@@ -2,69 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7625556482F
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Jul 2022 16:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D48564881
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Jul 2022 17:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232638AbiGCOzJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 3 Jul 2022 10:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
+        id S230446AbiGCP4c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 3 Jul 2022 11:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbiGCOzI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 3 Jul 2022 10:55:08 -0400
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8AF5F5C;
-        Sun,  3 Jul 2022 07:55:07 -0700 (PDT)
-Received: by mail-pf1-f178.google.com with SMTP id x4so6834539pfq.2;
-        Sun, 03 Jul 2022 07:55:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=kxKzGfxWGfKBHp9F8W62mmiucykNyoEbmozsyWHPQSM=;
-        b=d1lh/1mBMMLHDmqj2Ij8wIXP/v8XZbqUmBJah63ic+W0++MHJlwnQuVE60Z/wFUhnk
-         WrJUdnscYKAu9R1kA0oSmXjMPgNS2KXQVPH7aIHOsua1iknVwNUP4/6JC/h0MU5/fsJQ
-         P79pTxY1JDxxYfK91J0lbRzxM7r+M8Omsh4BjADFZ9sFOV2GjADbawKvwCSGkb2RjgQT
-         lPhvbrrMCH0gISY1fuUg+BgqnfxeFEjuya7o/18gtcqIY6rIJW1zh8JjqgTVKDzT94/4
-         dIE1WiSmJ1PZrPcWAG/M9pF7Xmb8DS5RK2ByUaCL7O6Ife1/5mWozkG4qzcbRiCOZqsS
-         8OvQ==
-X-Gm-Message-State: AJIora9fo4oFn0xWr2cHbHIaJpxh12MiKu9O2AESLNebSNAeoBttpP0W
-        /U8K4JZtFI0Lrepi3YbY7hI=
-X-Google-Smtp-Source: AGRyM1vNwKItYGfQdO3d4S6lgVRggBMRNaa0YOd45v0UMb597XCV+l8z9rytiJJk8z/SL/YvOR04Ww==
-X-Received: by 2002:a63:4526:0:b0:40d:f426:9f4b with SMTP id s38-20020a634526000000b0040df4269f4bmr22055292pga.595.1656860107288;
-        Sun, 03 Jul 2022 07:55:07 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
-        by smtp.gmail.com with ESMTPSA id nn12-20020a17090b38cc00b001ef59378951sm654399pjb.13.2022.07.03.07.55.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Jul 2022 07:55:06 -0700 (PDT)
-Message-ID: <19f203e5-e965-23bd-401b-0ae8d9a73a5d@acm.org>
-Date:   Sun, 3 Jul 2022 07:55:05 -0700
+        with ESMTP id S230154AbiGCP4c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 3 Jul 2022 11:56:32 -0400
+Received: from heian.cn.fujitsu.com (mail.cn.fujitsu.com [183.91.158.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B232BBBF
+        for <linux-rdma@vger.kernel.org>; Sun,  3 Jul 2022 08:56:30 -0700 (PDT)
+IronPort-Data: =?us-ascii?q?A9a23=3A/OVbWa6FA3ux+o5QyY7RVwxRtNjFchMFZxGqfqr?=
+ =?us-ascii?q?LsXjdYENS3jcHmjdKDG7XMqzfYmT2eN4gYN628kpQv8OHnNYyQVc5pCpnJ55og?=
+ =?us-ascii?q?ZCbXIzGdC8cHM8zwvXrFRsht4NHAjX5BJhcokT0+1H9YtANkVEmjfvSHuCkUba?=
+ =?us-ascii?q?dUsxMbVQMpBkJ2EsLd9ER0tYAbeiRW2thiPuqyyHtEAbNNw1cbgr435m+RCZH5?=
+ =?us-ascii?q?5wejt+3UmsWPpintHeG/5Uc4Ql2yauZdxMUSaEMdgK2qnqq8V23wo/Z109F5tK?=
+ =?us-ascii?q?NmbC9fFAIQ6LJIE6FjX8+t6qK20AE/3JtlP1gcqd0hUR/0l1lm/hgwdNCpdqyW?=
+ =?us-ascii?q?C8nI6/NhP8AFRJfFkmSOIUfouCefCfg75D7I0ruNiGEL+9VJFsuMIQC4eFxAXl?=
+ =?us-ascii?q?D3fMdITEJKBuEgoqe0qO5WPhu3Jx7dOHkOYoevjdryjSxJfIrRpbrQKjQ49Jcm?=
+ =?us-ascii?q?jAqiahmGffYetpcczZqZTzebBBVfFQaEpQzmKGvnHaXWz9Xp3qHpKcv7i7YxWR?=
+ =?us-ascii?q?MPBLFWDbOUoXSA5wLwQDD/SSbl1kVyyoybLS3oQdpOFr17gMXoR7GZQ=3D=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AgJByWaNG1ziAtcBcTv2jsMiBIKoaSvp037BL?=
+ =?us-ascii?q?7TEUdfUxSKGlfq+V8sjzqiWftN98YhAdcLO7Scy9qBHnhP1ICOAqVN/MYOCMgh?=
+ =?us-ascii?q?rLEGgN1+vf6gylMyj/28oY7q14bpV5YeeaMXFKyer8/ym0euxN/OW6?=
+X-IronPort-AV: E=Sophos;i="5.88,333,1635177600"; 
+   d="scan'208";a="127157764"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 03 Jul 2022 23:56:29 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 21E704D1719E;
+        Sun,  3 Jul 2022 23:56:28 +0800 (CST)
+Received: from G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Sun, 3 Jul 2022 23:56:30 +0800
+Received: from localhost.localdomain (10.167.215.54) by
+ G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Sun, 3 Jul 2022 23:56:29 +0800
+From:   Xiao Yang <yangx.jy@fujitsu.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     <leon@kernel.org>, <jgg@ziepe.ca>, <rpearsonhpe@gmail.com>,
+        <zyjzyj2000@gmail.com>, Xiao Yang <yangx.jy@fujitsu.com>
+Subject: [PATCH] RDMA/rxe: Process received packets in time
+Date:   Sun, 3 Jul 2022 23:56:25 +0800
+Message-ID: <20220703155625.14497-1-yangx.jy@fujitsu.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: use-after-free in srpt_enable_tpg()
-Content-Language: en-US
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Mike Christie <michael.christie@oracle.com>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <17649b9c-7e42-1625-8bc9-8ad333ab771c@fujitsu.com>
- <ed7e268e-94c5-38b1-286d-e2cb10412334@acm.org>
- <fbaca135-891c-7ff3-d7ac-bd79609849f5@oracle.com>
- <20220701015934.1105-1-hdanton@sina.com>
- <20220703021119.1109-1-hdanton@sina.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20220703021119.1109-1-hdanton@sina.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 21E704D1719E.A92C8
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@fujitsu.com
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,48 +63,123 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/2/22 19:11, Hillf Danton wrote:
-> On Sat, 2 Jul 2022 15:26:33 -0700 Bart Van Assche wrote:
->> As long as a session is live the ch->qp pointer may be
->> dereferenced. The sdev->pd pointer is stored in the pd member of struct
->> ib_qp and hence may be dereferenced by any function that uses ch->qp.
-> 
-> If it is still an issue after ib_dealloc_pd(sdev->pd) then it goes beyond the
-> aperture of my proposal and needs another fix.
-> 
-> Hillf
-> 
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> @@ -3235,6 +3235,8 @@ static void srpt_remove_one(struct ib_de
->   
->   	ib_set_client_data(device, &srpt_client, NULL);
->   
-> +	/* make sdev survive ib_dealloc_pd(sdev->pd); */
-> +	atomic_inc(&sdev->port_refcount);
->   	/*
->   	 * Unregistering a target must happen after destroying sdev->cm_id
->   	 * such that no new SRP_LOGIN_REQ information units can arrive while
-> @@ -3250,6 +3252,9 @@ static void srpt_remove_one(struct ib_de
->   	srpt_free_srq(sdev);
->   
->   	ib_dealloc_pd(sdev->pd);
-> +
-> +	if (0 == atomic_dec_return(&sdev->port_refcount))
-> +		kfree(sdev);
->   }
->   
->   static struct ib_client srpt_client = {
+If received packets (i.e. skb) stored in qp->resp_pkts
+cannot be processed in time, they may be ovewritten/reused
+and then lead to abnormal behavior.
 
-Do you perhaps want to combine the above patch with the previous patch? 
-I don't think that any reference counting scheme can fix all 
-use-after-free issues related to srpt_remove_one(). Immediately after 
-srpt_remove_one() returns the caller of this function calls 
-ib_device_put() and ib_client_put(). These functions free data 
-structures that can be reached from the pointers that are stored in 
-struct ib_qp. Holding a reference on struct ib_device as long as any 
-session is live would allow to remove the while-loop from 
-srpt_release_sport(). However, I'm not sure that would make a 
-significant difference since there is a similar while-loop in one of the 
-callers of srpt_remove_one() (disable_device() in the RDMA core).
+For example, running test_qp_ex_rc_atomic_cmp_swp always
+reproduced a panic on my slow vm:
+--------------------------------------------------------
+[39867.797693] rdma_rxe: qp#17 state = GET ACK
+[39867.800667] rdma_rxe: qp#17 state = GET WQE
+[39867.800722] rdma_rxe: qp#17 state = CHECK PSN
+[39867.800739] rdma_rxe: qp#17 state = CHECK ACK
+[39867.800776] rdma_rxe: unexpected opcode
+[39867.800790] rdma_rxe: qp#17 state = ERROR
+...
+[39867.822361] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[39867.822361] #PF: supervisor read access in kernel mode
+[39867.822361] #PF: error_code(0x0000) - not-present page
+[39867.822361] PGD 0 P4D 0
+[39867.822361] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[39867.822361] CPU: 3 PID: 19605 Comm: python3 Kdump: loaded Tainted: G        W         5.19.0-rc2+ #33
+[39867.822361] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.15.0-29-g6a62e0cb0dfe-prebuilt.qemu.org 04/01/2014
+[39867.822361] RIP: 0010:rxe_completer+0x41f/0xd10 [rdma_rxe]
+[39867.822361] Code: 41 83 ff 0d 0f 84 a7 02 00 00 41 83 ff 0e 0f 85 da 00 00 00 48 85 db 0f 84 74 fe ff ff 48 8b 6b 08 48 8d 7b d8 be 01 00 00 00 <4c> 8b 75 00 e8 68 65 56 dd 48 8d bd a0 01 00 00 e8 8c 47 00 00 4c
+[39867.822361] RSP: 0000:ffff9eab813c7e18 EFLAGS: 00000286
+[39867.822361] RAX: 0000000000022b5a RBX: ffff8adb07efeb28 RCX: 0000000000000006
+[39867.822361] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8adb07efeb00
+[39867.822361] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+[39867.822361] R10: 0000000000000000 R11: 0000000000011fac R12: ffff8adb06ae11a0
+[39867.822361] R13: 00000000fffffff5 R14: ffff9eab81803e80 R15: 000000000000000c
+[39867.822361] FS:  00007f87f99eb6c0(0000) GS:ffff8adb3dd00000(0000) knlGS:0000000000000000
+[39867.822361] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[39867.822361] CR2: 0000000000000000 CR3: 0000000106c3e000 CR4: 00000000000006e0
+[39867.822361] Call Trace:
+[39867.822361]  <TASK>
+[39867.822361]  ? __local_bh_enable_ip+0x83/0xf0
+[39867.822361]  rxe_do_task+0x67/0xc0 [rdma_rxe]
+[39867.822361]  tasklet_action_common.isra.0+0xe2/0x110
+[39867.822361]  __do_softirq+0xf0/0x4b5
+[39867.822361]  irq_exit_rcu+0xef/0x130
+[39867.822361]  sysvec_apic_timer_interrupt+0x40/0xc0
+[39867.822361]  asm_sysvec_apic_timer_interrupt+0x1b/0x20
+[39867.822361] RIP: 0033:0x7f87f96fcce5
+...
+--------------------------------------------------------
 
-Bart.
+The root cause is that a received skb stored in qp->resp_pkts
+has been ovewritten by another QP. Like the following logic:
+--------------------------------------------------------
+                    /* Trigger timeout */
+Requester(QP#17) -> retransmit_timer()
+                    -> rxe_completer()
+                          /* No skb (Atomic ACK) is added
+                           * to qp->resp_pkts */
+                          qp->req.need_retry = 1;
+                          rxe_run_task(&qp->req.task, 0);
+
+                    /* First skb (Atomic ACK) arrived &&
+                     * rxe_requester() is not called yet */
+Requester(QP#17) -> rxe_rcv()
+                       /* Add the skb (Atomic ACK) into qp->resp_pkts */
+                    -> rxe_comp_queue_pkt()
+                       -> rxe_completer()
+                             /* qp->req.need_retry == 1 */
+                             if (qp->req.need_retry) {
+		                ret = -EAGAIN;
+                                goto done;
+		             }
+
+Responder(QP#18) -> rxe_rcv()
+                       /* The skb (Atomic ACK) has been reused
+                        * to store the Atomic Comapre_Swap request */
+                    -> rxe_responder()
+
+                    /* rxe_requester() is called */
+Requester(QP#17) -> rxe_requester()
+                       if (unlikely(qp->req.need_retry)) {
+		          req_retry(qp);
+		          qp->req.need_retry = 0;
+                       }
+
+	            /* Trigger timeout again */
+Requester(QP#17) -> retransmit_timer()
+                    -> rxe_completer()
+                          /* qp->req.need_retry == 0 */
+                          if (qp->req.need_retry) {
+		             ret = -EAGAIN;
+                             goto done;
+		          }
+                          /* check_ack() throws "unexpected opcode" */
+                       -> check_ack()
+                          return COMPST_ERROR;
+--------------------------------------------------------
+
+If qp->req.need_retry is set and qp->resp_pkts is not empty,
+Process received packets in time to fix the issue.
+
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+---
+ drivers/infiniband/sw/rxe/rxe_comp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index da3a398053b8..8ffc874a25af 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -580,7 +580,7 @@ int rxe_completer(void *arg)
+ 		qp->comp.timeout_retry = 0;
+ 	}
+ 
+-	if (qp->req.need_retry) {
++	if (qp->req.need_retry && !skb_queue_len(&qp->resp_pkts)) {
+ 		ret = -EAGAIN;
+ 		goto done;
+ 	}
+-- 
+2.34.1
+
+
+
