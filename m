@@ -2,109 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A1A565736
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Jul 2022 15:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF405657A1
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Jul 2022 15:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbiGDNbp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Jul 2022 09:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
+        id S233872AbiGDNpX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Jul 2022 09:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbiGDNbZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Jul 2022 09:31:25 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2044.outbound.protection.outlook.com [40.107.101.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B9812610;
-        Mon,  4 Jul 2022 06:26:27 -0700 (PDT)
+        with ESMTP id S233559AbiGDNpW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Jul 2022 09:45:22 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2082.outbound.protection.outlook.com [40.107.244.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151582711
+        for <linux-rdma@vger.kernel.org>; Mon,  4 Jul 2022 06:45:22 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UhPwTk2nuJdOym3HL1WBtQNOWJaGhHm5/K4CSQgkII01+lj41UiW8t/hqlgaYfWXbHUh081vO5iKJXLu5lw7QsfNsv+T6dYF9nshICRpIu0I048YTXu2EpAI0bWAF2qhyeB77tfWKFnzXkY/DQMDreVh7q08L2mNcDFLR8Ps9mun3SV/GJPnnXKO0VsfXjuSS/p4wxs2rgxvDNfdrao1YlDsfPbsU7YyJylOzpCOxMwlpJ+kB7S47DzbFyTBGUbVqhI1rKS2o6uaBZRedcOeLhsUhPpGI03joYpOHfpXR0AnHR1R3fKSpTn0GrRYOJUi3Mz0WmTssc0xxZ4opd/GRw==
+ b=Vg/I7z2eXQcapnINGj4BK4agrmtnu/FET0gX3xTLC7bQIRpEZCF6ZVbyrauGk3CbKITotedqf5tocLZQXVKVRq7fIYIRzsCkSodYZ1t0e2Zmh0RmEv0Bu9fmvB6iZhPcq9aUd9/oT4kgga8k3Rfet/pISgUuFrp4aT1qjoAlrCET7vQzDfrEPzllYrci8ndvo1idE6iytKh67BjTxla6/ymmOKuZp6TD1fTX2G7tAmvfMEytzNWvftQgz99Mc5v1u7uj1Cqk7BsMqWgdPcPOCOAyzUEcpsihyjGpxVhmoFqlLD7Qx5FD9Sxmu80Ag+IhVt8GZF1felNmkV4lNUnIDw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HAgB+i01iAhpB6aqbybU0guWJyIobvnjpdq6YDJxw5k=;
- b=LYOnvS0C+JIcFds/7pGGMLHkmsmLjxDRsvmw4VFyZA1HRiDXLUxN0ou2l25SemnleQ6XH3uq+Y7vblik83QazVNNyrGfw4VonxqsurORkdKHAg454RVWzKhTNXizYZZs/JhDU4fS7kysawAf1VgTwfHxpGcuuxQKy2tyx7nLQT//pBAzBzl1PoAb7CnXC4gkQrhvHzptc17OOrh5sOSXPz2Z0Ejo1xLc1k1q99mDS71mOoDca6ugTDX8yUAEI5tscnS89bzJFJscUJ9dU6EVHerdIvpxXyCQlVGElXAu8ccOjmB3ldqST4iv+Z14Xv3docmMi/X97AcGNmGTb9z9FA==
+ bh=4tGXdAJy043fg1k8E52oHSxYC+GUuJtIAHF0kBToaOE=;
+ b=EXJNcNlfN8thsc749zYORXJOc74UG9guCBnbMDSHXBoMN2fIy+yVZKLaNPDyVvoWH42z28A9PUEyYzq/C36buN5+b/cmgxr8oDTH7kNkEgN4uIo5zRsP8paCFZiwuVjalIfj2ecgCSt59RuXx9ZHifbFItGcUCBd9jUwQN07uH1gyfGfctTS4zULcpLswEXeTMS+G+7XgpacnPsc6I+zXFgV+6v8QWDGUG/wgCudjRCzLkB8kBgUKI/UZMjlbKQIBv5/yxOu4WbsdcDs5OSfjyhiL99ivb+cz6uGapo0FJ7xRLW1jdD9+Z9xxTu35jGpzLW4HrtLs65xEo9mVyK2Tg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HAgB+i01iAhpB6aqbybU0guWJyIobvnjpdq6YDJxw5k=;
- b=KHtMmFihhQZgaI7gO/u8oYfN22zRkMkBSIUuVTfzSJCh+iqmFa7M76KXm8reXSzH8EzBZRKbXmbs4DWI/tdVWSWLBkzsDLSw6sBt/d5P7UpB9stDoRkgT0h0yq+jpjs11DD++yQ4rtKibAWTeYUjos2YpvAehjnLa0xRwe5b64+6Jp+Vgm5ZkKUNCDtw2p+3jWCTWsr1HwOMwJRiDi3yHYdP2zKNV60rSMzRfVRkaj3dVYSnqEnonWCFCgxFNPp6V/MSl2pp3dP0JqSDBnuSZGBRQe7pY7SElmQJasyaBkIsvuWpflkZ5uR4qM31FlTe7AAR6WunRLrNkS65/rgr7g==
+ bh=4tGXdAJy043fg1k8E52oHSxYC+GUuJtIAHF0kBToaOE=;
+ b=KJfVuEVGqXkUyh5hfui3vhJqvCTBa9VEtzz8pRyfBicxDPj5bA6D9p6nFu6y5BxszL0CMvDPDpzv0/cLG+WNOQjRMO0/9l0oERgWEfVw+Tp/4NnO3kk9Dfs5VNk6ubDSymLV69YehJK5jn2/PWZiV7QwKlsewKfnWc56pzlrF9bZ+b2sd2kL4Kh49mZnS0RsP3vjsSPGYPEtrgquhY8J6Zwy0aoZ86j8PQNYDDGXroYs2DyAqmAu/atQ1hYzgrcW4Y1wn7Ghzog4Pxl34VRKogbSJXD1w2gPTIIItjxwtGCMrX34M9QNupLgzfEgnTB7g05C9wOmdlgvP1nCoKnroA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by MN2PR12MB3614.namprd12.prod.outlook.com (2603:10b6:208:c6::17) with
+ by BY5PR12MB4919.namprd12.prod.outlook.com (2603:10b6:a03:1d6::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.15; Mon, 4 Jul
- 2022 13:26:24 +0000
+ 2022 13:45:20 +0000
 Received: from MN2PR12MB4192.namprd12.prod.outlook.com
  ([fe80::ac35:7c4b:3282:abfb]) by MN2PR12MB4192.namprd12.prod.outlook.com
  ([fe80::ac35:7c4b:3282:abfb%3]) with mapi id 15.20.5395.020; Mon, 4 Jul 2022
- 13:26:24 +0000
-Date:   Mon, 4 Jul 2022 10:26:23 -0300
+ 13:45:20 +0000
+Date:   Mon, 4 Jul 2022 10:45:19 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Li Zhijian <lizhijian@fujitsu.com>
-Cc:     linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com,
-        aharonl@nvidia.com, leon@kernel.org, tom@talpey.com,
-        tomasz.gromadzki@intel.com, linux-kernel@vger.kernel.org,
-        mbloch@nvidia.com, liangwenpeng@huawei.com, yangx.jy@fujitsu.com,
-        y-goto@fujitsu.com, rpearsonhpe@gmail.com, dan.j.williams@intel.com
-Subject: Re: [RFC PATCH v3 0/7] RDMA/rxe: Add RDMA FLUSH operation
-Message-ID: <20220704132623.GA1420657@nvidia.com>
-References: <20220315101845.4166983-1-lizhijian@fujitsu.com>
+To:     Xiao Yang <yangx.jy@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev,
+        rpearsonhpe@gmail.com, y-goto@fujitsu.com, lizhijian@fujitsu.com,
+        tomasz.gromadzki@intel.com, ira.weiny@intel.com
+Subject: Re: [PATCH v4 0/3] RDMA/rxe: Add RDMA Atomic Write operation
+Message-ID: <20220704134519.GA1422582@nvidia.com>
+References: <20220418061244.89025-1-yangx.jy@fujitsu.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220315101845.4166983-1-lizhijian@fujitsu.com>
-X-ClientProxiedBy: BL0PR0102CA0009.prod.exchangelabs.com
- (2603:10b6:207:18::22) To MN2PR12MB4192.namprd12.prod.outlook.com
+In-Reply-To: <20220418061244.89025-1-yangx.jy@fujitsu.com>
+X-ClientProxiedBy: MN2PR02CA0023.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::36) To MN2PR12MB4192.namprd12.prod.outlook.com
  (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bef4fb69-073e-48dd-a9ef-08da5dc0cab0
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3614:EE_
+X-MS-Office365-Filtering-Correlation-Id: bc3da6a0-d460-4367-4180-08da5dc37011
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4919:EE_
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fDf1xNCRcyJAIWaDqIox3AuT+7L/IwTgjR+hwTtmzizoyW/RFogEsmDbBsJUUOrmB4XJjGJah7L4HtOBRDjQk0Cg9jVx6F6qAqZhCQCmT/noHvupTFdT1lE5Do0uBfX2OrG3naOMwV6PDfgjbQPZJD15tQbHhfg5dsUDeGQLN13JM2TDNil5I/RAV75Jedt0+4EV1Rm5Lk67N92XDRRQzk4h6AcyOe+WZ0wy/ZHxJvFfbutzOke+aV/cvD549Z3girEq2Z8ePsiwOQGC2YAkVv7pOAaBjizhXbB+RFzfppL7rTjkT6YdSnzb0axWQpBqpdUxGBm0IM96ZcTak0Xc9MB9quEbt0JePiHpVkEMX4p+JQ51FFJjKYQ9L9ZrtAwGZkAOFWEjNtafzuKCsa+omKPVRvybOmToL2pAG04DCGatoCAXeXzWWEt46C7fci1YW4Q37Q5Kxeb+JFN8cAEgzJsyXSYR5iLdSfYEPEmRfcLF5QnGgprDMUN3tw19LKWqhGVdC+FShdcSOibct7hSO+6HUNq/z18Bm2nmcWvvu7BUmBY3t+K2SgkKbWJAYDbmTakZjPCkhXRb1LMxQM0TcDLqKr4DErm5u37LDDB0kta1FPDdXWvFhxIJUJYBO8ylcC3OfYZcFs3nG+bXaDo6UntsIC4iM21oyTVg3xmXRy/RIIKR6h/v3BxuCgpq9t/IHCoSOQg66lcAKligzWD2AyKshHIl0bEbkgkRaDnSMmcbpKZ+hyDaEhFq1b/dRG8SY8DKtMHGwn6tBY0Pq9ReLw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(376002)(366004)(396003)(39860400002)(346002)(83380400001)(186003)(1076003)(36756003)(41300700001)(38100700002)(66946007)(316002)(6916009)(478600001)(6486002)(66476007)(6512007)(2616005)(86362001)(8676002)(6506007)(8936002)(4326008)(2906002)(5660300002)(66556008)(7416002)(26005)(4744005)(33656002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: O3DaYa4/UsG9g2PlT0YRlsCdd/uyro/ru6wWQPSs+yVtsfT+7kHygr8jzlqoEr+Pka+Eo5aS+izcxd0XS0mMpg3OOlGN0GJQ71fvebgTMJN64iAwXCaikz0wl/H5IE6fU2+e6eXC9saGLUjRbj6GFmOog7MUM5RR2/Jn4aRwfiuS82Qkb73yKgyBxcDptaJzYtvY7QlZbzqOaZoL30QjMDoVLHJzZI1P+pFZA7zdM1K7eODMwYjdIpxGEDgq2MMDXeXHUOgy+aAa7sVMamm+pRryk6Q2x8/3prlrACzizuRVOs+a8k9wJj4/VhPKTZtyhipX5Cd+QmYQt6g11jzNUWAENpHfgxim3DoXMeUsBCRMt/iizR1f0dlW36iJpBNDrt8TYYlssfca6fm5ye3REA9XoiTbkZfeE9wYChTOqrpNzyj3zalHKrXg343UHSpPuq0c0KiBpHKTjp2Toit1o0VvVE14MXWvIuTV3L1EqKqu2rKNFSY/fYT8y3ntL/zja4ZdfXM31HYuEGHD7vrCpJaDNAjzXTPBtlHyIfdfUNBPxLyfS0NZHlrpL1M1C+k4RJEBjmXPwe+LbxPrYRfOr+0893rzON0Z4nc00sp3x42TkqQmph8UvaOLXBAMK7cRf9QxYEGFrcG/ON7QsocrSqk48ZbmyrG3l1FtkEThy5/r9fIkfoHNVVAKBr29cPHWyK0tH3H+PnmKpTGJJ+gAupoD6RJicvhl/qFefBwydnXFcOWDeP4mx33Rsa1E1Irz9FStrWlQZeyiUTXcXpE7sg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(39860400002)(396003)(346002)(366004)(376002)(66476007)(186003)(4326008)(66946007)(316002)(6486002)(8676002)(6916009)(66556008)(36756003)(26005)(38100700002)(6512007)(2616005)(5660300002)(8936002)(86362001)(1076003)(33656002)(478600001)(41300700001)(2906002)(4744005)(6506007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?79B2/iS72cwRX+FNHGB7AnZfpI1G6E/BWDYd8XWkdS8Rllk0C5aM3sNiTVYg?=
- =?us-ascii?Q?UImZDMeJboy5JVrUNKenjnbW59sXdwIA3tMXEYznanAkswlf+FnRc1lacqbc?=
- =?us-ascii?Q?yupCh4I9N+sIzV1GPD9SLpvR9IVFSo2Aiz2UbYkkS4kPasCxniakeL40bB7F?=
- =?us-ascii?Q?mKCo8osz8Rton4q9WQ1wvs7WkXdphSEwhu3H0ARtFhA54ZN7BImYpdi3l0hi?=
- =?us-ascii?Q?AJt+sw9nf+KvI2OoW5BRcH1DiZkerzqv31Fg3wrmcGZ8JYf2EXfkY7ckFWaU?=
- =?us-ascii?Q?xuF71S2E9NQQtx+UChTf/nsqJL6jeE6Fhu/X73xr0cVNVWGz6QmcOl+gFzp4?=
- =?us-ascii?Q?LjP3cqysQxtuYeaBj2UwpR7845x5rdw+A53e0MGgzdQE3U260WYVpfdaZXjJ?=
- =?us-ascii?Q?rERDU34clZxbYBlsJaF1xPL9AkBlvhfaX6vEUqA22ZOZCVXSmL/GNwqdnL2D?=
- =?us-ascii?Q?9Y6g7nxdpvWg16aPFbXKneB1m8RxHYQYEThjm+Y8UL97BHI3/ZH7yvvzvgQJ?=
- =?us-ascii?Q?1MZqmtp0zgJnMbPUEi2E/BaBLlC9KtInUHKXJod7hqtg05KLnbuYi2nry88C?=
- =?us-ascii?Q?ZiRgB4f3E4MyIv0qi0Qjnk5bDPGISzuDfOAPYRzuAYtLWWNkE+r3Ei6Ddp3Q?=
- =?us-ascii?Q?U3+jttTJS19XOQzdqiY70TXfMdKThgT9zklPCkPeIRKhN8SYX+QQ76egwgji?=
- =?us-ascii?Q?aXdRhTQ2S+OsgZ+fO0y49XZZ7K8MOZbhAc20q06er5FPZ6jaZ+UMDCVCDeNw?=
- =?us-ascii?Q?lLQPQ5tRCuRLPm8cQKFSHvPHaB+npwRaPiN7ztHO/rm+QZ31gz5iBAyeZMH5?=
- =?us-ascii?Q?dl9PYLo6e6qWwT3Y/9R5vUIfu2AW0Gs00xiFDSQBIPmOR6G+9+N1ZOsAIJxb?=
- =?us-ascii?Q?byAN7x5cctGNtoaRVU8joscourPA7bFI4sEqMXwxPEob1Zhce7kUMSdJELOl?=
- =?us-ascii?Q?HkLJ9ngBG7TelYXTQMkDWbzYk8Pse477CC9KTqJABerChlb+ECJXQmCRJePj?=
- =?us-ascii?Q?fHTztgxPELvBbtqwSNI4QDMNtgBtYbcFnP8uiqWc9MAC2LeKSNA2zOfc2wfh?=
- =?us-ascii?Q?yHp4QTaujT8B+PYzC0Pu2oplfy8jSFQ4tESQxOP8/6TDToJdkqA/ColnADbm?=
- =?us-ascii?Q?utCsucXFlvo7r8zHAD0krvIO7w//AovJSS8Ffzl337aKecZkFpfeD/tYsKUN?=
- =?us-ascii?Q?o51Hu43R5037p4b+UyFkAy9nDDluBahmsAyEcIrB82IJA/pST6GMQnUAvx1R?=
- =?us-ascii?Q?f2ZQxy5s7PNyqRISZ5o1AbfCArfK6Lik54yUzTTlMplec6Qt4z1F1QSdGHbU?=
- =?us-ascii?Q?wRT5Roqp/fzOAtuuJHK8MkTJllC8ln6xMSM4Id+q0BFh4U7QRlIexEpG0G4P?=
- =?us-ascii?Q?4PBZjG9aZucWOMMF+SdwnIVf3mmj9dq7VdGQKb1XA1VWknC5U7GJp8J3Gltc?=
- =?us-ascii?Q?Q7cuagD4oLSwULzzDRizi43Z432VUcT2NOhqFE6urxPeEm2PF7YN8bgmYKQi?=
- =?us-ascii?Q?QXqdcxRjzWmozGXSJuG5m3eK0s/wsXz3E0FiyVNEFJ968VXa/sB6EHp7KJBk?=
- =?us-ascii?Q?XODcIK9mftYdBVNhn/WiRcI/mcS8nAV6l9k6Ep4o?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BU/0diCdDzSFvTuiH0iViOc14A4+IOXrHXcbqU730g+Hm7GmyLOqIEhI9LdX?=
+ =?us-ascii?Q?X4Xzjd7Cj8SJ1WwvooBHFAinvqgGBwImRkeErEIlV9GvfH5XBVJWyWHkZbl3?=
+ =?us-ascii?Q?QDvqzsDr/bhaw5qyvc+LHZ5eAnvzcWltqOY8dIFM3H4ws3TqI1Vz69RKYq9g?=
+ =?us-ascii?Q?L1Nfaa8h3aGiGlVccIa8/i526pRwxKUvqAZfYZLHd6hx8bNLL1HiMgmVUg7s?=
+ =?us-ascii?Q?FOAMABOVSL3/NWCTk8QPZj7JB78d2Dkgc6uKZNLrJWd/sb9V1+MzKfhLajSl?=
+ =?us-ascii?Q?X8IRSbEhbVfQ7K9FEMSt65DgRtpsFIsaRV3QcSUbnWEGECO5ICt9Yuua7u60?=
+ =?us-ascii?Q?0UvCSlxBlD2+0nme9pKk1QNPxoVMGHtJkBbP/E0Xqj3OisL5umJI2zXheqDX?=
+ =?us-ascii?Q?krJrQBXCRBz8PHHm1j9O9iCC1Z1SRV3QT8P/owUXcBXPICxVJ7yo2OLpnGwM?=
+ =?us-ascii?Q?n+Lms1qqJBwxI2zi+m9O63qasiu7d9xSy/VweQ15HQNREheH2p9604G25GwK?=
+ =?us-ascii?Q?nnRchrrQoHMXxEeSwVBeobWuuIuxMf09JiUnBe0vrahHn2EVzYHUQ83BoMxI?=
+ =?us-ascii?Q?GKsV4p6Fa3rkZtrmHi15dcYX8dYMAKunrfD+18WaEYEmgRIYp+WSFTsS6ePN?=
+ =?us-ascii?Q?98J7Cmj9tLWEkWFQ7uGbw2b47Z/Ex70LEisaEoh1UuyU36ZEE7Kr76GXh8y6?=
+ =?us-ascii?Q?eqHYccDJ/Sk+fWLgxUQ9zlpSQjnZUjtpidcdJ64qVl70DQLAh89RYQReRCu6?=
+ =?us-ascii?Q?HV0eBbb+edfieRFwOHstTzBh5FOtSbwDABauwqj+BUVS39SXL6wQT9BLa+Uj?=
+ =?us-ascii?Q?Bhwpd8DXcNRn1umnWXxfi+02P3SMOSH+di/vttVsN7ROsxQMbeYIkSnuMp0B?=
+ =?us-ascii?Q?GorhTDD1nIecw8yvuCeR1fo4AlQ0GEJkm2XUa3s10zixJHV0bdMgRP2s//Br?=
+ =?us-ascii?Q?EdkGTEUnjQeIPa4IxSX0JXqAEwQ68tJRQEUB9AkkinjxOt5lnmrRLjFhJ3T+?=
+ =?us-ascii?Q?5qLfgO8es7JRSxazpCIFlZv8bCgBh2njnvYE/MDXVnKdi2mFV6VXFFASiimM?=
+ =?us-ascii?Q?Yg/oe9AYU/Y99Zo+RrymNDiDOOEp7FQovvaoBFSJ/lhXv98KochJIJ5+cLu5?=
+ =?us-ascii?Q?c7wvRJRND+zXNQsEJUj5z92d/Z7qFqDKNUrOKWAi571jGXIW9CJ4FXRky4qW?=
+ =?us-ascii?Q?XEEKetyX5NwmXkMGHL4L4ydYs0I5aQZMB7sfncDnmHA5FmTzUI1i8wFA7E0h?=
+ =?us-ascii?Q?aZ6x6yNtKNF0A9U6jCMt4Nb+Z/5QPHunh0hQthbLcJUsn9hlHah4kIhukCgv?=
+ =?us-ascii?Q?+djbGswMW4f5TWI5c6zzsbbVSHtbeHJKYLIMnoggyhhyU7lO5ZbCYX3WXg/G?=
+ =?us-ascii?Q?odMPCTCBnpbnacppZHmlEB/UfSAcdKyDUGG9LZJgOpjsFAgMD8KiyWJ5vEsO?=
+ =?us-ascii?Q?Y10mYfLmc/gdTvNtPfExYe7r/pZhYB7CW/qiJ71whvmVTm4cl6/G1fKqzJgD?=
+ =?us-ascii?Q?ya7BusNCze5ULJ1TqqgYtxDYG5wR7KxYhPyjA9mlTrKNG4scTHk52ywwQD/6?=
+ =?us-ascii?Q?3n5sIexmoVMt/wR5OqHXvsvS7/cJ3lx56Q6hHu68?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bef4fb69-073e-48dd-a9ef-08da5dc0cab0
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc3da6a0-d460-4367-4180-08da5dc37011
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jul 2022 13:26:24.3431
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jul 2022 13:45:20.7625
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ENr6UqSROMpj2W7sL1+KnqqVexvpp9Q/ZMqQxdysojqTOl94I8dvHp/UJt1R7Q/u
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3614
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5Sn+mWl7/NeP0yz3qtUcww8ORfKblFBlCS1J7uPRnkhJrn7cmX/KmQlMX6a6rDdi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4919
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -115,27 +113,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 06:18:38PM +0800, Li Zhijian wrote:
-> Hey folks,
-> 
-> These patches are going to implement a *NEW* RDMA opcode "RDMA FLUSH".
-> In IB SPEC 1.5[1], 2 new opcodes, ATOMIC WRITE and RDMA FLUSH were
-> added in the MEMORY PLACEMENT EXTENSIONS section.
-> 
-> This patchset makes SoftRoCE support new RDMA FLUSH on RC and RD service.
-> 
-> You can verify the patchset by building and running the rdma_flush example[2].
-> server:
-> $ ./rdma_flush_server -s [server_address] -p [port_number]
-> client:
-> $ ./rdma_flush_client -s [server_address] -p [port_number]
-> 
-> - We introduce new packet format for FLUSH request.
-> - We introduce FLUSH placement type attributes to HCA
-> - We introduce FLUSH access flags that users are able to register with
+On Mon, Apr 18, 2022 at 02:12:41PM +0800, Xiao Yang wrote:
+> The IB SPEC v1.5[1] defined new RDMA Atomic Write operation. This
+> patchset makes SoftRoCE support new RDMA Atomic Write on RC service.
 
-So where are we on this? Are all the rxe regressions fixed now? It
-doesn't apply so I'm dropping it from patchworks.
+This series doesn't apply cleanly, please rebase it and re-tet it.
 
-Thanks,
+Did you make pyverbs coverage for this?
+
 Jason
