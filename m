@@ -2,61 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5CD56739F
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Jul 2022 17:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8275673DC
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Jul 2022 18:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbiGEP5R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Jul 2022 11:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
+        id S229877AbiGEQKf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Jul 2022 12:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbiGEP5R (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Jul 2022 11:57:17 -0400
-Received: from heian.cn.fujitsu.com (mail.cn.fujitsu.com [183.91.158.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B79A4D6D
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Jul 2022 08:57:14 -0700 (PDT)
-IronPort-Data: =?us-ascii?q?A9a23=3AS64gFq3qjkhWMHU4SPbD5TNzkn2cJEfYwER7XOP?=
- =?us-ascii?q?LsXnJ0W9z1DwPzGtODWHXMvnfZWqmL9B1PI+wpB8DusfXnNI2QQE+nZ1PZygU8?=
- =?us-ascii?q?JKaX7x1DatR0xu6d5SFFAQ+hyknQoGowPscEzmM9n9BDpC79SMmjfvQH+KlYAL?=
- =?us-ascii?q?5EnsZqTFMGX5JZS1Ly7ZRbr5A2bBVMivV0T/Ai5S31GyNh1aYBlkpB5er83uDi?=
- =?us-ascii?q?hhdVAQw5TTSbdgT1LPXeuJ84Jg3fcldJFOgKmVY83LTegrN8F251juxExYFAdX?=
- =?us-ascii?q?jnKv5c1ERX/jZOg3mZnh+AvDk20Yd4HdplPtT2Pk0MC+7jx2YltZ+2JNPpLS+V?=
- =?us-ascii?q?AUoIrbR3u8aVnG0FgknZ/IcqOOffijXXcu7iheun2HX6+92AUgsJooe+v56KW5?=
- =?us-ascii?q?L/P0cbjsKa3irlfO00qO5ELE03uwsKcDqOMUUvXQI5TXUCvAOQp3ZRajOo9hC0?=
- =?us-ascii?q?18YgsFIAOabfcYcYBJxYxnaJR5CIFEaDNQ5hujArnvwfBVKqV+NqOw86gDuIKZ?=
- =?us-ascii?q?ZuFT2GIONPIXUGoMOxQDFzl8qNl/RWnkyXOFzAxLfmp50utLyoA=3D=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AAXH8TaiDEJi+r8XyLaAf6vZooHBQXuYji2hC?=
- =?us-ascii?q?6mlwRA09TyX4rbHLoB1/73LJYVkqNk3I5urrBEDtexLhHP1OkOws1NWZLWrbUQ?=
- =?us-ascii?q?KTRekM0WKI+UyDJ8SRzI5g/JYlW61/Jfm1NlJikPv9iTPSL/8QhPWB74Ck7N2z?=
- =?us-ascii?q?80tQ?=
-X-IronPort-AV: E=Sophos;i="5.88,333,1635177600"; 
-   d="scan'208";a="127284078"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 05 Jul 2022 23:57:13 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 082414D1716E;
-        Tue,  5 Jul 2022 23:57:09 +0800 (CST)
-Received: from G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Tue, 5 Jul 2022 23:57:09 +0800
-Received: from localhost.localdomain (10.167.215.54) by
- G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Tue, 5 Jul 2022 23:57:10 +0800
-From:   Xiao Yang <yangx.jy@fujitsu.com>
-To:     <linux-rdma@vger.kernel.org>
-CC:     <leon@kernel.org>, <jgg@ziepe.ca>, <rpearsonhpe@gmail.com>,
-        <zyjzyj2000@gmail.com>, Xiao Yang <yangx.jy@fujitsu.com>
-Subject: [PATCH] RDMA/rxe: Use correct ATOMIC Acknowledge opcode in BTH
-Date:   Tue, 5 Jul 2022 23:57:05 +0800
-Message-ID: <20220705155705.21094-1-yangx.jy@fujitsu.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229552AbiGEQKf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Jul 2022 12:10:35 -0400
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778E513F5B;
+        Tue,  5 Jul 2022 09:10:34 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id fz10so6521799pjb.2;
+        Tue, 05 Jul 2022 09:10:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ZNTQnk49H2igi0K6Q0jxdfi1a4YgDcy0NhVMvg7bnDQ=;
+        b=ikplLSPOU+RmjOFlWSmZG+ScUZ3Jw1FimpRtDx8st1tuLC7KxEd+VcFqAdhasyuWe/
+         n+E9nrJHpcCMUuWi2zJNmizKYwtQjvP9ySVPfy3RcMq00R5n+FffAzUhTiW2n3V86wvb
+         W7gKXFv1764kcyjj8SXQ1dyfx40HKFUTaLBf3I3psUJAoTDG3nHnKgbC8L4UETsclpXr
+         rr4ELLQ5qh3spVIhPSFA7vrdUX8+xKshl5vBD9yUtKqaptAKyHTvrjdM1uGianpSP8Ji
+         OP0OclP663/RjD2/yPqgsRJVlMPfqag+3CujW4TznbJ7Qup5Db70fPYuuPJWHylHr8GF
+         7dMQ==
+X-Gm-Message-State: AJIora8W6HrmF6K7wkiUMo00bws4xE1jz6dMixd/PSZn3FwB9EZ0BFqd
+        Qupivi1vYQAgdyoY0RvMnCHJU0mhwzc=
+X-Google-Smtp-Source: AGRyM1uDO/Py3wsxe/B9UjRraSQsGptcSXXY6FmxKvltGVVP5jYMSB5UDDBIAoTrgnh++2846CwQCg==
+X-Received: by 2002:a17:90a:6741:b0:1ef:7f62:6cd1 with SMTP id c1-20020a17090a674100b001ef7f626cd1mr17873644pjm.89.1657037433778;
+        Tue, 05 Jul 2022 09:10:33 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
+        by smtp.gmail.com with ESMTPSA id b5-20020a170902bd4500b0016a565f3f34sm23192699plx.168.2022.07.05.09.10.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jul 2022 09:10:32 -0700 (PDT)
+Message-ID: <2e8b080c-cda5-9224-1e46-95fb0b4f7036@acm.org>
+Date:   Tue, 5 Jul 2022 09:10:31 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 082414D1716E.A4915
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@fujitsu.com
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: use-after-free in srpt_enable_tpg()
+Content-Language: en-US
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Mike Christie <michael.christie@oracle.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <17649b9c-7e42-1625-8bc9-8ad333ab771c@fujitsu.com>
+ <ed7e268e-94c5-38b1-286d-e2cb10412334@acm.org>
+ <fbaca135-891c-7ff3-d7ac-bd79609849f5@oracle.com>
+ <20220701015934.1105-1-hdanton@sina.com>
+ <20220703021119.1109-1-hdanton@sina.com>
+ <20220704001157.1644-1-hdanton@sina.com>
+ <20220705114050.1979-1-hdanton@sina.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20220705114050.1979-1-hdanton@sina.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,35 +74,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When responder processed an Atomic requeset and got a NAK,
-the opcode field in BTH should be ATOMIC Acknowledge instead
-of Acknowledge.
+On 7/5/22 04:40, Hillf Danton wrote:
+> If no compat devices can be added to ib_device with DEVICE_REGISTERED
+> cleared then they can be removed without ib_device's refcount dropping
+> to zero.
+> Even if that is not strictly true, a new flag that marks ib device
+> disabled and prevents new compact devices from being added can be added
+> in bid to cut the wait for completion.
+> 
+> Hillf
+> 
+> +++ b/drivers/infiniband/core/device.c
+> @@ -1265,6 +1265,7 @@ static void disable_device(struct ib_dev
+>   
+>   	down_write(&devices_rwsem);
+>   	xa_clear_mark(&devices, device->index, DEVICE_REGISTERED);
+> +	// device->disabled = true;
+>   	up_write(&devices_rwsem);
+>   
+>   	/*
+> @@ -1282,17 +1283,10 @@ static void disable_device(struct ib_dev
+>   	}
+>   
+>   	ib_cq_pool_cleanup(device);
+> +	remove_compat_devs(device);
+>   
+>   	/* Pairs with refcount_set in enable_device */
+>   	ib_device_put(device);
+> -	wait_for_completion(&device->unreg_completion);
+> -
+> -	/*
+> -	 * compat devices must be removed after device refcount drops to zero.
+> -	 * Otherwise init_net() may add more compatdevs after removing compat
+> -	 * devices and before device is disabled.
+> -	 */
+> -	remove_compat_devs(device);
+>   }
 
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe_resp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I'm not convinced the above patch is a step in the right direction nor 
+that it is correct. Anyway, since the RDMA maintainers know this code 
+better than I do I will let them comment on the above patch.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 265e46fe050f..592d73c37d48 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -1080,10 +1080,10 @@ static enum resp_states acknowledge(struct rxe_qp *qp,
- 	if (qp_type(qp) != IB_QPT_RC)
- 		return RESPST_CLEANUP;
- 
--	if (qp->resp.aeth_syndrome != AETH_ACK_UNLIMITED)
-+	if (pkt->mask & RXE_ATOMIC_MASK)
-+		send_atomic_ack(qp, qp->resp.aeth_syndrome, pkt->psn);
-+	else if (qp->resp.aeth_syndrome != AETH_ACK_UNLIMITED)
- 		send_ack(qp, qp->resp.aeth_syndrome, pkt->psn);
--	else if (pkt->mask & RXE_ATOMIC_MASK)
--		send_atomic_ack(qp, AETH_ACK_UNLIMITED, pkt->psn);
- 	else if (bth_ack(pkt))
- 		send_ack(qp, AETH_ACK_UNLIMITED, pkt->psn);
- 
--- 
-2.34.1
-
-
-
+Bart.
