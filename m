@@ -2,87 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD99567A7C
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jul 2022 01:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E547567A82
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jul 2022 01:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbiGEXCS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Jul 2022 19:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
+        id S232272AbiGEXIZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Jul 2022 19:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbiGEXCQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Jul 2022 19:02:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D7F186C8
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Jul 2022 16:02:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EAF87B81A53
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Jul 2022 23:02:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CB78C341D0;
-        Tue,  5 Jul 2022 23:02:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657062133;
-        bh=izNugGZMhJ/GfuzadwaQToO1AjIs0aysSHFgrWobP5o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SQdlsa0PlJZE6lqlRv7ERjq3evTf6fEGAMpfvkcUnfruwz54UhNR8GCVL82jeLyiw
-         YChk3PmxuQZrUZhuOr7IqoxCoMgfC551sss18xPKY2ODrYt+QTq5Bvhl0N0hK0f9xa
-         u2zd+fpPsgWiExN9FV73k3pNsWPFfSNptcUOyZdXQyByY4kIo4cdgscQ/f7esiviZu
-         Eq7PNhgm4iBgeGXgNaqWqeJW566dSlYoDm8da2hG17ECwPrDS67GdLw8Tpo6fWCSUi
-         2jANnP2ZJPCmwwyASjZALLgyA5R3UlkRBIZwRMd9VpT0NZdL3tgrT8MZ85dzOVqFrZ
-         Y0K6mntj8xN7Q==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH rdma-next 3/3] ipoib: switch to netif_napi_add_weight()
-Date:   Tue,  5 Jul 2022 16:02:08 -0700
-Message-Id: <20220705230208.924408-4-kuba@kernel.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220705230208.924408-1-kuba@kernel.org>
-References: <20220705230208.924408-1-kuba@kernel.org>
+        with ESMTP id S232426AbiGEXIY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Jul 2022 19:08:24 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF20CFD5
+        for <linux-rdma@vger.kernel.org>; Tue,  5 Jul 2022 16:08:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657062503; x=1688598503;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=p//nJQXJJMDWAc6QLDRuJYJiRFB3NvUy2BGu78vNnS0=;
+  b=PzLkeoGLTFZTg73iyu8hpzh7nV4/PlePnsxih+ZMzHLFaRmpHc6gVAEZ
+   laDn20JZQvvZZkOo2juRrITWKXviSACcl+a5hd5igRhzGSVbilsBCPqiL
+   5wNln8y/aO65voO4n7M6qS7Qc2rU3Xvcwh0eAOagAganFj07WDiITgXmc
+   FjzJY5FtxERkGgzNprZVDsDL98gKKhlSfZljHI6nmp8apyA0oIxpNPsO2
+   H4d2jn5D9VQpIMCGiaBwb7okDYqpjbMnyEeViGW+m7GNkafGvYTw0i3hq
+   2m42hXTQa23UhwQHgumBV4BjrPG8qPhee4jy9MLCBuM+1/uQm/tSndYmJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="266588397"
+X-IronPort-AV: E=Sophos;i="5.92,248,1650956400"; 
+   d="scan'208";a="266588397"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 16:08:23 -0700
+X-IronPort-AV: E=Sophos;i="5.92,248,1650956400"; 
+   d="scan'208";a="620047507"
+Received: from ssaleem-mobl1.amr.corp.intel.com ([10.212.17.201])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 16:08:23 -0700
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     jgg@nvidia.com
+Cc:     linux-rdma@vger.kernel.org, Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH for-next 0/7] irdma for-next updates 7-5-2022
+Date:   Tue,  5 Jul 2022 18:08:08 -0500
+Message-Id: <20220705230815.265-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.35.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-We want to remove the weight argument from the basic
-netif_napi_add() API and just default to 64.
-Switch ipoib to the new API for explicitly specifing
-the weight.
+This series adds level2 PBLE support, debug tracing and a few minor
+fixes for irdma.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: jgg@ziepe.ca
-CC: leon@kernel.org
-CC: linux-rdma@vger.kernel.org
----
- drivers/infiniband/ulp/ipoib/ipoib_main.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Mustafa Ismail (6):
+  RDMA/irdma: Add 2 level PBLE support for FMR
+  RDMA/irdma: Add AE source to error log
+  RDMA/irdma: Make CQP invalid state error non-critical
+  RDMA/irdma: Fix a window for use-after-free
+  RDMA/irdma: Fix VLAN connection with wildcard address
+  RDMA/irdma: Fix setting of QP context err_rq_idx_valid field
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index 2a8961b685c2..a4904371e2db 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -1664,8 +1664,10 @@ static void ipoib_napi_add(struct net_device *dev)
- {
- 	struct ipoib_dev_priv *priv = ipoib_priv(dev);
- 
--	netif_napi_add(dev, &priv->recv_napi, ipoib_rx_poll, IPOIB_NUM_WC);
--	netif_napi_add(dev, &priv->send_napi, ipoib_tx_poll, MAX_SEND_CQE);
-+	netif_napi_add_weight(dev, &priv->recv_napi, ipoib_rx_poll,
-+			      IPOIB_NUM_WC);
-+	netif_napi_add_weight(dev, &priv->send_napi, ipoib_tx_poll,
-+			      MAX_SEND_CQE);
- }
- 
- static void ipoib_napi_del(struct net_device *dev)
+Nayan Kumar (1):
+  RDMA/irdma: Make resource distribution algorithm more QP oriented
+
+ drivers/infiniband/hw/irdma/cm.c    | 11 ++++++-----
+ drivers/infiniband/hw/irdma/ctrl.c  |  8 +++++---
+ drivers/infiniband/hw/irdma/hw.c    | 24 +++++++-----------------
+ drivers/infiniband/hw/irdma/main.h  |  2 +-
+ drivers/infiniband/hw/irdma/utils.c |  1 +
+ drivers/infiniband/hw/irdma/verbs.c | 16 ++++++++++++----
+ 6 files changed, 32 insertions(+), 30 deletions(-)
+
 -- 
-2.36.1
+1.8.3.1
 
