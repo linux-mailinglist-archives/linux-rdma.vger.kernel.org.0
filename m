@@ -2,164 +2,196 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4EF5660CD
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Jul 2022 03:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1035661F1
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Jul 2022 05:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbiGEBvp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Jul 2022 21:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
+        id S230176AbiGEDno (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Jul 2022 23:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbiGEBvo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Jul 2022 21:51:44 -0400
-X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Jul 2022 18:51:43 PDT
-Received: from esa16.fujitsucc.c3s2.iphmx.com (esa16.fujitsucc.c3s2.iphmx.com [216.71.158.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E2FDF4B
-        for <linux-rdma@vger.kernel.org>; Mon,  4 Jul 2022 18:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1656985903; x=1688521903;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=YmbmI23iXfCQKRd03OIst/tGiupgthnmUKL++bZaIuk=;
-  b=EwC4NDOQnZQq+tQu2ldLU/J2Q/A0iKic+sPNvh55E7xnyj3cvyVNgQ4E
-   y/pKkmahS3r2fahyQ4RR32+aldPL1cGelnljfkuLI0IMMPo3huZcAAFJR
-   7gAorAD3rmtiB8UA/hVJgk6+uzkULlw2s7X4cPmeX1+BCgD+sHnDKGeaJ
-   cff6NNZgvV28osbFdaSEdajGSYsgwZzBQvaq3gGu4n3OpgI0/ctB9pT1Q
-   ivwm/RNEdvHAF5e0HgAixODOfXlE7P4LXOdwGtRZS3aiMVWCLOaKGE+Q/
-   qpNrrnOuDs64LR9i3Gr02B++sthvrEmrUfejeiN9N2puc/1mU4xB8JcJ0
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10398"; a="59525971"
-X-IronPort-AV: E=Sophos;i="5.92,245,1650898800"; 
-   d="scan'208";a="59525971"
-Received: from mail-tycjpn01lp2174.outbound.protection.outlook.com (HELO JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.174])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 10:50:35 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WxNNC6s/yt+8Py5BijizyMof1Vw/HVGNyambXZpO4sFFCJ3ndsIKTYAG7nA4Qi5dT9aAky/fPmK8a2WMW1LkILshAZ7MIAsBpmk7XaZajAmYzuZB+NA3VSVd+8t9qTSZWS6tD4qo0m7qIy/ZCQ23ok0f2D//CVTIong04bIRbD2Onjb8LLznzhtBk6ekwUjyQXFP/06dz6KrjXx89GIbebxQc5TAoCRSNfnsmqWR2WaqlQRY1xHIY8x7FRxbixwPtSVHDuLwrjGt1AVJC9bkkr975E4qftXG+BL1BlmRnWaC4vhAHAbVpmilgUiLP5/YRbSzvy/mvSORoLgkwJJ53g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YmbmI23iXfCQKRd03OIst/tGiupgthnmUKL++bZaIuk=;
- b=nYomP1HNqc3IYNEiAeqyafSsp8OIgdPnysCvRqnlbTdsitHeaDW/49rvUxaV5xGoioj6gnWexYO/3HmhEgRNW20juSE/x9Z0HdEUjbL6EF0SDf4X8mZfqY17x8PyelBLLvWYH4jKRfg2OUb6nLGAj1bzntxGAYrhZxo4L7VWxOKhcK585NCrLxA0xqv0MNaLdASW1ALvnsBMSmwhA86yJ6ZXFQBcjjZ4sSaLsc+Ll3YBysF9+2WLgNMgqS0CXkvPuhUCPggFIPPS8XAK1QDhPTeW8E0oiHcAW4MuBlK1PXAoYSfUR7Ed0HKMb8FM7N0VK+gC1PeP9LeNUmNoHCfg/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YmbmI23iXfCQKRd03OIst/tGiupgthnmUKL++bZaIuk=;
- b=VcQrF4e4RP1e4STJN1JurZVZptjffRhgz+llYLuI6eRUXKSDfinAJ0V2tAVRuIfVKkFX99/F3zjS3Usw5q6fP3yHY5b1VuYL+/7psfgqr/M0zJMg7pAeD+aAIzkBqZE9WBMZ347Mz1D8/sm+IzPaBp6HY/3rTPtXGwjl0gpcPeY=
-Received: from OS3PR01MB9499.jpnprd01.prod.outlook.com (2603:1096:604:1c8::5)
- by TY2PR01MB4556.jpnprd01.prod.outlook.com (2603:1096:404:110::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.17; Tue, 5 Jul
- 2022 01:50:32 +0000
-Received: from OS3PR01MB9499.jpnprd01.prod.outlook.com
- ([fe80::d8d2:d66f:2f3:846c]) by OS3PR01MB9499.jpnprd01.prod.outlook.com
- ([fe80::d8d2:d66f:2f3:846c%7]) with mapi id 15.20.5395.021; Tue, 5 Jul 2022
- 01:50:32 +0000
-From:   "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "tomasz.gromadzki@intel.com" <tomasz.gromadzki@intel.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>
-Subject: Re: [PATCH v4 0/3] RDMA/rxe: Add RDMA Atomic Write operation
-Thread-Topic: [PATCH v4 0/3] RDMA/rxe: Add RDMA Atomic Write operation
-Thread-Index: AQHYUutUn9XU4R6Jekm3O/NqdHUgQq1ussKAgADKnQA=
-Date:   Tue, 5 Jul 2022 01:50:32 +0000
-Message-ID: <7f5d0a68-4efb-cbc4-6293-f363e5f49f30@fujitsu.com>
-References: <20220418061244.89025-1-yangx.jy@fujitsu.com>
- <20220704134519.GA1422582@nvidia.com>
-In-Reply-To: <20220704134519.GA1422582@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0d3a7fc9-207e-4736-b3a7-08da5e28bf03
-x-ms-traffictypediagnostic: TY2PR01MB4556:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EJIxLEQKcAmuzPI77lHUpm68HgM1J+lsYpYvv50eUuSDcpdBhOqMuICzNtSqozInimoj9DYOUoKWaDvSNhuBVLF3qZRfEZiz+FacfJstJTzK2O2I6g5YJ3xJz/qWjIIbmsEH745a/3fESrIihFWTiqnl0LBIIgXBQvUvtUUsi/LRiM79eZaeE/AvZQ5UWqcoeOmFj+qMW2HPqa3ACQfwcjWM5bPOzL00xkaUugqUyzWvkk3l2tcCEQltou8llvdBWUTICkj0+pZZIbMXHVWkqpeVfkv93Vuj+bza3SiBbI0aE30hwtYKLpxGUZ2IHsNCdYBhNdBCS19l2x08l/CjTPK2PROfAOaIyJX9CzVi9xGsKtoJeZXv01LgL+tbXuVJdy4yY2hJGP2KdZ4N0KOmKuaXG8zW40QowOeZTsmKz6FH/vY2va9euI1cWf449jIz8VnBwqb/KA2I8qCljD15ztLvZscJc9j1jvz0APxRFPzq7MjKgrPouXRFpc1ATLPxYsumAe/gyZW0b4len79X1EXcYPrcUalnmQ8oYCW3eJ/cBSBkof9TNMqdXLixdHW1x5qe1vJZP/3+4kLn+xO+xWCn5eI1h8uB42m/sJncEzZW4b+PrxbBlSdsXtUbbKu312CRJ79QRpn55FavGyFJGeMD9f5oxtHwCuBNRAsdIP7kTjeL/Gj8LS7iYJlFFIPJGsNhtKYMDLCRhlZwuonJ0H0Cjb01XHYsoqc8Kjvi7WnTBZS1LggEAIJaESG2/tkDoSfSuWL86TGAeJxNvWepqnTU2ljzMhw/CXOhzgQsyqKq82KuK36+FdAoEaBKvwLyPJWSBcKbORG30u9zcsaC4m0PSJYc7kzhs8qV5rfBiD7IBj2Et0B1mZlOsiv/HfuD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB9499.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(396003)(376002)(366004)(39860400002)(136003)(76116006)(66946007)(8676002)(4326008)(66556008)(64756008)(66446008)(38100700002)(91956017)(54906003)(4744005)(38070700005)(5660300002)(66476007)(31696002)(86362001)(2906002)(82960400001)(122000001)(41300700001)(26005)(2616005)(53546011)(8936002)(6512007)(186003)(6506007)(316002)(6916009)(6486002)(966005)(478600001)(71200400001)(31686004)(85182001)(36756003)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RWVpcklLMHRrNHFGeDBDQTdwQkNnOEhsZGsycEVpbXowYkVjeVBNdjlKaFow?=
- =?utf-8?B?cWpQclhhRXM0Rys5ZzFhdVVtRURWK0l0WW83YXgwNDc5eHVzUTQydWtoWnBy?=
- =?utf-8?B?TW5BRnVVWUxqYU9MK3BoS0ZYWEJEYll4Q2RNSGZpTnM3YjBFaDRLUXZubVBy?=
- =?utf-8?B?a3Azb3VCZEF3NWVOQ1dIQjVPZXF0SnU5Q1JJdnMrWUFsOERxbDZuYTl1ditI?=
- =?utf-8?B?T08zOGpybGhvVTVHRnhxN0tSSjlISUI4OGJja0FSYUdKeC9LbmNycnBka3or?=
- =?utf-8?B?Z0RNaVJreTlOTUZUMmdFMEN4a3F3NENPeFJoWTBXeWpZQTJTRUsvcElteWdT?=
- =?utf-8?B?dDBrME5KK2l4aHVGWjdEZmswVEdZNXZhRkNyT29OQXdTb0pjUEZNeWJJOUxV?=
- =?utf-8?B?ZXZTMDVEa0lEL25Tc2ZtSlBtOHFJY20zeVlKSllPZzNSNk00T204WU16ZjN6?=
- =?utf-8?B?RE9rNlRydnl6QThHL09RbEFZVlpyUnNBWUpRaXpYN0FTcUZLa0s2NG5wZ3RR?=
- =?utf-8?B?dTR0Smh4TjZkK1N4QlFxeU9DM1JrUFgyNHlyeDZVQ2xHajJQc0NsS2ZwYUhr?=
- =?utf-8?B?YnpRSFVaU3lEZlhQNnB4WXFaVUs3T2wrWmFXamNQOTExTjdBa215VGc5am5X?=
- =?utf-8?B?K04rMWJzYU54S215eWh2Q3dlckZiK3h5QjQ5VnJpaU1WNWRETVN2WHJBTGJL?=
- =?utf-8?B?YWcrVzh0VGQ3QVYrYVY2QUpUVmpoNVI2TGwwSEphNnpyT1hqd1RlaGpHOUx1?=
- =?utf-8?B?aVR5cHhORFFpM01FRDRUSkVPSzl5VDBiNGI2eE5HeDVNVGRzUUFpODhXWTJl?=
- =?utf-8?B?Mk9kbUY3dlVBQUV2Z0szMldBR2dPanZqMVVyU0JldG1Rams4ZUx1bUhoeC9i?=
- =?utf-8?B?bTRhL3RXTUs1NTlQbS9aaTdhUVZabzNpN05hMno1cGFicllveUZGdWVuTVFa?=
- =?utf-8?B?czRwcmdiZmpSSHhvMXRaQ3BnTUU5UkJzYkNsbk4vQndMVXNQc2tOb1JSZXZO?=
- =?utf-8?B?R2tSRUE1M0tUT2p0RnR4VGdRUmxOOU9SQzQ1NnpWKzJRczFoaWtrM0ZGejJw?=
- =?utf-8?B?K25oblNWaUJYdXdURWl6bVdFNkY1VWNYWGJEN1p2ZGlKY1dqOUd1eUdNQ0hX?=
- =?utf-8?B?SmRLNTFvcGE0YjFhVnZPUThpYkNqL2h0V0szc3FsZ1kzVW8zaFVFY0plRkRC?=
- =?utf-8?B?TnR1RkQ2dG55SWRnd1ZoQzIra1lwcFdXMjlvWXpPL3YrU2NrSGgzZmJTS2hD?=
- =?utf-8?B?OWtFZDVyQXFDVTRJM0hSWUp1TmxLK2cyWUNmODZaN0M4eXNtWVpXZ3hxVFlI?=
- =?utf-8?B?Wjl4bHptY1hLbTJlU2xYQWZnUjJybUcvVXFRV1N2OTJza1JMdXpncURWQ1hU?=
- =?utf-8?B?RGpXcjBselJSMnlPVVdISjRITHM2YkljZFRrZG03TEtCUTE5YTJtVW9xcXJY?=
- =?utf-8?B?Y3hSbXVKL21MeWMyZzNwVVBWNGE5NXBKUkkyMnNXcDNGbHBQSWxOT3VuZ28x?=
- =?utf-8?B?ZUJOcGIrbmUxbXRHMk1vckIvM2Yza3pyVnUrYndqY1hyUzVSZi9xM0xKV1VF?=
- =?utf-8?B?T3p0T2JzenkrUko0NktGRXNRSlFQVm9aMXozb1phVDdES3A4cTNIdGd4TkN6?=
- =?utf-8?B?R21kMmlBQzByQ3lDbDgvTndKQWpvdzVwQXFVaFYwYUlwblJWTFlyZ09pT2Jp?=
- =?utf-8?B?Q05YcjVySys0dXlpcDdGbzhBSDU1NzE3d2VNdTl0bERhM3lWY0dsQk9nNS9D?=
- =?utf-8?B?a3VUaW9oNFdrOTE1S2p1eXRSSUxEd0k1MVVOUjJEZ1hjTDU1L3NwNEdVaUY5?=
- =?utf-8?B?aERVVlE4MHlUblhIWmRCZyt4dEExaHVzVU1Iai9IUTQrNzRoSy9xWStidU5J?=
- =?utf-8?B?WHVCcHlMSXhNSlFJVS82QjJJQjVVY1dabml6bE94T0NwN0pqZW92Y2pzdm9S?=
- =?utf-8?B?UHBmNXZqbklTZlpTVU9XOXpFT0lLazJMcXFRK3ZMTDh1cUhlL1kzM2VSNXdF?=
- =?utf-8?B?UjZsREovb01jOGlmd050cU1FUVN0clM1d0xPSU8yM1dOVmhEUGVLSEIyaTVp?=
- =?utf-8?B?TEdqWmZwaFIvZTlnYk5wN0ljTnFSTWh2TkNZV3I0TlQ5Sk1NQmxsNGhsSHNE?=
- =?utf-8?B?ano5TzloZVk5TlhRL05VR3pLWkVBcE5zNTA0cldNS2RTNjRjY2h0bTFqRTVC?=
- =?utf-8?B?eEE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F3C8577F95ED4246957B3558581FF1F0@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S229727AbiGEDno (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Jul 2022 23:43:44 -0400
+Received: from heian.cn.fujitsu.com (mail.cn.fujitsu.com [183.91.158.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A43EA2BE5
+        for <linux-rdma@vger.kernel.org>; Mon,  4 Jul 2022 20:43:42 -0700 (PDT)
+IronPort-Data: =?us-ascii?q?A9a23=3AnYPE/Ko7qgmquNomsbY+Oz3mjhxeBmL7ZxIvgKr?=
+ =?us-ascii?q?LsJaIsI5as4F+vmQWDGuBaPyMNmv2e953PNvi9UJTu5aAyNVkTFZqqClmQiMRo?=
+ =?us-ascii?q?6IpJ/zDcB6oYHn6wu4v7a5fx5xHLIGGdajYd1eEzvuWGuWn/SkUOZ2gHOKmUra?=
+ =?us-ascii?q?eYnkpHGeIdQ964f5ds79g6mJXqYjha++9kYuaT/z3YDdJ6RYtWo4nw/7rRCdUg?=
+ =?us-ascii?q?RjHkGhwUmrSyhx8lAS2e3E9VPrzLEwqRpfyatE88uWSH44vwFwll1418SvBCvv?=
+ =?us-ascii?q?9+lr6WkYMBLDPPwmSkWcQUK+n6vRAjnVqlP9la7xHMgEK49mKt4kZJNFlsZ2iS?=
+ =?us-ascii?q?QYrP6TKsOoAURhECDw4NqpDkFPCCSHl7pbNlB2XLhMAxN0rVinaJ7Yw4P56CHt?=
+ =?us-ascii?q?V8voYMD0lYRWKhubwy7W+IsF+l8YxPcuxZNtHkn5lxDDdS/0hRPjrR6jN4/db0?=
+ =?us-ascii?q?S02i8QIGuzRD+IdaDxyfFHabxhGEkkYBYh4n+qygHT7NTpCpzq9p6U4y3rSwRR?=
+ =?us-ascii?q?8lrPkWOc50PTiqd59xx7e/zyZuT+iRExyCTBW8hLdmlrEuwMFtXqTtFouKYCF?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A+FRq/K4P9i7hdFDExQPXwFLXdLJyesId70hD?=
+ =?us-ascii?q?6qhwISY6TiXqrbHXoB19726MtN9xYgBHpTnuAtjjfZqxz/5ICMwqTNCftWrdyQ?=
+ =?us-ascii?q?+VxeNZnOjfKlTbckWUnINgPOVbEpSWY+edMbEVt6nHCUWDYrMdKce8gdyVrNab?=
+ =?us-ascii?q?33FwVhtrdq0lyw94DzyQGkpwSBIuP+tCKLOsotpAuyG7eWkaKuCyBnw+VeDFoN?=
+ =?us-ascii?q?HR0L38ZxpuPW9b1CC+ySOv9KXhEwWVmjMXUzZ0y78k9mTf1yzVj5/TyM2G9g?=
+ =?us-ascii?q?=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.88,333,1635177600"; 
+   d="scan'208";a="127263895"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 05 Jul 2022 11:43:41 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 405B04D16FFC;
+        Tue,  5 Jul 2022 11:43:39 +0800 (CST)
+Received: from G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Tue, 5 Jul 2022 11:43:40 +0800
+Received: from [192.168.122.212] (10.167.226.45) by
+ G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Tue, 5 Jul 2022 11:43:39 +0800
+Subject: Re: [PATCH] RDMA/rxe: Process received packets in time
+To:     Xiao Yang <yangx.jy@fujitsu.com>, <linux-rdma@vger.kernel.org>
+CC:     <leon@kernel.org>, <jgg@ziepe.ca>, <rpearsonhpe@gmail.com>,
+        <zyjzyj2000@gmail.com>
+References: <20220703155625.14497-1-yangx.jy@fujitsu.com>
+From:   "Li, Zhijian" <lizhijian@fujitsu.com>
+Message-ID: <8a034c85-3594-f965-6604-87361645016a@fujitsu.com>
+Date:   Tue, 5 Jul 2022 11:43:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB9499.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d3a7fc9-207e-4736-b3a7-08da5e28bf03
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jul 2022 01:50:32.2583
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sjyN2vGXfTNsFNfhRlSipQZmroeyjI4jlLADn9MxYXxgDyRPBQae9t7Bi4B10/WNWOS5GjB96WX4kulAe+HcKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4556
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220703155625.14497-1-yangx.jy@fujitsu.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-yoursite-MailScanner-ID: 405B04D16FFC.AF7F6
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMjAyMi83LzQgMjE6NDUsIEphc29uIEd1bnRob3JwZSB3cm90ZToNCj4gT24gTW9uLCBBcHIg
-MTgsIDIwMjIgYXQgMDI6MTI6NDFQTSArMDgwMCwgWGlhbyBZYW5nIHdyb3RlOg0KPj4gVGhlIElC
-IFNQRUMgdjEuNVsxXSBkZWZpbmVkIG5ldyBSRE1BIEF0b21pYyBXcml0ZSBvcGVyYXRpb24uIFRo
-aXMNCj4+IHBhdGNoc2V0IG1ha2VzIFNvZnRSb0NFIHN1cHBvcnQgbmV3IFJETUEgQXRvbWljIFdy
-aXRlIG9uIFJDIHNlcnZpY2UuDQo+IA0KPiBUaGlzIHNlcmllcyBkb2Vzbid0IGFwcGx5IGNsZWFu
-bHksIHBsZWFzZSByZWJhc2UgaXQgYW5kIHJlLXRldCBpdC4NCg0KSGkgSmFzb24sDQoNClN1cmUs
-IEkgd2lsbCByZWJhc2UgYW5kIHJldGVzdCBpdCBzb29uLg0KDQo+IA0KPiBEaWQgeW91IG1ha2Ug
-cHl2ZXJicyBjb3ZlcmFnZSBmb3IgdGhpcz8NCg0KWWVzLCBJIGhhdmUgYWRkZWQgYSBweXZlcmJz
-IEFQSSBhbmQgdGVzdCBmb3IgUkRNQSBBdG9taWMgV3JpdGUuDQpTZWUgdGhlIGZvbGxvd2luZyBQ
-UjoNCmh0dHBzOi8vZ2l0aHViLmNvbS9saW51eC1yZG1hL3JkbWEtY29yZS9wdWxsLzExNzkNCkJU
-VywgSSB3aWxsIGNoZWNrIGlmIHRoaXMgUFIgbmVlZHMgdG8gYmUgcmViYXNlZCBhcyB3ZWxsLg0K
-DQpCZXN0IFJlZ2FyZHMsDQpYaWFvIFlhbmcNCj4gDQo+IEphc29u
+on 7/3/2022 11:56 PM, Xiao Yang wrote:
+> If received packets (i.e. skb) stored in qp->resp_pkts
+> cannot be processed in time, they may be ovewritten/reused
+> and then lead to abnormal behavior.
+>
+> For example, running test_qp_ex_rc_atomic_cmp_swp always
+> reproduced a panic on my slow vm:
+> --------------------------------------------------------
+> [39867.797693] rdma_rxe: qp#17 state = GET ACK
+> [39867.800667] rdma_rxe: qp#17 state = GET WQE
+> [39867.800722] rdma_rxe: qp#17 state = CHECK PSN
+> [39867.800739] rdma_rxe: qp#17 state = CHECK ACK
+> [39867.800776] rdma_rxe: unexpected opcode
+> [39867.800790] rdma_rxe: qp#17 state = ERROR
+> ...
+> [39867.822361] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> [39867.822361] #PF: supervisor read access in kernel mode
+> [39867.822361] #PF: error_code(0x0000) - not-present page
+> [39867.822361] PGD 0 P4D 0
+> [39867.822361] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [39867.822361] CPU: 3 PID: 19605 Comm: python3 Kdump: loaded Tainted: G        W         5.19.0-rc2+ #33
+> [39867.822361] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.15.0-29-g6a62e0cb0dfe-prebuilt.qemu.org 04/01/2014
+> [39867.822361] RIP: 0010:rxe_completer+0x41f/0xd10 [rdma_rxe]
+> [39867.822361] Code: 41 83 ff 0d 0f 84 a7 02 00 00 41 83 ff 0e 0f 85 da 00 00 00 48 85 db 0f 84 74 fe ff ff 48 8b 6b 08 48 8d 7b d8 be 01 00 00 00 <4c> 8b 75 00 e8 68 65 56 dd 48 8d bd a0 01 00 00 e8 8c 47 00 00 4c
+> [39867.822361] RSP: 0000:ffff9eab813c7e18 EFLAGS: 00000286
+> [39867.822361] RAX: 0000000000022b5a RBX: ffff8adb07efeb28 RCX: 0000000000000006
+> [39867.822361] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8adb07efeb00
+> [39867.822361] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+> [39867.822361] R10: 0000000000000000 R11: 0000000000011fac R12: ffff8adb06ae11a0
+> [39867.822361] R13: 00000000fffffff5 R14: ffff9eab81803e80 R15: 000000000000000c
+> [39867.822361] FS:  00007f87f99eb6c0(0000) GS:ffff8adb3dd00000(0000) knlGS:0000000000000000
+> [39867.822361] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [39867.822361] CR2: 0000000000000000 CR3: 0000000106c3e000 CR4: 00000000000006e0
+> [39867.822361] Call Trace:
+> [39867.822361]  <TASK>
+> [39867.822361]  ? __local_bh_enable_ip+0x83/0xf0
+> [39867.822361]  rxe_do_task+0x67/0xc0 [rdma_rxe]
+> [39867.822361]  tasklet_action_common.isra.0+0xe2/0x110
+> [39867.822361]  __do_softirq+0xf0/0x4b5
+> [39867.822361]  irq_exit_rcu+0xef/0x130
+> [39867.822361]  sysvec_apic_timer_interrupt+0x40/0xc0
+> [39867.822361]  asm_sysvec_apic_timer_interrupt+0x1b/0x20
+> [39867.822361] RIP: 0033:0x7f87f96fcce5
+> ...
+> --------------------------------------------------------
+>
+> The root cause is that a received skb stored in qp->resp_pkts
+> has been ovewritten by another QP. Like the following logic:
+> --------------------------------------------------------
+>                      /* Trigger timeout */
+> Requester(QP#17) -> retransmit_timer()
+>                      -> rxe_completer()
+>                            /* No skb (Atomic ACK) is added
+>                             * to qp->resp_pkts */
+>                            qp->req.need_retry = 1;
+>                            rxe_run_task(&qp->req.task, 0);
+>
+>                      /* First skb (Atomic ACK) arrived &&
+>                       * rxe_requester() is not called yet */
+> Requester(QP#17) -> rxe_rcv()
+>                         /* Add the skb (Atomic ACK) into qp->resp_pkts */
+>                      -> rxe_comp_queue_pkt()
+>                         -> rxe_completer()
+>                               /* qp->req.need_retry == 1 */
+>                               if (qp->req.need_retry) {
+> 		                ret = -EAGAIN;
+>                                  goto done;
+> 		             }
+>
+> Responder(QP#18) -> rxe_rcv()
+>                         /* The skb (Atomic ACK) has been reused
+>                          * to store the Atomic Comapre_Swap request */
+
+Well, i didn't see how/when another QP can reuse/overwrite this skb.
+If this is true, i think we should fix it as well.
+
+Thanks
+
+
+>                      -> rxe_responder()
+>
+>                      /* rxe_requester() is called */
+> Requester(QP#17) -> rxe_requester()
+>                         if (unlikely(qp->req.need_retry)) {
+> 		          req_retry(qp);
+> 		          qp->req.need_retry = 0;
+>                         }
+>
+> 	            /* Trigger timeout again */
+> Requester(QP#17) -> retransmit_timer()
+>                      -> rxe_completer()
+>                            /* qp->req.need_retry == 0 */
+>                            if (qp->req.need_retry) {
+> 		             ret = -EAGAIN;
+>                               goto done;
+> 		          }
+>                            /* check_ack() throws "unexpected opcode" */
+>                         -> check_ack()
+>                            return COMPST_ERROR;
+> --------------------------------------------------------
+>
+> If qp->req.need_retry is set and qp->resp_pkts is not empty,
+> Process received packets in time to fix the issue.
+>
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_comp.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+> index da3a398053b8..8ffc874a25af 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+> @@ -580,7 +580,7 @@ int rxe_completer(void *arg)
+>   		qp->comp.timeout_retry = 0;
+>   	}
+>   
+> -	if (qp->req.need_retry) {
+> +	if (qp->req.need_retry && !skb_queue_len(&qp->resp_pkts)) {
+>   		ret = -EAGAIN;
+>   		goto done;
+>   	}
+
+
