@@ -2,48 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 294D8567A88
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jul 2022 01:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E4D567A89
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jul 2022 01:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbiGEXIb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Jul 2022 19:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
+        id S232479AbiGEXIc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Jul 2022 19:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbiGEXI2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Jul 2022 19:08:28 -0400
+        with ESMTP id S232762AbiGEXI3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Jul 2022 19:08:29 -0400
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A152460FB
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Jul 2022 16:08:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6324F1007
+        for <linux-rdma@vger.kernel.org>; Tue,  5 Jul 2022 16:08:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657062507; x=1688598507;
+  t=1657062508; x=1688598508;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=xeJ2ovW/sOD29dV2jOp4Qqo8sM/PjKO9uWsriEwhLfg=;
-  b=aAFDhgMPuSuJkgdOLA5OYJ56mAYJjLeLg2Bmkn0N4GgVXMBES626SR0Z
-   HsU4D0pSLxytXaMzraofHfsH0g2TtqmXIzs9srq+XtJM1yhTsIaQpISb7
-   wfVXVVpjYbj2K4XVWav7lNLnn0DjBA55ndO+ZtMLbHRE5h/kVXmluKDMx
-   lqEWx8yFEH+fOhp8r2k1e7qqm8bOjXKdO/61mRWJE1liDVH1m0jBv1Cuj
-   vT/p7I1VD9gMp8rhYoq0BWTNopMtRTmWgAG/tusEmZ+Uahwos5UStLEFR
-   RkS9Lff2paf3xwj1U8C2CIxkS1ardRAfCmoStpyYQznSJldWMnKPacUSY
+  bh=HsX13ASJ1D/BNbI3VCXTybuv+UArrS0tThSSv1xTcBQ=;
+  b=OgGO2XYCbKuvoGOvpv5YX1W5IE++KtmJQ83Z3Y4Z5Q2zUryoHhDqICiZ
+   UKX8n3JWKxBHwKD4/gkCdY0m0FehBnijldDqSxMfEWglFWduq3ReWZfkn
+   jNfy7I16SLPtSWbEZ65kieXaG9j1SYvblMyALeGZL+yx3ASPuAR5TgZZy
+   N3PRhmTuaL9SOz7shfvue70Mp+fbxJjrrdAZ8XwbpIH87VTe3v0tiDpET
+   rYDhngoMhIE9ApW9u3nx9gsfEaeB1kTtyRUkZWDTE908aq470bLatOzA+
+   X0qfm8cgadthwng3pHP5xfTSbKlPfh0yn2+OOazjGr1fjXfXPOd2/d2MN
    w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="266588434"
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="266588439"
 X-IronPort-AV: E=Sophos;i="5.92,248,1650956400"; 
-   d="scan'208";a="266588434"
+   d="scan'208";a="266588439"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 16:08:27 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 16:08:28 -0700
 X-IronPort-AV: E=Sophos;i="5.92,248,1650956400"; 
-   d="scan'208";a="620047556"
+   d="scan'208";a="620047564"
 Received: from ssaleem-mobl1.amr.corp.intel.com ([10.212.17.201])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 16:08:26 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 16:08:27 -0700
 From:   Shiraz Saleem <shiraz.saleem@intel.com>
 To:     jgg@nvidia.com
 Cc:     linux-rdma@vger.kernel.org,
         Mustafa Ismail <mustafa.ismail@intel.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH for-next 6/7] RDMA/irdma: Fix VLAN connection with wildcard address
-Date:   Tue,  5 Jul 2022 18:08:14 -0500
-Message-Id: <20220705230815.265-7-shiraz.saleem@intel.com>
+Subject: [PATCH for-next 7/7] RDMA/irdma: Fix setting of QP context err_rq_idx_valid field
+Date:   Tue,  5 Jul 2022 18:08:15 -0500
+Message-Id: <20220705230815.265-8-shiraz.saleem@intel.com>
 X-Mailer: git-send-email 2.35.2
 In-Reply-To: <20220705230815.265-1-shiraz.saleem@intel.com>
 References: <20220705230815.265-1-shiraz.saleem@intel.com>
@@ -61,42 +61,64 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Mustafa Ismail <mustafa.ismail@intel.com>
 
-When an application listens on a wildcard address, and there are VLAN and
-non-VLAN IP addresses, iWARP connection establishemnt can fail if the listen
-node VLAN ID does not match.
+Setting err_rq_idx_valid field in QP context when the AE source of the
+AEQE is not associated with an RQ causes the firmware flush to fail.
 
-Fix this by checking the vlan_id only if not a wildcard listen node.
+Set err_rq_idx_valid field in QP context only if it is associated with an
+RQ. Additionally, cleanup the redundant setting of this field in
+irdma_process_aeq.
 
-Fixes: 146b9756f14c ("RDMA/irdma: Add connection manager")
+Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
 Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
 Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
 ---
- drivers/infiniband/hw/irdma/cm.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/irdma/hw.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
-index 638bf4a..e4d837f 100644
---- a/drivers/infiniband/hw/irdma/cm.c
-+++ b/drivers/infiniband/hw/irdma/cm.c
-@@ -1477,12 +1477,13 @@ static int irdma_send_fin(struct irdma_cm_node *cm_node)
- 	list_for_each_entry (listen_node, &cm_core->listen_list, list) {
- 		memcpy(listen_addr, listen_node->loc_addr, sizeof(listen_addr));
- 		listen_port = listen_node->loc_port;
-+		if (listen_port != dst_port ||
-+		    !(listener_state & listen_node->listener_state))
-+			continue;
- 		/* compare node pair, return node handle if a match */
--		if ((!memcmp(listen_addr, dst_addr, sizeof(listen_addr)) ||
--		     !memcmp(listen_addr, ip_zero, sizeof(listen_addr))) &&
--		    listen_port == dst_port &&
--		    vlan_id == listen_node->vlan_id &&
--		    (listener_state & listen_node->listener_state)) {
-+		if (!memcmp(listen_addr, ip_zero, sizeof(listen_addr)) ||
-+		    (!memcmp(listen_addr, dst_addr, sizeof(listen_addr)) &&
-+		     vlan_id == listen_node->vlan_id)) {
- 			refcount_inc(&listen_node->refcnt);
- 			spin_unlock_irqrestore(&cm_core->listen_list_lock,
- 					       flags);
+diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+index 8abbd50..e041ed3 100644
+--- a/drivers/infiniband/hw/irdma/hw.c
++++ b/drivers/infiniband/hw/irdma/hw.c
+@@ -257,10 +257,6 @@ static void irdma_process_aeq(struct irdma_pci_f *rf)
+ 				iwqp->last_aeq = info->ae_id;
+ 			spin_unlock_irqrestore(&iwqp->lock, flags);
+ 			ctx_info = &iwqp->ctx_info;
+-			if (rdma_protocol_roce(&iwqp->iwdev->ibdev, 1))
+-				ctx_info->roce_info->err_rq_idx_valid = true;
+-			else
+-				ctx_info->iwarp_info->err_rq_idx_valid = true;
+ 		} else {
+ 			if (info->ae_id != IRDMA_AE_CQ_OPERATION_ERROR)
+ 				continue;
+@@ -370,16 +366,12 @@ static void irdma_process_aeq(struct irdma_pci_f *rf)
+ 		case IRDMA_AE_LCE_FUNCTION_CATASTROPHIC:
+ 		case IRDMA_AE_LCE_CQ_CATASTROPHIC:
+ 		case IRDMA_AE_UDA_XMIT_DGRAM_TOO_LONG:
+-			if (rdma_protocol_roce(&iwdev->ibdev, 1))
+-				ctx_info->roce_info->err_rq_idx_valid = false;
+-			else
+-				ctx_info->iwarp_info->err_rq_idx_valid = false;
+-			fallthrough;
+ 		default:
+ 			ibdev_err(&iwdev->ibdev, "abnormal ae_id = 0x%x bool qp=%d qp_id = %d, ae_src=%d\n",
+ 				  info->ae_id, info->qp, info->qp_cq_id, info->ae_src);
+ 			if (rdma_protocol_roce(&iwdev->ibdev, 1)) {
+-				if (!info->sq && ctx_info->roce_info->err_rq_idx_valid) {
++				ctx_info->roce_info->err_rq_idx_valid = info->rq;
++				if (info->rq) {
+ 					ctx_info->roce_info->err_rq_idx = info->wqe_idx;
+ 					irdma_sc_qp_setctx_roce(&iwqp->sc_qp, iwqp->host_ctx.va,
+ 								ctx_info);
+@@ -388,7 +380,8 @@ static void irdma_process_aeq(struct irdma_pci_f *rf)
+ 				irdma_cm_disconn(iwqp);
+ 				break;
+ 			}
+-			if (!info->sq && ctx_info->iwarp_info->err_rq_idx_valid) {
++			ctx_info->iwarp_info->err_rq_idx_valid = info->rq;
++			if (info->rq) {
+ 				ctx_info->iwarp_info->err_rq_idx = info->wqe_idx;
+ 				ctx_info->tcp_info_valid = false;
+ 				ctx_info->iwarp_info_valid = true;
 -- 
 1.8.3.1
 
