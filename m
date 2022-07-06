@@ -2,76 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C408568A48
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jul 2022 15:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C5B568F08
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jul 2022 18:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbiGFN55 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Jul 2022 09:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        id S233699AbiGFQYv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Jul 2022 12:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232833AbiGFN54 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Jul 2022 09:57:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DE017A90;
-        Wed,  6 Jul 2022 06:57:54 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8B0FE2262B;
-        Wed,  6 Jul 2022 13:57:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1657115873; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kiUjfUaxXUHtTpdwighgqJkP8dPW871+3s1BnMx2Ltw=;
-        b=yvPvbIuuxtdk2ZX8Q8tSoKYC5cW9dKB+5Zw1LzSQH7197bMhDdli0CWLiflL03yBVSxu31
-        3GMcXYJKFvhvNqtUy2cQiQ4XZHsfkN6pzZ7I3g+QRQgLeWpktmJqk3iii4LCOU5lITaQ9i
-        sL2Y/gJxVd14DsEMqswdcEn7ilbN6V4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1657115873;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kiUjfUaxXUHtTpdwighgqJkP8dPW871+3s1BnMx2Ltw=;
-        b=DrSRj0EvDTIpUIt/FJqzoaO8ehUFDCc6m4Kks/eb8UIsdpsS4gF3k4Myi2JAHEtoQp9hzo
-        OUxLU3k8ElQq8jAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F0F213A7D;
-        Wed,  6 Jul 2022 13:57:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RZFGFuGUxWKNOAAAMHmgww
-        (envelope-from <hare@suse.de>); Wed, 06 Jul 2022 13:57:53 +0000
-Message-ID: <18d78bd6-2150-f771-9a6e-2b972d2e1192@suse.de>
-Date:   Wed, 6 Jul 2022 15:57:52 +0200
+        with ESMTP id S232413AbiGFQYv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Jul 2022 12:24:51 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEE9220E3
+        for <linux-rdma@vger.kernel.org>; Wed,  6 Jul 2022 09:24:50 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id l14so18951155qtx.2
+        for <linux-rdma@vger.kernel.org>; Wed, 06 Jul 2022 09:24:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uINY8FbXZ4K0fgSzKCzCILQBpZoaurxgAcM5XQzBO2s=;
+        b=jufWmSUm3dS52kuMnxSYftc6uLsnfldwGPfUzw9VQD07HFJgUL3ozoibvvh9sNqlNc
+         HT+FCTbVRcGTaiHz5FjthsL952JyNV1H/FbVHB+3Bk+eOKbzHTQ4yoOfH7zNzccz82zB
+         PDUEsfwI+aozsYDeITqDqUYckliaHSJ18T59x7XsSNUnNBIkMOifByVwSOIkLGRoVcSY
+         SvGnltzf/NC1EoHRd+NelYqaTaeXgtvfaRPGCXKA5BQLcVQy2eppcaaBuI6k+/dNknv9
+         dKGRxbQdo1YQhhk1bYkUCtbGgTE2O2fgz3idgAPheEbdyvCh27jPi67C0GJc8l0I/Lwa
+         7+dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uINY8FbXZ4K0fgSzKCzCILQBpZoaurxgAcM5XQzBO2s=;
+        b=tRF5OxcWrzi0THGBLG9b2HerP/Xc84qtdqV3fnaNWNRgHbCnzg3+D1RAUUx+lOTkVx
+         vINl6KCR2TMkVvFSuU3VYQnthSNZxYVqwSo60cpthjRRnxjcqxS47nzVrfCpNKOAw3D4
+         GC4tCh/jzfz5i3EoKRhIHm0TTby7OfjA2rZCwYKFO1V7aMkGQ8urKSRJHBxnoJuoF3wp
+         x+Irf+mtHwYPaNm3wXCybycG62CmoXU/oSw8zsP6PpvM3le+yMEst3TSPDXQk2K37LjT
+         ou1ZFucA71CxwgtcVGK2RxXaQcTGmDEdXVdzu9mglRgOcdS+FFL5HLMGwfhTskmPjNyD
+         dicQ==
+X-Gm-Message-State: AJIora8Xg4fLsOu/1vpz8bMwnnyLE9Mxq6tiUm08s45kiTuFbBrD4kSJ
+        Fc9aGRbKpiv0gjueXVBRcPeinQ==
+X-Google-Smtp-Source: AGRyM1vSaBHN7QOTWTn9NvV2TrR5W6NZI6h6AHLLDLRRLyhfXqfmJFDLtvOW4xWIzDspFYjwmdhK6g==
+X-Received: by 2002:ac8:5e09:0:b0:31e:7ac2:e2e9 with SMTP id h9-20020ac85e09000000b0031e7ac2e2e9mr11120428qtx.194.1657124689450;
+        Wed, 06 Jul 2022 09:24:49 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id f11-20020a05620a408b00b006a74458410csm27331300qko.123.2022.07.06.09.24.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jul 2022 09:24:48 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1o97pY-0076oM-2k; Wed, 06 Jul 2022 13:24:48 -0300
+Date:   Wed, 6 Jul 2022 13:24:48 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: Creating new RDMA driver for habanalabs
+Message-ID: <20220706162448.GK23621@ziepe.ca>
+References: <CAFCwf12o_Hq8Ci4o1H9xvqDJT9DeVmXUc7d21EqZz1meNdU3qg@mail.gmail.com>
+ <20210822223128.GZ543798@ziepe.ca>
+ <CAFCwf10LXiAxf7Xr+pMcmSk-_q1FEY_YcBjoH05K0mkK9hMCYA@mail.gmail.com>
+ <20210823130419.GA543798@ziepe.ca>
+ <CAFCwf11NeJYDMBXaNTpQ+dLecxoAnFYE2Z9T9D4-A5gLtf8q+A@mail.gmail.com>
+ <CAFCwf13LRmez63hGmXMDO2FoC3Qo_2BwtAtnzyJ70=_OcTc23w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH v3 6/6] blk-mq: Drop local variable for reserved tag
-Content-Language: en-US
-To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
-        damien.lemoal@opensource.wdc.com, bvanassche@acm.org, hch@lst.de,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, satishkh@cisco.com,
-        sebaddel@cisco.com, kartilak@cisco.com
-Cc:     linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        mpi3mr-linuxdrv.pdl@broadcom.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org
-References: <1657109034-206040-1-git-send-email-john.garry@huawei.com>
- <1657109034-206040-7-git-send-email-john.garry@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <1657109034-206040-7-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf13LRmez63hGmXMDO2FoC3Qo_2BwtAtnzyJ70=_OcTc23w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,23 +77,68 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/6/22 14:03, John Garry wrote:
-> The local variable is now only referenced once so drop it.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-> ---
->   block/blk-mq-tag.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+On Wed, Jul 06, 2022 at 11:59:14AM +0300, Oded Gabbay wrote:
 
-Cheers,
+> Due to that, we would want to put all the ports under a single struct ib_device,
+> as you said it yourself in your original email a year ago.
 
-Hannes
--- 
-Dr. Hannes Reinecke		           Kernel Storage Architect
-hare@suse.de			                  +49 911 74053 688
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
+Yes
+
+> The major constraints are:
+> 
+> 1. Support only RDMA WRITE operation. We do not support READ, SEND or RECV.
+>     This means that many existing open source tests in rdma-core are not
+>     compatible. e.g. rc_pingpong.c will not work. I guess we will need to
+>     implement different tests and submit them ? Do you have a
+> different idea/suggestion ?
+
+I would suggest following what EFA did and just using your own unique
+QP with dv accessors to create it. A QP that can only do RDMA WRITE is
+not IBA compliant and shouldn't be created by a standard verbs call.
+ 
+> 2. As you mentioned in the original email, we support only a single PD.
+>    I don't see any major implication regarding this constraint but please
+>    correct me if you think otherwise.
+
+Seems fine
+
+> 3. MR limitation on the rkey that is received from the remote connection
+>    during connection creation. The limitation is that our h/w extracts
+>    the rkey from the QP h/w context and not from the WQE when sending packets.
+>    This means that we may associate only a single remote MR per QP.
+
+It seems OK in the context above where you have your own QP type and
+obviouly your specila RDMA WRITE poster will not take in an rkey as
+any argument.
+
+>    Do you see any issue here with these two limitations ? One thing we noted is
+>    that we need to somehow configure the rkey in our h/w QP context, while today
+>    the API doesn't allow it.
+
+When you add your own dv qp create function it will take in the
+required rkey during qp creation.
+ 
+>    These limitations are not relevant to a deployment where all the NICs are
+>    Gaudi NICs, because we can use a single rkey for all MRs.
+
+Er, that is weird, did you mean to say you have only one MR per PD and
+that it always has a fixed value?
+ 
+> 4. We do not support all the flags in the reg_mr API. e.g. we don't
+>    support IBV_ACCESS_LOCAL_WRITE. I'm not sure what the
+>    implication is here.
+
+It is OK, since you can't issue a local operation WQE anyhow you can
+just ignore the flag.
+
+> 5. Our h/w contains several accelerations we would like to utilize.
+>    e.g. we have a h/w mechanism for accelerating collective operations
+>    on multiple RDMA NICs. These accelerations will require either extensions
+>    to current APIs, or some dedicated APIs. For example, one of the
+>    accelerations requires that the user will create a QP with the same
+>    index on all the Gaudi NICs.
+
+Use your DV interface to do these kinds of things
+
+Thanks,
+Jason
