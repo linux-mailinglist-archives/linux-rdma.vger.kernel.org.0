@@ -2,193 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 124E9569DC6
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Jul 2022 10:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D2D569E91
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Jul 2022 11:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235296AbiGGIpR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Jul 2022 04:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        id S231636AbiGGJad (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Jul 2022 05:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbiGGIpJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Jul 2022 04:45:09 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563D813F9F;
-        Thu,  7 Jul 2022 01:45:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657183508; x=1688719508;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=edbKoKalbvq90CBmxogPesuIiDjl8rwJ49B+zZvetjQ=;
-  b=BfVKisWKCdx8CvBHxqsYg7j9cXv26yoQXE72HrhvrsHZACMcDf+Q4QeE
-   iezKOt76usGXV+kbwaKO7ucB7IaYA4gBUybR0oLB4xyC1Vm4hlMy3Mfqh
-   9orF/TMUfYsnaA4siDN3OfNN2ZHi8li2Tg62mdzzqPrFaDG0JJbV+DRPP
-   iwpbPp2cvvpvUZ62IKMOCHbcsc96XaEccZnOxR3WRawWvB7mbC3jKctJN
-   8CAuCUDBdHrDFmaFdIMnnGGbzhA6JCPGgQiHYVbqMyi9DeZgOTiWpgxom
-   oJhCT3UL+2okh6qNBEUcmQZZmIof0uguLdB3ImckLr4T46d5mInnCBOBg
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="345659129"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
-   d="scan'208";a="345659129"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 01:45:06 -0700
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
-   d="scan'208";a="651047273"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.31.6]) ([10.255.31.6])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 01:44:45 -0700
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 088b9c375534d905a4d337c78db3b3bfbb52c4a0
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        virtualization@lists.linux-foundation.org,
-        usbb2k-api-dev@nongnu.org, tipc-discussion@lists.sourceforge.net,
-        target-devel@vger.kernel.org, sound-open-firmware@alsa-project.org,
-        samba-technical@lists.samba.org, rds-devel@oss.oracle.com,
-        patches@opensource.cirrus.com, osmocom-net-gprs@lists.osmocom.org,
-        openipmi-developer@lists.sourceforge.net, nvdimm@lists.linux.dev,
-        ntb@lists.linux.dev, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org, mjpeg-users@lists.sourceforge.net,
-        megaraidlinux.pdl@broadcom.com, linuxppc-dev@lists.ozlabs.org,
-        linux1394-devel@lists.sourceforge.net, linux-x25@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
-        linux-sctp@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-perf-users@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-parport@lists.infradead.org,
-        linux-parisc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-nfc@lists.01.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-fpga@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-cxl@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linaro-mm-sig@lists.linaro.org,
-        legousb-devel@lists.sourceforge.net, kvm@vger.kernel.org,
-        keyrings@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
-        iommu@lists.linux.dev, iommu@lists.linux-foundation.org,
-        intel-wired-lan@lists.osuosl.org, greybus-dev@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, dm-devel@redhat.com,
-        devicetree@vger.kernel.org, dev@openvswitch.org,
-        dccp@vger.kernel.org, damon@lists.linux.dev,
-        coreteam@netfilter.org, cgroups@vger.kernel.org,
-        ceph-devel@vger.kernel.org, ath11k@lists.infradead.org,
-        apparmor@lists.ubuntu.com, amd-gfx@lists.freedesktop.org,
-        alsa-devel@alsa-project.org,
-        accessrunner-general@lists.sourceforge.net
-References: <62c683a2.g1VSVt6BrQC6ZzOz%lkp@intel.com>
- <YsaUgfPbOg7WuBuB@kroah.com>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <c86816fd-aaba-01a9-5def-44868f0a46c9@intel.com>
-Date:   Thu, 7 Jul 2022 16:44:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        with ESMTP id S229951AbiGGJad (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Jul 2022 05:30:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E163533E05
+        for <linux-rdma@vger.kernel.org>; Thu,  7 Jul 2022 02:30:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F62562186
+        for <linux-rdma@vger.kernel.org>; Thu,  7 Jul 2022 09:30:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0C68C341C8
+        for <linux-rdma@vger.kernel.org>; Thu,  7 Jul 2022 09:30:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657186230;
+        bh=RihlDyQN4lrc4Ac44pKi2oZzo2pS/46Mh72kTjpRBMc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T6EzO1AEYYMynBnjBULlVMNrjRMGEZyEs2THt6QLe5bYbKQPRU7CU71aVHqMixR+X
+         Hn+IIy5d1BJULAvo+8Lq5oa4BGXkPHz+DLPDU1jPJ2QukjMApdtPNlaajQimz9ESoh
+         aF9vsEoaV/vIZqHJJnQvQhMQmBpMx0KAuZgU9RxT7DAsPyQkzxrsD1nl2zA7BPmFI3
+         fmA9HAaKk0NZQv3w5VJ/9b0u22Kd6rlQ8bdjkcX+b3SXJq+UsWIJz3p3mLjKKIB4DN
+         hCBeutytgKdmZm4dbz+snZa1tdlJmfTeR7VsBJv3v0CntMpR+fqHF6Vlm6WDWcVJIi
+         APhb+3/8+RqUQ==
+Received: by mail-yb1-f169.google.com with SMTP id e69so24950543ybh.2
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Jul 2022 02:30:30 -0700 (PDT)
+X-Gm-Message-State: AJIora9v++TS36FONl6ydSI82bB6m2h9Ww6ssVYmwovf21B6wUbWmknx
+        wDbZlHcjk0baCrD5q0PaHQdlJJlVxszjRHTtpuc=
+X-Google-Smtp-Source: AGRyM1uNgyEoOEe/qdRp0T/VyW0dtckh35RZHzVe9hpNbrTofc9bhjy7s6uJrRiivgEVvOxAj6t/GknpEcx2t2ozmHI=
+X-Received: by 2002:a25:4210:0:b0:66e:bb10:1cb7 with SMTP id
+ p16-20020a254210000000b0066ebb101cb7mr2588121yba.534.1657186229925; Thu, 07
+ Jul 2022 02:30:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YsaUgfPbOg7WuBuB@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CAFCwf12o_Hq8Ci4o1H9xvqDJT9DeVmXUc7d21EqZz1meNdU3qg@mail.gmail.com>
+ <20210822223128.GZ543798@ziepe.ca> <CAFCwf10LXiAxf7Xr+pMcmSk-_q1FEY_YcBjoH05K0mkK9hMCYA@mail.gmail.com>
+ <20210823130419.GA543798@ziepe.ca> <CAFCwf11NeJYDMBXaNTpQ+dLecxoAnFYE2Z9T9D4-A5gLtf8q+A@mail.gmail.com>
+ <CAFCwf13LRmez63hGmXMDO2FoC3Qo_2BwtAtnzyJ70=_OcTc23w@mail.gmail.com> <20220706162448.GK23621@ziepe.ca>
+In-Reply-To: <20220706162448.GK23621@ziepe.ca>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Thu, 7 Jul 2022 12:30:03 +0300
+X-Gmail-Original-Message-ID: <CAFCwf10rGdOx94bOOW8vfuW73H_KFKPu2tg2Hpduzd+1OjnVOw@mail.gmail.com>
+Message-ID: <CAFCwf10rGdOx94bOOW8vfuW73H_KFKPu2tg2Hpduzd+1OjnVOw@mail.gmail.com>
+Subject: Re: Creating new RDMA driver for habanalabs
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Jul 6, 2022 at 7:24 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Jul 06, 2022 at 11:59:14AM +0300, Oded Gabbay wrote:
+>
+> > Due to that, we would want to put all the ports under a single struct ib_device,
+> > as you said it yourself in your original email a year ago.
+>
+> Yes
+>
+> > The major constraints are:
+> >
+> > 1. Support only RDMA WRITE operation. We do not support READ, SEND or RECV.
+> >     This means that many existing open source tests in rdma-core are not
+> >     compatible. e.g. rc_pingpong.c will not work. I guess we will need to
+> >     implement different tests and submit them ? Do you have a
+> > different idea/suggestion ?
+>
+> I would suggest following what EFA did and just using your own unique
+> QP with dv accessors to create it. A QP that can only do RDMA WRITE is
+> not IBA compliant and shouldn't be created by a standard verbs call.
+>
+> > 2. As you mentioned in the original email, we support only a single PD.
+> >    I don't see any major implication regarding this constraint but please
+> >    correct me if you think otherwise.
+>
+> Seems fine
+>
+> > 3. MR limitation on the rkey that is received from the remote connection
+> >    during connection creation. The limitation is that our h/w extracts
+> >    the rkey from the QP h/w context and not from the WQE when sending packets.
+> >    This means that we may associate only a single remote MR per QP.
+>
+> It seems OK in the context above where you have your own QP type and
+> obviouly your specila RDMA WRITE poster will not take in an rkey as
+> any argument.
+>
+> >    Do you see any issue here with these two limitations ? One thing we noted is
+> >    that we need to somehow configure the rkey in our h/w QP context, while today
+> >    the API doesn't allow it.
+>
+> When you add your own dv qp create function it will take in the
+> required rkey during qp creation.
+>
+> >    These limitations are not relevant to a deployment where all the NICs are
+> >    Gaudi NICs, because we can use a single rkey for all MRs.
+>
+> Er, that is weird, did you mean to say you have only one MR per PD and
+> that it always has a fixed value?
+Not exactly. We have multiple MRs per PD, but the driver assigns the
+same rkey (fixed value) for all created MRs. Our h/w matches the rkey
+with the one that is written in the QP. The rkey is not part of the actual
+MMU translation that is done inside our h/w. The MMU translation is
+done using the PD (we call it ASID - address space ID) and Address.
 
+>
+> > 4. We do not support all the flags in the reg_mr API. e.g. we don't
+> >    support IBV_ACCESS_LOCAL_WRITE. I'm not sure what the
+> >    implication is here.
+>
+> It is OK, since you can't issue a local operation WQE anyhow you can
+> just ignore the flag.
+>
+> > 5. Our h/w contains several accelerations we would like to utilize.
+> >    e.g. we have a h/w mechanism for accelerating collective operations
+> >    on multiple RDMA NICs. These accelerations will require either extensions
+> >    to current APIs, or some dedicated APIs. For example, one of the
+> >    accelerations requires that the user will create a QP with the same
+> >    index on all the Gaudi NICs.
+>
+> Use your DV interface to do these kinds of things
 
-On 7/7/2022 4:08 PM, Greg KH wrote:
-> On Thu, Jul 07, 2022 at 02:56:34PM +0800, kernel test robot wrote:
->> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
->> branch HEAD: 088b9c375534d905a4d337c78db3b3bfbb52c4a0  Add linux-next specific files for 20220706
->>
->> Error/Warning reports:
->>
->> https://lore.kernel.org/linux-doc/202207070644.x48XOOvs-lkp@intel.com
->>
->> Error/Warning: (recently discovered and may have been fixed)
->>
->> Documentation/arm/google/chromebook-boot-flow.rst: WARNING: document isn't included in any toctree
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1108): undefined reference to `__aeabi_ddiv'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1124): undefined reference to `__aeabi_ui2d'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1164): undefined reference to `__aeabi_dmul'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1170): undefined reference to `__aeabi_dadd'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1180): undefined reference to `__aeabi_dsub'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1190): undefined reference to `__aeabi_d2uiz'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x162c): undefined reference to `__aeabi_d2iz'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x16b0): undefined reference to `__aeabi_i2d'
->> dc_dmub_srv.c:(.text+0x10f8): undefined reference to `__aeabi_ui2d'
->> dc_dmub_srv.c:(.text+0x464): undefined reference to `__floatunsidf'
->> dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x33c): undefined reference to `__floatunsidf'
->> drivers/pci/endpoint/functions/pci-epf-vntb.c:975:5: warning: no previous prototype for 'pci_read' [-Wmissing-prototypes]
->> drivers/pci/endpoint/functions/pci-epf-vntb.c:984:5: warning: no previous prototype for 'pci_write' [-Wmissing-prototypes]
->> drivers/vfio/vfio_iommu_type1.c:2141:35: warning: cast to smaller integer type 'enum iommu_cap' from 'void *' [-Wvoid-pointer-to-enum-cast]
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x34c): undefined reference to `__floatunsidf'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x378): undefined reference to `__divdf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x38c): undefined reference to `__muldf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3a0): undefined reference to `__adddf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3b4): undefined reference to `__subdf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3d4): undefined reference to `__fixunsdfsi'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x750): undefined reference to `__fixdfsi'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x7c0): undefined reference to `__floatsidf'
->> powerpc-linux-ld: drivers/pci/endpoint/functions/pci-epf-vntb.c:174: undefined reference to `ntb_link_event'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x468): undefined reference to `__divdf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x46c): undefined reference to `__muldf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x470): undefined reference to `__adddf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x474): undefined reference to `__subdf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x478): undefined reference to `__fixunsdfsi'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x47c): undefined reference to `__fixdfsi'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x480): undefined reference to `__floatsidf'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x60c): undefined reference to `__floatunsidf'
->>
->> Unverified Error/Warning (likely false positive, please contact us if interested):
->>
->> arch/x86/events/core.c:2114 init_hw_perf_events() warn: missing error code 'err'
->> drivers/android/binder.c:1481:19-23: ERROR: from is NULL but dereferenced.
->> drivers/android/binder.c:2920:29-33: ERROR: target_thread is NULL but dereferenced.
->> drivers/android/binder.c:353:25-35: ERROR: node -> proc is NULL but dereferenced.
->> drivers/android/binder.c:4888:16-20: ERROR: t is NULL but dereferenced.
->> drivers/base/regmap/regmap.c:1996:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/char/random.c:869:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/firmware/arm_scmi/clock.c:394:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/firmware/arm_scmi/powercap.c:376:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_powertune.c:1214:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/gpu/drm/amd/display/dc/os_types.h: drm/drm_print.h is included more than once.
->> drivers/gpu/drm/bridge/ite-it66121.c:1398:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/greybus/operation.c:617:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
-> 
-> <snip>
-> 
-> When the compiler crashes, why are you blaming all of these different
-> mailing lists?  Perhaps you need to fix your compiler :)
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Great!
+We will start to move forward using this approach.
+I imagine we will have something to show in a couple of months.
 
-Hi Greg,
+Thanks,
+Oded
 
-Sorry for the inconvience, we'll fix it ASAP.
-
-Best Regards,
-Rong Chen
+>
+> Thanks,
+> Jason
