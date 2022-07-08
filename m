@@ -2,59 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF3E56B9F1
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Jul 2022 14:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7DE56BAAD
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Jul 2022 15:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238027AbiGHMox (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Jul 2022 08:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
+        id S237549AbiGHN3X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Jul 2022 09:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238004AbiGHMow (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Jul 2022 08:44:52 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC112DA8C
-        for <linux-rdma@vger.kernel.org>; Fri,  8 Jul 2022 05:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657284291; x=1688820291;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+CmaS9sapYaBglLhVFUxBPIgLNym1Q3NYEdfGHCY1Mg=;
-  b=PrY9A7epPeP2Uu9MJUfrF7FY/cEQSF0DRaEKCGKn5Ubn3cOymZ4sEHgL
-   7wUevid7ahfhwSsprtwjRsp0whHKZJBJQGrWysGcC/TKT9WvzQcPp9J4+
-   llOdBmbAi5ZM5oxALUS7cYQhfrDhEINs+88kAyEpMDq/K3nDAQzN3L9F1
-   U+h0TpbaHbnqLE9rp5tNQN8qUSU+BK8dlKfa6tUcFa7dOpRFQugdmPbV5
-   JQXBYVZkZzgr9UV3v9iiZDaTpNRgITYYn1a5fopzm8mUUbX04bq4iFzdU
-   GyqHvZH4ZRHgXNiFadjwUy1RNYKZvBOF9X14M2P8QqTcji3Yratja2HpR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10401"; a="281821433"
-X-IronPort-AV: E=Sophos;i="5.92,255,1650956400"; 
-   d="scan'208";a="281821433"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2022 05:44:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,255,1650956400"; 
-   d="scan'208";a="920983810"
-Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 08 Jul 2022 05:44:49 -0700
-Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1o9nLk-000NUG-PG;
-        Fri, 08 Jul 2022 12:44:48 +0000
-Date:   Fri, 08 Jul 2022 20:44:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 2635d2a8d4664b665bc12e15eee88e9b1b40ae7b
-Message-ID: <62c82695.waMV9J3CQlF/2lFN%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S231287AbiGHN3W (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Jul 2022 09:29:22 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8D12CC86
+        for <linux-rdma@vger.kernel.org>; Fri,  8 Jul 2022 06:29:21 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id bs20so27198903qtb.11
+        for <linux-rdma@vger.kernel.org>; Fri, 08 Jul 2022 06:29:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=igWhkETj07ZDrQH1PHnSKrg/K7u4e3MV+GpORTrUsWY=;
+        b=YgMUPP2XXiFkCiz7CJrgqZ/plfCfdDKFC7DfHnsDdhuW8Z5FMpkz2UH1R8nXnDxRIz
+         iz6FpKMYpvRLICU/5GosQ5q503dYQtnKBdKzH93GcW8HaC5pWXC2OQK7ALRNBwXQZ2hA
+         qAz7owTk67dRrC4bOswsa0FkMNVJxdVaj2ZmM7x/pT2lv2m1S2KWmZaC0U+xWL51zoje
+         1p1TAGLF9uLnKTESi1hYv+3s0bMShu+A8+MFtuaghT+m3zzbM5gWVoBKMTqjzlKUFQSG
+         zdOxdrgj16uhlvwksodNZsbRBQnUHKXeXpD0ko1otQ43XFSYKLc0zJn4rgv8//iJwRtX
+         AFWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=igWhkETj07ZDrQH1PHnSKrg/K7u4e3MV+GpORTrUsWY=;
+        b=4pFvARPFNSnl+9v/47ZEAEfcHox4gD4teZNZFF97x2TawMd/UckjvlwATbzn9ho4H4
+         POFDI8JZpVyqGeMtjmB/gbSs914zW6laIbojmF1dP/s8ZR/hfvmfQ//LiNymvxJvCjTm
+         8xJqMv/lwWBy3/wf1RQJdvyMSOISRk9Gk6pY6WatYHZm9/dquTClBR5ioZQ6aQObh9/B
+         Lq0Ceb86oW4O60YyOUR8snqHCsbX68/n6yPBFBnoRyTLM1P2TMv+AUYv0Nx90NJvwr7v
+         MXYSK9LmKhHUHhb4RJDjnMgCyXfsVNKZODv5y0AgT7PZZxWoGavJzpgZwo74qXdqqBPn
+         cXWA==
+X-Gm-Message-State: AJIora8UIjdlSQIQYun10G8SJra+RcEvdAJTA1TjZGjgDEEnPyJXR9Gq
+        uW5rOXNyljSKYFIHRbATYHIrrEUpohm0xQ==
+X-Google-Smtp-Source: AGRyM1splZVTEZEF+xBUizr3MMJwHdPsWW2Pe9oTnl7ehD11zp9QGX1kCO+xHpzR6leozHJHKpvAbQ==
+X-Received: by 2002:a05:622a:1305:b0:31d:3d10:fd88 with SMTP id v5-20020a05622a130500b0031d3d10fd88mr2873142qtk.168.1657286958828;
+        Fri, 08 Jul 2022 06:29:18 -0700 (PDT)
+Received: from ziepe.ca ([142.177.133.130])
+        by smtp.gmail.com with ESMTPSA id u4-20020a05620a430400b006a6d7c3a82esm34812150qko.15.2022.07.08.06.29.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jul 2022 06:29:17 -0700 (PDT)
+Received: from jgg by jggl with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1o9o2m-0001Ks-VL; Fri, 08 Jul 2022 10:29:16 -0300
+Date:   Fri, 8 Jul 2022 10:29:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: Creating new RDMA driver for habanalabs
+Message-ID: <20220708132916.GA4459@ziepe.ca>
+References: <CAFCwf12o_Hq8Ci4o1H9xvqDJT9DeVmXUc7d21EqZz1meNdU3qg@mail.gmail.com>
+ <20210822223128.GZ543798@ziepe.ca>
+ <CAFCwf10LXiAxf7Xr+pMcmSk-_q1FEY_YcBjoH05K0mkK9hMCYA@mail.gmail.com>
+ <20210823130419.GA543798@ziepe.ca>
+ <CAFCwf11NeJYDMBXaNTpQ+dLecxoAnFYE2Z9T9D4-A5gLtf8q+A@mail.gmail.com>
+ <CAFCwf13LRmez63hGmXMDO2FoC3Qo_2BwtAtnzyJ70=_OcTc23w@mail.gmail.com>
+ <20220706162448.GK23621@ziepe.ca>
+ <CAFCwf10rGdOx94bOOW8vfuW73H_KFKPu2tg2Hpduzd+1OjnVOw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Disposition: inline
+In-Reply-To: <CAFCwf10rGdOx94bOOW8vfuW73H_KFKPu2tg2Hpduzd+1OjnVOw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,110 +79,24 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 2635d2a8d4664b665bc12e15eee88e9b1b40ae7b  IB: Fix spelling of 'writable'
+On Thu, Jul 07, 2022 at 12:30:03PM +0300, Oded Gabbay wrote:
+> > >    These limitations are not relevant to a deployment where all the NICs are
+> > >    Gaudi NICs, because we can use a single rkey for all MRs.
+> >
+> > Er, that is weird, did you mean to say you have only one MR per PD and
+> > that it always has a fixed value?
 
-elapsed time: 725m
+> Not exactly. We have multiple MRs per PD, but the driver assigns the
+> same rkey (fixed value) for all created MRs. Our h/w matches the rkey
+> with the one that is written in the QP. The rkey is not part of the actual
+> MMU translation that is done inside our h/w. The MMU translation is
+> done using the PD (we call it ASID - address space ID) and Address.
 
-configs tested: 89
-configs skipped: 3
+I don't understand this at all - how can you have multiple MRs if
+there is only one ASID per PD? The MR is logically the ASID since the
+MR is the verbs model for MMU translation.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+So, if you have one ASID per PD and multiple MRs, what are the MRs
+supposed to be?
 
-gcc tested configs:
-arm64                            allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                          randconfig-c001
-powerpc                      mgcoge_defconfig
-sh                             shx3_defconfig
-mips                           xway_defconfig
-powerpc                 mpc8540_ads_defconfig
-nios2                            allyesconfig
-sh                           se7705_defconfig
-powerpc                     tqm8548_defconfig
-arm                           stm32_defconfig
-sh                   sh7770_generic_defconfig
-mips                         tb0226_defconfig
-arm                        mvebu_v7_defconfig
-sh                         ap325rxa_defconfig
-arm                        spear6xx_defconfig
-sh                      rts7751r2d1_defconfig
-riscv                               defconfig
-sh                           se7722_defconfig
-xtensa                              defconfig
-powerpc                     tqm8555_defconfig
-arm                             ezx_defconfig
-mips                 decstation_r4k_defconfig
-m68k                            q40_defconfig
-powerpc                      ppc6xx_defconfig
-arm                      jornada720_defconfig
-sh                   sh7724_generic_defconfig
-sh                           se7724_defconfig
-xtensa                       common_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-ia64                             allmodconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-powerpc                           allnoconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-sh                               allmodconfig
-i386                             allyesconfig
-i386                                defconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-x86_64                        randconfig-a015
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-riscv                randconfig-r042-20220707
-arc                  randconfig-r043-20220707
-s390                 randconfig-r044-20220707
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-
-clang tested configs:
-mips                     loongson1c_defconfig
-arm                        multi_v5_defconfig
-powerpc                 mpc8315_rdb_defconfig
-x86_64                        randconfig-k001
-x86_64                        randconfig-a005
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a013
-i386                          randconfig-a015
-i386                          randconfig-a011
-hexagon              randconfig-r045-20220707
-hexagon              randconfig-r041-20220707
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Jason
