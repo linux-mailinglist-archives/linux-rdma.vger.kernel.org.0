@@ -2,81 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D15AC56BFE5
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Jul 2022 20:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E411156C957
+	for <lists+linux-rdma@lfdr.de>; Sat,  9 Jul 2022 14:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238895AbiGHRo7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Jul 2022 13:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
+        id S229521AbiGIMJw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 9 Jul 2022 08:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238523AbiGHRo6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Jul 2022 13:44:58 -0400
-Received: from smtp.smtpout.orange.fr (smtp03.smtpout.orange.fr [80.12.242.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C16CB6052B
-        for <linux-rdma@vger.kernel.org>; Fri,  8 Jul 2022 10:44:57 -0700 (PDT)
-Received: from pop-os.home ([90.11.190.129])
-        by smtp.orange.fr with ESMTPA
-        id 9ruuoDchN3JPE9ruuoQx6z; Fri, 08 Jul 2022 19:37:26 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Fri, 08 Jul 2022 19:37:26 +0200
-X-ME-IP: 90.11.190.129
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Cheng Xu <chengyou@linux.alibaba.com>,
-        Kai Shen <kaishen@linux.alibaba.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH 2/2] RDMA/erdma: Use the non-atomic bitmap API when applicable
-Date:   Fri,  8 Jul 2022 19:37:22 +0200
-Message-Id: <3f311a4ebfff657c3e9ccbe754baf8be6ece4306.1657301795.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <2764b6e204b32ef8c198a5efaf6c6bc4119f7665.1657301795.git.christophe.jaillet@wanadoo.fr>
-References: <2764b6e204b32ef8c198a5efaf6c6bc4119f7665.1657301795.git.christophe.jaillet@wanadoo.fr>
+        with ESMTP id S229448AbiGIMJw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 9 Jul 2022 08:09:52 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B523F62499
+        for <linux-rdma@vger.kernel.org>; Sat,  9 Jul 2022 05:09:50 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6400,9594,10402"; a="267471405"
+X-IronPort-AV: E=Sophos;i="5.92,258,1650956400"; 
+   d="scan'208";a="267471405"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2022 05:09:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,258,1650956400"; 
+   d="scan'208";a="569245809"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by orsmga006.jf.intel.com with ESMTP; 09 Jul 2022 05:09:48 -0700
+From:   yanjun.zhu@linux.dev
+To:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
+        yanjun.zhu@linux.dev
+Cc:     syzbot+833061116fa28df97f3b@syzkaller.appspotmail.com
+Subject: [PATCHv2 1/1] RDMA/rxe: Fix qp error handler
+Date:   Sun, 10 Jul 2022 00:37:09 -0400
+Message-Id: <20220710043709.707649-1-yanjun.zhu@linux.dev>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Spam-Status: No, score=2.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Usages of the 'comp_wait_bitmap' bitmap is protected with a spinlock, so
-non-atomic functions can be used to set/clear bits.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+About 7 spin locks in qp creation needs to be initialized. Now these
+spin locks are initialized in the function rxe_qp_init_misc. This
+will avoid the error "initialize spin locks before use".
+
+Reported-by: syzbot+833061116fa28df97f3b@syzkaller.appspotmail.com
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 ---
- drivers/infiniband/hw/erdma/erdma_cmdq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_qp.c   | 12 ++++++++----
+ drivers/infiniband/sw/rxe/rxe_task.c |  1 -
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/hw/erdma/erdma_cmdq.c b/drivers/infiniband/hw/erdma/erdma_cmdq.c
-index 0489838d9717..e3d426668788 100644
---- a/drivers/infiniband/hw/erdma/erdma_cmdq.c
-+++ b/drivers/infiniband/hw/erdma/erdma_cmdq.c
-@@ -47,7 +47,7 @@ static struct erdma_comp_wait *get_comp_wait(struct erdma_cmdq *cmdq)
- 		return ERR_PTR(-ENOMEM);
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 8355a5b1cb60..259d8bb15116 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -172,6 +172,14 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 
+ 	spin_lock_init(&qp->state_lock);
+ 
++	spin_lock_init(&qp->req.task.state_lock);
++	spin_lock_init(&qp->resp.task.state_lock);
++	spin_lock_init(&qp->comp.task.state_lock);
++
++	spin_lock_init(&qp->sq.sq_lock);
++	spin_lock_init(&qp->rq.producer_lock);
++	spin_lock_init(&qp->rq.consumer_lock);
++
+ 	atomic_set(&qp->ssn, 0);
+ 	atomic_set(&qp->skb_out, 0);
+ }
+@@ -231,7 +239,6 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	qp->req.opcode		= -1;
+ 	qp->comp.opcode		= -1;
+ 
+-	spin_lock_init(&qp->sq.sq_lock);
+ 	skb_queue_head_init(&qp->req_pkts);
+ 
+ 	rxe_init_task(rxe, &qp->req.task, qp,
+@@ -282,9 +289,6 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		}
  	}
  
--	set_bit(comp_idx, cmdq->comp_wait_bitmap);
-+	__set_bit(comp_idx, cmdq->comp_wait_bitmap);
- 	spin_unlock(&cmdq->lock);
+-	spin_lock_init(&qp->rq.producer_lock);
+-	spin_lock_init(&qp->rq.consumer_lock);
+-
+ 	skb_queue_head_init(&qp->resp_pkts);
  
- 	return &cmdq->wait_pool[comp_idx];
-@@ -60,7 +60,7 @@ static void put_comp_wait(struct erdma_cmdq *cmdq,
+ 	rxe_init_task(rxe, &qp->resp.task, qp,
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+index 0c4db5bb17d7..77c691570673 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -98,7 +98,6 @@ int rxe_init_task(void *obj, struct rxe_task *task,
+ 	tasklet_setup(&task->tasklet, rxe_do_task);
  
- 	cmdq->wait_pool[comp_wait->ctx_id].cmd_status = ERDMA_CMD_STATUS_INIT;
- 	spin_lock(&cmdq->lock);
--	used = test_and_clear_bit(comp_wait->ctx_id, cmdq->comp_wait_bitmap);
-+	used = __test_and_clear_bit(comp_wait->ctx_id, cmdq->comp_wait_bitmap);
- 	spin_unlock(&cmdq->lock);
+ 	task->state = TASK_STATE_START;
+-	spin_lock_init(&task->state_lock);
  
- 	WARN_ON(!used);
+ 	return 0;
+ }
 -- 
-2.34.1
+2.25.1
 
