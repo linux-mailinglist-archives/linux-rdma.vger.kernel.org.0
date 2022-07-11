@@ -2,289 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE52856D2AE
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jul 2022 03:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2356A56D485
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jul 2022 08:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbiGKBmr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Jul 2022 21:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
+        id S229682AbiGKGNr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Jul 2022 02:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbiGKBmq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Jul 2022 21:42:46 -0400
-Received: from na01-obe.outbound.protection.outlook.com (unknown [52.101.56.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3D06466;
-        Sun, 10 Jul 2022 18:42:45 -0700 (PDT)
+        with ESMTP id S229469AbiGKGNq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jul 2022 02:13:46 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2053.outbound.protection.outlook.com [40.107.101.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665F9632F
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Jul 2022 23:13:45 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yinkq5QJENrk6IF2NfeI7qmsymP5CrC7mbN9StuIVXwvNSDJzat9NojkKuNt8F7y46Z/4Ur9vsCGvzDjAtCODgqdkUiz/rpLv2Ls552YL5UnNraK6231j8IhUu0oBtEBS5BVy/4ogxfiLDPRIVFPA/s0oaKHkk8K5JoFrDksc1aj0tdVg/eDFT3dZQ6h4lOdLHSObRtXd7Xt62zAeV1fPQvRdxw4eh/u2phLWBPQVriLZnN3mFcHhT1aFWbGWIP8d7Skyvce0E3dElp/ItHIi3BtLwT/WDU8fHjZifytnOlUnxQJn6weKWw8vR+LgVnNTnDPg+iQKge7J9jdW1IBSw==
+ b=HkwdZcvcJAZGicXWXYn6rogynjVXz19ujnl8DIzXlfGOgbQ2LW4BUEBdXc9EUbVRC2V82vtP5/cq6vsTlLpS62jKKvz0NolXtCunjCxwSnEynUHytYAudAz2v+04MsXWuX3iH8joFJSlgLVcNqariY0FsZiMBFsVG2z7L9aZhVHPBzqHG4M8D9+zG1Iz1PByDYpbY7uy2ugUsmM3omTwQAcgdkiOivPRRW+5O49/WjkUqlfaqWCPumT1akoZJoc2acRwEXlVAFmpf2JM7ObrWZhyFSaDZj6eTIeBoYIz29vna/mFaAvSQvc2dM7wVvbAIqU8fHDi5RqHRFV6b5GV+Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VuavuEEUzH0EQcjWRItAzQRFWkpwcfCTsHUDDwy0+A4=;
- b=iCYkxHyuKAAa5Vf2EIhLAslsLdL3Xc1X6h+BnczPnL6hjKFdNq6Wnwkv0B9PTc3YWQj3R3ezoG+UwUpIPMudNbDJIVZ1vJ3R7tcOU1b2zMAW/QZxJLX5lSNAtMdvE7oq2WQjrX6xIdJgcYLeNYexT/U0mltqcqwzbx+j8l2sgTIOnlWhrWH+x9z0CcR7c2Sxb6AIkUs4jTyr0Guq8RTvaIDu8JmJyMxI+qju6USyuXCjAPyfL/mgh7RNAPoXpwFq7125MmZt/Z9iA7a94K5nA8xeDGv1pZqR2Qdb1r0ObsUSbGFqiTzCcFUdC4XFEdtpC8loy6uR6BO0138AYbto+Q==
+ bh=RJRwwwl87xGIOJ38r3Ss2RDg+tX6xfDURyizxd9S5B0=;
+ b=LswhMSzpf40bSCw5EqiLdrmShUdg8njU4EAo7jF1VIT56uAQZ2fotjI8p+K3nJuaRtkKS7RTPbmjHN8V3gMMPYnK2Lz6ECqSpkBf/DbUbc5iGHA8D6EokL6phZAIIl/sVUAhxOd+Sea2vaBHg4ysIsQmKe30kZ4yCCpf3Cf5gbCEvnMEERswAFC/C9FjTLBgyqNbcp/D41+JIwwKUYLZoMOX/6GYNxejLmCvLB56Ir57VqhnFlwNFz54KVgStGOW/rxZem3MCh5Fj4yWLgOKFKo1ClBXyLMDpielttQlj1bgYdOV39FQ/kARst5QG+CFHrPV75afkvlMlpZcbyFAmg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VuavuEEUzH0EQcjWRItAzQRFWkpwcfCTsHUDDwy0+A4=;
- b=gUxgsDu+4lz6dha7cQce2XCIj6zMfqj2BIkRfegrGP4SoZssL02KCXDiNp28bLbBDPupfI2Zl5uWWOkrpPgNjNNiC/ZRBRhDFYGSSCmLCA9YUH2QSIPwgGkKYP18XooqIrJS4wO81kYtbsJHLAQ9bCrPlsBAb1MuXk0mjJn8+J4=
-Received: from SN6PR2101MB1327.namprd21.prod.outlook.com
- (2603:10b6:805:107::9) by SA1PR21MB2068.namprd21.prod.outlook.com
- (2603:10b6:806:1c3::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.4; Mon, 11 Jul
- 2022 01:42:42 +0000
-Received: from SN6PR2101MB1327.namprd21.prod.outlook.com
- ([fe80::59ea:cdde:5229:d4f0]) by SN6PR2101MB1327.namprd21.prod.outlook.com
- ([fe80::59ea:cdde:5229:d4f0%7]) with mapi id 15.20.5458.003; Mon, 11 Jul 2022
- 01:42:41 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Long Li <longli@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [Patch v4 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure
- Network Adapter
-Thread-Topic: [Patch v4 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure
- Network Adapter
-Thread-Index: AQHYgSXbp+YB12TPHUGa3Bv46Ly1sK14ihhQ
-Date:   Mon, 11 Jul 2022 01:42:41 +0000
-Message-ID: <SN6PR2101MB1327827B0EA68876717F0699BF879@SN6PR2101MB1327.namprd21.prod.outlook.com>
-References: <1655345240-26411-1-git-send-email-longli@linuxonhyperv.com>
- <1655345240-26411-13-git-send-email-longli@linuxonhyperv.com>
-In-Reply-To: <1655345240-26411-13-git-send-email-longli@linuxonhyperv.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=37fbf502-6d30-442e-a817-37730b6e8ac6;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2022-07-11T01:33:17Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 02ed54b3-bf95-4abd-1837-08da62dea521
-x-ms-traffictypediagnostic: SA1PR21MB2068:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KK3C3IgHRVPm0OakBco7XaL2URxsaFUw+Outelp8xLs3/BtFCz5gCc7aT29kmylMc5ADyiZcznJ40BsFjkmsPRsS/TloeEreLikuRANqzaRDT+FkrAfmK6praRlJPh2hqTDUZyNAmDf+40H9x+ylH4Un4FLNHbLrqkON7CugzkzOQTVcPdWoyCqoPBetHjhw9r3VJo64FfTa7zLyrAnDLFFQFEMjAaNr4e6YNIsUSQ6JvrgmXpmLje/isGPv7ICU8WzrLU2EtI5Zg5Zh9FgtvyCLCgLnRtey++ms+IeD6tqeteMB3z9NV43ZI3032h/UoI9j6JjhiqPVXU2FAfOtiT9N+krtCNXhoDNOUbFgBF8RvQMbnl22ox4PTSccO2AW0K8ElPBPSZZAqH3q13b0rIKuxmkeShXTNrXnsk9V0sztkpTluhJEWur8XP4SXUub4MAACqvRsVu+z3nlRGJsMp3nwM+xL8x+EsiMoYfjaM2tQTkSmM8aN40UQqZ4yWyeFk0pVpf7Ag9qFqyd3mEYUk39x3KBRFV1GRPvi17E97Nk07SFOV7i3hB6b52qvJMygDcM2CHWxiX6LFxvoqk8uzox/OQtxj24CZmRd8d4VnjnI9kJWOpkRY5fZ3RWW/9PdWZ0f47ZOtq3EPk5jAoAGeF8DOLXbJ1BNMFPprcIXY9ucEg+neLAObBtAlZisnPHK8BrEVoIgNjn4CpWcLA88OFsp4WjL6o6a1vfCBHtU/442jumoFgUEjLJMMq+vZqphTFbK+jqORArA4u4RIYySuEZIJwVEBMjcDCH6kp6Rg7Un2fgndfYleq2lQm6JLBnOWD96ztVgYbZAabG9nHUUDHg7afr1i4UJBgjHhfXac9T4kwc9aaptPV2ANoNlEca
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR2101MB1327.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(346002)(396003)(136003)(376002)(39860400002)(47530400004)(451199009)(82950400001)(64756008)(66446008)(4326008)(82960400001)(8676002)(921005)(86362001)(66476007)(66556008)(66946007)(76116006)(7696005)(6506007)(9686003)(41300700001)(71200400001)(10290500003)(26005)(478600001)(38070700005)(186003)(6636002)(54906003)(110136005)(316002)(8990500004)(38100700002)(122000001)(7416002)(33656002)(8936002)(5660300002)(55016003)(2906002)(52536014)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/ysjvLh3gktA+jxdRFMqulaQ7Tv13J6LreyZO4X1AOGyDCRDMLxfl6bb6Hsb?=
- =?us-ascii?Q?kqV/RywiMqAjimr87eX3GOgXp/O52IAe5lgvY8+l6fDhGIkdit/dsa7x6vJp?=
- =?us-ascii?Q?Tn/BhH9Sq/x1NXnkaI66f5IyhGgdtPiM50fPsOXMZxzZNRw0BEFam7RLNhMV?=
- =?us-ascii?Q?EblPLe9oBzpgf56FMfj1J60QlSj7a3WyK1hAX1tP+jBdZSH3lZReYRsCC+8p?=
- =?us-ascii?Q?v+FgMFvuk0FNrYzDx0P07umk0YptZg9F/A2Vso60w6AYGgXVxE12KRAvXNpI?=
- =?us-ascii?Q?L6d/Brxxrib+mMYVzb9v/HNkpio+M93a0L3Bx18b7lS1//C/FMbYVePe2Iub?=
- =?us-ascii?Q?U97BMRp45K4yDoanolVeAqHH8Rhv2a2MjiV7/hGqWlStLLMeIn7vN10xSQah?=
- =?us-ascii?Q?35nSLODtV09c5N5VDZpuw65nEygkDEKt0dmLevWwpnXE17vclrdCeAfnk8l1?=
- =?us-ascii?Q?GDTrlNgzaV6eRA6RZv+1DofImPeHJ4PjrkaD3zxs/FTTvQIIl1qYmlVEHRMg?=
- =?us-ascii?Q?oiiXdDdh2eC2U7lBSDE0A4ACflA2AhxHAeBkbD2gezCD/3AxXR51Y7lAJjH7?=
- =?us-ascii?Q?MPoYK23ZNxEjxnBhD8/loYwf3hhroxDzHaLtQsjoXOo6juXiWkpm2ejg8Sp9?=
- =?us-ascii?Q?lbg2GmrNtn2ZKkg/m/ioC0xnKvv/wPzRlVS10eTBcvfg6kHbVZOD4IwymxDz?=
- =?us-ascii?Q?ERJ8nrnA7i/1J8DsFtDZqxyGWiZtQExfGirgGU+1tv3OD1mpUgT95ZoTSxYt?=
- =?us-ascii?Q?p+6g6AToKXOg9xKFBuTqLFHb/lC/Ek3e69H6SgIU5LFjGnjQgcgBG8XhKV2s?=
- =?us-ascii?Q?5vzcWcGB3fGx18xjO5+HjO0YpcVOp149jyUGcMD3BuTJrO09Udjb5890qNVz?=
- =?us-ascii?Q?HKzjNhKTjNFgzoRFgeyTyqbqvA/WZR0spESmSs0F9SkO4S/1jWUdwS2+nKVm?=
- =?us-ascii?Q?XaKRn2YoOBj1PWnev3mRrFvv2TwQ1DdqsX7VLGSgXnuC1gbNlQA2tRi5UM5h?=
- =?us-ascii?Q?4oAtE2My2gAW6pZvi6FdqkARLHR1W4VuZhKhcS3SlwrTs5jQiAsR56fQ9cEp?=
- =?us-ascii?Q?uPWV/UqM98ZHW5d7YfGo2P5MWNUQfKaKqYLSLiv1uALhUHseK+DqichtSvbI?=
- =?us-ascii?Q?yEB4UPdC+WFfCpz+ttHnMkOobcn7skzmXcTePXwiztCxlDYjXEOGPVEV38X8?=
- =?us-ascii?Q?BACUYRSTLNaB7Q7fZ3MlbADJKlOBJG1QEuK6m/t4Ug/Uc1e+zyYAnVeW9xVh?=
- =?us-ascii?Q?4/wyzj+J5k34LVFQkw/9IgwRzfDbDqO4/mUsM3r3jEIZFmUn9fsvZ1VGECEG?=
- =?us-ascii?Q?hNKktClGrHvlrz5b+2jAexno93fJvh/o11x/TiW3xdL8wJdD0A7T5Qh1yS93?=
- =?us-ascii?Q?K9rSk3p+MEYcJqML40P2tZaEqB3rRY5yaGnxpUkQywxdUUH5FGt9uNa98nbC?=
- =?us-ascii?Q?Ufcvk9M4rFtLKfQ4H4XmFccuSKeSgsvTPpSiqd3RDc4WOV0e7ZOw4EAzOM55?=
- =?us-ascii?Q?S+d3/Isu4pgZqswE/XylI7a5Isoi1oPjn26qEpqONXO8Rx0/D0sREsBoRIYc?=
- =?us-ascii?Q?bNCXK9JZ0X/wFn1xjnrWOpopoef77XnzqjTQtUy0?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=RJRwwwl87xGIOJ38r3Ss2RDg+tX6xfDURyizxd9S5B0=;
+ b=WhWxtNyVJdmmLm2vxAFvkkCeVNJEQqGpKJxSA7s9qTwDXFS3ZPLq3GSMzXFRQ3/n5shlrDsm8Xdy8GO2O8sCF9K0an5gMmUs2BQ+g+g1IJtOxhUvd87Ed79an50facJqEDAvRhX/hzssiTRnFWm1ax5E9mVR6KAHZPuksR5iOb1LY6KnA38lAARUjo1XSw3/e8ABceBSC4w/+m3DShCgibskDiyhuZlmrjvwKaxZUEwRHW3cCuqhycVFgiN5u2r2JHJMwD3tWzuc2C41A520Fz3KT4sFu0XbynCqu1u9i0PZvNPsNrfa+h6MKFGZh1XKCqEFVIjnzdHLcI57zw2OHA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by BN8PR12MB3442.namprd12.prod.outlook.com (2603:10b6:408:43::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.25; Mon, 11 Jul
+ 2022 06:13:44 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ac35:7c4b:3282:abfb]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ac35:7c4b:3282:abfb%3]) with mapi id 15.20.5417.026; Mon, 11 Jul 2022
+ 06:13:44 +0000
+Date:   Mon, 11 Jul 2022 03:13:40 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Shiraz Saleem <shiraz.saleem@intel.com>
+Cc:     linux-rdma@vger.kernel.org,
+        Mustafa Ismail <mustafa.ismail@intel.com>
+Subject: Re: [PATCH for-rc] RDMA/irdma: Do not advertise 1GB page size for
+ x722
+Message-ID: <20220711061340.GA56430@nvidia.com>
+References: <20220705230837.294-1-shiraz.saleem@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220705230837.294-1-shiraz.saleem@intel.com>
+X-ClientProxiedBy: LO2P265CA0118.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:c::34) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9fb3e254-5dce-4ca8-937f-08da63048213
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3442:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tHzKnaXUMsp1WJ54PxSahfggjl/AMQI1TLKYjNbaTf5iIw94iDsBdxfbzMVLl0VfdnPFKYG+VJOkRjL3SVQLCERVwMZfI69iDD70uS0JJn1vzmJHBotB31a/UMzutE7TAnhQqmXS/FWOirjArvuy9abXkkQ/iisu452+Ci/8CwYt8HmJzNqZQaWoMe9C9Sgfv4OcSdc19OAsgVgysv642tprmHIvtkiTpg32zpXvr15y6B5GoyqhQgEOQC07RPzKr1ukyiCLrDBylaNpS6SgmVpgVo5W6SGeupUqAyPCxINQo6CIp1zb+YD+GDxY88SGGbkW4THVwfpdGgNWFXFUn5oZZt/qKY3G7DtLEuVfNUDSmC1W2V7ZXHBfCJrATFwdsE0+cvHxFtoNAHCsJhQpNQVNXFmohgnfpdixJdQmrCEW4uyeFcNdOdYmkZ/3UZXHPkR8vUrOtZB+sm/w0Nnt0RN5oVlMkmETrH8FEaj/ulVkMdHHlB2qQuHeFDb8MjXQ08hB8blPopr5Haloi9bxp8ORQ0RSOimTJtnLm/zVmScPcFBAtNfKnKn4nbXMQLjqoUQEOl8ehvwoptLCe1Rk8g2TL7keHcUD/TUgAo3ljB7RsPzX3zl+tj0ZNhmoJGqPHkaXcdXhtCdbcznfpRdnN8u27QH7t28bOe4P+ULs9yzwCVqsCjMxqhhEIMFWTtjEdq7tmgRyYKu/5BRxwRDDn50od78aXLrSIaUDlM8O+olykhroWSuLcxfCWgLaRhch
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(396003)(39860400002)(136003)(376002)(346002)(36756003)(38100700002)(2906002)(316002)(33656002)(83380400001)(5660300002)(8936002)(8676002)(66946007)(4744005)(186003)(66556008)(4326008)(66476007)(6512007)(1076003)(86362001)(6506007)(2616005)(6916009)(26005)(478600001)(41300700001)(6666004)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uR7iIkXhrsGT3HEe3lDpVU6jWEvQ7jagYtpLI3B8xDIlwaLPnugE5sN5uqaR?=
+ =?us-ascii?Q?drA2gZFI8TeLXKqPiBD9flCyxx5VqW4E4fpIky/Q/EetZMQ816Bv/MdAGRtB?=
+ =?us-ascii?Q?gKxiqrVdFm9bkZ+VaAYDzR+W9tq+MJo+NAjA13TiN2STbh4JUtOlBsP8clX5?=
+ =?us-ascii?Q?dPwTHY27OI1U0QqvJxT/AvU0fu6bEV5iviz31+ykTY1BRDEkSmyoP1LWHC3m?=
+ =?us-ascii?Q?pHA/RLMxyCeT2agJDGHNoWWIqKqJ0z+OndGqOLbMQwxf1q/bvC6Mpic5TKQW?=
+ =?us-ascii?Q?LMwTOyToFaKaS36DXDSxz27/bvuHiRKRGALSgK6vqKoB3KTNZxvWOM1T8OBx?=
+ =?us-ascii?Q?l3uiDf9FHkJaus3HfKA7LVzAXlZ3fDx/QpYO74byiNXJSD8Hi/4K3msci/nx?=
+ =?us-ascii?Q?2Sda9Dip18DykETYLXjZ8kg33oZ8Pw5Xwtx4VfwTwn+3zIeMx4knv0vF2rLN?=
+ =?us-ascii?Q?j78uiqKioMJXVZbMdSvHUQXYDBtDPVS2obQM5LN0icj0FS5LiSFUE17IWI8r?=
+ =?us-ascii?Q?Wlawy81Ry4CFzwfnB075a+2+zE77rKFVES+IpScIY4N40LkzIsJ9lIQKm9SH?=
+ =?us-ascii?Q?8zhq3gDYx/n3M6PQq05c2nhEhzULwv2daOCAKs3LSKBoIOU9iDfY3E0eEidM?=
+ =?us-ascii?Q?B7drFV7vnL2GGYdEsxXNTnbB2BiVfJulTPZ6HbfDnvYbj4wMLjpBSKNQkZLp?=
+ =?us-ascii?Q?cBo2Qc1uJOlSwNuoA4+lvuDFDop/7hj2Go1qXpluTsqNz319Fm5PH5+HbPhP?=
+ =?us-ascii?Q?jeG6lWo/Kq4C8logeELLbetyA7cN6SDronXfMamOJu4iSrxyVGyChOuYfunK?=
+ =?us-ascii?Q?3bSjmC/uJrajbPQszM8Rml6WvE5qw5Lt5rogsnUQ4pWLsuo/UbNg9Oo4MSzx?=
+ =?us-ascii?Q?u/R7KE7a3uAgMPqxUowBuh8OnFgX977MZc6IdSoU4og4hiMw3o7zlMwR2Yrl?=
+ =?us-ascii?Q?M9pszcRgV9ng977EMHamBfMiml8GAIniQV5NfSt0dexz0itn8nq2PvZIA56o?=
+ =?us-ascii?Q?M1CU21WIMiWBFhqehxjTLI9nW5u0coxWkx7+61QG7RtD+/ec+9Toq4EaITVs?=
+ =?us-ascii?Q?1VXm89l/txb0HFxI05FF1qD9M8USJUfiLxfTNKRvyt/akze8Ot6LZ7gwPqGX?=
+ =?us-ascii?Q?NHEWj360m+JdRSkA+IIMTcJcngvu+SUu5oEAX51np4EQ8ruzO+1Jnm77cRkq?=
+ =?us-ascii?Q?XFhTvx0Qjoi+5IHPN2y+5khhHSHHQCdTHoVTO1TwdTrn/jD+iDsN5ejLUL45?=
+ =?us-ascii?Q?W3sU2tFV95ZIOK93tA4DwEZgL04ugGIoHEuZVRb9Y1w94mBiI9VF6EYJGlvK?=
+ =?us-ascii?Q?IVW2eTQNHsvRCs3IIz9Qlnvx2ZCxnGOn+o7oy8akileLJ6rh2OVVBCioF/3f?=
+ =?us-ascii?Q?vjD2eM8uZ/UYs8I1FViCElz0Eoc8Vnwk2Jz5sd4EVoPGF0w87+1kM7NFYJwi?=
+ =?us-ascii?Q?rZqiLPGp/1odbzXvI6/9fJFcc9VT+lUlux4i8NZHbLZ44rwuyAf/R24iRq7M?=
+ =?us-ascii?Q?WrXiSS6mpiGiqufVLYX0Wt48vqV6oCWlJp0AMhl6jMSuttguIdtjFRmpc0LT?=
+ =?us-ascii?Q?JfclK+0dFHFIwbWU/m48OrwpsxW8MecDd1/X1ifw?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fb3e254-5dce-4ca8-937f-08da63048213
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR2101MB1327.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02ed54b3-bf95-4abd-1837-08da62dea521
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jul 2022 01:42:41.8549
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2022 06:13:44.1092
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PAUygYVIraezT1l56+CpUqySSggDxJJ6XDESMl+pMFjmMybd7TslW9F4f6nGM/GfnJqQm09yYmN3ed47mI7jzQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB2068
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: A1HqfSq5JLK99rtN5f91jSX9cTyPj5IZvsFNOM2IsahhoVXsJBIh1ZPVZqV2tekZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3442
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: longli@linuxonhyperv.com <longli@linuxonhyperv.com>
-> Sent: Wednesday, June 15, 2022 7:07 PM
-> ...
-> +int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct
-> ib_umem *umem,
-> +				 mana_handle_t *gdma_region, u64 page_sz)
-> +{
-> + ...
-> +	err =3D mana_gd_send_request(gc, create_req_msg_size, create_req,
-> +				   sizeof(create_resp), &create_resp);
-> +	kfree(create_req);
-> +
-> +	if (err || create_resp.hdr.status) {
-> +		ibdev_err(&dev->ib_dev,
-> +			  "Failed to create DMA region: %d, 0x%x\n", err,
-> +			  create_resp.hdr.status);
+On Tue, Jul 05, 2022 at 06:08:36PM -0500, Shiraz Saleem wrote:
+> From: Mustafa Ismail <mustafa.ismail@intel.com>
+> 
+> x722 does not support 1GB page size but the irdma driver
+> incorrectly advertises 1GB page size support for x722 device
+> to ib_core to compute the best page size to use on this MR.
+> This could lead to incorrect start offsets computed by
+> hardware on the MR.
+> 
+> Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
+> Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> ---
+>  drivers/infiniband/hw/irdma/i40iw_hw.c  | 1 +
+>  drivers/infiniband/hw/irdma/icrdma_hw.c | 1 +
+>  drivers/infiniband/hw/irdma/irdma.h     | 1 +
+>  drivers/infiniband/hw/irdma/verbs.c     | 4 ++--
+>  4 files changed, 5 insertions(+), 2 deletions(-)
 
-    if (!err)
-        err =3D -EPROTO;
+Applied to for-rc, thanks
 
-> +		goto error;
-> +	}
-> + ...
-> +			err =3D mana_gd_send_request(gc, add_req_msg_size,
-> +						   add_req, sizeof(add_resp),
-> +						   &add_resp);
-> +			if (!err || add_resp.hdr.status !=3D expected_status) {
-> +				ibdev_err(&dev->ib_dev,
-> +					  "Failed put DMA pages %u: %d,0x%x\n",
-> +					  i, err, add_resp.hdr.status);
-> +				err =3D -EPROTO;
-
-Should we try to undo what has been done by calling GDMA_DESTROY_DMA_REGION=
-?
-
-> +				goto free_req;
-> +			}
-> +
-> +			num_pages_cur +=3D num_pages_to_handle;
-> +			num_pages_to_handle =3D
-> +				min_t(size_t, num_pages_total - num_pages_cur,
-> +				      max_pgs_add_cmd);
-> +			add_req_msg_size =3D sizeof(*add_req) +
-> +					   num_pages_to_handle * sizeof(u64);
-> +		}
-> +free_req:
-> +		kfree(add_req);
-> +	}
-> +
-> +error:
-> +	return err;
-> +}
-> + ...
-> +int mana_ib_gd_create_mr(struct mana_ib_dev *dev, struct mana_ib_mr
-> *mr,
-> +			 struct gdma_create_mr_params *mr_params)
-> +{
-> +	struct gdma_create_mr_response resp =3D {};
-> +	struct gdma_create_mr_request req =3D {};
-> +	struct gdma_dev *mdev =3D dev->gdma_dev;
-> +	struct gdma_context *gc;
-> +	int err;
-> +
-> +	gc =3D mdev->gdma_context;
-> +
-> +	mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_MR, sizeof(req),
-> +			     sizeof(resp));
-> +	req.pd_handle =3D mr_params->pd_handle;
-> +
-> +	switch (mr_params->mr_type) {
-> +	case GDMA_MR_TYPE_GVA:
-> +		req.mr_type =3D GDMA_MR_TYPE_GVA;
-> +		req.gva.dma_region_handle =3D mr_params->gva.dma_region_handle;
-> +		req.gva.virtual_address =3D mr_params->gva.virtual_address;
-> +		req.gva.access_flags =3D mr_params->gva.access_flags;
-> +		break;
-> +
-> +	case GDMA_MR_TYPE_GPA:
-> +		req.mr_type =3D GDMA_MR_TYPE_GPA;
-> +		req.gpa.access_flags =3D mr_params->gpa.access_flags;
-> +		break;
-> +
-> +	case GDMA_MR_TYPE_FMR:
-> +		req.mr_type =3D GDMA_MR_TYPE_FMR;
-> +		req.fmr.page_size =3D mr_params->fmr.page_size;
-> +		req.fmr.reserved_pte_count =3D mr_params->fmr.reserved_pte_count;
-> +		break;
-> +
-> +	default:
-> +		ibdev_dbg(&dev->ib_dev,
-> +			  "invalid param (GDMA_MR_TYPE) passed, type %d\n",
-> +			  req.mr_type);
-
-Here req.mr_type is always 0.
-We should remove the 3 above lines of "req.mr_type =3D ...", and=20
-add a line "req.mr_type =3D mr_params->mr_type;" before the "switch" line..
-
-> +		err =3D -EINVAL;
-> +		goto error;
-> +	}
-> +
-> +	err =3D mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp=
-);
-> +
-> +	if (err || resp.hdr.status) {
-> +		ibdev_err(&dev->ib_dev, "Failed to create mr %d, %u", err,
-> +			  resp.hdr.status);
-
-    if (!err)
-        err =3D -EPROTO;
-
-> +		goto error;
-> +	}
-> +
-> +	mr->ibmr.lkey =3D resp.lkey;
-> +	mr->ibmr.rkey =3D resp.rkey;
-> +	mr->mr_handle =3D resp.mr_handle;
-> +
-> +	return 0;
-> +error:
-> +	return err;
-> +}
-> + ...
-> +static int mana_ib_probe(struct auxiliary_device *adev,
-> +			 const struct auxiliary_device_id *id)
-> +{
-> +	struct mana_adev *madev =3D container_of(adev, struct mana_adev, adev);
-> +	struct gdma_dev *mdev =3D madev->mdev;
-> +	struct mana_context *mc;
-> +	struct mana_ib_dev *dev;
-> +	int ret =3D 0;
-No need to initialize 'ret' to 0.
-
-> +int mana_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
-> +{
-> +	struct mana_ib_mr *mr =3D container_of(ibmr, struct mana_ib_mr, ibmr);
-> +	struct ib_device *ibdev =3D ibmr->device;
-> +	struct mana_ib_dev *dev;
-> +	int err;
-> +
-> +	dev =3D container_of(ibdev, struct mana_ib_dev, ib_dev);
-> +
-> +	err =3D mana_ib_gd_destroy_mr(dev, mr->mr_handle);
-> +	if (err)
-
-Should we return here without calling ib_umem_release() and kfree(mr)?
-> +		return err;
-
-> +
-> +	if (mr->umem)
-> +		ib_umem_release(mr->umem);
-> +
-> +	kfree(mr);
-> +
-> +	return 0;
-> +}
+Jason
