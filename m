@@ -2,83 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A5E56D5B0
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jul 2022 09:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FD256D6E3
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jul 2022 09:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbiGKHJA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Jul 2022 03:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
+        id S229849AbiGKHfG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Jul 2022 03:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbiGKHIR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jul 2022 03:08:17 -0400
-Received: from mail-m973.mail.163.com (mail-m973.mail.163.com [123.126.97.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 050B01ADA7;
-        Mon, 11 Jul 2022 00:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=OS8yM
-        oEJWC5pIc75D33LcDyvm2Vl3MkjdgsLOHnTjlI=; b=fpPb2r1SRLjaz/7u3Eh6A
-        Yo0yfDPbOvbwcSsQ/a3iPfxVFWCxhJ7FOEvPN9gkx18e2yHn9s3mZOrZmjYiffTD
-        RG3cDsHcKN3peqZa0gPPFWhkWNyddrsdLg1/5NRat+blS8Z6vXSSkeCNAs8ygJxv
-        lSQXzFERcMQU1xq2CZ47xc=
-Received: from localhost.localdomain (unknown [123.112.69.106])
-        by smtp3 (Coremail) with SMTP id G9xpCgDn_4knzMtimgUiOg--.9376S4;
-        Mon, 11 Jul 2022 15:07:25 +0800 (CST)
-From:   Jianglei Nie <niejianglei2021@163.com>
-To:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianglei Nie <niejianglei2021@163.com>
-Subject: [PATCH] RDMA/hfi1: fix potential memory leak in setup_base_ctxt()
-Date:   Mon, 11 Jul 2022 15:07:18 +0800
-Message-Id: <20220711070718.2318320-1-niejianglei2021@163.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229697AbiGKHfF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jul 2022 03:35:05 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528BC1A05C;
+        Mon, 11 Jul 2022 00:35:01 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R841e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VIyDJnm_1657524897;
+Received: from 30.43.105.92(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VIyDJnm_1657524897)
+          by smtp.aliyun-inc.com;
+          Mon, 11 Jul 2022 15:34:58 +0800
+Message-ID: <670c57a2-6432-80c9-cdc0-496d836d7bf0@linux.alibaba.com>
+Date:   Mon, 11 Jul 2022 15:34:56 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: G9xpCgDn_4knzMtimgUiOg--.9376S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Gw47GrW3Xw43Jw17Xw1xAFb_yoWfKrcEgr
-        yUuryDXr4YkwsYvw40vws3ZrWIqrW8Xrs5Za9aq3sxAF15CrZxtF1kuF43X348ZayjvFW5
-        urs7Kr4SyF4fKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRibAwPUUUUU==
-X-Originating-IP: [123.112.69.106]
-X-CM-SenderInfo: xqlhyxxdqjzvrlsqjii6rwjhhfrp/1tbiQxU7jFc7ajP70QAAs+
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH 1/2] RDMA/erdma: Use the bitmap API to allocate bitmaps
+Content-Language: en-US
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kai Shen <kaishen@linux.alibaba.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <2764b6e204b32ef8c198a5efaf6c6bc4119f7665.1657301795.git.christophe.jaillet@wanadoo.fr>
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <2764b6e204b32ef8c198a5efaf6c6bc4119f7665.1657301795.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-setup_base_ctxt() allocates a memory chunk for uctxt->groups with
-hfi1_alloc_ctxt_rcv_groups(). When init_user_ctxt() fails, uctxt->groups
-is not released, which will lead to a memory leak.
 
-We should release the uctxt->groups with hfi1_free_ctxt_rcv_groups()
-when init_user_ctxt() fails.
 
-Signed-off-by: Jianglei Nie <niejianglei2021@163.com>
----
- drivers/infiniband/hw/hfi1/file_ops.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On 7/9/22 1:37 AM, Christophe JAILLET wrote:
+> Use [devm_]bitmap_zalloc()/bitmap_free() instead of hand-writing them.
+> 
+> It is less verbose and it improves the semantic.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/infiniband/hw/erdma/erdma_cmdq.c | 7 +++----
+>  drivers/infiniband/hw/erdma/erdma_main.c | 9 ++++-----
+>  2 files changed, 7 insertions(+), 9 deletions(-)
+> 
 
-diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
-index 2e4cf2b11653..629beff053ad 100644
---- a/drivers/infiniband/hw/hfi1/file_ops.c
-+++ b/drivers/infiniband/hw/hfi1/file_ops.c
-@@ -1179,8 +1179,10 @@ static int setup_base_ctxt(struct hfi1_filedata *fd,
- 		goto done;
+Hi Christophe,
+
+Thanks for your two patches of erdma.
+
+The erdma code your got is our first upstreaming code, so I would like to squash your
+changes into the relevant commit in our next patchset to make the commit history cleaner.
+
+BTW, the coding style in the patches is OK, but has a little differences with clang-format's
+result. I will use the format from clang-format to minimize manual adjustments.
  
- 	ret = init_user_ctxt(fd, uctxt);
--	if (ret)
-+	if (ret) {
-+		hfi1_free_ctxt_rcv_groups(uctxt);
- 		goto done;
-+	}
+Thanks,
+Cheng Xu
  
- 	user_init(uctxt);
- 
--- 
-2.25.1
 
+> diff --git a/drivers/infiniband/hw/erdma/erdma_cmdq.c b/drivers/infiniband/hw/erdma/erdma_cmdq.c
+> index 0cf5032d4b78..0489838d9717 100644
+> --- a/drivers/infiniband/hw/erdma/erdma_cmdq.c
+> +++ b/drivers/infiniband/hw/erdma/erdma_cmdq.c
+> @@ -78,10 +78,9 @@ static int erdma_cmdq_wait_res_init(struct erdma_dev *dev,
+>  		return -ENOMEM;
+>  
+>  	spin_lock_init(&cmdq->lock);
+> -	cmdq->comp_wait_bitmap =
+> -		devm_kcalloc(&dev->pdev->dev,
+> -			     BITS_TO_LONGS(cmdq->max_outstandings),
+> -			     sizeof(unsigned long), GFP_KERNEL);
+> +	cmdq->comp_wait_bitmap = devm_bitmap_zalloc(&dev->pdev->dev,
+> +						    cmdq->max_outstandings,
+> +						    GFP_KERNEL);
+>  	if (!cmdq->comp_wait_bitmap) {
+>  		devm_kfree(&dev->pdev->dev, cmdq->wait_pool);
+>  		return -ENOMEM;
+> diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
+> index 27484bea51d9..7e1e27acb404 100644
+> --- a/drivers/infiniband/hw/erdma/erdma_main.c
+> +++ b/drivers/infiniband/hw/erdma/erdma_main.c
+> @@ -423,9 +423,8 @@ static int erdma_res_cb_init(struct erdma_dev *dev)
+>  	for (i = 0; i < ERDMA_RES_CNT; i++) {
+>  		dev->res_cb[i].next_alloc_idx = 1;
+>  		spin_lock_init(&dev->res_cb[i].lock);
+> -		dev->res_cb[i].bitmap =
+> -			kcalloc(BITS_TO_LONGS(dev->res_cb[i].max_cap),
+> -				sizeof(unsigned long), GFP_KERNEL);
+> +		dev->res_cb[i].bitmap = bitmap_zalloc(dev->res_cb[i].max_cap,
+> +						      GFP_KERNEL);
+>  		/* We will free the memory in erdma_res_cb_free */
+>  		if (!dev->res_cb[i].bitmap)
+>  			goto err;
+> @@ -435,7 +434,7 @@ static int erdma_res_cb_init(struct erdma_dev *dev)
+>  
+>  err:
+>  	for (j = 0; j < i; j++)
+> -		kfree(dev->res_cb[j].bitmap);
+> +		bitmap_free(dev->res_cb[j].bitmap);
+>  
+>  	return -ENOMEM;
+>  }
+> @@ -445,7 +444,7 @@ static void erdma_res_cb_free(struct erdma_dev *dev)
+>  	int i;
+>  
+>  	for (i = 0; i < ERDMA_RES_CNT; i++)
+> -		kfree(dev->res_cb[i].bitmap);
+> +		bitmap_free(dev->res_cb[i].bitmap);
+>  }
+>  
+>  static const struct ib_device_ops erdma_device_ops = {
