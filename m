@@ -2,86 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA96571331
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Jul 2022 09:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F91057138D
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Jul 2022 09:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbiGLHgR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Jul 2022 03:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40986 "EHLO
+        id S231608AbiGLHy0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Jul 2022 03:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232373AbiGLHgQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Jul 2022 03:36:16 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DFF9A5DA
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Jul 2022 00:36:15 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id g1so8971808edb.12
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Jul 2022 00:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PKYWNjh6uS7sTcTxXh7MYPjOwdPod5IfYnOYmMhizzw=;
-        b=J/Akhho9DdDvcMHcxp/1MI5y11ssV3+kQiBBJIODFpa7HR98CLbPtt3KNQydQU3Zv8
-         UQaqXJr9JRQi0jPK8vxh9iIOcekB7Onz+ojbeLgi+BEk1feIds7Xz9fRVXp9BAR4Ld54
-         GWeZCWrHWFTdX53VRCh0Mlm1U5t/SJmwZo+1HLbi3YzEmpXrahpz0t+f4dkUrQuvpEJf
-         t0ThS4LFd0keYvtiAbNiHxDBej/BJIWetvJ0bu8mLw18+pQPboKJBkyC5fdqwlPCusBi
-         uxXlOlPybMTIO0EzWQWeCoDK7S1REhsUlo+Fp8WAcbZ9MrLk91TSeLq/Y/c6ssgc8oiQ
-         BXuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PKYWNjh6uS7sTcTxXh7MYPjOwdPod5IfYnOYmMhizzw=;
-        b=lAnUTzCUaTiMiUpyWgnjJplUS2LlY59PXPfEYSixFYPrUoxX9QeVFIkUfIXcnJSOsZ
-         45MtZps1qaQMtlJ+FwoYB4DhRoIkbxTXF+5SUa2Kup0IC/wsbZCvekY/jFaVGYFXjtiT
-         eIt6R9anBF8kPJlgXezNfCQJs4jtm9CKs6HJonAQ4sh4pqBe/QouDa4hvl9Dan6Ee6QP
-         Chwy/ILRSIXmMuo1ODSGopZ8hoEETqEl9fp9joPFiNisodcAUpC5ymmtwDgVNVlCV8QA
-         CNUt0P13ZyRlPlHUb2bKVNtLjjAOutUqdX9yBcvWoesqXmrXGZam81EW4DErJjFSackK
-         6wLQ==
-X-Gm-Message-State: AJIora+DUyFFo0SNqQUs47d3xh+krpnDRRoFIZwcxSizA9lDOu4/8/Sc
-        zgObzY6YndhyT1jWxfexU+l1m45amta+K0WbEU2hVw==
-X-Google-Smtp-Source: AGRyM1t7gImuKNQDmSwDAD41VRaAgOv1rOeX0d41mqN/rjlwYLDZw7SHgWob8b9hjtJPT1bc+HASJ/7eu9zL0Zcqkhc=
-X-Received: by 2002:a05:6402:42d5:b0:433:1727:b31c with SMTP id
- i21-20020a05640242d500b004331727b31cmr29924926edc.9.1657611373846; Tue, 12
- Jul 2022 00:36:13 -0700 (PDT)
+        with ESMTP id S232425AbiGLHyZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Jul 2022 03:54:25 -0400
+Received: from gentwo.de (gentwo.de [IPv6:2a02:c206:2048:5042::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B21B21812
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Jul 2022 00:54:19 -0700 (PDT)
+Received: by gentwo.de (Postfix, from userid 1001)
+        id 7665DB00266; Tue, 12 Jul 2022 09:54:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.de; s=default;
+        t=1657612457; bh=EsnKVf5Q2XDAOZINRJvq5Mrh7WNXnWs5VkJGoEnhxNI=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=toMqzeUsasQS8lHKxk/yv/zYUjqXKq1u+HBl1DO8PDcfmhcwbYGwluvpSuxM5g7RD
+         Bi7KCkAwJVgmXuOVmBpZ/3ChoOB3mUGSaqHnE6pOJ1qnl/riCbCMAdq+zpxEDMoYbz
+         B1PKh4IE7pk4uEzkw1TwxTLa8yqZDq88MNDAUzlXuk0fZFP0ZRXcPvyVcaYSEeulYq
+         L1yuVsGgpgdrP8b4YO3tuEErDXMyw2wi4cwtC+i0rbs5wqt4M3U1Qs69IT4P6B1KtQ
+         JU6vb0/zPvxxZWuYluD2+IOZtFDPxeo3xLbXdFOo2AkGRBzLtDPF9bE7/ToyvN65jc
+         RVMpBGwsrnszg==
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.de (Postfix) with ESMTP id 72455B0001D;
+        Tue, 12 Jul 2022 09:54:17 +0200 (CEST)
+Date:   Tue, 12 Jul 2022 09:54:17 +0200 (CEST)
+From:   Christoph Lameter <cl@gentwo.de>
+To:     Md Haris Iqbal <haris.iqbal@ionos.com>
+cc:     linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
+        jinpu.wang@ionos.com,
+        Santosh Kumar Pradhan <santosh.pradhan@ionos.com>
+Subject: Re: [PATCH for-next 2/5] RDMA/rtrs-clt: Use this_cpu_ API for
+ stats
+In-Reply-To: <20220707142144.459751-3-haris.iqbal@ionos.com>
+Message-ID: <alpine.DEB.2.22.394.2207120953340.30202@gentwo.de>
+References: <20220707142144.459751-1-haris.iqbal@ionos.com> <20220707142144.459751-3-haris.iqbal@ionos.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <20220707142144.459751-1-haris.iqbal@ionos.com>
- <20220707142144.459751-6-haris.iqbal@ionos.com> <20220708133200.GB4459@ziepe.ca>
-In-Reply-To: <20220708133200.GB4459@ziepe.ca>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Tue, 12 Jul 2022 09:36:03 +0200
-Message-ID: <CAMGffEnL+kG8=jtqxYCi91-kcmesVq_A5NSjh7NnNqAZH=vRiw@mail.gmail.com>
-Subject: Re: [PATCH for-next 5/5] RDMA/rtrs-srv: Do not use mempool for page allocation
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Md Haris Iqbal <haris.iqbal@ionos.com>, linux-rdma@vger.kernel.org,
-        leon@kernel.org, Gioh Kim <gi-oh.kim@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 8, 2022 at 3:32 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Jul 07, 2022 at 04:21:44PM +0200, Md Haris Iqbal wrote:
-> > From: Jack Wang <jinpu.wang@ionos.com>
-> >
-> > The mempool is for guaranteed memory allocation during
-> > extreme VM load (see the header of mempool.c of the kernel).
-> > But rtrs-srv allocates pages only when creating new session.
-> > There is no need to use the mempool.
-> >
-> > With the removal of mempool, rtrs-server no longer need to reserve
-> > huge mount of memory, this will avoid error like this:
-> > https://www.spinics.net/lists/kernel/msg4404829.html
->
-> Use only lore.kernel.org links please
 
-Sure, will fix it.
->
-> Jason
+> Use this_cpu_x() for increasing/adding a percpu counter through a
+> percpu pointer without the need to disable/enable preemption.
+
+Reviewed-by: Christoph Lameter <cl@linux.com>
