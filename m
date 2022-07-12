@@ -2,59 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F1657175B
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Jul 2022 12:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B17257175C
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Jul 2022 12:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbiGLKbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Jul 2022 06:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
+        id S229740AbiGLKb3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Jul 2022 06:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbiGLKbU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Jul 2022 06:31:20 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3D7ACEF8
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Jul 2022 03:31:19 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id b11so13476519eju.10
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Jul 2022 03:31:19 -0700 (PDT)
+        with ESMTP id S229896AbiGLKbX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Jul 2022 06:31:23 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD18AAD854
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Jul 2022 03:31:20 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id oy13so8641985ejb.1
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Jul 2022 03:31:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gmVujBePXmmrW4p+h3rFQiuS7xsCFgZ6c7Mmdi7TSCU=;
-        b=JcXSBH1uVP/MqNgZnZux0PHVQGy6TTgGoIxozRYQ3LOWZnMmf9MJWznHX39sn4zo2a
-         qXTF5RXNNl1pzThw1L1jLuyMvKWrS5AKFMovDIn515XdfoZ3sfNXR22vvTR+XZGYCljx
-         M+Nd1abxM5pZFlHnKexEx9eiDvwd6o/2/BBzIu8G/pvt21A/nepSpTYFg6ELiUrz8Q54
-         ne//cC+LaJ6VfIE+JC7wKAjUBSArHoWJdxvIAMiawy4CxtiQdf5YzEhJVvSga/4hhFYt
-         0Y9ONUS3wkM12Y8/r2E8vZGBwKhlgkG33rVhZRI/mijVTUbcOtBYYlfi5D51/gQS+S4K
-         ZWnQ==
+        bh=uHPqIaxLqgWf7NR1j5EX5ARr+fAYM2yGQ7O88dTMNcI=;
+        b=Rr09vrN0BIW9cbDjJzenRB73ZSEODXyzM/MeK8GSeye4IfnrY9gbNrSksCe2bv5T/T
+         x4Jl5+Zb4fEuV7+I4y9M0AbvNcqF6agU8dHRi/MrzDn7mb2JO8ufvgZHrffXy5/XdLUt
+         EqGOU/rp+F2GD5OhH7DXsESpXJmBhAfOZFa9AWQIW6lMGSwm3RCPIxa5aqiL3wn0zrdQ
+         Eyt8sfdPvbMUOlSRoQ0pV4sJXYA6M5zkRH+yuH5YTSkI8kvYR89awFzsebSXp9zZpGXb
+         +7p3yGgsbUfRxCq0dRqGvc2KNNwD2U2ROHzGxUL5MQx+aIHnNTs9Sbi2DWpwbj9wY8NX
+         NdNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gmVujBePXmmrW4p+h3rFQiuS7xsCFgZ6c7Mmdi7TSCU=;
-        b=zZJa/x5Y6jSc9FHh/8x8I5gRW3G+7FXusrRcpdUxHpfVMWnJvDeaVFeqfydnIyyU8x
-         +DrY/mBc2eWLQqkGCz7Vsw0tMQw+qxmHv1RKUpQ3z1RkqsgrdALPqZ4fM5GRUforBZeU
-         dNgSiZNhD5VODuRH7ce6+DNzuJp00Ahf5x+SaT/KCxH2+g+g0xzGQhJvp5Q3w8wLwUNi
-         PZig3JrwJOfU1fYPEK0eIMaxdiakiruDdyi6uwjPd/vjM6sPDSqYfqIq7cnfIT1CHyXS
-         cqRWBj6/6bHesORbKQWpBbjLWcw2oMAsc9J4+cqz5y/zv+Re6DIBRay5BJYSoyEv8bir
-         x9cQ==
-X-Gm-Message-State: AJIora9EMevTXWaOqSdfloZZZ1AdiTdm6nzyZ0ewozMXjwR54LaEedwj
-        BuceI0caxNIwHwQTxk7rUokt/zpDqcjGYw==
-X-Google-Smtp-Source: AGRyM1tONuGGVdSEuh2AwZ+Xr21/HHYQGKyeumzsm81GX7FqQaYb0HEegFttQFH5CokHHxbDuM7wFg==
-X-Received: by 2002:a17:907:6d12:b0:72b:6e70:8c7d with SMTP id sa18-20020a1709076d1200b0072b6e708c7dmr5821860ejc.23.1657621878170;
+        bh=uHPqIaxLqgWf7NR1j5EX5ARr+fAYM2yGQ7O88dTMNcI=;
+        b=rxiUlyrmbFiek4iDvfLZswaNLFq6o/QoGeUmzGgOcIA+dcoU+fKj+pKHYgDQElUAPu
+         /XtFw170SSxiHhx20epH8qcULlhi/AOAHkoHd+WxNQNEstuHyYHBdyU3U6FIPBteVvFJ
+         gy8R65/Pz9c+PU6UBUdmI553DYsBtv6mEN3sRqzfHNlCcULkMfDeHLBn4zsBUBwgkuZ9
+         LBQCupR9L5lXqsB7RUiEN2NMaj2z30mE5ycExigwCRBYCkCOUNLcrlh7D3SE/rD0rSr3
+         dlCRAWilVhBnu2F8QyIG5d+Ggjsy5l5/WiT4L6ts5fn+qO/TTgfirSnsLvSd8RbzAlSy
+         RIJQ==
+X-Gm-Message-State: AJIora+0VLMuRGT7u3qYsPNuY9fdawne3D8T1uOcY1NgTaSGdoHPxdEz
+        2aLdFz2e1P3/Pe5BhyyjFMKcSyqhd/T29g==
+X-Google-Smtp-Source: AGRyM1uM06d4ZQC0QGTP+mhQQHA9kKMzGpiZFb193r1EknwOIrZu9UYiwIDZccW7DcxyFbM+9aF7hA==
+X-Received: by 2002:a17:907:2e01:b0:72b:764f:ea1a with SMTP id ig1-20020a1709072e0100b0072b764fea1amr4112315ejc.666.1657621878932;
         Tue, 12 Jul 2022 03:31:18 -0700 (PDT)
 Received: from lb01533.fkb.profitbricks.net ([85.214.13.132])
-        by smtp.gmail.com with ESMTPSA id n18-20020aa7c452000000b004355d27799fsm5763419edr.96.2022.07.12.03.31.17
+        by smtp.gmail.com with ESMTPSA id n18-20020aa7c452000000b004355d27799fsm5763419edr.96.2022.07.12.03.31.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 03:31:17 -0700 (PDT)
+        Tue, 12 Jul 2022 03:31:18 -0700 (PDT)
 From:   Md Haris Iqbal <haris.iqbal@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     leon@kernel.org, jgg@ziepe.ca, haris.iqbal@ionos.com,
-        jinpu.wang@ionos.com,
-        Santosh Kumar Pradhan <santosh.pradhan@ionos.com>
-Subject: [PATCH v2 for-next 3/5] RDMA/rtrs-srv: Use per-cpu variables for rdma stats
-Date:   Tue, 12 Jul 2022 12:31:11 +0200
-Message-Id: <20220712103113.617754-4-haris.iqbal@ionos.com>
+        jinpu.wang@ionos.com
+Subject: [PATCH v2 for-next 4/5] RDMA/rtrs-clt: Replace list_next_or_null_rr_rcu with an inline function
+Date:   Tue, 12 Jul 2022 12:31:12 +0200
+Message-Id: <20220712103113.617754-5-haris.iqbal@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220712103113.617754-1-haris.iqbal@ionos.com>
 References: <20220712103113.617754-1-haris.iqbal@ionos.com>
@@ -70,169 +69,89 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Santosh Kumar Pradhan <santosh.pradhan@ionos.com>
+removes list_next_or_null_rr_rcu macro to fix below warnings.
+That macro is used only twice.
+CHECK:MACRO_ARG_REUSE: Macro argument reuse 'head' - possible side-effects?
+CHECK:MACRO_ARG_REUSE: Macro argument reuse 'ptr' - possible side-effects?
+CHECK:MACRO_ARG_REUSE: Macro argument reuse 'memb' - possible side-effects?
 
-Convert server stat counters from atomic to per-cpu variables.
+Replaces that macro with an inline function.
 
-Signed-off-by: Santosh Kumar Pradhan <santosh.pradhan@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+Cc: jinpu.wang@ionos.com
 Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
-v1 -> v2: No change
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 35 ++++++++++++--------------
+ 1 file changed, 16 insertions(+), 19 deletions(-)
 
- drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c | 32 +++++++++++++++-----
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |  2 ++
- drivers/infiniband/ulp/rtrs/rtrs-srv.c       |  9 +++++-
- drivers/infiniband/ulp/rtrs/rtrs-srv.h       | 15 ++++-----
- 4 files changed, 42 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-index 44b1c1652131..2aff1213a19d 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-@@ -14,9 +14,14 @@
- int rtrs_srv_reset_rdma_stats(struct rtrs_srv_stats *stats, bool enable)
- {
- 	if (enable) {
--		struct rtrs_srv_stats_rdma_stats *r = &stats->rdma_stats;
-+		int cpu;
-+		struct rtrs_srv_stats_rdma_stats *r;
-+
-+		for_each_possible_cpu(cpu) {
-+			r = per_cpu_ptr(stats->rdma_stats, cpu);
-+			memset(r, 0, sizeof(*r));
-+		}
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 9809c3883979..525f083fcaeb 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -740,25 +740,25 @@ struct path_it {
+ 	struct rtrs_clt_path *(*next_path)(struct path_it *it);
+ };
  
--		memset(r, 0, sizeof(*r));
- 		return 0;
- 	}
- 
-@@ -25,11 +30,22 @@ int rtrs_srv_reset_rdma_stats(struct rtrs_srv_stats *stats, bool enable)
- 
- ssize_t rtrs_srv_stats_rdma_to_str(struct rtrs_srv_stats *stats, char *page)
- {
--	struct rtrs_srv_stats_rdma_stats *r = &stats->rdma_stats;
-+	int cpu;
-+	struct rtrs_srv_stats_rdma_stats sum;
-+	struct rtrs_srv_stats_rdma_stats *r;
-+
-+	memset(&sum, 0, sizeof(sum));
-+
-+	for_each_possible_cpu(cpu) {
-+		r = per_cpu_ptr(stats->rdma_stats, cpu);
-+
-+		sum.dir[READ].cnt	  += r->dir[READ].cnt;
-+		sum.dir[READ].size_total  += r->dir[READ].size_total;
-+		sum.dir[WRITE].cnt	  += r->dir[WRITE].cnt;
-+		sum.dir[WRITE].size_total += r->dir[WRITE].size_total;
-+	}
- 
--	return sysfs_emit(page, "%lld %lld %lld %lldn %u\n",
--			  (s64)atomic64_read(&r->dir[READ].cnt),
--			  (s64)atomic64_read(&r->dir[READ].size_total),
--			  (s64)atomic64_read(&r->dir[WRITE].cnt),
--			  (s64)atomic64_read(&r->dir[WRITE].size_total), 0);
-+	return sysfs_emit(page, "%llu %llu %llu %llu\n",
-+			  sum.dir[READ].cnt, sum.dir[READ].size_total,
-+			  sum.dir[WRITE].cnt, sum.dir[WRITE].size_total);
- }
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index b94ae12c2795..2a3c9ac64a42 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -220,6 +220,8 @@ static void rtrs_srv_path_stats_release(struct kobject *kobj)
- 
- 	stats = container_of(kobj, struct rtrs_srv_stats, kobj_stats);
- 
-+	free_percpu(stats->rdma_stats);
-+
- 	kfree(stats);
- }
- 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 24024bce2566..8278d3600a36 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1513,6 +1513,7 @@ static void free_path(struct rtrs_srv_path *srv_path)
- 		kobject_del(&srv_path->kobj);
- 		kobject_put(&srv_path->kobj);
- 	} else {
-+		free_percpu(srv_path->stats->rdma_stats);
- 		kfree(srv_path->stats);
- 		kfree(srv_path);
- 	}
-@@ -1755,13 +1756,17 @@ static struct rtrs_srv_path *__alloc_path(struct rtrs_srv_sess *srv,
- 	if (!srv_path->stats)
- 		goto err_free_sess;
- 
-+	srv_path->stats->rdma_stats = alloc_percpu(struct rtrs_srv_stats_rdma_stats);
-+	if (!srv_path->stats->rdma_stats)
-+		goto err_free_stats;
-+
- 	srv_path->stats->srv_path = srv_path;
- 
- 	srv_path->dma_addr = kcalloc(srv->queue_depth,
- 				     sizeof(*srv_path->dma_addr),
- 				     GFP_KERNEL);
- 	if (!srv_path->dma_addr)
--		goto err_free_stats;
-+		goto err_free_percpu;
- 
- 	srv_path->s.con = kcalloc(con_num, sizeof(*srv_path->s.con),
- 				  GFP_KERNEL);
-@@ -1813,6 +1818,8 @@ static struct rtrs_srv_path *__alloc_path(struct rtrs_srv_sess *srv,
- 	kfree(srv_path->s.con);
- err_free_dma_addr:
- 	kfree(srv_path->dma_addr);
-+err_free_percpu:
-+	free_percpu(srv_path->stats->rdma_stats);
- err_free_stats:
- 	kfree(srv_path->stats);
- err_free_sess:
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-index 6292e87f6afd..186a63c217df 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-@@ -12,6 +12,7 @@
- 
- #include <linux/device.h>
- #include <linux/refcount.h>
-+#include <linux/percpu.h>
- #include "rtrs-pri.h"
- 
- /*
-@@ -29,15 +30,15 @@ enum rtrs_srv_state {
+-/**
+- * list_next_or_null_rr_rcu - get next list element in round-robin fashion.
++/*
++ * rtrs_clt_get_next_path_or_null - get clt path from the list or return NULL
+  * @head:	the head for the list.
+- * @ptr:        the list head to take the next element from.
+- * @type:       the type of the struct this is embedded in.
+- * @memb:       the name of the list_head within the struct.
++ * @clt_path:	The element to take the next clt_path from.
+  *
+- * Next element returned in round-robin fashion, i.e. head will be skipped,
++ * Next clt path returned in round-robin fashion, i.e. head will be skipped,
+  * but if list is observed as empty, NULL will be returned.
+  *
+- * This primitive may safely run concurrently with the _rcu list-mutation
++ * This function may safely run concurrently with the _rcu list-mutation
+  * primitives such as list_add_rcu() as long as it's guarded by rcu_read_lock().
   */
- struct rtrs_srv_stats_rdma_stats {
- 	struct {
--		atomic64_t	cnt;
--		atomic64_t	size_total;
-+		u64 cnt;
-+		u64 size_total;
- 	} dir[2];
- };
+-#define list_next_or_null_rr_rcu(head, ptr, type, memb) \
+-({ \
+-	list_next_or_null_rcu(head, ptr, type, memb) ?: \
+-		list_next_or_null_rcu(head, READ_ONCE((ptr)->next), \
+-				      type, memb); \
+-})
++static inline struct rtrs_clt_path *
++rtrs_clt_get_next_path_or_null(struct list_head *head, struct rtrs_clt_path *clt_path)
++{
++	return list_next_or_null_rcu(head, &clt_path->s.entry, typeof(*clt_path), s.entry) ?:
++				     list_next_or_null_rcu(head,
++							   READ_ONCE((&clt_path->s.entry)->next),
++							   typeof(*clt_path), s.entry);
++}
  
- struct rtrs_srv_stats {
--	struct kobject				kobj_stats;
--	struct rtrs_srv_stats_rdma_stats	rdma_stats;
--	struct rtrs_srv_path			*srv_path;
-+	struct kobject					kobj_stats;
-+	struct rtrs_srv_stats_rdma_stats __percpu	*rdma_stats;
-+	struct rtrs_srv_path				*srv_path;
- };
+ /**
+  * get_next_path_rr() - Returns path in round-robin fashion.
+@@ -789,10 +789,8 @@ static struct rtrs_clt_path *get_next_path_rr(struct path_it *it)
+ 		path = list_first_or_null_rcu(&clt->paths_list,
+ 					      typeof(*path), s.entry);
+ 	else
+-		path = list_next_or_null_rr_rcu(&clt->paths_list,
+-						&path->s.entry,
+-						typeof(*path),
+-						s.entry);
++		path = rtrs_clt_get_next_path_or_null(&clt->paths_list, path);
++
+ 	rcu_assign_pointer(*ppcpu_path, path);
  
- struct rtrs_srv_con {
-@@ -130,8 +131,8 @@ void close_path(struct rtrs_srv_path *srv_path);
- static inline void rtrs_srv_update_rdma_stats(struct rtrs_srv_stats *s,
- 					      size_t size, int d)
- {
--	atomic64_inc(&s->rdma_stats.dir[d].cnt);
--	atomic64_add(size, &s->rdma_stats.dir[d].size_total);
-+	this_cpu_inc(s->rdma_stats->dir[d].cnt);
-+	this_cpu_add(s->rdma_stats->dir[d].size_total, size);
- }
+ 	return path;
+@@ -2277,8 +2275,7 @@ static void rtrs_clt_remove_path_from_arr(struct rtrs_clt_path *clt_path)
+ 	 * removed.  If @sess is the last element, then @next is NULL.
+ 	 */
+ 	rcu_read_lock();
+-	next = list_next_or_null_rr_rcu(&clt->paths_list, &clt_path->s.entry,
+-					typeof(*next), s.entry);
++	next = rtrs_clt_get_next_path_or_null(&clt->paths_list, clt_path);
+ 	rcu_read_unlock();
  
- /* functions which are implemented in rtrs-srv-stats.c */
+ 	/*
 -- 
 2.25.1
 
