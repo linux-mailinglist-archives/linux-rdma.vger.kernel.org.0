@@ -2,64 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0BA5753BF
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 19:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DAF5753C4
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 19:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbiGNRI3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jul 2022 13:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        id S231892AbiGNRKn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jul 2022 13:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbiGNRI3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 13:08:29 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1C228711
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 10:08:27 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id j70so3099272oih.10
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 10:08:27 -0700 (PDT)
+        with ESMTP id S240242AbiGNRKm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 13:10:42 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B46A4C60E
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 10:10:41 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id i126so3141688oih.4
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 10:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=i7nPmOhO4/W22RWflezeSDi8NUVxAax/VWiPQ+pAj1A=;
-        b=MXlJAJEsVaKLFnBusIck4gudeoLsBwLVUm8xoq8qHrp4bl9wwjmiJwiFp7t5ONf63t
-         CCdIJ27wrDzDuSjfxpYejABIPOxK26cjat8KObGMuqYzJRH5NbRI2SgM/hduqfxsWvjV
-         GCJZz79bT36KlvQlu/rirjUjOEuxaG6HQqUInbs2U09aWq9QU8PCLeGVlAdPymGaWFAM
-         Oig4tZsR7ZwfdXSfoFIPiMyTWfFa4bvX/tyc273oqoq+AyqhRS9qzASLu0oYnJFulexb
-         E5S1Y5TdcRf6LDdiLcm79PmUnDY3xz13njvUkl6ln9deJjYFsgqoGWWvzNpvq2VPKCGf
-         4UUQ==
+        bh=prO+eAXi4GRWJIM1VuUFR3yBDnfSGov/+q+UedLQEwg=;
+        b=G6QVZ3hZuXYTKi8JhGv+d/8j8Ss6PxOg0QxArZllMskbn+EyEC3Fbl+q5MLG7QTVP5
+         uxi6fk8vX6eZixBuh4W500NieFvCpf1FE1Xh5aMCt577sOE2ZYCbTTRn4pfmyvxO0q7t
+         rs8HA8rVgSsGgdHfF9lgqHT5KCkD9yh9IOQ/XEteLBZoqKW4MfGmWPpj5l9wZrOjkmMS
+         9Vz8UQF3VmVg2a7VpAC3VYkIyXrfPx5Ql62hC23Fq73QsnlmAtl6gjuCIf/ZxdU5svqX
+         Spp4f+ToX1o0nrkSxuwGsFSYvjV098nz38xiUFXEkuBW0YHs26J/MLFK4/OeCim3hQYM
+         /TTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=i7nPmOhO4/W22RWflezeSDi8NUVxAax/VWiPQ+pAj1A=;
-        b=hbX99AkY8Zcyy34+rq57GgG7yVS5smFTsmq6yT70Rze2zOL8s3xNeX3Iu1jwFM4k0X
-         XNiNMeFh8pqRpjoKq5oilv//IFG+Af2D1+3mVQuiOSdRmegUu6xJsws9hmVHaANwy92N
-         XVTtUmX822vHSzaJErJL48vfyFi448edta8yTSNMi86604Zh7E0eOj+f7BYa7nmihRPP
-         Jbs5FYWPUlwLIzDh5Y3hJagCYq2uvkhhVk1sU1UsnO+ERCp1ycfPITtYcQ0lONqdpYDJ
-         OBKgn6fWyf/GvyDGyyijHQENm2UXzilv5gln7Df1pfHoqkvrXJnpQ/7AKKNzwH5FJcjq
-         7cXQ==
-X-Gm-Message-State: AJIora/MCFmbX2iAvYV1wlQ/a8uAwKC9RVNO7gT8XLl1uVdQ/sTTxbtF
-        JDWZGmYqazrOKkSpu96wTh8=
-X-Google-Smtp-Source: AGRyM1s2hJOtjeM0xtcLn4UME5azfNi7dlG7sgE6kkZLX0v4kXmXAkx7fklaj6Q0tbkmSavAkJ8EQQ==
-X-Received: by 2002:a05:6808:17a6:b0:337:bc20:4bcb with SMTP id bg38-20020a05680817a600b00337bc204bcbmr4974550oib.16.1657818507357;
-        Thu, 14 Jul 2022 10:08:27 -0700 (PDT)
+        bh=prO+eAXi4GRWJIM1VuUFR3yBDnfSGov/+q+UedLQEwg=;
+        b=q5omOOvpcWu08Hq+V1y1bLCV/FwV2bWFR5PRE9vSGcv0EC1qYeGYzPANBM8W4hVP2G
+         iyWAacgsj4wEWXiSiys8sRyb2OE0tnIhUbpJTmbswz6kx56Xnl3oaSZKuC34yDDUL0EY
+         7siHnRBW0NTKUi0AEFIs0jxfLHi9DIg98YLIhgf4dCDTfrwbdDPMQjPcpdn3+BGGkrB8
+         YHEUakDkXzw7jFzhthJyUeJe2pC3+0cGucQHl8tr/1S3YOOM4OOCKkJdwHd4EkOZjdFX
+         yXlcCjAmE6+TfZDDqm3nwOLwuxXaS0gQa/9amP51pcBeQOAhfS5oAVPIm7xAo7asCmxP
+         d+lg==
+X-Gm-Message-State: AJIora8sHsTyrA4xBU4zxT2yWp1K/cUwpZD+liTuSjNK2M8LIyXgDe8h
+        Vg9eLzb8zCImlizttlolzzg=
+X-Google-Smtp-Source: AGRyM1tRqdZCERUH9ic6CpC8zHi4kYL3Es4pEUN8mqUkZIrwfklDcybr8RLcBGv1403w9RFUYhfSkA==
+X-Received: by 2002:a05:6808:e88:b0:337:9676:ddd4 with SMTP id k8-20020a0568080e8800b003379676ddd4mr4650548oil.9.1657818640735;
+        Thu, 14 Jul 2022 10:10:40 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:e02a:9936:8f26:4598? (2603-8081-140c-1a00-e02a-9936-8f26-4598.res6.spectrum.com. [2603:8081:140c:1a00:e02a:9936:8f26:4598])
-        by smtp.gmail.com with ESMTPSA id 16-20020a9d0e90000000b0061c309b1dc2sm886701otj.39.2022.07.14.10.08.26
+        by smtp.gmail.com with ESMTPSA id d3-20020a05680813c300b00339fd59cfc8sm803258oiw.46.2022.07.14.10.10.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jul 2022 10:08:26 -0700 (PDT)
-Message-ID: <417d778e-6047-d4c8-a33f-a8da9cbbaee3@gmail.com>
-Date:   Thu, 14 Jul 2022 12:08:25 -0500
+        Thu, 14 Jul 2022 10:10:39 -0700 (PDT)
+Message-ID: <c6b089f0-9f50-923a-526c-af41b9a81bbc@gmail.com>
+Date:   Thu, 14 Jul 2022 12:10:39 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH v2 1/2] RDMA/rxe: Add common rxe_prepare_res()
+Subject: Re: [PATCH v5 4/4] RDMA/rxe: Fix typo in comment
 Content-Language: en-US
-To:     Xiao Yang <yangx.jy@fujitsu.com>, linux-rdma@vger.kernel.org
-Cc:     leon@kernel.org, jgg@ziepe.ca, zyjzyj2000@gmail.com
-References: <20220705145212.12014-1-yangx.jy@fujitsu.com>
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        Yanjun Zhu <yanjun.zhu@linux.dev>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Haakon Bugge <haakon.bugge@oracle.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Cc:     Cheng Xu <chengyou@linux.alibaba.com>
+References: <20220704060806.1622849-1-lizhijian@fujitsu.com>
+ <20220704060806.1622849-5-lizhijian@fujitsu.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20220705145212.12014-1-yangx.jy@fujitsu.com>
+In-Reply-To: <20220704060806.1622849-5-lizhijian@fujitsu.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,134 +77,28 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/5/22 09:52, Xiao Yang wrote:
-> It's redundant to prepare resources for Read and Atomic
-> requests by different functions. Replace them by a common
-> rxe_prepare_res() with different parameters. In addition,
-> the common rxe_prepare_res() can also be used by new Flush
-> and Atomic Write requests in the future.
+On 7/4/22 01:00, lizhijian@fujitsu.com wrote:
+> Fix a spelling mistake
 > 
-> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 > ---
->  drivers/infiniband/sw/rxe/rxe_resp.c | 71 +++++++++++++---------------
->  1 file changed, 32 insertions(+), 39 deletions(-)
+>  drivers/infiniband/sw/rxe/rxe_task.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index ccdfc1a6b659..5536582b8fe4 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -553,27 +553,48 @@ static enum resp_states write_data_in(struct rxe_qp *qp,
->  	return rc;
->  }
+> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+> index 0c4db5bb17d7..c9b80410cd5b 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_task.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
+> @@ -67,7 +67,7 @@ void rxe_do_task(struct tasklet_struct *t)
+>  				cont = 1;
+>  			break;
 >  
-> -/* Guarantee atomicity of atomic operations at the machine level. */
-> -static DEFINE_SPINLOCK(atomic_ops_lock);
-> -
-> -static struct resp_res *rxe_prepare_atomic_res(struct rxe_qp *qp,
-> -					       struct rxe_pkt_info *pkt)
-> +static struct resp_res *rxe_prepare_res(struct rxe_qp *qp,
-> +					struct rxe_pkt_info *pkt,
-> +					int type)
->  {
->  	struct resp_res *res;
-> +	u32 pkts;
->  
->  	res = &qp->resp.resources[qp->resp.res_head];
->  	rxe_advance_resp_resource(qp);
->  	free_rd_atomic_resource(qp, res);
->  
-> -	res->type = RXE_ATOMIC_MASK;
-> -	res->first_psn = pkt->psn;
-> -	res->last_psn = pkt->psn;
-> -	res->cur_psn = pkt->psn;
-> +	res->type = type;
->  	res->replay = 0;
->  
-> +	switch (type) {
-> +	case RXE_READ_MASK:
-> +		res->read.va = qp->resp.va + qp->resp.offset;
-> +		res->read.va_org = qp->resp.va + qp->resp.offset;
-> +		res->read.resid = qp->resp.resid;
-> +		res->read.length = qp->resp.resid;
-> +		res->read.rkey = qp->resp.rkey;
-> +
-> +		pkts = max_t(u32, (reth_len(pkt) + qp->mtu - 1)/qp->mtu, 1);
-> +		res->first_psn = pkt->psn;
-> +		res->cur_psn = pkt->psn;
-> +		res->last_psn = (pkt->psn + pkts - 1) & BTH_PSN_MASK;
-> +
-> +		res->state = rdatm_res_state_new;
-> +		break;
-> +	case RXE_ATOMIC_MASK:
-> +		res->first_psn = pkt->psn;
-> +		res->last_psn = pkt->psn;
-> +		res->cur_psn = pkt->psn;
-> +		break;
-> +	}
-> +
->  	return res;
->  }
->  
-> +/* Guarantee atomicity of atomic operations at the machine level. */
-> +static DEFINE_SPINLOCK(atomic_ops_lock);
-> +
->  static enum resp_states rxe_atomic_reply(struct rxe_qp *qp,
->  					 struct rxe_pkt_info *pkt)
->  {
-> @@ -584,7 +605,7 @@ static enum resp_states rxe_atomic_reply(struct rxe_qp *qp,
->  	u64 value;
->  
->  	if (!res) {
-> -		res = rxe_prepare_atomic_res(qp, pkt);
-> +		res = rxe_prepare_res(qp, pkt, RXE_ATOMIC_MASK);
->  		qp->resp.res = res;
->  	}
->  
-> @@ -680,34 +701,6 @@ static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
->  	return skb;
->  }
->  
-> -static struct resp_res *rxe_prepare_read_res(struct rxe_qp *qp,
-> -					struct rxe_pkt_info *pkt)
-> -{
-> -	struct resp_res *res;
-> -	u32 pkts;
-> -
-> -	res = &qp->resp.resources[qp->resp.res_head];
-> -	rxe_advance_resp_resource(qp);
-> -	free_rd_atomic_resource(qp, res);
-> -
-> -	res->type = RXE_READ_MASK;
-> -	res->replay = 0;
-> -	res->read.va = qp->resp.va + qp->resp.offset;
-> -	res->read.va_org = qp->resp.va + qp->resp.offset;
-> -	res->read.resid = qp->resp.resid;
-> -	res->read.length = qp->resp.resid;
-> -	res->read.rkey = qp->resp.rkey;
-> -
-> -	pkts = max_t(u32, (reth_len(pkt) + qp->mtu - 1)/qp->mtu, 1);
-> -	res->first_psn = pkt->psn;
-> -	res->cur_psn = pkt->psn;
-> -	res->last_psn = (pkt->psn + pkts - 1) & BTH_PSN_MASK;
-> -
-> -	res->state = rdatm_res_state_new;
-> -
-> -	return res;
-> -}
-> -
->  /**
->   * rxe_recheck_mr - revalidate MR from rkey and get a reference
->   * @qp: the qp
-> @@ -778,7 +771,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
->  	struct rxe_mr *mr;
->  
->  	if (!res) {
-> -		res = rxe_prepare_read_res(qp, req_pkt);
-> +		res = rxe_prepare_res(qp, req_pkt, RXE_READ_MASK);
->  		qp->resp.res = res;
->  	}
->  
+> -		/* soneone tried to run the task since the last time we called
+> +		/* someone tried to run the task since the last time we called
+>  		 * func, so we will call one more time regardless of the
+>  		 * return value
+>  		 */
 
-Looks good.
+I think I snuck this in recently in something else but it is correct.
 
 Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
