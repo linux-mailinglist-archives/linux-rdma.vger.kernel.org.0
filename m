@@ -2,97 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A15574708
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 10:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B95F57494D
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 11:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237176AbiGNIhF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jul 2022 04:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
+        id S238008AbiGNJoU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jul 2022 05:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236515AbiGNIg6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 04:36:58 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB843F327
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 01:36:50 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id m16so1444740edb.11
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 01:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=nfF93HFABydKtKUN6hm08YjvNRh2G4i7biDP0iGWKm0CJI/6tO/7ASVGiMVbrFcvre
-         dFe7LS0o6XmnC1olR6EZQT61Pk5CcDXk8EOCE/ZUPQPC2WOF08wHjQNTI98f51BXkTW7
-         5dyslKzFlMJ1FAFUBcS5XSZMuJJQc0mVGS8sJL1EcuApFLh9MbSY3DeHMChVpm6lylO2
-         ZiD2YD5TYnCnW1RYesj2zabgr2TZokupGOdRW5Wg1Wsic5Yzi6a7GNVAIH/aFq924Tv4
-         l/BLkapdJUQdDh1nnfELCxBLwNTsd2zSHh12MGEWr6e9uOYA2kL+ohlW7KhzBK2CbHvs
-         dAHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=chW1SRCkZhyM04X7O73dJoCe8IPxXiyzktZZxPMeNZLQKiO8kXtqQv8lKADqdQRpE+
-         I8+any24SH05RVlHKHRo+evpOVWOF/UPBgRzLJJfaIxVlyWjZ9oDzpSM13hbodylODQ5
-         JzoM3tTFFed/Eef6NMHSAkcMsUU8GN3j46bD9rJ02lN/5MWw4AKLDHEg8db2FT3RF9/l
-         4dw3nN9VEboewhzTAdfVpvW5u2/2qUGwInzOCfUe5vCxSMI4Mk3KFK9kYk/sLVL0tZYM
-         rzPKADL1IgiqCT+2ddZ+bMDCUreEQZXji3tK+lGIjDIJY3sTnWNq/cOtlP93rGigL3bo
-         Rmgw==
-X-Gm-Message-State: AJIora/eQHARMkjC2LLkQDabNE/IbjkDHX5vS+PGRZoyK8gF7oVw6T8l
-        jz7TkV4nXoIZrTkTZ2R0F05jTB4qVFVE5bmIeaOG+X2kt72HnQ==
-X-Google-Smtp-Source: AGRyM1sBAY02anFyAAkYvB61573ohyB+lIVHvdune1I2St249pttaSZdeqZISv5rckThyg5u7Q/retQg6yCpkFrJ9YI=
-X-Received: by 2002:a05:6512:1307:b0:47f:baa4:52c5 with SMTP id
- x7-20020a056512130700b0047fbaa452c5mr4350443lfu.103.1657787798421; Thu, 14
- Jul 2022 01:36:38 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a2e:9041:0:0:0:0:0 with HTTP; Thu, 14 Jul 2022 01:36:37
- -0700 (PDT)
-Reply-To: abdwabbomaddahm@gmail.com
-From:   Abdwabbo Maddah <abdwabbomaddah746@gmail.com>
-Date:   Thu, 14 Jul 2022 09:36:37 +0100
-Message-ID: <CAFC-3idDfFB0Mmtq-N-n6z5Ly7T-KDCJtvbc0UgtirMnTLYTCg@mail.gmail.com>
-Subject: Get back to me... URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:52a listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4850]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [abdwabbomaddah746[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [abdwabbomaddah746[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+        with ESMTP id S229897AbiGNJoU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 05:44:20 -0400
+Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB47C11C1A;
+        Thu, 14 Jul 2022 02:44:17 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VJImA7W_1657791845;
+Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VJImA7W_1657791845)
+          by smtp.aliyun-inc.com;
+          Thu, 14 Jul 2022 17:44:14 +0800
+From:   Wen Gu <guwen@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/6] net/smc: Introduce virtually contiguous buffers for SMC-R
+Date:   Thu, 14 Jul 2022 17:43:59 +0800
+Message-Id: <1657791845-1060-1-git-send-email-guwen@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On long-running enterprise production servers, high-order contiguous
+memory pages are usually very rare and in most cases we can only get
+fragmented pages.
+
+When replacing TCP with SMC-R in such production scenarios, attempting
+to allocate high-order physically contiguous sndbufs and RMBs may result
+in frequent memory compaction, which will cause unexpected hung issue
+and further stability risks.
+
+So this patch set is aimed to allow SMC-R link group to use virtually
+contiguous sndbufs and RMBs to avoid potential issues mentioned above.
+Whether to use physically or virtually contiguous buffers can be set
+by sysctl smcr_buf_type.
+
+Note that using virtually contiguous buffers will bring an acceptable
+performance regression, which can be mainly divided into two parts:
+
+1) regression in data path, which is brought by additional address
+   translation of sndbuf by RNIC in Tx. But in general, translating
+   address through MTT is fast. According to qperf test, this part
+   regression is basically less than 10% in latency and bandwidth.
+   (see patch 5/6 for details)
+
+2) regression in buffer initialization and destruction path, which is
+   brought by additional MR operations of sndbufs. But thanks to link
+   group buffer reuse mechanism, the impact of this kind of regression
+   decreases as times of buffer reuse increases.
+
+Patch set overview:
+- Patch 1/6 and 2/6 mainly about simplifying and optimizing DMA sync
+  operation, which will reduce overhead on the data path, especially
+  when using virtually contiguous buffers;
+- Patch 3/6 and 4/6 introduce a sysctl smcr_buf_type to set the type
+  of buffers in new created link group;
+- Patch 5/6 allows SMC-R to use virtually contiguous sndbufs and RMBs,
+  including buffer creation, destruction, MR operation and access;
+- patch 6/6 extends netlink attribute for buffer type of SMC-R link group;
+
+v1->v2:
+- Patch 5/6 fixes build issue on 32bit;
+- Patch 3/6 adds description of new sysctl in smc-sysctl.rst;
+
+Guangguan Wang (2):
+  net/smc: remove redundant dma sync ops
+  net/smc: optimize for smc_sndbuf_sync_sg_for_device and
+    smc_rmb_sync_sg_for_cpu
+
+Wen Gu (4):
+  net/smc: Introduce a sysctl for setting SMC-R buffer type
+  net/smc: Use sysctl-specified types of buffers in new link group
+  net/smc: Allow virtually contiguous sndbufs or RMBs for SMC-R
+  net/smc: Extend SMC-R link group netlink attribute
+
+ Documentation/networking/smc-sysctl.rst |  13 ++
+ include/net/netns/smc.h                 |   1 +
+ include/uapi/linux/smc.h                |   1 +
+ net/smc/af_smc.c                        |  68 +++++++--
+ net/smc/smc_clc.c                       |   8 +-
+ net/smc/smc_clc.h                       |   2 +-
+ net/smc/smc_core.c                      | 246 +++++++++++++++++++++-----------
+ net/smc/smc_core.h                      |  20 ++-
+ net/smc/smc_ib.c                        |  44 +++++-
+ net/smc/smc_ib.h                        |   2 +
+ net/smc/smc_llc.c                       |  33 +++--
+ net/smc/smc_rx.c                        |  92 +++++++++---
+ net/smc/smc_sysctl.c                    |  11 ++
+ net/smc/smc_tx.c                        |  10 +-
+ 14 files changed, 404 insertions(+), 147 deletions(-)
+
 -- 
-Dear,
-I had sent you a mail but i don't think you received it that's why am
-writing you again.It is important you get back to me as soon as you
-can.
-Abd-Wabbo Maddah
+1.8.3.1
+
