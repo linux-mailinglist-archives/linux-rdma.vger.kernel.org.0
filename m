@@ -2,21 +2,21 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E26574F7D
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 15:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D440574F82
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 15:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239344AbiGNNps (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jul 2022 09:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
+        id S239354AbiGNNpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jul 2022 09:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238326AbiGNNpr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 09:45:47 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A4F52888
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 06:45:46 -0700 (PDT)
+        with ESMTP id S239363AbiGNNpt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 09:45:49 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA9E52DD7
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 06:45:47 -0700 (PDT)
 Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4LkG0D2bH6z1L91P;
-        Thu, 14 Jul 2022 21:43:08 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LkG0f66m8zkWcY;
+        Thu, 14 Jul 2022 21:43:30 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
  dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <liangwenpeng@huawei.com>
-Subject: [PATCH v3 for-next 4/5] RDMA/hns: Refactor the abnormal interrupt handler function
-Date:   Thu, 14 Jul 2022 21:43:52 +0800
-Message-ID: <20220714134353.16700-5-liangwenpeng@huawei.com>
+Subject: [PATCH v3 for-next 5/5] RDMA/hns: Recover 1bit-ECC error of RAM on chip
+Date:   Thu, 14 Jul 2022 21:43:53 +0800
+Message-ID: <20220714134353.16700-6-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20220714134353.16700-1-liangwenpeng@huawei.com>
 References: <20220714134353.16700-1-liangwenpeng@huawei.com>
@@ -53,79 +53,286 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Haoyue Xu <xuhaoyue1@hisilicon.com>
 
-Use a single function to handle the same kind of abnormal interrupts.
+Since ECC memory maintains a memory system immune to single-bit errors,
+add support for correcting the 1bit-ECC error, which prevents a 1bit-ECC
+error become an uncorrected type error. When a 1bit-ECC error happens in
+the internal ram of the ROCE engine, such as the QPC table, as a 1bit-ECC
+error caused by reading, the ROCE engine only corrects those 1bit ECC
+errors by writing.
 
 Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 35 ++++++++++++++--------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h |   1 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 182 +++++++++++++++++++-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  12 ++
+ 3 files changed, 193 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 2855e9ad4b32..f848eedc6a23 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -959,6 +959,7 @@ struct hns_roce_dev {
+ 	const struct hns_roce_hw *hw;
+ 	void			*priv;
+ 	struct workqueue_struct *irq_workq;
++	struct work_struct ecc_work;
+ 	const struct hns_roce_dfx_hw *dfx;
+ 	u32 func_num;
+ 	u32 is_vf;
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 35bf58fcaeb3..782f09a7f8af 100644
+index 782f09a7f8af..cbdafaac678a 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5982,24 +5982,19 @@ static irqreturn_t hns_roce_v2_msix_interrupt_eq(int irq, void *eq_ptr)
- 	return IRQ_RETVAL(int_work);
- }
+@@ -55,6 +55,42 @@ enum {
+ 	CMD_RST_PRC_EBUSY,
+ };
  
--static irqreturn_t hns_roce_v2_msix_interrupt_abn(int irq, void *dev_id)
-+static irqreturn_t abnormal_interrupt_basic(struct hns_roce_dev *hr_dev,
-+					    u32 int_st)
++enum ecc_resource_type {
++	ECC_RESOURCE_QPC,
++	ECC_RESOURCE_CQC,
++	ECC_RESOURCE_MPT,
++	ECC_RESOURCE_SRQC,
++	ECC_RESOURCE_GMV,
++	ECC_RESOURCE_QPC_TIMER,
++	ECC_RESOURCE_CQC_TIMER,
++	ECC_RESOURCE_SCCC,
++	ECC_RESOURCE_COUNT,
++};
++
++static const struct {
++	const char *name;
++	u8 read_bt0_op;
++	u8 write_bt0_op;
++} fmea_ram_res[] = {
++	{ "ECC_RESOURCE_QPC",
++	  HNS_ROCE_CMD_READ_QPC_BT0, HNS_ROCE_CMD_WRITE_QPC_BT0 },
++	{ "ECC_RESOURCE_CQC",
++	  HNS_ROCE_CMD_READ_CQC_BT0, HNS_ROCE_CMD_WRITE_CQC_BT0 },
++	{ "ECC_RESOURCE_MPT",
++	  HNS_ROCE_CMD_READ_MPT_BT0, HNS_ROCE_CMD_WRITE_MPT_BT0 },
++	{ "ECC_RESOURCE_SRQC",
++	  HNS_ROCE_CMD_READ_SRQC_BT0, HNS_ROCE_CMD_WRITE_SRQC_BT0 },
++	/* ECC_RESOURCE_GMV is handled by cmdq, not mailbox */
++	{ "ECC_RESOURCE_GMV",
++	  0, 0 },
++	{ "ECC_RESOURCE_QPC_TIMER",
++	  HNS_ROCE_CMD_READ_QPC_TIMER_BT0, HNS_ROCE_CMD_WRITE_QPC_TIMER_BT0 },
++	{ "ECC_RESOURCE_CQC_TIMER",
++	  HNS_ROCE_CMD_READ_CQC_TIMER_BT0, HNS_ROCE_CMD_WRITE_CQC_TIMER_BT0 },
++	{ "ECC_RESOURCE_SCCC",
++	  HNS_ROCE_CMD_READ_SCCC_BT0, HNS_ROCE_CMD_WRITE_SCCC_BT0 },
++};
++
+ static inline void set_data_seg_v2(struct hns_roce_v2_wqe_data_seg *dseg,
+ 				   struct ib_sge *sg)
  {
--	struct hns_roce_dev *hr_dev = dev_id;
--	struct device *dev = hr_dev->dev;
-+	struct pci_dev *pdev = hr_dev->pci_dev;
-+	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(pdev);
-+	const struct hnae3_ae_ops *ops = ae_dev->ops;
- 	irqreturn_t int_work = IRQ_NONE;
--	u32 int_st;
- 	u32 int_en;
- 
--	/* Abnormal interrupt */
--	int_st = roce_read(hr_dev, ROCEE_VF_ABN_INT_ST_REG);
- 	int_en = roce_read(hr_dev, ROCEE_VF_ABN_INT_EN_REG);
- 
- 	if (int_st & BIT(HNS_ROCE_V2_VF_INT_ST_AEQ_OVERFLOW_S)) {
--		struct pci_dev *pdev = hr_dev->pci_dev;
--		struct hnae3_ae_dev *ae_dev = pci_get_drvdata(pdev);
--		const struct hnae3_ae_ops *ops = ae_dev->ops;
--
--		dev_err(dev, "AEQ overflow!\n");
-+		dev_err(hr_dev->dev, "AEQ overflow!\n");
- 
- 		roce_write(hr_dev, ROCEE_VF_ABN_INT_ST_REG,
- 			   1 << HNS_ROCE_V2_VF_INT_ST_AEQ_OVERFLOW_S);
-@@ -6016,12 +6011,28 @@ static irqreturn_t hns_roce_v2_msix_interrupt_abn(int irq, void *dev_id)
- 
- 		int_work = IRQ_HANDLED;
- 	} else {
--		dev_err(dev, "There is no abnormal irq found!\n");
-+		dev_err(hr_dev->dev, "there is no basic abn irq found.\n");
- 	}
- 
+@@ -6017,6 +6053,142 @@ static irqreturn_t abnormal_interrupt_basic(struct hns_roce_dev *hr_dev,
  	return IRQ_RETVAL(int_work);
  }
  
-+static irqreturn_t hns_roce_v2_msix_interrupt_abn(int irq, void *dev_id)
++static int fmea_ram_ecc_query(struct hns_roce_dev *hr_dev,
++			       struct fmea_ram_ecc *ecc_info)
 +{
-+	struct hns_roce_dev *hr_dev = dev_id;
-+	irqreturn_t int_work = IRQ_NONE;
-+	u32 int_st;
++	struct hns_roce_cmq_desc desc;
++	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
++	int ret;
 +
-+	int_st = roce_read(hr_dev, ROCEE_VF_ABN_INT_ST_REG);
++	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_QUERY_RAM_ECC, true);
++	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
++	if (ret)
++		return ret;
 +
-+	if (int_st)
-+		int_work = abnormal_interrupt_basic(hr_dev, int_st);
-+	else
-+		dev_err(hr_dev->dev, "there is no abnormal irq found.\n");
++	ecc_info->is_ecc_err = hr_reg_read(req, QUERY_RAM_ECC_1BIT_ERR);
++	ecc_info->res_type = hr_reg_read(req, QUERY_RAM_ECC_RES_TYPE);
++	ecc_info->index = hr_reg_read(req, QUERY_RAM_ECC_TAG);
 +
-+	return IRQ_RETVAL(int_work);
++	return 0;
 +}
 +
- static void hns_roce_v2_int_mask_enable(struct hns_roce_dev *hr_dev,
- 					int eq_num, u32 enable_flag)
++static int fmea_recover_gmv(struct hns_roce_dev *hr_dev, u32 idx)
++{
++	struct hns_roce_cmq_desc desc;
++	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
++	u32 addr_upper;
++	u32 addr_low;
++	int ret;
++
++	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_CFG_GMV_BT, true);
++	hr_reg_write(req, CFG_GMV_BT_IDX, idx);
++
++	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
++	if (ret) {
++		dev_err(hr_dev->dev,
++			"failed to execute cmd to read gmv, ret = %d.\n", ret);
++		return ret;
++	}
++
++	addr_low =  hr_reg_read(req, CFG_GMV_BT_BA_L);
++	addr_upper = hr_reg_read(req, CFG_GMV_BT_BA_H);
++
++	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_CFG_GMV_BT, false);
++	hr_reg_write(req, CFG_GMV_BT_BA_L, addr_low);
++	hr_reg_write(req, CFG_GMV_BT_BA_H, addr_upper);
++	hr_reg_write(req, CFG_GMV_BT_IDX, idx);
++
++	return hns_roce_cmq_send(hr_dev, &desc, 1);
++}
++
++static u64 fmea_get_ram_res_addr(u32 res_type, __le64 *data)
++{
++	if (res_type == ECC_RESOURCE_QPC_TIMER ||
++	    res_type == ECC_RESOURCE_CQC_TIMER ||
++	    res_type == ECC_RESOURCE_SCCC)
++		return le64_to_cpu(*data);
++
++	return le64_to_cpu(*data) << PAGE_SHIFT;
++}
++
++static int fmea_recover_others(struct hns_roce_dev *hr_dev, u32 res_type,
++			       u32 index)
++{
++	u8 write_bt0_op = fmea_ram_res[res_type].write_bt0_op;
++	u8 read_bt0_op = fmea_ram_res[res_type].read_bt0_op;
++	struct hns_roce_cmd_mailbox *mailbox;
++	u64 addr;
++	int ret;
++
++	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
++	if (IS_ERR(mailbox))
++		return PTR_ERR(mailbox);
++
++	ret = hns_roce_cmd_mbox(hr_dev, 0, mailbox->dma, read_bt0_op, index);
++	if (ret) {
++		dev_err(hr_dev->dev,
++			"failed to execute cmd to read fmea ram, ret = %d.\n",
++			ret);
++		goto out;
++	}
++
++	addr = fmea_get_ram_res_addr(res_type, mailbox->buf);
++
++	ret = hns_roce_cmd_mbox(hr_dev, addr, 0, write_bt0_op, index);
++	if (ret)
++		dev_err(hr_dev->dev,
++			"failed to execute cmd to write fmea ram, ret = %d.\n",
++			ret);
++
++out:
++	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
++	return ret;
++}
++
++static void fmea_ram_ecc_recover(struct hns_roce_dev *hr_dev,
++				 struct fmea_ram_ecc *ecc_info)
++{
++	u32 res_type = ecc_info->res_type;
++	u32 index = ecc_info->index;
++	int ret;
++
++	BUILD_BUG_ON(ARRAY_SIZE(fmea_ram_res) != ECC_RESOURCE_COUNT);
++
++	if (res_type >= ECC_RESOURCE_COUNT) {
++		dev_err(hr_dev->dev, "unsupported fmea ram ecc type %u.\n",
++			res_type);
++		return;
++	}
++
++	if (res_type == ECC_RESOURCE_GMV)
++		ret = fmea_recover_gmv(hr_dev, index);
++	else
++		ret = fmea_recover_others(hr_dev, res_type, index);
++	if (ret)
++		dev_err(hr_dev->dev,
++			"failed to recover %s, index = %u, ret = %d.\n",
++			fmea_ram_res[res_type].name, index, ret);
++}
++
++static void fmea_ram_ecc_work(struct work_struct *ecc_work)
++{
++	struct hns_roce_dev *hr_dev =
++		container_of(ecc_work, struct hns_roce_dev, ecc_work);
++	struct fmea_ram_ecc ecc_info = {};
++
++	if (fmea_ram_ecc_query(hr_dev, &ecc_info)) {
++		dev_err(hr_dev->dev, "failed to query fmea ram ecc.\n");
++		return;
++	}
++
++	if (!ecc_info.is_ecc_err) {
++		dev_err(hr_dev->dev, "there is no fmea ram ecc err found.\n");
++		return;
++	}
++
++	fmea_ram_ecc_recover(hr_dev, &ecc_info);
++}
++
+ static irqreturn_t hns_roce_v2_msix_interrupt_abn(int irq, void *dev_id)
  {
+ 	struct hns_roce_dev *hr_dev = dev_id;
+@@ -6025,10 +6197,14 @@ static irqreturn_t hns_roce_v2_msix_interrupt_abn(int irq, void *dev_id)
+ 
+ 	int_st = roce_read(hr_dev, ROCEE_VF_ABN_INT_ST_REG);
+ 
+-	if (int_st)
++	if (int_st) {
+ 		int_work = abnormal_interrupt_basic(hr_dev, int_st);
+-	else
++	} else if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
++		queue_work(hr_dev->irq_workq, &hr_dev->ecc_work);
++		int_work = IRQ_HANDLED;
++	} else {
+ 		dev_err(hr_dev->dev, "there is no abnormal irq found.\n");
++	}
+ 
+ 	return IRQ_RETVAL(int_work);
+ }
+@@ -6344,6 +6520,8 @@ static int hns_roce_v2_init_eq_table(struct hns_roce_dev *hr_dev)
+ 		}
+ 	}
+ 
++	INIT_WORK(&hr_dev->ecc_work, fmea_ram_ecc_work);
++
+ 	hr_dev->irq_workq = alloc_ordered_workqueue("hns_roce_irq_workq", 0);
+ 	if (!hr_dev->irq_workq) {
+ 		dev_err(dev, "failed to create irq workqueue.\n");
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index e6186149ef19..f96debac30fe 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -250,6 +250,7 @@ enum hns_roce_opcode_type {
+ 	HNS_ROCE_OPC_CFG_GMV_TBL			= 0x850f,
+ 	HNS_ROCE_OPC_CFG_GMV_BT				= 0x8510,
+ 	HNS_ROCE_OPC_EXT_CFG				= 0x8512,
++	HNS_ROCE_QUERY_RAM_ECC				= 0x8513,
+ 	HNS_SWITCH_PARAMETER_CFG			= 0x1033,
+ };
+ 
+@@ -1107,6 +1108,11 @@ enum {
+ #define CFG_GMV_BT_BA_H CMQ_REQ_FIELD_LOC(51, 32)
+ #define CFG_GMV_BT_IDX CMQ_REQ_FIELD_LOC(95, 64)
+ 
++/* Fields of HNS_ROCE_QUERY_RAM_ECC */
++#define QUERY_RAM_ECC_1BIT_ERR CMQ_REQ_FIELD_LOC(31, 0)
++#define QUERY_RAM_ECC_RES_TYPE CMQ_REQ_FIELD_LOC(63, 32)
++#define QUERY_RAM_ECC_TAG CMQ_REQ_FIELD_LOC(95, 64)
++
+ struct hns_roce_cfg_sgid_tb {
+ 	__le32	table_idx_rsv;
+ 	__le32	vf_sgid_l;
+@@ -1343,6 +1349,12 @@ struct hns_roce_dip {
+ 	struct list_head node; /* all dips are on a list */
+ };
+ 
++struct fmea_ram_ecc {
++	u32	is_ecc_err;
++	u32	res_type;
++	u32	index;
++};
++
+ /* only for RNR timeout issue of HIP08 */
+ #define HNS_ROCE_CLOCK_ADJUST 1000
+ #define HNS_ROCE_MAX_CQ_PERIOD 65
 -- 
 2.33.0
 
