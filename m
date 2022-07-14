@@ -2,69 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DAF5753C4
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 19:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3015753D2
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 19:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbiGNRKn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jul 2022 13:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
+        id S239294AbiGNRQd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jul 2022 13:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240242AbiGNRKm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 13:10:42 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B46A4C60E
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 10:10:41 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id i126so3141688oih.4
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 10:10:41 -0700 (PDT)
+        with ESMTP id S232619AbiGNRQd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 13:16:33 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1CF45998;
+        Thu, 14 Jul 2022 10:16:32 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id j3so3142190oif.8;
+        Thu, 14 Jul 2022 10:16:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=prO+eAXi4GRWJIM1VuUFR3yBDnfSGov/+q+UedLQEwg=;
-        b=G6QVZ3hZuXYTKi8JhGv+d/8j8Ss6PxOg0QxArZllMskbn+EyEC3Fbl+q5MLG7QTVP5
-         uxi6fk8vX6eZixBuh4W500NieFvCpf1FE1Xh5aMCt577sOE2ZYCbTTRn4pfmyvxO0q7t
-         rs8HA8rVgSsGgdHfF9lgqHT5KCkD9yh9IOQ/XEteLBZoqKW4MfGmWPpj5l9wZrOjkmMS
-         9Vz8UQF3VmVg2a7VpAC3VYkIyXrfPx5Ql62hC23Fq73QsnlmAtl6gjuCIf/ZxdU5svqX
-         Spp4f+ToX1o0nrkSxuwGsFSYvjV098nz38xiUFXEkuBW0YHs26J/MLFK4/OeCim3hQYM
-         /TTQ==
+        bh=uhEv4YSwcCxcXhWvFeqOjhWTxgBTIYrW5s8rWKcWzmU=;
+        b=ItL0eFnVB11SXPSXjMU89R674AtggxpXHV/agOLJfMB6wYEGuARbddcbEYLSRFWz8O
+         VpmbahSN91O/LiBLRMlPtsb3hEcgHxc/H6xYKT0PRm4fC6kZKFU0+/A5Plrk83XvknAA
+         uA+QWtAOQ8Ga52PUCaDXBPK71FO+WJVnJMDeokAyZT+bVXEiEKB4TsVyBouRB6EBofcA
+         nZxZQm6c0O4JWtXMJX5J/55+bJ8rlqc9LajvDvYoceWflYBbTPmwTE+DMG7lYDKsk+AM
+         Yzluggp6hhmLSQEp+3R+xtv8fuXyhFD74bT0YWopS2g3Lxy5tKREZnhFsPXShUxhCvoV
+         IjpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=prO+eAXi4GRWJIM1VuUFR3yBDnfSGov/+q+UedLQEwg=;
-        b=q5omOOvpcWu08Hq+V1y1bLCV/FwV2bWFR5PRE9vSGcv0EC1qYeGYzPANBM8W4hVP2G
-         iyWAacgsj4wEWXiSiys8sRyb2OE0tnIhUbpJTmbswz6kx56Xnl3oaSZKuC34yDDUL0EY
-         7siHnRBW0NTKUi0AEFIs0jxfLHi9DIg98YLIhgf4dCDTfrwbdDPMQjPcpdn3+BGGkrB8
-         YHEUakDkXzw7jFzhthJyUeJe2pC3+0cGucQHl8tr/1S3YOOM4OOCKkJdwHd4EkOZjdFX
-         yXlcCjAmE6+TfZDDqm3nwOLwuxXaS0gQa/9amP51pcBeQOAhfS5oAVPIm7xAo7asCmxP
-         d+lg==
-X-Gm-Message-State: AJIora8sHsTyrA4xBU4zxT2yWp1K/cUwpZD+liTuSjNK2M8LIyXgDe8h
-        Vg9eLzb8zCImlizttlolzzg=
-X-Google-Smtp-Source: AGRyM1tRqdZCERUH9ic6CpC8zHi4kYL3Es4pEUN8mqUkZIrwfklDcybr8RLcBGv1403w9RFUYhfSkA==
-X-Received: by 2002:a05:6808:e88:b0:337:9676:ddd4 with SMTP id k8-20020a0568080e8800b003379676ddd4mr4650548oil.9.1657818640735;
-        Thu, 14 Jul 2022 10:10:40 -0700 (PDT)
+        bh=uhEv4YSwcCxcXhWvFeqOjhWTxgBTIYrW5s8rWKcWzmU=;
+        b=ZdTF8HKDG8HCgshMa2K1Knq/tTqvPKwXV2KmE9LhZawhZAyVuqfI4HUcAfrkYaqhhr
+         bXkxFCdLMaX4TiJNmQWVhmPmnF+8fxOCuILwAh2hu6g4o+FtoR5bDdzIQ0wNJQBS9DJ5
+         NUNC0fz8FFo2u0oMXcdmMlfjaGEW/Zdgd2ZvMtA9StplIJnsYTTE6kFF2fgYYd0xMbkE
+         cTXkvjYJu0i/cwHqSLwlgY3HgJ5fqZoxgfJSUAvVPcvvLWpcALDFpwZodfz316N77xhu
+         usCBHufk/8MKUOdKZMCAB+0g6wuOeCRFEDZaseQKD43GVAj4GwyFLRUclBymD9J/ajZg
+         Hs4Q==
+X-Gm-Message-State: AJIora8Eae4l1IIvFLhq8Y4gULnzmP9WHZKmg452lNohyBdy/OXcumZI
+        HpXCOvm8W6H29UTnaxBdZbA=
+X-Google-Smtp-Source: AGRyM1vurFHFWHvzQuDrVyPlMqlF0xZTPWoVAsb1/ZLVS5YEMncqwaVpv4UADyYF+aMmxRIdbeezOw==
+X-Received: by 2002:a05:6808:1184:b0:322:4c18:2f7e with SMTP id j4-20020a056808118400b003224c182f7emr4948099oil.109.1657818992002;
+        Thu, 14 Jul 2022 10:16:32 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:e02a:9936:8f26:4598? (2603-8081-140c-1a00-e02a-9936-8f26-4598.res6.spectrum.com. [2603:8081:140c:1a00:e02a:9936:8f26:4598])
-        by smtp.gmail.com with ESMTPSA id d3-20020a05680813c300b00339fd59cfc8sm803258oiw.46.2022.07.14.10.10.39
+        by smtp.gmail.com with ESMTPSA id n45-20020a4a9570000000b0042313f42b26sm818999ooi.39.2022.07.14.10.16.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jul 2022 10:10:39 -0700 (PDT)
-Message-ID: <c6b089f0-9f50-923a-526c-af41b9a81bbc@gmail.com>
-Date:   Thu, 14 Jul 2022 12:10:39 -0500
+        Thu, 14 Jul 2022 10:16:31 -0700 (PDT)
+Message-ID: <47c790e7-ef89-dd9b-76a4-1f2af7976105@gmail.com>
+Date:   Thu, 14 Jul 2022 12:16:30 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH v5 4/4] RDMA/rxe: Fix typo in comment
+Subject: Re: [PATCH] RDMA/rxe: Fix typo
 Content-Language: en-US
-To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        Yanjun Zhu <yanjun.zhu@linux.dev>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Haakon Bugge <haakon.bugge@oracle.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc:     Cheng Xu <chengyou@linux.alibaba.com>
-References: <20220704060806.1622849-1-lizhijian@fujitsu.com>
- <20220704060806.1622849-5-lizhijian@fujitsu.com>
+To:     Zhang Jiaming <jiaming@nfschina.com>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liqiong@nfschina.com, renyu@nfschina.com
+References: <20220701080019.13329-1-jiaming@nfschina.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20220704060806.1622849-5-lizhijian@fujitsu.com>
+In-Reply-To: <20220701080019.13329-1-jiaming@nfschina.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,28 +74,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/4/22 01:00, lizhijian@fujitsu.com wrote:
-> Fix a spelling mistake
+On 7/1/22 03:00, Zhang Jiaming wrote:
+> There is a spelling mistake (writeable) in function rxe_check_bind_mw.
+> Fix it.
 > 
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> Signed-off-by: Zhang Jiaming <jiaming@nfschina.com>
 > ---
->  drivers/infiniband/sw/rxe/rxe_task.c | 2 +-
+>  drivers/infiniband/sw/rxe/rxe_mw.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
-> index 0c4db5bb17d7..c9b80410cd5b 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_task.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
-> @@ -67,7 +67,7 @@ void rxe_do_task(struct tasklet_struct *t)
->  				cont = 1;
->  			break;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+> index 2e1fa844fabf..83b5d2b2ebfd 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mw.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+> @@ -113,7 +113,7 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+>  		      (IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_ATOMIC)) &&
+>  		     !(mr->access & IB_ACCESS_LOCAL_WRITE))) {
+>  		pr_err_once(
+> -			"attempt to bind an writeable MW to an MR without local write access\n");
+> +			"attempt to bind an writable MW to an MR without local write access\n");
+>  		return -EINVAL;
+>  	}
 >  
-> -		/* soneone tried to run the task since the last time we called
-> +		/* someone tried to run the task since the last time we called
->  		 * func, so we will call one more time regardless of the
->  		 * return value
->  		 */
 
-I think I snuck this in recently in something else but it is correct.
+Correct.
 
 Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
