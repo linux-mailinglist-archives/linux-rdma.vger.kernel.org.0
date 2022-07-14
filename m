@@ -2,113 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA1B574F41
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 15:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2951A574F80
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jul 2022 15:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238605AbiGNNer (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jul 2022 09:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32844 "EHLO
+        id S238901AbiGNNpt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jul 2022 09:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235151AbiGNNer (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 09:34:47 -0400
+        with ESMTP id S239331AbiGNNps (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jul 2022 09:45:48 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2781CB01
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 06:34:46 -0700 (PDT)
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LkFlW3bSdzhYf2;
-        Thu, 14 Jul 2022 21:32:07 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9B0528A0
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Jul 2022 06:45:46 -0700 (PDT)
+Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LkG1M6KT2zlVrQ;
+        Thu, 14 Jul 2022 21:44:07 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 14 Jul 2022 21:34:44 +0800
-Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 14 Jul
- 2022 21:34:43 +0800
-Subject: Re: [PATCH v2 for-next 5/5] RDMA/hns: Recover 1bit-ECC error of RAM
- on chip
-To:     Cheng Xu <chengyou@linux.alibaba.com>, <jgg@nvidia.com>,
-        <leon@kernel.org>
-References: <20220713092630.1657-1-liangwenpeng@huawei.com>
- <20220713092630.1657-6-liangwenpeng@huawei.com>
- <7a5655e7-cba6-9c6f-8591-c110de8baf32@linux.alibaba.com>
- <3eda3dd0-959a-b4d7-e67f-f5693f83c903@huawei.com>
- <1ffcaf32-dd7c-a0db-dd5f-1d0819437b45@linux.alibaba.com>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+ 15.1.2375.24; Thu, 14 Jul 2022 21:45:43 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 14 Jul 2022 21:45:43 +0800
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
-Message-ID: <5f2f1a50-659b-5a0d-419b-047225acd47c@huawei.com>
-Date:   Thu, 14 Jul 2022 21:34:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <liangwenpeng@huawei.com>
+Subject: [PATCH v3 for-next 0/5] RDMA/hns: Supports recovery of on-chip RAM 1bit ECC errors
+Date:   Thu, 14 Jul 2022 21:43:48 +0800
+Message-ID: <20220714134353.16700-1-liangwenpeng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <1ffcaf32-dd7c-a0db-dd5f-1d0819437b45@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.238.78]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Add support for the 1bit ECC error recovery by abnormal interrupt reporting
+and adjusts the structure of the abnormal interrupt handler.
 
-On 2022/7/13 18:14, Cheng Xu wrote:
-> 
-> On 7/13/22 6:03 PM, Wenpeng Liang wrote:
->> On 2022/7/13 17:36, Cheng Xu wrote:
->>> On 7/13/22 5:26 PM, Wenpeng Liang wrote:
->>>
->>> <...>
->>>
->>>> +static int fmea_recover_others(struct hns_roce_dev *hr_dev, u32 res_type,
->>>> +			       u32 index)
->>>> +{
->>>> +	u8 write_bt0_op = fmea_ram_res[res_type].write_bt0_op;
->>>> +	u8 read_bt0_op = fmea_ram_res[res_type].read_bt0_op;
->>>> +	struct hns_roce_cmd_mailbox *mailbox;
->>>> +	u64 addr;
->>>> +	int ret;
->>>> +
->>>> +	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
->>>> +	if (IS_ERR(mailbox))
->>>> +		return PTR_ERR(mailbox);
->>>> +
->>>> +	ret = hns_roce_cmd_mbox(hr_dev, 0, mailbox->dma, read_bt0_op, index);
->>>> +	if (ret) {
->>>> +		dev_err(hr_dev->dev,
->>>> +			"failed to execute cmd to read fmea ram, ret = %d.\n",
->>>> +			ret);
->>>> +		goto err;
->>>> +	}
->>>> +
->>>> +	addr = fmea_get_ram_res_addr(res_type, mailbox->buf);
->>>> +
->>>> +	ret = hns_roce_cmd_mbox(hr_dev, addr, 0, write_bt0_op, index);
->>>> +	if (ret) {
->>>> +		dev_err(hr_dev->dev,
->>>> +			"failed to execute cmd to write fmea ram, ret = %d.\n",
->>>> +			ret);
->>>> +		goto err;
->>>> +	}
->>>> +
->>> Here it seems that you miss a "return 0" or the "goto err;" is unnecessary.
->>>
->> Will remove the "goto err;".
->>
-> And, if the hns_roce_free_cmd_mailbox is called in both normal and error flow,
-> Maybe using "out" or some name else is better than "err" as the jump label?
-> 
+The following is the outline of each patch:
+(1)#1~#4: Cleanup and bugfix for the abnormal interrupt handler.
+(2)#5: Support for the 1bit ECC error recovery.
 
-Will fix it.
+Changes since v2:
+* Optimize the logic of the exit of fmea_recover_others() in #5.
+* v2 Link: https://patchwork.kernel.org/project/linux-rdma/cover/20220713092630.1657-1-liangwenpeng@huawei.com/
 
-Thansk,
-Wenpeng
+Changes since v1:
+* Embed ecc_work into structure hns_roce_dev, no longer dynamically allocated in #5.
+* Add the const keyword to the string array that does not change in #5.
+* v1 Link: https://patchwork.kernel.org/project/linux-rdma/cover/20220624110845.48184-1-liangwenpeng@huawei.com/
 
-> Thanks,
-> Cheng Xu
+Haoyue Xu (5):
+  RDMA/hns: Remove unused abnormal interrupt of type RAS
+  RDMA/hns: Fix the wrong type of return value of the interrupt handler
+  RDMA/hns: Fix incorrect clearing of interrupt status register
+  RDMA/hns: Refactor the abnormal interrupt handler function
+  RDMA/hns: Recover 1bit-ECC error of RAM on chip
+
+ drivers/infiniband/hw/hns/hns_roce_device.h |   1 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 248 +++++++++++++++++---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  13 +-
+ 3 files changed, 227 insertions(+), 35 deletions(-)
+
+--
+2.33.0
+
