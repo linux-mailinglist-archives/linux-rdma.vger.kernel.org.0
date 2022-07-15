@@ -2,150 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EF257644F
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jul 2022 17:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C635765BE
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jul 2022 19:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235288AbiGOPS4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Jul 2022 11:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
+        id S231698AbiGORVy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Jul 2022 13:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235240AbiGOPSr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jul 2022 11:18:47 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2946E100
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Jul 2022 08:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657898315; x=1689434315;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=FcffuCRlJ7Ogc7GhUJeLYwvS/JjsmY80BMnBuJKSZJc=;
-  b=eWooD5hdyPSUOt5eW79R4hJyvTHq2CLjubj9PqeG6EzQON10n8dd/IOv
-   RAOxrEArUDprNHlwYc44z64wi1+U4c/tSWZV6OxwcDoadhqfYY3OOCkPa
-   pISPg7DY3CO5h0x4DeTvTGaCBGz8v0ksSwETtVWbUZQQ+yGy69DRO+iXL
-   S2AKKzrImbHellF7fCkG0454FB0hbruBjxJRaMXyplaWYRM90zDnjhnbw
-   ++95lFWVOsr4BQ4ey90en0cHPAVPpUkOcRhQTrczWB63ZtgBrhtX53OWE
-   I0DLeXOcu8P+/Sg7sONKqwS0O2/ove6PcLYknEYe+6F1GxjuKtz3pGJ4Z
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="268840524"
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; 
-   d="scan'208";a="268840524"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2022 08:18:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; 
-   d="scan'208";a="571551504"
-Received: from lkp-server02.sh.intel.com (HELO ff137eb26ff1) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 15 Jul 2022 08:18:33 -0700
-Received: from kbuild by ff137eb26ff1 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1oCN5M-0000CP-Mz;
-        Fri, 15 Jul 2022 15:18:32 +0000
-Date:   Fri, 15 Jul 2022 19:31:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
- cc0315564d6eec91c716d314b743321be24c70b3
-Message-ID: <62d15007.F1Z7IiB+QrdXzE97%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S235756AbiGORVx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jul 2022 13:21:53 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8A983F2C
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Jul 2022 10:21:52 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id r22-20020a056830419600b0061c6edc5dcfso3933108otu.12
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Jul 2022 10:21:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=0NsPGXaQ5/GTl6LitJ+y4uo+ZpvYDR2Tfzvvec3t6gM=;
+        b=IAkv2sSr/cWz3PkRvE0slYCcRJMj5OtbGCoEKlrAdw0ARm9mQeIkAYk2AbuFeJjANG
+         K1vPrY/mf8ZTc2XgUoMiQPhA3H5lbd61Qx6Zdgw5zhr0La7cl1wj+L/Qx6QI0c2Lj9bX
+         n6l/D1WDiXfa7RdBXczfIgl09EMH1uAEUGcFSQRIIdThwansJ3p4pj8AWMI4OE2IUh96
+         H3FZrKDfdor29me/qZEuUPKOOR/CZMEhNCnbirJBn8R3X3m22w2MtRJGGCcelf5IL9mb
+         jMSq23P9gjCpPPwC3+CKl6+Gijci8AFueWrHaLTIYfvPCLbk2qW+moUQjOXSPPMZoYuK
+         BH/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=0NsPGXaQ5/GTl6LitJ+y4uo+ZpvYDR2Tfzvvec3t6gM=;
+        b=fe5IqvvRIV1f6BVUuoR/9c1B+K7qEAgRuuXO39vX24JWgU0E9G8/P73fE4MU8yGsMr
+         Q3nrtz6ICqkG3qEhoGLXqtnFbbyorBqdgRx3GPdIikEWKSSwaYbdv4+SqvIXF3s2mV8g
+         utPsXfdtKmosIprNr1VUdEVYvPwqM7wO6pxQu0X6healD5ctsyXyqqrSTobVFN/gf3Hp
+         Ng28t6BcCmnubNs/k7Ou/mxDiUoLhj1KFD/QFza2c9bpe6cj+KwDv6hbN7z0zARhK3IX
+         VjuY3uWrushJr2u5g50j64piC0oRKmolL6WLe1SB16hY1zQzHiRGRSunrXeCITdeWIi9
+         +LAQ==
+X-Gm-Message-State: AJIora8+4oZ/AYTBOHJ+xpla+ldfNfhO/Raob9ouVzDLu3HrYoSGP9oq
+        xkTEuRP5IRAgMrPh/NH1SRY=
+X-Google-Smtp-Source: AGRyM1vGUmu7QiKnAASZNMlM6wemGfWxNiq/1l/U4i/7Kek5iceZAgximTmsVVgQJdLlvYIILeGiWQ==
+X-Received: by 2002:a05:6830:61c1:b0:61c:56e1:d7c3 with SMTP id cc1-20020a05683061c100b0061c56e1d7c3mr6088058otb.90.1657905712050;
+        Fri, 15 Jul 2022 10:21:52 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:d7fe:5e08:17b5:c1dc? (2603-8081-140c-1a00-d7fe-5e08-17b5-c1dc.res6.spectrum.com. [2603:8081:140c:1a00:d7fe:5e08:17b5:c1dc])
+        by smtp.gmail.com with ESMTPSA id g5-20020a056870c14500b0010c0d04eb00sm2792224oad.2.2022.07.15.10.21.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Jul 2022 10:21:51 -0700 (PDT)
+Message-ID: <dc5168c3-0d3c-970a-652d-6bd1447a17a5@gmail.com>
+Date:   Fri, 15 Jul 2022 12:21:50 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH for-next v2] RDMA/rxe: Remove unused mask parameter
+Content-Language: en-US
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        Yanjun Zhu <yanjun.zhu@linux.dev>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20220715035340.1900168-1-lizhijian@fujitsu.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <20220715035340.1900168-1-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
-branch HEAD: cc0315564d6eec91c716d314b743321be24c70b3  RDMA/irdma: Fix sleep from invalid context BUG
+On 7/14/22 22:46, lizhijian@fujitsu.com wrote:
+> This parameter had beed deprecated since below commit:
+> 1a7085b34291 ("RDMA/rxe: Skip adjusting remote addr for write in retry operation")
+> 
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+> Feel free to add above commit to fixes tag if needed.
+> V2: add commit log.
+> ---
+>  drivers/infiniband/sw/rxe/rxe_req.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+> index 69fc35485e60..35a249727435 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_req.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+> @@ -15,8 +15,7 @@ static int next_opcode(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+>  		       u32 opcode);
+>  
+>  static inline void retry_first_write_send(struct rxe_qp *qp,
+> -					  struct rxe_send_wqe *wqe,
+> -					  unsigned int mask, int npsn)
+> +					  struct rxe_send_wqe *wqe, int npsn)
+>  {
+>  	int i;
+>  
+> @@ -83,7 +82,7 @@ static void req_retry(struct rxe_qp *qp)
+>  			if (mask & WR_WRITE_OR_SEND_MASK) {
+>  				npsn = (qp->comp.psn - wqe->first_psn) &
+>  					BTH_PSN_MASK;
+> -				retry_first_write_send(qp, wqe, mask, npsn);
+> +				retry_first_write_send(qp, wqe, npsn);
+>  			}
+>  
+>  			if (mask & WR_READ_MASK) {
 
-elapsed time: 5724m
-
-configs tested: 70
-configs skipped: 4
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                        trizeps4_defconfig
-sh                             sh03_defconfig
-mips                           gcw0_defconfig
-mips                             allyesconfig
-arc                              alldefconfig
-powerpc                  iss476-smp_defconfig
-mips                         bigsur_defconfig
-m68k                        mvme147_defconfig
-arm                       multi_v4t_defconfig
-arc                         haps_hs_defconfig
-powerpc                         wii_defconfig
-mips                      loongson3_defconfig
-sparc                       sparc64_defconfig
-csky                              allnoconfig
-sparc64                          alldefconfig
-arm64                               defconfig
-ia64                             allyesconfig
-arm                              allmodconfig
-m68k                                defconfig
-ia64                                defconfig
-mips                             allmodconfig
-x86_64                        randconfig-c001
-i386                          randconfig-c001
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-sh                               allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-i386                                defconfig
-i386                             allyesconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a002
-x86_64                        randconfig-a004
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-
-clang tested configs:
-powerpc                          g5_defconfig
-powerpc                   lite5200b_defconfig
-arm                          ep93xx_defconfig
-arm                     davinci_all_defconfig
-arm                        mvebu_v5_defconfig
-mips                     cu1830-neo_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                   bluestone_defconfig
-x86_64                        randconfig-k001
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a016
-x86_64                        randconfig-a014
-hexagon              randconfig-r045-20220714
-hexagon              randconfig-r041-20220714
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
