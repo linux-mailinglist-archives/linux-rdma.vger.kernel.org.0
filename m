@@ -2,140 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCE6575E65
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jul 2022 11:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62937575E9D
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jul 2022 11:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbiGOJWO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Jul 2022 05:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40106 "EHLO
+        id S231631AbiGOJbq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Jul 2022 05:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbiGOJWN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jul 2022 05:22:13 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0344161D57
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Jul 2022 02:22:12 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 19so5071344ljz.4
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Jul 2022 02:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fJ/N9z6a8uhmAmv1ud5XvRkYGwSmxPYUtsnZAb3GhNE=;
-        b=j3zIGlNMM6I+h28o2pTdDVEXkAlLvXbnD7ikWoYZAzoM+R9Uj95Yw+oLo+s5pWAH3Z
-         3XfA3oBCMHCDoz4YfaeZSHaDmwFqFeIOyP2BjNpDeJqef2B+yAay9th28JIQnYI7OHGG
-         c+lfTX2XOHOG15ie/HiUpd5bvPakX4p95glmRB5cgZJtSp3VbJXabCpseVshsoYRvH5j
-         MH+vMdA1wSYex5wLe1YnhBkiqmqMeRcAVe70l/nl1QO+8OhhBhooMC9Gjkl6EfZHO90n
-         fYZ34FFwMzwWGkRHv2kjOUSHoKkYnuNE913aPs4nmGmGnaG18SbyHVJSiHXBGXk0yPvg
-         meqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fJ/N9z6a8uhmAmv1ud5XvRkYGwSmxPYUtsnZAb3GhNE=;
-        b=fPjZm9CyvWCF9F5S9sWkdSnElXBbgOmiNbJyusvFDiUAkuHbWA10omQHJH4pSNuDVN
-         Nl2HCSA2zD7O8KdfGlj4DKP7/IqN4G2xGtC2sub2agU5EH2omR1YsggebKGy3ULriPJ9
-         D8hTUX9aHuvbi5AqxPPAOvA3H4ezMUrabbPkDgZf1afv7AuSMDmWqkcsfzNUxNO1Akkq
-         wGwdpuKvyUbg8RvJpnKXixeJiU+f4s9WH3vsCTjEGHY+lWw0IsrNwoy8XRG7SaBqGv8a
-         a7FSMrtXHgXaKRdD8nYmjJyIMUXg0dNch5o0dCmrlHP8IlxuAqAmUjGGEgCHW6M+VUVJ
-         YztA==
-X-Gm-Message-State: AJIora9V1cobshwrbrqxqv2c4ItC3R1YANoqNGE9ByfHzcG2R5B+cqut
-        xL3WD8G0r0hKLKLj8IQu3Y34R6ww2Sg/epGXFjQFeG367kIxe7h1
-X-Google-Smtp-Source: AGRyM1tEld7rKMD29u0MpgfRTacQKlxnQdJjIV4ns1vM1us8C03UmIEO2Bg4/uuTWLzug+1PKF5ixLP8o8UVkRbFOT4=
-X-Received: by 2002:a05:651c:a12:b0:25d:9ab3:4b38 with SMTP id
- k18-20020a05651c0a1200b0025d9ab34b38mr3866949ljq.409.1657876930079; Fri, 15
- Jul 2022 02:22:10 -0700 (PDT)
+        with ESMTP id S231187AbiGOJbp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jul 2022 05:31:45 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DEAE0B4;
+        Fri, 15 Jul 2022 02:31:44 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-119-232.nat.spd-mgts.ru [109.252.119.232])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5E29866019A8;
+        Fri, 15 Jul 2022 10:31:40 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1657877502;
+        bh=TWozmotf+sQwVdZNmn/06hy3nh6q5FZqNEZs2dkO0Xk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ook7FofVSeFu98kzfOW85/NvaqQGYfMlcoQwPYYEf1uM53lI6XEH5r2IfZA5D39YG
+         One7B2e3W/fD6MOKVR32mTsfa0F578/RBAeOo8/NotqqijY2/uTpe7t/xwykgVmrPt
+         +yavsYIuw7Eo6wCEeOig0kwF08jXCpcKDfKm5bf62mOtUtod68wxkNTfoOrBO2Vigr
+         jGGe7rNPzl9ucoy/rbaMWflBdm9lL83CRfG8Nh3DuvKmTusiGl7vlEzXHo8BAnin4h
+         VmXp2fNABeQZzflx/SPBJ4BlHwecx5t82vj5mWQ6sz+HwjJh2hV8TUmAiQ8RvCIpsC
+         jI9dt2CUipsuA==
+Message-ID: <5c98385b-f154-0128-6f4b-5fac89529201@collabora.com>
+Date:   Fri, 15 Jul 2022 12:31:37 +0300
 MIME-Version: 1.0
-References: <20220707073006.328737-1-haris.phnx@gmail.com>
-In-Reply-To: <20220707073006.328737-1-haris.phnx@gmail.com>
-From:   haris iqbal <haris.phnx@gmail.com>
-Date:   Fri, 15 Jul 2022 11:21:44 +0200
-Message-ID: <CAE_WKMzj3i6bKrHN_GuBpjoEzuQBXLoEZrXpsqKjtkxvM+ZbfA@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rxe: For invalidate compare according to set keys in mr
-To:     linux-rdma@vger.kernel.org
-Cc:     zyjzyj2000@gmail.com, Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, haris.iqbal@ionos.com,
-        Jinpu Wang <jinpu.wang@ionos.com>, aleksei.marov@ionos.com,
-        Bob Pearson <rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v1 1/6] dma-buf: Add _unlocked postfix to function names
+Content-Language: en-US
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Almeida <daniel.almeida@collabora.com>,
+        Gert Wollny <gert.wollny@collabora.com>,
+        Gustavo Padovan <gustavo.padovan@collabora.com>,
+        Daniel Stone <daniel@fooishbar.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Clark <robdclark@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= <thomas_os@shipmail.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20220715005244.42198-1-dmitry.osipenko@collabora.com>
+ <20220715005244.42198-2-dmitry.osipenko@collabora.com>
+ <43c06f53-bad8-af99-0b57-781dbf716768@amd.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <43c06f53-bad8-af99-0b57-781dbf716768@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 7, 2022 at 9:30 AM Md Haris Iqbal <haris.phnx@gmail.com> wrote:
->
-> The 'rkey' input can be an lkey or rkey, and in rxe the lkey or rkey have
-> the same value, including the variant bits.
->
-> So, if mr->rkey is set, compare the invalidate key with it, otherwise
-> compare with the mr->lkey.
->
-> Since we already did a lookup on the non-varient bits to get this far,
-> the check's only purpose is to confirm that the wqe has the correct
-> variant bits.
->
-> Fixes: 001345339f4c ("RDMA/rxe: Separate HW and SW l/rkeys")
-> Cc: rpearsonhpe@gmail.com
-> Signed-off-by: Md Haris Iqbal <haris.phnx@gmail.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_loc.h |  2 +-
->  drivers/infiniband/sw/rxe/rxe_mr.c  | 12 ++++++------
->  2 files changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-> index 0e022ae1b8a5..37484a559d20 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-> @@ -77,7 +77,7 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
->                          enum rxe_mr_lookup_type type);
->  int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
->  int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
-> -int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey);
-> +int rxe_invalidate_mr(struct rxe_qp *qp, u32 key);
->  int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
->  int rxe_mr_set_page(struct ib_mr *ibmr, u64 addr);
->  int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index fc3942e04a1f..3add52129006 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -576,22 +576,22 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
->         return mr;
->  }
->
-> -int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
-> +int rxe_invalidate_mr(struct rxe_qp *qp, u32 key)
->  {
->         struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
->         struct rxe_mr *mr;
->         int ret;
->
-> -       mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
-> +       mr = rxe_pool_get_index(&rxe->mr_pool, key >> 8);
->         if (!mr) {
-> -               pr_err("%s: No MR for rkey %#x\n", __func__, rkey);
-> +               pr_err("%s: No MR for key %#x\n", __func__, key);
->                 ret = -EINVAL;
->                 goto err;
->         }
->
-> -       if (rkey != mr->rkey) {
-> -               pr_err("%s: rkey (%#x) doesn't match mr->rkey (%#x)\n",
-> -                       __func__, rkey, mr->rkey);
-> +       if (mr->rkey ? (key != mr->rkey) : (key != mr->lkey)) {
-> +               pr_err("%s: wr key (%#x) doesn't match mr key (%#x)\n",
-> +                       __func__, key, (mr->rkey ? mr->rkey : mr->lkey));
->                 ret = -EINVAL;
->                 goto err_drop_ref;
->         }
-> --
-> 2.25.1
+On 7/15/22 10:19, Christian König wrote:
+>> -struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment
+>> *attach,
+>> -                    enum dma_data_direction direction)
+>> +struct sg_table *
+>> +dma_buf_map_attachment_unlocked(struct dma_buf_attachment *attach,
+>> +                enum dma_data_direction direction)
+> 
+> The locking state of mapping and unmapping operations depend on if the
+> attachment is dynamic or not.
+> 
+> So this here is not a good idea at all since it suggests that the
+> function is always called without holding the lock.
 
-Ping.
+I had the same thought while was working on this patch and initially was
+thinking about adding an "unlocked" alias to dma_buf_map_attachment().
+In the end I decided that it will create even more confusion and it's
+simpler just to rename this func here since there are only two drivers
+using the dynamic mapping.
 
->
+Do you have suggestions how to improve it?
+
+-- 
+Best regards,
+Dmitry
