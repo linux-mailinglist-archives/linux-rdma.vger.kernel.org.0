@@ -2,432 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CD9575C63
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jul 2022 09:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE047575D06
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jul 2022 10:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbiGOHb0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Jul 2022 03:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
+        id S231521AbiGOIIV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Jul 2022 04:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiGOHbZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jul 2022 03:31:25 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2069.outbound.protection.outlook.com [40.107.220.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7517B371;
-        Fri, 15 Jul 2022 00:31:24 -0700 (PDT)
+        with ESMTP id S229481AbiGOIIV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jul 2022 04:08:21 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2089.outbound.protection.outlook.com [40.107.223.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ABE87E80C;
+        Fri, 15 Jul 2022 01:08:20 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lRqZAAfux1nyiMlhkGz1oQeyvfRyYYjd33GPEv9FF+ULuaViZwz30JNm7RWjAP9RlX7TCWvsFiThN2MCAOJY6QnLLEUGWWt77pOfXG8xugPhSlxUpzyIrnbvjcIaLSyK0LVS6Z62rmRJcMN6HMgmYTltwt73NJfHDkmM4tajewuIqDpJCo8kyf+OGT8XXTeInJDdg+OAr9iSfdT4K3ozOWKcZIB8PWuNf4tv6PwNv5GC8bfXED8r4P9TQicw2j1xKj9Kk5uzk4WrpN23V7nXbLzgk6eHOup7Jr7yBYcae7ueslmqLiblmhy6UTimH4kC7789gpU9nqXemjB+Qlaffg==
+ b=UxuDu+Iann7zCLzJB1uciyw3SvquTLi3f0nNrIBz7KxbH6hXM6OJiRfzEUC61kOj0argGEA2C1upyIRQsMB2MWwjrve6atGoLTdCsM9zpriyHrqYR28VqIDvlos5lF3EU3WDKE50hYxNbGU82qDILPcmo9ncfHnRYOUO0DyvP8IV9UsdFjejQy+7vhJcs6Avm4xIy5Kt49+pJEKvzMEdLfxFzvE8MrpFJcisVLviF4Ki30EbfcaWBcQ0Wv5GlR/4yL9zxqTUSBairfMnKxDPaZRY7FlWXlI7JbZ8IZwcUPvfW9nTbVXtyQk0X7n9xbo0h1g7Vo8sP7VmAl4oKRB0Sg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u7bwDf0qM/tQuy+789QAkidbPdSab2SEqKFy5qDE2ow=;
- b=oOm3FKNsRcTWb+lYjZJqDvOEdz8OCUqlWKvHgYJbjF3yItja9u1XnxDY+PaF8pDT9D+jqPUf6aHQqGsunKQ7jYDvSvjoIjp2htDMzbyMppU86loepYIxXBEox22y3IzXglq4SZ8r9XbqzYXLv7qdeh7WS6up1ZPb92xXVFlq5om1F8WX/xhqjkc3fGV067KAas4HeEqj5DhXylGREr0kBd+j150E+ca0jJYdJqlUTp3KNGqMecYm2dVUCU8UzKcIDsTtfxKVQIKUOr1GMO3lus9/AVRLUMZEe62/vz5/4MasZZMdykSq9gNYtD+9MK4eCY3RhaE+x38JMoBzkNyynA==
+ bh=1VHMJ8JZ0zbljW7SbCr6XszFZk/M5TuMosh+7Gau7vM=;
+ b=Zfr+fexYGeHmSN1xk9zxIigFaddcCW2meLcA2HSgcPM+b3LtEUise1Q9ELLcpqL7/uu0t3olAj/CNY5GJN/81BITMJCXbIEOHfXEDRuGvU25ETK7cLRsUvJawKvnNBZjGWAe9R6GBcGmPXxCwtC6WLV2ZU1hY5Fey+DzEhme4JWbIE2J/A27HZL9BlctpiHH2+W38hkYGBRDM0n/2mJfZq8Xu00I/isPmT+xb+iIAwtFpCb43j7H4JB9jnQXJOKwcleXRqsE76G5GrudxNv1aeS0/DOTIb/qhCRIBt+5itAwGlLwjjjt+P3Gc/031GQ6x/5mYGZMKKBncHgYrsfE8Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u7bwDf0qM/tQuy+789QAkidbPdSab2SEqKFy5qDE2ow=;
- b=AzygjbT2i+TV3XGyRZYsuV1GO/G63GmnWwAibfhtq3f0MLOXA1XRYc+eUyw04L9G37waAxBNMjAQ9t7zZxHF2vPKVfmPfYS/8ymWBREtiYqat/TIBXGQKNDUy74hCQXwvGEXxvhBPR2tPUB9pO8+BJ9aRkowQUHIPcgpPZDH2y0=
+ bh=1VHMJ8JZ0zbljW7SbCr6XszFZk/M5TuMosh+7Gau7vM=;
+ b=ELVerD0YwxNaBx+ctxYi4X5XZ3ldAFFLY6/MQxFXKR/W/xHjb9QdNPa5iWp1iVSWFTI4WyDSMimmfrJTCkpOQRXu3ttIAePgsGOBYNJ8PKPuCyVX0qUwjgikZt416OfULp3vYlGYnCbHV+BBdrHfBl4OK+W7WL7fmoqWn229TRkrb+JExjOHNxa31xsEBdrrGsc9jCPvZqHqDvm9AHDSKoenm20Z9TpDwus1q+5YopMwyjpg0Xmv9rR3SMVR9iYFlgeiKhYd/CAIjihPCkFoI1aj3wEaZ/NyM1XZA0ZIbWD2nFWKCgGWjsUdhn1B5L+PfI8wJ8Tsk7+bYs8pGv8XsQ==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by DM6PR12MB4338.namprd12.prod.outlook.com (2603:10b6:5:2a2::21) with
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by DM5PR1201MB0074.namprd12.prod.outlook.com (2603:10b6:4:57::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.14; Fri, 15 Jul
- 2022 07:31:21 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::905:1701:3b51:7e39]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::905:1701:3b51:7e39%2]) with mapi id 15.20.5438.013; Fri, 15 Jul 2022
- 07:31:21 +0000
-Message-ID: <138407a9-e97f-001e-6e87-e5d92a55c8e8@amd.com>
-Date:   Fri, 15 Jul 2022 09:31:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v1 2/6] drm/gem: Take reservation lock for vmap/vunmap
- operations
-Content-Language: en-US
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Gert Wollny <gert.wollny@collabora.com>,
-        Gustavo Padovan <gustavo.padovan@collabora.com>,
-        Daniel Stone <daniel@fooishbar.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Clark <robdclark@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= <thomas_os@shipmail.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20220715005244.42198-1-dmitry.osipenko@collabora.com>
- <20220715005244.42198-3-dmitry.osipenko@collabora.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20220715005244.42198-3-dmitry.osipenko@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0096.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a1::8) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.25; Fri, 15 Jul
+ 2022 08:08:19 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ac35:7c4b:3282:abfb]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ac35:7c4b:3282:abfb%3]) with mapi id 15.20.5438.013; Fri, 15 Jul 2022
+ 08:08:18 +0000
+Date:   Fri, 15 Jul 2022 05:08:13 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH rdma-next 5/5] RDMA/mlx5: Expose steering anchor to
+ userspace
+Message-ID: <YtEgbZh63bs7w0v3@nvidia.com>
+References: <20220703205407.110890-1-saeed@kernel.org>
+ <20220703205407.110890-6-saeed@kernel.org>
+ <20220713223133.gbbt4fbphzpc42hx@sx1>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220713223133.gbbt4fbphzpc42hx@sx1>
+X-ClientProxiedBy: LO2P265CA0223.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:b::19) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a4804b5a-7352-469f-3eaa-08da663403b0
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4338:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9df7df07-1850-4e65-c7ba-08da66392d18
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0074:EE_
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y9BIhgcKhrwO2Wi+KpxBTiMCjT2gE7YIfKVQu71l+MYSa2zWeH+fEYE+jchr5RyzUK8DdPAH6exQ9SGMh60dOTIuByPUoJW3Hkq5ckMHswmw5QWYJcSXZhbA8BOKnECX+fHvxG9vrPtVRk4d20L4y2m71iDSHdvarvaGxlCZShGF2z/YrXDa1Rt7R+ld0/vRwFt6TFczwZgfHwYsHZRLeSCsBT2zAbGFC5d5RLh/pCQ/BSp4DJ9IbaAK/sG1mc0j7njP+Mg2ubudzGN57JsJ2/cnKgowhbT7VOvj+lG1kAQCbFePIaVFPJIwCSBOJCfiNkMwhEKcFG9vIYI4LqXLRaLzI5CCiDg4nB/ZofO7AlqeucoRu/TKA34JH6Dfc+tj+/MR9yDbI/RqJrFLeOui3Azivm2yPwQ5STE0n0n3wIEhLAjurvL4XT6eJRbaLjWbovPsWux1RAmKGSMNDLn3ws8foThus52yetfrp/rVCyYk20x/5RHAR3Phr5OF1DzGiTyPj6qUJEJTsCP7nxvxUfoar5mLdV6BV516F7MZmrCJ79kOYrDW3wJ2nsaLJHCnglcQnlCGZJUzn5xxZrMnnqxdFNfVF2RqmNZLEUi96PDJcLvndhFPKvriSkyenQpizDImPWgfVGYoQt2rCXT7YxEkuYZOAJoVsWGSfeBAySrbWJcmV88ooq04wC+XIvYkUf1E3Zj+JEW42PwF61jIntAj1/fMOE+t0gKRnd2vigC5AG/M+IW+lHiJM52RiHu+xZvndxieb7gWjs+ZR1G2HuhJnn+zzD7H235PsconYTmbyVrkWUyE3qj0s6tb9PO23TrmOg0wpm2SXOvGskqMZqUXcAnar1Cf3Ib2PmSW7q8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(376002)(39860400002)(346002)(366004)(136003)(316002)(41300700001)(83380400001)(6666004)(2906002)(31696002)(86362001)(478600001)(110136005)(2616005)(6506007)(6486002)(186003)(6512007)(36756003)(7416002)(5660300002)(38100700002)(7406005)(66476007)(4326008)(8936002)(8676002)(66556008)(31686004)(66946007)(921005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Um5M6uOMGHK1fi5cyD684WhqzZ90dcgndSWduKlqjvdzq67pQIUIIQ3DK85Aq668WHh2vv0+x1xAes7xMvGXFeKfjOo4IkFfmGchbi39ZACwjdAY0zqgy3sLwT9ONd/cvq6ozU/8KG4jc7ux7cO9IvQm+xeWGNbGBYuBVKeoxjy8E7LzNiryJea/5eA7f2mrim4JRw67g+9H2fQ/v03zF74EHT8/AaNr83sSwpQMvwQvP14k65MUjprKVtJU6LHIC2gaj9IqxFh4Zcvo1JWllsJUQvUIA5wCNhnr9tftXMT4xLBrd8lV/WtOq+bDw1f47pdSFJD6mtCQY+lu+5MlI5KHzGuCp8Tj2Ou7OxZosBL4c2lxteWAux6jZIk1ctVRiU6guMolgIczNqmSacUks5/HRHoTA6HiYeZB7pTKMSFRPU7jfdUYtl3eqgKuoG8H2qL8JudF2diDvC5k6iynp6h/zaEf4psSFn/tMjJa9dIk9q13Z9i/M0YbbNostG8yufIuY/wSRWxU5t4K5Im/DXlOhEqZU5svvVVSdVxzDKApYI26euo+d6Hyxa1aE3kA6GGW+14twN+cz/f/ZpwmN12E9AJyUADR+genmaWXd6WlYsCGfmdhMenfeqP4PXjeUPuFbpsdoYATUAMvGyqJ3jXknDKm7o2TGs66sqJsXQUHf37uvYfsc5RAcINH9EiJIpK+MR5OyHbcdP2RLaXDrQPXxgItqoCnwWDed9aNSCe6Gej6KDFQYCfsVpXP9CH+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(366004)(346002)(376002)(396003)(136003)(2906002)(36756003)(83380400001)(38100700002)(6512007)(186003)(26005)(6486002)(107886003)(2616005)(6862004)(316002)(86362001)(66946007)(54906003)(8936002)(4326008)(66556008)(5660300002)(66476007)(8676002)(478600001)(37006003)(6666004)(6636002)(41300700001)(6506007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MU9tVHpqUFZMQ2h6Z2NEQlFCcExOdFR6aFVCOHBhU3p1MVZ2NzQyMURUZGw1?=
- =?utf-8?B?MFZhZm45WW1UVEkyZTY4MWhPSFFaYk0yaE9hOGZXSWM0elJCaWQ2cjFBdFNj?=
- =?utf-8?B?c1IwbVBnalNET0NUbzdhM1pxOTFFdVl1T1k5L0xZd2NMclVyM1NXUGFmWmhG?=
- =?utf-8?B?dkhWbWVQZGlJdHpTaWRaZ3QyLy8vallXeHhmL2pvRFllV1VNbWZGeEpvZnYx?=
- =?utf-8?B?OUYvNHd3cXJyVm5wL3Roajh2NTFuVm1BYncwRmpGbERjWFk1UFpWbHZEd1ZH?=
- =?utf-8?B?eDg2VTcxQlFuaEhmU1dQV0d3U2JMQjJkOU1OaGVqM1FaRUpZZVV0YlBWbktr?=
- =?utf-8?B?MDBlTXUwVWRTY25Hc254OGZzR0dZd2VwSkdkVElUR2hRWDJRSko3VFErSDJh?=
- =?utf-8?B?UUxtL0hlTERmSlRqNDdMTFdzN0RkWTUwbFVWOXpJalhCNWlxSUQwemN6Vits?=
- =?utf-8?B?R0pQMjJOVlYzM24vUHVBMzkwbEliaThMYzdXVXp4c0FqaWx6RW5IZmJhdDRX?=
- =?utf-8?B?Y1ZtQ0M0ait0S25MVkczUTVHQlUySmlhQWxQY3JvMXVjR0JObHdoN1h4MzVR?=
- =?utf-8?B?N2tPZlJpbTUxc3lzTWloQUxqcWxMK2tjU0gzL2hIdVRkWVhtR05hWmlrZDFZ?=
- =?utf-8?B?M25WbEhJNjJDQ0VTanJyblBLUHp1RTUrYlJuczJUMWRRSHBQK3FGRU40Q09L?=
- =?utf-8?B?Wk1Ga2NraVZtYWVNU0xYU2hWMTBsb2dIaG5oV1FCdXVEZGlad2pxOGx5cUtt?=
- =?utf-8?B?Z1NveS9ycXpKaTBsdHpDSzhPWUJTcUhBbUlJa0cwaWIxd21rV0FSeFFQVkhl?=
- =?utf-8?B?eHh0VlpQVWpkb3NnYjUvVW1KZWFkRkVyVG1TdFFHbEpXS3ZnS3FxUitEaWJZ?=
- =?utf-8?B?VmlEaEdaYW8zSUN1cWlPS1pJMVBFREpkemFtTzBmamdyL3hKcXVjNHlzbjhk?=
- =?utf-8?B?d1hjcDg0Q3RDRHV6Vkk1ckJEVWRQNmcwNHdyenN3czJxYzB4NUt4WTFOdWNt?=
- =?utf-8?B?UXRKdWcyMjJNN1NJd3ZSNjlhTWMxaGNDQWJjeE9PcGJrYXAxZ2NkVExLcVNy?=
- =?utf-8?B?Umo5dHc2YkhjSVgvZXpoUnhJdC9TK0RMeU9EYmNVNVA0T1V5MFNwckJIK0xF?=
- =?utf-8?B?czhLdDFwR05yU2x6ZklVblIyWDc3WjlNbzFYek1CN3hYcXorMTdFMFFZL3ZC?=
- =?utf-8?B?SDRjTndnVzFocm1QU1pmZmZtenFSTlhKQ2JOdHp6b3JnUXpQQlJjVHNTNEE0?=
- =?utf-8?B?UTQ2R3o3UUF4NzFRVEFEb3QxUktwZFdNMEcyZXpaenNBUGdNN0JYNHQyc2dT?=
- =?utf-8?B?VWU4L214U1RlQWx1aDN2amxHSENrV0xXYzhSemRISHU5WWRaSFhHcTBkL3NM?=
- =?utf-8?B?aFl4SGhVV0ZuUGZ5bUMyTUV1VkhtWWxPeFhmRFZaZ3d2OWFvTERhL0xyMjNl?=
- =?utf-8?B?bUpTdGpsRE84OGlFTXRhV3BYWUNLeGJBdHB1cU9sT2VISnJ2Q1k0cjRxZ015?=
- =?utf-8?B?SExCUTVyUys3NXBWZGJrMm1OYnBDeklGeENMM28waXNrdFVPMDR6eFp5b1dw?=
- =?utf-8?B?NFArYXdxS3Vqc28zNThtMlBoK2p1eU1rNHV5VUVvWkViUEthUVEvMW5wclg5?=
- =?utf-8?B?NjJxeTdMZDBvc0gyLys5RmM4NDVuSUlVbUtIOUlNNmxDaTVtL0FiOXJFNmJV?=
- =?utf-8?B?RDM5Z05XNlVSMnQ4emovbk5DVXB4V3RBN1hsRlRnZS9ZTTJLRmlvV2x3QW1m?=
- =?utf-8?B?d29PRWxRNXBjTVB2bVByTjE5M0srS2V2dDIvQjdibUQ2VmF3UG03cmRNREFq?=
- =?utf-8?B?d3FhNGE4Y01EUkRzWllxWE8zcFU3dTVzUTFOd2kvd2Z6K0JLWlJzQ2xzVkdt?=
- =?utf-8?B?QjVLK040ZVE4UU5yWFVEVElOOEZTbjhnWHYyV1pTdXRqWUV2WmtPelgzSEQv?=
- =?utf-8?B?cFl1RTEvdUZORzBudU1vUzN0U09SbVFGdkw4b2xLdHl0UVBjanEzb09LWjVI?=
- =?utf-8?B?b3d6bFM1NXF3cS9valNpMHlXdVI3VTF5TXQrQVZmQVZ4clJ2L0N5dDJvb09Z?=
- =?utf-8?B?aW1CQkg1RXYrV09jMHoyK1NJZWdpNzhHekgySlByNjhlREpFM3E5OVNLZ0pE?=
- =?utf-8?B?c3ZGMEJDbHJ4L2ZOVGZQNnJ0a3c1L3VPS3Bkb3o3bm1jU01ZMEU4V3RqSXR2?=
- =?utf-8?Q?bZJsAarfJw11WK3HN8PWk+Vs08qIqcpBc49hznLHfovR?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4804b5a-7352-469f-3eaa-08da663403b0
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ie74bqh8NpEr3Da41kMf119shC3uAcb6GlK5YuZIsAIoAVvGkR7FXYQvLERO?=
+ =?us-ascii?Q?e1nQOGPmszo1jTCXOAOQefMm+76D6z5Sg7is2qvFTkMgFtrHuh1geAZTe/Dz?=
+ =?us-ascii?Q?R+CDOjO6s9QZZ7FdUWP/Cc1gj/hm77eMDv6UI8ZmrUOo9Wkw7uEWQ4TziH92?=
+ =?us-ascii?Q?XiVqxUJjztSPzimCaBrLdXlkE8NQz/QQhvlMgLIcdDmQe+AYJX7RyeOqp+gQ?=
+ =?us-ascii?Q?3jzSiz62OUH6hh7Dy1XTIsO+gDYZsPfFKMxoiOjjwC9Swu1Xfmg5Mrzz2ZGy?=
+ =?us-ascii?Q?P6auoznOHiwREIlTQMyspRQTFvOt6QbpOiK4NUdHy4O37nxtfY/GqHO4aVod?=
+ =?us-ascii?Q?ZS+cFQp1PmkidudxWlKfCJOUDIg59mNo6ibOOJSCNadIwsjQRe4ImvryU1w3?=
+ =?us-ascii?Q?fr9lVKrhsExlC51ey1DNKCZyzbItHBFEIcSrFK+0APo1devkcKqD3v69BOeX?=
+ =?us-ascii?Q?tpt7GTz8ysPVGkOeb2XS8M4gokBkUx6WObllGvLgpsZdsquAH+j/BSC4K44+?=
+ =?us-ascii?Q?RK0Jf1/9Cf1wv+V+WFB8J+NFZ/d3O9frEfbWG3EWHJ2UFXkaFDNcLtl3U+em?=
+ =?us-ascii?Q?QogIym6xQTN2LRG5xOGzkn1qVAa3BkFaQwBg7zEAQXwuJZ+je1L3/4vYLVI+?=
+ =?us-ascii?Q?OhaNYB/iKcOMdl34aonJzGYSvUoFQj+uI6EaDeLPyUScJJTwW0DNXUWlRrNs?=
+ =?us-ascii?Q?DsKk5Wf5ZwT/W+LBf7MHBCRf49dJdbGfCdyNih2WuhkAAHnwJ1q/VltvSdE1?=
+ =?us-ascii?Q?iHx6ZEL6hnY/gKygJSVXdMPHzvRuqtL3NL+aVEBwENpqPe5wXQZcr8PA4/K2?=
+ =?us-ascii?Q?kU/qFApRHCJUiVN29Y8rnYhxPaBhOZdSv5JoFphndJJmzgMqvyCQPBK+LM6D?=
+ =?us-ascii?Q?SXbeq47u66T2hGY+ApOYDTl/8h7JDv7wgVnj42U4djAcEoOXtVbRmWSVcfgf?=
+ =?us-ascii?Q?raWevN9BU6HTJmDKWLaOa4jvndGLaGe3c3afUfcHgnLb+7qOh/LxGwv8zTnZ?=
+ =?us-ascii?Q?AUJEMVfen1E7pT+cKaM7px80maVg5FBb0O8/QeqHEtw9x5wz9Kh2JP7bk2Oi?=
+ =?us-ascii?Q?jZKQisVCxzpzgJoOKHzbypxdf9cs/O3a5ra/eGmDxG+1G8cw4N7vQ06LJPW0?=
+ =?us-ascii?Q?BO2s/Mmr3GVknNuuWCWWhgLlJB5XkF5BCiSbk6/O26chOC0DSuipXf6VdMCH?=
+ =?us-ascii?Q?IKXOhiz0hqwmL21tbdyBvEY4Z5L2X+Z6DUKXk17nPx5Sr7Ned2nTdJacR4G/?=
+ =?us-ascii?Q?KoWpcDdzr8DB2MfIBYdOtCjpAsg2doSwkSW22rYVwW8gANX9xs9Jc4C3vLLU?=
+ =?us-ascii?Q?PBeJKdel6USAY5hDG+KRW50orxECZhFP72TBXc6OkOHrwYKsDREDKSmQiTpC?=
+ =?us-ascii?Q?niMVcvIlf/C0A2uR/a36/kK+5P88Cmbx9QS+hYIDZSmZwOfpTwOSs+IDZH45?=
+ =?us-ascii?Q?gNkhHVm1SxiqQ9h8sxt1kipJsrWtaOYH9foTnAHkdM5XwynJ3P4oE+h9PM2U?=
+ =?us-ascii?Q?EHxVkO0QremIrFKPfjfprZVM2g1mlWkYR3h32gMczNnhMuyGyJDDnDqkVX3E?=
+ =?us-ascii?Q?Dsh+qvOMeg1rkmcOu5IJfEuNQk4rU9mXlXrQFFJV?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9df7df07-1850-4e65-c7ba-08da66392d18
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2022 07:31:21.3654
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2022 08:08:18.3207
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sIVSt/Kz3qpSEQ1FdbHocGr+ZKk3MC6frNNvwEg1e45w/VcWB6JgRx5nl94FwCDU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4338
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: T0w0Yy59p+246uvhq7m1D9U1c5D2ucm5/qj8JNqp5pKFpOjCv9HKPjq2WZZS7rsB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0074
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Am 15.07.22 um 02:52 schrieb Dmitry Osipenko:
-> The new common dma-buf locking convention will require buffer importers
-> to hold the reservation lock around mapping operations. Make DRM GEM core
-> to take the lock around the vmapping operations and update QXL and i915
-> drivers to use the locked functions for the case where DRM core now holds
-> the lock. This patch prepares DRM core and drivers to transition to the
-> common dma-buf locking convention where vmapping of exported GEMs will
-> be done under the held reservation lock.
+On Wed, Jul 13, 2022 at 03:31:33PM -0700, Saeed Mahameed wrote:
+> On 03 Jul 13:54, Saeed Mahameed wrote:
+> > From: Mark Bloch <mbloch@nvidia.com>
+> > 
+> > Expose a steering anchor per priority to allow users to re-inject
+> > packets back into default NIC pipeline for additional processing.
+> > 
+> > MLX5_IB_METHOD_STEERING_ANCHOR_CREATE returns a flow table ID which
+> > a user can use to re-inject packets at a specific priority.
+> > 
+> > A FTE (flow table entry) can be created and the flow table ID
+> > used as a destination.
+> > 
+> > When a packet is taken into a RDMA-controlled steering domain (like
+> > software steering) there may be a need to insert the packet back into
+> > the default NIC pipeline. This exposes a flow table ID to the user that can
+> > be used as a destination in a flow table entry.
+> > 
+> > With this new method priorities that are exposed to users via
+> > MLX5_IB_METHOD_FLOW_MATCHER_CREATE can be reached from a non-zero UID.
+> > 
+> > As user-created flow tables (via RDMA DEVX) are created with a non-zero UID
+> > thus it's impossible to point to a NIC core flow table (core driver flow tables
+> > are created with UID value of zero) from userspace.
+> > Create flow tables that are exposed to users with the shared UID, this
+> > allows users to point to default NIC flow tables.
+> > 
+> > Steering loops are prevented at FW level as FW enforces that no flow
+> > table at level X can point to a table at level lower than X.
+> > 
+> > Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+> > Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
+> > Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+> > ---
+> > drivers/infiniband/hw/mlx5/fs.c          | 138 ++++++++++++++++++++++-
+> > drivers/infiniband/hw/mlx5/mlx5_ib.h     |   6 +
+> > include/uapi/rdma/mlx5_user_ioctl_cmds.h |  17 +++
+> 
+> Jason, Can you ack/nack ? This has uapi.. I need to move forward with this
+> submission.
 
-Oh ^^ That looks like a bug fix to me!
+Yes, it looks fine, can you update the shared branch?
 
-At least drm_gem_ttm_vmap() and drm_gem_ttm_vunmap() already expected 
-that they are called with the reservation lock held.
-
-Otherwise you could mess up internal structures in the TTM buffer object 
-while vmapping it.
-
-I will take a deeper look at this.
-
-Regards,
-Christian.
-
->
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> ---
->   drivers/gpu/drm/drm_client.c                 |  4 +--
->   drivers/gpu/drm/drm_gem.c                    | 28 ++++++++++++++++++++
->   drivers/gpu/drm/drm_gem_framebuffer_helper.c |  6 ++---
->   drivers/gpu/drm/drm_prime.c                  |  4 +--
->   drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c   |  2 +-
->   drivers/gpu/drm/qxl/qxl_object.c             | 17 ++++++------
->   drivers/gpu/drm/qxl/qxl_prime.c              |  4 +--
->   include/drm/drm_gem.h                        |  3 +++
->   8 files changed, 50 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_client.c b/drivers/gpu/drm/drm_client.c
-> index 2b230b4d6942..fbcb1e995384 100644
-> --- a/drivers/gpu/drm/drm_client.c
-> +++ b/drivers/gpu/drm/drm_client.c
-> @@ -323,7 +323,7 @@ drm_client_buffer_vmap(struct drm_client_buffer *buffer,
->   	 * fd_install step out of the driver backend hooks, to make that
->   	 * final step optional for internal users.
->   	 */
-> -	ret = drm_gem_vmap(buffer->gem, map);
-> +	ret = drm_gem_vmap_unlocked(buffer->gem, map);
->   	if (ret)
->   		return ret;
->   
-> @@ -345,7 +345,7 @@ void drm_client_buffer_vunmap(struct drm_client_buffer *buffer)
->   {
->   	struct iosys_map *map = &buffer->map;
->   
-> -	drm_gem_vunmap(buffer->gem, map);
-> +	drm_gem_vunmap_unlocked(buffer->gem, map);
->   }
->   EXPORT_SYMBOL(drm_client_buffer_vunmap);
->   
-> diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
-> index eb0c2d041f13..9769c33cad99 100644
-> --- a/drivers/gpu/drm/drm_gem.c
-> +++ b/drivers/gpu/drm/drm_gem.c
-> @@ -1155,6 +1155,8 @@ void drm_gem_print_info(struct drm_printer *p, unsigned int indent,
->   
->   int drm_gem_pin(struct drm_gem_object *obj)
->   {
-> +	dma_resv_assert_held(obj->resv);
-> +
->   	if (obj->funcs->pin)
->   		return obj->funcs->pin(obj);
->   	else
-> @@ -1163,6 +1165,8 @@ int drm_gem_pin(struct drm_gem_object *obj)
->   
->   void drm_gem_unpin(struct drm_gem_object *obj)
->   {
-> +	dma_resv_assert_held(obj->resv);
-> +
->   	if (obj->funcs->unpin)
->   		obj->funcs->unpin(obj);
->   }
-> @@ -1171,6 +1175,8 @@ int drm_gem_vmap(struct drm_gem_object *obj, struct iosys_map *map)
->   {
->   	int ret;
->   
-> +	dma_resv_assert_held(obj->resv);
-> +
->   	if (!obj->funcs->vmap)
->   		return -EOPNOTSUPP;
->   
-> @@ -1186,6 +1192,8 @@ EXPORT_SYMBOL(drm_gem_vmap);
->   
->   void drm_gem_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
->   {
-> +	dma_resv_assert_held(obj->resv);
-> +
->   	if (iosys_map_is_null(map))
->   		return;
->   
-> @@ -1197,6 +1205,26 @@ void drm_gem_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
->   }
->   EXPORT_SYMBOL(drm_gem_vunmap);
->   
-> +int drm_gem_vmap_unlocked(struct drm_gem_object *obj, struct iosys_map *map)
-> +{
-> +	int ret;
-> +
-> +	dma_resv_lock(obj->resv, NULL);
-> +	ret = drm_gem_vmap(obj, map);
-> +	dma_resv_unlock(obj->resv);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(drm_gem_vmap_unlocked);
-> +
-> +void drm_gem_vunmap_unlocked(struct drm_gem_object *obj, struct iosys_map *map)
-> +{
-> +	dma_resv_lock(obj->resv, NULL);
-> +	drm_gem_vunmap(obj, map);
-> +	dma_resv_unlock(obj->resv);
-> +}
-> +EXPORT_SYMBOL(drm_gem_vunmap_unlocked);
-> +
->   /**
->    * drm_gem_lock_reservations - Sets up the ww context and acquires
->    * the lock on an array of GEM objects.
-> diff --git a/drivers/gpu/drm/drm_gem_framebuffer_helper.c b/drivers/gpu/drm/drm_gem_framebuffer_helper.c
-> index 880a4975507f..e35e224e6303 100644
-> --- a/drivers/gpu/drm/drm_gem_framebuffer_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_framebuffer_helper.c
-> @@ -354,7 +354,7 @@ int drm_gem_fb_vmap(struct drm_framebuffer *fb, struct iosys_map *map,
->   			ret = -EINVAL;
->   			goto err_drm_gem_vunmap;
->   		}
-> -		ret = drm_gem_vmap(obj, &map[i]);
-> +		ret = drm_gem_vmap_unlocked(obj, &map[i]);
->   		if (ret)
->   			goto err_drm_gem_vunmap;
->   	}
-> @@ -376,7 +376,7 @@ int drm_gem_fb_vmap(struct drm_framebuffer *fb, struct iosys_map *map,
->   		obj = drm_gem_fb_get_obj(fb, i);
->   		if (!obj)
->   			continue;
-> -		drm_gem_vunmap(obj, &map[i]);
-> +		drm_gem_vunmap_unlocked(obj, &map[i]);
->   	}
->   	return ret;
->   }
-> @@ -403,7 +403,7 @@ void drm_gem_fb_vunmap(struct drm_framebuffer *fb, struct iosys_map *map)
->   			continue;
->   		if (iosys_map_is_null(&map[i]))
->   			continue;
-> -		drm_gem_vunmap(obj, &map[i]);
-> +		drm_gem_vunmap_unlocked(obj, &map[i]);
->   	}
->   }
->   EXPORT_SYMBOL(drm_gem_fb_vunmap);
-> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> index b75ef1756873..1bd234fd21a5 100644
-> --- a/drivers/gpu/drm/drm_prime.c
-> +++ b/drivers/gpu/drm/drm_prime.c
-> @@ -678,7 +678,7 @@ int drm_gem_dmabuf_vmap(struct dma_buf *dma_buf, struct iosys_map *map)
->   {
->   	struct drm_gem_object *obj = dma_buf->priv;
->   
-> -	return drm_gem_vmap(obj, map);
-> +	return drm_gem_vmap_unlocked(obj, map);
->   }
->   EXPORT_SYMBOL(drm_gem_dmabuf_vmap);
->   
-> @@ -694,7 +694,7 @@ void drm_gem_dmabuf_vunmap(struct dma_buf *dma_buf, struct iosys_map *map)
->   {
->   	struct drm_gem_object *obj = dma_buf->priv;
->   
-> -	drm_gem_vunmap(obj, map);
-> +	drm_gem_vunmap_unlocked(obj, map);
->   }
->   EXPORT_SYMBOL(drm_gem_dmabuf_vunmap);
->   
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-> index 5ecea7df98b1..cc54a5b1d6ae 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-> @@ -72,7 +72,7 @@ static int i915_gem_dmabuf_vmap(struct dma_buf *dma_buf,
->   	struct drm_i915_gem_object *obj = dma_buf_to_obj(dma_buf);
->   	void *vaddr;
->   
-> -	vaddr = i915_gem_object_pin_map_unlocked(obj, I915_MAP_WB);
-> +	vaddr = i915_gem_object_pin_map(obj, I915_MAP_WB);
->   	if (IS_ERR(vaddr))
->   		return PTR_ERR(vaddr);
->   
-> diff --git a/drivers/gpu/drm/qxl/qxl_object.c b/drivers/gpu/drm/qxl/qxl_object.c
-> index 695d9308d1f0..06a58dad5f5c 100644
-> --- a/drivers/gpu/drm/qxl/qxl_object.c
-> +++ b/drivers/gpu/drm/qxl/qxl_object.c
-> @@ -168,9 +168,16 @@ int qxl_bo_vmap_locked(struct qxl_bo *bo, struct iosys_map *map)
->   		bo->map_count++;
->   		goto out;
->   	}
-> -	r = ttm_bo_vmap(&bo->tbo, &bo->map);
-> +
-> +	r = __qxl_bo_pin(bo);
->   	if (r)
->   		return r;
-> +
-> +	r = ttm_bo_vmap(&bo->tbo, &bo->map);
-> +	if (r) {
-> +		__qxl_bo_unpin(bo);
-> +		return r;
-> +	}
->   	bo->map_count = 1;
->   
->   	/* TODO: Remove kptr in favor of map everywhere. */
-> @@ -192,12 +199,6 @@ int qxl_bo_vmap(struct qxl_bo *bo, struct iosys_map *map)
->   	if (r)
->   		return r;
->   
-> -	r = __qxl_bo_pin(bo);
-> -	if (r) {
-> -		qxl_bo_unreserve(bo);
-> -		return r;
-> -	}
-> -
->   	r = qxl_bo_vmap_locked(bo, map);
->   	qxl_bo_unreserve(bo);
->   	return r;
-> @@ -247,6 +248,7 @@ void qxl_bo_vunmap_locked(struct qxl_bo *bo)
->   		return;
->   	bo->kptr = NULL;
->   	ttm_bo_vunmap(&bo->tbo, &bo->map);
-> +	__qxl_bo_unpin(bo);
->   }
->   
->   int qxl_bo_vunmap(struct qxl_bo *bo)
-> @@ -258,7 +260,6 @@ int qxl_bo_vunmap(struct qxl_bo *bo)
->   		return r;
->   
->   	qxl_bo_vunmap_locked(bo);
-> -	__qxl_bo_unpin(bo);
->   	qxl_bo_unreserve(bo);
->   	return 0;
->   }
-> diff --git a/drivers/gpu/drm/qxl/qxl_prime.c b/drivers/gpu/drm/qxl/qxl_prime.c
-> index 142d01415acb..9169c26357d3 100644
-> --- a/drivers/gpu/drm/qxl/qxl_prime.c
-> +++ b/drivers/gpu/drm/qxl/qxl_prime.c
-> @@ -59,7 +59,7 @@ int qxl_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
->   	struct qxl_bo *bo = gem_to_qxl_bo(obj);
->   	int ret;
->   
-> -	ret = qxl_bo_vmap(bo, map);
-> +	ret = qxl_bo_vmap_locked(bo, map);
->   	if (ret < 0)
->   		return ret;
->   
-> @@ -71,5 +71,5 @@ void qxl_gem_prime_vunmap(struct drm_gem_object *obj,
->   {
->   	struct qxl_bo *bo = gem_to_qxl_bo(obj);
->   
-> -	qxl_bo_vunmap(bo);
-> +	qxl_bo_vunmap_locked(bo);
->   }
-> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
-> index 87cffc9efa85..bf3700415229 100644
-> --- a/include/drm/drm_gem.h
-> +++ b/include/drm/drm_gem.h
-> @@ -420,4 +420,7 @@ void drm_gem_unlock_reservations(struct drm_gem_object **objs, int count,
->   int drm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
->   			    u32 handle, u64 *offset);
->   
-> +int drm_gem_vmap_unlocked(struct drm_gem_object *obj, struct iosys_map *map);
-> +void drm_gem_vunmap_unlocked(struct drm_gem_object *obj, struct iosys_map *map);
-> +
->   #endif /* __DRM_GEM_H__ */
-
+Jason
