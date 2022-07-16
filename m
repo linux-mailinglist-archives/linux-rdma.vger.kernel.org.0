@@ -2,236 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8935766BC
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jul 2022 20:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC53576C7B
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Jul 2022 10:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbiGOS26 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Jul 2022 14:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        id S229748AbiGPIFj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 16 Jul 2022 04:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbiGOS25 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jul 2022 14:28:57 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC1A1C913
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Jul 2022 11:28:55 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-10c0d96953fso7894990fac.0
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Jul 2022 11:28:55 -0700 (PDT)
+        with ESMTP id S229497AbiGPIFi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 Jul 2022 04:05:38 -0400
+Received: from esa6.fujitsucc.c3s2.iphmx.com (esa6.fujitsucc.c3s2.iphmx.com [68.232.159.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE251C904
+        for <linux-rdma@vger.kernel.org>; Sat, 16 Jul 2022 01:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1657958736; x=1689494736;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=VR29y3WKIOItSc+RsHyXtrZ0NyV31n0LzhE4rAjRleo=;
+  b=MRE0AHeL8tHFWLdn9hYhRjtnJFE7/SQYmzD06dwbxXq5cgbjjcKR3i+a
+   HQcpmpldAxszK/cNT3YQGyJyivycbYDQeWli2VZe1kD3IxEoqqqRwEiIi
+   SF+UWQYVhSYbZmAdu3NPxF02VXMUXt4e0yhgIomBc/T4AhA/9oObMvCzR
+   c3PxWI3U6qKi/PAYSaQSMfWSvJTK2OlDhMr/1CPBBfIOWcp2p9u/na86b
+   SQxX/gQorvSXPqR8FkmPANLW2zC70Q34jTevj/n08+J5OklNQiYSOFrcs
+   Lv3EH07+LZOLXGPR1e4RwHAyRqNqsvNmCbdHOGDDfA7ofy9F4uZzkb6vr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10409"; a="60545950"
+X-IronPort-AV: E=Sophos;i="5.92,276,1650898800"; 
+   d="scan'208";a="60545950"
+Received: from mail-os0jpn01lp2104.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.104])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2022 17:05:33 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IlFJgqG+ZEht9c4LrPCbvV4X9USwwg6hf0dFGsLDESPgJsjwCFE16LZjGOgnRJamIvcCSAjQpHC6cRGKE+z9dQNgM5AdsaFvvaChhAE6MyuAdN9LomO01IAlLDQQ6ldZm6DvRqWixIfnGkout3JN2ZPyaNcggG4BXeUYkyYewCNoznAC3tDIkfMTgRUxlDJlTDA2F5fYEZXSAGe1U2GxYJh7+NgInDlHfgRpDeeWeC8TWtAmlbYhZLObrPfP76iQkjgKpnOEQap6RpqXE9ZXyd0mkDLwW9j4VFwxtJ8JsHNg56Bz2OAAEQNB/5FFbtkjQv3eFEbTslcFGzpjcPf7TA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VR29y3WKIOItSc+RsHyXtrZ0NyV31n0LzhE4rAjRleo=;
+ b=fgOvi2IWcgvuwOGPsiZordDQUCZ82l6842Em4HZacv3DQwEC/h41zkdcrZMWeh7AuHwWgjyFGxhVHV4frwYbuN5h8LMnZXZceJ/FciDgFH6EIhMYcVVIsiY6d3GIWGUZGZvgDjEbfF6OmjQvxJ4GvC8+4Yj2EeyYm6eVsTJyPHNry8a3GDoSEcEAmqEcVFIMq97OpjhtgabpWvRe5zhEYNYjl6r60zP9NH+xnyA3QBtpiB/lCoDPkc/yge6VL2QtuilpvrZK4hcMpB7wEVYuWL+YCX8xHWz+p2U3SFY9yZJ9aBvsMmj0pdem7cNS8xyy9MNHchhuQtvCpEOCvRKAfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=Z0XDO8aPyW4ONltpxXsOuSKj/eDNw7SjZgU+gkymypk=;
-        b=NkjuVxIwTWJoM06W42DEniXXkZage5CjguqEin+d9N5FWVla+xPhiTvkQKOLuSmskO
-         iv3d74CHOlQDFumvVfeAUMMONtTGpkKbeQ1LBzIa4CHDgY4H44C/vLpQPPSIen99WMhX
-         uYQGpttbZtY8Cu1zeFPI4qBNVTRcbqH0vkfBpIvsjHq45bL/TNkkOSjfhlWVwCnc9Lmh
-         dowg1eO+ADVsLAHnCvGJBIn4TzScKrWYH/PREZDsr0T+bl3JCvnjbDUjMFrhubxgWwio
-         +aExGSCXVL7MFzC13E5YtZgWqaH/UcPizNKh4w0QNnP6jRA9w//pIwZGLSbBBJ3F6O2E
-         kJkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Z0XDO8aPyW4ONltpxXsOuSKj/eDNw7SjZgU+gkymypk=;
-        b=nckBTyDyj0Nc4pVw0z7tW5j2LYOmlojHKF0b6V6VOeUfEhCp91SwJExTSP0XEn0let
-         2hx5WEFcdlvJohPKRobMzJUG0s4GnJuTBBupv/60a0ajTHzP2ULfpcubZTyTyVOWDHSD
-         JgukG31YZL5hc5bLwVt70VTNbpo/E6ta79Uyph2AcelSr3sD+QWpfRnguHsK8V9EZL6c
-         TB3BIV2bDzcs4ruwGnv4leiEYxfib02cBoLDn/wwjOMDasy9/ugCqCKi15belGal+3nw
-         6kV7EEZzip3yltpjCRjQQ7x25HgsCwwg442P/zy+CsbsueCqwmf0WK/AuhW32mcXMUee
-         5jUQ==
-X-Gm-Message-State: AJIora/Ppc/JyFFvlddEw7WfcCX0+NILZk1VRO2y6JelGazs2urM/RwL
-        egzibcHWuWwOqfqSsNxZ+jGxt3kni4g=
-X-Google-Smtp-Source: AGRyM1uAoMYGs7AEQZw/y9Tlx95dl9ctn61dXgRXrGjXmW8NWyIRq+EBfET/TGTkyxLP6W4SmVClgg==
-X-Received: by 2002:a05:6870:a9a4:b0:10c:1622:aacc with SMTP id ep36-20020a056870a9a400b0010c1622aaccmr8234132oab.184.1657909735089;
-        Fri, 15 Jul 2022 11:28:55 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:d7fe:5e08:17b5:c1dc? (2603-8081-140c-1a00-d7fe-5e08-17b5-c1dc.res6.spectrum.com. [2603:8081:140c:1a00:d7fe:5e08:17b5:c1dc])
-        by smtp.gmail.com with ESMTPSA id el12-20020a056870f68c00b0010c289aafbcsm2585730oab.16.2022.07.15.11.28.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jul 2022 11:28:54 -0700 (PDT)
-Message-ID: <545a4df9-4c5d-a74c-5359-2a4f484a8829@gmail.com>
-Date:   Fri, 15 Jul 2022 13:28:53 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH for-next] RDMA/rxe: check rxe_pd before rxe_put in
- rxe_mr_cleanup()
-Content-Language: en-US
-To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VR29y3WKIOItSc+RsHyXtrZ0NyV31n0LzhE4rAjRleo=;
+ b=G5SDBL6hfo1GlQEzQ4dCZOkftDfFbVmWC4JvAPBhkbGH1AmhsJOUF/+U4oCH9+yLZPzJOgS7cLbZTp6fF4D4uJfZKpNqSLt5JJt9rZvIyXlNEvvgdzgv3YecmjZocZKWorIXFDqQNU2hv6ZkBy6mXL4sdFvw/nFtHWi2iAHOENU=
+Received: from TYCPR01MB9305.jpnprd01.prod.outlook.com (2603:1096:400:196::10)
+ by OS3PR01MB5880.jpnprd01.prod.outlook.com (2603:1096:604:c6::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.14; Sat, 16 Jul
+ 2022 08:05:30 +0000
+Received: from TYCPR01MB9305.jpnprd01.prod.outlook.com
+ ([fe80::8d7a:baa8:3b18:cd93]) by TYCPR01MB9305.jpnprd01.prod.outlook.com
+ ([fe80::8d7a:baa8:3b18:cd93%7]) with mapi id 15.20.5438.020; Sat, 16 Jul 2022
+ 08:05:30 +0000
+From:   "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
         Yanjun Zhu <yanjun.zhu@linux.dev>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-next] RDMA/rxe: check rxe_pd before rxe_put in
+ rxe_mr_cleanup()
+Thread-Topic: [PATCH for-next] RDMA/rxe: check rxe_pd before rxe_put in
+ rxe_mr_cleanup()
+Thread-Index: AQHYkRm6Bw1pQgLwyUy00KjkER3CY61+FxgAgAC/PwCAAPjugIAA5CeA
+Date:   Sat, 16 Jul 2022 08:05:30 +0000
+Message-ID: <8df53e84-6743-5d48-1550-d214585acc29@fujitsu.com>
 References: <20220706092811.1756290-1-lizhijian@fujitsu.com>
  <c82760f8-8774-a90e-7636-1c8954c007f3@gmail.com>
  <11dafa5f-c52d-16c1-fe37-2cd45ab20474@fujitsu.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <11dafa5f-c52d-16c1-fe37-2cd45ab20474@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+ <545a4df9-4c5d-a74c-5359-2a4f484a8829@gmail.com>
+In-Reply-To: <545a4df9-4c5d-a74c-5359-2a4f484a8829@gmail.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2f989c30-4979-4f66-42b4-08da6701f37f
+x-ms-traffictypediagnostic: OS3PR01MB5880:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4O9kTdJbm0N+niSQDiO7eEAtT4x7iVPYl9B4Qt3dM6+MuFK/KCqfejJDRdsBjH3jMNXMlbMSPlVwaWf9EwHHZIsu3vAdl7CkedMbm0DXQz6CF/AaFtDMXGaSzbsai36MqwSdIizwlHTiWFOcgNWsNvz3sBwUP9L3BpcKeRozuC/tkfC391HvyMyuz8hMsHoJjXAQoLsn1HuyHoTwWdL5zrEZ7qLoqxABUJM4nCQI8Hl5RNIi7EGbCdn8uPkCAA/rGdRy/33uwdxVmQ4EOvtqpSNp60ZX8cWNEB+WE7Enqyksnuy6LItMSJfVVtY61etCGg8WPb/V+xB8y++Xs9dxgHMIQd8fa5RRR7uPF0KpNvujEJpaE72jgiEAAdArKaPcWEFArcgiAStTH/qbwMQJEPntsbwEnzpF7w7wVxeuikwjs4TG0P20D94Xg7VxCpsm+MbZF3LednfaHtapevfMY98a+JpxHKRX35iap5bDERR+RUVzu7AFs2H3A7yZQPJ5nQVI/HC0voTsoqH7NP1TGO9Qt3Sxka0X4HsIg7I9xYh5aF01P00NcBBFuRdl3VUqfv9i2uTdwixmIALnsuBESnkZQEid+cxVEkrr6j1P+RPBRO5yrpTsBoBslKOU3BppvQL7qVY9BKQ1QLMvfRwCxK/DNrHizoxySi6GNP0bmhQXkQK+dxKticaK27wIaqI5pql0t747u2zutYVtPZPt1wQTNBPbqkats+MtxmeBBiGXlrNdaQ94nuuPX0iRpYU78QtA4zc2ugP1qpI5a1sq4cF0w7pgqPRrSXCnlajf7u7L3uSGMe3bFw980g7OvPM1QXFsZC2PxuKrFW7dP96/VdE5VyAB8JPTT8tYpyPve+FQH0s2IXQO2j6bq2jxNjH0
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB9305.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(376002)(366004)(39860400002)(346002)(396003)(478600001)(38100700002)(6486002)(6512007)(41300700001)(2616005)(31686004)(4744005)(85182001)(6506007)(26005)(36756003)(2906002)(122000001)(31696002)(5660300002)(8936002)(86362001)(71200400001)(110136005)(38070700005)(66476007)(82960400001)(316002)(64756008)(186003)(91956017)(76116006)(66556008)(8676002)(66946007)(66446008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U0ZPbzdxUXE1U2I4R2lUUHlmVC9GdnMyL01rZXJUWUNrM1grc0h0TWtmTFVw?=
+ =?utf-8?B?MWltRVBJRVBVdVlqL28xMjJ4WVg0WFEzT05jTkVSQTEvSUNxdHZnR2F1bFk5?=
+ =?utf-8?B?bWlhZkV0dnVHandoR1hUOHNod1RtMUFWZ0JSMHFyblpwWTIwSlNuWGN3ZFVJ?=
+ =?utf-8?B?b0cyMm5HMzVkeWY4ajlsQ0gzdlpsQzJ3cTAvK2ZwK1BGNXkza1paV2pBaEdu?=
+ =?utf-8?B?TDRTbS9pdUl2cTVpTjhBZkh5dHFaRGQrUWlPSzRhaXd5MkVNUG80MzlYbjZn?=
+ =?utf-8?B?T2JjWjBqMWdmWGZjSEVxazhXbXVYbWJ0VStiVzN2TGVVaU1qMnVkaUc0Zjls?=
+ =?utf-8?B?bmxEZXJSZGw4VUg4M3BPRTYwTGQxa1oxaDdMQTdpT2I1RnkvbUZCaXZDZVRS?=
+ =?utf-8?B?N3JKelZMQitZYTdlQXk5bE05TXY4QkFvWlNIWnFPTmdYYXozVWRhWElpNFdp?=
+ =?utf-8?B?Y2ZraHpuTjlwRExaSW5OSU9HWnVmY0lEWnV1Qk4wY3Jpdk5rbXI3dHh6NVBL?=
+ =?utf-8?B?YnBFb0xnMFkzQ2s5bW1Ma3VzRzhFNUFFdXMraDNuY1hoaHUzWWYzR05neTUr?=
+ =?utf-8?B?Vk1EYWdLdWpFcEhUaEU5WXd6Zmhya0Urc2ZtbWtDbVNGV1l6WEhGVGpKZERt?=
+ =?utf-8?B?WTltM29teXA2Qkp2Mmc1R2p6eXR2dnRFOWtUaEdaQTlVSWhCRkNIcFhIL29Y?=
+ =?utf-8?B?S0RON3RQWjZLdDg4eXd5dnl3YzJISTFzSVJ6UG9zZm9YYzFaaFZVMkRmeWph?=
+ =?utf-8?B?WW9IUFZqOWNPVGhiWnVaTG1nOHoySnhWU0N1ZmZhT1NPblo2ZFVrcW41UjRN?=
+ =?utf-8?B?S2kzSE5YZ2J1UzJ0Z2pIanZLME9XTTdIMUUrVTNNSWw1NjdSODYxbXFjczJJ?=
+ =?utf-8?B?VzRjV0pERm1JZHR1SllTY1ZFZTFsVTFaZ3M5VTFTZ3FMRVM3TUhvcjNFTWhU?=
+ =?utf-8?B?c3RlYmxpOFNRZDVZZTFUYVZ2YitlQUkraHc2cXJYNFlOYUVmYkxHY2dYcm1U?=
+ =?utf-8?B?Mm9Na0YxeU5seS9oTWJUc01JWjZwQXpSTzJyLy9RS1Voa1VXUXZVMUpzRnRL?=
+ =?utf-8?B?S2dwbTNKKzdtWU5xQ0ZXUXRkMjk4ZTRuWVBGWk5qeFpqMk8zZ052ZEQwN2lt?=
+ =?utf-8?B?ZHZDb1ZETXdUWEwrV2ZNWlJLOUw5WHdpNnRyWWZEQVpvN1VhTkxnajVteXhE?=
+ =?utf-8?B?R0xxM1lBYkVvVk1LYWtzTEYyY3Z4NzhsWG13THcwbCtORkxqeE1EeVZQMlZj?=
+ =?utf-8?B?VG5BdDFXMDZmZTRCb2VqUjVDMnp3dytXblBFTU1idTdZV2MxQnNQYXhScExR?=
+ =?utf-8?B?b1BWc3VOdkp4aUxpbzNyTlRTc0FpSm5FMkVoZGthdkRoZ3UxcGRpMU9BWFJG?=
+ =?utf-8?B?NTBnMHI5QndwRUlQL25xbHNKdlZSM1BoMmdyRGlMQ2U1VFZNTG11QWNUTWdH?=
+ =?utf-8?B?cXR0MjFsMzcwcm1YRDdzUEdEazFITHdUTEoxTDRuYzByMmVrVVcxMjUxVFZq?=
+ =?utf-8?B?QVpJb0xNOG1NOXJyN0lyNjhGZWRWTWVGWktsYU94aHY3d1lQc2ZhellJZ1dp?=
+ =?utf-8?B?SHM1K09MNzh4K2pnbkpXY3AweWZjSXVCc1BHZUdxYjM1L1RQQU5rSFdxL2k3?=
+ =?utf-8?B?K3JGTmdjYUJjSzlDdjFaNnRYQXBHZ1dwdmx3eVdRRW95QzlHYkNXRC9IUGY2?=
+ =?utf-8?B?QWROT0NFbi81UlNrWjRDaHNacXdENEp2VUpEdDBJZ2ZKTkkzVUczbm5SeENj?=
+ =?utf-8?B?bmFFQlorb3lYMTRPcWlCRHdPVlcraGRrSWp1ekowZS9oK0FMTGsvRStJS2NR?=
+ =?utf-8?B?Yk9CT0lUckJ5ZS80elIxUkNLUkVQc2c3WSt5WSt0b3NyNVZCRk5BVXpvMDUv?=
+ =?utf-8?B?TTBaKzJ4ZlUwaWVLRndveElaVXF4c05leWhKb1VCeGFNcjVJTENCaEhUWGRx?=
+ =?utf-8?B?V2FYVllacXNyK2NtQ1l3VzRTUVkwcHZ6Y2lUeFE1eWxwZEEybE5kcVluNEND?=
+ =?utf-8?B?Nkp3YmlmZjlMRTllSmRaQnYwdTQzRmg4WVd3UENMWGxjM0kyRW4waGwzTG83?=
+ =?utf-8?B?M0g2dHl1S3hpZkx2L2JST0xtcUlOc1JmeHNLaExxaWFDM3ZSSDJONE1ZTE9n?=
+ =?utf-8?B?em9laEVwUnRTdkdYVURMZVBISGhaL1JCSW8zcEdaa3lqSVEwWmdOZ08rcTV0?=
+ =?utf-8?B?Zmc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <189129B8BB31904E905B0DC99DA1FBF5@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB9305.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f989c30-4979-4f66-42b4-08da6701f37f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jul 2022 08:05:30.3696
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JgOZvT6dK2czG4Cg9NEv+pMCWXzReyYZy2oBtscjh/Zha4YrcT0yRRSFcW/nI3CFHLTC//5smrhnc8LI+2i1yw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB5880
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/14/22 22:37, lizhijian@fujitsu.com wrote:
-> 
-> 
-> On 15/07/2022 00:13, Bob Pearson wrote:
->> On 7/6/22 04:21, lizhijian@fujitsu.com wrote:
->>> It's possible mr_pd(mr) returns NULL if rxe_mr_alloc() fails.
->>>
->>> it fixes below panic:
->>> [  114.163945] RPC: Registered rdma backchannel transport module.
->>> [  116.868003] eth0 speed is unknown, defaulting to 1000
->>> [  120.173114] rdma_rxe: rxe_mr_init_user: Unable to allocate memory for map
->>> [  120.173159] ==================================================================
->>> [  120.173161] BUG: KASAN: null-ptr-deref in __rxe_put+0x18/0x60 [rdma_rxe]
->>> [  120.173194] Write of size 4 at addr 0000000000000080 by task rdma_flush_serv/685
->>> [  120.173197]
->>> [  120.173199] CPU: 0 PID: 685 Comm: rdma_flush_serv Not tainted 5.19.0-rc1-roce-flush+ #90
->>> [  120.173203] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-27-g64f37cc530f1-prebuilt.qemu.org 04/01/2014
->>> [  120.173208] Call Trace:
->>> [  120.173216]  <TASK>
->>> [  120.173217]  dump_stack_lvl+0x34/0x44
->>> [  120.173250]  kasan_report+0xab/0x120
->>> [  120.173261]  ? __rxe_put+0x18/0x60 [rdma_rxe]
->>> [  120.173277]  kasan_check_range+0xf9/0x1e0
->>> [  120.173282]  __rxe_put+0x18/0x60 [rdma_rxe]
->>> [  120.173311]  rxe_mr_cleanup+0x21/0x140 [rdma_rxe]
->>> [  120.173328]  __rxe_cleanup+0xff/0x1d0 [rdma_rxe]
->>> [  120.173344]  rxe_reg_user_mr+0xa7/0xc0 [rdma_rxe]
->>> [  120.173360]  ib_uverbs_reg_mr+0x265/0x460 [ib_uverbs]
->>> [  120.173387]  ? ib_uverbs_modify_qp+0x8b/0xd0 [ib_uverbs]
->>> [  120.173433]  ? ib_uverbs_create_cq+0x100/0x100 [ib_uverbs]
->>> [  120.173461]  ? uverbs_fill_udata+0x1d8/0x330 [ib_uverbs]
->>> [  120.173488]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x19d/0x250 [ib_uverbs]
->>> [  120.173517]  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_CONTEXT+0x190/0x190 [ib_uverbs]
->>> [  120.173547]  ? radix_tree_next_chunk+0x31e/0x410
->>> [  120.173559]  ? uverbs_fill_udata+0x255/0x330 [ib_uverbs]
->>> [  120.173587]  ib_uverbs_cmd_verbs+0x11c2/0x1450 [ib_uverbs]
->>> [  120.173616]  ? ucma_put_ctx+0x16/0x50 [rdma_ucm]
->>> [  120.173623]  ? __rcu_read_unlock+0x43/0x60
->>> [  120.173633]  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_CONTEXT+0x190/0x190 [ib_uverbs]
->>> [  120.173661]  ? uverbs_fill_udata+0x330/0x330 [ib_uverbs]
->>> [  120.173711]  ? avc_ss_reset+0xb0/0xb0
->>> [  120.173722]  ? vfs_fileattr_set+0x450/0x450
->>> [  120.173742]  ? should_fail+0x78/0x2b0
->>> [  120.173745]  ? __fsnotify_parent+0x38a/0x4e0
->>> [  120.173764]  ? ioctl_has_perm.constprop.0.isra.0+0x198/0x210
->>> [  120.173784]  ? should_fail+0x78/0x2b0
->>> [  120.173787]  ? selinux_bprm_creds_for_exec+0x550/0x550
->>> [  120.173792]  ib_uverbs_ioctl+0x114/0x1b0 [ib_uverbs]
->>> [  120.173820]  ? ib_uverbs_cmd_verbs+0x1450/0x1450 [ib_uverbs]
->>> [  120.173861]  __x64_sys_ioctl+0xb4/0xf0
->>> [  120.173867]  do_syscall_64+0x3b/0x90
->>> [  120.173877]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
->>> [  120.173884] RIP: 0033:0x7f4b563c14eb
->>> [  120.173889] Code: ff ff ff 85 c0 79 9b 49 c7 c4 ff ff ff ff 5b 5d 4c 89 e0 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 55 b9 0c 00 f7 d8 64 89 01 48
->>> [  120.173892] RSP: 002b:00007ffe0e4a6fe8 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
->>>
->>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
->>> ---
->>>   drivers/infiniband/sw/rxe/rxe_mr.c | 4 +++-
->>>   1 file changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
->>> index 9a5c2af6a56f..cec5775a72f2 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
->>> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
->>> @@ -695,8 +695,10 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->>>   void rxe_mr_cleanup(struct rxe_pool_elem *elem)
->>>   {
->>>   	struct rxe_mr *mr = container_of(elem, typeof(*mr), elem);
->>> +	struct rxe_pd *pd = mr_pd(mr);
->>>   
->>> -	rxe_put(mr_pd(mr));
->>> +	if (pd)
->>> +		rxe_put(pd);
->>>   
->>>   	ib_umem_release(mr->umem);
->>>   
->> Li,
->>
->> You seem to be fixing the problem in the wrong place.
->> All MRs should have an associated PD.
-> 
-> Currently, in rxe_reg_user_mr process, PD will be associated to a MR only when the MR allotted map_set successfully.
-> 
-> 164 int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
-> 165                      int access, struct rxe_mr *mr)
-> 166 {
-> ...
-> 188         err = rxe_mr_alloc(mr, num_buf, 0);
-> 189         if (err) {
-> 190                 pr_warn("%s: Unable to allocate memory for map\n",
-> 191 __func__);
-> 192                 goto err_release_umem;
-> 193         }
-> ...
-> 227         mr->ibmr.pd = &pd->ibpd;      <<< associate the PD with a MR
-> 
-> 
-> But if rxe_mr_alloc() fails, this rxe_pd will be put in rxe_mr_init_user()'s caller rxe_reg_user_mr().
-> 
->   912 static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
->   913                                      u64 start,
->   914                                      u64 length,
->   915                                      u64 iova,
->   916                                      int access, struct ib_udata *udata)
->   917 {
->   918         int err;
->   919         struct rxe_dev *rxe = to_rdev(ibpd->device);
->   920         struct rxe_pd *pd = to_rpd(ibpd);
->   921         struct rxe_mr *mr;
->   922
->   923         mr = rxe_alloc(&rxe->mr_pool);
->   924         if (!mr) {
->   925                 err = -ENOMEM;
->   926                 goto err2;
->   927 }
->   928
->   929
->   930         rxe_get(pd);           <<< pair with rxe_put() in rxe_mr_cleanup() if rxe_mr_init_user() successes. or rxe_put() in err3 below.
->   931
->   932         err = rxe_mr_init_user(pd, start, length, iova, access, mr);
->   933         if (err)
->   934                 goto err3;
->   935
->   936 rxe_finalize(mr);
->   937
->   938         return &mr->ibmr;
->   939
->   940 err3:
->   941 rxe_put(pd);
->   942 rxe_cleanup(mr);
->   943 err2:
->   944         return ERR_PTR(err);
->   945 }
-> 
-> Thanks
-> 
-> 
->> The PD is passed in as a struct ib_pd to one of the MR registration APIs from rdma-core.
->> The PD is allocated in rdma-core and it should check that it has a valid PD before it calls
->> the rxe driver. I am not sure how you triggered the above behavior.
->>
->> The address of the PD is saved in the MR struct when the MR is registered and just should never
->> be NULL. Assuming there is a way to register an MR without a PD (I have never seen this) we should
->> check it in the registration routine not the cleanup routine and fail the call there.
->>
->> [Jason, Is there such a thing as an MR without a valid PD?]
->>
->> Bob
-
-Li,
-
-I just sent in an alternative patch that fixes up the error paths.
-We not only have a problem with PD but also umem. I moved the setting
-of PD up so it will always be set before cleanup gets called and also
-checks if umem is set before freeing it. Please take a look at it.
-
-Bob
+Qm9iDQoNCm9uIDcvMTYvMjAyMiAyOjI4IEFNLCBCb2IgUGVhcnNvbiB3cm90ZToNCj4gTGksDQo+
+DQo+IEkganVzdCBzZW50IGluIGFuIGFsdGVybmF0aXZlIHBhdGNoIHRoYXQgZml4ZXMgdXAgdGhl
+IGVycm9yIHBhdGhzLg0KDQp0aGFua3MgZm9yIHlvdXIgcGF0Y2gsIGkgd2lsbCB0YWtlIGEgbG9v
+ayBsYXRlci4NCg0KDQo+IFdlIG5vdCBvbmx5IGhhdmUgYSBwcm9ibGVtIHdpdGggUEQgYnV0IGFs
+c28gdW1lbS4NCg0KSW4gbXkgdW5kZXJzdGFuZGluZywgYWx0aG91Z2ggdGhlIHVtZW0gaXMgYWxz
+byBub3Qgc2V0IGluIHRoZSBzYW1lIGNhc2UsIA0KaXQncyBzYWZlIHRvIHBhc3MgTlVMTCB0byBp
+Yl91bWVtX3JlbGVhc2UoKcKgIGN1cnJlbnRseS4NCg0KVGhhbmtzDQoNCg0KPiBJIG1vdmVkIHRo
+ZSBzZXR0aW5nDQo+IG9mIFBEIHVwIHNvIGl0IHdpbGwgYWx3YXlzIGJlIHNldCBiZWZvcmUgY2xl
+YW51cCBnZXRzIGNhbGxlZCBhbmQgYWxzbw0KPiBjaGVja3MgaWYgdW1lbSBpcyBzZXQgYmVmb3Jl
+IGZyZWVpbmcgaXQuIFBsZWFzZSB0YWtlIGEgbG9vayBhdCBpdC4=
