@@ -2,138 +2,219 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D67D65782A9
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jul 2022 14:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4544578486
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jul 2022 15:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235141AbiGRMph (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jul 2022 08:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
+        id S235626AbiGRN45 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jul 2022 09:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235156AbiGRMpf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jul 2022 08:45:35 -0400
-Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C45AB9C;
-        Mon, 18 Jul 2022 05:45:33 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VJlyRhm_1658148329;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0VJlyRhm_1658148329)
-          by smtp.aliyun-inc.com;
-          Mon, 18 Jul 2022 20:45:30 +0800
-Date:   Mon, 18 Jul 2022 20:45:28 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Wenjia Zhang <wenjia@linux.ibm.com>
-Cc:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 0/6] net/smc: Introduce virtually contiguous
- buffers for SMC-R
-Message-ID: <YtVV6IWF0cKxJaWe@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <1657791845-1060-1-git-send-email-guwen@linux.alibaba.com>
- <345053d6-5ecb-066d-8eeb-7637da1d7370@linux.ibm.com>
+        with ESMTP id S235376AbiGRN44 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jul 2022 09:56:56 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CD927CE1;
+        Mon, 18 Jul 2022 06:56:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I7Kyh/zewmud2KO8wUekLRoqxEks9TpT38OYjGHc2OEtNMOIF0VbOBHWVMg/ckb5GmHGkfXGEXHkU0W5DvZLalhoNDcqh2hYaGsmnZ38aZBH3xG1BaHWIOc4z//R20MIsOfB7UMSgXFLUAlkzgkqoPPqfMAS8jh+ND1mo5+pfL1gA0sKdrArr+Fb69iyQ9RgkjfaW0EMm68RyrfBgZUGBe7vbEaWJBb4zwXcm6ENIHo4BiIBbXHliLqGdZ8Ga84SPbaFckmO6SXJPp19OrA6l0M0y4/sClpAZ1nWsgg6MKcIBiKUnH65Jf8YIwhf9uj2tHn3dLC/xWv+CWZ/S3bUdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NgVl+nmPogjaddr8F3uwXa7+aFkiDl8+Cvema/RSMoc=;
+ b=kN3qN9Ckfzx887gOC5Y4lBA0asXpq86mag+cfZxBioWG8ce1i2hqgjorUcGbXVuNAEPwQBoBkuPjAuvYlU/SIrzB7ycdctfRbq3wn0D3hNRJNJg62sGw3DCAXHF0tHfd+vyHpgbEoKJEqWU9DVPVM8mVzL/23OuqXQrzd0pznz4CteQ/HJ21X24A98ACrzqlNP4b/OUOGILgJ6/sqyfmQe3iDo1MjdM113HdxLBBInKMEjB9EKSbviyPmzXi3j8Ok6gWvP0nKupbbB4d8a9T/tmY4AEZ8TGUnUWQvK9Dfj05PwS+gAWOxZgsRvQcFQvguzPksaFkrRoqZyfnok8g+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NgVl+nmPogjaddr8F3uwXa7+aFkiDl8+Cvema/RSMoc=;
+ b=dOqCQwWcsf0CKYGaftnpxzN32n4eM1h5ecAfBy54JZZI2Rq/KdXyp2YpGMxjaUjJZIWomVzv484f4CJHSf/viLCJjBWscSiF9K6MH8YPxHWB+3D/f0htH/xkERv/hKKg1Qo3RtTtKvfIrQ6PCt47SlUTKEg1Cq25GyxmjHs9gWP89Hof0XTsgzmxeNhQ5erMO6SpJv5HC6jCIofTDPs4bYNs4hrdQ+pgVH6JZg+ds76aOzNk8VQFtYOh2WSt8Lwz3yjZTSGLYPSXTsiSm/nbqE7gSMASYnLHVuMHi2Ee0DXW5L9e4wfm+51w254pk1AsbEHd+pUM7QxcjTivbeVTuw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
+Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
+ DM6PR01MB3772.prod.exchangelabs.com (2603:10b6:5:8f::11) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5438.22; Mon, 18 Jul 2022 13:56:51 +0000
+Received: from PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::4000:7ba9:d4a:c339]) by PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::4000:7ba9:d4a:c339%7]) with mapi id 15.20.5438.023; Mon, 18 Jul 2022
+ 13:56:51 +0000
+Message-ID: <62c8d684-6587-e560-6029-18fbe76ad8c4@cornelisnetworks.com>
+Date:   Mon, 18 Jul 2022 09:56:48 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH] RDMA/hfi1: fix potential memory leak in setup_base_ctxt()
+Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jianglei Nie <niejianglei2021@163.com>, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20220711070718.2318320-1-niejianglei2021@163.com>
+ <1038e814-5f0d-17a3-1331-8ed24a64d597@cornelisnetworks.com>
+ <YtU4eXQCVEPGnh9b@unreal>
+ <be437471-0080-8e9c-978a-6029c7826335@cornelisnetworks.com>
+ <YtVSc7aazgxVFHRa@unreal>
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+In-Reply-To: <YtVSc7aazgxVFHRa@unreal>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL1P223CA0019.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c4::24) To PH0PR01MB6439.prod.exchangelabs.com
+ (2603:10b6:510:d::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <345053d6-5ecb-066d-8eeb-7637da1d7370@linux.ibm.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2ea14b4b-5ea4-4845-dbfa-08da68c55d70
+X-MS-TrafficTypeDiagnostic: DM6PR01MB3772:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xVdmXW8Tt9yT6kE4OUN7D9skI8+sepxM76x+u6enKUeVcIpZITTpITnrheC7tW65LijPgAVklMCwTtqw9qN7sQtY9lM2rbecstBzhsSWfO+lU9devGifUViwPqaIhR2WAZ7jn/CSl/I8FDqz1fagjpfAnX04I1dnQ3Tuot2OsTH0Pnrrztf74GN3wM5ThtkHexN4MsZYiDrgkavFOc9sspPM0oLB6TAL9si67jhyIWVwWfRxSnx8sv0/eEnJGRylXcznmqqtXLUPL5P1JlkdGn7wfm+ZDCsrd2VoVGHL1t6YHE7f5opoPF+kw5EkXfHZAh9+stiuGV7mCZRG3WFRKyd7n+ytZmokXaqLM7ytpGH+0pk45YJ8LbCReJSRECVqxwPxaSkqwVVETb39D1w135uzWz1jWM62OIWa9GCuNfBGgb1DfbKMDndC0RWFu7cSacBjABrvnmB5Wv8IvCKz5Kf4778obqWxnlLfcotRn4Gy7uNuh3DSSkQ0imrMP5UNDDUY+jc3TVJ3nCpJIKG08fGgwN1H4P5owkW9z3dlsw5ePoZM+w/OX/BpOnGbNDCU91tTsUQlQxD+pMxlfWEltxL00PM0QLX/OANUf5sLPKdwT380oO4ZC1tvePBf+LbPOpUgrFWkNUcbKR38DLRtfsVawYr38QiROQlePHiB8PwQ5DWi+uyy1kOoi/vYdVgOL0lzc6VkLICpQ4tbCCz9U0n8w7+DhhRJB8ZbeJICVdQbjz9ArFZLVm2xNzCUV3NoIKH670ReMMVkuUDesY1lxJz8GogAO/nHgaBgbgtHwIB85O9ZAbLxqgyj49XEFp7PHLjw2UKiitZmudFziu+lgw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(136003)(376002)(39830400003)(396003)(366004)(31686004)(36756003)(6916009)(316002)(83380400001)(186003)(38350700002)(38100700002)(5660300002)(6666004)(2616005)(4326008)(2906002)(66556008)(66476007)(41300700001)(66946007)(8676002)(26005)(6512007)(86362001)(6506007)(6486002)(53546011)(52116002)(31696002)(478600001)(8936002)(44832011)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S01tOVptcDNOMXJybHA1OFgyQk9EVEFmTURtaVlHVzJuV3hLa29Ra1l0aU1E?=
+ =?utf-8?B?cnlwVGQ2Vk5ydVNXdmI5bWI5bWhmZ2VwbnQ4bkMzbU9Sd3AzUDhMUWtsNTd6?=
+ =?utf-8?B?ekVTRlFYQWErMkpLUWRLa1RlUk5hZWRWc0U0WitIUXV6ZlhOUDZ0N0NUalZK?=
+ =?utf-8?B?RUtkSU1VbzUzZzJCelJkZXk1c3pvMEhhSUt1Z1Ywak5Ub3NiZThoM0FBbXdJ?=
+ =?utf-8?B?WHBJU0lMam5wTFlEaytpOTM0MHd0TlFLU0g1UU5KNUlRb3ZkZlhnTE9xR29N?=
+ =?utf-8?B?OGFXc0hyVHlLdldnUTN2dExFR1czMUxnam5wVWhrd285Nm1qZHRsNnlzWFVu?=
+ =?utf-8?B?bm4zQ0w0VHVaRER1TWE0QzMyeEtCV3BFcVp5RVczeXNObnNDd2h2L1VQcjhY?=
+ =?utf-8?B?NGZDeTFxeUk2WnZLREEzcGNVN2VFQkRrcFVwNERtRkdYd3hsYmN2ZEZZVDdn?=
+ =?utf-8?B?bElQMm9GSDdjVmJFTXE4WmFrSk1wWElNK05GeGllN3gwSUxDZmpzbTlZZklH?=
+ =?utf-8?B?YlV2RnJDUTZuaTFheWpDOWcwemFiQUtEU2d0emtaZmxOSE9lUjlNeGRPamdL?=
+ =?utf-8?B?TVAxcHU5U0w5Qzg1UzR4VThHS1MrSks2OUpDT1VTQnNQeUtZWGZBMldlcVlk?=
+ =?utf-8?B?SnZlL1QwYWNMSjJRaFI3WmxBWEkzM3A1cDZ3Z29idE0zb2NsWHBaWmNWMlgw?=
+ =?utf-8?B?QjRZVHc1Y3l5aWdPcDJDTFY4SUxMZXlzUFBvSWZ6V0NsRFR3QzlBTlVEeVNB?=
+ =?utf-8?B?T0ZCckczN0ZyaHpZdVUzQ0JHdXUxT2FNdERJQXBveGpiZVBvMFNSRHF0aVBp?=
+ =?utf-8?B?dHdtOWFMdDdpTUgrdzVYR0IzZjRrL05KeVZNazNlZlo4WUg5ckkvQ1pYSjVk?=
+ =?utf-8?B?amlZL0MzSU1DSkpDSG1EL2p3dlhvWVMzU3lxeFFzRGw2d0pFWmhBSnNZSVBH?=
+ =?utf-8?B?d2xocWRKeU9WNFJDRUQ4VzZhRlNSTlEvUUV2K3hyM1AxWWVOVUhUVEhOanNF?=
+ =?utf-8?B?Ynh1Nnp0MGdqWFVMN2hYR3lXVUJLRmJ5Q25zdzBPMDg0b01tYmZiTEZia0lq?=
+ =?utf-8?B?RDlmU2lBaXJCZnlEdE9iNjIyd0RFU2h3UHl0dGszVGUvVEZNbmtEOWx6OHVq?=
+ =?utf-8?B?R0NuZlZPZFNYV0tWdytOVnhRZ3d2clJxNmZVWW5xOGUvOThxYy84RW5wOThz?=
+ =?utf-8?B?eXNLd1BRcE05ZU9CSWNjamR5dGp3TWI4UDlVclhxTlBJb3lhL2V3MVBKZS9P?=
+ =?utf-8?B?bWpCdXZFQ0xLVVU0WnVlaTdnM0pEQkpydnhiejZKMWNwZjlaMzhZVGFsK0ta?=
+ =?utf-8?B?U3FSUnNLQ21aMS92ejlsM1NZeXRiQmRzZmVKUVdUaFE3YWtvMDVDaFVmRkRD?=
+ =?utf-8?B?Z29SL3Bva2V1WlhXVFNmdmk3QzhpRnExbDNLanE5S3ROeGhLc0EreHFPY3RR?=
+ =?utf-8?B?REZpNzFSdHM2b3FYWkFObFZsODRvbWNtYitlZTdGVUoveWVRYWJQV1RFYXh5?=
+ =?utf-8?B?ZHZIL2lZZE9pNjN4bWJRVmpGMnUzcERLSFR4QS9vTGpxUW9NZHZmYS9EeGky?=
+ =?utf-8?B?bHRyQlJGRHFJQnFYSzMyQmlQTTZHZWVSazI3emxkUDhxOEYwSVEvaDdvY2VH?=
+ =?utf-8?B?NGVVeU1RTE1YTnFFVkwwVHVSNmgzNitmZCsrRFMvMEs5TGlKYndYWHZ1eGdt?=
+ =?utf-8?B?NUxwMmRjaGJkUEVsWC8wRlkwWlBXTGxnTXhQbitLanV3d1hXOWJmRC9peW9L?=
+ =?utf-8?B?cGNaQk9tc1NJQk4vNGx3VW9jUTR1dEpxT28rSEgwWE1mcUU0OHdzazNPeXBB?=
+ =?utf-8?B?cmxQc0h0UnFyeUc0Q1hwd0xNdmZrRXZWT2lPQmFnZ0Rrb1lXSHpZNGZSM2hx?=
+ =?utf-8?B?K1IzUkhpcWdpekYyOUJPNlljVGQ2S3BQSzlEeDJ0S3FtMHdDbWtnTTNSQ0dR?=
+ =?utf-8?B?ZmlYb1B6K1hNWEM0dVZwQjIrZ0NDQ3M0anh6c0Nyc1pwUlErQW1IbTlOUjBD?=
+ =?utf-8?B?ZTdGd3hzR0dJQXJBUkg4aVk2ajFDbmc4aGV2OTlFNDNJdDRJbkM1UU1paXJ2?=
+ =?utf-8?B?WktpTXd6M0ljV3RGaFlTcTg2Qmd2ei9teGpaRXJjL1VsKzdaMGhBSUoxWWls?=
+ =?utf-8?B?KzloVDRwOGQwZzNTVHRSZ1AyQjdmS0NPOW1jNDVvdFZRMGZaUUh1TzZ6T1Ba?=
+ =?utf-8?Q?zWppw0G9j5vagTHpVxZidhM=3D?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ea14b4b-5ea4-4845-dbfa-08da68c55d70
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2022 13:56:51.3432
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QG05yxeLMcviL/i7V8lSse+HzL5AcOMNrJ3tiBCWJ1PiDVvapOCzY0G0zVPueSTopqpXvjnUqHTyv2KqjW/mzZP33dO+q/lC8gx+ACwulPuusCmEyKpvTzqY/vrKX03Y
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR01MB3772
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 14, 2022 at 05:16:47PM +0200, Wenjia Zhang wrote:
+On 7/18/22 8:30 AM, Leon Romanovsky wrote:
+> On Mon, Jul 18, 2022 at 08:11:59AM -0400, Dennis Dalessandro wrote:
+>> On 7/18/22 6:39 AM, Leon Romanovsky wrote:
+>>> On Mon, Jul 11, 2022 at 07:52:25AM -0400, Dennis Dalessandro wrote:
+>>>> On 7/11/22 3:07 AM, Jianglei Nie wrote:
+>>>>> setup_base_ctxt() allocates a memory chunk for uctxt->groups with
+>>>>> hfi1_alloc_ctxt_rcv_groups(). When init_user_ctxt() fails, uctxt->groups
+>>>>> is not released, which will lead to a memory leak.
+>>>>>
+>>>>> We should release the uctxt->groups with hfi1_free_ctxt_rcv_groups()
+>>>>> when init_user_ctxt() fails.
+>>>>>
+>>>>> Signed-off-by: Jianglei Nie <niejianglei2021@163.com>
+>>>>> ---
+>>>>>  drivers/infiniband/hw/hfi1/file_ops.c | 4 +++-
+>>>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
+>>>>> index 2e4cf2b11653..629beff053ad 100644
+>>>>> --- a/drivers/infiniband/hw/hfi1/file_ops.c
+>>>>> +++ b/drivers/infiniband/hw/hfi1/file_ops.c
+>>>>> @@ -1179,8 +1179,10 @@ static int setup_base_ctxt(struct hfi1_filedata *fd,
+>>>>>  		goto done;
+>>>>>  
+>>>>>  	ret = init_user_ctxt(fd, uctxt);
+>>>>> -	if (ret)
+>>>>> +	if (ret) {
+>>>>> +		hfi1_free_ctxt_rcv_groups(uctxt);
+>>>>>  		goto done;
+>>>>> +	}
+>>>>>  
+>>>>>  	user_init(uctxt);
+>>>>>  
+>>>>
+>>>> Doesn't seem like this patch is correct. The free is done when the file is
+>>>> closed, along with other clean up stuff. See hfi1_file_close().
+>>>
+>>> Can setup_base_ctxt() be called twice for same uctxt?
+>>> You are allocating rcd->groups and not releasing.
+>>
+>> The first thing assign_ctxt() does is a check of the fd->uctxt and it bails with
+>> -EINVAL. So effectively only once.
+> 
+> I'm slightly confused. How will you release rcd->groups?
+> 
+> assign_ctxt()
+>  -> setup_base_ctxt()
+>    -> hfi1_alloc_ctxt_rcv_groups()
+>       ,,,
+>       rcd->groups = kzalloc...
+>       ...
+>    -> init_user_ctxt() <-- fails and leaves fd->uctx == NULL
 > 
 > 
-> On 14.07.22 11:43, Wen Gu wrote:
-> > On long-running enterprise production servers, high-order contiguous
-> > memory pages are usually very rare and in most cases we can only get
-> > fragmented pages.
-> > 
-> > When replacing TCP with SMC-R in such production scenarios, attempting
-> > to allocate high-order physically contiguous sndbufs and RMBs may result
-> > in frequent memory compaction, which will cause unexpected hung issue
-> > and further stability risks.
-> > 
-> > So this patch set is aimed to allow SMC-R link group to use virtually
-> > contiguous sndbufs and RMBs to avoid potential issues mentioned above.
-> > Whether to use physically or virtually contiguous buffers can be set
-> > by sysctl smcr_buf_type.
-> > 
-> > Note that using virtually contiguous buffers will bring an acceptable
-> > performance regression, which can be mainly divided into two parts:
-> > 
-> > 1) regression in data path, which is brought by additional address
-> >     translation of sndbuf by RNIC in Tx. But in general, translating
-> >     address through MTT is fast. According to qperf test, this part
-> >     regression is basically less than 10% in latency and bandwidth.
-> >     (see patch 5/6 for details)
-> > 
-> > 2) regression in buffer initialization and destruction path, which is
-> >     brought by additional MR operations of sndbufs. But thanks to link
-> >     group buffer reuse mechanism, the impact of this kind of regression
-> >     decreases as times of buffer reuse increases.
-> > 
-> > Patch set overview:
-> > - Patch 1/6 and 2/6 mainly about simplifying and optimizing DMA sync
-> >    operation, which will reduce overhead on the data path, especially
-> >    when using virtually contiguous buffers;
-> > - Patch 3/6 and 4/6 introduce a sysctl smcr_buf_type to set the type
-> >    of buffers in new created link group;
-> > - Patch 5/6 allows SMC-R to use virtually contiguous sndbufs and RMBs,
-> >    including buffer creation, destruction, MR operation and access;
-> > - patch 6/6 extends netlink attribute for buffer type of SMC-R link group;
-> > 
-> > v1->v2:
-> > - Patch 5/6 fixes build issue on 32bit;
-> > - Patch 3/6 adds description of new sysctl in smc-sysctl.rst;
-> > 
-> > Guangguan Wang (2):
-> >    net/smc: remove redundant dma sync ops
-> >    net/smc: optimize for smc_sndbuf_sync_sg_for_device and
-> >      smc_rmb_sync_sg_for_cpu
-> > 
-> > Wen Gu (4):
-> >    net/smc: Introduce a sysctl for setting SMC-R buffer type
-> >    net/smc: Use sysctl-specified types of buffers in new link group
-> >    net/smc: Allow virtually contiguous sndbufs or RMBs for SMC-R
-> >    net/smc: Extend SMC-R link group netlink attribute
-> > 
-> >   Documentation/networking/smc-sysctl.rst |  13 ++
-> >   include/net/netns/smc.h                 |   1 +
-> >   include/uapi/linux/smc.h                |   1 +
-> >   net/smc/af_smc.c                        |  68 +++++++--
-> >   net/smc/smc_clc.c                       |   8 +-
-> >   net/smc/smc_clc.h                       |   2 +-
-> >   net/smc/smc_core.c                      | 246 +++++++++++++++++++++-----------
-> >   net/smc/smc_core.h                      |  20 ++-
-> >   net/smc/smc_ib.c                        |  44 +++++-
-> >   net/smc/smc_ib.h                        |   2 +
-> >   net/smc/smc_llc.c                       |  33 +++--
-> >   net/smc/smc_rx.c                        |  92 +++++++++---
-> >   net/smc/smc_sysctl.c                    |  11 ++
-> >   net/smc/smc_tx.c                        |  10 +-
-> >   14 files changed, 404 insertions(+), 147 deletions(-)
-> > 
-> This idea is very cool! Thank you for your effort! But we still need to
-> verify if this solution can run well on our system. I'll come to you soon.
+> ...
+> hfi1_file_close()
+>   struct hfi1_ctxtdata *uctxt = fdata->uctxt;
+>   ...
+>   if (!uctxt)             <-- This is our case
+>      goto done; 
+>   ...
+> 
+> done:
+>   if (refcount_dec_and_test(&dd->user_refcount))
+>      complete(&dd->user_comp);
+> 
+>   cleanup_srcu_struct(&fdata->pq_srcu);
+>   kfree(fdata);
+>   return 0;
+> 
 
-Hi Wenjia,
+Looks like this may have been broken with:
 
-We have noticed that SMC community is becoming more active recently.
-More and more companies have shown their interests in SMC.
-Correspondingly, patches are also increasing. We (Alibaba) are trying to
-apply SMC into cloud production environment, extending its abilities and
-enhancing the performance. We also contributed some work to community in
-the past period of time. So we are more than happy to help review SMC
-patches together. If you need, we are very glad to be reviewers to share
-the review work.
+e87473bc1b6c ("IB/hfi1: Only set fd pointer when base context is completely
+initialized")
 
-Hope to hear from you, thank you.
+The question is does it make more sense to just move the fd->uctxt assignment
+up, or call the free directly. I think that might be opening a bigger can of
+worms though, as this was part of a larger patch set. Maybe it is best after all
+to go with this patch.
 
-Best wishes,
-Tony Lu
+Let's add the above as a fixes line and tack on:
+
+Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+
+It's been like this since 4.14, so no rush to get it in for the ultra late RC.
+I'll get it tested as part of the next cycle.
+
+-Denny
