@@ -2,131 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDF957825D
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jul 2022 14:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67D65782A9
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jul 2022 14:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233661AbiGRMau (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jul 2022 08:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
+        id S235141AbiGRMph (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jul 2022 08:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233110AbiGRMat (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jul 2022 08:30:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3F2205F7;
-        Mon, 18 Jul 2022 05:30:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BBB5614E8;
-        Mon, 18 Jul 2022 12:30:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E75C341C0;
-        Mon, 18 Jul 2022 12:30:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658147447;
-        bh=ECdxE1bsN444YLZGJxne40CdRsdsjAKrmqAIXOOtD2g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RF/u2VR6cz7S5mkBDmpzsbDbNjmr7BKs7LNKjeB05r0TTto8rLYuFdRbXFRe+u9QI
-         cLOYtLkrOV+9t6opsTPUHf6BVlan3j5F60InYEYyW9BTKM/XoQ3Lh9nFwJ857Lfr5n
-         PA05IS5/5ruRYtuWSiDFI9tjDmif6SXp0cQJCY8YJpQe768bsi+fumpQIML3lK9Cl2
-         LEPP3hi0jQJr73iGcjhhn2lZqZHIXr73WXdAyp424PvXOiPYgrlYiVtFcQFLCIsz+u
-         JOLKiVo771my9jUZ+be2INOxgyltZxeF1UIdXxgUp2C29t2mXTRV9tKPq67kdEJElv
-         ZB9RSsFs3x+IQ==
-Date:   Mon, 18 Jul 2022 15:30:43 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     Jianglei Nie <niejianglei2021@163.com>, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/hfi1: fix potential memory leak in setup_base_ctxt()
-Message-ID: <YtVSc7aazgxVFHRa@unreal>
-References: <20220711070718.2318320-1-niejianglei2021@163.com>
- <1038e814-5f0d-17a3-1331-8ed24a64d597@cornelisnetworks.com>
- <YtU4eXQCVEPGnh9b@unreal>
- <be437471-0080-8e9c-978a-6029c7826335@cornelisnetworks.com>
+        with ESMTP id S235156AbiGRMpf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jul 2022 08:45:35 -0400
+Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C45AB9C;
+        Mon, 18 Jul 2022 05:45:33 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VJlyRhm_1658148329;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0VJlyRhm_1658148329)
+          by smtp.aliyun-inc.com;
+          Mon, 18 Jul 2022 20:45:30 +0800
+Date:   Mon, 18 Jul 2022 20:45:28 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     Wenjia Zhang <wenjia@linux.ibm.com>
+Cc:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 0/6] net/smc: Introduce virtually contiguous
+ buffers for SMC-R
+Message-ID: <YtVV6IWF0cKxJaWe@TonyMac-Alibaba>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <1657791845-1060-1-git-send-email-guwen@linux.alibaba.com>
+ <345053d6-5ecb-066d-8eeb-7637da1d7370@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <be437471-0080-8e9c-978a-6029c7826335@cornelisnetworks.com>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <345053d6-5ecb-066d-8eeb-7637da1d7370@linux.ibm.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 18, 2022 at 08:11:59AM -0400, Dennis Dalessandro wrote:
-> On 7/18/22 6:39 AM, Leon Romanovsky wrote:
-> > On Mon, Jul 11, 2022 at 07:52:25AM -0400, Dennis Dalessandro wrote:
-> >> On 7/11/22 3:07 AM, Jianglei Nie wrote:
-> >>> setup_base_ctxt() allocates a memory chunk for uctxt->groups with
-> >>> hfi1_alloc_ctxt_rcv_groups(). When init_user_ctxt() fails, uctxt->groups
-> >>> is not released, which will lead to a memory leak.
-> >>>
-> >>> We should release the uctxt->groups with hfi1_free_ctxt_rcv_groups()
-> >>> when init_user_ctxt() fails.
-> >>>
-> >>> Signed-off-by: Jianglei Nie <niejianglei2021@163.com>
-> >>> ---
-> >>>  drivers/infiniband/hw/hfi1/file_ops.c | 4 +++-
-> >>>  1 file changed, 3 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
-> >>> index 2e4cf2b11653..629beff053ad 100644
-> >>> --- a/drivers/infiniband/hw/hfi1/file_ops.c
-> >>> +++ b/drivers/infiniband/hw/hfi1/file_ops.c
-> >>> @@ -1179,8 +1179,10 @@ static int setup_base_ctxt(struct hfi1_filedata *fd,
-> >>>  		goto done;
-> >>>  
-> >>>  	ret = init_user_ctxt(fd, uctxt);
-> >>> -	if (ret)
-> >>> +	if (ret) {
-> >>> +		hfi1_free_ctxt_rcv_groups(uctxt);
-> >>>  		goto done;
-> >>> +	}
-> >>>  
-> >>>  	user_init(uctxt);
-> >>>  
-> >>
-> >> Doesn't seem like this patch is correct. The free is done when the file is
-> >> closed, along with other clean up stuff. See hfi1_file_close().
+On Thu, Jul 14, 2022 at 05:16:47PM +0200, Wenjia Zhang wrote:
+> 
+> 
+> On 14.07.22 11:43, Wen Gu wrote:
+> > On long-running enterprise production servers, high-order contiguous
+> > memory pages are usually very rare and in most cases we can only get
+> > fragmented pages.
 > > 
-> > Can setup_base_ctxt() be called twice for same uctxt?
-> > You are allocating rcd->groups and not releasing.
-> 
-> The first thing assign_ctxt() does is a check of the fd->uctxt and it bails with
-> -EINVAL. So effectively only once.
+> > When replacing TCP with SMC-R in such production scenarios, attempting
+> > to allocate high-order physically contiguous sndbufs and RMBs may result
+> > in frequent memory compaction, which will cause unexpected hung issue
+> > and further stability risks.
+> > 
+> > So this patch set is aimed to allow SMC-R link group to use virtually
+> > contiguous sndbufs and RMBs to avoid potential issues mentioned above.
+> > Whether to use physically or virtually contiguous buffers can be set
+> > by sysctl smcr_buf_type.
+> > 
+> > Note that using virtually contiguous buffers will bring an acceptable
+> > performance regression, which can be mainly divided into two parts:
+> > 
+> > 1) regression in data path, which is brought by additional address
+> >     translation of sndbuf by RNIC in Tx. But in general, translating
+> >     address through MTT is fast. According to qperf test, this part
+> >     regression is basically less than 10% in latency and bandwidth.
+> >     (see patch 5/6 for details)
+> > 
+> > 2) regression in buffer initialization and destruction path, which is
+> >     brought by additional MR operations of sndbufs. But thanks to link
+> >     group buffer reuse mechanism, the impact of this kind of regression
+> >     decreases as times of buffer reuse increases.
+> > 
+> > Patch set overview:
+> > - Patch 1/6 and 2/6 mainly about simplifying and optimizing DMA sync
+> >    operation, which will reduce overhead on the data path, especially
+> >    when using virtually contiguous buffers;
+> > - Patch 3/6 and 4/6 introduce a sysctl smcr_buf_type to set the type
+> >    of buffers in new created link group;
+> > - Patch 5/6 allows SMC-R to use virtually contiguous sndbufs and RMBs,
+> >    including buffer creation, destruction, MR operation and access;
+> > - patch 6/6 extends netlink attribute for buffer type of SMC-R link group;
+> > 
+> > v1->v2:
+> > - Patch 5/6 fixes build issue on 32bit;
+> > - Patch 3/6 adds description of new sysctl in smc-sysctl.rst;
+> > 
+> > Guangguan Wang (2):
+> >    net/smc: remove redundant dma sync ops
+> >    net/smc: optimize for smc_sndbuf_sync_sg_for_device and
+> >      smc_rmb_sync_sg_for_cpu
+> > 
+> > Wen Gu (4):
+> >    net/smc: Introduce a sysctl for setting SMC-R buffer type
+> >    net/smc: Use sysctl-specified types of buffers in new link group
+> >    net/smc: Allow virtually contiguous sndbufs or RMBs for SMC-R
+> >    net/smc: Extend SMC-R link group netlink attribute
+> > 
+> >   Documentation/networking/smc-sysctl.rst |  13 ++
+> >   include/net/netns/smc.h                 |   1 +
+> >   include/uapi/linux/smc.h                |   1 +
+> >   net/smc/af_smc.c                        |  68 +++++++--
+> >   net/smc/smc_clc.c                       |   8 +-
+> >   net/smc/smc_clc.h                       |   2 +-
+> >   net/smc/smc_core.c                      | 246 +++++++++++++++++++++-----------
+> >   net/smc/smc_core.h                      |  20 ++-
+> >   net/smc/smc_ib.c                        |  44 +++++-
+> >   net/smc/smc_ib.h                        |   2 +
+> >   net/smc/smc_llc.c                       |  33 +++--
+> >   net/smc/smc_rx.c                        |  92 +++++++++---
+> >   net/smc/smc_sysctl.c                    |  11 ++
+> >   net/smc/smc_tx.c                        |  10 +-
+> >   14 files changed, 404 insertions(+), 147 deletions(-)
+> > 
+> This idea is very cool! Thank you for your effort! But we still need to
+> verify if this solution can run well on our system. I'll come to you soon.
 
-I'm slightly confused. How will you release rcd->groups?
+Hi Wenjia,
 
-assign_ctxt()
- -> setup_base_ctxt()
-   -> hfi1_alloc_ctxt_rcv_groups()
-      ,,,
-      rcd->groups = kzalloc...
-      ...
-   -> init_user_ctxt() <-- fails and leaves fd->uctx == NULL
+We have noticed that SMC community is becoming more active recently.
+More and more companies have shown their interests in SMC.
+Correspondingly, patches are also increasing. We (Alibaba) are trying to
+apply SMC into cloud production environment, extending its abilities and
+enhancing the performance. We also contributed some work to community in
+the past period of time. So we are more than happy to help review SMC
+patches together. If you need, we are very glad to be reviewers to share
+the review work.
 
+Hope to hear from you, thank you.
 
-...
-hfi1_file_close()
-  struct hfi1_ctxtdata *uctxt = fdata->uctxt;
-  ...
-  if (!uctxt)             <-- This is our case
-     goto done; 
-  ...
-
-done:
-  if (refcount_dec_and_test(&dd->user_refcount))
-     complete(&dd->user_comp);
-
-  cleanup_srcu_struct(&fdata->pq_srcu);
-  kfree(fdata);
-  return 0;
-
-
-
-> 
-> -Denny
-> 
-> 
+Best wishes,
+Tony Lu
