@@ -2,202 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FA2579FE0
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jul 2022 15:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD25579FFE
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jul 2022 15:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238430AbiGSNlj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jul 2022 09:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40868 "EHLO
+        id S238524AbiGSNsY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jul 2022 09:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238554AbiGSNl1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jul 2022 09:41:27 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF392E681;
-        Tue, 19 Jul 2022 05:55:23 -0700 (PDT)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26JClq2l026923;
-        Tue, 19 Jul 2022 12:55:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=XvZRr+4XsyvLMc9mEfA47H14FhnnGzjLcTEglm3B41A=;
- b=FnbgZLn2WqwErxVOXpXcIAbv2y3DieR/70FEpX9Qlc9RTwpK8hQ7N/ANmjRYWYu5fnwA
- +HMbTtmvOmPwv1k1/YIhTuBz309v+Ej15dNYnnDh63I4gw0G6ljbE/ribcJEPIpR5kW2
- B6Ya+ct3LnLHIc1aTb2udpXnUOPM3vO+bfVxh+o3djbIe4crF+Qu0Nt88T1dvt/AIyaG
- RO7wrAF0V/CQ+Md7qVogSOHbOSvxHEwnhEOwI957ZQ3wq87xQMJ/JgqlqRh7j1Mqkke8
- 0qrErm2WzgeQMuLnRvwR5/C29mh9nEEHeUWTGKUl9yCMm439l87guk/ArQaUjBREywo1 cA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3hdvxcg5tn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jul 2022 12:55:18 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 26JCqoNs023307;
-        Tue, 19 Jul 2022 12:55:17 GMT
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3hdvxcg5t7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jul 2022 12:55:17 +0000
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 26JCq5JH005598;
-        Tue, 19 Jul 2022 12:55:16 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04wdc.us.ibm.com with ESMTP id 3hbmy9bb65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jul 2022 12:55:16 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 26JCtGCN18743644
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jul 2022 12:55:16 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB16F6E04E;
-        Tue, 19 Jul 2022 12:55:15 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 192ED6E054;
-        Tue, 19 Jul 2022 12:55:13 +0000 (GMT)
-Received: from [9.211.73.90] (unknown [9.211.73.90])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Jul 2022 12:55:13 +0000 (GMT)
-Message-ID: <6fe701ac-65fe-61c7-49f6-8b5af8022b55@linux.ibm.com>
-Date:   Tue, 19 Jul 2022 14:55:12 +0200
+        with ESMTP id S238595AbiGSNsD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jul 2022 09:48:03 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82867E307;
+        Tue, 19 Jul 2022 06:01:55 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26JBB9km032511;
+        Tue, 19 Jul 2022 13:01:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2022-7-12;
+ bh=Tz4Phtc02C5x7X3qkO3iDTgA1dK20pGbSFpnYXi+J6Q=;
+ b=e/QL42NGI+1f2Yqbhd3ASBao6Q9hf9GlJJ/oeD4eizPd+OwhzJEjKsc3v4KC0zlTfn3F
+ q91GoN9mhOzbGlvVn95o4lG1CLVbmDhC079Jic5O1Wd9MGGErFK3rfEMtNbC1VnupxUB
+ b8VzovXaPEXTAjp3RfVUk9xzG/BMOdpZ5/6mlMBdQQlJxyp1XFwm7n5CwDbe+aux7sY1
+ RIkME4tnhy6B0CuX0g4eyiWkLLtyUwpWX8K9oOG3cHAHOpKJO/PffDTMPLQvDOXinAKw
+ P8/UEqAjuQKvNXBhbpGlU/cctBh0rUbnPNTSXCRa7CdC3XQSjTM9bLKdUgpZsPQ558Po Ow== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3hbkx0x9tx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jul 2022 13:01:39 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 26JBBGhA022260;
+        Tue, 19 Jul 2022 13:01:37 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3hc1hrvas0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Jul 2022 13:01:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iID0DA1z2gnljcEgN58Ar5Bw3RTNe3JQQpd3bXCYFSm9ElOaO8mWbrIer1E38egb67yBDdSAnBAv58u+R8zza0gEXYDdOPrabzsUXUxJ73VTHmpgheWn2BH/HdegEWQHO40mBYOtHnAs010hoSONA7Fjg+L3gOYwZHntA+IqO6W7OCoN07rWJzKaYO49gyRJmslQ5AKGZBzysb9Re0cUEo0qoFSR88Is0aLsYjtIBLBzyldemNuCWnJkhrx9iuBaLOh2AbKshyKwEY4cdEXuxLEjZiARYPXJkfBAjiWYtpTXQMmvcus0Il2s/2CbqOdcGNlJ3RV6RkXXoqPPIlk5Cw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Tz4Phtc02C5x7X3qkO3iDTgA1dK20pGbSFpnYXi+J6Q=;
+ b=QcVTfhoOAxCNQT1Xf2SG7k47Dld6h9Q+Bs3lc2LWzo7owToqYXCzE06zvmyOhbULECLeCYn2LI0imEgAc6ykzip/oozHze4l4Uzc6d9xgx/lt6LUqAFEXMKuDOWDg0sVxvWpuGJuyvwlm60+8Cc52CVqZulbj13P5QE6TdTl1iaRoxSKkivI951uGX0Wob9COLpz+Fmukmh+Jd6SoMlqrtQkce2byVM9nVMx7XXww7caSknUitQYITtxn7uFBx4rZzmrrwvQxg3YHWZX2e0sXdoiFFp+51jPEarDGhOxvR3CAq8/W6kWg6pT1MCFh1LOZBU8+maw42eLUTDyCrh6Xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tz4Phtc02C5x7X3qkO3iDTgA1dK20pGbSFpnYXi+J6Q=;
+ b=FfkOrTHtVhjaoDI9mgmJxHTy0uba1NIvxTL3klvHJZyWwKISnp59/IVwZC7lwNiksaS/Xs0bZSlEVjjWdonyd2ZV1xQRzK8feeIE2b3sPegmckfXLQxD5Gz8BcU34sExIksyUsgfmpkNfZwG3LT2bmSQiCuLgufZXKxwJwv2DMY=
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by DM4PR10MB6278.namprd10.prod.outlook.com
+ (2603:10b6:8:b8::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.23; Tue, 19 Jul
+ 2022 13:01:36 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5020:9b82:5917:40b]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5020:9b82:5917:40b%6]) with mapi id 15.20.5438.024; Tue, 19 Jul 2022
+ 13:01:36 +0000
+Date:   Tue, 19 Jul 2022 16:01:25 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Cheng Xu <chengyou@linux.alibaba.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kai Shen <kaishen@linux.alibaba.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 1/2] RDMA/erdma: Use the bitmap API to allocate bitmaps
+Message-ID: <20220719130125.GB2316@kadam>
+References: <2764b6e204b32ef8c198a5efaf6c6bc4119f7665.1657301795.git.christophe.jaillet@wanadoo.fr>
+ <670c57a2-6432-80c9-cdc0-496d836d7bf0@linux.alibaba.com>
+ <20220712090110.GL2338@kadam>
+ <20220719125434.GG5049@ziepe.ca>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220719125434.GG5049@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MR1P264CA0129.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:51::17) To MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH net-next v2 0/6] net/smc: Introduce virtually contiguous
- buffers for SMC-R
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1657791845-1060-1-git-send-email-guwen@linux.alibaba.com>
- <345053d6-5ecb-066d-8eeb-7637da1d7370@linux.ibm.com>
- <YtVV6IWF0cKxJaWe@TonyMac-Alibaba>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <YtVV6IWF0cKxJaWe@TonyMac-Alibaba>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FruciYD3Lcg3L0Bm4W4SNAEWrglFq-9Q
-X-Proofpoint-ORIG-GUID: hJ_vhmUgELO8OsUQiC-pF3md-1fAOHLf
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a42e2bb2-f396-42bc-b8af-08da6986cfb8
+X-MS-TrafficTypeDiagnostic: DM4PR10MB6278:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: K4BLnrrdUOKf5L8uqPV4E1iP4Mao0ZIyIVr1Mh6xnPBQyw5HlZktZifTGRWTB/WK6b1ZZCm8aCVhiscoTHd5ojZwV50GlKDnV6GifOvGg/xvEo85l+nKpHcpvH2r/k6wIjv5q3Gzjy4F8Tmgrsk4FVTSPqSnT9yM0PQbPM+t27+vrGWhf01jxMsz/T8IlTJzRZJeCru/o46eLwsBw87lF5A7an4sTd10nh6rA2k0vnFJy502suV6oQtwYRAYB/+rubPZ+pxBo/PAauxVhWGLANt147qm6mR8jsuv7i2RiCC3e5MNEa//HSLH+dJjAefDUEhxKjldtnfroyatduLAftVAphX2at3CRqZREqhH4X4OENiw6cE1OtfN+Y9g3EyrxlqljWR7O/nk6BXsBkSKzk14s7kMtgsRHyL2EbIxEEYxYgV8dA6cAmPYa7/BxM2B2L9aDWlhxE5TmzZ7ANnNTcMBehFttVztheMRPuZIuzXaJOCXh45oXblDdU5tIfosJmu6K9oG2PHWJcAap7AgctAfUiuhCFY3fqkjpUQpy69KnS1xWJ3WqEMn9rsY4hhTjr9cB8Tv3sKlaaQ8zz3fmJIyoqPy/k42Gs9bhNqUWWfowpbiaFyurOUDhOKaRxOUppOC9051xzBN5+crYEH17251OASoDY12ibwdNPeq3Xvq8HUvH60MOWAfVgu3YyU3+sdOggJrAln3IxkEaSmvRVMmuLcyZHHhjCrKmtti+tCHS8V9KfNg7OEcmmbOBqTXys00k417Y++mEpHJ9VPRUFSdDhLH0N08xrDWUtIsgqoKJOYhg4Vnkop1FfgY1bWQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(396003)(376002)(136003)(366004)(346002)(39860400002)(2906002)(316002)(44832011)(8936002)(5660300002)(66556008)(86362001)(4326008)(66946007)(186003)(8676002)(66476007)(4744005)(33656002)(9686003)(54906003)(478600001)(41300700001)(33716001)(6916009)(26005)(6506007)(1076003)(6486002)(52116002)(6512007)(38100700002)(38350700002)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J4PHoOzhdN0zZnGjlFSFjBUzw7n+jIW6CAQNGdg8MU/E+IfNnYFHUxbpCtyv?=
+ =?us-ascii?Q?D1G+4vdq2sv1j6XRKS8HaA6ewLC4Ph6JUjiIqp0zTfhdf0793mP00yShb+ie?=
+ =?us-ascii?Q?vpVIpecpVnOfEqG/dmZnY4QGmxUgB1hu17WaTTNyswtEWarfkCuBqSnnaCpR?=
+ =?us-ascii?Q?/cCmvLYfdp+pCli8WeeyCKLNs9M8qzrx+jnbJkCttjl4ecB3GESQJzdO+XxM?=
+ =?us-ascii?Q?B+WznrUA+x2FMJXJBlIzFmy0ozACFAzs4zYzT/sDalNgQ0UWcYd3e9VLWne+?=
+ =?us-ascii?Q?ynshBShcv8aCwk2JFtooIxls2FOjVLvcY1qfYsFsUC67lC2fPBwbjnI8Howp?=
+ =?us-ascii?Q?dLwPLNGQOdMUfxzIc1x76Kc/bohNZmJ7iP8mCsKGkmME4ENfFPX+0ltElT1x?=
+ =?us-ascii?Q?bSRk8Fk8zqpyQOVtR1YbM1IOwYcDlNucsJwaq1+G7andPHUYlb0p6kfAbDzj?=
+ =?us-ascii?Q?1jGDa7b8UK7Ks6VqEj8RDQi7MwNWkSpCZWBhkAszXw5jT5f/3q8GiOQmM6o5?=
+ =?us-ascii?Q?ZrVXUJdtvOzGWd+KozLlG/gJSgASD3GSQRldTDPOkTUNNsxhhimOwa1xo+/M?=
+ =?us-ascii?Q?w4Jw0NRxpix+RkEUmfZHL1VByFQJvFCOab/wHMsPlGBZrHulEJULVECPVzjj?=
+ =?us-ascii?Q?ED+ul2HOCuBoGHnNHkv0gfWTc9DD6JjGj5Gtb5KWEWLdc3+bkTEm+k/KFHje?=
+ =?us-ascii?Q?PUwGysEMl1vWYZSfzOr0Px6ajuIbvFvgp+eunzOWi/zmAzZ5SOHB5/71Twik?=
+ =?us-ascii?Q?lFCPojM9DCs4UFwsFk3ZYL/rSJrZRVGan++ZmOSD/Z3XY8WuVyBJAN5Duy9c?=
+ =?us-ascii?Q?QLkXIOQ3KdbBRqn9PE9EjV+CKV9FdYdzhFvJQgMhMqDiVJxSuuZzWznZmIHV?=
+ =?us-ascii?Q?BRFAWRX4fY2qrEqS29bJqxfLskCzKJdP/zlXOzMoDdMIf4rHDEids7Ce7Ms3?=
+ =?us-ascii?Q?YItuHV47mLh7jIuYouQ9s6XWPvH2P+jY/E7GjHmxDdlX9iMt4SzEWSoDrZVK?=
+ =?us-ascii?Q?KJy9NIYMBWtM3V/tfkqocECSOZL5VIEAVdUQbHK7F/gTBCe55zbDZ1y+u/rt?=
+ =?us-ascii?Q?nhqMMDK2vepUuBMCIsJPdCmhO0twHrwryK4D8P1doeshWtqvW20jOyrCFw8s?=
+ =?us-ascii?Q?G+PmEWHnTzMxbI3oASfPtqd+b4caf4ZbseACgNtSU7g8f4MGAXT9hz7r54ce?=
+ =?us-ascii?Q?ZG1vPDVeR7xNUFlnbLL7w0xweUC/c98VrQfo2t28D4YiSR2rTx2CdKk1VrUX?=
+ =?us-ascii?Q?e6K4RuX2vuMtL9GequJc//k8VyJXOqdxNjFdHl0u6GYOWXnpXJ6Z3lMU5bXU?=
+ =?us-ascii?Q?MDXsiHpck8ZEyWO/m1gu8g6+mFAOO4ouYdshmM35ubCEDgaonN1skZMH4AV5?=
+ =?us-ascii?Q?sILFEQFifKTuwYZqulw2QQi0tPgTBrYWV8O1wkudJFScK64GK+5213Hvxwov?=
+ =?us-ascii?Q?kotyjQsv1vndkaAeRaIRbQDS7nuIZOfD+iMGgrY9qQhgwSFgV4FIFzPyKCUp?=
+ =?us-ascii?Q?H9EGxgbLKT8loqDfguGuPFhnlthG0gfA5sEeNyKR1KX1dB+LlOMJcLKuAjnE?=
+ =?us-ascii?Q?4id3tmYExLasY6CDQTeEKPDdrepLzgrrubSNsXoZD1JLVv5tUyVPxVOzHDMK?=
+ =?us-ascii?Q?GQ=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a42e2bb2-f396-42bc-b8af-08da6986cfb8
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2022 13:01:35.9588
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x8wc/4+EfYlqKaIlEUwwO0To68FZW7vhNUAaIav+IEIv+hHyxk5d8ajvYT6QAnAAjEZPXWNS++symvrzLOHEjcBflJ7c1TMJOPpVFq4San8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6278
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-18_22,2022-07-19_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- mlxlogscore=999 phishscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 lowpriorityscore=0 impostorscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2206140000 definitions=main-2207190052
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ definitions=2022-07-19_02,2022-07-19_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 malwarescore=0
+ mlxscore=0 phishscore=0 mlxlogscore=746 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
+ definitions=main-2207190055
+X-Proofpoint-GUID: z4W_vfBI9idlnc4ZlDxGdBoLsG8LPx7v
+X-Proofpoint-ORIG-GUID: z4W_vfBI9idlnc4ZlDxGdBoLsG8LPx7v
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 18.07.22 14:45, Tony Lu wrote:
-> On Thu, Jul 14, 2022 at 05:16:47PM +0200, Wenjia Zhang wrote:
->>
->>
->> On 14.07.22 11:43, Wen Gu wrote:
->>> On long-running enterprise production servers, high-order contiguous
->>> memory pages are usually very rare and in most cases we can only get
->>> fragmented pages.
->>>
->>> When replacing TCP with SMC-R in such production scenarios, attempting
->>> to allocate high-order physically contiguous sndbufs and RMBs may result
->>> in frequent memory compaction, which will cause unexpected hung issue
->>> and further stability risks.
->>>
->>> So this patch set is aimed to allow SMC-R link group to use virtually
->>> contiguous sndbufs and RMBs to avoid potential issues mentioned above.
->>> Whether to use physically or virtually contiguous buffers can be set
->>> by sysctl smcr_buf_type.
->>>
->>> Note that using virtually contiguous buffers will bring an acceptable
->>> performance regression, which can be mainly divided into two parts:
->>>
->>> 1) regression in data path, which is brought by additional address
->>>      translation of sndbuf by RNIC in Tx. But in general, translating
->>>      address through MTT is fast. According to qperf test, this part
->>>      regression is basically less than 10% in latency and bandwidth.
->>>      (see patch 5/6 for details)
->>>
->>> 2) regression in buffer initialization and destruction path, which is
->>>      brought by additional MR operations of sndbufs. But thanks to link
->>>      group buffer reuse mechanism, the impact of this kind of regression
->>>      decreases as times of buffer reuse increases.
->>>
->>> Patch set overview:
->>> - Patch 1/6 and 2/6 mainly about simplifying and optimizing DMA sync
->>>     operation, which will reduce overhead on the data path, especially
->>>     when using virtually contiguous buffers;
->>> - Patch 3/6 and 4/6 introduce a sysctl smcr_buf_type to set the type
->>>     of buffers in new created link group;
->>> - Patch 5/6 allows SMC-R to use virtually contiguous sndbufs and RMBs,
->>>     including buffer creation, destruction, MR operation and access;
->>> - patch 6/6 extends netlink attribute for buffer type of SMC-R link group;
->>>
->>> v1->v2:
->>> - Patch 5/6 fixes build issue on 32bit;
->>> - Patch 3/6 adds description of new sysctl in smc-sysctl.rst;
->>>
->>> Guangguan Wang (2):
->>>     net/smc: remove redundant dma sync ops
->>>     net/smc: optimize for smc_sndbuf_sync_sg_for_device and
->>>       smc_rmb_sync_sg_for_cpu
->>>
->>> Wen Gu (4):
->>>     net/smc: Introduce a sysctl for setting SMC-R buffer type
->>>     net/smc: Use sysctl-specified types of buffers in new link group
->>>     net/smc: Allow virtually contiguous sndbufs or RMBs for SMC-R
->>>     net/smc: Extend SMC-R link group netlink attribute
->>>
->>>    Documentation/networking/smc-sysctl.rst |  13 ++
->>>    include/net/netns/smc.h                 |   1 +
->>>    include/uapi/linux/smc.h                |   1 +
->>>    net/smc/af_smc.c                        |  68 +++++++--
->>>    net/smc/smc_clc.c                       |   8 +-
->>>    net/smc/smc_clc.h                       |   2 +-
->>>    net/smc/smc_core.c                      | 246 +++++++++++++++++++++-----------
->>>    net/smc/smc_core.h                      |  20 ++-
->>>    net/smc/smc_ib.c                        |  44 +++++-
->>>    net/smc/smc_ib.h                        |   2 +
->>>    net/smc/smc_llc.c                       |  33 +++--
->>>    net/smc/smc_rx.c                        |  92 +++++++++---
->>>    net/smc/smc_sysctl.c                    |  11 ++
->>>    net/smc/smc_tx.c                        |  10 +-
->>>    14 files changed, 404 insertions(+), 147 deletions(-)
->>>
->> This idea is very cool! Thank you for your effort! But we still need to
->> verify if this solution can run well on our system. I'll come to you soon.
+On Tue, Jul 19, 2022 at 09:54:34AM -0300, Jason Gunthorpe wrote:
+> On Tue, Jul 12, 2022 at 12:01:10PM +0300, Dan Carpenter wrote:
 > 
-> Hi Wenjia,
+> > Best not to use any auto-formatting tools.  They are all bad.
 > 
-> We have noticed that SMC community is becoming more active recently.
-> More and more companies have shown their interests in SMC.
-> Correspondingly, patches are also increasing. We (Alibaba) are trying to
-> apply SMC into cloud production environment, extending its abilities and
-> enhancing the performance. We also contributed some work to community in
-> the past period of time. So we are more than happy to help review SMC
-> patches together. If you need, we are very glad to be reviewers to share
-> the review work.
-> 
-> Hope to hear from you, thank you.
-> 
-> Best wishes,
-> Tony Lu
+> Have you tried clang-format? I wouldn't call it bad..
 
-Hi Tony,
+I prefered Christophe's formatting to clang's.  ;)
 
-That is very nice to hear that from you. It would be great for us. If 
-you like, feel free to add your sign after the review.
-Thank you!
-
-Best regards
-Wenjia Zhang
+regards,
+dan carpenter
 
