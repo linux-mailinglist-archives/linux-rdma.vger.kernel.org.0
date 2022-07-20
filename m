@@ -2,87 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF1257B63E
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jul 2022 14:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8456257BCD6
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jul 2022 19:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbiGTMSs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Jul 2022 08:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        id S235819AbiGTRih (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Jul 2022 13:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbiGTMSq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Jul 2022 08:18:46 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA262C108;
-        Wed, 20 Jul 2022 05:18:45 -0700 (PDT)
-Received: from [192.168.2.145] (unknown [109.252.119.232])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 81CE666015BE;
-        Wed, 20 Jul 2022 13:18:41 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1658319523;
-        bh=B4ji8JwW8eJ3XP1EGK6JbA9JDbvoYbqvHvRf2nsb7zM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=MVHTQFYSrRMdyliP4QT0X5TFtmh9JA+mHFJhAYOmZzsKwZwQzRnJK87cEcwpnFUZL
-         arJbnBaTGOQX2kUp2P8Ds7zfCZI6wmWngKny0rJieNPqAqpzGaEqCxk12yhpR9bWZ3
-         8o5aU0IRsGM53Utp7m+HQQ/mpoTgDM/dxR2xvu4IKhpYf00S9yfaCe6giBFGwuwUpT
-         s/4/8aBfsMBpZ0suxVilFqlaueL5Lc3v2jWW47REkJ3EOO9mFKe033EiupjZaH2QvJ
-         dKC8LfBq+innrk6YwjrjXyl3SZy47EYje/qG+yyAu8lC6YaalCpVJ+SnqsNOsPKo8P
-         7PYwHi0AyYdZw==
-Message-ID: <ab6252bb-50d4-1fd6-589e-1c956f058a5b@collabora.com>
-Date:   Wed, 20 Jul 2022 15:18:38 +0300
+        with ESMTP id S241396AbiGTRib (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Jul 2022 13:38:31 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDA670E6C;
+        Wed, 20 Jul 2022 10:38:30 -0700 (PDT)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26KHQu6x016806;
+        Wed, 20 Jul 2022 17:38:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=oRYSDww+xT2kBVZi4n+vXxIVbL6AE6OfPZiR44/2RWo=;
+ b=QR4J3FXggDWq+Gc+6Zoe/aYKzTjkebIINEBfoBjM/DcM6DkvECM7oWfqa2ZAbo2Udvjl
+ ZSQk6Bm8K0NUohAW5YyFW7NQ7JhLKRpcbX8mce8qqkXSq7pSa1m1lZxlDEFh/GbJU7WY
+ LjU8X87UtELFFJOXErQYlz3h+SVbnqz215M103lSekbdYPsTTthavmLlwI5hpBaZCcri
+ exzAqJ+GdaAn/5VXZ4qivDi5uq/yyrTQkZRHW6oJXUR8w6dk6RkR9GLOx6kekio4eHil
+ j9fHLUxmA1ECYnPv7uN0P6AF/E1rp22nQzHC6wHXjnM4h/oalD+LGOPqZPEG0IUw/yPP 9A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hen382yx4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jul 2022 17:38:24 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 26KGnasC035260;
+        Wed, 20 Jul 2022 17:38:24 GMT
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hen382ywg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jul 2022 17:38:24 +0000
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 26KHNT6o002129;
+        Wed, 20 Jul 2022 17:38:23 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma03dal.us.ibm.com with ESMTP id 3hbmy9hp5h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jul 2022 17:38:23 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 26KHcMgq3080866
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jul 2022 17:38:22 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A7FFB2067;
+        Wed, 20 Jul 2022 17:38:22 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6C372B2064;
+        Wed, 20 Jul 2022 17:38:20 +0000 (GMT)
+Received: from [9.211.34.199] (unknown [9.211.34.199])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Jul 2022 17:38:20 +0000 (GMT)
+Message-ID: <016ae05e-6d8c-2c95-ffcf-239230597def@linux.ibm.com>
+Date:   Wed, 20 Jul 2022 19:38:19 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v1 4/6] dma-buf: Acquire wait-wound context on attachment
-Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Gert Wollny <gert.wollny@collabora.com>,
-        Gustavo Padovan <gustavo.padovan@collabora.com>,
-        Daniel Stone <daniel@fooishbar.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Clark <robdclark@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= <thomas_os@shipmail.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20220715005244.42198-1-dmitry.osipenko@collabora.com>
- <20220715005244.42198-5-dmitry.osipenko@collabora.com>
- <5ec9313e-8498-2838-0320-331c347ce905@amd.com>
- <1ce233a2-36c9-3698-59f0-c4ff902bec60@collabora.com>
- <43446124-b99a-32d8-f797-7ec0cdca9ee4@collabora.com>
- <163d3271-e1e9-c325-185d-adb4391023e1@amd.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <163d3271-e1e9-c325-185d-adb4391023e1@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH net-next v2 0/6] net/smc: Introduce virtually contiguous
+ buffers for SMC-R
+To:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1657791845-1060-1-git-send-email-guwen@linux.alibaba.com>
+From:   Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <1657791845-1060-1-git-send-email-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: t4wdqEfuOEECHH7y4DP_PucxfT6lBMWz
+X-Proofpoint-GUID: cUwd6s4raPyTqXGcA1qpEnLNEbltzJ5k
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-20_10,2022-07-20_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 adultscore=0 bulkscore=0 priorityscore=1501 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2206140000 definitions=main-2207200071
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,121 +94,77 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/20/22 11:29, Christian König wrote:
-> Am 19.07.22 um 22:05 schrieb Dmitry Osipenko:
->> On 7/15/22 09:59, Dmitry Osipenko wrote:
->>> On 7/15/22 09:50, Christian König wrote:
->>>> Am 15.07.22 um 02:52 schrieb Dmitry Osipenko:
->>>>> Intel i915 GPU driver uses wait-wound mutex to lock multiple GEMs
->>>>> on the
->>>>> attachment to the i915 dma-buf. In order to let all drivers utilize
->>>>> shared
->>>>> wait-wound context during attachment in a general way, make dma-buf
->>>>> core to
->>>>> acquire the ww context internally for the attachment operation and
->>>>> update
->>>>> i915 driver to use the importer's ww context instead of the
->>>>> internal one.
->>>>>
->>>>>   From now on all dma-buf exporters shall use the importer's ww
->>>>> context
->>>>> for
->>>>> the attachment operation.
->>>>>
->>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->>>>> ---
->>>>>    drivers/dma-buf/dma-buf.c                     |  8 +++++-
->>>>>    drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c    |  2 +-
->>>>>    .../gpu/drm/i915/gem/i915_gem_execbuffer.c    |  2 +-
->>>>>    drivers/gpu/drm/i915/gem/i915_gem_object.h    |  6 ++---
->>>>>    drivers/gpu/drm/i915/i915_gem_evict.c         |  2 +-
->>>>>    drivers/gpu/drm/i915/i915_gem_ww.c            | 26
->>>>> +++++++++++++++----
->>>>>    drivers/gpu/drm/i915/i915_gem_ww.h            | 15 +++++++++--
->>>>>    7 files changed, 47 insertions(+), 14 deletions(-)
->>>>>
->>>>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
->>>>> index 0ee588276534..37545ecb845a 100644
->>>>> --- a/drivers/dma-buf/dma-buf.c
->>>>> +++ b/drivers/dma-buf/dma-buf.c
->>>>> @@ -807,6 +807,8 @@ static struct sg_table * __map_dma_buf(struct
->>>>> dma_buf_attachment *attach,
->>>>>     * Optionally this calls &dma_buf_ops.attach to allow
->>>>> device-specific attach
->>>>>     * functionality.
->>>>>     *
->>>>> + * Exporters shall use ww_ctx acquired by this function.
->>>>> + *
->>>>>     * Returns:
->>>>>     *
->>>>>     * A pointer to newly created &dma_buf_attachment on success, or a
->>>>> negative
->>>>> @@ -822,6 +824,7 @@ dma_buf_dynamic_attach_unlocked(struct dma_buf
->>>>> *dmabuf, struct device *dev,
->>>>>                    void *importer_priv)
->>>>>    {
->>>>>        struct dma_buf_attachment *attach;
->>>>> +    struct ww_acquire_ctx ww_ctx;
->>>>>        int ret;
->>>>>          if (WARN_ON(!dmabuf || !dev))
->>>>> @@ -841,7 +844,8 @@ dma_buf_dynamic_attach_unlocked(struct dma_buf
->>>>> *dmabuf, struct device *dev,
->>>>>        attach->importer_ops = importer_ops;
->>>>>        attach->importer_priv = importer_priv;
->>>>>    -    dma_resv_lock(dmabuf->resv, NULL);
->>>>> +    ww_acquire_init(&ww_ctx, &reservation_ww_class);
->>>>> +    dma_resv_lock(dmabuf->resv, &ww_ctx);
->>>> That won't work like this. The core property of a WW context is that
->>>> you
->>>> need to unwind all the locks and re-quire them with the contended one
->>>> first.
->>>>
->>>> When you statically lock the imported one here you can't do that any
->>>> more.
->>> You're right. I felt that something is missing here, but couldn't
->>> notice. I'll think more about this and enable
->>> CONFIG_DEBUG_WW_MUTEX_SLOWPATH. Thank you!
->>>
->> Christian, do you think we could make an excuse for the attach()
->> callback and make the exporter responsible for taking the resv lock? It
->> will be inconsistent with the rest of the callbacks, where importer
->> takes the lock, but it will be the simplest and least invasive solution.
->> It's very messy to do a cross-driver ww locking, I don't think it's the
->> right approach.
+
+
+On 14.07.22 11:43, Wen Gu wrote:
+> On long-running enterprise production servers, high-order contiguous
+> memory pages are usually very rare and in most cases we can only get
+> fragmented pages.
 > 
-> So to summarize the following calls will require that the caller hold
-> the resv lock:
-> 1. dma_buf_pin()/dma_buf_unpin()
-> 2. dma_buf_map_attachment()/dma_buf_unmap_attachment()
-> 3. dma_buf_vmap()/dma_buf_vunmap()
-> 4. dma_buf_move_notify()
+> When replacing TCP with SMC-R in such production scenarios, attempting
+> to allocate high-order physically contiguous sndbufs and RMBs may result
+> in frequent memory compaction, which will cause unexpected hung issue
+> and further stability risks.
 > 
-> The following calls require that caller does not held the resv lock:
-> 1. dma_buf_attach()/dma_buf_dynamic_attach()/dma_buf_detach()
-> 2. dma_buf_export()/dma_buf_fd()
-> 3. dma_buf_get()/dma_buf_put()
-> 4. dma_buf_begin_cpu_access()/dma_buf_end_cpu_access()
+> So this patch set is aimed to allow SMC-R link group to use virtually
+> contiguous sndbufs and RMBs to avoid potential issues mentioned above.
+> Whether to use physically or virtually contiguous buffers can be set
+> by sysctl smcr_buf_type.
 > 
-> If that's correct than that would work for me as well, but we should
-> probably document this.
-
-Looks good, thank you. I'll try this variant.
-
-> Or let me ask the other way around: What calls exactly do you need to
-> change to solve your original issue? That was vmap/vunmap, wasn't it? If
-> yes then let's concentrate on those for the moment.
-
-Originally, Daniel Vetter asked to sort out the dma-buf lockings across
-all drivers, so we could replace custom locks in DRM-SHMEM with the resv
-lock, otherwise there were no guarantees that we won't have deadlocks in
-the dma-buf code paths.
-
-The vmap/vunmap is one of the paths that needs to be sorted out, there
-is no particular issue with it, just need to specify the convention. The
-mmaping was the other questionable path and we concluded that it's
-better to prohibit dma-buf mappings for DRM entirely. Lastly, there is
-i915 attach() that uses the ww locking.
-
--- 
-Best regards,
-Dmitry
+> Note that using virtually contiguous buffers will bring an acceptable
+> performance regression, which can be mainly divided into two parts:
+> 
+> 1) regression in data path, which is brought by additional address
+>     translation of sndbuf by RNIC in Tx. But in general, translating
+>     address through MTT is fast. According to qperf test, this part
+>     regression is basically less than 10% in latency and bandwidth.
+>     (see patch 5/6 for details)
+> 
+> 2) regression in buffer initialization and destruction path, which is
+>     brought by additional MR operations of sndbufs. But thanks to link
+>     group buffer reuse mechanism, the impact of this kind of regression
+>     decreases as times of buffer reuse increases.
+> 
+> Patch set overview:
+> - Patch 1/6 and 2/6 mainly about simplifying and optimizing DMA sync
+>    operation, which will reduce overhead on the data path, especially
+>    when using virtually contiguous buffers;
+> - Patch 3/6 and 4/6 introduce a sysctl smcr_buf_type to set the type
+>    of buffers in new created link group;
+> - Patch 5/6 allows SMC-R to use virtually contiguous sndbufs and RMBs,
+>    including buffer creation, destruction, MR operation and access;
+> - patch 6/6 extends netlink attribute for buffer type of SMC-R link group;
+> 
+> v1->v2:
+> - Patch 5/6 fixes build issue on 32bit;
+> - Patch 3/6 adds description of new sysctl in smc-sysctl.rst;
+> 
+> Guangguan Wang (2):
+>    net/smc: remove redundant dma sync ops
+>    net/smc: optimize for smc_sndbuf_sync_sg_for_device and
+>      smc_rmb_sync_sg_for_cpu
+> 
+> Wen Gu (4):
+>    net/smc: Introduce a sysctl for setting SMC-R buffer type
+>    net/smc: Use sysctl-specified types of buffers in new link group
+>    net/smc: Allow virtually contiguous sndbufs or RMBs for SMC-R
+>    net/smc: Extend SMC-R link group netlink attribute
+> 
+>   Documentation/networking/smc-sysctl.rst |  13 ++
+>   include/net/netns/smc.h                 |   1 +
+>   include/uapi/linux/smc.h                |   1 +
+>   net/smc/af_smc.c                        |  68 +++++++--
+>   net/smc/smc_clc.c                       |   8 +-
+>   net/smc/smc_clc.h                       |   2 +-
+>   net/smc/smc_core.c                      | 246 +++++++++++++++++++++-----------
+>   net/smc/smc_core.h                      |  20 ++-
+>   net/smc/smc_ib.c                        |  44 +++++-
+>   net/smc/smc_ib.h                        |   2 +
+>   net/smc/smc_llc.c                       |  33 +++--
+>   net/smc/smc_rx.c                        |  92 +++++++++---
+>   net/smc/smc_sysctl.c                    |  11 ++
+>   net/smc/smc_tx.c                        |  10 +-
+>   14 files changed, 404 insertions(+), 147 deletions(-)
+> 
+It looks good for us. Thank you!
+Acked-by: Wenjia Zhang <wenjia@linux.ibm.com>
