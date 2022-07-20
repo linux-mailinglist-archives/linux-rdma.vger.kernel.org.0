@@ -2,168 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0AC57A7ED
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jul 2022 22:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712AE57AD6D
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jul 2022 03:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbiGSUFk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jul 2022 16:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
+        id S235626AbiGTB6b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jul 2022 21:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbiGSUFj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jul 2022 16:05:39 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F522BC0E;
-        Tue, 19 Jul 2022 13:05:38 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-119-232.nat.spd-mgts.ru [109.252.119.232])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8773166019F4;
-        Tue, 19 Jul 2022 21:05:34 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1658261136;
-        bh=87heNz60iY2xXlfWeCdMcHlfvOyIp4RDnOqiE+7EyOg=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=klOb5xsgl6l9ubftW1+ax0k9cZtkpR2szLSY0RrNAUUhC80j9cYIvyx7gq8L/l4sQ
-         sCPxodFYLm8cs6LJuLmCgfGJsD8BX8RJ0cpaixj0UjYBDHsXPcXAJbLfScrWaMUl5X
-         p/wkh4kyop0Xmmtp+8262aY0Wor62j5jd4HSYKZ370A48M7D5QrqJnsIscNmaC3Eia
-         0j8c8rYOSxeZEg/93bpTWiR3rdmQr/8qej0g5rWxZsP9s0FIXV53EAVH1lMqfFhgYw
-         HuVA4WjPXUPCS8++l3ROc0LKS5ut6fthJb9IwFqa8va09T/4H3uZb2AiQ7A5DufA3O
-         IE4FiFlv7vybg==
-Message-ID: <43446124-b99a-32d8-f797-7ec0cdca9ee4@collabora.com>
-Date:   Tue, 19 Jul 2022 23:05:30 +0300
+        with ESMTP id S238537AbiGTB6a (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jul 2022 21:58:30 -0400
+Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056D24F18C;
+        Tue, 19 Jul 2022 18:58:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VJuk2GC_1658282304;
+Received: from 30.43.104.155(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VJuk2GC_1658282304)
+          by smtp.aliyun-inc.com;
+          Wed, 20 Jul 2022 09:58:25 +0800
+Message-ID: <5bcd437f-92a4-1c04-796c-41559dd2823a@linux.alibaba.com>
+Date:   Wed, 20 Jul 2022 09:58:24 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v1 4/6] dma-buf: Acquire wait-wound context on attachment
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH 1/2] RDMA/erdma: Use the bitmap API to allocate bitmaps
 Content-Language: en-US
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Gert Wollny <gert.wollny@collabora.com>,
-        Gustavo Padovan <gustavo.padovan@collabora.com>,
-        Daniel Stone <daniel@fooishbar.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Clark <robdclark@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= <thomas_os@shipmail.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20220715005244.42198-1-dmitry.osipenko@collabora.com>
- <20220715005244.42198-5-dmitry.osipenko@collabora.com>
- <5ec9313e-8498-2838-0320-331c347ce905@amd.com>
- <1ce233a2-36c9-3698-59f0-c4ff902bec60@collabora.com>
-In-Reply-To: <1ce233a2-36c9-3698-59f0-c4ff902bec60@collabora.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Kai Shen <kaishen@linux.alibaba.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <2764b6e204b32ef8c198a5efaf6c6bc4119f7665.1657301795.git.christophe.jaillet@wanadoo.fr>
+ <670c57a2-6432-80c9-cdc0-496d836d7bf0@linux.alibaba.com>
+ <20220712090110.GL2338@kadam> <20220719125434.GG5049@ziepe.ca>
+ <20220719130125.GB2316@kadam>
+ <7075158a-64c1-8f69-7de1-9a60ee914f05@wanadoo.fr>
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <7075158a-64c1-8f69-7de1-9a60ee914f05@wanadoo.fr>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/15/22 09:59, Dmitry Osipenko wrote:
-> On 7/15/22 09:50, Christian König wrote:
->> Am 15.07.22 um 02:52 schrieb Dmitry Osipenko:
->>> Intel i915 GPU driver uses wait-wound mutex to lock multiple GEMs on the
->>> attachment to the i915 dma-buf. In order to let all drivers utilize
->>> shared
->>> wait-wound context during attachment in a general way, make dma-buf
->>> core to
->>> acquire the ww context internally for the attachment operation and update
->>> i915 driver to use the importer's ww context instead of the internal one.
->>>
->>>  From now on all dma-buf exporters shall use the importer's ww context
->>> for
->>> the attachment operation.
->>>
->>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->>> ---
->>>   drivers/dma-buf/dma-buf.c                     |  8 +++++-
->>>   drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c    |  2 +-
->>>   .../gpu/drm/i915/gem/i915_gem_execbuffer.c    |  2 +-
->>>   drivers/gpu/drm/i915/gem/i915_gem_object.h    |  6 ++---
->>>   drivers/gpu/drm/i915/i915_gem_evict.c         |  2 +-
->>>   drivers/gpu/drm/i915/i915_gem_ww.c            | 26 +++++++++++++++----
->>>   drivers/gpu/drm/i915/i915_gem_ww.h            | 15 +++++++++--
->>>   7 files changed, 47 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
->>> index 0ee588276534..37545ecb845a 100644
->>> --- a/drivers/dma-buf/dma-buf.c
->>> +++ b/drivers/dma-buf/dma-buf.c
->>> @@ -807,6 +807,8 @@ static struct sg_table * __map_dma_buf(struct
->>> dma_buf_attachment *attach,
->>>    * Optionally this calls &dma_buf_ops.attach to allow
->>> device-specific attach
->>>    * functionality.
->>>    *
->>> + * Exporters shall use ww_ctx acquired by this function.
->>> + *
->>>    * Returns:
->>>    *
->>>    * A pointer to newly created &dma_buf_attachment on success, or a
->>> negative
->>> @@ -822,6 +824,7 @@ dma_buf_dynamic_attach_unlocked(struct dma_buf
->>> *dmabuf, struct device *dev,
->>>                   void *importer_priv)
->>>   {
->>>       struct dma_buf_attachment *attach;
->>> +    struct ww_acquire_ctx ww_ctx;
->>>       int ret;
->>>         if (WARN_ON(!dmabuf || !dev))
->>> @@ -841,7 +844,8 @@ dma_buf_dynamic_attach_unlocked(struct dma_buf
->>> *dmabuf, struct device *dev,
->>>       attach->importer_ops = importer_ops;
->>>       attach->importer_priv = importer_priv;
->>>   -    dma_resv_lock(dmabuf->resv, NULL);
->>> +    ww_acquire_init(&ww_ctx, &reservation_ww_class);
->>> +    dma_resv_lock(dmabuf->resv, &ww_ctx);
->>
->> That won't work like this. The core property of a WW context is that you
->> need to unwind all the locks and re-quire them with the contended one
->> first.
->>
->> When you statically lock the imported one here you can't do that any more.
-> 
-> You're right. I felt that something is missing here, but couldn't
-> notice. I'll think more about this and enable
-> CONFIG_DEBUG_WW_MUTEX_SLOWPATH. Thank you!
-> 
 
-Christian, do you think we could make an excuse for the attach()
-callback and make the exporter responsible for taking the resv lock? It
-will be inconsistent with the rest of the callbacks, where importer
-takes the lock, but it will be the simplest and least invasive solution.
-It's very messy to do a cross-driver ww locking, I don't think it's the
-right approach.
 
--- 
-Best regards,
-Dmitry
+On 7/19/22 11:36 PM, Christophe JAILLET wrote:
+> Le 19/07/2022 à 15:01, Dan Carpenter a écrit :
+>> On Tue, Jul 19, 2022 at 09:54:34AM -0300, Jason Gunthorpe wrote:
+>>> On Tue, Jul 12, 2022 at 12:01:10PM +0300, Dan Carpenter wrote:
+>>>
+>>>> Best not to use any auto-formatting tools.  They are all bad.
+>>>
+>>> Have you tried clang-format? I wouldn't call it bad..
+>>
+>> I prefered Christophe's formatting to clang's.  ;)
+>>
+>> regards,
+>> dan carpenter
+>>
+>>
+> 
+> Hi,
+> 
+> (some other files in the same directory also have some checkpatch warning/error)
+
+I just double checked the checkpatch results, Two type warnings reported:
+
+ - WARNING: Missing commit description - Add an appropriate one (for patch 0001)
+ - WARNING: added, moved or deleted file(s), does MAINTAINERS need updating? (for almost all patches except 0001/0011)
+
+For the first warning, the change is very simple: add erdma's
+rdma_driver_id definition, I think the commit title can describe
+all things, and is enough.
+
+For the second warning, I think it is OK for new files before
+MAINTAINERS being updated in patch 0011.
+
+Thanks,
+Cheng Xu
