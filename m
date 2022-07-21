@@ -2,66 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFE657D4C7
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jul 2022 22:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864A157D6C5
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Jul 2022 00:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbiGUU2t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jul 2022 16:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
+        id S233033AbiGUWTT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jul 2022 18:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbiGUU2s (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jul 2022 16:28:48 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5628E6EB
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jul 2022 13:28:48 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-10d83692d5aso4016079fac.1
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jul 2022 13:28:48 -0700 (PDT)
+        with ESMTP id S233892AbiGUWTL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jul 2022 18:19:11 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB07015A3B
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jul 2022 15:19:10 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id l9-20020a056830268900b006054381dd35so2197967otu.4
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jul 2022 15:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=KPB4JaD3Bkw4/9zmgYAEyWnMLi96kjYon6db+fv+Cnc=;
-        b=BgGLOdMJDXw7JhL4jn3JmE0IyHBzVqGcnHpCGYMcrxvzbx3zaQ34LYMExVwoQvVd9/
-         UjIE9mILi2UZ44p+ViCGs/FVTuErab4JMEFS9i1sVwhmLE+Ap0tKlWpo4atzIET4vxks
-         IXAFqw9d+NKW5wzJNC6DfffupXfLtewoxO9AdiMKGn6WWJxn+ECVr6FHNP57Vnl9wikD
-         ve2anz6iM+b2rmT3+gxEXo16wlyEEMuDH80xWow00teZdVRBtGuelUAszeLg53phlI7P
-         0gjCLyzgABOum3svfjK2dgPa7gc6/mVa2b+J1ysEIVtulhzs/G+AIdXhfBZ9itURMswx
-         ehmA==
+        bh=FsRwVidl3qW95/gHbeOWe0iF4qd+2MWyG/8yMDZ9goE=;
+        b=CotBAYtWmAaf1odoiDWiBQbU3lj8M6L8M5l54V50TPCihF9I2l65fu8O0if5P3iVg8
+         k/cztIJnrw+MoycEE6BDp+sUpGvwH3IduhUJrEqRmJ4YqbUFZTc2lWF/1ee6e9B23zrk
+         mAk9ohHZdnzCkkdl8mGdbeny//hPpWYOEJl+TZ85wKfpA6wnQU3uUvxZtvt5z/J2XrMS
+         NWCGElRRmiYaMSKE+PGA4VM3aQx5QqPuawQSA/jflHVQc41Xrp1ko3tcFpITvppIHg1x
+         2b8E/Rlu6gcJawn3DxBhS4Phk4Lk4shbWTNZytFaqeJB1OKnx3GpAr+sOhNy/4FOKoeu
+         7e7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=KPB4JaD3Bkw4/9zmgYAEyWnMLi96kjYon6db+fv+Cnc=;
-        b=ItHC3kwZerFBy2yzuviyHP1oxXSKmQEi3napMEjbfxULm+E3D+owXLTMowCk1iUpQs
-         jjzOLSS59OBcCgVqS6707Tu+ffYRdCjxZcUAlQHjtXf8Yb6rk3pQ5YFrDNukZfEBDTth
-         A9vvYNQuOi0SGkPdlXQwNu61PpnrpukdWXsc+koThpU112vRb34T3AVFy1rdaaSPsAvr
-         fT7IgHOANM/16Jlajl9ha/m7ILPHrO/ilO+oL8kFLxXqxYCBdqgnpTTp0T1fbTtytDeZ
-         63AJu3jQsvOfNOHTW3zkzcghUvtElBVg+sbbVHgAgkeRe3pzMdsKfy2TK/w/5LGy6Xcq
-         27Gg==
-X-Gm-Message-State: AJIora9GFWw8MoQnFfqW5oQljZDw1lRv0Db+0SAozDUnyoPSTdI77TKN
-        zmY/6AP660A0b3pvI6WjtggmTSWXExM=
-X-Google-Smtp-Source: AGRyM1tj0RFgB9sMhylgd4e4CmHUxXcjyKzZrp2Ne2Y55yaXHmKh0iEVtil7y1/nRv9NNlCfhdnVEw==
-X-Received: by 2002:a05:6870:8a0e:b0:10c:1abf:6cbe with SMTP id p14-20020a0568708a0e00b0010c1abf6cbemr53327oaq.133.1658435327631;
-        Thu, 21 Jul 2022 13:28:47 -0700 (PDT)
+        bh=FsRwVidl3qW95/gHbeOWe0iF4qd+2MWyG/8yMDZ9goE=;
+        b=s8XdRNl6ubqkn/TO2RYj5L0TxHSYSVFS/c42tiFP8GGLs3VgZuoKbMbpVZEThpaECO
+         bgcbgPvQHGQJRy/uN29/AkCOIXGdipSo20mItivAHD56DvDeqSVm7nCCL7ra1+jT8C4P
+         iJuBP5FUkyF18OvoEifsINTAjI6MygKXtL4/FnwzY8LIrej8lTGd8yfJw6a/kDzHkWC4
+         WtWGnA9yjA7PciNHpIESS1SxyF99VlY65O4vF4dDeAzXyr3B4eSj1REBZugC4gMAg0rh
+         7Xx3tMYvAvhusLPn0yIers+vzW+PL7qcE+7af+OVnpULOgsL7+RFt/pbCxeugWJqaFn+
+         r2UQ==
+X-Gm-Message-State: AJIora8tNe2V3HxaW3DgtdGuvZ6KefL4ychdlWcUv6M0orT5AVs4krKy
+        rCAXw31FyDbjDCP5tKXLAvg=
+X-Google-Smtp-Source: AGRyM1uhi4OyfFLC3YMJex24CQFKZ9GVqL9/XkM15FnMxl2I+NGdFeWdPZf2LzT+SZOIGgd28GzjKQ==
+X-Received: by 2002:a9d:6c43:0:b0:61c:9d1e:b43e with SMTP id g3-20020a9d6c43000000b0061c9d1eb43emr227339otq.365.1658441950291;
+        Thu, 21 Jul 2022 15:19:10 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:26e5:db00:e7ca:8ba1? (2603-8081-140c-1a00-26e5-db00-e7ca-8ba1.res6.spectrum.com. [2603:8081:140c:1a00:26e5:db00:e7ca:8ba1])
-        by smtp.gmail.com with ESMTPSA id h130-20020aca3a88000000b0033a6bfdc5adsm1050408oia.36.2022.07.21.13.28.46
+        by smtp.gmail.com with ESMTPSA id h1-20020a9d2f01000000b0061c2f9b3b6esm1315734otb.32.2022.07.21.15.19.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jul 2022 13:28:46 -0700 (PDT)
-Message-ID: <bdd603f8-344f-dfec-29ee-96a512c35db0@gmail.com>
-Date:   Thu, 21 Jul 2022 15:28:45 -0500
+        Thu, 21 Jul 2022 15:19:09 -0700 (PDT)
+Message-ID: <318d02a4-8028-551c-5cda-e7934153e03d@gmail.com>
+Date:   Thu, 21 Jul 2022 17:19:08 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH for-next] RDMA/rxe: Fix error paths in MR alloc routines
+Subject: Re: [RESEND RFC PATCH for-next] Revert "RDMA/rxe: Create duplicate
+ mapping tables for FMRs"
 Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     lizhijian@fujitsu.com, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org
-References: <20220715182414.21320-1-rpearsonhpe@gmail.com>
- <20220721191525.GA9189@nvidia.com>
+To:     Haris Iqbal <haris.iqbal@ionos.com>,
+        Li Zhijian <lizhijian@fujitsu.com>
+Cc:     Yanjun Zhu <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        Guoqing Jiang <guoqing.jiang@linux.dev>
+References: <1658312958-13-1-git-send-email-lizhijian@fujitsu.com>
+ <CAJpMwyier2gtHoMhkrFeNXmqjUo9ab2Ba4Ef_YZoCwv__9cz=Q@mail.gmail.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20220721191525.GA9189@nvidia.com>
+In-Reply-To: <CAJpMwyier2gtHoMhkrFeNXmqjUo9ab2Ba4Ef_YZoCwv__9cz=Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,30 +77,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/21/22 14:15, Jason Gunthorpe wrote:
-> On Fri, Jul 15, 2022 at 01:24:15PM -0500, Bob Pearson wrote:
->> @@ -173,12 +172,11 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
->>  	void			*vaddr;
->>  	int err;
->>  
->> -	umem = ib_umem_get(pd->ibpd.device, start, length, access);
->> +	mr->umem = umem = ib_umem_get(&rxe->ib_dev, start, length, access);
->>  	if (IS_ERR(umem)) {
+On 7/20/22 05:50, Haris Iqbal wrote:
+> On Wed, Jul 20, 2022 at 12:22 PM Li Zhijian <lizhijian@fujitsu.com> wrote:
+>>
+>> Below 2 commits will be reverted:
+>>      8ff5f5d9d8cf ("RDMA/rxe: Prevent double freeing rxe_map_set()")
+>>      647bf13ce944 ("RDMA/rxe: Create duplicate mapping tables for FMRs")
+>>
+>> The community has a few bug reports which pointed this commit at last.
+>> Some proposals are raised up in the meantime but all of them have no
+>> follow-up operation.
+>>
+>> The previous commit led the map_set of FMR to be not avaliable any more if
+>> the MR is registered again after invalidating. Although the mentioned
+>> patch try to fix a potential race in building/accessing the same table
+>> for fast memory regions, it broke rnbd etc ULPs. Since the latter could
+>> be worse, revert this patch.
+>>
+>> With previous commit, it's observed that a same MR in rnbd server will
+>> trigger below code path:
 > 
-> So this puts an err_ptr into mr->umem and then later the cleanup:
+> Looks Good. I tested the patch against rdma for-next and it solves the
+> problem mentioned in the commit.
+> One small nitpick. It should be rtrs, and not rnbd in the commit message.
 > 
-> 	if (mr->umem)
-> 		ib_umem_release(mr->umem);
+> Feel free to add my,
 > 
-> Will not like it very much.
+> Tested-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 > 
-> I'm OK with the idea of initializing structures that are cleaned up by
-> their single master cleanup, but you have to do it in a way that
-> doesn't put corrupted data into the object..
-> 
-> Jason
+>>  -> rxe_mr_init_fast()
+>>  |-> alloc map_set() # map_set is uninitialized
+>>  |...-> rxe_map_mr_sg() # build the map_set
+>>      |-> rxe_mr_set_page()
+>>  |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE that means
+>>                           # we can access host memory(such rxe_mr_copy)
+>>  |...-> rxe_invalidate_mr() # mr->state change to FREE from VALID
+>>  |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE,
+>>                           # but map_set was not built again
+>>  |...-> rxe_mr_copy() # kernel crash due to access wild addresses
+>>                       # that lookup from the map_set
+>>
 
-I fixed this patch but it collides with the map set revert Li
-sent in.
+Where is the use case for this? All the FMR examples I am aware of call rxe_map_mr_sg()
+between each reg_fast_mr/invalidate_mr() sequence. I am not familiar with rtrs.
+What is it?
 
 Bob
