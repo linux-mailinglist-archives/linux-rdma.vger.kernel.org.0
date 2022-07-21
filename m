@@ -2,160 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E4457C75A
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jul 2022 11:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB63157CDD8
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jul 2022 16:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbiGUJRQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jul 2022 05:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49512 "EHLO
+        id S230132AbiGUOjK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jul 2022 10:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbiGUJRQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jul 2022 05:17:16 -0400
-Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729222B1B6;
-        Thu, 21 Jul 2022 02:17:09 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0VK.Qu92_1658395024;
-Received: from 192.168.0.4(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VK.Qu92_1658395024)
-          by smtp.aliyun-inc.com;
-          Thu, 21 Jul 2022 17:17:06 +0800
-Message-ID: <f030aeab-b503-8381-53f5-15862e1333b0@linux.alibaba.com>
-Date:   Thu, 21 Jul 2022 17:17:03 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.11.0
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-Subject: Re: [Patch v4 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure
- Network Adapter
-To:     longli@microsoft.com, "K. Y. Srinivasan" <kys@microsoft.com>,
+        with ESMTP id S230451AbiGUOjD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jul 2022 10:39:03 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884EA86891
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jul 2022 07:39:01 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id t7so1307071qvz.6
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jul 2022 07:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kwW27VCQ4+JlDB+iPSDhz5O1D0eurbd7dKtxO/dfIvY=;
+        b=OnzKBTMKPt8ybqoDKEizFWOIZUwtYD8NVniERJQRrRBD+FC+PRdDYfR9tAPu3M63Wt
+         JG3TqJzUoWvMaF0pCE36eey30fVsLVvODRU/er7wla8BCkhleJfMm7QLgdvrEynQfv7f
+         D64FKivghTNDU7lIbls+9rYw7bof/BUsEQ8+fzzuudi9b3k4wY3SXlIAk/SxIJOZJVCQ
+         TzeoL49vw0ePEWJOK2s1Tu0Tc1DJW173uCXzh3pS7Xigojqp5Ood6OfscacTHVee07jq
+         YdRhUB07YqVnhDr/fzI+/qAYhFgZvJyL8yNAyD2VsfUeuUe52gn2DhlXweRSZoq+fOeV
+         FLgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kwW27VCQ4+JlDB+iPSDhz5O1D0eurbd7dKtxO/dfIvY=;
+        b=nKL9MA3dtyONcUbwZ+89FEtJcy3b/VavcccZX43OVhPKZ6WD7T4/PU3Q/fJhiTsrxh
+         S5NBR+IGT7/RDxpDfgFZW9kAtKSjOLb+lbxA88jGqH7tzZXTlkMpANCtj+0XXKMCGG9Z
+         4C4Nx+zRdQbJ9Gbul9/idanh4Fjutfk3ckeKpg6NNGZR9up1w7GwJM59JO6PAHPkUnYb
+         5zOgx3PS/uakfCbWatn9hoIwIH2RoivqsoE3XVEcMarKKMOrlMrJEVg2M4/suxMhQnL7
+         1Q0MONUcqF+vZQNzy1dT53L2Nrg80SVVx131qaiKGqSSmdC7BV/+6eFmGVTSLuD82lvD
+         LoVg==
+X-Gm-Message-State: AJIora8ln9MO6lCBs6EWHypgV9bCf0oQqHF5g+Zyen6DaepmufBi6xk1
+        i88XPuSlBuTLMg+zhd9pQooM2g==
+X-Google-Smtp-Source: AGRyM1uWQJMIGs0cFKjzk6jOPxy6nU58JEm7wrsssEUVgVK/vH4DFVTrvRD0ZbRcmdLePWGA232yJQ==
+X-Received: by 2002:ad4:4ea2:0:b0:473:6d91:6759 with SMTP id ed2-20020ad44ea2000000b004736d916759mr34926483qvb.102.1658414340714;
+        Thu, 21 Jul 2022 07:39:00 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id e19-20020a05620a12d300b006b5905999easm1403705qkl.121.2022.07.21.07.38.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jul 2022 07:38:59 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1oEXKM-001wqY-N5; Thu, 21 Jul 2022 11:38:58 -0300
+Date:   Thu, 21 Jul 2022 11:38:58 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Long Li <longli@microsoft.com>
+Cc:     Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
         Haiyang Zhang <haiyangz@microsoft.com>,
         Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, edumazet@google.com,
-        shiraz.saleem@intel.com, Ajay Sharma <sharmaajay@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+        Leon Romanovsky <leon@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [Patch v4 03/12] net: mana: Handle vport sharing between devices
+Message-ID: <20220721143858.GV5049@ziepe.ca>
 References: <1655345240-26411-1-git-send-email-longli@linuxonhyperv.com>
- <1655345240-26411-13-git-send-email-longli@linuxonhyperv.com>
-Content-Language: en-US
-In-Reply-To: <1655345240-26411-13-git-send-email-longli@linuxonhyperv.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+ <1655345240-26411-4-git-send-email-longli@linuxonhyperv.com>
+ <SN6PR2101MB13272044B91D6E37F7F5124FBF879@SN6PR2101MB1327.namprd21.prod.outlook.com>
+ <PH7PR21MB3263F08C111C5D06C99CC32ACE869@PH7PR21MB3263.namprd21.prod.outlook.com>
+ <20220720234209.GP5049@ziepe.ca>
+ <PH7PR21MB3263F5FD2FA4BA6669C21509CE919@PH7PR21MB3263.namprd21.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH7PR21MB3263F5FD2FA4BA6669C21509CE919@PH7PR21MB3263.namprd21.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 6/16/22 10:07 AM, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
+On Thu, Jul 21, 2022 at 12:06:12AM +0000, Long Li wrote:
+> > Subject: Re: [Patch v4 03/12] net: mana: Handle vport sharing between
+> > devices
+> > 
+> > On Tue, Jul 12, 2022 at 06:48:09PM +0000, Long Li wrote:
+> > > > > @@ -563,9 +581,19 @@ static int mana_cfg_vport(struct
+> > > > > mana_port_context *apc, u32 protection_dom_id,
+> > > > >
+> > > > >  	apc->tx_shortform_allowed = resp.short_form_allowed;
+> > > > >  	apc->tx_vp_offset = resp.tx_vport_offset;
+> > > > > +
+> > > > > +	netdev_info(apc->ndev, "Configured vPort %llu PD %u DB %u\n",
+> > > > > +		    apc->port_handle, protection_dom_id, doorbell_pg_id);
+> > > > Should this be netdev_dbg()?
+> > > > The log buffer can be flooded if there are many vPorts per VF PCI
+> > > > device and there are a lot of VFs.
+> > >
+> > > The reason netdev_info () is used is that this message is important
+> > > for troubleshooting initial setup issues with Ethernet driver. We rely
+> > > on user to get this configured right to share the same hardware port
+> > > between Ethernet and RDMA driver. As far as I know, there is no easy
+> > > way for a driver to "take over" an exclusive hardware resource from
+> > > another driver.
+> > 
+> > This seems like a really strange statement.
+> > 
+> > Exactly how does all of this work?
+> > 
+> > Jason
 > 
+> "vport" is a hardware resource that can either be used by an
+> Ethernet device, or an RDMA device. But it can't be used by both at
+> the same time. The "vport" is associated with a protection domain
+> and doorbell, it's programmed in the hardware. Outgoing traffic is
+> enforced on this vport based on how it is programmed.
 
-<...>
+Sure, but how is the users problem to "get this configured right" and
+what exactly is the user supposed to do?
 
-> +
-> +static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
-> +				 struct ib_qp_init_attr *attr,
-> +				 struct ib_udata *udata)
-> +{
-> +	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
-> +	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
-> +	struct mana_ib_dev *mdev =
-> +		container_of(ibpd->device, struct mana_ib_dev, ib_dev);
-> +	struct mana_ib_cq *send_cq =
-> +		container_of(attr->send_cq, struct mana_ib_cq, ibcq);
-> +	struct ib_ucontext *ib_ucontext = ibpd->uobject->context;
-> +	struct mana_ib_create_qp_resp resp = {};
-> +	struct mana_ib_ucontext *mana_ucontext;
-> +	struct gdma_dev *gd = mdev->gdma_dev;
-> +	struct mana_ib_create_qp ucmd = {};
-> +	struct mana_obj_spec wq_spec = {};
-> +	struct mana_obj_spec cq_spec = {};
-> +	struct mana_port_context *mpc;
-> +	struct mana_context *mc;
-> +	struct net_device *ndev;
-> +	struct ib_umem *umem;
-> +	int err;
-> +	u32 port;
-> +
-> +	mana_ucontext =
-> +		container_of(ib_ucontext, struct mana_ib_ucontext, ibucontext);
-> +	mc = gd->driver_data;
-> +
-> +	if (udata->inlen < sizeof(ucmd))
-> +		return -EINVAL;
-> +
-> +	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
-> +	if (err) {
-> +		ibdev_dbg(&mdev->ib_dev,
-> +			  "Failed to copy from udata create qp-raw, %d\n", err);
-> +		return -EFAULT;
-> +	}
-> +
-> +	/* IB ports start with 1, MANA Ethernet ports start with 0 */
-> +	port = ucmd.port;
-> +	if (ucmd.port > mc->num_ports)
-> +		return -EINVAL;
-> +
-> +	if (attr->cap.max_send_wr > MAX_SEND_BUFFERS_PER_QUEUE) {
-> +		ibdev_dbg(&mdev->ib_dev,
-> +			  "Requested max_send_wr %d exceeding limit\n",
-> +			  attr->cap.max_send_wr);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (attr->cap.max_send_sge > MAX_TX_WQE_SGL_ENTRIES) {
-> +		ibdev_dbg(&mdev->ib_dev,
-> +			  "Requested max_send_sge %d exceeding limit\n",
-> +			  attr->cap.max_send_sge);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ndev = mc->ports[port - 1];
-> +	mpc = netdev_priv(ndev);
-> +	ibdev_dbg(&mdev->ib_dev, "port %u ndev %p mpc %p\n", port, ndev, mpc);
-> +
-> +	err = mana_ib_cfg_vport(mdev, port - 1, pd, mana_ucontext->doorbell);
-> +	if (err)
-> +		return -ENODEV;
-> +
-> +	qp->port = port;
-> +
-> +	ibdev_dbg(&mdev->ib_dev, "ucmd sq_buf_addr 0x%llx port %u\n",
-> +		  ucmd.sq_buf_addr, ucmd.port);
-> +
-> +	umem = ib_umem_get(ibpd->device, ucmd.sq_buf_addr, ucmd.sq_buf_size,
-> +			   IB_ACCESS_LOCAL_WRITE);
-> +	if (IS_ERR(umem)) {
-> +		err = PTR_ERR(umem);
-> +		ibdev_dbg(&mdev->ib_dev,
-> +			  "Failed to get umem for create qp-raw, err %d\n",
-> +			  err);
-> +		goto err_free_vport;
-> +	}
-> +	qp->sq_umem = umem;
-> +
-> +	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
-> +					   &qp->sq_gdma_region, PAGE_SIZE);
-> +	if (err) {
-> +		ibdev_err(&mdev->ib_dev,
-> +			  "Failed to create dma region for create qp-raw, %d\n",
-> +			  err);
+I would expect the allocation of HW resources to be completely
+transparent to the user. Why is it not?
 
-It is better not print in userspace-triggered paths.
-
-There are also same issues in other paths.
-
-Thanks,
-Cheng Xu
-
-
+Jason
