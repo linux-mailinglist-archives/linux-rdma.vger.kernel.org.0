@@ -2,74 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FFE57C70D
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jul 2022 11:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3872557C73A
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jul 2022 11:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbiGUJDj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jul 2022 05:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
+        id S232849AbiGUJO6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jul 2022 05:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbiGUJDj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jul 2022 05:03:39 -0400
-Received: from m12-14.163.com (m12-14.163.com [220.181.12.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 827B042AC8;
-        Thu, 21 Jul 2022 02:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yPFnU
-        jkTMZqkKR12zaen98dH3MRV2XVo5tCZdpubB3Y=; b=pHk0xPjBGclNhTKknCG+H
-        0zm48SsZtf5iiWTwxfzK8UhlcBjqOHlQF675dHUvE9Vb5xPJGvwFsWUSDlaQvhDy
-        lYsioYu1FN6sMOjcfb6jyhWdeV2aaJbSlr6jA0S6s7KOR2uEEjpnzaq8qfU9eosW
-        9vloYW3qdoovnZS6qc8hLg=
-Received: from localhost.localdomain (unknown [223.104.68.234])
-        by smtp10 (Coremail) with SMTP id DsCowAA3HcZdFtlibOrcOQ--.128S2;
-        Thu, 21 Jul 2022 17:03:28 +0800 (CST)
-From:   Slark Xiao <slark_xiao@163.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Slark Xiao <slark_xiao@163.com>
-Subject: [PATCH] IB/ipoib: Fix typo 'the the' in comment
-Date:   Thu, 21 Jul 2022 17:03:23 +0800
-Message-Id: <20220721090323.50751-1-slark_xiao@163.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S232829AbiGUJO6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jul 2022 05:14:58 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DBF3FA23;
+        Thu, 21 Jul 2022 02:14:56 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VK.RF5m_1658394892;
+Received: from 192.168.0.4(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VK.RF5m_1658394892)
+          by smtp.aliyun-inc.com;
+          Thu, 21 Jul 2022 17:14:54 +0800
+Message-ID: <6f684f43-4c98-8f27-abea-02ad5f68cef1@linux.alibaba.com>
+Date:   Thu, 21 Jul 2022 17:14:52 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH 1/2] RDMA/erdma: Use the bitmap API to allocate bitmaps
+Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kai Shen <kaishen@linux.alibaba.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <2764b6e204b32ef8c198a5efaf6c6bc4119f7665.1657301795.git.christophe.jaillet@wanadoo.fr>
+ <670c57a2-6432-80c9-cdc0-496d836d7bf0@linux.alibaba.com>
+ <20220712090110.GL2338@kadam> <20220719125434.GG5049@ziepe.ca>
+ <20220719130125.GB2316@kadam>
+ <7075158a-64c1-8f69-7de1-9a60ee914f05@wanadoo.fr>
+ <5bcd437f-92a4-1c04-796c-41559dd2823a@linux.alibaba.com>
+ <YtkA4tBhlSHX76JM@unreal>
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <YtkA4tBhlSHX76JM@unreal>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowAA3HcZdFtlibOrcOQ--.128S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZFWUWr1kGw43Wry5KrW3Wrg_yoWfKFb_Wa
-        1UJFZ7uw1qkryqkwn0qFs3XF9ayw4jgw1UZa4qgr95Aa4UWF13Wrn2vF4Fqr1UCanrKa47
-        ZFyfCwn5ur4xWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRiGQ67UUUUU==
-X-Originating-IP: [223.104.68.234]
-X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiRwBFZFc7YwQGZgAAsN
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace 'the the' with 'the' in the comment.
 
-Signed-off-by: Slark Xiao <slark_xiao@163.com>
----
- drivers/infiniband/ulp/ipoib/ipoib_ib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ib.c b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-index f7995519bbc8..ed25061fac62 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-@@ -1109,7 +1109,7 @@ static bool ipoib_dev_addr_changed_valid(struct ipoib_dev_priv *priv)
- 	 * if he sets the device address back to be based on GID index 0,
- 	 * he no longer wishs to control it.
- 	 *
--	 * If the user doesn't control the the device address,
-+	 * If the user doesn't control the device address,
- 	 * IPOIB_FLAG_DEV_ADDR_SET is set and ib_find_gid failed it means
- 	 * the port GUID has changed and GID at index 0 has changed
- 	 * so we need to change priv->local_gid and priv->dev->dev_addr
--- 
-2.25.1
+On 7/21/22 3:31 PM, Leon Romanovsky wrote:
+> On Wed, Jul 20, 2022 at 09:58:24AM +0800, Cheng Xu wrote:
+>>
+>>
+>> On 7/19/22 11:36 PM, Christophe JAILLET wrote:
+>>> Le 19/07/2022 à 15:01, Dan Carpenter a écrit :
+>>>> On Tue, Jul 19, 2022 at 09:54:34AM -0300, Jason Gunthorpe wrote:
+>>>>> On Tue, Jul 12, 2022 at 12:01:10PM +0300, Dan Carpenter wrote:
+>>>>>
+>>>>>> Best not to use any auto-formatting tools.  They are all bad.
+>>>>>
+>>>>> Have you tried clang-format? I wouldn't call it bad..
+>>>>
+>>>> I prefered Christophe's formatting to clang's.  ;)
+>>>>
+>>>> regards,
+>>>> dan carpenter
+>>>>
+>>>>
+>>>
+>>> Hi,
+>>>
+>>> (some other files in the same directory also have some checkpatch warning/error)
+>>
+>> I just double checked the checkpatch results, Two type warnings reported:
+>>
+>>  - WARNING: Missing commit description - Add an appropriate one (for patch 0001)
+>>  - WARNING: added, moved or deleted file(s), does MAINTAINERS need updating? (for almost all patches except 0001/0011)
+>>
+>> For the first warning, the change is very simple: add erdma's
+>> rdma_driver_id definition, I think the commit title can describe
+>> all things, and is enough.
+> 
+> To be clear, our preference is to have commit message in any case, even
+> for simple changes.
+> 
 
+Sorry for this, I didn't know it previously. Before I sent our patches, I reviewed the EFA/SIW's
+upstreaming history, and siw only has one line commit title for simply changes, I followed.
+
+I will update our patches to fix it in a few days, and collect potential feedback
+of erdma code in linux-next.
+
+Thanks,
+Cheng Xu
