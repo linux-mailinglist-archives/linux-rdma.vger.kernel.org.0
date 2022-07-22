@@ -2,130 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD03957E02B
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Jul 2022 12:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7963B57E275
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Jul 2022 15:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbiGVKnm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Jul 2022 06:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
+        id S230089AbiGVNn0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Jul 2022 09:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235129AbiGVKnl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Jul 2022 06:43:41 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81B1BB5C4
-        for <linux-rdma@vger.kernel.org>; Fri, 22 Jul 2022 03:43:39 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id e11so4977015ljl.4
-        for <linux-rdma@vger.kernel.org>; Fri, 22 Jul 2022 03:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z4wci0FSdXRSQOFvNZ+NIfVlyvQ7a48Qnafkh39PYKg=;
-        b=hsmBtbfDMDFpdAYmL1cUR9GKxFSm1+i6QBHhSQdkLBi9Pq6XdcOCewENlYR8GgUtsj
-         nqW6OgKaCjB2panWswYFAqxCMCUE/+PWSNY/tYdU/lOrCDSbbyfmR9Br+8icbHwTUGUK
-         2Ne/2TC68g5eQBBONcEOW9Luh+gzl07+Mp8plkB0znxI7tQDT80nC15wst/CWNuC+pq7
-         u5KFUWuDhYBxoRpapUUP0nOrFPaqqCI8NXz/maeWQ0GAzDQNZ78vJtM0JaEUIVkNY97Y
-         lg8n28DACGhb8TJqq9yMyqwHYE+tRkLQc5tN5RrJS22smCmI1/e9ESIAkfnb4CiGqyfP
-         1gzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z4wci0FSdXRSQOFvNZ+NIfVlyvQ7a48Qnafkh39PYKg=;
-        b=K/jG7YMOZnh/8Psyr4V9ClpoNnGziyamg49L5ePtldFrcpBy/ciFgHukpUdXSFy/ov
-         s4D/dSXiB4u/pFT+SHZAbP7e4zwd5fnqHVplsf1p5uiZ0zgTt3OKe40VPbxhSQ2mgMU4
-         D8kxIFwBJkpLsVBKp3++l6oGAmBpawB52bMoOnbHM5nmQgjLkGQ/m99RWjWQdeH7woj/
-         GhlOuBIxMthx0EeonAxxhGCFDbVI1XNXcUYvClHyjxQ9ZhPOyPCt5SkLBdkHIC7kw+UG
-         gmJ/xfYR5i9W9s8UaKAsBVBoL6oMtzeANp8cPrHFq3DjVBKrOlCdPNR9zdx9Bfyq6Ki1
-         BEXg==
-X-Gm-Message-State: AJIora8v1TespZHntUHaVrPxfFg8XWxrhlB3MkLNQHiZ6CxJZP6ao/jy
-        tx4KbuwSKJ+5S55eJpWb6TbZ0Wcwppj5jDIYSdDh+vgooy0MOg==
-X-Google-Smtp-Source: AGRyM1uvfzJ6fc1yZqPY22fBgVWczJY+LInL8NF8/usLu8VeA6kTferPU7MKIU+C84+GQFyvuaXTpYaPIyZAsZ0lpO8=
-X-Received: by 2002:a2e:9bc2:0:b0:25d:53a9:65e1 with SMTP id
- w2-20020a2e9bc2000000b0025d53a965e1mr1063915ljj.158.1658486618101; Fri, 22
- Jul 2022 03:43:38 -0700 (PDT)
+        with ESMTP id S229441AbiGVNnZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Jul 2022 09:43:25 -0400
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477CE13E36
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Jul 2022 06:43:21 -0700 (PDT)
+Message-ID: <921120a1-28fa-dd2a-b6fc-227faa3c8ace@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1658497399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IMl81u3/E6xVxNZ9UVoU10FqjJdUG9J/XQjXB4f/g3g=;
+        b=JuiC5ADGrGlGVjfLYK1NAMe/RsYJBphh/J+iWzBffh+DVPlU+CO+U9IVCmPJUHdAfbs1cr
+        6znwfmKbbJpdzg95Ac/f7rpKB9bYfjnZy1CQcSdih3GEgYIQVdvqMEimHjUpSf4c9wX+R6
+        zVDOR4L3LHTzDZ47Jbj6CfB0DgnNHEE=
+Date:   Fri, 22 Jul 2022 21:43:05 +0800
 MIME-Version: 1.0
-References: <1658312958-13-1-git-send-email-lizhijian@fujitsu.com>
- <CAJpMwyier2gtHoMhkrFeNXmqjUo9ab2Ba4Ef_YZoCwv__9cz=Q@mail.gmail.com> <318d02a4-8028-551c-5cda-e7934153e03d@gmail.com>
-In-Reply-To: <318d02a4-8028-551c-5cda-e7934153e03d@gmail.com>
-From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Fri, 22 Jul 2022 12:43:27 +0200
-Message-ID: <CAJpMwygwvi=CfJmtgienyfPJ=QgiM6dShGuQB4es7qRtSjuKaQ@mail.gmail.com>
-Subject: Re: [RESEND RFC PATCH for-next] Revert "RDMA/rxe: Create duplicate
- mapping tables for FMRs"
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Li Zhijian <lizhijian@fujitsu.com>,
-        Yanjun Zhu <yanjun.zhu@linux.dev>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Leon Romanovsky <leon@kernel.org>,
-        Guoqing Jiang <guoqing.jiang@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCHv6 1/4] RDMA/rxe: Fix dead lock caused by __rxe_add_to_pool
+ interrupted by rxe_pool_get_index
+To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>
+Cc:     Yi Zhang <yi.zhang@redhat.com>
+References: <20220422194416.983549-1-yanjun.zhu@linux.dev>
+ <5c2c8590-4798-ab70-2a15-949ca245ddae@fujitsu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <5c2c8590-4798-ab70-2a15-949ca245ddae@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 12:19 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+
+在 2022/7/22 14:51, yangx.jy@fujitsu.com 写道:
+> Hi Yanjun, Bob
 >
-> On 7/20/22 05:50, Haris Iqbal wrote:
-> > On Wed, Jul 20, 2022 at 12:22 PM Li Zhijian <lizhijian@fujitsu.com> wrote:
-> >>
-> >> Below 2 commits will be reverted:
-> >>      8ff5f5d9d8cf ("RDMA/rxe: Prevent double freeing rxe_map_set()")
-> >>      647bf13ce944 ("RDMA/rxe: Create duplicate mapping tables for FMRs")
-> >>
-> >> The community has a few bug reports which pointed this commit at last.
-> >> Some proposals are raised up in the meantime but all of them have no
-> >> follow-up operation.
-> >>
-> >> The previous commit led the map_set of FMR to be not avaliable any more if
-> >> the MR is registered again after invalidating. Although the mentioned
-> >> patch try to fix a potential race in building/accessing the same table
-> >> for fast memory regions, it broke rnbd etc ULPs. Since the latter could
-> >> be worse, revert this patch.
-> >>
-> >> With previous commit, it's observed that a same MR in rnbd server will
-> >> trigger below code path:
-> >
-> > Looks Good. I tested the patch against rdma for-next and it solves the
-> > problem mentioned in the commit.
-> > One small nitpick. It should be rtrs, and not rnbd in the commit message.
-> >
-> > Feel free to add my,
-> >
-> > Tested-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> >
-> >>  -> rxe_mr_init_fast()
-> >>  |-> alloc map_set() # map_set is uninitialized
-> >>  |...-> rxe_map_mr_sg() # build the map_set
-> >>      |-> rxe_mr_set_page()
-> >>  |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE that means
-> >>                           # we can access host memory(such rxe_mr_copy)
-> >>  |...-> rxe_invalidate_mr() # mr->state change to FREE from VALID
-> >>  |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE,
-> >>                           # but map_set was not built again
-> >>  |...-> rxe_mr_copy() # kernel crash due to access wild addresses
-> >>                       # that lookup from the map_set
-> >>
->
-> Where is the use case for this? All the FMR examples I am aware of call rxe_map_mr_sg()
-> between each reg_fast_mr/invalidate_mr() sequence. I am not familiar with rtrs.
-> What is it?
+> Could you tell me if the dead lock issue has been fixed by the following
+> issue:
+> [PATCH v16 2/2] RDMA/rxe: Convert read side locking to rcu
 
-From drivers/infiniband/ulp/rtrs/README
+Hi， Xiao
 
-RTRS (RDMA Transport) is a reliable high speed transport library which
-provides support to establish optimal number of connections between
-client and server machines using RDMA
+Normally I applied this "RDMA/rxe: Fix dead lock caused by 
+__rxe_add_to_pool interrupted by rxe_pool_get_index" patch
 
-IMHO, in addition to finding a use case for this, another question
-would be, whether putting this restriction of "rxe_map_mr_sg" needed
-for every reg_fast_mr/invalidate_mr() cycle makes sense in terms of
-spec and/or mlx drivers.
+series to fix this problem. And I am not sure if this problem is fixed 
+by "[PATCH v16 2/2] RDMA/rxe: Convert read side locking to rcu".
+
+Zhu Yanjun
 
 >
-> Bob
+> Best Regards,
+> Xiao Yang
+>
+> On 2022/4/23 3:44, yanjun.zhu@linux.dev 写道:
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> This is a dead lock problem.
+>> The ah_pool xa_lock first is acquired in this:
+>>
+>> {SOFTIRQ-ON-W} state was registered at:
+>>
+>>     lock_acquire+0x1d2/0x5a0
+>>     _raw_spin_lock+0x33/0x80
+>>     __rxe_add_to_pool+0x183/0x230 [rdma_rxe]
+>>
+>> Then ah_pool xa_lock is acquired in this:
+>>
+>> {IN-SOFTIRQ-W}:
+>>
+>> Call Trace:
+>>    <TASK>
+>>     dump_stack_lvl+0x44/0x57
+>>     mark_lock.part.52.cold.79+0x3c/0x46
+>>     __lock_acquire+0x1565/0x34a0
+>>     lock_acquire+0x1d2/0x5a0
+>>     _raw_spin_lock_irqsave+0x42/0x90
+>>     rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
+>>     rxe_get_av+0x168/0x2a0 [rdma_rxe]
+>> </TASK>
+>>
+>>   From the above, in the function __rxe_add_to_pool,
+>> xa_lock is acquired. Then the function __rxe_add_to_pool
+>> is interrupted by softirq. The function
+>> rxe_pool_get_index will also acquire xa_lock.
+>>
+>> Finally, the dead lock appears.
+>>
+>>           CPU0
+>>           ----
+>>      lock(&xa->xa_lock#15);  <----- __rxe_add_to_pool
+>>      <Interrupt>
+>>        lock(&xa->xa_lock#15); <---- rxe_pool_get_index
+>>
+>>                    *** DEADLOCK ***
+>>
+>> Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by carrays")
+>> Reported-and-tested-by: Yi Zhang <yi.zhang@redhat.com>
+>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> ---
+>> V5->V6: One dead lock fix in one commit
+>> V4->V5: Commit logs are changed.
+>> V3->V4: xa_lock_irq locks are used.
+>> V2->V3: __rxe_add_to_pool is between spin_lock and spin_unlock, so
+>>           GFP_ATOMIC is used in __rxe_add_to_pool.
+>> V1->V2: Replace GFP_KERNEL with GFP_ATOMIC
+>> ---
+>>    drivers/infiniband/sw/rxe/rxe_pool.c | 11 +++++++----
+>>    1 file changed, 7 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+>> index 87066d04ed18..67f1d4733682 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+>> @@ -106,7 +106,7 @@ void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
+>>    
+>>    	atomic_set(&pool->num_elem, 0);
+>>    
+>> -	xa_init_flags(&pool->xa, XA_FLAGS_ALLOC);
+>> +	xa_init_flags(&pool->xa, XA_FLAGS_ALLOC | XA_FLAGS_LOCK_IRQ);
+>>    	pool->limit.min = info->min_index;
+>>    	pool->limit.max = info->max_index;
+>>    }
+>> @@ -155,6 +155,7 @@ void *rxe_alloc(struct rxe_pool *pool)
+>>    int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
+>>    {
+>>    	int err;
+>> +	unsigned long flags;
+>>    
+>>    	if (WARN_ON(pool->flags & RXE_POOL_ALLOC))
+>>    		return -EINVAL;
+>> @@ -166,8 +167,10 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
+>>    	elem->obj = (u8 *)elem - pool->elem_offset;
+>>    	kref_init(&elem->ref_cnt);
+>>    
+>> -	err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
+>> -			      &pool->next, GFP_KERNEL);
+>> +	xa_lock_irqsave(&pool->xa, flags);
+>> +	err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
+>> +				&pool->next, GFP_ATOMIC);
+>> +	xa_unlock_irqrestore(&pool->xa, flags);
+>>    	if (err)
+>>    		goto err_cnt;
+>>    
+>> @@ -201,7 +204,7 @@ static void rxe_elem_release(struct kref *kref)
+>>    	struct rxe_pool_elem *elem = container_of(kref, typeof(*elem), ref_cnt);
+>>    	struct rxe_pool *pool = elem->pool;
+>>    
+>> -	xa_erase(&pool->xa, elem->index);
+>> +	xa_erase_irq(&pool->xa, elem->index);
+>>    
+>>    	if (pool->cleanup)
+>>    		pool->cleanup(elem);
