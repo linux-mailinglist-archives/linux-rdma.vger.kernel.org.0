@@ -2,735 +2,196 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEEC5809CE
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jul 2022 05:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02EA580A9B
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jul 2022 06:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbiGZDJq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Jul 2022 23:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
+        id S237281AbiGZE6s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jul 2022 00:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbiGZDJo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jul 2022 23:09:44 -0400
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46272A258
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jul 2022 20:09:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1658804981; i=@fujitsu.com;
-        bh=3BMgU/6Lfu+pS/3SvnuVnWNrNMRsASCXtbXGkAFM3vU=;
-        h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=G8lamli+0qYz3f+8qU/SwhuLOujhSAi95qG7TtCQEXekFPSvIFgiE+vqk90GbjmjY
-         xiq2Zgbzy908ZeO+leSD1Mt9ULRPP6FLjcCe6ygwXeEaEmOZ0PyVIfZ04IYuc/S47y
-         doM1fjSfQTpvJ51l9nHc1pKRLPqmcKYkuHSrbp+a9vRM68Y4bPWwgMi6m45Ckd5smc
-         2oARPuwX0zukNBk9kBf2kwpz3Xl+T4h0hewOfBC1IiEivqzgZrWTCzBNGbXvN3Jq5o
-         QWh6YXfMR/64GifIa+XJ9dukFA1wUrxeauEWHjYyqpMcMeW9e3dg2MdJU4xstInaTB
-         kuB/j5wkzOy6g==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplleJIrShJLcpLzFFi42Kxs+HYrPs56n6
-  SwfGDJhY3pslZbDu9gd1i5owTjBZTfi1ltnh2qJfF4svUacwWx6ecY3dg99g56y67x+k3d5g8
-  Nq3qZPNY2DCV2ePzJjmPrZ9vswSwRbFm5iXlVySwZiyc3clUcGY+Y8WmyR1sDYx7Whi7GLk4h
-  AQ2Mkq0PX7ODOEsYZK42/gBKMMJ5BxglFh3XwDEZhPQkLjXchMsLiKQInH92nKwbmaBQ4wSz5
-  t2s4IkhAUiJL79PgpmswioStx5tZQdxOYVcJSYsWk7C4gtIaAgMeXhe2aIuKDEyZlPwOLMAhI
-  SB1+8AIpzANUoSczsjocor5CYNauNCcJWk7h6bhPzBEb+WUi6ZyHpXsDItIrRKqkoMz2jJDcx
-  M0fX0MBA19DQVNfYUtfUSC+xSjdRL7VUtzy1uEQXyC0v1kstLtYrrsxNzknRy0st2cQIjIGUY
-  nWTHYzdK3/qHWKU5GBSEuXd0nkvSYgvKT+lMiOxOCO+qDQntfgQowYHh8CMc3OnM0mx5OXnpS
-  pJ8ApH3E8SEixKTU+tSMvMAcYpTKkEB4+SCC9vOFCat7ggMbc4Mx0idYrRkmPDgwN7mTmmzv6
-  3n5mjc3/XAWYhsHlS4rwLIoEaBEAaMkrz4MbBUsklRlkpYV5GBgYGIZ6C1KLczBJU+VeM4hyM
-  SsK8HSBTeDLzSuC2vgI6iAnooE/ad0AOKklESEk1MIWHb/RylctboaZ3wMJe1GN1t/u0l8uml
-  V6Tjswrv3vGk/nctOpt8gJ7FjIsdvYIjS55XLbdxdq06Nxy7vOr2vsmPqrcuP/6LbZN9zbf9F
-  rJptHnxvK7l0Gh/ltUyKV55bNVbWuzy96nr5y316FI+uhiue23/h89Z6y5YU7YCd40Kd9jd8u
-  +GKQ63XrmX3iYlf2/zncFG8tTrU//36lccCx+XWbGikaTrmdaqr2pqbe8g3y4uQR3+rHu0dyg
-  N2sSy2LZbrbSmpYTvJ8MDlQ+r/PbJJcY1Wkbrpwhc/7g3v9LHsxZq9hVPP3vsgnb+1mrDC5yz
-  7z0sPEcb8t+ztrS2dxX3x5e3iz8k0vUZL3XFyWW4oxEQy3mouJEAKve9qSgAwAA
-X-Env-Sender: lizhijian@fujitsu.com
-X-Msg-Ref: server-18.tower-565.messagelabs.com!1658804979!107151!1
-X-Originating-IP: [62.60.8.179]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.87.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 23016 invoked from network); 26 Jul 2022 03:09:39 -0000
-Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
-  by server-18.tower-565.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 26 Jul 2022 03:09:39 -0000
-Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 80BF8151;
-        Tue, 26 Jul 2022 04:09:39 +0100 (BST)
-Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 69B9A158;
-        Tue, 26 Jul 2022 04:09:39 +0100 (BST)
-Received: from 1c64a7579a29.localdomain (10.167.225.141) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Tue, 26 Jul 2022 04:09:35 +0100
-From:   Li Zhijian <lizhijian@fujitsu.com>
-To:     Yanjun Zhu <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>,
-        <linux-rdma@vger.kernel.org>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Li Zhijian <lizhijian@fujitsu.com>,
-        "Bob Pearson" <rpearsonhpe@gmail.com>,
-        Haris Iqbal <haris.iqbal@ionos.com>,
-        "Guoqing Jiang" <guoqing.jiang@linux.dev>
-Subject: [PATCH for-next v2] Revert "RDMA/rxe: Create duplicate mapping tables for FMRs"
-Date:   Tue, 26 Jul 2022 03:16:26 +0000
-Message-ID: <1658805386-2-1-git-send-email-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+        with ESMTP id S231555AbiGZE6s (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jul 2022 00:58:48 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2180E25E8C
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jul 2022 21:58:47 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id w29so9744248qtv.9
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jul 2022 21:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/ewQwjigcijxeXKXHOuO/pTBhId+B5FjvuxpWvxhxvY=;
+        b=OH3zpCZCZS/+DyZTxbbBPnxgzPtkVrZM4SRM2dZhTH7x9W+wh43+uXF0vsG6wrGZDV
+         CaA1UetrtwrOxtJVwI8ZIc8SO4/myukcnoGNg9vCNgKfOsvYU8s/SlCOy+FlRtoDZPMq
+         oHqy0TIQBxZWdD5H5Agbms3e4JElCowRyVKnE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/ewQwjigcijxeXKXHOuO/pTBhId+B5FjvuxpWvxhxvY=;
+        b=6IxXrhWW101LpyWqPEwS9PjNiBlg11IvzzO+ZfSttUs1dI7IHY41JBTydAmCuFNgXN
+         FjugG2wxHh+9TxY24n0cx08z2LbTGDJn6kzm48jqCBbKTOPqjnuGy6bd1idWmHpXr6jz
+         ySaigRtdGCgGN3Z7V6RPZA/mFvkw9CJWOWT0djbdP5KhjvMFNYdg9Kt06trxJkU3t3y5
+         98eL2penCN71BI25hQ0y1eWIwhMgu9QryedzpsuEcGyyuMko37zvMnJJVlNr3dWmy596
+         eA5qeCxccdXYHTA39p4S+YaNg/1xLyB8a3cs5cdowWOo1x2Xvr4qPjYOBdE8VzQ5FC2v
+         NgpQ==
+X-Gm-Message-State: AJIora9jjEcrHG87YoTGaWd99UWI/pePOcnjs7fkB4ZmKK7CZxIJzcw+
+        YhG4zLLH3VvzfcV5KbpLt1KDmqpFTrfzFZ4fhOzoAA==
+X-Google-Smtp-Source: AGRyM1ttCnF9nTgXcMKfAX7pFbZrsU99/Z16xyl4ExjDXRh1MTR92CktYpdgG3+bpU803nDjodTq6O62ItSL4/hMSxo=
+X-Received: by 2002:a05:622a:11c3:b0:31e:ebe7:692a with SMTP id
+ n3-20020a05622a11c300b0031eebe7692amr13110769qtk.352.1658811526262; Mon, 25
+ Jul 2022 21:58:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220724231458.93830-1-ajit.khaparde@broadcom.com>
+ <20220724231458.93830-3-ajit.khaparde@broadcom.com> <Yt6JV0Vs7nSnI8KB@unreal>
+In-Reply-To: <Yt6JV0Vs7nSnI8KB@unreal>
+From:   Ajit Khaparde <ajit.khaparde@broadcom.com>
+Date:   Mon, 25 Jul 2022 21:58:30 -0700
+Message-ID: <CACZ4nhvkTtPjrtKnFuxo+m0TJdBB6S3Tdu1sx+UDS2bT3Y2XZg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] RDMA/bnxt_re: Use auxiliary driver interface
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Michael Chan <michael.chan@broadcom.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        linux-rdma@vger.kernel.org,
+        Andrew Gospodarek <andrew.gospodarek@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000c94de005e4ae27ba"
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Below 2 commits will be reverted:
- commit 8ff5f5d9d8cf ("RDMA/rxe: Prevent double freeing rxe_map_set()")
- commit 647bf13ce944 ("RDMA/rxe: Create duplicate mapping tables for FMRs")
+--000000000000c94de005e4ae27ba
+Content-Type: text/plain; charset="UTF-8"
 
-The community has a few bug reports which pointed this commit at last.
-Some proposals are raised up in the meantime but all of them have no
-follow-up operation.
+On Mon, Jul 25, 2022 at 5:15 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Sun, Jul 24, 2022 at 04:14:58PM -0700, Ajit Khaparde wrote:
+> > Use auxiliary driver interface for driver load, unload ROCE driver.
+> > The driver does not need to register the interface using the netdev
+> > notifier anymore. Removed the bnxt_re_dev_list which is not needed.
+> > Currently probe, remove and shutdown ops have been implemented for
+> > the auxiliary device.
+> >
+> > BUG: DCSG01157556
+> > Change-Id: Ice54f076c1c4fc26d4ee7e77a5dcd1ca21cf4cd0
+>
+> Please remove the lines above.
+Apologies for missing that.
 
-The previous commit led the map_set of FMR to be not available any more if
-the MR is registered again after invalidating. Although the mentioned
-patch try to fix a potential race in building/accessing the same table
-for fast memory regions, it broke rtrs etc ULPs. Since the latter could
-be worse, revert this patch.
+>
+> > Signed-off-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
+> > ---
+> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h       |   9 +-
+> >  drivers/infiniband/hw/bnxt_re/main.c          | 405 +++++++-----------
+> >  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  64 ---
+> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  65 +++
+> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   3 +
+> >  5 files changed, 232 insertions(+), 314 deletions(-)
+>
+> <...>
+>
+> > +static DEFINE_IDA(bnxt_aux_dev_ids);
+> > +
+> >  static int bnxt_register_dev(struct bnxt_en_dev *edev, unsigned int ulp_id,
+> >                            struct bnxt_ulp_ops *ulp_ops, void *handle)
+>
+> I would expect that almost all code in bnxt_ulp.c will go after this change.
+I agree. My plan was to get these QA tested, initial Aux Bus changes
+in this release with a follow on series to clean this up further.
+Does that sound reasonable?
+Thanks for the feedback.
 
-With previous commit, it's observed that a same MR in rnbd server will
-trigger below code path:
- -> rxe_mr_init_fast()
- |-> alloc map_set() # map_set is uninitialized
- |...-> rxe_map_mr_sg() # build the map_set
-     |-> rxe_mr_set_page()
- |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE that means
-                          # we can access host memory(such rxe_mr_copy)
- |...-> rxe_invalidate_mr() # mr->state change to FREE from VALID
- |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE,
-                          # but map_set was not built again
- |...-> rxe_mr_copy() # kernel crash due to access wild addresses
-                      # that lookup from the map_set
+Thanks
+Ajit
 
-The backtraces are not always identical.
-[1st]----------
-[   80.163579] RIP: 0010:lookup_iova+0x66/0xa0 [rdma_rxe]
-[   80.164825] Code: 00 00 00 48 d3 ee 89 32 c3 4c 8b 18 49 8b 3b 48 8b 47 08 48 39 c6 72 38 48 29 c6 45 31 d2 b8 01 00 00 00 48 63 c8 48 c1 e1 04 <48> 8b 4c 0f 08 48 39 f1 77 21 83 c0 01 48 29 ce 3d 00 01 00 00 75
-[   80.168935] RSP: 0018:ffffb7ff80063bf0 EFLAGS: 00010246
-[   80.170333] RAX: 0000000000000000 RBX: ffff9b9949d86800 RCX: 0000000000000000
-[   80.171976] RDX: ffffb7ff80063c00 RSI: 0000000049f6b378 RDI: 002818da00000004
-[   80.173606] RBP: 0000000000000120 R08: ffffb7ff80063c08 R09: ffffb7ff80063c04
-[   80.176933] R10: 0000000000000002 R11: ffff9b9916f7eef8 R12: ffff9b99488a0038
-[   80.178526] R13: ffff9b99488a0038 R14: ffff9b9914fb346a R15: ffff9b990ab27000
-[   80.180378] FS:  0000000000000000(0000) GS:ffff9b997dc00000(0000) knlGS:0000000000000000
-[   80.182257] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   80.183577] CR2: 00007efc33a98ed0 CR3: 0000000014f32004 CR4: 00000000001706f0
-[   80.185210] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   80.186890] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   80.188517] Call Trace:
-[   80.189269]  <TASK>
-[   80.189949]  rxe_mr_copy.part.0+0x6f/0x140 [rdma_rxe]
-[   80.191173]  rxe_responder+0x12ee/0x1b60 [rdma_rxe]
-[   80.192409]  ? rxe_icrc_check+0x7e/0x100 [rdma_rxe]
-[   80.193576]  ? rxe_rcv+0x1d0/0x780 [rdma_rxe]
-[   80.194668]  ? rxe_icrc_hdr.isra.0+0xf6/0x160 [rdma_rxe]
-[   80.195952]  rxe_do_task+0x67/0xb0 [rdma_rxe]
-[   80.197081]  rxe_xmit_packet+0xc7/0x210 [rdma_rxe]
-[   80.198253]  rxe_requester+0x680/0xee0 [rdma_rxe]
-[   80.199439]  ? update_load_avg+0x5f/0x690
-[   80.200530]  ? update_load_avg+0x5f/0x690
-[   80.213968]  ? rtrs_clt_recv_done+0x1b/0x30 [rtrs_client]
+>
+> Thanks
 
-[2nd]----------
-[ 5213.049494] RIP: 0010:rxe_mr_copy.part.0+0xa8/0x140 [rdma_rxe]
-[ 5213.050978] Code: 00 00 49 c1 e7 04 48 8b 00 4c 8d 2c d0 48 8b 44 24 10 4d 03 7d 00 85 ed 7f 10 eb 6c 89 54 24 0c 49 83 c7 10 31 c0 85 ed 7e 5e <49> 8b 3f 8b 14 24 4c 89 f6 48 01 c7 85 d2 74 06 48 89 fe 4c 89 f7
-[ 5213.056463] RSP: 0018:ffffae3580063bf8 EFLAGS: 00010202
-[ 5213.057986] RAX: 0000000000018978 RBX: ffff9d7ef7a03600 RCX: 0000000000000008
-[ 5213.059797] RDX: 000000000000007c RSI: 000000000000007c RDI: ffff9d7ef7a03600
-[ 5213.061720] RBP: 0000000000000120 R08: ffffae3580063c08 R09: ffffae3580063c04
-[ 5213.063532] R10: ffff9d7efece0038 R11: ffff9d7ec4b1db00 R12: ffff9d7efece0038
-[ 5213.065445] R13: ffff9d7ef4098260 R14: ffff9d7f11e23c6a R15: 4c79500065708144
-[ 5213.067264] FS:  0000000000000000(0000) GS:ffff9d7f3dc00000(0000) knlGS:0000000000000000
-[ 5213.069442] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 5213.071004] CR2: 00007fce47276c60 CR3: 0000000003f66004 CR4: 00000000001706f0
-[ 5213.072827] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 5213.074484] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 5213.076292] Call Trace:
-[ 5213.077027]  <TASK>
-[ 5213.077718]  rxe_responder+0x12ee/0x1b60 [rdma_rxe]
-[ 5213.079019]  ? rxe_icrc_check+0x7e/0x100 [rdma_rxe]
-[ 5213.080380]  ? rxe_rcv+0x1d0/0x780 [rdma_rxe]
-[ 5213.081708]  ? rxe_icrc_hdr.isra.0+0xf6/0x160 [rdma_rxe]
-[ 5213.082990]  rxe_do_task+0x67/0xb0 [rdma_rxe]
-[ 5213.084030]  rxe_xmit_packet+0xc7/0x210 [rdma_rxe]
-[ 5213.085156]  rxe_requester+0x680/0xee0 [rdma_rxe]
-[ 5213.088258]  ? update_load_avg+0x5f/0x690
-[ 5213.089381]  ? update_load_avg+0x5f/0x690
-[ 5213.090446]  ? rtrs_clt_recv_done+0x1b/0x30 [rtrs_client]
-[ 5213.092087]  rxe_do_task+0x67/0xb0 [rdma_rxe]
-[ 5213.093125]  tasklet_action_common.constprop.0+0x92/0xc0
-[ 5213.094366]  __do_softirq+0xe1/0x2d8
-[ 5213.095287]  run_ksoftirqd+0x21/0x30
-[ 5213.096456]  smpboot_thread_fn+0x183/0x220
-[ 5213.097519]  ? sort_range+0x20/0x20
-[ 5213.098761]  kthread+0xe2/0x110
-[ 5213.099638]  ? kthread_complete_and_exit+0x20/0x20
-[ 5213.100948]  ret_from_fork+0x22/0x30
+--000000000000c94de005e4ae27ba
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Link: https://lore.kernel.org/all/20220210073655.42281-1-guoqing.jiang@linux.dev/T/
-Link: https://www.spinics.net/lists/linux-rdma/msg110836.html
-Link: https://lore.kernel.org/lkml/94a5ea93-b8bb-3a01-9497-e2021f29598a@linux.dev/t/
-
-CC: Bob Pearson <rpearsonhpe@gmail.com>
-CC: Haris Iqbal <haris.iqbal@ionos.com>
-CC: Guoqing Jiang <guoqing.jiang@linux.dev>
-Tested-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
-V2: fix commit log
----
- drivers/infiniband/sw/rxe/rxe_loc.h   |   1 -
- drivers/infiniband/sw/rxe/rxe_mr.c    | 199 +++++++++++-----------------------
- drivers/infiniband/sw/rxe/rxe_mw.c    |   6 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c |  39 +++++--
- drivers/infiniband/sw/rxe/rxe_verbs.h |  21 ++--
- 5 files changed, 104 insertions(+), 162 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index f9af30f582c6..22f6cc31d1d6 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -79,7 +79,6 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
- int rxe_invalidate_mr(struct rxe_qp *qp, u32 key);
- int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
--int rxe_mr_set_page(struct ib_mr *ibmr, u64 addr);
- int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
- void rxe_mr_cleanup(struct rxe_pool_elem *elem);
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 6fdbd7929ccc..850b80f5ad8b 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -24,7 +24,7 @@ u8 rxe_get_next_key(u32 last_key)
- 
- int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
- {
--	struct rxe_map_set *set = mr->cur_map_set;
-+
- 
- 	switch (mr->type) {
- 	case IB_MR_TYPE_DMA:
-@@ -32,8 +32,8 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
- 
- 	case IB_MR_TYPE_USER:
- 	case IB_MR_TYPE_MEM_REG:
--		if (iova < set->iova || length > set->length ||
--		    iova > set->iova + set->length - length)
-+		if (iova < mr->iova || length > mr->length ||
-+		    iova > mr->iova + mr->length - length)
- 			return -EFAULT;
- 		return 0;
- 
-@@ -65,89 +65,41 @@ static void rxe_mr_init(int access, struct rxe_mr *mr)
- 	mr->map_shift = ilog2(RXE_BUF_PER_MAP);
- }
- 
--static void rxe_mr_free_map_set(int num_map, struct rxe_map_set *set)
--{
--	int i;
--
--	for (i = 0; i < num_map; i++)
--		kfree(set->map[i]);
--
--	kfree(set->map);
--	kfree(set);
--}
--
--static int rxe_mr_alloc_map_set(int num_map, struct rxe_map_set **setp)
-+static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
- {
- 	int i;
--	struct rxe_map_set *set;
-+	int num_map;
-+	struct rxe_map **map = mr->map;
- 
--	set = kmalloc(sizeof(*set), GFP_KERNEL);
--	if (!set)
--		goto err_out;
-+	num_map = (num_buf + RXE_BUF_PER_MAP - 1) / RXE_BUF_PER_MAP;
- 
--	set->map = kmalloc_array(num_map, sizeof(struct rxe_map *), GFP_KERNEL);
--	if (!set->map)
--		goto err_free_set;
-+	mr->map = kmalloc_array(num_map, sizeof(*map), GFP_KERNEL);
-+	if (!mr->map)
-+		goto err1;
- 
- 	for (i = 0; i < num_map; i++) {
--		set->map[i] = kmalloc(sizeof(struct rxe_map), GFP_KERNEL);
--		if (!set->map[i])
--			goto err_free_map;
-+		mr->map[i] = kmalloc(sizeof(**map), GFP_KERNEL);
-+		if (!mr->map[i])
-+			goto err2;
- 	}
- 
--	*setp = set;
--
--	return 0;
--
--err_free_map:
--	for (i--; i >= 0; i--)
--		kfree(set->map[i]);
--
--	kfree(set->map);
--err_free_set:
--	kfree(set);
--err_out:
--	return -ENOMEM;
--}
--
--/**
-- * rxe_mr_alloc() - Allocate memory map array(s) for MR
-- * @mr: Memory region
-- * @num_buf: Number of buffer descriptors to support
-- * @both: If non zero allocate both mr->map and mr->next_map
-- *	  else just allocate mr->map. Used for fast MRs
-- *
-- * Return: 0 on success else an error
-- */
--static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf, int both)
--{
--	int ret;
--	int num_map;
--
- 	BUILD_BUG_ON(!is_power_of_2(RXE_BUF_PER_MAP));
--	num_map = (num_buf + RXE_BUF_PER_MAP - 1) / RXE_BUF_PER_MAP;
- 
- 	mr->map_shift = ilog2(RXE_BUF_PER_MAP);
- 	mr->map_mask = RXE_BUF_PER_MAP - 1;
-+
- 	mr->num_buf = num_buf;
--	mr->max_buf = num_map * RXE_BUF_PER_MAP;
- 	mr->num_map = num_map;
--
--	ret = rxe_mr_alloc_map_set(num_map, &mr->cur_map_set);
--	if (ret)
--		return -ENOMEM;
--
--	if (both) {
--		ret = rxe_mr_alloc_map_set(num_map, &mr->next_map_set);
--		if (ret)
--			goto err_free;
--	}
-+	mr->max_buf = num_map * RXE_BUF_PER_MAP;
- 
- 	return 0;
- 
--err_free:
--	rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
--	mr->cur_map_set = NULL;
-+err2:
-+	for (i--; i >= 0; i--)
-+		kfree(mr->map[i]);
-+
-+	kfree(mr->map);
-+err1:
- 	return -ENOMEM;
- }
- 
-@@ -164,7 +116,6 @@ void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr *mr)
- int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 		     int access, struct rxe_mr *mr)
- {
--	struct rxe_map_set	*set;
- 	struct rxe_map		**map;
- 	struct rxe_phys_buf	*buf = NULL;
- 	struct ib_umem		*umem;
-@@ -172,6 +123,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 	int			num_buf;
- 	void			*vaddr;
- 	int err;
-+	int i;
- 
- 	umem = ib_umem_get(pd->ibpd.device, start, length, access);
- 	if (IS_ERR(umem)) {
-@@ -185,20 +137,18 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 
- 	rxe_mr_init(access, mr);
- 
--	err = rxe_mr_alloc(mr, num_buf, 0);
-+	err = rxe_mr_alloc(mr, num_buf);
- 	if (err) {
- 		pr_warn("%s: Unable to allocate memory for map\n",
- 				__func__);
- 		goto err_release_umem;
- 	}
- 
--	set = mr->cur_map_set;
--	set->page_shift = PAGE_SHIFT;
--	set->page_mask = PAGE_SIZE - 1;
--
--	num_buf = 0;
--	map = set->map;
-+	mr->page_shift = PAGE_SHIFT;
-+	mr->page_mask = PAGE_SIZE - 1;
- 
-+	num_buf			= 0;
-+	map = mr->map;
- 	if (length > 0) {
- 		buf = map[0]->buf;
- 
-@@ -214,29 +164,33 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 				pr_warn("%s: Unable to get virtual address\n",
- 						__func__);
- 				err = -ENOMEM;
--				goto err_release_umem;
-+				goto err_cleanup_map;
- 			}
- 
- 			buf->addr = (uintptr_t)vaddr;
- 			buf->size = PAGE_SIZE;
- 			num_buf++;
- 			buf++;
-+
- 		}
- 	}
- 
- 	mr->ibmr.pd = &pd->ibpd;
- 	mr->umem = umem;
- 	mr->access = access;
-+	mr->length = length;
-+	mr->iova = iova;
-+	mr->va = start;
-+	mr->offset = ib_umem_offset(umem);
- 	mr->state = RXE_MR_STATE_VALID;
- 	mr->type = IB_MR_TYPE_USER;
- 
--	set->length = length;
--	set->iova = iova;
--	set->va = start;
--	set->offset = ib_umem_offset(umem);
--
- 	return 0;
- 
-+err_cleanup_map:
-+	for (i = 0; i < mr->num_map; i++)
-+		kfree(mr->map[i]);
-+	kfree(mr->map);
- err_release_umem:
- 	ib_umem_release(umem);
- err_out:
-@@ -250,7 +204,7 @@ int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr)
- 	/* always allow remote access for FMRs */
- 	rxe_mr_init(IB_ACCESS_REMOTE, mr);
- 
--	err = rxe_mr_alloc(mr, max_pages, 1);
-+	err = rxe_mr_alloc(mr, max_pages);
- 	if (err)
- 		goto err1;
- 
-@@ -268,24 +222,21 @@ int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr)
- static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
- 			size_t *offset_out)
- {
--	struct rxe_map_set *set = mr->cur_map_set;
--	size_t offset = iova - set->iova + set->offset;
-+	size_t offset = iova - mr->iova + mr->offset;
- 	int			map_index;
- 	int			buf_index;
- 	u64			length;
--	struct rxe_map *map;
- 
--	if (likely(set->page_shift)) {
--		*offset_out = offset & set->page_mask;
--		offset >>= set->page_shift;
-+	if (likely(mr->page_shift)) {
-+		*offset_out = offset & mr->page_mask;
-+		offset >>= mr->page_shift;
- 		*n_out = offset & mr->map_mask;
- 		*m_out = offset >> mr->map_shift;
- 	} else {
- 		map_index = 0;
- 		buf_index = 0;
- 
--		map = set->map[map_index];
--		length = map->buf[buf_index].size;
-+		length = mr->map[map_index]->buf[buf_index].size;
- 
- 		while (offset >= length) {
- 			offset -= length;
-@@ -295,8 +246,7 @@ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
- 				map_index++;
- 				buf_index = 0;
- 			}
--			map = set->map[map_index];
--			length = map->buf[buf_index].size;
-+			length = mr->map[map_index]->buf[buf_index].size;
- 		}
- 
- 		*m_out = map_index;
-@@ -317,7 +267,7 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
- 		goto out;
- 	}
- 
--	if (!mr->cur_map_set) {
-+	if (!mr->map) {
- 		addr = (void *)(uintptr_t)iova;
- 		goto out;
- 	}
-@@ -330,13 +280,13 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
- 
- 	lookup_iova(mr, iova, &m, &n, &offset);
- 
--	if (offset + length > mr->cur_map_set->map[m]->buf[n].size) {
-+	if (offset + length > mr->map[m]->buf[n].size) {
- 		pr_warn("crosses page boundary\n");
- 		addr = NULL;
- 		goto out;
- 	}
- 
--	addr = (void *)(uintptr_t)mr->cur_map_set->map[m]->buf[n].addr + offset;
-+	addr = (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
- 
- out:
- 	return addr;
-@@ -372,7 +322,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 		return 0;
- 	}
- 
--	WARN_ON_ONCE(!mr->cur_map_set);
-+	WARN_ON_ONCE(!mr->map);
- 
- 	err = mr_check_range(mr, iova, length);
- 	if (err) {
-@@ -382,7 +332,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 
- 	lookup_iova(mr, iova, &m, &i, &offset);
- 
--	map = mr->cur_map_set->map + m;
-+	map = mr->map + m;
- 	buf	= map[0]->buf + i;
- 
- 	while (length > 0) {
-@@ -628,9 +578,8 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key)
- int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- {
- 	struct rxe_mr *mr = to_rmr(wqe->wr.wr.reg.mr);
--	u32 key = wqe->wr.wr.reg.key & 0xff;
-+	u32 key = wqe->wr.wr.reg.key;
- 	u32 access = wqe->wr.wr.reg.access;
--	struct rxe_map_set *set;
- 
- 	/* user can only register MR in free state */
- 	if (unlikely(mr->state != RXE_MR_STATE_FREE)) {
-@@ -646,36 +595,19 @@ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 		return -EINVAL;
- 	}
- 
-+	/* user is only allowed to change key portion of l/rkey */
-+	if (unlikely((mr->lkey & ~0xff) != (key & ~0xff))) {
-+		pr_warn("%s: key = 0x%x has wrong index mr->lkey = 0x%x\n",
-+			__func__, key, mr->lkey);
-+		return -EINVAL;
-+	}
-+
- 	mr->access = access;
--	mr->lkey = (mr->lkey & ~0xff) | key;
--	mr->rkey = (access & IB_ACCESS_REMOTE) ? mr->lkey : 0;
-+	mr->lkey = key;
-+	mr->rkey = (access & IB_ACCESS_REMOTE) ? key : 0;
-+	mr->iova = wqe->wr.wr.reg.mr->iova;
- 	mr->state = RXE_MR_STATE_VALID;
- 
--	set = mr->cur_map_set;
--	mr->cur_map_set = mr->next_map_set;
--	mr->cur_map_set->iova = wqe->wr.wr.reg.mr->iova;
--	mr->next_map_set = set;
--
--	return 0;
--}
--
--int rxe_mr_set_page(struct ib_mr *ibmr, u64 addr)
--{
--	struct rxe_mr *mr = to_rmr(ibmr);
--	struct rxe_map_set *set = mr->next_map_set;
--	struct rxe_map *map;
--	struct rxe_phys_buf *buf;
--
--	if (unlikely(set->nbuf == mr->num_buf))
--		return -ENOMEM;
--
--	map = set->map[set->nbuf / RXE_BUF_PER_MAP];
--	buf = &map->buf[set->nbuf % RXE_BUF_PER_MAP];
--
--	buf->addr = addr;
--	buf->size = ibmr->page_size;
--	set->nbuf++;
--
- 	return 0;
- }
- 
-@@ -695,14 +627,15 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- void rxe_mr_cleanup(struct rxe_pool_elem *elem)
- {
- 	struct rxe_mr *mr = container_of(elem, typeof(*mr), elem);
-+	int i;
- 
- 	rxe_put(mr_pd(mr));
--
- 	ib_umem_release(mr->umem);
- 
--	if (mr->cur_map_set)
--		rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
-+	if (mr->map) {
-+		for (i = 0; i < mr->num_map; i++)
-+			kfree(mr->map[i]);
- 
--	if (mr->next_map_set)
--		rxe_mr_free_map_set(mr->num_map, mr->next_map_set);
-+		kfree(mr->map);
-+	}
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
-index e3f7ca41a91c..104993801a80 100644
---- a/drivers/infiniband/sw/rxe/rxe_mw.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mw.c
-@@ -114,15 +114,15 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 
- 	/* C10-75 */
- 	if (mw->access & IB_ZERO_BASED) {
--		if (unlikely(wqe->wr.wr.mw.length > mr->cur_map_set->length)) {
-+		if (unlikely(wqe->wr.wr.mw.length > mr->length)) {
- 			pr_err_once(
- 				"attempt to bind a ZB MW outside of the MR\n");
- 			return -EINVAL;
- 		}
- 	} else {
--		if (unlikely((wqe->wr.wr.mw.addr < mr->cur_map_set->iova) ||
-+		if (unlikely((wqe->wr.wr.mw.addr < mr->iova) ||
- 			     ((wqe->wr.wr.mw.addr + wqe->wr.wr.mw.length) >
--			      (mr->cur_map_set->iova + mr->cur_map_set->length)))) {
-+			      (mr->iova + mr->length)))) {
- 			pr_err_once(
- 				"attempt to bind a VA MW outside of the MR\n");
- 			return -EINVAL;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 151c6280abd5..e264cf69bf55 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -978,26 +978,41 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 	return ERR_PTR(err);
- }
- 
--/* build next_map_set from scatterlist
-- * The IB_WR_REG_MR WR will swap map_sets
-- */
-+static int rxe_set_page(struct ib_mr *ibmr, u64 addr)
-+{
-+	struct rxe_mr *mr = to_rmr(ibmr);
-+	struct rxe_map *map;
-+	struct rxe_phys_buf *buf;
-+
-+	if (unlikely(mr->nbuf == mr->num_buf))
-+		return -ENOMEM;
-+
-+	map = mr->map[mr->nbuf / RXE_BUF_PER_MAP];
-+	buf = &map->buf[mr->nbuf % RXE_BUF_PER_MAP];
-+
-+	buf->addr = addr;
-+	buf->size = ibmr->page_size;
-+	mr->nbuf++;
-+
-+	return 0;
-+}
-+
- static int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
- 			 int sg_nents, unsigned int *sg_offset)
- {
- 	struct rxe_mr *mr = to_rmr(ibmr);
--	struct rxe_map_set *set = mr->next_map_set;
- 	int n;
- 
--	set->nbuf = 0;
-+	mr->nbuf = 0;
- 
--	n = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, rxe_mr_set_page);
-+	n = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, rxe_set_page);
- 
--	set->va = ibmr->iova;
--	set->iova = ibmr->iova;
--	set->length = ibmr->length;
--	set->page_shift = ilog2(ibmr->page_size);
--	set->page_mask = ibmr->page_size - 1;
--	set->offset = set->iova & set->page_mask;
-+	mr->va = ibmr->iova;
-+	mr->iova = ibmr->iova;
-+	mr->length = ibmr->length;
-+	mr->page_shift = ilog2(ibmr->page_size);
-+	mr->page_mask = ibmr->page_size - 1;
-+	mr->offset = mr->iova & mr->page_mask;
- 
- 	return n;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 9fd5861f28fb..a24fbe984066 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -287,17 +287,6 @@ struct rxe_map {
- 	struct rxe_phys_buf	buf[RXE_BUF_PER_MAP];
- };
- 
--struct rxe_map_set {
--	struct rxe_map		**map;
--	u64			va;
--	u64			iova;
--	size_t			length;
--	u32			offset;
--	u32			nbuf;
--	int			page_shift;
--	int			page_mask;
--};
--
- static inline int rkey_is_mw(u32 rkey)
- {
- 	u32 index = rkey >> 8;
-@@ -315,20 +304,26 @@ struct rxe_mr {
- 	u32			rkey;
- 	enum rxe_mr_state	state;
- 	enum ib_mr_type		type;
-+	u64			va;
-+	u64			iova;
-+	size_t			length;
-+	u32			offset;
- 	int			access;
- 
-+	int			page_shift;
-+	int			page_mask;
- 	int			map_shift;
- 	int			map_mask;
- 
- 	u32			num_buf;
-+	u32			nbuf;
- 
- 	u32			max_buf;
- 	u32			num_map;
- 
- 	atomic_t		num_mw;
- 
--	struct rxe_map_set	*cur_map_set;
--	struct rxe_map_set	*next_map_set;
-+	struct rxe_map		**map;
- };
- 
- enum rxe_mw_state {
--- 
-1.8.3.1
-
+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
+RIaCW0xx+14NTQe17dkH6CEEpmCjejneq/FU0gmbuorwHoP9mOiqeh23/ZKVpmFO/eiDtvMNAMDW
+6LzhOk/pMklUPTHu/gQNW3OQebyhyFUHiBSp8rDkfWZT57Asd0PtdQIDAQABo4IB2zCCAdcwDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAlBgNVHREEHjAcgRphaml0LmtoYXBhcmRlQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
+BQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUPHif0ihgndR0
+h7r3sANaOIu2yM8wDQYJKoZIhvcNAQELBQADggEBAAEuLXDnP0Xd2zAMpQobXLUyqbpqGMO6ycQc
+Xq4H2YYlSNKVwPA+ZAVdUOzbSimBKlx8mzAEHkI3Ll1yXlYeT4UwkfWV9fioyGuQelLN1sGzi5bm
+WEpaSIbR1eiJMtzxUPwpRTn19gHZVueIot2Gw0fEYgHiMJpUr6xBWv2QNXULu/E8qvbXIRh2iycq
+5rWFggX/JHglO8nVqzb1ImzqzVMFnDN15h3j8ryy2MIvZ8VDQRP7l81IXaTvVwaKpWMgV6rfQOi6
+aOQZuOKkad7qoCkS5N2oSsvxi+rZtDaJJNsDjs05y5JZZQtBlfAmdYS+mmvkPjZ1iaLTzk59o/Yo
+fNkxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
+MTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQphPQ
+U+7K4aDRwxAwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIARJUHtzmiK4/EtlFxN0
+QYwcE89Lm+0wUHUtkEEbsvLvMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
+MQ8XDTIyMDcyNjA0NTg0NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
+BAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsG
+CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQARueZCwJdI/tX5HqvzpHFLYYbSHTWr3/lKXNXP
+FLTuIyP4uYfZ1vqkP3OHmSGjM9EmAj9/Vd/8FN0yzuQxU4h7//fkRBAfaLlq60bDQuEI3Ynzrq7Q
+h6SWHLStbFqMNbhGUF9VtyWinb2tgxzg4pyo4FaH2VApORc7V3aAWrmZ8sqG4HugRQpcJj67LTwC
+12DQQh5o7FGXAw/c8gVVD9isgVpRvytt/NadXYR7yF5hIIA/vGxD/CaZc4cGuVYXPaaHHYxuDxUS
+Y8mAtT7S7lVOlACOuNKz7HPw5HwNOzvzc7cUaNKM5bkBm+FuSfB3Rg2xDoKG+7/tFkVCHaOZLUg3
+--000000000000c94de005e4ae27ba--
