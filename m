@@ -2,64 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 903745804F1
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Jul 2022 22:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEEC5809CE
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jul 2022 05:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236412AbiGYUCP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Jul 2022 16:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        id S231679AbiGZDJq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Jul 2022 23:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiGYUCO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jul 2022 16:02:14 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD4113CC6
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jul 2022 13:02:13 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id by10-20020a056830608a00b0061c1ac80e1dso9446804otb.13
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jul 2022 13:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+hjpjc9sFKmRyzglvAtNCt6IoEVAqaBLcTmmQa3+eCA=;
-        b=Xd06mhpYTxKIxqWmWd+ujjBkd/0KXoDchEu7cw8v+Zhf8OGd66Ol6W76qyD3uaKo+2
-         ItmlVvTsm2aQGdD9qyVA7FrJMnESUcLjnShsTwjC9mEEtlfgOJA3+5MgCZz7ZWiPQtYa
-         ty63QQaT21/JLiA+arZcGpBDKZJ+SovRMNlouOspfTXnRrC7Y209U5pfTEUBZ783xJXY
-         Y8IHptIy1oV8PGBlflOabZ8DeQdLMel4fF4WU7y6NnwAnQhzc48wvJfSb0jchkM92hHa
-         D5Y3tZSCs0QbBMy0KmpfmfMwO1UI8JUNWQeWIF+uFiDhX0f9NsH49PQOIujePZ9jIcNw
-         eW5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+hjpjc9sFKmRyzglvAtNCt6IoEVAqaBLcTmmQa3+eCA=;
-        b=KH7ZZfV440rTxTcLtOM/u0D62BMq4MHGQnnXmvx7QwywWu0VDEDQsaBK6csKjmUCjd
-         1/wyBNICpIiM1vGbjWhOSyF96NPx9nVMR8nQmcxH1B5u3XFesyGaSMTcA7qkyZdGsGt5
-         VqlCvbFH7wYAFXt+w/orJ5ouyyHOym+cGuoOAQTYrR3LU+KsWlfLSwsNyb1Uk+LdfGpe
-         usv6Rq6wxM+BC86MHaOzSzhFXcaVCi8C9vNAeuuIyaMYeh9svxrWY2XUcGSY+vgHIkyO
-         /AnteeAHF8IhtA54qY09ALYhlsJDMrN0pqoYeqvi9qMldHv/NeT9Q5n98b/nJPNsuH2+
-         e9VQ==
-X-Gm-Message-State: AJIora+Jsmtd8LqucQyv3qId/MkZBhNAfjyAeqGsD+xSigRF2h5gT2Dw
-        DA1ETMtquaeFliq9WmTqomyASv6aZsE=
-X-Google-Smtp-Source: AGRyM1sAFW+Fgh9D6U/X+AJrc2/E9WcG5y3GiR2fe7MWqRhJQKN7A/R1ovIrwvH81h9zhOHF8T5KGw==
-X-Received: by 2002:a05:6830:1c3:b0:61c:aca3:c57f with SMTP id r3-20020a05683001c300b0061caca3c57fmr4912591ota.269.1658779333061;
-        Mon, 25 Jul 2022 13:02:13 -0700 (PDT)
-Received: from u-22.tx.rr.com (097-099-248-255.res.spectrum.com. [97.99.248.255])
-        by smtp.googlemail.com with ESMTPSA id t26-20020a056870601a00b0010490c6b552sm6553011oaa.35.2022.07.25.13.02.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jul 2022 13:02:12 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     lizhijian@fujitsu.com, jgg@nvidia.com, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next] RDMA/rxe: Guard mr state with spin lock
-Date:   Mon, 25 Jul 2022 15:01:15 -0500
-Message-Id: <20220725200114.2666-1-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S230433AbiGZDJo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jul 2022 23:09:44 -0400
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46272A258
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jul 2022 20:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+        s=170520fj; t=1658804981; i=@fujitsu.com;
+        bh=3BMgU/6Lfu+pS/3SvnuVnWNrNMRsASCXtbXGkAFM3vU=;
+        h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=G8lamli+0qYz3f+8qU/SwhuLOujhSAi95qG7TtCQEXekFPSvIFgiE+vqk90GbjmjY
+         xiq2Zgbzy908ZeO+leSD1Mt9ULRPP6FLjcCe6ygwXeEaEmOZ0PyVIfZ04IYuc/S47y
+         doM1fjSfQTpvJ51l9nHc1pKRLPqmcKYkuHSrbp+a9vRM68Y4bPWwgMi6m45Ckd5smc
+         2oARPuwX0zukNBk9kBf2kwpz3Xl+T4h0hewOfBC1IiEivqzgZrWTCzBNGbXvN3Jq5o
+         QWh6YXfMR/64GifIa+XJ9dukFA1wUrxeauEWHjYyqpMcMeW9e3dg2MdJU4xstInaTB
+         kuB/j5wkzOy6g==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplleJIrShJLcpLzFFi42Kxs+HYrPs56n6
+  SwfGDJhY3pslZbDu9gd1i5owTjBZTfi1ltnh2qJfF4svUacwWx6ecY3dg99g56y67x+k3d5g8
+  Nq3qZPNY2DCV2ePzJjmPrZ9vswSwRbFm5iXlVySwZiyc3clUcGY+Y8WmyR1sDYx7Whi7GLk4h
+  AQ2Mkq0PX7ODOEsYZK42/gBKMMJ5BxglFh3XwDEZhPQkLjXchMsLiKQInH92nKwbmaBQ4wSz5
+  t2s4IkhAUiJL79PgpmswioStx5tZQdxOYVcJSYsWk7C4gtIaAgMeXhe2aIuKDEyZlPwOLMAhI
+  SB1+8AIpzANUoSczsjocor5CYNauNCcJWk7h6bhPzBEb+WUi6ZyHpXsDItIrRKqkoMz2jJDcx
+  M0fX0MBA19DQVNfYUtfUSC+xSjdRL7VUtzy1uEQXyC0v1kstLtYrrsxNzknRy0st2cQIjIGUY
+  nWTHYzdK3/qHWKU5GBSEuXd0nkvSYgvKT+lMiOxOCO+qDQntfgQowYHh8CMc3OnM0mx5OXnpS
+  pJ8ApH3E8SEixKTU+tSMvMAcYpTKkEB4+SCC9vOFCat7ggMbc4Mx0idYrRkmPDgwN7mTmmzv6
+  3n5mjc3/XAWYhsHlS4rwLIoEaBEAaMkrz4MbBUsklRlkpYV5GBgYGIZ6C1KLczBJU+VeM4hyM
+  SsK8HSBTeDLzSuC2vgI6iAnooE/ad0AOKklESEk1MIWHb/RylctboaZ3wMJe1GN1t/u0l8uml
+  V6Tjswrv3vGk/nctOpt8gJ7FjIsdvYIjS55XLbdxdq06Nxy7vOr2vsmPqrcuP/6LbZN9zbf9F
+  rJptHnxvK7l0Gh/ltUyKV55bNVbWuzy96nr5y316FI+uhiue23/h89Z6y5YU7YCd40Kd9jd8u
+  +GKQ63XrmX3iYlf2/zncFG8tTrU//36lccCx+XWbGikaTrmdaqr2pqbe8g3y4uQR3+rHu0dyg
+  N2sSy2LZbrbSmpYTvJ8MDlQ+r/PbJJcY1Wkbrpwhc/7g3v9LHsxZq9hVPP3vsgnb+1mrDC5yz
+  7z0sPEcb8t+ztrS2dxX3x5e3iz8k0vUZL3XFyWW4oxEQy3mouJEAKve9qSgAwAA
+X-Env-Sender: lizhijian@fujitsu.com
+X-Msg-Ref: server-18.tower-565.messagelabs.com!1658804979!107151!1
+X-Originating-IP: [62.60.8.179]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.87.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 23016 invoked from network); 26 Jul 2022 03:09:39 -0000
+Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
+  by server-18.tower-565.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 26 Jul 2022 03:09:39 -0000
+Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 80BF8151;
+        Tue, 26 Jul 2022 04:09:39 +0100 (BST)
+Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 69B9A158;
+        Tue, 26 Jul 2022 04:09:39 +0100 (BST)
+Received: from 1c64a7579a29.localdomain (10.167.225.141) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.32; Tue, 26 Jul 2022 04:09:35 +0100
+From:   Li Zhijian <lizhijian@fujitsu.com>
+To:     Yanjun Zhu <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>,
+        <linux-rdma@vger.kernel.org>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Li Zhijian <lizhijian@fujitsu.com>,
+        "Bob Pearson" <rpearsonhpe@gmail.com>,
+        Haris Iqbal <haris.iqbal@ionos.com>,
+        "Guoqing Jiang" <guoqing.jiang@linux.dev>
+Subject: [PATCH for-next v2] Revert "RDMA/rxe: Create duplicate mapping tables for FMRs"
+Date:   Tue, 26 Jul 2022 03:16:26 +0000
+Message-ID: <1658805386-2-1-git-send-email-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,247 +89,648 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently the rxe driver does not guard changes to the mr state
-against race conditions which can arise from races between
-local operations and remote invalidate operations. This patch
-adds a spinlock to the mr object and makes the state changes
-atomic.
+Below 2 commits will be reverted:
+ commit 8ff5f5d9d8cf ("RDMA/rxe: Prevent double freeing rxe_map_set()")
+ commit 647bf13ce944 ("RDMA/rxe: Create duplicate mapping tables for FMRs")
 
-Applies to current for-next after adding the patch
-Revert "RDMA/rxe: Create duplicate mapping tables for FMRs"
+The community has a few bug reports which pointed this commit at last.
+Some proposals are raised up in the meantime but all of them have no
+follow-up operation.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+The previous commit led the map_set of FMR to be not available any more if
+the MR is registered again after invalidating. Although the mentioned
+patch try to fix a potential race in building/accessing the same table
+for fast memory regions, it broke rtrs etc ULPs. Since the latter could
+be worse, revert this patch.
+
+With previous commit, it's observed that a same MR in rnbd server will
+trigger below code path:
+ -> rxe_mr_init_fast()
+ |-> alloc map_set() # map_set is uninitialized
+ |...-> rxe_map_mr_sg() # build the map_set
+     |-> rxe_mr_set_page()
+ |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE that means
+                          # we can access host memory(such rxe_mr_copy)
+ |...-> rxe_invalidate_mr() # mr->state change to FREE from VALID
+ |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE,
+                          # but map_set was not built again
+ |...-> rxe_mr_copy() # kernel crash due to access wild addresses
+                      # that lookup from the map_set
+
+The backtraces are not always identical.
+[1st]----------
+[   80.163579] RIP: 0010:lookup_iova+0x66/0xa0 [rdma_rxe]
+[   80.164825] Code: 00 00 00 48 d3 ee 89 32 c3 4c 8b 18 49 8b 3b 48 8b 47 08 48 39 c6 72 38 48 29 c6 45 31 d2 b8 01 00 00 00 48 63 c8 48 c1 e1 04 <48> 8b 4c 0f 08 48 39 f1 77 21 83 c0 01 48 29 ce 3d 00 01 00 00 75
+[   80.168935] RSP: 0018:ffffb7ff80063bf0 EFLAGS: 00010246
+[   80.170333] RAX: 0000000000000000 RBX: ffff9b9949d86800 RCX: 0000000000000000
+[   80.171976] RDX: ffffb7ff80063c00 RSI: 0000000049f6b378 RDI: 002818da00000004
+[   80.173606] RBP: 0000000000000120 R08: ffffb7ff80063c08 R09: ffffb7ff80063c04
+[   80.176933] R10: 0000000000000002 R11: ffff9b9916f7eef8 R12: ffff9b99488a0038
+[   80.178526] R13: ffff9b99488a0038 R14: ffff9b9914fb346a R15: ffff9b990ab27000
+[   80.180378] FS:  0000000000000000(0000) GS:ffff9b997dc00000(0000) knlGS:0000000000000000
+[   80.182257] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   80.183577] CR2: 00007efc33a98ed0 CR3: 0000000014f32004 CR4: 00000000001706f0
+[   80.185210] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   80.186890] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   80.188517] Call Trace:
+[   80.189269]  <TASK>
+[   80.189949]  rxe_mr_copy.part.0+0x6f/0x140 [rdma_rxe]
+[   80.191173]  rxe_responder+0x12ee/0x1b60 [rdma_rxe]
+[   80.192409]  ? rxe_icrc_check+0x7e/0x100 [rdma_rxe]
+[   80.193576]  ? rxe_rcv+0x1d0/0x780 [rdma_rxe]
+[   80.194668]  ? rxe_icrc_hdr.isra.0+0xf6/0x160 [rdma_rxe]
+[   80.195952]  rxe_do_task+0x67/0xb0 [rdma_rxe]
+[   80.197081]  rxe_xmit_packet+0xc7/0x210 [rdma_rxe]
+[   80.198253]  rxe_requester+0x680/0xee0 [rdma_rxe]
+[   80.199439]  ? update_load_avg+0x5f/0x690
+[   80.200530]  ? update_load_avg+0x5f/0x690
+[   80.213968]  ? rtrs_clt_recv_done+0x1b/0x30 [rtrs_client]
+
+[2nd]----------
+[ 5213.049494] RIP: 0010:rxe_mr_copy.part.0+0xa8/0x140 [rdma_rxe]
+[ 5213.050978] Code: 00 00 49 c1 e7 04 48 8b 00 4c 8d 2c d0 48 8b 44 24 10 4d 03 7d 00 85 ed 7f 10 eb 6c 89 54 24 0c 49 83 c7 10 31 c0 85 ed 7e 5e <49> 8b 3f 8b 14 24 4c 89 f6 48 01 c7 85 d2 74 06 48 89 fe 4c 89 f7
+[ 5213.056463] RSP: 0018:ffffae3580063bf8 EFLAGS: 00010202
+[ 5213.057986] RAX: 0000000000018978 RBX: ffff9d7ef7a03600 RCX: 0000000000000008
+[ 5213.059797] RDX: 000000000000007c RSI: 000000000000007c RDI: ffff9d7ef7a03600
+[ 5213.061720] RBP: 0000000000000120 R08: ffffae3580063c08 R09: ffffae3580063c04
+[ 5213.063532] R10: ffff9d7efece0038 R11: ffff9d7ec4b1db00 R12: ffff9d7efece0038
+[ 5213.065445] R13: ffff9d7ef4098260 R14: ffff9d7f11e23c6a R15: 4c79500065708144
+[ 5213.067264] FS:  0000000000000000(0000) GS:ffff9d7f3dc00000(0000) knlGS:0000000000000000
+[ 5213.069442] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 5213.071004] CR2: 00007fce47276c60 CR3: 0000000003f66004 CR4: 00000000001706f0
+[ 5213.072827] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 5213.074484] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 5213.076292] Call Trace:
+[ 5213.077027]  <TASK>
+[ 5213.077718]  rxe_responder+0x12ee/0x1b60 [rdma_rxe]
+[ 5213.079019]  ? rxe_icrc_check+0x7e/0x100 [rdma_rxe]
+[ 5213.080380]  ? rxe_rcv+0x1d0/0x780 [rdma_rxe]
+[ 5213.081708]  ? rxe_icrc_hdr.isra.0+0xf6/0x160 [rdma_rxe]
+[ 5213.082990]  rxe_do_task+0x67/0xb0 [rdma_rxe]
+[ 5213.084030]  rxe_xmit_packet+0xc7/0x210 [rdma_rxe]
+[ 5213.085156]  rxe_requester+0x680/0xee0 [rdma_rxe]
+[ 5213.088258]  ? update_load_avg+0x5f/0x690
+[ 5213.089381]  ? update_load_avg+0x5f/0x690
+[ 5213.090446]  ? rtrs_clt_recv_done+0x1b/0x30 [rtrs_client]
+[ 5213.092087]  rxe_do_task+0x67/0xb0 [rdma_rxe]
+[ 5213.093125]  tasklet_action_common.constprop.0+0x92/0xc0
+[ 5213.094366]  __do_softirq+0xe1/0x2d8
+[ 5213.095287]  run_ksoftirqd+0x21/0x30
+[ 5213.096456]  smpboot_thread_fn+0x183/0x220
+[ 5213.097519]  ? sort_range+0x20/0x20
+[ 5213.098761]  kthread+0xe2/0x110
+[ 5213.099638]  ? kthread_complete_and_exit+0x20/0x20
+[ 5213.100948]  ret_from_fork+0x22/0x30
+
+Link: https://lore.kernel.org/all/20220210073655.42281-1-guoqing.jiang@linux.dev/T/
+Link: https://www.spinics.net/lists/linux-rdma/msg110836.html
+Link: https://lore.kernel.org/lkml/94a5ea93-b8bb-3a01-9497-e2021f29598a@linux.dev/t/
+
+CC: Bob Pearson <rpearsonhpe@gmail.com>
+CC: Haris Iqbal <haris.iqbal@ionos.com>
+CC: Guoqing Jiang <guoqing.jiang@linux.dev>
+Tested-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c    | 62 +++++++++++++++++++--------
- drivers/infiniband/sw/rxe/rxe_resp.c  | 24 +++++++++--
- drivers/infiniband/sw/rxe/rxe_verbs.h |  3 ++
- 3 files changed, 67 insertions(+), 22 deletions(-)
+V2: fix commit log
+---
+ drivers/infiniband/sw/rxe/rxe_loc.h   |   1 -
+ drivers/infiniband/sw/rxe/rxe_mr.c    | 199 +++++++++++-----------------------
+ drivers/infiniband/sw/rxe/rxe_mw.c    |   6 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  39 +++++--
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  21 ++--
+ 5 files changed, 104 insertions(+), 162 deletions(-)
 
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index f9af30f582c6..22f6cc31d1d6 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -79,7 +79,6 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
+ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
+ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key);
+ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
+-int rxe_mr_set_page(struct ib_mr *ibmr, u64 addr);
+ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+ void rxe_mr_cleanup(struct rxe_pool_elem *elem);
+ 
 diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 850b80f5ad8b..1dd849eb14dd 100644
+index 6fdbd7929ccc..850b80f5ad8b 100644
 --- a/drivers/infiniband/sw/rxe/rxe_mr.c
 +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -61,7 +61,8 @@ static void rxe_mr_init(int access, struct rxe_mr *mr)
- 	mr->lkey = mr->ibmr.lkey = lkey;
- 	mr->rkey = mr->ibmr.rkey = rkey;
+@@ -24,7 +24,7 @@ u8 rxe_get_next_key(u32 last_key)
  
--	mr->state = RXE_MR_STATE_INVALID;
-+	spin_lock_init(&mr->lock);
+ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
+ {
+-	struct rxe_map_set *set = mr->cur_map_set;
 +
+ 
+ 	switch (mr->type) {
+ 	case IB_MR_TYPE_DMA:
+@@ -32,8 +32,8 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
+ 
+ 	case IB_MR_TYPE_USER:
+ 	case IB_MR_TYPE_MEM_REG:
+-		if (iova < set->iova || length > set->length ||
+-		    iova > set->iova + set->length - length)
++		if (iova < mr->iova || length > mr->length ||
++		    iova > mr->iova + mr->length - length)
+ 			return -EFAULT;
+ 		return 0;
+ 
+@@ -65,89 +65,41 @@ static void rxe_mr_init(int access, struct rxe_mr *mr)
  	mr->map_shift = ilog2(RXE_BUF_PER_MAP);
  }
  
-@@ -109,7 +110,7 @@ void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr *mr)
+-static void rxe_mr_free_map_set(int num_map, struct rxe_map_set *set)
+-{
+-	int i;
+-
+-	for (i = 0; i < num_map; i++)
+-		kfree(set->map[i]);
+-
+-	kfree(set->map);
+-	kfree(set);
+-}
+-
+-static int rxe_mr_alloc_map_set(int num_map, struct rxe_map_set **setp)
++static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
+ {
+ 	int i;
+-	struct rxe_map_set *set;
++	int num_map;
++	struct rxe_map **map = mr->map;
  
- 	mr->ibmr.pd = &pd->ibpd;
- 	mr->access = access;
--	mr->state = RXE_MR_STATE_VALID;
-+	smp_store_release(&mr->state, RXE_MR_STATE_VALID);
- 	mr->type = IB_MR_TYPE_DMA;
+-	set = kmalloc(sizeof(*set), GFP_KERNEL);
+-	if (!set)
+-		goto err_out;
++	num_map = (num_buf + RXE_BUF_PER_MAP - 1) / RXE_BUF_PER_MAP;
+ 
+-	set->map = kmalloc_array(num_map, sizeof(struct rxe_map *), GFP_KERNEL);
+-	if (!set->map)
+-		goto err_free_set;
++	mr->map = kmalloc_array(num_map, sizeof(*map), GFP_KERNEL);
++	if (!mr->map)
++		goto err1;
+ 
+ 	for (i = 0; i < num_map; i++) {
+-		set->map[i] = kmalloc(sizeof(struct rxe_map), GFP_KERNEL);
+-		if (!set->map[i])
+-			goto err_free_map;
++		mr->map[i] = kmalloc(sizeof(**map), GFP_KERNEL);
++		if (!mr->map[i])
++			goto err2;
+ 	}
+ 
+-	*setp = set;
+-
+-	return 0;
+-
+-err_free_map:
+-	for (i--; i >= 0; i--)
+-		kfree(set->map[i]);
+-
+-	kfree(set->map);
+-err_free_set:
+-	kfree(set);
+-err_out:
+-	return -ENOMEM;
+-}
+-
+-/**
+- * rxe_mr_alloc() - Allocate memory map array(s) for MR
+- * @mr: Memory region
+- * @num_buf: Number of buffer descriptors to support
+- * @both: If non zero allocate both mr->map and mr->next_map
+- *	  else just allocate mr->map. Used for fast MRs
+- *
+- * Return: 0 on success else an error
+- */
+-static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf, int both)
+-{
+-	int ret;
+-	int num_map;
+-
+ 	BUILD_BUG_ON(!is_power_of_2(RXE_BUF_PER_MAP));
+-	num_map = (num_buf + RXE_BUF_PER_MAP - 1) / RXE_BUF_PER_MAP;
+ 
+ 	mr->map_shift = ilog2(RXE_BUF_PER_MAP);
+ 	mr->map_mask = RXE_BUF_PER_MAP - 1;
++
+ 	mr->num_buf = num_buf;
+-	mr->max_buf = num_map * RXE_BUF_PER_MAP;
+ 	mr->num_map = num_map;
+-
+-	ret = rxe_mr_alloc_map_set(num_map, &mr->cur_map_set);
+-	if (ret)
+-		return -ENOMEM;
+-
+-	if (both) {
+-		ret = rxe_mr_alloc_map_set(num_map, &mr->next_map_set);
+-		if (ret)
+-			goto err_free;
+-	}
++	mr->max_buf = num_map * RXE_BUF_PER_MAP;
+ 
+ 	return 0;
+ 
+-err_free:
+-	rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
+-	mr->cur_map_set = NULL;
++err2:
++	for (i--; i >= 0; i--)
++		kfree(mr->map[i]);
++
++	kfree(mr->map);
++err1:
+ 	return -ENOMEM;
  }
  
-@@ -182,7 +183,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 	mr->iova = iova;
- 	mr->va = start;
- 	mr->offset = ib_umem_offset(umem);
--	mr->state = RXE_MR_STATE_VALID;
-+	smp_store_release(&mr->state, RXE_MR_STATE_VALID);
+@@ -164,7 +116,6 @@ void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr *mr)
+ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 		     int access, struct rxe_mr *mr)
+ {
+-	struct rxe_map_set	*set;
+ 	struct rxe_map		**map;
+ 	struct rxe_phys_buf	*buf = NULL;
+ 	struct ib_umem		*umem;
+@@ -172,6 +123,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 	int			num_buf;
+ 	void			*vaddr;
+ 	int err;
++	int i;
+ 
+ 	umem = ib_umem_get(pd->ibpd.device, start, length, access);
+ 	if (IS_ERR(umem)) {
+@@ -185,20 +137,18 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 
+ 	rxe_mr_init(access, mr);
+ 
+-	err = rxe_mr_alloc(mr, num_buf, 0);
++	err = rxe_mr_alloc(mr, num_buf);
+ 	if (err) {
+ 		pr_warn("%s: Unable to allocate memory for map\n",
+ 				__func__);
+ 		goto err_release_umem;
+ 	}
+ 
+-	set = mr->cur_map_set;
+-	set->page_shift = PAGE_SHIFT;
+-	set->page_mask = PAGE_SIZE - 1;
+-
+-	num_buf = 0;
+-	map = set->map;
++	mr->page_shift = PAGE_SHIFT;
++	mr->page_mask = PAGE_SIZE - 1;
+ 
++	num_buf			= 0;
++	map = mr->map;
+ 	if (length > 0) {
+ 		buf = map[0]->buf;
+ 
+@@ -214,29 +164,33 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 				pr_warn("%s: Unable to get virtual address\n",
+ 						__func__);
+ 				err = -ENOMEM;
+-				goto err_release_umem;
++				goto err_cleanup_map;
+ 			}
+ 
+ 			buf->addr = (uintptr_t)vaddr;
+ 			buf->size = PAGE_SIZE;
+ 			num_buf++;
+ 			buf++;
++
+ 		}
+ 	}
+ 
+ 	mr->ibmr.pd = &pd->ibpd;
+ 	mr->umem = umem;
+ 	mr->access = access;
++	mr->length = length;
++	mr->iova = iova;
++	mr->va = start;
++	mr->offset = ib_umem_offset(umem);
+ 	mr->state = RXE_MR_STATE_VALID;
  	mr->type = IB_MR_TYPE_USER;
  
+-	set->length = length;
+-	set->iova = iova;
+-	set->va = start;
+-	set->offset = ib_umem_offset(umem);
+-
  	return 0;
-@@ -210,7 +211,7 @@ int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr)
  
- 	mr->ibmr.pd = &pd->ibpd;
- 	mr->max_buf = max_pages;
--	mr->state = RXE_MR_STATE_FREE;
-+	smp_store_release(&mr->state, RXE_MR_STATE_FREE);
- 	mr->type = IB_MR_TYPE_MEM_REG;
++err_cleanup_map:
++	for (i = 0; i < mr->num_map; i++)
++		kfree(mr->map[i]);
++	kfree(mr->map);
+ err_release_umem:
+ 	ib_umem_release(umem);
+ err_out:
+@@ -250,7 +204,7 @@ int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr)
+ 	/* always allow remote access for FMRs */
+ 	rxe_mr_init(IB_ACCESS_REMOTE, mr);
  
- 	return 0;
-@@ -260,8 +261,11 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
- 	size_t offset;
- 	int m, n;
- 	void *addr;
-+	enum rxe_mr_state state;
-+
-+	state = smp_load_acquire(&mr->state);
+-	err = rxe_mr_alloc(mr, max_pages, 1);
++	err = rxe_mr_alloc(mr, max_pages);
+ 	if (err)
+ 		goto err1;
  
--	if (mr->state != RXE_MR_STATE_VALID) {
-+	if (state != RXE_MR_STATE_VALID) {
- 		pr_warn("mr not in valid state\n");
+@@ -268,24 +222,21 @@ int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr)
+ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
+ 			size_t *offset_out)
+ {
+-	struct rxe_map_set *set = mr->cur_map_set;
+-	size_t offset = iova - set->iova + set->offset;
++	size_t offset = iova - mr->iova + mr->offset;
+ 	int			map_index;
+ 	int			buf_index;
+ 	u64			length;
+-	struct rxe_map *map;
+ 
+-	if (likely(set->page_shift)) {
+-		*offset_out = offset & set->page_mask;
+-		offset >>= set->page_shift;
++	if (likely(mr->page_shift)) {
++		*offset_out = offset & mr->page_mask;
++		offset >>= mr->page_shift;
+ 		*n_out = offset & mr->map_mask;
+ 		*m_out = offset >> mr->map_shift;
+ 	} else {
+ 		map_index = 0;
+ 		buf_index = 0;
+ 
+-		map = set->map[map_index];
+-		length = map->buf[buf_index].size;
++		length = mr->map[map_index]->buf[buf_index].size;
+ 
+ 		while (offset >= length) {
+ 			offset -= length;
+@@ -295,8 +246,7 @@ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
+ 				map_index++;
+ 				buf_index = 0;
+ 			}
+-			map = set->map[map_index];
+-			length = map->buf[buf_index].size;
++			length = mr->map[map_index]->buf[buf_index].size;
+ 		}
+ 
+ 		*m_out = map_index;
+@@ -317,7 +267,7 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
+ 		goto out;
+ 	}
+ 
+-	if (!mr->cur_map_set) {
++	if (!mr->map) {
+ 		addr = (void *)(uintptr_t)iova;
+ 		goto out;
+ 	}
+@@ -330,13 +280,13 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
+ 
+ 	lookup_iova(mr, iova, &m, &n, &offset);
+ 
+-	if (offset + length > mr->cur_map_set->map[m]->buf[n].size) {
++	if (offset + length > mr->map[m]->buf[n].size) {
+ 		pr_warn("crosses page boundary\n");
  		addr = NULL;
  		goto out;
-@@ -510,15 +514,18 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- 	struct rxe_mr *mr;
- 	struct rxe_dev *rxe = to_rdev(pd->ibpd.device);
- 	int index = key >> 8;
-+	enum rxe_mr_state state;
- 
- 	mr = rxe_pool_get_index(&rxe->mr_pool, index);
- 	if (!mr)
- 		return NULL;
- 
-+	state = smp_load_acquire(&mr->state);
-+
- 	if (unlikely((type == RXE_LOOKUP_LOCAL && mr->lkey != key) ||
- 		     (type == RXE_LOOKUP_REMOTE && mr->rkey != key) ||
- 		     mr_pd(mr) != pd || (access && !(access & mr->access)) ||
--		     mr->state != RXE_MR_STATE_VALID)) {
-+		     state != RXE_MR_STATE_VALID)) {
- 		rxe_put(mr);
- 		mr = NULL;
- 	}
-@@ -559,7 +566,18 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key)
- 		goto err_drop_ref;
  	}
  
--	mr->state = RXE_MR_STATE_FREE;
-+	spin_lock_bh(&mr->lock);
-+	if (mr->state == RXE_MR_STATE_INVALID) {
-+		spin_unlock_bh(&mr->lock);
-+		pr_debug("%s: Attempt to invalidate mr#%d in INVALID state\n",
-+			__func__, mr->elem.index);
-+		ret = -EINVAL;
-+		goto err_drop_ref;
-+	} else {
-+		mr->state = RXE_MR_STATE_FREE;
-+	}
-+	spin_unlock_bh(&mr->lock);
-+
- 	ret = 0;
+-	addr = (void *)(uintptr_t)mr->cur_map_set->map[m]->buf[n].addr + offset;
++	addr = (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
  
- err_drop_ref:
-@@ -581,13 +599,6 @@ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 	u32 key = wqe->wr.wr.reg.key;
+ out:
+ 	return addr;
+@@ -372,7 +322,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+ 		return 0;
+ 	}
+ 
+-	WARN_ON_ONCE(!mr->cur_map_set);
++	WARN_ON_ONCE(!mr->map);
+ 
+ 	err = mr_check_range(mr, iova, length);
+ 	if (err) {
+@@ -382,7 +332,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+ 
+ 	lookup_iova(mr, iova, &m, &i, &offset);
+ 
+-	map = mr->cur_map_set->map + m;
++	map = mr->map + m;
+ 	buf	= map[0]->buf + i;
+ 
+ 	while (length > 0) {
+@@ -628,9 +578,8 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key)
+ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+ {
+ 	struct rxe_mr *mr = to_rmr(wqe->wr.wr.reg.mr);
+-	u32 key = wqe->wr.wr.reg.key & 0xff;
++	u32 key = wqe->wr.wr.reg.key;
  	u32 access = wqe->wr.wr.reg.access;
+-	struct rxe_map_set *set;
  
--	/* user can only register MR in free state */
--	if (unlikely(mr->state != RXE_MR_STATE_FREE)) {
--		pr_warn("%s: mr->lkey = 0x%x not free\n",
--			__func__, mr->lkey);
--		return -EINVAL;
--	}
--
- 	/* user can only register mr with qp in same protection domain */
- 	if (unlikely(qp->ibqp.pd != mr->ibmr.pd)) {
- 		pr_warn("%s: qp->pd and mr->pd don't match\n",
-@@ -602,11 +613,20 @@ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+ 	/* user can only register MR in free state */
+ 	if (unlikely(mr->state != RXE_MR_STATE_FREE)) {
+@@ -646,36 +595,19 @@ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
  		return -EINVAL;
  	}
  
--	mr->access = access;
--	mr->lkey = key;
--	mr->rkey = (access & IB_ACCESS_REMOTE) ? key : 0;
--	mr->iova = wqe->wr.wr.reg.mr->iova;
--	mr->state = RXE_MR_STATE_VALID;
-+	spin_lock_bh(&mr->lock);
-+	if (mr->state == RXE_MR_STATE_FREE) {
-+		mr->access = access;
-+		mr->lkey = key;
-+		mr->rkey = (access & IB_ACCESS_REMOTE) ? key : 0;
-+		mr->iova = wqe->wr.wr.reg.mr->iova;
-+		mr->state = RXE_MR_STATE_VALID;
-+	} else {
-+		spin_unlock_bh(&mr->lock);
-+		pr_debug("%s: mr#%d not in FREE state\n",
-+			__func__, mr->elem.index);
++	/* user is only allowed to change key portion of l/rkey */
++	if (unlikely((mr->lkey & ~0xff) != (key & ~0xff))) {
++		pr_warn("%s: key = 0x%x has wrong index mr->lkey = 0x%x\n",
++			__func__, key, mr->lkey);
 +		return -EINVAL;
 +	}
-+	spin_unlock_bh(&mr->lock);
++
+ 	mr->access = access;
+-	mr->lkey = (mr->lkey & ~0xff) | key;
+-	mr->rkey = (access & IB_ACCESS_REMOTE) ? mr->lkey : 0;
++	mr->lkey = key;
++	mr->rkey = (access & IB_ACCESS_REMOTE) ? key : 0;
++	mr->iova = wqe->wr.wr.reg.mr->iova;
+ 	mr->state = RXE_MR_STATE_VALID;
  
+-	set = mr->cur_map_set;
+-	mr->cur_map_set = mr->next_map_set;
+-	mr->cur_map_set->iova = wqe->wr.wr.reg.mr->iova;
+-	mr->next_map_set = set;
+-
+-	return 0;
+-}
+-
+-int rxe_mr_set_page(struct ib_mr *ibmr, u64 addr)
+-{
+-	struct rxe_mr *mr = to_rmr(ibmr);
+-	struct rxe_map_set *set = mr->next_map_set;
+-	struct rxe_map *map;
+-	struct rxe_phys_buf *buf;
+-
+-	if (unlikely(set->nbuf == mr->num_buf))
+-		return -ENOMEM;
+-
+-	map = set->map[set->nbuf / RXE_BUF_PER_MAP];
+-	buf = &map->buf[set->nbuf % RXE_BUF_PER_MAP];
+-
+-	buf->addr = addr;
+-	buf->size = ibmr->page_size;
+-	set->nbuf++;
+-
  	return 0;
  }
-@@ -619,6 +639,10 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- 	if (atomic_read(&mr->num_mw) > 0)
- 		return -EINVAL;
  
-+	spin_lock_bh(&mr->lock);
-+	mr->state = RXE_MR_STATE_INVALID;
-+	spin_unlock_bh(&mr->lock);
-+
- 	rxe_cleanup(mr);
+@@ -695,14 +627,15 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ void rxe_mr_cleanup(struct rxe_pool_elem *elem)
+ {
+ 	struct rxe_mr *mr = container_of(elem, typeof(*mr), elem);
++	int i;
  
- 	return 0;
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index b36ec5c4d5e0..5ff0cdce24d2 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -602,15 +602,20 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
- 	enum resp_states ret;
- 	struct rxe_mr *mr = qp->resp.mr;
- 	struct resp_res *res = qp->resp.res;
-+	enum rxe_mr_state state;
- 	u64 value;
+ 	rxe_put(mr_pd(mr));
+-
+ 	ib_umem_release(mr->umem);
  
-+	spin_lock_bh(&mr->lock);
-+	state = mr->state;
-+	spin_unlock_bh(&mr->lock);
-+
- 	if (!res) {
- 		res = rxe_prepare_res(qp, pkt, RXE_ATOMIC_MASK);
- 		qp->resp.res = res;
- 	}
+-	if (mr->cur_map_set)
+-		rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
++	if (mr->map) {
++		for (i = 0; i < mr->num_map; i++)
++			kfree(mr->map[i]);
  
- 	if (!res->replay) {
--		if (mr->state != RXE_MR_STATE_VALID) {
-+		if (state != RXE_MR_STATE_VALID) {
- 			ret = RESPST_ERR_RKEY_VIOLATION;
- 			goto out;
+-	if (mr->next_map_set)
+-		rxe_mr_free_map_set(mr->num_map, mr->next_map_set);
++		kfree(mr->map);
++	}
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+index e3f7ca41a91c..104993801a80 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mw.c
++++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+@@ -114,15 +114,15 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ 
+ 	/* C10-75 */
+ 	if (mw->access & IB_ZERO_BASED) {
+-		if (unlikely(wqe->wr.wr.mw.length > mr->cur_map_set->length)) {
++		if (unlikely(wqe->wr.wr.mw.length > mr->length)) {
+ 			pr_err_once(
+ 				"attempt to bind a ZB MW outside of the MR\n");
+ 			return -EINVAL;
  		}
-@@ -723,6 +728,7 @@ static struct rxe_mr *rxe_recheck_mr(struct rxe_qp *qp, u32 rkey)
- 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
- 	struct rxe_mr *mr;
- 	struct rxe_mw *mw;
-+	enum rxe_mr_state state;
+ 	} else {
+-		if (unlikely((wqe->wr.wr.mw.addr < mr->cur_map_set->iova) ||
++		if (unlikely((wqe->wr.wr.mw.addr < mr->iova) ||
+ 			     ((wqe->wr.wr.mw.addr + wqe->wr.wr.mw.length) >
+-			      (mr->cur_map_set->iova + mr->cur_map_set->length)))) {
++			      (mr->iova + mr->length)))) {
+ 			pr_err_once(
+ 				"attempt to bind a VA MW outside of the MR\n");
+ 			return -EINVAL;
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 151c6280abd5..e264cf69bf55 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -978,26 +978,41 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+ 	return ERR_PTR(err);
+ }
  
- 	if (rkey_is_mw(rkey)) {
- 		mw = rxe_pool_get_index(&rxe->mw_pool, rkey >> 8);
-@@ -730,8 +736,16 @@ static struct rxe_mr *rxe_recheck_mr(struct rxe_qp *qp, u32 rkey)
- 			return NULL;
- 
- 		mr = mw->mr;
-+		if (mr) {
-+			spin_lock_bh(&mr->lock);
-+			state = mr->state;
-+			spin_unlock_bh(&mr->lock);
-+		} else {
-+			state = RXE_MR_STATE_INVALID;
-+		}
+-/* build next_map_set from scatterlist
+- * The IB_WR_REG_MR WR will swap map_sets
+- */
++static int rxe_set_page(struct ib_mr *ibmr, u64 addr)
++{
++	struct rxe_mr *mr = to_rmr(ibmr);
++	struct rxe_map *map;
++	struct rxe_phys_buf *buf;
 +
- 		if (mw->rkey != rkey || mw->state != RXE_MW_STATE_VALID ||
--		    !mr || mr->state != RXE_MR_STATE_VALID) {
-+		    !mr || state != RXE_MR_STATE_VALID) {
- 			rxe_put(mw);
- 			return NULL;
- 		}
-@@ -746,7 +760,11 @@ static struct rxe_mr *rxe_recheck_mr(struct rxe_qp *qp, u32 rkey)
- 	if (!mr)
- 		return NULL;
- 
--	if (mr->rkey != rkey || mr->state != RXE_MR_STATE_VALID) {
-+	spin_lock_bh(&mr->lock);
-+	state = mr->state;
-+	spin_unlock_bh(&mr->lock);
++	if (unlikely(mr->nbuf == mr->num_buf))
++		return -ENOMEM;
 +
-+	if (mr->rkey != rkey || state != RXE_MR_STATE_VALID) {
- 		rxe_put(mr);
- 		return NULL;
- 	}
++	map = mr->map[mr->nbuf / RXE_BUF_PER_MAP];
++	buf = &map->buf[mr->nbuf % RXE_BUF_PER_MAP];
++
++	buf->addr = addr;
++	buf->size = ibmr->page_size;
++	mr->nbuf++;
++
++	return 0;
++}
++
+ static int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
+ 			 int sg_nents, unsigned int *sg_offset)
+ {
+ 	struct rxe_mr *mr = to_rmr(ibmr);
+-	struct rxe_map_set *set = mr->next_map_set;
+ 	int n;
+ 
+-	set->nbuf = 0;
++	mr->nbuf = 0;
+ 
+-	n = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, rxe_mr_set_page);
++	n = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, rxe_set_page);
+ 
+-	set->va = ibmr->iova;
+-	set->iova = ibmr->iova;
+-	set->length = ibmr->length;
+-	set->page_shift = ilog2(ibmr->page_size);
+-	set->page_mask = ibmr->page_size - 1;
+-	set->offset = set->iova & set->page_mask;
++	mr->va = ibmr->iova;
++	mr->iova = ibmr->iova;
++	mr->length = ibmr->length;
++	mr->page_shift = ilog2(ibmr->page_size);
++	mr->page_mask = ibmr->page_size - 1;
++	mr->offset = mr->iova & mr->page_mask;
+ 
+ 	return n;
+ }
 diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index a24fbe984066..2dbc754c3faf 100644
+index 9fd5861f28fb..a24fbe984066 100644
 --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
 +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -302,7 +302,10 @@ struct rxe_mr {
+@@ -287,17 +287,6 @@ struct rxe_map {
+ 	struct rxe_phys_buf	buf[RXE_BUF_PER_MAP];
+ };
  
- 	u32			lkey;
+-struct rxe_map_set {
+-	struct rxe_map		**map;
+-	u64			va;
+-	u64			iova;
+-	size_t			length;
+-	u32			offset;
+-	u32			nbuf;
+-	int			page_shift;
+-	int			page_mask;
+-};
+-
+ static inline int rkey_is_mw(u32 rkey)
+ {
+ 	u32 index = rkey >> 8;
+@@ -315,20 +304,26 @@ struct rxe_mr {
  	u32			rkey;
-+
  	enum rxe_mr_state	state;
-+	spinlock_t		lock;	/* guard state */
-+
  	enum ib_mr_type		type;
- 	u64			va;
- 	u64			iova;
++	u64			va;
++	u64			iova;
++	size_t			length;
++	u32			offset;
+ 	int			access;
+ 
++	int			page_shift;
++	int			page_mask;
+ 	int			map_shift;
+ 	int			map_mask;
+ 
+ 	u32			num_buf;
++	u32			nbuf;
+ 
+ 	u32			max_buf;
+ 	u32			num_map;
+ 
+ 	atomic_t		num_mw;
+ 
+-	struct rxe_map_set	*cur_map_set;
+-	struct rxe_map_set	*next_map_set;
++	struct rxe_map		**map;
+ };
+ 
+ enum rxe_mw_state {
 -- 
-2.34.1
+1.8.3.1
 
