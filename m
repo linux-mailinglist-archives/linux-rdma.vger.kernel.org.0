@@ -2,371 +2,219 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B024581BA5
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jul 2022 23:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD2E581D4C
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jul 2022 03:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236260AbiGZVWN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jul 2022 17:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
+        id S240042AbiG0Btg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jul 2022 21:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239648AbiGZVWM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jul 2022 17:22:12 -0400
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D4B2E9EE
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jul 2022 14:22:10 -0700 (PDT)
-Received: by mail-pf1-f180.google.com with SMTP id g12so14354378pfb.3
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jul 2022 14:22:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9EUHclYJWiklrf3SOzWOhs0p776MYywYcomlraMfTXU=;
-        b=Oh3f5D0dkZwpb84B7gPp3wI89KK8vhZOuzINV1BaXfTjRlEME/w33MryiXyVBslkgw
-         D9z9fgku4UsTmTDfytJQmIMnX3YNhNsei8teQT1GSEOrdpZ6YtzMK4InZlNq4lfL48gs
-         uhQopV9XF2/tYU528XWQx80d4aVki79fwccC1MH9hzcce0LK8ucg2PvXZdBnLSzHZYwr
-         cF10qZRI/iLzbgx+yWyNc5zei2vnfy02me1cRxJr/0w1SYJtds/MqcVzj85rNrLpKWAq
-         Zm4lKLrwLIpaMKpqFhwXOCcBgsCHmolzN53RIaHukjE4n+xNzvuzbDZnfipr+HRYgqmV
-         UFTQ==
-X-Gm-Message-State: AJIora/Dk6bH0LmtZt9XU9GWoIb61jFoh0Bo8w2SiTNRZhzxU/3Sr/qw
-        +V7y2mV7qQRwi/1Jwl6gBvo=
-X-Google-Smtp-Source: AGRyM1v+2PNTO73u5AODRFQWH54xSHYs5jJlIwlJBSDwvkgkl2Y/iYIw8T7eV6pRjGVrBkBz0zux3A==
-X-Received: by 2002:a63:504c:0:b0:419:d02e:f42a with SMTP id q12-20020a63504c000000b00419d02ef42amr15816940pgl.566.1658870529992;
-        Tue, 26 Jul 2022 14:22:09 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:34f4:7aa8:57:d456])
-        by smtp.gmail.com with ESMTPSA id g5-20020aa796a5000000b00528999fba99sm12398983pfk.175.2022.07.26.14.22.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jul 2022 14:22:09 -0700 (PDT)
-From:   Bart Van Assche <bvanassche@acm.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Li Zhijian <lizhijian@fujitsu.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH 3/3] RDMA/srpt: Fix a use-after-free
-Date:   Tue, 26 Jul 2022 14:21:56 -0700
-Message-Id: <20220726212156.1318010-4-bvanassche@acm.org>
-X-Mailer: git-send-email 2.37.1.359.gd136c6c3e2-goog
-In-Reply-To: <20220726212156.1318010-1-bvanassche@acm.org>
-References: <20220726212156.1318010-1-bvanassche@acm.org>
+        with ESMTP id S231205AbiG0Btd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jul 2022 21:49:33 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E1D37F88
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jul 2022 18:49:31 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VKYRPiF_1658886568;
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VKYRPiF_1658886568)
+          by smtp.aliyun-inc.com;
+          Wed, 27 Jul 2022 09:49:29 +0800
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+To:     jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
+        chengyou@linux.alibaba.com, tonylu@linux.alibaba.com
+Subject: [PATCH for-next v14 00/11] Elastic RDMA Adapter (ERDMA) driver
+Date:   Wed, 27 Jul 2022 09:49:16 +0800
+Message-Id: <20220727014927.76564-1-chengyou@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Change the LIO port members inside struct srpt_port from regular members
-into pointers. Allocate the LIO port data structures from inside
-srpt_make_tport() and free these from inside srpt_make_tport(). Keep struct
-srpt_device as long as either an RDMA port or a LIO target port is
-associated with it. This patch decouples the lifetime of struct srpt_port
-(controlled by the RDMA core) and struct srpt_port_id (controlled by LIO).
-This patch fixes the following KASAN complaint:
+Hello all,
 
-BUG: KASAN: use-after-free in srpt_enable_tpg+0x31/0x70 [ib_srpt]
-Read of size 8 at addr ffff888141cc34b8 by task check/5093
+This v14 patch set introduces the Elastic RDMA Adapter (ERDMA) driver,
+which released in Apsara Conference 2021 by Alibaba. The PR of ERDMA
+userspace provider has already been created [1].
 
-Call Trace:
- <TASK>
- show_stack+0x4e/0x53
- dump_stack_lvl+0x51/0x66
- print_address_description.constprop.0.cold+0xea/0x41e
- print_report.cold+0x90/0x205
- kasan_report+0xb9/0xf0
- __asan_load8+0x69/0x90
- srpt_enable_tpg+0x31/0x70 [ib_srpt]
- target_fabric_tpg_base_enable_store+0xe2/0x140 [target_core_mod]
- configfs_write_iter+0x18b/0x210
- new_sync_write+0x1f2/0x2f0
- vfs_write+0x3e3/0x540
- ksys_write+0xbb/0x140
- __x64_sys_write+0x42/0x50
- do_syscall_64+0x34/0x80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
- </TASK>
+ERDMA enables large-scale RDMA acceleration capability in Alibaba ECS
+environment, initially offered in g7re instance. It can improve the
+efficiency of large-scale distributed computing and communication
+significantly and expand dynamically with the cluster scale of Alibaba
+Cloud.
 
-Reported-by: Li Zhijian <lizhijian@fujitsu.com>
-Cc: Li Zhijian <lizhijian@fujitsu.com>
-Cc: Hillf Danton <hdanton@sina.com>
-Cc: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
----
- drivers/infiniband/ulp/srpt/ib_srpt.c | 133 ++++++++++++++++++--------
- drivers/infiniband/ulp/srpt/ib_srpt.h |  10 +-
- 2 files changed, 96 insertions(+), 47 deletions(-)
+ERDMA is a RDMA networking adapter based on the Alibaba MOC hardware. It
+works in the VPC network environment (overlay network), and uses iWarp
+transport protocol. ERDMA supports reliable connection (RC). ERDMA also
+supports both kernel space and user space verbs. Now we have already
+supported HPC/AI applications with libfabric, NoF and some other internal
+verbs libraries, such as xrdma, epsl, etc,.
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 1fbce9225424..8d9eb1210d3b 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -565,18 +565,12 @@ static int srpt_refresh_port(struct srpt_port *sport)
- 	if (ret)
- 		return ret;
- 
--	sport->port_guid_id.wwn.priv = sport;
- 	srpt_format_guid(sport->guid_name, ARRAY_SIZE(sport->guid_name),
- 			 &sport->gid.global.interface_id);
--	memcpy(sport->port_guid_id.name, sport->guid_name,
--	       ARRAY_SIZE(sport->guid_name));
--	sport->port_gid_id.wwn.priv = sport;
- 	snprintf(sport->gid_name, ARRAY_SIZE(sport->gid_name),
- 		 "0x%016llx%016llx",
- 		 be64_to_cpu(sport->gid.global.subnet_prefix),
- 		 be64_to_cpu(sport->gid.global.interface_id));
--	memcpy(sport->port_gid_id.name, sport->gid_name,
--	       ARRAY_SIZE(sport->gid_name));
- 
- 	if (rdma_protocol_iwarp(sport->sdev->device, sport->port))
- 		return 0;
-@@ -2317,31 +2311,35 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
- 	tag_num = ch->rq_size;
- 	tag_size = 1; /* ib_srpt does not use se_sess->sess_cmd_map */
- 
--	mutex_lock(&sport->port_guid_id.mutex);
--	list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
--		if (!IS_ERR_OR_NULL(ch->sess))
--			break;
--		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-+	if (sport->guid_id) {
-+		mutex_lock(&sport->guid_id->mutex);
-+		list_for_each_entry(stpg, &sport->guid_id->tpg_list, entry) {
-+			if (!IS_ERR_OR_NULL(ch->sess))
-+				break;
-+			ch->sess = target_setup_session(&stpg->tpg, tag_num,
- 						tag_size, TARGET_PROT_NORMAL,
- 						ch->sess_name, ch, NULL);
-+		}
-+		mutex_unlock(&sport->guid_id->mutex);
- 	}
--	mutex_unlock(&sport->port_guid_id.mutex);
- 
--	mutex_lock(&sport->port_gid_id.mutex);
--	list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
--		if (!IS_ERR_OR_NULL(ch->sess))
--			break;
--		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-+	if (sport->gid_id) {
-+		mutex_lock(&sport->gid_id->mutex);
-+		list_for_each_entry(stpg, &sport->gid_id->tpg_list, entry) {
-+			if (!IS_ERR_OR_NULL(ch->sess))
-+				break;
-+			ch->sess = target_setup_session(&stpg->tpg, tag_num,
- 					tag_size, TARGET_PROT_NORMAL, i_port_id,
- 					ch, NULL);
--		if (!IS_ERR_OR_NULL(ch->sess))
--			break;
--		/* Retry without leading "0x" */
--		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-+			if (!IS_ERR_OR_NULL(ch->sess))
-+				break;
-+			/* Retry without leading "0x" */
-+			ch->sess = target_setup_session(&stpg->tpg, tag_num,
- 						tag_size, TARGET_PROT_NORMAL,
- 						i_port_id + 2, ch, NULL);
-+		}
-+		mutex_unlock(&sport->gid_id->mutex);
- 	}
--	mutex_unlock(&sport->port_gid_id.mutex);
- 
- 	if (IS_ERR_OR_NULL(ch->sess)) {
- 		WARN_ON_ONCE(ch->sess == NULL);
-@@ -2986,7 +2984,12 @@ static int srpt_release_sport(struct srpt_port *sport)
- 	return 0;
- }
- 
--static struct se_wwn *__srpt_lookup_wwn(const char *name)
-+struct port_and_port_id {
-+	struct srpt_port *sport;
-+	struct srpt_port_id **port_id;
-+};
-+
-+static struct port_and_port_id __srpt_lookup_port(const char *name)
- {
- 	struct ib_device *dev;
- 	struct srpt_device *sdev;
-@@ -3001,25 +3004,38 @@ static struct se_wwn *__srpt_lookup_wwn(const char *name)
- 		for (i = 0; i < dev->phys_port_cnt; i++) {
- 			sport = &sdev->port[i];
- 
--			if (strcmp(sport->port_guid_id.name, name) == 0)
--				return &sport->port_guid_id.wwn;
--			if (strcmp(sport->port_gid_id.name, name) == 0)
--				return &sport->port_gid_id.wwn;
-+			if (strcmp(sport->guid_name, name) == 0) {
-+				kref_get(&sdev->refcnt);
-+				return (struct port_and_port_id){
-+					sport, &sport->guid_id};
-+			}
-+			if (strcmp(sport->gid_name, name) == 0) {
-+				kref_get(&sdev->refcnt);
-+				return (struct port_and_port_id){
-+					sport, &sport->gid_id};
-+			}
- 		}
- 	}
- 
--	return NULL;
-+	return (struct port_and_port_id){};
- }
- 
--static struct se_wwn *srpt_lookup_wwn(const char *name)
-+/**
-+ * srpt_lookup_port() - Look up an RDMA port by name
-+ * @name: ASCII port name
-+ *
-+ * Increments the RDMA port reference count if an RDMA port pointer is returned.
-+ * The caller must drop that reference count by calling srpt_port_put_ref().
-+ */
-+static struct port_and_port_id srpt_lookup_port(const char *name)
- {
--	struct se_wwn *wwn;
-+	struct port_and_port_id papi;
- 
- 	spin_lock(&srpt_dev_lock);
--	wwn = __srpt_lookup_wwn(name);
-+	papi = __srpt_lookup_port(name);
- 	spin_unlock(&srpt_dev_lock);
- 
--	return wwn;
-+	return papi;
- }
- 
- static void srpt_free_srq(struct srpt_device *sdev)
-@@ -3198,10 +3214,6 @@ static int srpt_add_one(struct ib_device *device)
- 		sport->port_attrib.srp_sq_size = DEF_SRPT_SQ_SIZE;
- 		sport->port_attrib.use_srq = false;
- 		INIT_WORK(&sport->work, srpt_refresh_port_work);
--		mutex_init(&sport->port_guid_id.mutex);
--		INIT_LIST_HEAD(&sport->port_guid_id.tpg_list);
--		mutex_init(&sport->port_gid_id.mutex);
--		INIT_LIST_HEAD(&sport->port_gid_id.tpg_list);
- 
- 		ret = srpt_refresh_port(sport);
- 		if (ret) {
-@@ -3295,6 +3307,7 @@ static int srpt_check_false(struct se_portal_group *se_tpg)
- 
- static struct srpt_port *srpt_tpg_to_sport(struct se_portal_group *tpg)
- {
-+	BUG_ON(!tpg->se_tpg_wwn->priv);
- 	return tpg->se_tpg_wwn->priv;
- }
- 
-@@ -3302,11 +3315,11 @@ static struct srpt_port_id *srpt_wwn_to_sport_id(struct se_wwn *wwn)
- {
- 	struct srpt_port *sport = wwn->priv;
- 
--	if (wwn == &sport->port_guid_id.wwn)
--		return &sport->port_guid_id;
--	if (wwn == &sport->port_gid_id.wwn)
--		return &sport->port_gid_id;
--	WARN_ON_ONCE(true);
-+	BUG_ON(!sport);
-+	if (sport->guid_id && &sport->guid_id->wwn == wwn)
-+		return sport->guid_id;
-+	if (sport->gid_id && &sport->gid_id->wwn == wwn)
-+		return sport->gid_id;
- 	return NULL;
- }
- 
-@@ -3744,6 +3757,10 @@ static struct se_portal_group *srpt_make_tpg(struct se_wwn *wwn,
- 	struct srpt_tpg *stpg;
- 	int res = -ENOMEM;
- 
-+	if (!sport_id) {
-+		pr_err("RDMA port does not exist\n");
-+		return ERR_PTR(-EINVAL);
-+	}
- 	stpg = kzalloc(sizeof(*stpg), GFP_KERNEL);
- 	if (!stpg)
- 		return ERR_PTR(res);
-@@ -3790,7 +3807,28 @@ static struct se_wwn *srpt_make_tport(struct target_fabric_configfs *tf,
- 				      struct config_group *group,
- 				      const char *name)
- {
--	return srpt_lookup_wwn(name) ? : ERR_PTR(-EINVAL);
-+	struct port_and_port_id papi = srpt_lookup_port(name);
-+	struct srpt_port *sport = papi.sport;
-+	struct srpt_port_id *port_id;
-+
-+	if (!papi.port_id)
-+		return ERR_PTR(-EINVAL);
-+	if (*papi.port_id)
-+		return &(*papi.port_id)->wwn;
-+	port_id = kzalloc(sizeof(*port_id), GFP_KERNEL);
-+	if (!port_id) {
-+		srpt_sdev_put(sport->sdev);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+	mutex_init(&port_id->mutex);
-+	INIT_LIST_HEAD(&port_id->tpg_list);
-+	port_id->wwn.priv = sport;
-+	memcpy(port_id->name, port_id == sport->guid_id ? sport->guid_name :
-+	       sport->gid_name, ARRAY_SIZE(port_id->name));
-+
-+	*papi.port_id = port_id;
-+
-+	return &port_id->wwn;
- }
- 
- /**
-@@ -3799,6 +3837,17 @@ static struct se_wwn *srpt_make_tport(struct target_fabric_configfs *tf,
-  */
- static void srpt_drop_tport(struct se_wwn *wwn)
- {
-+	struct srpt_port_id *port_id = container_of(wwn, typeof(*port_id), wwn);
-+	struct srpt_port *sport = wwn->priv;
-+
-+	BUG_ON(!sport);
-+	if (sport->guid_id == port_id)
-+		sport->guid_id = NULL;
-+	else if (sport->gid_id == port_id)
-+		sport->gid_id = NULL;
-+
-+	srpt_sdev_put(sport->sdev);
-+	kfree(port_id);
- }
- 
- static ssize_t srpt_wwn_version_show(struct config_item *item, char *buf)
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
-index 0cb867d580f1..4c46b301eea1 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.h
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
-@@ -393,7 +393,7 @@ struct srpt_port_id {
- };
- 
- /**
-- * struct srpt_port - information associated by SRPT with a single IB port
-+ * struct srpt_port - SRPT RDMA port information
-  * @sdev:      backpointer to the HCA information.
-  * @mad_agent: per-port management datagram processing information.
-  * @enabled:   Whether or not this target port is enabled.
-@@ -403,9 +403,9 @@ struct srpt_port_id {
-  * @gid:       cached value of the port's gid.
-  * @work:      work structure for refreshing the aforementioned cached values.
-  * @guid_name: port name in GUID format.
-- * @port_guid_id: LIO target port information for the port name in GUID format.
-+ * @guid_id:   LIO target port information for the port name in GUID format.
-  * @gid_name:  port name in GID format.
-- * @port_gid_id: LIO target port information for the port name in GID format.
-+ * @gid_id:    LIO target port information for the port name in GID format.
-  * @port_attrib:   Port attributes that can be accessed through configfs.
-  * @refcount:	   Number of objects associated with this port.
-  * @freed_channels: Completion that will be signaled once @refcount becomes 0.
-@@ -422,9 +422,9 @@ struct srpt_port {
- 	union ib_gid		gid;
- 	struct work_struct	work;
- 	char			guid_name[64];
--	struct srpt_port_id	port_guid_id;
-+	struct srpt_port_id	*guid_id;
- 	char			gid_name[64];
--	struct srpt_port_id	port_gid_id;
-+	struct srpt_port_id	*gid_id;
- 	struct srpt_port_attrib port_attrib;
- 	atomic_t		refcount;
- 	struct completion	*freed_channels;
+For the ECS instance with RDMA enabled, our MOC hardware generates two
+kinds of PCI devices: one for ERDMA, and one for the original net device
+(virtio-net). They are separated PCI devices.
+
+Fixed issues in v14:
+- Add commit message for patch 0001/0010
+- Fix typos in commit messages of patch 0002/0006.
+
+Fixed issues or changes in v13:
+- Change the opensource license of code.
+- Simplify some code which is unnecessary in device probe.
+- Fix a bug in the error handler of erdma_proc_mpareply.
+
+Fixed issues in v12:
+- Use the bitmap API to allocate bitmaps. (From Christophe)
+- Use the non-atomic bitmap API when applicable. (From Christophe)
+
+Fixed issues in v11:
+- Return -EIO when CMDQ response has error status.
+- Eliminate static checker warnings.
+
+Fixed issues in v10:
+- Remove unneeded semicolon in erdma_qp.c reported by Abcci Robot.
+- Remove duplicated include in erdma_cm.c reported by Abcci Robot.
+- Fix return value check in erdma_alloc_ucontext() reported by Hulk
+  Robot.
+- Sort the include headers.
+
+Fixed issues or changes in v9:
+- Refactor the implementation of netdev bind flow in erdma.
+- Remove the modification of iw_query_port due to the refactor.
+
+Fixed issues or changes in v8:
+- Sort the source order in drivers/infiniband/Kconfig.
+- Remove !CPU_BIG_ENDIAN in our Kconfig, and fix warnings reported by
+  sparse.
+- Remove rdma_link_ops implementation in erdma. Instead, we implement a
+  workqueue to handle the link operation after registering erdma device
+  successfully.
+
+Changes in v7:
+- Fix a wrong doorbell records' address calculation issue in
+  erdma_create_qp.
+- Fix a condition race issue when reporting IW_CM_EVENT_CONNECT_REQUEST
+  event in cm.
+- Sorry for a mmap_free implementation missing, we add it in this version.
+- Remove unnecessary reference to erdma_dev in erdma_ucontext.
+
+Changes in v6:
+- Rebase to the latest for-next code, and solve the compilation issues.
+
+Fixed issues or changes in v5:
+- Rename the reserved fields of structure definitions to improve
+  readability.
+- Remove some magic numbers and unnecessary initializations.
+- Fix some coding style format issues.
+- Fix some typos in comments.
+- No casting in the assignment if the function's returned pointer is
+  "void *".
+- Re-write the polling functions (cmdq cq, verbs cq, aeq and ceq), which
+  all check the valid bit in order to get next valid QE. This new
+  implementation is more simple. Thank Wenpeng.
+- Fix an issue reported by kernel test robot.
+- Some minor changes in code (such as removing SRQ definitions since we do
+  not support it yet).
+
+Fixed issues in v4:
+- Fix some typos.
+- Use __GFP_ZERO flags in dma_alloc_coherent, instead of memset after
+  buffer allocation.
+- Use one single polling function for AEQ and CEQ, before there had two.
+- Fix wrong iov_num when calling kernel_sendmsg.
+- Add necessary comment in erdma_cm.
+- Remove duplicated check in MPA processing function.
+- Always return 0 in erdma_query_port.
+- Directly return error code instead of assigning "ret", and then returning
+  "ret" in init_kernel_qp.
+
+Fixed issues or changes in v3:
+- Change char limit of column from 100 to 80.
+- Remove unnecessary field or structure definitions in erdma.h.
+- Use exactly type (bool, unsigned int) instead of "int" in erdma_dev.
+- Make ibdev and pci device having the same lifecycle. ERDMA will remain
+  an invalid port state until binded to the corresponding netdev.
+- ib_core: allow query_port when netdev is NULL for iWarp device.
+- Move large inline function in erdma.h to .c files.
+- Use dev_{info, warn, err} or ibdev_{info, warn, err} instead of
+  pr_{info, warn, err} function calls.
+- Remove print function calls in userspace-triggered paths.
+- Add necessary comments in CM part.
+- Remove unused entries in map_cqe_opcode[] table.
+- Use rdma_is_kernel_res instead of self-definitions.
+- Remove unsed resources counter in erdma_dev.
+- Use pgprot_device instead of pgprot_noncached in erdma_mmap.
+- Remove disassociate_ucontext interface implementation
+
+Fixed issues in v2:
+- No "extern" to function declarations.
+- No inline functions in .c files, no void casting for functions with
+  return values.
+- Based on siw's newest kernel version, rewrite the code (mainly CM and
+  CM related part) which originally based on an old siw version.
+- remove debugfs.
+- fix issues reported by kernel test robot.
+- Using RDMA_NLDEV_CMD_NEWLINK instead of binding in net notifiers.
+
+[1] https://github.com/linux-rdma/rdma-core/pull/1126
+
+Thanks,
+Cheng Xu
+
+Cheng Xu (11):
+  RDMA: Add ERDMA to rdma_driver_id definition
+  RDMA/erdma: Add the hardware related definitions
+  RDMA/erdma: Add main include file
+  RDMA/erdma: Add cmdq implementation
+  RDMA/erdma: Add event queue implementation
+  RDMA/erdma: Add verbs header file
+  RDMA/erdma: Add verbs implementation
+  RDMA/erdma: Add connection management (CM) support
+  RDMA/erdma: Add the erdma module
+  RDMA/erdma: Add the ABI definitions
+  RDMA/erdma: Add driver to kernel build environment
+
+ MAINTAINERS                               |    8 +
+ drivers/infiniband/Kconfig                |   15 +-
+ drivers/infiniband/hw/Makefile            |    1 +
+ drivers/infiniband/hw/erdma/Kconfig       |   12 +
+ drivers/infiniband/hw/erdma/Makefile      |    4 +
+ drivers/infiniband/hw/erdma/erdma.h       |  287 ++++
+ drivers/infiniband/hw/erdma/erdma_cm.c    | 1430 ++++++++++++++++++++
+ drivers/infiniband/hw/erdma/erdma_cm.h    |  167 +++
+ drivers/infiniband/hw/erdma/erdma_cmdq.c  |  493 +++++++
+ drivers/infiniband/hw/erdma/erdma_cq.c    |  205 +++
+ drivers/infiniband/hw/erdma/erdma_eq.c    |  329 +++++
+ drivers/infiniband/hw/erdma/erdma_hw.h    |  508 +++++++
+ drivers/infiniband/hw/erdma/erdma_main.c  |  608 +++++++++
+ drivers/infiniband/hw/erdma/erdma_qp.c    |  566 ++++++++
+ drivers/infiniband/hw/erdma/erdma_verbs.c | 1460 +++++++++++++++++++++
+ drivers/infiniband/hw/erdma/erdma_verbs.h |  342 +++++
+ include/uapi/rdma/erdma-abi.h             |   49 +
+ include/uapi/rdma/ib_user_ioctl_verbs.h   |    1 +
+ 18 files changed, 6478 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/infiniband/hw/erdma/Kconfig
+ create mode 100644 drivers/infiniband/hw/erdma/Makefile
+ create mode 100644 drivers/infiniband/hw/erdma/erdma.h
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.h
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_cmdq.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_cq.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_eq.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_hw.h
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_main.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_qp.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_verbs.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_verbs.h
+ create mode 100644 include/uapi/rdma/erdma-abi.h
+
+-- 
+2.27.0
+
