@@ -2,146 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C95058456B
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jul 2022 20:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E320A584567
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jul 2022 20:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbiG1Rzt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Jul 2022 13:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33792 "EHLO
+        id S232976AbiG1SEY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Jul 2022 14:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232720AbiG1Rzs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jul 2022 13:55:48 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0946719001
-        for <linux-rdma@vger.kernel.org>; Thu, 28 Jul 2022 10:55:47 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26SGxpsp021898;
-        Thu, 28 Jul 2022 17:55:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : subject
- : from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=JjZ4pjTM620K2B3TTVBo6GbjdQscmGX0p9t2lVFevCk=;
- b=BX5h1zQva5bddThWBTshYwvmkQjaOGrwhtiDrkKfaRMpsH1fb7DOE1iKHD2YY2yrBvAq
- gjlCjdTh160eMOXOZWdVoAqpgoCVTGAxcXidyc4o6EmXJqTk72Si4L6t5A2+UmFS5O7T
- xvU7wDybsnyBuvt239S6DbtkAPONudz14xgTmM0I1AoPRplQAUjJpKYKmL/hWGBuE/O/
- 4NVBZwmbobVkfrAYXT/T7sPM3FBc+1jONsHqwdYq4jzvZHx7edP133nEMc4WA3ZW7Aih
- THphpnJ7pBNf4yRw7h6UUT/VT/lE3+BjFCt3oMapmG2xhTDkNBwNi9/9Ar27r8OXSbvG gA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3hg9hswuxf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jul 2022 17:55:44 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 26SHteiC023248;
-        Thu, 28 Jul 2022 17:55:43 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3hh5yxtbyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jul 2022 17:55:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nTE+8kid8X2fiQgnOislrHEJ7N/a9pWZV+jbU0oCrU/iqPuqbnotZ7ciw6ZmlmPR2fcNEVtSQMZW5jBsxWZDM0GfDVh3n6MIr/OyXcTVq9kxPoojMSFvfVQodtkehx8zMlZDQJu7zufoonkdJV1XXPjLJaADxLLgt0OOW1LuyvVUAY28t8Z1kpG/w6WVh24k7rwoB+HjpfBkP7GVQjsiaFYK8IVOkQCHPgaQ33THILTkwccuqpWHTds1SU6Fvd3ZvPLS96wImjItVShYiNrB4FIfbA/tJz7DtGZbJl4zrZ/lchEWSp8ZZ6njeJBVxiFAF3OIwq/VVZGL/HcF/jI4Bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JjZ4pjTM620K2B3TTVBo6GbjdQscmGX0p9t2lVFevCk=;
- b=aH82B9xfCYW9yiWzQAJWY/bJPeQXLxLBvn9JlWWQTGv+SbDmIGt6HYr0NUJI1+FwcMOaxV2ijR5Ft9M9ycqw2ZJx/Z2SClBzojmGiPyoFhz1ReFoXSz+sZ7mvSn4iDMYKtSNxMrxB0AS5cjhSh66+z7Q6mtAuNSdT0TdadcrKKvGyOpva5IqF4QV1luBSkUolI1S3EkcMm8PSsPZCNx9cLyX3nsnrJhIT/BMfR6LQnpMBFXmkSGhxi+mlMF6tdEMlx0E0SXeuvV1Mw8QZj1Xvia/dZNSwhuf9AVCGUxLePCT8h5cfA7dRSVd6q9vmSBaE0XjG4tmd/8HF5cYgXDtLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S232627AbiG1SEX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jul 2022 14:04:23 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E1D74CE3
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Jul 2022 11:04:21 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id u76so3265743oie.3
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Jul 2022 11:04:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JjZ4pjTM620K2B3TTVBo6GbjdQscmGX0p9t2lVFevCk=;
- b=U8lVkwJoyze8tMkcXYdEuw9olYzNZE3Z3u8LH2snWldXZ+pcdetKuj0SZfbKxQugKDG6nGDqY5GmUM8zfesHkrH2wB6Sof9eq3C2XdigSDWMIlX2fNhXbiVKoWlZjgHKzxfkKHA7s7MtSzJNUOFnJFC09BUFERVYiKdrYkZdR58=
-Received: from BYAPR10MB3158.namprd10.prod.outlook.com (2603:10b6:a03:15d::23)
- by PH0PR10MB5660.namprd10.prod.outlook.com (2603:10b6:510:ff::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.18; Thu, 28 Jul
- 2022 17:55:41 +0000
-Received: from BYAPR10MB3158.namprd10.prod.outlook.com
- ([fe80::11ab:5326:2d9c:936c]) by BYAPR10MB3158.namprd10.prod.outlook.com
- ([fe80::11ab:5326:2d9c:936c%7]) with mapi id 15.20.5482.006; Thu, 28 Jul 2022
- 17:55:41 +0000
-Message-ID: <94874f65fe9696ccd671625bdc6bfdc4cc496e30.camel@oracle.com>
-Subject: Re: [PATCH v2 1/1] RDMA/addr: Refresh neighbour entries upon
- "rdma_resolve_addr"
-From:   Gerd Rausch <gerd.rausch@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-Date:   Thu, 28 Jul 2022 10:55:39 -0700
-In-Reply-To: <3a50586afd22c1872dfe3f8fbc22438f7cb82cca.camel@oracle.com>
-References: <60b4df0f7349570fe91b94eb8861043f0aba7cf2.camel@oracle.com>
-         <20220624231134.GE23621@ziepe.ca>
-         <101720e727de34c222ac34889b4a75ab6aec4e33.camel@oracle.com>
-         <20220625001040.GH23621@ziepe.ca>
-         <3a50586afd22c1872dfe3f8fbc22438f7cb82cca.camel@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0232.namprd04.prod.outlook.com
- (2603:10b6:806:127::27) To BYAPR10MB3158.namprd10.prod.outlook.com
- (2603:10b6:a03:15d::23)
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=sUNvs8r1vknkVSSd8Fd3JWTdCYICDAv/mdgULeJ6VdY=;
+        b=YQqp3/e3vIx5pmk7Ei2GxX1Rl0kqNbAxxsHsj50POeBtGQ5HGrqu0DPPon/tnRBdpH
+         Po1gMUtAxcSNgIB8Qvu8hk3n2fnBxU1FusBdy303yAncos94LoWZDPEGw3rbDRYraDA1
+         bKTsKoYVyveVZtXyeDnvJsC/CgeaPMQy1B5D2SLN0R50kOV77dxvL/Y8K/pakXeesC4H
+         462yTHnEf44tFNPf9boX5AeHU0YBZshAwvvW7VhtsXMA8nqTcpoeeA2n0d2uRwLuwrMG
+         5AesrANZHK0xr6esiLz0sHKRq2HPXCn7wKIGqALyXb+bCoT3/s9YR6k4nAVg8y8XNurD
+         7ttg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=sUNvs8r1vknkVSSd8Fd3JWTdCYICDAv/mdgULeJ6VdY=;
+        b=KZNCqOnUf8BIvZc9fgClu0BYNdxuYrCkJVNMGKGMWLI+P9Ti5CKy/7rttEMcqBZ6na
+         7vI1tqitiJVa6TQN4vOn90BGmgx5uFDTvXl2VU02KpPI8eg+R3C2ZZUtBD6icD+zHi+1
+         C9wOR/c1ZXPsP7Mc7+keTqBcfcTj5B7ZBwWRRf6Wux618s/UYwaYYSMjwthELRc/SUiS
+         9QF1ITD5GidgPpPHS0OMiTHb//bgSzXGgBIhERGdf53Bns4v6qoUHj4e1SoXmCEcecsA
+         3toaC661rjjxOAbxW1/t578Swwg/n6Jlzhd+tCGuT9jDjCF8hMSqvhx2eSdm6nLcp8Xo
+         UoKA==
+X-Gm-Message-State: AJIora/MTMyjn1nx3PgGslgm3luHQqxMHwLLj9hi3sGz99jRSCXJz7tE
+        53xQ85dDMYWP0vEu2ZjPiwcVyL3DSr8=
+X-Google-Smtp-Source: AGRyM1sggNNnHyGSonYDaBIPqInpJT4aLcx2/wqN+BmYxwa1YJShachOvqdfFP3NEtQhG2uN/e2gJg==
+X-Received: by 2002:a05:6808:1b8c:b0:33a:d44f:2169 with SMTP id cj12-20020a0568081b8c00b0033ad44f2169mr22750oib.13.1659031461346;
+        Thu, 28 Jul 2022 11:04:21 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:74e9:26b8:3420:6d55? (2603-8081-140c-1a00-74e9-26b8-3420-6d55.res6.spectrum.com. [2603:8081:140c:1a00:74e9:26b8:3420:6d55])
+        by smtp.gmail.com with ESMTPSA id z5-20020a056870e30500b0010d7e268e1esm677609oad.10.2022.07.28.11.04.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jul 2022 11:04:19 -0700 (PDT)
+Message-ID: <afbf4443-493e-c564-7997-406ab90edc7d@gmail.com>
+Date:   Thu, 28 Jul 2022 13:04:18 -0500
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 438f6b8a-6fb8-44b3-7ec4-08da70c2632a
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5660:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Py+TSKNqBOj+pANsuAieG/qn29OarqLRdCi2vCoTELvxHmAib1lxzyHQpjnzTQpjXxa3frrMDO/fYAz+2PMqjAEAPFv12oDPL0VjnUS7PIX380GGjGDSeQmHoOt0byzJDpQCDZpqaTB1N+C7T8NBTXI9hqFlG2uGvqrUHWH1CzXIs1Y/yFASf7yu8ZDku5nG/fimHkdcOXPU9/vN9/vS67dTflnI9jGANE2dyX32ic3cRjUn95Q9GTCAzCePieGg9ACn+zBkP802QSvw2USnW9WoKzfmVquRS58d20YYbDQOIbuyoQFkSdUcSiXhrYqS0zUwV2gxILjJoy58aTQTA3GMzbb4WVBvgUz6wiCmBkRDj4mWnZ4iJeUH+OVnATezS6xoxTZcHkp2ldQWXCj4Ngh4VtYUMm0La8d/UUVLhEa/owDZtGhdol65hR1jjzhSx/mxphi6mJvJL+nc3OwyltRgo9amjDvZaJY6m1a2yyW9fBJwI+bkWYvhJKtSUae92qoODvD9tp6f1uytk7X5IZpREZlkhLmLfVLtEtTiqYgVIM9cC0IxKeKTjih02CgDaZu6kmqK4ZIzb2hCzjfMjEpOFNInEK4HXbllfqk7S/78rThQNRc7zkgpuLrLjNhEPIry4ab/qEyw7UDSrJ889RqM74e8fEYqs+wQGBzoWDEow4DHeOf/5kzRkbC72z1tculdXqQTGwZd0x2/3O+s+GR9G+fisb20ZsLB5EN4+TmhY32iB7Y200m+aRc7GA32Q7mWpHK1M+KgNzgnymG/ETr8c+rNgZb/xEqJKta9am4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3158.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(366004)(136003)(396003)(346002)(39860400002)(376002)(8936002)(44832011)(5660300002)(6486002)(38100700002)(2906002)(478600001)(36756003)(316002)(4326008)(83380400001)(6916009)(86362001)(66946007)(41300700001)(52116002)(66556008)(66476007)(186003)(6506007)(2616005)(8676002)(6512007)(99106002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-15?Q?KsJrqvVEFAkpH7egJUqFShmzbbdfaK2+s9oonLyxDngDnborFntUN+Zav?=
- =?iso-8859-15?Q?yo5pSRvCLFtiXxItXfvRBpjkCEyymDhitm/uWdfoqBoKja0kbmeO7VpBR?=
- =?iso-8859-15?Q?JucVLlAOv+P8dD1xuIOSpNIp2rRzHt/ZDUD67L3HQyejtv28SOSqAI0ol?=
- =?iso-8859-15?Q?BMUdGGWU3X7MHfTyIsnH4OQne5pFej9Ak3LroK+Py9aTJUAmRyL5IKXfZ?=
- =?iso-8859-15?Q?XvPDZkQru+N5pZn2JPgTkiRIbHT4+xWiA6O9kilRmHSoR59C0NaN/L2Xu?=
- =?iso-8859-15?Q?oWcJLv42DbkUcxB2lN0cQQxDJxJO/1kIGBKBUg1bcbiiVWu2p8RrbOiU0?=
- =?iso-8859-15?Q?GecUNTWlVl2g5Y3lNNH5OTYVrL/0TbTjCdeoxWcSDIB3sH5xN+oYi2gs2?=
- =?iso-8859-15?Q?xzEgHwKEa3f6eIs85+t/bmdk9H6DGRkwF2rSdMsnjdy0NrnHpXhAg4oLf?=
- =?iso-8859-15?Q?MewNT9zH/hJZcSLMMWAem1k/N1mZfO/lZVn9h962m+pNxr4ebcAnbJGLu?=
- =?iso-8859-15?Q?Ew5W2puitCrLucK4vGqyiLS904twA39Il5tubnYwGzi1x/e1rY7fFAVfd?=
- =?iso-8859-15?Q?eqCmzqy/+FkBAdqU2JpdN/U2QNCemF4Z6D4bVbB3/N/vQ5UDWB5KFl/lg?=
- =?iso-8859-15?Q?/ko0KQui1Q3ldIybQLy69O2Hlx8Hdze+bfYw4KnWlQPUHYyE18RcdySgX?=
- =?iso-8859-15?Q?6Rm8g2f7SHM1jeFI21CpYHJIFrSZJThpVem21Y4rlheP7J5Ks4p3iigSR?=
- =?iso-8859-15?Q?5AKBCvLf/YvrkWXF4JOI8zS5vLLttz7/CDgupuAY3iYT+C0PJzUT2DbpN?=
- =?iso-8859-15?Q?CX21uhXjvMkBMMiYDiJSLmds6i1ZBSpgDbfLyvD53i6L8z0Dqt+0zBayh?=
- =?iso-8859-15?Q?k5tHR7uRnxVkVNNx0DceixYB64rz/TGOrQqly3zrq+ey4JWOA5GTZUOnQ?=
- =?iso-8859-15?Q?9bPUUx7uLtfT0C1qqXMtCM1o5wHEzWbM3yk+haD5rZ7SbR+v5Pa8LklMx?=
- =?iso-8859-15?Q?GKpM+efqfmxKARBYba3wG2O5Y9FRXmJzveBIjewk39Vd6IwpzpO/8Lnt8?=
- =?iso-8859-15?Q?89QfSMSYqpnOvsJJszU+oIFO/AhnjGQhALRb+qisnvpHJ/PNYmG80mrEX?=
- =?iso-8859-15?Q?n6t7hDBkYnc7ww1pupvXtfXtcOUE8/OF3Hz717urtU8PlJLnIr59xYgv3?=
- =?iso-8859-15?Q?m1lP0ALcG5aeeA2Dtxg/n5QSrGcTanIL8B6qqTXkF/g/uZjrZfUWl77Vv?=
- =?iso-8859-15?Q?qsIIoqac+ZYiPQVT0MBWpxfSUZirEOkAAtXFqQ/+E4DRI5Kj0FI0XDV3c?=
- =?iso-8859-15?Q?IGBTl1fypPB+542pQyMKWMU65v5WP9Vf/p6qN9IY8KvTDIa2SiMCUDjkZ?=
- =?iso-8859-15?Q?TKu1Cs+DHD/kFTdP8beU1j3+12EIMS0Bobmy6f2X8HuLP8uEp4I8J9E8v?=
- =?iso-8859-15?Q?JdiAvYukPCgb6QN61xglcTbR98cy2iOBCUTTaDWxhXWpUyNCD8jlvyO98?=
- =?iso-8859-15?Q?ZFbnMHktPZ751C2NnD/GmkuxIDPwBdr0gEaeqQKeusg7w9tmpSaD80awT?=
- =?iso-8859-15?Q?gHDE/Xar1+dc617EMqul+Mqqs9zXFmUU0H+2v9GuqKmHC56TGw3pFfHan?=
- =?iso-8859-15?Q?mdDH8IqKPT+tX0tY+HE/j34u3Y4ku72U3Has+Mjkll2RyCtcdqYLWV29x?=
- =?iso-8859-15?Q?i6Xm6rnTIldmLuOc9xEPR3NvZoS94qdP/g3yG+BkMHHeXzc=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 438f6b8a-6fb8-44b3-7ec4-08da70c2632a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3158.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2022 17:55:41.7135
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e3GgjC/5ps2apzvK28Fx9nDjG942G8DljYLo2r1hnbdWw+jldjiBbrOkG26Ahjp8tB95Nf/0Atwj7gbr1CdXzQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5660
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-28_06,2022-07-28_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=907
- mlxscore=0 suspectscore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2206140000 definitions=main-2207280083
-X-Proofpoint-ORIG-GUID: uT2pEb8XYf8cDQtAnIkewJBVBmHBRmAi
-X-Proofpoint-GUID: uT2pEb8XYf8cDQtAnIkewJBVBmHBRmAi
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH for-next v2] RDMA/rxe: Cleanup rxe_init_packet()
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     zyjzyj2000@gmail.com, haris.iqbal@ionos.com,
+        linux-rdma@vger.kernel.org
+References: <20220727163651.6967-1-rpearsonhpe@gmail.com>
+ <YuK0a67aTpMWJgeE@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <YuK0a67aTpMWJgeE@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -149,50 +74,89 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
-
-On Fri, 2022-06-24 at 17:55 -0700, Gerd Rausch wrote:
-> In other words, I don't see how the STALE case was covered, and I'd have
-> to guess wether the -ENODATA coupling was intentional or accidental.
+On 7/28/22 11:08, Jason Gunthorpe wrote:
+> On Wed, Jul 27, 2022 at 11:36:52AM -0500, Bob Pearson wrote:
+>>  	unsigned int hdr_len;
+>>  	struct sk_buff *skb = NULL;
+>> -	struct net_device *ndev;
+>> -	const struct ib_gid_attr *attr;
+>> +	struct net_device *ndev = rxe->ndev;
+>>  	const int port_num = 1;
+>> -
+>> -	attr = rdma_get_gid_attr(&rxe->ib_dev, port_num, av->grh.sgid_index);
+>> -	if (IS_ERR(attr))
+>> -		return NULL;
 > 
-> Now it may be perfectly possible to just make the "neigh_event_send"
-> call above unconditional and call it a day.
+> An ib_device can have many netdevs associated with the gid indexes, eg
+> from VLANs or LAG. The core code creates these things
 > 
-> I mean, simpler fixes always win over more complex ones.
+> I think it is nonsense for rxe to work like this, and perhaps it
+> doesn't work at all, but until rxe blocks creation of these other gid
+> indexes I'm not sure it makes sense to delete this code..
 > 
-> But, I personally don't know the twists & turns of this code well enough
-> to be able to assert that this won't leave any non-covered conditional
-> corner cases. I certainly hadn't tested that.
-> 
-
-I finally got around to trying the much simpler fix, and it appears to
-work just as well:
-
---------%<--------%<--------%<--------%<--------%<--------%<--------
---- drivers/infiniband/core/addr.c-
-+++ drivers/infiniband/core/addr.c
-@@ -336,11 +336,11 @@ static int dst_fetch_ha(const struct dst
- 		return -ENODATA;
- 
- 	if (!(n->nud_state & NUD_VALID)) {
--		neigh_event_send(n, NULL);
- 		ret = -ENODATA;
- 	} else {
- 		neigh_ha_snapshot(dev_addr->dst_dev_addr, n, dst->dev);
- 	}
-+	neigh_event_send(n, NULL);
- 
- 	neigh_release(n);
- 
---------%<--------%<--------%<--------%<--------%<--------%<--------
-
-Tested with IPv4 only, but this should work just as well with IPv6:
-
-STALE neighbor entries transition to DELAY -> REACHABLE with this
-change, i.e. the entries get updated.
-
-Thanks,
-
-  Gerd
+> Jason
 
 
+Somehow I had the vague impression that rxe didn't support vlans but
+I just looked at the following commit
+
+commit fd49ddaf7e266b5892d659eb99d9f77841e5b4c0
+
+Author: Mohammad Heib <goody698@gmail.com>
+
+Date:   Tue Aug 11 18:04:15 2020 +0300
+
+
+
+    RDMA/rxe: prevent rxe creation on top of vlan interface
+
+    
+
+    Creating rxe device on top of vlan interface will create a non-functional
+
+    device that has an empty gids table and can't be used for rdma cm
+
+    communication.
+
+    
+
+    This is caused by the logic in
+
+    enum_all_gids_of_dev_cb()/is_eth_port_of_netdev(), which only considers
+
+    networks connected to "upper devices" of the configured network device,
+
+    resulting in an empty set of gids for a vlan interface, and attempts to
+
+    connect via this rdma device fail in cm_init_av_for_response because no
+
+    gids can be resolved.
+
+    
+
+    Apparently, this behavior was implemented to fit the HW-RoCE devices that
+
+    create RoCE device per port, therefore RXE must behave the same like
+
+    HW-RoCE devices and create rxe device per real device only.
+
+    
+
+    In order to communicate via a vlan interface, the user must use the gid
+
+    index of the vlan address instead of creating rxe over vlan.
+
+    
+
+    Link: https://lore.kernel.org/r/20200811150415.3693-1-goody698@gmail.com
+
+    Signed-off-by: Mohammad Heib <goody698@gmail.com>
+
+    Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+
+
+
+which jibes with what you are saying. The immediate impact of this is that
+rxe->ndev should probably not be used unless you know you want the physical device.
+
+Bob
