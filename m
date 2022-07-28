@@ -2,356 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AC25833B4
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jul 2022 21:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE5258381F
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jul 2022 07:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234209AbiG0Tea (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Jul 2022 15:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
+        id S230018AbiG1FWV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Jul 2022 01:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233783AbiG0Tea (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Jul 2022 15:34:30 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8733CBDC
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Jul 2022 12:34:28 -0700 (PDT)
-Received: by mail-pj1-f53.google.com with SMTP id c19-20020a17090ae11300b001f2f94ed5c6so3616479pjz.1
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Jul 2022 12:34:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wOrWIpXg62eHGvKZVv+xJ47vBojVpGqnNlzjm3McXi8=;
-        b=qo+pLWz7Fc8uPENzl2720jgyVaHWmR2q4CIyXhenaXAlgS/aRvfVkPqX6eUdnJjFkJ
-         OKcpalc1DTXSNWbaM0uyHPRaFp/ZIyMyXI7GI8z+6x1M6UpMs9y5U3ze7ZCbeIoYkDgH
-         0NXaWlSq0LpQjx1OEueop387ycR+XpbAQ2xEM6llu8QU+sWmTRnLS7xiycklSPUuzBJO
-         L2Gogb1ap6w7WzUxdhWbC343YDfUvUajIK0kZAwJLuIjvhau06z3iZweEcQ/G1R95Bas
-         acF7XDhpHcU59B8gAQ6C5wloYcSSO5UHHnnxWUGZf5HP1MH98fnjvPZhrJjRtteVSKYN
-         YgEQ==
-X-Gm-Message-State: AJIora+2bgGn28mY1zhxuDxtNj0cnMPKdK62g6d4ic+wHg4jQGTSWhG3
-        qRDX3Kv/Ou8jVvyzgH83mC8=
-X-Google-Smtp-Source: AGRyM1sySDnKnHpEE8p7TYcyAosj8TW7ZVcvZu24lnj1JzVNzjjDqMh0z4LSuGZ1cnr8GN97zXuI3w==
-X-Received: by 2002:a17:902:e747:b0:16c:3ffd:61e4 with SMTP id p7-20020a170902e74700b0016c3ffd61e4mr22536334plf.12.1658950468334;
-        Wed, 27 Jul 2022 12:34:28 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:a84e:2ec1:1b57:b033])
-        by smtp.gmail.com with ESMTPSA id y28-20020aa7943c000000b0052b94e757ecsm14221542pfo.213.2022.07.27.12.34.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jul 2022 12:34:27 -0700 (PDT)
-From:   Bart Van Assche <bvanassche@acm.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Li Zhijian <lizhijian@fujitsu.com>,
+        with ESMTP id S229538AbiG1FWT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jul 2022 01:22:19 -0400
+Received: from esa20.fujitsucc.c3s2.iphmx.com (esa20.fujitsucc.c3s2.iphmx.com [216.71.158.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A634051A2D
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Jul 2022 22:22:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1658985738; x=1690521738;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=bw4ywVQBFOu4h1EuINI2UxVSLdI6istsbjD1lwWqrVQ=;
+  b=aYwP1f1BjinZObpEAn1KBgYU/tPqfx5mqX0f8kZ6v2QmQgwynmLgaYDd
+   sCUEqq6phbOL2XILkj+Ql1MpXG3LuPNZ8AMmQ4SNiKl6cUQCtIjwQAAhE
+   oNM2fAmXPgrv+KcjGxApqFZZgpYl/bGBzpDBD6n9Hsw56+od2237M42Fa
+   ZPsye71SlD40EX7tBWnks5ua1Yi6/2gy5Nn3WgDSUNHZUGp4txbvhCytS
+   JuXrquG5lxzF+AzK7N2jFzY8/Q5fVV2ydMLRfuYLrjkCbJMYesMruTxce
+   m4pC9MHDe7v48PrSmuyX0ah9kB3732QgtqdFjcoMzWMSmNjvAlrynMxpq
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10421"; a="61409525"
+X-IronPort-AV: E=Sophos;i="5.93,196,1654527600"; 
+   d="scan'208";a="61409525"
+Received: from mail-tycjpn01lp2170.outbound.protection.outlook.com (HELO JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.170])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2022 14:22:14 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eeYa5ktgf0HSlCTAeY8MXZ3EulVWW+jg+aoezpJQcoNS4qaXwSkdx1lU+y+/lgHJSJQnTg7yiqgskNKpvIMXXqANtnF0DfQRNqXr5f60+liarTiVqXphJTLtWf7HCWBHRTCnpmywdSqYiqAUdCGGTlxwq+r20QbsuOVbnncf8dVCPWnKPMdhUdZ5v/JdxojD12/79W2i9TW85o1WTrQcWEd2VT0Q7SLOzhZrbm1X9xArlO+8IeItR/N2rL1yKVbVmaNeGhhCRuleaquTpqtShOb/LW+HGvg8H6pED6nQgT5AsKyQXulh9PwzrYMO+pgWFhwk9Thir+W8E6ZAW9LTIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bw4ywVQBFOu4h1EuINI2UxVSLdI6istsbjD1lwWqrVQ=;
+ b=KYScHBSJxWrwr9Bgkr9aESzAhruBf1BpoQO6jr7fGL1sG1bkg3OUwqheig0Ht/fAwBYxD+LiSGoN6OGkSXS6K4uhqHlpkYkn7ucQNjYJlgyoEMtysSaGDsOS7cMsJmFcZjQKdvzlyRCiWaLRiCXsP70QLud/GxwWeW2TSb+6r6S7VyTRQ4BftL/PM7Ua/xOdPAjgxEPruLWLo47er0YVeCxcB2gjNJ2vLPryLIhZ9x17W3wrsmqslKzTQxqpPiubc81xyXJBzlzmMwCLD/7mZct1+GWQ9FqgDNb8t/YP2KWJuAMTnJ6NVRN/W/ayBqhODYypus38MQmz4jFD6QN/pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from TYCPR01MB9305.jpnprd01.prod.outlook.com (2603:1096:400:196::10)
+ by OSZPR01MB8466.jpnprd01.prod.outlook.com (2603:1096:604:183::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.10; Thu, 28 Jul
+ 2022 05:22:10 +0000
+Received: from TYCPR01MB9305.jpnprd01.prod.outlook.com
+ ([fe80::1924:fa15:c8ce:8820]) by TYCPR01MB9305.jpnprd01.prod.outlook.com
+ ([fe80::1924:fa15:c8ce:8820%6]) with mapi id 15.20.5482.010; Thu, 28 Jul 2022
+ 05:22:10 +0000
+From:   "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Hillf Danton <hdanton@sina.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH v2 3/3] RDMA/srpt: Fix a use-after-free
-Date:   Wed, 27 Jul 2022 12:34:15 -0700
-Message-Id: <20220727193415.1583860-4-bvanassche@acm.org>
-X-Mailer: git-send-email 2.37.1.359.gd136c6c3e2-goog
-In-Reply-To: <20220727193415.1583860-1-bvanassche@acm.org>
-References: <20220727193415.1583860-1-bvanassche@acm.org>
+        Mike Christie <michael.christie@oracle.com>
+Subject: Re: [PATCH 3/3] RDMA/srpt: Fix a use-after-free
+Thread-Topic: [PATCH 3/3] RDMA/srpt: Fix a use-after-free
+Thread-Index: AQHYoTXIOjFXZzXvhUCb0Y264lSTv62R/d8AgACB9wCAAMGvgA==
+Date:   Thu, 28 Jul 2022 05:22:10 +0000
+Message-ID: <3ec0677e-f652-1541-b094-e74d23b7b1da@fujitsu.com>
+References: <20220726212156.1318010-1-bvanassche@acm.org>
+ <20220726212156.1318010-4-bvanassche@acm.org>
+ <c8663ec2-0436-cafd-448b-50f3e191c5b8@fujitsu.com>
+ <e268fd7d-e828-c5ed-8f95-0c6179db43fa@acm.org>
+In-Reply-To: <e268fd7d-e828-c5ed-8f95-0c6179db43fa@acm.org>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a72771e5-eee2-4424-e619-08da70591f73
+x-ms-traffictypediagnostic: OSZPR01MB8466:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wZeEVSjRVfpA0ZOyidU+aBOWY8bFNKX+XvzbA1zQLCvs4Gum/AGCYd6SltU3De+JKKFlS9T3njSl5AgVF4w2NKvqvBKdvrCq269PXHavKeWRp39E0LUf2c0hCId5qK9C8bg+3tmAtizDg63jMSnvJ+ds7BGJkfvCAgr3OdaGkoZ4UqMQjFd0hvPiW9lx6iL58rO/8MPv7aKoUy1mJcib+n5JLGbH4/dYCwI8igARpIQRPCD6S4y1eY3eHFAABLwsB/VfGvEJ+g8rxwpa1//4TUFFOHIds16k4szUXurwLDeMVdNyuzt+XOlcYQYwn8yfzi/BGiUmjIIQ8PXTu4XDjmQefeDsedtpfO3VK4p2+PQPgM7kPZz5MWeVc8ax+XKewj211DqoMsr+bzesSVxkkOKBTBRcwbAM2IIBVkH+jSS9N4ABeNPAldNx+9FNj9AU2ugaCCO/DXxUh7kwtR6nZTS9VRSPeMme2Or3CQ50uAUhIhIc4wikemQfthrgAeeIzifZDCvgOm/b2NXN82V4Y+2wNOCTMSdOwhi0bVdcZdDpJHLp1ssn8fkd1SoTlT226ykF2WXKvrwQcFZwdoCf3R06OUwAmeQF6KM2sokW6birCJqWhqMxVRUxPms5gsSuqdL2MiIgyplVdhI2syHW9oXhNHXKWk3+TvbKGRtdq3QV61MaBeH63jSDj4CLp60cti8BAnBVuB8RsvdyRkSGPgVkeyusX6bQtLwSiLfMR44N297eZiBnHt46luw3w3X+8Y7BXvosZbMIaIoq/ggc0B+9Z4V+CiZUbg5VvPfUWuHATujUuM4hKllHvRBj0arex8+aU9OeWKT8vAfNhlEwOh4hjopMtK7WMsXIzx8j+TzPpQuDjLH8x4gFkRt8U/L5
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB9305.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(136003)(39860400002)(346002)(376002)(366004)(6486002)(186003)(71200400001)(478600001)(41300700001)(53546011)(2616005)(26005)(6506007)(6512007)(122000001)(38100700002)(82960400001)(4744005)(31686004)(66446008)(64756008)(8676002)(4326008)(85182001)(38070700005)(2906002)(5660300002)(8936002)(36756003)(66556008)(316002)(66476007)(54906003)(31696002)(110136005)(86362001)(76116006)(66946007)(91956017)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UHg0ZjN0NGt0OXJTbVFZcDQ2bm9ZV1NUa2dxUTZnaFplWEpsMWQwdklTdnZV?=
+ =?utf-8?B?UEtQSk9ydlI3Qm95UU5aalVuM2I2Z2JtZittTnl2T3NaZEFLcG5jbS9rdHlT?=
+ =?utf-8?B?bGg5QktTSEU5RXYvZlRFamJ1SHFQdE5SWTliYTBvTWtPQnVHWXZxN1pkNE5v?=
+ =?utf-8?B?QVlZYTc1ZFR5WVRJMk1VYldzclFEMURoTW5OTEN2NHhWbUxkTUpOQzQwamxs?=
+ =?utf-8?B?UlN6WTJWd29zcWNCUENnKzV4dHNGWmVhYnZxZkV4UXZVZkdkdHh5NUZVazdR?=
+ =?utf-8?B?NTBPSXpSL0tteGpUSWNkNGJZZms3SExzcXRLUHRRMEp2QUZYVWpMQ01uWVJi?=
+ =?utf-8?B?ZW1WTjEwK2trVURza1VoNmJDR2poVmZ2MStlQjBvKzJhbDR6aFdmUnBaMjNJ?=
+ =?utf-8?B?SVBxWmFBWVJ4Q3ZCc2F5aUQ4a20ydE5mRVloYm1UV2VtK01nNTBpbWlqOWgy?=
+ =?utf-8?B?Ym5NMGRxUjlYem9KWEpEazdqWTZoMGw2QXcrQ2RrTFgzVG5ReGtPMlZkMDlE?=
+ =?utf-8?B?c0RDYlEvdXdJUU41RVg5V3dsYWVFaXczUUJHVHMzeEhDdWZwWWIzQjE2QWtr?=
+ =?utf-8?B?Z2RkVFF5dktFRXl4N0lEZ1RFU25CVWZvZmhjZHJpbTBOckxUZmNhRXQ3YUho?=
+ =?utf-8?B?WGltTHBOYkEvUE04cXBWUUN0eHF2a0VBRlhFV0lzRWN6NGd2bVdhS2d2Zi9h?=
+ =?utf-8?B?c0dHanZFMm1zVGhERGlTTWd0Qkk3ZVB5dko3MWF0RnUycUx0SC9WYStqWHVs?=
+ =?utf-8?B?bGttazg1Q2dpK1pGTVlHN0FjOWtmZmpjZjkvWmU3VWN0SjRTY010ckNROG1X?=
+ =?utf-8?B?UE94UElBWm92bk93SFdtZUdQNWJDTEFxalNPU0VLcitUQzBNUGdDU3Bmdk4x?=
+ =?utf-8?B?WDdJNnNiT0EzMmtldzhRcUtjNExoNXoyQ015cWxqTGNXZzAvRlVjNU1wQ2xo?=
+ =?utf-8?B?ZVoxaFM2dWEzQllSMmx6MkhaajhvbThJWTBIMHpkS1dVN3hwTWdDT0xlSTAy?=
+ =?utf-8?B?MUo3ekpnTG55WGpPV2dsbkwrTTE0dDdnVzd0TG1abnAvYXVnOUF3ai80cjRQ?=
+ =?utf-8?B?T1FONGdTeW5CdWlLVFdjTU0vTmxQOWF4cmNnN1o3R05Mb1FzYndGZlRpR0lr?=
+ =?utf-8?B?eHhJcE53SlBjcThMWEVlbng3MFFReDZVMnRSUE9TdTRTbitwVWRoT3JnMXFw?=
+ =?utf-8?B?TEI1akFsbjlHaUN4QlU0RmNaS3Rja00zb0pNVDZIVWs0aXlrelk1Qk4xVTFU?=
+ =?utf-8?B?MlV1MEkvMkFFZUhJbVA3clp2VnJCOE9nellqSnNHdzk3WEthVXVTeGdDUUpp?=
+ =?utf-8?B?RTIzdXVIa2JFOHV1cG55NCtoOURmdk1YWFp0dUN1cUJuU2hJZzJpNWhralVV?=
+ =?utf-8?B?aWVBdDVCa0JwYS9GZXl2QWttcW9wUkJVVXV3TXdrQ1lxR0RPeVcyUkc0Y2w1?=
+ =?utf-8?B?bXAyL0dvMDdKUVhzRzVLL1BrWTlST2Ura2liem54T1k4QXpJNDIrVG5iNUI5?=
+ =?utf-8?B?SmZwcmZoOW11YTVaNmIyNythNEs5ZHN4cW9nOUV6blpkS0dhS1FNa0RLMU1V?=
+ =?utf-8?B?MkI0WVdXK2xBcG16emplbVRQQmxwUEppT3lEWUJzaGdwZ2Z6SlNIVmhpN1d2?=
+ =?utf-8?B?cWJWVVJxdHJHMi94V0oyYXhCbUtQbEIrd1FCekJEOEVnYTVwMjhoL0IvQXJw?=
+ =?utf-8?B?bEwvMStSRW4rS084K21OTm94VDF6b1VFVVVJQ2w4YkpiSFZqZ0hDcUJaSDhY?=
+ =?utf-8?B?b3NuUldYZFBRVTZlOE5WRXA1V3B1UUZOMFRGZjZ3ekhEZ09EY1Irb0Ftayt2?=
+ =?utf-8?B?elBNekhLYVVCVHhxcmhkNnNtYXZoL3JRV0tJaW9ERXJOUDU2K2h5VkcyLzRr?=
+ =?utf-8?B?b3lQRkxkOTc2NUE5cVNOb3A4MENXcTdacWlWcXFFK0xsaklmamYxdDZrTUNu?=
+ =?utf-8?B?ZUJTNFVqNXJOZXk0ODNMUytrVVhjbHA0V3k0dDA2ak1haDFOa2RaV0x0NXBq?=
+ =?utf-8?B?Z1kzL0xDOVpaQXpqQzFNZTVlaWQ4djFZV2dXSkFVQ3lZMTU2YmdNdlRqU2tn?=
+ =?utf-8?B?d2hSNkl2d3ZIdmxDYWVWTWx4bldWdWhreUZMcHJ1b2FsNTYrQ1ljSVQrOWNM?=
+ =?utf-8?B?ZGtzVjFVY2Y4aDUxRFBtNml5dFJtZnpZODhlckVJeE9iZzRuOGt0LzVwZnRX?=
+ =?utf-8?B?VkE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6A0E189271678B4E95420A7067C220F3@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB9305.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a72771e5-eee2-4424-e619-08da70591f73
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2022 05:22:10.8279
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hJlYDjovoL7g7goPIyOAquzxMHyNEF1xvnabsuxfPlKj6YMXj8zO+PfjFL6W185e1oyM1Kvaxti9MBNFKnrdHw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB8466
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Change the LIO port members inside struct srpt_port from regular members
-into pointers. Allocate the LIO port data structures from inside
-srpt_make_tport() and free these from inside srpt_make_tport(). Keep struct
-srpt_device as long as either an RDMA port or a LIO target port is
-associated with it. This patch decouples the lifetime of struct srpt_port
-(controlled by the RDMA core) and struct srpt_port_id (controlled by LIO).
-This patch fixes the following KASAN complaint:
-
-BUG: KASAN: use-after-free in srpt_enable_tpg+0x31/0x70 [ib_srpt]
-Read of size 8 at addr ffff888141cc34b8 by task check/5093
-
-Call Trace:
- <TASK>
- show_stack+0x4e/0x53
- dump_stack_lvl+0x51/0x66
- print_address_description.constprop.0.cold+0xea/0x41e
- print_report.cold+0x90/0x205
- kasan_report+0xb9/0xf0
- __asan_load8+0x69/0x90
- srpt_enable_tpg+0x31/0x70 [ib_srpt]
- target_fabric_tpg_base_enable_store+0xe2/0x140 [target_core_mod]
- configfs_write_iter+0x18b/0x210
- new_sync_write+0x1f2/0x2f0
- vfs_write+0x3e3/0x540
- ksys_write+0xbb/0x140
- __x64_sys_write+0x42/0x50
- do_syscall_64+0x34/0x80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
- </TASK>
-
-Reported-by: Li Zhijian <lizhijian@fujitsu.com>
-Tested-by: Li Zhijian <lizhijian@fujitsu.com>
-Cc: Li Zhijian <lizhijian@fujitsu.com>
-Cc: Hillf Danton <hdanton@sina.com>
-Cc: Mike Christie <michael.christie@oracle.com>
-Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
----
- drivers/infiniband/ulp/srpt/ib_srpt.c | 130 ++++++++++++++++++--------
- drivers/infiniband/ulp/srpt/ib_srpt.h |  10 +-
- 2 files changed, 94 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 1fbce9225424..c3036aeac89e 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -565,18 +565,12 @@ static int srpt_refresh_port(struct srpt_port *sport)
- 	if (ret)
- 		return ret;
- 
--	sport->port_guid_id.wwn.priv = sport;
- 	srpt_format_guid(sport->guid_name, ARRAY_SIZE(sport->guid_name),
- 			 &sport->gid.global.interface_id);
--	memcpy(sport->port_guid_id.name, sport->guid_name,
--	       ARRAY_SIZE(sport->guid_name));
--	sport->port_gid_id.wwn.priv = sport;
- 	snprintf(sport->gid_name, ARRAY_SIZE(sport->gid_name),
- 		 "0x%016llx%016llx",
- 		 be64_to_cpu(sport->gid.global.subnet_prefix),
- 		 be64_to_cpu(sport->gid.global.interface_id));
--	memcpy(sport->port_gid_id.name, sport->gid_name,
--	       ARRAY_SIZE(sport->gid_name));
- 
- 	if (rdma_protocol_iwarp(sport->sdev->device, sport->port))
- 		return 0;
-@@ -2317,31 +2311,35 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
- 	tag_num = ch->rq_size;
- 	tag_size = 1; /* ib_srpt does not use se_sess->sess_cmd_map */
- 
--	mutex_lock(&sport->port_guid_id.mutex);
--	list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
--		if (!IS_ERR_OR_NULL(ch->sess))
--			break;
--		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-+	if (sport->guid_id) {
-+		mutex_lock(&sport->guid_id->mutex);
-+		list_for_each_entry(stpg, &sport->guid_id->tpg_list, entry) {
-+			if (!IS_ERR_OR_NULL(ch->sess))
-+				break;
-+			ch->sess = target_setup_session(&stpg->tpg, tag_num,
- 						tag_size, TARGET_PROT_NORMAL,
- 						ch->sess_name, ch, NULL);
-+		}
-+		mutex_unlock(&sport->guid_id->mutex);
- 	}
--	mutex_unlock(&sport->port_guid_id.mutex);
- 
--	mutex_lock(&sport->port_gid_id.mutex);
--	list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
--		if (!IS_ERR_OR_NULL(ch->sess))
--			break;
--		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-+	if (sport->gid_id) {
-+		mutex_lock(&sport->gid_id->mutex);
-+		list_for_each_entry(stpg, &sport->gid_id->tpg_list, entry) {
-+			if (!IS_ERR_OR_NULL(ch->sess))
-+				break;
-+			ch->sess = target_setup_session(&stpg->tpg, tag_num,
- 					tag_size, TARGET_PROT_NORMAL, i_port_id,
- 					ch, NULL);
--		if (!IS_ERR_OR_NULL(ch->sess))
--			break;
--		/* Retry without leading "0x" */
--		ch->sess = target_setup_session(&stpg->tpg, tag_num,
-+			if (!IS_ERR_OR_NULL(ch->sess))
-+				break;
-+			/* Retry without leading "0x" */
-+			ch->sess = target_setup_session(&stpg->tpg, tag_num,
- 						tag_size, TARGET_PROT_NORMAL,
- 						i_port_id + 2, ch, NULL);
-+		}
-+		mutex_unlock(&sport->gid_id->mutex);
- 	}
--	mutex_unlock(&sport->port_gid_id.mutex);
- 
- 	if (IS_ERR_OR_NULL(ch->sess)) {
- 		WARN_ON_ONCE(ch->sess == NULL);
-@@ -2986,7 +2984,12 @@ static int srpt_release_sport(struct srpt_port *sport)
- 	return 0;
- }
- 
--static struct se_wwn *__srpt_lookup_wwn(const char *name)
-+struct port_and_port_id {
-+	struct srpt_port *sport;
-+	struct srpt_port_id **port_id;
-+};
-+
-+static struct port_and_port_id __srpt_lookup_port(const char *name)
- {
- 	struct ib_device *dev;
- 	struct srpt_device *sdev;
-@@ -3001,25 +3004,38 @@ static struct se_wwn *__srpt_lookup_wwn(const char *name)
- 		for (i = 0; i < dev->phys_port_cnt; i++) {
- 			sport = &sdev->port[i];
- 
--			if (strcmp(sport->port_guid_id.name, name) == 0)
--				return &sport->port_guid_id.wwn;
--			if (strcmp(sport->port_gid_id.name, name) == 0)
--				return &sport->port_gid_id.wwn;
-+			if (strcmp(sport->guid_name, name) == 0) {
-+				kref_get(&sdev->refcnt);
-+				return (struct port_and_port_id){
-+					sport, &sport->guid_id};
-+			}
-+			if (strcmp(sport->gid_name, name) == 0) {
-+				kref_get(&sdev->refcnt);
-+				return (struct port_and_port_id){
-+					sport, &sport->gid_id};
-+			}
- 		}
- 	}
- 
--	return NULL;
-+	return (struct port_and_port_id){};
- }
- 
--static struct se_wwn *srpt_lookup_wwn(const char *name)
-+/**
-+ * srpt_lookup_port() - Look up an RDMA port by name
-+ * @name: ASCII port name
-+ *
-+ * Increments the RDMA port reference count if an RDMA port pointer is returned.
-+ * The caller must drop that reference count by calling srpt_port_put_ref().
-+ */
-+static struct port_and_port_id srpt_lookup_port(const char *name)
- {
--	struct se_wwn *wwn;
-+	struct port_and_port_id papi;
- 
- 	spin_lock(&srpt_dev_lock);
--	wwn = __srpt_lookup_wwn(name);
-+	papi = __srpt_lookup_port(name);
- 	spin_unlock(&srpt_dev_lock);
- 
--	return wwn;
-+	return papi;
- }
- 
- static void srpt_free_srq(struct srpt_device *sdev)
-@@ -3198,10 +3214,6 @@ static int srpt_add_one(struct ib_device *device)
- 		sport->port_attrib.srp_sq_size = DEF_SRPT_SQ_SIZE;
- 		sport->port_attrib.use_srq = false;
- 		INIT_WORK(&sport->work, srpt_refresh_port_work);
--		mutex_init(&sport->port_guid_id.mutex);
--		INIT_LIST_HEAD(&sport->port_guid_id.tpg_list);
--		mutex_init(&sport->port_gid_id.mutex);
--		INIT_LIST_HEAD(&sport->port_gid_id.tpg_list);
- 
- 		ret = srpt_refresh_port(sport);
- 		if (ret) {
-@@ -3302,10 +3314,10 @@ static struct srpt_port_id *srpt_wwn_to_sport_id(struct se_wwn *wwn)
- {
- 	struct srpt_port *sport = wwn->priv;
- 
--	if (wwn == &sport->port_guid_id.wwn)
--		return &sport->port_guid_id;
--	if (wwn == &sport->port_gid_id.wwn)
--		return &sport->port_gid_id;
-+	if (sport->guid_id && &sport->guid_id->wwn == wwn)
-+		return sport->guid_id;
-+	if (sport->gid_id && &sport->gid_id->wwn == wwn)
-+		return sport->gid_id;
- 	WARN_ON_ONCE(true);
- 	return NULL;
- }
-@@ -3790,7 +3802,31 @@ static struct se_wwn *srpt_make_tport(struct target_fabric_configfs *tf,
- 				      struct config_group *group,
- 				      const char *name)
- {
--	return srpt_lookup_wwn(name) ? : ERR_PTR(-EINVAL);
-+	struct port_and_port_id papi = srpt_lookup_port(name);
-+	struct srpt_port *sport = papi.sport;
-+	struct srpt_port_id *port_id;
-+
-+	if (!papi.port_id)
-+		return ERR_PTR(-EINVAL);
-+	if (*papi.port_id) {
-+		/* Attempt to create a directory that already exists. */
-+		WARN_ON_ONCE(true);
-+		return &(*papi.port_id)->wwn;
-+	}
-+	port_id = kzalloc(sizeof(*port_id), GFP_KERNEL);
-+	if (!port_id) {
-+		srpt_sdev_put(sport->sdev);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+	mutex_init(&port_id->mutex);
-+	INIT_LIST_HEAD(&port_id->tpg_list);
-+	port_id->wwn.priv = sport;
-+	memcpy(port_id->name, port_id == sport->guid_id ? sport->guid_name :
-+	       sport->gid_name, ARRAY_SIZE(port_id->name));
-+
-+	*papi.port_id = port_id;
-+
-+	return &port_id->wwn;
- }
- 
- /**
-@@ -3799,6 +3835,18 @@ static struct se_wwn *srpt_make_tport(struct target_fabric_configfs *tf,
-  */
- static void srpt_drop_tport(struct se_wwn *wwn)
- {
-+	struct srpt_port_id *port_id = container_of(wwn, typeof(*port_id), wwn);
-+	struct srpt_port *sport = wwn->priv;
-+
-+	if (sport->guid_id == port_id)
-+		sport->guid_id = NULL;
-+	else if (sport->gid_id == port_id)
-+		sport->gid_id = NULL;
-+	else
-+		WARN_ON_ONCE(true);
-+
-+	srpt_sdev_put(sport->sdev);
-+	kfree(port_id);
- }
- 
- static ssize_t srpt_wwn_version_show(struct config_item *item, char *buf)
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
-index 0cb867d580f1..4c46b301eea1 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.h
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
-@@ -393,7 +393,7 @@ struct srpt_port_id {
- };
- 
- /**
-- * struct srpt_port - information associated by SRPT with a single IB port
-+ * struct srpt_port - SRPT RDMA port information
-  * @sdev:      backpointer to the HCA information.
-  * @mad_agent: per-port management datagram processing information.
-  * @enabled:   Whether or not this target port is enabled.
-@@ -403,9 +403,9 @@ struct srpt_port_id {
-  * @gid:       cached value of the port's gid.
-  * @work:      work structure for refreshing the aforementioned cached values.
-  * @guid_name: port name in GUID format.
-- * @port_guid_id: LIO target port information for the port name in GUID format.
-+ * @guid_id:   LIO target port information for the port name in GUID format.
-  * @gid_name:  port name in GID format.
-- * @port_gid_id: LIO target port information for the port name in GID format.
-+ * @gid_id:    LIO target port information for the port name in GID format.
-  * @port_attrib:   Port attributes that can be accessed through configfs.
-  * @refcount:	   Number of objects associated with this port.
-  * @freed_channels: Completion that will be signaled once @refcount becomes 0.
-@@ -422,9 +422,9 @@ struct srpt_port {
- 	union ib_gid		gid;
- 	struct work_struct	work;
- 	char			guid_name[64];
--	struct srpt_port_id	port_guid_id;
-+	struct srpt_port_id	*guid_id;
- 	char			gid_name[64];
--	struct srpt_port_id	port_gid_id;
-+	struct srpt_port_id	*gid_id;
- 	struct srpt_port_attrib port_attrib;
- 	atomic_t		refcount;
- 	struct completion	*freed_channels;
+DQoNCk9uIDI4LzA3LzIwMjIgMDE6NDgsIEJhcnQgVmFuIEFzc2NoZSB3cm90ZToNCj4gT24gNy8y
+Ny8yMiAwMzowMywgbGl6aGlqaWFuQGZ1aml0c3UuY29tIHdyb3RlOg0KPj4gSSB0ZXN0ZWQgcGF0
+Y2hlcyB3aXRoIGJsa3Rlc3RzL3NycCwgaXQgd29ya3Mgd2VsbCBhbmQgdGhlIFVBRiBpcyBnb25l
+Lg0KPg0KPiBIaSBMaSwNCj4NCj4gVGhhbmsgeW91IGZvciBoYXZpbmcgdGVzdGVkIHRoZXNlIHBh
+dGNoZXMgc28gcXVpY2tseSA6LSkgSSBhc3N1bWUgdGhhdCB0aGUgYWJvdmUgY291bnRzIGFzIGEg
+VGVzdGVkLWJ5Pw0KDQpTdXJlIDopDQoNClRoYW5rcw0KWmhpamlhbg0KDQoNCj4NCj4gQmFydC4N
+Cg==
