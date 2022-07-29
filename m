@@ -2,37 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A63584B5B
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Jul 2022 08:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF7F584B60
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Jul 2022 08:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233565AbiG2GFC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Jul 2022 02:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
+        id S233813AbiG2GH6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 29 Jul 2022 02:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbiG2GFC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Jul 2022 02:05:02 -0400
-Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EFF19006
-        for <linux-rdma@vger.kernel.org>; Thu, 28 Jul 2022 23:05:00 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VKk1nlk_1659074694;
-Received: from 30.43.106.167(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VKk1nlk_1659074694)
+        with ESMTP id S229512AbiG2GH5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Jul 2022 02:07:57 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2ED56BC1F
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Jul 2022 23:07:56 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VKk5.Sl_1659074873;
+Received: from 30.43.106.167(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VKk5.Sl_1659074873)
           by smtp.aliyun-inc.com;
-          Fri, 29 Jul 2022 14:04:55 +0800
-Message-ID: <c2448883-b87b-b0a8-a1ed-70b1c6b34c18@linux.alibaba.com>
-Date:   Fri, 29 Jul 2022 14:04:53 +0800
+          Fri, 29 Jul 2022 14:07:54 +0800
+Message-ID: <277031d8-6e9c-b845-1331-6685c00f7a8a@linux.alibaba.com>
+Date:   Fri, 29 Jul 2022 14:07:52 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v14 10/11] RDMA/erdma: Add the ABI definitions
+Subject: Re: [PATCH v14 0/11] Elastic RDMA Adapter (ERDMA) driver
 Content-Language: en-US
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
         KaiShen@linux.alibaba.com, tonylu@linux.alibaba.com
 References: <20220727014927.76564-1-chengyou@linux.alibaba.com>
- <20220727014927.76564-11-chengyou@linux.alibaba.com>
- <YuHgRkOkuU5itoIe@nvidia.com>
+ <YuHgsTJ/tO9Lbodl@nvidia.com>
 From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <YuHgRkOkuU5itoIe@nvidia.com>
+In-Reply-To: <YuHgsTJ/tO9Lbodl@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
@@ -47,43 +46,36 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 7/28/22 9:03 AM, Jason Gunthorpe wrote:
-> On Wed, Jul 27, 2022 at 09:49:26AM +0800, Cheng Xu wrote:
->> Add erdma ABI definitions which will be shared between kernel and
->> userspace. This commit also fix compile issues reported by lkp.
+On 7/28/22 9:04 AM, Jason Gunthorpe wrote:
+> On Wed, Jul 27, 2022 at 09:49:16AM +0800, Cheng Xu wrote:
+>> Hello all,
 >>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
->> ---
->>  include/uapi/rdma/erdma-abi.h | 49 +++++++++++++++++++++++++++++++++++
->>  1 file changed, 49 insertions(+)
->>  create mode 100644 include/uapi/rdma/erdma-abi.h
+>> This v14 patch set introduces the Elastic RDMA Adapter (ERDMA) driver,
+>> which released in Apsara Conference 2021 by Alibaba. The PR of ERDMA
+>> userspace provider has already been created [1].
 >>
->> diff --git a/include/uapi/rdma/erdma-abi.h b/include/uapi/rdma/erdma-abi.h
->> new file mode 100644
->> index 000000000000..fcbaff1d84c3
->> --- /dev/null
->> +++ b/include/uapi/rdma/erdma-abi.h
->> @@ -0,0 +1,49 @@
->> +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
->> +/*
->> + * Copyright (c) 2020-2022, Alibaba Group.
->> + */
->> +
->> +#ifndef __ERDMA_USER_H__
->> +#define __ERDMA_USER_H__
->> +
->> +#include <linux/types.h>
->> +
->> +#define ERDMA_ABI_VERSION       1
->> +
->> +struct erdma_ureq_create_cq {
->> +	__u64 db_record_va;
->> +	__u64 qbuf_va;
+>> ERDMA enables large-scale RDMA acceleration capability in Alibaba ECS
+>> environment, initially offered in g7re instance. It can improve the
+>> efficiency of large-scale distributed computing and communication
+>> significantly and expand dynamically with the cluster scale of Alibaba
+>> Cloud.
+>>
+>> ERDMA is a RDMA networking adapter based on the Alibaba MOC hardware. It
+>> works in the VPC network environment (overlay network), and uses iWarp
+>> transport protocol. ERDMA supports reliable connection (RC). ERDMA also
+>> supports both kernel space and user space verbs. Now we have already
+>> supported HPC/AI applications with libfabric, NoF and some other internal
+>> verbs libraries, such as xrdma, epsl, etc,.
+>>
+>> For the ECS instance with RDMA enabled, our MOC hardware generates two
+>> kinds of PCI devices: one for ERDMA, and one for the original net device
+>> (virtio-net). They are separated PCI devices.
 > 
-> These should all be __aligned_u64, I fixed it
+> Applied to for-next, please sent any further fixes as individual
+> patches
 
-Thanks, It's fine.
+We will.
+
+Thank you, Jason. And thank everyone else who gave us lots of help.
 
 Cheng Xu
-
