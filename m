@@ -2,175 +2,198 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E91585AAB
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jul 2022 16:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F2D585BF1
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jul 2022 22:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbiG3OJd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 30 Jul 2022 10:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        id S230076AbiG3UC1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 30 Jul 2022 16:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbiG3OJc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 30 Jul 2022 10:09:32 -0400
+        with ESMTP id S230003AbiG3UC1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 30 Jul 2022 16:02:27 -0400
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239A717591
-        for <linux-rdma@vger.kernel.org>; Sat, 30 Jul 2022 07:09:31 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6400,9594,10424"; a="289688563"
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12F3140DC
+        for <linux-rdma@vger.kernel.org>; Sat, 30 Jul 2022 13:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1659211345; x=1690747345;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=u87fsDjK0SrKy1q75IXsepdfnMS99EQTUSo3xbCsLXg=;
+  b=i0ACOh1FjqN3Rnj29ghm4LK/QJZ3nSoGrq4cQ5eaa7rr1+7vmEWZ2nDY
+   OPYKVjBXZM/BVQJeEIKIZsEsBAi1PoXwRwKlxmwje9DRAF3tGVoQhUVra
+   VC2HHLdiF9YtN9HGM+kGsqI4Z6VLmxlb9Ei4KlOX4bvPozpRHG5OrhovC
+   0f4ltmL6Il5G5u7u77yovuAn0Mlh6sp6Y6tR0O65W5dfy57oMV3fif2Iz
+   0CmV+3VPMlO6EFZ7XQ96wQKXSw7rpmyO8knlW1+dV0TvpuoSCuk5Wg4bM
+   Ne6RBZsam9yesaujy0fldjFsmaNvtW9efKFgz1n3zPBIQfN2Yu2d0NmiU
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10424"; a="289714610"
 X-IronPort-AV: E=Sophos;i="5.93,204,1654585200"; 
-   d="scan'208";a="289688563"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2022 07:09:31 -0700
+   d="scan'208";a="289714610"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2022 13:02:25 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.93,204,1654585200"; 
-   d="scan'208";a="743813446"
-Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Jul 2022 07:09:29 -0700
-From:   yanjun.zhu@linux.dev
-To:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
-        yanjun.zhu@linux.dev
-Cc:     syzbot+833061116fa28df97f3b@syzkaller.appspotmail.com
-Subject: [PATCHv4 1/1] RDMA/rxe: Fix qp error handler
-Date:   Sun, 31 Jul 2022 02:36:21 -0400
-Message-Id: <20220731063621.298405-1-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
+   d="scan'208";a="777846798"
+Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 30 Jul 2022 13:02:23 -0700
+Received: from kbuild by e0eace57cfef with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oHsfH-000DEB-0W;
+        Sat, 30 Jul 2022 20:02:23 +0000
+Date:   Sun, 31 Jul 2022 04:02:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ b5605148e6ce36bb21020d49010b617693933128
+Message-ID: <62e58e3b.7LjC3Zahp0PIkTAx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: b5605148e6ce36bb21020d49010b617693933128  RDMA/srpt: Fix a use-after-free
 
-This problem is in this link:
-news://nntp.lore.kernel.org:119/0000000000006ed46805dfaded18@google.com
+elapsed time: 1442m
 
-this is an error unwind problem.
+configs tested: 116
+configs skipped: 6
 
-In the function rxe_create_qp, rxe_qp_from_init is called to initialize qp.
-rxe_qp_init_req is called by rxe_qp_from_init. If an error occurs before
-spin_lock_init in rxe_qp_init_req, several spin locks are not initialized.
-Then rxe_create_qp finally calls rxe_cleanup(qp) to handle errors.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-In the end, rxe_qp_do_cleanup is called. In this function, rxe_cleanup_task
-will call spin_lock_bh. But task->state_lock is not initialized.
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+i386                                defconfig
+x86_64                              defconfig
+i386                             allyesconfig
+x86_64                               rhel-8.3
+powerpc                           allnoconfig
+mips                             allyesconfig
+x86_64                           allyesconfig
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-kvm
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a002
+x86_64                        randconfig-a004
+x86_64                        randconfig-a006
+i386                          randconfig-a014
+i386                          randconfig-a016
+ia64                             allmodconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+x86_64                           rhel-8.3-syz
+i386                          randconfig-a012
+m68k                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+arc                               allnoconfig
+alpha                             allnoconfig
+csky                              allnoconfig
+riscv                             allnoconfig
+arm                         lpc18xx_defconfig
+powerpc                 mpc8540_ads_defconfig
+xtensa                    xip_kc705_defconfig
+openrisc                    or1ksim_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                     ep8248e_defconfig
+sparc                       sparc64_defconfig
+sh                           se7724_defconfig
+sh                          rsk7201_defconfig
+sh                           se7619_defconfig
+powerpc                      bamboo_defconfig
+m68k                          hp300_defconfig
+sh                              ul2_defconfig
+nios2                               defconfig
+sh                         ecovec24_defconfig
+mips                       capcella_defconfig
+mips                          rb532_defconfig
+sh                        apsh4ad0a_defconfig
+ia64                                defconfig
+powerpc                      mgcoge_defconfig
+m68k                        mvme147_defconfig
+sh                          r7780mp_defconfig
+sh                         apsh4a3a_defconfig
+arm                        shmobile_defconfig
+m68k                                defconfig
+powerpc                     pq2fads_defconfig
+ia64                            zx1_defconfig
+sh                           se7206_defconfig
+powerpc                       eiger_defconfig
+arm                           h3600_defconfig
+x86_64                           alldefconfig
+arm                             ezx_defconfig
+xtensa                  audio_kc705_defconfig
+sh                          r7785rp_defconfig
+sh                            hp6xx_defconfig
+mips                       bmips_be_defconfig
+arm                        clps711x_defconfig
+powerpc                  iss476-smp_defconfig
+ia64                             alldefconfig
+sh                          kfr2r09_defconfig
+parisc                generic-64bit_defconfig
+sh                        dreamcast_defconfig
+sh                           se7722_defconfig
+arm                           sama5_defconfig
+xtensa                generic_kc705_defconfig
 
-As such, an uninitialized spin lock is called by spin_lock_bh.
+clang tested configs:
+hexagon              randconfig-r041-20220729
+riscv                randconfig-r042-20220729
+hexagon              randconfig-r045-20220729
+s390                 randconfig-r044-20220729
+x86_64                        randconfig-a014
+x86_64                        randconfig-a012
+x86_64                        randconfig-a016
+i386                          randconfig-a002
+i386                          randconfig-a004
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a006
+x86_64                        randconfig-a005
+i386                          randconfig-a013
+i386                          randconfig-a015
+i386                          randconfig-a011
+powerpc                   microwatt_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                      katmai_defconfig
+powerpc                          g5_defconfig
+mips                           mtx1_defconfig
+mips                           ip28_defconfig
+powerpc                  mpc866_ads_defconfig
+arm                      tct_hammer_defconfig
+mips                        maltaup_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                      maltaaprp_defconfig
+mips                     loongson1c_defconfig
+arm                         palmz72_defconfig
+x86_64                        randconfig-k001
+arm                       spear13xx_defconfig
+riscv                             allnoconfig
 
-rxe_create_qp {
-        ...
-        err = rxe_qp_from_init(rxe, qp, pd, init, uresp, ibqp->pd, udata);
-        if (err)
-                goto qp_init;
-        ...
-        return 0;
-
-qp_init:
-        rxe_cleanup(qp);
-        return err;
-}
-
-rxe_qp_do_cleanup {
-  ...
-  rxe_cleanup_task {
-    ...
-    spin_lock_bh(&task->state_lock);
-    ...
-  }
-}
-
-rxe_qp_from_init {
-...
-        rxe_qp_init_misc(rxe, qp, init);
-
-        err = rxe_qp_init_req{
-                ...
-                spin_lock_init(&qp->sq.sq_lock);
-                ...
-                rxe_init_task{
-                  ...
-                  spin_lock_init(&task->state_lock);
-                  ...
-                }
-              }
-        if (err)
-                goto err1;
-
-        err = rxe_qp_init_resp {
-                ...
-                spin_lock_init(&qp->rq.producer_lock);
-                spin_lock_init(&qp->rq.consumer_lock);
-                ...
-                rxe_init_task {
-                  ...
-                  spin_lock_init(&task->state_lock);
-                  ...
-                }
-              }
-
-        if (err)
-                goto err2;
-...
-        return 0;
-
-err2:
-        ...
-err1:
-        ...
-        return err;
-}
-
-About 7 spin locks in qp creation needs to be initialized. Now these
-spin locks are initialized in the function rxe_qp_init_misc. This
-will avoid the error "initialize spin locks before use".
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Reported-by: syzbot+833061116fa28df97f3b@syzkaller.appspotmail.com
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_qp.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index b79e1b43454e..7a223583cf8b 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -174,6 +174,14 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
- 
- 	spin_lock_init(&qp->state_lock);
- 
-+	spin_lock_init(&qp->req.task.state_lock);
-+	spin_lock_init(&qp->resp.task.state_lock);
-+	spin_lock_init(&qp->comp.task.state_lock);
-+
-+	spin_lock_init(&qp->sq.sq_lock);
-+	spin_lock_init(&qp->rq.producer_lock);
-+	spin_lock_init(&qp->rq.consumer_lock);
-+
- 	atomic_set(&qp->ssn, 0);
- 	atomic_set(&qp->skb_out, 0);
- }
-@@ -233,7 +241,6 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- 	qp->req.opcode		= -1;
- 	qp->comp.opcode		= -1;
- 
--	spin_lock_init(&qp->sq.sq_lock);
- 	skb_queue_head_init(&qp->req_pkts);
- 
- 	rxe_init_task(rxe, &qp->req.task, qp,
-@@ -284,9 +291,6 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
- 		}
- 	}
- 
--	spin_lock_init(&qp->rq.producer_lock);
--	spin_lock_init(&qp->rq.consumer_lock);
--
- 	skb_queue_head_init(&qp->resp_pkts);
- 
- 	rxe_init_task(rxe, &qp->resp.task, qp,
 -- 
-2.27.0
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
