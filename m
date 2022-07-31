@@ -2,41 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9BB585E1E
-	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jul 2022 10:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0BF585E1F
+	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jul 2022 10:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbiGaI0q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 31 Jul 2022 04:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        id S231929AbiGaI3S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 31 Jul 2022 04:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiGaI0q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jul 2022 04:26:46 -0400
+        with ESMTP id S229456AbiGaI3R (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jul 2022 04:29:17 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A67CE0C0
-        for <linux-rdma@vger.kernel.org>; Sun, 31 Jul 2022 01:26:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9AD811161
+        for <linux-rdma@vger.kernel.org>; Sun, 31 Jul 2022 01:29:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AC19BB80D17
-        for <linux-rdma@vger.kernel.org>; Sun, 31 Jul 2022 08:26:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCFEDC433D7;
-        Sun, 31 Jul 2022 08:26:41 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 97669B80C95
+        for <linux-rdma@vger.kernel.org>; Sun, 31 Jul 2022 08:29:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDFA6C433D7;
+        Sun, 31 Jul 2022 08:29:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659256002;
-        bh=6cN0cQ++MWo/3EvpmYdJYZ9hdjUqZRvXnJM91Er36gY=;
+        s=k20201202; t=1659256154;
+        bh=hHrJ6KAVfAIQXJeRMDPn58DHW3V3C0hTFUXUT+/yLug=;
         h=From:To:Cc:Subject:Date:From;
-        b=jYk99ITkPyPmyb6NkCLDOnYGis1qnZiunR0EDinFL3buXluzERG0d/UlUoqfHTkwT
-         BdG2GE6e8+lA7tm6NqFvN18wiwuNemXv++231KtUdfkukVcMkQJFFkJgvlS5LQ9n+y
-         FzWFpXMk3o7xrRDs4pB/LH2Sv/lYvGhBO21b+LCSsxMJuH3nVcMccfXAw8IDDFIPs1
-         HellvP7YUAxo07/oURj4n+jQ8VPZ9CLIIEoXNrmZHvSMMrBh5HWw/+FHuVOuZFJs3W
-         LB+G49CeeiQpf3ny+EXcf/ZUk7ZXzdCoJNaK9P4jorinUqs19cT70Ma8puH/C22UvN
-         VYSccwJ7/+9Pw==
+        b=d4myckAEHqovS3/4jU/vLjhz8CZY8PSLFH2SG5bOGYkpNNQygaDjZmOl8MeFXFnPE
+         MBVzx/jbWipLMehfNIoRSrRvHYa7lAidrs9zcYZvLqTEu/aj7+i54MQJgDeuPtoegB
+         uosXXgML+Ng3vHu2hPSAlWZXfZZ0ki4n+F0XMTMZ/WL0GFSoI6FGX2nIYTvprcoKPN
+         wywnI16FGoYCZR2KdVxqDPstgo13aNM85xwO2vIvuZKr1Ele6mVHgCJER7uztintuy
+         BYmCtPOZF5gWNYsgfDYJqueD0taK0Foe0X83bnODQhiFrHye13QgoFvakDcA2yGovf
+         /MGElJ4BH5rPw==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/mlx5: Don't compare mkey tags in DEVX indirect mkey
-Date:   Sun, 31 Jul 2022 11:26:36 +0300
-Message-Id: <3d669aacea85a3a15c3b3b953b3eaba3f80ef9be.1659255945.git.leonro@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, Itay Aveksis <itayav@nvidia.com>,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next] RDMA/mlx5: Add missing check for return value in get namespace flow
+Date:   Sun, 31 Jul 2022 11:29:08 +0300
+Message-Id: <7b9ceda217d9368a51dc47a46b769bad4af9ac92.1659256069.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -49,71 +50,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Aharon Landau <aharonl@nvidia.com>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-According to the ib spec:
-If the CI supports the Base Memory Management Extensions defined in this
-specification, the L_Key format must consist of:
-24 bit index in the most significant bits of the R_Key, and
-8 bit key in the least significant bits of the R_Key
-Through a successful Allocate L_Key verb invocation, the CI must let the
-consumer own the key portion of the returned R_Key
+Add missing check for return value when calling to
+mlx5_ib_ft_type_to_namespace, even though it can't really fail
+in this specific call.
 
-Therefore, when creating a mkey using DEVX, the consumer is allowed to
-change the key part. The kernel should compare only the index part of a
-R_Key to determine equality with another R_Key.
-
-Adding capability in order not to break backward compatibility.
-
-Fixes: 534fd7aac56a ("IB/mlx5: Manage indirection mkey upon DEVX flow for ODP")
-Signed-off-by: Aharon Landau <aharonl@nvidia.com>
+Fixes: 52438be44112 ("RDMA/mlx5: Allow inserting a steering rule to the FDB")
+Reviewed-by: Itay Aveksis <itayav@nvidia.com>
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/main.c | 3 +++
- drivers/infiniband/hw/mlx5/odp.c  | 3 ++-
- include/uapi/rdma/mlx5-abi.h      | 1 +
- 3 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/fs.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index fc94a1b25485..a7d88713dfdd 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -1826,6 +1826,9 @@ static int set_ucontext_resp(struct ib_ucontext *uctx,
- 	if (MLX5_CAP_GEN(dev->mdev, drain_sigerr))
- 		resp->comp_mask |= MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_SQD2RTS;
+diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
+index 691d00c89f33..490ec308e309 100644
+--- a/drivers/infiniband/hw/mlx5/fs.c
++++ b/drivers/infiniband/hw/mlx5/fs.c
+@@ -2078,12 +2078,10 @@ static int mlx5_ib_matcher_ns(struct uverbs_attr_bundle *attrs,
+ 		if (err)
+ 			return err;
  
-+	resp->comp_mask |=
-+		MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_MKEY_UPDATE_TAG;
-+
- 	return 0;
- }
+-		if (flags) {
+-			mlx5_ib_ft_type_to_namespace(
++		if (flags)
++			return mlx5_ib_ft_type_to_namespace(
+ 				MLX5_IB_UAPI_FLOW_TABLE_TYPE_NIC_TX,
+ 				&obj->ns_type);
+-			return 0;
+-		}
+ 	}
  
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index e305bf1dc6c2..901a8b030236 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -795,7 +795,8 @@ static bool mkey_is_eq(struct mlx5_ib_mkey *mmkey, u32 key)
- {
- 	if (!mmkey)
- 		return false;
--	if (mmkey->type == MLX5_MKEY_MW)
-+	if (mmkey->type == MLX5_MKEY_MW ||
-+	    mmkey->type == MLX5_MKEY_INDIRECT_DEVX)
- 		return mlx5_base_mkey(mmkey->key) == mlx5_base_mkey(key);
- 	return mmkey->key == key;
- }
-diff --git a/include/uapi/rdma/mlx5-abi.h b/include/uapi/rdma/mlx5-abi.h
-index 86be4a92b67b..a96b7d2770e1 100644
---- a/include/uapi/rdma/mlx5-abi.h
-+++ b/include/uapi/rdma/mlx5-abi.h
-@@ -104,6 +104,7 @@ enum mlx5_ib_alloc_ucontext_resp_mask {
- 	MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_ECE               = 1UL << 2,
- 	MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_SQD2RTS           = 1UL << 3,
- 	MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_REAL_TIME_TS	   = 1UL << 4,
-+	MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_MKEY_UPDATE_TAG   = 1UL << 5,
- };
- 
- enum mlx5_user_cmds_supp_uhw {
+ 	obj->ns_type = MLX5_FLOW_NAMESPACE_BYPASS;
 -- 
 2.37.1
 
