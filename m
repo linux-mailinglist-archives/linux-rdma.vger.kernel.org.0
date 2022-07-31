@@ -2,45 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0BF585E1F
-	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jul 2022 10:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7AB585E25
+	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jul 2022 10:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbiGaI3S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 31 Jul 2022 04:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
+        id S229491AbiGaIeW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 31 Jul 2022 04:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiGaI3R (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jul 2022 04:29:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9AD811161
-        for <linux-rdma@vger.kernel.org>; Sun, 31 Jul 2022 01:29:16 -0700 (PDT)
+        with ESMTP id S229456AbiGaIeW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jul 2022 04:34:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F74112627;
+        Sun, 31 Jul 2022 01:34:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 97669B80C95
-        for <linux-rdma@vger.kernel.org>; Sun, 31 Jul 2022 08:29:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDFA6C433D7;
-        Sun, 31 Jul 2022 08:29:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E800A609D0;
+        Sun, 31 Jul 2022 08:34:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D85C2C433C1;
+        Sun, 31 Jul 2022 08:34:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659256154;
-        bh=hHrJ6KAVfAIQXJeRMDPn58DHW3V3C0hTFUXUT+/yLug=;
-        h=From:To:Cc:Subject:Date:From;
-        b=d4myckAEHqovS3/4jU/vLjhz8CZY8PSLFH2SG5bOGYkpNNQygaDjZmOl8MeFXFnPE
-         MBVzx/jbWipLMehfNIoRSrRvHYa7lAidrs9zcYZvLqTEu/aj7+i54MQJgDeuPtoegB
-         uosXXgML+Ng3vHu2hPSAlWZXfZZ0ki4n+F0XMTMZ/WL0GFSoI6FGX2nIYTvprcoKPN
-         wywnI16FGoYCZR2KdVxqDPstgo13aNM85xwO2vIvuZKr1Ele6mVHgCJER7uztintuy
-         BYmCtPOZF5gWNYsgfDYJqueD0taK0Foe0X83bnODQhiFrHye13QgoFvakDcA2yGovf
-         /MGElJ4BH5rPw==
+        s=k20201202; t=1659256460;
+        bh=8QXXfpkC/0m1rjKafHxPZkNrxMHSchHUGWSCxb7xruc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ooJLrlUlRPs3IpHjOPsggXTx/yuzdvtF5RthB1kTeMfdG6tIf1W7ijcO/cCSssv6V
+         Ge8ra+XpiNlVZJKVQg4bXk3H8DocDmA8ryEgL+qqnaD1/atwt6/0qJPwkbbqewui6C
+         yesuzSYeZ4evOiBk1hCl01ZL+sy2bw1455OMKl03qphswFXFXODXiEZQpisc1oCXg/
+         TQ1ZUe8JVK1IGhNWzfgmpqM/By2lvynyOARyRaaig9Zk+VXHj7SeTkbb37Ac47Ab1F
+         L4CnfqH0lZitlDTTB+6fWUcqsr7jqWek/uHs1yppBkjIBachPPVF8wldf82PFDBR/K
+         7M4wvBKv9IH4Q==
+Date:   Sun, 31 Jul 2022 11:34:16 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, Itay Aveksis <itayav@nvidia.com>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/mlx5: Add missing check for return value in get namespace flow
-Date:   Sun, 31 Jul 2022 11:29:08 +0300
-Message-Id: <7b9ceda217d9368a51dc47a46b769bad4af9ac92.1659256069.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.37.1
+To:     Sebin Sebastian <mailmesebin00@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] RDMA/mlx5: unchecked return value
+Message-ID: <YuY+iGeu+jRJFGki@unreal>
+References: <20220730103242.48612-1-mailmesebin00@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220730103242.48612-1-mailmesebin00@gmail.com>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,39 +52,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+On Sat, Jul 30, 2022 at 04:02:42PM +0530, Sebin Sebastian wrote:
+> Unchecked return value warning as reported by Coverity static analyzer
+> tool. check the return value of mlx5_ib_ft_type_to_namespace().
+> 
+> Signed-off-by: Sebin Sebastian <mailmesebin00@gmail.com>
+> ---
+>  drivers/infiniband/hw/mlx5/fs.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
-Add missing check for return value when calling to
-mlx5_ib_ft_type_to_namespace, even though it can't really fail
-in this specific call.
+Thanks, I had similar patch in my internal queue.
+https://lore.kernel.org/linux-rdma/7b9ceda217d9368a51dc47a46b769bad4af9ac92.1659256069.git.leonro@nvidia.com/T/#u
 
-Fixes: 52438be44112 ("RDMA/mlx5: Allow inserting a steering rule to the FDB")
-Reviewed-by: Itay Aveksis <itayav@nvidia.com>
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/fs.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
-index 691d00c89f33..490ec308e309 100644
---- a/drivers/infiniband/hw/mlx5/fs.c
-+++ b/drivers/infiniband/hw/mlx5/fs.c
-@@ -2078,12 +2078,10 @@ static int mlx5_ib_matcher_ns(struct uverbs_attr_bundle *attrs,
- 		if (err)
- 			return err;
- 
--		if (flags) {
--			mlx5_ib_ft_type_to_namespace(
-+		if (flags)
-+			return mlx5_ib_ft_type_to_namespace(
- 				MLX5_IB_UAPI_FLOW_TABLE_TYPE_NIC_TX,
- 				&obj->ns_type);
--			return 0;
--		}
- 	}
- 
- 	obj->ns_type = MLX5_FLOW_NAMESPACE_BYPASS;
--- 
-2.37.1
-
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
+> index 691d00c89f33..617e0e9c0c8e 100644
+> --- a/drivers/infiniband/hw/mlx5/fs.c
+> +++ b/drivers/infiniband/hw/mlx5/fs.c
+> @@ -2079,9 +2079,12 @@ static int mlx5_ib_matcher_ns(struct uverbs_attr_bundle *attrs,
+>  			return err;
+>  
+>  		if (flags) {
+> -			mlx5_ib_ft_type_to_namespace(
+> +			err = mlx5_ib_ft_type_to_namespace(
+>  				MLX5_IB_UAPI_FLOW_TABLE_TYPE_NIC_TX,
+>  				&obj->ns_type);
+> +			if (err)
+> +				return err;
+> +
+>  			return 0;
+>  		}
+>  	}
+> -- 
+> 2.34.1
+> 
