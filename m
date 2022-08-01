@@ -2,106 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B23E1586EDC
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Aug 2022 18:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9D3586EF9
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Aug 2022 18:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232828AbiHAQna (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Aug 2022 12:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        id S233958AbiHAQqO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Aug 2022 12:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbiHAQn3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Aug 2022 12:43:29 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96C31706A
-        for <linux-rdma@vger.kernel.org>; Mon,  1 Aug 2022 09:43:26 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e11so12949252ljl.4
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Aug 2022 09:43:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=q9Slei3vdZHf3BWZhWjxjnYHcSiTDd6lLLw5COAJJH4=;
-        b=bf7kmBr/SgfZ1wV4nI5vTAndNdYUbiAGmhGqIym6rX1OX0IxSa121QCCLjtfPTtP/q
-         Ji+y0OXbVSONjuLK/7HvTPJ0m6T7C2i8zva8hRhi9PAc4NLMf2QcGCMsVKAR/4SoxG8P
-         QCVBFNb+TBSE6hOTyUwwlUWtblNmcAsvavL/vwkHJhwxC5HKcnSuNdd2JaoddtOnq0f2
-         l8L1cTnZHt01Ad2nR5db4ZRgjujP4vZ5Nbd+R/n0bCKSy+6DchnTG1m2WXhoILL//vjC
-         4hQ2rR4QddBHqcFb8uNfmIzBTiaeke8T1siffGxdfn9eTO7JBIN070YbQDUKkrumHKo5
-         1fZg==
+        with ESMTP id S234243AbiHAQqM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Aug 2022 12:46:12 -0400
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A7EEE01;
+        Mon,  1 Aug 2022 09:46:10 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id w185so11145486pfb.4;
+        Mon, 01 Aug 2022 09:46:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=q9Slei3vdZHf3BWZhWjxjnYHcSiTDd6lLLw5COAJJH4=;
-        b=4dLF5BkwtfyytuxZqCrVV0S5W0I29GsBCs+hii32agQ1uQee6G4NAevencqvcHv/qF
-         WZQHTdcrEMarVC8adWhtYvFdbqhb2halc6QX5YNLOVqZVF6soE4ip+pbhe/QSRjYdIE8
-         cJVW6Xp1PgpiXB6ZgfasQ4R/YBYyz7R0be9CWMnc78aDGzvbanOq7i/E6bJ3FCU7rTIK
-         RwPra7TuBCR0wjpHUPOoG5GbScZFCjW+pqKjE7mOzH8EfZwRWw9HAMTe8jQ8axgIv/av
-         PfS0XQK8w5jfhgVP5n9WBokvF3wbc9Qz4r/3f53jvXJmThcMdvHSt0fyE9A23muHmA/t
-         Nt9g==
-X-Gm-Message-State: ACgBeo2W1bEd333GuNykF3WPV4KJYHaNBfub7NUOA+4EgJFkFNnlQcD8
-        Q0KBdButPJfK2M/75jHlhbnAE4snm8a8wMcczVo=
-X-Google-Smtp-Source: AA6agR515/n1OMi0vRWF0LCNYzDsADnnMxK25Yt6CRjhyA+ZrhMbjmB0DBADjlTnR+ktgvNpDDCS04nHCVe1WUuUnWY=
-X-Received: by 2002:a2e:3806:0:b0:25e:48ff:a218 with SMTP id
- f6-20020a2e3806000000b0025e48ffa218mr3294471lja.292.1659372205210; Mon, 01
- Aug 2022 09:43:25 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=oaCyo7hq+RU/dygb1CTSCLcZe9XahWnlD8COP0KgBlQ=;
+        b=qBAlWnSaEAraDzdpMhVqhX/c2M3Ni2uUnvZ+Kblu7OocNLvNzE5Mh/njJoI+je/92R
+         c9I6XzsggpMbwNMEQDK5YI1f6KrvZ9dg4eV9gaMsTT0oAzqhG03Z+y4AUZn+oPYP7vKa
+         mTg2LeNvZkDCYrGF4ojJ/YWTSWz6g9Ry1m4u3QskpD5h5tet4Gz3/7+SpE0p7fgFxmcY
+         V/OBOKKgvdPM0vayWtecNq6PPOtz8TvAs4sFs5dt9AEHiNhYjbIFhiGH4WpnsnbN6c4Q
+         8ZT13Xiz+c42TQilzf3ZEd8tDIUjVquc/7EW3ur2p5tqklVXjITOjnQTw4XcD0rtYYZN
+         Z7Fg==
+X-Gm-Message-State: AJIora+jv1hs9t9asOLXCwMwDQm+czsyO62iIKKbA0CSt/tC+ATDobl4
+        ICL9Gp9c41i4fX/jLM3hPTyoAvXw6yY=
+X-Google-Smtp-Source: AGRyM1tEQdPHp6rR+jB3N6XySraP/FcpHP+ZmIsTfItKq17AXBqA6+vqkHB25vBFYLeHTVfD9aerbQ==
+X-Received: by 2002:a63:f90d:0:b0:419:b112:91ea with SMTP id h13-20020a63f90d000000b00419b11291eamr14172722pgi.592.1659372370212;
+        Mon, 01 Aug 2022 09:46:10 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:6496:b2a7:616f:954d? ([2620:15c:211:201:6496:b2a7:616f:954d])
+        by smtp.gmail.com with ESMTPSA id o15-20020a17090a55cf00b001f333fab3d6sm7617838pjm.18.2022.08.01.09.46.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Aug 2022 09:46:09 -0700 (PDT)
+Message-ID: <bb20de72-fc15-feb1-541a-91454593e043@acm.org>
+Date:   Mon, 1 Aug 2022 09:46:07 -0700
 MIME-Version: 1.0
-Received: by 2002:aa6:cb52:0:b0:1fa:aaed:e6d9 with HTTP; Mon, 1 Aug 2022
- 09:43:24 -0700 (PDT)
-From:   Bright Gawayn <gben68387@gmail.com>
-Date:   Mon, 1 Aug 2022 22:13:24 +0530
-Message-ID: <CAG1+V0xy74Pa_JLx+ze1qhQfmiuJXdNJ4_AvNnskoiwRCHFd=g@mail.gmail.com>
-Subject: Lucrative business proposal very urgent!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.9 required=5.0 tests=ADVANCE_FEE_3_NEW,BAYES_50,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:242 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5113]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [gben68387[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [gben68387[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  3.5 ADVANCE_FEE_3_NEW Appears to be advance fee fraud (Nigerian
-        *      419)
-        *  2.5 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] RDMA/ib_srpt: unify checking rdma_cm_id condition in
+ srpt_cm_req_recv()
+Content-Language: en-US
+To:     Li Zhijian <lizhijian@fujitsu.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <1659336226-2-1-git-send-email-lizhijian@fujitsu.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <1659336226-2-1-git-send-email-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello dear My name is Mr Bright Gawayn,  It's my pleasure to contact you today.
+On 7/31/22 23:43, Li Zhijian wrote:
+> Although rdma_cm_id and ib_cm_id passing to srpt_cm_req_recv() are
+> exclusive currently, all other checking condition are using rdma_cm_id.
+> So unify the 'if' condition to make the code more clear.
+> 
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>   drivers/infiniband/ulp/srpt/ib_srpt.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index c3036aeac89e..21cbe30d526f 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2218,13 +2218,13 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   	ch->zw_cqe.done = srpt_zerolength_write_done;
+>   	INIT_WORK(&ch->release_work, srpt_release_channel_work);
+>   	ch->sport = sport;
+> -	if (ib_cm_id) {
+> -		ch->ib_cm.cm_id = ib_cm_id;
+> -		ib_cm_id->context = ch;
+> -	} else {
+> +	if (rdma_cm_id) {
+>   		ch->using_rdma_cm = true;
+>   		ch->rdma_cm.cm_id = rdma_cm_id;
+>   		rdma_cm_id->context = ch;
+> +	} else {
+> +		ch->ib_cm.cm_id = ib_cm_id;
+> +		ib_cm_id->context = ch;
+>   	}
+>   	/*
+>   	 * ch->rq_size should be at least as large as the initiator queue
 
-We use a certain raw material in our pharmaceutical firm for the
-manufacture of animal vaccines and many more.
+Although the above patch looks fine to me, I'm not sure this kind of 
+changes should be considered as useful or as churn?
 
-My intention is to give you the new contact information of the local
-manufacturer of this raw material in India and every details regarding
-how to supply the material to my company if you're interested, my
-company pays in advance for this material.
-
-Due to some reasons, which I will explain in my next email, I cannot
-procure this material and supply it to my company myself due to the
-fact that I am a staff in the company.
-
-Please get back to me as soon as possible for full detail if you are interested.
-
-Thanks and regards
-Bright.
+Bart.
