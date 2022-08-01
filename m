@@ -2,102 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9D3586EF9
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Aug 2022 18:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BE1587140
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Aug 2022 21:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbiHAQqO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Aug 2022 12:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
+        id S233425AbiHATOW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Aug 2022 15:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbiHAQqM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Aug 2022 12:46:12 -0400
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A7EEE01;
-        Mon,  1 Aug 2022 09:46:10 -0700 (PDT)
-Received: by mail-pf1-f169.google.com with SMTP id w185so11145486pfb.4;
-        Mon, 01 Aug 2022 09:46:10 -0700 (PDT)
+        with ESMTP id S234653AbiHATNh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Aug 2022 15:13:37 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B953371B2;
+        Mon,  1 Aug 2022 12:12:45 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id y10-20020a9d634a000000b006167f7ce0c5so8911982otk.0;
+        Mon, 01 Aug 2022 12:12:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=DGMsJ9bla5eGfElaNQwPSE6Invk7R1PYIXSydXhFXQE=;
+        b=TOuFTIk5bbqx/OdF4kCNgl1EQRsvRM7u5VqnAD9qalCC9ZMXm+5fbccr4MbHHYID4h
+         Oq5QJljh0B+r6XiGY7psbdGQ/OKoxKcNlAWergO73oNwZZANAikpfqdwxrouwJ9aaVzQ
+         /Ga1bTxKGvWkn4z4xqN3Ibja8vnrHba6QXGGbZmyB1ZZP+NOPjIyZORyyd2GjeGwKpEB
+         PsrS9E0IzM6Bw2nF8ffuJnQv44QlPpUqkvkYiDXhLlzSo8bdUinWuXdUK75Pwyy0H4ym
+         WnQZ3IVEnGUSZ3A1TGw3eccQHZlsaXLwOzpwqd4Jbntg+L10rnwIz56arVKvsZ0LLvp2
+         xc6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc;
-        bh=oaCyo7hq+RU/dygb1CTSCLcZe9XahWnlD8COP0KgBlQ=;
-        b=qBAlWnSaEAraDzdpMhVqhX/c2M3Ni2uUnvZ+Kblu7OocNLvNzE5Mh/njJoI+je/92R
-         c9I6XzsggpMbwNMEQDK5YI1f6KrvZ9dg4eV9gaMsTT0oAzqhG03Z+y4AUZn+oPYP7vKa
-         mTg2LeNvZkDCYrGF4ojJ/YWTSWz6g9Ry1m4u3QskpD5h5tet4Gz3/7+SpE0p7fgFxmcY
-         V/OBOKKgvdPM0vayWtecNq6PPOtz8TvAs4sFs5dt9AEHiNhYjbIFhiGH4WpnsnbN6c4Q
-         8ZT13Xiz+c42TQilzf3ZEd8tDIUjVquc/7EW3ur2p5tqklVXjITOjnQTw4XcD0rtYYZN
-         Z7Fg==
-X-Gm-Message-State: AJIora+jv1hs9t9asOLXCwMwDQm+czsyO62iIKKbA0CSt/tC+ATDobl4
-        ICL9Gp9c41i4fX/jLM3hPTyoAvXw6yY=
-X-Google-Smtp-Source: AGRyM1tEQdPHp6rR+jB3N6XySraP/FcpHP+ZmIsTfItKq17AXBqA6+vqkHB25vBFYLeHTVfD9aerbQ==
-X-Received: by 2002:a63:f90d:0:b0:419:b112:91ea with SMTP id h13-20020a63f90d000000b00419b11291eamr14172722pgi.592.1659372370212;
-        Mon, 01 Aug 2022 09:46:10 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:6496:b2a7:616f:954d? ([2620:15c:211:201:6496:b2a7:616f:954d])
-        by smtp.gmail.com with ESMTPSA id o15-20020a17090a55cf00b001f333fab3d6sm7617838pjm.18.2022.08.01.09.46.08
+        bh=DGMsJ9bla5eGfElaNQwPSE6Invk7R1PYIXSydXhFXQE=;
+        b=L7COGAV+cDmY2pJuQLHbI4JQyMFxNt2tlSVwKnHArMZQ++VDrdY1ETBl9+oP9l9B8U
+         xdERPr4dFkNy0fs9y1mmBtTLOAMqyy+D41Ahaf0RM7VyU3G1c6HjIYBOKP/q9Hd1gd4f
+         wLPl+1lgFdAVL38VxfO3sL3fYYpc3eWXtVRj2hgAWIqwOiFX1fh12Aka3temvWTU+kdm
+         42MGb2wQT7dl1M458FgqYxWhYO+DyBFwu98fCDtrwOO1pqOdxlUoNppIeibDk3RmiToh
+         elrFNHpSVk6BOWHjeU7Una19y8OpYl+mDUOAYD8GL2hIIZSi7ftSRQydVYbux/ak1eyC
+         ttkg==
+X-Gm-Message-State: AJIora+IuknpDJ/iLtRMV6w6w/RNmfAhOkhoewZ5B1kpcVHpu0OPwWuQ
+        gCNd2dkqvosFLnBR+RKpAX4=
+X-Google-Smtp-Source: AGRyM1vaPJGomInhg99NwnAi/WyqZpjt8gpryl4w+TyjBe0BVa5Qkd+OIWNIroCoM7qj4+AwlcHjWw==
+X-Received: by 2002:a05:6830:25c2:b0:61c:c3ab:ca5f with SMTP id d2-20020a05683025c200b0061cc3abca5fmr6453712otu.117.1659381164392;
+        Mon, 01 Aug 2022 12:12:44 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:fad3:624f:1d1b:8d14? (2603-8081-140c-1a00-fad3-624f-1d1b-8d14.res6.spectrum.com. [2603:8081:140c:1a00:fad3:624f:1d1b:8d14])
+        by smtp.gmail.com with ESMTPSA id f24-20020a056870899800b0010db1a8d931sm3316738oaq.28.2022.08.01.12.12.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Aug 2022 09:46:09 -0700 (PDT)
-Message-ID: <bb20de72-fc15-feb1-541a-91454593e043@acm.org>
-Date:   Mon, 1 Aug 2022 09:46:07 -0700
+        Mon, 01 Aug 2022 12:12:43 -0700 (PDT)
+Message-ID: <13232d91-d50e-0936-7e46-680721119262@gmail.com>
+Date:   Mon, 1 Aug 2022 14:12:42 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH] RDMA/ib_srpt: unify checking rdma_cm_id condition in
- srpt_cm_req_recv()
+Subject: Re: [PATCH] RDMA/rxe: Correct error handling in routines allocating
+ xarray entries
 Content-Language: en-US
-To:     Li Zhijian <lizhijian@fujitsu.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+To:     William Kucharski <william.kucharski@oracle.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1659336226-2-1-git-send-email-lizhijian@fujitsu.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1659336226-2-1-git-send-email-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        linux-kernel@vger.kernel.org
+References: <20220801073850.841628-1-william.kucharski@oracle.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <20220801073850.841628-1-william.kucharski@oracle.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/31/22 23:43, Li Zhijian wrote:
-> Although rdma_cm_id and ib_cm_id passing to srpt_cm_req_recv() are
-> exclusive currently, all other checking condition are using rdma_cm_id.
-> So unify the 'if' condition to make the code more clear.
+On 8/1/22 02:38, William Kucharski wrote:
+> The current code will report an error if xa_alloc_cyclic() returns
+> non-zero, but it will return 1 if it wrapped indices before successfully
+> allocating an entry.
 > 
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> An error should only be reported if the call actually failed (denoted by
+> a return value < 0.)
+> 
+> Fixes: 3225717f6dfa2 ("RDMA/rxe: Replace red-black trees by xarrays")
+> Signed-off-by: William Kucharski <william.kucharski@oracle.com>
 > ---
->   drivers/infiniband/ulp/srpt/ib_srpt.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+>  drivers/infiniband/sw/rxe/rxe_pool.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> index c3036aeac89e..21cbe30d526f 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> @@ -2218,13 +2218,13 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->   	ch->zw_cqe.done = srpt_zerolength_write_done;
->   	INIT_WORK(&ch->release_work, srpt_release_channel_work);
->   	ch->sport = sport;
-> -	if (ib_cm_id) {
-> -		ch->ib_cm.cm_id = ib_cm_id;
-> -		ib_cm_id->context = ch;
-> -	} else {
-> +	if (rdma_cm_id) {
->   		ch->using_rdma_cm = true;
->   		ch->rdma_cm.cm_id = rdma_cm_id;
->   		rdma_cm_id->context = ch;
-> +	} else {
-> +		ch->ib_cm.cm_id = ib_cm_id;
-> +		ib_cm_id->context = ch;
->   	}
->   	/*
->   	 * ch->rq_size should be at least as large as the initiator queue
+> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+> index 19b14826385b..e9f3bbd8d605 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+> @@ -139,7 +139,7 @@ void *rxe_alloc(struct rxe_pool *pool)
+>  
+>  	err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
+>  			      &pool->next, GFP_KERNEL);
+> -	if (err)
+> +	if (err < 0)
+>  		goto err_free;
+>  
+>  	return obj;
+> @@ -167,7 +167,7 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
+>  
+>  	err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
+>  			      &pool->next, GFP_KERNEL);
+> -	if (err)
+> +	if (err < 0)
+>  		goto err_cnt;
+>  
+>  	return 0;
 
-Although the above patch looks fine to me, I'm not sure this kind of 
-changes should be considered as useful or as churn?
+We fixed this a while back but not sure what happened. In any case this is absolutely correct.
+You can add
 
-Bart.
+Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+
+Bob
