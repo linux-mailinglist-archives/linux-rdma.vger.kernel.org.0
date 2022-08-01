@@ -2,84 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F26825867CF
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Aug 2022 12:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900CF586DD9
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Aug 2022 17:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbiHAKuR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Aug 2022 06:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
+        id S233160AbiHAPhC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Aug 2022 11:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbiHAKuQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Aug 2022 06:50:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472F0F68;
-        Mon,  1 Aug 2022 03:50:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 05109B80FF1;
-        Mon,  1 Aug 2022 10:50:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 90B34C433B5;
-        Mon,  1 Aug 2022 10:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659351012;
-        bh=AyuwO2/1dfwoNstGKU29Y1p6hs/jknSvMh/8nrrVsOA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tK0zGZmbyB0iE27QZ6Op3Xvp0TZfDHAzYfOHg51x9Ty55mB2/QklLqp8Arn7SFQVx
-         9K9wwSKjamGlseT8br2Xeyk7VP+qJ+PeaAfAsHgT0p0vzWfqw0VsUuK9SHLhio0XnY
-         RjTOPThHVGRm5jiePCY5ux70VGoxgxPSdIW8k/EQjW8c6u8odtlQpwNVeYA0AWBrqC
-         W+BrbrSLW/+orEwVgZ5Mo9lw1IV/GVDsx4q/xU4VuuTGNR3IL9EXm4d1giW1RszHDh
-         vbuklrPnW6Ug0LCGIrKIDYX9whdX0SbrlN1Yre/LYf/+tLRvnlyeUQpHGAt8fmXu1B
-         vmtGSlQX2SPhg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 71040C43140;
-        Mon,  1 Aug 2022 10:50:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231835AbiHAPhA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Aug 2022 11:37:00 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E702A706
+        for <linux-rdma@vger.kernel.org>; Mon,  1 Aug 2022 08:36:57 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id s9so6751755ljs.6
+        for <linux-rdma@vger.kernel.org>; Mon, 01 Aug 2022 08:36:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=q9Slei3vdZHf3BWZhWjxjnYHcSiTDd6lLLw5COAJJH4=;
+        b=UKcP1FDF09nj1k3uYCs67Q7ZyiUIjGtO/8/Bj2O390UgRgAJaQbdj4bNFv73NHa6D2
+         iYDxlXmYJBF3bZ+BbTGm686z3m5B8jXpwu0YmqjPCoKHCXX42ltrt2aAmH4sQv+ccJN+
+         OHyZ31OJTJwijh8OV8oO5eWh1/bM4pqSqK2uyo052aPr6eVSdk1CVQkx424vXYMEZQTj
+         HsS77Ky28UOjl0KpgsmMPfvxGbLfejaevmoaRlv0kRAHXIpr67GF1/t31ULjMlw9VGDc
+         NI+pGTJBLZwknk3P787XURm2/kBy3STaEpJiGhVmWsgdrf7IgJXaPWV7ssfsuJ7alB0a
+         /1Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=q9Slei3vdZHf3BWZhWjxjnYHcSiTDd6lLLw5COAJJH4=;
+        b=7B58kdIunfptDBRrbjmbG/OPxe6IwFW3CEgJU6m/DndWTLdmAKO5c2N3aQN2dth1dS
+         e52HbCNO65SwSq5+FNp8ldRue7IgNfDI/gy522vhd07d1heasSzP2CJZ3s/lg90J55n4
+         3kcUNwEWX1ZS5vqYuuTKhmH9+ZBBdgRicUYM2lh4GVx4HPxuH9iiKE94XD6+L05BT778
+         0XDpDUp7SaDgGkxjWl27ut5lPO54wDmUS0M2m/HGMJyx7OpS5evntmu43poAwiioQGQw
+         T4faZDsUwY46eapzY9hPZ+J0W5Xvix739C0kFHib8gcmoqRQvM4uyu30H+nako1Gf1v+
+         0fAQ==
+X-Gm-Message-State: AJIora9md+29nC7/PfK9qCBrQ4oJ4kFUPH/ovFcpVbEzgnQbKG2J7BtO
+        tjf4eYfbak9w2C+DJmyXvQ5au9XrrDDLPoMGBi8=
+X-Google-Smtp-Source: AGRyM1vmE9FJ4oaYsT2Hr55xmADsiyPljwE7zY7KjJ0BGtCDobMH8efpf5FFXcSqHPDNiB3EqFhLCRIlfACfnG64NOA=
+X-Received: by 2002:a2e:be90:0:b0:25e:1496:a0b8 with SMTP id
+ a16-20020a2ebe90000000b0025e1496a0b8mr5475533ljr.194.1659368215756; Mon, 01
+ Aug 2022 08:36:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/rds: Use PTR_ERR instead of IS_ERR for rdsdebug()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165935101245.27984.11610788210313298570.git-patchwork-notify@kernel.org>
-Date:   Mon, 01 Aug 2022 10:50:12 +0000
-References: <20220727150341.23746-1-liqiong@nfschina.com>
-In-Reply-To: <20220727150341.23746-1-liqiong@nfschina.com>
-To:     Li Qiong <liqiong@nfschina.com>
-Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        yuzhe@nfschina.com, renyu@nfschina.com, jiaming@nfschina.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:aa6:cb52:0:b0:1fa:aaed:e6d9 with HTTP; Mon, 1 Aug 2022
+ 08:36:55 -0700 (PDT)
+From:   Bright Gawayn <gben68387@gmail.com>
+Date:   Mon, 1 Aug 2022 21:06:55 +0530
+Message-ID: <CAG1+V0zQ=FhBLNLT__co7DHJWC=eYBw480NBDxjx-Za_ZVMuzw@mail.gmail.com>
+Subject: Lucrative business proposal very urgent!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=6.9 required=5.0 tests=ADVANCE_FEE_3_NEW,BAYES_50,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:244 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5003]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [gben68387[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [gben68387[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  3.5 ADVANCE_FEE_3_NEW Appears to be advance fee fraud (Nigerian
+        *      419)
+        *  2.5 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
+Hello dear My name is Mr Bright Gawayn,  It's my pleasure to contact you today.
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+We use a certain raw material in our pharmaceutical firm for the
+manufacture of animal vaccines and many more.
 
-On Wed, 27 Jul 2022 23:03:41 +0800 you wrote:
-> If 'local_odp_mr->r_trans_private' is a error code,
-> it is better to print the error code than to print
-> the value of IS_ERR().
-> 
-> Signed-off-by: Li Qiong <liqiong@nfschina.com>
-> ---
->  net/rds/rdma.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+My intention is to give you the new contact information of the local
+manufacturer of this raw material in India and every details regarding
+how to supply the material to my company if you're interested, my
+company pays in advance for this material.
 
-Here is the summary with links:
-  - net/rds: Use PTR_ERR instead of IS_ERR for rdsdebug()
-    https://git.kernel.org/netdev/net/c/5121db6afb99
+Due to some reasons, which I will explain in my next email, I cannot
+procure this material and supply it to my company myself due to the
+fact that I am a staff in the company.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Please get back to me as soon as possible for full detail if you are interested.
 
-
+Thanks and regards
+Bright.
