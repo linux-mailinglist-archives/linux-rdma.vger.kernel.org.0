@@ -2,61 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39B65865D4
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Aug 2022 09:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C252F5865DE
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Aug 2022 09:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbiHAHsJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Aug 2022 03:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
+        id S229772AbiHAHvv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Aug 2022 03:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbiHAHsI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Aug 2022 03:48:08 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBE32CC99;
-        Mon,  1 Aug 2022 00:48:07 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id 130so2043397pfv.13;
-        Mon, 01 Aug 2022 00:48:07 -0700 (PDT)
+        with ESMTP id S229623AbiHAHvu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Aug 2022 03:51:50 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138FF175BE;
+        Mon,  1 Aug 2022 00:51:50 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 15-20020a17090a098f00b001f305b453feso14350636pjo.1;
+        Mon, 01 Aug 2022 00:51:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IMAYnU2EC+yqL1BUsnDtAht/Xj2YzS3sDG0zRP+tgoc=;
-        b=ZCrFnl1/FKhMP2ChqtWUi4kLbjkrbbHxyaawhvgyc09rH8IXJ3XPFUeKkQNE7z4NT2
-         YKtaDVqIgMnGxrFryUiTfiHndkOfd555EeBICDQEJrrLqMoGf6kqS0pp9t2N63pzuztJ
-         2+85btwJlgKijZSBhfUww9vRycoEE4USDm9beI9R48BtMFo7KvWuPpMEHO882AIWklMd
-         oc9KuvQpVr9s/QKBMQdaFO5jqHtQFtoXQc/tgSRv+k8kCtZghE2TE+DnblBcxs9rvF4T
-         S1SmjNKI+d8sHSatamq4uuW+02e7yQ7sTX4coqVy1n+BXiELvxNkvY0WxnHvZR8En2OW
-         3CKg==
+        bh=MRXzgwGRnew18hle991+x/+veduQBDsHn97K7ipnoI8=;
+        b=QGvyo5U21pMGcC8K4Tt4H3R8NtfXjYfOymD+xHmuur3W3o+ChrBY+ph/RrliSwamOf
+         M88sV3RDFrt9W4h6IvzTMLGL+DgOffIUBmmWiRfZqsUS63SM7Po/158sKyrP9nJLS+Vv
+         ONclQ8kGtr6n0+TqNrGDdWnACkbkm2pmY8v+eyZPz/tpwAlq9aEbDNZ9FJARldR7J4uN
+         vwNggmaX66kiXU4Oz0BWGZdKXJlF9nABRyfOiH5ZqIRINHidST6Zll0PzAE4pTdE0lLp
+         JIEViNv0pmOPzpMDbJDLXBGmfgTjUN53TYOpVzAicv22zX2+s1Jup52PB19Az59S3Pn+
+         26hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IMAYnU2EC+yqL1BUsnDtAht/Xj2YzS3sDG0zRP+tgoc=;
-        b=SosUesnqzQA21KCP6o5tTgxQWEPgYTwujy/ccx8YB2GpcbOfL6p3iaOo5D5QQ6V79O
-         oPGKi6YVCJqROpCJyyn9j8SO5HaughK4UvTJyAu0nb4gvEM1/AB+tNHmgk10gTgkrqVD
-         5hv6bmSbN0bgwK//eTZTC02hT56n/IerC/boTtuBXwd8A6XuMjbkEmpwojJXnaMS+p2O
-         UvwJlHCUnz+ZiBEaotj55iaIUB5RmQ1ImqudSCzBpp6CdepQoRnR9mQpb1SwFwAwR3EH
-         YxWnzkqlc4UpfNrchyOt54QEYqplUB3xYo3W0YNTnPxNcV7JD+TqbuiJ1AyOX9GyJcH8
-         Uw1Q==
-X-Gm-Message-State: AJIora/c0m51x4zc0cVvIS16XT3n5pevRFSJHIoQouLtKvODsBP1EKJ6
-        66ijAT6Xn10G5bOI5WEYLcw3ZWK5U1ha12nTBQ0=
-X-Google-Smtp-Source: AGRyM1vIjd6ogUzsZFjIlziUmE8zsnxUjq3jxREUPypb96difwUuV4PC6474WlweKI/Q1FB/KYbSm/RRNtNIjR6EfdY=
-X-Received: by 2002:a05:6a00:17aa:b0:52a:e94b:67e5 with SMTP id
- s42-20020a056a0017aa00b0052ae94b67e5mr15280735pfg.76.1659340087358; Mon, 01
- Aug 2022 00:48:07 -0700 (PDT)
+        bh=MRXzgwGRnew18hle991+x/+veduQBDsHn97K7ipnoI8=;
+        b=NXR67l8U1NhjEKS8hXtZbPGpmIE1UG1S2xl77o6+Vn10TvE+xil+pxUfnBfz6MU6nB
+         2VS2aSC2SRJGXM6CRHrnfUxkpu6beuHrKj5tbX4H+G9JTO/WYEmV7oy7QdfenA0nyoC0
+         In386u4egbvnBCWArStDL94M8S4JXc4ht5FIxHn2+rIv79HeD160Kuo8WLcWN9Ym+JLA
+         czxxqt73NWlM9lY0tRR2Zf8iD7IOY04cRcBkto04lSk6VL9dXshu0zhtSw3/apBbKuRd
+         oh+GAAwhV8r/G0XsTpBiAxY5spSRk9WEWiHSB7w/zv460fX0qzWWCfYT7M45hcCYJHYa
+         Llaw==
+X-Gm-Message-State: ACgBeo2B2upFO8c7En4uumkRL021ZD7ZCx/zGLVM5lOry2V3bx8T04vp
+        wT2ALKnq7PWAcb3MSGj20kcoPIFbRW+dCdGLX4E=
+X-Google-Smtp-Source: AA6agR7DaOt3eS03tKH/EJCP9zIGQcn2b7s4o8XetUgsrErHqOcCV5uSwSjPWYWjRP1D10/H1b0MhaAq/OYzh5s0Hvg=
+X-Received: by 2002:a17:902:7796:b0:16d:41b2:dd36 with SMTP id
+ o22-20020a170902779600b0016d41b2dd36mr14979702pll.137.1659340309590; Mon, 01
+ Aug 2022 00:51:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <1659335010-2-1-git-send-email-lizhijian@fujitsu.com>
- <CAD=hENfqCKs3jk7pUNJq0Urqx1ZCSU2KpDcipgz_ORJs_43C=g@mail.gmail.com> <b47219be-b6e0-9a18-5d84-5546c08d721e@fujitsu.com>
-In-Reply-To: <b47219be-b6e0-9a18-5d84-5546c08d721e@fujitsu.com>
+References: <20220801073850.841628-1-william.kucharski@oracle.com>
+In-Reply-To: <20220801073850.841628-1-william.kucharski@oracle.com>
 From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Mon, 1 Aug 2022 15:47:55 +0800
-Message-ID: <CAD=hENfZN43c4ZBmXwdru61=341bZgfYa8VJeKaBQYF5KKFA2A@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/RXE: Add send_common_ack() helper
-To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
+Date:   Mon, 1 Aug 2022 15:51:38 +0800
+Message-ID: <CAD=hENc28hpeFsM841ON_N0E17FRLWe8PZhZ6kQLpg4rr1GSnw@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rxe: Correct error handling in routines allocating
+ xarray entries
+To:     William Kucharski <william.kucharski@oracle.com>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,126 +68,68 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 1, 2022 at 3:28 PM lizhijian@fujitsu.com
-<lizhijian@fujitsu.com> wrote:
+On Mon, Aug 1, 2022 at 3:39 PM William Kucharski
+<william.kucharski@oracle.com> wrote:
 >
+> The current code will report an error if xa_alloc_cyclic() returns
+> non-zero, but it will return 1 if it wrapped indices before successfully
+> allocating an entry.
 >
+> An error should only be reported if the call actually failed (denoted by
+> a return value < 0.)
 >
-> On 01/08/2022 15:11, Zhu Yanjun wrote:
-> > On Mon, Aug 1, 2022 at 2:16 PM Li Zhijian <lizhijian@fujitsu.com> wrote:
-> >> Most code in send_ack() and send_atomic_ack() are duplicate, move them
-> >> to a new helper send_common_ack().
-> >>
-> >> In newer IBA SPEC, some opcodes require acknowledge with a zero-length read
-> >> response, with this new helper, we can easily implement it later.
-> >>
-> >> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> >> ---
-> >>   drivers/infiniband/sw/rxe/rxe_resp.c | 43 ++++++++++++++----------------------
-> >>   1 file changed, 17 insertions(+), 26 deletions(-)
-> >>
-> >> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> >> index b36ec5c4d5e0..4c398fa220fa 100644
-> >> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> >> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> >> @@ -1028,50 +1028,41 @@ static enum resp_states do_complete(struct rxe_qp *qp,
-> >>                  return RESPST_CLEANUP;
-> >>   }
-> >>
-> >> -static int send_ack(struct rxe_qp *qp, u8 syndrome, u32 psn)
-> >> +
-> >> +static int send_common_ack(struct rxe_qp *qp, u8 syndrome, u32 psn,
-> > The function is better with rxe_send_common_ack?
-> I'm not clear the exact rule about the naming prefix. if it has, please let me know :)
->
-> IMHO, if a function is either a public API(export function) or a callback to a upper layer,  it's a good idea to a fixed prefix.
-> Instead, if they are just static, no prefix is not too bad.
+> Fixes: 3225717f6dfa2 ("RDMA/rxe: Replace red-black trees by xarrays")
+> Signed-off-by: William Kucharski <william.kucharski@oracle.com>
 
-When debug, a rxe_ prefix can help us filter the functions whatever
-the function static or public.
+Please check commit in
+https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
 
->
-> BTW, current RXE are mixing the two rules, it should be another standalone patch to do the cleanup if needed.
+commit 1a685940e6200e9def6e34bbaa19dd31dc5aeaf8
+Author: Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Thu Jun 9 15:06:56 2022 +0800
 
-Yes. Please make this standalone patch to complete this.
+    RDMA/rxe: fix xa_alloc_cycle() error return value check again
+
+    Currently rxe_alloc checks ret to indicate error, but 1 is also a valid
+    return and just indicates that the allocation succeeded with a wrap.
+
+    Fix this by modifying the check to be < 0.
+
+    Link: https://lore.kernel.org/r/20220609070656.1446121-1-dzm91@hust.edu.cn
+    Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by xarrays")
+    Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+    Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+    Signed-off-by: Leon Romanovsky <leon@kernel.org>
 
 Thanks and Regards,
 Zhu Yanjun
 
+> ---
+>  drivers/infiniband/sw/rxe/rxe_pool.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> Thanks
-> Zhijian
+> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+> index 19b14826385b..e9f3bbd8d605 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+> @@ -139,7 +139,7 @@ void *rxe_alloc(struct rxe_pool *pool)
 >
+>         err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
+>                               &pool->next, GFP_KERNEL);
+> -       if (err)
+> +       if (err < 0)
+>                 goto err_free;
 >
-> > So when debug, rxe_ prefix can help us.
-> >
-> >> +                                 int opcode, const char *msg)
-> >>   {
-> >> -       int err = 0;
-> >> +       int err;
-> >>          struct rxe_pkt_info ack_pkt;
-> >>          struct sk_buff *skb;
-> >>
-> >> -       skb = prepare_ack_packet(qp, &ack_pkt, IB_OPCODE_RC_ACKNOWLEDGE,
-> >> -                                0, psn, syndrome);
-> >> -       if (!skb) {
-> >> -               err = -ENOMEM;
-> >> -               goto err1;
-> >> -       }
-> >> +       skb = prepare_ack_packet(qp, &ack_pkt, opcode, 0, psn, syndrome);
-> >> +       if (!skb)
-> >> +               return -ENOMEM;
-> >>
-> >>          err = rxe_xmit_packet(qp, &ack_pkt, skb);
-> >>          if (err)
-> >> -               pr_err_ratelimited("Failed sending ack\n");
-> >> +               pr_err_ratelimited("Failed sending %s\n", msg);
-> >>
-> >> -err1:
-> >>          return err;
-> >>   }
-> >>
-> >> -static int send_atomic_ack(struct rxe_qp *qp, u8 syndrome, u32 psn)
-> >> +static int send_ack(struct rxe_qp *qp, u8 syndrome, u32 psn)
-> > rxe_send_ack
-> >
-> >>   {
-> >> -       int err = 0;
-> >> -       struct rxe_pkt_info ack_pkt;
-> >> -       struct sk_buff *skb;
-> >> -
-> >> -       skb = prepare_ack_packet(qp, &ack_pkt, IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE,
-> >> -                                0, psn, syndrome);
-> >> -       if (!skb) {
-> >> -               err = -ENOMEM;
-> >> -               goto out;
-> >> -       }
-> >> +       return send_common_ack(qp, syndrome, psn,
-> >> +                       IB_OPCODE_RC_ACKNOWLEDGE, "ACK");
-> >> +}
-> >>
-> >> -       err = rxe_xmit_packet(qp, &ack_pkt, skb);
-> >> -       if (err)
-> >> -               pr_err_ratelimited("Failed sending atomic ack\n");
-> >> +static int send_atomic_ack(struct rxe_qp *qp, u8 syndrome, u32 psn)
-> > rxe_send_atomic_ack
-> >
-> > Thanks and Regards,
-> > Zhu Yanjun
-> >> +{
-> >> +       int ret = send_common_ack(qp, syndrome, psn,
-> >> +                       IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE, "ATOMIC ACK");
-> >>
-> >>          /* have to clear this since it is used to trigger
-> >>           * long read replies
-> >>           */
-> >>          qp->resp.res = NULL;
-> >> -out:
-> >> -       return err;
-> >> +       return ret;
-> >>   }
-> >>
-> >>   static enum resp_states acknowledge(struct rxe_qp *qp,
-> >> --
-> >> 1.8.3.1
-> >>
+>         return obj;
+> @@ -167,7 +167,7 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
+>
+>         err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
+>                               &pool->next, GFP_KERNEL);
+> -       if (err)
+> +       if (err < 0)
+>                 goto err_cnt;
+>
+>         return 0;
+> --
+> 2.37.1
+>
