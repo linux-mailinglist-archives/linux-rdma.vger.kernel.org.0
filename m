@@ -2,103 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC3C587C18
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Aug 2022 14:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7B7587CA7
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Aug 2022 14:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236930AbiHBMNS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Aug 2022 08:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
+        id S231797AbiHBMvX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Aug 2022 08:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236865AbiHBMNO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Aug 2022 08:13:14 -0400
-Received: from mx07-0057a101.pphosted.com (mx07-0057a101.pphosted.com [205.220.184.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35004F648;
-        Tue,  2 Aug 2022 05:13:01 -0700 (PDT)
-Received: from pps.filterd (m0214197.ppops.net [127.0.0.1])
-        by mx07-0057a101.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 272Bru40021377;
-        Tue, 2 Aug 2022 14:10:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=westermo.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=12052020;
- bh=7Dt46XnYgf28PDkRim97Pp78Rq0luk57iTdbu5nsFDk=;
- b=5A5ZHa/0fQMLtboujnDa9BvigvhJm8zM/sKzAeRSrKNB/Vh8BF9o+gJvfxedi/5ona09
- BE6fPGar3b68cHForqu4ZK0KK9U5MJXrFgTbMXF9Ndr9kCmjdAU5XRVq1k+VzD38TK37
- wVtRkrcBN2c1OkEo9ZB/R8wZ1xJK1Rc+E3Dy5GVlcwrqfCCAO2HUkpKKJPtVhbMF/UiZ
- VLon0gn0MUaJloc9NgvcJi17bz/Tb5BY40K/A+QgvlsJo1ckpOUFl4qxtIhajLpjonCH
- J/d1746EKf7Eav9sh+YJ4Oayr9U8pd54NjmPZ05An5wZKjV8mFPio+M0qwZL+08WntQB Jw== 
-Received: from mail.beijerelectronics.com ([195.67.87.131])
-        by mx07-0057a101.pphosted.com (PPS) with ESMTPS id 3hms0c2wby-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 02 Aug 2022 14:10:04 +0200
-Received: from Orpheus.westermo.com (172.29.101.13) by
- EX01GLOBAL.beijerelectronics.com (10.101.10.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.2375.17; Tue, 2 Aug 2022 14:10:01 +0200
-From:   Matthias May <matthias.may@westermo.com>
-To:     <netdev@vger.kernel.org>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <roopa@nvidia.com>,
-        <eng.alaamohamedsoliman.am@gmail.com>, <bigeasy@linutronix.de>,
-        <saeedm@nvidia.com>, <leon@kernel.org>, <roid@nvidia.com>,
-        <maord@nvidia.com>, <lariel@nvidia.com>, <vladbu@nvidia.com>,
-        <cmi@nvidia.com>, <gnault@redhat.com>, <yoshfuji@linux-ipv6.org>,
-        <dsahern@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <nicolas.dichtel@6wind.com>, <eyal.birger@gmail.com>,
-        <jesse@nicira.com>, <linville@tuxdriver.com>,
-        <daniel@iogearbox.net>, <hadarh@mellanox.com>,
-        <ogerlitz@mellanox.com>, <willemb@google.com>,
-        <martin.varghese@nokia.com>,
-        Matthias May <matthias.may@westermo.com>
-Subject: [PATCH v2 net 4/4] ipv6: do not use RT_TOS for IPv6 flowlabel
-Date:   Tue, 2 Aug 2022 14:09:35 +0200
-Message-ID: <20220802120935.1363001-5-matthias.may@westermo.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220802120935.1363001-1-matthias.may@westermo.com>
-References: <20220802120935.1363001-1-matthias.may@westermo.com>
+        with ESMTP id S232569AbiHBMvX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Aug 2022 08:51:23 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10701DFC5;
+        Tue,  2 Aug 2022 05:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1659444682; x=1690980682;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OmAWyGmKcIghX+hLvGMM11Dgc6+5nsQXlAGINkiy/O0=;
+  b=ja6gFipYJLXY7hm0g/493EYhCipbpSLAY6wJZ6oAS/as6KQKenxt6BHf
+   WBD+rdGGc9+kstWnxu/gsYSA2c+FuSbFohprplVmjEmiBXtzjVQF+SqTU
+   uFqinm7V1Y6hfyMkoV1+lkR5FRlOqrj4w74yAUuyblgYazK/rSQuORzah
+   cnJiyidtctr9AafvAlHlf2Dcu3IFiNJj/+1ZiUBrDVq3TnOusy/MFObWW
+   tj/PlKhOqrqzh+NRUMIxGk71uF0hw9Z5+XSacX62YjKfQo4RG+1VRi+bB
+   6buR7X8TJrATH4rv0yhMS4OD+Glg2bHzYMbn2nFYMz+lPomAypxHEsFW7
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10426"; a="289411276"
+X-IronPort-AV: E=Sophos;i="5.93,210,1654585200"; 
+   d="scan'208";a="289411276"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2022 05:51:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,210,1654585200"; 
+   d="scan'208";a="691835530"
+Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Aug 2022 05:51:18 -0700
+Received: from kbuild by e0eace57cfef with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oIrMk-000G3b-11;
+        Tue, 02 Aug 2022 12:51:18 +0000
+Date:   Tue, 2 Aug 2022 20:50:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ajit Khaparde <ajit.khaparde@broadcom.com>,
+        michael.chan@broadcom.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca,
+        selvin.xavier@broadcom.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com
+Cc:     kbuild-all@lists.01.org
+Subject: Re: [PATCH 1/2] net/bnxt: Add auxiliary driver support
+Message-ID: <202208022009.CPnSrR8H-lkp@intel.com>
+References: <20220724231458.93830-2-ajit.khaparde@broadcom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.29.101.13]
-X-ClientProxiedBy: wsevst-s0023.westermo.com (192.168.130.120) To
- EX01GLOBAL.beijerelectronics.com (10.101.10.25)
-X-Proofpoint-GUID: ZoawDdE9j41KGZHES-cdGopeQksgu0vj
-X-Proofpoint-ORIG-GUID: ZoawDdE9j41KGZHES-cdGopeQksgu0vj
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220724231458.93830-2-ajit.khaparde@broadcom.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-According to Guillaume Nault RT_TOS should never be used for IPv6.
+Hi Ajit,
 
-Fixes: 571912c69f0e ("net: UDP tunnel encapsulation module for tunnelling different protocols like MPLS, IP, NSH etc.")
-Signed-off-by: Matthias May <matthias.may@westermo.com>
----
-v1 -> v2:
- - Fix spacing of "Fixes" tag.
- - Add missing CCs
----
- net/ipv6/ip6_output.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I love your patch! Yet something to improve:
 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 77e3f5970ce4..ec62f472aa1c 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1311,8 +1311,7 @@ struct dst_entry *ip6_dst_lookup_tunnel(struct sk_buff *skb,
- 	fl6.daddr = info->key.u.ipv6.dst;
- 	fl6.saddr = info->key.u.ipv6.src;
- 	prio = info->key.tos;
--	fl6.flowlabel = ip6_make_flowinfo(RT_TOS(prio),
--					  info->key.label);
-+	fl6.flowlabel = ip6_make_flowinfo(prio, info->key.label);
- 
- 	dst = ipv6_stub->ipv6_dst_lookup_flow(net, sock->sk, &fl6,
- 					      NULL);
+[auto build test ERROR on net-next/master]
+[also build test ERROR on net/master horms-ipvs/master linus/master v5.19 next-20220728]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Ajit-Khaparde/Add-Auxiliary-driver-support/20220725-071610
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 502c6f8cedcce7889ccdefeb88ce36b39acd522f
+config: riscv-randconfig-c043-20220801 (https://download.01.org/0day-ci/archive/20220802/202208022009.CPnSrR8H-lkp@intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/c93534ee352bf1888f05720b89a915f15d49fc51
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Ajit-Khaparde/Add-Auxiliary-driver-support/20220725-071610
+        git checkout c93534ee352bf1888f05720b89a915f15d49fc51
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   riscv32-linux-ld: drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.o: in function `.L0 ':
+>> bnxt_ulp.c:(.text+0xed2): undefined reference to `auxiliary_device_init'
+   riscv32-linux-ld: drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.o: in function `.L248':
+>> bnxt_ulp.c:(.text+0xf12): undefined reference to `__auxiliary_device_add'
+
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
