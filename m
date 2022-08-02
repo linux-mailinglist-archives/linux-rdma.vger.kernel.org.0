@@ -2,105 +2,230 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7B7587CA7
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Aug 2022 14:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9EA587CED
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Aug 2022 15:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbiHBMvX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Aug 2022 08:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
+        id S232503AbiHBNST (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Aug 2022 09:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232569AbiHBMvX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Aug 2022 08:51:23 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10701DFC5;
-        Tue,  2 Aug 2022 05:51:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659444682; x=1690980682;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=OmAWyGmKcIghX+hLvGMM11Dgc6+5nsQXlAGINkiy/O0=;
-  b=ja6gFipYJLXY7hm0g/493EYhCipbpSLAY6wJZ6oAS/as6KQKenxt6BHf
-   WBD+rdGGc9+kstWnxu/gsYSA2c+FuSbFohprplVmjEmiBXtzjVQF+SqTU
-   uFqinm7V1Y6hfyMkoV1+lkR5FRlOqrj4w74yAUuyblgYazK/rSQuORzah
-   cnJiyidtctr9AafvAlHlf2Dcu3IFiNJj/+1ZiUBrDVq3TnOusy/MFObWW
-   tj/PlKhOqrqzh+NRUMIxGk71uF0hw9Z5+XSacX62YjKfQo4RG+1VRi+bB
-   6buR7X8TJrATH4rv0yhMS4OD+Glg2bHzYMbn2nFYMz+lPomAypxHEsFW7
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10426"; a="289411276"
-X-IronPort-AV: E=Sophos;i="5.93,210,1654585200"; 
-   d="scan'208";a="289411276"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2022 05:51:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,210,1654585200"; 
-   d="scan'208";a="691835530"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Aug 2022 05:51:18 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oIrMk-000G3b-11;
-        Tue, 02 Aug 2022 12:51:18 +0000
-Date:   Tue, 2 Aug 2022 20:50:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ajit Khaparde <ajit.khaparde@broadcom.com>,
-        michael.chan@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca,
-        selvin.xavier@broadcom.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com
-Cc:     kbuild-all@lists.01.org
-Subject: Re: [PATCH 1/2] net/bnxt: Add auxiliary driver support
-Message-ID: <202208022009.CPnSrR8H-lkp@intel.com>
-References: <20220724231458.93830-2-ajit.khaparde@broadcom.com>
+        with ESMTP id S232425AbiHBNSS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Aug 2022 09:18:18 -0400
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6876A12D19;
+        Tue,  2 Aug 2022 06:18:10 -0700 (PDT)
+Message-ID: <0a073674-cb3b-96f5-8af6-779f681a05d0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1659446288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=px8ybqGB8lVsEkoR1fXo4n81yqEsz0zAAzD8kDgD+zQ=;
+        b=EOOlHjuSyES/QjQ7KnBPtt9XSjJayho7izkNJitc9wYxDWVl343ZJlV9qAK4T+2ZfBMLDl
+        Owsn0cgAzaGPMI4Ff5TXFkaix03MekSxvSbHpJkWbVeewNP6BdvZM7QIWkrXqykuwhE62p
+        hXOWDF+bHu3yqADCns87C2qfg1cfyfM=
+Date:   Tue, 2 Aug 2022 21:17:57 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220724231458.93830-2-ajit.khaparde@broadcom.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] RDMA/RXE: Add send_common_ack() helper
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <1659335010-2-1-git-send-email-lizhijian@fujitsu.com>
+ <CAD=hENfqCKs3jk7pUNJq0Urqx1ZCSU2KpDcipgz_ORJs_43C=g@mail.gmail.com>
+ <b47219be-b6e0-9a18-5d84-5546c08d721e@fujitsu.com>
+ <CAD=hENfZN43c4ZBmXwdru61=341bZgfYa8VJeKaBQYF5KKFA2A@mail.gmail.com>
+ <02c52efa-61fd-5e27-9f98-46e0384d81e7@fujitsu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <02c52efa-61fd-5e27-9f98-46e0384d81e7@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Ajit,
+在 2022/8/2 13:52, lizhijian@fujitsu.com 写道:
+> 
+> 
+> On 01/08/2022 15:47, Zhu Yanjun wrote:
+>> On Mon, Aug 1, 2022 at 3:28 PM lizhijian@fujitsu.com
+>> <lizhijian@fujitsu.com> wrote:
+>>>
+>>>
+>>> On 01/08/2022 15:11, Zhu Yanjun wrote:
+>>>> On Mon, Aug 1, 2022 at 2:16 PM Li Zhijian <lizhijian@fujitsu.com> wrote:
+>>>>> Most code in send_ack() and send_atomic_ack() are duplicate, move them
+>>>>> to a new helper send_common_ack().
+>>>>>
+>>>>> In newer IBA SPEC, some opcodes require acknowledge with a zero-length read
+>>>>> response, with this new helper, we can easily implement it later.
+>>>>>
+>>>>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+>>>>> ---
+>>>>>     drivers/infiniband/sw/rxe/rxe_resp.c | 43 ++++++++++++++----------------------
+>>>>>     1 file changed, 17 insertions(+), 26 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+>>>>> index b36ec5c4d5e0..4c398fa220fa 100644
+>>>>> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+>>>>> @@ -1028,50 +1028,41 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+>>>>>                    return RESPST_CLEANUP;
+>>>>>     }
+>>>>>
+>>>>> -static int send_ack(struct rxe_qp *qp, u8 syndrome, u32 psn)
+>>>>> +
+>>>>> +static int send_common_ack(struct rxe_qp *qp, u8 syndrome, u32 psn,
+>>>> The function is better with rxe_send_common_ack?
+>>> I'm not clear the exact rule about the naming prefix. if it has, please let me know :)
+>>>
+>>> IMHO, if a function is either a public API(export function) or a callback to a upper layer,  it's a good idea to a fixed prefix.
+>>> Instead, if they are just static, no prefix is not too bad.
+>> When debug, a rxe_ prefix can help us filter the functions whatever
+>> the function static or public.
+>>
+>>> BTW, current RXE are mixing the two rules, it should be another standalone patch to do the cleanup if needed.
+>> Yes. Please make this standalone patch to complete this.
+> 
+> i tried to do a rough statistic.
+> 
+> all functions:
+> $ git grep -E '^[a-z].*\(' drivers/infiniband/sw/rxe | awk -F'(' '{print $1}' | awk '{print $NF}' | tr -d '\*' | grep -E ^[a-z]+ | wc -l
+> 474
+> 
+> without rxe_ prefix:
+> git grep -E '^[a-z].*\(' drivers/infiniband/sw/rxe | awk -F'(' '{print $1}' | awk '{print $NF}' | tr -d '\*' | grep -E ^[a-z]+ | grep -v -e ^rxe | wc -l
+> 199
+The followings are the no rxe_ prefix functions. About 22 functions.
 
-I love your patch! Yet something to improve:
+do_complete
+retransmit_timer
+next_opcode
+rnr_nak_timer
+find_resource
+send_data_in
+prepare_ack_packet
+send_ack
+check_keys
+check_type_state
+resize_finish
+do_mmap_info
+parent_show
+post_one_recv
+free_rd_atomic_resources
+free_rd_atomic_resource
+lookup_iova
+mr_check_range
+iova_to_vaddr
+advance_dma_data
+lookup_mr
+copy_data
 
-[auto build test ERROR on net-next/master]
-[also build test ERROR on net/master horms-ipvs/master linus/master v5.19 next-20220728]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Zhu Yanjun
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ajit-Khaparde/Add-Auxiliary-driver-support/20220725-071610
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 502c6f8cedcce7889ccdefeb88ce36b39acd522f
-config: riscv-randconfig-c043-20220801 (https://download.01.org/0day-ci/archive/20220802/202208022009.CPnSrR8H-lkp@intel.com/config)
-compiler: riscv32-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/c93534ee352bf1888f05720b89a915f15d49fc51
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Ajit-Khaparde/Add-Auxiliary-driver-support/20220725-071610
-        git checkout c93534ee352bf1888f05720b89a915f15d49fc51
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
+> 
+> Similarly, the mlx5 have the same situations.
+> $ git grep -h -E '^[a-z].*\(' drivers/infiniband/hw/mlx5 | awk -F'(' '{print $1}' | awk '{print $NF}' | tr -d '\*' | grep -E ^[a-z]+ | wc -l
+> 1083
+> $ git grep -h -E '^[a-z].*\(' drivers/infiniband/hw/mlx5 | awk -F'(' '{print $1}' | awk '{print $NF}' | tr -d '\*' | grep -E ^[a-z]+ | grep -v -e ^mlx5 | wc -l
+> 476
+> 
+> TBH, i have no strong stomach to do such cleanup so far :)
+> 
+> Thanks
+> Zhijian
+> 
+> 
+>>
+>> Thanks and Regards,
+>> Zhu Yanjun
+>>
+>>> Thanks
+>>> Zhijian
+>>>
+>>>
+>>>> So when debug, rxe_ prefix can help us.
+>>>>
+>>>>> +                                 int opcode, const char *msg)
+>>>>>     {
+>>>>> -       int err = 0;
+>>>>> +       int err;
+>>>>>            struct rxe_pkt_info ack_pkt;
+>>>>>            struct sk_buff *skb;
+>>>>>
+>>>>> -       skb = prepare_ack_packet(qp, &ack_pkt, IB_OPCODE_RC_ACKNOWLEDGE,
+>>>>> -                                0, psn, syndrome);
+>>>>> -       if (!skb) {
+>>>>> -               err = -ENOMEM;
+>>>>> -               goto err1;
+>>>>> -       }
+>>>>> +       skb = prepare_ack_packet(qp, &ack_pkt, opcode, 0, psn, syndrome);
+>>>>> +       if (!skb)
+>>>>> +               return -ENOMEM;
+>>>>>
+>>>>>            err = rxe_xmit_packet(qp, &ack_pkt, skb);
+>>>>>            if (err)
+>>>>> -               pr_err_ratelimited("Failed sending ack\n");
+>>>>> +               pr_err_ratelimited("Failed sending %s\n", msg);
+>>>>>
+>>>>> -err1:
+>>>>>            return err;
+>>>>>     }
+>>>>>
+>>>>> -static int send_atomic_ack(struct rxe_qp *qp, u8 syndrome, u32 psn)
+>>>>> +static int send_ack(struct rxe_qp *qp, u8 syndrome, u32 psn)
+>>>> rxe_send_ack
+>>>>
+>>>>>     {
+>>>>> -       int err = 0;
+>>>>> -       struct rxe_pkt_info ack_pkt;
+>>>>> -       struct sk_buff *skb;
+>>>>> -
+>>>>> -       skb = prepare_ack_packet(qp, &ack_pkt, IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE,
+>>>>> -                                0, psn, syndrome);
+>>>>> -       if (!skb) {
+>>>>> -               err = -ENOMEM;
+>>>>> -               goto out;
+>>>>> -       }
+>>>>> +       return send_common_ack(qp, syndrome, psn,
+>>>>> +                       IB_OPCODE_RC_ACKNOWLEDGE, "ACK");
+>>>>> +}
+>>>>>
+>>>>> -       err = rxe_xmit_packet(qp, &ack_pkt, skb);
+>>>>> -       if (err)
+>>>>> -               pr_err_ratelimited("Failed sending atomic ack\n");
+>>>>> +static int send_atomic_ack(struct rxe_qp *qp, u8 syndrome, u32 psn)
+>>>> rxe_send_atomic_ack
+>>>>
+>>>> Thanks and Regards,
+>>>> Zhu Yanjun
+>>>>> +{
+>>>>> +       int ret = send_common_ack(qp, syndrome, psn,
+>>>>> +                       IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE, "ATOMIC ACK");
+>>>>>
+>>>>>            /* have to clear this since it is used to trigger
+>>>>>             * long read replies
+>>>>>             */
+>>>>>            qp->resp.res = NULL;
+>>>>> -out:
+>>>>> -       return err;
+>>>>> +       return ret;
+>>>>>     }
+>>>>>
+>>>>>     static enum resp_states acknowledge(struct rxe_qp *qp,
+>>>>> --
+>>>>> 1.8.3.1
+>>>>>
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   riscv32-linux-ld: drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.o: in function `.L0 ':
->> bnxt_ulp.c:(.text+0xed2): undefined reference to `auxiliary_device_init'
-   riscv32-linux-ld: drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.o: in function `.L248':
->> bnxt_ulp.c:(.text+0xf12): undefined reference to `__auxiliary_device_add'
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
