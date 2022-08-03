@@ -2,176 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E39AC588856
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Aug 2022 09:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D9D588B13
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Aug 2022 13:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbiHCH46 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Aug 2022 03:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
+        id S236164AbiHCLYR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Aug 2022 07:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbiHCH46 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Aug 2022 03:56:58 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2A960CD
-        for <linux-rdma@vger.kernel.org>; Wed,  3 Aug 2022 00:56:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659513417; x=1691049417;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=MXN0FKf+8EiaaRkw2KknnrChNXJskfsn7oj0OJNSFfc=;
-  b=Qvn7OiOqPyRvQFh2tJ6y9IrsjVrBqpRMS+kRMaFR/4fpGFEC72bnFJCu
-   hA19AzxnK+9s83IVF0F/9mbukL2g2Kt1F1E9y5szzRcLdEX2ayJBZrvCu
-   YmKeIyYvr8kxpTEdoWBOHIO4sJlnRhxNyV6flhwlNcw8pVCSV0C9R7RZB
-   wHessWaSn6Ptj/VTK03WkN3Ks4Lt6KwmOHEM8fYLxlLZL1FWDxKPawDRM
-   mMw1yfDnc9yHgbzf6/g1Q53N3z3vSYPS0o0sspxKOlskuJJvyPn1Sx/hc
-   L4uJKTtbgambk9iJ++YVX+D/ssSDRnbpA5Xmi32KtK4BJh2abl9zPQGO6
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10427"; a="289624486"
-X-IronPort-AV: E=Sophos;i="5.93,213,1654585200"; 
-   d="scan'208";a="289624486"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2022 00:56:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,213,1654585200"; 
-   d="scan'208";a="670775384"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 03 Aug 2022 00:56:55 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oJ9FP-000H11-0n;
-        Wed, 03 Aug 2022 07:56:55 +0000
-Date:   Wed, 03 Aug 2022 15:56:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 6b822d408b58c3c4f26dae93245c6b7d8b39e0f9
-Message-ID: <62ea2a11.VGjj0JWtyvt8LJ8T%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S236094AbiHCLYM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Aug 2022 07:24:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64DA32A408
+        for <linux-rdma@vger.kernel.org>; Wed,  3 Aug 2022 04:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1659525850;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3FOcvqJbUoGHDDUFPqQYrb80yq1QgKC3KQgj7v11X3w=;
+        b=V7TmKKUA1+/FGkVMFTQNxYGK372mcFyMgqLgKMsW7v9Qo8E1sQgYG0ZGkCowb7CPy0UZCP
+        Rc9OlbRxzbADSMvpTgjjUr6/f336bBoe9kMk8/wHHLZJEmWqiuRG+GSp96n+mMlxW5l43l
+        Z51W5fu4xK0f9zeKzlX2u9miB98GxDU=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-232-uBfp0L0zPKSvowJGsd9__A-1; Wed, 03 Aug 2022 07:24:01 -0400
+X-MC-Unique: uBfp0L0zPKSvowJGsd9__A-1
+Received: by mail-qt1-f198.google.com with SMTP id a18-20020a05622a02d200b0031ed7ae9abeso10684323qtx.8
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Aug 2022 04:24:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3FOcvqJbUoGHDDUFPqQYrb80yq1QgKC3KQgj7v11X3w=;
+        b=aqz7jDh3uFcEBw1VHOFyjocf5pVYn196u1OncUACdedOBeEMv5uFUw7juctOb9UJtj
+         12eKTyb4GyP0OHufMsmcUOWouJn5P9rwsPSa4RwGK4QBPA7c0uZ9kyIwmNm6ADJXpMmF
+         ohAvC+T/5p4wX7FNh2s5fx4pnaL/OQ2dDVJ1QGWiIEpOH0L3qtI98QurvJwMlOm9eQGn
+         PO6sjJOsPC9zhdKNjdj0ui8fOISFdrJ3IZZewcg6g0hdJMl2wYrAodtUPwUni3iiWHoy
+         2UATHaXzopjOemSjoIvr2/Q8b51U1JlHPdoozc0V2R2PS77mcmTQIukcGVzzMdy/Wv+K
+         F95A==
+X-Gm-Message-State: AJIora/OR4vHP3tj0ZiAokpLW7yi5TxDQiCotqH6DmgfG7EsGErQi6Ul
+        EQw1rt9KhIrLkxSbOwfXr8Ls55HV11TwH93BKUZeRa/S/xi6Vl+VGiEuBwEM3d8enzVrrawp/ru
+        7FXa6NyYOCgNcbwVNtNFa4A==
+X-Received: by 2002:a05:622a:247:b0:31f:1ede:840b with SMTP id c7-20020a05622a024700b0031f1ede840bmr21715045qtx.564.1659525841370;
+        Wed, 03 Aug 2022 04:24:01 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1tz5KSr5SVrnhkcL1Hcg5mE7G3xX8TvBx1o0yHreZukVEWfYCkszcC3wldnfhHBqw0mSOSLXA==
+X-Received: by 2002:a05:622a:247:b0:31f:1ede:840b with SMTP id c7-20020a05622a024700b0031f1ede840bmr21715005qtx.564.1659525841139;
+        Wed, 03 Aug 2022 04:24:01 -0700 (PDT)
+Received: from pc-4.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
+        by smtp.gmail.com with ESMTPSA id m26-20020ac866da000000b00339163a06fcsm3147288qtp.6.2022.08.03.04.23.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Aug 2022 04:24:00 -0700 (PDT)
+Date:   Wed, 3 Aug 2022 13:23:54 +0200
+From:   Guillaume Nault <gnault@redhat.com>
+To:     Matthias May <matthias.may@westermo.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, roopa@nvidia.com,
+        eng.alaamohamedsoliman.am@gmail.com, bigeasy@linutronix.de,
+        saeedm@nvidia.com, leon@kernel.org, roid@nvidia.com,
+        maord@nvidia.com, lariel@nvidia.com, vladbu@nvidia.com,
+        cmi@nvidia.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nicolas.dichtel@6wind.com,
+        eyal.birger@gmail.com, jesse@nicira.com, linville@tuxdriver.com,
+        daniel@iogearbox.net, hadarh@mellanox.com, ogerlitz@mellanox.com,
+        willemb@google.com, martin.varghese@nokia.com
+Subject: Re: [PATCH v2 net 1/4] geneve: do not use RT_TOS for IPv6 flowlabel
+Message-ID: <20220803112354.GA29408@pc-4.home>
+References: <20220802120935.1363001-1-matthias.may@westermo.com>
+ <20220802120935.1363001-2-matthias.may@westermo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Disposition: inline
+In-Reply-To: <20220802120935.1363001-2-matthias.may@westermo.com>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 6b822d408b58c3c4f26dae93245c6b7d8b39e0f9  RDMA/ib_srpt: Unify checking rdma_cm_id condition in srpt_cm_req_recv()
+On Tue, Aug 02, 2022 at 02:09:32PM +0200, Matthias May wrote:
+> According to Guillaume Nault RT_TOS should never be used for IPv6.
 
-elapsed time: 717m
+While I obviously agree with this statement, I don't think it brings
+much information to other people reading the commit message. Even
+though the cover letter has more information, it won't be immediately
+available to people reading the patch. Also the cover letter will be
+lost if the patch gets picked up for the -stable trees.
 
-configs tested: 96
-configs skipped: 3
+Appart from that, I'm fine with the patch of course.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Fixes: 3a56f86f1be6a ("geneve: handle ipv6 priority like ipv4 tos")
+> Signed-off-by: Matthias May <matthias.may@westermo.com>
+> ---
+> v1 -> v2:
+>  - Fix spacing of "Fixes" tag.
+>  - Add missing CCs
+> ---
+>  drivers/net/geneve.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+> index 4c380c06f178..e1a4480e6f17 100644
+> --- a/drivers/net/geneve.c
+> +++ b/drivers/net/geneve.c
+> @@ -877,8 +877,7 @@ static struct dst_entry *geneve_get_v6_dst(struct sk_buff *skb,
+>  		use_cache = false;
+>  	}
+>  
+> -	fl6->flowlabel = ip6_make_flowinfo(RT_TOS(prio),
+> -					   info->key.label);
+> +	fl6->flowlabel = ip6_make_flowinfo(prio, info->key.label);
+>  	dst_cache = (struct dst_cache *)&info->dst_cache;
+>  	if (use_cache) {
+>  		dst = dst_cache_get_ip6(dst_cache, &fl6->saddr);
+> -- 
+> 2.35.1
+> 
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-i386                                defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-i386                             allyesconfig
-x86_64                           allyesconfig
-x86_64               randconfig-a014-20220801
-x86_64               randconfig-a011-20220801
-x86_64               randconfig-a012-20220801
-x86_64               randconfig-a015-20220801
-arc                  randconfig-r043-20220801
-arc                  randconfig-r043-20220802
-x86_64                          rhel-8.3-func
-arc                              allyesconfig
-x86_64                         rhel-8.3-kunit
-s390                 randconfig-r044-20220801
-x86_64                           rhel-8.3-kvm
-x86_64                    rhel-8.3-kselftests
-riscv                randconfig-r042-20220801
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-sh                               allmodconfig
-m68k                             allmodconfig
-i386                 randconfig-a012-20220801
-i386                 randconfig-a013-20220801
-i386                 randconfig-a014-20220801
-i386                 randconfig-a011-20220801
-i386                 randconfig-a015-20220801
-i386                 randconfig-a016-20220801
-ia64                             allmodconfig
-x86_64                           rhel-8.3-syz
-x86_64                        randconfig-a004
-m68k                             allyesconfig
-alpha                            allyesconfig
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-x86_64                        randconfig-a015
-csky                              allnoconfig
-alpha                             allnoconfig
-arc                               allnoconfig
-riscv                             allnoconfig
-mips                             allyesconfig
-m68k                       m5208evb_defconfig
-um                                  defconfig
-sh                             espt_defconfig
-powerpc                     tqm8555_defconfig
-x86_64                        randconfig-a013
-powerpc                     ep8248e_defconfig
-powerpc                mpc7448_hpc2_defconfig
-sh                            migor_defconfig
-sh                        sh7785lcr_defconfig
-arc                     nsimosci_hs_defconfig
-arm64                            allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                        cerfcube_defconfig
-arm                           tegra_defconfig
-loongarch                         allnoconfig
-m68k                            mac_defconfig
-x86_64                        randconfig-a011
-powerpc                   motionpro_defconfig
-arm                         at91_dt_defconfig
-
-clang tested configs:
-i386                 randconfig-a006-20220801
-hexagon              randconfig-r045-20220801
-hexagon              randconfig-r041-20220801
-i386                 randconfig-a001-20220801
-x86_64               randconfig-a006-20220801
-i386                 randconfig-a002-20220801
-hexagon              randconfig-r041-20220802
-s390                 randconfig-r044-20220802
-riscv                randconfig-r042-20220802
-i386                 randconfig-a003-20220801
-hexagon              randconfig-r045-20220802
-i386                 randconfig-a005-20220801
-i386                 randconfig-a004-20220801
-x86_64               randconfig-a002-20220801
-x86_64               randconfig-a001-20220801
-x86_64               randconfig-a003-20220801
-x86_64               randconfig-a005-20220801
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-i386                          randconfig-a013
-x86_64                        randconfig-a005
-i386                          randconfig-a011
-x86_64                        randconfig-a014
-i386                          randconfig-a015
-x86_64                        randconfig-a012
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a016
-hexagon              randconfig-r045-20220803
-hexagon              randconfig-r041-20220803
-x86_64                        randconfig-k001
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
