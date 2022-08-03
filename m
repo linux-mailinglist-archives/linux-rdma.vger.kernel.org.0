@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72257588B24
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Aug 2022 13:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48622588B3E
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Aug 2022 13:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235349AbiHCL1n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Aug 2022 07:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
+        id S235833AbiHCLaz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Aug 2022 07:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234581AbiHCL1l (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Aug 2022 07:27:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DD8F5275F3
-        for <linux-rdma@vger.kernel.org>; Wed,  3 Aug 2022 04:27:40 -0700 (PDT)
+        with ESMTP id S236427AbiHCLav (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Aug 2022 07:30:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 05E042BB39
+        for <linux-rdma@vger.kernel.org>; Wed,  3 Aug 2022 04:30:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659526060;
+        s=mimecast20190719; t=1659526249;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=WXCHkKJ3NiqFVPxxjTWcCdeUI1hi1Vc6RuS+UWOjl2A=;
-        b=IKKB6OZsQA1NNKLXpTk4sheuCbO69Z9pu42/195oCnfdHXyA/WCUlMs+GMIK0x8pFhQeWK
-        Zd8dtr41P1ph96P/pZdPC8V0JMh34D9sm4k60s87tqEdOj3kfX04CQ/XW8dJSclqNi7wgq
-        Is6UN2cXS/VHws+7I+wMAyidqE2uUBI=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=ACliQ9oJqgCoHX8Ef7C87bGSwzNCX201dby99j7oUC8=;
+        b=P1pXfb0p8rGSq/Zm/1FllzqVcQkOMkXuv/JBIxh4577DovpaC80Dw3FKLrAEsnI+B3SBPt
+        GJd3AeYQo5n++gZwiRiXRGNmYR1Pk0hqjwR85HnPQA8BDUp/ABH6ZMEp1v90N9KMOlp1yx
+        Wqy2Qb19xlwuAoS8Azm3sFurQ4gMMFk=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-350-n1-uuVWbOXWg3ipOMJthdg-1; Wed, 03 Aug 2022 07:27:39 -0400
-X-MC-Unique: n1-uuVWbOXWg3ipOMJthdg-1
-Received: by mail-qt1-f199.google.com with SMTP id hf13-20020a05622a608d00b003214b6b3777so7938033qtb.13
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Aug 2022 04:27:38 -0700 (PDT)
+ us-mta-269-JrDZbHKkNW-7NlKY6-aE_Q-1; Wed, 03 Aug 2022 07:30:47 -0400
+X-MC-Unique: JrDZbHKkNW-7NlKY6-aE_Q-1
+Received: by mail-qv1-f72.google.com with SMTP id dn2-20020a056214094200b0047491ead6a2so7453925qvb.2
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Aug 2022 04:30:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=WXCHkKJ3NiqFVPxxjTWcCdeUI1hi1Vc6RuS+UWOjl2A=;
-        b=aQ1XsDhd7Q4gvn8tWBS4INAHF9pjya6CMe9f7OP0VX1g83xp8xFZRnJfe2BEoIP8ke
-         xiQKzPNzzWJgKdc6mutL/ReapigOalm9gYQtfwPtakFyit76CFSQ/S9Z1bApy1Wa5Ubv
-         fP1aBLTZZOasLrq74CjrA44mr20GZbulw90zmwOdnZj4eAGQyg8ja5PqKgBBXQcc0d4N
-         I8W4jRMuMit8tUMXnK7+SWhDlO95n/K/CpyPR5QaxlXcAZ22XfHjo6FmaerVWsikJmaH
-         Ay+cz5vFo+R4x+NQw2BSavrUe3DbZYXXjYtfJvBT+7OCkJ924HTADE3km3lwNGEA1ysO
-         qjPA==
-X-Gm-Message-State: AJIora+5GR0CFQ6IhMsiDeuB77FyWbkTHaQrVXSE9zyIIPLGUYy+t+6B
-        Ahbl7d63rV1r+vp07A0qCXFo6o+LJA+H2+tLf5lpAcB7Z+aH78Ap0DzX6EMb7fdiPKQS2mdbQ7/
-        b5l8suYmuFDUEhFkFWZJ7ug==
-X-Received: by 2002:a05:620a:29d6:b0:6b5:be51:fcf0 with SMTP id s22-20020a05620a29d600b006b5be51fcf0mr18064235qkp.705.1659526058537;
-        Wed, 03 Aug 2022 04:27:38 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1uy36sdA7Sh8aasUy+6BxrbC/DrMuE16xQziCA4OiQcdH+TqUbY9dg+IdQ3r5/Ko0Cx+GqURg==
-X-Received: by 2002:a05:620a:29d6:b0:6b5:be51:fcf0 with SMTP id s22-20020a05620a29d600b006b5be51fcf0mr18064224qkp.705.1659526058324;
-        Wed, 03 Aug 2022 04:27:38 -0700 (PDT)
+        bh=ACliQ9oJqgCoHX8Ef7C87bGSwzNCX201dby99j7oUC8=;
+        b=7GIq4tuqFZuH+X4jwIFHlpe14RYaF3D0ODKI9Xgmb0hmG+QjJWNU/cPxPn6nE66Vn0
+         ji61AIM1aKrUlqxbbpQomG5Vzq8DiGEkk0T4TAYVDse+IW2+CUCbLqs6B1t8KldnBpIu
+         6ByZwRKQeDPuWAjakfFYPBdF9PQCo7PwhpLuSuOxUlOgAvy/KmJMZssUN2wm87ILvCCQ
+         8nNmNTa2qh31tUs45apVqn1q/UfzIQkhxwp2TILdIFAQsHcLz3xOWMMcqJ1Uvn055QBa
+         9LbKy87r7kitEZBvKee8vuJ35NEo+uZJgLy6BswE2FthGFPZATgOccI/HersafvlAVin
+         qyRQ==
+X-Gm-Message-State: AJIora8GMr3cWf2EjzDRXFjCU0xr4KeZ7dYgbnKTtPHWnAM6YRnk/icW
+        gN/eJ4eisgeaWWYYnDtPW515xyDJj03oJEe1uqmMc8vFO8jzzscYuUqDWm6YIzCkrQ6Pztt8E3H
+        stZm2Pb6Iamhf3es0Vc+5cQ==
+X-Received: by 2002:ac8:59d5:0:b0:31f:dde:fca8 with SMTP id f21-20020ac859d5000000b0031f0ddefca8mr22345839qtf.86.1659526247495;
+        Wed, 03 Aug 2022 04:30:47 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sN0PZbJQ7Njk6l2cfsYiD8YZMh9JnksyXTAlgE0zWDCVaHwC+6GHlYXN2nC/9NqFsBWxtlVQ==
+X-Received: by 2002:ac8:59d5:0:b0:31f:dde:fca8 with SMTP id f21-20020ac859d5000000b0031f0ddefca8mr22345807qtf.86.1659526247297;
+        Wed, 03 Aug 2022 04:30:47 -0700 (PDT)
 Received: from pc-4.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
-        by smtp.gmail.com with ESMTPSA id fd9-20020a05622a4d0900b00304fe5247bfsm10712589qtb.36.2022.08.03.04.27.34
+        by smtp.gmail.com with ESMTPSA id n15-20020a05620a294f00b006b5cc25535fsm12275757qkp.99.2022.08.03.04.30.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Aug 2022 04:27:37 -0700 (PDT)
-Date:   Wed, 3 Aug 2022 13:27:32 +0200
+        Wed, 03 Aug 2022 04:30:46 -0700 (PDT)
+Date:   Wed, 3 Aug 2022 13:30:41 +0200
 From:   Guillaume Nault <gnault@redhat.com>
 To:     Matthias May <matthias.may@westermo.com>
 Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
@@ -67,59 +67,54 @@ Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
         eyal.birger@gmail.com, jesse@nicira.com, linville@tuxdriver.com,
         daniel@iogearbox.net, hadarh@mellanox.com, ogerlitz@mellanox.com,
         willemb@google.com, martin.varghese@nokia.com
-Subject: Re: [PATCH v2 net 0/4] Do not use RT_TOS for IPv6 flowlabel
-Message-ID: <20220803112732.GB29408@pc-4.home>
+Subject: Re: [PATCH v2 net 1/4] geneve: do not use RT_TOS for IPv6 flowlabel
+Message-ID: <20220803113041.GC29408@pc-4.home>
 References: <20220802120935.1363001-1-matthias.may@westermo.com>
+ <20220802120935.1363001-2-matthias.may@westermo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220802120935.1363001-1-matthias.may@westermo.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220802120935.1363001-2-matthias.may@westermo.com>
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 02, 2022 at 02:09:31PM +0200, Matthias May wrote:
+On Tue, Aug 02, 2022 at 02:09:32PM +0200, Matthias May wrote:
 > According to Guillaume Nault RT_TOS should never be used for IPv6.
 > 
-> Quote:
-> RT_TOS() is an old macro used to interprete IPv4 TOS as described in
-> the obsolete RFC 1349. It's conceptually wrong to use it even in IPv4
-> code, although, given the current state of the code, most of the
-> existing calls have no consequence.
-> 
-> But using RT_TOS() in IPv6 code is always a bug: IPv6 never had a "TOS"
-> field to be interpreted the RFC 1349 way. There's no historical
-> compatibility to worry about.
+> Fixes: 3a56f86f1be6a ("geneve: handle ipv6 priority like ipv4 tos")
 
-Apart from the not so informative commit messages, I'm fine with this
-series. Please keep my acked-by on all patches if you send a v3.
+While I'm at it, the SHA1 is normally truncated to 12 charaters, not 13.
 
-Thanks again for fixing this.
-
-Acked-by: Guillaume Nault <gnault@redhat.com>
-
+> Signed-off-by: Matthias May <matthias.may@westermo.com>
 > ---
 > v1 -> v2:
 >  - Fix spacing of "Fixes" tag.
 >  - Add missing CCs
+> ---
+>  drivers/net/geneve.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> Matthias May (4):
->   geneve: do not use RT_TOS for IPv6 flowlabel
->   vxlan: do not use RT_TOS for IPv6 flowlabel
->   mlx5: do not use RT_TOS for IPv6 flowlabel
->   ipv6: do not use RT_TOS for IPv6 flowlabel
-> 
->  drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c | 4 ++--
->  drivers/net/geneve.c                                | 3 +--
->  drivers/net/vxlan/vxlan_core.c                      | 2 +-
->  net/ipv6/ip6_output.c                               | 3 +--
->  4 files changed, 5 insertions(+), 7 deletions(-)
-> 
+> diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+> index 4c380c06f178..e1a4480e6f17 100644
+> --- a/drivers/net/geneve.c
+> +++ b/drivers/net/geneve.c
+> @@ -877,8 +877,7 @@ static struct dst_entry *geneve_get_v6_dst(struct sk_buff *skb,
+>  		use_cache = false;
+>  	}
+>  
+> -	fl6->flowlabel = ip6_make_flowinfo(RT_TOS(prio),
+> -					   info->key.label);
+> +	fl6->flowlabel = ip6_make_flowinfo(prio, info->key.label);
+>  	dst_cache = (struct dst_cache *)&info->dst_cache;
+>  	if (use_cache) {
+>  		dst = dst_cache_get_ip6(dst_cache, &fl6->saddr);
 > -- 
 > 2.35.1
 > 
