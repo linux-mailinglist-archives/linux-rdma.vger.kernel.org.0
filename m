@@ -2,76 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41275589DFF
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Aug 2022 16:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838FB589E24
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Aug 2022 17:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240100AbiHDO7f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Aug 2022 10:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39126 "EHLO
+        id S229854AbiHDPE6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Aug 2022 11:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240091AbiHDO7e (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Aug 2022 10:59:34 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44643AB17;
-        Thu,  4 Aug 2022 07:59:32 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id v131-20020a1cac89000000b003a4bb3f786bso2626861wme.0;
-        Thu, 04 Aug 2022 07:59:32 -0700 (PDT)
+        with ESMTP id S234233AbiHDPE5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Aug 2022 11:04:57 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC35A52FF0;
+        Thu,  4 Aug 2022 08:04:56 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id bv3so11684864wrb.5;
+        Thu, 04 Aug 2022 08:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=fIvr7r4dFld5MIm2rh62nNS+UOBVr/ErA+zOy7iWMao=;
-        b=A/Fik9lv/2gethHz0fZ+UAEGw/3qSbGg1E/Low6x0iRRXTokgLR9yM7uvtfz/YbA3W
-         h7dprtwYZPWTK/bb+r8SFqGnQ9iixgLf+ONaYlfiF7egl5W6Ws1ldtQ22Vqz4p99SYa2
-         mrHDQnzWvctMh29FtMXilAEU/zIqyOgE78K1zD4SBYvBkPZCQzeNPeMRaCR8yXOuUsiX
-         3bXoynGTGR+4l5aJwMzUw6Hm5KlrFTwMqdtN0s8MPuht6S7bx9MuALUwVJExTUVoi4+r
-         VlIcP+pR/iatTPn6dR+Jmm4UqfhVM8tXID19LeXH9HbgSIIQd0pXIrdEWp+yK50QeJH8
-         r6zg==
+        bh=OZAZOQcdiy06Yu4+hpKMxOPIygFLJTFjIVoiVQXoqPg=;
+        b=WTh0kQtEjcHi8EkyWYns+g/En+cpMJ96AAgg/8oZnNNvn6vKr8vbE7BQUG4BMHqn8s
+         P0KE9+af+/hQyP9cobiSU4F099+NOt1pDVQN1Gd0/f0ZKiY+AJSKZvnyJNFpYlS+RySN
+         ev/KJaYyhhgSCTZPb2mnVTfj5nCe/E1/viKsaBLy+afXVLAzitj+l0IpohNLdvfzQnci
+         B8MxzgloY3Mmk22njhjN9Y7ZG7qPJ70Dih7Y00Wb1PiKg6u3eq0r4TqC76lgx1S/gGE2
+         ZAYVh4bKPOzu2TgsW7zcRvRlRRbjMhiaoTHsnvsY2NDB6S2CqCoDHD6tfijhv+gg/KR4
+         04Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=fIvr7r4dFld5MIm2rh62nNS+UOBVr/ErA+zOy7iWMao=;
-        b=OFlsdVHTKdlCQcIoPRgxNWrHrwc9Psvfds484klwIfYKydABKwes9ySPHoS6Yp4KmB
-         fLiFWsDJLYbDcsWb7flcXfh4l+i7kT0wYNM5x9JJMvo9QaOjW/eShLqNkIRmdtcnL0S2
-         XTtXAgBOIqT99cFK1rHjsicNtMZUTm5F7fxVUbPBk+LySmbs/UFJ363u3suOCKXky7jb
-         lIKQNLwIG4sWh2/yi+QhXUXDjlnn3MGkaHqSS77GgU2lwZoTnCM6PreJ4UprsBuDuay7
-         tjbTfhoRrlwdJrU1yf1ytg+gilOZpNwqvNaNayet6IC8z5MBS5XJo7hsRSjPmwnKDkh8
-         G3fg==
-X-Gm-Message-State: ACgBeo2u9cS6j3CLr2E4M686u4qIJq+jGVpprTHiUjCDCcQljMrnlfQC
-        Geein3oKzWP+WwAvUMQDXNijQP5ajps=
-X-Google-Smtp-Source: AA6agR5TCZxbnnhJsvsjr7VRv9JM2gcdz57C0mjg2APxHzpck97bLs/MVKv6BbloUIKc4pxx2xVGyA==
-X-Received: by 2002:a05:600c:1e0f:b0:3a3:191c:a3c8 with SMTP id ay15-20020a05600c1e0f00b003a3191ca3c8mr1821727wmb.151.1659625171368;
-        Thu, 04 Aug 2022 07:59:31 -0700 (PDT)
+        bh=OZAZOQcdiy06Yu4+hpKMxOPIygFLJTFjIVoiVQXoqPg=;
+        b=otHlajnWlDqqcWjeBvR8hGu3Tw2pl4tjEgYRJl1nCwVCqMArCrsUS9ujMHoK4vyrOM
+         aHnacTQ1lUXm4WlmLfpmVTS5m/wzxU/HXrDp2GhE+LZgxPMUOqXY0xEC6pTA/wETMo4a
+         u0cIz3LFN/iVOlQaCSjluwXX5+5o1lE0eN0Lo9kO8gjsSS5Blkh9b0Je/6NVLZq1JuQF
+         Qr/5HFeyRH0V9YhXoEeBfltM5hXk90b5xSN9H6oswYHsb94q7uFW/wACKygywVCj+JTY
+         gxOmeyP0OQCPPm96bmZTWhmkG7Hrkyyz2v9PfwAxbApZd9LHN8jxco7yZP32ne7uMB8R
+         DHFQ==
+X-Gm-Message-State: ACgBeo2NCTrQ2aMgmBmD7l5WK7i/RWhYO8npfSs3W/5frJGrOMOjiNjb
+        121E4MDjVSMDg7RFMy016/8=
+X-Google-Smtp-Source: AA6agR6AaMAMV9vkpJOZDZRNryZnnCoaw9cLMQ0voxVvZUZDOCqzSljA35sUZ1JXqmLdSo7cksOsqA==
+X-Received: by 2002:a05:6000:1863:b0:220:6d5f:deb5 with SMTP id d3-20020a056000186300b002206d5fdeb5mr1656018wri.470.1659625495139;
+        Thu, 04 Aug 2022 08:04:55 -0700 (PDT)
 Received: from [192.168.0.104] ([77.126.166.31])
-        by smtp.gmail.com with ESMTPSA id c6-20020a05600c0a4600b003a308e9a192sm8004735wmq.30.2022.08.04.07.59.29
+        by smtp.gmail.com with ESMTPSA id b6-20020a5d6346000000b0022063e5228bsm1385790wrw.93.2022.08.04.08.04.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Aug 2022 07:59:31 -0700 (PDT)
-Message-ID: <b6857098-63c8-f1ca-9907-04ef1cad3f23@gmail.com>
-Date:   Thu, 4 Aug 2022 17:59:28 +0300
+        Thu, 04 Aug 2022 08:04:54 -0700 (PDT)
+Message-ID: <2e33b89a-5387-e68c-a0fb-dec2c54f87e2@gmail.com>
+Date:   Thu, 4 Aug 2022 18:04:52 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH net] net/mlx5e: kTLS, Use _safe() iterator in
- mlx5e_tls_priv_tx_list_cleanup()
+Subject: Re: [PATCH net] net/mlx5e: Fix use after free in mlx5e_fs_init()
 Content-Language: en-US
 To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
+Cc:     Leon Romanovsky <leon@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Gal Pressman <gal@nvidia.com>,
-        Aya Levin <ayal@nvidia.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Boris Pismenny <borisp@nvidia.com>
-References: <YuvbN3hr1F/KbeCh@kili>
+        Paolo Abeni <pabeni@redhat.com>,
+        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Lama Kayal <lkayal@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>
+References: <YuvbCRstoxopHi4n@kili>
 From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <YuvbN3hr1F/KbeCh@kili>
+In-Reply-To: <YuvbCRstoxopHi4n@kili>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,38 +83,43 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 8/4/2022 5:44 PM, Dan Carpenter wrote:
-> Use the list_for_each_entry_safe() macro to prevent dereferencing "obj"
-> after it has been freed.
+On 8/4/2022 5:43 PM, Dan Carpenter wrote:
+> Call mlx5e_fs_vlan_free(fs) before kvfree(fs).
 > 
-> Fixes: c4dfe704f53f ("net/mlx5e: kTLS, Recycle objects of device-offloaded TLS TX connections")
+> Fixes: af8bbf730068 ("net/mlx5e: Convert mlx5e_flow_steering member of mlx5e_priv to pointer")
 > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> This applies to net but I never really understand how mellanox patches
+> work...
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-> index 6b6c7044b64a..e6f604f9561d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-> @@ -246,7 +246,7 @@ static void mlx5e_tls_priv_tx_cleanup(struct mlx5e_ktls_offload_context_tx *priv
->   static void mlx5e_tls_priv_tx_list_cleanup(struct mlx5_core_dev *mdev,
->   					   struct list_head *list, int size)
->   {
-> -	struct mlx5e_ktls_offload_context_tx *obj;
-> +	struct mlx5e_ktls_offload_context_tx *obj, *n;
->   	struct mlx5e_async_ctx *bulk_async;
->   	int i;
->   
-> @@ -255,7 +255,7 @@ static void mlx5e_tls_priv_tx_list_cleanup(struct mlx5_core_dev *mdev,
->   		return;
->   
->   	i = 0;
-> -	list_for_each_entry(obj, list, list_node) {
-> +	list_for_each_entry_safe(obj, n, list, list_node) {
->   		mlx5e_tls_priv_tx_cleanup(obj, &bulk_async[i]);
->   		i++;
+
+Hi Dan,
+This patch belongs to next kernel (6.0).
+It seems that net-next (or parts of it) is already merged into net as 
+we're in the merge window.
+
+
+>   drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+> index e2a9b9be5c1f..e0ce5a233d0b 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+> @@ -1395,10 +1395,11 @@ struct mlx5e_flow_steering *mlx5e_fs_init(const struct mlx5e_profile *profile,
 >   	}
+>   
+>   	return fs;
+> -err_free_fs:
+> -	kvfree(fs);
+> +
+>   err_free_vlan:
+>   	mlx5e_fs_vlan_free(fs);
+> +err_free_fs:
+> +	kvfree(fs);
+>   err:
+>   	return NULL;
+>   }
 
 Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
