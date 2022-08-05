@@ -2,67 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C339258A743
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Aug 2022 09:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A3758A744
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Aug 2022 09:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240258AbiHEHkJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Aug 2022 03:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        id S240281AbiHEHkM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Aug 2022 03:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240227AbiHEHkG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Aug 2022 03:40:06 -0400
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AEB74DE8;
-        Fri,  5 Aug 2022 00:39:55 -0700 (PDT)
+        with ESMTP id S240242AbiHEHkH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Aug 2022 03:40:07 -0400
+Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70B874E26;
+        Fri,  5 Aug 2022 00:40:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1659685193; i=@fujitsu.com;
-        bh=zWQzyxasTlVBGOYCkg6w45iiHbCTBaThAhUnvGcr8Tg=;
+        s=170520fj; t=1659685198; i=@fujitsu.com;
+        bh=q+vZkm8yJ9zFKnWMnygIT/3sauEaYG/Tmtem+Zmc1j0=;
         h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
          MIME-Version:Content-Type;
-        b=tH8ghDi6ZgsHuKN0FmGDlHsl5985rA4NaMApqAtP3VHptTh6nE7zw3NPiFBTI5qCX
-         +v/c/41riHwClx0p6thkb/BYykYAAppKpteu9XGrHnjTStzj6xw0BuSFFlUqoEX0Gw
-         a8+rizHVq8yXWxByI0V0n7F3YsNAetQWEk/xcYrfgZa1QjVC1k9Mb0pT0gBloxxY4p
-         1fJxeGaTkQr6+ixUbiLwWDNYtjQDxRX7Y2vABSt42h0n8QN7md8HetrmgmSryoTVew
-         Fd4Hz8P3reObrni8Mp09zsiFCas4X/IekfqtmglVS/kaDn0OMT8LAuPzvoSMrCs/Dc
-         SpWI33fjrmafQ==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLKsWRWlGSWpSXmKPExsViZ8ORqOtx8k2
-  SweaL5hZzv8tZTJ96gdFi5owTjBZTfi1ltri8aw6bxbNDvSwWH6YeYbb4MnUas8WpX6eYLP5e
+        b=UtcNs0XZ9FtiYTTdTGnw3IuaLa9bQNail6fhbWBAV4WJboj7trmM3bqJDFx4rV+y2
+         tvw5RS815ASqi80pz6/VO4Lo3OmMxqZIszSWwqSLnOBrCN/82DJYFUrOqUlMXQwOkZ
+         JduBZrcIkV+XqDH+JjCuxAq55XYZn9q+lFDvRqKChicRE3POpQsFyavouEEdkwyVaH
+         R0+YrKo5o0ftl8jrFv+KypVhU+Q0UAclQyNRDC8FG6d5uZeZDAQtW5Km9xMo0m1a6f
+         oB2Nib1HKWPWZ5Fvi3OFj5sUEOotIEU2SaGb9AdhLwSnRO40GRkMXGNEuUYiLa2b/z
+         nnI2QF7Fhi7mg==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrOKsWRWlGSWpSXmKPExsViZ8OxWdfv5Js
+  kg6f97BZzv8tZTJ96gdFi5owTjBZTfi1ltri8aw6bxbNDvSwWH6YeYbb4MnUas8WpX6eYLP5e
   +sdmcf5YP7sDt8fOWXfZPRbvecnksWlVJ5tHb/M7No/LT64wenzeJOex9fNtlgD2KNbMvKT8i
-  gTWjPbNc9gK3slXLH1xjr2B8bR0FyMXh5DAFkaJj+faWCCc5UwS8yf9YYRw9jNKzHlxESjDyc
-  EmoCFxr+UmWEJEoJNR4lH/MTYQh1ngPJPEtE3/2EGqhAW8JO4+vMAKYrMIqEg8+LGUCcTmFXC
-  UmPW5AaxGQkBBYsrD98wgNqeAk8Smb6sYQWwhoJqjLQtZIOoFJU7OfAJmMwtISBx88QKongOo
-  V0liZnc8xJgKiVmz2pggbDWJq+c2MU9gFJyFpHsWku4FjEyrGG2TijLTM0pyEzNzdA0NDHQND
-  U2BtJGuoamxXmKVbqJeaqluXn5RSYauoV5iebFeanGxXnFlbnJOil5easkmRmCspRSnzdzBuG
-  XfL71DjJIcTEqivOeOv0kS4kvKT6nMSCzOiC8qzUktPsQow8GhJMEbdAIoJ1iUmp5akZaZA4x
-  7mLQEB4+SCO86kFbe4oLE3OLMdIjUKUZFKXFeI5CEAEgiozQPrg2Wai4xykoJ8zIyMDAI8RSk
-  FuVmlqDKv2IU52BUEua9BzKFJzOvBG76K6DFTECLuf6/BllckoiQkmpgypWryX/2dLvM7gKlO
-  yrcBR/dXh+rTN2QXCRYX3Z93sKif62SS2737fzbfuFGZdihs5HbfyhsuCfWkH9S8t1kIWGmaO
-  1PLRc3ejb2d3avffBfuujP9h8rPtjsatxxKfLB2Yz5Tuf59DWK+pZt5lU+E7rO28WvcN5je5/
-  yjNZzTQ9mZEnt3O+RpndlrYbM4ce7nxjmNzNuOj373Q+BN7eEfjy5PLEgbtGzZV07H+/a+7Y2
-  4XP388fG0zbMenD12anSFHfTurtvjEK9KgUmhHRXcB0XjXzpdk/pq0/rNp2lnYtWljIHPdlVY
-  rZmZn/S0jcFaULGtx+2RCsbbfR9sL/ra27ndHnOR8r+l4rnLd6R76vEUpyRaKjFXFScCAAomn
-  RwsAMAAA==
+  gTWjA0/5QuOC1Tc//WbsYHxNm8XIxeHkMBGRonTP98wQziLmSSmvnrN2sXICeTsZ5S4ONUExG
+  YT0JC413KTEaRIRKCTUeJR/zE2EIdZ4DyTxLRN/9hBqoQFQiQ2PN3PCGKzCKhIfG6aDRbnFXC
+  U2LZhPhuILSGgIDHl4XtmEJtTwEli07dVjBDbHCWOtixkgagXlDg58wmYzSwgIXHwxQugeg6g
+  XiWJmd3xEGMqJGbNamOCsNUkrp7bxDyBUXAWku5ZSLoXMDKtYrRNKspMzyjJTczM0TU0MNA1N
+  DQF0ka6hqbGeolVuol6qaW6eflFJRm6hnqJ5cV6qcXFesWVuck5KXp5qSWbGIFxllKcNnMH45
+  Z9v/QOMUpyMCmJ8p47/iZJiC8pP6UyI7E4I76oNCe1+BCjDAeHkgRv0AmgnGBRanpqRVpmDjD
+  mYdISHDxKIrzrQFp5iwsSc4sz0yFSpxh1Oc7v3L+XWYglLz8vVUqc1wikSACkKKM0D24ELP1c
+  YpSVEuZlZGBgEOIpSC3KzSxBlX/FKM7BqCTMew9kCk9mXgncpldARzABHcH1/zXIESWJCCmpB
+  qYaCYv4El9ZS8mVV6IF7xdPF3+7oWJtsc7y3t471im8Z5fv+v6+reBsc8Iat70vHnkpFrPx1C
+  S/uvb65c32Y+lxyyTcrbJu1Las7FI899r/419FpT8xQkqHbvGa/Ayav/ZYv/+M45VfBNp00gX
+  c4rY/vXnFf5q+vD5nC2dtPefMps1N+6JnHvt7eM+EVVl8k4+5Cj84nv844FqGa81RlcjMTRkn
+  1ZVFtAJ4v62RvdYdyCW5pepA390DRkolVfaiD5i702fOvs7HteTOu6Yb/omqbV2HjtWmbXu9N
+  O0AZz/HEd6+RXIeV/133BDfnbV3k3W177vV/p6O2RoCOxt2vl6z7EZF7NH/8Qvn7Epl/aPEUp
+  yRaKjFXFScCACmjgKuugMAAA==
 X-Env-Sender: lizhijian@fujitsu.com
-X-Msg-Ref: server-6.tower-728.messagelabs.com!1659685192!59229!1
-X-Originating-IP: [62.60.8.97]
+X-Msg-Ref: server-2.tower-745.messagelabs.com!1659685197!148381!1
+X-Originating-IP: [62.60.8.179]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.87.3; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 6197 invoked from network); 5 Aug 2022 07:39:52 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
-  by server-6.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 5 Aug 2022 07:39:52 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 39FB11001A0;
-        Fri,  5 Aug 2022 08:39:52 +0100 (BST)
+Received: (qmail 10002 invoked from network); 5 Aug 2022 07:39:58 -0000
+Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
+  by server-2.tower-745.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 5 Aug 2022 07:39:58 -0000
+Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 7035E153;
+        Fri,  5 Aug 2022 08:39:57 +0100 (BST)
 Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 2C4B510019D;
-        Fri,  5 Aug 2022 08:39:52 +0100 (BST)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 627DF75;
+        Fri,  5 Aug 2022 08:39:57 +0100 (BST)
 Received: from 4084fd6ad2a8.localdomain (10.167.225.141) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Fri, 5 Aug 2022 08:39:46 +0100
+ (TLS) id 15.0.1497.32; Fri, 5 Aug 2022 08:39:52 +0100
 From:   Li Zhijian <lizhijian@fujitsu.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <zyjzyj2000@gmail.com>,
         "Leon Romanovsky" <leon@kernel.org>, <linux-rdma@vger.kernel.org>
@@ -73,9 +73,9 @@ CC:     Xiao Yang <yangx.jy@fujitsu.com>, <y-goto@fujitsu.com>,
         Tom Talpey <tom@talpey.com>, <tomasz.gromadzki@intel.com>,
         Dan Williams <dan.j.williams@intel.com>,
         <linux-kernel@vger.kernel.org>, Li Zhijian <lizhijian@fujitsu.com>
-Subject: [PATCH v4 1/6] RDMA: Allow registering MR with flush access flags
-Date:   Fri, 5 Aug 2022 07:46:14 +0000
-Message-ID: <1659685579-2-2-git-send-email-lizhijian@fujitsu.com>
+Subject: [PATCH v4 2/6] RDMA/rxe: Allow registering persistent flag for pmem MR only
+Date:   Fri, 5 Aug 2022 07:46:15 +0000
+Message-ID: <1659685579-2-3-git-send-email-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1659685579-2-1-git-send-email-lizhijian@fujitsu.com>
 References: <1659685579-2-1-git-send-email-lizhijian@fujitsu.com>
@@ -95,106 +95,73 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It makes device/HCA support new FLUSH attributes/capabilities, and it
-also makes memory region support new FLUSH access flags.
+Memory region could at most support 2 access flags:
+IB_ACCESS_FLUSH_PERSISTENT and IB_ACCESS_FLUSH_GLOBAL_VISIBILITY
 
-Users can use ibv_reg_mr(3) to register flush access flags. Only the
-access flags also supported by device's capabilities can be registered
-successfully.
+But we only allow user to register persistent flush flags to the pmem MR
+that supports the ability of persisting data across power cycles.
 
-Once registered successfully, it means the MR is flushable. Similarly,
-A flushable MR should also have one or both of GLOBAL_VISIBILITY and
-PERSISTENT attributes/capabilities like device/HCA.
+So register a persistent access flag to a non-pmem MR will be rejected
+by kernel.
 
-CC: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
-V4: set is_pmem more simply
-V2: new scheme check is_pmem # Dan
+v2: update commit message, get rid of confusing ib_check_flush_access_flags() # Tom
 ---
- include/rdma/ib_verbs.h                 | 17 ++++++++++++++++-
- include/uapi/rdma/ib_user_ioctl_verbs.h |  2 ++
- include/uapi/rdma/ib_user_verbs.h       |  2 ++
- 3 files changed, 20 insertions(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 7c2f76f34f6f..aa174cdcdf5a 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -270,6 +270,10 @@ enum ib_device_cap_flags {
- 	/* The device supports padding incoming writes to cacheline. */
- 	IB_DEVICE_PCI_WRITE_END_PADDING =
- 		IB_UVERBS_DEVICE_PCI_WRITE_END_PADDING,
-+	/* Placement type attributes */
-+	IB_DEVICE_PLT_GLOBAL_VISIBILITY =
-+		IB_UVERBS_DEVICE_PLT_GLOBAL_VISIBILITY,
-+	IB_DEVICE_PLT_PERSISTENT = IB_UVERBS_DEVICE_PLT_PERSISTENT,
- };
- 
- enum ib_kernel_cap_flags {
-@@ -1458,10 +1462,14 @@ enum ib_access_flags {
- 	IB_ACCESS_ON_DEMAND = IB_UVERBS_ACCESS_ON_DEMAND,
- 	IB_ACCESS_HUGETLB = IB_UVERBS_ACCESS_HUGETLB,
- 	IB_ACCESS_RELAXED_ORDERING = IB_UVERBS_ACCESS_RELAXED_ORDERING,
-+	IB_ACCESS_FLUSH_GLOBAL_VISIBILITY = IB_UVERBS_ACCESS_FLUSH_GLOBAL_VISIBILITY,
-+	IB_ACCESS_FLUSH_PERSISTENT = IB_UVERBS_ACCESS_FLUSH_PERSISTENT,
-+	IB_ACCESS_FLUSHABLE = IB_ACCESS_FLUSH_GLOBAL_VISIBILITY |
-+			      IB_ACCESS_FLUSH_PERSISTENT,
- 
- 	IB_ACCESS_OPTIONAL = IB_UVERBS_ACCESS_OPTIONAL_RANGE,
- 	IB_ACCESS_SUPPORTED =
--		((IB_ACCESS_HUGETLB << 1) - 1) | IB_ACCESS_OPTIONAL,
-+		((IB_ACCESS_FLUSH_PERSISTENT << 1) - 1) | IB_ACCESS_OPTIONAL,
- };
- 
- /*
-@@ -4310,6 +4318,7 @@ int ib_dealloc_xrcd_user(struct ib_xrcd *xrcd, struct ib_udata *udata);
- static inline int ib_check_mr_access(struct ib_device *ib_dev,
- 				     unsigned int flags)
- {
-+	u64 device_cap = ib_dev->attrs.device_cap_flags;
- 	/*
- 	 * Local write permission is required if remote write or
- 	 * remote atomic permission is also requested.
-@@ -4324,6 +4333,12 @@ static inline int ib_check_mr_access(struct ib_device *ib_dev,
- 	if (flags & IB_ACCESS_ON_DEMAND &&
- 	    !(ib_dev->attrs.kernel_cap_flags & IBK_ON_DEMAND_PAGING))
- 		return -EINVAL;
-+
-+	if ((flags & IB_ACCESS_FLUSH_GLOBAL_VISIBILITY &&
-+	    !(device_cap & IB_DEVICE_PLT_GLOBAL_VISIBILITY)) ||
-+	    (flags & IB_ACCESS_FLUSH_PERSISTENT &&
-+	    !(device_cap & IB_DEVICE_PLT_PERSISTENT)))
-+		return -EINVAL;
- 	return 0;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index 9e3e1a18f2dd..24ca014cdecd 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -113,6 +113,13 @@ void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr *mr)
+ 	mr->type = IB_MR_TYPE_DMA;
  }
  
-diff --git a/include/uapi/rdma/ib_user_ioctl_verbs.h b/include/uapi/rdma/ib_user_ioctl_verbs.h
-index 7dd56210226f..32d44ca328b9 100644
---- a/include/uapi/rdma/ib_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/ib_user_ioctl_verbs.h
-@@ -57,6 +57,8 @@ enum ib_uverbs_access_flags {
- 	IB_UVERBS_ACCESS_ZERO_BASED = 1 << 5,
- 	IB_UVERBS_ACCESS_ON_DEMAND = 1 << 6,
- 	IB_UVERBS_ACCESS_HUGETLB = 1 << 7,
-+	IB_UVERBS_ACCESS_FLUSH_GLOBAL_VISIBILITY = 1 << 8,
-+	IB_UVERBS_ACCESS_FLUSH_PERSISTENT = 1 << 9,
++static bool vaddr_in_pmem(char *vaddr)
++{
++	return REGION_INTERSECTS ==
++	       region_intersects(virt_to_phys(vaddr), 1, IORESOURCE_MEM,
++				 IORES_DESC_PERSISTENT_MEMORY);
++}
++
+ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 		     int access, struct rxe_mr *mr)
+ {
+@@ -123,6 +130,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 	int			num_buf;
+ 	void			*vaddr;
+ 	int err;
++	bool first = true, is_pmem = false;
+ 	int i;
  
- 	IB_UVERBS_ACCESS_RELAXED_ORDERING = IB_UVERBS_ACCESS_OPTIONAL_FIRST,
- 	IB_UVERBS_ACCESS_OPTIONAL_RANGE =
-diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
-index 7dd903d932e5..a58df0ebcb79 100644
---- a/include/uapi/rdma/ib_user_verbs.h
-+++ b/include/uapi/rdma/ib_user_verbs.h
-@@ -1331,6 +1331,8 @@ enum ib_uverbs_device_cap_flags {
- 	/* Deprecated. Please use IB_UVERBS_RAW_PACKET_CAP_SCATTER_FCS. */
- 	IB_UVERBS_DEVICE_RAW_SCATTER_FCS = 1ULL << 34,
- 	IB_UVERBS_DEVICE_PCI_WRITE_END_PADDING = 1ULL << 36,
-+	IB_UVERBS_DEVICE_PLT_GLOBAL_VISIBILITY = 1ULL << 38,
-+	IB_UVERBS_DEVICE_PLT_PERSISTENT = 1ULL << 39,
- };
+ 	umem = ib_umem_get(pd->ibpd.device, start, length, access);
+@@ -167,6 +175,11 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 				goto err_cleanup_map;
+ 			}
  
- enum ib_uverbs_raw_packet_caps {
++			if (first) {
++				first = false;
++				is_pmem = vaddr_in_pmem(vaddr);
++			}
++
+ 			buf->addr = (uintptr_t)vaddr;
+ 			buf->size = PAGE_SIZE;
+ 			num_buf++;
+@@ -175,6 +188,12 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 		}
+ 	}
+ 
++	if (!is_pmem && access & IB_ACCESS_FLUSH_PERSISTENT) {
++		pr_warn("Cannot register IB_ACCESS_FLUSH_PERSISTENT for non-pmem memory\n");
++		err = -EINVAL;
++		goto err_release_umem;
++	}
++
+ 	mr->ibmr.pd = &pd->ibpd;
+ 	mr->umem = umem;
+ 	mr->access = access;
 -- 
 2.31.1
 
