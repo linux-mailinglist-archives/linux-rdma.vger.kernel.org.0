@@ -2,77 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A7A58A3F1
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Aug 2022 01:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA3458A4FD
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Aug 2022 05:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240039AbiHDXhY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Aug 2022 19:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
+        id S240167AbiHED0u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Aug 2022 23:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239940AbiHDXhX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Aug 2022 19:37:23 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3DC6E8B3
-        for <linux-rdma@vger.kernel.org>; Thu,  4 Aug 2022 16:37:22 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id v3so1511428wrp.0
-        for <linux-rdma@vger.kernel.org>; Thu, 04 Aug 2022 16:37:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc;
-        bh=YeEFrOpnueqp49lpSsCtkyhW66cD5QzqZPU5hyS5TkM=;
-        b=bo2XBP67BuG05EPFv/XoJIdVEPLxa1771zsCCTAejlB5sRGBBJscipwNLbZSExpHaj
-         pUyKO8j/8PL7bynEnTgIAfFfO5K7kE8SGUNCahnQkTvPNNs2NqPrlMjL+jGU6tqcn8Rr
-         A/uSn/rVR5Iu09uC/vIuAEyZWqqBuJmPhdgTDpmQg7LcGzOoKz8YVbV26QOS7ffG0IIx
-         8/fXPOKXG6S+ehx0Nsw5fiMFEQ4CGeFzBxo5ytpgvK6OynC4YtnkE0s+TZRo5vzbvQqY
-         zpBeWRiCfpL0Ol54u9tRq0gBY0fHGFZvmHpIN8HBVco2JTUPEFgHVWy3oXKtNjGfnyiJ
-         KxbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=YeEFrOpnueqp49lpSsCtkyhW66cD5QzqZPU5hyS5TkM=;
-        b=7diD6TDyxOem4XXCW3MTjGFyxQK4o7npU3edUvmeE1HhqXDFvYbQQexNjuUvG+v9mZ
-         yQHAsZNpCpwNv4Ap0ggM8Mgc2Ggka5RJRXAf0bN7KNRIlMsndpv3YftPv8Dt4k4Idn4/
-         LLbjve6Mt1W5UI6HLmfQs3plhwV60akuqy0CUKAurYVOj6xSo2MaKMugznb+9OFu+Vnj
-         G8MT9HD8dKOoIHE/dsV+Lqm3v2ByKizBpb3K4EcmWrNrubwvtQI79WGwz1mMg4WICl0m
-         0MloNnkulcbEcIUJ3PHG7GrQJ71flAi7GkqngfWuRhqRCiXbdF/dn81EhviLBTOJF2Qh
-         KaeQ==
-X-Gm-Message-State: ACgBeo1312xfNyKEbNgiosYDOruIOKUQvqV7MGl+X6YRKEnfDXP3vazd
-        xa7wE7zJwe102sjqfp4pa5KLgCpKAQEPV/BGVXQ=
-X-Google-Smtp-Source: AA6agR6f0xgcbz/jJiwHDKBEx340iRt7Ax/7tcMvNnzU6SINdVNPCvSm7LlNyy11FxYItH8Y+id8uuWVtbRpODop/BY=
-X-Received: by 2002:adf:fb12:0:b0:20c:79b2:a200 with SMTP id
- c18-20020adffb12000000b0020c79b2a200mr2693929wrr.617.1659656240885; Thu, 04
- Aug 2022 16:37:20 -0700 (PDT)
-MIME-Version: 1.0
-Sender: rasmaneniampa123@gmail.com
-Received: by 2002:a5d:6d89:0:0:0:0:0 with HTTP; Thu, 4 Aug 2022 16:37:20 -0700 (PDT)
-From:   Lisa Williams <lw23675851@gmail.com>
-Date:   Fri, 5 Aug 2022 00:37:20 +0100
-X-Google-Sender-Auth: mskJh2IMlAJTknsluuWjbZGqJ0Y
-Message-ID: <CAKOWe4C3jnyGfgvXxuZShiyykXU0dpGtbmM1qCzjtEKKCyu8ZQ@mail.gmail.com>
-Subject: My name is Dr Lisa Williams
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S240489AbiHED0Z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Aug 2022 23:26:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79805DEB4;
+        Thu,  4 Aug 2022 20:26:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1699260DBA;
+        Fri,  5 Aug 2022 03:26:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 78B9AC433D6;
+        Fri,  5 Aug 2022 03:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659669972;
+        bh=RiFsmtPK3C0sxX14TBvV1QeNDwkSe8hOKTmeVcrjEts=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=odf0gs6gIei4Kejfk/zJ4nvfkfbStgmj3b4+JN6+Wzyz5aRIfTnatPPb5a5+sjtM+
+         g6VqDxAgmyV9aSZMcJo1/HBlAc3kwiNfZTzidpjhjCN64ZDKFOaCVQT4R90LSA5wdi
+         S10gVRE8IE4CBmKDWH7IW09/f/7XD7Dc5i2ly5ZfHat6tbUTjvoBfHepTEG4UL5+6P
+         HUTChtwWkzzLyhhx5KM+/Xk8RylnJyJwmHPQVAhESCZg5lRoWgK79F55wS1hwgwbYu
+         kjNPiju9OKb4/38tfywVgKWxV9paFoqmjkQ1R1YM+FTW1+brzvqeHt3r+7oHFz5HHF
+         yfAKkfecaN/vQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 67EC9C43140;
+        Fri,  5 Aug 2022 03:26:12 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YuwUmSRis1rYhR+y@nvidia.com>
+References: <YuwUmSRis1rYhR+y@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YuwUmSRis1rYhR+y@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 6b822d408b58c3c4f26dae93245c6b7d8b39e0f9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e495274793ea602415d050452088a496abcd9e6c
+Message-Id: <165966997242.9883.1001097071562370675.pr-tracker-bot@kernel.org>
+Date:   Fri, 05 Aug 2022 03:26:12 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Dear,
+The pull request you sent on Thu, 4 Aug 2022 15:48:57 -0300:
 
-My name is Dr Lisa Williams from the United States.I am a French and
-American nationality (dual) living in the U.S and sometimes in France
-for Work Purpose.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-I hope you consider my friend request. I will share some of my pics
-and more details about myself when I get your response.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e495274793ea602415d050452088a496abcd9e6c
 
-Thanks
+Thank you!
 
-With love
-Lisa
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
