@@ -2,73 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA3458A4FD
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Aug 2022 05:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9546458A5AA
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Aug 2022 07:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240167AbiHED0u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Aug 2022 23:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47208 "EHLO
+        id S235498AbiHEFet (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Aug 2022 01:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240489AbiHED0Z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Aug 2022 23:26:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79805DEB4;
-        Thu,  4 Aug 2022 20:26:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1699260DBA;
-        Fri,  5 Aug 2022 03:26:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 78B9AC433D6;
-        Fri,  5 Aug 2022 03:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659669972;
-        bh=RiFsmtPK3C0sxX14TBvV1QeNDwkSe8hOKTmeVcrjEts=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=odf0gs6gIei4Kejfk/zJ4nvfkfbStgmj3b4+JN6+Wzyz5aRIfTnatPPb5a5+sjtM+
-         g6VqDxAgmyV9aSZMcJo1/HBlAc3kwiNfZTzidpjhjCN64ZDKFOaCVQT4R90LSA5wdi
-         S10gVRE8IE4CBmKDWH7IW09/f/7XD7Dc5i2ly5ZfHat6tbUTjvoBfHepTEG4UL5+6P
-         HUTChtwWkzzLyhhx5KM+/Xk8RylnJyJwmHPQVAhESCZg5lRoWgK79F55wS1hwgwbYu
-         kjNPiju9OKb4/38tfywVgKWxV9paFoqmjkQ1R1YM+FTW1+brzvqeHt3r+7oHFz5HHF
-         yfAKkfecaN/vQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 67EC9C43140;
-        Fri,  5 Aug 2022 03:26:12 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YuwUmSRis1rYhR+y@nvidia.com>
-References: <YuwUmSRis1rYhR+y@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YuwUmSRis1rYhR+y@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: 6b822d408b58c3c4f26dae93245c6b7d8b39e0f9
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e495274793ea602415d050452088a496abcd9e6c
-Message-Id: <165966997242.9883.1001097071562370675.pr-tracker-bot@kernel.org>
-Date:   Fri, 05 Aug 2022 03:26:12 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leonro@nvidia.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231181AbiHEFer (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Aug 2022 01:34:47 -0400
+Received: from ssh248.corpemail.net (ssh248.corpemail.net [210.51.61.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F2C6E2EF;
+        Thu,  4 Aug 2022 22:34:45 -0700 (PDT)
+Received: from ([60.208.111.195])
+        by ssh248.corpemail.net ((D)) with ASMTP (SSL) id ZDN00038;
+        Fri, 05 Aug 2022 13:34:38 +0800
+Received: from localhost.localdomain (10.200.104.97) by
+ jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
+ 15.1.2507.9; Fri, 5 Aug 2022 13:34:39 +0800
+From:   Bo Liu <liubo03@inspur.com>
+To:     <bvanassche@acm.org>, <jgg@ziepe.ca>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Bo Liu <liubo03@inspur.com>
+Subject: [PATCH] RDMA/srp: Check dev_set_name() return value
+Date:   Fri, 5 Aug 2022 01:34:34 -0400
+Message-ID: <20220805053434.3944-1-liubo03@inspur.com>
+X-Mailer: git-send-email 2.18.2
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.200.104.97]
+tUid:   20228051334389b490f9c674bd23283da27a41ff7b287
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Thu, 4 Aug 2022 15:48:57 -0300:
+It's possible that dev_set_name() returns -ENOMEM, catch and handle this.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+Signed-off-by: Bo Liu <liubo03@inspur.com>
+---
+ drivers/infiniband/ulp/srp/ib_srp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e495274793ea602415d050452088a496abcd9e6c
-
-Thank you!
-
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index 7720ea270ed8..a6f788e3b84b 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -3905,8 +3905,9 @@ static struct srp_host *srp_add_port(struct srp_device *device, u8 port)
+ 
+ 	host->dev.class = &srp_class;
+ 	host->dev.parent = device->dev->dev.parent;
+-	dev_set_name(&host->dev, "srp-%s-%d", dev_name(&device->dev->dev),
+-		     port);
++	if (dev_set_name(&host->dev, "srp-%s-%d", dev_name(&device->dev->dev),
++		     port))
++		goto free_host;
+ 
+ 	if (device_register(&host->dev))
+ 		goto free_host;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.27.0
+
