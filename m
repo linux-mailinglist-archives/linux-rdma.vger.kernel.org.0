@@ -2,117 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB14358E0B3
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Aug 2022 22:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417B458E2E4
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Aug 2022 00:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234400AbiHIUKR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Aug 2022 16:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34272 "EHLO
+        id S229821AbiHIWQW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Aug 2022 18:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbiHIUKQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Aug 2022 16:10:16 -0400
-X-Greylist: delayed 3590 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 Aug 2022 13:10:14 PDT
-Received: from stargate.chelsio.com (stargate.chelsio.com [12.32.117.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D651F0A;
-        Tue,  9 Aug 2022 13:10:14 -0700 (PDT)
-Received: from localhost (raina-lt.asicdesigners.com [10.193.177.168] (may be forged))
-        by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 279IftXR031673;
-        Tue, 9 Aug 2022 11:41:57 -0700
-From:   Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     netdev@vger.kernel.org, jgg@nvidia.com, leonro@nvidia.com,
-        davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
-        pabeni@redhat.com, keescook@chromium.org, bharat@chelsio.com
-Subject: [PATCH for-rc] RDMA/cxgb4: fix accept failure due to increased cpl_t5_pass_accept_rpl size
-Date:   Wed, 10 Aug 2022 00:11:18 +0530
-Message-Id: <20220809184118.2029-1-rahul.lakkireddy@chelsio.com>
-X-Mailer: git-send-email 2.32.0
+        with ESMTP id S229878AbiHIWPR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Aug 2022 18:15:17 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E3721E1A
+        for <linux-rdma@vger.kernel.org>; Tue,  9 Aug 2022 15:15:14 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id q124so10765583iod.3
+        for <linux-rdma@vger.kernel.org>; Tue, 09 Aug 2022 15:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc;
+        bh=GI1h58u9NHz7rI/vIwOU5DkUcoHPmL+b4tk5i/xxv5Y=;
+        b=QTP95oQi+RYhXbI8sz4RyTZp0RSE4jP48cyyUmWbTiK1ItvOHbADVtjkGHK/8zFbqv
+         EIzUG3d4HgG5eAQxnVHuBpH33ycuIiNpMEXk8S0LHARhhQGb6AufQVVn/40aQfLvP77W
+         778oK7qnpGZXO0Q2aGCYT4Mad4FGDHlh1br3s7D4D+9Vr7gPQrhXDR8bwR1fyz6kQ1n2
+         /mI7/+oIm6xqfpBjeRephfywWnzvzUcqvvdKwYuFsxmTm/GRVEQb9jKfBsLPvHEPeyBR
+         SLk52BQ10Zm7GZ4Mv5gugSKJZhGFXVOipaGDVsAOq6ABLyMrmGMv+5RYTjL3cqduwO+M
+         O1Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc;
+        bh=GI1h58u9NHz7rI/vIwOU5DkUcoHPmL+b4tk5i/xxv5Y=;
+        b=igoCSUGt3eFLbqoqR2fJVGYIXaIBn2HZdvCuaUKB0mDxFVCQeRdKrqHzIlr7xT3vwq
+         dsA3zlO45fvDbHAkhYj1vGtDvRryFBDhG4aLO7dAMZOEWq9ce4tfJNOki+HxMzRmJoZm
+         /6LurhwhYOPpz+kfyHsvvPNMIBxm2bkVU5KnFbY4iEie+ICCBXTCdeHZ0+Fa6WMJuREM
+         eKN+bv5GrcAJtt1LdAkDcX0FG/FgkVUjboOWmt5yVIpVikJfzJrUYSCQyDKeudaK7Y+z
+         3MM68ehFQfKHPE5s8ojF/5+gMmp+2o705G9WBp3HcylbD2zdjcmqHz4yYJ/sreGwEecv
+         5/qA==
+X-Gm-Message-State: ACgBeo1f5QG/V7pG0m5HsilVBLueU4S8Da5sH0ZjMQCf0mezdlxgB7V1
+        RkWgq55KtS/3VQkBgOMAMEaBqc/pgbu7n9fGC/y8JZHDJDVNhA==
+X-Google-Smtp-Source: AA6agR7pJ6r7fhR2kV9XLe+oV3h+/ej1weqLnpTQS1YP5ule1vsDwGSNCnOW6LlEIY2xTapZFY+hu5KXPqSjTYpoaJM=
+X-Received: by 2002:a63:4642:0:b0:41b:d353:c5c7 with SMTP id
+ v2-20020a634642000000b0041bd353c5c7mr20359415pgk.568.1660083303718; Tue, 09
+ Aug 2022 15:15:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a05:6a10:e8a6:b0:2d4:fb1c:cc5e with HTTP; Tue, 9 Aug 2022
+ 15:15:03 -0700 (PDT)
+Reply-To: wijh555@gmail.com
+From:   "Dr. Ali Moses" <alimoses07@gmail.com>
+Date:   Tue, 9 Aug 2022 15:15:03 -0700
+Message-ID: <CADWzZe65tcOX2+bMZfMLLauGpHEQ9Cdv814nLU=uQvKzDFrEVg@mail.gmail.com>
+Subject: Good Day,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:d2a listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [alimoses07[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [wijh555[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [alimoses07[at]gmail.com]
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Potnuri Bharat Teja <bharat@chelsio.com>
-
-Commit 'c2ed5611afd7' has increased the cpl_t5_pass_accept_rpl{} structure
-size by 8B to avoid roundup. cpl_t5_pass_accept_rpl{} is a HW specific
-structure and increasing its size will lead to unwanted adapter errors.
-Current commit reverts the cpl_t5_pass_accept_rpl{} back to its original
-and allocates zeroed skb buffer there by avoiding the memset for iss field.
-Reorder code to minimize chip type checks.
-
-Fixes: c2ed5611afd7 ("iw_cxgb4: Use memset_startat() for cpl_t5_pass_accept_rpl")
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
----
- drivers/infiniband/hw/cxgb4/cm.c            | 25 ++++++++-------------
- drivers/net/ethernet/chelsio/cxgb4/t4_msg.h |  2 +-
- 2 files changed, 10 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index c16017f6e8db..14392c942f49 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -2468,31 +2468,24 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
- 			opt2 |= CCTRL_ECN_V(1);
- 	}
- 
--	skb_get(skb);
--	rpl = cplhdr(skb);
- 	if (!is_t4(adapter_type)) {
--		BUILD_BUG_ON(sizeof(*rpl5) != roundup(sizeof(*rpl5), 16));
--		skb_trim(skb, sizeof(*rpl5));
--		rpl5 = (void *)rpl;
--		INIT_TP_WR(rpl5, ep->hwtid);
--	} else {
--		skb_trim(skb, sizeof(*rpl));
--		INIT_TP_WR(rpl, ep->hwtid);
--	}
--	OPCODE_TID(rpl) = cpu_to_be32(MK_OPCODE_TID(CPL_PASS_ACCEPT_RPL,
--						    ep->hwtid));
--
--	if (CHELSIO_CHIP_VERSION(adapter_type) > CHELSIO_T4) {
- 		u32 isn = (prandom_u32() & ~7UL) - 1;
-+
-+		skb = get_skb(skb, roundup(sizeof(*rpl5), 16), GFP_KERNEL);
-+		rpl5 = __skb_put_zero(skb, roundup(sizeof(*rpl5), 16));
-+		rpl = (void *)rpl5;
-+		INIT_TP_WR_CPL(rpl5, CPL_PASS_ACCEPT_RPL, ep->hwtid);
- 		opt2 |= T5_OPT_2_VALID_F;
- 		opt2 |= CONG_CNTRL_V(CONG_ALG_TAHOE);
- 		opt2 |= T5_ISS_F;
--		rpl5 = (void *)rpl;
--		memset_after(rpl5, 0, iss);
- 		if (peer2peer)
- 			isn += 4;
- 		rpl5->iss = cpu_to_be32(isn);
- 		pr_debug("iss %u\n", be32_to_cpu(rpl5->iss));
-+	} else {
-+		skb = get_skb(skb, sizeof(*rpl), GFP_KERNEL);
-+		rpl = __skb_put_zero(skb, sizeof(*rpl));
-+		INIT_TP_WR_CPL(rpl, CPL_PASS_ACCEPT_RPL, ep->hwtid);
- 	}
- 
- 	rpl->opt0 = cpu_to_be64(opt0);
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
-index 26433a62d7f0..fed5f93bf620 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
-@@ -497,7 +497,7 @@ struct cpl_t5_pass_accept_rpl {
- 	__be32 opt2;
- 	__be64 opt0;
- 	__be32 iss;
--	__be32 rsvd[3];
-+	__be32 rsvd;
- };
- 
- struct cpl_act_open_req {
 -- 
-2.31.1
+Hello,
+We the Board Directors believe you are in good health, doing great and
+with the hope that this mail will meet you in good condition, We are
+privileged and delighted to reach you via email" And we are urgently
+waiting to hear from you. and again your number is not connecting.
 
+My regards,
+Dr. Ali Moses..
+
+Sincerely,
+Prof. Chin Guang
