@@ -2,187 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 456F958DAF0
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Aug 2022 17:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB14358E0B3
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Aug 2022 22:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243303AbiHIPS5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Aug 2022 11:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
+        id S234400AbiHIUKR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Aug 2022 16:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbiHIPS4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Aug 2022 11:18:56 -0400
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BD210549
-        for <linux-rdma@vger.kernel.org>; Tue,  9 Aug 2022 08:18:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1660058336; x=1691594336;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Q4XFajfhr3WAmS725ESwEq8Gv52Hhz781mynH1Sus6s=;
-  b=kaQDJkFjjtmlF0Q25uWAfCcLae4axWbVjHKsHeOWXrmSYv/kYlDKGsSK
-   v37smNSx1JYXKJiPhq+5Jx+VplCcJ4qQbtVQ2n65TzFf0y3dBQJBOfD1w
-   m1YCEXFo97Zya43u9H92xJz0oXJHhnSI1+YWCZwILMtdzLIgopNVDdwpv
-   w=;
-X-IronPort-AV: E=Sophos;i="5.93,224,1654560000"; 
-   d="scan'208";a="247022591"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-92ba9394.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2022 15:17:09 +0000
-Received: from EX13D09EUC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2a-92ba9394.us-west-2.amazon.com (Postfix) with ESMTPS id 7862944A92;
-        Tue,  9 Aug 2022 15:17:08 +0000 (UTC)
-Received: from HFA15-G2116K32.ant.amazon.com (10.43.160.120) by
- EX13D09EUC002.ant.amazon.com (10.43.164.73) with Microsoft SMTP Server (TLS)
- id 15.0.1497.36; Tue, 9 Aug 2022 15:17:04 +0000
-From:   Michael Margolin <mrgolin@amazon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC:     Firas Jahjah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Daniel Kranzdorf <dkkranzd@amazon.com>
-Subject: [PATCH for-next] RDMA/efa: Support CQ receive entries with source GID
-Date:   Tue, 9 Aug 2022 18:16:36 +0300
-Message-ID: <20220809151636.788-1-mrgolin@amazon.com>
-X-Mailer: git-send-email 2.30.2.windows.1
+        with ESMTP id S229632AbiHIUKQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Aug 2022 16:10:16 -0400
+X-Greylist: delayed 3590 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 Aug 2022 13:10:14 PDT
+Received: from stargate.chelsio.com (stargate.chelsio.com [12.32.117.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D651F0A;
+        Tue,  9 Aug 2022 13:10:14 -0700 (PDT)
+Received: from localhost (raina-lt.asicdesigners.com [10.193.177.168] (may be forged))
+        by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 279IftXR031673;
+        Tue, 9 Aug 2022 11:41:57 -0700
+From:   Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     netdev@vger.kernel.org, jgg@nvidia.com, leonro@nvidia.com,
+        davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        pabeni@redhat.com, keescook@chromium.org, bharat@chelsio.com
+Subject: [PATCH for-rc] RDMA/cxgb4: fix accept failure due to increased cpl_t5_pass_accept_rpl size
+Date:   Wed, 10 Aug 2022 00:11:18 +0530
+Message-Id: <20220809184118.2029-1-rahul.lakkireddy@chelsio.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.120]
-X-ClientProxiedBy: EX13P01UWA003.ant.amazon.com (10.43.160.197) To
- EX13D09EUC002.ant.amazon.com (10.43.164.73)
-X-Spam-Status: No, score=-15.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add a parameter for create CQ admin command to set source address on
-receive completion descriptors. Report capability for this feature
-through query device verb.
+From: Potnuri Bharat Teja <bharat@chelsio.com>
 
-Reviewed-by: Firas Jahjah <firasj@amazon.com>
-Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
-Signed-off-by: Daniel Kranzdorf <dkkranzd@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+Commit 'c2ed5611afd7' has increased the cpl_t5_pass_accept_rpl{} structure
+size by 8B to avoid roundup. cpl_t5_pass_accept_rpl{} is a HW specific
+structure and increasing its size will lead to unwanted adapter errors.
+Current commit reverts the cpl_t5_pass_accept_rpl{} back to its original
+and allocates zeroed skb buffer there by avoiding the memset for iss field.
+Reorder code to minimize chip type checks.
+
+Fixes: c2ed5611afd7 ("iw_cxgb4: Use memset_startat() for cpl_t5_pass_accept_rpl")
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 ---
- drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 6 +++++-
- drivers/infiniband/hw/efa/efa_com_cmd.c         | 5 ++++-
- drivers/infiniband/hw/efa/efa_com_cmd.h         | 1 +
- drivers/infiniband/hw/efa/efa_verbs.c           | 4 +++-
- include/uapi/rdma/efa-abi.h                     | 4 +++-
- 5 files changed, 16 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/cxgb4/cm.c            | 25 ++++++++-------------
+ drivers/net/ethernet/chelsio/cxgb4/t4_msg.h |  2 +-
+ 2 files changed, 10 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-index 0b0b93b529f3..d4b9226088bd 100644
---- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-@@ -444,7 +444,10 @@ struct efa_admin_create_cq_cmd {
- 	/*
- 	 * 4:0 : cq_entry_size_words - size of CQ entry in
- 	 *    32-bit words, valid values: 4, 8.
--	 * 7:5 : reserved7 - MBZ
-+	 * 5 : set_src_addr - If set, source address will be
-+	 *    filled on RX completions from unknown senders.
-+	 *    Requires 8 words CQ entry size.
-+	 * 7:6 : reserved7 - MBZ
- 	 */
- 	u8 cq_caps_2;
- 
-@@ -980,6 +983,7 @@ struct efa_admin_host_info {
- #define EFA_ADMIN_CREATE_CQ_CMD_INTERRUPT_MODE_ENABLED_MASK BIT(5)
- #define EFA_ADMIN_CREATE_CQ_CMD_VIRT_MASK                   BIT(6)
- #define EFA_ADMIN_CREATE_CQ_CMD_CQ_ENTRY_SIZE_WORDS_MASK    GENMASK(4, 0)
-+#define EFA_ADMIN_CREATE_CQ_CMD_SET_SRC_ADDR_MASK           BIT(5)
- 
- /* create_cq_resp */
- #define EFA_ADMIN_CREATE_CQ_RESP_DB_VALID_MASK              BIT(0)
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index fb405da4e1db..8f8885e002ba 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -168,7 +168,10 @@ int efa_com_create_cq(struct efa_com_dev *edev,
- 			EFA_ADMIN_CREATE_CQ_CMD_INTERRUPT_MODE_ENABLED, 1);
- 		create_cmd.eqn = params->eqn;
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index c16017f6e8db..14392c942f49 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2468,31 +2468,24 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+ 			opt2 |= CCTRL_ECN_V(1);
  	}
+ 
+-	skb_get(skb);
+-	rpl = cplhdr(skb);
+ 	if (!is_t4(adapter_type)) {
+-		BUILD_BUG_ON(sizeof(*rpl5) != roundup(sizeof(*rpl5), 16));
+-		skb_trim(skb, sizeof(*rpl5));
+-		rpl5 = (void *)rpl;
+-		INIT_TP_WR(rpl5, ep->hwtid);
+-	} else {
+-		skb_trim(skb, sizeof(*rpl));
+-		INIT_TP_WR(rpl, ep->hwtid);
+-	}
+-	OPCODE_TID(rpl) = cpu_to_be32(MK_OPCODE_TID(CPL_PASS_ACCEPT_RPL,
+-						    ep->hwtid));
 -
-+	if (params->set_src_addr) {
-+		EFA_SET(&create_cmd.cq_caps_2,
-+			EFA_ADMIN_CREATE_CQ_CMD_SET_SRC_ADDR, 1);
-+	}
- 	efa_com_set_dma_addr(params->dma_addr,
- 			     &create_cmd.cq_ba.mem_addr_high,
- 			     &create_cmd.cq_ba.mem_addr_low);
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-index c33010bbf9e8..c6234336543d 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.h
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -76,6 +76,7 @@ struct efa_com_create_cq_params {
- 	u16 eqn;
- 	u8 entry_size_in_bytes;
- 	bool interrupt_mode_enabled;
-+	bool set_src_addr;
+-	if (CHELSIO_CHIP_VERSION(adapter_type) > CHELSIO_T4) {
+ 		u32 isn = (prandom_u32() & ~7UL) - 1;
++
++		skb = get_skb(skb, roundup(sizeof(*rpl5), 16), GFP_KERNEL);
++		rpl5 = __skb_put_zero(skb, roundup(sizeof(*rpl5), 16));
++		rpl = (void *)rpl5;
++		INIT_TP_WR_CPL(rpl5, CPL_PASS_ACCEPT_RPL, ep->hwtid);
+ 		opt2 |= T5_OPT_2_VALID_F;
+ 		opt2 |= CONG_CNTRL_V(CONG_ALG_TAHOE);
+ 		opt2 |= T5_ISS_F;
+-		rpl5 = (void *)rpl;
+-		memset_after(rpl5, 0, iss);
+ 		if (peer2peer)
+ 			isn += 4;
+ 		rpl5->iss = cpu_to_be32(isn);
+ 		pr_debug("iss %u\n", be32_to_cpu(rpl5->iss));
++	} else {
++		skb = get_skb(skb, sizeof(*rpl), GFP_KERNEL);
++		rpl = __skb_put_zero(skb, sizeof(*rpl));
++		INIT_TP_WR_CPL(rpl, CPL_PASS_ACCEPT_RPL, ep->hwtid);
+ 	}
+ 
+ 	rpl->opt0 = cpu_to_be64(opt0);
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
+index 26433a62d7f0..fed5f93bf620 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
++++ b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
+@@ -497,7 +497,7 @@ struct cpl_t5_pass_accept_rpl {
+ 	__be32 opt2;
+ 	__be64 opt0;
+ 	__be32 iss;
+-	__be32 rsvd[3];
++	__be32 rsvd;
  };
  
- struct efa_com_create_cq_result {
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index ecfe70eb5efb..c06669ca9e1f 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
- /*
-- * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2022 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #include <linux/dma-buf.h>
-@@ -242,6 +242,7 @@ int efa_query_device(struct ib_device *ibdev,
- 		resp.max_rq_wr = dev_attr->max_rq_depth;
- 		resp.max_rdma_size = dev_attr->max_rdma_size;
- 
-+		resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_WITH_SGID;
- 		if (EFA_DEV_CAP(dev, RDMA_READ))
- 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_RDMA_READ;
- 
-@@ -1138,6 +1139,7 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	params.dma_addr = cq->dma_addr;
- 	params.entry_size_in_bytes = cmd.cq_entry_size;
- 	params.num_sub_cqs = cmd.num_sub_cqs;
-+	params.set_src_addr = !!(cmd.flags & EFA_CREATE_CQ_WITH_SGID);
- 	if (cmd.flags & EFA_CREATE_CQ_WITH_COMPLETION_CHANNEL) {
- 		cq->eq = efa_vec2eq(dev, attr->comp_vector);
- 		params.eqn = cq->eq->eeq.eqn;
-diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
-index 08035ccf1fff..163ac79556d6 100644
---- a/include/uapi/rdma/efa-abi.h
-+++ b/include/uapi/rdma/efa-abi.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
- /*
-- * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2022 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #ifndef EFA_ABI_USER_H
-@@ -54,6 +54,7 @@ struct efa_ibv_alloc_pd_resp {
- 
- enum {
- 	EFA_CREATE_CQ_WITH_COMPLETION_CHANNEL = 1 << 0,
-+	EFA_CREATE_CQ_WITH_SGID               = 1 << 1,
- };
- 
- struct efa_ibv_create_cq {
-@@ -118,6 +119,7 @@ enum {
- 	EFA_QUERY_DEVICE_CAPS_RDMA_READ = 1 << 0,
- 	EFA_QUERY_DEVICE_CAPS_RNR_RETRY = 1 << 1,
- 	EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS = 1 << 2,
-+	EFA_QUERY_DEVICE_CAPS_CQ_WITH_SGID     = 1 << 3,
- };
- 
- struct efa_ibv_ex_query_device_resp {
+ struct cpl_act_open_req {
 -- 
-2.34.1
+2.31.1
 
