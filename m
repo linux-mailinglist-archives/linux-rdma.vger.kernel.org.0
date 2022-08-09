@@ -2,106 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 417B458E2E4
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Aug 2022 00:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF57558E375
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Aug 2022 00:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbiHIWQW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Aug 2022 18:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37272 "EHLO
+        id S229489AbiHIW7Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Aug 2022 18:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbiHIWPR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Aug 2022 18:15:17 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E3721E1A
-        for <linux-rdma@vger.kernel.org>; Tue,  9 Aug 2022 15:15:14 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id q124so10765583iod.3
-        for <linux-rdma@vger.kernel.org>; Tue, 09 Aug 2022 15:15:14 -0700 (PDT)
+        with ESMTP id S229463AbiHIW7X (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Aug 2022 18:59:23 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53A167C9D
+        for <linux-rdma@vger.kernel.org>; Tue,  9 Aug 2022 15:59:22 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id o3so12682835ple.5
+        for <linux-rdma@vger.kernel.org>; Tue, 09 Aug 2022 15:59:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc;
-        bh=GI1h58u9NHz7rI/vIwOU5DkUcoHPmL+b4tk5i/xxv5Y=;
-        b=QTP95oQi+RYhXbI8sz4RyTZp0RSE4jP48cyyUmWbTiK1ItvOHbADVtjkGHK/8zFbqv
-         EIzUG3d4HgG5eAQxnVHuBpH33ycuIiNpMEXk8S0LHARhhQGb6AufQVVn/40aQfLvP77W
-         778oK7qnpGZXO0Q2aGCYT4Mad4FGDHlh1br3s7D4D+9Vr7gPQrhXDR8bwR1fyz6kQ1n2
-         /mI7/+oIm6xqfpBjeRephfywWnzvzUcqvvdKwYuFsxmTm/GRVEQb9jKfBsLPvHEPeyBR
-         SLk52BQ10Zm7GZ4Mv5gugSKJZhGFXVOipaGDVsAOq6ABLyMrmGMv+5RYTjL3cqduwO+M
-         O1Rw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uk9xllDpkkKXpKKIb2SVKChrgQXlBadBKkhIa/3xmyo=;
+        b=dZ2uJaE62FdktfwqERKSuS1IY6YRO7A5RIsSwCjKhpQyrxa2ACOtIwvnqoxv9/gV/q
+         p1/zDJ0gjYAmB4+1AZZ+GYoDktMby0jovdjOATZmxqc8o/I0BN2Su7+Ri9IUXHWI408C
+         Qn2NLLkhzhZRf2O+9Q0Jgu/2XwL/MnNPE6TZU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=GI1h58u9NHz7rI/vIwOU5DkUcoHPmL+b4tk5i/xxv5Y=;
-        b=igoCSUGt3eFLbqoqR2fJVGYIXaIBn2HZdvCuaUKB0mDxFVCQeRdKrqHzIlr7xT3vwq
-         dsA3zlO45fvDbHAkhYj1vGtDvRryFBDhG4aLO7dAMZOEWq9ce4tfJNOki+HxMzRmJoZm
-         /6LurhwhYOPpz+kfyHsvvPNMIBxm2bkVU5KnFbY4iEie+ICCBXTCdeHZ0+Fa6WMJuREM
-         eKN+bv5GrcAJtt1LdAkDcX0FG/FgkVUjboOWmt5yVIpVikJfzJrUYSCQyDKeudaK7Y+z
-         3MM68ehFQfKHPE5s8ojF/5+gMmp+2o705G9WBp3HcylbD2zdjcmqHz4yYJ/sreGwEecv
-         5/qA==
-X-Gm-Message-State: ACgBeo1f5QG/V7pG0m5HsilVBLueU4S8Da5sH0ZjMQCf0mezdlxgB7V1
-        RkWgq55KtS/3VQkBgOMAMEaBqc/pgbu7n9fGC/y8JZHDJDVNhA==
-X-Google-Smtp-Source: AA6agR7pJ6r7fhR2kV9XLe+oV3h+/ej1weqLnpTQS1YP5ule1vsDwGSNCnOW6LlEIY2xTapZFY+hu5KXPqSjTYpoaJM=
-X-Received: by 2002:a63:4642:0:b0:41b:d353:c5c7 with SMTP id
- v2-20020a634642000000b0041bd353c5c7mr20359415pgk.568.1660083303718; Tue, 09
- Aug 2022 15:15:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uk9xllDpkkKXpKKIb2SVKChrgQXlBadBKkhIa/3xmyo=;
+        b=wKqenY4YaXzDcTow5NJbgdaDa22ly27CuCp0vA86Y6HaxAOY0zat0YIArcXUIqjvN4
+         AnTj7NpcfaobR74fewArV6nYyQuZak8kp56bhJ9ij+hpHY+wvUp4Tm0vRir0Mr144NXs
+         LpWGAVHhoyBT64Ny8xhAfG1jhmeYfSvDo6T2xL0phVy2NRS6mNYi+zkXx2Cq7MCX9juN
+         +2TjdxTsIO/YPdLhyoQSNYi5ebeAgPOgZ2qV/ju46WETSoyUK+v3ikAzSjU+v9r6qDn3
+         30t27ncJPtDFILqA6b5ni8ZWEnBoiAEK2DTfGbREUbX1PVmJdL/UuUJknyiHs1pXMl1H
+         kiOg==
+X-Gm-Message-State: ACgBeo07hqezUYg9CJLVakvDbU0KZKD2QZlT5ykxY0UAg4nNUb127hfY
+        ex8aqd2/lti5A7ZZkZPXP4X7xf0nmgV+Wg==
+X-Google-Smtp-Source: AA6agR4VvwV5pmCbMvV+o4oZfGL8y9RJ4dr9r2jB8f+9e5BmgaE7XElONCJDKLTkLsgD/24bkYBbnQ==
+X-Received: by 2002:a17:90b:ec7:b0:1f2:fa08:44cd with SMTP id gz7-20020a17090b0ec700b001f2fa0844cdmr672249pjb.183.1660085962328;
+        Tue, 09 Aug 2022 15:59:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id gd8-20020a17090b0fc800b001ef9659d711sm111565pjb.48.2022.08.09.15.59.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Aug 2022 15:59:21 -0700 (PDT)
+Date:   Tue, 9 Aug 2022 15:59:20 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org, jgg@nvidia.com,
+        leonro@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com, bharat@chelsio.com
+Subject: Re: [PATCH for-rc] RDMA/cxgb4: fix accept failure due to increased
+ cpl_t5_pass_accept_rpl size
+Message-ID: <202208091559.5656BBD4@keescook>
+References: <20220809184118.2029-1-rahul.lakkireddy@chelsio.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:e8a6:b0:2d4:fb1c:cc5e with HTTP; Tue, 9 Aug 2022
- 15:15:03 -0700 (PDT)
-Reply-To: wijh555@gmail.com
-From:   "Dr. Ali Moses" <alimoses07@gmail.com>
-Date:   Tue, 9 Aug 2022 15:15:03 -0700
-Message-ID: <CADWzZe65tcOX2+bMZfMLLauGpHEQ9Cdv814nLU=uQvKzDFrEVg@mail.gmail.com>
-Subject: Good Day,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:d2a listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [alimoses07[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [wijh555[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [alimoses07[at]gmail.com]
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220809184118.2029-1-rahul.lakkireddy@chelsio.com>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Aug 10, 2022 at 12:11:18AM +0530, Rahul Lakkireddy wrote:
+> From: Potnuri Bharat Teja <bharat@chelsio.com>
+> 
+> Commit 'c2ed5611afd7' has increased the cpl_t5_pass_accept_rpl{} structure
+> size by 8B to avoid roundup. cpl_t5_pass_accept_rpl{} is a HW specific
+> structure and increasing its size will lead to unwanted adapter errors.
+> Current commit reverts the cpl_t5_pass_accept_rpl{} back to its original
+> and allocates zeroed skb buffer there by avoiding the memset for iss field.
+> Reorder code to minimize chip type checks.
+> 
+> Fixes: c2ed5611afd7 ("iw_cxgb4: Use memset_startat() for cpl_t5_pass_accept_rpl")
+> Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+
+Thanks for the better solution!
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 -- 
-Hello,
-We the Board Directors believe you are in good health, doing great and
-with the hope that this mail will meet you in good condition, We are
-privileged and delighted to reach you via email" And we are urgently
-waiting to hear from you. and again your number is not connecting.
-
-My regards,
-Dr. Ali Moses..
-
-Sincerely,
-Prof. Chin Guang
+Kees Cook
