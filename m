@@ -2,97 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C1358FBA2
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Aug 2022 13:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A4C58FC41
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Aug 2022 14:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbiHKLxF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Aug 2022 07:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56776 "EHLO
+        id S235114AbiHKMb0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Aug 2022 08:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235075AbiHKLw4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Aug 2022 07:52:56 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCF66CD3F;
-        Thu, 11 Aug 2022 04:52:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660218775; x=1691754775;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Us48dgt1h8gZcQLMuTHC3rp79tb70SotwtEKrHWZwv8=;
-  b=SIXJ/zjM8qgI/3GHzK8hSGyh3rbfShFLchqdyv+VkXYvzsJUZOaw2z4X
-   JHxa49AteZmxe9KzReRTjEI+d7NGzDeaO4RjkpAc6fQT7+ZFdPQNL+dn6
-   kXqwPHqYZZJDPsB0uXNNemCsAwz4TlGeAuoAZkaU+2HfQ3OAAhh6//yYl
-   aw778kaC3eVuSj0clM1ljNDxReLdcHLuv0CxnQlYM9xMfkLeXJ7aEY6bC
-   ljz8fGCjAZAkiuB3XBWpRvEDbJFwLSBOfU/UiLq2DDkg3uaLUDF5uVveB
-   ydin2X88TB6CNV8YKaBaQDqzsN46MFtZW4LOwRSl5qJMDXh2/HpZ+d/b4
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10435"; a="271102260"
-X-IronPort-AV: E=Sophos;i="5.93,228,1654585200"; 
-   d="scan'208";a="271102260"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2022 04:52:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,228,1654585200"; 
-   d="scan'208";a="673668048"
-Received: from lkp-server02.sh.intel.com (HELO cfab306db114) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Aug 2022 04:52:48 -0700
-Received: from kbuild by cfab306db114 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oM6k3-0000A5-2V;
-        Thu, 11 Aug 2022 11:52:47 +0000
-Date:   Thu, 11 Aug 2022 19:51:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com
-Cc:     kbuild-all@lists.01.org, kuba@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 01/10] net/smc: remove locks
- smc_client_lgr_pending and smc_server_lgr_pending
-Message-ID: <202208111933.9PvuHltH-lkp@intel.com>
-References: <075ff0be35660efac638448cdae7f7e7e04199d4.1660152975.git.alibuda@linux.alibaba.com>
+        with ESMTP id S235210AbiHKMbV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Aug 2022 08:31:21 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46B62703;
+        Thu, 11 Aug 2022 05:31:17 -0700 (PDT)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27BCFwgL039373;
+        Thu, 11 Aug 2022 12:31:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=6PzQiZWHJXu1x3wlzsLkLkzkX844NcrBJ2Gj3MnPNt8=;
+ b=RfvG7bmovMCzmph1yiAvcmz7JxGyWYskO7O2Canf/Ttj2m+ins+fcOgZmN4TyeRSXctB
+ F6eldPmz7Kg/4f6RYkULCez3qbK3euIDysQ4QSMuy/YVFYyxmiOlu8Nbv9pdg4I7Kcb2
+ DgqXLggl3+wjZE0zUNhyHH7w2arg6fiwQD6FCAPuSg8XGfGGj+gGx9IcjkjIWkzEpnVv
+ Yke3XiAT/AWYrRap508PuI/2YYA7/gIJAyawpS5JeQzaUmCJHbqKCJJhl+MvUlDAUbdY
+ qtC2VnwTpc+MUeBSm3r8GQm/uuYrT/ZENCY1PFyxpbXRP0Xg+dUIe5BFpE1T8eMQ7RWJ Cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hw17sh9k6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Aug 2022 12:31:07 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 27BCHhet011639;
+        Thu, 11 Aug 2022 12:31:07 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hw17sh9j7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Aug 2022 12:31:07 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 27BCLfAL012298;
+        Thu, 11 Aug 2022 12:31:05 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3huwvf20f6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Aug 2022 12:31:05 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 27BCSUPZ25297226
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Aug 2022 12:28:30 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D15CFAE045;
+        Thu, 11 Aug 2022 12:31:02 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 73639AE04D;
+        Thu, 11 Aug 2022 12:31:02 +0000 (GMT)
+Received: from [9.171.37.122] (unknown [9.171.37.122])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 11 Aug 2022 12:31:02 +0000 (GMT)
+Message-ID: <43d46ad9-0193-603c-8b95-8c44e578f2df@linux.ibm.com>
+Date:   Thu, 11 Aug 2022 14:31:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <075ff0be35660efac638448cdae7f7e7e04199d4.1660152975.git.alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH net-next 00/10] net/smc: optimize the parallelism of SMC-R
+ connections
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, wenjia@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <cover.1660152975.git.alibuda@linux.alibaba.com>
+Content-Language: en-US
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <cover.1660152975.git.alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: vvKLkTimpvsqgVzjvchiwNIz5GI6BFfE
+X-Proofpoint-GUID: Qoou5s4nQuJqL0wplWnIR-7GHgTnn_fu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-11_05,2022-08-11_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
+ spamscore=0 suspectscore=0 impostorscore=0 mlxlogscore=960 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2207270000 definitions=main-2208110037
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Wythe",
+On 10/08/2022 19:47, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> This patch set attempts to optimize the parallelism of SMC-R connections,
+> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
+> occur after thoses optimization.
 
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on net-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-optimize-the-parallelism-of-SMC-R-connections/20220811-014942
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git f86d1fbbe7858884d6754534a0afbb74fc30bc26
-config: x86_64-randconfig-s021 (https://download.01.org/0day-ci/archive/20220811/202208111933.9PvuHltH-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-39-gce1a6720-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/2c1c2e644fb8dbce9b8a004e604792340cbfccb8
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review D-Wythe/net-smc-optimize-the-parallelism-of-SMC-R-connections/20220811-014942
-        git checkout 2c1c2e644fb8dbce9b8a004e604792340cbfccb8
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-sparse warnings: (new ones prefixed by >>)
->> net/smc/smc_core.c:49:24: sparse: sparse: symbol 'smc_lgr_manager' was not declared. Should it be static?
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+This are very interesting changes. Please allow us to review and test on 
+the s390 architecture. Thank you for this submission!
