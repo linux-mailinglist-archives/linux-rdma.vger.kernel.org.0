@@ -2,105 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A4C58FC41
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Aug 2022 14:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEFA58FFB9
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Aug 2022 17:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235114AbiHKMb0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Aug 2022 08:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
+        id S235998AbiHKPdY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Aug 2022 11:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235210AbiHKMbV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Aug 2022 08:31:21 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46B62703;
-        Thu, 11 Aug 2022 05:31:17 -0700 (PDT)
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27BCFwgL039373;
-        Thu, 11 Aug 2022 12:31:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=6PzQiZWHJXu1x3wlzsLkLkzkX844NcrBJ2Gj3MnPNt8=;
- b=RfvG7bmovMCzmph1yiAvcmz7JxGyWYskO7O2Canf/Ttj2m+ins+fcOgZmN4TyeRSXctB
- F6eldPmz7Kg/4f6RYkULCez3qbK3euIDysQ4QSMuy/YVFYyxmiOlu8Nbv9pdg4I7Kcb2
- DgqXLggl3+wjZE0zUNhyHH7w2arg6fiwQD6FCAPuSg8XGfGGj+gGx9IcjkjIWkzEpnVv
- Yke3XiAT/AWYrRap508PuI/2YYA7/gIJAyawpS5JeQzaUmCJHbqKCJJhl+MvUlDAUbdY
- qtC2VnwTpc+MUeBSm3r8GQm/uuYrT/ZENCY1PFyxpbXRP0Xg+dUIe5BFpE1T8eMQ7RWJ Cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hw17sh9k6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Aug 2022 12:31:07 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 27BCHhet011639;
-        Thu, 11 Aug 2022 12:31:07 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hw17sh9j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Aug 2022 12:31:07 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 27BCLfAL012298;
-        Thu, 11 Aug 2022 12:31:05 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3huwvf20f6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Aug 2022 12:31:05 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 27BCSUPZ25297226
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Aug 2022 12:28:30 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D15CFAE045;
-        Thu, 11 Aug 2022 12:31:02 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73639AE04D;
-        Thu, 11 Aug 2022 12:31:02 +0000 (GMT)
-Received: from [9.171.37.122] (unknown [9.171.37.122])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Aug 2022 12:31:02 +0000 (GMT)
-Message-ID: <43d46ad9-0193-603c-8b95-8c44e578f2df@linux.ibm.com>
-Date:   Thu, 11 Aug 2022 14:31:02 +0200
+        with ESMTP id S235800AbiHKPcj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Aug 2022 11:32:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A5897D59;
+        Thu, 11 Aug 2022 08:31:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F8096148F;
+        Thu, 11 Aug 2022 15:31:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA5E7C433C1;
+        Thu, 11 Aug 2022 15:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660231891;
+        bh=h/889FJU56IRAob0y1y7VpcmL0w4Y1MCS7pcsa1DZ+E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lHIvf2iHBmBunOHZSRVMJkKPKlsHS4f6tU41z7o2gcnd+NyuzxfdV/jeEoR3fvFHy
+         +HDT7Pnp+LERkFY8uS6upzqgXNfpa6oWBukqUVBI/KK2kqatVgvSOZPLu3iMksTiFz
+         4YKPWroTpcDQbxVmF3Rkge5vGYvRUYuAhlvkxM0mGDGtPPtoVrWg6rsh9EwQHrmxcT
+         wh7Mr6s1Kc5vO8BR3fflv0l+KQzuTWf7AF/pIJ7mQflALVbeRa3WI8XLketWl3FLB/
+         uZ1omIBGljxcja9FLz/TZS3AyGdgAd+jcoJKAm6LG2KNGKF8peJc700uLDbhRuVQh+
+         UUsOD27GHSzXQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.19 023/105] net/mlx5: Add HW definitions of vport debug counters
+Date:   Thu, 11 Aug 2022 11:27:07 -0400
+Message-Id: <20220811152851.1520029-23-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220811152851.1520029-1-sashal@kernel.org>
+References: <20220811152851.1520029-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH net-next 00/10] net/smc: optimize the parallelism of SMC-R
- connections
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, wenjia@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <cover.1660152975.git.alibuda@linux.alibaba.com>
-Content-Language: en-US
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <cover.1660152975.git.alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vvKLkTimpvsqgVzjvchiwNIz5GI6BFfE
-X-Proofpoint-GUID: Qoou5s4nQuJqL0wplWnIR-7GHgTnn_fu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-11_05,2022-08-11_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
- spamscore=0 suspectscore=0 impostorscore=0 mlxlogscore=960 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2207270000 definitions=main-2208110037
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/08/2022 19:47, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> This patch set attempts to optimize the parallelism of SMC-R connections,
-> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
-> occur after thoses optimization.
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-This are very interesting changes. Please allow us to review and test on 
-the s390 architecture. Thank you for this submission!
+[ Upstream commit 3e94e61bd44d90070dcda53b647fdc826097ef26 ]
+
+total_q_under_processor_handle - number of queues in error state due to an
+async error or errored command.
+
+send_queue_priority_update_flow - number of QP/SQ priority/SL update
+events.
+
+cq_overrun - number of times CQ entered an error state due to an
+overflow.
+
+async_eq_overrun -number of time an EQ mapped to async events was
+overrun.
+
+comp_eq_overrun - number of time an EQ mapped to completion events was
+overrun.
+
+quota_exceeded_command - number of commands issued and failed due to quota
+exceeded.
+
+invalid_command - number of commands issued and failed dues to any reason
+other than quota exceeded.
+
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/mlx5/mlx5_ifc.h | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index fd7d083a34d3..f0b0bb67955e 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -1426,7 +1426,8 @@ struct mlx5_ifc_cmd_hca_cap_bits {
+ 
+ 	u8         reserved_at_120[0xa];
+ 	u8         log_max_ra_req_dc[0x6];
+-	u8         reserved_at_130[0xa];
++	u8         reserved_at_130[0x9];
++	u8         vnic_env_cq_overrun[0x1];
+ 	u8         log_max_ra_res_dc[0x6];
+ 
+ 	u8         reserved_at_140[0x5];
+@@ -1621,7 +1622,11 @@ struct mlx5_ifc_cmd_hca_cap_bits {
+ 	u8         nic_receive_steering_discard[0x1];
+ 	u8         receive_discard_vport_down[0x1];
+ 	u8         transmit_discard_vport_down[0x1];
+-	u8         reserved_at_343[0x5];
++	u8         eq_overrun_count[0x1];
++	u8         reserved_at_344[0x1];
++	u8         invalid_command_count[0x1];
++	u8         quota_exceeded_count[0x1];
++	u8         reserved_at_347[0x1];
+ 	u8         log_max_flow_counter_bulk[0x8];
+ 	u8         max_flow_counter_15_0[0x10];
+ 
+@@ -3391,11 +3396,21 @@ struct mlx5_ifc_vnic_diagnostic_statistics_bits {
+ 
+ 	u8         transmit_discard_vport_down[0x40];
+ 
+-	u8         reserved_at_140[0xa0];
++	u8         async_eq_overrun[0x20];
++
++	u8         comp_eq_overrun[0x20];
++
++	u8         reserved_at_180[0x20];
++
++	u8         invalid_command[0x20];
++
++	u8         quota_exceeded_command[0x20];
+ 
+ 	u8         internal_rq_out_of_buffer[0x20];
+ 
+-	u8         reserved_at_200[0xe00];
++	u8         cq_overrun[0x20];
++
++	u8         reserved_at_220[0xde0];
+ };
+ 
+ struct mlx5_ifc_traffic_counter_bits {
+-- 
+2.35.1
+
