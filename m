@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 685665902DB
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Aug 2022 18:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A1C5903BF
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Aug 2022 18:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236361AbiHKQOn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Aug 2022 12:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
+        id S238050AbiHKQYj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Aug 2022 12:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236392AbiHKQON (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Aug 2022 12:14:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567F2A895A;
-        Thu, 11 Aug 2022 08:58:33 -0700 (PDT)
+        with ESMTP id S237860AbiHKQXq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Aug 2022 12:23:46 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1ED1144E;
+        Thu, 11 Aug 2022 09:05:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C37AA612FC;
-        Thu, 11 Aug 2022 15:58:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D2E0C433D7;
-        Thu, 11 Aug 2022 15:58:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 19F8CB82123;
+        Thu, 11 Aug 2022 16:05:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BC07C433C1;
+        Thu, 11 Aug 2022 16:05:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660233512;
-        bh=haJjNp5uiP6msnhmouVgkOmWZJhl1pqgm2KDQG5YEVk=;
+        s=k20201202; t=1660233916;
+        bh=oxr8ZUJO9aysC9EUSeeMWhFCCQ44WU/CjI3XHIhaM7A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kHwYNgwZ29+kJHsokGbmOyPA3ChsQZU4nohKTMmijzwzQLI6Rl4k1HyMGrHJVkhp/
-         aq8Vlh+CeAPPhjfRaMGlOMl9QWnuclPaffRdi9mJ092wRXEmmzIqdo+A8ZF7PghBQC
-         95U89DqITVSpYATKVjbjPxNoBhUXbygSDwiWOmCQNuezTbDcPMytDvGuYf0UeUJwyV
-         rWYgrGVX2DwqaeMqDcMiLZ0XqjKaM3Oyrjj0BIGq8efHHbfEIs7fvyjEQVhHMvL6dR
-         fijZ652Z9WJLqbfTwkOrCiMMK73yvzjSW4vdZ/SyFqrrHcdSRyxw6yhSOhs1QWEcfu
-         lA0vHQmw6pWBA==
+        b=iNrNLNsdlYfHkwUiSFXOEvhgtvPEsY7AkFRX0e1bfEEhEpT2xMLfNzDAcP3mZn8iP
+         w5VBu7Af/6ddPrdoH80G0Ng0whR6tCS6DKHcQ1HPmJPO+SdbXCQSYwv+4SsydpcY5E
+         vjgRscwNuiDYgKJCMoZNnaJmm/rpGPDaeLxILKdONfsCzJNwE98d4OjO5LE/lcyNNF
+         JhMYw7rqJWBYubZG9kR86JDO/Qn/BmFDoWD+5CPn9n+ldF7dTZh/dtWt38COIPkio9
+         susVvD/JFS51fy/NJYaTVgzC/A7+ic5P2mmQcyM0gQuaoAz+KVkYHGGGkzwG2HYg5T
+         WyiIRJGPxSwBw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Saeed Mahameed <saeedm@nvidia.com>,
         Michael Guralnik <michaelgur@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 19/69] net/mlx5: Add HW definitions of vport debug counters
-Date:   Thu, 11 Aug 2022 11:55:28 -0400
-Message-Id: <20220811155632.1536867-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 13/46] net/mlx5: Add HW definitions of vport debug counters
+Date:   Thu, 11 Aug 2022 12:03:37 -0400
+Message-Id: <20220811160421.1539956-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220811155632.1536867-1-sashal@kernel.org>
-References: <20220811155632.1536867-1-sashal@kernel.org>
+In-Reply-To: <20220811160421.1539956-1-sashal@kernel.org>
+References: <20220811160421.1539956-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -91,10 +91,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 19 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index cd9d1c95129e..9653539ebcb5 100644
+index 6ca97729b54a..4276677ecdb5 100644
 --- a/include/linux/mlx5/mlx5_ifc.h
 +++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -1369,7 +1369,8 @@ struct mlx5_ifc_cmd_hca_cap_bits {
+@@ -1282,7 +1282,8 @@ struct mlx5_ifc_cmd_hca_cap_bits {
  
  	u8         reserved_at_120[0xa];
  	u8         log_max_ra_req_dc[0x6];
@@ -104,7 +104,7 @@ index cd9d1c95129e..9653539ebcb5 100644
  	u8         log_max_ra_res_dc[0x6];
  
  	u8         reserved_at_140[0x6];
-@@ -1562,7 +1563,11 @@ struct mlx5_ifc_cmd_hca_cap_bits {
+@@ -1472,7 +1473,11 @@ struct mlx5_ifc_cmd_hca_cap_bits {
  	u8         nic_receive_steering_discard[0x1];
  	u8         receive_discard_vport_down[0x1];
  	u8         transmit_discard_vport_down[0x1];
@@ -117,7 +117,7 @@ index cd9d1c95129e..9653539ebcb5 100644
  	u8         log_max_flow_counter_bulk[0x8];
  	u8         max_flow_counter_15_0[0x10];
  
-@@ -3266,11 +3271,21 @@ struct mlx5_ifc_vnic_diagnostic_statistics_bits {
+@@ -3128,11 +3133,21 @@ struct mlx5_ifc_vnic_diagnostic_statistics_bits {
  
  	u8         transmit_discard_vport_down[0x40];
  
