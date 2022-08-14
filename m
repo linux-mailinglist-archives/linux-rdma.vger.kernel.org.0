@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA98A59224C
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Aug 2022 17:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6380959228F
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Aug 2022 17:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240783AbiHNPrC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Aug 2022 11:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
+        id S241656AbiHNPs0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 14 Aug 2022 11:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241454AbiHNPoj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 14 Aug 2022 11:44:39 -0400
+        with ESMTP id S241987AbiHNPqz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 14 Aug 2022 11:46:55 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170CA2DC8;
-        Sun, 14 Aug 2022 08:34:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB0CF35;
+        Sun, 14 Aug 2022 08:35:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B711760CF1;
-        Sun, 14 Aug 2022 15:34:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A419C43470;
-        Sun, 14 Aug 2022 15:34:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8226F60DC5;
+        Sun, 14 Aug 2022 15:35:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2205AC43140;
+        Sun, 14 Aug 2022 15:35:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660491242;
-        bh=mhYzhf2NtlHkk2TbX4QwhCx9pIGj1WFByfOUC1Lr1yc=;
+        s=k20201202; t=1660491313;
+        bh=c/6VzAsYv+gnK5VyepI2p2EwSqHQf9tsNnTDEQudJ4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=otNdf/FyB1JE62TgbLrOpRkidra+OSqSbQi2LAYuKtFF50fMQnF3R5iUauVVd3Nhs
-         vUi3I42TcHeiMT3fs9OOXW9MOGr2o+ra5t4SIZtJs40f4ftSihrdGdw5DomZWLcT+0
-         28TCSim/5Lh6gaAzFGebXX2I2+LAHphsJzfQptD7FX2MN7S+MY3TERH4rzWsD+DV/7
-         aLD4m1iYlmRATycV2VqyAOS1h3F2mlrh4W8VuotASkQmiN/yF1wijAzIBu/3s8DRab
-         cNnR0lxyvlRPaEbgDqwZjplN6iYoIY2ctK0bFGT8k640aiPC8CGNJGhSMGwYgPAjpj
-         3fYIVzVTH3q7g==
+        b=LYbsworFMmmmMj84gyox4PXPh95IwITNh7+C1dVLYTXIKfs+3Q3vtTrvvq8yIky8Q
+         TbdMrUncLEnJNSbZuO+j3pFUUm18RbTayOyl25t18zzaZ75GP3y1qCNNyDTuNMWbPY
+         xaWjFbHA0We7gNwqZ2DJK10HTbNEdoKoD/IrpimPoeu0z0losMplZbkRB7HIXsU/Id
+         E0UhMC1aGinxepduZxx3VbD/B7s0memoL2zBhuDT9W1xEBTrHtDrE90tJ3knmsn7A5
+         s4AS6+4XAZrES61Rw0Vlh2iIVU8mzgeWBxUc4wkzomQsNyyrvo9HD1g4VMhsA2cUrM
+         dMNtsFCm1CGyg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, zyjzyj2000@gmail.com,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 34/46] RDMA/rxe: Limit the number of calls to each tasklet
-Date:   Sun, 14 Aug 2022 11:32:35 -0400
-Message-Id: <20220814153247.2378312-34-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 22/31] RDMA/rxe: Limit the number of calls to each tasklet
+Date:   Sun, 14 Aug 2022 11:34:22 -0400
+Message-Id: <20220814153431.2379231-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220814153247.2378312-1-sashal@kernel.org>
-References: <20220814153247.2378312-1-sashal@kernel.org>
+In-Reply-To: <20220814153431.2379231-1-sashal@kernel.org>
+References: <20220814153431.2379231-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -76,10 +76,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 18 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-index b5a70cbe94aa..872389870106 100644
+index f9fb56ec6dfd..dca86422b0a2 100644
 --- a/drivers/infiniband/sw/rxe/rxe_param.h
 +++ b/drivers/infiniband/sw/rxe/rxe_param.h
-@@ -103,6 +103,12 @@ enum rxe_device_param {
+@@ -98,6 +98,12 @@ enum rxe_device_param {
  	RXE_INFLIGHT_SKBS_PER_QP_HIGH	= 64,
  	RXE_INFLIGHT_SKBS_PER_QP_LOW	= 16,
  
