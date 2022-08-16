@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EE1596208
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Aug 2022 20:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD7A5961FD
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Aug 2022 20:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236985AbiHPSIS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Aug 2022 14:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38192 "EHLO
+        id S236993AbiHPSIT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Aug 2022 14:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236907AbiHPSHx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Aug 2022 14:07:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F0F85FB8
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Aug 2022 11:07:43 -0700 (PDT)
+        with ESMTP id S236934AbiHPSHy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Aug 2022 14:07:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF9C85FDF
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Aug 2022 11:07:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1660673261;
+        s=mimecast20190719; t=1660673264;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vH2jTlmzQIwOMeKUkJzPFxzEVFleWwYuNxRt4X4XvAY=;
-        b=cmMQF5MV4d1o0o7Kx/cto+FCxnjN5y5SzJR+UXTMchLIrzS9WKgRjIOdMsM9S7kzSGCkBS
-        0cRRt8cmORFN451TVgb0FX1O/0aC6DhBdewwexfC1TAgSXgXq4aiAuRevTyAW5/HqlW0Jj
-        OE+F+4axd2QB7ACrgikbFDNgOAXYrm8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=qZr7gdCnQUFeKt5ugQdZLofQqTfC3GDipKWYJIctC0o=;
+        b=RsTC7p/RmGUnFOh53qXF8Z4ItmXGIkd19R2tC3DPyflaW9lA67PEAqnqDuP2UdzAEJkfLg
+        ZKcSHb3IYXaDkPi9E7AEI9g/+cgq+3XdEQdW5MIh6XuJ938kMT5g2mjamL6bnqlm+o1gZ4
+        8cfSWyxYlYyzWYsLnv9zoN+24JoaRXs=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-619-9WreqWjwN3SfENik-0zCCQ-1; Tue, 16 Aug 2022 14:07:40 -0400
-X-MC-Unique: 9WreqWjwN3SfENik-0zCCQ-1
-Received: by mail-wm1-f71.google.com with SMTP id j22-20020a05600c485600b003a5e4420552so5128369wmo.8
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Aug 2022 11:07:40 -0700 (PDT)
+ us-mta-154-caT8VHlLMuKRC0hw8qYKXw-1; Tue, 16 Aug 2022 14:07:42 -0400
+X-MC-Unique: caT8VHlLMuKRC0hw8qYKXw-1
+Received: by mail-wm1-f69.google.com with SMTP id f7-20020a1c6a07000000b003a60ede816cso318466wmc.0
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Aug 2022 11:07:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=vH2jTlmzQIwOMeKUkJzPFxzEVFleWwYuNxRt4X4XvAY=;
-        b=2HvT3EYN1NPEXDFpRBsmuIbWcqhCy/BHrw0XUf98Ty7RPzdvZog+jLsZR36yRDm1Hl
-         HGhXeegoXA/y/f5Hej9JHiRVTvSQzaHh++LfwUnNB68zeBoR9ZfTW49jZtgALHXZhnCG
-         6E5cubC6R7rDfVcvnOi9mSarceL3QsGdfeFUnuMY36A5bEvuCRF2JmaSzIoYVnImy3xi
-         7xwOmiUeylqXQWkDwju1ANVOvA1pCtWLEBBLnLqLXUc490qcuadLs8/fzKwUPv6hJhlb
-         Ga9pZeP/CRRdrRod21CuRuEdjdHziyhyOBJTKeLCr0hyjY1mEMx+tXOjbUutuSykyklL
-         GmkA==
-X-Gm-Message-State: ACgBeo1RyhUprPR4RUIrojwlxjfL4JzuUxObyOBIIYhC7QZrJwealBkn
-        xLR8viWU+WK1moTMKirS0LbM6PIy5M6NfqmS2Jlx4qTb7nkzCYwA/BEm7YeFjcgFFUOjXWvqMmb
-        4rTHSdKr6WaE9DvcBICLffQ==
-X-Received: by 2002:a05:600c:4fcf:b0:3a5:b7f7:3127 with SMTP id o15-20020a05600c4fcf00b003a5b7f73127mr14638603wmq.160.1660673259509;
-        Tue, 16 Aug 2022 11:07:39 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR6Ozt5n5rw1n8vb1yr16M5RH2dEqwc/tjFIJhySTHC/leYqLbNjdSwNueyR8yo+3ivUTDnsZQ==
-X-Received: by 2002:a05:600c:4fcf:b0:3a5:b7f7:3127 with SMTP id o15-20020a05600c4fcf00b003a5b7f73127mr14638594wmq.160.1660673259334;
-        Tue, 16 Aug 2022 11:07:39 -0700 (PDT)
+        bh=qZr7gdCnQUFeKt5ugQdZLofQqTfC3GDipKWYJIctC0o=;
+        b=nHg7sCo6/mUGphs2OZsZp4q1X0kqI0dqSxXIlvWIqVQnFOseADP1lgU2/YUanHAWnE
+         HQhz9EIIvbOCtJPM4YgaK/y1eUMhioZqmJkBJGUrcwMw8j/+Nam6ta/zFwj62fNC6owK
+         yQFi0wg8xR1pBK3O1/5MO5vnSy/4DVJEYBfKd+DjY9ISNVDHUtU4KW2k+tnvdUt5Z1XM
+         KmasyoWJ4cn+otWZ0gkCxMsEBkRH91a4uNUfIFATOCjQhzr+dSrzPl6AGPO1HgX86VlK
+         iZJ4oQWEgyldY3ZdnGS83JXQ0H7sakYbm9sc5Z+LTin+RJszXtt/rcAL2TUX0UDGHh3m
+         /BVA==
+X-Gm-Message-State: ACgBeo28WOZkRHaVZf0VwK1jFP3dglrVN3aIzwRgCOYMU5s0ELqCu4CG
+        LKZAhJ0AQUJruz/SRK+yn5XEQDpX5927Q/PSHyzxLQSJLJ9OhDSTjm0jbEAeStVHku4JlTOTbsa
+        kIqrGE09kLmAs3SrymMc5pg==
+X-Received: by 2002:a7b:c852:0:b0:3a5:407a:76df with SMTP id c18-20020a7bc852000000b003a5407a76dfmr13708349wml.101.1660673260911;
+        Tue, 16 Aug 2022 11:07:40 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR7UPXSQNMLUdzm2OIU4YmRzUCveA1esyoYO7MxQEQacoH/hwrHSpxGq4VehHXhVW3FIbjDgTw==
+X-Received: by 2002:a7b:c852:0:b0:3a5:407a:76df with SMTP id c18-20020a7bc852000000b003a5407a76dfmr13708328wml.101.1660673260684;
+        Tue, 16 Aug 2022 11:07:40 -0700 (PDT)
 Received: from vschneid.remote.csb ([185.11.37.247])
-        by smtp.gmail.com with ESMTPSA id o8-20020a05600c4fc800b003a319bd3278sm14694961wmq.40.2022.08.16.11.07.38
+        by smtp.gmail.com with ESMTPSA id o8-20020a05600c4fc800b003a319bd3278sm14694961wmq.40.2022.08.16.11.07.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Aug 2022 11:07:38 -0700 (PDT)
+        Tue, 16 Aug 2022 11:07:40 -0700 (PDT)
 From:   Valentin Schneider <vschneid@redhat.com>
 To:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -78,16 +78,16 @@ Cc:     Saeed Mahameed <saeedm@nvidia.com>,
         Tony Luck <tony.luck@intel.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH 2/5] cpumask: Introduce for_each_cpu_andnot()
-Date:   Tue, 16 Aug 2022 19:07:24 +0100
-Message-Id: <20220816180727.387807-3-vschneid@redhat.com>
+Subject: [PATCH 3/5] sched/topology: Introduce sched_numa_hop_mask()
+Date:   Tue, 16 Aug 2022 19:07:25 +0100
+Message-Id: <20220816180727.387807-4-vschneid@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220816180727.387807-1-vschneid@redhat.com>
 References: <20220816180727.387807-1-vschneid@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -96,114 +96,79 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-for_each_cpu_and() is very convenient as it saves having to allocate a
-temporary cpumask to store the result of cpumask_and(). The same issue
-applies to cpumask_andnot() which doesn't actually need temporary storage
-for iteration purposes.
+Tariq has pointed out that drivers allocating IRQ vectors would benefit
+from having smarter NUMA-awareness - cpumask_local_spread() only knows
+about the local node and everything outside is in the same bucket.
 
-Following what has been done for for_each_cpu_and(), introduce
-for_each_cpu_andnot().
+sched_domains_numa_masks is pretty much what we want to hand out (a cpumask
+of CPUs reachable within a given distance budget), introduce
+sched_numa_hop_mask() to export those cpumasks.
 
+Link: http://lore.kernel.org/r/20220728191203.4055-1-tariqt@nvidia.com
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- include/linux/cpumask.h | 32 ++++++++++++++++++++++++++++++++
- lib/cpumask.c           | 19 +++++++++++++++++++
- 2 files changed, 51 insertions(+)
+ include/linux/topology.h |  9 +++++++++
+ kernel/sched/topology.c  | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index fe29ac7cc469..a8b2ca160e57 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -157,6 +157,13 @@ static inline unsigned int cpumask_next_and(int n,
- 	return n+1;
+diff --git a/include/linux/topology.h b/include/linux/topology.h
+index 4564faafd0e1..13b82b83e547 100644
+--- a/include/linux/topology.h
++++ b/include/linux/topology.h
+@@ -245,5 +245,14 @@ static inline const struct cpumask *cpu_cpu_mask(int cpu)
+ 	return cpumask_of_node(cpu_to_node(cpu));
  }
  
-+static inline unsigned int cpumask_next_andnot(int n,
-+					    const struct cpumask *srcp,
-+					    const struct cpumask *andp)
++#ifdef CONFIG_NUMA
++extern const struct cpumask *sched_numa_hop_mask(int node, int hops);
++#else
++static inline const struct cpumask *sched_numa_hop_mask(int node, int hops)
 +{
-+	return n+1;
++	return ERR_PTR(-EOPNOTSUPP);
 +}
++#endif	/* CONFIG_NUMA */
 +
- static inline unsigned int cpumask_next_wrap(int n, const struct cpumask *mask,
- 					     int start, bool wrap)
- {
-@@ -194,6 +201,8 @@ static inline int cpumask_any_distribute(const struct cpumask *srcp)
- 	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask, (void)(start))
- #define for_each_cpu_and(cpu, mask1, mask2)	\
- 	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask1, (void)mask2)
-+#define for_each_cpu_andnot(cpu, mask1, mask2)	\
-+	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask1, (void)mask2)
- #else
- /**
-  * cpumask_first - get the first cpu in a cpumask
-@@ -259,6 +268,9 @@ static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
- }
  
- int __pure cpumask_next_and(int n, const struct cpumask *, const struct cpumask *);
-+int __pure cpumask_next_andnot(int n,
-+			       const struct cpumask *src1p,
-+			       const struct cpumask *src2p);
- int __pure cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
- unsigned int cpumask_local_spread(unsigned int i, int node);
- int cpumask_any_and_distribute(const struct cpumask *src1p,
-@@ -324,6 +336,26 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
- 	for ((cpu) = -1;						\
- 		(cpu) = cpumask_next_and((cpu), (mask1), (mask2)),	\
- 		(cpu) < nr_cpu_ids;)
-+
-+/**
-+ * for_each_cpu_andnot - iterate over every cpu in one mask but not in another
-+ * @cpu: the (optionally unsigned) integer iterator
-+ * @mask1: the first cpumask pointer
-+ * @mask2: the second cpumask pointer
-+ *
-+ * This saves a temporary CPU mask in many places.  It is equivalent to:
-+ *	struct cpumask tmp;
-+ *	cpumask_andnot(&tmp, &mask1, &mask2);
-+ *	for_each_cpu(cpu, &tmp)
-+ *		...
-+ *
-+ * After the loop, cpu is >= nr_cpu_ids.
-+ */
-+#define for_each_cpu_andnot(cpu, mask1, mask2)				\
-+	for ((cpu) = -1;						\
-+		(cpu) = cpumask_next_andnot((cpu), (mask1), (mask2)),	\
-+		(cpu) < nr_cpu_ids;)
-+
- #endif /* SMP */
- 
- #define CPU_BITS_NONE						\
-diff --git a/lib/cpumask.c b/lib/cpumask.c
-index a971a82d2f43..6896ff4a08fd 100644
---- a/lib/cpumask.c
-+++ b/lib/cpumask.c
-@@ -42,6 +42,25 @@ int cpumask_next_and(int n, const struct cpumask *src1p,
+ #endif /* _LINUX_TOPOLOGY_H */
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 8739c2a5a54e..f0236a0ae65c 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -2067,6 +2067,34 @@ int sched_numa_find_closest(const struct cpumask *cpus, int cpu)
+ 	return found;
  }
- EXPORT_SYMBOL(cpumask_next_and);
  
 +/**
-+ * cpumask_next_andnot - get the next cpu in *src1p & ~*src2p
-+ * @n: the cpu prior to the place to search (ie. return will be > @n)
-+ * @src1p: the first cpumask pointer
-+ * @src2p: the second cpumask pointer
++ * sched_numa_hop_mask() - Get the cpumask of CPUs at most @hops hops away.
++ * @node: The node to count hops from.
++ * @hops: Include CPUs up to that many hops away. 0 means local node.
 + *
-+ * Returns >= nr_cpu_ids if no further cpus set in *src1p & ~*src2p.
++ * Requires rcu_lock to be held. Returned cpumask is only valid within that
++ * read-side section, copy it if required beyond that.
++ *
++ * Note that not all hops are equal in size; see sched_init_numa() for how
++ * distances and masks are handled.
++ *
++ * Also note that this is a reflection of sched_domains_numa_masks, which may change
++ * during the lifetime of the system (offline nodes are taken out of the masks).
 + */
-+int cpumask_next_andnot(int n, const struct cpumask *src1p,
-+		     const struct cpumask *src2p)
++const struct cpumask *sched_numa_hop_mask(int node, int hops)
 +{
-+	/* -1 is a legal arg here. */
-+	if (n != -1)
-+		cpumask_check(n);
-+	return find_next_andnot_bit(cpumask_bits(src1p), cpumask_bits(src2p),
-+		nr_cpumask_bits, n + 1);
-+}
-+EXPORT_SYMBOL(cpumask_next_andnot);
++	struct cpumask ***masks = rcu_dereference(sched_domains_numa_masks);
 +
- /**
-  * cpumask_any_but - return a "random" in a cpumask, but not this one.
-  * @mask: the cpumask to search
++	if (node >= nr_node_ids || hops >= sched_domains_numa_levels)
++		return ERR_PTR(-EINVAL);
++
++	if (!masks)
++		return NULL;
++
++	return masks[hops][node];
++}
++EXPORT_SYMBOL_GPL(sched_numa_hop_mask);
++
+ #endif /* CONFIG_NUMA */
+ 
+ static int __sdt_alloc(const struct cpumask *cpu_map)
 -- 
 2.31.1
 
