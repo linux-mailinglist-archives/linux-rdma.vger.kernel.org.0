@@ -2,76 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10196596E03
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Aug 2022 14:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC29596E45
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Aug 2022 14:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239035AbiHQMCN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Aug 2022 08:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
+        id S234942AbiHQMSb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Aug 2022 08:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233455AbiHQMCM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Aug 2022 08:02:12 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E45844DA
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Aug 2022 05:02:12 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id s199so15151186oie.3
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Aug 2022 05:02:12 -0700 (PDT)
+        with ESMTP id S236698AbiHQMSa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Aug 2022 08:18:30 -0400
+Received: from smtp-fw-9103.amazon.com (smtp-fw-9103.amazon.com [207.171.188.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5E133379
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Aug 2022 05:18:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc;
-        bh=pbCVlee58SNRljTVR7wTvz7D3A0MvcLCtUjVncuzsEg=;
-        b=UXnkFigrWNgGKaOx0VQnd77QtAXH8MEBszhAV9Mmh/2E5RB+qCgtKhuL8L7XiRV5S0
-         Lqw0nPiwxOQHCnXkR5J7fJV2eJOsJNGxDAHKNaxRpLBMVPOr/ld336SPTjjFRGW8M2S6
-         p6NylbgEfNhN+akEX/D1mFH0i2aHG9Xw2qMU+TNZ+5GQE5OyJXnFYL3XIFNp6ETxkEi8
-         zJYrQr+OW5NTx0Q0qZolMm3nLwXr0CnCWm29w3/4IhAoZ+kHQRc7DnPr0t/WFSa+GeJJ
-         rJXIgOSE0nET6YA6K+Jy7hQbtGvtI9OjCd/M7rmX25jhWRWQRb/NyIM9o1Xv92y3XHEX
-         LNeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=pbCVlee58SNRljTVR7wTvz7D3A0MvcLCtUjVncuzsEg=;
-        b=zXbByDhOdfBZ5hOR1JooeWYekd6AAFub9qhTFpV+htZ00Jsf9D2QD7flUZSBaLd7y5
-         gVs80LR97iKqga0HZw+WeXu3tMyoeXMukaouGpP2oa6NYd55NzIFnp4OgCcLaDXPDPbm
-         ZDieYFBfCz1jve6tnM8bclNvUS+fr/t/jPjzZKoGe7ASn9CTXEMj535/23epuVFVcikG
-         BHEulIarUPzRioOTgTMi+tT+k8Whj0CM0y3SyHM1b9z6WXbM7y922BBlat+d9XL4mh9P
-         82O/eLs9vEY5avyYRFtmeFO34pOT8u5CpXLq0XD46cVPz8jv4+Pr20bOP2fnODvxiBs5
-         iAHA==
-X-Gm-Message-State: ACgBeo2DJ4tjlxzza8mALd3ioPzSuC7iVXxBLzjN78lRQQeiJkdayORB
-        0RRaiFx/uEVmWLXoOZasbmRFhaTaG7KMlGROS1k=
-X-Google-Smtp-Source: AA6agR4NSnF9F3v7ocNS/RdoIxQ0eH5h6/pJ5RK5y3AH1+GM1ulDwxnyGrJvl2h/tb00JyHTMNLXH4t97BW7sJhsiFg=
-X-Received: by 2002:a05:6808:124c:b0:342:9c9e:c935 with SMTP id
- o12-20020a056808124c00b003429c9ec935mr1363528oiv.70.1660737731350; Wed, 17
- Aug 2022 05:02:11 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1660738708; x=1692274708;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=04zyyO0sPL9KiuZOzvxcZXRwJluabb0Bsc2KNxTS0Lg=;
+  b=KJDd/9vhShomcu8Z/agYmUxGECBZ2/eEGTr2ldV2Ol6W5fPPo+Ofls7Z
+   mgnzC1qkQhWQ2lAvV+7rfe+6ZGldy7F0YrXXYR0u81sa8Iqbf0L+jrDkx
+   XyevzJeJf7ALKn0wKG44N7Iea4bPBbolw/Kk2gWMmNSX3mRkmLtNjQmA1
+   c=;
+X-IronPort-AV: E=Sophos;i="5.93,243,1654560000"; 
+   d="scan'208";a="1045211726"
+Subject: Re: [PATCH for-next] RDMA/efa: Support CQ receive entries with source GID
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-35b1f9a2.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9103.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2022 12:18:11 +0000
+Received: from EX13D09EUC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1d-35b1f9a2.us-east-1.amazon.com (Postfix) with ESMTPS id 11290201292;
+        Wed, 17 Aug 2022 12:18:09 +0000 (UTC)
+Received: from [192.168.92.243] (10.43.160.201) by
+ EX13D09EUC002.ant.amazon.com (10.43.164.73) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.38; Wed, 17 Aug 2022 12:18:06 +0000
+Message-ID: <a096d37b-e636-d621-8065-195d7cba627c@amazon.com>
+Date:   Wed, 17 Aug 2022 15:18:01 +0300
 MIME-Version: 1.0
-Sender: rw713667@gmail.com
-Received: by 2002:a4a:ae4a:0:0:0:0:0 with HTTP; Wed, 17 Aug 2022 05:02:10
- -0700 (PDT)
-From:   Charles Anthony <barcharlesanthonylawfirm1@gmail.com>
-Date:   Wed, 17 Aug 2022 12:02:10 +0000
-X-Google-Sender-Auth: QGuHA57Da4EWk8xAfjcMlStDAW0
-Message-ID: <CAAVzffGMtbLMTw+JQKJYRvxkigDqzZNnaCh_fepErtaxeDqDsA@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "jgg@nvidia.com" <jgg@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Jahjah, Firas" <firasj@amazon.com>,
+        "Leybovich, Yossi" <sleybo@amazon.com>,
+        "Kranzdorf, Daniel" <dkkranzd@amazon.com>
+References: <20220809151636.788-1-mrgolin@amazon.com>
+ <YvuiKpvLtBvKVhkO@unreal>
+From:   "Margolin, Michael" <mrgolin@amazon.com>
+In-Reply-To: <YvuiKpvLtBvKVhkO@unreal>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.201]
+X-ClientProxiedBy: EX13D27UWA001.ant.amazon.com (10.43.160.19) To
+ EX13D09EUC002.ant.amazon.com (10.43.164.73)
+X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
--- 
-Hello
 
-My Dear, I am Barrister Charles Anthony, I am contacting you to assist
-retrieve his huge deposit Mr. Alexander left in the bank $10.5
-million, before its get confiscated by the bank. please get back to me
-for more details.
+On 8/16/2022 4:56 PM, Leon Romanovsky wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+>
+>
+>
+> On Tue, Aug 09, 2022 at 06:16:36PM +0300, Michael Margolin wrote:
+>> Add a parameter for create CQ admin command to set source address on
+>> receive completion descriptors. Report capability for this feature
+>> through query device verb.
+>>
+>> Reviewed-by: Firas Jahjah <firasj@amazon.com>
+>> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+>> Signed-off-by: Daniel Kranzdorf <dkkranzd@amazon.com>
+>> Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+>> ---
+>>  drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 6 +++++-
+>>  drivers/infiniband/hw/efa/efa_com_cmd.c         | 5 ++++-
+>>  drivers/infiniband/hw/efa/efa_com_cmd.h         | 1 +
+>>  drivers/infiniband/hw/efa/efa_verbs.c           | 4 +++-
+>>  include/uapi/rdma/efa-abi.h                     | 4 +++-
+>>  5 files changed, 16 insertions(+), 4 deletions(-)
+> <...>
+>
+>> diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
+>> index c33010bbf9e8..c6234336543d 100644
+>> --- a/drivers/infiniband/hw/efa/efa_com_cmd.h
+>> +++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
+>> @@ -76,6 +76,7 @@ struct efa_com_create_cq_params {
+>>       u16 eqn;
+>>       u8 entry_size_in_bytes;
+>>       bool interrupt_mode_enabled;
+>> +     bool set_src_addr;
+> Please use "u8 xxx : 1" instead of bool in structs.
+>
+> Thanks
 
-Barrister. Charles Anthony
+Thanks Leon for your reply.
+
+Is this a convention in the subsystem? This is an internal struct used
+only to bind several variables for a function call and I think using
+bool makes it more readable.
+
+Of course if it's essential I will change this.
+
+
+Michael
+
