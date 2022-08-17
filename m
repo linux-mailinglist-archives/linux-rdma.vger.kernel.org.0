@@ -2,66 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 218DD596B94
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Aug 2022 10:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA1F596C95
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Aug 2022 12:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235225AbiHQIpk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Aug 2022 04:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
+        id S229764AbiHQKJc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Aug 2022 06:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235089AbiHQIpi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Aug 2022 04:45:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609694B0FF;
-        Wed, 17 Aug 2022 01:45:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EF5CE61362;
-        Wed, 17 Aug 2022 08:45:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55E93C433D6;
-        Wed, 17 Aug 2022 08:45:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660725936;
-        bh=Nl4ax/lyb7RpxEoNGNuW1AWeXdXLjVgCMAfaa08rBQo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=L339rJFtHf4UZSdKRcjJB8JkAPm5LKZaeoUlJIMenMcS8POHmcHZ12Hmt3bm4nLFv
-         yt7x+rMDjp765fET+w4zrMVoIiuBP4XixZb01MI25U8gfcckfIVTB649GS8hLuvyKy
-         WzEFq0xQH9bvOUnI65DSNYTUixjbyTRF4mILxFgr0GgNhRadOoHIivPaAwfdv3674J
-         sbgsDgenLhSNa52qRNGbnQbgzNFJ4E2t2k7Usbf91qfK/zSP1Br4g0HmIGGTbkYry/
-         sfxfC+BVcIBjMZlJao6CsdHyQLaNGmVdZLIXM6jD0uRisZ9w1NQ6QCykBH+CoLew+K
-         FMZPb2YqwAviQ==
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-11c5505dba2so925601fac.13;
-        Wed, 17 Aug 2022 01:45:36 -0700 (PDT)
-X-Gm-Message-State: ACgBeo2FhwE8KWmfCSBUC2wR8CBy8c0aFVa55sB4DstZyXVJxsK/Xtd+
-        TOVbU9vgo7ouqBYQdx88MM3vlzItt0rCCHOdDzk=
-X-Google-Smtp-Source: AA6agR5UK0nSUomkY8HQAeojh1Oyy4NrRyl664pTWXyUJbfC9S3o30KaZEymrrzcpQVOJ47FOUSQUkTlJozj4lG55Mg=
-X-Received: by 2002:a05:6870:961d:b0:10d:7606:b212 with SMTP id
- d29-20020a056870961d00b0010d7606b212mr1147862oaq.166.1660725935417; Wed, 17
- Aug 2022 01:45:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <0-v1-d8f4e1fa84c8+17-rdma_dmabuf_fix_jgg@nvidia.com>
-In-Reply-To: <0-v1-d8f4e1fa84c8+17-rdma_dmabuf_fix_jgg@nvidia.com>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Wed, 17 Aug 2022 11:45:09 +0300
-X-Gmail-Original-Message-ID: <CAFCwf112pdMMuNBGEt9j5QR2Hq=X+=7KUZ-8hS-EF=BzzfEB7Q@mail.gmail.com>
-Message-ID: <CAFCwf112pdMMuNBGEt9j5QR2Hq=X+=7KUZ-8hS-EF=BzzfEB7Q@mail.gmail.com>
-Subject: Re: [PATCH rc] RDMA: Handle the return code from dma_resv_wait_timeout()
- properly
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        with ESMTP id S231184AbiHQKJb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Aug 2022 06:09:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9512C4CA11
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Aug 2022 03:09:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1660730967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rFQ2vbdqNLS83JEBag1JaG73C2ejg94L1xY/86td28w=;
+        b=PrEaIf33xzkRRa3lxPK89SEwj8Cb2hqpVVcbWuGPzd6hNXxgj7NU84CY6jaipvmQRmGnCB
+        loxxGCDEviHZNFPD8htvb6nF5BdzuI6VxKvBj5T9kVMDzLLGeuN8LxOAJTKaNu8MKigFsv
+        sId3WJqdRIrXxZFL6eNyk389SbWWKXk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-653-dcnR9q8nPUC8pHzbf6rbxQ-1; Wed, 17 Aug 2022 06:09:26 -0400
+X-MC-Unique: dcnR9q8nPUC8pHzbf6rbxQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 133-20020a1c028b000000b003a5f307844bso3384348wmc.2
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Aug 2022 03:09:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc;
+        bh=rFQ2vbdqNLS83JEBag1JaG73C2ejg94L1xY/86td28w=;
+        b=G8NIW52V8agLpW93zj+NwgGY9f87IdIkhh66yr5GxvRNNaTgm/sSzfdlt+A4qysH41
+         5zXx8ykgITjiafT59Wt7NmOgssi0oZ6KXNgjALnxANBmghx4rqBAXRxeKXw6aFK2+4Ss
+         Ts3idbdgOGKZpIkB+cBpsWpqe/Euw88MqsVrN/Q+GyVGe+pTt1J5GfXV0Se6aZ60LHsg
+         FddtiKZoOpFm5WXmMQpe5NbY92W0yLgN+BsJfn7qkz497vgyr0qhiDuN+eIGCWeyjtog
+         P0gtEIZM0lQNaUca0t23lbH17NmvEupaYfOolL9O7jOSw8hEpt3vUhwY7nnExgRJJZYq
+         Ttyw==
+X-Gm-Message-State: ACgBeo039wqtWUTFCh/d/7BvnaG+2yz2ZWkbT/fmspWg0mGCnnLCx4oA
+        Rb6Tu/GOJNV8WpWYNLnFJfvL/iJBIRmMyWhbryMljDpUqzlPbhF2v6MpGspmWQJaEhKwtHRitDP
+        CYo3nNCCZcuhgoSbCmkRNpg==
+X-Received: by 2002:a5d:68c2:0:b0:225:1fd1:4225 with SMTP id p2-20020a5d68c2000000b002251fd14225mr2720014wrw.392.1660730965413;
+        Wed, 17 Aug 2022 03:09:25 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR5ZGYQ0AEgur9hwTQYlVHMNZtnDKsqXY7sZjx66IWnuzJqZHhHrrJ4f4Wg4sIvLI1TqI9vYKw==
+X-Received: by 2002:a5d:68c2:0:b0:225:1fd1:4225 with SMTP id p2-20020a5d68c2000000b002251fd14225mr2719982wrw.392.1660730965093;
+        Wed, 17 Aug 2022 03:09:25 -0700 (PDT)
+Received: from vschneid.remote.csb ([185.11.37.247])
+        by smtp.gmail.com with ESMTPSA id b18-20020a5d4b92000000b0021d6924b777sm12153974wrt.115.2022.08.17.03.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Aug 2022 03:09:24 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH 2/5] cpumask: Introduce for_each_cpu_andnot()
+In-Reply-To: <YvwZH/q5rvT6JD5S@yury-laptop>
+References: <20220816180727.387807-1-vschneid@redhat.com>
+ <20220816180727.387807-3-vschneid@redhat.com>
+ <YvwZH/q5rvT6JD5S@yury-laptop>
+Date:   Wed, 17 Aug 2022 11:09:23 +0100
+Message-ID: <xhsmhbksjb2r0.mognet@vschneid.remote.csb>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,72 +95,41 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 16, 2022 at 5:03 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+On 16/08/22 15:24, Yury Norov wrote:
+> On Tue, Aug 16, 2022 at 07:07:24PM +0100, Valentin Schneider wrote:
+>> for_each_cpu_and() is very convenient as it saves having to allocate a
+>> temporary cpumask to store the result of cpumask_and(). The same issue
+>> applies to cpumask_andnot() which doesn't actually need temporary storage
+>> for iteration purposes.
+>>
+>> Following what has been done for for_each_cpu_and(), introduce
+>> for_each_cpu_andnot().
+>>
+>> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+>> ---
+>>  include/linux/cpumask.h | 32 ++++++++++++++++++++++++++++++++
+>>  lib/cpumask.c           | 19 +++++++++++++++++++
+>>  2 files changed, 51 insertions(+)
+>>
+>> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+>> index fe29ac7cc469..a8b2ca160e57 100644
+>> --- a/include/linux/cpumask.h
+>> +++ b/include/linux/cpumask.h
+>> @@ -157,6 +157,13 @@ static inline unsigned int cpumask_next_and(int n,
+>>      return n+1;
+>>  }
+>>
+>> +static inline unsigned int cpumask_next_andnot(int n,
+>> +					    const struct cpumask *srcp,
+>> +					    const struct cpumask *andp)
+>> +{
+>> +	return n+1;
+>> +}
+>> +
 >
-> ib_umem_dmabuf_map_pages() returns 0 on success and -ERRNO on failure.
+> It looks like the patch is not based on top of 6.0, where UP cpumask
+> operations were fixed.  Can you please rebase?
 >
-> dma_resv_wait_timeout() uses a different scheme:
->
->  * Returns -ERESTARTSYS if interrupted, 0 if the wait timed out, or
->  * greater than zero on success.
->
-> This results in ib_umem_dmabuf_map_pages() being non-functional as a
-> positive return will be understood to be an error by drivers.
->
-> Fixes: f30bceab16d1 ("RDMA: use dma_resv_wait() instead of extracting the fence")
-> Cc: stable@kernel.org
-> Tested-by: Maor Gottlieb <maorg@nvidia.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/infiniband/core/umem_dmabuf.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> Oded, I assume the Habana driver will hit this as well - does this mean you
-> are not testing upstream kernels?
-Thanks Jason for letting me know.
 
-You are correct, we don't use upstream kernels.
-We use a back-ported EFA driver for 5.15 which in that version,
-ib_umem_dmabuf_map_pages() calls dma_resv_excl_fence().
-So I guess that's why we didn't encounter this issue.
+Right, this is based on tip/sched/core, I'll rebase it. Sorry about that!
 
-Thanks,
-oded
-
-
-
-
->
-> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-> index fce80a4a5147cd..04c04e6d24c358 100644
-> --- a/drivers/infiniband/core/umem_dmabuf.c
-> +++ b/drivers/infiniband/core/umem_dmabuf.c
-> @@ -18,6 +18,7 @@ int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
->         struct scatterlist *sg;
->         unsigned long start, end, cur = 0;
->         unsigned int nmap = 0;
-> +       long ret;
->         int i;
->
->         dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
-> @@ -67,9 +68,14 @@ int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
->          * may be not up-to-date. Wait for the exporter to finish
->          * the migration.
->          */
-> -       return dma_resv_wait_timeout(umem_dmabuf->attach->dmabuf->resv,
-> +       ret = dma_resv_wait_timeout(umem_dmabuf->attach->dmabuf->resv,
->                                      DMA_RESV_USAGE_KERNEL,
->                                      false, MAX_SCHEDULE_TIMEOUT);
-> +       if (ret < 0)
-> +               return ret;
-> +       if (ret == 0)
-> +               return -ETIMEDOUT;
-> +       return 0;
->  }
->  EXPORT_SYMBOL(ib_umem_dmabuf_map_pages);
->
->
-> base-commit: 568035b01cfb107af8d2e4bd2fb9aea22cf5b868
-> --
-> 2.37.2
->
