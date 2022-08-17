@@ -2,41 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9F85966F9
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Aug 2022 03:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313995967F1
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Aug 2022 06:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238083AbiHQBqm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Aug 2022 21:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
+        id S229935AbiHQEMO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Aug 2022 00:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233644AbiHQBql (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Aug 2022 21:46:41 -0400
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA9A979C4
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Aug 2022 18:46:40 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VMTMNEB_1660700796;
-Received: from 30.43.105.7(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VMTMNEB_1660700796)
-          by smtp.aliyun-inc.com;
-          Wed, 17 Aug 2022 09:46:38 +0800
-Message-ID: <47178d1a-489d-d258-3722-34add81425c5@linux.alibaba.com>
-Date:   Wed, 17 Aug 2022 09:46:36 +0800
+        with ESMTP id S229895AbiHQEMN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Aug 2022 00:12:13 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D05394118
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Aug 2022 21:12:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660709532; x=1692245532;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FmjR/5L3ky8vGrHnd+Xm4lyjkF4p84ZhZR3kkZXv9/M=;
+  b=E/9hFj19tBio42S1cUItE+6/HSKNk3H8VFh63UHW0vn0Rv9lqPy9RTl+
+   +ivFdo3t9fqUmtT8sH5hOqX9UcYj0ci0uO/Fg9+kOWfh9fvMGVziNjES/
+   I2/+Ew2Yv+E/XiKZm62iVLVNx2yPnBB/gUdQ5xpl4DdElxtsGAa4BP7T+
+   K5gkOBl7jrRoqpcP1hbJ3sQI5OS089wlnc8+uqrvXmM/ExdASSMdTrH18
+   FhJCwfk7oIh1aeUjKo6srvIEQqK8Im+LxzKrcPxAwyErvL7frfgCFAPD2
+   MBkUpCa7Z0N6q0rdEaJOoW1ckA9CtPuEsYYLhDys4L+WhZpwpQcnDb830
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10441"; a="293670844"
+X-IronPort-AV: E=Sophos;i="5.93,242,1654585200"; 
+   d="scan'208";a="293670844"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2022 21:12:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,242,1654585200"; 
+   d="scan'208";a="557964245"
+Received: from lkp-server02.sh.intel.com (HELO 81d7e1ade3ba) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 16 Aug 2022 21:12:10 -0700
+Received: from kbuild by 81d7e1ade3ba with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oOAPa-0000Yu-00;
+        Wed, 17 Aug 2022 04:12:10 +0000
+Date:   Wed, 17 Aug 2022 12:11:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
+ b16de8b9e7d1aae169d059c3a0dd9a881a3c0d1d
+Message-ID: <62fc6a6d.gg/6jG68SFYyFDtY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.12.0
-Subject: Re: [PATCH for-rc] RDMA/erdma: Correct the max_qp and max_cq
- capacities of the device
-Content-Language: en-US
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
-References: <20220810014320.88026-1-chengyou@linux.alibaba.com>
- <YvucWrCLUYjljcTj@unreal>
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <YvucWrCLUYjljcTj@unreal>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,28 +63,127 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
+branch HEAD: b16de8b9e7d1aae169d059c3a0dd9a881a3c0d1d  RDMA: Handle the return code from dma_resv_wait_timeout() properly
 
+elapsed time: 723m
 
-On 8/16/22 9:32 PM, Leon Romanovsky wrote:
-> On Wed, Aug 10, 2022 at 09:43:19AM +0800, Cheng Xu wrote:
->> QP0 in HW is used for CMDQ, and the rest is for RDMA QPs. So the actual
->> max_qp capacity reported to core should be max_qp (reported by HW) - 1.
->> So does max_cq.
->>
->> Fixes: 155055771704 ("RDMA/erdma: Add verbs implementation")
->> Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
->> ---
->>  drivers/infiniband/hw/erdma/erdma_verbs.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
-> 
-> Thanks, applied both patches to -rc.
-> 
-> As a note, please group the patches properly and not as a reply.
-> Or send them separately, or use cover letter.
+configs tested: 105
+configs skipped: 2
 
-It's my fault. I shouldn't send the two patches together in one git send-email
-command.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Cheng Xu
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                  randconfig-r043-20220815
+i386                                defconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+i386                             allyesconfig
+powerpc                          allmodconfig
+mips                             allyesconfig
+powerpc                           allnoconfig
+m68k                             allyesconfig
+sh                               allmodconfig
+m68k                             allmodconfig
+i386                 randconfig-a003-20220815
+i386                 randconfig-a004-20220815
+x86_64               randconfig-a001-20220815
+i386                 randconfig-a002-20220815
+x86_64               randconfig-a003-20220815
+x86_64               randconfig-a005-20220815
+i386                 randconfig-a001-20220815
+x86_64                    rhel-8.3-kselftests
+x86_64               randconfig-a004-20220815
+x86_64                          rhel-8.3-func
+x86_64               randconfig-a002-20220815
+arc                        nsimosci_defconfig
+m68k                          atari_defconfig
+sh                        dreamcast_defconfig
+sh                            migor_defconfig
+i386                 randconfig-a005-20220815
+x86_64                         rhel-8.3-kunit
+x86_64               randconfig-a006-20220815
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+i386                 randconfig-a006-20220815
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+csky                              allnoconfig
+alpha                             allnoconfig
+arc                               allnoconfig
+riscv                             allnoconfig
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+powerpc              randconfig-c003-20220815
+i386                 randconfig-c001-20220815
+sh                           se7343_defconfig
+m68k                                defconfig
+powerpc                 mpc837x_rdb_defconfig
+loongarch                           defconfig
+loongarch                         allnoconfig
+arm                         lubbock_defconfig
+csky                                defconfig
+arm                         vf610m4_defconfig
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+powerpc                      cm5200_defconfig
+ia64                            zx1_defconfig
+xtensa                  audio_kc705_defconfig
+um                                  defconfig
+xtensa                generic_kc705_defconfig
+mips                  maltasmvp_eva_defconfig
+sh                        sh7757lcr_defconfig
+mips                            gpr_defconfig
+m68k                        m5407c3_defconfig
+sparc                       sparc32_defconfig
+m68k                       m5275evb_defconfig
+sh                   sh7770_generic_defconfig
+parisc                           allyesconfig
+powerpc                         wii_defconfig
+sh                          landisk_defconfig
+parisc64                         alldefconfig
+ia64                             allmodconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+
+clang tested configs:
+hexagon              randconfig-r045-20220815
+hexagon              randconfig-r041-20220815
+riscv                randconfig-r042-20220815
+s390                 randconfig-r044-20220815
+x86_64               randconfig-a013-20220815
+x86_64               randconfig-a012-20220815
+x86_64               randconfig-a011-20220815
+x86_64               randconfig-a014-20220815
+x86_64               randconfig-a015-20220815
+x86_64               randconfig-a016-20220815
+i386                 randconfig-a012-20220815
+i386                 randconfig-a011-20220815
+i386                 randconfig-a013-20220815
+i386                 randconfig-a014-20220815
+powerpc                      ppc64e_defconfig
+powerpc                 mpc832x_mds_defconfig
+i386                 randconfig-a015-20220815
+i386                 randconfig-a016-20220815
+arm                       imx_v4_v5_defconfig
+mips                           mtx1_defconfig
+powerpc                     kilauea_defconfig
+s390                             alldefconfig
+mips                          ath79_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm64                            allyesconfig
+powerpc                      pmac32_defconfig
+x86_64               randconfig-k001-20220815
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
