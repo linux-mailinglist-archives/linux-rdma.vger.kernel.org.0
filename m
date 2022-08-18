@@ -2,129 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B5C598390
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 14:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0475983BA
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 15:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244830AbiHRM6Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Aug 2022 08:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47240 "EHLO
+        id S244888AbiHRNGn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Aug 2022 09:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244829AbiHRM6W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 08:58:22 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2083.outbound.protection.outlook.com [40.107.94.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09490275F6;
-        Thu, 18 Aug 2022 05:58:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NMCaiu/Q7ATXdrhBIql9hU8ud0zTvfiHRq+IWosAo3atUpYDsITXIOCLBQ4ixGGevVhLDr2UwNEBYvwXwcxkp6d2bhneLFI+JAizgLxpPPcnKaD9jEKT7RF29dHr2wXNLBT40aJx2uOF3dkdcBn8OfxTfxtgdoG8MQLxZbyh9QOnfOlN5FiA5ellrefooe2EDPL9xAALXNItWI0W/9AXc1aO9mWiApov+zYqB/3U+DS+IE4BS7I6YpS7cfkgJ/s/l4J6EqzZc4ScqOqcTnuHR01Hqgv5iymXgx866mWJqTFYNQ8t2MAN+iR6zrrQGENH7fxNh+feUWuN4fpzMDzVTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lIPs/IsdXnNc9z50f5GGLkCzHreGuc7Pb+vyFs1Y7yQ=;
- b=Nq+eaRldviwW1fKDe3s+rDn1kGrgXfKBZyuYHsuJ9snH+NKmaGtQSeZ2F/ZLfm0QT28/rKhqzonz84vjDUuWIU73aApDOe8vV6+ZX9jO1sb0HQzqXKUdosT2eRNJSrY6gzQ5YEX+5Y6gNQWGRirW2BPrjMClBojKWTlP0RuoYfVvfy7BdVc6L8kM1i0w3Qkz8EpyBQL7qkSXdWE5ODJI9AvbmwC+/GkbIbWhZPpVEamQhptU2KChbNLyQZ3eJ/QIQxXDix4KnhW/RBlfbZePCJ6vspjule4/okdzEsNm/1mJo9cYiYd2q6f/6Iq2gW6RCQz/ayfwXZRbArjhnyf5fA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lIPs/IsdXnNc9z50f5GGLkCzHreGuc7Pb+vyFs1Y7yQ=;
- b=kg4i994i5P2iKEH/WGURNIEp8JPGYqYAF+UCgUe3YExPV1JKm3GhFRxqe2H1qZ3IjcUJWgt9+lb+gqY/dnH9oLpiOY5qJKAs3mJln7ovhxvBT/OOGGqdrt/M06CZLVZrp5Gsas2gSFoijCmWjp+ltTAHDB3AhNMPNU21b90sORY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by BN6PR12MB1619.namprd12.prod.outlook.com (2603:10b6:405:f::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5525.10; Thu, 18 Aug
- 2022 12:58:18 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::905:1701:3b51:7e39]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::905:1701:3b51:7e39%2]) with mapi id 15.20.5504.020; Thu, 18 Aug 2022
- 12:58:18 +0000
-Message-ID: <d12fdf94-fbef-b981-2eff-660470ceca22@amd.com>
-Date:   Thu, 18 Aug 2022 14:58:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 0/4] Allow MMIO regions to be exported through dma-buf
+        with ESMTP id S244382AbiHRNGn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 09:06:43 -0400
+Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EF21A3A0;
+        Thu, 18 Aug 2022 06:06:40 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VMauZyi_1660827996;
+Received: from 30.227.95.9(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VMauZyi_1660827996)
+          by smtp.aliyun-inc.com;
+          Thu, 18 Aug 2022 21:06:36 +0800
+Message-ID: <4a79203b-a8a9-3f16-3b8d-5240f535ae10@linux.alibaba.com>
+Date:   Thu, 18 Aug 2022 21:06:35 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH net-next 00/10] net/smc: optimize the parallelism of SMC-R
+ connections
 Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Oded Gabbay <ogabbay@kernel.org>
-References: <0-v1-9e6e1739ed95+5fa-vfio_dma_buf_jgg@nvidia.com>
- <921de79a-9cb3-4217-f079-4b23958a16aa@amd.com> <Yv4qlOp9n78B8TFb@nvidia.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <Yv4qlOp9n78B8TFb@nvidia.com>
+To:     Jan Karcher <jaka@linux.ibm.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <cover.1660152975.git.alibuda@linux.alibaba.com>
+ <2182efbc-99f8-17ba-d344-95a467536b05@linux.ibm.com>
+ <9da41595-977f-5026-0ea1-f18a5fa1de4c@linux.alibaba.com>
+ <0f0718d1-eeb4-6440-5367-db9cc8104f43@linux.ibm.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <0f0718d1-eeb4-6440-5367-db9cc8104f43@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AS8PR04CA0033.eurprd04.prod.outlook.com
- (2603:10a6:20b:312::8) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 56987e2d-df19-4da1-c001-08da8119525f
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1619:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: i1XOE8iLaRqjf0erimBlctNdZj8NPO2GjDdmAwNaYoFubl8TnlslwhilhwFxNH08jt1fUvVEwxBRPF0JnE4hbIFjrGlTvQqI716TMAnh3YBvOzRKLTzaNHZOtfRiK69+jMWx6s9iE5lXaozkpWCg5i4cSyXlKR9d09NWs3kRrRnSsbpcSpC3yCi64fYwGdZDNy+KlUrYgAKp7jKLrGrp4wlVQ1T0HcektUQLOwGbVXwV/RF6WLAY+yuA76UcQjT+zaBWH158pTTGhcmH5vosuLbuEOMfdwbShWAQOcWEF+Uo72Cvhq1IaGXwKBKRZ89ZcMFiatuC06UMlbktK00hlO308ZBnvhtCVrxhi3uXf7OpvfkvI+Su8gs8o/FxI9Xx0Pme+fPNW+hIQgg92SuFI39RmgdrMN0+iSjxC7XfMA4KvKx4L5nA/q8PT3VoR2jz35gXjez2Yb+4xDAYWn1LMhNcqGfIbiMAz9e2lhJ9+tgh60lU9MSCnO5FkiRUerUlELpb3+ma1Wpu10v0eolCuuWaqlcUnRx75tGTBSk8IezsU0eZlxmZmzF21hney79JkctAsHjuA1v3YvMeDliO2r7ZWgMNNRJ7oyGdNvwMLm2338tZrAznzfvY9umgO3Co5WTE/0VNel/UZO/KzfWYN80B9Px1g4c15N+H2tE2ilJO05oGH2Rbcg4BiQu1wtoqWcqTuU8XxBadwuzi4O2ZHlb+UmvvV/KgoKhIrznFVaVTllB9zgr4rZifshlit7jBK4GLBu2+BiNPXI9UOhCCwHdDkYkEvk+5uD3LCuKCarw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(136003)(346002)(39860400002)(366004)(396003)(6506007)(54906003)(5660300002)(41300700001)(6916009)(6666004)(316002)(66556008)(31696002)(31686004)(66476007)(7416002)(86362001)(4326008)(8676002)(6512007)(36756003)(66946007)(2906002)(26005)(8936002)(66574015)(2616005)(186003)(83380400001)(38100700002)(478600001)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VjBGR3NQcDJkQW9ucTJTRFl5K1hvaS9UWGlBekdFMXF1TzRlSHlWQnFQZlZ5?=
- =?utf-8?B?MTQ0YmlERlp2L0pGRHd3UGtJWmorL2hId2diY3VrNHVQdVc1amIvd0k5NnBW?=
- =?utf-8?B?ZEQra1M4NURvSkZwWmQ2bEhFSTFlODlKWGR4blp4VEx0ZWlrVFZNem9LZmJi?=
- =?utf-8?B?Z1hwU2FGU2hzWFE3cWg3V3VSeGZaMFZPcGVET1UxYVZOWVZoY29PRkVGb0pD?=
- =?utf-8?B?MmFQWFgzVmczTW1nL0dBWWdPcTdpSXIwS1dRVnYweG83TjVVeFdPTThJYnFq?=
- =?utf-8?B?UGFqOHk1V05Kc0J4ak1FczFuNDk2ajdYVEt2ZkZSWWQ1djRqSDE1ZFBBcmxF?=
- =?utf-8?B?T0RSRTZpSEVTcTBXTmdmV1RWcFRzc05vYWpZYVpFbVVFY3VPc0xQN0pyZ3hL?=
- =?utf-8?B?S2cza0cwMjlTUmw5MlEvVkhFQmxDMWZkeEVSaHNRS1Q4TEQyeXZnMXVjV1NL?=
- =?utf-8?B?SW5XV2lnWllKdlppV0dUclkzREdiN1ZSUlg5NzRVaW1NWlRxQUtPT3BySlFR?=
- =?utf-8?B?Z1UxTWl5NXR3KzBkbjA2REtJM3VnN3BPS3pSM1FCRGxNNVRhOXdqU21MM2hZ?=
- =?utf-8?B?SmlJVGU5dmUvRVVURVBpeUFtdFkrQ3ZKajUwdzNLY2RPWnRRbjVJMmdFUXM5?=
- =?utf-8?B?MnpsVnQveEEyY3VOZ1RFdGErSjdrZVRxeHZnVGpISHYxcThPeG1PckpJZy94?=
- =?utf-8?B?STdsN1A2NmZHQWlhSmpRYlplcEtLMDd1dmd1WjVFL1V5REloYWVrazU4cFFv?=
- =?utf-8?B?dmhKOGJkSVFuVlcyVGxrZlBrYU8wVHBWRkFtRTE3MmNIVlliOTFJQlVFa0pS?=
- =?utf-8?B?V1MwbkVVNDBnY0k1UEFkbE1WV0MxNG9QU3ByOThsSDVENHRxWW44Q1RYRVFs?=
- =?utf-8?B?SW82YWZmSXBsR1krMzFsRUdBRDRmRldQVnRKYTZ3MnFxZlJqMWdGVFpLa1lR?=
- =?utf-8?B?NEszNG1JTzF5MmgyQTVDUGM4Mi9aUDFzRUdEWVBySWNOa0JqTHJ4WXJqTm4w?=
- =?utf-8?B?L3NDSC9DQlgwT0xmMnBOL1B2NGdSbDhYcHkyZHY3WUd2WWFkTS90ZjZhblFB?=
- =?utf-8?B?VzRERHhJelVhZ1R1R1BFZW53WWV0ZXJDN1V6R0ZqZGJvdzhzNXkySktvSkZ2?=
- =?utf-8?B?TlIzMmd1amdpMDlGUFMxL2lLVExQRzRWVk1TR3FOamttUU5SeE8zMDZ2QU5E?=
- =?utf-8?B?ak1jRU1LazlxYVFmZlJHZy83Y1hEYVVoN2Qzd3luNkFRUy9tZkRGcXUxWWRF?=
- =?utf-8?B?Zk9NZnJGWlVxS2pkMG1GdjFzWUpQOUIrTTd6WmFEZUFsMjJURzRNRVFWUGt0?=
- =?utf-8?B?c1JRSmtrNlVkOERybWhzUGduR1ZrdWVWN2JnQVhUdXczc0hqOXAvdU1nNTVZ?=
- =?utf-8?B?N3dxZTlzNkdkRTF2VDZJdzE2QjBRclkwNkYrcjYxb1lwdEh0Rjc0cEhGb1ZJ?=
- =?utf-8?B?eU5XaEZhbXdCMUp0OHNUMHFDM0R2bjA1eHpFU1NySkM1MXJoamhXRCtEd0JO?=
- =?utf-8?B?R0hPTnJHZXNuclZmanpKL3pJWVliK3J5N094RmlLdFc2YTdZTGM3VXBMQjFD?=
- =?utf-8?B?QmkxRys5ODVaTmpmR091SXpiZ0xRUVlydmhQSlliQ3NqQys0UEVsRGI2OTln?=
- =?utf-8?B?UzI1Ym1xeDk4bDgzY293aTg2dDUwUVhIWjBCQjhadEhrYS9pWXFiV2NGSlB5?=
- =?utf-8?B?bFJGQ09TaVZEeE1lUlBHa0VJalhUazZEL3U1bk5oOHY2dkNyeEhWV2hMcGp3?=
- =?utf-8?B?eUk0VjEyK2xtYXpoN2MwREdOSHBMM2EzNm1LT2RObXROdjhOS0puM0RCOWNz?=
- =?utf-8?B?RFVpQVVBZnlyRlVkTnJoUjcxY1h4NzlwSTdyS1h6TmM2OUdxbWRySzRrWCtr?=
- =?utf-8?B?WG9LR1dDQ2c1QTF5QTZTNnlGWlVoNE16b3h1d2E3K3N0L25NRHdRWEtYK25v?=
- =?utf-8?B?eVNuWjRQOFFNV0s4T2FibzlMTlRLaUs4a0RWb1ZzcXJwUEZzZ2VSUklpNGsx?=
- =?utf-8?B?K1VtZnZERHIvQ2J1VWNzU3hlSXNsZi9HeDg5WXZYYy9zOW9JeU1yYlE1MTM3?=
- =?utf-8?B?aFptd2hzSURpWVhUeVMrVXZrdklHTjlWaHJwbWdFNlRRb1NzSjB1Mis3cHdl?=
- =?utf-8?Q?RGFYGJN1/vkNId18Yq1rAQyQa?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56987e2d-df19-4da1-c001-08da8119525f
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2022 12:58:18.5331
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zzWAUlME2ibZjlmrhZCq+3jPnSJvV1+9EENb3V2FsPOVGbmuS2LIsSejsft5FTts
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1619
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -133,84 +51,106 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-Am 18.08.22 um 14:03 schrieb Jason Gunthorpe:
-> On Thu, Aug 18, 2022 at 01:07:16PM +0200, Christian König wrote:
->> Am 17.08.22 um 18:11 schrieb Jason Gunthorpe:
->>> dma-buf has become a way to safely acquire a handle to non-struct page
->>> memory that can still have lifetime controlled by the exporter. Notably
->>> RDMA can now import dma-buf FDs and build them into MRs which allows for
->>> PCI P2P operations. Extend this to allow vfio-pci to export MMIO memory
->>> from PCI device BARs.
->>>
->>> This series supports a use case for SPDK where a NVMe device will be owned
->>> by SPDK through VFIO but interacting with a RDMA device. The RDMA device
->>> may directly access the NVMe CMB or directly manipulate the NVMe device's
->>> doorbell using PCI P2P.
->>>
->>> However, as a general mechanism, it can support many other scenarios with
->>> VFIO. I imagine this dmabuf approach to be usable by iommufd as well for
->>> generic and safe P2P mappings.
->> In general looks good to me, but we really need to get away from using
->> sg_tables for this here.
+On 8/18/22 12:52 AM, Jan Karcher wrote:
+> 
+> 
+> On 17.08.2022 06:55, D. Wythe wrote:
 >>
->> The only thing I'm not 100% convinced of is dma_buf_try_get(), I've seen
->> this incorrectly used so many times that I can't count them any more.
 >>
->> Would that be somehow avoidable? Or could you at least explain the use case
->> a bit better.
-> I didn't see a way, maybe you know of one
+>> On 8/16/22 5:35 PM, Jan Karcher wrote:
+>>>
+>>>
+>>> On 10.08.2022 19:47, D. Wythe wrote:
+>>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>>
+>>>> This patch set attempts to optimize the parallelism of SMC-R connections,
+>>>> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
+>>>> occur after thoses optimization.
+>>>>
+>>>
+>>> Thank you again for your submission!
+>>> Let me give you a quick update from our side:
+>>> We tested your patches on top of the net-next kernel on our s390 systems. They did crash our systems. After verifying our environment we pulled console logs and now we can tell that there is indeed a problem with your patches regarding SMC-D. So please do not integrate this change as of right now. I'm going to do more in depth reviews of your patches but i need some time for them so here is a quick a description of the problem:
+>>
+>> Sorry for the late reply, and thanks a lot for your comment.
+>>
+>> I'm sorry for the low-level mistake. In the early design, I hoped that lnkc can also work on SMC-D,
+>> but in later tests I found out that we don't have SMC-D environment to test, so I have to canceled this logic.
+>> But dues to the rollback isn't thorough enough, leaving this issues, we are very sorry for that.
+>>
+> 
+> One more comment:
+> If the only reason why you do not touch SMC-D is that you do not have the environment to test it we strongly encourage you to change it anyway.
+> 
+> At some point doing kernel development, especially driver development you are going to reach the point where you do not have the environment to test it. It is on the maintainers to test those changes and verify that nothing is broken.
+> 
+> So please:
+> If testing is the only reason change SMC-D as well and we are going to test it for you verifying if it does work or not.
+> 
+> Thank you
+> Jan
 
-For GEM objects we usually don't use the reference count of the DMA-buf, 
-but rather that of the GEM object for this. But that's not an ideal 
-solution either.
+Actually, this is not the only reason. The purpose of remove smc_server_lgr_pending & smc_client_lgr_pending
+is mainly to solve the problem of excessive lock granularity in SMC-R. In SMC-R those locks protect
+a complete CLC message exchange process, including sending and receiving. This results in a large number of
+connections having to be queued. But this is not the case with SMC-D. SMC-D releases the lock in advance
+before receiving the CLC message, which makes the problem less severe in SMC-D than in SMC-R.
 
->
-> VFIO needs to maintain a list of dmabuf FDs that have been created by
-> the user attached to each vfio_device:
->
-> int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev, u32 flags,
-> 				  struct vfio_device_feature_dma_buf __user *arg,
-> 				  size_t argsz)
-> {
-> 	down_write(&vdev->memory_lock);
-> 	list_add_tail(&priv->dmabufs_elm, &vdev->dmabufs);
-> 	up_write(&vdev->memory_lock);
->
-> And dmabuf FD's are removed from the list when the user closes the FD:
->
-> static void vfio_pci_dma_buf_release(struct dma_buf *dmabuf)
-> {
-> 		down_write(&priv->vdev->memory_lock);
-> 		list_del_init(&priv->dmabufs_elm);
-> 		up_write(&priv->vdev->memory_lock);
->
-> Which then poses the problem: How do you iterate over only dma_buf's
-> that are still alive to execute move?
->
-> This seems necessary as parts of the dma_buf have already been
-> destroyed by the time the user's release function is called.
->
-> Which I solved like this:
->
-> 	down_write(&vdev->memory_lock);
-> 	list_for_each_entry_safe(priv, tmp, &vdev->dmabufs, dmabufs_elm) {
-> 		if (!dma_buf_try_get(priv->dmabuf))
-> 			continue;
+Of course, lnkc can be used for SMC-D, but considering that we have no way to test it,
+and it is not the core bottleneck of SMC-D, so we gave up it.
 
-What would happen if you don't skip destroyed dma-bufs here? In other 
-words why do you maintain that list in the first place?
+I will fix the panic problem first in the next revison. If you have a strong demand for this feature,
+I may commit a separate PATCH to support it, dues to current patch is quite complicated, adding SMC-D support
+will exacerbate its complexity, which may affect the other reviewer progress.
 
-Regards,
-Christian.
 
->
-> So the scenarios resolve as:
->   - Concurrent release is not in progress: dma_buf_try_get() succeeds
->     and prevents concurrent release from starting
->   - Release has started but not reached its memory_lock:
->     dma_buf_try_get() fails
->   - Release has started but passed its memory_lock: dmabuf is not on
->     the list so dma_buf_try_get() is not called.
->
-> Jason
+Thanks
+D. Wythe
 
+>>
+>>> It is a SMC-D problem, that occurs while building up the connection. In smc_conn_create you set struct smc_lnk_cluster *lnkc = NULL. For the SMC-R path you do grab the pointer, for SMC-D that never happens. Still you are using this refernce for SMC-D => Crash. This problem can be reproduced using the SMC-D path. Here is an example console output:
+>>>
+>>> [  779.516382] Unable to handle kernel pointer dereference in virtual kernel address space
+>>> [  779.516389] Failing address: 0000000000000000 TEID: 0000000000000483
+>>> [  779.516391] Fault in home space mode while using kernel ASCE.
+>>> [  779.516395] AS:0000000069628007 R3:00000000ffbf0007 S:00000000ffbef800 P:000000000000003d
+>>> [  779.516431] Oops: 0004 ilc:2 [#1] SMP
+>>> [  779.516436] Modules linked in: tcp_diag inet_diag ism mlx5_ib ib_uverbs mlx5_core smc_diag smc ib_core nft_fib_inet nft_fib_ipv4
+>>> nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv
+>>> 6 nf_defrag_ipv4 ip_set nf_tables n
+>>> [  779.516470] CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted 5.19.0-13940-g22a46254655a #3
+>>> [  779.516476] Hardware name: IBM 8561 T01 701 (z/VM 7.2.0)
+>>>
+>>> [  779.522738] Workqueue: smc_hs_wq smc_listen_work [smc]
+>>> [  779.522755] Krnl PSW : 0704c00180000000 000003ff803da89c (smc_conn_create+0x174/0x968 [smc])
+>>> [  779.522766]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:0 PM:0 RI:0 EA:3
+>>> [  779.522770] Krnl GPRS: 0000000000000002 0000000000000000 0000000000000001 0000000000000000
+>>> [  779.522773]            000000008a4128a0 000003ff803f21aa 000000008e30d640 0000000086d72000
+>>> [  779.522776]            0000000086d72000 000000008a412803 000000008a412800 000000008e30d650
+>>> [  779.522779]            0000000080934200 0000000000000000 000003ff803cb954 00000380002dfa88
+>>> [  779.522789] Krnl Code: 000003ff803da88e: e310f0e80024        stg %r1,232(%r15)
+>>> [  779.522789]            000003ff803da894: a7180000            lhi %r1,0
+>>> [  779.522789]           #000003ff803da898: 582003ac            l %r2,940
+>>> [  779.522789]           >000003ff803da89c: ba123020            cs %r1,%r2,32(%r3)
+>>> [  779.522789]            000003ff803da8a0: ec1603be007e        cij %r1,0,6,000003ff803db01c
+>>>
+>>> [  779.522789]            000003ff803da8a6: 4110b002            la %r1,2(%r11)
+>>> [  779.522789]            000003ff803da8aa: e310f0f00024        stg %r1,240(%r15)
+>>> [  779.522789]            000003ff803da8b0: e310f0c00004        lg %r1,192(%r15)
+>>> [  779.522870] Call Trace:
+>>> [  779.522873]  [<000003ff803da89c>] smc_conn_create+0x174/0x968 [smc]
+>>> [  779.522884]  [<000003ff803cb954>] smc_find_ism_v2_device_serv+0x1b4/0x300 [smc]
+>>> 01: HCPGSP2629I The virtual machine is placed in CP mode due to a SIGP stop from CPU 01.
+>>> 01: HCPGSP2629I The virtual machine is placed in CP mode due to a SIGP stop from CPU 00.
+>>> [  779.522894]  [<000003ff803cbace>] smc_listen_find_device+0x2e/0x370 [smc]
+>>>
+>>>
+>>> I'm going to send the review for the first patch right away (which is the one causing the crash), so far I'm done with it. The others are going to follow. Maybe you can look over the problem and come up with a solution, otherwise we are going to decide if we want to look into it as soon as I'm done with the reviews. Thank you for your patience.
+>>
+>> In the next revision, I will add additional judgment to protect the SMC-D environment,
+>> thanks for your comments.
+>>
+>> And Looking forward to your other comments, thanks again.
+>>
+>> D. Wythe
+>>
