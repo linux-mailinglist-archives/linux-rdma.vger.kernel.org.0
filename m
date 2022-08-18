@@ -2,137 +2,187 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB065981B8
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 12:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8515981F7
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 13:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243923AbiHRKyD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Aug 2022 06:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
+        id S241074AbiHRLHc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Aug 2022 07:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238963AbiHRKyC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 06:54:02 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F627E018
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Aug 2022 03:54:01 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id h5so477401wru.7
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Aug 2022 03:54:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=fr2v3RSLAAFVGU4ZnToOw6WKbJPi95JAWN3CM4OQ5QI=;
-        b=aQ+0Bpy+94hyWqnCtnOlpzOel5V3/dpBPB2Gvcko/DEm980eT8/5WdJS11khPU5eW2
-         6lYzb5+DDiYh02WpTpjVXD5GqdgAXT+sBCrR5fjkDHVcaaAWl3e2Rz13fKubG94gyVhZ
-         Kw1BaGFHVWjKpii7r1xpY20xPfk8o/Q+RnZovS2KjwQTGwIVaokRFEisXFHQHCoCcCcz
-         Gd6KTVKUFHgg14yw0IscfhxOKEvFnjTQBq2DpmYXm9p3cjF2fm3kkOuzZNZZ2mfN3wLT
-         d5RMPDddrlSrBNgrKxiDcbaIs8RKmQLfGE8M9dkp1m1aas1QVsmd1E5Y17eWmt1ess55
-         R6Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=fr2v3RSLAAFVGU4ZnToOw6WKbJPi95JAWN3CM4OQ5QI=;
-        b=pwuyC1ynDIwWZv96keE8l8RNcXkDkG2JKPmZhYwTHvtnOqeHd42H4cLHSwcwztgAx2
-         3h/4vu0YH1/5p8x/gbvoVavZnf7+YlidbGVDitmt1ZoPOZqQKByKHrrw5sjylf2PZ2yS
-         sywuH5E7R21+hrf6HpSalNDKWm5bZd+yhByBQ7NosoTWGmO/YOklso+DY6IJVRKTRLLG
-         NL1VSjdl4Q9LI4w7XG7TEDVi/yPJ/I8CdeCa9eRsqgMmHwkZ7ArcXOcLqIVfhKj0UPSs
-         olKIesmI+5hFxbUnjhfpQGf0TQ6iZ8lH42rJBP92CuJcVJQlwkTJ1iCCSnkn8c6OnDjd
-         m1Lw==
-X-Gm-Message-State: ACgBeo2z9lVFFMsI/YD627afUgdcI4Ud8ALxl03NY2Ks7bPvOqueNsz/
-        UPglMB/kVjK1puY+CVkjmV9lvvXigsRjzw==
-X-Google-Smtp-Source: AA6agR57/DSOHqKM96I6sNPTWGqVzHQaaKit6qoSuY7m/a/QWsGS1LOGYPLyBT7reffje1eU1NMgjg==
-X-Received: by 2002:a5d:640f:0:b0:220:e5a7:f5e7 with SMTP id z15-20020a5d640f000000b00220e5a7f5e7mr1276122wru.314.1660820040214;
-        Thu, 18 Aug 2022 03:54:00 -0700 (PDT)
-Received: from lb01533.fkb.profitbricks.net ([85.214.13.132])
-        by smtp.gmail.com with ESMTPSA id n3-20020a05600c3b8300b003a54fffa809sm1920751wms.17.2022.08.18.03.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Aug 2022 03:53:59 -0700 (PDT)
-From:   Md Haris Iqbal <haris.iqbal@ionos.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     leon@kernel.org, jgg@ziepe.ca, haris.iqbal@ionos.com,
-        jinpu.wang@ionos.com, Aleksei Marov <aleksei.marov@ionos.com>
-Subject: [PATCH for-next 3/3] RDMA/rtrs-srv: Pass the correct number of entries for dma mapped SGL
-Date:   Thu, 18 Aug 2022 12:53:55 +0200
-Message-Id: <20220818105355.110344-4-haris.iqbal@ionos.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220818105355.110344-1-haris.iqbal@ionos.com>
-References: <20220818105355.110344-1-haris.iqbal@ionos.com>
+        with ESMTP id S244272AbiHRLH0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 07:07:26 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2066.outbound.protection.outlook.com [40.107.101.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3651A0617;
+        Thu, 18 Aug 2022 04:07:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UyPn7w+muA8xnfl73Gsep5MJudZ74qIJ0QYNBNVcDfHCpVGctMGGjKbnjKga8Tuqx7vmrrdtNm98pqWQwbi8OxQzMrnKAmDwmtj42nbRzQzXrxdfq4isN7o4oHXFWT67kmKYDxjemhQBF5qD4xTB29estE+974UrHGEG4JMWX1p90hqOZESuRvM9/l9NNmpfN0zJQP6VVIyKfBdYsqCZJ54ZisFAmOwZVXMmxlctU7mYn4nTWwqqRqkCSmpS15Ngl6L80sldM/Vu5PZJClJ5/1Kx+m8+Q2QfzCmQvq3OSGKsqXqXKKPS2pC8y8bO78A62q9urBWRo3QXTLQOZ5KOYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Us6TlYHLMxPdE4hYt7W9gTHkpE1RbdXfDEq8ZfiRJQM=;
+ b=VTW5Qim020aGWqgFA4uSe0HYgHFNHMBckmnX9uoA3rJ0B9Dh+SZghnPwNcftYWJvF/8Intcwt1+xi5B5i+6nFG7RsOO2oCZ8X5EhxZ3P8FsfkK1zjEu2iENDY+zUjHtxymJGBnhUa67HKfib/d34ylEHQKmEwju2uj5dJVSDxiSzXGA5E1AiHhQzldEJeZ6hXVsOSQGmWivXpa2IaMejvMSt0eETdCgIIhhK6gG9D4JstG4oK7uJdef37ZtK7O4nwKSwkUwv6EDT5f0MfRao41LGj2AfgVYXryJ9FsebX9MG219ximHt02Dm+2nqgnUaS7RUF+9ddkmMbWxqAZHQwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Us6TlYHLMxPdE4hYt7W9gTHkpE1RbdXfDEq8ZfiRJQM=;
+ b=vR1b4yNjpQ7WOoSsV+YPbsRhTK8wer719SV45C1lz/OolKS+ZXFWkeNAP9MJ+I/DhEEW+ER6QYhHUwY94QRdMliMyGwp0PA/LUkHinDGVe3BwWn68XlJ0wQefEnuLhL8QrBIaCW0GNi05rq/o1GtQ8IWvfKtmG6S7nMr1mhjsTo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by DM4PR12MB6277.namprd12.prod.outlook.com (2603:10b6:8:a5::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5525.11; Thu, 18 Aug
+ 2022 11:07:23 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::905:1701:3b51:7e39]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::905:1701:3b51:7e39%2]) with mapi id 15.20.5504.020; Thu, 18 Aug 2022
+ 11:07:23 +0000
+Message-ID: <921de79a-9cb3-4217-f079-4b23958a16aa@amd.com>
+Date:   Thu, 18 Aug 2022 13:07:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 0/4] Allow MMIO regions to be exported through dma-buf
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Oded Gabbay <ogabbay@kernel.org>
+References: <0-v1-9e6e1739ed95+5fa-vfio_dma_buf_jgg@nvidia.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <0-v1-9e6e1739ed95+5fa-vfio_dma_buf_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM5PR1001CA0018.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:206:2::31) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d8de71c2-81f2-4a5a-0758-08da8109d3cf
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6277:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OafRzBMxtX1br2KNDTkiafwrT5RFEvqSqxyp7OLDrnV3bSsK154GNvuvcbpYGQl2rjikYMRHppRs5PGSYuh41lpsiK2iFOe+CIby4Q4QRQlfukEiQOp6YDbf+BMBVrIRxRQU+4OSSoiXURD2FBl5S9elA5KS4S+8FcHHZf6n7YzYDuNhBxpFhRL00Kinaz9xv5/Dn1WFjzDCAbFBYGO27Z0jUWBKK6sVglwwO5RcpanCkh16GtbjuShKByQnEuWy+XZEKMhwNWjCBRGpMPcX4TPRiiEdgJ/AoA3JW+KpBl4nr0ji48tFBlqkEz/Mr9OO6qTWhVncBSRRLWT4OH8aLhND1yyz3LZT5pvzQ4xTWVfOh9G3YwTyAy7JxLA5i6aIJsCxUmrkNmlnuIzXWUFonn4CJKosCflb1DhV6tTRUwHPilpCL72jdVspP7u3dVJvRPMv4+95hP6CoOH3rt4+j+be5Ra/IEh53Xpct4YcohSkFGrDZfouuxT7xeNNveZkWnIusKLhV+iZh/ZuTgp2b9K5ek+SqFjM7MS9kmUIOQM68Zz4Kv4l96Go7og9Oe7dL6724yUpcDSM3vNDC8IDwv6HmnHA6hYsepaaexOg0i/eNvMDISX0h4pj9En8aCm6UYvepHBXfJ66eD0q4Sc1l5E5p+qwQ3P6QJYBmK1T5T+meDmvW48X8hI+1BSoWqc+HGIFPUJTJfGfcdTz1LecOzBfxEz6wTLZ5YSQy7BNbMSOY0cGOlVjs/ucBdmPXmkCkEORXTL2RjzKD4tFXEUf2NBzS7OdEV7mxPH+u2/SpL5r+DIlUjBzXoWSge6NfgWGThc4tOAbplJsxiaMIZI/KA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(346002)(396003)(39860400002)(376002)(366004)(966005)(41300700001)(54906003)(316002)(478600001)(38100700002)(6486002)(5660300002)(8676002)(66946007)(7416002)(110136005)(66556008)(66476007)(8936002)(2906002)(4326008)(31696002)(36756003)(31686004)(26005)(6506007)(186003)(86362001)(6666004)(2616005)(6512007)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K1E5L1dPMEtRd1NlbWpTSGRjNmhVaHBUYjltcFZIdEdnb2xjMXBXUm5uNlZO?=
+ =?utf-8?B?VFZodHM4V0xtY2Jad1BuMlNPRVQyZGxzZkVjYmRjRU1yY1ZxemI5KzdteWdS?=
+ =?utf-8?B?Ri92L0VKVjlKcVlpNWppSVpCbk8wMVRXUGdYNSswdW5WWTlSTGRBQWkwWURZ?=
+ =?utf-8?B?QkR1b0NGalErSTJ1aWh4ckN0RHpVSEFvcHVPVW1ZTXlzclI5VVpENFZPNnF2?=
+ =?utf-8?B?K1RkREtjRUxlb2t0YTZVUHF1SGpOS0M1S0htd2htaEZ3S3B4TVZrQ2pXU2xu?=
+ =?utf-8?B?ZWNHdExKbWpKOFZzeTkvdVpjNWdFOHBGeXg5aTYvalMrQXB0T1o4VzEwUVZ5?=
+ =?utf-8?B?dUhlNHQ1aGRxaHkxUlhoL0QwR3dpU2doTyt0QnkzSkZoSVZxVUp1VjVVTUlw?=
+ =?utf-8?B?SFc0YjRTTkN0SndMSUFwdktnOHBaRVhMSUtwWmo5MjFzY3VBdE9sZWZMTWRL?=
+ =?utf-8?B?L2hUWE5pUXRub1c5cERMcmUya3dxaS9HSHcvSzNmYURUKzczVFluY1ZTSlhE?=
+ =?utf-8?B?Wkg2bzByUkxyWVA1c3hLSVBjMXRDSW4xYUxBS0ladXlvaGoxY3RKU3dvQkRO?=
+ =?utf-8?B?cE9sdlhVUVpzVTZySlZsYm5jT3EzZy9MRDZQU1dMSDBXUkZQV1lXNkN1dEll?=
+ =?utf-8?B?bE1EcjZOSUZ6REo2WW1BT2RVaStXUi9lb1pDdTcyT2dIOHZWKzNKclZYMjBD?=
+ =?utf-8?B?SGFZc3RyYjdWUkZZaHJhVEcwbGoxOVhTTS84Q1lVbnBnbFNxQkUxaHdIK3N0?=
+ =?utf-8?B?Y3pOZ3l6aE45SDlRQWF6NkRyUkhKM1orS2tsajVNL0UvSUZLNWV1YkNLcWN2?=
+ =?utf-8?B?N0VVSkM1dE1Ha2NjT1RXOWwwbzVlUnh4V1FkOGgxb2RRRFgvQ2wrZUl1RGox?=
+ =?utf-8?B?bC9McERkc2FDQzJrZi9JVUJ6bzFvUnI2WGVRcGQxNGRQaTlhTGdHeEtKN0kr?=
+ =?utf-8?B?d1AyVGhWZHhIazJVZ1VYaGxWTncxUFdLZUlkWFl5MDFtcVplOTZrcHczRm50?=
+ =?utf-8?B?aW9JNEVBdnZmSndNZHpBQU85cWhDRHR5cUxhRXJtZ2FjYlp4UEpydTA1V1pt?=
+ =?utf-8?B?eDBJZ2RueFhDRmQ3UG9uRGtxMEZycE44UG1NcFNad2p1dXZUN1NRRGtaOUNj?=
+ =?utf-8?B?QXZ5ODZqOVhvQ2wwRDRvKytUSlhNbjBLMzd2RTlRRXlZMjU1ZGVqYXM5RnFv?=
+ =?utf-8?B?dTUzeDFyU1lKbXNFUFZsb1NFQmU3NXVZeVIzZk1ncVdvYXFHWkNtUk9MQ1lL?=
+ =?utf-8?B?bTd2ZDhxWDBZZlRkQW10MzhZcEZ0cC9TZnd4Z1pNcTd5MDZEckh5aXJGZHJl?=
+ =?utf-8?B?WkFYb3FSMnBGYlN2UE4xbktiWVFielVkV2lhOFdWM212N21QMFcrbEhKeSts?=
+ =?utf-8?B?NkJiQ0tGQ0dYUGJieU9LeU9rTTJRM0FXL2lwYW41dzMwU3c1UTJMTW5IQnFi?=
+ =?utf-8?B?MXVrUWppWmR2WlllRjhZckU2dEpZUTExNW5aZjFna280M1A5VGVrTFZwRk1R?=
+ =?utf-8?B?dkFtRk14MGRhaHYvNkNOVGw0TlR6U2V0YUs4N0t2MHNIQnlHUlFwUTl3MmdE?=
+ =?utf-8?B?WXNvZDh0ak1rL0VBbUxiNkdoclRJVjZtaVVVTnBySWFFOGVQcXhRMnVmQ0lJ?=
+ =?utf-8?B?Q2FiRVVsUmptbGZqOFVYMWl5TENwdkJxcytvbkNvR2d6QXN1Z3IzRTg4ZHYz?=
+ =?utf-8?B?eGx3TzltR1c5Y1V4bFJWdXNWVkVleThZRFg4dlNLVGQxY3ViWXM2OGZ6R3oz?=
+ =?utf-8?B?R2FWTFp1N1BGUFB5RUFESGlLc2h4aVhQSDNQZ1R1aXdndmpoOTFXdk5yaDI5?=
+ =?utf-8?B?MXdFc2xJb0orWldTczlCdXJNWnZyWmo3R3F6WFRHZUdOa3VLNXRrOGxxR0ov?=
+ =?utf-8?B?eWR5M2dTSzlNa2VRc1U4MStwVHFzdDJCNFp1M0NzSmJJOE9XdkpYTGZ1TzVi?=
+ =?utf-8?B?QmJ3SUZ4dFdTcTFPa1BqRjhwQ1I4RFF2MWVCNnpPNVo5ZWtsR245SkxRYUdl?=
+ =?utf-8?B?Tithd2dtTURkRFpCb2dnbVJmR1l0S0ZCak01WGF0aVNlQjRYcWp0UEdBNWwx?=
+ =?utf-8?B?V1JEd2xYRnpjWTM4dyswT2VTNmlGbURyRVZZZ1VHM2doZHNySWJyU0xhd3Jr?=
+ =?utf-8?Q?PXLzKBr3/xa2VgsBTxOH17IoV?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8de71c2-81f2-4a5a-0758-08da8109d3cf
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2022 11:07:23.6470
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YuMu0+Njn/1/XlMOZQtongsO2UwgXtWWjqq+oz2u1blxKXH/QkJBmcrLfvWrUqC7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6277
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@ionos.com>
+Am 17.08.22 um 18:11 schrieb Jason Gunthorpe:
+> dma-buf has become a way to safely acquire a handle to non-struct page
+> memory that can still have lifetime controlled by the exporter. Notably
+> RDMA can now import dma-buf FDs and build them into MRs which allows for
+> PCI P2P operations. Extend this to allow vfio-pci to export MMIO memory
+> from PCI device BARs.
+>
+> This series supports a use case for SPDK where a NVMe device will be owned
+> by SPDK through VFIO but interacting with a RDMA device. The RDMA device
+> may directly access the NVMe CMB or directly manipulate the NVMe device's
+> doorbell using PCI P2P.
+>
+> However, as a general mechanism, it can support many other scenarios with
+> VFIO. I imagine this dmabuf approach to be usable by iommufd as well for
+> generic and safe P2P mappings.
 
-ib_dma_map_sg() augments the SGL into a 'dma mapped SGL'. This process
-may change the number of entries and the lengths of each entry.
+In general looks good to me, but we really need to get away from using 
+sg_tables for this here.
 
-Code that touches dma_address is iterating over the 'dma mapped SGL'
-and must use dma_nents which returned from ib_dma_map_sg().
+The only thing I'm not 100% convinced of is dma_buf_try_get(), I've seen 
+this incorrectly used so many times that I can't count them any more.
 
-We should use the return count from ib_dma_map_sg for futher usage.
+Would that be somehow avoidable? Or could you at least explain the use 
+case a bit better.
 
-Fixes: 9cb837480424e ("RDMA/rtrs: server: main functionality")
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reviewed-by: Aleksei Marov <aleksei.marov@ionos.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Thanks,
+Christian.
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 22e6f991946c..aa259b4c6f89 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -593,7 +593,7 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
- 		struct sg_table *sgt = &srv_mr->sgt;
- 		struct scatterlist *s;
- 		struct ib_mr *mr;
--		int nr, chunks;
-+		int nr, nr_sgt, chunks;
- 
- 		chunks = chunks_per_mr * mri;
- 		if (!always_invalidate)
-@@ -608,19 +608,19 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
- 			sg_set_page(s, srv->chunks[chunks + i],
- 				    max_chunk_size, 0);
- 
--		nr = ib_dma_map_sg(srv_path->s.dev->ib_dev, sgt->sgl,
-+		nr_sgt = ib_dma_map_sg(srv_path->s.dev->ib_dev, sgt->sgl,
- 				   sgt->nents, DMA_BIDIRECTIONAL);
--		if (nr < sgt->nents) {
--			err = nr < 0 ? nr : -EINVAL;
-+		if (!nr_sgt) {
-+			err = -EINVAL;
- 			goto free_sg;
- 		}
- 		mr = ib_alloc_mr(srv_path->s.dev->ib_pd, IB_MR_TYPE_MEM_REG,
--				 sgt->nents);
-+				 nr_sgt);
- 		if (IS_ERR(mr)) {
- 			err = PTR_ERR(mr);
- 			goto unmap_sg;
- 		}
--		nr = ib_map_mr_sg(mr, sgt->sgl, sgt->nents,
-+		nr = ib_map_mr_sg(mr, sgt->sgl, nr_sgt,
- 				  NULL, max_chunk_size);
- 		if (nr < 0 || nr < sgt->nents) {
- 			err = nr < 0 ? nr : -EINVAL;
-@@ -639,7 +639,7 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
- 			}
- 		}
- 		/* Eventually dma addr for each chunk can be cached */
--		for_each_sg(sgt->sgl, s, sgt->orig_nents, i)
-+		for_each_sg(sgt->sgl, s, nr_sgt, i)
- 			srv_path->dma_addr[chunks + i] = sg_dma_address(s);
- 
- 		ib_update_fast_reg_key(mr, ib_inc_rkey(mr->rkey));
--- 
-2.25.1
+>
+> This series goes after the "Break up ioctl dispatch functions to one
+> function per ioctl" series.
+>
+> This is on github: https://github.com/jgunthorpe/linux/commits/vfio_dma_buf
+>
+> Jason Gunthorpe (4):
+>    dma-buf: Add dma_buf_try_get()
+>    vfio: Add vfio_device_get()
+>    vfio_pci: Do not open code pci_try_reset_function()
+>    vfio/pci: Allow MMIO regions to be exported through dma-buf
+>
+>   drivers/vfio/pci/Makefile           |   1 +
+>   drivers/vfio/pci/vfio_pci_config.c  |  22 ++-
+>   drivers/vfio/pci/vfio_pci_core.c    |  33 +++-
+>   drivers/vfio/pci/vfio_pci_dma_buf.c | 265 ++++++++++++++++++++++++++++
+>   drivers/vfio/pci/vfio_pci_priv.h    |  24 +++
+>   drivers/vfio/vfio_main.c            |   3 +-
+>   include/linux/dma-buf.h             |  13 ++
+>   include/linux/vfio.h                |   6 +
+>   include/linux/vfio_pci_core.h       |   1 +
+>   include/uapi/linux/vfio.h           |  18 ++
+>   10 files changed, 364 insertions(+), 22 deletions(-)
+>   create mode 100644 drivers/vfio/pci/vfio_pci_dma_buf.c
+>
+>
+> base-commit: 385f0411fcd2780b5273992832cdc8edcd5b8ea9
 
