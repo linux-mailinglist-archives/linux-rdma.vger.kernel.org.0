@@ -2,46 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0475983BA
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 15:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88EC5983EA
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 15:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244888AbiHRNGn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Aug 2022 09:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        id S240587AbiHRNQ1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Aug 2022 09:16:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244382AbiHRNGn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 09:06:43 -0400
-Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EF21A3A0;
-        Thu, 18 Aug 2022 06:06:40 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VMauZyi_1660827996;
-Received: from 30.227.95.9(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VMauZyi_1660827996)
-          by smtp.aliyun-inc.com;
-          Thu, 18 Aug 2022 21:06:36 +0800
-Message-ID: <4a79203b-a8a9-3f16-3b8d-5240f535ae10@linux.alibaba.com>
-Date:   Thu, 18 Aug 2022 21:06:35 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH net-next 00/10] net/smc: optimize the parallelism of SMC-R
- connections
-Content-Language: en-US
-To:     Jan Karcher <jaka@linux.ibm.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <cover.1660152975.git.alibuda@linux.alibaba.com>
- <2182efbc-99f8-17ba-d344-95a467536b05@linux.ibm.com>
- <9da41595-977f-5026-0ea1-f18a5fa1de4c@linux.alibaba.com>
- <0f0718d1-eeb4-6440-5367-db9cc8104f43@linux.ibm.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <0f0718d1-eeb4-6440-5367-db9cc8104f43@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        with ESMTP id S244994AbiHRNQS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 09:16:18 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2062.outbound.protection.outlook.com [40.107.93.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD4EB5149;
+        Thu, 18 Aug 2022 06:16:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OfYGyJ4WEz9+xNtqyt88gthUhG8FF38LHg7N1bQhGXs2fx8FWFG326FUfVzppP2/9rjeBaIgHf3SwGYMWmP3qLQG5QNPkJH76vG7exdyr6NVT9x6FqKmWdshxrURXILpEA7Pm27mq3zODhO8BETb4AXFb7oz+Mz4HgWrFPMHSKNFUfyglXL5a/Ul6xlW3e13kJPuaR6zEv6uBu5A8WbWY35/Xh2CWBEAVNeKsPlfc8HLjFbsqE39DREccBXWKUt7Gop1tWh4A120ZKpF2MNA91RufsxQM5057P7zSpXsNEWKdrhGnlsDbB0G/BwEDNM//j09ngsUhRYZUVBvd2o76Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=28VhYa5QunRXQkBBnMZMo/T9V3EeOeRmCT+Y7T+enls=;
+ b=MCDNSCSWznYsLBFVRaTqFIBNkcu9yGBnmfJ2l7TKC3ZL6vJRhp8NR4Mf1nVTPJrOd26Xs9DK3D+LdvUWwp7Kl7JN23vEyvdZDkcvFVV7/VUv0LevL0WGi3MPfZAU5APBdK2M19kUM38Qky++VCNCmUu7q6A6ipSEulRfx+xu0EKq/e7ARAe1PmQiSII5pnOwy6DNay7V8e26Yd89NNw02tjAdUev5ovHtGo+TkODeQ2g9umLVNOsjgC05QYrDgNyQhmypW8e4q+yTGfnqZLrHWRwHqkba4VCrF/88Q+bHi3QQHQbNpo+dQuFKIEvE0Aepc81OfsZ29vMGLB6agTH2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=28VhYa5QunRXQkBBnMZMo/T9V3EeOeRmCT+Y7T+enls=;
+ b=V12GjMOkQ2PLCZWC2LJGL1lI2ARwuWUC3MGfcmfLh123IioyLjvh8AKcTb9Csea58QCGfl1T+JPOd/zMphn943yUDWtdVZwZP7MH/y5KMW0rLjPElHkhIGdSRizwed91z96JGeGkCIrs0vnRPuWDoJ4kp0/6a+jiXwd8nHa1E+LPakYVGIIRwNGgaDbwCTyACPqFCqnyp/NNIpI1GypIhcb/wHVWU9hmJ09KR6OP0gOz3+xLSGvcOoalJSmPxMDeSXT/6UhmqEIEk8QBcZk6v0mXQPNAJEXp3aYVtGHeK5ClOUW8AJBgTvPNCN36l5lSq+MGKFjzQjDaOaFzS1l8Fw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by PH8PR12MB7025.namprd12.prod.outlook.com (2603:10b6:510:1bc::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5525.19; Thu, 18 Aug
+ 2022 13:16:08 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5%6]) with mapi id 15.20.5525.019; Thu, 18 Aug 2022
+ 13:16:08 +0000
+Date:   Thu, 18 Aug 2022 10:16:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Oded Gabbay <ogabbay@kernel.org>
+Subject: Re: [PATCH 0/4] Allow MMIO regions to be exported through dma-buf
+Message-ID: <Yv47lkz7FG8vhqA5@nvidia.com>
+References: <0-v1-9e6e1739ed95+5fa-vfio_dma_buf_jgg@nvidia.com>
+ <921de79a-9cb3-4217-f079-4b23958a16aa@amd.com>
+ <Yv4qlOp9n78B8TFb@nvidia.com>
+ <d12fdf94-fbef-b981-2eff-660470ceca22@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+In-Reply-To: <d12fdf94-fbef-b981-2eff-660470ceca22@amd.com>
+X-ClientProxiedBy: MN2PR12CA0027.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::40) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 13ede1b0-315f-4770-3a56-08da811bcfd4
+X-MS-TrafficTypeDiagnostic: PH8PR12MB7025:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cMQEts3JrozPyuFh0j56SLEd9XYjUaT8imCp7+51eT9hQ9Eemk1HsJIgO2N+zXm0kTHHjrBGRFDrK0V4v2vsJA5KM5jlRHqdT1UiZLqToUxVPE8zPirvSEV5a/OqgOHR5qu535VLOMh+gI3JEm/EhtTb1kL7N1gX6/nf9OdSwiAeiSHdHgI0gZZTANwzNFaeLjxR0GaN5ZrtrK6KwtHy4i0QLrenryXSEvdxdpxmZSb8nreqL/Pn+5Lm2YwqTpZyODjBlai6+Il7rb0LWhabciwB6Zb746jLpu0UnKlGNzrPT1R+8E0qg4yV+yCTRcVDYVOhXHwNThO36tZnKBMAm6x0rki+GsBcnwnAjJbPBH92bCbnoJB6WTW+spN3r17Y8wvqih1eNfbh1waMSxJ2cimYOw32xUlIzE2TFfQ0mY8+M88WjvaYXa8pXD/ErureSbi5kktGyzu7Dus9BVpsViZc3f9YOEJLw0KFYn43tntLfyY4R0hxywgQve44Pp4dp80ngDxnhHGMfpblNHkMfAuHRfLvGk2uhOmktds9vabUrVKgWO6Dkq/bChPuY/Pd31dTBRGuYSZju+RR4nW/FDvsixi0qQIKavr1/yQ/TT2uXhEAueRLrT1rKn6ctuAoqzw7SOZKtkAli+XZUN5xAaSMBYuGUPgXg4gXSp3dB5h/RNKiK/WfJl8VbIdkGIkxWir+9tv8UoPfhfGC2uVNug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(396003)(366004)(376002)(39860400002)(346002)(66574015)(86362001)(2616005)(186003)(4326008)(83380400001)(38100700002)(66556008)(8676002)(66946007)(66476007)(36756003)(316002)(54906003)(8936002)(5660300002)(7416002)(2906002)(6486002)(41300700001)(6506007)(478600001)(6512007)(26005)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QythYndwUS94eGplN2l4Z3hFdmxQbkJ1c0hqUWFvVExwbWQ0L0FuNGRpWklj?=
+ =?utf-8?B?UmxWRUd1NVU3cnVZUEFhdDdlc2xFdUNDZGU0bzVZN3h6QkdxT2Y0U3VqdTEv?=
+ =?utf-8?B?aGFLNlZvanFDQXpnai9EV0lEUTQyK3VOMmxUZS80ZCtqRkNZeU5QS2VXUHFG?=
+ =?utf-8?B?V1FWQTN1SmFsY0pJbU15SlRwaEpHRUVyZG1RSkpWby9rVnV1UGI5Mm9XWjNN?=
+ =?utf-8?B?N2pMeHkzU1BkaHo4VDVFQzBNQUhldDFQbkhsYnlXdWRTY0V5QXpJYy9OeHlv?=
+ =?utf-8?B?RG95UDU1OU85b0lHWnpRSU9JQUo3QWNQeUMzNFZkUWxwd1dadEdlQ2hjaGFV?=
+ =?utf-8?B?QmVhY2NRMGlYOE5admxnQnZ5ZEsybEYxQ2p4QVVkMnBsVTVLN1NHNjhYUlF6?=
+ =?utf-8?B?WWplajR3a1RtSm0yTjVvUlZ4YXUzR0lMdmZVLzl0UUQ2anBaemJpTXFpbnhI?=
+ =?utf-8?B?OTV6eEJwWGdocHR5SFJZcDlMMGl4NUh1ZTg3UWF1T3R2U0dBdEtaU3QvRHkr?=
+ =?utf-8?B?czYyaEdwcGtQY2NLU2NKeDRhQVpFY2FQc0VCQ0praG4yOXRETi81ZStTUUFu?=
+ =?utf-8?B?R0REcE43YXdvVFN5VGVjZndWU3dENTBsaFVTQ1FXalBNbm9hWkZlUUpXWCs3?=
+ =?utf-8?B?dnl3UTFWOHFYR2syYXBLUlcvOFJSby9kZEhmbUFBSmVreVIraTNBekUyNkwx?=
+ =?utf-8?B?STBrU2x6RHJjVjdPa0JNWUhOTW5NUmhVbTF0SWRhTk84NC9GZWJnVm1jT3h6?=
+ =?utf-8?B?RjlIMHY1UW9Fby9sQlQ4b1NzMVhXdSswQ3ZzT3Y5QzdtSitrd3JhQXFpYk5U?=
+ =?utf-8?B?Qm43cy9XdWpPZG8xaWlFcjkzNnRrb0dYcVV3Z0pxd3dPZHlHK0JibWN1dUN3?=
+ =?utf-8?B?MzZDd1diQnZMdk1UaGVXOXlhL0hCYTNSc0ZLOG1nalJLWWtYM0NHMURtTkY0?=
+ =?utf-8?B?M0l2YjdyQUIxNlJpSWFlWXdjYWgxSm10WGE5YmttQklVRzhneE9UMWpPTkRW?=
+ =?utf-8?B?WkVwVWN4b2VoNG1DZHYyUkZQeUJ5dTl1RlZETGwzNG1rY3FVbUd4NDFzQ2pF?=
+ =?utf-8?B?eTk4clBoREVvcnVrWkRoN3Z0S0U5bzFRbUtSUzJtWmVReXYwTWpqd1NFYVBL?=
+ =?utf-8?B?ZXNuT1JzOW92SDdkd2hSa0NpY2kvWjdqcE4wOXBCRnBpNTRCOHlmalhnQ0o1?=
+ =?utf-8?B?RVZBUlBNM0laQnR1TmRuK0tkQ2c2bUpTQmozUHdSRWlRU3RQSnJ5REs5SkJX?=
+ =?utf-8?B?WDJsMGxHNFg5c1hBYzZBTXpSSWlld2hjQUw1aU5pVmNTNWNPRkJjRm1hOGdk?=
+ =?utf-8?B?dHFuUXM1R1JUSTEzbFlERUZkM0Z4L3VLaWFxZlk1ald3c0FHSzVWb0xWZlRR?=
+ =?utf-8?B?dkozM2hUc1lZSHVRQWtqaUQ1Q2xKYWFiQlluWm8wYVR6b2pONkhMYUxXOEZu?=
+ =?utf-8?B?ZjFnb04ycXdWR3A3MGd3QW5WY2QvQ3ZUNGJuZFlqaGkrRmJad0RJOWtUQjI2?=
+ =?utf-8?B?b2laS2pzbVJiY3Z4S3pUalZnUE93L0VzdmU3dk96S2YvRDEzT0UvRFg4d0d4?=
+ =?utf-8?B?SjNGMUlwR3I2Qm91SnNiTktzTVNycWRSS1g1QlRnZ1YzakwxMU5WK2dsMDRF?=
+ =?utf-8?B?MjZkOWRncmI1cUJQVjhvUWZPejN0blh6R1FveU5lSzRUaVdsVWZIajBNcUlj?=
+ =?utf-8?B?Nit0NzlNSWp0aHhkYzJXUklLOEFmSkdjT0lyYTcwZDVVSzdleUZDSDdWZStk?=
+ =?utf-8?B?RDR6WmlJQytMY245eGpyNEpMeW1NVDJNVU1yNmwybDdoNE9TWlUzcWJyMHdL?=
+ =?utf-8?B?WTNqVlRObnNTUlMyZW5SMzNRVXZrYnV0NG9lOHh0M0NRbkJHVk9ZUzF1bHpT?=
+ =?utf-8?B?OXo2UytCUHJML012RldXalRUZERVYlVvMk9ERDYyTVF0UUVjM29YOW4rcXdX?=
+ =?utf-8?B?M1Bidm1uazZnMzBaVFg3eTU5MHllYXFtc1d0dzNaV29RN1BWWjQwT3YydFA4?=
+ =?utf-8?B?TXZiSUc3U0IwQXllTkxKU1NaQS9KaHY1S3NwL042V3BjenhnNDRBVkQrVkVl?=
+ =?utf-8?B?MFpMYkxsY2F5eUlnTGUrNVFnVU5tam5HbEpoMkhNM082cytzU0UrUVdVUjBj?=
+ =?utf-8?Q?NugEBAhd4IK/5ITfEliaVM1Eh?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 13ede1b0-315f-4770-3a56-08da811bcfd4
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2022 13:16:07.9269
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OWhRUz29UZTAaBRZAED1EBbE7uXXTxyKKIP/ImLlvZTEAO09oQnEd6BkLzRfHvdL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7025
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,108 +133,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Aug 18, 2022 at 02:58:10PM +0200, Christian König wrote:
 
-
-On 8/18/22 12:52 AM, Jan Karcher wrote:
+> > > The only thing I'm not 100% convinced of is dma_buf_try_get(), I've seen
+> > > this incorrectly used so many times that I can't count them any more.
+> > > 
+> > > Would that be somehow avoidable? Or could you at least explain the use case
+> > > a bit better.
+> > I didn't see a way, maybe you know of one
 > 
+> For GEM objects we usually don't use the reference count of the DMA-buf, but
+> rather that of the GEM object for this. But that's not an ideal solution
+> either.
+
+You can't really ignore the dmabuf refcount. At some point you have to
+deal with the dmabuf being asynchronously released by userspace.
+
+> > 	down_write(&vdev->memory_lock);
+> > 	list_for_each_entry_safe(priv, tmp, &vdev->dmabufs, dmabufs_elm) {
+> > 		if (!dma_buf_try_get(priv->dmabuf))
+> > 			continue;
 > 
-> On 17.08.2022 06:55, D. Wythe wrote:
->>
->>
->> On 8/16/22 5:35 PM, Jan Karcher wrote:
->>>
->>>
->>> On 10.08.2022 19:47, D. Wythe wrote:
->>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>>>
->>>> This patch set attempts to optimize the parallelism of SMC-R connections,
->>>> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
->>>> occur after thoses optimization.
->>>>
->>>
->>> Thank you again for your submission!
->>> Let me give you a quick update from our side:
->>> We tested your patches on top of the net-next kernel on our s390 systems. They did crash our systems. After verifying our environment we pulled console logs and now we can tell that there is indeed a problem with your patches regarding SMC-D. So please do not integrate this change as of right now. I'm going to do more in depth reviews of your patches but i need some time for them so here is a quick a description of the problem:
->>
->> Sorry for the late reply, and thanks a lot for your comment.
->>
->> I'm sorry for the low-level mistake. In the early design, I hoped that lnkc can also work on SMC-D,
->> but in later tests I found out that we don't have SMC-D environment to test, so I have to canceled this logic.
->> But dues to the rollback isn't thorough enough, leaving this issues, we are very sorry for that.
->>
-> 
-> One more comment:
-> If the only reason why you do not touch SMC-D is that you do not have the environment to test it we strongly encourage you to change it anyway.
-> 
-> At some point doing kernel development, especially driver development you are going to reach the point where you do not have the environment to test it. It is on the maintainers to test those changes and verify that nothing is broken.
-> 
-> So please:
-> If testing is the only reason change SMC-D as well and we are going to test it for you verifying if it does work or not.
-> 
-> Thank you
-> Jan
+> What would happen if you don't skip destroyed dma-bufs here? In other words
+> why do you maintain that list in the first place?
 
-Actually, this is not the only reason. The purpose of remove smc_server_lgr_pending & smc_client_lgr_pending
-is mainly to solve the problem of excessive lock granularity in SMC-R. In SMC-R those locks protect
-a complete CLC message exchange process, including sending and receiving. This results in a large number of
-connections having to be queued. But this is not the case with SMC-D. SMC-D releases the lock in advance
-before receiving the CLC message, which makes the problem less severe in SMC-D than in SMC-R.
+The list is to keep track of the dmabufs that were created, it is not
+optional.
 
-Of course, lnkc can be used for SMC-D, but considering that we have no way to test it,
-and it is not the core bottleneck of SMC-D, so we gave up it.
+The only question is what do you do about invoking
+dma_buf_move_notify() on a dmabuf that is already undergoing
+destruction.
 
-I will fix the panic problem first in the next revison. If you have a strong demand for this feature,
-I may commit a separate PATCH to support it, dues to current patch is quite complicated, adding SMC-D support
-will exacerbate its complexity, which may affect the other reviewer progress.
+For instance undergoing destruction means the dmabuf core has already
+done this:
 
+	mutex_lock(&db_list.lock);
+	list_del(&dmabuf->list_node);
+	mutex_unlock(&db_list.lock);
+	dma_buf_stats_teardown(dmabuf);
 
-Thanks
-D. Wythe
+So it seems non-ideal to continue to use it.
 
->>
->>> It is a SMC-D problem, that occurs while building up the connection. In smc_conn_create you set struct smc_lnk_cluster *lnkc = NULL. For the SMC-R path you do grab the pointer, for SMC-D that never happens. Still you are using this refernce for SMC-D => Crash. This problem can be reproduced using the SMC-D path. Here is an example console output:
->>>
->>> [  779.516382] Unable to handle kernel pointer dereference in virtual kernel address space
->>> [  779.516389] Failing address: 0000000000000000 TEID: 0000000000000483
->>> [  779.516391] Fault in home space mode while using kernel ASCE.
->>> [  779.516395] AS:0000000069628007 R3:00000000ffbf0007 S:00000000ffbef800 P:000000000000003d
->>> [  779.516431] Oops: 0004 ilc:2 [#1] SMP
->>> [  779.516436] Modules linked in: tcp_diag inet_diag ism mlx5_ib ib_uverbs mlx5_core smc_diag smc ib_core nft_fib_inet nft_fib_ipv4
->>> nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv
->>> 6 nf_defrag_ipv4 ip_set nf_tables n
->>> [  779.516470] CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted 5.19.0-13940-g22a46254655a #3
->>> [  779.516476] Hardware name: IBM 8561 T01 701 (z/VM 7.2.0)
->>>
->>> [  779.522738] Workqueue: smc_hs_wq smc_listen_work [smc]
->>> [  779.522755] Krnl PSW : 0704c00180000000 000003ff803da89c (smc_conn_create+0x174/0x968 [smc])
->>> [  779.522766]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:0 PM:0 RI:0 EA:3
->>> [  779.522770] Krnl GPRS: 0000000000000002 0000000000000000 0000000000000001 0000000000000000
->>> [  779.522773]            000000008a4128a0 000003ff803f21aa 000000008e30d640 0000000086d72000
->>> [  779.522776]            0000000086d72000 000000008a412803 000000008a412800 000000008e30d650
->>> [  779.522779]            0000000080934200 0000000000000000 000003ff803cb954 00000380002dfa88
->>> [  779.522789] Krnl Code: 000003ff803da88e: e310f0e80024        stg %r1,232(%r15)
->>> [  779.522789]            000003ff803da894: a7180000            lhi %r1,0
->>> [  779.522789]           #000003ff803da898: 582003ac            l %r2,940
->>> [  779.522789]           >000003ff803da89c: ba123020            cs %r1,%r2,32(%r3)
->>> [  779.522789]            000003ff803da8a0: ec1603be007e        cij %r1,0,6,000003ff803db01c
->>>
->>> [  779.522789]            000003ff803da8a6: 4110b002            la %r1,2(%r11)
->>> [  779.522789]            000003ff803da8aa: e310f0f00024        stg %r1,240(%r15)
->>> [  779.522789]            000003ff803da8b0: e310f0c00004        lg %r1,192(%r15)
->>> [  779.522870] Call Trace:
->>> [  779.522873]  [<000003ff803da89c>] smc_conn_create+0x174/0x968 [smc]
->>> [  779.522884]  [<000003ff803cb954>] smc_find_ism_v2_device_serv+0x1b4/0x300 [smc]
->>> 01: HCPGSP2629I The virtual machine is placed in CP mode due to a SIGP stop from CPU 01.
->>> 01: HCPGSP2629I The virtual machine is placed in CP mode due to a SIGP stop from CPU 00.
->>> [  779.522894]  [<000003ff803cbace>] smc_listen_find_device+0x2e/0x370 [smc]
->>>
->>>
->>> I'm going to send the review for the first patch right away (which is the one causing the crash), so far I'm done with it. The others are going to follow. Maybe you can look over the problem and come up with a solution, otherwise we are going to decide if we want to look into it as soon as I'm done with the reviews. Thank you for your patience.
->>
->> In the next revision, I will add additional judgment to protect the SMC-D environment,
->> thanks for your comments.
->>
->> And Looking forward to your other comments, thanks again.
->>
->> D. Wythe
->>
+However, dma_buf_move_notify() specifically has no issue with that level of
+destruction since it only does
+
+	list_for_each_entry(attach, &dmabuf->attachments, node)
+
+And attachments must be empty if the file refcount is zero.
+
+So we could delete the try_buf and just rely on move being safe on
+partially destroyed dma_buf's as part of the API design.
+
+Jason
