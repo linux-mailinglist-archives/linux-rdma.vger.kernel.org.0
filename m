@@ -2,117 +2,232 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE59598C53
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 21:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34377598E8F
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 23:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237429AbiHRTEn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Aug 2022 15:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
+        id S1346302AbiHRVBm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Aug 2022 17:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233465AbiHRTEl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 15:04:41 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2BC8A1FC;
-        Thu, 18 Aug 2022 12:04:39 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id l18so1841442qvt.13;
-        Thu, 18 Aug 2022 12:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=nX5kZmoj9p73LSdvjfbhbZUq4ZnpvLi6/MC0mtc9D0M=;
-        b=oqibi37FPnZI3Pu0tNhInuUW8/oJVzWJD3X2LCD/7fjFR8WD6b6d6XmqWVEIZS9rEn
-         Yke7v/D2Pk5cu0PJpVxN6GGdQt45ChetQv1AqfDjv4B5N7eHme8oIROn3XQCzZvRjcKK
-         9v10gxPr8MnGlVZe6ylFL5XGzIzSbsxyyihCmsL6J5lmkepwcFC51QB1GjntU8baoECZ
-         KwLOcF1EFIlwRyo9ek0dqwjHrXF67/rrv+jPmNHNIWaCXi949yYW3pnLdRSpwTB3Te39
-         9VJDmCbnug/2rmZdysP6psMO2QFl/yWpMX8msM1jWnSUXYf11z7aMBwV3GhmvyISAnN/
-         CsVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=nX5kZmoj9p73LSdvjfbhbZUq4ZnpvLi6/MC0mtc9D0M=;
-        b=6W0DH/FLbDmxMEJOeVIHcCRfmc4xrtx018BJrNU+6yPG3H6aj1C72tS+HwoO9uxdLW
-         AOMsxF7qJpV+8vQjxYE9cO7cFXRnufCtdAcJIS7zPgVUn4dVr2Vq0yBwRjQ5v4+4Yxno
-         SK2JwGzmrz2O7vckwWbW1gDj3ftsTkFETNssGtN6XXOdLd+yBaof73n42HJbm1MckbEu
-         bCTtCkblQV/wa/dF3QXTcWaWeF1zyVm7L4l2jGOR0motn2PVE22+0+n7i2GSonV2Meus
-         px1unzgQ6uWBGdw/28rbyu0BJiiz9XhDmXTWbr7oJ0U2ArhzedCNwcdRSiLHI0A/XI1l
-         UzBg==
-X-Gm-Message-State: ACgBeo05gJ3PpHiTwqQQ6sWeATUU3+5mylVfgg3zlP8OzePvxjPkBqVK
-        9sBDnfR3WopPd6rcEqsUISmDgi6gJqScWOI6xM8=
-X-Google-Smtp-Source: AA6agR6fKUEhV/fg8HheOm3MKcS51tDj4hrn3SawVAOKe5szVEnjJq37JG0WrPnyLbK2yKpifS5kr3wELkD+/zj0cWU=
-X-Received: by 2002:a05:6214:d07:b0:476:c32f:f4f4 with SMTP id
- 7-20020a0562140d0700b00476c32ff4f4mr3782049qvh.11.1660849478391; Thu, 18 Aug
- 2022 12:04:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220817175812.671843-1-vschneid@redhat.com> <20220817175812.671843-2-vschneid@redhat.com>
- <20220818100820.3b45808b@gandalf.local.home> <xhsmh35dtbjr0.mognet@vschneid.remote.csb>
- <20220818130041.5b7c955f@gandalf.local.home>
-In-Reply-To: <20220818130041.5b7c955f@gandalf.local.home>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 18 Aug 2022 22:04:01 +0300
-Message-ID: <CAHp75VcaSwfy7kOm_d28-87QKQ5KPB69=X=Z9OYUzJJKwRCSmQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] bitops: Introduce find_next_andnot_bit()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        with ESMTP id S1346197AbiHRVAz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 17:00:55 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93693D3E48
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Aug 2022 14:00:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=Rq2HtBvMGxCO7VVI9VtsnRT1b0B
+        0bKNZwf/vzugLB5U=; b=zuSibp5++sUVx2ePHOHzuz6pxM7FvOmictX1yhgUBfo
+        7Q/qPXvZYfmljCKyNEWXQ+hCS0tf9mqOW01+skioGwOybCkLFkZTJ9976AtImYaP
+        KWMTpHgm+V1tRTS9kZLu2UjrvBMafHb425+d3c+uTpFZJD0DLauIKHrGagWEkKEY
+        =
+Received: (qmail 3960237 invoked from network); 18 Aug 2022 23:00:19 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 18 Aug 2022 23:00:19 +0200
+X-UD-Smtp-Session: l3s3148p1@V2vhRIrm5psucref
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org
+Subject: [PATCH] IB: move from strlcpy with unused retval to strscpy
+Date:   Thu, 18 Aug 2022 23:00:18 +0200
+Message-Id: <20220818210018.6841-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 8:18 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> On Thu, 18 Aug 2022 17:26:43 +0100
-> Valentin Schneider <vschneid@redhat.com> wrote:
->
-> > How about:
->
-> >
-> >   find the next set bit in (*addr1 & ~*addr2)
->
-> I understand the above better. But to convert that into English, we could
-> say:
->
->
->   Find the next bit in *addr1 excluding all the bits in *addr2.
->
-> or
->
->   Find the next bit in *addr1 that is not set in *addr2.
+Follow the advice of the below link and prefer 'strscpy' in this
+subsystem. Conversion is 1:1 because the return value is not used.
+Generated by a coccinelle script.
 
-With this explanation I'm wondering how different this is to
-bitmap_bitremap(), with adjusting to using an inverted mask. If they
-have something in common, perhaps make them in the same namespace with
-similar naming convention?
+Link: https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
+ drivers/infiniband/core/cma_configfs.c             | 2 +-
+ drivers/infiniband/core/device.c                   | 4 ++--
+ drivers/infiniband/hw/bnxt_re/main.c               | 2 +-
+ drivers/infiniband/hw/hfi1/file_ops.c              | 2 +-
+ drivers/infiniband/hw/hfi1/verbs.c                 | 2 +-
+ drivers/infiniband/hw/mthca/mthca_cmd.c            | 2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_hw.c           | 2 +-
+ drivers/infiniband/hw/qib/qib_iba7322.c            | 2 +-
+ drivers/infiniband/ulp/ipoib/ipoib_ethtool.c       | 4 ++--
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_ethtool.c | 4 ++--
+ drivers/infiniband/ulp/srpt/ib_srpt.c              | 2 +-
+ 11 files changed, 14 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/infiniband/core/cma_configfs.c b/drivers/infiniband/core/cma_configfs.c
+index de8a2d5d741c..7b68b3ea979f 100644
+--- a/drivers/infiniband/core/cma_configfs.c
++++ b/drivers/infiniband/core/cma_configfs.c
+@@ -292,7 +292,7 @@ static struct config_group *make_cma_dev(struct config_group *group,
+ 		goto fail;
+ 	}
+ 
+-	strlcpy(cma_dev_group->name, name, sizeof(cma_dev_group->name));
++	strscpy(cma_dev_group->name, name, sizeof(cma_dev_group->name));
+ 
+ 	config_group_init_type_name(&cma_dev_group->ports_group, "ports",
+ 				    &cma_ports_group_type);
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index d275db195f1a..ae60c73babcc 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -422,7 +422,7 @@ int ib_device_rename(struct ib_device *ibdev, const char *name)
+ 		return ret;
+ 	}
+ 
+-	strlcpy(ibdev->name, name, IB_DEVICE_NAME_MAX);
++	strscpy(ibdev->name, name, IB_DEVICE_NAME_MAX);
+ 	ret = rename_compat_devs(ibdev);
+ 
+ 	downgrade_write(&devices_rwsem);
+@@ -1217,7 +1217,7 @@ static int assign_name(struct ib_device *device, const char *name)
+ 		ret = -ENFILE;
+ 		goto out;
+ 	}
+-	strlcpy(device->name, dev_name(&device->dev), IB_DEVICE_NAME_MAX);
++	strscpy(device->name, dev_name(&device->dev), IB_DEVICE_NAME_MAX);
+ 
+ 	ret = xa_alloc_cyclic(&devices, &device->index, device, xa_limit_31b,
+ 			&last_id, GFP_KERNEL);
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 3d6834d3d4fb..8c0c80a8d338 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -725,7 +725,7 @@ static int bnxt_re_register_ib(struct bnxt_re_dev *rdev)
+ 
+ 	/* ib device init */
+ 	ibdev->node_type = RDMA_NODE_IB_CA;
+-	strlcpy(ibdev->node_desc, BNXT_RE_DESC " HCA",
++	strscpy(ibdev->node_desc, BNXT_RE_DESC " HCA",
+ 		strlen(BNXT_RE_DESC) + 5);
+ 	ibdev->phys_port_cnt = 1;
+ 
+diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
+index 629beff053ad..f5f9269fdc16 100644
+--- a/drivers/infiniband/hw/hfi1/file_ops.c
++++ b/drivers/infiniband/hw/hfi1/file_ops.c
+@@ -965,7 +965,7 @@ static int allocate_ctxt(struct hfi1_filedata *fd, struct hfi1_devdata *dd,
+ 	uctxt->userversion = uinfo->userversion;
+ 	uctxt->flags = hfi1_cap_mask; /* save current flag state */
+ 	init_waitqueue_head(&uctxt->wait);
+-	strlcpy(uctxt->comm, current->comm, sizeof(uctxt->comm));
++	strscpy(uctxt->comm, current->comm, sizeof(uctxt->comm));
+ 	memcpy(uctxt->uuid, uinfo->uuid, sizeof(uctxt->uuid));
+ 	uctxt->jkey = generate_jkey(current_uid());
+ 	hfi1_stats.sps_ctxts++;
+diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+index 6988f6f21bde..ec4f316a28e1 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.c
++++ b/drivers/infiniband/hw/hfi1/verbs.c
+@@ -1801,7 +1801,7 @@ int hfi1_register_ib_device(struct hfi1_devdata *dd)
+ 
+ 	ib_set_device_ops(ibdev, &hfi1_dev_ops);
+ 
+-	strlcpy(ibdev->node_desc, init_utsname()->nodename,
++	strscpy(ibdev->node_desc, init_utsname()->nodename,
+ 		sizeof(ibdev->node_desc));
+ 
+ 	/*
+diff --git a/drivers/infiniband/hw/mthca/mthca_cmd.c b/drivers/infiniband/hw/mthca/mthca_cmd.c
+index bdf5ed38de22..f330ce895d88 100644
+--- a/drivers/infiniband/hw/mthca/mthca_cmd.c
++++ b/drivers/infiniband/hw/mthca/mthca_cmd.c
+@@ -1252,7 +1252,7 @@ static void get_board_id(void *vsd, char *board_id)
+ 
+ 	if (be16_to_cpup(vsd + VSD_OFFSET_SIG1) == VSD_SIGNATURE_TOPSPIN &&
+ 	    be16_to_cpup(vsd + VSD_OFFSET_SIG2) == VSD_SIGNATURE_TOPSPIN) {
+-		strlcpy(board_id, vsd + VSD_OFFSET_TS_BOARD_ID, MTHCA_BOARD_ID_LEN);
++		strscpy(board_id, vsd + VSD_OFFSET_TS_BOARD_ID, MTHCA_BOARD_ID_LEN);
+ 	} else {
+ 		/*
+ 		 * The board ID is a string but the firmware byte
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_hw.c b/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
+index 265a581133dc..56f06c68f31a 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_hw.c
+@@ -1363,7 +1363,7 @@ static int ocrdma_mbx_get_ctrl_attribs(struct ocrdma_dev *dev)
+ 		dev->hba_port_num = (hba_attribs->ptpnum_maxdoms_hbast_cv &
+ 					OCRDMA_HBA_ATTRB_PTNUM_MASK)
+ 					>> OCRDMA_HBA_ATTRB_PTNUM_SHIFT;
+-		strlcpy(dev->model_number,
++		strscpy(dev->model_number,
+ 			hba_attribs->controller_model_number,
+ 			sizeof(dev->model_number));
+ 	}
+diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
+index 6861c6384f18..9d2dd135b784 100644
+--- a/drivers/infiniband/hw/qib/qib_iba7322.c
++++ b/drivers/infiniband/hw/qib/qib_iba7322.c
+@@ -2124,7 +2124,7 @@ static void qib_7322_handle_hwerrors(struct qib_devdata *dd, char *msg,
+ 
+ 	if (hwerrs & HWE_MASK(PowerOnBISTFailed)) {
+ 		isfatal = 1;
+-		strlcpy(msg,
++		strscpy(msg,
+ 			"[Memory BIST test failed, InfiniPath hardware unusable]",
+ 			msgl);
+ 		/* ignore from now on, so disable until driver reloaded */
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+index a09ca21f7dff..8af99b18d361 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_ethtool.c
+@@ -65,10 +65,10 @@ static void ipoib_get_drvinfo(struct net_device *netdev,
+ 
+ 	ib_get_device_fw_str(priv->ca, drvinfo->fw_version);
+ 
+-	strlcpy(drvinfo->bus_info, dev_name(priv->ca->dev.parent),
++	strscpy(drvinfo->bus_info, dev_name(priv->ca->dev.parent),
+ 		sizeof(drvinfo->bus_info));
+ 
+-	strlcpy(drvinfo->driver, "ib_ipoib", sizeof(drvinfo->driver));
++	strscpy(drvinfo->driver, "ib_ipoib", sizeof(drvinfo->driver));
+ }
+ 
+ static int ipoib_get_coalesce(struct net_device *dev,
+diff --git a/drivers/infiniband/ulp/opa_vnic/opa_vnic_ethtool.c b/drivers/infiniband/ulp/opa_vnic/opa_vnic_ethtool.c
+index 42d557dff19d..29b3d8fce3f5 100644
+--- a/drivers/infiniband/ulp/opa_vnic/opa_vnic_ethtool.c
++++ b/drivers/infiniband/ulp/opa_vnic/opa_vnic_ethtool.c
+@@ -124,8 +124,8 @@ static struct vnic_stats vnic_gstrings_stats[] = {
+ static void vnic_get_drvinfo(struct net_device *netdev,
+ 			     struct ethtool_drvinfo *drvinfo)
+ {
+-	strlcpy(drvinfo->driver, opa_vnic_driver_name, sizeof(drvinfo->driver));
+-	strlcpy(drvinfo->bus_info, dev_name(netdev->dev.parent),
++	strscpy(drvinfo->driver, opa_vnic_driver_name, sizeof(drvinfo->driver));
++	strscpy(drvinfo->bus_info, dev_name(netdev->dev.parent),
+ 		sizeof(drvinfo->bus_info));
+ }
+ 
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 21cbe30d526f..c1f0566bf6a0 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -2300,7 +2300,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+ 		goto free_recv_ring;
+ 	}
+ 
+-	strlcpy(ch->sess_name, src_addr, sizeof(ch->sess_name));
++	strscpy(ch->sess_name, src_addr, sizeof(ch->sess_name));
+ 	snprintf(i_port_id, sizeof(i_port_id), "0x%016llx%016llx",
+ 			be64_to_cpu(*(__be64 *)nexus->i_port_id),
+ 			be64_to_cpu(*(__be64 *)(nexus->i_port_id + 8)));
 -- 
-With Best Regards,
-Andy Shevchenko
+2.35.1
+
