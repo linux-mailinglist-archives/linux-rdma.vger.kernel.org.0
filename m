@@ -2,134 +2,207 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BE65983F3
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 15:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41223598447
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Aug 2022 15:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243265AbiHRNRx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Aug 2022 09:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
+        id S245066AbiHRNhN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Aug 2022 09:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242785AbiHRNRw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 09:17:52 -0400
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B7F844C7
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Aug 2022 06:17:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1660828669; x=1692364669;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=fb+ANQOc/neq3dsheXNt3PPcSOrjHV5ttaVH4C74tAg=;
-  b=i619vsYFZnbUuG9W8+doNaN89rbYEM9s2YEcR63H2ZMpucpa7VUZR64I
-   Wy8eOn6WFPWVthfnUU6CaDYgHCi34DzPTtq6h4UM7nlvZTRolwXq0b54D
-   46vOv3so90E5ZtgoI2c7ZqRwjlBHBdlCBtsKnLgMUaUiIEfKG/XgJcB6T
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.93,246,1654560000"; 
-   d="scan'208";a="231145967"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-8be8ed69.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2022 13:17:35 +0000
-Received: from EX13D09EUC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1e-8be8ed69.us-east-1.amazon.com (Postfix) with ESMTPS id 393A5C0A8F;
-        Thu, 18 Aug 2022 13:17:33 +0000 (UTC)
-Received: from [10.218.51.17] (10.43.162.158) by EX13D09EUC002.ant.amazon.com
- (10.43.164.73) with Microsoft SMTP Server (TLS) id 15.0.1497.38; Thu, 18 Aug
- 2022 13:17:30 +0000
-Message-ID: <744b1b25-a508-c624-cabe-1623059afd95@amazon.com>
-Date:   Thu, 18 Aug 2022 16:17:25 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH for-next] RDMA/efa: Support CQ receive entries with source
- GID
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Jahjah, Firas" <firasj@amazon.com>,
-        "Leybovich, Yossi" <sleybo@amazon.com>,
-        "Kranzdorf, Daniel" <dkkranzd@amazon.com>
-References: <20220809151636.788-1-mrgolin@amazon.com>
- <YvuiKpvLtBvKVhkO@unreal> <a096d37b-e636-d621-8065-195d7cba627c@amazon.com>
- <YvzfN6Ns7iaUmyGa@nvidia.com>
+        with ESMTP id S244787AbiHRNhM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Aug 2022 09:37:12 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2058.outbound.protection.outlook.com [40.107.100.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B320CB5169;
+        Thu, 18 Aug 2022 06:37:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jCAMi5kWF23wPi/YtH7pNRSw3+nh7U6MAy/6E9sMiwohChVOWfRMKIDfJ8kTFjK3I5d68fbP4IXrZP35e6dFdfKdl8QU+fSRpKFnHouO7j/lLXsUXgg+PWuS6PcWaNCleXDbytb/cNaQuRwkHcbkLBU40XJMzs+UQ4aMYpA9UqdYSIA8CcqrV7tyj0ri/kUmIt5vkm+PQhBN/abqvw5RwaRRAUeDrK/SwmnY6QE5lQZTd8f0oPWCssimm4KpGFsY4h92nku6TyI10MIGSJBF6DzE8RX8XflIHKAUoZ/ivFCUYIRHUMn/2WZ65eekxopBR9tDm0ZZKjvNdopGOomRew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bVx+8gWum9/gbqU9l4Z5rJctQuHHWlWUDFQPeHmXY0k=;
+ b=nDS/WJZjb/oAvkAypnb2NRSnoNbdKYkVxf3TwXiiEHy5xddROkANjrLxM/DxY+4smOThx9uAJC+7H9tZU0PDCwywRL1oNjGGJLBHYJw4x4ibTRxbv4pIUFCm7Dw+fZ9HH32BdyFizqoblzeSkJ/rkIYcs1hmuFpYWqgPeJ/7W69twMjhIDt/3dGsYxXRBlWeugsbgI0K3fjzfA8D7LS5zGIHDjEHMzzQHq767rFtGQ7EG4fRl9EOFdIMDIrNO56LyeBvJmy++LVD4O49OFua9u77a1qCi9ksyGGmEoFQplOBaXBS61wSOKOQhED7LxcRxXWerkdUhe2BokGOIOBgGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bVx+8gWum9/gbqU9l4Z5rJctQuHHWlWUDFQPeHmXY0k=;
+ b=ku0tw9yabZelts1tfTEnzHToV3KKLr6sPj2kI944Ox0UJynGGEB/t+STRTz3qYa1RyNj4PeQe4/iZj+XD/wyCmwKM8aWCcF0AcxmXg1tibmh4S8HsTDHXYPv0baKOkU3Gigj0h2dqSo4rarmpQdCuAADHflSQrbR3sM5gx5tJkc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by DM6PR12MB4420.namprd12.prod.outlook.com (2603:10b6:5:2a7::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.16; Thu, 18 Aug
+ 2022 13:37:07 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::905:1701:3b51:7e39]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::905:1701:3b51:7e39%2]) with mapi id 15.20.5504.020; Thu, 18 Aug 2022
+ 13:37:07 +0000
+Message-ID: <23cb08e4-6de8-8ff4-b569-c93533bf0e19@amd.com>
+Date:   Thu, 18 Aug 2022 15:37:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 0/4] Allow MMIO regions to be exported through dma-buf
 Content-Language: en-US
-From:   "Margolin, Michael" <mrgolin@amazon.com>
-In-Reply-To: <YvzfN6Ns7iaUmyGa@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.158]
-X-ClientProxiedBy: EX13D18UWC002.ant.amazon.com (10.43.162.88) To
- EX13D09EUC002.ant.amazon.com (10.43.164.73)
-X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Oded Gabbay <ogabbay@kernel.org>
+References: <0-v1-9e6e1739ed95+5fa-vfio_dma_buf_jgg@nvidia.com>
+ <921de79a-9cb3-4217-f079-4b23958a16aa@amd.com> <Yv4qlOp9n78B8TFb@nvidia.com>
+ <d12fdf94-fbef-b981-2eff-660470ceca22@amd.com> <Yv47lkz7FG8vhqA5@nvidia.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <Yv47lkz7FG8vhqA5@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR0P281CA0142.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:96::15) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 64824f27-6dd7-4779-ee89-08da811ebe92
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4420:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ALp61X/c9c/YpADkEsexlgHxu/j8U5PgGhJC5+fON4g3vRMopazdpJ18mDu2/TCNvRIhlyPQLb/cmwlnKs6OZnuRMPiSOEfmnlhESO2G/lYWnX4Zi8bPOcLBX67cBkVeHNiGAAh1I7yNedmcNd++1fM3QEd8arA96ggEwU8KEj8rRKcWbxa021XpPAgXoDrMS+JPx4a0rSMbSWoeO01NqJu9hi73fh+Kiep6xhLMGzcFUjUAxaZ34ZIAv12tnOngHrRAhKoVMgZS1rHDfkknuz/tJUh6zm2+ntLp/gXJaFcHIB2skFado8P7k9JkYivre0VOZmSRIIg2dxXLb/iGV+FLFjlor2jwFno8GhnF7yU6Ta64GP+qR9uciWaWS0qw/T255I/2BIqYsOr+nQlP+A81k3eiJMcNSQB16BbW3QlEJKZZQbws0GvUFwCtoE9SOPBtYatP28K+qEyqWgVsHp/k6xxHaRh9YZYGbkWW49DQwuiz5ss1bHwbx+Vxd18l9XBuOLMiqKOd+8pUXnvq42ujTimhtL3h1S799mf6ipnAmtKFrw4UvUlWAPuJe+UgiI1ZbkPAvLZ6mGl5H/kpb9uJzWHs1rzi6GicRUi7CkrTsWE915ZKkdcoEkjbVuP6cg0CA0DUkWy2JUaU91ztfLLTEULfC+IHUDb96Omiyb4XyEbzpH4nKk64Je6hkNM1r9/q4w5u/4oY1OeBkzTz0KagUXULBcCP6taP6IGqCpFRgaqut3g7/oD5WJ5sl09QtBHyGzEoXRHQpeU5+l5PA035gjOxexrSYCDwnTZYyu8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(136003)(396003)(376002)(39860400002)(366004)(31696002)(478600001)(66476007)(66946007)(66556008)(66574015)(6486002)(8676002)(2906002)(41300700001)(6512007)(86362001)(26005)(4326008)(6666004)(186003)(2616005)(7416002)(5660300002)(8936002)(36756003)(54906003)(6916009)(6506007)(31686004)(38100700002)(316002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eEp2UDZmdXlNeTFYTFlZKy9vblN0OFRIblZ6WWxZK2RHL1pZdWxCd0p4R1F4?=
+ =?utf-8?B?Y1c5RTBMSHprcWpPczFEWGFrQ1Y5WFk3US8yQ3hZVDRwWXRKbXRrQUdTbEx2?=
+ =?utf-8?B?aGd2b01zL01wRkMvdFhSajdLSTNMNXluR3ZCaGhpSG0xcFErbHdGYXVnbnVM?=
+ =?utf-8?B?QW5KMFFzcWRpQ3NQMTdsL0xTSU5CaXBxU3VwenF0UEFrVjVSNmt0eXJHN2NO?=
+ =?utf-8?B?U3ZjdW5GOTcwbWltcTNuYWp3UGl5SXJVNE5ONEt0ZGM4ZytqQ01MOWx1SGhu?=
+ =?utf-8?B?aTIyaG1ha0hiMFcvZmNXUUh2dmxUaXluN05FbGRqSERkV3I5NHZhVDZwempH?=
+ =?utf-8?B?WkE0WnllN2RkaFVYVzhwS0w4dGI3WGpyU0E4WjNhR1JuWlkzZzAzZkR3R1Qy?=
+ =?utf-8?B?MmNKcjBDazhJbnE2bzhuN3NZeU9IR0hCMkExUkxtSTVMbE9DTnlZQXlXQmdW?=
+ =?utf-8?B?MENEdHNsUCtYZ1hpM0pSM2s4cXV1Mmd6MG9sVTg0VUxqdG56SW9aOGl5RE9z?=
+ =?utf-8?B?aDdodTFiT1BOTFBSWDBNN051QzJIQ25BUmpublRicHdwZlR1MENMZ0wyUFh1?=
+ =?utf-8?B?M0Z4TC92cThWYXppRStLeWF1Q1NndXBOa0RYNE1jeHE1S2QvdlVSdyttdzFa?=
+ =?utf-8?B?aVc0MTliOTBZY2trRTJqU2ZoTDkyWTlFWHV1TFVnV3luR3h5Yk1hVzg0Uy9I?=
+ =?utf-8?B?MGhnYVI0d0pUZXFrMGYvYjJKRHlySUJ2MktFY0RPVUQ0cVJ3M0pIRVQxbnJX?=
+ =?utf-8?B?MHhGTzVXekh3elpUTXFXS2l1UmxXR1JsTWoybVRNaGI4ZTdBRFlxaU5zWndL?=
+ =?utf-8?B?bGZtYzlqazZYK09WUmNJc2NFVFdMLy95SFo2WXhpY3QrMmZJUWZSbWFySFZo?=
+ =?utf-8?B?OE1UaGVPWEZTVktDNnBmQVhxa0FmbytON1JWRit1TEMvTW9JaXVOaTNFTm9D?=
+ =?utf-8?B?bnBLeEtORWJlV1N3c1RPQnkvbW5tZCt3Q1p4b1p5REdTNmVaVXJLdk8reUti?=
+ =?utf-8?B?bUl5V0F4NHJsZGxjTS9BOS9US1A4VWFGaDkvVHNaeS9rVmNlWXJHOG5mdDRp?=
+ =?utf-8?B?SXpTR2swZFJVcGxkNTlTQzh2YzZxY0dMWnNweTA4TlI2T0tsTzdUVnkyWWdq?=
+ =?utf-8?B?QzJTUzdjTmVKSTRQeDNMM1NOME9UK0ZvNEd0WDRoV1Y5eVA3Q3hLOUhUNGZi?=
+ =?utf-8?B?YmJZOVdScWxzUThYR2JnVm9iMjREMGVETGV2YXY1YVZ2a3NaVFVGYXZVMzBx?=
+ =?utf-8?B?ODgxTjgzSHFnbmM0YTFkeGhadjZ1cTRkdEdsSFE0b251aDlIbkVwZDgvZkpj?=
+ =?utf-8?B?QkRQbjZjcHBUQ29jWWFJM0plR3NnNk9vZ0FSUyttNTBqZ2VOSk5iTm5iUW1V?=
+ =?utf-8?B?NXRaWjhXWVpDWHlKcnZzS0VQTGdDQWMvK2Vocm9PN1hZZy9hdDlhM1ZCQUoz?=
+ =?utf-8?B?VnI5S2ZENWZKRHZ5NnhRUmQrODI1VkRvdCtzOEJNekVrWTBqcHVlMUh2MVl6?=
+ =?utf-8?B?RDFlZ3ZTOFBLbG0vRWxJQ0R0YkxkVkQyVlRVejZ6ZGxyR3laMnVwVUs2YlFN?=
+ =?utf-8?B?WXYrTjRUZ0FjRkw1R0JBUzAzdGlLVWhEdlJLUlF3OE5UZk84aUwveUhyQS84?=
+ =?utf-8?B?c2J0T20xcFZ6UHhmdzBZRUgrdHlhdnNZRXlVeTI5dTBpUkdpNm43M1NxbGNY?=
+ =?utf-8?B?YUhGOURMRTVYS2llSngvQU5hUmZmRnlJU3lHcW1vV0d3cWlQWDVnTkNOMnBO?=
+ =?utf-8?B?SEsxNmhGTEQ1ZUUwOFcxL1JPdUJ1WHJtZnFvZXA0R2VkdjRPdE44QlpIR01u?=
+ =?utf-8?B?aHpveGZQYnQ2MUM4WjBkVWxpWjJxUU81NE13LzRhOElGV1ZoVGJSdkpGY3NE?=
+ =?utf-8?B?ZVRoQVhpUldqcW5tTjcvMXZOa05xbWlCTnEzVFArUGEvS2FZbVpWNkh1Rk04?=
+ =?utf-8?B?QU1Hc296bzZLa2o0cSt4ODkrQ0R5ZFFMbW1TN1d0UWpIdUNJTHBkdVJXQWNR?=
+ =?utf-8?B?aW9LQWRvcE11T29QREVBVWkvSDJ1UDlYdTR0Z29zSElXVmMwNWhpY05hSU52?=
+ =?utf-8?B?NzVMTUZkZ0R6WHlBak80T0Fhdm8zNmdIc1JCcDlKUGovaDhxbDRLQ002dk9B?=
+ =?utf-8?Q?m3+ohE6Hl3Z2S0gmiNbjEgcak?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64824f27-6dd7-4779-ee89-08da811ebe92
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2022 13:37:07.4992
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BmRrSF0Lj/2hxPw8oaAogwBW2Zo4zc6r66ZYPxC2jLFCj2mZ6foMeJCsX/n2MTCr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4420
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 8/17/2022 3:29 PM, Jason Gunthorpe wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+Am 18.08.22 um 15:16 schrieb Jason Gunthorpe:
+> On Thu, Aug 18, 2022 at 02:58:10PM +0200, Christian König wrote:
 >
->
->
-> On Wed, Aug 17, 2022 at 03:18:01PM +0300, Margolin, Michael wrote:
->> On 8/16/2022 4:56 PM, Leon Romanovsky wrote:
->>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->>>
->>>
->>>
->>> On Tue, Aug 09, 2022 at 06:16:36PM +0300, Michael Margolin wrote:
->>>> Add a parameter for create CQ admin command to set source address on
->>>> receive completion descriptors. Report capability for this feature
->>>> through query device verb.
+>>>> The only thing I'm not 100% convinced of is dma_buf_try_get(), I've seen
+>>>> this incorrectly used so many times that I can't count them any more.
 >>>>
->>>> Reviewed-by: Firas Jahjah <firasj@amazon.com>
->>>> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
->>>> Signed-off-by: Daniel Kranzdorf <dkkranzd@amazon.com>
->>>> Signed-off-by: Michael Margolin <mrgolin@amazon.com>
->>>> ---
->>>>  drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 6 +++++-
->>>>  drivers/infiniband/hw/efa/efa_com_cmd.c         | 5 ++++-
->>>>  drivers/infiniband/hw/efa/efa_com_cmd.h         | 1 +
->>>>  drivers/infiniband/hw/efa/efa_verbs.c           | 4 +++-
->>>>  include/uapi/rdma/efa-abi.h                     | 4 +++-
->>>>  5 files changed, 16 insertions(+), 4 deletions(-)
->>> <...>
->>>
->>>> diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
->>>> index c33010bbf9e8..c6234336543d 100644
->>>> --- a/drivers/infiniband/hw/efa/efa_com_cmd.h
->>>> +++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
->>>> @@ -76,6 +76,7 @@ struct efa_com_create_cq_params {
->>>>       u16 eqn;
->>>>       u8 entry_size_in_bytes;
->>>>       bool interrupt_mode_enabled;
->>>> +     bool set_src_addr;
->>> Please use "u8 xxx : 1" instead of bool in structs.
->>>
->>> Thanks
->> Thanks Leon for your reply.
->>
->> Is this a convention in the subsystem? This is an internal struct used
->> only to bind several variables for a function call and I think using
->> bool makes it more readable.
->>
->> Of course if it's essential I will change this.
-> You should use bool xx:1 in cases like this and join all the bools in
-> your struct into a bitfield - unless you can justify them being split
-> eg due to needing a READ_ONCE/etc or something
+>>>> Would that be somehow avoidable? Or could you at least explain the use case
+>>>> a bit better.
+>>> I didn't see a way, maybe you know of one
+>> For GEM objects we usually don't use the reference count of the DMA-buf, but
+>> rather that of the GEM object for this. But that's not an ideal solution
+>> either.
+> You can't really ignore the dmabuf refcount. At some point you have to
+> deal with the dmabuf being asynchronously released by userspace.
+
+Yeah, but in this case the dma-buf is just a reference to the 
+real/private object which holds the backing store.
+
+When the dma-buf is released you drop the real object reference and from 
+your driver internals you only try_get only the real object.
+
+The advantage is that only your driver can use the try_get function and 
+not some importing driver which doesn't know about the internals of the 
+exporter.
+
+We just had to many cases where developers weren't sure if a pointer is 
+still valid and by using try_get it just "magically" got working (well I 
+have to admit it made the crashing less likely....).
+
+>>> 	down_write(&vdev->memory_lock);
+>>> 	list_for_each_entry_safe(priv, tmp, &vdev->dmabufs, dmabufs_elm) {
+>>> 		if (!dma_buf_try_get(priv->dmabuf))
+>>> 			continue;
+>> What would happen if you don't skip destroyed dma-bufs here? In other words
+>> why do you maintain that list in the first place?
+> The list is to keep track of the dmabufs that were created, it is not
+> optional.
 >
-> This is expected across the kernel.
+> The only question is what do you do about invoking
+> dma_buf_move_notify() on a dmabuf that is already undergoing
+> destruction.
+
+Ah, yes. Really good point.
+
+>
+> For instance undergoing destruction means the dmabuf core has already
+> done this:
+>
+> 	mutex_lock(&db_list.lock);
+> 	list_del(&dmabuf->list_node);
+> 	mutex_unlock(&db_list.lock);
+> 	dma_buf_stats_teardown(dmabuf);
+>
+> So it seems non-ideal to continue to use it.
+>
+> However, dma_buf_move_notify() specifically has no issue with that level of
+> destruction since it only does
+>
+> 	list_for_each_entry(attach, &dmabuf->attachments, node)
+>
+> And attachments must be empty if the file refcount is zero.
+>
+> So we could delete the try_buf and just rely on move being safe on
+> partially destroyed dma_buf's as part of the API design.
+
+I think that might be the more defensive approach. A comment on the 
+dma_buf_move_notify() function should probably be a good idea.
+
+Thanks,
+Christian.
+
 >
 > Jason
-
-Thank you for your clarification, seems reasonable to me.
-
-Sending v2 patch with all the requested changes.
-
-
-Michael
 
