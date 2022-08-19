@@ -2,143 +2,185 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C104E599C29
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Aug 2022 14:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0980599CC6
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Aug 2022 15:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349019AbiHSMoX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Aug 2022 08:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
+        id S1349300AbiHSNLu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Aug 2022 09:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349031AbiHSMoU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Aug 2022 08:44:20 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C0350066;
-        Fri, 19 Aug 2022 05:44:19 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id u9so4618332oiv.12;
-        Fri, 19 Aug 2022 05:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=olgvWTHr9jS7KCb0QPjN0Q5SDmG5cWSWO8bFNkf78GM=;
-        b=YsEC8qSbFJb+2pn0c5tUK5CAeG6y1dHvZfZ0NSfgRIZX6FQjGTInPfh0y8S3WMXZLp
-         Oji1fcGeAtKlnm0L5NggYNQp33wLRhJvq57bUNeKen1apEwup1vV9F75qlXu3lx0W0d1
-         YX1oOwGOyQXThIb+oSdBseJTDlytEG2g2QstwFs4eCu5EMOIjSs/+G54gEV9ZQ7cKP3l
-         AeKgvsvxgwHz2lV7s8iRnmxO6EGkQoO/0Hl9rPB9BKiNCLxc2YzbNvZMV/2rl0wI9iJU
-         7RhFaCsZemxwLrxzU4gt3YFOfmlvaMuLdkBYPmVNjldvtupG13/N+gjEbJvU4EVYldOj
-         Z1tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=olgvWTHr9jS7KCb0QPjN0Q5SDmG5cWSWO8bFNkf78GM=;
-        b=TE3QQ7Dbg8WYDmvDdMCPnw4HUpZu7PdCiMgdRQPy/w5qBuakAi3L3N/jz3uM6sviWG
-         baaAf+whSaPTXOJBxlEUauhEYDgKu/m6bfTrQtUszu1OHOUAk661yU/DvVNgNTr6brxU
-         LxzOXuiZZMwHgbKHx4ADp19V490IPEHiLAIts0FtIEIS8liSY9MPRxfmoUDbeuI6Q9sa
-         wfFXLDDqpowHYoUiaGB+WdXcb2HoU1k+1EEwPUuXC6MeKPygN6NLx2tPN2odJMh3DpGL
-         JMU/mDBNyjcEU3BbrgA3cCLEiEESuNMee9ayJDSVH53LZTbZ7//yFyZxnWEnTFoM6NFE
-         4eLg==
-X-Gm-Message-State: ACgBeo35Ru9DHUMryYq8tL/QOJz2FUHFRR0q/mpI2Ez90LbvWlYXFlBU
-        P5WLkYmt/1kUtSlJh2eicgY=
-X-Google-Smtp-Source: AA6agR4TeLAlljlgzU9GM+oiS5UvkUK/mHzEuw8SpgXWqvvKguFcp7gVBgRwHKduQPnsh/7xlsfRmg==
-X-Received: by 2002:a05:6808:14cb:b0:344:cc0b:a567 with SMTP id f11-20020a05680814cb00b00344cc0ba567mr5730686oiw.204.1660913058552;
-        Fri, 19 Aug 2022 05:44:18 -0700 (PDT)
-Received: from localhost ([12.97.180.36])
-        by smtp.gmail.com with ESMTPSA id x37-20020a056870332500b00101bd4914f9sm1220409oae.43.2022.08.19.05.44.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Aug 2022 05:44:18 -0700 (PDT)
-Date:   Fri, 19 Aug 2022 05:42:06 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        netdev <netdev@vger.kernel.org>,
-        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-Subject: Re: [PATCH v2 1/5] bitops: Introduce find_next_andnot_bit()
-Message-ID: <Yv+FHpyZ6gpIAXMw@yury-laptop>
-References: <20220817175812.671843-1-vschneid@redhat.com>
- <20220817175812.671843-2-vschneid@redhat.com>
- <20220818100820.3b45808b@gandalf.local.home>
- <xhsmh35dtbjr0.mognet@vschneid.remote.csb>
- <20220818130041.5b7c955f@gandalf.local.home>
- <CAHp75VcaSwfy7kOm_d28-87QKQ5KPB69=X=Z9OYUzJJKwRCSmQ@mail.gmail.com>
- <xhsmhk074a5eu.mognet@vschneid.remote.csb>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        with ESMTP id S1349153AbiHSNLu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Aug 2022 09:11:50 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2044.outbound.protection.outlook.com [40.107.220.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25105E01E;
+        Fri, 19 Aug 2022 06:11:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HHaVe1BeOsGddif1jYbqsx5VIBIv9YsNWwtn2kL/gpYKXh55PEFlLbnjSWCAGssSKVhIp/zASLFfSHjUDJjZ6i/08YSX9KuBQMK8rnAOMlmCZ7qQnAC4XXAblv4rDo8H6fgDEcHlhe7t4G2wtxTjxNZZYVZ7ObAnqpZpqMLsN8WcrM2aOMsOeyYmV8ITfNK0XjxjYm/hKSPrFFhS/6TicpPYRGN97/LM97PnZOC1V8URrCT06tVS5wsF6n9ucZZRihc8C6PMK+7InICWlDYrpVE38DrennjBX8dZxvV+ZZDGYeeVWY9lGXezYVgZ9mO7+k9ajA6Ml66Fm9SkU59y5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mm6haemPaeQXoj6x7SfwnKk1lPYJPeZJqGZnLQ6xNEg=;
+ b=NKRjMOE6ZctQ0y8MT14nno1vPrHpD4DToGfiU4Ll7z7TXXJ2rGMbqKQezPVT8P9EHq5lMePfQ2AewSTMcDzd/ZMccahHz9BsmDziz4JGnuFaVMOmB3f3RUACjvwQ1bhpradZa1UE17GXjzm6heyTTEeQFDiUWHKDy9wmn3Qv9VfbcV5NoD1tQXA9+OXVfPWgDIFUO83yjo/ehqTT02KKXpClNxhS1/dZEuZ7170wT9PMR2C/wKI6+o9nl4ysdlOtt+rP5cGxjJk9KpENtIsOKanSZCVBkdSTKLIxrt+Yn45JL6XYcJiVA4PrxvWWo0VimDAq016ZXcvYFBPcVaEEqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mm6haemPaeQXoj6x7SfwnKk1lPYJPeZJqGZnLQ6xNEg=;
+ b=R5Q5xOH2tPe7v+Tzj43DvxlHtA5SzxVEryNdhxeoUiKdo9zz8BqvN8wAtW09mpJq7rWZtNuworhyIrkp6zHmdEID+aNuxIGsCT9CIto6LzA8ig7U1DfRqOC/wQS6Icuow3Hf+R+58eNPKCGEY8urRfsHfrpXVVji9dUoYc1cXO8EBGfZL5NcwkHNYN6bKCLC55Em1Ck5eepLLranvAohREss2ADkZ/sEg2RCOnS6zKJYx7HyJxImt60jmJFqN6PRT6ckPz1mqKSzBNcvCq4aXyVMChx56M+faUlms3qX62c+avCtfwdJbmy0FMW9SHWhSgEOnHxEatr3MKVawDGY0g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by DM4PR12MB5937.namprd12.prod.outlook.com (2603:10b6:8:68::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.16; Fri, 19 Aug
+ 2022 13:11:45 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5%6]) with mapi id 15.20.5525.019; Fri, 19 Aug 2022
+ 13:11:45 +0000
+Date:   Fri, 19 Aug 2022 10:11:43 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Oded Gabbay <ogabbay@kernel.org>
+Subject: Re: [PATCH 0/4] Allow MMIO regions to be exported through dma-buf
+Message-ID: <Yv+MD44ET211LMIl@nvidia.com>
+References: <0-v1-9e6e1739ed95+5fa-vfio_dma_buf_jgg@nvidia.com>
+ <921de79a-9cb3-4217-f079-4b23958a16aa@amd.com>
+ <Yv4qlOp9n78B8TFb@nvidia.com>
+ <d12fdf94-fbef-b981-2eff-660470ceca22@amd.com>
+ <Yv47lkz7FG8vhqA5@nvidia.com>
+ <23cb08e4-6de8-8ff4-b569-c93533bf0e19@amd.com>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <xhsmhk074a5eu.mognet@vschneid.remote.csb>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <23cb08e4-6de8-8ff4-b569-c93533bf0e19@amd.com>
+X-ClientProxiedBy: MN2PR19CA0001.namprd19.prod.outlook.com
+ (2603:10b6:208:178::14) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2d67048c-581c-47ae-1575-08da81e45d7e
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5937:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: z0P9BGtKtkrAyn6HBZso/mVCa4j6ytlB9C4BNT/b1YBLi+ClifYleQaRqjqlgotc3J//T8A9COlUCW76kEp1I5onZ7dP3VgYhVl2ZzgluOBHpio5O6kYx3bJOzwIxnBhKzVC8yhJKSwb4O84M91hW2xWCe5YLx9btIUOp4TXnVJqvYLeesNd9E4FehS1j3krulvyrBIe5DkGx2N2Cf8+avbvwZsR674nlIQnFzeIJKyFpwEUf0l6qOGD4G3xSPZpe8ap83RBnYDj3rlk9ZnsrDkXgo/JCKKuJyWlEh7DTZk2WNTpAXKwU8U0IaWLnj6VUAeU0hUwJQY/PQu2fom8geAmaCGXmI7acVi7rnM+R1vhErG4JQN3dw0aF9sja2axx6sOuDZCrrhZdhHPJq++A1oWLXOWQH2s5V4KvnMNkyFF15uubcuWSTW5qSz4nVVa8wYkaQDUSogcwINj/3Rf/0b5B8mBbOZQZD0S4ak61BdK+cMgPf2DI3mKXWO9l/FcMVAV8o2Aox87ElDurZvqmZp/15rw2ovpGgumShhDaqhDd/iGj7ynmMfSLoqyJkKSkR5w+JcdLQ5JtOGphU9+f6o9Swn0aBCGwmobG2JRW/t+ABdpvFxCji3X5jOdEaLWWKod61as79dftaoljT+9dm263ZHGfSCXd7Iar8h+jT+rSiWRfygDhFg1/F2ToLbWYi2Sb4YyoRwdGWCt3+12Xe4rN0g6Kw1QAmcuO7iA2fHdI8MxYLEk+Lg+ahKf1CgU
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(346002)(366004)(39860400002)(136003)(376002)(41300700001)(6486002)(66574015)(478600001)(2616005)(186003)(83380400001)(7416002)(6512007)(26005)(6506007)(5660300002)(66476007)(8936002)(4326008)(8676002)(2906002)(38100700002)(36756003)(6916009)(54906003)(66556008)(66946007)(86362001)(316002)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Wm9GUW5Ma3NHenJnbUI0Ni8vMDlnN1haUG84c0NMN0lSVzRYdWVXcE4vRkdz?=
+ =?utf-8?B?M3FNQVJvOG9oLzZaZkc0LzEvWlNTV0U2T2ZaUUhLU3NKczhIaFFTTVhkWGxG?=
+ =?utf-8?B?K1ljaFJNTW9vNnNUaEFiNHpvQlpnV0NTcTFNR3dyWXdhSmdRVWhUQ0pCSVFB?=
+ =?utf-8?B?clVrTFZTOG1lZzBod1EwWHpZVkk3dG5UaWExZlpCSWlmNzRaUEg5bDZMSGpS?=
+ =?utf-8?B?ZWtOeXl4UFVrS2J4aml0eCtIOEYwV1F2enl2R0VWUW44eFNycFdEUVk0a1Bo?=
+ =?utf-8?B?NkFLUVdWM1JKb0dVSUp4NktFRUtpMHNUWm1wa3ZtM2daSTBwN1VlMzA3NWtv?=
+ =?utf-8?B?VWRiUGI1OHVrVXhvYlFCZTJ3Tys0Y3c3ZDc3OTQyZWE2Q1FwRzAvQ1A1MUV6?=
+ =?utf-8?B?NllMcWtCMStkNDNWdHhxUzVER2VGK1pnUzdiS0dUQkZYbFlNcjA0Z1pxTkd4?=
+ =?utf-8?B?RU4yeEwxdmUxZnoyaWpVaWZzckt6aUhQTUlwQnR3d0xWS3kzMmlLcVZ3UStY?=
+ =?utf-8?B?czAxUkhjQzR4MHNnc0h1emp1Z1RGZ3k3TDlTUzU0RHF6TE95Z2s3d04zQkZr?=
+ =?utf-8?B?MjZTOGlXUDJ5bUJ5cm5XOUpwMEY0aWVuOEtLVWRvK1BRZk1hRzl5N0F3bk1H?=
+ =?utf-8?B?UU9kYUVYTmJJcElPeVN6M0FqNnc1QVJoYzAxOUVLOHZDZFBwNmdYZWRSMG80?=
+ =?utf-8?B?NldESUM3cWd2YWE4RGNxTUtEcC90K3pWYXUySkpMdUo5MC9VU3Ywdm55UWdk?=
+ =?utf-8?B?S3JublUrYlBwK2hGekNNQXg2ZFpURnFhY1ZiVlVWVTliWFh3ZmF4UjE4UkRC?=
+ =?utf-8?B?N1VjM29VeWZ0OGltcW8wdVJwSDdQMEhidnBRT3lGZjI5N083K0VpQUkzVVdI?=
+ =?utf-8?B?RlNVK2had2ZrOWMrQWIyTzhwSHhPN1FBM2NzOUhBb1daL3dGTkYweGIvL0RP?=
+ =?utf-8?B?UzI2aWYvcXJYWnhObTkyVTk0VFhTSVZTWE5RSGdzamxGZXRoQW9MeW5lVFla?=
+ =?utf-8?B?eloxdExXWnBpZXRyQ3g2VjN5akRCdFFiRmZYU2lVdGdLQUllY1ZzOEs5SktB?=
+ =?utf-8?B?bXZlcm02TDhwYnlxYjduU1RsZ2E0NTVDL0ZDZlRHRlBhdzJwN3JydDMvcGNT?=
+ =?utf-8?B?STlnWGt4NFFwUTZpRUJYQ2Q2UDFqZkdFYTVidmxyTHcrWElvNW9EbjYvK2xS?=
+ =?utf-8?B?SHhNZW8wZFRqZy9LY25rMWJHOHFnSmx1a1VBckpjM1gvNXFZZnFydGtETDc2?=
+ =?utf-8?B?ZXYxclRLRlJTTGE3Zm9aV3Jacks4STRsTlBFNGFtRnJzak4yQkRSb0dBQmtB?=
+ =?utf-8?B?blNwTVpVUmkvekdxQllmN3VyWnY0LzRQNVRMR3diajJqaGRoRnhwcVJta0RQ?=
+ =?utf-8?B?MDl1NktQR2JrMGdFT2xiRjBGVlMybG91aWMyYWJONlFmNkYvVHZZa0R4YWZB?=
+ =?utf-8?B?RFNVcmZVb2dRVC9sT0dYUWYzaTM5TVZpcjVXdzNXRkxaL2dCQlBKY09UVlRB?=
+ =?utf-8?B?YWJjMkdndXpFNG5rM3EzRkFNclRYUnNFUWFHdWtDcXN0Vm9MU29XaWprdEMy?=
+ =?utf-8?B?L3NvSWtlOWNldXJTV25jZW9JS3p1WnYrRFZ0c2pab1kxMHVVTmxhL2pPYnBJ?=
+ =?utf-8?B?NzBXOFhTeE8vS29SZXFBUjhSSU5hNmFLSDVxb2M0ZXVVVjFLQnllT01GdGNs?=
+ =?utf-8?B?bDFUYTNmaXZrV0I4OCtHTkhmZng2QXFVclQ2RTNZV2YrVHBtMFlFempWM2Q1?=
+ =?utf-8?B?MXNkUUMvTkdOR2FNTHN1UW9jRHl3ZkQrK25WL21CbS9VQ28yRnl5enhCU2pU?=
+ =?utf-8?B?Y2x5UG4yNlN2Yy8rVFIwSGVIMisvakFRQ2F5RUlKTVFsWi9sUFEyVnJUNlBS?=
+ =?utf-8?B?OTFzZGIwUm1XVWVYcWF4UDNpWHVnVVMvRWFQdEJXUjlDUWd5OWdsZlIrd244?=
+ =?utf-8?B?NDhZbGJtQXFJNDVPTW0vb0RXMkZueGxXM1JTL1VUK3FXd25FNXVUUi9sb21i?=
+ =?utf-8?B?TGF6Q2NXL0x6RytzOTgxTXNLakJoU0hOZmwyN0d1SFdpNjZNVERlKzB2YWJh?=
+ =?utf-8?B?ZUw0VWY3NEtHOXRwSGRqd1d6TnFBeE9oS0l2TGZDQTdtVkt6QlZyZW82blFW?=
+ =?utf-8?Q?OFihAYhKcvWf9nDWXtBnAbTYD?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d67048c-581c-47ae-1575-08da81e45d7e
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2022 13:11:44.9609
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /DaQ1rrQYUBesKqiUZf+SUS2tq97XzGev/lUcqJLbOB4Et8V3h12J7DU3hpMpg0n
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5937
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 11:34:01AM +0100, Valentin Schneider wrote:
-> On 18/08/22 22:04, Andy Shevchenko wrote:
-> > On Thu, Aug 18, 2022 at 8:18 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >> On Thu, 18 Aug 2022 17:26:43 +0100
-> >> Valentin Schneider <vschneid@redhat.com> wrote:
-> >>
-> >> > How about:
-> >>
-> >> >
-> >> >   find the next set bit in (*addr1 & ~*addr2)
-> >>
-> >> I understand the above better. But to convert that into English, we could
-> >> say:
-> >>
-> >>
-> >>   Find the next bit in *addr1 excluding all the bits in *addr2.
-> >>
-> >> or
-> >>
-> >>   Find the next bit in *addr1 that is not set in *addr2.
-> >
-> > With this explanation I'm wondering how different this is to
-> > bitmap_bitremap(), with adjusting to using an inverted mask. If they
-> > have something in common, perhaps make them in the same namespace with
-> > similar naming convention?
-> >
+On Thu, Aug 18, 2022 at 03:37:01PM +0200, Christian König wrote:
+> Am 18.08.22 um 15:16 schrieb Jason Gunthorpe:
+> > On Thu, Aug 18, 2022 at 02:58:10PM +0200, Christian König wrote:
+> > 
+> > > > > The only thing I'm not 100% convinced of is dma_buf_try_get(), I've seen
+> > > > > this incorrectly used so many times that I can't count them any more.
+> > > > > 
+> > > > > Would that be somehow avoidable? Or could you at least explain the use case
+> > > > > a bit better.
+> > > > I didn't see a way, maybe you know of one
+> > > For GEM objects we usually don't use the reference count of the DMA-buf, but
+> > > rather that of the GEM object for this. But that's not an ideal solution
+> > > either.
+> > You can't really ignore the dmabuf refcount. At some point you have to
+> > deal with the dmabuf being asynchronously released by userspace.
 > 
-> I'm trying to wrap my head around the whole remap thing, IIUC we could have
-> something like remap *addr1 to ~*addr2 and stop rather than continue with a
-> wraparound, but that really feels like shoehorning.
+> Yeah, but in this case the dma-buf is just a reference to the real/private
+> object which holds the backing store.
 
-Old and new maps create a simple forward-looking mapping, like this:
-    #0   #4
-old: 0111 0 ...
-     | \\\|
-New: 00 111 ...
+The gem approach is backwards to what I did here.
 
-So if you pass #0, it's wired to 0; but #1 will skip 1 bit and would be
-wired to 2; and so on. There is some puzzling when wraparound comes in
-play, but the general idea is like that.
+GEM holds a singleton pointer to the dmabuf and holds a reference on
+it as long as it has the pointer. This means the dmabuf can not be
+freed until the GEM object is freed.
 
-I think there's nothing common with bitmap_and{,_not}.
+For this I held a "weak reference" on the dmabuf in a list, and we
+convert the weak reference to a strong reference in the usual way
+using a try_get.
 
-Thanks,
-Yury
+The reason it is different is because the VFIO interface allows
+creating a DMABUF with unique parameters on every user request. Eg the
+user can select a BAR index and a slice of the MMIO space unique to
+each each request and this results in a unique DMABUF.
+
+Due to this we have to store a list of DMABUFs and we need the
+DMABUF's to clean up their memory when the user closes the file.
+
+> > So we could delete the try_buf and just rely on move being safe on
+> > partially destroyed dma_buf's as part of the API design.
+> 
+> I think that might be the more defensive approach. A comment on the
+> dma_buf_move_notify() function should probably be a good idea.
+
+IMHO, it is an anti-pattern. The caller should hold a strong reference
+on an object before invoking any API surface. Upgrading a weak
+reference to a strong reference requires the standard "try get" API.
+
+But if you feel strongly I don't mind dropping the try_get around move.
+
+Jason
