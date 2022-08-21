@@ -2,58 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7931259AF4E
-	for <lists+linux-rdma@lfdr.de>; Sat, 20 Aug 2022 19:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7B159B21B
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Aug 2022 07:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbiHTRzo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 20 Aug 2022 13:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        id S229965AbiHUFeb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 21 Aug 2022 01:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbiHTRzn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 20 Aug 2022 13:55:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862B254672;
-        Sat, 20 Aug 2022 10:55:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D22160D45;
-        Sat, 20 Aug 2022 17:55:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 84471C433D6;
-        Sat, 20 Aug 2022 17:55:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661018141;
-        bh=L60n1L5RonTwGo9L0pqiV6oKZblZjQ+pilEmhGi3ruI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=OZvV/1UYvCx5tkMwPQW5MTIPavTmXcG3DJ0ZFn2kAaU6vI9ILBJRHfmTRS834tj5G
-         YeBMnA747+atulGzfOOny6HAch/TlgxK7SHkbAfY1vbkLfTMSOCptgk4bHJa6XLssk
-         acaMweDZrGZ8/DHbfl4N8QBB+R8xywoy2rpAQaRyw2FQ2jOHbSHqxkPzqswQRVfc1/
-         qFmkpxHtQfs5O4reFydqog0oUUQVsMPpM4uSwsuaIw66KQ7q0UxoYwMGsRLqs9UmC3
-         GQLOSM7iFoyqCJMQvYXUkguvN24XWMowzdio2G211bndZ0OZ30qqR51rul7GyNacP5
-         pDEavKxlKm/8A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6AFE8E2A052;
-        Sat, 20 Aug 2022 17:55:41 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <Yv/Uti/+/VAycxfW@nvidia.com>
-References: <Yv/Uti/+/VAycxfW@nvidia.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Yv/Uti/+/VAycxfW@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: b16de8b9e7d1aae169d059c3a0dd9a881a3c0d1d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f31c32efd57c860f2b237a08327840f8444362f3
-Message-Id: <166101814143.10395.8817191920146481642.pr-tracker-bot@kernel.org>
-Date:   Sat, 20 Aug 2022 17:55:41 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leonro@nvidia.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        with ESMTP id S229713AbiHUFea (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Aug 2022 01:34:30 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D050913EAA
+        for <linux-rdma@vger.kernel.org>; Sat, 20 Aug 2022 22:34:28 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id a4-20020a056e0208a400b002e4621942dfso6141258ilt.0
+        for <linux-rdma@vger.kernel.org>; Sat, 20 Aug 2022 22:34:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=a+etxQMTB+vR5J4K1rcBznEYzEFIprZpeNGFNGTbBMY=;
+        b=3N0i74y+UNZI31qtTfCrcX/Xa0whIOkQwD0tJBVnbjO3V3W5oCC2NRFarfd6lcEgt3
+         3bB1PRay/nanFoFcd835fzD7KBO6HA1g71zjFxKXSqZNE9KBn75jq7ZgepRzx+LnpVgT
+         7yX63kTl73sb4jMucdQ90hebxrhTwxXNbxDu3jhbmisW8/Wtf6z6L15zpljNwNmfLsAv
+         J6F/kDD4zxWgadluW/9pgKQeWJCtdVRts68fNPhwu3jCTgSB9NbOxap4ssVtaTjKO3ga
+         E0WewZ9FDON4sKwcu5Kh7k4W6tFKeiMzq+WylA5nPoUtPNDU+B5y45ePfzT28gApW3At
+         OShw==
+X-Gm-Message-State: ACgBeo3ySmTQ0XoqHsaMLDPhK3IBPOlerNd8wHpFGE0/GPBd70GEAoMK
+        fe1iHjXNJ9YDbl2kQtTGRZ3cmy0TB3/zE8lGqHqPjSvg7NuA
+X-Google-Smtp-Source: AA6agR48w2x3OID+s9oHXffsyfKk30YfJGdt/O6WfKg5cTLowRFzkpnMlq+fj+9tQuX2KZUfJ10i5KnabXqYPfIonjnMvJ/nCgJO
+MIME-Version: 1.0
+X-Received: by 2002:a6b:6717:0:b0:688:d287:fa83 with SMTP id
+ b23-20020a6b6717000000b00688d287fa83mr6227528ioc.71.1661060068138; Sat, 20
+ Aug 2022 22:34:28 -0700 (PDT)
+Date:   Sat, 20 Aug 2022 22:34:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004fe8f805e6b9af20@google.com>
+Subject: [syzbot] possible deadlock in rds_tcp_reset_callbacks
+From:   syzbot <syzbot+78c55c7bc6f66e53dce2@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,15 +57,125 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Fri, 19 Aug 2022 15:21:42 -0300:
+Hello,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+syzbot found the following issue on:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f31c32efd57c860f2b237a08327840f8444362f3
+HEAD commit:    8755ae45a9e8 Add linux-next specific files for 20220819
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=107cf485080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ead6107a3bbe3c62
+dashboard link: https://syzkaller.appspot.com/bug?extid=78c55c7bc6f66e53dce2
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e678cb080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13f68e5b080000
 
-Thank you!
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+78c55c7bc6f66e53dce2@syzkaller.appspotmail.com
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+======================================================
+WARNING: possible circular locking dependency detected
+6.0.0-rc1-next-20220819-syzkaller #0 Not tainted
+------------------------------------------------------
+kworker/u4:3/46 is trying to acquire lock:
+ffff888027dc40e8 ((work_completion)(&(&cp->cp_send_w)->work)){+.+.}-{0:0}, at: __flush_work+0xdd/0xae0 kernel/workqueue.c:3066
+
+but task is already holding lock:
+ffff88807e18da70 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1712 [inline]
+ffff88807e18da70 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: rds_tcp_reset_callbacks+0x1bf/0x4d0 net/rds/tcp.c:169
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (k-sk_lock-AF_INET6){+.+.}-{0:0}:
+       lock_sock_nested+0x36/0xf0 net/core/sock.c:3391
+       lock_sock include/net/sock.h:1712 [inline]
+       tcp_sock_set_cork+0x16/0x90 net/ipv4/tcp.c:3328
+       rds_send_xmit+0x386/0x2540 net/rds/send.c:194
+       rds_send_worker+0x92/0x2e0 net/rds/threads.c:200
+       process_one_work+0x991/0x1610 kernel/workqueue.c:2289
+       worker_thread+0x665/0x1080 kernel/workqueue.c:2436
+       kthread+0x2e4/0x3a0 kernel/kthread.c:376
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+
+-> #0 ((work_completion)(&(&cp->cp_send_w)->work)){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3095 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+       validate_chain kernel/locking/lockdep.c:3829 [inline]
+       __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
+       lock_acquire kernel/locking/lockdep.c:5666 [inline]
+       lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
+       __flush_work+0x105/0xae0 kernel/workqueue.c:3069
+       __cancel_work_timer+0x3f9/0x570 kernel/workqueue.c:3160
+       rds_tcp_reset_callbacks+0x1cb/0x4d0 net/rds/tcp.c:171
+       rds_tcp_accept_one+0x9d5/0xd10 net/rds/tcp_listen.c:203
+       rds_tcp_accept_worker+0x55/0x80 net/rds/tcp.c:529
+       process_one_work+0x991/0x1610 kernel/workqueue.c:2289
+       worker_thread+0x665/0x1080 kernel/workqueue.c:2436
+       kthread+0x2e4/0x3a0 kernel/kthread.c:376
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(k-sk_lock-AF_INET6);
+                               lock((work_completion)(&(&cp->cp_send_w)->work));
+                               lock(k-sk_lock-AF_INET6);
+  lock((work_completion)(&(&cp->cp_send_w)->work));
+
+ *** DEADLOCK ***
+
+4 locks held by kworker/u4:3/46:
+ #0: ffff8880275f7938 ((wq_completion)krdsd){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff8880275f7938 ((wq_completion)krdsd){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
+ #0: ffff8880275f7938 ((wq_completion)krdsd){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1280 [inline]
+ #0: ffff8880275f7938 ((wq_completion)krdsd){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:636 [inline]
+ #0: ffff8880275f7938 ((wq_completion)krdsd){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:663 [inline]
+ #0: ffff8880275f7938 ((wq_completion)krdsd){+.+.}-{0:0}, at: process_one_work+0x87a/0x1610 kernel/workqueue.c:2260
+ #1: ffffc90000b77da8 ((work_completion)(&rtn->rds_tcp_accept_w)){+.+.}-{0:0}, at: process_one_work+0x8ae/0x1610 kernel/workqueue.c:2264
+ #2: ffff8880733c4088 (&tc->t_conn_path_lock){+.+.}-{3:3}, at: rds_tcp_accept_one+0x892/0xd10 net/rds/tcp_listen.c:195
+ #3: ffff88807e18da70 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1712 [inline]
+ #3: ffff88807e18da70 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: rds_tcp_reset_callbacks+0x1bf/0x4d0 net/rds/tcp.c:169
+
+stack backtrace:
+CPU: 1 PID: 46 Comm: kworker/u4:3 Not tainted 6.0.0-rc1-next-20220819-syzkaller #0
+kworker/u4:3[46] cmdline: ��a�����
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+Workqueue: krdsd rds_tcp_accept_worker
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:122 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:140
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3095 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+ validate_chain kernel/locking/lockdep.c:3829 [inline]
+ __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
+ lock_acquire kernel/locking/lockdep.c:5666 [inline]
+ lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
+ __flush_work+0x105/0xae0 kernel/workqueue.c:3069
+ __cancel_work_timer+0x3f9/0x570 kernel/workqueue.c:3160
+ rds_tcp_reset_callbacks+0x1cb/0x4d0 net/rds/tcp.c:171
+ rds_tcp_accept_one+0x9d5/0xd10 net/rds/tcp_listen.c:203
+ rds_tcp_accept_worker+0x55/0x80 net/rds/tcp.c:529
+ process_one_work+0x991/0x1610 kernel/workqueue.c:2289
+ worker_thread+0x665/0x1080 kernel/workqueue.c:2436
+ kthread+0x2e4/0x3a0 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
