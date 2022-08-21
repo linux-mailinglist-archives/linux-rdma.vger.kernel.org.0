@@ -2,123 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A14B59B2D8
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Aug 2022 10:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837AD59B33A
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Aug 2022 13:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbiHUItW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Aug 2022 04:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
+        id S229599AbiHULSW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Aug 2022 07:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbiHUItW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Aug 2022 04:49:22 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA1A2528C
-        for <linux-rdma@vger.kernel.org>; Sun, 21 Aug 2022 01:49:20 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6500,9779,10445"; a="276266527"
-X-IronPort-AV: E=Sophos;i="5.93,251,1654585200"; 
-   d="scan'208";a="276266527"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2022 01:49:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,251,1654585200"; 
-   d="scan'208";a="637791436"
-Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga008.jf.intel.com with ESMTP; 21 Aug 2022 01:49:18 -0700
-From:   yanjun.zhu@linux.dev
-To:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
-        yanjun.zhu@linux.dev, zyjzyj2000@gmail.com
-Subject: [PATCH 3/3] RDMA/rxe: Remove the unused variable obj
-Date:   Sun, 21 Aug 2022 21:16:15 -0400
-Message-Id: <20220822011615.805603-4-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220822011615.805603-1-yanjun.zhu@linux.dev>
-References: <20220822011615.805603-1-yanjun.zhu@linux.dev>
+        with ESMTP id S229566AbiHULSV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Aug 2022 07:18:21 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD722643F;
+        Sun, 21 Aug 2022 04:18:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 86D75B80CAC;
+        Sun, 21 Aug 2022 11:18:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7336C433D6;
+        Sun, 21 Aug 2022 11:18:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661080696;
+        bh=ptHOrY6H/u2M8gvWUkoZP/1haNUm/UVGhD3B1HMsr8E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pOPbY0XfVrNLb9iaanR876q8f08y8gyXGNkotpb79QcY6qjJmNFB4bVfEbodGBKXO
+         tbXcas9Y0Dz+sVfwjcaGZRIzlSVIjrQP4Gga8kG+Y0REXr4MKb/lx6AyUMK5FXXe+Q
+         JK9FvVoUHm0pdKbcWM9Db11Nbbnu6Gs5znb8bh1Z90M9+nSpr343uKFCikD5osJGUV
+         +ig/3HZbNAxhu92wyRoNfv/PjsADY5B47b6gzoTR70Ll4tAJc5595aH6whYXwUPbXJ
+         Uii7LNUr+dKFoMd6Z5gNwGdoCqqIjkbRbFFYSra8WnbMYQ6ovxmLTjiYQHQKq+Tv+k
+         6uLklpwb4krNQ==
+Date:   Sun, 21 Aug 2022 14:18:11 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org
+Subject: Re: [PATCH] IB: move from strlcpy with unused retval to strscpy
+Message-ID: <YwIUc7E18FexunJB@unreal>
+References: <20220818210018.6841-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=2.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220818210018.6841-1-wsa+renesas@sang-engineering.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+On Thu, Aug 18, 2022 at 11:00:18PM +0200, Wolfram Sang wrote:
+> Follow the advice of the below link and prefer 'strscpy' in this
+> subsystem. Conversion is 1:1 because the return value is not used.
+> Generated by a coccinelle script.
+> 
+> Link: https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/infiniband/core/cma_configfs.c             | 2 +-
+>  drivers/infiniband/core/device.c                   | 4 ++--
+>  drivers/infiniband/hw/bnxt_re/main.c               | 2 +-
+>  drivers/infiniband/hw/hfi1/file_ops.c              | 2 +-
+>  drivers/infiniband/hw/hfi1/verbs.c                 | 2 +-
+>  drivers/infiniband/hw/mthca/mthca_cmd.c            | 2 +-
+>  drivers/infiniband/hw/ocrdma/ocrdma_hw.c           | 2 +-
+>  drivers/infiniband/hw/qib/qib_iba7322.c            | 2 +-
+>  drivers/infiniband/ulp/ipoib/ipoib_ethtool.c       | 4 ++--
+>  drivers/infiniband/ulp/opa_vnic/opa_vnic_ethtool.c | 4 ++--
+>  drivers/infiniband/ulp/srpt/ib_srpt.c              | 2 +-
+>  11 files changed, 14 insertions(+), 14 deletions(-)
 
-The member variable obj in struct rxe_task is not needed.
-So remove it to save memory.
+You forgot to change strlcpy in include/rdma/rdma_vt.h file.
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_qp.c   | 6 +++---
- drivers/infiniband/sw/rxe/rxe_task.c | 3 +--
- drivers/infiniband/sw/rxe/rxe_task.h | 3 +--
- 3 files changed, 5 insertions(+), 7 deletions(-)
+I changed locally and applied to -next.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index b229052ae91a..ee4f7a4a7e01 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -242,9 +242,9 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- 
- 	skb_queue_head_init(&qp->req_pkts);
- 
--	rxe_init_task(rxe, &qp->req.task, qp,
-+	rxe_init_task(&qp->req.task, qp,
- 		      rxe_requester, "req");
--	rxe_init_task(rxe, &qp->comp.task, qp,
-+	rxe_init_task(&qp->comp.task, qp,
- 		      rxe_completer, "comp");
- 
- 	qp->qp_timeout_jiffies = 0; /* Can't be set for UD/UC in modify_qp */
-@@ -292,7 +292,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
- 
- 	skb_queue_head_init(&qp->resp_pkts);
- 
--	rxe_init_task(rxe, &qp->resp.task, qp,
-+	rxe_init_task(&qp->resp.task, qp,
- 		      rxe_responder, "resp");
- 
- 	qp->resp.opcode		= OPCODE_NONE;
-diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
-index 2248cf33d776..ec2b7de1c497 100644
---- a/drivers/infiniband/sw/rxe/rxe_task.c
-+++ b/drivers/infiniband/sw/rxe/rxe_task.c
-@@ -94,10 +94,9 @@ void rxe_do_task(struct tasklet_struct *t)
- 	task->ret = ret;
- }
- 
--int rxe_init_task(void *obj, struct rxe_task *task,
-+int rxe_init_task(struct rxe_task *task,
- 		  void *arg, int (*func)(void *), char *name)
- {
--	task->obj	= obj;
- 	task->arg	= arg;
- 	task->func	= func;
- 	snprintf(task->name, sizeof(task->name), "%s", name);
-diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
-index 11d183fd3338..7f612a1c68a7 100644
---- a/drivers/infiniband/sw/rxe/rxe_task.h
-+++ b/drivers/infiniband/sw/rxe/rxe_task.h
-@@ -19,7 +19,6 @@ enum {
-  * called again.
-  */
- struct rxe_task {
--	void			*obj;
- 	struct tasklet_struct	tasklet;
- 	int			state;
- 	spinlock_t		state_lock; /* spinlock for task state */
-@@ -35,7 +34,7 @@ struct rxe_task {
-  *	arg  => parameter to pass to fcn
-  *	func => function to call until it returns != 0
-  */
--int rxe_init_task(void *obj, struct rxe_task *task,
-+int rxe_init_task(struct rxe_task *task,
- 		  void *arg, int (*func)(void *), char *name);
- 
- /* cleanup task */
--- 
-2.31.1
-
+Thanks
