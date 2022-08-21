@@ -2,50 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 837AD59B33A
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Aug 2022 13:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D625E59B33F
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Aug 2022 13:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbiHULSW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Aug 2022 07:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
+        id S229472AbiHULTz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Aug 2022 07:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbiHULSV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Aug 2022 07:18:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD722643F;
-        Sun, 21 Aug 2022 04:18:18 -0700 (PDT)
+        with ESMTP id S229566AbiHULTy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Aug 2022 07:19:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767B92611A;
+        Sun, 21 Aug 2022 04:19:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 86D75B80CAC;
-        Sun, 21 Aug 2022 11:18:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7336C433D6;
-        Sun, 21 Aug 2022 11:18:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 13BF760DFA;
+        Sun, 21 Aug 2022 11:19:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE4DBC433C1;
+        Sun, 21 Aug 2022 11:19:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661080696;
-        bh=ptHOrY6H/u2M8gvWUkoZP/1haNUm/UVGhD3B1HMsr8E=;
+        s=k20201202; t=1661080792;
+        bh=UE2mzwxvhVOAbwYZ7hJUqcJdlJbQndqv1O4KiDWCuAQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pOPbY0XfVrNLb9iaanR876q8f08y8gyXGNkotpb79QcY6qjJmNFB4bVfEbodGBKXO
-         tbXcas9Y0Dz+sVfwjcaGZRIzlSVIjrQP4Gga8kG+Y0REXr4MKb/lx6AyUMK5FXXe+Q
-         JK9FvVoUHm0pdKbcWM9Db11Nbbnu6Gs5znb8bh1Z90M9+nSpr343uKFCikD5osJGUV
-         +ig/3HZbNAxhu92wyRoNfv/PjsADY5B47b6gzoTR70Ll4tAJc5595aH6whYXwUPbXJ
-         Uii7LNUr+dKFoMd6Z5gNwGdoCqqIjkbRbFFYSra8WnbMYQ6ovxmLTjiYQHQKq+Tv+k
-         6uLklpwb4krNQ==
-Date:   Sun, 21 Aug 2022 14:18:11 +0300
+        b=BCmXdIMF4YteDzET4Zgwy7eRa9dDq7Em+AYKNQBsViupo0rCJWHgqfzviFmJp0ezl
+         saKmxaAKY7eB9i0zJWIsrwYZj3+572anaFNRFmivSHNhr7B7kwqHQ/SR6YUzAqVK3U
+         INg7BuL29kvlGTCHH89INEn7QbG1tNYppTtDFfwhJZJgFfxtmZTv2K9ceOvoDbDD47
+         FZtYE4i/ItPTYXa6UvaEYQodjL5Ji+mGhsAKej21gfkLyIzaDNofuARsCMQJmPeCNf
+         a2OqIkqeO1xX8eIroal6ARj65BVN+Skw+9gByP5W7uXN7Aii53ynw22Vg1MEsFcqy2
+         i+K433sdF3axg==
+Date:   Sun, 21 Aug 2022 14:19:48 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
 Cc:     linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org
-Subject: Re: [PATCH] IB: move from strlcpy with unused retval to strscpy
-Message-ID: <YwIUc7E18FexunJB@unreal>
-References: <20220818210018.6841-1-wsa+renesas@sang-engineering.com>
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA: move from strlcpy with unused retval to strscpy
+Message-ID: <YwIU1DPEmWRR9E9v@unreal>
+References: <20220818210158.8179-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220818210018.6841-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20220818210158.8179-1-wsa+renesas@sang-engineering.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -56,7 +53,7 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 11:00:18PM +0200, Wolfram Sang wrote:
+On Thu, Aug 18, 2022 at 11:01:58PM +0200, Wolfram Sang wrote:
 > Follow the advice of the below link and prefer 'strscpy' in this
 > subsystem. Conversion is 1:1 because the return value is not used.
 > Generated by a coccinelle script.
@@ -64,21 +61,10 @@ On Thu, Aug 18, 2022 at 11:00:18PM +0200, Wolfram Sang wrote:
 > Link: https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
 > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > ---
->  drivers/infiniband/core/cma_configfs.c             | 2 +-
->  drivers/infiniband/core/device.c                   | 4 ++--
->  drivers/infiniband/hw/bnxt_re/main.c               | 2 +-
->  drivers/infiniband/hw/hfi1/file_ops.c              | 2 +-
->  drivers/infiniband/hw/hfi1/verbs.c                 | 2 +-
->  drivers/infiniband/hw/mthca/mthca_cmd.c            | 2 +-
->  drivers/infiniband/hw/ocrdma/ocrdma_hw.c           | 2 +-
->  drivers/infiniband/hw/qib/qib_iba7322.c            | 2 +-
->  drivers/infiniband/ulp/ipoib/ipoib_ethtool.c       | 4 ++--
->  drivers/infiniband/ulp/opa_vnic/opa_vnic_ethtool.c | 4 ++--
->  drivers/infiniband/ulp/srpt/ib_srpt.c              | 2 +-
->  11 files changed, 14 insertions(+), 14 deletions(-)
+>  include/rdma/rdma_vt.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-You forgot to change strlcpy in include/rdma/rdma_vt.h file.
-
-I changed locally and applied to -next.
+I squashed this patch to your first one "IB: move from strlcpy with
+unused retval to strscpy".
 
 Thanks
