@@ -2,67 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7679859C7C7
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Aug 2022 21:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1111259C7C9
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Aug 2022 21:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237179AbiHVTCb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Aug 2022 15:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S236707AbiHVTCq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Aug 2022 15:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238089AbiHVTCO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Aug 2022 15:02:14 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932D3422D8
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Aug 2022 12:00:20 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id l5-20020a05683004a500b0063707ff8244so8306545otd.12
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Aug 2022 12:00:20 -0700 (PDT)
+        with ESMTP id S237968AbiHVTCY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Aug 2022 15:02:24 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170EA5F70
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Aug 2022 12:01:17 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id j5so13312076oih.6
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Aug 2022 12:01:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc;
-        bh=H0HITnH7kGxnAUl3UvTxh5XAD3IhgNqM28KSM1Ep90s=;
-        b=krPjbo+tQ8ywTCTO//N1l0p2kKKKI7jr45n5en57fd05KRXPTupfYMgCDoPxayfexe
-         kC7impCtWozHSeUCQfTwg/VyTG6agaNB24Ce3YapSi/5u95do/cyO3GDWNH44I/2lSmC
-         wFMbtjHbppQiDy4AXT+TMjQ8lnXQIisnHJ62ZlTkk75L/XSdCH3syVtuG1GF6hFT2hh9
-         1RCk6ldCwdRzX+5hY+AKbBddg5jz4TP3Jpb6RqzNne84sxCrNRYw1PKEx+B6QOv/U4Vi
-         E8031zg+XASpM9ZqnN//E5T3M8xVXs7Q9Kqdio3KuODMa2sCTW4mFC2UoL9NBb6ZD1r8
-         NrPg==
+        bh=0ZCoFceewPQBXdXcK3xAuGH4lG4gWXe4JFRGcp9Lb94=;
+        b=hZmCbaUxYbEOrOnoHo74L/SdG2tQ6A187afo/7+cQXc5qBU15I/DZGGGrjY2QfV73V
+         ii2/QwRFe0+LbRSJov9a1cCt7Lg/D3jgmWEWurEelFNga5ILpO5E0ygaHVIXeuXxmOFh
+         BHUVC2aCVX/uLEhKcaRGZnDNXHLo8esSZWaSxZCO2I4HqHOhm1K/4FmF+56tjcbFNjP8
+         4lJDzF3gCQ1w6URg/K4+CLeWNVcSixt7/K4rU/80sCo44fDYG1kcTgLe245pfVatXf76
+         VmzV9PbS5sIf90a3YaZN/jiyJ+wsph5Bel9wFbSLbag3c9qBHheTI0mpKsue0RKHXD5x
+         2JDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc;
-        bh=H0HITnH7kGxnAUl3UvTxh5XAD3IhgNqM28KSM1Ep90s=;
-        b=qoDkrq3ZlmAYETPgkHvrNOATR250U3k2odLdEZB3Q9cMlf5Y7+eh7hV2hMa5A7lGpL
-         m/czXg2hdT0yoUkr1dVT0AeTzwTWtef55MYCkDcOpKvC7SSj8bQrfrTTlth/qpoV54UF
-         9bagl/TRHNXbVl1SqNf6+bZT+QXaJawXFg6lNjgUB056EHl7o0fWhwFc0CsPK/SfH4yp
-         MMbhmpgf4aTLDmqwYyDNGaY0Z6/tmytvAXo8gHJoszXIO/49gCgb5CtH049snbGq++k/
-         KxRDqaB2PSHuhQsmsO+na7AZV0Y0vXkJnJXexo4ctI7NMWMt29aGf0+A+JfXLI9193d5
-         4oyA==
-X-Gm-Message-State: ACgBeo0GMspouS1JRrcjWyMOMb1nhk5ig97Bepp81LuY3GvERottPxUD
-        1cfvk6q56FgMoe5HM1u+9jE=
-X-Google-Smtp-Source: AA6agR6qMjOJa4UKvI5j+4YlJVOtdi2bdNAH2ixM4zi/2LcGh9TIDVnzPPda3WL+DsIFWvTT1kk9iw==
-X-Received: by 2002:a05:6830:8d:b0:637:1e6c:8975 with SMTP id a13-20020a056830008d00b006371e6c8975mr8070839oto.135.1661194819951;
-        Mon, 22 Aug 2022 12:00:19 -0700 (PDT)
+        bh=0ZCoFceewPQBXdXcK3xAuGH4lG4gWXe4JFRGcp9Lb94=;
+        b=7gnI/tmDXkfqoVhUDj4QNuS/DRUe4j+OvWk9uGuKYWgWnrMEZhQABivhaNmEU49AT3
+         RE3bzkalkng//dvg9QDG8cfHUUhhavkIoRHZDsc3m+AAp2XNfoQ1VIZ55+Ap3kCz8ckN
+         DBM0ka5DkfdoofFN0UXEMpERF4ETiPTsDVvcq7owsIYtd4mr6KWm+0zEdH7njSccI9x1
+         vZgJpPy01e/IesBU8sLTHvUD3XpO3wbx4XrFACY9pGbWlwBOgh/USxTRVUbaiRu2HS1n
+         PHeRpSWQc6JWc3ULmaXItupk9PQKzXTlJ5j3WOr0KoMUflwrHjLoRE3j12I9CMYY0m1T
+         VLGg==
+X-Gm-Message-State: ACgBeo0tFQnXdzWijXHSA+uV/oApJWUd1gML20Qvfl8mCXx2W1r++Lwl
+        /Au+5IyQNEtKj/InApBvV64=
+X-Google-Smtp-Source: AA6agR7Ypg/6wBkEqjzqNkxSbCi7CtGOiHc3SDwRL0SPMsA9r1evVfJ4S97/niMaYIMMhJSAtO4GiA==
+X-Received: by 2002:a05:6808:3:b0:343:7d5c:ac50 with SMTP id u3-20020a056808000300b003437d5cac50mr9985691oic.108.1661194876385;
+        Mon, 22 Aug 2022 12:01:16 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:fd1d:d13f:3b8b:5104? (2603-8081-140c-1a00-fd1d-d13f-3b8b-5104.res6.spectrum.com. [2603:8081:140c:1a00:fd1d:d13f:3b8b:5104])
-        by smtp.gmail.com with ESMTPSA id m37-20020a05687088a500b0010efb044e37sm3075213oam.27.2022.08.22.12.00.19
+        by smtp.gmail.com with ESMTPSA id t26-20020a0568080b3a00b003434b221a17sm2742739oij.52.2022.08.22.12.01.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Aug 2022 12:00:19 -0700 (PDT)
-Message-ID: <6aaad445-0c9c-ad35-4941-7d3a6653cab6@gmail.com>
-Date:   Mon, 22 Aug 2022 14:00:18 -0500
+        Mon, 22 Aug 2022 12:01:15 -0700 (PDT)
+Message-ID: <8038c20c-37e6-bd39-54d0-be56bd88c1f9@gmail.com>
+Date:   Mon, 22 Aug 2022 14:01:15 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH 1/3] RDMA/rxe: Fix "kernel NULL pointer dereference" error
+Subject: Re: [PATCH 2/3] RDMA/rxe: Fix the error caused by qp->sk
 Content-Language: en-US
 To:     yanjun.zhu@linux.dev, jgg@ziepe.ca, leon@kernel.org,
         linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com
-Cc:     syzbot+ab99dc4c6e961eed8b8e@syzkaller.appspotmail.com
 References: <20220822011615.805603-1-yanjun.zhu@linux.dev>
- <20220822011615.805603-2-yanjun.zhu@linux.dev>
+ <20220822011615.805603-3-yanjun.zhu@linux.dev>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20220822011615.805603-2-yanjun.zhu@linux.dev>
+In-Reply-To: <20220822011615.805603-3-yanjun.zhu@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,37 +77,36 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 On 8/21/22 20:16, yanjun.zhu@linux.dev wrote:
 > From: Zhu Yanjun <yanjun.zhu@linux.dev>
 > 
-> When rxe_queue_init in the function rxe_qp_init_req fails,
-> both qp->req.task.func and qp->req.task.arg are not initialized.
+> When sock_create_kern in the function rxe_qp_init_req fails,
+> qp->sk is set to NULL.
 > 
-> Because of creation of qp fails, the function rxe_create_qp will
-> call rxe_qp_do_cleanup to handle allocated resource.
+> Then the function rxe_create_qp will call rxe_qp_do_cleanup
+> to handle allocated resource.
 > 
-> Before calling __rxe_do_task, both qp->req.task.func and
-> qp->req.task.arg should be checked.
+> Before handling qp->sk, this variable should be checked.
 > 
 > Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> Reported-by: syzbot+ab99dc4c6e961eed8b8e@syzkaller.appspotmail.com
 > Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 > ---
->  drivers/infiniband/sw/rxe/rxe_qp.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/infiniband/sw/rxe/rxe_qp.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> index 516bf9b95e48..f10b461b9963 100644
+> index f10b461b9963..b229052ae91a 100644
 > --- a/drivers/infiniband/sw/rxe/rxe_qp.c
 > +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> @@ -797,7 +797,9 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
->  	rxe_cleanup_task(&qp->comp.task);
+> @@ -835,8 +835,10 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
 >  
->  	/* flush out any receive wr's or pending requests */
-> -	__rxe_do_task(&qp->req.task);
-> +	if (qp->req.task.func && qp->req.task.arg)
-func would be enough since they get set together. But, this is still fine since not performance critical.
-> +		__rxe_do_task(&qp->req.task);
-> +
->  	if (qp->sq.queue) {
->  		__rxe_do_task(&qp->comp.task);
->  		__rxe_do_task(&qp->req.task);
+>  	free_rd_atomic_resources(qp);
+>  
+> -	kernel_sock_shutdown(qp->sk, SHUT_RDWR);
+> -	sock_release(qp->sk);
+> +	if (qp->sk) {
+> +		kernel_sock_shutdown(qp->sk, SHUT_RDWR);
+> +		sock_release(qp->sk);
+> +	}
+>  }
+>  
+>  /* called when the last reference to the qp is dropped */
 
 Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
