@@ -2,170 +2,199 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 545A659B459
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Aug 2022 16:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFC959B6EE
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Aug 2022 02:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbiHUOO6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Aug 2022 10:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
+        id S231821AbiHVARX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Aug 2022 20:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiHUOO5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Aug 2022 10:14:57 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2079.outbound.protection.outlook.com [40.107.101.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7600C12AF4
-        for <linux-rdma@vger.kernel.org>; Sun, 21 Aug 2022 07:14:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JujG355hOukwqqMi25xk/fcG0mpYp/Vl9gPc+e0svvgXfGncGXisKvo/WsNXH2TLU+GOLGZu1gC34U70OjzAH25CHPBaJTevAKEHXKEg5YPg1jVgqJYu9HgPdodvDPsJgoSxtWKY1hjiFtHaae18ZTZJLNTMlVnJZzMJKn+xjcJ/FAw+/DFz0m0b/t2zAh73eUjTeMC6U+MzK1k7Kk+N8rJz6oZcV2BsBWOBiXo2o9TT9V2ImKFd+N2T/DwckH8saad4ymIxkfyWFDnr+axWNLwOjAu3KeNWPimaezf7x8Prz5nNJdbgRGvigDxl9owkMGbjMf/vvd17qMb/RpkSgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3xyvKVPUmTdcPyQVVvgQN/O9ha8ObHA2Xz/RrKtOr6o=;
- b=FY7tgVP9+XDdrckRveQLsZQhWPG0T6AQIvlnp2wMkpNcHe5ocSMHg0ilNFaZMtOoaPvTJRbkYod1vCXl4w6NkLmcMLDu2QMWGpXWzHwlgoRBZf4CVyHXpYMm1NFQinvi3+/4WNrl2RX4hV8TcWtR41h562dbzTBJc5k/P5ygu8SJ/o4r1CNE8PPTrTTx6VYAq84r40q4vaXDUAVuImuaZ/f6QpRqP3cZJ5gZIYakE04NGU5Tjcrm3R/oIPpbeps880vHg9IyqpfyYVIczrVAkQp6EdUsq0/INCKvEkfMqd9qz37JlKP6f7PiBqF/oCCL2U4hSOvJqbNrRqvnHU0Yfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.238) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com; dmarc=pass
- (p=reject sp=reject pct=100) action=none header.from=nvidia.com; dkim=none
- (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3xyvKVPUmTdcPyQVVvgQN/O9ha8ObHA2Xz/RrKtOr6o=;
- b=qPCNS/oO9NnGHny13ZhYe6yVkxphEq3+LiwA5bKQOnve21G0KJQq7sUDnkAxcZxKfPjPrax1zgX2+udw63XBf2TMDYpR1rJJoxLJHskLiAW4i31+zx9dCIyWslPhJxBhCIFPoc3VfAHJjX5OX8mGe2bO5+0Al/8yYJ8QHg1dngGtI2kmlw6OIRpaZdOmxMQ9BCOwjvnZQLtzsCJa1+4y6iMzwLSvJbN0QjXM+EA4u+7PKEma59lrirRlLWy7Mp5uaB2WrR9p7ABUksVEDGcTmNfd2Kba0vCmQW+yNh7bO6qVClF9kf642fMnU86J3KQQy/W9KUtHz9bihcuqH7jAwA==
-Received: from MW2PR2101CA0016.namprd21.prod.outlook.com (2603:10b6:302:1::29)
- by BL1PR12MB5078.namprd12.prod.outlook.com (2603:10b6:208:313::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.18; Sun, 21 Aug
- 2022 14:14:53 +0000
-Received: from CO1NAM11FT064.eop-nam11.prod.protection.outlook.com
- (2603:10b6:302:1:cafe::24) by MW2PR2101CA0016.outlook.office365.com
- (2603:10b6:302:1::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.2 via Frontend
- Transport; Sun, 21 Aug 2022 14:14:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.238)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.238 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.238; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (12.22.5.238) by
- CO1NAM11FT064.mail.protection.outlook.com (10.13.175.77) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.5546.15 via Frontend Transport; Sun, 21 Aug 2022 14:14:52 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL105.nvidia.com
- (10.27.9.14) with Microsoft SMTP Server (TLS) id 15.0.1497.38; Sun, 21 Aug
- 2022 14:14:52 +0000
-Received: from localhost (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Sun, 21 Aug
- 2022 07:14:50 -0700
-Date:   Sun, 21 Aug 2022 17:14:47 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Mark Zhang <markzhang@nvidia.com>
-CC:     <jgg@nvidia.com>, <dledford@redhat.com>,
-        <jiapeng.chong@linux.alibaba.com>, <cgel.zte@gmail.com>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 2/3] IB/cm: remove cm_id_priv->id.service_mask
- and service_mask parameter of cm_init_listen()
-Message-ID: <YwI913+HsmU8YVf2@unreal>
-References: <20220819090859.957943-1-markzhang@nvidia.com>
- <20220819090859.957943-3-markzhang@nvidia.com>
- <YwIYXI9xTSpw4Vtj@unreal>
- <8863ab45-8b9f-3f1b-32c7-2c8f7e06b8ea@nvidia.com>
- <YwI3gG23YhD2zg0k@unreal>
- <472c4a14-e6fd-fe1d-51c0-31b8db8debc6@nvidia.com>
+        with ESMTP id S229541AbiHVARW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Aug 2022 20:17:22 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E59311443
+        for <linux-rdma@vger.kernel.org>; Sun, 21 Aug 2022 17:17:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661127441; x=1692663441;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uyveHBt4dbwiFJKwcjnRaUVH4VtKrLP0Zguns4aCjhU=;
+  b=CzN4m3iqYYF79FfXyxpeTpQoW5H+AkIdRZEnvuxJGEF6fubI9P2mY9+g
+   uKPVebQYPS1g7y5guqsw2flISkvv/JubZkHVO9M/T5BY8vUA1B+BI2wbk
+   6AwHuupToalJPrX6fJQIphgDvbWlZkbOMXPtnkuSXu7fvdN/1pDB438ML
+   jL+jnbaPldl5U+5tKf+H+h0TeAU26pXy2ySLmT9RMH5Lr1VPMOBKSqjKF
+   LLQJUeYGU8sVgp++u/Jz8Jhum20ZUTXyDO6+pi0F1mTuw5xQO7iy4KuW9
+   mKZVpgaxtdaX1RNtq+jr0fc+FDcmowNCSWIvCy5egd1s6tuTaczCvgcpn
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10446"; a="379583465"
+X-IronPort-AV: E=Sophos;i="5.93,253,1654585200"; 
+   d="scan'208";a="379583465"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2022 17:17:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,253,1654585200"; 
+   d="scan'208";a="677019246"
+Received: from lkp-server01.sh.intel.com (HELO 44b6dac04a33) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2022 17:17:19 -0700
+Received: from kbuild by 44b6dac04a33 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oPv82-0004gz-2o;
+        Mon, 22 Aug 2022 00:17:18 +0000
+Date:   Mon, 22 Aug 2022 08:16:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
+ 56c310de0b4b3aca1c4fdd9c1093fc48372a7335
+Message-ID: <6302caf2.sKxFKJkGip9SDBLI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <472c4a14-e6fd-fe1d-51c0-31b8db8debc6@nvidia.com>
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ec2e2218-d6f7-43ad-9452-08da837f8428
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5078:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TCtm9kQOrSq8jDYfRspmXJefKAv9fdH4rvaWZYFeaS+SzufzXHNH9OxKvNCo2+3Dh5A378sRzxeJ2vLBYq87PZh2Z/BKlW7kusJTfqf3lJRqI6yitd4XX80upKd1WyKOR6UXU1sOxeoB9M6qxvR/vZZI4WYRcLGmLBYyLMqEGE+zrQddmsnlcAOtqtJxu/15qMVPoTvIWNCVAuDvNfwOKWFUKclE2gVULD/1pKTUnb++ZFPRQO+h0Uc9ayVOdfi+5IAWdghfAHgRBS+bvCy8UuG0T5YOaXOJa0cAvxvupv53slTh2pDgMCsBwBQsxkeyxaV5A8T5b55vZA0uBnLxT1xYyWl5AuFPKTpwHvcB6D4R1dZM+5kcoUtrJixz9JbfU9zsE8mHbF/1q2VYfwVPDEJxkPoBTEfVsw9o/ayucSN5PXBAuSWWogohYnikCU1tpSf/xo9WgvQnXXTXEIeXs4BiM1n5btv0wyqx1UQeEcFMi65jA6YUAY4cfplJE2gySuZvxshtdzPbzexHRI/Y227iJb5izruWWM7F/DpmINQCDDr/hCETT8yuu6+QOy5mMw50iI0FsLJ7q6GPkJnpTEKhuw3gVjvVPSVyd7Py0qAg4chpMtOsbSenHEggET+Fsf8EEXXRZQvwpTAzkjtQ7+rw/HD/jROvIDFseFRqmjbYBFecE0YOE3JH4HbuQUw3VlCOC2GSa92b3rkHkHtYUYtBBEBwuxn8x7qZnq/llOts2Jdx6uSLB9JABTAdH0hsK223GSp/9uxgBuqAIm8Mnyf+e3mdtUHj194Cc1kv8CaidtuRDHUuZecujGwiJVZf
-X-Forefront-Antispam-Report: CIP:12.22.5.238;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230016)(7916004)(4636009)(396003)(346002)(136003)(39860400002)(376002)(46966006)(40470700004)(36840700001)(54906003)(8676002)(4326008)(70206006)(70586007)(40460700003)(6636002)(316002)(40480700001)(33716001)(82310400005)(5660300002)(8936002)(6862004)(2906002)(356005)(81166007)(82740400003)(86362001)(26005)(6666004)(9686003)(53546011)(41300700001)(478600001)(36860700001)(426003)(186003)(336012)(16526019)(47076005)(83380400001)(67856001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2022 14:14:52.6589
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec2e2218-d6f7-43ad-9452-08da837f8428
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.238];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT064.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5078
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 21, 2022 at 10:08:54PM +0800, Mark Zhang wrote:
-> On 8/21/2022 9:47 PM, Leon Romanovsky wrote:
-> > On Sun, Aug 21, 2022 at 08:50:08PM +0800, Mark Zhang wrote:
-> > > On 8/21/2022 7:34 PM, Leon Romanovsky wrote:
-> > > > On Fri, Aug 19, 2022 at 12:08:58PM +0300, Mark Zhang wrote:
-> > > > > The service_mask is always ~cpu_to_be64(0), so the result is always
-> > > > > a NOP when it is &'d with a service_id. Remove it for simplicity.
-> > > > > 
-> > > > > Signed-off-by: Mark Zhang <markzhang@nvidia.com>
-> > > > > ---
-> > > > >    drivers/infiniband/core/cm.c | 28 ++++++++--------------------
-> > > > >    include/rdma/ib_cm.h         |  1 -
-> > > > >    2 files changed, 8 insertions(+), 21 deletions(-)
-> > 
-> > <...>
-> > 
-> > > > > -	if (service_id == IB_CM_ASSIGN_SERVICE_ID) {
-> > > > > +	if (service_id == IB_CM_ASSIGN_SERVICE_ID)
-> > > > >    		cm_id_priv->id.service_id = cpu_to_be64(cm.listen_service_id++);
-> > > > > -		cm_id_priv->id.service_mask = ~cpu_to_be64(0);
-> > > > > -	} else {
-> > > > > +	else
-> > > > >    		cm_id_priv->id.service_id = service_id;
-> > > > > -		cm_id_priv->id.service_mask = service_mask;
-> > > > > -	}
-> > > > 
-> > > > If service_id != IB_CM_ASSIGN_SERVICE_ID, we had zero as service_mask
-> > > > and not FFF... like you wrote. It puts in question all
-> > > > cm_id_priv->id.service_mask & service_id => service_id conversions in
-> > > > this patch.
-> > > 
-> > > The id.service_mask field is removed in this patch, check the change in
-> > > include/rdma/ib_cm.h
-> > 
-> > Right, you removed service_mask and described it "is always ~cpu_to_be64(0)".
-> > As far as I can tell, this is not true and in this "if (service_id == IB_CM_ASSIGN_SERVICE_ID)"
-> > sometimes we set cm_id_priv->id.service_mask to be 0 and sometimes 0xFF....
-> > 
-> > Why is it correct to remove cm_id_priv->id.service_mask in this hunk?
-> 
-> 1. service_id == IB_CM_ASSIGN_SERVICE_ID:
->   cm_id_priv->id.service_mask = ~cpu_to_be64(0);
-> 
-> 2. service_id != IB_CM_ASSIGN_SERVICE_ID:
->      cm_id_priv->id.service_mask = service_mask;
->    It's also ~cpu_to_be64(0), because cm_init_listen() is always called
->    with service_mask = 0:
->      ib_cm_listen(..., 0) -> cm_init_listen(..., 0)
->      ib_cm_insert_listen() -> cm_init_listen(..., 0)
-> 
-> So it's always ~cpu_to_be64(0)..
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
+branch HEAD: 56c310de0b4b3aca1c4fdd9c1093fc48372a7335  RDMA/rtrs-srv: Pass the correct number of entries for dma mapped SGL
 
-I see it now, thanks.
+elapsed time: 726m
 
-> 
-> Thanks
-> 
-> 
-> 
-> 
-> 
+configs tested: 117
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arc                  randconfig-r043-20220821
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+arm64                            allyesconfig
+i386                                defconfig
+x86_64                        randconfig-a013
+i386                          randconfig-a001
+arm                              allyesconfig
+m68k                             allmodconfig
+x86_64                               rhel-8.3
+i386                          randconfig-a012
+powerpc                           allnoconfig
+x86_64                        randconfig-a011
+x86_64                           allyesconfig
+i386                          randconfig-a003
+x86_64                        randconfig-a004
+arc                              allyesconfig
+alpha                            allyesconfig
+x86_64                        randconfig-a015
+x86_64                           rhel-8.3-kvm
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+x86_64                          rhel-8.3-func
+ia64                             allmodconfig
+x86_64                         rhel-8.3-kunit
+i386                          randconfig-a005
+x86_64                    rhel-8.3-kselftests
+m68k                             allyesconfig
+arc                               allnoconfig
+x86_64                           rhel-8.3-syz
+i386                          randconfig-a016
+alpha                             allnoconfig
+sh                               allmodconfig
+i386                          randconfig-a014
+mips                             allyesconfig
+i386                             allyesconfig
+riscv                             allnoconfig
+csky                              allnoconfig
+powerpc                          allmodconfig
+mips                     decstation_defconfig
+arm                           imxrt_defconfig
+mips                 decstation_r4k_defconfig
+arm                       imx_v6_v7_defconfig
+ia64                             alldefconfig
+sh                           se7619_defconfig
+arm                      integrator_defconfig
+csky                                defconfig
+microblaze                          defconfig
+sh                        edosk7705_defconfig
+loongarch                           defconfig
+loongarch                         allnoconfig
+arm64                               defconfig
+arm                        spear6xx_defconfig
+parisc64                         alldefconfig
+i386                          randconfig-c001
+mips                           jazz_defconfig
+arm                           h3600_defconfig
+sh                     magicpanelr2_defconfig
+alpha                               defconfig
+openrisc                            defconfig
+powerpc                 canyonlands_defconfig
+arm                          lpd270_defconfig
+arm                         lubbock_defconfig
+sh                                  defconfig
+parisc                generic-32bit_defconfig
+arm                         axm55xx_defconfig
+sh                             shx3_defconfig
+sh                           se7780_defconfig
+sh                          rsk7269_defconfig
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+m68k                         apollo_defconfig
+sh                           se7724_defconfig
+arm                            lart_defconfig
+m68k                       m5275evb_defconfig
+arm                           sama5_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220821
+powerpc                    adder875_defconfig
+arm                         s3c6400_defconfig
+arm                        cerfcube_defconfig
+powerpc                      arches_defconfig
+powerpc                      ppc6xx_defconfig
+sh                           se7343_defconfig
+parisc                              defconfig
+sh                        apsh4ad0a_defconfig
+m68k                          sun3x_defconfig
+sh                     sh7710voipgw_defconfig
+mips                        vocore2_defconfig
+
+clang tested configs:
+hexagon              randconfig-r045-20220821
+hexagon              randconfig-r041-20220821
+riscv                randconfig-r042-20220821
+s390                 randconfig-r044-20220821
+x86_64                        randconfig-a016
+x86_64                        randconfig-a005
+x86_64                        randconfig-a012
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+x86_64                        randconfig-a003
+i386                          randconfig-a013
+i386                          randconfig-a006
+i386                          randconfig-a015
+x86_64                        randconfig-a014
+i386                          randconfig-a004
+i386                          randconfig-a011
+riscv                    nommu_virt_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                       cns3420vb_defconfig
+x86_64                        randconfig-k001
+arm                           spitz_defconfig
+arm                         s5pv210_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arm                          moxart_defconfig
+arm                         bcm2835_defconfig
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
