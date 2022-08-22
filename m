@@ -2,149 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3128959C751
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Aug 2022 20:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7679859C7C7
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Aug 2022 21:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237876AbiHVSxi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Aug 2022 14:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
+        id S237179AbiHVTCb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Aug 2022 15:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235412AbiHVSxV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Aug 2022 14:53:21 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA274DB41
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Aug 2022 11:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661194294; x=1692730294;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GKxHWX4aEtDR54Skii1cR1zRRFyFuVmdPBz2s2fFaM4=;
-  b=ilgw+6PjIQbsXkNSOorNsgX5Nn9f9QG31n0I1AG7gC1cTQvP81h2NevR
-   sEtVDXsCeVU7PiQunpdxKI4et8B/2IliCZ684B4CUXVcHl/OkrSIcJsD6
-   sZtzRwXzs46O7zaSQpNxk6LZtXY0Roj17/vL3p8ute3VV7096WijJGqX4
-   iMokVFVR+yInaE1lswdhpfVN9/mNiNCquPk8gaAD+GCWUB3IqLULArEsr
-   +AJZy/F9YsHiQ9QpisqT+G+hP0Do26nrqotCjQy5rHdNCC7FMKUenhFnU
-   ms0Yd6Jo3k18v3HEfurVd/6Z83bHNjrqbkujfeOzWDvYTIJCWHFBXab1S
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="292235987"
-X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; 
-   d="scan'208";a="292235987"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2022 11:50:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; 
-   d="scan'208";a="585642556"
-Received: from lkp-server01.sh.intel.com (HELO dd9b29378baa) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 22 Aug 2022 11:50:00 -0700
-Received: from kbuild by dd9b29378baa with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oQCUq-0000aZ-0F;
-        Mon, 22 Aug 2022 18:50:00 +0000
-Date:   Tue, 23 Aug 2022 02:49:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>, yanjun.zhu@linux.dev,
-        jgg@ziepe.ca, leon@kernel.org
-Cc:     kbuild-all@lists.01.org, linux-rdma@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@linux.dev>
-Subject: Re: [PATCH] RDMA/rxe: No need to check IPV6 in rxe_find_route
-Message-ID: <202208230225.DS04ZlXH-lkp@intel.com>
-References: <20220822112355.17635-1-guoqing.jiang@linux.dev>
+        with ESMTP id S238089AbiHVTCO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Aug 2022 15:02:14 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932D3422D8
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Aug 2022 12:00:20 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id l5-20020a05683004a500b0063707ff8244so8306545otd.12
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Aug 2022 12:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=H0HITnH7kGxnAUl3UvTxh5XAD3IhgNqM28KSM1Ep90s=;
+        b=krPjbo+tQ8ywTCTO//N1l0p2kKKKI7jr45n5en57fd05KRXPTupfYMgCDoPxayfexe
+         kC7impCtWozHSeUCQfTwg/VyTG6agaNB24Ce3YapSi/5u95do/cyO3GDWNH44I/2lSmC
+         wFMbtjHbppQiDy4AXT+TMjQ8lnXQIisnHJ62ZlTkk75L/XSdCH3syVtuG1GF6hFT2hh9
+         1RCk6ldCwdRzX+5hY+AKbBddg5jz4TP3Jpb6RqzNne84sxCrNRYw1PKEx+B6QOv/U4Vi
+         E8031zg+XASpM9ZqnN//E5T3M8xVXs7Q9Kqdio3KuODMa2sCTW4mFC2UoL9NBb6ZD1r8
+         NrPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=H0HITnH7kGxnAUl3UvTxh5XAD3IhgNqM28KSM1Ep90s=;
+        b=qoDkrq3ZlmAYETPgkHvrNOATR250U3k2odLdEZB3Q9cMlf5Y7+eh7hV2hMa5A7lGpL
+         m/czXg2hdT0yoUkr1dVT0AeTzwTWtef55MYCkDcOpKvC7SSj8bQrfrTTlth/qpoV54UF
+         9bagl/TRHNXbVl1SqNf6+bZT+QXaJawXFg6lNjgUB056EHl7o0fWhwFc0CsPK/SfH4yp
+         MMbhmpgf4aTLDmqwYyDNGaY0Z6/tmytvAXo8gHJoszXIO/49gCgb5CtH049snbGq++k/
+         KxRDqaB2PSHuhQsmsO+na7AZV0Y0vXkJnJXexo4ctI7NMWMt29aGf0+A+JfXLI9193d5
+         4oyA==
+X-Gm-Message-State: ACgBeo0GMspouS1JRrcjWyMOMb1nhk5ig97Bepp81LuY3GvERottPxUD
+        1cfvk6q56FgMoe5HM1u+9jE=
+X-Google-Smtp-Source: AA6agR6qMjOJa4UKvI5j+4YlJVOtdi2bdNAH2ixM4zi/2LcGh9TIDVnzPPda3WL+DsIFWvTT1kk9iw==
+X-Received: by 2002:a05:6830:8d:b0:637:1e6c:8975 with SMTP id a13-20020a056830008d00b006371e6c8975mr8070839oto.135.1661194819951;
+        Mon, 22 Aug 2022 12:00:19 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:fd1d:d13f:3b8b:5104? (2603-8081-140c-1a00-fd1d-d13f-3b8b-5104.res6.spectrum.com. [2603:8081:140c:1a00:fd1d:d13f:3b8b:5104])
+        by smtp.gmail.com with ESMTPSA id m37-20020a05687088a500b0010efb044e37sm3075213oam.27.2022.08.22.12.00.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Aug 2022 12:00:19 -0700 (PDT)
+Message-ID: <6aaad445-0c9c-ad35-4941-7d3a6653cab6@gmail.com>
+Date:   Mon, 22 Aug 2022 14:00:18 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220822112355.17635-1-guoqing.jiang@linux.dev>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 1/3] RDMA/rxe: Fix "kernel NULL pointer dereference" error
+Content-Language: en-US
+To:     yanjun.zhu@linux.dev, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com
+Cc:     syzbot+ab99dc4c6e961eed8b8e@syzkaller.appspotmail.com
+References: <20220822011615.805603-1-yanjun.zhu@linux.dev>
+ <20220822011615.805603-2-yanjun.zhu@linux.dev>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <20220822011615.805603-2-yanjun.zhu@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Guoqing,
+On 8/21/22 20:16, yanjun.zhu@linux.dev wrote:
+> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+> 
+> When rxe_queue_init in the function rxe_qp_init_req fails,
+> both qp->req.task.func and qp->req.task.arg are not initialized.
+> 
+> Because of creation of qp fails, the function rxe_create_qp will
+> call rxe_qp_do_cleanup to handle allocated resource.
+> 
+> Before calling __rxe_do_task, both qp->req.task.func and
+> qp->req.task.arg should be checked.
+> 
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> Reported-by: syzbot+ab99dc4c6e961eed8b8e@syzkaller.appspotmail.com
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_qp.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+> index 516bf9b95e48..f10b461b9963 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+> @@ -797,7 +797,9 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
+>  	rxe_cleanup_task(&qp->comp.task);
+>  
+>  	/* flush out any receive wr's or pending requests */
+> -	__rxe_do_task(&qp->req.task);
+> +	if (qp->req.task.func && qp->req.task.arg)
+func would be enough since they get set together. But, this is still fine since not performance critical.
+> +		__rxe_do_task(&qp->req.task);
+> +
+>  	if (qp->sq.queue) {
+>  		__rxe_do_task(&qp->comp.task);
+>  		__rxe_do_task(&qp->req.task);
 
-Thank you for the patch! Yet something to improve:
-
-[auto build test ERROR on rdma/for-next]
-[also build test ERROR on linus/master v6.0-rc2 next-20220822]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Guoqing-Jiang/RDMA-rxe-No-need-to-check-IPV6-in-rxe_find_route/20220822-192520
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-config: ia64-buildonly-randconfig-r005-20220822 (https://download.01.org/0day-ci/archive/20220823/202208230225.DS04ZlXH-lkp@intel.com/config)
-compiler: ia64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/9d154e806104f75aae6c66dfd78ecd5e67c7e00d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Guoqing-Jiang/RDMA-rxe-No-need-to-check-IPV6-in-rxe_find_route/20220822-192520
-        git checkout 9d154e806104f75aae6c66dfd78ecd5e67c7e00d
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash drivers/infiniband/sw/rxe/
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   drivers/infiniband/sw/rxe/rxe_net.c: In function 'rxe_find_route':
->> drivers/infiniband/sw/rxe/rxe_net.c:118:41: error: implicit declaration of function 'rt6_get_cookie' [-Werror=implicit-function-declaration]
-     118 |                                         rt6_get_cookie((struct rt6_info *)dst);
-         |                                         ^~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/rt6_get_cookie +118 drivers/infiniband/sw/rxe/rxe_net.c
-
-8700e3e7c4857d Moni Shoua      2016-06-16   88  
-3db2bceb29fd9a Parav Pandit    2018-08-28   89  static struct dst_entry *rxe_find_route(struct net_device *ndev,
-4ed6ad1eb30e20 yonatanc        2017-04-20   90  					struct rxe_qp *qp,
-4ed6ad1eb30e20 yonatanc        2017-04-20   91  					struct rxe_av *av)
-4ed6ad1eb30e20 yonatanc        2017-04-20   92  {
-4ed6ad1eb30e20 yonatanc        2017-04-20   93  	struct dst_entry *dst = NULL;
-4ed6ad1eb30e20 yonatanc        2017-04-20   94  
-4ed6ad1eb30e20 yonatanc        2017-04-20   95  	if (qp_type(qp) == IB_QPT_RC)
-4ed6ad1eb30e20 yonatanc        2017-04-20   96  		dst = sk_dst_get(qp->sk->sk);
-4ed6ad1eb30e20 yonatanc        2017-04-20   97  
-b9109b7ddb13a5 Andrew Boyer    2017-08-28   98  	if (!dst || !dst_check(dst, qp->dst_cookie)) {
-4ed6ad1eb30e20 yonatanc        2017-04-20   99  		if (dst)
-4ed6ad1eb30e20 yonatanc        2017-04-20  100  			dst_release(dst);
-4ed6ad1eb30e20 yonatanc        2017-04-20  101  
-e0d696d201dd5d Jason Gunthorpe 2020-10-15  102  		if (av->network_type == RXE_NETWORK_TYPE_IPV4) {
-4ed6ad1eb30e20 yonatanc        2017-04-20  103  			struct in_addr *saddr;
-4ed6ad1eb30e20 yonatanc        2017-04-20  104  			struct in_addr *daddr;
-4ed6ad1eb30e20 yonatanc        2017-04-20  105  
-4ed6ad1eb30e20 yonatanc        2017-04-20  106  			saddr = &av->sgid_addr._sockaddr_in.sin_addr;
-4ed6ad1eb30e20 yonatanc        2017-04-20  107  			daddr = &av->dgid_addr._sockaddr_in.sin_addr;
-43c9fc509fa59d Martin Wilck    2018-02-14  108  			dst = rxe_find_route4(ndev, saddr, daddr);
-e0d696d201dd5d Jason Gunthorpe 2020-10-15  109  		} else if (av->network_type == RXE_NETWORK_TYPE_IPV6) {
-4ed6ad1eb30e20 yonatanc        2017-04-20  110  			struct in6_addr *saddr6;
-4ed6ad1eb30e20 yonatanc        2017-04-20  111  			struct in6_addr *daddr6;
-4ed6ad1eb30e20 yonatanc        2017-04-20  112  
-4ed6ad1eb30e20 yonatanc        2017-04-20  113  			saddr6 = &av->sgid_addr._sockaddr_in6.sin6_addr;
-4ed6ad1eb30e20 yonatanc        2017-04-20  114  			daddr6 = &av->dgid_addr._sockaddr_in6.sin6_addr;
-43c9fc509fa59d Martin Wilck    2018-02-14  115  			dst = rxe_find_route6(ndev, saddr6, daddr6);
-b9109b7ddb13a5 Andrew Boyer    2017-08-28  116  			if (dst)
-b9109b7ddb13a5 Andrew Boyer    2017-08-28  117  				qp->dst_cookie =
-b9109b7ddb13a5 Andrew Boyer    2017-08-28 @118  					rt6_get_cookie((struct rt6_info *)dst);
-4ed6ad1eb30e20 yonatanc        2017-04-20  119  		}
-24c937b39dfb10 Vijay Immanuel  2018-06-18  120  
-24c937b39dfb10 Vijay Immanuel  2018-06-18  121  		if (dst && (qp_type(qp) == IB_QPT_RC)) {
-24c937b39dfb10 Vijay Immanuel  2018-06-18  122  			dst_hold(dst);
-24c937b39dfb10 Vijay Immanuel  2018-06-18  123  			sk_dst_set(qp->sk->sk, dst);
-24c937b39dfb10 Vijay Immanuel  2018-06-18  124  		}
-4ed6ad1eb30e20 yonatanc        2017-04-20  125  	}
-4ed6ad1eb30e20 yonatanc        2017-04-20  126  	return dst;
-4ed6ad1eb30e20 yonatanc        2017-04-20  127  }
-4ed6ad1eb30e20 yonatanc        2017-04-20  128  
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
