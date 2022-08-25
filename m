@@ -2,113 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9178D5A162C
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 17:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB2C5A16BF
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 18:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242308AbiHYPzx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Aug 2022 11:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
+        id S231437AbiHYQhg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Aug 2022 12:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbiHYPzu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 11:55:50 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FB4A3D4B
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 08:55:50 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id r124so8226926oig.11
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 08:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=j4raTDWjHLuuS07in2tmp//eqfbR4qdt1Uhlb1U+3Bc=;
-        b=aTh6wpuiuxRUDsx2eG7bUHyTzFM9a0Tsciy4qwE+MpLdmWXGJJNBGgvByC5qt0sSKa
-         2zuqCzUjKr95Te4uG1HgAA3YcYvq/26a1GAJnDZPqLh0110lBsrqRD7VIkJ5LdVFEpr8
-         VfkbESVRLtMU7qUnxmknfNpK07oB9XaGQaWaltBKoXQMR/d+sSOKHKgw4AtNWfwqohHY
-         rh+1izWE5INVSOwVeoTEBrz2eMk7HxuX+ZqYNTciomX2p2fVAGDgdzSQFqUJTcYn4kKI
-         WzpHqMD3p1RTMUed/RAaPG0CDD0VNrWiFsGkkvDcjZE9BwS0IJEsZbFYklkJM3S0w7j8
-         VNhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=j4raTDWjHLuuS07in2tmp//eqfbR4qdt1Uhlb1U+3Bc=;
-        b=ogbsZdfTtCKLH1aKq6mb3TPrCB1114K0XZc88NWfjWo0/Ry4KRzCOdq0CE51/qAzSr
-         V4eMlLGg9LUpyjCbQ7Qr4E1S9p+VcoRFGxOd6Tmmt8HF8Z8BSYkez/y3vXRrBmtrH4ux
-         Z4WzvD7vRy2rC/S2KkrshE/iRJBD2nPdChFTbsfdP15fAWuS3cjv3aeIH+25w+3IgzN7
-         DXHwf/HPbWl1ZRIuebZLeViw6RZ4S9zMcHiIEhs+7pjq8/gpIlC7ZqinLc4tQ8QSV0RW
-         j0mkk3GW8F5iHehPmesxEgQBFojXFcSwzkxFZU80IpxTSn7W5GcBF81SnBF8Z1DIH/tf
-         5aqA==
-X-Gm-Message-State: ACgBeo1z02SZg3OqpCmhQCV8jjcyk+5oxB5KsbzcB9G/pgn8u1AAoBhL
-        KqHalFdh2KZiGKeRT6oRGAhnnwnqsFM=
-X-Google-Smtp-Source: AA6agR69/6MEk/BSId9sX+aLvw5n8AsDlDM6VphjXhIdy/qy3gVsJYnwQ5SAtC/b/MtWsmEr3KntnA==
-X-Received: by 2002:aca:4189:0:b0:344:d96f:4635 with SMTP id o131-20020aca4189000000b00344d96f4635mr5406983oia.131.1661442949388;
-        Thu, 25 Aug 2022 08:55:49 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:7131:3a1c:71e2:864? (2603-8081-140c-1a00-7131-3a1c-71e2-0864.res6.spectrum.com. [2603:8081:140c:1a00:7131:3a1c:71e2:864])
-        by smtp.gmail.com with ESMTPSA id 127-20020a4a1b85000000b0044b47bb023fsm1042011oop.37.2022.08.25.08.55.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Aug 2022 08:55:48 -0700 (PDT)
-Message-ID: <25051057-e077-a470-5998-6456e2467232@gmail.com>
-Date:   Thu, 25 Aug 2022 10:55:47 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] RDMA/rxe: Ratelimit error messages of read_reply()
+        with ESMTP id S229657AbiHYQhf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 12:37:35 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam07on2043.outbound.protection.outlook.com [40.107.212.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40796B943B
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 09:37:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TJ2NFWJKeBGT7AM2U3aDidxQ4/m8KNHudRlNdKQKwC8U5yvkin0zxKDhrMVKn6PXvlqlhGNYQ8RzF0SJnchrIbYsPGAmP7OLbwk/FHEdJ8kCsrWy1MWJG2Gj7iuo4XrHMkfbSjqsCIooZsbLqFaPid+pluARFgX7YUz2LM8jBSoqZ1vgUB19NendLI+1VXN2KdcPoaht+RX9cq5v/U55d+2AcmCTHXUZae1nlOU8mlPwXIOjyWVBI+mGytFIhpmvIKbYTMuI6t1PC2ZSnlfK4Rfb3VAP2cXIz6WsrincSISiB7dsVdZoRopCS/mLBZPonaoUKGpUomoYe3ko7x5KOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=05WMdVXntrd9VzDMd/3l0WlSmJytDCrNNWZZT4uKzRQ=;
+ b=fRhiy7z2b3QK6O2kUu2wAajIRyBFJMeNW2qSG1itGhbPJfPhiy8aG8YUTHXzlil0VuwDRaA8hkGrQfRxAVJDLPQ8WHmJK9YY05kzbpt2jTG13g5ijdPnDT29LjsAVm5ZvbxIrX/sEfMPsiY8L8w1LV40qI4Em9ZpPN3SoPmY3U+NJeAtRFV8Vpo+sLKTFSq35mIBmHZXfcHZ1O+2+P+e7Fg6verIA9tOhYrwfr6LQ3BrjCjQEUR0LCMDt79g16QBVuMVY/s7TEqNpalzU//3MYcYWzj2zngJq2hNYuDG29q9GfE1rLju9LMcG2JfI/Aug/KTWtyUvpVK27yVCTo6+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
+ SN2PR01MB2048.prod.exchangelabs.com (2603:10b6:800:1::25) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5566.15; Thu, 25 Aug 2022 16:37:32 +0000
+Received: from SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::21e9:8dbb:6e40:5073]) by SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::21e9:8dbb:6e40:5073%2]) with mapi id 15.20.5546.019; Thu, 25 Aug 2022
+ 16:37:32 +0000
+Message-ID: <c7f4ce2d-e43d-50fa-afaf-1535aec2b0aa@talpey.com>
+Date:   Thu, 25 Aug 2022 12:37:30 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.3
+Subject: Re: [PATCH for-next 0/2] RDMA/erdma: Introduce custom implementation
+ of drain_sq and drain_rq
 Content-Language: en-US
-To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>, leonro@nvidia.com,
-        jgg@nvidia.com, zyjzyj2000@gmail.com
-Cc:     linux-rdma@vger.kernel.org
-References: <20220825110255.658706-1-matsuda-daisuke@fujitsu.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20220825110255.658706-1-matsuda-daisuke@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Cheng Xu <chengyou@linux.alibaba.com>, jgg@ziepe.ca,
+        leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
+References: <20220824094251.23190-1-chengyou@linux.alibaba.com>
+ <2c7c248c-34a9-c614-6abf-e2f6640978b8@talpey.com>
+ <9ba20242-7591-2ec9-4301-a6478a47fae4@linux.alibaba.com>
+From:   Tom Talpey <tom@talpey.com>
+In-Reply-To: <9ba20242-7591-2ec9-4301-a6478a47fae4@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: BL1PR13CA0135.namprd13.prod.outlook.com
+ (2603:10b6:208:2bb::20) To SN6PR01MB4445.prod.exchangelabs.com
+ (2603:10b6:805:e2::33)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e1b8d760-ceef-4dc0-30d7-08da86b81b9d
+X-MS-TrafficTypeDiagnostic: SN2PR01MB2048:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dCaxKTwINW95NaiRnDEqeg2UYFqwVy2xRHy1CP64YPh8SClZ7pfyxdnyZ3AG91rnHLOasQe4gXuct5wlSdnoRoF4i5EbJ82yerjfY/3Yxz80a/p7QxoIRZB9AldAzTsubmYpAvqDM6IEP8PvYE8zQeTKKY5ejKgSdPmA09zWOI6D0GNJOGsbdro6L4KH1WTj65qp5HUFc/6Qn7DH9L8JoMRueXi8+t5EcfIlt1WajXMlkC4acB6QIt20irn6p4X2W0RUZUvW/IE0+a9NaHQW2A8S6xN0HdCK4HM9HUrQZzRpYtzOMk+NrsWFv0IfoqFHofqrHAmGgrWJd2zpilA2Ohj0ooNIJdJqDdPeViWaw7/yMSfrKW22yuV/Q5IHv3AK9drWO6gVbtxWLC0JPag9HlMkvS54dXzj+E29sCZfq0pI1lP/hqoYrQuRCoIx7xKzkLNus2r9C5ZeoWfaWuIVz8/t81iRcON3uxzVvIw42GotGOjBB5/tZnseq7u58JBw0QfKePxgqmV9YofJnJM5HKtNmdynuo4ol9da1OunkFqaxGSZIH9kLPAZBooyB6w8xqMHEnoV2ov/MMvmgCY5q3cJ8pHUh2fj/sFeaG7jcK656NM9/6fBnRlzL/je8QiZV0Fp+U/agw+d9fIaoRHpx5QZGwz9kpG70XTCbzclhqBbir3/IpVodeZvPHwEKf1OiVsRJq4oGgo5b15e1aUrzvlH2qi1EdEAKQjZgo60QweMWq6uDjst9LWuXn5R/QWmG82015Sjg1ZMhJinZB9Ge78Je0av1Q0X3QWNPZYF9psUiukkTe5uTaNubuBOXUTNh60usbn5FYjkznXMzJmePw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230016)(346002)(39830400003)(366004)(136003)(396003)(376002)(41300700001)(38100700002)(86362001)(38350700002)(31696002)(8936002)(966005)(2906002)(8676002)(66476007)(66946007)(66556008)(5660300002)(316002)(2616005)(6486002)(186003)(31686004)(83380400001)(478600001)(6506007)(53546011)(52116002)(26005)(6512007)(36756003)(4326008)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZUx4S1FBRWYvakdtRGtqblMwV2Zwb1lrMExUNHd6d1ZmeHNjQ2lqaHFrbUxr?=
+ =?utf-8?B?SVEzQ1llakdKTkJPNkdWamJMMHFoMDdiTzJSZTZuLzFHOVFza0tIWk5YSDRm?=
+ =?utf-8?B?b1hBY01EQTRmQ0wzZzgzb3poUDhnOUNUd3ozOGFrV29rWlpYbkJ2bUp6NVNa?=
+ =?utf-8?B?RHg1Snh3bFJXd3JhcGc4T2VaTVlHYUdZSjlyc0tBQ0VMMXcrYWtVNU5VN0ht?=
+ =?utf-8?B?WmxRMUNtdWdFM1lYMm9GcW90OEQ1SVUxdllVQitmeTl3cVJZZVd4SWtseDJ6?=
+ =?utf-8?B?ZHdya3lmR0FzU1RmWkEzdmpTZ1N2bXEwcjZsQTI0L1ZRanU5bmJZVTY5bkNY?=
+ =?utf-8?B?aUdJOWU2Ujd5dDRaVlRQOHo3V3hRMEJ6eHp3djhUNHowR2hySlVVQjc0LzRh?=
+ =?utf-8?B?R2pjSzZSYnhON2ZKNFNoWjZaZXJqSkpERmNwV004bklaMjdhRXZSUDBQdzJB?=
+ =?utf-8?B?SXVaMFVjVm8rVmN3eTNCNG0zbGNHck54MVdwa0NTSGZOQ2xRajhVeDgyQkJN?=
+ =?utf-8?B?eDc5L2dHVGN5Y0dxNjhmczVWUE5EVlBwRmxCeVk3ZmovUGdrL2hpLzZyeTFt?=
+ =?utf-8?B?V1VVWVVMSndjL1lqTkJSMEE3TGs2bHBBZzBoNzIvdHRaajhlYVpKL3JtY21k?=
+ =?utf-8?B?dWNTbzFyR3RvZW5Ybk9xbG83ZEFsNGZuRTg0bXVjMCtiTWZ5T1J6L3RTQ1M5?=
+ =?utf-8?B?Zmpnd0szN29zZ2F5L21vcDBLYmNrNkZVRGNZTW84b1RYUXVHUkYyMm1kbXJY?=
+ =?utf-8?B?S2tYSjNnNlA0RTh0V1FhSURmQUlibnZCM0w1RFdweDNzcDhad2VLaGFqS3JH?=
+ =?utf-8?B?VWlLckRGa2JyMERtN24wNS9lbWtmdHhTNjNxR09OM1ZiVW1sNUM2elp5Z25t?=
+ =?utf-8?B?RlRZR28wOVhJd1ZaekFMdVRpTWs4MUd0bDIxNUJtVTF6SXZNaUpzMnpMV3VI?=
+ =?utf-8?B?STFlcWdGN1hpSXBmcVJHVTk3QmxKdVMrN0xBdVV1K05nd2MzVlV5eFQvUlFm?=
+ =?utf-8?B?RUx4NERFNXRzMWdjeSt2RWF1U1pzY1RXNzBPT201UCtuM29qZXVrL3dUR1Fl?=
+ =?utf-8?B?S1FGT21uWFlsZFVxSnZOR29qTDJFbGZxb29obG9idWFPdHE2bnkvbWFSVXFj?=
+ =?utf-8?B?UlZNanZlMUwwWk50bjdJV0VrMEtJb1JLeXVGOGdsV3FGQmxINXJxN2hhaHhX?=
+ =?utf-8?B?MWk3c2c0Y05pblBQSkZYYlNIOXVCK2x1N3dZZm1jeC93LzdNTjR6VDAvZEhi?=
+ =?utf-8?B?NE5JSDNONWZPUlhVbnIxbWxlOEw4enF1NWhBTVdCREJER0NRclNwaTkwdFJS?=
+ =?utf-8?B?djNvQ0NkT29zdzIrbnN3RVdrYzRteXVBUFhPbVhvU3dsalB0c3RxYmF3b3lE?=
+ =?utf-8?B?Z3RnWmY3Yldla0M5MTYvVzRJYmlYZG85SUk2aUFJbVlHT3pMODArUHlqb2NQ?=
+ =?utf-8?B?MzVmR2hJbHFCUGMrWjBiNUk1YnNXYUplZkJOUUw3aWQ0YjZJREFxRU9TVEx5?=
+ =?utf-8?B?S2hLeWljT21LT0QxS1haUEs5eWdQSEg3VGN5NWhMRDg2dHlnWG9mYTBZOGxV?=
+ =?utf-8?B?Z2Q0UklhZ2lpc2xRbEpGVXhZRUNKUXo0cDVVRzV2OGhCVFZSKzlZd0xiY0RE?=
+ =?utf-8?B?S0M1WWdxcWdQM1pYT1phT3hpZXdLeGZPUXlsZXVpVlVHdnJJKzNZTmZiUmYx?=
+ =?utf-8?B?Sm52ZHpqTlg0cFBldkZtSkYwRENZeThYRVRBcjVtK1l6UytmMk1SVEJEOC96?=
+ =?utf-8?B?OXRXdC9NK1VaS01VVFE3cWI2Zk8rREVJcWxPempvYXNwZGFRUjkzdEF6bEtC?=
+ =?utf-8?B?NzNLVndXSTVoRmVwSkd3QUpLVndGeHJZRklJaXpNdi8zc3BrSHpmaWJ6TnNs?=
+ =?utf-8?B?ODdYcW96V2FwdTJkNWRoaXphaGY4MUtHVDU3RWxhR3cyT24xS2Y4Qk0yYnlN?=
+ =?utf-8?B?Vy95cHRuTDdxaGNFQVRnQTVGZkJGdFdLQlU4eUZMWE5aaE1CWUQ4VlpWN3g2?=
+ =?utf-8?B?a3lOR3BPQUF3R0ltRTRZd1dXMFNMUkNDR1BYcU5JSGEyalJET2FCZmVhYnAv?=
+ =?utf-8?B?YWJSYWNqbEtvNDVYaE5wMU1qQ2tIVDJNMG1UaDh0M0Npam1uWi9hZ3hpUkkv?=
+ =?utf-8?Q?XK8I=3D?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1b8d760-ceef-4dc0-30d7-08da86b81b9d
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2022 16:37:32.3299
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y9j30HQpJXw7qfBaBGJCMF7fPv9VSoyOvJBlGk5A9Rb2NXYZCQkuaWZeWs7JD6bI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN2PR01MB2048
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/25/22 06:02, Daisuke Matsuda wrote:
-> When responder cannot copy data from a user MR, error messages overflow.
-> This is because an incoming RDMA Read request can results in multiple Read
-> responses. If the target MR is somehow unavailable, then the error message
-> is generated for every Read response.
+On 8/24/2022 9:54 PM, Cheng Xu wrote:
 > 
-> For the same reason, the error message for packet transmission should also
-> be ratelimited.
 > 
-> Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_resp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> On 8/24/22 10:08 PM, Tom Talpey wrote:
+>> On 8/24/2022 5:42 AM, Cheng Xu wrote:
+>>> Hi,
+>>>
+>>> This series introduces erdma's implementation of drain_sq and drain_rq.
+>>> Our hardware will stop processing any new WRs if QP state is error.
+>>
+>> Doesn't this violate the IB specification? Failing newly posted WRs
+>> before older WRs have flushed to the CQ means that ordering is not
+>> preserved.
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index b36ec5c4d5e0..f9e9679b5e32 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -812,7 +812,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
->  	err = rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
->  			  payload, RXE_FROM_MR_OBJ);
->  	if (err)
-> -		pr_err("Failed copying memory\n");
-> +		pr_err_ratelimited("Failed copying memory\n");
->  	if (mr)
->  		rxe_put(mr);
->  
-> @@ -824,7 +824,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
->  
->  	err = rxe_xmit_packet(qp, &ack_pkt, skb);
->  	if (err) {
-> -		pr_err("Failed sending RDMA reply.\n");
-> +		pr_err_ratelimited("Failed sending RDMA reply.\n");
->  		return RESPST_ERR_RNR;
->  	}
->  
+> I agree with Bernard's point.
+> 
+> I'm not very familiar with with IB specification. But for RNIC/iWarp [1],
+> post WR in Error state has two optional actions: "Post WQE, and then Flush it"
+> or "Return an Immediate Error" (Showed in Figure 10). So, I think failing
+> newly posted WRs is reasonable.
 
-Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+Both IB and iWARP allow new post-WR calls to fail synchronously if
+the QP is in the ERROR state. But the QP can only enter ERROR once the
+SQ and RQ are fully drained to the CQ(s). Until that happens, the
+WRs need to flush through.
+
+Your code seems to start failing WR's when the TX_STOPPED or RX_STOPPED
+bits are set. But that bit is being set when the drain *begins*, not
+when it flushes through. That seems wrong, to me.
+
+>> Many upper layers depend on this.
+> 
+> For kernel verbs, erdma currently supports NoF. we tested the NoF cases,
+> and found that it's never happened that newly WRs were posted after QP
+> changed to error, and the drain_qp should be the terminal of IO process.
+> 
+> Also, in userspace, I find that many providers prevents new WRs if QP state is
+> not right.
+
+Sure, but your new STOPPED bits don't propagate up to userspace, right?
+The post calls will fail unexpectedly, because the QP is not yet in
+ERROR state.
+
+I'm also concerned how consumers who are posting their own "drain" WQEs
+will behave. This is a common approach that many already take. But now
+they will see different behavior when posting them...
+
+Tom.
+
+
+> 
+> So, it seems ok in practice.
+> 
+> Thanks,
+> Cheng Xu
+> 
+> 
+> [1] http://www.rdmaconsortium.org/home/draft-hilland-iwarp-verbs-v1.0-RDMAC.pdf
+> 
+> 
