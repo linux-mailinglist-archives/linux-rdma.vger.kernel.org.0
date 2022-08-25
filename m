@@ -2,90 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A405A08D1
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 08:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6E95A08EC
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 08:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233355AbiHYG0b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Aug 2022 02:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        id S235827AbiHYGfj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Aug 2022 02:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbiHYG0a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 02:26:30 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1138D9F765
-        for <linux-rdma@vger.kernel.org>; Wed, 24 Aug 2022 23:26:29 -0700 (PDT)
-Subject: Re: [bug report] WARNING: possible circular locking at:
- rdma_destroy_id+0x17/0x20 [rdma_cm] triggered by blktests nvmeof-mp/002
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1661408787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kAGhCjedbV88BEmXYOWWiP/muXYh404/6AX3gJ1q0io=;
-        b=uIMILQZbIKWmq5LnxnVeHzj4XfNWKjhZp4V0L3CXEpJp2qC0satRipFXu5m+Oc4sm8k9hB
-        g+N0yMQHmx/nwyPHsoYoRNVML9avpE0cmuuiBA73EJ8UmqC5vW1zwvGnRYX+RslznJT4Qo
-        LMvwclUZitLGVbzLqoJrpa2A35eEqUk=
-To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Yi Zhang <yi.zhang@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <CAHj4cs93BfTRgWF6PbuZcfq6AARHgYC2g=RQ-7Jgcf1-6h+2SQ@mail.gmail.com>
- <13441b9b-cc13-f0e0-bd46-f14983dadd49@grimberg.me>
- <a4490b74-146e-809c-c969-aebc5835e2e2@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Message-ID: <a4412795-8079-025e-6d6c-ecf18cad2e4a@linux.dev>
-Date:   Thu, 25 Aug 2022 14:26:21 +0800
+        with ESMTP id S235803AbiHYGfi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 02:35:38 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F8C9E887
+        for <linux-rdma@vger.kernel.org>; Wed, 24 Aug 2022 23:35:36 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id t5so24777016edc.11
+        for <linux-rdma@vger.kernel.org>; Wed, 24 Aug 2022 23:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=RTFjvdY/XdFelUrknZTQMm6pYrH+vswDsl8CCg9+3Ek=;
+        b=MdmHEnyxWRpEirAJiggHyjFX/uGwwvoxXS/ejcI/h7yzAfYdC6fY6NzZc8afjf2Q2H
+         NfmNOVnfWcuiOJtcfRA5/jJl6R4b24rY1JJPcFJsY4QQLg0o5WZBRP022Y/HoSm2pcQl
+         EBVeyGKisGj+/Zn2o5cvJKGW2SW4W3gmLUetXhJXSZ6CMAL+zsd0se9ORZHwejQFP/Zn
+         RF/grv92gKY1D1cZSkj/blcb9pzv5n0mpKy3Izt2MdnOAviMRuNux4hujCKpl43XVUXG
+         RZdDdXcwb9N/cI42BwJ42KlaH+6iLwCWCyfGkFzJKadwLHfufAzGNMuipVzLVOkJs/Vs
+         +8LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=RTFjvdY/XdFelUrknZTQMm6pYrH+vswDsl8CCg9+3Ek=;
+        b=uETegO69ZnLQpl8h2GaFaoXTZb8FrbII1SH6piJXIMKmSlFdePFn7p+y+dtG4lVtVL
+         t4xEYOsqXKCoGQwB5jWwaqYOhsoK01nbd//ESuC8Lxzogn9w7F7o0jh4J+PtV176WN26
+         gA/avWinANpo7OGp1+NHXjzvawyFc+l698Sgigl3KBIv0ozCXmMrBvQkd23yJ8bowmNS
+         melyVLU+DSDsbyG9MFdp/5YaLA/8r5MRseuck7Kpkwy9F/9bDyy4Ls2hmQliUs3QEXIB
+         unYA8E+or15at0+4Bsi3jZJByIGrz6Pmkv5RFC+G11woxuoQJshLP3YYRRfoFSFdfEsV
+         /dtA==
+X-Gm-Message-State: ACgBeo2GiE4pqaU3CBs7AL9UdDKn+uAYcRHU4NY9pYL9QqrNYvmMFTo+
+        wBKpkinprCXewp6F9VvfV4QmEg==
+X-Google-Smtp-Source: AA6agR6X5o2hV4TMW4hKB+1bS0ceFDAQdGoYFFSN+ZQv5Iy7sMlgEDc8oX1CZ8H3MlRrESI+d4wJ6Q==
+X-Received: by 2002:a05:6402:501d:b0:443:1c7:ccb9 with SMTP id p29-20020a056402501d00b0044301c7ccb9mr1931783eda.101.1661409335279;
+        Wed, 24 Aug 2022 23:35:35 -0700 (PDT)
+Received: from lb02065.fritz.box ([2001:9e8:142d:a900:eab:b5b1:a064:1d0d])
+        by smtp.gmail.com with ESMTPSA id 2-20020a170906328200b0073c9d68ca0dsm1991219ejw.133.2022.08.24.23.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Aug 2022 23:35:34 -0700 (PDT)
+From:   Jack Wang <jinpu.wang@ionos.com>
+To:     kuba@kernel.org, davem@davemloft.net
+Cc:     Tariq Toukan <tariqt@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: [PATCH] net/mlx4: Fix error check for dma_map_sg
+Date:   Thu, 25 Aug 2022 08:35:33 +0200
+Message-Id: <20220825063533.21015-1-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <a4490b74-146e-809c-c969-aebc5835e2e2@fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+dma_map_sg return 0 on error.
 
+Cc: Tariq Toukan <tariqt@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-On 8/25/22 1:59 PM, yangx.jy@fujitsu.com wrote:
-> On 2022/5/25 19:01, Sagi Grimberg wrote:
->> iirc this was reported before, based on my analysis lockdep is giving
->> a false alarm here. The reason is that the id_priv->handler_mutex cannot
->> be the same for both cm_id that is handling the connect and the cm_id
->> that is handling the rdma_destroy_id because rdma_destroy_id call
->> is always called on a already disconnected cm_id, so this deadlock
->> lockdep is complaining about cannot happen.
-> Hi Jason, Bart and Sagi,
->
-> I also think it is actually a false positive.  The cm_id handling the
-> connection and the cm_id calling rdma_destroy_id() cannot be the same
-> one, right?
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/net/ethernet/mellanox/mlx4/icm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I am wondering if it is the same as the thread.
+diff --git a/drivers/net/ethernet/mellanox/mlx4/icm.c b/drivers/net/ethernet/mellanox/mlx4/icm.c
+index d89a3da89e5a..59b8b3c73582 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/icm.c
++++ b/drivers/net/ethernet/mellanox/mlx4/icm.c
+@@ -208,7 +208,7 @@ struct mlx4_icm *mlx4_alloc_icm(struct mlx4_dev *dev, int npages,
+ 						chunk->sg, chunk->npages,
+ 						DMA_BIDIRECTIONAL);
+ 
+-			if (chunk->nsg <= 0)
++			if (!chunk->nsg)
+ 				goto fail;
+ 		}
+ 
+@@ -222,7 +222,7 @@ struct mlx4_icm *mlx4_alloc_icm(struct mlx4_dev *dev, int npages,
+ 		chunk->nsg = dma_map_sg(&dev->persist->pdev->dev, chunk->sg,
+ 					chunk->npages, DMA_BIDIRECTIONAL);
+ 
+-		if (chunk->nsg <= 0)
++		if (!chunk->nsg)
+ 			goto fail;
+ 	}
+ 
+-- 
+2.34.1
 
-https://lore.kernel.org/linux-rdma/CAMGffEm22sP-oKK0D9=vOw77nbS05iwG7MC3DTVB0CyzVFhtXg@mail.gmail.com/
-
->> I'm not sure how to settle this.
-> Do you have any suggestion to remove the false positive by refactoring
-> the related RDMA/CM code. Sorry, I didn't know how to do it for now.
-
-The simplest way is to call lockdep_off in case it is false alarm to 
-avoid the
-debugging effort, but not everyone likes the idea.
-
-https://elixir.bootlin.com/linux/v6.0-rc2/C/ident/lockdep_off
-
-Thanks,
-Guoqing
