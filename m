@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1015A1892
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 20:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E0F5A1898
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 20:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243474AbiHYSNl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Aug 2022 14:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S243323AbiHYSOF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Aug 2022 14:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243342AbiHYSNJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 14:13:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33F774CD8
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 11:12:53 -0700 (PDT)
+        with ESMTP id S243374AbiHYSNL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 14:13:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD890BD2AA
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 11:12:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1661451172;
+        s=mimecast20190719; t=1661451175;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ygl4bsiGppbXjaR+QFxwzenbyEWvTTquS8G3MYyuF5k=;
-        b=gjZO7aIVARYnOyfIL8a9EN9KO2fTaxR3kUnPE2HeIvu546LCw4dBbTAyxdQkkNVyXCg4QR
-        saVshhGoFmq3B5YOnXw4WPU1Qdv5aOlY/w31F/V/0voikw5khIkxgttemJBv+6ne83qlCk
-        /EXxI75PcPUilpK0u/sgRjRpUg3Sfvg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=ywTMuS9huvM7zHWOxR6GjSmCdhb3SJi0oS2399XlZwU=;
+        b=L9pADQwVkbb1Nadfgo3qGCrunaiUMltbPPubfw9SXCkdUw05aCzTHjKxvjZi5d6L7xa/lT
+        AeM58nCRd6Lhw8kEKcn26u0vMbYTLn0djwKUceXYvzpaozbTz2McQH+9UWaJRcMIRQrG/S
+        4WYjG8/MuWM75CHv2ggN/WpCdbokGfo=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-630-vIG-fyezNeyN_jW_lrZgBw-1; Thu, 25 Aug 2022 14:12:51 -0400
-X-MC-Unique: vIG-fyezNeyN_jW_lrZgBw-1
-Received: by mail-wr1-f70.google.com with SMTP id r23-20020adfa157000000b00225660d47b7so1748867wrr.6
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 11:12:51 -0700 (PDT)
+ us-mta-619-Lmgwz7erPMmjcl65SxRrdg-1; Thu, 25 Aug 2022 14:12:53 -0400
+X-MC-Unique: Lmgwz7erPMmjcl65SxRrdg-1
+Received: by mail-wr1-f71.google.com with SMTP id k20-20020adfb354000000b0022556a0b8cbso2407893wrd.5
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 11:12:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=Ygl4bsiGppbXjaR+QFxwzenbyEWvTTquS8G3MYyuF5k=;
-        b=oPVkdQCpPtYo/zpQ3JU9uuSbXzcVgtTgMfUNkAerHUbGVDBKmOOvHa2/hQ8//XzXEn
-         WweBnvP6yJxTqyDGKgM1Nw/QJIh4+w82UjmVU6lcB0bTaqnqaR33o14oGlzDLuDsg6FQ
-         /N+p1AuZ5bz1ik5YDT5r6Dcx7zPn2RIXiXsg2lDXCcm8jQZbhXOSUfZk1uPrT0HcVDgk
-         wxylgq02XrJuVqJAv4YXGmWaQy2VPnpQkHWVsJTVw6y0sD5SUK2D4R673A3kLpr3E2Dw
-         7cMsxovSmZSHvKesDqPIm1gkeCC/HwhAngoLLKWZyxoKXJx5UpqVfJSOEnfffWH1HWHL
-         v+Vg==
-X-Gm-Message-State: ACgBeo1N0F8FTtNXV2xr1y8lfAjFUoPZvUYmWOpB7oU4gNdGIyHMyULj
-        zTwz+YgmBy1Yb7YdYSDvRhjpK95m0MhK5bm9Fe1C7BX+xzyuELbcqCUcJKcFKb/TXFRE/G6QkJg
-        q8EA17TDj6g/LLCcEH38gLg==
-X-Received: by 2002:adf:e10c:0:b0:225:3168:c261 with SMTP id t12-20020adfe10c000000b002253168c261mr2960603wrz.159.1661451170433;
-        Thu, 25 Aug 2022 11:12:50 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR4//RuHGtg2u96JYQmBT7E0pgZs/8dFZK5QKRpNIHW/sFCkTDIUkVmKlpjbmKJGB+DoHbT1ig==
-X-Received: by 2002:adf:e10c:0:b0:225:3168:c261 with SMTP id t12-20020adfe10c000000b002253168c261mr2960588wrz.159.1661451170194;
-        Thu, 25 Aug 2022 11:12:50 -0700 (PDT)
+        bh=ywTMuS9huvM7zHWOxR6GjSmCdhb3SJi0oS2399XlZwU=;
+        b=Qm7atQKGAVEnhKeOid75t8heOHGQojE5ydJGHB99JXodwvjRdTu54RGMh4e3Ufusmz
+         5Cnk8mdDMS8eZHXHUNsXPUBv2fx3L5SEiJJs9SJsLWeZjbh4w99Kk0rzOZSUjWupUhyA
+         0tITFGKd+LrDnwPTTj90OilriHN3o2X1DCYxarUA5FszJiEobyY7T6GHpzJKb6bW6qmf
+         88C9/lZdmWRX02oUPtWjxK4S0o84NF3bUxH6VUERth1bWD/kAhcZAnqjT42LGkOl0yZl
+         yrlvgQxzcPVLl1iD1e1KsbaYrnRAJW3l/lhf7XAaOeWzpju9FPN8QERYuOJqCJnPfNx6
+         kY8w==
+X-Gm-Message-State: ACgBeo3iOUqIWc02m9/VmnMCiJkSRPJLG4fRPpf8C1s8hnzQ5QKjzd96
+        0RWUsJwd+iyUg/+yZUtD0imvN3eqMFOdWDeRoRcFx+AxkFimUxTzjtnBJIXxygxnhSFq7ueDhwT
+        Elrndp1YyeS4faUkobdCCGQ==
+X-Received: by 2002:a05:600c:4f04:b0:3a5:f380:69dc with SMTP id l4-20020a05600c4f0400b003a5f38069dcmr3147412wmq.103.1661451171996;
+        Thu, 25 Aug 2022 11:12:51 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR4fdktDFMuOCPYmE2jaQU9clFyb6AEUVJjx8ZtnEbzWQsDn4rUuPMq7JNqtJC4Fj4rAWF5AyQ==
+X-Received: by 2002:a05:600c:4f04:b0:3a5:f380:69dc with SMTP id l4-20020a05600c4f0400b003a5f38069dcmr3147386wmq.103.1661451171834;
+        Thu, 25 Aug 2022 11:12:51 -0700 (PDT)
 Received: from vschneid.remote.csb ([185.11.37.247])
-        by smtp.gmail.com with ESMTPSA id w1-20020a05600018c100b00225250f2d1bsm20371622wrq.94.2022.08.25.11.12.48
+        by smtp.gmail.com with ESMTPSA id w1-20020a05600018c100b00225250f2d1bsm20371622wrq.94.2022.08.25.11.12.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 11:12:49 -0700 (PDT)
+        Thu, 25 Aug 2022 11:12:51 -0700 (PDT)
 From:   Valentin Schneider <vschneid@redhat.com>
 To:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -79,16 +79,16 @@ Cc:     Saeed Mahameed <saeedm@nvidia.com>,
         Gal Pressman <gal@nvidia.com>,
         Tariq Toukan <tariqt@nvidia.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: [PATCH v3 8/9] sched/topology: Introduce for_each_numa_hop_cpu()
-Date:   Thu, 25 Aug 2022 19:12:09 +0100
-Message-Id: <20220825181210.284283-9-vschneid@redhat.com>
+Subject: [PATCH v3 9/9] SHOWCASE: net/mlx5e: Leverage for_each_numa_hop_cpu()
+Date:   Thu, 25 Aug 2022 19:12:10 +0100
+Message-Id: <20220825181210.284283-10-vschneid@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220825181210.284283-1-vschneid@redhat.com>
 References: <20220825181210.284283-1-vschneid@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -97,67 +97,41 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The recently introduced sched_numa_hop_mask() exposes cpumasks of CPUs
-reachable within a given distance budget, but this means each successive
-cpumask is a superset of the previous one.
-
-Code wanting to allocate one item per CPU (e.g. IRQs) at increasing
-distances would thus need to allocate a temporary cpumask to note which
-CPUs have already been visited. This can be prevented by leveraging
-for_each_cpu_andnot() - package all that logic into one ugl^D fancy macro.
-
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+Not-signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- include/linux/topology.h | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/topology.h b/include/linux/topology.h
-index 13b82b83e547..6c671dc3252c 100644
---- a/include/linux/topology.h
-+++ b/include/linux/topology.h
-@@ -254,5 +254,42 @@ static inline const struct cpumask *sched_numa_hop_mask(int node, int hops)
- }
- #endif	/* CONFIG_NUMA */
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index 229728c80233..0a5432903edd 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -812,6 +812,7 @@ static int comp_irqs_request(struct mlx5_core_dev *dev)
+ 	int ncomp_eqs = table->num_comp_eqs;
+ 	u16 *cpus;
+ 	int ret;
++	int cpu;
+ 	int i;
  
-+/**
-+ * for_each_numa_hop_cpu - iterate over CPUs by increasing NUMA distance,
-+ *                         starting from a given node.
-+ * @cpu: the iteration variable.
-+ * @node: the NUMA node to start the search from.
-+ *
-+ * Requires rcu_lock to be held.
-+ * Careful: this is a double loop, 'break' won't work as expected.
-+ *
-+ *
-+ * Implementation notes:
-+ *
-+ * Providing it is valid, the mask returned by
-+ *  sched_numa_hop_mask(node, hops+1)
-+ * is a superset of the one returned by
-+ *   sched_numa_hop_mask(node, hops)
-+ * which may not be that useful for drivers that try to spread things out and
-+ * want to visit a CPU not more than once.
-+ *
-+ * To accommodate for that, we use for_each_cpu_andnot() to iterate over the cpus
-+ * of sched_numa_hop_mask(node, hops+1) with the CPUs of
-+ * sched_numa_hop_mask(node, hops) removed, IOW we only iterate over CPUs
-+ * a given distance away (rather than *up to* a given distance).
-+ *
-+ * hops=0 forces us to play silly games: we pass cpu_none_mask to
-+ * for_each_cpu_andnot(), which turns it into for_each_cpu().
-+ */
-+#define for_each_numa_hop_cpu(cpu, node)				       \
-+	for (struct { const struct cpumask *curr, *prev; int hops; } __v =     \
-+		     { sched_numa_hop_mask(node, 0), NULL, 0 };		       \
-+	     !IS_ERR_OR_NULL(__v.curr);					       \
-+	     __v.hops++,                                                       \
-+	     __v.prev = __v.curr,					       \
-+	     __v.curr = sched_numa_hop_mask(node, __v.hops))                   \
-+		for_each_cpu_andnot(cpu,				       \
-+				    __v.curr,				       \
-+				    __v.hops ? __v.prev : cpu_none_mask)
- 
- #endif /* _LINUX_TOPOLOGY_H */
+ 	ncomp_eqs = table->num_comp_eqs;
+@@ -830,8 +831,15 @@ static int comp_irqs_request(struct mlx5_core_dev *dev)
+ 		ret = -ENOMEM;
+ 		goto free_irqs;
+ 	}
+-	for (i = 0; i < ncomp_eqs; i++)
+-		cpus[i] = cpumask_local_spread(i, dev->priv.numa_node);
++
++	rcu_read_lock();
++	for_each_numa_hop_cpus(cpu, dev->priv.numa_node) {
++		cpus[i] = cpu;
++		if (++i == ncomp_eqs)
++			goto spread_done;
++	}
++spread_done:
++	rcu_read_unlock();
+ 	ret = mlx5_irqs_request_vectors(dev, cpus, ncomp_eqs, table->comp_irqs);
+ 	kfree(cpus);
+ 	if (ret < 0)
 -- 
 2.31.1
 
