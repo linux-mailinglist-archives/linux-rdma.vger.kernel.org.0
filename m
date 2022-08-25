@@ -2,136 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E0F5A1898
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 20:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEA35A18AC
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 20:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243323AbiHYSOF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Aug 2022 14:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
+        id S240817AbiHYSUE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Aug 2022 14:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243374AbiHYSNL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 14:13:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD890BD2AA
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 11:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1661451175;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ywTMuS9huvM7zHWOxR6GjSmCdhb3SJi0oS2399XlZwU=;
-        b=L9pADQwVkbb1Nadfgo3qGCrunaiUMltbPPubfw9SXCkdUw05aCzTHjKxvjZi5d6L7xa/lT
-        AeM58nCRd6Lhw8kEKcn26u0vMbYTLn0djwKUceXYvzpaozbTz2McQH+9UWaJRcMIRQrG/S
-        4WYjG8/MuWM75CHv2ggN/WpCdbokGfo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-619-Lmgwz7erPMmjcl65SxRrdg-1; Thu, 25 Aug 2022 14:12:53 -0400
-X-MC-Unique: Lmgwz7erPMmjcl65SxRrdg-1
-Received: by mail-wr1-f71.google.com with SMTP id k20-20020adfb354000000b0022556a0b8cbso2407893wrd.5
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 11:12:53 -0700 (PDT)
+        with ESMTP id S230523AbiHYSUC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 14:20:02 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C131C26D2
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 11:20:00 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id q7so25634428lfu.5
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Aug 2022 11:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=LzcSMU79flsCFGsYwPA8jm006j9ntJHVrXRums+x4hg=;
+        b=SYv3Q3AaGa03fEqdwIrUan3UK8SVmw9Z+8W0B7f1Bj2B8+vTNPtKhvy5T89n7XvozG
+         NDgrl5LlirpCD9r3IS2kZBXYAE8dV6QP7j2D5koQYtr3nUg9jAbPihRKFqrhn5RwEcp7
+         BZd5umqi6jfrO6Cx8Bgf7w4lG0lyQa4YV0Q/DkOpfm5hmLCPyrSHeF6USOHTKnb82axs
+         UbqNS0wIZUyhVt9oIeAumA1MQ798CrLeXJrUDk7NUqGzWAQI6IfNL7t9zG0bFBciPxy1
+         +Yq1LnHzDtJzsiTKE4JhDpzYlvm+dVVQN2UNFpkKFOEdD6wZ+Y0MP9sxzTcXJXAlNHDb
+         gwcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=ywTMuS9huvM7zHWOxR6GjSmCdhb3SJi0oS2399XlZwU=;
-        b=Qm7atQKGAVEnhKeOid75t8heOHGQojE5ydJGHB99JXodwvjRdTu54RGMh4e3Ufusmz
-         5Cnk8mdDMS8eZHXHUNsXPUBv2fx3L5SEiJJs9SJsLWeZjbh4w99Kk0rzOZSUjWupUhyA
-         0tITFGKd+LrDnwPTTj90OilriHN3o2X1DCYxarUA5FszJiEobyY7T6GHpzJKb6bW6qmf
-         88C9/lZdmWRX02oUPtWjxK4S0o84NF3bUxH6VUERth1bWD/kAhcZAnqjT42LGkOl0yZl
-         yrlvgQxzcPVLl1iD1e1KsbaYrnRAJW3l/lhf7XAaOeWzpju9FPN8QERYuOJqCJnPfNx6
-         kY8w==
-X-Gm-Message-State: ACgBeo3iOUqIWc02m9/VmnMCiJkSRPJLG4fRPpf8C1s8hnzQ5QKjzd96
-        0RWUsJwd+iyUg/+yZUtD0imvN3eqMFOdWDeRoRcFx+AxkFimUxTzjtnBJIXxygxnhSFq7ueDhwT
-        Elrndp1YyeS4faUkobdCCGQ==
-X-Received: by 2002:a05:600c:4f04:b0:3a5:f380:69dc with SMTP id l4-20020a05600c4f0400b003a5f38069dcmr3147412wmq.103.1661451171996;
-        Thu, 25 Aug 2022 11:12:51 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR4fdktDFMuOCPYmE2jaQU9clFyb6AEUVJjx8ZtnEbzWQsDn4rUuPMq7JNqtJC4Fj4rAWF5AyQ==
-X-Received: by 2002:a05:600c:4f04:b0:3a5:f380:69dc with SMTP id l4-20020a05600c4f0400b003a5f38069dcmr3147386wmq.103.1661451171834;
-        Thu, 25 Aug 2022 11:12:51 -0700 (PDT)
-Received: from vschneid.remote.csb ([185.11.37.247])
-        by smtp.gmail.com with ESMTPSA id w1-20020a05600018c100b00225250f2d1bsm20371622wrq.94.2022.08.25.11.12.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 11:12:51 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=LzcSMU79flsCFGsYwPA8jm006j9ntJHVrXRums+x4hg=;
+        b=kjyhlgUzSlJ5c2OvtPqhqgh0zrTpysxPBRwkikVTcr/aP3FntDmxQTEynCwt1HHKaA
+         bR3UFDwl/UFQSY7eDcBpeXH6yly5KolPJGynrY9T+/q/FzEtO+8J58TsCOQI99rN0l+c
+         vUPchtOf5Lh6mw9Gh3HaP6Bg7KG/cQvbINKlUpLNcBDPxe8WxCF54Rn8gQ/V/wh3ZoQR
+         R8SizEFR+66/+KshtDyQ1zdFYduGJUV+5/jgR4ptJ3w1OfRcVv4yyME2TPJl74VKtimt
+         zqnT4iPz7e9BaL4LXj6FqXxpJSEJ8XEylQWWdO5Q6xoRjZQWwjU8wK1qfP+hzukEltIR
+         cF0g==
+X-Gm-Message-State: ACgBeo2V2xWOqQ/JBrJpd8oW6WUUg0AWUwthIVQIzLqi7fbG3HXu7UOt
+        ora7GxwIRwy4sHPLDGUGjANcn5DgJSIG1C+k4oc6UA==
+X-Google-Smtp-Source: AA6agR4DcOai/4bkoqgXsxN2AlpaLedM35dK8SSB6wQ+78buD9y4OrDy89oUbjQQpHxrnsnUIN+AQrnsjuDafmd1nR8=
+X-Received: by 2002:a05:6512:158b:b0:48b:38:cff8 with SMTP id
+ bp11-20020a056512158b00b0048b0038cff8mr1399470lfb.100.1661451598905; Thu, 25
+ Aug 2022 11:19:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220825180607.2707947-1-nathan@kernel.org>
+In-Reply-To: <20220825180607.2707947-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 25 Aug 2022 11:19:47 -0700
+Message-ID: <CAKwvOdmNCT+USwe5Lui27Oa1jfNyy3NwP3jW=Q7JJi1R5ibRnw@mail.gmail.com>
+Subject: Re: [PATCH net-next] net/mlx5e: Do not use err uninitialized in mlx5e_rep_add_meta_tunnel_rule()
+To:     Nathan Chancellor <nathan@kernel.org>
 Cc:     Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: [PATCH v3 9/9] SHOWCASE: net/mlx5e: Leverage for_each_numa_hop_cpu()
-Date:   Thu, 25 Aug 2022 19:12:10 +0100
-Message-Id: <20220825181210.284283-10-vschneid@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220825181210.284283-1-vschneid@redhat.com>
-References: <20220825181210.284283-1-vschneid@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>, Tom Rix <trix@redhat.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Not-signed-off-by: Valentin Schneider <vschneid@redhat.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/eq.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+On Thu, Aug 25, 2022 at 11:06 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Clang warns:
+>
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:481:6: error: variable 'err' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+>           if (IS_ERR(flow_rule)) {
+>               ^~~~~~~~~~~~~~~~~
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:489:9: note: uninitialized use occurs here
+>           return err;
+>                 ^~~
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:481:2: note: remove the 'if' if its condition is always true
+>           if (IS_ERR(flow_rule)) {
+>           ^~~~~~~~~~~~~~~~~~~~~~~
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:474:9: note: initialize the variable 'err' to silence this warning
+>           int err;
+>                 ^
+>                   = 0
+>   1 error generated.
+>
+> There is little reason to have the 'goto + error variable' construct in
+> this function. Get rid of it and just return the PTR_ERR value in the if
+> statement and 0 at the end.
+>
+> Fixes: 430e2d5e2a98 ("net/mlx5: E-Switch, Move send to vport meta rule creation")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1695
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index 229728c80233..0a5432903edd 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -812,6 +812,7 @@ static int comp_irqs_request(struct mlx5_core_dev *dev)
- 	int ncomp_eqs = table->num_comp_eqs;
- 	u16 *cpus;
- 	int ret;
-+	int cpu;
- 	int i;
- 
- 	ncomp_eqs = table->num_comp_eqs;
-@@ -830,8 +831,15 @@ static int comp_irqs_request(struct mlx5_core_dev *dev)
- 		ret = -ENOMEM;
- 		goto free_irqs;
- 	}
--	for (i = 0; i < ncomp_eqs; i++)
--		cpus[i] = cpumask_local_spread(i, dev->priv.numa_node);
-+
-+	rcu_read_lock();
-+	for_each_numa_hop_cpus(cpu, dev->priv.numa_node) {
-+		cpus[i] = cpu;
-+		if (++i == ncomp_eqs)
-+			goto spread_done;
-+	}
-+spread_done:
-+	rcu_read_unlock();
- 	ret = mlx5_irqs_request_vectors(dev, cpus, ncomp_eqs, table->comp_irqs);
- 	kfree(cpus);
- 	if (ret < 0)
+Thanks for the fix!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> index c8617a62e542..a977804137a8 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> @@ -471,22 +471,18 @@ mlx5e_rep_add_meta_tunnel_rule(struct mlx5e_priv *priv)
+>         struct mlx5_eswitch_rep *rep = rpriv->rep;
+>         struct mlx5_flow_handle *flow_rule;
+>         struct mlx5_flow_group *g;
+> -       int err;
+>
+>         g = esw->fdb_table.offloads.send_to_vport_meta_grp;
+>         if (!g)
+>                 return 0;
+>
+>         flow_rule = mlx5_eswitch_add_send_to_vport_meta_rule(esw, rep->vport);
+> -       if (IS_ERR(flow_rule)) {
+> -               err = PTR_ERR(flow_rule);
+> -               goto out;
+> -       }
+> +       if (IS_ERR(flow_rule))
+> +               return PTR_ERR(flow_rule);
+>
+>         rpriv->send_to_vport_meta_rule = flow_rule;
+>
+> -out:
+> -       return err;
+> +       return 0;
+>  }
+>
+>  static void
+>
+> base-commit: c19d893fbf3f2f8fa864ae39652c7fee939edde2
+> --
+> 2.37.2
+>
+
+
 -- 
-2.31.1
-
+Thanks,
+~Nick Desaulniers
