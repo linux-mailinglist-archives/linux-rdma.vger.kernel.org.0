@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B13D5A1ACF
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 23:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76975A1AE1
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Aug 2022 23:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbiHYVHc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Aug 2022 17:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
+        id S234759AbiHYVQY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Aug 2022 17:16:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbiHYVHb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 17:07:31 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0572A1A7D;
-        Thu, 25 Aug 2022 14:07:28 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-11c9af8dd3eso26161927fac.10;
-        Thu, 25 Aug 2022 14:07:28 -0700 (PDT)
+        with ESMTP id S229736AbiHYVQX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Aug 2022 17:16:23 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980D6B729D;
+        Thu, 25 Aug 2022 14:16:21 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id r1-20020a056830418100b0063938f634feso7565073otu.8;
+        Thu, 25 Aug 2022 14:16:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc;
-        bh=1fSFLJV4Gh2PNLH705N+2oHQoK4YOhY8BnTb+mghw2w=;
-        b=eCk3b6xOrEtsPaZU6XKEEU4P7w5oK6VCvNqDrudLOd3nxfWFUsbyusdRp4ksho2d0n
-         jyVoCiWlbM6D/kyNwH7VdLq+ojgPTzAx/b1ulzPVICZkx2s1wy6z97wl22wplu2K/zTo
-         NkzriMHLHX3l3wKIRHUGsyhwmlGLnk4OiU+EUGriGhLyhqr2ILDpc7F8ua9fOtIOqx18
-         yDlvcTwWrRAnMFu3BzgYMGTUuK7GTbmPpLuNPjFCs+PNErpFkhYsWQ1NVjVVfNBPfxQB
-         1fEEMS1X0G0SZtvQ8vbjGr5DePGg5en3QuaGSiF8PJBGNpn9iC2GNMe7Fsn70aMyTVmB
-         3ogw==
+        bh=WgvG2W29oRYqx+pgSWt6jhXW7xV77AuyXqSnhGc+5XA=;
+        b=YTJFbhMlgG5jNIGSn/jzFi5xhXPrbKa20EX719xjEhIE037jficM3USz22fFii2wPV
+         IW6bJzFksTZpnQn+lS7KVD50WMWdAtsLwdKb0I5WLbXt29TMe5+NU2W2A4KZv5Rvc+BT
+         pRbJzCTmf6i1dvZaRiSy2SZ5w7h6g4FWT1thiRz3Ite8KdnYOKucYDtVgzkudn6K1hW/
+         uQJpLURmIYMALjFuhdnI6KVoCKhpq145PNp3/9RCrrGK/GXBsQh5Kc2xP79ZYo359yik
+         LX7/+OoSoFLrC3/2juyViecx5aHJPkP5PR3g+EibV7c/ojcfR4wcVE/tmF7ji3yk+0FQ
+         xvjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=1fSFLJV4Gh2PNLH705N+2oHQoK4YOhY8BnTb+mghw2w=;
-        b=fYo5aJvKXyPYPjZIghbkbsAFwJ6i+h4CvAcquXXG0asXRu+EdEuC3GZt4mKdHwciKF
-         TOK8wZNHiTkCpzY1Hi2gwMAdnw0JutqL1qhirZWbMQZTB+C5quwx+Sktn26nVN4Yns/T
-         p2a/umx7E/QrClkNiHftK4ri0GMIEekWeLzIRV9/5QkNpnqfAcmFph/gA4f+hLIrCgNE
-         0JJkyVmBn423+lgDFh1Tpu0d5iUqpFoC5Z6s69NFGev5CaHl+Ydhn8yZHPzYTC0GxpPD
-         7dpVRe/uVmRSHCv5T+Xyrfqd0gr9o7V1DWRIN19WVXHpnUF0aoNBlEbD+CFDFyaG8sBB
-         b1+Q==
-X-Gm-Message-State: ACgBeo1NoO/6EZSa/beekwjUyaVPtf2Vf3+pqm21vKfu3DU/mc7f5joE
-        r90Iik1gBlVBSdYkY4c7pvg=
-X-Google-Smtp-Source: AA6agR74ie5W9jV7mLm3DUa6Cs1VlyS9CdCWwj24VM90OFOFiAspOxyDbOlVV7s7ptQSFnsOiWd3WA==
-X-Received: by 2002:a05:6870:b405:b0:10d:7e26:8e8c with SMTP id x5-20020a056870b40500b0010d7e268e8cmr453459oap.78.1661461647990;
-        Thu, 25 Aug 2022 14:07:27 -0700 (PDT)
+        bh=WgvG2W29oRYqx+pgSWt6jhXW7xV77AuyXqSnhGc+5XA=;
+        b=0zzC9fg2P++TCR8/y0FBbTEwP9+ZQ7EGip0qZ6IK9Gxw0UZT94GB7dF+zIDpen1VQE
+         ZN2yhOgWOfOY5MT3bxzHjn7wJR95K0mTLKmczO5dSU/i3NpKtbW9hBFUnP8WJ3JCWWSo
+         kiWd0Dj7VoKONG5M3BdmP2/ftM8RqEehra9f1bI4BHNyFRLxEGdvWHC6hgO+72qqRjxU
+         7uu61vaqhfHT8gENgGQ4qUFvjzrG5TomXrCKhXX4qtiB3A5XuZMYrqPw/r2J/CIiU0kK
+         sLORnVv/5JrWZZW5r97kJQEYnxzs7E0duIpHi6w2+Faa2InE83+tvwfxRvh3fRKSOk7r
+         lYvQ==
+X-Gm-Message-State: ACgBeo1cr8Bfr/dKesyV/AxJrhz3pi/h53kgWjudcc/T20Eh47dvwuYJ
+        D7xactvGiVMkoV1jbycdzBU=
+X-Google-Smtp-Source: AA6agR7/xDw/ouHQ0sD6PHgtrb5u2On7h+B3nA3d5B9WOAtCtR7hyB9VUWMqDpgpBVtksulJAmixcg==
+X-Received: by 2002:a05:6830:1b62:b0:639:21d9:dec2 with SMTP id d2-20020a0568301b6200b0063921d9dec2mr340325ote.356.1661462180617;
+        Thu, 25 Aug 2022 14:16:20 -0700 (PDT)
 Received: from localhost ([12.97.180.36])
-        by smtp.gmail.com with ESMTPSA id x3-20020a4aaa03000000b0044b46c639easm195018oom.18.2022.08.25.14.07.27
+        by smtp.gmail.com with ESMTPSA id p81-20020acad854000000b00342ded07a75sm207899oig.18.2022.08.25.14.16.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 14:07:27 -0700 (PDT)
-Date:   Thu, 25 Aug 2022 14:05:16 -0700
+        Thu, 25 Aug 2022 14:16:20 -0700 (PDT)
+Date:   Thu, 25 Aug 2022 14:14:08 -0700
 From:   Yury Norov <yury.norov@gmail.com>
 To:     Valentin Schneider <vschneid@redhat.com>
 Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
@@ -72,14 +72,14 @@ Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         Gal Pressman <gal@nvidia.com>,
         Tariq Toukan <tariqt@nvidia.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [PATCH v3 3/9] bitops: Introduce find_next_andnot_bit()
-Message-ID: <YwfkDBl6DD+9Zjmk@yury-laptop>
+Subject: Re: [PATCH v3 4/9] cpumask: Introduce for_each_cpu_andnot()
+Message-ID: <YwfmIDEbRT4JfsZp@yury-laptop>
 References: <20220825181210.284283-1-vschneid@redhat.com>
- <20220825181210.284283-4-vschneid@redhat.com>
+ <20220825181210.284283-5-vschneid@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220825181210.284283-4-vschneid@redhat.com>
+In-Reply-To: <20220825181210.284283-5-vschneid@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -90,179 +90,85 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 07:12:04PM +0100, Valentin Schneider wrote:
-> In preparation of introducing for_each_cpu_andnot(), add a variant of
-> find_next_bit() that negate the bits in @addr2 when ANDing them with the
-> bits in @addr1.
+On Thu, Aug 25, 2022 at 07:12:05PM +0100, Valentin Schneider wrote:
+> for_each_cpu_and() is very convenient as it saves having to allocate a
+> temporary cpumask to store the result of cpumask_and(). The same issue
+> applies to cpumask_andnot() which doesn't actually need temporary storage
+> for iteration purposes.
 > 
-> Note that the _find_next_bit() @invert argument now gets split into two:
-> @invert1 for words in @addr1, @invert2 for words in @addr2. The only
-> current users of _find_next_bit() with @invert set are:
->   o find_next_zero_bit()
->   o find_next_zero_bit_le()
-> and neither of these pass an @addr2, so the conversion is straightforward.
+> Following what has been done for for_each_cpu_and(), introduce
+> for_each_cpu_andnot().
 > 
 > Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-
-Have you seen this series?
-https://lore.kernel.org/lkml/YwaXvphVpy5A7fSs@yury-laptop/t/
-
-It will significantly simplify your work for adding the
-find_next_andnot_bit(). If you wait a week or so, you'll most likely
-find it in -next.
-
-Thanks,
-Yury
-
 > ---
->  include/linux/find.h | 44 ++++++++++++++++++++++++++++++++++++++------
->  lib/find_bit.c       | 23 ++++++++++++-----------
->  2 files changed, 50 insertions(+), 17 deletions(-)
+>  include/linux/cpumask.h | 39 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
 > 
-> diff --git a/include/linux/find.h b/include/linux/find.h
-> index 424ef67d4a42..a195cf0a8bab 100644
-> --- a/include/linux/find.h
-> +++ b/include/linux/find.h
-> @@ -10,7 +10,8 @@
->  
->  extern unsigned long _find_next_bit(const unsigned long *addr1,
->  		const unsigned long *addr2, unsigned long nbits,
-> -		unsigned long start, unsigned long invert, unsigned long le);
-> +		unsigned long start, unsigned long invert1, unsigned long invert2,
-> +		unsigned long le);
->  extern unsigned long _find_first_bit(const unsigned long *addr, unsigned long size);
->  extern unsigned long _find_first_and_bit(const unsigned long *addr1,
->  					 const unsigned long *addr2, unsigned long size);
-> @@ -41,7 +42,7 @@ unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
->  		return val ? __ffs(val) : size;
->  	}
->  
-> -	return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
-> +	return _find_next_bit(addr, NULL, size, offset, 0UL, 0UL, 0);
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index 1414ce8cd003..372a642bf9ba 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -238,6 +238,25 @@ unsigned int cpumask_next_and(int n, const struct cpumask *src1p,
+>  		nr_cpumask_bits, n + 1);
 >  }
->  #endif
 >  
-> @@ -71,7 +72,38 @@ unsigned long find_next_and_bit(const unsigned long *addr1,
->  		return val ? __ffs(val) : size;
->  	}
->  
-> -	return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
-> +	return _find_next_bit(addr1, addr2, size, offset, 0UL, 0UL, 0);
-> +}
-> +#endif
-> +
-> +#ifndef find_next_andnot_bit
 > +/**
-> + * find_next_andnot_bit - find the next bit in *addr1 excluding all the bits
-> + *                        in *addr2
-> + * @addr1: The first address to base the search on
-> + * @addr2: The second address to base the search on
-> + * @size: The bitmap size in bits
-> + * @offset: The bitnumber to start searching at
+> + * cpumask_next_andnot - get the next cpu in *src1p & ~*src2p
+> + * @n: the cpu prior to the place to search (ie. return will be > @n)
+> + * @src1p: the first cpumask pointer
+> + * @src2p: the second cpumask pointer
 > + *
-> + * Returns the bit number for the next set bit
-> + * If no bits are set, returns @size.
+> + * Returns >= nr_cpu_ids if no further cpus set in *src1p & ~*src2p
 > + */
 > +static inline
-> +unsigned long find_next_andnot_bit(const unsigned long *addr1,
-> +		const unsigned long *addr2, unsigned long size,
-> +		unsigned long offset)
+> +unsigned int cpumask_next_andnot(int n, const struct cpumask *src1p,
+> +				 const struct cpumask *src2p)
 > +{
-> +	if (small_const_nbits(size)) {
-> +		unsigned long val;
+> +	/* -1 is a legal arg here. */
+> +	if (n != -1)
+> +		cpumask_check(n);
+> +	return find_next_andnot_bit(cpumask_bits(src1p), cpumask_bits(src2p),
+> +		nr_cpumask_bits, n + 1);
+> +}
 > +
-> +		if (unlikely(offset >= size))
-> +			return size;
+>  /**
+>   * for_each_cpu - iterate over every cpu in a mask
+>   * @cpu: the (optionally unsigned) integer iterator
+> @@ -317,6 +336,26 @@ unsigned int __pure cpumask_next_wrap(int n, const struct cpumask *mask, int sta
+>  		(cpu) = cpumask_next_and((cpu), (mask1), (mask2)),	\
+>  		(cpu) < nr_cpu_ids;)
+>  
+> +/**
+> + * for_each_cpu_andnot - iterate over every cpu present in one mask, excluding
+> + *			 those present in another.
+> + * @cpu: the (optionally unsigned) integer iterator
+> + * @mask1: the first cpumask pointer
+> + * @mask2: the second cpumask pointer
+> + *
+> + * This saves a temporary CPU mask in many places.  It is equivalent to:
+> + *	struct cpumask tmp;
+> + *	cpumask_andnot(&tmp, &mask1, &mask2);
+> + *	for_each_cpu(cpu, &tmp)
+> + *		...
+> + *
+> + * After the loop, cpu is >= nr_cpu_ids.
+> + */
+> +#define for_each_cpu_andnot(cpu, mask1, mask2)				\
+> +	for ((cpu) = -1;						\
+> +		(cpu) = cpumask_next_andnot((cpu), (mask1), (mask2)),	\
+> +		(cpu) < nr_cpu_ids;)
+
+The standard doesn't guarantee the order of execution of last 2 lines,
+so you might end up with unreliable code. Can you do it in a more
+conventional style:
+   #define for_each_cpu_andnot(cpu, mask1, mask2)			\
+   	for ((cpu) = cpumask_next_andnot(-1, (mask1), (mask2));	        \
+   		(cpu) < nr_cpu_ids;                                     \
+   		(cpu) = cpumask_next_andnot((cpu), (mask1), (mask2)))	
+
 > +
-> +		val = *addr1 & ~*addr2 & GENMASK(size - 1, offset);
-> +		return val ? __ffs(val) : size;
-> +	}
-> +
-> +	return _find_next_bit(addr1, addr2, size, offset, 0UL, ~0UL, 0);
->  }
->  #endif
->  
-> @@ -99,7 +131,7 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
->  		return val == ~0UL ? size : ffz(val);
->  	}
->  
-> -	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
-> +	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0UL, 0);
->  }
->  #endif
->  
-> @@ -247,7 +279,7 @@ unsigned long find_next_zero_bit_le(const void *addr, unsigned
->  		return val == ~0UL ? size : ffz(val);
->  	}
->  
-> -	return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
-> +	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0UL, 1);
->  }
->  #endif
->  
-> @@ -266,7 +298,7 @@ unsigned long find_next_bit_le(const void *addr, unsigned
->  		return val ? __ffs(val) : size;
->  	}
->  
-> -	return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
-> +	return _find_next_bit(addr, NULL, size, offset, 0UL, 0UL, 1);
->  }
->  #endif
->  
-> diff --git a/lib/find_bit.c b/lib/find_bit.c
-> index 1b8e4b2a9cba..c46b66d7d2b4 100644
-> --- a/lib/find_bit.c
-> +++ b/lib/find_bit.c
-> @@ -21,27 +21,29 @@
->  
->  #if !defined(find_next_bit) || !defined(find_next_zero_bit) ||			\
->  	!defined(find_next_bit_le) || !defined(find_next_zero_bit_le) ||	\
-> -	!defined(find_next_and_bit)
-> +	!defined(find_next_and_bit) || !defined(find_next_andnot_bit)
->  /*
->   * This is a common helper function for find_next_bit, find_next_zero_bit, and
->   * find_next_and_bit. The differences are:
-> - *  - The "invert" argument, which is XORed with each fetched word before
-> - *    searching it for one bits.
->   *  - The optional "addr2", which is anded with "addr1" if present.
-> + *  - The "invert" arguments, which are XORed with each fetched word (invert1
-> + *    for words in addr1, invert2 for those in addr2) before searching it for
-> + *    one bits.
->   */
->  unsigned long _find_next_bit(const unsigned long *addr1,
-> -		const unsigned long *addr2, unsigned long nbits,
-> -		unsigned long start, unsigned long invert, unsigned long le)
-> +			     const unsigned long *addr2,
-> +			     unsigned long nbits, unsigned long start,
-> +			     unsigned long invert1, unsigned long invert2,
-> +			     unsigned long le)
->  {
->  	unsigned long tmp, mask;
->  
->  	if (unlikely(start >= nbits))
->  		return nbits;
->  
-> -	tmp = addr1[start / BITS_PER_LONG];
-> +	tmp = addr1[start / BITS_PER_LONG] ^ invert1;
->  	if (addr2)
-> -		tmp &= addr2[start / BITS_PER_LONG];
-> -	tmp ^= invert;
-> +		tmp &= addr2[start / BITS_PER_LONG] ^ invert2;
->  
->  	/* Handle 1st word. */
->  	mask = BITMAP_FIRST_WORD_MASK(start);
-> @@ -57,10 +59,9 @@ unsigned long _find_next_bit(const unsigned long *addr1,
->  		if (start >= nbits)
->  			return nbits;
->  
-> -		tmp = addr1[start / BITS_PER_LONG];
-> +		tmp = addr1[start / BITS_PER_LONG] ^ invert1;
->  		if (addr2)
-> -			tmp &= addr2[start / BITS_PER_LONG];
-> -		tmp ^= invert;
-> +			tmp &= addr2[start / BITS_PER_LONG] ^ invert2;
->  	}
->  
->  	if (le)
+>  /**
+>   * cpumask_any_but - return a "random" in a cpumask, but not this one.
+>   * @mask: the cpumask to search
 > -- 
 > 2.31.1
