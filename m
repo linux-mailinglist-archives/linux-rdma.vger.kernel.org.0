@@ -2,52 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33ED15A3329
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Aug 2022 02:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B005A337A
+	for <lists+linux-rdma@lfdr.de>; Sat, 27 Aug 2022 03:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbiH0AkT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Aug 2022 20:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
+        id S230416AbiH0BcQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Aug 2022 21:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbiH0AkS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Aug 2022 20:40:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA05613CDD;
-        Fri, 26 Aug 2022 17:40:17 -0700 (PDT)
+        with ESMTP id S230220AbiH0BcP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Aug 2022 21:32:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35250C9EBA;
+        Fri, 26 Aug 2022 18:32:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1D3C9B83369;
-        Sat, 27 Aug 2022 00:40:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B463CC433D6;
-        Sat, 27 Aug 2022 00:40:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AFAEA6147C;
+        Sat, 27 Aug 2022 01:32:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D965AC433C1;
+        Sat, 27 Aug 2022 01:32:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661560814;
-        bh=rkzh3nR20qW/jQRU/zac4HyBSh6rIWKYlUSOlnHbI4A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=c569Bwb5eXT6yVQHpZh7AKQXJF8J29T8tup8DzsnA0ZRyUrHVU5sm4uQfQj/PzBFz
-         /xU9AKRFRaDyzpCKTBfGx2KAsjT3WIRecDwPiGanC+M6oTLcKkANal6uXUvznpQ4I3
-         6lLOGUTQ6qU5dgU11efBv3avC8HSIWt5EBvhVM41d1FyRbuAZ2BECstSc4oLcYEh8L
-         feDP9X5YIrjOo4f1UAwj3spgFWYZSBmktzlvBtWvN/KKVkcCBtCEZoD2rQyvFc7MHm
-         wDu6J8TdqOdll3dChktz1NeOGBDb8AcYLpEoFY0j847PM71mgXlGKr9KzVCI4ouHHQ
-         vF40SgVxrMOjA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 99FDDC0C3EC;
-        Sat, 27 Aug 2022 00:40:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1661563934;
+        bh=w7JK0dOpTIfnNITu9EJJP8AtVbw2z24CqztkLPzFmvs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oeljVeyJMpDIAfpnBl63g/oKaB1UQWiX05r58PGYpG7I2hh4TwfEwIpaf50vuzOxF
+         c02Zkq0zU/PHcDTi8bO3ngquT0nAXnQyZY8oFamjh8t7rc8C8yza3RmbMvRkz4aa5u
+         WxL8NceqNXXmYv6i2p8vM7dCbURXDuiWE6dfL312kruGq0QQXlTezxeunHX6nDIFCa
+         VpnVH6KaXUolY6CrVL2skLrJPH9ymZ99mHkvqfTjrg4i8q+FLvQofqrEwie9BLheLE
+         QxV78gfpEIgrG5mpdzakQIOmdorX/wEkQloCK5zSreurevVLu0CLZXFkiphrNtKIVN
+         8NXty+YvUTb+Q==
+Date:   Fri, 26 Aug 2022 18:32:13 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v2 00/10] optimize the parallelism of SMC-R
+ connections
+Message-ID: <20220826183213.38eb4cac@kernel.org>
+In-Reply-To: <cover.1661407821.git.alibuda@linux.alibaba.com>
+References: <cover.1661407821.git.alibuda@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/mlx4: Fix error check for dma_map_sg
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166156081462.5783.10194691553134779123.git-patchwork-notify@kernel.org>
-Date:   Sat, 27 Aug 2022 00:40:14 +0000
-References: <20220825063533.21015-1-jinpu.wang@ionos.com>
-In-Reply-To: <20220825063533.21015-1-jinpu.wang@ionos.com>
-To:     Jinpu Wang <jinpu.wang@ionos.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, tariqt@nvidia.com,
-        edumazet@google.com, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        leonro@nvidia.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,32 +55,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Thu, 25 Aug 2022 08:35:33 +0200 you wrote:
-> dma_map_sg return 0 on error.
+On Fri, 26 Aug 2022 17:51:27 +0800 D. Wythe wrote:
+> This patch set attempts to optimize the parallelism of SMC-R connections,
+> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
+> occur after thoses optimization.
 > 
-> Cc: Tariq Toukan <tariqt@nvidia.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: netdev@vger.kernel.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
+> According to Off-CPU graph, SMC worker's off-CPU as that: 
 > 
-> [...]
+> smc_close_passive_work			(1.09%)
+> 	smcr_buf_unuse			(1.08%)
+> 		smc_llc_flow_initiate	(1.02%)
+> 	
+> smc_listen_work 			(48.17%)
+> 	__mutex_lock.isra.11 		(47.96%)
 
-Here is the summary with links:
-  - net/mlx4: Fix error check for dma_map_sg
-    https://git.kernel.org/netdev/net-next/c/0c1f77d87d69
+The patches should be ordered so that the prerequisite changes are
+first, then the removal of locks. Looks like there are 3 patches here
+which carry a Fixes tag, for an old commit but in fact IIUC there is no
+bug in those old commits, the problem only appears after the locking is
+removed?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+That said please wait for IBM folks to review first before reshuffling
+the patches, I presume the code itself won't change.
 
-
+Also I still haven't see anyone reply to Al Viro, IIRC he was
+complaining about changes someone from your team has made. 
+I consider this a blocker for applying new patches from your team :(
