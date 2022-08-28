@@ -2,47 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C3B5A3D00
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Aug 2022 11:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABCA5A3D0B
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Aug 2022 11:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbiH1Jo1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 28 Aug 2022 05:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
+        id S229497AbiH1Jzu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 28 Aug 2022 05:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbiH1Jo0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Aug 2022 05:44:26 -0400
+        with ESMTP id S229448AbiH1Jzt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Aug 2022 05:55:49 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E7224F26
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Aug 2022 02:44:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9613C43E5D;
+        Sun, 28 Aug 2022 02:55:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 71856B80917
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Aug 2022 09:44:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2186C433D6;
-        Sun, 28 Aug 2022 09:44:22 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4A1EDB80A3A;
+        Sun, 28 Aug 2022 09:55:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A978C433C1;
+        Sun, 28 Aug 2022 09:55:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661679863;
-        bh=4JlMtjoa97Bc0v+Y2nDqTOutr1sO3SFkyyoAdIhWGPQ=;
+        s=k20201202; t=1661680546;
+        bh=TcwxDWZtQS6kMjN2jg9yz87Lt7T5qZ8ftJVQLc8rmrI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IIbrbuUhM3KbQYjAHM/oZViSmvoY7TECgC6kY67zHhu3SuPP6Kt8bQwUvMQ4S+MuK
-         DrNmRQKjOHby3wC3yofutcjzR8Zo7Vio4OGvJ0zi57AbRpiNZrR6clBxe5zl91z48F
-         NY4r8kDv8E3vZTwW8VBfaeCX74kuFHXaH84VW413GYBXpQlWo68AE5uzHELbf3lGnt
-         ImILQHkxOps9us4rzYEcTeV8vqV7no9e0uyk6L0qJ7fe+ZfvheQLSE5Gjb61Xi4ItM
-         d9p/+Yu5HOpx5AegAcG7CPColvvPC+P4tUpwqfMMZbNuXIpAmNevMlRRyIqutI5R8P
-         fACpbfaQsBOUQ==
-Date:   Sun, 28 Aug 2022 12:44:18 +0300
+        b=Rxq1frQ4Y7jG/7PA4ZNlJ7bYY/4+1Ihaz96hMvhmyswpnbYQ9NfPX9HShQ2ybT6pW
+         It1NQhz+dlZPJe19lcZ+FwtAT1QC0wS7J1y0qZMHoD7pMwPnwLHGMNDo4YxxCJxpdg
+         nDMHMiQE91NuwChoGUW2JC84wJEQOE5uSBM8uP79WzpX9vAq5FH5bhXnTFAkrLlLjx
+         v3OlNw401ZIXH6LvhActC8mcqhOjRwjzPO+wygYnRinPMZaebAgt7yWX4EZAMZiQcM
+         Lgz0AKaIZMWaXfsiePeR9j5QbrhaGtdZhnfw6+8k071rcdP/AOYfBpyBuuee1BNVGS
+         bQmnUOm6KjyYg==
+Date:   Sun, 28 Aug 2022 12:55:41 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: Re: [PATCH for-rc] RDMA/irdma: Fix drain SQ hang with no completion
-Message-ID: <Yws48tBf3aIv5Neo@unreal>
-References: <20220824154358.117-1-shiraz.saleem@intel.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev
+Subject: Re: [PATCH net-next] net/mlx5e: Do not use err uninitialized in
+ mlx5e_rep_add_meta_tunnel_rule()
+Message-ID: <Yws7nQsU8hIf7gZT@unreal>
+References: <20220825180607.2707947-1-nathan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220824154358.117-1-shiraz.saleem@intel.com>
+In-Reply-To: <20220825180607.2707947-1-nathan@kernel.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,44 +61,35 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 10:43:59AM -0500, Shiraz Saleem wrote:
-> SW generated completions for outstanding WRs posted on SQ
-> after QP is in error target the wrong CQ. This causes the
-> ib_drain_sq to hang with no completion.
+On Thu, Aug 25, 2022 at 11:06:07AM -0700, Nathan Chancellor wrote:
+> Clang warns:
 > 
-> Fix this to generate completions on the right CQ.
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:481:6: error: variable 'err' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+>           if (IS_ERR(flow_rule)) {
+>               ^~~~~~~~~~~~~~~~~
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:489:9: note: uninitialized use occurs here
+>           return err;
+>                 ^~~
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:481:2: note: remove the 'if' if its condition is always true
+>           if (IS_ERR(flow_rule)) {
+>           ^~~~~~~~~~~~~~~~~~~~~~~
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:474:9: note: initialize the variable 'err' to silence this warning
+>           int err;
+>                 ^
+>                   = 0
+>   1 error generated.
 > 
-> [  863.969340] INFO: task kworker/u52:2:671 blocked for more than 122 seconds.
-> [  863.979224]       Not tainted 5.14.0-130.el9.x86_64 #1
-> [  863.986588] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  863.996997] task:kworker/u52:2   state:D stack:    0 pid:  671 ppid:     2 flags:0x00004000
-> [  864.007272] Workqueue: xprtiod xprt_autoclose [sunrpc]
-> [  864.014056] Call Trace:
-> [  864.017575]  __schedule+0x206/0x580
-> [  864.022296]  schedule+0x43/0xa0
-> [  864.026736]  schedule_timeout+0x115/0x150
-> [  864.032185]  __wait_for_common+0x93/0x1d0
-> [  864.037717]  ? usleep_range_state+0x90/0x90
-> [  864.043368]  __ib_drain_sq+0xf6/0x170 [ib_core]
-> [  864.049371]  ? __rdma_block_iter_next+0x80/0x80 [ib_core]
-> [  864.056240]  ib_drain_sq+0x66/0x70 [ib_core]
-> [  864.062003]  rpcrdma_xprt_disconnect+0x82/0x3b0 [rpcrdma]
-> [  864.069365]  ? xprt_prepare_transmit+0x5d/0xc0 [sunrpc]
-> [  864.076386]  xprt_rdma_close+0xe/0x30 [rpcrdma]
-> [  864.082593]  xprt_autoclose+0x52/0x100 [sunrpc]
-> [  864.088718]  process_one_work+0x1e8/0x3c0
-> [  864.094170]  worker_thread+0x50/0x3b0
-> [  864.099109]  ? rescuer_thread+0x370/0x370
-> [  864.104473]  kthread+0x149/0x170
-> [  864.109022]  ? set_kthread_struct+0x40/0x40
-> [  864.114713]  ret_from_fork+0x22/0x30
+> There is little reason to have the 'goto + error variable' construct in
+> this function. Get rid of it and just return the PTR_ERR value in the if
+> statement and 0 at the end.
 > 
-> Fixes: 81091d7696ae ("RDMA/irdma: Add SW mechanism to generate completions on error")
-> Reported-by: Kamal Heib <kamalheib1@gmail.com>
-> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Fixes: 430e2d5e2a98 ("net/mlx5: E-Switch, Move send to vport meta rule creation")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1695
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
->  drivers/infiniband/hw/irdma/utils.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
 > 
 
-Thanks, applied.
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
