@@ -2,114 +2,218 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9845A3E2F
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Aug 2022 16:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F82C5A3E94
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Aug 2022 18:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229483AbiH1O5w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 28 Aug 2022 10:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
+        id S229519AbiH1Qik (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 28 Aug 2022 12:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbiH1O5v (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Aug 2022 10:57:51 -0400
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371842CE1D
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Aug 2022 07:57:50 -0700 (PDT)
-Received: by mail-wm1-f45.google.com with SMTP id ay39-20020a05600c1e2700b003a5503a80cfso3215709wmb.2
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Aug 2022 07:57:50 -0700 (PDT)
+        with ESMTP id S229483AbiH1Qij (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Aug 2022 12:38:39 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A814A15834;
+        Sun, 28 Aug 2022 09:38:37 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id r6so4666104qtx.6;
+        Sun, 28 Aug 2022 09:38:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc;
+        bh=83ChJE1rwggeSlg3O8D/w8h+7IVdbhRf3ERXz2m/uGE=;
+        b=a90vgfAVsfKU1PPJ8Koo3NtBBCEetOXihdgRvz4VAZoeiwfcq2Zqc38CXgjEWZd25g
+         rWlW521LPQC/RgvpZ6fmg2PCDmXs4An1B8n5pvltQJ6JbUAU9Hx9uDbSafPFMye5AscJ
+         6YpLaJSOosSFXfjTP5wsBxFOLbIdSB5piK3oqAvCaDRr2zjctL/6AiVsaPItuoc7VoBS
+         QDjCmiUAgROsbvpBKzrjazRKN9M5+LC/bnYkjEGRDEg94tGtM/V/Zrqx9V/rXbaa2cJT
+         JIIWGan57uzVs/safzElFiLtRB5oc6gbeb7I2rfEOfdmdtUpoN7xos58tqV2yT1gTfoy
+         HLrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc;
-        bh=68N5DycOpL4Rg4o9EfqAhk52NzjvSEM+u5OY5hUdLlo=;
-        b=b1FZh0JZ0Hj3ZGIpXJfLTt8FxHe8I0PZ3KySOJyUCrpo7023RGLcrfKejBrhHO1dLk
-         yZJNqSnUowQPzK5eDDuZh1hBxbTKe34kxp05ZT1O9Z4Uz+yfXO1cQmk2HUrNI97Btl6Q
-         xD6tYjiGfVNbZeGDEzjyrX9d2OCNSeVD+szKmz7OnYYrJsPNe21XTcsfRShNObT8uEL9
-         GQdWpXYEkuefQXHKARAU/3btRgkYqe/7ImMVglBnR/Rk9nbFBH7iQxQBKzACBIIJcLdu
-         c/l7NyzohHCSGH6gT8Uounz9ymmM+3gJ63QHdWUmdFuJbX40IummruAc8sVfWo/dW3wV
-         mvPg==
-X-Gm-Message-State: ACgBeo2LQ+QmSl45UuiTIblhL1Frz+CP6gbSPbuGX5NA5VkxO88cv/rv
-        DMBZQCc/5/FY67dqUZCgt0o=
-X-Google-Smtp-Source: AA6agR4E0LIUJ3MaoGtSq0VPJXKTeWI3G/89eKZvRW86JQwICUgESC4oRIxMDrYPoeFUEaNdrkBw2w==
-X-Received: by 2002:a05:600c:3541:b0:3a6:28e4:c458 with SMTP id i1-20020a05600c354100b003a628e4c458mr4703627wmq.188.1661698668776;
-        Sun, 28 Aug 2022 07:57:48 -0700 (PDT)
-Received: from [192.168.64.104] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
-        by smtp.gmail.com with ESMTPSA id v5-20020a5d59c5000000b002257fd37877sm4884686wry.6.2022.08.28.07.57.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Aug 2022 07:57:46 -0700 (PDT)
-Message-ID: <fbee7c67-fd7b-12c8-5685-066b1974aadb@grimberg.me>
-Date:   Sun, 28 Aug 2022 17:57:43 +0300
+        bh=83ChJE1rwggeSlg3O8D/w8h+7IVdbhRf3ERXz2m/uGE=;
+        b=tlNFLjguKzarpLcWP4bDKWv4P20O7RzGOT7ktCS6ZV/G0vAZr7+XelCgjZn3Y6fXB5
+         rs+qWv9O+8BYN73pDyNirWlbvsZLhBX9RN+qG3m3fIfjqGCdbV3ETJi1GVU4Wyv+zw0H
+         vChUJKMNg+AZdsR60Q3dQ5cfc+yNnda9+IWnetRp1no4ih0/JAGBjKIoKy369NuWCrHv
+         FZasmGLfGCn2Y6ThhJlBLzoRplLDTMNFo/sfr0STrXy57Y58PDVaH21qDpDFJgVsr0+F
+         8qfpbMchGnkiWvWSCIk9WM/SSn8eIL8q5fIngw3L4iXNvD1T3kSiV0/BdzInmW0uWTDW
+         kZxw==
+X-Gm-Message-State: ACgBeo0RRubS2wf+iG05ZXSU4XA4Wr8Up+QXXAIcyHM5OzyZh/zUObG4
+        ubFFYG0cYrLVGSyNYve1PAX5csb1bfA=
+X-Google-Smtp-Source: AA6agR49AKTcTgsipzL7o18hMvL2Alb7HxkjUhsc8ocxSyjKwePS7SBErZ38TtvAxDErBjX3J1AKDw==
+X-Received: by 2002:ac8:7f53:0:b0:343:652:ce62 with SMTP id g19-20020ac87f53000000b003430652ce62mr7016196qtk.514.1661704716616;
+        Sun, 28 Aug 2022 09:38:36 -0700 (PDT)
+Received: from localhost ([2601:4c1:c100:2270:fec3:5d7c:26ba:6691])
+        by smtp.gmail.com with ESMTPSA id s10-20020ac8758a000000b0033fc75c3469sm3652718qtq.27.2022.08.28.09.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Aug 2022 09:38:36 -0700 (PDT)
+Date:   Sun, 28 Aug 2022 09:38:35 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Valentin Schneider <vschneid@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+Subject: Re: [PATCH v3 1/9] cpumask: Make cpumask_full() check for nr_cpu_ids
+ bits
+Message-ID: <YwuaCxd+0yHA+bxk@yury-laptop>
+References: <20220825181210.284283-1-vschneid@redhat.com>
+ <20220825181210.284283-2-vschneid@redhat.com>
+ <YwfgQmtbr6IrPrXb@yury-laptop>
+ <15255a7223fe405808bcedb5ab19bf2108637e08.camel@svanheule.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] nvme-rdma: set ack timeout of RoCE to 262ms
-Content-Language: en-US
-To:     Chao Leng <lengchao@huawei.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20220819075825.21231-1-lengchao@huawei.com>
- <20220821062016.GA26553@lst.de>
- <83992e8f-b18a-ccd3-e0ee-a5802043f161@huawei.com>
- <86e9fc3b-aded-220d-1ee0-4d5928097104@nvidia.com>
- <f7254cc2-88e0-e91f-e4f1-788c5889fcf1@huawei.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <f7254cc2-88e0-e91f-e4f1-788c5889fcf1@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <15255a7223fe405808bcedb5ab19bf2108637e08.camel@svanheule.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Sun, Aug 28, 2022 at 10:35:38AM +0200, Sander Vanheule wrote:
 
->>> On 2022/8/21 14:20, Christoph Hellwig wrote:
->>>> On Fri, Aug 19, 2022 at 03:58:25PM +0800, Chao Leng wrote:
->>>>> Now the ack timeout of RoCE is 2 second(2^(18+1)*4us=2 second). In the
->>>>> case of low concurrency, if some packets lost due to network abnormal
->>>>> such as network rerouting, Optical fiber signal interference, etc,
->>>>> it will wait 2 second to try retransmitting the lost packets.
->>>>> As a result, the I/O latency is greater than 2 seconds.
->>>>> The I/O latency is so long for real-time transaction service. 
->>>>> Indeed we
->>>>> do not have to wait so long time to make sure that packets are lost.
->>>>> Setting the ack timeout to 262ms(2^(15+1)*4us=262ms) is sufficient.
->>>>
->>>> I'll leave people more familar with RoCE to judge the merits of this
->>>> change, but I really want a comment explaining the choice in the
->>>> source code.
->>> Now the TCP retransmission timeout interval is 250ms, and this setting
->>> has been maintained for many years.
->>> The network quality of rdma is better than that of common Ethernet.
->>> That is the reason to set 262ms as the default ack timeout.
->>> Adding a module parameter may be a better option.
->>
->> Are you solving a real issue you encountered ?
-> There is a low probability that this occurs in real scenarios.
-> The issue occurs in fault simulation test.
-> In the core-leaf fabrics,simulate a fiber fault between the core switch
-> and the leaf switch.
-> In the case of low concurrency, There is a high probability that the
-> I/O latency is greater than 2 seconds.
-> This patch can reduce the I/O latency to less than 1 second.
->>
->> If so, which devices did you use ?
-> The host HBA is Mellanox Technologies MT27800 Family [ConnectX-5];
-> The switch and storage are huawei equipments.
-> In principle, switches and storage devices from other vendors
-> have the same problem.
-> If you think it is necessary, we can test the other vendor switchs
-> and linux target.
+ ...
 
-Why is the 2s default chosen, what is the downside for a 250ms seconds 
-ack timeout? and why is nvme-rdma different than all other kernel rdma
-consumers that it needs to set this explicitly?
+> > It's really a puzzle, and some of my thoughts are below. So. 
+> > 
+> > This is a question what for we need nr_cpumask_bits while we already
+> > have nr_cpu_ids. When OFFSTACK is ON, they are obviously the same.
+> > When it's of - the nr_cpumask_bits is an alias to NR_CPUS.
+> > 
+> > I tried to wire the nr_cpumask_bits to nr_cpu_ids unconditionally, and
+> > it works even when OFFSTACK is OFF, no surprises.
+> > 
+> > I didn't find any discussions describing what for we need nr_cpumask_bits,
+> > and the code adding it dates to a very long ago.
+> > 
+> > If I alias nr_cpumask_bits to nr_cpu_ids unconditionally on my VM with
+> > NR_CPUs == 256 and nr_cpu_ids == 4, there's obviously a clear win in
+> > performance, but the Image size gets 2.5K bigger. Probably that's the
+> > reason for what nr_cpumask_bits was needed...
+> 
+> I think it makes sense to have a compile-time-constant value for nr_cpumask_bits
+> in some cases. For example on embedded platforms, where every opportunity to
+> save a few kB should be used, or cases where NR_CPUS <= BITS_PER_LONG.
+> 
+> > 
+> > There's also a very old misleading comment in cpumask.h:
+> > 
+> >  *  If HOTPLUG is enabled, then cpu_possible_mask is forced to have
+> >  *  all NR_CPUS bits set, otherwise it is just the set of CPUs that
+> >  *  ACPI reports present at boot.
+> > 
+> > It lies, and I checked with x86_64 that cpu_possible_mask is populated
+> > during boot time with 0b1111, if I create a 4-cpu VM. Hence, the
+> > nr_cpu_ids is 4, while NR_CPUS == 256.
+> > 
+> > Interestingly, there's no a single user of the cpumask_full(),
+> > obviously, because it's broken. This is really a broken dead code.
+> > 
+> > Now that we have a test that checks sanity of cpumasks, this mess
+> > popped up.
+> > 
+> > Your fix doesn't look correct, because it fixes one function, and
+> > doesn't touch others. For example, the cpumask subset() may fail
+> > if src1p will have set bits after nr_cpu_ids, while cpumask_full()
+> > will be returning true.
+> 
+> It appears the documentation for cpumask_full() is also incorrect, because it
+> claims to check if all CPUs < nr_cpu_ids are set. Meanwhile, the implementation
+> checks if all CPUs < nr_cpumask_bits are set.
+> 
+> cpumask_weight() has a similar issue, and maybe also other cpumask_*() functions
+> (I didn't check in detail yet).
+> 
+> > 
+> > In -next, there is an update from Sander for the cpumask test that
+> > removes this check, and probably if you rebase on top of -next, you
+> > can drop this and 2nd patch of your series.
+> > 
+> > What about proper fix? I think that a long time ago we didn't have
+> > ACPI tables for possible cpus, and didn't populate cpumask_possible
+> > from that, so the
+> > 
+> >         #define nr_cpumask_bits NR_CPUS
+> > 
+> > worked well. Now that we have cpumask_possible partially filled,
+> > we have to always
+> > 
+> >         #define nr_cpumask_bits nr_cpu_ids
+> > 
+> > and pay +2.5K price in size even if OFFSTACK is OFF. At least, it wins
+> > at runtime...
+> > 
+> > Any thoughts?
+> 
+> It looks like both nr_cpumask_bits and nr_cpu_ids are used in a number of places
+> outside of lib/cpumask.c. Documentation for cpumask_*() functions almost always
+> refers to nr_cpu_ids as a highest valid value.
+> 
+> Perhaps nr_cpumask_bits should become an variable for internal cpumask usage,
+> and external users should only use nr_cpu_ids? The changes in 6.0 are my first
+> real interaction with cpumask, so it's possible that there are things I'm
+> missing here.
+> 
+> That being said, some of the cpumask tests compare results to nr_cpumask_bits,
+> so those should then probably be fixed to compare against nr_cpu_ids instead.
 
-Adding linux-rdma folks.
+Aha, and it kills me how we have such a mess in a very core subsystem.
+
+We have 3 problems here:
+ - mess with nr_cpumask_bits and nr_cpu_ids;
+ - ineffectiveness of cpumask routines when nr_cpumask_bits > nr_cpu_ids;
+ - runtime nature of nr_cpu_ids, even for those embedded systems with
+   taught memory constraints. So that if we just drop nr_cpumask_bits,
+   it will add 2.5K to the Image.
+
+I think that dropping nr_cpumask_bits is our only choice, and to avoid
+Image bloating for embedded users, we can hint the kernel that NR_CPUS
+is an exact number, so that it will skip setting it in runtime.
+
+I added a EXACT_NR_CPUS option for this, which works like this:
+
+  #if (NR_CPUS == 1) || defined(CONFIG_EXACT_NR_CPUS)
+  #define nr_cpu_ids      ((unsigned int)NR_CPUS)
+  #else
+  extern unsigned int nr_cpu_ids;
+  #endif
+
+  /* Deprecated */ 
+  #define nr_cpumask_bits nr_cpu_ids
+
+I tried it with arm64 4-CPU build. When the EXACT_NR_CPUS is enabled,
+the difference is:
+  add/remove: 3/4 grow/shrink: 46/729 up/down: 652/-46952 (-46300)
+  Total: Before=25670945, After=25624645, chg -0.18%
+
+Looks quite impressive to me. I'll send a patch soon.
+
+Thanks,
+Yury
