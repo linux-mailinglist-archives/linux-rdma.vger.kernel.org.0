@@ -2,253 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 385AE5A3CAE
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Aug 2022 10:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B7B5A3CF2
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Aug 2022 11:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbiH1Ifr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 28 Aug 2022 04:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42638 "EHLO
+        id S229576AbiH1JGj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 28 Aug 2022 05:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232597AbiH1Ifp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Aug 2022 04:35:45 -0400
-Received: from polaris.svanheule.net (polaris.svanheule.net [84.16.241.116])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1582610A
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Aug 2022 01:35:43 -0700 (PDT)
-Received: from [IPv6:2a02:a03f:eaf9:8401:aa9f:5d01:1b2a:e3cd] (unknown [IPv6:2a02:a03f:eaf9:8401:aa9f:5d01:1b2a:e3cd])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 7349E312E19;
-        Sun, 28 Aug 2022 10:35:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1661675741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=91RPWC9lm6EmFuQ06ZRCxMuapFeAPU+WUb0848c6UKs=;
-        b=U/C4UbQcYApgt+xf4P5Vn1i9sqY1swonzE8zi8zhwtMptRuAZEa3uFxAACWVDET3lxJdKR
-        /zOLMPq4faG69lpJVdGTQn9vxYXRHu+8QQUMR6wBMFe/FTzJSWpuHiV6RKrfL90N181+oU
-        srMWGmn6v40AAzpHdCnpkXdkAc90Po16q7QSrUyeD3tNnQ1tHdccuNb7L31i7FGBvj3p98
-        DBY46U/Xq7BgYeN2GtWCMTNpi3fwAfp+DHgNXQy3gCf3IhfH1/4SqMItR/YDhhD48MCF/z
-        6pQ37B4fno6+Q1PMwQLK6j7+rHTc3r6BNVgMW87z8mCHyuDo0m/Ieg/VHj0uAw==
-Message-ID: <15255a7223fe405808bcedb5ab19bf2108637e08.camel@svanheule.net>
-Subject: Re: [PATCH v3 1/9] cpumask: Make cpumask_full() check for
- nr_cpu_ids bits
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Yury Norov <yury.norov@gmail.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Date:   Sun, 28 Aug 2022 10:35:38 +0200
-In-Reply-To: <YwfgQmtbr6IrPrXb@yury-laptop>
-References: <20220825181210.284283-1-vschneid@redhat.com>
-         <20220825181210.284283-2-vschneid@redhat.com>
-         <YwfgQmtbr6IrPrXb@yury-laptop>
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S229379AbiH1JGi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Aug 2022 05:06:38 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2067.outbound.protection.outlook.com [40.107.244.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886A548CA0
+        for <linux-rdma@vger.kernel.org>; Sun, 28 Aug 2022 02:06:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OibUHSb/bIo8csXQiwewPTg2m8t+4BUfNOoRaMLMNNpRYFWY3JiM/wNVfCzvQZm49BSuRB87hxFkTnSjsAgRMemEGcry3ZHUNSnbAtBJwah9LTeSywArqqYP0VT6l4ITRtKhj+d+oToMHlzNb3t4fWZpMjLvWuYfJZTrtEwK/VzHo5zUTgqAJdivja7VRp/U2r+OvF/5lJQixrneaOGXddcOI9j5TlEO1Q9XeAFQfqhkGYi5D+tsvJeDoMllJSYhsCVFkTREtTuJ1dnU828ERF/OPJKdI7kL/etnXZ4zKyJGtLGgR08CJ3GA+Gud1WyhYDNJXMEfiPDxMlcyimzI5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eAIiTZ7XxSUcMncTBaWcjwCWIJMsUuXk1n7uTs24GBY=;
+ b=gm0zry5BnEObh/Kx8FrVjQq60ix0OybcYMq0z6tiHkwj3MnajIy0tRWjSgFBUFxYDgBMJiMYE7AyvCsjagCZeUVTKFMpUtmneJQIPraL2JDTqdT+s/Bfhsc3P02cwAZ5Rx7Kp6JBVhjJiWVxk75kQ9sx5GYGhFb7aAZWZoq94OboP6maj7RKoJJ0corGCoeNt17YTBr4726QDFYgPmFzVY9/N7M6QcoKY6OOf/BgAub8qPfm22ELhf3TFbmFAQJFtnm6LYyO3ZHnjCgJtM7zmYj8CzbROE0saiasEQyj5DgRFYo4CT6WFzCRh/7wCIUXKe/3drEZzSd3Rmn2Kl5cAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eAIiTZ7XxSUcMncTBaWcjwCWIJMsUuXk1n7uTs24GBY=;
+ b=IxB0OBAVO7Es9M65RiEUxbSLVJpOjtTLlJOsHCfJRXHycYJ10pCHO2ZybFop6p9hJp3qXMaUuX6CGbWdskTO61aHTArhAHgCglbqU8u5Ckbw5VAPzG5O6DcQa98jaSCGhzp3gdgVZ4Yutboeep/osKF2A1LA4oA5mvVhvGQbhThw1GNpsRcughYJzuyur812NqaMTiMfgcGhBv5JKR8IYQTND31fLjXYxXnsrs8WfkXeyZzvlNn8dsnc+ROr+SVnBtGpBds7x3TrI6L5l+vHz8SvVjNC6vZhSEmvm7/NKy/KN955qePbQUoiH3MqYL2XKbtpCTBnQzpEAfIz1DEP/g==
+Received: from CH0PR12MB5330.namprd12.prod.outlook.com (2603:10b6:610:d5::7)
+ by BL1PR12MB5175.namprd12.prod.outlook.com (2603:10b6:208:318::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.15; Sun, 28 Aug
+ 2022 09:06:36 +0000
+Received: from CH0PR12MB5330.namprd12.prod.outlook.com
+ ([fe80::e034:e0b9:a75e:3478]) by CH0PR12MB5330.namprd12.prod.outlook.com
+ ([fe80::e034:e0b9:a75e:3478%8]) with mapi id 15.20.5566.021; Sun, 28 Aug 2022
+ 09:06:36 +0000
+From:   Roi Dayan <roid@nvidia.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: RE: [bug report] net/mlx5: E-Switch, Move send to vport meta rule
+ creation
+Thread-Topic: [bug report] net/mlx5: E-Switch, Move send to vport meta rule
+ creation
+Thread-Index: AQHYuRz6OmWu0pSkEEeYCTkkNltaMq3ECDJw
+Date:   Sun, 28 Aug 2022 09:06:36 +0000
+Message-ID: <CH0PR12MB533080411DE1A0E08AA17283B8779@CH0PR12MB5330.namprd12.prod.outlook.com>
+References: <Ywh1Qe1EH3+B4/ON@kili>
+In-Reply-To: <Ywh1Qe1EH3+B4/ON@kili>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 87be2e86-0a00-4c68-f674-08da88d49c3e
+x-ms-traffictypediagnostic: BL1PR12MB5175:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pioG5majanKzqJ2Ay4QU3EWzCLXjDHLXIpsqo47t2wUSFkn2IQ6pXZ+WlN35v8NoEUgkkVP7itZ7EhaVrF2ea+reYBZQ8+fMSdLRv89YcKrIdlbVTwbwPYREvDxBg3l2zgqIZk71Tu5WGwWjxt0qdI1DHWHeYDpvkGM9WMn6tCTZVuXvfyRIgYvyNxMZK3AYPeDkIXygzzTGu2QqLfXfK3Ro9C3ng6LZi1gyPPUtt+BrngPzPCgSCg+R87GuYuudR7LYJvvsAQQPqAUBTtmtxrq7hghiIhyhb09bhQq5Fu5OVt3+OHtA4aqZS30BkwXMC5IU70JY4kZPFquCfehdw99EcLSpLcKXVHa0NFnysn0h9oTzBvc/R1zRDPepwcmDyqrynmC2/9bmz8IL+DpXtpFc68ZEm8rx1rVAJ3IUUQUYS/80N5ODfFZtjVx4MsvBIEVa8pqMX1awu/M8jgTDU/cDUUcU6SsDwgEoofie/dMuYCLrU7A+3fAWtpSBx3Dw90AJfaTELgiqmQIU9vi7JqLMhtw1Cf2BLH7siHsF7BTwuT1RSHTzKKWg7XMnoIZVF45suQXk2yFu8if782L2S+OwwaJl0O1UgpRs6W6leHS+OxvSz/cgnvhPXxZLeObBQaq6lsThzZoop93i6m/i7rmHoSI3lRWwGYLve34pnVx51LjFIuLnpUHYYVSmW/CLioHMzlLnAHvXmW6kzsawqOZfvj7Fy62h7Rrtv4Q5X8qV+C3TFxTtsJJBDW8VHH1m
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR12MB5330.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(376002)(136003)(346002)(366004)(39860400002)(8676002)(76116006)(64756008)(66556008)(66476007)(4326008)(66946007)(66446008)(38100700002)(122000001)(38070700005)(86362001)(2906002)(52536014)(8936002)(5660300002)(41300700001)(7696005)(6506007)(107886003)(53546011)(26005)(9686003)(55016003)(478600001)(71200400001)(316002)(6916009)(54906003)(186003)(83380400001)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?oNlyCeRG4QgEQH6cPH/XedXzkXA6g5EgnqZewQVjg3VWOpd2nQ9Rq+Rp9nXq?=
+ =?us-ascii?Q?SxUx+iYxp3ha1Fv5beIDfuZ5NODk3UMPZbAp0GHWMfHNDEmxRQUdXT7+IZec?=
+ =?us-ascii?Q?Vune9HG4iv9I+waWNoLtOUFPMFQOQ7luSXv23JbA0ZFUisdmz2Wut6dm6F/B?=
+ =?us-ascii?Q?LBhf5b+UI9lNJi6J/HayqLidJAf+Gh7SzoihRScKOSpE0sQvfgz+u3fxdRje?=
+ =?us-ascii?Q?tWFqjqa88NBGiG70fXE2l86ypHBPpIWNqmOxRBpiYBQjM3dBMudcsJtRKnGf?=
+ =?us-ascii?Q?O+5KIbbMT7F+E4LQBZs66UheMDsCyvRXcO1DtItNNY0XB8uVRnmjLeE+jdsb?=
+ =?us-ascii?Q?+0FZJPWuhUsSfxICNSgZF2+qwBiRW3MRUZ7TeUiT6YtFKftg6WdELNrDhDSl?=
+ =?us-ascii?Q?gxCniTEPeiTtLCVoj0XlIk+mWb6+ikxlK/kNuGzszCfXIu5+gBQ2C3J+TMg6?=
+ =?us-ascii?Q?0Zt1A5e4hQu12s3sLExWnIE/+QYryPnoLkTfHGpFrJR4zC4/FpLhPsJWud6N?=
+ =?us-ascii?Q?URYWnIf65Tgs5SN5aCNMg5/D6SdQ++yPknkOjTiS8mufvhRViH4WV+++8Ewa?=
+ =?us-ascii?Q?CdUKdbtfEheuQTxXyEUgQy2FtcQyz5e+H2C/34OVBaJFZmvqp7c7edErgzHP?=
+ =?us-ascii?Q?eISmnhXMvv7ri295naj3yzQTT+JyNcYpxrpA+a2Y9g5AbsYSOQB2MaFTmkt8?=
+ =?us-ascii?Q?3trn6CaFBUAWtmJrJZgLwsJ0s0209ENNcDqSlBRSRwrWPGwxhHLJS9UXHk2A?=
+ =?us-ascii?Q?lMxRJJ++azHSiVCNhGm9q6OdRlPI8xIpBDb+kwmw+m/ffwdP1AHW+HBXN+/w?=
+ =?us-ascii?Q?jcG1mF2ulLnlEIlpVmULg/4QAPwReiRerhyHasO9CX+4/ERvJRJD4NmQdSBX?=
+ =?us-ascii?Q?7XbIXXCMHVVjC2UMVZ217i1brxEmtP9+hmzxZWxWAkpQ6S4Aw8mtDujAAT0M?=
+ =?us-ascii?Q?P7mHvb4nGF5S9HyU0Cm7A+YTa40BKuTEvXc1YT1jm5SMObPtTsQew14GLqTk?=
+ =?us-ascii?Q?PuvnGK6CyVQNVK7sjWdSCmof7FSmL5KogJcz6NOpnj0wzSET3MqCFC0QgyED?=
+ =?us-ascii?Q?f7bpbSjc3XzcddbMFyDwr3iiXqxFz0L0zfFPFacMJ7lQcjvi/yykNy6TyykL?=
+ =?us-ascii?Q?Tn1UiYKDXX4Eme3DASC0YA7ahOb12JAA4dEnYQgahhSEEwR+3e/pUjId6j0g?=
+ =?us-ascii?Q?wa52MNPhmT1Gv/NQ9q73P0BDQdtonHF4L1XlzmEbRCyv4ooYD6tm9K8y+Sfp?=
+ =?us-ascii?Q?otjaXJ8Ig7HeIdkIo/TxPp9K1utj57gIJ2s4hhs8eH4SQoNCxxdftl/V+A9S?=
+ =?us-ascii?Q?u5lTKrFHknJJM37zetfyttaXYOK+fr2EOxFF/N/uyta7GdQST/y0wVa+Ql36?=
+ =?us-ascii?Q?0pK3xV9ZWVcGayLRT3vON34qmCtpbnJJNLj/kac6GmJfaizyuzJfGOwUnYvx?=
+ =?us-ascii?Q?DnVMDVm3eNJn8SWLuq09PU5yaA4QE8V/47LLo6fa+N+H5KE6QSJRNaCoRb/e?=
+ =?us-ascii?Q?5+rOa7E8Ee5Gf7VZTEPI5BTS8P1bJxaqfBJQEX25R2Ra3BZAMPS8596cV0XZ?=
+ =?us-ascii?Q?ydKL+E57UpTjVgoK4wc=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR12MB5330.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87be2e86-0a00-4c68-f674-08da88d49c3e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2022 09:06:36.1850
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iope2Q1MJhgr1pVgcKWdy189+H7MM0y/vkZ6SZIQ8g8ywhb2lG6/SSP60CEKhGEH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5175
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Yury, Valentin,
+Thanks. Missed it. I also got a report from netdev. I'll send a fix to netd=
+ev (as the original commit) and I'll ping you when its there.
 
-On Thu, 2022-08-25 at 13:49 -0700, Yury Norov wrote:
-> + Sander Vanheule
->=20
-> On Thu, Aug 25, 2022 at 07:12:02PM +0100, Valentin Schneider wrote:
-> > Consider a system with 4 CPUs and:
-> > =C2=A0 CONFIG_NR_CPUS=3D64
-> > =C2=A0 CONFIG_CPUMASK_OFFSTACK=3Dn
-> >=20
-> > In this situation, we have:
-> > =C2=A0 nr_cpumask_bits =3D=3D NR_CPUS =3D=3D 64
-> > =C2=A0 nr_cpu_ids =3D 4
-> >=20
-> > Per smp.c::setup_nr_cpu_ids(), nr_cpu_ids <=3D NR_CPUS, so we want
-> > cpumask_full() to check for nr_cpu_ids bits set.
-> >=20
-> > This issue is currently pointed out by the cpumask KUnit tests:
-> >=20
-> > =C2=A0 [=C2=A0=C2=A0 14.072028]=C2=A0=C2=A0=C2=A0=C2=A0 # test_cpumask_=
-weight: EXPECTATION FAILED at
-> > lib/test_cpumask.c:57
-> > =C2=A0 [=C2=A0=C2=A0 14.072028]=C2=A0=C2=A0=C2=A0=C2=A0 Expected cpumas=
-k_full(((const struct cpumask
-> > *)&__cpu_possible_mask)) to be true, but is false
-> > =C2=A0 [=C2=A0=C2=A0 14.079333]=C2=A0=C2=A0=C2=A0=C2=A0 not ok 1 - test=
-_cpumask_weight
-> >=20
-> > Signed-off-by: Valentin Schneider <vschneid@redhat.com>
->=20
-> It's really a puzzle, and some of my thoughts are below. So.=20
->=20
-> This is a question what for we need nr_cpumask_bits while we already
-> have nr_cpu_ids. When OFFSTACK is ON, they are obviously the same.
-> When it's of - the nr_cpumask_bits is an alias to NR_CPUS.
->=20
-> I tried to wire the nr_cpumask_bits to nr_cpu_ids unconditionally, and
-> it works even when OFFSTACK is OFF, no surprises.
->=20
-> I didn't find any discussions describing what for we need nr_cpumask_bits=
-,
-> and the code adding it dates to a very long ago.
->=20
-> If I alias nr_cpumask_bits to nr_cpu_ids unconditionally on my VM with
-> NR_CPUs =3D=3D 256 and nr_cpu_ids =3D=3D 4, there's obviously a clear win=
- in
-> performance, but the Image size gets 2.5K bigger. Probably that's the
-> reason for what nr_cpumask_bits was needed...
 
-I think it makes sense to have a compile-time-constant value for nr_cpumask=
-_bits
-in some cases. For example on embedded platforms, where every opportunity t=
-o
-save a few kB should be used, or cases where NR_CPUS <=3D BITS_PER_LONG.
-
->=20
-> There's also a very old misleading comment in cpumask.h:
->=20
-> =C2=A0*=C2=A0 If HOTPLUG is enabled, then cpu_possible_mask is forced to =
-have
-> =C2=A0*=C2=A0 all NR_CPUS bits set, otherwise it is just the set of CPUs =
-that
-> =C2=A0*=C2=A0 ACPI reports present at boot.
->=20
-> It lies, and I checked with x86_64 that cpu_possible_mask is populated
-> during boot time with 0b1111, if I create a 4-cpu VM. Hence, the
-> nr_cpu_ids is 4, while NR_CPUS =3D=3D 256.
->=20
-> Interestingly, there's no a single user of the cpumask_full(),
-> obviously, because it's broken. This is really a broken dead code.
->=20
-> Now that we have a test that checks sanity of cpumasks, this mess
-> popped up.
->=20
-> Your fix doesn't look correct, because it fixes one function, and
-> doesn't touch others. For example, the cpumask subset() may fail
-> if src1p will have set bits after nr_cpu_ids, while cpumask_full()
-> will be returning true.
-
-It appears the documentation for cpumask_full() is also incorrect, because =
-it
-claims to check if all CPUs < nr_cpu_ids are set. Meanwhile, the implementa=
+-----Original Message-----
+From: Dan Carpenter <dan.carpenter@oracle.com>=20
+Sent: Friday, August 26, 2022 10:25 AM
+To: Roi Dayan <roid@nvidia.com>
+Cc: linux-rdma@vger.kernel.org
+Subject: [bug report] net/mlx5: E-Switch, Move send to vport meta rule crea=
 tion
-checks if all CPUs < nr_cpumask_bits are set.
 
-cpumask_weight() has a similar issue, and maybe also other cpumask_*() func=
-tions
-(I didn't check in detail yet).
+Hello Roi Dayan,
 
->=20
-> In -next, there is an update from Sander for the cpumask test that
-> removes this check, and probably if you rebase on top of -next, you
-> can drop this and 2nd patch of your series.
->=20
-> What about proper fix? I think that a long time ago we didn't have
-> ACPI tables for possible cpus, and didn't populate cpumask_possible
-> from that, so the
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #define nr_cpumask_bits NR_CPU=
-S
->=20
-> worked well. Now that we have cpumask_possible partially filled,
-> we have to always
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #define nr_cpumask_bits nr_cpu=
-_ids
->=20
-> and pay +2.5K price in size even if OFFSTACK is OFF. At least, it wins
-> at runtime...
->=20
-> Any thoughts?
+The patch 430e2d5e2a98: "net/mlx5: E-Switch, Move send to vport meta
+rule creation" from Jul 18, 2022, leads to the following Smatch
+static checker warning:
 
-It looks like both nr_cpumask_bits and nr_cpu_ids are used in a number of p=
-laces
-outside of lib/cpumask.c. Documentation for cpumask_*() functions almost al=
-ways
-refers to nr_cpu_ids as a highest valid value.
+	drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:489 mlx5e_rep_add_meta_tu=
+nnel_rule()
+	error: uninitialized symbol 'err'.
 
-Perhaps nr_cpumask_bits should become an variable for internal cpumask usag=
-e,
-and external users should only use nr_cpu_ids? The changes in 6.0 are my fi=
-rst
-real interaction with cpumask, so it's possible that there are things I'm
-missing here.
+drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+    466 static int
+    467 mlx5e_rep_add_meta_tunnel_rule(struct mlx5e_priv *priv)
+    468 {
+    469         struct mlx5_eswitch *esw =3D priv->mdev->priv.eswitch;
+    470         struct mlx5e_rep_priv *rpriv =3D priv->ppriv;
+    471         struct mlx5_eswitch_rep *rep =3D rpriv->rep;
+    472         struct mlx5_flow_handle *flow_rule;
+    473         struct mlx5_flow_group *g;
+    474         int err;
+    475=20
+    476         g =3D esw->fdb_table.offloads.send_to_vport_meta_grp;
+    477         if (!g)
+    478                 return 0;
+    479=20
+    480         flow_rule =3D mlx5_eswitch_add_send_to_vport_meta_rule(esw,=
+ rep->vport);
+    481         if (IS_ERR(flow_rule)) {
+    482                 err =3D PTR_ERR(flow_rule);
+    483                 goto out;
+    484         }
+    485=20
+    486         rpriv->send_to_vport_meta_rule =3D flow_rule;
+    487=20
+    488 out:
+--> 489         return err;
 
-That being said, some of the cpumask tests compare results to nr_cpumask_bi=
-ts,
-so those should then probably be fixed to compare against nr_cpu_ids instea=
-d.
+"err" not initialized on success path.  "goto out;" is 100% suck.
+Forgot to set the error code is the canonical bug for do-nothing gotos.
 
-Best,
-Sander
+    490 }
 
->=20
-> ---
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index 5e2b10fb4975..0f044d93ad01 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -41,13 +41,7 @@ typedef struct cpumask { DECLARE_BITMAP(bits, NR_CPUS)=
-; }
-> cpumask_t;
-> =C2=A0extern unsigned int nr_cpu_ids;
-> =C2=A0#endif
-> =C2=A0
-> -#ifdef CONFIG_CPUMASK_OFFSTACK
-> -/* Assuming NR_CPUS is huge, a runtime limit is more efficient.=C2=A0 Al=
-so,
-> - * not all bits may be allocated. */
-> =C2=A0#define nr_cpumask_bits=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0nr_cpu_ids
-> -#else
-> -#define nr_cpumask_bits=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0(=
-(unsigned int)NR_CPUS)
-> -#endif
-> =C2=A0
-> =C2=A0/*
-> =C2=A0 * The following particular system cpumasks and operations manage
-> @@ -67,10 +61,6 @@ extern unsigned int nr_cpu_ids;
-> =C2=A0 *=C2=A0 cpu_online_mask is the dynamic subset of cpu_present_mask,
-> =C2=A0 *=C2=A0 indicating those CPUs available for scheduling.
-> =C2=A0 *
-> - *=C2=A0 If HOTPLUG is enabled, then cpu_possible_mask is forced to have
-> - *=C2=A0 all NR_CPUS bits set, otherwise it is just the set of CPUs that
-> - *=C2=A0 ACPI reports present at boot.
-> - *
-> =C2=A0 *=C2=A0 If HOTPLUG is enabled, then cpu_present_mask varies dynami=
-cally,
-> =C2=A0 *=C2=A0 depending on what ACPI reports as currently plugged in, ot=
-herwise
-> =C2=A0 *=C2=A0 cpu_present_mask is just a copy of cpu_possible_mask.
-
+regards,
+dan carpenter
