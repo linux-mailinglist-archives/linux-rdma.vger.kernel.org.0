@@ -2,43 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5E85A45AA
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 11:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE055A45B2
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 11:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbiH2JEW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Aug 2022 05:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
+        id S229468AbiH2JGP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Aug 2022 05:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbiH2JEV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Aug 2022 05:04:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77A45A3CF
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Aug 2022 02:04:20 -0700 (PDT)
+        with ESMTP id S229446AbiH2JGO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Aug 2022 05:06:14 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2BF1A3B7;
+        Mon, 29 Aug 2022 02:06:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 640B0B80D8C
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Aug 2022 09:04:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F1E5C433D6;
-        Mon, 29 Aug 2022 09:04:17 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 17C95B80DD6;
+        Mon, 29 Aug 2022 09:06:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0E61C433C1;
+        Mon, 29 Aug 2022 09:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661763858;
-        bh=sRA2qeVyjq+B/DC7ye2lGpGZIMh3TdZBZNBy95Wnsyo=;
+        s=k20201202; t=1661763970;
+        bh=YxiSEiU77AdSBWd5wKKmc+hVh2H8m4okfNHl0r7sunw=;
         h=From:To:Cc:Subject:Date:From;
-        b=qtrp8QflUGXjeWfLiv70iexDggkKYdwRpAHXCk+LN7oJZLmf9nuNkZcddA0qo2N9r
-         caCGhOeKqDFw5xpUWPxwwFPPCKn7fNRBr4gpBa84OQCDBDTgcouu/YIdhF2F/VOpYt
-         Lsd++4o7hDoNTNdWFC1LletlCWro/bYTBsVrjlQSid2rRkRuN98SN5Dku59rL9bjSS
-         hUPRPJytkpwD6ERf8lZGvNzUswnOIFnR/tIDs4Hs7ctrc3BQ2/gRKtJNA8rv2WrbwG
-         g+tHkIqSAMf+wJ3sgiQ8rFQrrhNL0pYzO895vYXHn4qV7olM26XH81WPnnOhbs9IPL
-         5DMdnkI1q0i+Q==
+        b=dNgP346bm9X914Gn21n2UWqpMfES9xOcNa/OUgCvtGxwHG4B7Mytn1S6F+ACoxLp7
+         clMS0VATqpxjYpgxwxuasf3c1A810wm1hxCT2gZ5yT3eWZXsXVZU9pPPkplh4DZkam
+         9A7qVwdvWGh0XOuCRUDFBO3nn98XpslHPfA7ZAWwwlcV/cjkznTeHkd6cU1S2t3Hy3
+         yfUqNy01x41pTGXY6v1sNTCMLFRX0QWciTgvtFMPYZlEn+T61mI9WRofgaWASS2kRa
+         Al0cBVPCZKsup9wB4R8om+AIvQQyUVgHEn0OutaoLP2fa2z0IhXWiaTwNlV/RvrFO+
+         HX1anmVoIlk0g==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Bodong Wang <bodong@mellanox.com>,
-        Erez Shitrit <erezsh@nvidia.com>, linux-rdma@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH rdma-next] IB/mlx5: Support querying eswitch functions from DEVX
-Date:   Mon, 29 Aug 2022 12:04:12 +0300
-Message-Id: <4265925178ab3224dc1d3e3784bb312d808edca5.1661763785.git.leonro@nvidia.com>
+Cc:     Chris Mi <cmi@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Roi Dayan <roid@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH mlx5-next] RDMA/mlx5: Move function mlx5_core_query_ib_ppcnt() to mlx5_ib
+Date:   Mon, 29 Aug 2022 12:06:04 +0300
+Message-Id: <fd47b9138412bd94ed30f838026cbb4cf3878150.1661763871.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -52,39 +53,112 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bodong Wang <bodong@mellanox.com>
+From: Chris Mi <cmi@nvidia.com>
 
-Query eswitch functions returns information of the external host
-PF(if it exists). It can be used to check if DEVX is running on ECPF.
+This patch doesn't change any functionality, but move one function
+to mlx5_ib because it is not used by mlx5_core.
 
-Reviewed-by: Erez Shitrit <erezsh@nvidia.com>
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Bodong Wang <bodong@mellanox.com>
+The actual fix is in the next patch.
+
+Reviewed-by: Roi Dayan <roid@nvidia.com>
+Signed-off-by: Chris Mi <cmi@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/devx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/infiniband/hw/mlx5/mad.c              | 25 +++++++++++++++++--
+ .../net/ethernet/mellanox/mlx5/core/port.c    | 23 -----------------
+ include/linux/mlx5/driver.h                   |  2 --
+ 3 files changed, 23 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index d617f3ff9779..c8c345d90e0f 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -907,6 +907,7 @@ static bool devx_is_whitelist_cmd(void *in)
- 	case MLX5_CMD_OP_QUERY_HCA_CAP:
- 	case MLX5_CMD_OP_QUERY_HCA_VPORT_CONTEXT:
- 	case MLX5_CMD_OP_QUERY_ESW_VPORT_CONTEXT:
-+	case MLX5_CMD_OP_QUERY_ESW_FUNCTIONS:
- 		return true;
- 	default:
- 		return false;
-@@ -962,6 +963,7 @@ static bool devx_is_general_cmd(void *in, struct mlx5_ib_dev *dev)
- 	case MLX5_CMD_OP_QUERY_CONG_PARAMS:
- 	case MLX5_CMD_OP_QUERY_CONG_STATISTICS:
- 	case MLX5_CMD_OP_QUERY_LAG:
-+	case MLX5_CMD_OP_QUERY_ESW_FUNCTIONS:
- 		return true;
- 	default:
- 		return false;
+diff --git a/drivers/infiniband/hw/mlx5/mad.c b/drivers/infiniband/hw/mlx5/mad.c
+index 293ed709e5ed..d834ec13b1b3 100644
+--- a/drivers/infiniband/hw/mlx5/mad.c
++++ b/drivers/infiniband/hw/mlx5/mad.c
+@@ -147,6 +147,28 @@ static void pma_cnt_assign(struct ib_pma_portcounters *pma_cnt,
+ 			     vl_15_dropped);
+ }
+ 
++static int query_ib_ppcnt(struct mlx5_core_dev *dev, u8 port_num, void *out,
++			  size_t sz)
++{
++	u32 *in;
++	int err;
++
++	in  = kvzalloc(sz, GFP_KERNEL);
++	if (!in) {
++		err = -ENOMEM;
++		return err;
++	}
++
++	MLX5_SET(ppcnt_reg, in, local_port, port_num);
++
++	MLX5_SET(ppcnt_reg, in, grp, MLX5_INFINIBAND_PORT_COUNTERS_GROUP);
++	err = mlx5_core_access_reg(dev, in, sz, out,
++				   sz, MLX5_REG_PPCNT, 0, 0);
++
++	kvfree(in);
++	return err;
++}
++
+ static int process_pma_cmd(struct mlx5_ib_dev *dev, u32 port_num,
+ 			   const struct ib_mad *in_mad, struct ib_mad *out_mad)
+ {
+@@ -202,8 +224,7 @@ static int process_pma_cmd(struct mlx5_ib_dev *dev, u32 port_num,
+ 			goto done;
+ 		}
+ 
+-		err = mlx5_core_query_ib_ppcnt(mdev, mdev_port_num,
+-					       out_cnt, sz);
++		err = query_ib_ppcnt(mdev, mdev_port_num, out_cnt, sz);
+ 		if (!err)
+ 			pma_cnt_assign(pma_cnt, out_cnt);
+ 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/port.c b/drivers/net/ethernet/mellanox/mlx5/core/port.c
+index e1bd54574ea5..a1548e6bfb35 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/port.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/port.c
+@@ -493,29 +493,6 @@ int mlx5_query_port_vl_hw_cap(struct mlx5_core_dev *dev,
+ }
+ EXPORT_SYMBOL_GPL(mlx5_query_port_vl_hw_cap);
+ 
+-int mlx5_core_query_ib_ppcnt(struct mlx5_core_dev *dev,
+-			     u8 port_num, void *out, size_t sz)
+-{
+-	u32 *in;
+-	int err;
+-
+-	in  = kvzalloc(sz, GFP_KERNEL);
+-	if (!in) {
+-		err = -ENOMEM;
+-		return err;
+-	}
+-
+-	MLX5_SET(ppcnt_reg, in, local_port, port_num);
+-
+-	MLX5_SET(ppcnt_reg, in, grp, MLX5_INFINIBAND_PORT_COUNTERS_GROUP);
+-	err = mlx5_core_access_reg(dev, in, sz, out,
+-				   sz, MLX5_REG_PPCNT, 0, 0);
+-
+-	kvfree(in);
+-	return err;
+-}
+-EXPORT_SYMBOL_GPL(mlx5_core_query_ib_ppcnt);
+-
+ static int mlx5_query_pfcc_reg(struct mlx5_core_dev *dev, u32 *out,
+ 			       u32 out_size)
+ {
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index 96b16fbe1aa4..9ccfd9dd0d0f 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -1084,8 +1084,6 @@ int mlx5_core_destroy_psv(struct mlx5_core_dev *dev, int psv_num);
+ void mlx5_core_put_rsc(struct mlx5_core_rsc_common *common);
+ int mlx5_query_odp_caps(struct mlx5_core_dev *dev,
+ 			struct mlx5_odp_caps *odp_caps);
+-int mlx5_core_query_ib_ppcnt(struct mlx5_core_dev *dev,
+-			     u8 port_num, void *out, size_t sz);
+ 
+ int mlx5_init_rl_table(struct mlx5_core_dev *dev);
+ void mlx5_cleanup_rl_table(struct mlx5_core_dev *dev);
 -- 
 2.37.2
 
