@@ -2,163 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE055A45B2
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 11:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E155A45B4
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 11:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbiH2JGP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Aug 2022 05:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        id S229446AbiH2JGX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Aug 2022 05:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbiH2JGO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Aug 2022 05:06:14 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2BF1A3B7;
-        Mon, 29 Aug 2022 02:06:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 17C95B80DD6;
-        Mon, 29 Aug 2022 09:06:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0E61C433C1;
-        Mon, 29 Aug 2022 09:06:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661763970;
-        bh=YxiSEiU77AdSBWd5wKKmc+hVh2H8m4okfNHl0r7sunw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dNgP346bm9X914Gn21n2UWqpMfES9xOcNa/OUgCvtGxwHG4B7Mytn1S6F+ACoxLp7
-         clMS0VATqpxjYpgxwxuasf3c1A810wm1hxCT2gZ5yT3eWZXsXVZU9pPPkplh4DZkam
-         9A7qVwdvWGh0XOuCRUDFBO3nn98XpslHPfA7ZAWwwlcV/cjkznTeHkd6cU1S2t3Hy3
-         yfUqNy01x41pTGXY6v1sNTCMLFRX0QWciTgvtFMPYZlEn+T61mI9WRofgaWASS2kRa
-         Al0cBVPCZKsup9wB4R8om+AIvQQyUVgHEn0OutaoLP2fa2z0IhXWiaTwNlV/RvrFO+
-         HX1anmVoIlk0g==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Chris Mi <cmi@nvidia.com>, Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Roi Dayan <roid@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH mlx5-next] RDMA/mlx5: Move function mlx5_core_query_ib_ppcnt() to mlx5_ib
-Date:   Mon, 29 Aug 2022 12:06:04 +0300
-Message-Id: <fd47b9138412bd94ed30f838026cbb4cf3878150.1661763871.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.37.2
+        with ESMTP id S229530AbiH2JGU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Aug 2022 05:06:20 -0400
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C49237DD
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Aug 2022 02:06:18 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id b16so1690473wru.7
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Aug 2022 02:06:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=dUT6fA9d8r820XadYjeIsKVsw5zT8dmP/mI6xQ6wTNo=;
+        b=txyav2A97JdLMm3gjHSdYLliDSolraqZg+8DCiuA0jLRo+VJ16KT7o+YvlRKnQ4BQu
+         LG9dl2JvzPfivXwzlcBl8f29IMnLuetbv8towNQGB2ErTWSN/LHnlYuKkHQhprYbQ9oW
+         j30lWPhBLEkRWPq+78pcl3hjZ7azlVtTD+pdGbtC543AxM1cvm5IFBDWwRUoPJ5A89vx
+         n7ENuJBS3b2mjGlPtirewtq5xxNyry9ZVrcKwV7RoqcugwHnavBxuXugo6nv3nFP073J
+         DbbI5GVm2srjVkOqum0Jh+nk1uKgHbMxNigWb4kvt91Vue9bx9FOejlbVAGR3zI/1sk3
+         1EBg==
+X-Gm-Message-State: ACgBeo3TEyKW4Nzqex+4xcqercfYoqsmBEv9YnBRreznkaEOSdHrx7tW
+        F5mTRr1TePmAC9iZqueRSUM=
+X-Google-Smtp-Source: AA6agR7iApFvdlU2T/4MzdkD9sp0Y5WMdA7CfNnyj94odG0IknFW271OkgTQw1WRGnBOjuZyyw0b3g==
+X-Received: by 2002:a5d:6484:0:b0:226:dd0e:b09c with SMTP id o4-20020a5d6484000000b00226dd0eb09cmr1278618wri.388.1661763977162;
+        Mon, 29 Aug 2022 02:06:17 -0700 (PDT)
+Received: from [192.168.64.104] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
+        by smtp.gmail.com with ESMTPSA id g13-20020adfe40d000000b002252751629dsm6393794wrm.24.2022.08.29.02.06.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Aug 2022 02:06:16 -0700 (PDT)
+Message-ID: <3030fbb2-5c63-54ea-5be3-b88cf63c6b75@grimberg.me>
+Date:   Mon, 29 Aug 2022 12:06:15 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] nvme-rdma: set ack timeout of RoCE to 262ms
+Content-Language: en-US
+To:     Chao Leng <lengchao@huawei.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20220819075825.21231-1-lengchao@huawei.com>
+ <20220821062016.GA26553@lst.de>
+ <83992e8f-b18a-ccd3-e0ee-a5802043f161@huawei.com>
+ <86e9fc3b-aded-220d-1ee0-4d5928097104@nvidia.com>
+ <f7254cc2-88e0-e91f-e4f1-788c5889fcf1@huawei.com>
+ <fbee7c67-fd7b-12c8-5685-066b1974aadb@grimberg.me>
+ <550d4612-0041-3d84-b1cb-786d0c8e0d11@huawei.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <550d4612-0041-3d84-b1cb-786d0c8e0d11@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chris Mi <cmi@nvidia.com>
 
-This patch doesn't change any functionality, but move one function
-to mlx5_ib because it is not used by mlx5_core.
+>>>> If so, which devices did you use ?
+>>> The host HBA is Mellanox Technologies MT27800 Family [ConnectX-5];
+>>> The switch and storage are huawei equipments.
+>>> In principle, switches and storage devices from other vendors
+>>> have the same problem.
+>>> If you think it is necessary, we can test the other vendor switchs
+>>> and linux target.
+>>
+>> Why is the 2s default chosen, what is the downside for a 250ms seconds 
+>> ack timeout? and why is nvme-rdma different than all other kernel rdma
+> The downside is redundant retransmit if the packets delay more than
+> 250ms in the networks and finally reaches the receiver.
+> Only in extreme scenarios, the packet delay may exceed 250 ms.
 
-The actual fix is in the next patch.
+Sounds like the default needs to be changed if it only addresses the
+extreme scenarios...
 
-Reviewed-by: Roi Dayan <roid@nvidia.com>
-Signed-off-by: Chris Mi <cmi@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/mad.c              | 25 +++++++++++++++++--
- .../net/ethernet/mellanox/mlx5/core/port.c    | 23 -----------------
- include/linux/mlx5/driver.h                   |  2 --
- 3 files changed, 23 insertions(+), 27 deletions(-)
+>> consumers that it needs to set this explicitly?
+> The real-time transaction services are sensitive to the delay.
+> nvme-rdma will be used in real-time transactions.
+> The real-time transaction services do not allow that the packets
+> delay more than 250ms in the networks.
+> So we need to set the ack timeout to 262ms.
 
-diff --git a/drivers/infiniband/hw/mlx5/mad.c b/drivers/infiniband/hw/mlx5/mad.c
-index 293ed709e5ed..d834ec13b1b3 100644
---- a/drivers/infiniband/hw/mlx5/mad.c
-+++ b/drivers/infiniband/hw/mlx5/mad.c
-@@ -147,6 +147,28 @@ static void pma_cnt_assign(struct ib_pma_portcounters *pma_cnt,
- 			     vl_15_dropped);
- }
- 
-+static int query_ib_ppcnt(struct mlx5_core_dev *dev, u8 port_num, void *out,
-+			  size_t sz)
-+{
-+	u32 *in;
-+	int err;
-+
-+	in  = kvzalloc(sz, GFP_KERNEL);
-+	if (!in) {
-+		err = -ENOMEM;
-+		return err;
-+	}
-+
-+	MLX5_SET(ppcnt_reg, in, local_port, port_num);
-+
-+	MLX5_SET(ppcnt_reg, in, grp, MLX5_INFINIBAND_PORT_COUNTERS_GROUP);
-+	err = mlx5_core_access_reg(dev, in, sz, out,
-+				   sz, MLX5_REG_PPCNT, 0, 0);
-+
-+	kvfree(in);
-+	return err;
-+}
-+
- static int process_pma_cmd(struct mlx5_ib_dev *dev, u32 port_num,
- 			   const struct ib_mad *in_mad, struct ib_mad *out_mad)
- {
-@@ -202,8 +224,7 @@ static int process_pma_cmd(struct mlx5_ib_dev *dev, u32 port_num,
- 			goto done;
- 		}
- 
--		err = mlx5_core_query_ib_ppcnt(mdev, mdev_port_num,
--					       out_cnt, sz);
-+		err = query_ib_ppcnt(mdev, mdev_port_num, out_cnt, sz);
- 		if (!err)
- 			pma_cnt_assign(pma_cnt, out_cnt);
- 	}
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/port.c b/drivers/net/ethernet/mellanox/mlx5/core/port.c
-index e1bd54574ea5..a1548e6bfb35 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/port.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/port.c
-@@ -493,29 +493,6 @@ int mlx5_query_port_vl_hw_cap(struct mlx5_core_dev *dev,
- }
- EXPORT_SYMBOL_GPL(mlx5_query_port_vl_hw_cap);
- 
--int mlx5_core_query_ib_ppcnt(struct mlx5_core_dev *dev,
--			     u8 port_num, void *out, size_t sz)
--{
--	u32 *in;
--	int err;
--
--	in  = kvzalloc(sz, GFP_KERNEL);
--	if (!in) {
--		err = -ENOMEM;
--		return err;
--	}
--
--	MLX5_SET(ppcnt_reg, in, local_port, port_num);
--
--	MLX5_SET(ppcnt_reg, in, grp, MLX5_INFINIBAND_PORT_COUNTERS_GROUP);
--	err = mlx5_core_access_reg(dev, in, sz, out,
--				   sz, MLX5_REG_PPCNT, 0, 0);
--
--	kvfree(in);
--	return err;
--}
--EXPORT_SYMBOL_GPL(mlx5_core_query_ib_ppcnt);
--
- static int mlx5_query_pfcc_reg(struct mlx5_core_dev *dev, u32 *out,
- 			       u32 out_size)
- {
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index 96b16fbe1aa4..9ccfd9dd0d0f 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -1084,8 +1084,6 @@ int mlx5_core_destroy_psv(struct mlx5_core_dev *dev, int psv_num);
- void mlx5_core_put_rsc(struct mlx5_core_rsc_common *common);
- int mlx5_query_odp_caps(struct mlx5_core_dev *dev,
- 			struct mlx5_odp_caps *odp_caps);
--int mlx5_core_query_ib_ppcnt(struct mlx5_core_dev *dev,
--			     u8 port_num, void *out, size_t sz);
- 
- int mlx5_init_rl_table(struct mlx5_core_dev *dev);
- void mlx5_cleanup_rl_table(struct mlx5_core_dev *dev);
--- 
-2.37.2
-
+While I don't disagree with the change itself, I do disagree why this
+needs to be driven by nvme-rdma locally. If all kernel rdma consumers
+need this (and if not, I'd like to understand why), this needs to be set 
+in the rdma core.
