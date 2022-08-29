@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4F45A478E
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 12:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B455A478D
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 12:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbiH2KvC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S229929AbiH2KvC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Mon, 29 Aug 2022 06:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60338 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbiH2KvB (ORCPT
+        with ESMTP id S229762AbiH2KvB (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Aug 2022 06:51:01 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBEA1AD9C
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C70439BAE
         for <linux-rdma@vger.kernel.org>; Mon, 29 Aug 2022 03:51:00 -0700 (PDT)
-Received: from dggpeml500023.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MGRxY2mQZznTrj;
-        Mon, 29 Aug 2022 18:48:33 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MGRyJ5glhzHnVP;
+        Mon, 29 Aug 2022 18:49:12 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 29 Aug 2022 18:50:57 +0800
+ 15.1.2375.24; Mon, 29 Aug 2022 18:50:58 +0800
 Received: from localhost.localdomain (10.67.165.2) by
  dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,10 +29,12 @@ From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <liangwenpeng@huawei.com>
-Subject: [PATCH for-next 0/4] RDMA/hns: Bugfixes or cleanups for resource specs or numbers
-Date:   Mon, 29 Aug 2022 18:50:17 +0800
-Message-ID: <20220829105021.1427804-1-liangwenpeng@huawei.com>
+Subject: [PATCH for-next 1/4] RDMA/hns: Fix supported page size
+Date:   Mon, 29 Aug 2022 18:50:18 +0800
+Message-ID: <20220829105021.1427804-2-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20220829105021.1427804-1-liangwenpeng@huawei.com>
+References: <20220829105021.1427804-1-liangwenpeng@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -49,28 +51,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The following is the outline of each patch:
-(1)#1~#3: The earliest code sets the resource specification incorrectly.
-(2)#4: The earliest code used this parameter, but the latest code no longer
-       needs it.
+From: Chengchang Tang <tangchengchang@huawei.com>
 
-Chengchang Tang (1):
-  RDMA/hns: Fix supported page size
+The supported page size for hns is (4K, 128M), not (4K, 2G).
 
-Wenpeng Liang (2):
-  RDMA/hns: Fix wrong fixed value of qp->rq.wqe_shift
-  RDMA/hns: Remove redundant member doorbell_qpn of struct hns_roce_qp
+Fixes: cfc85f3e4b7f ("RDMA/hns: Add profile support for hip08 driver")
+Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yixing Liu (1):
-  RDMA/hns: Remove the num_qpc_timer variable
-
- drivers/infiniband/hw/hns/hns_roce_device.h |  2 --
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  5 ++---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  4 ++--
- drivers/infiniband/hw/hns/hns_roce_main.c   |  2 +-
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 10 ++--------
- 5 files changed, 7 insertions(+), 16 deletions(-)
-
---
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index ae29780dd63a..c170cd2fe03f 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -83,7 +83,7 @@
+ 
+ #define HNS_ROCE_V2_QPC_TIMER_ENTRY_SZ		PAGE_SIZE
+ #define HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ		PAGE_SIZE
+-#define HNS_ROCE_V2_PAGE_SIZE_SUPPORTED		0xFFFFF000
++#define HNS_ROCE_V2_PAGE_SIZE_SUPPORTED		0xFFFF000
+ #define HNS_ROCE_V2_MAX_INNER_MTPT_NUM		2
+ #define HNS_ROCE_INVALID_LKEY			0x0
+ #define HNS_ROCE_INVALID_SGE_LENGTH		0x80000000
+-- 
 2.30.0
 
