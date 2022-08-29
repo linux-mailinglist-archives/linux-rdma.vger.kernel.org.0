@@ -2,92 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B2F5A4E30
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 15:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073D75A4DD5
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 15:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbiH2Ne2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Aug 2022 09:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
+        id S231309AbiH2NYH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Aug 2022 09:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbiH2Ne0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Aug 2022 09:34:26 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF628A7FF
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Aug 2022 06:34:24 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MGW7d6xTkzlWWH;
-        Mon, 29 Aug 2022 21:12:29 +0800 (CST)
-Received: from [10.169.59.127] (10.169.59.127) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 29 Aug 2022 21:15:51 +0800
-Subject: Re: [PATCH] nvme-rdma: set ack timeout of RoCE to 262ms
-To:     Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>
-CC:     <linux-nvme@lists.infradead.org>, <kbusch@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20220819075825.21231-1-lengchao@huawei.com>
- <20220821062016.GA26553@lst.de>
- <83992e8f-b18a-ccd3-e0ee-a5802043f161@huawei.com>
- <86e9fc3b-aded-220d-1ee0-4d5928097104@nvidia.com>
- <f7254cc2-88e0-e91f-e4f1-788c5889fcf1@huawei.com>
- <fbee7c67-fd7b-12c8-5685-066b1974aadb@grimberg.me>
- <550d4612-0041-3d84-b1cb-786d0c8e0d11@huawei.com>
- <3030fbb2-5c63-54ea-5be3-b88cf63c6b75@grimberg.me>
-From:   Chao Leng <lengchao@huawei.com>
-Message-ID: <c86a6cea-09b5-c04c-aa7b-adc6a457acf6@huawei.com>
-Date:   Mon, 29 Aug 2022 21:15:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        with ESMTP id S230165AbiH2NXQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Aug 2022 09:23:16 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5DB3ECC8
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Aug 2022 06:20:17 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id b44so10077366edf.9
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Aug 2022 06:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=mQUHTuYnqcoAeXul3EMTaZkjzPrI/1mvOnzVF5OZRzI=;
+        b=L41nImzv8K5JsEIJizxYFWSpOBw1i7vOEH4Q8rIVvEIm75QDMYbrg2QawScMLgtk2O
+         7nnMXD7LseTKALkAxn81FcBtgf7klmlkj9rG7lq4kF/pr52w95TT6g3Tj2hGhr8EgrT0
+         NBxIkJV7J6YDkp+LUZv3jhvnJYo/Ec5oJ8Z0cShElsTG8lDSM55MQZevTC7DmeoGAqsg
+         erS+2jH+/Xyc8Cvv6ajVsKzSskEwVzXDOflfiGqK8RXS+p8kuBnj5Suoer4f8b0Lhla/
+         +F5HDCkDPMq7+5QtBypwjffEa/XaX/hK6XIKrBVpsun8kvHQD/Qf01oTehKiPseryJtz
+         1q/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=mQUHTuYnqcoAeXul3EMTaZkjzPrI/1mvOnzVF5OZRzI=;
+        b=n88nWbyQTkk83HguaUUyPd2tRspJvPYpS4YlVdXaUnkxzFxG53F+tk/Wz7H8jm9XTI
+         mJQjcxM1dJz/ozcrBDQewyLGempkrb0l8thZudC8PHsZJeXqsDN1bDcmPhgQDh6GA+Bq
+         BJo/BNaXg/FUE6lDODYcTRCV2S1IacfqDUsvDPIHGCTPkf7L99bYD2zcNXCBUgZZM+jK
+         rxtggIPEE2BniSoPbypSs8hXhM907nYrL2/xJbcSMHbx49Te9evO3xoSd9aLgqCKP/0S
+         5tZkmBIQETB7qvUHyYtmQTQAgdyTPda6LhbjPkbuhY7A6feq6hYlETRVprHjSoGWN+r1
+         3O+w==
+X-Gm-Message-State: ACgBeo2M6Q7omqtnJLDJnpnkXSSjByvtzkURwFOxZgIyJh3GzezAkiQy
+        Z/VCLnEcOGL6r7kVPYqbcyWxS9bnx3KVrRtFRox4eg==
+X-Google-Smtp-Source: AA6agR40wYNFW+LmW9zrbbUsooJU1a0lKwiC6U1QfIvaROBxj+jTCcLg3W0p/vtSj4Nc00eMEFjGsDlCUA5IOL4z+r8=
+X-Received: by 2002:a05:6402:1286:b0:447:e8ca:207b with SMTP id
+ w6-20020a056402128600b00447e8ca207bmr12452322edv.95.1661779165341; Mon, 29
+ Aug 2022 06:19:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3030fbb2-5c63-54ea-5be3-b88cf63c6b75@grimberg.me>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.169.59.127]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220826095615.74328-1-jinpu.wang@ionos.com> <20220826095615.74328-3-jinpu.wang@ionos.com>
+ <YwtM+/nB1F6p1Ey3@unreal> <CAMGffEmffkW0fHrjx84gQ6FnWuwriRUg=HSdwzU4W_sZLdiT7g@mail.gmail.com>
+ <Ywyr0+b350SZrznw@unreal>
+In-Reply-To: <Ywyr0+b350SZrznw@unreal>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Mon, 29 Aug 2022 15:19:14 +0200
+Message-ID: <CAMGffE=m_Na9n-oHkxm6C2C1sC3U9LkN_7k8Xx9g9SG2ifDjrw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] RDMA: dma-mapping: Return an unsigned int from ib_dma_map_sg{,_attrs}
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Aug 29, 2022 at 2:06 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Mon, Aug 29, 2022 at 11:40:40AM +0200, Jinpu Wang wrote:
+> > On Sun, Aug 28, 2022 at 1:09 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > On Fri, Aug 26, 2022 at 11:56:15AM +0200, Jack Wang wrote:
+> > > > Following 2a047e0662ae ("dma-mapping: return an unsigned int from dma_map_sg{,_attrs}")
+> > > > change the return value of ib_dma_map_sg{,attrs} to unsigned int.
+> > > >
+> > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > > > Cc: Leon Romanovsky <leon@kernel.org>
+> > > > Cc: Christoph Hellwig <hch@lst.de>
+> > > > Cc: linux-rdma@vger.kernel.org
+> > > > Cc: linux-kernel@vger.kernel.org
+> > > >
+> > > > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> > > > ---
+> > > >  drivers/infiniband/core/device.c | 2 +-
+> > > >  include/rdma/ib_verbs.h          | 6 +++---
+> > > >  2 files changed, 4 insertions(+), 4 deletions(-)
+> > >
+> > > You forgot to change ib_dma_map_sgtable_attrs() and various
+> > > ib_dma_map_sg*() callers.
+> > No, they are different.
+> > ib_dma_map_sgtable_attrs and dma_map_sgtable return negative on errors.
+>
+> It is not the point. You changed ib_dma_virt_map_sg() to be unsigned,
+> so now the following lines are not correct:
+>
+>   4138         int nents;
+>   4139
+>   4140         if (ib_uses_virt_dma(dev)) {
+>   4141                 nents = ib_dma_virt_map_sg(dev, sgt->sgl, sgt->orig_nents);
+>
+> "int nents" should be changed to "unsigned int".
+>
+> Thanks
+ok, I can do it.
+just to check if we are on the same page:
+For all the callers of ib_dma_map_sg,  would it be better to fix it
+one patch per driver or do it in a single bigger patch.
+I feel it's better to do it per driver, and there are drivers from
+different subsystems e.g. nvme/rds/etc.
+
+Thx!
 
 
-On 2022/8/29 17:06, Sagi Grimberg wrote:
-> 
->>>>> If so, which devices did you use ?
->>>> The host HBA is Mellanox Technologies MT27800 Family [ConnectX-5];
->>>> The switch and storage are huawei equipments.
->>>> In principle, switches and storage devices from other vendors
->>>> have the same problem.
->>>> If you think it is necessary, we can test the other vendor switchs
->>>> and linux target.
->>>
->>> Why is the 2s default chosen, what is the downside for a 250ms seconds ack timeout? and why is nvme-rdma different than all other kernel rdma
->> The downside is redundant retransmit if the packets delay more than
->> 250ms in the networks and finally reaches the receiver.
->> Only in extreme scenarios, the packet delay may exceed 250 ms.
-> 
-> Sounds like the default needs to be changed if it only addresses the
-> extreme scenarios...
-> 
->>> consumers that it needs to set this explicitly?
->> The real-time transaction services are sensitive to the delay.
->> nvme-rdma will be used in real-time transactions.
->> The real-time transaction services do not allow that the packets
->> delay more than 250ms in the networks.
->> So we need to set the ack timeout to 262ms.
-> 
-> While I don't disagree with the change itself, I do disagree why this
-> needs to be driven by nvme-rdma locally. If all kernel rdma consumers
-> need this (and if not, I'd like to understand why), this needs to be set in the rdma core.Changing the default set in the rdma core is another option.
-But it will affect all application based on RDMA.
-Max, what do you think? Thank you.
-> .
+>
+> > >
+> > > Thanks
+> > Thanks!
