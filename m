@@ -2,97 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C646E5A423A
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 07:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169B95A4273
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Aug 2022 07:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbiH2F1v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Aug 2022 01:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
+        id S229540AbiH2FmE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Aug 2022 01:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbiH2F1u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Aug 2022 01:27:50 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAC94598F
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Aug 2022 22:27:47 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id u9so13483136ejy.5
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Aug 2022 22:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=Rl3H3kwhWRRuIV9mnCNIVAy3s7btuOoctkFdruBo/gs=;
-        b=QYoZhw2R+dKSGUHL6/g3iTZCg2fFJoYMmPT+Tnniby0tI4ULrhG/bFOu9zP9+aQ9dk
-         63s4scAsjmvPnO31UjV3YIEq/Vp2dZIs+cbyXiPRTq3fLULPjftam66LZ8HiOX9lCV6P
-         EJ9KptlID85EbmZ6czzjY8SaEuoqml0rqXpXxcP+PGxwFuc+xA2us7/qeVx/llqlCPDW
-         ygU1fzYoDKaawxdKGF+HkzNa1folwGqNudPDT21wRkqGfyyla7Xs5wv//wv/7i3UXqiM
-         RH+TyrWlFyZLZTW6UMJPfwD2KoHXVqyufdADuDT/KpWdk4BZvAjUONCtIRHcvHCwtO3I
-         Erfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=Rl3H3kwhWRRuIV9mnCNIVAy3s7btuOoctkFdruBo/gs=;
-        b=Jxativ+KTumbJkDPGFUWk898ulYkgS81N9EwqLSd806W9Btr0HMq5XIbNDAPi04cj7
-         LYe9zirTtiseOcaHidnvgXCDksqcOL3FZruQmD/TUoffDzzS79PZKLKW80t11GOPC69h
-         qNdsx/8CNcu2eWeDWdFqqNPG0xIRM4/MmjIvqbQ8tVy9YiCi8zp8S7t9BsikfuB7qFXK
-         saEdZsKuuSkb5t1uFVd2C9juVa+PA/lfACbjQOMnFZTc10YWzQHUKilyH0IHOUyetL76
-         ELPhdBNQWcY6zalKPlKRq+BgY5uglxASJOiVQqxiq9TOgiBuAojFUX+6uLa2Rqn3odaq
-         ogbA==
-X-Gm-Message-State: ACgBeo1hbKph/XAENOXrekYDVnWAzzlEzkGwCLQwbluR0qCV01ueEu+O
-        g7hLVCTzrll3jfhe/pR5kGqJLSxzDvLfojbBi2caxQ==
-X-Google-Smtp-Source: AA6agR7cPPJa1sKgkh6/MbfaeUh3WlrXGuwxWXehUisqM5f40Y++fv9Irl9n5l6HE90qgIxVV7Oinz8hTxi1fhykU2U=
-X-Received: by 2002:a17:907:6285:b0:738:e862:a1b with SMTP id
- nd5-20020a170907628500b00738e8620a1bmr12847279ejc.70.1661750865893; Sun, 28
- Aug 2022 22:27:45 -0700 (PDT)
+        with ESMTP id S229504AbiH2FmD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Aug 2022 01:42:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36FB2CE16
+        for <linux-rdma@vger.kernel.org>; Sun, 28 Aug 2022 22:42:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FC0F61025
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Aug 2022 05:42:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31CECC433D6;
+        Mon, 29 Aug 2022 05:42:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661751721;
+        bh=vMySWFAysGpe9V0NE4VLT7MgDJ27Vi5WjA5yZA8kRvQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p5OuXdTzkMsA4KZGAce9ZlhW+xRSJJuPlXin6EQMeT3NQbhdHuxgxHtH2t/RrzR8/
+         KLJR2L/PNS/hag4qRiPgPb91Bf76VNppIlfH/hws5mpCSDngDdeFt0Oy12EKKD2tzW
+         0IgJKYDLLyej2dTWacdWmdOve4QcdNvCDWR4qQJsSz5Skz+8ONXOfVnze+Exp05W6Z
+         A8C9CxdFnVZjFR7YJwKuh35xthlsw5dydzuMmU6jGCiyHBJBEFCMrRLAqVAUKQRej6
+         sbsEOKhwH1Tz4ym8A0AI2bCmVSK9sfojw+F0/mjaMF+6yz5aOmLXpFCn9cVw/3iA5v
+         QFMGsJ+UvglNw==
+Date:   Mon, 29 Aug 2022 08:41:57 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 0/4] RDMA/srp: Handle dev_set_name() failure
+Message-ID: <YwxRpeDB9fpw6j58@unreal>
+References: <20220825213900.864587-1-bvanassche@acm.org>
+ <Yws9t6Xj/08izIdR@unreal>
+ <f98c7a98-21e5-817b-df6c-04df777307c2@acm.org>
 MIME-Version: 1.0
-References: <20220826095615.74328-1-jinpu.wang@ionos.com> <20220826095615.74328-2-jinpu.wang@ionos.com>
- <Yws+/FLRudJE08Xk@unreal>
-In-Reply-To: <Yws+/FLRudJE08Xk@unreal>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Mon, 29 Aug 2022 07:27:35 +0200
-Message-ID: <CAMGffEnoHHeWLE=_WKT96YErXmBK-8mpvRz6=6CRaicaPi+9hg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] infiniband/mthca: Fix dma_map_sg error check
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kees Cook <keescook@chromium.org>,
-        =?UTF-8?B?SMOla29uIEJ1Z2dl?= <haakon.bugge@oracle.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SCC_BODY_URI_ONLY,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f98c7a98-21e5-817b-df6c-04df777307c2@acm.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 28, 2022 at 12:10 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Fri, Aug 26, 2022 at 11:56:14AM +0200, Jack Wang wrote:
-> > dma_map_sg return 0 on error, in case of error set
-> > EIO as return code.
-> >
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Leon Romanovsky <leon@kernel.org>
-> > Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: "H=C3=A5kon Bugge" <haakon.bugge@oracle.com>
-> > Cc: linux-rdma@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Fixes: 56483ec1b702 ("[PATCH] IB uverbs: add mthca user doorbell record=
- support")
-> > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  drivers/infiniband/hw/mthca/mthca_memfree.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> Same answer as was here
-> https://lore.kernel.org/all/YwIbI3ktmEiLsy6s@unreal
->
-> Thanks
-ok, I see you are firm on this, we can skip the patch
+On Sun, Aug 28, 2022 at 12:50:28PM -0700, Bart Van Assche wrote:
+> On 8/28/22 03:04, Leon Romanovsky wrote:
+> > On Thu, Aug 25, 2022 at 02:38:56PM -0700, Bart Van Assche wrote:
+> > > This patch series includes one patch that handles dev_set_name() failure and
+> > > three refactoring patches. Please consider these patches for the next merge
+> > > window.
+> > 
+> > You confuse me. "next merge window" means that patches are targeted to
+> > -next, but you added stable@... tag and didn't add any Fixes lines.
+> > 
+> > I applied everything to rdma-next and removed stable@ tag.
+> 
+> Hi Leon,
+> 
+> Although it's not a big deal for this patch series, please do not modify patches
+> without agreement from the patch author.
+
+I didn't promote the series from my WIP branch to for-next yet and can drop
+them, if you want.
+
+> 
+> As far as I know adding a Fixes: tag if a Cc: stable tag is present is not required
+> by any document in the Documentation/ directory?
+> 
+> I had not added a Fixes: tag because the issue fixed by patch 3/3 was introduced
+> by the commit that added the ib_srp driver to the kernel tree. So it would be fine
+> to backport the first three patches of this series to all older kernel versions to
+> which the patches can be backported.
+
+You wanted third patch in stable@, but didn't add tag to it or any
+indication that it must be there. Instead of it, you added stable@
+to some cleanup that would be backported anyway if third patch would
+be stable material.
+
+Let's me cite Documentation/process/stable-kernel-rules.rst with items
+that make this series is not suitable for stable:
+...
+   12  - It must fix a real bug that bothers people (not a, "This could be a
+   13    problem..." type thing).
+   14  - It must fix a problem that causes a build error (but not for things
+   15    marked CONFIG_BROKEN), an oops, a hang, data corruption, a real
+   16    security issue, or some "oh, that's not good" issue.  In short, something
+   17    critical.
+   18  - Serious issues as reported by a user of a distribution kernel may also
+   19    be considered if they fix a notable performance or interactivity issue.
+   20    As these fixes are not as obvious and have a higher risk of a subtle
+   21    regression they should only be submitted by a distribution kernel
+   22    maintainer and include an addendum linking to a bugzilla entry if it
+   23    exists and additional information on the user-visible impact.
+   24  - New device IDs and quirks are also accepted.
+...
+   25  - No "theoretical race condition" issues, unless an explanation of how the
+   26    race can be exploited is also provided.
+   29  - It must follow the 
+   30    :ref:`Documentation/process/submitting-patches.rst <submittingpatches>`
+   31    rules.
+
+Documentation/process/submitting-patches.rst:
+...
+  137 If your patch fixes a bug in a specific commit, e.g. you found an issue using
+  138 ``git bisect``, please use the 'Fixes:' tag with the first 12 characters of
+  139 the SHA-1 ID, and the one line summary. 
+...
+
+Also I hope that you looked when dev_set_name() can fail. Hint, when it
+failed to allocate enough room for short string "srp-%s-%d". If it is
+happened, you have much more serious problems than not-checked
+dev_set_name().
+
+Why is it so urgent to be part of stable? Can you present me the case
+where user had OOM during dev_set_name at the beginning of srp initialization
+routine and passed device_register() later?
+
+Thanks
+
+> 
+> Thanks,
+> 
+> Bart.
