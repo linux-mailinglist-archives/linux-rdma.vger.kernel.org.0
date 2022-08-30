@@ -2,146 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC845A5F03
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Aug 2022 11:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86145A5FAE
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Aug 2022 11:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbiH3JPi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Aug 2022 05:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44880 "EHLO
+        id S230211AbiH3JpE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Aug 2022 05:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbiH3JPf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Aug 2022 05:15:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859A885FCC;
-        Tue, 30 Aug 2022 02:15:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S230133AbiH3JpB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Aug 2022 05:45:01 -0400
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C798313F98
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Aug 2022 02:44:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+        s=170520fj; t=1661852698; i=@fujitsu.com;
+        bh=ya0OxJl9a8hIiHJm6w5IIjBbbitpIgMbhrImD+vhJcE=;
+        h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+         In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        b=pK/xdcp/zvMCdfXLou+8xrkPIQW5zBl+9oC4Nfs0lVyFB/ok6MEt2UA6IQk1YSea4
+         VWe54Wrc7r7Cac4cn04o4dLgr64SW7sKSLUeCOqmGmHWQnC2h2aTIfM/NTR89BnE6Y
+         rOlBYoUx3zqFz+bvfj6UT6dbI2lbaOEw0TAChWQoYE7LWxIF5Y9odnfpjOVZfDd4xR
+         owsog3c97oJP9mWYWjwZjqqgtDAduRurvBzquU6YTWCDvGrgmDMKaFvBgpoYAbSCCJ
+         EfgkYQfQEgwiUnKJOvDvbhQxkZPxki4SE4J9XluNmpuvBKHB5co/IqE4N6mig3uVba
+         NIpuyuSKibMsA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHKsWRWlGSWpSXmKPExsViZ8ORqCt5hzf
+  ZYPkCI4sr//YwWjw71Mticf5YP7sDs8fOWXfZPXqb37F5fN4kF8AcxZqZl5RfkcCacftpbcEm
+  oYoV60UbGFfzdzFycQgJbGGUmHG1g62LkRPIWcEk8WdREkRiO6PE63trwRK8AnYS358cZAGxW
+  QRUJbq2H4SKC0qcnPkELC4qECHx8NEkMFtYIFLi1fztrCA2s4C4xK0n85lAbBGBKonuPbeg4r
+  kSO7ceZIZY9pxRYk3vFnaQBJuAhsS9lpuMIDanQKzEnD/9TBANFhKL3xxkh7DlJZq3zmYGsSU
+  EFCWOdP4FWswBZFdK3HicChFWk7h6bhPzBEbhWUhOnYXkpFlIps5CMnUBI8sqRuukosz0jJLc
+  xMwcXUMDA11DQ1NdY0tdIwMDvcQq3US91FLd8tTiEl0jvcTyYr3U4mK94src5JwUvbzUkk2Mw
+  EhKKVY/sYPx6cqfeocYJTmYlER5G7bxJgvxJeWnVGYkFmfEF5XmpBYfYpTh4FCS4E25BZQTLE
+  pNT61Iy8wBRjVMWoKDR0mE1/oiUJq3uCAxtzgzHSJ1itGY4/zO/XuZOSb9ubaXWYglLz8vVUq
+  cV/w2UKkASGlGaR7cIFiyucQoKyXMy8jAwCDEU5BalJtZgir/ilGcg1FJmHcVyD08mXklcPte
+  AZ3CBHTKwyXcIKeUJCKkpBqYDk4q3S56/+TaTcayyc3r/x596rr/WN0L0Z0TjZfG5B7ynukbV
+  CrM12/RtO+QzbanXYvevtj5T3njvHvK012W3v73bKF40DnRuR/KQvyebj5XZOcr3RZRm88xSe
+  RB/KS0NDNXdudHjRNaJp3fyDtd7Pwk9jlp93g7/a5dn/ZDIlzfmm952ZyNq3ZrGds/mBbksUs
+  6cKuHWsWNurVJC1+lbm5jOr5j0YHGdVkixW/uPb64YVnB+oXO9kt3SvEkPZ3WvfAl5+fL4frf
+  Zn555v4xrW3CsrWO76MDjKTv3GfO3KlnyHLrLNdt+bPHM45sS4n/fXy6Sycjg4ON2O7Orzmv1
+  mdZJhz4Okvl/Lb868tWHI9QYinOSDTUYi4qTgQAmt3xD7EDAAA=
+X-Env-Sender: lizhijian@fujitsu.com
+X-Msg-Ref: server-21.tower-548.messagelabs.com!1661852697!62334!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.87.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 22430 invoked from network); 30 Aug 2022 09:44:57 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+  by server-21.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 30 Aug 2022 09:44:57 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 7C3E8100194;
+        Tue, 30 Aug 2022 10:44:57 +0100 (BST)
+Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223 [10.182.185.121])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 25830615AF;
-        Tue, 30 Aug 2022 09:15:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F722C433D6;
-        Tue, 30 Aug 2022 09:15:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661850927;
-        bh=0rCKjtciXq7v8NAdMwNUpKFAV7bH3z1yw3HXxLkc038=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PVwwsNBnBm640JzQk8Kab8hp1F4C9Z1erAgsv+pQtJDmEwkQ/n2H8lUHuab+GG3za
-         Xm3T9C3Ah/nNWto6gp7d8ItrKTD3tMYqWJTNlJokLbAoWKvkexy3VnKeeAnrIsJJIL
-         POm/Wgt76E2Ax2bhpgspJLSmIqT2TZZvB6uhe7v1No+8HB59qCwXJwVZlUXysHEknK
-         eVWGeLn7YEgtbb59HvlWXHEhs3XktHVCkK8ncWQCGQIIkuzkpzW3xF2dErTRadD4tC
-         xzTBascDHFc1o1gBUFwiVW7ZzxbTKA+NaGMULsztASGIJiJRfizKg/GAeeC0zR7cx6
-         H22/5Z2y3Kqzw==
-Date:   Tue, 30 Aug 2022 12:15:23 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>
-Cc:     Jinpu Wang <jinpu.wang@ionos.com>, haris.iqbal@ionos.com,
-        axboe@kernel.dk, jgg@ziepe.ca, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] rnbd-srv: remove 'dir' argument from rnbd_srv_rdma_ev
-Message-ID: <Yw3VK/qbixMW7U6z@unreal>
-References: <20220826081117.21687-1-guoqing.jiang@linux.dev>
- <YwxuYrJJRBDxsJ8X@unreal>
- <d969d7bf-d2a3-05aa-26e5-41628f74b8ab@linux.dev>
- <CAMGffE=-Dsr=s1X=00+y1UcOhHC=FJ-9guQAWTDoHLTRBQ7Qaw@mail.gmail.com>
- <Yw3N0ALRz5xcBunA@unreal>
- <a8774cb1-fa99-33cd-f681-527de1e079be@linux.dev>
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 6FB77100192;
+        Tue, 30 Aug 2022 10:44:57 +0100 (BST)
+Received: from [10.167.226.45] (10.167.226.45) by
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.32; Tue, 30 Aug 2022 10:44:54 +0100
+Message-ID: <4eccf566-a8b9-4a5d-d9a4-a24f5b765c3d@fujitsu.com>
+Date:   Tue, 30 Aug 2022 17:44:04 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a8774cb1-fa99-33cd-f681-527de1e079be@linux.dev>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] RDMA/rxe: Delete error messages triggered by incoming
+ Read requests
+Content-Language: en-US
+To:     =?UTF-8?B?TWF0c3VkYSwgRGFpc3VrZS/mnb7nlLAg5aSn6LyU?= 
+        <matsuda-daisuke@fujitsu.com>, "jgg@nvidia.com" <jgg@nvidia.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>
+References: <Ywi8ZebmZv+bctrC@nvidia.com>
+ <20220829054413.1630495-1-matsuda-daisuke@fujitsu.com>
+ <708e6623-7b63-6741-a3ed-fedd4d96d1cb@fujitsu.com>
+ <TYCPR01MB845514BAC6CDED312B2E8720E5769@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+From:   Li Zhijian <lizhijian@fujitsu.com>
+In-Reply-To: <TYCPR01MB845514BAC6CDED312B2E8720E5769@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.226.45]
+X-ClientProxiedBy: G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) To
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121)
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 04:57:19PM +0800, Guoqing Jiang wrote:
-> 
-> 
-> On 8/30/22 4:44 PM, Leon Romanovsky wrote:
-> > On Mon, Aug 29, 2022 at 03:43:43PM +0200, Jinpu Wang wrote:
-> > > On Mon, Aug 29, 2022 at 3:33 PM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
-> > > > 
-> > > > 
-> > > > On 8/29/22 3:44 PM, Leon Romanovsky wrote:
-> > > > > On Fri, Aug 26, 2022 at 04:11:17PM +0800, Guoqing Jiang wrote:
-> > > > > > Since all callers (process_{read,write}) set id->dir, no need to
-> > > > > > pass 'dir' again.
-> > > > > > 
-> > > > > > Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
-> > > > > > ---
-> > > > > >    drivers/block/rnbd/rnbd-srv.c          | 9 ++++-----
-> > > > > >    drivers/block/rnbd/rnbd-srv.h          | 1 +
-> > > > > >    drivers/infiniband/ulp/rtrs/rtrs-srv.c | 4 ++--
-> > > > > >    drivers/infiniband/ulp/rtrs/rtrs.h     | 3 +--
-> > > > > >    4 files changed, 8 insertions(+), 9 deletions(-)
-> > > > > I applied the patch and cleanup of rtrs-srv.h can be done later.
-> > > > Thanks! I suppose below
-> > > > 
-> > > > > So decouple it from rtrs-srv.h and hide everything that not-needed to be
-> > > > > exported to separate header file.
-> > > > means move 'struct rtrs_srv_op' to rtrs.h, which seems not appropriate to me
-> > > > because both client and server include the header. Pls correct me if I
-> > > > am wrong.
-> > > > 
-> > > > Since process_{read,write} prints direction info if ctx->ops.rdma_ev
-> > > > fails, how
-> > > > about remove the 'dir' info from rnbd_srv_rdma_ev? Then we  don't need to
-> > > > include rtrs-srv.h.
-> > > > 
-> > > > diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-> > > > index 431c6da19d3f..d07ff3ba560c 100644
-> > > > --- a/drivers/block/rnbd/rnbd-srv.c
-> > > > +++ b/drivers/block/rnbd/rnbd-srv.c
-> > > > @@ -387,8 +387,8 @@ static int rnbd_srv_rdma_ev(void *priv, struct
-> > > > rtrs_srv_op *id,
-> > > >                                               datalen);
-> > > >                   break;
-> > > >           default:
-> > > > -               pr_warn("Received unexpected message type %d with dir %d
-> > > > from session %s\n",
-> > > > -                       type, id->dir, srv_sess->sessname);
-> > > > +               pr_warn("Received unexpected message type %d from
-> > > > session %s\n",
-> > > > +                       type, srv_sess->sessname);
-> > > >                   return -EINVAL;
-> > > >           }
-> > > > 
-> > > > diff --git a/drivers/block/rnbd/rnbd-srv.h b/drivers/block/rnbd/rnbd-srv.h
-> > > > index 5a0ef6c2b5c7..081bceaf4ae9 100644
-> > > > --- a/drivers/block/rnbd/rnbd-srv.h
-> > > > +++ b/drivers/block/rnbd/rnbd-srv.h
-> > > > @@ -14,7 +14,6 @@
-> > > >    #include <linux/kref.h>
-> > > > 
-> > > >    #include <rtrs.h>
-> > > > -#include <rtrs-srv.h>
-> > > >    #include "rnbd-proto.h"
-> > > >    #include "rnbd-log.h"
-> > > > 
-> > > > 
-> > > > Thoughts?
-> > > I like the idea. Please post a formal patch based on leon's
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=wip/leon-for-next
-> > I squashed this hunk into original patch.
-> 
-> Great, thank you!
-> 
-> If possible, to better reflect the change, please at your convenience to
-> replace the original commit
-> message with below.
-> 
-> "Since process_{read,write} already prints direction info if
-> ctx->ops.rdma_ev fails, no need to pass 'dir'"
 
-Done, as long as patches are in wip/* branches, we can rebase them.
 
-Thanks
+On 29/08/2022 18:21, Matsuda, Daisuke/松田 大輔 wrote:
+> On Monday, August 29, 2022 4:36 PM, Li Zhijian wrote:
+>> On 29/08/2022 13:44, Daisuke Matsuda wrote:
+>>> An incoming Read request causes multiple Read responses. If a user MR to
+>>> copy data from is unavailable or responder cannot send a reply, then the
+>>> error messages can be printed for each response attempt, resulting in
+>>> message overflow.
+>>>
+>>> Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+>>> ---
+>>>    drivers/infiniband/sw/rxe/rxe_resp.c | 6 +-----
+>>>    1 file changed, 1 insertion(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+>>> index b36ec5c4d5e0..4b3e8aec2fb8 100644
+>>> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+>>> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+>>> @@ -811,8 +811,6 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>>>
+>>>    	err = rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
+>>>    			  payload, RXE_FROM_MR_OBJ);
+>>> -	if (err)
+>>> -		pr_err("Failed copying memory\n");
+>> Not relate to this patch.
+>> I'm wondering why this err is ignored, rxe_mr_copy() does the real execution or rxe_mr_copy() would never fail ?
+>> IMO, when err happens, responder shall notify the request anyhow.
+> Practically, I have never seen rxe_mr_copy() failed before,
+> but I agree the implementation may be incorrect as you mentioned.
+>
+> As far as I tested, responder replied with the requested amount of payloads
+> even when rxe_mr_copy() is modified to fail. In this case,
+> requester may mistakenly believe that they get data correctly.
+>
+> For more details, see IB Specification Vol 1-Revision-1.5 Ch.9.7.5.1.3 (page.334).
 
-> 
-> Thanks,
-> Guoqing
+it seems it's suitable to reply NAK code "REMOTE ACCESS ERROR" to the requester side
+by returning RESPST_ERR_RKEY_VIOLATION here.
+
+see "9.7.5.2.4 REMOTE ACCESS ERROR" and "9.7.4.1.5 RESPONDER R_KEY VALIDATION"
+
+
+
+>
+> Daisuke Matsuda
+>
+>> Thanks
+>> Zhijian
+>>
+>>>    	if (mr)
+>>>    		rxe_put(mr);
+>>>
+>>> @@ -823,10 +821,8 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>>>    	}
+>>>
+>>>    	err = rxe_xmit_packet(qp, &ack_pkt, skb);
+>>> -	if (err) {
+>>> -		pr_err("Failed sending RDMA reply.\n");
+>>> +	if (err)
+>>>    		return RESPST_ERR_RNR;
+>>> -	}
+>>>
+>>>    	res->read.va += payload;
+>>>    	res->read.resid -= payload;
+
