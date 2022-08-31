@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A215A816F
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Aug 2022 17:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C68D5A8177
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Aug 2022 17:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbiHaPjU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Aug 2022 11:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
+        id S231898AbiHaPja (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Aug 2022 11:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbiHaPjT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Aug 2022 11:39:19 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B50D8B07;
-        Wed, 31 Aug 2022 08:39:18 -0700 (PDT)
+        with ESMTP id S231913AbiHaPj2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Aug 2022 11:39:28 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A22D91E8;
+        Wed, 31 Aug 2022 08:39:22 -0700 (PDT)
 Received: from dimapc.. (109-252-119-13.nat.spd-mgts.ru [109.252.119.13])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9C50866015A7;
-        Wed, 31 Aug 2022 16:39:14 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id BB1846601DE8;
+        Wed, 31 Aug 2022 16:39:17 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1661960357;
-        bh=mq+kKNWzsZPc/pkrHJnMglMwSZHTxBeTNMlcTvr2RPg=;
+        s=mail; t=1661960360;
+        bh=AwRlDUnXNPm7IrchqI1DhYwz6VGywo+kRbZaIUUsbws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IbpT9B92ORuHHTOTdGcTYBd7AIS/+QWfCseHtdp0O+oQE1cgYTont1FrG7hZJSNuz
-         oUsF3ZGj1p2as0ZxQN+dQQFRpSL87SbdRdB1ju7mIM4y+5dziqZ3e5DaJweV7YuOE/
-         1H320hsTsfF2G21JZ5DabpdmyJp9axAp7/fxwTkcYEovPsJBogm7F3Hd3eoDL/j9HE
-         rJltme0+96fSPLeXGlAUHMm6XssCRo6w8eziTcT6DzM1MpOWsRo/392sOmqFsbmF3c
-         A1py7rG+sPp7YAlUqD/27veLOxcAMqAStH7zkBrvbEuj59KSIjzMo6V7+p1IhljYvw
-         7EMJP9wiDeBIA==
+        b=EA11+Tf1xGgFwhLzaB4zpIaDCRNIdmnnJHMUCOo8+cNcA1+1F0D9jn9Wul3MjrQdD
+         E0MPm/kez2xbgU9fHHNKDQXMMW4h2mK4UsWjNtwn5C67YAnuBWpF+nC+PNcQOxHwe3
+         HZNocGVRO7Gx+HhKqArjSV+MCgscVPZcopzRkhcwwjxgHqrrxXYu2HhbUNjqd4nBia
+         cPLVBNFFXe1K8+Kx+80Y5D6dAd6wgcYCQv3I82150DNV6nMETDfoT+f3K4lppzovLS
+         hUo/r0FpG/YF36umNf1y+HgWwYpDw+XlGpyjBOSHprJrXFUIrwKGfPk/NTQA99oiVM
+         AV/jxqjw8iHiA==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
         Gurchetan Singh <gurchetansingh@chromium.org>,
@@ -75,9 +75,9 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org,
         linux-rdma@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH v4 01/21] dma-buf: Add unlocked variant of vmapping functions
-Date:   Wed, 31 Aug 2022 18:37:37 +0300
-Message-Id: <20220831153757.97381-2-dmitry.osipenko@collabora.com>
+Subject: [PATCH v4 02/21] dma-buf: Add unlocked variant of attachment-mapping functions
+Date:   Wed, 31 Aug 2022 18:37:38 +0300
+Message-Id: <20220831153757.97381-3-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20220831153757.97381-1-dmitry.osipenko@collabora.com>
 References: <20220831153757.97381-1-dmitry.osipenko@collabora.com>
@@ -93,83 +93,104 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add unlocked variant of dma_buf_vmap/vunmap() that will be utilized
-by drivers that don't take the reservation lock explicitly.
+Add unlocked variant of dma_buf_map/unmap_attachment() that will
+be used by drivers that don't take the reservation lock explicitly.
 
 Acked-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/dma-buf/dma-buf.c | 38 ++++++++++++++++++++++++++++++++++++++
- include/linux/dma-buf.h   |  2 ++
- 2 files changed, 40 insertions(+)
+ drivers/dma-buf/dma-buf.c | 53 +++++++++++++++++++++++++++++++++++++++
+ include/linux/dma-buf.h   |  6 +++++
+ 2 files changed, 59 insertions(+)
 
 diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 1c912255c5d6..5e4459bb1a6f 100644
+index 5e4459bb1a6f..51fb69048853 100644
 --- a/drivers/dma-buf/dma-buf.c
 +++ b/drivers/dma-buf/dma-buf.c
-@@ -1424,6 +1424,28 @@ int dma_buf_vmap(struct dma_buf *dmabuf, struct iosys_map *map)
+@@ -1099,6 +1099,34 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *attach,
  }
- EXPORT_SYMBOL_NS_GPL(dma_buf_vmap, DMA_BUF);
+ EXPORT_SYMBOL_NS_GPL(dma_buf_map_attachment, DMA_BUF);
  
 +/**
-+ * dma_buf_vmap_unlocked - Create virtual mapping for the buffer object into kernel
-+ * address space. Same restrictions as for vmap and friends apply.
-+ * @dmabuf:	[in]	buffer to vmap
-+ * @map:	[out]	returns the vmap pointer
++ * dma_buf_map_attachment_unlocked - Returns the scatterlist table of the attachment;
++ * mapped into _device_ address space. Is a wrapper for map_dma_buf() of the
++ * dma_buf_ops.
++ * @attach:	[in]	attachment whose scatterlist is to be returned
++ * @direction:	[in]	direction of DMA transfer
 + *
-+ * Unlocked version of dma_buf_vmap()
-+ *
-+ * Returns 0 on success, or a negative errno code otherwise.
++ * Unlocked variant of dma_buf_map_attachment().
 + */
-+int dma_buf_vmap_unlocked(struct dma_buf *dmabuf, struct iosys_map *map)
++struct sg_table *
++dma_buf_map_attachment_unlocked(struct dma_buf_attachment *attach,
++				enum dma_data_direction direction)
 +{
-+	int ret;
++	struct sg_table *sg_table;
 +
-+	dma_resv_lock(dmabuf->resv, NULL);
-+	ret = dma_buf_vmap(dmabuf, map);
-+	dma_resv_unlock(dmabuf->resv);
++	might_sleep();
 +
-+	return ret;
++	if (WARN_ON(!attach || !attach->dmabuf))
++		return ERR_PTR(-EINVAL);
++
++	dma_resv_lock(attach->dmabuf->resv, NULL);
++	sg_table = dma_buf_map_attachment(attach, direction);
++	dma_resv_unlock(attach->dmabuf->resv);
++
++	return sg_table;
 +}
-+EXPORT_SYMBOL_NS_GPL(dma_buf_vmap_unlocked, DMA_BUF);
++EXPORT_SYMBOL_NS_GPL(dma_buf_map_attachment_unlocked, DMA_BUF);
 +
  /**
-  * dma_buf_vunmap - Unmap a vmap obtained by dma_buf_vmap.
-  * @dmabuf:	[in]	buffer to vunmap
-@@ -1448,6 +1470,22 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct iosys_map *map)
+  * dma_buf_unmap_attachment - unmaps and decreases usecount of the buffer;might
+  * deallocate the scatterlist associated. Is a wrapper for unmap_dma_buf() of
+@@ -1135,6 +1163,31 @@ void dma_buf_unmap_attachment(struct dma_buf_attachment *attach,
  }
- EXPORT_SYMBOL_NS_GPL(dma_buf_vunmap, DMA_BUF);
+ EXPORT_SYMBOL_NS_GPL(dma_buf_unmap_attachment, DMA_BUF);
  
 +/**
-+ * dma_buf_vunmap_unlocked - Unmap a vmap obtained by dma_buf_vmap.
-+ * @dmabuf:	[in]	buffer to vunmap
-+ * @map:	[in]	vmap pointer to vunmap
++ * dma_buf_unmap_attachment_unlocked - unmaps and decreases usecount of the buffer;might
++ * deallocate the scatterlist associated. Is a wrapper for unmap_dma_buf() of
++ * dma_buf_ops.
++ * @attach:	[in]	attachment to unmap buffer from
++ * @sg_table:	[in]	scatterlist info of the buffer to unmap
++ * @direction:	[in]	direction of DMA transfer
++ *
++ * Unlocked variant of dma_buf_unmap_attachment().
 + */
-+void dma_buf_vunmap_unlocked(struct dma_buf *dmabuf, struct iosys_map *map)
++void dma_buf_unmap_attachment_unlocked(struct dma_buf_attachment *attach,
++				       struct sg_table *sg_table,
++				       enum dma_data_direction direction)
 +{
-+	if (WARN_ON(!dmabuf))
++	might_sleep();
++
++	if (WARN_ON(!attach || !attach->dmabuf || !sg_table))
 +		return;
 +
-+	dma_resv_lock(dmabuf->resv, NULL);
-+	dma_buf_vunmap(dmabuf, map);
-+	dma_resv_unlock(dmabuf->resv);
++	dma_resv_lock(attach->dmabuf->resv, NULL);
++	dma_buf_unmap_attachment(attach, sg_table, direction);
++	dma_resv_unlock(attach->dmabuf->resv);
 +}
-+EXPORT_SYMBOL_NS_GPL(dma_buf_vunmap_unlocked, DMA_BUF);
++EXPORT_SYMBOL_NS_GPL(dma_buf_unmap_attachment_unlocked, DMA_BUF);
 +
- #ifdef CONFIG_DEBUG_FS
- static int dma_buf_debug_show(struct seq_file *s, void *unused)
- {
+ /**
+  * dma_buf_move_notify - notify attachments that DMA-buf is moving
+  *
 diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 71731796c8c3..8daa054dd7fe 100644
+index 8daa054dd7fe..f11b5bbc2f37 100644
 --- a/include/linux/dma-buf.h
 +++ b/include/linux/dma-buf.h
-@@ -632,4 +632,6 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
+@@ -627,6 +627,12 @@ int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
+ 			     enum dma_data_direction dir);
+ int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
+ 			   enum dma_data_direction dir);
++struct sg_table *
++dma_buf_map_attachment_unlocked(struct dma_buf_attachment *attach,
++				enum dma_data_direction direction);
++void dma_buf_unmap_attachment_unlocked(struct dma_buf_attachment *attach,
++				       struct sg_table *sg_table,
++				       enum dma_data_direction direction);
+ 
+ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
  		 unsigned long);
- int dma_buf_vmap(struct dma_buf *dmabuf, struct iosys_map *map);
- void dma_buf_vunmap(struct dma_buf *dmabuf, struct iosys_map *map);
-+int dma_buf_vmap_unlocked(struct dma_buf *dmabuf, struct iosys_map *map);
-+void dma_buf_vunmap_unlocked(struct dma_buf *dmabuf, struct iosys_map *map);
- #endif /* __DMA_BUF_H__ */
 -- 
 2.37.2
 
