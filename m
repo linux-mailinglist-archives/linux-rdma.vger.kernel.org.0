@@ -2,50 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A10975A7420
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Aug 2022 04:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7255A743C
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Aug 2022 05:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbiHaCwU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Aug 2022 22:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
+        id S232079AbiHaDDl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Aug 2022 23:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbiHaCwT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Aug 2022 22:52:19 -0400
-Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604A7A3464
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Aug 2022 19:52:18 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VNoyBXX_1661914334;
-Received: from 30.43.104.189(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VNoyBXX_1661914334)
-          by smtp.aliyun-inc.com;
-          Wed, 31 Aug 2022 10:52:15 +0800
-Message-ID: <2d92f563-b4f6-0a09-6564-b61a0de9b9f8@linux.alibaba.com>
-Date:   Wed, 31 Aug 2022 10:52:14 +0800
+        with ESMTP id S232084AbiHaDDe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Aug 2022 23:03:34 -0400
+Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7896BAEDB5;
+        Tue, 30 Aug 2022 20:03:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+        s=170520fj; t=1661915010; i=@fujitsu.com;
+        bh=nFNoA3Xkt/aHRoPzDLem6pteL3AlAhYsHZ805T6Ourc=;
+        h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+         In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        b=efjX4WUGyJ+zUGr92iHiZgJI+pFVUthfSKays5H3iWn8dWlRlHTBlFl9RacbONR8F
+         XV/vfu281MpGEjqFYpDems9w5v0wQ22SOG0xKHFkLEbXYE3cSHm8gD7NiQLB/jB3br
+         Z0hlhpNaEQ3hI3BbV1yrBXRGyei6OxGwWtWRGuGzcf2SSLKlMfYNhNwZV1OuJHFVK1
+         d0exb8IiFptQZdzfVr5FNB8I77ZP/Ysk4oIRQx1l6ixgb7I1zbb8hUUqU4X17gjFEK
+         RYh1ehiEtBYqJV9xoZZJJ4KYK2JWvYqIysuLHTxYmifNTY0ynq5mdZbPfmXc8VBYhY
+         /hOzq90uRyQ4A==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPKsWRWlGSWpSXmKPExsViZ8OxWbfxPF+
+  ywbJrghbTPvxktrjybw+jxZRfS5ktLu+aw2bx7FAviwOrx+Ur3h6bVnWyefQ2v2Pz+LxJLoAl
+  ijUzLym/IoE14/Ufn4Jr7BX9f5sYGxhfsnYxcnEICWxklJh5YiozhLOESeLTzrNQznZGiY57h
+  9i6GDk5eAXsJLZtmcoOYrMIqEpsWn8AKi4ocXLmExYQW1QgQuLho0lgtrCAj8Sd58/A6pkFxC
+  VuPZnPBDJURGALo8T+NW2MEIlaicbTH9ghti1klOjfsQism01AQ+Jey02wIk4Be4lVfSegGiw
+  kFr85CDVVXqJ562xmEFtCQFHiSOdfoF4OILtS4sbjVIiwmsTVc5uYJzAKz0Jy6ywkN81CMnUW
+  kqkLGFlWMdomFWWmZ5TkJmbm6BoaGOgaGpoCaWNdI0MzvcQq3US91FLdvPyikgxdQ73E8mK91
+  OJiveLK3OScFL281JJNjMB4SylOv7GDcde+X3qHGCU5mJREeX+t5EsW4kvKT6nMSCzOiC8qzU
+  ktPsQow8GhJMEbfAYoJ1iUmp5akZaZA4x9mLQEB4+SCG/FQaA0b3FBYm5xZjpE6hSjopQ479l
+  zQAkBkERGaR5cGyzdXGKUlRLmZWRgYBDiKUgtys0sQZV/xSjOwagkzLv7FNAUnsy8Erjpr4AW
+  MwEtfriEG2RxSSJCSqqBSYT/zt+1czvdUiwrpby69js+LLELPGab+nWR+c0trvd3/tb0Z/7wY
+  tm2ntzi3+9ttz64kPazryBmLcP9qnyB5fsuzugJCb7vcuhZajo7a9Ip2SkaN98qHI5pmsUk9n
+  TmPE7G6MhjW54EaHWUnuqxCDf/trdmnpjSUdGkUg/27eF/DujNuriUmy35SWzNs7UZYXl/Di4
+  qUP8rq6m3yvf2pn1Ft52l1wV5XzpxfsvR8imndGY9ar3vXKdk5RQYZrhl+073mb/79m9Vu3Zp
+  z9SPPWa/A9ZKu5t9TTMq3aBUoTR9ZdYGybMdnw0veSY+feCzQz3g0rkGcXuTbcdkt1l4M7wqf
+  FfsfOiE+PpH9XkZhUosxRmJhlrMRcWJALZQGbGyAwAA
+X-Env-Sender: lizhijian@fujitsu.com
+X-Msg-Ref: server-27.tower-745.messagelabs.com!1661915008!31372!1
+X-Originating-IP: [62.60.8.179]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.87.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 28432 invoked from network); 31 Aug 2022 03:03:29 -0000
+Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
+  by server-27.tower-745.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 31 Aug 2022 03:03:29 -0000
+Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id AFDFE142;
+        Wed, 31 Aug 2022 04:03:28 +0100 (BST)
+Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223 [10.182.185.121])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id A3B3973;
+        Wed, 31 Aug 2022 04:03:28 +0100 (BST)
+Received: from [10.167.226.45] (10.167.226.45) by
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.32; Wed, 31 Aug 2022 04:03:25 +0100
+Message-ID: <f05347d1-854c-4aa5-c937-71e7b36f234f@fujitsu.com>
+Date:   Wed, 31 Aug 2022 11:02:35 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [PATCH for-next 0/2] RDMA/erdma: Introduce custom implementation
- of drain_sq and drain_rq
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] RDMA/srp: Set scmnd->result only when scmnd is not NULL
 Content-Language: en-US
-To:     Tom Talpey <tom@talpey.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
-        KaiShen@linux.alibaba.com
-References: <20220824094251.23190-1-chengyou@linux.alibaba.com>
- <2c7c248c-34a9-c614-6abf-e2f6640978b8@talpey.com>
- <9ba20242-7591-2ec9-4301-a6478a47fae4@linux.alibaba.com>
- <c7f4ce2d-e43d-50fa-afaf-1535aec2b0aa@talpey.com>
- <fc5dbf48-f3dd-7047-1933-c9e4b86ea891@linux.alibaba.com>
- <8ad2446d-157b-3894-c0a3-f8a57a6e1c34@talpey.com> <YwjRV3kubU9wnwax@ziepe.ca>
- <29dc35b9-8f25-6a3a-4df3-087c27870278@linux.alibaba.com>
- <70351625-4933-d63f-aed6-f9c5a46cb9b5@talpey.com>
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <70351625-4933-d63f-aed6-f9c5a46cb9b5@talpey.com>
-Content-Type: text/plain; charset=UTF-8
+To:     =?UTF-8?B?WWFuZywgWGlhby/mnagg5pmT?= <yangx.jy@fujitsu.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20220831014730.17566-1-yangx.jy@fujitsu.com>
+ <a66af10e-dea5-a9ec-5eeb-641b1d7ebeec@fujitsu.com>
+ <e3488129-6681-55a7-3d1c-99a965a5c884@fujitsu.com>
+From:   Li Zhijian <lizhijian@fujitsu.com>
+In-Reply-To: <e3488129-6681-55a7-3d1c-99a965a5c884@fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.167.226.45]
+X-ClientProxiedBy: G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) To
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121)
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -54,64 +98,36 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 8/31/22 2:45 AM, Tom Talpey wrote:
-> On 8/29/2022 12:01 AM, Cheng Xu wrote:
+On 31/08/2022 10:31, Yang, Xiao/杨 晓 wrote:
+> On 2022/8/31 9:59, Li Zhijian wrote:
+>> What i can see is that we have other places to de-reference scmnd and
 >>
->>
->> On 8/26/22 9:57 PM, Jason Gunthorpe wrote:
->>> On Fri, Aug 26, 2022 at 09:11:25AM -0400, Tom Talpey wrote:
->>>
->>>> With your change, ERDMA will pre-emptively fail such a newly posted
->>>> request, and generate no new completion. The consumer is left in limbo
->>>> on the status of its prior requests. Providers must not override this.
->>>
->>> Yeah, I tend to agree with Tom.
->>>
->>> And I also want to point out that Linux RDMA verbs does not follow the
->>> SW specifications of either IBTA or the iWarp group. We have our own
->>> expectation for how these APIs work that our own ULPs rely on.
->>>
->>> So pedantically debating what a software spec we don't follow says is
->>> not relavent. The utility is to understand the intention and use cases
->>> and ensure we cover the same. Usually this means we follow the spec :)
->>>
->>
->> Yeah, I totally agree with this.
->>
->> Actually, I thought that ULPs do not concern about the details of how the
->> flushing and modify_qp being performed in the drivers. The drain flow is
->> handled by a single ib_drain_qp call for ULPs. While ib_drain_qp API allows
->> vendor-custom implementation, this is invisible to ULPs.
->>
->> For the ULPs which implement their own drain flow instead of using
->> ib_drain_qp  (I think it is rare in kernel), they will fail in erdma.
->>
->> Anyway, since our implementation is disputed, We'd like to keep the same
->> behavior with other vendors. Maybe firmware updating w/o driver changes or
->> software flushing in driver will fix this.
-> 
-> To be clear, my concern is about the ordering of CQE flushes with
-> respect to the WR posting fails. Draining the CQs in whatever way
-> you choose to optimize for your device is not the issue, although
-> it seems odd to me that you need such a thing.
-> 
-> The problem is that your patch started failing the new requests
-> _before_ the drain could be used to clean up. This introduced
-> two new provider behaviors that consumers would not expect:
-> 
-> - first error detected in a post call (on the fast path!)
-> - inability to determine if prior requests were complete
-> 
-Yes, you are right. As I replied, we will drop this patch, and follow
-the common behaviors as other providers do.
-
-> I'd really suggest getting a copy of the full IB spec and examining
-> the difference between QP "Error" and "SQ Error" states. They are
-> subtle but important.
-
-Yeah, I'm already doing this. Thanks very much.
-
-Cheng Xu
+>> scmnd = srp_claim_req(ch, req, NULL, scmnd) is possible to return a NULL
+>> to scmnd
+> Hi,
+>
+> Thanks for your review.
+>
+> Yes, it seems better to just check scmnd before setting scmnd->result,
+> like this:
+> diff --git a/drivers/infiniband/ulp/srp/ib_srp.c
+> b/drivers/infiniband/ulp/srp/ib_srp.c
+> index 7720ea270ed8..99f5e7f852b3 100644
+> --- a/drivers/infiniband/ulp/srp/ib_srp.c
+> +++ b/drivers/infiniband/ulp/srp/ib_srp.c
+> @@ -1972,7 +1972,9 @@ static void srp_process_rsp(struct srp_rdma_ch
+> *ch, struct srp_rsp *rsp)
+>
+>                           return;
+>                   }
+> -               scmnd->result = rsp->status;
+> +
+> +               if (scmnd)
+> +                       scmnd->result = rsp->status;
+Not really, i think you may need to return directly if !scmnd
 
 
-> Tom.
+>
+> Best Regards,
+> Xiao Yang
+
