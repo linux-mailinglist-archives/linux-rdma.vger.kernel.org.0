@@ -2,92 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CA55A73B3
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Aug 2022 04:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45EB5A73CB
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Aug 2022 04:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbiHaCAw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Aug 2022 22:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
+        id S231237AbiHaCIZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Aug 2022 22:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiHaCAw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Aug 2022 22:00:52 -0400
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC314D817;
-        Tue, 30 Aug 2022 19:00:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1661911248; i=@fujitsu.com;
-        bh=Gl3aA44E2kcOR/hcpUwZc4GOVg1SY3WM0u9Pk2Dx4D0=;
-        h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        b=zJjsqwSsleOMtQjoKpHs7xs+T2/c7Pm/Tdfx8JEeCxP5qDdn+yMjaJe4g3u1HE6bX
-         KxdnP6mmn58YQFkbQdZWd3RD2kmuUlNvSs/LffBo23EEojlbgOa7DLN14i+3qp0YM4
-         YVVpZPAn6ONy29eY9DBlk8Ja7NoexZ4JIxEPhfuhwD5U9ZoDULwLsiySQLQ0ZoWkCW
-         mt6uADdLtyQXBb2AZhiYu1PAul70u6e4rPC7WdmtmTxbpGOQYgvsiVtmYyptVJF4c9
-         FhUKulSpuEMBWB8HFRbGBD0wsawNGQ766vgCeT1GxhbQEj5fFGAAPTv4uxXyv6YpZt
-         L4/aSYSkOsu/Q==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAKsWRWlGSWpSXmKPExsViZ8MxSffCAb5
-  kgyVtXBbTPvxktrjybw+jxZRfS5ktLu+aw2bx7FAviwOrx+Ur3h6bVnWyefQ2v2Pz+LxJLoAl
-  ijUzLym/IoE1Y8W9r+wF98Qr5v+ax9zA+FK4i5GLQ0hgC6PEyr2/GCGcFUwSt6e+Y4dwtjNKb
-  Nqym7mLkZODV8BOonHpXjCbRUBV4vCEFywQcUGJkzOfgNmiAhESDx9NArOFBXwk7jx/xg5iMw
-  uIS9x6Mp8JZKiIwDJGid1nrjFCJGolGk9/ACsSErCUWPz+OdgCNgENiXstN8FqOAWsJNafuME
-  GUW8hsfjNQaih8hLNW2eD1UsIKEoc6fwLtJgDyK6UuPE4FSKsJnH13CbmCYzCs5CcOgvJSbOQ
-  TJ2FZOoCRpZVjDZJRZnpGSW5iZk5uoYGBrqGhqZA2lDX2EAvsUo3US+1VDcvv6gkQ9dQL7G8W
-  C+1uFivuDI3OSdFLy+1ZBMjMNpSilPldjAe2PdL7xCjJAeTkijvr5V8yUJ8SfkplRmJxRnxRa
-  U5qcWHGGU4OJQkeC/vBcoJFqWmp1akZeYAIx8mLcHBoyTCG7gQKM1bXJCYW5yZDpE6xWjMseH
-  Bgb3MHFNn/9vPLMSSl5+XKiXO+3U/UKkASGlGaR7cIFhCusQoKyXMy8jAwCDEU5BalJtZgir/
-  ilGcg1FJmHfJHqApPJl5JXD7XgGdwgR0ysMl3CCnlCQipKQamLxe95eEcfdlmD7d5lCwtk06a
-  GKFlYv4qUmzUu4ErphiXb3thcGl+p9p4acevEw6rfLorWZ8X115A7NLIfO2+8U1ujer2jiulS
-  /Zvnnl4f7An9LJSw6YT/Hx3Sy9j3/Lp08T9x3d8SGC+d6J5Ib13rJlq3UzQ/X/Jz6+uVX30J3
-  IMKX82ZdWx7Gf+v9X4duNeaHe0ssc1X0ez9n2XYPj5wHmE2uu3ZlqmTNl/qyeL+ts/ghwvZyQ
-  XnNh6dKbgUd+li2uLmSTOSVvna47oWNf0e6SdVE/Lde/W+f6tGP7eu5XIl/rPledVvvxU+z/4
-  Vupa1Uaw0qbXv2e8unV0jzOl03RaY5njU7F8mXfywzqmPdciaU4I9FQi7moOBEAlkwnWcMDAA
-  A=
-X-Env-Sender: lizhijian@fujitsu.com
-X-Msg-Ref: server-13.tower-728.messagelabs.com!1661911247!30716!1
-X-Originating-IP: [62.60.8.146]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.87.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 24841 invoked from network); 31 Aug 2022 02:00:48 -0000
-Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
-  by server-13.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 31 Aug 2022 02:00:48 -0000
-Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 83DA71000DC;
-        Wed, 31 Aug 2022 03:00:47 +0100 (BST)
-Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223 [10.182.185.121])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 77AB9100078;
-        Wed, 31 Aug 2022 03:00:47 +0100 (BST)
-Received: from [10.167.226.45] (10.167.226.45) by
- R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Wed, 31 Aug 2022 03:00:43 +0100
-Message-ID: <a66af10e-dea5-a9ec-5eeb-641b1d7ebeec@fujitsu.com>
-Date:   Wed, 31 Aug 2022 09:59:52 +0800
+        with ESMTP id S229775AbiHaCIY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Aug 2022 22:08:24 -0400
+Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238A160534
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Aug 2022 19:08:21 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VNoxD.7_1661911698;
+Received: from 30.43.104.189(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VNoxD.7_1661911698)
+          by smtp.aliyun-inc.com;
+          Wed, 31 Aug 2022 10:08:19 +0800
+Message-ID: <21357a83-74ad-c16b-d3ce-87cd7d56c52c@linux.alibaba.com>
+Date:   Wed, 31 Aug 2022 10:08:17 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] RDMA/srp: Set scmnd->result only when scmnd is not NULL
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.0
+Subject: Re: [PATCH for-next 0/2] RDMA/erdma: Introduce custom implementation
+ of drain_sq and drain_rq
 Content-Language: en-US
-To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20220831014730.17566-1-yangx.jy@fujitsu.com>
-From:   Li Zhijian <lizhijian@fujitsu.com>
-In-Reply-To: <20220831014730.17566-1-yangx.jy@fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Tom Talpey <tom@talpey.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
+        KaiShen@linux.alibaba.com
+References: <20220824094251.23190-1-chengyou@linux.alibaba.com>
+ <2c7c248c-34a9-c614-6abf-e2f6640978b8@talpey.com>
+ <9ba20242-7591-2ec9-4301-a6478a47fae4@linux.alibaba.com>
+ <c7f4ce2d-e43d-50fa-afaf-1535aec2b0aa@talpey.com>
+ <fc5dbf48-f3dd-7047-1933-c9e4b86ea891@linux.alibaba.com>
+ <8ad2446d-157b-3894-c0a3-f8a57a6e1c34@talpey.com> <YwjRV3kubU9wnwax@ziepe.ca>
+ <29dc35b9-8f25-6a3a-4df3-087c27870278@linux.alibaba.com>
+ <70351625-4933-d63f-aed6-f9c5a46cb9b5@talpey.com>
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <70351625-4933-d63f-aed6-f9c5a46cb9b5@talpey.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.226.45]
-X-ClientProxiedBy: G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) To
- R01UKEXCASM223.r01.fujitsu.local (10.182.185.121)
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,76 +53,77 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 31/08/2022 09:47, yangx.jy@fujitsu.com wrote:
-> This change fixes the following kernel NULL pointer dereference
-> which is reproduced by blktests srp/007 occasionally.
->
-> BUG: kernel NULL pointer dereference, address: 0000000000000170
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> PGD 0 P4D 0
-> Oops: 0002 [#1] PREEMPT SMP NOPTI
-> CPU: 0 PID: 9 Comm: kworker/0:1H Kdump: loaded Not tainted 6.0.0-rc1+ #37
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.15.0-29-g6a62e0cb0dfe-prebuilt.qemu.org 04/01/2014
-> Workqueue:  0x0 (kblockd)
-> RIP: 0010:srp_recv_done+0x176/0x500 [ib_srp]
-> Code: 00 4d 85 ff 0f 84 52 02 00 00 48 c7 82 80 02 00 00 00 00 00 00 4c 89 df 4c 89 14 24 e8 53 d3 4a f6 4c 8b 14 24 41 0f b6 42 13 <41> 89 87 70 01 00 00 41 0f b6 52 12 f6 c2 02 74 44 41 8b 42 1c b9
-> RSP: 0018:ffffaef7c0003e28 EFLAGS: 00000282
-> RAX: 0000000000000000 RBX: ffff9bc9486dea60 RCX: 0000000000000000
-> RDX: 0000000000000102 RSI: ffffffffb76bbd0e RDI: 00000000ffffffff
-> RBP: ffff9bc980099a00 R08: 0000000000000001 R09: 0000000000000001
-> R10: ffff9bca53ef0000 R11: ffff9bc980099a10 R12: ffff9bc956e14000
-> R13: ffff9bc9836b9cb0 R14: ffff9bc9557b4480 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff9bc97ec00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000170 CR3: 0000000007e04000 CR4: 00000000000006f0
-> Call Trace:
->   <IRQ>
->   __ib_process_cq+0xb7/0x280 [ib_core]
->   ib_poll_handler+0x2b/0x130 [ib_core]
->   irq_poll_softirq+0x93/0x150
->   __do_softirq+0xee/0x4b8
->   irq_exit_rcu+0xf7/0x130
->   sysvec_apic_timer_interrupt+0x8e/0xc0
->   </IRQ>
->
-> Fixes: aef9ec39c47f ("IB: Add SCSI RDMA Protocol (SRP) initiator")
-> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
-> ---
->   drivers/infiniband/ulp/srp/ib_srp.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-> index 7720ea270ed8..528cdd0daba4 100644
-> --- a/drivers/infiniband/ulp/srp/ib_srp.c
-> +++ b/drivers/infiniband/ulp/srp/ib_srp.c
-> @@ -1961,6 +1961,7 @@ static void srp_process_rsp(struct srp_rdma_ch *ch, struct srp_rsp *rsp)
->   		if (scmnd) {
->   			req = scsi_cmd_priv(scmnd);
->   			scmnd = srp_claim_req(ch, req, NULL, scmnd);
-> +			scmnd->result = rsp->status;
->   		} else {
->   			shost_printk(KERN_ERR, target->scsi_host,
->   				     "Null scmnd for RSP w/tag %#016llx received on ch %td / QP %#x\n",
-> @@ -1972,7 +1973,6 @@ static void srp_process_rsp(struct srp_rdma_ch *ch, struct srp_rsp *rsp)
->   
->   			return;
->   		}
-> -		scmnd->result = rsp->status;
+On 8/31/22 2:45 AM, Tom Talpey wrote:
+> On 8/29/2022 12:01 AM, Cheng Xu wrote:
+>>
+>>
+>> On 8/26/22 9:57 PM, Jason Gunthorpe wrote:
+>>> On Fri, Aug 26, 2022 at 09:11:25AM -0400, Tom Talpey wrote:
+>>>
+>>>> With your change, ERDMA will pre-emptively fail such a newly posted
+>>>> request, and generate no new completion. The consumer is left in limbo
+>>>> on the status of its prior requests. Providers must not override this.
+>>>
+>>> Yeah, I tend to agree with Tom.
+>>>
+>>> And I also want to point out that Linux RDMA verbs does not follow the
+>>> SW specifications of either IBTA or the iWarp group. We have our own
+>>> expectation for how these APIs work that our own ULPs rely on.
+>>>
+>>> So pedantically debating what a software spec we don't follow says is
+>>> not relavent. The utility is to understand the intention and use cases
+>>> and ensure we cover the same. Usually this means we follow the spec :)
+>>>
+>>
+>> Yeah, I totally agree with this.
+>>
+>> Actually, I thought that ULPs do not concern about the details of how the
+>> flushing and modify_qp being performed in the drivers. The drain flow is
+>> handled by a single ib_drain_qp call for ULPs. While ib_drain_qp API allows
+>> vendor-custom implementation, this is invisible to ULPs.
+>>
+>> For the ULPs which implement their own drain flow instead of using
+>> ib_drain_qp  (I think it is rare in kernel), they will fail in erdma.
+>>
+>> Anyway, since our implementation is disputed, We'd like to keep the same
+>> behavior with other vendors. Maybe firmware updating w/o driver changes or
+>> software flushing in driver will fix this.
+> 
+> To be clear, my concern is about the ordering of CQE flushes with
+> respect to the WR posting fails.Draining the CQs in whatever way
+> you choose to optimize for your device is not the issue, although
+> it seems odd to me that you need such a thing.
+> 
 
-What i can see is that we have other places to de-reference scmnd and
+Yeah, I understand what you concern about. I'm sorry that there may be
+ambiguity in my last reply.
 
-scmnd = srp_claim_req(ch, req, NULL, scmnd) is possible to return a NULL to scmnd
+After discussed internally, we would like to drop this patch (e.g., failing
+WRs before drain, or failing WRs in QP Error State), because it indeed has problem
+in the cases you mentioned. And we are seeking for new solutions. New solutions
+will not failing the WRs in drain cases, and by this erdma will have the same behavior
+with other vendors.
 
+More, the reason why we introduced this patch is that our hardware do not flush
+newly WRs in QP Error State currently. So new solutions could be:
+ - Let our hardware flush newly WRs, or
+ - Flush WRs in our driver if hardware does not flush.
+Either of them will eliminate the odd logic in this patch. For now, we tend the
+first option.
 
-
-Thanks
-Zhijian
-
->   
->   		if (rsp->flags & SRP_RSP_FLAG_SNSVALID) {
->   			memcpy(scmnd->sense_buffer, rsp->data +
-                                              ^^^^
+Thanks,
+Cheng Xu
 
 
-
+> The problem is that your patch started failing the new requests
+> _before_ the drain could be used to clean up. This introduced
+> two new provider behaviors that consumers would not expect:
+> 
+> - first error detected in a post call (on the fast path!)
+> - inability to determine if prior requests were complete
+> 
+> I'd really suggest getting a copy of the full IB spec and examining
+> the difference between QP "Error" and "SQ Error" states. They are
+> subtle but important.
+> 
+> Tom.
