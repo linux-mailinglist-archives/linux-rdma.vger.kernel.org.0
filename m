@@ -2,185 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B765A7076
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Aug 2022 00:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E262C5A7274
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Aug 2022 02:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbiH3WQ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Aug 2022 18:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
+        id S231300AbiHaAem (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Aug 2022 20:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231749AbiH3WQy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Aug 2022 18:16:54 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA36E6D9E7
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Aug 2022 15:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661897813; x=1693433813;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=mzySOWRhhkOOvw3zaGWLFMFZqbE3iEmqZ5i9/21iMjY=;
-  b=P8TVcm7EJwAtaDBKHoehzltaIedKTu69OWEDfK1ak+WSBVToVrpKqgRc
-   0WrXYdq9rE8GiL7JeUBMTiQMt2n7fg/XCdHeQ8JE1OyMbeCgZ4v8/bAzA
-   LBpkrcO8EEGVdoiLvmp9pBhJKCTpP0E1jZEgbTxQWLEy+rgDgGXEjJAIc
-   R9So2GPg5VPhuvoPRgoymL03WdYG+VVnGQxK1UWg5txORjifEtEwmt6lU
-   cG4zVJ5P/ws22oWt/cCO11SwZX3YBhPxSivHBlRXYxT7d+Z9icbCqjNXy
-   UfqWjbXIRXo40x71mrPVyXzUMPjDDlTxZQeTjenbH7wi2uljZbduTpe6S
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10455"; a="321449460"
-X-IronPort-AV: E=Sophos;i="5.93,276,1654585200"; 
-   d="scan'208";a="321449460"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2022 15:11:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,276,1654585200"; 
-   d="scan'208";a="588800169"
-Received: from lkp-server02.sh.intel.com (HELO 77b6d4e16fc5) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 30 Aug 2022 15:11:34 -0700
-Received: from kbuild by 77b6d4e16fc5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oT9SH-0000fx-35;
-        Tue, 30 Aug 2022 22:11:33 +0000
-Date:   Wed, 31 Aug 2022 06:10:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leonro@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- bfb3bde95479e7072839564ec90dbf5d00bfb9b1
-Message-ID: <630e8ade.Y+b0fvs4OBEbwvy2%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230325AbiHaAel (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Aug 2022 20:34:41 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D3FDA598B;
+        Tue, 30 Aug 2022 17:34:39 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 166CE2045E24; Tue, 30 Aug 2022 17:34:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 166CE2045E24
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1661906079;
+        bh=20u8ixO/yuN3YFPTYaorc5Nw1VEF7gX5/pYC5BLxjHY=;
+        h=From:To:Cc:Subject:Date:Reply-To:From;
+        b=KP43ujlHcktDpToBlTMI7ugady0UFWZ+hkEsa6el3NQRGnsjEB+ntVbKck2eLILdE
+         Nq83kDrC/CIesYkDYFj9E1dwDMaN5UyVhzzdSMOQ6FufHbhJ8BgrwDnnPkXvmYgvri
+         LQLEnxblOD1lrec88Yz/WPa7zd/V3du7BEWL869U=
+From:   longli@linuxonhyperv.com
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, edumazet@google.com,
+        shiraz.saleem@intel.com, Ajay Sharma <sharmaajay@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Long Li <longli@microsoft.com>
+Subject: [Patch v5 00/12] Introduce Microsoft Azure Network Adapter (MANA) RDMA driver
+Date:   Tue, 30 Aug 2022 17:34:19 -0700
+Message-Id: <1661906071-29508-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
+Reply-To: longli@microsoft.com
+X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: bfb3bde95479e7072839564ec90dbf5d00bfb9b1  RDMA/hns: Remove redundant member doorbell_qpn of struct hns_roce_qp
+From: Long Li <longli@microsoft.com>
 
-elapsed time: 724m
+This patchset implements a RDMA driver for Microsoft Azure Network
+Adapter (MANA). In MANA, the RDMA device is modeled as an auxiliary device
+to the Ethernet device.
 
-configs tested: 103
-configs skipped: 3
+The first 11 patches modify the MANA Ethernet driver to support RDMA driver.
+The last patch implementes the RDMA driver.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The user-mode of the driver is being reviewed at:
+https://github.com/linux-rdma/rdma-core/pull/1177
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-arc                  randconfig-r043-20220830
-m68k                             allmodconfig
-sh                               allmodconfig
-arc                              allyesconfig
-x86_64                        randconfig-a004
-x86_64                              defconfig
-arm                                 defconfig
-x86_64                        randconfig-a002
-alpha                            allyesconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-x86_64                        randconfig-a006
-m68k                             allyesconfig
-i386                                defconfig
-i386                          randconfig-a005
-arm64                            allyesconfig
-i386                             allyesconfig
-x86_64                        randconfig-a013
-i386                          randconfig-a014
-arm                              allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                        randconfig-a011
-i386                          randconfig-a012
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-i386                          randconfig-a016
-x86_64                        randconfig-a015
-x86_64                           rhel-8.3-kvm
-powerpc                           allnoconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-x86_64                           rhel-8.3-syz
-x86_64                               rhel-8.3
-arc                                 defconfig
-sh                            hp6xx_defconfig
-arm                            pleb_defconfig
-openrisc                       virt_defconfig
-x86_64                           allyesconfig
-ia64                             allmodconfig
-csky                              allnoconfig
-alpha                             allnoconfig
-arc                               allnoconfig
-riscv                             allnoconfig
-arm                         lubbock_defconfig
-arc                           tb10x_defconfig
-arc                          axs101_defconfig
-xtensa                          iss_defconfig
-i386                          randconfig-c001
-arm                       imx_v6_v7_defconfig
-mips                           jazz_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                     asp8347_defconfig
-sh                           se7619_defconfig
-loongarch                           defconfig
-loongarch                         allnoconfig
-sparc                               defconfig
-mips                      loongson3_defconfig
-m68k                       m5475evb_defconfig
-xtensa                  nommu_kc705_defconfig
-mips                       bmips_be_defconfig
-mips                        bcm47xx_defconfig
-powerpc                       eiger_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sparc                             allnoconfig
-sh                           se7721_defconfig
-sh                        edosk7760_defconfig
-m68k                            mac_defconfig
-arm                      integrator_defconfig
-sh                          kfr2r09_defconfig
-arm                         cm_x300_defconfig
-nios2                            alldefconfig
-openrisc                  or1klitex_defconfig
-arc                        nsimosci_defconfig
-arm                        oxnas_v6_defconfig
-mips                         bigsur_defconfig
-m68k                          multi_defconfig
-xtensa                              defconfig
-powerpc                 mpc834x_itx_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                 mpc8540_ads_defconfig
-xtensa                    smp_lx200_defconfig
-arm                          lpd270_defconfig
-openrisc                         alldefconfig
 
-clang tested configs:
-hexagon              randconfig-r045-20220830
-hexagon              randconfig-r041-20220830
-s390                 randconfig-r044-20220830
-riscv                randconfig-r042-20220830
-x86_64                        randconfig-a005
-x86_64                        randconfig-a001
-i386                          randconfig-a002
-x86_64                        randconfig-a003
-i386                          randconfig-a004
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a006
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-i386                          randconfig-a015
-x86_64                        randconfig-a016
-arm                          pcm027_defconfig
-x86_64                        randconfig-k001
+Ajay Sharma (3):
+  net: mana: Set the DMA device max segment size
+  net: mana: Define and process GDMA response code
+    GDMA_STATUS_MORE_ENTRIES
+  net: mana: Define data structures for protection domain and memory
+    registration
+
+Long Li (9):
+  net: mana: Add support for auxiliary device
+  net: mana: Record the physical address for doorbell page region
+  net: mana: Handle vport sharing between devices
+  net: mana: Add functions for allocating doorbell page from GDMA
+  net: mana: Export Work Queue functions for use by RDMA driver
+  net: mana: Record port number in netdev
+  net: mana: Move header files to a common location
+  net: mana: Define max values for SGL entries
+  RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter
+
+ MAINTAINERS                                   |   4 +
+ drivers/infiniband/Kconfig                    |   1 +
+ drivers/infiniband/hw/Makefile                |   1 +
+ drivers/infiniband/hw/mana/Kconfig            |   7 +
+ drivers/infiniband/hw/mana/Makefile           |   4 +
+ drivers/infiniband/hw/mana/cq.c               |  80 +++
+ drivers/infiniband/hw/mana/device.c           | 129 ++++
+ drivers/infiniband/hw/mana/main.c             | 555 ++++++++++++++++++
+ drivers/infiniband/hw/mana/mana_ib.h          | 165 ++++++
+ drivers/infiniband/hw/mana/mr.c               | 133 +++++
+ drivers/infiniband/hw/mana/qp.c               | 501 ++++++++++++++++
+ drivers/infiniband/hw/mana/wq.c               | 114 ++++
+ .../net/ethernet/microsoft/mana/gdma_main.c   |  96 ++-
+ .../net/ethernet/microsoft/mana/hw_channel.c  |   6 +-
+ .../net/ethernet/microsoft/mana/mana_bpf.c    |   2 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 177 +++++-
+ .../ethernet/microsoft/mana/mana_ethtool.c    |   2 +-
+ .../net/ethernet/microsoft/mana/shm_channel.c |   2 +-
+ .../microsoft => include/net}/mana/gdma.h     | 162 ++++-
+ .../net}/mana/hw_channel.h                    |   0
+ .../microsoft => include/net}/mana/mana.h     |  23 +-
+ include/net/mana/mana_auxiliary.h             |  10 +
+ .../net}/mana/shm_channel.h                   |   0
+ include/uapi/rdma/ib_user_ioctl_verbs.h       |   1 +
+ include/uapi/rdma/mana-abi.h                  |  66 +++
+ 25 files changed, 2196 insertions(+), 45 deletions(-)
+ create mode 100644 drivers/infiniband/hw/mana/Kconfig
+ create mode 100644 drivers/infiniband/hw/mana/Makefile
+ create mode 100644 drivers/infiniband/hw/mana/cq.c
+ create mode 100644 drivers/infiniband/hw/mana/device.c
+ create mode 100644 drivers/infiniband/hw/mana/main.c
+ create mode 100644 drivers/infiniband/hw/mana/mana_ib.h
+ create mode 100644 drivers/infiniband/hw/mana/mr.c
+ create mode 100644 drivers/infiniband/hw/mana/qp.c
+ create mode 100644 drivers/infiniband/hw/mana/wq.c
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/gdma.h (79%)
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/hw_channel.h (100%)
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/mana.h (94%)
+ create mode 100644 include/net/mana/mana_auxiliary.h
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/shm_channel.h (100%)
+ create mode 100644 include/uapi/rdma/mana-abi.h
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.17.1
+
