@@ -2,392 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 929245A99A9
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Sep 2022 16:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F1C5A9A03
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Sep 2022 16:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbiIAODi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Sep 2022 10:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
+        id S233849AbiIAOVI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Sep 2022 10:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234292AbiIAODf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Sep 2022 10:03:35 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25CE2BD;
-        Thu,  1 Sep 2022 07:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662041013; x=1693577013;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=H7oNPMaMGRMvpqrmWoiI7VVYWC1hv+BhSiD5ZVZNMhs=;
-  b=AfvCsdXQ0nXjdpHsfmCTnvFnjQ7wnuZeOfnxcuyrcmsBWFGg/tfbndiy
-   vWcQfM37PkWFU/KwrzgFlwZD6zMOzxSQFRyz5xLJcd0o3RKLnGOJtDAQP
-   +I8D6Quona21UvqrirkGDbMi+BMNCBZ4sE9oKVoN4Zkd85DoooL2pEiRG
-   EOOenXV27K116zglMyepUMDdVsMqJFsX76n6mp8yG2X8LJp31iG31AhjZ
-   zay/SuL3tFk2UJSoIR1UyENxOjeHzeLeddjKLITooDhFz2ntXcILPekPU
-   0r9whDXkzi9eB4z8yBP/6C75a8khVNFQWC3aTENVm2OaSTDVoXZXstfzj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10457"; a="321870392"
-X-IronPort-AV: E=Sophos;i="5.93,281,1654585200"; 
-   d="scan'208";a="321870392"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2022 07:03:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,281,1654585200"; 
-   d="scan'208";a="940859749"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Sep 2022 07:03:26 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 1 Sep 2022 07:03:26 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 1 Sep 2022 07:03:25 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31 via Frontend Transport; Thu, 1 Sep 2022 07:03:25 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.31; Thu, 1 Sep 2022 07:03:25 -0700
+        with ESMTP id S234587AbiIAOVE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Sep 2022 10:21:04 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2071.outbound.protection.outlook.com [40.107.237.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE23C32EC1;
+        Thu,  1 Sep 2022 07:21:02 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AXYRwln+kGLwEahVtKb+mgYSHUWAtGOmA9oLOzsI8aq1bKkY5l3w5iGEtWJzsNDd/6LvM+4WVo8izghZx+rvqtFrXXPHtzcp3GttrvaVXDGCG+Z+0KfokXByjHyAM0RwsLoX0lcb23fR1f4PvR+nm8rexHtCRfsx231dOArvvSI0VSiSd7Kj8n45AalLVnYoyAqOIUs3Fl9Ndryi+oAZxZuBCtwh2HqzBa/oicTPOwYIpBjujC5YZo/xsF0dvmnhUMiEewgruE6O7y/E/2ubp7V+dXd96+T1EAIRYdU8aiMww+XEwXcQ30IrBM2MiTQHp2IUkrnUCW5S8DBsCKOaVg==
+ b=lsMpd31u76Lcy3CJXzSaNrsjiz7VhYz6nqJfP2806iUFnxHOtClClBRbQal2uRWW1qydN0/O9DOEB6T5fUgdA4LByszRy+1Ht2iOZhlHg5xxAywD8q142YWlFoQcxbfERGfICSr3LXlSmh+nFgSUTGO9ltMRWsayWTKAZOgcedOqaDFpJ+EUIIh/EBtmY7joPYj1Dk3gxMu7nfa4DvNLHnrmig+uy2HzDw66uxFAlikotBXpJtvJT6KBdlHSXm22vS/15Jik2+JE+sU2v7pfFE+gcWdIMo54cWi9+VJOdKi1NOjm/dfNJBd2Yi6vmDl3Uh3NAa4+F5HFf+6ldLfHAA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oogV8wEgaxlGmFuNC1AWMk6XFu0TpR3Q+a0Y1F5tmEg=;
- b=RpWr91LUoU6x18JsnJehmCzQdLRz6eLCgVO1TQFVuE0lleIxUu3ylsZeWjcpKg2YrvU9hmTI1a8SRMZbBrpzpkZxpaUDhLtnJnmFUPNXawxJqw+FofeTChzORcA3VtQU5WMNRDo6EOsC/w7QQdH3LUkMG1qsrcT1i1JDr6r2fTNgJAK9xb3xKs/OHSOT4vvRItmXB1aaDMaBFxMvMTuMzC+yLDDlR40IxZW/cy7emy+Yo+kF+39Dv9uqkT3AKRc8bzvpk8QQRbZZCUXAOg/qN+ofGNuCmvapeABi+sm4YXm4lMlWuN1wkiaVfHGe3BKUgKyBtEEdTwgOgSZJBai+lQ==
+ bh=W0my+09iX+XmJxjirxVH5rAlp7t1qEUwcjsQqAflNrw=;
+ b=A+kI73Cc1C+QH+7uEk3bO+J5/XYcfNs/d02iQXvRYIUtI/RE7p0Wc+O9JnvumrxChgXHV+Wsg0gFn2JgIacMqML0Mp6qH8MmJXa4AfsU4nMBZmX5rzUjLt/KX+aHKUslNtwx1o2QdUNUGLlCCHSAhSc0Gg+6vlKKSPuoTrIcOK+reu5DEd6Ck0YfE/1w2MWX+P/3t3aVlU31PBSaLhKCxCeGIFB/6U8Z1MGHff03JRf8J2rWhCZcTeizW5UuhBbA3sW4xJKlP+i0vs7RQjTD8b3oBBQys0iRIjjYqTlsW9t0bSo8lKeIDJUOPIEm60MuIWpfMCoehQhsc+pSmbj2Ag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DM5PR11MB1324.namprd11.prod.outlook.com (2603:10b6:3:15::14) by
- BN8PR11MB3634.namprd11.prod.outlook.com (2603:10b6:408:88::31) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5566.19; Thu, 1 Sep 2022 14:03:00 +0000
-Received: from DM5PR11MB1324.namprd11.prod.outlook.com
- ([fe80::64f9:b9bd:85bb:c756]) by DM5PR11MB1324.namprd11.prod.outlook.com
- ([fe80::64f9:b9bd:85bb:c756%3]) with mapi id 15.20.5588.010; Thu, 1 Sep 2022
- 14:03:00 +0000
-From:   "Ruhl, Michael J" <michael.j.ruhl@intel.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Gert Wollny <gert.wollny@collabora.com>,
-        Gustavo Padovan <gustavo.padovan@collabora.com>,
-        Daniel Stone <daniel@fooishbar.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Clark <robdclark@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "Thierry Reding" <thierry.reding@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "Marek Szyprowski" <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        =?iso-8859-1?Q?Thomas_Hellstr=F6m?= <thomas_os@shipmail.org>,
-        Qiang Yu <yuq825@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Amol Maheshwari <amahesh@qti.qualcomm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        "Stefano Stabellini" <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        "Russell King" <linux@armlinux.org.uk>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Dmitry Osipenko" <digetx@gmail.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>
-Subject: RE: [PATCH v4 06/21] drm/i915: Prepare to dynamic dma-buf locking
- specification
-Thread-Topic: [PATCH v4 06/21] drm/i915: Prepare to dynamic dma-buf locking
- specification
-Thread-Index: AQHYvVAKt26jWPyWVUOQMFIjO4nTPq3Km+VA
-Date:   Thu, 1 Sep 2022 14:02:59 +0000
-Message-ID: <DM5PR11MB1324088635FDE00B0D957816C17B9@DM5PR11MB1324.namprd11.prod.outlook.com>
-References: <20220831153757.97381-1-dmitry.osipenko@collabora.com>
- <20220831153757.97381-7-dmitry.osipenko@collabora.com>
-In-Reply-To: <20220831153757.97381-7-dmitry.osipenko@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.500.17
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dfed438e-2f29-44bb-b802-08da8c22add9
-x-ms-traffictypediagnostic: BN8PR11MB3634:EE_
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mMq9NvvlP9ajuIOC+hjVMXkGSs9f2xATLCHpzwcW4K4uToAIfBItl5anbvP8D/tQkrT742txZ6/mHbjfpGASPB8x9p1ncMrB0QFSlHxRxlOQVWknKM3MoLvkLON8VozxWRFvN1syZWQqgQJA/p4CjZPA5UiTVocZuABTpmbkAGiMklGi5RNQQwaPuXDrWYdj/gWUdWQTGnlR/A/mddFikY8agDGlTEsdwHne2hwREGmzZw/5AlnKcp1wfIzXf4CTqRnBju5VUVVi/xadfb9bdfSuEySg06roQZkBmPRBgOGbRcKa8+6JthIwfkys6ct4f84bzD+yljkDAOsuFfflPz8aiboRrzyaadxWeRMkILum86jOPwoh+KeA22P24Dk1W4XlI48XxRrQoi68MG62CY11/oU3j9ceXm4OsaLyvsBh+R7eOzhfszvGdC7QwXJVv74kz2QiPJum3Jpnt3nWhIRybmJzXtp763eUPN0+NFzP5CEhThNSOvr0e3Sz4ArzsDhNegaHnyGHHoD/JRIUslAnyj+PwIV6Afp4hmAT3QHa9b6eSEaheRKa2bYORMG4MUDn5Re8cBWy4kk/xAVNife9tDF7FyYPm7mHS90Hy3UdWE3cry1jjGEMTowtmuzQtuSJcqSnNasuZjZPTFvdMdfEkXIkI2VMnLoBBVe/awD7kVsTq5XZvCw59IYht95KIj83kBl2oDzgjfHs7xfcw71TJ3dxNuLN1pyZaEskaF/4mECTzGyTIA38xyVzS3x/sCHzmlBR8L0C3MaNGcmgEU1UCzawHIOHatEDsMHlLvw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1324.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(39860400002)(396003)(376002)(136003)(346002)(366004)(66446008)(66556008)(38070700005)(82960400001)(4326008)(76116006)(64756008)(921005)(8676002)(66946007)(33656002)(122000001)(38100700002)(86362001)(66574015)(41300700001)(83380400001)(7416002)(9686003)(71200400001)(6506007)(186003)(7696005)(7366002)(478600001)(2906002)(26005)(54906003)(316002)(5660300002)(110136005)(52536014)(7406005)(55016003)(66476007)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?eTE9ZUc5shAZ4zJTDbsqtqeqDWyXoP1oKxD87GwpnAsCuETLBlz+u51mBd?=
- =?iso-8859-1?Q?knTY2+M0+J1kXabO31GvuNv5a9D+ZJ4Ynw9IWa7aKUmeMzumDAqObeLlrA?=
- =?iso-8859-1?Q?z3Q58azARmZfMlxV7G00pcey1FtYjqFH92Hbf0P6fHoqTgA1EI7ycr02wJ?=
- =?iso-8859-1?Q?Kq9Fyp5aOMEXy+v4f0/vFl2Ndh0FyJhKNdpZ3Z//ZBeLi+WrBL96ouOeqc?=
- =?iso-8859-1?Q?Tu7HCI8rV8jkVP1/pYV1OEPfJWIp3CROGKhNAip/6X/644CT4NF4FMn2ve?=
- =?iso-8859-1?Q?3urYPNNBOdPLloNug9hfrvyeZNDNTAjBFRWkdzfX+1KVO7YQK8qwn2hbqa?=
- =?iso-8859-1?Q?lJPQY85ld4q7eJ3zbaY5VrBW02tNDPGKYsMCOd6tYT8FlPVgs+0P+qwL3w?=
- =?iso-8859-1?Q?PWLYWmOkvkhai+o0aJKSrcCu1wrlhfbaEwU0hPPyTbvdRZx5g+X7Is7COZ?=
- =?iso-8859-1?Q?LgTO3CPAsL9ZdVNzmzdAgp+4Azis8B5TCFbwMT6g88hHkfuHSJfTvrEJJt?=
- =?iso-8859-1?Q?BME5gI+0Kgb4ORJhN78XwD8Z2H2IezeXmSNsq+d790fB608CGBEzneNnzG?=
- =?iso-8859-1?Q?udrGnWUosS5dcODPNQqyHl/pyViEQUk7OqUu+Mh1iO1CtieQSJDe87/O1R?=
- =?iso-8859-1?Q?aSswHbAtre/6ueRmxi20a5b4n5RX0Df2KZAoG2f8mqD0+eoxZBZFTXGu6d?=
- =?iso-8859-1?Q?F+i0kb5J507GDB9YKL6QYu1VLEQTux01VyIpSmd9d+0oySgs00dFG3nyYl?=
- =?iso-8859-1?Q?PFTD/R50P+z7teGeS2XLcY50/JaRRPG24LWHWuGbhw+SrY3/DyLZWZ/KXd?=
- =?iso-8859-1?Q?eC2BYNePDP6JtMWFwr3nyIjHFA3kElGtHpMeiP/LpRzRr1cPJMy2yvGkD/?=
- =?iso-8859-1?Q?s+POeWW5yQ3h0W4jsXw4r+tKjzfXJp5eokNeQ1ILGwYsN7Q6VSuEKfH0y1?=
- =?iso-8859-1?Q?MFrkn8OTdnV9bsuoNo0CQYNVDpYFcr8QcZkbxxDyBEfYt7DShSN/sHLqdX?=
- =?iso-8859-1?Q?6hIYav44JP9lr3fPSLAQNnN7DIQy7rXF/Ih5hSj2S/IurSixf7a/I4xrxn?=
- =?iso-8859-1?Q?/p+Z4sjcZPiIQuVjy816arXYEd4eVsEM5SBJFmhqSrTgKqJOUDt+VQHgiz?=
- =?iso-8859-1?Q?ZA5Oum2QZoiTlhDJ+ZkDOgNiwJxAK0dQ6qlVBNYjsnmUtZtrez+Ga6N6RC?=
- =?iso-8859-1?Q?1jbCv4JYo5M9rBxewQhslZyLBfvSHMP59pRbQ5JEvnwbncpLe6tt0BMlSp?=
- =?iso-8859-1?Q?IE4FjZyHkOR+8zWJ72yGJzn1icb3P/dd2K8lkutOowgmyBtc1JTvh0XT4v?=
- =?iso-8859-1?Q?KB4/EX0rx+EuKInpRJ8A3eptyTStszd40DBtPSeQhO2vR+DY2q8T3pIRTO?=
- =?iso-8859-1?Q?AjAmmLwUUTPxWVsrDXwMtHWT5ITwemVogrHKUhk2REko+hK0+U8J3keUYw?=
- =?iso-8859-1?Q?b/YMDmxvbHTAf+b4WKN7nQz2YVgq1cFnVcGeXQzomczzHwzw8BQe2cbLQy?=
- =?iso-8859-1?Q?sJxACFam/yO2EoDzb33S12SZ5oA8N5tL9qtA7Fx3TlxFaF173q5AmEH8P4?=
- =?iso-8859-1?Q?1bso8HoKU5rdnQHknlGPfOG5XDhVOJQYuRlpUTt+kBqWhV0Kvi6aUXUw6o?=
- =?iso-8859-1?Q?xDJvotJoE5Hufyev5Z4n83S2NvhD3fk6H2?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W0my+09iX+XmJxjirxVH5rAlp7t1qEUwcjsQqAflNrw=;
+ b=J0vJJo/R96v0w4kvSsYNAbrR0bfagBC7nS+57oD30fEOmNRF14Kus3sNLP/Qbr9Y+hIF4ILvzt2yWszcRQqRpp3qXL1s3v44WUSMqQ9ld/r/N5+R/ULyK2UjJ/R4U3jevLD9IsRIUoyTBIMi9iMZpwAF/znHOtIWTcN4Njh0agHeN6qzN5HI7Vsh/gZddDlcIUs7uzaJzhgiIry7zAY8LoA5vkmIQJn5OXDwdPrGXi9+OrMfHGwYS1Ip0Qpyh41h9c++HIFcAbvPhFmvjjnDohl51ZqZKkdvEvKsTLlILeg2Fzg8GltO0CQJACJ3bvXQL9L/cJJT73sqeOZVD6AMdQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by BY5PR12MB5000.namprd12.prod.outlook.com (2603:10b6:a03:1d7::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.15; Thu, 1 Sep
+ 2022 14:20:59 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5%7]) with mapi id 15.20.5588.012; Thu, 1 Sep 2022
+ 14:20:59 +0000
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel@lists.freedesktop.org, Leon Romanovsky <leon@kernel.org>,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Kamal Heib <kamalheib1@gmail.com>,
+        Mohammad Kabat <mohammadkab@nvidia.com>
+Subject: [PATCH 0/4] RDMA/mlx5: Support DMABUF in umems and enable ATS
+Date:   Thu,  1 Sep 2022 11:20:52 -0300
+Message-Id: <0-v1-bd147097458e+ede-umem_dmabuf_jgg@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR01CA0021.prod.exchangelabs.com (2603:10b6:208:10c::34)
+ To MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bd6c9c99-a69d-4b58-877d-08da8c253031
+X-MS-TrafficTypeDiagnostic: BY5PR12MB5000:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KokJOkdrOCDCHp5EGrhn+eEJMlf3XPdRQ4Ktan1y1aKfJq98USLl5lAn9RyQA0M+UoOoEVJdSpnq3VOgcjoX6itD8FWhFkXd4F1Al2ND57LUjwA//uHAuJv7w0Owj0LNrZo1ksCUlCUTBLf52TTs2Oo/JrYliI5/kzbh/JoGBP5mxpUUR2f6JJz8+kvCvWRjtR2c3YaQtBcsTv2EWeHDhLwUtie46myHOrJrmO7tZJkD+riTflOFgCa57VvtYaAfJQekGkoK5uLwclpFxzKKm5mpDrxoG1rebfKBmBPYx7465UHiIGnTY2FTmlh6WVIlJIhEZ5EKoGoh6Ck8DdW/3HBNMvriS5fSuSzSPextWFj+ZQGJY6lIbRXlSDiSGpx4+pqaB+DPQLdWSJGQdOTViMzw6PTjY97JZ7foptdDhBVjmiuzrJAw4rIzh/QPrbK/pBmsWQ3r0+Y+4A+HKLEGiih7rhDbTuuzbiQYw6dFYfkupJQLjihGReEs5KwMTj4sVG4BeG5Z0palT1u2Kj6Yd20reI2CO0MKZEHaG8PEm+CJF0cNapUFED377l02TkrsAHxEFTuFh8tQAg3eugJMF1ZNYWka1yhv7NRYmwH9jIBLnzLwr+TwnhX/VkQK0jjRdYa1M5PvHT2BTv+0V9sz2rph5Fx9JO2UPcXCPc/HY18w9PIjHjgSAvAxvEXz5S65mCj1NAm56H7t60SRx8SHnOi6YtsUg5ErheqUkK/lmNP0OTLBf2oThYGVU7yzZFPp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(376002)(346002)(136003)(366004)(396003)(6512007)(66946007)(4326008)(5660300002)(66476007)(6666004)(6506007)(478600001)(107886003)(8676002)(66556008)(6486002)(8936002)(86362001)(41300700001)(83380400001)(2906002)(2616005)(26005)(38100700002)(186003)(316002)(36756003)(110136005)(54906003)(4216001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OV4JMjYJxzJZnMLJL69UzVTNciWyOjA9mo8VrFMpYYtShhbMs/U4i+zWbtmw?=
+ =?us-ascii?Q?9atG1wlhNijf41YRSQ6i7t5XgLStFJKU2U4bnCmUAjI7Z+VE7g9v7YBYlHju?=
+ =?us-ascii?Q?0EzQPpLZETUX3Skb089CiEb5YtyP5cKittuE0xxFXZWlzuJY7FA5neV980vS?=
+ =?us-ascii?Q?rLDwpzWT7x0UEh72f5Yu31MwvRoNJwlkfNcoJvSstJEc136ScLKtqlAnKCW9?=
+ =?us-ascii?Q?nk5RJGivxlYxaezYBf6ieYHt/7SfMZJ2RwFyVGPQ7LK7N2FqhmlV7R9bYQQu?=
+ =?us-ascii?Q?wnMysGbhui/3FTZjSVN7DT7gHU8YQ1NCnUvrUnYqCFChkV0VLPIBejMkEvLF?=
+ =?us-ascii?Q?ZzDcOf4/Y46+5kiPF7Y46XHoHXdb1w+/dN5uFdX85r/u4SslokaSLgvIRuPd?=
+ =?us-ascii?Q?Cj9xY8fBQsFouPk6r3t0OxlSUEhDWZQFPyhdDLc1onmoTtFCNHD1Tk0ZG/yX?=
+ =?us-ascii?Q?gTWDs9jkCBYKlMCw+7WV98hJUTu5NzwX093iXsh9doIrVttRC/FcR6hkCqU5?=
+ =?us-ascii?Q?2Vdf9Mhbbuwh0RZBIv7kxATWXI77mzjrmmTxZN1L9Ow9EVpgQnK7yLxk09Dz?=
+ =?us-ascii?Q?1JLYpbPTWYSXKgOjqe0X7f1Lo/MPI1T9rD/Y8Eflz36mHEZmqGTrwpM0vOy5?=
+ =?us-ascii?Q?QgEtVU7cQJ6+zMjEQlkEeb2FSJ1c0mlTqj4otXq1/H9DtquMr3ZX6liRK4Bh?=
+ =?us-ascii?Q?FVFDGlROMoF7eHykazhLMxxxFjY2e1l5cdvsZZ0qjHL+pFB8OTxScEJP/Rg2?=
+ =?us-ascii?Q?x5uI4Y1VzVZAdalqMzSabGbBcL+tN7IvPxXajZUFtyPgx74H1yJwIUCcYTT6?=
+ =?us-ascii?Q?RMrCEsklPr7BAYZPF+Agvcah0x+1Vjok2T7HrkecrsLBaTfFI6NgHRDUUZ3M?=
+ =?us-ascii?Q?OjXZYFEEUIQTAUkXRUvv+jsMtOjNgBZ+p8EZ7swJsG0MZ5mvEeNL8I71srJH?=
+ =?us-ascii?Q?ElrxZH46qyLN7rmECAQCGtvs6E+v+b29T4823CBP56oEWGyXrTXELHK27fXF?=
+ =?us-ascii?Q?08qQmhyp4TkxUBM0xARXx166c5ymvpnx8f4PzzqFUMRnMTgJX9uLpwl8Ah/t?=
+ =?us-ascii?Q?0lrrh61z9mH+3nBLwQcI4ZcX8PqA1X7G+kRgyjm5GFbhgM5fmWoM35/9JCTE?=
+ =?us-ascii?Q?AJ6EthHlJLa3PzZ6+Q7c8hoDwUetuP0E3g3RVVqNQHVwAU65lwd11FRDFWe9?=
+ =?us-ascii?Q?C7McxVZTbI4MlpM+NTftQwOqqEgCP8IrdrSyzGTbhPI5vRln0omwE/mwvsTo?=
+ =?us-ascii?Q?Y6r0s2x1YFqhnwT94j8+xxidy2+cb+ZQuf55Rh2SUyEl9d/KqShK67S/ny0d?=
+ =?us-ascii?Q?GO0OODwstKkcGUnQsN6QGqB92QQrEdCaWGzqt7RXzZAkO7njakansDBd+FAq?=
+ =?us-ascii?Q?2h1nEz2xGPnRjIUOgQFetLsDkRjDFi2bRzeF71StEgUegrhTV3LHJqwk3rrb?=
+ =?us-ascii?Q?deqGOT5Vd6+wfTbGsbgZrgukKYETbLU9/TO1jAgsxxzEZoP9a5Jl14NU65OR?=
+ =?us-ascii?Q?+uBO2HPrE8SI9FlNEx9JPpjx8yO8/O3I4EVxKFIyuXrLsdyxhQ56O3wp82bY?=
+ =?us-ascii?Q?d8BKGGriciVwC3nhq3H+5pRjBp7Va3bBnvaYQYLM?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd6c9c99-a69d-4b58-877d-08da8c253031
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1324.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfed438e-2f29-44bb-b802-08da8c22add9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2022 14:02:59.9225
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2022 14:20:57.7358
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g4ycS2vn1nGCJetZEgi48T+II34HkcCyIwVoRqc8cCeDu0JsHdf6zxPEc6wzDGuRYDM1mGqbVX1T5j3KqAM+NmwjRh1luBMpOlzNGEZf7UE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR11MB3634
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OqlkdnCT/PLlpewNqFLuufHKQYxuZTOiYeK9EMJCrmlzbXdAub8CY9EKHJgb/ahY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB5000
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
->-----Original Message-----
->From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->Sent: Wednesday, August 31, 2022 11:38 AM
->To: David Airlie <airlied@linux.ie>; Gerd Hoffmann <kraxel@redhat.com>;
->Gurchetan Singh <gurchetansingh@chromium.org>; Chia-I Wu
-><olvaffe@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Daniel Almeida
-><daniel.almeida@collabora.com>; Gert Wollny <gert.wollny@collabora.com>;
->Gustavo Padovan <gustavo.padovan@collabora.com>; Daniel Stone
-><daniel@fooishbar.org>; Tomeu Vizoso <tomeu.vizoso@collabora.com>;
->Maarten Lankhorst <maarten.lankhorst@linux.intel.com>; Maxime Ripard
-><mripard@kernel.org>; Thomas Zimmermann <tzimmermann@suse.de>;
->Rob Clark <robdclark@gmail.com>; Sumit Semwal
-><sumit.semwal@linaro.org>; Christian K=F6nig <christian.koenig@amd.com>;
->Pan, Xinhui <Xinhui.Pan@amd.com>; Thierry Reding
-><thierry.reding@gmail.com>; Tomasz Figa <tfiga@chromium.org>; Marek
->Szyprowski <m.szyprowski@samsung.com>; Mauro Carvalho Chehab
-><mchehab@kernel.org>; Alex Deucher <alexander.deucher@amd.com>; Jani
->Nikula <jani.nikula@linux.intel.com>; Joonas Lahtinen
-><joonas.lahtinen@linux.intel.com>; Vivi, Rodrigo <rodrigo.vivi@intel.com>;
->Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>; Thomas Hellstr=F6m
-><thomas_os@shipmail.org>; Qiang Yu <yuq825@gmail.com>; Srinivas
->Kandagatla <srinivas.kandagatla@linaro.org>; Amol Maheshwari
-><amahesh@qti.qualcomm.com>; Jason Gunthorpe <jgg@ziepe.ca>; Leon
->Romanovsky <leon@kernel.org>; Gross, Jurgen <jgross@suse.com>; Stefano
->Stabellini <sstabellini@kernel.org>; Oleksandr Tyshchenko
-><oleksandr_tyshchenko@epam.com>; Tomi Valkeinen <tomba@kernel.org>;
->Russell King <linux@armlinux.org.uk>; Lucas Stach <l.stach@pengutronix.de>=
-;
->Christian Gmeiner <christian.gmeiner@gmail.com>
->Cc: dri-devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; Dmitry
->Osipenko <digetx@gmail.com>; linux-media@vger.kernel.org; linaro-mm-
->sig@lists.linaro.org; amd-gfx@lists.freedesktop.org; intel-
->gfx@lists.freedesktop.org; kernel@collabora.com; virtualization@lists.linu=
-x-
->foundation.org; linux-rdma@vger.kernel.org; linux-arm-
->msm@vger.kernel.org
->Subject: [PATCH v4 06/21] drm/i915: Prepare to dynamic dma-buf locking
->specification
->
->Prepare i915 driver to the common dynamic dma-buf locking convention
->by starting to use the unlocked versions of dma-buf API functions
->and handling cases where importer now holds the reservation lock.
->
->Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->---
-> drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c       |  2 +-
-> drivers/gpu/drm/i915/gem/i915_gem_object.c       | 12 ++++++++++++
-> .../gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c | 16 ++++++++--------
-> 3 files changed, 21 insertions(+), 9 deletions(-)
->
->diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
->b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
->index f5062d0c6333..07eee1c09aaf 100644
->--- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
->+++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
->@@ -72,7 +72,7 @@ static int i915_gem_dmabuf_vmap(struct dma_buf
->*dma_buf,
-> 	struct drm_i915_gem_object *obj =3D dma_buf_to_obj(dma_buf);
-> 	void *vaddr;
->
->-	vaddr =3D i915_gem_object_pin_map_unlocked(obj, I915_MAP_WB);
->+	vaddr =3D i915_gem_object_pin_map(obj, I915_MAP_WB);
-> 	if (IS_ERR(vaddr))
-> 		return PTR_ERR(vaddr);
->
->diff --git a/drivers/gpu/drm/i915/gem/i915_gem_object.c
->b/drivers/gpu/drm/i915/gem/i915_gem_object.c
->index 389e9f157ca5..7e2a9b02526c 100644
->--- a/drivers/gpu/drm/i915/gem/i915_gem_object.c
->+++ b/drivers/gpu/drm/i915/gem/i915_gem_object.c
->@@ -331,7 +331,19 @@ static void __i915_gem_free_objects(struct
->drm_i915_private *i915,
-> 			continue;
-> 		}
->
->+		/*
->+		 * dma_buf_unmap_attachment() requires reservation to be
->+		 * locked. The imported GEM shouldn't share reservation lock,
->+		 * so it's safe to take the lock.
->+		 */
->+		if (obj->base.import_attach)
->+			i915_gem_object_lock(obj, NULL);
+This series adds support for DMABUF when creating a devx umem. devx umems
+are quite similar to MR's execpt they cannot be revoked, so this uses the
+dmabuf pinned memory flow. Several mlx5dv flows require umem and cannot
+work with MR.
 
-There is a lot of stuff going here.  Taking the lock may be premature...
+The intended use case is primarily for P2P transfers using dmabuf as a
+handle to the underlying PCI BAR memory from the exporter. When a PCI
+switch is present the P2P transfers can bypass the host bridge completely
+and go directly through the switch. ATS allows this bypass to function in
+more cases as translated TLPs issued after an ATS query allows the request
+redirect setting to be bypassed in the switch.
 
-> 		__i915_gem_object_pages_fini(obj);
+Have mlx5 automatically use ATS in places where it makes sense.
 
-The i915_gem_dmabuf.c:i915_gem_object_put_pages_dmabuf is where
-unmap_attachment is actually called, would it make more sense to make
-do the locking there?
+Jason Gunthorpe (4):
+  net/mlx5: Add IFC bits for mkey ATS
+  RDMA/core: Add UVERBS_ATTR_RAW_FD
+  RDMA/mlx5: Add support for dmabuf to devx umem
+  RDMA/mlx5: Enable ATS support for MRs and umems
 
-Mike
+ drivers/infiniband/core/uverbs_ioctl.c   |  8 ++++
+ drivers/infiniband/hw/mlx5/devx.c        | 55 +++++++++++++++++-------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h     | 36 ++++++++++++++++
+ drivers/infiniband/hw/mlx5/mr.c          |  5 ++-
+ include/linux/mlx5/mlx5_ifc.h            | 11 +++--
+ include/rdma/uverbs_ioctl.h              | 13 ++++++
+ include/uapi/rdma/mlx5_user_ioctl_cmds.h |  1 +
+ 7 files changed, 109 insertions(+), 20 deletions(-)
 
 
->+
->+		if (obj->base.import_attach)
->+			i915_gem_object_unlock(obj);
->+
-> 		__i915_gem_free_object(obj);
->
-> 		/* But keep the pointer alive for RCU-protected lookups */
->diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
->b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
->index 62c61af77a42..9e3ed634aa0e 100644
->--- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
->+++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
->@@ -213,7 +213,7 @@ static int igt_dmabuf_import_same_driver(struct
->drm_i915_private *i915,
-> 		goto out_import;
-> 	}
->
->-	st =3D dma_buf_map_attachment(import_attach,
->DMA_BIDIRECTIONAL);
->+	st =3D dma_buf_map_attachment_unlocked(import_attach,
->DMA_BIDIRECTIONAL);
-> 	if (IS_ERR(st)) {
-> 		err =3D PTR_ERR(st);
-> 		goto out_detach;
->@@ -226,7 +226,7 @@ static int igt_dmabuf_import_same_driver(struct
->drm_i915_private *i915,
-> 		timeout =3D -ETIME;
-> 	}
-> 	err =3D timeout > 0 ? 0 : timeout;
->-	dma_buf_unmap_attachment(import_attach, st,
->DMA_BIDIRECTIONAL);
->+	dma_buf_unmap_attachment_unlocked(import_attach, st,
->DMA_BIDIRECTIONAL);
-> out_detach:
-> 	dma_buf_detach(dmabuf, import_attach);
-> out_import:
->@@ -296,7 +296,7 @@ static int igt_dmabuf_import(void *arg)
-> 		goto out_obj;
-> 	}
->
->-	err =3D dma_buf_vmap(dmabuf, &map);
->+	err =3D dma_buf_vmap_unlocked(dmabuf, &map);
-> 	dma_map =3D err ? NULL : map.vaddr;
-> 	if (!dma_map) {
-> 		pr_err("dma_buf_vmap failed\n");
->@@ -337,7 +337,7 @@ static int igt_dmabuf_import(void *arg)
->
-> 	err =3D 0;
-> out_dma_map:
->-	dma_buf_vunmap(dmabuf, &map);
->+	dma_buf_vunmap_unlocked(dmabuf, &map);
-> out_obj:
-> 	i915_gem_object_put(obj);
-> out_dmabuf:
->@@ -358,7 +358,7 @@ static int igt_dmabuf_import_ownership(void *arg)
-> 	if (IS_ERR(dmabuf))
-> 		return PTR_ERR(dmabuf);
->
->-	err =3D dma_buf_vmap(dmabuf, &map);
->+	err =3D dma_buf_vmap_unlocked(dmabuf, &map);
-> 	ptr =3D err ? NULL : map.vaddr;
-> 	if (!ptr) {
-> 		pr_err("dma_buf_vmap failed\n");
->@@ -367,7 +367,7 @@ static int igt_dmabuf_import_ownership(void *arg)
-> 	}
->
-> 	memset(ptr, 0xc5, PAGE_SIZE);
->-	dma_buf_vunmap(dmabuf, &map);
->+	dma_buf_vunmap_unlocked(dmabuf, &map);
->
-> 	obj =3D to_intel_bo(i915_gem_prime_import(&i915->drm, dmabuf));
-> 	if (IS_ERR(obj)) {
->@@ -418,7 +418,7 @@ static int igt_dmabuf_export_vmap(void *arg)
-> 	}
-> 	i915_gem_object_put(obj);
->
->-	err =3D dma_buf_vmap(dmabuf, &map);
->+	err =3D dma_buf_vmap_unlocked(dmabuf, &map);
-> 	ptr =3D err ? NULL : map.vaddr;
-> 	if (!ptr) {
-> 		pr_err("dma_buf_vmap failed\n");
->@@ -435,7 +435,7 @@ static int igt_dmabuf_export_vmap(void *arg)
-> 	memset(ptr, 0xc5, dmabuf->size);
->
-> 	err =3D 0;
->-	dma_buf_vunmap(dmabuf, &map);
->+	dma_buf_vunmap_unlocked(dmabuf, &map);
-> out:
-> 	dma_buf_put(dmabuf);
-> 	return err;
->--
->2.37.2
+base-commit: b90cb1053190353cc30f0fef0ef1f378ccc063c5
+-- 
+2.37.2
 
