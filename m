@@ -2,263 +2,253 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E16795A95B5
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Sep 2022 13:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603FA5A964F
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Sep 2022 14:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233617AbiIAL3h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Sep 2022 07:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
+        id S232405AbiIAMHD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Sep 2022 08:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232877AbiIAL3g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Sep 2022 07:29:36 -0400
-Received: from mailgw.kylinos.cn (unknown [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3868C139F44;
-        Thu,  1 Sep 2022 04:29:30 -0700 (PDT)
-X-UUID: d2b2dd2aa5e14c18a6997ff43d0964de-20220901
-X-CPASD-INFO: d7ac05970d2d4a6a8d24d0437a085f10@rYebg11nZ2dchHSwg6SBm1iVYmSUXFS
-        CeZtQaGOWXVCVhH5xTV5uYFV9fWtVYV9dYVR6eGxQYmBgZFJ4i3-XblBgXoZgUZB3s3mbg2BjaQ==
-X-CLOUD-ID: d7ac05970d2d4a6a8d24d0437a085f10
-X-CPASD-SUMMARY: SIP:-1,APTIP:-2.0,KEY:0.0,FROMBLOCK:1,OB:0.0,URL:-5,TVAL:141.
-        0,ESV:0.0,ECOM:-5.0,ML:0.0,FD:0.0,CUTS:242.0,IP:-2.0,MAL:-5.0,PHF:-5.0,PHC:-5
-        .0,SPF:4.0,EDMS:-5,IPLABEL:4992.0,FROMTO:0,AD:0,FFOB:0.0,CFOB:0.0,SPC:0,SIG:-
-        5,AUF:3,DUF:3820,ACD:67,DCD:67,SL:0,EISP:0,AG:0,CFC:0.824,CFSR:0.034,UAT:0,RA
-        F:2,IMG:-5.0,DFA:0,DTA:0,IBL:-2.0,ADI:-5,SBL:0,REDM:0,REIP:0,ESB:0,ATTNUM:1,E
-        AF:0,CID:-5.0,VERSION:2.3.17
-X-CPASD-ID: d2b2dd2aa5e14c18a6997ff43d0964de-20220901
-X-CPASD-BLOCK: 1000
-X-CPASD-STAGE: 1
-X-UUID: d2b2dd2aa5e14c18a6997ff43d0964de-20220901
-X-User: jianghaoran@kylinos.cn
-Received: from [172.30.60.211] [(210.12.40.82)] by mailgw
-        (envelope-from <jianghaoran@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 978108655; Thu, 01 Sep 2022 19:29:48 +0800
-Subject: Re: [PATCH] RDMA/siw: Solve the error of compiling the 32BIT mips
- kernel when enable CONFIG_RDMA_SIW
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <SA0PR15MB3919F42FFE3C2FBF09D08026997B9@SA0PR15MB3919.namprd15.prod.outlook.com>
-From:   jianghaoran <jianghaoran@kylinos.cn>
-Message-ID: <3e5b573b-91c1-d9d8-cf1a-8da02ad6b568@kylinos.cn>
-Date:   Thu, 1 Sep 2022 19:26:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        with ESMTP id S229813AbiIAMHB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Sep 2022 08:07:01 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDA12AE30
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Sep 2022 05:07:00 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id y15so9933617qvn.2
+        for <linux-rdma@vger.kernel.org>; Thu, 01 Sep 2022 05:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
+         :references:from:from:to:cc:subject:date;
+        bh=Wf43ElFo+FS9PKVIVgtE9so4ujMaCrVoIH1Nss6PbFs=;
+        b=aaRuozjgwa21wtLWUgyDt3blAVwiHeo+PSv2BdUJJCZaR/R9CT2ujXjfR+Qemn1y+M
+         iy2gRdBkbNqWS9Kn7FeeAAgLmzBoZ9twwXBqGNiSbDX0ZFs2wXcArcBcfrfJQf+tUGi3
+         1DoP7piaEB13518be7cUPGsiBmqvbZCCBMn8I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
+         :references:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=Wf43ElFo+FS9PKVIVgtE9so4ujMaCrVoIH1Nss6PbFs=;
+        b=QIogOpEARB0LdqcOimHi7lSpAu13+Lvpu8Xxgf1JOE11a+285neeHMd8efXVXkU4LD
+         vdjVwANwmRgKQ+3n5WHMpt+eMPEOtVDX3a9uZs3V800pnyXrdv5OciHKt7P6AYOBqMg/
+         FzKXujdIxIuns1DjlRZB1Bcv2yjKyT+TrZkrZACuHAiyNle517YrdnI4mw5fBA54/U+f
+         zybJFYsg1YJ7WdJngJczi1WcT65Hn8/2iM6/9T/+QBS/uUs7L5C5i1qBV7+hGYXKzrb1
+         gG1pr96j+300Sox6Go/mQoHzWbpIpuMR/Fje0Kx55fDZPOd3SvTUTLyl2LdXCCGRLqrT
+         N5ng==
+X-Gm-Message-State: ACgBeo3ahzNi9O+R9IfzE4MxWLtTeI/XiSZR90VWf7ZulJ2FzanPGM+G
+        Pi0rZkZftOFMFmDvGIGbPSbZlGmyeqpLfyLAL63+5QVLkjMvjw==
+X-Google-Smtp-Source: AA6agR6nNAAafc1tcObuhVRhk+GT+ij/QOyauqasFg+HQFG3jo9TUQvy/uDwgqAIKdzkg6M7TTHRQAd9pKtq+JYSn5I=
+X-Received: by 2002:a05:6214:2aa2:b0:477:1882:3dc with SMTP id
+ js2-20020a0562142aa200b00477188203dcmr23445461qvb.11.1662034019741; Thu, 01
+ Sep 2022 05:06:59 -0700 (PDT)
+From:   Kashyap Desai <kashyap.desai@broadcom.com>
+References: <20220816081153.1580612-1-kashyap.desai@broadcom.com>
+ <Yv7QvMADD7g3yPWh@nvidia.com> <2b8cd62b4c5c0f9551977909981246d8@mail.gmail.com>
+ <Yv94fYp8869XZKFU@nvidia.com> <2651261c642ca672864c2c6c8e7a9774@mail.gmail.com>
+ <YwjHSBr3f4o0hXBX@nvidia.com>
+In-Reply-To: <YwjHSBr3f4o0hXBX@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <SA0PR15MB3919F42FFE3C2FBF09D08026997B9@SA0PR15MB3919.namprd15.prod.outlook.com>
-Content-Type: multipart/mixed;
- boundary="------------EC65EF279E17B4400AB6BC39"
-Content-Language: en-US
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RDNS_DYNAMIC,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=no autolearn_force=no version=3.4.6
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQHrfIfLJ9VN7XzL87A1I1MQ3pmjvwHYSPW6AdeSkpYDPgwgJgHwx5v4Agd0kkWtTcYMEA==
+Date:   Thu, 1 Sep 2022 17:36:57 +0530
+Message-ID: <85a37f42a08f4163cb5440d8825b7e7a@mail.gmail.com>
+Subject: RE: [PATCH rdma-rc v1] RDMA/core: fix sg_to_page mapping for boundary condition
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, leonro@nvidia.com,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Andrew Gospodarek <andrew.gospodarek@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000005e026c05e79c73e6"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------EC65EF279E17B4400AB6BC39
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+--0000000000005e026c05e79c73e6
+Content-Type: text/plain; charset="UTF-8"
+
+> -----Original Message-----
+> From: Jason Gunthorpe [mailto:jgg@nvidia.com]
+> Sent: Friday, August 26, 2022 6:45 PM
+> To: Kashyap Desai <kashyap.desai@broadcom.com>
+> Cc: linux-rdma@vger.kernel.org; leonro@nvidia.com; Selvin Xavier
+> <selvin.xavier@broadcom.com>; Andrew Gospodarek
+> <andrew.gospodarek@broadcom.com>
+> Subject: Re: [PATCH rdma-rc v1] RDMA/core: fix sg_to_page mapping for
+> boundary condition
+>
+> On Mon, Aug 22, 2022 at 07:51:22PM +0530, Kashyap Desai wrote:
+>
+> > Now, we will enter into below loop with dma_addr = page_addr =
+> > 0xffffffffffffe000 and "end_dma_addr = dma_addr + dma_len" is ZERO.
+> > eval 0xffffffffffffe000 + 8192
+> > hexadecimal: 0
+>
+> This is called overflow.
+
+Is this not DMAable for 64bit DMA mask device ? It is DMAable. So not sure
+why you call it as overflow. ?
+My understanding is -
+There is  a roll over (overflow) issue, If we get DMA address =
+0xffffffffffffe000 and length = 16K. This is a last page of the possible
+DMA range.
+Similar discussion I found
+@https://marc.info/?l=git-commits-head&m=149437079023021&w=2
+
+We need to handle size vs end_address gracefully.
+
+>
+> Anything doing maths on the sgl's is likely to become broken by this -
+which is
+> why I think it is unnecessarily dangerous for the iommu code to general
+dma
+> addresses like this. It just shouldn't.
+>
+> > > It should not create mappings that are so dangerous. There is really
+> > > no
+> > reason to
+> > > use the last page of IOVA space that includes -1.
+
+I agree that such mapping is obviously dangerous, but it is not illegal as
+well.
+Same sgl mapping works if it is direct attached Storage, so there will be
+a logical question why IB stack is not handling this.
+
+> >
+> > That is correct, but if API which deals with mapping they handle this
+> > kind of request gracefully is needed. Right ?
+>
+> Ideally, but that is a game of wack a mole across the kernel, and
+redoing
+> algorithms to avoid overflowing addition is tricky stuff.
+>
+> > I thought about better approach without creating regression and I
+> > found having loop using sg_dma_len can avoid such issues gracefully.
+> > How about original patch. ?
+>
+> It overflows too.
+>
+> You need to write the code so you never create the situation where
+> A+B=0 - don't try to fix things up after that happens.
+
+In proposed patch, A + B = 0 is possible, but it will be considered as end
+of the loop.  So let's say it was supposed to setup 8 sgl entries, A + B =
+0 will be detected only after 8th entry is setup.
+Current code detect A + B = 0 much early and that is what I am trying to
+fix in this patch (This patch will not fix any roll over issue).
+At least it will serve the purpose of creating correct sgl entries in low
+level driver's Memory region through set_page() callback.
+
+I am fine with your call since this is a concern case and it is going to
+change core function.
+
+We have two choice -
+If function ib_sg_to_pages() can't handle such case, would you like to
+detect such mapping error and at least return -EINVAL ?
+OR
+Just parse whatever mapping is received in sgl to low level driver and
+don't really care about overflow case. (May be this patch can help.) ?
 
 
+Kashyap
 
-在 2022/9/1 下午3:05, Bernard Metzler 写道:
-> 
-> 
->> -----Original Message-----
->> From: jianghaoran <jianghaoran@kylinos.cn>
->> Sent: Thursday, 1 September 2022 07:52
->> To: Bernard Metzler <BMT@zurich.ibm.com>
->> Cc: jgg@ziepe.ca; leon@kernel.org; linux-rdma@vger.kernel.org; linux-
->> kernel@vger.kernel.org
->> Subject: [EXTERNAL] [PATCH] RDMA/siw: Solve the error of compiling the
->> 32BIT mips kernel when enable CONFIG_RDMA_SIW
->>
->> cross-compilation environment：
->> ubuntu 20.04
->> mips-linux-gnu-gcc (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0
->>
->> generate a configuration file by make randconfig:
->> CONFIG_32BIT=y
->> CONFIG_RDMA_SIW=y
->>
->> the error message as follows：
->> In file included from ../arch/mips/include/asm/page.h:270,
->>                   from ../arch/mips/include/asm/io.h:29,
->>                   from ../arch/mips/include/asm/mmiowb.h:5,
->>                   from ../include/linux/spinlock.h:64,
->>                   from ../include/linux/wait.h:9,
->>                   from ../include/linux/net.h:19,
->>                   from ../drivers/infiniband/sw/siw/siw_qp_tx.c:8:
->> ../drivers/infiniband/sw/siw/siw_qp_tx.c: In function ‘siw_tx_hdt’:
->> ../arch/mips/include/asm/page.h:255:53: error: cast to pointer from integer
->> of different size [-Werror=int-to-pointer-cast]
->>    255 | #define virt_to_pfn(kaddr)    PFN_DOWN(virt_to_phys((void
->> *)(kaddr)))
->>        |                                                     ^
->> ../include/asm-generic/memory_model.h:18:41: note: in definition of macro
->> ‘__pfn_to_page’
->>     18 | #define __pfn_to_page(pfn) (mem_map + ((pfn) - ARCH_PFN_OFFSET))
->>        |                                         ^~~
->> ../arch/mips/include/asm/page.h:255:31: note: in expansion of macro
->> ‘PFN_DOWN’
->>    255 | #define virt_to_pfn(kaddr)    PFN_DOWN(virt_to_phys((void
->> *)(kaddr)))
->>        |                               ^~~~~~~~
->> ../arch/mips/include/asm/page.h:256:41: note: in expansion of macro
->> ‘virt_to_pfn’
->>    256 | #define virt_to_page(kaddr) pfn_to_page(virt_to_pfn(kaddr))
->>        |                                         ^~~~~~~~~~~
->> ../drivers/infiniband/sw/siw/siw_qp_tx.c:538:23: note: in expansion of
->> macro ‘virt_to_page’
->>    538 |     page_array[seg] = virt_to_page(va & PAGE_MASK);
->>        |                       ^~~~~~~~~~~~
->> cc1: all warnings being treated as errors
->> make[5]: *** [../scripts/Makefile.build:249:
->> drivers/infiniband/sw/siw/siw_qp_tx.o] Error 1
->> make[4]: *** [../scripts/Makefile.build:465: drivers/infiniband/sw/siw]
->> Error 2
->> make[3]: *** [../scripts/Makefile.build:465: drivers/infiniband/sw] Error 2
->> make[3]: *** Waiting for unfinished jobs....
->>
->> Reported-by: k2ci <kernel-bot@kylinos.cn>
->> Signed-off-by: jianghaoran <jianghaoran@kylinos.cn>
->> ---
->>   drivers/infiniband/sw/siw/siw_qp_tx.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c
->> b/drivers/infiniband/sw/siw/siw_qp_tx.c
->> index 1f4e60257700..55ed0c27f449 100644
->> --- a/drivers/infiniband/sw/siw/siw_qp_tx.c
->> +++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
->> @@ -533,7 +533,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct
->> socket *s)
->>   					kunmap_local(kaddr);
->>   				}
->>   			} else {
->> -				u64 va = sge->laddr + sge_off;
->> +				unsigned long va = sge->laddr + sge_off;
->>
-> 
-> We discussed same thing a few days ago - see PATCH from Linus:
-> '[PATCH] RDMA/siw: Pass a pointer to virt_to_page()'
-> 
-> While he suggested casting, I think it would be better to change
-> 'u64' to 'uintptr_t'. I'd prefer 'uintptr_t' over 'unsigned long'
-> for readability -- since we hold a pointer.
-> It would also simplify a cast of va a few lines down in
-> virt_to_page().
-> 
-> Could one of you two re-send?
-> 
-> Thanks Jianghaoran!
-> 
-> Bernard.
-> 
->>   				page_array[seg] = virt_to_page(va & PAGE_MASK);
->>   				if (do_crc)
->> --
->> 2.25.1
-> 
-Modified with suggestions from Linus Walleij <linus.walleij@linaro.org> 
-and Bernard Metzler <BMT@zurich.ibm.com>
+>
+> Usually that means transforming the algorithm so that it works on a
+"last byte"
+> so we never need to compute an address that is +1 to the last byte,
+which would
+> be the overflown 0.
+>
+> > Above revert is part of my test. In my setup "iommu_dma_forcedac = $2
+> > = false".
+>
+> So you opt into this behavior, OK
+>
+> Jason
 
-Detailed discussion as follows:
-[PATCH] RDMA/siw: Pass a pointer to virt_to_page()
+--0000000000005e026c05e79c73e6
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Thanks！
-
---------------EC65EF279E17B4400AB6BC39
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-RDMA-siw-Solve-the-error-of-compiling-the-32BIT-mips.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
- filename*0="0001-RDMA-siw-Solve-the-error-of-compiling-the-32BIT-mips.pa";
- filename*1="tch"
-
-From 659823f2aad1635be4fb1f70cbddb8ae91a3d4aa Mon Sep 17 00:00:00 2001
-From: jianghaoran <jianghaoran@kylinos.cn>
-Date: Thu, 1 Sep 2022 13:09:34 +0800
-Subject: [PATCH] RDMA/siw: Solve the error of compiling the 32BIT mips kernel
- when enable CONFIG_RDMA_SIW
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-cross-compilation environment：
-ubuntu 20.04
-mips-linux-gnu-gcc (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0
-
-generate a configuration file by make randconfig:
-CONFIG_32BIT=y
-CONFIG_RDMA_SIW=y
-
-the error message as follows：
-In file included from ../arch/mips/include/asm/page.h:270,
-                 from ../arch/mips/include/asm/io.h:29,
-                 from ../arch/mips/include/asm/mmiowb.h:5,
-                 from ../include/linux/spinlock.h:64,
-                 from ../include/linux/wait.h:9,
-                 from ../include/linux/net.h:19,
-                 from ../drivers/infiniband/sw/siw/siw_qp_tx.c:8:
-../drivers/infiniband/sw/siw/siw_qp_tx.c: In function ‘siw_tx_hdt’:
-../arch/mips/include/asm/page.h:255:53: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-  255 | #define virt_to_pfn(kaddr)    PFN_DOWN(virt_to_phys((void *)(kaddr)))
-      |                                                     ^
-../include/asm-generic/memory_model.h:18:41: note: in definition of macro ‘__pfn_to_page’
-   18 | #define __pfn_to_page(pfn) (mem_map + ((pfn) - ARCH_PFN_OFFSET))
-      |                                         ^~~
-../arch/mips/include/asm/page.h:255:31: note: in expansion of macro ‘PFN_DOWN’
-  255 | #define virt_to_pfn(kaddr)    PFN_DOWN(virt_to_phys((void *)(kaddr)))
-      |                               ^~~~~~~~
-../arch/mips/include/asm/page.h:256:41: note: in expansion of macro ‘virt_to_pfn’
-  256 | #define virt_to_page(kaddr) pfn_to_page(virt_to_pfn(kaddr))
-      |                                         ^~~~~~~~~~~
-../drivers/infiniband/sw/siw/siw_qp_tx.c:538:23: note: in expansion of macro ‘virt_to_page’
-  538 |     page_array[seg] = virt_to_page(va & PAGE_MASK);
-      |                       ^~~~~~~~~~~~
-cc1: all warnings being treated as errors
-make[5]: *** [../scripts/Makefile.build:249: drivers/infiniband/sw/siw/siw_qp_tx.o] Error 1
-make[4]: *** [../scripts/Makefile.build:465: drivers/infiniband/sw/siw] Error 2
-make[3]: *** [../scripts/Makefile.build:465: drivers/infiniband/sw] Error 2
-make[3]: *** Waiting for unfinished jobs....
-
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: jianghaoran <jianghaoran@kylinos.cn>
----
- drivers/infiniband/sw/siw/siw_qp_tx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 1f4e60257700..4bd7ccae614e 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -29,7 +29,7 @@ static struct page *siw_get_pblpage(struct siw_mem *mem, u64 addr, int *idx)
- 	dma_addr_t paddr = siw_pbl_get_buffer(pbl, offset, NULL, idx);
- 
- 	if (paddr)
--		return virt_to_page(paddr);
-+		return virt_to_page((void*)paddr);
- 
- 	return NULL;
- }
-@@ -533,7 +533,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 					kunmap_local(kaddr);
- 				}
- 			} else {
--				u64 va = sge->laddr + sge_off;
-+				uintptr_t va = sge->laddr + sge_off;
- 
- 				page_array[seg] = virt_to_page(va & PAGE_MASK);
- 				if (do_crc)
--- 
-2.25.1
-
-
---------------EC65EF279E17B4400AB6BC39--
+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
+P3lSxcw4Cg90iKHqfpwLnGNc9AGXHMxUCukpnAHRlivljilKHMx1ymb180BLmtF+ZLm6KrFLQWzB
+4KeiUOMtKM13wJrQubqTeZgB1XA+89jeLYlxagVsMyksdwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUkTOZp9jXE3yPj4ieKeDT
+OiNyCtswDQYJKoZIhvcNAQELBQADggEBABG1KCh7cLjStywh4S37nKE1eE8KPyAxDzQCkhxYLBVj
+gnnhaLmEOayEucPAsM1hCRAm/vR3RQ27lMXBGveCHaq9RZkzTjGSbzr8adOGK3CluPrasNf5StX3
+GSk4HwCapA39BDUrhnc/qG5vHwLrgA1jwAvSy8e/vn4F4h+KPrPoFNd1OnCafedbuiEXTqTkn5Rk
+vZ2AOTcSbxvmyKBMb/iu1vn7AAoui0d8GYCPoz8shf2iWMSUXVYJAMrtRHVJr47J5jlopF5F2ghC
+MzNfx6QsmJhYiRByd8L9sUOjp/DMgkC6H93PyYpYMiBGapgNf6UMsLg/1kx5DATNwhPAJbkxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxwO04DXOeYbZtr
+4mAwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIM8YSrmyd4J0tlpZRJtbRIv8PVu+
+iXxBQnIL3vEDNJ/NMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIy
+MDkwMTEyMDcwMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBp2PaeenVlIZdFoXV4n8H2ArsBJuhhEFcW9tvmalhP+oKX
+HJqk/GF3+Cvhmv+kWNghpHeVAOBEUIjXVlVYJH7AIPQ/kUbzAD56PxZpqpyP8Nyu8yBREG+Yoj0w
+jAqw+C4gg0DXVZRxiRemzookaR7LABSWJ2z65f9JLIOBXwAejELHyHJPNWoPvjQNZXFIxVwdCpb0
+lzB4yT2FSN4rLer+2z5HCpMwBEyS49cDMqQ01ahqy8gMlyKeIaPgqtNU4aQY8pp5UZrMFA4E/tLZ
+fW5c5NRm3nKimjm5onaEKpWn8Fn81uuxdKUUpHGRxbJFY7MP5KlilpQu8zntSHvnSlYx
+--0000000000005e026c05e79c73e6--
