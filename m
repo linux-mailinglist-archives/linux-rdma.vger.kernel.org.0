@@ -2,194 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1264C5AC2D0
-	for <lists+linux-rdma@lfdr.de>; Sun,  4 Sep 2022 07:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D025AC318
+	for <lists+linux-rdma@lfdr.de>; Sun,  4 Sep 2022 09:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbiIDE52 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 4 Sep 2022 00:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        id S232552AbiIDHW5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 4 Sep 2022 03:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbiIDE51 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Sep 2022 00:57:27 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E1642ACC;
-        Sat,  3 Sep 2022 21:57:25 -0700 (PDT)
-Message-ID: <df00f6c5-c2b8-de44-3232-4f9d598d06db@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1662267442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3xOhr9hXBeNUD8kMbZk1PvqgGIl4p7S9euzBpG4/j4o=;
-        b=U/EIvnRYllGczNMxpLtDud2eUjmk+Npp/jLTtaPz/Onekgqgx98C2M6w9HzJCIkrh9QbrV
-        NkJrw0G7xsgkvjk9lyobkHw+yJQG6zRCD/bY8J+kpSu7G2pZcpWAdd2DsTqalGEKvBxZSz
-        4MDodMomdpCbU9snzNX2NZrTvT8TADg=
-Date:   Sun, 4 Sep 2022 12:57:07 +0800
+        with ESMTP id S229478AbiIDHW4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Sep 2022 03:22:56 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2066.outbound.protection.outlook.com [40.107.93.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB4345F63
+        for <linux-rdma@vger.kernel.org>; Sun,  4 Sep 2022 00:22:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kvjjZ+IuU1CJCTQjhPw4P4aFrIf5XmwuBK3OvXQpCbR+x8+5NvN65z1dayMw2oaQH0Nmuw3RmvA5vJYGihxfiW/01OK/6WBap7rAt7nlv9FSFmTQj8EMtQEIM0BgjsAocMlWAjV9AuugdfZj/V8NP1jeYftuyYkwj6o2m3ZhIjG4u51znmeRr3FnskAC0h8G3Bbz4ySpBeYq+rd5QjDZoE7tCDighGckRGX6pmSV1PhnHW6BSnOxgDTt1Brjup39JT9V7EHQqa/2WagkxZ5NlXAuxxu3lXUM2ks7rhwVo5q9ooVOz1M44XC3rjL99ruVr/Hsmd+DFp1q6Xu9GqHTkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=enzoqwDTJ3gf1voXu9m70MnUbE7GVzq2eiQYJxQN1eM=;
+ b=PsehutulrC3qFdxToBO/T73JDTL/g6V+5Uf12CaYor4XWhVcWG0wTOJHCWPHbKff2nI4hB2P6hXDJsD+QVESGZ6OgqNBMnS0h91Lf8XOsk09G/dB2CC36/0HR1Rm+ZLmEJTpH0xZP9uPAcX1mx2Gnu9KECF0sX+GCQh0HxllngAL8gxjWL5R0q5UHzT5akaX92D/frLSnLi8QdN/yXb3V8fY48mP+2IqE91ssJXhJT7acshXmPUJK3mxsPfrglwgWEB49NDoVOp+BDEsZ6rzwBr/oVRdAIdflk48BBmG43BFufHtTgTawcFLUJBarGHNqKotaHPm0+JsKZkDzcQ+5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.234) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=enzoqwDTJ3gf1voXu9m70MnUbE7GVzq2eiQYJxQN1eM=;
+ b=HAk0y+gw1CswtUnozBbFK29Kbbi+mSySdHbtjgYp2EXpX2lLujL5AnZQBpFUGVN29+7feLGU6bOrU5ky3dZOaHKaQXRdpSV7MLlTmPpmB8+ZzZTjw1ukyCaxGN13XpV4FlVida6bmjBuF5l7H31R0sLhXmigJval/UbWe5jDM37797n4m3/geCrLXyigdgU990FPfNNvWWeIbS+7TTiHx4JjS2oRJ1I1xq+n9l3Fzk5ihiCKlxOIJWkoZbptLCi1ePFOWZ1ncB4oQZfIg6M/VeH1Wc34NvJ6Iz64n2nFR+4CP3WDTgUSfGTvRtYa4bfANBrC/eiLKW6CaxRoVeDIHA==
+Received: from MW4PR04CA0079.namprd04.prod.outlook.com (2603:10b6:303:6b::24)
+ by MW3PR12MB4394.namprd12.prod.outlook.com (2603:10b6:303:54::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.15; Sun, 4 Sep
+ 2022 07:22:54 +0000
+Received: from CO1NAM11FT076.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:6b:cafe::ca) by MW4PR04CA0079.outlook.office365.com
+ (2603:10b6:303:6b::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.16 via Frontend
+ Transport; Sun, 4 Sep 2022 07:22:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.234)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.234 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.234; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (12.22.5.234) by
+ CO1NAM11FT076.mail.protection.outlook.com (10.13.174.152) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.5588.10 via Frontend Transport; Sun, 4 Sep 2022 07:22:53 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL101.nvidia.com
+ (10.27.9.10) with Microsoft SMTP Server (TLS) id 15.0.1497.38; Sun, 4 Sep
+ 2022 07:22:53 +0000
+Received: from localhost (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Sun, 4 Sep 2022
+ 00:22:51 -0700
+Date:   Sun, 4 Sep 2022 10:22:44 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        Bernard Metzler <BMT@zurich.ibm.com>,
+        <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v3] RDMA/siw: Pass a pointer to virt_to_page()
+Message-ID: <YxRSRIOs3gEEAyGN@unreal>
+References: <20220902215918.603761-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] BUG: unable to handle kernel NULL pointer dereference in
- __rxe_do_task
-To:     syzbot <syzbot+ab99dc4c6e961eed8b8e@syzkaller.appspotmail.com>,
-        fgheet255t@gmail.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        lizhijian@fujitsu.com, netdev@vger.kernel.org,
-        rpearsonhpe@gmail.com, syzkaller-bugs@googlegroups.com,
-        yanjun.zhu@linux.dev, zyjzyj2000@gmail.com
-References: <000000000000c7cad805e7c3f663@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <000000000000c7cad805e7c3f663@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20220902215918.603761-1-linus.walleij@linaro.org>
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0b6c4ec7-a19a-4774-5a05-08da8e464854
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4394:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /AEmQ9uZfiKiqqw3+Q22eZ2e/25HuB8dcFadN80w340tg44T2dlJs/Fu5khIprArN+WGsxrilVZhpVU94+fwiFrcEGJkrWVxG/uxFjDRH5Qs1DBysp8+b0ozMAhqrn5HT4H1gL8jBYpWpKKUDwDIdvZMklS+fPlBnft4aKBLqLr+OcDIJZU0lyoRLzJamPu7psfDFs0wkwhZbcRtuzfROAzN2XVcKU+iYSY3iSVhl8qrxFycxM0fvhT28UQByH0h5k0R+OYuKdPzS7bv+AJdoOizOWM8zlaxYlYUHIR59tZbGrthunXPVQkGv8gO+/kRP2thXt1QHB0Xmzlslo67JW+1Zf2TKrgyiuTW+U0BZAoRBdlKxMtb5ki+HOyeaUlh72wo2sARu+zcwAv6Jq0gaNWmOMOjIXF7UWFVZy/u3zrjiVL09B78uWxjMqjeXT1TdjCSDJ0ClZN9aGQtHtdOKFLjZc8c3JUl6Cr7I+7B0xqq3t/vgF1i1PTh6qElvCZ6Gb42vMhmFwgRldUo0v2HosiwyJgzf2R32LZpcBMEIzbxb0tOY/VfC+p+792IgfrAEsL+0H8uGRe6bUYxbC1B772YAdgfzfQLUIaxvbYARu3p99aoBWVUE252oVph8sRv6SpjogZ7IFOfsDoUiaN1NuBCuzLjg0LehnDhu6P1etcmnCqB7SZYs5YI+Zmm1HU8MJHCu2P/h5vbSIgIVVJa9MsKzUqDXSzLvzsioZv/FhMxQlgxJKYMqy+xZEr6JCLrL+Ez2Csxh+mqyu68vUD5JWT2YHGDKXS2M6miUxLBjP/ZkHj8NAudbBBi5IUc5E7e8xw3/TA9+j7jnn9N98FjZg==
+X-Forefront-Antispam-Report: CIP:12.22.5.234;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230016)(4636009)(7916004)(39860400002)(376002)(396003)(136003)(346002)(46966006)(40470700004)(36840700001)(33716001)(36860700001)(316002)(6916009)(54906003)(5660300002)(2906002)(8936002)(70206006)(70586007)(8676002)(4326008)(40480700001)(41300700001)(478600001)(82310400005)(426003)(47076005)(83380400001)(186003)(336012)(16526019)(356005)(81166007)(40460700003)(82740400003)(9686003)(6666004)(86362001)(26005)(36900700001)(266184004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2022 07:22:53.7595
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b6c4ec7-a19a-4774-5a05-08da8e464854
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.234];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT076.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4394
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2022/9/3 19:15, syzbot 写道:
-> syzbot has found a reproducer for the following issue on:
+On Fri, Sep 02, 2022 at 11:59:18PM +0200, Linus Walleij wrote:
+> Functions that work on a pointer to virtual memory such as
+> virt_to_pfn() and users of that function such as
+> virt_to_page() are supposed to pass a pointer to virtual
+> memory, ideally a (void *) or other pointer. However since
+> many architectures implement virt_to_pfn() as a macro,
+> this function becomes polymorphic and accepts both a
+> (unsigned long) and a (void *).
 > 
-> HEAD commit:    05a5474efe93 Merge git://git.kernel.org/pub/scm/linux/kern..
-> git tree:       net
-
-This problem occurred on 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git, and HEAD 
-commit is:
-
-05a5474efe93 Merge 
-git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
-
-And the following commit tries to fix this problem. But currently it is 
-not included in this. So this problem occurred again.
-
-commit a625ca30eff806395175ebad3ac1399014bdb280
-Author: Zhu Yanjun <yanjun.zhu@linux.dev>
-Date:   Sun Aug 21 21:16:13 2022 -0400
-
-     RDMA/rxe: Fix "kernel NULL pointer dereference" error
-
-     When rxe_queue_init in the function rxe_qp_init_req fails,
-     both qp->req.task.func and qp->req.task.arg are not initialized.
-
-     Because of creation of qp fails, the function rxe_create_qp will
-     call rxe_qp_do_cleanup to handle allocated resource.
-
-     Before calling __rxe_do_task, both qp->req.task.func and
-     qp->req.task.arg should be checked.
-
-     Fixes: 8700e3e7c485 ("Soft RoCE driver")
-     Link: 
-https://lore.kernel.org/r/20220822011615.805603-2-yanjun.zhu@linux.dev
-     Reported-by: syzbot+ab99dc4c6e961eed8b8e@syzkaller.appspotmail.com
-     Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-     Reviewed-by: Li Zhijian <lizhijian@fujitsu.com>
-     Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
-     Signed-off-by: Leon Romanovsky <leon@kernel.org>
-
-Zhu Yanjun
-
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14e4bddb080000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=892a57667b7af6cf
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ab99dc4c6e961eed8b8e
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17718427080000
+> If we instead implement a proper virt_to_pfn(void *addr)
+> function the following happens (occurred on arch/arm):
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/cdeb0ae7599a/disk-05a5474e.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/d59d928441e6/vmlinux-05a5474e.xz
+> drivers/infiniband/sw/siw/siw_qp_tx.c:32:23: warning: incompatible
+>   integer to pointer conversion passing 'dma_addr_t' (aka 'unsigned int')
+>   to parameter of type 'const void *' [-Wint-conversion]
+> drivers/infiniband/sw/siw/siw_qp_tx.c:32:37: warning: passing argument
+>   1 of 'virt_to_pfn' makes pointer from integer without a cast
+>   [-Wint-conversion]
+> drivers/infiniband/sw/siw/siw_qp_tx.c:538:36: warning: incompatible
+>   integer to pointer conversion passing 'unsigned long long'
+>   to parameter of type 'const void *' [-Wint-conversion]
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ab99dc4c6e961eed8b8e@syzkaller.appspotmail.com
+> Fix this with an explicit cast. In one case where the SIW
+> SGE uses an unaligned u64 we need a double cast modifying the
+> virtual address (va) to a platform-specific uintptr_t before
+> casting to a (void *).
 > 
-> infiniband syz0: set active
-> infiniband syz0: added ip6gre0
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> #PF: supervisor instruction fetch in kernel mode
-> #PF: error_code(0x0010) - not-present page
-> PGD 1d64c067 P4D 1d64c067 PUD 22925067 PMD 0
-> Oops: 0010 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 3780 Comm: syz-executor.1 Not tainted 6.0.0-rc3-syzkaller-00123-g05a5474efe93 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/26/2022
-> RIP: 0010:0x0
-> Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-> RSP: 0018:ffffc9000413eb40 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff8880776e25c8 RCX: 0000000000000000
-> RDX: ffff88807932bb00 RSI: ffffffff86d530bb RDI: 0000000000000000
-> RBP: ffffed100eedc4c8 R08: 0000000000000001 R09: ffff8880776e269f
-> R10: ffffed100eedc4d3 R11: 0000000000000000 R12: 0000000000000000
-> R13: ffffed100eedc4c9 R14: ffff8880776e2640 R15: ffff8880776e2648
-> FS:  00007f1d65587700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffffffffd6 CR3: 000000001bd9d000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   __rxe_do_task+0x56/0xc0 drivers/infiniband/sw/rxe/rxe_task.c:18
->   rxe_qp_do_cleanup+0x102/0x770 drivers/infiniband/sw/rxe/rxe_qp.c:800
->   execute_in_process_context+0x37/0x150 kernel/workqueue.c:3359
->   __rxe_cleanup+0x21a/0x400 drivers/infiniband/sw/rxe/rxe_pool.c:276
->   rxe_create_qp+0x2be/0x340 drivers/infiniband/sw/rxe/rxe_verbs.c:441
->   create_qp+0x5ac/0x960 drivers/infiniband/core/verbs.c:1233
->   ib_create_qp_kernel+0x9d/0x310 drivers/infiniband/core/verbs.c:1344
->   ib_create_qp include/rdma/ib_verbs.h:3732 [inline]
->   create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2910
->   ib_mad_port_open drivers/infiniband/core/mad.c:2991 [inline]
->   ib_mad_init_device+0xd51/0x13f0 drivers/infiniband/core/mad.c:3082
->   add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:721
->   enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1332
->   ib_register_device drivers/infiniband/core/device.c:1420 [inline]
->   ib_register_device+0x83e/0xb20 drivers/infiniband/core/device.c:1366
->   rxe_register_device+0x2fe/0x3b0 drivers/infiniband/sw/rxe/rxe_verbs.c:1138
->   rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:521
->   rxe_newlink drivers/infiniband/sw/rxe/rxe.c:195 [inline]
->   rxe_newlink+0xa9/0xd0 drivers/infiniband/sw/rxe/rxe.c:176
->   nldev_newlink+0x32e/0x5c0 drivers/infiniband/core/nldev.c:1717
->   rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
->   rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
->   rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
->   netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
->   netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
->   netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
->   sock_sendmsg_nosec net/socket.c:714 [inline]
->   sock_sendmsg+0xcf/0x120 net/socket.c:734
->   ____sys_sendmsg+0x6eb/0x810 net/socket.c:2482
->   ___sys_sendmsg+0x110/0x1b0 net/socket.c:2536
->   __sys_sendmsg+0xf3/0x1c0 net/socket.c:2565
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f1d64489279
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f1d65587168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007f1d6459bf80 RCX: 00007f1d64489279
-> RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000003
-> RBP: 00007f1d644e32e9 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffd40d1b80f R14: 00007f1d65587300 R15: 0000000000022000
->   </TASK>
-> Modules linked in:
-> CR2: 0000000000000000
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:0x0
-> Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-> RSP: 0018:ffffc9000413eb40 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff8880776e25c8 RCX: 0000000000000000
-> RDX: ffff88807932bb00 RSI: ffffffff86d530bb RDI: 0000000000000000
-> RBP: ffffed100eedc4c8 R08: 0000000000000001 R09: ffff8880776e269f
-> R10: ffffed100eedc4d3 R11: 0000000000000000 R12: 0000000000000000
-> R13: ffffed100eedc4c9 R14: ffff8880776e2640 R15: ffff8880776e2648
-> FS:  00007f1d65587700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffffffffd6 CR3: 000000001bd9d000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Fixes: b9be6f18cf9e ("rdma/siw: transmit path")
+> Cc: linux-rdma@vger.kernel.org
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> ChangeLog v2->v3:
+> - Add Fixes: tag.
+> ChangeLog v1->v2:
+> - Change the local va variable to be uintptr_t, avoiding
+>   double casts in two spots.
+> ---
+>  drivers/infiniband/sw/siw/siw_qp_tx.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
 > 
 
+Thanks, applied.
