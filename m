@@ -2,96 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D53F45AD848
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Sep 2022 19:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37C35AD90C
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Sep 2022 20:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbiIERTw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Sep 2022 13:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
+        id S231887AbiIESdl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Sep 2022 14:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbiIERTv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Sep 2022 13:19:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83F91D309
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Sep 2022 10:19:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 851236137C
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Sep 2022 17:19:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62B0AC433D6;
-        Mon,  5 Sep 2022 17:19:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662398388;
-        bh=+ctvraZzAFo6p05hukY0B0JACk7Ku8ybNaQef/KfVVQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ldzd24OuzMg5IFkPa1qfrgZjhKMn23gGZggw8r+hEdyeit1o7y1MoFRVcwJwYRtj2
-         ZybTwPol9iSeohegcUZ4CURgDo8BfmM1ai+yhtRM5BXIySMxyi7yg5K1rvinxMZr+6
-         FJ5/uEL0qEOAJLHXo4kW0mq2cpqINt9r7NTz8EDwXJyjYd08sAXTNX+Dxp8iyMdiLf
-         wD6oymCGfQ4DDOjk3ClxDMX3vWtSYWa/B+0nsr6jsA0hUGqitFEN+3dek8PHWns+ZL
-         Zg8mXdjwSSPjZX0o9V3seylQ3KHVJ/M+XoPJ7DfsqhBQ4JXYYOB58/GNCUp7tCkW3k
-         D2muZNAzBS0CA==
-Date:   Mon, 5 Sep 2022 20:19:44 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bernard Metzler <BMT@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: Re: [PATCH v3] RDMA/siw: Pass a pointer to virt_to_page()
-Message-ID: <YxYvsO086ga2rP55@unreal>
-References: <SA0PR15MB3919314166F86C36B564961E997F9@SA0PR15MB3919.namprd15.prod.outlook.com>
- <CACRpkdYRvncv=CL_Jrsy5enTvaOeMpwCG+ssq17J_=2xrg0mWQ@mail.gmail.com>
+        with ESMTP id S232009AbiIESdi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Sep 2022 14:33:38 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4426F52824;
+        Mon,  5 Sep 2022 11:33:37 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id g185so4463752vkb.13;
+        Mon, 05 Sep 2022 11:33:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=mdiYTElc0N7vxtlgVoJ4ru4DWj2kj5bPdL6LfLpy0aM=;
+        b=D8oBhUif2Jjk678o2fHLYtmnpB6UYZ7abkmoEbTSB7gYd+aR7NJTzbHizWX0tEsttg
+         94prx+9nmPlCZdE5toZMsp430z+gngCXzzQ8F0xiJjKACppBxdxBLTlqIcPPacfPndOw
+         Z0Lqt285BGObRHpVzemZKZ/kraVoHaDn4JSYqvYh6Nh5r6wWFZtrxjWA7nvig9Ud7IFJ
+         xcs8Pv7moCtVzQwibbdhdRJ3R/sMYt1epwFDFt15E3PejndhkY4f8QjW6Ee3NYrLE9xB
+         xToTfryH++k4nKcj4DdExkema16S3GQs73HBYq5kYCwNzB+TI5x6OI0EPu/Ajcdi79z+
+         Fb6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=mdiYTElc0N7vxtlgVoJ4ru4DWj2kj5bPdL6LfLpy0aM=;
+        b=2P0ekqFKsU5YNn8p+z0Rx8wNWlOXWkrKM+FNLCzVgXQEoOoTVmgrEUZ/Ky1wQqR1EX
+         kAyjkAj9+vMO7todrk0aUW/K1TRXcw39GPg+sbM9XKZ+7T2z0Ewp+mBYaT1xi2HERjVO
+         htRntOAxGpRqpQgahUOailp21hGAsoFvp2N1gCPFfqOh669yMBPX2lcdUBiVBTsqbYKY
+         K5I/gIjwUquH/1b0KDhEOZJ9oM3EC3RIV6wia6ZtjRizwtJ+Tl94K+cX54mOcpEV9XhX
+         aJRaDcNcGZIlp5FHna2utJWk/yI4fXN+dZlQiGV5rxMJRVWDpzdVUFglYNdoJA+2QTxs
+         Jf1A==
+X-Gm-Message-State: ACgBeo3wNE928k6BFnDzmFMJb8tzRldqDiv7lGsMFAvdsPxKDTd9FZKV
+        7NtEZXBxy970o/umH51NMC689hrDidLA5cjfmCvpA9F5
+X-Google-Smtp-Source: AA6agR5O+agHArA/yt3Tr7w/AexHtBdz7ROCfVnT2AWabzEmYu4CO6i9d2nt4ec+fPUaR8DJL5zcLXKUYod+baz4ttw=
+X-Received: by 2002:a05:6122:2212:b0:374:2fb5:19ef with SMTP id
+ bb18-20020a056122221200b003742fb519efmr13937297vkb.2.1662402816175; Mon, 05
+ Sep 2022 11:33:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdYRvncv=CL_Jrsy5enTvaOeMpwCG+ssq17J_=2xrg0mWQ@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220825181210.284283-1-vschneid@redhat.com> <20220825181210.284283-5-vschneid@redhat.com>
+ <YwfmIDEbRT4JfsZp@yury-laptop> <xhsmh5yi1db56.mognet@vschneid.remote.csb>
+In-Reply-To: <xhsmh5yi1db56.mognet@vschneid.remote.csb>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Mon, 5 Sep 2022 11:33:24 -0700
+Message-ID: <CAAH8bW8DHTgXFB4wvjQqNqk7cbsYNk-SvBHL48tQwEBor_34hg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/9] cpumask: Introduce for_each_cpu_andnot()
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 05, 2022 at 02:07:34PM +0200, Linus Walleij wrote:
-> On Mon, Sep 5, 2022 at 2:02 PM Bernard Metzler <BMT@zurich.ibm.com> wrote:
-> 
-> > Can we easily fix the two line wraps introduced by this
-> > patch? Without sending an explicit patch on top --
-> 
-> Yeah Lean can just augment it when applying.
+On Mon, Sep 5, 2022 at 9:44 AM Valentin Schneider <vschneid@redhat.com> wrote:
+>
+> On 25/08/22 14:14, Yury Norov wrote:
+> > On Thu, Aug 25, 2022 at 07:12:05PM +0100, Valentin Schneider wrote:
+> >> +#define for_each_cpu_andnot(cpu, mask1, mask2)                              \
+> >> +    for ((cpu) = -1;                                                \
+> >> +            (cpu) = cpumask_next_andnot((cpu), (mask1), (mask2)),   \
+> >> +            (cpu) < nr_cpu_ids;)
+> >
+> > The standard doesn't guarantee the order of execution of last 2 lines,
+> > so you might end up with unreliable code. Can you do it in a more
+> > conventional style:
+> >    #define for_each_cpu_andnot(cpu, mask1, mask2)                     \
+> >       for ((cpu) = cpumask_next_andnot(-1, (mask1), (mask2));         \
+> >               (cpu) < nr_cpu_ids;                                     \
+> >               (cpu) = cpumask_next_andnot((cpu), (mask1), (mask2)))
+> >
+>
+> IIUC the order of execution *is* guaranteed as this is a comma operator,
+> not argument passing:
+>
+>   6.5.17 Comma operator
+>
+>   The left operand of a comma operator is evaluated as a void expression;
+>   there is a sequence point after its evaluation. Then the right operand is
+>   evaluated; the result has its type and value.
+>
+> for_each_cpu{_and}() uses the same pattern (which I simply copied here).
+>
+> Still, I'd be up for making this a bit more readable. I did a bit of
+> digging to figure out how we ended up with that pattern, and found
+>
+>   7baac8b91f98 ("cpumask: make for_each_cpu_mask a bit smaller")
+>
+> so this appears to have been done to save up on generated instructions.
+> *if* it is actually OK standard-wise, I'd vote to leave it as-is.
 
-I already promoted that patch to non-rebasable for-next.
+Indeed. I probably messed with ANSI C.
 
-> 
-> > I'd
-> > suggest adding just two line breaks to it. I'd be happy
-> > to see siw code continues to adhere to the 80 char's
-> > per line style.
-> 
-> You will be fighting an uphill battle since checkpatch (which is
-> what we use to check syntax) now accepts 100 chars/line.
-> commit bdc48fa11e46f867ea4d75fa59ee87a7f48be144
-> "checkpatch/coding-style: deprecate 80-column warning"
-> 
-> If there is infiniband consensus to stay with 80 chars per
-> line, you should send a patch to checkpatch so that it
-> warns for this for patches to drivers/rdma.
-
-It is not infiniband specific, many other subsystems and reviewers
-continue to use 80-char limit.
-
-The change to checkpatch came after Linus said that authors should
-use their best judgment while dealing with line lengths. Unfortunately,
-it was vague enough to apply it to checkpatch.
-
-We continue to use 80 char limit, because clang formatter continues
-to wrap everything to 80 chars.
-
-Thanks
-
-> 
-> Yours,
-> Linus Walleij
+Sorry for the noise.
