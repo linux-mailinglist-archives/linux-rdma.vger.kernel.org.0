@@ -2,48 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2020F5AE083
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Sep 2022 09:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87C75AE4CA
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Sep 2022 11:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbiIFHFK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Sep 2022 03:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
+        id S239220AbiIFJvh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Sep 2022 05:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236570AbiIFHFH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Sep 2022 03:05:07 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19EC2E9C2
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Sep 2022 00:05:05 -0700 (PDT)
-Subject: Re: [PATCH 0/3] misc changes for rtrs
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1662447903;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vFR1xXK3fUCz89LzOM7rJpkeUsh2OWUvCdb95mVg17E=;
-        b=oOrd8/JEHL9qQVBPqdfd1t0ad89BNOQSoSBlu3if7hxB94Q7nFt1ZePWxv+p4JzBEsimPY
-        2SDOu21Ben+T/tdY25ze8K6y200ho8rAUwSEt04tEYLdg+/PcJbkYtLplyvyVJtTNuQkq5
-        P4ryBpBFfBFDKIH9sJ/Zp8dS0uwC6Bc=
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org
-References: <20220902101922.26273-1-guoqing.jiang@linux.dev>
- <YxXrf1WKVwlDYgzm@unreal>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Message-ID: <0a170dcd-3665-43d2-8467-7566333d0307@linux.dev>
-Date:   Tue, 6 Sep 2022 15:04:50 +0800
+        with ESMTP id S239192AbiIFJvc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Sep 2022 05:51:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17856DFAD;
+        Tue,  6 Sep 2022 02:51:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8/NrZAK5q7MnGYfTuWbWU8dghg9PZc1WBiUJ2nOuaC4=; b=IAyCiQiRvm+ndIADZzUDg2ER2+
+        8Kz7YGsP3iYQq/EykkXdB+9anNfClC1OCd4udP7exSyBmsfShITgu4AW/cekmSy00tpbcV6w4Z3ZZ
+        CTMbiYiO7uLS00CKzrENWw+PQGegQwk90oJdjBXZmHwsjYekKt9L6qB7xjRqB8yDzIrx9UJL2ta09
+        9Cz4KilqnGfnvm3x2ffIqJ9TDiR0OTwKzgUuzbHyespz4Z5GO5DTrsxW6DHKFoR9/VyJfyCj3vTwx
+        ++lwBFxBrxfqK99GFdt/TfVWWYD9+Lw5yNmEk+PUrQtcDxl8AOZh3hu+Djvhp+LkaWj2Ifs4NGa/j
+        bvHemi+w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oVVEq-00C5Pm-08; Tue, 06 Sep 2022 09:51:24 +0000
+Date:   Tue, 6 Sep 2022 02:51:23 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Oded Gabbay <ogabbay@kernel.org>
+Subject: Re: [PATCH v2 4/4] vfio/pci: Allow MMIO regions to be exported
+ through dma-buf
+Message-ID: <YxcYGzPv022G2vLm@infradead.org>
+References: <0-v2-472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com>
+ <4-v2-472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <YxXrf1WKVwlDYgzm@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4-v2-472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,60 +59,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Leon,
+> +{
+> +	struct vfio_pci_dma_buf *priv = dmabuf->priv;
+> +	int rc;
+> +
+> +	rc = pci_p2pdma_distance_many(priv->vdev->pdev, &attachment->dev, 1,
+> +				      true);
 
-On 9/5/22 8:28 PM, Leon Romanovsky wrote:
-> On Fri, Sep 02, 2022 at 06:19:19PM +0800, Guoqing Jiang wrote:
->> Hi,
->>
->> Pls review the three patches.
->>
->> Thanks,
->> Guoqing
->>
->> Guoqing Jiang (3):
->>    RDMA/rtrs: Update comments for MAX_SESS_QUEUE_DEPTH
->>    RDMA/rtrs-clt: Break the loop once one path is connected
->>    RDMA/rtrs-clt: Kill xchg_paths
->>
->>   drivers/infiniband/ulp/rtrs/rtrs-clt.c | 18 +++++-------------
->>   drivers/infiniband/ulp/rtrs/rtrs-pri.h |  7 +++----
->>   2 files changed, 8 insertions(+), 17 deletions(-)
-> The third patch still generates warnings.
+This should just use pci_p2pdma_distance.
 
-Sorry, I didn't run sparse check, 😅.
+> +	/*
+> +	 * Since the memory being mapped is a device memory it could never be in
+> +	 * CPU caches.
+> +	 */
 
-> ➜  kernel git:(wip/leon-for-next) mkt ci
-> ^[[A^[[A^[[Ad9b137e23d31 (HEAD -> build) RDMA/rtrs-clt: Kill xchg_paths
-> WARNING: line length of 81 exceeds 80 columns
-> #43: FILE: drivers/infiniband/ulp/rtrs/rtrs-clt.c:2297:
-> +		if (try_cmpxchg((typeof(ppcpu_path))ppcpu_path, &clt_path, next))
->
-> drivers/infiniband/ulp/rtrs/rtrs-clt.c:2297:21: warning: incorrect type in initializer (different address spaces)
-> drivers/infiniband/ulp/rtrs/rtrs-clt.c:2297:21:    expected struct rtrs_clt_path [noderef] __rcu *__new
-> drivers/infiniband/ulp/rtrs/rtrs-clt.c:2297:21:    got struct rtrs_clt_path *[assigned] next
+DMA_ATTR_SKIP_CPU_SYNC doesn't even apply to dma_map_resource, not sure
+where this wisdom comes from.
 
-Before send new version, could you help to check whether the incremental 
-change works or not? Otherwise let's drop the third one.
+> +	dma_addr = dma_map_resource(
+> +		attachment->dev,
+> +		pci_resource_start(priv->vdev->pdev, priv->index) +
+> +			priv->offset,
+> +		priv->dmabuf->size, dir, DMA_ATTR_SKIP_CPU_SYNC);
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c 
-b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 0661a4e69fc9..bc3e1722e00d 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2294,7 +2294,8 @@ static void rtrs_clt_remove_path_from_arr(struct 
-rtrs_clt_path *clt_path)
-                  * We race with IO code path, which also changes pointer,
-                  * thus we have to be careful not to overwrite it.
-                  */
--               if (try_cmpxchg((typeof(ppcpu_path))ppcpu_path, 
-clt_path, next))
-+               if (try_cmpxchg((struct rtrs_clt_path **)ppcpu_path,
-+                               clt_path, next))
-                         /*
-                          * @ppcpu_path was successfully replaced with 
-@next,
-                          * that means that someone could also pick up the
+This is not how P2P addresses are mapped.  You need to use
+dma_map_sgtable and have the proper pgmap for it.
 
-Thanks,
-Guoqing
+The above is just a badly implemented version of the dma-direct
+PCI_P2PDMA_MAP_BUS_ADDR case, ignoring mappings through the host
+bridge or dma-map-ops interactions.
