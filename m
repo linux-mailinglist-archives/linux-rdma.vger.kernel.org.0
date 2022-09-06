@@ -2,149 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BCB5AE856
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Sep 2022 14:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B705AF054
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Sep 2022 18:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbiIFMeg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Sep 2022 08:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
+        id S238792AbiIFQZX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Sep 2022 12:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239784AbiIFMec (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Sep 2022 08:34:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D0495AC;
-        Tue,  6 Sep 2022 05:34:31 -0700 (PDT)
+        with ESMTP id S238882AbiIFQYk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Sep 2022 12:24:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6567A504;
+        Tue,  6 Sep 2022 08:55:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE16C6150E;
-        Tue,  6 Sep 2022 12:34:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CCE6C433D6;
-        Tue,  6 Sep 2022 12:34:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662467670;
-        bh=8rswhesIf7F5l4+vbHZDuYiPqhm8GcAPme7YzWlPZHo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PiNv1XmT/gpk9znR9JgMI4/e7BI81aa2qWYK/59dSmcexqrMxxpeHHNYXOVgORVT+
-         aNtMJHQF/LYb4TJ6/fr8ZBihYhKffPcMD8aD7d13wtmrjdCf+DnuOBkzByBaCaFknF
-         Ic16wmoX4NEG7XlyXqWG8ihyxJjA4XvwKBbUlyboZfuE7fZ0ukqZ36Ce90YO0bxj3Y
-         SOw2c3ksDzdeopDl2TOjx2ac2k0vxwqXeVzVqq0yLGG6BIY+eMyLwQ7jHnoM/jgpBy
-         y5DXqGO1Ciz/Mi2MxwFG9+1TVvjBtwXLIsXssWCGMTAmjfcvozXT4duoRTuhtXRc9K
-         NeUL0L7nLF39w==
-Received: by mail-il1-f176.google.com with SMTP id k9so2708231ils.12;
-        Tue, 06 Sep 2022 05:34:30 -0700 (PDT)
-X-Gm-Message-State: ACgBeo3B7DwB2Xwx5LbuQzw2Y5I6Zej8xGc6drcW0YVL0c5DO9ywVZh0
-        E111Tw0A7iPTWJ73uFPqFpbb2sv5iED8bhahOyg=
-X-Google-Smtp-Source: AA6agR5t2EEfOfqFt/KzpOaxtGy9C1ikdONdFt3Yo84P649uJqUH/4H9gMVQanRhVGUj+eh8dpntM2no5PF+qGxQBb0=
-X-Received: by 2002:a92:c561:0:b0:2ed:a26a:8c65 with SMTP id
- b1-20020a92c561000000b002eda26a8c65mr12449599ilj.23.1662467669406; Tue, 06
- Sep 2022 05:34:29 -0700 (PDT)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4B19FB81636;
+        Tue,  6 Sep 2022 15:55:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B42FDC433C1;
+        Tue,  6 Sep 2022 15:55:33 +0000 (UTC)
+Subject: [PATCH v1] SUNRPC: Replace the use of the xprtiod WQ in rpcrdma
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     anna.schumaker@netapp.com
+Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Tue, 06 Sep 2022 11:55:32 -0400
+Message-ID: <166247968798.587726.7092426682689468087.stgit@morisot.1015granger.net>
+User-Agent: StGit/1.5
 MIME-Version: 1.0
-References: <0-v2-472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com>
- <4-v2-472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com> <YxcYGzPv022G2vLm@infradead.org>
- <b6b5d236-c089-7428-4cc9-a08fe4f6b4a3@amd.com> <YxczjNIloP7TWcf2@nvidia.com>
-In-Reply-To: <YxczjNIloP7TWcf2@nvidia.com>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Tue, 6 Sep 2022 15:34:02 +0300
-X-Gmail-Original-Message-ID: <CAFCwf115rwTWzgPXcpog4u5NAvH4JO+Qis_fcx0mRrNR5AQcaQ@mail.gmail.com>
-Message-ID: <CAFCwf115rwTWzgPXcpog4u5NAvH4JO+Qis_fcx0mRrNR5AQcaQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] vfio/pci: Allow MMIO regions to be exported
- through dma-buf
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, KVM list <kvm@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 6, 2022 at 2:48 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Tue, Sep 06, 2022 at 12:38:44PM +0200, Christian K=C3=B6nig wrote:
-> > Am 06.09.22 um 11:51 schrieb Christoph Hellwig:
-> > > > +{
-> > > > + struct vfio_pci_dma_buf *priv =3D dmabuf->priv;
-> > > > + int rc;
-> > > > +
-> > > > + rc =3D pci_p2pdma_distance_many(priv->vdev->pdev, &attachment->de=
-v, 1,
-> > > > +                               true);
-> > > This should just use pci_p2pdma_distance.
->
-> OK
->
-> > > > + /*
-> > > > +  * Since the memory being mapped is a device memory it could neve=
-r be in
-> > > > +  * CPU caches.
-> > > > +  */
-> > > DMA_ATTR_SKIP_CPU_SYNC doesn't even apply to dma_map_resource, not su=
-re
-> > > where this wisdom comes from.
->
-> Habana driver
-I hate to throw the ball at someone else, but I actually copied the
-code from the amdgpu driver, from amdgpu_vram_mgr_alloc_sgt() iirc.
-And if you remember Jason, you asked why we use this specific define
-in the original review you did and I replied the following (to which
-you agreed and that's why we added the comment):
+While setting up a new lab, I accidentally misconfigured the
+Ethernet port for a system that tried an NFS mount using RoCE.
+This made the NFS server unreachable. The following WARNING
+popped on the NFS client while waiting for the mount attempt to
+time out:
 
-"The memory behind this specific dma-buf has *always* resided on the
-device itself, i.e. it lives only in the 'device' domain (after all,
-it maps a PCI bar address which points to the device memory).
-Therefore, it was never in the 'CPU' domain and hence, there is no
-need to perform a sync of the memory to the CPU's cache, as it was
-never inside that cache to begin with.
+kernel: workqueue: WQ_MEM_RECLAIM xprtiod:xprt_rdma_connect_worker [rpcrdma] is flushing !WQ_MEM_RECLAI>
+kernel: WARNING: CPU: 0 PID: 100 at kernel/workqueue.c:2628 check_flush_dependency+0xbf/0xca
+kernel: Modules linked in: rpcsec_gss_krb5 nfsv4 dns_resolver nfs 8021q garp stp mrp llc rfkill rpcrdma>
+kernel: CPU: 0 PID: 100 Comm: kworker/u8:8 Not tainted 6.0.0-rc1-00002-g6229f8c054e5 #13
+kernel: Hardware name: Supermicro X10SRA-F/X10SRA-F, BIOS 2.0b 06/12/2017
+kernel: Workqueue: xprtiod xprt_rdma_connect_worker [rpcrdma]
+kernel: RIP: 0010:check_flush_dependency+0xbf/0xca
+kernel: Code: 75 2a 48 8b 55 18 48 8d 8b b0 00 00 00 4d 89 e0 48 81 c6 b0 00 00 00 48 c7 c7 65 33 2e be>
+kernel: RSP: 0018:ffffb562806cfcf8 EFLAGS: 00010092
+kernel: RAX: 0000000000000082 RBX: ffff97894f8c3c00 RCX: 0000000000000027
+kernel: RDX: 0000000000000002 RSI: ffffffffbe3447d1 RDI: 00000000ffffffff
+kernel: RBP: ffff978941315840 R08: 0000000000000000 R09: 0000000000000000
+kernel: R10: 00000000000008b0 R11: 0000000000000001 R12: ffffffffc0ce3731
+kernel: R13: ffff978950c00500 R14: ffff97894341f0c0 R15: ffff978951112eb0
+kernel: FS:  0000000000000000(0000) GS:ffff97987fc00000(0000) knlGS:0000000000000000
+kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+kernel: CR2: 00007f807535eae8 CR3: 000000010b8e4002 CR4: 00000000003706f0
+kernel: DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+kernel: DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+kernel: Call Trace:
+kernel:  <TASK>
+kernel:  __flush_work.isra.0+0xaf/0x188
+kernel:  ? _raw_spin_lock_irqsave+0x2c/0x37
+kernel:  ? lock_timer_base+0x38/0x5f
+kernel:  __cancel_work_timer+0xea/0x13d
+kernel:  ? preempt_latency_start+0x2b/0x46
+kernel:  rdma_addr_cancel+0x70/0x81 [ib_core]
+kernel:  _destroy_id+0x1a/0x246 [rdma_cm]
+kernel:  rpcrdma_xprt_connect+0x115/0x5ae [rpcrdma]
+kernel:  ? _raw_spin_unlock+0x14/0x29
+kernel:  ? raw_spin_rq_unlock_irq+0x5/0x10
+kernel:  ? finish_task_switch.isra.0+0x171/0x249
+kernel:  xprt_rdma_connect_worker+0x3b/0xc7 [rpcrdma]
+kernel:  process_one_work+0x1d8/0x2d4
+kernel:  worker_thread+0x18b/0x24f
+kernel:  ? rescuer_thread+0x280/0x280
+kernel:  kthread+0xf4/0xfc
+kernel:  ? kthread_complete_and_exit+0x1b/0x1b
+kernel:  ret_from_fork+0x22/0x30
+kernel:  </TASK>
 
-This is not the same case as with regular memory which is dma-mapped
-and then copied into the device using a dma engine. In that case,
-the memory started in the 'CPU' domain and moved to the 'device'
-domain. When it is unmapped it will indeed be recycled to be used
-for another purpose and therefore we need to sync the CPU cache."
+SUNRPC's xprtiod workqueue is WQ_MEM_RECLAIM, so any workqueue that
+one of its work items tries to cancel has to be WQ_MEM_RECLAIM to
+prevent a priority inversion. The internal workqueues in the
+RDMA/core are currently non-MEM_RECLAIM.
 
-Oded
+Jason Gunthorpe says this about the current state of RDMA/core:
+> If you attempt to do a reconnection/etc from within a RECLAIM
+> context it will deadlock on one of the many allocations that are
+> made to support opening the connection.
 >
-> > > > + dma_addr =3D dma_map_resource(
-> > > > +         attachment->dev,
-> > > > +         pci_resource_start(priv->vdev->pdev, priv->index) +
-> > > > +                 priv->offset,
-> > > > +         priv->dmabuf->size, dir, DMA_ATTR_SKIP_CPU_SYNC);
-> > > This is not how P2P addresses are mapped.  You need to use
-> > > dma_map_sgtable and have the proper pgmap for it.
-> >
-> > The problem is once more that this is MMIO space, in other words regist=
-er
-> > BARs which needs to be exported/imported.
-> >
-> > Adding struct pages for it generally sounds like the wrong approach her=
-e.
-> > You can't even access this with the CPU or would trigger potentially
-> > unwanted hardware actions.
+> The general idea of reclaim is that the entire task context
+> working under the reclaim is marked with an override of the gfp
+> flags to make all allocations under that call chain reclaim safe.
 >
-> Right, this whole thing is the "standard" that dmabuf has adopted
-> instead of the struct pages. Once the AMD GPU driver started doing
-> this some time ago other drivers followed.
+> But rdmacm does allocations outside this, eg in the WQs processing
+> the CM packets. So this doesn't work and we will deadlock.
 >
-> Now we have struct pages, almost, but I'm not sure if their limits are
-> compatible with VFIO? This has to work for small bars as well.
->
-> Jason
+> Fixing it is a big deal and needs more than poking WQ_MEM_RECLAIM
+> here and there.
+
+So we will change the ULP in this case to avoid the use of
+WQ_MEM_RECLAIM where possible. Deadlocks that were possible before
+are not fixed, but at least we no longer have a false sense of
+confidence that the stack won't allocate memory during memory
+reclaim.
+
+While we're adjusting these queue_* call sites, ensure the work
+requests always run on the local CPU so the worker allocates RDMA
+resources that are local to the CPU that queued the work request.
+
+Suggested-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+---
+ net/sunrpc/xprtrdma/transport.c |    4 ++--
+ net/sunrpc/xprtrdma/verbs.c     |   11 ++++-------
+ 2 files changed, 6 insertions(+), 9 deletions(-)
+
+Hi Anna-
+
+I've had this applied to my test client for a while. I think it's
+ready to apply.
+
+
+diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
+index bcb37b51adf6..9581641bb8cb 100644
+--- a/net/sunrpc/xprtrdma/transport.c
++++ b/net/sunrpc/xprtrdma/transport.c
+@@ -494,8 +494,8 @@ xprt_rdma_connect(struct rpc_xprt *xprt, struct rpc_task *task)
+ 		xprt_reconnect_backoff(xprt, RPCRDMA_INIT_REEST_TO);
+ 	}
+ 	trace_xprtrdma_op_connect(r_xprt, delay);
+-	queue_delayed_work(xprtiod_workqueue, &r_xprt->rx_connect_worker,
+-			   delay);
++	queue_delayed_work_on(smp_processor_id(), system_long_wq,
++			      &r_xprt->rx_connect_worker, delay);
+ }
+ 
+ /**
+diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+index 2fbe9aaeec34..691afc96bcbc 100644
+--- a/net/sunrpc/xprtrdma/verbs.c
++++ b/net/sunrpc/xprtrdma/verbs.c
+@@ -791,13 +791,10 @@ void rpcrdma_mrs_refresh(struct rpcrdma_xprt *r_xprt)
+ 	/* If there is no underlying connection, it's no use
+ 	 * to wake the refresh worker.
+ 	 */
+-	if (ep->re_connect_status == 1) {
+-		/* The work is scheduled on a WQ_MEM_RECLAIM
+-		 * workqueue in order to prevent MR allocation
+-		 * from recursing into NFS during direct reclaim.
+-		 */
+-		queue_work(xprtiod_workqueue, &buf->rb_refresh_worker);
+-	}
++	if (ep->re_connect_status != 1)
++		return;
++	queue_work_on(smp_processor_id(), system_highpri_wq,
++		      &buf->rb_refresh_worker);
+ }
+ 
+ /**
+
+
