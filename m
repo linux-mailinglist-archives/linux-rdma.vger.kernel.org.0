@@ -2,172 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 625D25AF2C5
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Sep 2022 19:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9055AF2CF
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Sep 2022 19:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbiIFRhq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Sep 2022 13:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
+        id S229616AbiIFRjN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Sep 2022 13:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbiIFRhD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Sep 2022 13:37:03 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam07on2086.outbound.protection.outlook.com [40.107.212.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43253CBD9
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Sep 2022 10:33:21 -0700 (PDT)
+        with ESMTP id S233673AbiIFRip (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Sep 2022 13:38:45 -0400
+Received: from na01-obe.outbound.protection.outlook.com (mail-centralusazon11013001.outbound.protection.outlook.com [52.101.64.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4EEC14;
+        Tue,  6 Sep 2022 10:37:48 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dhxtDZWTu1LXQ8bE4BfQG29LtYW/CcZvOvrpBi1FGE9HLP2ABoYP9/WoDyAgU6wiRRsVfzdDD9AzTNY+euyMzHaEgd8hPKrk6PnQtTBpcuOUdw6XSN/r3Uv7+FCnQAyE+FP0NxBPBVnS2Q6evXjjduRcLjy/PEcg4Mrmzw/Njt9ZLD9ODq/Ulim+mHkdL5oFA97mF0FC+OPOKJ47Y0QQxaL7iufW9t2sNktfTa1NRV9Iw5IxURQYALD+hysUmz/O612iWXGs2FnldHS8ub+zGcX4qAHO43ktRkNd99UkuBWAc2Dfi/+dvEdW6KWWgH3LFaZSoYj3Bvb3FhYXbzSdsg==
+ b=aoJDmoiIBtrN2tvGO0lJZNPxE5oOzL4bK3B30ljZWwXbsVyIuFym5B7gdS1o2vWuInd8Bp21+tR7jRGz0a1sblHfKk1muw1XHB1Fznri66bgCUA3kQFVfIBXPnAunwp96Wgd2TsIwF8QeXYbr6yxcwbdPeBrOaw97k+q7PToFPy3AVxC4oBOqPyAp6PFtlao+EwK5tFI36L3QcresUaZoGC5AOOvkSgakP0T0JL5dlblMetfK7EpTeoYtIjKvHLB8K1SnQsRJynMjvxHampAqdoQ0Xq5/OzEiOwdOj2z5mCoPHsA1EESJtvY3+6W2wVXgUdbzLajr0Ji6xMBMwe9xA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZJAaeKQKNpo/P1v3BcYOO6IXbujqeQ4AxXXTQOtyhbA=;
- b=Zg+DPLrFzk9etAQdCfQmxvm2BKSW03EMyGT5PDU2xsmwf3nVptVFikEoMg1JAZfn9EYGMB1vNd25wRnazo+r/h8x+Uy5phWR6M9bwbrmekCVCQUh8/OderSKZEyuJU/GvZwABZD5tnnlYpuh9hZohW8u8jHbazlVDJ2u84M3yAK7mjIuXJ6ANr1XVdH6D5dy70Q+wZu3LqeCED8Jyqlzy4xE7uN+9efFZ/wbbxoZLSzjB+SDVj4WLfJ6or+i/wFTS99WPHPlqYrmExSujg7ATwK+7yPLlVqzaUojubq9VrSyxlsXFG5NnGwc3AmXvRjiMCyCZMF/UxYqcgW4QeVR1Q==
+ bh=rLYGAP5T7jZsDTmSdZNplX/2RRsSlrdQmwBf7rPj3g8=;
+ b=CCDR12SdWM2sPs4zCQ3EtXQ1pikX0jdb5bPxbU4qrJIlGiLEYAhhGPFrH7QHCVRWsUOnytrb4CK3Dg3WAnkT4ERzx9ExduuuPBsxnF0GDYYjwJSbS19CvM5G3T0Tpah96UocC0LH7VmJVGtr+RRb1g86athXRfm3TmypU271bAmA1Utp7PeY+7nFFfYUYl9vUygRQ4ibFiOEL7awHJw5m/p4/r4pnh6sVGY3QCQXye+JilyMD9g6MBK5H5I2YPi3nTaUcKpfKZ95Gf3QDl1GlzvSo8xA0rf5vAoeGh1/GvpAz622iYNnXFtMClQCO9sEF9ZJ1kXX/8CGhPMllTd1mw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZJAaeKQKNpo/P1v3BcYOO6IXbujqeQ4AxXXTQOtyhbA=;
- b=tjpNTFptoZRvndOO9tyRT+DTRAcjGdtqJ/S8N0WHtxez14Iow7rOR2G4+H7jW0e92ZTznlpCZ2VuGLOWbgzAcOiZ7rR4QnUJzVB2ZeblUnWZ/tTpcOil8ZsNWmJchQeyIIOZATRvrmO3h6x8zAeVrYN4Ph+kSzv4q82Rn+AP+5MSka5yi5UQHwpwOpnmzrDpkSK+f77YKK3Wx6T6FtbcuWy0GE3T4zHoZh4dQqswiRV/OWKSoe9iOqlQ0PBICyJ0NjI7G3YVADxYpOu+aZQrK/PjeKJL6MkWisL9VMF4VofouXNVx+W6PqpfEnhhlD8zq1WgWiUkDdFjkGiwKPCz3A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BL1PR12MB5970.namprd12.prod.outlook.com (2603:10b6:208:399::21) with
+ bh=rLYGAP5T7jZsDTmSdZNplX/2RRsSlrdQmwBf7rPj3g8=;
+ b=GtHAekKZFjSgX69cuvQgc5G5keZH1hmSh1GSRJxvyyLDvX3T1p8QIkebfk8DYoQ7SniMBe6xH/yHXe3j3jmu/sw8UItnIxT4g7em0t2FbdPocSSCqc0UlwuAe5Ad1+byAjlKrfNOLI/aZCUcGWCCP1uW9IbDfqWyORVsenSXvYU=
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
+ by BL0PR05MB4739.namprd05.prod.outlook.com (2603:10b6:208:29::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.17; Tue, 6 Sep
- 2022 17:33:20 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5%7]) with mapi id 15.20.5588.018; Tue, 6 Sep 2022
- 17:33:20 +0000
-Date:   Tue, 6 Sep 2022 14:33:19 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>
-Cc:     linux-rdma@vger.kernel.org, leonro@nvidia.com,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Andrew Gospodarek <andrew.gospodarek@broadcom.com>
-Subject: Re: [PATCH rdma-rc v1] RDMA/core: fix sg_to_page mapping for
- boundary condition
-Message-ID: <YxeEX7XcwYpnbP3M@nvidia.com>
-References: <20220816081153.1580612-1-kashyap.desai@broadcom.com>
- <Yv7QvMADD7g3yPWh@nvidia.com>
- <2b8cd62b4c5c0f9551977909981246d8@mail.gmail.com>
- <Yv94fYp8869XZKFU@nvidia.com>
- <2651261c642ca672864c2c6c8e7a9774@mail.gmail.com>
- <YwjHSBr3f4o0hXBX@nvidia.com>
- <85a37f42a08f4163cb5440d8825b7e7a@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85a37f42a08f4163cb5440d8825b7e7a@mail.gmail.com>
-X-ClientProxiedBy: BL0PR02CA0003.namprd02.prod.outlook.com
- (2603:10b6:207:3c::16) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.9; Tue, 6 Sep
+ 2022 17:37:44 +0000
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::e46:a7cf:acd:c835]) by BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::e46:a7cf:acd:c835%2]) with mapi id 15.20.5612.012; Tue, 6 Sep 2022
+ 17:37:43 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Vishnu Dasa <vdasa@vmware.com>
+CC:     Vishal Bhakta <vbhakta@vmware.com>,
+        Bryan Tan <bryantan@vmware.com>, Zack Rusin <zackr@vmware.com>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        "sgarzare@redhat.com" <sgarzare@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Pv-drivers <Pv-drivers@vmware.com>,
+        Joe Perches <joe@perches.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 2/3] MAINTAINERS: Change status of some VMware drivers
+Thread-Topic: [PATCH 2/3] MAINTAINERS: Change status of some VMware drivers
+Thread-Index: AQHYwhYZd5LRJliYYkuk8GCfNhJZQa3Sqo8A
+Date:   Tue, 6 Sep 2022 17:37:43 +0000
+Message-ID: <4269C33A-AC6E-4247-8471-5AC0A7D3DB1C@vmware.com>
+References: <20220906172722.19862-1-vdasa@vmware.com>
+ <20220906172722.19862-3-vdasa@vmware.com>
+In-Reply-To: <20220906172722.19862-3-vdasa@vmware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.120.41.1.1)
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY3PR05MB8531:EE_|BL0PR05MB4739:EE_
+x-ms-office365-filtering-correlation-id: 0f7de458-1c6e-473f-dbdb-08da902e811e
+x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xST/KcV54v6zjbQK8ejLFQe2/2tPGKfXQVAjiHWqilw/2RO6ha/OwInIKpIHz/RhcDTpxZVYUZugpgV3sPdqt/7KdSduBWZ2h0hWJIiJYeFgY1wBfwoG32guunfZJZjU8l2pBjjX/F1g76LthcWh6lQMNyjYvmxW1GKu6A2YcwsHy3PkXPySon+R5RcewXKmzn3BeavR41uP2hWh1eydimywCseYYXWPo16dhvEyhjW4wx4cymJWCCtt7S7o1Ka2m9dgvvYpKYl1zcVWxiUggaBgHb2Y+ViGHSOWB/3cQQ4ETLFUKc50pBkDcIWPJtvgTa1Gii1BE6jtq0B+UcfEOWJPseOXzIFy1Pavxbadhwf+F3kcVW87sDRtuyH+2HpvV2AgYUR1VTYrB/hyj0KF7sSck546vbreVMnoS8x8tiad4GXUDCZ/x3hi6RavpMIwO7lKFt9PBee6GDL5SGb+T2mYPC43LlJOfqeVYABju7a5ka7mCM5hVmOZbytVjLQ1zf6GNeYrMXEhkkyXc+jwVbv0yg0Q/ZHeJvK1K8dG7RlHuEdK/+/DsRmN15B1vExbTUKVTIl/W+MRSW6UhGI85rqOyaydWqsPSSiAzymxxZ1ZvhZdLyyV0Xyom8mMkq4WTswMVaUnXVlFHUg24zh0SQfyz1LCQi3iIs9qP+sS/7ukMgnmU/G4DQWwYQdtvXvJxST6TwQrLhRqhOCj2CAE9al45FfyjuiRzkJttGlQ9KPFY7DK3eqgksJ1Fye2tuStuShROO1M2TAvfulMGfgOvU7lRrpG3aoii4yk/y8v41drpwNB8uWQd1Z/Pkd+DfVcx1g9mq+EKd6hz6zC1B4pIeYnxxW/ML0H84+pmZiX5IpOI7zKT9IfLCYGaW5fOXuhV2/SbMc0gjj3wbH6227+jRVEAvaKZlduJwXfhzmBoTcyoQlzRIsXS/4w7kpCU1Qf
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(396003)(346002)(39860400002)(366004)(376002)(66556008)(8676002)(4326008)(66946007)(7416002)(2906002)(4744005)(76116006)(8936002)(6862004)(5660300002)(38070700005)(64756008)(66476007)(122000001)(38100700002)(53546011)(6506007)(66446008)(41300700001)(6512007)(26005)(478600001)(36756003)(71200400001)(966005)(6486002)(316002)(54906003)(2616005)(186003)(83380400001)(86362001)(37006003)(33656002)(6636002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Ffowl9du0aBsi20dxDrApkzw5edNv2yYrjy7F0CuHV+rQv4n+pKxR3Ijax/1?=
+ =?us-ascii?Q?iGy2WVnGkd86Tm17+2+HELt4LbIdgcV1KwYeSCa6D2GCLJSIZK/iGVr9uVAa?=
+ =?us-ascii?Q?Tf8aP9ocvTRNR4TvrukTYcFBF03qyQ6sh8SjwMmokJ7hZCf7lnwNXB77tcrB?=
+ =?us-ascii?Q?lJpNMMTOA4R8n6nuo9HxmCtLNbZrI6n+FAWzkChVxxPTnXEf3QISUsx7uiJD?=
+ =?us-ascii?Q?pt2fM/suPHiv3oFsmdQxY8r0Orv6LMCdz6eQARnD6wD8K+7iDkfd+slge0K0?=
+ =?us-ascii?Q?D3MyZrQDvgIDGwIM3hGenPJYI5lzuSex2G/9azPl34SJkconRxhxo5NVB7Gs?=
+ =?us-ascii?Q?HlZIQwpJEGnRgDxqJr0J74b5HBXhK5JLUDbRKURlCV8g/L1DvcYovEH0jt3n?=
+ =?us-ascii?Q?/dMGFFGA4aWZUUFIkpXq8M6tNoCKlbKnnXC1oLnDnyDMUshq85Y/FwgznjWN?=
+ =?us-ascii?Q?6OQsdLZ6mR87ebF7kNd2G/DNH3QN6I0n3XChnUl+0r3mCS0CzBA38wgcQD63?=
+ =?us-ascii?Q?QDXYeJHMyrMukGnd/6XtTQB3F/hLlFNXzcThVEmeXa9wAYH8D7tY3cGaBIAj?=
+ =?us-ascii?Q?xF9yj/dbDCPvNsGdZmCAxQxYYWLn8b37BsJSiUo3XJL0xYDQB1z1CZt8H39B?=
+ =?us-ascii?Q?sw2CDajxwXj9yDVGvL49ap7Hv4NeHu0KcpG1GjfQQKYRpiyOHmFbZ/XtaoaX?=
+ =?us-ascii?Q?9gerc0ydQlIvZ/xlhr+dUDzbVNKIQbZ2jQ9hOYHfhSPxyh/GHv0sEbEgbnn/?=
+ =?us-ascii?Q?5hiVgKRaQyB1Y289vHvZt4cIP+VZzIsWOHar001oq6NI+7+soSdQbvoMSv3h?=
+ =?us-ascii?Q?I2Ce70/GdQbE3vkhjR8mLQgb+e9n8o7iQ2dNEWQotK9Yl3bXP58dsBNKlUmG?=
+ =?us-ascii?Q?heCa1ijSzOc9NpYZFzw3VTWvqEk044GeBuSeVdIsslgBf/NJfCLgFmxczlST?=
+ =?us-ascii?Q?ihaEvYaPISdcYJgv2/fl7V1b9QbfU9t9VI4ceSKu0QHgq1UqrnNzvu48WQHn?=
+ =?us-ascii?Q?rxJjCyf66JArDm3uPTauvObpxKeuRFrOsuUGCeGmdYuf/YTUd8Tl5Bd7nLBp?=
+ =?us-ascii?Q?ZVNckC7fiLT9wbX0QdDT4Wej1U8lCLETyA+K4YurmvL0v59ICMJSLE7H9kKS?=
+ =?us-ascii?Q?n1Q/yyMJzzfPKicToFq8Km04O1c/hwXuZQ3L8f+GeCm7oTCOsICTE9yuyTkU?=
+ =?us-ascii?Q?9YufdSQ/vo0Q5JjNOWryN9p8Tevx1hGyxn6YqdRC8lwnKPCWfqlc4BxN9Pwf?=
+ =?us-ascii?Q?DpQjv0XVl14pLzwRoufDO4Uj/HobIQoAUNhSQq8TIttTOFUzH7KbbXB2TTyr?=
+ =?us-ascii?Q?XiTnRrkAkuSTaCTRx3YSttRYTBvJLN6+LG4RASUwz12N47Ha5jTBmxWpht8h?=
+ =?us-ascii?Q?OoNarSvSgbpFUDcLthQXeU8/cG5MRDA/coZnxBuDwTj6b0bY3KONAsVKbpns?=
+ =?us-ascii?Q?GPE9az0uo7r+K6XFbTKDlY/D8/fXGCjmbcSPIYrjGijHvd6K0tf4myeVZK64?=
+ =?us-ascii?Q?r3MvUykl2lmpTB8vNPPKIAeyw/5LVm5uoO0s2ltlC2V1Tmjz/yvnjRIvDZZO?=
+ =?us-ascii?Q?G+pWQ9uCBh/0AghWXnU2mfyMyJL0ywxIaIqv5JPz?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1781454FFC6038499E8F43715531848E@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2b4dd321-528b-4f91-95ca-08da902de3f7
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5970:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yVW5Oa1cBg8AffVh/arOrcxxJJfjRLvBbSW46c84Mnc5wwY+a0RVe2eCiO+3UOAyJgK/6AnaO0Xjel3ZglJR9FC6ygJ3GTfVrKIvOGggT33dZnQpokSM1iTm/dUbbVcaKLHfCtqbD8Y6NIkTSdA1kRROEoiQrm1uwbg/9LkCphOR81nj7ii+8VPfelFY44oK6D8R6vYol+A/7mzifPh/bmKixNdUjfrXZEDa+AMsP2lw1YiM5N5XZxAqIYQW10RfxSkY7yILRvjjvxYAiO6P7TT4NsHtEuyKTgcYNB5VFV2c73e48V44DvxVjH4bK9gL90bAaU6iqWZ0eplR7d4nJJ4KzjG+7lxx+mZuBr7eKYpROlfB546zPbMDZwkcsmqu0hyNmzCvEEFT0Pnd/1t6a3KPKEa43Zin7KrI0Bzn3Q5GE5FpMmKPAtrA1sSiQJzrO8kerj/WQKDrG5wqrIERI2IvLljNt2llWHco46qeeCgriFgrFvPibzFbjm9faPxUgQHaNt8CSNhog1bdyiPCiTksfHe7toIZLbFwpjn7/x2odg1Sw5eRt6HQBpEwPR0xqsuDJ5SgePx/YnGx+IFRuBHzKKbCi8up3psJHj56IwhXRLVWkyM0vq90qaIvcSwBrwk/xNLOiPj67zGjcEuNH8F6T2RUSOX1nlF9hMNCqhSFcYV0pKsV847CIBD8Fvypl0ZkM+cxWZE1dw6SRrjvkA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(366004)(376002)(39860400002)(136003)(346002)(478600001)(2616005)(186003)(66946007)(83380400001)(4326008)(8676002)(66556008)(66476007)(6506007)(36756003)(41300700001)(26005)(53546011)(6486002)(6512007)(86362001)(54906003)(8936002)(5660300002)(2906002)(6916009)(38100700002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4/2cMlUgHFpzw3o/wmsXHiUg0DHXZ5Q1cVoMOP3zdA5xU3yYUg5tyA7kV9cw?=
- =?us-ascii?Q?e7kKbhPC0svPCL0kcqr46LW+ffzzilCmMK3Ip+dHrTScsbnrnf9qyNyFEm5u?=
- =?us-ascii?Q?/WXVp83GX7Aa1fn/gpuFuLKVyXrrOe81nEdgZbOeQz6iPxbwIHvtC26DMnJI?=
- =?us-ascii?Q?yXrWU08ZsGW/T/7EjQGZDTI7xpLKi2l5JP6dMQkebA4umf6rmKJYESV9zy2t?=
- =?us-ascii?Q?9L3UqQD4Vb7ST6TfOIeVKs06GOApn5yPvlSaXINAgTy+c/bor+ikA8vGbXuC?=
- =?us-ascii?Q?zAaWv7yF2hC1emaPj4KlI26h5AslY6MPdKSY87XD5+C3pRUqzUr17yXa8NJz?=
- =?us-ascii?Q?Sq4Uz2aIjH1Unzrs+iqKhGlGzJPJHnZMdoTSDXnODqE82U8RQUxMX2eSQFKt?=
- =?us-ascii?Q?aYUsZLDtBL37pC1Y4Okc73ROxn8Fj+DauZiGzYu5ILt71aQ91rLgTZn7GcSE?=
- =?us-ascii?Q?xRoAYARFawRsGQepFxFwrupSa8Cx7nMAreBkjAqMl50Xswh4/AfUo8PlhLqI?=
- =?us-ascii?Q?1oHGa9/0bB7OHndZVqbZcm9KYJUogIG6U44D16bcyDo5AioyqbziHMcylwXr?=
- =?us-ascii?Q?jphtuVVS7Eds91RL674jWuoRDBrQaOWvT94yypDJOuZqmWvZtC4ml3JEpnrT?=
- =?us-ascii?Q?h/TtkGirv1xkExR3phWvhgANo1IVvFav4TY2tqLRk8VhxJALa+s4bPHHcXJQ?=
- =?us-ascii?Q?UXBQEuo7G1rpj4fV2+jOE/HHw368c0tYb8m2qWzavEoWxroKNjAXwccHya4N?=
- =?us-ascii?Q?robrsSxP70QOeT+lEjbam8YoHHwaEBLDuoSLItAC453MB6ZilFFYeZU7+Kju?=
- =?us-ascii?Q?uoNsqdO07XJBvpmu4vq4fZSxrgPbKyiD3Br7b/JFvhzbflkxrvMKwx+tbJK6?=
- =?us-ascii?Q?s9DuIc8BQja7J95D86qlgUO9/OYKNz2CtKJuhlGKdiMFqnHPQQf86SIL22gi?=
- =?us-ascii?Q?fsMjn0PHlClMklOsK1YAPf/AslSuZpKlURSagO7P5rjhdNbkTBeN1Do7UAj7?=
- =?us-ascii?Q?ryq8++G0QKtBBFsDBt01M0gBh3Tmu7QS5qZKEiib0neBB+AZUrKRViZyD6xq?=
- =?us-ascii?Q?vLDekaacWpCo94d4Y1dLmrtv3wGHvgnz3WUEPzDpVp1W3oZGal+W6f99gD5o?=
- =?us-ascii?Q?+6HIT5gYDWjpDbAov1mNIkuM2yQdvpSk3QNKi2wSsFqR5/NDfaDXsqrp5Q6Z?=
- =?us-ascii?Q?7jRwxquW+XM0zkGlyFGYXRpixC3mtNiRHZobQmb0RjhakJVqlUT0u/xCSVK/?=
- =?us-ascii?Q?DVTBra/0ELYhEf4Sz6AajdMB918b4ao04w5ngZBZFGQPTdqMAPgPID6+HAAd?=
- =?us-ascii?Q?JE83KcniBxsSLzYPcNQd2ZPXkZxsV+fwrLzo546RpAtcTWQ4T8rHhmlsNVdI?=
- =?us-ascii?Q?pmxLPb/a2OivKheAkBnGahU5lGxrTLdOV53XvAWx+5/jGWN/BrONN0H1UR9N?=
- =?us-ascii?Q?HzABl7ekM5K5X+3JWgG4ZJF/t/uctl8VmEdKUMBimHGYkTcXGV/2Aru+S7aN?=
- =?us-ascii?Q?ZpnGOkgudOyQgoJLjuuQnMF77v0FQiyNRC2pl0/5t2litOc0P0RSc1qZSRKp?=
- =?us-ascii?Q?IcafcK2nkEMiuclMe0OsEd6o3RGsY3wI4yUOmSmN?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b4dd321-528b-4f91-95ca-08da902de3f7
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2022 17:33:20.1115
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5AtEwayUSsr7DEFJnEH1WbG8kkEEYANmTPxudMU/U6bIN17/q19JP+vT96xDRT9A
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5970
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR05MB4739
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 01, 2022 at 05:36:57PM +0530, Kashyap Desai wrote:
-> > -----Original Message-----
-> > From: Jason Gunthorpe [mailto:jgg@nvidia.com]
-> > Sent: Friday, August 26, 2022 6:45 PM
-> > To: Kashyap Desai <kashyap.desai@broadcom.com>
-> > Cc: linux-rdma@vger.kernel.org; leonro@nvidia.com; Selvin Xavier
-> > <selvin.xavier@broadcom.com>; Andrew Gospodarek
-> > <andrew.gospodarek@broadcom.com>
-> > Subject: Re: [PATCH rdma-rc v1] RDMA/core: fix sg_to_page mapping for
-> > boundary condition
-> >
-> > On Mon, Aug 22, 2022 at 07:51:22PM +0530, Kashyap Desai wrote:
-> >
-> > > Now, we will enter into below loop with dma_addr = page_addr =
-> > > 0xffffffffffffe000 and "end_dma_addr = dma_addr + dma_len" is ZERO.
-> > > eval 0xffffffffffffe000 + 8192
-> > > hexadecimal: 0
-> >
-> > This is called overflow.
-> 
-> Is this not DMAable for 64bit DMA mask device ? It is DMAable. So not sure
-> why you call it as overflow. ?
+On Sep 6, 2022, at 10:27 AM, Vishnu Dasa <vdasa@vmware.com> wrote:
 
-Beacuse the normal math overflowed.
+> From: Vishnu Dasa <vdasa@vmware.com>
+>=20
+> Change the status from 'Maintained' to 'Supported' for VMWARE
+> BALLOON DRIVER, VMWARE PVRDMA DRIVER, VMWARE PVSCSI driver,
+> VMWARE VMCI DRIVER, VMWARE VMMOUSE SUBDRIVER and VMWARE VMXNET3
+> ETHERNET DRIVER.
+>=20
+> This needs to be done to conform to the guidelines in [1].
+> Maintainers for these drivers are VMware employees.
+>=20
+> [1] https://docs.kernel.org/process/maintainers.html
+>=20
+> Signed-off-by: Vishnu Dasa <vdasa@vmware.com>
+> ---
+> MAINTAINERS | 12 ++++++------
+> 1 file changed, 6 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b75eb23a099b..5a634b5d6f6c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -21812,7 +21812,7 @@ VMWARE BALLOON DRIVER
+> M:	Nadav Amit <namit@vmware.com>
+> R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+> L:	linux-kernel@vger.kernel.org
+> -S:	Maintained
+> +S:	Supported
+> F:	drivers/misc/vmw_balloon.c
 
-Should it work? Yes. Is it a special edge case that might have bugs?
-Certainly.
+Acked-by: Nadav Amit <namit@vmware.com>
 
-So the IOMMU layer shouldn't be stressing this edge case at all. It is
-crazy, there is no reason to do this.
-
-> I agree that such mapping is obviously dangerous, but it is not illegal as
-> well.
-> Same sgl mapping works if it is direct attached Storage, so there will be
-> a logical question why IB stack is not handling this.
-
-Oh that is probably very driver dependent.
-
-> > You need to write the code so you never create the situation where
-> > A+B=0 - don't try to fix things up after that happens.
-> 
-> In proposed patch, A + B = 0 is possible, but it will be considered as end
-> of the loop.
-
-Like I said, don't do that. End of the loop is -1 which requires a
-different loop logic design, so send a patch like that.
-
-But I would still send a patch for iommu to not create this in the
-first place.
-
-Jason
