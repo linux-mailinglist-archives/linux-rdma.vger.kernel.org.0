@@ -2,56 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 682495B0CF2
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Sep 2022 21:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7C05B1075
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Sep 2022 01:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbiIGTNk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Sep 2022 15:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        id S229999AbiIGXhM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Sep 2022 19:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbiIGTNi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Sep 2022 15:13:38 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CCF97B15
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Sep 2022 12:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662578017; x=1694114017;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=N+LHi4TEQfGqOCb4UJ8IrM/1a/61kQPvJ1m+E4Ttx24=;
-  b=FwatfzBakcEcDhRTUcu8O73aiaSmCrRXh8molrEGAsB69pkWNdtPg1lK
-   DyCSQKWNvJJfEhr+S0lIvv+KRbZGU+agwD9/Npyr1nyW7sfHfUK9exM/q
-   URJmJW9zN8hiHhUZyE5yo5kAO58NTfNxm3W13b5DsQAZUPqIKpmAUnpfu
-   Sk/c4kUklJ4Qr7qHguEna3ghpak91iZRf9h9CpUbCUcOnp1WBZPB6NPDO
-   9akSIXBv2cAOCPt37i3teyTSsJ758ABFpxBqQMWUhQU5lpIug8K03zKOG
-   ARtXiTp+aeRor9Pj7UmpSC1XMsamgS1S67oZP1dL87HluYTrafa2dIofR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10463"; a="295709243"
-X-IronPort-AV: E=Sophos;i="5.93,297,1654585200"; 
-   d="scan'208";a="295709243"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2022 12:13:37 -0700
-X-IronPort-AV: E=Sophos;i="5.93,297,1654585200"; 
-   d="scan'208";a="676339043"
-Received: from sveedu-mobl.amr.corp.intel.com (HELO ssaleem-mobl1.amr.corp.intel.com) ([10.255.37.1])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2022 12:13:37 -0700
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     jgg@nvidia.com, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH for-next 2/2] RDMA/irdma: Validate udata inlen and outlen
-Date:   Wed,  7 Sep 2022 14:13:24 -0500
-Message-Id: <20220907191324.1173-3-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.35.2
-In-Reply-To: <20220907191324.1173-1-shiraz.saleem@intel.com>
-References: <20220907191324.1173-1-shiraz.saleem@intel.com>
+        with ESMTP id S229459AbiIGXhL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Sep 2022 19:37:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54277E33B;
+        Wed,  7 Sep 2022 16:37:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 66DDF61AF2;
+        Wed,  7 Sep 2022 23:37:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B509EC433D6;
+        Wed,  7 Sep 2022 23:37:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662593829;
+        bh=fmr28kv/65U8JUTR7nL+T542LMSwkh0XA5b938laPIA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iXWDDgc3nSouXP1ACypdbUru4N3Os94Qx0fYPqGkykDUU8Iv+D1qBOm9S34EfGyPp
+         wi9i5Byg3qdk23ptBWBuJ6BZwiE6Y7XrCxI8FXKbHFapi4hSppuHQZnQYZRQFe0wb1
+         WFwvKHYVZ+fofjTUnK0OXpcOsS9KJjhBnQ1jlOitQhLlya7ZElgXP/XU1+jPvL6MYc
+         fC0D8EAZrL3aBUKLQuS2zrqrIat/7rUF8BdjxtUiiXRiwYHPAQtKHZKgyPq+AhCxEU
+         5dMeUtGVTqKTy1n0+K3sRLLVDhr16UrwgKn+wleT/tsJayarua+MBS0Gzf04nXs3bH
+         SltJRTuMazpTQ==
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH mlx5-next 00/14] mlx5-next updates 2022-09-07
+Date:   Wed,  7 Sep 2022 16:36:22 -0700
+Message-Id: <20220907233636.388475-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,261 +56,110 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently ib_copy_from_udata and ib_copy_to_udata could underfill
-the request and response buffer if the user-space passes an undersized
-value for udata->inlen or udata->outlen respectively [1]
-This could lead to undesirable behavior.
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-Zero initing the buffer only goes as far as preventing using the buffer
-uninitialized.
+This series includes various mlx5 updates
 
-Validate udata->inlen and udata->outlen passed from user-space to ensure
-they are at least the required minimum size.
+1) HW definitions and support for NPPS clock settings.
 
-[1] https://lore.kernel.org/linux-rdma/MWHPR11MB0029F37D40D9D4A993F8F549E9D79@MWHPR11MB0029.namprd11.prod.outlook.com/
+2) NVMEoTCP HW capabilities and definitions 
 
-Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/hw/irdma/verbs.c | 67 +++++++++++++++++++++++++++++++++----
- 1 file changed, 60 insertions(+), 7 deletions(-)
+3) crypt HW bits and definitions for upcoming ipsec and TLS improvements
 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index f3925f1..ba403cc 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -296,13 +296,19 @@ static void irdma_alloc_push_page(struct irdma_qp *iwqp)
- static int irdma_alloc_ucontext(struct ib_ucontext *uctx,
- 				struct ib_udata *udata)
- {
-+#define IRDMA_ALLOC_UCTX_MIN_REQ_LEN offsetofend(struct irdma_alloc_ucontext_req, rsvd8)
-+#define IRDMA_ALLOC_UCTX_MIN_RESP_LEN offsetofend(struct irdma_alloc_ucontext_resp, rsvd)
- 	struct ib_device *ibdev = uctx->device;
- 	struct irdma_device *iwdev = to_iwdev(ibdev);
--	struct irdma_alloc_ucontext_req req;
-+	struct irdma_alloc_ucontext_req req = {};
- 	struct irdma_alloc_ucontext_resp uresp = {};
- 	struct irdma_ucontext *ucontext = to_ucontext(uctx);
- 	struct irdma_uk_attrs *uk_attrs;
- 
-+	if (udata->inlen < IRDMA_ALLOC_UCTX_MIN_REQ_LEN ||
-+	    udata->outlen < IRDMA_ALLOC_UCTX_MIN_RESP_LEN)
-+		return -EINVAL;
-+
- 	if (ib_copy_from_udata(&req, udata, min(sizeof(req), udata->inlen)))
- 		return -EINVAL;
- 
-@@ -314,7 +320,7 @@ static int irdma_alloc_ucontext(struct ib_ucontext *uctx,
- 
- 	uk_attrs = &iwdev->rf->sc_dev.hw_attrs.uk_attrs;
- 	/* GEN_1 legacy support with libi40iw */
--	if (udata->outlen < sizeof(uresp)) {
-+	if (udata->outlen == IRDMA_ALLOC_UCTX_MIN_RESP_LEN) {
- 		if (uk_attrs->hw_rev != IRDMA_GEN_1)
- 			return -EOPNOTSUPP;
- 
-@@ -386,6 +392,7 @@ static void irdma_dealloc_ucontext(struct ib_ucontext *context)
-  */
- static int irdma_alloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- {
-+#define IRDMA_ALLOC_PD_MIN_RESP_LEN offsetofend(struct irdma_alloc_pd_resp, rsvd)
- 	struct irdma_pd *iwpd = to_iwpd(pd);
- 	struct irdma_device *iwdev = to_iwdev(pd->device);
- 	struct irdma_sc_dev *dev = &iwdev->rf->sc_dev;
-@@ -395,6 +402,9 @@ static int irdma_alloc_pd(struct ib_pd *pd, struct ib_udata *udata)
- 	u32 pd_id = 0;
- 	int err;
- 
-+	if (udata && udata->outlen < IRDMA_ALLOC_PD_MIN_RESP_LEN)
-+		return -EINVAL;
-+
- 	err = irdma_alloc_rsrc(rf, rf->allocated_pds, rf->max_pd, &pd_id,
- 			       &rf->next_pd);
- 	if (err)
-@@ -811,12 +821,14 @@ static int irdma_create_qp(struct ib_qp *ibqp,
- 			   struct ib_qp_init_attr *init_attr,
- 			   struct ib_udata *udata)
- {
-+#define IRDMA_CREATE_QP_MIN_REQ_LEN offsetofend(struct irdma_create_qp_req, user_compl_ctx)
-+#define IRDMA_CREATE_QP_MIN_RESP_LEN offsetofend(struct irdma_create_qp_resp, rsvd)
- 	struct ib_pd *ibpd = ibqp->pd;
- 	struct irdma_pd *iwpd = to_iwpd(ibpd);
- 	struct irdma_device *iwdev = to_iwdev(ibpd->device);
- 	struct irdma_pci_f *rf = iwdev->rf;
- 	struct irdma_qp *iwqp = to_iwqp(ibqp);
--	struct irdma_create_qp_req req;
-+	struct irdma_create_qp_req req = {};
- 	struct irdma_create_qp_resp uresp = {};
- 	u32 qp_num = 0;
- 	int err_code;
-@@ -833,6 +845,10 @@ static int irdma_create_qp(struct ib_qp *ibqp,
- 	if (err_code)
- 		return err_code;
- 
-+	if (udata && (udata->inlen < IRDMA_CREATE_QP_MIN_REQ_LEN ||
-+		      udata->outlen < IRDMA_CREATE_QP_MIN_RESP_LEN))
-+		return -EINVAL;
-+
- 	sq_size = init_attr->cap.max_send_wr;
- 	rq_size = init_attr->cap.max_recv_wr;
- 
-@@ -1117,6 +1133,8 @@ static int irdma_query_pkey(struct ib_device *ibdev, u32 port, u16 index,
- int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 			 int attr_mask, struct ib_udata *udata)
- {
-+#define IRDMA_MODIFY_QP_MIN_REQ_LEN offsetofend(struct irdma_modify_qp_req, rq_flush)
-+#define IRDMA_MODIFY_QP_MIN_RESP_LEN offsetofend(struct irdma_modify_qp_resp, push_valid)
- 	struct irdma_pd *iwpd = to_iwpd(ibqp->pd);
- 	struct irdma_qp *iwqp = to_iwqp(ibqp);
- 	struct irdma_device *iwdev = iwqp->iwdev;
-@@ -1135,6 +1153,13 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	roce_info = &iwqp->roce_info;
- 	udp_info = &iwqp->udp_info;
- 
-+	if (udata) {
-+		/* udata inlen/outlen can be 0 when supporting legacy libi40iw */
-+		if ((udata->inlen && udata->inlen < IRDMA_MODIFY_QP_MIN_REQ_LEN) ||
-+		    (udata->outlen && udata->outlen < IRDMA_MODIFY_QP_MIN_RESP_LEN))
-+			return -EINVAL;
-+	}
-+
- 	if (attr_mask & ~IB_QP_ATTR_STANDARD_BITS)
- 		return -EOPNOTSUPP;
- 
-@@ -1371,7 +1396,7 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 
- 			if (iwqp->iwarp_state == IRDMA_QP_STATE_ERROR) {
- 				spin_unlock_irqrestore(&iwqp->lock, flags);
--				if (udata) {
-+				if (udata && udata->inlen) {
- 					if (ib_copy_from_udata(&ureq, udata,
- 					    min(sizeof(ureq), udata->inlen)))
- 						return -EINVAL;
-@@ -1423,7 +1448,7 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		} else {
- 			iwqp->ibqp_state = attr->qp_state;
- 		}
--		if (udata && dev->hw_attrs.uk_attrs.hw_rev >= IRDMA_GEN_2) {
-+		if (udata && udata->outlen && dev->hw_attrs.uk_attrs.hw_rev >= IRDMA_GEN_2) {
- 			struct irdma_ucontext *ucontext;
- 
- 			ucontext = rdma_udata_to_drv_context(udata,
-@@ -1463,6 +1488,8 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
- 		    struct ib_udata *udata)
- {
-+#define IRDMA_MODIFY_QP_MIN_REQ_LEN offsetofend(struct irdma_modify_qp_req, rq_flush)
-+#define IRDMA_MODIFY_QP_MIN_RESP_LEN offsetofend(struct irdma_modify_qp_resp, push_valid)
- 	struct irdma_qp *iwqp = to_iwqp(ibqp);
- 	struct irdma_device *iwdev = iwqp->iwdev;
- 	struct irdma_sc_dev *dev = &iwdev->rf->sc_dev;
-@@ -1477,6 +1504,13 @@ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
- 	int err;
- 	unsigned long flags;
- 
-+	if (udata) {
-+		/* udata inlen/outlen can be 0 when supporting legacy libi40iw */
-+		if ((udata->inlen && udata->inlen < IRDMA_MODIFY_QP_MIN_REQ_LEN) ||
-+		    (udata->outlen && udata->outlen < IRDMA_MODIFY_QP_MIN_RESP_LEN))
-+			return -EINVAL;
-+	}
-+
- 	if (attr_mask & ~IB_QP_ATTR_STANDARD_BITS)
- 		return -EOPNOTSUPP;
- 
-@@ -1562,7 +1596,7 @@ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
- 		case IB_QPS_RESET:
- 			if (iwqp->iwarp_state == IRDMA_QP_STATE_ERROR) {
- 				spin_unlock_irqrestore(&iwqp->lock, flags);
--				if (udata) {
-+				if (udata && udata->inlen) {
- 					if (ib_copy_from_udata(&ureq, udata,
- 					    min(sizeof(ureq), udata->inlen)))
- 						return -EINVAL;
-@@ -1659,7 +1693,7 @@ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
- 			}
- 		}
- 	}
--	if (attr_mask & IB_QP_STATE && udata &&
-+	if (attr_mask & IB_QP_STATE && udata && udata->outlen &&
- 	    dev->hw_attrs.uk_attrs.hw_rev >= IRDMA_GEN_2) {
- 		struct irdma_ucontext *ucontext;
- 
-@@ -1794,6 +1828,7 @@ static int irdma_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
- static int irdma_resize_cq(struct ib_cq *ibcq, int entries,
- 			   struct ib_udata *udata)
- {
-+#define IRDMA_RESIZE_CQ_MIN_REQ_LEN offsetofend(struct irdma_resize_cq_req, user_cq_buffer)
- 	struct irdma_cq *iwcq = to_iwcq(ibcq);
- 	struct irdma_sc_dev *dev = iwcq->sc_cq.dev;
- 	struct irdma_cqp_request *cqp_request;
-@@ -1816,6 +1851,9 @@ static int irdma_resize_cq(struct ib_cq *ibcq, int entries,
- 	    IRDMA_FEATURE_CQ_RESIZE))
- 		return -EOPNOTSUPP;
- 
-+	if (udata && udata->inlen < IRDMA_RESIZE_CQ_MIN_REQ_LEN)
-+		return -EINVAL;
-+
- 	if (entries > rf->max_cqe)
- 		return -EINVAL;
- 
-@@ -1948,6 +1986,8 @@ static int irdma_create_cq(struct ib_cq *ibcq,
- 			   const struct ib_cq_init_attr *attr,
- 			   struct ib_udata *udata)
- {
-+#define IRDMA_CREATE_CQ_MIN_REQ_LEN offsetofend(struct irdma_create_cq_req, user_cq_buf)
-+#define IRDMA_CREATE_CQ_MIN_RESP_LEN offsetofend(struct irdma_create_cq_resp, cq_size)
- 	struct ib_device *ibdev = ibcq->device;
- 	struct irdma_device *iwdev = to_iwdev(ibdev);
- 	struct irdma_pci_f *rf = iwdev->rf;
-@@ -1966,6 +2006,11 @@ static int irdma_create_cq(struct ib_cq *ibcq,
- 	err_code = cq_validate_flags(attr->flags, dev->hw_attrs.uk_attrs.hw_rev);
- 	if (err_code)
- 		return err_code;
-+
-+	if (udata && (udata->inlen < IRDMA_CREATE_CQ_MIN_REQ_LEN ||
-+		      udata->outlen < IRDMA_CREATE_CQ_MIN_RESP_LEN))
-+		return -EINVAL;
-+
- 	err_code = irdma_alloc_rsrc(rf, rf->allocated_cqs, rf->max_cq, &cq_num,
- 				    &rf->next_cq);
- 	if (err_code)
-@@ -2743,6 +2788,7 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
- 				       u64 virt, int access,
- 				       struct ib_udata *udata)
- {
-+#define IRDMA_MEM_REG_MIN_REQ_LEN offsetofend(struct irdma_mem_reg_req, sq_pages)
- 	struct irdma_device *iwdev = to_iwdev(pd->device);
- 	struct irdma_ucontext *ucontext;
- 	struct irdma_pble_alloc *palloc;
-@@ -2760,6 +2806,9 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
- 	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
- 		return ERR_PTR(-EINVAL);
- 
-+	if (udata->inlen < IRDMA_MEM_REG_MIN_REQ_LEN)
-+		return ERR_PTR(-EINVAL);
-+
- 	region = ib_umem_get(pd->device, start, len, access);
- 
- 	if (IS_ERR(region)) {
-@@ -4291,12 +4340,16 @@ static int irdma_create_user_ah(struct ib_ah *ibah,
- 				struct rdma_ah_init_attr *attr,
- 				struct ib_udata *udata)
- {
-+#define IRDMA_CREATE_AH_MIN_RESP_LEN offsetofend(struct irdma_create_ah_resp, rsvd)
- 	struct irdma_ah *ah = container_of(ibah, struct irdma_ah, ibah);
- 	struct irdma_device *iwdev = to_iwdev(ibah->pd->device);
- 	struct irdma_create_ah_resp uresp;
- 	struct irdma_ah *parent_ah;
- 	int err;
- 
-+	if (udata && udata->outlen < IRDMA_CREATE_AH_MIN_RESP_LEN)
-+		return -EINVAL;
-+
- 	err = irdma_setup_ah(ibah, attr);
- 	if (err)
- 		return err;
+4) various cleanups 
+
+5)  Enable hash mode by default for all NICs
+
+Liu, Changcheng Says:
+=====================
+When hardware lag hash mode is active, the explicit port affinity
+of the QP/TIS is ignored. The steering rules inside the port-select
+steering domain will determine the egress port.
+
+To support setting explicit port affinity while using hardware lag
+hash mode, a new capability of bypassing the port-select steering
+domain is introduced.
+
+The following patch series enable hash mode over NICs that support
+the new capability:
+5.1) Set the active port bit mask to let the firmware know which ports
+   are down and which are up, so it can use this info when handling
+   failover on QPs with explicit port affinity.
+5.2) Remove the assignment of default port affinity by the driver as
+   the user has dedicated userspace APIs to set the port affinity so
+   the default configuration isn't needed anymore.
+5.3) Detect and enable port-select bypass so explicit port affinity is
+   honored by the firmware.
+5.4) Enable hash mode by default on all NICs
+
+When setting QP/TIS port affinity explicitly and hash mode is active
+and the bypass port-select flow table capability is enabled by firmware,
+firmware adds a steering rule to catch egress traffic of these QPs/TISs
+and make their traffic skip the port-select steering domain. This adds
+performance overhead for all QPs/TISs. The common use case is to not
+set explicit port affinity(as when in hash, we don't need it). If there
+is a user that does want to set port affinity, it can be done with the
+dedicated userspace APIs.
+
+Detect the bypass port-select flow table capability, set it to let
+firmware know the driver supports this new capability.
+
+=====================
+
+
+Aya Levin (2):
+  net/mlx5: Expose NPPS related registers
+  net/mlx5: Add support for NPPS with real time mode
+
+Ben Ben-Ishay (1):
+  net/mlx5: Add NVMEoTCP caps, HW bits, 128B CQE and enumerations
+
+Gal Pressman (2):
+  net/mlx5: Remove unused functions
+  net/mlx5: Remove unused structs
+
+Jianbo Liu (2):
+  net/mlx5: Add IFC bits for general obj create param
+  net/mlx5: Add IFC bits and enums for crypto key
+
+Leon Romanovsky (1):
+  net/mlx5: Remove from FPGA IFC file not-needed definitions
+
+Liu, Changcheng (5):
+  net/mlx5: add IFC bits for bypassing port select flow table
+  RDMA/mlx5: Don't set tx affinity when lag is in hash mode
+  net/mlx5: Lag, set active ports if support bypass port select flow
+    table
+  net/mlx5: Lag, enable hash mode by default for all NICs
+  net/mlx5: detect and enable bypass port select flow table
+
+Or Gerlitz (1):
+  net/mlx5e: Rename from tls to transport static params
+
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  12 +
+ .../ethernet/mellanox/mlx5/core/en/tc/meter.c |   6 +-
+ .../mlx5/core/en_accel/common_utils.h         |  32 ++
+ .../mellanox/mlx5/core/en_accel/ipsec_rxtx.h  |   5 -
+ .../mellanox/mlx5/core/en_accel/ktls_rx.c     |   6 +-
+ .../mellanox/mlx5/core/en_accel/ktls_tx.c     |   8 +-
+ .../mellanox/mlx5/core/en_accel/ktls_txrx.c   |  36 +--
+ .../mellanox/mlx5/core/en_accel/ktls_utils.h  |  17 +-
+ drivers/net/ethernet/mellanox/mlx5/core/fw.c  |   6 +
+ .../net/ethernet/mellanox/mlx5/core/health.c  |   7 -
+ .../net/ethernet/mellanox/mlx5/core/lag/lag.c |  91 +++++-
+ .../ethernet/mellanox/mlx5/core/lib/clock.c   | 139 +++++++--
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  34 +++
+ .../mellanox/mlx5/core/steering/dr_types.h    |  14 -
+ .../mellanox/mlx5/core/steering/fs_dr.h       |   4 -
+ include/linux/mlx5/device.h                   |  70 ++++-
+ include/linux/mlx5/driver.h                   |   9 +-
+ include/linux/mlx5/fs_helpers.h               |  48 ---
+ include/linux/mlx5/mlx5_ifc.h                 | 280 ++++++++++++++++--
+ include/linux/mlx5/mlx5_ifc_fpga.h            |  24 --
+ include/linux/mlx5/qp.h                       |   1 +
+ 21 files changed, 629 insertions(+), 220 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en_accel/common_utils.h
+
 -- 
-1.8.3.1
+2.37.2
 
