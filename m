@@ -2,48 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AEE5B0CF1
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Sep 2022 21:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682495B0CF2
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Sep 2022 21:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbiIGTNk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S229766AbiIGTNk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Wed, 7 Sep 2022 15:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbiIGTNi (ORCPT
+        with ESMTP id S229770AbiIGTNi (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Sep 2022 15:13:38 -0400
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5652497D6C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CCF97B15
         for <linux-rdma@vger.kernel.org>; Wed,  7 Sep 2022 12:13:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1662578017; x=1694114017;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=MjWeA4fsSR/WCNKixitK6nIW/I7IcR5x7sb3O17bLoE=;
-  b=n/ze/Pmt/ScQDp5XSZX28ZFCEfuDVBLbo8OtVnsy2uPINzHzJNjp6LNt
-   sRUsNPx23UBDIWgdSrBGJC0vzDi3ntNiGt1rW4fNMEzAnopPCeWKGM12f
-   5vmrIDSOjm/YcUNr52c2fQ7BYSG27BYqFdNC6yRBJZQ9Y6N1QnAnI5kbL
-   pfYhNQpoikjs+Itakk4HvK56UdakrFgyDAd3ImMn4twcMaJQs5T8lm4PL
-   L5P3neTRUAgDL2hsNFvB6pzWdkCro1Bvwg1PyfykNIUtBds0mzACin673
-   O4yNDYXtpqmPAwx+pgVmz5LhqYbAk/zjl2D22gNv88IRvFEqqjDroTAcS
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10463"; a="295709242"
+  bh=N+LHi4TEQfGqOCb4UJ8IrM/1a/61kQPvJ1m+E4Ttx24=;
+  b=FwatfzBakcEcDhRTUcu8O73aiaSmCrRXh8molrEGAsB69pkWNdtPg1lK
+   DyCSQKWNvJJfEhr+S0lIvv+KRbZGU+agwD9/Npyr1nyW7sfHfUK9exM/q
+   URJmJW9zN8hiHhUZyE5yo5kAO58NTfNxm3W13b5DsQAZUPqIKpmAUnpfu
+   Sk/c4kUklJ4Qr7qHguEna3ghpak91iZRf9h9CpUbCUcOnp1WBZPB6NPDO
+   9akSIXBv2cAOCPt37i3teyTSsJ758ABFpxBqQMWUhQU5lpIug8K03zKOG
+   ARtXiTp+aeRor9Pj7UmpSC1XMsamgS1S67oZP1dL87HluYTrafa2dIofR
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10463"; a="295709243"
 X-IronPort-AV: E=Sophos;i="5.93,297,1654585200"; 
-   d="scan'208";a="295709242"
+   d="scan'208";a="295709243"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2022 12:13:37 -0700
 X-IronPort-AV: E=Sophos;i="5.93,297,1654585200"; 
-   d="scan'208";a="676339039"
+   d="scan'208";a="676339043"
 Received: from sveedu-mobl.amr.corp.intel.com (HELO ssaleem-mobl1.amr.corp.intel.com) ([10.255.37.1])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2022 12:13:36 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2022 12:13:37 -0700
 From:   Shiraz Saleem <shiraz.saleem@intel.com>
 To:     jgg@nvidia.com, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org,
-        Sindhu-Devale <sindhu.devale@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH for-next 1/2] RDMA/irdma: Align AE id codes to correct flush code and event
-Date:   Wed,  7 Sep 2022 14:13:23 -0500
-Message-Id: <20220907191324.1173-2-shiraz.saleem@intel.com>
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH for-next 2/2] RDMA/irdma: Validate udata inlen and outlen
+Date:   Wed,  7 Sep 2022 14:13:24 -0500
+Message-Id: <20220907191324.1173-3-shiraz.saleem@intel.com>
 X-Mailer: git-send-email 2.35.2
 In-Reply-To: <20220907191324.1173-1-shiraz.saleem@intel.com>
 References: <20220907191324.1173-1-shiraz.saleem@intel.com>
@@ -59,184 +59,261 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Sindhu-Devale <sindhu.devale@intel.com>
+Currently ib_copy_from_udata and ib_copy_to_udata could underfill
+the request and response buffer if the user-space passes an undersized
+value for udata->inlen or udata->outlen respectively [1]
+This could lead to undesirable behavior.
 
-A number of asynchronous event (AE) ids were not aligned to the
-correct flush_code and event_type. Fix these up so that the
-correct IBV error and event codes are returned to application.
+Zero initing the buffer only goes as far as preventing using the buffer
+uninitialized.
 
-Also, add handling for new AE ids like IRDMA_AE_INVALID_REQUEST to
-return the correct WC error code.
+Validate udata->inlen and udata->outlen passed from user-space to ensure
+they are at least the required minimum size.
 
-Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
-Signed-off-by: Sindhu-Devale <sindhu.devale@intel.com>
+[1] https://lore.kernel.org/linux-rdma/MWHPR11MB0029F37D40D9D4A993F8F549E9D79@MWHPR11MB0029.namprd11.prod.outlook.com/
+
+Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
 ---
- drivers/infiniband/hw/irdma/defs.h  |  1 +
- drivers/infiniband/hw/irdma/hw.c    | 51 ++++++++++++++++++++++---------------
- drivers/infiniband/hw/irdma/type.h  |  1 +
- drivers/infiniband/hw/irdma/user.h  |  1 +
- drivers/infiniband/hw/irdma/utils.c |  3 +++
- drivers/infiniband/hw/irdma/verbs.c |  2 ++
- 6 files changed, 38 insertions(+), 21 deletions(-)
+ drivers/infiniband/hw/irdma/verbs.c | 67 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 60 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/defs.h b/drivers/infiniband/hw/irdma/defs.h
-index e03e030..c1906ca 100644
---- a/drivers/infiniband/hw/irdma/defs.h
-+++ b/drivers/infiniband/hw/irdma/defs.h
-@@ -314,6 +314,7 @@ enum irdma_cqp_op_type {
- #define IRDMA_AE_IB_REMOTE_ACCESS_ERROR					0x020d
- #define IRDMA_AE_IB_REMOTE_OP_ERROR					0x020e
- #define IRDMA_AE_WQE_LSMM_TOO_LONG					0x0220
-+#define IRDMA_AE_INVALID_REQUEST					0x0223
- #define IRDMA_AE_DDP_INVALID_MSN_GAP_IN_MSN				0x0301
- #define IRDMA_AE_DDP_UBE_DDP_MESSAGE_TOO_LONG_FOR_AVAILABLE_BUFFER	0x0303
- #define IRDMA_AE_DDP_UBE_INVALID_DDP_VERSION				0x0304
-diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-index 4f132c6..ab24644 100644
---- a/drivers/infiniband/hw/irdma/hw.c
-+++ b/drivers/infiniband/hw/irdma/hw.c
-@@ -138,59 +138,68 @@ static void irdma_set_flush_fields(struct irdma_sc_qp *qp,
- 	qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
- 
- 	switch (info->ae_id) {
--	case IRDMA_AE_AMP_UNALLOCATED_STAG:
- 	case IRDMA_AE_AMP_BOUNDS_VIOLATION:
- 	case IRDMA_AE_AMP_INVALID_STAG:
--		qp->event_type = IRDMA_QP_EVENT_ACCESS_ERR;
--		fallthrough;
-+	case IRDMA_AE_AMP_RIGHTS_VIOLATION:
-+	case IRDMA_AE_AMP_UNALLOCATED_STAG:
- 	case IRDMA_AE_AMP_BAD_PD:
--	case IRDMA_AE_UDA_XMIT_BAD_PD:
-+	case IRDMA_AE_AMP_BAD_QP:
-+	case IRDMA_AE_AMP_BAD_STAG_KEY:
-+	case IRDMA_AE_AMP_BAD_STAG_INDEX:
-+	case IRDMA_AE_AMP_TO_WRAP:
-+	case IRDMA_AE_PRIV_OPERATION_DENIED:
- 		qp->flush_code = FLUSH_PROT_ERR;
-+		qp->event_type = IRDMA_QP_EVENT_ACCESS_ERR;
- 		break;
--	case IRDMA_AE_AMP_BAD_QP:
-+	case IRDMA_AE_UDA_XMIT_BAD_PD:
- 	case IRDMA_AE_WQE_UNEXPECTED_OPCODE:
- 		qp->flush_code = FLUSH_LOC_QP_OP_ERR;
-+		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
-+		break;
-+	case IRDMA_AE_UDA_XMIT_DGRAM_TOO_LONG:
-+	case IRDMA_AE_UDA_XMIT_DGRAM_TOO_SHORT:
-+	case IRDMA_AE_UDA_L4LEN_INVALID:
-+	case IRDMA_AE_DDP_UBE_INVALID_MO:
-+	case IRDMA_AE_DDP_UBE_DDP_MESSAGE_TOO_LONG_FOR_AVAILABLE_BUFFER:
-+		qp->flush_code = FLUSH_LOC_LEN_ERR;
-+		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
- 		break;
--	case IRDMA_AE_AMP_BAD_STAG_KEY:
--	case IRDMA_AE_AMP_BAD_STAG_INDEX:
--	case IRDMA_AE_AMP_TO_WRAP:
--	case IRDMA_AE_AMP_RIGHTS_VIOLATION:
- 	case IRDMA_AE_AMP_INVALIDATE_NO_REMOTE_ACCESS_RIGHTS:
--	case IRDMA_AE_PRIV_OPERATION_DENIED:
--	case IRDMA_AE_IB_INVALID_REQUEST:
- 	case IRDMA_AE_IB_REMOTE_ACCESS_ERROR:
- 		qp->flush_code = FLUSH_REM_ACCESS_ERR;
- 		qp->event_type = IRDMA_QP_EVENT_ACCESS_ERR;
- 		break;
- 	case IRDMA_AE_LLP_SEGMENT_TOO_SMALL:
--	case IRDMA_AE_DDP_UBE_DDP_MESSAGE_TOO_LONG_FOR_AVAILABLE_BUFFER:
--	case IRDMA_AE_UDA_XMIT_DGRAM_TOO_LONG:
--	case IRDMA_AE_UDA_XMIT_DGRAM_TOO_SHORT:
--	case IRDMA_AE_UDA_L4LEN_INVALID:
-+	case IRDMA_AE_LLP_RECEIVED_MPA_CRC_ERROR:
- 	case IRDMA_AE_ROCE_RSP_LENGTH_ERROR:
--		qp->flush_code = FLUSH_LOC_LEN_ERR;
-+	case IRDMA_AE_IB_REMOTE_OP_ERROR:
-+		qp->flush_code = FLUSH_REM_OP_ERR;
-+		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
- 		break;
- 	case IRDMA_AE_LCE_QP_CATASTROPHIC:
- 		qp->flush_code = FLUSH_FATAL_ERR;
-+		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
- 		break;
--	case IRDMA_AE_DDP_UBE_INVALID_MO:
- 	case IRDMA_AE_IB_RREQ_AND_Q1_FULL:
--	case IRDMA_AE_LLP_RECEIVED_MPA_CRC_ERROR:
- 		qp->flush_code = FLUSH_GENERAL_ERR;
- 		break;
- 	case IRDMA_AE_LLP_TOO_MANY_RETRIES:
- 		qp->flush_code = FLUSH_RETRY_EXC_ERR;
-+		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
- 		break;
- 	case IRDMA_AE_AMP_MWBIND_INVALID_RIGHTS:
- 	case IRDMA_AE_AMP_MWBIND_BIND_DISABLED:
- 	case IRDMA_AE_AMP_MWBIND_INVALID_BOUNDS:
- 		qp->flush_code = FLUSH_MW_BIND_ERR;
-+		qp->event_type = IRDMA_QP_EVENT_ACCESS_ERR;
- 		break;
--	case IRDMA_AE_IB_REMOTE_OP_ERROR:
--		qp->flush_code = FLUSH_REM_OP_ERR;
-+	case IRDMA_AE_IB_INVALID_REQUEST:
-+		qp->flush_code = FLUSH_REM_INV_REQ_ERR;
-+		qp->event_type = IRDMA_QP_EVENT_REQ_ERR;
- 		break;
- 	default:
--		qp->flush_code = FLUSH_FATAL_ERR;
-+		qp->flush_code = FLUSH_GENERAL_ERR;
-+		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
- 		break;
- 	}
- }
-diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
-index 9e7b8ec..517d41a 100644
---- a/drivers/infiniband/hw/irdma/type.h
-+++ b/drivers/infiniband/hw/irdma/type.h
-@@ -98,6 +98,7 @@ enum irdma_term_mpa_errors {
- enum irdma_qp_event_type {
- 	IRDMA_QP_EVENT_CATASTROPHIC,
- 	IRDMA_QP_EVENT_ACCESS_ERR,
-+	IRDMA_QP_EVENT_REQ_ERR,
- };
- 
- enum irdma_hw_stats_index_32b {
-diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
-index ddd0ebb..2ef6192 100644
---- a/drivers/infiniband/hw/irdma/user.h
-+++ b/drivers/infiniband/hw/irdma/user.h
-@@ -103,6 +103,7 @@ enum irdma_flush_opcode {
- 	FLUSH_FATAL_ERR,
- 	FLUSH_RETRY_EXC_ERR,
- 	FLUSH_MW_BIND_ERR,
-+	FLUSH_REM_INV_REQ_ERR,
- };
- 
- enum irdma_cmpl_status {
-diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
-index fdf4cc8..dac939c 100644
---- a/drivers/infiniband/hw/irdma/utils.c
-+++ b/drivers/infiniband/hw/irdma/utils.c
-@@ -2476,6 +2476,9 @@ void irdma_ib_qp_event(struct irdma_qp *iwqp, enum irdma_qp_event_type event)
- 	case IRDMA_QP_EVENT_ACCESS_ERR:
- 		ibevent.event = IB_EVENT_QP_ACCESS_ERR;
- 		break;
-+	case IRDMA_QP_EVENT_REQ_ERR:
-+		ibevent.event = IB_EVENT_QP_REQ_ERR;
-+		break;
- 	}
- 	ibevent.device = iwqp->ibqp.device;
- 	ibevent.element.qp = &iwqp->ibqp;
 diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 9b07b8a..f3925f1 100644
+index f3925f1..ba403cc 100644
 --- a/drivers/infiniband/hw/irdma/verbs.c
 +++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -3308,6 +3308,8 @@ static enum ib_wc_status irdma_flush_err_to_ib_wc_status(enum irdma_flush_opcode
- 		return IB_WC_RETRY_EXC_ERR;
- 	case FLUSH_MW_BIND_ERR:
- 		return IB_WC_MW_BIND_ERR;
-+	case FLUSH_REM_INV_REQ_ERR:
-+		return IB_WC_REM_INV_REQ_ERR;
- 	case FLUSH_FATAL_ERR:
- 	default:
- 		return IB_WC_FATAL_ERR;
+@@ -296,13 +296,19 @@ static void irdma_alloc_push_page(struct irdma_qp *iwqp)
+ static int irdma_alloc_ucontext(struct ib_ucontext *uctx,
+ 				struct ib_udata *udata)
+ {
++#define IRDMA_ALLOC_UCTX_MIN_REQ_LEN offsetofend(struct irdma_alloc_ucontext_req, rsvd8)
++#define IRDMA_ALLOC_UCTX_MIN_RESP_LEN offsetofend(struct irdma_alloc_ucontext_resp, rsvd)
+ 	struct ib_device *ibdev = uctx->device;
+ 	struct irdma_device *iwdev = to_iwdev(ibdev);
+-	struct irdma_alloc_ucontext_req req;
++	struct irdma_alloc_ucontext_req req = {};
+ 	struct irdma_alloc_ucontext_resp uresp = {};
+ 	struct irdma_ucontext *ucontext = to_ucontext(uctx);
+ 	struct irdma_uk_attrs *uk_attrs;
+ 
++	if (udata->inlen < IRDMA_ALLOC_UCTX_MIN_REQ_LEN ||
++	    udata->outlen < IRDMA_ALLOC_UCTX_MIN_RESP_LEN)
++		return -EINVAL;
++
+ 	if (ib_copy_from_udata(&req, udata, min(sizeof(req), udata->inlen)))
+ 		return -EINVAL;
+ 
+@@ -314,7 +320,7 @@ static int irdma_alloc_ucontext(struct ib_ucontext *uctx,
+ 
+ 	uk_attrs = &iwdev->rf->sc_dev.hw_attrs.uk_attrs;
+ 	/* GEN_1 legacy support with libi40iw */
+-	if (udata->outlen < sizeof(uresp)) {
++	if (udata->outlen == IRDMA_ALLOC_UCTX_MIN_RESP_LEN) {
+ 		if (uk_attrs->hw_rev != IRDMA_GEN_1)
+ 			return -EOPNOTSUPP;
+ 
+@@ -386,6 +392,7 @@ static void irdma_dealloc_ucontext(struct ib_ucontext *context)
+  */
+ static int irdma_alloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+ {
++#define IRDMA_ALLOC_PD_MIN_RESP_LEN offsetofend(struct irdma_alloc_pd_resp, rsvd)
+ 	struct irdma_pd *iwpd = to_iwpd(pd);
+ 	struct irdma_device *iwdev = to_iwdev(pd->device);
+ 	struct irdma_sc_dev *dev = &iwdev->rf->sc_dev;
+@@ -395,6 +402,9 @@ static int irdma_alloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+ 	u32 pd_id = 0;
+ 	int err;
+ 
++	if (udata && udata->outlen < IRDMA_ALLOC_PD_MIN_RESP_LEN)
++		return -EINVAL;
++
+ 	err = irdma_alloc_rsrc(rf, rf->allocated_pds, rf->max_pd, &pd_id,
+ 			       &rf->next_pd);
+ 	if (err)
+@@ -811,12 +821,14 @@ static int irdma_create_qp(struct ib_qp *ibqp,
+ 			   struct ib_qp_init_attr *init_attr,
+ 			   struct ib_udata *udata)
+ {
++#define IRDMA_CREATE_QP_MIN_REQ_LEN offsetofend(struct irdma_create_qp_req, user_compl_ctx)
++#define IRDMA_CREATE_QP_MIN_RESP_LEN offsetofend(struct irdma_create_qp_resp, rsvd)
+ 	struct ib_pd *ibpd = ibqp->pd;
+ 	struct irdma_pd *iwpd = to_iwpd(ibpd);
+ 	struct irdma_device *iwdev = to_iwdev(ibpd->device);
+ 	struct irdma_pci_f *rf = iwdev->rf;
+ 	struct irdma_qp *iwqp = to_iwqp(ibqp);
+-	struct irdma_create_qp_req req;
++	struct irdma_create_qp_req req = {};
+ 	struct irdma_create_qp_resp uresp = {};
+ 	u32 qp_num = 0;
+ 	int err_code;
+@@ -833,6 +845,10 @@ static int irdma_create_qp(struct ib_qp *ibqp,
+ 	if (err_code)
+ 		return err_code;
+ 
++	if (udata && (udata->inlen < IRDMA_CREATE_QP_MIN_REQ_LEN ||
++		      udata->outlen < IRDMA_CREATE_QP_MIN_RESP_LEN))
++		return -EINVAL;
++
+ 	sq_size = init_attr->cap.max_send_wr;
+ 	rq_size = init_attr->cap.max_recv_wr;
+ 
+@@ -1117,6 +1133,8 @@ static int irdma_query_pkey(struct ib_device *ibdev, u32 port, u16 index,
+ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 			 int attr_mask, struct ib_udata *udata)
+ {
++#define IRDMA_MODIFY_QP_MIN_REQ_LEN offsetofend(struct irdma_modify_qp_req, rq_flush)
++#define IRDMA_MODIFY_QP_MIN_RESP_LEN offsetofend(struct irdma_modify_qp_resp, push_valid)
+ 	struct irdma_pd *iwpd = to_iwpd(ibqp->pd);
+ 	struct irdma_qp *iwqp = to_iwqp(ibqp);
+ 	struct irdma_device *iwdev = iwqp->iwdev;
+@@ -1135,6 +1153,13 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 	roce_info = &iwqp->roce_info;
+ 	udp_info = &iwqp->udp_info;
+ 
++	if (udata) {
++		/* udata inlen/outlen can be 0 when supporting legacy libi40iw */
++		if ((udata->inlen && udata->inlen < IRDMA_MODIFY_QP_MIN_REQ_LEN) ||
++		    (udata->outlen && udata->outlen < IRDMA_MODIFY_QP_MIN_RESP_LEN))
++			return -EINVAL;
++	}
++
+ 	if (attr_mask & ~IB_QP_ATTR_STANDARD_BITS)
+ 		return -EOPNOTSUPP;
+ 
+@@ -1371,7 +1396,7 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 
+ 			if (iwqp->iwarp_state == IRDMA_QP_STATE_ERROR) {
+ 				spin_unlock_irqrestore(&iwqp->lock, flags);
+-				if (udata) {
++				if (udata && udata->inlen) {
+ 					if (ib_copy_from_udata(&ureq, udata,
+ 					    min(sizeof(ureq), udata->inlen)))
+ 						return -EINVAL;
+@@ -1423,7 +1448,7 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		} else {
+ 			iwqp->ibqp_state = attr->qp_state;
+ 		}
+-		if (udata && dev->hw_attrs.uk_attrs.hw_rev >= IRDMA_GEN_2) {
++		if (udata && udata->outlen && dev->hw_attrs.uk_attrs.hw_rev >= IRDMA_GEN_2) {
+ 			struct irdma_ucontext *ucontext;
+ 
+ 			ucontext = rdma_udata_to_drv_context(udata,
+@@ -1463,6 +1488,8 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
+ 		    struct ib_udata *udata)
+ {
++#define IRDMA_MODIFY_QP_MIN_REQ_LEN offsetofend(struct irdma_modify_qp_req, rq_flush)
++#define IRDMA_MODIFY_QP_MIN_RESP_LEN offsetofend(struct irdma_modify_qp_resp, push_valid)
+ 	struct irdma_qp *iwqp = to_iwqp(ibqp);
+ 	struct irdma_device *iwdev = iwqp->iwdev;
+ 	struct irdma_sc_dev *dev = &iwdev->rf->sc_dev;
+@@ -1477,6 +1504,13 @@ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
+ 	int err;
+ 	unsigned long flags;
+ 
++	if (udata) {
++		/* udata inlen/outlen can be 0 when supporting legacy libi40iw */
++		if ((udata->inlen && udata->inlen < IRDMA_MODIFY_QP_MIN_REQ_LEN) ||
++		    (udata->outlen && udata->outlen < IRDMA_MODIFY_QP_MIN_RESP_LEN))
++			return -EINVAL;
++	}
++
+ 	if (attr_mask & ~IB_QP_ATTR_STANDARD_BITS)
+ 		return -EOPNOTSUPP;
+ 
+@@ -1562,7 +1596,7 @@ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
+ 		case IB_QPS_RESET:
+ 			if (iwqp->iwarp_state == IRDMA_QP_STATE_ERROR) {
+ 				spin_unlock_irqrestore(&iwqp->lock, flags);
+-				if (udata) {
++				if (udata && udata->inlen) {
+ 					if (ib_copy_from_udata(&ureq, udata,
+ 					    min(sizeof(ureq), udata->inlen)))
+ 						return -EINVAL;
+@@ -1659,7 +1693,7 @@ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
+ 			}
+ 		}
+ 	}
+-	if (attr_mask & IB_QP_STATE && udata &&
++	if (attr_mask & IB_QP_STATE && udata && udata->outlen &&
+ 	    dev->hw_attrs.uk_attrs.hw_rev >= IRDMA_GEN_2) {
+ 		struct irdma_ucontext *ucontext;
+ 
+@@ -1794,6 +1828,7 @@ static int irdma_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ static int irdma_resize_cq(struct ib_cq *ibcq, int entries,
+ 			   struct ib_udata *udata)
+ {
++#define IRDMA_RESIZE_CQ_MIN_REQ_LEN offsetofend(struct irdma_resize_cq_req, user_cq_buffer)
+ 	struct irdma_cq *iwcq = to_iwcq(ibcq);
+ 	struct irdma_sc_dev *dev = iwcq->sc_cq.dev;
+ 	struct irdma_cqp_request *cqp_request;
+@@ -1816,6 +1851,9 @@ static int irdma_resize_cq(struct ib_cq *ibcq, int entries,
+ 	    IRDMA_FEATURE_CQ_RESIZE))
+ 		return -EOPNOTSUPP;
+ 
++	if (udata && udata->inlen < IRDMA_RESIZE_CQ_MIN_REQ_LEN)
++		return -EINVAL;
++
+ 	if (entries > rf->max_cqe)
+ 		return -EINVAL;
+ 
+@@ -1948,6 +1986,8 @@ static int irdma_create_cq(struct ib_cq *ibcq,
+ 			   const struct ib_cq_init_attr *attr,
+ 			   struct ib_udata *udata)
+ {
++#define IRDMA_CREATE_CQ_MIN_REQ_LEN offsetofend(struct irdma_create_cq_req, user_cq_buf)
++#define IRDMA_CREATE_CQ_MIN_RESP_LEN offsetofend(struct irdma_create_cq_resp, cq_size)
+ 	struct ib_device *ibdev = ibcq->device;
+ 	struct irdma_device *iwdev = to_iwdev(ibdev);
+ 	struct irdma_pci_f *rf = iwdev->rf;
+@@ -1966,6 +2006,11 @@ static int irdma_create_cq(struct ib_cq *ibcq,
+ 	err_code = cq_validate_flags(attr->flags, dev->hw_attrs.uk_attrs.hw_rev);
+ 	if (err_code)
+ 		return err_code;
++
++	if (udata && (udata->inlen < IRDMA_CREATE_CQ_MIN_REQ_LEN ||
++		      udata->outlen < IRDMA_CREATE_CQ_MIN_RESP_LEN))
++		return -EINVAL;
++
+ 	err_code = irdma_alloc_rsrc(rf, rf->allocated_cqs, rf->max_cq, &cq_num,
+ 				    &rf->next_cq);
+ 	if (err_code)
+@@ -2743,6 +2788,7 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 				       u64 virt, int access,
+ 				       struct ib_udata *udata)
+ {
++#define IRDMA_MEM_REG_MIN_REQ_LEN offsetofend(struct irdma_mem_reg_req, sq_pages)
+ 	struct irdma_device *iwdev = to_iwdev(pd->device);
+ 	struct irdma_ucontext *ucontext;
+ 	struct irdma_pble_alloc *palloc;
+@@ -2760,6 +2806,9 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
+ 		return ERR_PTR(-EINVAL);
+ 
++	if (udata->inlen < IRDMA_MEM_REG_MIN_REQ_LEN)
++		return ERR_PTR(-EINVAL);
++
+ 	region = ib_umem_get(pd->device, start, len, access);
+ 
+ 	if (IS_ERR(region)) {
+@@ -4291,12 +4340,16 @@ static int irdma_create_user_ah(struct ib_ah *ibah,
+ 				struct rdma_ah_init_attr *attr,
+ 				struct ib_udata *udata)
+ {
++#define IRDMA_CREATE_AH_MIN_RESP_LEN offsetofend(struct irdma_create_ah_resp, rsvd)
+ 	struct irdma_ah *ah = container_of(ibah, struct irdma_ah, ibah);
+ 	struct irdma_device *iwdev = to_iwdev(ibah->pd->device);
+ 	struct irdma_create_ah_resp uresp;
+ 	struct irdma_ah *parent_ah;
+ 	int err;
+ 
++	if (udata && udata->outlen < IRDMA_CREATE_AH_MIN_RESP_LEN)
++		return -EINVAL;
++
+ 	err = irdma_setup_ah(ibah, attr);
+ 	if (err)
+ 		return err;
 -- 
 1.8.3.1
 
