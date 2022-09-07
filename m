@@ -2,35 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF675B0A1E
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Sep 2022 18:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84A85B0A9D
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Sep 2022 18:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbiIGQbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Sep 2022 12:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
+        id S230385AbiIGQsS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Sep 2022 12:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiIGQbV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Sep 2022 12:31:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B539D80501;
-        Wed,  7 Sep 2022 09:31:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A88EC143D;
-        Wed,  7 Sep 2022 09:31:25 -0700 (PDT)
-Received: from [10.57.15.197] (unknown [10.57.15.197])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 425123F71A;
-        Wed,  7 Sep 2022 09:31:16 -0700 (PDT)
-Message-ID: <6a42a8bc-4e2e-4502-3e7b-1a616dfee351@arm.com>
-Date:   Wed, 7 Sep 2022 17:31:14 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.2.1
-Subject: Re: [PATCH v2 4/4] vfio/pci: Allow MMIO regions to be exported
- through dma-buf
-Content-Language: en-GB
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Leon Romanovsky <leon@kernel.org>, kvm@vger.kernel.org,
+        with ESMTP id S230391AbiIGQrq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Sep 2022 12:47:46 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2068.outbound.protection.outlook.com [40.107.94.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1AFBD177;
+        Wed,  7 Sep 2022 09:47:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XoUZB923Eu2yMGfhFiDaKw1AK+aSV+AL9iTDoNQqlB38+tjNWWqgAqb6dx+2bNqZYY56BJXHqXf0e3wnfGBZ1YrIzGgHd4lI6Hv/BorL7u8uTBHf4AU/2nHi+AB5MseHbqDACgqWGQKztV3vq56twTWyr5JtjrGwLYAwEFZ8ORuI2XNnQfQVjxVjv/Ei6LH3mkH0RtY1zWEIT5UZv8eLH3nB89RSHNL/14fQu9m47KyLQGlQWQjMsizOWsci8CEY++2/igXtdAbjyS1IVT0A6VD4p4Jr8sFoGt1BjRMJyRCq2CnE3xsnO3pubN/KCnZhC2CVRkoYQkJKXrTZ/Xr0vA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Vdcod2Z9Jf31G3PE3RHoyoVDpCoDWuFSRz7PqnFKB9Y=;
+ b=kRD9o1zaVqv0UxjakaMLsIJZWIWWV6AOJgi8+bH5Btteiqt8xpXmVWvVl1jLHBJpKpx/AHCyuxNwTvveSqV2rkpGxYCxFjcvEcDlRZAvf1Zr3c2H9NixTe4CjFXT/rB3oNFCFW3Nk+OCnV9sxY90dok7ocMG8RFFXBAmRd3VX+u19zDyeveR+g0WYNlnCy+QRXIQRbsIwd6QhNN45rXhGHYgpX7AhPnBX5gNY9J7nka2AxLwqGKxBDfJnFScEXt8tJTgoV2UtBU471cFg2hBo7i9O0swRzE4bBMxPaYQ31xe6xTvxCIPENEFCF97L5iusvARmPbFfFOWI/D7LMKNxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vdcod2Z9Jf31G3PE3RHoyoVDpCoDWuFSRz7PqnFKB9Y=;
+ b=WueT0NL30khrYkJ/377+GYO30mU7uzjkMZo+zmDN7pVPLxdAzhf4tc6AJwB+tGlOO6vL/3I+MY8Lmc+KLruQcBirI4+bchET0V8JbPTxOH+VPhmi+yqS/ZjqvCWCz+W1VehTvUxJyS1F/jcUYzSCM2NcAOwPVSmNtCkbY9xD2e++P9IBhPT3SYPNp53STyJvbz8NegK1DcIz56E094tNFfsO/fgc6glQKkWHYB4eoZP+QPHpCz13vYJEPitjhVchN25sI/tTmWa4z65cBdf1eLHR1FrKUa/iiu+5j08GWgmY7GqyhKmLrRuTTnx8PC5DuzCtpt48meROQ+pzZFyPHQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by SJ0PR12MB6781.namprd12.prod.outlook.com (2603:10b6:a03:44b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.12; Wed, 7 Sep
+ 2022 16:47:25 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5%7]) with mapi id 15.20.5588.018; Wed, 7 Sep 2022
+ 16:47:25 +0000
+Date:   Wed, 7 Sep 2022 13:47:24 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Leon Romanovsky <leon@kernel.org>, kvm@vger.kernel.org,
         linux-rdma@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
         Oded Gabbay <ogabbay@kernel.org>,
         Cornelia Huck <cohuck@redhat.com>,
@@ -40,66 +54,96 @@ Cc:     Leon Romanovsky <leon@kernel.org>, kvm@vger.kernel.org,
         Alex Williamson <alex.williamson@redhat.com>,
         Dan Williams <dan.j.williams@intel.com>,
         Maor Gottlieb <maorg@nvidia.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
         linux-media@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] vfio/pci: Allow MMIO regions to be exported
+ through dma-buf
+Message-ID: <YxjLHAw6rAcS/ax6@nvidia.com>
 References: <0-v2-472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com>
  <4-v2-472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com>
  <YxcYGzPv022G2vLm@infradead.org>
- <b6b5d236-c089-7428-4cc9-a08fe4f6b4a3@amd.com> <YxczjNIloP7TWcf2@nvidia.com>
- <YxiJJYtWgh1l0wxg@infradead.org> <YxiPh4u/92chN02C@nvidia.com>
- <Yxiq5sjf/qA7xS8A@infradead.org> <Yxi3cFfs0SA4XWJw@nvidia.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <Yxi3cFfs0SA4XWJw@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+ <b6b5d236-c089-7428-4cc9-a08fe4f6b4a3@amd.com>
+ <YxczjNIloP7TWcf2@nvidia.com>
+ <YxiJJYtWgh1l0wxg@infradead.org>
+ <YxiPh4u/92chN02C@nvidia.com>
+ <Yxiq5sjf/qA7xS8A@infradead.org>
+ <Yxi3cFfs0SA4XWJw@nvidia.com>
+ <6a42a8bc-4e2e-4502-3e7b-1a616dfee351@arm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a42a8bc-4e2e-4502-3e7b-1a616dfee351@arm.com>
+X-ClientProxiedBy: BL0PR1501CA0011.namprd15.prod.outlook.com
+ (2603:10b6:207:17::24) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ddbcb250-cc03-4284-b104-08da90f0a441
+X-MS-TrafficTypeDiagnostic: SJ0PR12MB6781:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fQSZS9wr5PdfIAaC6l+QowKGqlf9/JgjmY7w4YpGhKN60mI5Ab+URSz82a+j3YGxsuo4g9RSFWSOjEJ1GM9hZyYZ+olMzOWum+0un57rHoCcglMHMwCllvIhCc2tEn5Zt1A5HbzxawEX26jq0Hne7txWtvdmV29ERHiuWAAE470KrWfojAtoqoMCcLqZmuceDbmUkCHa4duq+BZv2KsW9pTvvWUrwwhoh0knL71LKVhhY9ZJpRz0PmPYx/PrTZ1nTURBDzHXv20Pn1ZPMEObYXcKJrh2YYBr8zcV26MVQAIL5HSpsVuNGcQkQk0eCFLwfV0UI7J+QZMv10iHYrGxZ7bOuU22/XhJqxi+bUsO2naZU4Xn2dzdKERMcPD/a1kCrztgHb8VQdHyKIjereNXGjmzr/xoirQe69OO5O49DtZEh6PpCc2M0sCLjs0zuVCAUz/Tqp81JSO+LHL89FABHCqSp+b/OYd4cZiJcCPft/KfG1PWprcI//eJEhRoTchOy3L3c/pm5t1rtZTWELLVJXOIot+ZinxsVotsKf/SJQxIZPIhZ8tKZ0ykqBMZsnD6RFpJw9W2YLUQunP3+kVRaoFiG1x4NFIiUyLU0Bv84k19KIMyxCxXx/FZRYaH+i3YFjHgj/YjFVyjFfgHiltlXSWJLusaMfbZBuA0n64d5zXeuOeBduGC6GrWpY8jXcCl1rQNMGDV782SD/u7Fi1frg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(376002)(39860400002)(366004)(136003)(346002)(41300700001)(86362001)(54906003)(6916009)(316002)(26005)(478600001)(6486002)(6512007)(2616005)(6506007)(186003)(8936002)(2906002)(4744005)(66476007)(8676002)(36756003)(66556008)(4326008)(5660300002)(38100700002)(66946007)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2f+y9KGuC/ViakE8e3FozVPKVWpAUDudfjRXI69MUi+snDtSAHz2MRHwjb6s?=
+ =?us-ascii?Q?bH6pcjwlvFgl+owVWSt1MUc3usufVxRUuGFYq5hDFszrmhFE/a8klMUpIwQp?=
+ =?us-ascii?Q?mnOB722H/wVg0rP/lvh2mlCH4DWueuEKgRM40lonruG/rZuF120YPVWzJkno?=
+ =?us-ascii?Q?IiDAx8W7zt+xdqMKg2L/EeVRra6DjOFmCDHM7VdG6rkkF24qSN1A6PLRsK4+?=
+ =?us-ascii?Q?szTY+Xps5xucClRQI/KMN9PaBtgE+duauDr3f1Thqgacr/jooEJd/mgH9LVn?=
+ =?us-ascii?Q?eInHUFdBpoCV+rpTMjRMSGWI/pI/noi06weMgmNfZEHBhto7coyJP+eWXBzQ?=
+ =?us-ascii?Q?1kcybpB2fc6UpBHu6TNDxCn+K9cvrOcfzVNOFBUv+50AStPK/bexHQ5Zgz4Z?=
+ =?us-ascii?Q?vjYc0FM1ZBKEvhemsENcrcWdJY4xO2mGfT2UypV9S7Jn2fOVLlvECjVn/CYH?=
+ =?us-ascii?Q?wYNiaVdZZ3J5LFED45Z7maMoo3PKYNEggJy3AS3UHqZ1LnxEJ0nfoJheV21L?=
+ =?us-ascii?Q?RZcsIoCJOOcX4wW1VRehZo7wDzG/AAEJo+N0bUopbN+wDl/Gm5Mh7HZn4230?=
+ =?us-ascii?Q?nrMj/InfAAExdZ3KCJBMDZsSZHilAFeKSvNOO7x0P+jniRkYokbEnf/zSyOZ?=
+ =?us-ascii?Q?CiHOYC1Jj9OyxIaIvMdDypJLcvBKWvz9h727GAvdgMTsqjetYA7oNDfEPx6J?=
+ =?us-ascii?Q?fHM9TOeujm0BzzhdrmomqpnH2+UdW3NmS7BIWUj43yW9hy7WcqD7+xlx8ewn?=
+ =?us-ascii?Q?sRpHSY2ugjj3VjAuAeImeSJoa31Tiyaeu+ZM4sTxBbDt3i6/8p2HnmPq4Ye1?=
+ =?us-ascii?Q?SeNuQYU5teVF560fC1EBueB9zrZnk2bZWFn1GGC3QM4AfUGVloOf8eRwAh/r?=
+ =?us-ascii?Q?RIm5N5hjsaGNXwl0+l2ON7eo9Jslv1ERbqOHXKPBGg3FB5daHKzK1PTbCU6w?=
+ =?us-ascii?Q?3cpmPMcxGhLxhxfDs7xkTIXYXPv9BgHbFYbl3LMecYEyS1PY0y3taWxpRN8h?=
+ =?us-ascii?Q?BIoxG8F4KSC+vsPareqPjPf+WQmCJ0nW8KsMYVEE+fiFeecAG9xxEoBBkWDI?=
+ =?us-ascii?Q?u7n4K0VWRHbdjIDJDGxHSESgJtF1Yvo//fkgqW5Nz6Q/OjNUa+VKbKhJV+lD?=
+ =?us-ascii?Q?lnrVfKq37Z5QYlBlzSdP77Ii3k24n7tPP8Dpwg4j566fjhV5XVRZ+/vc2nzR?=
+ =?us-ascii?Q?FiYd4vkaDdGqECiDgtShFJoli1CSeD0otX5pAB6yonn3dEANFq1wLgQfLK7Z?=
+ =?us-ascii?Q?VTG2WrnpNjFEhxR/4x4SMs0dJUJeju00pmi9R0IwXK03duYeRxnX98Gptdl7?=
+ =?us-ascii?Q?RgZpkyRmBA3V9I7G28BXHCjJL7uImCkbvP4H94ujHgduU5alUX5ceWvz4EkE?=
+ =?us-ascii?Q?YIsh36Jme9ECfTeHgTISD2g+8inCS3aWknaRXGPt2xoFEglLKSAousNq9wUO?=
+ =?us-ascii?Q?xtz9ztY/5LCjlR1FWE+eD6AEO10T3Eiyk326pZPx8ry3ewO9EigdmimSFM9d?=
+ =?us-ascii?Q?6K9/q3lqD80NRBS7WpneOhfz26rlvaDWymm8ndynIrX+T/xYq6KcSjJnfmPu?=
+ =?us-ascii?Q?qzLUVvui22I1td0Lol5BUkJDZIvbNjlK5HLaoLF7?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ddbcb250-cc03-4284-b104-08da90f0a441
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2022 16:47:25.0072
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FjY8SEi+nD24r7GryHw/U/El1uRnqIOJa/esnz6HClGUUXJEB4IFB1U7ECZ5ElAq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6781
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2022-09-07 16:23, Jason Gunthorpe wrote:
-> On Wed, Sep 07, 2022 at 07:29:58AM -0700, Christoph Hellwig wrote:
->> On Wed, Sep 07, 2022 at 09:33:11AM -0300, Jason Gunthorpe wrote:
->>> Yes, you said that, and I said that when the AMD driver first merged
->>> it - but it went in anyhow and now people are using it in a bunch of
->>> places.
->>
->> drm folks made up their own weird rules, if they internally stick
->> to it they have to listen to it given that they ignore review comments,
->> but it violates the scatterlist API and has not business anywhere
->> else in the kernel.  And yes, there probably is a reason or two why
->> the drm code is unusually error prone.
-> 
-> That may be, but it is creating problems if DRM gets to do X crazy
-> thing and nobody else can..
-> 
-> So, we have two issues here
-> 
->   1) DMABUF abuses the scatter list, but this is very constrainted we have
->      this weird special "DMABUF scatterlist" that is only touched by DMABUF
->      importers. The imports signal that they understand the format with
->      a flag. This is ugly and would be nice to clean to a dma mapped
->      address list of some sort.
-> 
->      I spent alot of time a few years ago removing driver touches of
->      the SGL and preparing the RDMA stack to do this kind of change, at
->      least.
-> 
->   2) DMABUF abuses dma_map_resource() for P2P and thus doesn't work in
->      certain special cases.
+On Wed, Sep 07, 2022 at 05:31:14PM +0100, Robin Murphy wrote:
 
-FWIW, dma_map_resource() *is* for P2P in general. The classic case of 
-one device poking at another's registers that was the original 
-motivation is a standalone DMA engine reading/writing a peripheral 
-device's FIFO, so the very similar inter-device doorbell signal is 
-absolutely in scope too; VRAM might be a slightly greyer area, but if 
-it's still not page-backed kernel memory then I reckon that's fair game.
+> The only trouble is that it's not geared for *PCI* P2P when that may or may
+> not happen entirely upstream of IOMMU translation.
 
-The only trouble is that it's not geared for *PCI* P2P when that may or 
-may not happen entirely upstream of IOMMU translation.
+This is why PCI users have to call the pci_distance stuff before using
+dma_map_resource(), it ensures the PCI fabric is setup in a way that
+is consistent with the iommu. eg if we have IOMMU turned on then the
+fabric must have ACS/etc to ensure that all TLPs are translated.
 
-Robin.
+PCI P2P is very complicated and fragile, sadly.
+
+Thanks,
+Jason
