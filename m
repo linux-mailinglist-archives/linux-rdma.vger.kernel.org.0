@@ -2,146 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BCA5B05D8
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Sep 2022 15:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9985B0613
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Sep 2022 16:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbiIGN5t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Sep 2022 09:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
+        id S229626AbiIGOGR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Sep 2022 10:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbiIGN5s (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Sep 2022 09:57:48 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2064.outbound.protection.outlook.com [40.107.94.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6056A8CCA
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Sep 2022 06:57:47 -0700 (PDT)
+        with ESMTP id S229788AbiIGOGQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Sep 2022 10:06:16 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2057.outbound.protection.outlook.com [40.107.94.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9330E8A7FB
+        for <linux-rdma@vger.kernel.org>; Wed,  7 Sep 2022 07:06:11 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RXLoVvmhRI+YyvOOD41QPTuUmvt3d3c7jfinF1yrbGZkVVwL+KZLyqN+RI+bSa1gdIhAyJbf/iD4TsQCWGFirYQJzLYUFSHXFR+Ul/nFfw9jhgCoZVdPuQxrqhZtQ8lZIcj4JXDAUoxD7x9cZPcdz3KZ4mbdEbXmG6C0sKIrrGp7e6Velgud9Y5LunVDcDkiDTdKVK9wq4cUaNF9hsB+CRw480L/Sk79teMrf8mX+rUgWY4SNAHRPncJ2rEaq3Vu5lrYE0hPMcXFpJcqLxbMC1JsLywcPa1AFzQN+7JPVIO5yA+DdS7p1olTUaXFZ0oA4y3DQW+KpAJfZBF6wrarDA==
+ b=HRBZ9jHvtyk5+IIAthh4wV2qRHg04NaUZRvUM+Mn7cm4JWdeTR1OMj0xWp3HUaidAQdgusKMJU/akpYPET2qM8rOVEsM+cty63xfwUI2tX4c7/FF8KaQQuUH5RxJ5Kbh0m1RldrmwX5NBqDLzq93vSiZpwP5FHKI0M+HX/olKHPpbofJ+/YFuM8ju2/PkVntH2Sc6zkTsVuSwJtDVKBfXTK7js8T5c2OoXnbFe0FnxrCRGGtvSspjvV6Ulql9Trqz/k5MZJNyTBWJRF/eukGbrKMEVVxrIdd8wAMoYAnjyBJXphqW3uAhUS/yfEI4WTdz8HvEFqD8bbzfZQ/CsaZOw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qfGWk0UlKr/06lG49iQGeUaXxXol0K/GUi6MIpZit10=;
- b=Pv/GyDZ7jQQhsn3186fSZWEoCw6GCNnHGovm9FtjgdGKALhaTvNkBIOHTBJOOq1mgS66alih315IPZa46VR39kXrzT4mPzjK/MJI9ro4uoYmo+uN3PDzIBSj43TSXVQkQ2LrzgLFPltPGNQGKJEff8tWnKDuZcA6D2PBxHlHcTdPTX3vBINwii+//7/X4mrTTx1ll9tu5sGEHXltI4cSTe3emAcN7G2fzBteFHL/6zb+puRC1iy+aWD6fkT6rChLSGBDGjCE50TNFsCY7udGOxB5U9rZG9X8L2wmi3gzdBP/QRwxsy3TMYAzDIXmMWrPE+zuJERLGic/+71EXfY6Zg==
+ bh=qj2fozajoMUr+DEFy55AFYdzuSioZNuP7988aJSzjwg=;
+ b=NHeN0YicuRXHNP+Z/0XCFyyqA7MgIX6jjqZ000MITUVCW7OSPKhhmNaDXF+dEe1ySSmR48C0J2HMUsim5z8/t54d2ahfxePkyVj/frkC4omVNPDiRTPLakdcVf/uyJs/7H70rKLJ+G3dOcacRRSOOdwitBpv2h1A9Ue44qo3+gnN70YQLdeqCnmjQnRRMUVbMC/H/jQzVA3A37/Z9faK7Qcn/xF5JYRCAyDzawJhcl32TcLqWVTff/7qJZHrbrrKGHDTRi+3/NxzSmiEPbNqFS6PEGNd0Jc6LuyE59FoPe2jn1DFRHdCNR1hp6OrDAofKt6frh4Ikd7gLw0MWVZF6g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
- dkim=pass header.d=talpey.com; arc=none
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qj2fozajoMUr+DEFy55AFYdzuSioZNuP7988aJSzjwg=;
+ b=HLGwEOES+dtr+0KzqfRY2hVab9yMe+eZKb1xuFh/5eDkoh8iJ1bSl9r++GeZGoG9z3FkXkPOeF3FlaWz2zYR1cJhki5uJ+xRjQB3esGLbdsSL/Sx/ALwXpgZHXduRWUEOdx3a8QueCmIY7Eqodc59syGkW51tmBDJ0WOFQ3FYnkLGy7LBo/jd3g9TVFcqVHbSdjKNYo7jEbIzgnwBFkH9LWUOkDum4m+qlWDhFei7e4H0yGO3xF6BqUx2BnOIIwPiJNWG4YXYglzDR+0ffHa/qw61v9jzg2qJ881/309ImHYSf3tj7ii6pVLQtfRCBCz2ihuuZvJDTHZpqkTtUvO5g==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=talpey.com;
-Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
- DM6PR01MB4282.prod.exchangelabs.com (2603:10b6:5:23::23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5588.17; Wed, 7 Sep 2022 13:57:45 +0000
-Received: from SN6PR01MB4445.prod.exchangelabs.com
- ([fe80::701d:e406:dcfa:118b]) by SN6PR01MB4445.prod.exchangelabs.com
- ([fe80::701d:e406:dcfa:118b%4]) with mapi id 15.20.5588.018; Wed, 7 Sep 2022
- 13:57:45 +0000
-Message-ID: <0b035368-5da3-73c6-4d6f-1e22bcc70ecb@talpey.com>
-Date:   Wed, 7 Sep 2022 09:57:43 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.1
-Subject: Re: [PATCH] Add missing ib_uverbs dependency from SoftiWARP
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by IA1PR12MB6041.namprd12.prod.outlook.com (2603:10b6:208:3d7::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.12; Wed, 7 Sep
+ 2022 14:06:09 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5%7]) with mapi id 15.20.5588.018; Wed, 7 Sep 2022
+ 14:06:09 +0000
+Date:   Wed, 7 Sep 2022 11:06:09 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tom Talpey <tom@talpey.com>
 Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] Add missing ib_uverbs dependency from SoftiWARP
+Message-ID: <YxilUf2HbA6PAo59@nvidia.com>
 References: <4e7574d7-960f-9f92-e92f-630287f1903f@talpey.com>
  <Yxih3M3rym7Abt0P@nvidia.com>
-From:   Tom Talpey <tom@talpey.com>
-In-Reply-To: <Yxih3M3rym7Abt0P@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0449.namprd13.prod.outlook.com
- (2603:10b6:208:2c3::34) To SN6PR01MB4445.prod.exchangelabs.com
- (2603:10b6:805:e2::33)
+ <0b035368-5da3-73c6-4d6f-1e22bcc70ecb@talpey.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b035368-5da3-73c6-4d6f-1e22bcc70ecb@talpey.com>
+X-ClientProxiedBy: BL0PR05CA0002.namprd05.prod.outlook.com
+ (2603:10b6:208:91::12) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8db14469-0672-484e-a29f-08da90d8f0ab
-X-MS-TrafficTypeDiagnostic: DM6PR01MB4282:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0cf68a5f-2ef9-4060-7d5e-08da90da1d69
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6041:EE_
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XJiwQBsfDvxvbwEm5HyiU9Gjlfta/2OgwLYSu39mFEnMePpmbKZiWB6rFw8exWg35Sm4S+5ZZNo3YnUvhVlR9zlKXhGTwbz4nBk09JDTnqfVbcoJGgpStSNzF8jYwBb90oGWmyxYgA72H6AQgOhpkeh/Sel78RpfWCfaHGXolzmiqY4jOLHIHMB2kV3aAuOTFiJ/w9leQ36cciHAQF5ARQG9ZXTCBN6eRvKLIFi3ho/qQK1N7Czmio8dTWfYreIZTqC97kRyyv8rAzYgP8r2aGt6mlk38O8sr7nP3KZ7UT65NBsMeBTXeA054oNjEsIQO06eDX6nKoEYbxC9P8z/pE46xC2btbcAmeUDrGAHxvFkAecrtn2MuNMLFkFe9x0Bt/rnzY+jM16usizeC14brMfGAY7nXjP8sVUtR0mkFUIH3kV5Og+Y99KX1eHS8fVPD7aZ8t41RvbUAKkUl/hVL27tSTPJZdW9ee7Ti7i68nwqzAjmwQT1QT6fgqyjjiT4K+1VhUAyPa8BVAFpzFKp7vpmbTrBjHsYVcw0WBhDkEb77vOzCYrux1F7V01kiYRQYpC3HqJ/0RDD7ApsnPURuIYq9jxx57rFxt3vEChvsi6WDtcphYUD+4wKNMXNspMkIzCMbVaxRtTMZJ+Veiha0fILe3SE1QsUavYuq4YEA6cwcMC0idMhSaCBaQLFMyHoRDJcnkFpnNapz7oll/JOuRfGrtunGxHHzVdRVscXr1Q5aRnG+FlpYimD3oGmt6mQnT9IY/T5qr/pv2hsjnrrr0+g67pcxWqTIZQMJn6gwVs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230016)(136003)(366004)(39830400003)(396003)(376002)(346002)(26005)(478600001)(8676002)(6506007)(66556008)(66946007)(66476007)(6512007)(2906002)(41300700001)(36756003)(86362001)(316002)(31696002)(4326008)(54906003)(52116002)(6916009)(53546011)(31686004)(6486002)(38100700002)(38350700002)(2616005)(83380400001)(186003)(5660300002)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: RYxdP+G2O3HAlEy/gjyy8fqvt/mdG942euC7STaJqtSYFqIJX0W2AzkUMgC2Q6n3uyIRbmltDdBGggsDrsIXK6I2wFOyNErcJFqi0CkN0IvR9slD+W6bnKjIOgQ4TpEp6ASVVGjRnxw1tUMCavWTRgfugNUXC+NQSPPj0VbNNWj8f7aC+vuPOLehcCKqb3GwWHwEJ62QUCT0QVRBq0gu9KajMEjZmoUxy6wWX5nX72p/YCKlMlJ2pouyIQ90ceWVAjuUuG5gAFBg96NKUBwYlVi7eq0TrnSKdAhfmGbkeaT+s45DggjDucHCN+rYuWSOm2z2xTsTjqrncrsRbfGDRvYtLS8hJy2cY7GESs5gTgQ+MSVWW9uISrQaCrhG0cGqZLeBWadlTFBem9/LE57y11v0tT7T5M3vMgFpJkU4OZz8Lxyc7p5Z64+s73CEGhmRMX4PsaN2R5Q4s+3BpBqe0wpPlcgZ0QVVE+jfyv6KzB9AtDyirIJRL2N+8JAxt8TArHJuSWDgUVDhxj9n9zSPfUEvvnhM3QrZhKRjyRVgE8mqrK8TnOoU7zgvFaSC3AxiijMVFhzI3sFlAZi/B5owjqwtg6waoZ4v3F3LAXqxP3+jrmH/EUOVQBM3bISdBg0sJXcc2t/+THizYW3A1uF6XIz0++eNnVYl3TEBOIgmfnsl0ldvGW4FQ1z7bk1PV6paE45DwO4jqgWPfSPInqgbCQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(376002)(366004)(39860400002)(346002)(136003)(8676002)(66476007)(6486002)(478600001)(66556008)(66946007)(4326008)(6506007)(2906002)(6512007)(2616005)(8936002)(5660300002)(4744005)(26005)(186003)(86362001)(41300700001)(36756003)(38100700002)(316002)(54906003)(6916009);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c1FJaW5BNHJ4UStpY2xET1M5WDVJUmhoTElKOGd1ejNsWDl3LzMyaWtxeWgv?=
- =?utf-8?B?cmpvVjJZYVEwODMrcW9YK2VNcm9MSnp6WmU5dXVQRGRHbDBKTFluRk5ZU1ZR?=
- =?utf-8?B?Y2xVRUROaThmNGRVNVJ2MEZXRWxwWDYwMTJQbnRZNC83Y3JCblRkTUZ5cFhK?=
- =?utf-8?B?RFJaVEUzM0xpYmdNZXR1ZHZtT0Z0bDQwZWpJRzNuZG1OQ3BGZlVjbytCYVpZ?=
- =?utf-8?B?dEEvTUFUS3N1RnAvRnQ1NlZzMXJnZFF3QkVNcHJsQTFtTDBRZ00zMmViYi92?=
- =?utf-8?B?dm9qWEtlMU0zNHU1QXo2ZjhoU2J4YkE1SDQ0VnFHOTZYVFZWQmw5eVJhS2Fm?=
- =?utf-8?B?Q1dXbEtQbm85Zm9iM2NoWmxmUTBydjhzR0ZJejVadUFKb2E2L08rcC8yT3o0?=
- =?utf-8?B?YVIwT2VXQXByQkxrTnZjdS9Kb2FkcnBWTi9PYnNrQS9DN3lIVGZWNWVhcmtz?=
- =?utf-8?B?TEJ5K3h4NGdRT1o0NXV2aVJvNzhZbXFrV0hHY0JzS2xBRFYxVzBkSVBpRi9X?=
- =?utf-8?B?cHdaSXRMQ2xzbjRScy9QaEFrVzg2aUZWaEVIMWE5TkZCRU5uamJyUjU1V2po?=
- =?utf-8?B?eHhNQzRoMHVYNml3S1JOTDJRT2xEMVF1ZXpnZ0ZkUVM0L1N1dkhHSHk4VVFF?=
- =?utf-8?B?dktmTSsvVnhaallNN1QrWFozSW5sb0R1Tjh6QWZxSG9TWnJucDZmV3ZrZ3Nj?=
- =?utf-8?B?alhpSWpBMGdzTnFoWVFrNGJ0cDd1Qml4eHE1MFFrMGpHOFFncG9oeWd2R0V1?=
- =?utf-8?B?K2h1TmxJSnhiekdiVTF4MmRFb2VWc3ViWE5ac1FBMjdJVVEySSt3bE1HdVM3?=
- =?utf-8?B?dkdXaE9WdUlmZGdjdzRKZlJaeGkzVFJFUld6QzA0UkVRVE5HMXJWUkhYOGJI?=
- =?utf-8?B?WUg4S2V6UXozQmNqY3hGNWFhaURlVGovWm5CZjBFSG5hUFdlc0VyTXQvQnhG?=
- =?utf-8?B?eG41N3dTTVZrSEpINVlaeDFma3o3NFg2VFJaSUIxeTFXd24rYmxwMStxcHhL?=
- =?utf-8?B?ZkpHMGVkUUEvSGM3Uyt4Y25mNW9ZTWExUVdSb1FPSCtrVzM1K2VUdkxJeWNo?=
- =?utf-8?B?SjVrN1pSV2djRU5Ia3prR2JaWU5wbnQ1TnlJWTdlU2FyK1FORFdDdXNjV3VC?=
- =?utf-8?B?TzJoVElma0o0VUFDdW9UeVhVT2NNa1Q1Uy9HamJJRFFaQ3JNeTMxYjA0UUcy?=
- =?utf-8?B?bHhjR3FoRVF1TjRtcjhndTlHMWtPc1ZoaUw3NU5mcVd5ZEJqcU9KRGkweWdI?=
- =?utf-8?B?dmpZZWFLVVgwYXIvaFNwdklTeTJmbWxRaVkvUmswQjJ0MnNZc0dGcjBmUk1E?=
- =?utf-8?B?d0ZIdXRTZ21PMU13VnBKM05iTVNIdjlYSGRzSHJVTVJHeXZRL1QzUGc2V0Vl?=
- =?utf-8?B?TjdHRjcxL2JyMXFwUkJ1MlJnSlVNY3Y3Q3JtNzZMK3B1Z05pMmFBb05BclhL?=
- =?utf-8?B?WTA4aG9pTWpMampIVXpmMGMzQk9qeHlOaXYyV1FLdXFxeGhSUEdkbjdFSzg3?=
- =?utf-8?B?dGVpVnJDVkYrZDkzTXF2NFJFTi93Rkt4aGJHTkZjc2srVWpaK3l2N3RVMDVo?=
- =?utf-8?B?U2hSazhTbFVBd3BlMUs2TUg4OTI0dFRGTTNlK092NEN1WlorNlhiRW8wKzRs?=
- =?utf-8?B?eVRLZnFRNk51K0FzRGk3SWg3MDdFT05LcVkyemhUL3VObGdjNmJmSHA3S0lY?=
- =?utf-8?B?bEd6eEFkSjJoVHpDQzA3MFkwaThLZjRkbHJLNVpncmZYNU1kRjB0S25xNFQ1?=
- =?utf-8?B?WngzQTUrbUZFb1dLSUtZa21JSDF4VEI2WThpNVZLMnRta042czlmNzIrdy9F?=
- =?utf-8?B?bGc2WGJoVnpkb0dYcTdBUWJEeHhVOFQ0S1NEYUovWE5mS201bUt0UUVyOVF2?=
- =?utf-8?B?T25RUUpHTm5BQjNGMnVYZnkxc0tVdVFUWU9HRG5tQktvVHZkQ21uZjBQT3R3?=
- =?utf-8?B?ZmRKS2tGUTRwNVNGeHpEQ0ZvbEVGa2NUbStaNkdYcFNNcmp2a1JKY0hrb0FP?=
- =?utf-8?B?cGhOQ2hIYkJWM09qdTJsSFMxeUlPb1VyRFU2aXZnQnR3cWUvNW5QMlNPdHFz?=
- =?utf-8?B?dkdhRnNNeWpjNjI5eDZOcGxMY0NucEF4a2hkb3VZcWdCRWYwTzlscmVVZWw2?=
- =?utf-8?Q?jrKCDjNYTge5dL0hzttNYJtRT?=
-X-OriginatorOrg: talpey.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8db14469-0672-484e-a29f-08da90d8f0ab
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PN0iQaBsZ/GgU2aMisFiVmSmrHv0HDsoXMSG/SXYOzD0mtJwCxRfY47t8RT8?=
+ =?us-ascii?Q?Zn5HG/7nCWZEuPnnJd31HGioazVpYj9NjGz4gAZ+rPFl83qxijwmDP0rBNYu?=
+ =?us-ascii?Q?3SFEex8ZCPzHo6+547cPhosf8vpXMPxhUd2ldhVNmt1fCBPtDtXl6vAu+ZHg?=
+ =?us-ascii?Q?1i2nr31IvmbSK/CK8tqh/tV7IucAHdIWqNftRfbF4es6EGwo2+1JreILlsCs?=
+ =?us-ascii?Q?lYMEpVkZIHhjqD9SRg3jL3yQ08Idv0XrHaib87sXsbsY7RZQ0Gm93eZA85yX?=
+ =?us-ascii?Q?WwMbKc8qf2wabfqcrvNoMErIA4g6Qsa8IhgK5qf0Xw7EH+bDnPUDpVnlm/L7?=
+ =?us-ascii?Q?avvCk02PRrMhv6UFNwLNwN34TVYVCt1bnjqeFyqi0PtvUZMh/I4HayPxMz2g?=
+ =?us-ascii?Q?HQTMbmvimWsuFlAHzbQzwFgyjZDhiIUN1VQ3iHXrSgzvJnRbl4jaM3wKCiNg?=
+ =?us-ascii?Q?TVcbzjHmfKurPOXAd2/8JeJFypUllxwHdvXiZUE23FfFI1nThAx5j0b69RDA?=
+ =?us-ascii?Q?ODJksGazclqEFeZFKYBjM4T6eY1GGvJB8lrRpZs5y3enA3jRdEAFVkHg89Gy?=
+ =?us-ascii?Q?MJHNLXvP9gWMdIx+aRmXT8pLUUaHB35JzMlLJAih9T7sRCHh5JXDxwQ0yJAX?=
+ =?us-ascii?Q?W6MtNPaj2P1xKSu8hlMOXZ4d5Q5UG7EINA95BIpWIfVKkhON0Go2ZHnYOr2w?=
+ =?us-ascii?Q?4UFsNfxmF93A74FVLsvW1ImbTjwdHO2waBAslR0LO+uPSe2maze24511W9Uy?=
+ =?us-ascii?Q?ArAi7+33UNjrw4gcOUXB32smHxe4tYy9HeoRtWyQcnmCXaAP5f7DwJup6L4z?=
+ =?us-ascii?Q?0sBQ484mPb0nuAdfqGSUhRHtWn5R0UNbLy/JdTQfLlF+gFDCHco+GFmg8dW7?=
+ =?us-ascii?Q?IYLV1bTsPrpG1xZiOdTFlV05hDijW6dBS3++MhQi9ecbYhAtFi8Gu4Y23e/n?=
+ =?us-ascii?Q?Z2tSPIVnUSU9XCHmB3+BSoq5+4QE9h96uOGuN4LWxaFwpWgvOdkAagxJ9x/j?=
+ =?us-ascii?Q?4aMpUjRI7rzqTglUfCXW+jj2BMTpr7nxGeEjI+zL9v3RkYzoOl6ih2mwOJ7I?=
+ =?us-ascii?Q?NqS9fLH0I36gUXakdsxn1P7adSjb7l5yEX9l5rDyx4alsNyfRQKJqPT2BZmI?=
+ =?us-ascii?Q?2i1PQBKdGnH/Fgmkhr72SnTikigJ+hT4FfS/JyaJc9FFN4+5B/a5FljipUP0?=
+ =?us-ascii?Q?8m0h7PmgBRczxn3Xfob/AfbwqC5wToVIruAX5fa0mTZsSEL5Cku5iGO4VXAy?=
+ =?us-ascii?Q?X5ThWT8jUdqBoPQsVy179HHLqsCtuzdLVTFE36mOHt1ruQcOB3lNIprt6QRo?=
+ =?us-ascii?Q?W8/m/O0gHADgKU09LZyAC1qVfeJzdINB5djPv7CjbzsRJFGiKXJWPIQwVuL/?=
+ =?us-ascii?Q?kWSZYuJkZsNbvSEQb87UCO+W9pF/pFf9ursvUN17mUEDFp3xj3Lb504NYsX9?=
+ =?us-ascii?Q?iD1YLznEzLWXu4d7OUSmNJhFurdDmPBhjtgrW92iWIaGTte9joO6rdophoAU?=
+ =?us-ascii?Q?nRFnayRXbzMvHq1VFpL539l+1mYPdWnTtpQTXj44Il8xVwHwUvNAQfJ0SlaM?=
+ =?us-ascii?Q?CGf9xQVduTw2DFJo78inbjwuz1qwq2LPtP9umX9r?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0cf68a5f-2ef9-4060-7d5e-08da90da1d69
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2022 13:57:45.2087
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2022 14:06:09.8006
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iuAzoQ0bPB+PhXDtcgdZVp+qLNxioen+Dx7I7jm+B8Vm+sUqeOPOXyvMTlXN8LEO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR01MB4282
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: rNhMOCzoNHKuzqwhyf3EhP1wwJ9XIjk+SfeqdYjDYMG/7eYe8b9xqGSlcCydfC6P
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6041
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/7/2022 9:51 AM, Jason Gunthorpe wrote:
-> On Wed, Sep 07, 2022 at 09:45:07AM -0400, Tom Talpey wrote:
->> When loading the siw module, ib_uverbs is needed so that consumers may
->> access it. However, siw references only inline functions in ib_uverbs.h,
->> so the kernel linker can not detect this, and the module is not loaded
->> automatically. Add a module dependency to ensure ib_uverbs is present.
-> 
-> No, that is not how things work.
-> 
-> Modern rdma-core will auto-load uverbs when something uses it, we
-> shouldn't have things like this.
+On Wed, Sep 07, 2022 at 09:57:43AM -0400, Tom Talpey wrote:
 
-But, it doesn't, for the reason stated - siw only consumes
-inline functions from ib_uverbs.h, and the kernel linker has
-no clue.
+> You can test it easily, just load siw on a laptop without any
+> other RDMA provider. The ib_uverbs module will not be loaded,
+> and the siw provider won't be seen, rping -s will run but peers
+> cannot connect for example.
 
-You can test it easily, just load siw on a laptop without any
-other RDMA provider. The ib_uverbs module will not be loaded,
-and the siw provider won't be seen, rping -s will run but peers
-cannot connect for example.
+Perhaps there is something funky with rping, it works fine in simpler cases:
 
-My workaround has been to add a modprobe.d file, but it's a
-hack and very non-obvious. Is there a simpler way to allow
-ib_uverbs to be auto-loaded for siw?
+$ rdma link show
+link siw0/1 state ACTIVE physical_state LINK_UP netdev enp0s31f6 
+$ sudo rmmod ib_uverbs
+$ build/bin/ibv_devinfo
+hca_id:	siw0
+	transport:			iWARP (1)
+	fw_ver:				0.0.0
+	node_guid:			7686:e2ff:fe28:63fc
+	sys_image_guid:			7486:e228:63fc:0000
+	vendor_id:			0x626d74
+	vendor_part_id:			1
+	hw_ver:				0x0
+	phys_port_cnt:			1
+		port:	1
+			state:			PORT_ACTIVE (4)
+			max_mtu:		1024 (3)
+			active_mtu:		1024 (3)
+			sm_lid:			0
+			port_lid:		0
+			port_lmc:		0x00
+			link_layer:		Ethernet
+$ lsmod | grep -i uverb
+ib_uverbs             163840  0
+ib_core               393216  2 ib_uverbs,siw
 
-Tom.
+Jason
+
