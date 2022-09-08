@@ -2,149 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 816515B17C2
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Sep 2022 10:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989C75B17C9
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Sep 2022 10:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbiIHIxs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Sep 2022 04:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
+        id S229835AbiIHIyh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Sep 2022 04:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231184AbiIHIxT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Sep 2022 04:53:19 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D211E6B97
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Sep 2022 01:53:18 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id r18so9211785eja.11
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Sep 2022 01:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=ldknDEzVR51ObhugpTbmz8qodswdlxf/pDmvZsDvbxs=;
-        b=eGRAP3op6LfSEWYjWrBvyRFaOrMkuJgjFDMHeDESJN27MR+jLwcUrs0WBANjWlcgDA
-         eY5Dc4Uh1jk9ps6FaQj2cUAZ3GIq14MP1K5cVdvTfBdVDQd3a9zjfPCn9ic+FaFjw9mr
-         m7FVgH0jKLnH5HtgUp31hNdqmRP/KYUf2zU8ULouZd4EKSqXkNNpsZVVDtRQPD5dFQVL
-         OU7o4xCZVktnfH/POZ3rsTVolAQQsOz4w2SsFt1DYHic+lsk6bT+1qmfJdwXI95dKatA
-         +hJH2VJg3B/ZbuD5SjjNcRLhJwMFa5kOrzniFG9R2r4CxipqcwAIgFc4LmSxZ4OIhVa0
-         MrJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=ldknDEzVR51ObhugpTbmz8qodswdlxf/pDmvZsDvbxs=;
-        b=FYClaN9owb6FDvnCuU9zg+SBzZtR2ld8xUX9Ui+gF9M0q/zqMhmDbEIQIWkIOK8c9R
-         FnVyD6qW1fAgDErxQ/i1mbQe/BD3++GhM6hVEWhw+/owRlMypTzMq8+C86q1ZqGn6wQM
-         dx/nad/8sl/dbpzItVMQIbjTYecFIst2oR725TCqfNKWwpf2jOjrntz+SpvpPhTCeQbL
-         lcVaOKb7qQhSxBNgVcxyza8E3mV85AZUQbK5CxL5XSNTBNSoz+ZJFlF/1UJmouxwjspj
-         sMez1eFnlXx0BAcENoFkH4pXbzLwrRVipRUgF8ptJbtOELGYxYl/BEwQCRBBKdAW8iE5
-         XZlg==
-X-Gm-Message-State: ACgBeo1Ij5cQg8u9rbmwM0q0LxMnu18+rR0K7rOmaleZoZ4kSpMcwfU1
-        cMuHrlRvKuCrv4uSP2Xp+ZfxnLyTAk+11CCqpKignQ==
-X-Google-Smtp-Source: AA6agR45UdCAtQKDBjY1MVMZqrEqb9s3ESeWL33cf3jIL9RNl3t659wVGPLehwqO7C/qFQ+wAQnJlTuvdshGtLAFHmI=
-X-Received: by 2002:a17:906:7621:b0:750:c4a3:8fcd with SMTP id
- c1-20020a170906762100b00750c4a38fcdmr5607743ejn.180.1662627196581; Thu, 08
- Sep 2022 01:53:16 -0700 (PDT)
+        with ESMTP id S231726AbiIHIyR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Sep 2022 04:54:17 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2054.outbound.protection.outlook.com [40.107.237.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D9FE6B8A
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Sep 2022 01:54:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y8smYp0hcsVYhUqdl2JgHbTO919j/g2mxxwnoQoMxzJiIRnY2/GZGX5orQWdkhn3O4Ktz8UuF8dNRQJx1OTG8sXj03C7ISRZoqhKJvi+YQRwsX7f/cxDbrGx4HoHXKbwpUnCPuqWnlb9tb7m9Lv7Db4EYdddPX5e6swsac/8rH5Te9R7BhKsxRf8m18j/NsRoDI2/hBarFv7ukklPG2hAkghJQXYdytdUP5bYPEk8+qoRbhZGaDC7OYK6YKuApA82WeqUoM5ePIlqe7ywc/3WLgF1chEGyhKvaJ9WRSDi+1QeSoOigasoa248xoCj5x9Ox2bdlduzCzvBYm1zdlCvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FLfjczTdu3bmBXvq1rgCzuNQLlbiicWhUzzQah10HHc=;
+ b=VEtbazyzqnaLVQHi0A6W0Q9nMrMsoZT5PJgXVK6jJkK3l/kdtmmNgNbwS4Zr/QKMqZlQtlKqLyKMa1u6lGIKTSf6ROdxpWM2R7yidPT9I+pLPFsiv2zE37QqXxqVPyxbQUZQUJHQDH6c3Zm4gboYZyAMc8MtQD1hUItGi3d7te05L9IbOtoQN8ByUIO7vXXdxZb2lIh3xC3mpQKrJ4QHhAixEFhHQBta7SynVgUNOVh/zFPoT8zi6fJdz4owRiXeou+4B9akXEqYT5dbbFtT2OmSfGBAm3eexVLe8YIRIx4hhHrF2a3MtgwLtp/GEN8V+g1Cze11MMpiUA7F/F58Aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.235) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FLfjczTdu3bmBXvq1rgCzuNQLlbiicWhUzzQah10HHc=;
+ b=Ot8Et1ybEWMy7Q8c0fYrvq/MlMLPEtG5hGVGrEIIIxTxfm/9R5ZGWlqjHfaJ5AKUUGicYAts4RMS9MADUpWMRmb6bk4ISPbsdEaoFDF3wgD9/fjXCP7DSpUZ9F1xAtYWEuYqj4FIBFpxJ6aQPjxKGu2mlAHR+jofh7VeaeN4nQh/kZyhgFojNXUQfosG5OWLAePJWJe8qZonSFtmz9/qjgqv8CzXfdAL1105XUROJDAgInNrYt7pB60r+1vJa8XNpBginVhS+/sbHfO5ev+ZO2NIVhD9+bXQ8qwC7dVcNhQs/AtSW3KgZsp2rAkfBb7prDUZ5m9iWbaFyoXZpss1Cw==
+Received: from DM5PR06CA0086.namprd06.prod.outlook.com (2603:10b6:3:4::24) by
+ BY5PR12MB4113.namprd12.prod.outlook.com (2603:10b6:a03:207::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.14; Thu, 8 Sep
+ 2022 08:54:14 +0000
+Received: from DM6NAM11FT083.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:4:cafe::ca) by DM5PR06CA0086.outlook.office365.com
+ (2603:10b6:3:4::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.12 via Frontend
+ Transport; Thu, 8 Sep 2022 08:54:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.235)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.235 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.235; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (12.22.5.235) by
+ DM6NAM11FT083.mail.protection.outlook.com (10.13.173.97) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.5612.13 via Frontend Transport; Thu, 8 Sep 2022 08:54:14 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.38; Thu, 8 Sep
+ 2022 08:54:13 +0000
+Received: from localhost (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Thu, 8 Sep 2022
+ 01:54:12 -0700
+Date:   Thu, 8 Sep 2022 11:54:09 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+CC:     <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/mlx5: Remove duplicate assignment in umr_rereg_pas()
+Message-ID: <Yxmtsb7NtazRIoqB@unreal>
+References: <20220908083058.3993700-1-matsuda-daisuke@fujitsu.com>
 MIME-Version: 1.0
-References: <20220902101922.26273-1-guoqing.jiang@linux.dev>
- <YxXrf1WKVwlDYgzm@unreal> <0a170dcd-3665-43d2-8467-7566333d0307@linux.dev> <YxcrPY7LGcna1+eM@unreal>
-In-Reply-To: <YxcrPY7LGcna1+eM@unreal>
-From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Thu, 8 Sep 2022 10:53:06 +0200
-Message-ID: <CAJpMwyiQS9r861iFyse2odEpQeAHa3wQmRSuLDqUk+ZOUa8kjQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] misc changes for rtrs
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Guoqing Jiang <guoqing.jiang@linux.dev>, jinpu.wang@ionos.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20220908083058.3993700-1-matsuda-daisuke@fujitsu.com>
+X-Originating-IP: [10.126.231.35]
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT083:EE_|BY5PR12MB4113:EE_
+X-MS-Office365-Filtering-Correlation-Id: bca452f4-a377-49a1-174e-08da9177b480
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nLaUxu2Qkf8x1A9A7d060k2lHBclcINNAmRnwcTPW9kZ51K7cZWqQweTWYzPP1t/UgyLiO1vk9wSrLwIW0vvz2ksymoR9Nw4WSXtF/8pdWUQGH8X5/+vzGSdV4V1iHBLWUh4sXgps1VDSLamc7PGaWbLBBUPCHS3yqVAociDjIWV2O4Cuo3l2Y7Jc5hMwiU2QvwWiJzK3FspIvZkXHCyjH/rAhCHoXth9GrzOmjSYfK+IV7pBT/XsO1trLhmEU0CqTUuwqhNwYX2MX+1yd9ETU5GDtXqH12oyJ/Rkbb0EvjBIwq7EJrOh/e/5EIAtvsQq0FDHXjbKWpAwluOkQ00KRA2BA2wzZG6GsIk5M6uC+HbL+F5Dv5RlhOO2oxSWyWib0L5ecJf8qPrSbTbQMfhb20JkILZxGIWCQzaplRgnSdux0J0227OJNQuuSCA05S67o6rGNXHXOa7yH9MrqryNUjAPwlcHgo0M7H1UW4A8QsQOxJ1cPj/M8rFM/kBSlK98WQup0yfITQn/rXA1T3bXN08+lpkHMuGNpjlR2aOgYuEC50jh9Sq09TXXxuvlAeZj+XzI1nyTR1JXvTQMXdw+4me1fOjsyP6bt7CtcOnAePrz/pKOoDGgBsCbZcRSvIkC2LNINTKAATrCsZCY5Y9hKBtJuIjdOgwGqZ1DjzUY24OgceNw96gd6o2Fs8AeV4gAmHSI82I182Cooc349bxdsEYgM7hxOT1XhgJtswdShVJBgpez8ORUFg9gmaA3iDWrhwC7iqbpHNSwocKqcBpXqQALK50FCYLmTT4xGfu9QNYwKtNRxUX/cQcleIXfnLW
+X-Forefront-Antispam-Report: CIP:12.22.5.235;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230016)(7916004)(4636009)(39860400002)(376002)(396003)(136003)(346002)(46966006)(36840700001)(40470700004)(426003)(47076005)(336012)(81166007)(186003)(356005)(82310400005)(36860700001)(16526019)(4326008)(478600001)(70586007)(70206006)(54906003)(316002)(6916009)(83380400001)(86362001)(8676002)(2906002)(9686003)(26005)(6666004)(40460700003)(8936002)(41300700001)(558084003)(5660300002)(33716001)(82740400003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2022 08:54:14.0525
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bca452f4-a377-49a1-174e-08da9177b480
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.235];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT083.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4113
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 6, 2022 at 1:13 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Tue, Sep 06, 2022 at 03:04:50PM +0800, Guoqing Jiang wrote:
-> > Hi Leon,
-> >
-> > On 9/5/22 8:28 PM, Leon Romanovsky wrote:
-> > > On Fri, Sep 02, 2022 at 06:19:19PM +0800, Guoqing Jiang wrote:
-> > > > Hi,
-> > > >
-> > > > Pls review the three patches.
-> > > >
-> > > > Thanks,
-> > > > Guoqing
-> > > >
-> > > > Guoqing Jiang (3):
-> > > >    RDMA/rtrs: Update comments for MAX_SESS_QUEUE_DEPTH
-> > > >    RDMA/rtrs-clt: Break the loop once one path is connected
-> > > >    RDMA/rtrs-clt: Kill xchg_paths
-> > > >
-> > > >   drivers/infiniband/ulp/rtrs/rtrs-clt.c | 18 +++++-------------
-> > > >   drivers/infiniband/ulp/rtrs/rtrs-pri.h |  7 +++----
-> > > >   2 files changed, 8 insertions(+), 17 deletions(-)
-> > > The third patch still generates warnings.
-> >
-> > Sorry, I didn't run sparse check, =F0=9F=98=85.
-> >
-> > > =E2=9E=9C  kernel git:(wip/leon-for-next) mkt ci
-> > > ^[[A^[[A^[[Ad9b137e23d31 (HEAD -> build) RDMA/rtrs-clt: Kill xchg_pat=
-hs
-> > > WARNING: line length of 81 exceeds 80 columns
-> > > #43: FILE: drivers/infiniband/ulp/rtrs/rtrs-clt.c:2297:
-> > > +           if (try_cmpxchg((typeof(ppcpu_path))ppcpu_path, &clt_path=
-, next))
-> > >
-> > > drivers/infiniband/ulp/rtrs/rtrs-clt.c:2297:21: warning: incorrect ty=
-pe in initializer (different address spaces)
-> > > drivers/infiniband/ulp/rtrs/rtrs-clt.c:2297:21:    expected struct rt=
-rs_clt_path [noderef] __rcu *__new
-> > > drivers/infiniband/ulp/rtrs/rtrs-clt.c:2297:21:    got struct rtrs_cl=
-t_path *[assigned] next
-> >
-> > Before send new version, could you help to check whether the incrementa=
-l
-> > change works or not? Otherwise let's drop the third one.
->
-> Thanks, it worked.
+On Thu, Sep 08, 2022 at 05:30:58PM +0900, Daisuke Matsuda wrote:
+> The same value is assigned to 'mr->ibmr.length'. Remove redundant one.
+> 
+> Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+> ---
+>  drivers/infiniband/hw/mlx5/mr.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
 
-Looks good.
-
-Acked-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-
-For all 3 patches (3rd one with the latest changes).
-Thanks.
-
->
-> >
-> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > index 0661a4e69fc9..bc3e1722e00d 100644
-> > --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > @@ -2294,7 +2294,8 @@ static void rtrs_clt_remove_path_from_arr(struct
-> > rtrs_clt_path *clt_path)
-> >                  * We race with IO code path, which also changes pointe=
-r,
-> >                  * thus we have to be careful not to overwrite it.
-> >                  */
-> > -               if (try_cmpxchg((typeof(ppcpu_path))ppcpu_path, clt_pat=
-h,
-> > next))
-> > +               if (try_cmpxchg((struct rtrs_clt_path **)ppcpu_path,
-> > +                               clt_path, next))
-> >                         /*
-> >                          * @ppcpu_path was successfully replaced with @=
-next,
-> >                          * that means that someone could also pick up t=
-he
-> >
-> > Thanks,
-> > Guoqing
+Thanks, applied.
