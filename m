@@ -2,162 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 133AC5B1804
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Sep 2022 11:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BC65B18DB
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Sep 2022 11:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbiIHJID (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Sep 2022 05:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41830 "EHLO
+        id S229535AbiIHJhq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Sep 2022 05:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbiIHJID (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Sep 2022 05:08:03 -0400
-Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com [139.138.61.252])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E593A896D
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Sep 2022 02:08:01 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6500,9779,10463"; a="66535390"
-X-IronPort-AV: E=Sophos;i="5.93,299,1654527600"; 
-   d="scan'208";a="66535390"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
-  by esa7.hc1455-7.c3s2.iphmx.com with ESMTP; 08 Sep 2022 18:07:59 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com [192.168.83.67])
-        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 26442DAFCF
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Sep 2022 18:07:58 +0900 (JST)
-Received: from m3003.s.css.fujitsu.com (m3003.s.css.fujitsu.com [10.128.233.114])
-        by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 4C139F7DB
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Sep 2022 18:07:57 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.19.3.107])
-        by m3003.s.css.fujitsu.com (Postfix) with ESMTP id 20F8B200B435;
-        Thu,  8 Sep 2022 18:07:57 +0900 (JST)
-From:   Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-To:     leonro@nvidia.com, jgg@nvidia.com, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org
-Cc:     liangwenpeng@huawei.com, liweihang@huawei.com, yishaih@nvidia.com,
-        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH 2/2] RDMA/rxe: Use members of generic struct in rxe_mr
-Date:   Thu,  8 Sep 2022 18:07:08 +0900
-Message-Id: <20220908090708.3997456-2-matsuda-daisuke@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220908090708.3997456-1-matsuda-daisuke@fujitsu.com>
-References: <20220908090708.3997456-1-matsuda-daisuke@fujitsu.com>
+        with ESMTP id S229502AbiIHJhq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Sep 2022 05:37:46 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBB243613;
+        Thu,  8 Sep 2022 02:37:43 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VP29UV3_1662629860;
+Received: from 30.221.129.118(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VP29UV3_1662629860)
+          by smtp.aliyun-inc.com;
+          Thu, 08 Sep 2022 17:37:41 +0800
+Message-ID: <9f67d8b3-e813-6bc6-ca1f-e387288e9df4@linux.alibaba.com>
+Date:   Thu, 8 Sep 2022 17:37:37 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH net-next v2 10/10] net/smc: fix application data exception
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <cover.1661407821.git.alibuda@linux.alibaba.com>
+ <e590ca91e24d002608df29d100d4139977d0bcb6.1661407821.git.alibuda@linux.alibaba.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <e590ca91e24d002608df29d100d4139977d0bcb6.1661407821.git.alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.8 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,NORMAL_HTTP_TO_IP,NUMERIC_HTTP_ADDR,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-rxe_mr and ib_mr have interchangeable members. Remove device specific
-members and use ones in the generic struct. Both 'iova' and 'length' are
-filled in ib_uverbs layer after MR registration.
 
-Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe_mr.c    | 10 ++++------
- drivers/infiniband/sw/rxe/rxe_mw.c    |  6 +++---
- drivers/infiniband/sw/rxe/rxe_verbs.c |  4 +---
- drivers/infiniband/sw/rxe/rxe_verbs.h |  2 --
- 4 files changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 814116ec4778..6b0c2e7b8145 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -32,8 +32,8 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
- 
- 	case IB_MR_TYPE_USER:
- 	case IB_MR_TYPE_MEM_REG:
--		if (iova < mr->iova || length > mr->length ||
--		    iova > mr->iova + mr->length - length)
-+		if (iova < mr->ibmr.iova || length > mr->ibmr.length ||
-+		    iova > mr->ibmr.iova + mr->ibmr.length - length)
- 			return -EFAULT;
- 		return 0;
- 
-@@ -178,8 +178,6 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 	mr->ibmr.pd = &pd->ibpd;
- 	mr->umem = umem;
- 	mr->access = access;
--	mr->length = length;
--	mr->iova = iova;
- 	mr->offset = ib_umem_offset(umem);
- 	mr->state = RXE_MR_STATE_VALID;
- 	mr->type = IB_MR_TYPE_USER;
-@@ -221,7 +219,7 @@ int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr)
- static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
- 			size_t *offset_out)
- {
--	size_t offset = iova - mr->iova + mr->offset;
-+	size_t offset = iova - mr->ibmr.iova + mr->offset;
- 	int			map_index;
- 	int			buf_index;
- 	u64			length;
-@@ -604,7 +602,7 @@ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 	mr->access = access;
- 	mr->lkey = key;
- 	mr->rkey = (access & IB_ACCESS_REMOTE) ? key : 0;
--	mr->iova = wqe->wr.wr.reg.mr->iova;
-+	mr->ibmr.iova = wqe->wr.wr.reg.mr->iova;
- 	mr->state = RXE_MR_STATE_VALID;
- 
- 	return 0;
-diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
-index 104993801a80..902b7df7aaed 100644
---- a/drivers/infiniband/sw/rxe/rxe_mw.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mw.c
-@@ -114,15 +114,15 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 
- 	/* C10-75 */
- 	if (mw->access & IB_ZERO_BASED) {
--		if (unlikely(wqe->wr.wr.mw.length > mr->length)) {
-+		if (unlikely(wqe->wr.wr.mw.length > mr->ibmr.length)) {
- 			pr_err_once(
- 				"attempt to bind a ZB MW outside of the MR\n");
- 			return -EINVAL;
- 		}
- 	} else {
--		if (unlikely((wqe->wr.wr.mw.addr < mr->iova) ||
-+		if (unlikely((wqe->wr.wr.mw.addr < mr->ibmr.iova) ||
- 			     ((wqe->wr.wr.mw.addr + wqe->wr.wr.mw.length) >
--			      (mr->iova + mr->length)))) {
-+			      (mr->ibmr.iova + mr->ibmr.length)))) {
- 			pr_err_once(
- 				"attempt to bind a VA MW outside of the MR\n");
- 			return -EINVAL;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 9ebe9decad34..da1c484798dd 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -1007,11 +1007,9 @@ static int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
- 
- 	n = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, rxe_set_page);
- 
--	mr->iova = ibmr->iova;
--	mr->length = ibmr->length;
- 	mr->page_shift = ilog2(ibmr->page_size);
- 	mr->page_mask = ibmr->page_size - 1;
--	mr->offset = mr->iova & mr->page_mask;
-+	mr->offset = ibmr->iova & mr->page_mask;
- 
- 	return n;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index a51819d0c345..5f5cbfcb3569 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -305,8 +305,6 @@ struct rxe_mr {
- 	u32			rkey;
- 	enum rxe_mr_state	state;
- 	enum ib_mr_type		type;
--	u64			iova;
--	size_t			length;
- 	u32			offset;
- 	int			access;
- 
--- 
-2.31.1
+On 2022/8/26 17:51, D. Wythe wrote:
 
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> After we optimize the parallel capability of SMC-R connection
+> establishment, There is a certain probability that following
+> exceptions will occur in the wrk benchmark test:
+> 
+> Running 10s test @ http://11.213.45.6:80
+>    8 threads and 64 connections
+>    Thread Stats   Avg      Stdev     Max   +/- Stdev
+>      Latency     3.72ms   13.94ms 245.33ms   94.17%
+>      Req/Sec     1.96k   713.67     5.41k    75.16%
+>    155262 requests in 10.10s, 23.10MB read
+> Non-2xx or 3xx responses: 3
+> 
+> We will find that the error is HTTP 400 error, which is a serious
+> exception in our test, which means the application data was
+> corrupted.
+> 
+> Consider the following scenarios:
+> 
+> CPU0                            CPU1
+> 
+> buf_desc->used = 0;
+>                                  cmpxchg(buf_desc->used, 0, 1)
+>                                  deal_with(buf_desc)
+> 
+> memset(buf_desc->cpu_addr,0);
+> 
+> This will cause the data received by a victim connection to be cleared,
+> thus triggering an HTTP 400 error in the server.
+> 
+> This patch exchange the order between clear used and memset, add
+> barrier to ensure memory consistency.
+> 
+> Fixes: 1c5526968e27 ("net/smc: Clear memory when release and reuse buffer")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> ---
+>   net/smc/smc_core.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+> index 84bf84c..fdad953 100644
+> --- a/net/smc/smc_core.c
+> +++ b/net/smc/smc_core.c
+> @@ -1380,8 +1380,9 @@ static void smcr_buf_unuse(struct smc_buf_desc *buf_desc, bool is_rmb,
+>   
+>   		smc_buf_free(lgr, is_rmb, buf_desc);
+>   	} else {
+> -		buf_desc->used = 0;
+> -		memset(buf_desc->cpu_addr, 0, buf_desc->len);
+> +		/* memzero_explicit provides potential memory barrier semantics */
+> +		memzero_explicit(buf_desc->cpu_addr, buf_desc->len);
+> +		WRITE_ONCE(buf_desc->used, 0);
+>   	}
+>   }
+>   
+
+It seems that the same issue exists in smc_buf_unuse(), Maybe it also needs to be fixed?
+
+
+static void smc_buf_unuse(struct smc_connection *conn,
+			  struct smc_link_group *lgr)
+{
+	if (conn->sndbuf_desc) {
+		if (!lgr->is_smcd && conn->sndbuf_desc->is_vm) {
+			smcr_buf_unuse(conn->sndbuf_desc, false, lgr);
+		} else {
+			conn->sndbuf_desc->used = 0;
+			memset(conn->sndbuf_desc->cpu_addr, 0,
+			       conn->sndbuf_desc->len);
+                         ^...................
+		}
+	}
+	if (conn->rmb_desc) {
+		if (!lgr->is_smcd) {
+			smcr_buf_unuse(conn->rmb_desc, true, lgr);
+		} else {
+			conn->rmb_desc->used = 0;
+			memset(conn->rmb_desc->cpu_addr, 0,
+			       conn->rmb_desc->len +
+			       sizeof(struct smcd_cdc_msg));
+                         ^...................
+		}
+	}
+}
+
+Thanks,
+Wen Gu
