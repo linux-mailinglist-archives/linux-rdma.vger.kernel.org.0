@@ -2,225 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E05E55B58F0
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Sep 2022 13:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574E55B61E9
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Sep 2022 21:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbiILLCR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Sep 2022 07:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
+        id S229597AbiILTwe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Sep 2022 15:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbiILLCQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Sep 2022 07:02:16 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808B321E04
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Sep 2022 04:02:15 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id lz22so19274079ejb.3
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Sep 2022 04:02:15 -0700 (PDT)
+        with ESMTP id S229510AbiILTwc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Sep 2022 15:52:32 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CEC40565;
+        Mon, 12 Sep 2022 12:52:30 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1274ec87ad5so26355966fac.0;
+        Mon, 12 Sep 2022 12:52:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
-         :references:from:from:to:cc:subject:date;
-        bh=D3U1AM/Int/NP3wiczFtQcZQ1hc6/5onoeTOiH5DrgI=;
-        b=U9Dg3ZhydavfHpoCAK1lbwrXcmknZbqQUUO/xa2tvbIvfPi13BMSgi5tmQxFvp8XSQ
-         HtI+AzxC7pvJdFuUw7igoJdIWW/Azcle80dIHQjckHxxjEI6tUqdSgvNoKKAOZm5kSS4
-         yZsW9jsNTbk0wF9w7da7zIJ9HH/0VZjUC2EF4=
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=wEsvKd6RAZcw3hcTuaRy4gbOUDgxDjPKLjsFQoB060s=;
+        b=Rn82ib9dmnK56vc+nt4dxoinLgaglw0FziWYVHM4Q0xJy2WERAxP7mcz1pjDqDcmfS
+         qDmCY92k+CQQqyTg4/WhZKd+z3+OvGL4cFsUtNfHm1ApcZMIVAlA7F1QzxdVfY/GEiEo
+         onkz62GOXNlZ72sZG1q/GgPKRj6Gl9CO66suq5lPtg2j664ahuEUkoDIaGqYbCCyPy/+
+         ufNGKfH94JOkbkKOD7uAIs9ISZm592Oow4tS9h3n8x9JSV18Nxs59hhR++GDkFEvrMi9
+         RtVT93uvK8IQawwuXKquCqVElnZy1WAWr8lVIz/6aw4vDjdxOA2OVvCFJVDNXYSwSbBj
+         hH9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
-         :references:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=D3U1AM/Int/NP3wiczFtQcZQ1hc6/5onoeTOiH5DrgI=;
-        b=ii4InCurPvrUZRRjFlvk85Bzw3gGlXzZozB/WSuewHsqIaig/dQr/q43zDycyKJo6s
-         o/EDs0phu0UBkbpE8clTJ1Jjz5JmsJvIwvLk+dU9XGP5W+w3cIdWiUU85vZzV83owEkH
-         pHu7PCg1B1Y58BC3tC+H9taIm1wnLxKha6/fV2tNibMfldQXSBu2fS02QX5vR9vsTFmy
-         GsN803ZgKUQ2mjcZEReJilanjOaYrZ2kvsg2SRmY+De9zOSyzxn5v/fpXLEza9/6LfMF
-         1k+axQ+ageLb4JidIve21BylRee3ZuDwKN8JBl9ZYImjUnP6LWwq7Zz26dRHz+CpE9of
-         cegw==
-X-Gm-Message-State: ACgBeo2Fko7eBYvIas1Ro1fKdt2eJb6/sWU9ME8u72IgBVMOV3IcRgav
-        HgmXR1ITGiv7XRisKay1/LlPizv6wTnBxCVzjf2oBQ==
-X-Google-Smtp-Source: AA6agR4bZZicX7L/PPeFEIsPRmSNonzAP2JV1KyR3TNqrRpi4TJr+762+bjOvg9FMu9uW+DqKgosNxmj7wzjUD3O1aY=
-X-Received: by 2002:a17:907:7da3:b0:776:a0ae:5147 with SMTP id
- oz35-20020a1709077da300b00776a0ae5147mr13514865ejc.662.1662980533928; Mon, 12
- Sep 2022 04:02:13 -0700 (PDT)
-From:   Kashyap Desai <kashyap.desai@broadcom.com>
-References: <20220816081153.1580612-1-kashyap.desai@broadcom.com>
- <Yv7QvMADD7g3yPWh@nvidia.com> <2b8cd62b4c5c0f9551977909981246d8@mail.gmail.com>
- <Yv94fYp8869XZKFU@nvidia.com> <2651261c642ca672864c2c6c8e7a9774@mail.gmail.com>
- <YwjHSBr3f4o0hXBX@nvidia.com> <85a37f42a08f4163cb5440d8825b7e7a@mail.gmail.com>
- <YxeEX7XcwYpnbP3M@nvidia.com>
-In-Reply-To: <YxeEX7XcwYpnbP3M@nvidia.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=wEsvKd6RAZcw3hcTuaRy4gbOUDgxDjPKLjsFQoB060s=;
+        b=pXb+Yd3clr7MSnoMEQOYdP7D3GGxbEO0D8VzMGH+1dnvJWZp0dQv1AyaqnJ5//1oF4
+         KAetJj2kfxsHmv3G1sRGnWOx4k7FZRzJxWlbwcyj+9PFYqCg2oook2Wxk9tEC3/uPyyj
+         CGNSHmMc4XlPXbJ3S0LJL6jU/gLetgEiq3yBSz/x9Yjk9GEPC8eK5vkWjtRPWCqvKhpj
+         xmM//d2LdGuzJGUTAm2GpGDKwlLoUdJZtubIBO1/3JR6eMlo5Aa4NqUxm6Jz5AomMngL
+         HH0aNalVQpWa5YO6aGoBmbAqZGC7+LueyRp1gwxg4NMTzijLoy5SGe8qSrRNSwKFmlP5
+         IScg==
+X-Gm-Message-State: ACgBeo2qO4PeixenuXCyA0sIFu9ccEp+wPjbyOW3ZTZy61q22x35K5I8
+        kQr55gl1EsEbC6Gq3UMu6iA=
+X-Google-Smtp-Source: AA6agR4tsBAYFbRrZwOEYJnNGS7xtJrv97bGd/pXDoWVPp9q6447Ps8BWVB8O3tqkpmoITv9kFI8YQ==
+X-Received: by 2002:a05:6870:c58b:b0:10b:d21d:ad5e with SMTP id ba11-20020a056870c58b00b0010bd21dad5emr12553749oab.287.1663012349777;
+        Mon, 12 Sep 2022 12:52:29 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:9135:3fe0:59b2:4d18? (2603-8081-140c-1a00-9135-3fe0-59b2-4d18.res6.spectrum.com. [2603:8081:140c:1a00:9135:3fe0:59b2:4d18])
+        by smtp.gmail.com with ESMTPSA id a18-20020a05683012d200b00636ed80eab8sm5170291otq.4.2022.09.12.12.52.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Sep 2022 12:52:29 -0700 (PDT)
+Message-ID: <4a9f2b42-f230-b951-f03b-588b94cd39a6@gmail.com>
+Date:   Mon, 12 Sep 2022 14:52:27 -0500
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQHrfIfLJ9VN7XzL87A1I1MQ3pmjvwHYSPW6AdeSkpYDPgwgJgHwx5v4Agd0kkUBl0nyQAG3eiRMrUSJ5PA=
-Date:   Mon, 12 Sep 2022 16:32:09 +0530
-Message-ID: <fc18b231b93a47b8ca1314f3778bfe1a@mail.gmail.com>
-Subject: RE: [PATCH rdma-rc v1] RDMA/core: fix sg_to_page mapping for boundary condition
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, leonro@nvidia.com,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Andrew Gospodarek <andrew.gospodarek@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000003894705e878d438"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [RFC PATCH 2/7] RDMA/rxe: Convert the triple tasklets to
+ workqueues
+Content-Language: en-US
+To:     "matsuda-daisuke@fujitsu.com" <matsuda-daisuke@fujitsu.com>,
+        'Bart Van Assche' <bvanassche@acm.org>,
+        Yanjun Zhu <yanjun.zhu@linux.dev>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "leonro@nvidia.com" <leonro@nvidia.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>
+Cc:     "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
+References: <cover.1662461897.git.matsuda-daisuke@fujitsu.com>
+ <41e5476f4f14a0b77f4a8c3826e3ef943bf7c173.1662461897.git.matsuda-daisuke@fujitsu.com>
+ <0b3366e6-c0ae-7242-5006-b638e629972d@linux.dev>
+ <fd1d7c49-a090-e8c7-415b-dfcda94ace9d@acm.org>
+ <TYCPR01MB8455D739FC9FB034E3485C87E5449@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <TYCPR01MB8455D739FC9FB034E3485C87E5449@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000003894705e878d438
-Content-Type: text/plain; charset="UTF-8"
+On 9/12/22 02:58, matsuda-daisuke@fujitsu.com wrote:
+> On Mon, Sep 12, 2022 12:09 AM Bart Van Assche wrote:
+>> On 9/11/22 00:10, Yanjun Zhu wrote:
+>>> I also implemented a workqueue for rxe. IMO, can we add a variable to
+>>> decide to use tasklet or workqueue?
+>>>
+>>> If user prefer using tasklet, he can set the variable to use
+>>> tasklet. And the default is tasklet. Set the variable to another
+>>> value to use workqueue.
+> 
+> That's an interesting idea, but I am not sure how users specify it.
+> IIRC, tasklets are generated when rdma link is added, typically by 
+> executing ' rdma link add' command. I don't think we can add
+> an device specific option to the utility(iproute2/rdma).
+> 
+>>
+>> I'm in favor of removing all uses of the tasklet mechanism because of
+>> the disadvantages of that mechanism. See also:
+>> * "Eliminating tasklets" (https://lwn.net/Articles/239633/).
+>> * "Modernizing the tasklet API" (https://lwn.net/Articles/830964/).
+>> * Sebastian Andrzej Siewior's opinion about tasklets
+>> (https://lore.kernel.org/all/YvovfXMJQAUBsvBZ@linutronix.de/).
+> 
+> I am also in favor of using workqueues alone not only because of the
+> disadvantages above but also to avoid complexity. I would like to know
+> if there is anybody who will bothered by the change especially in terms
+> of performance.
+> 
+> Thanks,
+> Daisuke
+> 
+>>
+>> Thanks,
+>>
+>> Bart.
+> 
 
->
-> On Thu, Sep 01, 2022 at 05:36:57PM +0530, Kashyap Desai wrote:
-> > > -----Original Message-----
-> > > From: Jason Gunthorpe [mailto:jgg@nvidia.com]
-> > > Sent: Friday, August 26, 2022 6:45 PM
-> > > To: Kashyap Desai <kashyap.desai@broadcom.com>
-> > > Cc: linux-rdma@vger.kernel.org; leonro@nvidia.com; Selvin Xavier
-> > > <selvin.xavier@broadcom.com>; Andrew Gospodarek
-> > > <andrew.gospodarek@broadcom.com>
-> > > Subject: Re: [PATCH rdma-rc v1] RDMA/core: fix sg_to_page mapping
-> > > for boundary condition
-> > >
-> > > On Mon, Aug 22, 2022 at 07:51:22PM +0530, Kashyap Desai wrote:
-> > >
-> > > > Now, we will enter into below loop with dma_addr = page_addr =
-> > > > 0xffffffffffffe000 and "end_dma_addr = dma_addr + dma_len" is
-ZERO.
-> > > > eval 0xffffffffffffe000 + 8192
-> > > > hexadecimal: 0
-> > >
-> > > This is called overflow.
-> >
-> > Is this not DMAable for 64bit DMA mask device ? It is DMAable. So not
-> > sure why you call it as overflow. ?
->
-> Beacuse the normal math overflowed.
->
-> Should it work? Yes. Is it a special edge case that might have bugs?
-> Certainly.
->
-> So the IOMMU layer shouldn't be stressing this edge case at all. It is
-crazy, there
-> is no reason to do this.
->
-> > I agree that such mapping is obviously dangerous, but it is not
-> > illegal as well.
-> > Same sgl mapping works if it is direct attached Storage, so there will
-> > be a logical question why IB stack is not handling this.
->
-> Oh that is probably very driver dependent.
->
-> > > You need to write the code so you never create the situation where
-> > > A+B=0 - don't try to fix things up after that happens.
-> >
-> > In proposed patch, A + B = 0 is possible, but it will be considered as
-> > end of the loop.
->
-> Like I said, don't do that. End of the loop is -1 which requires a
-different loop
-> logic design, so send a patch like that.
->
-> But I would still send a patch for iommu to not create this in the first
-place.
+The HPE patch set for work queues (I should send it in) kept the ability to run tasklets or work queues.
+The reason was that the change was motivated by a benchmarking exercise and we found that the performance
+of tasklets was noticeably better for one IO stream but for 2 or more IO streams work queues were better because we
+could place the work on separate cpus. Tasklets have a tendency to bunch up on the same cpu. I am interested in
+how Matsuda got better/same performance for work queues.
 
-
-Jason -
-I noted your response.  Issue is possible to any RDMA h/w and issue is not
-completely Rejected. It is just that you need another way to fix it
-(preferred to handle it in iommu)
-We can reopen discussion if we see another instance from other vendors.
-Quick workaround is - use  63 bit DMA mask in rdma low level driver if
-someone really wants to work around this issue until something more robust
-fix committed in upstream kernel (either ib stack or iommu stack).
-
-We can close this thread.
-
-Kashyap
->
-> Jason
-
---00000000000003894705e878d438
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-P3lSxcw4Cg90iKHqfpwLnGNc9AGXHMxUCukpnAHRlivljilKHMx1ymb180BLmtF+ZLm6KrFLQWzB
-4KeiUOMtKM13wJrQubqTeZgB1XA+89jeLYlxagVsMyksdwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUkTOZp9jXE3yPj4ieKeDT
-OiNyCtswDQYJKoZIhvcNAQELBQADggEBABG1KCh7cLjStywh4S37nKE1eE8KPyAxDzQCkhxYLBVj
-gnnhaLmEOayEucPAsM1hCRAm/vR3RQ27lMXBGveCHaq9RZkzTjGSbzr8adOGK3CluPrasNf5StX3
-GSk4HwCapA39BDUrhnc/qG5vHwLrgA1jwAvSy8e/vn4F4h+KPrPoFNd1OnCafedbuiEXTqTkn5Rk
-vZ2AOTcSbxvmyKBMb/iu1vn7AAoui0d8GYCPoz8shf2iWMSUXVYJAMrtRHVJr47J5jlopF5F2ghC
-MzNfx6QsmJhYiRByd8L9sUOjp/DMgkC6H93PyYpYMiBGapgNf6UMsLg/1kx5DATNwhPAJbkxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxwO04DXOeYbZtr
-4mAwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIfBm0509F/TPHHfjjvzFTN1Med0
-ZxafEh6nYcN3jpMdMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIy
-MDkxMjExMDIxNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCkaiaFbwZy20ZBDbd0vZhXf+i0axSkoDR9K/prrwEMn290
-ppdVxrzpttg7MeP8FAH/F726UmYQIdg+aB+DwW9spLQQ5+phjYovbt+BuGT3/iyHXUx+KChyN8mO
-CYVM+8K2X7c8lFaY7wFO0nkVWj/J0CmcTXAA4uk0BsImQReUhIaLMOJ12b2wSpNkdp+kqoUumVPN
-QlBGbE8Nd2PsF/5dWfilKyJQYtmOfT0stoc25SOsHDS+yWA6HSBF/4PA0L2I8Mg61qN7wt86o65G
-fkQjEOwaZpDCo4I7UGFmmgbuIkw+fMXJd/6++73iIe2+KtOhRN8tApSdCZJ9WL+blVmB
---00000000000003894705e878d438--
+Bob
