@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B88B35B7167
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Sep 2022 16:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8949E5B723A
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Sep 2022 16:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbiIMOfx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Sep 2022 10:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
+        id S229889AbiIMOti (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Sep 2022 10:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233702AbiIMOfD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Sep 2022 10:35:03 -0400
+        with ESMTP id S234273AbiIMOsi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Sep 2022 10:48:38 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F235FAEA;
-        Tue, 13 Sep 2022 07:20:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4F53FA3F;
+        Tue, 13 Sep 2022 07:25:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CBA8E614D6;
-        Tue, 13 Sep 2022 14:19:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC59C433D6;
-        Tue, 13 Sep 2022 14:19:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B75BA614B4;
+        Tue, 13 Sep 2022 14:25:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD11BC433D6;
+        Tue, 13 Sep 2022 14:25:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1663078799;
-        bh=s+XP21am/LXb51mlVaMH3pGu2LgtbxLxu+OcUur/RVo=;
+        s=korg; t=1663079106;
+        bh=GMkAOvpeS2Q4DXNwpdWazj8uVwJMqhidTuecDSVaYYM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WmkBjIhJfS51QmRKvapm07T8r+mVgd+NDE9kuS3IHBu8orhT8DnTaX1m+xHn8FOYP
-         GocZlyW/tkYOXRbkeeRS3jwhOMGVh7hN7RroRSQlmwfKXiOb/x+xAeVILvLGtObT+N
-         e9RVT1AAUQVYHPJ18Nfb8Guvqk/wYGOUslylhpnY=
+        b=mYqJUxN0g6hD+5HtSCZqz+eGIKzBThq+wP7BuTSJtbuttqaaaKNN4XH9ZwOWECv44
+         gU3ZfEUlFDkMOVwD2RmJbMMLSl8DUqLD5oFSToE+PXsj7nL6MjUh2XTol8CxW/KRMc
+         UpNfCS0p2Oy7BRyo/uyz5rIXMtiDgkik3eg/gTAE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -35,12 +35,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         Leon Romanovsky <leon@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 086/121] RDMA/siw: Pass a pointer to virt_to_page()
-Date:   Tue, 13 Sep 2022 16:04:37 +0200
-Message-Id: <20220913140401.064675561@linuxfoundation.org>
+Subject: [PATCH 5.10 61/79] RDMA/siw: Pass a pointer to virt_to_page()
+Date:   Tue, 13 Sep 2022 16:05:06 +0200
+Message-Id: <20220913140353.160139198@linuxfoundation.org>
 X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220913140357.323297659@linuxfoundation.org>
-References: <20220913140357.323297659@linuxfoundation.org>
+In-Reply-To: <20220913140350.291927556@linuxfoundation.org>
+References: <20220913140350.291927556@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -96,7 +96,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 1f4e60257700e..7d47b521070b1 100644
+index 7989c4043db4e..3c3ae5ef29428 100644
 --- a/drivers/infiniband/sw/siw/siw_qp_tx.c
 +++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
 @@ -29,7 +29,7 @@ static struct page *siw_get_pblpage(struct siw_mem *mem, u64 addr, int *idx)
@@ -108,8 +108,8 @@ index 1f4e60257700e..7d47b521070b1 100644
  
  	return NULL;
  }
-@@ -533,13 +533,23 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 					kunmap_local(kaddr);
+@@ -523,13 +523,23 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 					kunmap(p);
  				}
  			} else {
 -				u64 va = sge->laddr + sge_off;
