@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4095B7034
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Sep 2022 16:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88B35B7167
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Sep 2022 16:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbiIMOUK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Sep 2022 10:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55252 "EHLO
+        id S234222AbiIMOfx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Sep 2022 10:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233327AbiIMOSq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Sep 2022 10:18:46 -0400
+        with ESMTP id S233702AbiIMOfD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Sep 2022 10:35:03 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CE9642ED;
-        Tue, 13 Sep 2022 07:13:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F235FAEA;
+        Tue, 13 Sep 2022 07:20:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B4F0614CD;
-        Tue, 13 Sep 2022 14:13:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 305C1C433D7;
-        Tue, 13 Sep 2022 14:13:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CBA8E614D6;
+        Tue, 13 Sep 2022 14:19:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC59C433D6;
+        Tue, 13 Sep 2022 14:19:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1663078404;
+        s=korg; t=1663078799;
         bh=s+XP21am/LXb51mlVaMH3pGu2LgtbxLxu+OcUur/RVo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eciygFaJzvf1YIQkD+a9RdmZMzFwBXst8PlnWp2ZCvyYi+7DV00RCMT75s11LjAG/
-         25wEcI7b7BgdcNDWq4AsQQGFh0ZiUeKZ65OqQ3sQk3RSxPGy/gj5v5IDG0+zTtjn7i
-         dy7k1pezZK7TQH/9tXumkPgTtHvrLbZjF2wk6Zso=
+        b=WmkBjIhJfS51QmRKvapm07T8r+mVgd+NDE9kuS3IHBu8orhT8DnTaX1m+xHn8FOYP
+         GocZlyW/tkYOXRbkeeRS3jwhOMGVh7hN7RroRSQlmwfKXiOb/x+xAeVILvLGtObT+N
+         e9RVT1AAUQVYHPJ18Nfb8Guvqk/wYGOUslylhpnY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -35,12 +35,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         Leon Romanovsky <leon@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.19 126/192] RDMA/siw: Pass a pointer to virt_to_page()
-Date:   Tue, 13 Sep 2022 16:03:52 +0200
-Message-Id: <20220913140416.280860971@linuxfoundation.org>
+Subject: [PATCH 5.15 086/121] RDMA/siw: Pass a pointer to virt_to_page()
+Date:   Tue, 13 Sep 2022 16:04:37 +0200
+Message-Id: <20220913140401.064675561@linuxfoundation.org>
 X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220913140410.043243217@linuxfoundation.org>
-References: <20220913140410.043243217@linuxfoundation.org>
+In-Reply-To: <20220913140357.323297659@linuxfoundation.org>
+References: <20220913140357.323297659@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
