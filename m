@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC865B7D0B
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Sep 2022 00:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7214C5B7D14
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Sep 2022 00:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbiIMW1q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Sep 2022 18:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
+        id S229692AbiIMWbN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Sep 2022 18:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbiIMW1p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Sep 2022 18:27:45 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA81D59273
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Sep 2022 15:27:44 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-12b542cb1d3so26349585fac.13
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Sep 2022 15:27:44 -0700 (PDT)
+        with ESMTP id S229715AbiIMWbM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Sep 2022 18:31:12 -0400
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A1861723
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Sep 2022 15:31:06 -0700 (PDT)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-11e9a7135easo36133993fac.6
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Sep 2022 15:31:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date;
-        bh=PDPAKoP1R68fU5RGlPXkyXEqnKkcTgJ84pnAPXc9IIw=;
-        b=nGNG1UQwStLBzjVYch85CMGFjQG2ESjyCCCSHzMUQzte9a9Fr10hE785XDZWL6egQE
-         um+slb1GG0oMeTjikYn8uKVAcaMNizX6rAgYN5nMxDN0L8K12YZLUDYNO4HPiCKSMhH5
-         XE479DBXJvncLtuf3VqINeBblyNrLVykFz6/v39AAW/rOpNGeUggJwegM7FwgHi8VVO4
-         lx6M7nkmkCrCogquBv4rg002GrDsNT6tlss0yBb/h0k7WaCpR+nC17nXe/F4OPjqo18F
-         JpbMarSyGgjuLPZm1nk+xMoN7QIA7CLzjlmvQ4BLULsHnmGXHS7EA4leJjjjnhLCKfYT
-         03hg==
+        bh=P6/+eey78DVr9qKN+MbyuMuBy153UbJh8mtNGJKWYNU=;
+        b=iTkQgoOjN6d1U4JNGgIadexYC/lZ5TeUG7Y5VBIw3OfwhPXN0YQuxCJBCODkD11u4p
+         4teadlHrxxsSW7aGhuoZtMzbeEDWs3V2VKDtEWDCdkiNc5oo+aMeWreZNIiwkNl+NXxY
+         M6hmYd1aGmln48w/g4lM63h2FPiNMiSCuAIIgvl+sO1g4yRzKQWReJ6xUjZ0vzL5amqn
+         s7Z9ydiaClvyCnPSkzx9EfGQhHSuLV548jMUIMyRUn2cAzLt62TjweJH21qQa1gJ1HPf
+         SQDP589SXi1EY9d3rvAraDWeZ5hcFOYQ/CqLmsN2CzRrW+frYRBsLR1bzeMWpf6+VTbL
+         W04A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=PDPAKoP1R68fU5RGlPXkyXEqnKkcTgJ84pnAPXc9IIw=;
-        b=MbxXUH4hdhBD2fj7+7tgJHT1DSHsEfi0uH+kpv8JMqfQrLKkSSOL+0lvRNyIDgRd+e
-         HULwyw/wxgI+ob7mVbcrgdMXiFHi8n327V98IeQ3VxjAJk/9lSmRniFM/WlzxlxOI44p
-         piSHbAVNT5/TCvyWpBBCM6T4VBmTJ6d1gbNqJvs0UAKl9YpBn7i3Sj8QLsyiFGD4CKst
-         73W9Iekyjgy14hQZE/EFDY6fGfPb3zshKAQZn5LsjXwz7IARGwpklgy13XgWOjvnTPKq
-         kj3scI5nECoGUr2LzwVJxxrNEJqMll3MtMca6YGuMgpgSss6Xnwd++sKlu4lm7qJNlZl
-         BSkw==
-X-Gm-Message-State: ACgBeo18QakjSnWrFLsr9eWjLaYx6CE+QkZ2uiwNV8Gx0588O6InKFCU
-        kESIyjJ8kgGCfEj7CtZ2UJ0m9bNDQX0=
-X-Google-Smtp-Source: AA6agR4+LTqoNcS69tJDdNgOUHyX4l44wqGxdWkU0YWSe3UP0FCZkl/Tpwg+6knYIUCIGRdMOhAmcQ==
-X-Received: by 2002:a05:6870:430b:b0:101:3d98:ba41 with SMTP id w11-20020a056870430b00b001013d98ba41mr809807oah.46.1663108064104;
-        Tue, 13 Sep 2022 15:27:44 -0700 (PDT)
+        bh=P6/+eey78DVr9qKN+MbyuMuBy153UbJh8mtNGJKWYNU=;
+        b=3jLt7QNSSlvBPpj9M8wpyH4XH3m1fro23SfpQOMgrw1U+us0r7/hHrgPZoox+P0fco
+         mHnO8G+TaffY18QqqSHFgncaxRDju138tE7FfPKFYGBSpQxI9GWgDr/PCxCyLZJUxzfS
+         vHBekC1oWyDm1h2Q/0hyayAuEFfgZrNFeqfW6o7XoxYsXcR4S75rUhHfIgfsPjZ++YDP
+         JwxC/SuuP1qoBfOlOfVjbV90AnoPsqyhPmnoLo8UyQS9Ibbu1Mgqta79bPJvKHzEV+yF
+         xZcc1pSNGo8sOCNgN103P/61J+CFVCAAxxX7QlfuemLeFvLO8bvrL1+TyV/tPlrb0lMt
+         ebSw==
+X-Gm-Message-State: ACgBeo3Tlgo/aZo7mEN1iK+hMCpARD/xulT5ZO2ZxQMJ0FqTw8hkEQ1Y
+        QASqvQamlewgX/9t8qjVwX0ECiI2M4Q=
+X-Google-Smtp-Source: AA6agR5m39WgKOZOkFegGbnCZ470whViCF0lBDxWP/cpwAEHitbuEYqVrnkVM2+akvoxSzxIJV5Zsw==
+X-Received: by 2002:a05:6870:8289:b0:127:d302:66f8 with SMTP id q9-20020a056870828900b00127d30266f8mr766581oae.16.1663108265695;
+        Tue, 13 Sep 2022 15:31:05 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-d098-9475-e37c-b40b.res6.spectrum.com. [2603:8081:140c:1a00:d098:9475:e37c:b40b])
-        by smtp.googlemail.com with ESMTPSA id d23-20020a9d4f17000000b00655f24330easm1447308otl.77.2022.09.13.15.27.42
+        by smtp.googlemail.com with ESMTPSA id v17-20020a05683018d100b0063696cbb6bdsm6537131ote.62.2022.09.13.15.31.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Sep 2022 15:27:43 -0700 (PDT)
+        Tue, 13 Sep 2022 15:31:04 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next] RDMA/rxe: Remove redundant num_sge fields
-Date:   Tue, 13 Sep 2022 17:27:17 -0500
-Message-Id: <20220913222716.18335-1-rpearsonhpe@gmail.com>
+Subject: [PATCH 0/2] providers/rxe: Remove redundant num_sge_fields
+Date:   Tue, 13 Sep 2022 17:30:49 -0500
+Message-Id: <20220913223050.18416-1-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,65 +66,23 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In include/uapi/rdma/rdma_user_rxe.h there are redundant copies of
-num_sge in the rxe_send_wr, rxe_recv_wqe, and rxe_dma_info. Only the
-ones in rxe_dma_info are actually used by the rxe driver. This patch
-replaces the ones in rxe_send_wr and rxe_recv_wqe by reserved. This
-patch matches a user space change to the rxe provider driver in
-rdma-core. This change has no affect on the current ABI and new or old
-versions of rdma-core operate correctly with new or old versions of
-the kernel rxe driver.
+This patch series removes two unused num_sge fields in
+struct rxe_send_wr and struct rxe_recv_wqe in favor of the
+num_sge field in struct rxe_dma_info. It has no effect on the
+current ABI. It has the desireable side effect of freeing
+4 bytes in rxe_send_wr, which is otherwise completely full, for
+other uses.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 2 --
- include/uapi/rdma/rdma_user_rxe.h     | 4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+Bob Pearson (2):
+  Update kernel headers
+  providers/rxe: Remove redundant num_sge fields
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 9ebe9decad34..7073a0a0adf4 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -262,7 +262,6 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
- 
- 	recv_wqe = queue_producer_addr(rq->queue, QUEUE_TYPE_TO_DRIVER);
- 	recv_wqe->wr_id = ibwr->wr_id;
--	recv_wqe->num_sge = num_sge;
- 
- 	memcpy(recv_wqe->dma.sge, ibwr->sg_list,
- 	       num_sge * sizeof(struct ib_sge));
-@@ -526,7 +525,6 @@ static void init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
- 			 const struct ib_send_wr *ibwr)
- {
- 	wr->wr_id = ibwr->wr_id;
--	wr->num_sge = ibwr->num_sge;
- 	wr->opcode = ibwr->opcode;
- 	wr->send_flags = ibwr->send_flags;
- 
-diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-index f09c5c9e3dd5..73f679dfd2df 100644
---- a/include/uapi/rdma/rdma_user_rxe.h
-+++ b/include/uapi/rdma/rdma_user_rxe.h
-@@ -74,7 +74,7 @@ struct rxe_av {
- 
- struct rxe_send_wr {
- 	__aligned_u64		wr_id;
--	__u32			num_sge;
-+	__u32			reserved;
- 	__u32			opcode;
- 	__u32			send_flags;
- 	union {
-@@ -166,7 +166,7 @@ struct rxe_send_wqe {
- 
- struct rxe_recv_wqe {
- 	__aligned_u64		wr_id;
--	__u32			num_sge;
-+	__u32			reserved;
- 	__u32			padding;
- 	struct rxe_dma_info	dma;
- };
+ kernel-headers/rdma/rdma_user_rxe.h |  4 ++--
+ providers/rxe/rxe.c                 | 11 +++++------
+ 2 files changed, 7 insertions(+), 8 deletions(-)
 
-base-commit: db77d84cfe3608eac938302f8f7178e44415bcba
+
+base-commit: 3cbfb618e0a70d7341d1e737fd00f661ccaac1c4
 -- 
 2.34.1
 
