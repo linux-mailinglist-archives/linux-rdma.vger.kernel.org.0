@@ -2,152 +2,387 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9515BA3F2
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Sep 2022 03:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F054E5BA64E
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Sep 2022 07:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbiIPBSl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Sep 2022 21:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
+        id S229635AbiIPFRD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Sep 2022 01:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbiIPBRu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Sep 2022 21:17:50 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01hn2245.outbound.protection.outlook.com [52.100.164.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711F0876BB;
-        Thu, 15 Sep 2022 18:17:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JhyLOY+N/a0hl5iqFUhc+Ouqf1B2ohoULHIHKKaG9WwDaV6o5ulQUl+18rUpEvCM1Gpeb4b9tAK3UtfuDVdDnkahC/Swbwj4j4jlYEk7fFCW1zaB2Y1pkcDIHsBSp5unPes18XFe+H5DtPDl/mbKLq/6wb0gMvr5Y41LXwV86CJLbdDMy6IV2kyDurK/WdKaZAvmwMVkITGqqgzJM5VkBvBTh1XKHAHAHC6b8Bmlis6E+4vcqP8oXSlwFDQ4svQLidKiKhXYz2O6z659PJkQWOLk78ypyYTDIDvNqa6+zRtYBtbVXGgVgt7cNl1uWXpxwmByJBE1MWTSXIIiWWcUBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Bs10Md+15nMnyayKLyd22Uv+/ZH79IcFcpzuzGLq1Fg=;
- b=fLdaE+A2GAzG3Nl4NeUw3cj0Y9kfK7Y0J6mx0yEReLLby2KkhycHSzFuQX3U0WG5JlFTpU09hC/UYTSdnse1sQtR2gp91ykj23Xae3OVbs43frizA1UAMFyNFUEEZ8ZN6+GKXmsQO0oQJCW4DKUkKY6OdQlHFq+BkoNvFZ9BRzHjFZPXU6g81wqF1yMzoM62fb++iCF94yOKt98pVdgb/+KHOctEl/Re7GB8yG2xciHmtqKys8dKACU2MH+j7U7CJGM9n3SzphxC8dSZjCz9jFngvhuegqq/UYeYToe+MV8jg7/O21P+D5rRnCqjl5J3WU4SEQdzb0+4SQLkRRrlrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 45.14.71.5) smtp.rcpttodomain=vger.kernel.orgq smtp.mailfrom=t4.cims.jp;
- dmarc=bestguesspass action=none header.from=t4.cims.jp; dkim=none (message
- not signed); arc=none (0)
-Received: from TY1PR01CA0184.jpnprd01.prod.outlook.com (2603:1096:403::14) by
- HKAPR04MB4033.apcprd04.prod.outlook.com (2603:1096:203:c6::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5612.19; Fri, 16 Sep 2022 01:17:42 +0000
-Received: from TYZAPC01FT021.eop-APC01.prod.protection.outlook.com
- (2603:1096:403:0:cafe::94) by TY1PR01CA0184.outlook.office365.com
- (2603:1096:403::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.12 via Frontend
- Transport; Fri, 16 Sep 2022 01:17:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 45.14.71.5)
- smtp.mailfrom=t4.cims.jp; dkim=none (message not signed)
- header.d=none;dmarc=bestguesspass action=none header.from=t4.cims.jp;
-Received-SPF: Pass (protection.outlook.com: domain of t4.cims.jp designates
- 45.14.71.5 as permitted sender) receiver=protection.outlook.com;
- client-ip=45.14.71.5; helo=User; pr=M
-Received: from mail.prasarana.com.my (58.26.8.158) by
- TYZAPC01FT021.mail.protection.outlook.com (10.118.152.130) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5632.12 via Frontend Transport; Fri, 16 Sep 2022 01:17:42 +0000
-Received: from MRL-EXH-02.prasarana.com.my (10.128.66.101) by
- MRL-EXH-01.prasarana.com.my (10.128.66.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 16 Sep 2022 09:17:01 +0800
-Received: from User (45.14.71.5) by MRL-EXH-02.prasarana.com.my
- (10.128.66.101) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Fri, 16 Sep 2022 09:16:30 +0800
-Reply-To: <rhashimi202222@kakao.com>
-From:   Consultant Swift Capital Loans Ltd <info@t4.cims.jp>
-Subject: I hope you are doing well, and business is great!
-Date:   Fri, 16 Sep 2022 09:17:12 +0800
+        with ESMTP id S229935AbiIPFRC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Sep 2022 01:17:02 -0400
+Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3577B784;
+        Thu, 15 Sep 2022 22:16:59 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VPvZOCg_1663305415;
+Received: from 30.221.149.4(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VPvZOCg_1663305415)
+          by smtp.aliyun-inc.com;
+          Fri, 16 Sep 2022 13:16:57 +0800
+Message-ID: <852b0d7b-090e-b24d-7950-b1332b1dcd6c@linux.alibaba.com>
+Date:   Fri, 16 Sep 2022 13:16:54 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <9503e0ab-4510-47d5-bcde-9fb0a78227ed@MRL-EXH-02.prasarana.com.my>
-To:     Undisclosed recipients:;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-SkipListedInternetSender: ip=[45.14.71.5];domain=User
-X-MS-Exchange-ExternalOriginalInternetSender: ip=[45.14.71.5];domain=User
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZAPC01FT021:EE_|HKAPR04MB4033:EE_
-X-MS-Office365-Filtering-Correlation-Id: 629bded5-1128-4957-f6d7-08da978140f0
-X-MS-Exchange-AtpMessageProperties: SA|SL
-X-MS-Exchange-SenderADCheck: 0
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?windows-1251?Q?vcG2ZJ3c7cHHwBxLwaIoH+mS9wdGk/tReUPMbRPGf2GVJPKHxy8K1iXb?=
- =?windows-1251?Q?IQffiUP8k7IEcJri6j24FoR2oNikZBD2Wa9pWUeWpplUI/NxrmmJAKe/?=
- =?windows-1251?Q?tH6ZgM9B+qFV3OdoY+9FjexkZcQo2kAzsAkgCocGGCRM/5J83ubRrnQz?=
- =?windows-1251?Q?gOIDRDrLttf8vfg4Bjy/NeVd7ADvsVsYZ5ZT5mIQdoYV2AP4+AR7s9ch?=
- =?windows-1251?Q?DniXh47s/wErYVvCFvrxxh7HE6BSL1HTpjSAq35OBanAgfOh3TZealw1?=
- =?windows-1251?Q?GNkIx9yrqssEpWzLbBQDge+ftyRckG3cMrzph+fypJnv69sElpAwK3K5?=
- =?windows-1251?Q?6AeaN48XK4rV2uaWEdYJT0Ww8Lrf6imjqaTaaUkF8A7zjm9tV3UUqrbL?=
- =?windows-1251?Q?x63qAk5poPHlrvbJhNSEE2EWBsfovoWM8Rl3gBn3+yo5o1aT//XD2cWu?=
- =?windows-1251?Q?onVveE4NtKKtJDqb7LkzITyf8B9PW7iOUPUh/ooOeL4biG5WNHkK9dN1?=
- =?windows-1251?Q?S/ifuTKuXcJZfpExvP/yRHA6bD2vpWYMDXdoYzjjCAPuYiZNCQeTtIoi?=
- =?windows-1251?Q?pQSv5am/6fSAyTvVn48LHSFsfbuwcvZSQf1QjH7jsMozM2FVOiGf+M3W?=
- =?windows-1251?Q?tJIRDhmpAScZQSsMNdwjb3dbHE0W6gN6kI+ijQZr0ldSEZPNE4eJDQQ2?=
- =?windows-1251?Q?OFBRgBLmjGdDw3vZnWP5pQkiyGiWAJPR5Wt9jxmqoqgIJkItGsh1h0PQ?=
- =?windows-1251?Q?pHLfe6qUKqD2Y0e5+ydbWytS1ZRTu5UQHcBMpHQ8r98ZjLGNgkBWIKFJ?=
- =?windows-1251?Q?XnyN7Z9Uos5gmARBc23bW8hVP4i7TtKE9xpJfGmaEFt53iZrO5jxDLcb?=
- =?windows-1251?Q?7tqKq1tY5BbE5OiksSqpNgx1XpyAP1UrJFemIWmgXPkbsyBw93IHtLNQ?=
- =?windows-1251?Q?HU0o9drnK33Vjv7WJT24hwu8P+aQuhzgXFcIAdQewip05I8ixdtrLDgi?=
- =?windows-1251?Q?2UJv9NuchlqKW7g9u7bsk41TB/3noQ0v4aFOx4tX1fV4ucse/xxqTcvs?=
- =?windows-1251?Q?algx4oLtHkJg59+Y+9xcJpQg2eMQ3iqpDBv8qX9L6LKBBIHuBX43VMNA?=
- =?windows-1251?Q?/vD7IYfomzMXCemBsTUlinUydK6IHTRUyIyiK9FeS6oWUbYzOqsqLwf7?=
- =?windows-1251?Q?+rUcu9MS7xc4tVpHkNQsCI+SVLg7fCR4Q2vL+pDeUr7y9NqCnjJTm2mJ?=
- =?windows-1251?Q?AfaXVXcHhmhciN49a2FzDPTz+5jwCOxLUdlRte/8Ig+onKI7C37Vfdpx?=
- =?windows-1251?Q?I8xALmlS5AE0ZHBl7wnjx9cL+byAK2XcWAecWsTpNHHw4LRv?=
-X-Forefront-Antispam-Report: CIP:58.26.8.158;CTRY:JP;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:User;PTR:45.14.71.5.static.xtom.com;CAT:OSPM;SFS:(13230022)(4636009)(136003)(346002)(376002)(396003)(39860400002)(451199015)(40470700004)(46966006)(498600001)(109986005)(40480700001)(41300700001)(316002)(8676002)(6666004)(47076005)(40460700003)(7406005)(9686003)(81166007)(70206006)(2906002)(36906005)(82310400005)(7416002)(70586007)(4744005)(8936002)(86362001)(31696002)(5660300002)(26005)(82740400003)(32850700003)(336012)(31686004)(956004)(35950700001)(156005)(66899012)(2700400008);DIR:OUT;SFP:1501;
-X-OriginatorOrg: myprasarana.onmicrosoft.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2022 01:17:42.0737
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 629bded5-1128-4957-f6d7-08da978140f0
-X-MS-Exchange-CrossTenant-Id: 3cbb2ff2-27fb-4993-aecf-bf16995e64c0
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3cbb2ff2-27fb-4993-aecf-bf16995e64c0;Ip=[58.26.8.158];Helo=[mail.prasarana.com.my]
-X-MS-Exchange-CrossTenant-AuthSource: TYZAPC01FT021.eop-APC01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HKAPR04MB4033
-X-Spam-Status: Yes, score=6.2 required=5.0 tests=AXB_XMAILER_MIMEOLE_OL_024C2,
-        AXB_X_FF_SEZ_S,BAYES_50,FORGED_MUA_OUTLOOK,FSL_CTYPE_WIN1251,
-        FSL_NEW_HELO_USER,HEADER_FROM_DIFFERENT_DOMAINS,NSL_RCVD_FROM_USER,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5012]
-        *  0.0 NSL_RCVD_FROM_USER Received from User
-        *  0.0 FSL_CTYPE_WIN1251 Content-Type only seen in 419 spam
-        *  3.2 AXB_X_FF_SEZ_S Forefront sez this is spam
-        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [52.100.164.245 listed in list.dnswl.org]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
-        *  0.2 HEADER_FROM_DIFFERENT_DOMAINS From and EnvelopeFrom 2nd level
-        *      mail domains are different
-        * -0.0 RCVD_IN_MSPIKE_H2 RBL: Average reputation (+2)
-        *      [52.100.164.245 listed in wl.mailspike.net]
-        *  0.0 AXB_XMAILER_MIMEOLE_OL_024C2 Yet another X header trait
-        *  0.0 FSL_NEW_HELO_USER Spam's using Helo and User
-        *  1.9 FORGED_MUA_OUTLOOK Forged mail pretending to be from MS Outlook
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH net-next v2 01/10] net/smc: remove locks
+ smc_client_lgr_pending and smc_server_lgr_pending
+Content-Language: en-US
+To:     Jan Karcher <jaka@linux.ibm.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <cover.1661407821.git.alibuda@linux.alibaba.com>
+ <688d165fe630989665e5091a28a5b1238123fbdc.1661407821.git.alibuda@linux.alibaba.com>
+ <f8ac755b-242b-acbb-a50c-7c6fcd3be736@linux.ibm.com>
+ <377011d2-7f9d-bf7f-8366-c579bf42c396@linux.alibaba.com>
+ <1767b6e4-0053-728b-9722-add68da13781@linux.ibm.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <1767b6e4-0053-728b-9722-add68da13781@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-11.7 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
 
-I hope you are doing well, and business is great!
-However, if you need working capital to further grow and expand your business, we may be a perfect fit for you. I am Ms. Kaori Ichikawa Swift Capital Loans Ltd Consultant, Our loans are NOT based on your personal credit, and NO collateral is required.
+Hi, Jan
 
-We are a Direct Lender who can approve your loan today, and fund as Early as Tomorrow.
+Thanks a lot for your test, your information is very important!
+And feel sorry to reply late, this issues is quite hidden but stupid.
 
-Once your reply I will send you the official website to complete your application
+Here's the problem:
 
-Waiting for your reply.
+We use ini->is_smcd to determine whether the lock needs to be removed in our patch,
+however, this value is only available after smc_listen_find_device be invoked,
+Before that, the value is always false (kzalloc). Unfortunately, we had used it before.
 
-Regards
-Ms. Kaori Ichikawa
-Consultant Swift Capital Loans Ltd
+In other words, it is equivalent that we removed the SMC-D lock but did not do SMC-D link cluster,
+which will lead to a large number of critical area issues, including abnormal downgrade to SMC-R,
+residual connection status, etc.
+
+Considering that, it seems that we have to do the link cluster for SMC-D too, It won't take much time,
+I expect to send a new version next week.
+
+Thanks
+D. Wythe
+
+On 9/7/22 4:10 PM, Jan Karcher wrote:
+> 
+> 
+> On 02.09.2022 13:25, D. Wythe wrote:
+>>
+>>
+>> On 8/31/22 11:04 PM, Jan Karcher wrote:
+>>>
+>>>
+>>> On 26.08.2022 11:51, D. Wythe wrote:
+>>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>>
+>>>> This patch attempts to remove locks named smc_client_lgr_pending and
+>>>> smc_server_lgr_pending, which aim to serialize the creation of link
+>>>> group. However, once link group existed already, those locks are
+>>>> meaningless, worse still, they make incoming connections have to be
+>>>> queued one after the other.
+>>>>
+>>>> Now, the creation of link group is no longer generated by competition,
+>>>> but allocated through following strategy.
+>>>>
+>>>> 1. Try to find a suitable link group, if successd, current connection
+>>>> is considered as NON first contact connection. ends.
+>>>>
+>>>> 2. Check the number of connections currently waiting for a suitable
+>>>> link group to be created, if it is not less that the number of link
+>>>> groups to be created multiplied by (SMC_RMBS_PER_LGR_MAX - 1), then
+>>>> increase the number of link groups to be created, current connection
+>>>> is considered as the first contact connection. ends.
+>>>>
+>>>> 3. Increase the number of connections currently waiting, and wait
+>>>> for woken up.
+>>>>
+>>>> 4. Decrease the number of connections currently waiting, goto 1.
+>>>>
+>>>> We wake up the connection that was put to sleep in stage 3 through
+>>>> the SMC link state change event. Once the link moves out of the
+>>>> SMC_LNK_ACTIVATING state, decrease the number of link groups to
+>>>> be created, and then wake up at most (SMC_RMBS_PER_LGR_MAX - 1)
+>>>> connections.
+>>>>
+>>>> In the iplementation, we introduce the concept of lnk cluster, which is
+>>>> a collection of links with the same characteristics (see
+>>>> smcr_lnk_cluster_cmpfn() with more details), which makes it possible to
+>>>> wake up efficiently in the scenario of N v.s 1.
+>>>>
+>>>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>>>
+>>> Hello D.,
+>>>
+>>> thanks for the v2 and the patience.
+>>> I got to testing and as with v1 I want to share our findings with you. If you need more information or want us to look deeper into the findings please let us know.
+>>>
+>>> Regarding SMC-R test-suite:
+>>> We see a refcount error during one of our stress tests. This lets us believe that the smc_link_cluster_put() to smc_link_cluster_hold() ratio is not right anymore.
+>>> The patch provided by yacan does fix this issue but we did not verify if it is the right way to balance the hold and put calls.
+>>>
+>>> [root@t8345011 ~]# journalctl --dmesg | tail -100
+>>> Aug 31 16:17:36 t8345011.lnxne.boe smc-tests: test_smcapp_50x_ifdown started
+>>> Aug 31 16:17:46 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000100 net 1 link removed: id 00000101, peerid 00000101, ibdev mlx5_0, ibport 1
+>>> Aug 31 16:17:46 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000100 net 1 state changed: SINGLE, pnetid NET25
+>>> Aug 31 16:17:46 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000100 net 1 link added: id 00000103, peerid 00000103, ibdev mlx5_0, ibport 1
+>>> Aug 31 16:17:46 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000100 net 1 state changed: ASYMMETRIC_PEER, pnetid NET25
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000100 net 1 link added: id 00000104, peerid 00000104, ibdev mlx5_0, ibport 1
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000100 net 1 state changed: SYMMETRIC, pnetid NET25
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: ------------[ cut here ]------------
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: refcount_t: underflow; use-after-free.
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: WARNING: CPU: 1 PID: 150 at lib/refcount.c:87 refcount_dec_not_one+0x88/0xa8
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: Modules linked in: smc_diag tcp_diag inet_diag nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables nfnetlink mlx5_ib ism smc ib_uverbs ib_core vfio_ccw mdev s390_trng vfio_iommu_type1 vfio sch_fq_codel configfs ip_tables x_tables ghash_s390 prng chacha_s390 libchacha aes_s390 mlx5_core des_s390 libdes sha3_512_s390 sha3_256_s390 sha512_s390 sha256_s390 sha1_s390 sha_common pkey zcrypt rng_core autofs4
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: CPU: 1 PID: 150 Comm: kworker/1:2 Not tainted 6.0.0-rc2-00493-g91ecd751199f #8
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: Hardware name: IBM 8561 T01 701 (z/VM 7.2.0)
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: Workqueue: events smc_llc_add_link_work [smc]
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: Krnl PSW : 0704c00180000000 000000005b31f32c (refcount_dec_not_one+0x8c/0xa8)
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:0 PM:0 RI:0 EA:3
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: Krnl GPRS: 00000000ffffffea 0000000000000027 0000000000000026 000000005c3151e0
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:            00000000fee80000 0000038000000001 000000008e0e9a00 000000008de79c24
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:            0000038000000000 000003ff803f05ac 0000000095038360 000000008de79c00
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:            00000000828ca100 0000000095038360 000000005b31f328 0000038000943b50
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: Krnl Code: 000000005b31f31c: c02000466122        larl        %r2,000000005bbeb560
+>>> 000000005b31f322: c0e500232e53        brasl        %r14,000000005b784fc8
+>>> #000000005b31f328: af000000                mc        0,0
+>>> >000000005b31f32c: a7280001                lhi        %r2,1
+>>> 000000005b31f330: ebeff0a00004        lmg        %r14,%r15,160(%r15)
+>>> 000000005b31f336: ec223fbf0055        risbg        %r2,%r2,63,191,0
+>>> 000000005b31f33c: 07fe                bcr        15,%r14
+>>> 000000005b31f33e: 47000700                bc        0,1792
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: Call Trace:
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000000005b31f32c>] refcount_dec_not_one+0x8c/0xa8
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: ([<000000005b31f328>] refcount_dec_not_one+0x88/0xa8)
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000003ff803ef16a>] smcr_link_cluster_on_link_state.part.0+0x1ba/0x440 [smc]
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000003ff803f05ac>] smcr_link_clear+0x5c/0x1b0 [smc]
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000003ff803fadf4>] smc_llc_add_link_work+0x43c/0x470 [smc]
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000000005ac1f0e2>] process_one_work+0x1fa/0x478
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000000005ac1f88c>] worker_thread+0x64/0x468
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000000005ac28580>] kthread+0x108/0x110
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000000005abaf2dc>] __ret_from_fork+0x3c/0x58
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000000005b7a4d6a>] ret_from_fork+0xa/0x40
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: Last Breaking-Event-Address:
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel:  [<000000005b785028>] __warn_printk+0x60/0x68
+>>
+>> Thank you for your test, I need to think about it, please give me some time.
+>>
+>>
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: ---[ end trace 0000000000000000 ]---
+>>> Aug 31 16:17:55 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000100 net 1 link removed: id 00000103, peerid 00000103, ibdev mlx5_0, ibport 1
+>>> [root@t8345011 ~]#
+>>>
+>>>
+>>>
+>>> Regarding SMC-D test-suite:
+>>> For SMC-D we also see errors during another stress test. While we expect connections to fall back to TCP due to the limit of parallel connections your patch introduces TCP fallbacks with a new reason.
+>>>
+>>> [root@t8345011 ~]# journalctl --dmesg | tail -10
+>>> Aug 31 16:30:07 t8345011.lnxne.boe smc-tests: test_oob7_send_multi_urg_at_start started
+>>> Aug 31 16:30:16 t8345011.lnxne.boe smc-tests: test_oob8_ignore_some_urg_data started
+>>> Aug 31 16:30:30 t8345011.lnxne.boe smc-tests: test_smc_tool_second started
+>>> Aug 31 16:30:34 t8345011.lnxne.boe smc-tests: test_tshark started
+>>> Aug 31 16:30:34 t8345011.lnxne.boe smc-tests: test_smcapp_torture_test started
+>>> Aug 31 16:30:49 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000401, peerid 00000401, ibdev mlx5_0, ibport 1
+>>> Aug 31 16:30:49 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000400 net 1 state changed: SINGLE, pnetid NET25
+>>> Aug 31 16:30:49 t8345011.lnxne.boe kernel: TCP: request_sock_TCP: Possible SYN flooding on port 51897. Sending cookies.  Check SNMP counters.
+>>> Aug 31 16:30:49 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000402, peerid 00000402, ibdev mlx5_1, ibport 1
+>>> Aug 31 16:30:49 t8345011.lnxne.boe kernel: smc: SMC-R lg 00000400 net 1 state changed: SYMMETRIC, pnetid NET25
+>>>
+>>> ^
+>>> I am wondering why we see SMC-R dmesgs even if we communicate with SMC-D. Gotta verify that. Can be an error on our side.
+>>
+>> This is very weird, is there no such SMC-R dmesgs before apply my PATCH?
+>>
+>> I am not sure if there is logic to downgrade SMC-D to SMC-R, maybe it's has related to 0x03010000.
+>> I need to check the code, the reason will be sent out as soon as possible
+>>
+>>
+>>> [root@t8345011 ~]#
+>>> [root@t8345011 ~]# smcss
+>>> ACTIVE         00000 0067005 10.25.45.10:48096       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0067001 10.25.45.10:48060       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0066999 10.25.45.10:48054       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0068762 10.25.45.10:48046       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0066997 10.25.45.10:48044       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0068760 10.25.45.10:48036       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0066995 10.25.45.10:48026       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0068758 10.25.45.10:48024       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0066993 10.25.45.10:48022       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0068756 10.25.45.10:48006       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0066991 10.25.45.10:47998       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0068754 10.25.45.10:47984       10.25.45.11:51897     0000 SMCD
+>>> ACTIVE         00000 0067124 10.25.45.11:51897       10.25.45.10:48314     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0067121 10.25.45.11:51897       10.25.45.10:48302     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0067120 10.25.45.11:51897       10.25.45.10:48284     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0067114 10.25.45.11:51897       10.25.45.10:48282     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0067115 10.25.45.11:51897       10.25.45.10:48254     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0067111 10.25.45.11:51897       10.25.45.10:48250     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0066415 10.25.45.11:51897       10.25.45.10:48242     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0067113 10.25.45.11:51897       10.25.45.10:48230     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0066409 10.25.45.11:51897       10.25.45.10:48202     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0066413 10.25.45.11:51897       10.25.45.10:48214     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0066414 10.25.45.11:51897       10.25.45.10:48204     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0066397 10.25.45.11:51897       10.25.45.10:48120     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0066399 10.25.45.11:51897       10.25.45.10:48084     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0066396 10.25.45.11:51897       10.25.45.10:48078     0000 TCP 0x05000000/0x030d0000
+>>> ACTIVE         00000 0062632 10.25.45.11:51897       10.25.45.10:43120     0000 TCP 0x03010000
+>>> ACTIVE         00000 0062631 10.25.45.11:51897       10.25.45.10:43134     0000 TCP 0x03010000
+>>> ACTIVE         00000 0062626 10.25.45.11:51897       10.25.45.10:43106     0000 TCP 0x03010000
+>>> ACTIVE         00000 0062625 10.25.45.11:51897       10.25.45.10:43138     0000 TCP 0x03010000
+>>> ACTIVE         00000 0062621 10.25.45.11:51897       10.25.45.10:43160     0000 TCP 0x03010000
+>>> ACTIVE         00000 0061580 10.25.45.11:51897       10.25.45.10:42820     0000 TCP 0x03010000
+>>> ACTIVE         00000 0061558 10.25.45.11:51897       10.25.45.10:42792     0000 TCP 0x03010000
+>>> ACTIVE         00000 0061549 10.25.45.11:51897       10.25.45.10:42816     0000 TCP 0x03010000
+>>> ACTIVE         00000 0061548 10.25.45.11:51897       10.25.45.10:42764     0000 TCP 0x03010000
+>>> ACTIVE         00000 0061544 10.25.45.11:51897       10.25.45.10:42804     0000 TCP 0x03010000
+>>> ACTIVE         00000 0061543 10.25.45.11:51897       10.25.45.10:42856     0000 TCP 0x03010000
+>>> ACTIVE         00000 0061542 10.25.45.11:51897       10.25.45.10:42756     0000 TCP 0x03010000
+>>> ACTIVE         00000 0062554 10.25.45.11:51897       10.25.45.10:42852     0000 TCP 0x03010000
+>>> ACTIVE         00000 0062553 10.25.45.11:51897       10.25.45.10:42844     0000 TCP 0x03010000
+>>> ACTIVE         00000 0062549 10.25.45.11:51897       10.25.45.10:42836     0000 TCP 0x03010000
+>>>
+>>> ^
+>>> Here SMCD and 0x05000000/0x030d0000 are expected. But:
+>>>    [353] smcss confirmed connection of type SMCD
+>>>    [353] Error: Found TCP fallback due to unexpected reasons: 0x03010000
+>> sysctl -w net.ipv4.tcp_syncookies=0
+>>
+>> Can you retry your test after set above configure? When TCP detects a potential flooding attack,
+>> it will starts syn-cookies to verify traffic. In this case, SMC can't work, and then triggering a fallback with
+>> error code 0x03010000.
+>>
+>> This doesn't seem to be the problem that my PATCH can cause, but my PATCH removes the lock in
+>> the handshake phase, which may speed up the frequency of your test initiating connections,
+>> But I can't be sure ...
+>>
+>>
+>>> We also exeperience that the lsmod count stays above 2 even after the testcase finished and takes quite a while before it goes down again (we send a kill signal at the end of our testcase).
+>>
+>>>
+>>> During test (which is fine)
+>>>
+>>> [root@t8345011 ~]# lsmod | grep smc
+>>> smc_diag               16384  0
+>>> smc                   225280  2981 ism,smc_diag
+>>> ib_core               413696  3 smc,ib_uverbs,mlx5_ib
+>>>
+>>> Count > 2 even after tests finish!
+>>>
+>>> [root@t8345011 ~]# lsmod | grep smc
+>>> smc_diag               16384  0
+>>> smc                   225280  40 ism,smc_diag
+>>> ib_core               413696  3 smc,ib_uverbs,mlx5_ib
+>>
+>>> Let us know if you need any more information.
+>>> Thanks, Jan
+>>
+>>
+>> This usually means that there are still connections that are not really destroyed,
+>> can you try this and to see if there are any remaining connections?
+>>
+>> smcd linkgroup; #or smcr, it depends, if any, can you show us the connection state (smcss -r or -d)
+>>
+>> ps aux | grep D; # check if there is work thread hungs, if any, please show us the /proc/$PID/stack.
+>>
+>>
+>> D. Wythe
+>> Thanks.
+>>
+> 
+> Thank you for the tip with the syncookies. We disabled them on both systems and here is the new output which should be not as confusing.
+> 
+> For your understanding of the output:
+> t8345010 is the system driving the tests and is acting as the client in this testcase.
+> t8345011 is the pair system and the server of this test.
+> What we are doing is we spawn a lot of connection between the two systems to see what is happening if there is stress (in terms of connection handling) on the system.
+> 
+> We see the following:
+> - The driver falls back to SMCR in many occasions. This should not be. Also note the missmatch of numbers of connections handled. There were no other connections beside the test.
+> 
+>    T8345010
+>    > SMC-D Connections Summary
+>    >   Total connections handled          1012
+>    > SMC-R Connections Summary
+>    >   Total connections handled          1512
+> 
+>    T8345011
+>    > SMC-D Connections Summary
+>    >   Total connections handled          1190
+>    > SMC-R Connections Summary
+>    >   Total connections handled          1513
+> 
+> 
+> - Linkgroups for the SMCD & SMCR connections are being build up.
+> 
+>    T8345011
+>    > [root@t8345011 ~]# smcd linkgroup
+>    > LG-ID    VLAN  #Conns  PNET-ID
+>    > 00000300    0      37  NET25
+>    > [root@t8345011 ~]# smcr linkgroup
+>    > LG-ID    LG-Role  LG-Type  VLAN  #Conns  PNET-ID
+>    > 00000400 SERV     SYM         0       0  NET25
+>    > [ 5 more LG 0500-0900]
+> 
+> 
+> - Linkgroups for the SMCD & SMCR connections are being build down once the clients finish.
+> - ALL SMCR linkgoups are being cleared completely as expected. They still reside empty for a while which is fine.
+> - The SMCD linkgroups are NOT cleared all the way. A few connections stay in there (See output above).
+> - If we perform smcss on the server side those connections are listed there as ACTIVE while the smcss list on the client side is empty.
+> 
+>    T8345011
+>    > [root@t8345011 ~]# smcss
+>    > State          UID   Inode   Local Address           Peer Address          Intf Mode
+>    > ACTIVE         00000 0100758 10.25.45.11:40237 10.25.45.10:55790       0000 SMCD
+>    > [ 36 more ACTIVE connections ]
+> 
+> 
+> - The remaing ACTIVE connections on the server are reflected in the smcd linkgroup #Conns aswell.
+> - On the client the lsmod count for the smc module is 39 also reflecting the leftover connections.
+> 
+>    T8345010
+>    > [root@t8345010 tela-kernel]# lsmod |grep smc
+>    > smc                   225280  39 ism,smc_diag
+> 
+> 
+> - On the server the lsmod count for the smc module is 79.
+> 
+>    T8345011
+>    > [root@t8345011 ~]# lsmod | grep smc
+>    > smc                   225280  79 ism,smc_diag
+> 
+> 
+> - The most important smc_dbg outputs are provided and are showing that the client is pretty clean and the server is still handling ghost connections.
+> 
+>    T8345011
+>    > [root@t8345011 ~]# smc_dbg
+>    > State          UID   Inode   Local Address           Peer Address          Intf Mode GID              Token            Peer-GID Peer-Token       Linkid
+>    > ACTIVE         00000 0100758 10.25.45.11:40237 10.25.45.10:55790       0000 SMCD 120014a12e488561 0000890fd0000000 3e0014a32e488561 00008a0bd0000000 00000300
+>    > State          UID   Inode   Local Address           Peer Address          Intf Mode Shutd Token    Sndbuf   Rcvbuf   Peerbuf rxprod-Cursor rxcons-Cursor rxFlags txprod-Cursor txcons-Cursor txFlags txprep-Cursor txsent-Cursor txfin-Cursor
+>    > ACTIVE         00000 0100758 10.25.45.11:40237 10.25.45.10:55790       0000 SMCD  <->  00001611 00004000 0000ffe0 0000ffe0 0000:00000000 0000:00000000 00:00   0000:00000000 0000:00000000 00:00   0000:00000000 0000:00000000 0000:00000000
+> 
+> 
+> - Via netstat we see that the server is in a CLOSE_WAIT state for the connections and the client in a FIN_WAIT2
+> 
+>    T8345010
+>    > [root@t8345010 tela-kernel]# netstat -nta
+>    > Proto Recv-Q Send-Q Local Address           Foreign Address State
+>    > tcp        0      0 10.25.45.10:55790       10.25.45.11:40237 FIN_WAIT2
+>    T8345011
+>    > [root@t8345011 ~]# netstat -nta | grep "40237"
+>    > tcp        1      0 10.25.45.11:40237       10.25.45.10:55790 CLOSE_WAIT
+> 
+> 
+> While I'm pretty new to the mailing list we had a discussion about how to provide the log data in a reasonable way.
+> To prevent too much information we decided to go for the short output on top. If that is not enough for you shot me a message and i can send you the full output outside the mailing list.
+> If you have any ideas on how to provide larger output in a reasonable way feel free to share your oppinion.
+> 
+> I hope the new output helps you locating the error.
+> Feel free to contact us in case you have questions.
+> - Jan
