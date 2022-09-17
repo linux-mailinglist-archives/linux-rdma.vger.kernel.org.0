@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550B05BB5C8
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 Sep 2022 05:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C825BB5D2
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 Sep 2022 05:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229483AbiIQDLt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Sep 2022 23:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
+        id S229728AbiIQDL6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Sep 2022 23:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbiIQDLS (ORCPT
+        with ESMTP id S229733AbiIQDLS (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Sep 2022 23:11:18 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821934D26D
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B330380523
         for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:11:10 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-127ba06d03fso54754329fac.3
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1274ec87ad5so54802429fac.0
         for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:11:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=dZydl9VOtrbPxiFnDDs3otuazpDHAJBf6IwhOk9Dnjk=;
-        b=Bw/lHNqGRd93JcnPwIp4Bl2AGDB57OpzlY3yxMwDw57ZLw5BcRSDkW+5Uhn0CU/Qni
-         TTyxMMz4J62FvJE+4kMxtRhBE63S+iwDwodXk811vSMiNvsXvtq/R7En8vZM5wRNCNnt
-         391YD/16yUyFiU/rofEJcaUoOFg0NL2aq749/Q5lOuHIFfX8AmKqcy51OVu6dqU4GIxU
-         OpEex25FlEzNqEAZsDhVfaLI4uWIKtTu2C+GSwyW1dDTcc5l5f9JZE6urCBmeoJ/Yzzy
-         56HBN3CyrsYkpJ6DIixrUG66bv6OMYki1IxlgWKwoBZf1CexIdfbw347XuPP1bRfQHFs
-         fujw==
+        bh=1O4gVNR3dcE8FWJuOdKt0Ng7mhdOLr6Amkjy6/uxb+o=;
+        b=GfM6hLQTFxfWCA/daXE+BKluySstWmo2hgO3FTfPTnOMpLJuRcawYnZVSAyFgPuCKQ
+         g5TNW/kI2YZriemNclMyQL4nRxGVwxPM10CmpTtvXDdArd+ATqrYv2QwWJ8GDr47BVjN
+         ah1TlhmbvxjP3x4sQitIpwGdz5QHPnqsVCtcRJvXAO9ucseH3vTU/1ykag5XcrubYMXw
+         mn8j9kdra/q60rtE2c9eqdLyvhns854OI/ETRtiLitK1NCWbaYhRJ4pu0NjGq+OJZj/Q
+         qx3XADj2IhZY0FPIqv7Y265HGbP+NE+wRM1ipE2gf2o+X5B9UOIOrqK2BS1Om7/J+mTR
+         DjBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=dZydl9VOtrbPxiFnDDs3otuazpDHAJBf6IwhOk9Dnjk=;
-        b=ybndBvYMl+cbtZoeAqq0Qcfh65mMOHKbnyt+vq3KF0oymA6zQOc873KJ4WWF+BLIFn
-         F4HPtmiL2Ms00tf6YH3kUjM0R2M/v/GOxBa9hRVFnZW868R+rUreIuadATubIGL7lICb
-         eg1NNgEk4rRD8wMW12jos1iyCUmMd5X5mYoUffR0R14fKiNoDE50N5Tv5u2n8cMK8WoN
-         eUK+8dfYRPi4OsYs0Ax7FDzH8IlTW9mxrebzjg5cCOILDGSFH+m8GAMy1k8kCmGERvxL
-         UXlg6hULJZhOm1yE12L8aX0FCMs1JuYAMQh+46t5UukojnauWGPIzmsEAsERSpFLQKAv
-         DMxA==
-X-Gm-Message-State: ACrzQf0KLQRWt8zKwD/pQ+tIEFVgVo53s8BSDA+N0OafuA3KffUWL7Xa
-        lFX2MWvGp/AOrS8hoO2wbeI=
-X-Google-Smtp-Source: AMsMyM7oKYcr3MZxj0holeyqZFI4nwLBomp46ROYPAC3DOTYSk1zuBd5Si5e4V1nooxB8eucF9RCtQ==
-X-Received: by 2002:a05:6870:a70f:b0:127:666a:658 with SMTP id g15-20020a056870a70f00b00127666a0658mr4583733oam.218.1663384269600;
-        Fri, 16 Sep 2022 20:11:09 -0700 (PDT)
+        bh=1O4gVNR3dcE8FWJuOdKt0Ng7mhdOLr6Amkjy6/uxb+o=;
+        b=v9+2lMEInLRTHONFrQfKTKKbyIa5M7SpNVTTlFUuFUgrJyZS2Bstz5y5cExG+u/aqJ
+         R/A5n5xouVpgCcrkUs14y+9l+7kA6BTPCT/rlMBpvP80tnuT9so9rCTTwaqsy2g1lNfh
+         Y+IcMl5u/LxEkQ6YP/t9TiWpaRPMpMc02t/Hf1SovAcNsoXQAkJ/zTsOkgk3xt2BkHtt
+         RZmdW5eI9+F+MZFPgUBOBdRszgg9T0LuWKLx66bp1Zx72187sViZoHbm27SB7IuAz9k5
+         GBAhO/S7F4T0EHTlzHGq6nnKvAsxHa4civ0aVxF8F9pihXYEGJqGOmuOpB+Mu6ql7llp
+         jhAA==
+X-Gm-Message-State: ACgBeo0X6PDuBMu7Zz2TTjTHyYTYMGIQYXsdLEGo8ONzMA/dg1oqu18X
+        nKe7vomimSEcYGjy7zQJn4MCCzQ7jr0=
+X-Google-Smtp-Source: AA6agR5p8SqFqEVzYCc+qLr6Ss9RmIPrDeK2Iv3QQGsGeX5gzqDUQeRczj3bOJ9ZsTIe92V5WyWGkg==
+X-Received: by 2002:a05:6870:d594:b0:12b:f19b:6e6d with SMTP id u20-20020a056870d59400b0012bf19b6e6dmr10409842oao.115.1663384270491;
+        Fri, 16 Sep 2022 20:11:10 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-f9ea-fe1d-a45c-bca2.res6.spectrum.com. [2603:8081:140c:1a00:f9ea:fe1d:a45c:bca2])
-        by smtp.googlemail.com with ESMTPSA id q17-20020a4a6c11000000b00475f26931c8sm921422ooc.13.2022.09.16.20.11.08
+        by smtp.googlemail.com with ESMTPSA id q17-20020a4a6c11000000b00475f26931c8sm921422ooc.13.2022.09.16.20.11.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Sep 2022 20:11:08 -0700 (PDT)
+        Fri, 16 Sep 2022 20:11:09 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, lizhijian@fujitsu.com,
         linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 02/13] RDMA/rxe: Move next_opcode() to rxe_opcode.c
-Date:   Fri, 16 Sep 2022 22:10:53 -0500
-Message-Id: <20220917031104.21222-3-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 03/13] RDMA: Add xrc opcodes to ib_pack.h
+Date:   Fri, 16 Sep 2022 22:10:54 -0500
+Message-Id: <20220917031104.21222-4-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220917031104.21222-1-rpearsonhpe@gmail.com>
 References: <20220917031104.21222-1-rpearsonhpe@gmail.com>
@@ -70,374 +70,72 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Move next_opcode() from rxe_req.c to rxe_opcode.c.
+Extend ib_pack.h to include xrc opcodes.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_loc.h    |   3 +
- drivers/infiniband/sw/rxe/rxe_opcode.c | 156 ++++++++++++++++++++++++-
- drivers/infiniband/sw/rxe/rxe_req.c    | 156 -------------------------
- 3 files changed, 157 insertions(+), 158 deletions(-)
+ include/rdma/ib_pack.h | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 22f6cc31d1d6..5526d83697c7 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -99,6 +99,9 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 		    struct sk_buff *skb);
- const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num);
+diff --git a/include/rdma/ib_pack.h b/include/rdma/ib_pack.h
+index a9162f25beaf..cc9aac05d38e 100644
+--- a/include/rdma/ib_pack.h
++++ b/include/rdma/ib_pack.h
+@@ -56,8 +56,11 @@ enum {
+ 	IB_OPCODE_UD                                = 0x60,
+ 	/* per IBTA 1.3 vol 1 Table 38, A10.3.2 */
+ 	IB_OPCODE_CNP                               = 0x80,
++	IB_OPCODE_XRC				    = 0xa0,
+ 	/* Manufacturer specific */
+ 	IB_OPCODE_MSP                               = 0xe0,
++	/* opcode type bits */
++	IB_OPCODE_TYPE				    = 0xe0,
  
-+/* opcode.c */
-+int next_opcode(struct rxe_qp *qp, struct rxe_send_wqe *wqe, u32 opcode);
+ 	/* operations -- just used to define real constants */
+ 	IB_OPCODE_SEND_FIRST                        = 0x00,
+@@ -84,6 +87,8 @@ enum {
+ 	/* opcode 0x15 is reserved */
+ 	IB_OPCODE_SEND_LAST_WITH_INVALIDATE         = 0x16,
+ 	IB_OPCODE_SEND_ONLY_WITH_INVALIDATE         = 0x17,
++	/* opcode command bits */
++	IB_OPCODE_CMD				    = 0x1f,
+ 
+ 	/* real constants follow -- see comment about above IB_OPCODE()
+ 	   macro for more details */
+@@ -152,7 +157,32 @@ enum {
+ 
+ 	/* UD */
+ 	IB_OPCODE(UD, SEND_ONLY),
+-	IB_OPCODE(UD, SEND_ONLY_WITH_IMMEDIATE)
++	IB_OPCODE(UD, SEND_ONLY_WITH_IMMEDIATE),
 +
- /* rxe_qp.c */
- int rxe_qp_chk_init(struct rxe_dev *rxe, struct ib_qp_init_attr *init);
- int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.c b/drivers/infiniband/sw/rxe/rxe_opcode.c
-index 0ea587c15931..6b1a1f197c4d 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.c
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.c
-@@ -5,8 +5,8 @@
-  */
- 
- #include <rdma/ib_pack.h>
--#include "rxe_opcode.h"
--#include "rxe_hdr.h"
-+
-+#include "rxe.h"
- 
- /* useful information about work request opcodes and pkt opcodes in
-  * table form
-@@ -919,3 +919,155 @@ struct rxe_opcode_info rxe_opcode[RXE_NUM_OPCODE] = {
- 	},
- 
++	/* XRC */
++	IB_OPCODE(XRC, SEND_FIRST),
++	IB_OPCODE(XRC, SEND_MIDDLE),
++	IB_OPCODE(XRC, SEND_LAST),
++	IB_OPCODE(XRC, SEND_LAST_WITH_IMMEDIATE),
++	IB_OPCODE(XRC, SEND_ONLY),
++	IB_OPCODE(XRC, SEND_ONLY_WITH_IMMEDIATE),
++	IB_OPCODE(XRC, RDMA_WRITE_FIRST),
++	IB_OPCODE(XRC, RDMA_WRITE_MIDDLE),
++	IB_OPCODE(XRC, RDMA_WRITE_LAST),
++	IB_OPCODE(XRC, RDMA_WRITE_LAST_WITH_IMMEDIATE),
++	IB_OPCODE(XRC, RDMA_WRITE_ONLY),
++	IB_OPCODE(XRC, RDMA_WRITE_ONLY_WITH_IMMEDIATE),
++	IB_OPCODE(XRC, RDMA_READ_REQUEST),
++	IB_OPCODE(XRC, RDMA_READ_RESPONSE_FIRST),
++	IB_OPCODE(XRC, RDMA_READ_RESPONSE_MIDDLE),
++	IB_OPCODE(XRC, RDMA_READ_RESPONSE_LAST),
++	IB_OPCODE(XRC, RDMA_READ_RESPONSE_ONLY),
++	IB_OPCODE(XRC, ACKNOWLEDGE),
++	IB_OPCODE(XRC, ATOMIC_ACKNOWLEDGE),
++	IB_OPCODE(XRC, COMPARE_SWAP),
++	IB_OPCODE(XRC, FETCH_ADD),
++	IB_OPCODE(XRC, SEND_LAST_WITH_INVALIDATE),
++	IB_OPCODE(XRC, SEND_ONLY_WITH_INVALIDATE),
  };
-+
-+static int next_opcode_rc(struct rxe_qp *qp, u32 opcode, int fits)
-+{
-+	switch (opcode) {
-+	case IB_WR_RDMA_WRITE:
-+		if (qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_FIRST ||
-+		    qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_RC_RDMA_WRITE_LAST :
-+				IB_OPCODE_RC_RDMA_WRITE_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_RC_RDMA_WRITE_ONLY :
-+				IB_OPCODE_RC_RDMA_WRITE_FIRST;
-+
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
-+		if (qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_FIRST ||
-+		    qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_RC_RDMA_WRITE_LAST_WITH_IMMEDIATE :
-+				IB_OPCODE_RC_RDMA_WRITE_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_RC_RDMA_WRITE_ONLY_WITH_IMMEDIATE :
-+				IB_OPCODE_RC_RDMA_WRITE_FIRST;
-+
-+	case IB_WR_SEND:
-+		if (qp->req.opcode == IB_OPCODE_RC_SEND_FIRST ||
-+		    qp->req.opcode == IB_OPCODE_RC_SEND_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_RC_SEND_LAST :
-+				IB_OPCODE_RC_SEND_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_RC_SEND_ONLY :
-+				IB_OPCODE_RC_SEND_FIRST;
-+
-+	case IB_WR_SEND_WITH_IMM:
-+		if (qp->req.opcode == IB_OPCODE_RC_SEND_FIRST ||
-+		    qp->req.opcode == IB_OPCODE_RC_SEND_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_RC_SEND_LAST_WITH_IMMEDIATE :
-+				IB_OPCODE_RC_SEND_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_RC_SEND_ONLY_WITH_IMMEDIATE :
-+				IB_OPCODE_RC_SEND_FIRST;
-+
-+	case IB_WR_RDMA_READ:
-+		return IB_OPCODE_RC_RDMA_READ_REQUEST;
-+
-+	case IB_WR_ATOMIC_CMP_AND_SWP:
-+		return IB_OPCODE_RC_COMPARE_SWAP;
-+
-+	case IB_WR_ATOMIC_FETCH_AND_ADD:
-+		return IB_OPCODE_RC_FETCH_ADD;
-+
-+	case IB_WR_SEND_WITH_INV:
-+		if (qp->req.opcode == IB_OPCODE_RC_SEND_FIRST ||
-+		    qp->req.opcode == IB_OPCODE_RC_SEND_MIDDLE)
-+			return fits ? IB_OPCODE_RC_SEND_LAST_WITH_INVALIDATE :
-+				IB_OPCODE_RC_SEND_MIDDLE;
-+		else
-+			return fits ? IB_OPCODE_RC_SEND_ONLY_WITH_INVALIDATE :
-+				IB_OPCODE_RC_SEND_FIRST;
-+	case IB_WR_REG_MR:
-+	case IB_WR_LOCAL_INV:
-+		return opcode;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int next_opcode_uc(struct rxe_qp *qp, u32 opcode, int fits)
-+{
-+	switch (opcode) {
-+	case IB_WR_RDMA_WRITE:
-+		if (qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_FIRST ||
-+		    qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_UC_RDMA_WRITE_LAST :
-+				IB_OPCODE_UC_RDMA_WRITE_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_UC_RDMA_WRITE_ONLY :
-+				IB_OPCODE_UC_RDMA_WRITE_FIRST;
-+
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
-+		if (qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_FIRST ||
-+		    qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_UC_RDMA_WRITE_LAST_WITH_IMMEDIATE :
-+				IB_OPCODE_UC_RDMA_WRITE_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_UC_RDMA_WRITE_ONLY_WITH_IMMEDIATE :
-+				IB_OPCODE_UC_RDMA_WRITE_FIRST;
-+
-+	case IB_WR_SEND:
-+		if (qp->req.opcode == IB_OPCODE_UC_SEND_FIRST ||
-+		    qp->req.opcode == IB_OPCODE_UC_SEND_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_UC_SEND_LAST :
-+				IB_OPCODE_UC_SEND_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_UC_SEND_ONLY :
-+				IB_OPCODE_UC_SEND_FIRST;
-+
-+	case IB_WR_SEND_WITH_IMM:
-+		if (qp->req.opcode == IB_OPCODE_UC_SEND_FIRST ||
-+		    qp->req.opcode == IB_OPCODE_UC_SEND_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_UC_SEND_LAST_WITH_IMMEDIATE :
-+				IB_OPCODE_UC_SEND_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_UC_SEND_ONLY_WITH_IMMEDIATE :
-+				IB_OPCODE_UC_SEND_FIRST;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+int next_opcode(struct rxe_qp *qp, struct rxe_send_wqe *wqe, u32 opcode)
-+{
-+	int fits = (wqe->dma.resid <= qp->mtu);
-+
-+	switch (qp_type(qp)) {
-+	case IB_QPT_RC:
-+		return next_opcode_rc(qp, opcode, fits);
-+
-+	case IB_QPT_UC:
-+		return next_opcode_uc(qp, opcode, fits);
-+
-+	case IB_QPT_UD:
-+	case IB_QPT_GSI:
-+		switch (opcode) {
-+		case IB_WR_SEND:
-+			return IB_OPCODE_UD_SEND_ONLY;
-+
-+		case IB_WR_SEND_WITH_IMM:
-+			return IB_OPCODE_UD_SEND_ONLY_WITH_IMMEDIATE;
-+		}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index e136abc802af..d2a9abfed596 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -11,9 +11,6 @@
- #include "rxe_loc.h"
- #include "rxe_queue.h"
  
--static int next_opcode(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
--		       u32 opcode);
--
- static inline void retry_first_write_send(struct rxe_qp *qp,
- 					  struct rxe_send_wqe *wqe, int npsn)
- {
-@@ -194,159 +191,6 @@ static int rxe_wqe_is_fenced(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 		atomic_read(&qp->req.rd_atomic) != qp->attr.max_rd_atomic;
- }
- 
--static int next_opcode_rc(struct rxe_qp *qp, u32 opcode, int fits)
--{
--	switch (opcode) {
--	case IB_WR_RDMA_WRITE:
--		if (qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_MIDDLE)
--			return fits ?
--				IB_OPCODE_RC_RDMA_WRITE_LAST :
--				IB_OPCODE_RC_RDMA_WRITE_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_RC_RDMA_WRITE_ONLY :
--				IB_OPCODE_RC_RDMA_WRITE_FIRST;
--
--	case IB_WR_RDMA_WRITE_WITH_IMM:
--		if (qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_MIDDLE)
--			return fits ?
--				IB_OPCODE_RC_RDMA_WRITE_LAST_WITH_IMMEDIATE :
--				IB_OPCODE_RC_RDMA_WRITE_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_RC_RDMA_WRITE_ONLY_WITH_IMMEDIATE :
--				IB_OPCODE_RC_RDMA_WRITE_FIRST;
--
--	case IB_WR_SEND:
--		if (qp->req.opcode == IB_OPCODE_RC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_SEND_MIDDLE)
--			return fits ?
--				IB_OPCODE_RC_SEND_LAST :
--				IB_OPCODE_RC_SEND_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_RC_SEND_ONLY :
--				IB_OPCODE_RC_SEND_FIRST;
--
--	case IB_WR_SEND_WITH_IMM:
--		if (qp->req.opcode == IB_OPCODE_RC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_SEND_MIDDLE)
--			return fits ?
--				IB_OPCODE_RC_SEND_LAST_WITH_IMMEDIATE :
--				IB_OPCODE_RC_SEND_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_RC_SEND_ONLY_WITH_IMMEDIATE :
--				IB_OPCODE_RC_SEND_FIRST;
--
--	case IB_WR_RDMA_READ:
--		return IB_OPCODE_RC_RDMA_READ_REQUEST;
--
--	case IB_WR_ATOMIC_CMP_AND_SWP:
--		return IB_OPCODE_RC_COMPARE_SWAP;
--
--	case IB_WR_ATOMIC_FETCH_AND_ADD:
--		return IB_OPCODE_RC_FETCH_ADD;
--
--	case IB_WR_SEND_WITH_INV:
--		if (qp->req.opcode == IB_OPCODE_RC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_SEND_MIDDLE)
--			return fits ? IB_OPCODE_RC_SEND_LAST_WITH_INVALIDATE :
--				IB_OPCODE_RC_SEND_MIDDLE;
--		else
--			return fits ? IB_OPCODE_RC_SEND_ONLY_WITH_INVALIDATE :
--				IB_OPCODE_RC_SEND_FIRST;
--	case IB_WR_REG_MR:
--	case IB_WR_LOCAL_INV:
--		return opcode;
--	}
--
--	return -EINVAL;
--}
--
--static int next_opcode_uc(struct rxe_qp *qp, u32 opcode, int fits)
--{
--	switch (opcode) {
--	case IB_WR_RDMA_WRITE:
--		if (qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_FIRST ||
--		    qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_MIDDLE)
--			return fits ?
--				IB_OPCODE_UC_RDMA_WRITE_LAST :
--				IB_OPCODE_UC_RDMA_WRITE_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_UC_RDMA_WRITE_ONLY :
--				IB_OPCODE_UC_RDMA_WRITE_FIRST;
--
--	case IB_WR_RDMA_WRITE_WITH_IMM:
--		if (qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_FIRST ||
--		    qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_MIDDLE)
--			return fits ?
--				IB_OPCODE_UC_RDMA_WRITE_LAST_WITH_IMMEDIATE :
--				IB_OPCODE_UC_RDMA_WRITE_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_UC_RDMA_WRITE_ONLY_WITH_IMMEDIATE :
--				IB_OPCODE_UC_RDMA_WRITE_FIRST;
--
--	case IB_WR_SEND:
--		if (qp->req.opcode == IB_OPCODE_UC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_UC_SEND_MIDDLE)
--			return fits ?
--				IB_OPCODE_UC_SEND_LAST :
--				IB_OPCODE_UC_SEND_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_UC_SEND_ONLY :
--				IB_OPCODE_UC_SEND_FIRST;
--
--	case IB_WR_SEND_WITH_IMM:
--		if (qp->req.opcode == IB_OPCODE_UC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_UC_SEND_MIDDLE)
--			return fits ?
--				IB_OPCODE_UC_SEND_LAST_WITH_IMMEDIATE :
--				IB_OPCODE_UC_SEND_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_UC_SEND_ONLY_WITH_IMMEDIATE :
--				IB_OPCODE_UC_SEND_FIRST;
--	}
--
--	return -EINVAL;
--}
--
--static int next_opcode(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
--		       u32 opcode)
--{
--	int fits = (wqe->dma.resid <= qp->mtu);
--
--	switch (qp_type(qp)) {
--	case IB_QPT_RC:
--		return next_opcode_rc(qp, opcode, fits);
--
--	case IB_QPT_UC:
--		return next_opcode_uc(qp, opcode, fits);
--
--	case IB_QPT_UD:
--	case IB_QPT_GSI:
--		switch (opcode) {
--		case IB_WR_SEND:
--			return IB_OPCODE_UD_SEND_ONLY;
--
--		case IB_WR_SEND_WITH_IMM:
--			return IB_OPCODE_UD_SEND_ONLY_WITH_IMMEDIATE;
--		}
--		break;
--
--	default:
--		break;
--	}
--
--	return -EINVAL;
--}
--
- static inline int check_init_depth(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- {
- 	int depth;
+ enum {
 -- 
 2.34.1
 
