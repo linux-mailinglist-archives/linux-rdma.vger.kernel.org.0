@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C6F5BB5C2
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 Sep 2022 05:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E5C5BB5C3
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 Sep 2022 05:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbiIQDKy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Sep 2022 23:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
+        id S229613AbiIQDK4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Sep 2022 23:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiIQDKv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Sep 2022 23:10:51 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A504DF25
-        for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:10:49 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id w125so8307473oig.3
-        for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:10:49 -0700 (PDT)
+        with ESMTP id S229538AbiIQDKy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Sep 2022 23:10:54 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A594D26D
+        for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:10:50 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id j188so5964753oih.0
+        for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:10:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=/yphHfq1fscJdeg9GonHY1UqInv08T/3vgxuCO7wSGA=;
-        b=YbI009aIVgGj8Ak+Q3v5IVX1ITvZJUmgTqPSWl8+PwLBz4wjPAl34inMUQd4EohJDH
-         Lh9gwWiYYkAietWHHeB2HpC9yp0RQRQQcM+9vTKH0PGAr3+A6FoBFpYyHbaTsoSRuwRl
-         8X23PJV1yVaCRl1USzDqR6wr31lke07bXICHQsLPmASGc+z4Vo21V2jxBoKPt/Rso+8I
-         lm7p8R0IJaLajURSFB+zV7wzNGoF/J67hqXn1gHsUQbh4zO+wgxAw4VX5vOUL0oxjgNg
-         H1+K/RVvwIC8TixHghlJykFBO8ZFMulu+n5/D3voWxAd/76Avs1d1YqiiLefasJZvZMi
-         lyLw==
+        bh=QdO3klLpVE9C39N+UNoV5oSHsEGmmluYbUXlMnbabqs=;
+        b=fHB39p26Gop+Cy/sqwZ62ALN9/9pH1gR+NeWUQXSuoPjIraqowQ/bXaDKma3iclf7J
+         VDPe3w60DE1a9HFzLBSMg7bzjTAAARHtZwwtiIy1rwyjutv9QBRGHLNPlPEDPbpA/Gk4
+         lvqbk4BL+5UST/Rn4czn2qKD07sCl2e3dRktfbXBeDalWkd1++3a8j0BoeY7W7NnbMrc
+         iANY/0kYsqiB7ovYW4btwIAMvX8qRo3uYX7UFVF02l++XGQjeVN3i+ncP04TRnKbhgez
+         eEADSRbG+WFHRo49Zv8EUqB2gaes4Imm6ZrcilPljsqMHXrlCXl457CfmA/k0cA9VQQ4
+         B8EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=/yphHfq1fscJdeg9GonHY1UqInv08T/3vgxuCO7wSGA=;
-        b=Zj8DzL0gvJxOPfuPrQoDSJAOnkF9Ap4l7xvOH02PS7QYauECpV3P7hQiizTyuu9mA6
-         2DrTCU5R+YQue7BSRegYqm/Jf3F1S6679fodmKlKbFi1W6oYE92b7bM0RX1wm2CFhSZ1
-         z8O+4rEnCBYffN22nBKO59j7zncXBk+4+bFwHZO5ozMZL0N63mMTdc/ZGPBlBxTxj48r
-         VtNyRPh8VcrLl8dQBqRbC+gCMJRB0cf+8DpAmiPWi1A2SlrCUB7GehFPzL94HpuBM+tK
-         y4jE9l7xq+utjUdNHek9VVhbZpgMXltXgc5Shdp2A/ddujwHrqb1i3kFXXErVAixdo0q
-         4ODA==
-X-Gm-Message-State: ACgBeo3X1Xq13ZvfZsd7fkMjFSJscIRGmQp4stBT/QvgoQZCeRab0PZz
-        7dUiovfK5HXVApWE0TVKle0=
-X-Google-Smtp-Source: AA6agR5fgaNaEZFOQiqj/Flfo0GWNMQtZZj0hh8yWRgaofZTuof/ya3ajgN2B5ZO7ojsMtt+7r3KJQ==
-X-Received: by 2002:a05:6808:2190:b0:34d:8ea6:3e9d with SMTP id be16-20020a056808219000b0034d8ea63e9dmr8400446oib.40.1663384248864;
-        Fri, 16 Sep 2022 20:10:48 -0700 (PDT)
+        bh=QdO3klLpVE9C39N+UNoV5oSHsEGmmluYbUXlMnbabqs=;
+        b=KBYtp7tlP4WIWmNCwP6ohE7iFgfAqWPi5/P29jb+K2/F25AVw61uX7wM/7sI7zPvoz
+         VtZbbHXuvJodL4DigiS7RrKvZTPWXYLQEwa3ZkQqpojC0kzw90W517JwSYMZsbxmRN4H
+         IO9mi9dh2w+23YNzjlgeXoRrM+f7hU1CZ9YU7dHCasN/337MCxrOP0YHLMPgul1zIj8y
+         i6JydbXANSQ+HWGFT1pxgNHgM8HULqVaeiCylQhvjuCvPMYyKZ/ITqhr2Y/UscFIxhu3
+         zSk+l/n8Qaofd9YOFwy5qwbKScAy35w4m7zDbSv+lL6JiuyF7QpNz6Pt2PYxjpu6FUn5
+         GT8Q==
+X-Gm-Message-State: ACrzQf01Q4jb3D0v+uY1akv3tZ3V88G0qEr9VP02Pk868WBFDJjHWd6e
+        Y5yH4rCmuSnvNAenhgWoZSQ=
+X-Google-Smtp-Source: AMsMyM7PKSlKC4F44rJIXwmI9uPOEGUcyhdxtJGfK05xDOh/50ZDCkgjG+QBMZ+oLExsciBMCDV/kQ==
+X-Received: by 2002:a05:6808:10c8:b0:350:6ae1:b764 with SMTP id s8-20020a05680810c800b003506ae1b764mr1999304ois.66.1663384250077;
+        Fri, 16 Sep 2022 20:10:50 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-f9ea-fe1d-a45c-bca2.res6.spectrum.com. [2603:8081:140c:1a00:f9ea:fe1d:a45c:bca2])
-        by smtp.googlemail.com with ESMTPSA id be36-20020a05687058a400b000f5e89a9c60sm4464800oab.3.2022.09.16.20.10.47
+        by smtp.googlemail.com with ESMTPSA id be36-20020a05687058a400b000f5e89a9c60sm4464800oab.3.2022.09.16.20.10.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Sep 2022 20:10:48 -0700 (PDT)
+        Fri, 16 Sep 2022 20:10:49 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, lizhijian@fujitsu.com,
         linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 06/13] RDMA/rxe: Implement open_xrcd and close_xrcd
-Date:   Fri, 16 Sep 2022 22:10:25 -0500
-Message-Id: <20220917031028.21187-6-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 07/13] RDMA/rxe: Extend srq verbs to support xrcd
+Date:   Fri, 16 Sep 2022 22:10:26 -0500
+Message-Id: <20220917031028.21187-7-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220917031028.21187-1-rpearsonhpe@gmail.com>
 References: <20220917031028.21187-1-rpearsonhpe@gmail.com>
@@ -70,175 +70,343 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add rxe_open_xrcd() and rxe_close_xrcd() and add xrcd objects
-to rxe object pools to implement ib_open_xrcd() and ib_close_xrcd().
+Extend srq to support xrcd in create verb
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe.c       |  2 ++
- drivers/infiniband/sw/rxe/rxe_param.h |  3 +++
- drivers/infiniband/sw/rxe/rxe_pool.c  |  8 ++++++++
- drivers/infiniband/sw/rxe/rxe_pool.h  |  1 +
- drivers/infiniband/sw/rxe/rxe_verbs.c | 23 +++++++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_verbs.h | 11 +++++++++++
- 6 files changed, 48 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_srq.c   | 131 ++++++++++++++------------
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  13 +--
+ drivers/infiniband/sw/rxe/rxe_verbs.h |   8 +-
+ include/uapi/rdma/rdma_user_rxe.h     |   4 +-
+ 4 files changed, 83 insertions(+), 73 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 51daac5c4feb..acd22980836e 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -23,6 +23,7 @@ void rxe_dealloc(struct ib_device *ib_dev)
- 	rxe_pool_cleanup(&rxe->uc_pool);
- 	rxe_pool_cleanup(&rxe->pd_pool);
- 	rxe_pool_cleanup(&rxe->ah_pool);
-+	rxe_pool_cleanup(&rxe->xrcd_pool);
- 	rxe_pool_cleanup(&rxe->srq_pool);
- 	rxe_pool_cleanup(&rxe->qp_pool);
- 	rxe_pool_cleanup(&rxe->cq_pool);
-@@ -120,6 +121,7 @@ static void rxe_init_pools(struct rxe_dev *rxe)
- 	rxe_pool_init(rxe, &rxe->uc_pool, RXE_TYPE_UC);
- 	rxe_pool_init(rxe, &rxe->pd_pool, RXE_TYPE_PD);
- 	rxe_pool_init(rxe, &rxe->ah_pool, RXE_TYPE_AH);
-+	rxe_pool_init(rxe, &rxe->xrcd_pool, RXE_TYPE_XRCD);
- 	rxe_pool_init(rxe, &rxe->srq_pool, RXE_TYPE_SRQ);
- 	rxe_pool_init(rxe, &rxe->qp_pool, RXE_TYPE_QP);
- 	rxe_pool_init(rxe, &rxe->cq_pool, RXE_TYPE_CQ);
-diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-index 86c7a8bf3cbb..fa4bf177e123 100644
---- a/drivers/infiniband/sw/rxe/rxe_param.h
-+++ b/drivers/infiniband/sw/rxe/rxe_param.h
-@@ -86,6 +86,9 @@ enum rxe_device_param {
- 	RXE_MAX_QP_INDEX		= DEFAULT_MAX_VALUE,
- 	RXE_MAX_QP			= DEFAULT_MAX_VALUE - RXE_MIN_QP_INDEX,
+diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c b/drivers/infiniband/sw/rxe/rxe_srq.c
+index 02b39498c370..fcd1a58c3900 100644
+--- a/drivers/infiniband/sw/rxe/rxe_srq.c
++++ b/drivers/infiniband/sw/rxe/rxe_srq.c
+@@ -11,61 +11,85 @@
+ int rxe_srq_chk_init(struct rxe_dev *rxe, struct ib_srq_init_attr *init)
+ {
+ 	struct ib_srq_attr *attr = &init->attr;
++	int err = -EINVAL;
  
-+	RXE_MIN_XRCD_INDEX		= 1,
-+	RXE_MAX_XRCD_INDEX		= 128,
-+	RXE_MAX_XRCD			= 128,
- 	RXE_MIN_SRQ_INDEX		= 0x00020001,
- 	RXE_MAX_SRQ_INDEX		= DEFAULT_MAX_VALUE,
- 	RXE_MAX_SRQ			= DEFAULT_MAX_VALUE - RXE_MIN_SRQ_INDEX,
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index f50620f5a0a1..b54453b68169 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.c
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -42,6 +42,14 @@ static const struct rxe_type_info {
- 		.max_index	= RXE_MAX_AH_INDEX,
- 		.max_elem	= RXE_MAX_AH_INDEX - RXE_MIN_AH_INDEX + 1,
- 	},
-+	[RXE_TYPE_XRCD] = {
-+		.name		= "xrcd",
-+		.size		= sizeof(struct rxe_xrcd),
-+		.elem_offset	= offsetof(struct rxe_xrcd, elem),
-+		.min_index	= RXE_MIN_XRCD_INDEX,
-+		.max_index	= RXE_MAX_XRCD_INDEX,
-+		.max_elem	= RXE_MAX_XRCD_INDEX - RXE_MIN_XRCD_INDEX + 1,
-+	},
- 	[RXE_TYPE_SRQ] = {
- 		.name		= "srq",
- 		.size		= sizeof(struct rxe_srq),
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-index 9d83cb32092f..35ac0746a4b8 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.h
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-@@ -11,6 +11,7 @@ enum rxe_elem_type {
- 	RXE_TYPE_UC,
- 	RXE_TYPE_PD,
- 	RXE_TYPE_AH,
-+	RXE_TYPE_XRCD,
- 	RXE_TYPE_SRQ,
- 	RXE_TYPE_QP,
- 	RXE_TYPE_CQ,
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 9ebe9decad34..4a5da079bf11 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -281,6 +281,26 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
- 	return err;
+-	if (attr->max_wr > rxe->attr.max_srq_wr) {
+-		pr_warn("max_wr(%d) > max_srq_wr(%d)\n",
+-			attr->max_wr, rxe->attr.max_srq_wr);
+-		goto err1;
++	if (init->srq_type == IB_SRQT_TM) {
++		err = -EOPNOTSUPP;
++		goto err_out;
+ 	}
+ 
+-	if (attr->max_wr <= 0) {
+-		pr_warn("max_wr(%d) <= 0\n", attr->max_wr);
+-		goto err1;
++	if (init->srq_type == IB_SRQT_XRC) {
++		if (!init->ext.cq || !init->ext.xrc.xrcd)
++			goto err_out;
+ 	}
+ 
++	if (attr->max_wr > rxe->attr.max_srq_wr)
++		goto err_out;
++
++	if (attr->max_wr <= 0)
++		goto err_out;
++
+ 	if (attr->max_wr < RXE_MIN_SRQ_WR)
+ 		attr->max_wr = RXE_MIN_SRQ_WR;
+ 
+-	if (attr->max_sge > rxe->attr.max_srq_sge) {
+-		pr_warn("max_sge(%d) > max_srq_sge(%d)\n",
+-			attr->max_sge, rxe->attr.max_srq_sge);
+-		goto err1;
+-	}
++	if (attr->max_sge > rxe->attr.max_srq_sge)
++		goto err_out;
+ 
+ 	if (attr->max_sge < RXE_MIN_SRQ_SGE)
+ 		attr->max_sge = RXE_MIN_SRQ_SGE;
+ 
+ 	return 0;
+ 
+-err1:
+-	return -EINVAL;
++err_out:
++	pr_debug("%s: failed err = %d\n", __func__, err);
++	return err;
  }
  
-+static int rxe_alloc_xrcd(struct ib_xrcd *ibxrcd, struct ib_udata *udata)
-+{
-+	struct rxe_dev *rxe = to_rdev(ibxrcd->device);
-+	struct rxe_xrcd *xrcd = to_rxrcd(ibxrcd);
+ int rxe_srq_from_init(struct rxe_dev *rxe, struct rxe_srq *srq,
+ 		      struct ib_srq_init_attr *init, struct ib_udata *udata,
+ 		      struct rxe_create_srq_resp __user *uresp)
+ {
+-	int err;
+-	int srq_wqe_size;
++	struct rxe_pd *pd = to_rpd(srq->ibsrq.pd);
++	struct rxe_cq *cq;
++	struct rxe_xrcd *xrcd;
+ 	struct rxe_queue *q;
+-	enum queue_type type;
++	int srq_wqe_size;
 +	int err;
 +
-+	err = rxe_add_to_pool(&rxe->xrcd_pool, xrcd);
-+
-+	return err;
-+}
-+
-+static int rxe_dealloc_xrcd(struct ib_xrcd *ibxrcd, struct ib_udata *udata)
-+{
-+	struct rxe_xrcd *xrcd = to_rxrcd(ibxrcd);
-+
-+	rxe_cleanup(xrcd);
-+
-+	return 0;
-+}
-+
- static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
- 			  struct ib_udata *udata)
- {
-@@ -1055,6 +1075,7 @@ static const struct ib_device_ops rxe_dev_ops = {
- 	.alloc_mw = rxe_alloc_mw,
- 	.alloc_pd = rxe_alloc_pd,
- 	.alloc_ucontext = rxe_alloc_ucontext,
-+	.alloc_xrcd = rxe_alloc_xrcd,
- 	.attach_mcast = rxe_attach_mcast,
- 	.create_ah = rxe_create_ah,
- 	.create_cq = rxe_create_cq,
-@@ -1065,6 +1086,7 @@ static const struct ib_device_ops rxe_dev_ops = {
- 	.dealloc_mw = rxe_dealloc_mw,
- 	.dealloc_pd = rxe_dealloc_pd,
- 	.dealloc_ucontext = rxe_dealloc_ucontext,
-+	.dealloc_xrcd = rxe_dealloc_xrcd,
- 	.dereg_mr = rxe_dereg_mr,
- 	.destroy_ah = rxe_destroy_ah,
- 	.destroy_cq = rxe_destroy_cq,
-@@ -1103,6 +1125,7 @@ static const struct ib_device_ops rxe_dev_ops = {
- 	INIT_RDMA_OBJ_SIZE(ib_cq, rxe_cq, ibcq),
- 	INIT_RDMA_OBJ_SIZE(ib_pd, rxe_pd, ibpd),
- 	INIT_RDMA_OBJ_SIZE(ib_qp, rxe_qp, ibqp),
-+	INIT_RDMA_OBJ_SIZE(ib_xrcd, rxe_xrcd, ibxrcd),
- 	INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
- 	INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
- 	INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index a51819d0c345..6c4cfb802dd4 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -93,6 +93,11 @@ struct rxe_rq {
- 	struct rxe_queue	*queue;
- };
++	rxe_get(pd);
++	srq->pd = pd;
  
-+struct rxe_xrcd {
-+	struct ib_xrcd		ibxrcd;
-+	struct rxe_pool_elem	elem;
-+};
-+
- struct rxe_srq {
- 	struct ib_srq		ibsrq;
- 	struct rxe_pool_elem	elem;
-@@ -383,6 +388,7 @@ struct rxe_dev {
- 	struct rxe_pool		uc_pool;
- 	struct rxe_pool		pd_pool;
- 	struct rxe_pool		ah_pool;
-+	struct rxe_pool		xrcd_pool;
- 	struct rxe_pool		srq_pool;
- 	struct rxe_pool		qp_pool;
- 	struct rxe_pool		cq_pool;
-@@ -432,6 +438,11 @@ static inline struct rxe_ah *to_rah(struct ib_ah *ah)
- 	return ah ? container_of(ah, struct rxe_ah, ibah) : NULL;
+ 	srq->ibsrq.event_handler	= init->event_handler;
+ 	srq->ibsrq.srq_context		= init->srq_context;
+ 	srq->limit		= init->attr.srq_limit;
+-	srq->srq_num		= srq->elem.index;
+ 	srq->rq.max_wr		= init->attr.max_wr;
+ 	srq->rq.max_sge		= init->attr.max_sge;
+ 
+-	srq_wqe_size		= rcv_wqe_size(srq->rq.max_sge);
++	if (init->srq_type == IB_SRQT_XRC) {
++		cq = to_rcq(init->ext.cq);
++		if (cq) {
++			rxe_get(cq);
++			srq->cq = to_rcq(init->ext.cq);
++		} else {
++			return -EINVAL;
++		}
++		xrcd = to_rxrcd(init->ext.xrc.xrcd);
++		if (xrcd) {
++			rxe_get(xrcd);
++			srq->xrcd = to_rxrcd(init->ext.xrc.xrcd);
++		}
++		srq->ibsrq.ext.xrc.srq_num = srq->elem.index;
++	}
+ 
+ 	spin_lock_init(&srq->rq.producer_lock);
+ 	spin_lock_init(&srq->rq.consumer_lock);
+ 
+-	type = QUEUE_TYPE_FROM_CLIENT;
+-	q = rxe_queue_init(rxe, &srq->rq.max_wr, srq_wqe_size, type);
++	srq_wqe_size = rcv_wqe_size(srq->rq.max_sge);
++	q = rxe_queue_init(rxe, &srq->rq.max_wr, srq_wqe_size,
++			   QUEUE_TYPE_FROM_CLIENT);
+ 	if (!q) {
+-		pr_warn("unable to allocate queue for srq\n");
++		pr_debug("%s: srq#%d: unable to allocate queue\n",
++				__func__, srq->elem.index);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -79,66 +103,45 @@ int rxe_srq_from_init(struct rxe_dev *rxe, struct rxe_srq *srq,
+ 		return err;
+ 	}
+ 
+-	if (uresp) {
+-		if (copy_to_user(&uresp->srq_num, &srq->srq_num,
+-				 sizeof(uresp->srq_num))) {
+-			rxe_queue_cleanup(q);
+-			return -EFAULT;
+-		}
+-	}
+-
+ 	return 0;
  }
  
-+static inline struct rxe_xrcd *to_rxrcd(struct ib_xrcd *ibxrcd)
+ int rxe_srq_chk_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
+ 		     struct ib_srq_attr *attr, enum ib_srq_attr_mask mask)
+ {
+-	if (srq->error) {
+-		pr_warn("srq in error state\n");
+-		goto err1;
+-	}
++	int err = -EINVAL;
++
++	if (srq->error)
++		goto err_out;
+ 
+ 	if (mask & IB_SRQ_MAX_WR) {
+-		if (attr->max_wr > rxe->attr.max_srq_wr) {
+-			pr_warn("max_wr(%d) > max_srq_wr(%d)\n",
+-				attr->max_wr, rxe->attr.max_srq_wr);
+-			goto err1;
+-		}
++		if (attr->max_wr > rxe->attr.max_srq_wr)
++			goto err_out;
+ 
+-		if (attr->max_wr <= 0) {
+-			pr_warn("max_wr(%d) <= 0\n", attr->max_wr);
+-			goto err1;
+-		}
++		if (attr->max_wr <= 0)
++			goto err_out;
+ 
+-		if (srq->limit && (attr->max_wr < srq->limit)) {
+-			pr_warn("max_wr (%d) < srq->limit (%d)\n",
+-				attr->max_wr, srq->limit);
+-			goto err1;
+-		}
++		if (srq->limit && (attr->max_wr < srq->limit))
++			goto err_out;
+ 
+ 		if (attr->max_wr < RXE_MIN_SRQ_WR)
+ 			attr->max_wr = RXE_MIN_SRQ_WR;
+ 	}
+ 
+ 	if (mask & IB_SRQ_LIMIT) {
+-		if (attr->srq_limit > rxe->attr.max_srq_wr) {
+-			pr_warn("srq_limit(%d) > max_srq_wr(%d)\n",
+-				attr->srq_limit, rxe->attr.max_srq_wr);
+-			goto err1;
+-		}
++		if (attr->srq_limit > rxe->attr.max_srq_wr)
++			goto err_out;
+ 
+-		if (attr->srq_limit > srq->rq.queue->buf->index_mask) {
+-			pr_warn("srq_limit (%d) > cur limit(%d)\n",
+-				attr->srq_limit,
+-				srq->rq.queue->buf->index_mask);
+-			goto err1;
+-		}
++		if (attr->srq_limit > srq->rq.queue->buf->index_mask)
++			goto err_out;
+ 	}
+ 
+ 	return 0;
+ 
+-err1:
+-	return -EINVAL;
++err_out:
++	pr_debug("%s: srq#%d: failed err = %d\n", __func__,
++			srq->elem.index, err);
++	return err;
+ }
+ 
+ int rxe_srq_from_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
+@@ -182,6 +185,12 @@ void rxe_srq_cleanup(struct rxe_pool_elem *elem)
+ 	if (srq->pd)
+ 		rxe_put(srq->pd);
+ 
++	if (srq->cq)
++		rxe_put(srq->cq);
++
++	if (srq->xrcd)
++		rxe_put(srq->xrcd);
++
+ 	if (srq->rq.queue)
+ 		rxe_queue_cleanup(srq->rq.queue);
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 4a5da079bf11..ef86f0c5890e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -306,7 +306,6 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+ {
+ 	int err;
+ 	struct rxe_dev *rxe = to_rdev(ibsrq->device);
+-	struct rxe_pd *pd = to_rpd(ibsrq->pd);
+ 	struct rxe_srq *srq = to_rsrq(ibsrq);
+ 	struct rxe_create_srq_resp __user *uresp = NULL;
+ 
+@@ -316,9 +315,6 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+ 		uresp = udata->outbuf;
+ 	}
+ 
+-	if (init->srq_type != IB_SRQT_BASIC)
+-		return -EOPNOTSUPP;
+-
+ 	err = rxe_srq_chk_init(rxe, init);
+ 	if (err)
+ 		return err;
+@@ -327,13 +323,11 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+ 	if (err)
+ 		return err;
+ 
+-	rxe_get(pd);
+-	srq->pd = pd;
+-
+ 	err = rxe_srq_from_init(rxe, srq, init, udata, uresp);
+ 	if (err)
+ 		goto err_cleanup;
+ 
++	rxe_finalize(srq);
+ 	return 0;
+ 
+ err_cleanup:
+@@ -367,6 +361,7 @@ static int rxe_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+ 	err = rxe_srq_from_attr(rxe, srq, attr, mask, &ucmd, udata);
+ 	if (err)
+ 		return err;
++
+ 	return 0;
+ }
+ 
+@@ -380,6 +375,7 @@ static int rxe_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
+ 	attr->max_wr = srq->rq.queue->buf->index_mask;
+ 	attr->max_sge = srq->rq.max_sge;
+ 	attr->srq_limit = srq->limit;
++
+ 	return 0;
+ }
+ 
+@@ -546,7 +542,6 @@ static void init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
+ 			 const struct ib_send_wr *ibwr)
+ {
+ 	wr->wr_id = ibwr->wr_id;
+-	wr->num_sge = ibwr->num_sge;
+ 	wr->opcode = ibwr->opcode;
+ 	wr->send_flags = ibwr->send_flags;
+ 
+@@ -628,6 +623,8 @@ static void init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+ 		return;
+ 	}
+ 
++	wqe->dma.num_sge = ibwr->num_sge;
++
+ 	if (unlikely(ibwr->send_flags & IB_SEND_INLINE))
+ 		copy_inline_data_to_wqe(wqe, ibwr);
+ 	else
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 6c4cfb802dd4..7dab7fa3ba6c 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -102,13 +102,19 @@ struct rxe_srq {
+ 	struct ib_srq		ibsrq;
+ 	struct rxe_pool_elem	elem;
+ 	struct rxe_pd		*pd;
++	struct rxe_xrcd		*xrcd;		/* xrc only */
++	struct rxe_cq		*cq;		/* xrc only */
+ 	struct rxe_rq		rq;
+-	u32			srq_num;
+ 
+ 	int			limit;
+ 	int			error;
+ };
+ 
++static inline u32 srq_num(struct rxe_srq *srq)
 +{
-+	return ibxrcd ? container_of(ibxrcd, struct rxe_xrcd, ibxrcd) : NULL;
++	return srq->ibsrq.ext.xrc.srq_num;
 +}
 +
- static inline struct rxe_srq *to_rsrq(struct ib_srq *srq)
- {
- 	return srq ? container_of(srq, struct rxe_srq, ibsrq) : NULL;
+ enum rxe_qp_state {
+ 	QP_STATE_RESET,
+ 	QP_STATE_INIT,
+diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
+index f09c5c9e3dd5..514a1b6976fe 100644
+--- a/include/uapi/rdma/rdma_user_rxe.h
++++ b/include/uapi/rdma/rdma_user_rxe.h
+@@ -74,7 +74,7 @@ struct rxe_av {
+ 
+ struct rxe_send_wr {
+ 	__aligned_u64		wr_id;
+-	__u32			num_sge;
++	__u32			srq_num;	/* xrc only */
+ 	__u32			opcode;
+ 	__u32			send_flags;
+ 	union {
+@@ -191,8 +191,6 @@ struct rxe_create_qp_resp {
+ 
+ struct rxe_create_srq_resp {
+ 	struct mminfo mi;
+-	__u32 srq_num;
+-	__u32 reserved;
+ };
+ 
+ struct rxe_modify_srq_cmd {
 -- 
 2.34.1
 
