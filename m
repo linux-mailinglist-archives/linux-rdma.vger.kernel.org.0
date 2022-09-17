@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F085BB5CC
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 Sep 2022 05:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EC65BB5D1
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 Sep 2022 05:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbiIQDLw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Sep 2022 23:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
+        id S229593AbiIQDL5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Sep 2022 23:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbiIQDLV (ORCPT
+        with ESMTP id S229773AbiIQDLV (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Sep 2022 23:11:21 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC05B9DB6C
-        for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:11:16 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-12b542cb1d3so44955109fac.13
-        for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:11:16 -0700 (PDT)
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF829E0FD
+        for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:11:18 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id h9-20020a9d5549000000b0063727299bb4so16109046oti.9
+        for <linux-rdma@vger.kernel.org>; Fri, 16 Sep 2022 20:11:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=2sQYsVirRP6MdY15qHzh8WxTTUEdGT3IBBGPdUTLpFI=;
-        b=MQju2xXVMj3zhesztM+J4UOUYJdNCuNrtPQm8KZmR4UWEmd0m/EtNlX0TMiDnE4gOX
-         o7HNTa8VXePLuz6EfdYrUdGSeDc7I2KHtOj3WyU43IsJFoQCrfXbeV+ZZPsnLYBzUWQR
-         HcrC6alQtrmQ9IMos2x+BCJMsJaAqNSD7KPq0/VJU+QPNI1lbIgmlU6igQhNRYiCrkxS
-         dWtKQNN7Mv3xJw1QrzZTXAR/vxeuDGqYXCENjLFJna/brcCfXMCAK8CxUnH07hWbT/lu
-         +601qcqSqyi+wJqbebJbYf33yoQYNylDkWe5jRUVNbYpOcwvV5ei3yihHTcUt3f+UGZ8
-         3Rig==
+        bh=ku0ZUcIZA3npQmzAHPTmYvCJbqp5m4nqBvFCAYUUG2w=;
+        b=Tz76RYrfDHFNs8y/kJJvV220909bxwBpAVHYDQeWqdBgTfgrM7JITekMSVKzrI+xNl
+         B/3In4DDECpkoM9YFetynRN+q/+PSkMfyl0kOpieDeU8c2ExoGN/ZSW6DQgU7NASj3Tc
+         mxrer4ckB36SUf/a+t0Q9oaf4abNv3C98Q6RnRG5A8OrFvLgAPXSGjqts+RI5p0t21G6
+         E8N5Ne9NryIlVPIKZaq5A9u+QzZMXLjtUlZQqA13vHB8rPkgcQGWkFBcrb8M4N5yIIA+
+         nmRLzpyV+vYzSoSZ82A8WTyOcyOn/w1riM49Asrp+i/SqVH0sJ3Rdy7tOdtIAPAAg5Sm
+         2uxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=2sQYsVirRP6MdY15qHzh8WxTTUEdGT3IBBGPdUTLpFI=;
-        b=TTL76awRRgiXoKCy7bWE9lcMXuS0NATeB8zV0ry76BTduFW3aXhTsMX7k0GaeoyuEl
-         Z0sBWKCvmj1LUpLgVOaX/ZdckKKd9qI+IAFwPC9W/5JuxZeM1qtNUbjmX5dBIdMqEBSX
-         1Nb/jfEviewRsdqgw2Cqyaa0VbYqNBCrFmA+u3xz5SQcRTqPQpkOJGD8lZzyAOHR1YOb
-         SAfSBSNxTrylfKQc/4sVuiW1E0BPfM37jGdi2JA7oG1vnqEp10TUFl1PMLUs64mluicy
-         OeVGqqlVIOkRM560N5R/uyu6/Da/F7jWdkTZngEt6wbw36H9d79w7hOJTp/NOCmQAZ/c
-         Uzhw==
-X-Gm-Message-State: ACgBeo26apCR42aiBWO1bs8lsAdQLrXwulnt5PsWktT7AqZoXPNyMleZ
-        aHMP7cSLYdzlq9BRZf5op7U=
-X-Google-Smtp-Source: AA6agR5EqS42wR4GOmLz5/XB3LRs53V53NycHalSumUrWZ7WdV5LuOi+RpgBF9uLyvzfEpAkQ24Vsg==
-X-Received: by 2002:a05:6871:29a:b0:127:6381:9bbc with SMTP id i26-20020a056871029a00b0012763819bbcmr10590878oae.77.1663384276233;
-        Fri, 16 Sep 2022 20:11:16 -0700 (PDT)
+        bh=ku0ZUcIZA3npQmzAHPTmYvCJbqp5m4nqBvFCAYUUG2w=;
+        b=D20hG0bo7H23jf0bin/hVuIuZ0AX2YwH7bWrC2KyANwuohJefb2FbqfRWaURMvndcX
+         RywmI/RYEuk0pvxe5X//oU5iznoKRo8qZQMDa+b5mZYmQM00CRn5bv/GuAaMJ3k+uio4
+         bV4kYBM+DCqKZ3sD9xORTUBGQskEmFWwhaoifPehzcunSmzZYTLLeyhEX+YYAl07dFn9
+         Dr4uItB1np6uqf7XN606SuYoWDmolIeJduQUUv04gwqGQb0SuyZN7QxkzVJzg5+CGaTL
+         3pnZVnQPJlBMQTxdLTwc2qoJ8CB2VbAv6x1nBRFbBfoeCPDWzrqmETN3wsxfJnM24nNm
+         Xr3w==
+X-Gm-Message-State: ACrzQf1UZfiROpYwRc8O4R5oel8+5LCj/MVh8jSPx0AN7FEYUjh+RW3D
+        9+B4JSwC13yCw+1ZYL5OvsL0iIZWd2Q=
+X-Google-Smtp-Source: AMsMyM4++VijmLVspPdQ5MLNMXHHct6QrLDvH9h5f1sctewsR8FKreb6Ji3guGjH8S/Lw2LIh29zOw==
+X-Received: by 2002:a05:6830:d86:b0:639:35d9:4b90 with SMTP id bv6-20020a0568300d8600b0063935d94b90mr3698644otb.184.1663384277349;
+        Fri, 16 Sep 2022 20:11:17 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-f9ea-fe1d-a45c-bca2.res6.spectrum.com. [2603:8081:140c:1a00:f9ea:fe1d:a45c:bca2])
-        by smtp.googlemail.com with ESMTPSA id q17-20020a4a6c11000000b00475f26931c8sm921422ooc.13.2022.09.16.20.11.15
+        by smtp.googlemail.com with ESMTPSA id q17-20020a4a6c11000000b00475f26931c8sm921422ooc.13.2022.09.16.20.11.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Sep 2022 20:11:15 -0700 (PDT)
+        Fri, 16 Sep 2022 20:11:16 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, lizhijian@fujitsu.com,
         linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 09/13] RDMA/rxe: Extend rxe_recv.c to support xrc
-Date:   Fri, 16 Sep 2022 22:11:00 -0500
-Message-Id: <20220917031104.21222-10-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 10/13] RDMA/rxe: Extend rxe_comp.c to support xrc qps
+Date:   Fri, 16 Sep 2022 22:11:01 -0500
+Message-Id: <20220917031104.21222-11-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220917031104.21222-1-rpearsonhpe@gmail.com>
 References: <20220917031104.21222-1-rpearsonhpe@gmail.com>
@@ -70,158 +70,119 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Extend rxe_recv.c to support xrc packets. Add checks for qp type
-and check qp->xrcd matches srq->xrcd.
+Extend code in rxe_comp.c to support xrc qp types.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_hdr.h  |  5 +-
- drivers/infiniband/sw/rxe/rxe_recv.c | 79 +++++++++++++++++++++-------
- 2 files changed, 63 insertions(+), 21 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_comp.c | 45 ++++++++++++++--------------
+ 1 file changed, 22 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_hdr.h b/drivers/infiniband/sw/rxe/rxe_hdr.h
-index e947bcf75209..fb9959d91b8d 100644
---- a/drivers/infiniband/sw/rxe/rxe_hdr.h
-+++ b/drivers/infiniband/sw/rxe/rxe_hdr.h
-@@ -14,7 +14,10 @@
- struct rxe_pkt_info {
- 	struct rxe_dev		*rxe;		/* device that owns packet */
- 	struct rxe_qp		*qp;		/* qp that owns packet */
--	struct rxe_send_wqe	*wqe;		/* send wqe */
-+	union {
-+		struct rxe_send_wqe	*wqe;	/* send wqe */
-+		struct rxe_srq		*srq;	/* srq for recvd xrc packets */
-+	};
- 	u8			*hdr;		/* points to bth */
- 	u32			mask;		/* useful info about pkt */
- 	u32			psn;		/* bth psn of packet */
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index f3ad7b6dbd97..4f35757d3c52 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -13,49 +13,51 @@
- static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
- 			    struct rxe_qp *qp)
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index 1f10ae4a35d5..cb6621b4055d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -213,12 +213,13 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
+ 					struct rxe_pkt_info *pkt,
+ 					struct rxe_send_wqe *wqe)
  {
--	unsigned int pkt_type;
-+	unsigned int pkt_type = pkt->opcode & IB_OPCODE_TYPE;
++	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+ 	unsigned int mask = pkt->mask;
++	int opcode;
+ 	u8 syn;
+-	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
  
- 	if (unlikely(!qp->valid))
--		goto err1;
-+		goto err_out;
+-	/* Check the sequence only */
+-	switch (qp->comp.opcode) {
++	/* Mask off type bits and check the sequence only */
++	switch (qp->comp.opcode & IB_OPCODE_CMD) {
+ 	case -1:
+ 		/* Will catch all *_ONLY cases. */
+ 		if (!(mask & RXE_FIRST_MASK))
+@@ -226,42 +227,39 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
  
--	pkt_type = pkt->opcode & 0xe0;
- 
- 	switch (qp_type(qp)) {
- 	case IB_QPT_RC:
--		if (unlikely(pkt_type != IB_OPCODE_RC)) {
--			pr_warn_ratelimited("bad qp type\n");
--			goto err1;
--		}
-+		if (unlikely(pkt_type != IB_OPCODE_RC))
-+			goto err_out;
  		break;
- 	case IB_QPT_UC:
--		if (unlikely(pkt_type != IB_OPCODE_UC)) {
--			pr_warn_ratelimited("bad qp type\n");
--			goto err1;
--		}
-+		if (unlikely(pkt_type != IB_OPCODE_UC))
-+			goto err_out;
- 		break;
- 	case IB_QPT_UD:
- 	case IB_QPT_GSI:
--		if (unlikely(pkt_type != IB_OPCODE_UD)) {
--			pr_warn_ratelimited("bad qp type\n");
--			goto err1;
--		}
-+		if (unlikely(pkt_type != IB_OPCODE_UD))
-+			goto err_out;
-+		break;
-+	case IB_QPT_XRC_INI:
-+		if (unlikely(pkt_type != IB_OPCODE_XRC))
-+			goto err_out;
-+		break;
-+	case IB_QPT_XRC_TGT:
-+		if (unlikely(pkt_type != IB_OPCODE_XRC))
-+			goto err_out;
+ 
+-	case IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST:
+-	case IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE:
+-		if (pkt->opcode != IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE &&
+-		    pkt->opcode != IB_OPCODE_RC_RDMA_READ_RESPONSE_LAST) {
++	case IB_OPCODE_RDMA_READ_RESPONSE_FIRST:
++	case IB_OPCODE_RDMA_READ_RESPONSE_MIDDLE:
++		opcode = pkt->opcode & IB_OPCODE_CMD;
++		if (opcode != IB_OPCODE_RDMA_READ_RESPONSE_MIDDLE &&
++		    opcode != IB_OPCODE_RDMA_READ_RESPONSE_LAST) {
+ 			/* read retries of partial data may restart from
+ 			 * read response first or response only.
+ 			 */
+ 			if ((pkt->psn == wqe->first_psn &&
+-			     pkt->opcode ==
+-			     IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST) ||
++			     opcode == IB_OPCODE_RDMA_READ_RESPONSE_FIRST) ||
+ 			    (wqe->first_psn == wqe->last_psn &&
+-			     pkt->opcode ==
+-			     IB_OPCODE_RC_RDMA_READ_RESPONSE_ONLY))
++			     opcode == IB_OPCODE_RDMA_READ_RESPONSE_ONLY))
+ 				break;
+ 
+ 			return COMPST_ERROR;
+ 		}
  		break;
  	default:
--		pr_warn_ratelimited("unsupported qp type\n");
--		goto err1;
-+		goto err_out;
+-		WARN_ON_ONCE(1);
++		//WARN_ON_ONCE(1);
  	}
  
- 	if (pkt->mask & RXE_REQ_MASK) {
- 		if (unlikely(qp->resp.state != QP_STATE_READY))
--			goto err1;
-+			goto err_out;
- 	} else if (unlikely(qp->req.state < QP_STATE_READY ||
- 				qp->req.state > QP_STATE_DRAINED)) {
--		goto err1;
-+		goto err_out;
- 	}
+-	/* Check operation validity. */
+-	switch (pkt->opcode) {
+-	case IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST:
+-	case IB_OPCODE_RC_RDMA_READ_RESPONSE_LAST:
+-	case IB_OPCODE_RC_RDMA_READ_RESPONSE_ONLY:
++	/* Mask off the type bits and check operation validity. */
++	switch (pkt->opcode & IB_OPCODE_CMD) {
++	case IB_OPCODE_RDMA_READ_RESPONSE_FIRST:
++	case IB_OPCODE_RDMA_READ_RESPONSE_LAST:
++	case IB_OPCODE_RDMA_READ_RESPONSE_ONLY:
+ 		syn = aeth_syn(pkt);
  
- 	return 0;
+ 		if ((syn & AETH_TYPE_MASK) != AETH_ACK)
+ 			return COMPST_ERROR;
  
--err1:
-+err_out:
-+	pr_debug("%s: failed qp#%d: opcode = 0x%02x\n", __func__,
-+			qp->elem.index, pkt->opcode);
- 	return -EINVAL;
- }
+ 		fallthrough;
+-		/* (IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE doesn't have an AETH)
+-		 */
+-	case IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE:
++	case IB_OPCODE_RDMA_READ_RESPONSE_MIDDLE:
+ 		if (wqe->wr.opcode != IB_WR_RDMA_READ &&
+ 		    wqe->wr.opcode != IB_WR_RDMA_READ_WITH_INV) {
+ 			wqe->status = IB_WC_FATAL_ERR;
+@@ -270,7 +268,7 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
+ 		reset_retry_counters(qp);
+ 		return COMPST_READ;
  
-@@ -166,6 +168,37 @@ static int check_addr(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
- 	return -EINVAL;
- }
+-	case IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE:
++	case IB_OPCODE_ATOMIC_ACKNOWLEDGE:
+ 		syn = aeth_syn(pkt);
  
-+static int check_xrcd(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
-+		      struct rxe_qp *qp)
-+{
-+	int err;
-+
-+	struct rxe_xrcd *xrcd = qp->xrcd;
-+	u32 srqn = xrceth_srqn(pkt);
-+	struct rxe_srq *srq;
-+
-+	srq = rxe_pool_get_index(&rxe->srq_pool, srqn);
-+	if (unlikely(!srq)) {
-+		err = -EINVAL;
-+		goto err_out;
-+	}
-+
-+	if (unlikely(srq->xrcd != xrcd)) {
-+		rxe_put(srq);
-+		err = -EINVAL;
-+		goto err_out;
-+	}
-+
-+	pkt->srq = srq;
-+
-+	return 0;
-+
-+err_out:
-+	pr_debug("%s: qp#%d: failed err = %d\n", __func__,
-+			qp->elem.index, err);
-+	return err;
-+}
-+
- static int hdr_check(struct rxe_pkt_info *pkt)
- {
- 	struct rxe_dev *rxe = pkt->rxe;
-@@ -205,6 +238,12 @@ static int hdr_check(struct rxe_pkt_info *pkt)
- 		err = check_keys(rxe, pkt, qpn, qp);
- 		if (unlikely(err))
- 			goto err2;
-+
-+		if (qp_type(qp) == IB_QPT_XRC_TGT) {
-+			err = check_xrcd(rxe, pkt, qp);
-+			if (unlikely(err))
-+				goto err2;
-+		}
- 	} else {
- 		if (unlikely((pkt->mask & RXE_GRH_MASK) == 0)) {
- 			pr_warn_ratelimited("no grh for mcast qpn\n");
+ 		if ((syn & AETH_TYPE_MASK) != AETH_ACK)
+@@ -282,7 +280,7 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
+ 		reset_retry_counters(qp);
+ 		return COMPST_ATOMIC;
+ 
+-	case IB_OPCODE_RC_ACKNOWLEDGE:
++	case IB_OPCODE_ACKNOWLEDGE:
+ 		syn = aeth_syn(pkt);
+ 		switch (syn & AETH_TYPE_MASK) {
+ 		case AETH_ACK:
+@@ -669,7 +667,8 @@ int rxe_completer(void *arg)
+ 			 *     timeouts but try to keep them as few as possible)
+ 			 * (4) the timeout parameter is set
+ 			 */
+-			if ((qp_type(qp) == IB_QPT_RC) &&
++			if ((qp_type(qp) == IB_QPT_RC ||
++			     qp_type(qp) == IB_QPT_XRC_INI) &&
+ 			    (qp->req.state == QP_STATE_READY) &&
+ 			    (psn_compare(qp->req.psn, qp->comp.psn) > 0) &&
+ 			    qp->qp_timeout_jiffies)
 -- 
 2.34.1
 
