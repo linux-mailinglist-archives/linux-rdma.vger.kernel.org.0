@@ -2,100 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4B35BDFCD
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Sep 2022 10:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821825BDFFF
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Sep 2022 10:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbiITIVF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Sep 2022 04:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
+        id S229891AbiITI3G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Sep 2022 04:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbiITIUN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Sep 2022 04:20:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7A0B844
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Sep 2022 01:18:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1663661914;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nYBXnM221OKkMmYnX56agU4HA29O1+0qE07dmbgFr1Y=;
-        b=F0OgTcmRQgV+Ch8wa63Iif3veP7AxynKLHbV79zgrraolhR+oDpdSGMZABtGOhz71Udllp
-        9/cqc6NHBuE4WvXuHuepAwiPmqRWO4MRwY/MFSWh+7YpzdfaSb7AlD31hCh24ud/DuIayk
-        n3f5z9hyD9GmZuEBubv5zcGJVBaxBak=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-588-A-_kUuW4MJiaMFGfkG1_9A-1; Tue, 20 Sep 2022 04:18:31 -0400
-X-MC-Unique: A-_kUuW4MJiaMFGfkG1_9A-1
-Received: by mail-wr1-f71.google.com with SMTP id d30-20020adfa41e000000b00228c0e80c49so831030wra.21
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Sep 2022 01:18:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=nYBXnM221OKkMmYnX56agU4HA29O1+0qE07dmbgFr1Y=;
-        b=knqSOnZwSBfK3/pN3ej8ATzvmaZQmgqfRMn1IP22rmvabby9xuS2blr7n4ObK+epoz
-         +/a5/DWJ9EDg8CvIm5JOu0VRDfF5PkkZmR6HRtNzT2caT+Gl7uYxUK1rCQtL2fElvjfU
-         zt6CzpkrxrFMxiBENqYfHS7ZQ1F99iS6Az2Ixi4M66YRsUkVqWWPmG+Kbrzg6PtcEAdG
-         k5wms7yw/Hnb78V2UIdA051Gtcbfv3MfiNTHXgyc/oU/9ROYSNGZtFlpH4aRaLRMfUIs
-         XtsAA9tghKbw5T78ll7rJp9hpk57CA1oAp+5aLOTJl7KNVKEeJ/o9tixYzz4wzO4Kjo2
-         jjtA==
-X-Gm-Message-State: ACrzQf1ynT4NUWIj7CP3y2zfNKt+c8kfXPimyiSs33V62rHHzzIwmxCP
-        WPFLvbTF0K9/6GkK5wsUQf1gI/Vf/Xlz6TWuQdxskIOcUTtGmB39Tz41iMZN15FCT6Fh+hJJUV9
-        Ah6pcK5QAGtFOJDXVptUGmw==
-X-Received: by 2002:a5d:4ec5:0:b0:228:6707:8472 with SMTP id s5-20020a5d4ec5000000b0022867078472mr13700976wrv.12.1663661910617;
-        Tue, 20 Sep 2022 01:18:30 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM5Gc746EtqOMp12PC/ZhI3qlffavJ9O8HKgnaDgO6702xNdn3VPX99CEZYZBDDZBLY3QzW+vw==
-X-Received: by 2002:a5d:4ec5:0:b0:228:6707:8472 with SMTP id s5-20020a5d4ec5000000b0022867078472mr13700953wrv.12.1663661910369;
-        Tue, 20 Sep 2022 01:18:30 -0700 (PDT)
-Received: from sgarzare-redhat (host-87-11-6-69.retail.telecomitalia.it. [87.11.6.69])
-        by smtp.gmail.com with ESMTPSA id z22-20020a05600c0a1600b003b4868eb6bbsm1749112wmp.23.2022.09.20.01.18.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Sep 2022 01:18:29 -0700 (PDT)
-Date:   Tue, 20 Sep 2022 10:18:24 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     vdasa@vmware.com, vbhakta@vmware.com, namit@vmware.com,
-        bryantan@vmware.com, zackr@vmware.com,
-        linux-graphics-maintainer@vmware.com, doshir@vmware.com,
-        gregkh@linuxfoundation.org, davem@davemloft.net,
-        pv-drivers@vmware.com, joe@perches.com, netdev@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 0/3] MAINTAINERS: Update entries for some VMware drivers
-Message-ID: <20220920081824.vshwiv3lt5crlxdj@sgarzare-redhat>
-References: <20220906172722.19862-1-vdasa@vmware.com>
- <20220919104147.1373eac1@kernel.org>
+        with ESMTP id S229907AbiITI1m (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Sep 2022 04:27:42 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0431E696E7
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Sep 2022 01:25:45 -0700 (PDT)
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28K8Gq6c015177;
+        Tue, 20 Sep 2022 08:25:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=CD8lPBU8+Fwy36vYdGIvy7Ssr4hr/VtD5u+Ga9j1rEs=;
+ b=KaYmC6zgjQX37X6uGq+ghoQ4bpWwhIZ9CcXUY52tijTsCbz3Nqjot3q24iHgVn4xk2da
+ L88pIDW9yejrAvhoWXuJCod7EZ7O3ImealxaGD1gCjJUA6ylJ0tQQeJuRUCtId0Mc5eT
+ m/DdCuNFSlg0f4u9GwRXTZtTuMAMJR2HM8DHZMKdvf84KsajzMdSosw8Axah33tnircB
+ NTDZW95cG0XvN5EvpbZSZgMwOyyOqcRMsPtBDHDjD082xI/f6J2vpm1qZ6DdiFoR5WCq
+ 1wczz70wgIIE3FNuac9fQsmOBzg53KT67MGQ3PtPiwg+i2MSyF+iPnHjq0vXzUmuhvZQ 6Q== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3jq9vb876h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Sep 2022 08:25:43 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 28K8L0mP023149;
+        Tue, 20 Sep 2022 08:25:41 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 3jn5v8kjj5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Sep 2022 08:25:40 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 28K8PcNG48365908
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Sep 2022 08:25:38 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A1E9C4C04E;
+        Tue, 20 Sep 2022 08:25:38 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AA594C046;
+        Tue, 20 Sep 2022 08:25:38 +0000 (GMT)
+Received: from rims.zurich.ibm.com (unknown [9.4.69.56])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Sep 2022 08:25:38 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     jgg@nvidia.com, leonro@nvidia.com,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Olga Kornievskaia <kolga@netapp.com>
+Subject: [PATCH] RDMA/siw: Fix QP destroy to wait for all references dropped.
+Date:   Tue, 20 Sep 2022 10:25:03 +0200
+Message-Id: <20220920082503.224189-1-bmt@zurich.ibm.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20220919104147.1373eac1@kernel.org>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cvWGPTziPJcSF3w3Qr4zykzbRcwu9F3G
+X-Proofpoint-ORIG-GUID: cvWGPTziPJcSF3w3Qr4zykzbRcwu9F3G
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-20_02,2022-09-16_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=984 bulkscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2209200049
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 19, 2022 at 10:41:47AM -0700, Jakub Kicinski wrote:
->On Tue,  6 Sep 2022 10:27:19 -0700 vdasa@vmware.com wrote:
->> From: Vishnu Dasa <vdasa@vmware.com>
->>
->> This series updates a few existing maintainer entries for VMware
->> supported drivers and adds a new entry for vsock vmci transport
->> driver.
->
->Just to be sure - who are you expecting to take these in?
->
+Delay QP destroy completion until all siw references to QP are
+dropped. The calling RDMA core will free QP structure after
+successful return from siw_qp_destroy() call, so siw must not
+hold any remaining reference to the QP upon return.
+A use-after-free was encountered in xfstest generic/460, while
+testing NFSoRDMA. Here, after a TCP connection drop by peer,
+the triggered siw_cm_work_handler got delayed until after
+QP destroy call, referencing a QP which has already freed.
 
-FYI Greg already queued this series in his char-misc-next branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git/log/?h=char-misc-next
+Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
 
-Thanks,
-Stefano
+Reported-by: Olga Kornievskaia <kolga@netapp.com>
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw.h       | 1 +
+ drivers/infiniband/sw/siw/siw_qp.c    | 2 +-
+ drivers/infiniband/sw/siw/siw_verbs.c | 3 +++
+ 3 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+index df03d84c6868..2f3a9cda3850 100644
+--- a/drivers/infiniband/sw/siw/siw.h
++++ b/drivers/infiniband/sw/siw/siw.h
+@@ -418,6 +418,7 @@ struct siw_qp {
+ 	struct ib_qp base_qp;
+ 	struct siw_device *sdev;
+ 	struct kref ref;
++	struct completion qp_free;
+ 	struct list_head devq;
+ 	int tx_cpu;
+ 	struct siw_qp_attrs attrs;
+diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
+index 7e01f2438afc..e6f634971228 100644
+--- a/drivers/infiniband/sw/siw/siw_qp.c
++++ b/drivers/infiniband/sw/siw/siw_qp.c
+@@ -1342,6 +1342,6 @@ void siw_free_qp(struct kref *ref)
+ 	vfree(qp->orq);
+ 
+ 	siw_put_tx_cpu(qp->tx_cpu);
+-
++	complete(&qp->qp_free);
+ 	atomic_dec(&sdev->num_qp);
+ }
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 8dedae7ae79e..3e814cfb298c 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -480,6 +480,8 @@ int siw_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attrs,
+ 	list_add_tail(&qp->devq, &sdev->qp_list);
+ 	spin_unlock_irqrestore(&sdev->lock, flags);
+ 
++	init_completion(&qp->qp_free);
++
+ 	return 0;
+ 
+ err_out_xa:
+@@ -624,6 +626,7 @@ int siw_destroy_qp(struct ib_qp *base_qp, struct ib_udata *udata)
+ 	qp->scq = qp->rcq = NULL;
+ 
+ 	siw_qp_put(qp);
++	wait_for_completion(&qp->qp_free);
+ 
+ 	return 0;
+ }
+-- 
+2.32.0
 
