@@ -2,169 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DBD5BDF90
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Sep 2022 10:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4B35BDFCD
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Sep 2022 10:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbiITIN5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Sep 2022 04:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
+        id S230121AbiITIVF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Sep 2022 04:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbiITINS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Sep 2022 04:13:18 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AC8A453
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Sep 2022 01:12:29 -0700 (PDT)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28K7g0lx007303;
-        Tue, 20 Sep 2022 08:12:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=F4ULou7gFTA2xj7rJyi2/MERhISSyduJUBBr6Va3cMk=;
- b=S/HTqbeqkTpVE7xw5JBkE/oqz0shFPRn33g9X+kOBsOeIEnxzyV7t6g8Cz7gUtQVKaVl
- fQpGq1zBVb3TqdciR1qEwmw7T/BnDCyl0yA0wxgaciwWkOL6yIzAKO1YZNO2YQ/mXGHz
- B1JqcfNdwS7es1gSeP7UvnIS7QbDAmu6uuaI3ZNcHHWUQ7rYji0hJ64Qv0CH4subCH8I
- JA6V5ib4nzFYAr1v+lsqUywl6sguuDKOHyqBMGLInroIinLCHO4YYCqARRlaPT8cYuQR
- LoHxDIKN7tds6Fbk6mBeEON+Jw7rrmca2v7jJD31GeywuBQX4Tp26xrkMtkWyImbPmCy pg== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3jq9br8yuf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Sep 2022 08:12:26 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 28K869Zn019055;
-        Tue, 20 Sep 2022 08:12:24 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 3jn5v8jkhq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Sep 2022 08:12:23 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 28K88NRR40829190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Sep 2022 08:08:23 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AAAA742042;
-        Tue, 20 Sep 2022 08:12:21 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D3C84203F;
-        Tue, 20 Sep 2022 08:12:21 +0000 (GMT)
-Received: from rims.zurich.ibm.com (unknown [9.4.69.56])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Sep 2022 08:12:21 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     jgg@nvidia.com, leonro@nvidia.com,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Olga Kornievskaia <kolga@netapp.com>
-Subject: [PATCH] RDMA/siw: Always consume all skbuf data in sk_data_ready() upcall.
-Date:   Tue, 20 Sep 2022 10:12:02 +0200
-Message-Id: <20220920081202.223629-1-bmt@zurich.ibm.com>
-X-Mailer: git-send-email 2.32.0
+        with ESMTP id S231186AbiITIUN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Sep 2022 04:20:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7A0B844
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Sep 2022 01:18:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1663661914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nYBXnM221OKkMmYnX56agU4HA29O1+0qE07dmbgFr1Y=;
+        b=F0OgTcmRQgV+Ch8wa63Iif3veP7AxynKLHbV79zgrraolhR+oDpdSGMZABtGOhz71Udllp
+        9/cqc6NHBuE4WvXuHuepAwiPmqRWO4MRwY/MFSWh+7YpzdfaSb7AlD31hCh24ud/DuIayk
+        n3f5z9hyD9GmZuEBubv5zcGJVBaxBak=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-588-A-_kUuW4MJiaMFGfkG1_9A-1; Tue, 20 Sep 2022 04:18:31 -0400
+X-MC-Unique: A-_kUuW4MJiaMFGfkG1_9A-1
+Received: by mail-wr1-f71.google.com with SMTP id d30-20020adfa41e000000b00228c0e80c49so831030wra.21
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Sep 2022 01:18:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=nYBXnM221OKkMmYnX56agU4HA29O1+0qE07dmbgFr1Y=;
+        b=knqSOnZwSBfK3/pN3ej8ATzvmaZQmgqfRMn1IP22rmvabby9xuS2blr7n4ObK+epoz
+         +/a5/DWJ9EDg8CvIm5JOu0VRDfF5PkkZmR6HRtNzT2caT+Gl7uYxUK1rCQtL2fElvjfU
+         zt6CzpkrxrFMxiBENqYfHS7ZQ1F99iS6Az2Ixi4M66YRsUkVqWWPmG+Kbrzg6PtcEAdG
+         k5wms7yw/Hnb78V2UIdA051Gtcbfv3MfiNTHXgyc/oU/9ROYSNGZtFlpH4aRaLRMfUIs
+         XtsAA9tghKbw5T78ll7rJp9hpk57CA1oAp+5aLOTJl7KNVKEeJ/o9tixYzz4wzO4Kjo2
+         jjtA==
+X-Gm-Message-State: ACrzQf1ynT4NUWIj7CP3y2zfNKt+c8kfXPimyiSs33V62rHHzzIwmxCP
+        WPFLvbTF0K9/6GkK5wsUQf1gI/Vf/Xlz6TWuQdxskIOcUTtGmB39Tz41iMZN15FCT6Fh+hJJUV9
+        Ah6pcK5QAGtFOJDXVptUGmw==
+X-Received: by 2002:a5d:4ec5:0:b0:228:6707:8472 with SMTP id s5-20020a5d4ec5000000b0022867078472mr13700976wrv.12.1663661910617;
+        Tue, 20 Sep 2022 01:18:30 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM5Gc746EtqOMp12PC/ZhI3qlffavJ9O8HKgnaDgO6702xNdn3VPX99CEZYZBDDZBLY3QzW+vw==
+X-Received: by 2002:a5d:4ec5:0:b0:228:6707:8472 with SMTP id s5-20020a5d4ec5000000b0022867078472mr13700953wrv.12.1663661910369;
+        Tue, 20 Sep 2022 01:18:30 -0700 (PDT)
+Received: from sgarzare-redhat (host-87-11-6-69.retail.telecomitalia.it. [87.11.6.69])
+        by smtp.gmail.com with ESMTPSA id z22-20020a05600c0a1600b003b4868eb6bbsm1749112wmp.23.2022.09.20.01.18.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Sep 2022 01:18:29 -0700 (PDT)
+Date:   Tue, 20 Sep 2022 10:18:24 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     vdasa@vmware.com, vbhakta@vmware.com, namit@vmware.com,
+        bryantan@vmware.com, zackr@vmware.com,
+        linux-graphics-maintainer@vmware.com, doshir@vmware.com,
+        gregkh@linuxfoundation.org, davem@davemloft.net,
+        pv-drivers@vmware.com, joe@perches.com, netdev@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 0/3] MAINTAINERS: Update entries for some VMware drivers
+Message-ID: <20220920081824.vshwiv3lt5crlxdj@sgarzare-redhat>
+References: <20220906172722.19862-1-vdasa@vmware.com>
+ <20220919104147.1373eac1@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sFL4RPperYt4x0XSNW8Vh6ZZNWM8KokM
-X-Proofpoint-ORIG-GUID: sFL4RPperYt4x0XSNW8Vh6ZZNWM8KokM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-20_02,2022-09-16_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 bulkscore=0 adultscore=0 mlxlogscore=999 spamscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2209200049
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20220919104147.1373eac1@kernel.org>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-For header and trailer/padding processing, siw did not consume new
-skb data until minimum amount present to fill current header or trailer
-structure, including potential payload padding. Not consuming any
-data during upcall may cause a receive stall, since tcp_read_sock()
-is not upcalling again if no new data arrive.
-A NFSoRDMA client got stuck at RDMA Write reception of unaligned
-payload, if the current skb did contain only the expected 3 padding
-bytes, but not the 4 bytes CRC trailer. Expecting 4 more bytes already
-arrived in another skb, and not consuming those 3 bytes in the current
-upcall left the Write incomplete, waiting for the CRC forever.
+On Mon, Sep 19, 2022 at 10:41:47AM -0700, Jakub Kicinski wrote:
+>On Tue,  6 Sep 2022 10:27:19 -0700 vdasa@vmware.com wrote:
+>> From: Vishnu Dasa <vdasa@vmware.com>
+>>
+>> This series updates a few existing maintainer entries for VMware
+>> supported drivers and adds a new entry for vsock vmci transport
+>> driver.
+>
+>Just to be sure - who are you expecting to take these in?
+>
 
-Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
+FYI Greg already queued this series in his char-misc-next branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git/log/?h=char-misc-next
 
-Reported-by: Olga Kornievskaia <kolga@netapp.com>
-Tested-by: Olga Kornievskaia <kolga@netapp.com>
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
- drivers/infiniband/sw/siw/siw_qp_rx.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
-index 875ea6f1b04a..fd721cc19682 100644
---- a/drivers/infiniband/sw/siw/siw_qp_rx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
-@@ -961,27 +961,28 @@ int siw_proc_terminate(struct siw_qp *qp)
- static int siw_get_trailer(struct siw_qp *qp, struct siw_rx_stream *srx)
- {
- 	struct sk_buff *skb = srx->skb;
-+	int avail = min(srx->skb_new, srx->fpdu_part_rem);
- 	u8 *tbuf = (u8 *)&srx->trailer.crc - srx->pad;
- 	__wsum crc_in, crc_own = 0;
- 
- 	siw_dbg_qp(qp, "expected %d, available %d, pad %u\n",
- 		   srx->fpdu_part_rem, srx->skb_new, srx->pad);
- 
--	if (srx->skb_new < srx->fpdu_part_rem)
--		return -EAGAIN;
--
--	skb_copy_bits(skb, srx->skb_offset, tbuf, srx->fpdu_part_rem);
-+	skb_copy_bits(skb, srx->skb_offset, tbuf, avail);
- 
--	if (srx->mpa_crc_hd && srx->pad)
--		crypto_shash_update(srx->mpa_crc_hd, tbuf, srx->pad);
-+	srx->skb_new -= avail;
-+	srx->skb_offset += avail;
-+	srx->skb_copied += avail;
-+	srx->fpdu_part_rem -= avail;
- 
--	srx->skb_new -= srx->fpdu_part_rem;
--	srx->skb_offset += srx->fpdu_part_rem;
--	srx->skb_copied += srx->fpdu_part_rem;
-+	if (srx->fpdu_part_rem)
-+		return -EAGAIN;
- 
- 	if (!srx->mpa_crc_hd)
- 		return 0;
- 
-+	if (srx->pad)
-+		crypto_shash_update(srx->mpa_crc_hd, tbuf, srx->pad);
- 	/*
- 	 * CRC32 is computed, transmitted and received directly in NBO,
- 	 * so there's never a reason to convert byte order.
-@@ -1083,10 +1084,9 @@ static int siw_get_hdr(struct siw_rx_stream *srx)
- 	 * completely received.
- 	 */
- 	if (iwarp_pktinfo[opcode].hdr_len > sizeof(struct iwarp_ctrl_tagged)) {
--		bytes = iwarp_pktinfo[opcode].hdr_len - MIN_DDP_HDR;
-+		int hdrlen = iwarp_pktinfo[opcode].hdr_len;
- 
--		if (srx->skb_new < bytes)
--			return -EAGAIN;
-+		bytes = min_t(int, hdrlen - MIN_DDP_HDR, srx->skb_new);
- 
- 		skb_copy_bits(skb, srx->skb_offset,
- 			      (char *)c_hdr + srx->fpdu_part_rcvd, bytes);
-@@ -1096,6 +1096,9 @@ static int siw_get_hdr(struct siw_rx_stream *srx)
- 		srx->skb_new -= bytes;
- 		srx->skb_offset += bytes;
- 		srx->skb_copied += bytes;
-+
-+		if (srx->fpdu_part_rcvd < hdrlen)
-+			return -EAGAIN;
- 	}
- 
- 	/*
--- 
-2.32.0
+Thanks,
+Stefano
 
