@@ -2,55 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE35F5BE260
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Sep 2022 11:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670B35BE2F5
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Sep 2022 12:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbiITJua (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Sep 2022 05:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
+        id S229505AbiITKVG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Sep 2022 06:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbiITJuW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Sep 2022 05:50:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1378C6B8D8;
-        Tue, 20 Sep 2022 02:50:15 -0700 (PDT)
+        with ESMTP id S230096AbiITKU6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Sep 2022 06:20:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D544A659E0
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Sep 2022 03:20:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E51D562831;
-        Tue, 20 Sep 2022 09:50:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4FD20C433D7;
-        Tue, 20 Sep 2022 09:50:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 70E5062231
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Sep 2022 10:20:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CF45C433D6;
+        Tue, 20 Sep 2022 10:20:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663667414;
-        bh=kX2EBvWZ7BlQJA8Sgf4mtTIkaLClscQRwqoplzn8F+w=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iGLipXrYNs2g8myoZN31AF5AMVDi9F7fpr2rQbYV9xIkXKvb5U5f9OmhsyoUXxxma
-         TK7TZCi5lUTncUgdCTP0k0a/7gb+JCEFUrokJrVKSqJo3LAA/O4TBp3nIbgOz+PdEZ
-         B5sq27tZD50rlW6Dgl5bSEePtETNennnxGl7LeDvXHqbiKGMLq1SJT4iyHqSepLoyl
-         dGUyZDZNc4VRweknhSSq74Ui9ZnnJBH+dP/5We0Kx1zpPwJlSiObzQW8NwZgFnM2n7
-         Vz6VYdmMXf1KKap52E2b8UQ9COnXhdLwZz8G/CtP/qko1QCpoSvLjHG/5a1n/QnScV
-         eZajxpUjQH9nQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 36080E21EE2;
-        Tue, 20 Sep 2022 09:50:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1663669256;
+        bh=wCeXX4UvCpr2WGofIOaT5QfPEHJz6Sr7XBy6HG52Hwo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DUnERLtmDfpb0lrhnEl2MmFUtcit0+wVV9OsMfDwJla2lIvjeLrFUbKM6LZuTBaya
+         Ue3qgh9SIuv5s5mVE/bVGoJKxkLFB/LNm6PVlwkhlGweDSpSVtVurnXoI9nAygl8pq
+         iDB6FwJ38u4FQANZilCR7PgWrILc/5DMSoCIMNy6S29YoxmHLmi4BD8i1IoR20FMJJ
+         OlHI3+vcq3e236GfKWRrdWcZ/O27MFug2EqzqlYcP/0yn8XfmtV1X20UkpghKDfx4y
+         MrLREVE0PSRKn0kw2VctVZz01J/BkraBM645PPuDteBpKt3x1OZ1kats86sq/uUfli
+         5MMNa+Irf/OSw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next 0/2] irdma for-next updates 9-7-2022
+Date:   Tue, 20 Sep 2022 13:20:43 +0300
+Message-Id: <166366921631.95513.16702056670790966720.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20220907191324.1173-1-shiraz.saleem@intel.com>
+References: <20220907191324.1173-1-shiraz.saleem@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] net/mlx5e: Ensure macsec_rule is always
- initiailized in macsec_fs_{r,t}x_add_rule()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166366741421.25964.18299631498168125673.git-patchwork-notify@kernel.org>
-Date:   Tue, 20 Sep 2022 09:50:14 +0000
-References: <20220911085748.461033-1-nathan@kernel.org>
-In-Reply-To: <20220911085748.461033-1-nathan@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ndesaulniers@google.com, trix@redhat.com, borisp@nvidia.com,
-        raeds@nvidia.com, liorna@nvidia.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, patches@lists.linux.dev
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,51 +53,25 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Sun, 11 Sep 2022 01:57:50 -0700 you wrote:
-> Clang warns:
+On Wed, 7 Sep 2022 14:13:22 -0500, Shiraz Saleem wrote:
+> This series adds udata inlen/outlen validation for the verb API's
+> and fixes up completion error code reporting to ulp's.
 > 
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c:539:6: error: variable 'macsec_rule' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (err)
->               ^~~
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c:598:9: note: uninitialized use occurs here
->           return macsec_rule;
->                 ^~~~~~~~~~~
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c:539:2: note: remove the 'if' if its condition is always false
->           if (err)
->           ^~~~~~~~
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c:523:38: note: initialize the variable 'macsec_rule' to silence this warning
->           union mlx5e_macsec_rule *macsec_rule;
->                                               ^
->                                               = NULL
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c:1131:6: error: variable 'macsec_rule' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (err)
->               ^~~
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c:1215:9: note: uninitialized use occurs here
->           return macsec_rule;
->                 ^~~~~~~~~~~
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c:1131:2: note: remove the 'if' if its condition is always false
->           if (err)
->           ^~~~~~~~
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c:1118:38: note: initialize the variable 'macsec_rule' to silence this warning
->           union mlx5e_macsec_rule *macsec_rule;
->                                               ^
->                                               = NULL
->   2 errors generated.
+> Shiraz Saleem (1):
+>   RDMA/irdma: Validate udata inlen and outlen
+> 
+> Sindhu-Devale (1):
+>   RDMA/irdma: Align AE id codes to correct flush code and event
 > 
 > [...]
 
-Here is the summary with links:
-  - [net-next,v2] net/mlx5e: Ensure macsec_rule is always initiailized in macsec_fs_{r,t}x_add_rule()
-    https://git.kernel.org/netdev/net-next/c/2e50e9bf328f
+Applied, thanks!
 
-You are awesome, thank you!
+[1/2] RDMA/irdma: Align AE id codes to correct flush code and event
+      commit: 7f51a961f8c6b84752a48e950074a8c4a0808d91
+[2/2] RDMA/irdma: Validate udata inlen and outlen
+      commit: 34acb833cc83bdea912a160ff99b537e62bb4cf3
+
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Leon Romanovsky <leon@kernel.org>
