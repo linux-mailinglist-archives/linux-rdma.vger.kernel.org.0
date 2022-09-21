@@ -2,194 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBF65BF7CD
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Sep 2022 09:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DDF5BF88E
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Sep 2022 10:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbiIUHgL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Sep 2022 03:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
+        id S229819AbiIUIDP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Sep 2022 04:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbiIUHgL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Sep 2022 03:36:11 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856697F265
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Sep 2022 00:36:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663745770; x=1695281770;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=a25cyIk6FxBE+GvCMYOPNYFiCOtAxz7OZS4i6uKMbH8=;
-  b=dzEmJKRR38pZPN1mmMIfcdT5PT/73Cu5pMouaRlphTg7gIvYWiGx0435
-   8e+pkq7STl8pH1rUU/jSvtODd2AXxlfGK+SGWyoXWndKX7C7KLjDW1usY
-   MJnPuzovHziEvXATTlRxmVjNEDUkiEA8s05PAF6ccMUf7vEado0oB94Wv
-   +WDhCtn7U4NVt4MgYV0w4+2NsH1sbXQuhvFuWQ8VLa1iSI0R6+oYrPLRb
-   lImf/zhhnnUcgv0jtqKXA9VRtLL5VHFLXFVzBfSk7GaAE5AwJ7jfjZzMN
-   f4+Qztjy7JkGq7SMeqpLdK//8c9Htkql5U0TQkDdrlUico/Bt1vN9TL3T
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="279654516"
-X-IronPort-AV: E=Sophos;i="5.93,332,1654585200"; 
-   d="scan'208";a="279654516"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2022 00:36:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,332,1654585200"; 
-   d="scan'208";a="948031622"
-Received: from lkp-server01.sh.intel.com (HELO c0a60f19fe7e) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Sep 2022 00:36:08 -0700
-Received: from kbuild by c0a60f19fe7e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oauHA-0003Mr-0g;
-        Wed, 21 Sep 2022 07:36:08 +0000
-Date:   Wed, 21 Sep 2022 15:36:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- a3c278807a459e6f50afee6971cabe74cccfb490
-Message-ID: <632abee6.kSww16dbNhIMk/bU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229677AbiIUIDO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Sep 2022 04:03:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F32A8689A
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Sep 2022 01:03:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C73B86247D
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Sep 2022 08:03:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA920C433C1;
+        Wed, 21 Sep 2022 08:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663747392;
+        bh=GfPafFpYZRr4UoL0L+baH6hzWG8EqcbOB0f/Eemtpjk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mNqBNUMiYbpvstvvi6GopvJPjN4MBaoc9gPQNf+na8vWwx0QOCfSiHQI9TQrBA2A6
+         jmLd6pVOcgMQoJgj/ezwpUYlANDGPrK3GdtoMK6COpuyb1YFYQKTbWn8gp2ejIa/nY
+         F/5O0+jLdkA0t66qHkf1+8API1/w4xEb4Q5KJZEM2JV+rEtjwtq7FHXWzUq2Aof35A
+         K2lW7D7GPaaA6abubKZth3eFdiheIwP/1ihDQmlJdvhysg5i50cEonoQYZJLvlM9Ij
+         bkFteDQRXM28m0GDXqxNBVWzb+paVKYk7UjmFDyqSiFDau+L6ioJKPOF1wUkQ4tQrM
+         aHihfApPRsPeA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Mikhael Goikhman <migo@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/srp: Support more than 255 rdma ports
+Date:   Wed, 21 Sep 2022 11:03:07 +0300
+Message-Id: <7d80d8844f1abb3a54170b7259f0a02be38080a6.1663747327.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: a3c278807a459e6f50afee6971cabe74cccfb490  RDMA/siw: Fix QP destroy to wait for all references dropped.
+From: Mikhael Goikhman <migo@nvidia.com>
 
-elapsed time: 758m
+Currently ib_srp module does not support devices with more than 256
+ports. Switch from u8 to u32 to fix the problem.
 
-configs tested: 111
-configs skipped: 3
+Fixes: 1fb7f8973f51 ("RDMA: Support more than 255 rdma ports")
+Reviewed-by: Shay Drory <shayd@nvidia.com>
+Signed-off-by: Mikhael Goikhman <migo@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/ulp/srp/ib_srp.c | 12 ++++++------
+ drivers/infiniband/ulp/srp/ib_srp.h |  2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-arc                                 defconfig
-s390                             allmodconfig
-alpha                               defconfig
-s390                                defconfig
-s390                             allyesconfig
-powerpc                          allmodconfig
-mips                             allyesconfig
-powerpc                           allnoconfig
-sh                               allmodconfig
-arc                  randconfig-r043-20220921
-riscv                randconfig-r042-20220921
-s390                 randconfig-r044-20220921
-alpha                            allyesconfig
-arc                              allyesconfig
-i386                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-i386                             allyesconfig
-ia64                             allmodconfig
-ia64                        generic_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                          rsk7203_defconfig
-nios2                         3c120_defconfig
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-x86_64                           rhel-8.3-kvm
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                    rhel-8.3-kselftests
-x86_64                         rhel-8.3-kunit
-csky                              allnoconfig
-alpha                             allnoconfig
-arc                               allnoconfig
-riscv                             allnoconfig
-arm                          simpad_defconfig
-powerpc                    sam440ep_defconfig
-sh                             espt_defconfig
-arm                            xcep_defconfig
-arm64                            allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-ia64                          tiger_defconfig
-powerpc                  iss476-smp_defconfig
-m68k                            q40_defconfig
-sparc                       sparc64_defconfig
-openrisc                         alldefconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-m68k                         amcore_defconfig
-powerpc                         ps3_defconfig
-s390                          debug_defconfig
-sh                          sdk7780_defconfig
-m68k                           virt_defconfig
-nios2                            allyesconfig
-nios2                               defconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-sh                        sh7763rdp_defconfig
-sparc64                             defconfig
-powerpc                      makalu_defconfig
-m68k                        mvme147_defconfig
-sh                           se7705_defconfig
-m68k                            mac_defconfig
-arm                        mini2440_defconfig
-arc                        nsimosci_defconfig
-powerpc                     tqm8541_defconfig
-arm                             ezx_defconfig
-mips                         cobalt_defconfig
-sparc                             allnoconfig
-microblaze                      mmu_defconfig
-arc                      axs103_smp_defconfig
-i386                 randconfig-c001-20220919
-sparc                               defconfig
-xtensa                           allyesconfig
-csky                                defconfig
-sparc                            allyesconfig
-x86_64                                  kexec
-i386                          debian-10.3-kvm
-i386                        debian-10.3-kunit
-i386                         debian-10.3-func
-powerpc                          allyesconfig
-riscv                               defconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-m68k                       m5275evb_defconfig
-loongarch                 loongson3_defconfig
-
-clang tested configs:
-hexagon              randconfig-r041-20220921
-hexagon              randconfig-r045-20220921
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-x86_64                        randconfig-k001
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-arm                        multi_v5_defconfig
-mips                        bcm63xx_defconfig
-powerpc                          allyesconfig
-powerpc                      acadia_defconfig
-mips                      pic32mzda_defconfig
-riscv                             allnoconfig
-mips                           ip28_defconfig
-
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index d01102db4fd4..66ff61e54fa9 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -2988,7 +2988,7 @@ static ssize_t local_ib_port_show(struct device *dev,
+ {
+ 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+ 
+-	return sysfs_emit(buf, "%d\n", target->srp_host->port);
++	return sysfs_emit(buf, "%u\n", target->srp_host->port);
+ }
+ 
+ static DEVICE_ATTR_RO(local_ib_port);
+@@ -3886,7 +3886,7 @@ static ssize_t port_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct srp_host *host = container_of(dev, struct srp_host, dev);
+ 
+-	return sysfs_emit(buf, "%d\n", host->port);
++	return sysfs_emit(buf, "%u\n", host->port);
+ }
+ 
+ static DEVICE_ATTR_RO(port);
+@@ -3898,7 +3898,7 @@ static struct attribute *srp_class_attrs[] = {
+ 	NULL
+ };
+ 
+-static struct srp_host *srp_add_port(struct srp_device *device, u8 port)
++static struct srp_host *srp_add_port(struct srp_device *device, u32 port)
+ {
+ 	struct srp_host *host;
+ 
+@@ -3915,7 +3915,7 @@ static struct srp_host *srp_add_port(struct srp_device *device, u8 port)
+ 	device_initialize(&host->dev);
+ 	host->dev.class = &srp_class;
+ 	host->dev.parent = device->dev->dev.parent;
+-	if (dev_set_name(&host->dev, "srp-%s-%d", dev_name(&device->dev->dev),
++	if (dev_set_name(&host->dev, "srp-%s-%u", dev_name(&device->dev->dev),
+ 			 port))
+ 		goto put_host;
+ 	if (device_add(&host->dev))
+@@ -3937,7 +3937,7 @@ static void srp_rename_dev(struct ib_device *device, void *client_data)
+ 	list_for_each_entry_safe(host, tmp_host, &srp_dev->dev_list, list) {
+ 		char name[IB_DEVICE_NAME_MAX + 8];
+ 
+-		snprintf(name, sizeof(name), "srp-%s-%d",
++		snprintf(name, sizeof(name), "srp-%s-%u",
+ 			 dev_name(&device->dev), host->port);
+ 		device_rename(&host->dev, name);
+ 	}
+@@ -3949,7 +3949,7 @@ static int srp_add_one(struct ib_device *device)
+ 	struct ib_device_attr *attr = &device->attrs;
+ 	struct srp_host *host;
+ 	int mr_page_shift;
+-	unsigned int p;
++	u32 p;
+ 	u64 max_pages_per_mr;
+ 	unsigned int flags = 0;
+ 
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.h b/drivers/infiniband/ulp/srp/ib_srp.h
+index 493e7fd1913e..00b0068fda20 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.h
++++ b/drivers/infiniband/ulp/srp/ib_srp.h
+@@ -120,7 +120,7 @@ struct srp_device {
+  */
+ struct srp_host {
+ 	struct srp_device      *srp_dev;
+-	u8			port;
++	u32			port;
+ 	struct device		dev;
+ 	struct list_head	target_list;
+ 	spinlock_t		target_lock;
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.37.3
+
