@@ -2,552 +2,214 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AA05E6284
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Sep 2022 14:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AF35E6472
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Sep 2022 15:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbiIVMeZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Sep 2022 08:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
+        id S231675AbiIVN61 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Sep 2022 09:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbiIVMeP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Sep 2022 08:34:15 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85DBE720B
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Sep 2022 05:34:12 -0700 (PDT)
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MYF3Z1NhPz14S36;
-        Thu, 22 Sep 2022 20:30:02 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 20:34:10 +0800
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 20:34:05 +0800
-From:   Haoyue Xu <xuhaoyue1@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <liangwenpeng@huawei.com>, <xuhaoyue1@hisilicon.com>
-Subject: [PATCH for-next 12/12] RDMA/hns: Unified Log Printing Style
-Date:   Thu, 22 Sep 2022 20:33:15 +0800
-Message-ID: <20220922123315.3732205-13-xuhaoyue1@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20220922123315.3732205-1-xuhaoyue1@hisilicon.com>
-References: <20220922123315.3732205-1-xuhaoyue1@hisilicon.com>
+        with ESMTP id S231737AbiIVN6R (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Sep 2022 09:58:17 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2045.outbound.protection.outlook.com [40.107.244.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D37EF089
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Sep 2022 06:58:15 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RAleHEfxKJw627g2y30kEChBDhUzLXEGm9bZkEe4JRpRlHHzOpnDpVILOG3XQtiKFfP/xOmTeE5AThgtUoKNRLYoSSGpLI/K7SKpzoy6eZF/fzGcwBk/HV8TWlPZHr4QSp9f2VX4iDIw82tSHIr8gDGJVKFBvZG7qk45gelWiRFbvJ4TzLE7t6US9PvccQJbBX4hxlqL5kQdilbbZ6qZhmxcp3trKlKJwmY8J9Q2ReF6rVTZHUMejGrXdopyLd/Lvw/nTTtH4d8gvbKDVjUQ2jzu37Z2S0p3VNP/DPjI+Hu15HwyE6mbuy6KgDLktbFWQVk8nPkmbCXO81/VAE9mMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UFR869wjjt/i8uZEtNaRVUwx1in3O7Mliqibdzn0Yk4=;
+ b=nicfX/pzUDVH2iJsYADBRSiaTnlMVbUEmYTnStrv8m/5gTeoeWspofS7xZfIXH/qLuzURvTC46XXizEZVJ6sI6PXl6r0EJLWLg4ZeG5MDG7digChNx3R8sI99qr2Wd+Gd98Iw0I12/PYoDOvMmhigm98ZgxOkYpJN63EBqZAbdPFSLWBiERMbd7O2IzUEvyltgnTMmL8/NJy8S5J+/ZzaY8jf0vC7otC5uYw7+CXdbABG9J+Dx99wJpvhMMdemWW35PcHnsdopw5bi5JswtbTyBeCPCp61JRp33urrNwkHLK6xElOP9FE7A0k+tskr5eOu7d/bpRAp/PcdImuKCtVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UFR869wjjt/i8uZEtNaRVUwx1in3O7Mliqibdzn0Yk4=;
+ b=NcgUzzaJ/8LYZXHHqanWoq5EgPaWO5CPsvU9q6ODTB694VzOBXaWn3+ggTu7vkvhnQ1lLMMct95UXcmYB1EyO+pfeb6kfvrNWF0JiOhxaPKTnZ/yY6zyrN5R4fcMnbPCUx3KLOe+L0fPsm7wKrbLKIKBAuqW/HZWH1RK9m5WcZ0SYRIgFOcwYeLAinDUSJenNmZ2ZpxNoBTuP/6b+iQLygqPA3Ktrlrt0Rzb/pMx+qe51IviAfZBuQ2TEN6ETNCkZWCSt0eb6h6Aj40N5g6ykyIpDXSK6l2xUt1OPFZwKt2Aesd0iByitLEJMr5qz3OClADpnZpik7Xteo//RxQS0A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by CY5PR12MB6201.namprd12.prod.outlook.com (2603:10b6:930:26::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.21; Thu, 22 Sep
+ 2022 13:58:13 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::462:7fe:f04f:d0d5%7]) with mapi id 15.20.5654.019; Thu, 22 Sep 2022
+ 13:58:13 +0000
+Date:   Thu, 22 Sep 2022 10:58:12 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Mark Zhang <markzhang@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>
+Subject: Re: [PATCH rdma-next 2/4] RDMA/cma: Multiple path records support
+ with netlink channel
+Message-ID: <Yyxp9E9pJtUids2o@nvidia.com>
+References: <cover.1662631201.git.leonro@nvidia.com>
+ <2fa2b6c93c4c16c8915bac3cfc4f27be1d60519d.1662631201.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2fa2b6c93c4c16c8915bac3cfc4f27be1d60519d.1662631201.git.leonro@nvidia.com>
+X-ClientProxiedBy: BL1PR13CA0131.namprd13.prod.outlook.com
+ (2603:10b6:208:2bb::16) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4192:EE_|CY5PR12MB6201:EE_
+X-MS-Office365-Filtering-Correlation-Id: b910bb0b-6953-4b5c-2641-08da9ca27dca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GSGxQ/Acyu+vde5VJSY4PM5gFhLC22hry0lQ6DdWOOAdYXtSUyDaKaQyR5QuZs2qR7VMaMKKBYTOteH2OXnyVdSkzv8gMSf3Jf2hDRZfqViPkCz13EaxQ+iyen3jhcQi3JPsPujGzTQBto8ETMOtTYJyYTAzI1KvD75pWO5LVJldu4bJ2yt6licr437a3Hx23Zbnf90hJkpr8P/F0ELJn8YrR5MVsiNeY8WuQP5JZhcLq7p35VcVAr4uf0KVBSMgO81t4LAP7cQ8A0z3PIF4QHOX93nGKXUz1GbEPtjMMwPqJnUWfYvwgPw1rJLZydy0uxCZIjZgPhL5eq8Br3TrdWyW+V9kKUZSix+Q/2SNxzkK6YEsTRMYQTdk1+/ZxLB+1evSxo8vZrhxydnLBmqmLO7TqIU3ZTG1V4a/uZsh14M3Ej9N4Enj5MCxRhZnQVZDN0pAOtSFgkQxxt2X/oKL2xEey3LDSNMuxZM7bfB39iWjOTWSUUTYNIak6JkIxDHE70Wb5VfBRuyAzkRCmLCn5e+elQ4SlXXMMyG0/rTRY8hEmPZCz33mz0o5HCORPXsW1GjMWRniqHdbsi95Q5PaW6KNkvAi/mIPy0KuznOVtys3F+efwmQbMzgmzB5+BytPWWuRV2imOToOy3y2BUmckYbVJCToOZVAm1Pf2gjRKw3rmYB13eOGpKMks28AuZ0mAP1NSR22TwTOe4ZprZ81fg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(136003)(39860400002)(376002)(366004)(396003)(451199015)(4326008)(8676002)(66556008)(6916009)(8936002)(66476007)(54906003)(2906002)(5660300002)(316002)(66946007)(86362001)(36756003)(6512007)(83380400001)(2616005)(41300700001)(6486002)(478600001)(6506007)(26005)(38100700002)(186003)(107886003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?osDwLnMMGKT8jX6BVbLBL8Pe/O2DreaDXISNXa3s+S5RcurNON59CbvaLEEo?=
+ =?us-ascii?Q?+GB5/dceSMXQdsIH5RYK2rTJ0c8C5FODYMXGw1vxKb+3qTY/lSjofY7X47C9?=
+ =?us-ascii?Q?n4nSDV4Br1lolTOajZ3sEIP4xqJHvyilx2AqsiR9vM8gUC6VuYbNyYp+2hhA?=
+ =?us-ascii?Q?Hy2delp3rDzAYi2w5/+1lMZDIRLJuTkh+TK8mcUjuPw951e2I4XadIxhFgdK?=
+ =?us-ascii?Q?SlQYv7s2udMPtlunV71hlzgqZyaeNK92IoD+atYk1njUpLAQ8u38zW36WZy9?=
+ =?us-ascii?Q?Qq1UaC2NeM9UyjD4sa5jGhHTOZmDHicqM78jye+riDVxBwINvbbDMUdONZre?=
+ =?us-ascii?Q?5T4OoMfTETAqIVWFX/rp5soLx8/ANUisFUPQzcM09l7Fpj5l8Y7tbGJBeXPt?=
+ =?us-ascii?Q?NW/KsEKXiTkQoB944e7rqnbRS7o/6fQf6aEsdvAbH9uDJpuKmMNFKMhEAn80?=
+ =?us-ascii?Q?6EPMtQQ6RO22H9BRgNlTcP/VUmhOFNB7KppSVJIQvWPw1TItTg/+dd5OMP2f?=
+ =?us-ascii?Q?dbIh4uT/WDr7REdIUCFrn8rrHIuTuhmkSBjlCp5RuxzbqWnNh7t7904wbg7r?=
+ =?us-ascii?Q?qlu7zdc9Wa9Ni93injrT4fd8MlrA0M7Y/qTY80x6/Q9W5m9LyOEXwsSyUa/p?=
+ =?us-ascii?Q?RqqrjgkVMJP9tbtKE/EXCTnBKSKnu2WadHOhPm9S6ntrMbyZgG+ClptdydcG?=
+ =?us-ascii?Q?8Qefv83b/rD0RI7XJL2YafcETsl6mF1PitobmllotjjDKVDVcfLXA/wy9ssG?=
+ =?us-ascii?Q?oLTa9At+xTKZoejabMHgriiMrgOCzurQ6CB/yleuLPdTcBzZgHKxiHUja3Ek?=
+ =?us-ascii?Q?p0XCdY798xQnNk5QjmLn/nRdIxaFlU3IEmhKRdo5GnrtBMFmdhL78qJ+/vuM?=
+ =?us-ascii?Q?m5VZCydXhexZFcRO0z6h1ja0OXy0q9lfYLDCw9RkE+EEozUmrYmW2L5d7AZc?=
+ =?us-ascii?Q?NKUTE/iuCT3jZnK2ytb2GIo1mUhHGUbz/c8h0qSMEkBz1BfBRM4UnTWR4r7u?=
+ =?us-ascii?Q?03TxPhNMvOjJMXE88x6Lcbw5u4jJU6+HAIBugAwfKXVD3HH8X0X/J6QCGGly?=
+ =?us-ascii?Q?HkA6Mt6juCRju7sbJC/hnSHigc/+yM7oNt3RCjXAXouOU9JLgrB/x2UixES4?=
+ =?us-ascii?Q?LPpeCmQBp4sUTqkrYkeuMw0DunqCIllDmbq/gDQw+Gf+pWrrYz0wbNvf4wCD?=
+ =?us-ascii?Q?09kA22VbqvE4riIHYkuh46B6MCZxM/hbP8ZNKu/DXaY3hiyN+yeTDzOiAf/E?=
+ =?us-ascii?Q?+6jlfROkFn0uzICrqSRYTmf1SKW643fegTG6/1S8AEugwSt4CMl1AksyZdjT?=
+ =?us-ascii?Q?KYrGUHeywfemXVhn6I+JkkuGovhDWxtvFv3MnR8FLUMNyg9wKQLM+hwFo4T7?=
+ =?us-ascii?Q?brUL1GkG1ZypyKigNzgGz2+RGGrAg1lNSi9FDIjM+VL5sSnVVJzUM1o9ihZ3?=
+ =?us-ascii?Q?ncVrJaZ+keotrt1jN99j4xzwcBoodCxjO58dvdDAs2lVVxth8hgo2Gon1QmQ?=
+ =?us-ascii?Q?uLjqxw43p+szmuJQ8NIF7h/QN7vpUzFpa4DwyRjswDnc0NrBLTSESA1ZSFrQ?=
+ =?us-ascii?Q?uyEk+YJ4cukdTnijqHt8kGY0VUEYOk7dv8jBRGd5?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b910bb0b-6953-4b5c-2641-08da9ca27dca
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2022 13:58:13.6475
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7UqoYsfq6d0laWk/zPFULL6NCVw1zwEPhWVMZ1vtl3oMbKlrEIVxx7gWBWq/jXBF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6201
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Guofeng Yue <yueguofeng@hisilicon.com>
+On Thu, Sep 08, 2022 at 01:09:01PM +0300, Leon Romanovsky wrote:
 
-The first letter of the log information is changed to lowercase
-to keep the same style.
+> +static void route_set_path_rec_inbound(struct cma_work *work,
+> +				       struct sa_path_rec *path_rec)
+> +{
+> +	struct rdma_route *route = &work->id->id.route;
+> +
+> +	if (!route->path_rec_inbound) {
+> +		route->path_rec_inbound =
+> +			kzalloc(sizeof(*route->path_rec_inbound), GFP_KERNEL);
+> +		if (!route->path_rec_inbound)
+> +			return;
+> +	}
+> +
+> +	*route->path_rec_inbound = *path_rec;
+> +}
 
-Signed-off-by: Guofeng Yue <yueguofeng@hisilicon.com>
-Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_cq.c    |  6 +--
- drivers/infiniband/hw/hns/hns_roce_hem.c   |  6 +--
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 50 +++++++++++-----------
- drivers/infiniband/hw/hns/hns_roce_main.c  | 30 ++++++-------
- drivers/infiniband/hw/hns/hns_roce_mr.c    |  2 +-
- drivers/infiniband/hw/hns/hns_roce_qp.c    | 16 +++----
- 6 files changed, 55 insertions(+), 55 deletions(-)
+We are just ignoring these memory allocation failures??
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 8acd599ffac1..736dc2f993b4 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -454,7 +454,7 @@ void hns_roce_cq_completion(struct hns_roce_dev *hr_dev, u32 cqn)
- 	hr_cq = xa_load(&hr_dev->cq_table.array,
- 			cqn & (hr_dev->caps.num_cqs - 1));
- 	if (!hr_cq) {
--		dev_warn(hr_dev->dev, "Completion event for bogus CQ 0x%06x\n",
-+		dev_warn(hr_dev->dev, "completion event for bogus CQ 0x%06x\n",
- 			 cqn);
- 		return;
- 	}
-@@ -475,14 +475,14 @@ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
- 	hr_cq = xa_load(&hr_dev->cq_table.array,
- 			cqn & (hr_dev->caps.num_cqs - 1));
- 	if (!hr_cq) {
--		dev_warn(dev, "Async event for bogus CQ 0x%06x\n", cqn);
-+		dev_warn(dev, "async event for bogus CQ 0x%06x\n", cqn);
- 		return;
- 	}
- 
- 	if (event_type != HNS_ROCE_EVENT_TYPE_CQ_ID_INVALID &&
- 	    event_type != HNS_ROCE_EVENT_TYPE_CQ_ACCESS_ERROR &&
- 	    event_type != HNS_ROCE_EVENT_TYPE_CQ_OVERFLOW) {
--		dev_err(dev, "Unexpected event type 0x%x on CQ 0x%06x\n",
-+		dev_err(dev, "unexpected event type 0x%x on CQ 0x%06x\n",
- 			event_type, cqn);
- 		return;
- 	}
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index d0b75a2234d3..aa8a08d1c014 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -926,7 +926,7 @@ void hns_roce_cleanup_hem_table(struct hns_roce_dev *hr_dev,
- 		if (table->hem[i]) {
- 			if (hr_dev->hw->clear_hem(hr_dev, table,
- 			    i * table->table_chunk_size / table->obj_size, 0))
--				dev_err(dev, "Clear HEM base address failed.\n");
-+				dev_err(dev, "clear HEM base address failed.\n");
- 
- 			hns_roce_free_hem(hr_dev, table->hem[i]);
- 		}
-@@ -1415,7 +1415,7 @@ int hns_roce_hem_list_request(struct hns_roce_dev *hr_dev,
- 						    &hem_list->btm_bt);
- 			if (ret) {
- 				dev_err(hr_dev->dev,
--					"alloc hem trunk fail ret=%d!\n", ret);
-+					"alloc hem trunk fail ret = %d!\n", ret);
- 				goto err_alloc;
- 			}
- 		}
-@@ -1424,7 +1424,7 @@ int hns_roce_hem_list_request(struct hns_roce_dev *hr_dev,
- 	ret = hem_list_alloc_root_bt(hr_dev, hem_list, unit, regions,
- 				     region_cnt);
- 	if (ret)
--		dev_err(hr_dev->dev, "alloc hem root fail ret=%d!\n", ret);
-+		dev_err(hr_dev->dev, "alloc hem root fail ret = %d!\n", ret);
- 	else
- 		return 0;
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index fd4e767cd8de..2d0192057d1a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -380,7 +380,7 @@ static int check_send_valid(struct hns_roce_dev *hr_dev,
- 	if (unlikely(ibqp->qp_type != IB_QPT_RC &&
- 		     ibqp->qp_type != IB_QPT_GSI &&
- 		     ibqp->qp_type != IB_QPT_UD)) {
--		ibdev_err(ibdev, "Not supported QP(0x%x)type!\n",
-+		ibdev_err(ibdev, "not supported QP(0x%x)type!\n",
- 			  ibqp->qp_type);
- 		return -EOPNOTSUPP;
- 	} else if (unlikely(hr_qp->state == IB_QPS_RESET ||
-@@ -1405,20 +1405,20 @@ static void func_clr_hw_resetting_state(struct hns_roce_dev *hr_dev,
- 	hr_dev->dis_db = true;
- 
- 	dev_warn(hr_dev->dev,
--		 "Func clear is pending, device in resetting state.\n");
-+		 "func clear is pending, device in resetting state.\n");
- 	end = HNS_ROCE_V2_HW_RST_TIMEOUT;
- 	while (end) {
- 		if (!ops->get_hw_reset_stat(handle)) {
- 			hr_dev->is_reset = true;
- 			dev_info(hr_dev->dev,
--				 "Func clear success after reset.\n");
-+				 "func clear success after reset.\n");
- 			return;
- 		}
- 		msleep(HNS_ROCE_V2_HW_RST_COMPLETION_WAIT);
- 		end -= HNS_ROCE_V2_HW_RST_COMPLETION_WAIT;
- 	}
- 
--	dev_warn(hr_dev->dev, "Func clear failed.\n");
-+	dev_warn(hr_dev->dev, "func clear failed.\n");
- }
- 
- static void func_clr_sw_resetting_state(struct hns_roce_dev *hr_dev,
-@@ -1430,21 +1430,21 @@ static void func_clr_sw_resetting_state(struct hns_roce_dev *hr_dev,
- 	hr_dev->dis_db = true;
- 
- 	dev_warn(hr_dev->dev,
--		 "Func clear is pending, device in resetting state.\n");
-+		 "func clear is pending, device in resetting state.\n");
- 	end = HNS_ROCE_V2_HW_RST_TIMEOUT;
- 	while (end) {
- 		if (ops->ae_dev_reset_cnt(handle) !=
- 		    hr_dev->reset_cnt) {
- 			hr_dev->is_reset = true;
- 			dev_info(hr_dev->dev,
--				 "Func clear success after sw reset\n");
-+				 "func clear success after sw reset\n");
- 			return;
- 		}
- 		msleep(HNS_ROCE_V2_HW_RST_COMPLETION_WAIT);
- 		end -= HNS_ROCE_V2_HW_RST_COMPLETION_WAIT;
- 	}
- 
--	dev_warn(hr_dev->dev, "Func clear failed because of unfinished sw reset\n");
-+	dev_warn(hr_dev->dev, "func clear failed because of unfinished sw reset\n");
- }
- 
- static void hns_roce_func_clr_rst_proc(struct hns_roce_dev *hr_dev, int retval,
-@@ -1457,7 +1457,7 @@ static void hns_roce_func_clr_rst_proc(struct hns_roce_dev *hr_dev, int retval,
- 	if (ops->ae_dev_reset_cnt(handle) != hr_dev->reset_cnt) {
- 		hr_dev->dis_db = true;
- 		hr_dev->is_reset = true;
--		dev_info(hr_dev->dev, "Func clear success after reset.\n");
-+		dev_info(hr_dev->dev, "func clear success after reset.\n");
- 		return;
- 	}
- 
-@@ -1474,9 +1474,9 @@ static void hns_roce_func_clr_rst_proc(struct hns_roce_dev *hr_dev, int retval,
- 
- 	if (retval && !flag)
- 		dev_warn(hr_dev->dev,
--			 "Func clear read failed, ret = %d.\n", retval);
-+			 "func clear read failed, ret = %d.\n", retval);
- 
--	dev_warn(hr_dev->dev, "Func clear failed.\n");
-+	dev_warn(hr_dev->dev, "func clear failed.\n");
- }
- 
- static void __hns_roce_function_clear(struct hns_roce_dev *hr_dev, int vf_id)
-@@ -1497,7 +1497,7 @@ static void __hns_roce_function_clear(struct hns_roce_dev *hr_dev, int vf_id)
- 	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
- 	if (ret) {
- 		fclr_write_fail_flag = true;
--		dev_err(hr_dev->dev, "Func clear write failed, ret = %d.\n",
-+		dev_err(hr_dev->dev, "func clear write failed, ret = %d.\n",
- 			 ret);
- 		goto out;
- 	}
-@@ -5033,14 +5033,14 @@ static bool check_qp_timeout_cfg_range(struct hns_roce_dev *hr_dev, u8 *timeout)
- 	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08) {
- 		if (*timeout > QP_ACK_TIMEOUT_MAX_HIP08) {
- 			ibdev_warn(&hr_dev->ib_dev,
--				   "Local ACK timeout shall be 0 to 20.\n");
-+				   "local ACK timeout shall be 0 to 20.\n");
- 			return false;
- 		}
- 		*timeout += QP_ACK_TIMEOUT_OFFSET;
- 	} else if (hr_dev->pci_dev->revision > PCI_REVISION_ID_HIP08) {
- 		if (*timeout > QP_ACK_TIMEOUT_MAX) {
- 			ibdev_warn(&hr_dev->ib_dev,
--				   "Local ACK timeout shall be 0 to 31.\n");
-+				   "local ACK timeout shall be 0 to 31.\n");
- 			return false;
- 		}
- 	}
-@@ -5543,7 +5543,7 @@ static int hns_roce_v2_qp_flow_control_init(struct hns_roce_dev *hr_dev,
- 		msleep(20);
- 	}
- 
--	ibdev_err(ibdev, "Query SCC clr done flag overtime.\n");
-+	ibdev_err(ibdev, "query SCC clr done flag overtime.\n");
- 	ret = -ETIMEDOUT;
- 
- out:
-@@ -5832,26 +5832,26 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- 
- 	switch (irq_work->event_type) {
- 	case HNS_ROCE_EVENT_TYPE_PATH_MIG:
--		ibdev_info(ibdev, "Path migrated succeeded.\n");
-+		ibdev_info(ibdev, "path migrated succeeded.\n");
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_PATH_MIG_FAILED:
--		ibdev_warn(ibdev, "Path migration failed.\n");
-+		ibdev_warn(ibdev, "path migration failed.\n");
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_COMM_EST:
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_SQ_DRAINED:
--		ibdev_warn(ibdev, "Send queue drained.\n");
-+		ibdev_warn(ibdev, "send queue drained.\n");
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_WQ_CATAS_ERROR:
--		ibdev_err(ibdev, "Local work queue 0x%x catast error, sub_event type is: %d\n",
-+		ibdev_err(ibdev, "local work queue 0x%x catast error, sub_event type is: %d\n",
- 			  irq_work->queue_num, irq_work->sub_type);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_INV_REQ_LOCAL_WQ_ERROR:
--		ibdev_err(ibdev, "Invalid request local work queue 0x%x error.\n",
-+		ibdev_err(ibdev, "invalid request local work queue 0x%x error.\n",
- 			  irq_work->queue_num);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_LOCAL_WQ_ACCESS_ERROR:
--		ibdev_err(ibdev, "Local access violation work queue 0x%x error, sub_event type is: %d\n",
-+		ibdev_err(ibdev, "local access violation work queue 0x%x error, sub_event type is: %d\n",
- 			  irq_work->queue_num, irq_work->sub_type);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_SRQ_LIMIT_REACH:
-@@ -5873,7 +5873,7 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- 		ibdev_warn(ibdev, "DB overflow.\n");
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_FLR:
--		ibdev_warn(ibdev, "Function level reset.\n");
-+		ibdev_warn(ibdev, "function level reset.\n");
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_XRCD_VIOLATION:
- 		ibdev_err(ibdev, "xrc domain violation error.\n");
-@@ -5992,7 +5992,7 @@ static irqreturn_t hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 		case HNS_ROCE_EVENT_TYPE_FLR:
- 			break;
- 		default:
--			dev_err(dev, "Unhandled event %d on EQ %d at idx %u.\n",
-+			dev_err(dev, "unhandled event %d on EQ %d at idx %u.\n",
- 				event_type, eq->eqn, eq->cons_index);
- 			break;
- 		}
-@@ -6383,7 +6383,7 @@ static int alloc_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq)
- 				  hr_dev->caps.eqe_ba_pg_sz + PAGE_SHIFT, NULL,
- 				  0);
- 	if (err)
--		dev_err(hr_dev->dev, "Failed to alloc EQE mtr, err %d\n", err);
-+		dev_err(hr_dev->dev, "failed to alloc EQE mtr, err %d\n", err);
- 
- 	return err;
- }
-@@ -6472,7 +6472,7 @@ static int __hns_roce_request_irq(struct hns_roce_dev *hr_dev, int irq_num,
- 					  0, hr_dev->irq_names[j - comp_num],
- 					  &eq_table->eq[j - other_num]);
- 		if (ret) {
--			dev_err(hr_dev->dev, "Request irq error!\n");
-+			dev_err(hr_dev->dev, "request irq error!\n");
- 			goto err_request_failed;
- 		}
- 	}
-@@ -6894,7 +6894,7 @@ static int hns_roce_hw_v2_reset_notify_init(struct hnae3_handle *handle)
- 		dev_err(dev, "In reset process RoCE reinit failed %d.\n", ret);
- 	} else {
- 		handle->rinfo.reset_state = HNS_ROCE_STATE_RST_INITED;
--		dev_info(dev, "Reset done, RoCE client reinit finished.\n");
-+		dev_info(dev, "reset done, RoCE client reinit finished.\n");
- 	}
- 
- 	return ret;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 498d7c28c56c..53c53c20360d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -97,7 +97,7 @@ static int handle_en_event(struct hns_roce_dev *hr_dev, u32 port,
- 
- 	netdev = hr_dev->iboe.netdevs[port];
- 	if (!netdev) {
--		dev_err(dev, "Can't find netdev on port(%u)!\n", port);
-+		dev_err(dev, "can't find netdev on port(%u)!\n", port);
- 		return -ENODEV;
- 	}
- 
-@@ -239,7 +239,7 @@ static int hns_roce_query_port(struct ib_device *ib_dev, u32 port_num,
- 	net_dev = hr_dev->iboe.netdevs[port];
- 	if (!net_dev) {
- 		spin_unlock_irqrestore(&hr_dev->iboe.lock, flags);
--		dev_err(dev, "Find netdev %u failed!\n", port);
-+		dev_err(dev, "find netdev %u failed!\n", port);
- 		return -EINVAL;
- 	}
- 
-@@ -661,7 +661,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 				      HEM_TYPE_MTPT, hr_dev->caps.mtpt_entry_sz,
- 				      hr_dev->caps.num_mtpts);
- 	if (ret) {
--		dev_err(dev, "Failed to init MTPT context memory, aborting.\n");
-+		dev_err(dev, "failed to init MTPT context memory, aborting.\n");
- 		return ret;
- 	}
- 
-@@ -669,7 +669,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 				      HEM_TYPE_QPC, hr_dev->caps.qpc_sz,
- 				      hr_dev->caps.num_qps);
- 	if (ret) {
--		dev_err(dev, "Failed to init QP context memory, aborting.\n");
-+		dev_err(dev, "failed to init QP context memory, aborting.\n");
- 		goto err_unmap_dmpt;
- 	}
- 
-@@ -679,7 +679,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 				      hr_dev->caps.max_qp_init_rdma,
- 				      hr_dev->caps.num_qps);
- 	if (ret) {
--		dev_err(dev, "Failed to init irrl_table memory, aborting.\n");
-+		dev_err(dev, "failed to init irrl_table memory, aborting.\n");
- 		goto err_unmap_qp;
- 	}
- 
-@@ -692,7 +692,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 					      hr_dev->caps.num_qps);
- 		if (ret) {
- 			dev_err(dev,
--				"Failed to init trrl_table memory, aborting.\n");
-+				"failed to init trrl_table memory, aborting.\n");
- 			goto err_unmap_irrl;
- 		}
- 	}
-@@ -701,7 +701,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 				      HEM_TYPE_CQC, hr_dev->caps.cqc_entry_sz,
- 				      hr_dev->caps.num_cqs);
- 	if (ret) {
--		dev_err(dev, "Failed to init CQ context memory, aborting.\n");
-+		dev_err(dev, "failed to init CQ context memory, aborting.\n");
- 		goto err_unmap_trrl;
- 	}
- 
-@@ -712,7 +712,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 					      hr_dev->caps.num_srqs);
- 		if (ret) {
- 			dev_err(dev,
--				"Failed to init SRQ context memory, aborting.\n");
-+				"failed to init SRQ context memory, aborting.\n");
- 			goto err_unmap_cq;
- 		}
- 	}
-@@ -725,7 +725,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 					      hr_dev->caps.num_qps);
- 		if (ret) {
- 			dev_err(dev,
--				"Failed to init SCC context memory, aborting.\n");
-+				"failed to init SCC context memory, aborting.\n");
- 			goto err_unmap_srq;
- 		}
- 	}
-@@ -737,7 +737,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 					      hr_dev->caps.num_qpc_timer);
- 		if (ret) {
- 			dev_err(dev,
--				"Failed to init QPC timer memory, aborting.\n");
-+				"failed to init QPC timer memory, aborting.\n");
- 			goto err_unmap_ctx;
- 		}
- 	}
-@@ -749,7 +749,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
- 					      hr_dev->caps.cqc_timer_bt_num);
- 		if (ret) {
- 			dev_err(dev,
--				"Failed to init CQC timer memory, aborting.\n");
-+				"failed to init CQC timer memory, aborting.\n");
- 			goto err_unmap_qpc_timer;
- 		}
- 	}
-@@ -827,13 +827,13 @@ static int hns_roce_setup_hca(struct hns_roce_dev *hr_dev)
- 
- 	ret = hns_roce_uar_alloc(hr_dev, &hr_dev->priv_uar);
- 	if (ret) {
--		dev_err(dev, "Failed to allocate priv_uar.\n");
-+		dev_err(dev, "failed to allocate priv_uar.\n");
- 		goto err_uar_table_free;
- 	}
- 
- 	ret = hns_roce_init_qp_table(hr_dev);
- 	if (ret) {
--		dev_err(dev, "Failed to init qp_table.\n");
-+		dev_err(dev, "failed to init qp_table.\n");
- 		goto err_uar_table_free;
- 	}
- 
-@@ -910,14 +910,14 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
- 	if (hr_dev->hw->cmq_init) {
- 		ret = hr_dev->hw->cmq_init(hr_dev);
- 		if (ret) {
--			dev_err(dev, "Init RoCE Command Queue failed!\n");
-+			dev_err(dev, "init RoCE Command Queue failed!\n");
- 			return ret;
- 		}
- 	}
- 
- 	ret = hr_dev->hw->hw_profile(hr_dev);
- 	if (ret) {
--		dev_err(dev, "Get RoCE engine profile failed!\n");
-+		dev_err(dev, "get RoCE engine profile failed!\n");
- 		goto error_failed_cmd_init;
- 	}
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index a36afc77b3ae..dd42ff81a96e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -190,7 +190,7 @@ struct ib_mr *hns_roce_get_dma_mr(struct ib_pd *pd, int acc)
- 	int ret;
- 
- 	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
--	if (mr == NULL)
-+	if (!mr)
- 		return  ERR_PTR(-ENOMEM);
- 
- 	mr->type = MR_TYPE_DMA;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 52ba194d7ae3..a546e934b887 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -56,7 +56,7 @@ static void flush_work_handle(struct work_struct *work)
- 	if (test_and_clear_bit(HNS_ROCE_FLUSH_FLAG, &hr_qp->flush_flag)) {
- 		ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
- 		if (ret)
--			dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
-+			dev_err(dev, "modify QP to error state failed(%d) during CQE flush\n",
- 				ret);
- 	}
- 
-@@ -105,7 +105,7 @@ void hns_roce_qp_event(struct hns_roce_dev *hr_dev, u32 qpn, int event_type)
- 	xa_unlock(&hr_dev->qp_table_xa);
- 
- 	if (!qp) {
--		dev_warn(dev, "Async event for bogus QP %08x\n", qpn);
-+		dev_warn(dev, "async event for bogus QP %08x\n", qpn);
- 		return;
- 	}
- 
-@@ -275,7 +275,7 @@ static int hns_roce_qp_store(struct hns_roce_dev *hr_dev,
- 
- 	ret = xa_err(xa_store_irq(xa, hr_qp->qpn, hr_qp, GFP_KERNEL));
- 	if (ret)
--		dev_err(hr_dev->dev, "Failed to xa store for QPC\n");
-+		dev_err(hr_dev->dev, "failed to xa store for QPC\n");
- 	else
- 		/* add QP to device's QP list for softwc */
- 		add_qp_to_list(hr_dev, hr_qp, init_attr->send_cq,
-@@ -296,14 +296,14 @@ static int alloc_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 	/* Alloc memory for QPC */
- 	ret = hns_roce_table_get(hr_dev, &qp_table->qp_table, hr_qp->qpn);
- 	if (ret) {
--		dev_err(dev, "Failed to get QPC table\n");
-+		dev_err(dev, "failed to get QPC table\n");
- 		goto err_out;
- 	}
- 
- 	/* Alloc memory for IRRL */
- 	ret = hns_roce_table_get(hr_dev, &qp_table->irrl_table, hr_qp->qpn);
- 	if (ret) {
--		dev_err(dev, "Failed to get IRRL table\n");
-+		dev_err(dev, "failed to get IRRL table\n");
- 		goto err_put_qp;
- 	}
- 
-@@ -312,7 +312,7 @@ static int alloc_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 		ret = hns_roce_table_get(hr_dev, &qp_table->trrl_table,
- 					 hr_qp->qpn);
- 		if (ret) {
--			dev_err(dev, "Failed to get TRRL table\n");
-+			dev_err(dev, "failed to get TRRL table\n");
- 			goto err_put_irrl;
- 		}
- 	}
-@@ -322,7 +322,7 @@ static int alloc_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 		ret = hns_roce_table_get(hr_dev, &qp_table->sccc_table,
- 					 hr_qp->qpn);
- 		if (ret) {
--			dev_err(dev, "Failed to get SCC CTX table\n");
-+			dev_err(dev, "failed to get SCC CTX table\n");
- 			goto err_put_trrl;
- 		}
- 	}
-@@ -1206,7 +1206,7 @@ int hns_roce_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *init_attr,
- 
- 	ret = hns_roce_create_qp_common(hr_dev, pd, init_attr, udata, hr_qp);
- 	if (ret)
--		ibdev_err(ibdev, "Create QP type 0x%x failed(%d)\n",
-+		ibdev_err(ibdev, "create QP type 0x%x failed(%d)\n",
- 			  init_attr->qp_type, ret);
- 
- 	return ret;
--- 
-2.30.0
+>  static void cma_query_handler(int status, struct sa_path_rec *path_rec,
+> -			      void *context)
+> +			      int num_prs, void *context)
 
+This param should be "unsigned int num_prs"
+
+>  {
+>  	struct cma_work *work = context;
+>  	struct rdma_route *route;
+> +	int i;
+>  
+>  	route = &work->id->id.route;
+>  
+> -	if (!status) {
+> -		route->num_pri_alt_paths = 1;
+> -		*route->path_rec = *path_rec;
+> -	} else {
+> -		work->old_state = RDMA_CM_ROUTE_QUERY;
+> -		work->new_state = RDMA_CM_ADDR_RESOLVED;
+> -		work->event.event = RDMA_CM_EVENT_ROUTE_ERROR;
+> -		work->event.status = status;
+> -		pr_debug_ratelimited("RDMA CM: ROUTE_ERROR: failed to query path. status %d\n",
+> -				     status);
+> +	if (status)
+> +		goto fail;
+> +
+> +	for (i = 0; i < num_prs; i++) {
+> +		if (!path_rec[i].flags || (path_rec[i].flags & IB_PATH_GMP))
+> +			*route->path_rec = path_rec[i];
+> +		else if (path_rec[i].flags & IB_PATH_INBOUND)
+> +			route_set_path_rec_inbound(work, &path_rec[i]);
+> +		else if (path_rec[i].flags & IB_PATH_OUTBOUND)
+> +			route_set_path_rec_outbound(work, &path_rec[i]);
+> +	}
+> +	if (!route->path_rec) {
+
+Why is this needed? The for loop above will have already oops'd.
+
+> +/**
+> + * ib_sa_pr_callback_multiple() - Parse path records then do callback.
+> + *
+> + * In a multiple-PR case the PRs are saved in "query->resp_pr_data"
+> + * (instead of"mad->data") and with "ib_path_rec_data" structure format,
+> + * so that rec->flags can be set to indicate the type of PR.
+> + * This is valid only in IB fabric.
+> + */
+> +static void ib_sa_pr_callback_multiple(struct ib_sa_path_query *query,
+> +				       int status, int num_prs,
+> +				       struct ib_path_rec_data *rec_data)
+> +{
+> +	struct sa_path_rec *rec;
+> +	int i;
+> +
+> +	rec = kvcalloc(num_prs, sizeof(*rec), GFP_KERNEL);
+> +	if (!rec) {
+> +		query->callback(-ENOMEM, NULL, 0, query->context);
+> +		return;
+> +	}
+
+This all seems really wild, why are we allocating memory so many times
+on this path? Have ib_nl_process_good_resolve_rsp unpack the mad
+instead of storing the raw format
+
+It would also be good to make resp_pr_data always valid so all these
+special paths don't need to exist.
+
+> diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
+> index 81916039ee24..cdc7cafab572 100644
+> --- a/include/rdma/rdma_cm.h
+> +++ b/include/rdma/rdma_cm.h
+> @@ -49,9 +49,15 @@ struct rdma_addr {
+>  	struct rdma_dev_addr dev_addr;
+>  };
+>  
+> +#define RDMA_PRIMARY_PATH_MAX_REC_NUM 3
+
+This is a strange place for this define, it should be in sa_query.c?
+
+Jason
