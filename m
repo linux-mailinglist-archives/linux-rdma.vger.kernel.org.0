@@ -2,46 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE865E5EB1
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Sep 2022 11:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE3F5E5F1A
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Sep 2022 11:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbiIVJgQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Sep 2022 05:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
+        id S231164AbiIVJ4d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Sep 2022 05:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiIVJgP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Sep 2022 05:36:15 -0400
+        with ESMTP id S231330AbiIVJ4O (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Sep 2022 05:56:14 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8660733E3B
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Sep 2022 02:36:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDA9D575F
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Sep 2022 02:55:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 21E55629E4
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Sep 2022 09:36:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEB72C433C1;
-        Thu, 22 Sep 2022 09:36:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1691B62A82
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Sep 2022 09:55:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2E4AC433C1;
+        Thu, 22 Sep 2022 09:55:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663839373;
-        bh=TN338hrpnHypEMNVDAikOb1LyoUd9QrcfAL5p5Bly8U=;
+        s=k20201202; t=1663840509;
+        bh=D6GTw1zpOqodzbILB77tzfeOxiXBkAqlMxEQnsqgSA8=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Ao52A0vS4rOTdTK5N1lyMEPZL5LB8A+5fI5eF53OgDObgjFf4oWsmLtF5HkoP/krC
-         EmTdvCi6bFd05a+F6TFGiP9jo3gv1NPNXL5fsOeYnv4DFc3NZ3MsngVaxmmWX8LA/I
-         LpQO9buacLPW7jYnKjrp6cVcsIaLy4O3ET3dbaSL4v7QrtgU2aDC+RIACFxESWGlJ9
-         EPqhAWoenCBfcfGw86XrrwvRce4hrwQW4GYFTkuK8703NXq7zF62PiSldQVeWMoVod
-         LmKKUgkrYDqDLqax26uK2XpUv2DqJRbFFonGSp8YUfmsqsB68yxUwymtzAIShJw2eE
-         GtbTUX2m2qXCQ==
+        b=eWF9RMwIbiWmdLT9DBCWKqprbloludtMljCY1ZPPq6Ejg6vwyVHLt6WBjiTAtFI2S
+         LbCsTHGkLBVQpJ++G1m5TGl0di1yQcf5EuVHBD4o5amDMbrMlgRjEIoFONQ6w9NM9f
+         E+LQVw97gjcFL7gbWpLwiw69zxhkTYyqmFz3/oFYICDVpTze+kundpCLyj+z2xWPbQ
+         gy3Sa/C6YDE4Ek8VscZQytpCOhC3Jci4nw51iHxEpN17O3aJzAmtBKnQtS08fOnMNE
+         Gq+jZstgFv0XsGZ89CQRbFEb5lXdrMocpTQbDHaay3CTu7kobPmyB3BjnkJHML5nVB
+         0RUISPZ8tLV6Q==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Mark Zhang <markzhang@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Mark Bloch <mbloch@nvidia.com>, linux-rdma@vger.kernel.org
-In-Reply-To: <cover.1662631201.git.leonro@nvidia.com>
-References: <cover.1662631201.git.leonro@nvidia.com>
-Subject: Re: [PATCH rdma-next 0/4] Support multiple path records
-Message-Id: <166383936923.929497.12159526364985833338.b4-ty@kernel.org>
-Date:   Thu, 22 Sep 2022 12:36:09 +0300
+To:     linux-rdma@vger.kernel.org,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, zyjzyj2000@gmail.com,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     yishaih@nvidia.com
+In-Reply-To: <20220921080844.1616883-1-matsuda-daisuke@fujitsu.com>
+References: <20220921080844.1616883-1-matsuda-daisuke@fujitsu.com>
+Subject: Re: [PATCH v2 1/2] IB: Set IOVA/LENGTH on IB_MR in core/uverbs layers
+Message-Id: <166384050528.1028734.983378336970814695.b4-ty@kernel.org>
+Date:   Thu, 22 Sep 2022 12:55:05 +0300
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,26 +55,23 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 8 Sep 2022 13:08:59 +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, 21 Sep 2022 17:08:43 +0900, Daisuke Matsuda wrote:
+> Set 'iova' and 'length' on ib_mr in ib_uverbs and ib_core layers to let all
+> drivers have the members filled. Also, this commit removes redundancy in
+> the respective drivers.
 > 
-> From Mark:
-> 
-> These patches allow IB core to receive multiple path records from
-> user-space rdma netlink service.
+> Previously, commit 04c0a5fcfcf65 ("IB/uverbs: Set IOVA on IB MR in uverbs
+> layer") changed to set 'iova', but seems to have missed 'length' and the
+> ib_core layer at that time.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/4] RDMA/core: Rename rdma_route.num_paths field to num_pri_alt_paths
-      https://git.kernel.org/rdma/rdma/c/bf9a9928510a03
-[2/4] RDMA/cma: Multiple path records support with netlink channel
-      https://git.kernel.org/rdma/rdma/c/5a374949339427
-[3/4] RDMA/cm: Use SLID in the work completion as the DLID in responder side
-      https://git.kernel.org/rdma/rdma/c/b7d95040c13f61
-[4/4] RDMA/cm: Use DLID from inbound/outbound PathRecords as the datapath DLID
-      https://git.kernel.org/rdma/rdma/c/eb8336dbe373ed
+[1/2] IB: Set IOVA/LENGTH on IB_MR in core/uverbs layers
+      https://git.kernel.org/rdma/rdma/c/241f9a27e0fc0e
+[2/2] RDMA/rxe: Use members of generic struct in rxe_mr
+      https://git.kernel.org/rdma/rdma/c/954afc5a8fd857
 
 Best regards,
 -- 
