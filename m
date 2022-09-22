@@ -2,20 +2,20 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A51005E6280
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Sep 2022 14:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770E05E627C
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Sep 2022 14:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbiIVMeY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S231615AbiIVMeY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 22 Sep 2022 08:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbiIVMeO (ORCPT
+        with ESMTP id S231629AbiIVMeO (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Sep 2022 08:34:14 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A581E7223
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D302E721A
         for <linux-rdma@vger.kernel.org>; Thu, 22 Sep 2022 05:34:11 -0700 (PDT)
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MYF535DH1zpTpC;
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MYF536TzszpTqV;
         Thu, 22 Sep 2022 20:31:19 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
  dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
@@ -29,9 +29,9 @@ From:   Haoyue Xu <xuhaoyue1@hisilicon.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <liangwenpeng@huawei.com>, <xuhaoyue1@hisilicon.com>
-Subject: [PATCH for-next 08/12] RDMA/hns: Remove redundant 'num_mtt_segs' and 'max_extend_sg'
-Date:   Thu, 22 Sep 2022 20:33:11 +0800
-Message-ID: <20220922123315.3732205-9-xuhaoyue1@hisilicon.com>
+Subject: [PATCH for-next 09/12] RDMA/hns: Remove redundant 'max_srq_desc_sz' in caps
+Date:   Thu, 22 Sep 2022 20:33:12 +0800
+Message-ID: <20220922123315.3732205-10-xuhaoyue1@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20220922123315.3732205-1-xuhaoyue1@hisilicon.com>
 References: <20220922123315.3732205-1-xuhaoyue1@hisilicon.com>
@@ -53,96 +53,71 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Yangyang Li <liyangyang20@huawei.com>
 
-The num_mtt_segs and max_extend_sg used to be used for HIP06,
-remove them since the HIP06 code has been removed.
+The max_srq_desc_sz is defined in the code, but never used,
+so delete this redundant variable.
 
 Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
 Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h | 4 ++--
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 3 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 4 +---
- 3 files changed, 3 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h | 2 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 2 --
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 3 +--
+ 3 files changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 32cc116b3a6d..edd19970931d 100644
+index edd19970931d..aa859bf30774 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_device.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -724,7 +724,7 @@ struct hns_roce_caps {
- 	u32		max_sq_sg;
- 	u32		max_sq_inline;
- 	u32		max_rq_sg;
--	u32		max_extend_sg;
-+	u32		rsv0;
- 	u32		num_qps;
- 	u32		num_pi_qps;
- 	u32		reserved_qps;
-@@ -748,7 +748,7 @@ struct hns_roce_caps {
- 	int		num_comp_vectors;
- 	int		num_other_vectors;
- 	u32		num_mtpts;
--	u32		num_mtt_segs;
-+	u32		rsv1;
- 	u32		num_srqwqe_segs;
- 	u32		num_idx_segs;
- 	int		reserved_mrws;
+@@ -735,7 +735,7 @@ struct hns_roce_caps {
+ 	u32		max_srq_sges;
+ 	u32		max_sq_desc_sz;
+ 	u32		max_rq_desc_sz;
+-	u32		max_srq_desc_sz;
++	u32		rsv2;
+ 	int		max_qp_init_rdma;
+ 	int		max_qp_dest_rdma;
+ 	u32		num_cqs;
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 4931f2a8a4af..f8b747cc4e79 100644
+index f8b747cc4e79..31bfea15cdfc 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1966,7 +1966,6 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
- 	caps->min_cqes		= HNS_ROCE_MIN_CQE_NUM;
- 	caps->max_cqes		= HNS_ROCE_V2_MAX_CQE_NUM;
- 	caps->max_sq_sg		= HNS_ROCE_V2_MAX_SQ_SGE_NUM;
--	caps->max_extend_sg	= HNS_ROCE_V2_MAX_EXTEND_SGE_NUM;
- 	caps->max_rq_sg		= HNS_ROCE_V2_MAX_RQ_SGE_NUM;
+@@ -1983,7 +1983,6 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
+ 	caps->max_qp_dest_rdma	= HNS_ROCE_V2_MAX_QP_DEST_RDMA;
+ 	caps->max_sq_desc_sz	= HNS_ROCE_V2_MAX_SQ_DESC_SZ;
+ 	caps->max_rq_desc_sz	= HNS_ROCE_V2_MAX_RQ_DESC_SZ;
+-	caps->max_srq_desc_sz	= HNS_ROCE_V2_MAX_SRQ_DESC_SZ;
+ 	caps->irrl_entry_sz	= HNS_ROCE_V2_IRRL_ENTRY_SZ;
+ 	caps->trrl_entry_sz	= HNS_ROCE_V2_EXT_ATOMIC_TRRL_ENTRY_SZ;
+ 	caps->cqc_entry_sz	= HNS_ROCE_V2_CQC_ENTRY_SZ;
+@@ -2277,7 +2276,6 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
+ 	caps->num_other_vectors	     = resp_a->num_other_vectors;
+ 	caps->max_sq_desc_sz	     = resp_a->max_sq_desc_sz;
+ 	caps->max_rq_desc_sz	     = resp_a->max_rq_desc_sz;
+-	caps->max_srq_desc_sz	     = resp_a->max_srq_desc_sz;
+ 	caps->cqe_sz		     = resp_a->cqe_sz;
  
- 	caps->num_uars		= HNS_ROCE_V2_UAR_NUM;
-@@ -2185,7 +2184,6 @@ static void apply_func_caps(struct hns_roce_dev *hr_dev)
- 	caps->num_xrcds = HNS_ROCE_V2_MAX_XRCD_NUM;
- 	caps->reserved_xrcds = HNS_ROCE_V2_RSV_XRCD_NUM;
- 
--	caps->num_mtt_segs = HNS_ROCE_V2_MAX_MTT_SEGS;
- 	caps->num_srqwqe_segs = HNS_ROCE_V2_MAX_SRQWQE_SEGS;
- 	caps->num_idx_segs = HNS_ROCE_V2_MAX_IDX_SEGS;
- 
-@@ -2272,7 +2270,6 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 	caps->max_sq_inline	     = le16_to_cpu(resp_a->max_sq_inline);
- 	caps->max_rq_sg		     = le16_to_cpu(resp_a->max_rq_sg);
- 	caps->max_rq_sg = roundup_pow_of_two(caps->max_rq_sg);
--	caps->max_extend_sg	     = le32_to_cpu(resp_a->max_extend_sg);
- 	caps->num_qpc_timer	     = le16_to_cpu(resp_a->num_qpc_timer);
- 	caps->max_srq_sges	     = le16_to_cpu(resp_a->max_srq_sges);
- 	caps->max_srq_sges = roundup_pow_of_two(caps->max_srq_sges);
+ 	caps->mtpt_entry_sz	     = resp_b->mtpt_entry_sz;
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index ca63463e7d4e..7a613cbe2ad6 100644
+index 7a613cbe2ad6..bd09109e4848 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -46,7 +46,6 @@
- #define HNS_ROCE_V2_MAX_CQE_NUM			0x400000
- #define HNS_ROCE_V2_MAX_RQ_SGE_NUM		64
- #define HNS_ROCE_V2_MAX_SQ_SGE_NUM		64
--#define HNS_ROCE_V2_MAX_EXTEND_SGE_NUM		0x200000
- #define HNS_ROCE_V2_MAX_SQ_INLINE		0x20
- #define HNS_ROCE_V3_MAX_SQ_INLINE		0x400
- #define HNS_ROCE_V2_MAX_RC_INL_INN_SZ		32
-@@ -55,7 +54,6 @@
- #define HNS_ROCE_V2_AEQE_VEC_NUM		1
- #define HNS_ROCE_V2_ABNORMAL_VEC_NUM		1
- #define HNS_ROCE_V2_MAX_MTPT_NUM		0x100000
--#define HNS_ROCE_V2_MAX_MTT_SEGS		0x1000000
- #define HNS_ROCE_V2_MAX_SRQWQE_SEGS		0x1000000
- #define HNS_ROCE_V2_MAX_IDX_SEGS		0x1000000
- #define HNS_ROCE_V2_MAX_PD_NUM			0x1000000
-@@ -1175,7 +1173,7 @@ struct hns_roce_query_pf_caps_a {
- 	__le16 max_sq_sg;
- 	__le16 max_sq_inline;
- 	__le16 max_rq_sg;
--	__le32 max_extend_sg;
-+	__le32 rsv0;
- 	__le16 num_qpc_timer;
- 	__le16 num_cqc_timer;
- 	__le16 max_srq_sges;
+@@ -63,7 +63,6 @@
+ #define HNS_ROCE_V2_MAX_QP_DEST_RDMA		128
+ #define HNS_ROCE_V2_MAX_SQ_DESC_SZ		64
+ #define HNS_ROCE_V2_MAX_RQ_DESC_SZ		16
+-#define HNS_ROCE_V2_MAX_SRQ_DESC_SZ		64
+ #define HNS_ROCE_V2_IRRL_ENTRY_SZ		64
+ #define HNS_ROCE_V2_EXT_ATOMIC_TRRL_ENTRY_SZ	100
+ #define HNS_ROCE_V2_CQC_ENTRY_SZ		64
+@@ -1181,7 +1180,7 @@ struct hns_roce_query_pf_caps_a {
+ 	u8 num_other_vectors;
+ 	u8 max_sq_desc_sz;
+ 	u8 max_rq_desc_sz;
+-	u8 max_srq_desc_sz;
++	u8 rsv1;
+ 	u8 cqe_sz;
+ };
+ 
 -- 
 2.30.0
 
