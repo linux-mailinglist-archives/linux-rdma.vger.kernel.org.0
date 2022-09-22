@@ -2,21 +2,21 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D515E627A
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Sep 2022 14:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51005E6280
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Sep 2022 14:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbiIVMeV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Sep 2022 08:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
+        id S231604AbiIVMeY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Sep 2022 08:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbiIVMeO (ORCPT
+        with ESMTP id S231631AbiIVMeO (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Sep 2022 08:34:14 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A081E7222
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A581E7223
         for <linux-rdma@vger.kernel.org>; Thu, 22 Sep 2022 05:34:11 -0700 (PDT)
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MYF5p5rQPzHpsK;
-        Thu, 22 Sep 2022 20:31:58 +0800 (CST)
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MYF535DH1zpTpC;
+        Thu, 22 Sep 2022 20:31:19 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
  dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -24,14 +24,14 @@ Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 20:34:03 +0800
+ 15.1.2375.31; Thu, 22 Sep 2022 20:34:04 +0800
 From:   Haoyue Xu <xuhaoyue1@hisilicon.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <liangwenpeng@huawei.com>, <xuhaoyue1@hisilicon.com>
-Subject: [PATCH for-next 07/12] RDMA/hns: Remove redundant 'phy_addr' in hns_roce_hem_list_find_mtt()
-Date:   Thu, 22 Sep 2022 20:33:10 +0800
-Message-ID: <20220922123315.3732205-8-xuhaoyue1@hisilicon.com>
+Subject: [PATCH for-next 08/12] RDMA/hns: Remove redundant 'num_mtt_segs' and 'max_extend_sg'
+Date:   Thu, 22 Sep 2022 20:33:11 +0800
+Message-ID: <20220922123315.3732205-9-xuhaoyue1@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20220922123315.3732205-1-xuhaoyue1@hisilicon.com>
 References: <20220922123315.3732205-1-xuhaoyue1@hisilicon.com>
@@ -51,88 +51,98 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+From: Yangyang Li <liyangyang20@huawei.com>
 
-This parameter has never been used. Remove it to simplify the function.
+The num_mtt_segs and max_extend_sg used to be used for HIP06,
+remove them since the HIP06 code has been removed.
 
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
 Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hem.c | 7 +------
- drivers/infiniband/hw/hns/hns_roce_hem.h | 2 +-
- drivers/infiniband/hw/hns/hns_roce_mr.c  | 4 ++--
- 3 files changed, 4 insertions(+), 9 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h | 4 ++--
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 3 ---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 4 +---
+ 3 files changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index e8acd2839d7d..d0b75a2234d3 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -1462,19 +1462,17 @@ void hns_roce_hem_list_init(struct hns_roce_hem_list *hem_list)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 32cc116b3a6d..edd19970931d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -724,7 +724,7 @@ struct hns_roce_caps {
+ 	u32		max_sq_sg;
+ 	u32		max_sq_inline;
+ 	u32		max_rq_sg;
+-	u32		max_extend_sg;
++	u32		rsv0;
+ 	u32		num_qps;
+ 	u32		num_pi_qps;
+ 	u32		reserved_qps;
+@@ -748,7 +748,7 @@ struct hns_roce_caps {
+ 	int		num_comp_vectors;
+ 	int		num_other_vectors;
+ 	u32		num_mtpts;
+-	u32		num_mtt_segs;
++	u32		rsv1;
+ 	u32		num_srqwqe_segs;
+ 	u32		num_idx_segs;
+ 	int		reserved_mrws;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 4931f2a8a4af..f8b747cc4e79 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -1966,7 +1966,6 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
+ 	caps->min_cqes		= HNS_ROCE_MIN_CQE_NUM;
+ 	caps->max_cqes		= HNS_ROCE_V2_MAX_CQE_NUM;
+ 	caps->max_sq_sg		= HNS_ROCE_V2_MAX_SQ_SGE_NUM;
+-	caps->max_extend_sg	= HNS_ROCE_V2_MAX_EXTEND_SGE_NUM;
+ 	caps->max_rq_sg		= HNS_ROCE_V2_MAX_RQ_SGE_NUM;
  
- void *hns_roce_hem_list_find_mtt(struct hns_roce_dev *hr_dev,
- 				 struct hns_roce_hem_list *hem_list,
--				 int offset, int *mtt_cnt, u64 *phy_addr)
-+				 int offset, int *mtt_cnt)
- {
- 	struct list_head *head = &hem_list->btm_bt;
- 	struct hns_roce_hem_item *hem, *temp_hem;
- 	void *cpu_base = NULL;
--	u64 phy_base = 0;
- 	int nr = 0;
+ 	caps->num_uars		= HNS_ROCE_V2_UAR_NUM;
+@@ -2185,7 +2184,6 @@ static void apply_func_caps(struct hns_roce_dev *hr_dev)
+ 	caps->num_xrcds = HNS_ROCE_V2_MAX_XRCD_NUM;
+ 	caps->reserved_xrcds = HNS_ROCE_V2_RSV_XRCD_NUM;
  
- 	list_for_each_entry_safe(hem, temp_hem, head, sibling) {
- 		if (hem_list_page_is_in_range(hem, offset)) {
- 			nr = offset - hem->start;
- 			cpu_base = hem->addr + nr * BA_BYTE_LEN;
--			phy_base = hem->dma_addr + nr * BA_BYTE_LEN;
- 			nr = hem->end + 1 - offset;
- 			break;
- 		}
-@@ -1483,8 +1481,5 @@ void *hns_roce_hem_list_find_mtt(struct hns_roce_dev *hr_dev,
- 	if (mtt_cnt)
- 		*mtt_cnt = nr;
+-	caps->num_mtt_segs = HNS_ROCE_V2_MAX_MTT_SEGS;
+ 	caps->num_srqwqe_segs = HNS_ROCE_V2_MAX_SRQWQE_SEGS;
+ 	caps->num_idx_segs = HNS_ROCE_V2_MAX_IDX_SEGS;
  
--	if (phy_addr)
--		*phy_addr = phy_base;
--
- 	return cpu_base;
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.h b/drivers/infiniband/hw/hns/hns_roce_hem.h
-index 6b888049e9a0..7d23d3c51da4 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.h
-@@ -131,7 +131,7 @@ void hns_roce_hem_list_release(struct hns_roce_dev *hr_dev,
- 			       struct hns_roce_hem_list *hem_list);
- void *hns_roce_hem_list_find_mtt(struct hns_roce_dev *hr_dev,
- 				 struct hns_roce_hem_list *hem_list,
--				 int offset, int *mtt_cnt, u64 *phy_addr);
-+				 int offset, int *mtt_cnt);
- 
- static inline void hns_roce_hem_first(struct hns_roce_hem *hem,
- 				      struct hns_roce_hem_iter *iter)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 867972c2a894..a36afc77b3ae 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -586,7 +586,7 @@ static int mtr_map_region(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 	while (offset < end && npage < max_count) {
- 		count = 0;
- 		mtts = hns_roce_hem_list_find_mtt(hr_dev, &mtr->hem_list,
--						  offset, &count, NULL);
-+						  offset, &count);
- 		if (!mtts)
- 			return -ENOBUFS;
- 
-@@ -835,7 +835,7 @@ int hns_roce_mtr_find(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 		mtt_count = 0;
- 		mtts = hns_roce_hem_list_find_mtt(hr_dev, &mtr->hem_list,
- 						  start_index + total,
--						  &mtt_count, NULL);
-+						  &mtt_count);
- 		if (!mtts || !mtt_count)
- 			goto done;
- 
+@@ -2272,7 +2270,6 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
+ 	caps->max_sq_inline	     = le16_to_cpu(resp_a->max_sq_inline);
+ 	caps->max_rq_sg		     = le16_to_cpu(resp_a->max_rq_sg);
+ 	caps->max_rq_sg = roundup_pow_of_two(caps->max_rq_sg);
+-	caps->max_extend_sg	     = le32_to_cpu(resp_a->max_extend_sg);
+ 	caps->num_qpc_timer	     = le16_to_cpu(resp_a->num_qpc_timer);
+ 	caps->max_srq_sges	     = le16_to_cpu(resp_a->max_srq_sges);
+ 	caps->max_srq_sges = roundup_pow_of_two(caps->max_srq_sges);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index ca63463e7d4e..7a613cbe2ad6 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -46,7 +46,6 @@
+ #define HNS_ROCE_V2_MAX_CQE_NUM			0x400000
+ #define HNS_ROCE_V2_MAX_RQ_SGE_NUM		64
+ #define HNS_ROCE_V2_MAX_SQ_SGE_NUM		64
+-#define HNS_ROCE_V2_MAX_EXTEND_SGE_NUM		0x200000
+ #define HNS_ROCE_V2_MAX_SQ_INLINE		0x20
+ #define HNS_ROCE_V3_MAX_SQ_INLINE		0x400
+ #define HNS_ROCE_V2_MAX_RC_INL_INN_SZ		32
+@@ -55,7 +54,6 @@
+ #define HNS_ROCE_V2_AEQE_VEC_NUM		1
+ #define HNS_ROCE_V2_ABNORMAL_VEC_NUM		1
+ #define HNS_ROCE_V2_MAX_MTPT_NUM		0x100000
+-#define HNS_ROCE_V2_MAX_MTT_SEGS		0x1000000
+ #define HNS_ROCE_V2_MAX_SRQWQE_SEGS		0x1000000
+ #define HNS_ROCE_V2_MAX_IDX_SEGS		0x1000000
+ #define HNS_ROCE_V2_MAX_PD_NUM			0x1000000
+@@ -1175,7 +1173,7 @@ struct hns_roce_query_pf_caps_a {
+ 	__le16 max_sq_sg;
+ 	__le16 max_sq_inline;
+ 	__le16 max_rq_sg;
+-	__le32 max_extend_sg;
++	__le32 rsv0;
+ 	__le16 num_qpc_timer;
+ 	__le16 num_cqc_timer;
+ 	__le16 max_srq_sges;
 -- 
 2.30.0
 
