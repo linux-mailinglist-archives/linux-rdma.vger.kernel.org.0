@@ -2,174 +2,225 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C865E7B91
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Sep 2022 15:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B395E7BC4
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Sep 2022 15:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbiIWNNy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Sep 2022 09:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
+        id S232173AbiIWN0C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Sep 2022 09:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbiIWNNn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Sep 2022 09:13:43 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2044.outbound.protection.outlook.com [40.107.220.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F2713EAE4
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Sep 2022 06:13:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bJ5HS4ACH2oZt+nDJmRviSM3lc/Yk4tNkPYuX1p2Q/gnAhSDWINP89b9VJBBP9h8ghgFVlqg3ILdKwO6sqRfi6Ety7gnMDAfN2prWANHxlB8OuVlV14rjN/7GaqzpSPjDHhQbeUJojSnwjmtCrTQ+vtNfZ6Vi36V/YRurCcWSVbXRnxfAd+J01N8gqWGmIe8cGKXTYqyw2zjITNi1Pq2OkldPVEn5/yv+aTlEI6xd4e/0ee8NvrwLGE3n4e0sd4FiXNKHZDur7giIfpQdRl6HycEjkFPsksd15EmYWtA9IbRGmAbeAk13OKk4D+oFC5gE7kHdRh5aKl0Js3rbb+CEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3TMda6ej55gteSNYL2UjncI5wovCnmChsW9tYjuV3PQ=;
- b=eqVwh7YlnKI9rkzYBpXsPNZuRVl3wPv3K4oC4Fb1n00llxBjOQjjp7ub9gyM6RBobazd0NNa8AXO75tuMaMDhQCFJFTA1Mi3uZe721mruPB10RRDcNOijT/bJIGdK0cgfjtvNNhjtqgM0OabltbL94RUbr92MKbF2aVQm7iPY2vGtCrRC6huaHS/hpcfbiJHCile9sWkgdR3/v+QdoU967SPB0dcUUbmT4u98nxpcRVIl10W6FKKa8Hr5EzXr77nAtkKtcfb89Sc51yhLlv0PCT47faAIqkDZmKOGy5VmYwteW8kSLxl4Md6ek5SnX1wOwu0CvaouXJry332101XIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3TMda6ej55gteSNYL2UjncI5wovCnmChsW9tYjuV3PQ=;
- b=s/Xy9H6a5WsVERNegy34VPaG14xHZ4750WoUxzpn7ChI6dS7BbDtP/v4MQR4LlDH8CHJur8vqjL6+ef/yEfc5k4X6F8Kk8tqcIQehK4Li94jnA6Ykun65PKoVgdvmtPulgRH91krs7s4YFSequU31W2u+4n493vb2InMtqxKXrRT/+uHUvsDreiAsYYi+i5hMa+OecydwRNLZxZVcIDqDcQZ8lHYVWPSoIFxZLbmF8LB1eoSonC9fc499WxHq87sCwrCDuZjTGUiZfyn2kGKubcNmfEnDzI5+Kpoq6bmVBK+I0u5oVFOUPNGd6/Gt2kOZgR7o4Wy8PguScovCBur8w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by PH8PR12MB7136.namprd12.prod.outlook.com (2603:10b6:510:22b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.20; Fri, 23 Sep
- 2022 13:13:31 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5%7]) with mapi id 15.20.5654.020; Fri, 23 Sep 2022
- 13:13:31 +0000
-Date:   Fri, 23 Sep 2022 10:13:30 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mark Zhang <markzhang@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>
-Subject: Re: [PATCH rdma-next 2/4] RDMA/cma: Multiple path records support
- with netlink channel
-Message-ID: <Yy2w+kxp7ebtsdFE@nvidia.com>
-References: <cover.1662631201.git.leonro@nvidia.com>
- <2fa2b6c93c4c16c8915bac3cfc4f27be1d60519d.1662631201.git.leonro@nvidia.com>
- <Yyxp9E9pJtUids2o@nvidia.com>
- <969cf0aa-a066-5142-d917-f07130974764@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <969cf0aa-a066-5142-d917-f07130974764@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0003.namprd13.prod.outlook.com
- (2603:10b6:208:256::8) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+        with ESMTP id S232165AbiIWNZ7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Sep 2022 09:25:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D99145CA7
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Sep 2022 06:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1663939552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tAeIGOVStX2Lw3qzLzs/LetnOg1f7KwuoITGfiRfzZM=;
+        b=hIDmbre0mPeLcIseggA+YIXeNPXclBRpkNARib7HFqwyb4peOAWnrQ0TisLbbl1c2fOVfO
+        O/NWwBcSyhKW3C2LmXy1y1yrs/eD3rxS0Eh3pANYnMUt/07un/No6n1lRbE2EdX649D650
+        RzgXEPHZuQSe02gWUdK0HSCAdDf6iTY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-407--fZred67MJqsvQ_d4ssNsA-1; Fri, 23 Sep 2022 09:25:51 -0400
+X-MC-Unique: -fZred67MJqsvQ_d4ssNsA-1
+Received: by mail-wr1-f72.google.com with SMTP id e2-20020adf9bc2000000b0022ae4ea0afcso1793913wrc.8
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Sep 2022 06:25:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=tAeIGOVStX2Lw3qzLzs/LetnOg1f7KwuoITGfiRfzZM=;
+        b=e4hO0r1Y4QwsY7PFJ2xkgXbtcZTbMU5ZJCTRtDId/PyZh2IuTf4Br1BKToGSvp4nj/
+         cTpEL0ecLParZqkdLttaPhPd/nlHr0ecwKoSWJE8hF22ef5igfuF7DotcyHAD4CRPJ8K
+         W56nEtOfQtuoyH0RkWXeC2GcbdnUh1aUmNRaeIb80hEYfkvec1V/9nx2K7B3UmrAlhMo
+         N/JSyAcAWTbdykbIilohxcwp8Ig6YV7M1MmWSa8DzslPoVOTWIlWe/p9t5Tie7gDoHco
+         hS5UMls0HpqM+0dA6vSGJAxBb1LzfwoxaspN6j18LxYuqqqfTT/1qkKBpoyjtWvW4wmx
+         nT3g==
+X-Gm-Message-State: ACrzQf3ytDTbIY4PNnZkwxVZvALTJBb4Yw5rYcrhnArTkcTIg2eQsLKs
+        iiw/cFtErVm272GFTFPfi0r0OvIzMznJO5Sot7XXEmuQgUngIGZFVA8gwYc3I4HpGpVTftrItTm
+        dpwX/tnO882ydfm8+5ioWIA==
+X-Received: by 2002:a5d:444c:0:b0:22a:e6a2:c498 with SMTP id x12-20020a5d444c000000b0022ae6a2c498mr5314721wrr.531.1663939549562;
+        Fri, 23 Sep 2022 06:25:49 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4N/wjIavqBpF3kB6Ziv8ZKrFuJVNi73SNzDhIEw6012kl5eNx3Mxay36+E6T46Vl3hMVXh3Q==
+X-Received: by 2002:a5d:444c:0:b0:22a:e6a2:c498 with SMTP id x12-20020a5d444c000000b0022ae6a2c498mr5314710wrr.531.1663939549350;
+        Fri, 23 Sep 2022 06:25:49 -0700 (PDT)
+Received: from vschneid.remote.csb ([185.11.37.247])
+        by smtp.gmail.com with ESMTPSA id q5-20020a5d6585000000b0022add5a6fb1sm7067306wru.30.2022.09.23.06.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Sep 2022 06:25:48 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+Subject: [PATCH v4 0/7] sched, net: NUMA-aware CPU spreading interface
+Date:   Fri, 23 Sep 2022 14:25:20 +0100
+Message-Id: <20220923132527.1001870-1-vschneid@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4192:EE_|PH8PR12MB7136:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9dcafe38-4280-4a3b-478e-08da9d656957
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kBFLH82rbc3E//zIhPyXUxFyIDK+K948y5dR7w8HK98nmMctnxzoftOD+UgQdNhh+5jcjDMzU/KDSLNBtN5Xq8ouhzrc55HQZHgC4deROtpm0jGAwLsXz1LJO+rwBeqj9g4TCHF4cEu1/hCuro7WIkgDwlJpUUhJCZvkA+0x3pe2KMhHcB65dc1zToEqyNCiOKo+WhaIPaxAKoEtjHzojBmBmeFTJZwf/99WwOonagLuDit9T8gbq24FJpbYrQdkMVyA1mmq5gnaQVfqlZ+rpUih0dDjMJvkkjSyQg7lPF5fGSQOgtXSr1jowcc4s5l/W6/I5DZtAgkveqPuNJXf7fwux+Xoc1l4IqtpL12kdDaq+tuaIO7mbYycTrbauyNpuHy4yqIIycvEwzLX0QIJJ2S7DCufFPWbBk9OaoXGc/3d849nGISAX3VQD5cURc82Kh+uQ2SEoXOfuCRP2SUejchNPeTjJ8cYd0E9j3V8g9W5WmBpH53uDGSonazLlaBeKBzLTTcJYcHfNCSbDrfGa99XsUVK1muXu1n4qnzjule2fL6SjpqU8b1yrRZVfmHgO3AvmcGpqh/ZjY+Lyys3XPEguUvHkZaidkkqeD6jDmm9z+gi6DBggDBPnoHJ5RFeFyUenVDbC/nUW9LY21RAGeXwAnL2ogNS130j3HJ95q79tYyz0bxgiACyQUs4CbNntMY77QSkKQFGBugE19ysPa8/1clsHTem0A1jRbQ5HCIfBVYewHMe8C/BmeakhEC6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(376002)(396003)(346002)(136003)(366004)(451199015)(66556008)(66476007)(66946007)(36756003)(4326008)(8676002)(5660300002)(8936002)(6862004)(41300700001)(53546011)(26005)(6506007)(83380400001)(107886003)(38100700002)(186003)(2616005)(6512007)(86362001)(6636002)(37006003)(54906003)(316002)(6486002)(478600001)(2906002)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xO8vHC2Im1wH0oz4MHBdvTrmQmeOcZAzndkZk81Zx8wOqQLlXpCSmqDCzaQC?=
- =?us-ascii?Q?Bq4K1Mue3H4xY+GNoxqC3QVXyr0GGv+1QAY9gH1A5TrrMdfYbl/MANULDowf?=
- =?us-ascii?Q?1CpV3aPiZrDwckK9L46N4GMz++fOG7+NYrLQ7ap7vwlSs+J/aWMyd3tu21Tm?=
- =?us-ascii?Q?Aoj1yZ0lrBkaGBu56+UyUKlapE97R1b1Wk+fGC3FrncuIsc+/J8GStCv+28W?=
- =?us-ascii?Q?Oq8IZVLotJcZlcJebY15mz/ZDrP55j93N0uw0sX8yKfyBOMboKs1Eglw1On3?=
- =?us-ascii?Q?/VeXk9XWxa0gye8pkjwVs6xsDY4mpMjBp7q4jvnk4yBUgAlnsOjsdocCUSPS?=
- =?us-ascii?Q?+A8pj7wvbY0xVgwIrcyspoJus5qlm+jZeVrAXpHSN0mJW9n0KWTBgFTcGYuk?=
- =?us-ascii?Q?t7p+nKZFG2uUTEHTrqOIUMclpv2zxCFZCe4bMWKrz+m7Q13JqUS7ptnKg4lY?=
- =?us-ascii?Q?VuD5ZW7ix6GM7bS/KeRIQPnM1NrkLRy3fpe2C2W3rHUocEnwuUagEHTU0yb7?=
- =?us-ascii?Q?r3Bpg+fiFdKarv/TDQlOdRVVIVLj+8eymzOeBYE3ti5bUqAff6W1J2ru4Ur6?=
- =?us-ascii?Q?i3jspjrNt7UXgfXOkaB5Bkse+mIRp2MQfCsIUnoBI2gX71OEG8jJdOnf9fDI?=
- =?us-ascii?Q?xk02YwQgzQa1cLdbleGP/BT99rHzUKPFliMiFvNJ1iVAvMLGtZeUAPnWdOSA?=
- =?us-ascii?Q?Y82tV1s1Zo4JSf9gJu/B8+I1Ef/2Jhhe8KlEfe9tnGkCbN32jZVcorzR7xlM?=
- =?us-ascii?Q?mHfYu7WFCWUVG5D6RXFfALb/JrG8Jsp4IvBQiWHt2HLb9yJKLSVP9EBfSwzS?=
- =?us-ascii?Q?tyNNiGRmsj94wsJVAK/ZzY3rNrgCApGS6ls4AM5HGCM7b3MnHuJwH6Zpbvn2?=
- =?us-ascii?Q?lFdt+kEBo8oY0d8MgNCyj/2LDvMACpj1IC4qkz3cMr8rhYOfYnN6E+RPdgh0?=
- =?us-ascii?Q?4UTYBd+Q74uA3HWVC4hfZ0gukV7Gyqwm60HgLBhqcWZoVpEv4+g8rzTT2W+0?=
- =?us-ascii?Q?nIIPXQMWvt28WFWVv4da457nDYMb+lhaLKiLRIJScKO/7d1KFaNY/9HYq8i7?=
- =?us-ascii?Q?3KgPFApa0Tc4dPqO0UwQXXc+0IlqiNmD0h3OUOfCGCqd7QiEKuRob8cr6OPy?=
- =?us-ascii?Q?imdennbD4aFor8yuJv/c6O5CO4TK7H4W4f5rAES8HvcqxCEHVVeUQrytj+Pg?=
- =?us-ascii?Q?01JRPSSZjWdMRkso6AipL7gdzc8h/Y+KNon59tv5yGYS2npU60lqZ6OybZo0?=
- =?us-ascii?Q?ykpJnX+YUGjjMttGSCfTtoHfal3OpXA7QLSS+qux3LCeAT1b+SEuEqPj7Sa7?=
- =?us-ascii?Q?9Uto3ketc5g+HPraa4/QSdQElDAGA4AD/XHOfB97GjxrP0Ji8i3kiPswni2o?=
- =?us-ascii?Q?RdX+qk4lavTRnYQgstH8JFU7RBJue5WK8Ejah9z74crOFLsmfDI89zCYGxAD?=
- =?us-ascii?Q?c2ZChj6fdSnMCwEgl0gP9DTxckVnB36RwS3wKWiEHxKr4cVUXN3kNmpbNK8h?=
- =?us-ascii?Q?ffNnakZ8oXXs3HgYEIzy/ql5B4YiK+Cv8uHym+QW2zXcieEXX93j1qFDR3nm?=
- =?us-ascii?Q?hgepzLzcl+B/b3vd2H3Uh65G8tNMWx0ixSriWO4H?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9dcafe38-4280-4a3b-478e-08da9d656957
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2022 13:13:31.2962
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QnKVtFa5eZHzT80DX2y9pMVER3xG4ZsCwVad5DSqBYm0s3F3e/+di25XwpS8GGiQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7136
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 23, 2022 at 09:40:22AM +0800, Mark Zhang wrote:
-> On 9/22/2022 9:58 PM, Jason Gunthorpe wrote:
-> > On Thu, Sep 08, 2022 at 01:09:01PM +0300, Leon Romanovsky wrote:
-> > 
-> > > +static void route_set_path_rec_inbound(struct cma_work *work,
-> > > +				       struct sa_path_rec *path_rec)
-> > > +{
-> > > +	struct rdma_route *route = &work->id->id.route;
-> > > +
-> > > +	if (!route->path_rec_inbound) {
-> > > +		route->path_rec_inbound =
-> > > +			kzalloc(sizeof(*route->path_rec_inbound), GFP_KERNEL);
-> > > +		if (!route->path_rec_inbound)
-> > > +			return;
-> > > +	}
-> > > +
-> > > +	*route->path_rec_inbound = *path_rec;
-> > > +}
-> > 
-> > We are just ignoring these memory allocation failures??
-> > 
-> Inside "if" statement if kzalloc fails here then we don't set
-> route->path_rec_inbound or outbound;
+Hi folks,
 
-But why don't we propogate a ENOMEM failure code?
-> > > +static void ib_sa_pr_callback_multiple(struct ib_sa_path_query *query,
-> > > +				       int status, int num_prs,
-> > > +				       struct ib_path_rec_data *rec_data)
-> > > +{
-> > > +	struct sa_path_rec *rec;
-> > > +	int i;
-> > > +
-> > > +	rec = kvcalloc(num_prs, sizeof(*rec), GFP_KERNEL);
-> > > +	if (!rec) {
-> > > +		query->callback(-ENOMEM, NULL, 0, query->context);
-> > > +		return;
-> > > +	}
-> > 
-> > This all seems really wild, why are we allocating memory so many times
-> > on this path? Have ib_nl_process_good_resolve_rsp unpack the mad
-> > instead of storing the raw format
-> > 
-> > It would also be good to make resp_pr_data always valid so all these
-> > special paths don't need to exist.
-> 
-> The ib_sa_pr_callback_single() uses stack variable "rec" but
-> ib_sa_pr_callback_multiple() uses malloc because there are multiple PRs.
-> 
-> ib_sa_path_rec_callback is also used by ib_post_send_mad(), which always
-> have single PR and saved in mad->data, so always set resp_pr_data in netlink
-> case is not enough.
+Tariq pointed out in [1] that drivers allocating IRQ vectors would benefit
+from having smarter NUMA-awareness (cpumask_local_spread() doesn't quite cut
+it).
 
-We should always be able to point resp_pr_data to some kind of
-storage, even if it is stack storage.
+The proposed interface involved an array of CPUs and a temporary cpumask, and
+being my difficult self what I'm proposing here is an interface that doesn't
+require any temporary storage other than some stack variables (at the cost of
+one wild macro).
 
-Jason
+Please note that this is based on top of Yury's bitmap-for-next [2] to leverage
+his fancy new FIND_NEXT_BIT() macro.
+
+[1]: https://lore.kernel.org/all/20220728191203.4055-1-tariqt@nvidia.com/
+[2]: https://github.com/norov/linux.git/ -b bitmap-for-next
+
+A note on treewide use of for_each_cpu_andnot()
+===============================================
+
+I've used the below coccinelle script to find places that could be patched (I
+couldn't figure out the valid syntax to patch from coccinelle itself):
+
+,-----
+@tmpandnot@
+expression tmpmask;
+iterator for_each_cpu;
+position p;
+statement S;
+@@
+cpumask_andnot(tmpmask, ...);
+
+...
+
+(
+for_each_cpu@p(..., tmpmask, ...)
+	S
+|
+for_each_cpu@p(..., tmpmask, ...)
+{
+	...
+}
+)
+
+@script:python depends on tmpandnot@
+p << tmpandnot.p;
+@@
+coccilib.report.print_report(p[0], "andnot loop here")
+'-----
+
+Which yields (against c40e8341e3b3):
+
+.//arch/powerpc/kernel/smp.c:1587:1-13: andnot loop here
+.//arch/powerpc/kernel/smp.c:1530:1-13: andnot loop here
+.//arch/powerpc/kernel/smp.c:1440:1-13: andnot loop here
+.//arch/powerpc/platforms/powernv/subcore.c:306:2-14: andnot loop here
+.//arch/x86/kernel/apic/x2apic_cluster.c:62:1-13: andnot loop here
+.//drivers/acpi/acpi_pad.c:110:1-13: andnot loop here
+.//drivers/cpufreq/armada-8k-cpufreq.c:148:1-13: andnot loop here
+.//drivers/cpufreq/powernv-cpufreq.c:931:1-13: andnot loop here
+.//drivers/net/ethernet/sfc/efx_channels.c:73:1-13: andnot loop here
+.//drivers/net/ethernet/sfc/siena/efx_channels.c:73:1-13: andnot loop here
+.//kernel/sched/core.c:345:1-13: andnot loop here
+.//kernel/sched/core.c:366:1-13: andnot loop here
+.//net/core/dev.c:3058:1-13: andnot loop here
+
+A lot of those are actually of the shape
+
+  for_each_cpu(cpu, mask) {
+      ...
+      cpumask_andnot(mask, ...);
+  }
+
+I think *some* of the powerpc ones would be a match for for_each_cpu_andnot(),
+but I decided to just stick to the one obvious one in __sched_core_flip().
+  
+Revisions
+=========
+
+v3 -> v4
+++++++++
+
+o Rebased on top of Yury's bitmap-for-next
+o Added Tariq's mlx5e patch
+o Made sched_numa_hop_mask() return cpu_online_mask for the NUMA_NO_NODE &&
+  hops=0 case
+
+v2 -> v3
+++++++++
+
+o Added for_each_cpu_and() and for_each_cpu_andnot() tests (Yury)
+o New patches to fix issues raised by running the above
+
+o New patch to use for_each_cpu_andnot() in sched/core.c (Yury)
+
+v1 -> v2
+++++++++
+
+o Split _find_next_bit() @invert into @invert1 and @invert2 (Yury)
+o Rebase onto v6.0-rc1
+
+Cheers,
+Valentin
+
+Tariq Toukan (1):
+  net/mlx5e: Improve remote NUMA preferences used for the IRQ affinity
+    hints
+
+Valentin Schneider (6):
+  lib/find_bit: Introduce find_next_andnot_bit()
+  cpumask: Introduce for_each_cpu_andnot()
+  lib/test_cpumask: Add for_each_cpu_and(not) tests
+  sched/core: Merge cpumask_andnot()+for_each_cpu() into
+    for_each_cpu_andnot()
+  sched/topology: Introduce sched_numa_hop_mask()
+  sched/topology: Introduce for_each_numa_hop_cpu()
+
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c | 13 +++++-
+ include/linux/cpumask.h                      | 39 ++++++++++++++++
+ include/linux/find.h                         | 33 +++++++++++++
+ include/linux/topology.h                     | 49 ++++++++++++++++++++
+ kernel/sched/core.c                          |  5 +-
+ kernel/sched/topology.c                      | 31 +++++++++++++
+ lib/cpumask_kunit.c                          | 19 ++++++++
+ lib/find_bit.c                               |  9 ++++
+ 8 files changed, 192 insertions(+), 6 deletions(-)
+
+--
+2.31.1
+
