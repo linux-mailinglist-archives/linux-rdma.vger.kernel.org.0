@@ -2,127 +2,199 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1708B5E6BAE
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Sep 2022 21:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946D25E70C6
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Sep 2022 02:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbiIVTXd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Sep 2022 15:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
+        id S229811AbiIWAlw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Sep 2022 20:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbiIVTXc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Sep 2022 15:23:32 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2043.outbound.protection.outlook.com [40.107.244.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A894BD02;
-        Thu, 22 Sep 2022 12:23:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UvxPBE2dPUpyZXMVAk6bGndGViJgfJHs5phZse+vsSB0ZTn/tGlNQoGF6KLY8UhQYwa76Ss4qyJWmrGSt8yzm2XMFgUAfx+q7vcs3IsSEo1pOCt9vRkLHPoe4KuvvdQ8OB0ATZxuAUvj3EukR2K/RIDtIQl2Vnob8/IhMGu/cVOMNeYaYS86cekL4VWk5nklqSNbi5mnscMwjAk1XrkuF9gw+3biw9/hKFFCsUPik1fSjzendowmIASaI2TLHB6x2bHfRmZBN2tskL1Z8YTKFg5YdkRV6LQFcZKtwIpden7B2RfpGNe3F5PWI3U4LXp7R8JydNWzOvDXTj0S0lqDIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wl90UaH2BKdJpU5MV6KOoqPze/4l3Hb87d9No1/REL8=;
- b=O8yZIN00N5eN1s0jtLv5FPZ1n8D4Q/CZHpjv4fAiuzWKicWpVl4rJL1ODGN+pr35gGDsNiebPHwrAe1DaPXVDFdDe5N2eazYckzNG2o6fFJi5iuzc49ouq9YV0y+sWCH3+rrOvCKMkALAoEnf9TLgJx/W4VHiMNI8pZWz5jBeCByz8gGj3nwLsNmMm9/eXIuJ/TXz+syXMRsxuXttnpn5h/g8akDrPb38Rmn9JnwHg5+YKxCfP74oPE2z1U5/ctUssXsj3sDOhfsHxkAPZzMUaj+9XmYmquI1bb9sTAjokdSSAl+gnmP4+eMNSUR52NDSwIbqSZi8V7SOY8s/LgVdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wl90UaH2BKdJpU5MV6KOoqPze/4l3Hb87d9No1/REL8=;
- b=QNp1Ntenw40F9j6SEXuMK7PY/7pNGjU9clQU1sNtEkHgCDIJhzD4OLVfc2CrpK3BLN9GyxSB6/sgRfm1yumAynQepNpo5E81xDYZv9d3OxyOrJBVVqtMLqxIA/wklPZDMNfu0m4UJ2CBFu6Czmca0I3YHxc+biAllTDBTP+KvSeM80t0+A1A7J/ruK2VbaE5HhzeG0+MoZy1oTQWq/XqOONqhnyjZqFzr0yvyUfz8ohnz5I4Syq/1cQC7dDBcGaQAj6K7DaxQyP5fN7G1MjEZYl8m3WmzYddlqJ9DbV7PmI1D1VB/FfB4omgUVrgYK4Rmbp/1JIwjrGSWwI2aJIDMg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by DM4PR12MB6663.namprd12.prod.outlook.com (2603:10b6:8:bb::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5654.18; Thu, 22 Sep 2022 19:23:30 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::462:7fe:f04f:d0d5%7]) with mapi id 15.20.5654.019; Thu, 22 Sep 2022
- 19:23:28 +0000
-Date:   Thu, 22 Sep 2022 16:23:27 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     jianghaoran <jianghaoran@kylinos.cn>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: Re: Re: [PATCH] RDMA/siw: Solve the error of compiling the 32BIT
- mips kernel when enable CONFIG_RDMA_SIW
-Message-ID: <Yyy2L24vHouLEipe@nvidia.com>
-References: <SA0PR15MB39191553A6C95FB96FAB7146994E9@SA0PR15MB3919.namprd15.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SA0PR15MB39191553A6C95FB96FAB7146994E9@SA0PR15MB3919.namprd15.prod.outlook.com>
-X-ClientProxiedBy: MN2PR17CA0029.namprd17.prod.outlook.com
- (2603:10b6:208:15e::42) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+        with ESMTP id S229518AbiIWAlv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Sep 2022 20:41:51 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A32410976B
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Sep 2022 17:41:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663893711; x=1695429711;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/+y+h/BXdmwXck+u/a2adWpvY4QHTZjSkHfoBdZZZAU=;
+  b=LXMLS1MoB6i7R9ygOw73qdNR+O2R92erkhy7tomAIYA8MJ2otklJXFiI
+   jIVySybngWAvViDupltYQlq0p40aW3W8VQ0Kp/kuKvXaZwHED8VS2NGpg
+   1P1jJMK876Q0kyfRTA7BQEIiBKMwku2YYdD3fvZtQ71xDbUMInQLT9aFv
+   VU/9fFEJpB4ZxrVIPAtK1ik3W3QxQkOGCA+9yRJvdH50pgb9lRoHgAAKP
+   f6aZcjjlsM8mPmVhcrDGkIXa1WrIZ5iWidItJY5fZau75ARKyRtzWK3v9
+   gMsegPIACBcGgZSmnHpoQvh8r29qap17i5D1NRHkfCxuD1y8MO/L3HUjt
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="326801621"
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
+   d="scan'208";a="326801621"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 17:41:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
+   d="scan'208";a="650758374"
+Received: from lkp-server01.sh.intel.com (HELO c0a60f19fe7e) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 22 Sep 2022 17:41:49 -0700
+Received: from kbuild by c0a60f19fe7e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1obWlI-000584-1n;
+        Fri, 23 Sep 2022 00:41:48 +0000
+Date:   Fri, 23 Sep 2022 08:41:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ b300729b77b0b746c4f898332705672eb50d3297
+Message-ID: <632d00cb.IYmztkH7ys9jbAWc%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4192:EE_|DM4PR12MB6663:EE_
-X-MS-Office365-Filtering-Correlation-Id: 06fe41c3-6982-4a0e-0c40-08da9ccfedb4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IYIjvt86l3eh2V6ZgPIIisVA3UpFtu/Pw3SUF1tRB+q9fZ1dTR3Zk22YiPYWtGIzsR3eMpMEW9hYAFD94tto88ZHKPNcPN4qCp7l8Fyn5AcJ7sHRG+jP9MvIGgP5doJGF01buymK0YjTG60ItT5kd7MIXvM7uqAlFGpvvntzrSdyp8U1rvgNyV9PBKEtj3id12p3dk3bLr1XhlGR0+6wpX9QSQxv46BKNOFLBHBSbMtJQuJC0f7HtGQuU3Eq4LcU1Kceo8IuePhR1GuexRw4eIRPzHEqK6eZ8tB8BAotIf5VPtibRfCiZfU462YozdURMT4Ftc/AbZsHYJhBSnGDrEHAGCGmv78IiTmmZaUsujhCK67SBgZMXXJN+HjJfCvFpuq95bdyTbj5fwFRIabM/baJOPfANvorB9miKmIID3BjWRh58TZEu+nNTzOPnmNttOspO1QTWm/WH6WSW4lo9kNqpsonItfZLxwU1HfIE2ZOfeVM4BpShlyHB2dUCpnKNUfstXrg4LueJrwfKlCLNcUoNOC0L5uNQ821s1WeqiXG7MwpCk7AGW0gSvgIqcNxKZpB10IdaqK3p/BuaXFMC8mwSrMlb9/OHho6dlP4Fh9xw0uZdGXQ/nSVGiyESs5QzIxGpB2lUmfHaQJ6u2cNKO20QaKn29bR9uHAStBqCpI91j0BPwf56eirIfJmLGyBKrwwsbvGWFzZba/smE53rA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(346002)(366004)(39860400002)(376002)(136003)(451199015)(8936002)(6506007)(5660300002)(86362001)(8676002)(4326008)(6916009)(54906003)(36756003)(66556008)(66476007)(66946007)(41300700001)(316002)(478600001)(2616005)(2906002)(4744005)(186003)(6486002)(38100700002)(26005)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zpEiYA0GWeJEv2FuNzkdQsIjcMDyyfubX/hw6XL2SbPWdy7Gb9PLHkhTrUjg?=
- =?us-ascii?Q?HABPwFKfmF1+le3os/oN7zWhkT8n6UeyT13mAaS00xaZtVOb4DJuSCQUx9zi?=
- =?us-ascii?Q?xgl4eYIkq6McbzD1HTyyGYqGh7NqCmH413OOeoGzBT2BboRYpY7L1+HZBEo5?=
- =?us-ascii?Q?8VArAYm8MCGxkcjLmJmnLSal1kR1/b5tuYgQeIIs3+2dxuahzKhCnu9OqhfC?=
- =?us-ascii?Q?ZZoJfmeoVOixnKFsghFPLJg1F+k4DKpWhNpm6dov7nGTx8fvlFEjUkm8thT4?=
- =?us-ascii?Q?wu0Q99W9dl2Rm2MhkiybZV9NzIRj3cLEpJQuvd8ZDsK/63ccxVlP7846vNrV?=
- =?us-ascii?Q?dvk433z4EMpCl3qYL4FjM+bt5u33l7wRX5+cVzJPNWWlVR8nUYokxWMXA+J5?=
- =?us-ascii?Q?2b0yNjmL6k2Un8+TsIaSsblYXmDRgk7d4khujp+bZ9km8uOiBn1jBDGNWkvF?=
- =?us-ascii?Q?j4pehNXScFxo5Q8aPjfw/35dl4JtLrejZHkxj1yQ8FuaomyH3oHnncET5dT1?=
- =?us-ascii?Q?KnIBLQbmH6x/mP8Noc+ujIMueMgrC41FAeZE8Y0cjxnMRRuzfwBp7rSDbfhr?=
- =?us-ascii?Q?AHfpCmoidCVzELuEgPG+pCQN710ZUBtjiYzCvUvw7+1iLoOi3Tr/opgN1CcI?=
- =?us-ascii?Q?jrO8vPC9sCONE3Q0qNdf5Y2yG9TKmxlMJprE8x8T0kJnBOBq7ORNICPNvJmn?=
- =?us-ascii?Q?Vx1BN3bXAEzfX/EDonJ5Ihzr7n64SmbprEfT7XPfLuMVFoAYZCcfGcBShQFi?=
- =?us-ascii?Q?OWsJxXleIg0Wyf6GtBZeRvCdl05GZHajyFP1y0zYVd2ZSfGcyeiB8WGxmjkT?=
- =?us-ascii?Q?Oa6XinNoPlqTU4dVYW48psD5yUpLs/uhOedH4Nwa+B2sPcobKi2cJLCDIc/L?=
- =?us-ascii?Q?FJTkA3MnaK0b8bfF92MYA8OLpo+7LedFf3v7kLEFJAq3Uk5PW4W0YmoipoS9?=
- =?us-ascii?Q?qme3/fT33L+dl0OPbvAgc+SnDjoHWxZSrOWeNaGWMnGrmucjbuG9Xohvhhqc?=
- =?us-ascii?Q?yUpcXuh2335us7KxNVAnWbAE6LmFyvt9HRcFUuyHdcfVWh0P1FGmuCDhxLdt?=
- =?us-ascii?Q?RngOtgKNVXK8aswOVuJyhec9swJ938pKnqUAZjggkrIv9fw9WfPS8wAorKAR?=
- =?us-ascii?Q?WiDdC7MtEvCXkOmD0AB5xTdAJ9x3uRlTiBQRD1WSBBPC4Mzt5PdIy1ZecF0U?=
- =?us-ascii?Q?T12R37zcjpiEPxDhHAsorxaN8I9fVSjLJLeMRFIlMLgN7ye+DXtlksdmKZDr?=
- =?us-ascii?Q?ak1Oy6ZuvNvgfZzBiHL+VzsxuayBG62YaMU5U74wgdbJ9IYAimq1Hj1z9ldr?=
- =?us-ascii?Q?HG3SGMJ3u60joFctraAV70UJhXzLCti8Fq+okeO05oXBBWwk/CBSu6sN5koL?=
- =?us-ascii?Q?Bb2v4QvhVoUfVluM2gYbzw3CnpkhVAYjrqqL7+fPg+bXbMFYXhbO+SBIU7TD?=
- =?us-ascii?Q?LZRUICQBe3wFmM9z0+MumqNzH6O7hxzfrwPTJPsoo+EnjB9KpL3ZBILUX/bu?=
- =?us-ascii?Q?zAu3SFRRfNC/lAuynTsxCQ1fu8dvUYAmGZMXT4uWxVPWeO1WopmeflLAfV/z?=
- =?us-ascii?Q?Nq4H5WT1ew5yc6Y4jroZzMPvU7Gxni2JRvWLP1bX?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 06fe41c3-6982-4a0e-0c40-08da9ccfedb4
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2022 19:23:28.7603
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fPeQ3QnmbxZ1glB25syrpH8Mi6znWW7esi9TKgdH7e9UgLaWp5BKO1PC5CUQ+tjM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6663
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 07:02:54PM +0000, Bernard Metzler wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: b300729b77b0b746c4f898332705672eb50d3297  RDMA/core: Clean up a variable name in ib_create_srq_user()
 
-> Looks good. It's the right patch from Linus W. which got
-> merged, as your lore link points at. You seem to have looked
-> at Jianghaoran's patch for the same issue, which came
-> in almost same time, but was not taken.
+elapsed time: 726m
 
-Er, so this is just a dup in patchworks, OK, punted
+configs tested: 115
+configs skipped: 3
 
-Thanks,
-Jason
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+mips                             allyesconfig
+arc                                 defconfig
+s390                             allmodconfig
+alpha                               defconfig
+sh                               allmodconfig
+arc                  randconfig-r043-20220922
+s390                                defconfig
+m68k                             allmodconfig
+alpha                            allyesconfig
+i386                                defconfig
+x86_64                              defconfig
+arc                              allyesconfig
+s390                             allyesconfig
+m68k                             allyesconfig
+x86_64                        randconfig-a015
+arm                                 defconfig
+x86_64                               rhel-8.3
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+x86_64                           allyesconfig
+arm64                            allyesconfig
+i386                          randconfig-a001
+x86_64                        randconfig-a004
+arm                              allyesconfig
+x86_64                        randconfig-a002
+i386                          randconfig-a003
+i386                             allyesconfig
+i386                          randconfig-a005
+x86_64                        randconfig-a006
+arc                               allnoconfig
+alpha                             allnoconfig
+riscv                             allnoconfig
+csky                              allnoconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+ia64                             allmodconfig
+sparc                               defconfig
+loongarch                        alldefconfig
+m68k                        stmark2_defconfig
+powerpc                          allyesconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+sparc                       sparc32_defconfig
+sh                           se7721_defconfig
+m68k                          atari_defconfig
+mips                             allmodconfig
+xtensa                       common_defconfig
+i386                          randconfig-c001
+xtensa                           allyesconfig
+csky                                defconfig
+sparc                            allyesconfig
+x86_64                                  kexec
+nios2                            allyesconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+powerpc                 mpc837x_mds_defconfig
+xtensa                          iss_defconfig
+nios2                            alldefconfig
+m68k                            mac_defconfig
+sh                        edosk7705_defconfig
+xtensa                    smp_lx200_defconfig
+csky                             alldefconfig
+sh                           se7705_defconfig
+powerpc                      tqm8xx_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220922
+arm                        cerfcube_defconfig
+microblaze                          defconfig
+arm                           viper_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+powerpc                         wii_defconfig
+powerpc                    adder875_defconfig
+arm                             ezx_defconfig
+mips                       bmips_be_defconfig
+
+clang tested configs:
+hexagon              randconfig-r041-20220922
+riscv                randconfig-r042-20220922
+hexagon              randconfig-r045-20220922
+s390                 randconfig-r044-20220922
+x86_64                        randconfig-a014
+x86_64                        randconfig-a012
+i386                          randconfig-a013
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a015
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+i386                          randconfig-a004
+i386                          randconfig-a006
+powerpc                      ppc64e_defconfig
+arm                          ep93xx_defconfig
+x86_64                        randconfig-c007
+arm                  randconfig-c002-20220922
+i386                          randconfig-c001
+s390                 randconfig-c005-20220922
+riscv                randconfig-c006-20220922
+mips                 randconfig-c004-20220922
+powerpc              randconfig-c003-20220922
+x86_64                        randconfig-k001
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
