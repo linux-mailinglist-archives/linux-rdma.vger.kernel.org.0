@@ -2,158 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 485F15EB16E
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Sep 2022 21:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6851E5EB398
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Sep 2022 23:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbiIZTkE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Sep 2022 15:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
+        id S230267AbiIZVux (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Sep 2022 17:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbiIZTkD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Sep 2022 15:40:03 -0400
-X-Greylist: delayed 450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 26 Sep 2022 12:40:02 PDT
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A14FC11810
-        for <linux-rdma@vger.kernel.org>; Mon, 26 Sep 2022 12:40:02 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.100.34])
-        by smtp.orange.fr with ESMTPA
-        id ctq8o7e69sfCIctq8ohSCv; Mon, 26 Sep 2022 21:32:30 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 26 Sep 2022 21:32:30 +0200
-X-ME-IP: 86.243.100.34
-Message-ID: <7cbe6ea7-3d05-449f-ea06-c98b9078d1df@wanadoo.fr>
-Date:   Mon, 26 Sep 2022 21:32:28 +0200
+        with ESMTP id S230229AbiIZVuw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Sep 2022 17:50:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80838B14E7;
+        Mon, 26 Sep 2022 14:50:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D30986134E;
+        Mon, 26 Sep 2022 21:50:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4C30C433D6;
+        Mon, 26 Sep 2022 21:50:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664229049;
+        bh=wjVBM2rtaXLU9XIzfLnEkRHuZJyfInxhvNz/xCYz1NU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RlLDMnwX600IDLVy4DKLv+JQ3x8lUPQHI0OVDGSIvtVJObTkGDWVflfS6Hyt0XcY6
+         IH1ZpuIzvaKogZty98eGLQV9M0qyQ806nQimmSI6aqCPGJ6COh3uQMYjgkdZLtaPMc
+         c/sZnjriBgFCn8jxYXHNGE9OpQPgkMoDbF229eMK9vs/z+PWgdDA6ZUqf+8vwh+2IH
+         Nq5Aq6GbevgyjEKiI6MuSblMnpF8aiR5Jki5BSk3Daqb07ODS8qWqN6sBjI5jsDHY5
+         GdGgkXcRDrAilJwo32A4dlcbe/4Qg81P8Qxh1hTWUA4je1Rw6JSQX22qDhBhhAvehO
+         KfUkh0akqf9Cg==
+Date:   Mon, 26 Sep 2022 16:50:42 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] net/mlx5e: Replace zero-length arrays with
+ DECLARE_FLEX_ARRAY() helper
+Message-ID: <YzIestBCo0RL7sVi@work>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] headers: Remove some left-over license text in
- include/uapi/rdma/
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     aelior@marvell.com, bharat@chelsio.com,
-        kernel-janitors@vger.kernel.org, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mkalderon@marvell.com, selvin.xavier@broadcom.com,
-        yishaih@nvidia.com, zyjzyj2000@gmail.com
-References: <6b2b69c1eb89a37b95d17a1e866c2e8173c6fd15.1664113175.git.christophe.jaillet@wanadoo.fr>
- <YzHttWsmFSMR8vCY@nvidia.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <YzHttWsmFSMR8vCY@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Le 26/09/2022 à 20:21, Jason Gunthorpe a écrit :
-> On Sun, Sep 25, 2022 at 03:39:58PM +0200, Christophe JAILLET wrote:
->> There is already a SPDX-License-Identifier tag, so the corresponding
->> license text can be removed.
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet-39ZsbGIQGT5GWvitb5QawA@public.gmane.org>
->> ---
->> Changes in the 2 files under rdma/hfi/ is a bit more than just removing
->> the license text. There were some Copyright(c) for GPL and BSD licence.
->> I have simplified it to what look logical to me.
->> But in case it matters, review with care.
-> 
-> Did you use a script or something to verify that the text being
-> removed is word for word identical to the text in LICENSES/ ?
+Zero-length arrays are deprecated and we are moving towards adopting
+C99 flexible-array members, instead. So, replace zero-length arrays
+declarations in anonymous union with the new DECLARE_FLEX_ARRAY()
+helper macro.
 
-Hi,
+This helper allows for flexible-array members in unions.
 
-Short answer:
-============
+Link: https://github.com/KSPP/linux/issues/193
+Link: https://github.com/KSPP/linux/issues/222
+Link: https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-You are likely right, and patches for BSD like license should certainly 
-be left as-is to keep as-is.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.h b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.h
+index 48241317a535..0db41fa4a9a6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.h
+@@ -97,8 +97,8 @@ struct mlx5_flow_attr {
+ 	} lag;
+ 	/* keep this union last */
+ 	union {
+-		struct mlx5_esw_flow_attr esw_attr[0];
+-		struct mlx5_nic_flow_attr nic_attr[0];
++		DECLARE_FLEX_ARRAY(struct mlx5_esw_flow_attr, esw_attr);
++		DECLARE_FLEX_ARRAY(struct mlx5_nic_flow_attr, nic_attr);
+ 	};
+ };
+ 
+-- 
+2.34.1
 
-
-
-Longer answer:
-=============
-
-I spot potential candidate with:
-   grep -r --include=*.[ch] -A50 SPDX | grep -v SPDX | grep -v staging | 
-grep -v usr\/include\/ | grep -C10 License
-
-Then I manually check that the included license is consistent with the 
-SPDX-License-Identifier tag.
-
-If they don't match, I propose to change the SPDX tag (see [1] for an 
-example)
-
-My grep is not optimal. Looking for GNU or GPL or BSD or... also gives 
-some decent results. But all what is done is done.
-
-
-Honestly, I don't look word by word the text itself.
-My point is that if a file states that it is usable under a given 
-license, then it should use the term of this license. Otherwise it looks 
-pointless to refer to it, no?
-
-Moreover, in the BSD license, some parts of the text can be adjusted to 
-the context. (in red in [3]
-
-In "bnxt_re-abi.h", the BSD-2-Clause "THE COPYRIGHT HOLDER OR 
-CONTRIBUTORS" has been replaced by "THE AUTHOR AND CONTRIBUTORS".
-
-
-Giving a 2nd look at it (see [4]), when boilerplate have been removed, 
-it was mostly (only?) for GPL-2, which don't have such "red" parts in 
-the license text.
-
-
-So you are likely right, and patches for BSD like license should 
-certainly be left as-is to keep this "red places" as-is.
-
-> 
-> I had understood this was the reason the original SPDX conversion left
-> the license text around?
-
-I don't know. It looks to me that Greg has done some mass update, 
-especially in the uapi directory, only adding the 
-SPDX-License-Identifier tag.
-See [2].
-
-> 
-> It looks OK to me, but I didn't check it word for word :)
-> 
-> Is there a reason this series is coming up now around the uapi
-> headers? Are we doing them all or something?
-
-No specific reason for it to happen now.
-
-I chose uapi directory because it is .h files. This is my own 
-contribution to the Ingo Molnar's "Fast Kernel Headers".
-Smaller header files, faster compilation :)
-(even if my clean-ups should be just noise in the overall building time)
-
-I try to send patches in small hunks of related files. This avoids the 
-"please split the patch in a serie by maintainer" answer.
-
-I've send ~10 or 15 patches yet. I'll see the enthusiasms (or lack of) 
-for such patches before continuing.
-
-> 
-> Jason
-> 
-
-CJ
-
-[1]: 
-https://lore.kernel.org/all/a57505bf6c8ddbd68ff5a320aaf5922ec431e00e.1664117249.git.christophe.jaillet@wanadoo.fr/
-
-[2]: 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=e2be04c7f9958dde770eeb8b30e829ca969b37bb
-
-[3]: https://spdx.org/licenses/BSD-2-Clause.html
-
-[4]: 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?qt=grep&q=boilerplate%2Freference
