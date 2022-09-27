@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CDB5ECCED
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Sep 2022 21:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149D55ECDC7
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Sep 2022 22:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbiI0Tcj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Sep 2022 15:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
+        id S232479AbiI0UGO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Sep 2022 16:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbiI0Tch (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Sep 2022 15:32:37 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8268100AB5;
-        Tue, 27 Sep 2022 12:32:35 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id g130so12967613oia.13;
-        Tue, 27 Sep 2022 12:32:35 -0700 (PDT)
+        with ESMTP id S232418AbiI0UF3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Sep 2022 16:05:29 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55D46F272;
+        Tue, 27 Sep 2022 13:04:42 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id d64so13084751oia.9;
+        Tue, 27 Sep 2022 13:04:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=oQDB9ct+qcAHJxoPKciYt0KcH1qS6YXsLDiNCEzbRiU=;
-        b=YkK8eKUyATrybs1Dvj+mQMo+kILtrulVIzHK3TvMPyP7S0bwRRLWcqjjvUIyL9wGhl
-         /otqKCVoHdVE8dT5Vvl0x8HtSDi+hZv0VFi0DhZYwkLKfUF6khMcl4u3SLgT19Uu7sVT
-         pL0zKPJvdU0/b/bcbL+utKDQVbiBYdq3HK1IYqZ8ugm9vNXOoz7o2mBJX6NMDr9cjaUP
-         ZPDXuLQh3W1fGYpEF3+Lbm9Qbe4FazP6lIaWN916cVmIIJw3kSKXT3YGKb6vIJ08IK2S
-         j04huKfgTpVnDS8XOcj2WYlYsaEdA5sb0/FEI4Nbpq8N5CajxLmp6szh1acD4R9S7aVM
-         6Jig==
+        bh=YIZ0y9UAHomtacUaehn8ypReGgtyIec2adv7THfzCiU=;
+        b=h3/wRzqut0XN1ennxNst2ojt2POvBIvpDNQ/JTvplRqETdDfw4AOgwrevVMwzz0SAE
+         SqE4oJHK4+OL5zm68mNceaJMr3bW/yUWFKlbwVnqjYFdKVmN/sFWr38cyNf0ltyr9XCR
+         JQjDi0GxXNbj8610R7V5JPKD9dFC5m5LBQATLGT0lRusPIyJpmZFvkxEf3VyiqWH98V3
+         giiM+AX/8hCjseKySytiXfmBkk9Qiefl7wAMJgt0fCOEW7Jjw4pKtsn4396w1moTiZY5
+         8pjTsAyRf38U+cwYRHiJc3XkrWx9JneGx/8KVdowOFdTUHK+bCXsIyGS8lKRLABHhMpr
+         PKag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=oQDB9ct+qcAHJxoPKciYt0KcH1qS6YXsLDiNCEzbRiU=;
-        b=FT1mLrkSZSdr882l3PZdgVFoilxtA0viIwJhR7oQTAN3zgJ6irG95MPkPjXtLqEX/s
-         6cn0NaBD1wCctir0NN4epsw0/b72ggaNQEcB9wOU9yFZYLDDIAXCRqvge3ySbXLarC3a
-         i7NfPSWGM3ytME5EeTug0HhHlbQYogUXrMGZKLEYTSwsIlESQ7rH7Zbc0B8mVrJJ80JS
-         DQaTBCnaXH2EJTZxz0SwPGWSTuiP1f0TFiX6ezgwoP1fYbwuv864Esw+ftTdkMl+PGRi
-         GcMs8Wv5G/ugj8VHgoTqCV19z5ErXIyTg18YsOH19QNClWOXg7aNc0FUxkewBjYbeFPY
-         nRrw==
-X-Gm-Message-State: ACrzQf0pIGDDIfM5oaNfJI22rF4uNc6H50mVPULEW7UV8fdRbQzKd3Qf
-        /ptPUOwdsPPkvacXUvegx+E=
-X-Google-Smtp-Source: AMsMyM6MLJx13cfLn3Piy+OvO/YEbicJ4DfOEex1bdl+6Y9GVLKIloVORSvGT/yzTuMICfsoHgIQJA==
-X-Received: by 2002:a05:6808:190f:b0:350:ae4d:dd67 with SMTP id bf15-20020a056808190f00b00350ae4ddd67mr2559858oib.202.1664307154781;
-        Tue, 27 Sep 2022 12:32:34 -0700 (PDT)
+        bh=YIZ0y9UAHomtacUaehn8ypReGgtyIec2adv7THfzCiU=;
+        b=z4eEVVly4SlBErXW0k+stj3hjDzYNRTszXwda4LzGSAcl533fZCmneBzH/kxuizPP7
+         zBV4VYODNuk5Lfe8wIR9wK0zS+w9yA7uY9IIn7+aefzlnXNCsOh2NEEdywPwK3B0Pm3W
+         BwL1VH6FT7sa1cois6ft2Eye6QsA7f5AFTbwLmy0OoJF11cwDXXiQjIXQjsQgDeB0uFf
+         VSUe7hj84/Ex7ZY87acGsi73H6STu6Yl+7Xyzd9+q7hXM4OtiBBZVlkNcCaP45kkf1F5
+         WMNl+qQZjb45OkBvtBBlonYx9sSMZjuMPW0wuYqBVyqQh3WNz/gdxl72p8LDSZi9oMyG
+         8OiA==
+X-Gm-Message-State: ACrzQf1xeOACiha07WqE6HyEGskMDlLmG7f+VmcK/n0jh5EwqYxnMWYu
+        f/cSbLc7c1xCLJZiL0y0X6TIuSB3COQ=
+X-Google-Smtp-Source: AMsMyM4jBAgr3tTGRxGnw5EF4NOAPDLQ1e1dCtIb/KtKSSRBgfBytNltq8E7+lq12ONEKjYBzH2v2A==
+X-Received: by 2002:a05:6808:1247:b0:351:4a04:8058 with SMTP id o7-20020a056808124700b003514a048058mr2560760oiv.12.1664309081885;
+        Tue, 27 Sep 2022 13:04:41 -0700 (PDT)
 Received: from localhost ([12.97.180.36])
-        by smtp.gmail.com with ESMTPSA id t84-20020acaaa57000000b0034fc91dbd7bsm938163oie.58.2022.09.27.12.32.33
+        by smtp.gmail.com with ESMTPSA id 94-20020a9d0f67000000b00657daa70c37sm1120336ott.25.2022.09.27.13.04.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Sep 2022 12:32:34 -0700 (PDT)
-Date:   Tue, 27 Sep 2022 12:30:23 -0700
+        Tue, 27 Sep 2022 13:04:41 -0700 (PDT)
+Date:   Tue, 27 Sep 2022 13:02:30 -0700
 From:   Yury Norov <yury.norov@gmail.com>
 To:     Valentin Schneider <vschneid@redhat.com>
 Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
@@ -72,16 +72,16 @@ Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         Gal Pressman <gal@nvidia.com>,
         Tariq Toukan <tariqt@nvidia.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [PATCH v4 5/7] sched/topology: Introduce sched_numa_hop_mask()
-Message-ID: <YzNPTwVKb7ssrH01@yury-laptop>
+Subject: Re: [PATCH v4 2/7] cpumask: Introduce for_each_cpu_andnot()
+Message-ID: <YzNW1su5pcO5SLIW@yury-laptop>
 References: <20220923132527.1001870-1-vschneid@redhat.com>
- <20220923155542.1212814-4-vschneid@redhat.com>
- <YzBtH8s98eTmxaJo@yury-laptop>
- <xhsmhh70s4vhl.mognet@vschneid.remote.csb>
+ <20220923155542.1212814-1-vschneid@redhat.com>
+ <YzBycCwecSUlGgjX@yury-laptop>
+ <xhsmhill84vhr.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <xhsmhh70s4vhl.mognet@vschneid.remote.csb>
+In-Reply-To: <xhsmhill84vhr.mognet@vschneid.remote.csb>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -92,28 +92,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 27, 2022 at 05:45:10PM +0100, Valentin Schneider wrote:
-> On 25/09/22 08:00, Yury Norov wrote:
-> > On Fri, Sep 23, 2022 at 04:55:40PM +0100, Valentin Schneider wrote:
+On Tue, Sep 27, 2022 at 05:45:04PM +0100, Valentin Schneider wrote:
+> On 25/09/22 08:23, Yury Norov wrote:
+> > On Fri, Sep 23, 2022 at 04:55:37PM +0100, Valentin Schneider wrote:
 > >> +/**
-> >> + * sched_numa_hop_mask() - Get the cpumask of CPUs at most @hops hops away.
-> >> + * @node: The node to count hops from.
-> >> + * @hops: Include CPUs up to that many hops away. 0 means local node.
+> >> + * for_each_cpu_andnot - iterate over every cpu present in one mask, excluding
+> >> + *			 those present in another.
+> >> + * @cpu: the (optionally unsigned) integer iterator
+> >> + * @mask1: the first cpumask pointer
+> >> + * @mask2: the second cpumask pointer
 > >> + *
-> >> + * Requires rcu_lock to be held. Returned cpumask is only valid within that
-> >> + * read-side section, copy it if required beyond that.
+> >> + * This saves a temporary CPU mask in many places.  It is equivalent to:
+> >> + *	struct cpumask tmp;
+> >> + *	cpumask_andnot(&tmp, &mask1, &mask2);
+> >> + *	for_each_cpu(cpu, &tmp)
+> >> + *		...
 > >> + *
-> >> + * Note that not all hops are equal in distance; see sched_init_numa() for how
-> >> + * distances and masks are handled.
-> >> + *
-> >> + * Also note that this is a reflection of sched_domains_numa_masks, which may change
-> >> + * during the lifetime of the system (offline nodes are taken out of the masks).
+> >> + * After the loop, cpu is >= nr_cpu_ids.
 > >> + */
+> >> +#define for_each_cpu_andnot(cpu, mask1, mask2)				\
+> >> +	for ((cpu) = -1;						\
+> >> +		(cpu) = cpumask_next_andnot((cpu), (mask1), (mask2)),	\
+> >> +		(cpu) < nr_cpu_ids;)
 > >
-> > Since it's exported, can you declare function parameters and return
-> > values properly?
+> > This would raise cpumaks_check() warning at the very last iteration.
+> > Because cpu is initialized insize the loop, you don't need to check it
+> > at all. You can do it like this:
+> >
+> >  #define for_each_cpu_andnot(cpu, mask1, mask2)				\
+> >          for_each_andnot_bit(...)
+> >
+> > Check this series for details (and please review).
+> > https://lore.kernel.org/all/20220919210559.1509179-8-yury.norov@gmail.com/T/
 > >
 > 
-> I'll add a bit about the return value; what is missing for the parameters?
+> Thanks, I'll have a look.
 
-My bad, scratch this.
+Also, if you send first 4 patches as a separate series on top of
+bitmap-for-next, I'll be able to include them in bitmap-for-next
+and then in 6.1 pull-request.
+
+Thanks,
+Yury
