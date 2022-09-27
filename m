@@ -2,33 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C91185EBA38
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Sep 2022 07:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE8D5EBA22
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Sep 2022 07:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbiI0F4T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Sep 2022 01:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        id S229867AbiI0FyO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Sep 2022 01:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbiI0F4C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Sep 2022 01:56:02 -0400
-X-Greylist: delayed 68 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 26 Sep 2022 22:55:14 PDT
-Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com [139.138.36.225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70571A5C6C;
-        Mon, 26 Sep 2022 22:55:13 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="77857524"
+        with ESMTP id S229680AbiI0FyK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Sep 2022 01:54:10 -0400
+Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com [139.138.61.252])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266ED97533;
+        Mon, 26 Sep 2022 22:54:09 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="68849860"
 X-IronPort-AV: E=Sophos;i="5.93,348,1654527600"; 
-   d="scan'208";a="77857524"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
-  by esa10.hc1455-7.c3s2.iphmx.com with ESMTP; 27 Sep 2022 14:54:03 +0900
-Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
-        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 5DCBFDAFD0;
-        Tue, 27 Sep 2022 14:54:02 +0900 (JST)
+   d="scan'208";a="68849860"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+  by esa7.hc1455-7.c3s2.iphmx.com with ESMTP; 27 Sep 2022 14:54:03 +0900
+Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com [192.168.83.67])
+        by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 5B455D6252;
+        Tue, 27 Sep 2022 14:54:03 +0900 (JST)
 Received: from kws-ab1.gw.nic.fujitsu.com (kws-ab1.gw.nic.fujitsu.com [192.51.206.11])
-        by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 7E7E5D35B6;
-        Tue, 27 Sep 2022 14:54:01 +0900 (JST)
+        by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 7F829142C2;
+        Tue, 27 Sep 2022 14:54:02 +0900 (JST)
 Received: from FNSTPC.g08.fujitsu.local (unknown [10.167.226.45])
-        by kws-ab1.gw.nic.fujitsu.com (Postfix) with ESMTP id 4B0B711416F0;
-        Tue, 27 Sep 2022 14:54:00 +0900 (JST)
+        by kws-ab1.gw.nic.fujitsu.com (Postfix) with ESMTP id 21B3A11403D7;
+        Tue, 27 Sep 2022 14:54:01 +0900 (JST)
 From:   Li Zhijian <lizhijian@fujitsu.com>
 To:     Bob Pearson <rpearsonhpe@gmail.com>,
         Leon Romanovsky <leon@kernel.org>,
@@ -38,9 +37,9 @@ Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>, yangx.jy@fujitsu.com,
         tom@talpey.com, tomasz.gromadzki@intel.com,
         dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
         Li Zhijian <lizhijian@fujitsu.com>
-Subject: [for-next PATCH v5 03/11] RDMA: Extend RDMA kernel verbs ABI to support flush
-Date:   Tue, 27 Sep 2022 13:53:29 +0800
-Message-Id: <20220927055337.22630-4-lizhijian@fujitsu.com>
+Subject: [for-next PATCH v5 04/11] RDMA/rxe: Extend rxe user ABI to support flush
+Date:   Tue, 27 Sep 2022 13:53:30 +0800
+Message-Id: <20220927055337.22630-5-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 2.36.0
 In-Reply-To: <20220927055337.22630-1-lizhijian@fujitsu.com>
 References: <20220927055337.22630-1-lizhijian@fujitsu.com>
@@ -50,13 +49,12 @@ X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27166.005
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27166.005
-X-TMASE-Result: 10--10.970200-10.000000
-X-TMASE-MatchedRID: p0yCgO9DtmM3i8FXueJ7nqzGfgakLdja4Tk+Ydnj9Rsv82KK+I057uEO
-        iHvBs/Z/m+UTNeyODYnz1oCTj9zInhmNqsUuotRsJTyMiqml0inVBDonH99+VjoUdFbHYUawvwU
-        evDt+uW5/XjpbSJS7a2e9j2HEH29zBhg5qTA0S18wYApm54/SZlcoFMSHqXOcwszB/83OsgdzFn
-        5q/FBFPMNN2eR4SoF7Z3XFK4bdN4aGN4c/hNvzQ6qHmm/V4M/PCIFiJP1XZ1KOVdQAiMmbZ9E08
-        LKMDwXNnIqnRXCrHED+8jNl7Al3/PCpvtQpW4FpngIgpj8eDcAZ1CdBJOsoY8RB0bsfrpPIfiAq
-        rjYtFiTDQc28a3sN9DHjumRon+WmCi1AacwWk06GbjSsxghr7X7cGd19dSFd
+X-TMASE-Result: 10--3.211900-10.000000
+X-TMASE-MatchedRID: e0bKGi4Iljo3i8FXueJ7nioiRKlBVkYI4Tk+Ydnj9RtFms6YEs23D8s0
+        A8Och09BxTsa1zsKwGAzoUNAtFjsci/7QU2czuUNA9lly13c/gGrHFhHKqXuS+0NA4pWf9v6o8W
+        MkQWv6iUoTQl7wNH8Pg1fA1QHegDv3QfwsVk0UbvqwGfCk7KUs8Cx+5zdsNXieV+GVTO9r576L9
+        Rdzx8Ia3BpfZuY721qzZC7kciz4mL6AFbccivBztjvnSWxNHzqwdIQhbYFrscbOi487b5zISHJp
+        2UYVccqxOB8J0pRLhyJxKSZiwBX6QtRTXOqKmFVftwZ3X11IV0=
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -66,126 +64,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This commit extends the RDMA kernel verbs ABI to support the flush
+This commit extends the rxe user ABI to support the flush
 operation defined in IBA A19.4.1. These changes are
-backwards compatible with the existing RDMA kernel verbs ABI.
+backwards compatible with the existing rxe user ABI.
 
-It makes device/HCA support new FLUSH attributes/capabilities, and it
-also makes memory region support new FLUSH access flags.
-
-Users can use ibv_reg_mr(3) to register flush access flags. Only the
-access flags also supported by device's capabilities can be registered
-successfully.
-
-Once registered successfully, it means the MR is flushable. Similarly,
-A flushable MR should also have one or both of GLOBAL_VISIBILITY and
-PERSISTENT attributes/capabilities like device/HCA.
+The user API request a flush by filling this structure.
 
 Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
-V5: new names and new patch split scheme, suggested by Bob
+V5: new patch split scheme, suggested by Bob
 ---
- include/rdma/ib_pack.h  |  3 +++
- include/rdma/ib_verbs.h | 20 +++++++++++++++++++-
- 2 files changed, 22 insertions(+), 1 deletion(-)
+ include/uapi/rdma/rdma_user_rxe.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/include/rdma/ib_pack.h b/include/rdma/ib_pack.h
-index a9162f25beaf..56211d1cc9f9 100644
---- a/include/rdma/ib_pack.h
-+++ b/include/rdma/ib_pack.h
-@@ -84,6 +84,7 @@ enum {
- 	/* opcode 0x15 is reserved */
- 	IB_OPCODE_SEND_LAST_WITH_INVALIDATE         = 0x16,
- 	IB_OPCODE_SEND_ONLY_WITH_INVALIDATE         = 0x17,
-+	IB_OPCODE_FLUSH                             = 0x1C,
- 
- 	/* real constants follow -- see comment about above IB_OPCODE()
- 	   macro for more details */
-@@ -112,6 +113,7 @@ enum {
- 	IB_OPCODE(RC, FETCH_ADD),
- 	IB_OPCODE(RC, SEND_LAST_WITH_INVALIDATE),
- 	IB_OPCODE(RC, SEND_ONLY_WITH_INVALIDATE),
-+	IB_OPCODE(RC, FLUSH),
- 
- 	/* UC */
- 	IB_OPCODE(UC, SEND_FIRST),
-@@ -149,6 +151,7 @@ enum {
- 	IB_OPCODE(RD, ATOMIC_ACKNOWLEDGE),
- 	IB_OPCODE(RD, COMPARE_SWAP),
- 	IB_OPCODE(RD, FETCH_ADD),
-+	IB_OPCODE(RD, FLUSH),
- 
- 	/* UD */
- 	IB_OPCODE(UD, SEND_ONLY),
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 975d6e9efbcb..571838dd06eb 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -270,6 +270,9 @@ enum ib_device_cap_flags {
- 	/* The device supports padding incoming writes to cacheline. */
- 	IB_DEVICE_PCI_WRITE_END_PADDING =
- 		IB_UVERBS_DEVICE_PCI_WRITE_END_PADDING,
-+	/* Placement type attributes */
-+	IB_DEVICE_FLUSH_GLOBAL = IB_UVERBS_DEVICE_FLUSH_GLOBAL,
-+	IB_DEVICE_FLUSH_PERSISTENT = IB_UVERBS_DEVICE_FLUSH_PERSISTENT,
- };
- 
- enum ib_kernel_cap_flags {
-@@ -985,6 +988,7 @@ enum ib_wc_opcode {
- 	IB_WC_REG_MR,
- 	IB_WC_MASKED_COMP_SWAP,
- 	IB_WC_MASKED_FETCH_ADD,
-+	IB_WC_FLUSH = IB_UVERBS_WC_FLUSH,
- /*
-  * Set value of IB_WC_RECV so consumers can test if a completion is a
-  * receive by testing (opcode & IB_WC_RECV).
-@@ -1325,6 +1329,7 @@ enum ib_wr_opcode {
- 		IB_UVERBS_WR_MASKED_ATOMIC_CMP_AND_SWP,
- 	IB_WR_MASKED_ATOMIC_FETCH_AND_ADD =
- 		IB_UVERBS_WR_MASKED_ATOMIC_FETCH_AND_ADD,
-+	IB_WR_FLUSH = IB_UVERBS_WR_FLUSH,
- 
- 	/* These are kernel only and can not be issued by userspace */
- 	IB_WR_REG_MR = 0x20,
-@@ -1458,10 +1463,14 @@ enum ib_access_flags {
- 	IB_ACCESS_ON_DEMAND = IB_UVERBS_ACCESS_ON_DEMAND,
- 	IB_ACCESS_HUGETLB = IB_UVERBS_ACCESS_HUGETLB,
- 	IB_ACCESS_RELAXED_ORDERING = IB_UVERBS_ACCESS_RELAXED_ORDERING,
-+	IB_ACCESS_FLUSH_GLOBAL = IB_UVERBS_ACCESS_FLUSH_GLOBAL,
-+	IB_ACCESS_FLUSH_PERSISTENT = IB_UVERBS_ACCESS_FLUSH_PERSISTENT,
-+	IB_ACCESS_FLUSHABLE = IB_ACCESS_FLUSH_GLOBAL |
-+			      IB_ACCESS_FLUSH_PERSISTENT,
- 
- 	IB_ACCESS_OPTIONAL = IB_UVERBS_ACCESS_OPTIONAL_RANGE,
- 	IB_ACCESS_SUPPORTED =
--		((IB_ACCESS_HUGETLB << 1) - 1) | IB_ACCESS_OPTIONAL,
-+		((IB_ACCESS_FLUSH_PERSISTENT << 1) - 1) | IB_ACCESS_OPTIONAL,
- };
- 
- /*
-@@ -4321,6 +4330,8 @@ int ib_dealloc_xrcd_user(struct ib_xrcd *xrcd, struct ib_udata *udata);
- static inline int ib_check_mr_access(struct ib_device *ib_dev,
- 				     unsigned int flags)
- {
-+	u64 device_cap = ib_dev->attrs.device_cap_flags;
-+
- 	/*
- 	 * Local write permission is required if remote write or
- 	 * remote atomic permission is also requested.
-@@ -4335,6 +4346,13 @@ static inline int ib_check_mr_access(struct ib_device *ib_dev,
- 	if (flags & IB_ACCESS_ON_DEMAND &&
- 	    !(ib_dev->attrs.kernel_cap_flags & IBK_ON_DEMAND_PAGING))
- 		return -EINVAL;
-+
-+	if ((flags & IB_ACCESS_FLUSH_GLOBAL &&
-+	    !(device_cap & IB_DEVICE_FLUSH_GLOBAL)) ||
-+	    (flags & IB_ACCESS_FLUSH_PERSISTENT &&
-+	    !(device_cap & IB_DEVICE_FLUSH_PERSISTENT)))
-+		return -EINVAL;
-+
- 	return 0;
- }
- 
+diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
+index 73f679dfd2df..e2b93df94590 100644
+--- a/include/uapi/rdma/rdma_user_rxe.h
++++ b/include/uapi/rdma/rdma_user_rxe.h
+@@ -82,6 +82,13 @@ struct rxe_send_wr {
+ 		__u32		invalidate_rkey;
+ 	} ex;
+ 	union {
++		struct {
++			__aligned_u64 remote_addr;
++			__u32	length;
++			__u32	rkey;
++			__u8	type;
++			__u8	level;
++		} flush;
+ 		struct {
+ 			__aligned_u64 remote_addr;
+ 			__u32	rkey;
 -- 
 2.31.1
 
