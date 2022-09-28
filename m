@@ -2,152 +2,278 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2625E5ED477
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Sep 2022 08:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C275ED4DF
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Sep 2022 08:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbiI1GFA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Sep 2022 02:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
+        id S232599AbiI1G2e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Sep 2022 02:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbiI1GE6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Sep 2022 02:04:58 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2E65F10C
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Sep 2022 23:04:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id C0C0ECE1C63
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Sep 2022 06:04:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD1BC433D6;
-        Wed, 28 Sep 2022 06:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664345092;
-        bh=LdJL8EKXQcxlIpTxcJ0cx1Xcf1GfJSwTBRSXGqdHIuk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rwKVIKMubIch6k/eE5FSfwwffIwHXZM3MBuBIRPRtL0PKehZmQIi2sZRqJDFwUp1n
-         /gIYrclADgNw9FxjEMic3LkpeMl08gk+3QD/z6F/HjEMmTm+k4f64l51wwerV+ye6k
-         0L+Vth5z2tNN6rbS2m2RbQmKx0ENu0s3YelUmHclKWLvFNpaIZLS6WL0OuwN/b+RD6
-         hi2PWyhZVrGxnbtpDB+BgJJUCYgYofMhSYVxb+wUwx7+GrbHsAtxtSAuxLAjTTuM4R
-         IW8sZBig/qoIgR0aFf+ybbM5+Xw1/En/g2+jjaD1tFj9c6nzMNkckRqYZRWRiEfqyf
-         7XSRa2fmyl9hQ==
-Date:   Wed, 28 Sep 2022 09:04:48 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yanjun Zhu <yanjun.zhu@linux.dev>
-Cc:     Leon Romanovsky <leo@kernel.org>, linux-rdma@vger.kernel.org,
-        jgg@nvidia.com
-Subject: Re: [PATCH] rdma: not display the rdma link in other net namespace
-Message-ID: <YzPkAGs60Kk4QCck@unreal>
-References: <20220926024033.284341-1-yanjun.zhu@linux.dev>
- <YzLRvzAH9MqqtSGk@unreal>
- <4e5d49fe-38a3-4891-3755-3decf8ffebda@linux.dev>
+        with ESMTP id S233015AbiI1G2d (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Sep 2022 02:28:33 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03441E45AC
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Sep 2022 23:28:31 -0700 (PDT)
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mcmf64DM2zHtjj;
+        Wed, 28 Sep 2022 14:23:42 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 28 Sep 2022 14:28:30 +0800
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 28 Sep 2022 14:28:29 +0800
+From:   Haoyue Xu <xuhaoyue1@hisilicon.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>, <zyjzyj2000@gmail.com>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <liangwenpeng@huawei.com>, <xuhaoyue1@hisilicon.com>,
+        <linyunsheng@huawei.com>
+Subject: [PATCH for-next] RDMA/rxe: cleanup some error handling in rxe_verbs.c
+Date:   Wed, 28 Sep 2022 14:27:43 +0800
+Message-ID: <20220928062743.4029492-1-xuhaoyue1@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4e5d49fe-38a3-4891-3755-3decf8ffebda@linux.dev>
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 27, 2022 at 06:58:50PM +0800, Yanjun Zhu wrote:
-> 
-> 在 2022/9/27 18:34, Leon Romanovsky 写道:
-> > On Sun, Sep 25, 2022 at 10:40:33PM -0400, yanjun.zhu@linux.dev wrote:
-> > > From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> > > 
-> > > When the net devices are moved to another net namespace, the command
-> > > "rdma link" should not dispaly the rdma link about this net device.
-> > > 
-> > > For example, when the net device eno12399 is moved to net namespace net0
-> > > from init_net, the rdma link of eno12399 should not display in init_net.
-> > > 
-> > > Before this change:
-> > > 
-> > > Init_net:
-> > > 
-> > > link roceo12399/1 state DOWN physical_state DISABLED  <---should not display
-> > > link roceo12409/1 state DOWN physical_state DISABLED netdev eno12409
-> > > link rocep202s0f0/1 state DOWN physical_state DISABLED netdev ens7f0
-> > > link rocep202s0f1/1 state ACTIVE physical_state LINK_UP netdev ens7f1
-> > > 
-> > > net0:
-> > > 
-> > > link roceo12399/1 state DOWN physical_state DISABLED netdev eno12399
-> > > link roceo12409/1 state DOWN physical_state DISABLED <---should not display
-> > > link rocep202s0f0/1 state DOWN physical_state DISABLED <---should not display
-> > > link rocep202s0f1/1 state ACTIVE physical_state LINK_UP <---should not display
-> > > 
-> > > After this change
-> > > 
-> > > Init_net:
-> > > 
-> > > link roceo12409/1 state DOWN physical_state DISABLED netdev eno12409
-> > > link rocep202s0f0/1 state DOWN physical_state DISABLED netdev ens7f0
-> > > link rocep202s0f1/1 state ACTIVE physical_state LINK_UP netdev ens7f1
-> > > 
-> > > net0:
-> > > 
-> > > link roceo12399/1 state DOWN physical_state DISABLED netdev eno12399
-> > > 
-> > > Fixes: da990ab40a92 ("rdma: Add link object")
-> > > Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> > > ---
-> > >   rdma/link.c | 3 +++
-> > >   1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/rdma/link.c b/rdma/link.c
-> > > index bf24b849..449a7636 100644
-> > > --- a/rdma/link.c
-> > > +++ b/rdma/link.c
-> > > @@ -238,6 +238,9 @@ static int link_parse_cb(const struct nlmsghdr *nlh, void *data)
-> > >   		return MNL_CB_ERROR;
-> > >   	}
-> > > +	if (!tb[RDMA_NLDEV_ATTR_NDEV_NAME] || !tb[RDMA_NLDEV_ATTR_NDEV_INDEX])
-> > > +		return MNL_CB_OK;
-> > > +
-> > Regarding your question where it should go in addition to RDMA, the answer
-> > is netdev ML. The rdmatool is part of iproute2 and the relevant maintainers
-> > should be CCed.
-> Thanks. I will also send it to netdev ML and CC the maintainers.
-> > 
-> > Regarding the change, I don't think that it is right. User space tool is
-> > a simple viewer of data returned from the kernel. It is not a mistake to
-> > return device without netdev.
-> 
-> Normally a rdma link based on RoCEv2 should be with a NIC. This NIC device
-> 
-> will send/recv udp packets. With mellanox/intel NIC device, this net device
-> also
-> 
-> do more work than sending/receiving packets.
-> 
-> From this perspective, a rdma link is dependent on a net device.
-> 
-> In this problem, net device is moved to another net namespace. So it can not
-> be
-> 
-> obtained.  And this rdma link can also not work in this net namespace.
-> 
-> So this rdma link should not appear in this net namespace. Or else, it would
-> confuse
-> 
-> the user.
-> 
-> In fact, net namespace is a concept in tcp/ip stack. And it does not exist
-> in rdma stack.
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-RDMA has two different net namespace mode: shared and exclusive.
+Instead of 'goto and return', just return directly to
+simplify the error handling, and avoid some unnecessary
+return value check.
 
-In shared mode, the IB devices are shared across all net namespaces and
-"moving" net device into different namespace just "hides" it, but don't
-disconnect.
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
+---
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 80 ++++++++-------------------
+ 1 file changed, 23 insertions(+), 57 deletions(-)
 
-See comments around various usages of ib_devices_shared_netns variable.
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index da1c484798dd..78ee89bcf877 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -238,7 +238,6 @@ static int rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
+ 
+ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
+ {
+-	int err;
+ 	int i;
+ 	u32 length;
+ 	struct rxe_recv_wqe *recv_wqe;
+@@ -246,15 +245,11 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
+ 	int full;
+ 
+ 	full = queue_full(rq->queue, QUEUE_TYPE_TO_DRIVER);
+-	if (unlikely(full)) {
+-		err = -ENOMEM;
+-		goto err1;
+-	}
++	if (unlikely(full))
++		return -ENOMEM;
+ 
+-	if (unlikely(num_sge > rq->max_sge)) {
+-		err = -EINVAL;
+-		goto err1;
+-	}
++	if (unlikely(num_sge > rq->max_sge))
++		return -EINVAL;
+ 
+ 	length = 0;
+ 	for (i = 0; i < num_sge; i++)
+@@ -276,9 +271,6 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
+ 	queue_advance_producer(rq->queue, QUEUE_TYPE_TO_DRIVER);
+ 
+ 	return 0;
+-
+-err1:
+-	return err;
+ }
+ 
+ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+@@ -344,10 +336,7 @@ static int rxe_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+ 	if (err)
+ 		return err;
+ 
+-	err = rxe_srq_from_attr(rxe, srq, attr, mask, &ucmd, udata);
+-	if (err)
+-		return err;
+-	return 0;
++	return rxe_srq_from_attr(rxe, srq, attr, mask, &ucmd, udata);
+ }
+ 
+ static int rxe_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
+@@ -454,11 +443,11 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 
+ 	err = rxe_qp_chk_attr(rxe, qp, attr, mask);
+ 	if (err)
+-		goto err1;
++		return err;
+ 
+ 	err = rxe_qp_from_attr(qp, attr, mask, udata);
+ 	if (err)
+-		goto err1;
++		return err;
+ 
+ 	if ((mask & IB_QP_AV) && (attr->ah_attr.ah_flags & IB_AH_GRH))
+ 		qp->src_port = rdma_get_udp_sport(attr->ah_attr.grh.flow_label,
+@@ -466,9 +455,6 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 						  qp->attr.dest_qp_num);
+ 
+ 	return 0;
+-
+-err1:
+-	return err;
+ }
+ 
+ static int rxe_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+@@ -502,24 +488,21 @@ static int validate_send_wr(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+ 	struct rxe_sq *sq = &qp->sq;
+ 
+ 	if (unlikely(num_sge > sq->max_sge))
+-		goto err1;
++		return -EINVAL;
+ 
+ 	if (unlikely(mask & WR_ATOMIC_MASK)) {
+ 		if (length < 8)
+-			goto err1;
++			return -EINVAL;
+ 
+ 		if (atomic_wr(ibwr)->remote_addr & 0x7)
+-			goto err1;
++			return -EINVAL;
+ 	}
+ 
+ 	if (unlikely((ibwr->send_flags & IB_SEND_INLINE) &&
+ 		     (length > sq->max_inline)))
+-		goto err1;
++		return -EINVAL;
+ 
+ 	return 0;
+-
+-err1:
+-	return -EINVAL;
+ }
+ 
+ static void init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
+@@ -737,14 +720,12 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 
+ 	if (unlikely((qp_state(qp) < IB_QPS_INIT) || !qp->valid)) {
+ 		*bad_wr = wr;
+-		err = -EINVAL;
+-		goto err1;
++		return -EINVAL;
+ 	}
+ 
+ 	if (unlikely(qp->srq)) {
+ 		*bad_wr = wr;
+-		err = -EINVAL;
+-		goto err1;
++		return -EINVAL;
+ 	}
+ 
+ 	spin_lock_irqsave(&rq->producer_lock, flags);
+@@ -763,7 +744,6 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 	if (qp->resp.state == QP_STATE_ERROR)
+ 		rxe_run_task(&qp->resp.task, 1);
+ 
+-err1:
+ 	return err;
+ }
+ 
+@@ -828,16 +808,9 @@ static int rxe_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
+ 
+ 	err = rxe_cq_chk_attr(rxe, cq, cqe, 0);
+ 	if (err)
+-		goto err1;
+-
+-	err = rxe_cq_resize_queue(cq, cqe, uresp, udata);
+-	if (err)
+-		goto err1;
+-
+-	return 0;
++		return err;
+ 
+-err1:
+-	return err;
++	return rxe_cq_resize_queue(cq, cqe, uresp, udata);
+ }
+ 
+ static int rxe_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
+@@ -921,26 +894,22 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
+ 	struct rxe_mr *mr;
+ 
+ 	mr = rxe_alloc(&rxe->mr_pool);
+-	if (!mr) {
+-		err = -ENOMEM;
+-		goto err2;
+-	}
+-
++	if (!mr)
++		return ERR_PTR(-ENOMEM);
+ 
+ 	rxe_get(pd);
+ 
+ 	err = rxe_mr_init_user(pd, start, length, iova, access, mr);
+ 	if (err)
+-		goto err3;
++		goto err1;
+ 
+ 	rxe_finalize(mr);
+ 
+ 	return &mr->ibmr;
+ 
+-err3:
++err1:
+ 	rxe_put(pd);
+ 	rxe_cleanup(mr);
+-err2:
+ 	return ERR_PTR(err);
+ }
+ 
+@@ -956,25 +925,22 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	mr = rxe_alloc(&rxe->mr_pool);
+-	if (!mr) {
+-		err = -ENOMEM;
+-		goto err1;
+-	}
++	if (!mr)
++		return ERR_PTR(-ENOMEM);
+ 
+ 	rxe_get(pd);
+ 
+ 	err = rxe_mr_init_fast(pd, max_num_sg, mr);
+ 	if (err)
+-		goto err2;
++		goto err1;
+ 
+ 	rxe_finalize(mr);
+ 
+ 	return &mr->ibmr;
+ 
+-err2:
++err1:
+ 	rxe_put(pd);
+ 	rxe_cleanup(mr);
+-err1:
+ 	return ERR_PTR(err);
+ }
+ 
+-- 
+2.30.0
 
-Thanks
