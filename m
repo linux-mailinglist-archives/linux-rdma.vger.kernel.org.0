@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F161C5EFBA7
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Sep 2022 19:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DEE5EFBAC
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Sep 2022 19:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236155AbiI2RJY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Sep 2022 13:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        id S236165AbiI2RJ1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Sep 2022 13:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236128AbiI2RJU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Sep 2022 13:09:20 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBB71D1E01
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Sep 2022 10:09:17 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id d74-20020a4a524d000000b004755f8aae16so529857oob.11
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Sep 2022 10:09:17 -0700 (PDT)
+        with ESMTP id S236133AbiI2RJW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Sep 2022 13:09:22 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4321CEDE1
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Sep 2022 10:09:18 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id k11-20020a4ab28b000000b0047659ccfc28so530240ooo.8
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Sep 2022 10:09:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=ku0ZUcIZA3npQmzAHPTmYvCJbqp5m4nqBvFCAYUUG2w=;
-        b=QypgKAedzTGaVDdff7L9RWA0idQzKQcrIDQ+niOOecq4kANkhclJ5MEnFCw/DGRd9h
-         tXy5AvAS/jtuQPlz7cTPUx7b1ztetr22PfJ+Qkw4ojF/I1+aXLn5RKZjGh1fiQKKRURY
-         X5cfUk7AdRJ0PJcf1OOiqAfHzq1xII8T/zdunDyDhtjGNweAvOW8s7+pwxxny/4ADSOZ
-         +F3TAhoeMT8ADViCQLVTRJ+A5ymfBjuPZiwrqSPn72A/GBZY5rh5G/wb7YSOPhggbm07
-         EcMq2rtORj+agL5WKQfIlivElyP6uqx+q3+WS+NdgMvlkM4xFRsWiqTeGvTRs2yBVzOD
-         arQQ==
+        bh=pmXKEYyCNniaE+BlAFgYZOoUvItL4ct2QR9ZHK2YPsY=;
+        b=bA8pwMcPE/R/nSHDIqB9iir2Vr6ISeVqs5oLaWP91XAgqyBcSbnt3anehuPtbYgYVw
+         TB2hm40CW/brAe+/UoX58ghu8uYUmPIvcQl1qnMJ5+iYpSQq9Dd2OGRRUgN3kQtfIBma
+         thneeD2/PPPzwehd+fhL2mHEm+MxLCdckYeDhw67x6559Ql/qwgxb5n5gU9U2pz7wub5
+         d8J7neyLsnCsmDxgOLFCnCS93Eap9sUfQjyYW8U7pROCG8nS35Tbj1mbTdhToh5ys+Qw
+         T7G1zKBBsn6q06o6+7QrGP4xjtSeFvRk8x4DvP5DnXjX3ymQShlcl6Ndmu5KXH2cm3Xs
+         IqvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=ku0ZUcIZA3npQmzAHPTmYvCJbqp5m4nqBvFCAYUUG2w=;
-        b=0Gz/bA1Y14dEcmEUd30d9KkWLmw9wlKW2U+Gg4enFZqVr8exwPzduyjzQydin3Fn50
-         XtPt/dat5HS8DpunvFbHgEZq9yp2WanyMjFhMY8qtF9kMEYnmILFXTAW6ukxfTNUp2SE
-         rIh98LYrZjQAeCi8mZYCG06YOMXfqNlZhB76PGMZKxEZrL9ai0Y0gnucZ6WlBjJ8cP/W
-         EqABCojWaJgOxacjOTOuv6qIHq5ZSbuAvnEa+YF9kyKOlpPLAEyp/NUA/lbVNOBWd8G5
-         rtKqJ6oBeyph08vVauD6H0403MOt7RJNN66b6s8xds8BwNJhrxv5T9POOsvG9vw81t8p
-         AFqA==
-X-Gm-Message-State: ACrzQf2KhVDNMQu7exuF0QBdd0TBIYtcyPgO+9q/atHKdkwJU1bvckWQ
-        vRwtiiPFl5Le6fmS2+9y3Cs=
-X-Google-Smtp-Source: AMsMyM4jZqTis+HEgW+apXpkIDS5+1rgfsnpscfxfywCJ/p4d/i50EkxJKt04LA/wKpfLD+Vai0bfQ==
-X-Received: by 2002:a05:6830:2709:b0:659:d9e4:b6b with SMTP id j9-20020a056830270900b00659d9e40b6bmr1809738otu.9.1664471356445;
-        Thu, 29 Sep 2022 10:09:16 -0700 (PDT)
+        bh=pmXKEYyCNniaE+BlAFgYZOoUvItL4ct2QR9ZHK2YPsY=;
+        b=YxcUydr7IQLt/30hkS0WfTe4C4Hb33PKqgVw20/hrLFV57fWjI/K9VO5kCmIAeHHT+
+         zudfAmT58gS2kNHB56POoN7u3uDsvQa0xfh4PmV3QPtgwoB2f7Y3bUKkE/x+LRB4tQFy
+         JtsZSvIYwK01I4bOgg210QanX2V82GiPCDr30jXpgpEZdiOhlNwoPKQDzRJNtyNUC7Mh
+         +pAT1Kr+/FKcwA4HoZr3Ctlox4i5GjNwNpmmvPX3tzyTMLa0BCCXXkSb4uj32kTqeJGi
+         hLlVN6xokq9Bfe0nkHBuRvKBV0ytWzvttVkFfVlfB5ZiBs8LZkSvPfqYUxC/tLAqWlEA
+         8uLg==
+X-Gm-Message-State: ACrzQf34D0eY02wTFmRHGloMEaGMJXpiTkM4UkisI/Rc+QT9WXi20Nmc
+        7/Bx1mu0o9eIXNQv/N4tL3a/RAbgF/hwOA==
+X-Google-Smtp-Source: AMsMyM56NHT+MRHccmazHXly/Bbr2eZbiqMsSjyeQBJ9/rcDIVFFPKQmDGlF12vcRveFYcLNILLtxA==
+X-Received: by 2002:a05:6830:349:b0:63a:cd5d:9014 with SMTP id h9-20020a056830034900b0063acd5d9014mr1769951ote.29.1664471357483;
+        Thu, 29 Sep 2022 10:09:17 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-c4e7-bfae-90ed-ac81.res6.spectrum.com. [2603:8081:140c:1a00:c4e7:bfae:90ed:ac81])
-        by smtp.googlemail.com with ESMTPSA id v17-20020a056808005100b00349a06c581fsm2798557oic.3.2022.09.29.10.09.15
+        by smtp.googlemail.com with ESMTPSA id v17-20020a056808005100b00349a06c581fsm2798557oic.3.2022.09.29.10.09.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Sep 2022 10:09:15 -0700 (PDT)
+        Thu, 29 Sep 2022 10:09:17 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 10/13] RDMA/rxe: Extend rxe_comp.c to support xrc qps
-Date:   Thu, 29 Sep 2022 12:08:34 -0500
-Message-Id: <20220929170836.17838-11-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 11/13] RDMA/rxe: Extend rxe_req.c to support xrc qps
+Date:   Thu, 29 Sep 2022 12:08:35 -0500
+Message-Id: <20220929170836.17838-12-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220929170836.17838-1-rpearsonhpe@gmail.com>
 References: <20220929170836.17838-1-rpearsonhpe@gmail.com>
@@ -69,119 +69,115 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Extend code in rxe_comp.c to support xrc qp types.
+Extend code in rxe_req.c to support xrc qp types.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_comp.c | 45 ++++++++++++++--------------
- 1 file changed, 22 insertions(+), 23 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_req.c | 38 +++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index 1f10ae4a35d5..cb6621b4055d 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -213,12 +213,13 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
- 					struct rxe_pkt_info *pkt,
- 					struct rxe_send_wqe *wqe)
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index d2a9abfed596..e7bb969f97f3 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -229,7 +229,7 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
  {
-+	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
- 	unsigned int mask = pkt->mask;
-+	int opcode;
- 	u8 syn;
--	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+ 	struct rxe_dev		*rxe = to_rdev(qp->ibqp.device);
+ 	struct sk_buff		*skb;
+-	struct rxe_send_wr	*ibwr = &wqe->wr;
++	struct rxe_send_wr	*wr = &wqe->wr;
+ 	int			pad = (-payload) & 0x3;
+ 	int			paylen;
+ 	int			solicited;
+@@ -246,13 +246,13 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+ 		return NULL;
  
--	/* Check the sequence only */
--	switch (qp->comp.opcode) {
-+	/* Mask off type bits and check the sequence only */
-+	switch (qp->comp.opcode & IB_OPCODE_CMD) {
- 	case -1:
- 		/* Will catch all *_ONLY cases. */
- 		if (!(mask & RXE_FIRST_MASK))
-@@ -226,42 +227,39 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
+ 	/* init bth */
+-	solicited = (ibwr->send_flags & IB_SEND_SOLICITED) &&
++	solicited = (wr->send_flags & IB_SEND_SOLICITED) &&
+ 			(pkt->mask & RXE_LAST_MASK) &&
+ 			((pkt->mask & (RXE_SEND_MASK)) ||
+ 			(pkt->mask & (RXE_WRITE_MASK | RXE_IMMDT_MASK)) ==
+ 			(RXE_WRITE_MASK | RXE_IMMDT_MASK));
  
- 		break;
+-	qp_num = (pkt->mask & RXE_DETH_MASK) ? ibwr->wr.ud.remote_qpn :
++	qp_num = (pkt->mask & RXE_DETH_MASK) ? wr->wr.ud.remote_qpn :
+ 					 qp->attr.dest_qp_num;
  
--	case IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST:
--	case IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE:
--		if (pkt->opcode != IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE &&
--		    pkt->opcode != IB_OPCODE_RC_RDMA_READ_RESPONSE_LAST) {
-+	case IB_OPCODE_RDMA_READ_RESPONSE_FIRST:
-+	case IB_OPCODE_RDMA_READ_RESPONSE_MIDDLE:
-+		opcode = pkt->opcode & IB_OPCODE_CMD;
-+		if (opcode != IB_OPCODE_RDMA_READ_RESPONSE_MIDDLE &&
-+		    opcode != IB_OPCODE_RDMA_READ_RESPONSE_LAST) {
- 			/* read retries of partial data may restart from
- 			 * read response first or response only.
- 			 */
- 			if ((pkt->psn == wqe->first_psn &&
--			     pkt->opcode ==
--			     IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST) ||
-+			     opcode == IB_OPCODE_RDMA_READ_RESPONSE_FIRST) ||
- 			    (wqe->first_psn == wqe->last_psn &&
--			     pkt->opcode ==
--			     IB_OPCODE_RC_RDMA_READ_RESPONSE_ONLY))
-+			     opcode == IB_OPCODE_RDMA_READ_RESPONSE_ONLY))
- 				break;
+ 	ack_req = ((pkt->mask & RXE_LAST_MASK) ||
+@@ -264,34 +264,37 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+ 		 ack_req, pkt->psn);
  
- 			return COMPST_ERROR;
- 		}
- 		break;
- 	default:
--		WARN_ON_ONCE(1);
-+		//WARN_ON_ONCE(1);
+ 	/* init optional headers */
++	if (pkt->mask & RXE_XRCETH_MASK)
++		xrceth_set_srqn(pkt, wr->srq_num);
++
+ 	if (pkt->mask & RXE_RETH_MASK) {
+-		reth_set_rkey(pkt, ibwr->wr.rdma.rkey);
++		reth_set_rkey(pkt, wr->wr.rdma.rkey);
+ 		reth_set_va(pkt, wqe->iova);
+ 		reth_set_len(pkt, wqe->dma.resid);
  	}
  
--	/* Check operation validity. */
--	switch (pkt->opcode) {
--	case IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST:
--	case IB_OPCODE_RC_RDMA_READ_RESPONSE_LAST:
--	case IB_OPCODE_RC_RDMA_READ_RESPONSE_ONLY:
-+	/* Mask off the type bits and check operation validity. */
-+	switch (pkt->opcode & IB_OPCODE_CMD) {
-+	case IB_OPCODE_RDMA_READ_RESPONSE_FIRST:
-+	case IB_OPCODE_RDMA_READ_RESPONSE_LAST:
-+	case IB_OPCODE_RDMA_READ_RESPONSE_ONLY:
- 		syn = aeth_syn(pkt);
+ 	if (pkt->mask & RXE_IMMDT_MASK)
+-		immdt_set_imm(pkt, ibwr->ex.imm_data);
++		immdt_set_imm(pkt, wr->ex.imm_data);
  
- 		if ((syn & AETH_TYPE_MASK) != AETH_ACK)
- 			return COMPST_ERROR;
+ 	if (pkt->mask & RXE_IETH_MASK)
+-		ieth_set_rkey(pkt, ibwr->ex.invalidate_rkey);
++		ieth_set_rkey(pkt, wr->ex.invalidate_rkey);
  
- 		fallthrough;
--		/* (IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE doesn't have an AETH)
--		 */
--	case IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE:
-+	case IB_OPCODE_RDMA_READ_RESPONSE_MIDDLE:
- 		if (wqe->wr.opcode != IB_WR_RDMA_READ &&
- 		    wqe->wr.opcode != IB_WR_RDMA_READ_WITH_INV) {
- 			wqe->status = IB_WC_FATAL_ERR;
-@@ -270,7 +268,7 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
- 		reset_retry_counters(qp);
- 		return COMPST_READ;
+ 	if (pkt->mask & RXE_ATMETH_MASK) {
+ 		atmeth_set_va(pkt, wqe->iova);
+-		if (opcode == IB_OPCODE_RC_COMPARE_SWAP) {
+-			atmeth_set_swap_add(pkt, ibwr->wr.atomic.swap);
+-			atmeth_set_comp(pkt, ibwr->wr.atomic.compare_add);
++		if ((opcode & IB_OPCODE_CMD) == IB_OPCODE_COMPARE_SWAP) {
++			atmeth_set_swap_add(pkt, wr->wr.atomic.swap);
++			atmeth_set_comp(pkt, wr->wr.atomic.compare_add);
+ 		} else {
+-			atmeth_set_swap_add(pkt, ibwr->wr.atomic.compare_add);
++			atmeth_set_swap_add(pkt, wr->wr.atomic.compare_add);
+ 		}
+-		atmeth_set_rkey(pkt, ibwr->wr.atomic.rkey);
++		atmeth_set_rkey(pkt, wr->wr.atomic.rkey);
+ 	}
  
--	case IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE:
-+	case IB_OPCODE_ATOMIC_ACKNOWLEDGE:
- 		syn = aeth_syn(pkt);
+ 	if (pkt->mask & RXE_DETH_MASK) {
+ 		if (qp->ibqp.qp_num == 1)
+ 			deth_set_qkey(pkt, GSI_QKEY);
+ 		else
+-			deth_set_qkey(pkt, ibwr->wr.ud.remote_qkey);
++			deth_set_qkey(pkt, wr->wr.ud.remote_qkey);
+ 		deth_set_sqp(pkt, qp->ibqp.qp_num);
+ 	}
  
- 		if ((syn & AETH_TYPE_MASK) != AETH_ACK)
-@@ -282,7 +280,7 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
- 		reset_retry_counters(qp);
- 		return COMPST_ATOMIC;
+@@ -338,8 +341,10 @@ static void update_wqe_state(struct rxe_qp *qp,
+ 		struct rxe_pkt_info *pkt)
+ {
+ 	if (pkt->mask & RXE_LAST_MASK) {
+-		if (qp_type(qp) == IB_QPT_RC)
++		if (qp_type(qp) == IB_QPT_RC ||
++		    qp_type(qp) == IB_QPT_XRC_INI)
+ 			wqe->state = wqe_state_pending;
++		/* other qp types handled in rxe_xmit_packet() */
+ 	} else {
+ 		wqe->state = wqe_state_processing;
+ 	}
+@@ -532,9 +537,10 @@ int rxe_requester(void *arg)
+ 			goto done;
+ 	}
  
--	case IB_OPCODE_RC_ACKNOWLEDGE:
-+	case IB_OPCODE_ACKNOWLEDGE:
- 		syn = aeth_syn(pkt);
- 		switch (syn & AETH_TYPE_MASK) {
- 		case AETH_ACK:
-@@ -669,7 +667,8 @@ int rxe_completer(void *arg)
- 			 *     timeouts but try to keep them as few as possible)
- 			 * (4) the timeout parameter is set
- 			 */
--			if ((qp_type(qp) == IB_QPT_RC) &&
-+			if ((qp_type(qp) == IB_QPT_RC ||
-+			     qp_type(qp) == IB_QPT_XRC_INI) &&
- 			    (qp->req.state == QP_STATE_READY) &&
- 			    (psn_compare(qp->req.psn, qp->comp.psn) > 0) &&
- 			    qp->qp_timeout_jiffies)
+-	if (unlikely(qp_type(qp) == IB_QPT_RC &&
+-		psn_compare(qp->req.psn, (qp->comp.psn +
+-				RXE_MAX_UNACKED_PSNS)) > 0)) {
++	if (unlikely((qp_type(qp) == IB_QPT_RC ||
++		      qp_type(qp) == IB_QPT_XRC_INI) &&
++		     psn_compare(qp->req.psn, (qp->comp.psn +
++					RXE_MAX_UNACKED_PSNS)) > 0)) {
+ 		qp->req.wait_psn = 1;
+ 		goto exit;
+ 	}
 -- 
 2.34.1
 
