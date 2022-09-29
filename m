@@ -2,54 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC47A5EEC12
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Sep 2022 04:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F535EEC30
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Sep 2022 04:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbiI2Cu2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Sep 2022 22:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
+        id S234758AbiI2C4h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Sep 2022 22:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234202AbiI2Cu1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Sep 2022 22:50:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6A728E1A;
-        Wed, 28 Sep 2022 19:50:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 545536200D;
-        Thu, 29 Sep 2022 02:50:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A25ACC43470;
-        Thu, 29 Sep 2022 02:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664419825;
-        bh=tubfkDxWIIvpnStySyrVCci7ZewjNXhXbri8kj3N8aE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=d6/vXL51Ps/Pk5cteqhp5lZAOxRsyTmmLHK+UFygtvWx41g7MqZWT04huawWpNc2Z
-         mxoY6xrg4S0DiXf6mlgaZS4AK36evdwEhcuoSyy5XNwfTWN0KP57Hr9ZHSlhghpyw6
-         QxmepZ/4lu+cvJ5hHbhPbU6fqiyb+R943keE2GKBcOeaXOsUx1G3BOWjQ5+vm7h+ap
-         A9WJbqjPWNMrjj7AtgMlJkiWX/Y7eEzZTYl6ZMbsm1MKq8XRi9dcp1knL+XneHCY2X
-         JcuVk6hM68rn027mHqcOHsjMPCtjx07tGSoi2eD3Sd3Y4Wr/DQSTXTkrqAtMnHfSiK
-         TqdanwJRmF9EA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 856D9E4D024;
-        Thu, 29 Sep 2022 02:50:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S234928AbiI2C4U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Sep 2022 22:56:20 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9039B851
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Sep 2022 19:56:12 -0700 (PDT)
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MdHxX6t5qzHqS3;
+        Thu, 29 Sep 2022 10:53:52 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by dggpemm500022.china.huawei.com
+ (7.185.36.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Thu, 29 Sep
+ 2022 10:56:10 +0800
+From:   Zeng Heng <zengheng4@huawei.com>
+To:     <benve@cisco.com>, <neescoba@cisco.com>, <jgg@ziepe.ca>,
+        <leon@kernel.org>, <roland@purestorage.com>, <umalhi@cisco.com>
+CC:     <linux-rdma@vger.kernel.org>, <liwei391@huawei.com>,
+        <zengheng4@huawei.com>
+Subject: [PATCH -next] RDMA/usnic: fix set-but-not-unused variable 'flags' warning
+Date:   Thu, 29 Sep 2022 11:12:00 +0800
+Message-ID: <20220929031200.4060891-1-zengheng4@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [GIT PULL][V2] updates from mlx5-next 2022-09-24
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166441982554.2371.18322511585722466183.git-patchwork-notify@kernel.org>
-Date:   Thu, 29 Sep 2022 02:50:25 +0000
-References: <20220927201906.234015-1-saeed@kernel.org>
-In-Reply-To: <20220927201906.234015-1-saeed@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, jgg@nvidia.com, saeedm@nvidia.com,
-        linux-rdma@vger.kernel.org, leonro@nvidia.com,
-        netdev@vger.kernel.org
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500022.china.huawei.com (7.185.36.162)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,28 +45,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
+Remove unused local variable 'flag'
+without any logic changes.
 
-This pull request was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+Fixes: e3cf00d0a87f ("IB/usnic: Add Cisco VIC low-level hardware driver")
+Signed-off-by: Zeng Heng <zengheng4@huawei.com>
+---
+ drivers/infiniband/hw/usnic/usnic_uiom.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-On Tue, 27 Sep 2022 13:19:06 -0700 you wrote:
-> From: Saeed Mahameed <saeedm@nvidia.com>
-> 
-> Please pull mlx5-next branch
-> 
-> v1->v2:
->   - tossed already applied rdma commit.
-> 
-> [...]
-
-Here is the summary with links:
-  - [GIT,PULL,V2] updates from mlx5-next 2022-09-24
-    https://git.kernel.org/netdev/net-next/c/0d5bfebf7401
-
-You are awesome, thank you!
+diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
+index 67a1b4562dc2..67923ced6e2d 100644
+--- a/drivers/infiniband/hw/usnic/usnic_uiom.c
++++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
+@@ -95,7 +95,6 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
+ 	int ret;
+ 	int off;
+ 	int i;
+-	int flags;
+ 	dma_addr_t pa;
+ 	unsigned int gup_flags;
+ 	struct mm_struct *mm;
+@@ -132,8 +131,6 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
+ 		goto out;
+ 	}
+ 
+-	flags = IOMMU_READ | IOMMU_CACHE;
+-	flags |= (writable) ? IOMMU_WRITE : 0;
+ 	gup_flags = FOLL_WRITE;
+ 	gup_flags |= (writable) ? 0 : FOLL_FORCE;
+ 	cur_base = addr & PAGE_MASK;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
