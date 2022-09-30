@@ -2,145 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D495F0ABE
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Sep 2022 13:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5185F0AFC
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Sep 2022 13:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbiI3LjL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Sep 2022 07:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        id S231509AbiI3Lrw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Sep 2022 07:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbiI3Lio (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Sep 2022 07:38:44 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE27132AA2
-        for <linux-rdma@vger.kernel.org>; Fri, 30 Sep 2022 04:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1664537451; x=1696073451;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=vKzx+x+WkxBKb3ZkLR6tz0V1qCz+KY2b/FFv9Wf/OMc=;
-  b=doYa8hHL4Sz7S9m6zy42PEQvXNjUAUlma64C0+AAl3kbGc8hQF2uD3Tw
-   mqtbCPhUGQk5n7MAZlI1wFx+7MPZg1LZzoiX140moi5yHwZEevJyiktKB
-   76AuDA4v5FNpAOpWyYD20S9cmW3R/MK2xIRbaFJTBKEmdtCho1xaNsyI9
-   8bCsQNhD4UgX72+zxrxN9INZxiAjnmFX2xW5BIcSU4bU/G/KzptdnUVlq
-   pAF/JqkBjLhx/N5mQ4EJPtUdLWW1yWtkVM4r461xrpPa5i1zeVrnp/mwt
-   lL2xhowYUjgoWKNhzd3a0f/Zn5Etasn48FniPQ0QVUkhk2DkPXh/Hxv2v
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10485"; a="303655518"
-X-IronPort-AV: E=Sophos;i="5.93,358,1654585200"; 
-   d="scan'208";a="303655518"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2022 04:30:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10485"; a="691218583"
-X-IronPort-AV: E=Sophos;i="5.93,358,1654585200"; 
-   d="scan'208";a="691218583"
-Received: from lkp-server01.sh.intel.com (HELO 14cc182da2d0) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Sep 2022 04:30:29 -0700
-Received: from kbuild by 14cc182da2d0 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oeEDs-0000yF-2p;
-        Fri, 30 Sep 2022 11:30:28 +0000
-Date:   Fri, 30 Sep 2022 19:30:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 8ad891ed435ba24465e0650942267e90a060675f
-Message-ID: <6336d340.1+QSR0bDvAuhpzGj%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S231379AbiI3Lr2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Sep 2022 07:47:28 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA003FFB2D;
+        Fri, 30 Sep 2022 04:44:03 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id v1so3749852plo.9;
+        Fri, 30 Sep 2022 04:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=Gg0A0CsuZvn3gbRKVVoweIsGGQktuRgro3yyKRZC6yo=;
+        b=S+rHi0IQSlE7WkWXkHzEMCYAR1eWbIOMxU34v3/uqSUu6rWSlQ4XA7Mzr4vhHHCauT
+         FoM0gfdBofAk3PbMoCHFuWL64F3WYU1ow8kT2j5JXIjEluv6DMd4+NuK6BpzDklJ/3BK
+         pamHa2SUGU6hFOLg8JtCAPiHwcWNH/ZZolATHka6ri+BTZu09AIDPMFU+tyybnclj5gv
+         txzO5jhYXDkK+cvUhIE0AkSXFlhxH0KFRJD8JnzipQbr/DzJLfinSmEN7ilXrEUq/ZgL
+         UtuOvkB7baze3Yl7SD1duleGsmBFF1OS51ez9Q7WYyPcj91o6q8Cqnma8uNSHzj2z8jd
+         2CRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=Gg0A0CsuZvn3gbRKVVoweIsGGQktuRgro3yyKRZC6yo=;
+        b=W5SVhfLSKC8jttS9/8w8kGRtSDENNiTxWBTUpgD+3V7csaB8SPe5vrK+Czz5BDc1Pj
+         /TB7Yd69CDTOTm4SInOK/xKchi0aP+cm9jPuo1u0pEulZ3A856OytEGgi2ldNgEiiiYf
+         DrgR7N3Zj+G8re3mNaYns9KbZuPByb15dQmj77oBhHCWuu/u0frkKI9e3c0gUCM4pE0B
+         kGQx1zu2t+3qtWOhF/inBP2UOpmp/M0egwKtVN/vOYXrWM9lfLcYRe6orX0Z6tH+kZsh
+         +OL6Qm8Rh+TcV7eeiKMehRL5reqcj5zYurpHGS+Jh+uUHICljnxQ8QukymcYX0sfkHkQ
+         yYTQ==
+X-Gm-Message-State: ACrzQf0g94HYmimzWX7BhEPUMhGdiRyu1K2WU17oVPqq6U6cy34fG1+5
+        nv7NUqDHWFzUgJL9d7g9icE=
+X-Google-Smtp-Source: AMsMyM5irRGrmMh154wuYn4XRa9MjbS0fbaOivd2pICaLsfqAP45ZvvxrOMGKbXZv2kxePcQ1XGJog==
+X-Received: by 2002:a17:90a:db85:b0:20a:607a:3701 with SMTP id h5-20020a17090adb8500b0020a607a3701mr1209544pjv.187.1664538242883;
+        Fri, 30 Sep 2022 04:44:02 -0700 (PDT)
+Received: from localhost.localdomain ([49.206.115.111])
+        by smtp.gmail.com with ESMTPSA id g3-20020a170902d1c300b0017a00216965sm1642129plb.218.2022.09.30.04.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Sep 2022 04:44:02 -0700 (PDT)
+From:   Praghadeesh T K S <praghadeeshthevendria@gmail.com>
+To:     Boris Pismenny <borisp@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "GitAuthor: Praghadeesh" <praghadeeshthevendria@gmail.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     praghadeeshtks@zohomail.in,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] net: ethernet/mellanox: fix dereference before null check
+Date:   Fri, 30 Sep 2022 17:13:35 +0530
+Message-Id: <20220930114335.608894-1-praghadeeshthevendria@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 8ad891ed435ba24465e0650942267e90a060675f  RDMA/rxe: Remove error/warning messages from packet receiver path
+net: ethernet/mellanox: fix dereference before null check
+macsec dereferenced before null check
+bug identified by coverity's linux-next weekly scan
+Coverity CID No: 1525317
 
-elapsed time: 1461m
+Signed-off-by: Praghadeesh T K S <praghadeeshthevendria@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-configs tested: 63
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-um                             i386_defconfig
-arc                                 defconfig
-um                           x86_64_defconfig
-alpha                               defconfig
-s390                             allmodconfig
-s390                                defconfig
-s390                             allyesconfig
-i386                                defconfig
-x86_64                          rhel-8.3-func
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64                    rhel-8.3-kselftests
-mips                             allyesconfig
-x86_64                              defconfig
-sh                               allmodconfig
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-x86_64                           rhel-8.3-syz
-i386                             allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-arc                  randconfig-r043-20220925
-riscv                randconfig-r042-20220925
-alpha                            allyesconfig
-i386                 randconfig-a001-20220926
-arc                              allyesconfig
-i386                 randconfig-a004-20220926
-i386                 randconfig-a005-20220926
-m68k                             allyesconfig
-arc                  randconfig-r043-20220926
-i386                 randconfig-a006-20220926
-m68k                             allmodconfig
-i386                 randconfig-a002-20220926
-s390                 randconfig-r044-20220925
-i386                 randconfig-a003-20220926
-arm                                 defconfig
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-arm                              allyesconfig
-arm64                            allyesconfig
-ia64                             allmodconfig
-
-clang tested configs:
-hexagon              randconfig-r045-20220925
-hexagon              randconfig-r041-20220926
-hexagon              randconfig-r045-20220926
-hexagon              randconfig-r041-20220925
-riscv                randconfig-r042-20220926
-s390                 randconfig-r044-20220926
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-i386                 randconfig-a011-20220926
-i386                 randconfig-a014-20220926
-i386                 randconfig-a013-20220926
-i386                 randconfig-a012-20220926
-x86_64               randconfig-a012-20220926
-x86_64               randconfig-a013-20220926
-x86_64               randconfig-a011-20220926
-i386                 randconfig-a016-20220926
-i386                 randconfig-a015-20220926
-x86_64               randconfig-a016-20220926
-x86_64               randconfig-a015-20220926
-x86_64               randconfig-a014-20220926
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+index 5da746d..e822c2a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+@@ -1846,11 +1846,11 @@ int mlx5e_macsec_init(struct mlx5e_priv *priv)
+ void mlx5e_macsec_cleanup(struct mlx5e_priv *priv)
+ {
+ 	struct mlx5e_macsec *macsec = priv->macsec;
+-	struct mlx5_core_dev *mdev = macsec->mdev;
+ 
+ 	if (!macsec)
+ 		return;
+ 
++	struct mlx5_core_dev *mdev = macsec->mdev;
+ 	mlx5_notifier_unregister(mdev, &macsec->nb);
+ 
+ 	mlx5e_macsec_fs_cleanup(macsec->macsec_fs);
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.25.1
+
