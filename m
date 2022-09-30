@@ -2,81 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E56F5F0B5D
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Sep 2022 14:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483775F0D86
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Sep 2022 16:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbiI3MKW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Sep 2022 08:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
+        id S232012AbiI3O3L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Sep 2022 10:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbiI3MKU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Sep 2022 08:10:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA378E4D7;
-        Fri, 30 Sep 2022 05:10:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7BAC662314;
-        Fri, 30 Sep 2022 12:10:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CDC20C433D6;
-        Fri, 30 Sep 2022 12:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664539817;
-        bh=t4MV0cXsgxNGKQwmObRrW7em92ARScSQC2qWmTjzovQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=KeV6Gh4OSEr2mXoiXetMBdO5j0Hz8yukyPXjPfV8XJg9AE5LKiLalPvL7xd9XenRI
-         qryxYNibohsCt3qgfOiAj2sWB6E/ivBaVByPqauGxi9nf4OVVwSPJgtPV/GIzOnRvP
-         WLcTtuUy3unm1OZ6n+4qCSRtR5jA6jp1xatVrFMzdisTzxAxEeFsl9HWibblSPajip
-         B/6gZd0JyVhWKWDaFJ71tIFJDJCjhOqLXK8HOKhZ17sc+9Rkfivjp+Rli16vKt255v
-         kXqBlIkV9p8KR3eia8oxJl5hK2w127wfYDcmMO/BynApvdLimR2MkprapG2UpgEnv1
-         Rk21Q4I68zczw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AB2E5E49FA5;
-        Fri, 30 Sep 2022 12:10:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231266AbiI3O3K (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Sep 2022 10:29:10 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0661A10BB
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Sep 2022 07:29:10 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id t16so4994227ljh.3
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Sep 2022 07:29:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date;
+        bh=WT82etd91PDSUL/8+27QkPwmNaDjHjZz1/B6ldVoOBw=;
+        b=qQwpEE3Vy0et5Pgd1C+v2Cb2jDwJKcF3YBx1PAqtmTavWYvA/Zl/C6j/3swr1KRgxg
+         25BjWNOMv57LBEf9a3F8cWMYYJeIftolo2BX+5dk/DIziEv6waQf0B0gbmD/25yefFBR
+         RB8BOpOgxlLQ8BGC5Q9S1d8TgDZ0iluyx2TZcDSOqrhKwpPAcZpSZR0pqIMyGQuyCXfn
+         kCvVP1Sj87QoslCypJV4h6dDgmPRU4ZDIF1wu5riZPI27bFjbSK292k45+MASX6i0ptF
+         QEve4gNJnaOl5lnbrDoROPYvF7CMUpSZGfwVRpy5bLGlPZUrTVWjsHPcEthPx8xxMSar
+         xdHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=WT82etd91PDSUL/8+27QkPwmNaDjHjZz1/B6ldVoOBw=;
+        b=PIhDL2xlK6OuhEl1szCGyo2eoiS7cpIkioEX/DTgp4omXnjZraeQ6KFQampMuBlUns
+         L1G6j5BS0EF9aJ6WGVZGLO/EBgWQggGW9cIbC9C+uUQN26VPTMmIGgwIHqrWYS6CrxXw
+         S/FD+HogTZtSlAvj17Bl2DF7GaileldS72ZmOUgT96Qvr5h6ptaUlZWiPYgfPbIaHvv/
+         Xa4GLbBMW2S23FzjwOgN92+fGqP4pSFxPnKBQ/2NF9cYZlXAG+gk3WckhoEeAhoWfhJm
+         G7Lz6JeWn4oa5ZXu02PFQHGZwh4QpAcvU9/TOA/vr0GFYyEOxhY0qDJlMBYibd5VMtqX
+         LNqw==
+X-Gm-Message-State: ACrzQf3T5/SWTXCNsn57P8Jp7ytel12eNYHPtiIImoeX1cmGR8StuUlX
+        IhFhoRRmWfCiHaHUmL1xjc3n3zmqGKLu0pW833Y=
+X-Google-Smtp-Source: AMsMyM72WQxG7/L6ffIXlZ6UHWzuhPwi2aKI6Pkk542Z9Fc/DBeu9/8ArwRfZ8tavgTklPKU543fgnsoB8v5KdORAU8=
+X-Received: by 2002:a2e:8014:0:b0:26a:d12c:3719 with SMTP id
+ j20-20020a2e8014000000b0026ad12c3719mr2977652ljg.472.1664548148526; Fri, 30
+ Sep 2022 07:29:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/mlx5: Fix spelling mistake "syndrom" -> "syndrome"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166453981769.22292.1617251533762607587.git-patchwork-notify@kernel.org>
-Date:   Fri, 30 Sep 2022 12:10:17 +0000
-References: <20220928220755.67137-1-colin.i.king@gmail.com>
-In-Reply-To: <20220928220755.67137-1-colin.i.king@gmail.com>
-To:     Colin Ian King <colin.i.king@gmail.com>
-Cc:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6512:3daa:0:0:0:0 with HTTP; Fri, 30 Sep 2022 07:29:07
+ -0700 (PDT)
+From:   Maya Williamson <aw7338485@gmail.com>
+Date:   Fri, 30 Sep 2022 14:29:07 +0000
+Message-ID: <CABCwc84QyuP1tydGn4Qp26qB_MZELTgn_ZNW0ThE4_p6q5cZNg@mail.gmail.com>
+Subject: re
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Wed, 28 Sep 2022 23:07:55 +0100 you wrote:
-> There is a spelling mistake in a devlink_health_report message. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/health.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Here is the summary with links:
-  - net/mlx5: Fix spelling mistake "syndrom" -> "syndrome"
-    https://git.kernel.org/netdev/net-next/c/fd01b9b5b02b
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Hello,
 
+I'd like to talk to you
 
+Maya
