@@ -2,101 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2431F5F1BDE
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Oct 2022 12:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB65D5F1C15
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 Oct 2022 14:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbiJAKvB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 1 Oct 2022 06:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
+        id S229581AbiJAMPf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 1 Oct 2022 08:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbiJAKvA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Oct 2022 06:51:00 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDED7D5B;
-        Sat,  1 Oct 2022 03:50:58 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gf8so3723789pjb.5;
-        Sat, 01 Oct 2022 03:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=902zAy6Vn6wh4uiLUnvbwF2NvhM+4Dk+0jWQAGP5110=;
-        b=GeJYvI8SjMylNFlGT6aW3bAHhTuabf/LT8iyU66IEjxGux+cDbxHhXhIS2kVT6NYeh
-         /Quxr3v3/sG1JBIN2/Ssm/03o7XaJzXBbcSvbLqPtJrhrRUbXXv0nLU8k9Ru0UQPmBsS
-         dbmO50FTZV6Sih1ju6DEMgkWYstzoeStvgjreRgRXfa1RurTk+OFLy9ouWt3ig478CgR
-         oxwgtq6yv56W33hrPBv1SqDGIOzxYXfABN6VHFc1qRFevrFlxwr/GDZY4vvY0SvDMWmU
-         JGs3unyjKn4xz67yatisGk5GpbzMPkD7lKwIqbAYz3R5tE0HMoS94pd9WtmGnLZsTfB1
-         f/bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=902zAy6Vn6wh4uiLUnvbwF2NvhM+4Dk+0jWQAGP5110=;
-        b=2q0koZE8f0Nzw7ZqD10zkG9bXh9j0o6IveIZMeYuEVCoWroLel/zbSoc+83cFRiYut
-         gB+QQLbh3O5rMsi0/E5FIKSDrSU+nQ25vfLuZ0LqO6aRFMBfzQracelkSSbh7xTnUC5K
-         t1MlA0qjqu7QI2DGuMqRzO3vWrbpCLFoYHRWE3OmIE6MAT3J9UaWt7gt0fQZU1pn3oUf
-         U+B5YvDNbo2baAWHo74VWKbUjLBH0VarZcENJ4vU8tdI1sRp4/WSQfIAG0Spg0JoZyNR
-         F6hnT/Jt0BdaK3A/7nWjyrVIxaSkXoep7QddvI4BWsmP/SsUNFmFtKlI+lG2QZSrNg7h
-         W3Ng==
-X-Gm-Message-State: ACrzQf06+v0OTDlp/KfQ6eHrI8Blw5EmXM1ltfeFs57eotufhSG3oyCe
-        nMDi2mxY7ZApA12OdBO7+8WtAahu/ZAOd7j9a3U=
-X-Google-Smtp-Source: AMsMyM5syCGrkuxycNAvt40JdD4s/zHSLiZSh3m8QlilysmJk1114r/wKlV+1sycEk5/6iGX7V5+2FfptbpbAst/fyU=
-X-Received: by 2002:a17:902:da8a:b0:17b:df43:9235 with SMTP id
- j10-20020a170902da8a00b0017bdf439235mr9749353plx.137.1664621458490; Sat, 01
- Oct 2022 03:50:58 -0700 (PDT)
+        with ESMTP id S229550AbiJAMPe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Oct 2022 08:15:34 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314BC5B7BD
+        for <linux-rdma@vger.kernel.org>; Sat,  1 Oct 2022 05:15:30 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6500,9779,10486"; a="328763282"
+X-IronPort-AV: E=Sophos;i="5.93,360,1654585200"; 
+   d="scan'208";a="328763282"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2022 05:15:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10486"; a="653848517"
+X-IronPort-AV: E=Sophos;i="5.93,360,1654585200"; 
+   d="scan'208";a="653848517"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by orsmga008.jf.intel.com with ESMTP; 01 Oct 2022 05:15:28 -0700
+From:   yanjun.zhu@linux.dev
+To:     jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com,
+        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
+Subject: [PATCH 0/6] Fix the problem that rxe can not work in net
+Date:   Sun,  2 Oct 2022 00:41:46 -0400
+Message-Id: <20221002044152.933021-1-yanjun.zhu@linux.dev>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20221001020045.8324-1-lizhijian@fujitsu.com>
-In-Reply-To: <20221001020045.8324-1-lizhijian@fujitsu.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Sat, 1 Oct 2022 18:50:47 +0800
-Message-ID: <CAD=hENegJLuWZUvCVk66MFUE_m64PbqY7+mG2jZz3+Wyu4i6+w@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA: return -EOPNOSUPP for ODP unsupported device
-To:     Li Zhijian <lizhijian@fujitsu.com>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
+        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Oct 1, 2022 at 10:00 AM Li Zhijian <lizhijian@fujitsu.com> wrote:
->
-> ib_reg_mr(3) which is used to register a MR with specific access flags
-> for specific HCA will set errno when something go wrong.
-> So, here we should return the specific -EOPNOTSUPP when the being
-> requested ODP access flag is unspported by the HCA(such as RXE).
->
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+When run "ip link add" command to add a rxe rdma link in a net
+namespace, normally this rxe rdma link can not work in a net
+name space. 
 
-Thanks.
-Zhu Yanjun
-> ---
->  include/rdma/ib_verbs.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index 975d6e9efbcb..a1f4d53a4bb6 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -4334,7 +4334,7 @@ static inline int ib_check_mr_access(struct ib_device *ib_dev,
->
->         if (flags & IB_ACCESS_ON_DEMAND &&
->             !(ib_dev->attrs.kernel_cap_flags & IBK_ON_DEMAND_PAGING))
-> -               return -EINVAL;
-> +               return -EOPNOTSUPP;
->         return 0;
->  }
->
-> --
-> 2.31.1
->
+The root cause is that a sock listening on udp port 4791 is created
+in init_net when the rdma_rxe module is loaded into kernel. That is,
+the sock listening on udp port 4791 is created in init_net. Other net
+namespace is difficult to use this sock.
+
+The following commits will solve this problem.
+
+In the first commit, move the creating sock listening on udp port 4791
+from module_init function to rdma link creating functions. That is,
+after the module rdma_rxe is loaded, the sock will not be created.
+When run "rdma link add ..." command, the sock will be created. So
+when creating a rdma link in the net namespace, the sock will be
+created in this net namespace.
+
+In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
+will check the sock exists in the net namespace or not. If yes, rdma
+link will increase the reference count of this sock, then continue other
+jobs instead of creating a new sock to listen on udp port 4791. Since the
+network notifier is global, when the module rdma_rxe is loaded, this
+notifier will be registered.
+
+After the rdma link is created, the command "rdma link del" is to
+delete rdma link at the same time the sock is checked. If the reference
+count of this sock is greater than the sock reference count needed by
+udp tunnel, the sock reference count is decreased by one. If equal, it
+indicates that this rdma link is the last one. As such, the udp tunnel
+is shut down and the sock is closed. The above work should be
+implemented in linkdel function. But currently no dellink function in
+rxe. So the 3rd commit addes dellink function pointer. And the 4th
+commit implements the dellink function in rxe.
+
+To now, it is not necessary to keep a global variable to store the sock
+listening udp port 4791. This global variable can be replaced by the
+functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
+function udp6_lib_lookup is in the fast path, a member variable l_sk6
+is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
+to lookup the sock, then the sock is stored in l_sk6, in the future,it
+can be used directly.
+
+All the above work has been done in init_net. And it can also work in
+the net namespace. So the init_net is replaced by the individual net
+namespace. This is what the 6th commit does. Because rxe device is
+dependent on the net device and the sock listening on udp port 4791,
+every rxe device is in exclusive mode in the individual net namespace.
+Other rdma netns operations will be considerred in the future.
+
+Test steps:
+1) Suppose that 2 NICs are in 2 different net namespaces.
+
+ # ip netns exec net0 ip link
+ 3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
+    link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
+    altname enp5s0
+
+ # ip netns exec net1 ip link
+ 4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
+    link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
+
+2) Add rdma link in the different net namespace
+   net0:
+   ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
+
+   net1:
+   ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
+
+3) Run rping test.
+   net0
+   # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
+   [1] 1737
+   # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
+   verbose
+   count 1
+   ...
+   ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+   ...
+
+4) Remove the rdma links from the net namespaces.
+   net0:
+   ip netns exec net0 rdma link del rxe0
+   net1:
+   ip netns exec net1 rdma link del rxe1
+
+Zhu Yanjun (6):
+  RDMA/rxe: Creating listening sock in newlink function
+  RDMA/rxe: Support more rdma links in init_net
+  RDMA/nldev: Add dellink function pointer
+  RDMA/rxe: Implement dellink in rxe
+  RDMA/rxe: Replace global variable with sock lookup functions
+  RDMA/rxe: add the support of net namespace
+
+ drivers/infiniband/core/nldev.c       |   6 ++
+ drivers/infiniband/sw/rxe/rxe.c       |  27 +++++-
+ drivers/infiniband/sw/rxe/rxe_net.c   | 131 ++++++++++++++++++++------
+ drivers/infiniband/sw/rxe/rxe_net.h   |   9 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.h |   1 +
+ include/rdma/rdma_netlink.h           |   2 +
+ 6 files changed, 135 insertions(+), 41 deletions(-)
+
+-- 
+2.25.1
+
