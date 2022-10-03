@@ -2,46 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A54AA5F33D4
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 18:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D53D5F33D9
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 18:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbiJCQqB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Oct 2022 12:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
+        id S229936AbiJCQrD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Oct 2022 12:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbiJCQp7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 12:45:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5922EF2A;
-        Mon,  3 Oct 2022 09:45:58 -0700 (PDT)
+        with ESMTP id S229744AbiJCQq7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 12:46:59 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4468303D1;
+        Mon,  3 Oct 2022 09:46:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 77C9061174;
-        Mon,  3 Oct 2022 16:45:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9740CC433C1;
-        Mon,  3 Oct 2022 16:45:57 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1DC6AB81110;
+        Mon,  3 Oct 2022 16:46:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E96AC433C1;
+        Mon,  3 Oct 2022 16:46:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664815557;
-        bh=nzdOonOyGPuvkC96+krKbY28e/QOBRuSwdP5kVCyE7I=;
+        s=k20201202; t=1664815599;
+        bh=8fL5ph1ZCDrgON77bewSrlo834+UKemG8iP2Ctrd8Ys=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s15AJEAXwVf/WOIiuGkaNDZ3CnzWW3H8LAaNj5t8nwmFI2lIh3/gqCAawWWVK9DvW
-         AH35vhTnQejsPvQalIGTtVuEOLKXM3G3v3gZwx+sUIH5HEmJtTMJUNkG++ykkko8CN
-         MIoFKxysBhLmARCFqlDauc/MB1yxDwvR44EJ3+ZFlpUTKnt8NozjHhhdPoxOFW0LFY
-         L2mhHLc4t5qEO5ZmUELeTKfWUJfmJZTP46mYRsSJv0MAL6JFZXa53WT9nehI7iRFmF
-         ZHHsQYbCj72j7MTulejycM3R7/l6ZoFMIFuaLvrlWdDtw7Ga5cx5osvPeCYdsa4+AM
-         YuAAxZqjUuq0g==
-Date:   Mon, 3 Oct 2022 09:45:56 -0700
+        b=N6HUDTFuONNaYpol47j298WIEye8HhGCvW3MHxPE22Hq6YyJ3uDHt2zgNiF3/N8QH
+         9IVIQkWdFBQbFd6h6w0VNvuAa08trMmTWHJgV+Ir5F2w7l1OlwdYBDNRF6zi8hPadr
+         Pj520SQnSKaSxdySuTfqrtq4ZAEBm9f43yK41wq6zf5GsQhNxLwwQX1JlYZn4LhGUg
+         guju3Lg5qmNeuwsmII/+dLvsgCNbn4q6mFbLbsZFavij0rL6kGC9VJ1BHIXTRrAs1u
+         XEiuV5J4C5muqqrC+JEq3x34+Fd4bWfImBQyNfVxJ3PTdWuIQrPB+GQy0jTwRTZHAA
+         atxdVlGxo5xBg==
+Date:   Mon, 3 Oct 2022 09:46:38 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     Jiri Pirko <jiri@resnulli.us>
 Cc:     netdev@vger.kernel.org, davem@davemloft.net, pabeni@redhat.com,
         edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
         saeedm@nvidia.com, linux-rdma@vger.kernel.org
-Subject: Re: [patch net-next v2 00/13] net: fix netdev to devlink_port
- linkage and expose to user
-Message-ID: <20221003094556.1f16a255@kernel.org>
-In-Reply-To: <20221003105204.3315337-1-jiri@resnulli.us>
+Subject: Re: [patch net-next v2 06/13] net: make drivers to use
+ SET_NETDEV_DEVLINK_PORT to set devlink_port
+Message-ID: <20221003094638.5e3d4cbf@kernel.org>
+In-Reply-To: <20221003105204.3315337-7-jiri@resnulli.us>
 References: <20221003105204.3315337-1-jiri@resnulli.us>
+        <20221003105204.3315337-7-jiri@resnulli.us>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -54,33 +55,15 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon,  3 Oct 2022 12:51:51 +0200 Jiri Pirko wrote:
-> Currently, the info about linkage from netdev to the related
-> devlink_port instance is done using ndo_get_devlink_port().
-> This is not sufficient, as it is up to the driver to implement it and
-> some of them don't do that. Also it leads to a lot of unnecessary
-> boilerplate code in all the drivers.
+On Mon,  3 Oct 2022 12:51:57 +0200 Jiri Pirko wrote:
+> From: Jiri Pirko <jiri@nvidia.com>
 > 
-> Instead of that, introduce a possibility for driver to expose this
-> relationship by new SET_NETDEV_DEVLINK_PORT macro which stores it into
-> dev->devlink_port. It is ensured by the driver init/fini flows that
-> the devlink_port pointer does not change during the netdev lifetime.
-> Devlink port is always registered before netdev register and
-> unregistered after netdev unregister.
-> 
-> Benefit from this linkage setup and remove explicit calls from driver
-> to devlink_port_type_eth_set() and clear(). Many of the driver
-> didn't use it correctly anyway. Let the devlink.c to track associated
-> netdev events and adjust type and type pointer accordingly. Also
-> use this events to to keep track on ifname change and remove RTNL lock
-> taking from devlink_nl_port_fill().
-> 
-> Finally, remove the ndo_get_devlink_port() ndo which is no longer used
-> and expose devlink_port handle as a new netdev netlink attribute to the
-> user. That way, during the ifname->devlink_port lookup, userspace app
-> does not have to dump whole devlink port list and instead it can just
-> do a simple RTM_GETLINK query.
+> Benefit from the previously implemented tracking of netdev events in
+> devlink code and instead of calling  devlink_port_type_eth_set() and
+> devlink_port_type_clear() to set devlink port type and link to related
+> netdev, use SET_NETDEV_DEVLINK_PORT() macro to assign devlink_port
+> pointer to netdevice which is about to be registered.
 
-Would you be okay if we deferred until 6.2?
-
-It's technically past the deadline and some odd driver could regress.
+drivers/net/ethernet/mscc/ocelot_vsc7514.c:380:23: warning: variable 'ocelot_port' set but not used [-Wunused-but-set-variable]
+                struct ocelot_port *ocelot_port;
+                                    ^
