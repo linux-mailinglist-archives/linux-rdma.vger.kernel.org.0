@@ -2,47 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D53D5F33D9
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 18:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055095F3448
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 19:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbiJCQrD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Oct 2022 12:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        id S229461AbiJCROD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Oct 2022 13:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbiJCQq7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 12:46:59 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4468303D1;
-        Mon,  3 Oct 2022 09:46:42 -0700 (PDT)
+        with ESMTP id S229496AbiJCRNa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 13:13:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EE132DAF;
+        Mon,  3 Oct 2022 10:13:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1DC6AB81110;
-        Mon,  3 Oct 2022 16:46:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E96AC433C1;
-        Mon,  3 Oct 2022 16:46:39 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DB13761186;
+        Mon,  3 Oct 2022 17:13:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE2E6C433D6;
+        Mon,  3 Oct 2022 17:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664815599;
-        bh=8fL5ph1ZCDrgON77bewSrlo834+UKemG8iP2Ctrd8Ys=;
+        s=k20201202; t=1664817206;
+        bh=ix/u/5RYQfRbQ6xWKnsreS80VFdbDF76pRBFUOS16p4=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N6HUDTFuONNaYpol47j298WIEye8HhGCvW3MHxPE22Hq6YyJ3uDHt2zgNiF3/N8QH
-         9IVIQkWdFBQbFd6h6w0VNvuAa08trMmTWHJgV+Ir5F2w7l1OlwdYBDNRF6zi8hPadr
-         Pj520SQnSKaSxdySuTfqrtq4ZAEBm9f43yK41wq6zf5GsQhNxLwwQX1JlYZn4LhGUg
-         guju3Lg5qmNeuwsmII/+dLvsgCNbn4q6mFbLbsZFavij0rL6kGC9VJ1BHIXTRrAs1u
-         XEiuV5J4C5muqqrC+JEq3x34+Fd4bWfImBQyNfVxJ3PTdWuIQrPB+GQy0jTwRTZHAA
-         atxdVlGxo5xBg==
-Date:   Mon, 3 Oct 2022 09:46:38 -0700
+        b=ZWzhMCYwI/FyqUMEQ/Lk/KLPyqJsDhRxgk/JCRSomd6gdnMhFvd4CzpyehtWdBuUi
+         ZMzDrrmCDC/0DepaABSDL/2HPvSEcgFFvr+Wu/FuITdIDfXQ3iMspmWH/cqwPfhK2/
+         F34DfCIkWYPKJqnnjrXQ3o5E2AmID9lidebmKmtkK9Y7wEjZr8Il+pQeLrKvqVGgQI
+         Z0qxfcgOLlj1TI7o1/b1ZnKTVMsOkdDVtuXyvbaczZ/sSooTO3yr+1imdzbDVaKZ78
+         tr8fpNcieEnYagkjrM0YdrnqZQ1+W4EBBaKLWYCnuE2ylFWjkz8Ok0zn5u73FHaA8/
+         /4MkwUb4mvVJw==
+Date:   Mon, 3 Oct 2022 10:13:24 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, pabeni@redhat.com,
-        edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
-        saeedm@nvidia.com, linux-rdma@vger.kernel.org
-Subject: Re: [patch net-next v2 06/13] net: make drivers to use
- SET_NETDEV_DEVLINK_PORT to set devlink_port
-Message-ID: <20221003094638.5e3d4cbf@kernel.org>
-In-Reply-To: <20221003105204.3315337-7-jiri@resnulli.us>
-References: <20221003105204.3315337-1-jiri@resnulli.us>
-        <20221003105204.3315337-7-jiri@resnulli.us>
+To:     Rohit Sajan Kumar <rohit.sajan.kumar@oracle.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "saeedm@nvidia.com" <saeedm@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Manjunath Patil <manjunath.b.patil@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>
+Subject: Re: [External] : Re: [PATCH] IB/mlx5: Add a signature check to
+ received EQEs and CQEs
+Message-ID: <20221003101324.3e432360@kernel.org>
+In-Reply-To: <BYAPR10MB2997F4E3E1588E2D003E65FFDC5B9@BYAPR10MB2997.namprd10.prod.outlook.com>
+References: <1663974295-2910-1-git-send-email-rohit.sajan.kumar@oracle.com>
+        <BYAPR10MB29977D4DCA235EE5F91EFF29DC579@BYAPR10MB2997.namprd10.prod.outlook.com>
+        <YzYfwXtLceoEw0qo@ziepe.ca>
+        <BYAPR10MB29977337E0C3791BCBC6381BDC5B9@BYAPR10MB2997.namprd10.prod.outlook.com>
+        <YzsOPllsIMCOC0ks@ziepe.ca>
+        <BYAPR10MB2997F4E3E1588E2D003E65FFDC5B9@BYAPR10MB2997.namprd10.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -55,15 +68,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon,  3 Oct 2022 12:51:57 +0200 Jiri Pirko wrote:
-> From: Jiri Pirko <jiri@nvidia.com>
+On Mon, 3 Oct 2022 16:34:31 +0000 Rohit Sajan Kumar wrote:
+> Hey Jason,
 > 
-> Benefit from the previously implemented tracking of netdev events in
-> devlink code and instead of calling  devlink_port_type_eth_set() and
-> devlink_port_type_clear() to set devlink port type and link to related
-> netdev, use SET_NETDEV_DEVLINK_PORT() macro to assign devlink_port
-> pointer to netdevice which is about to be registered.
+> I just resent it. Does it show up on that list instantly or is there a time delay involved ?
 
-drivers/net/ethernet/mscc/ocelot_vsc7514.c:380:23: warning: variable 'ocelot_port' set but not used [-Wunused-but-set-variable]
-                struct ocelot_port *ocelot_port;
-                                    ^
+Please be aware that:
+ a) the lists don't accept HTML emails (which you're sending
+    in this thread)
+ b) you should not top post on the list
