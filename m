@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1713E5F2F17
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 12:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656395F2F15
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 12:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbiJCKwp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Oct 2022 06:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
+        id S229887AbiJCKwn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Oct 2022 06:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbiJCKw1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 06:52:27 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281CE5788A
-        for <linux-rdma@vger.kernel.org>; Mon,  3 Oct 2022 03:52:20 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id sd10so21297090ejc.2
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Oct 2022 03:52:20 -0700 (PDT)
+        with ESMTP id S229724AbiJCKwZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 06:52:25 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F0553D3C
+        for <linux-rdma@vger.kernel.org>; Mon,  3 Oct 2022 03:52:21 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id s30so10308076eds.1
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Oct 2022 03:52:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=resnulli-us.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=h+iNDFFBmRSTs83x5DP2zCPfIEFpaEyEDolI5fG6fJM=;
-        b=NIPcu+oDR8z5ijl1KaJmzCXt/cp/m/fuc9YVYqFyJNUaXARBoi4xjDnFvqeIYhB+3T
-         Ok49L9JqPNuHXoQzS4ydVwkkBZN0CO7S97cURO+sXh+Em37z77mbq85STfzb88Su4hbv
-         0onoregr17N3tEUVP/BHkARRg5RpRpx0hxFNkwAib4kSc+G9Mno5rjTDmbta1eDO0ZUX
-         eoy99nOL6Q6iLikkOnZk6SF3kUysxPqzvLrdyvfZN54Fhtcr8zqgPzmDZtla1T5QzuCN
-         7E8ZR170Bh9xzAFwMxjcxZYrmImNEJbhFC/DIxRrugy1fk490HzU3QM3Lmpu8dS5e3dY
-         EnfA==
+        bh=ZSUCxj9wdTS5KSDeUaAgEGU+xDzkrY6KowvhlmYUvgU=;
+        b=3X5lq0eh0BvuynXAxwTGe3F26+97ePOOeuq7xi2T/7wWmNywM+KDoqKcqmvRS0SVAk
+         5dCQPv4t/ua++bHGCuhEuc2j5IE2BJ3duC9JyWKQaOuGoV2tumN3yoO+GmYtIBhxKP5L
+         BXBucyn3HizckWsR0tamHr64gUurVbb8IZ4nunw2H7MOFkWmn54UrLC2jfpmPeh5ovcx
+         ZzJECRC6UnWFEn2XUKbapl4LtyJIxp79YVksPfjoRmIcePPAA05cBp5a9Z78hVFEAuJH
+         QxvRwuAn7hmnK71erP4VUnQhVI68+I46A09mMyOyLUkI+AXt0aFay5imEH3emvh2pQ6t
+         fBpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=h+iNDFFBmRSTs83x5DP2zCPfIEFpaEyEDolI5fG6fJM=;
-        b=Uei5SnGnTSsTJf42nKVkAVuoZ7GQWU8TEyQ0F14+DjqPueDNmhCS5bvFtZ+mzb8r7g
-         aXbn1ZiSkSOBgvKVHRy6x6THHSPqo7zSwFcNcJrMq7sSEa5Xfq2SGTXXAAs99MwpUv43
-         zp4mvkrwGktslNXw0jMIwr/zW7Siy9V5U0wqZsNMozkMQZ33LAXPwaMc1fdm1TrFMrfB
-         TEiu8Ujzl34R5ePyyTcgQ4jozKUgjeEtkoWswPHeOyquNrG88llTxQ7kcB0zCs67FyZs
-         UhZZxM0rlFBpyN99J3cDsts9+FDS3STkJoXnbGzrN+Yfl3SzAyLNlFf2NN9mFkysHsDy
-         xUVg==
-X-Gm-Message-State: ACrzQf2IjhfHbXUrWT99f8x5V2t/0Sj/Y3kEH1R4YdXMNhZJ2mv3GR+n
-        GMlgiT1iqqeaGVLjhAAj7O6vhQ==
-X-Google-Smtp-Source: AMsMyM7Dnkro7trEPzpMl38dWC4arOUOx4MIzN691YI3hhQleogN2MgxU4NPx6xkcYKjoU6AUoXDIg==
-X-Received: by 2002:a17:907:3207:b0:741:3a59:738d with SMTP id xg7-20020a170907320700b007413a59738dmr14436379ejb.110.1664794339025;
-        Mon, 03 Oct 2022 03:52:19 -0700 (PDT)
+        bh=ZSUCxj9wdTS5KSDeUaAgEGU+xDzkrY6KowvhlmYUvgU=;
+        b=lDDAPZJevcUGAOWbmVCCVaEpMw0Qq6hYPP0np6W9VPHQThisR2b5pLIeCMfN0GdPY5
+         ef3M48fXZYGGndYm19I9fEnnSddCC0ePTFBkzDnfkzsb+LQLkQOuRhv/huT8waj9sUsf
+         zQU+ItfisLUhJryOpR7fHHg7DdZMHmgs242cFyKGpPqrS1y4uKanBnEosI2k6Go7bDWy
+         +6qKEcF21zWKFEvCWdYyqTvcXcaDhqtNW8TzL1Ky4fKFJvM26923IvCATB/Un6dN5Brz
+         z5iXus3h8BUx7idzbCILInKgNVB49MysLT3sQNbNMjCqDU4Sil9KqZsk7tdPWtjp5kqg
+         CLPQ==
+X-Gm-Message-State: ACrzQf0eWmdTA/V4y80IW5UBhR7LWouE2PSBejFPsjEN2OJncBvt5m7s
+        r2vIykssN4OHoGKdzCqT38dY6Q==
+X-Google-Smtp-Source: AMsMyM57IBDMvHcPVBqxw5kZSB54Q+vt3ln85AXSbE5NwjRCQ4nJNeTncc4T+LMdEynH/L99PhNsUQ==
+X-Received: by 2002:a05:6402:430a:b0:451:d8ed:b87e with SMTP id m10-20020a056402430a00b00451d8edb87emr17907003edc.246.1664794340277;
+        Mon, 03 Oct 2022 03:52:20 -0700 (PDT)
 Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id ku20-20020a170907789400b0078cac2a1faesm484668ejc.202.2022.10.03.03.52.18
+        by smtp.gmail.com with ESMTPSA id e6-20020aa7d7c6000000b00451319a43dasm7209660eds.2.2022.10.03.03.52.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Oct 2022 03:52:18 -0700 (PDT)
+        Mon, 03 Oct 2022 03:52:19 -0700 (PDT)
 From:   Jiri Pirko <jiri@resnulli.us>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
         edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
         saeedm@nvidia.com, linux-rdma@vger.kernel.org
-Subject: [patch net-next v2 10/13] net: devlink: add not cleared type warning to port unregister
-Date:   Mon,  3 Oct 2022 12:52:01 +0200
-Message-Id: <20221003105204.3315337-11-jiri@resnulli.us>
+Subject: [patch net-next v2 11/13] net: devlink: use devlink_port pointer instead of ndo_get_devlink_port
+Date:   Mon,  3 Oct 2022 12:52:02 +0200
+Message-Id: <20221003105204.3315337-12-jiri@resnulli.us>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20221003105204.3315337-1-jiri@resnulli.us>
 References: <20221003105204.3315337-1-jiri@resnulli.us>
@@ -72,27 +72,98 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-By the time port unregister is called. There should be no type set. Make
-sure that the driver cleared it before and warn in case it didn't. This
-enforces symmetricity with type set and port register.
+Use newly introduced devlink_port pointer instead of getting it calling
+to ndo_get_devlink_port op.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
- net/core/devlink.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/core/devlink.c   | 12 ++----------
+ net/core/net-sysfs.c |  4 ++--
+ net/ethtool/ioctl.c  | 11 ++---------
+ 3 files changed, 6 insertions(+), 21 deletions(-)
 
 diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 2f565976979f..cac0c7852159 100644
+index cac0c7852159..2a42e49f6a4e 100644
 --- a/net/core/devlink.c
 +++ b/net/core/devlink.c
-@@ -9977,6 +9977,7 @@ EXPORT_SYMBOL_GPL(devlink_port_register);
- void devl_port_unregister(struct devlink_port *devlink_port)
- {
- 	lockdep_assert_held(&devlink_port->devlink->lock);
-+	WARN_ON(devlink_port->type != DEVLINK_PORT_TYPE_NOTSET);
+@@ -12505,14 +12505,6 @@ static void __devlink_compat_running_version(struct devlink *devlink,
+ 	nlmsg_free(msg);
+ }
  
- 	devlink_port_type_warn_cancel(devlink_port);
- 	devlink_port_notify(devlink_port, DEVLINK_CMD_PORT_DEL);
+-static struct devlink_port *netdev_to_devlink_port(struct net_device *dev)
+-{
+-	if (!dev->netdev_ops->ndo_get_devlink_port)
+-		return NULL;
+-
+-	return dev->netdev_ops->ndo_get_devlink_port(dev);
+-}
+-
+ void devlink_compat_running_version(struct devlink *devlink,
+ 				    char *buf, size_t len)
+ {
+@@ -12558,7 +12550,7 @@ int devlink_compat_phys_port_name_get(struct net_device *dev,
+ 	 */
+ 	ASSERT_RTNL();
+ 
+-	devlink_port = netdev_to_devlink_port(dev);
++	devlink_port = dev->devlink_port;
+ 	if (!devlink_port)
+ 		return -EOPNOTSUPP;
+ 
+@@ -12574,7 +12566,7 @@ int devlink_compat_switch_id_get(struct net_device *dev,
+ 	 * devlink_port instance cannot disappear in the middle. No need to take
+ 	 * any devlink lock as only permanent values are accessed.
+ 	 */
+-	devlink_port = netdev_to_devlink_port(dev);
++	devlink_port = dev->devlink_port;
+ 	if (!devlink_port || !devlink_port->switch_port)
+ 		return -EOPNOTSUPP;
+ 
+diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+index 8409d41405df..679b84cc8794 100644
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -532,7 +532,7 @@ static ssize_t phys_port_name_show(struct device *dev,
+ 	 * returning early without hitting the trylock/restart below.
+ 	 */
+ 	if (!netdev->netdev_ops->ndo_get_phys_port_name &&
+-	    !netdev->netdev_ops->ndo_get_devlink_port)
++	    !netdev->devlink_port)
+ 		return -EOPNOTSUPP;
+ 
+ 	if (!rtnl_trylock())
+@@ -562,7 +562,7 @@ static ssize_t phys_switch_id_show(struct device *dev,
+ 	 * because recurse is false when calling dev_get_port_parent_id.
+ 	 */
+ 	if (!netdev->netdev_ops->ndo_get_port_parent_id &&
+-	    !netdev->netdev_ops->ndo_get_devlink_port)
++	    !netdev->devlink_port)
+ 		return -EOPNOTSUPP;
+ 
+ 	if (!rtnl_trylock())
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index 57e7238a4136..b6835136c53f 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -44,16 +44,9 @@ struct ethtool_devlink_compat {
+ 
+ static struct devlink *netdev_to_devlink_get(struct net_device *dev)
+ {
+-	struct devlink_port *devlink_port;
+-
+-	if (!dev->netdev_ops->ndo_get_devlink_port)
+-		return NULL;
+-
+-	devlink_port = dev->netdev_ops->ndo_get_devlink_port(dev);
+-	if (!devlink_port)
++	if (!dev->devlink_port)
+ 		return NULL;
+-
+-	return devlink_try_get(devlink_port->devlink);
++	return devlink_try_get(dev->devlink_port->devlink);
+ }
+ 
+ /*
 -- 
 2.37.1
 
