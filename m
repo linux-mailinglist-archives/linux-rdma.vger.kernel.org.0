@@ -2,215 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B4E5F1C18
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Oct 2022 14:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24335F28E2
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 09:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbiJAMP4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 1 Oct 2022 08:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
+        id S229596AbiJCHAa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Oct 2022 03:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiJAMPu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Oct 2022 08:15:50 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F0A5F98A
-        for <linux-rdma@vger.kernel.org>; Sat,  1 Oct 2022 05:15:43 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6500,9779,10486"; a="328763335"
-X-IronPort-AV: E=Sophos;i="5.93,360,1654585200"; 
-   d="scan'208";a="328763335"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2022 05:15:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10486"; a="653848574"
-X-IronPort-AV: E=Sophos;i="5.93,360,1654585200"; 
-   d="scan'208";a="653848574"
-Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga008.jf.intel.com with ESMTP; 01 Oct 2022 05:15:40 -0700
-From:   yanjun.zhu@linux.dev
-To:     jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
-Subject: [PATCH 6/6] RDMA/rxe: add the support of net namespace
-Date:   Sun,  2 Oct 2022 00:41:52 -0400
-Message-Id: <20221002044152.933021-7-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20221002044152.933021-1-yanjun.zhu@linux.dev>
-References: <20221002044152.933021-1-yanjun.zhu@linux.dev>
+        with ESMTP id S229710AbiJCHAV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 03:00:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27037DF1C;
+        Mon,  3 Oct 2022 00:00:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EE95160F80;
+        Mon,  3 Oct 2022 07:00:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 54FAAC433B5;
+        Mon,  3 Oct 2022 07:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664780415;
+        bh=qZ17h429eDqUgwv/aGG3SQHS7BjHvVN6jcPIWDLcYAQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=R53ANWsdp78RakxCBEjxbBu1d5cN6J48MgxmDE/iK5QUj/X4qGB2fLCM/UXKPaRHU
+         1Qde8nkVZv+xI6+Y3DaGz0AM7EWIOHSbvqAuCPVAt44V5RvLM4QvcXElj4iH25O5IP
+         1U+DKS2r/pDjeb6vJUfZI7zOuuyWL9V4nc8fEechn0gXF5XbdYyh9W0a0cdE2UTjaw
+         juVY0DIKYpo8woIBDKwJJlAIoz3hHlYFrcepz0m9Cyvp/VcoxeDWGwQNGLIBE/vOnJ
+         BmXfdQv/bbEsQ+jaGAC7VNeUBFH88K+OMVMFIjuWSqJ21zXjphrP/zqkPwa1QdLY69
+         765M3f1KacwPQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3AF5AE49FA7;
+        Mon,  3 Oct 2022 07:00:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] net: rds: don't hold sock lock when cancelling work from
+ rds_tcp_reset_callbacks()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166478041523.16664.6828494970350493146.git-patchwork-notify@kernel.org>
+Date:   Mon, 03 Oct 2022 07:00:15 +0000
+References: <3de97b2d-1c15-5dda-4fe2-78311a91d861@I-love.SAKURA.ne.jp>
+In-Reply-To: <3de97b2d-1c15-5dda-4fe2-78311a91d861@I-love.SAKURA.ne.jp>
+To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net,
+        sowmini.varadhan@oracle.com, hdanton@sina.com,
+        syzkaller-bugs@googlegroups.com,
+        syzbot+78c55c7bc6f66e53dce2@syzkaller.appspotmail.com,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+Hello:
 
-Originally init_net is used to indicate the current net namespace.
-Currently more net namespaces are supported.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe.c     |  2 +-
- drivers/infiniband/sw/rxe/rxe_net.c | 37 +++++++++++++++--------------
- drivers/infiniband/sw/rxe/rxe_net.h |  2 +-
- 3 files changed, 21 insertions(+), 20 deletions(-)
+On Thu, 29 Sep 2022 00:25:37 +0900 you wrote:
+> syzbot is reporting lockdep warning at rds_tcp_reset_callbacks() [1], for
+> commit ac3615e7f3cffe2a ("RDS: TCP: Reduce code duplication in
+> rds_tcp_reset_callbacks()") added cancel_delayed_work_sync() into a section
+> protected by lock_sock() without realizing that rds_send_xmit() might call
+> lock_sock().
+> 
+> We don't need to protect cancel_delayed_work_sync() using lock_sock(), for
+> even if rds_{send,recv}_worker() re-queued this work while __flush_work()
+>  from cancel_delayed_work_sync() was waiting for this work to complete,
+> retried rds_{send,recv}_worker() is no-op due to the absence of RDS_CONN_UP
+> bit.
+> 
+> [...]
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 7427e84feadd..1f79613bf5ef 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -195,7 +195,7 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
- 		goto err;
- 	}
- 
--	err = rxe_net_init();
-+	err = rxe_net_init(ndev);
- 	if (err)
- 		return err;
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 331d4a279e08..b331433ec6b7 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -31,7 +31,7 @@ static struct dst_entry *rxe_find_route4(struct net_device *ndev,
- 	memcpy(&fl.daddr, daddr, sizeof(*daddr));
- 	fl.flowi4_proto = IPPROTO_UDP;
- 
--	rt = ip_route_output_key(&init_net, &fl);
-+	rt = ip_route_output_key(dev_net(ndev), &fl);
- 	if (IS_ERR(rt)) {
- 		pr_err_ratelimited("no route to %pI4\n", &daddr->s_addr);
- 		return NULL;
-@@ -54,7 +54,8 @@ static struct dst_entry *rxe_find_route6(struct net_device *ndev,
- 		struct sock *sk;
- 
- 		rcu_read_lock();
--		sk = udp6_lib_lookup(&init_net, NULL, 0, &in6addr_any, htons(ROCE_V2_UDP_DPORT), 0);
-+		sk = udp6_lib_lookup(dev_net(ndev), NULL, 0, &in6addr_any,
-+				     htons(ROCE_V2_UDP_DPORT), 0);
- 		rcu_read_unlock();
- 		if (!sk) {
- 			pr_info("file: %s +%d, error\n", __FILE__, __LINE__);
-@@ -546,9 +547,13 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
- void rxe_net_del(struct ib_device *dev)
- {
- 	struct sock *sk;
-+	struct rxe_dev *rdev;
-+
-+	rdev = container_of(dev, struct rxe_dev, ib_dev);
- 
- 	rcu_read_lock();
--	sk = udp4_lib_lookup(&init_net, 0, 0, htonl(INADDR_ANY), htons(ROCE_V2_UDP_DPORT), 0);
-+	sk = udp4_lib_lookup(dev_net(rdev->ndev), 0, 0, htonl(INADDR_ANY),
-+			     htons(ROCE_V2_UDP_DPORT), 0);
- 	rcu_read_unlock();
- 	if (!sk)
- 		return;
-@@ -561,7 +566,8 @@ void rxe_net_del(struct ib_device *dev)
- 		rxe_release_udp_tunnel(sk->sk_socket);
- 
- 	rcu_read_lock();
--	sk = udp6_lib_lookup(&init_net, NULL, 0, &in6addr_any, htons(ROCE_V2_UDP_DPORT), 0);
-+	sk = udp6_lib_lookup(dev_net(rdev->ndev), NULL, 0, &in6addr_any,
-+			     htons(ROCE_V2_UDP_DPORT), 0);
- 	rcu_read_unlock();
- 	if (!sk)
- 		return;
-@@ -665,55 +671,50 @@ struct notifier_block rxe_net_notifier = {
- 	.notifier_call = rxe_notify,
- };
- 
--static int rxe_net_ipv4_init(void)
-+static int rxe_net_ipv4_init(struct net_device *ndev)
- {
- 	struct sock *sk;
- 	struct socket *sock;
- 
- 	rcu_read_lock();
--	sk = udp4_lib_lookup(&init_net, 0, 0, htonl(INADDR_ANY),
-+	sk = udp4_lib_lookup(dev_net(ndev), 0, 0, htonl(INADDR_ANY),
- 			     htons(ROCE_V2_UDP_DPORT), 0);
- 	rcu_read_unlock();
- 	if (sk)
- 		return 0;
- 
--	sock = rxe_setup_udp_tunnel(&init_net, htons(ROCE_V2_UDP_DPORT), false);
-+	sock = rxe_setup_udp_tunnel(dev_net(ndev), htons(ROCE_V2_UDP_DPORT), false);
- 	if (IS_ERR(sock)) {
- 		pr_err("Failed to create IPv4 UDP tunnel\n");
--		recv_sockets.sk4 = NULL;
- 		return -1;
- 	}
--	recv_sockets.sk4 = sock;
- 
- 	return 0;
- }
- 
--static int rxe_net_ipv6_init(void)
-+static int rxe_net_ipv6_init(struct net_device *ndev)
- {
- #if IS_ENABLED(CONFIG_IPV6)
- 	struct sock *sk;
- 	struct socket *sock;
- 
- 	rcu_read_lock();
--	sk = udp6_lib_lookup(&init_net, NULL, 0, &in6addr_any,
-+	sk = udp6_lib_lookup(dev_net(ndev), NULL, 0, &in6addr_any,
- 			     htons(ROCE_V2_UDP_DPORT), 0);
- 	rcu_read_unlock();
- 	if (sk)
- 		return 0;
- 
--	sock = rxe_setup_udp_tunnel(&init_net, htons(ROCE_V2_UDP_DPORT), true);
-+	sock = rxe_setup_udp_tunnel(dev_net(ndev), htons(ROCE_V2_UDP_DPORT), true);
- 	if (PTR_ERR(sock) == -EAFNOSUPPORT) {
--		recv_sockets.sk6 = NULL;
- 		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
- 		return 0;
- 	}
- 
- 	if (IS_ERR(sock)) {
--		recv_sockets.sk6 = NULL;
- 		pr_err("Failed to create IPv6 UDP tunnel\n");
- 		return -1;
- 	}
--	recv_sockets.sk6 = sock;
- #endif
- 	return 0;
- }
-@@ -736,14 +737,14 @@ void rxe_net_exit(void)
- 	unregister_netdevice_notifier(&rxe_net_notifier);
- }
- 
--int rxe_net_init(void)
-+int rxe_net_init(struct net_device *ndev)
- {
- 	int err;
- 
--	err = rxe_net_ipv4_init();
-+	err = rxe_net_ipv4_init(ndev);
- 	if (err)
- 		return err;
--	err = rxe_net_ipv6_init();
-+	err = rxe_net_ipv6_init(ndev);
- 	if (err)
- 		goto err_out;
- 	return 0;
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
-index 027b20e1bab6..56249677d692 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.h
-+++ b/drivers/infiniband/sw/rxe/rxe_net.h
-@@ -15,7 +15,7 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
- void rxe_net_del(struct ib_device *dev);
- 
- int rxe_register_notifier(void);
--int rxe_net_init(void);
-+int rxe_net_init(struct net_device *ndev);
- void rxe_net_exit(void);
- 
- #endif /* RXE_NET_H */
+Here is the summary with links:
+  - net: rds: don't hold sock lock when cancelling work from rds_tcp_reset_callbacks()
+    https://git.kernel.org/netdev/net/c/a91b750fd662
+
+You are awesome, thank you!
 -- 
-2.25.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
