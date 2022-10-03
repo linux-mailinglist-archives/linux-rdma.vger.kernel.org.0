@@ -2,243 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A5F5F2F20
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 12:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933A55F339A
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 18:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbiJCKxT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Oct 2022 06:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
+        id S229904AbiJCQbG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Oct 2022 12:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbiJCKwl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 06:52:41 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C445789C
-        for <linux-rdma@vger.kernel.org>; Mon,  3 Oct 2022 03:52:25 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a26so21270614ejc.4
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Oct 2022 03:52:25 -0700 (PDT)
+        with ESMTP id S229885AbiJCQbB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 12:31:01 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5081AF17
+        for <linux-rdma@vger.kernel.org>; Mon,  3 Oct 2022 09:30:56 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id 3so6862555qka.5
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Oct 2022 09:30:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=WiDCHbS5LVTCBohPAoCScsHZ7FLNei9IQYIOcoDdszU=;
-        b=MhPQNkRj4ZYnBk9sI0cZfkc8C4qcA6jKkcC+7wRuW8p86c4l7LEjR7cwDHsZacXqOi
-         voC7jpHyDX3gQ7MJ3rFT+vLEw+Ej83DqocWN38/sHzJOoEXNr6JNztmKxAb7DCOS8hYi
-         0/lP6TqGgzba1wG7jkbNxwr8jH868oEc2KhvUbDbasuzh6+EjJoiiWePN+Pyl+TPMtIh
-         /oKXB8WxHL73awTH6AhlYzoNLJsZah3rkdHYq7Vli5x/hzTKDPizhUEeh60FmVhqWUc+
-         MuUT4tnlE6CexK1ULpFGXokteiGfjS74FtQ2GedYcfLaIH9wq7h429j38GzM24clTLUb
-         DLEg==
+        d=ziepe.ca; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=28aIkdDQKcvP/iDMdvRxq6s4w7ACes8lqFEjE8LWg2U=;
+        b=pYqdGYaxa8MigjkrsdXj9U7udcujE81P2GMQyLzDRUs+K9P1Y+s/Xj0YvxS/579fol
+         0Exu6H2g047xTerziNxHZIcuJBP1HYFqvOkntLy5/K5vdX1YawAm52UQPrrusDdRs1l8
+         bmRP4G9tobohmh3g7pVh/+PU94v/BKkMfN3vXjxJ2geJy8f2jCigIx9UL21vBqI9b9KR
+         +PVo+tc5PvwzqWMlVtFXtRZjv6Vrpa0qSYbC86NywbVSTlguxiJpZFhEPzFdzg9Zrayq
+         sZ+NxrJydTubnbZXG9W5FTIUHh69GKM0PXB0T33v1I66sqddIRe/tDSftECt6dHFZMvj
+         xeRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=WiDCHbS5LVTCBohPAoCScsHZ7FLNei9IQYIOcoDdszU=;
-        b=pqovKqr9RJcytQXhmJEsPQAM1UwePpPWTFxGArbpxxeeHP9c0cJfF6ep0X26ID7EGb
-         hD4SLJ80Gj6v+ZnzTxWmpjPAU9eSQlYwViLL0sbXxERV7ZJFIkFLLJLdpmZTOiF8qxEf
-         mPhobokhUn+yHvGYShcO8WHTR4IPf6h3+oVjf6Lt3ezq0GmKXiUNmxs5LI9LHxk2Zjfn
-         dt/hKM/EgBhy1JRAZ5vkDO4MWeFNztN3/Vmbh3Ex91JEUKKs371By3PFFu6dd+TuQg4F
-         4TPJk4YQxoj0fNUIErfYWEoUR+sSng93RtyjHQRXRzJleK7na7eIKmvqlaxHmN4XBWSd
-         DKdg==
-X-Gm-Message-State: ACrzQf3FJmziJDMGJaxwRD53T97BM0Sr4WSR9dxz0JywpfcADR+lUjtZ
-        awDpRnbvf6IUOCTC8kY/MBiDyjsatj9r7oa0Gdk=
-X-Google-Smtp-Source: AMsMyM6LCRRc48DiWfo8PoiHrraSPk4aY3s8/wrayUQ4WrK2hYnQd6WIcp2y7yw7I/6DPj7K93wTRQ==
-X-Received: by 2002:a17:907:a410:b0:782:d172:d540 with SMTP id sg16-20020a170907a41000b00782d172d540mr14276831ejc.563.1664794343484;
-        Mon, 03 Oct 2022 03:52:23 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id g24-20020a056402321800b00458478a4295sm7254679eda.9.2022.10.03.03.52.22
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=28aIkdDQKcvP/iDMdvRxq6s4w7ACes8lqFEjE8LWg2U=;
+        b=Etk+m4+k/opaXHLFw1Lv5G2Qm685zAAqC7vixmdIrHz/EVFhtBfg4ZRTdjEa4zcP/4
+         dlXeUI7gZzpPM7Zd2gxEOGUdrgDeN7Q7wyUPOEKq9+pPMoO5Nbi4EymK/Gson8rSKxh0
+         Wnc060yNiW6aXrW61FAeq53rwqmmEJw25NFbSQFKlwv0NmBLvkGsXjPxWSYI/Vv4ogrO
+         YrfLEZZH1KQYJvqlianhYTC0lz0TAHV1jZu/BPFkuXYcvNOIJoDlFvRV8RiwpwR9pR8V
+         fsr0mEgy48AZD+U8zVqTf6udUGDpNbm2IukowBuxaIEq6XBmpKxWGSfGR8smsqPw9/zK
+         WVAA==
+X-Gm-Message-State: ACrzQf35Es3Q+uqH66lpt1nxm+h6sF8CkkGJsXD/M+to65wywZYCPKzm
+        czMz3sL4cEciYcMrmpE35tD30A==
+X-Google-Smtp-Source: AMsMyM6F66yasR3ryCM0HFNJA5iXaqjK5Zu95vuLwN8ccWqkmtAqgAUcCg5RdsapGzXmbT5h2BoNVA==
+X-Received: by 2002:a05:620a:14bb:b0:6ce:37fc:b808 with SMTP id x27-20020a05620a14bb00b006ce37fcb808mr14173633qkj.726.1664814655819;
+        Mon, 03 Oct 2022 09:30:55 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.122.23])
+        by smtp.gmail.com with ESMTPSA id j5-20020ac86645000000b0031f36cd1958sm9538106qtp.81.2022.10.03.09.30.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Oct 2022 03:52:22 -0700 (PDT)
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
-        saeedm@nvidia.com, linux-rdma@vger.kernel.org
-Subject: [patch net-next v2 13/13] net: expose devlink port over rtnetlink
-Date:   Mon,  3 Oct 2022 12:52:04 +0200
-Message-Id: <20221003105204.3315337-14-jiri@resnulli.us>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20221003105204.3315337-1-jiri@resnulli.us>
-References: <20221003105204.3315337-1-jiri@resnulli.us>
+        Mon, 03 Oct 2022 09:30:54 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ofOLG-0063Pv-AO;
+        Mon, 03 Oct 2022 13:30:54 -0300
+Date:   Mon, 3 Oct 2022 13:30:54 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Rohit Sajan Kumar <rohit.sajan.kumar@oracle.com>
+Cc:     "leon@kernel.org" <leon@kernel.org>,
+        "saeedm@nvidia.com" <saeedm@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Manjunath Patil <manjunath.b.patil@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Srinivas Eeda <srinivas.eeda@oracle.com>
+Subject: Re: [External] : Re: [PATCH] IB/mlx5: Add a signature check to
+ received EQEs and CQEs
+Message-ID: <YzsOPllsIMCOC0ks@ziepe.ca>
+References: <1663974295-2910-1-git-send-email-rohit.sajan.kumar@oracle.com>
+ <BYAPR10MB29977D4DCA235EE5F91EFF29DC579@BYAPR10MB2997.namprd10.prod.outlook.com>
+ <YzYfwXtLceoEw0qo@ziepe.ca>
+ <BYAPR10MB29977337E0C3791BCBC6381BDC5B9@BYAPR10MB2997.namprd10.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR10MB29977337E0C3791BCBC6381BDC5B9@BYAPR10MB2997.namprd10.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jiri Pirko <jiri@nvidia.com>
+On Mon, Oct 03, 2022 at 04:28:48PM +0000, Rohit Sajan Kumar wrote:
+>    Hey Jason,
+> 
+>    I resent the patch. I used the get_maintainers.pl script to get a list
+>    of maintainers and mailing lists to send the patch to.
+> 
+>    Is there anything else that I should do ?
 
-Expose devlink port handle related to netdev over rtnetlink. Introduce a
-new nested IFLA attribute to carry the info. Call into devlink code to
-fill-up the nest with existing devlink attributes that are used over
-devlink netlink.
+Until it shows up here:
 
-Signed-off-by: Jiri Pirko <jiri@nvidia.com>
----
- include/net/devlink.h        | 14 +++++++++++++
- include/uapi/linux/if_link.h |  2 ++
- net/core/devlink.c           | 20 ++++++++++++++++++
- net/core/rtnetlink.c         | 39 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 75 insertions(+)
+https://patchwork.kernel.org/project/linux-rdma/list/
 
-diff --git a/include/net/devlink.h b/include/net/devlink.h
-index 7befad57afd4..fa6e936af1a5 100644
---- a/include/net/devlink.h
-+++ b/include/net/devlink.h
-@@ -1873,6 +1873,9 @@ int devlink_compat_phys_port_name_get(struct net_device *dev,
- int devlink_compat_switch_id_get(struct net_device *dev,
- 				 struct netdev_phys_item_id *ppid);
- 
-+int devlink_nl_port_handle_fill(struct sk_buff *msg, struct devlink_port *devlink_port);
-+size_t devlink_nl_port_handle_size(struct devlink_port *devlink_port);
-+
- #else
- 
- static inline struct devlink *devlink_try_get(struct devlink *devlink)
-@@ -1909,6 +1912,17 @@ devlink_compat_switch_id_get(struct net_device *dev,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int
-+devlink_nl_port_handle_fill(struct sk_buff *msg, struct devlink_port *devlink_port)
-+{
-+	return 0;
-+}
-+
-+static inline size_t devlink_nl_port_handle_size(struct devlink_port *devlink_port)
-+{
-+	return 0;
-+}
-+
- #endif
- 
- #endif /* _NET_DEVLINK_H_ */
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index 5e7a1041df3a..9af9da1db4e8 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -372,6 +372,8 @@ enum {
- 	IFLA_TSO_MAX_SEGS,
- 	IFLA_ALLMULTI,		/* Allmulti count: > 0 means acts ALLMULTI */
- 
-+	IFLA_DEVLINK_PORT,
-+
- 	__IFLA_MAX
- };
- 
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 2a42e49f6a4e..d2ee33044b2e 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -880,6 +880,26 @@ static int devlink_nl_put_nested_handle(struct sk_buff *msg, struct devlink *dev
- 	return -EMSGSIZE;
- }
- 
-+int devlink_nl_port_handle_fill(struct sk_buff *msg, struct devlink_port *devlink_port)
-+{
-+	if (devlink_nl_put_handle(msg, devlink_port->devlink))
-+		return -EMSGSIZE;
-+	if (nla_put_u32(msg, DEVLINK_ATTR_PORT_INDEX, devlink_port->index))
-+		return -EMSGSIZE;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(devlink_nl_port_handle_fill);
-+
-+size_t devlink_nl_port_handle_size(struct devlink_port *devlink_port)
-+{
-+	struct devlink *devlink = devlink_port->devlink;
-+
-+	return nla_total_size(strlen(devlink->dev->bus->name) + 1) /* DEVLINK_ATTR_BUS_NAME */
-+	     + nla_total_size(strlen(dev_name(devlink->dev)) + 1) /* DEVLINK_ATTR_DEV_NAME */
-+	     + nla_total_size(4); /* DEVLINK_ATTR_PORT_INDEX */
-+}
-+EXPORT_SYMBOL_GPL(devlink_nl_port_handle_size);
-+
- struct devlink_reload_combination {
- 	enum devlink_reload_action action;
- 	enum devlink_reload_limit limit;
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 74864dc46a7e..e034c0c8e6cc 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -53,6 +53,7 @@
- #include <net/fib_rules.h>
- #include <net/rtnetlink.h>
- #include <net/net_namespace.h>
-+#include <net/devlink.h>
- 
- #include "dev.h"
- 
-@@ -1038,6 +1039,16 @@ static size_t rtnl_proto_down_size(const struct net_device *dev)
- 	return size;
- }
- 
-+static size_t rtnl_devlink_port_size(const struct net_device *dev)
-+{
-+	size_t size = nla_total_size(0); /* nest IFLA_DEVLINK_PORT */
-+
-+	if (dev->devlink_port)
-+		size += devlink_nl_port_handle_size(dev->devlink_port);
-+
-+	return size;
-+}
-+
- static noinline size_t if_nlmsg_size(const struct net_device *dev,
- 				     u32 ext_filter_mask)
- {
-@@ -1091,6 +1102,7 @@ static noinline size_t if_nlmsg_size(const struct net_device *dev,
- 	       + nla_total_size(4)  /* IFLA_MAX_MTU */
- 	       + rtnl_prop_list_size(dev)
- 	       + nla_total_size(MAX_ADDR_LEN) /* IFLA_PERM_ADDRESS */
-+	       + rtnl_devlink_port_size(dev)
- 	       + 0;
- }
- 
-@@ -1728,6 +1740,30 @@ static int rtnl_fill_proto_down(struct sk_buff *skb,
- 	return -EMSGSIZE;
- }
- 
-+static int rtnl_fill_devlink_port(struct sk_buff *skb,
-+				  const struct net_device *dev)
-+{
-+	struct nlattr *devlink_port_nest;
-+	int ret;
-+
-+	devlink_port_nest = nla_nest_start(skb, IFLA_DEVLINK_PORT);
-+	if (!devlink_port_nest)
-+		return -EMSGSIZE;
-+
-+	if (dev->devlink_port) {
-+		ret = devlink_nl_port_handle_fill(skb, dev->devlink_port);
-+		if (ret < 0)
-+			goto nest_cancel;
-+	}
-+
-+	nla_nest_end(skb, devlink_port_nest);
-+	return 0;
-+
-+nest_cancel:
-+	nla_nest_cancel(skb, devlink_port_nest);
-+	return ret;
-+}
-+
- static int rtnl_fill_ifinfo(struct sk_buff *skb,
- 			    struct net_device *dev, struct net *src_net,
- 			    int type, u32 pid, u32 seq, u32 change,
-@@ -1865,6 +1901,9 @@ static int rtnl_fill_ifinfo(struct sk_buff *skb,
- 			   dev->dev.parent->bus->name))
- 		goto nla_put_failure;
- 
-+	if (rtnl_fill_devlink_port(skb, dev))
-+		goto nla_put_failure;
-+
- 	nlmsg_end(skb, nlh);
- 	return 0;
- 
--- 
-2.37.1
+It is not sent.. I still don't see it.
 
+Something is wrong with your mailing environment.
+
+Jason
