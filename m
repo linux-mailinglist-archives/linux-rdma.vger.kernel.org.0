@@ -1,79 +1,106 @@
 Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 055095F3448
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Oct 2022 19:14:07 +0200 (CEST)
+Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 044465F3CF9
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Oct 2022 08:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbiJCROD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Oct 2022 13:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
+        id S229484AbiJDG4V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Oct 2022 02:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbiJCRNa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Oct 2022 13:13:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EE132DAF;
-        Mon,  3 Oct 2022 10:13:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DB13761186;
-        Mon,  3 Oct 2022 17:13:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE2E6C433D6;
-        Mon,  3 Oct 2022 17:13:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664817206;
-        bh=ix/u/5RYQfRbQ6xWKnsreS80VFdbDF76pRBFUOS16p4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZWzhMCYwI/FyqUMEQ/Lk/KLPyqJsDhRxgk/JCRSomd6gdnMhFvd4CzpyehtWdBuUi
-         ZMzDrrmCDC/0DepaABSDL/2HPvSEcgFFvr+Wu/FuITdIDfXQ3iMspmWH/cqwPfhK2/
-         F34DfCIkWYPKJqnnjrXQ3o5E2AmID9lidebmKmtkK9Y7wEjZr8Il+pQeLrKvqVGgQI
-         Z0qxfcgOLlj1TI7o1/b1ZnKTVMsOkdDVtuXyvbaczZ/sSooTO3yr+1imdzbDVaKZ78
-         tr8fpNcieEnYagkjrM0YdrnqZQ1+W4EBBaKLWYCnuE2ylFWjkz8Ok0zn5u73FHaA8/
-         /4MkwUb4mvVJw==
-Date:   Mon, 3 Oct 2022 10:13:24 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Rohit Sajan Kumar <rohit.sajan.kumar@oracle.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "saeedm@nvidia.com" <saeedm@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Manjunath Patil <manjunath.b.patil@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>
-Subject: Re: [External] : Re: [PATCH] IB/mlx5: Add a signature check to
- received EQEs and CQEs
-Message-ID: <20221003101324.3e432360@kernel.org>
-In-Reply-To: <BYAPR10MB2997F4E3E1588E2D003E65FFDC5B9@BYAPR10MB2997.namprd10.prod.outlook.com>
-References: <1663974295-2910-1-git-send-email-rohit.sajan.kumar@oracle.com>
-        <BYAPR10MB29977D4DCA235EE5F91EFF29DC579@BYAPR10MB2997.namprd10.prod.outlook.com>
-        <YzYfwXtLceoEw0qo@ziepe.ca>
-        <BYAPR10MB29977337E0C3791BCBC6381BDC5B9@BYAPR10MB2997.namprd10.prod.outlook.com>
-        <YzsOPllsIMCOC0ks@ziepe.ca>
-        <BYAPR10MB2997F4E3E1588E2D003E65FFDC5B9@BYAPR10MB2997.namprd10.prod.outlook.com>
+        with ESMTP id S229676AbiJDG4U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Oct 2022 02:56:20 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133EA2D77F
+        for <linux-rdma@vger.kernel.org>; Mon,  3 Oct 2022 23:56:19 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id b2so26814079eja.6
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Oct 2022 23:56:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=+tcn9B7Ym8UONbEc5EvJpUWZ3bzMEiRSGSgK5uDh3Sc=;
+        b=ic3g3krgCZxWT2MmFGd0e131DBRZaVGX4SX7ueo5RYe4yrJOBu9UjJJq21eTtuHlwI
+         1Us8YtCkExouFVIhzLrZ9mVKOEl94t/XEDZf3W6D6dXA0kHGbQs8lcPlDcewdjmbysMi
+         LFyHjWHAQC7KfkcXPfBLaOA9ugwVn+xqRP8iS/55+yFCkZje+bwyOrdxjXYfyiutl0UK
+         jHQywcdko5pN9iNdp662Xz6HO3+5Wkis+09uKcYCo8wVyXFWAUUiCDJMNUony8sGOZyL
+         epr7+7wMqHYwzNMX8hpr1oOI0LvViTzA4NnbzsRWN+pYkSnlgaoPeNX/plVi/7fpaoI5
+         NT8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=+tcn9B7Ym8UONbEc5EvJpUWZ3bzMEiRSGSgK5uDh3Sc=;
+        b=0ub80RRAM+KL66CGDCn5HMbD2i0kqT1XRDwC+b25SJz84i/FBoSCnxl68HzhtngMK8
+         nSB/mAZMJC5BgjwCzdEUonj+/EnKqufhh0OnPLNxyMKCqQjiUA7KNTlGthO0OqFVd6qr
+         QjzMD/31dW48jdorpj/Vog213BjA11Rg23j8CMFyN0FPgmuHmcF831S3cJ4vVbKQXKv8
+         2Ta143rEnh9/ExO6Dk/Pv/FLnJuXSiv4yOt487cFjRVBL/rFBvSsdHwYKyHA3NsTCbDJ
+         E7hS/bwXvr1KVoxUbUvNhOUANc99uPY3inXLiRHWm1Im0giIKnSMxtVdwl7NmRHmfOux
+         3zYw==
+X-Gm-Message-State: ACrzQf0oeTx+W9zohrstYICcTeweEr9EN4ODSLkXbQ9BvE9Lcq+5z7d1
+        JwDaMIU5QVKSmHr/Egw8j3dDOg==
+X-Google-Smtp-Source: AMsMyM6q7CanQFsXNr9PR5MUNCDJkkeS0Fb8NDXZLxXrJWUQ38BsN/3e2MM+M6lhZxSoagpmZvRbMA==
+X-Received: by 2002:a17:907:724e:b0:783:5fba:4298 with SMTP id ds14-20020a170907724e00b007835fba4298mr19360005ejc.28.1664866577564;
+        Mon, 03 Oct 2022 23:56:17 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id g25-20020a056402321900b004542e65337asm1046089eda.51.2022.10.03.23.56.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Oct 2022 23:56:16 -0700 (PDT)
+Date:   Tue, 4 Oct 2022 08:56:16 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, pabeni@redhat.com,
+        edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
+        saeedm@nvidia.com, linux-rdma@vger.kernel.org
+Subject: Re: [patch net-next v2 00/13] net: fix netdev to devlink_port
+ linkage and expose to user
+Message-ID: <YzvZEDTM1FVOX9BC@nanopsycho>
+References: <20221003105204.3315337-1-jiri@resnulli.us>
+ <20221003094556.1f16a255@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221003094556.1f16a255@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 3 Oct 2022 16:34:31 +0000 Rohit Sajan Kumar wrote:
-> Hey Jason,
-> 
-> I just resent it. Does it show up on that list instantly or is there a time delay involved ?
+Mon, Oct 03, 2022 at 06:45:56PM CEST, kuba@kernel.org wrote:
+>On Mon,  3 Oct 2022 12:51:51 +0200 Jiri Pirko wrote:
+>> Currently, the info about linkage from netdev to the related
+>> devlink_port instance is done using ndo_get_devlink_port().
+>> This is not sufficient, as it is up to the driver to implement it and
+>> some of them don't do that. Also it leads to a lot of unnecessary
+>> boilerplate code in all the drivers.
+>> 
+>> Instead of that, introduce a possibility for driver to expose this
+>> relationship by new SET_NETDEV_DEVLINK_PORT macro which stores it into
+>> dev->devlink_port. It is ensured by the driver init/fini flows that
+>> the devlink_port pointer does not change during the netdev lifetime.
+>> Devlink port is always registered before netdev register and
+>> unregistered after netdev unregister.
+>> 
+>> Benefit from this linkage setup and remove explicit calls from driver
+>> to devlink_port_type_eth_set() and clear(). Many of the driver
+>> didn't use it correctly anyway. Let the devlink.c to track associated
+>> netdev events and adjust type and type pointer accordingly. Also
+>> use this events to to keep track on ifname change and remove RTNL lock
+>> taking from devlink_nl_port_fill().
+>> 
+>> Finally, remove the ndo_get_devlink_port() ndo which is no longer used
+>> and expose devlink_port handle as a new netdev netlink attribute to the
+>> user. That way, during the ifname->devlink_port lookup, userspace app
+>> does not have to dump whole devlink port list and instead it can just
+>> do a simple RTM_GETLINK query.
+>
+>Would you be okay if we deferred until 6.2?
+>
+>It's technically past the deadline and some odd driver could regress.
 
-Please be aware that:
- a) the lists don't accept HTML emails (which you're sending
-    in this thread)
- b) you should not top post on the list
+Sure.
