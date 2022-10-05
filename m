@@ -1,69 +1,73 @@
 Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 044465F3CF9
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Oct 2022 08:56:23 +0200 (CEST)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 386A15F5952
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Oct 2022 19:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbiJDG4V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Oct 2022 02:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
+        id S230508AbiJERr1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Oct 2022 13:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbiJDG4U (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Oct 2022 02:56:20 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133EA2D77F
-        for <linux-rdma@vger.kernel.org>; Mon,  3 Oct 2022 23:56:19 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id b2so26814079eja.6
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Oct 2022 23:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=+tcn9B7Ym8UONbEc5EvJpUWZ3bzMEiRSGSgK5uDh3Sc=;
-        b=ic3g3krgCZxWT2MmFGd0e131DBRZaVGX4SX7ueo5RYe4yrJOBu9UjJJq21eTtuHlwI
-         1Us8YtCkExouFVIhzLrZ9mVKOEl94t/XEDZf3W6D6dXA0kHGbQs8lcPlDcewdjmbysMi
-         LFyHjWHAQC7KfkcXPfBLaOA9ugwVn+xqRP8iS/55+yFCkZje+bwyOrdxjXYfyiutl0UK
-         jHQywcdko5pN9iNdp662Xz6HO3+5Wkis+09uKcYCo8wVyXFWAUUiCDJMNUony8sGOZyL
-         epr7+7wMqHYwzNMX8hpr1oOI0LvViTzA4NnbzsRWN+pYkSnlgaoPeNX/plVi/7fpaoI5
-         NT8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=+tcn9B7Ym8UONbEc5EvJpUWZ3bzMEiRSGSgK5uDh3Sc=;
-        b=0ub80RRAM+KL66CGDCn5HMbD2i0kqT1XRDwC+b25SJz84i/FBoSCnxl68HzhtngMK8
-         nSB/mAZMJC5BgjwCzdEUonj+/EnKqufhh0OnPLNxyMKCqQjiUA7KNTlGthO0OqFVd6qr
-         QjzMD/31dW48jdorpj/Vog213BjA11Rg23j8CMFyN0FPgmuHmcF831S3cJ4vVbKQXKv8
-         2Ta143rEnh9/ExO6Dk/Pv/FLnJuXSiv4yOt487cFjRVBL/rFBvSsdHwYKyHA3NsTCbDJ
-         E7hS/bwXvr1KVoxUbUvNhOUANc99uPY3inXLiRHWm1Im0giIKnSMxtVdwl7NmRHmfOux
-         3zYw==
-X-Gm-Message-State: ACrzQf0oeTx+W9zohrstYICcTeweEr9EN4ODSLkXbQ9BvE9Lcq+5z7d1
-        JwDaMIU5QVKSmHr/Egw8j3dDOg==
-X-Google-Smtp-Source: AMsMyM6q7CanQFsXNr9PR5MUNCDJkkeS0Fb8NDXZLxXrJWUQ38BsN/3e2MM+M6lhZxSoagpmZvRbMA==
-X-Received: by 2002:a17:907:724e:b0:783:5fba:4298 with SMTP id ds14-20020a170907724e00b007835fba4298mr19360005ejc.28.1664866577564;
-        Mon, 03 Oct 2022 23:56:17 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id g25-20020a056402321900b004542e65337asm1046089eda.51.2022.10.03.23.56.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Oct 2022 23:56:16 -0700 (PDT)
-Date:   Tue, 4 Oct 2022 08:56:16 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, pabeni@redhat.com,
-        edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
-        saeedm@nvidia.com, linux-rdma@vger.kernel.org
-Subject: Re: [patch net-next v2 00/13] net: fix netdev to devlink_port
- linkage and expose to user
-Message-ID: <YzvZEDTM1FVOX9BC@nanopsycho>
-References: <20221003105204.3315337-1-jiri@resnulli.us>
- <20221003094556.1f16a255@kernel.org>
+        with ESMTP id S230042AbiJERrJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Oct 2022 13:47:09 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C0480BDB;
+        Wed,  5 Oct 2022 10:45:58 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 295GedKv005552;
+        Wed, 5 Oct 2022 17:45:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2022-7-12; bh=PAfKF245rJVuyKQIojRzi3hHRTZzW3nXv15RmqODTr4=;
+ b=0aV3/2SVZS5xIpa0qWVT1kpY9eh9NGdlvN9f0B1oWw8FMiSgwZoEZos/o2/kwOsFUVJE
+ vRUw9gxI4j7KIc7Usm70B+OjL+GNF9P3NzuC/JZyuHnzFNEpCGgkLjnqe9BMYY2Q55kN
+ 4o+2Yf3v7uytSiMWgZC04gUWARuoajok13ftIJg94mwNzfwX7f2NRzdVNs0uzAKV7YWF
+ nrS5wX59rVW+vd/o3/g41sj9vh+qs9Vuud/VdN6HEzmRjjGREjwvIpC/KFjL033xj4rU
+ A9EbfFZmrc7aQSejPm6rCMKujdD0fyVjjd72mHmNutSJKZxnbSlfmyTEFCKpOOIQuKQK Iw== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3k15up1e6x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 Oct 2022 17:45:31 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 295HQq3C029578;
+        Wed, 5 Oct 2022 17:45:30 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3jxc05t2t2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 Oct 2022 17:45:30 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 295HjUb6024064;
+        Wed, 5 Oct 2022 17:45:30 GMT
+Received: from rsajanku-mac.us.oracle.com (dhcp-10-159-236-222.vpn.oracle.com [10.159.236.222])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3jxc05t2sa-1;
+        Wed, 05 Oct 2022 17:45:29 +0000
+From:   Rohit Nair <rohit.sajan.kumar@oracle.com>
+To:     leon@kernel.org, jgg@ziepe.ca, saeedm@nvidia.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     manjunath.b.patil@oracle.com, rama.nichanamatlu@oracle.com,
+        rohit.sajan.kumar@oracle.com,
+        Michael Guralnik <michaelgur@nvidia.com>
+Subject: [PATCH 1/1] IB/mlx5: Add a signature check to received EQEs and CQEs
+Date:   Wed,  5 Oct 2022 10:45:20 -0700
+Message-Id: <20221005174521.63619-1-rohit.sajan.kumar@oracle.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221003094556.1f16a255@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-10-05_05,2022-10-05_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 phishscore=0 bulkscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2210050110
+X-Proofpoint-GUID: 7fg1NbIa4R_lG-oT8MZX2aGtcx9eazeq
+X-Proofpoint-ORIG-GUID: 7fg1NbIa4R_lG-oT8MZX2aGtcx9eazeq
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,36 +75,138 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Mon, Oct 03, 2022 at 06:45:56PM CEST, kuba@kernel.org wrote:
->On Mon,  3 Oct 2022 12:51:51 +0200 Jiri Pirko wrote:
->> Currently, the info about linkage from netdev to the related
->> devlink_port instance is done using ndo_get_devlink_port().
->> This is not sufficient, as it is up to the driver to implement it and
->> some of them don't do that. Also it leads to a lot of unnecessary
->> boilerplate code in all the drivers.
->> 
->> Instead of that, introduce a possibility for driver to expose this
->> relationship by new SET_NETDEV_DEVLINK_PORT macro which stores it into
->> dev->devlink_port. It is ensured by the driver init/fini flows that
->> the devlink_port pointer does not change during the netdev lifetime.
->> Devlink port is always registered before netdev register and
->> unregistered after netdev unregister.
->> 
->> Benefit from this linkage setup and remove explicit calls from driver
->> to devlink_port_type_eth_set() and clear(). Many of the driver
->> didn't use it correctly anyway. Let the devlink.c to track associated
->> netdev events and adjust type and type pointer accordingly. Also
->> use this events to to keep track on ifname change and remove RTNL lock
->> taking from devlink_nl_port_fill().
->> 
->> Finally, remove the ndo_get_devlink_port() ndo which is no longer used
->> and expose devlink_port handle as a new netdev netlink attribute to the
->> user. That way, during the ifname->devlink_port lookup, userspace app
->> does not have to dump whole devlink port list and instead it can just
->> do a simple RTM_GETLINK query.
->
->Would you be okay if we deferred until 6.2?
->
->It's technically past the deadline and some odd driver could regress.
+As PRM defines, the bytewise XOR of the EQE and the EQE index should be
+0xff. Otherwise, we can assume we have a corrupt EQE. The same is
+applicable to CQE as well.
 
-Sure.
+Adding a check to verify the EQE and CQE is valid in that aspect and if
+not, dump the CQE and EQE to dmesg to be inspected.
+
+This patch does not introduce any significant performance degradations
+and has been tested using qperf.
+
+Suggested-by: Michael Guralnik <michaelgur@nvidia.com>
+Signed-off-by: Rohit Nair <rohit.sajan.kumar@oracle.com>
+---
+ drivers/infiniband/hw/mlx5/cq.c              | 40 ++++++++++++++++++++++++++++
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c | 39 +++++++++++++++++++++++++++
+ 2 files changed, 79 insertions(+)
+
+diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+index be189e0..2a6d722 100644
+--- a/drivers/infiniband/hw/mlx5/cq.c
++++ b/drivers/infiniband/hw/mlx5/cq.c
+@@ -441,6 +441,44 @@ static void mlx5_ib_poll_sw_comp(struct mlx5_ib_cq *cq, int num_entries,
+ 	}
+ }
+ 
++static void verify_cqe(struct mlx5_cqe64 *cqe64, struct mlx5_ib_cq *cq)
++{
++	int i = 0;
++	u64 temp_xor = 0;
++	struct mlx5_ib_dev *dev = to_mdev(cq->ibcq.device);
++
++	u32 cons_index = cq->mcq.cons_index;
++	u64 *eight_byte_raw_cqe = (u64 *)cqe64;
++	u8 *temp_bytewise_xor = (u8 *)(&temp_xor);
++	u8 cqe_bytewise_xor = (cons_index & 0xff) ^
++				((cons_index & 0xff00) >> 8) ^
++				((cons_index & 0xff0000) >> 16);
++
++	for (i = 0; i < sizeof(struct mlx5_cqe64); i += 8) {
++		temp_xor ^= *eight_byte_raw_cqe;
++		eight_byte_raw_cqe++;
++	}
++
++	for (i = 0; i < (sizeof(u64)); i++) {
++		cqe_bytewise_xor ^= *temp_bytewise_xor;
++		temp_bytewise_xor++;
++	}
++
++	if (cqe_bytewise_xor == 0xff)
++		return;
++
++	dev_err(&dev->mdev->pdev->dev,
++		"Faulty CQE - checksum failure: cqe=0x%x cqn=0x%x cqe_bytewise_xor=0x%x\n",
++		cq->ibcq.cqe, cq->mcq.cqn, cqe_bytewise_xor);
++	dev_err(&dev->mdev->pdev->dev,
++		"cons_index=%u arm_sn=%u irqn=%u cqe_size=0x%x\n",
++		cq->mcq.cons_index, cq->mcq.arm_sn, cq->mcq.irqn, cq->mcq.cqe_sz);
++
++	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET,
++		       16, 1, cqe64, sizeof(*cqe64), false);
++	BUG();
++}
++
+ static int mlx5_poll_one(struct mlx5_ib_cq *cq,
+ 			 struct mlx5_ib_qp **cur_qp,
+ 			 struct ib_wc *wc)
+@@ -463,6 +501,8 @@ static int mlx5_poll_one(struct mlx5_ib_cq *cq,
+ 
+ 	cqe64 = (cq->mcq.cqe_sz == 64) ? cqe : cqe + 64;
+ 
++	verify_cqe(cqe64, cq);
++
+ 	++cq->mcq.cons_index;
+ 
+ 	/* Make sure we read CQ entry contents after we've checked the
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index 229728c..f2a6d8b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -102,6 +102,43 @@ static struct mlx5_core_cq *mlx5_eq_cq_get(struct mlx5_eq *eq, u32 cqn)
+ 	return cq;
+ }
+ 
++static void verify_eqe(struct mlx5_eq *eq, struct mlx5_eqe *eqe)
++{
++	u64 *eight_byte_raw_eqe = (u64 *)eqe;
++	u8 eqe_bytewise_xor = (eq->cons_index & 0xff) ^
++			      ((eq->cons_index & 0xff00) >> 8) ^
++			      ((eq->cons_index & 0xff0000) >> 16);
++
++	int i = 0;
++	u64 temp_xor = 0;
++	u8 *temp_bytewise_xor = (u8 *)(&temp_xor);
++
++	for (i = 0; i < sizeof(struct mlx5_eqe); i += 8) {
++		temp_xor ^= *eight_byte_raw_eqe;
++		eight_byte_raw_eqe++;
++	}
++
++	for (i = 0; i < (sizeof(u64)); i++) {
++		eqe_bytewise_xor ^= *temp_bytewise_xor;
++		temp_bytewise_xor++;
++	}
++
++	if (eqe_bytewise_xor == 0xff)
++		return;
++
++	dev_err(&eq->dev->pdev->dev,
++		"Faulty EQE - checksum failure: ci=0x%x eqe_type=0x%x eqe_bytewise_xor=0x%x",
++		eq->cons_index, eqe->type, eqe_bytewise_xor);
++
++	dev_err(&eq->dev->pdev->dev,
++		"EQ addr=%p eqn=%u irqn=%u vec_index=%u",
++		eq, eq->eqn, eq->irqn, eq->vecidx);
++
++	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET,
++		       16, 1, eqe, sizeof(*eqe), false);
++	BUG();
++}
++
+ static int mlx5_eq_comp_int(struct notifier_block *nb,
+ 			    __always_unused unsigned long action,
+ 			    __always_unused void *data)
+@@ -127,6 +164,8 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
+ 		/* Assume (eqe->type) is always MLX5_EVENT_TYPE_COMP */
+ 		cqn = be32_to_cpu(eqe->data.comp.cqn) & 0xffffff;
+ 
++		verify_eqe(eq, eqe);
++
+ 		cq = mlx5_eq_cq_get(eq, cqn);
+ 		if (likely(cq)) {
+ 			++cq->arm_sn;
+-- 
+1.8.3.1
+
