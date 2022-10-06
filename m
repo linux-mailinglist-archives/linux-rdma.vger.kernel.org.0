@@ -2,132 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DB55F6BBD
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Oct 2022 18:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCAD5F6BEE
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Oct 2022 18:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbiJFQ1e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Oct 2022 12:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
+        id S231572AbiJFQkO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Oct 2022 12:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231789AbiJFQZv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Oct 2022 12:25:51 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFCE4E607;
-        Thu,  6 Oct 2022 09:25:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2FBBB218E0;
-        Thu,  6 Oct 2022 16:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1665073547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XCQ01W/Zak7b1/Z15iSFiNNO+LnDKjRUCwgq9owN358=;
-        b=BuCJHwpPWmPIMX1bCVa8JvF5Z7d74n/yJTO58u9Flcub7+SsSH8xi8XlpREVi0km3sCU9I
-        n49kVMdngxh5xHUcQ7JaAcHnUNwcTFTbcX666mAdObWVWWOiQa+NDqw9MObg2XVpG17TSv
-        v1FutPp1yNGHL7WKXiiXO6EFByUMvOk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1665073547;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XCQ01W/Zak7b1/Z15iSFiNNO+LnDKjRUCwgq9owN358=;
-        b=SBbeuIQGR7WWo1BYruUMTbe52g3YJZXPJmGbNwSK0jCwlB3l1oeiG8qTbAyyKKzsNlfKnK
-        YUPXB99RMPIak5BQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0B0413AC8;
-        Thu,  6 Oct 2022 16:25:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UOdXNooBP2OJIwAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 06 Oct 2022 16:25:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 30DD3A06E9; Thu,  6 Oct 2022 18:25:46 +0200 (CEST)
-Date:   Thu, 6 Oct 2022 18:25:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Christoph =?utf-8?Q?B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Airlie <airlied@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hugh Dickins <hughd@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Paolo Abeni <pabeni@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Graf <tgraf@suug.ch>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mm@kvack.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] treewide: use get_random_u32() when possible
-Message-ID: <20221006162546.hgkrftnsk5p3sug7@quack3>
-References: <20221006132510.23374-1-Jason@zx2c4.com>
- <20221006132510.23374-4-Jason@zx2c4.com>
+        with ESMTP id S231631AbiJFQkH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Oct 2022 12:40:07 -0400
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C231A389
+        for <linux-rdma@vger.kernel.org>; Thu,  6 Oct 2022 09:40:04 -0700 (PDT)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1322fa1cf6fso2806879fac.6
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Oct 2022 09:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Sx2SydxFWO5a6f78O7GmARlZelqAHo5t5iWn6bGRaM=;
+        b=GCn2YFZ4SZeyZsdRgirmFdItw2fOTMD/ynlFCEHDfSNAeSkMH7+nxFhUxtJyBmI3dZ
+         qwEY3uI+yDgkwtC1jjnet1d3Ay8cbE0O6a/f+g2oRUUP0Wm+NRT7dLHozfcUMkpuILHl
+         y9SkGJoPjfmPu/ddsUgPk4hsChzw0bc2ZiSGLlrtFay6/zNPY2Bs9DUYjbuXE+ktHn07
+         DiP/wYCIJwvpNGwcMnHP9Gi7OuSaLLLCGeLU60TYxGhuI5znA1ZPZlEJZ4H+yK8inzf7
+         sdtzpYO5tSOJKy74SRSDGE3BavYO8DiSlpc+opnggZ8rl0Yin7wiZ4Nnos0G4KTjlb9H
+         GK6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2Sx2SydxFWO5a6f78O7GmARlZelqAHo5t5iWn6bGRaM=;
+        b=ssHc0Lziyf8j0FmKXNLeL+UZy0Ilzf5Aq+HF+H9HBtVoMy/4qPmBdPzr973H2GgId5
+         oRE+sRX8LDKufkEfhOO31b6H7DqndrXiaOeF88UAYluNorV8G6T+CYZakOOjR8W1cEcQ
+         qyD0SdDZrgmcl0x2uOld48NGnYo98YVyivohSZboMV0tdyNQqlnRuKw6/fFyvV/ng3Z+
+         mxSvFwhavrrIAORfaey9Itdofegm1zAHxFlj7nxlnDlZmr3sWPcPAd3aBauJGgr1XYDi
+         6q/AzrtNb9YZCQCku14bdlqZmtxL//PwM3pI3AAxGormaVSnRWAoXnoiX3ahFbCaiZNJ
+         IeWg==
+X-Gm-Message-State: ACrzQf27pvUweJZpr1ez0fqUp8DUkcvws9/vUOoiburk4psPechgzHfX
+        dNygX+oqP9n9gt6+NM/r2a0=
+X-Google-Smtp-Source: AMsMyM5ctaxDwBS9b4+GbVCwh8EsEO8L+X9byhHIQl0q1WKgni8YlmWDYBAAD8r+aHT6ylElrGYYKg==
+X-Received: by 2002:a05:6871:89:b0:131:6362:e26f with SMTP id u9-20020a056871008900b001316362e26fmr308196oaa.144.1665074403903;
+        Thu, 06 Oct 2022 09:40:03 -0700 (PDT)
+Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-4f1a-4f5a-81c0-34f5.res6.spectrum.com. [2603:8081:140c:1a00:4f1a:4f5a:81c0:34f5])
+        by smtp.googlemail.com with ESMTPSA id o6-20020a056870524600b0012d939eb0bfsm8416oai.34.2022.10.06.09.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Oct 2022 09:40:03 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next] RDMA/rxe: Convert spinlock to memory barrier
+Date:   Thu,  6 Oct 2022 11:39:00 -0500
+Message-Id: <20221006163859.84266-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221006132510.23374-4-Jason@zx2c4.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu 06-10-22 07:25:08, Jason A. Donenfeld wrote:
-> The prandom_u32() function has been a deprecated inline wrapper around
-> get_random_u32() for several releases now, and compiles down to the
-> exact same code. Replace the deprecated wrapper with a direct call to
-> the real function.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Currently the rxe driver takes a spinlock to safely pass a
+control variable from a verbs API to a tasklet. A release/acquire
+memory barrier pair can accomplish the same thing with less effort.
 
-Looks good. Feel free to add:
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_cq.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+index b1a0ab3cd4bd..76534bc66cb6 100644
+--- a/drivers/infiniband/sw/rxe/rxe_cq.c
++++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+@@ -42,14 +42,10 @@ int rxe_cq_chk_attr(struct rxe_dev *rxe, struct rxe_cq *cq,
+ static void rxe_send_complete(struct tasklet_struct *t)
+ {
+ 	struct rxe_cq *cq = from_tasklet(cq, t, comp_task);
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&cq->cq_lock, flags);
+-	if (cq->is_dying) {
+-		spin_unlock_irqrestore(&cq->cq_lock, flags);
++	/* pairs with rxe_cq_disable */
++	if (smp_load_acquire(&cq->is_dying))
+ 		return;
+-	}
+-	spin_unlock_irqrestore(&cq->cq_lock, flags);
+ 
+ 	cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
+ }
+@@ -143,11 +139,8 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+ 
+ void rxe_cq_disable(struct rxe_cq *cq)
+ {
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&cq->cq_lock, flags);
+-	cq->is_dying = true;
+-	spin_unlock_irqrestore(&cq->cq_lock, flags);
++	/* pairs with rxe_send_complete */
++	smp_store_release(&cq->is_dying, true);
+ }
+ 
+ void rxe_cq_cleanup(struct rxe_pool_elem *elem)
 
-for the ext4 bits.
-
-								Honza
+base-commit: cbdae01d8b517b81ed271981395fee8ebd08ba7d
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
