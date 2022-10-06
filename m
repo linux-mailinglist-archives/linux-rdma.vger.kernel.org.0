@@ -2,111 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 438FF5F6C67
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Oct 2022 18:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DF95F6C7D
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Oct 2022 19:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbiJFQ5Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Oct 2022 12:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
+        id S230202AbiJFRFR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Oct 2022 13:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbiJFQzs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Oct 2022 12:55:48 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26424EA3;
-        Thu,  6 Oct 2022 09:54:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 673E0B82114;
-        Thu,  6 Oct 2022 16:54:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40F56C433B5;
-        Thu,  6 Oct 2022 16:54:28 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="FFz7TrE8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1665075266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wugUkH0LlLzYfPgynaJ//AEyTMustLSmvE+oyYjIDcM=;
-        b=FFz7TrE8aP9zLhhxK3uSpfoTyzjDq0bxQI30fpdoCXYfWegFK2m6ZPSu3pNQAqVlYDkUIR
-        0CnyABW7SnfNiMi0WXqnYFETeGuwWucMKsJb0WF37vnebsOE58jPV9HKZ30JYEa0G+DgTH
-        izZ6lZm62mnNDAHNsqJ7hn4ygBLXV3o=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 0c028fd9 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 6 Oct 2022 16:54:26 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Airlie <airlied@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Graf <tgraf@suug.ch>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
-        kernel-janitors@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        loongarch@lists.linux.dev, netdev@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v3 5/5] prandom: remove unused functions
-Date:   Thu,  6 Oct 2022 10:53:46 -0600
-Message-Id: <20221006165346.73159-6-Jason@zx2c4.com>
-In-Reply-To: <20221006165346.73159-1-Jason@zx2c4.com>
-References: <20221006165346.73159-1-Jason@zx2c4.com>
+        with ESMTP id S229567AbiJFRFQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Oct 2022 13:05:16 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670C7844C9
+        for <linux-rdma@vger.kernel.org>; Thu,  6 Oct 2022 10:05:15 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id x6-20020a4ac586000000b0047f8cc6dbe4so1843302oop.3
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Oct 2022 10:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Z45VfjuZ/sh/T8R5wU37N6e0izY6PnUo0QVO/d5HDI=;
+        b=pbxwMkO3hthEaJ0cRF09gC5RYVxTKIvVCWwIOT2b6bIJ0NNEVYxsSjqr1KJRw8eWQS
+         2Hot2v5kBr4hPqs4YRK/cEpT1Xnxga4S8JKOYhqBVy33/NyhqWDj3h7e+S+nSZ1euCMi
+         APzaS4vtH9X9zkTVEAJdwl8nfgcJSwKC1iNL4H5XraWuifJmV6iIgMBQo9rR6dp/I/Kr
+         rgbH8QRAqPFgNj/HsKxySx/YL2WUV2TVEgk1JzzBrsqcOPzRWE3YmNxhMi22zpZO5kMZ
+         dlwEI0MoCVOMU0DJ29OWyQJT+be2pNlTbwBPlwRcVxhtX6p1x8fwBVwBpboCTQoqiRo8
+         WVpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6Z45VfjuZ/sh/T8R5wU37N6e0izY6PnUo0QVO/d5HDI=;
+        b=UPgTTqLJ1fuUzsROLq3giIs1FNdNB3c1nklevE59hLqY8Doa5nfmWP5AZFopK6Kd6k
+         ngulyxihVnUuHsEovDCcgn3C2r3MTa1VA/sUMKLw7TEI+jfdj8pdIB6VHkcd12OLDbIl
+         T6u/93pA9SmoWk1GWqf9mhTo8Xz/xJbBoz5p5nbwYlFSz+zQUplyXXeL+W9nUFH+kbNk
+         Q80wyx3gor6b+24Cd01qQ58ihwHQGDQoP4silyfThfecmVFSfeahEJWotQ2Yu5pp6rbY
+         LAIngTEKErWarEFFGP4U/xo5WSw7KRv4ra9YA87BRM63DLaiGFI7D2C73y6QBqN+HagP
+         P/JA==
+X-Gm-Message-State: ACrzQf3MPCaIYLzTXo0Lt64EhX5icDQgGMrcTr1WLMXTDdXHldIvGVgD
+        2PNJc16pEQ7dAdt0SSCybkE=
+X-Google-Smtp-Source: AMsMyM78V9FCQ0V5RnlsCwW7AATH2d3uF7hHFxFa9NjBEGpNmVzqqicoVC3tLKbgIljAHaOKlR4BuA==
+X-Received: by 2002:a9d:5f05:0:b0:638:9ae3:59e with SMTP id f5-20020a9d5f05000000b006389ae3059emr349172oti.271.1665075914768;
+        Thu, 06 Oct 2022 10:05:14 -0700 (PDT)
+Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-4f1a-4f5a-81c0-34f5.res6.spectrum.com. [2603:8081:140c:1a00:4f1a:4f5a:81c0:34f5])
+        by smtp.googlemail.com with ESMTPSA id f26-20020a9d6c1a000000b006370c0e5be0sm28609otq.48.2022.10.06.10.05.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Oct 2022 10:05:14 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next] RDMA/rxe: Convert spin_lock_irqsave to spin_lock
+Date:   Thu,  6 Oct 2022 12:04:55 -0500
+Message-Id: <20221006170454.89903-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,97 +67,47 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-With no callers left of prandom_u32() and prandom_bytes(), as well as
-get_random_int(), remove these deprecated wrappers, in favor of
-get_random_u32() and get_random_bytes().
+Currently the rxe driver uses a spin_lock_irqsave call to protect
+the producer end of a completion queue from multiple QPs which may
+be sharing the cq. Since all accesses to the cq are from tasklets
+this is overkill and a simple spin_lock will be sufficient.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/char/random.c   | 11 +++++------
- include/linux/prandom.h | 12 ------------
- include/linux/random.h  |  5 -----
- 3 files changed, 5 insertions(+), 23 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_cq.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 01acf235f263..2fe28eeb2f38 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -97,7 +97,7 @@ MODULE_PARM_DESC(ratelimit_disable, "Disable random ratelimit suppression");
-  * Returns whether or not the input pool has been seeded and thus guaranteed
-  * to supply cryptographically secure random numbers. This applies to: the
-  * /dev/urandom device, the get_random_bytes function, and the get_random_{u8,
-- * u16,u32,u64,int,long} family of functions.
-+ * u16,u32,u64,long} family of functions.
-  *
-  * Returns: true if the input pool has been seeded.
-  *          false if the input pool has not been seeded.
-@@ -161,15 +161,14 @@ EXPORT_SYMBOL(wait_for_random_bytes);
-  *	u16 get_random_u16()
-  *	u32 get_random_u32()
-  *	u64 get_random_u64()
-- *	unsigned int get_random_int()
-  *	unsigned long get_random_long()
-  *
-  * These interfaces will return the requested number of random bytes
-  * into the given buffer or as a return value. This is equivalent to
-- * a read from /dev/urandom. The u8, u16, u32, u64, int, and long
-- * family of functions may be higher performance for one-off random
-- * integers, because they do a bit of buffering and do not invoke
-- * reseeding until the buffer is emptied.
-+ * a read from /dev/urandom. The u8, u16, u32, u64, long family of
-+ * functions may be higher performance for one-off random integers,
-+ * because they do a bit of buffering and do not invoke reseeding
-+ * until the buffer is emptied.
-  *
-  *********************************************************************/
+diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+index 76534bc66cb6..408ffe2e6f14 100644
+--- a/drivers/infiniband/sw/rxe/rxe_cq.c
++++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+@@ -104,13 +104,12 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+ 	struct ib_event ev;
+ 	int full;
+ 	void *addr;
+-	unsigned long flags;
  
-diff --git a/include/linux/prandom.h b/include/linux/prandom.h
-index 78db003bc290..e0a0759dd09c 100644
---- a/include/linux/prandom.h
-+++ b/include/linux/prandom.h
-@@ -12,18 +12,6 @@
- #include <linux/percpu.h>
- #include <linux/random.h>
+-	spin_lock_irqsave(&cq->cq_lock, flags);
++	spin_lock(&cq->cq_lock);
  
--/* Deprecated: use get_random_u32 instead. */
--static inline u32 prandom_u32(void)
--{
--	return get_random_u32();
--}
--
--/* Deprecated: use get_random_bytes instead. */
--static inline void prandom_bytes(void *buf, size_t nbytes)
--{
--	return get_random_bytes(buf, nbytes);
--}
--
- struct rnd_state {
- 	__u32 s1, s2, s3, s4;
- };
-diff --git a/include/linux/random.h b/include/linux/random.h
-index 08322f700cdc..147a5e0d0b8e 100644
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -42,10 +42,6 @@ u8 get_random_u8(void);
- u16 get_random_u16(void);
- u32 get_random_u32(void);
- u64 get_random_u64(void);
--static inline unsigned int get_random_int(void)
--{
--	return get_random_u32();
--}
- static inline unsigned long get_random_long(void)
- {
- #if BITS_PER_LONG == 64
-@@ -100,7 +96,6 @@ declare_get_random_var_wait(u8, u8)
- declare_get_random_var_wait(u16, u16)
- declare_get_random_var_wait(u32, u32)
- declare_get_random_var_wait(u64, u32)
--declare_get_random_var_wait(int, unsigned int)
- declare_get_random_var_wait(long, unsigned long)
- #undef declare_get_random_var
+ 	full = queue_full(cq->queue, QUEUE_TYPE_TO_CLIENT);
+ 	if (unlikely(full)) {
+-		spin_unlock_irqrestore(&cq->cq_lock, flags);
++		spin_unlock(&cq->cq_lock);
+ 		if (cq->ibcq.event_handler) {
+ 			ev.device = cq->ibcq.device;
+ 			ev.element.cq = &cq->ibcq;
+@@ -126,7 +125,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
  
+ 	queue_advance_producer(cq->queue, QUEUE_TYPE_TO_CLIENT);
+ 
+-	spin_unlock_irqrestore(&cq->cq_lock, flags);
++	spin_unlock(&cq->cq_lock);
+ 
+ 	if ((cq->notify == IB_CQ_NEXT_COMP) ||
+ 	    (cq->notify == IB_CQ_SOLICITED && solicited)) {
+
+base-commit: cbdae01d8b517b81ed271981395fee8ebd08ba7d
 -- 
-2.37.3
+2.34.1
 
