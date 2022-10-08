@@ -1,60 +1,50 @@
 Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE4E5F80E9
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Oct 2022 00:47:55 +0200 (CEST)
+Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id A7C845F81E6
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Oct 2022 03:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbiJGWrx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Oct 2022 18:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
+        id S229744AbiJHB30 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Oct 2022 21:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbiJGWrv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Oct 2022 18:47:51 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E3FC103245
-        for <linux-rdma@vger.kernel.org>; Fri,  7 Oct 2022 15:47:46 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id l1-20020a17090a72c100b0020a6949a66aso5927359pjk.1
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Oct 2022 15:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yZqaicka3IU4vV1MYdOWb5w3mOcfwDVNwAUulPcr27Y=;
-        b=iXQ9UvdzaG3zByw2GBNLz3/YVU1qnMbHWTkFhauTR657sXRQGAG+NlE+Q9rJd5luVx
-         INuHridXF4858oAPsKtGfjtbkx2VdjBSQCDETBbwUrSMqp7tkUzuQxOHz4Iev7dLesfK
-         vpnuiiKohn9Hx+Mnal9EiATSUtY0yZ8+mCOj4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yZqaicka3IU4vV1MYdOWb5w3mOcfwDVNwAUulPcr27Y=;
-        b=EmfANiCt3QxY24fVUFeF0BuJmOW06YAPHLiuoPPbz6YGI+W8mR0uTGygRwpPs9jPec
-         2vlj9DZJLKi6T5LyNm0t6yNi/70JN4gKAJ1cbXe+M2sPKpBqoBU1qYLZ3uucIb6KsZaJ
-         4Zt67BWggWtHRi6PdXdgcQLf6/0AIBPv/7ov0sGqx9so334dNhzOk75A/GKLQu5rqfGF
-         Ba2nt3i8JOH1wDBdxqHOedidL3oEhq8PMtJUTaHITnB7iKO56iDdTZ7NaKCiEEjPLjtz
-         Ei8EGn2e4Tk2XzPHugthEjcrhrcJvgezKzENjBMm8cz5zvN4UOIASKk4ArsnTfPG2CZs
-         /laA==
-X-Gm-Message-State: ACrzQf3OUdATcZQ0jL/+4dAjFVHLKD8gH1yztRRX+cUc6l0DBQH6ZokN
-        nNHsONofvdLaK5R2DJVYRT4VUg==
-X-Google-Smtp-Source: AMsMyM69gQJ00Sz5u9R9f9VP3RUWXmTzR4M6xX7XuJJaYjHWOM1kbOa6WmdFAYvizvrv4fE33FE/eQ==
-X-Received: by 2002:a17:902:6945:b0:17b:f38b:900f with SMTP id k5-20020a170902694500b0017bf38b900fmr6900771plt.85.1665182865829;
-        Fri, 07 Oct 2022 15:47:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q27-20020aa7983b000000b005625d5ae760sm2210282pfl.11.2022.10.07.15.47.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Oct 2022 15:47:45 -0700 (PDT)
-Date:   Fri, 7 Oct 2022 15:47:44 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+        with ESMTP id S229468AbiJHB3Y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Oct 2022 21:29:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDADBC604;
+        Fri,  7 Oct 2022 18:29:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 60D8FB8248E;
+        Sat,  8 Oct 2022 01:29:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6C01C433C1;
+        Sat,  8 Oct 2022 01:29:12 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="F0WFV840"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1665192550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2a2X1YlfkZ0pGgKe1BT3qPauqYJUuDonzfwdbODwUj0=;
+        b=F0WFV8408bfDyb840yWHYb2sS5Uszq0PMkkmtmrVRBUNL2FY49DLuZ3A8VZX01cjH92PRw
+        963/yLDTfSbPjK9v/cSx6ClQtvwOaP31xlyhs5+LtAOzyMXtRqv5atZ8HOk8wnFIOFKYJl
+        weXSG5WPTsM48QIVGdJf4b19sbZPAzo=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 08b122db (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Sat, 8 Oct 2022 01:29:09 +0000 (UTC)
+Date:   Fri, 7 Oct 2022 19:28:59 -0600
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
         Andreas Noever <andreas.noever@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Borislav Petkov <bp@alien8.de>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph =?iso-8859-1?Q?B=F6hmwalder?= 
+        Christoph =?utf-8?Q?B=C3=B6hmwalder?= 
         <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -77,7 +67,9 @@ Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
         Johannes Berg <johannes@sipsolutions.net>,
         Jonathan Corbet <corbet@lwn.net>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
-        KP Singh <kpsingh@kernel.org>, Marco Elver <elver@google.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
@@ -107,296 +99,89 @@ Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
         loongarch@lists.linux.dev, netdev@vger.kernel.org,
         sparclinux@vger.kernel.org, x86@kernel.org, Jan Kara <jack@suse.cz>
 Subject: Re: [PATCH v4 2/6] treewide: use prandom_u32_max() when possible
-Message-ID: <202210071241.445289C5@keescook>
+Message-ID: <Y0DSW4AAX/yA3CdI@zx2c4.com>
 References: <20221007180107.216067-1-Jason@zx2c4.com>
  <20221007180107.216067-3-Jason@zx2c4.com>
+ <Y0CXYjV8qMpJxxBa@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221007180107.216067-3-Jason@zx2c4.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Y0CXYjV8qMpJxxBa@magnolia>
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 07, 2022 at 12:01:03PM -0600, Jason A. Donenfeld wrote:
-> Rather than incurring a division or requesting too many random bytes for
-> the given range, use the prandom_u32_max() function, which only takes
-> the minimum required bytes from the RNG and avoids divisions.
-
-I actually meant splitting the by-hand stuff by subsystem, but nearly
-all of these can be done mechanically too, so it shouldn't be bad. Notes
-below...
-
+On Fri, Oct 07, 2022 at 02:17:22PM -0700, Darrick J. Wong wrote:
+> On Fri, Oct 07, 2022 at 12:01:03PM -0600, Jason A. Donenfeld wrote:
+> > Rather than incurring a division or requesting too many random bytes for
+> > the given range, use the prandom_u32_max() function, which only takes
+> > the minimum required bytes from the RNG and avoids divisions.
+> > 
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Reviewed-by: KP Singh <kpsingh@kernel.org>
+> > Reviewed-by: Christoph Böhmwalder <christoph.boehmwalder@linbit.com> # for drbd
+> > Reviewed-by: Jan Kara <jack@suse.cz> # for ext2, ext4, and sbitmap
+> > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> > ---
 > 
-> [...]
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 92bcc1768f0b..87203429f802 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -595,7 +595,7 @@ unsigned long __get_wchan(struct task_struct *p)
->  unsigned long arch_align_stack(unsigned long sp)
->  {
->  	if (!(current->personality & ADDR_NO_RANDOMIZE) && randomize_va_space)
-> -		sp -= get_random_int() & ~PAGE_MASK;
-> +		sp -= prandom_u32_max(PAGE_SIZE);
->  	return sp & ~0xf;
->  }
->  
+> <snip, skip to the xfs part>
+> 
+> > diff --git a/fs/xfs/libxfs/xfs_alloc.c b/fs/xfs/libxfs/xfs_alloc.c
+> > index e2bdf089c0a3..6261599bb389 100644
+> > --- a/fs/xfs/libxfs/xfs_alloc.c
+> > +++ b/fs/xfs/libxfs/xfs_alloc.c
+> > @@ -1520,7 +1520,7 @@ xfs_alloc_ag_vextent_lastblock(
+> >  
+> >  #ifdef DEBUG
+> >  	/* Randomly don't execute the first algorithm. */
+> > -	if (prandom_u32() & 1)
+> > +	if (prandom_u32_max(2))
+> 
+> I wonder if these usecases (picking 0 or 1 randomly) ought to have a
+> trivial wrapper to make it more obvious that we want boolean semantics:
+> 
+> static inline bool prandom_bool(void)
+> {
+> 	return prandom_u32_max(2);
+> }
+> 
+> 	if (prandom_bool())
+> 		use_crazy_algorithm(...);
+> 
 
-@mask@
-expression MASK;
-@@
+Yea, I've had a lot of similar ideas there. Part of doing this (initial)
+patchset is to get an intuitive sense of what's actually used and how
+often. On my list for investigation are a get_random_u32_max() to return
+uniform numbers by rejection sampling (prandom_u32_max() doesn't do
+that uniformly) and adding a function for booleans or bits < 8. Possible
+ideas for the latter include:
 
-- (get_random_int() & ~(MASK))
-+ prandom_u32_max(MASK)
+   bool get_random_bool(void);
+   bool get_random_bool(unsigned int probability);
+   bool get_random_bits(u8 bits_less_than_eight);
 
-> diff --git a/arch/loongarch/kernel/vdso.c b/arch/loongarch/kernel/vdso.c
-> index f32c38abd791..8c9826062652 100644
-> --- a/arch/loongarch/kernel/vdso.c
-> +++ b/arch/loongarch/kernel/vdso.c
-> @@ -78,7 +78,7 @@ static unsigned long vdso_base(void)
->  	unsigned long base = STACK_TOP;
->  
->  	if (current->flags & PF_RANDOMIZE) {
-> -		base += get_random_int() & (VDSO_RANDOMIZE_SIZE - 1);
-> +		base += prandom_u32_max(VDSO_RANDOMIZE_SIZE);
->  		base = PAGE_ALIGN(base);
->  	}
->  
+With the core of all of those involving the same batching as the current
+get_random_u{8,16,32,64}() functions, but also buffering the latest byte
+and managing how many bits are left in it that haven't been shifted out
+yet.
 
-@minus_one@
-expression FULL;
-@@
+So API-wise, there are a few ways to go, so hopefully this series will
+start to give a good picture of what's needed.
 
-- (get_random_int() & ((FULL) - 1)
-+ prandom_u32_max(FULL)
+One thing I've noticed is that most of the prandom_u32_max(2)
+invocations are in debug or test code, so that doesn't need to be
+optimized. But kfence does that too in its hot path, so a
+get_random_bool() function there would in theory lead to an 8x speed-up.
+But I guess I just have to try some things and see.
 
-> diff --git a/arch/parisc/kernel/vdso.c b/arch/parisc/kernel/vdso.c
-> index 63dc44c4c246..47e5960a2f96 100644
-> --- a/arch/parisc/kernel/vdso.c
-> +++ b/arch/parisc/kernel/vdso.c
-> @@ -75,7 +75,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
->  
->  	map_base = mm->mmap_base;
->  	if (current->flags & PF_RANDOMIZE)
-> -		map_base -= (get_random_int() & 0x1f) * PAGE_SIZE;
-> +		map_base -= prandom_u32_max(0x20) * PAGE_SIZE;
->  
->  	vdso_text_start = get_unmapped_area(NULL, map_base, vdso_text_len, 0, 0);
->  
+Anyway, that is a long way to say, I share you curiosity on the matter
+and I'm looking into it.
 
-These are more fun, but Coccinelle can still do them with a little
-Pythonic help:
-
-// Find a potential literal
-@literal_mask@
-expression LITERAL;
-identifier randfunc =~ "get_random_int|prandom_u32|get_random_u32";
-position p;
-@@
-
-        (randfunc()@p & (LITERAL))
-
-// Add one to the literal.
-@script:python add_one@
-literal << literal_mask.LITERAL;
-RESULT;
-@@
-
-if literal.startswith('0x'):
-        value = int(literal, 16) + 1
-        coccinelle.RESULT = cocci.make_expr("0x%x" % (value))
-elif literal[0] in '123456789':
-        value = int(literal, 10) + 1
-        coccinelle.RESULT = cocci.make_expr("%d" % (value))
-else:
-        print("I don't know how to handle: %s" % (literal))
-
-// Replace the literal mask with the calculated result.
-@plus_one@
-expression literal_mask.LITERAL;
-position literal_mask.p;
-expression add_one.RESULT;
-identifier FUNC;
-@@
-
--       (FUNC()@p & (LITERAL))
-+       prandom_u32_max(RESULT)
-
-> diff --git a/drivers/mtd/tests/stresstest.c b/drivers/mtd/tests/stresstest.c
-> index cb29c8c1b370..d2faaca7f19d 100644
-> --- a/drivers/mtd/tests/stresstest.c
-> +++ b/drivers/mtd/tests/stresstest.c
-> @@ -45,9 +45,8 @@ static int rand_eb(void)
->  	unsigned int eb;
->  
->  again:
-> -	eb = prandom_u32();
->  	/* Read or write up 2 eraseblocks at a time - hence 'ebcnt - 1' */
-> -	eb %= (ebcnt - 1);
-> +	eb = prandom_u32_max(ebcnt - 1);
->  	if (bbt[eb])
->  		goto again;
->  	return eb;
-
-This can also be done mechanically:
-
-@multi_line@
-identifier randfunc =~ "get_random_int|prandom_u32|get_random_u32";
-identifier RAND;
-expression E;
-@@
-
--       RAND = randfunc();
-        ... when != RAND
--       RAND %= (E);
-+       RAND = prandom_u32_max(E);
-
-@collapse_ret@
-type TYPE;
-identifier VAR;
-expression E;
-@@
-
- {
--       TYPE VAR;
--       VAR = (E);
--       return VAR;
-+       return E;
- }
-
-@drop_var@
-type TYPE;
-identifier VAR;
-@@
-
- {
--       TYPE VAR;
-        ... when != VAR
- }
-
-> diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
-> index 998dd2ac8008..f4944c4dee60 100644
-> --- a/fs/ext2/ialloc.c
-> +++ b/fs/ext2/ialloc.c
-> @@ -277,8 +277,7 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
->  		int best_ndir = inodes_per_group;
->  		int best_group = -1;
->  
-> -		group = prandom_u32();
-> -		parent_group = (unsigned)group % ngroups;
-> +		parent_group = prandom_u32_max(ngroups);
->  		for (i = 0; i < ngroups; i++) {
->  			group = (parent_group + i) % ngroups;
->  			desc = ext2_get_group_desc (sb, group, NULL);
-
-Okay, that one is too much for me -- checking that group is never used
-after the assignment removal is likely possible, but beyond my cocci
-know-how. :)
-
-> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-> index f73e5eb43eae..36d5bc595cc2 100644
-> --- a/fs/ext4/ialloc.c
-> +++ b/fs/ext4/ialloc.c
-> @@ -463,10 +463,9 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
->  			hinfo.hash_version = DX_HASH_HALF_MD4;
->  			hinfo.seed = sbi->s_hash_seed;
->  			ext4fs_dirhash(parent, qstr->name, qstr->len, &hinfo);
-> -			grp = hinfo.hash;
-> +			parent_group = hinfo.hash % ngroups;
->  		} else
-> -			grp = prandom_u32();
-> -		parent_group = (unsigned)grp % ngroups;
-> +			parent_group = prandom_u32_max(ngroups);
->  		for (i = 0; i < ngroups; i++) {
->  			g = (parent_group + i) % ngroups;
->  			get_orlov_stats(sb, g, flex_size, &stats);
-
-Much less easy mechanically. :)
-
-> diff --git a/lib/test_hexdump.c b/lib/test_hexdump.c
-> index 0927f44cd478..41a0321f641a 100644
-> --- a/lib/test_hexdump.c
-> +++ b/lib/test_hexdump.c
-> @@ -208,7 +208,7 @@ static void __init test_hexdump_overflow(size_t buflen, size_t len,
->  static void __init test_hexdump_overflow_set(size_t buflen, bool ascii)
->  {
->  	unsigned int i = 0;
-> -	int rs = (prandom_u32_max(2) + 1) * 16;
-> +	int rs = prandom_u32_max(2) + 1 * 16;
->  
->  	do {
->  		int gs = 1 << i;
-
-This looks wrong. Cocci says:
-
--       int rs = (get_random_int() % 2 + 1) * 16;
-+       int rs = (prandom_u32_max(2) + 1) * 16;
-
-> diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
-> index 4f2f2d1bac56..56ffaa8dd3f6 100644
-> --- a/lib/test_vmalloc.c
-> +++ b/lib/test_vmalloc.c
-> @@ -151,9 +151,7 @@ static int random_size_alloc_test(void)
->  	int i;
->  
->  	for (i = 0; i < test_loop_count; i++) {
-> -		n = prandom_u32();
-> -		n = (n % 100) + 1;
-> -
-> +		n = prandom_u32_max(n % 100) + 1;
->  		p = vmalloc(n * PAGE_SIZE);
->  
->  		if (!p)
-
-This looks wrong. Cocci says:
-
--               n = prandom_u32();
--               n = (n % 100) + 1;
-+               n = prandom_u32_max(100) + 1;
-
-> @@ -293,16 +291,12 @@ pcpu_alloc_test(void)
->  		return -1;
->  
->  	for (i = 0; i < 35000; i++) {
-> -		unsigned int r;
-> -
-> -		r = prandom_u32();
-> -		size = (r % (PAGE_SIZE / 4)) + 1;
-> +		size = prandom_u32_max(PAGE_SIZE / 4) + 1;
->  
->  		/*
->  		 * Maximum PAGE_SIZE
->  		 */
-> -		r = prandom_u32();
-> -		align = 1 << ((r % 11) + 1);
-> +		align = 1 << (prandom_u32_max(11) + 1);
->  
->  		pcpu[i] = __alloc_percpu(size, align);
->  		if (!pcpu[i])
-> @@ -393,14 +387,11 @@ static struct test_driver {
->  
->  static void shuffle_array(int *arr, int n)
->  {
-> -	unsigned int rnd;
->  	int i, j;
->  
->  	for (i = n - 1; i > 0; i--)  {
-> -		rnd = prandom_u32();
-> -
->  		/* Cut the range. */
-> -		j = rnd % i;
-> +		j = prandom_u32_max(i);
->  
->  		/* Swap indexes. */
->  		swap(arr[i], arr[j]);
-
-Yup, agrees with Cocci on these.
-
--- 
-Kees Cook
+Jason
