@@ -2,166 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1711C5F8938
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Oct 2022 05:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351145F8A17
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Oct 2022 10:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbiJIDlp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 8 Oct 2022 23:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42606 "EHLO
+        id S229947AbiJIILj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 Oct 2022 04:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbiJIDlU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 8 Oct 2022 23:41:20 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F54356C1
-        for <linux-rdma@vger.kernel.org>; Sat,  8 Oct 2022 20:41:16 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id u71so282206pgd.2
-        for <linux-rdma@vger.kernel.org>; Sat, 08 Oct 2022 20:41:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jc9wqi9hH7sDAuXmZMPHByefEvgO0MbR3+ZEqDB7Wuk=;
-        b=ZhbF7aukJSn3TNMRwCJkZSqm1r+X38mJ2RxvPJW6Z+9mn1TOlxypOyituNx8mz1HVC
-         FGqxSiHSDomVzpOPFi9kka3+6Rdn9v0XaNwqyXLdtOhmQI0POv0z39c8Rsj4C7/d+KIP
-         fJKzHg6Na0ETg2nVHR+d6vQT/rsL3lGZwlInw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jc9wqi9hH7sDAuXmZMPHByefEvgO0MbR3+ZEqDB7Wuk=;
-        b=MQBmLVmujwyBt8BtpZKo+O57RiKym5y7yE/ijsat5mYIjjzbx2Btl780Nm1gM2exys
-         gGGq5m4NfhQojEQM0hBn7xOVoVKhkZSj5zhe5a42t0Uaxx2mTGrfrH2MCYsVgQibZl7p
-         04+3eyPcHVHLL1SAw5GUj9YvXf0LPI5Lcc8pIvHSXtW9fdngWIrRbFlUmgO13SPJZdMc
-         MC4XNMFF49v+YKyykEgCk7i3usay08f5XWCtAvnhUKFgEQBj1AD+VO9mKx/65MZNmGiS
-         2e02uDpC/Hj1NcgGBWeWFVomNfp7bePMeRSAwaAj2Q9TrV8D0nbLaD6+3Y0/cywqW6+6
-         oftg==
-X-Gm-Message-State: ACrzQf03VBwjJUVCE0HURG4oRu4BOEm7gfdGpQ/P/zXz5bfb5k5sG9wT
-        O031D9N3jEOaZ++uvMm2KT4TyA==
-X-Google-Smtp-Source: AMsMyM7YoBLGpPreiN9760Jo2f1/EfVU3YsZS0ZZ4a+XLEChtkH8ZIzixkyyCKOXZUBZ1uN6dxOluQ==
-X-Received: by 2002:a63:5a44:0:b0:431:fa3a:f92c with SMTP id k4-20020a635a44000000b00431fa3af92cmr11522888pgm.471.1665286876368;
-        Sat, 08 Oct 2022 20:41:16 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w2-20020a626202000000b0053e8f4a10c1sm4198763pfb.217.2022.10.08.20.41.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Oct 2022 20:41:15 -0700 (PDT)
-Date:   Sat, 8 Oct 2022 20:41:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph =?iso-8859-1?Q?B=F6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Airlie <airlied@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        KP Singh <kpsingh@kernel.org>, Marco Elver <elver@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Graf <tgraf@suug.ch>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
-        kernel-janitors@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        loongarch@lists.linux.dev, netdev@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 0/7] treewide cleanup of random integer usage
-Message-ID: <202210082028.692DFA21@keescook>
-References: <20221008055359.286426-1-Jason@zx2c4.com>
+        with ESMTP id S229749AbiJIILi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Oct 2022 04:11:38 -0400
+Received: from mail-m972.mail.163.com (mail-m972.mail.163.com [123.126.97.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4BD0F2E9C9;
+        Sun,  9 Oct 2022 01:11:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=vsWH7
+        IkxtHbChJdSNgFucJQ2WMShYDa2SxxjSkF8E2M=; b=Vku5RKwYh4r0uR9d4lxXt
+        EUI9ZaTELqphKO0wZSEoWVyeE5HTWS7VAzxg5c1U7cXj4NheCvHu9EqQ2RP07xbF
+        cMzuBsSAOJO08e8pi6QwhplpruiyB5F1KKicuRqI7AUKU+ML70NmCf18NmWbGwPs
+        NK9kkB1HeIrZAWT5FuoYUs=
+Received: from localhost.localdomain (unknown [116.128.244.169])
+        by smtp2 (Coremail) with SMTP id GtxpCgB3ttMtgkJjdr25jw--.48799S2;
+        Sun, 09 Oct 2022 16:11:26 +0800 (CST)
+From:   Jiangshan Yi <13667453960@163.com>
+To:     jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiangshan Yi <yijiangshan@kylinos.cn>,
+        k2ci <kernel-bot@kylinos.cn>
+Subject: [PATCH] include/rdma/opa_vnic.h: fix spelling typo in comment
+Date:   Sun,  9 Oct 2022 16:10:47 +0800
+Message-Id: <20221009081047.2643471-1-13667453960@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221008055359.286426-1-Jason@zx2c4.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GtxpCgB3ttMtgkJjdr25jw--.48799S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrury7Jr47ZFy5GryxtF1kZrb_yoW3Wrg_Z3
+        y7ta1jg34DJFZavr4Y9F4FqryUKan0ka95Wwn8Xr4DGa97W3yDJ3yDJrn29a47WrZ0qa43
+        W3Z3GryUJ3WYqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUby8B5UUUUU==
+X-Originating-IP: [116.128.244.169]
+X-CM-SenderInfo: bprtllyxuvjmiwq6il2tof0z/1tbi8A6V+1uoiZrgYwAAsz
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FROM_LOCAL_DIGITS,FROM_LOCAL_HEX,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 07, 2022 at 11:53:52PM -0600, Jason A. Donenfeld wrote:
-> This is a five part treewide cleanup of random integer handling. The
-> rules for random integers are:
+From: Jiangshan Yi <yijiangshan@kylinos.cn>
 
-Reviewing the delta between of my .cocci rules and your v5, everything
-matches, except for get_random_int() conversions for files not in
-your tree:
+Fix spelling typo in comment.
 
-diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tests/drm_buddy_test.c
-index 7a2b2d6bc3fe..62f69589a72d 100644
---- a/drivers/gpu/drm/tests/drm_buddy_test.c
-+++ b/drivers/gpu/drm/tests/drm_buddy_test.c
-@@ -729,7 +729,7 @@ static void drm_test_buddy_alloc_limit(struct kunit *test)
- static int drm_buddy_init_test(struct kunit *test)
- {
- 	while (!random_seed)
--		random_seed = get_random_int();
-+		random_seed = get_random_u32();
- 
- 	return 0;
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: Jiangshan Yi <yijiangshan@kylinos.cn>
+---
+ include/rdma/opa_vnic.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/rdma/opa_vnic.h b/include/rdma/opa_vnic.h
+index f3d5377b217a..d297f084001a 100644
+--- a/include/rdma/opa_vnic.h
++++ b/include/rdma/opa_vnic.h
+@@ -51,7 +51,7 @@ static inline void *opa_vnic_dev_priv(const struct net_device *dev)
+ 	return oparn->dev_priv;
  }
-diff --git a/drivers/gpu/drm/tests/drm_mm_test.c b/drivers/gpu/drm/tests/drm_mm_test.c
-index 659d1af4dca7..c4b66eeae203 100644
---- a/drivers/gpu/drm/tests/drm_mm_test.c
-+++ b/drivers/gpu/drm/tests/drm_mm_test.c
-@@ -2212,7 +2212,7 @@ static void drm_test_mm_color_evict_range(struct kunit *test)
- static int drm_mm_init_test(struct kunit *test)
- {
- 	while (!random_seed)
--		random_seed = get_random_int();
-+		random_seed = get_random_u32();
  
- 	return 0;
- }
-
-So, I guess I mean to say that "prandom: remove unused functions" is
-going to cause some pain. :) Perhaps don't push that to -next, and do a
-final pass next merge window to catch any new stuff, and then send those
-updates and the removal before -rc1 closes?
-
+-/* opa_vnic skb meta data structrue */
++/* opa_vnic skb meta data structure */
+ struct opa_vnic_skb_mdata {
+ 	u8 vl;
+ 	u8 entropy;
 -- 
-Kees Cook
+2.25.1
+
+
+No virus found
+		Checked by Hillstone Network AntiVirus
+
