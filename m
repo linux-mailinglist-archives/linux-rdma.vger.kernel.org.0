@@ -2,168 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C8A5FA3D4
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Oct 2022 20:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771615FA721
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Oct 2022 23:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbiJJS5A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Oct 2022 14:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
+        id S229548AbiJJVor (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Oct 2022 17:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbiJJS4m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Oct 2022 14:56:42 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5E64BA59
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Oct 2022 11:56:39 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id d13so879924qko.5
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Oct 2022 11:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mfdinePb/h+FQryCI1VnJk1iVMwwW9XbS8GRZ1SXnEM=;
-        b=Y1FJnNxKCCmUeBjERypSSpOT5hLZIa3B6ZfL7TmeBlDcYn7G53u+wzaqGztD4xstS6
-         H56NjZrTnnAs/mwbv/53uHY1GhzxoFxOLWj+6+255TR+XIgzukZ2wrhnTPfXH4rpl0ll
-         x20RYa7gkPKPOAB+2GjUbYRf86UKilK/+RP5mPzo1iTwxgbIcI/NL1hAwcQva+CI+c58
-         wXQg1m452/c0qjzqE/xGhDgd9xycIGhUX5tiX7SJhqTWnYftDSAsnXqQ0qceqqSNwxFf
-         a0gsQbHVGj7OQXKVN8LpCmOTHmcWT/lMPoHErC7k7GBXJjyyytJ8h/nDzI7STIfMcpme
-         CGHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mfdinePb/h+FQryCI1VnJk1iVMwwW9XbS8GRZ1SXnEM=;
-        b=hh5H+cXG+kXt8DV7ruXjtaqtK5c4ogERdzOqxd56mKqpl8qlMKxSsvTB7RXUeoyWKJ
-         u3gCGwqBWkuBlEYF2sTBtCDnGC4zTkEoJwv1Q7OdAUzLBTC2ADhafs02wKqqwqtbwWsm
-         rzunVVHvByp/ySL/NQ3v+R1AxsMhbURpZcbvFgk0KG/XvPvDnfGgcEyBal4DKbiJ4ys/
-         ZOuW5eyCBkDIYh+dn80+2/DmOzXpxbriHFTfMy9kH9R6wJ+cHTmzxVWIh5fOcFqgSQBq
-         0pQ7GhJJMelY6SSsYKmvtD4Hx1G5x4Cgj84Svadmw2r3lydFNeE2HqAMZm+QHzlYt1O7
-         srLg==
-X-Gm-Message-State: ACrzQf1Xi3sxieQ4eTxo0AY0f6rO2cir3d6jNzBURPZyedFkawM0LMkg
-        v2Wi7DRwV059y3TOxU22hEPtSQ==
-X-Google-Smtp-Source: AMsMyM4cq1ZiSompu2ffs6ddf24dPwkk/2Lnq1GVt1O6/KQn3scUPTnTqdwZ/uWcjL7riJrPyy9iDQ==
-X-Received: by 2002:a05:620a:4397:b0:6e1:345a:e080 with SMTP id a23-20020a05620a439700b006e1345ae080mr13783062qkp.677.1665428198984;
-        Mon, 10 Oct 2022 11:56:38 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.122.23])
-        by smtp.gmail.com with ESMTPSA id j8-20020a05620a288800b006bb2cd2f6d1sm10684472qkp.127.2022.10.10.11.56.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Oct 2022 11:56:38 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ohxx7-0012V5-CO;
-        Mon, 10 Oct 2022 15:56:37 -0300
-Date:   Mon, 10 Oct 2022 15:56:37 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        linux-rdma@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Gert Wollny <gert.wollny@collabora.com>,
-        Gustavo Padovan <gustavo.padovan@collabora.com>,
-        Daniel Stone <daniel@fooishbar.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Clark <robdclark@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas_os@shipmail.org>,
-        Qiang Yu <yuq825@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Amol Maheshwari <amahesh@qti.qualcomm.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Ruhl Michael J <michael.j.ruhl@intel.com>
-Subject: Re: [PATCH v6 10/21] RDMA/umem: Prepare to dynamic dma-buf locking
- specification
-Message-ID: <Y0Rq5Zb9+63++2z/@ziepe.ca>
-References: <20220928191600.5874-1-dmitry.osipenko@collabora.com>
- <20220928191600.5874-11-dmitry.osipenko@collabora.com>
- <e3ba146d-8153-add5-2cf4-02fe6519abee@collabora.com>
+        with ESMTP id S229461AbiJJVor (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Oct 2022 17:44:47 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDF9FAF9;
+        Mon, 10 Oct 2022 14:44:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B6950B810F1;
+        Mon, 10 Oct 2022 21:44:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 371AAC433D6;
+        Mon, 10 Oct 2022 21:44:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665438282;
+        bh=8i9Sp/zDP5LGHEO1+Oz/sZ8i5e+xyIwvdtaV+G68Qb4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=JVYyYeemTOQzhjCLpkSbxcPnk4m3qeNpHxpVw0JoVcI8v0BR5DGHgoENzQEl/70da
+         Q7FKNlAP2X1golzwCvsPjaY1nQTOm64bcZPSbH0MaJv4rePGoaWTpxev59zP520YnW
+         lHLYWHBTr5t2JdNqD9Oth78/xyN5y4yG8HCjt2ZWygKjhUtrzVXFVUacuVV4UAZ8T9
+         OHE13TQ6w+W8PzI6gf0EMEZdjrmIiVRlOzsA2qOzsL8/uBSSTEr2fQBjXN7YSqpeY1
+         zTUn2zuusN/nPsh5WKBQUaIlZKaRq9t7c5fn2z9yiJk1mePnbmC1prrWoxd7HgEZWj
+         fkIF1h4fSwRww==
+Date:   Mon, 10 Oct 2022 16:44:40 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ariel Elior <aelior@marvell.com>,
+        Manish Chopra <manishc@marvell.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net,
+        linux-rdma@vger.kernel.org, Ram.Amrani@caviumnetworks.com,
+        Michal.Kalderon@caviumnetworks.com, dledford@redhat.com,
+        linux-pci@vger.kernel.org,
+        Yuval Mintz <Yuval.Mintz@caviumnetworks.com>
+Subject: Re: [PATCH net-next 3/7] qed: Add support for RoCE hw init
+Message-ID: <20221010214440.GA2940104@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e3ba146d-8153-add5-2cf4-02fe6519abee@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20221007154830.GA2630865@bhelgaas>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Oct 09, 2022 at 03:08:56AM +0300, Dmitry Osipenko wrote:
-> On 9/28/22 22:15, Dmitry Osipenko wrote:
-> > Prepare InfiniBand drivers to the common dynamic dma-buf locking
-> > convention by starting to use the unlocked versions of dma-buf API
-> > functions.
+[ping, updated Ariel's address]
+
+On Fri, Oct 07, 2022 at 10:48:32AM -0500, Bjorn Helgaas wrote:
+> On Sat, Oct 01, 2016 at 09:59:57PM +0300, Yuval Mintz wrote:
+> > From: Ram Amrani <Ram.Amrani@caviumnetworks.com>
 > > 
-> > Acked-by: Christian König <christian.koenig@amd.com>
-> > Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> > ---
-> >  drivers/infiniband/core/umem_dmabuf.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-> > index 04c04e6d24c3..43b26bc12288 100644
-> > --- a/drivers/infiniband/core/umem_dmabuf.c
-> > +++ b/drivers/infiniband/core/umem_dmabuf.c
-> > @@ -26,7 +26,8 @@ int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
-> >  	if (umem_dmabuf->sgt)
-> >  		goto wait_fence;
-> >  
-> > -	sgt = dma_buf_map_attachment(umem_dmabuf->attach, DMA_BIDIRECTIONAL);
-> > +	sgt = dma_buf_map_attachment_unlocked(umem_dmabuf->attach,
-> > +					      DMA_BIDIRECTIONAL);
-> >  	if (IS_ERR(sgt))
-> >  		return PTR_ERR(sgt);
-> >  
-> > @@ -102,8 +103,8 @@ void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf)
-> >  		umem_dmabuf->last_sg_trim = 0;
-> >  	}
-> >  
-> > -	dma_buf_unmap_attachment(umem_dmabuf->attach, umem_dmabuf->sgt,
-> > -				 DMA_BIDIRECTIONAL);
-> > +	dma_buf_unmap_attachment_unlocked(umem_dmabuf->attach, umem_dmabuf->sgt,
-> > +					  DMA_BIDIRECTIONAL);
-> >  
-> >  	umem_dmabuf->sgt = NULL;
-> >  }
+> > This adds the backbone required for the various HW initalizations
+> > which are necessary for the qedr driver - FW notification, resource
+> > initializations, etc.
+> > ...
 > 
-> Jason / Leon,
+> > diff --git a/drivers/net/ethernet/qlogic/qed/qed_roce.c b/drivers/net/ethernet/qlogic/qed/qed_roce.c
+> > ...
+> > +	/* Check atomic operations support in PCI configuration space. */
+> > +	pci_read_config_dword(cdev->pdev,
+> > +			      cdev->pdev->pcie_cap + PCI_EXP_DEVCTL2,
+> > +			      &pci_status_control);
+> > +
+> > +	if (pci_status_control & PCI_EXP_DEVCTL2_LTR_EN)
+> > +		SET_FIELD(dev->dev_caps, QED_RDMA_DEV_CAP_ATOMIC_OP, 1);
 > 
-> Could you please ack this patch?
-
-You probably don't need it, for something so simple, but sure
-
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+> I don't understand this.
+> 
+>   1) PCI_EXP_DEVCTL2 is a 16-bit register ("word"), not a 32-bit one
+>   ("dword").
+> 
+>   2) QED_RDMA_DEV_CAP_ATOMIC_OP is set here but is not read anywhere
+>   in this patch.  Is it used by the qed device itself?
+> 
+>   3) PCI_EXP_DEVCTL2_LTR_EN is for Latency Tolerance Reporting and is
+>   not related to atomic ops.  I don't know what
+>   QED_RDMA_DEV_CAP_ATOMIC_OP means, but possibly one of these was
+>   intended instead?
+> 
+>     - PCI_EXP_DEVCAP2_ATOMIC_COMP32 means the device supports 32-bit
+>       AtomicOps as a completer.
+>     - PCI_EXP_DEVCAP2_ATOMIC_COMP64 means the device supports 64-bit
+>       AtomicOps as a completer.
+>     - PCI_EXP_DEVCAP2_ATOMIC_COMP128 means the device supports 128-bit
+>       AtomicOps as a completer.
+>     - PCI_EXP_DEVCTL2_ATOMIC_REQ means the device is allowed to
+>       initiate AtomicOps.
+> 
+> (This code is now in qed_rdma.c)
