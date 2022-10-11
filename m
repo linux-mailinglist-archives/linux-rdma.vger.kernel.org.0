@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F21095FAD4B
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Oct 2022 09:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD5C5FAFA8
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Oct 2022 11:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbiJKHRx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Oct 2022 03:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S229663AbiJKJtx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Oct 2022 05:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbiJKHRx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Oct 2022 03:17:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D8B844E8;
-        Tue, 11 Oct 2022 00:17:52 -0700 (PDT)
+        with ESMTP id S229623AbiJKJtv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Oct 2022 05:49:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68A6BC0E
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Oct 2022 02:49:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFF686112B;
-        Tue, 11 Oct 2022 07:17:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0AF5C433D6;
-        Tue, 11 Oct 2022 07:17:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 665F86116D
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Oct 2022 09:49:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F6CEC433D6;
+        Tue, 11 Oct 2022 09:49:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665472671;
-        bh=NtJ7v6/G5QEm210bmOM52lM9FGXyvCrH5npEMhuG5dg=;
+        s=k20201202; t=1665481781;
+        bh=qDxI6ToA8YiVvrU6hFF9ZiwO2zAQPnHGnkhgAJxBgs8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pZspTNQUzoy4rlvEmPdqABsDYMXx//z2uDjqx8J9ToecczBNWoAdoBSRSmnd3neig
-         e613vwQsA5jex30GWEuIxAO5X5weH2GoJ0gzVhD5XhLyA6BIPlArOquIJu0mUibf10
-         Gfai9jHxLkER3HNDkwsiRyfGUWQ4RgwnskrrF80tAlWdAqdO3LBbhxhQWcYU/WAMxG
-         SmoZr6rHHnXAXAteB40ug7blDmk9V2RBdB71rKX2sOwmJ4IITPMqlWSV8dj68hRlo+
-         k/nYLjgTrKkLbRNjO5JTIMEgDvjt19r6nryXjo1MArjYHDM0zpH3dFuMqojJtUNaXJ
-         Ortwe82NIAAkA==
-Date:   Tue, 11 Oct 2022 10:17:46 +0300
+        b=ai6utFsek49St9Gs5GzMWisb4PNn9PO3lC664j3l7+m4+YelAfky0M4f6nn//40tz
+         T1Q8aT6NiVS2BJPXnC8lXhr2dNNsxl3lAXqP8cfM2X+rNusU+8OHdEH+6PVhtaUDRJ
+         AKB9RKBXQXIXFX9DubWQGJFTK1UYgLH7BWMRw206xyCqu9sChVOuiiUhJeB0i9rpTh
+         zhTGA0BKo4ZW/P1fxapYVwy/YP5h4TgDHCrxQX3+da5kEHJ4CXW7B2xk46VYeP3LsZ
+         z4orqPbu45r9f9LAVD+OtjLLkrR9w08SZoWY7WEfTxpMOu+LqTWRr27+oxb7uCIlmH
+         q4Zpux+/uzFVA==
+Date:   Tue, 11 Oct 2022 12:49:37 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Rohit Nair <rohit.sajan.kumar@oracle.com>
-Cc:     jgg@ziepe.ca, saeedm@nvidia.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, manjunath.b.patil@oracle.com,
-        rama.nichanamatlu@oracle.com,
-        Michael Guralnik <michaelgur@nvidia.com>
-Subject: Re: [PATCH 1/1] IB/mlx5: Add a signature check to received EQEs and
- CQEs
-Message-ID: <Y0UYml07lb1I38MQ@unreal>
-References: <20221005174521.63619-1-rohit.sajan.kumar@oracle.com>
+To:     yanjun.zhu@linux.dev
+Cc:     Leon Romanovsky <leo@kernel.org>, linux-rdma@vger.kernel.org,
+        jgg@nvidia.com
+Subject: Re: [PATCH] rdma: not display the rdma link in other net namespace
+Message-ID: <Y0U8McWLRJRTKqQ/@unreal>
+References: <YzPkAGs60Kk4QCck@unreal>
+ <20220926024033.284341-1-yanjun.zhu@linux.dev>
+ <YzLRvzAH9MqqtSGk@unreal>
+ <4e5d49fe-38a3-4891-3755-3decf8ffebda@linux.dev>
+ <1c6c286460ac6450d1ae7a93efd4c062@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221005174521.63619-1-rohit.sajan.kumar@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1c6c286460ac6450d1ae7a93efd4c062@linux.dev>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,89 +57,131 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There is no need to ping anyone, the patch is registered in patchworks
-https://patchwork.kernel.org/project/linux-rdma/patch/20221005174521.63619-1-rohit.sajan.kumar@oracle.com/
-and we will get to it.
-
-You sent the patch during merge window, no wonder that none looked on it.
-
-On Wed, Oct 05, 2022 at 10:45:20AM -0700, Rohit Nair wrote:
-> As PRM defines, the bytewise XOR of the EQE and the EQE index should be
-> 0xff. Otherwise, we can assume we have a corrupt EQE. The same is
-> applicable to CQE as well.
-
-I didn't find anything like this in my version of PRM.
-
+On Sun, Oct 09, 2022 at 10:20:53AM +0000, yanjun.zhu@linux.dev wrote:
+> September 28, 2022 2:04 PM, "Leon Romanovsky" <leon@kernel.org> wrote:
 > 
-> Adding a check to verify the EQE and CQE is valid in that aspect and if
-> not, dump the CQE and EQE to dmesg to be inspected.
-
-While it is nice to see prints in dmesg, you need to explain why other
-mechanisms (reporters, mlx5 events, e.t.c) are not enough.
-
+> > On Tue, Sep 27, 2022 at 06:58:50PM +0800, Yanjun Zhu wrote:
+> > 
+> >> 在 2022/9/27 18:34, Leon Romanovsky 写道:
+> >> On Sun, Sep 25, 2022 at 10:40:33PM -0400, yanjun.zhu@linux.dev wrote:
+> >>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+> >>> 
+> >>> When the net devices are moved to another net namespace, the command
+> >>> "rdma link" should not dispaly the rdma link about this net device.
+> >>> 
+> >>> For example, when the net device eno12399 is moved to net namespace net0
+> >>> from init_net, the rdma link of eno12399 should not display in init_net.
+> >>> 
+> >>> Before this change:
+> >>> 
+> >>> Init_net:
+> >>> 
+> >>> link roceo12399/1 state DOWN physical_state DISABLED <---should not display
+> >>> link roceo12409/1 state DOWN physical_state DISABLED netdev eno12409
+> >>> link rocep202s0f0/1 state DOWN physical_state DISABLED netdev ens7f0
+> >>> link rocep202s0f1/1 state ACTIVE physical_state LINK_UP netdev ens7f1
+> >>> 
+> >>> net0:
+> >>> 
+> >>> link roceo12399/1 state DOWN physical_state DISABLED netdev eno12399
+> >>> link roceo12409/1 state DOWN physical_state DISABLED <---should not display
+> >>> link rocep202s0f0/1 state DOWN physical_state DISABLED <---should not display
+> >>> link rocep202s0f1/1 state ACTIVE physical_state LINK_UP <---should not display
+> >>> 
+> >>> After this change
+> >>> 
+> >>> Init_net:
+> >>> 
+> >>> link roceo12409/1 state DOWN physical_state DISABLED netdev eno12409
+> >>> link rocep202s0f0/1 state DOWN physical_state DISABLED netdev ens7f0
+> >>> link rocep202s0f1/1 state ACTIVE physical_state LINK_UP netdev ens7f1
+> >>> 
+> >>> net0:
+> >>> 
+> >>> link roceo12399/1 state DOWN physical_state DISABLED netdev eno12399
+> >>> 
+> >>> Fixes: da990ab40a92 ("rdma: Add link object")
+> >>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> >>> ---
+> >>> rdma/link.c | 3 +++
+> >>> 1 file changed, 3 insertions(+)
+> >>> 
+> >>> diff --git a/rdma/link.c b/rdma/link.c
+> >>> index bf24b849..449a7636 100644
+> >>> --- a/rdma/link.c
+> >>> +++ b/rdma/link.c
+> >>> @@ -238,6 +238,9 @@ static int link_parse_cb(const struct nlmsghdr *nlh, void *data)
+> >>> return MNL_CB_ERROR;
+> >>> }
+> >>> + if (!tb[RDMA_NLDEV_ATTR_NDEV_NAME] || !tb[RDMA_NLDEV_ATTR_NDEV_INDEX])
+> >>> + return MNL_CB_OK;
+> >>> +
+> >> Regarding your question where it should go in addition to RDMA, the answer
+> >> is netdev ML. The rdmatool is part of iproute2 and the relevant maintainers
+> >> should be CCed.
+> >> Thanks. I will also send it to netdev ML and CC the maintainers.
+> >> 
+> >> Regarding the change, I don't think that it is right. User space tool is
+> >> a simple viewer of data returned from the kernel. It is not a mistake to
+> >> return device without netdev.
+> >> 
+> >> Normally a rdma link based on RoCEv2 should be with a NIC. This NIC device
+> >> 
+> >> will send/recv udp packets. With mellanox/intel NIC device, this net device
+> >> also
+> >> 
+> >> do more work than sending/receiving packets.
+> >> 
+> >> From this perspective, a rdma link is dependent on a net device.
+> >> 
+> >> In this problem, net device is moved to another net namespace. So it can not
+> >> be
+> >> 
+> >> obtained.  And this rdma link can also not work in this net namespace.
+> >> 
+> >> So this rdma link should not appear in this net namespace. Or else, it would
+> >> confuse
+> >> 
+> >> the user.
+> >> 
+> >> In fact, net namespace is a concept in tcp/ip stack. And it does not exist
+> >> in rdma stack.
+> > 
+> > RDMA has two different net namespace mode: shared and exclusive.
+> > 
+> > In shared mode, the IB devices are shared across all net namespaces and
+> > "moving" net device into different namespace just "hides" it, but don't
+> > disconnect.
 > 
-> This patch does not introduce any significant performance degradations
-> and has been tested using qperf.
-
-What does it mean? You made changes in kernel verbs flow, they are not
-executed through qperf.
-
+> Hi, Leon
 > 
-> Suggested-by: Michael Guralnik <michaelgur@nvidia.com>
-> Signed-off-by: Rohit Nair <rohit.sajan.kumar@oracle.com>
-> ---
->  drivers/infiniband/hw/mlx5/cq.c              | 40 ++++++++++++++++++++++++++++
->  drivers/net/ethernet/mellanox/mlx5/core/eq.c | 39 +++++++++++++++++++++++++++
->  2 files changed, 79 insertions(+)
+> About RDMA shared and exclusive mode, I am confusing about this scenario:
 > 
-> diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-> index be189e0..2a6d722 100644
-> --- a/drivers/infiniband/hw/mlx5/cq.c
-> +++ b/drivers/infiniband/hw/mlx5/cq.c
-> @@ -441,6 +441,44 @@ static void mlx5_ib_poll_sw_comp(struct mlx5_ib_cq *cq, int num_entries,
->  	}
->  }
->  
-> +static void verify_cqe(struct mlx5_cqe64 *cqe64, struct mlx5_ib_cq *cq)
-> +{
-> +	int i = 0;
-> +	u64 temp_xor = 0;
-> +	struct mlx5_ib_dev *dev = to_mdev(cq->ibcq.device);
-> +
-> +	u32 cons_index = cq->mcq.cons_index;
-> +	u64 *eight_byte_raw_cqe = (u64 *)cqe64;
-> +	u8 *temp_bytewise_xor = (u8 *)(&temp_xor);
-> +	u8 cqe_bytewise_xor = (cons_index & 0xff) ^
-> +				((cons_index & 0xff00) >> 8) ^
-> +				((cons_index & 0xff0000) >> 16);
-> +
-> +	for (i = 0; i < sizeof(struct mlx5_cqe64); i += 8) {
-> +		temp_xor ^= *eight_byte_raw_cqe;
-> +		eight_byte_raw_cqe++;
-> +	}
-> +
-> +	for (i = 0; i < (sizeof(u64)); i++) {
-> +		cqe_bytewise_xor ^= *temp_bytewise_xor;
-> +		temp_bytewise_xor++;
-> +	}
-> +
-> +	if (cqe_bytewise_xor == 0xff)
-> +		return;
-> +
-> +	dev_err(&dev->mdev->pdev->dev,
-> +		"Faulty CQE - checksum failure: cqe=0x%x cqn=0x%x cqe_bytewise_xor=0x%x\n",
-> +		cq->ibcq.cqe, cq->mcq.cqn, cqe_bytewise_xor);
-> +	dev_err(&dev->mdev->pdev->dev,
-> +		"cons_index=%u arm_sn=%u irqn=%u cqe_size=0x%x\n",
-> +		cq->mcq.cons_index, cq->mcq.arm_sn, cq->mcq.irqn, cq->mcq.cqe_sz);
+> In shared mode, ib device A is in net namespace A1 while netdev device B is in net namespace B1.
+> IB device A is dependent on netdev device B. How to make tests in the above scenario?
+> Both rping and perftest need a IP address to work. But now ip address is in net namespace B1 while
+> ib device A is in net namespace A1.
+> 
+> In the product environment, does the above scenario exist?
 
-mlx5_err ... and not dev_err ...
+Yes and no at the same time.
 
-> +
-> +	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET,
-> +		       16, 1, cqe64, sizeof(*cqe64), false);
-> +	BUG();
+Yes:
+The whole net namespace support is needed for containers. In old
+versions of rdma-core, libibverbs relied on /sys/class/infiniband/
+structure. This is why we need "shared" mode, where IB exists without
+relation to netdev.
 
-No BUG() in new code.
+No:
+Like you said, it won't work for RoCE and iWARP.
 
 Thanks
+
+> 
+> Thanks and Regards,
+> Zhu Yanjun
+> 
+> > 
+> > See comments around various usages of ib_devices_shared_netns variable.
+> > 
+> > Thanks
