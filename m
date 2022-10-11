@@ -2,152 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB245FAAF0
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Oct 2022 05:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21095FAD4B
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Oct 2022 09:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbiJKDAd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Oct 2022 23:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        id S229469AbiJKHRx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Oct 2022 03:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiJKDA1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Oct 2022 23:00:27 -0400
+        with ESMTP id S229506AbiJKHRx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Oct 2022 03:17:53 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8939C51425;
-        Mon, 10 Oct 2022 20:00:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D8B844E8;
+        Tue, 11 Oct 2022 00:17:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C52046108C;
-        Tue, 11 Oct 2022 03:00:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 207E1C433D6;
-        Tue, 11 Oct 2022 03:00:18 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="HINC5krz"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1665457216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qirw48xc/tsq9oJ9bN2wDgpC7gkOILHLI1FFvZKjy0g=;
-        b=HINC5krzVlg2RfBkI+DN4TfkkfdILG81+nGbG6H3ymULtvrDJBAAPyivNN5Ks6xLTRDgBj
-        St0npOJIqnMiQJAEsME6hn8HSGUVr7vaSgTvTLlUyVWoppp8tjC9zJyq6/W2qkBuApVnBr
-        cXYoav/TXzo4IDNClYviVzHvX/Qex3Y=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 0a7ccddd (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 11 Oct 2022 03:00:16 +0000 (UTC)
-Date:   Mon, 10 Oct 2022 21:00:08 -0600
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     "Elliott, Robert (Servers)" <elliott@hpe.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph =?utf-8?Q?B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Airlie <airlied@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Graf <tgraf@suug.ch>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH v6 3/7] treewide: use get_random_{u8,u16}() when
- possible, part 1
-Message-ID: <Y0TcOH/BDfg5c1gj@zx2c4.com>
-References: <20221010230613.1076905-1-Jason@zx2c4.com>
- <20221010230613.1076905-4-Jason@zx2c4.com>
- <MW5PR84MB18421AC962BE140DDEB58A8BAB239@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFF686112B;
+        Tue, 11 Oct 2022 07:17:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0AF5C433D6;
+        Tue, 11 Oct 2022 07:17:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665472671;
+        bh=NtJ7v6/G5QEm210bmOM52lM9FGXyvCrH5npEMhuG5dg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pZspTNQUzoy4rlvEmPdqABsDYMXx//z2uDjqx8J9ToecczBNWoAdoBSRSmnd3neig
+         e613vwQsA5jex30GWEuIxAO5X5weH2GoJ0gzVhD5XhLyA6BIPlArOquIJu0mUibf10
+         Gfai9jHxLkER3HNDkwsiRyfGUWQ4RgwnskrrF80tAlWdAqdO3LBbhxhQWcYU/WAMxG
+         SmoZr6rHHnXAXAteB40ug7blDmk9V2RBdB71rKX2sOwmJ4IITPMqlWSV8dj68hRlo+
+         k/nYLjgTrKkLbRNjO5JTIMEgDvjt19r6nryXjo1MArjYHDM0zpH3dFuMqojJtUNaXJ
+         Ortwe82NIAAkA==
+Date:   Tue, 11 Oct 2022 10:17:46 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Rohit Nair <rohit.sajan.kumar@oracle.com>
+Cc:     jgg@ziepe.ca, saeedm@nvidia.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, manjunath.b.patil@oracle.com,
+        rama.nichanamatlu@oracle.com,
+        Michael Guralnik <michaelgur@nvidia.com>
+Subject: Re: [PATCH 1/1] IB/mlx5: Add a signature check to received EQEs and
+ CQEs
+Message-ID: <Y0UYml07lb1I38MQ@unreal>
+References: <20221005174521.63619-1-rohit.sajan.kumar@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MW5PR84MB18421AC962BE140DDEB58A8BAB239@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221005174521.63619-1-rohit.sajan.kumar@oracle.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 01:18:40AM +0000, Elliott, Robert (Servers) wrote:
-> 
-> > diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-> ...
-> > @@ -944,7 +944,7 @@ static void generate_random_bytes(u8 *buf, size_t count)
-> >  	default:
-> >  		/* Fully random bytes */
-> >  		for (i = 0; i < count; i++)
-> > -			buf[i] = (u8)prandom_u32();
-> > +			buf[i] = get_random_u8();
-> 
-> Should that whole for loop be replaced with this?
->     get_random_bytes(buf, count);
+There is no need to ping anyone, the patch is registered in patchworks
+https://patchwork.kernel.org/project/linux-rdma/patch/20221005174521.63619-1-rohit.sajan.kumar@oracle.com/
+and we will get to it.
 
-Wow, that's kind of grotesque. Yea, it certainly should. But that's
-beyond the scope of this patchset. I'll send a follow-up patch just for
-this case to Herbert after this cleanup lands, though.
+You sent the patch during merge window, no wonder that none looked on it.
 
-Jason
+On Wed, Oct 05, 2022 at 10:45:20AM -0700, Rohit Nair wrote:
+> As PRM defines, the bytewise XOR of the EQE and the EQE index should be
+> 0xff. Otherwise, we can assume we have a corrupt EQE. The same is
+> applicable to CQE as well.
+
+I didn't find anything like this in my version of PRM.
+
+> 
+> Adding a check to verify the EQE and CQE is valid in that aspect and if
+> not, dump the CQE and EQE to dmesg to be inspected.
+
+While it is nice to see prints in dmesg, you need to explain why other
+mechanisms (reporters, mlx5 events, e.t.c) are not enough.
+
+> 
+> This patch does not introduce any significant performance degradations
+> and has been tested using qperf.
+
+What does it mean? You made changes in kernel verbs flow, they are not
+executed through qperf.
+
+> 
+> Suggested-by: Michael Guralnik <michaelgur@nvidia.com>
+> Signed-off-by: Rohit Nair <rohit.sajan.kumar@oracle.com>
+> ---
+>  drivers/infiniband/hw/mlx5/cq.c              | 40 ++++++++++++++++++++++++++++
+>  drivers/net/ethernet/mellanox/mlx5/core/eq.c | 39 +++++++++++++++++++++++++++
+>  2 files changed, 79 insertions(+)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+> index be189e0..2a6d722 100644
+> --- a/drivers/infiniband/hw/mlx5/cq.c
+> +++ b/drivers/infiniband/hw/mlx5/cq.c
+> @@ -441,6 +441,44 @@ static void mlx5_ib_poll_sw_comp(struct mlx5_ib_cq *cq, int num_entries,
+>  	}
+>  }
+>  
+> +static void verify_cqe(struct mlx5_cqe64 *cqe64, struct mlx5_ib_cq *cq)
+> +{
+> +	int i = 0;
+> +	u64 temp_xor = 0;
+> +	struct mlx5_ib_dev *dev = to_mdev(cq->ibcq.device);
+> +
+> +	u32 cons_index = cq->mcq.cons_index;
+> +	u64 *eight_byte_raw_cqe = (u64 *)cqe64;
+> +	u8 *temp_bytewise_xor = (u8 *)(&temp_xor);
+> +	u8 cqe_bytewise_xor = (cons_index & 0xff) ^
+> +				((cons_index & 0xff00) >> 8) ^
+> +				((cons_index & 0xff0000) >> 16);
+> +
+> +	for (i = 0; i < sizeof(struct mlx5_cqe64); i += 8) {
+> +		temp_xor ^= *eight_byte_raw_cqe;
+> +		eight_byte_raw_cqe++;
+> +	}
+> +
+> +	for (i = 0; i < (sizeof(u64)); i++) {
+> +		cqe_bytewise_xor ^= *temp_bytewise_xor;
+> +		temp_bytewise_xor++;
+> +	}
+> +
+> +	if (cqe_bytewise_xor == 0xff)
+> +		return;
+> +
+> +	dev_err(&dev->mdev->pdev->dev,
+> +		"Faulty CQE - checksum failure: cqe=0x%x cqn=0x%x cqe_bytewise_xor=0x%x\n",
+> +		cq->ibcq.cqe, cq->mcq.cqn, cqe_bytewise_xor);
+> +	dev_err(&dev->mdev->pdev->dev,
+> +		"cons_index=%u arm_sn=%u irqn=%u cqe_size=0x%x\n",
+> +		cq->mcq.cons_index, cq->mcq.arm_sn, cq->mcq.irqn, cq->mcq.cqe_sz);
+
+mlx5_err ... and not dev_err ...
+
+> +
+> +	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET,
+> +		       16, 1, cqe64, sizeof(*cqe64), false);
+> +	BUG();
+
+No BUG() in new code.
+
+Thanks
