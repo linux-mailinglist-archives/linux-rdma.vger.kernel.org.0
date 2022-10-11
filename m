@@ -2,186 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD5C5FAFA8
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Oct 2022 11:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58A35FAFE2
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Oct 2022 12:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbiJKJtx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Oct 2022 05:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
+        id S229483AbiJKKAX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Oct 2022 06:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbiJKJtv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Oct 2022 05:49:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68A6BC0E
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Oct 2022 02:49:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 665F86116D
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Oct 2022 09:49:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F6CEC433D6;
-        Tue, 11 Oct 2022 09:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665481781;
-        bh=qDxI6ToA8YiVvrU6hFF9ZiwO2zAQPnHGnkhgAJxBgs8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ai6utFsek49St9Gs5GzMWisb4PNn9PO3lC664j3l7+m4+YelAfky0M4f6nn//40tz
-         T1Q8aT6NiVS2BJPXnC8lXhr2dNNsxl3lAXqP8cfM2X+rNusU+8OHdEH+6PVhtaUDRJ
-         AKB9RKBXQXIXFX9DubWQGJFTK1UYgLH7BWMRw206xyCqu9sChVOuiiUhJeB0i9rpTh
-         zhTGA0BKo4ZW/P1fxapYVwy/YP5h4TgDHCrxQX3+da5kEHJ4CXW7B2xk46VYeP3LsZ
-         z4orqPbu45r9f9LAVD+OtjLLkrR9w08SZoWY7WEfTxpMOu+LqTWRr27+oxb7uCIlmH
-         q4Zpux+/uzFVA==
-Date:   Tue, 11 Oct 2022 12:49:37 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     yanjun.zhu@linux.dev
-Cc:     Leon Romanovsky <leo@kernel.org>, linux-rdma@vger.kernel.org,
-        jgg@nvidia.com
-Subject: Re: [PATCH] rdma: not display the rdma link in other net namespace
-Message-ID: <Y0U8McWLRJRTKqQ/@unreal>
-References: <YzPkAGs60Kk4QCck@unreal>
- <20220926024033.284341-1-yanjun.zhu@linux.dev>
- <YzLRvzAH9MqqtSGk@unreal>
- <4e5d49fe-38a3-4891-3755-3decf8ffebda@linux.dev>
- <1c6c286460ac6450d1ae7a93efd4c062@linux.dev>
+        with ESMTP id S229599AbiJKKAU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Oct 2022 06:00:20 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC3C3343A;
+        Tue, 11 Oct 2022 03:00:17 -0700 (PDT)
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29B9tIKb006463;
+        Tue, 11 Oct 2022 09:59:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=rsi++8Kv70P/yyaG5N63ukoqzzaV32xXultfsAN+sgY=;
+ b=b9WrKX6EJhkwDas+5wQJeAb2oflElkQO3Ljn8q8IiYGku406jhrTUM1QFFSYZPFNdFKo
+ QHKpdpz+dy38RreLu0fUmM6qnpOScfAfMCKM/XDDc0eenMPRVJyB1RlO6H/T2c9TEfEu
+ hK0orCiQnVvs2Xeg2cLtK5eQXHPw0hzLK43X6e9sknHM/b0YWS55t+kKmywfWSvUyDye
+ YNyh/te56N5fSc0tbPKKLOp4apFrXLDvZpYTL9AYNeZvLOaJgu6ULqrutiVzLDgBe4AG
+ VodfO95fsMEXeDJoBpykCHBGmpu4cocaq5++1kXg6MVP2WJiWMl8qYN+9OSEl3yDnTVx SA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k569g03km-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 Oct 2022 09:59:09 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 29B9tmI8010269;
+        Tue, 11 Oct 2022 09:59:08 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k569g03hx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 Oct 2022 09:59:08 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29B9oZnZ003829;
+        Tue, 11 Oct 2022 09:59:05 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 3k30u9c3hv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 Oct 2022 09:59:05 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 29B9sJie47120848
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 Oct 2022 09:54:19 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 10739A405B;
+        Tue, 11 Oct 2022 09:59:02 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30E5BA4054;
+        Tue, 11 Oct 2022 09:59:00 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.239])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 11 Oct 2022 09:59:00 +0000 (GMT)
+Date:   Tue, 11 Oct 2022 11:58:59 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph =?iso-8859-1?Q?B=F6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Airlie <airlied@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Helge Deller <deller@gmx.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Graf <tgraf@suug.ch>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
+        kernel-janitors@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        loongarch@lists.linux.dev, netdev@vger.kernel.org,
+        sparclinux@vger.kernel.org, x86@kernel.org,
+        Jan Kara <jack@suse.cz>, "Darrick J . Wong" <djwong@kernel.org>
+Subject: Re: [PATCH v6 1/7] treewide: use prandom_u32_max() when possible,
+ part 1
+Message-ID: <Y0U+Y+VBqefDAZRG@osiris>
+References: <20221010230613.1076905-1-Jason@zx2c4.com>
+ <20221010230613.1076905-2-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1c6c286460ac6450d1ae7a93efd4c062@linux.dev>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221010230613.1076905-2-Jason@zx2c4.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: e2CZuGMXbt8P1Ahw-KHczcjQF2nFCX-z
+X-Proofpoint-ORIG-GUID: wAGriSa-6j8SChamwbK6r6GTq7mVMlOg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-10-11_03,2022-10-10_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ malwarescore=0 clxscore=1011 mlxscore=0 spamscore=0 mlxlogscore=427
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2210110053
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Oct 09, 2022 at 10:20:53AM +0000, yanjun.zhu@linux.dev wrote:
-> September 28, 2022 2:04 PM, "Leon Romanovsky" <leon@kernel.org> wrote:
-> 
-> > On Tue, Sep 27, 2022 at 06:58:50PM +0800, Yanjun Zhu wrote:
-> > 
-> >> 在 2022/9/27 18:34, Leon Romanovsky 写道:
-> >> On Sun, Sep 25, 2022 at 10:40:33PM -0400, yanjun.zhu@linux.dev wrote:
-> >>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> >>> 
-> >>> When the net devices are moved to another net namespace, the command
-> >>> "rdma link" should not dispaly the rdma link about this net device.
-> >>> 
-> >>> For example, when the net device eno12399 is moved to net namespace net0
-> >>> from init_net, the rdma link of eno12399 should not display in init_net.
-> >>> 
-> >>> Before this change:
-> >>> 
-> >>> Init_net:
-> >>> 
-> >>> link roceo12399/1 state DOWN physical_state DISABLED <---should not display
-> >>> link roceo12409/1 state DOWN physical_state DISABLED netdev eno12409
-> >>> link rocep202s0f0/1 state DOWN physical_state DISABLED netdev ens7f0
-> >>> link rocep202s0f1/1 state ACTIVE physical_state LINK_UP netdev ens7f1
-> >>> 
-> >>> net0:
-> >>> 
-> >>> link roceo12399/1 state DOWN physical_state DISABLED netdev eno12399
-> >>> link roceo12409/1 state DOWN physical_state DISABLED <---should not display
-> >>> link rocep202s0f0/1 state DOWN physical_state DISABLED <---should not display
-> >>> link rocep202s0f1/1 state ACTIVE physical_state LINK_UP <---should not display
-> >>> 
-> >>> After this change
-> >>> 
-> >>> Init_net:
-> >>> 
-> >>> link roceo12409/1 state DOWN physical_state DISABLED netdev eno12409
-> >>> link rocep202s0f0/1 state DOWN physical_state DISABLED netdev ens7f0
-> >>> link rocep202s0f1/1 state ACTIVE physical_state LINK_UP netdev ens7f1
-> >>> 
-> >>> net0:
-> >>> 
-> >>> link roceo12399/1 state DOWN physical_state DISABLED netdev eno12399
-> >>> 
-> >>> Fixes: da990ab40a92 ("rdma: Add link object")
-> >>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> >>> ---
-> >>> rdma/link.c | 3 +++
-> >>> 1 file changed, 3 insertions(+)
-> >>> 
-> >>> diff --git a/rdma/link.c b/rdma/link.c
-> >>> index bf24b849..449a7636 100644
-> >>> --- a/rdma/link.c
-> >>> +++ b/rdma/link.c
-> >>> @@ -238,6 +238,9 @@ static int link_parse_cb(const struct nlmsghdr *nlh, void *data)
-> >>> return MNL_CB_ERROR;
-> >>> }
-> >>> + if (!tb[RDMA_NLDEV_ATTR_NDEV_NAME] || !tb[RDMA_NLDEV_ATTR_NDEV_INDEX])
-> >>> + return MNL_CB_OK;
-> >>> +
-> >> Regarding your question where it should go in addition to RDMA, the answer
-> >> is netdev ML. The rdmatool is part of iproute2 and the relevant maintainers
-> >> should be CCed.
-> >> Thanks. I will also send it to netdev ML and CC the maintainers.
-> >> 
-> >> Regarding the change, I don't think that it is right. User space tool is
-> >> a simple viewer of data returned from the kernel. It is not a mistake to
-> >> return device without netdev.
-> >> 
-> >> Normally a rdma link based on RoCEv2 should be with a NIC. This NIC device
-> >> 
-> >> will send/recv udp packets. With mellanox/intel NIC device, this net device
-> >> also
-> >> 
-> >> do more work than sending/receiving packets.
-> >> 
-> >> From this perspective, a rdma link is dependent on a net device.
-> >> 
-> >> In this problem, net device is moved to another net namespace. So it can not
-> >> be
-> >> 
-> >> obtained.  And this rdma link can also not work in this net namespace.
-> >> 
-> >> So this rdma link should not appear in this net namespace. Or else, it would
-> >> confuse
-> >> 
-> >> the user.
-> >> 
-> >> In fact, net namespace is a concept in tcp/ip stack. And it does not exist
-> >> in rdma stack.
-> > 
-> > RDMA has two different net namespace mode: shared and exclusive.
-> > 
-> > In shared mode, the IB devices are shared across all net namespaces and
-> > "moving" net device into different namespace just "hides" it, but don't
-> > disconnect.
-> 
-> Hi, Leon
-> 
-> About RDMA shared and exclusive mode, I am confusing about this scenario:
-> 
-> In shared mode, ib device A is in net namespace A1 while netdev device B is in net namespace B1.
-> IB device A is dependent on netdev device B. How to make tests in the above scenario?
-> Both rping and perftest need a IP address to work. But now ip address is in net namespace B1 while
-> ib device A is in net namespace A1.
-> 
-> In the product environment, does the above scenario exist?
+On Mon, Oct 10, 2022 at 05:06:07PM -0600, Jason A. Donenfeld wrote:
+> Rather than incurring a division or requesting too many random bytes for
+> the given range, use the prandom_u32_max() function, which only takes
+> the minimum required bytes from the RNG and avoids divisions. This was
+...
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Yury Norov <yury.norov@gmail.com>
+> Reviewed-by: KP Singh <kpsingh@kernel.org>
+> Reviewed-by: Jan Kara <jack@suse.cz> # for ext4 and sbitmap
+> Reviewed-by: Christoph B�hmwalder <christoph.boehmwalder@linbit.com> # for drbd
+> Acked-by: Ulf Hansson <ulf.hansson@linaro.org> # for mmc
+> Acked-by: Darrick J. Wong <djwong@kernel.org> # for xfs
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+>  arch/s390/kernel/process.c                    |  2 +-
+>  arch/s390/kernel/vdso.c                       |  2 +-
 
-Yes and no at the same time.
-
-Yes:
-The whole net namespace support is needed for containers. In old
-versions of rdma-core, libibverbs relied on /sys/class/infiniband/
-structure. This is why we need "shared" mode, where IB exists without
-relation to netdev.
-
-No:
-Like you said, it won't work for RoCE and iWARP.
-
-Thanks
-
-> 
-> Thanks and Regards,
-> Zhu Yanjun
-> 
-> > 
-> > See comments around various usages of ib_devices_shared_netns variable.
-> > 
-> > Thanks
+For s390:
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
