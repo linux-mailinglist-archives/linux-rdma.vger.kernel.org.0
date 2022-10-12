@@ -2,169 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 570745FC493
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Oct 2022 13:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073DA5FC71A
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Oct 2022 16:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbiJLL4M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Oct 2022 07:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
+        id S229489AbiJLOQ6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Oct 2022 10:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbiJLL4K (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Oct 2022 07:56:10 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B82F140FD
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Oct 2022 04:56:08 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id r14so25408591lfm.2
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Oct 2022 04:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aYIY89oVfV3Cha2m/C5Rzwmm5SoCmP3eO+T8yBTmbq4=;
-        b=F0R4zaldS6d5aXR1L7VatOhgCFFjZC/G6zsWmVyVQre2KSUZ979mYjoLHGjdJ8xy3T
-         4RTb8ABdPlRwCkrKbAydSPgM8i9VbuJVjx4GNuyD7GMw9p6HqJbT7BpYcbt4sZNmYvp7
-         ir/dhkkMUN08bieuSqtCDluRAeoMaJKHGwnNunMbrCtaJpq28TW7jhWfSp1pb4YPLJ/U
-         9RROFY4L7Q82oZFBkbubPQobC9URohFP3c/Nbq+U7+KFOwRJEWSHW7BZ2U89L6OpGJqj
-         nm4m0ASfsK3aBLGnuWc8HBlhkq7EcbaX9Bd9gwQKrWe6QAmfFrbBwSm49mx7zWmVhimJ
-         +tnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aYIY89oVfV3Cha2m/C5Rzwmm5SoCmP3eO+T8yBTmbq4=;
-        b=Xu9tP/6Fgz1mVQIukbUZHfFregQ6F4LumJZP97sKvBVkrbj+7MPh9aEO4XyaJiHtkW
-         Nhm8TNte8biyTqtfUo/Raw58JJIoq/BrqMM+i6JofLI8I32W3zyDWmnF/KQvqERSlxHC
-         MufIaBb9FABzXRJA8e18hafkqAhcdAT8fAQNrf3vb1bAOekBA0OGcQYWXa7CwVaw9BAr
-         om9kebXq6haMEmM2N+gSjdYWk/F1YZJfbUv3kA5BAoHhh7V+JJ3d59joii8i8BkJ/U3g
-         /RKVgeZ60gkkHfnmpfWjdQ5r2kzFV52cUCVzCPaJAMTborTw2DZ07UXS5lBzr6hA/dJB
-         ljvQ==
-X-Gm-Message-State: ACrzQf1cNID24ec1yMRUrpQfykfQ6djEfj3wByKleTW1H8Dd0lfUj/E8
-        P4fwU3RFYiJoh8vAttRszAYu6Cy8za6nWCQHS5jlSXCnWac=
-X-Google-Smtp-Source: AMsMyM77WIsn5veYY1FHU6uEub7t4BL92WdwxonHMHlVmEpwqBGKqWx2glgF8fTR8/zCFqykygFDCmpaXGg4/TG522U=
-X-Received: by 2002:ac2:46d9:0:b0:4a2:22e1:4ad1 with SMTP id
- p25-20020ac246d9000000b004a222e14ad1mr9862681lfo.19.1665575766846; Wed, 12
- Oct 2022 04:56:06 -0700 (PDT)
+        with ESMTP id S229604AbiJLOQ5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Oct 2022 10:16:57 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8A669F7A
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Oct 2022 07:16:56 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29CE3qY0012248;
+        Wed, 12 Oct 2022 14:16:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2022-7-12;
+ bh=Oe/Kys43RAnTQ9BFdjyHBdz07vfOf8ZqyTFl0oxIJPI=;
+ b=sPyCihOCOAA4xW/bgCVRDMOmG31cyiyJy5b/IBQBXcvGcrdRqXwOyMz5ph+IPCXHHhbT
+ lWxlP4RE7j+meFFZ+pNd7umsLJ+oVY5NpP+uS74mxG2niT0lY3OWKMlV0mrQO3qvzgjC
+ UkNqzwsd4pMalf+PqfSAONtifXTX3LBKGtCcEh8v1TRGMrCxCLjKyAuUFFpoyuNRtydB
+ uGr/1XFa29KSJ0IxmZAa3MfJRWzDcZjy3AtyV6U8ZvL3BwHJ02ef+dks3QEOVGKR8Qy+
+ ofXUcwa37tBNVSWa3PvTji0pLLiARA1O6YE4b1RPWXDDes8G2AXqpbGPVRl5/3wuZuRB 9A== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3k3003244v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 Oct 2022 14:16:46 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29CDVISu008518;
+        Wed, 12 Oct 2022 14:16:45 GMT
+Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3k2yn4w99v-1;
+        Wed, 12 Oct 2022 14:16:44 +0000
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc] RDMA/cma: Use output interface for net_dev check
+Date:   Wed, 12 Oct 2022 16:15:42 +0200
+Message-Id: <20221012141542.16925-1-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 2.16.2
 MIME-Version: 1.0
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Wed, 12 Oct 2022 13:55:55 +0200
-Message-ID: <CAMGffEmiu2BPx6=KW+7_+pzD-=hb8sX9r5cJ1_NovmrWG9xFuA@mail.gmail.com>
-Subject: [BUG] mlx5_core general protection fault in mlx5_cmd_comp_handler
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-12_06,2022-10-12_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
+ definitions=main-2210120094
+X-Proofpoint-ORIG-GUID: lJ6kqLz25I6vX_KAIe0IeMMUUgV-JL1H
+X-Proofpoint-GUID: lJ6kqLz25I6vX_KAIe0IeMMUUgV-JL1H
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Leon, hi Saeed,
+Commit 27cfde795a96 ("RDMA/cma: Fix arguments order in net device
+validation") swapped the src and dst addresses in the call to
+validate_net_dev().
 
-We have seen crashes during server shutdown on both kernel 5.10 and
-kernel 5.15 with GPF in mlx5 mlx5_cmd_comp_handler function.
+As a consequence, the test in validate_ipv4_net_dev() to see if the
+net_dev is the right one, is incorrect for port 1 <-> 2 communication
+when the ports are on the same sub-net. This is fixed by denoting the
+flowi4_oif as the device instead of the incoming one.
 
-All of the crashes point to
+The bug has not been observed using IPv6 addresses.
 
-1606                         memcpy(ent->out->first.data,
-ent->lay->out, sizeof(ent->lay->out));
+Fixes: 27cfde795a96 ("RDMA/cma: Fix arguments order in net device validation")
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+---
+ drivers/infiniband/core/cma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I guess, it's kind of use after free for ent buffer. I tried to reprod
-by repeatedly reboot the testing servers, but no success  so far.
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 925e1e7d1f1f3..2f95e12296fa2 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -1634,7 +1634,7 @@ static bool validate_ipv4_net_dev(struct net_device *net_dev,
+ 		return false;
+ 
+ 	memset(&fl4, 0, sizeof(fl4));
+-	fl4.flowi4_iif = net_dev->ifindex;
++	fl4.flowi4_oif = net_dev->ifindex;
+ 	fl4.daddr = daddr;
+ 	fl4.saddr = saddr;
+ 
+-- 
+2.16.2
 
-A sample output from kernel 5.15.32
-
-<30>[ 1246.308327] systemd-shutdown[1]: Rebooting.
-
-<6>[ 1246.308429] kvm: exiting hardware virtualization
-
-<6>[ 1246.602813] megaraid_sas 0000:65:00.0:
-megasas_disable_intr_fusion is called outbound_intr_mask:0x40000009
-
-<6>[ 1246.605901] mlx5_core 0000:4b:00.1: Shutdown was called
-
-<6>[ 1246.608371] mlx5_core 0000:4b:00.0: Shutdown was called
-
-<4>[ 1246.608811] general protection fault, probably for non-canonical
-address 0xb028ffa964bb3e4b: 0000 [#1] SMP
-
-<4>[ 1246.615211] CPU: 95 PID: 5670 Comm: kworker/u256:6 Tainted: G
-       O      5.15.32-pserver
-#5.15.32-1+feature+linux+5.15.y+20220405.0441+03895bda~deb11
-
-<4>[ 1246.628483] Hardware name: Dell Inc. PowerEdge R650/0PYXKY, BIOS
-1.5.5 02/10/2022
-
-<4>[ 1246.635401] Workqueue: mlx5_cmd_0000:4b:00.0 cmd_work_handler [mlx5_core]
-
-<4>[ 1246.642459] RIP: 0010:mlx5_cmd_comp_handler+0xda/0x490 [mlx5_core]
-
-<4>[ 1246.649707] Code: b0 00 00 00 01 0f 84 9a 02 00 00 4c 89 ff e8
-9d e5 ff ff e8 28 86 34 db 49 8b 97 00 01 00 00 49 89 87 20 01 00 00
-49 8b 47 10 <48> 8b 72 20 48 8b 7a 28 31 d2 48 89 70 1c 4c 89 fe 48 89
-78 24 48
-
-<4>[ 1246.664596] RSP: 0018:ff59e28ca3103db0 EFLAGS: 00010202
-
-<4>[ 1246.672167] RAX: ff25be460afc4580 RBX: ff25be460d196180 RCX:
-0000000000000017
-
-<4>[ 1246.679804] RDX: b028ffa964bb3e2b RSI: 000000000003a550 RDI:
-000ce7c15700ae52
-
-<4>[ 1246.687528] RBP: ff59e28ca3103e28 R08: 0000000000000001 R09:
-ffffffffc0dc5500
-
-<4>[ 1246.695331] R10: ff25be4607793000 R11: ff25be4607793000 R12:
-0000000000000000
-
-<4>[ 1246.703167] R13: ff25be460d196180 R14: ff25be460d1962a8 R15:
-ff25be4607793000
-
-<4>[ 1246.711051] FS:  0000000000000000(0000)
-GS:ff25bec4019c0000(0000) knlGS:0000000000000000
-
-<4>[ 1246.719000] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-
-<4>[ 1246.726844] CR2: 00007f82d8850006 CR3: 000000695760a004 CR4:
-0000000000771ee0
-
-<4>[ 1246.734856] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-
-<4>[ 1246.742757] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-
-<4>[ 1246.750573] PKRU: 55555554
-
-<4>[ 1246.758289] Call Trace:
-
-<4>[ 1246.765755]  <TASK>
-
-<4>[ 1246.772997]  ? dump_command+0x159/0x3d0 [mlx5_core]
-
-<4>[ 1246.780267]  cmd_work_handler+0x270/0x5d0 [mlx5_core]
-
-<4>[ 1246.787576]  process_one_work+0x1d6/0x370
-
-<4>[ 1246.794669]  worker_thread+0x4d/0x3d0
-
-<4>[ 1246.801796]  ? rescuer_thread+0x390/0x390
-
-<4>[ 1246.808895]  kthread+0x124/0x150
-
-<4>[ 1246.815957]  ? set_kthread_struct+0x40/0x40
-
-<4>[ 1246.823051]  ret_from_fork+0x1f/0x30
-
-<4>[ 1246.830076]  </TASK>
-
-Is this problem known, maybe already fixed?
-I briefly checked the git, don't see anything, could you give me some hint?
-
-
-Thanks!
-Jinpu Wang @ IONOS
