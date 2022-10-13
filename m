@@ -2,71 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B37725FDE31
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 18:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B01C5FDEC6
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 19:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbiJMQVg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Oct 2022 12:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
+        id S229744AbiJMRRw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Oct 2022 13:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbiJMQVd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 12:21:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBCBA3F69;
-        Thu, 13 Oct 2022 09:21:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 182AB6173A;
-        Thu, 13 Oct 2022 16:21:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5671C433D6;
-        Thu, 13 Oct 2022 16:21:28 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="GP4P33Go"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1665678086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kPntWr7A6bA616PExnbnx5reDbccdV4V+F7u1oTVbdw=;
-        b=GP4P33GoTZTXwgHWO1z/FqyjryY8qsqfXNBCumID69G06rmzAbuflrmGXm0knLxOwy6AOV
-        r5Se8is8rcJ8teWZq2zoRDvfJGTZawQk7FulxMoGHupIBrT9us1rnRt6jRmg3GIbXoJ/w6
-        20UjSRmQn/6S5nyrDvb7rvSacSvCVHE=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 5f752f1b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 13 Oct 2022 16:21:25 +0000 (UTC)
-Date:   Thu, 13 Oct 2022 10:21:18 -0600
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Rolf Eike Beer <eike-kernel@sf-tec.de>
-Cc:     Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev, Andrew Morton <akpm@linux-foundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Graf <tgraf@suug.ch>, kasan-dev@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-janitors@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        loongarch@lists.linux.dev, netdev@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v6 5/7] treewide: use get_random_u32() when possible
-Message-ID: <Y0g6/sIJMq/JRe6y@zx2c4.com>
-References: <20221010230613.1076905-1-Jason@zx2c4.com>
- <3026360.ZldQQBzMgz@eto.sf-tec.de>
- <20221013101635.GB11818@breakpoint.cc>
- <11986571.xaOnivgMc4@eto.sf-tec.de>
+        with ESMTP id S229724AbiJMRRu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 13:17:50 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D198FD25B4
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 10:17:49 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id p127so1782070oih.9
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 10:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pAJbCkDilMBxukjPuJ+10gXj4BnrryqJ690otd7Rbvc=;
+        b=Aq6WGcFnnOHjfA9G+92Eeu42LMvF2zBmdjGthxN2asYrsnb/pTD9EjBkTqlU61QjEz
+         7txNuHjrm3qtGPdEo6idw/wZ7hJQSeKZ0Zf+tKwq/FXycim4CwTQUx8B3hA39QM7NrS4
+         FO/8ODFyccvMKmePuXzv+nqG/KLIRx/v5nyimvAHsFh5W+oj+WjRCyhR7sz4+EIuU95M
+         KbUgQGholdco3AXyXEmRk58mJOwMfnCI/9YinmuKV1+Rs/pEfE1BBJl2j9Q+txAaPbTw
+         jrWe0IvO3F2Hv+M1lr6m2VBi4RFWOTtyoXdNI12vwyqbyo4MMpsg16zPwnprnxsDe9oX
+         bHPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pAJbCkDilMBxukjPuJ+10gXj4BnrryqJ690otd7Rbvc=;
+        b=SkzX84+zg8DGUpA9FrMv92OjvlLa6bQgJ6TLgvxPTdPcU/ZQS7QkXaeuJ2IPxGdADD
+         vw/h1cc5ABA+EyzSryVkEg2zwojWoOTKdBxtPip4SGOX90L03Op8XwygBg4CmaUN6Ikj
+         AXudJnHQmPMu061H/XSkac5L+GYLeYFKs0JremTkgNnGaf1fIBldeXk6v1CUIJ1YX0ji
+         i5ED13eartSz7vy9uBF1EKxCIgTAzkYcV/5deaS02a9QS+Gxdfo4DgwPCna1KsbZ4DMq
+         InTvhNWuOfTng0zEMoOdMWc7WNtTVbryLi0xwbGC0LIrYOPpcLsH73cV55tbeEot1J2n
+         Z1Cg==
+X-Gm-Message-State: ACrzQf1IKwXdwDlYlsaqrEpRyGNUEWuM8VGjrna7AfmfMsowCKkC61wO
+        FGUcRuwqzEiMsNmG0/gczDQ=
+X-Google-Smtp-Source: AMsMyM6bjWZiorkIfpSfcBdqZmRPjuAXxX4Yfp9n2HdYC6jACYUN2XldVCnWEBC2UcrjxIu2XDgoxw==
+X-Received: by 2002:aca:bbd4:0:b0:353:f167:6fd3 with SMTP id l203-20020acabbd4000000b00353f1676fd3mr402538oif.287.1665681469098;
+        Thu, 13 Oct 2022 10:17:49 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:2ba6:2a0:8249:dec6? (2603-8081-140c-1a00-2ba6-02a0-8249-dec6.res6.spectrum.com. [2603:8081:140c:1a00:2ba6:2a0:8249:dec6])
+        by smtp.gmail.com with ESMTPSA id v81-20020aca6154000000b0034fc91dbd7bsm27345oib.58.2022.10.13.10.17.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Oct 2022 10:17:48 -0700 (PDT)
+Message-ID: <8a5dc704-5f10-fa59-6db8-f4e684121233@gmail.com>
+Date:   Thu, 13 Oct 2022 12:17:47 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <11986571.xaOnivgMc4@eto.sf-tec.de>
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [PATCH for-next 00/13] Implement the xrc transport
+Content-Language: en-US
+To:     "matsuda-daisuke@fujitsu.com" <matsuda-daisuke@fujitsu.com>,
+        'Jason Gunthorpe' <jgg@nvidia.com>
+Cc:     "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20220917031104.21222-1-rpearsonhpe@gmail.com>
+ <YzIyHsRUy4gNeJL8@nvidia.com>
+ <TYCPR01MB84557734DE313F81A10D30B1E5559@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+ <2d0420d9-b2b2-1a23-084c-6104bac18838@gmail.com>
+ <TYCPR01MB8455C2E2DCD507C32051E929E5579@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+ <TYCPR01MB84554785DE728A68EFF385C1E5229@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <TYCPR01MB84554785DE728A68EFF385C1E5229@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,22 +81,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 01:40:40PM +0200, Rolf Eike Beer wrote:
-> Am Donnerstag, 13. Oktober 2022, 12:16:35 CEST schrieb Florian Westphal:
-> > Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
-> > > Florian, can you comment and maybe fix it?
-> > 
-> > Can't comment, do not remember -- this was 5 years ago.
-> > 
-> > > Or you wanted to move the variable before the loop and keep the random
-> > > state between the loops and only reseed when all '1' bits have been
-> > > consumed.
-> > Probably.  No clue, best to NOT change it to not block Jasons series and
-> > then just simplify this and remove all the useless shifts.
+On 10/12/22 02:41, matsuda-daisuke@fujitsu.com wrote:
+> Hi Bob,
 > 
-> Sure. Jason, just in case you are going to do a v7 this could move to u8 then.
+> I am ready and willing to review your workqueue implementation.
+> Could you inform me of the current status of the patch series?
+> Are you having trouble rebasing it? 
+> 
+> Daisuke
+> 
+>>>> The ODP patch series is the one I posted for rxe this month:
+>>>>   [RFC PATCH 0/7] RDMA/rxe: On-Demand Paging on SoftRoCE
+>>>>   https://lore.kernel.org/lkml/cover.1662461897.git.matsuda-daisuke@fujitsu.com/
+>>>>   https://patchwork.kernel.org/project/linux-rdma/list/?series=674699&state=%2A&archive=both
+>>>>
+>>>> We had an argument about the way to use workqueues instead of tasklets.
+>>>> Some prefer to get rid of tasklets, but others prefer finding a way to switch
+>>>> between the bottom halves for performance reasons. I am currently taking
+>>>> some data to continue the discussion while waiting for Bob to post their(HPE's)
+>>>> implementation that enables the switching. I think I can resend the ODP patches
+>>>> without an RFC tag once we reach an agreement on this point.
+>>>
+>>> I tried to get Ian Ziemba, who wrote the patch series, to send it in but he is very busy
+>>> and finally after a long while he asked me to do that. I have to rebase it from
+>>> an older kernel to head of tree. I hope to have that done in a day or two.
+>>>
+>>> Bob
+>>
+>> Thank you for the update.
+>> I am glad to hear your work is in progress just now.
+>> I am looking forward to seeing your work!
+>>
+>> Daisuke
+> 
 
-Indeed I think this is one to send individually to netdev@ once the tree
-opens there for 6.2.
+I know. Thanks. It's ready to send in. I am testing the performance and was surprised that the tasklet performance has gotten better in 6.0. Not sure why. I'll send it today.
 
-Jason
+Bob
