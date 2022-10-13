@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 702565FCF3C
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 02:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81155FD028
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 02:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbiJMAQT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Oct 2022 20:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
+        id S230486AbiJMAYv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Oct 2022 20:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbiJMAQP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Oct 2022 20:16:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C7BD2CE7;
-        Wed, 12 Oct 2022 17:16:14 -0700 (PDT)
+        with ESMTP id S231299AbiJMAYO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Oct 2022 20:24:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CD4104D31;
+        Wed, 12 Oct 2022 17:22:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B2CED616B6;
-        Thu, 13 Oct 2022 00:16:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BF06C433C1;
-        Thu, 13 Oct 2022 00:16:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 08883616BE;
+        Thu, 13 Oct 2022 00:19:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1A22C43470;
+        Thu, 13 Oct 2022 00:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665620173;
-        bh=2vttJVL/wGU2aeD9rhWr5CzNN4oH2sKTlJIu2eSZwmQ=;
+        s=k20201202; t=1665620343;
+        bh=7La2O9nGNKQitcBs24OLPlXs/LRT+Ca0fFDBGqHMwGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nAZSV6AMD0UHS1LoIOrLIxWghhoiEUhwwYws8cTbcbIjNISXyQ+08vMdI/9ZScE7J
-         XNnGBIDMDVxslYcM34wgUqa6YXDDDMI5YjcX8I0vlU3pM6m5LgO4tA6q8i6MwQ2yJI
-         7hZCEDvC1RRah9oohJ6047kn+Cl0SIbxg14SkhAyaaHRM0eVZ8T2m1QTQnryStBDXu
-         KzdelqOvXnU2Hy14842LvOFy91TGoAVkUJN4tz9OwRRpF3fRkqO6WCYBPuuiHKzUy1
-         LjXYAOc4rAGsk4VzG0MQaoTxtG01lNibjv2prwpAKe67BCmqPJK9Mq1Rnw9k3z7qf4
-         jg3g6qU++lMgA==
+        b=bXAib9E3DXiyqok0Vg17JuYJU15JvFQcB+pEKn/6ECNA1AnIq2/9C1MGyIfatQUTY
+         WLYogr1MS6+GUBJ9JXopzeFDeKo37DuoAN8P7AylgUX5kp/Auy92mjBga44MXdXZO+
+         6otjfmsJX2s4dZbxE8FAnfem2C3K3nd7JbvJPuWaQX0l+lgdgIAwKZFVmlYabp0/DU
+         dMUPfjc9BFYE8pvng9iT2TjAz1RY1fHoQhTlt9CqDAkiE3sTb77JEcje1yB5dq+jBY
+         xplPuGUad+B69sEjYwqCicuhNFStf44ODl31BqjibA0Gh3OaQ8AH+xpIHoQtyGEYw2
+         BmjA/MG/oVlcg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
         Leon Romanovsky <leon@kernel.org>,
         Sasha Levin <sashal@kernel.org>, zyjzyj2000@gmail.com,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 06/67] RDMA/rxe: Delete error messages triggered by incoming Read requests
-Date:   Wed, 12 Oct 2022 20:14:47 -0400
-Message-Id: <20221013001554.1892206-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.19 06/63] RDMA/rxe: Delete error messages triggered by incoming Read requests
+Date:   Wed, 12 Oct 2022 20:17:40 -0400
+Message-Id: <20221013001842.1893243-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221013001554.1892206-1-sashal@kernel.org>
-References: <20221013001554.1892206-1-sashal@kernel.org>
+In-Reply-To: <20221013001842.1893243-1-sashal@kernel.org>
+References: <20221013001842.1893243-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -74,10 +74,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index b36ec5c4d5e0..7c336db5cb54 100644
+index e38bf958ab48..2ef21a1cba81 100644
 --- a/drivers/infiniband/sw/rxe/rxe_resp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -809,10 +809,8 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+@@ -787,10 +787,8 @@ static enum resp_states read_reply(struct rxe_qp *qp,
  	if (!skb)
  		return RESPST_ERR_RNR;
  
@@ -90,7 +90,7 @@ index b36ec5c4d5e0..7c336db5cb54 100644
  	if (mr)
  		rxe_put(mr);
  
-@@ -823,10 +821,8 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+@@ -801,10 +799,8 @@ static enum resp_states read_reply(struct rxe_qp *qp,
  	}
  
  	err = rxe_xmit_packet(qp, &ack_pkt, skb);
