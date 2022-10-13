@@ -2,260 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AED55FD700
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 11:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2105FD78D
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 12:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbiJMJZe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Oct 2022 05:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
+        id S229678AbiJMKDu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Oct 2022 06:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiJMJZb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 05:25:31 -0400
-Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5F9D8EE7
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 02:25:28 -0700 (PDT)
-Received: (qmail 7803 invoked from network); 13 Oct 2022 09:25:01 -0000
-Received: from p200300cf070ada0076d435fffeb7be92.dip0.t-ipconnect.de ([2003:cf:70a:da00:76d4:35ff:feb7:be92]:60562 HELO eto.sf-tec.de) (auth=eike@sf-mail.de)
-        by mail.sf-mail.de (Qsmtpd 0.38dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Oct 2022 11:25:01 +0200
-From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
-To:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Florian Westphal <fw@strlen.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Graf <tgraf@suug.ch>, kasan-dev@googlegroups.com
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-janitors@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        loongarch@lists.linux.dev, netdev@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v6 5/7] treewide: use get_random_u32() when possible
-Date:   Thu, 13 Oct 2022 11:25:11 +0200
-Message-ID: <3026360.ZldQQBzMgz@eto.sf-tec.de>
-In-Reply-To: <20221010230613.1076905-6-Jason@zx2c4.com>
-References: <20221010230613.1076905-1-Jason@zx2c4.com> <20221010230613.1076905-6-Jason@zx2c4.com>
+        with ESMTP id S229660AbiJMKDt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 06:03:49 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213CEB1C4;
+        Thu, 13 Oct 2022 03:03:48 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id a13so1943109edj.0;
+        Thu, 13 Oct 2022 03:03:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YkfSrLawJkCOnCmEIszje28r/jjOo0B9M1Q/HwavUR0=;
+        b=NXM7iu0eUsDEY12rm2wMW7Qx5rtC+ohPufzxETcK2aTDQ3YN/KeUX6QKr4QdZAyJZg
+         ebQOc74W7SoIjtti5VilwBVSO1tp+5hLtbzqBrhj8AhMgXjvjOLSrK0yYrwXDzS3eDJ3
+         QkDfw9z0JYBnchuH8OxkC7eHcR17+donYCNkCjA3boqfVos2dfwtDePfEoLbLntT5pIn
+         3lPMJ+Pgg1ANTu4Ry6kUEpIOgzLquQbocL6kxugSQh34RnkjdTlnIrSRLV8SMXvI0pf0
+         dsbkjHORiE+ayQADNma8fhi1H6GmzUSsO81TgLiv3kU54PUMABsR35yy8rjqQiMTi0ZX
+         zsWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YkfSrLawJkCOnCmEIszje28r/jjOo0B9M1Q/HwavUR0=;
+        b=Vzxj56thF24iChqzWB1PzZ5MOjLREYgpV2b71j+s6btnLJLbFJJg5qaqr3cBVC6GZi
+         S0EE1vz9DKdvLweouDUDkeoTN9HMRqyDtXEYuf1inLN6+xBPNPgdfVOl8V+sie6M0ohP
+         oZOZ0+SPTPR0GFo7pW0cE3F1FLgIwpybaRbsOC//8XmUws88BG7MdXEkTRMAJwGhkdx1
+         58uMsoqQ/js9GG8RjlKRE6WNUH+igBzdmZBUtd7iLI7x7KT05xOnWy4RwaVTha6PnwTM
+         urPk0qhGy+Ykg7MsSlZKHozMHXVpK2f0xhkQFhIpp+hPSr8XL3b9wwcrCL2/dqFta4CB
+         ZO9Q==
+X-Gm-Message-State: ACrzQf2VfeJakSga4qQRYlIPrJM4WZH9XrJQ0/ZTf0vfJ7j7TJneIONG
+        Iok2LlODV4B/bOrTh2AdEWM=
+X-Google-Smtp-Source: AMsMyM6Ze8RfFcCHJWUGrTWc38UBdjYoIJq7uQFGL9+Ha96tHHz9IQzMbwSIwdjPp+7NX7mTb9tejw==
+X-Received: by 2002:aa7:c78d:0:b0:454:fe1d:8eb1 with SMTP id n13-20020aa7c78d000000b00454fe1d8eb1mr31642060eds.59.1665655426590;
+        Thu, 13 Oct 2022 03:03:46 -0700 (PDT)
+Received: from [192.168.0.106] ([77.126.16.127])
+        by smtp.gmail.com with ESMTPSA id d22-20020aa7d5d6000000b0044dbecdcd29sm12874554eds.12.2022.10.13.03.03.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Oct 2022 03:03:46 -0700 (PDT)
+Message-ID: <446abc60-b954-6c41-e6f6-62e0ff02c9e9@gmail.com>
+Date:   Thu, 13 Oct 2022 13:03:43 +0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3480752.mCL07Ym2y3"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH net] net/mlx5e: Cleanup MACsec uninitialization routine
+To:     Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Emeel Hakim <ehakim@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Raed Salem <raeds@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>
+References: <b43b1c5aadd5cfdcd2e385ce32693220331700ba.1665645548.git.leonro@nvidia.com>
+Content-Language: en-US
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <b43b1c5aadd5cfdcd2e385ce32693220331700ba.1665645548.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---nextPart3480752.mCL07Ym2y3
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; protected-headers="v1"
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Date: Thu, 13 Oct 2022 11:25:11 +0200
-Message-ID: <3026360.ZldQQBzMgz@eto.sf-tec.de>
-In-Reply-To: <20221010230613.1076905-6-Jason@zx2c4.com>
-MIME-Version: 1.0
 
-Am Dienstag, 11. Oktober 2022, 01:06:11 CEST schrieb Jason A. Donenfeld:
-> The prandom_u32() function has been a deprecated inline wrapper around
-> get_random_u32() for several releases now, and compiles down to the
-> exact same code. Replace the deprecated wrapper with a direct call to
-> the real function. The same also applies to get_random_int(), which is
-> just a wrapper around get_random_u32(). This was done as a basic find
-> and replace.
->=20
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Yury Norov <yury.norov@gmail.com>
-> Acked-by: Toke H=F8iland-J=F8rgensen <toke@toke.dk> # for sch_cake
-> Acked-by: Chuck Lever <chuck.lever@oracle.com> # for nfsd
-> Reviewed-by: Jan Kara <jack@suse.cz> # for ext4
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com> # for
-> thunderbolt Acked-by: Darrick J. Wong <djwong@kernel.org> # for xfs
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+
+On 10/13/2022 10:21 AM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> The mlx5e_macsec_cleanup() routine has pointer dereferencing if mlx5 device
+> doesn't support MACsec (priv->macsec will be NULL) together with useless
+> comment line, assignment and extra blank lines.
+> 
+> Fix everything in one patch.
+> 
+> Fixes: 1f53da676439 ("net/mlx5e: Create advanced steering operation (ASO) object for MACsec")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
->  Documentation/networking/filter.rst            |  2 +-
->  arch/parisc/kernel/process.c                   |  2 +-
->  arch/parisc/kernel/sys_parisc.c                |  4 ++--
->  arch/s390/mm/mmap.c                            |  2 +-
->  arch/x86/kernel/cpu/amd.c                      |  2 +-
->  drivers/gpu/drm/i915/i915_gem_gtt.c            |  6 +++---
->  drivers/gpu/drm/i915/selftests/i915_selftest.c |  2 +-
->  drivers/gpu/drm/tests/drm_buddy_test.c         |  2 +-
->  drivers/gpu/drm/tests/drm_mm_test.c            |  2 +-
->  drivers/infiniband/hw/cxgb4/cm.c               |  4 ++--
->  drivers/infiniband/hw/hfi1/tid_rdma.c          |  2 +-
->  drivers/infiniband/hw/mlx4/mad.c               |  2 +-
->  drivers/infiniband/ulp/ipoib/ipoib_cm.c        |  2 +-
->  drivers/md/raid5-cache.c                       |  2 +-
->  .../media/test-drivers/vivid/vivid-touch-cap.c |  4 ++--
->  drivers/misc/habanalabs/gaudi2/gaudi2.c        |  2 +-
->  drivers/net/bonding/bond_main.c                |  2 +-
->  drivers/net/ethernet/broadcom/cnic.c           |  2 +-
->  .../chelsio/inline_crypto/chtls/chtls_cm.c     |  2 +-
->  drivers/net/ethernet/rocker/rocker_main.c      |  6 +++---
->  .../wireless/broadcom/brcm80211/brcmfmac/pno.c |  2 +-
->  .../net/wireless/marvell/mwifiex/cfg80211.c    |  4 ++--
->  .../net/wireless/microchip/wilc1000/cfg80211.c |  2 +-
->  .../net/wireless/quantenna/qtnfmac/cfg80211.c  |  2 +-
->  drivers/net/wireless/ti/wlcore/main.c          |  2 +-
->  drivers/nvme/common/auth.c                     |  2 +-
->  drivers/scsi/cxgbi/cxgb4i/cxgb4i.c             |  4 ++--
->  drivers/target/iscsi/cxgbit/cxgbit_cm.c        |  2 +-
->  drivers/thunderbolt/xdomain.c                  |  2 +-
->  drivers/video/fbdev/uvesafb.c                  |  2 +-
->  fs/exfat/inode.c                               |  2 +-
->  fs/ext4/ialloc.c                               |  2 +-
->  fs/ext4/ioctl.c                                |  4 ++--
->  fs/ext4/mmp.c                                  |  2 +-
->  fs/f2fs/namei.c                                |  2 +-
->  fs/fat/inode.c                                 |  2 +-
->  fs/nfsd/nfs4state.c                            |  4 ++--
->  fs/ntfs3/fslog.c                               |  6 +++---
->  fs/ubifs/journal.c                             |  2 +-
->  fs/xfs/libxfs/xfs_ialloc.c                     |  2 +-
->  fs/xfs/xfs_icache.c                            |  2 +-
->  fs/xfs/xfs_log.c                               |  2 +-
->  include/net/netfilter/nf_queue.h               |  2 +-
->  include/net/red.h                              |  2 +-
->  include/net/sock.h                             |  2 +-
->  kernel/bpf/bloom_filter.c                      |  2 +-
->  kernel/bpf/core.c                              |  2 +-
->  kernel/bpf/hashtab.c                           |  2 +-
->  kernel/bpf/verifier.c                          |  2 +-
->  kernel/kcsan/selftest.c                        |  2 +-
->  lib/random32.c                                 |  2 +-
->  lib/reed_solomon/test_rslib.c                  |  6 +++---
->  lib/test_fprobe.c                              |  2 +-
->  lib/test_kprobes.c                             |  2 +-
->  lib/test_min_heap.c                            |  6 +++---
->  lib/test_rhashtable.c                          |  6 +++---
->  mm/shmem.c                                     |  2 +-
->  mm/slab.c                                      |  2 +-
->  net/core/pktgen.c                              |  4 ++--
->  net/ipv4/route.c                               |  2 +-
->  net/ipv4/tcp_cdg.c                             |  2 +-
->  net/ipv4/udp.c                                 |  2 +-
->  net/ipv6/ip6_flowlabel.c                       |  2 +-
->  net/ipv6/output_core.c                         |  2 +-
->  net/netfilter/ipvs/ip_vs_conn.c                |  2 +-
->  net/netfilter/xt_statistic.c                   |  2 +-
->  net/openvswitch/actions.c                      |  2 +-
->  net/sched/sch_cake.c                           |  2 +-
->  net/sched/sch_netem.c                          | 18 +++++++++---------
->  net/sunrpc/auth_gss/gss_krb5_wrap.c            |  4 ++--
->  net/sunrpc/xprt.c                              |  2 +-
->  net/unix/af_unix.c                             |  2 +-
->  72 files changed, 101 insertions(+), 101 deletions(-)
->=20
+>   .../net/ethernet/mellanox/mlx5/core/en_accel/macsec.c | 11 +----------
+>   1 file changed, 1 insertion(+), 10 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+> index 41970067917b..4331235b21ee 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+> @@ -1846,25 +1846,16 @@ int mlx5e_macsec_init(struct mlx5e_priv *priv)
+>   void mlx5e_macsec_cleanup(struct mlx5e_priv *priv)
+>   {
+>   	struct mlx5e_macsec *macsec = priv->macsec;
+> -	struct mlx5_core_dev *mdev = macsec->mdev;
+> +	struct mlx5_core_dev *mdev = priv->mdev;
+>   
 
-> diff --git a/lib/test_rhashtable.c b/lib/test_rhashtable.c
-> index 5a1dd4736b56..b358a74ed7ed 100644
-> --- a/lib/test_rhashtable.c
-> +++ b/lib/test_rhashtable.c
-> @@ -291,7 +291,7 @@ static int __init test_rhltable(unsigned int entries)
->  	if (WARN_ON(err))
->  		goto out_free;
->=20
-> -	k =3D prandom_u32();
-> +	k =3D get_random_u32();
->  	ret =3D 0;
->  	for (i =3D 0; i < entries; i++) {
->  		rhl_test_objects[i].value.id =3D k;
+simply defer the mdev calculation to be after the early return, trying 
+to keep this macsec function as independent as possible.
 
-This one looks ok.
+>   	if (!macsec)
+>   		return;
+>   
+>   	mlx5_notifier_unregister(mdev, &macsec->nb);
+> -
+>   	mlx5e_macsec_fs_cleanup(macsec->macsec_fs);
+> -
+> -	/* Cleanup workqueue */
+>   	destroy_workqueue(macsec->wq);
+> -
+>   	mlx5e_macsec_aso_cleanup(&macsec->aso, mdev);
+> -
+> -	priv->macsec = NULL;
+> -
 
-> @@ -369,12 +369,12 @@ static int __init test_rhltable(unsigned int entrie=
-s)
->  	pr_info("test %d random rhlist add/delete operations\n", entries);
->  	for (j =3D 0; j < entries; j++) {
->  		u32 i =3D prandom_u32_max(entries);
-> -		u32 prand =3D prandom_u32();
-> +		u32 prand =3D get_random_u32();
->=20
->  		cond_resched();
->=20
->  		if (prand =3D=3D 0)
-> -			prand =3D prandom_u32();
-> +			prand =3D get_random_u32();
->=20
->  		if (prand & 1) {
->  			prand >>=3D 1;
+Why remove this assignment?
 
-But this doesn't make any sense to me. It needs a bit more context:
+It protects against accessing freed memory, for instance when querying 
+the macsec stats, see 
+drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_stats.c
 
->			continue;
->		}
-
-Why would one change prand wen it will be overwritten in the next loop anyw=
-ay?
-
->		err =3D rhltable_remove(&rhlt, &rhl_test_objects[i].list_node, test_rht_=
-params);
->		if (test_bit(i, obj_in_table)) {
->			clear_bit(i, obj_in_table);
->			if (WARN(err, "cannot remove element at slot %d", i))
->				continue;
->		} else {
->			if (WARN(err !=3D -ENOENT, "removed non-existent element %d, error %d n=
-ot %d",
->			     i, err, -ENOENT))
->				continue;
->		}
->
->		if (prand & 1) {
->			prand >>=3D 1;
->			continue;
->		}
-
-The same code again, and in this case it is impossible to reach, as the che=
-ck=20
-already returned false before.
-
-Should these have been something like this in the first place:
-
-	if (prand & 1)
-		prand >>=3D1;
-	else
-		continue;
-
-At least as the code looks now this only ever needs a single bit of randomn=
-ess,
-and the later checks and the shift can go away, but I suspect that somethin=
-g=20
-else was meant with that code.
-
-=46lorian, can you comment and maybe fix it? When possible use prandom_u8()=
- as=20
-it seems to me that you only need 3 bytes of randomness here anyway.
-
-Or you wanted to move the variable before the loop and keep the random state
-between the loops and only reseed when all '1' bits have been consumed. But=
-=20
-even in this case the later checks seem wrong as the value has not changed =
-in=20
-between.
-
-Eike
---nextPart3480752.mCL07Ym2y3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCY0fZeAAKCRBcpIk+abn8
-TntwAJ9xzxWkK3p1U0eDZrP7KBVqifG2qQCfX+QJlO38O9/0GmN/6UVEEt2C1l8=
-=+1Dc
------END PGP SIGNATURE-----
-
---nextPart3480752.mCL07Ym2y3--
-
-
-
+>   	rhashtable_destroy(&macsec->sci_hash);
+> -
+>   	mutex_destroy(&macsec->lock);
+> -
+>   	kfree(macsec);
+>   }
