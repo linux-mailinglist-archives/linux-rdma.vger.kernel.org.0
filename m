@@ -2,106 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D81155FD028
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 02:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4A35FD2D7
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 03:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbiJMAYv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Oct 2022 20:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58428 "EHLO
+        id S229762AbiJMBn1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 12 Oct 2022 21:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbiJMAYO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Oct 2022 20:24:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CD4104D31;
-        Wed, 12 Oct 2022 17:22:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 08883616BE;
-        Thu, 13 Oct 2022 00:19:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1A22C43470;
-        Thu, 13 Oct 2022 00:19:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665620343;
-        bh=7La2O9nGNKQitcBs24OLPlXs/LRT+Ca0fFDBGqHMwGA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bXAib9E3DXiyqok0Vg17JuYJU15JvFQcB+pEKn/6ECNA1AnIq2/9C1MGyIfatQUTY
-         WLYogr1MS6+GUBJ9JXopzeFDeKo37DuoAN8P7AylgUX5kp/Auy92mjBga44MXdXZO+
-         6otjfmsJX2s4dZbxE8FAnfem2C3K3nd7JbvJPuWaQX0l+lgdgIAwKZFVmlYabp0/DU
-         dMUPfjc9BFYE8pvng9iT2TjAz1RY1fHoQhTlt9CqDAkiE3sTb77JEcje1yB5dq+jBY
-         xplPuGUad+B69sEjYwqCicuhNFStf44ODl31BqjibA0Gh3OaQ8AH+xpIHoQtyGEYw2
-         BmjA/MG/oVlcg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 06/63] RDMA/rxe: Delete error messages triggered by incoming Read requests
-Date:   Wed, 12 Oct 2022 20:17:40 -0400
-Message-Id: <20221013001842.1893243-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221013001842.1893243-1-sashal@kernel.org>
-References: <20221013001842.1893243-1-sashal@kernel.org>
+        with ESMTP id S229459AbiJMBnV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Oct 2022 21:43:21 -0400
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7678936DEB;
+        Wed, 12 Oct 2022 18:43:19 -0700 (PDT)
+Received: from omf20.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay02.hostedemail.com (Postfix) with ESMTP id 640C9120237;
+        Thu, 13 Oct 2022 01:37:28 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id 56EDD20026;
+        Thu, 13 Oct 2022 01:37:01 +0000 (UTC)
+Message-ID: <3f527ec95a12135eb40f5f2d156a2954feb7fbfe.camel@perches.com>
+Subject: Re: [PATCH v1 3/5] treewide: use get_random_u32() when possible
+From:   Joe Perches <joe@perches.com>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "dev@openvswitch.org" <dev@openvswitch.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "dccp@vger.kernel.org" <dccp@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        "lvs-devel@vger.kernel.org" <lvs-devel@vger.kernel.org>,
+        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
+        "coreteam@netfilter.org" <coreteam@netfilter.org>,
+        "tipc-discussion@lists.sourceforge.net" 
+        <tipc-discussion@lists.sourceforge.net>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-actions@lists.infradead.org" 
+        <linux-actions@lists.infradead.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "cake@lists.bufferbloat.net" <cake@lists.bufferbloat.net>,
+        "brcm80211-dev-list.pdl@broadcom.com" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Date:   Wed, 12 Oct 2022 18:37:11 -0700
+In-Reply-To: <d45bd258e033453b85a137112e7694e1@AcuMS.aculab.com>
+References: <20221005214844.2699-1-Jason@zx2c4.com>
+         <20221005214844.2699-4-Jason@zx2c4.com>
+         <f8ad3ba44d28dec1a5f7626b82c5e9c2aeefa729.camel@perches.com>
+         <d45bd258e033453b85a137112e7694e1@AcuMS.aculab.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_NONE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Stat-Signature: jmxt1u5agdpi9w76hr4tp6uotie3p373
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 56EDD20026
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18KEIRmyyr9pSEavQqF5X0dTzAEITyiJq4=
+X-HE-Tag: 1665625021-540494
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+On Wed, 2022-10-12 at 21:29 +0000, David Laight wrote:
+> From: Joe Perches
+> > Sent: 12 October 2022 20:17
+> > 
+> > On Wed, 2022-10-05 at 23:48 +0200, Jason A. Donenfeld wrote:
+> > > The prandom_u32() function has been a deprecated inline wrapper around
+> > > get_random_u32() for several releases now, and compiles down to the
+> > > exact same code. Replace the deprecated wrapper with a direct call to
+> > > the real function.
+> > []
+> > > diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+> > []
+> > > @@ -734,7 +734,7 @@ static int send_connect(struct c4iw_ep *ep)
+> > >  				   &ep->com.remote_addr;
+> > >  	int ret;
+> > >  	enum chip_type adapter_type = ep->com.dev->rdev.lldi.adapter_type;
+> > > -	u32 isn = (prandom_u32() & ~7UL) - 1;
+> > > +	u32 isn = (get_random_u32() & ~7UL) - 1;
+> > 
+> > trivia:
+> > 
+> > There are somewhat odd size mismatches here.
+> > 
+> > I had to think a tiny bit if random() returned a value from 0 to 7
+> > and was promoted to a 64 bit value then truncated to 32 bit.
+> > 
+> > Perhaps these would be clearer as ~7U and not ~7UL
+> 
+> That makes no difference - the compiler will generate the same code.
 
-[ Upstream commit 2c02249fcbfc066bd33e2a7375c7006d4cb367f6 ]
+True, more or less.  It's more a question for the reader.
 
-An incoming Read request causes multiple Read responses. If a user MR to
-copy data from is unavailable or responder cannot send a reply, then the
-error messages can be printed for each response attempt, resulting in
-message overflow.
+> The real question is WTF is the code doing?
 
-Link: https://lore.kernel.org/r/20220829071218.1639065-1-matsuda-daisuke@fujitsu.com
-Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/sw/rxe/rxe_resp.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+True.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index e38bf958ab48..2ef21a1cba81 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -787,10 +787,8 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	if (!skb)
- 		return RESPST_ERR_RNR;
- 
--	err = rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
--			  payload, RXE_FROM_MR_OBJ);
--	if (err)
--		pr_err("Failed copying memory\n");
-+	rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
-+		    payload, RXE_FROM_MR_OBJ);
- 	if (mr)
- 		rxe_put(mr);
- 
-@@ -801,10 +799,8 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	}
- 
- 	err = rxe_xmit_packet(qp, &ack_pkt, skb);
--	if (err) {
--		pr_err("Failed sending RDMA reply.\n");
-+	if (err)
- 		return RESPST_ERR_RNR;
--	}
- 
- 	res->read.va += payload;
- 	res->read.resid -= payload;
--- 
-2.35.1
+> The '& ~7u' clears the bottom 3 bits.
+> The '- 1' then sets the bottom 3 bits and decrements the
+> (random) high bits.
 
+Right.
+
+> So is the same as get_random_u32() | 7.
+
+True, it's effectively the same as the upper 29 bits are random
+anyway and the bottom 3 bits are always set.
+
+> But I bet the coder had something else in mind.
+
+Likely.
+
+And it was also likely copy/pasted a few times.
