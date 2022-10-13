@@ -2,99 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D84855FD612
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 10:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0445FD639
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 10:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbiJMITB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Oct 2022 04:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48690 "EHLO
+        id S229724AbiJMIai (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Oct 2022 04:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbiJMITA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 04:19:00 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B850A14BB51;
-        Thu, 13 Oct 2022 01:18:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id E88DDCE1D6A;
-        Thu, 13 Oct 2022 08:18:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66EB9C433D6;
-        Thu, 13 Oct 2022 08:18:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665649132;
-        bh=O8bSMpuAhrzFMNlzIJLNqAFCoTEKRAUEdtX1d1jZf/c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oI9bG5T03ncB9jLi1e2kqXw2BGAPgSC+isQuC6vjnP2idYTUyQJqThSDoWJdpBEgu
-         01y2fwFe8MkmzEfsLsNptGYySxWdaZw8qNt4TiM4DhCUNeSmLuNgtrv0jHiRvsERpp
-         zgIjJXX6C0/rRqR0+ELf7WHu4uufldY6QgGmR3lrwP231XdZYbf04MQ2Z4N9UZKmv/
-         78ZB9f+4Z6WfvBdGOwMj1hzeSVfHWX3eknQ6CwPXLy47C2+GshtgFsQRTchi9OdVB9
-         b/r+xBhTONnBabnHd9ZMASI1dRmagt4qtBOiSmnlqXnAF4AGRzBwXsxOv/Q/PG3UT/
-         ba2g65P31frug==
-Date:   Thu, 13 Oct 2022 11:18:48 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jinpu Wang <jinpu.wang@ionos.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>, Shay Drory <shayd@nvidia.com>
-Subject: Re: [BUG] mlx5_core general protection fault in mlx5_cmd_comp_handler
-Message-ID: <Y0fJ6P943FuVZ3k1@unreal>
-References: <CAMGffEmiu2BPx6=KW+7_+pzD-=hb8sX9r5cJ1_NovmrWG9xFuA@mail.gmail.com>
+        with ESMTP id S229492AbiJMIah (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 04:30:37 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38F0537CA
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 01:30:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMGffEmiu2BPx6=KW+7_+pzD-=hb8sX9r5cJ1_NovmrWG9xFuA@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1665649832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F/X/TZFeKPXriPKxbhVLZS3/VUO+FezaLtEEGc30HhU=;
+        b=GdLN3+sUL4Qba4cMn8omg1EzwtZ9laaPR+2gRFav3cExq7J8Qu85MpOp5TQLomy9o6EeoS
+        bm1y+BzceKdTZpdFwgEbS/2YQLwV9zKKrgxFhwf9cSRKQenpxZ8wi9Tn8qzoIHhv9ia7gk
+        rArUew8RLGTXyGMHCExnn3+85olSCwg=
+Date:   Thu, 13 Oct 2022 08:30:25 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   yanjun.zhu@linux.dev
+Message-ID: <fb9fed08d43ed53ccc8ae34e60d707f2@linux.dev>
+Subject: Re: [RFC PATCH 1/1] RDMA/core: Fix a problem from rdma link in
+ exclusive mode
+To:     "Leon Romanovsky" <leon@kernel.org>,
+        "Zhu Yanjun" <yanjun.zhu@intel.com>
+Cc:     jgg@nvidia.com, leo@kernel.org, linux-rdma@vger.kernel.org
+In-Reply-To: <0c399db3-a9a6-0b07-fb99-060c3bba418b@linux.dev>
+References: <0c399db3-a9a6-0b07-fb99-060c3bba418b@linux.dev>
+ <Yz/FaiYZO5Y0R7QP@unreal> <20221011002545.1410247-1-yanjun.zhu@intel.com>
+ <Y0VBhhhSfzRQ8GY9@unreal>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 01:55:55PM +0200, Jinpu Wang wrote:
-> Hi Leon, hi Saeed,
-> 
-> We have seen crashes during server shutdown on both kernel 5.10 and
-> kernel 5.15 with GPF in mlx5 mlx5_cmd_comp_handler function.
-> 
-> All of the crashes point to
-> 
-> 1606                         memcpy(ent->out->first.data,
-> ent->lay->out, sizeof(ent->lay->out));
-> 
-> I guess, it's kind of use after free for ent buffer. I tried to reprod
-> by repeatedly reboot the testing servers, but no success  so far.
-
-My guess is that command interface is not flushed, but Moshe and me
-didn't see how it can happen.
-
-  1206         INIT_DELAYED_WORK(&ent->cb_timeout_work, cb_timeout_handler);
-  1207         INIT_WORK(&ent->work, cmd_work_handler);
-  1208         if (page_queue) {
-  1209                 cmd_work_handler(&ent->work);
-  1210         } else if (!queue_work(cmd->wq, &ent->work)) {
-                          ^^^^^^^ this is what is causing to the splat    
-  1211                 mlx5_core_warn(dev, "failed to queue work\n");
-  1212                 err = -EALREADY;
-  1213                 goto out_free;
-  1214         }
-
-<...>
-> 
-> Is this problem known, maybe already fixed?
-
-I don't see any missing Fixes that exist in 6.0 and don't exist in 5.5.32.
-Is it possible to reproduce this on latest upstream code?
-And what is your FW version?
-
-
-> I briefly checked the git, don't see anything, could you give me some hint?
-> 
-> 
-> Thanks!
-> Jinpu Wang @ IONOS
+October 11, 2022 11:08 PM, "Yanjun Zhu" <yanjun.zhu@linux.dev> wrote:=0A=
+=0A> =E5=9C=A8 2022/10/11 18:12, Leon Romanovsky =E5=86=99=E9=81=93:=0A> =
+=0A>> On Mon, Oct 10, 2022 at 08:25:45PM -0400, Zhu Yanjun wrote:=0A>>> F=
+rom: Zhu Yanjun <yanjun.zhu@linux.dev>=0A>>> =0A>>> This is not an offici=
+al commit. In rdma net namespace, the rdma device=0A>>> is separate from =
+the net device. For example, a rdma device A is in net=0A>>> namespace A1=
+ while the related net device B is in net namespace B1.=0A>>> =0A>>> I am=
+ curious how to make perftest and rping tests on the above=0A>>> scenario=
+. The ip address of net device B is in net namespace B1=0A>>> while the r=
+dma device is in net namespace A1.=0A>> =0A>> Use "exclusive" mode, "shar=
+ed" is legacy interface for backward=0A>> compatibility.=0A> =0A> Got it.=
+ Thanks.=0A> =0A>>> From my perspective, the rdma device and related net =
+device should=0A>>> be in the same net namespace. When a net device is mo=
+ved from one net=0A>>> namespace to another net namespace, the rdma devic=
+e should be in the=0A>>> same net namespace with the net device.=0A>>> =
+=0A>>> In this commit, when all the ib devices are parsed in exclusive mo=
+de,=0A>>> if the ib devices and related net devices are not in the same n=
+et=0A>>> namespace, the link information will not be reported to user spa=
+ce.=0A>>> =0A>>> This commit is a RFC.=0A>> =0A>> Please don't send patch=
+es as reply-to.=0A> =0A> OK. I will send another commit to fix this probl=
+em very soon.=0A=0AHi, Leon=0A=0APer discussion, to the non-legacy ib dev=
+ice, when the net devices are moved from one net namespace to another net=
+ namespace, the related  ib devices are also moved to the new net namespa=
+ce.=0A=0ATo the legacy ib device, shared/exclusive mode still work with t=
+hem.=0A=0ABased on the above, 2 patches are implemented. I will send them=
+ out very soon.=0A=0AThanks and Regards,=0AZhu Yanjun=0A=0A> =0A> Zhu Yan=
+jun=0A> =0A>> Thanks
