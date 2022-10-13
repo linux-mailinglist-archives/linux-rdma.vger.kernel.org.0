@@ -2,78 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0445FD639
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 10:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAFD5FD63C
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 10:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbiJMIai (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Oct 2022 04:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
+        id S229493AbiJMIdK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Oct 2022 04:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbiJMIah (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 04:30:37 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38F0537CA
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 01:30:34 -0700 (PDT)
+        with ESMTP id S229492AbiJMIdJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 04:33:09 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AAF32AB9
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 01:33:08 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id g1so1346705lfu.12
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 01:33:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ZpTw3WTAoEOQKKnmdLeptRF2P2Fy9YbHeutJDGoVvc=;
+        b=g/+qzeK7WiAdajY0cbcic6EKhScsY14YRSNUyAqw6NJjNfLWcF/4VDGD3ZPYW6RfF2
+         OBVgOP8o7Bfw9Rqk5s8o2o+NSZfAQSrSM0aSEPHf54P3m+r0zTR9mo/ulvAFRG6wkKcv
+         O9pDduxtI1lU5HG3p9M0WrBtZDvujtIiY/bZLu37OlzcQD4YSGN1dbCm/d/HreN8X5qE
+         rWCjOx3EiPzTOUvQfWU4f6AawBO9bzZeChwy2v7M6Q6TYoyd4teJ1+2mFtg8tXfyNJH9
+         U3meemjy/MGXNM6QWEmk4oGXtqixxonlc8n0wUZWz3mNgp6Y9Uq34sevX9zpPRKtlszA
+         ApLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2ZpTw3WTAoEOQKKnmdLeptRF2P2Fy9YbHeutJDGoVvc=;
+        b=0/hJ4E5sKge5gv9Ik+oKhYIyvYOj7/9bjHP54SiuxSSD/CAKLB4Qquewtk9YQTqvsV
+         kPnZPGE0oBW/KwlpAxGAY+74WctocOhUGhgSxTQ7qXDpfA7WgTUuvhjWWatWwUTc3ZpP
+         ZWCI0JmY4e+RS6ONAZqLZUgSXXSd5nJl/6kHEsCO0MLD4sqg1JD3iWiuFsO1h2IGYbPw
+         C1mmDYcCw0TcRgQiQ1QpZgDWvmZtAv+3ArokG1S49vopkbqtO/3RjVjj77LlYmBQIJ0g
+         wzYLK45o9lNTf7XhZibqlKkyTrfsxDPmiD066Zg0yi/48dq45N+1DkkgqVW8EcnzLsMz
+         wb6w==
+X-Gm-Message-State: ACrzQf2y9rGjjtbcC3jxlBIqcI4sEdeD+HOuyIBoQJMSuHPgOHDES2RU
+        DB+mi0b8W1FSNCHVsnZlGsJZMC6q7ONvqDY3ht6l9A==
+X-Google-Smtp-Source: AMsMyM69fjgjLenLVofuWDr0iuvaEcVhBwHeqNq+PoQdDTghqNkAkz8PHUJeuADOS5GpyTgolGdRx9FRhAX2wBtD+Js=
+X-Received: by 2002:a05:6512:25a4:b0:4a0:547a:b29b with SMTP id
+ bf36-20020a05651225a400b004a0547ab29bmr11276088lfb.469.1665649987002; Thu, 13
+ Oct 2022 01:33:07 -0700 (PDT)
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1665649832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F/X/TZFeKPXriPKxbhVLZS3/VUO+FezaLtEEGc30HhU=;
-        b=GdLN3+sUL4Qba4cMn8omg1EzwtZ9laaPR+2gRFav3cExq7J8Qu85MpOp5TQLomy9o6EeoS
-        bm1y+BzceKdTZpdFwgEbS/2YQLwV9zKKrgxFhwf9cSRKQenpxZ8wi9Tn8qzoIHhv9ia7gk
-        rArUew8RLGTXyGMHCExnn3+85olSCwg=
-Date:   Thu, 13 Oct 2022 08:30:25 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yanjun.zhu@linux.dev
-Message-ID: <fb9fed08d43ed53ccc8ae34e60d707f2@linux.dev>
-Subject: Re: [RFC PATCH 1/1] RDMA/core: Fix a problem from rdma link in
- exclusive mode
-To:     "Leon Romanovsky" <leon@kernel.org>,
-        "Zhu Yanjun" <yanjun.zhu@intel.com>
-Cc:     jgg@nvidia.com, leo@kernel.org, linux-rdma@vger.kernel.org
-In-Reply-To: <0c399db3-a9a6-0b07-fb99-060c3bba418b@linux.dev>
-References: <0c399db3-a9a6-0b07-fb99-060c3bba418b@linux.dev>
- <Yz/FaiYZO5Y0R7QP@unreal> <20221011002545.1410247-1-yanjun.zhu@intel.com>
- <Y0VBhhhSfzRQ8GY9@unreal>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CAMGffEmiu2BPx6=KW+7_+pzD-=hb8sX9r5cJ1_NovmrWG9xFuA@mail.gmail.com>
+ <Y0fJ6P943FuVZ3k1@unreal>
+In-Reply-To: <Y0fJ6P943FuVZ3k1@unreal>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Thu, 13 Oct 2022 10:32:55 +0200
+Message-ID: <CAMGffEmFCgKv-6XNXjAKzr5g6TtT_=wj6H62AdGCUXx4hruxBQ@mail.gmail.com>
+Subject: Re: [BUG] mlx5_core general protection fault in mlx5_cmd_comp_handler
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>, Shay Drory <shayd@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-October 11, 2022 11:08 PM, "Yanjun Zhu" <yanjun.zhu@linux.dev> wrote:=0A=
-=0A> =E5=9C=A8 2022/10/11 18:12, Leon Romanovsky =E5=86=99=E9=81=93:=0A> =
-=0A>> On Mon, Oct 10, 2022 at 08:25:45PM -0400, Zhu Yanjun wrote:=0A>>> F=
-rom: Zhu Yanjun <yanjun.zhu@linux.dev>=0A>>> =0A>>> This is not an offici=
-al commit. In rdma net namespace, the rdma device=0A>>> is separate from =
-the net device. For example, a rdma device A is in net=0A>>> namespace A1=
- while the related net device B is in net namespace B1.=0A>>> =0A>>> I am=
- curious how to make perftest and rping tests on the above=0A>>> scenario=
-. The ip address of net device B is in net namespace B1=0A>>> while the r=
-dma device is in net namespace A1.=0A>> =0A>> Use "exclusive" mode, "shar=
-ed" is legacy interface for backward=0A>> compatibility.=0A> =0A> Got it.=
- Thanks.=0A> =0A>>> From my perspective, the rdma device and related net =
-device should=0A>>> be in the same net namespace. When a net device is mo=
-ved from one net=0A>>> namespace to another net namespace, the rdma devic=
-e should be in the=0A>>> same net namespace with the net device.=0A>>> =
-=0A>>> In this commit, when all the ib devices are parsed in exclusive mo=
-de,=0A>>> if the ib devices and related net devices are not in the same n=
-et=0A>>> namespace, the link information will not be reported to user spa=
-ce.=0A>>> =0A>>> This commit is a RFC.=0A>> =0A>> Please don't send patch=
-es as reply-to.=0A> =0A> OK. I will send another commit to fix this probl=
-em very soon.=0A=0AHi, Leon=0A=0APer discussion, to the non-legacy ib dev=
-ice, when the net devices are moved from one net namespace to another net=
- namespace, the related  ib devices are also moved to the new net namespa=
-ce.=0A=0ATo the legacy ib device, shared/exclusive mode still work with t=
-hem.=0A=0ABased on the above, 2 patches are implemented. I will send them=
- out very soon.=0A=0AThanks and Regards,=0AZhu Yanjun=0A=0A> =0A> Zhu Yan=
-jun=0A> =0A>> Thanks
+On Thu, Oct 13, 2022 at 10:18 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Wed, Oct 12, 2022 at 01:55:55PM +0200, Jinpu Wang wrote:
+> > Hi Leon, hi Saeed,
+> >
+> > We have seen crashes during server shutdown on both kernel 5.10 and
+> > kernel 5.15 with GPF in mlx5 mlx5_cmd_comp_handler function.
+> >
+> > All of the crashes point to
+> >
+> > 1606                         memcpy(ent->out->first.data,
+> > ent->lay->out, sizeof(ent->lay->out));
+> >
+> > I guess, it's kind of use after free for ent buffer. I tried to reprod
+> > by repeatedly reboot the testing servers, but no success  so far.
+>
+> My guess is that command interface is not flushed, but Moshe and me
+> didn't see how it can happen.
+>
+>   1206         INIT_DELAYED_WORK(&ent->cb_timeout_work, cb_timeout_handler);
+>   1207         INIT_WORK(&ent->work, cmd_work_handler);
+>   1208         if (page_queue) {
+>   1209                 cmd_work_handler(&ent->work);
+>   1210         } else if (!queue_work(cmd->wq, &ent->work)) {
+>                           ^^^^^^^ this is what is causing to the splat
+>   1211                 mlx5_core_warn(dev, "failed to queue work\n");
+>   1212                 err = -EALREADY;
+>   1213                 goto out_free;
+>   1214         }
+>
+> <...>
+> >
+> > Is this problem known, maybe already fixed?
+>
+> I don't see any missing Fixes that exist in 6.0 and don't exist in 5.5.32.
+> Is it possible to reproduce this on latest upstream code?
+I haven't been able to reproduce it, as mentioned above, I tried to
+reproduce by simply reboot in loop, no luck yet.
+do you have suggestions to speedup the reproduction?
+Once I can reproduce, I can also try with kernel 6.0.
+
+> And what is your FW version?
+here is ibstat output
+CA 'mlx5_0'
+CA type: MT4119
+Number of ports: 1
+Firmware version: 16.27.2008
+Hardware version: 0
+Node GUID: 0x08c0eb030054b372
+System image GUID: 0x08c0eb030054b372
+Port 1:
+State: Active
+Physical state: LinkUp
+Rate: 100
+Base lid: 15
+LMC: 0
+SM lid: 1
+Capability mask: 0x2651e848
+Port GUID: 0x08c0eb030054b372
+Link layer: InfiniBand
+CA 'mlx5_1'
+CA type: MT4119
+Number of ports: 1
+Firmware version: 16.27.2008
+Hardware version: 0
+Node GUID: 0x08c0eb030054b373
+System image GUID: 0x08c0eb030054b372
+Port 1:
+State: Active
+Physical state: LinkUp
+Rate: 100
+Base lid: 12
+LMC: 0
+SM lid: 4
+Capability mask: 0x2651e848
+Port GUID: 0x08c0eb030054b373
+Link layer: InfiniBand
+
+
+Thanks for your help!
+>
+>
+> > I briefly checked the git, don't see anything, could you give me some hint?
+> >
+> >
+> > Thanks!
+> > Jinpu Wang @ IONOS
