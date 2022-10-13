@@ -2,95 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC255FD7F0
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 12:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6385FD890
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Oct 2022 13:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbiJMKtq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Oct 2022 06:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
+        id S229742AbiJMLlB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Oct 2022 07:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbiJMKtp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 06:49:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35883A1A2
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 03:49:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 361D76177B
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 10:49:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 103B2C433D6;
-        Thu, 13 Oct 2022 10:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665658182;
-        bh=xgJUIoH3QGNw0fuX3cYjk3VdMddQBwAljIZvFG8xmKQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Udviwxs8nNwmUnQgADvfftYlVcgGKK13cwPEJZd5DfTN/luglqgksCeE7wrXjXaAK
-         4XFnbwYAfC+ysWhg+VGMWC7iQU5P66PSgcQxMrh2hUJlmoG44Z0saMl6zBIzf4f2gJ
-         gwtY632kFKj7XUk8O7P9yr6DQ5xiPJxL6AguJ5o0I+9BL+beMmFdCFwIoBzuFY8NAk
-         PBWTV8+4kcoKS7Ok1umQ4IKlYrb23KKC0xphULqAF+sBhe/c68M0EoR9bSNscJWfmb
-         e0HibOod8QUJC9Kz0jOEZMgkbVxQ5pIfEYbLlH9iLYzlrWFI2nzQSXBuIg/1WUodC0
-         81Z+RHf27F6+Q==
-Date:   Thu, 13 Oct 2022 13:49:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-rc] RDMA/cma: Use output interface for net_dev check
-Message-ID: <Y0ftQidCuDwbiT3m@unreal>
-References: <20221012141542.16925-1-haakon.bugge@oracle.com>
- <Y0fPvlrpapweqrdA@unreal>
- <6068AC23-108C-47B2-ACC2-8664040D4C8B@oracle.com>
+        with ESMTP id S229774AbiJMLkz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Oct 2022 07:40:55 -0400
+Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7249B40CF
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Oct 2022 04:40:52 -0700 (PDT)
+Received: (qmail 12515 invoked from network); 13 Oct 2022 11:40:25 -0000
+Received: from p200300cf070ada0076d435fffeb7be92.dip0.t-ipconnect.de ([2003:cf:70a:da00:76d4:35ff:feb7:be92]:49034 HELO eto.sf-tec.de) (auth=eike@sf-mail.de)
+        by mail.sf-mail.de (Qsmtpd 0.38dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
+        for <fw@strlen.de>; Thu, 13 Oct 2022 13:40:25 +0200
+From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Florian Westphal <fw@strlen.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Graf <tgraf@suug.ch>, kasan-dev@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-janitors@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        loongarch@lists.linux.dev, netdev@vger.kernel.org,
+        sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v6 5/7] treewide: use get_random_u32() when possible
+Date:   Thu, 13 Oct 2022 13:40:40 +0200
+Message-ID: <11986571.xaOnivgMc4@eto.sf-tec.de>
+In-Reply-To: <20221013101635.GB11818@breakpoint.cc>
+References: <20221010230613.1076905-1-Jason@zx2c4.com> <3026360.ZldQQBzMgz@eto.sf-tec.de> <20221013101635.GB11818@breakpoint.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6068AC23-108C-47B2-ACC2-8664040D4C8B@oracle.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="nextPart22512332.f9tG50R4rC"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 10:31:55AM +0000, Haakon Bugge wrote:
-> 
-> 
-> > On 13 Oct 2022, at 10:43, Leon Romanovsky <leon@kernel.org> wrote:
-> > 
-> > On Wed, Oct 12, 2022 at 04:15:42PM +0200, Håkon Bugge wrote:
-> >> Commit 27cfde795a96 ("RDMA/cma: Fix arguments order in net device
-> >> validation") swapped the src and dst addresses in the call to
-> >> validate_net_dev().
-> >> 
-> >> As a consequence, the test in validate_ipv4_net_dev() to see if the
-> >> net_dev is the right one, is incorrect for port 1 <-> 2 communication
-> >> when the ports are on the same sub-net. This is fixed by denoting the
-> >> flowi4_oif as the device instead of the incoming one.
-> >> 
-> >> The bug has not been observed using IPv6 addresses.
-> >> 
-> >> Fixes: 27cfde795a96 ("RDMA/cma: Fix arguments order in net device validation")
-> >> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> >> ---
-> >> drivers/infiniband/core/cma.c | 2 +-
-> >> 1 file changed, 1 insertion(+), 1 deletion(-)
-> >> 
-> > 
-> > Thanks,
-> > Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Thank you for your quick review Leon!
+--nextPart22512332.f9tG50R4rC
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+To: Florian Westphal <fw@strlen.de>
+Date: Thu, 13 Oct 2022 13:40:40 +0200
+Message-ID: <11986571.xaOnivgMc4@eto.sf-tec.de>
+In-Reply-To: <20221013101635.GB11818@breakpoint.cc>
+MIME-Version: 1.0
 
-Sure, just as a note. We won't take any patches before -rc1.
+Am Donnerstag, 13. Oktober 2022, 12:16:35 CEST schrieb Florian Westphal:
+> Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
+> > Florian, can you comment and maybe fix it?
+> 
+> Can't comment, do not remember -- this was 5 years ago.
+> 
+> > Or you wanted to move the variable before the loop and keep the random
+> > state between the loops and only reseed when all '1' bits have been
+> > consumed.
+> Probably.  No clue, best to NOT change it to not block Jasons series and
+> then just simplify this and remove all the useless shifts.
 
-Thanks
+Sure. Jason, just in case you are going to do a v7 this could move to u8 then.
 
-> 
-> 
-> Håkon
-> 
-> 
+--nextPart22512332.f9tG50R4rC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCY0f5OAAKCRBcpIk+abn8
+TncNAKCia3h4AG/9IzqybWbLcwE6uVgTqACfRr3dPUK8JMrKIqGzYOiL96isZhg=
+=zppL
+-----END PGP SIGNATURE-----
+
+--nextPart22512332.f9tG50R4rC--
+
+
+
