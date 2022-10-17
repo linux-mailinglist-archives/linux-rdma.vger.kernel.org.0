@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 859CC601526
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Oct 2022 19:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B2160153E
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Oct 2022 19:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbiJQR0a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Oct 2022 13:26:30 -0400
+        id S230494AbiJQR0v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Oct 2022 13:26:51 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbiJQRZ7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Oct 2022 13:25:59 -0400
+        with ESMTP id S230178AbiJQR03 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Oct 2022 13:26:29 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1794272877;
-        Mon, 17 Oct 2022 10:25:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1517B37FB5;
+        Mon, 17 Oct 2022 10:25:36 -0700 (PDT)
 Received: from dimapc.. (109-252-119-114.nat.spd-mgts.ru [109.252.119.114])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 600E866023A7;
-        Mon, 17 Oct 2022 18:25:02 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C65856602392;
+        Mon, 17 Oct 2022 18:25:05 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1666027505;
-        bh=5SoJM0KT/OL453Vzox/c0XL1yLlnHbzjEdmJRs0v2dc=;
+        s=mail; t=1666027509;
+        bh=66yORAV2VtaBLYK6ZDQXn3jm0axpgjq07+Vjv6hDHOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QEQbHcySSmdRRFu5cljh/cK7BHMk8qZfkcjDS5eOOKVDghtoyex1jAb7YPWyBbwfg
-         ib6aNP35oJMZlmxr2j3UksBUtFJBDUTx7ujb4o17wcS7vamgOxEAoC8FE2YZXl+oeL
-         VCUDj4uri/fhaC83PvEzgmmNr7FFLrq8caU6iqaGxZQxcXCGyp1eRTnUl3xbJ6hGt3
-         cBJrY8vdfuavC1XbAW+07oWGtr1fMGxDPqPks+e2XEgD+0Sw+c7/HCycoX+SkUQ7CB
-         VhGf2d8NFvviOgfhmrrwONG6DLL2XyTwHCVTYHu4ALSRPwSiu7aM+HsTAY4OtL9xo3
-         e0dLi5cj6PZkA==
+        b=Yt+6YpjTd2k6o0eDpmcJu0sF+A6aPsemDGwj+QbhYhf58HXdKN7jbBpJiMIOzHAtE
+         iEB4EBKmJo//AkXrY6GUMzqXcMxPNvB/ZJ+Dq54XA4kIQ8IditSVC0L5DysL/LPG2m
+         of9J1K7592sk2i74mum6W68hs2Lvp728HU8ExrePOOX094AYSkzSP84PDtmLJ2PFoR
+         fHBBm1V5ziUb4ZEjvVIXxzdDNU58pBPedjcUi/k5dmVKu8MWK+YN00vP5XYHnTH0Rf
+         oyZv8wJ+7RuGNWJiROMNuoyqnRVml7yEcYRLbu1Cd87UqkijnLpfRhgbLgmFLUzfjB
+         hUqyMWZcNwpUQ==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
         Gurchetan Singh <gurchetansingh@chromium.org>,
@@ -76,9 +76,9 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org,
         linux-rdma@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH v7 14/21] media: tegra-vde: Prepare to dynamic dma-buf locking specification
-Date:   Mon, 17 Oct 2022 20:22:22 +0300
-Message-Id: <20221017172229.42269-15-dmitry.osipenko@collabora.com>
+Subject: [PATCH v7 15/21] dma-buf: Move dma_buf_vmap() to dynamic locking specification
+Date:   Mon, 17 Oct 2022 20:22:23 +0300
+Message-Id: <20221017172229.42269-16-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221017172229.42269-1-dmitry.osipenko@collabora.com>
 References: <20221017172229.42269-1-dmitry.osipenko@collabora.com>
@@ -94,47 +94,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Prepare Tegra video decoder driver to the common dynamic dma-buf
-locking convention by starting to use the unlocked versions of dma-buf
-API functions.
+Move dma_buf_vmap/vunmap() functions to the dynamic locking
+specification by asserting that the reservation lock is held.
 
+Acked-by: Sumit Semwal <sumit.semwal@linaro.org>
 Acked-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/media/platform/nvidia/tegra-vde/dmabuf-cache.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/dma-buf/dma-buf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/platform/nvidia/tegra-vde/dmabuf-cache.c b/drivers/media/platform/nvidia/tegra-vde/dmabuf-cache.c
-index 69c346148070..1c5b94989aec 100644
---- a/drivers/media/platform/nvidia/tegra-vde/dmabuf-cache.c
-+++ b/drivers/media/platform/nvidia/tegra-vde/dmabuf-cache.c
-@@ -38,7 +38,7 @@ static void tegra_vde_release_entry(struct tegra_vde_cache_entry *entry)
- 	if (entry->vde->domain)
- 		tegra_vde_iommu_unmap(entry->vde, entry->iova);
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 3e4060dadb74..2c4381bb9478 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -1450,6 +1450,8 @@ int dma_buf_vmap(struct dma_buf *dmabuf, struct iosys_map *map)
+ 	if (WARN_ON(!dmabuf))
+ 		return -EINVAL;
  
--	dma_buf_unmap_attachment(entry->a, entry->sgt, entry->dma_dir);
-+	dma_buf_unmap_attachment_unlocked(entry->a, entry->sgt, entry->dma_dir);
- 	dma_buf_detach(dmabuf, entry->a);
- 	dma_buf_put(dmabuf);
++	dma_resv_assert_held(dmabuf->resv);
++
+ 	if (!dmabuf->ops->vmap)
+ 		return -EINVAL;
  
-@@ -102,7 +102,7 @@ int tegra_vde_dmabuf_cache_map(struct tegra_vde *vde,
- 		goto err_unlock;
- 	}
+@@ -1515,6 +1517,8 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct iosys_map *map)
+ 	if (WARN_ON(!dmabuf))
+ 		return;
  
--	sgt = dma_buf_map_attachment(attachment, dma_dir);
-+	sgt = dma_buf_map_attachment_unlocked(attachment, dma_dir);
- 	if (IS_ERR(sgt)) {
- 		dev_err(dev, "Failed to get dmabufs sg_table\n");
- 		err = PTR_ERR(sgt);
-@@ -152,7 +152,7 @@ int tegra_vde_dmabuf_cache_map(struct tegra_vde *vde,
- err_free:
- 	kfree(entry);
- err_unmap:
--	dma_buf_unmap_attachment(attachment, sgt, dma_dir);
-+	dma_buf_unmap_attachment_unlocked(attachment, sgt, dma_dir);
- err_detach:
- 	dma_buf_detach(dmabuf, attachment);
- err_unlock:
++	dma_resv_assert_held(dmabuf->resv);
++
+ 	BUG_ON(iosys_map_is_null(&dmabuf->vmap_ptr));
+ 	BUG_ON(dmabuf->vmapping_counter == 0);
+ 	BUG_ON(!iosys_map_is_equal(&dmabuf->vmap_ptr, map));
 -- 
 2.37.3
 
