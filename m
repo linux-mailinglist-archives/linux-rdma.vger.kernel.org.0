@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E8F6014F7
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Oct 2022 19:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E126014FB
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Oct 2022 19:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbiJQRZa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Oct 2022 13:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
+        id S230299AbiJQRZl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Oct 2022 13:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbiJQRZA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Oct 2022 13:25:00 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81EDC2CCB7;
-        Mon, 17 Oct 2022 10:24:45 -0700 (PDT)
+        with ESMTP id S229786AbiJQRZT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Oct 2022 13:25:19 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177DF4CA09;
+        Mon, 17 Oct 2022 10:24:50 -0700 (PDT)
 Received: from dimapc.. (109-252-119-114.nat.spd-mgts.ru [109.252.119.114])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EA1056602396;
-        Mon, 17 Oct 2022 18:24:39 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9C6A76602390;
+        Mon, 17 Oct 2022 18:24:43 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1666027483;
-        bh=3secHBjyjMQpoZrQKxguIhOKP495IyqhEAH64Kaz1ng=;
+        s=mail; t=1666027487;
+        bh=RCM7cbGa0hbU3izrAQh1wOIWATDaV8057tfGw8XuSMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fqNm9C5VJxOlyfE6mT6wlswlCW34KpybN+UQ2Dz+uXc/OgACinb9MOuTP920lI1DK
-         btVVCTcTfwuoHCSNUW6v6f9Sr38gz67kD9QyWuexvpUFJxcyHLl8HH2nHvEZTfXEXE
-         JKZp6RM7mCoKY4rusnNlqIaNOYa+VtceraCMwEIRt7OU4y4ZlA8CrOTq4Kqe5DIdI2
-         TVAw2WO2aJ+Ye4zSSPgYSOBHPcajFPsGabmD8bIIprRMLv5q/grGn85GaSVz769g2i
-         RjCzJABG/jJ9TVQl/qagbPgHiGRsSpLL5wPZeEmMFHwC3MDVJfMAcpdWyTrFt2aXZ3
-         yqhrZutQDl4ag==
+        b=LUNFmRkGe7D2WCreJBmVIcXQZNXb4QrTtTwUICPZzJvAemeYn6f919VTZmLpcO9zY
+         E5mSacGhuqnK6ohEE3yQwUWiT+hfKZJNI1akEicYOEJEP+vL2HVSopJcxmAlq57dLo
+         qK3+M10qCnwjb8MKEtEMfED+UYBqQ8cmQOddvTnuM72lWoIBWiAss8p21Py1IvKGa7
+         l6URVbXp+u2/Iy7ZfeEmZ51b0xFRfBztb/891Mcnnc9fPNqUxwgsfTHpey7Teb9GnB
+         tSJe7jS7xlNOfb7O8diRea1jBbpzEPnMu34NABsCinJjje04EYQ/a5BgUzELToyC/I
+         /Db+rQkBDPwPA==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
         Gurchetan Singh <gurchetansingh@chromium.org>,
@@ -76,9 +76,9 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org,
         linux-rdma@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH v7 08/21] drm/tegra: Prepare to dynamic dma-buf locking specification
-Date:   Mon, 17 Oct 2022 20:22:16 +0300
-Message-Id: <20221017172229.42269-9-dmitry.osipenko@collabora.com>
+Subject: [PATCH v7 09/21] drm/etnaviv: Prepare to dynamic dma-buf locking specification
+Date:   Mon, 17 Oct 2022 20:22:17 +0300
+Message-Id: <20221017172229.42269-10-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221017172229.42269-1-dmitry.osipenko@collabora.com>
 References: <20221017172229.42269-1-dmitry.osipenko@collabora.com>
@@ -94,85 +94,28 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Prepare Tegra DRM driver to the common dynamic dma-buf locking convention
+Prepare Etnaviv driver to the common dynamic dma-buf locking convention
 by starting to use the unlocked versions of dma-buf API functions.
 
 Acked-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/gpu/drm/tegra/gem.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tegra/gem.c b/drivers/gpu/drm/tegra/gem.c
-index 81991090adcc..b09b8ab40ae4 100644
---- a/drivers/gpu/drm/tegra/gem.c
-+++ b/drivers/gpu/drm/tegra/gem.c
-@@ -84,7 +84,7 @@ static struct host1x_bo_mapping *tegra_bo_pin(struct device *dev, struct host1x_
- 			goto free;
- 		}
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+index 3fa2da149639..7031db145a77 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+@@ -65,7 +65,7 @@ static void etnaviv_gem_prime_release(struct etnaviv_gem_object *etnaviv_obj)
+ 	struct iosys_map map = IOSYS_MAP_INIT_VADDR(etnaviv_obj->vaddr);
  
--		map->sgt = dma_buf_map_attachment(map->attach, direction);
-+		map->sgt = dma_buf_map_attachment_unlocked(map->attach, direction);
- 		if (IS_ERR(map->sgt)) {
- 			dma_buf_detach(buf, map->attach);
- 			err = PTR_ERR(map->sgt);
-@@ -160,7 +160,8 @@ static struct host1x_bo_mapping *tegra_bo_pin(struct device *dev, struct host1x_
- static void tegra_bo_unpin(struct host1x_bo_mapping *map)
- {
- 	if (map->attach) {
--		dma_buf_unmap_attachment(map->attach, map->sgt, map->direction);
-+		dma_buf_unmap_attachment_unlocked(map->attach, map->sgt,
-+						  map->direction);
- 		dma_buf_detach(map->attach->dmabuf, map->attach);
- 	} else {
- 		dma_unmap_sgtable(map->dev, map->sgt, map->direction, 0);
-@@ -181,7 +182,7 @@ static void *tegra_bo_mmap(struct host1x_bo *bo)
- 	if (obj->vaddr) {
- 		return obj->vaddr;
- 	} else if (obj->gem.import_attach) {
--		ret = dma_buf_vmap(obj->gem.import_attach->dmabuf, &map);
-+		ret = dma_buf_vmap_unlocked(obj->gem.import_attach->dmabuf, &map);
- 		return ret ? NULL : map.vaddr;
- 	} else {
- 		return vmap(obj->pages, obj->num_pages, VM_MAP,
-@@ -197,7 +198,7 @@ static void tegra_bo_munmap(struct host1x_bo *bo, void *addr)
- 	if (obj->vaddr)
- 		return;
- 	else if (obj->gem.import_attach)
--		dma_buf_vunmap(obj->gem.import_attach->dmabuf, &map);
-+		dma_buf_vunmap_unlocked(obj->gem.import_attach->dmabuf, &map);
- 	else
- 		vunmap(addr);
- }
-@@ -461,7 +462,7 @@ static struct tegra_bo *tegra_bo_import(struct drm_device *drm,
+ 	if (etnaviv_obj->vaddr)
+-		dma_buf_vunmap(etnaviv_obj->base.import_attach->dmabuf, &map);
++		dma_buf_vunmap_unlocked(etnaviv_obj->base.import_attach->dmabuf, &map);
  
- 	get_dma_buf(buf);
- 
--	bo->sgt = dma_buf_map_attachment(attach, DMA_TO_DEVICE);
-+	bo->sgt = dma_buf_map_attachment_unlocked(attach, DMA_TO_DEVICE);
- 	if (IS_ERR(bo->sgt)) {
- 		err = PTR_ERR(bo->sgt);
- 		goto detach;
-@@ -479,7 +480,7 @@ static struct tegra_bo *tegra_bo_import(struct drm_device *drm,
- 
- detach:
- 	if (!IS_ERR_OR_NULL(bo->sgt))
--		dma_buf_unmap_attachment(attach, bo->sgt, DMA_TO_DEVICE);
-+		dma_buf_unmap_attachment_unlocked(attach, bo->sgt, DMA_TO_DEVICE);
- 
- 	dma_buf_detach(buf, attach);
- 	dma_buf_put(buf);
-@@ -508,8 +509,8 @@ void tegra_bo_free_object(struct drm_gem_object *gem)
- 		tegra_bo_iommu_unmap(tegra, bo);
- 
- 	if (gem->import_attach) {
--		dma_buf_unmap_attachment(gem->import_attach, bo->sgt,
--					 DMA_TO_DEVICE);
-+		dma_buf_unmap_attachment_unlocked(gem->import_attach, bo->sgt,
-+						  DMA_TO_DEVICE);
- 		drm_prime_gem_destroy(gem, NULL);
- 	} else {
- 		tegra_bo_free(gem->dev, bo);
+ 	/* Don't drop the pages for imported dmabuf, as they are not
+ 	 * ours, just free the array we allocated:
 -- 
 2.37.3
 
