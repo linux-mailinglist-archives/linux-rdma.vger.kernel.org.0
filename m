@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACB56014DC
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Oct 2022 19:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD6C6014DF
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Oct 2022 19:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbiJQRZB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Oct 2022 13:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54376 "EHLO
+        id S230364AbiJQRZN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Oct 2022 13:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbiJQRY4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Oct 2022 13:24:56 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E11BC95;
-        Mon, 17 Oct 2022 10:24:37 -0700 (PDT)
+        with ESMTP id S230304AbiJQRY6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Oct 2022 13:24:58 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E25E222AA;
+        Mon, 17 Oct 2022 10:24:41 -0700 (PDT)
 Received: from dimapc.. (109-252-119-114.nat.spd-mgts.ru [109.252.119.114])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 12D196602392;
-        Mon, 17 Oct 2022 18:24:32 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 46CE76602389;
+        Mon, 17 Oct 2022 18:24:36 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1666027476;
-        bh=bkOPdhT4KmbBTi13gT/RrmSvnfk+bsHbwFQx3BLv4fk=;
+        s=mail; t=1666027479;
+        bh=GhuscwhnN1rEaoy5OISonfRJMlLjonYkZBtE9HRenG4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZTl8vQ6RNKg4tkH3j//rMDlPsKNpFYgTzEw3glhFR6TsD4QrNExdA04WJryFTSqV1
-         d3gY6dgj4fMfQ46nQ0hXVezV69DyIEwKSnYDlVb6chnk4+1JXq7w3L59BrPTshDw7I
-         uivybEYIgLoEbm0g0CG3dVhxOT1ZZy3Zh40hEfIW/3SnAF1siV3rM+Ln3UDX8L4FHY
-         QKPGhJK3gZPCInCfam6pxxFs8MAPmgh+mTN2eNGfbB6/7VRGYeorz67fVg9MN85FAa
-         +Cz+BvSc/RYc6+T3UkIE3ca7gs7JYAK/SvuVz8KT6DBYAUYNf6yNk4Amq6bC+JTVG2
-         OKiYEqGMD8wOw==
+        b=mbNmR/ZZ1ghiOg+9AuA4spmRGWdqAG3Rc1gbu1Z1QueaPGDKs8z+jUOBG0vj/srEc
+         HWgofwdJeABqt+zPqMH51Wc6QruTUs/DECdvsbvSfYPHyQ7WU2bG4y3Im1PLK1RVl5
+         M8FKN1uGl8CnTtc4MBQRTiza32u+yw6UpeC9YOA2KUZKDHoh3hfbLkBruAQIdzszre
+         nCR7OkMVNEHakNZqIdhIjnbVA3X7pQCocL5hLwN53G4N+vFYJlKOShVp9efFH1VyyA
+         hG8afBb2XCFlFos0cC5VTcrF0sC4sT1U3hlrht2M61hubwh3VleTcctxQbVlH4q0/e
+         omndaVf3PKTvg==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
         Gurchetan Singh <gurchetansingh@chromium.org>,
@@ -76,9 +76,9 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org,
         linux-rdma@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH v7 06/21] drm/i915: Prepare to dynamic dma-buf locking specification
-Date:   Mon, 17 Oct 2022 20:22:14 +0300
-Message-Id: <20221017172229.42269-7-dmitry.osipenko@collabora.com>
+Subject: [PATCH v7 07/21] drm/omapdrm: Prepare to dynamic dma-buf locking specification
+Date:   Mon, 17 Oct 2022 20:22:15 +0300
+Message-Id: <20221017172229.42269-8-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221017172229.42269-1-dmitry.osipenko@collabora.com>
 References: <20221017172229.42269-1-dmitry.osipenko@collabora.com>
@@ -94,134 +94,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Prepare i915 driver to the common dynamic dma-buf locking convention
-by starting to use the unlocked versions of dma-buf API functions
-and handling cases where importer now holds the reservation lock.
+Prepare OMAP DRM driver to the common dynamic dma-buf locking convention
+by starting to use the unlocked versions of dma-buf API functions.
 
 Acked-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c       |  2 +-
- drivers/gpu/drm/i915/gem/i915_gem_object.c       | 14 ++++++++++++++
- .../gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c | 16 ++++++++--------
- 3 files changed, 23 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-index f5062d0c6333..07eee1c09aaf 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-@@ -72,7 +72,7 @@ static int i915_gem_dmabuf_vmap(struct dma_buf *dma_buf,
- 	struct drm_i915_gem_object *obj = dma_buf_to_obj(dma_buf);
- 	void *vaddr;
+diff --git a/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c b/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
+index 393f82e26927..8e194dbc9506 100644
+--- a/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
++++ b/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
+@@ -125,7 +125,7 @@ struct drm_gem_object *omap_gem_prime_import(struct drm_device *dev,
  
--	vaddr = i915_gem_object_pin_map_unlocked(obj, I915_MAP_WB);
-+	vaddr = i915_gem_object_pin_map(obj, I915_MAP_WB);
- 	if (IS_ERR(vaddr))
- 		return PTR_ERR(vaddr);
+ 	get_dma_buf(dma_buf);
  
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_object.c b/drivers/gpu/drm/i915/gem/i915_gem_object.c
-index 85482a04d158..7cab89618bad 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_object.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_object.c
-@@ -290,7 +290,21 @@ void __i915_gem_object_pages_fini(struct drm_i915_gem_object *obj)
- 	__i915_gem_object_free_mmaps(obj);
+-	sgt = dma_buf_map_attachment(attach, DMA_TO_DEVICE);
++	sgt = dma_buf_map_attachment_unlocked(attach, DMA_TO_DEVICE);
+ 	if (IS_ERR(sgt)) {
+ 		ret = PTR_ERR(sgt);
+ 		goto fail_detach;
+@@ -142,7 +142,7 @@ struct drm_gem_object *omap_gem_prime_import(struct drm_device *dev,
+ 	return obj;
  
- 	atomic_set(&obj->mm.pages_pin_count, 0);
-+
-+	/*
-+	 * dma_buf_unmap_attachment() requires reservation to be
-+	 * locked. The imported GEM shouldn't share reservation lock
-+	 * and ttm_bo_cleanup_memtype_use() shouldn't be invoked for
-+	 * dma-buf, so it's safe to take the lock.
-+	 */
-+	if (obj->base.import_attach)
-+		i915_gem_object_lock(obj, NULL);
-+
- 	__i915_gem_object_put_pages(obj);
-+
-+	if (obj->base.import_attach)
-+		i915_gem_object_unlock(obj);
-+
- 	GEM_BUG_ON(i915_gem_object_has_pages(obj));
- }
- 
-diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
-index 51ed824b020c..f2f3cfad807b 100644
---- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
-+++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
-@@ -213,7 +213,7 @@ static int igt_dmabuf_import_same_driver(struct drm_i915_private *i915,
- 		goto out_import;
- 	}
- 
--	st = dma_buf_map_attachment(import_attach, DMA_BIDIRECTIONAL);
-+	st = dma_buf_map_attachment_unlocked(import_attach, DMA_BIDIRECTIONAL);
- 	if (IS_ERR(st)) {
- 		err = PTR_ERR(st);
- 		goto out_detach;
-@@ -226,7 +226,7 @@ static int igt_dmabuf_import_same_driver(struct drm_i915_private *i915,
- 		timeout = -ETIME;
- 	}
- 	err = timeout > 0 ? 0 : timeout;
--	dma_buf_unmap_attachment(import_attach, st, DMA_BIDIRECTIONAL);
-+	dma_buf_unmap_attachment_unlocked(import_attach, st, DMA_BIDIRECTIONAL);
- out_detach:
- 	dma_buf_detach(dmabuf, import_attach);
- out_import:
-@@ -296,7 +296,7 @@ static int igt_dmabuf_import(void *arg)
- 		goto out_obj;
- 	}
- 
--	err = dma_buf_vmap(dmabuf, &map);
-+	err = dma_buf_vmap_unlocked(dmabuf, &map);
- 	dma_map = err ? NULL : map.vaddr;
- 	if (!dma_map) {
- 		pr_err("dma_buf_vmap failed\n");
-@@ -337,7 +337,7 @@ static int igt_dmabuf_import(void *arg)
- 
- 	err = 0;
- out_dma_map:
--	dma_buf_vunmap(dmabuf, &map);
-+	dma_buf_vunmap_unlocked(dmabuf, &map);
- out_obj:
- 	i915_gem_object_put(obj);
- out_dmabuf:
-@@ -358,7 +358,7 @@ static int igt_dmabuf_import_ownership(void *arg)
- 	if (IS_ERR(dmabuf))
- 		return PTR_ERR(dmabuf);
- 
--	err = dma_buf_vmap(dmabuf, &map);
-+	err = dma_buf_vmap_unlocked(dmabuf, &map);
- 	ptr = err ? NULL : map.vaddr;
- 	if (!ptr) {
- 		pr_err("dma_buf_vmap failed\n");
-@@ -367,7 +367,7 @@ static int igt_dmabuf_import_ownership(void *arg)
- 	}
- 
- 	memset(ptr, 0xc5, PAGE_SIZE);
--	dma_buf_vunmap(dmabuf, &map);
-+	dma_buf_vunmap_unlocked(dmabuf, &map);
- 
- 	obj = to_intel_bo(i915_gem_prime_import(&i915->drm, dmabuf));
- 	if (IS_ERR(obj)) {
-@@ -418,7 +418,7 @@ static int igt_dmabuf_export_vmap(void *arg)
- 	}
- 	i915_gem_object_put(obj);
- 
--	err = dma_buf_vmap(dmabuf, &map);
-+	err = dma_buf_vmap_unlocked(dmabuf, &map);
- 	ptr = err ? NULL : map.vaddr;
- 	if (!ptr) {
- 		pr_err("dma_buf_vmap failed\n");
-@@ -435,7 +435,7 @@ static int igt_dmabuf_export_vmap(void *arg)
- 	memset(ptr, 0xc5, dmabuf->size);
- 
- 	err = 0;
--	dma_buf_vunmap(dmabuf, &map);
-+	dma_buf_vunmap_unlocked(dmabuf, &map);
- out:
- 	dma_buf_put(dmabuf);
- 	return err;
+ fail_unmap:
+-	dma_buf_unmap_attachment(attach, sgt, DMA_TO_DEVICE);
++	dma_buf_unmap_attachment_unlocked(attach, sgt, DMA_TO_DEVICE);
+ fail_detach:
+ 	dma_buf_detach(dma_buf, attach);
+ 	dma_buf_put(dma_buf);
 -- 
 2.37.3
 
