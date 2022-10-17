@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52723601511
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Oct 2022 19:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBD86014F8
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Oct 2022 19:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230441AbiJQR0C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Oct 2022 13:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59606 "EHLO
+        id S230362AbiJQRZo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Oct 2022 13:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbiJQRZb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Oct 2022 13:25:31 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18EE5301C;
-        Mon, 17 Oct 2022 10:24:56 -0700 (PDT)
+        with ESMTP id S229780AbiJQRZU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Oct 2022 13:25:20 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FF153A68;
+        Mon, 17 Oct 2022 10:24:57 -0700 (PDT)
 Received: from dimapc.. (109-252-119-114.nat.spd-mgts.ru [109.252.119.114])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D90EA660238A;
-        Mon, 17 Oct 2022 18:24:47 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D726B660239E;
+        Mon, 17 Oct 2022 18:24:51 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1666027491;
-        bh=/fmhFqKRdyFDSOgw768lCF7vkLc6zTfOgN/CMggxBBU=;
+        s=mail; t=1666027495;
+        bh=l5BRfbWC5T1dh+H9OotQXa1bcseJO6ASdNvasBha29E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VIrv1adCfYeYjyl/ZPvIa+2eitMJaYnVt+F8bcEXKl3KPIGgzE6UfTMJIPZP9TLui
-         8K7QkYfa/uENzMzSrPEukPION9g/2LQilBX3TipN3kH2BDK0qPuPM92xMLJld5nKPK
-         yicLWuPrB/tjot0Wdy+luQ43FEBA5SQjcmsefOM28FwSkUMcRnBw6VH+aE3usBpoJw
-         oyri+ALarLBcxPD1ONJF1boMRpHAfx7xZqtkSFFajZfwAYM3ga3PCS2SmrOevLP0TX
-         RxwY/B3B18geKRsUVs+z5N+iiML1QLMTJNO1DeoUFQBc+u5iujq5S/35O8vXCPXavh
-         xX0nFwsLWuSGg==
+        b=CzNTMdEJOxDp4A5gv6FT1KtuAOVV8BgYjE2NA8gfwscQqftPsjogL5wLD89DBA7zq
+         VtwsrO4hMZxqe3XNiPrBu1Lbsivm9/u7eexNdpa+xDPN/wwu/BcPTcpZ+CBeaORruQ
+         EgEE64VS3e9BoYyozavmdPH8LtnNtQbwm5AvhCXgegcqR1dfHSpYpbTTHYWP83AjVs
+         QQnEy/BwQrA+vougTJi4lwWpcb9+6APM9upNMnPC8AvKJlbk106r81S6TqdlgKprU0
+         b7Fhz6tD9iDeQRyiT7+dO3AUXAoFvu/tG516gGubRlSd0junB52vlPM3M7+qtzDnH1
+         1zoXv6KogANJw==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
         Gurchetan Singh <gurchetansingh@chromium.org>,
@@ -76,9 +76,9 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org,
         linux-rdma@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH v7 10/21] RDMA/umem: Prepare to dynamic dma-buf locking specification
-Date:   Mon, 17 Oct 2022 20:22:18 +0300
-Message-Id: <20221017172229.42269-11-dmitry.osipenko@collabora.com>
+Subject: [PATCH v7 11/21] misc: fastrpc: Prepare to dynamic dma-buf locking specification
+Date:   Mon, 17 Oct 2022 20:22:19 +0300
+Message-Id: <20221017172229.42269-12-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221017172229.42269-1-dmitry.osipenko@collabora.com>
 References: <20221017172229.42269-1-dmitry.osipenko@collabora.com>
@@ -94,42 +94,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Prepare InfiniBand drivers to the common dynamic dma-buf locking
-convention by starting to use the unlocked versions of dma-buf API
-functions.
+Prepare fastrpc to the common dynamic dma-buf locking convention by
+starting to use the unlocked versions of dma-buf API functions.
 
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
 Acked-by: Christian König <christian.koenig@amd.com>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/infiniband/core/umem_dmabuf.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/misc/fastrpc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-index 04c04e6d24c3..43b26bc12288 100644
---- a/drivers/infiniband/core/umem_dmabuf.c
-+++ b/drivers/infiniband/core/umem_dmabuf.c
-@@ -26,7 +26,8 @@ int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
- 	if (umem_dmabuf->sgt)
- 		goto wait_fence;
- 
--	sgt = dma_buf_map_attachment(umem_dmabuf->attach, DMA_BIDIRECTIONAL);
-+	sgt = dma_buf_map_attachment_unlocked(umem_dmabuf->attach,
-+					      DMA_BIDIRECTIONAL);
- 	if (IS_ERR(sgt))
- 		return PTR_ERR(sgt);
- 
-@@ -102,8 +103,8 @@ void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf)
- 		umem_dmabuf->last_sg_trim = 0;
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index 93ebd174d848..6fcfb2e9f7a7 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -310,8 +310,8 @@ static void fastrpc_free_map(struct kref *ref)
+ 				return;
+ 			}
+ 		}
+-		dma_buf_unmap_attachment(map->attach, map->table,
+-					 DMA_BIDIRECTIONAL);
++		dma_buf_unmap_attachment_unlocked(map->attach, map->table,
++						  DMA_BIDIRECTIONAL);
+ 		dma_buf_detach(map->buf, map->attach);
+ 		dma_buf_put(map->buf);
+ 	}
+@@ -726,7 +726,7 @@ static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
+ 		goto attach_err;
  	}
  
--	dma_buf_unmap_attachment(umem_dmabuf->attach, umem_dmabuf->sgt,
--				 DMA_BIDIRECTIONAL);
-+	dma_buf_unmap_attachment_unlocked(umem_dmabuf->attach, umem_dmabuf->sgt,
-+					  DMA_BIDIRECTIONAL);
- 
- 	umem_dmabuf->sgt = NULL;
- }
+-	map->table = dma_buf_map_attachment(map->attach, DMA_BIDIRECTIONAL);
++	map->table = dma_buf_map_attachment_unlocked(map->attach, DMA_BIDIRECTIONAL);
+ 	if (IS_ERR(map->table)) {
+ 		err = PTR_ERR(map->table);
+ 		goto map_err;
 -- 
 2.37.3
 
