@@ -2,91 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B74602E6F
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 16:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C83D602F77
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 17:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbiJRO2A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Oct 2022 10:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39316 "EHLO
+        id S229635AbiJRPSQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Oct 2022 11:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbiJRO17 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 10:27:59 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam07on2139.outbound.protection.outlook.com [40.107.212.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592C2C0985
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 07:27:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YBJczMfOvfzLA6cmeotaN2mnGktBx8GMpo433hXHY/ARc7fEXgcY759OrGeI9KInsLBPsC6Ll0vnCQle/WnuRpGe7sMnybsWvo4+pUDp40VxktEf8P/kjncUBj9Utjl2Z6edSVa0a55LHsuyRiXXtvTvEIADvGsea6GnXH8kcqDQKdIpGhC38SzMP3jpFDP3RPXRvwE83dVmcTxm99mAwGMt2H/kLprMF0hp55C0d4X3OzZbmcnBdLW7FxSJBk/BErpWf7T+Er8VcIXPJ3AG1TBn8KYpc15HPd+88a7tL6d1s2yo4fQqzb80ZlcSoM2TYBhhyvH0408mOmMbx8Ddfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RBzCi6jX1oznDkCAX80ku3XpCYcwbRqEs3IUk2K5uAw=;
- b=JciC2L264fRpKfaYQom0lro2+TWbgKFhfDgKQeT5G2uc3l38l6uUL/2OZup2qpVu2r3R5lkp4ndycLOWeLPmjG6OUrCejonXnqedAnmhVaBs/giCO+imSQZAEUsSoZTqJeGG765sfTwglirnIGZ1wZvuxG5y46BQfYvLoFr8FyYHrSmB5TBq1PJ0wUddvMV2saE/KqXppI3fIf/GTq5wYb9Cn+Ho50UK+cdztYa6Hbd4FO8WyESmMcbYO8GNiiMdpaWHAtQqt9DMiyhI9KCDiipmYk0fUTtXLQyt7W1lF6QI7Itzll9+RbYQ48zy8z7btwxB5Y6hZSDVtiZZyqVO3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 208.255.156.42) smtp.rcpttodomain=vger.kernel.org
- smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
- header.from=cornelisnetworks.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RBzCi6jX1oznDkCAX80ku3XpCYcwbRqEs3IUk2K5uAw=;
- b=cFJ7o0chfZoXuOwJ3YUYuKO7oJf/bu65wH0w//rfVG4ddSJkA2vRsrR5Lfbru1v+PWP8AV3k1KAcSa1MHwmN3m9znjYgUwErW/SUb0va8eid3bAtTuRVi8Uf2wZufew+zJpprAm8yPPoLAxIzQlRRVO+cta5o6YcpSTPTovqaNCR10KrR9h5+cbzetfogu6ZVZMuDlZjebsFI8mMR8b3zanzAqsSbfx5aQu1DP/BGDp7xI0PcvNBoJCtWMJZTrQ8mb/aKt3EWCJ8nlciDAwmgHxOxOULbJnn+GGRCype9jPoQsWllbzN1/FYqP0GUYq8IRVYQ2eYkCvtG+MCKESvHA==
-Received: from MW2PR16CA0044.namprd16.prod.outlook.com (2603:10b6:907:1::21)
- by DM6PR01MB4028.prod.exchangelabs.com (2603:10b6:5:26::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5723.33; Tue, 18 Oct 2022 14:27:52 +0000
-Received: from CO1NAM11FT103.eop-nam11.prod.protection.outlook.com
- (2603:10b6:907:1:cafe::f3) by MW2PR16CA0044.outlook.office365.com
- (2603:10b6:907:1::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5709.15 via Frontend
- Transport; Tue, 18 Oct 2022 14:27:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
- smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
- header.d=none;dmarc=bestguesspass action=none
- header.from=cornelisnetworks.com;
-Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
- designates 208.255.156.42 as permitted sender)
- receiver=protection.outlook.com; client-ip=208.255.156.42;
- helo=awfm-02.cornelisnetworks.com; pr=C
-Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
- CO1NAM11FT103.mail.protection.outlook.com (10.13.174.252) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5723.20 via Frontend Transport; Tue, 18 Oct 2022 14:27:51 +0000
-Received: from awfm-02.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 29IERorh674440;
-        Tue, 18 Oct 2022 10:27:50 -0400
-Subject: [PATCH for-rc] IB/hfi1: Correctly move list in sc_disable()
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-To:     jgg@nvidia.com, leonro@nvidia.com
-Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
-        linux-rdma@vger.kernel.org
-Date:   Tue, 18 Oct 2022 10:27:50 -0400
-Message-ID: <166610327042.674422.6146908799669288976.stgit@awfm-02.cornelisnetworks.com>
-User-Agent: StGit/1.5.dev2+g9ce680a5
+        with ESMTP id S229498AbiJRPSQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 11:18:16 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349859AC2C
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 08:18:15 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id br15-20020a056830390f00b0061c9d73b8bdso7797835otb.6
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 08:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cH1rJdQN2/54ci0CZHsjNF2d5JHGV/6Na/lvI7+2M1s=;
+        b=GeDooyH2FXOAZjZrxSR5D2mBZ0HCTqjIGs9XI//m8AVsn238CWViqKsTzXq2ysHa5f
+         Q1iP94W/m93S3YrK1vZm1SFzrc/H+/aIEYjdUkDMzwPO7Y6zhie5BuBSglK7VIGhPheU
+         DY4v9wn7+uqhMei8aASkrExiYlp8+CvzMYieeKYJf5cj8uipNLa6wNZKGmx0scVuT4fS
+         hNTptDsPlkitlU3MMJot2FRR77vy/q7C9zpT8eMXtQ0OVMfjof/LIplu/0AyfXkcON57
+         kiZoJFX1zAJ8qxfgixhYYvYMrScUWWgcCoB4pHll2tRAF9aYipHIBsY/HRVUMaBfhEjC
+         tOuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cH1rJdQN2/54ci0CZHsjNF2d5JHGV/6Na/lvI7+2M1s=;
+        b=jMb9VIzV42l8OdgHPC/SKYk7J7SwVAGE5LBv2F10EfxKPt6CuE3i7aei8MRhyyupcj
+         /2z9C6+ejhvp07kk4qkgll+bnLqAh+AFlpJmHzH40LywuBz8QPG6do5tUUQYsezaIiW2
+         OiI0FbjXp3/46ELCr1Iirfq4QDKsOTJMUFyGry5D7qbTqAVX4JKQHZ3SpBZ7gVrDVIvG
+         b737kMdG25XOlEIfs7buAdhA4eQZOw4l0G1sEy0R8LFXSxjYsiS71+efq9NTn5rLf9Ud
+         CP1YRqWqNrDI+sgLbhOMsVF0t9ZvMpwLwyTmjaxNGEZh7BXPqCZwy738Nqq+dV2Ig1wD
+         V1/Q==
+X-Gm-Message-State: ACrzQf0DvQ3ORMP0mmPfI7fYvM0dqHV9T+UHc4FflRCwiPvNWe6uSJ9P
+        72hyz4e4EQhCBHJNAcSlLjY=
+X-Google-Smtp-Source: AMsMyM4E/769F870hd/auIiWkskV/B6bfgR4Oc4/g25XJavi9ZTNYZBKhHGZvyq5G5d/GC8QM9LyuA==
+X-Received: by 2002:a9d:7012:0:b0:661:9481:7ac4 with SMTP id k18-20020a9d7012000000b0066194817ac4mr1544087otj.135.1666106294541;
+        Tue, 18 Oct 2022 08:18:14 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:c2cf:2de0:3c3c:e52c? (2603-8081-140c-1a00-c2cf-2de0-3c3c-e52c.res6.spectrum.com. [2603:8081:140c:1a00:c2cf:2de0:3c3c:e52c])
+        by smtp.gmail.com with ESMTPSA id h7-20020a9d61c7000000b00661c3846b4csm6069385otk.27.2022.10.18.08.18.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Oct 2022 08:18:14 -0700 (PDT)
+Message-ID: <0d612d5f-8faa-0e65-a820-ffaf886b32ca@gmail.com>
+Date:   Tue, 18 Oct 2022 10:18:13 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [PATCH for-next 15/16] RDMA/rxe: Add workqueue support for tasks
+Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, matsuda-daisuke@fujitsu.com,
+        lizhijian@fujitsu.com, linux-rdma@vger.kernel.org,
+        jenny.hack@hpe.com, ian.ziemba@hpe.com
+References: <20221018043345.4033-1-rpearsonhpe@gmail.com>
+ <20221018043345.4033-16-rpearsonhpe@gmail.com> <Y05rCgMya/D7VBV9@unreal>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <Y05rCgMya/D7VBV9@unreal>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT103:EE_|DM6PR01MB4028:EE_
-X-MS-Office365-Filtering-Correlation-Id: 298b68b5-d1bf-493c-76a8-08dab114f07b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aohfk5idR4EAZa8X3fynpku0gaI2wYyG6wg2Od5SWYx/ClyO6z+Qg8RhfFLRI8TsS2poR0S6Cd2JnFAUZP85gshBE3vHgf6cMcK3vt5G20H+MocmCc0RMZeNRYI84gDfngWwCCqZRMaMhvtP/pp5lQcVxIsWoKojis+fxzj0cXlzkY7H6DFO1NMfGK/kuBvEqZ7PRtMTR1dIzJgqE0XzA/aHMIGMvZj4Hm5klvqodlhunk4AQfm9gEz8sTvdZOzjRxymyYrmVT1N+/NPKKdMNEpGDWL983QxJdZJlkhk+KVChhqeP2tmp7e5DOlipUKxElnEK7uA832/ILkXUi10OvjSa4aYFmHDcSqao93JQOZl4ty2m+ux1UXdry/AM2XiMa2OElrzPtrKfsTazluynRvY6dkAqVE0jSraAtdnyQaJ1w7t7dMfQJxQNRh+9lxru83o/g1uEQ/hHuUtzHSNHnZJ6ZKVIrKR8L8Dx7v7TbNxkkg0uMPpjlOO4kBk03suwa2gHzoQbOzHL7PuOWyJaiVnfV+sYXgmVdupooW5i5MQC9OI8XR9Gcr2ijg1+vv0xL1jx47VTsstutPViXMI+v5G16AA9h4gCXVMtjUv4jg2gFD4OnAVs06DjO9jSOCmKdQeAGYB80esGwut5gGmlx1fv/dTfPQP6ZHP8eBovRuAwgzZtaUUL/DNuSe8lxuV35Z2e/QVbzUdKAd5Z/CIfs+pWlN2kKlG7VqhnSLWE6yk24pK/MTtNdja2HvcmlgnG5NhUgq+xW53oO/UlqT6uA==
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230022)(4636009)(136003)(376002)(396003)(346002)(39840400004)(451199015)(46966006)(36840700001)(103116003)(86362001)(81166007)(356005)(2906002)(47076005)(426003)(83380400001)(55016003)(40480700001)(8936002)(5660300002)(44832011)(7126003)(186003)(336012)(7696005)(36860700001)(26005)(478600001)(316002)(82310400005)(4326008)(70586007)(70206006)(8676002)(41300700001)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2022 14:27:51.6713
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 298b68b5-d1bf-493c-76a8-08dab114f07b
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT103.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR01MB4028
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,54 +76,73 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dean Luick <dean.luick@cornelisnetworks.com>
+On 10/18/22 03:59, Leon Romanovsky wrote:
+> On Mon, Oct 17, 2022 at 11:33:46PM -0500, Bob Pearson wrote:
+>> Add a third task type RXE_TASK_TYPE_WORKQUEUE to rxe_task.c.
+> 
+> Why do you need an extra type and not instead of RXE_TASK_TYPE_TASKLET?
 
-Commit 13bac861952a ("IB/hfi1: Fix abba locking issue with
-sc_disable()") incorrectly tries to move a list from one list
-head to another.  The result is a kernel crash.
+It performs much better in some settings.
+> 
+>>
+>> Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>> ---
+>>  drivers/infiniband/sw/rxe/rxe.c      |  9 ++-
+>>  drivers/infiniband/sw/rxe/rxe_task.c | 84 ++++++++++++++++++++++++++++
+>>  drivers/infiniband/sw/rxe/rxe_task.h | 10 +++-
+>>  3 files changed, 101 insertions(+), 2 deletions(-)
+> 
+> <...>
+> 
+>> +static struct workqueue_struct *rxe_wq;
+>> +
+>> +int rxe_alloc_wq(void)
+>> +{
+>> +	rxe_wq = alloc_workqueue("rxe_wq", WQ_MEM_RECLAIM |
+>> +				WQ_HIGHPRI | WQ_CPU_INTENSIVE |
+>> +				WQ_SYSFS, WQ_MAX_ACTIVE);
+> 
+> Are you sure that all these flags can be justified? WQ_MEM_RECLAIM?
 
-The crash is triggered when a link goes down and there are
-waiters for a send to complete.  The following signature is
-seen:
+Not really. CPU intensive is most likely correct. The rest not so much.
+> 
+>> +
+>> +	if (!rxe_wq)
+>> +		return -ENOMEM;
+>> +
+>> +	return 0;
+>> +}
+> 
+> <...>
+> 
+>> +static void work_sched(struct rxe_task *task)
+>> +{
+>> +	if (!task->valid)
+>> +		return;
+>> +
+>> +	queue_work(rxe_wq, &task->work);
+>> +}
+>> +
+>> +static void work_do_task(struct work_struct *work)
+>> +{
+>> +	struct rxe_task *task = container_of(work, typeof(*task), work);
+>> +
+>> +	if (!task->valid)
+>> +		return;
+> 
+> How can it be that submitted task is not valid? Especially without any
+> locking.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000030
-[...]
-Call Trace:
- <TASK>
- sc_disable+0x1ba/0x240 [hfi1]
- pio_freeze+0x3d/0x60 [hfi1]
- handle_freeze+0x27/0x1b0 [hfi1]
- process_one_work+0x1b0/0x380
- ? process_one_work+0x380/0x380
- worker_thread+0x30/0x360
- ? process_one_work+0x380/0x380
- kthread+0xd7/0x100
- ? kthread_complete_and_exit+0x20/0x20
- ret_from_fork+0x1f/0x30
- </TASK>
-
-The fix is to use the correct call to move the list.
-
-Fixes: 13bac861952a ("IB/hfi1: Fix abba locking issue with sc_disable()")
-Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
----
- drivers/infiniband/hw/hfi1/pio.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
-index 3d42bd2b36bd..51ae58c02b15 100644
---- a/drivers/infiniband/hw/hfi1/pio.c
-+++ b/drivers/infiniband/hw/hfi1/pio.c
-@@ -913,8 +913,7 @@ void sc_disable(struct send_context *sc)
- 	spin_unlock(&sc->release_lock);
- 
- 	write_seqlock(&sc->waitlock);
--	if (!list_empty(&sc->piowait))
--		list_move(&sc->piowait, &wake_list);
-+	list_splice_init(&sc->piowait, &wake_list);
- 	write_sequnlock(&sc->waitlock);
- 	while (!list_empty(&wake_list)) {
- 		struct iowait *wait;
-
+This and a similar subroutine for tasklets are called deferred and can have a significant
+delay before being called. In the mean time someone could have tried to destroy the QP. The valid
+flag is only cleared by QP destroy code and is not turned back on. Perhaps a rmb().
+> 
+>> +
+>> +	do_task(task);
+>> +}
+> 
+> Thanks
+> 
+>> +
 
