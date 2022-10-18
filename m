@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDE3602355
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 06:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59319602357
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 06:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbiJREgb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Oct 2022 00:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
+        id S230188AbiJREge (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Oct 2022 00:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbiJREg1 (ORCPT
+        with ESMTP id S229917AbiJREg1 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 00:36:27 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF531A0244
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Oct 2022 21:36:22 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id g15-20020a4a894f000000b0047f8e899623so2927698ooi.5
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Oct 2022 21:36:22 -0700 (PDT)
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB15DA0248
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Oct 2022 21:36:23 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id l5so14398942oif.7
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Oct 2022 21:36:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=24SPsUkbVLd5ye8D67mHnRGjR1k+hcsP3X79sb7BR3w=;
-        b=AMwE9dRaytTK20YWqrkFwDv4gSlPQpm7fW98AqGzGfATyg0p/jus8mX0/DKAWymhQs
-         E97ULfgs0i72LK3+t50su/ubVO8hnj5u4HHzAcqhFeoQZGTFcgT05qI7rZA7J69v9HJs
-         sfecUnayPt/x8aDuDl5pVZZwJm3UAe197L3XQPxNfPE0PxLGZ6sJHGE+eWirYJnTL/oR
-         xsgJKCalQKQSyStFh6t8NPMmhro0821R64ZQOQQvCZ4GvCqSL+1Sy1JzYYkrqgKepYYy
-         muQjRjJ/U85uR0QMSaFAWQ723jmwmPgDDSWQTQZzE2GdnPeDut3QdDCnd/kFRkeIsqOB
-         NxmQ==
+        bh=yW+DMhH4EeyZPJ/sfP09rQT+gnK+v+z7PE/z/pWlIgo=;
+        b=RbnjK9O36NQy/mXBNXpXUx8qJ3GaX5X/vEzsaAETqdCYL9zhP/P4baTfAAIU+xK7za
+         dUivgmoNJf7COEKwQ9WUX8NRlcDGqd37R3G08U8aiUmcZYO5XMC1MMptN4L31odCNj1V
+         T7XUhxjEnfN2oOUZv3jSsaqW3pootEb08En9D7hDL3z/OtoRHgIFt4nACiwTubHY/vKX
+         18zSTn0QUJdtJBis5kQ4KRzBy+9Sb4G2NDiyS/CVatzupzBsE+H2QhLYoVhoo64j4q+z
+         i1BmXaJ28qYufmPQJxPBZ0N4b4SpUhrDpaznQybU9HvXoMRWHotkKFPlRmswKnQqsBTU
+         loLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=24SPsUkbVLd5ye8D67mHnRGjR1k+hcsP3X79sb7BR3w=;
-        b=gEAjNCzHkwaxLIxTwHNnkBSNvktHkUGCOQEbZLxzCjj7gJFFBVxFV8MVwW9SRiXIEP
-         PxsOtYh75Oj5css07kvWfL8ytSPI7fZ0t9A5Wow2H70NRynCVXD3rLIA6CT4r1V/bs9D
-         fbTlJhg1P9HR5WCK3JQi4BFz8oeGwgV8ZplkWZA5ygoigltxo5R8rISllJZ7u2l3Ua+G
-         fIWHDRn3eDapjK2agrJgdRQuKDFGeVHSTHYZUOIR5CyWo8kHjlh+3lzk3+hT2jIQfewb
-         iFgRK/QLUrqm2GBuoa640TCHjBPZm5nYW6by8A5GsF/Cu6z+6N+DtMVPNehj/oUW0M/x
-         V+xw==
-X-Gm-Message-State: ACrzQf1AVa9546mFjPhqVa6ApjxrDjeaIsli7i+DY26ruYvLGraKT6+t
-        /91x4YoukpkHg843z83n8iU=
-X-Google-Smtp-Source: AMsMyM4eswEJxUXP7y86BbDDUbAbGQWPf6KYOI9drcySKpS4y1UiIthoi+XeCC5jnIBcefP1tDUJeA==
-X-Received: by 2002:a4a:4847:0:b0:443:347d:6617 with SMTP id p68-20020a4a4847000000b00443347d6617mr535267ooa.94.1666067781936;
-        Mon, 17 Oct 2022 21:36:21 -0700 (PDT)
+        bh=yW+DMhH4EeyZPJ/sfP09rQT+gnK+v+z7PE/z/pWlIgo=;
+        b=XA8yLNNZktaZWP0tLvDw5lwuSxL396f8tKyVxy1kiucBsEMdEe80Bw9WHuXfX7VUpU
+         yEaGT8w+h1ghxgXbeaOd6bl2l/SkVabbE3uDt+ybt+qrtyvij1f9uOlLPIS5+VMoxbZY
+         mzZQ9+VNEqTNTWLfmsdndU8gtR185Gd8x55nF1RWu9mLO/KzhTJ9ActezFAy2WMaHRrM
+         jOGFM5cc6MVL8xyqiEDBoOBwiepubdoDslZBYpEfsFAMedjjRyddGM0a3DeZP0LqwfmL
+         FXrfqDHHnT4haaol/R7wuZ1JiTOT3nY9npWhKiaR72/95sJ4ZRpTNnBO3JFgYg3LOZ0d
+         l8VA==
+X-Gm-Message-State: ACrzQf0Znp7HJ/4ANX2HhaSoas31F2fIgakYdeisCBCVfTEuACpnY9zT
+        d5QFFqw/bRdxwXtHpgT7/ny2DzktNFUh4w==
+X-Google-Smtp-Source: AMsMyM7rpBYpdZwYbXZ636zha/4eLEoHZMMux5MyGf50WInCWrQawKisMnDSxt0Qv2Ct6DB4Ax1DJA==
+X-Received: by 2002:a05:6808:1894:b0:355:2235:31f7 with SMTP id bi20-20020a056808189400b00355223531f7mr8282173oib.248.1666067783221;
+        Mon, 17 Oct 2022 21:36:23 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-290b-8972-ce76-602c.res6.spectrum.com. [2603:8081:140c:1a00:290b:8972:ce76:602c])
-        by smtp.googlemail.com with ESMTPSA id e96-20020a9d01e9000000b006618ca5caa0sm5480333ote.78.2022.10.17.21.36.20
+        by smtp.googlemail.com with ESMTPSA id e96-20020a9d01e9000000b006618ca5caa0sm5480333ote.78.2022.10.17.21.36.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Oct 2022 21:36:21 -0700 (PDT)
+        Mon, 17 Oct 2022 21:36:22 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, matsuda-daisuke@fujitsu.com,
         lizhijian@fujitsu.com, leon@kernel.org, linux-rdma@vger.kernel.org,
         jenny.hack@hpe.com, ian.ziemba@hpe.com
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 07/16] RDMA/rxe: Simplify reset state handling in rxe_resp.c
-Date:   Mon, 17 Oct 2022 23:33:38 -0500
-Message-Id: <20221018043345.4033-8-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 08/16] RDMA/rxe: Split rxe_drain_resp_pkts()
+Date:   Mon, 17 Oct 2022 23:33:39 -0500
+Message-Id: <20221018043345.4033-9-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221018043345.4033-1-rpearsonhpe@gmail.com>
 References: <20221018043345.4033-1-rpearsonhpe@gmail.com>
@@ -72,58 +72,63 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Make rxe_responder() more like rxe_completer() and take qp reset
-handling out of the state machine.
+Split rxe_drain_resp_pkts() into two subroutines which perform separate
+functions.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_resp.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_comp.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 2a2a50de51b2..dd11dea70bbf 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -40,7 +40,6 @@ enum resp_states {
- 	RESPST_ERR_LENGTH,
- 	RESPST_ERR_CQ_OVERFLOW,
- 	RESPST_ERROR,
--	RESPST_RESET,
- 	RESPST_DONE,
- 	RESPST_EXIT,
- };
-@@ -75,7 +74,6 @@ static char *resp_state_name[] = {
- 	[RESPST_ERR_LENGTH]			= "ERR_LENGTH",
- 	[RESPST_ERR_CQ_OVERFLOW]		= "ERR_CQ_OVERFLOW",
- 	[RESPST_ERROR]				= "ERROR",
--	[RESPST_RESET]				= "RESET",
- 	[RESPST_DONE]				= "DONE",
- 	[RESPST_EXIT]				= "EXIT",
- };
-@@ -1278,8 +1276,9 @@ int rxe_responder(void *arg)
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index d2a250123617..5d434cce2b69 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -524,17 +524,21 @@ static inline enum comp_state complete_wqe(struct rxe_qp *qp,
+ 	return COMPST_GET_WQE;
+ }
  
- 	switch (qp->resp.state) {
- 	case QP_STATE_RESET:
--		state = RESPST_RESET;
--		break;
-+		rxe_drain_req_pkts(qp, false);
-+		qp->resp.wqe = NULL;
-+		goto exit;
+-static void rxe_drain_resp_pkts(struct rxe_qp *qp, bool notify)
++static void rxe_drain_resp_pkts(struct rxe_qp *qp)
+ {
+ 	struct sk_buff *skb;
+-	struct rxe_send_wqe *wqe;
+-	struct rxe_queue *q = qp->sq.queue;
  
- 	default:
- 		state = RESPST_GET_REQ;
-@@ -1438,11 +1437,6 @@ int rxe_responder(void *arg)
+ 	while ((skb = skb_dequeue(&qp->resp_pkts))) {
+ 		rxe_put(qp);
+ 		kfree_skb(skb);
+ 		ib_device_put(qp->ibqp.device);
+ 	}
++}
++
++static void rxe_drain_send_queue(struct rxe_qp *qp, bool notify)
++{
++	struct rxe_send_wqe *wqe;
++	struct rxe_queue *q = qp->sq.queue;
  
- 			goto exit;
+ 	while ((wqe = queue_head(q, q->type))) {
+ 		if (notify) {
+@@ -565,6 +569,7 @@ int rxe_completer(void *arg)
+ 	struct sk_buff *skb = NULL;
+ 	struct rxe_pkt_info *pkt = NULL;
+ 	enum comp_state state;
++	bool notify;
+ 	int ret;
  
--		case RESPST_RESET:
--			rxe_drain_req_pkts(qp, false);
--			qp->resp.wqe = NULL;
--			goto exit;
--
- 		case RESPST_ERROR:
- 			qp->resp.goto_error = 0;
- 			pr_debug("qp#%d moved to error state\n", qp_num(qp));
+ 	if (!rxe_get(qp))
+@@ -572,8 +577,9 @@ int rxe_completer(void *arg)
+ 
+ 	if (!qp->valid || qp->comp.state == QP_STATE_ERROR ||
+ 	    qp->comp.state == QP_STATE_RESET) {
+-		rxe_drain_resp_pkts(qp, qp->valid &&
+-				    qp->comp.state == QP_STATE_ERROR);
++		notify = qp->valid && (qp->comp.state == QP_STATE_ERROR);
++		rxe_drain_resp_pkts(qp);
++		rxe_drain_send_queue(qp, notify);
+ 		goto exit;
+ 	}
+ 
 -- 
 2.34.1
 
