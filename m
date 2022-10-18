@@ -2,111 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96235603106
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 18:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254EE6031D0
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 19:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbiJRQuN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Oct 2022 12:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
+        id S229975AbiJRRw6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Oct 2022 13:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbiJRQuM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 12:50:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44BC5282E
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 09:50:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1666111806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Tm5JCAIMhjvmiBFpFhEHwWPITj0JcQocFbip2mfREU=;
-        b=Sc0JA5g6QvUlwQ07fZTUqp1uoCYAZkL67/VIyRarBCNTCSyuhWFixBMU3xgXpFawk0/CJZ
-        Yrea/w3b5ZodMkrymzYJ+NPFuRp8H1euv1U8DI2TuIQTtvoARB7whmN7OfV3BqFQOJE/MT
-        tp/KV900pytmFmoApvTtHmUsBG3ASfw=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-619-sP8VfAPyMMmSV2fja2aWvg-1; Tue, 18 Oct 2022 12:50:05 -0400
-X-MC-Unique: sP8VfAPyMMmSV2fja2aWvg-1
-Received: by mail-qv1-f70.google.com with SMTP id 71-20020a0c804d000000b004b2fb260447so9051553qva.10
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 09:50:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Tm5JCAIMhjvmiBFpFhEHwWPITj0JcQocFbip2mfREU=;
-        b=PN+zNsIl+M3nb1ol+nNjtHWQbV8bYgjaFkT2udGgbNhOxxcPtPtHQ2zCoTKXkZuJjb
-         Ituli2mcneU+cs1An1Itt6q5AK+8kbKnj7KNc/mlCKuANuZnPaxaeSuRb7A7/3IrwPUS
-         vH5jRjkyArVY+5mZc6uNbdQVfZZgxKRPbcgiXN84QgcfcaX9zgehkGArrYl8wwAF6iDJ
-         OxNfZGQKzntTgsERs6v4CTENzb63qHRrsOBxCjCewDVu1kLtzYC5kumwRfXvyp7Ak8xQ
-         zW96IUqUoBqcTVyWp8PBm95C6ZQBnWlCeF87j/kw2GYoPntv056nhQNXxcUn/Qeyy9h1
-         gckA==
-X-Gm-Message-State: ACrzQf2jB7FIbDSECdyDPpY8I7Gm8xRm2cX7jVQ1NlyhDa+5o3K9S21w
-        J9TNtsHrMMIAYJ9xXLfqczjIFXJALUHmXULrvI7YxMN/8QJtHFYAe3wopL49PsAWQO/gOLVLsJD
-        PUbrp+hF+afDTnwR/1YizYg==
-X-Received: by 2002:a05:6214:27ec:b0:4b2:1337:a442 with SMTP id jt12-20020a05621427ec00b004b21337a442mr2965292qvb.20.1666111804502;
-        Tue, 18 Oct 2022 09:50:04 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM4U4uK6OVhT20CLjACsP21+jL2yR6/slxJzsjXi33DwcqiXKPhbECIEjn4iYNxKMsyfPadJCw==
-X-Received: by 2002:a05:6214:27ec:b0:4b2:1337:a442 with SMTP id jt12-20020a05621427ec00b004b21337a442mr2965272qvb.20.1666111804336;
-        Tue, 18 Oct 2022 09:50:04 -0700 (PDT)
-Received: from vschneid.remote.csb ([149.71.65.94])
-        by smtp.gmail.com with ESMTPSA id j5-20020ac874c5000000b0039ccd7a0e10sm2171918qtr.62.2022.10.18.09.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Oct 2022 09:50:03 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Tariq Toukan <ttoukan.linux@gmail.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [PATCH v4 0/7] sched, net: NUMA-aware CPU spreading interface
-In-Reply-To: <07a034cf-507a-e4ad-d78c-e5dd5a8d98b5@gmail.com>
-References: <20220923132527.1001870-1-vschneid@redhat.com>
- <07a034cf-507a-e4ad-d78c-e5dd5a8d98b5@gmail.com>
-Date:   Tue, 18 Oct 2022 17:50:00 +0100
-Message-ID: <xhsmhwn8xvzyf.mognet@vschneid.remote.csb>
+        with ESMTP id S229625AbiJRRw5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 13:52:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D39B1A3A5
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 10:52:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6677361668
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 17:52:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E872C433C1;
+        Tue, 18 Oct 2022 17:52:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666115572;
+        bh=7L9FXJjVyfj22Kd2cIlZ6MZU7zJCCETMOAB0C8mNnsw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KOxXqn5fKc/nPIxrYMVJAGIMyW9RRht+tZ4p4uQ+l0/r/ZchYX4yxfcEdWapIECJa
+         ptWRrGm3wFezeqmPYnLm9SRysJo8CRkM0Wc03jL+AK+1eYlKDO5xozeVH7eo+BROy+
+         JKOKOV4Du0Fj3eiQI+Aeun/D6SbfLQUuYfUd9+Zgmeug1Xij5bPO+bJL7UHfM3xAGG
+         hPqgataA+v+fcZj4XhFcwF0wiiR8k4Lz+lzh0g1PtXbEKfdYxZfXPA9xzSUaCjSGHi
+         vwOdwkMBK8JOhG0dluE+wjwGkx8AguRjaoXDED57iM84BS5/QF0Jk2VdofGdsIKUfk
+         4oFqc0TDRRG0g==
+Date:   Tue, 18 Oct 2022 20:52:48 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, matsuda-daisuke@fujitsu.com,
+        lizhijian@fujitsu.com, linux-rdma@vger.kernel.org,
+        jenny.hack@hpe.com, ian.ziemba@hpe.com
+Subject: Re: [PATCH for-next 15/16] RDMA/rxe: Add workqueue support for tasks
+Message-ID: <Y07n8G+6va+scr67@unreal>
+References: <20221018043345.4033-1-rpearsonhpe@gmail.com>
+ <20221018043345.4033-16-rpearsonhpe@gmail.com>
+ <Y05rCgMya/D7VBV9@unreal>
+ <0d612d5f-8faa-0e65-a820-ffaf886b32ca@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0d612d5f-8faa-0e65-a820-ffaf886b32ca@gmail.com>
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 18/10/22 09:36, Tariq Toukan wrote:
->
-> Hi,
->
-> What's the status of this?
-> Do we have agreement on the changes needed for the next respin?
->
+On Tue, Oct 18, 2022 at 10:18:13AM -0500, Bob Pearson wrote:
+> On 10/18/22 03:59, Leon Romanovsky wrote:
+> > On Mon, Oct 17, 2022 at 11:33:46PM -0500, Bob Pearson wrote:
+> >> Add a third task type RXE_TASK_TYPE_WORKQUEUE to rxe_task.c.
+> > 
+> > Why do you need an extra type and not instead of RXE_TASK_TYPE_TASKLET?
+> 
+> It performs much better in some settings.
+> > 
+> >>
+> >> Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
+> >> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> >> ---
+> >>  drivers/infiniband/sw/rxe/rxe.c      |  9 ++-
+> >>  drivers/infiniband/sw/rxe/rxe_task.c | 84 ++++++++++++++++++++++++++++
+> >>  drivers/infiniband/sw/rxe/rxe_task.h | 10 +++-
+> >>  3 files changed, 101 insertions(+), 2 deletions(-)
 
-Yep, the bitmap patches are in 6.1-rc1, I need to respin the topology ones
-to address Yury's comments. It's in my todolist, I'll get to it soonish.
+<...>
 
-> Regards,
-> Tariq
+> >> +static void work_do_task(struct work_struct *work)
+> >> +{
+> >> +	struct rxe_task *task = container_of(work, typeof(*task), work);
+> >> +
+> >> +	if (!task->valid)
+> >> +		return;
+> > 
+> > How can it be that submitted task is not valid? Especially without any
+> > locking.
+> 
+> This and a similar subroutine for tasklets are called deferred and can have a significant
+> delay before being called. In the mean time someone could have tried to destroy the QP. The valid
+> flag is only cleared by QP destroy code and is not turned back on. Perhaps a rmb().
 
+rmb() is not a locking.
+
+> > 
+> >> +
+> >> +	do_task(task);
+> >> +}
+> > 
+> > Thanks
+> > 
+> >> +
+> 
