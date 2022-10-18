@@ -2,98 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2551602CF0
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 15:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EF5602E22
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 16:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbiJRN2f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Oct 2022 09:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54268 "EHLO
+        id S229608AbiJROTU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Oct 2022 10:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiJRN2a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 09:28:30 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38668CA8A1;
-        Tue, 18 Oct 2022 06:28:21 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id DACAD92009D; Tue, 18 Oct 2022 15:28:17 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id D66BA92009C;
-        Tue, 18 Oct 2022 14:28:17 +0100 (BST)
-Date:   Tue, 18 Oct 2022 14:28:17 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     linux-kernel@vger.kernel.org,
-        D Scott Phillips <scott@os.amperecomputing.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        linux-arm-kernel@lists.infradead.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-um@lists.infradead.org, linux-rdma@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
-        sparclinux@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: Build regressions/improvements in v6.1-rc1
-In-Reply-To: <CAMuHMdVbo0wMaVVhe4f4tC9-TW2+DsOVAB77TtLdnsG=us8Q2A@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2210181349060.50489@angie.orcam.me.uk>
-References: <20221017145157.1866351-1-geert@linux-m68k.org> <alpine.DEB.2.22.394.2210171653540.9136@ramsan.of.borg> <alpine.DEB.2.21.2210181126040.50489@angie.orcam.me.uk> <CAMuHMdVbo0wMaVVhe4f4tC9-TW2+DsOVAB77TtLdnsG=us8Q2A@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        with ESMTP id S229660AbiJROTT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 10:19:19 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA88C5138
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 07:19:17 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id i9so9383794qvu.1
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 07:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tyKg35I/fC/6qjBHQJJCU8zltrFBVuRFgzo1HKpJ8cE=;
+        b=AKhM1p7NWOfhcHdT+AMQuqMBCu0RQjzxCh3rJMIv+dDRM4YzQlpwtY76R5kNiFpQOO
+         5PpbnxTm0jtxCNrTZSa7htHyYIfW/+kDp7SwUwimAAhl8HFY26mfCkv66lF6YMnEuo9U
+         7CM3KS5QsNijsU+XhE+8CJNhldDcJYR45OozRxeux0Zn0BLKRS7Qiw93QBhbpl2Aly6C
+         KqvyixTOVS0ovPDVOlN8YbigfBl/zKma/3cOmcCgkpT3AkrxseYMhoBxytFSb5Bwn/QV
+         GP+5i1ZOYvJfI1Vzu2tQ6vuIxkdVy5epsT/L32c0wsRZ9Ff+Goj3Wl2rfKkEj5hmfm1m
+         cSQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tyKg35I/fC/6qjBHQJJCU8zltrFBVuRFgzo1HKpJ8cE=;
+        b=bn4JFqAZyhUb2xpDD6/DtsNZaCUHgaQcOXtU0fFmOSJrd7LKtYWB4A6bsGiQcNVXo1
+         ix6iC9gAe9cvFm7oJJ04DNH1iZxdEwKmhw+dl3IgQd/tIgYXlrgFv1wHj9/GI+qx8JPv
+         jCM5DJFiNfhO5bUthpJigCRKhucwJ6mL/kD0LTKwSyxhiuMLMSZ/1On9PyUVWki9vRdF
+         7ssFD791Wit9UQEkZjh1sJWuZ1EShen6JqRjmAXxxqkfbkv404ACSd+c1IaHfT+8fcH+
+         SkZ6SIqxaXG7YwC2iwIzgKABhMGnrSqQUuH77Nse6oJigDgRyc8TA3wYqXIpAABITteL
+         9iUA==
+X-Gm-Message-State: ACrzQf0XX1mrZeAITmfveErSzVCCC905b79guBBsbZ2EcJlC0J+Beyzz
+        hw+UDjt2v6sFlszsjqcYf9wdpw==
+X-Google-Smtp-Source: AMsMyM4W1JAowbJ/E87kQZsfil8x5X5PNKEgtJw8PTtkY7VEONGydESQTnM4InrKhE9Px9GHoObvhQ==
+X-Received: by 2002:a05:6214:2689:b0:4b1:892e:9bd0 with SMTP id gm9-20020a056214268900b004b1892e9bd0mr2591641qvb.25.1666102756661;
+        Tue, 18 Oct 2022 07:19:16 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.122.23])
+        by smtp.gmail.com with ESMTPSA id cb23-20020a05622a1f9700b0039cc22a2c49sm1995123qtb.47.2022.10.18.07.19.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Oct 2022 07:19:15 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1oknR4-008F1C-KX;
+        Tue, 18 Oct 2022 11:19:14 -0300
+Date:   Tue, 18 Oct 2022 11:19:14 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Zhu Yanjun <yanjun.zhu@intel.com>, linux-rdma@vger.kernel.org,
+        yanjun.zhu@linux.dev
+Subject: Re: [PATCH 1/1] RDMA/mlx5: Make mlx5 device work with
+ ib_device_get_by_netdev
+Message-ID: <Y0614lU6j0Bp/g8A@ziepe.ca>
+References: <20221016061925.1831180-1-yanjun.zhu@intel.com>
+ <Y05iy+/0BUvbwp5z@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y05iy+/0BUvbwp5z@unreal>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Geert,
-
-> > > .> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9abf2313adc1ca1b6180c508c25f22f9395cc780/ (all 149 configs)
+On Tue, Oct 18, 2022 at 11:24:43AM +0300, Leon Romanovsky wrote:
+> On Sun, Oct 16, 2022 at 02:19:25AM -0400, Zhu Yanjun wrote:
+> > From: Zhu Yanjun <yanjun.zhu@linux.dev>
+> > 
+> > Before mlx5 ib device is registered, the function ib_device_set_netdev
+> > is not called to map the mlx5 ib device with the related net device.
+> > 
+> > As such, when the function ib_device_get_by_netdev is called to get ib
+> > device, NULL is returned.
+> > 
+> > Other ib devices, such as irdma, rxe and so on, the function
+> > ib_device_get_by_netdev can get ib device from the related net device.
 > 
-> > > >  + {standard input}: Error: branch to a symbol in another ISA mode: 1339 =>
-> > > > 2616, 2621
-> > >
-> > > mips-gcc11/micro32r2_defconfig
-> > > mips-gcc11/micro32r2el_defconfig
-> >
-> >  Where can these configs be obtained from?
+> Ohh, you opened Pandora box, everything around it looks half-backed.
 > 
-> By following the links in the URL above you removed while replying? ;-)
+> mlx4 and mlx5 don't call to ib_device_set_netdev(), because they have
+> .get_netdev() callback. This callback is not an easy task to eliminate
+> and many internal attempts failed to eliminate them.
 > 
-> http://kisskb.ellerman.id.au/kisskb/buildresult/14818296/
-> http://kisskb.ellerman.id.au/kisskb/buildresult/14818298/
+> This caused to very questionable ksmbd_rdma_capable_netdev()
+> implementation where ksmbd first checked internal ib_dev callback
+> and tried to use ib_device_get_by_netdev(). And to smc_ib, which
+> didn't even bother to use ib_device_get_by_netdev().
 
- Thank you.
+Oh really? Those APIs were only for driver use, not ULP :(
 
- The error message is due to the use of MT ASE code in a microMIPS 
-compilation, specifically a handwritten machine instruction encoding via 
-`.word' in `dmt' from <asm/mipsmtregs.h>.  A similar construct is made 
-from `mftc0', but it isn't at a branch target, so no error is triggered.
-
- A `.insn' pseudo-op ought to precede such handwritten constructs to tell 
-the assembler that what follows is really an instruction rather than data, 
-which would then cause any preceding label to be correctly annotated.
-
- Now the MT ASE has been specified for the microMIPS ISA, but the machine 
-instruction encodings are different, so merely adding `.insn' won't do any 
-good.  Also we've never added support for the microMIPS MT ASE, and it's 
-not clear to me if it's ever been used with real silicon.  Perhaps QEMU 
-has it, but I suspect not.  Also no support has ever been added to 
-binutils.
-
- So I think we want to just exclude the offending code from microMIPS 
-configurations, perhaps by hardcoding `cpu_has_mipsmt' to 0 if 
-CPU_MICROMIPS.
-
- On the other hand support for the MT ASE with the regular MIPS ISA has 
-been added with binutils 2.17:
-
-commit 61cc02671150a81ea68f25b8409b8ace18bda9ae
-Author: Chao-ying Fu <fu@mips.com>
-Date:   Tue Sep 6 18:46:57 2005 +0000
-
-and according to Documentation/process/changes.rst we require version 2.23 
-now.  So it looks to me like we want to discard the handwritten hacks and 
-use proper assembly instruction mnemonics.  I do believe we did this for 
-the DSP ASE already.
-
-  Maciej
+Jason
