@@ -2,50 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193DA60261A
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 09:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6E76026B5
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 10:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbiJRHrq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Oct 2022 03:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
+        id S230271AbiJRIYy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Oct 2022 04:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbiJRHro (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 03:47:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D403718F;
-        Tue, 18 Oct 2022 00:47:43 -0700 (PDT)
+        with ESMTP id S229894AbiJRIYw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 04:24:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D9D33A1C
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 01:24:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24BBC6148F;
-        Tue, 18 Oct 2022 07:47:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02035C433D6;
-        Tue, 18 Oct 2022 07:47:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 11DE6614A5
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 08:24:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBBD7C433C1;
+        Tue, 18 Oct 2022 08:24:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666079262;
-        bh=dTb8BDS1O5vbDAjfxZNFnpPKuW0eQTPLw9NpNDarqMQ=;
+        s=k20201202; t=1666081487;
+        bh=j88ROZ+AdCcExlUIBZcP/O7s6LGc3yF5OwsybPIRgv0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lZIVD2TD7r/UVWBk/IwsGcztgYvv9uSinp0gZ/s2bzq0qFBzl81OpJU5fQAQFfg9D
-         1rfheCdC3GHUdKBK4dVYvZAUUQmwldYrVh1zEWp/3V3/a2aaPWI4qZmzOOr+yMD+0X
-         ESKrBWftoix1vtH654FfDKM3jmoHpOpXHulKOZojtKdN442Iu4IViNvDwY/b3hget9
-         bsVG4n+P/rPgppugmW2Sb8Q34HXjuI2tactKdouet1jsvOO1WRxYBIKB6eMVQ1axQR
-         HlK1AAb1QPx58eckgBJNnzNHbULLGHu8390t13NShpYOLfscwQuP/YGK6f4FAqh9a/
-         TF6xe90b9mKGw==
-Date:   Tue, 18 Oct 2022 10:47:38 +0300
+        b=cbbJ1VsAllfjQQT01kwWaOzzFWaQVetM4hdmp9a7yUt2ciprEd1XED+Q6/IB8/emH
+         oSRrLfPpT1LHY0rI8snGEbabaXDzEi3L/SsW2pDI5hjcU3jVyl6psDg4jRSUJmdo7l
+         5Yc9eMYrsyoKS1jcJPZlyPIUIcENnQALJaJdkj2efKlLtCKJyCrMpVWIh55EUfX6vW
+         6B6Cr76Jf5RxM6drPrxH/yqyLCvoe5hp7TIJJAsjcp+NMk/k+b8mYjsAF9HWTuPdfW
+         Mu5WYxNVxOiU/ItqRXbbPsRcPsoZi2g1eARzFOl2+E/qnQotGexqY99T4YBcLssjmr
+         CFfCS63XRvPaA==
+Date:   Tue, 18 Oct 2022 11:24:43 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Aru <aru.kolappan@oracle.com>
-Cc:     jgg@ziepe.ca, saeedm@nvidia.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        manjunath.b.patil@oracle.com, rama.nichanamatlu@oracle.com
-Subject: Re: [PATCH 1/1] net/mlx5: add dynamic logging for mlx5_dump_err_cqe
-Message-ID: <Y05aGuXSEtSt2aS2@unreal>
-References: <1665618772-11048-1-git-send-email-aru.kolappan@oracle.com>
- <Y0frx6g/iadBBYgQ@unreal>
- <a7fad299-6df5-e79b-960a-c85c7ea4235a@oracle.com>
+To:     Zhu Yanjun <yanjun.zhu@intel.com>, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
+Subject: Re: [PATCH 1/1] RDMA/mlx5: Make mlx5 device work with
+ ib_device_get_by_netdev
+Message-ID: <Y05iy+/0BUvbwp5z@unreal>
+References: <20221016061925.1831180-1-yanjun.zhu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a7fad299-6df5-e79b-960a-c85c7ea4235a@oracle.com>
+In-Reply-To: <20221016061925.1831180-1-yanjun.zhu@intel.com>
 X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,138 +52,85 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 12:12:36PM -0700, Aru wrote:
-> Hi Leon,
+On Sun, Oct 16, 2022 at 02:19:25AM -0400, Zhu Yanjun wrote:
+> From: Zhu Yanjun <yanjun.zhu@linux.dev>
 > 
-> Thank you for reviewing the patch.
+> Before mlx5 ib device is registered, the function ib_device_set_netdev
+> is not called to map the mlx5 ib device with the related net device.
 > 
-> The method you mentioned disables the dump permanently for the kernel.
-> We thought vendor might have enabled it for their consumption when needed.
-> Hence we made it dynamic, so that it can be enabled/disabled at run time.
+> As such, when the function ib_device_get_by_netdev is called to get ib
+> device, NULL is returned.
 > 
-> Especially, in a production environment, having the option to turn this log
-> on/off
-> at runtime will be helpful.
+> Other ib devices, such as irdma, rxe and so on, the function
+> ib_device_get_by_netdev can get ib device from the related net device.
 
-While you are interested on/off this specific warning, your change will
-cause "to hide" all syndromes as it is unlikely that anyone runs in
-production with debug prints.
+Ohh, you opened Pandora box, everything around it looks half-backed.
 
- -   mlx5_ib_warn(dev, "dump error cqe\n");
- +   mlx5_ib_dbg(dev, "dump error cqe\n");
+mlx4 and mlx5 don't call to ib_device_set_netdev(), because they have
+.get_netdev() callback. This callback is not an easy task to eliminate
+and many internal attempts failed to eliminate them.
 
-Something like this will do the trick without interrupting to the others.
-
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index 457f57b088c6..966206085eb3 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -267,10 +267,29 @@ static void handle_responder(struct ib_wc *wc, struct mlx5_cqe64 *cqe,
- 	wc->wc_flags |= IB_WC_WITH_NETWORK_HDR_TYPE;
- }
- 
--static void dump_cqe(struct mlx5_ib_dev *dev, struct mlx5_err_cqe *cqe)
-+static void dump_cqe(struct mlx5_ib_dev *dev, struct mlx5_err_cqe *cqe,
-+		     struct ib_wc *wc, int dump)
- {
--	mlx5_ib_warn(dev, "dump error cqe\n");
--	mlx5_dump_err_cqe(dev->mdev, cqe);
-+	const char *level;
-+
-+	if (!dump)
-+		return;
-+
-+	mlx5_ib_warn(dev, "WC error: %d, Message: %s\n", wc->status,
-+		     ib_wc_status_msg(wc->status));
-+
-+	if (dump == 1) {
-+		mlx5_ib_warn(dev, "dump error cqe\n");
-+		level = KERN_WARNING;
-+	}
-+
-+	if (dump == 2) {
-+		mlx5_ib_dbg(dev, "dump error cqe\n");
-+		level = KERN_DEBUG;
-+	}
-+
-+	print_hex_dump(level, "", DUMP_PREFIX_OFFSET, 16, 1, cqe, sizeof(*cqe),
-+		       false);
- }
- 
- static void mlx5_handle_error_cqe(struct mlx5_ib_dev *dev,
-@@ -300,6 +319,7 @@ static void mlx5_handle_error_cqe(struct mlx5_ib_dev *dev,
- 		wc->status = IB_WC_BAD_RESP_ERR;
- 		break;
- 	case MLX5_CQE_SYNDROME_LOCAL_ACCESS_ERR:
-+		dump = 2;
- 		wc->status = IB_WC_LOC_ACCESS_ERR;
- 		break;
- 	case MLX5_CQE_SYNDROME_REMOTE_INVAL_REQ_ERR:
-@@ -328,11 +348,7 @@ static void mlx5_handle_error_cqe(struct mlx5_ib_dev *dev,
- 	}
- 
- 	wc->vendor_err = cqe->vendor_err_synd;
--	if (dump) {
--		mlx5_ib_warn(dev, "WC error: %d, Message: %s\n", wc->status,
--			     ib_wc_status_msg(wc->status));
--		dump_cqe(dev, cqe);
--	}
-+	dump_cqe(dev, cqe, wc, dump);
- }
- 
- static void handle_atomics(struct mlx5_ib_qp *qp, struct mlx5_cqe64 *cqe64,
+This caused to very questionable ksmbd_rdma_capable_netdev()
+implementation where ksmbd first checked internal ib_dev callback
+and tried to use ib_device_get_by_netdev(). And to smc_ib, which
+didn't even bother to use ib_device_get_by_netdev().
 
 > 
-> Feel free to share your thoughts.
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> ---
+>  drivers/infiniband/hw/mlx5/main.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> index 883d7c60143e..6899c3f73509 100644
+> --- a/drivers/infiniband/hw/mlx5/main.c
+> +++ b/drivers/infiniband/hw/mlx5/main.c
+> @@ -168,6 +168,7 @@ static int mlx5_netdev_event(struct notifier_block *this,
+>  	u32 port_num = roce->native_port_num;
+>  	struct mlx5_core_dev *mdev;
+>  	struct mlx5_ib_dev *ibdev;
+> +	int ret = 0;
+>  
+>  	ibdev = roce->dev;
+>  	mdev = mlx5_ib_get_native_port_mdev(ibdev, port_num, NULL);
+> @@ -183,6 +184,14 @@ static int mlx5_netdev_event(struct notifier_block *this,
 
-And please don't top-post.
+This is part of the problem, as you are setting netdev for IB
+representors, and not for simple RoCE flow. There is more cumbersome
+multiport flow which needs special logic too.
 
 Thanks
+
+>  		if (ndev->dev.parent == mdev->device)
+>  			roce->netdev = ndev;
+>  		write_unlock(&roce->netdev_lock);
+> +		if (ndev->dev.parent == mdev->device) {
+> +			ret = ib_device_set_netdev(&ibdev->ib_dev, ndev, port_num);
+> +			if (ret) {
+> +				pr_warn("func: %s, error: %d\n", __func__, ret);
+> +				goto done;
+> +			}
+> +		}
+> +
+>  		break;
+>  
+>  	case NETDEV_UNREGISTER:
+> @@ -191,6 +200,15 @@ static int mlx5_netdev_event(struct notifier_block *this,
+>  		if (roce->netdev == ndev)
+>  			roce->netdev = NULL;
+>  		write_unlock(&roce->netdev_lock);
+> +
+> +		if (roce->netdev == ndev) {
+> +			ret = ib_device_set_netdev(&ibdev->ib_dev, NULL, port_num);
+> +			if (ret) {
+> +				pr_warn("func: %s, error: %d\n", __func__, ret);
+> +				goto done;
+> +			}
+> +		}
+> +
+>  		break;
+>  
+>  	case NETDEV_CHANGE:
+> -- 
+> 2.27.0
 > 
-> Thanks,
-> Aru
-> 
-> On 10/13/22 3:43 AM, Leon Romanovsky wrote:
-> > On Wed, Oct 12, 2022 at 04:52:52PM -0700, Aru Kolappan wrote:
-> > > From: Arumugam Kolappan <aru.kolappan@oracle.com>
-> > > 
-> > > Presently, mlx5 driver dumps error CQE by default for few syndromes. Some
-> > > syndromes are expected due to application behavior[Ex: REMOTE_ACCESS_ERR
-> > > for revoking rkey before RDMA operation is completed]. There is no option
-> > > to disable the log if the application decided to do so. This patch
-> > > converts the log into dynamic print and by default, this debug print is
-> > > disabled. Users can enable/disable this logging at runtime if needed.
-> > > 
-> > > Suggested-by: Manjunath Patil <manjunath.b.patil@oracle.com>
-> > > Signed-off-by: Arumugam Kolappan <aru.kolappan@oracle.com>
-> > > ---
-> > >   drivers/infiniband/hw/mlx5/cq.c | 2 +-
-> > >   include/linux/mlx5/cq.h         | 4 ++--
-> > >   2 files changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-> > > index be189e0..890cdc3 100644
-> > > --- a/drivers/infiniband/hw/mlx5/cq.c
-> > > +++ b/drivers/infiniband/hw/mlx5/cq.c
-> > > @@ -269,7 +269,7 @@ static void handle_responder(struct ib_wc *wc, struct mlx5_cqe64 *cqe,
-> > >   static void dump_cqe(struct mlx5_ib_dev *dev, struct mlx5_err_cqe *cqe)
-> > >   {
-> > > -	mlx5_ib_warn(dev, "dump error cqe\n");
-> > > +	mlx5_ib_dbg(dev, "dump error cqe\n");
-> > This path should be handled in switch<->case of mlx5_handle_error_cqe()
-> > by skipping dump_cqe for MLX5_CQE_SYNDROME_REMOTE_ACCESS_ERR.
-> > 
-> > diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-> > index be189e0525de..2d75c3071a1e 100644
-> > --- a/drivers/infiniband/hw/mlx5/cq.c
-> > +++ b/drivers/infiniband/hw/mlx5/cq.c
-> > @@ -306,6 +306,7 @@ static void mlx5_handle_error_cqe(struct mlx5_ib_dev *dev,
-> >                  wc->status = IB_WC_REM_INV_REQ_ERR;
-> >                  break;
-> >          case MLX5_CQE_SYNDROME_REMOTE_ACCESS_ERR:
-> > +               dump = 0;
-> >                  wc->status = IB_WC_REM_ACCESS_ERR;
-> >                  break;
-> >          case MLX5_CQE_SYNDROME_REMOTE_OP_ERR:
-> > 
-> > Thanks
