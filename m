@@ -2,74 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A6F602F86
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 17:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96235603106
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 18:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbiJRPWR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Oct 2022 11:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
+        id S229968AbiJRQuN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Oct 2022 12:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbiJRPWO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 11:22:14 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B180BB97A5
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 08:22:11 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-132b8f6f1b2so17149400fac.11
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 08:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HqScLkuFLI4C7y3OKmXiayrq9RvJv1Qo4um49+1PXkc=;
-        b=A9m63d/ZShFR4a/LUJ/wNPkHCvD+nZJtAnjgB0QPaYDEZW2f/HaBzbMNBk3wBL3LxU
-         HDxqaWYCIsMsRpYt4rjHogqLxjLKpl1NA4be5mzZZ8i5FFGpacJNN+NaNAUE7x4EvAFX
-         3olX08zmEZT+k95Z/eB93qk+VoTbZHdXKEs1r1kRcv2tC35rCpNn1aUb2nS2f8RbaDfP
-         7l+9t3AbianghGzOyR42uNyLGkws5W/hfY3tJbLwxqDudpLnuVdrNjMKbLxyzZziQ2nU
-         Kv35I+it3aaN+G3/GGcQTy5V2V0CPxptNsDJrBlOXiz880KHwzBl5FyG+CSmUea/CCpO
-         PytQ==
+        with ESMTP id S229957AbiJRQuM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 12:50:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44BC5282E
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 09:50:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1666111806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Tm5JCAIMhjvmiBFpFhEHwWPITj0JcQocFbip2mfREU=;
+        b=Sc0JA5g6QvUlwQ07fZTUqp1uoCYAZkL67/VIyRarBCNTCSyuhWFixBMU3xgXpFawk0/CJZ
+        Yrea/w3b5ZodMkrymzYJ+NPFuRp8H1euv1U8DI2TuIQTtvoARB7whmN7OfV3BqFQOJE/MT
+        tp/KV900pytmFmoApvTtHmUsBG3ASfw=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-619-sP8VfAPyMMmSV2fja2aWvg-1; Tue, 18 Oct 2022 12:50:05 -0400
+X-MC-Unique: sP8VfAPyMMmSV2fja2aWvg-1
+Received: by mail-qv1-f70.google.com with SMTP id 71-20020a0c804d000000b004b2fb260447so9051553qva.10
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 09:50:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HqScLkuFLI4C7y3OKmXiayrq9RvJv1Qo4um49+1PXkc=;
-        b=3TANEbBvtPVpRBn0SAxtuWe+js/IVDtf7WBD0cEh4oBDGzdNFIbIwvQsIvLESBVCNf
-         eRMDY9elfrBkrv9GRn+arAm1ex5Z2btuGsUOs21ronHDyzEaUDDB+VAgxfavogzTsQah
-         hQjHaQ0S8gjRkzCjmO6rGv67TOS+w0rfpYfPHX1zXT+EoCGenNVcJIy3PhZuZhdBHkTa
-         oaxRbc0iSXD5QnOk9z1ArhDLCkW98SLESbx+Hy4VN0njqAno7HWPCwUWDErBMaaOWAgB
-         KrpSq2HddXoH3oVsC7waRxgyQOPRr9G8LCxx7HfAW7hLa6eEsFyNR7ufIK9l2gW6JQPv
-         +JAQ==
-X-Gm-Message-State: ACrzQf2/45ECu6XaKGCWYVUJwOeS9gGAbFXWEkzqMG7hkdnrVJA64dNJ
-        DMglIxPlx2gExXSIDS09C+RqRQdLNFzMHw==
-X-Google-Smtp-Source: AMsMyM5qC8l9a84vJskWy/eGBECqglyDodSkRNELbPbK9Uxa97cs4TqT0I4uL5qxfJPTL4NJJJK4mw==
-X-Received: by 2002:a05:6870:f703:b0:132:3892:3bfc with SMTP id ej3-20020a056870f70300b0013238923bfcmr18266558oab.288.1666106530575;
-        Tue, 18 Oct 2022 08:22:10 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:c2cf:2de0:3c3c:e52c? (2603-8081-140c-1a00-c2cf-2de0-3c3c-e52c.res6.spectrum.com. [2603:8081:140c:1a00:c2cf:2de0:3c3c:e52c])
-        by smtp.gmail.com with ESMTPSA id q28-20020a05683022dc00b00661a0a256ffsm6041155otc.81.2022.10.18.08.22.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Oct 2022 08:22:10 -0700 (PDT)
-Message-ID: <c178c3b6-8a3f-7167-4463-4a450684ea80@gmail.com>
-Date:   Tue, 18 Oct 2022 10:22:09 -0500
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Tm5JCAIMhjvmiBFpFhEHwWPITj0JcQocFbip2mfREU=;
+        b=PN+zNsIl+M3nb1ol+nNjtHWQbV8bYgjaFkT2udGgbNhOxxcPtPtHQ2zCoTKXkZuJjb
+         Ituli2mcneU+cs1An1Itt6q5AK+8kbKnj7KNc/mlCKuANuZnPaxaeSuRb7A7/3IrwPUS
+         vH5jRjkyArVY+5mZc6uNbdQVfZZgxKRPbcgiXN84QgcfcaX9zgehkGArrYl8wwAF6iDJ
+         OxNfZGQKzntTgsERs6v4CTENzb63qHRrsOBxCjCewDVu1kLtzYC5kumwRfXvyp7Ak8xQ
+         zW96IUqUoBqcTVyWp8PBm95C6ZQBnWlCeF87j/kw2GYoPntv056nhQNXxcUn/Qeyy9h1
+         gckA==
+X-Gm-Message-State: ACrzQf2jB7FIbDSECdyDPpY8I7Gm8xRm2cX7jVQ1NlyhDa+5o3K9S21w
+        J9TNtsHrMMIAYJ9xXLfqczjIFXJALUHmXULrvI7YxMN/8QJtHFYAe3wopL49PsAWQO/gOLVLsJD
+        PUbrp+hF+afDTnwR/1YizYg==
+X-Received: by 2002:a05:6214:27ec:b0:4b2:1337:a442 with SMTP id jt12-20020a05621427ec00b004b21337a442mr2965292qvb.20.1666111804502;
+        Tue, 18 Oct 2022 09:50:04 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4U4uK6OVhT20CLjACsP21+jL2yR6/slxJzsjXi33DwcqiXKPhbECIEjn4iYNxKMsyfPadJCw==
+X-Received: by 2002:a05:6214:27ec:b0:4b2:1337:a442 with SMTP id jt12-20020a05621427ec00b004b21337a442mr2965272qvb.20.1666111804336;
+        Tue, 18 Oct 2022 09:50:04 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.71.65.94])
+        by smtp.gmail.com with ESMTPSA id j5-20020ac874c5000000b0039ccd7a0e10sm2171918qtr.62.2022.10.18.09.50.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Oct 2022 09:50:03 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+Subject: Re: [PATCH v4 0/7] sched, net: NUMA-aware CPU spreading interface
+In-Reply-To: <07a034cf-507a-e4ad-d78c-e5dd5a8d98b5@gmail.com>
+References: <20220923132527.1001870-1-vschneid@redhat.com>
+ <07a034cf-507a-e4ad-d78c-e5dd5a8d98b5@gmail.com>
+Date:   Tue, 18 Oct 2022 17:50:00 +0100
+Message-ID: <xhsmhwn8xvzyf.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH for-next 16/16] RDMA/rxe: Add parameters to control task
- type
-Content-Language: en-US
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, matsuda-daisuke@fujitsu.com,
-        lizhijian@fujitsu.com, linux-rdma@vger.kernel.org,
-        jenny.hack@hpe.com, ian.ziemba@hpe.com
-References: <20221018043345.4033-1-rpearsonhpe@gmail.com>
- <20221018043345.4033-17-rpearsonhpe@gmail.com> <Y05rjL+ufktJslNU@unreal>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <Y05rjL+ufktJslNU@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,19 +96,17 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/18/22 04:02, Leon Romanovsky wrote:
-> On Mon, Oct 17, 2022 at 11:33:47PM -0500, Bob Pearson wrote:
->> Add modparams to control the task types for req, comp, and resp
->> tasks.
-> 
-> You need to be more descriptive why module parameters are unavoidable.
-> 
-> Thanks
+On 18/10/22 09:36, Tariq Toukan wrote:
+>
+> Hi,
+>
+> What's the status of this?
+> Do we have agreement on the changes needed for the next respin?
+>
 
-I asked Jason what was the best way here and didn't get an answer. These are tuning parameters.
-Generally I am not sure how to present them to users. They are pretty specific to this
-driver so the rdma app seems a bad choice. I know netlink is the preferred way to talk to
-rdma-core but I haven't figured out how it works. I suspect this is temporary and work queues
-will replace tasklets in this driver once people are used to it.
+Yep, the bitmap patches are in 6.1-rc1, I need to respin the topology ones
+to address Yury's comments. It's in my todolist, I'll get to it soonish.
 
-Bob
+> Regards,
+> Tariq
+
