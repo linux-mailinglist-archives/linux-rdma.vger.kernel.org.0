@@ -2,65 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 958E5602741
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 10:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D38E6027BE
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 11:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbiJRIl3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Oct 2022 04:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
+        id S230309AbiJRJAY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Oct 2022 05:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbiJRIl2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 04:41:28 -0400
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4C62D1F9
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 01:41:28 -0700 (PDT)
-Received: by mail-wm1-f49.google.com with SMTP id v11so217610wmd.1
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 01:41:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
-        b=LmYdBmzIzHhebXZEdqhSwaYL9oXvM5exobWv0klrNEHjMyQMF4hyLHJhOfYD2DlUwL
-         9DBKACprIKc+t2/qwOAGWEBINigoBfDIPIySpNqIec6AlpsNdsOUvn5x1Od1EwLYwxI5
-         iLQ6D8hAbDYHMuQy1GLXl5HSpIN9JAXhcp8DlC+YGDw/t4atCR7QqB93qgBk0phjDs8X
-         ZtchC79cD+7WnXK/mBM7tECS3h3VyKgqV/zJ80t2SiVxiMKiaWZmwLlkRRjnLUB4qGRI
-         mZoQcJxYr+puSML6VD4iF6cgzwUgArDj0JnNgdR2pW3mYz933ggVYmGUCdy75YDciWBK
-         gTpg==
-X-Gm-Message-State: ACrzQf0iHigU1AZHc/7LM2JsSnBG8AeHMLc7EZMW2HUqOwI9xPT9mMY8
-        LpqVUNaYK15YCcV4HJ7dgHCYTgf1fpI=
-X-Google-Smtp-Source: AMsMyM6LyTA30UGtbjGtIsWslmWbumgZc01fwdMEu2vjeBLcwjLMpauBP0P8lRRM+Tfrj7y9w5CYJQ==
-X-Received: by 2002:a05:600c:548c:b0:3c6:d8dd:2a72 with SMTP id iv12-20020a05600c548c00b003c6d8dd2a72mr19438425wmb.179.1666082486501;
-        Tue, 18 Oct 2022 01:41:26 -0700 (PDT)
-Received: from [192.168.64.53] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
-        by smtp.gmail.com with ESMTPSA id e38-20020a5d5966000000b002252884cc91sm10459496wri.43.2022.10.18.01.41.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Oct 2022 01:41:26 -0700 (PDT)
-Message-ID: <5f43a498-3076-254c-ef9a-eb4eef4dc199@grimberg.me>
-Date:   Tue, 18 Oct 2022 11:41:24 +0300
+        with ESMTP id S231137AbiJRJAA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 05:00:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD74190
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 01:59:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 284C8614E6
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 08:59:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED5C5C433D6;
+        Tue, 18 Oct 2022 08:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666083598;
+        bh=8dsXkcP0ne9/QbMpehGM1maj1PjDXH+z3IUoALBvTAE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=apUJjA8p3U+ErpELpJC/C0E+5OFEblDa7Cjq5WCBmoEHzXC68T50LZK+JYJru+Yqb
+         XENVKtDojI8xmVU3ZKiCtbhsP4dSodGRfwjxPNEaVgbOVxFeOLcqaN9TEDS9m3RPQ/
+         SLyyWgTV7QRnoYgQSog9p3IVzZkG7kx5gcgH/2t1/wnhbVJ+fLdoihrpSGwMMBBIdB
+         LTwly2mPqJE//bSqfj8EHVPLoMzP6seTeko1812Z0YBjSR9sr/3zk5KjK/l5HPmIVx
+         6ovBl66xrKr8MAp2iG/B2hShR14bfEPFZahDisYOZTH/oW0nmAD/Gf3wOy3J7YMWEx
+         lQyweVR7jcBrw==
+Date:   Tue, 18 Oct 2022 11:59:54 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, matsuda-daisuke@fujitsu.com,
+        lizhijian@fujitsu.com, linux-rdma@vger.kernel.org,
+        jenny.hack@hpe.com, ian.ziemba@hpe.com
+Subject: Re: [PATCH for-next 15/16] RDMA/rxe: Add workqueue support for tasks
+Message-ID: <Y05rCgMya/D7VBV9@unreal>
+References: <20221018043345.4033-1-rpearsonhpe@gmail.com>
+ <20221018043345.4033-16-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH 3/3] IB/iser: open code iser_disconnected_handler
-Content-Language: en-US
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>, jgg@nvidia.com,
-        linux-rdma@vger.kernel.org
-Cc:     sergeygo@nvidia.com, leonro@nvidia.com
-References: <20221016093833.12537-1-mgurtovoy@nvidia.com>
- <20221016093833.12537-4-mgurtovoy@nvidia.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <20221016093833.12537-4-mgurtovoy@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221018043345.4033-16-rpearsonhpe@gmail.com>
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+On Mon, Oct 17, 2022 at 11:33:46PM -0500, Bob Pearson wrote:
+> Add a third task type RXE_TASK_TYPE_WORKQUEUE to rxe_task.c.
+
+Why do you need an extra type and not instead of RXE_TASK_TYPE_TASKLET?
+
+> 
+> Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
+> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe.c      |  9 ++-
+>  drivers/infiniband/sw/rxe/rxe_task.c | 84 ++++++++++++++++++++++++++++
+>  drivers/infiniband/sw/rxe/rxe_task.h | 10 +++-
+>  3 files changed, 101 insertions(+), 2 deletions(-)
+
+<...>
+
+> +static struct workqueue_struct *rxe_wq;
+> +
+> +int rxe_alloc_wq(void)
+> +{
+> +	rxe_wq = alloc_workqueue("rxe_wq", WQ_MEM_RECLAIM |
+> +				WQ_HIGHPRI | WQ_CPU_INTENSIVE |
+> +				WQ_SYSFS, WQ_MAX_ACTIVE);
+
+Are you sure that all these flags can be justified? WQ_MEM_RECLAIM?
+
+> +
+> +	if (!rxe_wq)
+> +		return -ENOMEM;
+> +
+> +	return 0;
+> +}
+
+<...>
+
+> +static void work_sched(struct rxe_task *task)
+> +{
+> +	if (!task->valid)
+> +		return;
+> +
+> +	queue_work(rxe_wq, &task->work);
+> +}
+> +
+> +static void work_do_task(struct work_struct *work)
+> +{
+> +	struct rxe_task *task = container_of(work, typeof(*task), work);
+> +
+> +	if (!task->valid)
+> +		return;
+
+How can it be that submitted task is not valid? Especially without any
+locking.
+
+> +
+> +	do_task(task);
+> +}
+
+Thanks
+
+> +
