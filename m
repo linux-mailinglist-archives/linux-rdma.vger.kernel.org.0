@@ -2,181 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 797F560291D
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 12:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0885602926
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Oct 2022 12:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbiJRKKx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Oct 2022 06:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37364 "EHLO
+        id S229874AbiJRKMJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Oct 2022 06:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbiJRKKc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 06:10:32 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5C0B2DA1;
-        Tue, 18 Oct 2022 03:10:24 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29I7QGcN003536;
-        Tue, 18 Oct 2022 03:10:16 -0700
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3k7vcpapn7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Oct 2022 03:10:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UBhS8P8E3QjWo/OHa6NEb+QyXYOhQUVtHBopK5HlCc8RuWuUf8FiXvRhKKHizP2SOae3v2M6wOOfENZ+C827K2Ow+iBUgia9htu27TKBnORAItINrCD68/mjb1kyYnrt8U3ozlzyHj6aUZFy7oLCYTMPNjzZbFRhzVJXJdCqduuAMMAfIv6YXvICEzyTrgfEN+EkVyZr05iXApfvoVswsbPL+esVU/MiB7frudCVIpequzyNmFFjHG9PE/uuQLJVzsw0VsSE75DhVheBfCDbgoxJbgN2taiiD52I2M3YjGJRb2e+cMGY+m7zRlXa25fQPWYfI1574UKAt2kFlaaNzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=enrN9NQq/1csiOJ6ljNEL2NeGdZLCon+pS7t6BodtXU=;
- b=Fp8cmEC69VDon7vIMKBmQpKK7AmSBYG4r61+IFal8cioBeJyiLZwGrShkKX62wi2TtFGLcQzrQ/IoiHCcMAozm3+ASjzudfCYdEHblpx8QEaHqvz35kCl9nelfITERGZ1b9JR9vo1zHa8b8zcMzGau4ZkHzgkE6lyrV2INV+udxdCCRASxnKXTsCQMHfYCutarSWG1M/DtMr5O6XpZADZBLmyI5V1lLvfwXDTpBJHIrg/AUAsKhviJk1pV8oqPkhL9kN6tMd1PeBSXZHdDuwQTh2vjaq3clEvBrEQo5vl0SLW9TIZvPbUWNGZ4HyDg9r9CshJqQQ7Uwa3glTLTAn0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=enrN9NQq/1csiOJ6ljNEL2NeGdZLCon+pS7t6BodtXU=;
- b=F5zgQZAOOfDS+xWprB2gaG2fmGaWicOLfFukAOJ2NJvN2694I4pugVCYYecd7YPEBZsr85fVTQpnGtn9HURjpeD91240LJALB9fnD8BDq3surUeyHTANySIwZUGJ3TqeHQ30i2hLzIIoJ3XqP5vw1b+Y1n1Qfx6HsZyjrFR7u0k=
-Received: from MW5PR18MB5199.namprd18.prod.outlook.com (2603:10b6:303:1ca::16)
- by SA0PR18MB3645.namprd18.prod.outlook.com (2603:10b6:806:9f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.32; Tue, 18 Oct
- 2022 10:10:15 +0000
-Received: from MW5PR18MB5199.namprd18.prod.outlook.com
- ([fe80::6660:188e:7728:73a5]) by MW5PR18MB5199.namprd18.prod.outlook.com
- ([fe80::6660:188e:7728:73a5%2]) with mapi id 15.20.5723.033; Tue, 18 Oct 2022
- 10:10:14 +0000
-From:   Michal Kalderon <mkalderon@marvell.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-Subject: RE: [PATCH net-next 3/7] qed: Add support for RoCE hw init
-Thread-Topic: [PATCH net-next 3/7] qed: Add support for RoCE hw init
-Thread-Index: AQHUgVHnV5rTUYh2skSo+eKWU7aIiK4LxdoAgAUaggCAC8/FYA==
-Date:   Tue, 18 Oct 2022 10:10:14 +0000
-Message-ID: <MW5PR18MB51999D61F954FB61B7791739A1289@MW5PR18MB5199.namprd18.prod.outlook.com>
-References: <20221007154830.GA2630865@bhelgaas>
- <20221010214440.GA2940104@bhelgaas>
-In-Reply-To: <20221010214440.GA2940104@bhelgaas>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbWthbGRlcm9u?=
- =?us-ascii?Q?XGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0?=
- =?us-ascii?Q?YmEyOWUzNWJcbXNnc1xtc2ctMGQ5MjgxYTMtNGVjZC0xMWVkLTljM2MtNTA3?=
- =?us-ascii?Q?NmFmMzM2Y2NkXGFtZS10ZXN0XDBkOTI4MWE1LTRlY2QtMTFlZC05YzNjLTUw?=
- =?us-ascii?Q?NzZhZjMzNmNjZGJvZHkudHh0IiBzej0iMjM5MyIgdD0iMTMzMTA1NjE0MTMx?=
- =?us-ascii?Q?MzUyMDg5IiBoPSJiUHFZWFF6ZHdTY2ZZa3l0c1FlVXBzSzExTEk9IiBpZD0i?=
- =?us-ascii?Q?IiBibD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFQNEZB?=
- =?us-ascii?Q?QUFaMHVqUDJlTFlBUzlwZW5uTmMzV0VMMmw2ZWMxemRZUUpBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBSEFBQUFDT0JRQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBRUFBUUFCQUFBQTZQcWVsQUFBQUFBQUFBQUFBQUFBQUo0QUFBQmhBR1FB?=
- =?us-ascii?Q?WkFCeUFHVUFjd0J6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdNQWRRQnpBSFFBYndCdEFGOEFj?=
- =?us-ascii?Q?QUJsQUhJQWN3QnZBRzRBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNB?=
- =?us-ascii?Q?QUFBQUFDZUFBQUFZd0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJn?=
- =?us-ascii?Q?QjFBRzBBWWdCbEFISUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCakFI?=
- =?us-ascii?Q?VUFjd0IwQUc4QWJRQmZBSE1BY3dCdUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFB?=
- =?us-ascii?Q?R1FBYkFCd0FGOEFjd0JyQUhrQWNBQmxBRjhBWXdCb0FHRUFkQUJmQUcwQVpR?=
- =?us-ascii?Q?QnpBSE1BWVFCbkFHVUFYd0IyQURBQU1nQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVpBQnNBSEFBWHdCekFH?=
- =?us-ascii?Q?d0FZUUJqQUdzQVh3QmpBR2dBWVFCMEFGOEFiUUJsQUhNQWN3QmhBR2NBWlFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFB?=
- =?us-ascii?Q?QUFBQUlBQUFBQUFKNEFBQUJrQUd3QWNBQmZBSFFBWlFCaEFHMEFjd0JmQUc4?=
- =?us-ascii?Q?QWJnQmxBR1FBY2dCcEFIWUFaUUJmQUdZQWFRQnNBR1VBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdB?=
- =?us-ascii?Q?QUFHVUFiUUJoQUdrQWJBQmZBR0VBWkFCa0FISUFaUUJ6QUhNQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBYlFCaEFISUFkZ0Js?=
- =?us-ascii?Q?QUd3QWJBQmZBSFFBWlFCeUFHMEFhUUJ1QUhVQWN3QUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-rorf: true
-x-dg-reftwo: QUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUE9PSIvPjwvbWV0YT4=
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW5PR18MB5199:EE_|SA0PR18MB3645:EE_
-x-ms-office365-filtering-correlation-id: 8839373f-c047-4c03-31be-08dab0f0f368
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hMaOXQGHnIO3a+TehUaTUae3WbpYg+pHyxHBlKHcL/PMr5pTjfVmY70izewKHMkgXaHcM18prxPzwUqfzXcIvcKLNeFbeTEnMs1WIgX0eyWqCHW7JJyOiGFaFAXG5oELWWWGraWlWDc6RBNgmh14c3im0jph+1mrLcdTCbvB2AXlD9DfRsqYe/vTCYIN82LOi5kzlC+o2NeKg6dCxvuS1uw3Sr06VD7YrFul1UhD5txixoBs7e2MwWjvKQN861Z0klq+XeRa8gWm+aLE7v2AICgcLVFxCnexU3BZPhg32FG9A7bgqAj6MeHY0LvfHgeQays6QSkR3M0z87D1At98e8lZBXwaoCLzjzbDQQaT0wV8AXNDJLhCEeAUd0adyktGXS1XfXVSezH/GpMyc2qyzsh/5UaUUNjN6C2uwXoCKQ7n78PruiaAeoqUac+au6677kY+f1gNwslmWPwPmMwQhxGl6XOHlFafVlfdUfjM912YErsKw3zXh+/ZDmiHZXZOS2T1TtLFiJCXjx4woKMxeMM7CGIbY3WeqboSimZv2yTsgm8HIRsoCY0lPimv4RG2nxLK5DCWBytfeyVGBDjG84gadEA79G7hzA5nWpcCy7fs/VXSVvoUI93jUePo7HnKqxnEkI9yOwQGQrjkc3A9uhKbHyvEACvKIuVr7tvhq2A0el6mvODH4KgiyjMT9MsTA4JeWM1zNpYwm47Sy0fHkJc1pJMfet9WwH7l+sRf95evmLCjbBGRg5+CJIIMlDDoxOiuapiXiAAsV96xb8q58g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR18MB5199.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(39860400002)(396003)(346002)(136003)(376002)(451199015)(8936002)(52536014)(478600001)(66446008)(55016003)(122000001)(38100700002)(86362001)(38070700005)(7696005)(76116006)(186003)(110136005)(6506007)(9686003)(66476007)(8676002)(83380400001)(26005)(4326008)(66556008)(64756008)(2906002)(316002)(66946007)(41300700001)(6636002)(71200400001)(54906003)(5660300002)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?se7l9t4TDxcH4fVwlKCu+D3XfWkPN0TGk5UIfsw4AcUVEL2uhYVTWLnuNVP/?=
- =?us-ascii?Q?cjQzbY4gNetxhmrDzPyWvWQgG2f4N7DpB4cR+orrmyObGrpKjAhKfJlFDBcn?=
- =?us-ascii?Q?B+NFhvOqfLpyyDe+owRuqZPJ6fGWigOj1ojW3MOO5rPDGu7TQ8oZwcZs67VJ?=
- =?us-ascii?Q?DHU8RVM6bOQa2axyU0xJKY78pJrpBDJUkNkmSLTQerTMCuR7HlN6HI3e7MCa?=
- =?us-ascii?Q?0oz5irMAjt67Ozcbu3b1dl1YVZhjDiE61ux8V9PInWOy//HzbBEAWIAHRQ1n?=
- =?us-ascii?Q?GBRPPgbxrln8bq/95xXOvJ4NcvsUa5VMQQY1FTovb1aakRLcQSfW1MvuSN5b?=
- =?us-ascii?Q?3wKGJu5RwSOhZIV/NdPB74LSHlq78H6ITiLt1eAKzil+yI2do+CLHWmYRlbi?=
- =?us-ascii?Q?dHNF02k2/qLozFYNH62NcIUg5pDpst4ZaaVgs7gvCNn0y5jnSVWzqHsXMV3G?=
- =?us-ascii?Q?2gM36U+JURybeAQBgGtiMnWV3Bv+dvk13Kk/OKQKfnkY21fh4rYFgBRnYRk0?=
- =?us-ascii?Q?/Tiaj7oR/wc7W4OgO+jmSIHIbqRlnI14wdkg7UlQ7ueG4aNIVUq/ijBDjWFd?=
- =?us-ascii?Q?m2c9AvYtbmD6qHjPpZtTjOAovHm/Y4wT5n7Deq2jKUwjiOt5SM8815M/E4ih?=
- =?us-ascii?Q?83SY0h4hjkyq+Wpv4kj7wyD1ikSNRjO1VrR3waalDJuqkXk0JBVToLuraOLq?=
- =?us-ascii?Q?yZfdzL5AZLHYfZ4H20ZV7bsE6uyLv05DbJrXV8KRr69ptGETqa81DVpTd3Dy?=
- =?us-ascii?Q?zx1BKuoJnNOuwU+XY+O7+7mfteSkAkCFkPStFFu5B9rS1xZRZMe6Kc7T3sz5?=
- =?us-ascii?Q?xHLG1t30g2T1G/6/QZfow7CfkzUjh9M8lM7Si8bmLj+9MVl9+wEw2lXUlS7B?=
- =?us-ascii?Q?8irGPcqtPcvaHBLZUb6FJDtPr7XS/osMRlt2eEWNkohyhvQazyqY877pQk3I?=
- =?us-ascii?Q?DrYXkQb4Ma8taKvNwxlCqvHskVpWzmkX4jnv1rJK3pFmveCWUsCg92QcqRrx?=
- =?us-ascii?Q?iBATOO9VJcjZP5gpaQaI6gjD0hSwYXgJuhGWH74eALhv8bP7LcYOTuql9375?=
- =?us-ascii?Q?hsqABFdVw4tS2PwyylEdcsXAM+9B79cLVr3Je2kMlAldRuF/3SXtROO2H5Ia?=
- =?us-ascii?Q?+THsMBaF7NYuuAmOU55Kdpqbt5vxIhk4X/P3RnLCEqLycWAmcti+DgZEPXcM?=
- =?us-ascii?Q?jB0YYcXi41pP1ed/sbnMJrEm3cR7Nfhujyq+VRWh7KsniY0nrjlX2m1lNSFt?=
- =?us-ascii?Q?HC99ZEAxQubMNxX3sgs3lW3jcW8jQqIN98wC0w0ofVhn1Ma89uupGcrWgIEK?=
- =?us-ascii?Q?SWCCxr0rsijJO4aoH/nxc+Bb0fEZ5rAwGBuW54IDoSuRQaIxfO7hr+JF6I4X?=
- =?us-ascii?Q?OzgbY3hOPo7wXHB39rYdFhCIniB4SV/RSy2h1V9V3zC5w3pFfLl3BeTiRwUy?=
- =?us-ascii?Q?dU42f41eJf/qUAueJIU0W/CB++3ethCIVIXb7c4BqS6QyATHkbtgN2RxSYE1?=
- =?us-ascii?Q?JjFQEJQ55YO9yp62AJ0sqolei2OjKwNFgY82zLl0ebcFEUh/AtqFks+G55kO?=
- =?us-ascii?Q?uFHqTsrkUwVa1gUGz4GM7fC1EvzmXp2A8/PQ2Npb?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S230312AbiJRKLx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Oct 2022 06:11:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B939BB40C8
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 03:11:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1666087895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1clN6YYSHPELBC6RtYOPG6kuOY0pGGZ/GET+ZIeJc5g=;
+        b=KUTUQKVzVqGuo8KrADr4AR6KYvWvt/svN0kb5AckFkGhqY2YV1mn+WaOFzcr+nrxjq2LJ0
+        j18KhU6dBbYlnWeu3i0c/t5tvqr9a0jard6f1ORkYrmXGMpQkA2zC/hhupXS39iUc4efOB
+        p5dlTkzTbksUQBkGJ640wToKo4Hwca0=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-127-YLQVgB17PP-hRuYM6tjJyA-1; Tue, 18 Oct 2022 06:11:34 -0400
+X-MC-Unique: YLQVgB17PP-hRuYM6tjJyA-1
+Received: by mail-qt1-f200.google.com with SMTP id d1-20020ac80601000000b00388b0fc84beso10234975qth.3
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Oct 2022 03:11:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1clN6YYSHPELBC6RtYOPG6kuOY0pGGZ/GET+ZIeJc5g=;
+        b=yc6lld1CG1AmjaxAal1j/5GKLtmCWJhy2+aYNwfNR37mH4gTR83ewFHymlIDmNXJrF
+         rS2dosqK0OI9xrxdCcDqYGDpGlV7rHnDPlvnajDLuo7QEBhgUxWaItRmF8IhJuTVHorh
+         PBkfwvHSeocCCvsx3TouHDSZAQQfNSuCaBKcG/xCvF7W7+/HFsqRSgm4OE9qoN4CGb4O
+         HlNsCyd4znh9PBU8tPyztQO5i5DSh5UgwAE5y/Ofx7MTTtNRQN7us972OL2Iwppfgsib
+         Zd95PGIQaLysY0eqrsHjjWJ9j0R6EdSpaQC0lT1e6f5p66fLLeirBbmkJZhxswD1v3Xr
+         t5WQ==
+X-Gm-Message-State: ACrzQf0jp39UU2lCDMaiYptIOoudR4hYWLPbvAG1S6z1iykAmHPdk8ND
+        ioDYHo3IfnY438XbUaj4Kn+NpCc+VDSN73keT7/+xf7XnRfKqOBdlfRoFnlM9mWIOL+QIqYFNf7
+        zJGRnPQx1mTLHAPOm7+h2wQ==
+X-Received: by 2002:ac8:4e89:0:b0:39c:c025:887a with SMTP id 9-20020ac84e89000000b0039cc025887amr1358825qtp.413.1666087893619;
+        Tue, 18 Oct 2022 03:11:33 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM7DsxJ2DLFs28NjOrMptWxggYK3t40OlJt+7xNu2Q3Vh8+TvT5sEexDPbDkleGi2SqKmGnM2w==
+X-Received: by 2002:ac8:4e89:0:b0:39c:c025:887a with SMTP id 9-20020ac84e89000000b0039cc025887amr1358801qtp.413.1666087893270;
+        Tue, 18 Oct 2022 03:11:33 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-103-235.dyn.eolo.it. [146.241.103.235])
+        by smtp.gmail.com with ESMTPSA id ch8-20020a05622a40c800b0039cc82a319asm1593863qtb.76.2022.10.18.03.11.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Oct 2022 03:11:32 -0700 (PDT)
+Message-ID: <720519df325384f4bf5d1e51045ecfd402d1d859.camel@redhat.com>
+Subject: Re: [Patch v7 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure
+ Network Adapter
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     longli@microsoft.com, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, edumazet@google.com,
+        shiraz.saleem@intel.com, Ajay Sharma <sharmaajay@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Tue, 18 Oct 2022 12:11:28 +0200
+In-Reply-To: <1666034441-15424-13-git-send-email-longli@linuxonhyperv.com>
+References: <1666034441-15424-1-git-send-email-longli@linuxonhyperv.com>
+         <1666034441-15424-13-git-send-email-longli@linuxonhyperv.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW5PR18MB5199.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8839373f-c047-4c03-31be-08dab0f0f368
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2022 10:10:14.8365
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3BAU90/Q941RatlpJiozuVChQvjzm0k0SxtdUkmhNnjkI1ttf5Vp3zklrnFAvUxOKFWmsb8DxK26Xg8GKBIjyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR18MB3645
-X-Proofpoint-ORIG-GUID: uvJEx8WeaZiZEopfCtgS5dvR8EyvlCxm
-X-Proofpoint-GUID: uvJEx8WeaZiZEopfCtgS5dvR8EyvlCxm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-18_03,2022-10-18_01,2022-06-22_01
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -184,67 +88,514 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: Bjorn Helgaas <helgaas@kernel.org>
-> Sent: Tuesday, October 11, 2022 12:45 AM
->=20
-> [ping, updated Ariel's address]
->=20
-> On Fri, Oct 07, 2022 at 10:48:32AM -0500, Bjorn Helgaas wrote:
-> > On Sat, Oct 01, 2016 at 09:59:57PM +0300, Yuval Mintz wrote:
-> > > From: Ram Amrani <Ram.Amrani@caviumnetworks.com>
-> > >
-> > > This adds the backbone required for the various HW initalizations
-> > > which are necessary for the qedr driver - FW notification, resource
-> > > initializations, etc.
-> > > ...
-> >
-> > > diff --git a/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> b/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> > > ...
-> > > +	/* Check atomic operations support in PCI configuration space. */
-> > > +	pci_read_config_dword(cdev->pdev,
-> > > +			      cdev->pdev->pcie_cap + PCI_EXP_DEVCTL2,
-> > > +			      &pci_status_control);
-> > > +
-> > > +	if (pci_status_control & PCI_EXP_DEVCTL2_LTR_EN)
-> > > +		SET_FIELD(dev->dev_caps,
-> QED_RDMA_DEV_CAP_ATOMIC_OP, 1);
-> >
-> > I don't understand this.
-> >
-> >   1) PCI_EXP_DEVCTL2 is a 16-bit register ("word"), not a 32-bit one
-> >   ("dword").
-> >
-> >   2) QED_RDMA_DEV_CAP_ATOMIC_OP is set here but is not read
-> anywhere
-> >   in this patch.  Is it used by the qed device itself?
-> >
-> >   3) PCI_EXP_DEVCTL2_LTR_EN is for Latency Tolerance Reporting and is
-> >   not related to atomic ops.  I don't know what
-> >   QED_RDMA_DEV_CAP_ATOMIC_OP means, but possibly one of these
-> was
-> >   intended instead?
-> >
-> >     - PCI_EXP_DEVCAP2_ATOMIC_COMP32 means the device supports 32-
-> bit
-> >       AtomicOps as a completer.
-> >     - PCI_EXP_DEVCAP2_ATOMIC_COMP64 means the device supports 64-
-> bit
-> >       AtomicOps as a completer.
-> >     - PCI_EXP_DEVCAP2_ATOMIC_COMP128 means the device supports
-> 128-bit
-> >       AtomicOps as a completer.
-> >     - PCI_EXP_DEVCTL2_ATOMIC_REQ means the device is allowed to
-> >       initiate AtomicOps.
-> >
-> > (This code is now in qed_rdma.c)
+On Mon, 2022-10-17 at 12:20 -0700, longli@linuxonhyperv.com wrote:
+> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+> new file mode 100644
+> index 000000000000..57e5f9dca454
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/mana/main.c
 
-Thanks for looking into this.=20
-This seems like redundant code and left-overs for supporting the atomic ope=
-ration verb.
-Atomic support is handled by: qedr_pci_set_atomic and introduced with a pro=
-per implementation by commit-SHA 20c3ff6114b0c
+[...]
 
-This code in qed_rdma.c can safely be removed.
-Thanks,
-Michal
+> +static int mana_gd_destroy_doorbell_page(struct gdma_context *gc,
+> +					 int doorbell_page)
+> +{
+> +	struct gdma_destroy_resource_range_req req = {};
+> +	struct gdma_resp_hdr resp = {};
+> +	int err;
+> +
+> +	mana_gd_init_req_hdr(&req.hdr, GDMA_DESTROY_RESOURCE_RANGE,
+> +			     sizeof(req), sizeof(resp));
+> +
+> +	req.resource_type = GDMA_RESOURCE_DOORBELL_PAGE;
+> +	req.num_resources = 1;
+> +	req.allocated_resources = doorbell_page;
+> +
+> +	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+> +	if (err || resp.status) {
+> +		dev_err(gc->dev,
+> +			"Failed to destroy doorbell page: ret %d, 0x%x\n",
+> +			err, resp.status);
+> +		return err ? err : -EPROTO;
+
+Minor nit: the preferred style is:
+		return err ?: -EPROTO;
+
+a few other occurences below.
+
+> +	}
+> +
+> +	return 0;
+> +}
+
+[...]
+
+> +int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+> +				 mana_handle_t *gdma_region)
+> +{
+> +	struct gdma_dma_region_add_pages_req *add_req = NULL;
+> +	struct gdma_create_dma_region_resp create_resp = {};
+> +	struct gdma_create_dma_region_req *create_req;
+> +	size_t num_pages_cur, num_pages_to_handle;
+> +	unsigned int create_req_msg_size;
+> +	struct hw_channel_context *hwc;
+> +	struct ib_block_iter biter;
+> +	size_t max_pgs_create_cmd;
+> +	struct gdma_context *gc;
+> +	size_t num_pages_total;
+> +	struct gdma_dev *mdev;
+> +	unsigned long page_sz;
+> +	void *request_buf;
+> +	unsigned int i;
+> +	int err;
+> +
+> +	mdev = dev->gdma_dev;
+> +	gc = mdev->gdma_context;
+> +	hwc = gc->hwc.driver_data;
+> +
+> +	/* Hardware requires dma region to align to chosen page size */
+> +	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
+> +	if (!page_sz) {
+> +		ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
+> +		return -ENOMEM;
+> +	}
+> +	num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
+> +
+> +	max_pgs_create_cmd =
+> +		(hwc->max_req_msg_size - sizeof(*create_req)) / sizeof(u64);
+> +	num_pages_to_handle =
+> +		min_t(size_t, num_pages_total, max_pgs_create_cmd);
+> +	create_req_msg_size =
+> +		struct_size(create_req, page_addr_list, num_pages_to_handle);
+> +
+> +	request_buf = kzalloc(hwc->max_req_msg_size, GFP_KERNEL);
+> +	if (!request_buf)
+> +		return -ENOMEM;
+> +
+> +	create_req = request_buf;
+> +	mana_gd_init_req_hdr(&create_req->hdr, GDMA_CREATE_DMA_REGION,
+> +			     create_req_msg_size, sizeof(create_resp));
+> +
+> +	create_req->length = umem->length;
+> +	create_req->offset_in_page = umem->address & (page_sz - 1);
+> +	create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
+> +	create_req->page_count = num_pages_total;
+> +	create_req->page_addr_list_len = num_pages_to_handle;
+> +
+> +	ibdev_dbg(&dev->ib_dev, "size_dma_region %lu num_pages_total %lu\n",
+> +		  umem->length, num_pages_total);
+> +
+> +	ibdev_dbg(&dev->ib_dev, "page_sz %lu offset_in_page %u\n",
+> +		  page_sz, create_req->offset_in_page);
+> +
+> +	ibdev_dbg(&dev->ib_dev, "num_pages_to_handle %lu, gdma_page_type %u",
+> +		  num_pages_to_handle, create_req->gdma_page_type);
+> +
+> +	__rdma_umem_block_iter_start(&biter, umem, page_sz);
+> +
+> +	for (i = 0; i < num_pages_to_handle; ++i) {
+> +		dma_addr_t cur_addr;
+> +
+> +		__rdma_block_iter_next(&biter);
+> +		cur_addr = rdma_block_iter_dma_address(&biter);
+> +
+> +		create_req->page_addr_list[i] = cur_addr;
+> +	}
+> +
+> +	err = mana_gd_send_request(gc, create_req_msg_size, create_req,
+> +				   sizeof(create_resp), &create_resp);
+> +	if (err || create_resp.hdr.status) {
+> +		ibdev_dbg(&dev->ib_dev,
+> +			  "Failed to create DMA region: %d, 0x%x\n", err,
+> +			  create_resp.hdr.status);
+> +		if (!err)
+> +			err = -EPROTO;
+> +
+> +		kfree(request_buf);
+> +		return err;
+
+Minor nit: you can avoid a little code doplication replacing the above
+2 lines with:
+		goto out;
+
+and ...
+
+> +	}
+> +
+> +	*gdma_region = create_resp.dma_region_handle;
+> +	ibdev_dbg(&dev->ib_dev, "Created DMA region with handle 0x%llx\n",
+> +		  *gdma_region);
+> +
+> +	num_pages_cur = num_pages_to_handle;
+> +
+> +	if (num_pages_cur < num_pages_total) {
+> +		unsigned int add_req_msg_size;
+> +		size_t max_pgs_add_cmd =
+> +			(hwc->max_req_msg_size - sizeof(*add_req)) /
+> +			sizeof(u64);
+> +
+> +		num_pages_to_handle =
+> +			min_t(size_t, num_pages_total - num_pages_cur,
+> +			      max_pgs_add_cmd);
+> +
+> +		/* Calculate the max num of pages that will be handled */
+> +		add_req_msg_size = struct_size(add_req, page_addr_list,
+> +					       num_pages_to_handle);
+> +		add_req = request_buf;
+> +
+> +		while (num_pages_cur < num_pages_total) {
+> +			struct gdma_general_resp add_resp = {};
+> +			u32 expected_status = 0;
+> +
+> +			if (num_pages_cur + num_pages_to_handle <
+> +			    num_pages_total) {
+> +				/* Status indicating more pages are needed */
+> +				expected_status = GDMA_STATUS_MORE_ENTRIES;
+> +			}
+> +
+> +			memset(add_req, 0, add_req_msg_size);
+> +
+> +			mana_gd_init_req_hdr(&add_req->hdr,
+> +					     GDMA_DMA_REGION_ADD_PAGES,
+> +					     add_req_msg_size,
+> +					     sizeof(add_resp));
+> +			add_req->dma_region_handle = *gdma_region;
+> +			add_req->page_addr_list_len = num_pages_to_handle;
+> +
+> +			for (i = 0; i < num_pages_to_handle; ++i) {
+> +				dma_addr_t cur_addr =
+> +					rdma_block_iter_dma_address(&biter);
+> +				add_req->page_addr_list[i] = cur_addr;
+> +				__rdma_block_iter_next(&biter);
+> +
+> +				ibdev_dbg(&dev->ib_dev,
+> +					  "page_addr_list %lu addr 0x%llx\n",
+> +					  num_pages_cur + i, cur_addr);
+> +			}
+> +
+> +			err = mana_gd_send_request(gc, add_req_msg_size,
+> +						   add_req, sizeof(add_resp),
+> +						   &add_resp);
+> +			if (err || add_resp.hdr.status != expected_status) {
+> +				ibdev_dbg(&dev->ib_dev,
+> +					  "Failed put DMA pages %u: %d,0x%x\n",
+> +					  i, err, add_resp.hdr.status);
+> +				err = -EPROTO;
+> +				break;
+> +			}
+> +
+> +			num_pages_cur += num_pages_to_handle;
+> +			num_pages_to_handle =
+> +				min_t(size_t, num_pages_total - num_pages_cur,
+> +				      max_pgs_add_cmd);
+> +			add_req_msg_size = sizeof(*add_req) +
+> +					   num_pages_to_handle * sizeof(u64);
+> +		}
+> +	}
+> +
+> +	kfree(request_buf);
+> +
+> +	if (err)
+> +		mana_ib_gd_destroy_dma_region(dev, create_resp.dma_region_handle);
+
+... here:
+
+	if (err)
+		mana_ib_gd_destroy_dma_region(dev, create_resp.dma_region_handle);
+
+out:
+	kfree(request_buf);
+
+> +
+> +	return err;
+> +}
+
+[...]
+
+> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+> new file mode 100644
+> index 000000000000..fec7d4a06ace
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/mana/qp.c
+> @@ -0,0 +1,505 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2022, Microsoft Corporation. All rights reserved.
+> + */
+> +
+> +#include "mana_ib.h"
+> +
+> +static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+> +				      struct net_device *ndev,
+> +				      mana_handle_t default_rxobj,
+> +				      mana_handle_t ind_table[],
+> +				      u32 log_ind_tbl_size, u32 rx_hash_key_len,
+> +				      u8 *rx_hash_key)
+> +{
+> +	struct mana_port_context *mpc = netdev_priv(ndev);
+> +	struct mana_cfg_rx_steer_req *req = NULL;
+> +	struct mana_cfg_rx_steer_resp resp = {};
+> +	mana_handle_t *req_indir_tab;
+> +	struct gdma_context *gc;
+> +	struct gdma_dev *mdev;
+> +	u32 req_buf_size;
+> +	int i, err;
+> +
+> +	mdev = dev->gdma_dev;
+> +	gc = mdev->gdma_context;
+> +
+> +	req_buf_size =
+> +		sizeof(*req) + sizeof(mana_handle_t) * MANA_INDIRECT_TABLE_SIZE;
+> +	req = kzalloc(req_buf_size, GFP_KERNEL);
+> +	if (!req)
+> +		return -ENOMEM;
+> +
+> +	mana_gd_init_req_hdr(&req->hdr, MANA_CONFIG_VPORT_RX, req_buf_size,
+> +			     sizeof(resp));
+> +
+> +	req->vport = mpc->port_handle;
+> +	req->rx_enable = 1;
+> +	req->update_default_rxobj = 1;
+> +	req->default_rxobj = default_rxobj;
+> +	req->hdr.dev_id = mdev->dev_id;
+> +
+> +	/* If there are more than 1 entries in indirection table, enable RSS */
+> +	if (log_ind_tbl_size)
+> +		req->rss_enable = true;
+> +
+> +	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
+> +	req->indir_tab_offset = sizeof(*req);
+> +	req->update_indir_tab = true;
+> +
+> +	req_indir_tab = (mana_handle_t *)(req + 1);
+> +	/* The ind table passed to the hardware must have
+> +	 * MANA_INDIRECT_TABLE_SIZE entries. Adjust the verb
+> +	 * ind_table to MANA_INDIRECT_TABLE_SIZE if required
+> +	 */
+> +	ibdev_dbg(&dev->ib_dev, "ind table size %u\n", 1 << log_ind_tbl_size);
+> +	for (i = 0; i < MANA_INDIRECT_TABLE_SIZE; i++) {
+> +		req_indir_tab[i] = ind_table[i % (1 << log_ind_tbl_size)];
+> +		ibdev_dbg(&dev->ib_dev, "index %u handle 0x%llx\n", i,
+> +			  req_indir_tab[i]);
+> +	}
+> +
+> +	req->update_hashkey = true;
+> +	if (rx_hash_key_len)
+> +		memcpy(req->hashkey, rx_hash_key, rx_hash_key_len);
+> +	else
+> +		netdev_rss_key_fill(req->hashkey, MANA_HASH_KEY_SIZE);
+> +
+> +	ibdev_dbg(&dev->ib_dev, "vport handle %llu default_rxobj 0x%llx\n",
+> +		  req->vport, default_rxobj);
+> +
+> +	err = mana_gd_send_request(gc, req_buf_size, req, sizeof(resp), &resp);
+> +	if (err) {
+> +		netdev_err(ndev, "Failed to configure vPort RX: %d\n", err);
+> +		goto out;
+> +	}
+> +
+> +	if (resp.hdr.status) {
+> +		netdev_err(ndev, "vPort RX configuration failed: 0x%x\n",
+> +			   resp.hdr.status);
+> +		err = -EPROTO;
+
+This is confusing: if this error condition is reached, both error and
+succesful configuration will be logged. I guess an additional:
+
+		goto out;
+
+is needed.
+
+> +	}
+> +
+> +	netdev_info(ndev, "Configured steering vPort %llu log_entries %u\n",
+> +		    mpc->port_handle, log_ind_tbl_size);
+> +
+> +out:
+> +	kfree(req);
+> +	return err;
+> +}
+> +
+> +static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+> +				 struct ib_qp_init_attr *attr,
+> +				 struct ib_udata *udata)
+> +{
+> +	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
+> +	struct mana_ib_dev *mdev =
+> +		container_of(pd->device, struct mana_ib_dev, ib_dev);
+> +	struct ib_rwq_ind_table *ind_tbl = attr->rwq_ind_tbl;
+> +	struct mana_ib_create_qp_rss_resp resp = {};
+> +	struct mana_ib_create_qp_rss ucmd = {};
+> +	struct gdma_dev *gd = mdev->gdma_dev;
+> +	mana_handle_t *mana_ind_table;
+> +	struct mana_port_context *mpc;
+> +	struct mana_context *mc;
+> +	struct net_device *ndev;
+> +	struct mana_ib_cq *cq;
+> +	struct mana_ib_wq *wq;
+> +	unsigned int ind_tbl_size;
+> +	struct ib_cq *ibcq;
+> +	struct ib_wq *ibwq;
+> +	u32 port;
+> +	int ret;
+> +	int i;
+
+This causes a build warning with clang:
+
+../drivers/infiniband/hw/mana/qp.c:172:6: warning: variable 'i' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+        if (!mana_ind_table) {
+            ^~~~~~~~~~~~~~~
+../drivers/infiniband/hw/mana/qp.c:241:9: note: uninitialized use occurs here
+        while (i-- > 0) {
+               ^
+../drivers/infiniband/hw/mana/qp.c:172:2: note: remove the 'if' if its condition is always false
+        if (!mana_ind_table) {
+        ^~~~~~~~~~~~~~~~~~~~~~
+../drivers/infiniband/hw/mana/qp.c:113:7: note: initialize the variable 'i' to silence this warning
+        int i;
+
+
+
+> +
+> +	mc = gd->driver_data;
+> +
+> +	if (!udata || udata->inlen < sizeof(ucmd))
+> +		return -EINVAL;
+> +
+> +	ret = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
+> +	if (ret) {
+> +		ibdev_dbg(&mdev->ib_dev,
+> +			  "Failed copy from udata for create rss-qp, err %d\n",
+> +			  ret);
+> +		return -EFAULT;
+> +	}
+> +
+> +	if (attr->cap.max_recv_wr > MAX_SEND_BUFFERS_PER_QUEUE) {
+> +		ibdev_dbg(&mdev->ib_dev,
+> +			  "Requested max_recv_wr %d exceeding limit\n",
+> +			  attr->cap.max_recv_wr);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (attr->cap.max_recv_sge > MAX_RX_WQE_SGL_ENTRIES) {
+> +		ibdev_dbg(&mdev->ib_dev,
+> +			  "Requested max_recv_sge %d exceeding limit\n",
+> +			  attr->cap.max_recv_sge);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ind_tbl_size = 1 << ind_tbl->log_ind_tbl_size;
+> +	if (ind_tbl_size > MANA_INDIRECT_TABLE_SIZE) {
+> +		ibdev_dbg(&mdev->ib_dev,
+> +			  "Indirect table size %d exceeding limit\n",
+> +			  ind_tbl_size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (ucmd.rx_hash_function != MANA_IB_RX_HASH_FUNC_TOEPLITZ) {
+> +		ibdev_dbg(&mdev->ib_dev,
+> +			  "RX Hash function is not supported, %d\n",
+> +			  ucmd.rx_hash_function);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* IB ports start with 1, MANA start with 0 */
+> +	port = ucmd.port;
+> +	if (port < 1 || port > mc->num_ports) {
+> +		ibdev_dbg(&mdev->ib_dev, "Invalid port %u in creating qp\n",
+> +			  port);
+> +		return -EINVAL;
+> +	}
+> +	ndev = mc->ports[port - 1];
+> +	mpc = netdev_priv(ndev);
+> +
+> +	ibdev_dbg(&mdev->ib_dev, "rx_hash_function %d port %d\n",
+> +		  ucmd.rx_hash_function, port);
+> +
+> +	mana_ind_table = kcalloc(ind_tbl_size, sizeof(mana_handle_t),
+> +				 GFP_KERNEL);
+> +	if (!mana_ind_table) {
+> +		ret = -ENOMEM;
+> +		goto fail;
+> +	}
+> +
+> +	qp->port = port;
+> +
+> +	for (i = 0; i < ind_tbl_size; i++) {
+> +		struct mana_obj_spec wq_spec = {};
+> +		struct mana_obj_spec cq_spec = {};
+> +
+> +		ibwq = ind_tbl->ind_tbl[i];
+> +		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
+> +
+> +		ibcq = ibwq->cq;
+> +		cq = container_of(ibcq, struct mana_ib_cq, ibcq);
+> +
+> +		wq_spec.gdma_region = wq->gdma_region;
+> +		wq_spec.queue_size = wq->wq_buf_size;
+> +
+> +		cq_spec.gdma_region = cq->gdma_region;
+> +		cq_spec.queue_size = cq->cqe * COMP_ENTRY_SIZE;
+> +		cq_spec.modr_ctx_id = 0;
+> +		cq_spec.attached_eq = GDMA_CQ_NO_EQ;
+> +
+> +		ret = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_RQ,
+> +					 &wq_spec, &cq_spec, &wq->rx_object);
+> +		if (ret)
+> +			goto fail;
+> +
+> +		/* The GDMA regions are now owned by the WQ object */
+> +		wq->gdma_region = GDMA_INVALID_DMA_REGION;
+> +		cq->gdma_region = GDMA_INVALID_DMA_REGION;
+> +
+> +		wq->id = wq_spec.queue_index;
+> +		cq->id = cq_spec.queue_index;
+> +
+> +		ibdev_dbg(&mdev->ib_dev,
+> +			  "ret %d rx_object 0x%llx wq id %llu cq id %llu\n",
+> +			  ret, wq->rx_object, wq->id, cq->id);
+> +
+> +		resp.entries[i].cqid = cq->id;
+> +		resp.entries[i].wqid = wq->id;
+> +
+> +		mana_ind_table[i] = wq->rx_object;
+> +	}
+> +	resp.num_entries = i;
+> +
+> +	ret = mana_ib_cfg_vport_steering(mdev, ndev, wq->rx_object,
+> +					 mana_ind_table,
+> +					 ind_tbl->log_ind_tbl_size,
+> +					 ucmd.rx_hash_key_len,
+> +					 ucmd.rx_hash_key);
+> +	if (ret)
+> +		goto fail;
+> +
+> +	ret = ib_copy_to_udata(udata, &resp, sizeof(resp));
+> +	if (ret) {
+> +		ibdev_dbg(&mdev->ib_dev,
+> +			  "Failed to copy to udata create rss-qp, %d\n",
+> +			  ret);
+> +		goto fail;
+> +	}
+> +
+> +	kfree(mana_ind_table);
+> +
+> +	return 0;
+> +
+> +fail:
+> +	while (i-- > 0) {
+> +		ibwq = ind_tbl->ind_tbl[i];
+> +		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
+> +		mana_destroy_wq_obj(mpc, GDMA_RQ, wq->rx_object);
+> +	}
+> +
+> +	kfree(mana_ind_table);
+> +
+> +	return ret;
+> +}
+
+
+Cheers,
+
+Paolo
+
