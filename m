@@ -2,45 +2,45 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB585603A38
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Oct 2022 08:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB229603A3B
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Oct 2022 09:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbiJSG7J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Oct 2022 02:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
+        id S229770AbiJSG7M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Oct 2022 02:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbiJSG7I (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Oct 2022 02:59:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4827548B;
-        Tue, 18 Oct 2022 23:59:07 -0700 (PDT)
+        with ESMTP id S229752AbiJSG7L (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Oct 2022 02:59:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8901A74E34;
+        Tue, 18 Oct 2022 23:59:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 602D6B82248;
-        Wed, 19 Oct 2022 06:59:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EFCBC433C1;
-        Wed, 19 Oct 2022 06:59:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2408C61780;
+        Wed, 19 Oct 2022 06:59:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AC3CC433C1;
+        Wed, 19 Oct 2022 06:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666162745;
-        bh=zkHbNMMe/H8kbcI+ewovSQpXvA8zcSql7+69m3QFUZM=;
+        s=k20201202; t=1666162749;
+        bh=OfVW4QnOh93RwF/s/KLpFrhT6CiZCgqwx9xOE292feg=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=khYrR1424vTYIs02ea1r5p0GfrkLJf3AbeRrgK3wq+91u3LLY5bKh40UuP+7EMK3O
-         EkipOB77BlH61oQJFd+E4w6ADzTSXwICQn+lvPv1sWIk74AQTdm53n+xibbIFrzo2T
-         NZYhIfvBqhUUPIopeOef1jS9m3pUAD1CYVAVWzvZJDpnEjGK+3pHhhPOSxpw1YS0eh
-         4EEr11vOrbLh0t3uHjHYLrOReX1wpJYr1HbiiXwIYlrB889TWVkjPXNlumIMIkCZI3
-         kxs2PJ75xqw3fwgGOPCiWw3zxbAJTflHvoe15Vr4xPz3HOqaTAUFBqgZ69H85f1O4Z
-         8cPdsy9UI3W/Q==
+        b=rAxDA2Kq9vo5Ivl04DGNgDlP0Zey2E1LKgbu/w6gE96YKH7RJWNc5qXJF3opHDZEu
+         Ptm3QqboS+4rp8tupRa3cGv4yvHrEuyiywQ0a+G6JIj9PZ720RjCTTGiVt7474ruU4
+         g+ekTaMXinOKdGtri61SHBakQ75TAxGW47jH8D2UG4Nh0L80qkvC7R2lkHaDR0LvSk
+         bQ+11+wIx4fwOGo+9RHK7evAO7nrSje5NJt24evlpmQGAA1tPObSs641WbEfTHBkoJ
+         GM9C4qXtyN7RnWRRGs0sVH3UQYZC1RUfRJEBukeN7V/f8JuwtpM4lpc/CmVpI7H1CW
+         hKhO7eOnNyAMA==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20221001020045.8324-1-lizhijian@fujitsu.com>
-References: <20221001020045.8324-1-lizhijian@fujitsu.com>
-Subject: Re: [PATCH for-next] RDMA: return -EOPNOSUPP for ODP unsupported device
-Message-Id: <166616274049.238391.4392133358524096226.b4-ty@kernel.org>
-Date:   Wed, 19 Oct 2022 09:59:00 +0300
+To:     Jiangshan Yi <13667453960@163.com>, jgg@ziepe.ca
+Cc:     Jiangshan Yi <yijiangshan@kylinos.cn>,
+        k2ci <kernel-bot@kylinos.cn>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20221009081047.2643471-1-13667453960@163.com>
+References: <20221009081047.2643471-1-13667453960@163.com>
+Subject: Re: [PATCH] include/rdma/opa_vnic.h: fix spelling typo in comment
+Message-Id: <166616274559.238391.7371433630937415786.b4-ty@kernel.org>
+Date:   Wed, 19 Oct 2022 09:59:05 +0300
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,18 +54,17 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, 1 Oct 2022 10:00:45 +0800, Li Zhijian wrote:
-> ib_reg_mr(3) which is used to register a MR with specific access flags
-> for specific HCA will set errno when something go wrong.
-> So, here we should return the specific -EOPNOTSUPP when the being
-> requested ODP access flag is unspported by the HCA(such as RXE).
+On Sun, 9 Oct 2022 16:10:47 +0800, Jiangshan Yi wrote:
+> From: Jiangshan Yi <yijiangshan@kylinos.cn>
+> 
+> Fix spelling typo in comment.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] RDMA: return -EOPNOSUPP for ODP unsupported device
-      https://git.kernel.org/rdma/rdma/c/0154331c318907
+[1/1] include/rdma/opa_vnic.h: fix spelling typo in comment
+      https://git.kernel.org/rdma/rdma/c/fac12d9d4d3577
 
 Best regards,
 -- 
