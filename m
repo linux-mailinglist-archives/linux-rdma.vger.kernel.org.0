@@ -2,71 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3546061C3
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Oct 2022 15:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A9F6063BF
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Oct 2022 17:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbiJTNiB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Oct 2022 09:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
+        id S229697AbiJTPCu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Oct 2022 11:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbiJTNh7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Oct 2022 09:37:59 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9EF1A2E15;
-        Thu, 20 Oct 2022 06:37:58 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id 67so20250282pfz.12;
-        Thu, 20 Oct 2022 06:37:58 -0700 (PDT)
+        with ESMTP id S229541AbiJTPCt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Oct 2022 11:02:49 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1E11C5A68
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Oct 2022 08:02:48 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id i9so1817406wrv.5
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Oct 2022 08:02:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-language:content-transfer-encoding:mime-version:user-agent
-         :date:message-id:cc:to:subject:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HObGkk8/50MLX1fXtg3oFVqil/SnGKf+l1zdO9y3SR8=;
-        b=qlhc67dyLARvuESh0/6OU6vWyLT/K5vwlz6HxntCHddTHgjVtJIANKdW1fwRuRLdJ2
-         wuNZ9QJ3Ac7VGNqzWLPRfyjVNQHNcameIWz3IuHVtt4iH5oFiYVlToG8oEw+Xm2Ird6c
-         cMKRDBRGDbRbCrlWorYfyVjkY7JEFpDz+ZvZ8cMko1jMbRtfsPjk5qMljvmoV/1Rr7uk
-         85o/V3UZ5e3Esi5m/PceVo7VV+w68mnBcrAiHfMvsWzm3iQN70CGZs+N+tm94OanZDKq
-         0GckElRGQyaV/IWV6h9EXYo3GwaDzCptTN79wg1mKRsQFha3cmbQJ2TtQXwzxnKK4DBI
-         yFGg==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lFzxi2+Pf+HJE5P7sThuX6Zki3A70pmMtyRywO5tUKM=;
+        b=hVVXBM7KI3HqP0blB/bo5BAPz2oImUmgGg78jo+2oaufmLq6wZLI3TVRwYVa3bz7K8
+         SFt/GGv4C2jYohfvE3KBG1F5zxeUfZrZwTTlO515VuSSVYG1OGgEudje9EBFk5Xb9cIC
+         jBavLuTtstKQLmFzIVAEtfhaukF3AGQPZIaViKWldYV3tQPY/r5gTDwFN5RwjfaZch9c
+         VhKfJT6UI16pACoN4Rt05q1M8mlVo0BoDVlbaKuBxFn6jvg5FmYXRqu6gkxG5m6ibhj2
+         hMgAaeFe1AI/YrQMkkBRxE7BnjfB7EXOeqUqSv2RVQ/jbnNjYNR9ISclAH3G/ONjw1GK
+         jNxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-language:content-transfer-encoding:mime-version:user-agent
-         :date:message-id:cc:to:subject:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HObGkk8/50MLX1fXtg3oFVqil/SnGKf+l1zdO9y3SR8=;
-        b=KSg3Xi4n9/1DUD5KBcn7tgWXm2ZlJ7Un53cR9RTDl3MB48ph1X2KE/kOariStWExPX
-         0/I8alF979tIkvPvJCNd6zqiFWMNKq30ZAF9fpj6vhy9H8G2jqNAdlB4ZiUdYLamDvDH
-         2oSPUcs6luW6ji133DiN3K/MC9TcY0Sbj5Qcb1ZJr1NngByDMi/xVhizMY1hFPYwzAw0
-         aR13Pngjozb4JW5fymRTNrQ/vAvF8qPodCGeH24HdTQSb65QOqcNG5yCecJ8BYr7F6HU
-         4QsRafOBunNC1/k1oXi99UYadzm3Y9pYw3ihOaEVuj5me6jOOheQrRrOIyK5taHE+Lp3
-         +6lw==
-X-Gm-Message-State: ACrzQf3NNPWvMnfn0sMnJAucra+rfLBfL0SggrwC0x9chcIOxfyWhAQj
-        1n2L/Ydjy/LlRkeZ/12xYAvw97yBZC0vmg==
-X-Google-Smtp-Source: AMsMyM61LY2v/6Nt4JmFXyiKme0ueRkrE85gmZcRNgsvcAU8HafSJalFMgoD5NA2hMeyaUdKGjAonA==
-X-Received: by 2002:a63:8549:0:b0:461:3995:60d1 with SMTP id u70-20020a638549000000b00461399560d1mr11766364pgd.105.1666273077593;
-        Thu, 20 Oct 2022 06:37:57 -0700 (PDT)
-Received: from [100.64.100.6] ([194.5.48.149])
-        by smtp.gmail.com with ESMTPSA id c6-20020a170902b68600b00172e19c5f8bsm12779963pls.168.2022.10.20.06.37.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Oct 2022 06:37:57 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] infiniband: sw: rdmavt: possible ABBA deadlocks in
- rvt_ruc_loopback()
-To:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <afe67a8e-82b8-9a47-0832-527c652cc66e@gmail.com>
-Date:   Thu, 20 Oct 2022 21:37:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lFzxi2+Pf+HJE5P7sThuX6Zki3A70pmMtyRywO5tUKM=;
+        b=71kGjjm48t7GvkGC0STul1Eo1Ll3Nzze9l41g3XuSXtG+GFd8u/GE2WJGJpmjnHMAC
+         KIj1tMqGVRAPaxyENpoBF1LNPMiHJyzsEm2XYTpNRWpSVvnAnWaXA2zFvcAaO47lB0/o
+         LjD92NYlMxZHDC+Ul+sU3bMw413ArI2O+05KbiBo2uk8mrls3vK+byXkkUyYuuG54Lov
+         C7kVREsG16e5wINdgGKKIaDqrQavx1r8WUBhoJFXUgZUg9go2S7knXxHDAAqCMOYNZaZ
+         XqLad7qHk2Vgzv37USmELcXXUpF9xbKWUtbQ3zfTRegMK3xhdIQ7hffdfulxTUPwJUfA
+         dSLg==
+X-Gm-Message-State: ACrzQf0OMyosnHrbCSFSLf/TghMgTyt60Sc5/DhnyuHkWFu7zK95u8J0
+        8plrM9ZC7OXmi9oJtH5byFn9tehdXsxfveCk268=
+X-Google-Smtp-Source: AMsMyM6rzHGFkETs1A3jOh8DSNA0+8Mv/fTdEnljv7/WefxwCuaxZaQj8gcOd1wZe+zsUOEIaXhYMpWTmeujrE/MC8k=
+X-Received: by 2002:a05:6000:18a2:b0:22e:72fd:c5d0 with SMTP id
+ b2-20020a05600018a200b0022e72fdc5d0mr8727683wri.682.1666278167118; Thu, 20
+ Oct 2022 08:02:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20221018043345.4033-1-rpearsonhpe@gmail.com>
+In-Reply-To: <20221018043345.4033-1-rpearsonhpe@gmail.com>
+From:   haris iqbal <haris.phnx@gmail.com>
+Date:   Thu, 20 Oct 2022 17:02:20 +0200
+Message-ID: <CAE_WKMz8kTWY_-BCheuqj+szpS9rkSrE+NFGLa-0-WXcKr5Sug@mail.gmail.com>
+Subject: Re: [PATCH for-next 00/16] Implement work queues for rdma_rxe
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, matsuda-daisuke@fujitsu.com,
+        lizhijian@fujitsu.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        jenny.hack@hpe.com, ian.ziemba@hpe.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,45 +67,72 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Tue, Oct 18, 2022 at 6:39 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> This patch series implements work queues as an alternative for
+> the main tasklets in the rdma_rxe driver. The first few patches
+> perform some cleanups of the current tasklet code followed by a
+> patch that makes the internal API for task execution pluggable and
+> implements an inline and a tasklet based set of functions.
+> The remaining patches cleanup the qp reset and error code in the
+> three tasklets and modify the locking logic to prevent making
+> multiple calls to the tasklet scheduling routine. Finally after
+> this preparation the work queue equivalent set of functions is
+> added and module parameters are implemented to allow tuning the
+> task types.
+>
+> The advantages of the work queue version of deferred task execution
+> is mainly that the work queue variant has much better scalability
+> and overall performance than the tasklet variant. The tasklet
+> performance saturates with one connected queue pair and stays constant.
+> The work queue performance is slightly better for one queue pair but
+> scales up with the number of connected queue pairs. The perftest
+> microbenchmarks in local loopback mode (not a very realistic test
+> case) can reach approximately 100Gb/sec with work queues compared to
+> about 16Gb/sec for tasklets.
+>
+> This patch series is derived from an earlier patch set developed by
+> Ian Ziemba at HPE which is used in some Lustre storage clients attached
+> to Lustre servers with hard RoCE v2 NICs.
+>
+> Bob Pearson (16):
+>   RDMA/rxe: Remove init of task locks from rxe_qp.c
+>   RDMA/rxe: Removed unused name from rxe_task struct
+>   RDMA/rxe: Split rxe_run_task() into two subroutines
+>   RDMA/rxe: Make rxe_do_task static
+>   RDMA/rxe: Rename task->state_lock to task->lock
+>   RDMA/rxe: Make task interface pluggable
+>   RDMA/rxe: Simplify reset state handling in rxe_resp.c
+>   RDMA/rxe: Split rxe_drain_resp_pkts()
+>   RDMA/rxe: Handle qp error in rxe_resp.c
+>   RDMA/rxe: Cleanup comp tasks in rxe_qp.c
+>   RDMA/rxe: Remove __rxe_do_task()
+>   RDMA/rxe: Make tasks schedule each other
+>   RDMA/rxe: Implement disable/enable_task()
+>   RDMA/rxe: Replace TASK_STATE_START by TASK_STATE_IDLE
+>   RDMA/rxe: Add workqueue support for tasks
+>   RDMA/rxe: Add parameters to control task type
+>
+>  drivers/infiniband/sw/rxe/rxe.c       |   9 +-
+>  drivers/infiniband/sw/rxe/rxe_comp.c  |  35 ++-
+>  drivers/infiniband/sw/rxe/rxe_net.c   |   4 +-
+>  drivers/infiniband/sw/rxe/rxe_qp.c    |  87 +++----
+>  drivers/infiniband/sw/rxe/rxe_req.c   |  10 +-
+>  drivers/infiniband/sw/rxe/rxe_resp.c  |  75 ++++--
+>  drivers/infiniband/sw/rxe/rxe_task.c  | 354 ++++++++++++++++++++------
+>  drivers/infiniband/sw/rxe/rxe_task.h  |  76 +++---
+>  drivers/infiniband/sw/rxe/rxe_verbs.c |   8 +-
+>  9 files changed, 451 insertions(+), 207 deletions(-)
+>
+>
+> base-commit: 9abf2313adc1ca1b6180c508c25f22f9395cc780
 
-My static analysis tool reports several possible ABBA deadlock in the 
-rdmavt driver in Linux 5.18:
+The patch series is not applying cleanly over the mentioned commit for
+me. Patch 'PATCH for-next 05/16] RDMA/rxe: Rename task->state_lock to
+task->lock.' fails at "drivers/infiniband/sw/rxe/rxe_task.c:103".
+I corrected that manually, then it fails in the next commit. Didn't
+check after that. Is it the same for others or is it just me?
 
-rvt_ruc_loopback()
-   spin_lock_irqsave(&sqp->s_lock, flags); --> Line 3190 (Lock A)
-   spin_lock(&sqp->r_lock); --> Line 3195 (Lock B)
-
-rvt_qp_mr_clean()
-   spin_lock_irq(&qp->r_lock); --> Line 698 (Lock B)
-   spin_lock(&qp->s_lock); --> Line 700 (Lock A)
-
-rvt_rc_timeout()
-   spin_lock_irqsave(&qp->r_lock, flags); --> Line 2595 (Lock B)
-   spin_lock(&qp->s_lock); --> Line 2596 (Lock A)
-
-rvt_modify_qp()
-   spin_lock_irq(&qp->r_lock); --> Line 1419 (Lock B)
-   spin_lock(&qp->s_lock); --> Line 1421(Lock A)
-
-_rvt_reset_qp()
-   spin_lock_irq(&qp->r_lock); --> Line 907 (Lock B)
-   spin_lock(&qp->s_lock); --> Line 909 (Lock A)
-
-rvt_reset_qp()
-   spin_lock_irq(&qp->r_lock); --> Line 936 (Lock B)
-   spin_lock(&qp->s_lock); --> Line 938 (Lock A)
-
-When rvt_ruc_loopback() is concurrently executed with rvt_qp_mr_clean(), 
-rvt_rc_timeout(), rvt_modify_qp(), _rvt_reset_qp() or rvt_reset_qp(), 
-the deadlocks can occur.
-
-I am not quite sure whether these possible deadlocks are real and how to 
-fix them if real.
-Any feedback would be appreciated, thanks :)
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-
-
-Best wishes,
-Jia-Ju Bai
+> --
+> 2.34.1
+>
