@@ -2,62 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BF9607F69
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Oct 2022 22:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AA8607F6A
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Oct 2022 22:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbiJUUCm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Oct 2022 16:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
+        id S230190AbiJUUCr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Oct 2022 16:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbiJUUCN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 16:02:13 -0400
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E3B26205F
+        with ESMTP id S230308AbiJUUCO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 16:02:14 -0400
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0055526206D
         for <linux-rdma@vger.kernel.org>; Fri, 21 Oct 2022 13:02:04 -0700 (PDT)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-13b103a3e5dso4928839fac.2
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1321a1e94b3so4942982fac.1
         for <linux-rdma@vger.kernel.org>; Fri, 21 Oct 2022 13:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yh+FwTHc00Q0kWWf36fdCBxCjYor7euxP3hgKCKswJg=;
-        b=YrAD+5Y2RnKoj8aqhfLJ+pNPVG99vZPrwN+OMkr9v8J/SucdWKQrhVc9exrEoc5tbr
-         6lO/2x4fiK01wEaeXi8w8G37X7RaHI7/bUHW1srffDtr0Td8eEgSxMZfQf9VJRUGY0Lu
-         Bze72ecsaA+a0Zy+SSlBLiBGJ0eHvLODikOtMf0kIwt0ani2uQes2p5pTAlzpY7e9+tF
-         TQJwgadvsCgC9p98818K5DvrPojw5092GvSK5m5ONq5tx1pWDzkHwkg0bsTiFR9sU/ik
-         CssAxVgWiVrXpdSCWlvg02X1D/NXKJCnh3/SISN81TebdGIYBuJE65tLLjVVKv32hH6s
-         cm8A==
+        bh=MfHzARTUOwlxk5UNCo6aVjcUHyvPDj/ohKpbqfaDQFY=;
+        b=f3ZpvGDLIi4SdSSRQ7TUp3F9tXc8P5ppdQlx/UvIiMmQ2VYWFYa+xPdd6lR/Dmj0Ba
+         J1AtTgwSJ1z2hbPHfkzUoj4X2i4gm8kRG7JaXn0eeB1var/QKAw2edlWh+ZS91ii3Y2c
+         HNN9MxQX4GB/PU7gEIzS7X9SBe6aUFeWMt+tDeYZTPE3hHOUYEGVRnIdUoCBeiNDrWus
+         pmr/B0vuHWqvWD/slMnsZL9/dxG1Yvc/5bfEYOhlnu+OhIG+/mEznjNyj4c4gZOh/3rw
+         9H7vWa/piZ3thGXxR4LUUCNRgee8TiYSJrPtxqS+rWDkIyv6/dhFGyNieIKlwC9d6X1W
+         EyrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yh+FwTHc00Q0kWWf36fdCBxCjYor7euxP3hgKCKswJg=;
-        b=wpZ/eSLl4XS45fKxbzuf4d3mtCW9y/jjo9oQL2QmE413YzHcLXqGSzpHsUeHxlWA5B
-         8s0NwNgIUiNtsNZuxrKqwDXl9CJRdRCZLa82vBpyJXgGHteeL4KHW7romVj0Rnhe4AmE
-         thsw35CxEJJjgbvBsgiGBsLwTznpNs2os5J/78nLSsDszHeQmJKyqyh2p1YSJCL98AXH
-         lK2Q+Tyb2iS2uZJOiKwDxCO/stJ3Z+b8BPAJJo1Ez63aWAY0je4nbuXjX79X0Z8YMVcY
-         xAX6SfhbG9PbY73ginFh3F6MmQawOPrSbhx3C6aDRIASs7YR/uVZ1boZwO0rZMORdaIJ
-         10DA==
-X-Gm-Message-State: ACrzQf1Fb5SutKtU1sFifcPSgKLiEewk1MyKJHJXl+pKaUuWR1Xoj5ts
-        YZJSPJMtzBTjfXy6mnO2wVg=
-X-Google-Smtp-Source: AMsMyM6FXtk9DrySLrDKQXHiOgXeAAVnI6jOLin8jLoYkqcrH6nTzxta4kKuuqM1Hkw4z+tLUJqmhQ==
-X-Received: by 2002:a05:6870:3452:b0:127:74a6:365c with SMTP id i18-20020a056870345200b0012774a6365cmr30012330oah.169.1666382523226;
-        Fri, 21 Oct 2022 13:02:03 -0700 (PDT)
+        bh=MfHzARTUOwlxk5UNCo6aVjcUHyvPDj/ohKpbqfaDQFY=;
+        b=A9QW40Mu8DUg9jgvbZSEOv9c81y8I7lcJVsg3GVdz5praMI5bQl5jOToPpQ/vQ1B35
+         Se3maV/C+dItpSmAhKID8831USh5Y03dH6VTMPEuPerb9sxWjbVHnG5bir/6gYf6oxv8
+         uTBj8PEdhvLgaVvxFvtizmQxSCiQ15Fa6C63v9+nfyBVXg70TmOEkWIEWF0PB4k230DL
+         iFdKI6u51+r3PJ/rZSA7tkCm4SpaWZFLnoHu2Okz8sR523RLr8alh50FspdwIITaNEbx
+         U1ExnSai3AAfhYvyrneDd7LbD9wCz2StyZVNVkdMBlk027tac8OavziS2ULBNiSRbwoD
+         Hkpg==
+X-Gm-Message-State: ACrzQf1BQFmGh38dOmmO5nYwrF52VhoVC2yXs/RHOwKrekK+NMc9aUcf
+        PAtxtwx+d+ch6v22Q+eoimM=
+X-Google-Smtp-Source: AMsMyM7cOuikro8415Tfh2beIGx7L0/qRjWZl/dE1yCrimMy/bT7QWWOWMT2Oqh/mOJumm03XotdGQ==
+X-Received: by 2002:a05:6871:8a3:b0:13b:18ef:e8df with SMTP id r35-20020a05687108a300b0013b18efe8dfmr4529044oaq.181.1666382524365;
+        Fri, 21 Oct 2022 13:02:04 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-a860-f1d2-9e17-7593.res6.spectrum.com. [2603:8081:140c:1a00:a860:f1d2:9e17:7593])
-        by smtp.googlemail.com with ESMTPSA id s23-20020a056870631700b00132f141ef2dsm10674684oao.56.2022.10.21.13.02.01
+        by smtp.googlemail.com with ESMTPSA id s23-20020a056870631700b00132f141ef2dsm10674684oao.56.2022.10.21.13.02.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Oct 2022 13:02:02 -0700 (PDT)
+        Fri, 21 Oct 2022 13:02:04 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, leon@kernel.org,
         jhack@hpe.com, ian.ziemba@hpe.com, matsuda-daisuke@fujitsu.com,
         lizhijian@fujitsu.com, haris.phnx@gmail.com,
         linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 02/18] RDMA/rxe: Remove init of task locks from rxe_qp.c
-Date:   Fri, 21 Oct 2022 15:01:03 -0500
-Message-Id: <20221021200118.2163-3-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 03/18] RDMA/rxe: Removed unused name from rxe_task struct
+Date:   Fri, 21 Oct 2022 15:01:04 -0500
+Message-Id: <20221021200118.2163-4-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221021200118.2163-1-rpearsonhpe@gmail.com>
 References: <20221021200118.2163-1-rpearsonhpe@gmail.com>
@@ -73,31 +73,83 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The calls to spin_lock_init() for the tasklet spinlocks in
-rxe_qp_init_misc() are redundant since they are intiialized in
-rxe_init_task().  This patch removes them.
+The name field in struct rxe_task is never used. This patch removes it.
 
 Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_qp.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_qp.c   | 9 +++------
+ drivers/infiniband/sw/rxe/rxe_task.c | 4 +---
+ drivers/infiniband/sw/rxe/rxe_task.h | 4 +---
+ 3 files changed, 5 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index a62bab88415c..57c3f05ad15b 100644
+index 57c3f05ad15b..03bd9f3e9956 100644
 --- a/drivers/infiniband/sw/rxe/rxe_qp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -172,10 +172,6 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
+@@ -238,10 +238,8 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
  
- 	spin_lock_init(&qp->state_lock);
+ 	skb_queue_head_init(&qp->req_pkts);
  
--	spin_lock_init(&qp->req.task.state_lock);
--	spin_lock_init(&qp->resp.task.state_lock);
--	spin_lock_init(&qp->comp.task.state_lock);
--
- 	spin_lock_init(&qp->sq.sq_lock);
- 	spin_lock_init(&qp->rq.producer_lock);
- 	spin_lock_init(&qp->rq.consumer_lock);
+-	rxe_init_task(&qp->req.task, qp,
+-		      rxe_requester, "req");
+-	rxe_init_task(&qp->comp.task, qp,
+-		      rxe_completer, "comp");
++	rxe_init_task(&qp->req.task, qp, rxe_requester);
++	rxe_init_task(&qp->comp.task, qp, rxe_completer);
+ 
+ 	qp->qp_timeout_jiffies = 0; /* Can't be set for UD/UC in modify_qp */
+ 	if (init->qp_type == IB_QPT_RC) {
+@@ -288,8 +286,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 
+ 	skb_queue_head_init(&qp->resp_pkts);
+ 
+-	rxe_init_task(&qp->resp.task, qp,
+-		      rxe_responder, "resp");
++	rxe_init_task(&qp->resp.task, qp, rxe_responder);
+ 
+ 	qp->resp.opcode		= OPCODE_NONE;
+ 	qp->resp.msn		= 0;
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+index 3fbaba9eec39..0cbba455fefd 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -90,12 +90,10 @@ void rxe_do_task(struct tasklet_struct *t)
+ 	task->ret = ret;
+ }
+ 
+-int rxe_init_task(struct rxe_task *task,
+-		  void *arg, int (*func)(void *), char *name)
++int rxe_init_task(struct rxe_task *task, void *arg, int (*func)(void *))
+ {
+ 	task->arg	= arg;
+ 	task->func	= func;
+-	snprintf(task->name, sizeof(task->name), "%s", name);
+ 	task->destroyed	= false;
+ 
+ 	tasklet_setup(&task->tasklet, rxe_do_task);
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
+index 7f612a1c68a7..b3dfd970d1dc 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.h
++++ b/drivers/infiniband/sw/rxe/rxe_task.h
+@@ -25,7 +25,6 @@ struct rxe_task {
+ 	void			*arg;
+ 	int			(*func)(void *arg);
+ 	int			ret;
+-	char			name[16];
+ 	bool			destroyed;
+ };
+ 
+@@ -34,8 +33,7 @@ struct rxe_task {
+  *	arg  => parameter to pass to fcn
+  *	func => function to call until it returns != 0
+  */
+-int rxe_init_task(struct rxe_task *task,
+-		  void *arg, int (*func)(void *), char *name);
++int rxe_init_task(struct rxe_task *task, void *arg, int (*func)(void *));
+ 
+ /* cleanup task */
+ void rxe_cleanup_task(struct rxe_task *task);
 -- 
 2.34.1
 
