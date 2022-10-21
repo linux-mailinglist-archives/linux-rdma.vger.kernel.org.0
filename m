@@ -2,66 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68618606FBC
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Oct 2022 07:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0A5606FC4
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Oct 2022 08:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229489AbiJUF7A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Oct 2022 01:59:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42796 "EHLO
+        id S229514AbiJUGCj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Oct 2022 02:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbiJUF66 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 01:58:58 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5930A21464D
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Oct 2022 22:58:55 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-13b23e29e36so1607936fac.8
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Oct 2022 22:58:55 -0700 (PDT)
+        with ESMTP id S229741AbiJUGCi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 02:02:38 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAD92347BE
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Oct 2022 23:02:36 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id p24-20020a9d6958000000b00661c528849eso1216600oto.9
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Oct 2022 23:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=grYrDopIYX2UevTpE8lfGDonvA8vvl3YCiQ8e7PLYnA=;
-        b=keXqly2uN0yOTP8fzNj7GZQ418blzkt9623Bx9rx090DBeroDJNwO74pTx08a9WqYE
-         Z9uWEcZDEZYHYxbkU59hs8V9g5XgpCfuY2+ytd+g3/on/ZCM8Aug5BhmXgtz3yFBfbv/
-         4oqlJfOu2otmbPBWQ5tuith5L2zj64gTLFLnkshn8IsDRBzTeEz8ObL4fd+Ary8YFA52
-         zL1LD1fNLpHkX9Dq2E/4CApuLJVy86IbIowUbr3F1AVfTCjw9Leot64B32LZkVh9isjR
-         Mex0ZOwLjV1e80xIy4QaTA91KW7qQIW1S5xjwjqNVDBekIySBbfMzWC1JwszYbUpNAgc
-         vAOA==
+        bh=vMfNveDa/y2Cv+o0kmPrXzbBpr9iL/WIY+LEU2FX5Jo=;
+        b=UID6ZjAqNSsYc+QG76Rkobjyr2fd/SI9RL4/r1DSfN1YAZfLMKNMHdGiNIqYBrWkoI
+         HTzgynnVuYX1tnTa56bYuO8JPOx7LP0fJXcSuDgFwZZHtU9aVkDW+Rf6Kwy+tQ/6sLnd
+         oam1kXDrBQGhUGGdKBpW72xMQqXqAdFaX4///s3AXollbkxmkSgngXxnpqSDa1LY9JHo
+         91LeqJa+NAc3Ros5/UaK+KYVKvO7DRRrNQf5AfwdeE9C49c2kqUjDnKQvbvtgeJwAX8v
+         L15L20X8oVa0qEoFGGLJKjxa5M3wWh1f5JpGFqK6RzddFs0em9JEnl/7ainAnmWvop8K
+         fnVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=grYrDopIYX2UevTpE8lfGDonvA8vvl3YCiQ8e7PLYnA=;
-        b=lMkbk72VP0k0jL6utBmyxrRsJekQ1Oiux0NRehvBNcJyMiHA9/gbXafx4Jkslvyt2b
-         V2rT8IoiS+y9p2tdgxS8gLzEYE1sQScl2p3t04UcME1+VMSXOscvSDx9/5x+9U737qZ3
-         CBUmzODSYH9txJd74D4sSprZZbtX25yfg3T2lJc2zwjADEHys2IWHjgQ2WTtaR6EOqso
-         mnytsWAY6TEa8KglnmkFc3rVDxkj9bOyjN7tIX+ua1yqsMXVeUrB15dsZuDerjh6qYpM
-         cY/bK3H7q/nPPFr72h37JeW6BqoHeK5b1DouCkFW3JVYjgRaZ+SKubzCGCPvvaRLuzo3
-         UVZg==
-X-Gm-Message-State: ACrzQf15eDqLxv4Bpjs7XojlWYDCaVHYKj0SRRwT83v2QXlp2k665gtV
-        Xw+LGTcMDpnfMNtYZLaqz8g=
-X-Google-Smtp-Source: AMsMyM7JbPq0iH2rd3wh0E17EM5rdf/WiGXmBrD1Y6/K21q7S3W0lSp7VSVPrMdG3jYoRWUxmaPu3g==
-X-Received: by 2002:a05:6870:56a7:b0:136:74fb:e6df with SMTP id p39-20020a05687056a700b0013674fbe6dfmr10559439oao.37.1666331934769;
-        Thu, 20 Oct 2022 22:58:54 -0700 (PDT)
+        bh=vMfNveDa/y2Cv+o0kmPrXzbBpr9iL/WIY+LEU2FX5Jo=;
+        b=hJTCwEe1JSBT/GsBFEnvmdPb31JP4s4BHUBrP+Oa4IFUSQujHhqWBeK8Vag/1sHD8b
+         peg77N/fueSmXUBecceyqjX+aN2TSS80lv0hYnPRHU+layvf5bhmx1SIEPkXBONCJvzi
+         b2WlM35eF7AWCheojjxQ4wR6fF1GPjTyspEdnUevx6b4frxRYI77x0A7TOnwX12zVan3
+         2vSCa9Yhjv5VtYzfJfe42r+YlS5hCFqzrzqIuZr2LsLR2JFqNwjAa1H/6DPah1pO8L9G
+         lC/KseZAQA3brhXHVaq1hlf8AmytZWEW9vCVsxBJVD+4CHK8/YdIseRYfIjxY4iq2B+7
+         gBZQ==
+X-Gm-Message-State: ACrzQf1rHRhIXDSPgG2WJM1JNh4YLHhMyxwIxK5JfMWkjCD1idcftPtE
+        k3DRBn4xvGzm5lgdgsLOY0Spluy6do8Rtw==
+X-Google-Smtp-Source: AMsMyM504+Wam4zmsNhuzcz9UvLM2S7YDK9nIlr9znfPcw+iS0Ce7fB+nWzamognz0TrWuhacYF/pQ==
+X-Received: by 2002:a9d:4e7:0:b0:65b:e537:5a75 with SMTP id 94-20020a9d04e7000000b0065be5375a75mr8853168otm.138.1666332156078;
+        Thu, 20 Oct 2022 23:02:36 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:6dfb:79f8:bd:7aa5? (2603-8081-140c-1a00-6dfb-79f8-00bd-7aa5.res6.spectrum.com. [2603:8081:140c:1a00:6dfb:79f8:bd:7aa5])
-        by smtp.gmail.com with ESMTPSA id g3-20020a9d6c43000000b00655c6b2655esm707537otq.68.2022.10.20.22.58.53
+        by smtp.gmail.com with ESMTPSA id e2-20020a05680809a200b00350a8b0637asm740498oig.47.2022.10.20.23.02.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Oct 2022 22:58:54 -0700 (PDT)
-Message-ID: <2ead1fb9-853d-a326-0038-69122e0a0bbb@gmail.com>
-Date:   Fri, 21 Oct 2022 00:58:53 -0500
+        Thu, 20 Oct 2022 23:02:35 -0700 (PDT)
+Message-ID: <c149759d-5cee-5447-c00e-ea38a6951e84@gmail.com>
+Date:   Fri, 21 Oct 2022 01:02:34 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.2
-Subject: Re: [PATCH for-next] RDMA/rxe: rxe_get_av always receives ahp hence
- no put is needed
+Subject: Re: [PATCH for-next 00/16] Implement work queues for rdma_rxe
 Content-Language: en-US
-To:     Md Haris Iqbal <haris.phnx@gmail.com>, linux-rdma@vger.kernel.org
-Cc:     leon@kernel.org, jgg@ziepe.ca, haris.iqbal@ionos.com
-References: <20221020151345.412731-1-haris.phnx@gmail.com>
+To:     haris iqbal <haris.phnx@gmail.com>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, matsuda-daisuke@fujitsu.com,
+        lizhijian@fujitsu.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        jenny.hack@hpe.com, ian.ziemba@hpe.com
+References: <20221018043345.4033-1-rpearsonhpe@gmail.com>
+ <CAE_WKMz8kTWY_-BCheuqj+szpS9rkSrE+NFGLa-0-WXcKr5Sug@mail.gmail.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20221020151345.412731-1-haris.phnx@gmail.com>
+In-Reply-To: <CAE_WKMz8kTWY_-BCheuqj+szpS9rkSrE+NFGLa-0-WXcKr5Sug@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,44 +76,79 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/20/22 10:13, Md Haris Iqbal wrote:
-> The function rxe_get_av is only used by rxe_requester, and the ahp double
-> pointer is always sent. Hence there is no need to do the check.
-> rxe_requester also always performs the put for ah, hence that is also not
-> needed.
+On 10/20/22 10:02, haris iqbal wrote:
+> On Tue, Oct 18, 2022 at 6:39 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>
+>> This patch series implements work queues as an alternative for
+>> the main tasklets in the rdma_rxe driver. The first few patches
+>> perform some cleanups of the current tasklet code followed by a
+>> patch that makes the internal API for task execution pluggable and
+>> implements an inline and a tasklet based set of functions.
+>> The remaining patches cleanup the qp reset and error code in the
+>> three tasklets and modify the locking logic to prevent making
+>> multiple calls to the tasklet scheduling routine. Finally after
+>> this preparation the work queue equivalent set of functions is
+>> added and module parameters are implemented to allow tuning the
+>> task types.
+>>
+>> The advantages of the work queue version of deferred task execution
+>> is mainly that the work queue variant has much better scalability
+>> and overall performance than the tasklet variant. The tasklet
+>> performance saturates with one connected queue pair and stays constant.
+>> The work queue performance is slightly better for one queue pair but
+>> scales up with the number of connected queue pairs. The perftest
+>> microbenchmarks in local loopback mode (not a very realistic test
+>> case) can reach approximately 100Gb/sec with work queues compared to
+>> about 16Gb/sec for tasklets.
+>>
+>> This patch series is derived from an earlier patch set developed by
+>> Ian Ziemba at HPE which is used in some Lustre storage clients attached
+>> to Lustre servers with hard RoCE v2 NICs.
+>>
+>> Bob Pearson (16):
+>>   RDMA/rxe: Remove init of task locks from rxe_qp.c
+>>   RDMA/rxe: Removed unused name from rxe_task struct
+>>   RDMA/rxe: Split rxe_run_task() into two subroutines
+>>   RDMA/rxe: Make rxe_do_task static
+>>   RDMA/rxe: Rename task->state_lock to task->lock
+>>   RDMA/rxe: Make task interface pluggable
+>>   RDMA/rxe: Simplify reset state handling in rxe_resp.c
+>>   RDMA/rxe: Split rxe_drain_resp_pkts()
+>>   RDMA/rxe: Handle qp error in rxe_resp.c
+>>   RDMA/rxe: Cleanup comp tasks in rxe_qp.c
+>>   RDMA/rxe: Remove __rxe_do_task()
+>>   RDMA/rxe: Make tasks schedule each other
+>>   RDMA/rxe: Implement disable/enable_task()
+>>   RDMA/rxe: Replace TASK_STATE_START by TASK_STATE_IDLE
+>>   RDMA/rxe: Add workqueue support for tasks
+>>   RDMA/rxe: Add parameters to control task type
+>>
+>>  drivers/infiniband/sw/rxe/rxe.c       |   9 +-
+>>  drivers/infiniband/sw/rxe/rxe_comp.c  |  35 ++-
+>>  drivers/infiniband/sw/rxe/rxe_net.c   |   4 +-
+>>  drivers/infiniband/sw/rxe/rxe_qp.c    |  87 +++----
+>>  drivers/infiniband/sw/rxe/rxe_req.c   |  10 +-
+>>  drivers/infiniband/sw/rxe/rxe_resp.c  |  75 ++++--
+>>  drivers/infiniband/sw/rxe/rxe_task.c  | 354 ++++++++++++++++++++------
+>>  drivers/infiniband/sw/rxe/rxe_task.h  |  76 +++---
+>>  drivers/infiniband/sw/rxe/rxe_verbs.c |   8 +-
+>>  9 files changed, 451 insertions(+), 207 deletions(-)
+>>
+>>
+>> base-commit: 9abf2313adc1ca1b6180c508c25f22f9395cc780
 > 
-> Signed-off-by: Md Haris Iqbal <haris.phnx@gmail.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_av.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+> The patch series is not applying cleanly over the mentioned commit for
+> me. Patch 'PATCH for-next 05/16] RDMA/rxe: Rename task->state_lock to
+> task->lock.' fails at "drivers/infiniband/sw/rxe/rxe_task.c:103".
+> I corrected that manually, then it fails in the next commit. Didn't
+> check after that. Is it the same for others or is it just me?
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_av.c b/drivers/infiniband/sw/rxe/rxe_av.c
-> index 3b05314ca739..0780ffcf24a6 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_av.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_av.c
-> @@ -130,11 +130,7 @@ struct rxe_av *rxe_get_av(struct rxe_pkt_info *pkt, struct rxe_ah **ahp)
->  			rxe_put(ah);
->  			return NULL;
->  		}
-> -
-> -		if (ahp)
-> -			*ahp = ah;
-> -		else
-> -			rxe_put(ah);
-> +		*ahp = ah;
->  
->  		return &ah->av;
->  	}
+>> --
+>> 2.34.1
+>>
 
-That doesn't sound right. There are several cases depending on the version of the user library
-and whether the QP is UD or RC/UC. The old driver/library computed the address vector in
-user space and passed it back to the kernel in the WR. If both the kernel and user library are using
-the new API the user space passes back the AH# in the WR for UD commands. In both cases for
-connected QPs the AV is stored in the rxe_struct_qp and there is no AH. At the point where
-rxe_get_av is called the requester needs the AV it gets it from one of the three places:
-the QP, the WR (old), or the kernel AH after looking up the AH#. If the kernel AH was involved
-its pointer is returned so the requester can continue to hold a reference to it until it
-is through sending the packet and then it can drop the reference. This to protect from
-someone calling destroy_ah in a race with the send queue. Hope this makes it clearer.
+This worked for me. There was the botched 4/16 which I resent just after the other ones.
+You may need to delete the first 4/16 and use the second one. I am going to resend it
+tomorrow. There are a couple of things folks have pointed out that I want to address.
 
 Bob
