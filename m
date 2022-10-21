@@ -2,63 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675EC607D9A
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Oct 2022 19:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB85607F7C
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Oct 2022 22:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbiJURfJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Oct 2022 13:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
+        id S229776AbiJUUDe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Oct 2022 16:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbiJURfI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 13:35:08 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2210A9A290;
-        Fri, 21 Oct 2022 10:35:07 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id v1so6036521wrt.11;
-        Fri, 21 Oct 2022 10:35:07 -0700 (PDT)
+        with ESMTP id S230041AbiJUUD0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 16:03:26 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFBA263B7E
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Oct 2022 13:03:18 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-13ae8117023so4889373fac.9
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Oct 2022 13:03:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L//Wieblo+p2SGcpxf4C8N8iwGJJZA437EZKxzdxE5c=;
-        b=c7QSuv7iBp5wBrkef3xhwdcZzBUk7O3yFsXRHdNkIwZRAgDvjtzVu3lTez4Or0vyqZ
-         5srXJJ+CRE3E1YNzid2s4Md7XF+aRPkxl6K6NALoeHYddEpW4VHZ04RTPBnnp2PX0EZU
-         +qSojd6H9nT4wHskzFEaa9LLw+Xqc2GyohDTnJYaSg0okXfDNoEea1f/jiX48iSzMHyO
-         SiX5Sa2HbS2v7CjuJkBHKOzHxYpvBOvOeKYvCEE1sOjjA3Pvio7YrU86gea29CMgYS8Z
-         T74fs5CQ8RzDLttl668kRmYZg/P+hiJZfHttqjmrQ0NEe/1nwgIm3TUSqhDljjSlhlEN
-         4RUQ==
+        bh=PRM3ISXSCOAgWY0giM3tFNjXOHiP7T6JUSVvbmPDS/M=;
+        b=NwclfFzSDQlfEjq3w5Oi8QFSACawhKDuyOPc8tcQzT/oS0n8fr1Hg26xmqpRVnOMC3
+         gUnT6fLdtH9LxnSeRJO72AtF+7Eas9SNA3M+Wj+e1Q4Wy3Ju4JbtayedY1evUzs0jgWe
+         tjhsbvKOnucIiMZ0M7nmVnbjCiut+6wbb0tUy2lH6tVGAgfzaAa4QxBAfeGIUrZ/RcxP
+         U12PPiwfPG74IsqVmsNWeKXo2KozjXqLsOpPB3bqMM5up8+FxPEDW69xZd8jKaJ3SfbX
+         mjId7tgqSHr0ZJfsANCPY/8qtV/UvOBaCDUgyBSY4J+abivz+PChllWxARxzsxqrAMW8
+         CVxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=L//Wieblo+p2SGcpxf4C8N8iwGJJZA437EZKxzdxE5c=;
-        b=2DyxTja42MTzDFn5tLwsjk8ncNlkmRce/G1LjiIQaSjTCHOawlAsNxHQMq5inkTVd+
-         2QbLKzt0vNJMf3nY+piRf4tM1BHyzp1ub17OdF70uwPimPhXK5S9hcpcu+nmDuXlcsNP
-         R3kT+kl4l9QFk1M1jXFjr4LkPG6QJXSf8TsNEEA5VjTKvz5ylMVWDE8I/NJV9acVWc2h
-         XfNa4cl0HnXgZpI6jXaEairibtZAIVlQNOGIbsV/pqzZqhadBiD0u70EY9evyYvqFbgh
-         60jyVjhYIYF9tKuvh0JcPd4ccSQV2rCXx8z+GLe/2xHO32L5l0GnD1HpY43OsF29Ts8R
-         DaGQ==
-X-Gm-Message-State: ACrzQf0pgefLmCRxyo9cLPzYuDtcLWlf5r/+GFmMUzaFbD6RDILXaLOJ
-        +MqsXFr/WTdqvIM4+5uMe1Y=
-X-Google-Smtp-Source: AMsMyM54AR9BJUW9TsivXYlyV1jmFLZIEQsnfKPiFn3aRYGaLVXlfmLDEFGSkuGG5WBbqHLN6o+D6A==
-X-Received: by 2002:a05:6000:18ac:b0:232:c7c1:314f with SMTP id b12-20020a05600018ac00b00232c7c1314fmr12382847wri.109.1666373705721;
-        Fri, 21 Oct 2022 10:35:05 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id e38-20020a5d5966000000b002252884cc91sm19436118wri.43.2022.10.21.10.35.05
+        bh=PRM3ISXSCOAgWY0giM3tFNjXOHiP7T6JUSVvbmPDS/M=;
+        b=i76jaKqun+VOBgIpcXZMnX8acVjOaRgl8vb2rplaDVJYYoQwbyib7RWl66Fi0SEg9D
+         PchazA4ed2vvpfXNFQveMfYBKTFKFYfR95o/VQei1N0P5tysXKSuANr3XD3lYAgKSs4e
+         tT9WY4gXMSRMHQrVjh/9UrXv1TqSm596GZtFoWJy1RfHKa/YUxZbK8lPS8Bb+3pRxjUs
+         zn+B2CTXUKh949T+Nz2E8CYAYWnq9b4F4WwkaBYy5OLb5KQ65MReFsU6wM+6A/xR/5gd
+         MWm4QUkc/G2peHr5J/Fz8UbOuAnmBWdiQi63K8doNMT0vVASdSg24wMhQWPp0nNhNehe
+         9joA==
+X-Gm-Message-State: ACrzQf3d+soI0Gb8PR0oZoELqA/Uohp5pEdPcOwCflGtoZrYVy4xsYNa
+        7P8kA6aD75RCgA3hS2Ykb06oj02CG1k=
+X-Google-Smtp-Source: AMsMyM46N+WRFsr4Ucjc1Fw90cQSCr+iWq6wGfWcVPXN2MtbZ/+cE9yNLp4XrFdPTdQV9/PzZqwknw==
+X-Received: by 2002:a05:6870:a2c7:b0:131:d098:9e37 with SMTP id w7-20020a056870a2c700b00131d0989e37mr13151526oak.152.1666382505876;
+        Fri, 21 Oct 2022 13:01:45 -0700 (PDT)
+Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-a860-f1d2-9e17-7593.res6.spectrum.com. [2603:8081:140c:1a00:a860:f1d2:9e17:7593])
+        by smtp.googlemail.com with ESMTPSA id s23-20020a056870631700b00132f141ef2dsm10674684oao.56.2022.10.21.13.01.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Oct 2022 10:35:05 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/hw/qib/qib_iba6120: Remove variable freeze_cnt
-Date:   Fri, 21 Oct 2022 18:35:04 +0100
-Message-Id: <20221021173504.27546-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.37.3
+        Fri, 21 Oct 2022 13:01:45 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, leon@kernel.org,
+        jhack@hpe.com, ian.ziemba@hpe.com, matsuda-daisuke@fujitsu.com,
+        lizhijian@fujitsu.com, haris.phnx@gmail.com,
+        linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH v2 00/18] Implement work queues for rdma_rxe
+Date:   Fri, 21 Oct 2022 15:01:01 -0500
+Message-Id: <20221021200118.2163-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,33 +70,76 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The variable freeze_cnt being incremented but it is never referenced,
-it is redundant and can be removed.
+This patch series implements work queues as an alternative for
+the main tasklets in the rdma_rxe driver. The first few patches
+perform some cleanups of the current tasklet code followed by a
+patch that makes the internal API for task execution pluggable and
+implements an inline and a tasklet based set of functions.
+The remaining patches cleanup the qp reset and error code in the
+three tasklets and modify the locking logic to prevent making
+multiple calls to the tasklet scheduling routine. Finally after
+this preparation the work queue equivalent set of functions is
+added and module parameters are implemented to allow tuning the
+task types.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/infiniband/hw/qib/qib_iba6120.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+The advantages of the work queue version of deferred task execution
+is mainly that the work queue variant has much better scalability
+and overall performance than the tasklet variant. The tasklet
+performance saturates with one connected queue pair and stays constant.
+The work queue performance is slightly better for one queue pair but
+scales up with the number of connected queue pairs. The perftest
+microbenchmarks in local loopback mode (not a very realistic test
+case) can reach approximately 100Gb/sec with work queues compared to
+about 16Gb/sec for tasklets.
 
-diff --git a/drivers/infiniband/hw/qib/qib_iba6120.c b/drivers/infiniband/hw/qib/qib_iba6120.c
-index aea571943768..23a81edf3f7a 100644
---- a/drivers/infiniband/hw/qib/qib_iba6120.c
-+++ b/drivers/infiniband/hw/qib/qib_iba6120.c
-@@ -799,12 +799,9 @@ static void qib_handle_6120_hwerrors(struct qib_devdata *dd, char *msg,
- 			hwerrs &= ~TXE_PIO_PARITY;
- 		}
- 
--		if (!hwerrs) {
--			static u32 freeze_cnt;
--
--			freeze_cnt++;
-+		if (!hwerrs)
- 			qib_6120_clear_freeze(dd);
--		} else
-+		else
- 			isfatal = 1;
- 	}
- 
+It is expected that the work queue version will take the place of
+the tasklet version once this patch series is accepted and moved
+upstream. However, for now it is convenient to keep the option of
+easily switching between the versions to help benchmarking and
+debugging.
+
+This patch series is derived from an earlier patch set developed by
+Ian Ziemba at HPE which is used in some Lustre storage clients attached
+to Lustre servers with hard RoCE v2 NICs.
+
+This v2 version of the patch set has some minor changes that address
+comments from Leon Romanovsky regarding locking of the valid parameter
+and the setup parameters for alloc_workqueue. It also has one
+additional cleanup patch.
+
+Bob Pearson (18):
+  RDMA/rxe: Remove redundant header files
+  RDMA/rxe: Remove init of task locks from rxe_qp.c
+  RDMA/rxe: Removed unused name from rxe_task struct
+  RDMA/rxe: Split rxe_run_task() into two subroutines
+  RDMA/rxe: Make rxe_do_task static
+  RDMA/rxe: Rename task->state_lock to task->lock
+  RDMA/rxe: Make task interface pluggable
+  RDMA/rxe: Split rxe_drain_resp_pkts()
+  RDMA/rxe: Simplify reset state handling in rxe_resp.c
+  RDMA/rxe: Handle qp error in rxe_resp.c
+  RDMA/rxe: Cleanup comp tasks in rxe_qp.c
+  RDMA/rxe: Remove __rxe_do_task()
+  RDMA/rxe: Make tasks schedule each other
+  RDMA/rxe: Implement disable/enable_task()
+  RDMA/rxe: Replace TASK_STATE_START by TASK_STATE_IDLE
+  RDMA/rxe: Replace task->destroyed by task state INVALID.
+  RDMA/rxe: Add workqueue support for tasks
+  RDMA/rxe: Add parameters to control task type
+
+ drivers/infiniband/sw/rxe/rxe.c       |   9 +-
+ drivers/infiniband/sw/rxe/rxe_comp.c  |  35 ++-
+ drivers/infiniband/sw/rxe/rxe_net.c   |   4 +-
+ drivers/infiniband/sw/rxe/rxe_qp.c    |  87 +++----
+ drivers/infiniband/sw/rxe/rxe_req.c   |  10 +-
+ drivers/infiniband/sw/rxe/rxe_resp.c  |  75 ++++--
+ drivers/infiniband/sw/rxe/rxe_task.c  | 339 +++++++++++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_task.h  |  77 +++---
+ drivers/infiniband/sw/rxe/rxe_verbs.c |   8 +-
+ 9 files changed, 427 insertions(+), 217 deletions(-)
+
+
+base-commit: 9abf2313adc1ca1b6180c508c25f22f9395cc780
 -- 
-2.37.3
+2.34.1
 
