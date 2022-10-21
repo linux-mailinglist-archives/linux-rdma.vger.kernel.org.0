@@ -2,72 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92070607178
+	by mail.lfdr.de (Postfix) with ESMTP id DCCCD607179
 	for <lists+linux-rdma@lfdr.de>; Fri, 21 Oct 2022 09:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbiJUHxW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Oct 2022 03:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
+        id S229932AbiJUHxX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Oct 2022 03:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbiJUHxV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 03:53:21 -0400
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8203247E22;
-        Fri, 21 Oct 2022 00:53:18 -0700 (PDT)
+        with ESMTP id S229615AbiJUHxW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 03:53:22 -0400
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63979248CA5;
+        Fri, 21 Oct 2022 00:53:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1666338797; i=@fujitsu.com;
+        s=170520fj; t=1666338799; i=@fujitsu.com;
         bh=szLPaMCwWt2GPt2jeJIVDwTUnrQYN4R0TZFNJZtF4F0=;
-        h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=hjYtH5HnBrGXyHODtjGkU2kFODdH4Ey1XykB++B7nkrK/WwJvQqzBhhFivYiLOST3
-         xzm/ARdZXZ2UPzjnvdnep7M4B/4hCmBRb00USLG608JEoEwQtZar3Uzp1H8WdvbNg0
-         4GhlkAREvpSRAXNj0ucb5UG7urfKRe/IgEwu5/ECi5uIqNAFacP9TcrcZPi8KabZhi
-         ci+Rb66nMCaKr4H352uGVJb99NaK+WsQSG2veeDwdE+YoTYU4Xp9DXcC3FJYTtK1yL
-         rCNxCXrbwT7wb7+LhRCTMXYXIhKKvPZxvJ2aRiycU0uqrmKyVhP9rvNqnOrXioiJVQ
-         vhBr1YyZDh/UA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRWlGSWpSXmKPExsViZ8OxWfeNf1C
-  ywdOJahYzZ5xgtJjyaymzxeVdc9gsnh3qZbE4f6yf3YHVY+esu+wem1Z1snl83iTnsfXzbZYA
-  lijWzLyk/IoE1ozeBe3sBZs4K55MW8bewPiZvYuRi0NIYCOjxMorz1ggnCVMEpOOT4TKHGCUm
-  LalDSjDycEmoCFxr+UmI4gtIhAj8e/YLzCbWcBNYtOb2ewgtrCAh8SJSwfA4iwCqhJ9D48zgd
-  i8Ao4SD04vBauREFCQmPLwPTNEXFDi5MwnLBBzJCQOvngBFOcAqlGSmNkdD1FeITFrVhsThK0
-  mcfXcJuYJjPyzkHTPQtK9gJFpFaN5cWpRWWqRrqGpXlJRZnpGSW5iZo5eYpVuol5qqW5eflFJ
-  hq6hXmJ5sV5qcbFecWVuck6KXl5qySZGYEinFCdw72B8tOyP3iFGSQ4mJVFeIYWgZCG+pPyUy
-  ozE4oz4otKc1OJDjDIcHEoSvHN9gHKCRanpqRVpmTnA+IJJS3DwKInw9noBpXmLCxJzizPTIV
-  KnGBWlxHmX+AElBEASGaV5cG2wmL7EKCslzMvIwMAgxFOQWpSbWYIq/4pRnINRSZg3H2Q8T2Z
-  eCdz0V0CLmYAWm27xA1lckoiQkmpg8j7nYJ/9P2TKshPaOb/r4vddeLnQ5F84J/fkt2uluP6v
-  zv6w2GSt2gmvGoPrrt92WX9PlLH6FGdiftF+rfHCK7yxnLfW9hpwT43RyniytqX0xqZmfd81Z
-  x/MCzA7kPP3bs/FuKkyrd8a5nLUprv4fmszXVdStukZz7uOzPk73FKaCyu2ri3SyygpstnIue
-  soa/ILx60lT+JKD4izLfU15LD8YyoXv/bFRnXDJ4mTWhqNr5xR07aukJ8xp/TGHvVPIsJbbm7
-  5IWfPl75dpq7wS73Ita3b31pcfP1GfkaJxf0l1/9ss5NZWbprJlfB+XxrDu3UmOeMeydZCKhZ
-  fNlfY715m36fbfy9j2v12AXfKbEUZyQaajEXFScCAG+7r19kAwAA
+        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=Jadakq0kgQ70LzVsgo3OvNlv6DPt3X4StCr9zmJbLjox7xyldFOO8jZ4zM7mzy328
+         wFEG61t+voVKPJ18ubn7566Q9hcvxk7lFhzdKBCWvppVrZDfKSkqQGszAEUpWl2cbN
+         0sLOlI7XvxTrGOzb5jBmkkug0+i33BSeapDml/IMFv+mDGDgT/tRLDJmqC2zzAs5Y3
+         gjQed4k4oJlmC1Xr5zWSqy7P1FYWyObNUFlxBS06MgqjYvhhzfVOxZGX2vNl1ZwhgJ
+         ewWqQZ9fgd0W8aleJuC6V94LUoA/mKv/p0qSK6M/flnYDZ5USgEm96szAmGESPDRVo
+         M4bQJ9ATlN/Nw==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRWlGSWpSXmKPExsViZ8OxWfe9f1C
+  yQe9zQYuZM04wWkz5tZTZ4vKuOWwWzw71slicP9bP7sDqsXPWXXaPTas62Tw+b5Lz2Pr5NksA
+  SxRrZl5SfkUCa0bvgnb2gk2cFU+mLWNvYPzM3sXIySEksJFRYvOCuC5GLiB7CZPE645uZgjnA
+  KPE3BmfmUGq2AQ0JO613GQEsUUEYiT+HfsFZjMLuElsejMbbJKwgIfEiUsHwOIsAqoSK6fsBb
+  I5OHgFHCU+TUgHCUsIKEhMefgebCSngJPEvzVHWSCOcJT4duoGE4jNKyAocXLmExaI8RISB1+
+  8YAYZIyGgJDGzOx5iTIXErFltTBC2msTVc5uYJzAKzkLSPQtJ9wJGplWMpsWpRWWpRbrGeklF
+  mekZJbmJmTl6iVW6iXqppbrlqcUlukZ6ieXFeqnFxXrFlbnJOSl6eaklmxiBoZ9SrKq8g/HL0
+  j96hxglOZiURHmFFIKShfiS8lMqMxKLM+KLSnNSiw8xynBwKEnwzvUBygkWpaanVqRl5gDjEC
+  YtwcGjJMLb6wWU5i0uSMwtzkyHSJ1iVJQS513iB5QQAElklObBtcFi/xKjrJQwLyMDA4MQT0F
+  qUW5mCar8K0ZxDkYlYd58kPE8mXklcNNfAS1mAlpsusUPZHFJIkJKqoHpiQHz0x1X93PG1Tpq
+  7ZL9l1Mh+Wrnwou8jbcFKhfdCgiYv+zahLrn376wdaxN0j+5KPFRqV/kvOfz3j5LfaPjvm+7y
+  83pnQUz3zXmPLrJxLR2xf3rTFML3q7S3PZmxovwN10GH2ftZH+9/rKG9UFjOb/ezsMK0fm+Lx
+  uYTl3/+lJz5U1JhSv2SrUij5e73f70sDlQ3VB0W79dQ/ItLa45m9wXHrb/+Tr04jt+jvoSnkM
+  Fj+rfb5y7aJpxxbcNAvc7wk5nP2wrdPGReCgqsuyG7696qcL7zI96JzY73/8hdytlov2HOTck
+  Y5sWTmlT2T5P4S4Th+9k3VMn3zP4LZpwId5l1TJOoV2Xn157m/5xS70SS3FGoqEWc1FxIgByl
+  4TQeAMAAA==
 X-Env-Sender: lizhijian@fujitsu.com
-X-Msg-Ref: server-8.tower-732.messagelabs.com!1666338796!137848!1
+X-Msg-Ref: server-2.tower-548.messagelabs.com!1666338799!83842!1
 X-Originating-IP: [62.60.8.179]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.100.1; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 3584 invoked from network); 21 Oct 2022 07:53:16 -0000
+Received: (qmail 30517 invoked from network); 21 Oct 2022 07:53:19 -0000
 Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
-  by server-8.tower-732.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 21 Oct 2022 07:53:16 -0000
+  by server-2.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 21 Oct 2022 07:53:19 -0000
 Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 1A429155;
-        Fri, 21 Oct 2022 08:53:16 +0100 (BST)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id F3E2F154;
+        Fri, 21 Oct 2022 08:53:18 +0100 (BST)
 Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 0CF9D153;
-        Fri, 21 Oct 2022 08:53:16 +0100 (BST)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id E5470152;
+        Fri, 21 Oct 2022 08:53:18 +0100 (BST)
 Received: from 988193f0f739.localdomain (10.167.225.141) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Fri, 21 Oct 2022 08:53:13 +0100
+ (TLS) id 15.0.1497.32; Fri, 21 Oct 2022 08:53:16 +0100
 From:   Li Zhijian <lizhijian@fujitsu.com>
 To:     <zyjzyj2000@gmail.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
         <linux-rdma@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, Li Zhijian <lizhijian@fujitsu.com>
 Subject: [for-next PATCH v2 1/2] RDMA/rxe: Remove unnecessary mr testing
-Date:   Fri, 21 Oct 2022 07:52:43 +0000
-Message-ID: <1666338764-2-1-git-send-email-lizhijian@fujitsu.com>
+Date:   Fri, 21 Oct 2022 07:52:44 +0000
+Message-ID: <1666338764-2-2-git-send-email-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1666338764-2-1-git-send-email-lizhijian@fujitsu.com>
+References: <1666338764-2-1-git-send-email-lizhijian@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.167.225.141]
