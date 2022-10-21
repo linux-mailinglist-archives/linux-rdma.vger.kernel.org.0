@@ -2,62 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B5A607F6D
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Oct 2022 22:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33255607F6E
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Oct 2022 22:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbiJUUCu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Oct 2022 16:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48366 "EHLO
+        id S230262AbiJUUCv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Oct 2022 16:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbiJUUCS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 16:02:18 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D332623DA
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Oct 2022 13:02:07 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id g130so4382116oia.13
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Oct 2022 13:02:07 -0700 (PDT)
+        with ESMTP id S230382AbiJUUCW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Oct 2022 16:02:22 -0400
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E9F26207F
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Oct 2022 13:02:08 -0700 (PDT)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1364357a691so4894230fac.7
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Oct 2022 13:02:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BFM9klmBW4ISA+589VLKd91C/jSg7NSbf9UoDxhQrS4=;
-        b=KfyVo5KZTRiLP5gj/wAR0mzYfmYplM3DAS8l5DFGmqGxXC8RuE5UXKvY7xpHhNnJwY
-         QyWS9jTUcJPXUxv/J/6sql82v9qeJsm0lZTyBbVcvTA/zM/HUnk0tclHlr0vG6vHJnXJ
-         4yxqzH73IgETmLjBJCS8M2G1CHriv73Imee9bW8QKcszgFVUZ7f46w4ATs9RCUXTjy3R
-         ET8KCbmyV29B6zDjHBEXVcmkr2SAjyVUE97PDWM4EKBU7ensBfHEs1sDlXtg6lCJAry0
-         ghh2QeW+P3QXoy+1CBgmpgrIR/b09ieHKv+9z50OTQO5AaVYqcVmAL6WkNFW7DXdaixe
-         EyBA==
+        bh=xWKHDmzwNMn+q2ooSjlIQRw6Jqrwp6NxfB1YrN3XR2o=;
+        b=Bj2fkOdp4w2S0KWGbLDd6U3o8bNcCLSNt74349XcBihVS7F6mT3hDZgMUljs/k0imp
+         yQTQj62frWES3QHSyS+tbIvxYjUFK+/GeLheIKapWnklOAbpOFgglx2wK/t9oZl1RBi+
+         /ekPQ3bONWAGED61YcNX1zrVj2Z+EKUtAx8NTLOuRGLe66pbRbBc/JYeMSXNdEOyomvn
+         ZpRa4ogqzge9doJp912Dk2W47C0HsxkDm4ijv6jJD0iholr9nVDwSOQRNrM07blv0pys
+         048J8eYtPYLMfAas5T1A6BsDh06X7o4Ots6/s0UGfYhSZZHnsiVSiYJsxDoSFzMz/I98
+         JFmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BFM9klmBW4ISA+589VLKd91C/jSg7NSbf9UoDxhQrS4=;
-        b=iqL8fIvIet8aDnzTT6tgw2gFTY3KRL2B7S+KtViCbzOwi8SqaLe2nFLjkTGgqB0XsY
-         WTsvOJYrNdh0NurT4iqwT6/+H9AMPABbcZ51OLoxdXHFyrFkETH9lFfc1Zjv2PJadD/t
-         uFweg4zXULifLERaN9BIB5m8Ykinfgppt/5vpzP3VWALI0ooc4THFQUbTZKsaMbx5WrY
-         BpMArUGM9LSCSX7Q3UFedacXpkstJWE+mfGsY5EVbHk+l29TNKGmhnbC7PqqF7p/g8Ma
-         SYkl2DNvHxGNV1Ej8nWOo8hznlW1nIOHSdFARuqxs1kQLuPa9CrMKROHaRZM15FDB2jq
-         q5Fw==
-X-Gm-Message-State: ACrzQf24EYqzqR5l6/S4QwHm/7JlUosgD2LL7jXa0sCEtYz3lwDOxZcG
-        j8LWQg4v+gzWBEPAMN6xOAs=
-X-Google-Smtp-Source: AMsMyM7iHzwj3/GIDFYtJ5j58Q5WoTKcUw4nw72rVezMJP2KrC83GGlAkDCaINN8NIf7iqlTcXVDfA==
-X-Received: by 2002:a05:6808:1209:b0:353:92d1:2a0 with SMTP id a9-20020a056808120900b0035392d102a0mr11011315oil.51.1666382526970;
-        Fri, 21 Oct 2022 13:02:06 -0700 (PDT)
+        bh=xWKHDmzwNMn+q2ooSjlIQRw6Jqrwp6NxfB1YrN3XR2o=;
+        b=kU88FqdrPtFwB6iVjpPY83JWoH6HsMYidO/FIk9LCQbIS1H1wPBnvo415dJFONd8Zt
+         x2MPq/XhoTRbAfbpC6Kl85tNquJZSezdii9MEIDo0vZcuJqKeozDyeA04PSMGRhwt+B7
+         5WOVSDXF2Gr3aZfmyRZi5N/WhJBy9yJMk7cJtrKCfHv72rWTNgZCwPnBwv9yFnweilU3
+         T+cK+V8GNnE1nmlFOwx6SN3DOoWnpBAQ46sZEGbUIBw0qA7jiSXGCQ7wclK4ME5u+VMN
+         yerE/OAmAKRi57DVy7A8ONvopTscjR3lENqqNr1paMn2rlq7WAc7JtBF8onIjMFGTVBs
+         PVkw==
+X-Gm-Message-State: ACrzQf38nmTDZG9iWP6rWU5JXg5l2uqZM6FmJzkHMjU+XhCEwcDwOhu0
+        0m4E2Klzi5zjZWZUd6YFVz6ymAD3QzM=
+X-Google-Smtp-Source: AMsMyM4sC7Gh3EthPSJP8SivhPQGbMtQVfPtlzQmg9i5KfMVrgmSnzdGzckWdD+hVzwtzBkCRO2Y3w==
+X-Received: by 2002:a05:6870:1611:b0:132:d73d:8f7f with SMTP id b17-20020a056870161100b00132d73d8f7fmr29951067oae.250.1666382528220;
+        Fri, 21 Oct 2022 13:02:08 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-a860-f1d2-9e17-7593.res6.spectrum.com. [2603:8081:140c:1a00:a860:f1d2:9e17:7593])
-        by smtp.googlemail.com with ESMTPSA id s23-20020a056870631700b00132f141ef2dsm10674684oao.56.2022.10.21.13.02.05
+        by smtp.googlemail.com with ESMTPSA id s23-20020a056870631700b00132f141ef2dsm10674684oao.56.2022.10.21.13.02.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Oct 2022 13:02:06 -0700 (PDT)
+        Fri, 21 Oct 2022 13:02:07 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, leon@kernel.org,
         jhack@hpe.com, ian.ziemba@hpe.com, matsuda-daisuke@fujitsu.com,
         lizhijian@fujitsu.com, haris.phnx@gmail.com,
         linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 05/18] RDMA/rxe: Make rxe_do_task static
-Date:   Fri, 21 Oct 2022 15:01:06 -0500
-Message-Id: <20221021200118.2163-6-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 06/18] RDMA/rxe: Rename task->state_lock to task->lock
+Date:   Fri, 21 Oct 2022 15:01:07 -0500
+Message-Id: <20221021200118.2163-7-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221021200118.2163-1-rpearsonhpe@gmail.com>
 References: <20221021200118.2163-1-rpearsonhpe@gmail.com>
@@ -73,66 +73,98 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The subroutine rxe_do_task() is only called in rxe_task.c. This patch
-makes it static and renames it do_task().
+Rename task-state_lock to task->lock
 
 Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_task.c | 6 +++---
- drivers/infiniband/sw/rxe/rxe_task.h | 8 --------
- 2 files changed, 3 insertions(+), 11 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_task.c | 18 +++++++++---------
+ drivers/infiniband/sw/rxe/rxe_task.h |  2 +-
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
-index 442b7348acdc..fb953f5195b8 100644
+index fb953f5195b8..0208d833a41b 100644
 --- a/drivers/infiniband/sw/rxe/rxe_task.c
 +++ b/drivers/infiniband/sw/rxe/rxe_task.c
-@@ -24,7 +24,7 @@ int __rxe_do_task(struct rxe_task *task)
-  * a second caller finds the task already running
-  * but looks just after the last call to func
-  */
--void rxe_do_task(struct tasklet_struct *t)
-+static void do_task(struct tasklet_struct *t)
- {
- 	int cont;
- 	int ret;
-@@ -96,7 +96,7 @@ int rxe_init_task(struct rxe_task *task, void *arg, int (*func)(void *))
- 	task->func	= func;
- 	task->destroyed	= false;
+@@ -31,22 +31,22 @@ static void do_task(struct tasklet_struct *t)
+ 	struct rxe_task *task = from_tasklet(task, t, tasklet);
+ 	unsigned int iterations = RXE_MAX_ITERATIONS;
  
--	tasklet_setup(&task->tasklet, rxe_do_task);
-+	tasklet_setup(&task->tasklet, do_task);
+-	spin_lock_bh(&task->state_lock);
++	spin_lock_bh(&task->lock);
+ 	switch (task->state) {
+ 	case TASK_STATE_START:
+ 		task->state = TASK_STATE_BUSY;
+-		spin_unlock_bh(&task->state_lock);
++		spin_unlock_bh(&task->lock);
+ 		break;
  
- 	task->state = TASK_STATE_START;
- 	spin_lock_init(&task->state_lock);
-@@ -128,7 +128,7 @@ void rxe_run_task(struct rxe_task *task)
- 	if (task->destroyed)
+ 	case TASK_STATE_BUSY:
+ 		task->state = TASK_STATE_ARMED;
+ 		fallthrough;
+ 	case TASK_STATE_ARMED:
+-		spin_unlock_bh(&task->state_lock);
++		spin_unlock_bh(&task->lock);
  		return;
  
--	rxe_do_task(&task->tasklet);
-+	do_task(&task->tasklet);
- }
+ 	default:
+-		spin_unlock_bh(&task->state_lock);
++		spin_unlock_bh(&task->lock);
+ 		pr_warn("%s failed with bad state %d\n", __func__, task->state);
+ 		return;
+ 	}
+@@ -55,7 +55,7 @@ static void do_task(struct tasklet_struct *t)
+ 		cont = 0;
+ 		ret = task->func(task->arg);
  
- void rxe_sched_task(struct rxe_task *task)
+-		spin_lock_bh(&task->state_lock);
++		spin_lock_bh(&task->lock);
+ 		switch (task->state) {
+ 		case TASK_STATE_BUSY:
+ 			if (ret) {
+@@ -84,7 +84,7 @@ static void do_task(struct tasklet_struct *t)
+ 			pr_warn("%s failed with bad state %d\n", __func__,
+ 				task->state);
+ 		}
+-		spin_unlock_bh(&task->state_lock);
++		spin_unlock_bh(&task->lock);
+ 	} while (cont);
+ 
+ 	task->ret = ret;
+@@ -99,7 +99,7 @@ int rxe_init_task(struct rxe_task *task, void *arg, int (*func)(void *))
+ 	tasklet_setup(&task->tasklet, do_task);
+ 
+ 	task->state = TASK_STATE_START;
+-	spin_lock_init(&task->state_lock);
++	spin_lock_init(&task->lock);
+ 
+ 	return 0;
+ }
+@@ -115,9 +115,9 @@ void rxe_cleanup_task(struct rxe_task *task)
+ 	task->destroyed = true;
+ 
+ 	do {
+-		spin_lock_bh(&task->state_lock);
++		spin_lock_bh(&task->lock);
+ 		idle = (task->state == TASK_STATE_START);
+-		spin_unlock_bh(&task->state_lock);
++		spin_unlock_bh(&task->lock);
+ 	} while (!idle);
+ 
+ 	tasklet_kill(&task->tasklet);
 diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
-index 590b1c1d7e7c..99e0173e5c46 100644
+index 99e0173e5c46..7b88129702ac 100644
 --- a/drivers/infiniband/sw/rxe/rxe_task.h
 +++ b/drivers/infiniband/sw/rxe/rxe_task.h
-@@ -44,14 +44,6 @@ void rxe_cleanup_task(struct rxe_task *task);
-  */
- int __rxe_do_task(struct rxe_task *task);
- 
--/*
-- * common function called by any of the main tasklets
-- * If there is any chance that there is additional
-- * work to do someone must reschedule the task before
-- * leaving
-- */
--void rxe_do_task(struct tasklet_struct *t);
--
- void rxe_run_task(struct rxe_task *task);
- 
- void rxe_sched_task(struct rxe_task *task);
+@@ -21,7 +21,7 @@ enum {
+ struct rxe_task {
+ 	struct tasklet_struct	tasklet;
+ 	int			state;
+-	spinlock_t		state_lock; /* spinlock for task state */
++	spinlock_t		lock;
+ 	void			*arg;
+ 	int			(*func)(void *arg);
+ 	int			ret;
 -- 
 2.34.1
 
