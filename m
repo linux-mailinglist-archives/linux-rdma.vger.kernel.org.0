@@ -2,104 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A7D608B02
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Oct 2022 11:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62727609157
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Oct 2022 07:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbiJVJUM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Oct 2022 05:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
+        id S229761AbiJWFja (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Oct 2022 01:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbiJVJS0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Oct 2022 05:18:26 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E15132DE1
-        for <linux-rdma@vger.kernel.org>; Sat, 22 Oct 2022 01:32:23 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id g130so5708861oia.13
-        for <linux-rdma@vger.kernel.org>; Sat, 22 Oct 2022 01:32:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:reply-to:mime-version:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=VaaSLAJ+hgNGNq49WyPsh3ndDLo+mnrYcswrOHpJSv8=;
-        b=nNMBkCIwl/6gK+toGqNRGG/YLL0fF324bx1qaOH1y4x3OIjxLq/HHYoLEQ6DIXVMhZ
-         yBP/JqjfeKgn2zVw2pvLxCg6MQgOccj9D0PS+BxibSDKUMZPqFuO1BH9rucwVtk0imfk
-         Uf1JB6y6hh5nwSF4l3nIHzMcJeO23qzW5xyKvOUo02NXv/UxA+fb1xfQ7gd0wj97+Png
-         rtJzhayXE1f7/T0HHp6tTaPH4f4DE9rtLLXyoMLmdIeuEqEwHYp6KAIXioE2APt9Vqok
-         QcnzNnKCtevhk7rrd2+8KLFUz2JMtjuKTuyIwbz60pUc4RihSWynNyvtYnVRFpjOFC8v
-         n2WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VaaSLAJ+hgNGNq49WyPsh3ndDLo+mnrYcswrOHpJSv8=;
-        b=LnncZPDeQlvHgJexR97HRRTgE7KGRl1CH1D03ZjvvVbn8a+vLWsQIaC9UL+qXQ3LyT
-         7ybI/X10uZk5Hz4/67cNSeroGlIxOurcebdXXIEuJFO6px06FaX7bc04jKeGJr08XF33
-         PkwUcGEFll43uRB3sZchUJl9urDPPS27GqQumVZOmFa1Cm22VmaPDWkL3ZuqJjdJNXoJ
-         j+fs/lK4dzMyx9zjp7p9v3Gv4YWSWbMvfFLszaC5vFaVZzFFGkECQGMBbMAaV3YspZ9p
-         ErM9HNNoI4KBUHGKdBLmYx74yfCj0abf5ZgH4g/2qgxtCH+xkeTOvrSAQPkZeYMHaXq0
-         TfwA==
-X-Gm-Message-State: ACrzQf0weWHscvrYgsZCuZ7G1gqfCyZNy49iZGTisIlx3sSztlFQf46G
-        QcnXxl80RaZbvo5toi4SN/VG/BejrNs9Igx4ViM=
-X-Google-Smtp-Source: AMsMyM7DV/UQjMDmfWUDARQEST583xXUpUhZuwI6Yo6QWpU1NylqbjJLzURvxWrib8B1x1GiMXZKxXX9K7ug1XjFr6Y=
-X-Received: by 2002:a05:6808:13d2:b0:355:1770:c6ef with SMTP id
- d18-20020a05680813d200b003551770c6efmr21666671oiw.284.1666427448022; Sat, 22
- Oct 2022 01:30:48 -0700 (PDT)
+        with ESMTP id S229588AbiJWFj3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Oct 2022 01:39:29 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC7EB486
+        for <linux-rdma@vger.kernel.org>; Sat, 22 Oct 2022 22:39:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1666503567; x=1698039567;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2q3QpFqKE5bWbCs0311mgQ/14WERgw/u4rVVASWiS1U=;
+  b=PXGSpYJ0xN4sX/wWgV1nXE4Rvurhx7jrf0wbLxxuaqvDVPVWP4+hLOXY
+   L8WcFducr/iwUR4zE/dOw+EANkkP4lPyOodK8ekmBqJ0UzLdHg5MSdtLi
+   p6hRVymSBTj8CG0539tFrI9M1AjMLtyt0G2D9abuhF2Mxih5jTIXGqzgq
+   JrQiCWXayFJEqU6uctDf3uM2ebnOvNAf8bt9erjhDmHuYWyn5KGs0vapT
+   SndJ7C+GzY7hsJ/i6WBdglve0Q0uwuiNWf5/1N/dtNTvMcyQqcN9Ir5mU
+   oDsXcNzEW+B0N4OgCo05CBSDFlz9nr4nqb0Mi9T4Le254kr0bgzK8MB9G
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10508"; a="294632905"
+X-IronPort-AV: E=Sophos;i="5.95,206,1661842800"; 
+   d="scan'208";a="294632905"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2022 22:39:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10508"; a="662046998"
+X-IronPort-AV: E=Sophos;i="5.95,206,1661842800"; 
+   d="scan'208";a="662046998"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by orsmga008.jf.intel.com with ESMTP; 22 Oct 2022 22:39:25 -0700
+From:   Zhu Yanjun <yanjun.zhu@intel.com>
+To:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
+        yanjun.zhu@linux.dev, yanjun.zhu@intel.com
+Subject: [PATCH 0/3] RDMA net namespace
+Date:   Sun, 23 Oct 2022 18:04:47 -0400
+Message-Id: <20221023220450.2287909-1-yanjun.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Reply-To: mrs.susanelwoodhara17@gmail.com
-Sender: mrs.arawayann01@gmail.com
-Received: by 2002:a05:6838:aea5:0:0:0:0 with HTTP; Sat, 22 Oct 2022 01:30:47
- -0700 (PDT)
-From:   Mrs Susan Elwood Hara <mrs.susanelwoodhara17@gmail.com>
-Date:   Sat, 22 Oct 2022 08:30:47 +0000
-X-Google-Sender-Auth: UfMdHY-IGn2vy7vhRxwr3_PMsYw
-Message-ID: <CAAOf0OErkdBB+pkMfQKO+67_RwCPJjBUpQs9uCH=U1CN1QD5=w@mail.gmail.com>
-Subject: GOD BLESS YOU AS YOU REPLY URGENTLY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.4 required=5.0 tests=BAYES_60,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,T_HK_NAME_FM_MR_MRS,UNDISC_MONEY
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:22b listed in]
-        [list.dnswl.org]
-        *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
-        *      [score: 0.7366]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [mrs.arawayann01[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mrs.susanelwoodhara17[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [mrs.susanelwoodhara17[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  3.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-GOD BLESS YOU AS YOU REPLY URGENTLY
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
- Hello Dear,
-Greetings, I am contacting you regarding an important information i
-have for you please reply to confirm your email address and for more
-details Thanks
-Regards
-Mrs Susan Elwood Hara.
+There are shared and exclusive modes in RDMA net namespace. After
+discussion with Leon, the above modes are compatible with legacy IB
+device. 
+
+To the RoCE and iWARP devices, the ib devices should be in the same net
+namespace with the related net devices regardless of in shared or
+exclusive mode.
+
+In the first commit, when the net devices are moved to a new net
+namespace, the related ib devices are also moved to the same net
+namespace.
+
+In the second commit, the shared/exclusive modes still work with legacy
+ib devices. To the RoCE and iWARP devices, these modes will not be
+considered.
+
+Because MLX4/5 do not call the function ib_device_set_netdev to map ib
+devices and the related net devices, the function ib_device_get_by_netdev
+can not get ib devices from net devices. In the third commit, all the
+registered ib devices are parsed to get the net devices, then compared
+with the given net devices.
+
+The steps to make tests:
+1) Create a new net namespace net0
+
+   ip netns add net0
+
+2) Show the rdma links in init_net
+
+   rdma link
+
+   "
+   link mlx5_0/1 state DOWN physical_state DISABLED netdev enp7s0np1
+   "
+
+3) Move the net device to net namespace net0
+
+   ip link set enp7s0np1 netns net0
+
+4) Show the rdma links in init_net again
+
+   rdma link
+
+   There is no rdma links
+
+5) Show the rdma links in net0
+
+   ip netns exec net0 rdma link
+
+   "
+   link mlx5_0/1 state DOWN physical_state DISABLED netdev enp7s0np1
+   "
+
+We can confirm that rdma links are moved to the same net namespace with
+the net devices.
+
+Zhu Yanjun (3):
+  RDMA/core: Move ib device to the same net namespace with net device
+  RDMA/core: The legacy IB devices still work with shared/exclusive mode
+  RDMA/core: Get all the ib devices from net devices
+
+ drivers/infiniband/core/device.c | 107 ++++++++++++++++++++++++++++++-
+ 1 file changed, 105 insertions(+), 2 deletions(-)
+
+-- 
+2.27.0
+
