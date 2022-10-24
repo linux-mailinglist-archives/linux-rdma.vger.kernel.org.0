@@ -2,43 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3BB60A5F9
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Oct 2022 14:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405BB60A412
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Oct 2022 14:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232676AbiJXMaj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Oct 2022 08:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S232227AbiJXMFQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Oct 2022 08:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234343AbiJXMaF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Oct 2022 08:30:05 -0400
+        with ESMTP id S232693AbiJXMEF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Oct 2022 08:04:05 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D148F5D739;
-        Mon, 24 Oct 2022 05:04:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F202F558FA;
+        Mon, 24 Oct 2022 04:50:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 31FF6B81181;
-        Mon, 24 Oct 2022 11:47:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40EF5C433D7;
-        Mon, 24 Oct 2022 11:47:49 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D7DBFB811B1;
+        Mon, 24 Oct 2022 11:48:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0001AC433D6;
+        Mon, 24 Oct 2022 11:48:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666612070;
-        bh=2Xq/Xx65ukmX6CknqA0PZRSw+qJQk8YtM6vyHsXpZA0=;
+        s=k20201202; t=1666612123;
+        bh=cswlCaj9VwBonTfXSZ1J1DKFa5XV0tJmp/Plc7iexDE=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=RFazvBS4s6P+srUXi9c1t6n9vmFmZZOwNA5B+NevoXN5TuABrk22dSuDDrhvgsDeq
-         Ea0Ah1OSwctul3jvVUaLQ8HDT9r5UYlBvcgseaY8ETJE/nXSV772iuhPz6hrwazjnj
-         UMjV7AhnVTZ9aDtTtUB1IwFUrSGoE4aWL7Ad/h1k14aV31CBdCuW4SaLekwa+sTqvl
-         XxxLhgc96RvIIzTr6omIrG0/qkdCuNSuswYovf0T/ky3d4cz4tko/GZci76kjZQPUM
-         vZmdWaQctTQ0DCab6DTKfidWbUcIW+ujUyJuwQWUukX6qsz3LGglDZorAVJqPUNN9d
-         7Pq6zLtL8BVaw==
+        b=Y1u87aFhnIK1FJ2TxmbqsxD4JLPo7ijLFPLjv4rl7KqSJ7VLGR6AEAppRCIb3uYke
+         qGLLxAks9sbp9M8VzTf3mmqW9hGsniuhdx8YcehFkVxrI0N+H+tOCb1Iw1w+yEGR3/
+         JEFrbwMgIcCU7wLgwpz4cCrs4mxL+dgLyD0LA42GuSMrUNK0GVorvgPDFK71iGdL/h
+         z1U4GJbeUQmQrk4bcKSQ3iRlRIFnUrQFYsyabNROt9mSr471rTcTF4MnVnFCczlnlv
+         HziAG1PKDh2JgY8FLMLH585cVyJrRJqAgtI/JotQ/lmUrCDywMPNEm6CrRffKJ7K15
+         zeZyee1sFhJ9w==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     wangjianli <wangjianli@cdjrlc.com>, jgg@ziepe.ca
+To:     aelior@marvell.com, jgg@ziepe.ca, mkalderon@marvell.com,
+        wangjianli <wangjianli@cdjrlc.com>
 Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-In-Reply-To: <20221022060030.50900-1-wangjianli@cdjrlc.com>
-References: <20221022060030.50900-1-wangjianli@cdjrlc.com>
-Subject: Re: [PATCH] infiniband/core: fix repeated words in comments
-Message-Id: <166661206651.860056.8565656174789482533.b4-ty@kernel.org>
-Date:   Mon, 24 Oct 2022 14:47:46 +0300
+In-Reply-To: <20221022055257.42905-1-wangjianli@cdjrlc.com>
+References: <20221022055257.42905-1-wangjianli@cdjrlc.com>
+Subject: Re: [PATCH] infiniband/hw: fix repeated words in comments
+Message-Id: <166661211934.860464.11739360867240865732.b4-ty@kernel.org>
+Date:   Mon, 24 Oct 2022 14:48:39 +0300
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -52,15 +53,15 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, 22 Oct 2022 14:00:30 +0800, wangjianli wrote:
+On Sat, 22 Oct 2022 13:52:57 +0800, wangjianli wrote:
 > Delete the redundant word 'the'.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] infiniband/core: fix repeated words in comments
-      https://git.kernel.org/rdma/rdma/c/c4bb733234b0ff
+[1/1] infiniband/hw: fix repeated words in comments
+      https://git.kernel.org/rdma/rdma/c/65bf03427cee48
 
 Best regards,
 -- 
