@@ -2,60 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C63BD6097C1
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Oct 2022 03:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4739609836
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Oct 2022 04:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbiJXBUf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Oct 2022 21:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54842 "EHLO
+        id S229613AbiJXC0M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Oct 2022 22:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbiJXBUd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Oct 2022 21:20:33 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F89B4DB25;
-        Sun, 23 Oct 2022 18:20:31 -0700 (PDT)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Mwcd52bJhzJn8t;
-        Mon, 24 Oct 2022 09:17:45 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 24 Oct 2022 09:20:29 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 24 Oct
- 2022 09:20:29 +0800
-Subject: Re: [Patch v9 03/12] net: mana: Handle vport sharing between devices
-To:     <longli@microsoft.com>, "K. Y. Srinivasan" <kys@microsoft.com>,
-        "Haiyang Zhang" <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, <edumazet@google.com>,
-        <shiraz.saleem@intel.com>, "Ajay Sharma" <sharmaajay@microsoft.com>
-CC:     <linux-hyperv@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-References: <1666396889-31288-1-git-send-email-longli@linuxonhyperv.com>
- <1666396889-31288-4-git-send-email-longli@linuxonhyperv.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <05607c38-7c9f-49df-c6b2-17e35f2ecbbd@huawei.com>
-Date:   Mon, 24 Oct 2022 09:20:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        with ESMTP id S229562AbiJXC0L (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Oct 2022 22:26:11 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D085D0D8;
+        Sun, 23 Oct 2022 19:26:10 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id q9-20020a17090a178900b00212fe7c6bbeso2022981pja.4;
+        Sun, 23 Oct 2022 19:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=71rjY3eLm+7RTIJeX7H54aiz+xuwcwUC1e8Fpch6tyk=;
+        b=d/l60TUozsO8NzthUJnNGQjNDekj6EZ059Bj/Yu232ph2q3G9tEcGVoNbRDHlPh7KO
+         z0ZToBrJsdjnhcGrnvJx+Lj8KOAITTi43vpnFusHSh7ZJ7SEusRBe+YonMHTBvZ96awj
+         jwq/5vXY+kZmJtwbttrJatDjk/ovmttkZ0Kz6iF73H6zQL4RMmcSgbernXCAZclytEgX
+         ARGXt9z34OUu3b4B73oKec1yRltf3UQGwhQqpYMTVHKb3L5arNM4Q4GV+cmrAvNDc8zr
+         Bis4UBgYAFIzeCRM3yLxNUlgWCqDW2fZpgGai1aflf+nHsrUbf2j+7wAcGtbAbpjUcXi
+         GaCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=71rjY3eLm+7RTIJeX7H54aiz+xuwcwUC1e8Fpch6tyk=;
+        b=LEZ1CPr/RDUQclT8rysOxaLsVBaxCXI+jf2SVYduK96yGiZLnEsjn4TR9LNERy7zWw
+         chJyt+t2QlJwPow+YbYHwaRvyOGT+YxK6VkbNljd4MXEJrEfx6TCGdUiPC9vWQh4iLw1
+         Nu2QmzChzXOh6j+iA6mdchFuGz5gfY0H6InI+e5Rb1CzNwAbVZidNllVL9FVvl4WgT9/
+         7GIcvVX0N2/a8vBU2EQOcIaJyBh/iDWXxGS5U+H+UXefyNUeTts2xYjer5Dw1uTWVxax
+         rBRga3P2nzli0ybPdLaRcnrLYTjJ69glge7AaT+fApPXmraDJB6ZVxvkpQw8BQ8aWpT8
+         VbvA==
+X-Gm-Message-State: ACrzQf2SyQW/9ESX0ZQiRVbuEzVEBQZ54WMu99VmIOrTaB3g8tp8zw3Z
+        wpmNATPE1mGKnpJifxvM1YwpMPilNQp8a8bHejs=
+X-Google-Smtp-Source: AMsMyM5XXS5doRLt3gET5d9S+BTfM6vYGER4xgnWkcA/iyiiQPqTJ29gd3agZia8krEz+aGNcjnF2uf45vIY0T9ShsE=
+X-Received: by 2002:a17:902:f78b:b0:17f:9c94:b247 with SMTP id
+ q11-20020a170902f78b00b0017f9c94b247mr30116589pln.137.1666578369902; Sun, 23
+ Oct 2022 19:26:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1666396889-31288-4-git-send-email-longli@linuxonhyperv.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <1666338764-2-1-git-send-email-lizhijian@fujitsu.com>
+ <1666338764-2-2-git-send-email-lizhijian@fujitsu.com> <CAD=hENeGMKri0nYMtcu98K2j3D+ZBkxO6fFX5cvvyJsEghrrmQ@mail.gmail.com>
+ <1846f2e1-ff13-5fa2-240f-fd7749921ce2@fujitsu.com> <30ff25c4-ce66-eac4-eaa2-64c0db203a19@gmail.com>
+In-Reply-To: <30ff25c4-ce66-eac4-eaa2-64c0db203a19@gmail.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Mon, 24 Oct 2022 10:25:58 +0800
+Message-ID: <CAD=hENeTnLGN5KKi_Cwni6FDb77prijHVjCjfdvhrjXdp7bdjQ@mail.gmail.com>
+Subject: Re: [for-next PATCH v2 1/2] RDMA/rxe: Remove unnecessary mr testing
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Li Zhijian <lizhijian@fujitsu.com>, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,155 +68,85 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2022/10/22 8:01, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> For outgoing packets, the PF requires the VF to configure the vport with
-> corresponding protection domain and doorbell ID for the kernel or user
-> context. The vport can't be shared between different contexts.
-> 
-> Implement the logic to exclusively take over the vport by either the
-> Ethernet device or RDMA device.
-> 
-> Reviewed-by: Dexuan Cui <decui@microsoft.com>
-> Signed-off-by: Long Li <longli@microsoft.com>
-> Acked-by: Haiyang Zhang <haiyangz@microsoft.com>
-> ---
-> Change log:
-> v2: use refcount instead of directly using atomic variables
-> v4: change to mutex to avoid possible race with refcount
-> v5: add detailed comments explaining vport sharing, use EXPORT_SYMBOL_NS
-> v6: rebased to rdma-next
-> 
->  drivers/net/ethernet/microsoft/mana/mana.h    |  7 +++
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 53 ++++++++++++++++++-
->  2 files changed, 58 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana.h b/drivers/net/ethernet/microsoft/mana/mana.h
-> index d58be64374c8..2883a08dbfb5 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana.h
-> +++ b/drivers/net/ethernet/microsoft/mana/mana.h
-> @@ -380,6 +380,10 @@ struct mana_port_context {
->  	mana_handle_t port_handle;
->  	mana_handle_t pf_filter_handle;
->  
-> +	/* Mutex for sharing access to vport_use_count */
-> +	struct mutex vport_mutex;
-> +	int vport_use_count;
-> +
->  	u16 port_idx;
->  
->  	bool port_is_up;
-> @@ -631,4 +635,7 @@ struct mana_tx_package {
->  	struct gdma_posted_wqe_info wqe_info;
->  };
->  
-> +int mana_cfg_vport(struct mana_port_context *apc, u32 protection_dom_id,
-> +		   u32 doorbell_pg_id);
-> +void mana_uncfg_vport(struct mana_port_context *apc);
->  #endif /* _MANA_H */
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 8751e475d1ba..efe14a343fd1 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -646,13 +646,48 @@ static int mana_query_vport_cfg(struct mana_port_context *apc, u32 vport_index,
->  	return 0;
->  }
->  
-> -static int mana_cfg_vport(struct mana_port_context *apc, u32 protection_dom_id,
-> -			  u32 doorbell_pg_id)
-> +void mana_uncfg_vport(struct mana_port_context *apc)
-> +{
-> +	mutex_lock(&apc->vport_mutex);
-> +	apc->vport_use_count--;
-> +	WARN_ON(apc->vport_use_count < 0);
-> +	mutex_unlock(&apc->vport_mutex);
-> +}
-> +EXPORT_SYMBOL_NS(mana_uncfg_vport, NET_MANA);
-> +
-> +int mana_cfg_vport(struct mana_port_context *apc, u32 protection_dom_id,
-> +		   u32 doorbell_pg_id)
->  {
->  	struct mana_config_vport_resp resp = {};
->  	struct mana_config_vport_req req = {};
->  	int err;
->  
-> +	/* This function is used to program the Ethernet port in the hardware
-> +	 * table. It can be called from the Ethernet driver or the RDMA driver.
-> +	 *
-> +	 * For Ethernet usage, the hardware supports only one active user on a
-> +	 * physical port. The driver checks on the port usage before programming
-> +	 * the hardware when creating the RAW QP (RDMA driver) or exposing the
-> +	 * device to kernel NET layer (Ethernet driver).
-> +	 *
-> +	 * Because the RDMA driver doesn't know in advance which QP type the
-> +	 * user will create, it exposes the device with all its ports. The user
-> +	 * may not be able to create RAW QP on a port if this port is already
-> +	 * in used by the Ethernet driver from the kernel.
-> +	 *
-> +	 * This physical port limitation only applies to the RAW QP. For RC QP,
-> +	 * the hardware doesn't have this limitation. The user can create RC
-> +	 * QPs on a physical port up to the hardware limits independent of the
-> +	 * Ethernet usage on the same port.
-> +	 */
-> +	mutex_lock(&apc->vport_mutex);
-> +	if (apc->vport_use_count > 0) {
-> +		mutex_unlock(&apc->vport_mutex);
-> +		return -EBUSY;
-> +	}
-> +	apc->vport_use_count++;
-> +	mutex_unlock(&apc->vport_mutex);
-> +
->  	mana_gd_init_req_hdr(&req.hdr, MANA_CONFIG_VPORT_TX,
->  			     sizeof(req), sizeof(resp));
->  	req.vport = apc->port_handle;
-> @@ -679,9 +714,16 @@ static int mana_cfg_vport(struct mana_port_context *apc, u32 protection_dom_id,
->  
->  	apc->tx_shortform_allowed = resp.short_form_allowed;
->  	apc->tx_vp_offset = resp.tx_vport_offset;
-> +
-> +	netdev_info(apc->ndev, "Configured vPort %llu PD %u DB %u\n",
-> +		    apc->port_handle, protection_dom_id, doorbell_pg_id);
->  out:
-> +	if (err)
-> +		mana_uncfg_vport(apc);
+On Mon, Oct 24, 2022 at 2:05 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> On 10/21/22 20:09, Li Zhijian wrote:
+> >
+> >
+> > On 21/10/2022 22:39, Zhu Yanjun wrote:
+> >> On Fri, Oct 21, 2022 at 3:53 PM Li Zhijian <lizhijian@fujitsu.com> wrote:
+> >>> Before the testing, we already passed it to rxe_mr_copy() where mr could
+> >>> be dereferenced. so this checking is not exactly correct.
+> >>>
+> >>> I tried to figure out the details how/when mr could be NULL, but failed
+> >>> at last. Add a WARN_ON(!mr) to that path to tell us more when it
+> >>> happends.
+> >> If I get you correctly, you confronted a problem,
+> > Not exactly,  I removed the mr checking since i think this checking is not correct.
+> > the newly added WARN_ON(!mr) is the only once place where the mr can be NULL but not handled correctly.
+> > At least with/without this patch, once WARN_ON(!mr) is triggered, kernel will go something wrong.
+> >
+> > so i want to place this  WARN_ON(!mr) to point to the problem.
+> >
+> > Thanks
+> > Zhijian
+> >
+> >>   but you can not figure it out.
+> >> So you send it upstream as a patch?
+> >>
+> >> I am not sure if it is a good idea.
+> >>
+> >> Zhu Yanjun
+> >>
+> >>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> >>> ---
+> >>>   drivers/infiniband/sw/rxe/rxe_resp.c | 4 ++--
+> >>>   1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> >>> index ed5a09e86417..218c14fb07c6 100644
+> >>> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> >>> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> >>> @@ -778,6 +778,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+> >>>          if (res->state == rdatm_res_state_new) {
+> >>>                  if (!res->replay) {
+> >>>                          mr = qp->resp.mr;
+> >>> +                       WARN_ON(!mr);
+> >>>                          qp->resp.mr = NULL;
+> >>>                  } else {
+> >>>                          mr = rxe_recheck_mr(qp, res->read.rkey);
+> >>> @@ -811,8 +812,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+> >>>
+> >>>          rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
+> >>>                      payload, RXE_FROM_MR_OBJ);
+> >>> -       if (mr)
+> >>> -               rxe_put(mr);
+> >>> +       rxe_put(mr);
+> >>>
+> >>>          if (bth_pad(&ack_pkt)) {
+> >>>                  u8 *pad = payload_addr(&ack_pkt) + payload
+> >>> --
+> >>> 2.31.1
+> >>>
+> >
+>
+> Li is correct that the only way mr could be NULL is if qp->resp.mr == NULL. So the
 
-There seems to be a similar race between error handling here and the
-"apc->vport_use_count > 0" checking above as pointed out in v7.
+What I am concerned about is if "WARN_ON(!mr);" should be added or not.
+IMO, if the root cause remains unclear, this should be a problem.
+Currently this problem is not fixed. It is useless to send a debug
+statement to the maillist.
 
-> +
->  	return err;
->  }
-> +EXPORT_SYMBOL_NS(mana_cfg_vport, NET_MANA);
->  
->  static int mana_cfg_vport_steering(struct mana_port_context *apc,
->  				   enum TRI_STATE rx,
-> @@ -742,6 +784,9 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
->  			   resp.hdr.status);
->  		err = -EPROTO;
->  	}
-> +
-> +	netdev_info(ndev, "Configured steering vPort %llu entries %u\n",
-> +		    apc->port_handle, num_entries);
->  out:
->  	kfree(req);
->  	return err;
-> @@ -1804,6 +1849,7 @@ static void mana_destroy_vport(struct mana_port_context *apc)
->  	}
->  
->  	mana_destroy_txq(apc);
-> +	mana_uncfg_vport(apc);
->  
->  	if (gd->gdma_context->is_pf)
->  		mana_pf_deregister_hw_vport(apc);
-> @@ -2076,6 +2122,9 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
->  	apc->pf_filter_handle = INVALID_MANA_HANDLE;
->  	apc->port_idx = port_idx;
->  
-> +	mutex_init(&apc->vport_mutex);
-> +	apc->vport_use_count = 0;
-> +
->  	ndev->netdev_ops = &mana_devops;
->  	ndev->ethtool_ops = &mana_ethtool_ops;
->  	ndev->mtu = ETH_DATA_LEN;
-> 
+Zhu Yanjun
+
+> 'if (mr)' is not needed if that is the case. The read_reply subroutine is reached
+> from a new rdma read operation after going through check_rkey or from a previous
+> rdma read operations from get_req if qp->resp.res != NULL or from a duplicate request
+> where the previous responder resource is found. In all these cases the mr is set.
+> Initially in check_rkey where if it can't find the mr it causes an RKEY_VIOLATION.
+> Thereafter the rkey is stored in the responder resources and looked up for each
+> packet to get an mr or cause an RKEY_VIOLATION. So the mr can't be NULL. I think
+> you can leave out the WARN and just drop the if (mr).
+>
+> Bob
+>
