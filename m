@@ -2,70 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 504B160B66A
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Oct 2022 20:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B919160B836
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Oct 2022 21:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbiJXS5L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Oct 2022 14:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
+        id S229920AbiJXTmr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Oct 2022 15:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbiJXS4h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Oct 2022 14:56:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A8B8BBB4
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Oct 2022 10:37:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0FBD7612DC
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Oct 2022 11:57:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E14CDC433B5;
-        Mon, 24 Oct 2022 11:57:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666612646;
-        bh=nlblTCFo4p0BzL0A+EguurykHOrA2eEzEYHVVCHEaxc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lL4bKdTrdT3HQgrvaOzh3FU68z05u45GmVzXjceHTCAsiyXIR2dMcOWyQU5qbC1bw
-         c3vGzkfRuQ1XKytIw0xwJMY4MNRLuqfKpQ+Sz3Cv1ad4tQ81W0b/2Ez6xzAR5Q40Ew
-         lyDgqaO99aFn8+EOLpCBQAssycUqF2+xymtLtuOkUYK+wbILdqciego/s0I4yCFF49
-         gJ5uvow7f65Mb9X0ElSoeMhxEkTGVJ2e0z1LSfrcptz8ZTb+Jrwhtzc+me3ERbtT+o
-         0q2HA+FlHA2TQGUQFratrbecxZhO5CsQJYWWARHMVa+HT3CYOVXSVU2OsX8zR71MPh
-         JZU46RSrhxWtg==
-Date:   Mon, 24 Oct 2022 14:57:21 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-Subject: Re: [PATCH] RDMA/rxe: Remove the member 'type' of struct rxe_mr
-Message-ID: <Y1Z9oYf+nnY6B19L@unreal>
-References: <20221021134513.17730-1-yangx.jy@fujitsu.com>
+        with ESMTP id S231784AbiJXTlw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Oct 2022 15:41:52 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF32265517;
+        Mon, 24 Oct 2022 11:11:32 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id n14so2789261wmq.3;
+        Mon, 24 Oct 2022 11:11:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yvPcFlw6lM+Z4kH9nDAFT0Arkjdhr1idqjBqC9Ky3Kw=;
+        b=MUZ7iaB3iWtFgeLi5pIjcRc7HXnLWLrBmoA0lvgXcBrQWKK8HBx9ce0VYt9pVrW27H
+         09m1rykXg6YUDCQwsmeInLz/OeIdpMJ+cSMG6vx8saDiSbm+rMicQGLKcSSSP3GCrz7O
+         8YBZCGfInLxHW5y88EDyPCNxi+Bm9L1RcTLJvNXAKwVKmNQscfxX2sJecaBuHvWsiABK
+         Y4XmoJvethqru/stSjFpKykkzAqSBjIOCqnPpYU78TA+j8/zjolYKUMVeh1wXHpU5RNM
+         Gxno7Gtm5sUB24yl8zYkEhayBbSG/IgLsjIF4w3XccG4VnXx6FLNeBQAc4Sk3Ty+hNzv
+         om5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yvPcFlw6lM+Z4kH9nDAFT0Arkjdhr1idqjBqC9Ky3Kw=;
+        b=UzKpPOMgekmk1+Qoq1PQPEz9Tw2Q8aWpXa9tr1IE5v6UAvxZln6fvGtc61U9dB+UiM
+         vytr/k959Ktb7UpIwWorYEmVoRFmGtuKT4ke8R0A6goMbuYbrvg8/oGLSMYEPMXQ7qXE
+         LtcPB3tEQVOfRHL4QV6yEbmHV8r4e4OPqSDACgff7MozEzuAQW6BuJp/7TTqIO2Be5xD
+         gUIHWEGC/aUYE5HSvKB8HpBn2UAhbuMinEuCYvOah9xhK7aHM04xUAIwyBpdUiDY+Sgo
+         62advRbcWpLaGLw1icEB6F9KBI3l7JFmeem4l6HGRu7Ca/g1cW5y/GM8qriQmh4cqPYk
+         oxaQ==
+X-Gm-Message-State: ACrzQf2OTRhDVmExEjqz0ncAxKvqUOEU2yGsa2cIE1RGAVT+OZVGqhbz
+        JubRZBusx1j0HLQZ5EIQi/fVYgS0Q0rVm7RH
+X-Google-Smtp-Source: AMsMyM5rIEPKlhEcUBOaCv6On9SyEcsFNO7IYk+unK8cRtGodPkeczvInbtItNUIdeGmjuIUXCmz+w==
+X-Received: by 2002:a7b:c005:0:b0:3c3:6b2a:33bf with SMTP id c5-20020a7bc005000000b003c36b2a33bfmr22193340wmb.167.1666619448014;
+        Mon, 24 Oct 2022 06:50:48 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id bj19-20020a0560001e1300b002238ea5750csm11529340wrb.72.2022.10.24.06.50.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Oct 2022 06:50:47 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net/rds: remove variable total_copied
+Date:   Mon, 24 Oct 2022 14:50:46 +0100
+Message-Id: <20221024135046.2159523-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221021134513.17730-1-yangx.jy@fujitsu.com>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 01:45:17PM +0000, yangx.jy@fujitsu.com wrote:
-> The member 'type' is included in both struct rxe_mr and struct ib_mr
-> so remove the duplicate one of struct rxe_mr.
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_mr.c    | 16 ++++++++--------
->  drivers/infiniband/sw/rxe/rxe_verbs.h |  1 -
->  2 files changed, 8 insertions(+), 9 deletions(-)
+Variable total_copied is just being incremented and it's never used
+anywhere else. The variable and the increment are redundant so
+remove it.
 
-Please fix you From field and resubmit.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ net/rds/message.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-71d236399160 (HEAD -> build) RDMA/rxe: Remove the member 'type' of struct rxe_mr
-WARNING: From:/Signed-off-by: email name mismatch: 'From: "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>' != 'Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>'
+diff --git a/net/rds/message.c b/net/rds/message.c
+index 44dbc612ef54..b47e4f0a1639 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -366,7 +366,6 @@ static int rds_message_zcopy_from_user(struct rds_message *rm, struct iov_iter *
+ 	struct scatterlist *sg;
+ 	int ret = 0;
+ 	int length = iov_iter_count(from);
+-	int total_copied = 0;
+ 	struct rds_msg_zcopy_info *info;
+ 
+ 	rm->m_inc.i_hdr.h_len = cpu_to_be32(iov_iter_count(from));
+@@ -404,7 +403,6 @@ static int rds_message_zcopy_from_user(struct rds_message *rm, struct iov_iter *
+ 			ret = -EFAULT;
+ 			goto err;
+ 		}
+-		total_copied += copied;
+ 		length -= copied;
+ 		sg_set_page(sg, pages, copied, start);
+ 		rm->data.op_nents++;
+-- 
+2.37.3
 
-
-Thanks
