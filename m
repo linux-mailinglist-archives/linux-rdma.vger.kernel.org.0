@@ -2,151 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D18C609550
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Oct 2022 20:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561576097B1
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Oct 2022 03:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbiJWSFk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Oct 2022 14:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34664 "EHLO
+        id S229634AbiJXBKP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Oct 2022 21:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbiJWSFj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Oct 2022 14:05:39 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8205B4D81F;
-        Sun, 23 Oct 2022 11:05:36 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id y72so8825238oia.3;
-        Sun, 23 Oct 2022 11:05:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vIkYcAuPNC2VZr6XaUkofhf+zx2CPN+Q3gq7bfVVVgs=;
-        b=VsYKXxm6CHaiX7K0eZCBPSinJHT5CS1DpO5xKAxZtl5m3onGgfI6XLFNVK80bwQfUh
-         P9Cc2YGKGX51Hv5eAYHzx7g2EzarZRw3FbnV5lMkBVHLdKR8qxKHP7s38JzNXHl8AErZ
-         +Exsj1o9K6pLbZHiJUkZ+fVVoj1hqNMrUt9veLfWnuB3iwgoHuQhnFDZXftpX4yeX6ZS
-         KMpgN0kqP/VGVUtcU+vVzn6zSgMIEEg2ay8VRvPc2dBr6sKpCuMX8P8Xie/dX5vIcu/4
-         NIGZ1ABBPD0+iJFoMvDQpICH6EUF6ZZfcWIQUeMzt0rFJ0EDaSDb9Y5IzBBZYlXGw7z6
-         IbKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vIkYcAuPNC2VZr6XaUkofhf+zx2CPN+Q3gq7bfVVVgs=;
-        b=CbiwfTM5720UAHGjgOKgFLPU4pkaTee+TzKCXozOozg4TLrmsX+23yR5rAV/UUINqZ
-         86VOCEu9TG/OKYRNPXCgfdOZukiB+eRhEGsC1H92dShAd7edy2QLEF0k+uX4cVax9/A+
-         E8wQb5PciCbxS37X4OssQoIj/tIywETV1dZDQEUKtrfqNo+ocED/I8Z1bO79ebIeA/q4
-         RefEGaSba0sHtsx5uv8kqnnEquNYolzYfvrYGi7hAUbpzCJoCgF4LXmk4SugAYBbzelR
-         8t0Jj69iDAykwlpUjmTpBvIocsG2OTZ+W4DkUZAvnK4/4p1sRYUJGBxT9QiWt0u5QmGC
-         K4FA==
-X-Gm-Message-State: ACrzQf1LK5ea9FmfYqSm72EM9z95W23Ywy2sODnBp35xrLYxXdFDaLL7
-        /QCKnns71cxkFrG72aFMgac=
-X-Google-Smtp-Source: AMsMyM5PSsB0AcGAdGpyC3coarqx8OUdSt76jr0koLYMpbPyZ/A7bhAuuH5WiKYhSnGWuaDCLQDnbw==
-X-Received: by 2002:a05:6808:171b:b0:34d:444a:fc1e with SMTP id bc27-20020a056808171b00b0034d444afc1emr29013446oib.85.1666548335793;
-        Sun, 23 Oct 2022 11:05:35 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:1e0:e60:c33:b344? (2603-8081-140c-1a00-01e0-0e60-0c33-b344.res6.spectrum.com. [2603:8081:140c:1a00:1e0:e60:c33:b344])
-        by smtp.gmail.com with ESMTPSA id em40-20020a0568705ba800b001226d2100f2sm13037314oab.33.2022.10.23.11.05.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Oct 2022 11:05:35 -0700 (PDT)
-Message-ID: <30ff25c4-ce66-eac4-eaa2-64c0db203a19@gmail.com>
-Date:   Sun, 23 Oct 2022 13:05:34 -0500
+        with ESMTP id S229665AbiJXBKN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Oct 2022 21:10:13 -0400
+Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B4233A3E
+        for <linux-rdma@vger.kernel.org>; Sun, 23 Oct 2022 18:10:10 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VSqp2Rd_1666573807;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0VSqp2Rd_1666573807)
+          by smtp.aliyun-inc.com;
+          Mon, 24 Oct 2022 09:10:08 +0800
+Date:   Mon, 24 Oct 2022 09:10:07 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     Zhu Yanjun <yanjun.zhu@intel.com>, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
+Subject: Re: [PATCH 0/3] RDMA net namespace
+Message-ID: <20221024011007.GE63658@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20221023220450.2287909-1-yanjun.zhu@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [for-next PATCH v2 1/2] RDMA/rxe: Remove unnecessary mr testing
-Content-Language: en-US
-To:     Li Zhijian <lizhijian@fujitsu.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1666338764-2-1-git-send-email-lizhijian@fujitsu.com>
- <1666338764-2-2-git-send-email-lizhijian@fujitsu.com>
- <CAD=hENeGMKri0nYMtcu98K2j3D+ZBkxO6fFX5cvvyJsEghrrmQ@mail.gmail.com>
- <1846f2e1-ff13-5fa2-240f-fd7749921ce2@fujitsu.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <1846f2e1-ff13-5fa2-240f-fd7749921ce2@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221023220450.2287909-1-yanjun.zhu@intel.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/21/22 20:09, Li Zhijian wrote:
-> 
-> 
-> On 21/10/2022 22:39, Zhu Yanjun wrote:
->> On Fri, Oct 21, 2022 at 3:53 PM Li Zhijian <lizhijian@fujitsu.com> wrote:
->>> Before the testing, we already passed it to rxe_mr_copy() where mr could
->>> be dereferenced. so this checking is not exactly correct.
->>>
->>> I tried to figure out the details how/when mr could be NULL, but failed
->>> at last. Add a WARN_ON(!mr) to that path to tell us more when it
->>> happends.
->> If I get you correctly, you confronted a problem,
-> Not exactly,  I removed the mr checking since i think this checking is not correct.
-> the newly added WARN_ON(!mr) is the only once place where the mr can be NULL but not handled correctly.
-> At least with/without this patch, once WARN_ON(!mr) is triggered, kernel will go something wrong.
-> 
-> so i want to place this  WARN_ON(!mr) to point to the problem.
-> 
-> Thanks
-> Zhijian
-> 
->>   but you can not figure it out.
->> So you send it upstream as a patch?
->>
->> I am not sure if it is a good idea.
->>
->> Zhu Yanjun
->>
->>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
->>> ---
->>>   drivers/infiniband/sw/rxe/rxe_resp.c | 4 ++--
->>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
->>> index ed5a09e86417..218c14fb07c6 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
->>> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
->>> @@ -778,6 +778,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
->>>          if (res->state == rdatm_res_state_new) {
->>>                  if (!res->replay) {
->>>                          mr = qp->resp.mr;
->>> +                       WARN_ON(!mr);
->>>                          qp->resp.mr = NULL;
->>>                  } else {
->>>                          mr = rxe_recheck_mr(qp, res->read.rkey);
->>> @@ -811,8 +812,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
->>>
->>>          rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
->>>                      payload, RXE_FROM_MR_OBJ);
->>> -       if (mr)
->>> -               rxe_put(mr);
->>> +       rxe_put(mr);
->>>
->>>          if (bth_pad(&ack_pkt)) {
->>>                  u8 *pad = payload_addr(&ack_pkt) + payload
->>> -- 
->>> 2.31.1
->>>
-> 
+On Sun, Oct 23, 2022 at 06:04:47PM -0400, Zhu Yanjun wrote:
+>From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>
+>There are shared and exclusive modes in RDMA net namespace. After
+>discussion with Leon, the above modes are compatible with legacy IB
+>device. 
+>
+>To the RoCE and iWARP devices, the ib devices should be in the same net
+>namespace with the related net devices regardless of in shared or
+>exclusive mode.
 
-Li is correct that the only way mr could be NULL is if qp->resp.mr == NULL. So the
-'if (mr)' is not needed if that is the case. The read_reply subroutine is reached
-from a new rdma read operation after going through check_rkey or from a previous
-rdma read operations from get_req if qp->resp.res != NULL or from a duplicate request
-where the previous responder resource is found. In all these cases the mr is set.
-Initially in check_rkey where if it can't find the mr it causes an RKEY_VIOLATION.
-Thereafter the rkey is stored in the responder resources and looked up for each
-packet to get an mr or cause an RKEY_VIOLATION. So the mr can't be NULL. I think
-you can leave out the WARN and just drop the if (mr).
+Does this mean that shared mode is no longer supported for RoCE and iWarp
+devices ?
 
-Bob
 
+>
+>In the first commit, when the net devices are moved to a new net
+>namespace, the related ib devices are also moved to the same net
+>namespace.
+>
+>In the second commit, the shared/exclusive modes still work with legacy
+>ib devices. To the RoCE and iWARP devices, these modes will not be
+>considered.
+>
+>Because MLX4/5 do not call the function ib_device_set_netdev to map ib
+>devices and the related net devices, the function ib_device_get_by_netdev
+>can not get ib devices from net devices. In the third commit, all the
+>registered ib devices are parsed to get the net devices, then compared
+>with the given net devices.
+>
+>The steps to make tests:
+>1) Create a new net namespace net0
+>
+>   ip netns add net0
+>
+>2) Show the rdma links in init_net
+>
+>   rdma link
+>
+>   "
+>   link mlx5_0/1 state DOWN physical_state DISABLED netdev enp7s0np1
+>   "
+>
+>3) Move the net device to net namespace net0
+>
+>   ip link set enp7s0np1 netns net0
+>
+>4) Show the rdma links in init_net again
+>
+>   rdma link
+>
+>   There is no rdma links
+>
+>5) Show the rdma links in net0
+>
+>   ip netns exec net0 rdma link
+>
+>   "
+>   link mlx5_0/1 state DOWN physical_state DISABLED netdev enp7s0np1
+>   "
+>
+>We can confirm that rdma links are moved to the same net namespace with
+>the net devices.
+>
+>Zhu Yanjun (3):
+>  RDMA/core: Move ib device to the same net namespace with net device
+>  RDMA/core: The legacy IB devices still work with shared/exclusive mode
+>  RDMA/core: Get all the ib devices from net devices
+>
+> drivers/infiniband/core/device.c | 107 ++++++++++++++++++++++++++++++-
+> 1 file changed, 105 insertions(+), 2 deletions(-)
+>
+>-- 
+>2.27.0
