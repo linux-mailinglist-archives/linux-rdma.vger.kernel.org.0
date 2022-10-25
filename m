@@ -2,186 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4B460C0B6
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Oct 2022 03:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C244D60C102
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Oct 2022 03:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbiJYBOw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Oct 2022 21:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
+        id S229544AbiJYB3R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Oct 2022 21:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbiJYBOU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Oct 2022 21:14:20 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A1910FF4
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Oct 2022 17:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1666657795; x=1698193795;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=JGPbIF+BYEajR/innvSkLYpB0q93NsF2ULr3mCiaFsU=;
-  b=daXfN7g/kPSGMNwL4RABFEA8WlY3up1oNNu8jYT4tVdUdeLMbm5khwUR
-   inmHYVpf49LbfzgmMkTupMZU7yQkXKo8JAOqJJk1f3P4GwKLdwb1ovc/r
-   djfOqmOxLsBjKZ9J9ENi1YbOSRSUgr3VePrpagLP9mKVkAg8KlTpG7hsb
-   ddpXfz6u/yQYPFmkDiaLZiWSJmwDdZ3OCMZWaAml/4WBjzH7rcXXNMLFy
-   XdABZgE5Uk3ro9LRm5g6UCJg0mIdV9qyfSL7XXHrZPAAT57xOQzWB+CRs
-   DfzgstwjUaZxLVkpKLt5ysN7T8TuCWErMadV9iOZaBtYsDwVDrq74BMr3
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="305165295"
-X-IronPort-AV: E=Sophos;i="5.95,210,1661842800"; 
-   d="scan'208";a="305165295"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2022 17:29:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="720666293"
-X-IronPort-AV: E=Sophos;i="5.95,210,1661842800"; 
-   d="scan'208";a="720666293"
-Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 24 Oct 2022 17:29:53 -0700
-Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1on7pJ-0005ke-0s;
-        Tue, 25 Oct 2022 00:29:53 +0000
-Date:   Tue, 25 Oct 2022 08:29:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 71d236399160ad9beaae7267b93d2d487e8f19a0
-Message-ID: <63572dff.uV33AJMJixLTW94Q%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S231624AbiJYB2v (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Oct 2022 21:28:51 -0400
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66290B6024;
+        Mon, 24 Oct 2022 18:05:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+        s=170520fj; t=1666659935; i=@fujitsu.com;
+        bh=Cj7Dw3iBahw64xjeRZzqlINSjK0FkwGPzDAEv4Mhb3Q=;
+        h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+         In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        b=rHcujE610TfpvRiaMqDM/21gop28wGFAxstZ5Wr1xRlIG/50aL3ciz0J1pHnaQwf+
+         5KvsymehXEUv78DDRWWtrnWRtTfSVJgBVnE5+j2I5/7ngVAeLCJ58rg60EFyD18uA9
+         Qwms3+D5x+ZEuWgIGvAtwFINHQzRlrAkqA2fpKehUbLB3s3WJYXSq1RpR+DkeAD0+n
+         GCaPI52cFpiITC/NBP/CyFbm94+fRbsXgLQ4aDEtD5U8rILyq4udTVhz+RfRHyydiM
+         7sMhA5tU6NG2JH22jv2+At0BLH/mHJqd5TgFDUxas1VAr5FE1FLaJaQpaXy6lVm7HX
+         u67ZOZ3bQUaCQ==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLKsWRWlGSWpSXmKPExsViZ8OxWTfeLDz
+  ZYKK4xZV/exgtpvxaymxxedccNotnh3pZLL5MncZscf5YP7sDm8fOWXfZPTat6mTz6G1+x+bx
+  eZNcAEsUa2ZeUn5FAmvGw3VrGAs+8lZ8esvRwPiOu4uRi0NIYCOjxO7V85ghnCVMEk+WdTFBO
+  NsYJe6vnA+U4eTgFbCTaD/7mQXEZhFQlXjR0cwCEReUODnzCZgtKhAh8fDRJDBbWMBHYuWeu2
+  wgNrOAuMStJ/OZQGwRARWJEyfOsIMsYBaYyCixbcFrFoht/YwSU2ZsB+tmE9CQuNdykxHE5hT
+  QkriwtwtqkoXE4jcH2SFseYntb+eAXSchoChxpPMvC4RdITFrVhsThK0mcfXcJuYJjMKzkBw7
+  C8lRs5CMnYVk7AJGllWMpsWpRWWpRbpmeklFmekZJbmJmTl6iVW6iXqppbrlqcUlukZ6ieXFe
+  qnFxXrFlbnJOSl6eaklmxiBsZZSrHRvB+O0ZX/0DjFKcjApifIyiIclC/El5adUZiQWZ8QXle
+  akFh9ilOHgUJLgDTANTxYSLEpNT61Iy8wBxj1MWoKDR0mEd6kCUJq3uCAxtzgzHSJ1ilFRSpy
+  3EqRPACSRUZoH1wZLNZcYZaWEeRkZGBiEeApSi3IzS1DlXzGKczAqCfNymgBN4cnMK4Gb/gpo
+  MRPQ4jVzw0AWlyQipKQamHhL6/3a/xSL7ilIWvRbQulWsCPbj9n8kTIlIuKvkvwlLiesLD0rt
+  5FLfYZgt+WTeQXn1oTICHsrK5dv2CU84+AP5+/djsH3jSqc44S+79hnm+dX2KrI1/OEc5la+Z
+  JoY2Mn6ykPFRafjOBV0r86scHjqb3nu97sW0m/6tRPOJi8XvCVU9wuYtu72Z4vZs+qzdW5odZ
+  YZbxpz+03OZGiizY+3yTG36DeJBe5TNqEdVmsT8U/geSzNacLXO2vHQgROqpVVnS6y/pG+N33
+  6l9Mn3rOsZZ3uJ+7//7DnTcvVh+8o/uhm89ompnGjklTeg/kWN+Z7vNVptgnQ3ip0SIevam1e
+  UL1cYvffje/5vtNiaU4I9FQi7moOBEAXIP/wbADAAA=
+X-Env-Sender: lizhijian@fujitsu.com
+X-Msg-Ref: server-4.tower-565.messagelabs.com!1666659934!296755!1
+X-Originating-IP: [62.60.8.179]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.100.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 11446 invoked from network); 25 Oct 2022 01:05:34 -0000
+Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
+  by server-4.tower-565.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 25 Oct 2022 01:05:34 -0000
+Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id A9A74154;
+        Tue, 25 Oct 2022 02:05:34 +0100 (BST)
+Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 9C4C3153;
+        Tue, 25 Oct 2022 02:05:34 +0100 (BST)
+Received: from [10.167.226.45] (10.167.226.45) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.32; Tue, 25 Oct 2022 02:05:31 +0100
+Message-ID: <15c06129-3584-70df-a084-d7c8dde4cfbc@fujitsu.com>
+Date:   Tue, 25 Oct 2022 09:05:23 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH for-next v3 2/2] RDMA/rxe: Fix mr leak in RESPST_ERR_RNR
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <zyjzyj2000@gmail.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Bob Pearson <rpearsonhpe@gmail.com>
+References: <1666582315-2-1-git-send-email-lizhijian@fujitsu.com>
+ <20221024052049.20577-1-lizhijian@fujitsu.com> <Y1bHygLEu6VjXIzI@nvidia.com>
+From:   Li Zhijian <lizhijian@fujitsu.com>
+In-Reply-To: <Y1bHygLEu6VjXIzI@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.167.226.45]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 71d236399160ad9beaae7267b93d2d487e8f19a0  RDMA/rxe: Remove the member 'type' of struct rxe_mr
 
-elapsed time: 723m
 
-configs tested: 103
-configs skipped: 2
+On 25/10/2022 01:13, Jason Gunthorpe wrote:
+> On Mon, Oct 24, 2022 at 01:20:49PM +0800, Li Zhijian wrote:
+>> rxe_recheck_mr() will increase mr's ref_cnt, so we should call rxe_put(mr)
+>> to drop mr's ref_cnt in RESPST_ERR_RNR to avoid below warning:
+>> [  633.447883] WARNING: CPU: 0 PID: 4156 at drivers/infiniband/sw/rxe/rxe_pool.c:259 __rxe_cleanup+0x1df/0x240 [rdma_rxe]
+>> ...
+>> [  633.509482] Call Trace:
+>> [  633.510246]  <TASK>
+>> [  633.510962]  rxe_dereg_mr+0x4c/0x60 [rdma_rxe]
+>> [  633.512123]  ib_dereg_mr_user+0xa8/0x200 [ib_core]
+>> [  633.513444]  ib_mr_pool_destroy+0x77/0xb0 [ib_core]
+>> [  633.514763]  nvme_rdma_destroy_queue_ib+0x89/0x240 [nvme_rdma]
+>> [  633.516230]  nvme_rdma_free_queue+0x40/0x50 [nvme_rdma]
+>> [  633.517577]  nvme_rdma_teardown_io_queues.part.0+0xc3/0x120 [nvme_rdma]
+>> [  633.519204]  nvme_rdma_error_recovery_work+0x4d/0xf0 [nvme_rdma]
+>> [  633.520695]  process_one_work+0x582/0xa40
+>> [  633.522987]  ? pwq_dec_nr_in_flight+0x100/0x100
+>> [  633.524227]  ? rwlock_bug.part.0+0x60/0x60
+>> [  633.525372]  worker_thread+0x2a9/0x700
+>> [  633.526437]  ? process_one_work+0xa40/0xa40
+>> [  633.527589]  kthread+0x168/0x1a0
+>> [  633.528518]  ? kthread_complete_and_exit+0x20/0x20
+>> [  633.529792]  ret_from_fork+0x22/0x30
+>>
+>> CC: Bob Pearson <rpearsonhpe@gmail.com>
+>> Fixes: 8a1a0be894da ("RDMA/rxe: Replace mr by rkey in responder resources")
+>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+>> V2: remove mr testing
+>> ---
+>>   drivers/infiniband/sw/rxe/rxe_resp.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+> Sigh, please try to avoid sending patches in a way that causes
+> patchworks to become confused.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Understood
+> I updated things to remove the if as in
+> this v2.
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-arc                                 defconfig
-alpha                               defconfig
-arm                                 defconfig
-s390                             allmodconfig
-s390                                defconfig
-arm64                            allyesconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-arm                              allyesconfig
-i386                                defconfig
-x86_64                               rhel-8.3
-ia64                             allmodconfig
-s390                             allyesconfig
-x86_64                           allyesconfig
-i386                 randconfig-a011-20221024
-i386                 randconfig-a013-20221024
-m68k                             allmodconfig
-i386                 randconfig-a012-20221024
-arc                              allyesconfig
-i386                 randconfig-a015-20221024
-alpha                            allyesconfig
-i386                 randconfig-a014-20221024
-x86_64               randconfig-a014-20221024
-x86_64                           rhel-8.3-syz
-x86_64               randconfig-a013-20221024
-i386                 randconfig-a016-20221024
-x86_64               randconfig-a012-20221024
-i386                             allyesconfig
-x86_64               randconfig-a011-20221024
-x86_64                         rhel-8.3-kunit
-powerpc                           allnoconfig
-m68k                             allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a015-20221024
-mips                             allyesconfig
-x86_64               randconfig-a016-20221024
-x86_64                           rhel-8.3-kvm
-arc                  randconfig-r043-20221024
-sh                               allmodconfig
-riscv                randconfig-r042-20221024
-s390                 randconfig-r044-20221024
-x86_64               randconfig-k001-20221024
-i386                          randconfig-c001
-powerpc                   motionpro_defconfig
-csky                             alldefconfig
-powerpc                 mpc837x_rdb_defconfig
-openrisc                            defconfig
-arm                        mini2440_defconfig
-sh                         ecovec24_defconfig
-m68k                            mac_defconfig
-arm                       omap2plus_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                        spear6xx_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                            gpr_defconfig
-m68k                            q40_defconfig
-m68k                        m5307c3_defconfig
-powerpc                      cm5200_defconfig
-sh                        sh7763rdp_defconfig
-ia64                             allyesconfig
-sh                             shx3_defconfig
-arc                      axs103_smp_defconfig
-mips                        vocore2_defconfig
-sh                         ap325rxa_defconfig
-ia64                      gensparse_defconfig
-arm                          pxa910_defconfig
-i386                 randconfig-c001-20221024
-arc                  randconfig-r043-20221023
-parisc                generic-64bit_defconfig
-sh                           se7712_defconfig
-arc                              alldefconfig
-sh                        dreamcast_defconfig
-sh                          polaris_defconfig
-riscv                    nommu_k210_defconfig
-xtensa                    xip_kc705_defconfig
+thanks a lot.
 
-clang tested configs:
-x86_64               randconfig-a001-20221024
-x86_64               randconfig-a005-20221024
-hexagon              randconfig-r041-20221024
-i386                 randconfig-a001-20221024
-x86_64               randconfig-a003-20221024
-i386                 randconfig-a002-20221024
-x86_64               randconfig-a006-20221024
-i386                 randconfig-a003-20221024
-x86_64               randconfig-a004-20221024
-i386                 randconfig-a004-20221024
-x86_64               randconfig-a002-20221024
-hexagon              randconfig-r045-20221024
-i386                 randconfig-a005-20221024
-i386                 randconfig-a006-20221024
-s390                 randconfig-r044-20221023
-hexagon              randconfig-r041-20221023
-riscv                randconfig-r042-20221023
-hexagon              randconfig-r045-20221023
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-mips                     loongson2k_defconfig
-arm                          moxart_defconfig
-arm                         s3c2410_defconfig
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+
+
+>
+> Jason
+
