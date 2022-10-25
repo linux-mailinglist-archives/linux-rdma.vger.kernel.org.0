@@ -2,153 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D45260CA71
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Oct 2022 12:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CEE60CAC1
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Oct 2022 13:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbiJYKxq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Oct 2022 06:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
+        id S230428AbiJYLSJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Oct 2022 07:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbiJYKxo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Oct 2022 06:53:44 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D474181CB3
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Oct 2022 03:53:42 -0700 (PDT)
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MxTFf6ssmzVj4Y;
-        Tue, 25 Oct 2022 18:48:54 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 25 Oct 2022 18:53:40 +0800
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 25 Oct 2022 18:53:40 +0800
-From:   Haoyue Xu <xuhaoyue1@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <xuhaoyue1@hisilicon.com>
-Subject: [PATCH 5/5] RDMA/hns: Support cqe inline in user space
-Date:   Tue, 25 Oct 2022 18:52:44 +0800
-Message-ID: <20221025105244.204570-6-xuhaoyue1@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20221025105244.204570-1-xuhaoyue1@hisilicon.com>
-References: <20221025105244.204570-1-xuhaoyue1@hisilicon.com>
+        with ESMTP id S231828AbiJYLSI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Oct 2022 07:18:08 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2058.outbound.protection.outlook.com [40.107.223.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95DC11F4A0
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Oct 2022 04:18:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JtH1TLBP18PxeUOLABDOTDR+EJSXA6zbKPW8mV8dw+fBYkRG8biqHpBRobjn+dzDiuiFRZO26g1eOFlvI0lPFrjlm7GkLx3UAUGcGJOgXFSakpqPE3Ahy2S5YbTWP77sKDDjW2DHpLq8SCJYMEAkIEZhGnZraMmWBnhkEoB/x7UHvfsWeCDJqjfBc43Cjb0WVqVUghdf1xyMFmF5xw1Z3rKg2FBd5uSXswsqtxk5X4yuP3Z9zpELUOcqd/lYcu4u5x2u3+rOd7aMGLUoXdvST7g9Pk/HMK+cohX9ORqAWGSanS0PHRFswOq6MWFYWrPFGwazisRYnAQ4CsZeMTg9Dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P7zPMZ6m4P4SUDWEegvx88CZwZF6qe99FwI0HE92tiU=;
+ b=gyf+AA0wKWZvQFtZ9zm9qYr4WtT+0S+4R6EeMFGytwQ2xcFO1gr7PBd+6aG512cKnFc0SiTfS17GbQJ7Al6CPR1HPMt49Tm2pEoeyFSG8uflkVNhF896FnTYrYfqskncLWRV09QgQnbH7R7vEgMstZl8DcMHhh1Y5HXGQ6oaLIiVm59bga9DM0ORyKQMPkjcWvcLpHW3UUb+P4n2zTyweDusk5FliWMUub6hY05iV3WdiDiMJlHodbIP5yUlaV7JwKwShD/ubrqqU6RSwfHi5uzTUH5tJiAy4CmmsAVnZHgu0rQgMq4OjsPkuytz5xtJ/Hy+zLBpEgBWLKRmlb2kig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P7zPMZ6m4P4SUDWEegvx88CZwZF6qe99FwI0HE92tiU=;
+ b=iaPbMSNfi6dUhI+N2XcIH6XzneDAc7UDQOEit9KDEvaFT7on3kbYN59Gl4E1X338qLlfISh0SpgAMAHXg00yjjiH51h//aRuSN1EDvGenOaRtHlXtk94fws0wT/0T+AnzIqs86Bo/l6rX1v2PMZU3Qz5qfUbepHZb8qQRP6CN/v0khZLHC7r+rBooaV0FV/FimwHz+RbC/T+0eq2VjUEto+tJOE9ZoQz32+XeDg6ie0yKCTKxKFB2hn0v8diwuUq3MfvettAImC34FCMOLqC+hCNWdaeZd7EEnod7LlLdqa4N4pHcx07jMwPUi6ffee+z0mcljmxfAdjiCWcn6CzeA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by BN9PR12MB5145.namprd12.prod.outlook.com (2603:10b6:408:136::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.28; Tue, 25 Oct
+ 2022 11:18:06 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5746.021; Tue, 25 Oct 2022
+ 11:18:06 +0000
+Date:   Tue, 25 Oct 2022 08:18:05 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>
+Cc:     'Bob Pearson' <rpearsonhpe@gmail.com>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "jhack@hpe.com" <jhack@hpe.com>,
+        "ian.ziemba@hpe.com" <ian.ziemba@hpe.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "haris.phnx@gmail.com" <haris.phnx@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-next v2 18/18] RDMA/rxe: Add parameters to control
+ task type
+Message-ID: <Y1fF7UcaIcwJegvH@nvidia.com>
+References: <20221021200118.2163-1-rpearsonhpe@gmail.com>
+ <20221021200118.2163-19-rpearsonhpe@gmail.com>
+ <TYCPR01MB845563BB1E56CFB317D4409BE5319@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYCPR01MB845563BB1E56CFB317D4409BE5319@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+X-ClientProxiedBy: BL0PR0102CA0020.prod.exchangelabs.com
+ (2603:10b6:207:18::33) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BN9PR12MB5145:EE_
+X-MS-Office365-Filtering-Correlation-Id: 296016f9-9dad-4478-bc99-08dab67a971e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cs5EFRwxyCAYmPTnpaMn1FWvDTqZnznWSen92QShOVb6KsAyzCab+kubpHU87rxFF6BJPEMPfXdTHFd/H9NasmETB6X/ddTg09CD3LscyPbuDpcMAjvK/G7IgPiPbSVQBCRqVh8cMc+JDIRrLlqoid0g9uD6fMyfovdP/gVg1+YlLE0fmMKJ0a3Pay9244ibXyaccf/AxX0oW5eHFG6BBKS44S7LW9+TwV8II5aQBOpTVEEzQVgzZmbeMc1qkYHThrh6F29YI78waqG2b4ofPcXAmmPD8naOxViyUSxHnJVSRe5ebtv/2LR5EENuMpizIHDy8oYNTMJHMPHraLf+FO5MHljkOCxkEn9TyAHpXYS/pmP/8TXlULNWgx2QCHF/zuuG/0NFigPxU2EHlrtz0gSa+y1+r6siRuvAyI3w3uVlw0DWXFmJo8oWuPeiktX1q1C7LRtBgAYzEeP5pmi9Ay2k41YP+hNMwOvVDA37cCeJwPLeb8Xi2YsUMnnd7cB4illhrgK8TXM9LOrg8o2eWSA5UFEEWvvP0Lk/Bw/XoT2mGe9PlhjJdE/IAh4rEhrOkxMZUn5qv6Irg3ZWgqpprz7ed5ek7CGx2ruYMYXH1EC4doQlUS8FDmhjk3ncatPFRn83b2Lu2DzxRFISQkzbznIEMh4D03Ix57EtFENcy5upG9YwBQfwj7H+3RNg7Hp08HrvfGjvvlNmzH3rDQDZVw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(366004)(39860400002)(346002)(136003)(376002)(451199015)(26005)(6486002)(4326008)(8676002)(41300700001)(66476007)(6512007)(6506007)(38100700002)(478600001)(36756003)(2906002)(8936002)(86362001)(186003)(83380400001)(5660300002)(2616005)(66556008)(54906003)(6916009)(316002)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ml6/xPhOQTw2t7gTE6LRvnoXpsg+joyNuKIg4vp3gSRFw4tCBNpk4d+Gh3nQ?=
+ =?us-ascii?Q?LBHQOnQuLXV7rUHUftQDawbot2/xuxb5Mz8F0X3TjV4Y06LwiuBkbjwzpcp/?=
+ =?us-ascii?Q?MUPDyXHX3ZARz8vo4ChQBpl5UvBGLnc8ZzyECUmJcSJ6VqbnlRha1OL9vF0g?=
+ =?us-ascii?Q?KrEnNC2o7HW+W8xRU//tcTAPL5DtBNj0WUe62t0yEQb57zQOeyJSq6SeVPpr?=
+ =?us-ascii?Q?PUOQJyaNVLYrBYQrkP226YDtDysy1E+XmRpkEkaynDaALUk8EoRu8Pz03DWT?=
+ =?us-ascii?Q?wHbnlSGkwDlPU8iLDFZxZooQQK8nksg0qE0w4PcVKSw2Fh/YwL96DcQeFOOo?=
+ =?us-ascii?Q?7inCi0qCbzWEuDBnvjiCj4TPGwGjTZaXXn+Z+c+2DMhyTHstaDS9iDIeZk9h?=
+ =?us-ascii?Q?JWKTWIWMBN+7XWn6NuoTJQKocMNbY+OUZuKfYcNFazVBTY3B+e2kwc3XL/cn?=
+ =?us-ascii?Q?JNO8DMJ8GRSEbT1E+XZbg6YLIq7p95wpsXOIgwJut6p/dQWEAMlIgXqHVmD3?=
+ =?us-ascii?Q?bdZ2VD119o7SXvFReQkhE5wMGvi78w6yCmopwfPquYLwSQFaD/ADGIsPi6Pm?=
+ =?us-ascii?Q?M4AUWTvmTxzyyy5riTuM0nUVEZGc5EMe98/pUjd2Mqr6gOqUTipL62LkqC53?=
+ =?us-ascii?Q?Jiz1Fg/16rSnd64elG6KUUhWh0CqJLFO4Wib+RNfzh8CNTcp44YN5hFKYeWb?=
+ =?us-ascii?Q?YiQ4cW82j34gHTIZwSylfKrxwA0SbWUqfxIQ31eeYqO2u0jM/qvUJ72XT27q?=
+ =?us-ascii?Q?FBPK5noktlOC1dmaMMpoII4jeCXFDv/jVG55lb8hJcvCLQDqXDMMiDJyDX7s?=
+ =?us-ascii?Q?1JvS1XR4eJ9nmKgxqbogY3PGK8O9GKqRIcdmTnLiIFm0g8jU+EgybZQpAufX?=
+ =?us-ascii?Q?XMfZiD4tEe8hoCjo5TKiDvPem18+nYk1OpecLkdIEjliZMkJwHDtKrlmJHLK?=
+ =?us-ascii?Q?prR4ciGy3l2bnGPAvqNzdQ/hT8t0dI5fbAY0aV+iqEzbvwSodLpFCdGrMAmA?=
+ =?us-ascii?Q?UzunP4cE+1qiR1JvqqTuCcQqavtsd4bgTFp+YwNQ44Juk03L9zE11VnQn+vl?=
+ =?us-ascii?Q?zNdauUCxfubjnCwNnCX5sfcdsHKzlV5B3f19hQLjsbZTO8FcAqapzi/mUCD3?=
+ =?us-ascii?Q?D/b3fbzU79k5tMECCErAdkDA5ey+oKXnUsSzY9SW15tFnk7i67luRivAZoPP?=
+ =?us-ascii?Q?4MNMKTz/4gLjBKCnkNxfOiZWOxY0mH2Ps1aDnVugUEGFiP1IJNaDKpEzfGdH?=
+ =?us-ascii?Q?0JqoE18gAEEjUZTkKWa9XaH3ifb/ZKXL6VpuA2B/Anbz/N6/2iTI8huug13/?=
+ =?us-ascii?Q?glHlDKyrFvyFat6vWy9N+9VrjW8NwOTQ7YYqLRMH261+k0XdbGGrFUmCllIx?=
+ =?us-ascii?Q?fMhz5E7kyVmmz8oRs47W12+ItrWG2rkUzrHYzn9It/V9RD/3Kqbf0B8tc9zm?=
+ =?us-ascii?Q?axCrF7MdK4+hSKp/NeRaKboSwErg75zONvv18OiX5I/iAdVCrCzkVG0wJNmz?=
+ =?us-ascii?Q?E3DpGE2UjSaoqfWpjL6u7yrTYgB2S+/RGE1SgphvWY9sr31X53Ze8bI9w9oH?=
+ =?us-ascii?Q?SB2FAK1PGPD5oyxNnWk=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 296016f9-9dad-4478-bc99-08dab67a971e
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2022 11:18:06.5079
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: liF2p/Exz4uBCrVTdsPz0d49h6rua9WDWWeDrbgDT3mq+977eLBRnkq46NOiTf9s
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5145
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Luoyouming <luoyouming@huawei.com>
+On Tue, Oct 25, 2022 at 09:35:01AM +0000, Daisuke Matsuda (Fujitsu) wrote:
+> On Sat, Oct 22, 2022 5:01 AM Bob Pearson:
+> > 
+> > Add modparams to control the task types for req, comp, and resp
+> > tasks.
+> > 
+> > It is expected that the work queue version will take the place of
+> > the tasklet version once this patch series is accepted and moved
+> > upstream. However, for now it is convenient to keep the option of
+> > easily switching between the versions to help benchmarking and
+> > debugging.
+> > 
+> > Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
+> > Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> > ---
+> >  drivers/infiniband/sw/rxe/rxe_qp.c   | 6 +++---
+> >  drivers/infiniband/sw/rxe/rxe_task.c | 8 ++++++++
+> >  drivers/infiniband/sw/rxe/rxe_task.h | 4 ++++
+> >  3 files changed, 15 insertions(+), 3 deletions(-)
+> 
+> <...>
+> 
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+> > index 9b8c9d28ee46..4568c4a05e85 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_task.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_task.c
+> > @@ -6,6 +6,14 @@
+> > 
+> >  #include "rxe.h"
+> > 
+> > +int rxe_req_task_type = RXE_TASK_TYPE_TASKLET;
+> > +int rxe_comp_task_type = RXE_TASK_TYPE_TASKLET;
+> > +int rxe_resp_task_type = RXE_TASK_TYPE_TASKLET;
+> 
+> As the tasklet version is to be eliminated in near future, why
+> don't we make the workqueue version default now?
 
-Enable the CQEIE field and configure the CQEIS field of QPC.
-And add compatibility handling.
+Why don't we just get rid of the tasklet version right away?
 
-Signed-off-by: Luoyouming <luoyouming@huawei.com>
-Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 12 ++++++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 ++-
- drivers/infiniband/hw/hns/hns_roce_main.c   |  5 +++++
- include/uapi/rdma/hns-abi.h                 |  2 ++
- 5 files changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 3f6f328d3a3e..893ec7e4e777 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -145,6 +145,7 @@ enum {
- 	HNS_ROCE_CAP_FLAG_DIRECT_WQE		= BIT(12),
- 	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
- 	HNS_ROCE_CAP_FLAG_STASH			= BIT(17),
-+	HNS_ROCE_CAP_FLAG_CQE_INLINE		= BIT(19),
- 	HNS_ROCE_CAP_FLAG_RQ_INLINE		= BIT(20),
- };
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 19e326bda936..7381319d128a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4596,6 +4596,18 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
- 		hr_reg_clear(qpc_mask, QPC_RQIE);
- 	}
- 
-+	if (udata &&
-+	    (ibqp->qp_type == IB_QPT_RC || ibqp->qp_type == IB_QPT_XRC_TGT) &&
-+	    (uctx->config & HNS_ROCE_CQE_INLINE_FLAGS)) {
-+		hr_reg_write_bool(context, QPC_CQEIE,
-+				  hr_dev->caps.flags &
-+				  HNS_ROCE_CAP_FLAG_CQE_INLINE);
-+		hr_reg_clear(qpc_mask, QPC_CQEIE);
-+
-+		hr_reg_write(context, QPC_CQEIS, 0);
-+		hr_reg_clear(qpc_mask, QPC_CQEIS);
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index c7bf2d52c1cd..d1fc76d7d78a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -526,7 +526,8 @@ struct hns_roce_v2_qp_context {
- #define QPC_RQ_RTY_TX_ERR QPC_FIELD_LOC(607, 607)
- #define QPC_RX_CQN QPC_FIELD_LOC(631, 608)
- #define QPC_XRC_QP_TYPE QPC_FIELD_LOC(632, 632)
--#define QPC_RSV3 QPC_FIELD_LOC(634, 633)
-+#define QPC_CQEIE QPC_FIELD_LOC(633, 633)
-+#define QPC_CQEIS QPC_FIELD_LOC(634, 634)
- #define QPC_MIN_RNR_TIME QPC_FIELD_LOC(639, 635)
- #define QPC_RQ_PRODUCER_IDX QPC_FIELD_LOC(655, 640)
- #define QPC_RQ_CONSUMER_IDX QPC_FIELD_LOC(671, 656)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index ea1ef395f60f..56ed24501155 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -384,6 +384,11 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 		resp.config |= HNS_ROCE_RSP_RQ_INLINE_FLAGS;
- 	}
- 
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_CQE_INLINE) {
-+		context->config |= ucmd.config & HNS_ROCE_CQE_INLINE_FLAGS;
-+		resp.config |= HNS_ROCE_RSP_CQE_INLINE_FLAGS;
-+	}
-+
- 	ret = hns_roce_uar_alloc(hr_dev, &context->uar);
- 	if (ret)
- 		goto error_fail_uar_alloc;
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index 9375ac3de059..b2b41d9d0dee 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -88,11 +88,13 @@ struct hns_roce_ib_create_qp_resp {
- enum {
- 	HNS_ROCE_EXSGE_FLAGS = 1 << 0,
- 	HNS_ROCE_RQ_INLINE_FLAGS = 1 << 1,
-+	HNS_ROCE_CQE_INLINE_FLAGS = 1 << 2,
- };
- 
- enum {
- 	HNS_ROCE_RSP_EXSGE_FLAGS = 1 << 0,
- 	HNS_ROCE_RSP_RQ_INLINE_FLAGS = 1 << 1,
-+	HNS_ROCE_RSP_CQE_INLINE_FLAGS = 1 << 2,
- };
- 
- 
--- 
-2.30.0
-
+Jason
