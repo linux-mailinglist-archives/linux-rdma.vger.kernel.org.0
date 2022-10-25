@@ -2,328 +2,278 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EF860D28A
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Oct 2022 19:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1438F60D2B0
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Oct 2022 19:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbiJYRcl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Oct 2022 13:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
+        id S232274AbiJYRoj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Oct 2022 13:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbiJYRcM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Oct 2022 13:32:12 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95A3175369
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Oct 2022 10:31:46 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id p16so10985479iod.6
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Oct 2022 10:31:46 -0700 (PDT)
+        with ESMTP id S232292AbiJYRoh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Oct 2022 13:44:37 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E5062C2;
+        Tue, 25 Oct 2022 10:44:33 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29PGDQaD012990;
+        Tue, 25 Oct 2022 17:44:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=nvTwcpeb48UH9OKN2p2xynoxH6i3GxQkeeiIn7Wq0QA=;
+ b=C/qx8C347iZ/PM/VllI3pX9fF034SGYsmH9SzohmGSozfgJ7iQConM6UfVJGgf/g4C0l
+ YkrgU4OW+jJQ+FJk55QciRvyulQAv0gUqpR4W+JRTOZl7/yrVVP1RWZozkmrjX4KB1ZE
+ yH9ZNEr7wk2mvtr1YDPkk928RYk3EipJalFRGvB+atD0CYzQxqGljOFmUPytZdgrnn22
+ cK60Hjg3dK84itOuC74Q+AWIN5M6AyXqQ3a/9ypId6+vCFD8mhulwUVd4PQNuzZ1OvxO
+ 0B+u9ivNBO9bvbq9f+s9dfyIu27ATCVD3xXwxrguBmo1lZhmMDEygd5UOM006jlDW2jM aA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3kc8dbm2p3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Oct 2022 17:44:19 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 29PGPxI9012752;
+        Tue, 25 Oct 2022 17:44:18 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2048.outbound.protection.outlook.com [104.47.57.48])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3kc6y4v5wh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Oct 2022 17:44:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i4eA0w8tgNrnRqjgETGEureB+tCwgttc2bkcNPVvpp5L7y2ZZhv2i6y5IvRPYdOpIi+u9J2igmYjdK9+QuIl4ZcC/ZjN5qnkoiaScE1XolzZ3duCZ2AV1inRS45w8dCJMsXxT8QEsjVTFZ60NvMLkYtEHOhRmn3WrlLOi6/vDMBfJeQn5ylWmzvd0CGa8nSxCEeqAQqKqSPIlFMFtqIgtM4qtN6g2OCmKk1K5H2O3ttBDVNTUhBd4sWffA5oEH1tBSm0OxyRuuCF+C9P4+m+aQS0YNZDUy1cBVDT4d0W2UGiX8wrmaCrLiL6MR+KWFaPyCUwBtiuQ94DYMbStUTw6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nvTwcpeb48UH9OKN2p2xynoxH6i3GxQkeeiIn7Wq0QA=;
+ b=QYaQ4IN2gqhgais9P6HFjCHGdemWMfo37TJ+vYWOSh9sxILG+WD2VZDg3mARhh5ZFDfwi/bKsGrXHRJsgwPx20GZslmQKIcWgu1iPLkifuM257SkPj/D7y2wIQ5AMj+xlGo/2XenmDLSa7duEnRz93WC0tmm9bnvzzGjU9XaRFNZ/OkgymiLW/R5Y6pxs1SvUPawz+rQ+DxaAtDpr1Gol6r13enyLhOQEvSqLoFuAYfy/SpH3+bbQrVvvaksUP8yqLtZyogGr/l18Z3sWkdCzlVQrcGrGYRjqIrBslQk1zXUT09jJoAqvpUc2teB8hgjOmNu0KktxJcN39tNClIuiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7kt/U9GD1fJkAWFgx5I72zSFYnTatGqNgB0IluJefkA=;
-        b=RDBp5+H0l8pE+0m8Ks0a/eDujAHcHA/wcbIDmwWHk/k6XK619Ur8OV02maVF9l8ZrO
-         JrZmXMtbKMVAc1XlUXC2PYrmvu/2+91CGs1zD9RPv3dLmGHy1u/cH3wA7Yzo1+rwyOqX
-         UYj1BvvoSkyVTKs0LQlutBRBGF1iuTn7QE/og=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7kt/U9GD1fJkAWFgx5I72zSFYnTatGqNgB0IluJefkA=;
-        b=CLvqhIvHpRlSjoPLX5JXqsYe1tuNVZVL1wiNSq2J0YHoCda+jBJsZlZBGSJGZyme1j
-         44l9j+zeNQiJfReKWKEHRN6QXGD4QAeCeklUROgd3hZZLM7/ujy08p4S7zksvzia1WDZ
-         E5gDE3jqoYZnN8W6n6acDGuHYIi2KqpqpuAnI4yeAmCh94DFStvMZ9oYkH6cmIOyS+5U
-         9uWORIsEbcRSWh7qcb0cEGRqzBTrJS/jvj0TbBzaxBvEbE5Yla5CIlgAoMSJ76/7wANP
-         gGz4RRUXHo9ov4CQLJbTz29qq9lmIX/OY9oiFNztVIlPvLcZ2QK/RkAbgYNoaYhS0OI2
-         vVig==
-X-Gm-Message-State: ACrzQf3oOiMATjTL6lDiqXLA8Kj+hbs9BR9NUbB+O74jSlt5hKEa+o6U
-        nSNT3oL/HVW6jl0BQs+CB2hUXD1NKMRHDQ==
-X-Google-Smtp-Source: AMsMyM4djSZ0FZUSVwgmWgMiWY8U6zzx7fYYrolR4qb2bJPkCARcWLzTDRjLxacxDq+oGiYFIFM+mQ==
-X-Received: by 2002:a05:622a:44b:b0:39c:f5bf:694d with SMTP id o11-20020a05622a044b00b0039cf5bf694dmr31862147qtx.531.1666719095804;
-        Tue, 25 Oct 2022 10:31:35 -0700 (PDT)
-Received: from C02GC2QQMD6T.wifi.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u6-20020a37ab06000000b006eed094dcdasm2329034qke.70.2022.10.25.10.31.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Oct 2022 10:31:35 -0700 (PDT)
-From:   Ajit Khaparde <ajit.khaparde@broadcom.com>
-To:     ajit.khaparde@broadcom.com
-Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, jgg@ziepe.ca, kuba@kernel.org,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, michael.chan@broadcom.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        selvin.xavier@broadcom.com,
-        Hongguang Gao <hongguang.gao@broadcom.com>
-Subject: [PATCH v2 6/6] bnxt_en: Remove struct bnxt access from RoCE driver
-Date:   Tue, 25 Oct 2022 10:31:10 -0700
-Message-Id: <20221025173110.33192-7-ajit.khaparde@broadcom.com>
-X-Mailer: git-send-email 2.37.0 (Apple Git-136)
-In-Reply-To: <20221025173110.33192-1-ajit.khaparde@broadcom.com>
-References: <20220724231458.93830-1-ajit.khaparde@broadcom.com>
- <20221025173110.33192-1-ajit.khaparde@broadcom.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nvTwcpeb48UH9OKN2p2xynoxH6i3GxQkeeiIn7Wq0QA=;
+ b=YuTIHxB8m0HC8q9/2HR9916Wmm/1M0nBfwlKSi/iSO6uBpHKgjBG9nwEDtrrZrl2R3QzjLvKrz+DOwc1PDSrQBNefts3HPXO1TV1Xi6ZIK2p4KKN43UTYA6n++pBJSBr+SneyPEpzSfm3qqtXrdxdOH7HBkov/5BKYv8SEfcbCc=
+Received: from BYAPR10MB2997.namprd10.prod.outlook.com (2603:10b6:a03:90::16)
+ by PH0PR10MB4518.namprd10.prod.outlook.com (2603:10b6:510:38::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.28; Tue, 25 Oct
+ 2022 17:44:16 +0000
+Received: from BYAPR10MB2997.namprd10.prod.outlook.com
+ ([fe80::fee8:36cd:5e78:f1a1]) by BYAPR10MB2997.namprd10.prod.outlook.com
+ ([fe80::fee8:36cd:5e78:f1a1%4]) with mapi id 15.20.5746.028; Tue, 25 Oct 2022
+ 17:44:16 +0000
+Message-ID: <5bab650a-3c0b-cfd2-d6a7-2e39c8474514@oracle.com>
+Date:   Tue, 25 Oct 2022 10:44:12 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.0
+Subject: Re: [External] : Re: [PATCH 1/1] IB/mlx5: Add a signature check to
+ received EQEs and CQEs
+Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     jgg@ziepe.ca, saeedm@nvidia.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, manjunath.b.patil@oracle.com,
+        rama.nichanamatlu@oracle.com,
+        Michael Guralnik <michaelgur@nvidia.com>
+References: <20221005174521.63619-1-rohit.sajan.kumar@oracle.com>
+ <Y0UYml07lb1I38MQ@unreal>
+From:   Rohit Nair <rohit.sajan.kumar@oracle.com>
+In-Reply-To: <Y0UYml07lb1I38MQ@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR04CA0104.namprd04.prod.outlook.com
+ (2603:10b6:805:f2::45) To BYAPR10MB2997.namprd10.prod.outlook.com
+ (2603:10b6:a03:90::16)
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000049831105ebdf48d4"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2997:EE_|PH0PR10MB4518:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2fa60b70-6913-46bf-64f7-08dab6b0896f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JyiUHOM1JopCstoXQuurBf+8hZ2emWq1ZndjzQ+0NGmSMC632jJA/sAnWtWS4zYRXr4Ee5C1pvOcDE/jrby4GhW5geePAzF/yJ4/+kTsjo+vo//HMFtBpp1C9j6VreLqVKBf8DEI3PuZ2Mtqz6GBFQSfQaab1Q3aH2231WwbLiLIwj69PnliIc0V9CYQjtSCXoo+YaZQVFe0vV3IGsNDtjmR8+wXvS2CRuqCxaihIma2tLML2XiWnU1Jcl8+A/aIsFz90VFi6UJSsVC/js1mZ8g4OQOrTrMvUxosZRBfLnFiD2O5jISYRc4rX2VbWTgHt9yIcl3Be0A/ocOAjFw5dbjQj8EeGXSqV1Rr34yZEAwiYDTN6fCPCU4SMCDHN6q/DqHAeeKW1otWgOsedUD6V06W08e909zPOkL20Nf0xjgb6KpSTWInz1ui7ezfqi8QBbynkBO/puT4M3h00lzJrsE9B+7txLmjBs2BnPkra5wzfy3oKkA/EIOJF89lVCh6qcirHdPdwyZiIfh23u67g2azxB5F5syzLuO+UoMRLcB+Zf+RRnOFRXu1dFGN9mMuJuqK5E0NgJkOiLtdGZIU4RHHc2ZMFo4wwKewUQM5zrcQlkMPI4CkLu/5QhgQ5qC7iekJZMlEwDiiHg1R42ZoXsbUMtE0kas5QfQU0XDXpTc5+81L7hehAxHS7lLIW8+i67xbJXx4e4OZMtpw82TfUNQQ2tTQ73krxNR9Th2S/cvWBcX4yvGAAPEwkMb+vQw9WA+aYI9GZf8zsNvxK0X3gzOFx/gU9ho0nC5xBzI/Zcg7K3llzMvhtg3elSI557UBUSPP491jzEDi2CXO0ZDFUw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2997.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(396003)(39860400002)(346002)(136003)(376002)(451199015)(31686004)(6506007)(316002)(53546011)(6512007)(6916009)(36756003)(86362001)(7416002)(8676002)(66946007)(31696002)(66556008)(66476007)(4326008)(5660300002)(41300700001)(2906002)(8936002)(6666004)(478600001)(966005)(6486002)(83380400001)(38100700002)(186003)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OFNtU3hIRy9TZ3Mxd3VHMENabmtVTDVjLzFNamtIaDI0dUhBaTNiUXovRDBr?=
+ =?utf-8?B?TGhhUzBxbHdHWm1uYm5JSGlpSDN1ZmtiTHdtWHNLY0dLRytmN2ltRWg0dFkr?=
+ =?utf-8?B?dm1EaW9XY0k5R3VJWWhTUWZ5TzdKcjhEV2RrZVpiR3ZJUm1DYnpWeFliREE5?=
+ =?utf-8?B?allFODNtcnozRU4wREw4eGpZdWpHd3o1SXcvQkhkcWg3UDA1NERwYjJaUU82?=
+ =?utf-8?B?Z09EK3g1TWNhcitwMTJiY2N3a0hDa1lEL3F1cE1CemRpRkZoQnhxUFByWHhm?=
+ =?utf-8?B?R011R3dzLzlCSDdSL2lLMmcvS28wM0xNR2dVU0cwdFZDSWd0MElmdU90UlNE?=
+ =?utf-8?B?T2tpODYwZHpqT2YrcjZwV1hQYkFDendxdmtBUUtMTjRNQ1kzd1l3cWVSaUVW?=
+ =?utf-8?B?STl3aHQwZGRCTUYwUnBodGtuKzgwVlV3VzB5cUFvaWg5cXVWQ01pczhuSVkv?=
+ =?utf-8?B?MXNSandUUnVQK24zMEhLclBmazlrMUVGekVBS1JXb0xXbmxXR3Q5R0VCc0VS?=
+ =?utf-8?B?Z1RsN3FJaVcvZFdtbU8rcDV1YURpbVExUFB4SlhnN25HejFJckVURGRjREtF?=
+ =?utf-8?B?Q1RuM0U3RFNiSm50RGFianladlJ6WVZFc2crbzVjTUNmRWc0VmQ2cE9uSWhn?=
+ =?utf-8?B?Tm8rYWNubWVYa0JmZ0RsZUY1QmdOZXdkYURqdWtReEJHTjB1ajRzL1ZiWFN1?=
+ =?utf-8?B?aVRLdkh4MGQ3Q0Rmb2xvQnFJYnAzYmhIR1lSWnMyU0Zsd1d3eUUwZFU4N1pO?=
+ =?utf-8?B?RGhNWUc2NWVaSmwzSEl2TmxlanIyRmJBOEVnV1Q1dGJncjVkUU5tc3IvczFt?=
+ =?utf-8?B?Z0dobjlUa0xhbWt4VXlwdlk4cm9qNGV4R3F4MVoxamsrWkRkZVFtaFp3RVU3?=
+ =?utf-8?B?OEZaNkJVNHFSdTQzdUpQbkJDb1BBWFZmejBpVmdDOTAvdjZwRExYRW1LMzFh?=
+ =?utf-8?B?Q0FSSml5UDNZby9TdTFwMW93RHBtdjIxOGJlYy9nTDZWOStsT3hkbWVqSVpa?=
+ =?utf-8?B?KzNBbVUraHRBdmhvSVBWbUhGV1o3RFpNVU5SQ0tNT3VBKytJRjZOOU1jbkVX?=
+ =?utf-8?B?ODhzWnB6OERuTlpXUk91SUJNRVhoZHpLaDljUy95Uk44bUp5NVBqZERMNnJU?=
+ =?utf-8?B?S05MWFJBcWV4K0Zqa3hWcHduSkRheC93L3FDL0ZjY0h3cE1IZG82YVUwR2NK?=
+ =?utf-8?B?bWU2OGF2QUNDRlhTWUVKSzZKOTE0WGR5WHdVWVBhdDA2YzVVZERMZ2d3ekJI?=
+ =?utf-8?B?Sm1RUXkvY0dLYm1laVc1SktrY0FEREhvaE1LZlNlbFhzYm1YdHV1VlE2clpI?=
+ =?utf-8?B?NWplenhEZ1RVNjg2YmtEckFpaGRVMEh3YnpRb2o1Mm1QTDVPc0VHTUcvT0Fo?=
+ =?utf-8?B?UlNGS05lVWRKRVJRVWFzNjQ3dXV0cGdTTXlRUm5GR2h2c0s1TnlVSzVjUUx2?=
+ =?utf-8?B?d1hJUEc3UC91ZVhYNjlaNzkwa0RQcFFRVkZ4MDZDc2VyR1l5MzBsV2ljWW1y?=
+ =?utf-8?B?dG4xNVpSbEhiblRsbnRsemNlTTBEcDNYUkR1OUx5OHNYOVdvWjEyVEFZWGZj?=
+ =?utf-8?B?b3d4K0lJYnhuQ0x1OTZrMDdjcnNlaDhrVGkyQThPTnlKSkRHdGFLUW1iT295?=
+ =?utf-8?B?YVAvM0xHanBEK01VbnhrYVU3bWpHUVR4bmpSbnhxZUw5SC92bTVaYi8xOTVl?=
+ =?utf-8?B?bjdNcXl5SG9WRVdDMW41UklDelE5Sjdjd1BHRVdjRDJPcSt5QlJaaGRuL0Z0?=
+ =?utf-8?B?WmlPWU1qV2xzRk9RY0hRMGxZcmZlWVJvQXF2cnJYTExvL1lzV0FkY01JRitG?=
+ =?utf-8?B?MmNsNzh0eFA4anpBblVNVUUweUt1NWtiN2NBb25BVGE0eXNpVVkxZXAzSVI4?=
+ =?utf-8?B?NVY2ZUhQcFY1Ri9LYktUemJ6ZVNkWjlvM2RhUmdENnR6N1ZBVzFOSVBzSlVE?=
+ =?utf-8?B?SDRHckRXblB3eWRMSUhjS3FybWpCQy9HbzJhd3NLdVJ1WVRsR3JHQ2NlV2Jt?=
+ =?utf-8?B?YTd4SldkNFIwT3R4d3IwTnFNbm5uRGhiU2pkY080aFovRW5kT2dJc1V0Tnk4?=
+ =?utf-8?B?MGRFUlJXTmNOYU9GNXNtVFkzVkI4K2VPYSt4U2JCU0ROcGQ3RTNDa1I4Zys1?=
+ =?utf-8?B?TjVnTVRZbXFlQXpNaGRBKy9vbEVnb1BDbGVGVmhoR1dNZE9CQm5vZHZ4SWpP?=
+ =?utf-8?Q?a1hHtKDouck5jSLNw9vJEHQbWyNysUK0ik1wFKx4MJXz?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fa60b70-6913-46bf-64f7-08dab6b0896f
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2997.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2022 17:44:16.5280
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gg+v/bGoBo5ZTGYPkMnWiB+NyP3QykeX1Z0xqtFkBFF/N0jh9bBxa91zBsnx3VzPJlAsOlvJHkTiy2VwQ4p70do1/tvTU7h2MLZNHSFJUek=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4518
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-25_11,2022-10-25_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2210250101
+X-Proofpoint-ORIG-GUID: 22kjfJAjmnYHuAZia4NgDU0Cs498YMJ3
+X-Proofpoint-GUID: 22kjfJAjmnYHuAZia4NgDU0Cs498YMJ3
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000049831105ebdf48d4
-Content-Transfer-Encoding: 8bit
+Hey Leon,
 
-From: Hongguang Gao <hongguang.gao@broadcom.com>
-
-Decouple RoCE driver from directly accessing L2's private bnxt
-structure. Move the fields needed by RoCE driver into bnxt_en_dev.
-They'll be passed to RoCE driver by bnxt_rdma_aux_device_add()
-function.
-
-Signed-off-by: Hongguang Gao <hongguang.gao@broadcom.com>
-Signed-off-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
-Reviewed-by: Andy Gospodarek <andrew.gospodarek@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/main.c          | 22 ++++++-------------
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  9 ++++++++
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h | 11 ++++++++++
- 3 files changed, 27 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 1266cfe7ea88..446025fa0bfb 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -112,16 +112,14 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
- {
- 	struct bnxt_qplib_chip_ctx *chip_ctx;
- 	struct bnxt_en_dev *en_dev;
--	struct bnxt *bp;
- 
- 	en_dev = rdev->en_dev;
--	bp = netdev_priv(en_dev->net);
- 
- 	chip_ctx = kzalloc(sizeof(*chip_ctx), GFP_KERNEL);
- 	if (!chip_ctx)
- 		return -ENOMEM;
--	chip_ctx->chip_num = bp->chip_num;
--	chip_ctx->hw_stats_size = bp->hw_ring_stats_size;
-+	chip_ctx->chip_num = en_dev->chip_num;
-+	chip_ctx->hw_stats_size = en_dev->hw_ring_stats_size;
- 
- 	rdev->chip_ctx = chip_ctx;
- 	/* rest members to follow eventually */
-@@ -129,7 +127,7 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 	rdev->qplib_res.cctx = rdev->chip_ctx;
- 	rdev->rcfw.res = &rdev->qplib_res;
- 	rdev->qplib_res.dattr = &rdev->dev_attr;
--	rdev->qplib_res.is_vf = BNXT_VF(bp);
-+	rdev->qplib_res.is_vf = BNXT_EN_VF(en_dev);
- 
- 	bnxt_re_set_drv_mode(rdev, wqe_mode);
- 	if (bnxt_qplib_determine_atomics(en_dev->pdev))
-@@ -142,10 +140,7 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 
- static void bnxt_re_get_sriov_func_type(struct bnxt_re_dev *rdev)
- {
--	struct bnxt *bp;
--
--	bp = netdev_priv(rdev->en_dev->net);
--	if (BNXT_VF(bp))
-+	if (BNXT_EN_VF(rdev->en_dev))
- 		rdev->is_virtfn = 1;
- }
- 
-@@ -986,7 +981,6 @@ static int bnxt_re_query_hwrm_pri2cos(struct bnxt_re_dev *rdev, u8 dir,
- 				      u64 *cid_map)
- {
- 	struct hwrm_queue_pri2cos_qcfg_input req = {0};
--	struct bnxt *bp = netdev_priv(rdev->netdev);
- 	struct hwrm_queue_pri2cos_qcfg_output resp;
- 	struct bnxt_en_dev *en_dev = rdev->en_dev;
- 	struct bnxt_fw_msg fw_msg;
-@@ -1003,7 +997,7 @@ static int bnxt_re_query_hwrm_pri2cos(struct bnxt_re_dev *rdev, u8 dir,
- 	flags |= (dir & 0x01);
- 	flags |= HWRM_QUEUE_PRI2COS_QCFG_INPUT_FLAGS_IVLAN;
- 	req.flags = cpu_to_le32(flags);
--	req.port_id = bp->pf.port_id;
-+	req.port_id = en_dev->pf_port_id;
- 
- 	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
- 			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
-@@ -1585,7 +1579,6 @@ static int bnxt_re_probe(struct auxiliary_device *adev,
- int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
- {
- 	struct bnxt_re_dev *rdev = auxiliary_get_drvdata(adev);
--	struct bnxt *bp;
- 
- 	if (!rdev)
- 		return 0;
-@@ -1597,15 +1590,14 @@ int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
- 	 * ie. by calling bnxt_re_dev_stop and release the MSIx vectors as
- 	 * L2 driver want to modify the MSIx table.
- 	 */
--	bp = netdev_priv(rdev->netdev);
- 
- 	ibdev_info(&rdev->ibdev, "Handle device suspend call");
--	/* Check the current device state from L2 structure and move the
-+	/* Check the current device state from bnxt_en_dev and move the
- 	 * device to detached state if FW_FATAL_COND is set.
- 	 * This prevents more commands to HW during clean-up,
- 	 * in case the device is already in error.
- 	 */
--	if (test_bit(BNXT_STATE_FW_FATAL_COND, &bp->state))
-+	if (test_bit(BNXT_STATE_FW_FATAL_COND, &rdev->en_dev->en_state))
- 		set_bit(ERR_DEVICE_DETACHED, &rdev->rcfw.cmdq.flags);
- 
- 	bnxt_re_dev_stop(rdev);
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-index ba0c281c74ba..1bbc76037910 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-@@ -286,6 +286,7 @@ void bnxt_ulp_stop(struct bnxt *bp)
- 			pm_message_t pm = {};
- 
- 			adrv = to_auxiliary_drv(adev->dev.driver);
-+			edev->en_state = bp->state;
- 			adrv->suspend(adev, pm);
- 		}
- 	}
-@@ -312,6 +313,7 @@ void bnxt_ulp_start(struct bnxt *bp, int err)
- 			struct auxiliary_driver *adrv;
- 
- 			adrv = to_auxiliary_drv(adev->dev.driver);
-+			edev->en_state = bp->state;
- 			adrv->resume(adev);
- 		}
- 	}
-@@ -496,6 +498,13 @@ static inline void bnxt_set_edev_info(struct bnxt_en_dev *edev, struct bnxt *bp)
- 		edev->flags |= BNXT_EN_FLAG_ROCEV1_CAP;
- 	if (bp->flags & BNXT_FLAG_ROCEV2_CAP)
- 		edev->flags |= BNXT_EN_FLAG_ROCEV2_CAP;
-+	if (bp->flags & BNXT_FLAG_VF)
-+		edev->flags |= BNXT_EN_FLAG_VF;
-+
-+	edev->chip_num = bp->chip_num;
-+	edev->hw_ring_stats_size = bp->hw_ring_stats_size;
-+	edev->pf_port_id = bp->pf.port_id;
-+	edev->en_state = bp->state;
- }
- 
- int bnxt_rdma_aux_device_add(struct bnxt *bp)
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-index ba253ba5aba0..9a30fd848aaa 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-@@ -63,6 +63,9 @@ struct bnxt_en_dev {
- 						 BNXT_EN_FLAG_ROCEV2_CAP)
- 	#define BNXT_EN_FLAG_MSIX_REQUESTED	0x4
- 	#define BNXT_EN_FLAG_ULP_STOPPED	0x8
-+	#define BNXT_EN_FLAG_VF			0x10
-+#define BNXT_EN_VF(edev)	((edev)->flags & BNXT_EN_FLAG_VF)
-+
- 	struct bnxt_ulp			*ulp_tbl;
- 	int				l2_db_size;	/* Doorbell BAR size in
- 							 * bytes mapped by L2
-@@ -72,6 +75,14 @@ struct bnxt_en_dev {
- 							 * bytes mapped as non-
- 							 * cacheable.
- 							 */
-+	u16				chip_num;
-+	u16				hw_ring_stats_size;
-+	u16				pf_port_id;
-+	unsigned long			en_state;	/* Could be checked in
-+							 * RoCE driver suspend
-+							 * mode only. Will be
-+							 * updated in resume.
-+							 */
- };
- 
- static inline bool bnxt_ulp_registered(struct bnxt_en_dev *edev)
--- 
-2.37.0 (Apple Git-136)
+Please find my replies to your comments here below:
 
 
---00000000000049831105ebdf48d4
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+On 10/11/22 12:17 AM, Leon Romanovsky wrote:
+> There is no need to ping anyone, the patch is registered in patchworks
+> https://urldefense.com/v3/__https://patchwork.kernel.org/project/linux-rdma/patch/20221005174521.63619-1-rohit.sajan.kumar@oracle.com/__;!!ACWV5N9M2RV99hQ!IdRYzr4ujJ0haaWRKGd05SNbDiiW4v85yzCS233IObdO6ziwUhmEpWBC73PMs1dwbjwL5qHv9YwJrmKNtIo$
+> and we will get to it.
+>
+> You sent the patch during merge window, no wonder that none looked on it.
+>
+> On Wed, Oct 05, 2022 at 10:45:20AM -0700, Rohit Nair wrote:
+>> As PRM defines, the bytewise XOR of the EQE and the EQE index should be
+>> 0xff. Otherwise, we can assume we have a corrupt EQE. The same is
+>> applicable to CQE as well.
+> I didn't find anything like this in my version of PRM.
 
-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
-pZEyqKnwS1lKCzjX7mV5W955rFsFxChdAKfw0HilwtqdY24mhy62+GeaEkD0gYIj1tCmw9gnQToc
-K+0s7xEunfR9pBrzmOwS3OQbcP0nJ8SmQ8R+reroH6LYuFpaqK1rgQIDAQABo4IB2zCCAdcwDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAlBgNVHREEHjAcgRphaml0LmtoYXBhcmRlQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
-BQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUbrcTuh0mr2qP
-xYdtyDgFeRIiE/gwDQYJKoZIhvcNAQELBQADggEBALrc1TljKrDhXicOaZlzIQyqOEkKAZ324i8X
-OwzA0n2EcPGmMZvgARurvanSLD3mLeeuyq1feCcjfGM1CJFh4+EY7EkbFbpVPOIdstSBhbnAJnOl
-aC/q0wTndKoC/xXBhXOZB8YL/Zq4ZclQLMUO6xi/fFRyHviI5/IrosdrpniXFJ9ukJoOXtvdrEF+
-KlMYg/Deg9xo3wddCqQIsztHSkR4XaANdn+dbLRQpctZ13BY1lim4uz5bYn3M0IxyZWkQ1JuPHCK
-aRJv0SfR88PoI4RB7NCEHqFwARTj1KvFPQi8pK/YISFydZYbZrxQdyWDidqm4wSuJfpE6i0cWvCd
-u50xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
-MTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwM2Vrj
-4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIN4dgJTwjMXbbRhpAz3t
-1EKDYZJkSjzk+XbMOymX0LqSMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
-MQ8XDTIyMTAyNTE3MzE0NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
-BAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsG
-CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAQz+arX15Xs3TJZoLGsn5TJNfBt03iqbQFO1CL
-GSP2Cpfyw7mWQUE6U7pUAkazWmRHKEL22X5i3Wud5HjtRX7QMWKwOuqSiLUzIqmw5yjGz5fi76pp
-5/yRozAj+aigNSOVGTCACAzeuzcOIDMCkT7Efg/Wi53A7787L6uP9/6e4oH/D8rKB9nn3HllZcV8
-aIm6WQBAM6/eU383CKt94JRAXEpXWBdI8JjHihDSR4qWJEUhxoxihxIlZrfBweRQq4QxmAVtzzae
-GSsNmpuI3VS5/euR6HNhRJ6c93fG44lW/dvGFZq5+svzhxqOZgdwozaZHq5QOW/Nm7FmhBrULwTf
---00000000000049831105ebdf48d4--
+The PRM does contain this information and can be seen on page 121 of the 
+reference manual. I have linked the refernece manual I consulted for 
+your reference.
+https://network.nvidia.com/files/doc-2020/ethernet-adapters-programming-manual.pdf
+Here is a short extract from the refernce manual: "Byte-wise XOR of CQE 
+- signature protection (see "Completion and Event Queue Elements (CQEs 
+and EQEs)" on page 156). CQE is valid if byte-wise XOR of entire CQE 
+(including signature field) and the CQE index is 0xff. For 128B CQE, the 
+GRH/inline_64 section is taken into account if data / GRH was written to 
+it (cqe_format == 2 or grh == 2)"
+
+>
+>> Adding a check to verify the EQE and CQE is valid in that aspect and if
+>> not, dump the CQE and EQE to dmesg to be inspected.
+> While it is nice to see prints in dmesg, you need to explain why other
+> mechanisms (reporters, mlx5 events, e.t.c) are not enough.
+
+We had recently faces an issue where the we failing to arm the CQ due to 
+an sn_mismatch. This issue was not reported in the logs or error events 
+and was the same for the corrupted CQE.
+If we were able to dectect the corrupted CQE, or EQE earlier, we may 
+have been able to respond to the issue better and in a more timely 
+manner. This is our motivation behind have the error printed to dmesg.
+
+>
+>> This patch does not introduce any significant performance degradations
+>> and has been tested using qperf.
+> What does it mean? You made changes in kernel verbs flow, they are not
+> executed through qperf.
+We also conducted several extensive performance tests using our 
+test-suite which utilizes rds-stress and also saw no significant 
+performance degrdations in those results.
+
+>> Suggested-by: Michael Guralnik <michaelgur@nvidia.com>
+>> Signed-off-by: Rohit Nair <rohit.sajan.kumar@oracle.com>
+>> ---
+>>   drivers/infiniband/hw/mlx5/cq.c              | 40 ++++++++++++++++++++++++++++
+>>   drivers/net/ethernet/mellanox/mlx5/core/eq.c | 39 +++++++++++++++++++++++++++
+>>   2 files changed, 79 insertions(+)
+>>
+>> diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+>> index be189e0..2a6d722 100644
+>> --- a/drivers/infiniband/hw/mlx5/cq.c
+>> +++ b/drivers/infiniband/hw/mlx5/cq.c
+>> @@ -441,6 +441,44 @@ static void mlx5_ib_poll_sw_comp(struct mlx5_ib_cq *cq, int num_entries,
+>>   	}
+>>   }
+>>   
+>> +static void verify_cqe(struct mlx5_cqe64 *cqe64, struct mlx5_ib_cq *cq)
+>> +{
+>> +	int i = 0;
+>> +	u64 temp_xor = 0;
+>> +	struct mlx5_ib_dev *dev = to_mdev(cq->ibcq.device);
+>> +
+>> +	u32 cons_index = cq->mcq.cons_index;
+>> +	u64 *eight_byte_raw_cqe = (u64 *)cqe64;
+>> +	u8 *temp_bytewise_xor = (u8 *)(&temp_xor);
+>> +	u8 cqe_bytewise_xor = (cons_index & 0xff) ^
+>> +				((cons_index & 0xff00) >> 8) ^
+>> +				((cons_index & 0xff0000) >> 16);
+>> +
+>> +	for (i = 0; i < sizeof(struct mlx5_cqe64); i += 8) {
+>> +		temp_xor ^= *eight_byte_raw_cqe;
+>> +		eight_byte_raw_cqe++;
+>> +	}
+>> +
+>> +	for (i = 0; i < (sizeof(u64)); i++) {
+>> +		cqe_bytewise_xor ^= *temp_bytewise_xor;
+>> +		temp_bytewise_xor++;
+>> +	}
+>> +
+>> +	if (cqe_bytewise_xor == 0xff)
+>> +		return;
+>> +
+>> +	dev_err(&dev->mdev->pdev->dev,
+>> +		"Faulty CQE - checksum failure: cqe=0x%x cqn=0x%x cqe_bytewise_xor=0x%x\n",
+>> +		cq->ibcq.cqe, cq->mcq.cqn, cqe_bytewise_xor);
+>> +	dev_err(&dev->mdev->pdev->dev,
+>> +		"cons_index=%u arm_sn=%u irqn=%u cqe_size=0x%x\n",
+>> +		cq->mcq.cons_index, cq->mcq.arm_sn, cq->mcq.irqn, cq->mcq.cqe_sz);
+> mlx5_err ... and not dev_err ...
+Will update dev_err to mlx5_err.
+>
+>> +
+>> +	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET,
+>> +		       16, 1, cqe64, sizeof(*cqe64), false);
+>> +	BUG();
+> No BUG() in new code.
+
+I will remove the BUG() calls and only have it print the error msgs.
+
+Thanks.
+
+
+Best,
+
+Rohit
+
