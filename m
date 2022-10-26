@@ -2,44 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E36E460DC00
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Oct 2022 09:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA0560DD7B
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Oct 2022 10:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbiJZHUT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Oct 2022 03:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
+        id S232488AbiJZIrG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Oct 2022 04:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbiJZHUS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Oct 2022 03:20:18 -0400
-Received: from out199-13.us.a.mail.aliyun.com (out199-13.us.a.mail.aliyun.com [47.90.199.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1AE303FF;
-        Wed, 26 Oct 2022 00:20:15 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VT69Lai_1666768810;
-Received: from 30.221.146.122(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VT69Lai_1666768810)
-          by smtp.aliyun-inc.com;
-          Wed, 26 Oct 2022 15:20:11 +0800
-Message-ID: <8f938762-4060-10ed-32fd-ef7317b02300@linux.alibaba.com>
-Date:   Wed, 26 Oct 2022 15:20:10 +0800
+        with ESMTP id S229949AbiJZIrF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Oct 2022 04:47:05 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DDC75CD2
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Oct 2022 01:47:03 -0700 (PDT)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4My2Qc0G3qzpVt6;
+        Wed, 26 Oct 2022 16:43:36 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 26 Oct 2022 16:47:01 +0800
+Received: from [10.67.103.121] (10.67.103.121) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 26 Oct 2022 16:47:01 +0800
+Subject: Re: [PATCH 2/5] RDMA/hns: Fix the problem of sge nums
+To:     kernel test robot <lkp@intel.com>, <jgg@nvidia.com>,
+        <leon@kernel.org>
+CC:     <oe-kbuild-all@lists.linux.dev>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <20221025105244.204570-3-xuhaoyue1@hisilicon.com>
+ <202210252038.R76mzmoZ-lkp@intel.com>
+From:   "xuhaoyue (A)" <xuhaoyue1@hisilicon.com>
+Message-ID: <1789493b-ca0b-3912-e40c-91a201043155@hisilicon.com>
+Date:   Wed, 26 Oct 2022 16:47:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [PATCH net-next v4 00/10] optimize the parallelism of SMC-R
- connections
+In-Reply-To: <202210252038.R76mzmoZ-lkp@intel.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Language: en-US
-To:     Jan Karcher <jaka@linux.ibm.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1666529042-40828-1-git-send-email-alibuda@linux.alibaba.com>
- <95feb2a1-d17a-6233-d3d0-eaebf26d2284@linux.ibm.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <95feb2a1-d17a-6233-d3d0-eaebf26d2284@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.121]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -47,227 +56,62 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-Thank you for your information. I'm trying to debug it.
-we will let you know as soon as possible.
-
-Best Wishes.
-D. Wythe
-
-On 10/24/22 9:11 PM, Jan Karcher wrote:
-> Hi D. Wythe,
+I will send V2 to fix it.
+On 2022/10/25 20:47:33, kernel test robot wrote:
+> Hi Haoyue,
 > 
-> I re-run the tests with your fix.
-> SMC-R works fine now. For SMC-D we still have the following problem. It is kind of the same as i reported in v2 but even weirder:
+> Thank you for the patch! Perhaps something to improve:
 > 
-> smc stats:
+> [auto build test WARNING on rdma/for-next]
+> [also build test WARNING on linus/master v6.1-rc2 next-20221025]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
 > 
-> t8345011
-> SMC-D Connections Summary
->    Total connections handled          2465
-> SMC-R Connections Summary
->    Total connections handled           232
+> url:    https://github.com/intel-lab-lkp/linux/commits/Haoyue-Xu/Fix-sge_num-bug-and-add-cqe-inline-refactor-rq-inline/20221025-185626
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+> patch link:    https://lore.kernel.org/r/20221025105244.204570-3-xuhaoyue1%40hisilicon.com
+> patch subject: [PATCH 2/5] RDMA/hns: Fix the problem of sge nums
+> config: ia64-allyesconfig (attached as .config)
+> compiler: ia64-linux-gcc (GCC) 12.1.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/intel-lab-lkp/linux/commit/b277a5cdd36f6cfac1e387afd3b670052041e9df
+>         git remote add linux-review https://github.com/intel-lab-lkp/linux
+>         git fetch --no-tags linux-review Haoyue-Xu/Fix-sge_num-bug-and-add-cqe-inline-refactor-rq-inline/20221025-185626
+>         git checkout b277a5cdd36f6cfac1e387afd3b670052041e9df
+>         # save the config file
+>         mkdir build_dir && cp config build_dir/.config
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash drivers/infiniband/
 > 
-> t8345010
-> SMC-D Connections Summary
->    Total connections handled          2290
-> SMC-R Connections Summary
->    Total connections handled           231
+> If you fix the issue, kindly add following tag where applicable
+> | Reported-by: kernel test robot <lkp@intel.com>
 > 
+> All warnings (new ones prefixed by >>):
 > 
-> smc linkgroups:
-> 
-> t8345011
-> [root@t8345011 ~]# smcr linkgroup
-> LG-ID    LG-Role  LG-Type  VLAN  #Conns  PNET-ID
-> 00000400 SERV     SYM         0       0  NET25
-> [root@t8345011 ~]# smcd linkgroup
-> LG-ID    VLAN  #Conns  PNET-ID
-> 00000300    0      16  NET25
-> 
-> t8345010
-> [root@t8345010 tela-kernel]# smcr linkgroup
-> LG-ID    LG-Role  LG-Type  VLAN  #Conns  PNET-ID
-> 00000400 CLNT     SYM         0       0  NET25
-> [root@t8345010 tela-kernel]# smcd linkgroup
-> LG-ID    VLAN  #Conns  PNET-ID
-> 00000300    0       1  NET25
+>>> drivers/infiniband/hw/hns/hns_roce_qp.c:510: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>     *  Calculated sge num according to attr's max_send_sge
+>    drivers/infiniband/hw/hns/hns_roce_qp.c:525: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>     *  Calculated sge num according to attr's max_inline_data
 > 
 > 
-> smcss:
+> vim +510 drivers/infiniband/hw/hns/hns_roce_qp.c
 > 
-> t8345011
-> [root@t8345011 ~]# smcss
-> State          UID   Inode   Local Address           Peer Address     Intf Mode
+>    508	
+>    509	/**
+>  > 510	 *  Calculated sge num according to attr's max_send_sge
+>    511	 */
+>    512	static u32 get_sge_num_from_max_send_sge(bool is_ud_or_gsi,
+>    513						 u32 max_send_sge)
+>    514	{
+>    515		unsigned int std_sge_num;
+>    516		unsigned int min_sge;
+>    517	
+>    518		std_sge_num = is_ud_or_gsi ? 0 : HNS_ROCE_SGE_IN_WQE;
+>    519		min_sge = is_ud_or_gsi ? 1 : 0;
+>    520		return max_send_sge > std_sge_num ? (max_send_sge - std_sge_num) :
+>    521					min_sge;
+>    522	}
+>    523	
 > 
-> t8345010
-> [root@t8345010 tela-kernel]# smcss
-> State          UID   Inode   Local Address           Peer Address     Intf Mode
-> 
-> 
-> lsmod:
-> 
-> t8345011
-> [root@t8345011 ~]# lsmod | grep smc
-> smc                   225280  18 ism,smc_diag
-> t8345010
-> [root@t8345010 tela-kernel]# lsmod | grep smc
-> smc                   225280  3 ism,smc_diag
-> 
-> Also smc_dbg and netstat do not show any more information on this problem. We only see in the dmesg that the code seems to build up SMC-R linkgroups even tho we are running the SMC-D tests.
-> NOTE: we disabled the syncookies for the tests.
-> 
-> dmesg:
-> 
-> t8345011
-> smc-tests: test_smcapp_torture_test started
-> kernel: TCP: request_sock_TCP: Possible SYN flooding on port 22465. Dropping request.  Check SNMP counters.
-> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000401, peerid 00000401, ibdev mlx5_0, ibport 1
-> kernel: smc: SMC-R lg 00000400 net 1 state changed: SINGLE, pnetid NET25
-> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000402, peerid 00000402, ibdev mlx5_1, ibport 1
-> kernel: smc: SMC-R lg 00000400 net 1 state changed: SYMMETRIC, pnetid NET25
-> 
-> t8345010
-> smc-tests: test_smcapp_torture_test started
-> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000401, peerid 00000401, ibdev mlx5_0, ibport 1
-> kernel: smc: SMC-R lg 00000400 net 1 state changed: SINGLE, pnetid NET25
-> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000402, peerid 00000402, ibdev mlx5_1, ibport 1
-> kernel: smc: SMC-R lg 00000400 net 1 state changed: SYMMETRIC, pnetid NET25
-> 
-> If this output does not help and if you want us to look deeper into it feel free to let us know and we can debug further.
-> 
-> On 23/10/2022 14:43, D.Wythe wrote:
->> From: "D.Wythe" <alibuda@linux.alibaba.com>
->>
->> This patch set attempts to optimize the parallelism of SMC-R connections,
->> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
->> occur after thoses optimization.
->>
->> According to Off-CPU graph, SMC worker's off-CPU as that:
->>
->> smc_close_passive_work                  (1.09%)
->>          smcr_buf_unuse                  (1.08%)
->>                  smc_llc_flow_initiate   (1.02%)
->>
->> smc_listen_work                         (48.17%)
->>          __mutex_lock.isra.11            (47.96%)
->>
->>
->> An ideal SMC-R connection process should only block on the IO events
->> of the network, but it's quite clear that the SMC-R connection now is
->> queued on the lock most of the time.
->>
->> The goal of this patchset is to achieve our ideal situation where
->> network IO events are blocked for the majority of the connection lifetime.
->>
->> There are three big locks here:
->>
->> 1. smc_client_lgr_pending & smc_server_lgr_pending
->>
->> 2. llc_conf_mutex
->>
->> 3. rmbs_lock & sndbufs_lock
->>
->> And an implementation issue:
->>
->> 1. confirm/delete rkey msg can't be sent concurrently while
->> protocol allows indeed.
->>
->> Unfortunately,The above problems together affect the parallelism of
->> SMC-R connection. If any of them are not solved. our goal cannot
->> be achieved.
->>
->> After this patch set, we can get a quite ideal off-CPU graph as
->> following:
->>
->> smc_close_passive_work                                  (41.58%)
->>          smcr_buf_unuse                                  (41.57%)
->>                  smc_llc_do_delete_rkey                  (41.57%)
->>
->> smc_listen_work                                         (39.10%)
->>          smc_clc_wait_msg                                (13.18%)
->>                  tcp_recvmsg_locked                      (13.18)
->>          smc_listen_find_device                          (25.87%)
->>                  smcr_lgr_reg_rmbs                       (25.87%)
->>                          smc_llc_do_confirm_rkey         (25.87%)
->>
->> We can see that most of the waiting times are waiting for network IO
->> events. This also has a certain performance improvement on our
->> short-lived conenction wrk/nginx benchmark test:
->>
->> +--------------+------+------+-------+--------+------+--------+
->> |conns/qps     |c4    | c8   |  c16  |  c32   | c64  |  c200  |
->> +--------------+------+------+-------+--------+------+--------+
->> |SMC-R before  |9.7k  | 10k  |  10k  |  9.9k  | 9.1k |  8.9k  |
->> +--------------+------+------+-------+--------+------+--------+
->> |SMC-R now     |13k   | 19k  |  18k  |  16k   | 15k  |  12k   |
->> +--------------+------+------+-------+--------+------+--------+
->> |TCP           |15k   | 35k  |  51k  |  80k   | 100k |  162k  |
->> +--------------+------+------+-------+--------+------+--------+
->>
->> The reason why the benefit is not obvious after the number of connections
->> has increased dues to workqueue. If we try to change workqueue to UNBOUND,
->> we can obtain at least 4-5 times performance improvement, reach up to half
->> of TCP. However, this is not an elegant solution, the optimization of it
->> will be much more complicated. But in any case, we will submit relevant
->> optimization patches as soon as possible.
->>
->> Please note that the premise here is that the lock related problem
->> must be solved first, otherwise, no matter how we optimize the workqueue,
->> there won't be much improvement.
->>
->> Because there are a lot of related changes to the code, if you have
->> any questions or suggestions, please let me know.
->>
->> Thanks
->> D. Wythe
->>
->> v1 -> v2:
->>
->> 1. Fix panic in SMC-D scenario
->> 2. Fix lnkc related hashfn calculation exception, caused by operator
->> priority
->> 3. Only wake up one connection if the lnk is not active
->> 4. Delete obsolete unlock logic in smc_listen_work()
->> 5. PATCH format, do Reverse Christmas tree
->> 6. PATCH format, change all xxx_lnk_xxx function to xxx_link_xxx
->> 7. PATCH format, add correct fix tag for the patches for fixes.
->> 8. PATCH format, fix some spelling error
->> 9. PATCH format, rename slow to do_slow
->>
->> v2 -> v3:
->>
->> 1. add SMC-D support, remove the concept of link cluster since SMC-D has
->> no link at all. Replace it by lgr decision maker, who provides suggestions
->> to SMC-D and SMC-R on whether to create new link group.
->>
->> 2. Fix the corruption problem described by PATCH 'fix application
->> data exception' on SMC-D.
->>
->> v3 -> v4:
->>
->> 1. Fix panic caused by uninitialization map.
->>
->> D. Wythe (10):
->>    net/smc: remove locks smc_client_lgr_pending and
->>      smc_server_lgr_pending
->>    net/smc: fix SMC_CLC_DECL_ERR_REGRMB without smc_server_lgr_pending
->>    net/smc: allow confirm/delete rkey response deliver multiplex
->>    net/smc: make SMC_LLC_FLOW_RKEY run concurrently
->>    net/smc: llc_conf_mutex refactor, replace it with rw_semaphore
->>    net/smc: use read semaphores to reduce unnecessary blocking in
->>      smc_buf_create() & smcr_buf_unuse()
->>    net/smc: reduce unnecessary blocking in smcr_lgr_reg_rmbs()
->>    net/smc: replace mutex rmbs_lock and sndbufs_lock with rw_semaphore
->>    net/smc: Fix potential panic dues to unprotected
->>      smc_llc_srv_add_link()
->>    net/smc: fix application data exception
->>
->>   net/smc/af_smc.c   |  70 ++++----
->>   net/smc/smc_core.c | 478 +++++++++++++++++++++++++++++++++++++++++++++++------
->>   net/smc/smc_core.h |  36 +++-
->>   net/smc/smc_llc.c  | 277 ++++++++++++++++++++++---------
->>   net/smc/smc_llc.h  |   6 +
->>   net/smc/smc_wr.c   |  10 --
->>   net/smc/smc_wr.h   |  10 ++
->>   7 files changed, 712 insertions(+), 175 deletions(-)
->>
