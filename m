@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 368B860D8A0
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Oct 2022 02:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5319960D99F
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Oct 2022 05:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbiJZA5f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Oct 2022 20:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
+        id S230090AbiJZDVn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Oct 2022 23:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbiJZA5e (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Oct 2022 20:57:34 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E56B56F5;
-        Tue, 25 Oct 2022 17:57:33 -0700 (PDT)
+        with ESMTP id S229995AbiJZDVl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Oct 2022 23:21:41 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144BE5B511;
+        Tue, 25 Oct 2022 20:21:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1666745853; x=1698281853;
+  t=1666754500; x=1698290500;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=GR5CoT3qMwNMe+IwyVf2qOLjY5sEFOQ5M+yY8ncTyIs=;
-  b=bm8VBxyVWxLTpVDzMXf26GN2c5Z9/TRaILVmZsUPz9ffybnD+MQaGuvT
-   Dqp0FDyJNSHK4P+9hZWLFNU2mehHJD/AwgO/aKAqHw4fMUqg0NDKI5suG
-   RbyqmOgAM6PZ75D13Do7TN/KL8sSdGKVkipXauljuOwM6xI5DfFdcE275
-   9p2gSOy6ridPuI9m1b1lCHhNFSL34ObvwoxaYC0jAz8E2SFGFwizY5CmT
-   Y5lt65m2gRgikQzQwdRXXDhBS3huASVt8atgXuaU1VJSecnQA2yZlE1V4
-   tVm8wIjAb4A0PnoDZGxmVesLd4eMJImPVUIg7omlx23pm+SLhKTuZPJYU
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10511"; a="369894481"
+  bh=7V/YmU3TinRXCsrytyRRbey+0rN1a/J/CGHV/q/boes=;
+  b=JX+A+oNVBRy7DSItqlxy/aPSMW4vjH354jvd8E2X7sYuVpgnXjwcjnXW
+   0j8smY/0Up4d6zNFuVKXS/kcUwf/6WhEND0T4AuC9zOzV1kY9EsxMhjds
+   565xaLckUbXze73fZM/6v1G47fVgXfEO2sR9+HChqUtdzQ0+fWG55Qon5
+   2TLfOwJrtgkDx+XyL0Rk01BmjRRLKuVB2d446grXDksODEKx1a5Fkgai6
+   kRfE5Jxxwg1XraZpuyxZ1DZBZfHFwQkPk57mtxe3rUh7Iu873RebI1pzT
+   AhGuLaUO3QBnz8OtUeL9UQbSVEZE38k16EvV1fbsufQOVIYKboWdR4/UU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10511"; a="372060151"
 X-IronPort-AV: E=Sophos;i="5.95,213,1661842800"; 
-   d="gz'50?scan'50,208,50";a="369894481"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2022 17:57:33 -0700
+   d="gz'50?scan'50,208,50";a="372060151"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2022 20:21:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10511"; a="665108408"
+X-IronPort-AV: E=McAfee;i="6500,9779,10511"; a="806899103"
 X-IronPort-AV: E=Sophos;i="5.95,213,1661842800"; 
-   d="gz'50?scan'50,208,50";a="665108408"
+   d="gz'50?scan'50,208,50";a="806899103"
 Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 25 Oct 2022 17:57:28 -0700
+  by orsmga005.jf.intel.com with ESMTP; 25 Oct 2022 20:21:33 -0700
 Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1onUjY-0006mU-08;
-        Wed, 26 Oct 2022 00:57:28 +0000
-Date:   Wed, 26 Oct 2022 08:57:09 +0800
+        id 1onWyz-0006uW-0M;
+        Wed, 26 Oct 2022 03:21:33 +0000
+Date:   Wed, 26 Oct 2022 11:21:23 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Ajit Khaparde <ajit.khaparde@broadcom.com>
 Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
@@ -51,14 +51,15 @@ Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
         leon@kernel.org, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, michael.chan@broadcom.com,
         netdev@vger.kernel.org, pabeni@redhat.com,
-        selvin.xavier@broadcom.com, Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH v2 3/6] bnxt_en: Remove usage of ulp_id
-Message-ID: <202210260854.O9AvqbkE-lkp@intel.com>
-References: <20221025173110.33192-4-ajit.khaparde@broadcom.com>
+        selvin.xavier@broadcom.com
+Subject: Re: [PATCH v2 5/6] bnxt_en: Use auxiliary bus calls over proprietary
+ calls
+Message-ID: <202210261149.1AKEoiQx-lkp@intel.com>
+References: <20221025173110.33192-6-ajit.khaparde@broadcom.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="XIWVxdq7T/5JrI+v"
+Content-Type: multipart/mixed; boundary="hsW1/s1h1b9At3HR"
 Content-Disposition: inline
-In-Reply-To: <20221025173110.33192-4-ajit.khaparde@broadcom.com>
+In-Reply-To: <20221025173110.33192-6-ajit.khaparde@broadcom.com>
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -70,7 +71,7 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---XIWVxdq7T/5JrI+v
+--hsW1/s1h1b9At3HR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -85,71 +86,116 @@ And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Ajit-Khaparde/bnxt_en-Add-auxiliary-driver-support/20221026-023141
-patch link:    https://lore.kernel.org/r/20221025173110.33192-4-ajit.khaparde%40broadcom.com
-patch subject: [PATCH v2 3/6] bnxt_en: Remove usage of ulp_id
+patch link:    https://lore.kernel.org/r/20221025173110.33192-6-ajit.khaparde%40broadcom.com
+patch subject: [PATCH v2 5/6] bnxt_en: Use auxiliary bus calls over proprietary calls
 config: x86_64-randconfig-a003-20221024 (attached as .config)
 compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/92c7d0e64af8a4eec67cc8b257c13256b441167d
+        # https://github.com/intel-lab-lkp/linux/commit/f04080c956abfeabf32961081d0401a800163d99
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Ajit-Khaparde/bnxt_en-Add-auxiliary-driver-support/20221026-023141
-        git checkout 92c7d0e64af8a4eec67cc8b257c13256b441167d
+        git checkout f04080c956abfeabf32961081d0401a800163d99
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/infiniband/hw/bnxt_re/ drivers/net/ethernet/broadcom/bnxt/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/infiniband/hw/bnxt_re/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
 
 All warnings (new ones prefixed by >>):
 
->> drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c:319:15: warning: variable 'ulp' is uninitialized when used here [-Wuninitialized]
-           bnxt_ulp_get(ulp);
-                        ^~~
-   drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c:308:22: note: initialize the variable 'ulp' to silence this warning
-           struct bnxt_ulp *ulp;
-                               ^
-                                = NULL
-   1 warning generated.
+>> drivers/infiniband/hw/bnxt_re/main.c:1585:5: warning: no previous prototype for function 'bnxt_re_suspend' [-Wmissing-prototypes]
+   int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
+       ^
+   drivers/infiniband/hw/bnxt_re/main.c:1585:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
+   ^
+   static 
+>> drivers/infiniband/hw/bnxt_re/main.c:1623:5: warning: no previous prototype for function 'bnxt_re_resume' [-Wmissing-prototypes]
+   int bnxt_re_resume(struct auxiliary_device *adev)
+       ^
+   drivers/infiniband/hw/bnxt_re/main.c:1623:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int bnxt_re_resume(struct auxiliary_device *adev)
+   ^
+   static 
+   2 warnings generated.
 
 
-vim +/ulp +319 drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+vim +/bnxt_re_suspend +1585 drivers/infiniband/hw/bnxt_re/main.c
 
-a588e4580a7ecb Michael Chan  2016-12-07  303  
-a588e4580a7ecb Michael Chan  2016-12-07  304  void bnxt_ulp_sriov_cfg(struct bnxt *bp, int num_vfs)
-a588e4580a7ecb Michael Chan  2016-12-07  305  {
-a588e4580a7ecb Michael Chan  2016-12-07  306  	struct bnxt_en_dev *edev = bp->edev;
-a588e4580a7ecb Michael Chan  2016-12-07  307  	struct bnxt_ulp_ops *ops;
-92c7d0e64af8a4 Ajit Khaparde 2022-10-25  308  	struct bnxt_ulp *ulp;
-a588e4580a7ecb Michael Chan  2016-12-07  309  
-a588e4580a7ecb Michael Chan  2016-12-07  310  	if (!edev)
-a588e4580a7ecb Michael Chan  2016-12-07  311  		return;
-a588e4580a7ecb Michael Chan  2016-12-07  312  
-a588e4580a7ecb Michael Chan  2016-12-07  313  	rcu_read_lock();
-a588e4580a7ecb Michael Chan  2016-12-07  314  	ops = rcu_dereference(ulp->ulp_ops);
-a588e4580a7ecb Michael Chan  2016-12-07  315  	if (!ops || !ops->ulp_sriov_config) {
-a588e4580a7ecb Michael Chan  2016-12-07  316  		rcu_read_unlock();
-92c7d0e64af8a4 Ajit Khaparde 2022-10-25  317  		return;
-a588e4580a7ecb Michael Chan  2016-12-07  318  	}
-a588e4580a7ecb Michael Chan  2016-12-07 @319  	bnxt_ulp_get(ulp);
-a588e4580a7ecb Michael Chan  2016-12-07  320  	rcu_read_unlock();
-a588e4580a7ecb Michael Chan  2016-12-07  321  	ops->ulp_sriov_config(ulp->handle, num_vfs);
-a588e4580a7ecb Michael Chan  2016-12-07  322  	bnxt_ulp_put(ulp);
-a588e4580a7ecb Michael Chan  2016-12-07  323  }
-a588e4580a7ecb Michael Chan  2016-12-07  324  
+  1584	
+> 1585	int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
+  1586	{
+  1587		struct bnxt_re_dev *rdev = auxiliary_get_drvdata(adev);
+  1588		struct bnxt *bp;
+  1589	
+  1590		if (!rdev)
+  1591			return 0;
+  1592	
+  1593		mutex_lock(&bnxt_re_mutex);
+  1594		/* L2 driver may invoke this callback during device error/crash or device
+  1595		 * reset. Current RoCE driver doesn't recover the device in case of
+  1596		 * error. Handle the error by dispatching fatal events to all qps
+  1597		 * ie. by calling bnxt_re_dev_stop and release the MSIx vectors as
+  1598		 * L2 driver want to modify the MSIx table.
+  1599		 */
+  1600		bp = netdev_priv(rdev->netdev);
+  1601	
+  1602		ibdev_info(&rdev->ibdev, "Handle device suspend call");
+  1603		/* Check the current device state from L2 structure and move the
+  1604		 * device to detached state if FW_FATAL_COND is set.
+  1605		 * This prevents more commands to HW during clean-up,
+  1606		 * in case the device is already in error.
+  1607		 */
+  1608		if (test_bit(BNXT_STATE_FW_FATAL_COND, &bp->state))
+  1609			set_bit(ERR_DEVICE_DETACHED, &rdev->rcfw.cmdq.flags);
+  1610	
+  1611		bnxt_re_dev_stop(rdev);
+  1612		bnxt_re_stop_irq(rdev);
+  1613		/* Move the device states to detached and  avoid sending any more
+  1614		 * commands to HW
+  1615		 */
+  1616		set_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags);
+  1617		set_bit(ERR_DEVICE_DETACHED, &rdev->rcfw.cmdq.flags);
+  1618		mutex_unlock(&bnxt_re_mutex);
+  1619	
+  1620		return 0;
+  1621	}
+  1622	
+> 1623	int bnxt_re_resume(struct auxiliary_device *adev)
+  1624	{
+  1625		struct bnxt_re_dev *rdev = auxiliary_get_drvdata(adev);
+  1626	
+  1627		if (!rdev)
+  1628			return 0;
+  1629	
+  1630		mutex_lock(&bnxt_re_mutex);
+  1631		/* L2 driver may invoke this callback during device recovery, resume.
+  1632		 * reset. Current RoCE driver doesn't recover the device in case of
+  1633		 * error. Handle the error by dispatching fatal events to all qps
+  1634		 * ie. by calling bnxt_re_dev_stop and release the MSIx vectors as
+  1635		 * L2 driver want to modify the MSIx table.
+  1636		 */
+  1637	
+  1638		ibdev_info(&rdev->ibdev, "Handle device resume call");
+  1639		mutex_unlock(&bnxt_re_mutex);
+  1640	
+  1641		return 0;
+  1642	}
+  1643	
 
 -- 
 0-DAY CI Kernel Test Service
 https://01.org/lkp
 
---XIWVxdq7T/5JrI+v
+--hsW1/s1h1b9At3HR
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICJ53WGMAAy5jb25maWcAjDxNd9s4kvf+FXrpS88hieU4nszu8wEiQQkRSTAAKcm+8Cm2
+H4sICBKeWGMAAy5jb25maWcAjDxNd9s4kvf+FXrpS88hieU4nszu8wEiQQkRSTAAKcm+8Cm2
 nPaObWVkuTfZX79VAD8AsKh0DkmEKgAFoL5R4O+//T5hr8f90/b4cLt9fPw5+bZ73h22x93d
 5P7hcfffk1hOcllOeCzKd4CcPjy//nj/49NlfXkxuXw3fXf29nB7PlnuDs+7x0m0f75/+PYK
 /R/2z7/9/lsk80TM6yiqV1xpIfO65Jvy6s3t4/b52+Sv3eEF8CbTi3dn7y4nf3x7OP7X+/fw
@@ -947,4 +993,4 @@ pIwsE98Tvtz0cqR4scEkAur8MK1uJ1ZuVkysHMtgYeI0k1kkYJFPYrhmDQ7V8OBAk5yJT5rb
 SlobSBo4nU+05w5D9wA6LsKISBU9GhgOBW4cT/aOVDr11+cXw957VDxb5V5YUFX+f35FNPNb
 qQIA
 
---XIWVxdq7T/5JrI+v--
+--hsW1/s1h1b9At3HR--
