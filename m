@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 809076100DA
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Oct 2022 20:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404BB6100DB
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Oct 2022 20:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236451AbiJ0S4j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Oct 2022 14:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        id S236374AbiJ0S4k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Oct 2022 14:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236337AbiJ0S4c (ORCPT
+        with ESMTP id S236361AbiJ0S4c (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Oct 2022 14:56:32 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A98501B3
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Oct 2022 11:56:28 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id i7so3404429oif.4
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Oct 2022 11:56:28 -0700 (PDT)
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78FA318E0A
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Oct 2022 11:56:29 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id d18-20020a05683025d200b00661c6f1b6a4so1615778otu.1
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Oct 2022 11:56:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GaFNnE3LTQv6kJv+8drqhqVvuAL0z5lzANxUuMdNOXA=;
-        b=LMoWzFJcY8PDOR+26C2wiCTtzduLLUmzCZv39k4tKqpk5FhQTH9/Xe9M8e3Oq4UXsc
-         +PlMREU0NOm26UyJv09JNQ/FwHL82kZG5ps3/uy29ZBZeJ74U6Y2XNoM7BZpf7wlioAP
-         iZVay5N7pQStN7wm2lAp9QIadfNPnkyEgv+6iEA9LLz2zMSQ0KibWR26B/VCz+wZ83X9
-         1od3FMN5t/ly1fjxGp2p3dHCPF92EH2co7DZWMUCdm72AgXUHahiV65PKkDGReakWFEy
-         q6lMF0WEcp74fZE0eQVi0ELn8+VwbaZvWEpDNg8O5RvpznrR5YPFSgqd+a5PKPYoqKG3
-         CezA==
+        bh=tKi9h7WR9eMA4SBNRrq6cYz+ShYuF0Y3JvfUyZYr89o=;
+        b=j7iBOKSHfJaPm/Y2NcipGr23x5FLCCl0zdS1Dt1kaADKXJMC0ZiUMU/9rH/OsEJTKk
+         LwsVuHyPx0X/ubwLDCQFGdkLFXA7kbobfkXNiTrY6TsxjZeDe8DAaN8YH6XOd4mlPzwf
+         vF92WDTMFYHFOUwxelYbQxFrvrVrH+yrlHB6cSOChjKdDPk8VGF8poK1IrUGevoY+Myu
+         NLjyaFQ0q/gaRXTSKBD5H4SRwQk0bWBiEa0Y1kKkyHojf7OpnPIDT1QPMDModE1Chz8r
+         iJqJ/sNLX6sndOMrzVGeOI1W7qUkHvM2Fj6dwAR4F1O6pfhZBhv7PQsqYLfEqVyR+N92
+         79rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GaFNnE3LTQv6kJv+8drqhqVvuAL0z5lzANxUuMdNOXA=;
-        b=EoVp4uJGvTuVXXPWtcN94+PlYV/+tB0S8QxcMHTqAORsWTlpPD+THdGOzQKAkAGHB1
-         w+kDmbFobvxJp3Kv5pPnAgLilZOKnGb4pYtkGdcFrRFCrZF4R/YX/g3v9CY7DVmI9izd
-         xkXwxAsAS6nFobjSVbWkxmCYXTUYtsk/7dU8odVGSHcoEiabGYxynsWUCOZF+wMQSJIE
-         MrOHA5Fdd16N0hfYyMSF0ozWNPPh10DB1BIKbMvZf9ABfkF1X4aNnF8KXdDlz9xn8vgS
-         GSNHjgwUwRkG90x6yp6H+RTkfh3ccQc14G8+xx1a6tjjp5JU5i7JPjNPQR41OS56l9zA
-         a3Gw==
-X-Gm-Message-State: ACrzQf32c9jAkU9NIfDjgSXWrrgONMHKYP+qIsFtdjVxiLQAP1EurTxu
-        qw/Fgw7PBiLjYqPqHsgORNPgkpAjrq4=
-X-Google-Smtp-Source: AMsMyM7ATt1cQXY16Jxdn3e7kxS3z6ciJ7/3So+l3rUSncfiu/I/Y2x9QRvMlApScllGhkwtKEbyAg==
-X-Received: by 2002:a05:6808:65a:b0:359:a964:4154 with SMTP id z26-20020a056808065a00b00359a9644154mr5521484oih.249.1666896988181;
-        Thu, 27 Oct 2022 11:56:28 -0700 (PDT)
+        bh=tKi9h7WR9eMA4SBNRrq6cYz+ShYuF0Y3JvfUyZYr89o=;
+        b=SuONx9OEmBKxQw9fNLcJwvK631IurSbdXwCwqFvv/SNQDbdDor5o7M+INWglJFXiuw
+         bAbfV6HfA83KE5W4M6XaOLyTTYa8qE6VbpLre2Q5gG8ITh2wVx0tvk3r0b/KMEXhptOC
+         5Wn8xxOD0OwTMH+UqBPMZzPBnGlF5D3Z7diNqx115WOVR60RUMiLC40nLRRkHwyc8ix3
+         pksmtuKGWqgQWjFzAHHwxc92uIKZYrrbzHxxB2LMrUQN7VnVHPUI9/CAj3U8wcVp3LZf
+         YSQHXgbmo5R2iD4m0GPbnvGRFxevejGFe/tCJ2qUSu3UrNbyzOh/9J9QmEqzVUqmKTR6
+         duZw==
+X-Gm-Message-State: ACrzQf3SBB6HQ6y+evjQtghy32BbpqBNfBjgce8reqHkZfRT0SxEzp/E
+        RJaZi71BLgpN0pnhJ6nepXg=
+X-Google-Smtp-Source: AMsMyM6PGlajGwjqcvgSZgENifM8+VP7y9QLTR3r8CbvlB0UUb4udmu3Itd9Yfaqh9+Iaz80exJ3hA==
+X-Received: by 2002:a05:6830:131a:b0:666:fe36:1f86 with SMTP id p26-20020a056830131a00b00666fe361f86mr6897545otq.272.1666896989221;
+        Thu, 27 Oct 2022 11:56:29 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-f015-3653-e617-fa3f.res6.spectrum.com. [2603:8081:140c:1a00:f015:3653:e617:fa3f])
-        by smtp.googlemail.com with ESMTPSA id f1-20020a4a8f41000000b0049602fb9b4csm732736ool.46.2022.10.27.11.56.27
+        by smtp.googlemail.com with ESMTPSA id f1-20020a4a8f41000000b0049602fb9b4csm732736ool.46.2022.10.27.11.56.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Oct 2022 11:56:27 -0700 (PDT)
+        Thu, 27 Oct 2022 11:56:28 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, leon@kernel.org, zyjzyj2000@gmail.com,
         jhack@hpe.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 15/17] RDMA/rxe: Extend send/write_data_in() for frags
-Date:   Thu, 27 Oct 2022 13:55:09 -0500
-Message-Id: <20221027185510.33808-16-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 16/17] RDMA/rxe: Extend do_read() in rxe_comp,c for frags
+Date:   Thu, 27 Oct 2022 13:55:10 -0500
+Message-Id: <20221027185510.33808-17-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221027185510.33808-1-rpearsonhpe@gmail.com>
 References: <20221027185510.33808-1-rpearsonhpe@gmail.com>
@@ -71,162 +71,76 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Extend send_data_in() and write_data_in() in rxe_resp.c to
-support fragmented received skbs.
+Extend do_read() in rxe_comp.c to support fragmented skbs.
 
-This is in preparation for using fragmented skbs.
+Rename rxe_do_read(). Adjust caller's API.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_resp.c | 103 +++++++++++++++++----------
- 1 file changed, 65 insertions(+), 38 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_comp.c | 40 ++++++++++++++++++----------
+ 1 file changed, 26 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 79dcd0f37140..cd50ae080eda 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -518,45 +518,89 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
- 	return state;
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index 3c1ecc88446d..85b3a4a6b55b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -348,22 +348,34 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
+ 	return COMPST_ERROR;
  }
  
--static enum resp_states send_data_in(struct rxe_qp *qp, void *data_addr,
--				     int data_len)
+-static inline enum comp_state do_read(struct rxe_qp *qp,
+-				      struct rxe_pkt_info *pkt,
+-				      struct rxe_send_wqe *wqe)
 +/**
-+ * rxe_send_data_in() - Copy payload data into receive buffer
++ * rxe_do_read() - Process read reply packet
 + * @qp: The queue pair
-+ * @pkt: Request packet info
++ * @pkt: Packet info
++ * @wqe: The current work request
 + *
-+ * Copy the packet payload into the receive buffer at the current offset.
-+ * If a UD message also copy the IP header into the receive buffer.
++ * Copy payload from incoming read reply packet into current
++ * iova.
 + *
-+ * Returns: 0 if successful else an error resp_states value.
++ * Returns: 0 on success else an error comp_state
 + */
-+static enum resp_states rxe_send_data_in(struct rxe_qp *qp,
-+					 struct rxe_pkt_info *pkt)
++static inline enum comp_state rxe_do_read(struct rxe_qp *qp,
++					  struct rxe_pkt_info *pkt,
++					  struct rxe_send_wqe *wqe)
  {
--	struct sk_buff *skb = NULL;
-+	struct sk_buff *skb = PKT_TO_SKB(pkt);
+ 	struct sk_buff *skb = PKT_TO_SKB(pkt);
+-	int skb_offset = 0;
+-	int ret;
+-
+-	ret = rxe_copy_dma_data(skb, qp->pd, IB_ACCESS_LOCAL_WRITE,
+-				&wqe->dma, payload_addr(pkt),
+-				skb_offset, payload_size(pkt),
+-				RXE_COPY_TO_MR);
+-	if (ret) {
+-		wqe->status = IB_WC_LOC_PROT_ERR;
 +	int nr_frags = skb_shinfo(skb)->nr_frags;
 +	u8 *data_addr = payload_addr(pkt);
 +	int data_len = payload_size(pkt);
-+	union rdma_network_hdr hdr;
-+	enum rxe_mr_copy_op op;
- 	int skb_offset = 0;
- 	int err;
- 
-+	/* Per IBA for UD packets copy the IP header into the receive buffer */
-+	if (qp_type(qp) == IB_QPT_UD || qp_type(qp) == IB_QPT_GSI) {
-+		if (skb->protocol == htons(ETH_P_IP)) {
-+			memset(&hdr.reserved, 0, sizeof(hdr.reserved));
-+			memcpy(&hdr.roce4grh, ip_hdr(skb), sizeof(hdr.roce4grh));
-+		} else {
-+			memcpy(&hdr.ibgrh, ipv6_hdr(skb), sizeof(hdr));
-+		}
-+		err = rxe_copy_dma_data(skb, qp->pd, IB_ACCESS_LOCAL_WRITE,
-+					&qp->resp.wqe->dma, &hdr, skb_offset,
-+					sizeof(hdr), RXE_COPY_TO_MR);
-+		if (err)
-+			goto err_out;
-+	}
++	enum rxe_mr_copy_op op = nr_frags ? RXE_FRAG_TO_MR : RXE_COPY_TO_MR;
++	int skb_offset = data_addr - skb_transport_header(skb);
++	int err;
 +
-+	op = nr_frags ? RXE_FRAG_TO_MR : RXE_COPY_TO_MR;
-+	skb_offset = data_addr - skb_transport_header(skb);
- 	err = rxe_copy_dma_data(skb, qp->pd, IB_ACCESS_LOCAL_WRITE,
- 				&qp->resp.wqe->dma, data_addr,
--				skb_offset, data_len, RXE_COPY_TO_MR);
--	if (unlikely(err))
--		return (err == -ENOSPC) ? RESPST_ERR_LENGTH
--					: RESPST_ERR_MALFORMED_WQE;
++	err = rxe_copy_dma_data(skb, qp->pd, IB_ACCESS_LOCAL_WRITE,
++				&wqe->dma, data_addr,
 +				skb_offset, data_len, op);
 +	if (err)
-+		goto err_out;
- 
- 	return RESPST_NONE;
-+
-+err_out:
-+	return (err == -ENOSPC) ? RESPST_ERR_LENGTH
-+				: RESPST_ERR_MALFORMED_WQE;
- }
- 
--static enum resp_states write_data_in(struct rxe_qp *qp,
--				      struct rxe_pkt_info *pkt)
-+/**
-+ * rxe_write_data_in() - Copy payload data to iova
-+ * @qp: The queue pair
-+ * @pkt: Request packet info
-+ *
-+ * Copy the packet payload to current iova and update iova.
-+ *
-+ * Returns: 0 if successful else an error resp_states value.
-+ */
-+static enum resp_states rxe_write_data_in(struct rxe_qp *qp,
-+					  struct rxe_pkt_info *pkt)
- {
- 	struct sk_buff *skb = PKT_TO_SKB(pkt);
--	enum resp_states rc = RESPST_NONE;
-+	int nr_frags = skb_shinfo(skb)->nr_frags;
-+	u8 *data_addr = payload_addr(pkt);
- 	int data_len = payload_size(pkt);
-+	enum rxe_mr_copy_op op;
-+	int skb_offset;
- 	int err;
--	int skb_offset = 0;
- 
-+	op = nr_frags ? RXE_FRAG_TO_MR : RXE_COPY_TO_MR;
-+	skb_offset = data_addr - skb_transport_header(skb);
- 	err = rxe_copy_mr_data(skb, qp->resp.mr, qp->resp.va + qp->resp.offset,
--			  payload_addr(pkt), skb_offset, data_len,
--			  RXE_COPY_TO_MR);
--	if (err) {
--		rc = RESPST_ERR_RKEY_VIOLATION;
--		goto out;
+ 		return COMPST_ERROR;
 -	}
-+			  data_addr, skb_offset, data_len, op);
-+	if (err)
-+		return RESPST_ERR_RKEY_VIOLATION;
  
- 	qp->resp.va += data_len;
- 	qp->resp.resid -= data_len;
+ 	if (wqe->dma.resid == 0 && (pkt->mask & RXE_END_MASK))
+ 		return COMPST_COMP_ACK;
+@@ -625,7 +637,7 @@ int rxe_completer(void *arg)
+ 			break;
  
--out:
--	return rc;
-+	return RESPST_NONE;
- }
+ 		case COMPST_READ:
+-			state = do_read(qp, pkt, wqe);
++			state = rxe_do_read(qp, pkt, wqe);
+ 			break;
  
- static struct resp_res *rxe_prepare_res(struct rxe_qp *qp,
-@@ -882,30 +926,13 @@ static int invalidate_rkey(struct rxe_qp *qp, u32 rkey)
- static enum resp_states execute(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
- {
- 	enum resp_states err;
--	struct sk_buff *skb = PKT_TO_SKB(pkt);
--	union rdma_network_hdr hdr;
- 
- 	if (pkt->mask & RXE_SEND_MASK) {
--		if (qp_type(qp) == IB_QPT_UD ||
--		    qp_type(qp) == IB_QPT_GSI) {
--			if (skb->protocol == htons(ETH_P_IP)) {
--				memset(&hdr.reserved, 0,
--						sizeof(hdr.reserved));
--				memcpy(&hdr.roce4grh, ip_hdr(skb),
--						sizeof(hdr.roce4grh));
--				err = send_data_in(qp, &hdr, sizeof(hdr));
--			} else {
--				err = send_data_in(qp, ipv6_hdr(skb),
--						sizeof(hdr));
--			}
--			if (err)
--				return err;
--		}
--		err = send_data_in(qp, payload_addr(pkt), payload_size(pkt));
-+		err = rxe_send_data_in(qp, pkt);
- 		if (err)
- 			return err;
- 	} else if (pkt->mask & RXE_WRITE_MASK) {
--		err = write_data_in(qp, pkt);
-+		err = rxe_write_data_in(qp, pkt);
- 		if (err)
- 			return err;
- 	} else if (pkt->mask & RXE_READ_MASK) {
+ 		case COMPST_ATOMIC:
 -- 
 2.34.1
 
