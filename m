@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F03E46100D2
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Oct 2022 20:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2EC6100D3
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Oct 2022 20:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235987AbiJ0S4W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Oct 2022 14:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
+        id S236327AbiJ0S4X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Oct 2022 14:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236015AbiJ0S4U (ORCPT
+        with ESMTP id S236284AbiJ0S4U (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Oct 2022 14:56:20 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB341248C0
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Oct 2022 11:56:18 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id s206so3405246oie.3
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Oct 2022 11:56:18 -0700 (PDT)
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E271D33C
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Oct 2022 11:56:20 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id r83so3396785oih.2
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Oct 2022 11:56:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IP44sTc2xj7SImr8+JKsYI5I/w/qT5HqhNNRRehFm3o=;
-        b=aMhOc15B4MPVAeVxndr95FnGiwiP8RL5VjoRzCoF4dPparWIvVL8woaxR2jFp9WfLa
-         6S2NsgwlW7gdCTBxDIaSXY+vrkEQ5g6Ukkg17330edrDn32+YY9HZwbDjdw3DwjZNAj1
-         VMx77h3emAuO1c31x7uKaIRSeFXIiaOpSELcnq1bO0V6fKut1Fkz/qrZKhJ0WdvCD1f0
-         BwZk0ujwTShC5+TJYFPvUc0vPLIMLBFoTZihlG4VRYsRff1PwK5sIQQcy5VdTV9yv8nk
-         WgjskE+a9kaelY01ds3Acs7TcggHtLhhYikitRuoYXkuFchd3unGzmP03MRmODJMWgXO
-         bOPw==
+        bh=G7zgQgeSXLF/fNVhN5xzAHBWpV3bu2nbiNNH6HqTPc0=;
+        b=OFSMwDOoSFJYKmC+eyxnXSmJI3lcnLePQtweYxFJ2ZVPmcoHs81rUPbQpkn+oFKmYq
+         ivu6f9cDVgYoVbpCorxTTbOB415aUW7mS/Q6DDOHD9WtnYQT8Nm8jUXHsLSWua2kSGpN
+         HwzH/aKxlrIAZ5FXGHwOO5gGVneY83krxrLO7EdYRxCpNDflZYzoGOG5T++PlDz6qbKx
+         GEVBezNY6ZKPYzpFLGuWJcSpnduEoLFMeXG//P4UozlM37VLA3pQhyh+bv+mS+k611AZ
+         QHcijNKo5bZiRidmwYbe5oNamwsudcgpBoB3A7h/AJgkj4Owr6eIsDsclTBzbJCRCUZU
+         OLSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IP44sTc2xj7SImr8+JKsYI5I/w/qT5HqhNNRRehFm3o=;
-        b=Ikq6LlLSzEYdQTZM8lGxTMqHLwnxfTP2SHdvaD6vVNAVFUr0P9u5shrWsEPJ0FYK0n
-         Iu21zv/mX24nj+YK7jcs38D9laYURwlZqumWskg5/MctH5S+URL+9JZa2munnfi1IzwM
-         2SAbmotR6HGt8a3P+/pg/imKwM9w4T6lLa+EvQT2VpwxnUnJcVDYqhE2UnapeI06raBN
-         +pFr2P09m3RDseeCRJ+bF2QHWdyHvw2WKMhk/Rk+LwvQdzkUH5H1kU/d+wTYTOjL9pUV
-         KuqVh3EzAg365Oqrp8rR+k+Nrly60dZkJVrMwquYVUrXVMTp0NJxEaDsJEnGkAbUQJJS
-         cL8Q==
-X-Gm-Message-State: ACrzQf3H0QgiNCDVKVI6f26YaCen2AoAyRDT4wQ0cqWm5c/SyWCuRX+u
-        sM3djJAseTfNPf8IS0lb2oM=
-X-Google-Smtp-Source: AMsMyM51GfGir5Mq6DGi/eDMQxyq4En1oaMgOofJ5nGvBa4cDCQw1McbXi3k3GA2FzKCjchp3OuxtA==
-X-Received: by 2002:a05:6808:e8f:b0:345:7a77:2ae0 with SMTP id k15-20020a0568080e8f00b003457a772ae0mr5832185oil.52.1666896978566;
-        Thu, 27 Oct 2022 11:56:18 -0700 (PDT)
+        bh=G7zgQgeSXLF/fNVhN5xzAHBWpV3bu2nbiNNH6HqTPc0=;
+        b=NStG6xnb57rp0pUhsZS95YjWqeXQH2LyoCTbXR5j30sjOeLpbnrAeXYRR/zeYBWe7d
+         PaDTOnWhhSiALpjRa2bF01OQ7X4NKjRzcS9Aeb+zYWme9U4mtaePMepsVbOvCRwla8dV
+         Iwt+7+G0xX8Z5Thml2rCmojGpxjunFwIa0hW4KrhxBtI6qaymtD8P7o0EmZgRvOEoVU9
+         lyywJpzb4zoJ491vCRbPJpV2wbwM0wCTxpbHOIyvkrc81GnTGSJ/AM+Bi2yA+mXkGsRT
+         3UWNAQPbwH3OBcggGwKyreoiuNtRA6EIoFYR/QDbAynXQeI5B7aHf3j5Kjhcqwy6y3TI
+         u3Ag==
+X-Gm-Message-State: ACrzQf3DIMyGnJ5GOJ1/0V8PBRu9sJbNSAakrhoemHSOyzqN4+X6vI9K
+        FhDUmuaPz6haR2Vk9gJUUE4=
+X-Google-Smtp-Source: AMsMyM5FblE9ZV06iAys+dh0HlmpnK58UhJGT7q0Op88g+7TvrFTsYeZXSUlQBffilQSUE3dsJbtVg==
+X-Received: by 2002:a05:6808:f91:b0:359:a22e:b047 with SMTP id o17-20020a0568080f9100b00359a22eb047mr5794526oiw.215.1666896979835;
+        Thu, 27 Oct 2022 11:56:19 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-f015-3653-e617-fa3f.res6.spectrum.com. [2603:8081:140c:1a00:f015:3653:e617:fa3f])
-        by smtp.googlemail.com with ESMTPSA id f1-20020a4a8f41000000b0049602fb9b4csm732736ool.46.2022.10.27.11.56.17
+        by smtp.googlemail.com with ESMTPSA id f1-20020a4a8f41000000b0049602fb9b4csm732736ool.46.2022.10.27.11.56.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Oct 2022 11:56:18 -0700 (PDT)
+        Thu, 27 Oct 2022 11:56:19 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, leon@kernel.org, zyjzyj2000@gmail.com,
         jhack@hpe.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 07/17] RDMA/rxe: Extend rxe_mr_copy to support skb frags
-Date:   Thu, 27 Oct 2022 13:55:01 -0500
-Message-Id: <20221027185510.33808-8-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 08/17] RDMA/rxe: Add routine to compute number of frags for dma
+Date:   Thu, 27 Oct 2022 13:55:02 -0500
+Message-Id: <20221027185510.33808-9-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221027185510.33808-1-rpearsonhpe@gmail.com>
 References: <20221027185510.33808-1-rpearsonhpe@gmail.com>
@@ -71,283 +71,118 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-rxe_mr_copy() currently supports copying between an mr and
-a contiguous region of kernel memory.
-
-Rename rxe_mr_copy() to rxe_copy_mr_data().
-Extend the operations to support copying between an mr and an skb
-fragment list. Fixup calls to rxe_mr_copy() to support the new
-API.
-
-This is in preparation for supporting fragmented skbs.
+Add routine named rxe_num_dma_frags() to compute the number of skb
+frags needed to copy length bytes from a dma info struct.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_loc.h  |   3 +
- drivers/infiniband/sw/rxe/rxe_mr.c   | 142 +++++++++++++++++++--------
- drivers/infiniband/sw/rxe/rxe_resp.c |  20 ++--
- 3 files changed, 116 insertions(+), 49 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_loc.h |  4 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c  | 67 ++++++++++++++++++++++++++++-
+ 2 files changed, 69 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 87fb052c1d0a..c62fc2613a01 100644
+index c62fc2613a01..4c30ffaccc92 100644
 --- a/drivers/infiniband/sw/rxe/rxe_loc.h
 +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -71,6 +71,9 @@ int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr);
- int rxe_add_frag(struct sk_buff *skb, struct rxe_phys_buf *buf,
- 		 int length, int offset);
- int rxe_num_mr_frags(struct rxe_mr *mr, u64 iova, int length);
-+int rxe_copy_mr_data(struct sk_buff *skb, struct rxe_mr *mr, u64 iova,
-+		     void *addr, int skb_offset, int length,
-+		     enum rxe_mr_copy_op op);
+@@ -76,10 +76,12 @@ int rxe_copy_mr_data(struct sk_buff *skb, struct rxe_mr *mr, u64 iova,
+ 		     enum rxe_mr_copy_op op);
  int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
  		enum rxe_mr_copy_op op);
++int rxe_num_dma_frags(const struct rxe_pd *pd, const struct rxe_dma_info *dma,
++		      int length);
  int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info *dma,
+ 	      void *addr, int length, enum rxe_mr_copy_op op);
+ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
+-struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
++struct rxe_mr *lookup_mr(const struct rxe_pd *pd, int access, u32 key,
+ 			 enum rxe_mr_lookup_type type);
+ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
+ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
 diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index dd4dbe117c91..fd39b3e17f41 100644
+index fd39b3e17f41..77437a0dd7ec 100644
 --- a/drivers/infiniband/sw/rxe/rxe_mr.c
 +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -388,70 +388,130 @@ int rxe_num_mr_frags(struct rxe_mr *mr, u64 iova, int length)
- 	return num_frags;
- }
- 
--/* copy data from a range (vaddr, vaddr+length-1) to or from
-- * a mr object starting at iova.
-+/**
-+ * rxe_copy_mr_data() - transfer data between an MR and a packet
-+ * @skb: the packet buffer
-+ * @mr: the MR
-+ * @iova: the address in the MR
-+ * @addr: the address in the packet (TO/FROM MR only)
-+ * @length: the length to transfer
-+ * @op: copy operation (TO MR, FROM MR or FRAG MR)
-+ *
-+ * Copy data from a range (addr, addr+length-1) in a packet
-+ * to or from a range in an MR object at (iova, iova+length-1).
-+ * Or, build a frag list referencing the MR range.
-+ *
-+ * Caller must verify that the access permissions support the
-+ * operation.
-+ *
-+ * Returns: 0 on success or an error
-  */
--int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
--		enum rxe_mr_copy_op op)
-+int rxe_copy_mr_data(struct sk_buff *skb, struct rxe_mr *mr, u64 iova,
-+		     void *addr, int skb_offset, int length,
-+		     enum rxe_mr_copy_op op)
- {
--	int			err;
--	int			bytes;
--	u8			*va;
--	struct rxe_map		**map;
--	struct rxe_phys_buf	*buf;
--	int			m;
--	int			i;
--	size_t			offset;
-+	struct rxe_phys_buf dmabuf;
-+	struct rxe_phys_buf *buf;
-+	struct rxe_map **map;
-+	size_t buf_offset;
-+	int bytes;
-+	void *va;
-+	int m;
-+	int i;
-+	int err = 0;
- 
- 	if (length == 0)
- 		return 0;
- 
--	if (mr->type == IB_MR_TYPE_DMA) {
--		u8 *src, *dest;
--
--		src = (op == RXE_COPY_TO_MR) ? addr : ((void *)(uintptr_t)iova);
--
--		dest = (op == RXE_COPY_TO_MR) ? ((void *)(uintptr_t)iova) : addr;
-+	switch (mr->type) {
-+	case IB_MR_TYPE_DMA:
-+		va = (void *)(uintptr_t)iova;
-+		switch (op) {
-+		case RXE_COPY_TO_MR:
-+			memcpy(va, addr, length);
-+			break;
-+		case RXE_COPY_FROM_MR:
-+			memcpy(addr, va, length);
-+			break;
-+		case RXE_FRAG_TO_MR:
-+			err = skb_copy_bits(skb, skb_offset, va, length);
-+			if (err)
-+				return err;
-+			break;
-+		case RXE_FRAG_FROM_MR:
-+			/* limit frag length to PAGE_SIZE */
-+			while (length) {
-+				dmabuf.addr = iova & PAGE_MASK;
-+				buf_offset = iova & ~PAGE_MASK;
-+				bytes = PAGE_SIZE - buf_offset;
-+				if (bytes > length)
-+					bytes = length;
-+				err = rxe_add_frag(skb, &dmabuf, bytes,
-+						   buf_offset);
-+				if (err)
-+					return err;
-+				iova += bytes;
-+				length -= bytes;
-+			}
-+			break;
-+		}
-+		return 0;
- 
--		memcpy(dest, src, length);
-+	case IB_MR_TYPE_MEM_REG:
-+	case IB_MR_TYPE_USER:
-+		break;
- 
--		return 0;
-+	default:
-+		pr_warn("%s: mr type (%d) not supported\n",
-+			__func__, mr->type);
-+		return -EINVAL;
- 	}
- 
- 	WARN_ON_ONCE(!mr->map);
- 
- 	err = mr_check_range(mr, iova, length);
--	if (err) {
--		err = -EFAULT;
--		goto err1;
--	}
-+	if (err)
-+		return -EFAULT;
- 
--	lookup_iova(mr, iova, &m, &i, &offset);
-+	lookup_iova(mr, iova, &m, &i, &buf_offset);
- 
- 	map = mr->map + m;
--	buf	= map[0]->buf + i;
-+	buf = map[0]->buf + i;
- 
- 	while (length > 0) {
--		u8 *src, *dest;
--
--		va	= (u8 *)(uintptr_t)buf->addr + offset;
--		src = (op == RXE_COPY_TO_MR) ? addr : va;
--		dest = (op == RXE_COPY_TO_MR) ? va : addr;
--
--		bytes	= buf->size - offset;
--
-+		va = (void *)(uintptr_t)buf->addr + buf_offset;
-+		bytes = buf->size - buf_offset;
- 		if (bytes > length)
- 			bytes = length;
- 
--		memcpy(dest, src, bytes);
-+		switch (op) {
-+		case RXE_COPY_TO_MR:
-+			memcpy(va, addr, bytes);
-+			break;
-+		case RXE_COPY_FROM_MR:
-+			memcpy(addr, va, bytes);
-+			break;
-+		case RXE_FRAG_TO_MR:
-+			err = skb_copy_bits(skb, skb_offset, va, bytes);
-+			if (err)
-+				return err;
-+			break;
-+		case RXE_FRAG_FROM_MR:
-+			err = rxe_add_frag(skb, buf, bytes, buf_offset);
-+			if (err)
-+				return err;
-+			break;
-+		}
- 
--		length	-= bytes;
--		addr	+= bytes;
-+		length -= bytes;
-+		addr += bytes;
- 
--		offset	= 0;
-+		buf_offset = 0;
-+		skb_offset += bytes;
- 		buf++;
- 		i++;
- 
-+		/* we won't overrun since we checked range above */
- 		if (i == RXE_BUF_PER_MAP) {
- 			i = 0;
- 			map++;
-@@ -460,9 +520,6 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 	}
- 
+@@ -522,6 +522,71 @@ int rxe_copy_mr_data(struct sk_buff *skb, struct rxe_mr *mr, u64 iova,
  	return 0;
--
--err1:
--	return err;
  }
  
- /* copy data in or out of a wqe, i.e. sg list
-@@ -535,7 +592,8 @@ int copy_data(
- 		if (bytes > 0) {
- 			iova = sge->addr + offset;
- 
--			err = rxe_mr_copy(mr, iova, addr, bytes, op);
-+			err = rxe_copy_mr_data(NULL, mr, iova, addr,
-+					       0, bytes, op);
- 			if (err)
- 				goto err2;
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 4b185ddac887..ba359242118a 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -535,12 +535,15 @@ static enum resp_states send_data_in(struct rxe_qp *qp, void *data_addr,
- static enum resp_states write_data_in(struct rxe_qp *qp,
- 				      struct rxe_pkt_info *pkt)
- {
-+	struct sk_buff *skb = PKT_TO_SKB(pkt);
- 	enum resp_states rc = RESPST_NONE;
--	int	err;
- 	int data_len = payload_size(pkt);
-+	int err;
-+	int skb_offset = 0;
- 
--	err = rxe_mr_copy(qp->resp.mr, qp->resp.va + qp->resp.offset,
--			  payload_addr(pkt), data_len, RXE_COPY_TO_MR);
-+	err = rxe_copy_mr_data(skb, qp->resp.mr, qp->resp.va + qp->resp.offset,
-+			  payload_addr(pkt), skb_offset, data_len,
-+			  RXE_COPY_TO_MR);
- 	if (err) {
- 		rc = RESPST_ERR_RKEY_VIOLATION;
- 		goto out;
-@@ -766,6 +769,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	int err;
- 	struct resp_res *res = qp->resp.res;
- 	struct rxe_mr *mr;
-+	int skb_offset = 0;
- 
- 	if (!res) {
- 		res = rxe_prepare_res(qp, req_pkt, RXE_READ_MASK);
-@@ -806,15 +810,17 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	if (!skb)
- 		return RESPST_ERR_RNR;
- 
--	err = rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
--			  payload, RXE_COPY_FROM_MR);
--	if (mr)
--		rxe_put(mr);
-+	err = rxe_copy_mr_data(skb, mr, res->read.va, payload_addr(&ack_pkt),
-+			       skb_offset, payload, RXE_COPY_FROM_MR);
- 	if (err) {
- 		kfree_skb(skb);
-+		rxe_put(mr);
- 		return RESPST_ERR_RKEY_VIOLATION;
- 	}
- 
-+	if (mr)
-+		rxe_put(mr);
++/**
++ * rxe_num_dma_frags() - Count the number of skb frags needed to copy
++ *			 length bytes from a dma info struct to an skb
++ * @pd: protection domain used by dma entries
++ * @dma: dma info
++ * @length: number of bytes to copy
++ *
++ * Returns: number of frags needed or negative error
++ */
++int rxe_num_dma_frags(const struct rxe_pd *pd, const struct rxe_dma_info *dma,
++		      int length)
++{
++	int cur_sge = dma->cur_sge;
++	const struct rxe_sge *sge = &dma->sge[cur_sge];
++	int buf_offset = dma->sge_offset;
++	int resid = dma->resid;
++	struct rxe_mr *mr = NULL;
++	int bytes;
++	u64 iova;
++	int ret;
++	int num_frags = 0;
 +
- 	if (bth_pad(&ack_pkt)) {
- 		u8 *pad = payload_addr(&ack_pkt) + payload;
- 
++	if (length == 0)
++		return 0;
++
++	if (length > resid)
++		return -EINVAL;
++
++	while (length > 0) {
++		if (buf_offset >= sge->length) {
++			if (mr)
++				rxe_put(mr);
++
++			sge++;
++			cur_sge++;
++			buf_offset = 0;
++
++			if (cur_sge >= dma->num_sge)
++				return -ENOSPC;
++			if (!sge->length)
++				continue;
++		}
++
++		mr = lookup_mr(pd, 0, sge->lkey, RXE_LOOKUP_LOCAL);
++		if (!mr)
++			return -EINVAL;
++
++		bytes = min_t(int, length, sge->length - buf_offset);
++		if (bytes > 0) {
++			iova = sge->addr + buf_offset;
++			ret = rxe_num_mr_frags(mr, iova, length);
++			if (ret < 0) {
++				rxe_put(mr);
++				return ret;
++			}
++
++			buf_offset += bytes;
++			resid -= bytes;
++			length -= bytes;
++		}
++	}
++
++	return num_frags;
++}
++
+ /* copy data in or out of a wqe, i.e. sg list
+  * under the control of a dma descriptor
+  */
+@@ -658,7 +723,7 @@ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
+  * (3) verify that the mr can support the requested access
+  * (4) verify that mr state is valid
+  */
+-struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
++struct rxe_mr *lookup_mr(const struct rxe_pd *pd, int access, u32 key,
+ 			 enum rxe_mr_lookup_type type)
+ {
+ 	struct rxe_mr *mr;
 -- 
 2.34.1
 
