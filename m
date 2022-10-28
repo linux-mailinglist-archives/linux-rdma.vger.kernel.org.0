@@ -2,163 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9708F6109BB
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Oct 2022 07:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504C8610AD7
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Oct 2022 08:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbiJ1F3j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Oct 2022 01:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41140 "EHLO
+        id S229574AbiJ1G7G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Oct 2022 02:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbiJ1F3h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Oct 2022 01:29:37 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69AEDA3;
-        Thu, 27 Oct 2022 22:29:29 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VTF-aiQ_1666934966;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0VTF-aiQ_1666934966)
-          by smtp.aliyun-inc.com;
-          Fri, 28 Oct 2022 13:29:27 +0800
-Date:   Fri, 28 Oct 2022 13:29:25 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Jan Karcher <jaka@linux.ibm.com>
-Cc:     "D. Wythe" <alibuda@linux.alibaba.com>, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v3 00/10] optimize the parallelism of SMC-R
- connections
-Message-ID: <Y1totRGH3t9u3QlQ@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <1666248232-63751-1-git-send-email-alibuda@linux.alibaba.com>
- <62001adc-129a-d477-c916-7a4cf2000553@linux.alibaba.com>
- <79e3bccb-55c2-3b92-b14a-7378ef02dd78@linux.ibm.com>
- <4127d84d-e3b4-ca44-2531-8aed12fdee3f@linux.alibaba.com>
- <f8ea7943-4267-8b8d-f8b4-831fea7f3963@linux.ibm.com>
- <Y1d+jDQiyn4LSKlu@TonyMac-Alibaba>
- <35d14144-28f7-6129-d6d3-ba16dae7a646@linux.ibm.com>
+        with ESMTP id S229441AbiJ1G7F (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Oct 2022 02:59:05 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BE218197D
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Oct 2022 23:59:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D1CBDB82899
+        for <linux-rdma@vger.kernel.org>; Fri, 28 Oct 2022 06:59:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED35BC433C1;
+        Fri, 28 Oct 2022 06:59:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666940342;
+        bh=VrxVR6IX/9QSLVD8TyxaCLq9h8cREFmo27SwIfNQ8aw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EcMYCQt+w6iK/dam9aexa2WWt8YEP1tH9jZiWS+vChG75F6nyYrD4xd+cN3yOzQiM
+         WPSoLYqoRGN09owgxUgKi91616hz1t2bKhRP5kjgu7zecMIyzYWHK0Mdo+gJSs9evJ
+         uDTseKykufhlgDgSd3SAOCn6m8/Ay8gWGj1ojrWlZ7aSH3uds7pz3mUYABYiSAIign
+         em72uAdIcx9KR8h7CjHSiEAeFDvlTKynrQpQH2tGJIYnm1gy6s11LcYGj4uXSlq3Pj
+         AtjhbQrE8P/s5w4/RMddU+unuJuUmlJcEUVe2YtygGhSqTbH58Bhq0JJTnIc+M4xWK
+         ml85K1aXqaVSQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH rdma-next] RDMA/nldev: Fix section mismatch warning for nldev
+Date:   Fri, 28 Oct 2022 09:58:56 +0300
+Message-Id: <50e3139ef8cbbff5db858a4916be309e012313b1.1666940305.git.leon@kernel.org>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <35d14144-28f7-6129-d6d3-ba16dae7a646@linux.ibm.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 26, 2022 at 03:12:48PM +0200, Jan Karcher wrote:
-> 
-> 
-> On 25/10/2022 08:13, Tony Lu wrote:
-> > On Mon, Oct 24, 2022 at 03:10:54PM +0200, Jan Karcher wrote:
-> > > Hi D. Wythe,
-> > > 
-> > > I reply with the feedback on your fix to your v4 fix.
-> > > 
-> > > Regarding your questions:
-> > > We are aware of this situation and we are currently evaluating how we want
-> > > to deal with SMC-D in the future because as of right now i can understand
-> > > your frustration regarding the SMC-D testing.
-> > > Please give me some time to hit up the right people and collect some
-> > > information to answer your question. I'll let you know as soon as i have an
-> > > answer.
-> 
-> Hi Tony (and D.),
-> > 
-> > Hi Jan,
-> > 
-> > We sent a RFC [1] to mock SMC-D device for inter-VM communication. The
-> > original purpose is not to test, but for now it could be useful for the
-> > people who are going to test without physical devices in the community.
-> 
-> I'm aware of the RFC and various people in IBM looked over it.
-> 
-> As stated in the last mail we are aware that the entanglement between SMC-D
-> and ISM is causing problems for the community.
-> To give you a little insight:
-> 
-> In order to improve the code quality and usability for the broader community
-> we are working on placing an API between SMC-D and the ISM device. If this
-> API is complete it will be easier to use different "devices" for SMC-D. One
-> could be your device driver for inter-VM communication (ivshmem).
-> Another one could be a "Dummy-Device" which just implements the required
-> interface which acts as a loopback device. This would work only in a single
-> Linux instance, thus would be the perfect device to test SMC-D logic for the
-> broad community.
+ppc64_defconfig) produced this warning:
 
-That sounds great :-) It will provide many possibilities.
+WARNING: modpost: drivers/infiniband/core/ib_core.o: section mismatch in reference: .init_module (section: .init.text) -> .nldev_exit (section: .exit.text)
 
-> We would hope that these changes remove the hardware restrictions and that
-> the community picks up the idea and implements devices and improves SMC
-> (including SMC-D and SMC-R) even more in the future!
-> 
-> As i said - and also teased by Alexandra in a respond to your RFC - this API
-> feature is currently being developed and in our internal reviews. This would
-> make your idea with the inter-VM communication a lot easier and would
-> provide a clean base to build upon in the future.
+Fix it by removing __init/__exit markers as nldev is part of ib_core.ko
+and as such doesn't require any special notations for entry/exit functions.
 
-Great +1.
+Fixes: 6c80b41abe22 ("RDMA/netlink: Add nldev initialization flows")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
+---
+ drivers/infiniband/core/nldev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> > 
-> > This driver basically works but I would improve it for testing. Before
-> > that, what do you think about it?
-> 
-> I think it is a great idea and we should definetly give it a shot! I'm also
-> putting a lot in code quality and future maintainability. The API is a key
-> feature there improving the usability for the community and our work as
-> maintainers. So - for the sake of the future of the SMC code base - I'd like
-> to wait with putting your changes upstream for the API and use your idea to
-> see if fits our (and your) requirements.
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index b92358f606d0..4b6815dcd261 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -2532,12 +2532,12 @@ static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
+ 	},
+ };
+ 
+-void __init nldev_init(void)
++void nldev_init(void)
+ {
+ 	rdma_nl_register(RDMA_NL_NLDEV, nldev_cb_table);
+ }
+ 
+-void __exit nldev_exit(void)
++void nldev_exit(void)
+ {
+ 	rdma_nl_unregister(RDMA_NL_NLDEV);
+ }
+-- 
+2.37.3
 
-Sure. We are very much looking forward to the new API :-) Maybe we can
-discuss this API in the mail list, and I'd like to adapt it first.
-
-> 
-> > 
-> > And where to put this driver? In kernel with SMC code or merge into
-> > separate SMC test cases. I haven't made up my mind yet.
-> 
-> We are not sure either currently, and have to think about that for a bit. I
-> think your driver could be a classic driver, since it is usable for a real
-> world problem (communication between two VMs on the same host). If we look
-> at the "Dummy-Device" above we see that it does not provide any value beside
-> testing. Feel free to share your ideas on that topic.
-
-I agree with this. SMC would provides a common ability that drivers can
-be introduced as classic driver for every individual device, maybe likes
-ethernet cards with their drivers.
-
-And for dummy devices, I have an idea that provides the same
-shared-memory ability for same host, just like loopback devices for
-TCP/IP. SMC-D with loopback devices also shows better performance compared
-with other protocols.
-
-Maybe SMC can cover all the scenes including inter-host (SMC-R),
-inter-VM (SMC-D) and inter-local-process (SMC-D) communication with the
-fastest path, and make things easier for user-space. I'd like to share
-this RFC later when it's ready.
-
-> 
-> > 
-> > [1] https://lore.kernel.org/netdev/20220720170048.20806-1-tonylu@linux.alibaba.com/
-> > 
-> > Cheers,
-> > Tony Lu
-> 
-> A friendly disclaimer: Even tho this API feature is pretty far in the
-> development process it can always be that we decide to drop it, if it does
-> not meet our quality expectations. But of course we'll keep you updated.
-> 
-
-No problem. If there has something that we can involve, we'd be pleasure
-to do that.
-
-Cheers,
-Tony Lu
-
-
-> - Jan
