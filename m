@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4F1611FA2
-	for <lists+linux-rdma@lfdr.de>; Sat, 29 Oct 2022 05:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A88611FA7
+	for <lists+linux-rdma@lfdr.de>; Sat, 29 Oct 2022 05:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbiJ2DKw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Oct 2022 23:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        id S229877AbiJ2DK5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Oct 2022 23:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbiJ2DKp (ORCPT
+        with ESMTP id S229933AbiJ2DKp (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Oct 2022 23:10:45 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D9E2A411
-        for <linux-rdma@vger.kernel.org>; Fri, 28 Oct 2022 20:10:28 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-13b103a3e5dso8355326fac.2
-        for <linux-rdma@vger.kernel.org>; Fri, 28 Oct 2022 20:10:28 -0700 (PDT)
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571BD2A96A
+        for <linux-rdma@vger.kernel.org>; Fri, 28 Oct 2022 20:10:29 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-13b6c1c89bdso8303695fac.13
+        for <linux-rdma@vger.kernel.org>; Fri, 28 Oct 2022 20:10:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6Z4qyWIMoBUjYRI1MMwuXnIkq79/rYZQuSMRXsWdTRk=;
-        b=qD42AWLtOmlILqRP5T0YeDkfw5HSWAAlLgkLPVQtmiLRgJuKDjdkMambHrgndwAdMJ
-         Gjh2rTxr8w/khKrorBtYXMzjkzWgyIpMA83dUgn9JAaO+YQZW/BCXapjXvL9XsPxHnmA
-         f2ws6KoJ4TQE3H1aNbF2GaPZ5nFglqaRRMvCzMcrT9rnouCKBd5Dg5y0Ux2giaJ0ADjQ
-         WlHyusdckG9ATZ7xPN9D7jwzX4j/yjE7mNc0AfhKwXSM/IBY7Of6qED9/P3liOvAoSBJ
-         zb+FBmzanebsSX1fQx78S4kol+B855bIy2AZCE7izs+XAfpT3psjzxr9LfCtaoD4+L36
-         VVDA==
+        bh=soz/F6qoTZgUnUzOYqKvjKeAcULP68mCGNrH+7qHydk=;
+        b=ZMAR4uz82O8YYa71qADcL9CZVS1BmRsnxryByrsWV3hUsfLZrYhNqC3SLNhWuSzWbB
+         RHeN8U5ersX+lruBCxVTLyInJgpzOjqnyT+Y04bA4dReX5kWUz/JQkoDxDXlszOec9h6
+         qhgZdOVVmTjl3HFXGaHBD8lXKldJV9VDtxoYHD39fxUF+UyrsJy0dOg9z1zpD43lisyW
+         Cyms/dPbIqsJShStzdnI/zRWhR58WV5sZohtexMsmIwakXrI3+fYHfEeOXK45pqFKuUI
+         D2OwXeScd2413BXevawJqu7ZA2cV5NaWTchIuXY58CTeLfu8IQ6HYxnx6tYYzIwQnWwr
+         J5Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6Z4qyWIMoBUjYRI1MMwuXnIkq79/rYZQuSMRXsWdTRk=;
-        b=P7JaFUQ4Z49hzdQkcpPpYnp7VI9OGE2vkjCxsdQVsqltdrl8t3Xrn22hG8BM1CsoJf
-         cAX6NiVsw7zOWDZws2i9ugzDCp3ou3Z8vOvkrsS4Lc8Jk8hByBrZh1cn77iO0L8NJVJH
-         kDHGCYXq5obP9ZUaNJHI0KsX75QiVVOKxLnXkixgwdXIgjD3xopMqW8H6MKy4rbnGKqu
-         k2A2KLBhf9lgmHKpR2zvKJbSBOhNIX1QP3XLXn6OT4vNzc6Zmqq+JuX+lJOswGCWeNIf
-         dD4eOt4zLX2r7DeikFa2HjycXshegtQF0L2vxJscajhq4lpmG51CY0HzlgsWAyR8rgw6
-         anzQ==
-X-Gm-Message-State: ACrzQf3oV7KlhsDfL651lBWI5tBp4U8JYfYv5vbz1V0z08f+8aohnB98
-        gR2DdCA7rP7aJn58B7zXUV73vHJUK2g=
-X-Google-Smtp-Source: AMsMyM7Qwpe3H+nxEdO9v14M5MiRG4bdHLnNAYUhACl+6jFUdLulRQw1yBv67mziLpsV4jttreq5eg==
-X-Received: by 2002:a05:6870:f201:b0:13b:2f1f:865b with SMTP id t1-20020a056870f20100b0013b2f1f865bmr11399373oao.205.1667013028132;
-        Fri, 28 Oct 2022 20:10:28 -0700 (PDT)
+        bh=soz/F6qoTZgUnUzOYqKvjKeAcULP68mCGNrH+7qHydk=;
+        b=RmCy/f7iWjYdsf9tg8rdMOslfhxLQc1MRu7HpI7ICrIgncqYj53YbwzPobT9cp26hV
+         YFKIPAVZMBT+tlP/RqPyQ5LkTUYMMB+ypgelKy8aIsspnwXIVOvmJQyI/7iW+z6obMKL
+         OhmEFv6veY50ccW3X1z5LbGXuJCCocfJV5XtiokwX5590Oh/GD58wIbZoAUCyt/32cYB
+         pChRQZGr5AxcH+8c75h44U86yuoSEZd86FaeriNB7ZFEPJsvKV8PHcD69eRy1udLCiqI
+         hbuugEmIDvF0v8Z2QIEphqO7q/VxUIRfjjo4BTrWA3BaDyLoYJdSHf25jG+L1siS2h40
+         CoGw==
+X-Gm-Message-State: ACrzQf1Swnh63JHQzR5L7rlnP2WXnjOriy1kBlqS0FNqXXJ5Lm/OxVj/
+        wfknWQvKaePpizT74b/7bIg=
+X-Google-Smtp-Source: AMsMyM5TMjLgrq7+C1+F2ZVElBA1teWXl3TMyg6kD21nGMvYMEYjBCDqK58/AbtEFAqFRPIVlh1Tdg==
+X-Received: by 2002:a05:6870:3120:b0:132:7d08:7059 with SMTP id v32-20020a056870312000b001327d087059mr1336547oaa.226.1667013029213;
+        Fri, 28 Oct 2022 20:10:29 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-5d1e-45f3-e9b5-d771.res6.spectrum.com. [2603:8081:140c:1a00:5d1e:45f3:e9b5:d771])
-        by smtp.googlemail.com with ESMTPSA id p3-20020a0568301d4300b006391adb6034sm162493oth.72.2022.10.28.20.10.27
+        by smtp.googlemail.com with ESMTPSA id p3-20020a0568301d4300b006391adb6034sm162493oth.72.2022.10.28.20.10.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Oct 2022 20:10:27 -0700 (PDT)
+        Fri, 28 Oct 2022 20:10:28 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, leon@kernel.org, zyjzyj2000@gmail.com,
         jhack@hpe.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
         Ian Ziemba <ian.ziemba@hpe.com>
-Subject: [PATCH for-next v3 10/13] RDMA/rxe: Replace task->destroyed by task state INVALID.
-Date:   Fri, 28 Oct 2022 22:10:07 -0500
-Message-Id: <20221029031009.64467-11-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v3 11/13] RDMA/rxe: Add workqueue support for tasks
+Date:   Fri, 28 Oct 2022 22:10:08 -0500
+Message-Id: <20221029031009.64467-12-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221029031009.64467-1-rpearsonhpe@gmail.com>
 References: <20221029031009.64467-1-rpearsonhpe@gmail.com>
@@ -72,182 +72,172 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add a new state TASK_STATE_INVALID to replace the flag task->destroyed.
-Make changes to task->state proteted by task->lock now including
-TASK_STATE_INVALID.
+Add a third task type RXE_TASK_TYPE_WORKQUEUE to rxe_task.c.
 
 Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_task.c | 49 ++++++++++------------------
- drivers/infiniband/sw/rxe/rxe_task.h |  3 +-
- 2 files changed, 19 insertions(+), 33 deletions(-)
+ drivers/infiniband/sw/rxe/rxe.c      |  9 +++-
+ drivers/infiniband/sw/rxe/rxe_task.c | 66 ++++++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_task.h | 10 ++++-
+ 3 files changed, 83 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 51daac5c4feb..6d80218334ca 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -210,10 +210,16 @@ static int __init rxe_module_init(void)
+ {
+ 	int err;
+ 
+-	err = rxe_net_init();
++	err = rxe_alloc_wq();
+ 	if (err)
+ 		return err;
+ 
++	err = rxe_net_init();
++	if (err) {
++		rxe_destroy_wq();
++		return err;
++	}
++
+ 	rdma_link_register(&rxe_link_ops);
+ 	pr_info("loaded\n");
+ 	return 0;
+@@ -224,6 +230,7 @@ static void __exit rxe_module_exit(void)
+ 	rdma_link_unregister(&rxe_link_ops);
+ 	ib_unregister_driver(RDMA_DRIVER_RXE);
+ 	rxe_net_exit();
++	rxe_destroy_wq();
+ 
+ 	pr_info("unloaded\n");
+ }
 diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
-index 0fd0d97e8272..da175f2a0dbf 100644
+index da175f2a0dbf..c1177752088d 100644
 --- a/drivers/infiniband/sw/rxe/rxe_task.c
 +++ b/drivers/infiniband/sw/rxe/rxe_task.c
-@@ -8,9 +8,6 @@
+@@ -6,6 +6,22 @@
  
+ #include "rxe.h"
+ 
++static struct workqueue_struct *rxe_wq;
++
++int rxe_alloc_wq(void)
++{
++	rxe_wq = alloc_workqueue("rxe_wq", WQ_CPU_INTENSIVE, WQ_MAX_ACTIVE);
++	if (!rxe_wq)
++		return -ENOMEM;
++
++	return 0;
++}
++
++void rxe_destroy_wq(void)
++{
++	destroy_workqueue(rxe_wq);
++}
++
  static bool task_is_idle(struct rxe_task *task)
  {
--	if (task->destroyed)
--		return false;
--
  	spin_lock_bh(&task->lock);
- 	switch (task->state) {
- 	case TASK_STATE_IDLE:
-@@ -19,12 +16,8 @@ static bool task_is_idle(struct rxe_task *task)
- 		return true;
- 	case TASK_STATE_BUSY:
- 		task->state = TASK_STATE_ARMED;
--		fallthrough;
--	case TASK_STATE_ARMED:
--	case TASK_STATE_PAUSED:
+@@ -198,6 +214,53 @@ static void tsklet_init(struct rxe_task *task)
+ 	task->ops = &tsklet_ops;
+ }
+ 
++static void work_sched(struct rxe_task *task)
++{
++	if (task_is_idle(task))
++		queue_work(rxe_wq, &task->work);
++}
++
++static void work_do_task(struct work_struct *work)
++{
++	do_task(container_of(work, struct rxe_task, work));
++}
++
++static void work_run(struct rxe_task *task)
++{
++	if (task_is_idle(task))
++		do_task(task);
++}
++
++static void work_enable(struct rxe_task *task)
++{
++	enable_task(task);
++}
++
++static void work_disable(struct rxe_task *task)
++{
++	disable_task(task);
++	flush_workqueue(rxe_wq);
++}
++
++static void work_cleanup(struct rxe_task *task)
++{
++	cleanup_task(task);
++}
++
++static const struct rxe_task_ops work_ops = {
++	.sched = work_sched,
++	.run = work_run,
++	.enable = work_enable,
++	.disable = work_disable,
++	.cleanup = work_cleanup,
++};
++
++static void work_init(struct rxe_task *task)
++{
++	INIT_WORK(&task->work, work_do_task);
++	task->ops = &work_ops;
++}
++
+ int rxe_init_task(struct rxe_task *task, void *arg, int (*func)(void *),
+ 		  enum rxe_task_type type)
+ {
+@@ -215,6 +278,9 @@ int rxe_init_task(struct rxe_task *task, void *arg, int (*func)(void *),
+ 	case RXE_TASK_TYPE_TASKLET:
+ 		tsklet_init(task);
  		break;
++	case RXE_TASK_TYPE_WORKQUEUE:
++		work_init(task);
++		break;
  	default:
--		WARN_ON(1);
- 		break;
- 	}
- 	spin_unlock_bh(&task->lock);
-@@ -41,7 +34,8 @@ static void do_task(struct rxe_task *task)
- 
- 	/* flush out pending tasks */
- 	spin_lock_bh(&task->lock);
--	if (task->state == TASK_STATE_PAUSED) {
-+	if (task->state == TASK_STATE_PAUSED ||
-+	    task->state == TASK_STATE_INVALID) {
- 		spin_unlock_bh(&task->lock);
- 		return;
- 	}
-@@ -69,10 +63,7 @@ static void do_task(struct rxe_task *task)
- 			task->state = TASK_STATE_BUSY;
- 			cont = 1;
- 			break;
--		case TASK_STATE_PAUSED:
--			break;
- 		default:
--			WARN_ON(1);
- 			break;
- 		}
- 		spin_unlock_bh(&task->lock);
-@@ -87,14 +78,16 @@ static void do_task(struct rxe_task *task)
- static void disable_task(struct rxe_task *task)
- {
- 	spin_lock_bh(&task->lock);
--	task->state = TASK_STATE_PAUSED;
-+	if (task->state != TASK_STATE_INVALID)
-+		task->state = TASK_STATE_PAUSED;
- 	spin_unlock_bh(&task->lock);
- }
- 
- static void enable_task(struct rxe_task *task)
- {
- 	spin_lock_bh(&task->lock);
--	task->state = TASK_STATE_IDLE;
-+	if (task->state != TASK_STATE_INVALID)
-+		task->state = TASK_STATE_IDLE;
- 	spin_unlock_bh(&task->lock);
- 
- 	/* restart task in case */
-@@ -104,16 +97,16 @@ static void enable_task(struct rxe_task *task)
- /* busy wait until any previous tasks are done */
- static void cleanup_task(struct rxe_task *task)
- {
--	bool idle;
--
--	task->destroyed = true;
-+	bool busy;
- 
- 	do {
- 		spin_lock_bh(&task->lock);
--		idle = (task->state == TASK_STATE_IDLE ||
--			task->state == TASK_STATE_PAUSED);
-+		busy = (task->state == TASK_STATE_BUSY ||
-+			task->state == TASK_STATE_ARMED);
-+		if (!busy)
-+			task->state = TASK_STATE_INVALID;
- 		spin_unlock_bh(&task->lock);
--	} while (!idle);
-+	} while (busy);
- }
- 
- /* silently treat schedule as inline for inline tasks */
-@@ -131,14 +124,12 @@ static void inline_run(struct rxe_task *task)
- 
- static void inline_disable(struct rxe_task *task)
- {
--	if (!task->destroyed)
--		disable_task(task);
-+	disable_task(task);
- }
- 
- static void inline_enable(struct rxe_task *task)
- {
--	if (!task->destroyed)
--		enable_task(task);
-+	enable_task(task);
- }
- 
- static void inline_cleanup(struct rxe_task *task)
-@@ -168,10 +159,7 @@ static void tsklet_sched(struct rxe_task *task)
- 
- static void tsklet_do_task(struct tasklet_struct *tasklet)
- {
--	struct rxe_task *task = container_of(tasklet, typeof(*task), tasklet);
--
--	if (!task->destroyed)
--		do_task(task);
-+	do_task(container_of(tasklet, struct rxe_task, tasklet));
- }
- 
- static void tsklet_run(struct rxe_task *task)
-@@ -182,14 +170,12 @@ static void tsklet_run(struct rxe_task *task)
- 
- static void tsklet_disable(struct rxe_task *task)
- {
--	if (!task->destroyed)
--		disable_task(task);
-+	disable_task(task);
- }
- 
- static void tsklet_enable(struct rxe_task *task)
- {
--	if (!task->destroyed)
--		enable_task(task);
-+	enable_task(task);
- }
- 
- static void tsklet_cleanup(struct rxe_task *task)
-@@ -217,7 +203,6 @@ int rxe_init_task(struct rxe_task *task, void *arg, int (*func)(void *),
- {
- 	task->arg	= arg;
- 	task->func	= func;
--	task->destroyed	= false;
- 	task->type	= type;
- 	task->state	= TASK_STATE_IDLE;
- 
+ 		pr_debug("%s: invalid task type = %d\n", __func__, type);
+ 		return -EINVAL;
 diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
-index 0146307fc517..2c4ef4d339f1 100644
+index 2c4ef4d339f1..d1156b935635 100644
 --- a/drivers/infiniband/sw/rxe/rxe_task.h
 +++ b/drivers/infiniband/sw/rxe/rxe_task.h
-@@ -27,6 +27,7 @@ enum {
- 	TASK_STATE_BUSY		= 1,
- 	TASK_STATE_ARMED	= 2,
- 	TASK_STATE_PAUSED	= 3,
-+	TASK_STATE_INVALID	= 4,
+@@ -20,6 +20,7 @@ struct rxe_task_ops {
+ enum rxe_task_type {
+ 	RXE_TASK_TYPE_INLINE	= 0,
+ 	RXE_TASK_TYPE_TASKLET	= 1,
++	RXE_TASK_TYPE_WORKQUEUE	= 2,
  };
  
- /*
-@@ -41,7 +42,7 @@ struct rxe_task {
+ enum {
+@@ -36,7 +37,10 @@ enum {
+  * called again.
+  */
+ struct rxe_task {
+-	struct tasklet_struct		tasklet;
++	union {
++		struct tasklet_struct		tasklet;
++		struct work_struct		work;
++	};
+ 	int				state;
+ 	spinlock_t			lock;
  	void				*arg;
- 	int				(*func)(void *arg);
- 	int				ret;
--	bool				destroyed;
-+	bool				invalid;
- 	const struct rxe_task_ops	*ops;
+@@ -47,6 +51,10 @@ struct rxe_task {
  	enum rxe_task_type		type;
  };
+ 
++int rxe_alloc_wq(void);
++
++void rxe_destroy_wq(void);
++
+ int rxe_init_task(struct rxe_task *task, void *arg, int (*func)(void *),
+ 		  enum rxe_task_type type);
+ 
 -- 
 2.34.1
 
