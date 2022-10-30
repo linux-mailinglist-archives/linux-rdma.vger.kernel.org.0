@@ -2,65 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C53612C59
-	for <lists+linux-rdma@lfdr.de>; Sun, 30 Oct 2022 19:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 119FB612C71
+	for <lists+linux-rdma@lfdr.de>; Sun, 30 Oct 2022 20:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbiJ3Sxt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 30 Oct 2022 14:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
+        id S229588AbiJ3Tdt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 30 Oct 2022 15:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbiJ3Sxs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 30 Oct 2022 14:53:48 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DD39FC8
-        for <linux-rdma@vger.kernel.org>; Sun, 30 Oct 2022 11:53:44 -0700 (PDT)
+        with ESMTP id S229441AbiJ3Tds (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 30 Oct 2022 15:33:48 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF4ADA5
+        for <linux-rdma@vger.kernel.org>; Sun, 30 Oct 2022 12:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1667156024; x=1698692024;
+  t=1667158424; x=1698694424;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=KOXzDFRJdLBDUriplyv3zDMPgOlgWDTotnYjFgZXesk=;
-  b=GeXTPguGoq948LmlspPt957YCmcl2aL/fMRJdRgIo07jn7x209pYyZI6
-   QPiaYtw7RyUg2WEInVy37hAfc2zlYo1NJ0/Q1X87HAy2Zow3JOXICHNxl
-   SNMoVcei4wo7x9SUVEw2O1rl9gGxHDDMxOIvXloO5R40A9un0cAWy0A+F
-   JLt9NrHZY0vXrTjU1Al9tlRx86ywi8TnxvZs0b/geLk6Zkf5S+c+tX7O9
-   ytM6Ai+vb0aY/LdhCMGiAdlb4Vu0ntm6iZ3j7SwIXv1AJEIZ9LRzOETQM
-   /QCLr6dvJ55zQM2Q7Vt5pS7p0wHTphvLYXS/YJf/X5wMAg+qrVUqs/D4B
+  bh=wO6DXN/Bk7g3PqNpv2RhZc7nbf/hCuxbpXEB3kBR2Zc=;
+  b=Ewg4y6Z0HU7IUIN4Pw8uH+8Y4KpxMqzjWKlY0o5DPm+vAMXd+6qWTwjs
+   S22me50++e7PkRj942Yur8OUMcxjRY9L40VVRWzf7QinY1Fk7ih/Go3Qn
+   aBGUYMCGL2JgsCsQKMfmA1Xe6iu08ohRak5/T1Tzy4eZ3Zz7et7qUI822
+   DhcvawmIl9n+4OoACqGG2evLBMO8fsBHGMIFJbtcRkceOi/7zDhn/UeJi
+   F7TsO+jW5m/Vn+ik16HJNNnmW/KFc6TRGzKwJ69ru6ULv3zl3YfGnEExv
+   9cOun4gpsJmERLepRDm9vyRertZuezbrxH54h/p2uyk4AlAlSvs4ZTube
    g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10516"; a="309856790"
+X-IronPort-AV: E=McAfee;i="6500,9779,10516"; a="289165810"
 X-IronPort-AV: E=Sophos;i="5.95,226,1661842800"; 
-   d="scan'208";a="309856790"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2022 11:53:43 -0700
+   d="scan'208";a="289165810"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2022 12:33:43 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10516"; a="722590712"
+X-IronPort-AV: E=McAfee;i="6500,9779,10516"; a="962562577"
 X-IronPort-AV: E=Sophos;i="5.95,226,1661842800"; 
-   d="scan'208";a="722590712"
+   d="scan'208";a="962562577"
 Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 30 Oct 2022 11:53:39 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 30 Oct 2022 12:33:40 -0700
 Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1opDRC-000CHO-3A;
-        Sun, 30 Oct 2022 18:53:38 +0000
-Date:   Mon, 31 Oct 2022 02:52:51 +0800
+        id 1opE3v-000CJA-31;
+        Sun, 30 Oct 2022 19:33:39 +0000
+Date:   Mon, 31 Oct 2022 03:33:16 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
         leon@kernel.org, zyjzyj2000@gmail.com, jhack@hpe.com,
         linux-rdma@vger.kernel.org
 Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
         Bob Pearson <rpearsonhpe@gmail.com>
-Subject: Re: [PATCH for-next 03/17] RDMA/rxe: Isolate code to build request
- packet
-Message-ID: <202210310201.ILNpklgm-lkp@intel.com>
-References: <20221027185510.33808-4-rpearsonhpe@gmail.com>
+Subject: Re: [PATCH for-next 12/17] RDMA/rxe: Extend rxe_icrc.c to support
+ frags
+Message-ID: <202210310340.NkTBkfQx-lkp@intel.com>
+References: <20221027185510.33808-13-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="p4932y+kvqxKOtnu"
+Content-Type: multipart/mixed; boundary="p4sPFOrlzWmV0ois"
 Content-Disposition: inline
-In-Reply-To: <20221027185510.33808-4-rpearsonhpe@gmail.com>
+In-Reply-To: <20221027185510.33808-13-rpearsonhpe@gmail.com>
 X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        UPPERCASE_75_100 autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,UPPERCASE_75_100 autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -68,7 +68,7 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---p4932y+kvqxKOtnu
+--p4sPFOrlzWmV0ois
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -80,8 +80,8 @@ Thank you for the patch! Perhaps something to improve:
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Bob-Pearson/RDMA-rxe-Enable-scatter-gather-support-for-skbs/20221028-025839
 base:   c9eeabac5e8d27a3f40280908e089058bab39edb
-patch link:    https://lore.kernel.org/r/20221027185510.33808-4-rpearsonhpe%40gmail.com
-patch subject: [PATCH for-next 03/17] RDMA/rxe: Isolate code to build request packet
+patch link:    https://lore.kernel.org/r/20221027185510.33808-13-rpearsonhpe%40gmail.com
+patch subject: [PATCH for-next 12/17] RDMA/rxe: Extend rxe_icrc.c to support frags
 config: arm64-allyesconfig
 compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project 791a7ae1ba3efd6bca96338e10ffde557ba83920)
 reproduce (this is a W=1 build):
@@ -89,10 +89,10 @@ reproduce (this is a W=1 build):
         chmod +x ~/bin/make.cross
         # install arm64 cross compiling tool for clang build
         # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/574d2b0517821f3c83c7962814b820a6880e2224
+        # https://github.com/intel-lab-lkp/linux/commit/8771e470c3460298af105ec419d49256a0156b3a
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Bob-Pearson/RDMA-rxe-Enable-scatter-gather-support-for-skbs/20221028-025839
-        git checkout 574d2b0517821f3c83c7962814b820a6880e2224
+        git checkout 8771e470c3460298af105ec419d49256a0156b3a
         # save the config file
         mkdir build_dir && cp config build_dir/.config
         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/infiniband/sw/rxe/
@@ -102,106 +102,75 @@ If you fix the issue, kindly add following tag where applicable
 
 All warnings (new ones prefixed by >>):
 
->> drivers/infiniband/sw/rxe/rxe_req.c:482:6: warning: variable 'skb' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-           if (unlikely(!av))
-               ^~~~~~~~~~~~~
-   include/linux/compiler.h:78:22: note: expanded from macro 'unlikely'
-   # define unlikely(x)    __builtin_expect(!!(x), 0)
-                           ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/infiniband/sw/rxe/rxe_req.c:523:6: note: uninitialized use occurs here
-           if (skb)
-               ^~~
-   drivers/infiniband/sw/rxe/rxe_req.c:482:2: note: remove the 'if' if its condition is always false
-           if (unlikely(!av))
-           ^~~~~~~~~~~~~~~~~~
-   drivers/infiniband/sw/rxe/rxe_req.c:465:21: note: initialize the variable 'skb' to silence this warning
-           struct sk_buff *skb;
-                              ^
-                               = NULL
+>> drivers/infiniband/sw/rxe/rxe_icrc.c:142:8: warning: no previous prototype for function 'rxe_icrc_payload' [-Wmissing-prototypes]
+   __be32 rxe_icrc_payload(struct sk_buff *skb, struct rxe_pkt_info *pkt,
+          ^
+   drivers/infiniband/sw/rxe/rxe_icrc.c:142:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   __be32 rxe_icrc_payload(struct sk_buff *skb, struct rxe_pkt_info *pkt,
+   ^
+   static 
    1 warning generated.
 
 
-vim +482 drivers/infiniband/sw/rxe/rxe_req.c
+vim +/rxe_icrc_payload +142 drivers/infiniband/sw/rxe/rxe_icrc.c
 
-   458	
-   459	static struct sk_buff *rxe_init_req_packet(struct rxe_qp *qp,
-   460						   struct rxe_send_wqe *wqe,
-   461						   int opcode, u32 payload,
-   462						   struct rxe_pkt_info *pkt)
-   463	{
-   464		struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-   465		struct sk_buff *skb;
-   466		struct rxe_av *av;
-   467		struct rxe_ah *ah;
-   468		void *padp;
-   469		int pad;
-   470		int err = -EINVAL;
-   471	
-   472		pkt->rxe = rxe;
-   473		pkt->opcode = opcode;
-   474		pkt->qp = qp;
-   475		pkt->psn = qp->req.psn;
-   476		pkt->mask = rxe_opcode[opcode].mask;
-   477		pkt->wqe = wqe;
-   478		pkt->port_num = 1;
-   479	
-   480		/* get address vector and address handle for UD qps only */
-   481		av = rxe_get_av(pkt, &ah);
- > 482		if (unlikely(!av))
-   483			goto err_out;
-   484	
-   485		/* length from start of bth to end of icrc */
-   486		pad = (-payload) & 0x3;
-   487		pkt->paylen = rxe_opcode[opcode].length + payload +
-   488							pad + RXE_ICRC_SIZE;
-   489	
-   490		/* init skb */
-   491		skb = rxe_init_packet(rxe, av, pkt);
-   492		if (unlikely(!skb))
-   493			goto err_out;
-   494	
-   495		rxe_init_roce_hdrs(qp, wqe, pkt, pad);
-   496	
-   497		if (pkt->mask & RXE_WRITE_OR_SEND_MASK) {
-   498			err = rxe_init_payload(qp, wqe, pkt, payload);
-   499			if (err)
-   500				goto err_out;
-   501		}
-   502	
-   503		if (pad) {
-   504			padp = payload_addr(pkt) + payload;
-   505			memset(padp, 0, pad);
-   506		}
-   507	
-   508		/* IP and UDP network headers */
-   509		err = rxe_prepare(av, pkt, skb);
-   510		if (err)
-   511			goto err_out;
-   512	
-   513		if (ah)
-   514			rxe_put(ah);
-   515	
-   516		return skb;
-   517	
-   518	err_out:
-   519		if (err == -EFAULT)
-   520			wqe->status = IB_WC_LOC_PROT_ERR;
-   521		else
-   522			wqe->status = IB_WC_LOC_QP_OP_ERR;
-   523		if (skb)
-   524			kfree_skb(skb);
-   525		if (ah)
-   526			rxe_put(ah);
-   527	
-   528		return NULL;
-   529	}
-   530	
+   131	
+   132	/**
+   133	 * rxe_icrc_payload() - Compute the ICRC for a packet payload and also
+   134	 *			compute the address of the icrc in the packet.
+   135	 * @skb: packet buffer
+   136	 * @pkt: packet information
+   137	 * @icrc: current icrc i.e. including headers
+   138	 * @icrcp: returned pointer to icrc in skb
+   139	 *
+   140	 * Return: 0 if the values match else an error
+   141	 */
+ > 142	__be32 rxe_icrc_payload(struct sk_buff *skb, struct rxe_pkt_info *pkt,
+   143				__be32 icrc, __be32 **icrcp)
+   144	{
+   145		struct skb_shared_info *shinfo = skb_shinfo(skb);
+   146		skb_frag_t *frag;
+   147		u8 *addr;
+   148		int hdr_len;
+   149		int len;
+   150		int i;
+   151	
+   152		/* handle any payload left in the linear buffer */
+   153		hdr_len = rxe_opcode[pkt->opcode].length;
+   154		addr = pkt->hdr + hdr_len;
+   155		len = skb_tail_pointer(skb) - skb_transport_header(skb)
+   156			- sizeof(struct udphdr) - hdr_len;
+   157		if (!shinfo->nr_frags) {
+   158			len -= RXE_ICRC_SIZE;
+   159			*icrcp = (__be32 *)(addr + len);
+   160		}
+   161		if (len > 0)
+   162			icrc = rxe_crc32(pkt->rxe, icrc, payload_addr(pkt), len);
+   163		WARN_ON(len < 0);
+   164	
+   165		/* handle any payload in frags */
+   166		for (i = 0; i < shinfo->nr_frags; i++) {
+   167			frag = &shinfo->frags[i];
+   168			addr = page_to_virt(frag->bv_page) + frag->bv_offset;
+   169			len = frag->bv_len;
+   170			if (i == shinfo->nr_frags - 1) {
+   171				len -= RXE_ICRC_SIZE;
+   172				*icrcp = (__be32 *)(addr + len);
+   173			}
+   174			if (len > 0)
+   175				icrc = rxe_crc32(pkt->rxe, icrc, addr, len);
+   176			WARN_ON(len < 0);
+   177		}
+   178	
+   179		return icrc;
+   180	}
+   181	
 
 -- 
 0-DAY CI Kernel Test Service
 https://01.org/lkp
 
---p4932y+kvqxKOtnu
+--p4sPFOrlzWmV0ois
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename=config
 
@@ -15867,4 +15836,4 @@ CONFIG_WARN_MISSING_DOCUMENTS=y
 CONFIG_WARN_ABI_ERRORS=y
 # end of Kernel hacking
 
---p4932y+kvqxKOtnu--
+--p4sPFOrlzWmV0ois--
