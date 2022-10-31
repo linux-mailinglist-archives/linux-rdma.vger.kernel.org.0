@@ -2,61 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F286136A5
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Oct 2022 13:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387156136A7
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Oct 2022 13:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbiJaMmx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Oct 2022 08:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
+        id S230249AbiJaMmy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Oct 2022 08:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbiJaMmw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Oct 2022 08:42:52 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED5AF024
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Oct 2022 05:42:50 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5so7059111wmo.1
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Oct 2022 05:42:50 -0700 (PDT)
+        with ESMTP id S231194AbiJaMmx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Oct 2022 08:42:53 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4104BF029
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Oct 2022 05:42:52 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id z14so15775731wrn.7
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Oct 2022 05:42:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=27jiGBRkKA9KVsu+9TEtFs5XoMhm35d52CGzAYnTh6g=;
-        b=2CcpRxK5VuCTEhqsRyMrSF8VeFTgPBCMBvUXv+cEeNqZu05OHywqk5XzZ/rqCOLVIx
-         fXl0QpsAavV296IbZUewLvQOuORrfPeT5nRhOzL5j6BpKMq3yUNqMhu9W4SM29ZOh2t1
-         CIU6GwOVlCbnoVqAjcLWTyzyk4nUhw8hx2FORyhhJ8JQI4gIJ+dXZLC3jiAjbzTpamY1
-         uKDeWS9qEp7fXKHmRFXSIWCDSEpP7Cffz99g2lJ10O+4oBgmj5OHCJxyve35S4u4B0Be
-         PwtAqHOQg5aUr+6lEAnv2vCaaiu8io8N8vC9O8XPqoHdAU6l2NW1H1lIKZT6e/MsBsZ7
-         VGVA==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A8an90UsiLKs2claL8HWs+wiEf3vQhctPHwegzIpH0s=;
+        b=UJk4CYIvp9kaDE3lgRbDyX148xxlxDHxPEbpSZm/MZCgp1mL4iiKIrJxu+jqwgZGJy
+         +PnnBGjcbQ01Bb2DgNYN7VpYST3WTPETcae++qD0SrLjrIkLSN7JHSYTG/SdfRn2EI9A
+         mia7TNRxKtbwk+vSmUxQwn0yMPVC6YdHEusabOJ1tf96aAhvp+ElFBqts1iSD9c+OJv0
+         mgbtvm27107iGggD6aKmAY/oheXeizpkA2L4qnIirKV1Y/Wtj47niKu8OHnyTNuwv6Yg
+         gYyfx7YIbMtecruiQF3uO/lIyjFkJKZKSqynjnQ7pt8p2+Ccvbb9m6LXnru552WIrg0Q
+         +MnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=27jiGBRkKA9KVsu+9TEtFs5XoMhm35d52CGzAYnTh6g=;
-        b=stThNvULJavlN77lq/hczTlNwtU/IiJs3pLx0hX0/Qgn6vzwnFNv1AhuJaH+hqHXNq
-         VR87biwEZgbBw4AXUm+jJVV3AYMgUaI2gISSHhxB58HYn3pYhU+buL/+wL3zj8StbF5X
-         aO0TQ1v20Tx+jiMlhI9w8zDlFK26LX7dCBdtFz/QgFOMWQ2OEtVB2+MZQZcQTeSbaSeN
-         2x1uPx6P3hVv+T4QLo3JxWgJ+LgJPP4GAs04IrWKAZZw7oww14m4HcIsYvafSAZsBNUb
-         uVLe54lfZl7xvsc1XsLcsk2YA1HUjMyKgAkB8B1FHkcQjFs+n7p85S3b5c10O/+gfwWs
-         /Rpg==
-X-Gm-Message-State: ACrzQf21HoPyiJ/PCNTfnuvzqH7PX+niLF+2EdsKysWUj5spDhJbnzbV
-        gQEmP2AHPJZwiyA29WpISpYUSQ==
-X-Google-Smtp-Source: AMsMyM6AvUfHo2kQiXs45niXwce4oPtw18jQpOxzOPA+wEiBUIoDMm54Fux4J+weugaLkwkcyMKV7A==
-X-Received: by 2002:a05:600c:a4c:b0:3b4:fc1b:81 with SMTP id c12-20020a05600c0a4c00b003b4fc1b0081mr7790068wmq.125.1667220169438;
-        Mon, 31 Oct 2022 05:42:49 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A8an90UsiLKs2claL8HWs+wiEf3vQhctPHwegzIpH0s=;
+        b=5DqpDS5VN2Jc7rfXdYmcEs1+oRNvLV0gGPjsBj6hcK9eg/yCwJELH+Ipe+NSZD3W3j
+         95yO3dvUFwwOIFwJSE6BB5oTuv3nw7VsTWM4O+Kh2iLcu8aCbCD9PsSYltEmxx4qDb+r
+         6Pw6UjG6N1DkH+sY3hYCqyuMpzfZ6CeQrP9rNT2SdevIpvv27t9Vx+O0pm1XpHixdkas
+         HYEEWAaeSnqi2G7+OmpYhvoSMMCHS50jFftHZnv/mafl3jfk/NDiel2lEnLS9iu+8tGf
+         YNnIZ6ndRxC2iJuabl05WN7mcmOhKc+htZ6DWWYSsYmYbzV9y8cnvizLhGKrzmPNBqMr
+         wQTw==
+X-Gm-Message-State: ACrzQf3/hI+Z91DO/ADGODzeAFrYCckp1TSpjDcpsOespWEdbSOyL9HT
+        QyxC2kZsKN3qWMHpeulsm7xeAw==
+X-Google-Smtp-Source: AMsMyM5s/bETjONVsNNG+fpJwKUXp+9N6rNKieiQxNy1dhp3BgL9mBetu7zqRren3dWZf90430a6DQ==
+X-Received: by 2002:a5d:44d2:0:b0:236:d8c5:122e with SMTP id z18-20020a5d44d2000000b00236d8c5122emr1419442wrr.611.1667220170752;
+        Mon, 31 Oct 2022 05:42:50 -0700 (PDT)
 Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id bd26-20020a05600c1f1a00b003c6b70a4d69sm7153511wmb.42.2022.10.31.05.42.48
+        by smtp.gmail.com with ESMTPSA id h10-20020a5d4fca000000b002367ad808a9sm6994892wrw.30.2022.10.31.05.42.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Oct 2022 05:42:48 -0700 (PDT)
+        Mon, 31 Oct 2022 05:42:50 -0700 (PDT)
 From:   Jiri Pirko <jiri@resnulli.us>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
         edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
         saeedm@nvidia.com, linux-rdma@vger.kernel.org
-Subject: [patch net-next v3 00/13] net: fix netdev to devlink_port linkage and expose to user
-Date:   Mon, 31 Oct 2022 13:42:35 +0100
-Message-Id: <20221031124248.484405-1-jiri@resnulli.us>
+Subject: [patch net-next v3 01/13] net: devlink: convert devlink port type-specific pointers to union
+Date:   Mon, 31 Oct 2022 13:42:36 +0100
+Message-Id: <20221031124248.484405-2-jiri@resnulli.us>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20221031124248.484405-1-jiri@resnulli.us>
+References: <20221031124248.484405-1-jiri@resnulli.us>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -70,100 +73,91 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jiri Pirko <jiri@nvidia.com>
 
-Currently, the info about linkage from netdev to the related
-devlink_port instance is done using ndo_get_devlink_port().
-This is not sufficient, as it is up to the driver to implement it and
-some of them don't do that. Also it leads to a lot of unnecessary
-boilerplate code in all the drivers.
+Instead of storing type_dev as a void pointer, convert it to union and
+use it to store either struct net_device or struct ib_device pointer.
 
-Instead of that, introduce a possibility for driver to expose this
-relationship by new SET_NETDEV_DEVLINK_PORT macro which stores it into
-dev->devlink_port. It is ensured by the driver init/fini flows that
-the devlink_port pointer does not change during the netdev lifetime.
-Devlink port is always registered before netdev register and
-unregistered after netdev unregister.
-
-Benefit from this linkage setup and remove explicit calls from driver
-to devlink_port_type_eth_set() and clear(). Many of the driver
-didn't use it correctly anyway. Let the devlink.c to track associated
-netdev events and adjust type and type pointer accordingly. Also
-use this events to to keep track on ifname change and remove RTNL lock
-taking from devlink_nl_port_fill().
-
-Finally, remove the ndo_get_devlink_port() ndo which is no longer used
-and expose devlink_port handle as a new netdev netlink attribute to the
-user. That way, during the ifname->devlink_port lookup, userspace app
-does not have to dump whole devlink port list and instead it can just
-do a simple RTM_GETLINK query.
-
+Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
-v2->v3:
-- see patch 6 for a changelog
-v1->v2:
-- see patches 5 and 6 for changelogs
+ include/net/devlink.h | 13 ++++++++++---
+ net/core/devlink.c    | 17 +++++++++++++----
+ 2 files changed, 23 insertions(+), 7 deletions(-)
 
-Jiri Pirko (13):
-  net: devlink: convert devlink port type-specific pointers to union
-  net: devlink: move port_type_warn_schedule() call to
-    __devlink_port_type_set()
-  net: devlink: move port_type_netdev_checks() call to
-    __devlink_port_type_set()
-  net: devlink: take RTNL in port_fill() function only if it is not held
-  net: devlink: track netdev with devlink_port assigned
-  net: make drivers to use SET_NETDEV_DEVLINK_PORT to set devlink_port
-  net: devlink: remove netdev arg from devlink_port_type_eth_set()
-  net: devlink: remove net namespace check from devlink_nl_port_fill()
-  net: devlink: store copy netdevice ifindex and ifname to allow
-    port_fill() without RTNL held
-  net: devlink: add not cleared type warning to port unregister
-  net: devlink: use devlink_port pointer instead of ndo_get_devlink_port
-  net: remove unused ndo_get_devlink_port
-  net: expose devlink port over rtnetlink
-
- drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  14 +-
- .../freescale/dpaa2/dpaa2-eth-devlink.c       |  11 +-
- .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   1 +
- .../ethernet/fungible/funeth/funeth_main.c    |  13 +-
- drivers/net/ethernet/intel/ice/ice_devlink.c  |  14 +-
- drivers/net/ethernet/intel/ice/ice_main.c     |  18 +-
- drivers/net/ethernet/intel/ice/ice_repr.c     |  12 +-
- .../marvell/prestera/prestera_devlink.c       |  17 --
- .../marvell/prestera/prestera_devlink.h       |   5 -
- .../ethernet/marvell/prestera/prestera_main.c |   5 +-
- .../net/ethernet/mellanox/mlx4/en_netdev.c    |   9 +-
- drivers/net/ethernet/mellanox/mlx4/main.c     |   2 +-
- .../ethernet/mellanox/mlx5/core/en/devlink.c  |  17 --
- .../ethernet/mellanox/mlx5/core/en/devlink.h  |   2 -
- .../net/ethernet/mellanox/mlx5/core/en_main.c |   4 +-
- .../net/ethernet/mellanox/mlx5/core/en_rep.c  |  43 +---
- drivers/net/ethernet/mellanox/mlxsw/core.c    |  20 +-
- drivers/net/ethernet/mellanox/mlxsw/core.h    |   7 +-
- drivers/net/ethernet/mellanox/mlxsw/minimal.c |  17 +-
- .../net/ethernet/mellanox/mlxsw/spectrum.c    |  16 +-
- drivers/net/ethernet/mscc/ocelot_net.c        |  11 +-
- drivers/net/ethernet/mscc/ocelot_vsc7514.c    |   9 -
- drivers/net/ethernet/netronome/nfp/nfp_app.h  |   2 -
- .../net/ethernet/netronome/nfp/nfp_devlink.c  |  23 +-
- .../ethernet/netronome/nfp/nfp_net_common.c   |   2 -
- .../net/ethernet/netronome/nfp/nfp_net_main.c |  11 +-
- .../net/ethernet/netronome/nfp/nfp_net_repr.c |   1 -
- drivers/net/ethernet/netronome/nfp/nfp_port.h |   2 -
- .../ethernet/pensando/ionic/ionic_devlink.c   |   2 +-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  14 +-
- drivers/net/netdevsim/dev.c                   |   2 -
- drivers/net/netdevsim/netdev.c                |  10 +-
- include/linux/netdevice.h                     |  24 +-
- include/net/devlink.h                         |  32 ++-
- include/uapi/linux/if_link.h                  |   2 +
- net/core/dev.c                                |  11 +-
- net/core/devlink.c                            | 205 +++++++++++++-----
- net/core/net-sysfs.c                          |   4 +-
- net/core/rtnetlink.c                          |  39 ++++
- net/dsa/dsa2.c                                |   9 -
- net/dsa/slave.c                               |   9 +-
- net/ethtool/ioctl.c                           |  11 +-
- 42 files changed, 292 insertions(+), 390 deletions(-)
-
+diff --git a/include/net/devlink.h b/include/net/devlink.h
+index ba6b8b094943..6c55aabaedf1 100644
+--- a/include/net/devlink.h
++++ b/include/net/devlink.h
+@@ -121,12 +121,19 @@ struct devlink_port {
+ 	struct list_head region_list;
+ 	struct devlink *devlink;
+ 	unsigned int index;
+-	spinlock_t type_lock; /* Protects type and type_dev
+-			       * pointer consistency.
++	spinlock_t type_lock; /* Protects type and type_eth/ib
++			       * structures consistency.
+ 			       */
+ 	enum devlink_port_type type;
+ 	enum devlink_port_type desired_type;
+-	void *type_dev;
++	union {
++		struct {
++			struct net_device *netdev;
++		} type_eth;
++		struct {
++			struct ib_device *ibdev;
++		} type_ib;
++	};
+ 	struct devlink_port_attrs attrs;
+ 	u8 attrs_set:1,
+ 	   switch_port:1,
+diff --git a/net/core/devlink.c b/net/core/devlink.c
+index 0a16ad45520e..868d04c2164f 100644
+--- a/net/core/devlink.c
++++ b/net/core/devlink.c
+@@ -1303,7 +1303,7 @@ static int devlink_nl_port_fill(struct sk_buff *msg,
+ 		goto nla_put_failure_type_locked;
+ 	if (devlink_port->type == DEVLINK_PORT_TYPE_ETH) {
+ 		struct net *net = devlink_net(devlink_port->devlink);
+-		struct net_device *netdev = devlink_port->type_dev;
++		struct net_device *netdev = devlink_port->type_eth.netdev;
+ 
+ 		if (netdev && net_eq(net, dev_net(netdev)) &&
+ 		    (nla_put_u32(msg, DEVLINK_ATTR_PORT_NETDEV_IFINDEX,
+@@ -1313,7 +1313,7 @@ static int devlink_nl_port_fill(struct sk_buff *msg,
+ 			goto nla_put_failure_type_locked;
+ 	}
+ 	if (devlink_port->type == DEVLINK_PORT_TYPE_IB) {
+-		struct ib_device *ibdev = devlink_port->type_dev;
++		struct ib_device *ibdev = devlink_port->type_ib.ibdev;
+ 
+ 		if (ibdev &&
+ 		    nla_put_string(msg, DEVLINK_ATTR_PORT_IBDEV_NAME,
+@@ -10003,7 +10003,16 @@ static void __devlink_port_type_set(struct devlink_port *devlink_port,
+ 	devlink_port_type_warn_cancel(devlink_port);
+ 	spin_lock_bh(&devlink_port->type_lock);
+ 	devlink_port->type = type;
+-	devlink_port->type_dev = type_dev;
++	switch (type) {
++	case DEVLINK_PORT_TYPE_ETH:
++		devlink_port->type_eth.netdev = type_dev;
++		break;
++	case DEVLINK_PORT_TYPE_IB:
++		devlink_port->type_ib.ibdev = type_dev;
++		break;
++	default:
++		break;
++	}
+ 	spin_unlock_bh(&devlink_port->type_lock);
+ 	devlink_port_notify(devlink_port, DEVLINK_CMD_PORT_NEW);
+ }
+@@ -12016,7 +12025,7 @@ devlink_trap_report_metadata_set(struct devlink_trap_metadata *metadata,
+ 
+ 	spin_lock(&in_devlink_port->type_lock);
+ 	if (in_devlink_port->type == DEVLINK_PORT_TYPE_ETH)
+-		metadata->input_dev = in_devlink_port->type_dev;
++		metadata->input_dev = in_devlink_port->type_eth.netdev;
+ 	spin_unlock(&in_devlink_port->type_lock);
+ }
+ 
 -- 
 2.37.3
 
