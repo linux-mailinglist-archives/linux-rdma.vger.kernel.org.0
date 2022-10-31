@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB602613F02
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Oct 2022 21:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF61613F03
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Oct 2022 21:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbiJaU2v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Oct 2022 16:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57082 "EHLO
+        id S230052AbiJaU2x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Oct 2022 16:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbiJaU2s (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Oct 2022 16:28:48 -0400
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF21613D5F
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Oct 2022 13:28:45 -0700 (PDT)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-13ba9a4430cso14705451fac.11
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Oct 2022 13:28:45 -0700 (PDT)
+        with ESMTP id S230031AbiJaU2t (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Oct 2022 16:28:49 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263FA13E36
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Oct 2022 13:28:47 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 16-20020a9d0490000000b0066938311495so7395650otm.4
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Oct 2022 13:28:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Th0OSjRZIl1OjiycBvrEPmKLUM7WABC3AjbwfaNykSU=;
-        b=ZBjBMv/7h1rksAjjLizTNFKQFp4e3KgnTXkiFfF1P75hc14FCqHzig4+pd0LGKqqn6
-         99A9a+va9wB2iCJDt0+NzYi/2ZbrFV8I5QiB2KNZoQGP+t7Y+TpT26hHLIEUtJK7SDWE
-         rcT++Va/B7DYbgurk24K3/EZ6c7R0n6RiIgx/MwAJvtq/4Uh4vHonk75IitzQ6riZWB1
-         W+jlC7nx4uJOuyKJcmSycYT0YyOqhtijCiV7pqWoauIP1p35JlDRh9hmHhyirsyJhLQd
-         wQmotdb8BiqFgeo/BTKV0OaTzuL7r0LNZggsPWAOlpt3ubuTsR8+S/tvAmAs1gakMboA
-         IHjw==
+        bh=IFN8jQE/48Dw0iUXJPRfQ4xJofloB8GyBk/xzS0kbsM=;
+        b=guPPbmh4HEDcQoXBg2JBFb7GntMcnQkU/ijjyXyYL+yS4ScKbbJhsfpvU7ulsNTDcx
+         vhrVyRRYs+cnBAbSy6qv1wYG/cjjcPHV5WGzANel6hfcEQfsFbItfeMEDLjOWGPMH0YE
+         aCVg9rQ/0FfTjecTV4tYeWu93KARMeaEjiJC9xLeqJVT6EM98GxiD19v+O2ORmFQb6rB
+         dmtihBA9kuiTcPQ0VFAbpDY2WoY/DlHLYqF+MIZNvOcUi8OULKt3z7VMg0BWFaBqa/pb
+         njSRMg5jjAt+8fw+g2XoFUzXMUYVl6VUHZsEfHDeNLJkqL8Itl9eECE9RBOC2dcZwGJ7
+         ccyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Th0OSjRZIl1OjiycBvrEPmKLUM7WABC3AjbwfaNykSU=;
-        b=cOV+mcGd0bwLFIamkIMUEh92Iz5nUNLK6QxQyTaHgGV+p7XM030qK9h2rIyo0s8IWc
-         IgltrFQ3BXfPTm1SO7/uoNULG3HxGPzu0upTuhWTuIT/YPc1azbQUrsghFZDErV8/0CC
-         mbBeTSOCBaBaE3VfVHMIahz6/FyCaw028y8tFtRAH+0MDNyd5DJ0a2g/wS84/BXAhw2o
-         +Jb8Xg7IeE4rKjyBfEhgXgucyOKt9ESpONPym0sY6g6wG9odvlYGD8IEklKS3ynilR8p
-         nurlFLlvbgIaDCVHihiowUIdxnuvsuke3XeHJTW60gPERKQ2sqI1Wg9l1XAvFREQMTgr
-         pUbQ==
-X-Gm-Message-State: ACrzQf1q5/Yp7uGJhV+xoefHzj0rwAHtLk7PX06USgY7CP0nSeRfpNMV
-        sluXNhPx2eUXtPV5O3zC3AA=
-X-Google-Smtp-Source: AMsMyM6HvEpLe+IvB5sfbuPu7GZlLdViY09j3wLytv7T/gfSxYvpk+cuotstt7x+UDy+mSWM69Woaw==
-X-Received: by 2002:a05:6870:b410:b0:13b:7955:513f with SMTP id x16-20020a056870b41000b0013b7955513fmr18491223oap.25.1667248125199;
-        Mon, 31 Oct 2022 13:28:45 -0700 (PDT)
+        bh=IFN8jQE/48Dw0iUXJPRfQ4xJofloB8GyBk/xzS0kbsM=;
+        b=L6JyzDRpjHAdUr+P2GHTnam9O9NwLkPxbBYn+1AWCfdcRbSW08fmCpaNrWneLvV4kD
+         9XbgozreCROSe7g7gkrKqeaFf1XJTCJKcV9Rzi3kGLxY1XAn17Bwyz3za9e+zjot/PIh
+         WwS5QD6Uy7sTS8AfwukssJ0EcCU7uFgocjG4wtbrB1ZIveQlZKBRSQekgxO1oLwuj/fe
+         82L9mJyzKc8uWGSLU3BWk3DHCINIDRLo7/W18taazQMh9ArlgmzlbvsEDlXY3/e6GYJe
+         +Nb5ag+7TvutU3ZWU5eCYogZW6H6oIPv1ZdlCLH2WYxlVFEDBqQ4bGCp9nrhSAhb9fuw
+         izBA==
+X-Gm-Message-State: ACrzQf2YYJeANnnZuRVMrgF7iaK4nz2vNfwrvKe83+b8LDTZoRngX1O2
+        drdsIJjmPyj3HsJqTMYMQXw=
+X-Google-Smtp-Source: AMsMyM4H2jYht/1iZUBY9VYIVo+CZwjMTefeXC+PkPyapJKTZz9cq6acN1A5UX1BRU7b4NMolkzZxA==
+X-Received: by 2002:a05:6830:1f34:b0:66c:4a42:9ca5 with SMTP id e20-20020a0568301f3400b0066c4a429ca5mr4481171oth.175.1667248126466;
+        Mon, 31 Oct 2022 13:28:46 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-ce7d-a808-badd-629d.res6.spectrum.com. [2603:8081:140c:1a00:ce7d:a808:badd:629d])
-        by smtp.googlemail.com with ESMTPSA id w1-20020a056808018100b00342e8bd2299sm2721215oic.6.2022.10.31.13.28.44
+        by smtp.googlemail.com with ESMTPSA id w1-20020a056808018100b00342e8bd2299sm2721215oic.6.2022.10.31.13.28.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Oct 2022 13:28:44 -0700 (PDT)
+        Mon, 31 Oct 2022 13:28:45 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, leon@kernel.org, zyjzyj2000@gmail.com,
         linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 13/18] RDMA/rxe: Extend rxe_icrc.c to support frags
-Date:   Mon, 31 Oct 2022 15:28:02 -0500
-Message-Id: <20221031202805.19138-13-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 14/18] RDMA/rxe: Extend rxe_init_req_packet() for frags
+Date:   Mon, 31 Oct 2022 15:28:03 -0500
+Message-Id: <20221031202805.19138-14-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221031202805.19138-1-rpearsonhpe@gmail.com>
 References: <20221031202805.19138-1-rpearsonhpe@gmail.com>
@@ -71,238 +71,159 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Extend the subroutines rxe_icrc_generate() and rxe_icrc_check()
-to support skb frags.
+Add code to rxe_build_req_packet() to allocate space for the
+pad and icrc if the skb is fragmented.
 
 This is in preparation for supporting fragmented skbs.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_icrc.c | 65 ++++++++++++++++++++++++----
- drivers/infiniband/sw/rxe/rxe_net.c  | 55 ++++++++++++++++++-----
- drivers/infiniband/sw/rxe/rxe_recv.c |  1 +
- 3 files changed, 100 insertions(+), 21 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_loc.h |  9 +++-
+ drivers/infiniband/sw/rxe/rxe_req.c | 74 ++++++++++++++++++++++++-----
+ 2 files changed, 71 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
-index 46bb07c5c4df..699730a13c92 100644
---- a/drivers/infiniband/sw/rxe/rxe_icrc.c
-+++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
-@@ -63,7 +63,7 @@ static __be32 rxe_crc32(struct rxe_dev *rxe, __be32 crc, void *next, size_t len)
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 12fd5811cd79..cab6acad7a83 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -179,8 +179,15 @@ void rxe_srq_cleanup(struct rxe_pool_elem *elem);
  
- /**
-  * rxe_icrc_hdr() - Compute the partial ICRC for the network and transport
-- *		  headers of a packet.
-+ *		    headers of a packet.
-  * @skb: packet buffer
-  * @pkt: packet information
-  *
-@@ -129,6 +129,56 @@ static __be32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- 	return crc;
+ void rxe_dealloc(struct ib_device *ib_dev);
+ 
+-int rxe_completer(void *arg);
++/* rxe_req.c */
++int rxe_prepare_pad_icrc(struct rxe_pkt_info *pkt, struct sk_buff *skb,
++			  int payload, bool frag);
+ int rxe_requester(void *arg);
++
++/* rxe_comp.c */
++int rxe_completer(void *arg);
++
++/* rxe_resp.c */
+ int rxe_responder(void *arg);
+ 
+ /* rxe_icrc.c */
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index 71a65f2a5d6d..984e3e957aef 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -438,27 +438,79 @@ static void rxe_init_roce_hdrs(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ }
+ 
+ static int rxe_init_payload(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+-			    struct rxe_pkt_info *pkt, u32 payload,
+-			    struct sk_buff *skb)
++			    struct rxe_pkt_info *pkt, int pad, u32 payload,
++			    struct sk_buff *skb, bool frag)
+ {
++	int len = skb_tailroom(skb);
++	int tot_len = payload + pad + RXE_ICRC_SIZE;
++	int access = 0;
+ 	int skb_offset = 0;
++	int op;
++	void *addr;
+ 	void *data;
+ 	int err = 0;
+ 
+ 	if (wqe->wr.send_flags & IB_SEND_INLINE) {
++		if (WARN_ON(frag))
++			return -EINVAL;
++		if (len < tot_len)
++			return -EINVAL;
+ 		data = &wqe->dma.inline_data[wqe->dma.sge_offset];
+ 		memcpy(payload_addr(pkt), data, payload);
+ 		wqe->dma.resid -= payload;
+ 		wqe->dma.sge_offset += payload;
+ 	} else {
+-		err = rxe_copy_dma_data(skb, qp->pd, 0, &wqe->dma,
+-					payload_addr(pkt), skb_offset,
+-					payload, RXE_COPY_FROM_MR);
++		op = frag ? RXE_FRAG_FROM_MR : RXE_COPY_FROM_MR;
++		addr = frag ? NULL : payload_addr(pkt);
++		err = rxe_copy_dma_data(skb, qp->pd, access, &wqe->dma,
++					addr, skb_offset, payload, op);
+ 	}
+ 
+ 	return err;
  }
  
 +/**
-+ * rxe_icrc_payload() - Compute the ICRC for a packet payload and also
-+ *			compute the address of the icrc in the packet.
++ * rxe_prepare_pad_icrc() - Alloc space if fragmented and init pad and icrc
++ * @pkt: packet info
 + * @skb: packet buffer
-+ * @pkt: packet information
-+ * @icrc: current icrc i.e. including headers
-+ * @icrcp: returned pointer to icrc in skb
++ * @payload: roce payload
++ * @frag: true if skb is fragmented
 + *
-+ * Return: 0 if the values match else an error
++ * Returns: 0 on success else an error
 + */
-+static __be32 rxe_icrc_payload(struct sk_buff *skb, struct rxe_pkt_info *pkt,
-+			       __be32 icrc, __be32 **icrcp)
++int rxe_prepare_pad_icrc(struct rxe_pkt_info *pkt, struct sk_buff *skb,
++			 int payload, bool frag)
 +{
-+	struct skb_shared_info *shinfo = skb_shinfo(skb);
-+	skb_frag_t *frag;
++	struct rxe_phys_buf dmabuf;
++	size_t offset;
++	u64 iova;
 +	u8 *addr;
-+	int hdr_len;
-+	int len;
-+	int i;
++	int err = 0;
++	int pad = (-payload) & 0x3;
 +
-+	/* handle any payload left in the linear buffer */
-+	hdr_len = rxe_opcode[pkt->opcode].length;
-+	addr = pkt->hdr + hdr_len;
-+	len = skb_tail_pointer(skb) - skb_transport_header(skb)
-+		- sizeof(struct udphdr) - hdr_len;
-+	if (!shinfo->nr_frags) {
-+		len -= RXE_ICRC_SIZE;
-+		*icrcp = (__be32 *)(addr + len);
-+	}
-+	if (len > 0)
-+		icrc = rxe_crc32(pkt->rxe, icrc, payload_addr(pkt), len);
-+	WARN_ON(len < 0);
-+
-+	/* handle any payload in frags */
-+	for (i = 0; i < shinfo->nr_frags; i++) {
-+		frag = &shinfo->frags[i];
-+		addr = page_to_virt(frag->bv_page) + frag->bv_offset;
-+		len = frag->bv_len;
-+		if (i == shinfo->nr_frags - 1) {
-+			len -= RXE_ICRC_SIZE;
-+			*icrcp = (__be32 *)(addr + len);
-+		}
-+		if (len > 0)
-+			icrc = rxe_crc32(pkt->rxe, icrc, addr, len);
-+		WARN_ON(len < 0);
++	if (frag) {
++		/* allocate bytes at the end of the skb linear buffer
++		 * and build a frag pointing at it
++		 */
++		WARN_ON((skb->end - skb->tail) < 8);
++		addr = skb_end_pointer(skb) - RXE_ICRC_SIZE - pad;
++		iova = (uintptr_t)addr;
++		dmabuf.addr = iova & PAGE_MASK;
++		offset = iova & ~PAGE_MASK;
++		err = rxe_add_frag(skb, &dmabuf, pad + RXE_ICRC_SIZE, offset);
++		if (err)
++			goto err;
++	} else {
++		addr = payload_addr(pkt) + payload;
 +	}
 +
-+	return icrc;
++	/* init pad and icrc to zero */
++	memset(addr, 0, pad + RXE_ICRC_SIZE);
++
++err:
++	return err;
 +}
 +
- /**
-  * rxe_icrc_check() - Compute ICRC for a packet and compare to the ICRC
-  *		      delivered in the packet.
-@@ -143,13 +193,11 @@ int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- 	__be32 pkt_icrc;
- 	__be32 icrc;
+ static struct sk_buff *rxe_init_req_packet(struct rxe_qp *qp,
+ 					   struct rxe_send_wqe *wqe,
+ 					   int opcode, u32 payload,
+@@ -468,9 +520,9 @@ static struct sk_buff *rxe_init_req_packet(struct rxe_qp *qp,
+ 	struct sk_buff *skb = NULL;
+ 	struct rxe_av *av;
+ 	struct rxe_ah *ah = NULL;
+-	void *padp;
+ 	int pad;
+ 	int err = -EINVAL;
++	bool frag = false;
  
--	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
--	pkt_icrc = *icrcp;
--
- 	icrc = rxe_icrc_hdr(skb, pkt);
--	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
--				payload_size(pkt) + bth_pad(pkt));
-+	icrc = rxe_icrc_payload(skb, pkt, icrc, &icrcp);
-+
- 	icrc = ~icrc;
-+	pkt_icrc = *icrcp;
- 
- 	if (unlikely(icrc != pkt_icrc))
- 		return -EINVAL;
-@@ -167,9 +215,8 @@ void rxe_icrc_generate(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- 	__be32 *icrcp;
- 	__be32 icrc;
- 
--	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
- 	icrc = rxe_icrc_hdr(skb, pkt);
--	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
--				payload_size(pkt) + bth_pad(pkt));
-+	icrc = rxe_icrc_payload(skb, pkt, icrc, &icrcp);
-+
- 	*icrcp = ~icrc;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index c6d8f5c80562..395e9d7d81c3 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -134,32 +134,51 @@ static int rxe_udp_encap_recv(struct sock *sk, struct sk_buff *skb)
- 	struct rxe_dev *rxe;
- 	struct net_device *ndev = skb->dev;
- 	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
-+	u8 opcode;
-+	u8 buf[1];
-+	u8 *p;
- 
--	/* takes a reference on rxe->ib_dev
--	 * drop when skb is freed
--	 */
-+	/* Takes a reference on rxe->ib_dev. Drop when skb is freed */
- 	rxe = rxe_get_dev_from_net(ndev);
- 	if (!rxe && is_vlan_dev(ndev))
- 		rxe = rxe_get_dev_from_net(vlan_dev_real_dev(ndev));
- 	if (!rxe)
--		goto drop;
-+		goto err_drop;
- 
--	if (skb_linearize(skb)) {
--		ib_device_put(&rxe->ib_dev);
--		goto drop;
-+	/* Get bth opcode out of skb */
-+	p = skb_header_pointer(skb, sizeof(struct udphdr), 1, buf);
-+	if (!p)
-+		goto err_device_put;
-+	opcode = *p;
-+
-+	/* If using fragmented skbs make sure roce headers
-+	 * are in linear buffer else make skb linear
-+	 */
-+	if (rxe_use_sg && skb_is_nonlinear(skb)) {
-+		int delta = rxe_opcode[opcode].length -
-+			(skb_headlen(skb) - sizeof(struct udphdr));
-+
-+		if (delta > 0 && !__pskb_pull_tail(skb, delta))
-+			goto err_device_put;
-+	} else {
-+		if (skb_linearize(skb))
-+			goto err_device_put;
- 	}
- 
- 	udph = udp_hdr(skb);
  	pkt->rxe = rxe;
- 	pkt->port_num = 1;
- 	pkt->hdr = (u8 *)(udph + 1);
--	pkt->mask = RXE_GRH_MASK;
-+	pkt->mask = rxe_opcode[opcode].mask | RXE_GRH_MASK;
- 	pkt->paylen = be16_to_cpu(udph->len) - sizeof(*udph);
+ 	pkt->opcode = opcode;
+@@ -498,15 +550,15 @@ static struct sk_buff *rxe_init_req_packet(struct rxe_qp *qp,
+ 	rxe_init_roce_hdrs(qp, wqe, pkt, pad);
  
- 	rxe_rcv(skb);
- 
- 	return 0;
--drop:
-+
-+err_device_put:
-+	ib_device_put(&rxe->ib_dev);
-+err_drop:
- 	kfree_skb(skb);
- 
- 	return 0;
-@@ -385,21 +404,32 @@ static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
-  */
- static int rxe_loopback(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- {
--	memcpy(SKB_TO_PKT(skb), pkt, sizeof(*pkt));
-+	struct rxe_pkt_info *newpkt;
-+	int err;
- 
-+	/* make loopback line up with rxe_udp_encap_recv */
- 	if (skb->protocol == htons(ETH_P_IP))
- 		skb_pull(skb, sizeof(struct iphdr));
- 	else
- 		skb_pull(skb, sizeof(struct ipv6hdr));
-+	skb_reset_transport_header(skb);
-+
-+	newpkt = SKB_TO_PKT(skb);
-+	memcpy(newpkt, pkt, sizeof(*newpkt));
-+	newpkt->hdr = skb_transport_header(skb) + sizeof(struct udphdr);
- 
- 	if (WARN_ON(!ib_device_try_get(&pkt->rxe->ib_dev))) {
- 		kfree_skb(skb);
--		return -EIO;
-+		err = -EINVAL;
-+		goto drop;
+ 	if (pkt->mask & RXE_WRITE_OR_SEND_MASK) {
+-		err = rxe_init_payload(qp, wqe, pkt, payload, skb);
++		err = rxe_init_payload(qp, wqe, pkt, pad, payload, skb, frag);
+ 		if (err)
+ 			goto err_out;
  	}
  
- 	rxe_rcv(skb);
--
- 	return 0;
-+
-+drop:
-+	kfree_skb(skb);
-+	return err;
- }
+-	if (pad) {
+-		padp = payload_addr(pkt) + payload;
+-		memset(padp, 0, pad);
+-	}
++	/* handle pad and icrc */
++	err = rxe_prepare_pad_icrc(pkt, skb, payload, frag);
++	if (err)
++		goto err_out;
  
- int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
-@@ -415,6 +445,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 		goto drop;
- 	}
- 
-+	/* skb->data points at IP header */
- 	rxe_icrc_generate(skb, pkt);
- 
- 	if (pkt->mask & RXE_LOOPBACK_MASK)
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index 434a693cd4a5..ba786e5c6266 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -329,6 +329,7 @@ void rxe_rcv(struct sk_buff *skb)
- 	if (unlikely(err))
- 		goto drop;
- 
-+	/* skb->data points at UDP header */
- 	err = rxe_icrc_check(skb, pkt);
- 	if (unlikely(err))
- 		goto drop;
+ 	/* IP and UDP network headers */
+ 	err = rxe_prepare(av, pkt, skb);
 -- 
 2.34.1
 
