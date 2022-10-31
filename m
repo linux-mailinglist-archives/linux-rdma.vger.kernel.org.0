@@ -2,99 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0443661316B
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Oct 2022 09:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506A46131A4
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Oct 2022 09:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbiJaIBJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Oct 2022 04:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
+        id S229544AbiJaIXU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Oct 2022 04:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiJaIBI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Oct 2022 04:01:08 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A324A1B0;
-        Mon, 31 Oct 2022 01:01:07 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5so6666472wmo.1;
-        Mon, 31 Oct 2022 01:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8CNX8jzayop+Kti5FIqpzMp88MzE0hO8BrJ9pvHH71g=;
-        b=mNx4KRRz+pN2Gl8FenOlMLsScGrkz7en9/rFpi5F0anT38zwStUDuPbJioC6TlrMN4
-         KzSG/mJ75f9mLuKfs2E6JrPgNjFGomQ8JbvUOPLPmn3BuDLrqRAPvBEGRbHew6GrHpez
-         gZOlqD9cedonHgWzZr0W6ofwqfC6d7f61Lxc+OHwkSJnaV0PvZWAc21GYRNpTHX7eOnr
-         6Vg6Kkj/+yAzURuF+M3L6bSa7uZkTSBRmFVeDV8scCe27Ai78Y52W/dnnC3izmeYmA7U
-         GfchKLKFHv5j6m8z1ehEsRa89Lr0MIqp1sgeIErcGTnKoop1wOEfvWFWd2RnPYwrKZxz
-         m8sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8CNX8jzayop+Kti5FIqpzMp88MzE0hO8BrJ9pvHH71g=;
-        b=wEBxynen7BGaSAM9EAfAFKoJa9qIkte3oP4IQlt44AJ54pzFSj1LkiqnJTCxp0c8+G
-         TDN0qCiNuhCsEbf5F7QF7vCZ22Ruqjc2AGBOJjTGXgNHdTf46/1WKy58TYnavkZL9Hpj
-         WrQ+f5rXYWdDIgMGZlsRvoQTAXGBn0LKpL5heWyw3EbVstw/b0ugR/MxCZKi/0k2pzSX
-         +RwCQ06gpkq1I4B5j6E+6qL/49Ocf5rO73K7NNCdodSishpKLzv6pn6rTBOfV5mxv+BT
-         j3MP9+Ru/pLo16C7Glf2MhJNGT8z05f5n+qc9v5eUc93xZMjQ/Ca/o9eH1SazVn9dp7c
-         jDiw==
-X-Gm-Message-State: ACrzQf3pw4iYbt2rKBLVY9SdgEZJm3LTZ8LvgIhSqv5lYLKTgiDn95HE
-        dj99KYJbgcI2ykTL+ANLP/4=
-X-Google-Smtp-Source: AMsMyM7uSqMgve5Vo1MLvjOo6LdpW7emDVMT75NeNcMPog4+Vpyq+k2SsTtW6loczZLAdnRXsSq3Ug==
-X-Received: by 2002:a1c:3503:0:b0:3c6:fb2a:b115 with SMTP id c3-20020a1c3503000000b003c6fb2ab115mr7166768wma.10.1667203265908;
-        Mon, 31 Oct 2022 01:01:05 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id 7-20020a056000154700b00236644228besm6552880wry.40.2022.10.31.01.01.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Oct 2022 01:01:05 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yevgeny Kliteynik <kliteyn@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5: Fix spelling mistake "destoy" -> "destroy"
-Date:   Mon, 31 Oct 2022 08:01:04 +0000
-Message-Id: <20221031080104.773325-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.37.3
+        with ESMTP id S229495AbiJaIXT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Oct 2022 04:23:19 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF657B4BE
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Oct 2022 01:23:17 -0700 (PDT)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N15fm1hVbzpVyh;
+        Mon, 31 Oct 2022 16:19:44 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 31 Oct 2022 16:23:15 +0800
+Received: from [10.67.103.121] (10.67.103.121) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 31 Oct 2022 16:23:14 +0800
+Subject: Re: [PATCH v2 for-rc 3/5] RDMA/hns: Remove enable rq inline in kernel
+ and add compatibility handling
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <20221026095054.2384620-1-xuhaoyue1@hisilicon.com>
+ <20221026095054.2384620-4-xuhaoyue1@hisilicon.com>
+ <Y1wF68CgChG+hM87@nvidia.com>
+From:   "xuhaoyue (A)" <xuhaoyue1@hisilicon.com>
+Message-ID: <9b50dae1-e448-047b-8a54-489ff120f00c@hisilicon.com>
+Date:   Mon, 31 Oct 2022 16:23:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <Y1wF68CgChG+hM87@nvidia.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.121]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There is a spelling mistake in an error message. Fix it.
+This bit is used to prevent compatibility issues in the old kernel. It is not for compatibility with userspace.
+It should be a bugfix. I will separate this into a new bugfix patch.
+I will change the name to __HNS_ROCE_CAP_FLAG_RQ_INLINE in V3.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c
-index eb81759244d5..9c3dfd68f8df 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c
-@@ -292,7 +292,7 @@ int mlx5dr_table_destroy(struct mlx5dr_table *tbl)
- 	mlx5dr_dbg_tbl_del(tbl);
- 	ret = dr_table_destroy_sw_owned_tbl(tbl);
- 	if (ret)
--		mlx5dr_err(tbl->dmn, "Failed to destoy sw owned table\n");
-+		mlx5dr_err(tbl->dmn, "Failed to destroy sw owned table\n");
- 
- 	dr_table_uninit(tbl);
- 
--- 
-2.37.3
-
+On 2022/10/29 0:40:11, Jason Gunthorpe wrote:
+> On Wed, Oct 26, 2022 at 05:50:52PM +0800, Haoyue Xu wrote:
+>> From: Luoyouming <luoyouming@huawei.com>
+>>
+>> The rq inline makes some changes as follows, Firstly, it is only
+>> used in user space. Secondly, it should notify hardware in QP RTR
+>> status. Thirdly, Add compatibility processing between different
+>> user space and kernel space. Change the HNS_ROCE_CAP_FLAG_RQ_INLINE
+>> to a new bit to prevent old kernel spaces / spaced from enabling
+>> rq inline.
+>>
+>> Signed-off-by: Luoyouming <luoyouming@huawei.com>
+>> Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  6 +++--
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 28 +++++++++++++--------
+>>  drivers/infiniband/hw/hns/hns_roce_main.c   |  5 ++++
+>>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  2 +-
+>>  include/uapi/rdma/hns-abi.h                 |  2 ++
+>>  5 files changed, 30 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> index f701cc86896b..9ce053fe737d 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> @@ -132,7 +132,8 @@ enum hns_roce_event {
+>>  enum {
+>>  	HNS_ROCE_CAP_FLAG_REREG_MR		= BIT(0),
+>>  	HNS_ROCE_CAP_FLAG_ROCE_V1_V2		= BIT(1),
+>> -	HNS_ROCE_CAP_FLAG_RQ_INLINE		= BIT(2),
+>> +	/* discard this bit, reserved for compatibility */
+>> +	HNS_ROCE_CAP_FLAG_DISCARD		= BIT(2),
+> 
+> If it is for compatability with userspace why is this enum not under
+> include/uapi? Something has gone wrong here, please fix it.
+> 
+> Also, it is better to name this __HNS_ROCE_CAP_FLAG_RQ_INLINE to
+> indicate it is not used instead of 'discard'
+> 
+> Jason
+> .
+> 
