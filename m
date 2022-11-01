@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141AA61532C
+	by mail.lfdr.de (Postfix) with ESMTP id 62D2E61532D
 	for <lists+linux-rdma@lfdr.de>; Tue,  1 Nov 2022 21:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbiKAUYA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Nov 2022 16:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        id S229487AbiKAUYB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Nov 2022 16:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbiKAUX6 (ORCPT
+        with ESMTP id S230254AbiKAUX6 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Nov 2022 16:23:58 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB811EC5A
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Nov 2022 13:23:56 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-13bd2aea61bso18180644fac.0
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Nov 2022 13:23:56 -0700 (PDT)
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BA41E739
+        for <linux-rdma@vger.kernel.org>; Tue,  1 Nov 2022 13:23:57 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-13d604e207aso663861fac.11
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Nov 2022 13:23:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WxXQWRXx2VSWrNX2SesjY05W4BgTQKiZzjs6+V20W2I=;
-        b=PsI8bbFk6RBmWhfhUTi7JAxMqqFprdvumuy1KpX1RQYTzYxO1cLjpDoucvamFnzq2D
-         imjIOZbo6G6c2L33AbdpxWSEtOZ2TTIyacL8xqP+7Xw9T0JeIZtnpB4oIiwaucmX4stY
-         HyPjftG+McwcOGTzqh8M7GLGjI8z8JVSeoZf/yH3My8gN3hTcQpP7n1PNALfOhJ9VGFp
-         ChF8zNLsewt+7Jb/N9WokCocV4vs8ahmfpNSQVrHFEJyAUPG4cjQrkCGPSj2Hl0LfZYn
-         t5xjr3Gzdd7Q+KlPPHbNWHk3hvw3XcdjPrSMMXQWQHqsz2Wl7laAbCotHo8G4PeQquw0
-         UeHA==
+        bh=zVe9ZfLRPNYHOfmtzWp4JC0kPR3TnPVQz8nZ+/weqCs=;
+        b=Y6pD2RXG7X8DZ411ySdi1ETNdSY4f6mVIGPbc9TaCT07vVrlNodBCXfEngElHUthYC
+         bNaqQpT+XBs985PfpqbjDq1FV45c4u9D4DNmVmbmnwB48Rtep0WygQ6ASf8HjykD/Pu+
+         +ZDem07VQ95gWLnh5Ed6XH+Sj2zZ4l1aSnFhvRE9cV0GcPtl8Ehz1b0hIe07paNEGiiK
+         xbUqPk2mKi7zrT+ti6TPkuhSXtpMZQDjdmGXOEEJmfj/luH79m5F6VQymP5Icw4OCEJX
+         Fnym9mkEmd1HO9ZHWiTGPROY+jFOt79OwNfMvNF2PluXwrEyPn79VbCmShR7DvBHS3Wq
+         d0qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WxXQWRXx2VSWrNX2SesjY05W4BgTQKiZzjs6+V20W2I=;
-        b=HoVjoYrJat7+64qg1McEryyQPAVOCHz6oqC95ZwoqEDI8oqjGCIeq5YKPmWnORNMo1
-         QJZYGG/XC1JvsnTJ35/JwVtkaDkArH1uzKUrRvE3YtncTSAvV5x6zTOlyLPmZWmDqG7d
-         3Q2r3rZ9kfMZ4k0CL5N1Jik2/1rUYKqJnkG1icmZxrPUs/KpPSvTAUBvIcBa7z4YQLZv
-         eL/bvcdwwn7XfkZfjBpcvTZAFmhlqBeiPeTViO2zvS18JEdRRkByYTvODGfQl2WFbyRi
-         MZVuDo13E1r08nh5oaCgj+xn/KRHsWXmEQOatbei/OfMF4W684HFRqkTNCQkd6dIY3wb
-         UhoA==
-X-Gm-Message-State: ACrzQf24Bvaya6aSnZhn7kuM+lCGMHwtongAiRSChqBzUQIkshp9VyOA
-        QECPiyTlgyJlEwOIla8hRo0=
-X-Google-Smtp-Source: AMsMyM573vNMmDzX709FBcxEgJT9xqIZQpUhrBnpoxP/YBdn5pC+I10Lxotjm3aaywDEBx1ccx07LQ==
-X-Received: by 2002:a05:6871:79f:b0:13c:265b:75d2 with SMTP id o31-20020a056871079f00b0013c265b75d2mr20057276oap.175.1667334235823;
-        Tue, 01 Nov 2022 13:23:55 -0700 (PDT)
+        bh=zVe9ZfLRPNYHOfmtzWp4JC0kPR3TnPVQz8nZ+/weqCs=;
+        b=bgQIZxC7rF0+/MNT9cedcF+YEoHZ7C/lofN3VHC8KZMoE76M3X4qGwDhfjPhXMbWHz
+         aZoo/T5+jTutwo/nJpKT7+2wSAKbCWsjgZ1Ws4TqJrVnbszZzZ8Dsy3QohJNDpH4zqZC
+         8P0SxsnDDKsCR2kiu1Q7tVzUw19e+XwcyfYjbuxHR5rXY/4VnALucaOZOWf/trkJ6x6y
+         xYN1jZjvjrzyDnT0dskmkcJzaODHsFh9ersrjWpRCmtfolrRinSlPW29+2jARrF+ORri
+         6q8MT+5lxsSY+NigPx920xpsF6hwW/2quAGXOtAYp8evcCFvLrD6knlY+1tkkmpuRvvL
+         lM+Q==
+X-Gm-Message-State: ACrzQf1F/wJytDa//VTBDfg+eBN4ZkDdn/o/S7S7ILmONAvuFXGLKLL+
+        6JwDDVPfO3sB3QtAfBBjNWg7F0hoVXs=
+X-Google-Smtp-Source: AMsMyM43CRLSUO1WWGLSdCBkXrmCXf5nea1iLVujd60Jfcudcmeu/IaUyhPYmjF4wnd9tDR3IECwIQ==
+X-Received: by 2002:a05:6870:a997:b0:11c:5a86:e11a with SMTP id ep23-20020a056870a99700b0011c5a86e11amr11907877oab.270.1667334236866;
+        Tue, 01 Nov 2022 13:23:56 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-e052-4710-92ba-8142.res6.spectrum.com. [2603:8081:140c:1a00:e052:4710:92ba:8142])
-        by smtp.googlemail.com with ESMTPSA id d22-20020a056830045600b0066210467fb1sm4337493otc.41.2022.11.01.13.23.54
+        by smtp.googlemail.com with ESMTPSA id d22-20020a056830045600b0066210467fb1sm4337493otc.41.2022.11.01.13.23.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Nov 2022 13:23:55 -0700 (PDT)
+        Tue, 01 Nov 2022 13:23:56 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     leon@kernel.org, jgg@nvidia.com, zyjzyj2000@gmail.com,
         jhack@hpe.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 08/16] RDMA/rxe: Replace pr_xxx by rxe_dbg_qp in rxe_req.c
-Date:   Tue,  1 Nov 2022 15:22:33 -0500
-Message-Id: <20221101202238.32836-9-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 09/16] RDMA/rxe: Replace pr_xxx by rxe_dbg_qp in rxe_resp.c
+Date:   Tue,  1 Nov 2022 15:22:34 -0500
+Message-Id: <20221101202238.32836-10-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221101202238.32836-1-rpearsonhpe@gmail.com>
 References: <20221101202238.32836-1-rpearsonhpe@gmail.com>
@@ -63,69 +63,90 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace calls to rxe_err/warn in rxe_req.c with rxe_dbg_qp().
+Replace calls to rxe_err/warn() in rxe_resp.c with rxe_dbg_qp().
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_req.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_resp.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 41f1d84f0acb..4d45f508392f 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -100,7 +100,7 @@ void rnr_nak_timer(struct timer_list *t)
- {
- 	struct rxe_qp *qp = from_timer(qp, t, rnr_nak_timer);
- 
--	pr_debug("%s: fired for qp#%d\n", __func__, qp_num(qp));
-+	rxe_dbg_qp(qp, "nak timer fired\n");
- 
- 	/* request a send queue retry */
- 	qp->req.need_retry = 1;
-@@ -595,7 +595,7 @@ static int rxe_do_local_ops(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index c32bc12cc82f..61f03ff3c696 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -317,7 +317,7 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
+ 	/* don't trust user space data */
+ 	if (unlikely(wqe->dma.num_sge > srq->rq.max_sge)) {
+ 		spin_unlock_irqrestore(&srq->rq.consumer_lock, flags);
+-		pr_warn("%s: invalid num_sge in SRQ entry\n", __func__);
++		rxe_dbg_qp(qp, "invalid num_sge in SRQ entry\n");
+ 		return RESPST_ERR_MALFORMED_WQE;
+ 	}
+ 	size = sizeof(*wqe) + wqe->dma.num_sge*sizeof(struct rxe_sge);
+@@ -453,15 +453,14 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 	if (rkey_is_mw(rkey)) {
+ 		mw = rxe_lookup_mw(qp, access, rkey);
+ 		if (!mw) {
+-			pr_debug("%s: no MW matches rkey %#x\n",
+-					__func__, rkey);
++			rxe_dbg_qp(qp, "no MW matches rkey %#x\n", rkey);
+ 			state = RESPST_ERR_RKEY_VIOLATION;
+ 			goto err;
  		}
- 		break;
- 	default:
--		pr_err("Unexpected send wqe opcode %d\n", opcode);
-+		rxe_dbg_qp(qp, "Unexpected send wqe opcode %d\n", opcode);
- 		wqe->status = IB_WC_LOC_QP_OP_ERR;
- 		return -EINVAL;
+ 
+ 		mr = mw->mr;
+ 		if (!mr) {
+-			pr_err("%s: MW doesn't have an MR\n", __func__);
++			rxe_dbg_qp(qp, "MW doesn't have an MR\n");
+ 			state = RESPST_ERR_RKEY_VIOLATION;
+ 			goto err;
+ 		}
+@@ -474,8 +473,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 	} else {
+ 		mr = lookup_mr(qp->pd, access, rkey, RXE_LOOKUP_REMOTE);
+ 		if (!mr) {
+-			pr_debug("%s: no MR matches rkey %#x\n",
+-					__func__, rkey);
++			rxe_dbg_qp(qp, "no MR matches rkey %#x\n", rkey);
+ 			state = RESPST_ERR_RKEY_VIOLATION;
+ 			goto err;
+ 		}
+@@ -1044,7 +1042,7 @@ static int send_common_ack(struct rxe_qp *qp, u8 syndrome, u32 psn,
+ 
+ 	err = rxe_xmit_packet(qp, &ack_pkt, skb);
+ 	if (err)
+-		pr_err_ratelimited("Failed sending %s\n", msg);
++		rxe_dbg_qp(qp, "Failed sending %s\n", msg);
+ 
+ 	return err;
+ }
+@@ -1290,8 +1288,7 @@ int rxe_responder(void *arg)
  	}
-@@ -748,14 +748,14 @@ int rxe_requester(void *arg)
  
- 	av = rxe_get_av(&pkt, &ah);
- 	if (unlikely(!av)) {
--		pr_err("qp#%d Failed no address vector\n", qp_num(qp));
-+		rxe_dbg_qp(qp, "Failed no address vector\n");
- 		wqe->status = IB_WC_LOC_QP_OP_ERR;
- 		goto err;
- 	}
+ 	while (1) {
+-		pr_debug("qp#%d state = %s\n", qp_num(qp),
+-			 resp_state_name[state]);
++		rxe_dbg_qp(qp, "state = %s\n", resp_state_name[state]);
+ 		switch (state) {
+ 		case RESPST_GET_REQ:
+ 			state = get_req(qp, &pkt);
+@@ -1448,7 +1445,7 @@ int rxe_responder(void *arg)
  
- 	skb = init_req_packet(qp, av, wqe, opcode, payload, &pkt);
- 	if (unlikely(!skb)) {
--		pr_err("qp#%d Failed allocating skb\n", qp_num(qp));
-+		rxe_dbg_qp(qp, "Failed allocating skb\n");
- 		wqe->status = IB_WC_LOC_QP_OP_ERR;
- 		if (ah)
- 			rxe_put(ah);
-@@ -764,7 +764,7 @@ int rxe_requester(void *arg)
+ 		case RESPST_ERROR:
+ 			qp->resp.goto_error = 0;
+-			pr_debug("qp#%d moved to error state\n", qp_num(qp));
++			rxe_dbg_qp(qp, "moved to error state\n");
+ 			rxe_qp_error(qp);
+ 			goto exit;
  
- 	err = finish_packet(qp, av, wqe, &pkt, skb, payload);
- 	if (unlikely(err)) {
--		pr_debug("qp#%d Error during finish packet\n", qp_num(qp));
-+		rxe_dbg_qp(qp, "Error during finish packet\n");
- 		if (err == -EFAULT)
- 			wqe->status = IB_WC_LOC_PROT_ERR;
- 		else
 -- 
 2.34.1
 
