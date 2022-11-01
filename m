@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2D1615325
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Nov 2022 21:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 143DD615326
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Nov 2022 21:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbiKAUXs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Nov 2022 16:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59842 "EHLO
+        id S230251AbiKAUXx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Nov 2022 16:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbiKAUXk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Nov 2022 16:23:40 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D23D1C416
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Nov 2022 13:23:39 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id s1-20020a4a81c1000000b0047d5e28cdc0so2217165oog.12
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Nov 2022 13:23:39 -0700 (PDT)
+        with ESMTP id S230233AbiKAUXw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Nov 2022 16:23:52 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0840317052
+        for <linux-rdma@vger.kernel.org>; Tue,  1 Nov 2022 13:23:50 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-13c2cfd1126so18082358fac.10
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Nov 2022 13:23:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UTc8DYxRHwrx7moBbowmcIUIPuxWr0WrNqCa5fecqEg=;
-        b=LV5C6tRwzTbc+wm+Z9RveiIjmjgeb5ydhQmPaT4xjU5uumoG3aOn0JQW+Zt6yRvDE7
-         ZShVEQ8xvktau0EFXXlksgc4J5p+KcjeLt8TiSHtpMAkVgThKMDAJQFiIwd/mBwj5AYJ
-         uaa93vLoPuP4ZJyMD/HkrbXIMyD6qtrRVsBytJHK/tNgDf2SrbsDOgWSAiCFssMfopbs
-         fDmDlwGA5FhKayV2O9hymuZtKfpKDBxX45d2MqR3kKy6k1yTsE9yYj8Rwm+adNZr4qqb
-         5qanVT5j1i++zPexQOxlzJiQC/w/yWx6uGDfPXramB8nE5bN4eN5fp8dYmSesQYGYVyy
-         MmvA==
+        bh=Jjp9wYlavuPz4LHH71+rdE2DpYiSE2m/SsqEKdhE490=;
+        b=YgGdMzGR5AzNE+8BHfaDe8VS6iKFqCPogKRW0srAI5cPAAmlrXLyu5/Zbjj7yFPv8h
+         3mTe9vHm9Q15EJYBspaCdholCZ6CDq6Q2F+PO3NVhEWjQxTvwye4HItMEfEZE1i7A04p
+         7crCNlCnm8NnPKDazqlFrlhxW4+/XL7FQY4WFqGLZO1+PhgyXtcyr57v3gDv46XAt/om
+         PkSf5YFyNUC1w10E0NtACBE3gen6xGVzqFh7Wz8M4QOlRCXGTKIrnmeGXz8eumwkLB2V
+         0pO3TYvmJU7BWEf8Rhc1gue5+7QREgcEKZaT7o/aNruQBQx8Bji+iVXHYnyl0mjHkxH6
+         Fu4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UTc8DYxRHwrx7moBbowmcIUIPuxWr0WrNqCa5fecqEg=;
-        b=3UpRygws1di3gSYFqyCnS7swI3rmznkJVIQtMT78SZ147VQdNrsWiw5HK7h18tVb5Q
-         bjbVBBqgdMliM+7syBRo9spSTnzT01UHXElj7SkZkJopNXChwVSkBpvUZjJq90UzTA85
-         5JplOdzzixYn5AkXzxt5wMIisKGU48IDSfPPtyagNWnAblAczRSzeyNk87h8hqTSihxz
-         Y6WA7YaguP6hwTg78SX+tQwDtEok+GCKYUaSgHwyfwsUtHz7D/KWhcORzhEOImYvkAB5
-         FVTsFw+tCVLIevusxiVRp+HS9mM2KtU2L6wnyvoQyhknL4xDl3+e/7yWwm2KezxaNIjz
-         fQ3w==
-X-Gm-Message-State: ACrzQf0mcoBcwL60qhLUrwoP81MO+daTGArpSkNogSW9UjS1QfqXBsXG
-        H/c4oJLBWOXp5ZKP5kPKic8=
-X-Google-Smtp-Source: AMsMyM5BZTOfwi8Dt09OMIxLi3UlZU4y8d8/ueferawvA7/zzC4vRGReF3His7mqZuiVB4ABQngdkQ==
-X-Received: by 2002:a4a:b648:0:b0:47f:90bb:e7e8 with SMTP id f8-20020a4ab648000000b0047f90bbe7e8mr8924993ooo.32.1667334218760;
-        Tue, 01 Nov 2022 13:23:38 -0700 (PDT)
+        bh=Jjp9wYlavuPz4LHH71+rdE2DpYiSE2m/SsqEKdhE490=;
+        b=SZ7MBseqAFo5ID1k4Hq6cE9xaxF92J/orALiURI2o+p6ajZGvi+08PG/OCCn705QrW
+         NdQG4awyOwZeyLLYhClL9oR8q6lv0f/1hRO55dpj6mQijFCF0Xnn9CfiCZVqtcIEru1x
+         j0lI8UOrbioDlYQja0DCboTnUya158FoBJAzj29erEcfKI1a7zc00Vrt7ReCedwe8kwE
+         HBvHdsS+bgwZIK3xkQOLy6vr56CrhARjT3075hP66Ira9JU2rEaw3/MRMa7QkSz2ZW8l
+         A8O8TLKC9ZlCmGjfpK2MTOsIIh4lBjoxquzDeh40o67sjcsp+6EQGOgI8BnO45a7R9Yg
+         UCcg==
+X-Gm-Message-State: ACrzQf2J0felN9bhDQpMp/3XEKJgFIAPCy4rx+LaGqfJJQ4PYnVLUVd4
+        Dzp2aVf3A9r/+mnL3tEaq9E=
+X-Google-Smtp-Source: AMsMyM6qkUszLRMlE7LpULEBpv35GjqAN6Hhnj5Yddy8SeVlPm+JJMJ4nhkhuzfQVDlF/C4vThpC0g==
+X-Received: by 2002:a05:6870:51a:b0:130:ae8d:daaf with SMTP id j26-20020a056870051a00b00130ae8ddaafmr20713783oao.103.1667334229052;
+        Tue, 01 Nov 2022 13:23:49 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-e052-4710-92ba-8142.res6.spectrum.com. [2603:8081:140c:1a00:e052:4710:92ba:8142])
-        by smtp.googlemail.com with ESMTPSA id d22-20020a056830045600b0066210467fb1sm4337493otc.41.2022.11.01.13.23.37
+        by smtp.googlemail.com with ESMTPSA id d22-20020a056830045600b0066210467fb1sm4337493otc.41.2022.11.01.13.23.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Nov 2022 13:23:38 -0700 (PDT)
+        Tue, 01 Nov 2022 13:23:48 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     leon@kernel.org, jgg@nvidia.com, zyjzyj2000@gmail.com,
         jhack@hpe.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 01/16] RDMA/rxe: Add ibdev_dbg macros for rxe
-Date:   Tue,  1 Nov 2022 15:22:25 -0500
-Message-Id: <20221101202238.32836-2-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 02/16] RDMA/rxe: Replace pr_xxx by rxe_dbg_qp in rxe_comp.c
+Date:   Tue,  1 Nov 2022 15:22:27 -0500
+Message-Id: <20221101202238.32836-3-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221101202238.32836-1-rpearsonhpe@gmail.com>
 References: <20221101202238.32836-1-rpearsonhpe@gmail.com>
@@ -71,43 +71,64 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add macros borrowed from siw to call dynamic debug macro ibdev_dbg.
+Replace calls to pr_err/warn() in rxe_comp.c with rxe_dbg_qp().
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_comp.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
-index 30fbdf3bc76a..1c5186c26bce 100644
---- a/drivers/infiniband/sw/rxe/rxe.h
-+++ b/drivers/infiniband/sw/rxe/rxe.h
-@@ -38,6 +38,25 @@
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index 66f392810c86..4dca4f8bbb5a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -114,7 +114,7 @@ void retransmit_timer(struct timer_list *t)
+ {
+ 	struct rxe_qp *qp = from_timer(qp, t, retrans_timer);
  
- #define RXE_ROCE_V2_SPORT		(0xc000)
+-	pr_debug("%s: fired for qp#%d\n", __func__, qp->elem.index);
++	rxe_dbg_qp(qp, "retransmit timer fired\n");
  
-+#define rxe_dbg(rxe, fmt, ...) ibdev_dbg(&rxe->ib_dev,			\
-+		"%s: " fmt, __func__, ##__VA_ARGS__)
-+#define rxe_dbg_uc(uc, fmt, ...) ibdev_dbg(uc->ibpd.device,		\
-+		"uc#%d %s: " fmt, uc->elem.index, __func__, ##__VA_ARGS__)
-+#define rxe_dbg_pd(pd, fmt, ...) ibdev_dbg(pd->ibpd.device,		\
-+		"pd#%d %s: " fmt, pd->elem.index, __func__, ##__VA_ARGS__)
-+#define rxe_dbg_ah(ah, fmt, ...) ibdev_dbg(ah->ibah.device,		\
-+		"ah#%d %s: " fmt, ah->elem.index, __func__, ##__VA_ARGS__)
-+#define rxe_dbg_srq(srq, fmt, ...) ibdev_dbg(srq->ibsrq.device,	\
-+		"srq#%d %s: " fmt, srq->elem.index, __func__, ##__VA_ARGS__)
-+#define rxe_dbg_qp(qp, fmt, ...) ibdev_dbg(qp->ibqp.device,		\
-+		"qp#%d %s: " fmt, qp->elem.index, __func__, ##__VA_ARGS__)
-+#define rxe_dbg_cq(cq, fmt, ...) ibdev_dbg(cq->ibcq.device,		\
-+		"cq#%d %s: " fmt, cq->elem.index, __func__, ##__VA_ARGS__)
-+#define rxe_dbg_mr(mr, fmt, ...) ibdev_dbg(mr->ibmr.device,		\
-+		"mr#%d %s:  " fmt, mr->elem.index, __func__, ##__VA_ARGS__)
-+#define rxe_dbg_mw(mw, fmt, ...) ibdev_dbg(mw->ibmw.device,		\
-+		"mw#%d %s:  " fmt, mw->elem.index, __func__, ##__VA_ARGS__)
-+
- void rxe_set_mtu(struct rxe_dev *rxe, unsigned int dev_mtu);
+ 	if (qp->valid) {
+ 		qp->comp.timeout = 1;
+@@ -334,7 +334,7 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
+ 				return COMPST_ERROR;
  
- int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name);
+ 			default:
+-				pr_warn("unexpected nak %x\n", syn);
++				rxe_dbg_qp(qp, "unexpected nak %x\n", syn);
+ 				wqe->status = IB_WC_REM_OP_ERR;
+ 				return COMPST_ERROR;
+ 			}
+@@ -345,7 +345,7 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
+ 		break;
+ 
+ 	default:
+-		pr_warn("unexpected opcode\n");
++		rxe_dbg_qp(qp, "unexpected opcode\n");
+ 	}
+ 
+ 	return COMPST_ERROR;
+@@ -598,8 +598,7 @@ int rxe_completer(void *arg)
+ 	state = COMPST_GET_ACK;
+ 
+ 	while (1) {
+-		pr_debug("qp#%d state = %s\n", qp_num(qp),
+-			 comp_state_name[state]);
++		rxe_dbg_qp(qp, "state = %s\n", comp_state_name[state]);
+ 		switch (state) {
+ 		case COMPST_GET_ACK:
+ 			skb = skb_dequeue(&qp->resp_pkts);
+@@ -746,8 +745,7 @@ int rxe_completer(void *arg)
+ 				 * rnr timer has fired
+ 				 */
+ 				qp->req.wait_for_rnr_timer = 1;
+-				pr_debug("qp#%d set rnr nak timer\n",
+-					 qp_num(qp));
++				rxe_dbg_qp(qp, "set rnr nak timer\n");
+ 				mod_timer(&qp->rnr_nak_timer,
+ 					  jiffies + rnrnak_jiffies(aeth_syn(pkt)
+ 						& ~AETH_TYPE_MASK));
 -- 
 2.34.1
 
