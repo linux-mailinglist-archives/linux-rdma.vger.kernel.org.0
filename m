@@ -2,77 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04467616345
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 14:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A0C61642E
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 15:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbiKBNC2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Nov 2022 09:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
+        id S230419AbiKBOAZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Nov 2022 10:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbiKBNC1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 09:02:27 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5602871B
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Nov 2022 06:02:26 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id a27so7916524qtw.10
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Nov 2022 06:02:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9ui2spH7Ijxdyz3Q6yHTW1U/bSitTRDpSp5cXJ8JASQ=;
-        b=L3mc3II/vblRGybKufSbD0XGkcv+/Ndo+Ncph5snlwdoLFIIf2N+eiTsnh/towV6SQ
-         teA8vs9GdfKuarodtBR4J1ToeItpWVaPXKrj1ul87TpPTYsSc3ZiNeeh5/yGuI71HCVT
-         0+Wfh6yPzkO9BRy8Qq5z2eU6tesodEKpfU8ey0AWdu1fn0duRiXQSyPulQNJXdZfRC4H
-         G+OpJ3M1z+/HSxOflPI8DdDwADuwtSATZGd0VHJY2yuyiGW/gU/5HPKXgvAGdAg5J2dS
-         aDauWRMkaJ4DgnDvbc/RHTLdkX71jWl7dpNkb4TU0d/ab6TuAYJpEndxgJoT6HlGFUR4
-         5KlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9ui2spH7Ijxdyz3Q6yHTW1U/bSitTRDpSp5cXJ8JASQ=;
-        b=vr5aA4ybIucRFzngwLQlM/I3uNQDW2a7lTc6W3nHOuhOa3Vdv/wbgUAETyRVcEukwY
-         LVftfNCVK9N1qhNGnIJnEuMByJxVzlGtELDGbBnLcaXTWLz5a5Aw4MMpKPox+459Q26d
-         FwP35yM0Yz6A6FrMVZEYlTPsS/EhWgx9lyHYBcJ1IhUscON59c18siKOUNNG5YbqKX01
-         Aw64dtXspzet7vVdCvBjZgvbI7+693pU6RfSf9x+ZNkx6lG5m0m8Lby46Uk1rFIsdYRA
-         EupmvDkO7vG1sYKFbmDYs20BMp8PFcfTfRPJZ9cGLznye9Vu7e3cO+4SclXJDNcr43x4
-         yn1A==
-X-Gm-Message-State: ACrzQf0GL9qYnY2Adg9AIwjKbhVbgcGU7uOokqkKBBpDW+zOSW5u/urS
-        IxdQbU2aH1bd5pUfz6tS3251kQ==
-X-Google-Smtp-Source: AMsMyM4hG3J43eMr0N8kd2RNr5CGjH8FZCEj0O/saxYELV47TVbI18Z/MhuWquKg2CIuAW2tEMh2mQ==
-X-Received: by 2002:ac8:60c3:0:b0:3a5:26c3:1a5e with SMTP id i3-20020ac860c3000000b003a526c31a5emr12641109qtm.247.1667394145195;
-        Wed, 02 Nov 2022 06:02:25 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.122.23])
-        by smtp.gmail.com with ESMTPSA id u21-20020a37ab15000000b006fa1dc83a36sm7480299qke.64.2022.11.02.06.02.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 06:02:24 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1oqDNv-004VTc-Nq;
-        Wed, 02 Nov 2022 10:02:23 -0300
-Date:   Wed, 2 Nov 2022 10:02:23 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Leonid Ravich <leonid.ravich@toganetworks.com>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <IMCEAMAILTO-linux-trace-kernel+40vger+2Ekernel+2Eorg@eurprd02.prod.outlook.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Yigal Korman <yigal.korman@toganetworks.com>
-Subject: Re: BUG:  ib_mad ftrace event unsupported migration
-Message-ID: <Y2JqX3vC1mG/JDex@ziepe.ca>
-References: <VI1PR02MB623706DA8A01842834FC191089399@VI1PR02MB6237.eurprd02.prod.outlook.com>
- <20221102074457.08f538a8@rorschach.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221102074457.08f538a8@rorschach.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        with ESMTP id S230433AbiKBOAY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 10:00:24 -0400
+X-Greylist: delayed 569 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Nov 2022 07:00:21 PDT
+Received: from mxus.zte.com.cn (mxus.zte.com.cn [20.112.44.237])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED0C63AE
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Nov 2022 07:00:20 -0700 (PDT)
+Received: from mxhk.zte.com.cn (unknown [192.168.250.138])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mxus.zte.com.cn (FangMail) with ESMTPS id 4N2Svt3LQgz9tyVb
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Nov 2022 21:50:50 +0800 (CST)
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4N2Svp52fSz5PkGn;
+        Wed,  2 Nov 2022 21:50:46 +0800 (CST)
+Received: from xaxapp01.zte.com.cn ([10.88.40.50])
+        by mse-fl2.zte.com.cn with SMTP id 2A2DobUS088110;
+        Wed, 2 Nov 2022 21:50:37 +0800 (+08)
+        (envelope-from zhang.songyi@zte.com.cn)
+Received: from mapi (xaxapp01[null])
+        by mapi (Zmail) with MAPI id mid31;
+        Wed, 2 Nov 2022 21:50:40 +0800 (CST)
+Date:   Wed, 2 Nov 2022 21:50:40 +0800 (CST)
+X-Zmail-TransId: 2af9636275b06d0fc8ef
+X-Mailer: Zmail v1.0
+Message-ID: <202211022150403300510@zte.com.cn>
+Mime-Version: 1.0
+From:   <zhang.songyi@zte.com.cn>
+To:     <saeedm@nvidia.com>
+Cc:     <leon@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <kliteyn@nvidia.com>,
+        <shunh@nvidia.com>, <rongweil@nvidia.com>, <valex@nvidia.com>,
+        <zhang.songyi@zte.com.cn>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jiang.xuexin@zte.com.cn>, <xue.zhihong@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIG5ldC9tbHg1OiByZW1vdmUgcmVkdW5kYW50IHJldCB2YXJpYWJsZQ==?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl2.zte.com.cn 2A2DobUS088110
+X-Fangmail-Gw-Spam-Type: 0
+X-FangMail-Miltered: at 10-207-168-7 with ID 636275B9.001 by FangMail milter!
+X-FangMail-Envelope: 1667397050/4N2Svt3LQgz9tyVb/636275B9.001/192.168.250.138/[192.168.250.138]/mxhk.zte.com.cn/<zhang.songyi@zte.com.cn>
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 636275B9.001/4N2Svt3LQgz9tyVb
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,24 +63,42 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 02, 2022 at 07:44:57AM -0400, Steven Rostedt wrote:
-> > before starting throwing some patch into the the air  I would like to align with you the approach we should take here. 
-> > 
-> > my suggestion here : 
-> > - ftrace infra should verify no migration happen  (end and start happens on same CPU)  in case not we will  throw warning for the issue  .
-> 
-> The scheduler should have. On entering the ring buffer code
-> ring_buffer_lock_reserver() it disables preemption and does not
-> re-enable it until ring_buffer_unlock_commit().
-> 
-> The only way to migrate is if you re-enable preemption. WHICH IS A
-> BUG!
+From 74562e313cf9a1b96c7030f27964f826a0c2572d Mon Sep 17 00:00:00 2001
+From: zhang songyi <zhang.songyi@zte.com.cn>
+Date: Wed, 2 Nov 2022 20:48:08 +0800
+Subject: [PATCH linux-next] net/mlx5: remove redundant ret variable
 
-So what on earth did that?
+Return value from mlx5dr_send_postsend_action() directly instead of taking
+this in another redundant variable.
 
-I'm guessing some driver's query_pkey op, but AFAIK we don't have any
-explicit pre-emption reenablements in the code - unless it is sneaky..
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Leonid what driver are you testing?
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+index a4476cb4c3b3..fd2d31cdbcf9 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+@@ -724,7 +724,6 @@ int mlx5dr_send_postsend_action(struct mlx5dr_domain *dmn,
+                struct mlx5dr_action *action)
+ {
+    struct postsend_info send_info = {};
+-   int ret;
 
-Jason
+    send_info.write.addr = (uintptr_t)action->rewrite->data;
+    send_info.write.length = action->rewrite->num_of_actions *
+@@ -734,9 +733,7 @@ int mlx5dr_send_postsend_action(struct mlx5dr_domain *dmn,
+        mlx5dr_icm_pool_get_chunk_mr_addr(action->rewrite->chunk);
+    send_info.rkey = mlx5dr_icm_pool_get_chunk_rkey(action->rewrite->chunk);
+
+-   ret = dr_postsend_icm_data(dmn, &send_info);
+-
+-   return ret;
++   return dr_postsend_icm_data(dmn, &send_info);
+ }
+
+ static int dr_modify_qp_rst2init(struct mlx5_core_dev *mdev,
+--
+2.15.2
