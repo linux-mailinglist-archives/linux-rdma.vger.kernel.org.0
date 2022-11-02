@@ -2,293 +2,200 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675E16160B4
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 11:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED02616138
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 11:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbiKBKR1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Nov 2022 06:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
+        id S230012AbiKBKtt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Nov 2022 06:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiKBKR0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 06:17:26 -0400
-Received: from esa2.fujitsucc.c3s2.iphmx.com (esa2.fujitsucc.c3s2.iphmx.com [68.232.152.246])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE64524952
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Nov 2022 03:17:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1667384242; x=1698920242;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=yRg3Yl+j+rShmf8k2xQqUdqsa3VQ87dxpcaIxUDEUjo=;
-  b=biGJ0TK6UX1nosCT11MkY98CEo9jNvo2HzWUcOipIoffslugcGezRbav
-   ZnEJo3wBQo0PaIMb82xnHNjdYIIwwn3EOh3ZDjBSsY9N/5r/lVYwR0iDc
-   XKshMjWpBP4l0YMJA2PYbonE2kYTv0dBQ+VNJqrhVI4rLtKLCDAiusbG3
-   Isbl7yYTJbS9UgMGLGiiMc+z2updCZqMgqihLJMd4UXMMhGxrOq9OzPBp
-   O3b0rrepoPBSIfMcTtTEtguvU+UF1uU6evCePlYBGrj7eu8WRjYGmbL4M
-   mxJey95+0R01B5BWHYA11Ze59EK//0okYufESFC4Lt4zkkzKwUDH+coHd
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10518"; a="77284293"
-X-IronPort-AV: E=Sophos;i="5.95,232,1661785200"; 
-   d="scan'208";a="77284293"
-Received: from mail-os0jpn01lp2110.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.110])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2022 19:17:18 +0900
+        with ESMTP id S230442AbiKBKtj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 06:49:39 -0400
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-eopbgr150054.outbound.protection.outlook.com [40.107.15.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6710222B3;
+        Wed,  2 Nov 2022 03:49:29 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SdtPLKMoYjWS9UNVZD/AZwrQFQdCbMmCPXPmoUdr2nyWwM+P8hhZj4u7ewkHR0Ca7l35Zgawh5yXra6NB50LWMi61ydyt/jmvZgMp9PuDu8YR6bcu+iJtaBdhWfz7b38CLNVRbX/Ay9eytd/z7kAhntqDSHgZzrHy0/6eXK21cNc99vxVjwEv7Kz2n4OlR1L6Fg7KmLevO46SmrZxCW4R3TWg0Zvc9FMpcJcpDgYBHr+pBTRA5XVxAo648juQ7GlETkcVSeJx01ANYa5T+v6Wet8+D6ExYlatiHEbGAMdeAT84Pwn8E+cQeUeVT0AcctEf8luQ/dBN+Cv3vojCMVbg==
+ b=NU+snbbMZ4iJtFuX432RU+LIgQWwKb1VYODou8DWnk3k9dpYGeSqb8ShsLBAlaJlD1eoPEf0jLQFFc8ArZ33BRUYgkC9KvAowkE2qDtkz6I6vBAy4g696v8mZs9i4UgEOx9XqhXWj2dk17gDdtkNDHlqBS+IKPr0CSABm/Ebbz0GgYYzDWfwr5Z+SbLMPMlP3Km5m/A2dnr2ZMYaixLDwNlomyLtVDWpery8STssHAbU18adDS3iLEIj98fGuv4KcidufR1JfQwzVThSvXi0e5wzg0x7aLR0wCouRYl5zGZmmF9JcrcEn7TRyV1cC0V8RIPL2GtAeaYInvP/Zb5nGA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FJLf0jAhyuN4vvUKeuYFqGnpqZW0riLe3T6nfqtJRm0=;
- b=gyO+PFwSrA0JI3fxZ1gFOlw+eX9ZiCyzv5Eyf7cAXYTpASlWFy2aPbDJi7n5/RNusIK2n+2+77YLX5UnFao1bvabTRZiWP3yefrC49/eUG3JMZvMzbSROsNhm0PaBE9vekV5U7XuE/MzzbCd93Nbpbm4tlcp0WKcgto0Da53cMX8xgLCugRO4QSFDg5J1HSDiesmP5YumcIIxI6Yrqp/K0/ebw2YNY50Kj0HTiS3dPlBzDURklKqMYYtZF3AKZesh4WTl8YgtmjnuKsP5nf9n6U/rV8Ly6iQd6Vc5OLMkS56oDJUkg1/57uKFCJkKO6HfJFB1wvDU0h93Hr2vxQsXQ==
+ bh=aSML6Kl5Iq0ZJ05+PGB1MwEVg/KF1W8GWdKf2HmUarc=;
+ b=ED5bp1D7l2wfE39iO1nRjyyWiRukhVPVxAiIX8MdPEmn5IP699cT/Iv+OzN+ayheQAJ7ltBgTja7gm0pWPtF6q5w+0Krj+/nbjebLVHEGOS2fAlhGZ3YBo0w/m4qTl+9rRGtuueHel4pxRjY/HDIiXmDQThwpTZ7oMAUBjYrT0RN3s/u45Ceiw+fSbnReV6n0VO0NRQuZcfnIPe0iT2/6P/mueA69MoZKrw7J6ZnpCNKszNRgjztVzo7iqtgN3otQ3Ng7R72XyM9Er82qhCjHkL/53SJ88Yz5tTPWOsRy7VLgioDhydICBfwM9qvVVRVz/g4dK4fna3PI0ranxIu2A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TYCPR01MB8455.jpnprd01.prod.outlook.com (2603:1096:400:15d::13)
- by TYCPR01MB9401.jpnprd01.prod.outlook.com (2603:1096:400:195::8) with
+ smtp.mailfrom=toganetworks.com; dmarc=pass action=none
+ header.from=toganetworks.com; dkim=pass header.d=toganetworks.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=TogaNetworksLtd.onmicrosoft.com;
+ s=selector2-TogaNetworksLtd-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aSML6Kl5Iq0ZJ05+PGB1MwEVg/KF1W8GWdKf2HmUarc=;
+ b=wsYQH1sWdUTGoiC049o1cyutUgZmzTgjVP1oV5jikw85M7tQkwXAkuCSOGNfhwR9QvZPdfXbkcMPaIfBtoSvjJIBPFuHC1zUFH1iAH80wAyB6EImOtFc7vNzsAQky8on4kaVC0XLbNdoxVwbXuaifnjL9rvWBQLpX1ZND5aR158=
+Received: from VI1PR02MB6237.eurprd02.prod.outlook.com (2603:10a6:800:17e::7)
+ by AS8PR02MB7319.eurprd02.prod.outlook.com (2603:10a6:20b:3b1::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5769.21; Wed, 2 Nov
- 2022 10:17:14 +0000
-Received: from TYCPR01MB8455.jpnprd01.prod.outlook.com
- ([fe80::8f33:6006:986f:f575]) by TYCPR01MB8455.jpnprd01.prod.outlook.com
- ([fe80::8f33:6006:986f:f575%4]) with mapi id 15.20.5791.020; Wed, 2 Nov 2022
- 10:17:14 +0000
-From:   "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>
-To:     'Bob Pearson' <rpearsonhpe@gmail.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jhack@hpe.com" <jhack@hpe.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH for-next v3 00/13] Implement work queues for rdma_rxe
-Thread-Topic: [PATCH for-next v3 00/13] Implement work queues for rdma_rxe
-Thread-Index: AQHY60QPhEmsfEs6mEOBpNno2u2Vq64rPfoQ
-Date:   Wed, 2 Nov 2022 10:17:14 +0000
-Message-ID: <TYCPR01MB8455A2A6E317C08E2F9DF908E5399@TYCPR01MB8455.jpnprd01.prod.outlook.com>
-References: <20221029031009.64467-1-rpearsonhpe@gmail.com>
-In-Reply-To: <20221029031009.64467-1-rpearsonhpe@gmail.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.20; Wed, 2 Nov
+ 2022 10:49:26 +0000
+Received: from VI1PR02MB6237.eurprd02.prod.outlook.com
+ ([fe80::b8a7:7177:555f:150b]) by VI1PR02MB6237.eurprd02.prod.outlook.com
+ ([fe80::b8a7:7177:555f:150b%4]) with mapi id 15.20.5769.021; Wed, 2 Nov 2022
+ 10:49:26 +0000
+From:   Leonid Ravich <leonid.ravich@toganetworks.com>
+To:     "linux-trace-kernel@vger.kernel.org" 
+        <IMCEAMAILTO-linux-trace-kernel+40vger+2Ekernel+2Eorg@eurprd02.prod.outlook.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Yigal Korman <yigal.korman@toganetworks.com>
+Subject: BUG:  ib_mad ftrace event unsupported migration
+Thread-Topic: BUG:  ib_mad ftrace event unsupported migration
+Thread-Index: AQHY7qUIEmC+0HXRl0GAS6BMUX6rtg==
+Date:   Wed, 2 Nov 2022 10:49:26 +0000
+Message-ID: <VI1PR02MB623706DA8A01842834FC191089399@VI1PR02MB6237.eurprd02.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-securitypolicycheck: OK by SHieldMailChecker v2.5.2
-x-shieldmailcheckerpolicyversion: FJ-ISEC-20170217
-x-shieldmailcheckermailid: f035c8b60d08463b9a7809eeedac9e21
-msip_labels: MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Enabled=true;
- MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SetDate=2022-11-02T10:17:12Z;
- MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Method=Standard;
- MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Name=FUJITSU-RESTRICTED?;
- MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;
- MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ActionId=00fe9382-5d4e-44cf-bc64-4f87485beb34;
- MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ContentBits=0
+msip_labels: 
 authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
+ header.d=none;dmarc=none action=none header.from=toganetworks.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYCPR01MB8455:EE_|TYCPR01MB9401:EE_
-x-ms-office365-filtering-correlation-id: fc241a8a-6b27-429f-1b15-08dabcbb69db
+x-ms-traffictypediagnostic: VI1PR02MB6237:EE_|AS8PR02MB7319:EE_
+x-ms-office365-filtering-correlation-id: a56a0f3c-6205-4a8e-a67f-08dabcbfe967
+x-ld-processed: 73f7e7df-ca98-4f08-bf85-f137b447da96,ExtFwd
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CqhwImiQs7MGBkZZ2zkSjPkA68ot4V0RHB+8f7Gl/hpn+ZuAP5tsUdUFBxAJybwkw+MUSZ47IparFVdbFimcJXEKpugQrdFeWu/ebxaTrRvGkq1j8hudYzX45jKelS9Jh5pc30cvwlkQbaD+1fVHNNhMkdRfGxOfa9I2BfmWlOzQUrDeo64mRezECS66wkhtHyGsKQCL6wsESR3IhbL/UsL5r5/dw70QsCI/m1I95tKfdExi5KKEj3u8jb2bzwS+1KPCU3xBKM6vAH4ipjFb2bNVSbGCFvcvU4Gm+yWwzhIf8KG15RMOMxHBQmPykE6i12roEzLp8HQRkJO2PLietL0r35I9S40ovZE4Flftm1TYASnRbWst1vE3kO7UlD5BlIWm1TUCeCJNx+WeZn7fE1rXDIIwymWjMkvd4n8hqNo/knAijknNrkouBor4SSjVbNTArWIQmjYNchjkYDYUnN0fILLjt5m2rU9ZfBQC2UnRpvy5E5ENyACqwgoYgIoZUszgjkwTlRayu2tj3YlL0wIsc4n7QhGwhxxgWlh4cPwK0IAwD9fV5Dz5CBmAVAy4Kh0RGE3ZnLo5NKbMKgwcmEgILJXD5MyXGTziRBO4aydcxcKZ5VSIsi+IBgYCypkrNpLtzrY9iJy7IOST51akUMs41BGg37G1Dl/zxBoeDwmJ/O+H+5sr9J5xOExngbgXXgkPYTfXWCYsrG1YjvvaYg2AxSGJ5fZwPvgXY9a5Wf7yT/iNVWaqAhvOBxmzoOu3SXd0ZZ1oEifj4FpBkegGc5jHSomyQ5/J5ywH3nCYrqdN43AwoMwyI4IgVaozRdjbGKAgPKQRiY6Sn7Ek8r4IMQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB8455.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(136003)(346002)(396003)(39860400002)(366004)(451199015)(1590799012)(1580799009)(85182001)(2906002)(33656002)(41300700001)(55016003)(83380400001)(66556008)(71200400001)(966005)(5660300002)(52536014)(8936002)(66446008)(8676002)(64756008)(38070700005)(66476007)(86362001)(76116006)(9686003)(316002)(82960400001)(110136005)(478600001)(53546011)(7696005)(6506007)(186003)(122000001)(38100700002)(66946007)(26005);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: rQzuLNWVaqbRDBaumhSAqURgnsQnUxQW+NUXHKDBZvWSacRtdoF7/W/vGr35Tv5ILHrCDBnsMrYQZL8J+nWHPFFucOYNQ56aQJmKy9H5dq928kVSxmTrkc2pY3aIQfvGdiAlftTlKHx7vgfL2H5NleGYK07O5dvRxCK/m2cjhozIDPpam0JfWt93l63lk+sSy0dnrwIRslyF3gdy1Q3lfukY/L4hxt2fLKQVE50KAUwBDEHTnPWbfa5TdxelbPMqSfrbs4LyFRzT+ykcN7EoODNbcJI3czrcotiugQ5aV8M7VfaU9p93zqUh26vKLirmc3mVLs02qeUiwaDINFgyCtfoo+J52LWgYzHIAM5aH+ZWgBUqOPbtSYEr5Aa+ZsoOtKZt/SYO3LLtnYjWnAq8RE6Ri4EMQH9MxVVdsc0z0nPZcXDN8niMBOtiwTgbNe/mkOgShyLw+Nuzw6fGWP/a5QAKT/3fUuceFZ6O3tnz7cdrC6ZgW7UVIOitxJlIQoJvSklbE5QBwBmbnfLWHtbrBJNLawpj+Rf7N+WW5+6a1YJ0PUaj3aDFPWdyHedqLz1W6c+iAGW16mNs4udz7t/ZfagJGaHrPYLYwSXGvh/S2Btc52NZZXQ+AstXqCeQwSlZoeTfTMBEMnRdw6MKQUMLGMLj9jthJ76lQyJ3mvsRXsemn0CE8t9VJGGMUIcwePU8l740ockmnXasrvnDUY5+PylzyD9Hpx6S2MSr9RnbIxsvI/6Ce4+ewUtiUGnPNkKE0VyXDLCmYZjelKrnxTVDGA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR02MB6237.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(39850400004)(136003)(376002)(396003)(346002)(451199015)(71200400001)(55016003)(38100700002)(5660300002)(2906002)(122000001)(86362001)(83380400001)(26005)(38070700005)(33656002)(9686003)(107886003)(186003)(478600001)(316002)(91956017)(66476007)(110136005)(41300700001)(6506007)(7696005)(52536014)(8676002)(64756008)(8936002)(44832011)(66946007)(66446008)(4326008)(66556008)(76116006)(491001);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?Qld5V1B6ejhKZlFJUzJYZDd0d0FleUkzZC9QSDFQQU5HRkk4OFFNd1VI?=
- =?iso-2022-jp?B?bXZkVkpsR0NVOGZUMkliamY5WTNubkpYVzVHOVFwWllod0ZWN3FPS2N4?=
- =?iso-2022-jp?B?TzREWnlPWE01cFhRVmRjTUhyb0RvUUp5NVBVS3Q3Nkw1V3JwOTJYVXZT?=
- =?iso-2022-jp?B?VUdQREFsR2xobWc1U3dvRExuV0RFajRjcDhybU81b1RwTDRRQk9ScUZk?=
- =?iso-2022-jp?B?NnBldklOR1hsSWlwdlZWK1I4Ym5MUFdmNy9FMjlWR3FqVWxwVHF4ckEv?=
- =?iso-2022-jp?B?d0l3aE9DVUVsOXRRWnpiVXJGeVhVWVAxZTQzNDQ1OFZHWnZmNG1Icmhp?=
- =?iso-2022-jp?B?S2d1OTNIMnM1bGhyZ2hZVGpmeFNHMHhHZHZmSlUyT3JER3pGa3VkSDQ4?=
- =?iso-2022-jp?B?dHJGandTVUhoeXo4NSttczVIN1A1SktxZDk3Rml2RlVyVldIOElhVW1k?=
- =?iso-2022-jp?B?OFh5TGNSbVlRam5kcWQ2aTJMWW0wR3NGcmN2dmRSRDZhVUpIMmpaVThs?=
- =?iso-2022-jp?B?OVAvOW9XK3V6QWJxMWplVEpZNzg5R3RUTndINnBtNU1HQVhlZ3B5WDNT?=
- =?iso-2022-jp?B?L3VOckdYdUEzd2NmV2RKWHhWbFZyc2l2Mm5Dekl2SDJLdGhlQnFHRjlQ?=
- =?iso-2022-jp?B?RFZLaHd4blFxdVZabXQvTVBoTnpveFJCTm8yMUNRWHNQanJpUExjZ3pk?=
- =?iso-2022-jp?B?ZHhkSHdtWEljTytBYWh0STcxVU9JT1FtMlRMUjEwYTZ6Vks0QXkxV3Jl?=
- =?iso-2022-jp?B?T0JQbWNrZFVlSzhYM2hBeEVhN3dvc2xKTkdsZjRTVWlJYTR1OWN1Nzkw?=
- =?iso-2022-jp?B?TEdNN1BtRTkrVENQT28vVzhRM2xDdnVhVjhIMkRUbEhEUWdSRGFPNERR?=
- =?iso-2022-jp?B?ODNMZ3ljbVRieFBNUmhSa0lldExXYWttQVMxeDFQTGNZcGFWbm9FdEtM?=
- =?iso-2022-jp?B?K1FqUnhjNHBMdDB5bXZPZ1R0RlRqbW9oZ1BqYmN3VDg0Y2xoNFJFZWhK?=
- =?iso-2022-jp?B?RElMZlVwSy9YdmhxRWZZMFJyWVl5TjE0bUYwVEt1SCtNSHdCbklPaHpn?=
- =?iso-2022-jp?B?VDMzSVhuTmtBM3VIcHBsM0kwVWlLeE1ZMS9BQStxQWFXSEpLRGxsS3Rt?=
- =?iso-2022-jp?B?Qkk0R1RhSG9JUXR0Z1FRZDhMUFRzSW1uL2dYWTN0T012NkdsbW0zV25K?=
- =?iso-2022-jp?B?SXV1K253U0huU3lSUkhJb2hWVkQ4SlhpREMxYmZsWjZtd05uOGhwY2pX?=
- =?iso-2022-jp?B?S3RvK3VZcjV6b1VhK3dXRVlzR1dQdUo5cTNrWEFLdmV0RGNtZUFCcUFu?=
- =?iso-2022-jp?B?eEtpOFB5OFd4WWVjbFdabzZHdTFEbC9mVTVLY211R1Z5TmZLWHRvenBj?=
- =?iso-2022-jp?B?WE5TWGFtSUNYd1JTTWNrTFcrQ2pTY21JZG9ZclV3WUZpQnFjMjFDNDZa?=
- =?iso-2022-jp?B?V1h6SVVveGJjMDVZOFUxMXdqTHlOWU10UnE5b2o3M3QrTzRVa0F5WlBu?=
- =?iso-2022-jp?B?TmRBNUM3eWUzVmVMU1hmQjdpNXhlVUhJNjAxQjNFd0YrTlhucmZuZkYx?=
- =?iso-2022-jp?B?bTBqS3ZXWmpSekxvRzF3dXNycnhrblBkT2RnazA3bTJCekZhdDlWQ2s1?=
- =?iso-2022-jp?B?MkluSHhFV1RMWE9OMXY0a1RabTYyaWJsNDgveUhlR25VeEY2RzRwZU1T?=
- =?iso-2022-jp?B?YndScE5PTjZoelhqYW5lWUZHN3NDbTlaZGdHQzIxZEdVR25GeklIL0hP?=
- =?iso-2022-jp?B?ZU8xZGZ5N3ExRkpEVUtiWmNyN3VUYVgzTjUvN3JaQVJYem5LeDlFWE9J?=
- =?iso-2022-jp?B?d2s0WERaSmZ6N2JaamV6VDdDZ0g3YXN5cHNVdGw2OGhRYUJjQ254MXln?=
- =?iso-2022-jp?B?eGhhZUJMUFd3ek1MTEZVeWNsS3RpVzNoMXlQc1Z2TndWdHhWM1dSMFM2?=
- =?iso-2022-jp?B?S0g5UnkrdmJVTEpvdUQwS1RPRTlNYmFnQk9xUHdIU1NIbmN1emRBUjJ5?=
- =?iso-2022-jp?B?QkczdzF3cDJVN2l4QWRxdUZQSGIydVNaa1VBNnBpeDdjaDRGZFRsZXVB?=
- =?iso-2022-jp?B?em5zd2FpWGoxbmI2cllNajJxUnRPUHA4djdSeXdLL0NzREs0eUdFTGQ4?=
- =?iso-2022-jp?B?SWpwUVJwdThpUHExVG5kVy8ra3ZwcjZSVlJUdElTQ0t3dnJyVDAwZkp4?=
- =?iso-2022-jp?B?K0xrS1dzcW5iQzlSME1IdG9ENVRaVnZFT1lVYUVGVlFzVEZtOXFqRWpn?=
- =?iso-2022-jp?B?bEhPTDBVUmFodjNlbzhFM0Q1UXNrSXRUaVVkUnhxWkRjZ3o0ZGdWYlFR?=
- =?iso-2022-jp?B?MDdoQkxyclBGQTJ3N0dzVVZ1eGVVN1pQT1E9PQ==?=
-Content-Type: text/plain; charset="iso-2022-jp"
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?K8Jb7k+zcYWrCstIB/XTBgLeUA4UAh1sXf/t9lqkJ0P07Rp8Qx3WG3DS3P?=
+ =?iso-8859-1?Q?+gESP022cUIhpxcnnPAH4C5+DWQiKybr7xCYgli1X9p+Thsj8cmJ6FPlit?=
+ =?iso-8859-1?Q?IjRxl3nYYEzVNWfD8sX/kB4FkBpN5IExkK6KKft70UFERPZF8dvJO/8iK6?=
+ =?iso-8859-1?Q?oXGFLTAarkd8bDV+SE4tDNomMBq8MGmmVITTyKKtR130Wyg5iPcAUGY8nB?=
+ =?iso-8859-1?Q?8rUuUU8QcL6Dk/LifDzclnoA+qXEQuWl5GyYdcI+DmOXsYxXpUltXepGYX?=
+ =?iso-8859-1?Q?7kJxmN8/S+Cc9CESL2X7Wt3Gd4QGBS3x/7nGgpATO5QMyRSsxc1ZJ9idZf?=
+ =?iso-8859-1?Q?un08H1dfbd7Nd/Kad69ge1y5vCNkY1Q+9O4zyf1Cslt2SJ3u48Nv65Uke6?=
+ =?iso-8859-1?Q?ik3RXfVdGJzkVFnwJyxfK+gkQ9Pd2dERPJlawp0jVJDxQIo/paUmSLE7y8?=
+ =?iso-8859-1?Q?jBF0Dwm3bmWJtfLkc3Sw0aJ5XwW4Jxrh96UPGTTlGhcMgQWNjHzlWkFGUL?=
+ =?iso-8859-1?Q?fZ9bH7CujmqotbjNSiVUxaRAlqDM99WerCfrWhEJ0TowG47DeQlfEaMlC6?=
+ =?iso-8859-1?Q?LpF6X5yCi1iaduQto3qMGSgLOgj8JyJuGkR98sOBC86KVMUDXd0j81KI+B?=
+ =?iso-8859-1?Q?XFryRCq5hzOvW0rg1SSEuKZ2/9HuaMdeqiyAqjm9CLOFDIoLnzaoI9D9cq?=
+ =?iso-8859-1?Q?frxDsEWebQqBRGXlpXVLYF30Hb4jbrDBFoS2a3tBT/wnzPYT4kfsDaRaaW?=
+ =?iso-8859-1?Q?lIX1/h2NN3aoV/XzWgh5j2zqgX/Z1OGxO2+UNLmj/kHmCE9tCiDz5pRgrr?=
+ =?iso-8859-1?Q?3ri2n5tqLQZOQCqOgR8+YPH0oePEBRROFrVymfscxxj5RpIs3xNK11zJI7?=
+ =?iso-8859-1?Q?ysDIB+F1E6iQmkwXmsd0hEXtYeJvc5FbVP3x3/UCSR+Sbl5xEeB7JyZKL3?=
+ =?iso-8859-1?Q?wyLSWCEgbM6KojOX27CiH4MXZiGuVyU9GX2zdS26AM2dRMmkK16fsg72Uu?=
+ =?iso-8859-1?Q?8jD4v/R3ly7pZ/7ZV3CKyC0b05KYYTKmCK77ZQDm55SpzXJajyFL1zCylU?=
+ =?iso-8859-1?Q?dxceJvCUpzWSNMTCWmzYyi3ryk46XdF6BQLPES8+ThBPLbSdA0vtvg4skZ?=
+ =?iso-8859-1?Q?gl9S3ExdrQNjtLfIMlntiiq2DH48rTxq6/p2vclTuo1O5EFNdJBYMx6zv1?=
+ =?iso-8859-1?Q?K1ZJYB3+Bee/bEdJ7XjaIfnwevNifGy2ViCh6apHvjHqHxWxJdLp4jziXb?=
+ =?iso-8859-1?Q?/FGClwMDWz6/ID2JJMGZx5x1a5gVMd5u81YEYzqn9XaYkv6kpkQ/Evgmtx?=
+ =?iso-8859-1?Q?XJUgR1gia2tGEE3GU9S8bHplJSPa9Xvb1uCyyB4QTPwjvpNzq0A+TUVrjn?=
+ =?iso-8859-1?Q?USA3Lu2uc5xtlzHdvtXCLytz/Qzn6zymSk8H1HwXwCiaOh7uhPJ4sQOIds?=
+ =?iso-8859-1?Q?xrSwp5jQKG9TFaA3s8wGhNig9k2jU0nXhNaSuliNAmJ4/8azP3RMUlIDhV?=
+ =?iso-8859-1?Q?mPoUMPNG1+B7y9L6/YnoaQoh16B0OrRCcyVlitshMEX4qc2ZqBv6IbSsUP?=
+ =?iso-8859-1?Q?brgm0ZyZg8p6hvtJD2iycTfuNpP8rn3Vrf1KohIHNbsvrI08+ZXhgmbyqo?=
+ =?iso-8859-1?Q?Pekv1E5OHNs9sXlRtQ9D58sQPD+kTzPTGSbZBd6jlDdGmb0V9VqBStiA?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
+X-OriginatorOrg: toganetworks.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB8455.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc241a8a-6b27-429f-1b15-08dabcbb69db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2022 10:17:14.6594
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR02MB6237.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a56a0f3c-6205-4a8e-a67f-08dabcbfe967
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2022 10:49:26.6693
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-id: 73f7e7df-ca98-4f08-bf85-f137b447da96
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fVRNZLBF8Ach0pdKuEqQcy88wTYmyZVALfdpVneK0XgKf5cwAMH6O/k4w83TApXKOwVrArLFR0/7BS6T7gBN2vXIgw3jbDBYF9t41HHtCoM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB9401
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-userprincipalname: whPnM9jd+5ybAgG9pIwZlALOE11nVhbJ/nyLYgn3d5bWDBsN7CIysVjZYKP+As9aqww2KjlOUvlXOr4eRVDXFsh2r7Tg1K7kekE83KgvWeo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR02MB7319
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,T_SPF_PERMERROR autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Oct 29, 2022 12:10 PM Bob Pearson wrote:
-> This patch series implements work queues as an alternative for
-> the main tasklets in the rdma_rxe driver. The patch series starts
-> with a patch that makes the internal API for task execution pluggable
-> and implements an inline and a tasklet based set of functions.
-> The remaining patches cleanup the qp reset and error code in the
-> three tasklets and modify the locking logic to prevent making
-> multiple calls to the tasklet scheduling routine. After
-> this preparation the work queue equivalent set of functions is
-> added and the tasklet version is dropped.
-
-Thank you for posting the 3rd series.
-It looks fine at a glance, but now I am concerned about problems
-that can be potentially caused by concurrency.
-
->=20
-> The advantages of the work queue version of deferred task execution
-> is mainly that the work queue variant has much better scalability
-> and overall performance than the tasklet variant.  The perftest
-> microbenchmarks in local loopback mode (not a very realistic test
-> case) can reach approximately 100Gb/sec with work queues compared to
-> about 16Gb/sec for tasklets.
-
-As you wrote, the advantage of work queue version is that the number works
-that can run parallelly scales with the number of logical CPUs. However, th=
-e
-dispatched works (rxe_requester, rxe_responder, and rxe_completer) are
-designed for serial execution on tasklet, so we must not rely on them funct=
-ioning
-properly on parallel execution.
-
-There could be 3 problems, which stem from the fact that works are not nece=
-ssarily
-executed in the same order the packets are received. Works are enqueued to =
-worker
-pools on each CPU, and each CPU respectively schedules the works, so the or=
-dering
-of works among CPUs is not guaranteed.
-
-[1]
-On UC/UD connections, responder does not check the psn of inbound packets,
-so the payloads can be copied to MRs without checking the order. If there a=
-re
-works that write to overlapping memory locations, they can potentially caus=
-e
-data corruption depending the order.
-
-[2]
-On RC connections, responder checks the psn, and drops the packet if it is =
-not
-the expected one. Requester can retransmit the request in this case, so the=
- order
-seems to be guaranteed for RC.
-
-However, responder updates the next expected psn (qp->resp.psn) BEFORE
-replying an ACK packet. If the work is preempted soon after storing the nex=
-t psn,
-another work on another CPU can potentially reply another ACK packet earlie=
-r.
-This behaviour is against the spec.
-Cf. IB Specification Vol 1-Release-1.5 " 9.5 TRANSACTION ORDERING"
-
-[3]
-Again on RC connections, the next expected psn (qp->resp.psn) can be
-loaded and stored at the same time from different threads. It seems we
-have to use a synchronization method, perhaps like READ_ONCE() and
-WRITE_ONCE() macros, to prevent loading an old value. This one is just an
-example; there can be other variables that need similar consideration.
-
-
-All the problems above can be solved by making the work queue single-
-threaded. We can do it by using flags=3DWQ_UNBOUND and max_active=3D1
-for alloc_workqueue(), but this should be the last resort since this spoils
-the performance benefit of work queue.
-
-I am not sure what we can do with [1] right now.
-For [2] and [3], we could just move the update of psn later than the ack re=
-ply,
-and use *_ONCE() macros for shared variables.
-
-Thanks,
-Daisuke
-
->=20
-> This version of the patch series drops the tasklet version as an option
-> but keeps the option of switching between the workqueue and inline
-> versions.
->=20
-> This patch series is derived from an earlier patch set developed by
-> Ian Ziemba at HPE which is used in some Lustre storage clients attached
-> to Lustre servers with hard RoCE v2 NICs.
->=20
-> It is based on the current version of wip/jgg-for-next.
->=20
-> v3:
-> Link: https://lore.kernel.org/linux-rdma/202210220559.f7taTL8S-lkp@intel.=
-com/
-> The v3 version drops the first few patches which have already been accept=
-ed
-> in for-next. It also drops the last patch of the v2 version which
-> introduced module parameters to select between the task interfaces. It al=
-so
-> drops the tasklet version entirely. It fixes a minor error caught by
-> the kernel test robot <lkp@intel.com> with a missing static declaration.
->=20
-> v2:
-> The v2 version of the patch set has some minor changes that address
-> comments from Leon Romanovsky regarding locking of the valid parameter
-> and the setup parameters for alloc_workqueue. It also has one
-> additional cleanup patch.
->=20
-> Bob Pearson (13):
->   RDMA/rxe: Make task interface pluggable
->   RDMA/rxe: Split rxe_drain_resp_pkts()
->   RDMA/rxe: Simplify reset state handling in rxe_resp.c
->   RDMA/rxe: Handle qp error in rxe_resp.c
->   RDMA/rxe: Cleanup comp tasks in rxe_qp.c
->   RDMA/rxe: Remove __rxe_do_task()
->   RDMA/rxe: Make tasks schedule each other
->   RDMA/rxe: Implement disable/enable_task()
->   RDMA/rxe: Replace TASK_STATE_START by TASK_STATE_IDLE
->   RDMA/rxe: Replace task->destroyed by task state INVALID.
->   RDMA/rxe: Add workqueue support for tasks
->   RDMA/rxe: Make WORKQUEUE default for RC tasks
->   RDMA/rxe: Remove tasklets from rxe_task.c
->=20
->  drivers/infiniband/sw/rxe/rxe.c      |   9 +-
->  drivers/infiniband/sw/rxe/rxe_comp.c |  24 ++-
->  drivers/infiniband/sw/rxe/rxe_qp.c   |  80 ++++-----
->  drivers/infiniband/sw/rxe/rxe_req.c  |   4 +-
->  drivers/infiniband/sw/rxe/rxe_resp.c |  70 +++++---
->  drivers/infiniband/sw/rxe/rxe_task.c | 258 +++++++++++++++++++--------
->  drivers/infiniband/sw/rxe/rxe_task.h |  56 +++---
->  7 files changed, 329 insertions(+), 172 deletions(-)
->=20
->=20
-> base-commit: 692373d186205dfb1b56f35f22702412d94d9420
-> --
-> 2.34.1
-
+after enabling ib_mad events hit this warning=A0=0A=
+=0A=
+echo 1 > /sys/kernel/debug/tracing/events/ib_mad/enable=0A=
+=0A=
+WARNING: CPU: 0 PID: 1888000 at kernel/trace/ring_buffer.c:2492 rb_commit+0=
+xc1/0x220=0A=
+CPU: 0 PID: 1888000 Comm: kworker/u9:0 Kdump: loaded Tainted: G =A0 =A0 =A0=
+ =A0 =A0 OE =A0 =A0--------- - =A0- 4.18.0-305.3.1.el8.x86_64 #1=0A=
+l: Hardware name: Red Hat KVM, BIOS 1.13.0-2.module_el8.3.0+555+a55c8938 04=
+/01/2014=0A=
+l: Workqueue: ib-comp-unb-wq ib_cq_poll_work [ib_core]=0A=
+l: RIP: 0010:rb_commit+0xc1/0x220=0A=
+l: Code: 00 00 80 fa 1f 0f 84 ec 00 00 00 48 01 87 b8 00 00 00 48 8b 87 98 =
+00 00 00 48 85 c0 0f 85 72 ff ff ff 48 8b 47 08 f0 ff 40 08 <0f> 0b c3 48 8=
+b 00 48 89 87 b8 00 00 00 e9 48 ff ff ff 48 8b 47 48=0A=
+l: RSP: 0000:ffffa8ac80f9bca0 EFLAGS: 00010202=0A=
+l: RAX: ffff8951c7c01300 RBX: ffff8951c7c14a00 RCX: 0000000000000246=0A=
+l: RDX: ffff8951c707c000 RSI: ffff8951c707c57c RDI: ffff8951c7c14a00=0A=
+l: RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000=0A=
+l: R10: ffff8951c7c01300 R11: 0000000000000001 R12: 0000000000000246=0A=
+l: R13: 0000000000000000 R14: ffffffff964c70c0 R15: 0000000000000000=0A=
+l: FS: =A00000000000000000(0000) GS:ffff8951fbc00000(0000) knlGS:0000000000=
+000000=0A=
+l: CS: =A00010 DS: 0000 ES: 0000 CR0: 0000000080050033=0A=
+l: CR2: 00007f20e8f39010 CR3: 000000002ca10005 CR4: 0000000000170ef0=0A=
+l: Call Trace:=0A=
+l: =A0ring_buffer_unlock_commit+0x1d/0xa0=0A=
+l: =A0trace_buffer_unlock_commit_regs+0x3b/0x1b0=0A=
+l: =A0trace_event_buffer_commit+0x67/0x1d0=0A=
+l: =A0trace_event_raw_event_ib_mad_recv_done_handler+0x11c/0x160 [ib_core]=
+=0A=
+l: =A0ib_mad_recv_done+0x48b/0xc10 [ib_core]=0A=
+l: =A0? trace_event_raw_event_cq_poll+0x6f/0xb0 [ib_core]=0A=
+l: =A0__ib_process_cq+0x91/0x1c0 [ib_core]=0A=
+l: =A0ib_cq_poll_work+0x26/0x80 [ib_core]=0A=
+l: =A0process_one_work+0x1a7/0x360=0A=
+l: =A0? create_worker+0x1a0/0x1a0=0A=
+l: =A0worker_thread+0x30/0x390=0A=
+l: =A0? create_worker+0x1a0/0x1a0=0A=
+l: =A0kthread+0x116/0x130=0A=
+l: =A0? kthread_flush_work_fn+0x10/0x10=0A=
+l: =A0ret_from_fork+0x35/0x40=0A=
+l: ---[ end trace 78ba8509d3830a16 ]---=0A=
+=0A=
+warning originated from below code (kernel/trace/ring_buffer.c)=0A=
+=0A=
+rb_end_commit()=0A=
+{=0A=
+...=0A=
+if (RB_WARN_ON(cpu_buffer,=0A=
+                !local_read(&cpu_buffer->committing)))=0A=
+...=0A=
+}=0A=
+=0A=
+after investigation  looks like there is a broken assumption of rb_end_comm=
+it and rb_start_commit are on same CPU (no migration) during trace =0A=
+looking in ib_mad trace  in include/trace/events/ib_mad.h there is a call t=
+o create_mad_addr_info during  TP assign which sleeps (at least under mlx5 =
+ib driver)=0A=
+=0A=
+so the scenario looks :=0A=
+=0A=
+rb_start_commit - buffer 0xffffa0984777e400  CPU 1 pid 1368=0A=
+switch from 1368 to 1605=0A=
+thread 1368 () is migrating from 1 to 0=0A=
+rb_end_commit - buffer 0xffffa09847c14a00  CPU 0 pid 1368=0A=
+=0A=
+before starting throwing some patch into the the air  I would like to align=
+ with you the approach we should take here. =0A=
+=0A=
+my suggestion here : =0A=
+- ftrace infra should verify no migration happen  (end and start happens on=
+ same CPU)  in case not we will  throw warning for the issue  .=0A=
+- ftrace users will be responsible to avoid migration during TP assign (RDM=
+A in my case)=0A=
+=0A=
+please let me know what do you think =
