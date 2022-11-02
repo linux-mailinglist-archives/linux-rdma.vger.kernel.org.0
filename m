@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA1B6166D3
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 17:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D04F6166D5
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 17:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbiKBQCU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Nov 2022 12:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        id S231157AbiKBQCa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Nov 2022 12:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbiKBQCR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 12:02:17 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437842B636
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Nov 2022 09:02:16 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5so10953068wmo.1
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Nov 2022 09:02:16 -0700 (PDT)
+        with ESMTP id S231128AbiKBQCT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 12:02:19 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA762BB33
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Nov 2022 09:02:18 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id cl5so13582601wrb.9
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Nov 2022 09:02:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=resnulli-us.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X1MyJqO1mdXn8/laNFPE2bRj0/yLyArfqMTcNfqAWXY=;
-        b=5ZSd+8BZbC24G3hbjqtLLcA9qcMb2v+6qeZbrlQUpJeEz1lGdpVdvaX6LEV02EzS7t
-         9OEPRh50svPbCNop7fylt9dJB5OxIHTvPK+ABvyF2BAAsKd0So4MuwzUm9k/1/HJORDU
-         v9JDjG22glSbM0HQ9ixLj18TjKSNR43hrE8nyJt9lRiqh6ByDINsj5+nEmYTVPn3Qhxr
-         63r+5scySM14zvSedDCBdNMewOQDoiucPwnJOJzfOXShsYW8vgxBmM4XsE/KZ3p7ksT4
-         /CL57UjU02qvgYQC7/PXLgBrXVcxT1AsnehtxQEuKghi1/fn2lU8ohZsbJqYWVHmK18z
-         +99A==
+        bh=I45FK7zcDRBB0Zgi/S0IlH6Urr75YvzqB/X8kS4wMAg=;
+        b=Dc74jYC9LHWxvKGuw7BNL1LR4Ehfg/baudvcMA4RAD+A/OfdRQ0p2XjY7G4TME3SpM
+         YbaFK7fpYN9pgW7x5m9owY/NBibe0CpT+SQBr/4gaCcechnIo6kY9wzyA525Rta7erv0
+         MhGs2hxfwqjeXjwB6ToLTU4PbfnAVZyAOTcbxuHKvqhYSwGonc2iXBf/hJMEUywEpSLU
+         yFHmS9R5xMQDoWWMKP8IvPBc36dgPL89NGEY7Mf8GHGEi9ZKUU2s99YidzclkjJtm0Z3
+         sxv02l13RHWAtiUaX8TbTSRpfMXtNuJbG1KZVPEVwhzkEBI2w0t5OPJI82ILqpRHVZ0v
+         M3iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X1MyJqO1mdXn8/laNFPE2bRj0/yLyArfqMTcNfqAWXY=;
-        b=jk0HwuQoBz6HQ1wbUBpPmqsj4FKnKvOj96/Di/UPeTi9vEX1XZTxUKoD351iO5blId
-         CESB0L4n27ytsEEpljIwwPeHnFkndkxXiJRcPTZzwJudl/qE/xm/2dcBpYfsq5/fksQP
-         xTxTnWWEqN+hBvNv7j6pJCVfy8qhW1kgXXkXwGjHhMtBmyKRug+E8ZBGAc/wgsWJJwyg
-         ZCXAQT6D2LfyAWQt2IzxDaAdISrpG6H355cKrBrX96eK7aQeqrI1ZQhlfzNLmSF27qNa
-         3xrcEw4RkYvb2LTMYncDcAwf7Ko4VOmc9RTSteQGuJ1b+j+U8DlNqY/5WQDu+4QZnRD/
-         eU5A==
-X-Gm-Message-State: ACrzQf1d7Jqzszg0vjT8kPet4VDeJfpdZzZ/sNDdyIj3ZiZd1NvZPdm5
-        EQBrQO6UgLgDFTL0hTyziL0Smw==
-X-Google-Smtp-Source: AMsMyM5Diub71WltbaxQ+S2Rmu9qh1NqQ5bqtg0jFl0Na2uJtVi083hRmXXE/6FmM+HBpN5HvsJvVA==
-X-Received: by 2002:a05:600c:1d1c:b0:3cf:846c:5092 with SMTP id l28-20020a05600c1d1c00b003cf846c5092mr3693954wms.160.1667404935880;
-        Wed, 02 Nov 2022 09:02:15 -0700 (PDT)
+        bh=I45FK7zcDRBB0Zgi/S0IlH6Urr75YvzqB/X8kS4wMAg=;
+        b=QdxAT30hFObQCoNN5iSqtIeHlYgrMQhQwZLVgHTww3uRP6JEAfl/EF+HyophhUvMvv
+         S/vgih8+pMmlML6qOTJTm7CIC8ity/51NNjJ4MGK30/YHHRAhhMYG7ObmJVvP4/+/P5E
+         oPqR5t9/Dxm37FKb8SbSho01RWj6JwVT07CWYEeXgZS55SiQlfX7roiqs1XWbse48L9s
+         bA4SxCDerHiAQihlwKJ5h3YAOvd5XX686lLXBUsaei4MPraGKPIotBDlQUBDNzj4R9i1
+         riGtn78yA2M/wG9aEbQzPhz8U9qlCLRyLkuQCyddAXv4Kpeq9pDrY7SAN0UX/gCUBwZY
+         Cegw==
+X-Gm-Message-State: ACrzQf16yJv2KTnSE/U/rlJ4Ad4ZqRYiSAI7y44GuZv5HEsqwhOQGmiH
+        LtcWpo9SFpKMfwNdKtvHmreAnQ==
+X-Google-Smtp-Source: AMsMyM55Kkqsrb5gps1B6nWrUx0HCWSipXZz0lRp30tsoEwU3SpkwpMuYh0hFjIeiXVbLQ0NaDCSsw==
+X-Received: by 2002:adf:de8d:0:b0:236:6087:e07e with SMTP id w13-20020adfde8d000000b002366087e07emr15766235wrl.533.1667404937429;
+        Wed, 02 Nov 2022 09:02:17 -0700 (PDT)
 Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id g19-20020a05600c4ed300b003c6f426467fsm2743204wmq.40.2022.11.02.09.02.14
+        by smtp.gmail.com with ESMTPSA id bp21-20020a5d5a95000000b002302dc43d77sm13405951wrb.115.2022.11.02.09.02.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 09:02:15 -0700 (PDT)
+        Wed, 02 Nov 2022 09:02:16 -0700 (PDT)
 From:   Jiri Pirko <jiri@resnulli.us>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
         edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
         saeedm@nvidia.com, linux-rdma@vger.kernel.org
-Subject: [patch net-next v4 02/13] net: devlink: move port_type_warn_schedule() call to __devlink_port_type_set()
-Date:   Wed,  2 Nov 2022 17:02:00 +0100
-Message-Id: <20221102160211.662752-3-jiri@resnulli.us>
+Subject: [patch net-next v4 03/13] net: devlink: move port_type_netdev_checks() call to __devlink_port_type_set()
+Date:   Wed,  2 Nov 2022 17:02:01 +0100
+Message-Id: <20221102160211.662752-4-jiri@resnulli.us>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221102160211.662752-1-jiri@resnulli.us>
 References: <20221102160211.662752-1-jiri@resnulli.us>
@@ -75,38 +75,101 @@ From: Jiri Pirko <jiri@nvidia.com>
 
 As __devlink_port_type_set() is going to be called directly from netdevice
 notifier event handle in one of the follow-up patches, move the
-port_type_warn_schedule() call there.
+port_type_netdev_checks() call there.
 
 Signed-off-by: Jiri Pirko <jiri@nvidia.com>
 ---
- net/core/devlink.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ net/core/devlink.c | 63 ++++++++++++++++++++++++----------------------
+ 1 file changed, 33 insertions(+), 30 deletions(-)
 
 diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 868d04c2164f..3ba3435e2cd5 100644
+index 3ba3435e2cd5..ff81a5a5087c 100644
 --- a/net/core/devlink.c
 +++ b/net/core/devlink.c
-@@ -10000,7 +10000,11 @@ static void __devlink_port_type_set(struct devlink_port *devlink_port,
- {
- 	ASSERT_DEVLINK_PORT_REGISTERED(devlink_port);
- 
--	devlink_port_type_warn_cancel(devlink_port);
-+	if (type == DEVLINK_PORT_TYPE_NOTSET)
-+		devlink_port_type_warn_schedule(devlink_port);
-+	else
-+		devlink_port_type_warn_cancel(devlink_port);
-+
- 	spin_lock_bh(&devlink_port->type_lock);
- 	devlink_port->type = type;
- 	switch (type) {
-@@ -10095,7 +10099,6 @@ EXPORT_SYMBOL_GPL(devlink_port_type_ib_set);
- void devlink_port_type_clear(struct devlink_port *devlink_port)
- {
- 	__devlink_port_type_set(devlink_port, DEVLINK_PORT_TYPE_NOTSET, NULL);
--	devlink_port_type_warn_schedule(devlink_port);
+@@ -9994,33 +9994,6 @@ void devlink_port_unregister(struct devlink_port *devlink_port)
  }
- EXPORT_SYMBOL_GPL(devlink_port_type_clear);
+ EXPORT_SYMBOL_GPL(devlink_port_unregister);
  
+-static void __devlink_port_type_set(struct devlink_port *devlink_port,
+-				    enum devlink_port_type type,
+-				    void *type_dev)
+-{
+-	ASSERT_DEVLINK_PORT_REGISTERED(devlink_port);
+-
+-	if (type == DEVLINK_PORT_TYPE_NOTSET)
+-		devlink_port_type_warn_schedule(devlink_port);
+-	else
+-		devlink_port_type_warn_cancel(devlink_port);
+-
+-	spin_lock_bh(&devlink_port->type_lock);
+-	devlink_port->type = type;
+-	switch (type) {
+-	case DEVLINK_PORT_TYPE_ETH:
+-		devlink_port->type_eth.netdev = type_dev;
+-		break;
+-	case DEVLINK_PORT_TYPE_IB:
+-		devlink_port->type_ib.ibdev = type_dev;
+-		break;
+-	default:
+-		break;
+-	}
+-	spin_unlock_bh(&devlink_port->type_lock);
+-	devlink_port_notify(devlink_port, DEVLINK_CMD_PORT_NEW);
+-}
+-
+ static void devlink_port_type_netdev_checks(struct devlink_port *devlink_port,
+ 					    struct net_device *netdev)
+ {
+@@ -10058,6 +10031,38 @@ static void devlink_port_type_netdev_checks(struct devlink_port *devlink_port,
+ 	}
+ }
+ 
++static void __devlink_port_type_set(struct devlink_port *devlink_port,
++				    enum devlink_port_type type,
++				    void *type_dev)
++{
++	struct net_device *netdev = type_dev;
++
++	ASSERT_DEVLINK_PORT_REGISTERED(devlink_port);
++
++	if (type == DEVLINK_PORT_TYPE_NOTSET) {
++		devlink_port_type_warn_schedule(devlink_port);
++	} else {
++		devlink_port_type_warn_cancel(devlink_port);
++		if (type == DEVLINK_PORT_TYPE_ETH && netdev)
++			devlink_port_type_netdev_checks(devlink_port, netdev);
++	}
++
++	spin_lock_bh(&devlink_port->type_lock);
++	devlink_port->type = type;
++	switch (type) {
++	case DEVLINK_PORT_TYPE_ETH:
++		devlink_port->type_eth.netdev = netdev;
++		break;
++	case DEVLINK_PORT_TYPE_IB:
++		devlink_port->type_ib.ibdev = type_dev;
++		break;
++	default:
++		break;
++	}
++	spin_unlock_bh(&devlink_port->type_lock);
++	devlink_port_notify(devlink_port, DEVLINK_CMD_PORT_NEW);
++}
++
+ /**
+  *	devlink_port_type_eth_set - Set port type to Ethernet
+  *
+@@ -10067,9 +10072,7 @@ static void devlink_port_type_netdev_checks(struct devlink_port *devlink_port,
+ void devlink_port_type_eth_set(struct devlink_port *devlink_port,
+ 			       struct net_device *netdev)
+ {
+-	if (netdev)
+-		devlink_port_type_netdev_checks(devlink_port, netdev);
+-	else
++	if (!netdev)
+ 		dev_warn(devlink_port->devlink->dev,
+ 			 "devlink port type for port %d set to Ethernet without a software interface reference, device type not supported by the kernel?\n",
+ 			 devlink_port->index);
 -- 
 2.37.3
 
