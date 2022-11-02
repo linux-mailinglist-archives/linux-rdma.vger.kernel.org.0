@@ -2,214 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BA8615FC7
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 10:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669FA615FD1
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 10:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbiKBJc3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Nov 2022 05:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
+        id S230231AbiKBJdA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Nov 2022 05:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbiKBJc3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 05:32:29 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E2865F6
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Nov 2022 02:32:28 -0700 (PDT)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A28Vccq001458;
-        Wed, 2 Nov 2022 09:32:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=L6PtZ0NgEUr4bs+JpCJQFIgTqQDIZEN+gTaXazygSEs=;
- b=srLooNKFQ2+s0KV4bpUUVUwA6RzduZ8quuaveCzpYOyghY9r+bz2OlyesAAhFJCRoFlS
- GWDavo9vLMUtXErJc1+2JnEU4MQMTN0LLwVTuv1enealG5OnUAs60bb4UniYg7BgGZNw
- 53IeeunkPGgBDiMrbXSq78bOfXSsJQ51QubeKn129jz94KXjBb9W0rGRFIDN72Gj5VMq
- akaB8S7tzkSlavaFQ19izgy+82sk3srZVUhyqufTbODGDfMUKCODsu67kOG+qTtVkkoD
- Q004flmhi/ORBzWUUnee3X2bI5MvJtLEqXAmw0z1FP/AilMdHQsdHOKWLatX3EC2YVqG ug== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkn45huhr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Nov 2022 09:32:23 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A29LTnL016754;
-        Wed, 2 Nov 2022 09:32:20 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 3kguehxe99-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Nov 2022 09:32:20 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2A29WId060948798
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Nov 2022 09:32:18 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9624211C050;
-        Wed,  2 Nov 2022 09:32:18 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5964611C04A;
-        Wed,  2 Nov 2022 09:32:18 +0000 (GMT)
-Received: from rims.zurich.ibm.com (unknown [9.4.69.56])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Nov 2022 09:32:18 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     jgg@nvidia.com, leonro@nvidia.com,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Tom Talpey <tom@talpey.com>
-Subject: [PATCH v2] RDMA/siw: Fix immediate work request flush to completion queue.
-Date:   Wed,  2 Nov 2022 10:31:10 +0100
-Message-Id: <20221102093110.661109-1-bmt@zurich.ibm.com>
-X-Mailer: git-send-email 2.32.0
+        with ESMTP id S230241AbiKBJc6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 05:32:58 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E927A1403A
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Nov 2022 02:32:56 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id f5so22144410ejc.5
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Nov 2022 02:32:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RV2bi+Arg3PPh2gmWVESDVUwH/ZtxQUyDYdE3wwmynk=;
+        b=LzC7PqYowNtWtKrB7MpbozFX/0KKlidIXFWdjUF/PzqypiZE3ppmsRQ2NY/Tv4GhIx
+         RmVC28gEkgxyBlyb+Wdszxv/J5INcITr3rRd21Rm3RYACszV2NCgBcAQ2YAm7AJKg6E+
+         W/V6Dz6YTt6++WrEkhQFrGge7o4VHpBsj9MgQaynf3ic8xCG6HErzC5FceiLp0U362Ty
+         B+LmGKv2iGyqyJfRgIDRjV6x/KPeXzoI2P1QjmfzJ81FvXB/Z1RTy2UiU6kdwGUcfgG1
+         iaNrSSxrVXs1Fu3u/HF/mQVth7HnwX8VpiVHO/rJyYxbPE3LFM5dQ5G3WhH2zGuEnWGr
+         Ad+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RV2bi+Arg3PPh2gmWVESDVUwH/ZtxQUyDYdE3wwmynk=;
+        b=NDs5SXazkr1V7JAlZ9dYqCf2XpVbOZmFh9I1II4FWSw2n27yDsX7xUUPdwFiofukF4
+         c8NzKheji/yv0GR6vW3j4Fc/ABiEJ8ZuQAKoYoasgAD6zM0s225/lF73xHoYsMtNtSlD
+         YNUupv2DP6jsWm7KBc43fdM55m+AcDwordyklDaqfqqoeXwzCiKdfa8bzj0fvqY2TPgG
+         a44UeLRXg8SlR2TUWo49JH2RBc24subyRGFITNjzM/nDUR7x6WFN9yTuGle0BS1sx4al
+         hDZK+QLa/tbkK4scl2JS3BhN12swWokcb0zHLJK0UX3c3O3S9t4eiJgx/goRCGX60zjA
+         k8Zw==
+X-Gm-Message-State: ACrzQf0RJ17Qt2I58uIsGG8r44rG2tb4paORCvp2dZxyYWm/sc0tXUKl
+        lJnuoGme7Yx5O3nlyCE2YqidMg==
+X-Google-Smtp-Source: AMsMyM6yvI2slLDREEHpW0fkIE/dvGcddUP6M0Z0pmFGZeBg94FTPohCq/nTSyJ+kC6q/O3FmzY6+g==
+X-Received: by 2002:a17:906:5a6e:b0:7ad:9303:65da with SMTP id my46-20020a1709065a6e00b007ad930365damr23497401ejc.638.1667381575298;
+        Wed, 02 Nov 2022 02:32:55 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id 16-20020a170906329000b0073ddb2eff27sm5112047ejw.167.2022.11.02.02.32.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Nov 2022 02:32:54 -0700 (PDT)
+Date:   Wed, 2 Nov 2022 10:32:52 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, pabeni@redhat.com,
+        edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
+        saeedm@nvidia.com, linux-rdma@vger.kernel.org
+Subject: Re: [patch net-next v3 05/13] net: devlink: track netdev with
+ devlink_port assigned
+Message-ID: <Y2I5RD6zPDr3MGpG@nanopsycho>
+References: <20221031124248.484405-1-jiri@resnulli.us>
+ <20221031124248.484405-6-jiri@resnulli.us>
+ <20221101092542.26c66235@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ofeHT9Q7F4kXywS4Aw4MMigktShSpK_W
-X-Proofpoint-ORIG-GUID: ofeHT9Q7F4kXywS4Aw4MMigktShSpK_W
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-02_06,2022-11-01_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0 clxscore=1015
- spamscore=0 phishscore=0 malwarescore=0 impostorscore=0 mlxlogscore=991
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211020057
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221101092542.26c66235@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Correctly set send queue element opcode during immediate work request
-flushing in post sendqueue operation, if the QP is in ERROR state.
-An undefined ocode value results in out-of-bounds access to an array
-for mapping the opcode between siw internal and RDMA core representation
-in work completion generation. It resulted in a KASAN BUG report
-of type 'global-out-of-bounds' during NFSoRDMA testing.
-This patch further fixes a potential case of a malicious user which may
-write undefined values for completion queue elements status or opcode,
-if the CQ is memory mapped to user land. It avoids the same out-of-bounds
-access to arrays for status and opcode mapping as described above.
+Tue, Nov 01, 2022 at 05:25:42PM CET, kuba@kernel.org wrote:
+>On Mon, 31 Oct 2022 13:42:40 +0100 Jiri Pirko wrote:
+>> +/*
+>> + * Driver should use this to assign devlink port instance to a netdevice
+>> + * before it registers the netdevice. Therefore devlink_port is static
+>> + * during the netdev lifetime after it is registered.
+>> + */
+>> +#define SET_NETDEV_DEVLINK_PORT(dev, _devlink_port)		\
+>> +({								\
+>> +	WARN_ON(dev->reg_state != NETREG_UNINITIALIZED);	\
+>> +	((dev)->devlink_port = (_devlink_port));		\
+>> +})
+>
+>The argument wrapping is inconsistent here - dev is in brackets
+>on the second line but not on the first. _devlink_port is prefixed 
+>with underscore and dev is not. Let's make this properly secure
+>and define a local var for dev.
 
-Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-Fixes: b0fff7317bb4 ("rdma/siw: completion queue methods")
+Ok.
 
-Reported-by: Olga Kornievskaia <kolga@netapp.com>
-Reviewed-by: Tom Talpey <tom@talpey.com>
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
 
-----
-v1 -> v2:
-	Change return code of siw_sq_flush_wr() to -EINVAL
-	for unexpected opcodes.
+>
+>> @@ -10107,6 +10107,7 @@ int register_netdevice(struct net_device *dev)
+>>  	return ret;
+>>  
+>>  err_uninit:
+>> +	call_netdevice_notifiers(NETDEV_PRE_UNINIT, dev);
+>
+>I think we should make this symmetric with POST_INIT.
+>IOW PRE_UNINIT should only be called if POST_INIT was called.
 
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
- drivers/infiniband/sw/siw/siw_cq.c    | 24 ++++++++++++++--
- drivers/infiniband/sw/siw/siw_verbs.c | 40 ++++++++++++++++++++++++---
- 2 files changed, 58 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_cq.c b/drivers/infiniband/sw/siw/siw_cq.c
-index d68e37859e73..acc7bcd538b5 100644
---- a/drivers/infiniband/sw/siw/siw_cq.c
-+++ b/drivers/infiniband/sw/siw/siw_cq.c
-@@ -56,8 +56,6 @@ int siw_reap_cqe(struct siw_cq *cq, struct ib_wc *wc)
- 	if (READ_ONCE(cqe->flags) & SIW_WQE_VALID) {
- 		memset(wc, 0, sizeof(*wc));
- 		wc->wr_id = cqe->id;
--		wc->status = map_cqe_status[cqe->status].ib;
--		wc->opcode = map_wc_opcode[cqe->opcode];
- 		wc->byte_len = cqe->bytes;
- 
- 		/*
-@@ -71,10 +69,32 @@ int siw_reap_cqe(struct siw_cq *cq, struct ib_wc *wc)
- 				wc->wc_flags = IB_WC_WITH_INVALIDATE;
- 			}
- 			wc->qp = cqe->base_qp;
-+			wc->opcode = map_wc_opcode[cqe->opcode];
-+			wc->status = map_cqe_status[cqe->status].ib;
- 			siw_dbg_cq(cq,
- 				   "idx %u, type %d, flags %2x, id 0x%pK\n",
- 				   cq->cq_get % cq->num_cqe, cqe->opcode,
- 				   cqe->flags, (void *)(uintptr_t)cqe->id);
-+		} else {
-+			/*
-+			 * A malicious user may set invalid opcode or
-+			 * status in the user mmapped CQE array.
-+			 * Sanity check and correct values in that case
-+			 * to avoid out-of-bounds access to global arrays
-+			 * for opcode and status mapping.
-+			 */
-+			u8 opcode = cqe->opcode;
-+			u16 status = cqe->status;
-+
-+			if (opcode >= SIW_NUM_OPCODES) {
-+				opcode = 0;
-+				status = IB_WC_GENERAL_ERR;
-+			} else if (status >= SIW_NUM_WC_STATUS) {
-+				status = IB_WC_GENERAL_ERR;
-+			}
-+			wc->opcode = map_wc_opcode[opcode];
-+			wc->status = map_cqe_status[status].ib;
-+
- 		}
- 		WRITE_ONCE(cqe->flags, 0);
- 		cq->cq_get++;
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 3e814cfb298c..906fde1a2a0d 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -676,13 +676,45 @@ static int siw_copy_inline_sgl(const struct ib_send_wr *core_wr,
- static int siw_sq_flush_wr(struct siw_qp *qp, const struct ib_send_wr *wr,
- 			   const struct ib_send_wr **bad_wr)
- {
--	struct siw_sqe sqe = {};
- 	int rv = 0;
- 
- 	while (wr) {
--		sqe.id = wr->wr_id;
--		sqe.opcode = wr->opcode;
--		rv = siw_sqe_complete(qp, &sqe, 0, SIW_WC_WR_FLUSH_ERR);
-+		struct siw_sqe sqe = {};
-+
-+		switch (wr->opcode) {
-+		case IB_WR_RDMA_WRITE:
-+			sqe.opcode = SIW_OP_WRITE;
-+			break;
-+		case IB_WR_RDMA_READ:
-+			sqe.opcode = SIW_OP_READ;
-+			break;
-+		case IB_WR_RDMA_READ_WITH_INV:
-+			sqe.opcode = SIW_OP_READ_LOCAL_INV;
-+			break;
-+		case IB_WR_SEND:
-+			sqe.opcode = SIW_OP_SEND;
-+			break;
-+		case IB_WR_SEND_WITH_IMM:
-+			sqe.opcode = SIW_OP_SEND_WITH_IMM;
-+			break;
-+		case IB_WR_SEND_WITH_INV:
-+			sqe.opcode = SIW_OP_SEND_REMOTE_INV;
-+			break;
-+		case IB_WR_LOCAL_INV:
-+			sqe.opcode = SIW_OP_INVAL_STAG;
-+			break;
-+		case IB_WR_REG_MR:
-+			sqe.opcode = SIW_OP_REG_MR;
-+			break;
-+		default:
-+			rv = -EINVAL;
-+			break;
-+		}
-+		if (!rv) {
-+			sqe.id = wr->wr_id;
-+			rv = siw_sqe_complete(qp, &sqe, 0,
-+					      SIW_WC_WR_FLUSH_ERR);
-+		}
- 		if (rv) {
- 			if (bad_wr)
- 				*bad_wr = wr;
--- 
-2.32.0
+Yep, will check and fix.
 
