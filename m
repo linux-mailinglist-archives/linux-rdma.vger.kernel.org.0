@@ -2,139 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA6A6161A6
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 12:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE686161F9
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Nov 2022 12:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbiKBLWO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Nov 2022 07:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
+        id S230262AbiKBLp0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Nov 2022 07:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230396AbiKBLWO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 07:22:14 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F06F24082
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Nov 2022 04:22:13 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id 13so44442596ejn.3
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Nov 2022 04:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=L6ZOQ8ap65FDoZvGO4LbJzIKfcErn6tnfDue9+sjxaA=;
-        b=nALBY/Szg03CdUX9J5scrrugMi/hc9QnWoTAnXvkmoASytzQT281v7s0zMTF8ZO7kf
-         RDnwg+inWzrSIh3CInvQLuAek0/QN+JsJVwanstDXKFuyhf6Asb86yRdXQIXP/Fj16fJ
-         vByF7/yFtNnAZtuCr7T6Z00nmMZUeALUUjm1W0NMkGCFc1qftyGCkphi89E8UaqIaw2I
-         187EXhNhdHY6KotN+I9N2EG3stg9DedqyHds+SxqLOOjmbWOmwfWihC76IgrteeDscxh
-         XbikYybiJ1ep3ILqKWbPqwLXxjLazKEXLUhERPf3JBAkbZwIr/RTSDEqNl7qwAAF87br
-         HMVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L6ZOQ8ap65FDoZvGO4LbJzIKfcErn6tnfDue9+sjxaA=;
-        b=jiJBcRoyJMFqywxUwoehvpJMEf7lMRqwAQmNY1iXKHw87JJAZ4If6qE95CO1sdzysR
-         4GyZN8WgraPkdZEGWCWYEOasfH48wzlYozE4p2GOf8o53rHZss6yNhEvelkxo1O5sodc
-         srmsFZEGCkGnSJeZD/0vIAiVPc8FHXswtNa9e283DERNaB/ke9ln6C9OKmknxtxZuFL5
-         nMYFP6bioUVxUqn0oYkXKGdQZS+1Tv6qCce21NIca217uiDTZ9zl09Tn4voHrD8b/l35
-         xezutABo4E/IgoGRHwu8P3YoOF7jYqmUGRZsE9pFO6E3Q8mIIZpzjiUn8EeQALR1++u4
-         XkdQ==
-X-Gm-Message-State: ACrzQf0OZiFKY9HExc+xKbAVwEM+ELeyWVXie65dxQoocCjt/72DKPMi
-        jXhnPw5IOaQgbC3z2XU5/lpIqQ==
-X-Google-Smtp-Source: AMsMyM7xgRR5ZW68+lq+XTwTqMPRnANhKpdviiN5PNrXqBQztSB1zPQQ8pZI9KrZVvMcclFHbdg8eA==
-X-Received: by 2002:a17:907:8a23:b0:78d:b042:eece with SMTP id sc35-20020a1709078a2300b0078db042eecemr22318651ejc.494.1667388131591;
-        Wed, 02 Nov 2022 04:22:11 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id h8-20020a17090634c800b00731582babcasm5389428ejb.71.2022.11.02.04.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Nov 2022 04:22:10 -0700 (PDT)
-Date:   Wed, 2 Nov 2022 12:22:09 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, pabeni@redhat.com,
-        edumazet@google.com, tariqt@nvidia.com, moshe@nvidia.com,
-        saeedm@nvidia.com, linux-rdma@vger.kernel.org
-Subject: Re: [patch net-next v3 13/13] net: expose devlink port over rtnetlink
-Message-ID: <Y2JS4bBhPB1qbDi9@nanopsycho>
-References: <20221031124248.484405-1-jiri@resnulli.us>
- <20221031124248.484405-14-jiri@resnulli.us>
- <20221101091834.4dbdcbc1@kernel.org>
+        with ESMTP id S230520AbiKBLpI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 07:45:08 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10ED82871A;
+        Wed,  2 Nov 2022 04:45:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7764EB821DF;
+        Wed,  2 Nov 2022 11:45:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F37ECC433D6;
+        Wed,  2 Nov 2022 11:44:58 +0000 (UTC)
+Date:   Wed, 2 Nov 2022 07:44:57 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Leonid Ravich <leonid.ravich@toganetworks.com>
+Cc:     "linux-trace-kernel@vger.kernel.org" 
+        <IMCEAMAILTO-linux-trace-kernel+40vger+2Ekernel+2Eorg@eurprd02.prod.outlook.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yigal Korman <yigal.korman@toganetworks.com>
+Subject: Re: BUG:  ib_mad ftrace event unsupported migration
+Message-ID: <20221102074457.08f538a8@rorschach.local.home>
+In-Reply-To: <VI1PR02MB623706DA8A01842834FC191089399@VI1PR02MB6237.eurprd02.prod.outlook.com>
+References: <VI1PR02MB623706DA8A01842834FC191089399@VI1PR02MB6237.eurprd02.prod.outlook.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221101091834.4dbdcbc1@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Tue, Nov 01, 2022 at 05:18:34PM CET, kuba@kernel.org wrote:
->On Mon, 31 Oct 2022 13:42:48 +0100 Jiri Pirko wrote:
->> From: Jiri Pirko <jiri@nvidia.com>
->> 
->> Expose devlink port handle related to netdev over rtnetlink. Introduce a
->> new nested IFLA attribute to carry the info. Call into devlink code to
->> fill-up the nest with existing devlink attributes that are used over
->> devlink netlink.
->
->> +int devlink_nl_port_handle_fill(struct sk_buff *msg, struct devlink_port *devlink_port)
->> +{
->> +	if (devlink_nl_put_handle(msg, devlink_port->devlink))
->> +		return -EMSGSIZE;
->> +	if (nla_put_u32(msg, DEVLINK_ATTR_PORT_INDEX, devlink_port->index))
->> +		return -EMSGSIZE;
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(devlink_nl_port_handle_fill);
->> +
->> +size_t devlink_nl_port_handle_size(struct devlink_port *devlink_port)
->> +{
->> +	struct devlink *devlink = devlink_port->devlink;
->> +
->> +	return nla_total_size(strlen(devlink->dev->bus->name) + 1) /* DEVLINK_ATTR_BUS_NAME */
->> +	     + nla_total_size(strlen(dev_name(devlink->dev)) + 1) /* DEVLINK_ATTR_DEV_NAME */
->> +	     + nla_total_size(4); /* DEVLINK_ATTR_PORT_INDEX */
->> +}
->> +EXPORT_SYMBOL_GPL(devlink_nl_port_handle_size);
->
->Why the exports? devlink is a boolean now IIRC.
+On Wed, 2 Nov 2022 10:49:26 +0000
+Leonid Ravich <leonid.ravich@toganetworks.com> wrote:
 
-Right, removed.
+> after investigation  looks like there is a broken assumption of rb_end_commit and rb_start_commit are on same CPU (no migration) during trace 
+> looking in ib_mad trace  in include/trace/events/ib_mad.h there is a call to create_mad_addr_info during  TP assign which sleeps (at least under mlx5 ib driver)
 
+Wait, WHAT?
 
->
->> +static int rtnl_fill_devlink_port(struct sk_buff *skb,
->> +				  const struct net_device *dev)
->> +{
->> +	struct nlattr *devlink_port_nest;
->> +	int ret;
->> +
->> +	devlink_port_nest = nla_nest_start(skb, IFLA_DEVLINK_PORT);
->> +	if (!devlink_port_nest)
->> +		return -EMSGSIZE;
->> +
->> +	if (dev->devlink_port) {
->
->Why produce the empty nest if port is not set?
+> 
+> so the scenario looks :
+> 
+> rb_start_commit - buffer 0xffffa0984777e400  CPU 1 pid 1368
+> switch from 1368 to 1605
+> thread 1368 () is migrating from 1 to 0
+> rb_end_commit - buffer 0xffffa09847c14a00  CPU 0 pid 1368
 
-Empty nest indicates that kernel supports this but there is no devlink
-port associated. I see no other way to indicate this :/
+That's a MAJOR bug with the use case of tracepoints!
 
+> 
+> before starting throwing some patch into the the air  I would like to align with you the approach we should take here. 
+> 
+> my suggestion here : 
+> - ftrace infra should verify no migration happen  (end and start happens on same CPU)  in case not we will  throw warning for the issue  .
 
->
->> +		ret = devlink_nl_port_handle_fill(skb, dev->devlink_port);
->> +		if (ret < 0)
->> +			goto nest_cancel;
->> +	}
->> +
->> +	nla_nest_end(skb, devlink_port_nest);
->> +	return 0;
->> +
->> +nest_cancel:
->> +	nla_nest_cancel(skb, devlink_port_nest);
->> +	return ret;
->> +}
+The scheduler should have. On entering the ring buffer code
+ring_buffer_lock_reserver() it disables preemption and does not
+re-enable it until ring_buffer_unlock_commit().
+
+The only way to migrate is if you re-enable preemption. WHICH IS A BUG!
+
+> - ftrace users will be responsible to avoid migration during TP assign (RDMA in my case)
+
+Yes, it is responsible to do that. Just like it's up to users of
+spin_locks to not enable preemption and migrate while holding one.
+Entering the ring buffer code is the same as holding a spin_lock except
+that the ring buffer code allows for reentrancy.
+
+> 
+> please let me know what do you think 
+
+I think that whatever enabled preemption in the ib_mad trace event
+needs to be fixed.
+
+-- Steve
