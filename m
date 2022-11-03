@@ -2,90 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1708F617498
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 03:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D24B617C71
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 13:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbiKCC4d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Nov 2022 22:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
+        id S231624AbiKCMWJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Nov 2022 08:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbiKCC4X (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Nov 2022 22:56:23 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DD41116B;
-        Wed,  2 Nov 2022 19:56:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 71CBACE24F1;
-        Thu,  3 Nov 2022 02:56:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB88CC433D6;
-        Thu,  3 Nov 2022 02:56:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667444178;
-        bh=tD7HISYbOkSJc2+ZVHlEVkAOqJHo5AkPqZ+MZ6h6daU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nM6ajyfyLprHH/c2CXEK4niMZiDKOw0wjQmQRIR18HHlgpdfMgNBCY+4cO6qUxOK2
-         Jd8YjyLkNjH/bWK+DfFaPcxdKxBrwwdCKzEK3bCGUmn+OWyv5fPeKzeJSWc5yBfPza
-         v5z3VGza6WHThHKCY8kRuCAnHgv1GG8PW/ef30EF71mtMl2fDHIUgQ44XfhO3ouong
-         vhE2nvLUEl3QzKc8KTZHiZ4A+nqvdMRWKzZqm+89dI7KFsiptfcxzglwA6IqTGXuth
-         XGgqrw9K4k2Q0DPMy4uXB6X/o+a9c3XdjT1OShC/ZRdvgDfAX4Jc35HMbKY7Nm1cp7
-         x5CRcT5j6hi7w==
-Date:   Wed, 2 Nov 2022 19:56:16 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [PATCH v6 0/3] sched, net: NUMA-aware CPU spreading interface
-Message-ID: <20221102195616.6f55c894@kernel.org>
-In-Reply-To: <20221028164959.1367250-1-vschneid@redhat.com>
-References: <20221028164959.1367250-1-vschneid@redhat.com>
+        with ESMTP id S231629AbiKCMWI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Nov 2022 08:22:08 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB7EF69;
+        Thu,  3 Nov 2022 05:22:07 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id p13-20020a05600c468d00b003cf8859ed1bso1076398wmo.1;
+        Thu, 03 Nov 2022 05:22:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B3XxTo7IpX7TqdyYgvc//56G/3r2F5+mPbQZ0vMiEFo=;
+        b=Nr0ZeNZSad3dcoIAwU7msQDlzOl1I97puv+VDPnkBlQbiG+kOX94yfmGdj87/obumZ
+         R7A6nMlsf/xjhCxr9KFkttou0lWShCDRhVNC2hzK0SGdVX6iKDplzIzCim2Co7pEiQVR
+         raP/jnFYJQIPpBvbNNA5hsrYv1p5NtsIvqhnclWOvXS4RoLTMk9NAHTWQYV0dFnqeZlc
+         jIN1XDQE/VKl+qxk/BLal27IQdPFcWTncgIBztfkPD34B7bOnO48TWv0Pt9rCd528Qb7
+         cM0GktZ3IejdRkmgr/TKBiIWgyuLyJOeyVWHbv13MXr8lvvSq/fgluV5DS8qo4E4xIkZ
+         VNnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B3XxTo7IpX7TqdyYgvc//56G/3r2F5+mPbQZ0vMiEFo=;
+        b=gW6gwc/fiZvqNdPbz6T3VR4bUPzetWILxABqwm7C+f+AxdP4OxuDvx6WSKNznhmaL/
+         oRjKRidW5sy96O2YVzQJbiwNTEF42wGl998hIKF96BBFIPxb7RuleBe3aQ/Rz7mCT5CB
+         y36oR0c5bS3kBNKTIl1hrjRTHExIyiqJiDoSWFB1aOMEYJRCgSSeSvk2dQwRNQ6dlSLf
+         Vs0j9OS//PIH9ys4qH8+8kjWo+kJPyfA2QivtomQKubJX3ba+xt6uskOk65xt+KUpyE6
+         r9Gbl/Vn6qvfn516GJvtWjXO1DZHKk8elaoGxsr+FQ/+hNaVjAHDL13AlAjPZAEEp27P
+         uvZQ==
+X-Gm-Message-State: ACrzQf3+xiC6DbIRtMki1lLFVPsThVOFRjYrL3BwyolIS/UV3okvhnVC
+        0L/jswM4VC7ckboedoSIE7ZoG1GQR6eH/A==
+X-Google-Smtp-Source: AMsMyM4ipe0FNeWek+zT8c1jYgA6h5Ce1S08+MIdAaSHFLq6BV1jiTufVPW+0EoFjKAPXeoObWYs3Q==
+X-Received: by 2002:a05:600c:3107:b0:3c6:ff0a:c42 with SMTP id g7-20020a05600c310700b003c6ff0a0c42mr28778299wmo.141.1667478125558;
+        Thu, 03 Nov 2022 05:22:05 -0700 (PDT)
+Received: from leonid-Inspiron-3421 (93-172-205-151.bb.netvision.net.il. [93.172.205.151])
+        by smtp.gmail.com with ESMTPSA id y10-20020a056000108a00b0022cd96b3ba6sm847289wrw.90.2022.11.03.05.22.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Nov 2022 05:22:04 -0700 (PDT)
+Date:   Thu, 3 Nov 2022 14:22:01 +0200
+From:   Leonid Ravich <lravich@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Leonid Ravich <leonid.ravich@toganetworks.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yigal Korman <yigal.korman@toganetworks.com>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>
+Subject: Re: BUG:  ib_mad ftrace event unsupported migration
+Message-ID: <Y2OyaSe7CrhJ9COo@leonid-Inspiron-3421>
+References: <VI1PR02MB623706DA8A01842834FC191089399@VI1PR02MB6237.eurprd02.prod.outlook.com>
+ <20221102074457.08f538a8@rorschach.local.home>
+ <Y2JqX3vC1mG/JDex@ziepe.ca>
+ <VI1PR02MB623731066685B6E249F71A3189399@VI1PR02MB6237.eurprd02.prod.outlook.com>
+ <Y2J4/NQMhRORqnZ0@ziepe.ca>
+ <20221102101719.6cbcca6b@rorschach.local.home>
+ <Y2J9lAqBvjjPUmJf@ziepe.ca>
+ <20221102115947.000897fa@rorschach.local.home>
+ <Y2LMjYNAE5LwtcOp@leonid-Inspiron-3421>
+ <20221102181900.5bc9812f@rorschach.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221102181900.5bc9812f@rorschach.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 28 Oct 2022 17:49:56 +0100 Valentin Schneider wrote:
-> Tariq pointed out in [1] that drivers allocating IRQ vectors would benefit
-> from having smarter NUMA-awareness (cpumask_local_spread() doesn't quite cut
-> it).
+On Wed, Nov 02, 2022 at 06:19:00PM -0400, Steven Rostedt wrote:
+> On Wed, 2 Nov 2022 22:01:17 +0200
+> Leonid Ravich <lravich@gmail.com> wrote:
 > 
-> The proposed interface involved an array of CPUs and a temporary cpumask, and
-> being my difficult self what I'm proposing here is an interface that doesn't
-> require any temporary storage other than some stack variables (at the cost of
-> one wild macro).
+> > disagree, without CONFIG_PREEMPTION (which is the default case in some
+> > destros) we will not get any warning, because there will not be
+> > preamption disable.
 > 
-> [1]: https://lore.kernel.org/all/20220728191203.4055-1-tariqt@nvidia.com/
+> I test all for my code (NON_PREEMPT, VOLUNTEER_PREEMPT, PREEMPT) and
+> with and without lockdep enabled.
+> 
+> This would be a bug if you called kmalloc(X, GFP_KERNEL) in *any* non
+> preempt section.
+yes, but for NON_PREEMPT trace is not non preempt section,
+actualy the problem is with CONFIG_PREEMPT_COUNT not set. 
 
-Not sure who's expected to take these, no preference here so:
+ftrace uses preemot_enable/disable_notrace macro to "mark" it as non preempt section
+which do it only for CONFIG_PREEMPT_COUNT. 
 
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+from include/linux/preempt.h
+if !CONFIG_PREEMPT_COUNT
+#define preempt_enable_notrace()                barrier()
 
-Thanks for ironing it out!
+this is why there is no any warning on my system.
+> 
+> > 
+> > second issue I see and maybe it is only me, is that the assuption of
+> > atomicity in trace is not a common knowledge for trace users.     
+> 
+> Well, I suppose we could add more documentation. Would that help? Where
+> would you see it? In the sample code?
+> 
+I think if we fix the first issue and make kernel cry for any miss
+behave it we do the job. 
+> I advise not even grabbing locks in trace events, because in most cases
+> lockdep will not catch any issues with them (it will be hidden unless
+> the trace event is enabled).
+> 
+
+-- Leonid 
+
