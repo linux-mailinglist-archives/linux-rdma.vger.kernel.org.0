@@ -2,67 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEB76185E4
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 18:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D786185EC
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 18:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbiKCRLv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Nov 2022 13:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37538 "EHLO
+        id S232167AbiKCRNE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Nov 2022 13:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbiKCRKx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Nov 2022 13:10:53 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B247110ED
-        for <linux-rdma@vger.kernel.org>; Thu,  3 Nov 2022 10:10:51 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id a7-20020a056830008700b0066c82848060so1187364oto.4
-        for <linux-rdma@vger.kernel.org>; Thu, 03 Nov 2022 10:10:51 -0700 (PDT)
+        with ESMTP id S232204AbiKCRMn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Nov 2022 13:12:43 -0400
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3339C1F614
+        for <linux-rdma@vger.kernel.org>; Thu,  3 Nov 2022 10:11:56 -0700 (PDT)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-13bd19c3b68so2888564fac.7
+        for <linux-rdma@vger.kernel.org>; Thu, 03 Nov 2022 10:11:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XaMckkcWbGrz5gkL7N+lZHQbz01KxlLQHTbEkTzcXcs=;
-        b=a8PvjWHXCeM4wAVRLpyyQxyfFi+QPhmedlNbe7h2EFPOUcVdf62S73eT2Sy/sQecUY
-         T7SAK3mR6utEVWORt+FS0g28e/9cCDeAGz3tpQyQbKTZRyen5gnfw6kB6Uhvzt+i4eJs
-         4wof6+1EpIizG17twR7+KD3yRXrDdrf3NlwO2PklgdapIc0twmnCFRbGq9MzpIoEoa57
-         6q9VuMSRJWf2DaMWDiqtqC+BUIolK1huAbfo45A1Y4q+8QOkTrWWjibT4WeUjRQj+UVn
-         sk7oul5sSUrCIrRS2hLbu9cpELeOf/OVJ1D0ri5Ynm+lvQ++W+BetchScz8IbqO8Gvwa
-         RfGg==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jCedUWR0WJD5zx0Q730hEIY7teF4tVYiYMC2pwT7hRA=;
+        b=cUkMvya72a+WSFqeO6Esnw70Yp5mtaax7lV68AClHKwQQ6/99oAu2bM9zumml+5my/
+         BFnZaEV/2P9+Q5qDQAfRnG/NJn2uSwUUqgEl44Y+px851b7Sri/f513sCX6w5R+OFIZq
+         y/dZ5PB/PhxkpcHO5r5aLLGx5kXHBR1Y178mMzzNe/PCTsBXygYoy0QksVVDYnZZfB46
+         FZUgfMtBOGVGSeJXoTpNsd+e8mHEfKFtJRTJPlQxgtUEyC4jiiBtCakx4rlRyyvur2Gn
+         KjJV1NDHJ4XPnTEuCyGxQyWiqPREhGfRSKdFzPwDXKOHaccRWhcNDzDwoRVW5rIWTHcL
+         yFow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XaMckkcWbGrz5gkL7N+lZHQbz01KxlLQHTbEkTzcXcs=;
-        b=SuhYb7xaXkP7wBrA4mx+hvVC1iyahr5N967Jg354oQV0U7M20C+pyHPzSTzVVSB2eE
-         mRs+oIcYwAyMthpkoxO/6vwvf2T3KY3+udAnWNA9rWAHn+ioxEaRu7hxt4/urFwzfz8Q
-         WQgu28GvMs2AgX2dsw+CtCpGQ0ZlszRGEit5ixovdUjPEl+POlFC8d7p4/uRhDIwMnyG
-         62lK9emK8AO4r/6aX1O91psmln4tsMdYHCgEJgolHLUHASj9Nnm+SL7qywEXkZJHZwo0
-         9TmrP71B1gGe4eTvG1iHD9oK1iHBEo4kE/a562vXOs0LfdS0IuKFcXHqDoExrlIcjDbB
-         W12A==
-X-Gm-Message-State: ACrzQf1gYKcX8GoD8Xd3C3Hfdkj211ACstHNCwssvsR/PTXvl6j8UDpR
-        f/fq+2UtiJfo1rmrVci0cQk=
-X-Google-Smtp-Source: AMsMyM5fKuUs2PvQ0CmEtBhDwPJn7AFCcV0IsVZcwRLol22x/PiCq++VH65VXMWKWSahbLk5z4W2qg==
-X-Received: by 2002:a9d:4002:0:b0:66c:5acc:ffe6 with SMTP id m2-20020a9d4002000000b0066c5accffe6mr9922484ote.301.1667495451468;
-        Thu, 03 Nov 2022 10:10:51 -0700 (PDT)
-Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-b254-769c-82c0-77a4.res6.spectrum.com. [2603:8081:140c:1a00:b254:769c:82c0:77a4])
-        by smtp.googlemail.com with ESMTPSA id m1-20020a056870a10100b0012b298699dbsm624304oae.1.2022.11.03.10.10.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 10:10:51 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     leon@kernel.org, jgg@nvidia.com, zyjzyj2000@gmail.com,
-        jhack@hpe.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 16/16] RDMA/rxe: Replace pr_xxx by rxe_dbg_xxx in rxe_mmap.c
-Date:   Thu,  3 Nov 2022 12:10:14 -0500
-Message-Id: <20221103171013.20659-17-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221103171013.20659-1-rpearsonhpe@gmail.com>
-References: <20221103171013.20659-1-rpearsonhpe@gmail.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jCedUWR0WJD5zx0Q730hEIY7teF4tVYiYMC2pwT7hRA=;
+        b=KHqVRnYYuj2K4op5hiy/lx4l+pMhmxpuf2T/P6IqEzHdf7kUBwNNVi5kfIflqCLdJJ
+         Kel4CJ5pIQqU3w96tyQ8IzuvKNXKAR8hvpKdwNrexTDgMEahIAHeOftzfWHKRbNw51Qs
+         3caxudPRe+Z2IASopX0N9ds4z2XsBBOwH1Ab6XZ+/LanmKqOcsIj6gawAouIvQHUv9oE
+         LFANp2pip83o+YshNQwToAoZoK6fs0wMu0887sGzU3RNV/hDD3AeD3tJO/uLIJV7m/e9
+         Z4HL7norOVPCFdOnir+goOlUzQiYRE3M30OUHmlAI/Ihwgje5GQma44Qzt6gxTco2rEi
+         IZJg==
+X-Gm-Message-State: ACrzQf154ZoAP04H9dtJLClbK/a58dWcX1vjb9Vh1u1d+AhAtdGfiS8f
+        YQngjKhMaHQKTXwhxE4lIV/5DjEyDkY=
+X-Google-Smtp-Source: AMsMyM48wHmryYQebPru5o1txIdKDrM+8LgyR+gjqq5n6flzfdTiYpXcn20vX9ZzlnBgKA+8wW0edg==
+X-Received: by 2002:a05:6870:f61a:b0:13b:9374:203e with SMTP id ek26-20020a056870f61a00b0013b9374203emr18486946oab.18.1667495515613;
+        Thu, 03 Nov 2022 10:11:55 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:13df:ba12:73d1:1737? (2603-8081-140c-1a00-13df-ba12-73d1-1737.res6.spectrum.com. [2603:8081:140c:1a00:13df:ba12:73d1:1737])
+        by smtp.gmail.com with ESMTPSA id m12-20020a05680806cc00b0035a2f3e423esm590633oih.32.2022.11.03.10.11.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Nov 2022 10:11:54 -0700 (PDT)
+Message-ID: <1e0c5b92-caa3-19bc-3e96-974c85f860c6@gmail.com>
+Date:   Thu, 3 Nov 2022 12:11:53 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [PATCH for-next 01/16] RDMA/rxe: Add ibdev_dbg macros for rxe
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     leon@kernel.org, zyjzyj2000@gmail.com, jhack@hpe.com,
+        linux-rdma@vger.kernel.org
+References: <20221101202238.32836-1-rpearsonhpe@gmail.com>
+ <20221101202238.32836-2-rpearsonhpe@gmail.com> <Y2JpU2hJaTghhgAn@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <Y2JpU2hJaTghhgAn@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,44 +75,50 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace calls to pr_xxx() in rxe_mmap.c with rxe_dbg_xxx().
+On 11/2/22 07:57, Jason Gunthorpe wrote:
+> On Tue, Nov 01, 2022 at 03:22:25PM -0500, Bob Pearson wrote:
+>> Add macros borrowed from siw to call dynamic debug macro ibdev_dbg.
+>>
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>> ---
+>>  drivers/infiniband/sw/rxe/rxe.h | 19 +++++++++++++++++++
+>>  1 file changed, 19 insertions(+)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+>> index 30fbdf3bc76a..1c5186c26bce 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe.h
+>> @@ -38,6 +38,25 @@
+>>  
+>>  #define RXE_ROCE_V2_SPORT		(0xc000)
+>>  
+>> +#define rxe_dbg(rxe, fmt, ...) ibdev_dbg(&rxe->ib_dev,			\
+>> +		"%s: " fmt, __func__, ##__VA_ARGS__)
+>> +#define rxe_dbg_uc(uc, fmt, ...) ibdev_dbg(uc->ibpd.device,		\
+>> +		"uc#%d %s: " fmt, uc->elem.index, __func__, ##__VA_ARGS__)
+>> +#define rxe_dbg_pd(pd, fmt, ...) ibdev_dbg(pd->ibpd.device,		\
+>> +		"pd#%d %s: " fmt, pd->elem.index, __func__, ##__VA_ARGS__)
+>> +#define rxe_dbg_ah(ah, fmt, ...) ibdev_dbg(ah->ibah.device,		\
+>> +		"ah#%d %s: " fmt, ah->elem.index, __func__, ##__VA_ARGS__)
+>> +#define rxe_dbg_srq(srq, fmt, ...) ibdev_dbg(srq->ibsrq.device,	\
+>> +		"srq#%d %s: " fmt, srq->elem.index, __func__, ##__VA_ARGS__)
+>> +#define rxe_dbg_qp(qp, fmt, ...) ibdev_dbg(qp->ibqp.device,		\
+>> +		"qp#%d %s: " fmt, qp->elem.index, __func__, ##__VA_ARGS__)
+>> +#define rxe_dbg_cq(cq, fmt, ...) ibdev_dbg(cq->ibcq.device,		\
+>> +		"cq#%d %s: " fmt, cq->elem.index, __func__, ##__VA_ARGS__)
+>> +#define rxe_dbg_mr(mr, fmt, ...) ibdev_dbg(mr->ibmr.device,		\
+>> +		"mr#%d %s:  " fmt, mr->elem.index, __func__, ##__VA_ARGS__)
+>> +#define rxe_dbg_mw(mw, fmt, ...) ibdev_dbg(mw->ibmw.device,		\
+>> +		"mw#%d %s:  " fmt, mw->elem.index, __func__, ##__VA_ARGS__)
+> 
+> All the macro arguments here need to be enclosed in brackets if they
+> are not a singular expression:
+> 
+>  #define rxe_dbg_mw(mw, fmt, ...) ibdev_dbg((mw)->ibmw.device,		\
+>  		"mw#%d %s:  " fmt, (mw)->elem.index, __func__, ##__VA_ARGS__)
+> 
+> Jason
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_mmap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks. I just sent v2 with this fix and a couple of others.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mmap.c b/drivers/infiniband/sw/rxe/rxe_mmap.c
-index 9149b6095429..a47d72dbc537 100644
---- a/drivers/infiniband/sw/rxe/rxe_mmap.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mmap.c
-@@ -79,7 +79,7 @@ int rxe_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- 
- 		/* Don't allow a mmap larger than the object. */
- 		if (size > ip->info.size) {
--			pr_err("mmap region is larger than the object!\n");
-+			rxe_dbg(rxe, "mmap region is larger than the object!\n");
- 			spin_unlock_bh(&rxe->pending_lock);
- 			ret = -EINVAL;
- 			goto done;
-@@ -87,7 +87,7 @@ int rxe_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- 
- 		goto found_it;
- 	}
--	pr_warn("unable to find pending mmap info\n");
-+	rxe_dbg(rxe, "unable to find pending mmap info\n");
- 	spin_unlock_bh(&rxe->pending_lock);
- 	ret = -EINVAL;
- 	goto done;
-@@ -98,7 +98,7 @@ int rxe_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- 
- 	ret = remap_vmalloc_range(vma, ip->obj, 0);
- 	if (ret) {
--		pr_err("err %d from remap_vmalloc_range\n", ret);
-+		rxe_dbg(rxe, "err %d from remap_vmalloc_range\n", ret);
- 		goto done;
- 	}
- 
--- 
-2.34.1
-
+Bob
