@@ -2,61 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C24C46185D6
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 18:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C1D6185DC
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 18:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbiKCRLf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Nov 2022 13:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
+        id S232037AbiKCRLo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Nov 2022 13:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231633AbiKCRKr (ORCPT
+        with ESMTP id S231215AbiKCRKr (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Nov 2022 13:10:47 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD712655
-        for <linux-rdma@vger.kernel.org>; Thu,  3 Nov 2022 10:10:40 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id y67so2672017oiy.1
-        for <linux-rdma@vger.kernel.org>; Thu, 03 Nov 2022 10:10:40 -0700 (PDT)
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B889265D
+        for <linux-rdma@vger.kernel.org>; Thu,  3 Nov 2022 10:10:41 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id p127so2623922oih.9
+        for <linux-rdma@vger.kernel.org>; Thu, 03 Nov 2022 10:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YOrCfxbhHa4AcI2L2O/I+6YAaOAln5/3tFPHUtWRx98=;
-        b=nihsgTkIPumc2DEOTF/H1SFYnpCvOg8dWFd63jGnrov2Yy14O+p0IXvUQke8OhDW3A
-         VmRTBliEtHK5pI4Chj64Qw2LWtzJumsyBkhCc+LrJzrPyJlO5cGNRPve19WX0klZmp0H
-         piVT4xFGIq1lIf3iJ742nnA9N1SrUx96TKZ0jWazRCnseVr2i1FfBki6+n19PIM6HARc
-         KXHjOtB+oq2mORhjrgZSqb8415cx3TK2LE43JhcGYVVpDWj4H2CzMIPBYmrH5ajakXjQ
-         zIipKzBYSRiKPUzQdhagpfCXMvbkhwgomGgGWL8yBbl3/6WHivwtVFOYljLsUWx7vJwF
-         uAAg==
+        bh=/ADS8K8TlKXvyf1lsN+Hri+aecn1lm0LbJQAXo/GbHo=;
+        b=QIj+a87LNmEoLp9q1zH0Fd4osdOOlI9scF2LQwsciPRQlRGxn4xI0NZANq3kIV1S/7
+         OuQGf0dwIBnUR8TDjiLHYyGNHXvKIkOPWa33SQ2dVu0SBow5crG4I/1oorrXa8kl2Icp
+         C+67maqdVMMh3Gdwl8A+BKJqgLvn0L3nl2riyvKLoXzbYbLlxSD5dRQD/vv96yT6CJ0E
+         aiUTpxh6v5QHjBS0BgyiQm1985wusXbp7x2zWJuVK97gQl8GJMcj5o3lcfQtHuSOkjqu
+         f29SaOJ0PdAccNukTP2C2aTnpsteijaiYoUG+WT2/m3z+NHlkAURuraolFaQeKep/sim
+         wn8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YOrCfxbhHa4AcI2L2O/I+6YAaOAln5/3tFPHUtWRx98=;
-        b=2MWLgKzJOivTKRr07NHlca/55jLWSMSihRlPWlEEumUl63SF5UDPt61ZqAiBztc1fe
-         eZHzJgZeySXNczUOCs87AyKc2ji25doMfEPOG0mt80qhWFjC144urSCqm6KiKF86w2gZ
-         iQlqul2lbirPbeL67ykQSqiIBCggU2j5U3hmYNQmZGna04/QZaHp1aB4Ra/if0WS+ezP
-         OEbKYZ95ph6yB65D+r9+X/5u2o942BnQ19VsL7jxBJxIj+ILNlYR2bx3cqg6Nska408e
-         Nlbb3vcH5fdz2LZlEmyqETfcTeWBr099igHCTL7XkpMLSCw5nJLxQczI4/SYTceHiI9g
-         m0ZQ==
-X-Gm-Message-State: ACrzQf3tc3ANnpejUCa/04lnMkqfbvPUxB//qeWD2AabrxjfIuw22POM
-        ClaSeyhN8m3BpfiNq90wJ7g=
-X-Google-Smtp-Source: AMsMyM7uWjHac2qFxD1q8GLM4e8OjgL5OWpZuDvUpqhLWTYip3xWrWmU0GrGyBoKy63bAUEHtL0zvw==
-X-Received: by 2002:a05:6808:ecc:b0:351:5b2e:e161 with SMTP id q12-20020a0568080ecc00b003515b2ee161mr25018070oiv.259.1667495439930;
-        Thu, 03 Nov 2022 10:10:39 -0700 (PDT)
+        bh=/ADS8K8TlKXvyf1lsN+Hri+aecn1lm0LbJQAXo/GbHo=;
+        b=nluHVQV0taIUr/FLlTMhT7ZfwIrwvuEls6nZi62kHku4PMMWOEOYDmpq69+RbwUgem
+         Jk6LD0tSwjZ2oQoXS0/pckhQdd98sRfDFL16ppmuOkNeAKnIrSaHREsYSrKmdwSylEjF
+         6LFv28cieEGtwRX4t4h2OKrU46eRTWCSmPKgeRJEW38xBZAJ81RsTjbtK7gm7CD8Y4Ql
+         eNJs8DRiLIFppgB+6mMoyiP7+968QVvQJm62X93rIKv/ER+8PmSfBwmcn3XBVvhtLCDx
+         Odd/2eWkhLdhancVxXmp5rNYokfdNlWOtzob7vNHd6saSfuOC3GfwjZRITT8nTeO2iWh
+         UBCg==
+X-Gm-Message-State: ACrzQf0QoybYi1CYW3AVrDAD4DgNMK3GPKXJPfsR3I4jdhIZEhYvphSv
+        XuiqmO3ysJbn+dG67eOMEhc=
+X-Google-Smtp-Source: AMsMyM55pWGmM++Ojt9rbpU6Nszo1eQ7/gtKVcw1IjUkcqr6F4CEitL9GvtCHsnJWDBnkyZrOrVDbg==
+X-Received: by 2002:aca:2804:0:b0:35a:ff1:b12f with SMTP id 4-20020aca2804000000b0035a0ff1b12fmr11886950oix.207.1667495441230;
+        Thu, 03 Nov 2022 10:10:41 -0700 (PDT)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-b254-769c-82c0-77a4.res6.spectrum.com. [2603:8081:140c:1a00:b254:769c:82c0:77a4])
-        by smtp.googlemail.com with ESMTPSA id m1-20020a056870a10100b0012b298699dbsm624304oae.1.2022.11.03.10.10.38
+        by smtp.googlemail.com with ESMTPSA id m1-20020a056870a10100b0012b298699dbsm624304oae.1.2022.11.03.10.10.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Nov 2022 10:10:39 -0700 (PDT)
+        Thu, 03 Nov 2022 10:10:40 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     leon@kernel.org, jgg@nvidia.com, zyjzyj2000@gmail.com,
         jhack@hpe.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH for-next v2 06/16] RDMA/rxe: Replace pr_xxx by rxe_dbg_xxx in rxe_net.c
-Date:   Thu,  3 Nov 2022 12:10:04 -0500
-Message-Id: <20221103171013.20659-7-rpearsonhpe@gmail.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 07/16] RDMA/rxe: Replace pr_xxx by rxe_dbg_xxx in rxe_qp.c
+Date:   Thu,  3 Nov 2022 12:10:05 -0500
+Message-Id: <20221103171013.20659-8-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221103171013.20659-1-rpearsonhpe@gmail.com>
 References: <20221103171013.20659-1-rpearsonhpe@gmail.com>
@@ -72,161 +71,259 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace (some) calls to pr_xxx() in rxe_net.c with rxe_dbg_xxx().
-Calls with a rxe device not yet in scope are left as is.
+Replace calls to pr_xxx() in rxe_qp.c with rxe_dbg_xxx().
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
-v2:
-  Fixed incorrect parameter list in rxe_find_route6() in the #else case.
-Reported-by: kernel test robot <lkp@intel.com>
+ drivers/infiniband/sw/rxe/rxe_qp.c | 65 ++++++++++++++----------------
+ 1 file changed, 30 insertions(+), 35 deletions(-)
 
- drivers/infiniband/sw/rxe/rxe_net.c | 38 ++++++++++++++++-------------
- 1 file changed, 21 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index c36cad9c7a66..e02e1624bcf4 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -20,9 +20,10 @@
- 
- static struct rxe_recv_sockets recv_sockets;
- 
--static struct dst_entry *rxe_find_route4(struct net_device *ndev,
--				  struct in_addr *saddr,
--				  struct in_addr *daddr)
-+static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
-+					 struct net_device *ndev,
-+					 struct in_addr *saddr,
-+					 struct in_addr *daddr)
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 3f6d62a80bea..bcbfe6068b8b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -19,33 +19,33 @@ static int rxe_qp_chk_cap(struct rxe_dev *rxe, struct ib_qp_cap *cap,
+ 			  int has_srq)
  {
- 	struct rtable *rt;
- 	struct flowi4 fl = { { 0 } };
-@@ -35,7 +36,7 @@ static struct dst_entry *rxe_find_route4(struct net_device *ndev,
- 
- 	rt = ip_route_output_key(&init_net, &fl);
- 	if (IS_ERR(rt)) {
--		pr_err_ratelimited("no route to %pI4\n", &daddr->s_addr);
-+		rxe_dbg_qp(qp, "no route to %pI4\n", &daddr->s_addr);
- 		return NULL;
+ 	if (cap->max_send_wr > rxe->attr.max_qp_wr) {
+-		pr_debug("invalid send wr = %u > %d\n",
++		rxe_dbg(rxe, "invalid send wr = %u > %d\n",
+ 			 cap->max_send_wr, rxe->attr.max_qp_wr);
+ 		goto err1;
  	}
  
-@@ -43,7 +44,8 @@ static struct dst_entry *rxe_find_route4(struct net_device *ndev,
+ 	if (cap->max_send_sge > rxe->attr.max_send_sge) {
+-		pr_debug("invalid send sge = %u > %d\n",
++		rxe_dbg(rxe, "invalid send sge = %u > %d\n",
+ 			 cap->max_send_sge, rxe->attr.max_send_sge);
+ 		goto err1;
+ 	}
+ 
+ 	if (!has_srq) {
+ 		if (cap->max_recv_wr > rxe->attr.max_qp_wr) {
+-			pr_debug("invalid recv wr = %u > %d\n",
++			rxe_dbg(rxe, "invalid recv wr = %u > %d\n",
+ 				 cap->max_recv_wr, rxe->attr.max_qp_wr);
+ 			goto err1;
+ 		}
+ 
+ 		if (cap->max_recv_sge > rxe->attr.max_recv_sge) {
+-			pr_debug("invalid recv sge = %u > %d\n",
++			rxe_dbg(rxe, "invalid recv sge = %u > %d\n",
+ 				 cap->max_recv_sge, rxe->attr.max_recv_sge);
+ 			goto err1;
+ 		}
+ 	}
+ 
+ 	if (cap->max_inline_data > rxe->max_inline_data) {
+-		pr_debug("invalid max inline data = %u > %d\n",
++		rxe_dbg(rxe, "invalid max inline data = %u > %d\n",
+ 			 cap->max_inline_data, rxe->max_inline_data);
+ 		goto err1;
+ 	}
+@@ -73,7 +73,7 @@ int rxe_qp_chk_init(struct rxe_dev *rxe, struct ib_qp_init_attr *init)
+ 	}
+ 
+ 	if (!init->recv_cq || !init->send_cq) {
+-		pr_debug("missing cq\n");
++		rxe_dbg(rxe, "missing cq\n");
+ 		goto err1;
+ 	}
+ 
+@@ -82,14 +82,14 @@ int rxe_qp_chk_init(struct rxe_dev *rxe, struct ib_qp_init_attr *init)
+ 
+ 	if (init->qp_type == IB_QPT_GSI) {
+ 		if (!rdma_is_port_valid(&rxe->ib_dev, port_num)) {
+-			pr_debug("invalid port = %d\n", port_num);
++			rxe_dbg(rxe, "invalid port = %d\n", port_num);
+ 			goto err1;
+ 		}
+ 
+ 		port = &rxe->port;
+ 
+ 		if (init->qp_type == IB_QPT_GSI && port->qp_gsi_index) {
+-			pr_debug("GSI QP exists for port %d\n", port_num);
++			rxe_dbg(rxe, "GSI QP exists for port %d\n", port_num);
+ 			goto err1;
+ 		}
+ 	}
+@@ -264,9 +264,6 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 
+ 		wqe_size = rcv_wqe_size(qp->rq.max_sge);
+ 
+-		pr_debug("qp#%d max_wr = %d, max_sge = %d, wqe_size = %d\n",
+-			 qp_num(qp), qp->rq.max_wr, qp->rq.max_sge, wqe_size);
+-
+ 		type = QUEUE_TYPE_FROM_CLIENT;
+ 		qp->rq.queue = rxe_queue_init(rxe, &qp->rq.max_wr,
+ 					wqe_size, type);
+@@ -395,7 +392,7 @@ int rxe_qp_chk_attr(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 					attr->qp_state : cur_state;
+ 
+ 	if (!ib_modify_qp_is_ok(cur_state, new_state, qp_type(qp), mask)) {
+-		pr_debug("invalid mask or state for qp\n");
++		rxe_dbg_qp(qp, "invalid mask or state\n");
+ 		goto err1;
+ 	}
+ 
+@@ -409,7 +406,7 @@ int rxe_qp_chk_attr(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 
+ 	if (mask & IB_QP_PORT) {
+ 		if (!rdma_is_port_valid(&rxe->ib_dev, attr->port_num)) {
+-			pr_debug("invalid port %d\n", attr->port_num);
++			rxe_dbg_qp(qp, "invalid port %d\n", attr->port_num);
+ 			goto err1;
+ 		}
+ 	}
+@@ -424,11 +421,11 @@ int rxe_qp_chk_attr(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		if (rxe_av_chk_attr(rxe, &attr->alt_ah_attr))
+ 			goto err1;
+ 		if (!rdma_is_port_valid(&rxe->ib_dev, attr->alt_port_num))  {
+-			pr_debug("invalid alt port %d\n", attr->alt_port_num);
++			rxe_dbg_qp(qp, "invalid alt port %d\n", attr->alt_port_num);
+ 			goto err1;
+ 		}
+ 		if (attr->alt_timeout > 31) {
+-			pr_debug("invalid QP alt timeout %d > 31\n",
++			rxe_dbg_qp(qp, "invalid alt timeout %d > 31\n",
+ 				 attr->alt_timeout);
+ 			goto err1;
+ 		}
+@@ -441,7 +438,7 @@ int rxe_qp_chk_attr(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		enum ib_mtu mtu = attr->path_mtu;
+ 
+ 		if (mtu > max_mtu) {
+-			pr_debug("invalid mtu (%d) > (%d)\n",
++			rxe_dbg_qp(qp, "invalid mtu (%d) > (%d)\n",
+ 				 ib_mtu_enum_to_int(mtu),
+ 				 ib_mtu_enum_to_int(max_mtu));
+ 			goto err1;
+@@ -450,7 +447,7 @@ int rxe_qp_chk_attr(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 
+ 	if (mask & IB_QP_MAX_QP_RD_ATOMIC) {
+ 		if (attr->max_rd_atomic > rxe->attr.max_qp_rd_atom) {
+-			pr_debug("invalid max_rd_atomic %d > %d\n",
++			rxe_dbg_qp(qp, "invalid max_rd_atomic %d > %d\n",
+ 				 attr->max_rd_atomic,
+ 				 rxe->attr.max_qp_rd_atom);
+ 			goto err1;
+@@ -459,7 +456,8 @@ int rxe_qp_chk_attr(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 
+ 	if (mask & IB_QP_TIMEOUT) {
+ 		if (attr->timeout > 31) {
+-			pr_debug("invalid QP timeout %d > 31\n", attr->timeout);
++			rxe_dbg_qp(qp, "invalid timeout %d > 31\n",
++					attr->timeout);
+ 			goto err1;
+ 		}
+ 	}
+@@ -637,27 +635,24 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ 	if (mask & IB_QP_RETRY_CNT) {
+ 		qp->attr.retry_cnt = attr->retry_cnt;
+ 		qp->comp.retry_cnt = attr->retry_cnt;
+-		pr_debug("qp#%d set retry count = %d\n", qp_num(qp),
+-			 attr->retry_cnt);
++		rxe_dbg_qp(qp, "set retry count = %d\n", attr->retry_cnt);
+ 	}
+ 
+ 	if (mask & IB_QP_RNR_RETRY) {
+ 		qp->attr.rnr_retry = attr->rnr_retry;
+ 		qp->comp.rnr_retry = attr->rnr_retry;
+-		pr_debug("qp#%d set rnr retry count = %d\n", qp_num(qp),
+-			 attr->rnr_retry);
++		rxe_dbg_qp(qp, "set rnr retry count = %d\n", attr->rnr_retry);
+ 	}
+ 
+ 	if (mask & IB_QP_RQ_PSN) {
+ 		qp->attr.rq_psn = (attr->rq_psn & BTH_PSN_MASK);
+ 		qp->resp.psn = qp->attr.rq_psn;
+-		pr_debug("qp#%d set resp psn = 0x%x\n", qp_num(qp),
+-			 qp->resp.psn);
++		rxe_dbg_qp(qp, "set resp psn = 0x%x\n", qp->resp.psn);
+ 	}
+ 
+ 	if (mask & IB_QP_MIN_RNR_TIMER) {
+ 		qp->attr.min_rnr_timer = attr->min_rnr_timer;
+-		pr_debug("qp#%d set min rnr timer = 0x%x\n", qp_num(qp),
++		rxe_dbg_qp(qp, "set min rnr timer = 0x%x\n",
+ 			 attr->min_rnr_timer);
+ 	}
+ 
+@@ -665,7 +660,7 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ 		qp->attr.sq_psn = (attr->sq_psn & BTH_PSN_MASK);
+ 		qp->req.psn = qp->attr.sq_psn;
+ 		qp->comp.psn = qp->attr.sq_psn;
+-		pr_debug("qp#%d set req psn = 0x%x\n", qp_num(qp), qp->req.psn);
++		rxe_dbg_qp(qp, "set req psn = 0x%x\n", qp->req.psn);
+ 	}
+ 
+ 	if (mask & IB_QP_PATH_MIG_STATE)
+@@ -679,40 +674,40 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ 
+ 		switch (attr->qp_state) {
+ 		case IB_QPS_RESET:
+-			pr_debug("qp#%d state -> RESET\n", qp_num(qp));
++			rxe_dbg_qp(qp, "state -> RESET\n");
+ 			rxe_qp_reset(qp);
+ 			break;
+ 
+ 		case IB_QPS_INIT:
+-			pr_debug("qp#%d state -> INIT\n", qp_num(qp));
++			rxe_dbg_qp(qp, "state -> INIT\n");
+ 			qp->req.state = QP_STATE_INIT;
+ 			qp->resp.state = QP_STATE_INIT;
+ 			qp->comp.state = QP_STATE_INIT;
+ 			break;
+ 
+ 		case IB_QPS_RTR:
+-			pr_debug("qp#%d state -> RTR\n", qp_num(qp));
++			rxe_dbg_qp(qp, "state -> RTR\n");
+ 			qp->resp.state = QP_STATE_READY;
+ 			break;
+ 
+ 		case IB_QPS_RTS:
+-			pr_debug("qp#%d state -> RTS\n", qp_num(qp));
++			rxe_dbg_qp(qp, "state -> RTS\n");
+ 			qp->req.state = QP_STATE_READY;
+ 			qp->comp.state = QP_STATE_READY;
+ 			break;
+ 
+ 		case IB_QPS_SQD:
+-			pr_debug("qp#%d state -> SQD\n", qp_num(qp));
++			rxe_dbg_qp(qp, "state -> SQD\n");
+ 			rxe_qp_drain(qp);
+ 			break;
+ 
+ 		case IB_QPS_SQE:
+-			pr_warn("qp#%d state -> SQE !!?\n", qp_num(qp));
++			rxe_dbg_qp(qp, "state -> SQE !!?\n");
+ 			/* Not possible from modify_qp. */
+ 			break;
+ 
+ 		case IB_QPS_ERR:
+-			pr_debug("qp#%d state -> ERR\n", qp_num(qp));
++			rxe_dbg_qp(qp, "state -> ERR\n");
+ 			rxe_qp_error(qp);
+ 			break;
+ 		}
+@@ -752,7 +747,7 @@ int rxe_qp_to_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask)
+ 		attr->sq_draining = 0;
+ 	}
+ 
+-	pr_debug("attr->sq_draining = %d\n", attr->sq_draining);
++	rxe_dbg_qp(qp, "attr->sq_draining = %d\n", attr->sq_draining);
+ 
+ 	return 0;
  }
- 
- #if IS_ENABLED(CONFIG_IPV6)
--static struct dst_entry *rxe_find_route6(struct net_device *ndev,
-+static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
-+					 struct net_device *ndev,
- 					 struct in6_addr *saddr,
- 					 struct in6_addr *daddr)
- {
-@@ -60,12 +62,12 @@ static struct dst_entry *rxe_find_route6(struct net_device *ndev,
- 					       recv_sockets.sk6->sk, &fl6,
- 					       NULL);
- 	if (IS_ERR(ndst)) {
--		pr_err_ratelimited("no route to %pI6\n", daddr);
-+		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
- 		return NULL;
+@@ -764,7 +759,7 @@ int rxe_qp_chk_destroy(struct rxe_qp *qp)
+ 	 * will fail immediately.
+ 	 */
+ 	if (atomic_read(&qp->mcg_num)) {
+-		pr_debug("Attempt to destroy QP while attached to multicast group\n");
++		rxe_dbg_qp(qp, "Attempt to destroy while attached to multicast group\n");
+ 		return -EBUSY;
  	}
  
- 	if (unlikely(ndst->error)) {
--		pr_err("no route to %pI6\n", daddr);
-+		rxe_dbg_qp(qp, "no route to %pI6\n", daddr);
- 		goto put;
- 	}
- 
-@@ -77,7 +79,8 @@ static struct dst_entry *rxe_find_route6(struct net_device *ndev,
- 
- #else
- 
--static struct dst_entry *rxe_find_route6(struct net_device *ndev,
-+static struct dst_entry *rxe_find_route6(struct rxe_qp *qp,
-+					 struct net_device *ndev,
- 					 struct in6_addr *saddr,
- 					 struct in6_addr *daddr)
- {
-@@ -105,14 +108,14 @@ static struct dst_entry *rxe_find_route(struct net_device *ndev,
- 
- 			saddr = &av->sgid_addr._sockaddr_in.sin_addr;
- 			daddr = &av->dgid_addr._sockaddr_in.sin_addr;
--			dst = rxe_find_route4(ndev, saddr, daddr);
-+			dst = rxe_find_route4(qp, ndev, saddr, daddr);
- 		} else if (av->network_type == RXE_NETWORK_TYPE_IPV6) {
- 			struct in6_addr *saddr6;
- 			struct in6_addr *daddr6;
- 
- 			saddr6 = &av->sgid_addr._sockaddr_in6.sin6_addr;
- 			daddr6 = &av->dgid_addr._sockaddr_in6.sin6_addr;
--			dst = rxe_find_route6(ndev, saddr6, daddr6);
-+			dst = rxe_find_route6(qp, ndev, saddr6, daddr6);
- #if IS_ENABLED(CONFIG_IPV6)
- 			if (dst)
- 				qp->dst_cookie =
-@@ -282,7 +285,7 @@ static int prepare4(struct rxe_av *av, struct rxe_pkt_info *pkt,
- 
- 	dst = rxe_find_route(skb->dev, qp, av);
- 	if (!dst) {
--		pr_err("Host not reachable\n");
-+		rxe_dbg_qp(qp, "Host not reachable\n");
- 		return -EHOSTUNREACH;
- 	}
- 
-@@ -306,7 +309,7 @@ static int prepare6(struct rxe_av *av, struct rxe_pkt_info *pkt,
- 
- 	dst = rxe_find_route(skb->dev, qp, av);
- 	if (!dst) {
--		pr_err("Host not reachable\n");
-+		rxe_dbg_qp(qp, "Host not reachable\n");
- 		return -EHOSTUNREACH;
- 	}
- 
-@@ -365,7 +368,8 @@ static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- 	} else if (skb->protocol == htons(ETH_P_IPV6)) {
- 		err = ip6_local_out(dev_net(skb_dst(skb)->dev), skb->sk, skb);
- 	} else {
--		pr_err("Unknown layer 3 protocol: %d\n", skb->protocol);
-+		rxe_dbg_qp(pkt->qp, "Unknown layer 3 protocol: %d\n",
-+				skb->protocol);
- 		atomic_dec(&pkt->qp->skb_out);
- 		rxe_put(pkt->qp);
- 		kfree_skb(skb);
-@@ -373,7 +377,7 @@ static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- 	}
- 
- 	if (unlikely(net_xmit_eval(err))) {
--		pr_debug("error sending packet: %d\n", err);
-+		rxe_dbg_qp(pkt->qp, "error sending packet: %d\n", err);
- 		return -EAGAIN;
- 	}
- 
-@@ -411,7 +415,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 
- 	if ((is_request && (qp->req.state != QP_STATE_READY)) ||
- 	    (!is_request && (qp->resp.state != QP_STATE_READY))) {
--		pr_info("Packet dropped. QP is not in ready state\n");
-+		rxe_dbg_qp(qp, "Packet dropped. QP is not in ready state\n");
- 		goto drop;
- 	}
- 
-@@ -592,7 +596,7 @@ static int rxe_notify(struct notifier_block *not_blk,
- 		rxe_port_down(rxe);
- 		break;
- 	case NETDEV_CHANGEMTU:
--		pr_info("%s changed mtu to %d\n", ndev->name, ndev->mtu);
-+		rxe_dbg(rxe, "%s changed mtu to %d\n", ndev->name, ndev->mtu);
- 		rxe_set_mtu(rxe, ndev->mtu);
- 		break;
- 	case NETDEV_CHANGE:
-@@ -604,7 +608,7 @@ static int rxe_notify(struct notifier_block *not_blk,
- 	case NETDEV_CHANGENAME:
- 	case NETDEV_FEAT_CHANGE:
- 	default:
--		pr_info("ignoring netdev event = %ld for %s\n",
-+		rxe_dbg(rxe, "ignoring netdev event = %ld for %s\n",
- 			event, ndev->name);
- 		break;
- 	}
 -- 
 2.34.1
 
