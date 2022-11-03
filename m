@@ -2,55 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C87F617D13
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 13:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 008CD6184B4
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 17:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbiKCMvF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Nov 2022 08:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
+        id S232308AbiKCQde (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Nov 2022 12:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbiKCMvE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Nov 2022 08:51:04 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9311114A
-        for <linux-rdma@vger.kernel.org>; Thu,  3 Nov 2022 05:51:02 -0700 (PDT)
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4N33XH3Qrkz15Lwh;
-        Thu,  3 Nov 2022 20:50:55 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 3 Nov 2022 20:51:00 +0800
-Received: from [10.67.103.121] (10.67.103.121) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 3 Nov 2022 20:50:59 +0800
-Subject: Re: [PATCH v2 for-rc 3/5] RDMA/hns: Remove enable rq inline in kernel
- and add compatibility handling
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <20221026095054.2384620-1-xuhaoyue1@hisilicon.com>
- <20221026095054.2384620-4-xuhaoyue1@hisilicon.com>
- <Y1wF68CgChG+hM87@nvidia.com>
- <9b50dae1-e448-047b-8a54-489ff120f00c@hisilicon.com>
- <Y1+6j7KwbG9ls/25@nvidia.com>
-From:   "xuhaoyue (A)" <xuhaoyue1@hisilicon.com>
-Message-ID: <48f9bc6f-9bfa-7664-69a2-20401c282150@hisilicon.com>
-Date:   Thu, 3 Nov 2022 20:50:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        with ESMTP id S232311AbiKCQcn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Nov 2022 12:32:43 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140181759F;
+        Thu,  3 Nov 2022 09:32:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 59398CE2834;
+        Thu,  3 Nov 2022 16:32:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43FEEC433B5;
+        Thu,  3 Nov 2022 16:32:25 +0000 (UTC)
+Date:   Thu, 3 Nov 2022 12:32:23 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Leonid Ravich <lravich@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Leonid Ravich <leonid.ravich@toganetworks.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yigal Korman <yigal.korman@toganetworks.com>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>
+Subject: Re: BUG:  ib_mad ftrace event unsupported migration
+Message-ID: <20221103123223.0bd96128@rorschach.local.home>
+In-Reply-To: <Y2OyaSe7CrhJ9COo@leonid-Inspiron-3421>
+References: <VI1PR02MB623706DA8A01842834FC191089399@VI1PR02MB6237.eurprd02.prod.outlook.com>
+        <20221102074457.08f538a8@rorschach.local.home>
+        <Y2JqX3vC1mG/JDex@ziepe.ca>
+        <VI1PR02MB623731066685B6E249F71A3189399@VI1PR02MB6237.eurprd02.prod.outlook.com>
+        <Y2J4/NQMhRORqnZ0@ziepe.ca>
+        <20221102101719.6cbcca6b@rorschach.local.home>
+        <Y2J9lAqBvjjPUmJf@ziepe.ca>
+        <20221102115947.000897fa@rorschach.local.home>
+        <Y2LMjYNAE5LwtcOp@leonid-Inspiron-3421>
+        <20221102181900.5bc9812f@rorschach.local.home>
+        <Y2OyaSe7CrhJ9COo@leonid-Inspiron-3421>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <Y1+6j7KwbG9ls/25@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.121]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,20 +59,57 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-You are right. This enum has gone wrong here. I will fix in the V3.
+On Thu, 3 Nov 2022 14:22:01 +0200
+Leonid Ravich <lravich@gmail.com> wrote:
 
-On 2022/10/31 20:07:43, Jason Gunthorpe wrote:
-> On Mon, Oct 31, 2022 at 04:23:14PM +0800, xuhaoyue (A) wrote:
+> On Wed, Nov 02, 2022 at 06:19:00PM -0400, Steven Rostedt wrote:
+> > On Wed, 2 Nov 2022 22:01:17 +0200
+> > Leonid Ravich <lravich@gmail.com> wrote:
+> >   
+> > > disagree, without CONFIG_PREEMPTION (which is the default case in some
+> > > destros) we will not get any warning, because there will not be
+> > > preamption disable.  
+> > 
+> > I test all for my code (NON_PREEMPT, VOLUNTEER_PREEMPT, PREEMPT) and
+> > with and without lockdep enabled.
+> > 
+> > This would be a bug if you called kmalloc(X, GFP_KERNEL) in *any* non
+> > preempt section.  
+> yes, but for NON_PREEMPT trace is not non preempt section,
+> actualy the problem is with CONFIG_PREEMPT_COUNT not set. 
 > 
->> This bit is used to prevent compatibility issues in the old
->> kernel. It is not for compatibility with userspace.  It should be a
->> bugfix. I will separate this into a new bugfix patch.  I will change
->> the name to __HNS_ROCE_CAP_FLAG_RQ_INLINE in V3.
+> ftrace uses preemot_enable/disable_notrace macro to "mark" it as non preempt section
+> which do it only for CONFIG_PREEMPT_COUNT. 
+
+Correct.
+
 > 
-> There is no such thing as "compatability issues in the old kernel"
+> from include/linux/preempt.h
+> if !CONFIG_PREEMPT_COUNT
+> #define preempt_enable_notrace()                barrier()
 > 
-> If it is used then name it sensibly, if it isn't then delete it.
-> 
-> Jason
-> .
-> 
+> this is why there is no any warning on my system.
+
+Correct.
+
+> >   
+> > > 
+> > > second issue I see and maybe it is only me, is that the assuption of
+> > > atomicity in trace is not a common knowledge for trace users.       
+> > 
+> > Well, I suppose we could add more documentation. Would that help? Where
+> > would you see it? In the sample code?
+> >   
+> I think if we fix the first issue and make kernel cry for any miss
+> behave it we do the job. 
+
+It does with the right configs enable. I will NACK any change to add
+more checks here for the production case. This is an extremely fast
+path where every nanosecond counts (trace events can be under 100ns).
+The fact that it doesn't do anything is a feature not a bug.
+
+It's up to the developer to run their code with lockdep and other debug
+settings (and possibly even PREEMPT config tests) while developing
+their code. Not to expect the production use case to do it for them.
+
+-- Steve
