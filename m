@@ -2,123 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D786185EC
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 18:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9F9618867
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Nov 2022 20:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbiKCRNE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Nov 2022 13:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        id S230121AbiKCTQv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Nov 2022 15:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232204AbiKCRMn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Nov 2022 13:12:43 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3339C1F614
-        for <linux-rdma@vger.kernel.org>; Thu,  3 Nov 2022 10:11:56 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-13bd19c3b68so2888564fac.7
-        for <linux-rdma@vger.kernel.org>; Thu, 03 Nov 2022 10:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jCedUWR0WJD5zx0Q730hEIY7teF4tVYiYMC2pwT7hRA=;
-        b=cUkMvya72a+WSFqeO6Esnw70Yp5mtaax7lV68AClHKwQQ6/99oAu2bM9zumml+5my/
-         BFnZaEV/2P9+Q5qDQAfRnG/NJn2uSwUUqgEl44Y+px851b7Sri/f513sCX6w5R+OFIZq
-         y/dZ5PB/PhxkpcHO5r5aLLGx5kXHBR1Y178mMzzNe/PCTsBXygYoy0QksVVDYnZZfB46
-         FZUgfMtBOGVGSeJXoTpNsd+e8mHEfKFtJRTJPlQxgtUEyC4jiiBtCakx4rlRyyvur2Gn
-         KjJV1NDHJ4XPnTEuCyGxQyWiqPREhGfRSKdFzPwDXKOHaccRWhcNDzDwoRVW5rIWTHcL
-         yFow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jCedUWR0WJD5zx0Q730hEIY7teF4tVYiYMC2pwT7hRA=;
-        b=KHqVRnYYuj2K4op5hiy/lx4l+pMhmxpuf2T/P6IqEzHdf7kUBwNNVi5kfIflqCLdJJ
-         Kel4CJ5pIQqU3w96tyQ8IzuvKNXKAR8hvpKdwNrexTDgMEahIAHeOftzfWHKRbNw51Qs
-         3caxudPRe+Z2IASopX0N9ds4z2XsBBOwH1Ab6XZ+/LanmKqOcsIj6gawAouIvQHUv9oE
-         LFANp2pip83o+YshNQwToAoZoK6fs0wMu0887sGzU3RNV/hDD3AeD3tJO/uLIJV7m/e9
-         Z4HL7norOVPCFdOnir+goOlUzQiYRE3M30OUHmlAI/Ihwgje5GQma44Qzt6gxTco2rEi
-         IZJg==
-X-Gm-Message-State: ACrzQf154ZoAP04H9dtJLClbK/a58dWcX1vjb9Vh1u1d+AhAtdGfiS8f
-        YQngjKhMaHQKTXwhxE4lIV/5DjEyDkY=
-X-Google-Smtp-Source: AMsMyM48wHmryYQebPru5o1txIdKDrM+8LgyR+gjqq5n6flzfdTiYpXcn20vX9ZzlnBgKA+8wW0edg==
-X-Received: by 2002:a05:6870:f61a:b0:13b:9374:203e with SMTP id ek26-20020a056870f61a00b0013b9374203emr18486946oab.18.1667495515613;
-        Thu, 03 Nov 2022 10:11:55 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:13df:ba12:73d1:1737? (2603-8081-140c-1a00-13df-ba12-73d1-1737.res6.spectrum.com. [2603:8081:140c:1a00:13df:ba12:73d1:1737])
-        by smtp.gmail.com with ESMTPSA id m12-20020a05680806cc00b0035a2f3e423esm590633oih.32.2022.11.03.10.11.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Nov 2022 10:11:54 -0700 (PDT)
-Message-ID: <1e0c5b92-caa3-19bc-3e96-974c85f860c6@gmail.com>
-Date:   Thu, 3 Nov 2022 12:11:53 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH for-next 01/16] RDMA/rxe: Add ibdev_dbg macros for rxe
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     leon@kernel.org, zyjzyj2000@gmail.com, jhack@hpe.com,
-        linux-rdma@vger.kernel.org
-References: <20221101202238.32836-1-rpearsonhpe@gmail.com>
- <20221101202238.32836-2-rpearsonhpe@gmail.com> <Y2JpU2hJaTghhgAn@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <Y2JpU2hJaTghhgAn@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230041AbiKCTQu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Nov 2022 15:16:50 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DECFF1D306;
+        Thu,  3 Nov 2022 12:16:48 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 9DBBE20B9F81; Thu,  3 Nov 2022 12:16:48 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9DBBE20B9F81
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1667503008;
+        bh=kadn+aTf3nW20UCiL7FSGugZ1f36OZduTmq6RjMWCWQ=;
+        h=From:To:Cc:Subject:Date:Reply-To:From;
+        b=EPwRK0Eu0s1m8QfOiv2DXRMPZhHvxaaLj88sjHqt59UdZ5H7vMKf/MqKc1CvgcvLA
+         5jIsw7cU+k7hI3HKH0nr7P/7ycaj6g/D800LCw9j7vsIaoz7e2zNCCPqTUjeJh7fTs
+         tKKIlrnFi2COMblXApZYP4EARmd75etsD21y8lSU=
+From:   longli@linuxonhyperv.com
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, edumazet@google.com,
+        shiraz.saleem@intel.com, Ajay Sharma <sharmaajay@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Long Li <longli@microsoft.com>
+Subject: [Patch v10 00/12] Introduce Microsoft Azure Network Adapter (MANA) RDMA driver
+Date:   Thu,  3 Nov 2022 12:16:18 -0700
+Message-Id: <1667502990-2559-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
+Reply-To: longli@microsoft.com
+X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/2/22 07:57, Jason Gunthorpe wrote:
-> On Tue, Nov 01, 2022 at 03:22:25PM -0500, Bob Pearson wrote:
->> Add macros borrowed from siw to call dynamic debug macro ibdev_dbg.
->>
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->> ---
->>  drivers/infiniband/sw/rxe/rxe.h | 19 +++++++++++++++++++
->>  1 file changed, 19 insertions(+)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
->> index 30fbdf3bc76a..1c5186c26bce 100644
->> --- a/drivers/infiniband/sw/rxe/rxe.h
->> +++ b/drivers/infiniband/sw/rxe/rxe.h
->> @@ -38,6 +38,25 @@
->>  
->>  #define RXE_ROCE_V2_SPORT		(0xc000)
->>  
->> +#define rxe_dbg(rxe, fmt, ...) ibdev_dbg(&rxe->ib_dev,			\
->> +		"%s: " fmt, __func__, ##__VA_ARGS__)
->> +#define rxe_dbg_uc(uc, fmt, ...) ibdev_dbg(uc->ibpd.device,		\
->> +		"uc#%d %s: " fmt, uc->elem.index, __func__, ##__VA_ARGS__)
->> +#define rxe_dbg_pd(pd, fmt, ...) ibdev_dbg(pd->ibpd.device,		\
->> +		"pd#%d %s: " fmt, pd->elem.index, __func__, ##__VA_ARGS__)
->> +#define rxe_dbg_ah(ah, fmt, ...) ibdev_dbg(ah->ibah.device,		\
->> +		"ah#%d %s: " fmt, ah->elem.index, __func__, ##__VA_ARGS__)
->> +#define rxe_dbg_srq(srq, fmt, ...) ibdev_dbg(srq->ibsrq.device,	\
->> +		"srq#%d %s: " fmt, srq->elem.index, __func__, ##__VA_ARGS__)
->> +#define rxe_dbg_qp(qp, fmt, ...) ibdev_dbg(qp->ibqp.device,		\
->> +		"qp#%d %s: " fmt, qp->elem.index, __func__, ##__VA_ARGS__)
->> +#define rxe_dbg_cq(cq, fmt, ...) ibdev_dbg(cq->ibcq.device,		\
->> +		"cq#%d %s: " fmt, cq->elem.index, __func__, ##__VA_ARGS__)
->> +#define rxe_dbg_mr(mr, fmt, ...) ibdev_dbg(mr->ibmr.device,		\
->> +		"mr#%d %s:  " fmt, mr->elem.index, __func__, ##__VA_ARGS__)
->> +#define rxe_dbg_mw(mw, fmt, ...) ibdev_dbg(mw->ibmw.device,		\
->> +		"mw#%d %s:  " fmt, mw->elem.index, __func__, ##__VA_ARGS__)
-> 
-> All the macro arguments here need to be enclosed in brackets if they
-> are not a singular expression:
-> 
->  #define rxe_dbg_mw(mw, fmt, ...) ibdev_dbg((mw)->ibmw.device,		\
->  		"mw#%d %s:  " fmt, (mw)->elem.index, __func__, ##__VA_ARGS__)
-> 
-> Jason
+From: Long Li <longli@microsoft.com>
 
-Thanks. I just sent v2 with this fix and a couple of others.
+This patchset implements a RDMA driver for Microsoft Azure Network
+Adapter (MANA). In MANA, the RDMA device is modeled as an auxiliary device
+to the Ethernet device.
 
-Bob
+The first 11 patches modify the MANA Ethernet driver to support RDMA driver.
+The last patch implementes the RDMA driver.
+
+The user-mode of the driver is being reviewed at:
+https://github.com/linux-rdma/rdma-core/pull/1177
+
+Ajay Sharma (3):
+  net: mana: Set the DMA device max segment size
+  net: mana: Define and process GDMA response code
+    GDMA_STATUS_MORE_ENTRIES
+  net: mana: Define data structures for protection domain and memory
+    registration
+
+Long Li (9):
+  net: mana: Add support for auxiliary device
+  net: mana: Record the physical address for doorbell page region
+  net: mana: Handle vport sharing between devices
+  net: mana: Export Work Queue functions for use by RDMA driver
+  net: mana: Record port number in netdev
+  net: mana: Move header files to a common location
+  net: mana: Define max values for SGL entries
+  net: mana: Define data structures for allocating doorbell page from
+    GDMA
+  RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter
+
+ MAINTAINERS                                   |  10 +
+ drivers/infiniband/Kconfig                    |   1 +
+ drivers/infiniband/hw/Makefile                |   1 +
+ drivers/infiniband/hw/mana/Kconfig            |  10 +
+ drivers/infiniband/hw/mana/Makefile           |   4 +
+ drivers/infiniband/hw/mana/cq.c               |  79 +++
+ drivers/infiniband/hw/mana/device.c           | 117 ++++
+ drivers/infiniband/hw/mana/main.c             | 521 ++++++++++++++++++
+ drivers/infiniband/hw/mana/mana_ib.h          | 162 ++++++
+ drivers/infiniband/hw/mana/mr.c               | 197 +++++++
+ drivers/infiniband/hw/mana/qp.c               | 506 +++++++++++++++++
+ drivers/infiniband/hw/mana/wq.c               | 115 ++++
+ drivers/net/ethernet/microsoft/Kconfig        |   1 +
+ .../net/ethernet/microsoft/mana/gdma_main.c   |  40 +-
+ .../net/ethernet/microsoft/mana/hw_channel.c  |   6 +-
+ .../net/ethernet/microsoft/mana/mana_bpf.c    |   2 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 175 +++++-
+ .../ethernet/microsoft/mana/mana_ethtool.c    |   2 +-
+ .../net/ethernet/microsoft/mana/shm_channel.c |   2 +-
+ .../microsoft => include/net}/mana/gdma.h     | 158 +++++-
+ .../net}/mana/hw_channel.h                    |   0
+ .../microsoft => include/net}/mana/mana.h     |  23 +-
+ include/net/mana/mana_auxiliary.h             |  10 +
+ .../net}/mana/shm_channel.h                   |   0
+ include/uapi/rdma/ib_user_ioctl_verbs.h       |   1 +
+ include/uapi/rdma/mana-abi.h                  |  66 +++
+ 26 files changed, 2164 insertions(+), 45 deletions(-)
+ create mode 100644 drivers/infiniband/hw/mana/Kconfig
+ create mode 100644 drivers/infiniband/hw/mana/Makefile
+ create mode 100644 drivers/infiniband/hw/mana/cq.c
+ create mode 100644 drivers/infiniband/hw/mana/device.c
+ create mode 100644 drivers/infiniband/hw/mana/main.c
+ create mode 100644 drivers/infiniband/hw/mana/mana_ib.h
+ create mode 100644 drivers/infiniband/hw/mana/mr.c
+ create mode 100644 drivers/infiniband/hw/mana/qp.c
+ create mode 100644 drivers/infiniband/hw/mana/wq.c
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/gdma.h (80%)
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/hw_channel.h (100%)
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/mana.h (95%)
+ create mode 100644 include/net/mana/mana_auxiliary.h
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/shm_channel.h (100%)
+ create mode 100644 include/uapi/rdma/mana-abi.h
+
+-- 
+2.17.1
+
