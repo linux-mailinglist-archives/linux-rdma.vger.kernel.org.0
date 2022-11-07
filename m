@@ -2,296 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2026F61F85B
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Nov 2022 17:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7A561F8AD
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Nov 2022 17:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbiKGQHF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Nov 2022 11:07:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
+        id S231922AbiKGQPA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Nov 2022 11:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232674AbiKGQGW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 11:06:22 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0E120370
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Nov 2022 08:06:18 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id t62so12580290oib.12
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Nov 2022 08:06:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=G1PmWesmDB3y9Hlad/mXuQSdn7BGdPXlpBDx4350r5c=;
-        b=AT3lTkXfeXfvSzm/KZOOoVtaSJneiiPpGh1bZGE+fXPdKJvq8tuEQRIaQ4JNE5n+H5
-         3e7mevS4C46p/gukyIDtkmG6ioGNjKcUabbIBBko8CN8lz18LnPoNHTlUkz7Nktm1YEv
-         yTn5RGZjjqiGe6eqJEOKdEC1O2GGmvpsOV9rEFyak6kmavI93BmTE2ZeJMNwZJZHumUP
-         YKdxBIHqFFbqgWjDitIVqkYSmZ7Bzt7vTz7xZ7nuQ+oJx+1n9N9VAYkv5wFANMsouv82
-         kRV+gJjumXDIzDgqpyUAY8IiW1XTFomCnzAFCPqi5z3+aECP9o+/l0lEUGw3C90UAMSm
-         iMnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G1PmWesmDB3y9Hlad/mXuQSdn7BGdPXlpBDx4350r5c=;
-        b=eryb2aIOwA8K03jOrKZIJnDIbLiNnAge8IMyQMr4xeKIFe1fL27gq3HLVHhdmPQPxV
-         J2I66cLMH+O9MJ97S1XkN6RqDACUqVgRonAMndk8vLq+3EmjXsDZ9DeD5zxx0TydW93q
-         xELNBUN4Pfy36OOXEWp6ZN2Mh7/pj7h9oIkg6vWPWi0+Di7W4bqqWBThEh0dEeZRhqz9
-         uH4f94SG55Oxs7OFAyWALQdBJykJEdZyOS6Gt5mFWG79Vq0rTOh74foJ+RbXs9Hyq9PU
-         bCD5c5YLTMdykrw5NYP4NJ67pubpV9iUOPfc83DkSMcNYbLXgznph5E2mUsMN0lA5XCY
-         KWtQ==
-X-Gm-Message-State: ACrzQf0HAlS7sn5p6dLwVmPCVEoIZ8IxULk71rL/jORXok8KTbm6F3D3
-        UtnqfA1VSWc2Zh0QsRbOk40=
-X-Google-Smtp-Source: AMsMyM48ne4j+1GKpIGmaz5NnShWs2GeuJ9QQT8OFDl1K8NGFZmDvnluYEHvf4UqAjKk+u6z+xLvbQ==
-X-Received: by 2002:a05:6808:1209:b0:353:92d1:2a0 with SMTP id a9-20020a056808120900b0035392d102a0mr27119371oil.51.1667837177536;
-        Mon, 07 Nov 2022 08:06:17 -0800 (PST)
-Received: from ?IPV6:2603:8081:140c:1a00:b536:91e:6a44:646c? (2603-8081-140c-1a00-b536-091e-6a44-646c.res6.spectrum.com. [2603:8081:140c:1a00:b536:91e:6a44:646c])
-        by smtp.gmail.com with ESMTPSA id eq42-20020a056870a92a00b0013626c1a5f6sm3250867oab.10.2022.11.07.08.06.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Nov 2022 08:06:17 -0800 (PST)
-Message-ID: <c1016a97-80c5-349d-0238-a5d7d408950d@gmail.com>
-Date:   Mon, 7 Nov 2022 10:06:16 -0600
+        with ESMTP id S232077AbiKGQO7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 11:14:59 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2046.outbound.protection.outlook.com [40.107.237.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6F8263A
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Nov 2022 08:14:58 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W8CKDHs0AuXA7LkI0KFq8pKjjvkz9/a2H1Jh0slOK+NvC+2J9jII+4Agwp1pnI+E9yX5I9RZDiWHE/bZFDVVExJGEHRqqlyVYkzdeop9o+WQqbjZt8rAdTylYHy4PgMrdVchosFGM4s9GnsrqF9/tFPkpHXLz508KvVHNROyez8ppyC9pwATC4sUxoCIB2V60fdq0MIOa67oQQoVfrFfYaitICW6ytqLTrtI2sDX4bZVlpXrDRZd9651gFN7OWF+ypzvAph4zLDg/5kgSBOmcqqw5uRm5lBesi4Wr32Y7+IX1fcxXIKRdLBg850lqWcn8V0UXgp6FrN9THGxfoxTvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RV6o+xm5sjs9NFMPubs4WaARbvI0lko2FezGtZyJ19s=;
+ b=mC0Tfuxx2/Dxo0QI875hLpYijEmIK97qldNvsagT58xjfBPEWWzzYrML3o//Y1jo4gYT5D+p0swu01Qngx/NABAn/Mp0UzUh+UHHG1x+rDMas2UoZ4MszHnH4ym6KPhF6QRp7VDD8QloJPCDrDLovRBUWVo0jDzfE8y5Cjf0xlPPwyqZhxTf2kc6acJzlK4/Jo278J65YolrKmG+1O0KWnOXtcWYH3aXDL6kXLh+xCAa1aFN6X4Cocns0eiaELuiptA4iS/6GZn3a/SLOWUO3MGgqMcmTB+gyiOmao8Ory+kfphQpHjdEQSRLsO+zhEpG/447Ael/DFRtC92eCsJnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RV6o+xm5sjs9NFMPubs4WaARbvI0lko2FezGtZyJ19s=;
+ b=HCZXVfwTs8Q9eosgcwG+usCS5wb8Wuo9q7E+0Eomzez4XhMpdmVZh9iFXE+qp9BbrSH+dlD0vK/z7QDkD4eo/sfBCXP4cr+CUAsVE3ajDBm6VToyaBIYLcfs+IbU32qtYZjgSOzcaaaVZvVx4f8CivGW+CHSH9OCokGyIJ/wpMSXfbEjSLW6IfihmY6PEZDZS/QtWnG8rW43l02b/uZ/A7vRJjrotASKSYxKKyVnawPZLTrEMqWTiW0WUFgyfjiQTwoSwA7Tvh8k2OXeBTonopgGif/j53Sd+LhuZv+VsIULltCcFbZML/RRJJgWPq3s/WLWyrT48xsGccvJpjOvyQ==
+Received: from DM6PR06CA0036.namprd06.prod.outlook.com (2603:10b6:5:120::49)
+ by SN7PR12MB6715.namprd12.prod.outlook.com (2603:10b6:806:271::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.22; Mon, 7 Nov
+ 2022 16:14:54 +0000
+Received: from DM6NAM11FT018.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:120:cafe::b) by DM6PR06CA0036.outlook.office365.com
+ (2603:10b6:5:120::49) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.26 via Frontend
+ Transport; Mon, 7 Nov 2022 16:14:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ DM6NAM11FT018.mail.protection.outlook.com (10.13.172.110) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5791.20 via Frontend Transport; Mon, 7 Nov 2022 16:14:54 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.26; Mon, 7 Nov 2022
+ 08:14:53 -0800
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.29; Mon, 7 Nov 2022 08:14:53 -0800
+Received: from vdi.nvidia.com (10.127.8.13) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.986.29 via Frontend
+ Transport; Mon, 7 Nov 2022 08:14:51 -0800
+From:   Michael Guralnik <michaelgur@nvidia.com>
+To:     <jgg@nvidia.com>, <leonro@nvidia.com>, <linux-rdma@vger.kernel.org>
+CC:     <maorg@nvidia.com>, <aharonl@nvidia.com>,
+        Michael Guralnik <michaelgur@nvidia.com>
+Subject: [PATCH v1 rdma-next 0/8] RDMA/mlx5: Switch MR cache to use RB-tree
+Date:   Mon, 7 Nov 2022 18:14:41 +0200
+Message-ID: <20221107161449.5611-1-michaelgur@nvidia.com>
+X-Mailer: git-send-email 2.17.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH for-next v3 00/13] Implement work queues for rdma_rxe
-Content-Language: en-US
-To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jhack@hpe.com" <jhack@hpe.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20221029031009.64467-1-rpearsonhpe@gmail.com>
- <TYCPR01MB8455A2A6E317C08E2F9DF908E5399@TYCPR01MB8455.jpnprd01.prod.outlook.com>
- <3953c08a-8809-820d-0bb7-dc61eabc630c@gmail.com>
- <TYCPR01MB84558043C5E77ADE74E46AE6E53B9@TYCPR01MB8455.jpnprd01.prod.outlook.com>
- <da40d7cb-ef2d-15bf-54b2-2e21db11da47@gmail.com>
- <TYCPR01MB8455610B57F2EAE2A2691614E53C9@TYCPR01MB8455.jpnprd01.prod.outlook.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <TYCPR01MB8455610B57F2EAE2A2691614E53C9@TYCPR01MB8455.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT018:EE_|SN7PR12MB6715:EE_
+X-MS-Office365-Filtering-Correlation-Id: 10b174dd-de44-49ea-9d24-08dac0db3507
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zq+LZiPzvLpKcIZ7Eiqy3E+OYfxsvre9Qk507M0JRxtPdvKW+k4jgXV+YtJIEtgOxY8JgTB1K5OXFIr71bae743IfxxKC13GCiHMlC5lnTOebmRVCo2Z1JKyrEQSkC1GkToU02dPOPuzCvDzLZQnvdYcfYuuECqviZQWoTrqZGr8oSyTpwQWPNDs6b9P4AgHY65TCcDXpiurKQ8nRAJRWvUBCmRkL4vgFBLO7OFe6cms+mVex0LEEkXPianXNcntr/mVLW/xQnbnO4pgsmROujxZDmO2ijVVkRQkt9qp00EqsiC7zrIuDwDjkL/zdlOD/DDcYcfq3WKBYYdEf9GSxZZQVisrOtVzq6Cnm2T5KhlakYHBqsKOAfXuy42Nb2LXH9lLjkyYLCfdbkJWYi0CqrRGl9TR+6DH6BTUbDow46UbMy3eCRXRhczJtrpGCTf+tJxHFVPvFB/UnpMqp2MEqBUAV787kD8azCs1U5IL5dKP9P7OyPY0hLU+NZHZyEK7HkXqFGXy1RrzBdmpCJeJ4knGlLLfu3CdQP7mgj9qB4RGlaFiWUaWstgnl84Rl1EOIzGTgJelSj+/EignLFuR/M5/2YUGZ9j4QWi0M1FQVe5/fUrxUBr+ov/ke16eq09gT3tyrcCahwdO+uajWt7EHLvgDXcGRlWgigbB9Dler6pweyCpPbuoRra/0ENW4teRhqvQP8f4CYu5an+hizn5TLJny7e1HoVJ3SQF0dwHd+5KaFAOf5CA3Y0qtyTAnn8Nzt+5wJy9/RFF+13QOVZ5WGiBd8wQi7EAw6HVhnM0z7Y=
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230022)(4636009)(376002)(39860400002)(396003)(346002)(136003)(451199015)(40470700004)(36840700001)(46966006)(54906003)(7636003)(40480700001)(356005)(26005)(110136005)(82310400005)(70206006)(41300700001)(8676002)(70586007)(4326008)(316002)(1076003)(5660300002)(186003)(7696005)(478600001)(8936002)(2616005)(40460700003)(6666004)(36860700001)(82740400003)(336012)(107886003)(86362001)(426003)(36756003)(47076005)(2906002)(83380400001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2022 16:14:54.4690
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10b174dd-de44-49ea-9d24-08dac0db3507
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT018.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6715
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/7/22 02:21, Daisuke Matsuda (Fujitsu) wrote:
-> On Sun, Nov 6, 2022 6:15 AM Bob Pearson
->> On 11/3/22 23:59, Daisuke Matsuda (Fujitsu) wrote:
->>> On Wed, Nov 2, 2022 8:21 PM Bob Pearson wrote:
->>>> On 11/2/22 05:17, Daisuke Matsuda (Fujitsu) wrote:
->>>>> On Sat, Oct 29, 2022 12:10 PM Bob Pearson wrote:
->>>>>> This patch series implements work queues as an alternative for
->>>>>> the main tasklets in the rdma_rxe driver. The patch series starts
->>>>>> with a patch that makes the internal API for task execution pluggable
->>>>>> and implements an inline and a tasklet based set of functions.
->>>>>> The remaining patches cleanup the qp reset and error code in the
->>>>>> three tasklets and modify the locking logic to prevent making
->>>>>> multiple calls to the tasklet scheduling routine. After
->>>>>> this preparation the work queue equivalent set of functions is
->>>>>> added and the tasklet version is dropped.
->>>>>
->>>>> Thank you for posting the 3rd series.
->>>>> It looks fine at a glance, but now I am concerned about problems
->>>>> that can be potentially caused by concurrency.
->>>>>
->>>>>>
->>>>>> The advantages of the work queue version of deferred task execution
->>>>>> is mainly that the work queue variant has much better scalability
->>>>>> and overall performance than the tasklet variant.  The perftest
->>>>>> microbenchmarks in local loopback mode (not a very realistic test
->>>>>> case) can reach approximately 100Gb/sec with work queues compared to
->>>>>> about 16Gb/sec for tasklets.
->>>>>
->>>>> As you wrote, the advantage of work queue version is that the number works
->>>>> that can run parallelly scales with the number of logical CPUs. However, the
->>>>> dispatched works (rxe_requester, rxe_responder, and rxe_completer) are
->>>>> designed for serial execution on tasklet, so we must not rely on them functioning
->>>>> properly on parallel execution.
->>>>
->>>> Work queues are serial for each separate work task just like tasklets. There isn't
->>>> a problem here. The tasklets for different tasks can run in parallel but tend to
->>>> do so less than work queue tasks. The reason is that tasklets are scheduled by
->>>> default on the same cpu as the thread that scheduled it while work queues are scheduled
->>>> by the kernel scheduler and get spread around.
->>>
->>> =====
->>> rxe_wq = alloc_workqueue("rxe_wq", WQ_CPU_INTENSIVE, WQ_MAX_ACTIVE);
->>> =====
->>> You are using the WQ_CPU_INTENSIVE flag. This allows works to be scheduled by
->>> the system scheduler, but each work is still enqueued to worker pools of each CPU
->>> and thus bound to the CPU the issuer is running on. It seems the behaviour you
->>> expect can be achieved by the WQ_UNBOUND flag. Unbound work items will run
->>> on any CPU at the cost of cache utilization.
->>>
->>> Two of the same tasklets never run concurrently on two different processors by nature,
->>> but that is not the case with work queues. If two softirqs running on different CPUs
->>> enqueue responder works at almost the same time, it is possible that they are dispatched
->>> and run on the different CPUs at the same time. I mean the problems may arise in such
->>> a situation.
->>>
->>> Please let me know if I missed anything. I referred to the following document.
->>> The easiest solution is to use @flags= WQ_UNBOUND and @max_active=1 to let works
->>> run serially.
->>> cf. https://www.kernel.org/doc/html/latest/core-api/workqueue.html
->>>
->>> Thanks,
->>> Daisuke
->>>
->> According to this:
->>
->>     Workqueue guarantees that a work item cannot be re-entrant if the following conditions hold
->>     after a work item gets queued:
->>
->>         The work function hasn’t been changed.
->>
->>         No one queues the work item to another workqueue.
->>
->>         The work item hasn’t been reinitiated.
->>
->>     In other words, if the above conditions hold, the work item is guaranteed to be executed by at
->>     most one worker system-wide at any given time.
->>
->>     Note that requeuing the work item (to the same queue) in the self function doesn’t break these
->>     conditions, so it’s safe to do. Otherwise, caution is required when breaking the conditions
->>     inside a work function.
->>
->> I should be OK. Each work item checks the state under lock before scheduling the item and
->> if it is free moves it to busy and then schedules it. Only one instance of a work item
->> at a time should be running.
-> 
-> Thank you for the explanation.
-> Per-qp work items should meet the three conditions. That is what I have missing.
-> Now I see. You are correct.
-> 
->>
->> I only know what I see from running top. It seems that the work items do get spread out over
->> time on the cpus.
-> 
-> It seems process_one_work() schedules items for both UNBOUND and CPU_INTENSIVE
-> workers in the same way. This is not stated explicitly in the document.
-> 
->>
->> The CPU_INTENSIVE is certainly correct for our application which will run all the cpus at
->> 100% for extended periods of time. We are benchmarking storage with IOR.
-> 
-> It is OK with me. I have not come up with any situations where the CPU_INTENSIVE
-> flag bothers other rxe users.
-> 
-> Thanks,
-> Daisuke
-> 
->>
->> Bob
->>
->>>>>
->>>>> There could be 3 problems, which stem from the fact that works are not necessarily
->>>>> executed in the same order the packets are received. Works are enqueued to worker
->>>>> pools on each CPU, and each CPU respectively schedules the works, so the ordering
->>>>> of works among CPUs is not guaranteed.
->>>>>
->>>>> [1]
->>>>> On UC/UD connections, responder does not check the psn of inbound packets,
->>>>> so the payloads can be copied to MRs without checking the order. If there are
->>>>> works that write to overlapping memory locations, they can potentially cause
->>>>> data corruption depending the order.
->>>>>
->>>>> [2]
->>>>> On RC connections, responder checks the psn, and drops the packet if it is not
->>>>> the expected one. Requester can retransmit the request in this case, so the order
->>>>> seems to be guaranteed for RC.
->>>>>
->>>>> However, responder updates the next expected psn (qp->resp.psn) BEFORE
->>>>> replying an ACK packet. If the work is preempted soon after storing the next psn,
->>>>> another work on another CPU can potentially reply another ACK packet earlier.
->>>>> This behaviour is against the spec.
->>>>> Cf. IB Specification Vol 1-Release-1.5 " 9.5 TRANSACTION ORDERING"
->>>>>
->>>>> [3]
->>>>> Again on RC connections, the next expected psn (qp->resp.psn) can be
->>>>> loaded and stored at the same time from different threads. It seems we
->>>>> have to use a synchronization method, perhaps like READ_ONCE() and
->>>>> WRITE_ONCE() macros, to prevent loading an old value. This one is just an
->>>>> example; there can be other variables that need similar consideration.
->>>>>
->>>>>
->>>>> All the problems above can be solved by making the work queue single-
->>>>> threaded. We can do it by using flags=WQ_UNBOUND and max_active=1
->>>>> for alloc_workqueue(), but this should be the last resort since this spoils
->>>>> the performance benefit of work queue.
->>>>>
->>>>> I am not sure what we can do with [1] right now.
->>>>> For [2] and [3], we could just move the update of psn later than the ack reply,
->>>>> and use *_ONCE() macros for shared variables.
->>>>>
->>>>> Thanks,
->>>>> Daisuke
+This series moves the MR cache to use RB tree to store the entries of the
+cache. By doing so, enabling more flexibility when managing the cache
+entries.
 
-Thank you for taking the time to review this.
+The MR cache will now cache mkeys returned by the user even if they are
+not from one of the predefined pools, by that allowing restarting
+applications to reuse the their released mkey and improve restart times.
 
-Bob
->>>>>
->>>>>>
->>>>>> This version of the patch series drops the tasklet version as an option
->>>>>> but keeps the option of switching between the workqueue and inline
->>>>>> versions.
->>>>>>
->>>>>> This patch series is derived from an earlier patch set developed by
->>>>>> Ian Ziemba at HPE which is used in some Lustre storage clients attached
->>>>>> to Lustre servers with hard RoCE v2 NICs.
->>>>>>
->>>>>> It is based on the current version of wip/jgg-for-next.
->>>>>>
->>>>>> v3:
->>>>>> Link: https://lore.kernel.org/linux-rdma/202210220559.f7taTL8S-lkp@intel.com/
->>>>>> The v3 version drops the first few patches which have already been accepted
->>>>>> in for-next. It also drops the last patch of the v2 version which
->>>>>> introduced module parameters to select between the task interfaces. It also
->>>>>> drops the tasklet version entirely. It fixes a minor error caught by
->>>>>> the kernel test robot <lkp@intel.com> with a missing static declaration.
->>>>>>
->>>>>> v2:
->>>>>> The v2 version of the patch set has some minor changes that address
->>>>>> comments from Leon Romanovsky regarding locking of the valid parameter
->>>>>> and the setup parameters for alloc_workqueue. It also has one
->>>>>> additional cleanup patch.
->>>>>>
->>>>>> Bob Pearson (13):
->>>>>>   RDMA/rxe: Make task interface pluggable
->>>>>>   RDMA/rxe: Split rxe_drain_resp_pkts()
->>>>>>   RDMA/rxe: Simplify reset state handling in rxe_resp.c
->>>>>>   RDMA/rxe: Handle qp error in rxe_resp.c
->>>>>>   RDMA/rxe: Cleanup comp tasks in rxe_qp.c
->>>>>>   RDMA/rxe: Remove __rxe_do_task()
->>>>>>   RDMA/rxe: Make tasks schedule each other
->>>>>>   RDMA/rxe: Implement disable/enable_task()
->>>>>>   RDMA/rxe: Replace TASK_STATE_START by TASK_STATE_IDLE
->>>>>>   RDMA/rxe: Replace task->destroyed by task state INVALID.
->>>>>>   RDMA/rxe: Add workqueue support for tasks
->>>>>>   RDMA/rxe: Make WORKQUEUE default for RC tasks
->>>>>>   RDMA/rxe: Remove tasklets from rxe_task.c
->>>>>>
->>>>>>  drivers/infiniband/sw/rxe/rxe.c      |   9 +-
->>>>>>  drivers/infiniband/sw/rxe/rxe_comp.c |  24 ++-
->>>>>>  drivers/infiniband/sw/rxe/rxe_qp.c   |  80 ++++-----
->>>>>>  drivers/infiniband/sw/rxe/rxe_req.c  |   4 +-
->>>>>>  drivers/infiniband/sw/rxe/rxe_resp.c |  70 +++++---
->>>>>>  drivers/infiniband/sw/rxe/rxe_task.c | 258 +++++++++++++++++++--------
->>>>>>  drivers/infiniband/sw/rxe/rxe_task.h |  56 +++---
->>>>>>  7 files changed, 329 insertions(+), 172 deletions(-)
->>>>>>
->>>>>>
->>>>>> base-commit: 692373d186205dfb1b56f35f22702412d94d9420
->>>>>> --
->>>>>> 2.34.1
->>>>>
->>>
-> 
+v0->v1:
+- Fix rb tree search from memcmp to dedicated cmp function
+- Rewording of some commit messages
+
+Aharon Landau (8):
+  RDMA/mlx5: Don't keep umrable 'page_shift' in cache entries
+  RDMA/mlx5: Generalize mlx5_cache_cache_mr() to fit all cacheable mkeys
+  RDMA/mlx5: Remove explicit ODP cache entry
+  RDMA/mlx5: Allow rereg all the mkeys that can load pas with UMR
+  RDMA/mlx5: Introduce mlx5r_cache_rb_key
+  RDMA/mlx5: Change the cache structure to an RB-tree
+  RDMA/mlx5: Cache all user cacheable mkeys on dereg MR flow
+  RDMA/mlx5: Add work to remove temporary entries from the cache
+
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  42 +-
+ drivers/infiniband/hw/mlx5/mr.c      | 574 ++++++++++++++++++++-------
+ drivers/infiniband/hw/mlx5/odp.c     |  34 +-
+ include/linux/mlx5/driver.h          |   1 -
+ 4 files changed, 465 insertions(+), 186 deletions(-)
+
+-- 
+2.17.2
 
