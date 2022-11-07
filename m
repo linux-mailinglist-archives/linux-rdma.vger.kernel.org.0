@@ -2,128 +2,301 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F1861F02A
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Nov 2022 11:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE49261F165
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Nov 2022 12:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbiKGKVS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Nov 2022 05:21:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60892 "EHLO
+        id S231145AbiKGLF6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Nov 2022 06:05:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbiKGKVQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 05:21:16 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E38215FE0
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Nov 2022 02:21:15 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id o7so10132793pjj.1
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Nov 2022 02:21:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AOmtRIzmF5dcnWrT0j3skK83MYTC+QvduwZ6ndeN2Ks=;
-        b=L9okY7Icb0Gf5ctoFsS3m7Ms6FyffuhIG/wumllqb99pGSDM0eKoVdXRomu4k2Vvje
-         vaAAA5b5CG4T9vL3DYzTbt6i7ilTYVRiZHeAf51qWroCKMi/06UV8twkwYbbvcb58b0c
-         O8aiXYIeKLPGKFxD8AeTNjdm9XiiwAwYXXYnxXnBzQtt4ZaPQYbu2mn3d4/wBF5dq0sI
-         fYgKey8dWac3TMQ3pm+aZLL8XgADS0c8wc9DQhJYDoGLimjkDspSigMMA/pe1/be4Mmf
-         FTMTprRtatoAeN10/4e16TIuQYPcJ6zZ7AsqjnUqg8Bde3BWUPkO4V20s/KjpolOjYbD
-         1dVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AOmtRIzmF5dcnWrT0j3skK83MYTC+QvduwZ6ndeN2Ks=;
-        b=CUBuRHzSsqUcYrKeqiCMNe8P0Eq+N80139wNVOdjz4t1TNkLZCDcUQVblhnlRvN72M
-         1LeDmJ294Ad6tXSzGmL+t3MQraD+L6LRYyGwLL0wuT2Wy8zg/9/XBllBLDG7r7pS83GR
-         vBOrtZfgEQAry7oS+o2LeqQChQV6ciWV19wDvm9gqeEkWVLCONayz6CcMe6qt216lzgR
-         f7t37dc3/e245A72m94Gt0XbFmoIJ/VcJ9/7I+NciMQgT2LhKn7JbvPNAZqO3lGb40mB
-         NGc/Pq7ajGaw41kvTSHJ7htPqZyckc2B/wM0cTRrb56GIP8SYXbQVt+PUe5Sv4Uaulvh
-         L//Q==
-X-Gm-Message-State: ACrzQf0YqHFNBKnaJYmvTxGN0QxDSxF+DcChEq+SVgxzQY62/i9ip8aI
-        eOh8zbtl+yo/agnKU+ORHNfujPUEcXkGk0jloZA=
-X-Google-Smtp-Source: AMsMyM4Z92xjGZXgCyg2wym9Bu3/u65n6EL2ZpWI9kWf7s8xWZden0QG/zdZVfFd3uCVmOfceIs+YigxV7lXSF4Af+Y=
-X-Received: by 2002:a17:90b:2393:b0:213:ecb2:2e04 with SMTP id
- mr19-20020a17090b239300b00213ecb22e04mr38944517pjb.100.1667816475223; Mon, 07
- Nov 2022 02:21:15 -0800 (PST)
+        with ESMTP id S229929AbiKGLF6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 06:05:58 -0500
+Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9217C14D36;
+        Mon,  7 Nov 2022 03:05:55 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VUC7jcl_1667819138;
+Received: from 30.221.146.249(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VUC7jcl_1667819138)
+          by smtp.aliyun-inc.com;
+          Mon, 07 Nov 2022 19:05:52 +0800
+Message-ID: <c97c4313-8d20-98c6-7f5e-3bac8b00093d@linux.alibaba.com>
+Date:   Mon, 7 Nov 2022 19:05:37 +0800
 MIME-Version: 1.0
-Received: by 2002:a05:6a06:925:b0:587:19e0:c567 with HTTP; Mon, 7 Nov 2022
- 02:21:14 -0800 (PST)
-Reply-To: contact@ammico.it
-From:   =?UTF-8?Q?Mrs=2E_Monika_Everenov=C3=A1?= <977638ib@gmail.com>
-Date:   Mon, 7 Nov 2022 11:21:14 +0100
-Message-ID: <CAHAXD+Z_SoFK+TjW_6apBCCLtc_awXEjaqOdf77jdLRxxup3TA@mail.gmail.com>
-Subject: Re:
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.6 required=5.0 tests=ADVANCE_FEE_2_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FROM,FROM_STARTS_WITH_NUMS,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:1041 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 FROM_STARTS_WITH_NUMS From: starts with several numbers
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [977638ib[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  3.3 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  2.0 ADVANCE_FEE_2_NEW_MONEY Advance Fee fraud and lots of money
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.1
+Subject: Re: [PATCH net-next v4 00/10] optimize the parallelism of SMC-R
+ connections
+Content-Language: en-US
+To:     Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>, kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1666529042-40828-1-git-send-email-alibuda@linux.alibaba.com>
+ <95feb2a1-d17a-6233-d3d0-eaebf26d2284@linux.ibm.com>
+ <1615836b-3087-2467-262e-f402ec521716@linux.alibaba.com>
+ <3526d73b-a0cf-e9eb-383b-2ad917f3bcc2@linux.ibm.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <3526d73b-a0cf-e9eb-383b-2ad917f3bcc2@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hei ja miten voit?
-Nimeni on rouva Evereen, l=C3=A4het=C3=A4n t=C3=A4m=C3=A4n viestin suurella=
- toivolla
-v=C3=A4lit=C3=B6n vastaus, koska minun on teht=C3=A4v=C3=A4 uusi syd=C3=A4n=
-leikkaus
-t=C3=A4ll=C3=A4 hetkell=C3=A4 huonokuntoinen ja v=C3=A4h=C3=A4iset mahdolli=
-suudet selviyty=C3=A4.
-Mutta ennen kuin min=C3=A4
-Tee toinen vaarallinen operaatio, annan sen sinulle
-Minulla on 6 550 000 dollaria yhdysvaltalaisella pankkitilill=C3=A4
-sijoittamista, hallinnointia ja k=C3=A4ytt=C3=B6=C3=A4 varten
-voittoa hyv=C3=A4ntekev=C3=A4isyysprojektin toteuttamiseen. Tarkoitan saira=
-iden auttamista
-ja k=C3=B6yh=C3=A4t ovat viimeinen haluni maan p=C3=A4=C3=A4ll=C3=A4, sill=
-=C3=A4 minulla ei ole niit=C3=A4
-kenelt=C3=A4 perii rahaa.
-Vastaa minulle nopeasti
-terveisi=C3=A4
-Rouva Monika Evereen
-Florida, Amerikan Yhdysvallat
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-Hi and how are you?
-My name is Mrs. Evereen, I am sending this message with great hope for
-an immediate response, as I have to undergo heart reoperation in my
-current poor health with little chance of survival. But before I
-undertake the second dangerous operation, I will give you the
-$6,550,000 I have in my US bank account to invest well, manage and use
-the profits to run a charity project for me. I count helping the sick
-and the poor as my last wish on earth, because I have no one to
-inherit money from.
-Please give me a quick reply
-regards
-Mrs. Monika Evereen
-Florida, United States of America
+
+Hi Wenjia,
+
+Thanks a lot for your information, before that we thought you did PATCH test one by one,
+now I think I have found the root cause, and I will release a new version to fix this
+soon as possible.
+
+Best Wishes.
+D. Wythe
+
+On 11/2/22 9:55 PM, Wenjia Zhang wrote:
+> 
+> 
+> On 01.11.22 08:22, D. Wythe wrote:
+>>
+>> Hi Jan,
+>>
+>> Our team conducted some code reviews over this, but unfortunately no obvious problems were found. Hence
+>> we are waiting for Tony Lu's virtual SMC-D device to test, which is expected to come in this week.  Before that,
+>> I wonder if your tests are running separately on separate PATCH? If so, I would like to please you to test
+>> the first PATCH and the second PATCH together. I doubt that the problem repaired by the second PATCH
+>> is the cause of this issues.
+>>
+>> Best Wishes.
+>> D. Wythe
+>>
+> 
+> Hi D. Wythe,
+> 
+> We did test the series of the patches as a whole. That would be great if you could use Tony's virtual device to test SMC-D. By the way, I'll put your patches in our CI, let's see if it can find something.
+> 
+> Best,
+> Wenjia
+>>
+>> On 10/24/22 9:11 PM, Jan Karcher wrote:
+>>> Hi D. Wythe,
+>>>
+>>> I re-run the tests with your fix.
+>>> SMC-R works fine now. For SMC-D we still have the following problem. It is kind of the same as i reported in v2 but even weirder:
+>>>
+>>> smc stats:
+>>>
+>>> t8345011
+>>> SMC-D Connections Summary
+>>>    Total connections handled          2465
+>>> SMC-R Connections Summary
+>>>    Total connections handled           232
+>>>
+>>> t8345010
+>>> SMC-D Connections Summary
+>>>    Total connections handled          2290
+>>> SMC-R Connections Summary
+>>>    Total connections handled           231
+>>>
+>>>
+>>> smc linkgroups:
+>>>
+>>> t8345011
+>>> [root@t8345011 ~]# smcr linkgroup
+>>> LG-ID    LG-Role  LG-Type  VLAN  #Conns  PNET-ID
+>>> 00000400 SERV     SYM         0       0  NET25
+>>> [root@t8345011 ~]# smcd linkgroup
+>>> LG-ID    VLAN  #Conns  PNET-ID
+>>> 00000300    0      16  NET25
+>>>
+>>> t8345010
+>>> [root@t8345010 tela-kernel]# smcr linkgroup
+>>> LG-ID    LG-Role  LG-Type  VLAN  #Conns  PNET-ID
+>>> 00000400 CLNT     SYM         0       0  NET25
+>>> [root@t8345010 tela-kernel]# smcd linkgroup
+>>> LG-ID    VLAN  #Conns  PNET-ID
+>>> 00000300    0       1  NET25
+>>>
+>>>
+>>> smcss:
+>>>
+>>> t8345011
+>>> [root@t8345011 ~]# smcss
+>>> State          UID   Inode   Local Address           Peer Address Intf Mode
+>>>
+>>> t8345010
+>>> [root@t8345010 tela-kernel]# smcss
+>>> State          UID   Inode   Local Address           Peer Address Intf Mode
+>>>
+>>>
+>>> lsmod:
+>>>
+>>> t8345011
+>>> [root@t8345011 ~]# lsmod | grep smc
+>>> smc                   225280  18 ism,smc_diag
+>>> t8345010
+>>> [root@t8345010 tela-kernel]# lsmod | grep smc
+>>> smc                   225280  3 ism,smc_diag
+>>>
+>>> Also smc_dbg and netstat do not show any more information on this problem. We only see in the dmesg that the code seems to build up SMC-R linkgroups even tho we are running the SMC-D tests.
+>>> NOTE: we disabled the syncookies for the tests.
+>>>
+>>> dmesg:
+>>>
+>>> t8345011
+>>> smc-tests: test_smcapp_torture_test started
+>>> kernel: TCP: request_sock_TCP: Possible SYN flooding on port 22465. Dropping request.  Check SNMP counters.
+>>> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000401, peerid 00000401, ibdev mlx5_0, ibport 1
+>>> kernel: smc: SMC-R lg 00000400 net 1 state changed: SINGLE, pnetid NET25
+>>> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000402, peerid 00000402, ibdev mlx5_1, ibport 1
+>>> kernel: smc: SMC-R lg 00000400 net 1 state changed: SYMMETRIC, pnetid NET25
+>>>
+>>> t8345010
+>>> smc-tests: test_smcapp_torture_test started
+>>> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000401, peerid 00000401, ibdev mlx5_0, ibport 1
+>>> kernel: smc: SMC-R lg 00000400 net 1 state changed: SINGLE, pnetid NET25
+>>> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000402, peerid 00000402, ibdev mlx5_1, ibport 1
+>>> kernel: smc: SMC-R lg 00000400 net 1 state changed: SYMMETRIC, pnetid NET25
+>>>
+>>> If this output does not help and if you want us to look deeper into it feel free to let us know and we can debug further.
+>>>
+>>> On 23/10/2022 14:43, D.Wythe wrote:
+>>>> From: "D.Wythe" <alibuda@linux.alibaba.com>
+>>>>
+>>>> This patch set attempts to optimize the parallelism of SMC-R connections,
+>>>> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
+>>>> occur after thoses optimization.
+>>>>
+>>>> According to Off-CPU graph, SMC worker's off-CPU as that:
+>>>>
+>>>> smc_close_passive_work                  (1.09%)
+>>>>          smcr_buf_unuse                  (1.08%)
+>>>>                  smc_llc_flow_initiate   (1.02%)
+>>>>
+>>>> smc_listen_work                         (48.17%)
+>>>>          __mutex_lock.isra.11            (47.96%)
+>>>>
+>>>>
+>>>> An ideal SMC-R connection process should only block on the IO events
+>>>> of the network, but it's quite clear that the SMC-R connection now is
+>>>> queued on the lock most of the time.
+>>>>
+>>>> The goal of this patchset is to achieve our ideal situation where
+>>>> network IO events are blocked for the majority of the connection lifetime.
+>>>>
+>>>> There are three big locks here:
+>>>>
+>>>> 1. smc_client_lgr_pending & smc_server_lgr_pending
+>>>>
+>>>> 2. llc_conf_mutex
+>>>>
+>>>> 3. rmbs_lock & sndbufs_lock
+>>>>
+>>>> And an implementation issue:
+>>>>
+>>>> 1. confirm/delete rkey msg can't be sent concurrently while
+>>>> protocol allows indeed.
+>>>>
+>>>> Unfortunately,The above problems together affect the parallelism of
+>>>> SMC-R connection. If any of them are not solved. our goal cannot
+>>>> be achieved.
+>>>>
+>>>> After this patch set, we can get a quite ideal off-CPU graph as
+>>>> following:
+>>>>
+>>>> smc_close_passive_work                                  (41.58%)
+>>>>          smcr_buf_unuse                                  (41.57%)
+>>>>                  smc_llc_do_delete_rkey                  (41.57%)
+>>>>
+>>>> smc_listen_work                                         (39.10%)
+>>>>          smc_clc_wait_msg                                (13.18%)
+>>>>                  tcp_recvmsg_locked                      (13.18)
+>>>>          smc_listen_find_device                          (25.87%)
+>>>>                  smcr_lgr_reg_rmbs                       (25.87%)
+>>>>                          smc_llc_do_confirm_rkey         (25.87%)
+>>>>
+>>>> We can see that most of the waiting times are waiting for network IO
+>>>> events. This also has a certain performance improvement on our
+>>>> short-lived conenction wrk/nginx benchmark test:
+>>>>
+>>>> +--------------+------+------+-------+--------+------+--------+
+>>>> |conns/qps     |c4    | c8   |  c16  |  c32   | c64  |  c200  |
+>>>> +--------------+------+------+-------+--------+------+--------+
+>>>> |SMC-R before  |9.7k  | 10k  |  10k  |  9.9k  | 9.1k |  8.9k  |
+>>>> +--------------+------+------+-------+--------+------+--------+
+>>>> |SMC-R now     |13k   | 19k  |  18k  |  16k   | 15k  |  12k   |
+>>>> +--------------+------+------+-------+--------+------+--------+
+>>>> |TCP           |15k   | 35k  |  51k  |  80k   | 100k |  162k  |
+>>>> +--------------+------+------+-------+--------+------+--------+
+>>>>
+>>>> The reason why the benefit is not obvious after the number of connections
+>>>> has increased dues to workqueue. If we try to change workqueue to UNBOUND,
+>>>> we can obtain at least 4-5 times performance improvement, reach up to half
+>>>> of TCP. However, this is not an elegant solution, the optimization of it
+>>>> will be much more complicated. But in any case, we will submit relevant
+>>>> optimization patches as soon as possible.
+>>>>
+>>>> Please note that the premise here is that the lock related problem
+>>>> must be solved first, otherwise, no matter how we optimize the workqueue,
+>>>> there won't be much improvement.
+>>>>
+>>>> Because there are a lot of related changes to the code, if you have
+>>>> any questions or suggestions, please let me know.
+>>>>
+>>>> Thanks
+>>>> D. Wythe
+>>>>
+>>>> v1 -> v2:
+>>>>
+>>>> 1. Fix panic in SMC-D scenario
+>>>> 2. Fix lnkc related hashfn calculation exception, caused by operator
+>>>> priority
+>>>> 3. Only wake up one connection if the lnk is not active
+>>>> 4. Delete obsolete unlock logic in smc_listen_work()
+>>>> 5. PATCH format, do Reverse Christmas tree
+>>>> 6. PATCH format, change all xxx_lnk_xxx function to xxx_link_xxx
+>>>> 7. PATCH format, add correct fix tag for the patches for fixes.
+>>>> 8. PATCH format, fix some spelling error
+>>>> 9. PATCH format, rename slow to do_slow
+>>>>
+>>>> v2 -> v3:
+>>>>
+>>>> 1. add SMC-D support, remove the concept of link cluster since SMC-D has
+>>>> no link at all. Replace it by lgr decision maker, who provides suggestions
+>>>> to SMC-D and SMC-R on whether to create new link group.
+>>>>
+>>>> 2. Fix the corruption problem described by PATCH 'fix application
+>>>> data exception' on SMC-D.
+>>>>
+>>>> v3 -> v4:
+>>>>
+>>>> 1. Fix panic caused by uninitialization map.
+>>>>
+>>>> D. Wythe (10):
+>>>>    net/smc: remove locks smc_client_lgr_pending and
+>>>>      smc_server_lgr_pending
+>>>>    net/smc: fix SMC_CLC_DECL_ERR_REGRMB without smc_server_lgr_pending
+>>>>    net/smc: allow confirm/delete rkey response deliver multiplex
+>>>>    net/smc: make SMC_LLC_FLOW_RKEY run concurrently
+>>>>    net/smc: llc_conf_mutex refactor, replace it with rw_semaphore
+>>>>    net/smc: use read semaphores to reduce unnecessary blocking in
+>>>>      smc_buf_create() & smcr_buf_unuse()
+>>>>    net/smc: reduce unnecessary blocking in smcr_lgr_reg_rmbs()
+>>>>    net/smc: replace mutex rmbs_lock and sndbufs_lock with rw_semaphore
+>>>>    net/smc: Fix potential panic dues to unprotected
+>>>>      smc_llc_srv_add_link()
+>>>>    net/smc: fix application data exception
+>>>>
+>>>>   net/smc/af_smc.c   |  70 ++++----
+>>>>   net/smc/smc_core.c | 478 +++++++++++++++++++++++++++++++++++++++++++++++------
+>>>>   net/smc/smc_core.h |  36 +++-
+>>>>   net/smc/smc_llc.c  | 277 ++++++++++++++++++++++---------
+>>>>   net/smc/smc_llc.h  |   6 +
+>>>>   net/smc/smc_wr.c   |  10 --
+>>>>   net/smc/smc_wr.h   |  10 ++
+>>>>   7 files changed, 712 insertions(+), 175 deletions(-)
+>>>>
