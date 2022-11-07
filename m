@@ -2,41 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A6861F947
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Nov 2022 17:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B88F61F95E
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Nov 2022 17:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbiKGQVK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Nov 2022 11:21:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42518 "EHLO
+        id S232592AbiKGQVa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Nov 2022 11:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232032AbiKGQUe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 11:20:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1360A220D1
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Nov 2022 08:19:09 -0800 (PST)
+        with ESMTP id S232585AbiKGQU5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 11:20:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13BA22BC6
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Nov 2022 08:19:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1667837949;
+        s=mimecast20190719; t=1667837967;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vTxiy4wmEQ2Tx61KeZ7EnYpqIVEsJFtTV/INlCwg4Xw=;
-        b=cPkPHNos+I/kdufBnr4lBzz4FYSjFU3FaCcmpe9UOcPHZJuMqFgulvgzibjHFlO2KfPwA3
-        Dzhpu8J34LpVRxab0bPofpFKFoNW54Z1m8tZogdCL1Zx1tNcO4PcV/07Pj4L2lK4AsRvfA
-        pTLOaIQ4ZG7YoXLwScnceqSwYeRdW8Q=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=6Fr+6PvBJcVGo49mRUSTVB+G70kkKYpHo7niK5GMhiI=;
+        b=jBBc/rHy8j9A+hk//jynW/u94A9mP+o+0AJHASlAI7XxDymT1pIz6afvSxGMcih6p6hRxm
+        rkG7ZKL8euF4mihjgDj3IlBF+SNFUlMWEQ1ykEYHDUv7hvotiX3oKVU9gAeYPMsnajNFQ7
+        P/NDwBsp8TDnH7BffIUJ6g28MkiQU34=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-128-AohbtXG3NbqOyb9Xxa7ytw-1; Mon, 07 Nov 2022 11:19:05 -0500
-X-MC-Unique: AohbtXG3NbqOyb9Xxa7ytw-1
+ us-mta-75-0nINmOCBNB6j33TN5DvJug-1; Mon, 07 Nov 2022 11:19:21 -0500
+X-MC-Unique: 0nINmOCBNB6j33TN5DvJug-1
 Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DF7B33C0F679;
-        Mon,  7 Nov 2022 16:19:04 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ED32D185A7AE;
+        Mon,  7 Nov 2022 16:19:19 +0000 (UTC)
 Received: from t480s.redhat.com (unknown [10.39.195.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E8444B400F;
-        Mon,  7 Nov 2022 16:18:59 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 48FAF4B400F;
+        Mon,  7 Nov 2022 16:19:05 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, etnaviv@lists.freedesktop.org,
@@ -61,10 +61,12 @@ Cc:     linux-mm@kvack.org, etnaviv@lists.freedesktop.org,
         David Airlie <airlied@gmail.com>,
         Oded Gabbay <ogabbay@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: [PATCH RFC 13/19] media: videobuf-dma-sg: remove FOLL_FORCE usage
-Date:   Mon,  7 Nov 2022 17:17:34 +0100
-Message-Id: <20221107161740.144456-14-david@redhat.com>
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>
+Subject: [PATCH RFC 14/19] drm/etnaviv: remove FOLL_FORCE usage
+Date:   Mon,  7 Nov 2022 17:17:35 +0100
+Message-Id: <20221107161740.144456-15-david@redhat.com>
 In-Reply-To: <20221107161740.144456-1-david@redhat.com>
 References: <20221107161740.144456-1-david@redhat.com>
 MIME-Version: 1.0
@@ -86,58 +88,55 @@ far in one corner case (DAXFS file with holes), which can be ignored
 because GUP does not support long-term pinning in fsdax (see
 check_vma_flags()).
 
+commit cd5297b0855f ("drm/etnaviv: Use FOLL_FORCE for userptr")
+documents that FOLL_FORCE | FOLL_WRITE was really only used for reliable
+R/O pinning.
+
 Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
 for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
 using FOLL_FORCE, which is really only for debugger access.
 
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Lucas Stach <l.stach@pengutronix.de>
+Cc: Russell King <linux+etnaviv@armlinux.org.uk>
+Cc: Christian Gmeiner <christian.gmeiner@gmail.com>
+Cc: David Airlie <airlied@gmail.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/media/v4l2-core/videobuf-dma-sg.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gem.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
-index f75e5eedeee0..234e9f647c96 100644
---- a/drivers/media/v4l2-core/videobuf-dma-sg.c
-+++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
-@@ -151,17 +151,16 @@ static void videobuf_dma_init(struct videobuf_dmabuf *dma)
- static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
- 			int direction, unsigned long data, unsigned long size)
- {
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+index cc386f8a7116..efe2240945d0 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+@@ -638,6 +638,7 @@ static int etnaviv_gem_userptr_get_pages(struct etnaviv_gem_object *etnaviv_obj)
+ 	struct page **pvec = NULL;
+ 	struct etnaviv_gem_userptr *userptr = &etnaviv_obj->userptr;
+ 	int ret, pinned = 0, npages = etnaviv_obj->base.size >> PAGE_SHIFT;
 +	unsigned int gup_flags = FOLL_LONGTERM;
- 	unsigned long first, last;
--	int err, rw = 0;
--	unsigned int flags = FOLL_FORCE;
-+	int err;
  
- 	dma->direction = direction;
- 	switch (dma->direction) {
- 	case DMA_FROM_DEVICE:
--		rw = READ;
-+		gup_flags |= FOLL_WRITE;
- 		break;
- 	case DMA_TO_DEVICE:
--		rw = WRITE;
- 		break;
- 	default:
- 		BUG();
-@@ -177,14 +176,11 @@ static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
- 	if (NULL == dma->pages)
+ 	might_lock_read(&current->mm->mmap_lock);
+ 
+@@ -648,14 +649,15 @@ static int etnaviv_gem_userptr_get_pages(struct etnaviv_gem_object *etnaviv_obj)
+ 	if (!pvec)
  		return -ENOMEM;
  
--	if (rw == READ)
--		flags |= FOLL_WRITE;
--
- 	dprintk(1, "init user [0x%lx+0x%lx => %lu pages]\n",
- 		data, size, dma->nr_pages);
++	if (!userptr->ro)
++		gup_flags |= FOLL_WRITE;
++
+ 	do {
+ 		unsigned num_pages = npages - pinned;
+ 		uint64_t ptr = userptr->ptr + pinned * PAGE_SIZE;
+ 		struct page **pages = pvec + pinned;
  
--	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages,
--			     flags | FOLL_LONGTERM, dma->pages, NULL);
-+	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages, gup_flags,
-+			     dma->pages, NULL);
- 
- 	if (err != dma->nr_pages) {
- 		dma->nr_pages = (err >= 0) ? err : 0;
+-		ret = pin_user_pages_fast(ptr, num_pages,
+-					  FOLL_WRITE | FOLL_FORCE | FOLL_LONGTERM,
+-					  pages);
++		ret = pin_user_pages_fast(ptr, num_pages, gup_flags, pages);
+ 		if (ret < 0) {
+ 			unpin_user_pages(pvec, pinned);
+ 			kvfree(pvec);
 -- 
 2.38.1
 
