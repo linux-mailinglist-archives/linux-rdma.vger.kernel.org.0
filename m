@@ -2,99 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5267161EB22
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Nov 2022 07:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9509D61EB5C
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Nov 2022 08:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbiKGGle (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Nov 2022 01:41:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
+        id S230457AbiKGHKf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Nov 2022 02:10:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbiKGGld (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 01:41:33 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63BF64E9;
-        Sun,  6 Nov 2022 22:41:32 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 61CA560C64;
-        Mon,  7 Nov 2022 06:41:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 402F0C433D6;
-        Mon,  7 Nov 2022 06:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667803291;
-        bh=U0SynG610DSqGIW9D//fFEojtynW6o3KzHgwrCnPAUo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L8fVPl7X6f1QT5qJnoJ+j3q7wWmtwE3H65i/lkp0HHTu8bpRLlkUpp2i/51mrKYSl
-         DOXtgnMm0ebCT5sxFwt7vJWA89GA4ymNM3HWOCAzQx8KLe53CPYd4dSUDoEKHwbPjM
-         irOij7npoz+f0hhu1LZqE8a6IU74Pp2FJGoPuegysSO5mSC4gk0YPAETSO0ha2QkSN
-         ayT0tFn4ALrC8EuhuA+EH5OCUYLXZqAeWuGijC5cHT7qY1GPSWolM9etBBpBMtBqmR
-         03EmzmfLEdqhkhwcyykZYRosO+l9z/4oqonMsYmRnILYHJT/a2VsjPJYGvFnwY+0wV
-         bJfToVjr3i71Q==
-Date:   Mon, 7 Nov 2022 08:41:27 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ajit Khaparde <ajit.khaparde@broadcom.com>
-Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, jgg@ziepe.ca, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        michael.chan@broadcom.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH v3 5/6] bnxt_en: Use auxiliary bus calls over proprietary
- calls
-Message-ID: <Y2iol/ypwVMqrpQT@unreal>
-References: <CACZ4nhtmE9Dh9z_O9-A934+q0_8yHEyj+V-DcEsuEWFbPH6BGg@mail.gmail.com>
- <20221104162733.73345-1-ajit.khaparde@broadcom.com>
- <20221104162733.73345-6-ajit.khaparde@broadcom.com>
+        with ESMTP id S230061AbiKGHKe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 02:10:34 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3E25F4C
+        for <linux-rdma@vger.kernel.org>; Sun,  6 Nov 2022 23:10:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1667805033; x=1699341033;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jeJeBaZoyYsVbXNPHkQhv86781qemAQkMJ4zLzIq4jI=;
+  b=oFb/lKOV6OtE3X7kNFRgugQ9uEkv4VxNST4D79Z2j+36t/0O5MQ2IM6V
+   UomuBjBwFznx0xMwT6iqHY1o4DNe2j3MtAcFw8MGoY+cMfV3MDfBGyWBC
+   lnLyWkFwSNjEKpf5e2zFNHoBvVaOv7jkiQVyVYTIOAA2FFZv8NAsgYuO0
+   wB4w/yFr4dtfXdSzVegUpejA1KRO/Tw1oTEqN8zxVosgJi2BpimE9opUT
+   ONLm6713sCUBPqt7kcslr9dBF4R62C6y2cduzJ1vhkJBXnWfdkfh+kWGZ
+   7U9CCIh7YRgkURsOAYs/aiy/Z9uhfO/7/mQ3/APO4udSE/20SQ8pM63QB
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10523"; a="297834595"
+X-IronPort-AV: E=Sophos;i="5.96,143,1665471600"; 
+   d="scan'208";a="297834595"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2022 23:10:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10523"; a="613763289"
+X-IronPort-AV: E=Sophos;i="5.96,143,1665471600"; 
+   d="scan'208";a="613763289"
+Received: from lkp-server01.sh.intel.com (HELO 462403710aa9) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 06 Nov 2022 23:10:31 -0800
+Received: from kbuild by 462403710aa9 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1orwH8-0000Q0-28;
+        Mon, 07 Nov 2022 07:10:30 +0000
+Date:   Mon, 07 Nov 2022 15:09:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ abef378c434e6f5abd46fd536e9972374fb74e98
+Message-ID: <6368af46.dahtti3mwe9vLfMD%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221104162733.73345-6-ajit.khaparde@broadcom.com>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 04, 2022 at 09:27:32AM -0700, Ajit Khaparde wrote:
-> Wherever possible use the function ops provided by auxiliary bus
-> instead of using proprietary ops.
-> 
-> Defined bnxt_re_suspend and bnxt_re_resume calls which can be
-> invoked by the bnxt_en driver instead of the ULP stop/start calls.
-> 
-> Signed-off-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
-> Reviewed-by: Andy Gospodarek <andrew.gospodarek@broadcom.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/main.c          | 102 +++++++++++-------
->  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  40 ++++---
->  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   2 -
->  3 files changed, 87 insertions(+), 57 deletions(-)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: abef378c434e6f5abd46fd536e9972374fb74e98  RDMA/mlx5: Change debug log level for remote access error syndromes
 
-<...>
+elapsed time: 720m
 
->  void bnxt_ulp_sriov_cfg(struct bnxt *bp, int num_vfs)
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> index 26b7c627342b..e96f93d38a30 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> @@ -29,8 +29,6 @@ struct bnxt_msix_entry {
->  struct bnxt_ulp_ops {
+configs tested: 64
+configs skipped: 2
 
-Once you convert to use AUX bus, this struct should go too.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->  	/* async_notifier() cannot sleep (in BH context) */
->  	void (*ulp_async_notifier)(void *, struct hwrm_async_event_cmpl *);
-> -	void (*ulp_stop)(void *);
-> -	void (*ulp_start)(void *);
->  	void (*ulp_sriov_config)(void *, int);
->  	void (*ulp_shutdown)(void *);
->  	void (*ulp_irq_stop)(void *);
-> -- 
-> 2.37.1 (Apple Git-137.1)
-> 
+gcc tested configs:
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+i386                                defconfig
+m68k                             allyesconfig
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+arc                                 defconfig
+um                             i386_defconfig
+x86_64                        randconfig-a015
+s390                                defconfig
+x86_64                              defconfig
+alpha                               defconfig
+s390                 randconfig-r044-20221106
+x86_64                          rhel-8.3-func
+um                           x86_64_defconfig
+x86_64                    rhel-8.3-kselftests
+i386                          randconfig-a016
+x86_64                           allyesconfig
+i386                          randconfig-a001
+arc                  randconfig-r043-20221106
+s390                             allmodconfig
+i386                          randconfig-a003
+s390                             allyesconfig
+x86_64                               rhel-8.3
+i386                          randconfig-a005
+riscv                randconfig-r042-20221106
+i386                          randconfig-a012
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+i386                          randconfig-a014
+i386                 randconfig-a002-20221107
+i386                 randconfig-a003-20221107
+i386                 randconfig-a001-20221107
+i386                 randconfig-a004-20221107
+mips                             allyesconfig
+sh                               allmodconfig
+x86_64                        randconfig-a006
+arm                                 defconfig
+i386                 randconfig-a005-20221107
+powerpc                           allnoconfig
+i386                             allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a006-20221107
+arm                              allyesconfig
+arm64                            allyesconfig
+ia64                             allmodconfig
 
+clang tested configs:
+x86_64                        randconfig-a014
+x86_64                        randconfig-a012
+x86_64                        randconfig-a016
+i386                          randconfig-a015
+hexagon              randconfig-r041-20221106
+i386                          randconfig-a013
+i386                          randconfig-a002
+hexagon              randconfig-r045-20221106
+i386                          randconfig-a011
+i386                          randconfig-a004
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+i386                          randconfig-a006
 
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
