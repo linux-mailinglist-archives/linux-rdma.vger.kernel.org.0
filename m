@@ -2,127 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE960620FDC
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 13:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05AE62109C
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 13:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbiKHMIG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Nov 2022 07:08:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
+        id S233702AbiKHM1S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Nov 2022 07:27:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbiKHMIG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Nov 2022 07:08:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACBD624D
-        for <linux-rdma@vger.kernel.org>; Tue,  8 Nov 2022 04:07:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1667909232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IMfMqd/NRcR1JqekXckZSgySkw+5cuSOOLne9X/Ks6Y=;
-        b=fPhKLJ9xCmNu1oZCtI71ttB0lmEjf0cIyTIOOvyg37ayvb4A9CGSHshwmo8U1BNiXWhP/4
-        Sf4oikFh4ygjayrTaSQpzta+0OiaVY11ulOM4rkl7uEvhi4QtL6Y6SSFz2wt2PizHK4cM1
-        ysZT5qqqam+cyW1k5RxYZHd9Xrcaa7Q=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-59-75mH8rWuOreypkMXd8sp5A-1; Tue, 08 Nov 2022 07:07:11 -0500
-X-MC-Unique: 75mH8rWuOreypkMXd8sp5A-1
-Received: by mail-wm1-f71.google.com with SMTP id bi19-20020a05600c3d9300b003cf9d6c4016so5098718wmb.8
-        for <linux-rdma@vger.kernel.org>; Tue, 08 Nov 2022 04:07:10 -0800 (PST)
+        with ESMTP id S234237AbiKHM1L (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Nov 2022 07:27:11 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77024FFB6
+        for <linux-rdma@vger.kernel.org>; Tue,  8 Nov 2022 04:27:09 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id w4so8561670qts.0
+        for <linux-rdma@vger.kernel.org>; Tue, 08 Nov 2022 04:27:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
+        b=pIKifzYsm2Cgt7CW/bcOJ93WkTm1io3rPOOj+9f1zC6lB7sB67wYnxEUpuBnKyRUlx
+         SfPF0u2wYyxrahkLf1yQ4tczFc9SERo96uDfYcaPNAXoIHaf7KHDnu3+cnAraUwmacwy
+         VAFhVk2dzd3MkxiKbkHoW6bYs2GCGvW2LoGPOcG8zOQoGLs0IRYb7QJV8Jf5wwcAAPKF
+         6opWpaP0l0/M1d8GRF5HZe+ZhAaixOT9G9L3scITKM5AvX0MEmxapsBUnFRINNqPx0z9
+         hRwzprOAdKhZJZluY4nIVCI0h/cAKkj7lKkzOXQfAECrtKSZl2XwwTS7PNjxU1hJ3tYb
+         O/Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IMfMqd/NRcR1JqekXckZSgySkw+5cuSOOLne9X/Ks6Y=;
-        b=Uue+IKPAIcVTk2YcPs9wh5BvkVXlSGdiwi7u0LcVsG0zX2nClNdwcLtTxwa44IIQoy
-         qfj3+D0F6rFa3CC11v/CoSFCREm6nzwuds05ja4JKM5LTUhORjJwKjR9s5y08DiYqmgD
-         2iIe3gbrEtMLGNyTbZedUGQgyI9FNMhfzhLHCKoN6L8oKXR3Iou3+s6z2gXB+eW9KcEf
-         RrY5Mi9mpGWmyW3aKMu2CAx9r3FBY3eRkpZCvyK2gVDO6dozPjg9FqJNai9MSfMQjQ4E
-         oOkFACfMw6Cd0wE6k52MdZ1TtCddRavvfrhC2aDoY+j2/DzRgPTU77QEr6hj/XYJZtJn
-         7RRg==
-X-Gm-Message-State: ACrzQf1kog3gshq2hwtYsDEiKyplLvJ3utJFd4Py3kPk78AOYNgKIjim
-        t+KXOho0X3SiETtnD2H1JlemxKSEeMMIeCzyD+3NWQMgLNaCnQHkf2f2LvVfOYrPeH3xZIENn7M
-        uB0s//HORxTgQk4Q2koQiMQ==
-X-Received: by 2002:adf:f58e:0:b0:236:a8b2:373 with SMTP id f14-20020adff58e000000b00236a8b20373mr35753923wro.575.1667909229342;
-        Tue, 08 Nov 2022 04:07:09 -0800 (PST)
-X-Google-Smtp-Source: AMsMyM671SN4rKjOS4m0IXm1rydtBeGKPVnCuxp/5nq9PqKtGUO9t65vl23IJqhbdg2+p5gCuDL/pw==
-X-Received: by 2002:adf:f58e:0:b0:236:a8b2:373 with SMTP id f14-20020adff58e000000b00236a8b20373mr35753898wro.575.1667909229147;
-        Tue, 08 Nov 2022 04:07:09 -0800 (PST)
-Received: from vschneid.remote.csb ([154.57.232.159])
-        by smtp.gmail.com with ESMTPSA id m11-20020a5d4a0b000000b0022ca921dc67sm9877375wrq.88.2022.11.08.04.07.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Nov 2022 04:07:08 -0800 (PST)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Tariq Toukan <ttoukan.linux@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [PATCH v6 0/3] sched, net: NUMA-aware CPU spreading interface
-In-Reply-To: <ca6a5aee-19c8-e0a9-60af-00e2e5abaed0@gmail.com>
-References: <20221028164959.1367250-1-vschneid@redhat.com>
- <20221102195616.6f55c894@kernel.org>
- <ca6a5aee-19c8-e0a9-60af-00e2e5abaed0@gmail.com>
-Date:   Tue, 08 Nov 2022 12:07:07 +0000
-Message-ID: <xhsmhleolmyz8.mognet@vschneid.remote.csb>
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
+        b=ukwJTBS5wCXD+ngEiXaqvo6VYGwC2g3KQKjSIoyq2K0NI1WF9Z0bCVRLYioLt/jg2a
+         qurtcDostfWjgCbEQvN6GJJXW3QE1zOAPffUsM7VG5CNPhl147w428kdyEKIkbUYThNp
+         uOlLc2+cUpoFEJNgZsBAfRYH+NSfl8qA1KU6LoHiLjuqoE7XALzUT9NMeuxFiLg/JN19
+         R7DvRHMp5/Klnl+FTc6dOQwp7nu2xKt8kQvft9mwLMMLIvJ21veVh590gw/lFV39QQwx
+         Cp3hOieCxMISQquazDhPX5a6PWMbUFN6BB+SFYMROkPHczkOely/fc8WGQlpSiAYZFhb
+         D8YQ==
+X-Gm-Message-State: ANoB5plc4L0nPT1vs0yPRW3v63aGMJZeElR+b+3kogu0DQqESjB6PgUa
+        Egc4Pi/9H2vrWQ1EtyAVxJWVjNklY/nWE+m7kTM=
+X-Google-Smtp-Source: AA0mqf6hQM49zFskzAz7fucTuSO+Uh4xEcuAvShEmJ0YEAzJb3ts/0We8X6dQ/FpepotXXedScNq7tnCGKvOzxlQ1kM=
+X-Received: by 2002:ac8:5ccd:0:b0:3a5:92a5:4427 with SMTP id
+ s13-20020ac85ccd000000b003a592a54427mr6193386qta.391.1667910428928; Tue, 08
+ Nov 2022 04:27:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:6214:2f8a:b0:4bb:6e86:8303 with HTTP; Tue, 8 Nov 2022
+ 04:27:08 -0800 (PST)
+Reply-To: mr.abraham022@gmail.com
+From:   Mr Abraham <mr.abraham2021@gmail.com>
+Date:   Tue, 8 Nov 2022 12:27:08 +0000
+Message-ID: <CAJ2UK+bZ1hTEGrQ+FFXS4roEQsVOuz8=6tjXvgADsoAsEO7csQ@mail.gmail.com>
+Subject: Greeting
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:82e listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4990]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mr.abraham022[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [mr.abraham2021[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [mr.abraham2021[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 08/11/22 13:25, Tariq Toukan wrote:
-> On 11/3/2022 4:56 AM, Jakub Kicinski wrote:
->> On Fri, 28 Oct 2022 17:49:56 +0100 Valentin Schneider wrote:
->>> Tariq pointed out in [1] that drivers allocating IRQ vectors would benefit
->>> from having smarter NUMA-awareness (cpumask_local_spread() doesn't quite cut
->>> it).
->>>
->>> The proposed interface involved an array of CPUs and a temporary cpumask, and
->>> being my difficult self what I'm proposing here is an interface that doesn't
->>> require any temporary storage other than some stack variables (at the cost of
->>> one wild macro).
->>>
->>> [1]: https://lore.kernel.org/all/20220728191203.4055-1-tariqt@nvidia.com/
->>
->> Not sure who's expected to take these, no preference here so:
->>
->> Acked-by: Jakub Kicinski <kuba@kernel.org>
->>
->> Thanks for ironing it out!
->
-> Thanks Jakub.
->
-> Valentin, what do you think?
-> Shouldn't it go through the sched branch?
-
-So yeah the topology bits should go through tip/sched/core, and given it's
-the only user of the new interface, the mlx5e one should probably be
-bundled with them.
-
+My Greeting, Did you receive the letter i sent to you. Please answer me.
+Regard, Mr.Abraham
