@@ -2,76 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD6D620658
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 02:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E910A620867
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 05:46:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbiKHBx3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Nov 2022 20:53:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40394 "EHLO
+        id S232972AbiKHEqO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Nov 2022 23:46:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233125AbiKHBx1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 20:53:27 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA67A46B;
-        Mon,  7 Nov 2022 17:53:26 -0800 (PST)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N5rdr6HxKzJnYH;
-        Tue,  8 Nov 2022 09:50:24 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 8 Nov
- 2022 09:53:24 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <saeedm@nvidia.com>, <leon@kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <kliteyn@nvidia.com>, <mbloch@nvidia.com>, <valex@nvidia.com>,
-        <erezsh@mellanox.com>
-CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net] net/mlx5: DR, Fix uninitialized var warning
-Date:   Tue, 8 Nov 2022 09:53:14 +0800
-Message-ID: <20221108015314.17928-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        with ESMTP id S232654AbiKHEqN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Nov 2022 23:46:13 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBB03205D
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Nov 2022 20:46:12 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id bj12so35434696ejb.13
+        for <linux-rdma@vger.kernel.org>; Mon, 07 Nov 2022 20:46:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fra4yIWv6TZGqY5e50Ht4t7fKg9qXIteCxj5r9JD6vc=;
+        b=k5nrvygDjfG84Jq8usw3TAeubZw8DjisC8BDW/Nl99poBxOVm3b4Emj6HmmfjmpRDg
+         6UqJx+Zje8uwbw0492FSt+SP9nPZpSClhlI2a7jkV8gf4dZ+NQhHw/+vcVeKfiMshCy8
+         l5vHZxgwLrsSFmUFQ9k9AqBdcglrJDMAIuZNg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fra4yIWv6TZGqY5e50Ht4t7fKg9qXIteCxj5r9JD6vc=;
+        b=sROFpt8xcbtdUtgaK5QYwqeY0QGxmaBbOrQxZbL0Ym924qgTfzI6Z3jwdzVGgR85Mw
+         c/ydKkzrTr2im+W57XZQGmZWB7x+/U/kGtMUPi9z9QryE2pFn/DlA1lMVRjLCcM0gAb4
+         F61Yll7ssQnxIZWr9wAqJPX3d3qHiT3qmQ9NzONTbA+5s8F8FQDfrR3oNaqgXKYDu+Rt
+         2B8OgCwFF/P+cuJIJD2IWFNd3rD7KPuSrql6Ms361WCzbWcClp5fnfwwB51R2Q+ie1qa
+         AYtcsAitMoNDYhflj2FuPXtlG9kFRnyoZueSoN+WUGOARVm09KFyKumHCuWcRO8uHv+W
+         6fWQ==
+X-Gm-Message-State: ACrzQf0i8oKfwzrVW8//Qd1LumSicl5vJwi0GVwF8xx1dMKkqgCXdbR+
+        ouhXWF7i6fG6cZOetXbScQO9kJiVWO/d8Q==
+X-Google-Smtp-Source: AMsMyM6iFoAAKSOsccMKzHiZDDtMRnOvRVOQ6AQdTS++b6X1IfZi5cKDkfq9iZ55OFAg7+qnApz06g==
+X-Received: by 2002:a17:906:e28e:b0:7ad:bde1:3cc9 with SMTP id gg14-20020a170906e28e00b007adbde13cc9mr47004635ejb.482.1667882771159;
+        Mon, 07 Nov 2022 20:46:11 -0800 (PST)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id l26-20020aa7c3da000000b0045bccd8ab83sm5101474edr.1.2022.11.07.20.46.09
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Nov 2022 20:46:09 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id sc25so35440449ejc.12
+        for <linux-rdma@vger.kernel.org>; Mon, 07 Nov 2022 20:46:09 -0800 (PST)
+X-Received: by 2002:a17:906:ee8e:b0:730:3646:d178 with SMTP id
+ wt14-20020a170906ee8e00b007303646d178mr51989213ejb.426.1667882769115; Mon, 07
+ Nov 2022 20:46:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221107161740.144456-1-david@redhat.com> <20221107161740.144456-17-david@redhat.com>
+In-Reply-To: <20221107161740.144456-17-david@redhat.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 8 Nov 2022 13:45:57 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5C3Ba1WhjYJF_7tW06mgvzoz9KTakNo+Tz8h_f6dGKzHQ@mail.gmail.com>
+Message-ID: <CAAFQd5C3Ba1WhjYJF_7tW06mgvzoz9KTakNo+Tz8h_f6dGKzHQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 16/19] mm/frame-vector: remove FOLL_FORCE usage
+To:     David Hildenbrand <david@redhat.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Smatch warns this:
+Hi David,
 
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c:81
- mlx5dr_table_set_miss_action() error: uninitialized symbol 'ret'.
+On Tue, Nov 8, 2022 at 1:19 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> FOLL_FORCE is really only for debugger access. According to commit
+> 707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are always
+> writable"), the pinned pages are always writable.
 
-Fix this by initializing ret with zero.
+Actually that patch is only a workaround to temporarily disable
+support for read-only pages as they seemed to suffer from some
+corruption issues in the retrieved user pages. We expect to support
+read-only pages as hardware input after. That said, FOLL_FORCE doesn't
+sound like the right thing even in that case, but I don't know the
+background behind it being added here in the first place. +Hans
+Verkuil +Marek Szyprowski do you happen to remember anything about it?
 
-Fixes: 7838e1725394 ("net/mlx5: DR, Expose steering table functionality")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Best regards,
+Tomasz
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c
-index 31d443dd8386..44dea75dabde 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c
-@@ -46,7 +46,7 @@ static int dr_table_set_miss_action_nic(struct mlx5dr_domain *dmn,
- int mlx5dr_table_set_miss_action(struct mlx5dr_table *tbl,
- 				 struct mlx5dr_action *action)
- {
--	int ret;
-+	int ret = 0;
- 
- 	if (action && action->action_type != DR_ACTION_TYP_FT)
- 		return -EOPNOTSUPP;
--- 
-2.17.1
-
+>
+> FOLL_FORCE in this case seems to be a legacy leftover. Let's just remove
+> it.
+>
+> Cc: Tomasz Figa <tfiga@chromium.org>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+> index 542dde9d2609..062e98148c53 100644
+> --- a/drivers/media/common/videobuf2/frame_vector.c
+> +++ b/drivers/media/common/videobuf2/frame_vector.c
+> @@ -50,7 +50,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>         start = untagged_addr(start);
+>
+>         ret = pin_user_pages_fast(start, nr_frames,
+> -                                 FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+> +                                 FOLL_WRITE | FOLL_LONGTERM,
+>                                   (struct page **)(vec->ptrs));
+>         if (ret > 0) {
+>                 vec->got_ref = true;
+> --
+> 2.38.1
+>
