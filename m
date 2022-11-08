@@ -2,62 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E19620F02
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 12:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE960620FDC
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 13:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbiKHLZ5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Nov 2022 06:25:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
+        id S233814AbiKHMIG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Nov 2022 07:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234151AbiKHLZd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Nov 2022 06:25:33 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D255F4D5DB;
-        Tue,  8 Nov 2022 03:25:31 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id y16so20412786wrt.12;
-        Tue, 08 Nov 2022 03:25:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JnjUyk4orA11aKk4ZfXfB066xwU2JxSgzP0UrUCR36I=;
-        b=eXFFGndn5T1sviflNGr++RU3ahBMhVuCp04eodh3oW8pHaz61C1zaOZMPxvpsbkWyU
-         g4QLHTcy9H7z+h+8Qnib96W57U1hPW6zPNjNHKJ74w47BSqhX9QA1tGf1qAZxGw3F+jf
-         Xx1UvW5wbQuCF786qvuShtDw5KOP9Vv4BRXbI3XvSg39zEAy6vcvB8GjnfDAuDG5QJsX
-         Yp60KJVmES0k434SLd8h9rlR3tcOZS6xpqOdwH+Yq28LMOuSLOq4Dg3juy0cKVTkTYlP
-         wQB8nrYJlsN3/Ts5L+nf5DW4H4KGJh8QqfNxihTnV9gxtFxjQ2zR4lSwqdzrk2CqHVp2
-         qsqA==
+        with ESMTP id S233703AbiKHMIG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Nov 2022 07:08:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACBD624D
+        for <linux-rdma@vger.kernel.org>; Tue,  8 Nov 2022 04:07:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1667909232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IMfMqd/NRcR1JqekXckZSgySkw+5cuSOOLne9X/Ks6Y=;
+        b=fPhKLJ9xCmNu1oZCtI71ttB0lmEjf0cIyTIOOvyg37ayvb4A9CGSHshwmo8U1BNiXWhP/4
+        Sf4oikFh4ygjayrTaSQpzta+0OiaVY11ulOM4rkl7uEvhi4QtL6Y6SSFz2wt2PizHK4cM1
+        ysZT5qqqam+cyW1k5RxYZHd9Xrcaa7Q=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-59-75mH8rWuOreypkMXd8sp5A-1; Tue, 08 Nov 2022 07:07:11 -0500
+X-MC-Unique: 75mH8rWuOreypkMXd8sp5A-1
+Received: by mail-wm1-f71.google.com with SMTP id bi19-20020a05600c3d9300b003cf9d6c4016so5098718wmb.8
+        for <linux-rdma@vger.kernel.org>; Tue, 08 Nov 2022 04:07:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JnjUyk4orA11aKk4ZfXfB066xwU2JxSgzP0UrUCR36I=;
-        b=ku2ikuo3Z0Z6q5S2UwVnFHhw+VkvwmF6Hm5u42P+XL7f6TE4ORhJ7e8I7cD0Ddgnn2
-         3GOIQ9aRQYbFws6qlZYttm9tJsBe7jKNk4dN9bVEO6nIDWjdTvgaCDQc5OZb1OpkT2sK
-         rtPc5XFx1Azp8vwc4SumIVxstdfYftiOYlKJ2K9cXZSwck+flUM/yJ9a5xWL00c5a1zE
-         IB7VxG8gAPdN5g4jWjU6d8RpXwZ5y3iataeLMS5Ab+fAwPPKw60gaj0d1byB3pWfvk9E
-         GB9KXIV3WB3u5DxfYdLw6IuRbySdxfHDzZq4GnzeKQST+60gUVdFM1ineQ38I7762f5E
-         DHpA==
-X-Gm-Message-State: ACrzQf1fouh14zNt+EKTZJ58eUcsClkUmAzTzm/nr6Cbi3R2zu8WpDcw
-        IXiya8NRwtT+jkXQ4QoxFhs=
-X-Google-Smtp-Source: AMsMyM6FFhVpSk/IvvwtgsSDSXsKetnEtWhkjwpHVK4lNJsHKej3dDnQbotGOn0svhPuoAWzePHHjg==
-X-Received: by 2002:a05:6000:2c1:b0:236:d474:f053 with SMTP id o1-20020a05600002c100b00236d474f053mr28449679wry.517.1667906730344;
-        Tue, 08 Nov 2022 03:25:30 -0800 (PST)
-Received: from [10.158.37.55] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id bn23-20020a056000061700b002305cfb9f3dsm10077457wrb.89.2022.11.08.03.25.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Nov 2022 03:25:29 -0800 (PST)
-Message-ID: <ca6a5aee-19c8-e0a9-60af-00e2e5abaed0@gmail.com>
-Date:   Tue, 8 Nov 2022 13:25:26 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH v6 0/3] sched, net: NUMA-aware CPU spreading interface
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IMfMqd/NRcR1JqekXckZSgySkw+5cuSOOLne9X/Ks6Y=;
+        b=Uue+IKPAIcVTk2YcPs9wh5BvkVXlSGdiwi7u0LcVsG0zX2nClNdwcLtTxwa44IIQoy
+         qfj3+D0F6rFa3CC11v/CoSFCREm6nzwuds05ja4JKM5LTUhORjJwKjR9s5y08DiYqmgD
+         2iIe3gbrEtMLGNyTbZedUGQgyI9FNMhfzhLHCKoN6L8oKXR3Iou3+s6z2gXB+eW9KcEf
+         RrY5Mi9mpGWmyW3aKMu2CAx9r3FBY3eRkpZCvyK2gVDO6dozPjg9FqJNai9MSfMQjQ4E
+         oOkFACfMw6Cd0wE6k52MdZ1TtCddRavvfrhC2aDoY+j2/DzRgPTU77QEr6hj/XYJZtJn
+         7RRg==
+X-Gm-Message-State: ACrzQf1kog3gshq2hwtYsDEiKyplLvJ3utJFd4Py3kPk78AOYNgKIjim
+        t+KXOho0X3SiETtnD2H1JlemxKSEeMMIeCzyD+3NWQMgLNaCnQHkf2f2LvVfOYrPeH3xZIENn7M
+        uB0s//HORxTgQk4Q2koQiMQ==
+X-Received: by 2002:adf:f58e:0:b0:236:a8b2:373 with SMTP id f14-20020adff58e000000b00236a8b20373mr35753923wro.575.1667909229342;
+        Tue, 08 Nov 2022 04:07:09 -0800 (PST)
+X-Google-Smtp-Source: AMsMyM671SN4rKjOS4m0IXm1rydtBeGKPVnCuxp/5nq9PqKtGUO9t65vl23IJqhbdg2+p5gCuDL/pw==
+X-Received: by 2002:adf:f58e:0:b0:236:a8b2:373 with SMTP id f14-20020adff58e000000b00236a8b20373mr35753898wro.575.1667909229147;
+        Tue, 08 Nov 2022 04:07:09 -0800 (PST)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id m11-20020a5d4a0b000000b0022ca921dc67sm9877375wrq.88.2022.11.08.04.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Nov 2022 04:07:08 -0800 (PST)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
 Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
@@ -80,15 +78,18 @@ Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         Gal Pressman <gal@nvidia.com>,
         Tariq Toukan <tariqt@nvidia.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>
+Subject: Re: [PATCH v6 0/3] sched, net: NUMA-aware CPU spreading interface
+In-Reply-To: <ca6a5aee-19c8-e0a9-60af-00e2e5abaed0@gmail.com>
 References: <20221028164959.1367250-1-vschneid@redhat.com>
  <20221102195616.6f55c894@kernel.org>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20221102195616.6f55c894@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+ <ca6a5aee-19c8-e0a9-60af-00e2e5abaed0@gmail.com>
+Date:   Tue, 08 Nov 2022 12:07:07 +0000
+Message-ID: <xhsmhleolmyz8.mognet@vschneid.remote.csb>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,28 +97,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 11/3/2022 4:56 AM, Jakub Kicinski wrote:
-> On Fri, 28 Oct 2022 17:49:56 +0100 Valentin Schneider wrote:
->> Tariq pointed out in [1] that drivers allocating IRQ vectors would benefit
->> from having smarter NUMA-awareness (cpumask_local_spread() doesn't quite cut
->> it).
+On 08/11/22 13:25, Tariq Toukan wrote:
+> On 11/3/2022 4:56 AM, Jakub Kicinski wrote:
+>> On Fri, 28 Oct 2022 17:49:56 +0100 Valentin Schneider wrote:
+>>> Tariq pointed out in [1] that drivers allocating IRQ vectors would benefit
+>>> from having smarter NUMA-awareness (cpumask_local_spread() doesn't quite cut
+>>> it).
+>>>
+>>> The proposed interface involved an array of CPUs and a temporary cpumask, and
+>>> being my difficult self what I'm proposing here is an interface that doesn't
+>>> require any temporary storage other than some stack variables (at the cost of
+>>> one wild macro).
+>>>
+>>> [1]: https://lore.kernel.org/all/20220728191203.4055-1-tariqt@nvidia.com/
 >>
->> The proposed interface involved an array of CPUs and a temporary cpumask, and
->> being my difficult self what I'm proposing here is an interface that doesn't
->> require any temporary storage other than some stack variables (at the cost of
->> one wild macro).
+>> Not sure who's expected to take these, no preference here so:
 >>
->> [1]: https://lore.kernel.org/all/20220728191203.4055-1-tariqt@nvidia.com/
-> 
-> Not sure who's expected to take these, no preference here so:
-> 
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
-> 
-> Thanks for ironing it out!
+>> Acked-by: Jakub Kicinski <kuba@kernel.org>
+>>
+>> Thanks for ironing it out!
+>
+> Thanks Jakub.
+>
+> Valentin, what do you think?
+> Shouldn't it go through the sched branch?
 
-Thanks Jakub.
+So yeah the topology bits should go through tip/sched/core, and given it's
+the only user of the new interface, the mlx5e one should probably be
+bundled with them.
 
-Valentin, what do you think?
-Shouldn't it go through the sched branch?
