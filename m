@@ -2,105 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33870621CDA
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 20:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5F1621D2C
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 20:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbiKHTSZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Nov 2022 14:18:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46344 "EHLO
+        id S229453AbiKHTpS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Nov 2022 14:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbiKHTSY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Nov 2022 14:18:24 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CE3109B;
-        Tue,  8 Nov 2022 11:18:22 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 82BB1B81C1E;
-        Tue,  8 Nov 2022 19:18:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B13EEC433C1;
-        Tue,  8 Nov 2022 19:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667935100;
-        bh=Zranr7iyznyU/9gl8EjHHvex4h6tuR5Swpjv1QcEnso=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AzqbKw2F0vRoDcS7+ji4s5t8hP7E541dC286tReM6+RH73T8/4nnIHUBha0G0YxVN
-         q71Fd7FK+LFZPdokyRLPY0nZ7pv9CSbyiF0Z6LskZET2FBE2ABO4yfrNsCuBDtGpTk
-         bDrO45rWtxkjEWfUP9eRjz1ujdAd8GBf/+SyYFbiiwLV5jo5QGEbqigvqvToJVJRdS
-         Ru5xDKEhH9CrjKwWNAQHeZj+g7DoCWus4AeIK0PSbmxzVBjp6JruEBi1u1aGP2xDnz
-         5Z2UOD8k4PQyh6i6sMfJ4FiF+S8Z+xwgsJQN3SUjDVC3bFr81bcq2FIq1YPsC6ZhNc
-         NPrzMkbuF725g==
-Date:   Tue, 8 Nov 2022 21:18:15 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     longli@microsoft.com
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, edumazet@google.com,
-        shiraz.saleem@intel.com, Ajay Sharma <sharmaajay@microsoft.com>,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [Patch v10 01/12] net: mana: Add support for auxiliary device
-Message-ID: <Y2qrd/BbrZUokitA@unreal>
-References: <1667502990-2559-1-git-send-email-longli@linuxonhyperv.com>
- <1667502990-2559-2-git-send-email-longli@linuxonhyperv.com>
+        with ESMTP id S229447AbiKHTpR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Nov 2022 14:45:17 -0500
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E84623A8
+        for <linux-rdma@vger.kernel.org>; Tue,  8 Nov 2022 11:45:17 -0800 (PST)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-36ad4cf9132so143392237b3.6
+        for <linux-rdma@vger.kernel.org>; Tue, 08 Nov 2022 11:45:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fc+E4R+7cUUkGZ7PCWTXzs7Qw6DNz7myIIZni5DsKGA=;
+        b=W3iVyMAEv6yM0MwYKqtNe8LFE1zTLITgCUiaeBDOnN2fMVHS6g5mYv8HOlTqZzcXMw
+         Lw3T9nFq6959LF6sNHrSGGuhkbNxdxVLMDZZc/W7po/QN5YXD5oxkUUE+bHh1YedRjdf
+         nm+jPnjBbj7LDMWsNxtL3oJLpeXiM+PSDF7wOD/U/HYu1OD09AOkULQI06GS+XQitYIB
+         SXa6Ru9D5gdiB8kJ5SiQ34B3nnAMYZYvMuRK3HSohW4gKf1XUtew6YPmS47RuT5cQVq9
+         FlxZt5IPZe5lzlCdBvQjKqYIz437feqS31P19I5VZh25IyhQvNs64d8IoJ6M1XJWXKOE
+         LdPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fc+E4R+7cUUkGZ7PCWTXzs7Qw6DNz7myIIZni5DsKGA=;
+        b=EUmSpkBK9xYHwOOJyNrptx/4m9YhMzfaZ56glTDkGe3fUuzJsVCrgHVZUkCn5pJXrX
+         Rugjde/7mnAOQIdqv16RVd+U2YTIl3tO9DbUxpekydb/iNLWsFW/c3/wISbcu+PAFIQx
+         vQUh+uk7BJ6aZhU+UAHJTTZVAg6L1wCI3dIXzf6ChyJdsju47f+5SVROB2oNV8sGULU0
+         6/lBayBtXEEhE+1YVdXUSP8Cp2czxVFadbwYpUa+oUQeD559yiHuPu1YjCxG7Tz0+M36
+         lGVoYG3Bfas7pUihGIpYiHsG4PW9AzY5ctbfHdeewRXYMGc6X8m1Dps1UZYoDNb9X0bd
+         q4Hg==
+X-Gm-Message-State: ACrzQf1cUrE6buVI7DKQ6kUHD02sG/kzY8Q5kkzbb8L1WrK2cnD03Yid
+        ZHZwfIwqaKSZonxCuxpjRYYEw/dW1nfDpH284uWPYg==
+X-Google-Smtp-Source: AMsMyM52J1Oid9I1EA4rtfVCdMgQ5Vllun7h5FSwnQGoDgz16yFB/ite3eYJTUMpNfi0LhC3yKXnEXIJT7EFJO1rQjA=
+X-Received: by 2002:a81:6084:0:b0:370:10fa:c4ff with SMTP id
+ u126-20020a816084000000b0037010fac4ffmr55887180ywb.255.1667936716100; Tue, 08
+ Nov 2022 11:45:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1667502990-2559-2-git-send-email-longli@linuxonhyperv.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221108140614.12968-1-yuehaibing@huawei.com> <febe8f20-626a-02d6-c8ed-f0dcf6cd607f@gmail.com>
+In-Reply-To: <febe8f20-626a-02d6-c8ed-f0dcf6cd607f@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 8 Nov 2022 11:45:04 -0800
+Message-ID: <CANn89iKqm9=uyoymd9OvASjnazQVKVW1kwOxhpazxv_FGaVpFg@mail.gmail.com>
+Subject: Re: [PATCH v2] net/mlx5e: Use kvfree() in mlx5e_accel_fs_tcp_create()
+To:     Tariq Toukan <ttoukan.linux@gmail.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>, borisp@nvidia.com,
+        saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, lkayal@nvidia.com,
+        tariqt@nvidia.com, markzhang@nvidia.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 12:16:19PM -0700, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> In preparation for supporting MANA RDMA driver, add support for auxiliary
-> device in the Ethernet driver. The RDMA device is modeled as an auxiliary
-> device to the Ethernet device.
-> 
-> Reviewed-by: Dexuan Cui <decui@microsoft.com>
-> Signed-off-by: Long Li <longli@microsoft.com>
-> Acked-by: Haiyang Zhang <haiyangz@microsoft.com>
-> ---
-> Change log:
-> v3: define mana_adev_idx_alloc and mana_adev_idx_free as static
-> v7: fix a bug that may assign a negative value to adev->id
+On Tue, Nov 8, 2022 at 9:58 AM Tariq Toukan <ttoukan.linux@gmail.com> wrote:
+>
+>
+>
+> On 11/8/2022 4:06 PM, YueHaibing wrote:
+> > 'accel_tcp' is allocted by kvzalloc(), which should freed by kvfree().
+> >
+> > Fixes: f52f2faee581 ("net/mlx5e: Introduce flow steering API")
+> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> > ---
+> > v2: fix the same issue in mlx5e_accel_fs_tcp_destroy() and a commit log typo
+> > ---
+> >   drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
+> > index 285d32d2fd08..d7c020f72401 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
+> > @@ -365,7 +365,7 @@ void mlx5e_accel_fs_tcp_destroy(struct mlx5e_flow_steering *fs)
+> >       for (i = 0; i < ACCEL_FS_TCP_NUM_TYPES; i++)
+> >               accel_fs_tcp_destroy_table(fs, i);
+> >
+> > -     kfree(accel_tcp);
+> > +     kvfree(accel_tcp);
+> >       mlx5e_fs_set_accel_tcp(fs, NULL);
+> >   }
+> >
+> > @@ -397,7 +397,7 @@ int mlx5e_accel_fs_tcp_create(struct mlx5e_flow_steering *fs)
+> >   err_destroy_tables:
+> >       while (--i >= 0)
+> >               accel_fs_tcp_destroy_table(fs, i);
+> > -     kfree(accel_tcp);
+> > +     kvfree(accel_tcp);
+> >       mlx5e_fs_set_accel_tcp(fs, NULL);
+> >       return err;
+> >   }
+>
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+>
+> Thanks for your patch.
 
-<...>
-
->  int mana_probe(struct gdma_dev *gd, bool resuming)
->  {
->  	struct gdma_context *gc = gd->gdma_context;
-> @@ -2173,6 +2249,8 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
->  				break;
->  		}
->  	}
-> +
-> +	err = add_adev(gd);
->  out:
->  	if (err)
->  		mana_remove(gd, false);
-> @@ -2189,6 +2267,10 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
->  	int err;
->  	int i;
->  
-> +	/* adev currently doesn't support suspending, always remove it */
-> +	if (gd->adev)
-
-This condition is always true, isn't it?
-
-> +		remove_adev(gd);
-> +
-
-Thanks
+Although this structure is 64 bytes... Not sure why kvmalloc() has
+been used for this small chunk.
