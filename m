@@ -2,256 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBB7621DC0
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 21:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED49621E93
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Nov 2022 22:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbiKHUhu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Nov 2022 15:37:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
+        id S229952AbiKHVdZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Nov 2022 16:33:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbiKHUhs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Nov 2022 15:37:48 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFE76710B;
-        Tue,  8 Nov 2022 12:37:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1667939867; x=1699475867;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=G04WwAeQWk0pwDOcNnDFTPJEMbVRinCyv847NR9rxkw=;
-  b=TEJg8yuS+Yia6Y6LJmbK1/t+fbQzU+QbIKDc1IrJ0qKsObmAvTu3R7M/
-   3MFjLyXIPzlr7QcCwyq4VAtJ6nzZfoePkAg0EKPZOzh+n+dfIhMfYtn65
-   nK0TaoNbB3AfHJYPi/ONuPynh6ixC5awF0Yua1Rw2l6EWEn0NAjc8uKk1
-   x+cpZbzM7gSYMT8ANjWzl7EOZbvR57nrNR9fWC+6ZQfApv5A4t4cZdGne
-   4kR3rOVSs6azVXgCxwvstLmZz/HVor+YiIIQq/yCQ4hU2mQzOoPWwwwh7
-   LhDeHW8oCPuW86BGsV+EDUxVvd00VyP8TxFFroi966CZ4ZtmXi4SoJsVJ
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10525"; a="312594911"
-X-IronPort-AV: E=Sophos;i="5.96,148,1665471600"; 
-   d="scan'208";a="312594911"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2022 12:34:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10525"; a="587506857"
-X-IronPort-AV: E=Sophos;i="5.96,148,1665471600"; 
-   d="scan'208";a="587506857"
-Received: from lkp-server01.sh.intel.com (HELO e783503266e8) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 08 Nov 2022 12:34:00 -0800
-Received: from kbuild by e783503266e8 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1osVIG-0000bM-0G;
-        Tue, 08 Nov 2022 20:34:00 +0000
-Date:   Wed, 09 Nov 2022 04:33:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     ntfs3@lists.linux.dev, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- b6fc3fddade7a194bd141a49f2689e50f796ef46
-Message-ID: <636abd0d.1OXnfmzy1rhQe3n4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229920AbiKHVdY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Nov 2022 16:33:24 -0500
+Received: from na01-obe.outbound.protection.outlook.com (mail-westcentralusazon11020019.outbound.protection.outlook.com [40.93.198.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7307FC2D;
+        Tue,  8 Nov 2022 13:33:23 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=my2BNiYSJ1wTGzoiN2GGwAh/Xv/8m5nj4i+HPSzqVTOus6ipKTB1qY2FGm51a+np/YL14tDI8UDfGIXMAQn1uVotDFTkrbrNnc68K6B/IJoPo1s8Wp53ABF+HWdj359x7M98XX/ymozOjkVooTmGHlyo07RQhyciETlvoDSXGaV9+dFWp2o4/UgCuNJPlcHlguHl29cUiiYuLbOi7DqsQpoCDKsjR4f9jWv82tvWQh+bGRwKTqXwc6no4WB+SVhCQzzGs80vJJyz3BjtMzvmNS9I4eMRLXjDOHnrqy+ooaeo3QQm23C5CRqh/rrGfn6ZfodJvom/mst7jcaBl1E2kQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3U1IiE5DEiOmUDui/qdvSLR3wWwv8efR4X2GwMHIkS8=;
+ b=bytkvdRfEh8PgYuJ3EhNefYzJEr7FJR2Vul/gxlWkvNG98Z0MUKwgytSEL/t2p0iU8gyCcYrgEkQUEqOorGTTW68apquM3rG00uCTo8m2igmr05xbVNiQ4JdPSXzY+E9ZrW1QuiqMFhU8IugJNpzxgCOJQiH5LxzOF6wWMvzi5QDJXTHJLMdN8s2mY8DtHEpDTx/d+QwdnX6bffj/Gx2o5lUMc5LlIwnZpJzfCsH6H9ZchPlnK7Zs8VLgANZFX+WuMw+/eRj8t6mYog/PRl/p0vOa2JOKD/DBAdAnxJD/W6B8fGMXaVZ6fF7ZJQlNF79h9o4jSVzLbIjJAos6mWlnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3U1IiE5DEiOmUDui/qdvSLR3wWwv8efR4X2GwMHIkS8=;
+ b=G5iJIPkKOdLsh5qamUX+WFuOlZvFC/lv4ms7qSEjVVCa1o0IJvZnkMnc2SoVStUBZEBWpvfbiaqpFonBzMHPUBJ/Vd6dfrBXBZ4IXOEMjFjcWq+bhVNsDzAXe2OEABdVtrap5q76k/khX+Lt5qhgkd+QHayM5/h4mSPGNh1HVnM=
+Received: from PH7PR21MB3263.namprd21.prod.outlook.com (2603:10b6:510:1db::16)
+ by PH7PR21MB3332.namprd21.prod.outlook.com (2603:10b6:510:1d9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5834.2; Tue, 8 Nov
+ 2022 21:33:21 +0000
+Received: from PH7PR21MB3263.namprd21.prod.outlook.com
+ ([fe80::34f6:64de:960b:ff72]) by PH7PR21MB3263.namprd21.prod.outlook.com
+ ([fe80::34f6:64de:960b:ff72%4]) with mapi id 15.20.5834.002; Tue, 8 Nov 2022
+ 21:33:21 +0000
+From:   Long Li <longli@microsoft.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [Patch v10 01/12] net: mana: Add support for auxiliary device
+Thread-Topic: [Patch v10 01/12] net: mana: Add support for auxiliary device
+Thread-Index: AQHY77jYyCZ4V2zftE2vySTJPn7Kra41bkGAgAAkh2A=
+Date:   Tue, 8 Nov 2022 21:33:21 +0000
+Message-ID: <PH7PR21MB3263700CCC9EC16FF7EA937BCE3F9@PH7PR21MB3263.namprd21.prod.outlook.com>
+References: <1667502990-2559-1-git-send-email-longli@linuxonhyperv.com>
+ <1667502990-2559-2-git-send-email-longli@linuxonhyperv.com>
+ <Y2qrd/BbrZUokitA@unreal>
+In-Reply-To: <Y2qrd/BbrZUokitA@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e68d55fe-9f7c-4b7b-8ebc-7e806bc250ba;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2022-11-08T21:28:59Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3263:EE_|PH7PR21MB3332:EE_
+x-ms-office365-filtering-correlation-id: 0266c204-582c-4d8c-ecc6-08dac1d0dbdf
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: j96ox6SQOkRZsBU1zI1YbpF55+2xZ7VDHcWCvGLfN/JrHLeIlKumKivqUgDoRp1RVH7O5BaeC4yXboCFSMOWdii0Zjnd7QV2fubU/uT/rYyQuez8Hx5zeVnEh2MtxGgJa7YvAqliA2L5L/HI+JBsc6Ql8Et37ilj7J6vWr25OshiTOreSS2W4HIM0UTtSz0btALzl5TBMjVxlHbXv4df8ARZf1wr5PbocO2pj8inJR9fEPNrJT7PPWiS47iCdGAyzI92SXNVB1Y2C5vFwoYnTRACrgHUbYU7u9MPS8/Q32JaiSy75wsdHC1CIzKK7rS3O/uuKAVYQlcuQOIOqgA44r2EET5TkDru3AqufBnKXe3SHNW0zyyjtPHA8YwGIwLvJljB2RDb9h7kvFKs12/5PLa1EGz8e4zHLlhHx2WRnUz7fil0jkOqrOdcCYh85fNEq5YJ1IeyBydSJAtRnckA2NJQect3976RyQgKQDZ8ADbd0AqtkXwzjGkl2dYDjlUM4qJVYj0HUqaJt/BQ+bDxT2OQu048YjswrYF7Cx3MBguUlTgotuZJGVJKsaK8Vdr/5wUqIyFgv4JZxA5vAsbQqQfd4Lc62LXDU6MhJnnt5taJnDaGaUAbeXE7RHXRcputDjgEz6W1NQMGU9U4GeoZbfjNObbbJf5rOswf85H/UVv6yN21a3vOmvEYHJZyUWLTehZqBpsDWzxintYfkhHM5zo0KVZjfDsA3cm7XOaC1wB7PbKO02LZQerCn26+mXUn+M6VeRfzDgAU3K4aArBBMNv/nMqbg+rNKVg5CwM0Rolt+DNSeIiI6Esorc8Vho3/
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3263.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(366004)(346002)(39860400002)(396003)(376002)(451199015)(2906002)(55016003)(64756008)(82960400001)(41300700001)(9686003)(26005)(38100700002)(8936002)(7416002)(4744005)(82950400001)(33656002)(186003)(7696005)(5660300002)(6506007)(6916009)(122000001)(54906003)(4326008)(8676002)(316002)(38070700005)(52536014)(66556008)(66476007)(76116006)(66946007)(478600001)(83380400001)(66446008)(10290500003)(71200400001)(86362001)(8990500004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vb9yOJTzy5FUMqr5VZ+a+AYuKIcDYhvfVOD03YOyGZZFE//rk3+/bEr4PZkp?=
+ =?us-ascii?Q?kZdmM1CGi/yxVNlwelW3/mzVLj/9cFfnKJel2VvV8A+rXclvBzxp5zr8huWO?=
+ =?us-ascii?Q?tXq/Jm3j419+zkPxANX+r3a2+59l53Frtmegf4WPMFCbXvO7u/d9tKs7ZnTq?=
+ =?us-ascii?Q?7Wnj+WqpHryqgs9TbMHtWYHhxYs03B62yfbsafD735AJ9Y+IWfl1UsrRDaHn?=
+ =?us-ascii?Q?VRaZl5GVr0n6ihQKrtJZymkZA/BqD3ab1989N8zN9SKyfdIdDtXlgGi5EI3H?=
+ =?us-ascii?Q?HdbGKcO/b3CQdGQHeK2dGZFpz0kdPme5sqLt0cpRguFspJKqECD+32IImlNW?=
+ =?us-ascii?Q?ThR5XGDgr7UT6CL1WYEPLaixt7kjbzV8/YPuJVshcCwZtYfIi0sZ2+8wUnpH?=
+ =?us-ascii?Q?UbW/J/u/XPVbV3sb8ge6VouGza0AN8YF1t8GY6CgrGw86ZqQQFrNcGXkvH+4?=
+ =?us-ascii?Q?GH2M73JlDcUjDuCeWdM+0E2MMemY/NAhM5NtYCCZJS3iBHnHAHc7wwN5keTP?=
+ =?us-ascii?Q?ygA0oIChxNSd0+AyYDMZw+eM8vC4NEWLz3eg2nLixQd6LloaRQxheYnCi507?=
+ =?us-ascii?Q?BI4GSw+Ym4Xp49eXvwQR3qKLUWAxvO0fv39zBrOgkFiOFfux6hnLbAeXvqJe?=
+ =?us-ascii?Q?MrE6gB5wI5q9pLSUFXlMnbtr3n7yXP2AZ9LL87VVQsrazPMCyDjZlt12Or7y?=
+ =?us-ascii?Q?+2VeAUDdRzDBQgCvtmXJJvWiKVFXfwJSttM0h+3Y2+iUnWhMIocdLFwR1Kq0?=
+ =?us-ascii?Q?lMJdrsKLm+AOzv06dl4Mg6jVzTe7VOLv3VViXJtLgG5i8JVwZX3hTWjHKiyO?=
+ =?us-ascii?Q?Iss3H3GfjzNUFEa29MbqlDxPdKTynrBdZE1Tcb1Yau1QxG/DyUrpikUmiZ+f?=
+ =?us-ascii?Q?3lrtYqUzYKVIFoaoaXL6e0htNALNZfDxIzyrTQnFt23S3uPmoUr64UoJgCDr?=
+ =?us-ascii?Q?ckO7ufQHFo3pzoQil7rJRYbt4BmTGJLbpR6iRK7OT+3FR52CaT+9W9vIq754?=
+ =?us-ascii?Q?El8aRR72HodGW1Se/fPBlR7Vnyo/X5GacRx8HMRtxtqSGNrzkl9auH7kWeaU?=
+ =?us-ascii?Q?voFuIQaObDUSsUMMcCHVb9VvhgSimC4myobPcthLAll+DHOvCKpomy+oBIFQ?=
+ =?us-ascii?Q?Xh8WOuiDx+sJfcVZpH7RQEch9ssnxTX5Cj4ySdGA2tMS8xHMCdfHl9A5RgOj?=
+ =?us-ascii?Q?jMyu5TLZbx+hyjHRYh60p93DXqPdmzB1/vzojA/uemEyNcjbnD4s4Ak1izgZ?=
+ =?us-ascii?Q?Pk5vfEDUp8VPZ0PHSxABrg3Vwq8SaeJUv93WLZ6QFYSL7iOYwuCHSRUEmIFW?=
+ =?us-ascii?Q?cYvQ5JMLR1yelHfLmSZEifgob6qPoaPww/Dc9xeJ57oPc7iw/pVJGv1JStPh?=
+ =?us-ascii?Q?6qz9sH1KOMAMwb0lOOso4rXwrg/0oToOPlBOmozgxUqgdKCqqc+qygzym+RU?=
+ =?us-ascii?Q?zJ6lIFN3f2/Fur8QWbQMVeV2toE/BzASeHYVUw3H3erXsPR9o2SKNzDnRSkz?=
+ =?us-ascii?Q?drtsyYTWQeCyBWd/0ssOh7UUlK5nmphXWZXzedjdcki1HellC6O4bphDnoK7?=
+ =?us-ascii?Q?IaXolaJ2jppBXhNEkf9PlMtepObUuKuuupfnHP8M?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3263.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0266c204-582c-4d8c-ecc6-08dac1d0dbdf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Nov 2022 21:33:21.2277
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WNkq8tasqA7uv/gdmlbPPSSpYyh/mGS8rFD9L6ddKkaFukMpMtmK9lXTC4hIqPMmwQCsEo0DOZLPWnHpTZqIeA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR21MB3332
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: b6fc3fddade7a194bd141a49f2689e50f796ef46  Add linux-next specific files for 20221108
 
-Error/Warning reports:
+> > int mana_probe(struct gdma_dev *gd, bool resuming)
+> >  				break;
+> >  		}
+> >  	}
+> > +
+> > +	err =3D add_adev(gd);
+> >  out:
+> >  	if (err)
+> >  		mana_remove(gd, false);
+> > @@ -2189,6 +2267,10 @@ void mana_remove(struct gdma_dev *gd, bool
+> suspending)
+> >  	int err;
+> >  	int i;
+> >
+> > +	/* adev currently doesn't support suspending, always remove it */
+> > +	if (gd->adev)
+>=20
+> This condition is always true, isn't it?
 
-https://lore.kernel.org/linux-mm/202210111318.mbUfyhps-lkp@intel.com
-https://lore.kernel.org/linux-mm/202210261404.b6UlzG7H-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202210270637.Q5Y7FiKJ-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202211041320.coq8EELJ-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202211082141.3XSHPtO1-lkp@intel.com
+I think the check is necessary. mana_probe() will call mana_remove() if it =
+fails to
+add this adev to gd. If this is the case, we can't call remove_adev().
 
-Error/Warning: (recently discovered and may have been fixed)
-
-drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:4878: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:5044:24: warning: implicit conversion from 'enum <anonymous>' to 'enum dc_status' [-Wenum-conversion]
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c:1087:1: warning: stack frame size (1184) exceeds limit (1024) in 'dr_rule_create_rule_nic' [-Wframe-larger-than]
-
-Unverified Error/Warning (likely false positive, please contact us if interested):
-
-drivers/net/ethernet/microchip/vcap/vcap_api_kunit.c:245:23: sparse: sparse: Using plain integer as NULL pointer
-lib/test_objpool.c:1007:16: sparse: sparse: symbol 'g_ot_async' was not declared. Should it be static?
-lib/test_objpool.c:108:6: sparse: sparse: symbol 'ot_vfree' was not declared. Should it be static?
-lib/test_objpool.c:516:3: sparse: sparse: symbol 'g_ot_sync_ops' was not declared. Should it be static?
-lib/test_objpool.c:76:3: sparse: sparse: symbol 'g_ot_data' was not declared. Should it be static?
-lib/test_objpool.c:824:3: sparse: sparse: symbol 'g_ot_async_ops' was not declared. Should it be static?
-lib/test_objpool.c:82:6: sparse: sparse: symbol 'ot_kzalloc' was not declared. Should it be static?
-lib/test_objpool.c:91:6: sparse: sparse: symbol 'ot_kfree' was not declared. Should it be static?
-lib/test_objpool.c:989:16: sparse: sparse: symbol 'g_ot_sync' was not declared. Should it be static?
-lib/test_objpool.c:998:16: sparse: sparse: symbol 'g_ot_miss' was not declared. Should it be static?
-lib/test_objpool.c:99:6: sparse: sparse: symbol 'ot_vmalloc' was not declared. Should it be static?
-lib/zstd/compress/huf_compress.c:460 HUF_getIndex() warn: the 'RANK_POSITION_LOG_BUCKETS_BEGIN' macro might need parens
-lib/zstd/decompress/zstd_decompress_block.c:1009 ZSTD_execSequence() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_block.c:894 ZSTD_execSequenceEnd() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_block.c:942 ZSTD_execSequenceEndSplitLitBuffer() warn: inconsistent indenting
-lib/zstd/decompress/zstd_decompress_internal.h:206 ZSTD_DCtx_get_bmi2() warn: inconsistent indenting
-s390x-linux-ld: drivers/clk/clk-fixed-mmio.c:26: undefined reference to `of_iomap'
-s390x-linux-ld: drivers/clk/clk-fixed-mmio.c:33: undefined reference to `iounmap'
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- arc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- arm-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- arm-randconfig-r032-20221108
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- arm64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- i386-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- i386-randconfig-m021-20221107
-|   |-- lib-zstd-compress-huf_compress.c-HUF_getIndex()-warn:the-RANK_POSITION_LOG_BUCKETS_BEGIN-macro-might-need-parens
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequence()-warn:inconsistent-indenting
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEnd()-warn:inconsistent-indenting
-|   |-- lib-zstd-decompress-zstd_decompress_block.c-ZSTD_execSequenceEndSplitLitBuffer()-warn:inconsistent-indenting
-|   `-- lib-zstd-decompress-zstd_decompress_internal.h-ZSTD_DCtx_get_bmi2()-warn:inconsistent-indenting
-|-- loongarch-randconfig-r033-20221107
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- m68k-randconfig-s033-20221108
-|   |-- fs-ntfs3-index.c:sparse:sparse:restricted-__le32-degrades-to-integer
-|   |-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s1-got-unsigned-short
-|   `-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s2-got-unsigned-short
-|-- microblaze-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- microblaze-randconfig-c042-20221108
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- mips-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- parisc-randconfig-c032-20221108
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- powerpc-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- s390-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:warning:implicit-conversion-from-enum-anonymous-to-enum-dc_status
-|-- sparc-allyesconfig
-clang_recent_errors
-|-- powerpc-randconfig-c003-20221107
-|   `-- drivers-net-ethernet-mellanox-mlx5-core-steering-dr_rule.c:warning:stack-frame-size-()-exceeds-limit-()-in-dr_rule_create_rule_nic
-|-- s390-randconfig-r006-20221108
-|   |-- s39-linux-ld:drivers-clk-clk-fixed-mmio.c:undefined-reference-to-iounmap
-|   `-- s39-linux-ld:drivers-clk-clk-fixed-mmio.c:undefined-reference-to-of_iomap
-`-- x86_64-randconfig-a016
-    `-- vmlinux.o:warning:objtool:handle_bug:call-to-kmsan_unpoison_entry_regs()-leaves-.noinstr.text-section
-
-elapsed time: 724m
-
-configs tested: 79
-configs skipped: 3
-
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                            allnoconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-arm                                 defconfig
-x86_64                           rhel-8.3-kvm
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-powerpc                           allnoconfig
-mips                             allyesconfig
-arm                              allyesconfig
-x86_64                              defconfig
-powerpc                          allmodconfig
-arm64                            allyesconfig
-x86_64                               rhel-8.3
-sh                               allmodconfig
-x86_64                           allyesconfig
-x86_64                        randconfig-a013
-m68k                             allyesconfig
-x86_64                        randconfig-a011
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-x86_64                        randconfig-a015
-arc                  randconfig-r043-20221108
-s390                 randconfig-r044-20221108
-riscv                randconfig-r042-20221108
-i386                                defconfig
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-i386                          randconfig-a014
-x86_64                        randconfig-a006
-i386                          randconfig-a012
-arc                                 defconfig
-i386                          randconfig-a016
-s390                             allmodconfig
-alpha                               defconfig
-i386                          randconfig-a001
-s390                                defconfig
-i386                             allyesconfig
-i386                          randconfig-a003
-arc                    vdk_hs38_smp_defconfig
-sh                           sh2007_defconfig
-i386                          randconfig-a005
-sparc                            alldefconfig
-arm                      footbridge_defconfig
-arm                           tegra_defconfig
-s390                             allyesconfig
-arm                            xcep_defconfig
-sh                        sh7757lcr_defconfig
-sh                ecovec24-romimage_defconfig
-arm                         axm55xx_defconfig
-m68k                        m5272c3_defconfig
-mips                            ar7_defconfig
-i386                          randconfig-c001
-powerpc                        warp_defconfig
-arm                            zeus_defconfig
-sh                           se7722_defconfig
-sh                          lboxre2_defconfig
-parisc                generic-64bit_defconfig
-arm                        realview_defconfig
-m68k                           virt_defconfig
-powerpc                      ep88xc_defconfig
-
-clang tested configs:
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-x86_64                        randconfig-a001
-i386                          randconfig-a013
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-i386                          randconfig-a015
-i386                          randconfig-a011
-i386                          randconfig-a002
-i386                          randconfig-a004
-powerpc                    gamecube_defconfig
-i386                          randconfig-a006
-mips                     cu1000-neo_defconfig
-x86_64                          rhel-8.3-rust
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Thanks,
+Long
