@@ -2,174 +2,328 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8F762259E
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Nov 2022 09:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C35D622660
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Nov 2022 10:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbiKIIjg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Nov 2022 03:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
+        id S230313AbiKIJLS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Nov 2022 04:11:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbiKIIjf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Nov 2022 03:39:35 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA14F10A6
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Nov 2022 00:39:34 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id z6so10014473qtv.5
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Nov 2022 00:39:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jCLZb9MxypjC2th3/0j4f17JRWmi9IXHP3Stp/E27nE=;
-        b=Nju1Wn+QB/BifJ2GXZEwj5eSHWerWHJe/tBCfKOJgmRqYk6pcDWrzQummtbB9hAJJF
-         +c9nq8EE2l6npRI3upBJQhFsr8GB8PKA8/J8TuBFbqBmCIyQsoaz4bdX+y3w9mW0txVH
-         mTZQaMUX2tmFmmk402AnLPeqEdSG1SKrErrgY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jCLZb9MxypjC2th3/0j4f17JRWmi9IXHP3Stp/E27nE=;
-        b=zGSQRMzM7DpclY7u5Y2wlXNY8VUu4ul7v4iHJvVfZLfxf0ZuCf4J37KcGvx4W9lKZX
-         2EAuiBCB9tQ3GRdJwZB7i3B7uLAaQoH+9TghfRWyeGnnYI43vuTwNy5i+6P1oOG1sVFD
-         QmQF2emAxRugU/aDFxJ/iYlU238+yu2LOvpwDMLLdVRqiKvxQ50Of8RaKNEHjRLL/C4H
-         j45WDRCyV4U4P0FcDVhfwHcUiCjTUJBocQS5Gc1G2dHRieq/ya1Xhggk5CiCZo6taWBn
-         ZhAlVZg5Q282b6XReE1hUAr6t08H6Ou9Gw0MQv72VLryu9WPgXDgmjjVuTzYoaJ0ZztD
-         eRsA==
-X-Gm-Message-State: ANoB5pm6lOGq06O5gzfX3aDyyC79raHAHpzPh4ylbloZlWEwgyUdmAO4
-        N6UVzInl0O0QGZ0AhM7TdOqyTYrjagQL01XC5l4k0vVMe7cxhQ==
-X-Google-Smtp-Source: AA0mqf47xYa3Zvhaa6jdkyDLu1JXrQN2pjTI3EWHmdAq9dCN7LvPbkEEvoOnevatq5r+8bXVZDrUrIdXebezT+H61vU=
-X-Received: by 2002:a05:622a:1c1:b0:3a5:8416:690d with SMTP id
- t1-20020a05622a01c100b003a58416690dmr13116880qtw.61.1667983173760; Wed, 09
- Nov 2022 00:39:33 -0800 (PST)
+        with ESMTP id S229545AbiKIJKf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Nov 2022 04:10:35 -0500
+Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2534E22B1F;
+        Wed,  9 Nov 2022 01:10:14 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VUNUlIt_1667985011;
+Received: from 30.221.149.123(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VUNUlIt_1667985011)
+          by smtp.aliyun-inc.com;
+          Wed, 09 Nov 2022 17:10:12 +0800
+Message-ID: <901fbb4e-9dd0-adb8-a854-44930a601a9d@linux.alibaba.com>
+Date:   Wed, 9 Nov 2022 17:10:10 +0800
 MIME-Version: 1.0
-References: <CABHQ5Qrby1r-R8f4i22bR9Y2YjHKunH--=OeLZhh+dCcgDGWpQ@mail.gmail.com>
-In-Reply-To: <CABHQ5Qrby1r-R8f4i22bR9Y2YjHKunH--=OeLZhh+dCcgDGWpQ@mail.gmail.com>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Wed, 9 Nov 2022 14:09:22 +0530
-Message-ID: <CA+sbYW2JHb=LZGL83PDbZ0MBHQrDYjR=FzJqyEOpNqsWOPCfkQ@mail.gmail.com>
-Subject: Re: building libbnxt_re-rdmav25.so
-To:     Arvind Kini <arvind.kini@sambanovasystems.com>
-Cc:     linux-rdma@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000095ad5a05ed059886"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.1
+Subject: Re: [PATCH net-next v4 00/10] optimize the parallelism of SMC-R
+ connections
+Content-Language: en-US
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>, kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1666529042-40828-1-git-send-email-alibuda@linux.alibaba.com>
+ <95feb2a1-d17a-6233-d3d0-eaebf26d2284@linux.ibm.com>
+ <1615836b-3087-2467-262e-f402ec521716@linux.alibaba.com>
+ <3526d73b-a0cf-e9eb-383b-2ad917f3bcc2@linux.ibm.com>
+ <c97c4313-8d20-98c6-7f5e-3bac8b00093d@linux.alibaba.com>
+In-Reply-To: <c97c4313-8d20-98c6-7f5e-3bac8b00093d@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000095ad5a05ed059886
-Content-Type: text/plain; charset="UTF-8"
 
-Hi Aravind,
- This error is indicating that you are using the latest driver
-distributed along with Broadcom CDs.  This will not work with
-libbnxt_re in rdma-core.
- Please confirm the driver version loaded on the system.
+Hi Wenjia and Jan,
 
-Thanks,
-Selvin
+I'm not sure whether my guess is right, I need some help from you. I guess the smcd_ops register_dmb()
+is not thread-safe, after I remove the lock, different connections might get the same sba_idx, which will cause
+the connection to be lost in the map(smcd->conn). If so, the CDC message carrying close/abort information cannot be
+distributed to the correct connection, then the connection remains in link group abnormally.
 
-On Wed, Nov 9, 2022 at 2:06 AM Arvind Kini
-<arvind.kini@sambanovasystems.com> wrote:
->
-> Hi,
->
-> I've successfully built rdma-core from sources on a Ubuntu 20.04. I set LD_LIBRARY_PATH to my rdma-core workspace /build/lib directory.
-> I am running into the following error:
-> # ibv_devinfo
-> libibverbs: Warning: Driver bnxt_re does not support the kernel ABI of 6 (supports 1 to 1) for device /sys/class/infiniband/rocep201s0
->
-> I am executing everything in place from my workspace and everything is self contained until libbnxt_re-rdmav25.so talks to the bnxt_re kernel driver (which is from ubuntu repos).
->
-> What am I missing in the above picture to see the ABI errors ?
-> Any comments much appreciated.
-> Thanks in advance,
-> Arvind
+/* Set a connection using this DMBE. */
+void smc_ism_set_conn(struct smc_connection *conn)
+{
+	unsigned long flags;
 
---00000000000095ad5a05ed059886
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+	spin_lock_irqsave(&conn->lgr->smcd->lock, flags);
+	conn->lgr->smcd->conn[conn->rmb_desc->sba_idx] = conn;
+	spin_unlock_irqrestore(&conn->lgr->smcd->lock, flags);
+}
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPVMxHXTfJxE
-xdsVsWnCZ+n8Yy0+fuO2YXfUcmQZ5e3vMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIyMTEwOTA4MzkzNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCGgNkDQqqj5I3017N1TCSwhrjM1lu8
-jUH/KFnax9ak60FZWc0sDnpQSZWax8fAuzJEPF4Pre1MLOd3zuW963mOhWmRiXrp6rDWZlWkfUT9
-B/J62Tfs/SM8FrbPCJ6YMNBhL9+IapncEFXEwLWp7jwBaRPeiaxcr9r85c+ydOZmgpQo6NpebsBB
-a2zVvS5Nf9n4PKW3g61OOnOE98d3g3g2Oiudp1kuOh+oCooCt7r+DK4PGey84PXEPu0NvPOHXiYh
-gUfinWqyyGb5U0kTbtoHxtJcS80fsK8A94acrm7JJdQickpG2E+Rw6rzOYHlamNvKIWVILs5KExw
-IdGQX9pu
---00000000000095ad5a05ed059886--
+
+struct smcd_ops {
+
+	int (*register_dmb)(struct smcd_dev *dev, struct smcd_dmb *dmb);
+}
+
+
+On 11/7/22 7:05 PM, D. Wythe wrote:
+> 
+> Hi Wenjia,
+> 
+> Thanks a lot for your information, before that we thought you did PATCH test one by one,
+> now I think I have found the root cause, and I will release a new version to fix this
+> soon as possible.
+> 
+> Best Wishes.
+> D. Wythe
+> 
+> On 11/2/22 9:55 PM, Wenjia Zhang wrote:
+>>
+>>
+>> On 01.11.22 08:22, D. Wythe wrote:
+>>>
+>>> Hi Jan,
+>>>
+>>> Our team conducted some code reviews over this, but unfortunately no obvious problems were found. Hence
+>>> we are waiting for Tony Lu's virtual SMC-D device to test, which is expected to come in this week.  Before that,
+>>> I wonder if your tests are running separately on separate PATCH? If so, I would like to please you to test
+>>> the first PATCH and the second PATCH together. I doubt that the problem repaired by the second PATCH
+>>> is the cause of this issues.
+>>>
+>>> Best Wishes.
+>>> D. Wythe
+>>>
+>>
+>> Hi D. Wythe,
+>>
+>> We did test the series of the patches as a whole. That would be great if you could use Tony's virtual device to test SMC-D. By the way, I'll put your patches in our CI, let's see if it can find something.
+>>
+>> Best,
+>> Wenjia
+>>>
+>>> On 10/24/22 9:11 PM, Jan Karcher wrote:
+>>>> Hi D. Wythe,
+>>>>
+>>>> I re-run the tests with your fix.
+>>>> SMC-R works fine now. For SMC-D we still have the following problem. It is kind of the same as i reported in v2 but even weirder:
+>>>>
+>>>> smc stats:
+>>>>
+>>>> t8345011
+>>>> SMC-D Connections Summary
+>>>>    Total connections handled          2465
+>>>> SMC-R Connections Summary
+>>>>    Total connections handled           232
+>>>>
+>>>> t8345010
+>>>> SMC-D Connections Summary
+>>>>    Total connections handled          2290
+>>>> SMC-R Connections Summary
+>>>>    Total connections handled           231
+>>>>
+>>>>
+>>>> smc linkgroups:
+>>>>
+>>>> t8345011
+>>>> [root@t8345011 ~]# smcr linkgroup
+>>>> LG-ID    LG-Role  LG-Type  VLAN  #Conns  PNET-ID
+>>>> 00000400 SERV     SYM         0       0  NET25
+>>>> [root@t8345011 ~]# smcd linkgroup
+>>>> LG-ID    VLAN  #Conns  PNET-ID
+>>>> 00000300    0      16  NET25
+>>>>
+>>>> t8345010
+>>>> [root@t8345010 tela-kernel]# smcr linkgroup
+>>>> LG-ID    LG-Role  LG-Type  VLAN  #Conns  PNET-ID
+>>>> 00000400 CLNT     SYM         0       0  NET25
+>>>> [root@t8345010 tela-kernel]# smcd linkgroup
+>>>> LG-ID    VLAN  #Conns  PNET-ID
+>>>> 00000300    0       1  NET25
+>>>>
+>>>>
+>>>> smcss:
+>>>>
+>>>> t8345011
+>>>> [root@t8345011 ~]# smcss
+>>>> State          UID   Inode   Local Address           Peer Address Intf Mode
+>>>>
+>>>> t8345010
+>>>> [root@t8345010 tela-kernel]# smcss
+>>>> State          UID   Inode   Local Address           Peer Address Intf Mode
+>>>>
+>>>>
+>>>> lsmod:
+>>>>
+>>>> t8345011
+>>>> [root@t8345011 ~]# lsmod | grep smc
+>>>> smc                   225280  18 ism,smc_diag
+>>>> t8345010
+>>>> [root@t8345010 tela-kernel]# lsmod | grep smc
+>>>> smc                   225280  3 ism,smc_diag
+>>>>
+>>>> Also smc_dbg and netstat do not show any more information on this problem. We only see in the dmesg that the code seems to build up SMC-R linkgroups even tho we are running the SMC-D tests.
+>>>> NOTE: we disabled the syncookies for the tests.
+>>>>
+>>>> dmesg:
+>>>>
+>>>> t8345011
+>>>> smc-tests: test_smcapp_torture_test started
+>>>> kernel: TCP: request_sock_TCP: Possible SYN flooding on port 22465. Dropping request.  Check SNMP counters.
+>>>> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000401, peerid 00000401, ibdev mlx5_0, ibport 1
+>>>> kernel: smc: SMC-R lg 00000400 net 1 state changed: SINGLE, pnetid NET25
+>>>> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000402, peerid 00000402, ibdev mlx5_1, ibport 1
+>>>> kernel: smc: SMC-R lg 00000400 net 1 state changed: SYMMETRIC, pnetid NET25
+>>>>
+>>>> t8345010
+>>>> smc-tests: test_smcapp_torture_test started
+>>>> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000401, peerid 00000401, ibdev mlx5_0, ibport 1
+>>>> kernel: smc: SMC-R lg 00000400 net 1 state changed: SINGLE, pnetid NET25
+>>>> kernel: smc: SMC-R lg 00000400 net 1 link added: id 00000402, peerid 00000402, ibdev mlx5_1, ibport 1
+>>>> kernel: smc: SMC-R lg 00000400 net 1 state changed: SYMMETRIC, pnetid NET25
+>>>>
+>>>> If this output does not help and if you want us to look deeper into it feel free to let us know and we can debug further.
+>>>>
+>>>> On 23/10/2022 14:43, D.Wythe wrote:
+>>>>> From: "D.Wythe" <alibuda@linux.alibaba.com>
+>>>>>
+>>>>> This patch set attempts to optimize the parallelism of SMC-R connections,
+>>>>> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
+>>>>> occur after thoses optimization.
+>>>>>
+>>>>> According to Off-CPU graph, SMC worker's off-CPU as that:
+>>>>>
+>>>>> smc_close_passive_work                  (1.09%)
+>>>>>          smcr_buf_unuse                  (1.08%)
+>>>>>                  smc_llc_flow_initiate   (1.02%)
+>>>>>
+>>>>> smc_listen_work                         (48.17%)
+>>>>>          __mutex_lock.isra.11            (47.96%)
+>>>>>
+>>>>>
+>>>>> An ideal SMC-R connection process should only block on the IO events
+>>>>> of the network, but it's quite clear that the SMC-R connection now is
+>>>>> queued on the lock most of the time.
+>>>>>
+>>>>> The goal of this patchset is to achieve our ideal situation where
+>>>>> network IO events are blocked for the majority of the connection lifetime.
+>>>>>
+>>>>> There are three big locks here:
+>>>>>
+>>>>> 1. smc_client_lgr_pending & smc_server_lgr_pending
+>>>>>
+>>>>> 2. llc_conf_mutex
+>>>>>
+>>>>> 3. rmbs_lock & sndbufs_lock
+>>>>>
+>>>>> And an implementation issue:
+>>>>>
+>>>>> 1. confirm/delete rkey msg can't be sent concurrently while
+>>>>> protocol allows indeed.
+>>>>>
+>>>>> Unfortunately,The above problems together affect the parallelism of
+>>>>> SMC-R connection. If any of them are not solved. our goal cannot
+>>>>> be achieved.
+>>>>>
+>>>>> After this patch set, we can get a quite ideal off-CPU graph as
+>>>>> following:
+>>>>>
+>>>>> smc_close_passive_work                                  (41.58%)
+>>>>>          smcr_buf_unuse                                  (41.57%)
+>>>>>                  smc_llc_do_delete_rkey                  (41.57%)
+>>>>>
+>>>>> smc_listen_work                                         (39.10%)
+>>>>>          smc_clc_wait_msg                                (13.18%)
+>>>>>                  tcp_recvmsg_locked                      (13.18)
+>>>>>          smc_listen_find_device                          (25.87%)
+>>>>>                  smcr_lgr_reg_rmbs                       (25.87%)
+>>>>>                          smc_llc_do_confirm_rkey         (25.87%)
+>>>>>
+>>>>> We can see that most of the waiting times are waiting for network IO
+>>>>> events. This also has a certain performance improvement on our
+>>>>> short-lived conenction wrk/nginx benchmark test:
+>>>>>
+>>>>> +--------------+------+------+-------+--------+------+--------+
+>>>>> |conns/qps     |c4    | c8   |  c16  |  c32   | c64  |  c200  |
+>>>>> +--------------+------+------+-------+--------+------+--------+
+>>>>> |SMC-R before  |9.7k  | 10k  |  10k  |  9.9k  | 9.1k |  8.9k  |
+>>>>> +--------------+------+------+-------+--------+------+--------+
+>>>>> |SMC-R now     |13k   | 19k  |  18k  |  16k   | 15k  |  12k   |
+>>>>> +--------------+------+------+-------+--------+------+--------+
+>>>>> |TCP           |15k   | 35k  |  51k  |  80k   | 100k |  162k  |
+>>>>> +--------------+------+------+-------+--------+------+--------+
+>>>>>
+>>>>> The reason why the benefit is not obvious after the number of connections
+>>>>> has increased dues to workqueue. If we try to change workqueue to UNBOUND,
+>>>>> we can obtain at least 4-5 times performance improvement, reach up to half
+>>>>> of TCP. However, this is not an elegant solution, the optimization of it
+>>>>> will be much more complicated. But in any case, we will submit relevant
+>>>>> optimization patches as soon as possible.
+>>>>>
+>>>>> Please note that the premise here is that the lock related problem
+>>>>> must be solved first, otherwise, no matter how we optimize the workqueue,
+>>>>> there won't be much improvement.
+>>>>>
+>>>>> Because there are a lot of related changes to the code, if you have
+>>>>> any questions or suggestions, please let me know.
+>>>>>
+>>>>> Thanks
+>>>>> D. Wythe
+>>>>>
+>>>>> v1 -> v2:
+>>>>>
+>>>>> 1. Fix panic in SMC-D scenario
+>>>>> 2. Fix lnkc related hashfn calculation exception, caused by operator
+>>>>> priority
+>>>>> 3. Only wake up one connection if the lnk is not active
+>>>>> 4. Delete obsolete unlock logic in smc_listen_work()
+>>>>> 5. PATCH format, do Reverse Christmas tree
+>>>>> 6. PATCH format, change all xxx_lnk_xxx function to xxx_link_xxx
+>>>>> 7. PATCH format, add correct fix tag for the patches for fixes.
+>>>>> 8. PATCH format, fix some spelling error
+>>>>> 9. PATCH format, rename slow to do_slow
+>>>>>
+>>>>> v2 -> v3:
+>>>>>
+>>>>> 1. add SMC-D support, remove the concept of link cluster since SMC-D has
+>>>>> no link at all. Replace it by lgr decision maker, who provides suggestions
+>>>>> to SMC-D and SMC-R on whether to create new link group.
+>>>>>
+>>>>> 2. Fix the corruption problem described by PATCH 'fix application
+>>>>> data exception' on SMC-D.
+>>>>>
+>>>>> v3 -> v4:
+>>>>>
+>>>>> 1. Fix panic caused by uninitialization map.
+>>>>>
+>>>>> D. Wythe (10):
+>>>>>    net/smc: remove locks smc_client_lgr_pending and
+>>>>>      smc_server_lgr_pending
+>>>>>    net/smc: fix SMC_CLC_DECL_ERR_REGRMB without smc_server_lgr_pending
+>>>>>    net/smc: allow confirm/delete rkey response deliver multiplex
+>>>>>    net/smc: make SMC_LLC_FLOW_RKEY run concurrently
+>>>>>    net/smc: llc_conf_mutex refactor, replace it with rw_semaphore
+>>>>>    net/smc: use read semaphores to reduce unnecessary blocking in
+>>>>>      smc_buf_create() & smcr_buf_unuse()
+>>>>>    net/smc: reduce unnecessary blocking in smcr_lgr_reg_rmbs()
+>>>>>    net/smc: replace mutex rmbs_lock and sndbufs_lock with rw_semaphore
+>>>>>    net/smc: Fix potential panic dues to unprotected
+>>>>>      smc_llc_srv_add_link()
+>>>>>    net/smc: fix application data exception
+>>>>>
+>>>>>   net/smc/af_smc.c   |  70 ++++----
+>>>>>   net/smc/smc_core.c | 478 +++++++++++++++++++++++++++++++++++++++++++++++------
+>>>>>   net/smc/smc_core.h |  36 +++-
+>>>>>   net/smc/smc_llc.c  | 277 ++++++++++++++++++++++---------
+>>>>>   net/smc/smc_llc.h  |   6 +
+>>>>>   net/smc/smc_wr.c   |  10 --
+>>>>>   net/smc/smc_wr.h   |  10 ++
+>>>>>   7 files changed, 712 insertions(+), 175 deletions(-)
+>>>>>
