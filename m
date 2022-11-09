@@ -2,66 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 314DF6232CE
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Nov 2022 19:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9847D6232D3
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Nov 2022 19:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbiKISnw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Nov 2022 13:43:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        id S229550AbiKISpg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Nov 2022 13:45:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbiKISn3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Nov 2022 13:43:29 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7692715FD3
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Nov 2022 10:43:07 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id z17so5165883qki.11
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Nov 2022 10:43:07 -0800 (PST)
+        with ESMTP id S231416AbiKISpT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Nov 2022 13:45:19 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C3FDB4
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Nov 2022 10:45:18 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id 4so17967367pli.0
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Nov 2022 10:45:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nJbAivtGGFH4IIhcb1hedsdhvU14y8UnmvmCjIowyxg=;
-        b=PQmx+rELqQhLCOeR80QJsO5ZKb1D81txaAGxcXWqbXZ+n13d+tMucVNeGx41xAlzg/
-         RfXx2du82VFThcvqwi6psqG/v0u1i1FywhdYojktvbCgEExHpRIUICUJceUjHbkEElpR
-         xW3jdj++H0tx8t/cSatbmo9/XzjWSEIv+S9Uc=
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OFg7r8vhQSWqVM2uDfgOXci0gau/O6nXqlVnAS2NxnI=;
+        b=RnxMQwxuvPz5m8yFuaHMZtc4oeJluRgymOlYNfR47Wuoa9KjbsXlw5yEEeuh3yn5N4
+         nSJpCUxSLuXL60qK+wT8yN67BwrcmHpXKZ2WpOngEJ6/NvJrIGOnbqRVBVxuToWyAKcI
+         cKyj/TlxBg2tnQKpvBMveaep2gnMpm+zgqDCg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nJbAivtGGFH4IIhcb1hedsdhvU14y8UnmvmCjIowyxg=;
-        b=VpIRVIwae8znvNK4WzKMBpgj+NDKmTH18t51sGF92N6ELrfqZLs+vd1G7Iir7hJeRt
-         /++wAxe57ZVxXsCH2o2HxVm83sJpLa+aE3YgxZoucSBIxUu4SEudcFyqqVLvVD9kxdH1
-         Wo5C6WTEWGBMAr7nrx70Xav/Kza65Y3ltnJ8QSQ70r4XC3NnJTJp433s3beTOIaHBx2h
-         x1qnTJlr4iJFnoEr7zZGbc3h1JFt7gy0LtdUMW0ABtLFEC2ulP1Atnr3SwuIYnq+tDJ9
-         F+dJ1D/1AweKxHVg/VunAwF9sA7AbDxNQo6itP5AcMLW63ATmo/t0AKfvMQ+MCbkSIYD
-         jmJg==
-X-Gm-Message-State: ACrzQf2P878qTKml0QcdRB3jYKnpPVUQWlH/BhwL5vy2aGzGlqj832MA
-        iznRp33axdNmpAZ6brkDb1HpvsmC4dcZ0g==
-X-Google-Smtp-Source: AMsMyM4JehCqHaUN0EoqZD3xq4a6yJStjL69BLI3M+aL0u7HtGRuJOQaAMWYi3Nqkv7sFxwYp6EPdg==
-X-Received: by 2002:a37:c246:0:b0:6fa:263c:574b with SMTP id j6-20020a37c246000000b006fa263c574bmr40448704qkm.484.1668019387074;
-        Wed, 09 Nov 2022 10:43:07 -0800 (PST)
-Received: from C02GC2QQMD6T.wifi.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u17-20020a05622a011100b003a598fcddefsm4795108qtw.87.2022.11.09.10.43.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Nov 2022 10:43:06 -0800 (PST)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OFg7r8vhQSWqVM2uDfgOXci0gau/O6nXqlVnAS2NxnI=;
+        b=m7cREpUtcCxAy0+O5kNmvTv8gG3n8rdD6rKw8e3CLq4S1mxmk2IbVjfimNTKCV3bRk
+         pzOMdIqk8hvhAlI4hmbVb8ZRcq/8txt6bVx8Tp25qugp4XIkZflvmboEHekIlotwWxmF
+         CNj2D2EnlYDgk9ODpIg6divmmkKLv6edQzYxMEkwmb9m023V2B9clCO4a0SY6Q83Kf5Y
+         nzwhyvFny8lrcUFtOuv6+c0IEMWwFr1VBqOfOv2Gtyf7XT3mxRK8SZDWpw5hqcLBiKhy
+         OBo7lyxche79aox94VjRRcIk700GUh+uOH46zVvflnfW1TGg4k11JScbPDFUYwNHunfL
+         WbnA==
+X-Gm-Message-State: ANoB5pnaJK0D+lxawg4hcacuQeJdfQ7RZ5iSbMP2dSH/wr7wzaThgqFE
+        hxyP0xrGZ2PGhLKFuHJxCTrIv5zLKVdMdHEnTQC7UA==
+X-Google-Smtp-Source: AA0mqf5n+dAn+5TaDBh4w8UkezBhAeu9AmpKqodcjg6jArzX/8WCXF4BXyH2WHYTmmDcmWhmKesJ8Jd/evYQiWM1K1k=
+X-Received: by 2002:a17:90b:2248:b0:210:10dc:a314 with SMTP id
+ hk8-20020a17090b224800b0021010dca314mr3293096pjb.15.1668019518120; Wed, 09
+ Nov 2022 10:45:18 -0800 (PST)
+MIME-Version: 1.0
+References: <CACZ4nhtmE9Dh9z_O9-A934+q0_8yHEyj+V-DcEsuEWFbPH6BGg@mail.gmail.com>
+ <20221104162733.73345-1-ajit.khaparde@broadcom.com> <20221104162733.73345-6-ajit.khaparde@broadcom.com>
+ <Y2iol/ypwVMqrpQT@unreal>
+In-Reply-To: <Y2iol/ypwVMqrpQT@unreal>
 From:   Ajit Khaparde <ajit.khaparde@broadcom.com>
-To:     ajit.khaparde@broadcom.com
+Date:   Wed, 9 Nov 2022 10:45:01 -0800
+Message-ID: <CACZ4nhvvGzDKPqsZ5F48oLC1u39a_m+ejRyaDieVOLatMC9Uqw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] bnxt_en: Use auxiliary bus calls over proprietary calls
+To:     Leon Romanovsky <leon@kernel.org>
 Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
         edumazet@google.com, jgg@ziepe.ca, kuba@kernel.org,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, michael.chan@broadcom.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        selvin.xavier@broadcom.com,
-        Hongguang Gao <hongguang.gao@broadcom.com>
-Subject: [PATCH v4 6/6] bnxt_en: Remove struct bnxt access from RoCE driver
-Date:   Wed,  9 Nov 2022 10:42:44 -0800
-Message-Id: <20221109184244.7032-7-ajit.khaparde@broadcom.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20221109184244.7032-1-ajit.khaparde@broadcom.com>
-References: <20221109184244.7032-1-ajit.khaparde@broadcom.com>
-MIME-Version: 1.0
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        michael.chan@broadcom.com, netdev@vger.kernel.org,
+        pabeni@redhat.com, selvin.xavier@broadcom.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000000fe5a205ed0e07e9"
+        boundary="000000000000dff14105ed0e0edb"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -71,181 +68,64 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000000fe5a205ed0e07e9
-Content-Transfer-Encoding: 8bit
+--000000000000dff14105ed0e0edb
+Content-Type: text/plain; charset="UTF-8"
 
-From: Hongguang Gao <hongguang.gao@broadcom.com>
+On Sun, Nov 6, 2022 at 10:41 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Fri, Nov 04, 2022 at 09:27:32AM -0700, Ajit Khaparde wrote:
+> > Wherever possible use the function ops provided by auxiliary bus
+> > instead of using proprietary ops.
+> >
+> > Defined bnxt_re_suspend and bnxt_re_resume calls which can be
+> > invoked by the bnxt_en driver instead of the ULP stop/start calls.
+> >
+> > Signed-off-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
+> > Reviewed-by: Andy Gospodarek <andrew.gospodarek@broadcom.com>
+> > ---
+> >  drivers/infiniband/hw/bnxt_re/main.c          | 102 +++++++++++-------
+> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  40 ++++---
+> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   2 -
+> >  3 files changed, 87 insertions(+), 57 deletions(-)
+>
+> <...>
+>
+> >  void bnxt_ulp_sriov_cfg(struct bnxt *bp, int num_vfs)
+> > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+> > index 26b7c627342b..e96f93d38a30 100644
+> > --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+> > +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+> > @@ -29,8 +29,6 @@ struct bnxt_msix_entry {
+> >  struct bnxt_ulp_ops {
+>
+> Once you convert to use AUX bus, this struct should go too.
 
-Decouple RoCE driver from directly accessing L2's private bnxt
-structure. Move the fields needed by RoCE driver into bnxt_en_dev.
-They'll be passed to RoCE driver by bnxt_rdma_aux_device_add()
-function.
+We got rid of the bnxt_en_ops which the bnxt_re driver used to
+communicate with bnxt_en.
+Similarly  We have tried to clean up most of the bnxt_ulp_ops.
+In most of the cases we used the functions and entry points provided
+by the auxiliary bus driver framework.
+As you can see in the v4, there are the minimal functions needed to
+support the functionality.
 
-Signed-off-by: Hongguang Gao <hongguang.gao@broadcom.com>
-Signed-off-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
-Reviewed-by: Andy Gospodarek <andrew.gospodarek@broadcom.com>
-Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/main.c          | 22 ++++++-------------
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  9 ++++++++
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h | 11 ++++++++++
- 3 files changed, 27 insertions(+), 15 deletions(-)
+We will try to work on getting rid of the remaining if we find any
+other viable alternative for those in future.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index b2d9667c02af..2997b1949de9 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -112,16 +112,14 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
- {
- 	struct bnxt_qplib_chip_ctx *chip_ctx;
- 	struct bnxt_en_dev *en_dev;
--	struct bnxt *bp;
- 
- 	en_dev = rdev->en_dev;
--	bp = netdev_priv(en_dev->net);
- 
- 	chip_ctx = kzalloc(sizeof(*chip_ctx), GFP_KERNEL);
- 	if (!chip_ctx)
- 		return -ENOMEM;
--	chip_ctx->chip_num = bp->chip_num;
--	chip_ctx->hw_stats_size = bp->hw_ring_stats_size;
-+	chip_ctx->chip_num = en_dev->chip_num;
-+	chip_ctx->hw_stats_size = en_dev->hw_ring_stats_size;
- 
- 	rdev->chip_ctx = chip_ctx;
- 	/* rest members to follow eventually */
-@@ -129,7 +127,7 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 	rdev->qplib_res.cctx = rdev->chip_ctx;
- 	rdev->rcfw.res = &rdev->qplib_res;
- 	rdev->qplib_res.dattr = &rdev->dev_attr;
--	rdev->qplib_res.is_vf = BNXT_VF(bp);
-+	rdev->qplib_res.is_vf = BNXT_EN_VF(en_dev);
- 
- 	bnxt_re_set_drv_mode(rdev, wqe_mode);
- 	if (bnxt_qplib_determine_atomics(en_dev->pdev))
-@@ -142,10 +140,7 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 
- static void bnxt_re_get_sriov_func_type(struct bnxt_re_dev *rdev)
- {
--	struct bnxt *bp;
--
--	bp = netdev_priv(rdev->en_dev->net);
--	if (BNXT_VF(bp))
-+	if (BNXT_EN_VF(rdev->en_dev))
- 		rdev->is_virtfn = 1;
- }
- 
-@@ -966,7 +961,6 @@ static int bnxt_re_query_hwrm_pri2cos(struct bnxt_re_dev *rdev, u8 dir,
- 				      u64 *cid_map)
- {
- 	struct hwrm_queue_pri2cos_qcfg_input req = {0};
--	struct bnxt *bp = netdev_priv(rdev->netdev);
- 	struct hwrm_queue_pri2cos_qcfg_output resp;
- 	struct bnxt_en_dev *en_dev = rdev->en_dev;
- 	struct bnxt_fw_msg fw_msg;
-@@ -983,7 +977,7 @@ static int bnxt_re_query_hwrm_pri2cos(struct bnxt_re_dev *rdev, u8 dir,
- 	flags |= (dir & 0x01);
- 	flags |= HWRM_QUEUE_PRI2COS_QCFG_INPUT_FLAGS_IVLAN;
- 	req.flags = cpu_to_le32(flags);
--	req.port_id = bp->pf.port_id;
-+	req.port_id = en_dev->pf_port_id;
- 
- 	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
- 			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
-@@ -1559,7 +1553,6 @@ static int bnxt_re_probe(struct auxiliary_device *adev,
- static int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
- {
- 	struct bnxt_re_dev *rdev = auxiliary_get_drvdata(adev);
--	struct bnxt *bp;
- 
- 	if (!rdev)
- 		return 0;
-@@ -1571,15 +1564,14 @@ static int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
- 	 * ie. by calling bnxt_re_dev_stop and release the MSIx vectors as
- 	 * L2 driver want to modify the MSIx table.
- 	 */
--	bp = netdev_priv(rdev->netdev);
- 
- 	ibdev_info(&rdev->ibdev, "Handle device suspend call");
--	/* Check the current device state from L2 structure and move the
-+	/* Check the current device state from bnxt_en_dev and move the
- 	 * device to detached state if FW_FATAL_COND is set.
- 	 * This prevents more commands to HW during clean-up,
- 	 * in case the device is already in error.
- 	 */
--	if (test_bit(BNXT_STATE_FW_FATAL_COND, &bp->state))
-+	if (test_bit(BNXT_STATE_FW_FATAL_COND, &rdev->en_dev->en_state))
- 		set_bit(ERR_DEVICE_DETACHED, &rdev->rcfw.cmdq.flags);
- 
- 	bnxt_re_dev_stop(rdev);
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-index 0df44c14b3fc..a8357fc503bb 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-@@ -288,6 +288,7 @@ void bnxt_ulp_stop(struct bnxt *bp)
- 			pm_message_t pm = {};
- 
- 			adrv = to_auxiliary_drv(adev->dev.driver);
-+			edev->en_state = bp->state;
- 			adrv->suspend(adev, pm);
- 		}
- 	}
-@@ -314,6 +315,7 @@ void bnxt_ulp_start(struct bnxt *bp, int err)
- 			struct auxiliary_driver *adrv;
- 
- 			adrv = to_auxiliary_drv(adev->dev.driver);
-+			edev->en_state = bp->state;
- 			adrv->resume(adev);
- 		}
- 	}
-@@ -475,6 +477,13 @@ static inline void bnxt_set_edev_info(struct bnxt_en_dev *edev, struct bnxt *bp)
- 		edev->flags |= BNXT_EN_FLAG_ROCEV1_CAP;
- 	if (bp->flags & BNXT_FLAG_ROCEV2_CAP)
- 		edev->flags |= BNXT_EN_FLAG_ROCEV2_CAP;
-+	if (bp->flags & BNXT_FLAG_VF)
-+		edev->flags |= BNXT_EN_FLAG_VF;
-+
-+	edev->chip_num = bp->chip_num;
-+	edev->hw_ring_stats_size = bp->hw_ring_stats_size;
-+	edev->pf_port_id = bp->pf.port_id;
-+	edev->en_state = bp->state;
- }
- 
- int bnxt_rdma_aux_device_add(struct bnxt *bp)
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-index f76f06413a88..a065ecda6838 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-@@ -60,6 +60,9 @@ struct bnxt_en_dev {
- 						 BNXT_EN_FLAG_ROCEV2_CAP)
- 	#define BNXT_EN_FLAG_MSIX_REQUESTED	0x4
- 	#define BNXT_EN_FLAG_ULP_STOPPED	0x8
-+	#define BNXT_EN_FLAG_VF			0x10
-+#define BNXT_EN_VF(edev)	((edev)->flags & BNXT_EN_FLAG_VF)
-+
- 	struct bnxt_ulp			*ulp_tbl;
- 	int				l2_db_size;	/* Doorbell BAR size in
- 							 * bytes mapped by L2
-@@ -69,6 +72,14 @@ struct bnxt_en_dev {
- 							 * bytes mapped as non-
- 							 * cacheable.
- 							 */
-+	u16				chip_num;
-+	u16				hw_ring_stats_size;
-+	u16				pf_port_id;
-+	unsigned long			en_state;	/* Could be checked in
-+							 * RoCE driver suspend
-+							 * mode only. Will be
-+							 * updated in resume.
-+							 */
- };
- 
- static inline bool bnxt_ulp_registered(struct bnxt_en_dev *edev)
--- 
-2.37.1 (Apple Git-137.1)
+>
+> >       /* async_notifier() cannot sleep (in BH context) */
+> >       void (*ulp_async_notifier)(void *, struct hwrm_async_event_cmpl *);
+> > -     void (*ulp_stop)(void *);
+> > -     void (*ulp_start)(void *);
+> >       void (*ulp_sriov_config)(void *, int);
+> >       void (*ulp_shutdown)(void *);
+> >       void (*ulp_irq_stop)(void *);
+> > --
+> > 2.37.1 (Apple Git-137.1)
+> >
+>
+>
 
-
---0000000000000fe5a205ed0e07e9
+--000000000000dff14105ed0e0edb
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -316,13 +196,13 @@ KlMYg/Deg9xo3wddCqQIsztHSkR4XaANdn+dbLRQpctZ13BY1lim4uz5bYn3M0IxyZWkQ1JuPHCK
 aRJv0SfR88PoI4RB7NCEHqFwARTj1KvFPQi8pK/YISFydZYbZrxQdyWDidqm4wSuJfpE6i0cWvCd
 u50xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
 MTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwM2Vrj
-4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIwrzS9FVID4gkQ6g+Gd
-nARqqIE6AhNqJzftplo3SUnSMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
-MQ8XDTIyMTEwOTE4NDMwN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
+4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPcbpaHwtB7bdc761XEf
+Ephla5MNl7sLXblOGjUUL77VMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
+MQ8XDTIyMTEwOTE4NDUxOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
 BAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsG
-CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCLFRombWGD3V3Pma1hqM6PhiumE+Ui3YBQpwiz
-LGh1Dm1OnXqBcw7MmTwuOUbW8LdbxnwMIjEZxDW4skrGauTwJOgqsYv5hfAQ8t5MuzSW6G45QTIn
-N/czraOBXLNIwXRxc9JpaEoY9UpC3C/tRcdKrppq+EmOt11OSreznyeswEAb5hYM9ah2Mn4wieI9
-leOJ4vAcOLt3rypZEOT4pikMh7H6dJAnhF26xCWcjH2KjSYCtqF6jN9C/k1Q8L+nGiyEZA1S/8Fu
-6MhyM7cBPoIjLGKVdaBZflKzTiZyrlpKJUSDi0lVWuFP4KcY1u9mKRjtt4Fg0bcST3WS6n1DqLXj
---0000000000000fe5a205ed0e07e9--
+CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBpm0qq4dHUN9iJ4kvzjBckhk2+5DBbeqrE/26z
+cIBr2PUsoisF5MlWZOgvPwnzgAqn8CPYmLKzlA3WrSO7HdmtSy5QhbZFoAT5uahn3u6Ji/5L01Fi
+I7VCVEHaIiDTC+t20NA5fsJ5N57pvtnw9nvqFgycX5CD89GU0YfPVC9HrAnJEwnhFc3hVaigOrJK
+CvwZg7PqRmffKaK6ta3EGTH0BQX7KB9BjeGaBcNKihig5+s0UyaKvln4dPwlalPh/jlKI9HUEkv6
+fDdTHvD6JT4Jha2f2uecPureF7QBAooMS4sn35Jy7AdHw+dM86rlOke3ZPEvYxOeh8b1hfRsjmE7
+--000000000000dff14105ed0e0edb--
