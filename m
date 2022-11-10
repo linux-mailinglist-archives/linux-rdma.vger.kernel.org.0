@@ -2,111 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BF36244FA
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 16:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B16D624A72
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 20:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbiKJPBn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 10:01:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
+        id S229976AbiKJTSa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 14:18:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbiKJPBg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 10:01:36 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5FF1084;
-        Thu, 10 Nov 2022 07:01:35 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id y16so2619744wrt.12;
-        Thu, 10 Nov 2022 07:01:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+nltbjQBKpVbTJLMAnxljJZEHRKo2FfTGRd7DlcozC8=;
-        b=GgegB9t4B9Y0hPUanSoNKX5L1wf0K9nDiDeSpUMm8Ez5oRfuUtO+tumApucC0JjPU9
-         u2+phshdrSIkW0GOdf5f1ywFm/Iz5qd7TsFXkhazZuB+2cNMwPPp2jQGnK3lE4LMtWN9
-         DI7gVYNpMASxkPrBs2IdjjvItsWoVQIBRHd23MvzUijg7mlCFGOqHEyQJ1Db0J2KxQHa
-         MBvpNd4ViOfJti62CNYwF8doLRLByU7W+Mz5jVzLvoWPD8yaBKDPhiAqXcPoiRmplHHN
-         XSngBvQ84JlxcEC2qEi2JNgUwuWC6ls0nE23QUBXNxRt5XXFW/ypGJ4oY5bNRceu2ygb
-         qlWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+nltbjQBKpVbTJLMAnxljJZEHRKo2FfTGRd7DlcozC8=;
-        b=qfir/33A/E7PFn4BfIPLc/4DiHdWnFmIjkpyTeNv2CYgUf0VCzoSRO3TYmVhVApumt
-         iUEfGQRPIs74k5zunuIl/QdlcQYnHjI9n+I/GC6rbAtNQ97aPvlEH2segOhicelKBY2m
-         te6/5dE2EMGithrO/qTl6zQkl0MCnhjQC7ClR6c3jOiJF4d/KOonIJ7axVp9oiBoYxeP
-         nJk9DIzsdzblAfxPYNnMlfqFVH7kQmSOvYKZD1dX7eM0fbqk7KbpQv8C64QpG/RP/WjJ
-         5TS61Poy75O7ZnP5NByVd/APo0hyd2go48T9IG7GH/GaEIKQIyQ1TZyhUpCUgHFZfzp7
-         iVEw==
-X-Gm-Message-State: ACrzQf24XPjqAHw+0J05j61QdXfbuifSnlBuwxNvSTS5lrJx+5qfRh1a
-        tTWmX698xOjugLSQB9RvgIoScN/2OJ0=
-X-Google-Smtp-Source: AMsMyM5pnlAfcRgoDfICNzkU8Ea1J3Zqsj5SBdPX3jUoGJ3dOJcau0gxXyh9lVZXEvACgFs/ChHRTg==
-X-Received: by 2002:a5d:6250:0:b0:236:dc52:adae with SMTP id m16-20020a5d6250000000b00236dc52adaemr33555190wrv.111.1668092493642;
-        Thu, 10 Nov 2022 07:01:33 -0800 (PST)
-Received: from [192.168.0.105] ([77.126.19.155])
-        by smtp.gmail.com with ESMTPSA id h18-20020a5d6e12000000b002365730eae8sm16060704wrz.55.2022.11.10.07.01.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Nov 2022 07:01:33 -0800 (PST)
-Message-ID: <939ca9bb-0207-2b14-8d44-09c47deb72c6@gmail.com>
-Date:   Thu, 10 Nov 2022 17:01:31 +0200
+        with ESMTP id S229528AbiKJTS2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 14:18:28 -0500
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF017218A
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Nov 2022 11:18:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668107906; x=1699643906;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vTjXGjmIE8WtndrVi0YN5eLVmzSvHC3SI9WJ6ZgwI+Y=;
+  b=kcAptMYy7VGZR+Qzdp4UPUqLhGMlR67wdX08kWJJqtwLzDYp3Rgeh1YC
+   bXJEB3AR0T5aY8tJGEpiLbpqr0FMmoi9IJNaXdovJfI2QzrLZzT1i1TcR
+   sM9YWjKM0gvP2ih6ig0OuHQRBCwz/9OYQsNX5CKhrApbg+W6R8YAhzg5x
+   SwKbJNKwQNfMOOPo1gtBSg7JwC/yFI8P9nTgCEwPKPLOLEChqzG20Sp4A
+   VU12zdoyHcvojAuo0GOVBDZWs//8F8mtaBkar+uNDzs3mzmaMuwjEi7Ku
+   LiXOAjC/fa0vfmTJwWbCZYGKDb32pufd8ZMmalA/9j/V0/XlPDyN2qJ4r
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="375669158"
+X-IronPort-AV: E=Sophos;i="5.96,154,1665471600"; 
+   d="scan'208";a="375669158"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2022 11:13:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="631774558"
+X-IronPort-AV: E=Sophos;i="5.96,154,1665471600"; 
+   d="scan'208";a="631774558"
+Received: from lkp-server01.sh.intel.com (HELO e783503266e8) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 10 Nov 2022 11:13:35 -0800
+Received: from kbuild by e783503266e8 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1otCzX-00037U-0G;
+        Thu, 10 Nov 2022 19:13:35 +0000
+Date:   Fri, 11 Nov 2022 03:13:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:mana-shared-6.2] BUILD SUCCESS
+ 28c66cfa45388af1126985d1114e0ed762eb2abd
+Message-ID: <636d4d50.jbUoG+fSwW4tZJE1%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-Subject: Re: [PATCH v3] net/mlx5e: Use kzalloc() in
- mlx5e_accel_fs_tcp_create()
-To:     YueHaibing <yuehaibing@huawei.com>, borisp@nvidia.com,
-        saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        lkayal@nvidia.com, tariqt@nvidia.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20221110134319.47076-1-yuehaibing@huawei.com>
-Content-Language: en-US
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20221110134319.47076-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git mana-shared-6.2
+branch HEAD: 28c66cfa45388af1126985d1114e0ed762eb2abd  net: mana: Define data structures for protection domain and memory registration
 
+elapsed time: 752m
 
-On 11/10/2022 3:43 PM, YueHaibing wrote:
-> 'accel_tcp' is allocted by kvzalloc() now, which is a small chunk.
-> Use kzalloc() directly instead of kvzalloc(), fix the mismatch free.
-> 
-> Fixes: f52f2faee581 ("net/mlx5e: Introduce flow steering API")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
-> v3: use kzalloc() instead of kvzalloc()
-> v2: fix the same issue in mlx5e_accel_fs_tcp_destroy() and a commit log typo
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
-> index 285d32d2fd08..88a5aed9d678 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
-> @@ -377,7 +377,7 @@ int mlx5e_accel_fs_tcp_create(struct mlx5e_flow_steering *fs)
->   	if (!MLX5_CAP_FLOWTABLE_NIC_RX(mlx5e_fs_get_mdev(fs), ft_field_support.outer_ip_version))
->   		return -EOPNOTSUPP;
->   
-> -	accel_tcp = kvzalloc(sizeof(*accel_tcp), GFP_KERNEL);
-> +	accel_tcp = kzalloc(sizeof(*accel_tcp), GFP_KERNEL);
->   	if (!accel_tcp)
->   		return -ENOMEM;
->   	mlx5e_fs_set_accel_tcp(fs, accel_tcp);
+configs tested: 93
+configs skipped: 2
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks.
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+i386                                defconfig
+arm                            lart_defconfig
+i386                             alldefconfig
+powerpc                       holly_defconfig
+m68k                        mvme16x_defconfig
+sh                        edosk7760_defconfig
+x86_64                              defconfig
+arc                                 defconfig
+alpha                               defconfig
+i386                          randconfig-a001
+x86_64                          rhel-8.3-func
+i386                          randconfig-a003
+x86_64                    rhel-8.3-kselftests
+s390                             allmodconfig
+i386                          randconfig-a005
+x86_64                               rhel-8.3
+i386                             allyesconfig
+s390                                defconfig
+x86_64                           allyesconfig
+arm                                 defconfig
+powerpc                           allnoconfig
+arc                              allyesconfig
+powerpc                          allmodconfig
+alpha                            allyesconfig
+s390                             allyesconfig
+mips                             allyesconfig
+x86_64                            allnoconfig
+sh                               allmodconfig
+m68k                             allyesconfig
+x86_64                           rhel-8.3-syz
+x86_64                           rhel-8.3-kvm
+x86_64                         rhel-8.3-kunit
+ia64                             allmodconfig
+arm                        cerfcube_defconfig
+sh                               alldefconfig
+sh                        sh7757lcr_defconfig
+s390                       zfcpdump_defconfig
+powerpc                      arches_defconfig
+powerpc                     sequoia_defconfig
+mips                         cobalt_defconfig
+arm                      footbridge_defconfig
+xtensa                  cadence_csp_defconfig
+mips                         db1xxx_defconfig
+arm                        spear6xx_defconfig
+powerpc                      pasemi_defconfig
+m68k                             allmodconfig
+sh                           se7722_defconfig
+arm                         cm_x300_defconfig
+powerpc              randconfig-c003-20221110
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+sh                   secureedge5410_defconfig
+powerpc                 mpc837x_rdb_defconfig
+xtensa                    xip_kc705_defconfig
+xtensa                          iss_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                         lpc18xx_defconfig
+nios2                         10m50_defconfig
+sh                      rts7751r2d1_defconfig
+sh                           se7724_defconfig
+microblaze                          defconfig
+parisc                           alldefconfig
+arm                          pxa910_defconfig
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+arm64                               defconfig
+powerpc                 linkstation_defconfig
+parisc                generic-64bit_defconfig
+loongarch                           defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+
+clang tested configs:
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+s390                 randconfig-r044-20221110
+riscv                randconfig-r042-20221110
+hexagon              randconfig-r041-20221110
+hexagon              randconfig-r045-20221110
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+powerpc                        fsp2_defconfig
+powerpc                    gamecube_defconfig
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
