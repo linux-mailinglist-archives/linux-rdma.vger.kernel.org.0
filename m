@@ -2,89 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3D3623B8C
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 06:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 071F1623CA6
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 08:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbiKJF7G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 00:59:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
+        id S232661AbiKJHbI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 02:31:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiKJF7F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 00:59:05 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D116C23160;
-        Wed,  9 Nov 2022 21:59:04 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 968C0B820D1;
-        Thu, 10 Nov 2022 05:59:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D535C433C1;
-        Thu, 10 Nov 2022 05:59:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668059942;
-        bh=Kxi2OJfvqKxGgAAbiw6Xg1xqi29Pu3qteZH37x0jI/Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=raEaUbXqv2l8wcv7Bbh/M2h7y8Njan2AqT0NTCBKFM8vstAnuN9fyWXo2ZiuCFuuQ
-         bk35EucUcBvXDjWKd+JgvjnNwG8NoZyZFnRWZRXYAx/FeuvF98llDvA76zQgYGfWg7
-         /RWlg1qFBU7d2nLaVF2X5VkEd/qqDiFNz9pROVNHCSEEv2MdZBJnT3XDk7k9QWANx9
-         H6IZENhdnrJXovIbIXTyowONbsOHhMLlfMOMax6evB/M5+zraPD/6iC2riFMq1qhu1
-         MHr++NcHHHWpcU8yht0tVD8BT4G6CzuFxXmbhuRakzwJ6g/HJw5atJDIIs1G5ycb5F
-         3vMiia8nTE8lQ==
-Date:   Thu, 10 Nov 2022 07:58:57 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>, edumazet@google.com,
-        longli@microsoft.com, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, shiraz.saleem@intel.com,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [Patch v10 00/12] Introduce Microsoft Azure Network Adapter
- (MANA) RDMA driver
-Message-ID: <Y2yTIczYumDTPXpu@unreal>
-References: <1667502990-2559-1-git-send-email-longli@linuxonhyperv.com>
- <Y2qqq9/N65tfYyP0@unreal>
- <20221108150529.764b5ab8@kernel.org>
- <Y2v2CGEWC70g+Ot+@unreal>
- <20221109120544.135f2ee2@kernel.org>
+        with ESMTP id S232448AbiKJHbH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 02:31:07 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D7C32061;
+        Wed,  9 Nov 2022 23:31:06 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id l14so992934wrw.2;
+        Wed, 09 Nov 2022 23:31:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8/dow2hr+K/Ps/4l2mFEzK5sJM1FFNyn+gsI/aO7eO4=;
+        b=ejjW8NpxCmMk59Fll40y5nfBo5eGvsyzWSfCUvEQHttAnj3UTYI+yns7e2t+lrqUko
+         rjbodonumcpbIOHPzT+NkqZkpqZalvYhz4M60Eb6u4UXxHiLGu++6SVC0dz2Vx+PwH7j
+         3Jf1PV3EHQCqXZABGHpew3OTNH/EHnDsyc8+HB6HYieLg6uRpwfz+534DK3gq4FaIBSW
+         w7JTJIdrY1YbNqJG7GFNP5MCIsJLW6R9lYkOYf5EQR387Ygzvd2xNA+J8YxtFGWmUN4K
+         q73z969yAo8FakFLXXWk+iQHbCmtOCHiedZzc8q9o7cBe7M+DoqkRCmZzpZj0/eidtbw
+         pCsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8/dow2hr+K/Ps/4l2mFEzK5sJM1FFNyn+gsI/aO7eO4=;
+        b=W5JNAhrSDIjTLssVsZZS2wa7xoCoEF/z5TVGJT0dG/jIjPX3bWdOsW48v6pqAOlDIi
+         OlxMZuZFDvigbY9ED/VfbVpn+Vd1Y7EJIatTI8stIs8qewalnwv/vvCcLMWtXHxysfS6
+         Md3MpY+7fhkd9lvmKS5JUU55saTcIW0Dyt4zgktMiv6HptoHDHaMSoyYJhsWDDSjtlOu
+         A/il5m/7t72vtG0nu5A5dp4SZkJjl2ofe4v2Px/eGCToffY8DacIarVHo5bg6aRwqYON
+         de50dns5c+y8J8rghqRyhw2N8KKwvvghOjVExLebULVrUjRo2b6k7XzfQGZlDl38HdjV
+         wDXA==
+X-Gm-Message-State: ACrzQf3wQ01nXJb3uwxQecgeNfUT25YGwVD7KZxZQ5FsSRURxxxBgwr3
+        5QuX3Mj8Zan9bPA/Bj9UfZYHUx0lAe8=
+X-Google-Smtp-Source: AMsMyM58b9in8nxGVUHqTWpUM5omfbM7Q/xvh7mppbSkxDOClpOqs5UeghFX9htgE2b0M++LTpS/3Q==
+X-Received: by 2002:a5d:6688:0:b0:238:3e06:9001 with SMTP id l8-20020a5d6688000000b002383e069001mr24032704wru.308.1668065464418;
+        Wed, 09 Nov 2022 23:31:04 -0800 (PST)
+Received: from [192.168.0.105] ([77.126.19.155])
+        by smtp.gmail.com with ESMTPSA id 26-20020a05600c029a00b003cf5ec79bf9sm4102754wmk.40.2022.11.09.23.31.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Nov 2022 23:31:03 -0800 (PST)
+Message-ID: <ba0c84f1-1d99-c0e4-111d-bbd14047ca0b@gmail.com>
+Date:   Thu, 10 Nov 2022 09:31:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221109120544.135f2ee2@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH v2] net/mlx5e: Use kvfree() in mlx5e_accel_fs_tcp_create()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>, borisp@nvidia.com,
+        saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, lkayal@nvidia.com,
+        tariqt@nvidia.com, markzhang@nvidia.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20221108140614.12968-1-yuehaibing@huawei.com>
+ <febe8f20-626a-02d6-c8ed-f0dcf6cd607f@gmail.com>
+ <CANn89iKqm9=uyoymd9OvASjnazQVKVW1kwOxhpazxv_FGaVpFg@mail.gmail.com>
+Content-Language: en-US
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <CANn89iKqm9=uyoymd9OvASjnazQVKVW1kwOxhpazxv_FGaVpFg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 09, 2022 at 12:05:44PM -0800, Jakub Kicinski wrote:
-> On Wed, 9 Nov 2022 20:48:40 +0200 Leon Romanovsky wrote:
-> > Please pull, I collected everything from ML and created shared branch.
-> > 
-> > The following changes since commit f0c4d9fc9cc9462659728d168387191387e903cc:
-> > 
-> >   Linux 6.1-rc4 (2022-11-06 15:07:11 -0800)
-> > 
-> > are available in the Git repository at:
-> > 
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/ mana-shared-6.2
-> > 
-> > for you to fetch changes up to 1e6e19c6e1c100be3d6511345842702a24c155b9:
-> > 
-> >   net: mana: Define data structures for protection domain and memory registration (2022-11-09 20:41:17 +0200)
-> 
-> 
-> It's not on a common base with net-next.
-> Could you rebase on something that's at or below git merge-base ?
 
-Done, I downgraded the branch to be based on -rc3.
 
-Thanks
+On 11/8/2022 9:45 PM, Eric Dumazet wrote:
+> On Tue, Nov 8, 2022 at 9:58 AM Tariq Toukan <ttoukan.linux@gmail.com> wrote:
+>>
+>>
+>>
+>> On 11/8/2022 4:06 PM, YueHaibing wrote:
+>>> 'accel_tcp' is allocted by kvzalloc(), which should freed by kvfree().
+>>>
+>>> Fixes: f52f2faee581 ("net/mlx5e: Introduce flow steering API")
+>>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>>> ---
+>>> v2: fix the same issue in mlx5e_accel_fs_tcp_destroy() and a commit log typo
+>>> ---
+>>>    drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c | 4 ++--
+>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
+>>> index 285d32d2fd08..d7c020f72401 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
+>>> @@ -365,7 +365,7 @@ void mlx5e_accel_fs_tcp_destroy(struct mlx5e_flow_steering *fs)
+>>>        for (i = 0; i < ACCEL_FS_TCP_NUM_TYPES; i++)
+>>>                accel_fs_tcp_destroy_table(fs, i);
+>>>
+>>> -     kfree(accel_tcp);
+>>> +     kvfree(accel_tcp);
+>>>        mlx5e_fs_set_accel_tcp(fs, NULL);
+>>>    }
+>>>
+>>> @@ -397,7 +397,7 @@ int mlx5e_accel_fs_tcp_create(struct mlx5e_flow_steering *fs)
+>>>    err_destroy_tables:
+>>>        while (--i >= 0)
+>>>                accel_fs_tcp_destroy_table(fs, i);
+>>> -     kfree(accel_tcp);
+>>> +     kvfree(accel_tcp);
+>>>        mlx5e_fs_set_accel_tcp(fs, NULL);
+>>>        return err;
+>>>    }
+>>
+>> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+>>
+>> Thanks for your patch.
+> 
+> Although this structure is 64 bytes... Not sure why kvmalloc() has
+> been used for this small chunk.
+
+It's a small chunk indeed. Unnecessary usage of kvmalloc.
+
+Although it's not critical (used only in slowpath), it'd be nice to 
+clean it up and directly call kzalloc, instead of aligning the kfree().
+
+YueHaibing, can you please submit a v3 for this?
+
+Regards,
+Tariq
