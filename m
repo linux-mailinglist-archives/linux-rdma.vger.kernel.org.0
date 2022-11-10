@@ -2,47 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 101B5623E2C
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 10:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 791CE623E2F
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 10:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbiKJJAw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 04:00:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        id S229615AbiKJJBM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 04:01:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbiKJJAv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 04:00:51 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E131D263F;
-        Thu, 10 Nov 2022 01:00:50 -0800 (PST)
+        with ESMTP id S229575AbiKJJBK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 04:01:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9661277A;
+        Thu, 10 Nov 2022 01:01:09 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A9FC4B82113;
-        Thu, 10 Nov 2022 09:00:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E458C433C1;
-        Thu, 10 Nov 2022 09:00:47 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 781BEB82114;
+        Thu, 10 Nov 2022 09:01:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 934A9C433D6;
+        Thu, 10 Nov 2022 09:01:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668070848;
-        bh=lmAo6D7yt1n6CLC/D6badZUNXJiAPTTAowMvYzfQBmw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VGnMq7rJ4QsbZAVAt4yPhSm0t19/XSlUN2OLt0DpEcCWtRpkpU8NykfsT9CIjD8ta
-         zjmUcg32ft/aNwnrT/uLw0nyYpiKP/Vg5gKzGkg1qvgNED7KfV+6AGm0XHRKMx9Vak
-         UYKrUswogO5E4M1PdrjUZMFm/Ph1akIioJjmebXCvdikbT8PYhc9BfUKr36QLP4p7K
-         /zkyvu9z8zJGhvwpCh3PDSZB/NIJXifqabknd0QBtQ3/RjMAH9ULE7xGnUK7rZGz06
-         DUYc+Xim3jqEkqksgv7OeniDM1JupLg8mDxgWDfVl14zbOfKg+CHVJOM35SDew3BZ9
-         U3/DGtU8w2VPw==
-Date:   Thu, 10 Nov 2022 11:00:43 +0200
+        s=k20201202; t=1668070867;
+        bh=bwZxApbwQPyWL7EgpzVCY+Xs2569ep+Xi+vB0ETIhfk=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=QRrFKiT/k3M0g+nWZO9OjFbF9w+58XL02K8VB5cXkT01H/s1S98P+GnrS8wM7fc1Z
+         RmBlSuS1pp7js5YenQuDQNCBMwueH97q4LDwE9Jbr9N253a/avTAJdgW2EbUjcYZyq
+         htjCZMDtPnlPCuyiPPWO/xPFljQ8V4BYC/XEAHVHEm0qH2XGpwRh8bvcaF5a2fhrfr
+         2fpswKxOvmQRSDycB0SfjjntCH/T37n4DziDu9Mr4PK37Ay23xYIkF5J44KPFQPSvD
+         M4h0XJ8fid6MkaVU4d6JEOFA8dyb77oqKyqvLWWd+YBEh3CR0QUUfp4YRtSHdeXjAf
+         +9Di5HDwT+gkQ==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Leonid Ravich <lravich@gmail.com>
-Cc:     jgg@ziepe.ca, mhiramat@kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/MAD: fix might sleep in atomic
-Message-ID: <Y2y9u7Lz7bxYUOqJ@unreal>
-References: <Y2t5feomyznrVj7V@leonid-Inspiron-3421>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+To:     Leonid Ravich <lravich@gmail.com>, mhiramat@kernel.org,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
 In-Reply-To: <Y2t5feomyznrVj7V@leonid-Inspiron-3421>
+References: <Y2t5feomyznrVj7V@leonid-Inspiron-3421>
+Subject: Re: [PATCH] IB/MAD: fix might sleep in atomic
+Message-Id: <166807086256.536401.9653051259980801150.b4-ty@kernel.org>
+Date:   Thu, 10 Nov 2022 11:01:02 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.11.0-dev-87e0e
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,7 +53,7 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 09, 2022 at 11:57:17AM +0200, Leonid Ravich wrote:
+On Wed, 9 Nov 2022 11:57:17 +0200, Leonid Ravich wrote:
 > Sleep in TR_assign not allowd
 > 
 > WARNING: CPU: 0 PID: 1888000 at kernel/trace/ring_buffer.c:2492 rb_commit+0xc1/0x220
@@ -87,21 +88,13 @@ On Wed, Nov 09, 2022 at 11:57:17AM +0200, Leonid Ravich wrote:
 > l:  ret_from_fork+0x35/0x40
 > l: ---[ end trace 78ba8509d3830a16 ]---
 > 
-> Signed-off-by: Leonid Ravich <lravich@gmail.com>
-> ---
->  drivers/infiniband/core/mad.c |  3 ---
->  include/trace/events/ib_mad.h | 13 ++++---------
->  2 files changed, 4 insertions(+), 12 deletions(-)
+> [...]
 
-make[4]: *** [scripts/Makefile.build:250: drivers/infiniband/core/mad.o] Error 1
-drivers/infiniband/core/mad.c:62:20: error: unused variable 'dev' [-Werror,-Wunused-variable]
-        struct ib_device *dev = qp_info->port_priv->device;
-                          ^
-drivers/infiniband/core/mad.c:63:6: error: unused variable 'pnum' [-Werror,-Wunused-variable]
-        u32 pnum = qp_info->port_priv->port_num;
-            ^
-2 errors generated.
+Applied, thanks!
 
-I fixed it together with commit message and applied.
+[1/1] IB/MAD: fix might sleep in atomic
+      https://git.kernel.org/rdma/rdma/c/5c20311d76cbae
 
-Thanks
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
