@@ -2,125 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 504CF624492
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 15:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BF36244FA
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 16:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbiKJOoJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 09:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        id S231165AbiKJPBn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 10:01:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbiKJOoD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 09:44:03 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2045.outbound.protection.outlook.com [40.107.93.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1DE20BD5;
-        Thu, 10 Nov 2022 06:44:02 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xx/XsDAHRccBMfolYRB6mXxe4bfKFUxh2URzRwyT9BYyWLXsRmNr+IykQD3aG3ymTngBaoYwzWeBIgfWsJx8NjMbhil+GSod+y79vMe2BakIveqTZKISjz0S5n4dZwToQgrT+Jgk/xoA5lVYkasSs2eJ4qffibN/T0/G+gY7Us9zpdhxuSMTHJDO09FDnpo721CTYRCrldjaGTtEdWmOHTxQG8EIDqh9yt8wO9VSlcj19hT9pVspIPS9J7Fxv2ZB8+SfVLjNx1cOYRGbMEpAhAOrWBO4hxbzwQ4Zw2Vpctt+wBDcXUg/5jVJj4HTpsqxFfcpyraT/dlWH6mV2Oivtw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VdpW10wksxLxH5VyXFrV5YTx/oG2JSMvpALZPpMUYNw=;
- b=idcRFJnOkpCrCkWmzyt9Ci0s/Pb2xUdmpiyKQNXCE0bR/iBjRMIzRXmxioRaRutyLJhhgfH5aclyjlNrBuGzBpMKDkQ41LIyDZn9EjJFW09OeZUdAe3QlN0ui7p8uHHa0WXkf/tgfgFxJEE8Bx3TbMFjSwnoaAcgcdEJ7xxxDyHyA1TRoQDs3wzc8QDq4vQVARyIpJdK0v1P+/e+cXlOuXHPrmkBy9FbKC4F9XR1E/TF5fpGhoiRZWHc75zkm976EUyEa9VZmnEZb/YDqR2W/MvXOZG4kvL5j78aueT+rOIDt6XyHWitvY7b5FrGR/flzSsTe3iGrzpNAxGco/PU+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VdpW10wksxLxH5VyXFrV5YTx/oG2JSMvpALZPpMUYNw=;
- b=ILaW/+4tYhnj78372fwoyeJjzZXs5n4BYy1WNb1EICBFDzrqSAjWPIDY07d2FNa1myqB3zrCs9xQEkkBDTVDFxQWG2V2gxni7WI5SjQmOznSUjlV6tKSRlAy6jdz7Rt60mInVba8fcv94hKnX75jLbRAQzIb9u022YftLGjFKZbEGRnRJkFt2DK+3LQu9/1mw45PmAZFU3RenpOIUpZHmcQMd6DerN0HGYQEbdYNsSXcQuk4QyudaoQtkBxaztboFO6PlRMtM+y2HzNSdjaEHL1fNrBhEFJwH9EqadPVFHOpcTnuOft0sfWdHT9PqpAFwn7Gdgi8pB5qnF/t4j7F4w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH0PR12MB5330.namprd12.prod.outlook.com (2603:10b6:610:d5::7)
- by BN9PR12MB5083.namprd12.prod.outlook.com (2603:10b6:408:134::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.27; Thu, 10 Nov
- 2022 14:44:00 +0000
-Received: from CH0PR12MB5330.namprd12.prod.outlook.com
- ([fe80::eabd:c1b9:a96f:9bfa]) by CH0PR12MB5330.namprd12.prod.outlook.com
- ([fe80::eabd:c1b9:a96f:9bfa%5]) with mapi id 15.20.5813.013; Thu, 10 Nov 2022
- 14:44:00 +0000
-Message-ID: <613ca9c7-399b-08ac-8333-907128511e80@nvidia.com>
-Date:   Thu, 10 Nov 2022 16:43:53 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101
- Thunderbird/107.0
-Subject: Re: [PATCH v2] net/mlx5: DR, Fix uninitialized var warning
-Content-Language: en-US
-To:     YueHaibing <yuehaibing@huawei.com>, saeedm@nvidia.com,
-        leon@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, kliteyn@nvidia.com,
-        mbloch@nvidia.com, erezsh@mellanox.com, valex@nvidia.com
+        with ESMTP id S231142AbiKJPBg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 10:01:36 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5FF1084;
+        Thu, 10 Nov 2022 07:01:35 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id y16so2619744wrt.12;
+        Thu, 10 Nov 2022 07:01:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+nltbjQBKpVbTJLMAnxljJZEHRKo2FfTGRd7DlcozC8=;
+        b=GgegB9t4B9Y0hPUanSoNKX5L1wf0K9nDiDeSpUMm8Ez5oRfuUtO+tumApucC0JjPU9
+         u2+phshdrSIkW0GOdf5f1ywFm/Iz5qd7TsFXkhazZuB+2cNMwPPp2jQGnK3lE4LMtWN9
+         DI7gVYNpMASxkPrBs2IdjjvItsWoVQIBRHd23MvzUijg7mlCFGOqHEyQJ1Db0J2KxQHa
+         MBvpNd4ViOfJti62CNYwF8doLRLByU7W+Mz5jVzLvoWPD8yaBKDPhiAqXcPoiRmplHHN
+         XSngBvQ84JlxcEC2qEi2JNgUwuWC6ls0nE23QUBXNxRt5XXFW/ypGJ4oY5bNRceu2ygb
+         qlWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+nltbjQBKpVbTJLMAnxljJZEHRKo2FfTGRd7DlcozC8=;
+        b=qfir/33A/E7PFn4BfIPLc/4DiHdWnFmIjkpyTeNv2CYgUf0VCzoSRO3TYmVhVApumt
+         iUEfGQRPIs74k5zunuIl/QdlcQYnHjI9n+I/GC6rbAtNQ97aPvlEH2segOhicelKBY2m
+         te6/5dE2EMGithrO/qTl6zQkl0MCnhjQC7ClR6c3jOiJF4d/KOonIJ7axVp9oiBoYxeP
+         nJk9DIzsdzblAfxPYNnMlfqFVH7kQmSOvYKZD1dX7eM0fbqk7KbpQv8C64QpG/RP/WjJ
+         5TS61Poy75O7ZnP5NByVd/APo0hyd2go48T9IG7GH/GaEIKQIyQ1TZyhUpCUgHFZfzp7
+         iVEw==
+X-Gm-Message-State: ACrzQf24XPjqAHw+0J05j61QdXfbuifSnlBuwxNvSTS5lrJx+5qfRh1a
+        tTWmX698xOjugLSQB9RvgIoScN/2OJ0=
+X-Google-Smtp-Source: AMsMyM5pnlAfcRgoDfICNzkU8Ea1J3Zqsj5SBdPX3jUoGJ3dOJcau0gxXyh9lVZXEvACgFs/ChHRTg==
+X-Received: by 2002:a5d:6250:0:b0:236:dc52:adae with SMTP id m16-20020a5d6250000000b00236dc52adaemr33555190wrv.111.1668092493642;
+        Thu, 10 Nov 2022 07:01:33 -0800 (PST)
+Received: from [192.168.0.105] ([77.126.19.155])
+        by smtp.gmail.com with ESMTPSA id h18-20020a5d6e12000000b002365730eae8sm16060704wrz.55.2022.11.10.07.01.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Nov 2022 07:01:33 -0800 (PST)
+Message-ID: <939ca9bb-0207-2b14-8d44-09c47deb72c6@gmail.com>
+Date:   Thu, 10 Nov 2022 17:01:31 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH v3] net/mlx5e: Use kzalloc() in
+ mlx5e_accel_fs_tcp_create()
+To:     YueHaibing <yuehaibing@huawei.com>, borisp@nvidia.com,
+        saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        lkayal@nvidia.com, tariqt@nvidia.com
 Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20221110134707.43740-1-yuehaibing@huawei.com>
-From:   Roi Dayan <roid@nvidia.com>
-In-Reply-To: <20221110134707.43740-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=UTF-8
+References: <20221110134319.47076-1-yuehaibing@huawei.com>
+Content-Language: en-US
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20221110134319.47076-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0547.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:319::16) To CH0PR12MB5330.namprd12.prod.outlook.com
- (2603:10b6:610:d5::7)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH0PR12MB5330:EE_|BN9PR12MB5083:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5853992d-920c-4433-e978-08dac32a00f4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JIK1pFyTW52qR20QLd2UrFySRXMc+RhRHTCswpRr3xMh6VAxL7WV/HjO3Pj/tEeN7qbJ+W3nkjqULusr/UOvvDnoFjL3UebPXFO/7k/FVeQl8qdS1vYKtK/mxW7zW4kxDWxSq6A1epli86Mh8r5FPBpZfoV2VmveCtHCWA7ysY7T45L9/g4p/iTHCe3DEOXRQIdoKgNeR3gDqaYTVKEyBuzFdQWWk4sJqtgNhWUhr/Gy1BMXmd5R/5e2huJc6NHV1degJXtLOWfEMdXQonQM1XKcI72vnWSzCsqozOGrV3MCGBM9ELkmC6P5yvbaAi1V4iNjPtzlvBIXfTvjkwOF5nNf9/Kkdpab4Fm6BzeO0TXg9PpdmOzzc6xWdNdl6p2MQOSkVdN6+iEkge35wAjTdnU8TMaCoEItFtoGhH8MirzrfvHJR8Cn8kwGGNaGPDX9k+koTSr9W5dJ9kBMXiQbAL0qvBXjhAjhgqZ7GJNtWJw7ySoJh72yKID+W/4OpdDVPAactCVONy/Sxwrq1d2jGFEBUv3NGP7F6FbAmDDruNQPEjLisL5xV0lPDsBfU4h68rDKoKI4OSgbSJXkT156yeBysryvsG5e1INCVYTh24gwxW+12aZ2G1dMgTcdQ/RIMVL1H/HJ6rhm1CI5fZPo+nZ1j940QIvYELrh6AemK/srCnzYCejmJf5Bjd6Lzoq2Mr+Okho2iUQiPRb7TJxrkMe6hpG4wxXiLRWBLdql6AgeIdhausjE7GiC2vFVKNVAhS+hqhswF/6ZKEGyVazunHXEeErbQ2VdSCxfdGBvwgYPY73/a3etbhmseuBgaq5/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR12MB5330.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(136003)(39860400002)(396003)(346002)(366004)(451199015)(31686004)(36756003)(83380400001)(2906002)(38100700002)(5660300002)(921005)(66946007)(31696002)(86362001)(8676002)(41300700001)(6636002)(66556008)(66476007)(316002)(26005)(6486002)(4326008)(6512007)(186003)(8936002)(2616005)(53546011)(6506007)(478600001)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UTF6V2FVZ0ZTVklJOWE3NmtxdGE3QW1MNzVkNHgvb3RISFc5TG40SWp0WlNW?=
- =?utf-8?B?OVhKS21lL1l4OHBNM2lLcmtkK1d3L1FRRG8rMTM3d3BXNm9od3ZPVzBCajg0?=
- =?utf-8?B?RmZHbTd4K2tsUnhQRXdVZjQvVFNORExaU3RhZFFCT25CRW83dmw5U0kyUnhw?=
- =?utf-8?B?KzJBNkVGQWlCejR3bHhMVWVZOEQrYTNpWkdYSzVxN0VjZFRndVVtVFM2b0ox?=
- =?utf-8?B?SXpsYXRmL3BxakppRTRwKzkrZ3IvOHN6MTNnRGU2c2lRNWcrQTEwdDFkcnRS?=
- =?utf-8?B?bEd1eVlhY1pDMXVMNTM2enlWbjA2UEtZbHBySVBWVjB5LzBlTGFWR3p1QWRM?=
- =?utf-8?B?RkIrc1NQWnA1eXFIR0ZDbXNrN2ZPSmh4Qnp1cDkvSnROOGZxc000anMzSjFx?=
- =?utf-8?B?VmVEbG1DUGdGQmpUZkd2VWxsTTBjbDRhdDRGeVdOVmFwWUN4MmlpWWFmOU5w?=
- =?utf-8?B?eEdtTFpQdzNXT0wrQk8zNzdnY0NqRENCYTl1aFdGanZhSnQzZlpKalhWUXlP?=
- =?utf-8?B?bVhkWmNSb1Y1NE5zOFVjazJYUXloNHZtVGtkUDVyS2RGVXd6K0NnS29hU3Ji?=
- =?utf-8?B?SEFQWkxQSEJwc2dQajZ2YmxsVTZDb05VVVdoUnhQdlIzTUpqejZoRzJ1VUVW?=
- =?utf-8?B?T3dNTjlKZjVjVStxQlpqcWwwTVZWd1ZZdW9KamNFcFNGdXlCQnM3ay9XQzdF?=
- =?utf-8?B?MjJkOWY1bEs3NnFUbDZxb2FiT05rclRPNkpwdmlDa2phNmpGY3FjeGRIQnRy?=
- =?utf-8?B?cjV2V2llZGpTUWZvZFVUUzJjcHJTQTZJd0sybFkvVmxtTldubUp1SzRIWit4?=
- =?utf-8?B?L2FUWWFJUVNKcWg4aGlqZk1QMzYzRm9wdFJqaFN1bWVMNU9mZHJlaVNKZjc3?=
- =?utf-8?B?OGx2dXI4NWRlNXJod21LWG9lcVpseXRpazlqYmU5MFo0T0l6UGwyWEZ5MXZV?=
- =?utf-8?B?M3czc0pSeDlBYVFhTytvNnFPUldSNXluaFZrSWFjWlF0RUVSQzBWQjhQWGxq?=
- =?utf-8?B?dTk5RmtPSEpvaVBuQndlVkZBeHlHdGl0Sis0WlQ2SkwwdU14L3ZVWXVWaVA4?=
- =?utf-8?B?M2E2a3E3ZE14WXlyTk9NSytVbFRGaHpuTCt4K3lGR1d3UWk4LzR0ZGRZNDIy?=
- =?utf-8?B?NXErWDFVRFVUTGpwQ3ZnVjg3M1RUU201V1VlRVFaTFkwNU5wTWwxbmJPTk5M?=
- =?utf-8?B?bHRENGJ0VUdzR3pjbFczdWNoYjZNZ2F6YWZCcVhja3c5Q0hja3JyelZRTjZX?=
- =?utf-8?B?Uk42Y00zU2Y5QitZdzBWNGVvajcvMjlFSTBGdDNlbTQ0OE9BNC83Zm5lU3dT?=
- =?utf-8?B?Q29Rc0cyRGQ4djcyMkcvTHdUUWYzS2Qzbko5VCtKV3lPQmlrS2J0eGNodXFM?=
- =?utf-8?B?dWV2bjRBeWMvYjN0Y0NyS1kxdVpMa2tHRVRnSUZ5UHkzcm1LNng0Q3UvRWFY?=
- =?utf-8?B?T2NkcHpqQkhaL3ZZd0VvemV2NHZoaVdZVFEyeVVXemM1dWJPWEtzMTh4bXRU?=
- =?utf-8?B?dXF2amtHMHkreWZBblhKcnBNSVB6SkpEQnV4cTZzejRQYThodW5tUWF3Wmpz?=
- =?utf-8?B?WkNFUVF0L2lTTFA2MUpSQlYwZGpHZkVFemJWOGx5aVVDTE5qY0ZzMjVVYW11?=
- =?utf-8?B?SjYzbE1xVDNPWVU0cFJWQXBpR3JSeUVWdW1zVmFuRS9WajlJUzBxTXZvNWdl?=
- =?utf-8?B?UVlwZXh1eE4wU2xLVUZsNEtCSjdHZFptNUw5dkdDV3JHR041RGYwRGpqR3Nt?=
- =?utf-8?B?WGdCUlRPTjZPSmIyRTh2UzI5NHFtT0hYL05Oa3QyS2QzTFZTUGJaMUlkbkl0?=
- =?utf-8?B?VGoxNVNqR2lZeDhUa0dJZGZvTis0UTN4b0hlNGhRVHc4N0IxZWZUQ2tYOFY3?=
- =?utf-8?B?bVlpOEtwT1B0SnVBb3ljZ3ZWOWVjMjFET3o0YW9wSG1xbXdJTXlkMklCSzYw?=
- =?utf-8?B?Z2thS0NtQXl4UlZJSWdkZVhXbGNoSWtDVTBmcURLSTJwL09CSnE0aFRPMFAv?=
- =?utf-8?B?S3JNU3h6MDFFSG9uSlVoYnVna21wc3JQNTFwODVzcWtTTDJENHkweVVkbERs?=
- =?utf-8?B?MHNtT002STZoZGx4TzUvRlNtTFg3UTB1MEZ6Q3dodjJVSk5oOG93VlJaaFl0?=
- =?utf-8?Q?c6TvMayFpAtgu8A2LsRl2vXcu?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5853992d-920c-4433-e978-08dac32a00f4
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR12MB5330.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2022 14:44:00.3608
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qNIss9Mksocc649ibwcZchqnkHMKBCsQPtvQM9vffPWdEiqouniYnRS5Rov+Fosz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5083
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -129,46 +80,33 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 10/11/2022 15:47, YueHaibing wrote:
-> Smatch warns this:
+On 11/10/2022 3:43 PM, YueHaibing wrote:
+> 'accel_tcp' is allocted by kvzalloc() now, which is a small chunk.
+> Use kzalloc() directly instead of kvzalloc(), fix the mismatch free.
 > 
-> drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c:81
->  mlx5dr_table_set_miss_action() error: uninitialized symbol 'ret'.
-> 
-> Initializing ret with -EOPNOTSUPP and fix missing action case.
-> 
-> Fixes: 7838e1725394 ("net/mlx5: DR, Expose steering table functionality")
+> Fixes: f52f2faee581 ("net/mlx5e: Introduce flow steering API")
 > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > ---
-> v2: init ret to -EOPNOTSUPP
+> v3: use kzalloc() instead of kvzalloc()
+> v2: fix the same issue in mlx5e_accel_fs_tcp_destroy() and a commit log typo
 > ---
->  drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>   drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c
-> index eb81759244d5..7cc4cb7fa392 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_table.c
-> @@ -46,7 +46,7 @@ static int dr_table_set_miss_action_nic(struct mlx5dr_domain *dmn,
->  int mlx5dr_table_set_miss_action(struct mlx5dr_table *tbl,
->  				 struct mlx5dr_action *action)
->  {
-> -	int ret;
-> +	int ret = -EOPNOTSUPP;
->  
->  	if (action && action->action_type != DR_ACTION_TYP_FT)
->  		return -EOPNOTSUPP;
-> @@ -67,6 +67,9 @@ int mlx5dr_table_set_miss_action(struct mlx5dr_table *tbl,
->  			goto out;
->  	}
->  
-> +	if (ret)
-> +		goto out;
-> +
->  	/* Release old action */
->  	if (tbl->miss_action)
->  		refcount_dec(&tbl->miss_action->refcount);
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
+> index 285d32d2fd08..88a5aed9d678 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c
+> @@ -377,7 +377,7 @@ int mlx5e_accel_fs_tcp_create(struct mlx5e_flow_steering *fs)
+>   	if (!MLX5_CAP_FLOWTABLE_NIC_RX(mlx5e_fs_get_mdev(fs), ft_field_support.outer_ip_version))
+>   		return -EOPNOTSUPP;
+>   
+> -	accel_tcp = kvzalloc(sizeof(*accel_tcp), GFP_KERNEL);
+> +	accel_tcp = kzalloc(sizeof(*accel_tcp), GFP_KERNEL);
+>   	if (!accel_tcp)
+>   		return -ENOMEM;
+>   	mlx5e_fs_set_accel_tcp(fs, accel_tcp);
 
-thanks
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-Reviewed-by: Roi Dayan <roid@nvidia.com>
+Thanks.
