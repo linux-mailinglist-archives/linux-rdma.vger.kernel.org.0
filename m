@@ -2,48 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EDA623DB9
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 09:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101B5623E2C
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Nov 2022 10:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbiKJIpL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 03:45:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
+        id S229527AbiKJJAw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 04:00:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbiKJIpJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 03:45:09 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6B3275E6
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Nov 2022 00:45:09 -0800 (PST)
+        with ESMTP id S229575AbiKJJAv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 04:00:51 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E131D263F;
+        Thu, 10 Nov 2022 01:00:50 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B8FA1B820F6
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Nov 2022 08:45:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0AF6C433C1;
-        Thu, 10 Nov 2022 08:45:05 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A9FC4B82113;
+        Thu, 10 Nov 2022 09:00:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E458C433C1;
+        Thu, 10 Nov 2022 09:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668069906;
-        bh=FyxQEI5yp9QF+5kzP2LKfhKlnzhUZ9Z3+3/ZP+WSIjg=;
+        s=k20201202; t=1668070848;
+        bh=lmAo6D7yt1n6CLC/D6badZUNXJiAPTTAowMvYzfQBmw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IZ1J3mecJ7+J+TslIyrsB24EV7Rp8XBtlwNYlCpAgoLhzXRWrXxMcZIBayge+6vGT
-         tbMWkOfHZ+sNY/eYrmmxZlZnhRERgGAiJNoOx7nRDdvia+LQAsvsbMzm3h8WkAhD2i
-         KrR9kATkdQesTcwAIsQfdMGOwmx04+NDiQZ3IoWo5xFqcxLxUmL4XfkP1JUBsfaO4v
-         K6JnoqarLBs4gsAEOeAvFQeAojeJnphiKmOK+9mS2QxGMk7KAz8Q2VwRliIHiU+jXZ
-         oPqspojtR5gWn1PEprTIkv9hLkQX0SnMGIzLJ8CX2o/AW5Tz0cLsdnZGy0ZjOqmxGE
-         37/Y48ZValuTQ==
-Date:   Thu, 10 Nov 2022 10:45:01 +0200
+        b=VGnMq7rJ4QsbZAVAt4yPhSm0t19/XSlUN2OLt0DpEcCWtRpkpU8NykfsT9CIjD8ta
+         zjmUcg32ft/aNwnrT/uLw0nyYpiKP/Vg5gKzGkg1qvgNED7KfV+6AGm0XHRKMx9Vak
+         UYKrUswogO5E4M1PdrjUZMFm/Ph1akIioJjmebXCvdikbT8PYhc9BfUKr36QLP4p7K
+         /zkyvu9z8zJGhvwpCh3PDSZB/NIJXifqabknd0QBtQ3/RjMAH9ULE7xGnUK7rZGz06
+         DUYc+Xim3jqEkqksgv7OeniDM1JupLg8mDxgWDfVl14zbOfKg+CHVJOM35SDew3BZ9
+         U3/DGtU8w2VPw==
+Date:   Thu, 10 Nov 2022 11:00:43 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org,
-        Mustafa Ismail <mustafa.ismail@intel.com>
-Subject: Re: [PATCH v1 for-next 2/3] RDMA/irdma: Fix RQ completion opcode
-Message-ID: <Y2y6DXem7XmKi1JM@unreal>
-References: <20221108162958.1227-1-shiraz.saleem@intel.com>
- <20221108162958.1227-3-shiraz.saleem@intel.com>
+To:     Leonid Ravich <lravich@gmail.com>
+Cc:     jgg@ziepe.ca, mhiramat@kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/MAD: fix might sleep in atomic
+Message-ID: <Y2y9u7Lz7bxYUOqJ@unreal>
+References: <Y2t5feomyznrVj7V@leonid-Inspiron-3421>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221108162958.1227-3-shiraz.saleem@intel.com>
+In-Reply-To: <Y2t5feomyznrVj7V@leonid-Inspiron-3421>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,44 +52,56 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 08, 2022 at 10:29:57AM -0600, Shiraz Saleem wrote:
-> From: Mustafa Ismail <mustafa.ismail@intel.com>
+On Wed, Nov 09, 2022 at 11:57:17AM +0200, Leonid Ravich wrote:
+> Sleep in TR_assign not allowd
 > 
-> The opcode written by HW, in the RQ CQE, is the
-> RoCEv2/iWARP protocol opcode from the received
-> packet and not the SW opcode as currently assumed.
-> Fix this by returning the raw operation type and
-> queue type in the CQE to irdma_process_cqe and add
-> 2 helpers set_ib_wc_op_sq set_ib_wc_op_rq to map
-> IRDMA HW op types to IB op types.
+> WARNING: CPU: 0 PID: 1888000 at kernel/trace/ring_buffer.c:2492 rb_commit+0xc1/0x220
+> CPU: 0 PID: 1888000 Comm: kworker/u9:0 Kdump: loaded Tainted: G           OE    --------- -  - 4.18.0-305.3.1.el8.x86_64 #1
+> l: Hardware name: Red Hat KVM, BIOS 1.13.0-2.module_el8.3.0+555+a55c8938 04/01/2014
+> l: Workqueue: ib-comp-unb-wq ib_cq_poll_work [ib_core]
+> l: RIP: 0010:rb_commit+0xc1/0x220
+> l: RSP: 0000:ffffa8ac80f9bca0 EFLAGS: 00010202
+> l: RAX: ffff8951c7c01300 RBX: ffff8951c7c14a00 RCX: 0000000000000246
+> l: RDX: ffff8951c707c000 RSI: ffff8951c707c57c RDI: ffff8951c7c14a00
+> l: RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> l: R10: ffff8951c7c01300 R11: 0000000000000001 R12: 0000000000000246
+> l: R13: 0000000000000000 R14: ffffffff964c70c0 R15: 0000000000000000
+> l: FS:  0000000000000000(0000) GS:ffff8951fbc00000(0000) knlGS:0000000000000000
+> l: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> l: CR2: 00007f20e8f39010 CR3: 000000002ca10005 CR4: 0000000000170ef0
+> l: Call Trace:
+> l:  ring_buffer_unlock_commit+0x1d/0xa0
+> l:  trace_buffer_unlock_commit_regs+0x3b/0x1b0
+> l:  trace_event_buffer_commit+0x67/0x1d0
+> l:  trace_event_raw_event_ib_mad_recv_done_handler+0x11c/0x160 [ib_core]
+> l:  ib_mad_recv_done+0x48b/0xc10 [ib_core]
+> l:  ? trace_event_raw_event_cq_poll+0x6f/0xb0 [ib_core]
+> l:  __ib_process_cq+0x91/0x1c0 [ib_core]
+> l:  ib_cq_poll_work+0x26/0x80 [ib_core]
+> l:  process_one_work+0x1a7/0x360
+> l:  ? create_worker+0x1a0/0x1a0
+> l:  worker_thread+0x30/0x390
+> l:  ? create_worker+0x1a0/0x1a0
+> l:  kthread+0x116/0x130
+> l:  ? kthread_flush_work_fn+0x10/0x10
+> l:  ret_from_fork+0x35/0x40
+> l: ---[ end trace 78ba8509d3830a16 ]---
 > 
-> Note that for iWARP, only Write with Immediate is
-> supported so the opcode can only be IB_WC_RECV_RDMA_WITH_IMM
-> when there is immediate data present.
-> 
-> Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-> Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Signed-off-by: Leonid Ravich <lravich@gmail.com>
 > ---
->  drivers/infiniband/hw/irdma/uk.c    | 19 +++-----
->  drivers/infiniband/hw/irdma/user.h  |  1 +
->  drivers/infiniband/hw/irdma/utils.c |  2 +
->  drivers/infiniband/hw/irdma/verbs.c | 91 +++++++++++++++++++++++--------------
->  4 files changed, 68 insertions(+), 45 deletions(-)
+>  drivers/infiniband/core/mad.c |  3 ---
+>  include/trace/events/ib_mad.h | 13 ++++---------
+>  2 files changed, 4 insertions(+), 12 deletions(-)
 
-<...>
+make[4]: *** [scripts/Makefile.build:250: drivers/infiniband/core/mad.o] Error 1
+drivers/infiniband/core/mad.c:62:20: error: unused variable 'dev' [-Werror,-Wunused-variable]
+        struct ib_device *dev = qp_info->port_priv->device;
+                          ^
+drivers/infiniband/core/mad.c:63:6: error: unused variable 'pnum' [-Werror,-Wunused-variable]
+        u32 pnum = qp_info->port_priv->port_num;
+            ^
+2 errors generated.
 
-> +static inline void set_ib_wc_op_sq(struct irdma_cq_poll_info *cq_poll_info,
-> +				   struct ib_wc *entry)
-> +{
-> +	switch (cq_poll_info->op_type) {
-> +	case IRDMA_OP_TYPE_RDMA_WRITE:
-> +	case IRDMA_OP_TYPE_RDMA_WRITE_SOL:
-> +	entry->opcode = IB_WC_RDMA_WRITE;
-
-1. Please run clang formatter on your series, I see wrong indentation here.
-2. We are honoring 80-symbol limit, when it is possible. First patch is
-full of such warnings.
-3. No inline functions in .c code please.
+I fixed it together with commit message and applied.
 
 Thanks
