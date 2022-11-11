@@ -2,89 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AA2625359
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 07:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2024625367
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 07:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbiKKGHy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Nov 2022 01:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
+        id S232471AbiKKGKd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Nov 2022 01:10:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbiKKGHw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Nov 2022 01:07:52 -0500
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E09F5E9E5
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Nov 2022 22:07:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1668146869; i=@fujitsu.com;
-        bh=Ddwo0i9PQJCNeKeG7eDIiEq5HIdUKq4hfZkVWUtsHt4=;
-        h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        b=k+QW6lck33CGQFWf5PSdwgtfnanYSigORGHwaidd+fh41lFyvVyg2wqEkSGr0qp8x
-         fApFtv9mC38EihjqTjbhCSBiSrZKL+oe0/TB3XeGZl6v9gjWHk+s3W7AdmO/dX4FD/
-         tx6Q1+Q6sWVtavOdyrrXG8DvtUAyUQKhvEy/e7aVoo3kq2W3bQ8+7EzKJ6T99vNPmK
-         f99uVRd7TmsSIDzrGFqUUOQTWQUJd3+Bg5YMQ+DlkRyS+MXhRlbxvmG/jjvjf8+f2Q
-         rZXtm6cBkN6cn+Pkxo2hgBHxwTnlQmb4E0LKT5lcrEzVtOyCFR3/DtK74zDbiaZBki
-         0Cw3mF5/cgHHg==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplleJIrShJLcpLzFFi42Kxs+GYpLvlWW6
-  ywezpfBb7nz5nsbjybw+jxbNDvSwWDW+5HFg8Wo68ZfVYvOclk0dv8zs2j8+b5AJYolgz85Ly
-  KxJYM7p33mAteOld0d55mqWB8YRNFyMXh5DAFkaJ2btPsUA4y5kkptxayQThbGOUuPNxPpDDy
-  cErYCdx5exGZhCbRUBVYsP9zSwQcUGJkzOfgNmiAkkSVzfcZQWxhQV8JJbfm8XexcjBISIQLL
-  H/TDpImFkgROLF5uNg5UICJRKrJ/0GK2cTcJSYN2sjG4jNCbTq+ebHzBD1FhKL3xxkh7DlJba
-  /nQMWlxBQlGhb8o8dwq6QmDWrjQnCVpO4em4T8wRGoVlIrpuFZNQsJKMWMDKvYjQtTi0qSy3S
-  NdFLKspMzyjJTczM0Uus0k3USy3VLU8tLtE10kssL9ZLLS7WK67MTc5J0ctLLdnECIyRlGJVz
-  x2Mf5b+0TvEKMnBpCTKu88mN1mILyk/pTIjsTgjvqg0J7X4EKMMB4eSBO+lx0A5waLU9NSKtM
-  wcYLzCpCU4eJREePOeAKV5iwsSc4sz0yFSpxh1OabO/refWYglLz8vVUqcN+IpUJEASFFGaR7
-  cCFjquMQoKyXMy8jAwCDEU5BalJtZgir/ilGcg1FJmFcLZApPZl4J3KZXQEcwAR1hl5oFckRJ
-  IkJKqoGp/4zNxEcTHAQUHge1r9SYynwjX8h4ZrOsW9q9+nN7HldUrs+KvLOf9Y3GnAaNKwk+q
-  5mMO/yPrbliGm5Qpi6k/FdB6PGa8O9aa5fxiDzzWPBmu16A0MmJqySnLzlh+HChs+RuqXv7nH
-  dfsAt/KvIv4Zzd5G/fbSya+VVZxTl/LH9/u3Tr4QcJJiq7nn1Y+dlDwvTK4pYv3l0X7Sd0NE0
-  K2H2949s3dYUzN9sWH3o+wffE7UC9TJeaGu5pc2+8K/nT/HbOfcZK4RXRaUWLznVdnmHw94Fx
-  gkeG04dzHzqqfFZ9j3ipVzvjZ2tbojxPkMwVv5d+9+Qfqdiu2lSitubj1cBtAnHKy6Y7e5r3l
-  mU2KrEUZyQaajEXFScCADikRDeYAwAA
-X-Env-Sender: yangx.jy@fujitsu.com
-X-Msg-Ref: server-4.tower-565.messagelabs.com!1668146868!258840!1
-X-Originating-IP: [62.60.8.146]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.100.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 9855 invoked from network); 11 Nov 2022 06:07:48 -0000
-Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
-  by server-4.tower-565.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 11 Nov 2022 06:07:48 -0000
-Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id E06C61000E7;
-        Fri, 11 Nov 2022 06:07:47 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id D2D031000D5;
-        Fri, 11 Nov 2022 06:07:47 +0000 (GMT)
-Received: from [10.167.215.54] (10.167.215.54) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Fri, 11 Nov 2022 06:07:44 +0000
-Message-ID: <60e8ee7b-96f1-6570-471b-d7a7114bd2fd@fujitsu.com>
-Date:   Fri, 11 Nov 2022 14:07:38 +0800
+        with ESMTP id S232483AbiKKGKc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Nov 2022 01:10:32 -0500
+Received: from esa10.fujitsucc.c3s2.iphmx.com (esa10.fujitsucc.c3s2.iphmx.com [68.232.159.247])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D5D5F84E
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Nov 2022 22:10:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1668147030; x=1699683030;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=2SGiScVMLlNnAj8eam1t37UzpU/IwtRsam3qX07AbTQ=;
+  b=tlcOvFDlrcd5Imrq+QIpZ9gwEqSmQ/27QxLlhhES0E4h1jKN0lCFwxDF
+   CTmatXj36oqvmU8/SfG+fOq4rf9Iqo3e6BroLlH+dN76P+VRja7WCAPeU
+   wFidDcDm/dKE7djrZGJGyfEs6b+LhrE3mN8TNfoSMUI3bJQVh51hX+bTk
+   LlOb7knfmVBPy5pNExmzG3sjWoWT4Bo+2uCbc/WurdhNcGF+rBFuO/cNR
+   yJpxtIN+DP7b50ytL8VUlmfDnHfinwZt5P09zrjDt4l2ICyMB2Oz++z/d
+   c2dfY7ME0CWkDtt+u73BOZojwWtR+wZFgKxesah6BEcYhFEGeUC1+rJnv
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="69888797"
+X-IronPort-AV: E=Sophos;i="5.96,156,1665414000"; 
+   d="scan'208";a="69888797"
+Received: from mail-os0jpn01lp2111.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.111])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2022 15:10:25 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RFDgaC7b0yn6e81F0zgdvTaHwHBOYQ3NJzIl1u9N9veyxgrf7P7w4wxh4M7dYv5/pcYywprsoAC+6mqaxzRNYb0yaox1OtLIFO0tYKyKiCOUPSRs+fBZpxvUoFFL1htNuCMEUhvX2gc9NYb2hUiWfZC27VPOjz2MqTV5mm68tIdfGJmp9Rja8K7xUbKfv8266AU9QAPYjEiw4yeQe+vl1Y9iocOIaKaxQE43CNV32YJzCMUrLNUwKCm4IsERLTBNhGt902nxmVryUFocZAHKokQsBFESm6HAxMQhu3yavWV06l7Hg+PgbZ0tZx2lAK4C69pLtf5IWp5oWadzzVQFQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2SGiScVMLlNnAj8eam1t37UzpU/IwtRsam3qX07AbTQ=;
+ b=Zm42w/FM5MSSR/my7QOIWL0SMEjRNIA+Nm3PvZSWYBM4Z9Z1pcBN+HmGUt65l2bdKqMXyLjKHmAvxK7p4PvOKtVYk7rLJFluHR9oBeUitE2FQQdbP6LzXWv3UNI/eRvyPX6le7xcGrmuUoPwwSeVe2JOouhtaeqnfn8Xwo2oqBEJ8BgCBsQ/1sFGNIr5IXyCCrNw3hhfhci/4e+NT/oDy4I0uEB9ZVbbVz4kA83sZVWQ727rAvzhFs81eyOxVkXjOE554wwv0OjfKqcjz4YBkqkaW0ZdWX+hy/1Y0V84wvf/miqfa2DBZqE+a0aV+SDBsO3xaG5w9rb/Wp3OqludAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from OS3PR01MB10390.jpnprd01.prod.outlook.com
+ (2603:1096:604:1fb::14) by TYCPR01MB10311.jpnprd01.prod.outlook.com
+ (2603:1096:400:1d7::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.13; Fri, 11 Nov
+ 2022 06:10:22 +0000
+Received: from OS3PR01MB10390.jpnprd01.prod.outlook.com
+ ([fe80::6c12:df68:ca6:7522]) by OS3PR01MB10390.jpnprd01.prod.outlook.com
+ ([fe80::6c12:df68:ca6:7522%5]) with mapi id 15.20.5813.013; Fri, 11 Nov 2022
+ 06:10:22 +0000
+From:   "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
+To:     Yanjun Zhu <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@nvidia.com>
+CC:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
+        "Yasunori Gotou (Fujitsu)" <y-goto@fujitsu.com>,
+        "mbloch@nvidia.com" <mbloch@nvidia.com>,
+        "liangwenpeng@huawei.com" <liangwenpeng@huawei.com>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "tomasz.gromadzki@intel.com" <tomasz.gromadzki@intel.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [for-next PATCH v5 00/11] RDMA/rxe: Add RDMA FLUSH operation
+Thread-Topic: [for-next PATCH v5 00/11] RDMA/rxe: Add RDMA FLUSH operation
+Thread-Index: AQHY0jWKfhUFQlLLK0eS5npEn6TuzK4kSPYAgBUC+ACAACdjgIAAC9yAgAAE8wA=
+Date:   Fri, 11 Nov 2022 06:10:22 +0000
+Message-ID: <9fa30c8b-cb8d-efec-5896-b96177929d08@fujitsu.com>
+References: <20220927055337.22630-1-lizhijian@fujitsu.com>
+ <Y1wX8n9R7dkLo0KU@nvidia.com>
+ <a37814f9-ed8a-d70a-3024-466700276864@linux.dev>
+ <00a3797c-9759-d4ec-6d6f-8f157cd2a220@fujitsu.com>
+ <b9f3550a-6fbc-b279-22a3-50285da82e5d@linux.dev>
+In-Reply-To: <b9f3550a-6fbc-b279-22a3-50285da82e5d@linux.dev>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS3PR01MB10390:EE_|TYCPR01MB10311:EE_
+x-ms-office365-filtering-correlation-id: 2c92f751-6da1-4f7c-d597-08dac3ab6a8a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6Dg32p21r0TkkP6PVdwjqEde5hTIM71Q7R46bd1ycXgNwqnSTeIlBHcreoycK92XfOHJwDAPKWoC1iql4e6TaQmrRatx8jPMvdR/14lxt1xagAs6ULjO7CPrSr4BJnDnrmgcBIg4ftc2i5FBiSGvt4yLn0sRluk9FxMR2ZWMDpROD25X6FqVCA7ddGYGvcd7Q0eettFrDnthiS/2uLGFCpCHRJA908D9SNqalEpWEmqg47d06te8LnXaS9zOnNnwANQgE3qnGcu/RQlvpuE4W9vCF2hiJrhkyHfu0evDQTn0FAFn/z61Zu5pDbpxOZskWc+3PH5Q0c9bZRwd5aZ+xKkD8cptj5NT8fS6UxC2Trbjati+/XB7rCTIfDEtwE0REofnRMYP6VzhBnzZ4TtkclY75a596P2WnNlsaIEVyu0D0uQCU6QPMI8QPkD0lelFSOOYZMZwPUEYeeuYQGx8wSfxr9k1X7j0tlXriluSBwBFqVe2/wwbhQYoeEHu8+XdCcfLmhsWSWmQapcMrybCtcaqA8lvvgWFF+QzD126cB6nbqhgvynjs53fOZRf+wuUX9lj5yBis89MGfsVK9EiiiM0GjrgP6ts6yrVgsqBrEjt4hdOQvPRmLs22QRm/Qmc0bDN0v1WCq92LOxpj9tjdp9hT4S52LQFaVMz4hOZyOYQTGscLh4WuvBdIoEcZCIC0x4jHjOTYeRnKa2J/VWtsZWH4OeYQPF0HwWQNoWp9jrarZ8PFNcc6KkK3k6q2lBb15kdwgh60dlvOCNUPF0Ox6lULt95JW7WnOerKosvKQZ1s1KJVK0FD2ahl2DlOzQ3GB6oD2TAlPPWRp2QEn1yhe+IXF0tXWfj49tNlRw6IcMj6401Z8rPc4D365GgRyRYADhp5YSSPCiMeyQM2jW1FA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB10390.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(366004)(376002)(396003)(136003)(1590799012)(451199015)(186003)(5660300002)(66946007)(66556008)(76116006)(38070700005)(8936002)(31686004)(7416002)(41300700001)(38100700002)(82960400001)(4326008)(66446008)(66476007)(2906002)(8676002)(122000001)(64756008)(91956017)(6512007)(71200400001)(53546011)(26005)(86362001)(85182001)(54906003)(110136005)(36756003)(316002)(83380400001)(6506007)(31696002)(1580799009)(2616005)(478600001)(6486002)(966005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YnplSWV1eEFzY29yZ0xtWXVsRVBtMUltdENXN0NjRjhFR1RYT3hqUFQ1NlF4?=
+ =?utf-8?B?RkwxcEo2T1FMN216Y1pCdjgwTXN3YWdxanlibW5WNFZkSUNXZng0RUVoR1po?=
+ =?utf-8?B?YjZPOTZFcGVMQlpuQjBwUkpBSmhqeHZBTDQvNE1UU3BBM0JRTStFWTU3Mlpx?=
+ =?utf-8?B?RnlHbmZYV05FbFczaGFsLys0MFh0a3dUbjh0aFJSUlRlUlg0TDM1ZUJWZUJ3?=
+ =?utf-8?B?KzVudForay9nM1N0bHdqSHQ5RDYzMHhKcDMyU25QS1NLSHNqYThtNlNVQlhw?=
+ =?utf-8?B?L2VxbkMycEdLLzl4U2lqZDZ1UWE5ak5EQWFhVXRqcVRTMFcxUTMvWkEzby81?=
+ =?utf-8?B?Skd1RWxvVHpQcnoydXRDL2xFVXV3bVR1TU5McWZ5clF6ZlBuc1dPak00blU2?=
+ =?utf-8?B?cmZMMzdXbG82aENHWWRqb1BkRzh3SlQzbGI2YW03MlBXNDVPOFFGUURCNHRP?=
+ =?utf-8?B?ZUtIelNEVGlPakxvU1pHZHZqNm5BMkg2M1ZMYmdaVHhBczNsSHFUN2o4N3VH?=
+ =?utf-8?B?RjgzNXNzR0lwUjNjOXBKdFpvTUpWclBhVm8wRy9qVy9UK3RnMXVvRERLVUF6?=
+ =?utf-8?B?ZGhFVG5IQTdYMGg0UENQSE5MSjhNMEpBa3QwTGRMTE1KaHI4SE5pTTc3YXRv?=
+ =?utf-8?B?VXRQOFF2MkNjKzk1bFIrSm0vUkJtVUptNlR0TWxKaElqbTR3ZmQ0eWV1bVBN?=
+ =?utf-8?B?QVA5c0I0MmVlaER1cHNWSWpPRkU4cWxOTjRYQllFSmIyVDI3VTlPbzhLdkxC?=
+ =?utf-8?B?dGFiczNWNjVVRWtpV05vbUVLOXJRRXV6L0FWZWN4bEdpYXJZS0NINWgyQ2ZD?=
+ =?utf-8?B?bFpFMGtYZTcxeTVQV29VUEJycTdudzJURGhrWTMvaVNyd2FxSTRtcFBCdnFt?=
+ =?utf-8?B?RkZCZ2dVSUZaUnM3QzlZRFZIMDJ5bXNKRmd0dFNtMkc5NDlKaTgxK3hzYkxn?=
+ =?utf-8?B?ZDlUT0JhMENJY1pGRzloZDRoU1BRK01RVDkwV2x3VFBnclZUcmJhK1M1L0FS?=
+ =?utf-8?B?OWxDeU42cklpdTkvenduVUwrTER4V1M2MGU3Z0xJY3YrVndrQ1pUTGR6N1Fz?=
+ =?utf-8?B?c1BnZWpDTDBSenF6ZjlDWlRER1c0eHpsSWxnODh4bUR2SGQ5UXNHb1gwemc4?=
+ =?utf-8?B?enl0bUxhNnlZdk9ud0Nyakl4SVRsUytLbk92c0JWWDFhRXZhcWxKb25lS1ow?=
+ =?utf-8?B?Nm43aE1EbjVmOGFaZHc3bXRsYmIrVnVPSXdSYVlMYkhXRVpXckFmYnpBdXNu?=
+ =?utf-8?B?NnM4SlMxSGNnc2w4dTgrQXhYT21PQnJoUzdVUWhCZVRkaEVLaVJhQXBVdVQy?=
+ =?utf-8?B?cXNyUkxXU2pBVDVSNmhDMlIzbWM1aFFaM2JpWE1ieE56aEpsNTBGKzRSQndY?=
+ =?utf-8?B?V3kvUkx4VjRVcUNhNHNsVTN0QStxN2hSTk1wRllXbVhiNm1DSDFMTFhTeFc2?=
+ =?utf-8?B?L044RjhXQ1luWEtFQVZUTVdLakJGOFpsQ3pXZmNZUFFqU1N4QkZjM09TWEE0?=
+ =?utf-8?B?V1BZUHdrY29GVVduemRLczQzeGphT2EySlJhS0ZBSHhheFFtV1BMWDZsdjk2?=
+ =?utf-8?B?YU9TTXZ1RWlydlBEcUpsbVVXMHllbHg1ditTNGNvVFBsdnBKSGFwbGNINGF6?=
+ =?utf-8?B?MWRTTVVBenl1c0lQTVNKZHNZUWlBRW1VTmIybjMwWFQ4eEtiSFdJMDVzZ01D?=
+ =?utf-8?B?S2FBWjJacFpSNmNoRzBuUUFCOHhqTVY4TFNYYTJnSnI0K2k1RnBoelI5ZFpa?=
+ =?utf-8?B?bStjRU5CL3NGVURuajNIZ1c3dnNVcFJHUUpmemFlNUZ3d3Mvb1dhN3NFUFlT?=
+ =?utf-8?B?QURmTVQzOUQyYStSOVZqOVAySGJkZDFYQTRCdVNra2tuU0xXODc4U2plenNK?=
+ =?utf-8?B?cFZCL2F3UnRVR2Myc2xOaHkrZVdublV3bE1EeXpjRmtraUdKdWZZNEkzcUtN?=
+ =?utf-8?B?MnlYTGFrYzJNRlZRWTBmajZ1MWtjYm9rckJ0bThFWkJHS1VkVStJWW9IbHlG?=
+ =?utf-8?B?djkvYStiaWgrbXRWUFFiSEQ4a1dENUJycVE3RkZGTHBlR2FpUUMySlYyOVZI?=
+ =?utf-8?B?QWRHNEhUTUdJeVg3am5nMzhwekNZc291bGlJUnU3V0pORkhjcythNW54OWpG?=
+ =?utf-8?B?Vm1xYUlIc2VGdWY0ZUlycDRTaE03TUxHS3VidFB3UmM5QjJIV2hOZnJ3NzZO?=
+ =?utf-8?B?YlE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <77B9A94A48592C4093DACB912AFF4B84@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] RDMA/rxe: Replace page_address() with kmap_local_page()
-To:     Yunsheng Lin <linyunsheng@huawei.com>, <jgg@nvidia.com>,
-        <ira.weiny@intel.com>
-CC:     <linux-rdma@vger.kernel.org>, <lizhijian@fujitsu.com>,
-        <Gotoy-goto@fujitsu.com>
-References: <1668136765-34-1-git-send-email-yangx.jy@fujitsu.com>
- <11a89848-c4db-6465-8b55-9fc600392cf7@huawei.com>
-From:   =?UTF-8?B?WWFuZywgWGlhby/mnagg5pmT?= <yangx.jy@fujitsu.com>
-In-Reply-To: <11a89848-c4db-6465-8b55-9fc600392cf7@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.215.54]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB10390.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c92f751-6da1-4f7c-d597-08dac3ab6a8a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2022 06:10:22.0029
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yxKXC7SrjibSJ3Lr4E597lL/AL/X6ZClRsR3KHNEG724uYIukhd7sgztIoC8rpHzZYRQIUHCqv3bpXzqc1yr9Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB10311
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,314 +156,42 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2022/11/11 11:34, Yunsheng Lin wrote:
-> On 2022/11/11 11:19, Xiao Yang wrote:
->> 1) Use kmap_local_page() for new in-kernel memory protection schemes.
->> 2) Do some cleanup(e.g. remove struct rxe_phys_buf).
-> 
-> As the commit log above, it seems better to spilt it to two patches:
-> Patch 1: Do some cleanup
-> Patch 2: Use kmap_local_page()
-
-Hi Lin,
-
-It's fine for me to split the patchset. I will send v2 soon.
-
-> 
-> 
-> Alas, does not pin_user_pages_fast() in ib_umem_get() ensure the
-> user memory is accessible in the kernel space, which means we
-> can use page_address() safely?
-
-Now it's safe to call page_address() here but it will be broken when new 
-in-kernel memory protection schemes(e.g. PKS[1]) are applied in the future.
-
-[1]: 
-https://lore.kernel.org/lkml/20220419170649.1022246-1-ira.weiny@intel.com/
-
-Jason suggested that we should replace page_address() with 
-kmap_local_page(), please see the detailed discussion[2][3]
-
-[2]: 
-https://lore.kernel.org/linux-rdma/20220121160654.GC773547@iweiny-DESK2.sc.intel.com/
-[3]: https://lore.kernel.org/linux-rdma/Y1bFG%2FOM5zSOoWcr@nvidia.com/
-
-Best Regards,
-Xiao Yang
-> 
-> 
->>
->> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
->> ---
->>   drivers/infiniband/sw/rxe/rxe_loc.h   |  2 +
->>   drivers/infiniband/sw/rxe/rxe_mr.c    | 84 +++++++++++++--------------
->>   drivers/infiniband/sw/rxe/rxe_resp.c  |  1 +
->>   drivers/infiniband/sw/rxe/rxe_verbs.c |  6 +-
->>   drivers/infiniband/sw/rxe/rxe_verbs.h |  9 +--
->>   5 files changed, 45 insertions(+), 57 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
->> index c2a5c8814a48..a63d29156a66 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
->> @@ -68,6 +68,8 @@ void rxe_mr_init_dma(int access, struct rxe_mr *mr);
->>   int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
->>   		     int access, struct rxe_mr *mr);
->>   int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr);
->> +void *rxe_map_to_vaddr(struct rxe_mr *mr, int map_index, int addr_index, size_t offset);
->> +void rxe_unmap_vaddr(struct rxe_mr *mr, void *vaddr);
->>   int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
->>   		enum rxe_mr_copy_dir dir);
->>   int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info *dma,
->> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
->> index bc081002bddc..4246b7f34a29 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
->> @@ -115,13 +115,10 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
->>   		     int access, struct rxe_mr *mr)
->>   {
->>   	struct rxe_map		**map;
->> -	struct rxe_phys_buf	*buf = NULL;
->>   	struct ib_umem		*umem;
->>   	struct sg_page_iter	sg_iter;
->>   	int			num_buf;
->> -	void			*vaddr;
->>   	int err;
->> -	int i;
->>   
->>   	umem = ib_umem_get(&rxe->ib_dev, start, length, access);
->>   	if (IS_ERR(umem)) {
->> @@ -144,32 +141,19 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
->>   
->>   	mr->page_shift = PAGE_SHIFT;
->>   	mr->page_mask = PAGE_SIZE - 1;
->> +	mr->ibmr.page_size = PAGE_SIZE;
->>   
->> -	num_buf			= 0;
->> +	num_buf = 0;
->>   	map = mr->map;
->>   	if (length > 0) {
->> -		buf = map[0]->buf;
->> -
->>   		for_each_sgtable_page (&umem->sgt_append.sgt, &sg_iter, 0) {
->>   			if (num_buf >= RXE_BUF_PER_MAP) {
->>   				map++;
->> -				buf = map[0]->buf;
->>   				num_buf = 0;
->>   			}
->>   
->> -			vaddr = page_address(sg_page_iter_page(&sg_iter));
->> -			if (!vaddr) {
->> -				pr_warn("%s: Unable to get virtual address\n",
->> -						__func__);
->> -				err = -ENOMEM;
->> -				goto err_cleanup_map;
->> -			}
->> -
->> -			buf->addr = (uintptr_t)vaddr;
->> -			buf->size = PAGE_SIZE;
->> +			map[0]->addrs[num_buf] = (uintptr_t)sg_page_iter_page(&sg_iter);
->>   			num_buf++;
->> -			buf++;
->> -
->>   		}
->>   	}
->>   
->> @@ -181,10 +165,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
->>   
->>   	return 0;
->>   
->> -err_cleanup_map:
->> -	for (i = 0; i < mr->num_map; i++)
->> -		kfree(mr->map[i]);
->> -	kfree(mr->map);
->>   err_release_umem:
->>   	ib_umem_release(umem);
->>   err_out:
->> @@ -216,9 +196,9 @@ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
->>   			size_t *offset_out)
->>   {
->>   	size_t offset = iova - mr->ibmr.iova + mr->offset;
->> +	u64 length = mr->ibmr.page_size;
->>   	int			map_index;
->> -	int			buf_index;
->> -	u64			length;
->> +	int			addr_index;
->>   
->>   	if (likely(mr->page_shift)) {
->>   		*offset_out = offset & mr->page_mask;
->> @@ -227,27 +207,46 @@ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
->>   		*m_out = offset >> mr->map_shift;
->>   	} else {
->>   		map_index = 0;
->> -		buf_index = 0;
->> -
->> -		length = mr->map[map_index]->buf[buf_index].size;
->> +		addr_index = 0;
->>   
->>   		while (offset >= length) {
->>   			offset -= length;
->> -			buf_index++;
->> +			addr_index++;
->>   
->> -			if (buf_index == RXE_BUF_PER_MAP) {
->> +			if (addr_index == RXE_BUF_PER_MAP) {
->>   				map_index++;
->> -				buf_index = 0;
->> +				addr_index = 0;
->>   			}
->> -			length = mr->map[map_index]->buf[buf_index].size;
->>   		}
->>   
->>   		*m_out = map_index;
->> -		*n_out = buf_index;
->> +		*n_out = addr_index;
->>   		*offset_out = offset;
->>   	}
->>   }
->>   
->> +void *rxe_map_to_vaddr(struct rxe_mr *mr, int map_index, int addr_index, size_t offset)
->> +{
->> +	void *vaddr = NULL;
->> +
->> +	if (mr->ibmr.type == IB_MR_TYPE_USER) {
->> +		vaddr = kmap_local_page((struct page *)mr->map[map_index]->addrs[addr_index]);
->> +		if (vaddr == NULL) {
->> +			pr_warn("Failed to map page");
->> +			return NULL;
->> +		}
->> +	} else
->> +		vaddr = (void *)(uintptr_t)mr->map[map_index]->addrs[addr_index];
->> +
->> +	return vaddr + offset;
->> +}
->> +
->> +void rxe_unmap_vaddr(struct rxe_mr *mr, void *vaddr)
->> +{
->> +	if (mr->ibmr.type == IB_MR_TYPE_USER)
->> +		kunmap_local(vaddr);
->> +}
->> +
->>   void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
->>   {
->>   	size_t offset;
->> @@ -273,13 +272,13 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
->>   
->>   	lookup_iova(mr, iova, &m, &n, &offset);
->>   
->> -	if (offset + length > mr->map[m]->buf[n].size) {
->> +	if (offset + length > mr->ibmr.page_size) {
->>   		pr_warn("crosses page boundary\n");
->>   		addr = NULL;
->>   		goto out;
->>   	}
->>   
->> -	addr = (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
->> +	addr = rxe_map_to_vaddr(mr, m, n, offset);
->>   
->>   out:
->>   	return addr;
->> @@ -294,8 +293,6 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
->>   	int			err;
->>   	int			bytes;
->>   	u8			*va;
->> -	struct rxe_map		**map;
->> -	struct rxe_phys_buf	*buf;
->>   	int			m;
->>   	int			i;
->>   	size_t			offset;
->> @@ -325,17 +322,14 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
->>   
->>   	lookup_iova(mr, iova, &m, &i, &offset);
->>   
->> -	map = mr->map + m;
->> -	buf	= map[0]->buf + i;
->> -
->>   	while (length > 0) {
->>   		u8 *src, *dest;
->>   
->> -		va	= (u8 *)(uintptr_t)buf->addr + offset;
->> +		va = (u8 *)rxe_map_to_vaddr(mr, m, i, offset);
->>   		src = (dir == RXE_TO_MR_OBJ) ? addr : va;
->>   		dest = (dir == RXE_TO_MR_OBJ) ? va : addr;
->>   
->> -		bytes	= buf->size - offset;
->> +		bytes = mr->ibmr.page_size - offset;
->>   
->>   		if (bytes > length)
->>   			bytes = length;
->> @@ -346,14 +340,14 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
->>   		addr	+= bytes;
->>   
->>   		offset	= 0;
->> -		buf++;
->>   		i++;
->>   
->>   		if (i == RXE_BUF_PER_MAP) {
->>   			i = 0;
->> -			map++;
->> -			buf = map[0]->buf;
->> +			m++;
->>   		}
->> +
->> +		rxe_unmap_vaddr(mr, va);
->>   	}
->>   
->>   	return 0;
->> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
->> index c32bc12cc82f..31f9ba11a921 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
->> @@ -652,6 +652,7 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
->>   
->>   	ret = RESPST_ACKNOWLEDGE;
->>   out:
->> +	rxe_unmap_vaddr(mr, vaddr);
->>   	return ret;
->>   }
->>   
->> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
->> index bcdfdadaebbc..13e4d660cb02 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
->> @@ -948,16 +948,12 @@ static int rxe_set_page(struct ib_mr *ibmr, u64 addr)
->>   {
->>   	struct rxe_mr *mr = to_rmr(ibmr);
->>   	struct rxe_map *map;
->> -	struct rxe_phys_buf *buf;
->>   
->>   	if (unlikely(mr->nbuf == mr->num_buf))
->>   		return -ENOMEM;
->>   
->>   	map = mr->map[mr->nbuf / RXE_BUF_PER_MAP];
->> -	buf = &map->buf[mr->nbuf % RXE_BUF_PER_MAP];
->> -
->> -	buf->addr = addr;
->> -	buf->size = ibmr->page_size;
->> +	map->addrs[mr->nbuf % RXE_BUF_PER_MAP] = addr;
->>   	mr->nbuf++;
->>   
->>   	return 0;
->> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
->> index 22a299b0a9f0..d136f02d5b56 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
->> @@ -277,15 +277,10 @@ enum rxe_mr_lookup_type {
->>   	RXE_LOOKUP_REMOTE,
->>   };
->>   
->> -#define RXE_BUF_PER_MAP		(PAGE_SIZE / sizeof(struct rxe_phys_buf))
->> -
->> -struct rxe_phys_buf {
->> -	u64      addr;
->> -	u64      size;
->> -};
->> +#define RXE_BUF_PER_MAP		(PAGE_SIZE / sizeof(u64))
->>   
->>   struct rxe_map {
->> -	struct rxe_phys_buf	buf[RXE_BUF_PER_MAP];
->> +	u64 addrs[RXE_BUF_PER_MAP];
->>   };
->>   
->>   static inline int rkey_is_mw(u32 rkey)
->>
+DQoNCk9uIDExLzExLzIwMjIgMTM6NTIsIFlhbmp1biBaaHUgd3JvdGU6DQo+IOWcqCAyMDIyLzEx
+LzExIDEzOjEwLCBsaXpoaWppYW5AZnVqaXRzdS5jb20g5YaZ6YGTOg0KPj4NCj4+DQo+PiBPbiAx
+MS8xMS8yMDIyIDEwOjQ5LCBZYW5qdW4gWmh1IHdyb3RlOg0KPj4+IOWcqCAyMDIyLzEwLzI5IDE6
+NTcsIEphc29uIEd1bnRob3JwZSDlhpnpgZM6DQo+Pj4+IE9uIFR1ZSwgU2VwIDI3LCAyMDIyIGF0
+IDAxOjUzOjI2UE0gKzA4MDAsIExpIFpoaWppYW4gd3JvdGU6DQo+Pj4+PiBIZXkgZm9sa3MsDQo+
+Pj4+Pg0KPj4+Pj4gRmlyc3RseSBpIHdhbnQgdG8gc2F5IHRoYW5rIHlvdSB0byBhbGwgeW91IGd1
+eXMsIGVzcGVjaWFsbHkgQm9iLCB3aG8NCj4+Pj4+IGluIHRoZQ0KPj4+Pj4gcGFzdCAxKyBtb250
+aCwgZ2F2ZSBtZSBhIGxvdHMgb2YgaWRlYSBhbmQgaW5zcGlyYXRpb24uDQo+Pj4+DQo+Pj4+IEkg
+d291bGQgbGlrZSBpdCBpZiBzb21lb25lIGZhbWlsaWFyIHdpdGggcnhlIGNvdWxkIHJldmlld2Vk
+LWJ5IHRoZQ0KPj4+PiBwcm90b2NvbCBwYXJ0cy4NCj4+Pg0KPj4+IEhpLCBKYXNvbg0KPj4+DQo+
+Pj4gSSByZXZpZXdlZCB0aGVzZSBwYXRjaGVzLiBJIGFtIGZpbmUgd2l0aCB0aGVzZSBwYXRjaGVz
+Lg0KPj4+DQo+Pj4gSGksIFpoaWppYW4NCj4+Pg0KPj4+IEkgbm90aWNlZCB0aGUgZm9sbG93aW5n
+czoNCj4+PiAiDQo+Pj4gJCAuL3JkbWFfZmx1c2hfc2VydmVyIC1zIFtzZXJ2ZXJfYWRkcmVzc10g
+LXAgW3BvcnRfbnVtYmVyXQ0KPj4+IGNsaWVudDoNCj4+PiAkIC4vcmRtYV9mbHVzaF9jbGllbnQg
+LXMgW3NlcnZlcl9hZGRyZXNzXSAtcCBbcG9ydF9udW1iZXJdDQo+Pj4gIg0KPj4+IENhbiB5b3Ug
+bWVyZ2UgdGhlIHNlcnZlciBhbmQgdGhlIGNsaWVudCB0byByZG1hLWNvcmU/DQo+Pg0KPj4gWWFu
+anVuLA0KPj4NCj4+IFllcywgdGhlcmUgd2FzIGFscmVhZHkgYSBkcmFmdCBQUiBoZXJlDQo+PiBo
+dHRwczovL2dpdGh1Yi5jb20vbGludXgtcmRtYS9yZG1hLWNvcmUvcHVsbC8xMTgxLCBidXQgaXQg
+Y2Fubm90IGdvDQo+PiBhaGVhZCB1bnRpbCB0aGUga2VybmVsJ3MgcGF0Y2hlcyBhcmUgbWVyZ2Vk
+Lg0KPj4NCj4+IGFuZCBpIHdpbGwgcG9zdCBhIG5ldyB2ZXJzaW9uIHRoZXNlIGRheXMsIHdvdWxk
+IHlvdSBtaW5kIGlmIGkgYWRkIHlvdXINCj4+ICJSZXZpZXdlZC1ieSIgaW4gbmV4dCB2ZXJzaW9u
+ID8NCj4gDQo+IFJldmlld2VkLWJ5OiBaaHUgWWFuanVuIDx5YW5qdW4uemh1QGxpbnV4LmRldj4N
+Cj4gVGhhbmtzLg0KPiANCj4gQW5vdGhlciBwcm9ibGVtLCBub3JtYWxseSByeGUgc2hvdWxkIGNv
+bm5lY3QgdG8gcGh5c2ljYWwgaWIgZGV2aWNlcywgDQo+IHN1Y2ggYXMgbWx4IGliIGRldmljZS4g
+VGhhdCBpcywgb25lIGhvc3QgaXMgcnhlLCB0aGUgb3RoZXIgaG9zdCBpcyBtbHggDQo+IGliIGRl
+dmljZS4gVGhlIHJkbWEgY29ubmVjdGlvbiBzaG91bGQgYmUgY3JlYXRlZCBiZXR3ZWVuIHRoZSAy
+IGhvc3RzLg0KDQppdCdzIGZ1bGx5IGNvbXBhdGlibGUgd2l0aCBvbGQgb3BlcmF0aW9uLg0KDQoN
+Cj4gDQo+IERvIHlvdSBjb25uZWN0IHRvIG1seCBpYiBkZXZpY2Ugd2l0aCB0aGlzIFJETUEgRkxV
+U0ggb3BlcmF0aW9uPw0KPiBBbmQgd2hhdCBpcyB0aGUgdGVzdCByZXN1bHQ/DQoNClllcywgaSB0
+ZXN0ZWQgaXQuDQoNCkFmdGVyIHRoZXNlIHBhdGNoZXMsIG9ubHkgUlhFIGRldmljZSBjYW4gcmVn
+aXN0ZXIgKkZMVVNIQUJMRSogTVJzIA0Kc3VjY2Vzc2Z1bGx5LiBJZiBtbHggdHJ5IHRoYXQsIEVP
+UE5PU1VQUCB3aWxsIGJlIHJldHVybmVkLg0KDQpTaW1pbGFybHksIFNpbmNlIG90aGVyIGhhcmR3
+YXJlcyhNTFggZm9yIGV4YW1wbGUpIGhhdmUgbm90IHN1cHBvcnRlZCANCkZMVVNIIG9wZXJhdGlv
+biwgRU9QTk9TVVBQIHdpbGwgYmUgcmV0dXJuZWQgaWYgdXNlcnMgdHJ5IHRvIHRvIHRoYXQuDQoN
+CkluIHNob3J0LCBmb3IgUlhFIHJlcXVlc3RlciwgTUxYIHJlc3BvbmRlciB3aWxsIHJldHVybiBl
+cnJvciBmb3IgdGhlIA0KcmVxdWVzdC4gTUxYIHJlcXVlc3RlciBpcyBub3QgYWJsZSB0byByZXF1
+ZXN0IGEgRkxVU0ggb3BlcmF0aW9uLg0KDQpUaGFua3MNClpoaWppYW4NCg0KDQo+IA0KPiBUaGFu
+a3MgYSBsb3QuDQo+IFpodSBZYW5qdW4NCj4gDQo+Pg0KPj4NCj4+DQo+Pj4NCj4+PiBUaGFua3Ms
+DQo+Pj4gWmh1IFlhbmp1bg0KPj4+DQo+Pj4+DQo+Pj4+IEphc29uDQo+IA==
