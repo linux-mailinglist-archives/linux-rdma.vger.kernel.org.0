@@ -2,49 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E845625F54
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 17:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E1E625F6A
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 17:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbiKKQWO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Nov 2022 11:22:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50838 "EHLO
+        id S233940AbiKKQZ7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Nov 2022 11:25:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232416AbiKKQWN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Nov 2022 11:22:13 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E8C7343D;
-        Fri, 11 Nov 2022 08:22:12 -0800 (PST)
+        with ESMTP id S232979AbiKKQZ6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Nov 2022 11:25:58 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442D26324;
+        Fri, 11 Nov 2022 08:25:57 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E70A5B8261D;
-        Fri, 11 Nov 2022 16:22:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 044D8C433C1;
-        Fri, 11 Nov 2022 16:22:08 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 8DD1ECE2843;
+        Fri, 11 Nov 2022 16:25:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76562C433D6;
+        Fri, 11 Nov 2022 16:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668183729;
-        bh=Jo2VLhgTPhaP0FaHWJqMlTHXlRzhpTRXowe0wUl1tYY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FLo0AIoboSZU0MWNkngQG3YmGzq+vFwred21EgELiAr0s910LEc6a3FNVJa7lZiBw
-         JShUC5fxmg0Tdc9BbUDPDA2/8OCe6Pk+pavs74ZKt/d6zrUZ7NzSYxOq2CQ5T7ps9V
-         akgPJYHdwVtLSFtrYJPnUaHPOtcAJGJt/eAesSwOimXEZxyuHRxuAiCtlxSr7cHqOK
-         /9ImoaeWp87TxV31zju+WXPWlPWvxCrVSpGe6rA8xdAwiIfmCqtYtJk3IjQ5JGzSjq
-         uadTXHvO3jKPZIg6+/N/MsNhe9kJG21pLxUX8kjtrXkc0JSzVfZ44fkAXOqsV4NgsA
-         SLXYkX2iu/09w==
-Date:   Fri, 11 Nov 2022 18:22:05 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "xuhaoyue (A)" <xuhaoyue1@hisilicon.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 for-rc 0/2] Fix sge_num bug
-Message-ID: <Y252rdeqOY2zGosj@unreal>
-References: <20221108133847.2304539-1-xuhaoyue1@hisilicon.com>
- <Y2vsZ+qPWJI/R94M@unreal>
- <48d3efa2-60f8-c0dd-8206-8ca0466f3b77@hisilicon.com>
+        s=k20201202; t=1668183953;
+        bh=OQ/EpSlHbcD4pnx4y1IaBDrv3gzT9uiG1VObrf/kmUY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CnvaXD8N+0HL+jWFlNDj2BAS3IfMnVYgT6ci+Kz+CdBbnnIz4qjgeBZsYJehB2Izf
+         zaS7Zm/j2r7EpRCmDgzdIR38/PzONJ2wv3G0vhClVLWd3Bt9EFfVRbdyE+ZzOkl6M/
+         SDxJCmH+UXD976ynQycQFSHvV4wfw/KiKch39tky/7E+zc9hBEcfsl1YsYnIdZrRJL
+         G9B0T5Kw7BJSXwFCSd8kGfuC58NH6hb8dBQabV8x8sgfvUAk5rEIEnOhv6wQTvaPsU
+         jIEYvNHIY9i4FJh74MkGo/BOsjt3NlqISPDMpE7i7Az4Lh254P1iH1cnNvzzboJAeJ
+         6vIZ3gZSf0sAw==
+Date:   Fri, 11 Nov 2022 08:25:51 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Barry Song <baohua@kernel.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 0/4] cpumask: improve on cpumask_local_spread() locality
+Message-ID: <20221111082551.7e71fbf4@kernel.org>
+In-Reply-To: <20221111040027.621646-1-yury.norov@gmail.com>
+References: <20221111040027.621646-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48d3efa2-60f8-c0dd-8206-8ca0466f3b77@hisilicon.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,23 +78,28 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 07:41:43PM +0800, xuhaoyue (A) wrote:
-> Hi Jason and Leon,
+On Thu, 10 Nov 2022 20:00:23 -0800 Yury Norov wrote:
+> cpumask_local_spread() currently checks local node for presence of i'th
+> CPU, and then if it finds nothing makes a flat search among all non-local
+> CPUs. We can do it better by checking CPUs per NUMA hops.
+
+Nice.
+
+> This series is inspired by Valentin Schneider's "net/mlx5e: Improve remote
+> NUMA preferences used for the IRQ affinity hints"
 > 
-> Actually, I have another bugfix patch set needed to send, and I am waiting for this patch to apply. That one is not related to this patch set.
-> Could I send it out, since it is a little late for Linux 6.1?
+> https://patchwork.kernel.org/project/netdevbpf/patch/20220728191203.4055-3-tariqt@nvidia.com/
+> 
+> According to Valentin's measurements, for mlx5e:
+> 
+> 	Bottleneck in RX side is released, reached linerate (~1.8x speedup).
+> 	~30% less cpu util on TX.
+> 
+> This patch makes cpumask_local_spread() traversing CPUs based on NUMA
+> distance, just as well, and I expect comparabale improvement for its
+> users, as in Valentin's case.
+> 
+> I tested it on my VM with the following NUMA configuration:
 
-Up to you and the change you want to send. At this stage, your commit 
-message must be very descriptive and patch should fix kernel panic and/or
-UAPI issue introduced in previous cycle.
-
-> Also, I wonder is that ok to send more than one patch set in the review list.
-
-Yes, you can send, but with two small caveats:
-1. You need to try and avoid merge conflicts if series are applied not in
-the order of submission.
-2. Series should be small.
-
-Bottom line, take a look on RXE patches and DON'T do like them.
-
-Thanks
+nit: the authorship is a bit more complicated, it'd be good to mention
+Tariq. Both for the code and attribution of the testing / measurements.
