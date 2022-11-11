@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 700A162502D
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 03:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B046250A0
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 03:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbiKKCdr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 21:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S233006AbiKKChL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 21:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231559AbiKKCdq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 21:33:46 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BAD96446;
-        Thu, 10 Nov 2022 18:33:46 -0800 (PST)
+        with ESMTP id S232904AbiKKCgk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 21:36:40 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004B317E17;
+        Thu, 10 Nov 2022 18:35:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BB58A61E87;
-        Fri, 11 Nov 2022 02:33:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25B00C43470;
-        Fri, 11 Nov 2022 02:33:44 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 85DEBB822ED;
+        Fri, 11 Nov 2022 02:35:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55A30C433C1;
+        Fri, 11 Nov 2022 02:35:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668134025;
-        bh=VNiKRABtIMeIUh7oCOs21KW8F8F7jkA01llco3JUimo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ourdeIO32FYE6REoiJNAP6nNPSgLTsppbZ9BZYzjsiu/PfbC5GMYSKkgmnBT5bTYT
-         HG5aMdCKzr/SMTnhtjB2KueYiI71de/SR6uyE36Ud2Ys2PgE/nXd22+8+0lwKFSd1O
-         wbxp7Gngae0SPsMoExXgCkwAIDHWRh7BkhUL8PnZw0JsQhhJlvm7CWl98PSxdhuxJd
-         Cjpugkw6qlNW8zCbN/ZG72sh236xq7vJ4VWPsf2b99QRBRbxpvU/ncl7chUbe3qENG
-         VWtozXPSqlrCYG14aEMCWhUKnjI/B9lyO5rLBSrml6fSi5mWAfa+CJnLdH6iLu1ysY
-         GMQJCOKWyVfzg==
+        s=k20201202; t=1668134114;
+        bh=N8NVJueAeboGeHke8tO0MN6mtyRozkODvCg+zb2WlE0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=a/a6d0BrxlNRsdWrZjzX8qp391u3K4zgrZcbgl3WxboJlEL9bIx1EiboCmZXLV3xv
+         xmKx9D1qQ4MWm5sxMAfGWxVCuKw/xb8q3fd7AmC/CczSrqdJ8vRtc6tB/Kg1wHPLWD
+         Tki/fYGa0/Qlt/V27or056cUxve3+CMZuuZzcQSCxqYWSg1mY6KGyhYNC2x7H1UMYn
+         lIYp4rDrfLtUTdQmfdQ3CFVHT2f8ww8QdME6/zePNIkNcpXE5xEQDufCc1OQB/JUqX
+         adKBuo9U4WcPiK183bgqDNKJ8ICn/jwiKSMxjZ4Bbs8moBh/AJzD3VpWEOrX72uanN
+         lINAQ6LDAFLjQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Michael Margolin <mrgolin@amazon.com>,
@@ -39,12 +39,10 @@ Cc:     Michael Margolin <mrgolin@amazon.com>,
         Leon Romanovsky <leon@kernel.org>,
         Sasha Levin <sashal@kernel.org>, galpress@amazon.com,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 02/30] RDMA/efa: Add EFA 0xefa2 PCI ID
-Date:   Thu, 10 Nov 2022 21:33:10 -0500
-Message-Id: <20221111023340.227279-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 01/11] RDMA/efa: Add EFA 0xefa2 PCI ID
+Date:   Thu, 10 Nov 2022 21:35:01 -0500
+Message-Id: <20221111023511.227800-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221111023340.227279-1-sashal@kernel.org>
-References: <20221111023340.227279-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -75,7 +73,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 94b94cca4870..15ee92081118 100644
+index 417dea5f90cf..d6d48db86681 100644
 --- a/drivers/infiniband/hw/efa/efa_main.c
 +++ b/drivers/infiniband/hw/efa/efa_main.c
 @@ -1,6 +1,6 @@
