@@ -2,73 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C4C62528C
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 05:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C066762528D
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 05:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbiKKEa7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 23:30:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
+        id S232183AbiKKEbA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 23:31:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiKKEaz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 23:30:55 -0500
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6530442F68;
-        Thu, 10 Nov 2022 20:30:52 -0800 (PST)
+        with ESMTP id S232343AbiKKEa7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 23:30:59 -0500
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC82F68AE6;
+        Thu, 10 Nov 2022 20:30:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1668141050; i=@fujitsu.com;
-        bh=fjsTTPP+5pcUTVlho3XxaWSxwAHN8a8nnOjRBSnAiBM=;
+        s=170520fj; t=1668141053; i=@fujitsu.com;
+        bh=t3W7ccYeAWOB7TN9rQwLcUW5c4OzST5kRuF91e5+TEI=;
         h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
          MIME-Version:Content-Type;
-        b=gVmFTUKy24yRO3ZNKouAZibyZxVDhdtkqL6D35FwlMFii/Qs06kTOwAEK7mNxJYRM
-         pD2vhvfE7DIcxULPBpl4h46r5F9nUV76WucSTtBwbdnhzvPvjRSTgzl5O4daFwmxsW
-         GD5JR1zVqO83HEq710tHHfjpMkfOcG9o+jOofoNp1wAcEnZijXYUuDeSgkuSogzBPi
-         fXPSE65L3iV0wzQYsUornXqElaf9eEa4AxTev1AOloXPfmLlyGgTB1dc9Stx1fcW+P
-         pYd9ltbD6VrPIuJ+yOVnj8dpTQ3b1aWDR4G3d5zZcA6rxL03KtfFsp+1RCf09ofbLd
-         O1sbmSkYehV6Q==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRWlGSWpSXmKPExsViZ8ORpPvrfG6
-  ywe4qi5kzTjBaTPm1lNni8q45bBbPDvWyWJw/1s/uwOqxc9Zddo9NqzrZPD5vkvPY+vk2SwBL
-  FGtmXlJ+RQJrxppPvAVLJCueP/rB1MD4WaSLkYtDSGAjo8Tv+XfYIZwlTBKLX19m6WLkBHIOM
-  Er83cgBYrMJaEjca7nJCGKLCHQySmxrTQOxmQXcJDa9mc0OYgsLOEic3XKNGcRmEVCVeHR8JS
-  uIzSvgKLH/zSMwW0JAQWLKw/dgNZwCThLL73xhg9jlKHFq5h0WiHpBiZMzn7BAzJeQOPjiBVA
-  9B1CvksTM7niIMRUSs2a1MUHYahJXz21insAoOAtJ9ywk3QsYmVYxmhWnFpWlFuma6iUVZaZn
-  lOQmZuboJVbpJuqllurm5ReVZOga6iWWF+ulFhfrFVfmJuek6OWllmxiBIZ+SnGC0w7GKcv+6
-  B1ilORgUhLl3WeTmyzEl5SfUpmRWJwRX1Sak1p8iFGGg0NJglfvLFBOsCg1PbUiLTMHGIcwaQ
-  kOHiURXuHtQGne4oLE3OLMdIjUKUZFKXFeK2D0CgmAJDJK8+DaYLF/iVFWSpiXkYGBQYinILU
-  oN7MEVf4VozgHo5Iwb9w5oCk8mXklcNNfAS1mAlpsl5oFsrgkESEl1cAk1bD5V9OZ9xd+pRcV
-  TdfTESk5qLBIIsb955L2m4Vf7VgP7PuZOWfJmS+cz+/rlSc0bKtP/Zt0ZsexkH+zTT4//i8Yb
-  nbhtMrz77NtGPvio0qyD7rvePxmvfrGb86KqQaXda/5lz99sIDrl0vwxLkqLm8MNb2YdNLSPq
-  Xu4T6f2rBL9MJLppcRx+8Zfjw0lT1TXaBQXyXXo/RAiKVgeuxbOXfHa1YLG1Ljf33rn1L9w0z
-  0bzCjee25+qCbVzvmfqlay68e+PjknEvLc7OfBFWc7/nU0vr5tJbapRB/L6aT/LZ3p3gXtq43
-  eXPm+RPx+RG3y5c3l5s7lU9PO/nhcbfngo/sCSEN3FUP8/oNDeyVWIozEg21mIuKEwG4nn/je
-  AMAAA==
+        b=w+eLUlGxhp3aQOon3jqrxU1B0Pvb0BSHUPchD8TxSSUUF0t6GUk6cyBM47nhJkanb
+         SFoBFZIA8AZrwRWNUtzLBZygLjyzTkiN32FpF84hzFUXZd/uB9IFbPJ7Yg3N0AiIhN
+         +ul9fkq7sBLYigtcBT3FZbK5BxI7VFBcQ2CIxPBFZ8KNsmA9umBOab6jg1bUqZaz8J
+         ALf8R4vGeUAjL4AzoC+q2baJ6nDkWqoNu9CNCh6i8RWw5MqoeWCnEptrCC2XVxz/C1
+         HhA6bqXFF57/z66htCiJ/FFeb0ED5vhVG4Xc5/Yjf5xitZ9l0EaJlM6KmGvP5TD1CN
+         wVZqSPxcX0kWQ==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOIsWRWlGSWpSXmKPExsViZ8MxSffP+dx
+  kg+tP1S1mzjjBaDHl11Jmi8u75rBZPDvUy2Jx/lg/uwOrx85Zd9k9Nq3qZPP4vEnOY+vn2ywB
+  LFGsmXlJ+RUJrBlrW34wFfQJVPy8UtrAeJuni5GLQ0hgC6PE/YbjLBDOciaJ419ms0I4Bxgll
+  jx5y97FyMnBJqAhca/lJiOILSLQySixrTUNxGYWcJPY9GY2WI2wQLTE+euzWUBsFgFViROnX7
+  OB2LwCjhJ3G3Yxg9gSAgoSUx6+B7M5BZwklt/5AlYjBFRzauYdFoh6QYmTM5+wQMyXkDj44gV
+  QPQdQr5LEzO54iDEVErNmtTFB2GoSV89tYp7AKDgLSfcsJN0LGJlWMZoVpxaVpRbpGlroJRVl
+  pmeU5CZm5uglVukm6qWW6panFpfoGukllhfrpRYX6xVX5ibnpOjlpZZsYgSGf0qx+skdjBuW/
+  dE7xCjJwaQkyrvPJjdZiC8pP6UyI7E4I76oNCe1+BCjDAeHkgSv3lmgnGBRanpqRVpmDjAWYd
+  ISHDxKIrzC24HSvMUFibnFmekQqVOMilLivFbACBYSAElklObBtcHi/xKjrJQwLyMDA4MQT0F
+  qUW5mCar8K0ZxDkYlYd64c0BTeDLzSuCmvwJazAS02C41C2RxSSJCSqqBySVfN4OXib/7kLwc
+  cxvDPO8DwmyfX/84dmp6Zlx88bmFi3feFlj3Lqvv7u/7+yw7ksw7P+aVnHacsuyzz7tZfT0Sz
+  e/Pc+yWi3zy+dCfg39Oaev5fQp+c0m3SeG8vM/i1Pw1/84qhZt5Tyn0LX5jGi5rU7zfm+1Fhk
+  nw3YXt4pP5XF5dWpf0ouvxMxO/NWYzC3J/PKvLcFP+52DXevLLtJkLv64/uyjTNGjzS97+G2/
+  ktScuFrp3LENCddnTgLM5uzl/dE1hOTizs+cQr+r8lTOqbupcCp8oPmP5Oq0gjjU/NrlsF8lJ
+  1l5+/8F7i1vn2S4Wp7IKXHTOMP96W3w/z+xHb39yZc5beaXni4lTzEUlluKMREMt5qLiRAA2f
+  es1egMAAA==
 X-Env-Sender: lizhijian@fujitsu.com
-X-Msg-Ref: server-17.tower-728.messagelabs.com!1668141049!608144!1
-X-Originating-IP: [62.60.8.98]
+X-Msg-Ref: server-20.tower-548.messagelabs.com!1668141052!16817!1
+X-Originating-IP: [62.60.8.146]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.100.1; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 30575 invoked from network); 11 Nov 2022 04:30:49 -0000
-Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
-  by server-17.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 11 Nov 2022 04:30:49 -0000
-Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id 6D3681AE;
-        Fri, 11 Nov 2022 04:30:49 +0000 (GMT)
+Received: (qmail 9145 invoked from network); 11 Nov 2022 04:30:52 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+  by server-20.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 11 Nov 2022 04:30:52 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 56B2C1000D5;
+        Fri, 11 Nov 2022 04:30:52 +0000 (GMT)
 Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id 623541AD;
-        Fri, 11 Nov 2022 04:30:49 +0000 (GMT)
+        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 49A7A1000C1;
+        Fri, 11 Nov 2022 04:30:52 +0000 (GMT)
 Received: from bc0da1a9c27e.localdomain (10.167.225.141) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Fri, 11 Nov 2022 04:30:46 +0000
+ (TLS) id 15.0.1497.32; Fri, 11 Nov 2022 04:30:49 +0000
 From:   Li Zhijian <lizhijian@fujitsu.com>
 To:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         "Leon Romanovsky" <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, Li Zhijian <lizhijian@fujitsu.com>
-Subject: [for-next PATCH 1/5] RDMA/rxe: Remove rxe_phys_buf.size
-Date:   Fri, 11 Nov 2022 04:30:26 +0000
-Message-ID: <1668141030-2-2-git-send-email-lizhijian@fujitsu.com>
+Subject: [for-next PATCH 2/5] RDMA/rxe: use iova_to_vaddr to transform iova for rxe_mr_copy
+Date:   Fri, 11 Nov 2022 04:30:27 +0000
+Message-ID: <1668141030-2-3-git-send-email-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1668141030-2-1-git-send-email-lizhijian@fujitsu.com>
 References: <1668141030-2-1-git-send-email-lizhijian@fujitsu.com>
@@ -88,105 +88,96 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Every rxe_phys_buf used by either IB_MR_TYPE_MEM_REG or IB_MR_TYPE_USER
-has the same size, which should be same with ibmr->page_size. So we can
-use ibmr->page_size correspondingly.
+Make the code more friendly and readable by using iova_to_vaddr()
+
+This commit also remove the err1 label in rxe_mr_copy().
 
 Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c    | 11 ++++-------
- drivers/infiniband/sw/rxe/rxe_verbs.c |  1 -
- drivers/infiniband/sw/rxe/rxe_verbs.h |  1 -
- 3 files changed, 4 insertions(+), 9 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 46 +++++++++---------------------
+ 1 file changed, 13 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index d4f10c2d1aa7..f6366a635b92 100644
+index f6366a635b92..cf3ce8d293b3 100644
 --- a/drivers/infiniband/sw/rxe/rxe_mr.c
 +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -145,6 +145,7 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+@@ -289,13 +289,6 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
+ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+ 		enum rxe_mr_copy_dir dir)
+ {
+-	int			err;
+-	int			bytes;
+-	u8			*va;
+-	struct rxe_map		**map;
+-	struct rxe_phys_buf	*buf;
+-	int			m;
+-	int			i;
+ 	size_t			offset;
  
- 	mr->page_shift = PAGE_SHIFT;
- 	mr->page_mask = PAGE_SIZE - 1;
-+	mr->ibmr.page_size = PAGE_SIZE;
+ 	if (length == 0)
+@@ -315,49 +308,36 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
  
- 	num_buf			= 0;
- 	map = mr->map;
-@@ -167,7 +168,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
- 			}
+ 	WARN_ON_ONCE(!mr->map);
  
- 			buf->addr = (uintptr_t)vaddr;
--			buf->size = PAGE_SIZE;
- 			num_buf++;
- 			buf++;
- 
-@@ -219,7 +219,7 @@ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
- 	size_t offset = iova - mr->ibmr.iova + mr->offset;
- 	int			map_index;
- 	int			buf_index;
--	u64			length;
-+	u64			length = mr->ibmr.page_size;
- 
- 	if (likely(mr->page_shift)) {
- 		*offset_out = offset & mr->page_mask;
-@@ -230,8 +230,6 @@ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
- 		map_index = 0;
- 		buf_index = 0;
- 
--		length = mr->map[map_index]->buf[buf_index].size;
+-	err = mr_check_range(mr, iova, length);
+-	if (err) {
+-		err = -EFAULT;
+-		goto err1;
+-	}
 -
- 		while (offset >= length) {
- 			offset -= length;
- 			buf_index++;
-@@ -240,7 +238,6 @@ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
- 				map_index++;
- 				buf_index = 0;
- 			}
--			length = mr->map[map_index]->buf[buf_index].size;
- 		}
+-	lookup_iova(mr, iova, &m, &i, &offset);
+-
+-	map = mr->map + m;
+-	buf	= map[0]->buf + i;
++	if (mr_check_range(mr, iova, length))
++		return -EFAULT;
  
- 		*m_out = map_index;
-@@ -274,7 +271,7 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
++	offset = (iova - mr->ibmr.iova + mr->offset) & mr->page_mask;
+ 	while (length > 0) {
+-		u8 *src, *dest;
+-
+-		va	= (u8 *)(uintptr_t)buf->addr + offset;
+-		src = (dir == RXE_TO_MR_OBJ) ? addr : va;
+-		dest = (dir == RXE_TO_MR_OBJ) ? va : addr;
++		u8 *src, *dest, *va;
++		int bytes;
  
- 	lookup_iova(mr, iova, &m, &n, &offset);
- 
--	if (offset + length > mr->map[m]->buf[n].size) {
-+	if (offset + length > mr->ibmr.page_size) {
- 		pr_warn("crosses page boundary\n");
- 		addr = NULL;
- 		goto out;
-@@ -336,7 +333,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 		src = (dir == RXE_TO_MR_OBJ) ? addr : va;
- 		dest = (dir == RXE_TO_MR_OBJ) ? va : addr;
- 
--		bytes	= buf->size - offset;
-+		bytes	= mr->ibmr.page_size - offset;
+ 		bytes	= mr->ibmr.page_size - offset;
  
  		if (bytes > length)
  			bytes = length;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 88825edc7dce..5da394c675bf 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -991,7 +991,6 @@ static int rxe_set_page(struct ib_mr *ibmr, u64 addr)
- 	buf = &map->buf[mr->nbuf % RXE_BUF_PER_MAP];
  
- 	buf->addr = addr;
--	buf->size = ibmr->page_size;
- 	mr->nbuf++;
++		va = iova_to_vaddr(mr, iova, bytes);
++		if (!va)
++			return -EFAULT;
++
++		src = (dir == RXE_TO_MR_OBJ) ? addr : va;
++		dest = (dir == RXE_TO_MR_OBJ) ? va : addr;
++
+ 		memcpy(dest, src, bytes);
+ 
+ 		length	-= bytes;
+ 		addr	+= bytes;
++		iova += bytes;
+ 
+ 		offset	= 0;
+-		buf++;
+-		i++;
+-
+-		if (i == RXE_BUF_PER_MAP) {
+-			i = 0;
+-			map++;
+-			buf = map[0]->buf;
+-		}
+ 	}
  
  	return 0;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 22a299b0a9f0..acab785ba7e2 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -281,7 +281,6 @@ enum rxe_mr_lookup_type {
+-
+-err1:
+-	return err;
+ }
  
- struct rxe_phys_buf {
- 	u64      addr;
--	u64      size;
- };
- 
- struct rxe_map {
+ /* copy data in or out of a wqe, i.e. sg list
 -- 
 2.31.1
 
