@@ -2,84 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B7E62511A
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 03:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029F6625140
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 04:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbiKKCu3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 21:50:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
+        id S231685AbiKKDET (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 22:04:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233192AbiKKCuO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 21:50:14 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE4912E;
-        Thu, 10 Nov 2022 18:49:16 -0800 (PST)
-Message-ID: <a37814f9-ed8a-d70a-3024-466700276864@linux.dev>
+        with ESMTP id S231873AbiKKDES (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 22:04:18 -0500
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7BF48777
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Nov 2022 19:04:17 -0800 (PST)
+Message-ID: <9f649db1-a0f9-dff4-ad0b-905a356c7459@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668134955;
+        t=1668135856;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vhaTPSkrdP42Cy7UEGp+EqsBBT2BRFaWnPTLbkiuH9s=;
-        b=pTm3XQzqD4gGvFpGJWqOzyYUkFgo2B9Am9Y3TQ9jlHG4M2UkCL3UjDztsZIKG3o98c2Shj
-        6q+Mr92E2+L+FjFyp+PGV0s4daQ8TnnfJrMafEZbYBSnX9h8cn2QoCl2VKFneV4HQ3393O
-        MCTdQxZbKnrGsGaJTloonTMSLeXyjS0=
-Date:   Fri, 11 Nov 2022 10:49:10 +0800
+        bh=CwJ/cTYDi561cPUFWYYpBd08v4gN4m4JSjFYg4ZIe/k=;
+        b=PDWLzVOwsZQEH0/mMbZIdi9j4Sr4/nA2FHO8w541tzspCWJfYwF4M9rNdd/gt0wEDRcQu2
+        5XbOvAZ6M8mlQ5GRYbmlIqTuZnh1zR+e1erZ3MNmpnkgyT8VZbNpHPm4lX3tX1fr8pocwi
+        Ly2n2iiaOyoDVDRmdNfM4OvBczOdnB4=
+Date:   Fri, 11 Nov 2022 11:04:09 +0800
 MIME-Version: 1.0
-Subject: Re: [for-next PATCH v5 00/11] RDMA/rxe: Add RDMA FLUSH operation
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Li Zhijian <lizhijian@fujitsu.com>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Zhu Yanjun <zyjzyj2000@gmail.com>, yangx.jy@fujitsu.com,
-        y-goto@fujitsu.com, mbloch@nvidia.com, liangwenpeng@huawei.com,
-        tom@talpey.com, tomasz.gromadzki@intel.com,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
-References: <20220927055337.22630-1-lizhijian@fujitsu.com>
- <Y1wX8n9R7dkLo0KU@nvidia.com>
+Subject: Re: [PATCH for-next v3 03/13] RDMA/rxe: Simplify reset state handling
+ in rxe_resp.c
+To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
+        leon@kernel.org, zyjzyj2000@gmail.com, jhack@hpe.com,
+        linux-rdma@vger.kernel.org
+Cc:     Ian Ziemba <ian.ziemba@hpe.com>
+References: <20221029031009.64467-1-rpearsonhpe@gmail.com>
+ <20221029031009.64467-4-rpearsonhpe@gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <Y1wX8n9R7dkLo0KU@nvidia.com>
+In-Reply-To: <20221029031009.64467-4-rpearsonhpe@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2022/10/29 1:57, Jason Gunthorpe 写道:
-> On Tue, Sep 27, 2022 at 01:53:26PM +0800, Li Zhijian wrote:
->> Hey folks,
->>
->> Firstly i want to say thank you to all you guys, especially Bob, who in the
->> past 1+ month, gave me a lots of idea and inspiration.
-> 
-> I would like it if someone familiar with rxe could reviewed-by the
-> protocol parts.
+在 2022/10/29 11:10, Bob Pearson 写道:
+> Make rxe_responder() more like rxe_completer() and take qp reset
+> handling out of the state machine.
 
-Hi, Jason
+ From RDMA spec, qp reset is part of qp states. If qp reset is moved out 
+of the state machine. And other devices still take qp reset in the state 
+machine. Will this make difference on the connection between rxe and 
+other ib devices, such as irdma, mlx devices.
 
-I reviewed these patches. I am fine with these patches.
+You know, rxe should make basic connections with other ib devices.
 
-Hi, Zhijian
-
-I noticed the followings:
-"
-$ ./rdma_flush_server -s [server_address] -p [port_number]
-client:
-$ ./rdma_flush_client -s [server_address] -p [port_number]
-"
-Can you merge the server and the client to rdma-core?
-
-Thanks,
 Zhu Yanjun
 
 > 
-> Jason
+> Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
+> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_resp.c | 12 +++---------
+>   1 file changed, 3 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> index c32bc12cc82f..c4f365449aa5 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> @@ -40,7 +40,6 @@ enum resp_states {
+>   	RESPST_ERR_LENGTH,
+>   	RESPST_ERR_CQ_OVERFLOW,
+>   	RESPST_ERROR,
+> -	RESPST_RESET,
+>   	RESPST_DONE,
+>   	RESPST_EXIT,
+>   };
+> @@ -75,7 +74,6 @@ static char *resp_state_name[] = {
+>   	[RESPST_ERR_LENGTH]			= "ERR_LENGTH",
+>   	[RESPST_ERR_CQ_OVERFLOW]		= "ERR_CQ_OVERFLOW",
+>   	[RESPST_ERROR]				= "ERROR",
+> -	[RESPST_RESET]				= "RESET",
+>   	[RESPST_DONE]				= "DONE",
+>   	[RESPST_EXIT]				= "EXIT",
+>   };
+> @@ -1281,8 +1279,9 @@ int rxe_responder(void *arg)
+>   
+>   	switch (qp->resp.state) {
+>   	case QP_STATE_RESET:
+> -		state = RESPST_RESET;
+> -		break;
+> +		rxe_drain_req_pkts(qp, false);
+> +		qp->resp.wqe = NULL;
+> +		goto exit;
+>   
+>   	default:
+>   		state = RESPST_GET_REQ;
+> @@ -1441,11 +1440,6 @@ int rxe_responder(void *arg)
+>   
+>   			goto exit;
+>   
+> -		case RESPST_RESET:
+> -			rxe_drain_req_pkts(qp, false);
+> -			qp->resp.wqe = NULL;
+> -			goto exit;
+> -
+>   		case RESPST_ERROR:
+>   			qp->resp.goto_error = 0;
+>   			pr_debug("qp#%d moved to error state\n", qp_num(qp));
 
