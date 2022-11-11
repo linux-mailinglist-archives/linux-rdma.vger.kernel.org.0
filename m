@@ -2,73 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 839F0625292
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 05:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E04625296
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 05:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbiKKEbQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 23:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
+        id S230183AbiKKEcv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 23:32:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbiKKEbC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 23:31:02 -0500
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FAE69DD2;
-        Thu, 10 Nov 2022 20:31:01 -0800 (PST)
+        with ESMTP id S231167AbiKKEcu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 23:32:50 -0500
+Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com [195.245.230.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4254A68AEB;
+        Thu, 10 Nov 2022 20:32:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1668141059; i=@fujitsu.com;
-        bh=6BOQYMvWVSi2uBbZfL1Bzz07XDsCbIwy+Optf2MNYVA=;
+        s=170520fj; t=1668141166; i=@fujitsu.com;
+        bh=bqzxuxOj1uBZFGGeCXRO50kMdRTB6u9u4Z9D5YPVTeo=;
         h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
          MIME-Version:Content-Type;
-        b=Wl7LeVr8srVymoGxdKgmQAMbHmM6+bwnmfzzLVYbzLZOCNZ7eMkzmAcCUP17WBfK6
-         2bAF/IG9DkwxOCM2lA2u8J5PiHCSB8QvaoP6QhDwyruzjpIogmV+erJ+U5MhMzKKHc
-         I2W2UppcHCxJ80nhSlKL7lstMjHDY0s9gxN6P69gIxCagu/ift1fjA4QZ6S14k3APj
-         PubLoCLVpB9FyvHKVpFwPf3IQYmPe3++EMraT/r/K5wiV3M0j8jecGg/iQnNN4Jc/A
-         HP8IMX+l10b7mdhv5AWIBa/LrmR1VVTYOTOBdovSu9P7J6TcU/7XidRPWFcJrzPQvx
-         2Mhl+sZeUBoUg==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRWlGSWpSXmKPExsViZ8OxWZfpQm6
-  ywZtNphYzZ5xgtJjyaymzxeVdc9gsnh3qZbE4f6yf3YHVY+esu+wem1Z1snl83iTnsfXzbZYA
-  lijWzLyk/IoE1oy1y/6xFJxTqtg0aS9jA2O7bBcjJ4eQwEZGiflnMiHsJUwSO8/LQdgHGCUe9
-  SiA2GwCGhL3Wm4ygtgiAp2MEtta00BsZgE3iU1vZrOD2MICdhIf7z9hAbFZBFQl3t9rYAOxeQ
-  UcJRZ9PQ5WIyGgIDHl4XtmEJtTwEli+Z0vbBC7HCVOzbzDAlEvKHFyJsQcZgEJiYMvXgDVcwD
-  1KknM7I6HGFMhMWtWGxOErSZx9dwm5gmMgrOQdM9C0r2AkWkVo1lxalFZapGuqV5SUWZ6Rklu
-  YmaOXmKVbqJeaqluXn5RSYauoV5iebFeanGxXnFlbnJOil5easkmRmDopxQnOO1gnLLsj94hR
-  kkOJiVR3n02uclCfEn5KZUZicUZ8UWlOanFhxhlODiUJHj1zgLlBItS01Mr0jJzgHEIk5bg4F
-  ES4RXeDpTmLS5IzC3OTIdInWJUlBLntToPlBAASWSU5sG1wWL/EqOslDAvIwMDgxBPQWpRbmY
-  JqvwrRnEORiVh3rhzQFN4MvNK4Ka/AlrMBLTYLjULZHFJIkJKqoEpVy3ny/dFuypy52bn2Qgo
-  Pt/88+kRjsksG68afykKOb0lUGmFYqLCkl093Zfj7JcI/HuYkbjh+9Qfcx9NeFS49OI9OZ6fL
-  q9sPlZ/dg/Juarx0UXvWN+qTzv9wyQlVJ9wLxHsPlQXcWilj8dsvhsTFxbp/1LjuXE09uSU22
-  cMxD4EBPqfFZU4x3dKo1Qwebna95aqA1fc87m1xT4Y3ldtWexab81YFHfE5L/reaWdoQbvZ3h
-  FhZkv3JnC9WlOenTYv+Ts0KsL6mz3SxTbuSUzdk1bZh4Vocj4UYN13q/c9Q8m2Tv2zG1YmHUv
-  8uBDcdHa3Uzlp+cr9W+ZYZb2/sbx9r5FEjzTl4d/YUpYZxKnxFKckWioxVxUnAgAXtqlj3gDA
-  AA=
+        b=pKAmvP12BU+OFaZO4k/MPVM6nSXuLTaqQXcRgwJTYXRTBDSr4kpETIH/cCZsBL1zz
+         hcfxtJ0wROMv89Neo3rYJUsExY16UDn/f+pCCYv8B5MHQ/amjVZCmWdSvdHMcQ6ris
+         hRvbgcMEo+83hPuMvSHTLFNlAouDtXFR7xRNe4xEDbtwEecQMaFH+E3nvJMUKgI/jP
+         G2G50sRs6Tcfw2h6YqgJI85ftvG48CL3yhgXoTjSfZUGAl2WLmFYLkVFkdmod7C221
+         JtdrJFVXFqu52E47CCgW80uLpmCGQGqHKu3uIuBAfp2W84XJcPmAFC1NbanGK0b7gI
+         jR1u4AKX1Z8tw==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOIsWRWlGSWpSXmKPExsViZ8ORpJt7ITf
+  ZYNtufYuZM04wWkz5tZTZ4vKuOWwWzw71slicP9bP7sDqsXPWXXaPTas62Tw+b5Lz2Pr5NksA
+  SxRrZl5SfkUCa0b/3x62gqtCFZ+mnmVrYPzC38XIxSEksJFR4t7/54wQzmImiSNPbzFBOAcYJ
+  ZYsfsjSxcjJwSagIXGv5SYjiC0i0Mkosa01DcRmFnCT2PRmNnsXIweHsICPRNereJAwi4CqxJ
+  rbG5lBbF4BR4mnT66xgdgSAgoSUx6+B4tzCjhJLL/zBSwuBFRzauYdFoh6QYmTM5+wQIyXkDj
+  44gUzyHgJASWJmd3xEGMqJGbNamOCsNUkrp7bxDyBUXAWku5ZSLoXMDKtYjQrTi0qSy3SNTTR
+  SyrKTM8oyU3MzNFLrNJN1Est1S1PLS7RNdRLLC/WSy0u1iuuzE3OSdHLSy3ZxAgM/5RitlU7G
+  H8t+6N3iFGSg0lJlHefTW6yEF9SfkplRmJxRnxRaU5q8SFGGQ4OJQlevbNAOcGi1PTUirTMHG
+  AswqQlOHiURHiFtwOleYsLEnOLM9MhUqcYFaXEea3OAyUEQBIZpXlwbbD4v8QoKyXMy8jAwCD
+  EU5BalJtZgir/ilGcg1FJmDfuHNAUnsy8Erjpr4AWMwEttkvNAllckoiQkmpgsr8Wvq3NQuva
+  ox2XQvbLadwUETj2s2yvXFzQ6S/yD23NOJuc7RlNDPd1em5yWqSSLnM29f2pGTV7n54yXe00b
+  dddjWrVxSrhcw9yiv+qXWSUo7Te7vL2giqGss9+1yZce9BalbOvprjurbveKpGp/1g0/aIOmV
+  oIWX09WXq+j997dh2/hJm3iv+j+APhJxnDDCU2FgQ03DS8WPyK7aONj8mVpEcSPWeYz39T+Ow
+  /795nLY8MtuoPq35PvXN0QqXB1kNzKnZmznF12dJm5/ZT7ejZ23WT3rlMO1DooCHocrupSEh3
+  2p0Df10/RDcYn9HcP/P3Wv8rgr+ni+989+SzwRt2bpNrVqvfZU46YaP0S4mlOCPRUIu5qDgRA
+  MVi5iN6AwAA
 X-Env-Sender: lizhijian@fujitsu.com
-X-Msg-Ref: server-15.tower-728.messagelabs.com!1668141058!608057!1
-X-Originating-IP: [62.60.8.179]
+X-Msg-Ref: server-26.tower-585.messagelabs.com!1668141165!713889!1
+X-Originating-IP: [62.60.8.98]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.100.1; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 14018 invoked from network); 11 Nov 2022 04:30:58 -0000
-Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
-  by server-15.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 11 Nov 2022 04:30:58 -0000
-Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 41D42156;
-        Fri, 11 Nov 2022 04:30:58 +0000 (GMT)
+Received: (qmail 31940 invoked from network); 11 Nov 2022 04:32:45 -0000
+Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
+  by server-26.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 11 Nov 2022 04:32:45 -0000
+Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id 607E81AE;
+        Fri, 11 Nov 2022 04:32:45 +0000 (GMT)
 Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 34D92153;
-        Fri, 11 Nov 2022 04:30:58 +0000 (GMT)
-Received: from bc0da1a9c27e.localdomain (10.167.225.141) by
+        by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id 5554C7B;
+        Fri, 11 Nov 2022 04:32:45 +0000 (GMT)
+Received: from 401ba783c32b.localdomain (10.167.225.141) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Fri, 11 Nov 2022 04:30:55 +0000
+ (TLS) id 15.0.1497.32; Fri, 11 Nov 2022 04:32:42 +0000
 From:   Li Zhijian <lizhijian@fujitsu.com>
 To:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         "Leon Romanovsky" <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, Li Zhijian <lizhijian@fujitsu.com>
-Subject: [for-next PATCH 4/5] RDMA/rxe: refactor iova_to_vaddr
-Date:   Fri, 11 Nov 2022 04:30:29 +0000
-Message-ID: <1668141030-2-5-git-send-email-lizhijian@fujitsu.com>
+Subject: [for-next PATCH 5/5] RDMA/rxe: Rename iova_to_vaddr to rxe_map_iova
+Date:   Fri, 11 Nov 2022 04:32:15 +0000
+Message-ID: <1668141135-2-1-git-send-email-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1668141030-2-1-git-send-email-lizhijian@fujitsu.com>
 References: <1668141030-2-1-git-send-email-lizhijian@fujitsu.com>
@@ -88,146 +88,65 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-For IB_MR_TYPE_USER MR, iova_to_vaddr() will call kmap_local_page() to
-map page.
+be pair with rxe_unmap_vaddr
 
 Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- drivers/infiniband/sw/rxe/rxe_loc.h   |  1 +
- drivers/infiniband/sw/rxe/rxe_mr.c    | 38 +++++++++++++++------------
- drivers/infiniband/sw/rxe/rxe_resp.c  |  1 +
- drivers/infiniband/sw/rxe/rxe_verbs.h |  5 +++-
- 4 files changed, 27 insertions(+), 18 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_loc.h  | 2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c   | 4 ++--
+ drivers/infiniband/sw/rxe/rxe_resp.c | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index c2a5c8814a48..22a8c44d39c8 100644
+index 22a8c44d39c8..496e29215e0f 100644
 --- a/drivers/infiniband/sw/rxe/rxe_loc.h
 +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -73,6 +73,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+@@ -72,7 +72,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+ 		enum rxe_mr_copy_dir dir);
  int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info *dma,
  	      void *addr, int length, enum rxe_mr_copy_dir dir);
- void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
-+void rxe_unmap_vaddr(struct rxe_mr *mr, void *vaddr);
+-void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
++void *rxe_map_iova(struct rxe_mr *mr, u64 iova, int length);
+ void rxe_unmap_vaddr(struct rxe_mr *mr, void *vaddr);
  struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
  			 enum rxe_mr_lookup_type type);
- int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
 diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index a4e786b657b7..d26a4a33119c 100644
+index d26a4a33119c..e46ea2a7179c 100644
 --- a/drivers/infiniband/sw/rxe/rxe_mr.c
 +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -120,9 +120,7 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
- 	struct ib_umem		*umem;
- 	struct sg_page_iter	sg_iter;
- 	int			num_buf;
--	void			*vaddr;
- 	int err;
--	int i;
- 
- 	umem = ib_umem_get(&rxe->ib_dev, start, length, access);
- 	if (IS_ERR(umem)) {
-@@ -159,18 +157,9 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
- 				num_buf = 0;
- 			}
- 
--			vaddr = page_address(sg_page_iter_page(&sg_iter));
--			if (!vaddr) {
--				pr_warn("%s: Unable to get virtual address\n",
--						__func__);
--				err = -ENOMEM;
--				goto err_cleanup_map;
--			}
--
--			buf->addr = (uintptr_t)vaddr;
-+			buf->page = sg_page_iter_page(&sg_iter);
- 			num_buf++;
- 			buf++;
--
- 		}
- 	}
- 
-@@ -182,10 +171,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
- 
- 	return 0;
- 
--err_cleanup_map:
--	for (i = 0; i < mr->num_map; i++)
--		kfree(mr->map[i]);
--	kfree(mr->map);
- err_release_umem:
- 	ib_umem_release(umem);
- err_out:
-@@ -246,6 +231,12 @@ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
- 	}
+@@ -264,7 +264,7 @@ static void *__iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
  }
  
-+void rxe_unmap_vaddr(struct rxe_mr *mr, void *vaddr)
-+{
-+	if (mr->ibmr.type == IB_MR_TYPE_USER)
-+		kunmap_local(vaddr);
-+}
-+
- static void *__iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
- {
- 	size_t offset;
-@@ -258,9 +249,21 @@ static void *__iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
- 		return NULL;
- 	}
- 
--	return (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
-+	if (mr->ibmr.type == IB_MR_TYPE_USER) {
-+		char *paddr;
-+		struct page *pg = mr->map[m]->buf[n].page;
-+
-+		paddr = kmap_local_page(pg);
-+		if (paddr == NULL) {
-+			pr_warn("Failed to map page");
-+			return NULL;
-+		}
-+		return paddr + offset;
-+	} else
-+		return (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
- }
- 
-+/* must call rxe_unmap_vaddr to unmap vaddr */
- void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
+ /* must call rxe_unmap_vaddr to unmap vaddr */
+-void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
++void *rxe_map_iova(struct rxe_mr *mr, u64 iova, int length)
  {
  	if (mr->state != RXE_MR_STATE_VALID) {
-@@ -326,6 +329,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 		dest = (dir == RXE_TO_MR_OBJ) ? va : addr;
+ 		pr_warn("mr not in valid state\n");
+@@ -321,7 +321,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+ 		if (bytes > length)
+ 			bytes = length;
  
- 		memcpy(dest, src, bytes);
-+		rxe_unmap_vaddr(mr, va);
+-		va = iova_to_vaddr(mr, iova, bytes);
++		va = rxe_map_iova(mr, iova, bytes);
+ 		if (!va)
+ 			return -EFAULT;
  
- 		length	-= bytes;
- 		addr	+= bytes;
 diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 483043dc4e89..765cb9f8538a 100644
+index 765cb9f8538a..831d71e2054c 100644
 --- a/drivers/infiniband/sw/rxe/rxe_resp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -636,6 +636,7 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
+@@ -615,8 +615,8 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
+ 			goto out;
+ 		}
  
- 		*vaddr = value;
- 		spin_unlock_bh(&atomic_ops_lock);
-+		rxe_unmap_vaddr(mr, vaddr);
+-		vaddr = iova_to_vaddr(mr, qp->resp.va + qp->resp.offset,
+-					sizeof(u64));
++		vaddr = rxe_map_iova(mr, qp->resp.va + qp->resp.offset,
++				     sizeof(u64));
  
- 		qp->resp.msn++;
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index acab785ba7e2..6080a4b32f09 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -280,7 +280,10 @@ enum rxe_mr_lookup_type {
- #define RXE_BUF_PER_MAP		(PAGE_SIZE / sizeof(struct rxe_phys_buf))
- 
- struct rxe_phys_buf {
--	u64      addr;
-+	union {
-+		u64 addr; /* IB_MR_TYPE_MEM_REG */
-+		struct page *page; /* IB_MR_TYPE_USER */
-+	};
- };
- 
- struct rxe_map {
+ 		/* check vaddr is 8 bytes aligned. */
+ 		if (!vaddr || (uintptr_t)vaddr & 7) {
 -- 
 2.31.1
 
