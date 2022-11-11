@@ -2,94 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB92625239
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 05:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA98162528A
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Nov 2022 05:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbiKKEMD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Nov 2022 23:12:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
+        id S229703AbiKKEav (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Nov 2022 23:30:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbiKKELk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 23:11:40 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2653222AD;
-        Thu, 10 Nov 2022 20:11:37 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id m204so3918527oib.6;
-        Thu, 10 Nov 2022 20:11:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2kdIP1WeRYup9WYrN50JXtVx97BRTIEhufBzxLjkpYA=;
-        b=ca+da0sURkVvT/w+o9IghO9odiWy7U2rEiwocTnlWe8gRPKeY6vA/M3PsJV+6s4GvU
-         WfYZKSQU//3TI0w9UwCZ/DVJ1Har1ltjs8l6DnqK1nfLcti12ge1yXp0hbHK08walcTb
-         2TfDFld7p8zKluEDkBLpoac2orSne4kZQbn134+liUFuDZI8SVIOcAQzSASduZcqfxDr
-         JSIdr2NxzWe9wvHvEKahSEsHFdubdsbCHf9SL16y/WELxf/ugXp1tYdJ/q2yLyUH4UrZ
-         JQs8fb8MzBaiqfmwCv8rNYzlzupSidep31WWSr3zhIUsJ8uB4EfEChazB7e9e7zR4Axh
-         aHww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2kdIP1WeRYup9WYrN50JXtVx97BRTIEhufBzxLjkpYA=;
-        b=jMLWnvCntSNzazcvCBDfTmzWdqGQDC5wpqBRR7Uq5JlJ03kz3EEhPEdPG9fOC0zy/p
-         dth4dGtaGvcXMOAwJfVpnvybAvPRn0ft5agF5aFZha8eulT7m901F7FWN+XDRTuxXc0F
-         F1XOIGLZ76+qNg0uW3A5FIZhOoZkqd7/ckTFDjZ2JNw8ny8EK/81sszOj2nhVPFwGeoZ
-         M2oHuYJFnp1PfEZpG54i4b42BGO851FJhYUJfJgryu2LzL915IgFIbKmjqs0jVXvVVkO
-         lG6VdxfDW0MYQWGU8RrnikP4MG3Bt8ZFC2JjoOgDHQaNX8Ji4apfbQhQQ8mwJRBPto6e
-         iDYg==
-X-Gm-Message-State: ACrzQf12wI8kuhL0GAJ1/9LrtjP9Hh0+ZCYhIdktZnz4kD43lozZw0UU
-        0d6owRPVKhR4Q9LVW/KwsWbkAkNKvx0=
-X-Google-Smtp-Source: AMsMyM6RqfzUJQRUyyuyGav+7kCftcXcYL/D6/Myr/JgItXlXdrZ/Tw2jdm/GbNRqBDj8tfCZcsGWA==
-X-Received: by 2002:a05:6808:170c:b0:345:20f7:b5df with SMTP id bc12-20020a056808170c00b0034520f7b5dfmr2742007oib.46.1668139896789;
-        Thu, 10 Nov 2022 20:11:36 -0800 (PST)
-Received: from localhost ([12.97.180.36])
-        by smtp.gmail.com with ESMTPSA id u24-20020a056870f29800b0013c50b812a2sm746209oap.36.2022.11.10.20.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Nov 2022 20:11:36 -0800 (PST)
-Date:   Thu, 10 Nov 2022 20:11:35 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Barry Song <baohua@kernel.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tariq Toukan <ttoukan.linux@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 3/4] sched: add sched_numa_find_nth_cpu()
-Message-ID: <Y23Ld7fDVO8Z8Oqu@yury-laptop>
-References: <20221111040027.621646-1-yury.norov@gmail.com>
- <20221111040027.621646-4-yury.norov@gmail.com>
+        with ESMTP id S229463AbiKKEau (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Nov 2022 23:30:50 -0500
+Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C7A42F68;
+        Thu, 10 Nov 2022 20:30:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+        s=170520fj; t=1668141047; i=@fujitsu.com;
+        bh=qfFZQbTvGV8YnMkJ2TiYg0iJaPMZtX/qYQUzFkFbqog=;
+        h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=koQX9oOH6fRK3ZlKT8cKu16lj1Ik96huRV64Nnvf/sU8IF64ulhn14Vdch0JQ4jjf
+         267+oJs9BoDTS2deY5xKx44th9NvUVy2Io6pUemV2KySMbHIhiBm/ofPxUgLiJkJtI
+         yATqyYu7SxqA/0QJ4UpRUvBfqQQdt5UrgkBnDpdjJIX9My9UIj9Yzgo8b+S4dfJasA
+         IcQoSJf+hryfg/8TMFQcECn4hPRFBv0toJJs5tVRS+6HhpE+f2L8jngjT33TmPRTXU
+         fsDP2jq84vc6wSHx2sF9HAO+UX4+Tle3lISfwWQ01r5KUZulkGLpo4YWlKDiOn5iy5
+         ahVZFEehuKcGA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRWlGSWpSXmKPExsViZ8OxWff7+dx
+  kg6sLmC1mzjjBaDHl11Jmi8u75rBZPDvUy2Jx/lg/uwOrx85Zd9k9Nq3qZPP4vEnOY+vn2ywB
+  LFGsmXlJ+RUJrBmX/01jK7jKWfF51Rb2BsaFHF2MXBxCAhsZJSaebGCBcJYwSVxtb2OEcA4wS
+  qxcs4e9i5GTg01AQ+Jey01GEFtEoJNRYltrGojNLOAmsenNbLAaYQETiRW/LrKB2CwCqhJLns
+  1gBrF5BRwlVs7cDtYrIaAgMeXhe6i4oMTJmU9YIOZISBx88QIozgFUoyQxszseorxCYtasNiY
+  IW03i6rlNzBMY+Wch6Z6FpHsBI9MqRvPi1KKy1CJdQ0u9pKLM9IyS3MTMHL3EKt1EvdRS3bz8
+  opIMXUO9xPJivdTiYr3iytzknBS9vNSSTYzAkE4pTo3ewTh32R+9Q4ySHExKorz7bHKThfiS8
+  lMqMxKLM+KLSnNSiw8xynBwKEnw6p0FygkWpaanVqRl5gDjCyYtwcGjJMIrvB0ozVtckJhbnJ
+  kOkTrFqCglznv8HFBCACSRUZoH1waL6UuMslLCvIwMDAxCPAWpRbmZJajyrxjFORiVhHnjQKb
+  wZOaVwE1/BbSYCWixXWoWyOKSRISUVAOTZpb84sP2u1b8XNH9NXiX0kNXVr/tJ1qKIvW25ufm
+  i65/ItKv7mLixDYhImxfYVxi4PM+I53jCXoxM2UnzN745OCCRQWOR9f0Jp57IV+WnWUvxm0Ys
+  EqrQvek47Yzr/R3/9G5c84gUiNx2d5S+T3LJq6z1eAsqmObpNa7XXnaz9Tapc5zeCvMO9jUrr
+  1xXr3b6v6Fa1GRUldaN2SF+jdLTrWwl7y44dLJz91/viVe/Bbsf7FTLjJauqX+0LLOqRp5l6/
+  uvq5zzT3v9J5p3evWPm/8PqFKp/+jiZbzOb61XjkdOVOuHjXZduWXof+uWZknt/jsWdCkcGW5
+  6ylHc6nrP4qLHDZInzuwf6eGnqG8EktxRqKhFnNRcSIAKDsId2QDAAA=
+X-Env-Sender: lizhijian@fujitsu.com
+X-Msg-Ref: server-6.tower-732.messagelabs.com!1668141046!636325!1
+X-Originating-IP: [62.60.8.179]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.100.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 29744 invoked from network); 11 Nov 2022 04:30:47 -0000
+Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
+  by server-6.tower-732.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 11 Nov 2022 04:30:47 -0000
+Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 80115155;
+        Fri, 11 Nov 2022 04:30:46 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 737F7154;
+        Fri, 11 Nov 2022 04:30:46 +0000 (GMT)
+Received: from bc0da1a9c27e.localdomain (10.167.225.141) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.32; Fri, 11 Nov 2022 04:30:43 +0000
+From:   Li Zhijian <lizhijian@fujitsu.com>
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Leon Romanovsky" <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Li Zhijian <lizhijian@fujitsu.com>
+Subject: [for-next PATCH 0/5] iova_to_vaddr refactor
+Date:   Fri, 11 Nov 2022 04:30:25 +0000
+Message-ID: <1668141030-2-1-git-send-email-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221111040027.621646-4-yury.norov@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,94 +84,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 10, 2022 at 08:00:26PM -0800, Yury Norov wrote:
-> The function finds Nth set CPU in a given cpumask starting from a given
-> node.
-> 
-> Leveraging the fact that each hop in sched_domains_numa_masks includes the
-> same or greater number of CPUs than the previous one, we can use binary
-> search on hops instead of linear walk, which makes the overall complexity
-> of O(log n) in terms of number of cpumask_weight() calls.
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  include/linux/topology.h |  8 ++++++++
->  kernel/sched/topology.c  | 42 ++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 50 insertions(+)
-> 
-> diff --git a/include/linux/topology.h b/include/linux/topology.h
-> index 4564faafd0e1..63048ac3207c 100644
-> --- a/include/linux/topology.h
-> +++ b/include/linux/topology.h
-> @@ -245,5 +245,13 @@ static inline const struct cpumask *cpu_cpu_mask(int cpu)
->  	return cpumask_of_node(cpu_to_node(cpu));
->  }
->  
-> +#ifdef CONFIG_NUMA
-> +int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node);
-> +#else
-> +int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
+Background:
+iova_to_addr just lookups at the map which is constructed and manages the
+relationship between iova to vaddr when MR is registering. By conventional,
+we should map the userspace address(iova) every time we want to access it.
+Please refer to the previous discussion[1][2] for more details.
 
-Ah, this should be static of course.
+Refactor:
+In this refactoring, we will do the map every time before the user really
+accesses it.
 
-> +{
-> +	return cpumask_nth(cpu, cpus);
-> +}
-> +#endif	/* CONFIG_NUMA */
->  
->  #endif /* _LINUX_TOPOLOGY_H */
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 8739c2a5a54e..c8f56287de46 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -2067,6 +2067,48 @@ int sched_numa_find_closest(const struct cpumask *cpus, int cpu)
->  	return found;
->  }
->  
-> +/*
-> + * sched_numa_find_nth_cpu() - given the NUMA topology, find the Nth next cpu
-> + *                             closest to @cpu from @cpumask.
-> + * cpumask: cpumask to find a cpu from
-> + * cpu: Nth cpu to find
-> + *
-> + * returns: cpu, or >= nr_cpu_ids when nothing found.
-> + */
-> +int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
-> +{
-> +	unsigned int first = 0, mid, last = sched_domains_numa_levels;
-> +	struct cpumask ***masks;
-> +	int w, ret = nr_cpu_ids;
-> +
-> +	rcu_read_lock();
-> +	masks = rcu_dereference(sched_domains_numa_masks);
-> +	if (!masks)
-> +		goto out;
-> +
-> +	while (last >= first) {
-> +		mid = (last + first) / 2;
-> +
-> +		if (cpumask_weight_and(cpus, masks[mid][node]) <= cpu) {
-> +			first = mid + 1;
-> +			continue;
-> +		}
-> +
-> +		w = (mid == 0) ? 0 : cpumask_weight_and(cpus, masks[mid - 1][node]);
-> +		if (w <= cpu)
-> +			break;
-> +
-> +		last = mid - 1;
-> +	}
-> +
-> +	ret = (mid == 0) ?
-> +		cpumask_nth_and(cpu - w, cpus, masks[mid][node]) :
-> +		cpumask_nth_and_andnot(cpu - w, cpus, masks[mid][node], masks[mid - 1][node]);
-> +out:
-> +	rcu_read_unlock();
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(sched_numa_find_nth_cpu);
->  #endif /* CONFIG_NUMA */
->  
->  static int __sdt_alloc(const struct cpumask *cpu_map)
-> -- 
-> 2.34.1
+patch1,3,5 are cleanup and preparation.
+patch2 is to make all subroutines accessing the iova use iova_to_vaddr() API.
+patch4 is the refactor.
+
+[1]: https://www.spinics.net/lists/linux-rdma/msg113206.html
+[2]: https://lore.kernel.org/all/20220118123505.GF84788@nvidia.com/
+
+Li Zhijian (5):
+  RDMA/rxe: Remove rxe_phys_buf.size
+  RDMA/rxe: use iova_to_vaddr to transform iova for rxe_mr_copy
+  RDMA/rxe: iova_to_vaddr cleanup
+  RDMA/rxe: refactor iova_to_vaddr
+  RDMA/rxe: Rename iova_to_vaddr to rxe_map_iova
+
+ drivers/infiniband/sw/rxe/rxe_loc.h   |   3 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c    | 128 +++++++++++---------------
+ drivers/infiniband/sw/rxe/rxe_resp.c  |   5 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c |   1 -
+ drivers/infiniband/sw/rxe/rxe_verbs.h |   6 +-
+ 5 files changed, 62 insertions(+), 81 deletions(-)
+
+-- 
+2.31.1
+
