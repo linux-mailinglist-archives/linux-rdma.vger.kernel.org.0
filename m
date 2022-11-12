@@ -2,60 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4CA626AF9
-	for <lists+linux-rdma@lfdr.de>; Sat, 12 Nov 2022 19:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD77F626B20
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Nov 2022 20:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235010AbiKLSOs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 12 Nov 2022 13:14:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
+        id S233437AbiKLTJw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 12 Nov 2022 14:09:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbiKLSOs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Nov 2022 13:14:48 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4708D2CC;
-        Sat, 12 Nov 2022 10:14:47 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id l15so4705387qtv.4;
-        Sat, 12 Nov 2022 10:14:47 -0800 (PST)
+        with ESMTP id S230170AbiKLTJv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Nov 2022 14:09:51 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB7517E30;
+        Sat, 12 Nov 2022 11:09:50 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id p18so5223721qkg.2;
+        Sat, 12 Nov 2022 11:09:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lTFl9aWO+1SeQzS//SMRtEyeX6yINNitWAxlXrbM5e0=;
-        b=bbbo8SH+J6x9hAfBQAbE6hZ1zz7YYSIoK67mg1Zzbg88jPR6zEu7EkjVBc1qe0F57c
-         +KB3rtIMU7XRT9AqMnLWHRuqDX1ibzP9GDwyzHMN/nyUrvKWMQJb1gcyPRx8ZGW3fxlg
-         0EfW6YTANwLb0AZAHxJl+kfJOUycnK8HDMBwSyAXu/wcZuf3cjh64gnQmsq9dkIEcCjv
-         SEoZK0uzF8HvlXxEmJl9OBFEODYNapKg5ydfDdgWVenoOQDaSpxX+rImt2iMKpuc5kTe
-         J/32xGw+eV6skjjPy4e8gFyHNOdKwEjPk8dYCVROPw/HdcjLmURd3JVLvUy+xcuWuV/S
-         CkZg==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7d2DeMwIv7xGzs3K0k3aDYoBbKn47/eVccZLRTDD5k0=;
+        b=grKF04adVSoE91BbUQqXZn6Fw8cfovF/AFby+zoJaMHGv5a0lvyPNcEQKLXAUnB1cr
+         W213E5tFCb6VM3rdX/j5i8Udx3xM/sJhxPOX5RZ9eGYPmFGunuYYSLfZJuRMhclE7Jif
+         MzS4+6v8tmVfcZDNGgZjOh/uREOsa6G5iqDxUHN2Hm9BJdQyhbKhuuVLPncvdWyYfGLY
+         5OR4LakMlUxolRikG1JJVAM1cIA5ybM/1pehwL9h0D0mMEAI7g1TYWHUC6Rl4LBPw/J3
+         cAnzJZiLccPKwFti7znTuNp8rTjq4THH4DOx/KggDKYzwWVb/lXKTJIiB+SMUCmlyYN8
+         B0wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lTFl9aWO+1SeQzS//SMRtEyeX6yINNitWAxlXrbM5e0=;
-        b=ZZ6A1nhSHIkvyjWCNhROVauK6CFdbadequxd27C+8Vd8fwznu1p2X78rqOn/okRoDk
-         Muu4guqeEWT22NHJo10BaGHWtdzQkEyrmrlXQkJAOodbVLejO7cVzw9Sdb/yycws26OJ
-         j7LoZCZX5aSIZ6uktM/hlb4uIJZJ48d04zOUe5DbsRA6DyYGT+zhvLrKAQXtdCQw9aAg
-         YP7KAv0uCnYWnd0/cdk3wM1rvB9UnMfx/HlUJRGtaFAWiG+PfCk0bBOBTEcxz51vxZ7K
-         FSMhcdorIbb8bcIa+A9UO3Lr8yEa1rlcWETptPyOyE9g3BKKxFfOD/D41X3flKKBqinp
-         0MiQ==
-X-Gm-Message-State: ANoB5pkmrsEoBCBYFVaE/DVlrPGj9SeJte/G4rt3I4UKhbXoZwMTLDIM
-        qTlDG3xjAQYi9Mqvu1ipKvI=
-X-Google-Smtp-Source: AA0mqf4/q4Hw65EwDHaphX2lo7UTuol94xx3giPYnaMAfBF3nTZv23iAvlSLMuR6lJyj40BtXMjPcA==
-X-Received: by 2002:ac8:5043:0:b0:3a5:c55a:72c4 with SMTP id h3-20020ac85043000000b003a5c55a72c4mr6261313qtm.223.1668276886174;
-        Sat, 12 Nov 2022 10:14:46 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7d2DeMwIv7xGzs3K0k3aDYoBbKn47/eVccZLRTDD5k0=;
+        b=ANkSqf2yY1IY8XPz5C4kqibKkxw1LrQuDpvwqdZQNZc/IFpqMV556XjiOJbY8S7hk5
+         w+EIEMFbEC8xLguuznbB7mGFDB+BS+7TnJ2orNzpneHJ0Bep7XgBX3hnmC7oyzA5xnjV
+         l/P6jIB0FH+P6JygaGIkCKc0uv7gG5jhQZINTmY+bQ4ocQyc6N0v8Ab43tijQw1hMdHA
+         Ux72qwQAx1Y7+AylSH5mDEtOW2w/tD82Hu9Ohzug5IA4uDUKd2GhRc/Px4SFm3jY8LWU
+         ncpWHx6cRooId4xVx6X4LyFYgwngj1P1yGVoFh9MRRtvg1ljHpjw3k3F8hcttM0jJZE3
+         EaZg==
+X-Gm-Message-State: ANoB5pnmk0OJ4lp4EgpK7Rg7R/1milCJqGhu2fkc0O3SS4Bl7rzQ6P/C
+        7ztu6z0qrViSGJqNlldUY7nbgoktnDk=
+X-Google-Smtp-Source: AA0mqf416Qa+kUiFb8TUpoMAQuikXcCFQuqeJxlh33Gl9IJjr+BJ/ihDOkSYdW1iqb9/1t6Rw/l1iw==
+X-Received: by 2002:a05:620a:d84:b0:6fa:937f:61d4 with SMTP id q4-20020a05620a0d8400b006fa937f61d4mr5652984qkl.280.1668280189645;
+        Sat, 12 Nov 2022 11:09:49 -0800 (PST)
 Received: from localhost (user-24-236-74-177.knology.net. [24.236.74.177])
-        by smtp.gmail.com with ESMTPSA id z9-20020ac81009000000b0039cd4d87aacsm3092459qti.15.2022.11.12.10.14.45
+        by smtp.gmail.com with ESMTPSA id f7-20020ac84707000000b003995f6513b9sm3111019qtp.95.2022.11.12.11.09.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Nov 2022 10:14:45 -0800 (PST)
-Date:   Sat, 12 Nov 2022 10:14:45 -0800
+        Sat, 12 Nov 2022 11:09:49 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
+To:     linux-kernel@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Barry Song <baohua@kernel.org>,
         Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        haniel Bristot de Oliveira <bristot@redhat.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Gal Pressman <gal@nvidia.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -76,19 +75,15 @@ Cc:     linux-kernel@vger.kernel.org,
         Tariq Toukan <ttoukan.linux@gmail.com>,
         Tony Luck <tony.luck@intel.com>,
         Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 3/4] sched: add sched_numa_find_nth_cpu()
-Message-ID: <Y2/ilckO8Wj9uAPq@yury-laptop>
-References: <20221111040027.621646-1-yury.norov@gmail.com>
- <20221111040027.621646-4-yury.norov@gmail.com>
- <Y241Jd+27r/ZIiji@smile.fi.intel.com>
- <Y26BQ92l9xWKaz2z@yury-laptop>
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Yury Norov <yury.norov@gmail.com>, linux-crypto@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH v2 0/4] cpumask: improve on cpumask_local_spread() locality
+Date:   Sat, 12 Nov 2022 11:09:42 -0800
+Message-Id: <20221112190946.728270-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y26BQ92l9xWKaz2z@yury-laptop>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -99,48 +94,74 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 09:07:17AM -0800, Yury Norov wrote:
-> On Fri, Nov 11, 2022 at 01:42:29PM +0200, Andy Shevchenko wrote:
-> > On Thu, Nov 10, 2022 at 08:00:26PM -0800, Yury Norov wrote:
-> > > +	int w, ret = nr_cpu_ids;
-> > > +
-> > > +	rcu_read_lock();
-> > > +	masks = rcu_dereference(sched_domains_numa_masks);
-> > > +	if (!masks)
-> > > +		goto out;
-> > > +
-> > > +	while (last >= first) {
-> > > +		mid = (last + first) / 2;
-> > > +
-> > > +		if (cpumask_weight_and(cpus, masks[mid][node]) <= cpu) {
-> > > +			first = mid + 1;
-> > > +			continue;
-> > > +		}
-> > > +
-> > > +		w = (mid == 0) ? 0 : cpumask_weight_and(cpus, masks[mid - 1][node]);
-> > 
-> > See below.
-> > 
-> > > +		if (w <= cpu)
-> > > +			break;
-> > > +
-> > > +		last = mid - 1;
-> > > +	}
-> > 
-> > We have lib/bsearch.h. I haven't really looked deeply into the above, but my
-> > gut feelings that that might be useful here. Can you check that?
-> 
-> Yes we do. I tried it, and it didn't work because nodes arrays are
-> allocated dynamically, and distance between different pairs of hops
-> for a given node is not a constant, which is a requirement for
-> bsearch.
-> 
-> However, distance between hops pointers in 1st level array should be
-> constant, and we can try feeding bsearch with it. I'll experiment with
-> bsearch for more.
+cpumask_local_spread() currently checks local node for presence of i'th
+CPU, and then if it finds nothing makes a flat search among all non-local
+CPUs. We can do it better by checking CPUs per NUMA hops.
 
-OK, I tried bsearch on array of hops, and it works. But it requires
-adding some black pointers magic. I'll send v2 based on bsearch soon.
+This series is inspired by Tariq Toukan and Valentin Schneider's "net/mlx5e:
+Improve remote NUMA preferences used for the IRQ affinity hints"
 
-Thanks,
-Yury
+https://patchwork.kernel.org/project/netdevbpf/patch/20220728191203.4055-3-tariqt@nvidia.com/
+
+According to their measurements, for mlx5e:
+
+        Bottleneck in RX side is released, reached linerate (~1.8x speedup).
+        ~30% less cpu util on TX.
+
+This patch makes cpumask_local_spread() traversing CPUs based on NUMA
+distance, just as well, and I expect comparabale improvement for its
+users, as in case of mlx5e.
+
+I tested new behavior on my VM with the following NUMA configuration:
+
+root@debian:~# numactl -H
+available: 4 nodes (0-3)
+node 0 cpus: 0 1 2 3
+node 0 size: 3869 MB
+node 0 free: 3740 MB
+node 1 cpus: 4 5
+node 1 size: 1969 MB
+node 1 free: 1937 MB
+node 2 cpus: 6 7
+node 2 size: 1967 MB
+node 2 free: 1873 MB
+node 3 cpus: 8 9 10 11 12 13 14 15
+node 3 size: 7842 MB
+node 3 free: 7723 MB
+node distances:
+node   0   1   2   3
+  0:  10  50  30  70
+  1:  50  10  70  30
+  2:  30  70  10  50
+  3:  70  30  50  10
+
+And the cpumask_local_spread() for each node and offset traversing looks
+like this:
+
+node 0:   0   1   2   3   6   7   4   5   8   9  10  11  12  13  14  15
+node 1:   4   5   8   9  10  11  12  13  14  15   0   1   2   3   6   7
+node 2:   6   7   0   1   2   3   8   9  10  11  12  13  14  15   4   5
+node 3:   8   9  10  11  12  13  14  15   4   5   6   7   0   1   2   3
+
+v1: https://lore.kernel.org/lkml/20221111040027.621646-5-yury.norov@gmail.com/T/
+v2: 
+ - use bsearch() in sched_numa_find_nth_cpu();
+ - fix missing 'static inline' in 3rd patch.
+
+Yury Norov (4):
+  lib/find: introduce find_nth_and_andnot_bit
+  cpumask: introduce cpumask_nth_and_andnot
+  sched: add sched_numa_find_nth_cpu()
+  cpumask: improve on cpumask_local_spread() locality
+
+ include/linux/cpumask.h  | 20 +++++++++++++++
+ include/linux/find.h     | 33 ++++++++++++++++++++++++
+ include/linux/topology.h |  8 ++++++
+ kernel/sched/topology.c  | 55 ++++++++++++++++++++++++++++++++++++++++
+ lib/cpumask.c            | 12 ++-------
+ lib/find_bit.c           |  9 +++++++
+ 6 files changed, 127 insertions(+), 10 deletions(-)
+
+-- 
+2.34.1
+
