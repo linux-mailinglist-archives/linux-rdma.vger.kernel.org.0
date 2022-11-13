@@ -2,35 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4874626D33
+	by mail.lfdr.de (Postfix) with ESMTP id 9626C626D32
 	for <lists+linux-rdma@lfdr.de>; Sun, 13 Nov 2022 02:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233832AbiKMBIl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 12 Nov 2022 20:08:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
+        id S235073AbiKMBIm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 12 Nov 2022 20:08:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbiKMBIj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Nov 2022 20:08:39 -0500
+        with ESMTP id S230170AbiKMBIm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Nov 2022 20:08:42 -0500
 Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742CBF10
-        for <linux-rdma@vger.kernel.org>; Sat, 12 Nov 2022 17:08:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B76125C7
+        for <linux-rdma@vger.kernel.org>; Sat, 12 Nov 2022 17:08:39 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668301716;
+        t=1668301718;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3CJFWjYt61jecG+fnK/iUkyykWjvWumkbqRC+UNbwlw=;
-        b=qN3phKeG4Jf5RrkawGpKapDNzGvLvPzi3kParOnCl+MgIHA467L5mJzIb4AGgUqCnJ9DjU
-        owj3/nFaXG2shRHRSZcSoX3YLzp4+KU2XTT8pJZ6jWZD7NPr2jYzxeRA103eFaHF2aq6bB
-        YGd1CM/D/ObigS9cQBlsS7fKYaGCZiE=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lv032lrzlN9ChNEAvXxauoX7CEIDjAQVR47zbEM1hqA=;
+        b=MZntfJDfQgGD+gdCYIMKlcd0gnPPaRIplLTZXKlhrRjgzYeiiDJMPjj6YT89ONae6ZYeP/
+        ZLkWgyaIj91as1NYbuldoIjHr6XXcl80bfyzyteGeNt/VrtkTe7v8r5rmZLAVuA7JT7kZs
+        Kw0M9Z70j/5nyVc4+sAgLmpkJSU9VcQ=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
         leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH RFC 00/12] Misc changes for rtrs
-Date:   Sun, 13 Nov 2022 09:08:11 +0800
-Message-Id: <20221113010823.6436-1-guoqing.jiang@linux.dev>
+Subject: [PATCH RFC 01/12] RDMA/rtrs-srv: Remove ib_dev_count from rtrs_srv_ib_ctx
+Date:   Sun, 13 Nov 2022 09:08:12 +0800
+Message-Id: <20221113010823.6436-2-guoqing.jiang@linux.dev>
+In-Reply-To: <20221113010823.6436-1-guoqing.jiang@linux.dev>
+References: <20221113010823.6436-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -43,36 +46,86 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
+The ib_dev_count is supposed to track the number of added ib devices
+which is only used in rtrs_srv_{add,remove}_one.
 
-Here are some changes for rtrs, please review them.
+However we only trigger rtrs_srv_add_one from rnbd_srv_init_module
+-> rtrs_srv_open -> ib_register_client -> client->add which should
+happen only once. And so is rtrs_srv_close since it is only called
+by unload rnbd-server or failure case when load rnbd-server.
 
-Thanks,
-Guoqing
+Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 16 ----------------
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h |  1 -
+ 2 files changed, 17 deletions(-)
 
-Guoqing Jiang (12):
-  RDMA/rtrs-srv: Remove ib_dev_count from rtrs_srv_ib_ctx
-  RDMA/rtrs-srv: Refactor rtrs_srv_rdma_cm_handler
-  RDMA/rtrs-srv: Only close srv_path if it is just allocated
-  RDMA/rtrs-srv: refactor the handling of failure case in map_cont_bufs
-  RDMA/rtrs-srv: Correct the checking of ib_map_mr_sg
-  RDMA/rtrs-clt: Correct the checking of ib_map_mr_sg
-  RDMA/rtrs-srv: Remove outdated comments from create_con
-  RDMA/rtrs: Kill recon_cnt from several structs
-  RDMA/rtrs: Clean up rtrs_rdma_dev_pd_ops
-  RDMA/rtrs-srv: Remove paths_num
-  RDMA/rtrs-srv: fix several issues in rtrs_srv_destroy_path_files
-  RDMA/rtrs-srv: Remove kobject_del from
-    rtrs_srv_destroy_once_sysfs_root_folders
-
- drivers/infiniband/ulp/rtrs/rtrs-clt.c       |  12 +-
- drivers/infiniband/ulp/rtrs/rtrs-pri.h       |   6 -
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |  13 ++-
- drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 110 ++++++-------------
- drivers/infiniband/ulp/rtrs/rtrs-srv.h       |   2 -
- drivers/infiniband/ulp/rtrs/rtrs.c           |  22 +---
- 6 files changed, 47 insertions(+), 118 deletions(-)
-
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 22d7ba05e9fe..79504aaef0cc 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -2097,8 +2097,6 @@ static int rtrs_srv_add_one(struct ib_device *device)
+ 	int ret = 0;
+ 
+ 	mutex_lock(&ib_ctx.ib_dev_mutex);
+-	if (ib_ctx.ib_dev_count)
+-		goto out;
+ 
+ 	/*
+ 	 * Since our CM IDs are NOT bound to any ib device we will create them
+@@ -2108,21 +2106,12 @@ static int rtrs_srv_add_one(struct ib_device *device)
+ 	ret = rtrs_srv_rdma_init(ctx, ib_ctx.port);
+ 	if (ret) {
+ 		/*
+-		 * We errored out here.
+ 		 * According to the ib code, if we encounter an error here then the
+ 		 * error code is ignored, and no more calls to our ops are made.
+ 		 */
+ 		pr_err("Failed to initialize RDMA connection");
+-		goto err_out;
+ 	}
+ 
+-out:
+-	/*
+-	 * Keep a track on the number of ib devices added
+-	 */
+-	ib_ctx.ib_dev_count++;
+-
+-err_out:
+ 	mutex_unlock(&ib_ctx.ib_dev_mutex);
+ 	return ret;
+ }
+@@ -2132,10 +2121,6 @@ static void rtrs_srv_remove_one(struct ib_device *device, void *client_data)
+ 	struct rtrs_srv_ctx *ctx;
+ 
+ 	mutex_lock(&ib_ctx.ib_dev_mutex);
+-	ib_ctx.ib_dev_count--;
+-
+-	if (ib_ctx.ib_dev_count)
+-		goto out;
+ 
+ 	/*
+ 	 * Since our CM IDs are NOT bound to any ib device we will remove them
+@@ -2145,7 +2130,6 @@ static void rtrs_srv_remove_one(struct ib_device *device, void *client_data)
+ 	rdma_destroy_id(ctx->cm_id_ip);
+ 	rdma_destroy_id(ctx->cm_id_ib);
+ 
+-out:
+ 	mutex_unlock(&ib_ctx.ib_dev_mutex);
+ }
+ 
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+index 2f8a638e36fa..eccc432b0715 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+@@ -126,7 +126,6 @@ struct rtrs_srv_ib_ctx {
+ 	struct rtrs_srv_ctx	*srv_ctx;
+ 	u16			port;
+ 	struct mutex            ib_dev_mutex;
+-	int			ib_dev_count;
+ };
+ 
+ extern struct class *rtrs_dev_class;
 -- 
 2.31.1
 
