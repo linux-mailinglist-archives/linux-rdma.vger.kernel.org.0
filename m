@@ -2,56 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A789C62850A
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Nov 2022 17:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C94628510
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Nov 2022 17:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237469AbiKNQWj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Nov 2022 11:22:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
+        id S237384AbiKNQXW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Nov 2022 11:23:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237495AbiKNQWa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Nov 2022 11:22:30 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AAE2F01D
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 08:22:23 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id s8so2987181lfc.8
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 08:22:23 -0800 (PST)
+        with ESMTP id S237513AbiKNQXI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Nov 2022 11:23:08 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4411D2F398
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 08:23:07 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id c25so13877668ljr.8
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 08:23:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pyI/vjNFbJB2Hv0/zqwdiZnbeMPXjSdMKeWZbUv6LEY=;
-        b=MH8PRTGwKwNZyQ0/5ATLj/nT/boBF8H329SJRhwOqxefmTKpJPFiFHG4aFGn/rVQ1O
-         ggOWaNFdEcHqBdrlf5bZwTXeebg/hWqsDatMuhviBDTygO5ke9XS3DCtkQfH+zfl9Eei
-         Z/+4iJD+h01d7T5bPRGkxbBTpH22w2qUnc29KiDysUtoL1WwZQePam4QxaeSBgk3jTSX
-         o/RrQ739AY/5SeVWebyUEpd0u49dtYGVhFUSANz02/bsNV1tZV1iTWvWV2kDej3QovyU
-         aB+sQauTDOne/gSF7D/KYpTcWqGhUG6LFKwSpkUHdVi6SUl026fW0kTJraH5g10/EJC6
-         jhcw==
+        bh=+XHqhmE9c8ljAHwnKRbzL6lgGb29nprsd2yKH8yo87A=;
+        b=Fi43vcOIgEBhIjiGwV2BiP81GwuTtH5iGolFBMKiy1wsYe0iZvZ12w9Zht6QtWrHti
+         8wcyzF4wkfiPWGFvin2nusgzddUUShN/za76zdAS9pKJPdJKHFbPVIbxHGcR1aPaeTNb
+         /YXFOwRPtPoa5YL4oVsTGwgj7CvNT/xigZ5eg+cZcg6cZs3h0W5TUrsOTJ92WiwgsrJn
+         dcF2bzCCtJ81cx6D1RI07oFvo5Xlfla4o4OPDyVfIQA0UtD8W3sj7r4FGODTzqgEFVY7
+         YI9OJAJfaKddw2B70JYNrJTvD/cEtkm2OGuGP1QiY68sG2qiqoa4qxpQ2iBAGcZVv+j/
+         v16g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pyI/vjNFbJB2Hv0/zqwdiZnbeMPXjSdMKeWZbUv6LEY=;
-        b=wfvvxulc8VW49GM++pNZbOp9KuF+J5/ONumzg4tI5/xpe0ON4mRL2DW121eEPGn5/3
-         fssG9ZIKCc7mXJXkeDXDykYJOq+Tjny65PumrwCYDYbAuLfKw07vxA6+MiD2DqsuM9oI
-         tCsiwGJ3Th47AVFgGYQiCXh095ltx2/qJ4It0wmbNR5FiVP/GyOuy/YNmUIB8VqhBJx+
-         qIePeFFtU8ubnko2uAzOs9kHouDtcgWO6YfpV3jTRLAbrLxKqgCGX1jX9PGouaS/d7y8
-         0YX7Zy+Ky/0Pug2eigancMqBQozefCCquPFwJ1chnu2OvPs5jKyTGxKBFdvu99IzjDir
-         eD3A==
-X-Gm-Message-State: ANoB5pkuqLQ0eL6lg5K2j34jmKiSaI+CMaFNz9P9A5Bo4gT7ZHBDvGNU
-        BLylbwrKNRA4+lRqLCWijdrN+pOuyadu4Lp5Ua7qXXn6VRu1sQ==
-X-Google-Smtp-Source: AA0mqf56jn7rr+JBFpqJh+1uSgSphgbKcloglg/t2OGPWfx2YpjlE+XRoN/kJLhZOon1ul/NnRF9wHZ1V4Y3ZEhbEYE=
-X-Received: by 2002:ac2:44d9:0:b0:4a6:fa2a:275b with SMTP id
- d25-20020ac244d9000000b004a6fa2a275bmr4434773lfm.87.1668442941698; Mon, 14
- Nov 2022 08:22:21 -0800 (PST)
+        bh=+XHqhmE9c8ljAHwnKRbzL6lgGb29nprsd2yKH8yo87A=;
+        b=BBCBZ8N1gZelkb6CstgS6lEgo3aAs2vKv5iL65o1xTlA7Pmj+YbLCaEgKoyR/SDjCW
+         aGwgHAn8nYPoCrTx7QwgSXkE31uhlj7tvrAVhsTCQGAJa9xUtwFECaQlu2/TyPsov030
+         k0CmOFB3l7UvFAuUqeYnSfGhLTVLsqMjO/KbHdIeahedIaACnLuobB7y5+q5XEseE0uY
+         hPaUYsSlPmY0fzoZnkTSSzatytrqvhCUdTL5gPQgKsva5DD/ORwDwI8OBK7zopIkNxu9
+         k/k8sDWoFLB3rRAaz/BTXI/Xy2Jbd5ZEpxtcimnvwWb7FTlmmws5jXf7V6YLSdZIuoQW
+         QrLQ==
+X-Gm-Message-State: ANoB5pk+HIucb89J+YUPel0ljWNuZy2HfVf9jWOHt+P3VJL1yWF6K3fO
+        Lf/uoBBGJdzGXEBVZ86/n8113hSQp6JJBakFjWCgeqa3j7xwhQ==
+X-Google-Smtp-Source: AA0mqf7/uXZRxUOIRT7nXKzlhcW88Whg2cQnY4fZbXF9GLx+rpxkWwB5lhIfbRgfHw9JJNK7G5rqTooHJ0RUdJ6YjQc=
+X-Received: by 2002:a2e:2c15:0:b0:277:2463:cfdb with SMTP id
+ s21-20020a2e2c15000000b002772463cfdbmr4433179ljs.213.1668442985597; Mon, 14
+ Nov 2022 08:23:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20221113010823.6436-1-guoqing.jiang@linux.dev> <20221113010823.6436-8-guoqing.jiang@linux.dev>
-In-Reply-To: <20221113010823.6436-8-guoqing.jiang@linux.dev>
+References: <20221113010823.6436-1-guoqing.jiang@linux.dev> <20221113010823.6436-12-guoqing.jiang@linux.dev>
+In-Reply-To: <20221113010823.6436-12-guoqing.jiang@linux.dev>
 From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Mon, 14 Nov 2022 17:22:10 +0100
-Message-ID: <CAJpMwyhHrRV1mO3LL4hsd4p-v41o7ZxwY0xUDye_+v_iuwqaRA@mail.gmail.com>
-Subject: Re: [PATCH RFC 07/12] RDMA/rtrs-srv: Remove outdated comments from create_con
+Date:   Mon, 14 Nov 2022 17:22:54 +0100
+Message-ID: <CAJpMwyh0dxi1oWiyc6DXUc6Zyzup3=Hjy4qMiA4=Fj1N6p1-Dg@mail.gmail.com>
+Subject: Re: [PATCH RFC 11/12] RDMA/rtrs-srv: fix several issues in rtrs_srv_destroy_path_files
 To:     Guoqing Jiang <guoqing.jiang@linux.dev>
 Cc:     jinpu.wang@ionos.com, jgg@ziepe.ca, leon@kernel.org,
         linux-rdma@vger.kernel.org
@@ -67,7 +67,21 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On Sun, Nov 13, 2022 at 2:08 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
 >
-> Remove the orphan comments.
+> There are several issues in the function which is supposed to be paired
+> with rtrs_srv_create_path_files.
+>
+> 1. rtrs_srv_stats_attr_group is not removed though it is created in
+>    rtrs_srv_create_stats_files.
+>
+> 2. it makes more sense to check kobj_stats.state_in_sysfs before destroy
+>    kobj_stats instead of rely on kobj.state_in_sysfs.
+>
+> 3. kobject_init_and_add is used for both kobjs (srv_path->kobj and
+>    srv_path->stats->kobj_stats), however we missed to call kobject_del
+>    for srv_path->kobj which was called in free_path.
+>
+> 4. rtrs_srv_destroy_once_sysfs_root_folders is independant of either
+>    kobj or kobj_stats.
 >
 > Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 Acked-by: Md Haris Iqbal <haris.iqbal@ionos.com>
@@ -75,26 +89,35 @@ Acked-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Thanks
 
 > ---
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 6 ------
->  1 file changed, 6 deletions(-)
+>  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> index f3bf5bbb4377..4c883c57c2ef 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> @@ -1671,12 +1671,6 @@ static int create_con(struct rtrs_srv_path *srv_path,
->                                       srv->queue_depth * (1 + 2) + 1);
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> index 2a3c9ac64a42..da8e205ce331 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> @@ -304,12 +304,18 @@ int rtrs_srv_create_path_files(struct rtrs_srv_path *srv_path)
 >
->                 max_recv_wr = srv->queue_depth + 1;
-> -               /*
-> -                * If we have all receive requests posted and
-> -                * all write requests posted and each read request
-> -                * requires an invalidate request + drain
-> -                * and qp gets into error state.
-> -                */
+>  void rtrs_srv_destroy_path_files(struct rtrs_srv_path *srv_path)
+>  {
+> -       if (srv_path->kobj.state_in_sysfs) {
+> +       if (srv_path->stats->kobj_stats.state_in_sysfs) {
+> +               sysfs_remove_group(&srv_path->stats->kobj_stats,
+> +                                  &rtrs_srv_stats_attr_group);
+>                 kobject_del(&srv_path->stats->kobj_stats);
+>                 kobject_put(&srv_path->stats->kobj_stats);
+> +       }
+> +
+> +       if (srv_path->kobj.state_in_sysfs) {
+>                 sysfs_remove_group(&srv_path->kobj, &rtrs_srv_path_attr_group);
+> +               kobject_del(&srv_path->kobj);
+>                 kobject_put(&srv_path->kobj);
+> -
+> -               rtrs_srv_destroy_once_sysfs_root_folders(srv_path);
 >         }
->         cq_num = max_send_wr + max_recv_wr;
->         atomic_set(&con->c.sq_wr_avail, max_send_wr);
+> +
+> +       rtrs_srv_destroy_once_sysfs_root_folders(srv_path);
+>  }
 > --
 > 2.31.1
 >
