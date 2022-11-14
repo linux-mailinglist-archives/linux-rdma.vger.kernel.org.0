@@ -2,92 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A476277BC
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Nov 2022 09:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C026277FF
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Nov 2022 09:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236484AbiKNIc3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Nov 2022 03:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50944 "EHLO
+        id S236189AbiKNIpm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Nov 2022 03:45:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236395AbiKNIc2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Nov 2022 03:32:28 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17031B9D8
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 00:32:27 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B7ED60F14
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 08:32:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08F93C433C1;
-        Mon, 14 Nov 2022 08:32:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668414746;
-        bh=iRIBLynOyeXShEeXRwCNsdaj99aKPrr3Fy9encIf1Uc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iycpTOePdyh03Xbk/c+l3ke0AQk/OolPO86HAjRm9iSK4Patpnvm4GEoFsf/3+B0g
-         /voDZMUKHh1FFqZMaoBg10OBwdxbnde+xbn6gpoL0WFTNqyp16alFpybJOviUQeS5K
-         unIyCeOgaQ9JPYgjr6+40b+ezBu0TiTNgQuGc+asEZXiLS/bY4oh03MkYFndJil2sS
-         9/nQVwa976JRCm/cyOTnOCVoU0V74yqQK6P4OONiNF1jJhUib7QNMe1jUu3T3T9ald
-         ZUF+ueLq/W9Na8Z+YXt4bwV8J5zfLLhkt1nwPQZCLWdIyrW/Z01PRGS/cs8mh25uIZ
-         G+mdnqIciFuTg==
-Date:   Mon, 14 Nov 2022 10:32:22 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>
-Cc:     haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
+        with ESMTP id S236596AbiKNIpj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Nov 2022 03:45:39 -0500
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824D71BE8E
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 00:45:37 -0800 (PST)
+Subject: Re: [PATCH RFC 01/12] RDMA/rtrs-srv: Remove ib_dev_count from
+ rtrs_srv_ib_ctx
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1668415535;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DndS9ebqtLVaFbyLTvkGUjxBH2nXudJgKeJKWezsr9M=;
+        b=r/BgnjbWM9IzJeyUcOv0l5QTMCIMFXExsKwyFuAcym6XnezUDXlGwV9ikpPb+TBE0AzRCa
+        qBAuBadDmwStsmvQYPxtFDH9GO1f030rkahw4NjG6PR22CMn7bBW0Yv8Zg3bVFa4/I+qZb
+        XYySC4AToEAyGMDr5BHqFxjzgcXvteU=
+To:     Jinpu Wang <jinpu.wang@ionos.com>
+Cc:     haris.iqbal@ionos.com, jgg@ziepe.ca, leon@kernel.org,
         linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/12] Misc changes for rtrs
-Message-ID: <Y3H9FrmwdEe/q8wu@unreal>
 References: <20221113010823.6436-1-guoqing.jiang@linux.dev>
+ <20221113010823.6436-2-guoqing.jiang@linux.dev>
+ <CAMGffEkJ-3rodi1EJ=nouhcXdxB2AJ8qP2RyirxXyg=6HnakaA@mail.gmail.com>
+ <82038928-59fb-e857-1855-1831252f4a88@linux.dev>
+ <CAMGffEn4eUrSX-v3Dr-iOD_LOFvqneGDYCuvAgqpTYBZTDFRYA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Message-ID: <2b99778c-9819-adc4-59fe-c8023c932247@linux.dev>
+Date:   Mon, 14 Nov 2022 16:45:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221113010823.6436-1-guoqing.jiang@linux.dev>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAMGffEn4eUrSX-v3Dr-iOD_LOFvqneGDYCuvAgqpTYBZTDFRYA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 13, 2022 at 09:08:11AM +0800, Guoqing Jiang wrote:
-> Hi,
-> 
-> Here are some changes for rtrs, please review them.
-> 
-> Thanks,
-> Guoqing
-> 
-> Guoqing Jiang (12):
->   RDMA/rtrs-srv: Remove ib_dev_count from rtrs_srv_ib_ctx
->   RDMA/rtrs-srv: Refactor rtrs_srv_rdma_cm_handler
->   RDMA/rtrs-srv: Only close srv_path if it is just allocated
->   RDMA/rtrs-srv: refactor the handling of failure case in map_cont_bufs
->   RDMA/rtrs-srv: Correct the checking of ib_map_mr_sg
->   RDMA/rtrs-clt: Correct the checking of ib_map_mr_sg
->   RDMA/rtrs-srv: Remove outdated comments from create_con
->   RDMA/rtrs: Kill recon_cnt from several structs
->   RDMA/rtrs: Clean up rtrs_rdma_dev_pd_ops
->   RDMA/rtrs-srv: Remove paths_num
->   RDMA/rtrs-srv: fix several issues in rtrs_srv_destroy_path_files
->   RDMA/rtrs-srv: Remove kobject_del from
->     rtrs_srv_destroy_once_sysfs_root_folders
-> 
->  drivers/infiniband/ulp/rtrs/rtrs-clt.c       |  12 +-
->  drivers/infiniband/ulp/rtrs/rtrs-pri.h       |   6 -
->  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |  13 ++-
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 110 ++++++-------------
->  drivers/infiniband/ulp/rtrs/rtrs-srv.h       |   2 -
->  drivers/infiniband/ulp/rtrs/rtrs.c           |  22 +---
->  6 files changed, 47 insertions(+), 118 deletions(-)
 
-Why is this series marked as RFC?
 
-Thanks
+On 11/14/22 4:24 PM, Jinpu Wang wrote:
+> On Mon, Nov 14, 2022 at 9:00 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
+>> Hi Jinpu,
+>>
+>> On 11/14/22 3:39 PM, Jinpu Wang wrote:
+>>> Hi Guoqing,
+>>>
+>>> Thx for the patch, see comments below.
+>>> On Sun, Nov 13, 2022 at 2:08 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
+>>>> The ib_dev_count is supposed to track the number of added ib devices
+>>>> which is only used in rtrs_srv_{add,remove}_one.
+>>>>
+>>>> However we only trigger rtrs_srv_add_one from rnbd_srv_init_module
+>>>> -> rtrs_srv_open -> ib_register_client -> client->add which should
+>>>> happen only once.
+>>> client->add is call per ib_device, eg:
+>>> jwang@ps404a-1.stg:~$ ls -l /sys/class/infiniband/mlx5_*
+>>> lrwxrwxrwx 1 root root 0 Nov  8 13:49 /sys/class/infiniband/mlx5_0 ->
+>>> ../../devices/pci0000:ae/0000:ae:00.0/0000:af:00.0/infiniband/mlx5_0
+>>> lrwxrwxrwx 1 root root 0 Nov  8 13:49 /sys/class/infiniband/mlx5_1 ->
+>>> ../../devices/pci0000:ae/0000:ae:00.0/0000:af:00.1/infiniband/mlx5_1
+>>> rtrs will be call twice for  mlx5_0 and mlx5_1 devices
+>> Ah, yes.
+>>
+>> But still we can only load/unload module once, I guess it was used to avoid
+>> racy condition (concurrent loading/unloading module?), could you elaborate
+>> why it is needed?
+> The change was introduced due to  a bug report, you can follow the
+> discussion here for the history and reason:
+> https://lore.kernel.org/linux-rdma/20200617103732.10356-1-haris.iqbal@cloud.ionos.com/
 
-> 
-> -- 
-> 2.31.1
-> 
+Thanks for the link.
+
+I probably missed something but I don't know how rnbd_server module can be
+initialized before cma module since we have the dependency chain as 
+follows.
+
+INFINIBAND_RTRS_SERVER depends on INFINIBAND_ADDR_TRANS
+BLK_DEV_RNBD_SERVER depends on INFINIBAND_RTRS_SERVER
+
+But commit 558d52b2976b ("RDMA/rtrs-srv: Incorporate ib_register_client into
+rtrs server init") did mention this.
+
+"and if the rnbd_server module is initialized before RDMA cma module, a 
+null ptr
+dereference occurs during the RDMA bind operation."
+
+Thanks,
+Guoqing
