@@ -2,57 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D19846284F7
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Nov 2022 17:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A789C62850A
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Nov 2022 17:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236406AbiKNQVl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Nov 2022 11:21:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
+        id S237469AbiKNQWj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Nov 2022 11:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235941AbiKNQVl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Nov 2022 11:21:41 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBD45F56
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 08:21:40 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id be13so20125098lfb.4
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 08:21:40 -0800 (PST)
+        with ESMTP id S237495AbiKNQWa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Nov 2022 11:22:30 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AAE2F01D
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 08:22:23 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id s8so2987181lfc.8
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 08:22:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hce3gOKejiZjozkssxuC5iCMepRv3tk5WzvMPLIa9lA=;
-        b=L/3eHRtnSEbc3bvDG10+Ha27rquxNV6YKKhbw7LhnUv99Ha9qtCzYpPReBXC2lVVES
-         AH1nvgom9PrGS8nhOfRQLHDaLqNJN7q5307ajXKGD/2iY9h388NquFY6uwQJsXwFB0Q+
-         fnef/YM4DQ1+o/wJVBwkDOResTxhD2xQFXFxIvcxuVI8yBKGO52t2s29FaelcPOK5WGO
-         NTv6Bp74v4LChcaFfxdt3KSpEK1NZTZxkXkADu5iH0hEWuWf3uN39za60s0rfRm+P/Sz
-         YQ7ztjVLLw+P4D/nYTK+c6Eoc7Y5j/W6aSLq+k+BLM9hpjcNKBKaQ5ez/yBtuekRT76m
-         0MVw==
+        bh=pyI/vjNFbJB2Hv0/zqwdiZnbeMPXjSdMKeWZbUv6LEY=;
+        b=MH8PRTGwKwNZyQ0/5ATLj/nT/boBF8H329SJRhwOqxefmTKpJPFiFHG4aFGn/rVQ1O
+         ggOWaNFdEcHqBdrlf5bZwTXeebg/hWqsDatMuhviBDTygO5ke9XS3DCtkQfH+zfl9Eei
+         Z/+4iJD+h01d7T5bPRGkxbBTpH22w2qUnc29KiDysUtoL1WwZQePam4QxaeSBgk3jTSX
+         o/RrQ739AY/5SeVWebyUEpd0u49dtYGVhFUSANz02/bsNV1tZV1iTWvWV2kDej3QovyU
+         aB+sQauTDOne/gSF7D/KYpTcWqGhUG6LFKwSpkUHdVi6SUl026fW0kTJraH5g10/EJC6
+         jhcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Hce3gOKejiZjozkssxuC5iCMepRv3tk5WzvMPLIa9lA=;
-        b=svM+3gf0W/cWLitEfvwkfZQy631eiHb1ZU4CLlRiYIg6zoS88lIrgD6Sv2aVOYxA50
-         nfWnY1XEPZodDdMUPRiaIWhcwbM4dlZR6R+qiiNxF6xzU/q7/ryBUOYQ2MnlRQ5mO1r8
-         srzrAAltsLXdT2iMwTfCBgU4LRCx3GCwlK2kobLWDZDrDYp3hGRs9d+xa5mf2YoI5omt
-         E4cAIHV0Z0u4e1Sqs/fYfj2HAELexI77ry5p4fFRSuBpEz6VKGvGDfeeWeCpyydR/GF1
-         MZsHtuvatFt6zFdwdadD969JcK13M92dbPLy7agjrG0PtTLkPY3UpXCauMWxFJvht00v
-         7VXw==
-X-Gm-Message-State: ANoB5plsg5sPYsdkC8KeVEBpBU421KgUBLY+7NbvmVCggNr2KQuPAD5z
-        di29Nh7rOT9vbeyNbNvN4WBc/IcK3GlWpo+4HbqxtA==
-X-Google-Smtp-Source: AA0mqf75IKBUdGMxmerZBYnCYYTmDnG1ZoFwN2o7HuvSddj2mvLc8LyC48ajCqqNbQRBkWeKjrToTQv/eF5l8AqJo40=
-X-Received: by 2002:a05:6512:308:b0:4aa:8cd:5495 with SMTP id
- t8-20020a056512030800b004aa08cd5495mr4038618lfp.254.1668442898397; Mon, 14
- Nov 2022 08:21:38 -0800 (PST)
+        bh=pyI/vjNFbJB2Hv0/zqwdiZnbeMPXjSdMKeWZbUv6LEY=;
+        b=wfvvxulc8VW49GM++pNZbOp9KuF+J5/ONumzg4tI5/xpe0ON4mRL2DW121eEPGn5/3
+         fssG9ZIKCc7mXJXkeDXDykYJOq+Tjny65PumrwCYDYbAuLfKw07vxA6+MiD2DqsuM9oI
+         tCsiwGJ3Th47AVFgGYQiCXh095ltx2/qJ4It0wmbNR5FiVP/GyOuy/YNmUIB8VqhBJx+
+         qIePeFFtU8ubnko2uAzOs9kHouDtcgWO6YfpV3jTRLAbrLxKqgCGX1jX9PGouaS/d7y8
+         0YX7Zy+Ky/0Pug2eigancMqBQozefCCquPFwJ1chnu2OvPs5jKyTGxKBFdvu99IzjDir
+         eD3A==
+X-Gm-Message-State: ANoB5pkuqLQ0eL6lg5K2j34jmKiSaI+CMaFNz9P9A5Bo4gT7ZHBDvGNU
+        BLylbwrKNRA4+lRqLCWijdrN+pOuyadu4Lp5Ua7qXXn6VRu1sQ==
+X-Google-Smtp-Source: AA0mqf56jn7rr+JBFpqJh+1uSgSphgbKcloglg/t2OGPWfx2YpjlE+XRoN/kJLhZOon1ul/NnRF9wHZ1V4Y3ZEhbEYE=
+X-Received: by 2002:ac2:44d9:0:b0:4a6:fa2a:275b with SMTP id
+ d25-20020ac244d9000000b004a6fa2a275bmr4434773lfm.87.1668442941698; Mon, 14
+ Nov 2022 08:22:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20221113010823.6436-1-guoqing.jiang@linux.dev> <20221113010823.6436-5-guoqing.jiang@linux.dev>
-In-Reply-To: <20221113010823.6436-5-guoqing.jiang@linux.dev>
+References: <20221113010823.6436-1-guoqing.jiang@linux.dev> <20221113010823.6436-8-guoqing.jiang@linux.dev>
+In-Reply-To: <20221113010823.6436-8-guoqing.jiang@linux.dev>
 From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Mon, 14 Nov 2022 17:21:27 +0100
-Message-ID: <CAJpMwyj659G3QbT2wntQ1FtivscewtjB-jh2ZODQR-BawoD=jQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 04/12] RDMA/rtrs-srv: refactor the handling of failure
- case in map_cont_bufs
+Date:   Mon, 14 Nov 2022 17:22:10 +0100
+Message-ID: <CAJpMwyhHrRV1mO3LL4hsd4p-v41o7ZxwY0xUDye_+v_iuwqaRA@mail.gmail.com>
+Subject: Re: [PATCH RFC 07/12] RDMA/rtrs-srv: Remove outdated comments from create_con
 To:     Guoqing Jiang <guoqing.jiang@linux.dev>
 Cc:     jinpu.wang@ionos.com, jgg@ziepe.ca, leon@kernel.org,
         linux-rdma@vger.kernel.org
@@ -68,102 +67,34 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On Sun, Nov 13, 2022 at 2:08 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
 >
-> Let's call unmap_cont_bufs when failure happens, and also only update
-> mrs_num after everything is settled which means we can remove 'mri'.
+> Remove the orphan comments.
 >
 > Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 Acked-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 
-Thanks for this. It looks much better now without the weird while loop
-and the gotos
+Thanks
 
 > ---
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 47 +++++++++++---------------
->  1 file changed, 20 insertions(+), 27 deletions(-)
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 6 ------
+>  1 file changed, 6 deletions(-)
 >
 > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> index 063082d29fc6..88eae0dcf87f 100644
+> index f3bf5bbb4377..4c883c57c2ef 100644
 > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
 > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> @@ -561,9 +561,11 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
->  {
->         struct rtrs_srv_sess *srv = srv_path->srv;
->         struct rtrs_path *ss = &srv_path->s;
-> -       int i, mri, err, mrs_num;
-> +       int i, err, mrs_num;
->         unsigned int chunk_bits;
->         int chunks_per_mr = 1;
-> +       struct ib_mr *mr;
-> +       struct sg_table *sgt;
+> @@ -1671,12 +1671,6 @@ static int create_con(struct rtrs_srv_path *srv_path,
+>                                       srv->queue_depth * (1 + 2) + 1);
 >
->         /*
->          * Here we map queue_depth chunks to MR.  Firstly we have to
-> @@ -586,16 +588,14 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
->         if (!srv_path->mrs)
->                 return -ENOMEM;
->
-> -       srv_path->mrs_num = mrs_num;
-> -
-> -       for (mri = 0; mri < mrs_num; mri++) {
-> -               struct rtrs_srv_mr *srv_mr = &srv_path->mrs[mri];
-> -               struct sg_table *sgt = &srv_mr->sgt;
-> +       for (srv_path->mrs_num = 0; srv_path->mrs_num < mrs_num;
-> +            srv_path->mrs_num++) {
-> +               struct rtrs_srv_mr *srv_mr = &srv_path->mrs[srv_path->mrs_num];
->                 struct scatterlist *s;
-> -               struct ib_mr *mr;
->                 int nr, nr_sgt, chunks;
->
-> -               chunks = chunks_per_mr * mri;
-> +               sgt = &srv_mr->sgt;
-> +               chunks = chunks_per_mr * srv_path->mrs_num;
->                 if (!always_invalidate)
->                         chunks_per_mr = min_t(int, chunks_per_mr,
->                                               srv->queue_depth - chunks);
-> @@ -644,31 +644,24 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
->
->                 ib_update_fast_reg_key(mr, ib_inc_rkey(mr->rkey));
->                 srv_mr->mr = mr;
-> -
-> -               continue;
-> -err:
-> -               while (mri--) {
-> -                       srv_mr = &srv_path->mrs[mri];
-> -                       sgt = &srv_mr->sgt;
-> -                       mr = srv_mr->mr;
-> -                       rtrs_iu_free(srv_mr->iu, srv_path->s.dev->ib_dev, 1);
-> -dereg_mr:
-> -                       ib_dereg_mr(mr);
-> -unmap_sg:
-> -                       ib_dma_unmap_sg(srv_path->s.dev->ib_dev, sgt->sgl,
-> -                                       sgt->nents, DMA_BIDIRECTIONAL);
-> -free_sg:
-> -                       sg_free_table(sgt);
-> -               }
-> -               kfree(srv_path->mrs);
-> -
-> -               return err;
+>                 max_recv_wr = srv->queue_depth + 1;
+> -               /*
+> -                * If we have all receive requests posted and
+> -                * all write requests posted and each read request
+> -                * requires an invalidate request + drain
+> -                * and qp gets into error state.
+> -                */
 >         }
->
->         chunk_bits = ilog2(srv->queue_depth - 1) + 1;
->         srv_path->mem_bits = (MAX_IMM_PAYL_BITS - chunk_bits);
->
->         return 0;
-> +
-> +dereg_mr:
-> +       ib_dereg_mr(mr);
-> +unmap_sg:
-> +       ib_dma_unmap_sg(srv_path->s.dev->ib_dev, sgt->sgl,
-> +                       sgt->nents, DMA_BIDIRECTIONAL);
-> +free_sg:
-> +       sg_free_table(sgt);
-> +err:
-> +       unmap_cont_bufs(srv_path);
-> +
-> +       return err;
->  }
->
->  static void rtrs_srv_hb_err_handler(struct rtrs_con *c)
+>         cq_num = max_send_wr + max_recv_wr;
+>         atomic_set(&con->c.sq_wr_avail, max_send_wr);
 > --
 > 2.31.1
 >
