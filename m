@@ -2,95 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8656297BA
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 12:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E886299E3
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 14:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbiKOLtm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Nov 2022 06:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
+        id S229700AbiKONRm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Nov 2022 08:17:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbiKOLtl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 06:49:41 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A94B1B
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 03:49:40 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id b9so17189073ljr.5
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 03:49:40 -0800 (PST)
+        with ESMTP id S238203AbiKONRk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 08:17:40 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE06028E3E
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 05:17:38 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id o4so24096584wrq.6
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 05:17:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IQAVM3TnUj3lVCtlxbG9x+1pvOwFY35R9w1F6E0oEI4=;
-        b=LCkymLLpMkDvAZz07j+azO+jLb6DTckeN5jw5QGTiOVYrsMzOgwGYqSk8Lv5xhvnUb
-         JNimNCQcFa6FclU9ds6z3vTYbsaUkU2k3J3Zu+W1UNLpEsVyvYBUTqa8kcf6IkUqN0EP
-         qA6nB86Or7SuQsZfq3ZxtV48XKdjnxESws0PQC0jYP2oNx4XfmSURdqgslSHd/29ynT2
-         pCiZJlkgTHo+w9pDj5NJgTHObeJ4zFz0u0oC04g20TCsJZ1MR5UDtDj9PLv7KMVqH2jk
-         tL/gGtT6GbnmAYGuKUtPtzotVQlR6YLfQMTn269Mjt2+sVlMqzzBOhPz1vk6R/86s5sA
-         OqQg==
+        d=gmail.com; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7k+41jdhNVglPvhuVLep9moXbUuQWxFUaAGlXEnBiAo=;
+        b=iQhGnOAnig524QlsspgHfbQvVnF8aGJ4i7YoBTpJkS1yuxW9XpY49luREyXMeokJA5
+         Kh0GS/0l6oKzwtsDcHQsdCs0gKxQVoPxMct9RcxHg6R9+xyZWwk96JkMNM6/gLtop+fj
+         8/6BP3tghdtO8Pvx6eaKACy1BtKeVCgPqA1svOvxp3RXU4/1mHiB+YqyP/heF2D+kHOe
+         geaFcXaHIgLLPtCeLNhFkoUQJ/506N11MTPyf1qZhO7n7P2ooYuEGU4ZDroEU22hKY1A
+         xduTOzXQ2VwUyDuOxZ14lc29ivjdeKOFln9F2/xLdU9DuWFuu64HtnYpN7zaWXk12H+m
+         +J2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IQAVM3TnUj3lVCtlxbG9x+1pvOwFY35R9w1F6E0oEI4=;
-        b=LKR8nO/ejQyHx1u4WXtG0TgiV+j2NZCSWsQd5TZSkg4FH4ASRgIQ4Ddh/c2tMMasuh
-         ioC9edWWxXzANw0pqyXROTazg497S0CBn6QA7m6iyekHZydbSFB4k3RrqtgCk4KXY2yb
-         iXwA1/qWw1ANMKFoE/bD67k+qOgYWpE3IK+rTAprDm5ClOnY0mMqhIOPdfhKFXoefe71
-         L6Fqa7WnfVmUICZuN94bBNuNPIoiOpM157mUpFja1rAYg5IMWd3WjPK5NFm/XIE0B9b3
-         0aGRzHII6a0gW7NcNWXaKeXM9XmE6J/s4CoFFKOETls8ORb5daIxQUyAX1uyXM2tOY6N
-         0FuA==
-X-Gm-Message-State: ANoB5pl+U2Om8ctjwxSvaFG9fh2gtfr3rPIX7yR9Yod7gObrUPF4sHFt
-        xNMVo1CX98/oTmC2EqJ6C/cYO2tMs7VgeEWGJunULw==
-X-Google-Smtp-Source: AA0mqf5d3C45p3toJnJLIwNP1TTaywBkklEZOaa5O6U+8Jey/zV5YmGV/DUPclRZsCi5AQlXprsbEXgptEf9qDGnXMk=
-X-Received: by 2002:a05:651c:8b:b0:26d:d196:d04 with SMTP id
- 11-20020a05651c008b00b0026dd1960d04mr5945375ljq.403.1668512979058; Tue, 15
- Nov 2022 03:49:39 -0800 (PST)
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7k+41jdhNVglPvhuVLep9moXbUuQWxFUaAGlXEnBiAo=;
+        b=ccO1zKzXw8ko9BODXXypvcXe/HjHslb1o0j9DqyUeH0/bs/taZINfLEF6Q9zIcP55P
+         eB7Lf0JgnD7JecCrUibN6jRefTsMpTyIrrP1L3RfpOmu2sIHzooRdwHaMFop7gE5HUZe
+         Tr+G2ISvUKLkNRislpQU+n/SX3AsHCtxMZAtw7VPimPopMaE+F82GZw5NK34ZQjIzuBI
+         qXU/ntkBv/u70khUz3iEz5T1cPdnKPgWwPuRJ7q5c/+4R/664AiBhckXo1+Rz1GkUm6a
+         LIsK52ya/zFgFFZIRwwx/W4+bylRmnkVTq64mB4nrtB3Wb0oaMYE0dKWogVI5nS7voCR
+         K2eg==
+X-Gm-Message-State: ANoB5pmuKUNf0ldK2F/ycT4GLpgStaPtcRGnICKcFHBSTgFB+R0yURI0
+        bh/KAjQe0lMc6DO+CSBMqcbjIdxldgyyPw==
+X-Google-Smtp-Source: AA0mqf57psjlDIhrdTC5K9QVW8qUBuh65Rpm37JFL/ke36HoTWntj5saCjs8EYhw4g8xop4XjOjAQw==
+X-Received: by 2002:a5d:5242:0:b0:236:e271:c64e with SMTP id k2-20020a5d5242000000b00236e271c64emr10655055wrc.490.1668518257189;
+        Tue, 15 Nov 2022 05:17:37 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id k22-20020a05600c0b5600b003cfe6fd7c60sm2430572wmr.8.2022.11.15.05.17.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Nov 2022 05:17:36 -0800 (PST)
+Date:   Tue, 15 Nov 2022 16:17:32 +0300
+From:   Dan Carpenter <error27@gmail.com>
+To:     faisal.latif@intel.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] iwpm: crash fix for large connections test
+Message-ID: <Y3ORbHXv5M8X8kqN@kili>
 MIME-Version: 1.0
-References: <20221113010823.6436-1-guoqing.jiang@linux.dev> <20221113010823.6436-7-guoqing.jiang@linux.dev>
-In-Reply-To: <20221113010823.6436-7-guoqing.jiang@linux.dev>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Tue, 15 Nov 2022 12:49:28 +0100
-Message-ID: <CAMGffEksscRoEJb4pbSubdbQ1JCODwnRSO+hjOA4QArnKrR1bA@mail.gmail.com>
-Subject: Re: [PATCH RFC 06/12] RDMA/rtrs-clt: Correct the checking of ib_map_mr_sg
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>
-Cc:     haris.iqbal@ionos.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 13, 2022 at 2:08 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
->
-> We should check with count, also the only successful case is that
-> all sg elements are mapped, so make it explict.
->
-> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> index 8546b8816524..5ffc170dae8c 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> @@ -1064,9 +1064,7 @@ static int rtrs_map_sg_fr(struct rtrs_clt_io_req *req, size_t count)
->
->         /* Align the MR to a 4K page size to match the block virt boundary */
->         nr = ib_map_mr_sg(req->mr, req->sglist, count, NULL, SZ_4K);
-> -       if (nr < 0)
-> -               return nr;
-> -       if (nr < req->sg_cnt)
-> +       if (nr != count)
->                 return -EINVAL;
-same here, we lost errno from API.
->         ib_update_fast_reg_key(req->mr, ib_inc_rkey(req->mr->rkey));
->
-> --
-> 2.31.1
->
+[ This isn't really the correct patch to blame.  Sorry! -dan ]
+
+Hello Faisal Latif,
+
+The patch dafb5587178a: "iwpm: crash fix for large connections test"
+from Feb 26, 2016, leads to the following Smatch static checker
+warning:
+
+drivers/infiniband/core/iwpm_msg.c:437 iwpm_register_pid_cb() warn: 'nlmsg_request' was already freed.
+drivers/infiniband/core/iwpm_msg.c:509 iwpm_add_mapping_cb() warn: 'nlmsg_request' was already freed.
+drivers/infiniband/core/iwpm_msg.c:607 iwpm_add_and_query_mapping_cb() warn: 'nlmsg_request' was already freed.
+drivers/infiniband/core/iwpm_msg.c:806 iwpm_mapping_error_cb() warn: 'nlmsg_request' was already freed.
+
+drivers/infiniband/core/iwpm_msg.c
+    385 int iwpm_register_pid_cb(struct sk_buff *skb, struct netlink_callback *cb)
+    386 {
+    387         struct iwpm_nlmsg_request *nlmsg_request = NULL;
+    388         struct nlattr *nltb[IWPM_NLA_RREG_PID_MAX];
+    389         struct iwpm_dev_data *pm_msg;
+    390         char *dev_name, *iwpm_name;
+    391         u32 msg_seq;
+    392         u8 nl_client;
+    393         u16 iwpm_version;
+    394         const char *msg_type = "Register Pid response";
+    395 
+    396         if (iwpm_parse_nlmsg(cb, IWPM_NLA_RREG_PID_MAX,
+    397                                 resp_reg_policy, nltb, msg_type))
+    398                 return -EINVAL;
+    399 
+    400         msg_seq = nla_get_u32(nltb[IWPM_NLA_RREG_PID_SEQ]);
+    401         nlmsg_request = iwpm_find_nlmsg_request(msg_seq);
+    402         if (!nlmsg_request) {
+    403                 pr_info("%s: Could not find a matching request (seq = %u)\n",
+    404                                  __func__, msg_seq);
+    405                 return -EINVAL;
+    406         }
+    407         pm_msg = nlmsg_request->req_buffer;
+    408         nl_client = nlmsg_request->nl_client;
+    409         dev_name = (char *)nla_data(nltb[IWPM_NLA_RREG_IBDEV_NAME]);
+    410         iwpm_name = (char *)nla_data(nltb[IWPM_NLA_RREG_ULIB_NAME]);
+    411         iwpm_version = nla_get_u16(nltb[IWPM_NLA_RREG_ULIB_VER]);
+    412 
+    413         /* check device name, ulib name and version */
+    414         if (strcmp(pm_msg->dev_name, dev_name) ||
+    415                         strcmp(iwpm_ulib_name, iwpm_name) ||
+    416                         iwpm_version < IWPM_UABI_VERSION_MIN) {
+    417 
+    418                 pr_info("%s: Incorrect info (dev = %s name = %s version = %u)\n",
+    419                                 __func__, dev_name, iwpm_name, iwpm_version);
+    420                 nlmsg_request->err_code = IWPM_USER_LIB_INFO_ERR;
+    421                 goto register_pid_response_exit;
+    422         }
+    423         iwpm_user_pid = cb->nlh->nlmsg_pid;
+    424         iwpm_ulib_version = iwpm_version;
+    425         if (iwpm_ulib_version < IWPM_UABI_VERSION)
+    426                 pr_warn_once("%s: Down level iwpmd/pid %d.  Continuing...",
+    427                         __func__, iwpm_user_pid);
+    428         atomic_set(&echo_nlmsg_seq, cb->nlh->nlmsg_seq);
+    429         pr_debug("%s: iWarp Port Mapper (pid = %d) is available!\n",
+    430                         __func__, iwpm_user_pid);
+    431         iwpm_set_registration(nl_client, IWPM_REG_VALID);
+    432 register_pid_response_exit:
+    433         nlmsg_request->request_done = 1;
+    434         /* always for found nlmsg_request */
+    435         kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
+
+The iwpm_free_nlmsg_request() function will free "nlmsg_request"...
+It's not clear what the "/* always for found nlmsg_request */" comment
+means.  Maybe it means that the refcount won't drop to zero so the
+free function won't be called?
+
+    436         barrier();
+--> 437         up(&nlmsg_request->sem);
+                    ^^^^^^^^^^^^^
+Dereference.
+
+    438         return 0;
+    439 }
+
+regards,
+dan carpenter
