@@ -2,110 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 804536293A8
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 09:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB65629429
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 10:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232547AbiKOIz0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Nov 2022 03:55:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58706 "EHLO
+        id S238055AbiKOJTx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Nov 2022 04:19:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232706AbiKOIzL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 03:55:11 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D1820BD8;
-        Tue, 15 Nov 2022 00:55:11 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CFA3D61576;
-        Tue, 15 Nov 2022 08:55:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB9A4C433D7;
-        Tue, 15 Nov 2022 08:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668502510;
-        bh=YQt8dY+TTo+k+xH93ToB9Kla1gbOkIvs+B7HgkneBzs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SafA/O9IFTMH486enCSQ1mSkVVGcsN/txRSQAHrK2/bmjfB9qjAE0WE9w26WCrFQU
-         vvQi+MUmnMbzOx8jcQ5CRNkjWZzU2cwNSstDFIdY2NNM9p5J0TfWzuvN2MpEGEw3Ez
-         dV71MMYBluVg9rMLoP1PdfapnMtQouN0Ro0JhalqizHslS9lyOYgSl2jHQWZf1zZph
-         h2TQ/BJmnyT6jNSUPJOdmW3SJk5UjgoF5eijcoG1Gt5O2U63AXhAoHKVdfbor7nRIl
-         haV9Ae6xGWBFZ1CRKOrMPyKryJqgRe5F7X3zLLOANzEVbo2xNXsWVjtj60GShamDDd
-         bl2QJrSJB+80g==
-Date:   Tue, 15 Nov 2022 10:55:06 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     rostedt@goodmis.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] trace: Relocate event helper files
-Message-ID: <Y3NT6sCGhtf16FaO@unreal>
-References: <166843895843.170837.8663873976042560070.stgit@klimt.1015granger.net>
+        with ESMTP id S232917AbiKOJTh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 04:19:37 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F06C62E5
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 01:18:52 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id b3so23475266lfv.2
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 01:18:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kADTpbkq0En76Um53SmxIAybOP8rnRuo/Zr6fLnKXYc=;
+        b=OYshvhJd3i/jTaEq824ZDH3zyZT6tzSInPbaVuiJEbVOr/TY6Ccsmj4LqnRhke2v9z
+         k/Wtb4DrY+sodgWyc4/siKdHEnMCrhFhU54ugtT+QSnFgDnNj0Mro4sviSzA0DygG5HY
+         uatqOL8mGl/DQrGZqQKQSGsnPImDdPyZeYRxnzQAwqUZuiLlymNrpBqVdhj5PsTTaIBj
+         0kdbTOHTMd7re7rLdLFQlKIkFyjCeqGdAtar8CUtyKjKGOKG+5O7AePMEOtopScfhwkS
+         t466d0yVmz1S7/hwkrTrR+OsbvVx4SpA8Xmp+7CJPfwen0jH0QAD62uu+2EYxK5hW/3u
+         sgDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kADTpbkq0En76Um53SmxIAybOP8rnRuo/Zr6fLnKXYc=;
+        b=m4gbQhvsC8gFtG/UXe6+Z4l0Jtbfp4/I1z7KpjP62JsN7V9Caj1Crkhp2de1tOzLWD
+         9urh2RRcyLrlAkqz8MDUSafTaFA3nXMFVQ2uxY0NxZ0xmNOysUHrrgfcAl4VAff7eWZj
+         9iihMRFclxi/PEee0ofzdjHVn+aRgGLWt8M6QF97VpVys1lTxAE+V3UDiAsQmFjfz7MO
+         snV+y4JgUisdM+/BXO1Vy4xSXimg4us8shfxrP+8iEX3fjbn69JS+hT4POdIDjbOyJEK
+         vd7sWntltsHLYpIwD7baHe/7U01hEZJDf8KiYqVEUFjT341X1j9nX94OJo31+FQLWKue
+         Zhng==
+X-Gm-Message-State: ANoB5plZPNMGHgWDRaWlyTtzCx/4R6eTgb+EQ4eTC/nyYc7nTpOtzQJs
+        iwqeG8+ZeKFpDsqX5LzOV2ikSvSvKr02KO9zuOb/HQ==
+X-Google-Smtp-Source: AA0mqf4s3gS/1vk4+mlhZzNPrQmdlk1XZSkBbyIYVNc0KiIdw8B73qv4lmVgseBWl2EMA9mZS1mVHBNDa+jfnRXLt7o=
+X-Received: by 2002:a05:6512:308:b0:4aa:8cd:5495 with SMTP id
+ t8-20020a056512030800b004aa08cd5495mr4872585lfp.254.1668503930944; Tue, 15
+ Nov 2022 01:18:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <166843895843.170837.8663873976042560070.stgit@klimt.1015granger.net>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221113010823.6436-1-guoqing.jiang@linux.dev> <20221113010823.6436-10-guoqing.jiang@linux.dev>
+In-Reply-To: <20221113010823.6436-10-guoqing.jiang@linux.dev>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Tue, 15 Nov 2022 10:18:39 +0100
+Message-ID: <CAJpMwyg_7qJJ6RNgF_fQygu6enVuuWu2_7B_NaAWABo_OZPQ=Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 09/12] RDMA/rtrs: Clean up rtrs_rdma_dev_pd_ops
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     jinpu.wang@ionos.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 14, 2022 at 10:16:12AM -0500, Chuck Lever wrote:
-> Steven Rostedt says:
-> > The include/trace/events/ directory should only hold files that
-> > are to create events, not headers that hold helper functions.
-> >
-> > Can you please move them out of include/trace/events/ as that
-> > directory is "special" in the creation of events.
-> 
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+On Sun, Nov 13, 2022 at 2:08 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
+>
+> Let's remove them since the three members are not used.
+>
+> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+Acked-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+
+Thanks
+
 > ---
->  drivers/infiniband/core/cm_trace.h  |    2 
->  drivers/infiniband/core/cma_trace.h |    2 
->  fs/nfs/nfs4trace.h                  |    6 -
->  fs/nfs/nfstrace.h                   |    6 -
->  include/trace/events/fs.h           |  122 -----------
->  include/trace/events/nfs.h          |  375 -----------------------------------
->  include/trace/events/rdma.h         |  168 ----------------
->  include/trace/events/rpcgss.h       |    2 
->  include/trace/events/rpcrdma.h      |    4 
->  include/trace/events/sunrpc.h       |    2 
->  include/trace/events/sunrpc_base.h  |   18 --
->  include/trace/misc/fs.h             |  122 +++++++++++
->  include/trace/misc/nfs.h            |  375 +++++++++++++++++++++++++++++++++++
->  include/trace/misc/rdma.h           |  168 ++++++++++++++++
->  include/trace/misc/sunrpc.h         |   18 ++
->  15 files changed, 695 insertions(+), 695 deletions(-)
->  delete mode 100644 include/trace/events/fs.h
->  delete mode 100644 include/trace/events/nfs.h
->  delete mode 100644 include/trace/events/rdma.h
->  delete mode 100644 include/trace/events/sunrpc_base.h
->  create mode 100644 include/trace/misc/fs.h
->  create mode 100644 include/trace/misc/nfs.h
->  create mode 100644 include/trace/misc/rdma.h
->  create mode 100644 include/trace/misc/sunrpc.h
-> 
-> Note: with an Acked-by from both the NFS client and RDMA core
-> maintainers I can take this through the nfsd for-next tree, unless
-> someone has another suggestion.
-
-Please update MAINTAINERS file too.
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4db8e4e02c05..86e57325eb6e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10054,6 +10054,7 @@ F:      drivers/infiniband/
- F:     include/rdma/
- F:     include/trace/events/ib_mad.h
- F:     include/trace/events/ib_umad.h
-+F:     include/trace/misc/rdma.h
- F:     include/uapi/linux/if_infiniband.h
- F:     include/uapi/rdma/
- F:     samples/bpf/ibumad_kern.c
-
-
-Thanks,
-Acked-by: Leon Romanovsky <leonro@nvidia.com>
+>  drivers/infiniband/ulp/rtrs/rtrs-pri.h |  3 ---
+>  drivers/infiniband/ulp/rtrs/rtrs.c     | 22 ++++------------------
+>  2 files changed, 4 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+> index c4ddaeba1c59..4d15a6fd96b6 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+> @@ -68,10 +68,7 @@ enum {
+>  struct rtrs_ib_dev;
+>
+>  struct rtrs_rdma_dev_pd_ops {
+> -       struct rtrs_ib_dev *(*alloc)(void);
+> -       void (*free)(struct rtrs_ib_dev *dev);
+>         int (*init)(struct rtrs_ib_dev *dev);
+> -       void (*deinit)(struct rtrs_ib_dev *dev);
+>  };
+>
+>  struct rtrs_rdma_dev_pd {
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+> index ed324b47d93a..4bf9d868cc52 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+> @@ -557,7 +557,6 @@ EXPORT_SYMBOL(rtrs_addr_to_sockaddr);
+>  void rtrs_rdma_dev_pd_init(enum ib_pd_flags pd_flags,
+>                             struct rtrs_rdma_dev_pd *pool)
+>  {
+> -       WARN_ON(pool->ops && (!pool->ops->alloc ^ !pool->ops->free));
+>         INIT_LIST_HEAD(&pool->list);
+>         mutex_init(&pool->mutex);
+>         pool->pd_flags = pd_flags;
+> @@ -583,15 +582,8 @@ static void dev_free(struct kref *ref)
+>         list_del(&dev->entry);
+>         mutex_unlock(&pool->mutex);
+>
+> -       if (pool->ops && pool->ops->deinit)
+> -               pool->ops->deinit(dev);
+> -
+>         ib_dealloc_pd(dev->ib_pd);
+> -
+> -       if (pool->ops && pool->ops->free)
+> -               pool->ops->free(dev);
+> -       else
+> -               kfree(dev);
+> +       kfree(dev);
+>  }
+>
+>  int rtrs_ib_dev_put(struct rtrs_ib_dev *dev)
+> @@ -618,11 +610,8 @@ rtrs_ib_dev_find_or_add(struct ib_device *ib_dev,
+>                         goto out_unlock;
+>         }
+>         mutex_unlock(&pool->mutex);
+> -       if (pool->ops && pool->ops->alloc)
+> -               dev = pool->ops->alloc();
+> -       else
+> -               dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+> -       if (IS_ERR_OR_NULL(dev))
+> +       dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+> +       if (!dev)
+>                 goto out_err;
+>
+>         kref_init(&dev->ref);
+> @@ -644,10 +633,7 @@ rtrs_ib_dev_find_or_add(struct ib_device *ib_dev,
+>  out_free_pd:
+>         ib_dealloc_pd(dev->ib_pd);
+>  out_free_dev:
+> -       if (pool->ops && pool->ops->free)
+> -               pool->ops->free(dev);
+> -       else
+> -               kfree(dev);
+> +       kfree(dev);
+>  out_err:
+>         return NULL;
+>  }
+> --
+> 2.31.1
+>
