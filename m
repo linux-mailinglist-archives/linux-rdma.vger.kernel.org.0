@@ -2,180 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 103256291A3
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 06:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0E56292BA
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 08:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbiKOFqt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Nov 2022 00:46:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        id S232307AbiKOHw6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Nov 2022 02:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbiKOFqs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 00:46:48 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108761ADA2
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 21:46:47 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id h12so16141082ljg.9
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 21:46:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OKar4tQ/9UML+jEyYZ0Rf7DUkg+/1BGj6frRwD9ZtKw=;
-        b=G7wHExlxJTVBNLeASqeutzBAAyE4wZ7kIHmrHCdtVxCcEhzqMRlLVhml0YCGbP2HE1
-         i0vXIunLUatXL9AS2lQfH3++KIh1+AWNi/qOoa7tP65vZVXs2H3B7DYRKj0eaxCHvIi5
-         /Of9r2cZ8cKzt5oYmvbA1wV/o7WMlXCg6Lmx+Dmp2/sfoTNV5cATqe43F3h5lptpODrx
-         wUA5QL57fabs14rMhXkaq7at8AsBchtmNn2VPnxv9Pt5gJ5XfL3COK2GuqkoRr4dRNvS
-         yDzpk1ouYDuLSZKO30B8X8woUsfNLrejriPo2IONubsn6jF1hyI2bePd9CSA+mGiEMmE
-         DQfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OKar4tQ/9UML+jEyYZ0Rf7DUkg+/1BGj6frRwD9ZtKw=;
-        b=tRF03I6AhRQbaR3VvKkZLaSVlDZAO7c08Wq3T2WeY9vzSZtRWAv8LGdDmZoZ72V4Vg
-         YGBNBcsfnxSQ63/ckyQY0C5LtqlBne0IEw7fHzFSZDUXY+SRd/xmjVGgJTbFhtaicG1z
-         H6PWzW3Sfa3ldU+mL+ual59S0EdBacs/DJhTQ450gC2+sO3rJNI2FfIa4yghDnZmcU4j
-         FPrbr1FvmJ9EFfWrlxg9vZ3xFrJp4NE3sMmQI/qy54AZEfEhe6Mb5WGSP3gf5VcNHOjX
-         v4Cd+0O0ofQ2czIwloigcUA0LWmkubnzWfgx1aYH/H3ixws9T4MxUloF513CGwe5pBwK
-         Tofg==
-X-Gm-Message-State: ANoB5pksqNBeLPjPhHDXzeK7oCs0gTdJIGqRBG6VL9xVMnq4RiezeRZ/
-        K5xDw73GzB6D9lWhCAyAG/bOR7JtelLnLLG+c3QQew==
-X-Google-Smtp-Source: AA0mqf5V7vNHLXyHY12HR7v1WHFCeOkNU5zT9cOOLFzB1VLZs9QFb8FtIzNddUiAY99lIwvaYmG/wIIb+5O3o4nFEuo=
-X-Received: by 2002:a05:651c:8b:b0:26d:d196:d04 with SMTP id
- 11-20020a05651c008b00b0026dd1960d04mr5484026ljq.403.1668491205128; Mon, 14
- Nov 2022 21:46:45 -0800 (PST)
+        with ESMTP id S232453AbiKOHw5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 02:52:57 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBAE20350
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Nov 2022 23:52:56 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4CABC6155B
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 07:52:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 189F6C433C1;
+        Tue, 15 Nov 2022 07:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1668498775;
+        bh=YUFdmyn7CN5pJffxkxWQ3XTId3hCgsBRwK2vs4EniaU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EzkGq8XcYFZREedhgy2i4Mcy7X3wEePWKSuYCAZPfwPcfDKOQ3gO4kpCfMQ2lYHZq
+         y4+bIrm6O5q3na0Nr+SMs+8MdBzbWtotldmV+uMto7rDmx0Wbnq5owUBYfHnN5kDPk
+         2A9VwaU0Kwa7vzoL1ma7XGofXSFTVT19Mr4J3qdzkkW2w9g/CNmQjiUz9oDzsSKGwX
+         aH/m4MYx5V1o+hqyUkdIZI9CCE4Wi0NhmrMPAlHujd5t6zMpVLLTdickAAqPKex4X5
+         QyUq5if5wUcWT6JV4RvHtpWtfNtSllIj3hnuIXQGdB4vbKumIb2XsZKPYmUldzkhtW
+         aEt+iKtfm0Vsw==
+Date:   Tue, 15 Nov 2022 09:52:51 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Or Har-Toov <ohartoov@nvidia.com>, linux-rdma@vger.kernel.org,
+        Michael Guralnik <michaelgur@nvidia.com>
+Subject: Re: [PATCH rdma-next 1/4] RDMA/nldev: Use __nlmsg_put instead
+ nlmsg_put
+Message-ID: <Y3NFU68nSl1Gh9Pu@unreal>
+References: <cover.1667810736.git.leonro@nvidia.com>
+ <3d8fb9edbd41f122fda680158a80bac44e55e847.1667810736.git.leonro@nvidia.com>
+ <Y2v8UsT015iiRuob@nvidia.com>
+ <Y3Cany776/OrEpbY@unreal>
+ <Y3JN6GVUgcjbHVv0@nvidia.com>
 MIME-Version: 1.0
-References: <CAMGffEmiu2BPx6=KW+7_+pzD-=hb8sX9r5cJ1_NovmrWG9xFuA@mail.gmail.com>
- <Y0fJ6P943FuVZ3k1@unreal> <CAMGffEmFCgKv-6XNXjAKzr5g6TtT_=wj6H62AdGCUXx4hruxBQ@mail.gmail.com>
- <Y0foGrlwnYX8lJX2@unreal> <CAMGffEnWmVb_qZFq6_rhZGH5q1Wq=n5ciJmp6uxxE6JLctywng@mail.gmail.com>
- <CAMGffEmY6SGPg8KMMFCFKtv4wiF1VOtVnA7JPnXhz5LKrJsiJA@mail.gmail.com> <82a62c6c-1616-ebb4-6308-ce56ec176cf3@nvidia.com>
-In-Reply-To: <82a62c6c-1616-ebb4-6308-ce56ec176cf3@nvidia.com>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Tue, 15 Nov 2022 06:46:34 +0100
-Message-ID: <CAMGffEk5=BWNVROHs185WfNH0DRiGpdQnS7aSgD74yjhT803tw@mail.gmail.com>
-Subject: Re: [BUG] mlx5_core general protection fault in mlx5_cmd_comp_handler
-To:     Moshe Shemesh <moshe@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>, Shay Drory <shayd@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y3JN6GVUgcjbHVv0@nvidia.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 6:15 AM Moshe Shemesh <moshe@nvidia.com> wrote:
->
->
-> On 11/9/2022 11:51 AM, Jinpu Wang wrote:
-> > On Mon, Oct 17, 2022 at 7:54 AM Jinpu Wang <jinpu.wang@ionos.com> wrote:
-> >> On Thu, Oct 13, 2022 at 12:27 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >>> On Thu, Oct 13, 2022 at 10:32:55AM +0200, Jinpu Wang wrote:
-> >>>> On Thu, Oct 13, 2022 at 10:18 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >>>>> On Wed, Oct 12, 2022 at 01:55:55PM +0200, Jinpu Wang wrote:
-> >>>>>> Hi Leon, hi Saeed,
-> >>>>>>
-> >>>>>> We have seen crashes during server shutdown on both kernel 5.10 and
-> >>>>>> kernel 5.15 with GPF in mlx5 mlx5_cmd_comp_handler function.
-> >>>>>>
-> >>>>>> All of the crashes point to
-> >>>>>>
-> >>>>>> 1606                         memcpy(ent->out->first.data,
-> >>>>>> ent->lay->out, sizeof(ent->lay->out));
-> >>>>>>
-> >>>>>> I guess, it's kind of use after free for ent buffer. I tried to reprod
-> >>>>>> by repeatedly reboot the testing servers, but no success  so far.
-> >>>>> My guess is that command interface is not flushed, but Moshe and me
-> >>>>> didn't see how it can happen.
-> >>>>>
-> >>>>>    1206         INIT_DELAYED_WORK(&ent->cb_timeout_work, cb_timeout_handler);
-> >>>>>    1207         INIT_WORK(&ent->work, cmd_work_handler);
-> >>>>>    1208         if (page_queue) {
-> >>>>>    1209                 cmd_work_handler(&ent->work);
-> >>>>>    1210         } else if (!queue_work(cmd->wq, &ent->work)) {
-> >>>>>                            ^^^^^^^ this is what is causing to the splat
-> >>>>>    1211                 mlx5_core_warn(dev, "failed to queue work\n");
-> >>>>>    1212                 err = -EALREADY;
-> >>>>>    1213                 goto out_free;
-> >>>>>    1214         }
-> >>>>>
-> >>>>> <...>
-> >>>>>> Is this problem known, maybe already fixed?
-> >>>>> I don't see any missing Fixes that exist in 6.0 and don't exist in 5.5.32.
-> >>> Sorry it is 5.15.32
-> >>>
-> >>>>> Is it possible to reproduce this on latest upstream code?
-> >>>> I haven't been able to reproduce it, as mentioned above, I tried to
-> >>>> reproduce by simply reboot in loop, no luck yet.
-> >>>> do you have suggestions to speedup the reproduction?
-> >>> Maybe try to shutdown during filling command interface.
-> >>> I think that any query command will do the trick.
-> >> Just an update.
-> >> I tried to run "saquery" in a loop in one session and do "modproble -r
-> >> mlx5_ib && modprobe mlx5_ib" in loop in another session during last
-> >> days , but still no luck. --c
-> >>>> Once I can reproduce, I can also try with kernel 6.0.
-> >>> It will be great.
-> >>>
-> >>> Thanks
-> >> Thanks!
-> > Just want to mention, we see more crash during reboot, all the crash
-> > we saw are all
-> > Intel  Intel(R) Xeon(R) Gold 6338 CPU. We use the same HCA on
-> > different servers. So I suspect the bug is related to Ice Lake server.
-> >
-> > In case it matters, here is lspci attached.
->
->
-> Please try the following change on 5.15.32, let me know if it solves the
-> failure :
+On Mon, Nov 14, 2022 at 10:17:12AM -0400, Jason Gunthorpe wrote:
+> On Sun, Nov 13, 2022 at 09:19:59AM +0200, Leon Romanovsky wrote:
+> > On Wed, Nov 09, 2022 at 03:15:30PM -0400, Jason Gunthorpe wrote:
+> > > On Mon, Nov 07, 2022 at 10:51:33AM +0200, Leon Romanovsky wrote:
+> > > > From: Or Har-Toov <ohartoov@nvidia.com>
+> > > > 
+> > > > Using nlmsg_put causes static analysis tools to many
+> > > > false positives of not checking the return value of nlmsg_put.
+> > > > 
+> > > > In all uses in nldev.c, payload parameter is 0 so NULL will never
+> > > > be returned. So let's use __nlmsg_put function to silence the
+> > > > warnings.
+> > > 
+> > > I'd rather just add useless checks for the errors than call a private
+> > > function like this. Or add some nlmsg_put_no_payload() that can't fail
+> > 
+> > This is exactly what __nlmsg_put() means. Function that can't fail.
+> 
+> Er no, it is some internal function. A function that can't fail
+> wouldn't accept the payload argument at all.
 
-Thank you Moshe, I will test it on affected servers and report back the result.
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> index e06a6104e91f..d45ca9c52a21 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> @@ -971,6 +971,7 @@ static void cmd_work_handler(struct work_struct *work)
->                  cmd_ent_get(ent);
->          set_bit(MLX5_CMD_ENT_STATE_PENDING_COMP, &ent->state);
->
-> +       cmd_ent_get(ent); /* for the _real_ FW event on completion */
->          /* Skip sending command to fw if internal error */
->          if (mlx5_cmd_is_down(dev) || !opcode_allowed(&dev->cmd, ent->op)) {
->                  u8 status = 0;
-> @@ -984,7 +985,6 @@ static void cmd_work_handler(struct work_struct *work)
->                  return;
->          }
->
-> -       cmd_ent_get(ent); /* for the _real_ FW event on completion */
->          /* ring doorbell after the descriptor is valid */
->          mlx5_core_dbg(dev, "writing 0x%x to command doorbell\n", 1 <<
-> ent->idx);
->          wmb();
-> @@ -1598,8 +1598,8 @@ static void mlx5_cmd_comp_handler(struct
-> mlx5_core_dev *dev, u64 vec, bool force
->                                  cmd_ent_put(ent); /* timeout work was
-> canceled */
->
->                          if (!forced || /* Real FW completion */
-> -                           pci_channel_offline(dev->pdev) || /* FW is
-> inaccessible */
-> -                           dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR)
-> +                            mlx5_cmd_is_down(dev) || /* No real FW
-> completion is expected */
-> +                            !opcode_allowed(cmd, ent->op))
->                                  cmd_ent_put(ent);
->
->                          ent->ts2 = ktime_get_ns();
->
-> > Thx!
+It is not internal to me, all users of __nlmsg_put() are outside of
+netdev world.
+
+Thanks
+
+> 
+> Jason
