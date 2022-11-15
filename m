@@ -2,58 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B176629485
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 10:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265E16294CC
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 10:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236921AbiKOJjZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Nov 2022 04:39:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33342 "EHLO
+        id S238007AbiKOJtO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Nov 2022 04:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236214AbiKOJjS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 04:39:18 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BFA14D15
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 01:39:17 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id l8so16729364ljh.13
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 01:39:17 -0800 (PST)
+        with ESMTP id S238029AbiKOJtM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 04:49:12 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B472D2D0
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 01:49:09 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id k19so16804608lji.2
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 01:49:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RUQdJ16izzgkTvrYYcRtrNFuHM/cDiQmTpnNTFYxaLk=;
-        b=gmGQNJ2CB1hIosbu7FsD7fXK12+6fQwPD0cGCj+M1ncRBcLdNLBPoqk5+LaX40kx35
-         iE1H/6AZCeRp/+ruUqkawHcJBqLr8fsr9xawlWhwv4xdWG+VEKCyYx6Mk3oXlPusvY+K
-         rdlshExV2kSwb+fuy/ubjqp35CtBIXyBjQhdWUM7I1Q/fb276vjgtjjQ9+sKDXB5K5Yc
-         +3YBmqvD/8kqEODqRcRyRrrtD9EteZWAhrx0afCbtSRSl2qv/CiT6EiH7bOaWAaRt147
-         PZ9TRBIF7nHafl3KX910SX+n9aNlY9tO1RoG1mQ0gDaiCl+N3s2vNuuRrJNr8fZtrdnn
-         +C4g==
+        bh=8m0XLrSSKEe666eNC6yJ4ZkBItu26anin6JmJAwbKII=;
+        b=XT59P3xECXDv8CZacA/hPHOAKPW+FBCmMj0x1EI3la7fTm9tbH7bzsyjKp1rCbK8Go
+         BJWWF+tmja29pdPkReDFOyxkWMpWxnlCFv35nEwgG+U1+cNd0W4wAa98rp0PUWqkgzKE
+         083bsBK1USbaD8c0avqFJNAoomrJiK5Bkd/XVR27QIjx3jbVyLd4wUw3iiAlvbsD1UFV
+         rSKJFbQqLIgq2dlB3zq2L/jN+H659CDpRK9k/XIXSj4R6ee2UJmrBUex5CFexlV8i9MU
+         t5zDqLqUBhAXP3/au4QXqwoOonFFrQJ8tL4uQrS3IW7UkXLnOWc5fQ4ZWoEJ0tqJeXaf
+         J5xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RUQdJ16izzgkTvrYYcRtrNFuHM/cDiQmTpnNTFYxaLk=;
-        b=LSWu9Yh5yqsFkjmcxMuGzVA8/bLH7I6YfE8Nkq1hONDgxEssrNyrmQXB6N9l+VwoF6
-         2ED88+lazLJfLQBASJ614Tt9s9+9IUWrXqYdosMES6yOgp34if4F7StEWK/kb/c4gvAs
-         cI0M3c/Tq7FwsizPF+WQGZVK5eg0+jiVCZZjHKK6xRIiMDw/Fhm74SDhmTlAeykF39Nn
-         6JK6ADkNCONwgWCU8olyxjdbfw7KmbtLV32A3yqS72YkUTuVzl2UDRKEo0o6BeSOPcco
-         Y54pSQk9jS9Ioki5Ku338xI3XtvhlpRwDq42tbRXeYJr04CPOTDa/zFfEivFkWMBxM8l
-         we1Q==
-X-Gm-Message-State: ANoB5pl0RpDC10oYxGgcALq+fuPU1U9KsmrELOiK1XAZ5wiU6HM9Nhgf
-        fCaym88ULvPUAASeF4S0g7Uf0Xl3ZnYoEO/UwxszNiIMAqE=
-X-Google-Smtp-Source: AA0mqf5CkTPy266EeJ1ejklYpfbp90nqjOQycmDITOc8MPJ5mdYC+VYI8CV/5rZOa5ni5BLAD90NBvH7KUsbMfkANx4=
-X-Received: by 2002:a2e:be06:0:b0:277:2437:e977 with SMTP id
- z6-20020a2ebe06000000b002772437e977mr6051768ljq.195.1668505155756; Tue, 15
- Nov 2022 01:39:15 -0800 (PST)
+        bh=8m0XLrSSKEe666eNC6yJ4ZkBItu26anin6JmJAwbKII=;
+        b=NBgZ862z9eDKi4NFBa/YN5F2v0RTAwLvILBWVUCUmN2XdkQSPqJYCBK/TFDi9Anb1B
+         n5NZQhM5dNU+sseQ4vIS2kIvUhIARiIwFVdCWWzfmsDsoYS6X5UAPXl+gZLpkw5rBh8n
+         gdvzkIGPOF6ohWVrTWga3kMTU1c9YmjcJOGGWWS6Y6kLQc6iDa/QnUFEeosYxbhE9Gvf
+         ZGr8Qfggr8RuGKQupE1NKY8XwKl3GBPJ61A+PFDwjE70UgWbSWiJNFQiEA6Pmd2NC91n
+         dDDjfV2Z0pEQju+V4+nxgdia4qsnCRgH2dK7YhuagnZ0mG5d6/2+jpNqWQzZSKf+oZ+B
+         WcaQ==
+X-Gm-Message-State: ANoB5pkIom6k68usDW8AbQlwPJsGWkUyCQvO4v/cXzmll3gHy9uhUiG6
+        wnLpBrMMLqoQ2FiI0lyfccO/CXNMaZZOEJ694EyDZg==
+X-Google-Smtp-Source: AA0mqf7FzeCo8azWXEWwRUHgpKY4YDd6/NGShz5LeTuB4mGqbYDR+jjzNkhdWK87sP2Cst+ryzYarYzYh/9cAR55l2s=
+X-Received: by 2002:a2e:2c15:0:b0:277:2463:cfdb with SMTP id
+ s21-20020a2e2c15000000b002772463cfdbmr5524758ljs.213.1668505747472; Tue, 15
+ Nov 2022 01:49:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20221113010823.6436-1-guoqing.jiang@linux.dev> <20221113010823.6436-9-guoqing.jiang@linux.dev>
-In-Reply-To: <20221113010823.6436-9-guoqing.jiang@linux.dev>
+References: <20221113010823.6436-1-guoqing.jiang@linux.dev> <20221113010823.6436-11-guoqing.jiang@linux.dev>
+In-Reply-To: <20221113010823.6436-11-guoqing.jiang@linux.dev>
 From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Tue, 15 Nov 2022 10:39:04 +0100
-Message-ID: <CAJpMwygWQgq+NicnOwJRU-zn32t55KtKQO5q6-68YqtCvd19iQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 08/12] RDMA/rtrs: Kill recon_cnt from several structs
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>, jinpu.wang@ionos.com
-Cc:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
+Date:   Tue, 15 Nov 2022 10:48:56 +0100
+Message-ID: <CAJpMwyjkeYj6eVMG+htwHkFVRP6m-tGpyFEaUeSCkXO3u6MqzA@mail.gmail.com>
+Subject: Re: [PATCH RFC 10/12] RDMA/rtrs-srv: Remove paths_num
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     jinpu.wang@ionos.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -66,131 +67,72 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On Sun, Nov 13, 2022 at 2:08 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
 >
-> Seems the only relevant comment about recon_cnt is,
->
-> /*
->  * On every new session connections increase reconnect counter
->  * to avoid clashes with previous sessions not yet closed
->  * sessions on a server side.
->  */
->
-> However, it is not clear how the recon_cnt avoid clashed at these places
-> in the commit since no where checks it.
+> The paths_num is only increased by rtrs_rdma_connect -> __alloc_path
+> which is only one time thing, so is the decreasing of it given only
+> rtrs_srv_close_work -> del_path_from_srv, which means paths_num should
+> always be 1.
 
-It does seem redundant. This predates my time, so I don't know if
-there was a change which removed the usage of this. I tried to search
-in commit history, but couldn't.
+It would actually go up to the number of paths a session will have in
+a multipath setup. It is the exact counter part of paths_num in the
+structure rtrs_clt_sess. But whereas on the client side, the number is
+used to access the path list for making decisions in multipathing IO
+like round-robin, etc. On the server side, I don't see the use of it.
+Maybe just for sanity checks.
 
-@Jinpu Your thoughts?
+@Jinpu Any thoughts?
 
 >
 > Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 > ---
->  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 8 --------
->  drivers/infiniband/ulp/rtrs/rtrs-pri.h | 3 ---
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 7 +------
->  3 files changed, 1 insertion(+), 17 deletions(-)
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 --------
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.h | 1 -
+>  2 files changed, 9 deletions(-)
 >
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> index 5ffc170dae8c..dcc8c041a141 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> @@ -1802,7 +1802,6 @@ static int rtrs_rdma_route_resolved(struct rtrs_clt_con *con)
->                 .version = cpu_to_le16(RTRS_PROTO_VER),
->                 .cid = cpu_to_le16(con->c.cid),
->                 .cid_num = cpu_to_le16(clt_path->s.con_num),
-> -               .recon_cnt = cpu_to_le16(clt_path->s.recon_cnt),
->         };
->         msg.first_conn = clt_path->for_new_clt ? FIRST_CONN : 0;
->         uuid_copy(&msg.sess_uuid, &clt_path->s.uuid);
-> @@ -2336,13 +2335,6 @@ static int init_conns(struct rtrs_clt_path *clt_path)
->         unsigned int cid;
->         int err;
->
-> -       /*
-> -        * On every new session connections increase reconnect counter
-> -        * to avoid clashes with previous sessions not yet closed
-> -        * sessions on a server side.
-> -        */
-> -       clt_path->s.recon_cnt++;
-> -
->         /* Establish all RDMA connections  */
->         for (cid = 0; cid < clt_path->s.con_num; cid++) {
->                 err = create_con(clt_path, cid);
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-> index a2420eecaf5a..c4ddaeba1c59 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-> @@ -109,7 +109,6 @@ struct rtrs_path {
->         struct rtrs_con **con;
->         unsigned int            con_num;
->         unsigned int            irq_con_num;
-> -       unsigned int            recon_cnt;
->         unsigned int            signal_interval;
->         struct rtrs_ib_dev      *dev;
->         int                     dev_ref;
-> @@ -177,7 +176,6 @@ struct rtrs_sg_desc {
->   * @version:      RTRS protocol version
->   * @cid:          Current connection id
->   * @cid_num:      Number of connections per session
-> - * @recon_cnt:    Reconnections counter
->   * @sess_uuid:    UUID of a session (path)
->   * @paths_uuid:           UUID of a group of sessions (paths)
->   *
-> @@ -196,7 +194,6 @@ struct rtrs_msg_conn_req {
->         __le16          version;
->         __le16          cid;
->         __le16          cid_num;
-> -       __le16          recon_cnt;
->         uuid_t          sess_uuid;
->         uuid_t          paths_uuid;
->         u8              first_conn : 1;
 > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> index 4c883c57c2ef..e2ea09a8def7 100644
+> index e2ea09a8def7..400cf8ae34a3 100644
 > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
 > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> @@ -1712,7 +1712,6 @@ static int create_con(struct rtrs_srv_path *srv_path,
->  static struct rtrs_srv_path *__alloc_path(struct rtrs_srv_sess *srv,
->                                            struct rdma_cm_id *cm_id,
->                                            unsigned int con_num,
-> -                                          unsigned int recon_cnt,
->                                            const uuid_t *uuid)
+> @@ -1437,8 +1437,6 @@ static void __add_path_to_srv(struct rtrs_srv_sess *srv,
+>                               struct rtrs_srv_path *srv_path)
 >  {
->         struct rtrs_srv_path *srv_path;
-> @@ -1768,7 +1767,6 @@ static struct rtrs_srv_path *__alloc_path(struct rtrs_srv_sess *srv,
+>         list_add_tail(&srv_path->s.entry, &srv->paths_list);
+> -       srv->paths_num++;
+> -       WARN_ON(srv->paths_num >= MAX_PATHS_NUM);
+>  }
 >
->         srv_path->s.con_num = con_num;
->         srv_path->s.irq_con_num = con_num;
-> -       srv_path->s.recon_cnt = recon_cnt;
->         uuid_copy(&srv_path->s.uuid, uuid);
->         spin_lock_init(&srv_path->state_lock);
->         INIT_WORK(&srv_path->close_work, rtrs_srv_close_work);
-> @@ -1818,7 +1816,6 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
->         struct rtrs_srv_sess *srv;
+>  static void del_path_from_srv(struct rtrs_srv_path *srv_path)
+> @@ -1450,8 +1448,6 @@ static void del_path_from_srv(struct rtrs_srv_path *srv_path)
 >
->         u16 version, con_num, cid;
-> -       u16 recon_cnt;
->         int err = -ECONNRESET;
->         bool alloc_path = false;
+>         mutex_lock(&srv->paths_mutex);
+>         list_del(&srv_path->s.entry);
+> -       WARN_ON(!srv->paths_num);
+> -       srv->paths_num--;
+>         mutex_unlock(&srv->paths_mutex);
+>  }
 >
-> @@ -1848,7 +1845,6 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
->                 pr_err("Incorrect cid: %d >= %d\n", cid, con_num);
->                 goto reject_w_err;
->         }
-> -       recon_cnt = le16_to_cpu(msg->recon_cnt);
->         srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
->         if (IS_ERR(srv)) {
->                 err = PTR_ERR(srv);
-> @@ -1885,8 +1881,7 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
->                         goto reject_w_err;
->                 }
->         } else {
-> -               srv_path = __alloc_path(srv, cm_id, con_num, recon_cnt,
-> -                                   &msg->sess_uuid);
-> +               srv_path = __alloc_path(srv, cm_id, con_num, &msg->sess_uuid);
->                 if (IS_ERR(srv_path)) {
->                         mutex_unlock(&srv->paths_mutex);
->                         put_srv(srv);
+> @@ -1719,10 +1715,6 @@ static struct rtrs_srv_path *__alloc_path(struct rtrs_srv_sess *srv,
+>         char str[NAME_MAX];
+>         struct rtrs_addr path;
+>
+> -       if (srv->paths_num >= MAX_PATHS_NUM) {
+> -               err = -ECONNRESET;
+> -               goto err;
+> -       }
+>         if (__is_path_w_addr_exists(srv, &cm_id->route.addr)) {
+>                 err = -EEXIST;
+>                 pr_err("Path with same addr exists\n");
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+> index eccc432b0715..8e4fcb578f49 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+> @@ -100,7 +100,6 @@ struct rtrs_srv_sess {
+>         struct list_head        paths_list;
+>         int                     paths_up;
+>         struct mutex            paths_ev_mutex;
+> -       size_t                  paths_num;
+>         struct mutex            paths_mutex;
+>         uuid_t                  paths_uuid;
+>         refcount_t              refcount;
 > --
 > 2.31.1
 >
