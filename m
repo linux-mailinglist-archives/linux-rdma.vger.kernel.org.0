@@ -2,57 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E886299E3
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 14:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C942B629AE9
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Nov 2022 14:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbiKONRm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Nov 2022 08:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49144 "EHLO
+        id S230152AbiKONop (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Nov 2022 08:44:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238203AbiKONRk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 08:17:40 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE06028E3E
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 05:17:38 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id o4so24096584wrq.6
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 05:17:38 -0800 (PST)
+        with ESMTP id S229793AbiKONoo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 08:44:44 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D631423BEA
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 05:44:43 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id y16so24332856wrt.12
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 05:44:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7k+41jdhNVglPvhuVLep9moXbUuQWxFUaAGlXEnBiAo=;
-        b=iQhGnOAnig524QlsspgHfbQvVnF8aGJ4i7YoBTpJkS1yuxW9XpY49luREyXMeokJA5
-         Kh0GS/0l6oKzwtsDcHQsdCs0gKxQVoPxMct9RcxHg6R9+xyZWwk96JkMNM6/gLtop+fj
-         8/6BP3tghdtO8Pvx6eaKACy1BtKeVCgPqA1svOvxp3RXU4/1mHiB+YqyP/heF2D+kHOe
-         geaFcXaHIgLLPtCeLNhFkoUQJ/506N11MTPyf1qZhO7n7P2ooYuEGU4ZDroEU22hKY1A
-         xduTOzXQ2VwUyDuOxZ14lc29ivjdeKOFln9F2/xLdU9DuWFuu64HtnYpN7zaWXk12H+m
-         +J2Q==
+        bh=wDmLuqXwYmVdbmWSZ+GecMD+zyy/1poKx+xtJEviWDg=;
+        b=PcPJLqj4j3iGCsy3o7Kniq/bXyR8LrHEFjBvLMpbt0t4jYQGGwqRIox3kEg4qk8iTR
+         ZxY1FGULDhZ5sqHwLqptXCf84rtm57OBg9S0Eo08rkkwJDduP5po2q+NGo7zWIgX74lI
+         XXpMQn1/XANqfVcEJxdd0xH+QSFuj3rD/A04v7gIIkL/ReHZsU7FEb/xg3KLPUkAqfBO
+         W4cw1bx+uoYPdkTSsMPfoHT6FQml8656w3gijDq1kqnTZzh0H4LdfHSs5feLgFVr5lul
+         WRd5BXUbQrQacHN/oAa+7SINv8Tth/SCEkRGDrzzsCGGlGJiEoVhPQXUNtAFvFFUrXNt
+         SbJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7k+41jdhNVglPvhuVLep9moXbUuQWxFUaAGlXEnBiAo=;
-        b=ccO1zKzXw8ko9BODXXypvcXe/HjHslb1o0j9DqyUeH0/bs/taZINfLEF6Q9zIcP55P
-         eB7Lf0JgnD7JecCrUibN6jRefTsMpTyIrrP1L3RfpOmu2sIHzooRdwHaMFop7gE5HUZe
-         Tr+G2ISvUKLkNRislpQU+n/SX3AsHCtxMZAtw7VPimPopMaE+F82GZw5NK34ZQjIzuBI
-         qXU/ntkBv/u70khUz3iEz5T1cPdnKPgWwPuRJ7q5c/+4R/664AiBhckXo1+Rz1GkUm6a
-         LIsK52ya/zFgFFZIRwwx/W4+bylRmnkVTq64mB4nrtB3Wb0oaMYE0dKWogVI5nS7voCR
-         K2eg==
-X-Gm-Message-State: ANoB5pmuKUNf0ldK2F/ycT4GLpgStaPtcRGnICKcFHBSTgFB+R0yURI0
-        bh/KAjQe0lMc6DO+CSBMqcbjIdxldgyyPw==
-X-Google-Smtp-Source: AA0mqf57psjlDIhrdTC5K9QVW8qUBuh65Rpm37JFL/ke36HoTWntj5saCjs8EYhw4g8xop4XjOjAQw==
-X-Received: by 2002:a5d:5242:0:b0:236:e271:c64e with SMTP id k2-20020a5d5242000000b00236e271c64emr10655055wrc.490.1668518257189;
-        Tue, 15 Nov 2022 05:17:37 -0800 (PST)
+        bh=wDmLuqXwYmVdbmWSZ+GecMD+zyy/1poKx+xtJEviWDg=;
+        b=cajG0wyI545AwR0YFBSiDj7ZVO1TzeYpUwhpfH2BxQWt1wm3T6ijw5LOqujMdok+ue
+         nPf+MxsGhA5jYI3UVKZtFGBYstjvOSNjIg4I700czpNwrnSbrPSZwoCVMCR/gZYPvoHq
+         Vp/LxYtUJoiI5VGJvCAdnz4pWN1850ifFL8g93Q1bQHu4fzzHhuQOmTJ4A04fioIpmMk
+         b8Y5t8EOwZ+GBUEetdGu4HGz1nCNnF+mds2KZBAKl9qzLtkAo0DYQlUnps+ICDm6gZSj
+         N+/gy0RpciczHbFXM/S+PRgWVqUgjVFw5APUKhdi5ybEdEFXi65ED/G4kr1sjIRuuxJo
+         /O9g==
+X-Gm-Message-State: ANoB5pl+9JE3d0F/51c9/9p2EVjJpcO+cC7sPd+2tSPv8PcPMuQz/aG4
+        O0v4RS2YZNkDHa4PVWAHLqc=
+X-Google-Smtp-Source: AA0mqf6KfRDxsET25+hLVuzL3RZ3pDrjHO/otWFL+zH+WxCdywsBVz5NIlsE+zMi10NIMtOka3OJ8g==
+X-Received: by 2002:adf:f4c3:0:b0:22e:3498:9adb with SMTP id h3-20020adff4c3000000b0022e34989adbmr11339013wrp.335.1668519882409;
+        Tue, 15 Nov 2022 05:44:42 -0800 (PST)
 Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id k22-20020a05600c0b5600b003cfe6fd7c60sm2430572wmr.8.2022.11.15.05.17.35
+        by smtp.gmail.com with ESMTPSA id r15-20020a05600c35cf00b003a84375d0d1sm24072166wmq.44.2022.11.15.05.44.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Nov 2022 05:17:36 -0800 (PST)
-Date:   Tue, 15 Nov 2022 16:17:32 +0300
+        Tue, 15 Nov 2022 05:44:42 -0800 (PST)
+Date:   Tue, 15 Nov 2022 16:44:38 +0300
 From:   Dan Carpenter <error27@gmail.com>
-To:     faisal.latif@intel.com
+To:     bmt@zurich.ibm.com
 Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] iwpm: crash fix for large connections test
-Message-ID: <Y3ORbHXv5M8X8kqN@kili>
+Subject: [bug report] RDMA/siw: Fix immediate work request flush to
+ completion queue
+Message-ID: <Y3OXxkGXUFqgU/Oa@kili>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -66,84 +67,87 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-[ This isn't really the correct patch to blame.  Sorry! -dan ]
+Hello Bernard Metzler,
 
-Hello Faisal Latif,
+The patch bdf1da5df9da: "RDMA/siw: Fix immediate work request flush
+to completion queue" from Nov 7, 2022, leads to the following Smatch
+static checker warning:
 
-The patch dafb5587178a: "iwpm: crash fix for large connections test"
-from Feb 26, 2016, leads to the following Smatch static checker
-warning:
+	drivers/infiniband/sw/siw/siw_cq.c:96 siw_reap_cqe()
+	error: buffer overflow 'map_cqe_status' 10 <= 21
 
-drivers/infiniband/core/iwpm_msg.c:437 iwpm_register_pid_cb() warn: 'nlmsg_request' was already freed.
-drivers/infiniband/core/iwpm_msg.c:509 iwpm_add_mapping_cb() warn: 'nlmsg_request' was already freed.
-drivers/infiniband/core/iwpm_msg.c:607 iwpm_add_and_query_mapping_cb() warn: 'nlmsg_request' was already freed.
-drivers/infiniband/core/iwpm_msg.c:806 iwpm_mapping_error_cb() warn: 'nlmsg_request' was already freed.
+drivers/infiniband/sw/siw/siw_cq.c
+    48 int siw_reap_cqe(struct siw_cq *cq, struct ib_wc *wc)
+    49 {
+    50         struct siw_cqe *cqe;
+    51         unsigned long flags;
+    52 
+    53         spin_lock_irqsave(&cq->lock, flags);
+    54 
+    55         cqe = &cq->queue[cq->cq_get % cq->num_cqe];
+    56         if (READ_ONCE(cqe->flags) & SIW_WQE_VALID) {
+    57                 memset(wc, 0, sizeof(*wc));
+    58                 wc->wr_id = cqe->id;
+    59                 wc->byte_len = cqe->bytes;
+    60 
+    61                 /*
+    62                  * During CQ flush, also user land CQE's may get
+    63                  * reaped here, which do not hold a QP reference
+    64                  * and do not qualify for memory extension verbs.
+    65                  */
+    66                 if (likely(rdma_is_kernel_res(&cq->base_cq.res))) {
+    67                         if (cqe->flags & SIW_WQE_REM_INVAL) {
+    68                                 wc->ex.invalidate_rkey = cqe->inval_stag;
+    69                                 wc->wc_flags = IB_WC_WITH_INVALIDATE;
+    70                         }
+    71                         wc->qp = cqe->base_qp;
+    72                         wc->opcode = map_wc_opcode[cqe->opcode];
+    73                         wc->status = map_cqe_status[cqe->status].ib;
+    74                         siw_dbg_cq(cq,
+    75                                    "idx %u, type %d, flags %2x, id 0x%pK\n",
+    76                                    cq->cq_get % cq->num_cqe, cqe->opcode,
+    77                                    cqe->flags, (void *)(uintptr_t)cqe->id);
+    78                 } else {
+    79                         /*
+    80                          * A malicious user may set invalid opcode or
+    81                          * status in the user mmapped CQE array.
+    82                          * Sanity check and correct values in that case
+    83                          * to avoid out-of-bounds access to global arrays
+    84                          * for opcode and status mapping.
+    85                          */
+    86                         u8 opcode = cqe->opcode;
+    87                         u16 status = cqe->status;
+    88 
+    89                         if (opcode >= SIW_NUM_OPCODES) {
+    90                                 opcode = 0;
+    91                                 status = IB_WC_GENERAL_ERR;
 
-drivers/infiniband/core/iwpm_msg.c
-    385 int iwpm_register_pid_cb(struct sk_buff *skb, struct netlink_callback *cb)
-    386 {
-    387         struct iwpm_nlmsg_request *nlmsg_request = NULL;
-    388         struct nlattr *nltb[IWPM_NLA_RREG_PID_MAX];
-    389         struct iwpm_dev_data *pm_msg;
-    390         char *dev_name, *iwpm_name;
-    391         u32 msg_seq;
-    392         u8 nl_client;
-    393         u16 iwpm_version;
-    394         const char *msg_type = "Register Pid response";
-    395 
-    396         if (iwpm_parse_nlmsg(cb, IWPM_NLA_RREG_PID_MAX,
-    397                                 resp_reg_policy, nltb, msg_type))
-    398                 return -EINVAL;
-    399 
-    400         msg_seq = nla_get_u32(nltb[IWPM_NLA_RREG_PID_SEQ]);
-    401         nlmsg_request = iwpm_find_nlmsg_request(msg_seq);
-    402         if (!nlmsg_request) {
-    403                 pr_info("%s: Could not find a matching request (seq = %u)\n",
-    404                                  __func__, msg_seq);
-    405                 return -EINVAL;
-    406         }
-    407         pm_msg = nlmsg_request->req_buffer;
-    408         nl_client = nlmsg_request->nl_client;
-    409         dev_name = (char *)nla_data(nltb[IWPM_NLA_RREG_IBDEV_NAME]);
-    410         iwpm_name = (char *)nla_data(nltb[IWPM_NLA_RREG_ULIB_NAME]);
-    411         iwpm_version = nla_get_u16(nltb[IWPM_NLA_RREG_ULIB_VER]);
-    412 
-    413         /* check device name, ulib name and version */
-    414         if (strcmp(pm_msg->dev_name, dev_name) ||
-    415                         strcmp(iwpm_ulib_name, iwpm_name) ||
-    416                         iwpm_version < IWPM_UABI_VERSION_MIN) {
-    417 
-    418                 pr_info("%s: Incorrect info (dev = %s name = %s version = %u)\n",
-    419                                 __func__, dev_name, iwpm_name, iwpm_version);
-    420                 nlmsg_request->err_code = IWPM_USER_LIB_INFO_ERR;
-    421                 goto register_pid_response_exit;
-    422         }
-    423         iwpm_user_pid = cb->nlh->nlmsg_pid;
-    424         iwpm_ulib_version = iwpm_version;
-    425         if (iwpm_ulib_version < IWPM_UABI_VERSION)
-    426                 pr_warn_once("%s: Down level iwpmd/pid %d.  Continuing...",
-    427                         __func__, iwpm_user_pid);
-    428         atomic_set(&echo_nlmsg_seq, cb->nlh->nlmsg_seq);
-    429         pr_debug("%s: iWarp Port Mapper (pid = %d) is available!\n",
-    430                         __func__, iwpm_user_pid);
-    431         iwpm_set_registration(nl_client, IWPM_REG_VALID);
-    432 register_pid_response_exit:
-    433         nlmsg_request->request_done = 1;
-    434         /* always for found nlmsg_request */
-    435         kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
+IB_WC_GENERAL_ERR is 21.
 
-The iwpm_free_nlmsg_request() function will free "nlmsg_request"...
-It's not clear what the "/* always for found nlmsg_request */" comment
-means.  Maybe it means that the refcount won't drop to zero so the
-free function won't be called?
+    92                         } else if (status >= SIW_NUM_WC_STATUS) {
+    93                                 status = IB_WC_GENERAL_ERR;
 
-    436         barrier();
---> 437         up(&nlmsg_request->sem);
-                    ^^^^^^^^^^^^^
-Dereference.
+Here too.
 
-    438         return 0;
-    439 }
+    94                         }
+    95                         wc->opcode = map_wc_opcode[opcode];
+--> 96                         wc->status = map_cqe_status[status].ib;
+                                            ^^^^^^^^^^^^^^^
+Out of bounds.
+
+    97 
+    98                 }
+    99                 WRITE_ONCE(cqe->flags, 0);
+    100                 cq->cq_get++;
+    101 
+    102                 spin_unlock_irqrestore(&cq->lock, flags);
+    103 
+    104                 return 1;
+    105         }
+    106         spin_unlock_irqrestore(&cq->lock, flags);
+    107 
+    108         return 0;
+    109 }
 
 regards,
 dan carpenter
