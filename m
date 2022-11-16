@@ -2,73 +2,249 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDB462BBA6
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 12:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C071F62BE50
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 13:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbiKPL0A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Nov 2022 06:26:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
+        id S239009AbiKPMi2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Nov 2022 07:38:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233819AbiKPLY2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 06:24:28 -0500
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7D3101FA
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 03:14:34 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668597273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5FHza1rvrmLrZtFWGWRw6X8+BrLZ2Z3GIR74RWWuK+A=;
-        b=JzxxZJUmywzuB2tTcFCV/rxqFCef7M8JPm98UsB0nlXUhOwTONbm/hi3oAF+EepCsgP3Rx
-        oKXQatHIThdlI2Tb+GePmpPqeMa8/xnejvfTHn3OAdUvd9mZeMuldaXCd7X4JJE76krHHW
-        BgeCfrq1F4yiH/ue66FoA3u3KTCQ0TI=
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-To:     haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
-        leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH 8/8] RDMA/rtrs-srv: Remove kobject_del from rtrs_srv_destroy_once_sysfs_root_folders
-Date:   Wed, 16 Nov 2022 19:14:00 +0800
-Message-Id: <20221116111400.7203-9-guoqing.jiang@linux.dev>
-In-Reply-To: <20221116111400.7203-1-guoqing.jiang@linux.dev>
-References: <20221116111400.7203-1-guoqing.jiang@linux.dev>
+        with ESMTP id S239015AbiKPMiC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 07:38:02 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C631248D6;
+        Wed, 16 Nov 2022 04:37:33 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id h12so21649920ljg.9;
+        Wed, 16 Nov 2022 04:37:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eT/6csOSu7SFpZHBsgunlrQMZeMZnaIM2b4OlHql6Ps=;
+        b=Z3k0EOmSnjchLvQlVuICpdEqdcJERXsU2Nptii3E8Rl2oNGnJt5nYBROlwreVEg/dn
+         qsnUjbn5HjrL2YMW+lOK0F4uKVBhtD0o8L76GWy6gHRt1Vkrx/UfKHt6E2OYv7Ll4F6L
+         lFfpARGnAs8YDxHS0zg+oUk73FwEUH+cTDScmNu6DpKtYMS/efv+iKkeyeuuHbY5/gCX
+         GOGJ4BvmZLsvpVKDoSGNBvaMuaZazd7aEoS38dl2mPffw/atTYDuKI4dQN/+iIj98f0W
+         ESvaA+MBlU1QYMi/owdMJJ7VlSat2EIjFnPJ74eH5zL+5esnYROLAIg61vvJ/fx7zaU/
+         vyNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eT/6csOSu7SFpZHBsgunlrQMZeMZnaIM2b4OlHql6Ps=;
+        b=sx9gkNSemzqV2LK+jsMJLiQtfX3EDgsGCkXNPRO4N7DNDc4ZtFdrJQ7CiK6jht06I0
+         mXcz9GIIVwUuR+0T2fkUBvwl1sH90ENbP+eTNfyVvNC9tbzQcwBc1B3qppiGJUS+efj8
+         TEqh/XgpR/iGIbYbQHhezlw69s+jynp8frdth6tdK4nCqiFc+zpi1vCqDFNXonaZ8Gmi
+         p41n7TV0W1eignNJEY6+a09GksD3S6IIYG0ZR3tEnZHN6GCPu41p37KzGFdk+v8U6EqK
+         uPr+ROurDQwxSatJYaPUTfaaNm7dycZytZWKK3Ox5NUT3iWXIg7dwmWr1B/n3MBONxkn
+         pVSA==
+X-Gm-Message-State: ANoB5plwOKNBoz98eMQlY1KWbWR5R0KYGAZ5cPmniMVL3fih0ujLsLQL
+        zfl7CIPzWf7XLyKXeE2rnqcids8iRgwnDdmOJfd6+lEF
+X-Google-Smtp-Source: AA0mqf5+prrRRdpvi7dqyUu7jOKyZt4c3aH6aM7ebF9USDpV5syKrMqn5fHBibnZ0YBEY3VIborXGBCRX+4ttxea3wU=
+X-Received: by 2002:a2e:b0ef:0:b0:26d:ee99:93b4 with SMTP id
+ h15-20020a2eb0ef000000b0026dee9993b4mr7987691ljl.329.1668602251220; Wed, 16
+ Nov 2022 04:37:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <1668141030-2-1-git-send-email-lizhijian@fujitsu.com> <1668141030-2-5-git-send-email-lizhijian@fujitsu.com>
+In-Reply-To: <1668141030-2-5-git-send-email-lizhijian@fujitsu.com>
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Date:   Wed, 16 Nov 2022 13:37:14 +0100
+Message-ID: <CAPj211to20yHUy8o-Lg6TMjB5rpwrfPCUtQqxfeDFHUDR4+wJw@mail.gmail.com>
+Subject: Re: [for-next PATCH 4/5] RDMA/rxe: refactor iova_to_vaddr
+To:     Li Zhijian <lizhijian@fujitsu.com>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The kobj_paths which is created dynamically by kobject_create_and_add,
-and per the comment above kobject_create_and_add, we only need to call
-kobject_put which is not same as other kobjs such as stats->kobj_stats
-and srv_path->kobj.
+On venerd=C3=AC 11 novembre 2022 05:30:29 CET Li Zhijian wrote:
+> For IB_MR_TYPE_USER MR, iova_to_vaddr() will call kmap_local_page() to
+> map page.
+>
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_loc.h   |  1 +
+>  drivers/infiniband/sw/rxe/rxe_mr.c    | 38 +++++++++++++++------------
+>  drivers/infiniband/sw/rxe/rxe_resp.c  |  1 +
+>  drivers/infiniband/sw/rxe/rxe_verbs.h |  5 +++-
+>  4 files changed, 27 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h
+> b/drivers/infiniband/sw/rxe/rxe_loc.h index c2a5c8814a48..22a8c44d39c8
+100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -73,6 +73,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr=
+,
+int
+> length, int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info
+> *dma, void *addr, int length, enum rxe_mr_copy_dir dir);
+>  void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
+> +void rxe_unmap_vaddr(struct rxe_mr *mr, void *vaddr);
+>  struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
+>                        enum rxe_mr_lookup_type type);
+>  int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c
+> b/drivers/infiniband/sw/rxe/rxe_mr.c index a4e786b657b7..d26a4a33119c 100=
+644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -120,9 +120,7 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, =
+u64
+> length, u64 iova, struct ib_umem              *umem;
+>       struct sg_page_iter     sg_iter;
+>       int                     num_buf;
+> -     void                    *vaddr;
+>       int err;
+> -     int i;
+>
+>       umem =3D ib_umem_get(&rxe->ib_dev, start, length, access);
+>       if (IS_ERR(umem)) {
+> @@ -159,18 +157,9 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start,
+u64
+> length, u64 iova, num_buf =3D 0;
+>                       }
+>
+> -                     vaddr =3D
+page_address(sg_page_iter_page(&sg_iter));
+> -                     if (!vaddr) {
+> -                             pr_warn("%s: Unable to get virtual
+address\n",
+> -                                             __func__);
+> -                             err =3D -ENOMEM;
+> -                             goto err_cleanup_map;
+> -                     }
+> -
+> -                     buf->addr =3D (uintptr_t)vaddr;
+> +                     buf->page =3D sg_page_iter_page(&sg_iter);
+>                       num_buf++;
+>                       buf++;
+> -
+>               }
+>       }
+>
+> @@ -182,10 +171,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start,
+u64
+> length, u64 iova,
+>
+>       return 0;
+>
+> -err_cleanup_map:
+> -     for (i =3D 0; i < mr->num_map; i++)
+> -             kfree(mr->map[i]);
+> -     kfree(mr->map);
+>  err_release_umem:
+>       ib_umem_release(umem);
+>  err_out:
+> @@ -246,6 +231,12 @@ static void lookup_iova(struct rxe_mr *mr, u64 iova,
+int
+> *m_out, int *n_out, }
+>  }
+>
+> +void rxe_unmap_vaddr(struct rxe_mr *mr, void *vaddr)
+> +{
+> +     if (mr->ibmr.type =3D=3D IB_MR_TYPE_USER)
+> +             kunmap_local(vaddr);
+> +}
+> +
+>  static void *__iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
+>  {
+>       size_t offset;
+> @@ -258,9 +249,21 @@ static void *__iova_to_vaddr(struct rxe_mr *mr, u64
+iova,
+> int length) return NULL;
+>       }
+>
+> -     return (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
+> +     if (mr->ibmr.type =3D=3D IB_MR_TYPE_USER) {
+> +             char *paddr;
+> +             struct page *pg =3D mr->map[m]->buf[n].page;
+> +
+> +             paddr =3D kmap_local_page(pg);
+> +             if (paddr =3D=3D NULL) {
+> +                     pr_warn("Failed to map page");
+> +                     return NULL;
+> +             }
 
-Acked-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
----
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 1 -
- 1 file changed, 1 deletion(-)
+I know nothing about this code but I am here as a result of regular checks =
+for
+changes to HIGHMEM mappings across the entire kernel. So please forgive me =
+if
+I'm objecting to the correct changes.
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index da8e205ce331..c76ba29da1e2 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -203,7 +203,6 @@ rtrs_srv_destroy_once_sysfs_root_folders(struct rtrs_srv_path *srv_path)
- 
- 	mutex_lock(&srv->paths_mutex);
- 	if (!--srv->dev_ref) {
--		kobject_del(srv->kobj_paths);
- 		kobject_put(srv->kobj_paths);
- 		mutex_unlock(&srv->paths_mutex);
- 		device_del(&srv->dev);
--- 
-2.31.1
+1) It looks like this code had a call to page_address() and you converted i=
+t
+to mapping with kmap_local_page().
 
+If page_address() is related and it used to work properly, the page you are
+mapping cannot come from ZONE_HIGHMEM. Therefore, kmap_local_page() looks l=
+ike
+an overkill.
+
+I'm probably missing something...
+
+> +             return paddr + offset;
+> +     } else
+> +             return (void *)(uintptr_t)mr->map[m]->buf[n].addr +
+offset;
+>  }
+>
+> +/* must call rxe_unmap_vaddr to unmap vaddr */
+>  void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
+>  {
+>       if (mr->state !=3D RXE_MR_STATE_VALID) {
+> @@ -326,6 +329,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *ad=
+dr,
+> int length, dest =3D (dir =3D=3D RXE_TO_MR_OBJ) ? va : addr;
+>
+>               memcpy(dest, src, bytes);
+> +             rxe_unmap_vaddr(mr, va);
+>
+>               length  -=3D bytes;
+>               addr    +=3D bytes;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c
+> b/drivers/infiniband/sw/rxe/rxe_resp.c index 483043dc4e89..765cb9f8538a
+> 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> @@ -636,6 +636,7 @@ static enum resp_states atomic_reply(struct rxe_qp *q=
+p,
+>
+>               *vaddr =3D value;
+>               spin_unlock_bh(&atomic_ops_lock);
+> +             rxe_unmap_vaddr(mr, vaddr);
+>
+>               qp->resp.msn++;
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> b/drivers/infiniband/sw/rxe/rxe_verbs.h index acab785ba7e2..6080a4b32f09
+> 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> @@ -280,7 +280,10 @@ enum rxe_mr_lookup_type {
+>  #define RXE_BUF_PER_MAP              (PAGE_SIZE / sizeof(struct
+rxe_phys_buf))
+>
+>  struct rxe_phys_buf {
+> -     u64      addr;
+> +     union {
+> +             u64 addr; /* IB_MR_TYPE_MEM_REG */
+> +             struct page *page; /* IB_MR_TYPE_USER */
+> +     };
+>  };
+>
+>  struct rxe_map {
+> --
+> 2.31.1
