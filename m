@@ -2,74 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA3A62C732
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 19:05:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 410AC62C78E
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 19:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbiKPSFe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Nov 2022 13:05:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
+        id S238685AbiKPSXS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Nov 2022 13:23:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbiKPSFe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 13:05:34 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9431613E80;
-        Wed, 16 Nov 2022 10:05:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 329ED61CEB;
-        Wed, 16 Nov 2022 18:05:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22C05C433C1;
-        Wed, 16 Nov 2022 18:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668621932;
-        bh=aJc/RNCjdqIzYrdw+eDY3vzELD9uFjLi6tK/L9ffeQw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GAyjSmREjjzX6y2oAi1pJ1KCCOWUJXE74t8/5KG+gFInhMM1xXZSbvuhACZArFuLI
-         P2tI9IbkgKSqoMimhneAx+OMS1vtbJn28ym5MNUL3WvA4gEKaxHcxwwliyQjr0yXPg
-         ZWuBC57V3JOvW5/mAfvtIQSSf/cq0RooAsiU5AlFC/2/X1DEZRNyk4F9025j9ilwe0
-         k+T5QG6xyqZ04S1khkohc9kioI84MXfzaX6X07umC5XRzJ4a6O3/UE+CB3MMzkYiZ+
-         Bq1vvIGdKBnvjIGElfuKkgK0EdNOEDGMalj/sy4aehlLbWm8zSl1oEoGOI6Ghx4xhm
-         3aRkmb6Pm+pPg==
-Date:   Wed, 16 Nov 2022 20:05:28 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Cc:     linux-rdma@vger.kernel.org, jgg@nvidia.com, zyjzyj2000@gmail.com,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        rpearsonhpe@gmail.com, yangx.jy@fujitsu.com, lizhijian@fujitsu.com,
-        y-goto@fujitsu.com
-Subject: Re: [RFC PATCH v2 0/7] On-Demand Paging on SoftRoCE
-Message-ID: <Y3UmaJil5slosqjA@unreal>
-References: <cover.1668157436.git.matsuda-daisuke@fujitsu.com>
+        with ESMTP id S234119AbiKPSXR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 13:23:17 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9123E19026
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 10:23:16 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id p141so13862997iod.6
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 10:23:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PBgZn+u117R7gFQNpsnvlIYlwSeo0LUTLoxlFKr3wyI=;
+        b=eH0YS14VezMu1YoYc8i9L/9V4Rda12NtBPhbyEQG9con1K8dLIyV9b4KNCmIq0wzpX
+         WqxRC9GRz2SSVMeoKLZbZ25GRVxvk4TLZwapfzc9KJm3PzFnUZgrmijMI3uqPEOn38/b
+         +5K39+JbiCr6klzOuT84Gyzf87KIYKFM/ltfQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PBgZn+u117R7gFQNpsnvlIYlwSeo0LUTLoxlFKr3wyI=;
+        b=MTFLojYHj9KTyq5KEmv4F3VCK1nspZhyJJ8pPACaNVHVghw+awnQshC54KuWV8q3NW
+         Oo6lsTqcaEuLXBD9f6umxaXartPOFYWM+bKMRrIp4z2XeKEBMLYNXQscIHtf8usArTFA
+         4DHcFWmIVr0Zl2G+d5E1IG38I2PGEyYqfVdkF00opCYUejtl6JCZ6ePgzNoFMmcV8Lli
+         fuIXs/wZpt80ZyocMUY+brx+ALi4IgwiQtOM16pish9bEjrGkLxZYvxkwvLz/B4QyY/P
+         MQC7VEBN1OB6oO0g1AOsG/NpFA0J+hl/KgHESfX6MdW315lH5BHn0uKtA8SkJP5doq/H
+         18UQ==
+X-Gm-Message-State: ANoB5pn4KeWWpFVDX7eCfjjPUJGWqfN301OwoYxQMyo9wdeq9Sb2n+d9
+        3EQEomcgIF7RbswYi/5veiuRNNF2kxCrlbOy
+X-Google-Smtp-Source: AA0mqf5ZHOfX2em+qP4mS6zAZva3XTpHQFbPEjbsMaKiO9Ksp+itcMzFCeTkz4Deim9T+NqAgNeG6g==
+X-Received: by 2002:a5e:8915:0:b0:6bd:2f72:f783 with SMTP id k21-20020a5e8915000000b006bd2f72f783mr10386700ioj.215.1668622995738;
+        Wed, 16 Nov 2022 10:23:15 -0800 (PST)
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com. [209.85.166.45])
+        by smtp.gmail.com with ESMTPSA id g20-20020a0566380bd400b003758f787affsm5851182jad.112.2022.11.16.10.23.15
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Nov 2022 10:23:15 -0800 (PST)
+Received: by mail-io1-f45.google.com with SMTP id 11so13909940iou.0
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 10:23:15 -0800 (PST)
+X-Received: by 2002:a05:622a:1c15:b0:3a5:49fa:3983 with SMTP id
+ bq21-20020a05622a1c1500b003a549fa3983mr21860304qtb.436.1668622610752; Wed, 16
+ Nov 2022 10:16:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1668157436.git.matsuda-daisuke@fujitsu.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221116102659.70287-1-david@redhat.com> <20221116102659.70287-21-david@redhat.com>
+In-Reply-To: <20221116102659.70287-21-david@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 16 Nov 2022 10:16:34 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
+Message-ID: <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v1 20/20] mm: rename FOLL_FORCE to FOLL_PTRACE
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-perf-users@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 11, 2022 at 06:22:21PM +0900, Daisuke Matsuda wrote:
-> This patch series implements the On-Demand Paging feature on SoftRoCE(rxe)
-> driver, which has been available only in mlx5 driver[1] so far.
+On Wed, Nov 16, 2022 at 2:30 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> Let's make it clearer that functionality provided by FOLL_FORCE is
+> really only for ptrace access.
 
-<...>
+I'm not super-happy about this one.
 
-> Daisuke Matsuda (7):
->   IB/mlx5: Change ib_umem_odp_map_dma_single_page() to retain umem_mutex
->   RDMA/rxe: Convert the triple tasklets to workqueues
->   RDMA/rxe: Cleanup code for responder Atomic operations
->   RDMA/rxe: Add page invalidation support
->   RDMA/rxe: Allow registering MRs for On-Demand Paging
->   RDMA/rxe: Add support for Send/Recv/Write/Read operations with ODP
->   RDMA/rxe: Add support for the traditional Atomic operations with ODP
+I do understand the "let's rename the bit so that no new user shows up".
 
-It is a shame that such cool feature is not progressing.
-RXE folks, can you please review it?
+And it's true that the main traditional use is ptrace.
 
-Thanks
+But from the patch itself it becomes obvious that no, it's not *just*
+ptrace. At least not yet.
+
+It's used for get_arg_page(), which uses it to basically look up (and
+install) pages in the newly created VM.
+
+Now, I'm not entirely sure why it even uses FOLL_FORCE, - I think it
+might be historical, because the target should always be the new stack
+vma.
+
+Following the history of it is a big of a mess, because there's a
+number of renamings and re-organizations, but it seems to go back to
+2007 and commit b6a2fea39318 ("mm: variable length argument support").
+
+Before that commit, we kept our own array of "this is the set of pages
+that I will install in the new VM". That commit basically just inserts
+the pages directly into the VM instead, getting rid of the array size
+limitation.
+
+So at a minimum, I think that FOLL_FORCE would need to be removed
+before any renaming to FOLL_PTRACE, because that's not some kind of
+small random case.
+
+It *might* be as simple as just removing it, but maybe there's some
+reason for having it that I don't immediately see.
+
+There _are_ also small random cases too, like get_cmdline(). Maybe
+that counts as ptrace, but the execve() case most definitely does not.
+
+                Linus
