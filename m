@@ -2,132 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9932562B13F
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 03:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FD962B14D
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 03:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbiKPCYh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Nov 2022 21:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
+        id S230211AbiKPCbO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Nov 2022 21:31:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbiKPCYg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 21:24:36 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5A427173
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 18:24:35 -0800 (PST)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NBn1B5y75zRpMY;
-        Wed, 16 Nov 2022 10:24:14 +0800 (CST)
-Received: from [10.169.59.127] (10.169.59.127) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 16 Nov 2022 10:24:33 +0800
-Subject: Re: [PATCH] nvme-rdma: set ack timeout of RoCE to 262ms
-From:   Chao Leng <lengchao@huawei.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>
-CC:     <linux-nvme@lists.infradead.org>, <kbusch@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20220819075825.21231-1-lengchao@huawei.com>
- <20220821062016.GA26553@lst.de>
- <83992e8f-b18a-ccd3-e0ee-a5802043f161@huawei.com>
- <86e9fc3b-aded-220d-1ee0-4d5928097104@nvidia.com>
- <f7254cc2-88e0-e91f-e4f1-788c5889fcf1@huawei.com>
- <fbee7c67-fd7b-12c8-5685-066b1974aadb@grimberg.me>
- <550d4612-0041-3d84-b1cb-786d0c8e0d11@huawei.com>
- <3030fbb2-5c63-54ea-5be3-b88cf63c6b75@grimberg.me>
- <c86a6cea-09b5-c04c-aa7b-adc6a457acf6@huawei.com>
- <328a807f-bfaf-b279-69c5-09be179891ac@huawei.com>
- <1bd4d4f6-fe33-7fe5-f662-cdef61acf800@nvidia.com>
- <405b78aa-51b8-30b4-ff86-c46d1bc84cda@huawei.com>
-Message-ID: <47eb747d-0b48-acc5-a833-02457817e71b@huawei.com>
-Date:   Wed, 16 Nov 2022 10:24:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        with ESMTP id S229560AbiKPCbM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 21:31:12 -0500
+Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963B829353
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 18:31:11 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VUvaC6P_1668565868;
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VUvaC6P_1668565868)
+          by smtp.aliyun-inc.com;
+          Wed, 16 Nov 2022 10:31:09 +0800
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+To:     jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
+Subject: [PATCH for-next 0/3] RDMA/erdma: Support flushing all WRs after QP state changed to ERROR
+Date:   Wed, 16 Nov 2022 10:31:04 +0800
+Message-Id: <20221116023107.82835-1-chengyou@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
-In-Reply-To: <405b78aa-51b8-30b4-ff86-c46d1bc84cda@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.169.59.127]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi, Max
-    How's it going now?
-    Thank you.
+Hi,
 
-On 2022/10/14 10:15, Chao Leng wrote:
-> 
-> 
-> On 2022/10/14 8:05, Max Gurtovoy wrote:
->> Sorry for late response, we have holiday's in my country.
->>
->> I still can't understand how this patch fixes your problem if you use ConnectX-5 since we use adaptive re-transmission by default and it's faster than 256msec to re-transmit.
-> adaptive re-transmission? Do you mean NAK-triggered retransmission?
-> NAK-triggered retransmission is very fast, but timeout-triggered retransmission
-> is very slow. Because There is a possibility that all packets of a QP are lost,
-> receiver HBA can not send NAK.
->  From our analysis, we didn't see any other adaptive re-transmission.
-> If there is any other adaptive re-transmission, can you explain it?
-> 
-> This patch modify the waiting time for timeout re-transmission, Thus if all packets
-> of a QP are lost, the re-transmission waiting time will become short.
->>
->> Did you disable it ?
-> We do not disable anything.
->>
->> I'll try to re-spin it internally again.
-> If you need more information, please feel free to contact me.
-> Thank you.
->>
->> On 10/10/2022 12:12 PM, Chao Leng wrote:
->>> Hi, Max
->>>     Can you give some comment? Thank you.
->>>
->>> On 2022/8/29 21:15, Chao Leng wrote:
->>>>
->>>>
->>>> On 2022/8/29 17:06, Sagi Grimberg wrote:
->>>>>
->>>>>>>>> If so, which devices did you use ?
->>>>>>>> The host HBA is Mellanox Technologies MT27800 Family [ConnectX-5];
->>>>>>>> The switch and storage are huawei equipments.
->>>>>>>> In principle, switches and storage devices from other vendors
->>>>>>>> have the same problem.
->>>>>>>> If you think it is necessary, we can test the other vendor switchs
->>>>>>>> and linux target.
->>>>>>>
->>>>>>> Why is the 2s default chosen, what is the downside for a 250ms seconds ack timeout? and why is nvme-rdma different than all other kernel rdma
->>>>>> The downside is redundant retransmit if the packets delay more than
->>>>>> 250ms in the networks and finally reaches the receiver.
->>>>>> Only in extreme scenarios, the packet delay may exceed 250 ms.
->>>>>
->>>>> Sounds like the default needs to be changed if it only addresses the
->>>>> extreme scenarios...
->>>>>
->>>>>>> consumers that it needs to set this explicitly?
->>>>>> The real-time transaction services are sensitive to the delay.
->>>>>> nvme-rdma will be used in real-time transactions.
->>>>>> The real-time transaction services do not allow that the packets
->>>>>> delay more than 250ms in the networks.
->>>>>> So we need to set the ack timeout to 262ms.
->>>>>
->>>>> While I don't disagree with the change itself, I do disagree why this
->>>>> needs to be driven by nvme-rdma locally. If all kernel rdma consumers
->>>>> need this (and if not, I'd like to understand why), this needs to be set in the rdma core.Changing the default set in the rdma core is another option.
->>>> But it will affect all application based on RDMA.
->>>> Max, what do you think? Thank you.
->>>>> .
->>>>
->>>> .
->> .
+This series introduces the support of flushing all WRs posted to hardware
+after QP state changed to ERROR.
+
+Old Firmware may not flush the newly posted WRs after QP state chagned to
+ERROR, because it's a little difficult for firmware to get the realtime
+PI (producer index) of QPs, especially for the RQs.
+
+Previously we want to avoid this issue by implementing custom
+drain_{sq/rq} [1], but this has falw, as Tom and Jason pointed out, which
+we also meet in some scenarios, for example, NoF fatal recovery.
+
+So, we introduce a new mechanism to fix this. When registering the ibdev,
+we create a workqueue for reflushing (we name it "reflush", because
+hardware is already start flushing for the QPs at that time, and it's used
+for hardware to flush newly posted WRs). Once QP needs to flush WRs, or
+new WRs posted after flushing, we post a delay work to the workqueue or
+modify the delay time if is already posted. In the work, driver notifies
+the lastest PIs to firmware by CMDQ, so that firmware can flush all the
+newly posted WRs. This applies to kernel QP first.
+
+- #1 adds a workqueue for WRs reflushing.
+- #2 adds a reflushing work for each QP.
+- #4 notifies the lastest PIs to firmware for reflushing.
+
+[1] https://lore.kernel.org/all/20220824094251.23190-3-chengyou@linux.alibaba.com/t/
+
+Thanks,
+Cheng Xu
+
+Cheng Xu (3):
+  RDMA/erdma: Add a workqueue for WRs reflushing
+  RDMA/erdma: Implement the lifecycle of reflushing work for each QP
+  RDMA/erdma: Notify the latest PI to FW for reflushing when necessary
+
+ drivers/infiniband/hw/erdma/erdma.h       |  1 +
+ drivers/infiniband/hw/erdma/erdma_hw.h    |  8 ++++++
+ drivers/infiniband/hw/erdma/erdma_main.c  | 14 +++++++++--
+ drivers/infiniband/hw/erdma/erdma_qp.c    | 30 ++++++++++++++++-------
+ drivers/infiniband/hw/erdma/erdma_verbs.c | 18 ++++++++++++++
+ drivers/infiniband/hw/erdma/erdma_verbs.h |  7 ++++++
+ 6 files changed, 67 insertions(+), 11 deletions(-)
+
+-- 
+2.27.0
+
