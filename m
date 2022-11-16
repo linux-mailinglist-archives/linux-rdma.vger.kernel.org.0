@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F07A62BB8D
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 12:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDB462BBA6
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 12:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239088AbiKPLYs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Nov 2022 06:24:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40634 "EHLO
+        id S232403AbiKPL0A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Nov 2022 06:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239215AbiKPLY2 (ORCPT
+        with ESMTP id S233819AbiKPLY2 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 06:24:28 -0500
 Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733A423E94
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 03:14:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7D3101FA
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 03:14:34 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668597271;
+        t=1668597273;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tNiq9I28TaJTiBREtnU7FhSV013Hf/tsOD07ObmZwuQ=;
-        b=fHuhgdansuvq0rsDoC+aVQABtyBlRk3I6V4mxOkNcdLolwX9C1DXsKlHcdIo167z4JY4bS
-        V008GQbA9xt0yzzwo0cMi8u9SIAtOPf0wAGJshadzN0jaPCawhyHi8BWZ6QZxcmQ8e1K0w
-        zh1+YgNoDzEnBDsmZy++ESoG3f1tbqI=
+        bh=5FHza1rvrmLrZtFWGWRw6X8+BrLZ2Z3GIR74RWWuK+A=;
+        b=JzxxZJUmywzuB2tTcFCV/rxqFCef7M8JPm98UsB0nlXUhOwTONbm/hi3oAF+EepCsgP3Rx
+        oKXQatHIThdlI2Tb+GePmpPqeMa8/xnejvfTHn3OAdUvd9mZeMuldaXCd7X4JJE76krHHW
+        BgeCfrq1F4yiH/ue66FoA3u3KTCQ0TI=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
         leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH 7/8] RDMA/rtrs-srv: Fix several issues in rtrs_srv_destroy_path_files
-Date:   Wed, 16 Nov 2022 19:13:59 +0800
-Message-Id: <20221116111400.7203-8-guoqing.jiang@linux.dev>
+Subject: [PATCH 8/8] RDMA/rtrs-srv: Remove kobject_del from rtrs_srv_destroy_once_sysfs_root_folders
+Date:   Wed, 16 Nov 2022 19:14:00 +0800
+Message-Id: <20221116111400.7203-9-guoqing.jiang@linux.dev>
 In-Reply-To: <20221116111400.7203-1-guoqing.jiang@linux.dev>
 References: <20221116111400.7203-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -46,54 +46,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There are several issues in the function which is supposed to be paired
-with rtrs_srv_create_path_files.
-
-1. rtrs_srv_stats_attr_group is not removed though it is created in
-   rtrs_srv_create_stats_files.
-
-2. it makes more sense to check kobj_stats.state_in_sysfs before destroy
-   kobj_stats instead of rely on kobj.state_in_sysfs.
-
-3. kobject_init_and_add is used for both kobjs (srv_path->kobj and
-   srv_path->stats->kobj_stats), however we missed to call kobject_del
-   for srv_path->kobj which was called in free_path.
-
-4. rtrs_srv_destroy_once_sysfs_root_folders is independant of either
-   kobj or kobj_stats.
+The kobj_paths which is created dynamically by kobject_create_and_add,
+and per the comment above kobject_create_and_add, we only need to call
+kobject_put which is not same as other kobjs such as stats->kobj_stats
+and srv_path->kobj.
 
 Acked-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index 2a3c9ac64a42..da8e205ce331 100644
+index da8e205ce331..c76ba29da1e2 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -304,12 +304,18 @@ int rtrs_srv_create_path_files(struct rtrs_srv_path *srv_path)
+@@ -203,7 +203,6 @@ rtrs_srv_destroy_once_sysfs_root_folders(struct rtrs_srv_path *srv_path)
  
- void rtrs_srv_destroy_path_files(struct rtrs_srv_path *srv_path)
- {
--	if (srv_path->kobj.state_in_sysfs) {
-+	if (srv_path->stats->kobj_stats.state_in_sysfs) {
-+		sysfs_remove_group(&srv_path->stats->kobj_stats,
-+				   &rtrs_srv_stats_attr_group);
- 		kobject_del(&srv_path->stats->kobj_stats);
- 		kobject_put(&srv_path->stats->kobj_stats);
-+	}
-+
-+	if (srv_path->kobj.state_in_sysfs) {
- 		sysfs_remove_group(&srv_path->kobj, &rtrs_srv_path_attr_group);
-+		kobject_del(&srv_path->kobj);
- 		kobject_put(&srv_path->kobj);
--
--		rtrs_srv_destroy_once_sysfs_root_folders(srv_path);
- 	}
-+
-+	rtrs_srv_destroy_once_sysfs_root_folders(srv_path);
- }
+ 	mutex_lock(&srv->paths_mutex);
+ 	if (!--srv->dev_ref) {
+-		kobject_del(srv->kobj_paths);
+ 		kobject_put(srv->kobj_paths);
+ 		mutex_unlock(&srv->paths_mutex);
+ 		device_del(&srv->dev);
 -- 
 2.31.1
 
