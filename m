@@ -2,129 +2,203 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3271762C7C3
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 19:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A174562C880
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 19:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239234AbiKPShn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Nov 2022 13:37:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
+        id S239357AbiKPS4o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Nov 2022 13:56:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239236AbiKPShj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 13:37:39 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BD91F5B5B0;
-        Wed, 16 Nov 2022 10:37:38 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C141E1477;
-        Wed, 16 Nov 2022 10:37:44 -0800 (PST)
-Received: from [10.57.70.190] (unknown [10.57.70.190])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE3123F587;
-        Wed, 16 Nov 2022 10:37:35 -0800 (PST)
-Message-ID: <29d11541-8c11-4c3e-db76-a982751e61e6@arm.com>
-Date:   Wed, 16 Nov 2022 18:37:10 +0000
+        with ESMTP id S238358AbiKPS4W (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 13:56:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1661A67121
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 10:54:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1668624843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XrMOrTfFoolcBWY273BC4KVOqyrI8gbytsgZlItRSSY=;
+        b=ggnk2mNlajTLNaTYtTEVAXXL1mzLcneUkdkTzCipHOe8bpGYR81K2i0Q1IZkJzxzD6loT0
+        VKwyQr+j6YAkRE5woCv3D8UX+LCBDyk//mZqtobHn5uAEz5dmYpkCGrHnFc1bjg5+yePtM
+        ZHKhMPO4da92jOYTzViClXv0S4S0ri8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-518-iSCObIybNgeTw07YUL7jXQ-1; Wed, 16 Nov 2022 13:54:02 -0500
+X-MC-Unique: iSCObIybNgeTw07YUL7jXQ-1
+Received: by mail-wr1-f69.google.com with SMTP id k7-20020adfc707000000b002416f2e9ad5so3338104wrg.6
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 10:54:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XrMOrTfFoolcBWY273BC4KVOqyrI8gbytsgZlItRSSY=;
+        b=khAvjXj4YnN9ekCvO2cmGbRYtPGmPE74fBcx8pTNEkKYXJXs+K4W00jWeaytLrExwm
+         vNHYbSwWJQ7k22X1MHzFl9nLwI2WoemkB/MF7WPGFrOpvEefjluFset/WhTLCS/ayb9x
+         YOuvcfZo8wXQhADbDeEgOj3O749YQ/vXA0WbK7UIrJvs9bNy/gDNgDE52BF57XWGkdrt
+         aZjbyBsfTm/nj2a/aYjF/+6SpA+rNseNg3mWJ5T5kbVkYiQhPprH3L0LlBZ5r7kyrzpV
+         dOnFeOdT8o2IfbT6POv+UdrB6xwF7wHY1Lz4XcGKcOjhToH1Pegywh0uBprQ/+xYvMVX
+         5urQ==
+X-Gm-Message-State: ANoB5pkqFjdo5wmbTe50uy+0GoQeoY/JSWY2DCX6mLWxO2Gm9vBHiZEf
+        336CCVQNuLlQP2GjKLTcZ00y+3xbhaGmHRUEkO+nQKSUs5W5o9XRF7Mny9hbFZMBMlwYNv5mI++
+        r1JWcS1daJkZnn68a6y573Q==
+X-Received: by 2002:a05:600c:188a:b0:3cf:8e62:f769 with SMTP id x10-20020a05600c188a00b003cf8e62f769mr3135333wmp.52.1668624841277;
+        Wed, 16 Nov 2022 10:54:01 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5DCp6F6fiXltcSvKkMYb+ZcNvwNu+I48re+Q7o+sjDMiBTT1rVi2cU7FL82kIKKDnPvsKEPw==
+X-Received: by 2002:a05:600c:188a:b0:3cf:8e62:f769 with SMTP id x10-20020a05600c188a00b003cf8e62f769mr3135302wmp.52.1668624841029;
+        Wed, 16 Nov 2022 10:54:01 -0800 (PST)
+Received: from ?IPV6:2003:cb:c704:9f00:a98d:4026:7c44:40fd? (p200300cbc7049f00a98d40267c4440fd.dip0.t-ipconnect.de. [2003:cb:c704:9f00:a98d:4026:7c44:40fd])
+        by smtp.gmail.com with ESMTPSA id h16-20020a05600c315000b003cff309807esm3012333wmo.23.2022.11.16.10.53.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Nov 2022 10:54:00 -0800 (PST)
+Message-ID: <caf52607-49cd-3073-ca4a-ddce9509e7c9@redhat.com>
+Date:   Wed, 16 Nov 2022 19:53:57 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.1
-Subject: Re: [PATCH 2/7] RDMA/hfi1: don't pass bogus GFP_ flags to
- dma_alloc_coherent
-Content-Language: en-GB
-To:     Dean Luick <dean.luick@cornelisnetworks.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
-        iommu@lists.linux.dev, linux-media@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <20221113163535.884299-1-hch@lst.de>
- <20221113163535.884299-3-hch@lst.de>
- <c7c6eb30-4b54-01f7-9651-07deac3662bf@cornelisnetworks.com>
- <be8ca3f9-b7f7-5402-0cfc-47b9985e007b@arm.com>
- <87b12755-15d6-1064-1559-8951c1252eaa@cornelisnetworks.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <87b12755-15d6-1064-1559-8951c1252eaa@cornelisnetworks.com>
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-perf-users@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+References: <20221116102659.70287-1-david@redhat.com>
+ <20221116102659.70287-21-david@redhat.com>
+ <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH mm-unstable v1 20/20] mm: rename FOLL_FORCE to FOLL_PTRACE
+In-Reply-To: <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2022-11-16 16:21, Dean Luick wrote:
-> On 11/16/2022 9:15 AM, Robin Murphy wrote:
->> On 2022-11-16 14:40, Dean Luick wrote:
->>> On 11/13/2022 10:35 AM, Christoph Hellwig wrote:
->>>> dma_alloc_coherent is an opaque allocator that only uses the GFP_ flags
->>>> for allocation context control.  Don't pass GFP_USER which doesn't make
->>>> sense for a kernel DMA allocation or __GFP_COMP which makes no sense
->>>> for an allocation that can't in any way be converted to a page pointer.
->>>>
->>>> Signed-off-by: Christoph Hellwig <hch@lst.de>
->>>> ---
->>>>    drivers/infiniband/hw/hfi1/init.c | 21 +++------------------
->>>>    1 file changed, 3 insertions(+), 18 deletions(-)
->>>>
->>>> diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
->>>> index 436372b314312..24c0f0d257fc9 100644
->>>> --- a/drivers/infiniband/hw/hfi1/init.c
->>>> +++ b/drivers/infiniband/hw/hfi1/init.c
->>>> @@ -1761,17 +1761,11 @@ int hfi1_create_rcvhdrq(struct hfi1_devdata *dd, struct hfi1_ctxtdata *rcd)
->>>>         unsigned amt;
->>>>
->>>>         if (!rcd->rcvhdrq) {
->>>> -             gfp_t gfp_flags;
->>>> -
->>>>                 amt = rcvhdrq_size(rcd);
->>>>
->>>> -             if (rcd->ctxt < dd->first_dyn_alloc_ctxt || rcd->is_vnic)
->>>> -                     gfp_flags = GFP_KERNEL;
->>>> -             else
->>>> -                     gfp_flags = GFP_USER;
->>>>                 rcd->rcvhdrq = dma_alloc_coherent(&dd->pcidev->dev, amt,
->>>>                                                   &rcd->rcvhdrq_dma,
->>>> -                                               gfp_flags | __GFP_COMP);
->>>> +                                               GFP_KERNEL);
->>>
->>> A user context receive header queue may be mapped into user space.  Is that not the use case for GFP_USER?  The above conditional is what decides.
->>>
->>> Why do you think GFP_USER should be removed here?
+On 16.11.22 19:16, Linus Torvalds wrote:
+> On Wed, Nov 16, 2022 at 2:30 AM David Hildenbrand <david@redhat.com> wrote:
 >>
->> Coherent DMA buffers are allocated by a kernel driver or subsystem for the use of a device managed by that driver or subsystem, and thus they fundamentally belong to the kernel as proxy for the device. Any coherent DMA buffer may be mapped to userspace with the dma_mmap_*() interfaces, but they're never a "userspace allocation" in that sense.
+>> Let's make it clearer that functionality provided by FOLL_FORCE is
+>> really only for ptrace access.
 > 
-> My (seemingly dated) understanding is that GFP_USER is for kernel allocations that may be mapped into user space.  The description of GFP_USER in gfp_types.h enforces my understanding.  Is my uderstanding no longer correct?  If not, then what is the point of GFP_USER?  Is GFP_USER now mostly an artifact?  Should its description be updated?
+> I'm not super-happy about this one.
+> 
+> I do understand the "let's rename the bit so that no new user shows up".
+> 
+> And it's true that the main traditional use is ptrace.
+> 
+> But from the patch itself it becomes obvious that no, it's not *just*
+> ptrace. At least not yet.
+> 
+> It's used for get_arg_page(), which uses it to basically look up (and
+> install) pages in the newly created VM.
+> 
+> Now, I'm not entirely sure why it even uses FOLL_FORCE, - I think it
+> might be historical, because the target should always be the new stack
+> vma.
+> 
+> Following the history of it is a big of a mess, because there's a
+> number of renamings and re-organizations, but it seems to go back to
+> 2007 and commit b6a2fea39318 ("mm: variable length argument support").
+> 
 
-I think there's a subtle distinction between userspace memory which may 
-be shared with DMA, and DMA memory which may be shared with userspace. 
-My reading is that GFP_USER (vs. GFP_HIGHUSER or GFP_HIGHUSER_MOVABLE) 
-matters for the former case, where you might use alloc_pages(), but 
-intend to come back and do dma_map_single() at some point afterwards. 
-For dma_alloc_coherent(), it's clearly always a DMA allocation from the 
-off, so whether it might also end up mmap()ed into one or more processes 
-later doesn't really have much practical impact.
+Right.
 
-> Presently, the difference between GFP_KERNEL and GFP_USER is __GFP_HARDWALL.  This enforces cpuset allocation policy. If HARDWALL is not set, the allocator will back off to the nearest memory ancestor if needed.  The back off seems like a reasonable general policy.  I do have one concern that may be hypothetical: if GFP_KERNEL is used and a buffer is silently pushed out of the expected cpuset, this can lead to mysterious slowdowns.
+> Before that commit, we kept our own array of "this is the set of pages
+> that I will install in the new VM". That commit basically just inserts
+> the pages directly into the VM instead, getting rid of the array size
+> limitation.
+> 
+> So at a minimum, I think that FOLL_FORCE would need to be removed
+> before any renaming to FOLL_PTRACE, because that's not some kind of
+> small random case.
+> 
+> It *might* be as simple as just removing it, but maybe there's some
+> reason for having it that I don't immediately see.
 
-Note that NUMA-aware dma_alloc_coherent() implementations do try to 
-place the buffer close to the device (since typically over its lifetime 
-it may be accessed by any CPU, but not any other device), therefore not 
-being bound by process restrictions is arguably right for that. If a 
-process is bound to a different node than a device it's trying to use 
-then *something's* going to have to eat the cross-node latency either 
-way. I suppose one could argue that GFP_USER might make sense when it's 
-known that the device is only ever going to use this buffer for work on 
-behalf of the current process, and thus it could be accounted to the 
-process instead of the kernel, but that seems incredibly niche and 
-likely to be far outweighed by people just using it wrong.
+Right, I have the same feeling. It might just be a copy-and-paste legacy 
+leftover.
 
+> 
+> There _are_ also small random cases too, like get_cmdline(). Maybe
+> that counts as ptrace, but the execve() case most definitely does not.
+
+I agree. I'd suggest moving forward without this (last) patch for now 
+and figuring out how to further cleanup FOLL_FORCE usage on top.
+
+@Andrew, if you intend to put this into mm-unstable, please drop the 
+last patch for now.
+
+-- 
 Thanks,
-Robin.
+
+David / dhildenb
+
