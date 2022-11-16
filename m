@@ -2,191 +2,198 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD9562BA9C
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 12:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC0662BAB4
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 12:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232359AbiKPLB3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Nov 2022 06:01:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41804 "EHLO
+        id S233165AbiKPLC4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Nov 2022 06:02:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbiKPLBB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 06:01:01 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1E045EE3
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 02:49:00 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id f27so43141487eje.1
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 02:49:00 -0800 (PST)
+        with ESMTP id S239063AbiKPLCE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 06:02:04 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE552DAA5
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 02:49:47 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id f7so25949314edc.6
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 02:49:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OSCwvxDUrivspPm0mWYSEKkrMB19obOv39RUwyA0PH0=;
-        b=VJ17UkTNHUXDMc38lOye7y2paGd4FOYHBRYpe2vgelPuC55Z4g5rnX+xNi0NFRGTrN
-         mdMUVKijrbkJJfn3y8Tm8vf3pLdF4omxIOM6UM8S6CVz2p3NrVUPvz4FNRN3RF3rQ/lN
-         9z9ibLXy5LDPJfO5cF7QIpPDKsW5E+659K7gg=
+        bh=SB0xMxg7mb7arNhoP48cqWafxbk28Z1Lix7iS7Zkf4o=;
+        b=G+yH7gGM79Kur0Iop0CPPA+qhziqzAzwIurg983ubYb3WshrhUBjt115nMP15JVtFB
+         bCAGjPfacpREtOfp/xR/YX1SymsdQ1bgnCyPvMlgHC3mzRuO7K3B6poJkP/JWiUCmMWF
+         GisY2xBmQqATnhhXA26BG81FXfyHx1zsVnNWg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OSCwvxDUrivspPm0mWYSEKkrMB19obOv39RUwyA0PH0=;
-        b=zCVUJy1b3zcv2Wlk3MnBC5ZP6n3ASR167tO1s/ZSPjGDTWC3PNFibDDzCW/cQ4zIuu
-         0k/KjBRdX9bWv9omNPeLscJgGXt0LX8e6H/LFitkelZIwuTXbY28F/UCWY+w7ikq17Is
-         /EO11emCtBRSWR0letgj5Kn4PSfY7dLBR7WdByvWIAGm62ZXp9psACGMpAEHYy0wxtsx
-         fx/g1vZbrMOwCWXmy1Y9huNav1g6zd7RNF3+IoLHcnGAisSBaInh3mxEbZCEMlCqyb6G
-         rGqvNO6sqGW/4Kh13BCI7sRFzhENA3vGSpZYYdKTQSzYu/nk808bKIyKSknYWoaejla+
-         ImTg==
-X-Gm-Message-State: ANoB5pksmqK4ZevA/ojHGtkd/C6vf1iMJVNjLcXqbfBHW/muXNVtd3iG
-        KPCKmy2aW0KD6CcyJaoOVElbCw==
-X-Google-Smtp-Source: AA0mqf6lc5lrEzUlEqYgu67h96R4r19JtBnDlqqKBl9ey0VuIf1EYIOTKVPSxvCTipQmxuaB88n35Q==
-X-Received: by 2002:a17:906:970e:b0:7ad:ccae:a30d with SMTP id k14-20020a170906970e00b007adccaea30dmr18079730ejx.704.1668595739329;
-        Wed, 16 Nov 2022 02:48:59 -0800 (PST)
+        bh=SB0xMxg7mb7arNhoP48cqWafxbk28Z1Lix7iS7Zkf4o=;
+        b=jjIgSwBufuHTQQweKM1JHTnWejh7ySxZ+qStYvmbU2Gq6z2bAI6AolQCxXVYWmoXKY
+         nRZn1riz7pRPKjYhuxjJbYGsdoz0sjXGXilKxV0dTig9HfVl1DKlr0poPlw7/Do5C5nL
+         1n31TtAPDJaddxOecBSVTCpM5SD2xZ8dBne0xwMA0LyvgS+ogGguofjlH2L/nt0pclaG
+         LOGMutKyjfg7jzIe18GhxK54szBtR6l/faYYwRnWTkyFuzZdNoqyqVTe9KyWtcpb1hjF
+         By/Bc7P4MS3wHeRTCGrGY6UQVX+QXUjR+jo19aktWoEzP1eym+mYVrHSmiBHMM02LViG
+         in8w==
+X-Gm-Message-State: ANoB5pmx+h5Pw92TzftM5F2TiIeqLDSGuG62X26ZnvtpMMp2n+GKfc5E
+        Iowd20k7+gcsyG8ns5lLVC+F0A==
+X-Google-Smtp-Source: AA0mqf5eZw0lnDAfrqoVYz8ol539itw9JN3l4qV2Eir0Zt6pEgAkXKur5xarVrPRHlm5su04xf/hGA==
+X-Received: by 2002:a05:6402:3458:b0:458:b9f9:9fba with SMTP id l24-20020a056402345800b00458b9f99fbamr19055554edc.305.1668595786519;
+        Wed, 16 Nov 2022 02:49:46 -0800 (PST)
 Received: from phenom.ffwll.local (212-51-149-33.fiber7.init7.net. [212.51.149.33])
-        by smtp.gmail.com with ESMTPSA id g13-20020a50ec0d000000b0045b3853c4b7sm7352935edr.51.2022.11.16.02.48.57
+        by smtp.gmail.com with ESMTPSA id kx13-20020a170907774d00b0078ba492db81sm6694451ejc.9.2022.11.16.02.49.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 02:48:58 -0800 (PST)
-Date:   Wed, 16 Nov 2022 11:48:56 +0100
+        Wed, 16 Nov 2022 02:49:46 -0800 (PST)
+Date:   Wed, 16 Nov 2022 11:49:43 +0100
 From:   Daniel Vetter <daniel@ffwll.ch>
 To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        Nadav Amit <namit@vmware.com>, linux-kselftest@vger.kernel.org,
-        sparclinux@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
-        x86@kernel.org, Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-media@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        John Hubbard <jhubbard@nvidia.com>,
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
         linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, Oded Gabbay <ogabbay@kernel.org>,
-        linux-mips@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH mm-unstable v1 13/20] media: videobuf-dma-sg: remove
- FOLL_FORCE usage
-Message-ID: <Y3TAGAUIo/IR+tAa@phenom.ffwll.local>
-Mail-Followup-To: David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        Nadav Amit <namit@vmware.com>, linux-kselftest@vger.kernel.org,
-        sparclinux@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
-        x86@kernel.org, Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Vlastimil Babka <vbabka@suse.cz>,
-        linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        John Hubbard <jhubbard@nvidia.com>, linux-um@lists.infradead.org,
-        etnaviv@lists.freedesktop.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        Oded Gabbay <ogabbay@kernel.org>, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
         linux-perf-users@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>
+Subject: Re: [PATCH mm-unstable v1 14/20] drm/etnaviv: remove FOLL_FORCE usage
+Message-ID: <Y3TAR7Ndmat+zYpJ@phenom.ffwll.local>
+Mail-Followup-To: David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-perf-users@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>, Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>
 References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-14-david@redhat.com>
+ <20221116102659.70287-15-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221116102659.70287-14-david@redhat.com>
+In-Reply-To: <20221116102659.70287-15-david@redhat.com>
 X-Operating-System: Linux phenom 5.19.0-2-amd64 
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 11:26:52AM +0100, David Hildenbrand wrote:
+On Wed, Nov 16, 2022 at 11:26:53AM +0100, David Hildenbrand wrote:
 > GUP now supports reliable R/O long-term pinning in COW mappings, such
 > that we break COW early. MAP_SHARED VMAs only use the shared zeropage so
 > far in one corner case (DAXFS file with holes), which can be ignored
 > because GUP does not support long-term pinning in fsdax (see
 > check_vma_flags()).
 > 
+> commit cd5297b0855f ("drm/etnaviv: Use FOLL_FORCE for userptr")
+> documents that FOLL_FORCE | FOLL_WRITE was really only used for reliable
+> R/O pinning.
+> 
 > Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
 > for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
 > using FOLL_FORCE, which is really only for ptrace access.
 > 
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: Lucas Stach <l.stach@pengutronix.de>
+> Cc: Russell King <linux+etnaviv@armlinux.org.uk>
+> Cc: Christian Gmeiner <christian.gmeiner@gmail.com>
+> Cc: David Airlie <airlied@gmail.com>
 > Signed-off-by: David Hildenbrand <david@redhat.com>
-
-I looked at this a while ago when going through some of the follow_pfn
-stuff, so
 
 Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
+Also ack for merging through whatever tree suits best, since I guess this
+should all land together.
+-Daniel
+
 > ---
->  drivers/media/v4l2-core/videobuf-dma-sg.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
+>  drivers/gpu/drm/etnaviv/etnaviv_gem.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
-> index f75e5eedeee0..234e9f647c96 100644
-> --- a/drivers/media/v4l2-core/videobuf-dma-sg.c
-> +++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
-> @@ -151,17 +151,16 @@ static void videobuf_dma_init(struct videobuf_dmabuf *dma)
->  static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
->  			int direction, unsigned long data, unsigned long size)
->  {
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+> index cc386f8a7116..efe2240945d0 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+> @@ -638,6 +638,7 @@ static int etnaviv_gem_userptr_get_pages(struct etnaviv_gem_object *etnaviv_obj)
+>  	struct page **pvec = NULL;
+>  	struct etnaviv_gem_userptr *userptr = &etnaviv_obj->userptr;
+>  	int ret, pinned = 0, npages = etnaviv_obj->base.size >> PAGE_SHIFT;
 > +	unsigned int gup_flags = FOLL_LONGTERM;
->  	unsigned long first, last;
-> -	int err, rw = 0;
-> -	unsigned int flags = FOLL_FORCE;
-> +	int err;
 >  
->  	dma->direction = direction;
->  	switch (dma->direction) {
->  	case DMA_FROM_DEVICE:
-> -		rw = READ;
-> +		gup_flags |= FOLL_WRITE;
->  		break;
->  	case DMA_TO_DEVICE:
-> -		rw = WRITE;
->  		break;
->  	default:
->  		BUG();
-> @@ -177,14 +176,11 @@ static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
->  	if (NULL == dma->pages)
+>  	might_lock_read(&current->mm->mmap_lock);
+>  
+> @@ -648,14 +649,15 @@ static int etnaviv_gem_userptr_get_pages(struct etnaviv_gem_object *etnaviv_obj)
+>  	if (!pvec)
 >  		return -ENOMEM;
 >  
-> -	if (rw == READ)
-> -		flags |= FOLL_WRITE;
-> -
->  	dprintk(1, "init user [0x%lx+0x%lx => %lu pages]\n",
->  		data, size, dma->nr_pages);
+> +	if (!userptr->ro)
+> +		gup_flags |= FOLL_WRITE;
+> +
+>  	do {
+>  		unsigned num_pages = npages - pinned;
+>  		uint64_t ptr = userptr->ptr + pinned * PAGE_SIZE;
+>  		struct page **pages = pvec + pinned;
 >  
-> -	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages,
-> -			     flags | FOLL_LONGTERM, dma->pages, NULL);
-> +	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages, gup_flags,
-> +			     dma->pages, NULL);
->  
->  	if (err != dma->nr_pages) {
->  		dma->nr_pages = (err >= 0) ? err : 0;
+> -		ret = pin_user_pages_fast(ptr, num_pages,
+> -					  FOLL_WRITE | FOLL_FORCE | FOLL_LONGTERM,
+> -					  pages);
+> +		ret = pin_user_pages_fast(ptr, num_pages, gup_flags, pages);
+>  		if (ret < 0) {
+>  			unpin_user_pages(pvec, pinned);
+>  			kvfree(pvec);
 > -- 
 > 2.38.1
 > 
