@@ -2,93 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D3F62B070
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 02:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9932562B13F
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 03:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbiKPBOB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Nov 2022 20:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
+        id S230132AbiKPCYh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Nov 2022 21:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbiKPBOA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 20:14:00 -0500
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2A727173
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 17:13:56 -0800 (PST)
-Subject: Re: [PATCH RFC 05/12] RDMA/rtrs-srv: Correct the checking of
- ib_map_mr_sg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668561235;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oubu4qStIv2OE2IdDQNJFKQnk9YVpMbbS5o02UElcYo=;
-        b=IhBFIAhZorKZGHKTEVjopP0EjjdLkbrb2D36E/O5lSHHlWbEWZDu+m/jBVwrpCSg3GfvcD
-        FeYpLxTKaJn6K9b/AI22qgAPab/VzUqfPOBCXAHMpdFFhu4De9JWjSU6uXWkqN7gjqLLTj
-        BM6jdIuko7fuhUEb22a34c6LA4YL8JE=
-To:     Jinpu Wang <jinpu.wang@ionos.com>
-Cc:     haris.iqbal@ionos.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20221113010823.6436-1-guoqing.jiang@linux.dev>
- <20221113010823.6436-6-guoqing.jiang@linux.dev>
- <CAMGffEn3sYLbF1_05mjHvtOM4DPGKR3AYYTBip0BD=4V9g9-+A@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Message-ID: <9f626b16-ee9a-e8f6-2db9-2277fddab0e5@linux.dev>
-Date:   Wed, 16 Nov 2022 09:13:49 +0800
+        with ESMTP id S229561AbiKPCYg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 21:24:36 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5A427173
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 18:24:35 -0800 (PST)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NBn1B5y75zRpMY;
+        Wed, 16 Nov 2022 10:24:14 +0800 (CST)
+Received: from [10.169.59.127] (10.169.59.127) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 16 Nov 2022 10:24:33 +0800
+Subject: Re: [PATCH] nvme-rdma: set ack timeout of RoCE to 262ms
+From:   Chao Leng <lengchao@huawei.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+CC:     <linux-nvme@lists.infradead.org>, <kbusch@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20220819075825.21231-1-lengchao@huawei.com>
+ <20220821062016.GA26553@lst.de>
+ <83992e8f-b18a-ccd3-e0ee-a5802043f161@huawei.com>
+ <86e9fc3b-aded-220d-1ee0-4d5928097104@nvidia.com>
+ <f7254cc2-88e0-e91f-e4f1-788c5889fcf1@huawei.com>
+ <fbee7c67-fd7b-12c8-5685-066b1974aadb@grimberg.me>
+ <550d4612-0041-3d84-b1cb-786d0c8e0d11@huawei.com>
+ <3030fbb2-5c63-54ea-5be3-b88cf63c6b75@grimberg.me>
+ <c86a6cea-09b5-c04c-aa7b-adc6a457acf6@huawei.com>
+ <328a807f-bfaf-b279-69c5-09be179891ac@huawei.com>
+ <1bd4d4f6-fe33-7fe5-f662-cdef61acf800@nvidia.com>
+ <405b78aa-51b8-30b4-ff86-c46d1bc84cda@huawei.com>
+Message-ID: <47eb747d-0b48-acc5-a833-02457817e71b@huawei.com>
+Date:   Wed, 16 Nov 2022 10:24:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <CAMGffEn3sYLbF1_05mjHvtOM4DPGKR3AYYTBip0BD=4V9g9-+A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <405b78aa-51b8-30b4-ff86-c46d1bc84cda@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.169.59.127]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hi, Max
+    How's it going now?
+    Thank you.
 
-
-On 11/15/22 7:46 PM, Jinpu Wang wrote:
-> On Sun, Nov 13, 2022 at 2:08 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
->> We should check with nr_sgt, also the only successful case is that
->> all sg elements are mapped, so make it explict.
+On 2022/10/14 10:15, Chao Leng wrote:
+> 
+> 
+> On 2022/10/14 8:05, Max Gurtovoy wrote:
+>> Sorry for late response, we have holiday's in my country.
 >>
->> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
->> ---
->>   drivers/infiniband/ulp/rtrs/rtrs-srv.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
+>> I still can't understand how this patch fixes your problem if you use ConnectX-5 since we use adaptive re-transmission by default and it's faster than 256msec to re-transmit.
+> adaptive re-transmission? Do you mean NAK-triggered retransmission?
+> NAK-triggered retransmission is very fast, but timeout-triggered retransmission
+> is very slow. Because There is a possibility that all packets of a QP are lost,
+> receiver HBA can not send NAK.
+>  From our analysis, we didn't see any other adaptive re-transmission.
+> If there is any other adaptive re-transmission, can you explain it?
+> 
+> This patch modify the waiting time for timeout re-transmission, Thus if all packets
+> of a QP are lost, the re-transmission waiting time will become short.
 >>
->> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
->> index 88eae0dcf87f..f3bf5bbb4377 100644
->> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
->> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
->> @@ -622,8 +622,8 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
->>                  }
->>                  nr = ib_map_mr_sg(mr, sgt->sgl, nr_sgt,
->>                                    NULL, max_chunk_size);
->> -               if (nr < 0 || nr < sgt->nents) {
->> -                       err = nr < 0 ? nr : -EINVAL;
->> +               if (nr != nr_sgt) {
->> +                       err = -EINVAL;
-> but with this, the initial errno are lost, we only return EINVAL
-
-OK, assume you mean 'nr' here, I can change it back as iser_memory did.
-But seems the only negative value returned from ib_map_mr_sg is also
-"-EINVAL" from ib_sg_to_pages after go through hw drivers.
-
-BTW, I looked all call sites of ib_map_mr_sg, seems they have different
-kind of checking.
-
-1. if (ret < 0 || ret < nents)
-
-2. if (ret < nents) or if (ret < 0)
-
-3. if (ret != nents)
-
-Thanks,
-Guoqing
+>> Did you disable it ?
+> We do not disable anything.
+>>
+>> I'll try to re-spin it internally again.
+> If you need more information, please feel free to contact me.
+> Thank you.
+>>
+>> On 10/10/2022 12:12 PM, Chao Leng wrote:
+>>> Hi, Max
+>>>     Can you give some comment? Thank you.
+>>>
+>>> On 2022/8/29 21:15, Chao Leng wrote:
+>>>>
+>>>>
+>>>> On 2022/8/29 17:06, Sagi Grimberg wrote:
+>>>>>
+>>>>>>>>> If so, which devices did you use ?
+>>>>>>>> The host HBA is Mellanox Technologies MT27800 Family [ConnectX-5];
+>>>>>>>> The switch and storage are huawei equipments.
+>>>>>>>> In principle, switches and storage devices from other vendors
+>>>>>>>> have the same problem.
+>>>>>>>> If you think it is necessary, we can test the other vendor switchs
+>>>>>>>> and linux target.
+>>>>>>>
+>>>>>>> Why is the 2s default chosen, what is the downside for a 250ms seconds ack timeout? and why is nvme-rdma different than all other kernel rdma
+>>>>>> The downside is redundant retransmit if the packets delay more than
+>>>>>> 250ms in the networks and finally reaches the receiver.
+>>>>>> Only in extreme scenarios, the packet delay may exceed 250 ms.
+>>>>>
+>>>>> Sounds like the default needs to be changed if it only addresses the
+>>>>> extreme scenarios...
+>>>>>
+>>>>>>> consumers that it needs to set this explicitly?
+>>>>>> The real-time transaction services are sensitive to the delay.
+>>>>>> nvme-rdma will be used in real-time transactions.
+>>>>>> The real-time transaction services do not allow that the packets
+>>>>>> delay more than 250ms in the networks.
+>>>>>> So we need to set the ack timeout to 262ms.
+>>>>>
+>>>>> While I don't disagree with the change itself, I do disagree why this
+>>>>> needs to be driven by nvme-rdma locally. If all kernel rdma consumers
+>>>>> need this (and if not, I'd like to understand why), this needs to be set in the rdma core.Changing the default set in the rdma core is another option.
+>>>> But it will affect all application based on RDMA.
+>>>> Max, what do you think? Thank you.
+>>>>> .
+>>>>
+>>>> .
+>> .
