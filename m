@@ -2,193 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 642FC62AF15
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 00:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D753162AFE5
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 01:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbiKOXF2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Nov 2022 18:05:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        id S229561AbiKPALF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Nov 2022 19:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238575AbiKOXFZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 18:05:25 -0500
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B655D2BB1A
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Nov 2022 15:05:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668553523; x=1700089523;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Xe1W+VjK4jWqF9+yMDuefqYExJXNH7sWwIWoQ+ziYpg=;
-  b=FROduqrM0ljYBqo1/nqP06eIETuTGfmpfiH7MqPal8cgr7qzFiAuXtJN
-   /zbwI49L6wmMHjAmDfvVdXnRn/cdC8P56E9TXc5Eoe1Va26Xgmd5EVjp/
-   KgLqhIiCOs8EMBrAt7//5c+ja5SwUuBkaAD3hTa4nCLB++HXmvbMbaufF
-   fQMg22mDUVHnR4HdHgAEnLiS2FE9KcQZRjkHgm29jIeNk+EWFG4pHfKVN
-   IFbIfWWGIjTL1Dngm/8w+luOCXs1wndg3xa25nk+5WgEAEW8Iyixn9+VZ
-   GC1grgh8qcW1wpsYmdZi72R89/FQ8Eaw9k6MfM3xR4fZx3od6gDkZG+cl
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10532"; a="313540147"
-X-IronPort-AV: E=Sophos;i="5.96,167,1665471600"; 
-   d="scan'208";a="313540147"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2022 15:05:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10532"; a="744791177"
-X-IronPort-AV: E=Sophos;i="5.96,167,1665471600"; 
-   d="scan'208";a="744791177"
-Received: from lkp-server01.sh.intel.com (HELO ebd99836cbe0) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Nov 2022 15:05:21 -0800
-Received: from kbuild by ebd99836cbe0 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1ov4zY-0001jT-22;
-        Tue, 15 Nov 2022 23:05:20 +0000
-Date:   Wed, 16 Nov 2022 07:05:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- ecacb3751f254572af0009b9501e2cdc83a30b6a
-Message-ID: <63741b1d.qXBBwEwgJYWofUi6%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229953AbiKPALB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Nov 2022 19:11:01 -0500
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6292A716;
+        Tue, 15 Nov 2022 16:10:59 -0800 (PST)
+Message-ID: <c1fa0a0c-d8f3-f6c4-7964-3bb31ac936ff@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1668557458;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JvPn6Ns2hZ82F1x4tzt3EH9pCuqXBb8Xskbp9KbDexI=;
+        b=CkKtpHcBA8Jp61hlsJmIuHBy5U08VG7cJU2r189KoSbfvo0I4GAWAZpjhAiGwkdYNL6+js
+        +FUfihWSm8/iUZnhAUzvNcn9nY/MmuQILi/p7vuExm2z+JpGNBViaMKpoJhJgRNvRqfEQX
+        zirpltS9GTN69xs30ZaHxDdLNHy9Ec4=
+Date:   Wed, 16 Nov 2022 08:10:52 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH for-next v2] RDMA/rxe: Fix mr->map double free
+To:     Li Zhijian <lizhijian@fujitsu.com>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>, linux-kernel@vger.kernel.org
+References: <1667099073-2-1-git-send-email-lizhijian@fujitsu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <1667099073-2-1-git-send-email-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: ecacb3751f254572af0009b9501e2cdc83a30b6a  RDMA/nldev: Return "-EAGAIN" if the cm_id isn't from expected port
+在 2022/10/30 11:04, Li Zhijian 写道:
+> rxe_mr_cleanup() which tries to free mr->map again will be called
+> when rxe_mr_init_user() fails.
+> 
+> [43895.939883] CPU: 0 PID: 4917 Comm: rdma_flush_serv Kdump: loaded Not tainted 6.1.0-rc1-roce-flush+ #25
+> [43895.942341] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> [43895.945208] Call Trace:
+> [43895.946130]  <TASK>
+> [43895.946931]  dump_stack_lvl+0x45/0x5d
+> [43895.948049]  panic+0x19e/0x349
+> [43895.949010]  ? panic_print_sys_info.part.0+0x77/0x77
+> [43895.950356]  ? asm_sysvec_apic_timer_interrupt+0x16/0x20
+> [43895.952589]  ? preempt_count_sub+0x14/0xc0
+> [43895.953809]  end_report.part.0+0x54/0x7c
+> [43895.954993]  ? rxe_mr_cleanup+0x9d/0xf0 [rdma_rxe]
+> [43895.956406]  kasan_report.cold+0xa/0xf
+> [43895.957668]  ? rxe_mr_cleanup+0x9d/0xf0 [rdma_rxe]
+> [43895.959090]  rxe_mr_cleanup+0x9d/0xf0 [rdma_rxe]
+> [43895.960502]  __rxe_cleanup+0x10a/0x1e0 [rdma_rxe]
+> [43895.961983]  rxe_reg_user_mr+0xb7/0xd0 [rdma_rxe]
+> [43895.963456]  ib_uverbs_reg_mr+0x26a/0x480 [ib_uverbs]
+> [43895.964921]  ? __lock_acquire+0x876/0x31e0
+> [43895.966182]  ? ib_uverbs_ex_create_wq+0x630/0x630 [ib_uverbs]
+> [43895.967739]  ? uverbs_fill_udata+0x1c6/0x330 [ib_uverbs]
+> [43895.969204]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x1a2/0x250 [ib_uverbs]
+> [43895.971126]  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_CONTEXT+0x1a0/0x1a0 [ib_uverbs]
+> [43895.973094]  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_CONTEXT+0x1a0/0x1a0 [ib_uverbs]
+> [43895.975096]  ? uverbs_fill_udata+0x25f/0x330 [ib_uverbs]
+> [43895.976466]  ib_uverbs_cmd_verbs+0x1397/0x15a0 [ib_uverbs]
+> [43895.977930]  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_CONTEXT+0x1a0/0x1a0 [ib_uverbs]
+> [43895.979937]  ? uverbs_fill_udata+0x330/0x330 [ib_uverbs]
+> 
+> This issue was fistrly exposed since
+> commit: b18c7da63fcb ("RDMA/rxe: Fix memory leak in error path code")
+> and then we fixed it in
+> commit: 8ff5f5d9d8cf ("RDMA/rxe: Prevent double freeing rxe_map_set()")
+> but this fix was reverted together at last by
+> commit: 1e75550648da (Revert "RDMA/rxe: Create duplicate mapping tables for FMRs")
+> 
+> Fixes: 1e75550648da (Revert "RDMA/rxe: Create duplicate mapping tables for FMRs")
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_mr.c | 9 ++-------
+>   1 file changed, 2 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index d4f10c2d1aa7..7c99d1591580 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -99,6 +99,7 @@ static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
+>   		kfree(mr->map[i]);
+>   
+>   	kfree(mr->map);
+> +	mr->map = NULL;
+>   err1:
+>   	return -ENOMEM;
+>   }
+> @@ -122,7 +123,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+>   	int			num_buf;
+>   	void			*vaddr;
+>   	int err;
+> -	int i;
+>   
+>   	umem = ib_umem_get(&rxe->ib_dev, start, length, access);
+>   	if (IS_ERR(umem)) {
+> @@ -163,9 +163,8 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+>   				pr_warn("%s: Unable to get virtual address\n",
+>   						__func__);
+>   				err = -ENOMEM;
+> -				goto err_cleanup_map;
+> +				goto err_release_umem;
 
-elapsed time: 772m
+This call trace results from page_address's returning NULL, then goto 
+err_cleanup_map where mr->map[i] and mr->map are freed.
 
-configs tested: 110
-configs skipped: 5
+And finally rxe_reg_user_mr gets an error from rxe_mr_init_user, the 
+function rxe_mr_cleanup is called to handle mr to free mr->map[i] and 
+mr->map again.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+So mr->map[i] and mr->map are double freed.
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-arc                                 defconfig
-s390                             allmodconfig
-alpha                               defconfig
-s390                                defconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-i386                 randconfig-a001-20221114
-s390                             allyesconfig
-i386                 randconfig-a002-20221114
-powerpc                          allmodconfig
-i386                 randconfig-a005-20221114
-i386                 randconfig-a006-20221114
-i386                 randconfig-a003-20221114
-x86_64                              defconfig
-i386                 randconfig-a004-20221114
-x86_64               randconfig-a002-20221114
-mips                             allyesconfig
-x86_64               randconfig-a001-20221114
-i386                                defconfig
-x86_64               randconfig-a004-20221114
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20221114
-sh                               allmodconfig
-x86_64                               rhel-8.3
-x86_64               randconfig-a003-20221114
-arc                  randconfig-r043-20221115
-x86_64               randconfig-a006-20221114
-riscv                randconfig-r042-20221115
-s390                 randconfig-r044-20221115
-x86_64                           allyesconfig
-ia64                             allmodconfig
-alpha                            allyesconfig
-arc                              allyesconfig
-i386                          randconfig-a014
-i386                          randconfig-a012
-m68k                             allmodconfig
-i386                          randconfig-a016
-m68k                             allyesconfig
-x86_64                            allnoconfig
-sh                          kfr2r09_defconfig
-xtensa                  nommu_kc705_defconfig
-sh                     magicpanelr2_defconfig
-xtensa                          iss_defconfig
-microblaze                      mmu_defconfig
-arm                       multi_v4t_defconfig
-arm64                            allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-powerpc                      ppc40x_defconfig
-powerpc                     taishan_defconfig
-arc                          axs101_defconfig
-arm                      integrator_defconfig
-mips                           ci20_defconfig
-powerpc                      ppc6xx_defconfig
-sh                 kfr2r09-romimage_defconfig
-x86_64                           rhel-8.3-kvm
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-i386                             allyesconfig
-i386                          randconfig-c001
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-mips                     decstation_defconfig
-sh                         apsh4a3a_defconfig
-openrisc                 simple_smp_defconfig
-s390                          debug_defconfig
-riscv                    nommu_k210_defconfig
-mips                        vocore2_defconfig
-arm                            hisi_defconfig
-powerpc                   motionpro_defconfig
-mips                      maltasmvp_defconfig
-mips                      loongson3_defconfig
-sh                           se7721_defconfig
-arm                         axm55xx_defconfig
-parisc                              defconfig
-powerpc                       maple_defconfig
-arm                      footbridge_defconfig
-x86_64                        randconfig-c001
-arm                  randconfig-c002-20221115
-m68k                            q40_defconfig
-sh                        dreamcast_defconfig
-sh                          rsk7203_defconfig
-mips                         cobalt_defconfig
-arm                         vf610m4_defconfig
-powerpc                      cm5200_defconfig
+As such, this commit is reasonable.
 
-clang tested configs:
-x86_64               randconfig-a012-20221114
-x86_64               randconfig-a013-20221114
-x86_64               randconfig-a011-20221114
-x86_64               randconfig-a014-20221114
-x86_64               randconfig-a016-20221114
-x86_64               randconfig-a015-20221114
-hexagon              randconfig-r045-20221115
-hexagon              randconfig-r041-20221115
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-powerpc                   bluestone_defconfig
-powerpc               mpc834x_itxgp_defconfig
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-x86_64                        randconfig-k001
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-arm                           sama7_defconfig
-powerpc                 mpc8315_rdb_defconfig
+But why page_address will return NULL?
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Zhu Yanjun
+
+>   			}
+> -
+>   			buf->addr = (uintptr_t)vaddr;
+>   			buf->size = PAGE_SIZE;
+>   			num_buf++;
+> @@ -182,10 +181,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+>   
+>   	return 0;
+>   
+> -err_cleanup_map:
+> -	for (i = 0; i < mr->num_map; i++)
+> -		kfree(mr->map[i]);
+> -	kfree(mr->map);
+>   err_release_umem:
+>   	ib_umem_release(umem);
+>   err_out:
+
