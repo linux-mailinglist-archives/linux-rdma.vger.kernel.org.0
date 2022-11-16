@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D855B62BB8C
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 12:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F07A62BB8D
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 12:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239066AbiKPLYs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S239088AbiKPLYs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Wed, 16 Nov 2022 06:24:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239094AbiKPLY0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 06:24:26 -0500
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D6DB1E0
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 03:14:30 -0800 (PST)
+        with ESMTP id S239215AbiKPLY2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 06:24:28 -0500
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733A423E94
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 03:14:32 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668597269;
+        t=1668597271;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KmD9qh1FqlWYgBEpeyOXm9cT2kOzIyPuX0R2CFN4980=;
-        b=n06pxyCBvRfNdswAjqS6YO9yLM//l3R6iSVVKuYEXowYlYMGqJkBKl0c17tEWwnTh8jdYC
-        nWGNiX9aj1wvdXUjyslztwEihURdyzWWIrQDfHGV/0X1A+bICqGfrDP8GWu9gdekxEux/5
-        mJ2W7spJ6kg6/D5+wi9GghZkm+wDNLM=
+        bh=tNiq9I28TaJTiBREtnU7FhSV013Hf/tsOD07ObmZwuQ=;
+        b=fHuhgdansuvq0rsDoC+aVQABtyBlRk3I6V4mxOkNcdLolwX9C1DXsKlHcdIo167z4JY4bS
+        V008GQbA9xt0yzzwo0cMi8u9SIAtOPf0wAGJshadzN0jaPCawhyHi8BWZ6QZxcmQ8e1K0w
+        zh1+YgNoDzEnBDsmZy++ESoG3f1tbqI=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
         leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH 6/8] RDMA/rtrs: Clean up rtrs_rdma_dev_pd_ops
-Date:   Wed, 16 Nov 2022 19:13:58 +0800
-Message-Id: <20221116111400.7203-7-guoqing.jiang@linux.dev>
+Subject: [PATCH 7/8] RDMA/rtrs-srv: Fix several issues in rtrs_srv_destroy_path_files
+Date:   Wed, 16 Nov 2022 19:13:59 +0800
+Message-Id: <20221116111400.7203-8-guoqing.jiang@linux.dev>
 In-Reply-To: <20221116111400.7203-1-guoqing.jiang@linux.dev>
 References: <20221116111400.7203-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -46,84 +46,53 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Let's remove them since the three members are not used.
+There are several issues in the function which is supposed to be paired
+with rtrs_srv_create_path_files.
+
+1. rtrs_srv_stats_attr_group is not removed though it is created in
+   rtrs_srv_create_stats_files.
+
+2. it makes more sense to check kobj_stats.state_in_sysfs before destroy
+   kobj_stats instead of rely on kobj.state_in_sysfs.
+
+3. kobject_init_and_add is used for both kobjs (srv_path->kobj and
+   srv_path->stats->kobj_stats), however we missed to call kobject_del
+   for srv_path->kobj which was called in free_path.
+
+4. rtrs_srv_destroy_once_sysfs_root_folders is independant of either
+   kobj or kobj_stats.
 
 Acked-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-pri.h |  3 ---
- drivers/infiniband/ulp/rtrs/rtrs.c     | 22 ++++------------------
- 2 files changed, 4 insertions(+), 21 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index a2420eecaf5a..ab25619261d2 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -68,10 +68,7 @@ enum {
- struct rtrs_ib_dev;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+index 2a3c9ac64a42..da8e205ce331 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+@@ -304,12 +304,18 @@ int rtrs_srv_create_path_files(struct rtrs_srv_path *srv_path)
  
- struct rtrs_rdma_dev_pd_ops {
--	struct rtrs_ib_dev *(*alloc)(void);
--	void (*free)(struct rtrs_ib_dev *dev);
- 	int (*init)(struct rtrs_ib_dev *dev);
--	void (*deinit)(struct rtrs_ib_dev *dev);
- };
- 
- struct rtrs_rdma_dev_pd {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-index ed324b47d93a..4bf9d868cc52 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-@@ -557,7 +557,6 @@ EXPORT_SYMBOL(rtrs_addr_to_sockaddr);
- void rtrs_rdma_dev_pd_init(enum ib_pd_flags pd_flags,
- 			    struct rtrs_rdma_dev_pd *pool)
+ void rtrs_srv_destroy_path_files(struct rtrs_srv_path *srv_path)
  {
--	WARN_ON(pool->ops && (!pool->ops->alloc ^ !pool->ops->free));
- 	INIT_LIST_HEAD(&pool->list);
- 	mutex_init(&pool->mutex);
- 	pool->pd_flags = pd_flags;
-@@ -583,15 +582,8 @@ static void dev_free(struct kref *ref)
- 	list_del(&dev->entry);
- 	mutex_unlock(&pool->mutex);
- 
--	if (pool->ops && pool->ops->deinit)
--		pool->ops->deinit(dev);
+-	if (srv_path->kobj.state_in_sysfs) {
++	if (srv_path->stats->kobj_stats.state_in_sysfs) {
++		sysfs_remove_group(&srv_path->stats->kobj_stats,
++				   &rtrs_srv_stats_attr_group);
+ 		kobject_del(&srv_path->stats->kobj_stats);
+ 		kobject_put(&srv_path->stats->kobj_stats);
++	}
++
++	if (srv_path->kobj.state_in_sysfs) {
+ 		sysfs_remove_group(&srv_path->kobj, &rtrs_srv_path_attr_group);
++		kobject_del(&srv_path->kobj);
+ 		kobject_put(&srv_path->kobj);
 -
- 	ib_dealloc_pd(dev->ib_pd);
--
--	if (pool->ops && pool->ops->free)
--		pool->ops->free(dev);
--	else
--		kfree(dev);
-+	kfree(dev);
- }
- 
- int rtrs_ib_dev_put(struct rtrs_ib_dev *dev)
-@@ -618,11 +610,8 @@ rtrs_ib_dev_find_or_add(struct ib_device *ib_dev,
- 			goto out_unlock;
+-		rtrs_srv_destroy_once_sysfs_root_folders(srv_path);
  	}
- 	mutex_unlock(&pool->mutex);
--	if (pool->ops && pool->ops->alloc)
--		dev = pool->ops->alloc();
--	else
--		dev = kzalloc(sizeof(*dev), GFP_KERNEL);
--	if (IS_ERR_OR_NULL(dev))
-+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-+	if (!dev)
- 		goto out_err;
- 
- 	kref_init(&dev->ref);
-@@ -644,10 +633,7 @@ rtrs_ib_dev_find_or_add(struct ib_device *ib_dev,
- out_free_pd:
- 	ib_dealloc_pd(dev->ib_pd);
- out_free_dev:
--	if (pool->ops && pool->ops->free)
--		pool->ops->free(dev);
--	else
--		kfree(dev);
-+	kfree(dev);
- out_err:
- 	return NULL;
++
++	rtrs_srv_destroy_once_sysfs_root_folders(srv_path);
  }
 -- 
 2.31.1
