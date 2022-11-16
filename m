@@ -2,83 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B45C662B6DA
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 10:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A93A62B763
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 11:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbiKPJqf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Nov 2022 04:46:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        id S231866AbiKPKNx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Nov 2022 05:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233113AbiKPJqe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 04:46:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01A0616E
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 01:45:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668591938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4EAqsQwxyeW5W1Mia2wWmnvRUmqjVlYjuvgN/Efzygc=;
-        b=E/c/13F/J97/3L3hsAA0WLPvDNZsrmphbIB5z9pGNmTz8dvd2mjn/d4jBN5arj4xgdeokR
-        pbfDtosZIFJNCL6EFzXARSd4cwsI29pluIB9FkTP30gxjrgs20SAGufJ4fa1A4QZMnlzNI
-        6Lm8cGq0gjJGnYnEhX6wLmm9JYA6osY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-61-S63VYrPBOAOxkQqM0-0EfA-1; Wed, 16 Nov 2022 04:45:37 -0500
-X-MC-Unique: S63VYrPBOAOxkQqM0-0EfA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E9E5B185A7AC;
-        Wed, 16 Nov 2022 09:45:36 +0000 (UTC)
-Received: from raketa.redhat.com (ovpn-193-253.brq.redhat.com [10.40.193.253])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 04AA040C6EC3;
-        Wed, 16 Nov 2022 09:45:35 +0000 (UTC)
-From:   Maurizio Lombardi <mlombard@redhat.com>
-To:     sagi@grimberg.me
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org
-Subject: [PATCH] infiniband: use the ISCSI_LOGIN_CURRENT_STAGE macro
-Date:   Wed, 16 Nov 2022 10:45:35 +0100
-Message-Id: <20221116094535.138298-1-mlombard@redhat.com>
+        with ESMTP id S233766AbiKPKNe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 05:13:34 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F18B2B617
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 02:13:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668593580; x=1700129580;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8XZBn4ckGdeTovntN3R6CJRTbwcZ1UeNNgYloHFjwUo=;
+  b=ORTJnNdCCVj9gjK5IzpwiZU1S9a/L+nZu5Wvo440D/ZwKNmwqfs+QUd9
+   pY7pB1QUB1MOoqjUY6fx0rqW1WHKLgiXZgtjawcIkI6sg4INGTmh4oToB
+   8Jp/Q6ogDmyoxT4uGfDpA9xBlquncf+xNX9U1dEmz03GntIyw/OwTOcii
+   iWiu3FcziHln/mnZS9vh2jUB6VozOO91k+Kwu1h7MhUQuqHrNNXK9XNJ5
+   oKPHiNV4sfr6/jGnOVOMMxH0NmJFTAt1jE3wzeumDXmPcq3IuUxnIBaPs
+   rVSPEPTWtR0P25busAicMLPeGeybDDMR39nEWIp2twWeukl+oH/YRdsHZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10532"; a="295872790"
+X-IronPort-AV: E=Sophos;i="5.96,167,1665471600"; 
+   d="scan'208";a="295872790"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2022 02:12:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10532"; a="670443436"
+X-IronPort-AV: E=Sophos;i="5.96,167,1665471600"; 
+   d="scan'208";a="670443436"
+Received: from lkp-server01.sh.intel.com (HELO ebd99836cbe0) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 16 Nov 2022 02:11:58 -0800
+Received: from kbuild by ebd99836cbe0 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1ovFOf-0002Ez-1B;
+        Wed, 16 Nov 2022 10:11:57 +0000
+Date:   Wed, 16 Nov 2022 18:11:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 60da2d11fcbc043304910e4d2ca82f9bab953e63
+Message-ID: <6374b73e.kWUADkNP7WScCV8H%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use the proper macro to get the current_stage value.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 60da2d11fcbc043304910e4d2ca82f9bab953e63  RDMA/siw: Set defined status for work completion with undefined status
 
-Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
----
- drivers/infiniband/ulp/isert/ib_isert.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+elapsed time: 725m
 
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index b360a1527cd1..75404885cf98 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.c
-+++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -993,9 +993,8 @@ isert_rx_login_req(struct isert_conn *isert_conn)
- 		 * login request PDU.
- 		 */
- 		login->leading_connection = (!login_req->tsih) ? 1 : 0;
--		login->current_stage =
--			(login_req->flags & ISCSI_FLAG_LOGIN_CURRENT_STAGE_MASK)
--			 >> 2;
-+		login->current_stage = ISCSI_LOGIN_CURRENT_STAGE(
-+				login_req->flags);
- 		login->version_min	= login_req->min_version;
- 		login->version_max	= login_req->max_version;
- 		memcpy(login->isid, login_req->isid, 6);
+configs tested: 78
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arc                                 defconfig
+alpha                               defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+s390                             allmodconfig
+s390                                defconfig
+powerpc                          allmodconfig
+m68k                             allmodconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+alpha                            allyesconfig
+arc                              allyesconfig
+x86_64                           rhel-8.3-syz
+x86_64                        randconfig-a002
+x86_64                         rhel-8.3-kunit
+arc                  randconfig-r043-20221115
+m68k                             allyesconfig
+x86_64                           rhel-8.3-kvm
+s390                 randconfig-r044-20221115
+ia64                             allmodconfig
+x86_64                              defconfig
+x86_64                        randconfig-a006
+riscv                randconfig-r042-20221115
+x86_64                               rhel-8.3
+x86_64                        randconfig-a004
+x86_64                           allyesconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                                defconfig
+i386                          randconfig-a005
+i386                          randconfig-a014
+i386                          randconfig-a012
+arm                                 defconfig
+i386                          randconfig-a016
+arm64                            allyesconfig
+arm                              allyesconfig
+i386                             allyesconfig
+s390                             allyesconfig
+powerpc                           allnoconfig
+x86_64                            allnoconfig
+mips                             allyesconfig
+sh                               allmodconfig
+i386                 randconfig-a002-20221114
+i386                 randconfig-a004-20221114
+i386                 randconfig-a003-20221114
+i386                 randconfig-a005-20221114
+i386                 randconfig-a006-20221114
+i386                 randconfig-a001-20221114
+mips                     decstation_defconfig
+arm                      footbridge_defconfig
+sh                         apsh4a3a_defconfig
+openrisc                 simple_smp_defconfig
+m68k                            q40_defconfig
+sparc                       sparc32_defconfig
+powerpc                      makalu_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                          pxa910_defconfig
+sh                          rsk7264_defconfig
+loongarch                        alldefconfig
+sh                   sh7770_generic_defconfig
+mips                           ip32_defconfig
+
+clang tested configs:
+x86_64               randconfig-a012-20221114
+x86_64               randconfig-a016-20221114
+x86_64               randconfig-a015-20221114
+x86_64               randconfig-a013-20221114
+x86_64               randconfig-a011-20221114
+x86_64               randconfig-a014-20221114
+hexagon              randconfig-r041-20221115
+hexagon              randconfig-r045-20221115
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+i386                          randconfig-a006
+
 -- 
-2.31.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
