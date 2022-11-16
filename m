@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C1462BB86
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 12:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5B762BB88
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 12:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239240AbiKPLYk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Nov 2022 06:24:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S237359AbiKPLYn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Nov 2022 06:24:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238971AbiKPLYZ (ORCPT
+        with ESMTP id S239203AbiKPLYZ (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 06:24:25 -0500
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929365F45
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 03:14:21 -0800 (PST)
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418076432
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 03:14:24 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668597260;
+        t=1668597262;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3yhW/NTQ895k440jT3bFIVaH6OV39q2OKSv28QeG1tc=;
-        b=suP5mbepCBB5vkTmHEDVzUjeaxZ2M6XNzwUy98rv1wvK5PCItfleynh18TVZC6q8qgHPFJ
-        dQPDK902cR2mSnr9TRPQ+oVXbrs/zrmnpTBUE5Z9kzuH8+TV1BdNzOKQs9bH+rDj+759cX
-        fZ0XGQ3QImPEuqSfRNNoBURBSJj74zg=
+        bh=FeZJDyvy2k1yMG7X6RBCLmLoH6HX8BrnLiKUuq8/UYc=;
+        b=K712G5J56UmCsSviuFCmbzIV1gtf/yHgTyEcYX/ANJmex9PmZEoUDeetEqUjlyG6KWTQYI
+        EH3hZZD1nWbIOkw8gUFeDxbEr/rTu9rXzyLVyFVLRzMiy5fMxQwW92huI8h3sNtzYPdUuZ
+        b0taykOqGWF/atOPMub9qVxIZY2QhKI=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
         leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH 1/8] RDMA/rtrs-srv: Refactor rtrs_srv_rdma_cm_handler
-Date:   Wed, 16 Nov 2022 19:13:53 +0800
-Message-Id: <20221116111400.7203-2-guoqing.jiang@linux.dev>
+Subject: [PATCH 2/8] RDMA/rtrs-srv: Refactor the handling of failure case in map_cont_bufs
+Date:   Wed, 16 Nov 2022 19:13:54 +0800
+Message-Id: <20221116111400.7203-3-guoqing.jiang@linux.dev>
 In-Reply-To: <20221116111400.7203-1-guoqing.jiang@linux.dev>
 References: <20221116111400.7203-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -46,50 +46,98 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The RDMA_CM_EVENT_CONNECT_REQUEST is quite different to other types,
-let's checking it separately at the beginning of routine, then we can
-avoid the identation accordingly.
+Let's call unmap_cont_bufs when failure happens, and also only update
+mrs_num after everything is settled which means we can remove 'mri'.
 
+Acked-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 47 +++++++++++---------------
+ 1 file changed, 20 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 22d7ba05e9fe..5fe3699cb8ff 100644
+index 5fe3699cb8ff..b877dd57b6b9 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1950,22 +1950,21 @@ static int rtrs_srv_rdma_cm_handler(struct rdma_cm_id *cm_id,
+@@ -561,9 +561,11 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
  {
- 	struct rtrs_srv_path *srv_path = NULL;
- 	struct rtrs_path *s = NULL;
-+	struct rtrs_con *c = NULL;
+ 	struct rtrs_srv_sess *srv = srv_path->srv;
+ 	struct rtrs_path *ss = &srv_path->s;
+-	int i, mri, err, mrs_num;
++	int i, err, mrs_num;
+ 	unsigned int chunk_bits;
+ 	int chunks_per_mr = 1;
++	struct ib_mr *mr;
++	struct sg_table *sgt;
  
--	if (ev->event != RDMA_CM_EVENT_CONNECT_REQUEST) {
--		struct rtrs_con *c = cm_id->context;
+ 	/*
+ 	 * Here we map queue_depth chunks to MR.  Firstly we have to
+@@ -586,16 +588,14 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
+ 	if (!srv_path->mrs)
+ 		return -ENOMEM;
+ 
+-	srv_path->mrs_num = mrs_num;
 -
--		s = c->path;
--		srv_path = to_srv_path(s);
--	}
+-	for (mri = 0; mri < mrs_num; mri++) {
+-		struct rtrs_srv_mr *srv_mr = &srv_path->mrs[mri];
+-		struct sg_table *sgt = &srv_mr->sgt;
++	for (srv_path->mrs_num = 0; srv_path->mrs_num < mrs_num;
++	     srv_path->mrs_num++) {
++		struct rtrs_srv_mr *srv_mr = &srv_path->mrs[srv_path->mrs_num];
+ 		struct scatterlist *s;
+-		struct ib_mr *mr;
+ 		int nr, nr_sgt, chunks;
+ 
+-		chunks = chunks_per_mr * mri;
++		sgt = &srv_mr->sgt;
++		chunks = chunks_per_mr * srv_path->mrs_num;
+ 		if (!always_invalidate)
+ 			chunks_per_mr = min_t(int, chunks_per_mr,
+ 					      srv->queue_depth - chunks);
+@@ -644,31 +644,24 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
+ 
+ 		ib_update_fast_reg_key(mr, ib_inc_rkey(mr->rkey));
+ 		srv_mr->mr = mr;
 -
--	switch (ev->event) {
--	case RDMA_CM_EVENT_CONNECT_REQUEST:
-+	if (ev->event == RDMA_CM_EVENT_CONNECT_REQUEST)
- 		/*
- 		 * In case of error cma.c will destroy cm_id,
- 		 * see cma_process_remove()
- 		 */
- 		return rtrs_rdma_connect(cm_id, ev->param.conn.private_data,
- 					  ev->param.conn.private_data_len);
+-		continue;
+-err:
+-		while (mri--) {
+-			srv_mr = &srv_path->mrs[mri];
+-			sgt = &srv_mr->sgt;
+-			mr = srv_mr->mr;
+-			rtrs_iu_free(srv_mr->iu, srv_path->s.dev->ib_dev, 1);
+-dereg_mr:
+-			ib_dereg_mr(mr);
+-unmap_sg:
+-			ib_dma_unmap_sg(srv_path->s.dev->ib_dev, sgt->sgl,
+-					sgt->nents, DMA_BIDIRECTIONAL);
+-free_sg:
+-			sg_free_table(sgt);
+-		}
+-		kfree(srv_path->mrs);
+-
+-		return err;
+ 	}
+ 
+ 	chunk_bits = ilog2(srv->queue_depth - 1) + 1;
+ 	srv_path->mem_bits = (MAX_IMM_PAYL_BITS - chunk_bits);
+ 
+ 	return 0;
 +
-+	c = cm_id->context;
-+	s = c->path;
-+	srv_path = to_srv_path(s);
++dereg_mr:
++	ib_dereg_mr(mr);
++unmap_sg:
++	ib_dma_unmap_sg(srv_path->s.dev->ib_dev, sgt->sgl,
++			sgt->nents, DMA_BIDIRECTIONAL);
++free_sg:
++	sg_free_table(sgt);
++err:
++	unmap_cont_bufs(srv_path);
 +
-+	switch (ev->event) {
- 	case RDMA_CM_EVENT_ESTABLISHED:
- 		/* Nothing here */
- 		break;
++	return err;
+ }
+ 
+ static void rtrs_srv_hb_err_handler(struct rtrs_con *c)
 -- 
 2.31.1
 
