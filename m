@@ -2,67 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A174562C880
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Nov 2022 19:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9468E62D00E
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 01:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239357AbiKPS4o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Nov 2022 13:56:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54376 "EHLO
+        id S238829AbiKQAq5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Nov 2022 19:46:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238358AbiKPS4W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 13:56:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1661A67121
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 10:54:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1668624843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XrMOrTfFoolcBWY273BC4KVOqyrI8gbytsgZlItRSSY=;
-        b=ggnk2mNlajTLNaTYtTEVAXXL1mzLcneUkdkTzCipHOe8bpGYR81K2i0Q1IZkJzxzD6loT0
-        VKwyQr+j6YAkRE5woCv3D8UX+LCBDyk//mZqtobHn5uAEz5dmYpkCGrHnFc1bjg5+yePtM
-        ZHKhMPO4da92jOYTzViClXv0S4S0ri8=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-518-iSCObIybNgeTw07YUL7jXQ-1; Wed, 16 Nov 2022 13:54:02 -0500
-X-MC-Unique: iSCObIybNgeTw07YUL7jXQ-1
-Received: by mail-wr1-f69.google.com with SMTP id k7-20020adfc707000000b002416f2e9ad5so3338104wrg.6
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 10:54:02 -0800 (PST)
+        with ESMTP id S238402AbiKQAqY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 19:46:24 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCE76EB7E
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 16:45:24 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id d8so208990qki.13
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 16:45:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HEOs2OljVpzFekHebtNmxJNTS1biZDzbDC+7E+gbGXE=;
+        b=NKUDG6/HRBHYArrki2ErKlKAFAloDP3syGXEvUqNJ9D2fVrZim0dI4zYfgnJWEKy+2
+         eIgPOs+mttvXhYUIJL/UppN4gHtQqcQpWlrONSgHhATtfRfLqa70r2Y5AFUtDhoXumLz
+         QwAO0SpqErl+SpXb2isD+wqK260zhrI3m0OcjGKZmRIuadG54e+ieDR5HURAecTq4gww
+         +4XuPNBvBD2G5dec/bz8Eh9V9EDh1RbiHGn8GIrcO4V8END9r1k5y0xfRAbT/lxmG9Cm
+         d4SXiY9+ZupOQT/Gb+ZePnA6lwtOPkxvxI9tRVsC2WHBPZX7s+xnX8nZsTymxhqmYSZB
+         7vEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XrMOrTfFoolcBWY273BC4KVOqyrI8gbytsgZlItRSSY=;
-        b=khAvjXj4YnN9ekCvO2cmGbRYtPGmPE74fBcx8pTNEkKYXJXs+K4W00jWeaytLrExwm
-         vNHYbSwWJQ7k22X1MHzFl9nLwI2WoemkB/MF7WPGFrOpvEefjluFset/WhTLCS/ayb9x
-         YOuvcfZo8wXQhADbDeEgOj3O749YQ/vXA0WbK7UIrJvs9bNy/gDNgDE52BF57XWGkdrt
-         aZjbyBsfTm/nj2a/aYjF/+6SpA+rNseNg3mWJ5T5kbVkYiQhPprH3L0LlBZ5r7kyrzpV
-         dOnFeOdT8o2IfbT6POv+UdrB6xwF7wHY1Lz4XcGKcOjhToH1Pegywh0uBprQ/+xYvMVX
-         5urQ==
-X-Gm-Message-State: ANoB5pkqFjdo5wmbTe50uy+0GoQeoY/JSWY2DCX6mLWxO2Gm9vBHiZEf
-        336CCVQNuLlQP2GjKLTcZ00y+3xbhaGmHRUEkO+nQKSUs5W5o9XRF7Mny9hbFZMBMlwYNv5mI++
-        r1JWcS1daJkZnn68a6y573Q==
-X-Received: by 2002:a05:600c:188a:b0:3cf:8e62:f769 with SMTP id x10-20020a05600c188a00b003cf8e62f769mr3135333wmp.52.1668624841277;
-        Wed, 16 Nov 2022 10:54:01 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5DCp6F6fiXltcSvKkMYb+ZcNvwNu+I48re+Q7o+sjDMiBTT1rVi2cU7FL82kIKKDnPvsKEPw==
-X-Received: by 2002:a05:600c:188a:b0:3cf:8e62:f769 with SMTP id x10-20020a05600c188a00b003cf8e62f769mr3135302wmp.52.1668624841029;
-        Wed, 16 Nov 2022 10:54:01 -0800 (PST)
-Received: from ?IPV6:2003:cb:c704:9f00:a98d:4026:7c44:40fd? (p200300cbc7049f00a98d40267c4440fd.dip0.t-ipconnect.de. [2003:cb:c704:9f00:a98d:4026:7c44:40fd])
-        by smtp.gmail.com with ESMTPSA id h16-20020a05600c315000b003cff309807esm3012333wmo.23.2022.11.16.10.53.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Nov 2022 10:54:00 -0800 (PST)
-Message-ID: <caf52607-49cd-3073-ca4a-ddce9509e7c9@redhat.com>
-Date:   Wed, 16 Nov 2022 19:53:57 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HEOs2OljVpzFekHebtNmxJNTS1biZDzbDC+7E+gbGXE=;
+        b=Dj7IDRzDJlpeItakJI/dabD+KXK3tIjv7ceL7ltywtmWZRVSksMfUPIJbXxGDvdyoB
+         OlZEWuJt3Q/eu5Uo3cQ+joMq40Aw2/eCwn9rL+Of94z0d2nRBxBdO/QRb8T/yVXdx3gN
+         OzuygKDr8FKf9KXHojJ95ueR05smgCq6r1PR6TZFE4ylwbREygSIigDuWWHRMOF4D5La
+         Sx6+IaIveniHNo6iuGm+Nz8z2UzdITAWz1AAR5FvXSCjE9YupDIzo406Ncb+AfqtHMI+
+         ArhsniVWGeFt/0bo+A8dMeMV6ajjWORxRsAtMPCbR6CwvQjCN+MqSu7xyENf3gclrzj2
+         gAKA==
+X-Gm-Message-State: ANoB5pmHkWsKDqIRAXqEecHyeXNo5cvsjrHgskji4G37LXZW4h0KQMvs
+        MuIdXG5Sk0eWX/UvHMY84xIQRA==
+X-Google-Smtp-Source: AA0mqf7xjJLeTnaPhhrans4JhE0iVba1LlwPzkyl9vYE07B6pyjsI7ODbIFQEN1WHHyVUFKfNxMUWg==
+X-Received: by 2002:a05:620a:1455:b0:6ee:80b5:32d3 with SMTP id i21-20020a05620a145500b006ee80b532d3mr22079595qkl.237.1668645923644;
+        Wed, 16 Nov 2022 16:45:23 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.122.23])
+        by smtp.gmail.com with ESMTPSA id n7-20020ac86747000000b00399ad646794sm9480378qtp.41.2022.11.16.16.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Nov 2022 16:45:22 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ovT1t-0066TN-E8;
+        Wed, 16 Nov 2022 20:45:21 -0400
+Date:   Wed, 16 Nov 2022 20:45:21 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
@@ -74,8 +66,8 @@ Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         linux-perf-users@vger.kernel.org,
         linux-security-module@vger.kernel.org,
         linux-kselftest@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
         John Hubbard <jhubbard@nvidia.com>,
         Peter Xu <peterx@redhat.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -92,113 +84,45 @@ Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         Arnd Bergmann <arnd@arndb.de>,
         Christoph Hellwig <hch@infradead.org>,
         Alex Williamson <alex.williamson@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
+        Leon Romanovsky <leonro@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+Subject: Re: [PATCH mm-unstable v1 10/20] RDMA/umem: remove FOLL_FORCE usage
+Message-ID: <Y3WEIVROhUPTtaeQ@ziepe.ca>
 References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-21-david@redhat.com>
- <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH mm-unstable v1 20/20] mm: rename FOLL_FORCE to FOLL_PTRACE
-In-Reply-To: <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+ <20221116102659.70287-11-david@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221116102659.70287-11-david@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 16.11.22 19:16, Linus Torvalds wrote:
-> On Wed, Nov 16, 2022 at 2:30 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> Let's make it clearer that functionality provided by FOLL_FORCE is
->> really only for ptrace access.
+On Wed, Nov 16, 2022 at 11:26:49AM +0100, David Hildenbrand wrote:
+> GUP now supports reliable R/O long-term pinning in COW mappings, such
+> that we break COW early. MAP_SHARED VMAs only use the shared zeropage so
+> far in one corner case (DAXFS file with holes), which can be ignored
+> because GUP does not support long-term pinning in fsdax (see
+> check_vma_flags()).
 > 
-> I'm not super-happy about this one.
+> Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
+> for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
+> using FOLL_FORCE, which is really only for ptrace access.
 > 
-> I do understand the "let's rename the bit so that no new user shows up".
-> 
-> And it's true that the main traditional use is ptrace.
-> 
-> But from the patch itself it becomes obvious that no, it's not *just*
-> ptrace. At least not yet.
-> 
-> It's used for get_arg_page(), which uses it to basically look up (and
-> install) pages in the newly created VM.
-> 
-> Now, I'm not entirely sure why it even uses FOLL_FORCE, - I think it
-> might be historical, because the target should always be the new stack
-> vma.
-> 
-> Following the history of it is a big of a mess, because there's a
-> number of renamings and re-organizations, but it seems to go back to
-> 2007 and commit b6a2fea39318 ("mm: variable length argument support").
-> 
+> Tested-by: Leon Romanovsky <leonro@nvidia.com> # Over mlx4 and mlx5.
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  drivers/infiniband/core/umem.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Right.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-> Before that commit, we kept our own array of "this is the set of pages
-> that I will install in the new VM". That commit basically just inserts
-> the pages directly into the VM instead, getting rid of the array size
-> limitation.
-> 
-> So at a minimum, I think that FOLL_FORCE would need to be removed
-> before any renaming to FOLL_PTRACE, because that's not some kind of
-> small random case.
-> 
-> It *might* be as simple as just removing it, but maybe there's some
-> reason for having it that I don't immediately see.
-
-Right, I have the same feeling. It might just be a copy-and-paste legacy 
-leftover.
-
-> 
-> There _are_ also small random cases too, like get_cmdline(). Maybe
-> that counts as ptrace, but the execve() case most definitely does not.
-
-I agree. I'd suggest moving forward without this (last) patch for now 
-and figuring out how to further cleanup FOLL_FORCE usage on top.
-
-@Andrew, if you intend to put this into mm-unstable, please drop the 
-last patch for now.
-
--- 
-Thanks,
-
-David / dhildenb
-
+Jason
