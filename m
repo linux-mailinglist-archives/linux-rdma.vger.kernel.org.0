@@ -2,56 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6131E62D307
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 06:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD83A62D30A
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 06:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239142AbiKQF4R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Nov 2022 00:56:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
+        id S239145AbiKQF5T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Nov 2022 00:57:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239145AbiKQF4P (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 00:56:15 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D8466C85
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 21:56:11 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id t10so1450477ljj.0
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 21:56:11 -0800 (PST)
+        with ESMTP id S239272AbiKQF46 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 00:56:58 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E55E6711C
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 21:56:56 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id d20so1343775ljc.12
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 21:56:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ukCy+XhWjfZVFkJNU5Mv+aeFn25klEeXrnYqSOasMc=;
-        b=Is5g/Re5LoaWrd85CVtGGtsO867C0qruxkhk9XBqGUkl3WZuNvX3TX6MdHZM8s/QmK
-         Rbj55K8uKbuyFP6auOZ4LgMDVyaFVkHOBy2NIE05I5SvzRVGsRsPtcze9iHh3QPDmHfq
-         bDsAMVy9XDU7KmnAx+uhwREUMiNSoegzzKG/9qfeCyYShbtYfd9gLe7+9ftr05dSL2bl
-         0/h3/sLGgjQhPWg2yjmsZExv2LoFPLy+d9PHyvxTbrLPMIF4XLQnugG9ZQ3Y079Xxhae
-         QoXiSxeKdaSTCRTXzkMSsCGvqoM/bg2K/e9DIDm2dOWobcH1QT+rmhCbxvw03/cSxRCp
-         TZ7w==
+        bh=c362285bPRcadxp3LJ7gYhX5D2pd5v4sdbwP+Y6bigM=;
+        b=E6czSGtstLaomewSI8vaWwZzLpZ3ncj3f4wgeSE3h7E5w+Os46CJLhMRWVOe48z7fA
+         aXWOIu26i7wLJdVbQokAbT3CB774sdYxdSLKxzARgg5C12mSwSQ723yxZIk77eME911z
+         QksPUy/SfpumlNxZ2V3uybIrrI6zgcBdDqs2wfJnqU8ZeRUZPW8r4w48hKZ0Lou2EfEs
+         nYhngHa+TG4HzHCEJ/+iVrtMOnmRo4DevslL+HClrMwD3qGYl+/LTnkJ+aUEzbtYfHCy
+         7w+e0qQPlgwaXJVpbr35bLULxnYVZ4u9igjIR/UiRx20aftvUV4d7wu9DtzTbegjfWOh
+         Edmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5ukCy+XhWjfZVFkJNU5Mv+aeFn25klEeXrnYqSOasMc=;
-        b=zF6FiftWVJ1juH2GDAmlMfRhjE4P0uMp+lABpL5sKyPDzToxrse6k0qC0PQ7k4HVga
-         5QxkrtGxS+lUd6lsEnVfniyywIjY34+OWz+i0/g4Xs+d3hp2Z3ACsbbCw4BYYuXrITmg
-         JgXu2kQatnPmBVt9w8zstZ12qkE+rzcnTCzJIw9pIiAOVoLicjeLd+oHl0TdHzsSnWS2
-         G8hqVhKU2n0DtlebPeP7/Bof0n2//oa8JrzfV5+30leS21VztAKS0D18YmlUmhdMOLsg
-         RoAcqNt/hl5lgrkrQwFNZoUkIJMeqGBME7uXvp+hwIkK8e4gOMNp4hQ10r+EUOPlUO1+
-         eX+g==
-X-Gm-Message-State: ANoB5plM74mqwFrMSW5NvjlQqzr0XTKbIuFGbrmfaxUhtXF5v2xZEnNk
-        qe+ZwdYHSY15nvZ2SO8VxwZhBC9p/CDj8MjvIxMb5Q==
-X-Google-Smtp-Source: AA0mqf7fJ2VdrFOTHiSOuWpxP9rTvcgnBiQ2X23a9OdgETHfRFRhZKrjLzrSAzHOXqimNTLqGt6SBngScbLVSSVEoWc=
-X-Received: by 2002:a05:651c:c8f:b0:26d:d196:d04 with SMTP id
- bz15-20020a05651c0c8f00b0026dd1960d04mr494632ljb.403.1668664570224; Wed, 16
- Nov 2022 21:56:10 -0800 (PST)
+        bh=c362285bPRcadxp3LJ7gYhX5D2pd5v4sdbwP+Y6bigM=;
+        b=vMByghzZYMGxqSsvgEOkSyMssxwpx+5qlZStaV2Ba/DNpZny4V7eNL+Y8AS59cwTk/
+         2byD0VAC2YIZiPUSxGKdM1YwmMEiwwOW1r4jqIAoMA/sfl80KMbDMC9azLVrWzCbIWag
+         +Vlb3iJ3SgWu2iVhvc+qhGj+bfs4XiYrbHKhdQeFxzYBSrqMFcRsZgU4Dv3J9k2F+RYy
+         vmEnzL7MjC5vSamXhwQlgBKLNER3nrNxzEQYLTS9HGMqv28pn57HhBob+Oadv0m0YAWy
+         b29/kls2HQHO7Oy0jpBa88cHQU5bDC63ZynjcOg0TNBZzVXqN/hp0Exu86vLtYJXuKJ1
+         kdLw==
+X-Gm-Message-State: ANoB5pkEwvlLgX9aOtaH2kjq4YtMmqZvUv9BfP/J3U9yMiIRqhk5dPon
+        t5PKKspe00YtzYgA3VKFkB/esz2swY1Kg4SepDQNPiq2MXQ=
+X-Google-Smtp-Source: AA0mqf6tUocb/aqROtSfnE8cFV+CNlA0ZTZEjzQ1tkYVGp2v7wpag+9HYtw17T3jj4/Yq13nQxw8qjNJTKeLVv/6oI8=
+X-Received: by 2002:a05:651c:2002:b0:278:a1bc:ad26 with SMTP id
+ s2-20020a05651c200200b00278a1bcad26mr500142ljo.235.1668664614582; Wed, 16 Nov
+ 2022 21:56:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20221116111400.7203-1-guoqing.jiang@linux.dev> <20221116111400.7203-4-guoqing.jiang@linux.dev>
-In-Reply-To: <20221116111400.7203-4-guoqing.jiang@linux.dev>
+References: <20221116111400.7203-1-guoqing.jiang@linux.dev> <20221116111400.7203-5-guoqing.jiang@linux.dev>
+In-Reply-To: <20221116111400.7203-5-guoqing.jiang@linux.dev>
 From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Thu, 17 Nov 2022 06:55:59 +0100
-Message-ID: <CAMGffEnSWffmPVzMkKx02s30-odEmqGPeUc2YYapAxAP+T21FQ@mail.gmail.com>
-Subject: Re: [PATCH 3/8] RDMA/rtrs-srv: Correct the checking of ib_map_mr_sg
+Date:   Thu, 17 Nov 2022 06:56:43 +0100
+Message-ID: <CAMGffEkjbyPunNiq3V4CQT5nULzm7VPnMFXO-U=0pURrrDqOzQ@mail.gmail.com>
+Subject: Re: [PATCH 4/8] RDMA/rtrs-clt: Correct the checking of ib_map_mr_sg
 To:     Guoqing Jiang <guoqing.jiang@linux.dev>
 Cc:     haris.iqbal@ionos.com, jgg@ziepe.ca, leon@kernel.org,
         linux-rdma@vger.kernel.org
@@ -67,29 +67,33 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On Wed, Nov 16, 2022 at 12:14 PM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
 >
-> We should check with nr_sgt, also the only successful case is that
+> We should check with count, also the only successful case is that
 > all sg elements are mapped, so make it explict.
-typo, s/explicit/explicitly.
+s/explicit/explicitly
 >
 > Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
 > ---
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 >
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> index b877dd57b6b9..581c850e71d6 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> @@ -622,7 +622,7 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
->                 }
->                 nr = ib_map_mr_sg(mr, sgt->sgl, nr_sgt,
->                                   NULL, max_chunk_size);
-> -               if (nr < 0 || nr < sgt->nents) {
-> +               if (nr != nr_sgt) {
->                         err = nr < 0 ? nr : -EINVAL;
->                         goto dereg_mr;
->                 }
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> index 8546b8816524..be7c8480f947 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> @@ -1064,10 +1064,8 @@ static int rtrs_map_sg_fr(struct rtrs_clt_io_req *req, size_t count)
+>
+>         /* Align the MR to a 4K page size to match the block virt boundary */
+>         nr = ib_map_mr_sg(req->mr, req->sglist, count, NULL, SZ_4K);
+> -       if (nr < 0)
+> -               return nr;
+> -       if (nr < req->sg_cnt)
+> -               return -EINVAL;
+> +       if (nr != count)
+> +               return nr < 0 ? nr : -EINVAL;
+>         ib_update_fast_reg_key(req->mr, ib_inc_rkey(req->mr->rkey));
+>
+>         return nr;
 > --
 > 2.31.1
 >
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
