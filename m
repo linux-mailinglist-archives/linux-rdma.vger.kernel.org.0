@@ -2,127 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7EF62D026
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 01:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF7562D303
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 06:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238991AbiKQAsT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Nov 2022 19:48:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38790 "EHLO
+        id S233278AbiKQFwo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Nov 2022 00:52:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234454AbiKQArf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Nov 2022 19:47:35 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD8A716D4
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 16:46:05 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id x21so270307qkj.0
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 16:46:05 -0800 (PST)
+        with ESMTP id S231748AbiKQFwl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 00:52:41 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545A8E2A
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 21:52:38 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id a29so1118836lfj.9
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Nov 2022 21:52:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rT9xjSJmKp4cCvf16bTKl9Dc4YEY7MjOtsK/w44qv+E=;
-        b=VV2cb+pd6jfcSL2tauZE67KBioAHcybPQR+VfU40dKebsvpG7CB3+xd0Uv8h8MKz8R
-         sbSQ7TqeMCU61fYQIjRwQoQBWrCcg8ekkdEQ8V7xYjRGPq0DN+C0Atnpvt0eAux7Zvaz
-         PXr7WI31PYcmErRNWRYdBKljCyptLiKShcOF4gqH5bxcH7c9a48sUWSu+SLW+D60rEcT
-         94q2cJm8yEvdEzbYpl0Vwvwu6uXwvrse0KXhbaR5xd9/LECZYdD6vR+hmUeAJTlxbvcq
-         ueSGRE+vNlUSsDE90kXWUWeAcS6lHSqHDXkbeBbAuFPPnKLrO2HgUtltNTPZxflFTx6j
-         B+8A==
+        d=ionos.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T5sBqUasBU6StzC3o8Q5n4kN1rlev+YbPe+SrsGyl7w=;
+        b=XV5uTwaJilAR6CvXEUZRIdwufeLSgv+Nl5OZNRF3N9CBURdujnxWzCo2tmKSTP/Jm1
+         2QLQd/1J8UBx+ttqjQ4KEfb/2rLDpGZsFKxWN50hMsdo8HUpK1m561xnnWpk9sBDbhq3
+         Vnj2wCHdGIyp0sJGcJr/1ZD7feUxxzXz99joLF+XWaTCIagfoyrVtNCLpYfrfvge5cbn
+         XYrQyy4FjeEXOacPFgDY14ZfKpHVzS+xr4Tdam4k7/LNSJt9+OPtivCyTXGKoyM5HvtV
+         lHuC2INgz5Wv8FHMuXscRiH4ymj3Ov72T1QZqT/yMdbbl/FyuVDyObxj201eK8cXU2wB
+         ZdQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rT9xjSJmKp4cCvf16bTKl9Dc4YEY7MjOtsK/w44qv+E=;
-        b=5k7A/htA4Xy5VzZwpWe5vc189o40EM05pkt9WgAzYUBDgbNUr2ArJ4woJk+/JnqcQ/
-         agGyMtLZRxfMcGmPrwHI/zRu/ZLZdyS2W3g0r6Ilu1Ieo8h6een2VFcBjlIpXwtKJeom
-         Ou91X2YTtbAhSsNfYprLogUE15NCvszo5KVbtf/KRG9NswLM8k7EqWCh+YBkY/nB7n7t
-         Eq3o7kn2otaVkJwoE+oOo+Eb8WiwWbqrlYTnAqUc2M5GXcZ6W8yMp3u4S7usKvswfwoC
-         z9cWcH1TSL8ru1RIAG+grvuvuW3z3BHVEwdysGHE2A4RNkZjOMbBST1GMdqSjMBnJ/9i
-         fRHw==
-X-Gm-Message-State: ANoB5pkaCXHbqIIhX+m03i5xxqom/TdEaz0AzuwdVbDibfiuR53xxiPO
-        tWgxdnzF0DRRBw6p7DCbXm4KdQ==
-X-Google-Smtp-Source: AA0mqf607w9C7cuVA1Gk/5OO594s7B3KGBk4c2yq8D1+/1YgY/KvFwESfDj3NEnwxZjz0MAqyk7Deg==
-X-Received: by 2002:a37:424c:0:b0:6fb:a0ec:c5ba with SMTP id p73-20020a37424c000000b006fba0ecc5bamr8177915qka.493.1668645964499;
-        Wed, 16 Nov 2022 16:46:04 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.122.23])
-        by smtp.gmail.com with ESMTPSA id i18-20020a05620a405200b006fa84082b6dsm11394495qko.128.2022.11.16.16.46.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 16:46:03 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ovT2Z-0066UZ-3n;
-        Wed, 16 Nov 2022 20:46:03 -0400
-Date:   Wed, 16 Nov 2022 20:46:03 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-perf-users@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Peter Xu <peterx@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: Re: [PATCH mm-unstable v1 12/20] RDMA/siw: remove FOLL_FORCE usage
-Message-ID: <Y3WES5adl6yyS4ZB@ziepe.ca>
-References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-13-david@redhat.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T5sBqUasBU6StzC3o8Q5n4kN1rlev+YbPe+SrsGyl7w=;
+        b=P77E6YGP60ewHXxNGfaxpzYso4W2dpocfTDJqhwATb1T7ubJxgyrILfkVdl2TunNtK
+         bGVOK8X7uTGCxtBpadWT21TQRJTz8KGlbEI11ato5MEEWeWaUvCMG2XwEkrKhS+X/gFV
+         tBsEBLLKDJUb3zSIqXSD720GqscCWRAaS5KIgBlYYfW5e1XiA6io4iEvcXRAy5UJEFEA
+         wa0l2yG5C+AorFiu8D8h5lqrtbdE0hxEVKq4kPVAOSRPc5I5kjEJev27KCNBAI7/Rpli
+         nkDrupeY4+twx+iBzbmylgLfXvc+TTI+sEHt7hHAweiAnzGjVZdYW52TeS/lJIJeoJ+5
+         JzEQ==
+X-Gm-Message-State: ANoB5plrAMU36dOydOmchWJq3TyxLOz+MQdisEqAPKnV8NwDLXd/9nb2
+        GM0ehyAixg9mVtuG8S+yYxoVab5C9NpR4VONWAQ+yg==
+X-Google-Smtp-Source: AA0mqf7NXGTHwAXhiOayN1dUi6bqaezK+ZU2oxFJfLvM8TsVvk+CLVnMOlmdfy7od6bAUlOMiCR9V4+tRRz3BOtmNyo=
+X-Received: by 2002:ac2:47e3:0:b0:4b4:1324:6ed3 with SMTP id
+ b3-20020ac247e3000000b004b413246ed3mr370063lfp.19.1668664356626; Wed, 16 Nov
+ 2022 21:52:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221116102659.70287-13-david@redhat.com>
+References: <20221116111400.7203-1-guoqing.jiang@linux.dev> <20221116111400.7203-2-guoqing.jiang@linux.dev>
+In-Reply-To: <20221116111400.7203-2-guoqing.jiang@linux.dev>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Thu, 17 Nov 2022 06:52:25 +0100
+Message-ID: <CAMGffEmnzA6+2H_CbhusfQ0r68jo8j93jVau-qoX7=kJv_UNrA@mail.gmail.com>
+Subject: Re: [PATCH 1/8] RDMA/rtrs-srv: Refactor rtrs_srv_rdma_cm_handler
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     haris.iqbal@ionos.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 11:26:51AM +0100, David Hildenbrand wrote:
-> GUP now supports reliable R/O long-term pinning in COW mappings, such
-> that we break COW early. MAP_SHARED VMAs only use the shared zeropage so
-> far in one corner case (DAXFS file with holes), which can be ignored
-> because GUP does not support long-term pinning in fsdax (see
-> check_vma_flags()).
-> 
-> Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
-> for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
-> using FOLL_FORCE, which is really only for ptrace access.
-> 
-> Cc: Bernard Metzler <bmt@zurich.ibm.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Leon Romanovsky <leon@kernel.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Wed, Nov 16, 2022 at 12:14 PM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
+>
+> The RDMA_CM_EVENT_CONNECT_REQUEST is quite different to other types,
+> let's checking it separately at the beginning of routine, then we can
+> avoid the identation accordingly.
+There are two typos.
+s/checking/check
+s/identation/indentation.
+
+>
+> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 > ---
->  drivers/infiniband/sw/siw/siw_mem.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 17 ++++++++---------
+>  1 file changed, 8 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> index 22d7ba05e9fe..5fe3699cb8ff 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> @@ -1950,22 +1950,21 @@ static int rtrs_srv_rdma_cm_handler(struct rdma_cm_id *cm_id,
+>  {
+>         struct rtrs_srv_path *srv_path = NULL;
+>         struct rtrs_path *s = NULL;
+> +       struct rtrs_con *c = NULL;
+>
+> -       if (ev->event != RDMA_CM_EVENT_CONNECT_REQUEST) {
+> -               struct rtrs_con *c = cm_id->context;
+> -
+> -               s = c->path;
+> -               srv_path = to_srv_path(s);
+> -       }
+> -
+> -       switch (ev->event) {
+> -       case RDMA_CM_EVENT_CONNECT_REQUEST:
+> +       if (ev->event == RDMA_CM_EVENT_CONNECT_REQUEST)
+>                 /*
+>                  * In case of error cma.c will destroy cm_id,
+>                  * see cma_process_remove()
+>                  */
+>                 return rtrs_rdma_connect(cm_id, ev->param.conn.private_data,
+>                                           ev->param.conn.private_data_len);
+> +
+> +       c = cm_id->context;
+> +       s = c->path;
+> +       srv_path = to_srv_path(s);
+> +
+> +       switch (ev->event) {
+>         case RDMA_CM_EVENT_ESTABLISHED:
+>                 /* Nothing here */
+>                 break;
+> --
+> 2.31.1
+>
+The patch LGTM.
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
