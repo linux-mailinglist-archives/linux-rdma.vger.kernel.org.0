@@ -2,71 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A374962E85A
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 23:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4836262E8E2
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 23:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240665AbiKQWYe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Nov 2022 17:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
+        id S239887AbiKQW6Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Nov 2022 17:58:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240705AbiKQWYM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 17:24:12 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4257AF6A
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 14:22:43 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id l8so4527628ljh.13
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 14:22:43 -0800 (PST)
+        with ESMTP id S235089AbiKQW6W (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 17:58:22 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AF71B9FD
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 14:58:21 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id jn7so1137961plb.13
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 14:58:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6z/H/hUdzby6qzD77X8A67itjj5DLg7zeEm5yiK8ewk=;
-        b=eE4LiOIHFvyJHY7TCuARlwSw6Fxj3RoALWhC9BTrYw2hyYbtcHjUsNVUOiniWdZCFQ
-         Rsv4SOdZhTUmrW+oHsj2Kb5Nve8M3yTYlEASqDEv9vFrV0udjI04LpHlfEIzneczAqIo
-         cLlniHaU3+rIJq6TAq8ESm4HV4ST0kGo137LrAiwxlLpObLlxqnA7EWSRlYRh1KoHFz3
-         tR1zX85c3nfv+7p7Q6kmWI7iaX/M+acHF6e/aHABMB7h4IfmqiaqH2Hgi2JpPt9mtlx/
-         rzG/2SVNL9yVatDL/fKPhGcrrMCVSK53fbcVJYJvOcPV6+SFNHCncWoqAcSBIkCiHBoB
-         GwNQ==
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gB4fu8WxG++brcac1xEx09Jo8IsSv6jaRuNq5hahL+I=;
+        b=Fy4BdUGW9a1WNEtqYFLG188KBaVxCW7dlYHJCJYByhqbYzWtrREex26XefPtc0cld6
+         YCRtECSkUML5k6sMmax4MrQy/8YHDQGVY6nBvl6IgyA0kq1FCwf8z9yqhcxsos46Zhwv
+         H1rDgpoCNHoreRPMRNhXYMHZ9u7/T1h/SC+nQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6z/H/hUdzby6qzD77X8A67itjj5DLg7zeEm5yiK8ewk=;
-        b=YTyCzWNMrNMBIlavntAs4oU/TyD0kO6012dKTqHG2JeuV+YAKmILem5EHkopHU8B3o
-         qwwue+kzNl/dh+6sPfb4siQsVlxXQLoX9hrUb5+emsSzFXNqQb0SA6HXS/iXK5Z27x/H
-         Mc6uqkm4g5RVQyJOzbairhpu3CbsXr93AHA7j1MeMj2SHI4yZQ3OgbXUmyPrnD7WuHVF
-         PlxmLl0c9lHP6i4hGcw7NvoNSwD2YF8DAAPgEyDNLZh/NAbqWT4advtNWnshbK40L2M1
-         xaQWaDJ6JffhgSzyNwh8b9AbbSLbsBmnSfmydcLo+w7Q2oaXbr/9CMnskq0+PCfZy4I6
-         E64A==
-X-Gm-Message-State: ANoB5pliAR5n2eKqpqADYbmLi4d3jpj7eowxrdEpnTzos9p1tnRAgZzh
-        Mqsc2zNePI7FVvB9j81TexaEmyO7suxl4VETgNUGEZUqM4s=
-X-Google-Smtp-Source: AA0mqf5+3d83OHwdcEp1GMffOoUPH2NG2Ir5kPpXpkI1tPtt7kGd2jzVeDtSIET1guqGSM3l24+zC0BpVlpsAr5MVHY=
-X-Received: by 2002:aa7:d307:0:b0:461:91e1:368 with SMTP id
- p7-20020aa7d307000000b0046191e10368mr3838155edq.327.1668723751655; Thu, 17
- Nov 2022 14:22:31 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gB4fu8WxG++brcac1xEx09Jo8IsSv6jaRuNq5hahL+I=;
+        b=7DSBhZLQhOeyS3QrU+v9PfnpzSzQL4ZokYn8Z3mi+4s+7dPq7cY/p0NbCAdG+j8bSV
+         j9fFVMP0Kds0vy/hoi7NuRcHy+HcEeiufHwGL0dgZde94981LiraYBSJPPTAobbTukkl
+         SnxNifpHHNyVAH84S7qlYJYTvN2xW2ODZQGd+xJF4dPKvhvHSlqVwXh/Q5XeGWCafMgJ
+         wXHFee8PbL6ETgIXX0RIjk2Jigr0rHplYl864aiDds1Fr430H5wfoISZc65n2Wbi/km4
+         YnLfdZmoPbQFFEx6aXGAYRaA71tBKmCGYLhUwJXvfEbRm7eeVgRS2Myq6u5luv8eIniY
+         RmsQ==
+X-Gm-Message-State: ANoB5pmp4selG4rO7ge6RMnTZ7WBWobMHjxvtEHlHSTNNMcspWwzL8tD
+        rZeb9GQSGOc5LWTTdqnE8ttzoQ==
+X-Google-Smtp-Source: AA0mqf5a5ur58uPnDpwIjYXEwn4PnQ44wkjJwk4UbGX/PChCoGId0YIreHCZd3TM/oH8mIHpTiFUgA==
+X-Received: by 2002:a17:90a:2b46:b0:213:aa5f:a026 with SMTP id y6-20020a17090a2b4600b00213aa5fa026mr4652677pjc.243.1668725901245;
+        Thu, 17 Nov 2022 14:58:21 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170902710b00b00186bc66d2cbsm1970473pll.73.2022.11.17.14.58.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Nov 2022 14:58:20 -0800 (PST)
+Date:   Thu, 17 Nov 2022 14:58:19 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Subject: Re: [PATCH mm-unstable v1 20/20] mm: rename FOLL_FORCE to FOLL_PTRACE
+Message-ID: <202211171439.CDE720EAD@keescook>
+References: <20221116102659.70287-1-david@redhat.com>
+ <20221116102659.70287-21-david@redhat.com>
+ <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
 MIME-Version: 1.0
-Sender: gnimgimegang@gmail.com
-Received: by 2002:a05:7208:5486:b0:5d:220d:12fe with HTTP; Thu, 17 Nov 2022
- 14:22:30 -0800 (PST)
-From:   =?UTF-8?B?0JvQuNC30LAg0KHQuNC00L7RgNC10L3QutC+?= 
-        <a45476301@gmail.com>
-Date:   Thu, 17 Nov 2022 22:22:30 +0000
-X-Google-Sender-Auth: _nMiJUMiDaAgQ1ujl_JkAGMSFiA
-Message-ID: <CALvt0+=rj8-1zj0pbCYDi_Z+7=H3DeA_soSfHtThNRTz2UnFYQ@mail.gmail.com>
-Subject: It's for you.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Greetings!!
-Did you receive my previous email?
-Regards,
-Yelyzaveta Sydorenko,
+On Wed, Nov 16, 2022 at 10:16:34AM -0800, Linus Torvalds wrote:
+> There _are_ also small random cases too, like get_cmdline(). Maybe
+> that counts as ptrace, but the execve() case most definitely does not.
+
+Oh, er, why does get_arg_page() even need FOLL_FORCE? This is writing the
+new stack contents to the nascent brpm->vma, which was newly allocated
+with VM_STACK_FLAGS, which an arch can override, but they all appear to include
+VM_WRITE | VM_MAYWRITE.
+
+-- 
+Kees Cook
