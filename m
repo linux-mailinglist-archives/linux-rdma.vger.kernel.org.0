@@ -2,38 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 845BF62D966
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 12:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C215A62DC1B
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 13:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239460AbiKQL3S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Nov 2022 06:29:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
+        id S233502AbiKQM6D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Nov 2022 07:58:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239731AbiKQL3M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 06:29:12 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6147043AC3
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 03:29:08 -0800 (PST)
-Received: from dggpeml500023.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NCd313JR2zRpLh;
-        Thu, 17 Nov 2022 19:28:45 +0800 (CST)
-Received: from localhost.localdomain (10.175.101.6) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+        with ESMTP id S239598AbiKQM5h (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 07:57:37 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A75362055
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 04:57:35 -0800 (PST)
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NCfxq14GxzJnR2;
+        Thu, 17 Nov 2022 20:54:23 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 17 Nov 2022 19:29:06 +0800
-From:   Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-To:     <linux-rdma@vger.kernel.org>, <zhangxiaoxu5@huawei.com>,
-        <zyjzyj2000@gmail.com>, <jgg@ziepe.ca>, <leon@kernel.org>
-Subject: [PATCH] RDMA/rxe: Fix null-ptr-deref in rxe_qp_do_cleanup when socket create failed
-Date:   Thu, 17 Nov 2022 20:33:47 +0800
-Message-ID: <20221117123347.2576350-1-zhangxiaoxu5@huawei.com>
-X-Mailer: git-send-email 2.31.1
+ 15.1.2375.31; Thu, 17 Nov 2022 20:57:32 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 17 Nov 2022 20:57:32 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <jgg@nvidia.com>, <leonro@nvidia.com>,
+        <dennis.dalessandro@cornelisnetworks.com>, <jgg@ziepe.ca>,
+        <leon@kernel.org>, <mike.marciniszyn@intel.com>,
+        <michael.j.ruhl@intel.com>
+CC:     <linux-rdma@vger.kernel.org>, <yangyingliang@huawei.com>,
+        <wangxiongfeng2@huawei.com>
+Subject: [PATCH] RDMA/hfi: Decrease PCI device reference count in error path
+Date:   Thu, 17 Nov 2022 21:15:46 +0800
+Message-ID: <20221117131546.113280-1-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500023.china.huawei.com (7.185.36.114)
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -43,61 +51,33 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There is a null-ptr-deref when mount.cifs over rdma:
+pci_get_device() will increase the reference count for the returned
+pci_dev, and also decrease the reference count for the input parameter
+*from* if it is not NULL.
 
-  BUG: KASAN: null-ptr-deref in rxe_qp_do_cleanup+0x2f3/0x360 [rdma_rxe]
-  Read of size 8 at addr 0000000000000018 by task mount.cifs/3046
+If we break out the loop in node_affinity_init() with 'dev' not NULL, we
+need to call pci_dev_put() to decrease the reference count. Add missing
+pci_dev_put() in error path.
 
-  CPU: 2 PID: 3046 Comm: mount.cifs Not tainted 6.1.0-rc5+ #62
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc3
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x34/0x44
-   kasan_report+0xad/0x130
-   rxe_qp_do_cleanup+0x2f3/0x360 [rdma_rxe]
-   execute_in_process_context+0x25/0x90
-   __rxe_cleanup+0x101/0x1d0 [rdma_rxe]
-   rxe_create_qp+0x16a/0x180 [rdma_rxe]
-   create_qp.part.0+0x27d/0x340
-   ib_create_qp_kernel+0x73/0x160
-   rdma_create_qp+0x100/0x230
-   _smbd_get_connection+0x752/0x20f0
-   smbd_get_connection+0x21/0x40
-   cifs_get_tcp_session+0x8ef/0xda0
-   mount_get_conns+0x60/0x750
-   cifs_mount+0x103/0xd00
-   cifs_smb3_do_mount+0x1dd/0xcb0
-   smb3_get_tree+0x1d5/0x300
-   vfs_get_tree+0x41/0xf0
-   path_mount+0x9b3/0xdd0
-   __x64_sys_mount+0x190/0x1d0
-   do_syscall_64+0x35/0x80
-   entry_SYSCALL_64_after_hwframe+0x46/0xb0
-
-The root cause of the issue is the socket create failed in
-rxe_qp_init_req().
-
-So add a null ptr check about the sk before reset the dst socket.
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Fixes: c513de490f80 ("IB/hfi1: Invalid NUMA node information can cause a divide by zero")
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 ---
- drivers/infiniband/sw/rxe/rxe_qp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hfi1/affinity.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index a62bab88415c..4bab641fdd42 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -829,7 +829,7 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
- 	if (qp->resp.mr)
- 		rxe_put(qp->resp.mr);
+diff --git a/drivers/infiniband/hw/hfi1/affinity.c b/drivers/infiniband/hw/hfi1/affinity.c
+index 877f8e84a672..77ee77d4000f 100644
+--- a/drivers/infiniband/hw/hfi1/affinity.c
++++ b/drivers/infiniband/hw/hfi1/affinity.c
+@@ -177,6 +177,8 @@ int node_affinity_init(void)
+ 	for (node = 0; node < node_affinity.num_possible_nodes; node++)
+ 		hfi1_per_node_cntr[node] = 1;
  
--	if (qp_type(qp) == IB_QPT_RC)
-+	if (qp_type(qp) == IB_QPT_RC && qp->sk)
- 		sk_dst_reset(qp->sk->sk);
++	pci_dev_put(dev);
++
+ 	return 0;
+ }
  
- 	free_rd_atomic_resources(qp);
 -- 
-2.31.1
+2.20.1
 
