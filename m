@@ -2,46 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1AC62D6AC
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 10:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0CD62D775
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 10:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234807AbiKQJZS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Nov 2022 04:25:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
+        id S233223AbiKQJwn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Nov 2022 04:52:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239943AbiKQJZC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 04:25:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20B62704
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 01:24:45 -0800 (PST)
+        with ESMTP id S230344AbiKQJwm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 04:52:42 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0199227B02
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 01:52:41 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E2F7DB81D97
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 09:24:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 263C9C433C1;
-        Thu, 17 Nov 2022 09:24:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FCD461FEF
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 09:52:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 723A9C433D6;
+        Thu, 17 Nov 2022 09:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1668677082;
-        bh=Hlm/U+6P1WqWr9fWknvKKaxOGxsXPT9CvB+0+SVSWZE=;
+        s=k20201202; t=1668678761;
+        bh=NZycOMPj/xUnFUWwc5tT8XQd/v1VTN03mJxsFssZblI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EtVpKkYcH/bDWMEapvLGo+IMJ/0GJvfc8Qdzog/WAOxxmZl5bxLh42UMitDTbvFF1
-         Nx+arIGLX3BVeDBdjOCV3gJDkJhEeIi8jKlMEy57X0oJzSNNjVvevSY+dRDBHcGWR3
-         FltD0Pf446dH+mBh4sQwu1//+PMqEmrC05d4b1PzXyUrb7ozUzZi0nrAt/lhPL0Hxi
-         IHk0XvvAnVHsf2rsMV+IXhJPYj7PbcYZoowL3LeUkeLsis6Xl/yjsx08kVLOaglXvF
-         ALwUD0pE9HAfFfGZANXSyymym8TJ0RB5fFSDUM0aa/Ihax8UKZt8AClbPwhI/3wRNo
-         9CbcBeLN2tWfw==
-Date:   Thu, 17 Nov 2022 11:24:38 +0200
+        b=ruyo1sgB3AYlFc34wstgVA1vy4fS1XQQLg5jehp9eVB1/ozna/w8BsC6fotizf3Ln
+         daB6/NNlBVYaU3ZocJpUZ0tOrbbFgJdWzrLPBoMqvugd5+0FdO9sJWhPtWUk/sFG9F
+         x5xsKUvpq/rlqHRMNo7/ZlmrKQfu7qBuD9F+btH+Qsv9ayvPBDc7yI41yhVb0FU8z8
+         r8Jfy43Ppospv7dUcP4U6uU6PNfj2/EooqsvoWObn/y8KSWVoqyOxcRdorlkTd7Vok
+         n/d2Cq3EfAklgOYAi3ueZzFdt3UYfBbIJPNnykYhvdjuXDFZJVVB7pYJ1VOrJK9Np5
+         CYxXWgdJwEjrQ==
+Date:   Thu, 17 Nov 2022 11:52:36 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Dan Carpenter <error27@gmail.com>
-Cc:     faisal.latif@intel.com, linux-rdma@vger.kernel.org
-Subject: Re: [bug report] iwpm: crash fix for large connections test
-Message-ID: <Y3X91h5Fla+4mICY@unreal>
-References: <Y3ORbHXv5M8X8kqN@kili>
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/12] Misc changes for rtrs
+Message-ID: <Y3YEZK8BQjQ2DBSr@unreal>
+References: <20221113010823.6436-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y3ORbHXv5M8X8kqN@kili>
+In-Reply-To: <20221113010823.6436-1-guoqing.jiang@linux.dev>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -51,83 +52,43 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 15, 2022 at 04:17:32PM +0300, Dan Carpenter wrote:
-> [ This isn't really the correct patch to blame.  Sorry! -dan ]
+On Sun, Nov 13, 2022 at 09:08:11AM +0800, Guoqing Jiang wrote:
+> Hi,
 > 
-> Hello Faisal Latif,
+> Here are some changes for rtrs, please review them.
 > 
-> The patch dafb5587178a: "iwpm: crash fix for large connections test"
-> from Feb 26, 2016, leads to the following Smatch static checker
-> warning:
+> Thanks,
+> Guoqing
 > 
-> drivers/infiniband/core/iwpm_msg.c:437 iwpm_register_pid_cb() warn: 'nlmsg_request' was already freed.
-> drivers/infiniband/core/iwpm_msg.c:509 iwpm_add_mapping_cb() warn: 'nlmsg_request' was already freed.
-> drivers/infiniband/core/iwpm_msg.c:607 iwpm_add_and_query_mapping_cb() warn: 'nlmsg_request' was already freed.
-> drivers/infiniband/core/iwpm_msg.c:806 iwpm_mapping_error_cb() warn: 'nlmsg_request' was already freed.
-> 
-> drivers/infiniband/core/iwpm_msg.c
->     385 int iwpm_register_pid_cb(struct sk_buff *skb, struct netlink_callback *cb)
->     386 {
->     387         struct iwpm_nlmsg_request *nlmsg_request = NULL;
->     388         struct nlattr *nltb[IWPM_NLA_RREG_PID_MAX];
->     389         struct iwpm_dev_data *pm_msg;
->     390         char *dev_name, *iwpm_name;
->     391         u32 msg_seq;
->     392         u8 nl_client;
->     393         u16 iwpm_version;
->     394         const char *msg_type = "Register Pid response";
->     395 
->     396         if (iwpm_parse_nlmsg(cb, IWPM_NLA_RREG_PID_MAX,
->     397                                 resp_reg_policy, nltb, msg_type))
->     398                 return -EINVAL;
->     399 
->     400         msg_seq = nla_get_u32(nltb[IWPM_NLA_RREG_PID_SEQ]);
->     401         nlmsg_request = iwpm_find_nlmsg_request(msg_seq);
->     402         if (!nlmsg_request) {
->     403                 pr_info("%s: Could not find a matching request (seq = %u)\n",
->     404                                  __func__, msg_seq);
->     405                 return -EINVAL;
->     406         }
->     407         pm_msg = nlmsg_request->req_buffer;
->     408         nl_client = nlmsg_request->nl_client;
->     409         dev_name = (char *)nla_data(nltb[IWPM_NLA_RREG_IBDEV_NAME]);
->     410         iwpm_name = (char *)nla_data(nltb[IWPM_NLA_RREG_ULIB_NAME]);
->     411         iwpm_version = nla_get_u16(nltb[IWPM_NLA_RREG_ULIB_VER]);
->     412 
->     413         /* check device name, ulib name and version */
->     414         if (strcmp(pm_msg->dev_name, dev_name) ||
->     415                         strcmp(iwpm_ulib_name, iwpm_name) ||
->     416                         iwpm_version < IWPM_UABI_VERSION_MIN) {
->     417 
->     418                 pr_info("%s: Incorrect info (dev = %s name = %s version = %u)\n",
->     419                                 __func__, dev_name, iwpm_name, iwpm_version);
->     420                 nlmsg_request->err_code = IWPM_USER_LIB_INFO_ERR;
->     421                 goto register_pid_response_exit;
->     422         }
->     423         iwpm_user_pid = cb->nlh->nlmsg_pid;
->     424         iwpm_ulib_version = iwpm_version;
->     425         if (iwpm_ulib_version < IWPM_UABI_VERSION)
->     426                 pr_warn_once("%s: Down level iwpmd/pid %d.  Continuing...",
->     427                         __func__, iwpm_user_pid);
->     428         atomic_set(&echo_nlmsg_seq, cb->nlh->nlmsg_seq);
->     429         pr_debug("%s: iWarp Port Mapper (pid = %d) is available!\n",
->     430                         __func__, iwpm_user_pid);
->     431         iwpm_set_registration(nl_client, IWPM_REG_VALID);
->     432 register_pid_response_exit:
->     433         nlmsg_request->request_done = 1;
->     434         /* always for found nlmsg_request */
->     435         kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
-> 
-> The iwpm_free_nlmsg_request() function will free "nlmsg_request"...
-> It's not clear what the "/* always for found nlmsg_request */" comment
-> means.  Maybe it means that the refcount won't drop to zero so the
-> free function won't be called?
+> Guoqing Jiang (12):
+>   RDMA/rtrs-srv: Remove ib_dev_count from rtrs_srv_ib_ctx
+>   RDMA/rtrs-srv: Refactor rtrs_srv_rdma_cm_handler
+>   RDMA/rtrs-srv: Only close srv_path if it is just allocated
+>   RDMA/rtrs-srv: refactor the handling of failure case in map_cont_bufs
+>   RDMA/rtrs-srv: Correct the checking of ib_map_mr_sg
+>   RDMA/rtrs-clt: Correct the checking of ib_map_mr_sg
+>   RDMA/rtrs-srv: Remove outdated comments from create_con
+>   RDMA/rtrs: Kill recon_cnt from several structs
+>   RDMA/rtrs: Clean up rtrs_rdma_dev_pd_ops
+>   RDMA/rtrs-srv: Remove paths_num
+>   RDMA/rtrs-srv: fix several issues in rtrs_srv_destroy_path_files
+>   RDMA/rtrs-srv: Remove kobject_del from
+>     rtrs_srv_destroy_once_sysfs_root_folders
 
-I think so. The nlmsg_request reference counter is elevated when it is
-found in iwpm_find_nlmsg_request(). So I assume that it will be at least
-2 before call to kref_put(). Most likely, nlmsg_request->sem prevents
-from parallel threads to decrease that reference counter.
-
-BTW, not IWPM expert.
+Can you please resend already reviewed and non-controversial patches as a
+standalone series, so we will be able to apply them?
 
 Thanks
+
+> 
+>  drivers/infiniband/ulp/rtrs/rtrs-clt.c       |  12 +-
+>  drivers/infiniband/ulp/rtrs/rtrs-pri.h       |   6 -
+>  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |  13 ++-
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 110 ++++++-------------
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.h       |   2 -
+>  drivers/infiniband/ulp/rtrs/rtrs.c           |  22 +---
+>  6 files changed, 47 insertions(+), 118 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
