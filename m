@@ -2,193 +2,1632 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D00962DD5F
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 14:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F6C62DE10
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Nov 2022 15:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239514AbiKQN4r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Nov 2022 08:56:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
+        id S239220AbiKQO1r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Nov 2022 09:27:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240280AbiKQN4p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 08:56:45 -0500
-Received: from esa6.fujitsucc.c3s2.iphmx.com (esa6.fujitsucc.c3s2.iphmx.com [68.232.159.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B1770A31
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Nov 2022 05:56:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1668693405; x=1700229405;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=CKPrNpwHqvwQ7CYGHTogB/gZXwuOnbbdx2gcPPlxbLI=;
-  b=X0mj1PXUiBpMzkOP8tyiKffL8TnQ3eDHbjkma7Nh005A3soMSOIQOwEf
-   ZWD0QzEsW+rnm2x98hXN5ZliylWKIDCgxHDYkXcUFMTxo60B3Zn1RHGih
-   efjOCw3VV8sYTUBs0Mp4xXlJio0zDtKi+NNuhe4VQ0Jd0Tpf5viKhNmTX
-   DK1Dd6qAC4VlldorV8jrHw7cYMKzJ1OIJsVf2NFHCjzRZkpWFDkYdPhHk
-   D3+8JbqlaIhjIGR5XP6mkBTZLo5K36Y/OynJCE30Lwl43VeEtN0bBICGJ
-   D5L3RC9zcMe15FtEKV7uS0qqgraO8pkMv+KSBbSOE1ojOaGi8HdRGBmgx
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10534"; a="70325386"
-X-IronPort-AV: E=Sophos;i="5.96,171,1665414000"; 
-   d="scan'208";a="70325386"
-Received: from mail-tycjpn01lp2169.outbound.protection.outlook.com (HELO JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.169])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2022 22:56:41 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d7z1ZourzdyckEFnqw51X9OoHXZRTT3bWDXI58liQthJs9dbVcIn2qRqccNSdt14qoD8J/DEMMA0j+T2P7Y6b3CdEQaCd6e4LQoAoyMO9Z9jysQb/n5PJqeOte4oKDasyUFB4g1mB5Y3MpwHdBWdbocnfzbjPUB8F0VVWEco3MVHZSnrQrP7tBqdK21A7oXwY/iCtLW8pTua+7qCDgnky7cUggNVyXLlJ1gcyGACuzuTOx7z4YEYu1AHbPa+iQFiOonBRvUnOosOma8E1+HlzUtY34u8vt6Oq7LqLHGfGiFt023xgW9JcTG/ZKzzdlFUIG596aNcOONyUbVR5HNBSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CKPrNpwHqvwQ7CYGHTogB/gZXwuOnbbdx2gcPPlxbLI=;
- b=PHjfLJxXlz5UqBbvLZBo8g8MU4GM9v4ZyN39QHag/f8RUe4tUcozCM4gC7M/S7NL4nj673OVdD5mMRoGztuWgD/3m9qx8VgnMO/UxX/d82vrjV3hg0pIYacnAxp+MihNOEqpaN3cgzg8QuE1QOtbBA4uHyJVjM5jtHtScvT+Ygek//mlucFqXbWP5jihKYMdpcrfdWl5qBXmNGpfOaZ5fA53eTUQA58gX5AXMpzJKI0fdNW5qAV3uAOUk6DBkyjsrjQ8rupxGgQ+DX166ZfKLgbO1cbCqTw78pbYKVF4jVMRAdBaRgY8QeMGIvP3x6Dbm7X2ke3/FDbTbL/snoRfCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from OS3PR01MB10390.jpnprd01.prod.outlook.com
- (2603:1096:604:1fb::14) by OS3PR01MB6005.jpnprd01.prod.outlook.com
- (2603:1096:604:d3::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17; Thu, 17 Nov
- 2022 13:56:37 +0000
-Received: from OS3PR01MB10390.jpnprd01.prod.outlook.com
- ([fe80::b01a:186c:94a7:acc9]) by OS3PR01MB10390.jpnprd01.prod.outlook.com
- ([fe80::b01a:186c:94a7:acc9%7]) with mapi id 15.20.5813.019; Thu, 17 Nov 2022
- 13:56:37 +0000
-From:   "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-To:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [PATCH] RDMA/rxe: Fix null-ptr-deref in rxe_qp_do_cleanup when
- socket create failed
-Thread-Topic: [PATCH] RDMA/rxe: Fix null-ptr-deref in rxe_qp_do_cleanup when
- socket create failed
-Thread-Index: AQHY+nfiTbcYUjqkQEmsGw99Y/d71a5DI+AA
-Date:   Thu, 17 Nov 2022 13:56:36 +0000
-Message-ID: <16cb1c06-cc93-f0a8-d674-2c9cd5e63cea@fujitsu.com>
-References: <20221117123347.2576350-1-zhangxiaoxu5@huawei.com>
-In-Reply-To: <20221117123347.2576350-1-zhangxiaoxu5@huawei.com>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS3PR01MB10390:EE_|OS3PR01MB6005:EE_
-x-ms-office365-filtering-correlation-id: 0d649704-d608-4e31-0899-08dac8a38b6c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hcUk+PZuBJklpaV09/8bz0RBkabYH7A/CDDsKPRXpYQzWrXON3GZHqGgQquxbbpKf7ETkgOFm6k5cn5ai4Lg3SUX24/jdnI7efpwtg8fKm1QuaiXbxyT4Gger9AcjvSmP+pBjSov8xmP3qKvLWBJdIWVOvoD1KThiq7pIQiv1w3UJNHXrIQt1Vl61U8AUecqz1lwvgtKTQikZWqQXzy1ZrC4E3B1jIAqTMHWT11C6PuV+t5Dbn+8QijXMqfeXu2lPbFWpKm+b1jnOiuf4RgTcxbwWLTOjwbeDZF+10yPTTMfwkVlYeo6704FH0cBo7K5I0IJQHVhYYpILdufCoAwrViU7fBESPuhuxk0bwVEUH+Jy6QfllKrZPldZwYvCJkJOSArY04gTyl58bGrSOcMXwV91hjQxTlGhBVapkrReKzLJYDmLOr1zp093KHJqcMIZRddaHysreIFT7490xqprV8oQgaWEWJpzpuviGm+8ZpWD7j1iqeHRX1ladqmt/CwG+KHZCzxXGDHi0c9OFJDx942CEcpZLpgPmEfJmD6W+lWtj9eVvvg1vzpKrTD2inOS8bTGnvnOaaddHMtfJXDPeAnivIUNiZ8rneOIQFUB6Wf/X2VIQJkwZfp4c7uL3ImhwK9hU8ZuiN/GQMYWpiohcmOElXlTrGG4Ro7aZVfDWpwImzzBYd6uUEPyINuiC1JgXARe0H3fHyA1MFxLOSpciMY2sJgAHl6lMgDYShlIGqiZUxQ4qnXCCmAwKED5H3q8EvNXgPt11+CU0yTZtfE8sUznQ7bdlpxGggoOTDBRY1tfcBCH6rRMIan5UhUbT/RaYthhbzuAQm6kLOO0THtKw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB10390.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(1590799012)(451199015)(8676002)(26005)(64756008)(41300700001)(66446008)(36756003)(5660300002)(6512007)(66556008)(91956017)(186003)(8936002)(76116006)(66476007)(2616005)(86362001)(82960400001)(85182001)(66946007)(38100700002)(2906002)(122000001)(83380400001)(31696002)(53546011)(110136005)(31686004)(38070700005)(71200400001)(316002)(84970400001)(6486002)(6506007)(1580799009)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WVNKUHRBc3VsMy8vaURmRkh5NG9Fd0FZR3NsMkUvZ2RYSzZzbGZVY2ZIa2xy?=
- =?utf-8?B?ZzNJVVM0cFd5azBza1BRVHFCWGNqbDh0cGJ1cnpQNHpHRzZibjl4Y0FJYzli?=
- =?utf-8?B?S2tGMFU1L2lGUTNXbWJhbDBIVzEyeEZYeFpQRTR1M1JILzUzd1hHRGxpT2U0?=
- =?utf-8?B?NTJFeTNac3IrRG5iMDJiNmZyajN1VE1PeW0vUmlzc1o4eDNJUWVIMWFCalBF?=
- =?utf-8?B?OUwyMU12ZEhRWjNaa3ZMRWpXQ282V3pvNGpwQmZWWVMxR0JrMVI3WFh5bEI4?=
- =?utf-8?B?QUNXcWt3Yk5JSytKZ1dVRzA5WHpad1JUZGtCcEZqY1A4MkNaMU9lOFRGNENu?=
- =?utf-8?B?ZVRrbFp1ZGx4ZHMwMUlNeklHeEp4bEhVUGdpREtwMkNXN3RVVkVja1RrOTEr?=
- =?utf-8?B?aDJvNHAwYXQzZDBTYTNrb3k4K0sxK0J0d0dRdC9pdkViRnhyYllvZTB6UmNp?=
- =?utf-8?B?SVJSVDVnaXpLcStpSVlSRXNDc1M2cGJ4UkJRWmliTzRBR1lLcjJ4RWMyWi9z?=
- =?utf-8?B?dDhFeHE4ZXNVT0ZYTENjZFZCZ2Q5dk5DdGRGT2VPT1c0KzRmbmJrM0FKWlls?=
- =?utf-8?B?VXFoTXVVZElBOHVxWlpHVjBKVUpzWVZoMFQ3WlpybE1GbW5yUW9QcllMOU1U?=
- =?utf-8?B?ckJlNmJkb3FhMXd1UWV6Q0N3d1I2K2FWMDZQQ2oraEFZT1ZxQmloZDFQYkdW?=
- =?utf-8?B?UkFpaHFrVTlVb0NzWG9xMGpXU1h2QU15QmdPN2dZckU1TTh4Wk9OMWM5YTdI?=
- =?utf-8?B?RDRjN3ptd051eU53NXYya0Q4c2J1djNkaDBBa0hwcW5FMDJZd2EyQWZrS2k5?=
- =?utf-8?B?eWYwSEYySHpWYVFncFRxSzlkTUJpY0NSQ1ZWbHkvWGx6V2IweFIyQXBwVDV5?=
- =?utf-8?B?SDdzUENIb25xSUkrOVJRT2J6cCt0ODhqalIrbTFuNVRBanozbzlkQkEvWEJs?=
- =?utf-8?B?QXNBcm01N21sOVM3UU1kbVpGYnc2NTlDbjJVUDVwT0lHS2paWFExRFRnUUpn?=
- =?utf-8?B?bEs2RDZ1WlRKbE5lWTRuUFc0Z3RKRHVFUHdpdmxIU3RnQ3g2U2cxY0pscEFW?=
- =?utf-8?B?eHVRRS82dWFyMVh1WWplWFIvR2FqdW8rM2owc3hkSDhsMEpzbVB5MG1zWTdJ?=
- =?utf-8?B?YnVSUWhpUzlqS0czaE5jdGJHclJNUnpqenZyakNYY0lVQndqTjNEQmtnaVBx?=
- =?utf-8?B?bU5qUFI2VStnT2syclBQTnB4eGtISmpndUNEYUhvQUNmM0pkSWtaTkh2WDFs?=
- =?utf-8?B?bUwzTk1GR1huaGxWT2lGdWM0VURxZ00zd29jaFVTWFhmaFI3eGQrZUttSVVu?=
- =?utf-8?B?M21MeVNXR2tjNDQyTERnQUZyTnN5bE1JTUNEczl3SXBBUytGMjNIMjFMaFZO?=
- =?utf-8?B?ZG1Oa0gyQWNTSGZJOTZCb1NGVzFNNFJHWXhyMDNmQ2tKeDliMFdtSWhDVGhQ?=
- =?utf-8?B?akJjb2JRVnpsOEJCSjJ5S0ZjS0JqaVBPb3hvQW1NUmlwb2d5QzMwS09OZzdS?=
- =?utf-8?B?dDdJU2JWSHZUaTluWERRREJTdmxMN25HNVIvNVhnSVpET2ljaHZnSjR5QnFU?=
- =?utf-8?B?QUdzSFRpMkpKejFSUTFoamFHdzZiVnZvZU85Mm1DWk1rTktadm5mZm9zTkRv?=
- =?utf-8?B?RHJZZHp3ZjJWWWtpb0laRFNFUUJvcFhzS1FIWm9tSDNBNEhtV1RMQkdqNWhh?=
- =?utf-8?B?elpnalNuSnJHbkM2TzBUUVZSMnFkV0RiaTg5WXhxT2FaeWdoRHUzSDQrUUZl?=
- =?utf-8?B?VXEyd3F3SmpkNlhlSnN2S2pFQUxvajZQZ0ZUWXRoS0lGVVhXUVpXMXFGTlND?=
- =?utf-8?B?dG9HVlMvUlQ4emFoT1hTUi9qMkVvMmVFRUZQKzRmeE9jMXBpUy9zb3dYWEpB?=
- =?utf-8?B?N21vdHowU3NaV08rbHZHdjhjYWlyNzFsTGtma3dnTzRsL0lKYTlCeEIraUIr?=
- =?utf-8?B?UFVRdlBzb1VYYmNIbXowVDJsTWFEbTkzMll4SitVYlEyellZcVo5bi9ka3BV?=
- =?utf-8?B?TkE4RHhVK3RRcnJ2dVVIK2prMW1tSU5mc29IZ3BKRXRVakU1V1E5M2dyUnJk?=
- =?utf-8?B?Wkc2RDlob2Q1NnNSZlhFWVNBTnpJMGF2V0t3VjBNekZMNGdoYnRMdFBMZ3RT?=
- =?utf-8?B?cHpaWlUwcWtLVDhYQ1NRSXVZaEd1WDFkemNaOWUzdkM3N3pZeWxUZSt6K2dD?=
- =?utf-8?B?OXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <12E50E376FE26E44BF2AB477BD68C773@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S240082AbiKQO1Y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Nov 2022 09:27:24 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938CD79E1A;
+        Thu, 17 Nov 2022 06:27:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9874A61EB2;
+        Thu, 17 Nov 2022 14:27:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B6ACC433D6;
+        Thu, 17 Nov 2022 14:27:14 +0000 (UTC)
+Subject: [PATCH v3] trace: Relocate event helper files
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc:     rostedt@goodmis.org, trondmy@hammerspace.com,
+        anna.schumaker@netapp.com
+Date:   Thu, 17 Nov 2022 09:27:13 -0500
+Message-ID: <166869513208.318836.8777065369440403777.stgit@klimt.1015granger.net>
+User-Agent: StGit/1.5.dev3+g9561319
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 995NbV3G7JXEv5/tSPcSwAh3hQjJAH6eV0dPCh2ttByB/fESgkXWfC84Sg9fazedqEvZoJg789C71TMcaXm848wRegR94ipXkDjyXK++KOHHd0p2MePnjFQroVKFiMsErtV8Ux+86MkLA7YNqWwcs9AjRrkQxJxo/j2FBFVdhJNekiKP2Tm/Qj71S0RsXeG0OMIsf6ExDjRr6cj0khtDabpgRDikWMkWQvVPnAfHzHaHUXz+n6IyxIn4lMz01a4hAGU0SnqRXDYcHbqU7t5W1w7NRWxtU0YwkECqZXiASLIwyNOWJ2om1xBFQ+DB/B6lTkS8ThuDNUu0qtU5zmvPj87Pz1NwLB8xwUpdn98ubN3Pw9/8FlpT4CLhts5RjelR5s7FDHSYl+3sDNAb4qMYqybse99vJouLU+2V6kfm9cJJDyy0gXq78gztMQBM5DKNYH3ZKA2+nHKAMnop7ivytX+MCuzBdvOKyHoZvPu8TpSeu+7tmK5coG4JJspJk+z29dL0UqZqyfsmcwFUjTOLkVtaJann8BNNycDSsPt94AYYsDcTnm9B4dKs7BahL5O67/VkZiJceSZ0e2Bl+57aDXryT8zNwlqtUZ53YrueV2m43xy+6kGh9E9IUadHSMUiP5AdFAHPPEzuYhSW168SI7iPQnwgFQEaYFCFNymtSP47Q7jN/RLcocGhZqdDa94eyahZvFfHIFZAxqjHnYZhiIc9UZa68IBHJC86qTkJaBurDmypckjRIjD9VgD7M6NiaaQsYasa4PAGUyNwKk/MDZyDRtYvTdSVZo2osLcgqsP+4eXGBtlTIht3U/qRbh2YJsMv7crsCyOkeiiIHb5BcDJf+fjRST7gM1SfV2BTVOT/tvdmAVKhByrJXmVd9hsP
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB10390.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d649704-d608-4e31-0899-08dac8a38b6c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2022 13:56:37.0059
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Og1MrAsAAFgvosK0JZdAgdsm63PJXPYjkVpvQLredFb5q5I0VwPLmxdoZj79dAH4yyA8h7JGD7JOHlJ6aqPosQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB6005
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        UPPERCASE_50_75 autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCk9uIDE3LzExLzIwMjIgMjA6MzMsIFpoYW5nIFhpYW94dSB3cm90ZToNCj4gVGhlcmUgaXMg
-YSBudWxsLXB0ci1kZXJlZiB3aGVuIG1vdW50LmNpZnMgb3ZlciByZG1hOg0KPiANCj4gICAgQlVH
-OiBLQVNBTjogbnVsbC1wdHItZGVyZWYgaW4gcnhlX3FwX2RvX2NsZWFudXArMHgyZjMvMHgzNjAg
-W3JkbWFfcnhlXQ0KPiAgICBSZWFkIG9mIHNpemUgOCBhdCBhZGRyIDAwMDAwMDAwMDAwMDAwMTgg
-YnkgdGFzayBtb3VudC5jaWZzLzMwNDYNCj4gDQo+ICAgIENQVTogMiBQSUQ6IDMwNDYgQ29tbTog
-bW91bnQuY2lmcyBOb3QgdGFpbnRlZCA2LjEuMC1yYzUrICM2Mg0KPiAgICBIYXJkd2FyZSBuYW1l
-OiBRRU1VIFN0YW5kYXJkIFBDIChpNDQwRlggKyBQSUlYLCAxOTk2KSwgQklPUyAxLjE0LjAtMS5m
-YzMNCj4gICAgQ2FsbCBUcmFjZToNCj4gICAgIDxUQVNLPg0KPiAgICAgZHVtcF9zdGFja19sdmwr
-MHgzNC8weDQ0DQo+ICAgICBrYXNhbl9yZXBvcnQrMHhhZC8weDEzMA0KPiAgICAgcnhlX3FwX2Rv
-X2NsZWFudXArMHgyZjMvMHgzNjAgW3JkbWFfcnhlXQ0KPiAgICAgZXhlY3V0ZV9pbl9wcm9jZXNz
-X2NvbnRleHQrMHgyNS8weDkwDQo+ICAgICBfX3J4ZV9jbGVhbnVwKzB4MTAxLzB4MWQwIFtyZG1h
-X3J4ZV0NCj4gICAgIHJ4ZV9jcmVhdGVfcXArMHgxNmEvMHgxODAgW3JkbWFfcnhlXQ0KPiAgICAg
-Y3JlYXRlX3FwLnBhcnQuMCsweDI3ZC8weDM0MA0KPiAgICAgaWJfY3JlYXRlX3FwX2tlcm5lbCsw
-eDczLzB4MTYwDQo+ICAgICByZG1hX2NyZWF0ZV9xcCsweDEwMC8weDIzMA0KPiAgICAgX3NtYmRf
-Z2V0X2Nvbm5lY3Rpb24rMHg3NTIvMHgyMGYwDQo+ICAgICBzbWJkX2dldF9jb25uZWN0aW9uKzB4
-MjEvMHg0MA0KPiAgICAgY2lmc19nZXRfdGNwX3Nlc3Npb24rMHg4ZWYvMHhkYTANCj4gICAgIG1v
-dW50X2dldF9jb25ucysweDYwLzB4NzUwDQo+ICAgICBjaWZzX21vdW50KzB4MTAzLzB4ZDAwDQo+
-ICAgICBjaWZzX3NtYjNfZG9fbW91bnQrMHgxZGQvMHhjYjANCj4gICAgIHNtYjNfZ2V0X3RyZWUr
-MHgxZDUvMHgzMDANCj4gICAgIHZmc19nZXRfdHJlZSsweDQxLzB4ZjANCj4gICAgIHBhdGhfbW91
-bnQrMHg5YjMvMHhkZDANCj4gICAgIF9feDY0X3N5c19tb3VudCsweDE5MC8weDFkMA0KPiAgICAg
-ZG9fc3lzY2FsbF82NCsweDM1LzB4ODANCj4gICAgIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdm
-cmFtZSsweDQ2LzB4YjANCj4gDQo+IFRoZSByb290IGNhdXNlIG9mIHRoZSBpc3N1ZSBpcyB0aGUg
-c29ja2V0IGNyZWF0ZSBmYWlsZWQgaW4NCj4gcnhlX3FwX2luaXRfcmVxKCkuDQo+IA0KPiBTbyBh
-ZGQgYSBudWxsIHB0ciBjaGVjayBhYm91dCB0aGUgc2sgYmVmb3JlIHJlc2V0IHRoZSBkc3Qgc29j
-a2V0Lg0KPiANCj4gRml4ZXM6IDg3MDBlM2U3YzQ4NSAoIlNvZnQgUm9DRSBkcml2ZXIiKQ0KPiBT
-aWduZWQtb2ZmLWJ5OiBaaGFuZyBYaWFveHUgPHpoYW5neGlhb3h1NUBodWF3ZWkuY29tPg0KDQoN
-CkxHVE0uDQpSZXZpZXdlZC1ieTogTGkgWmhpamlhbiA8bGl6aGlqaWFuQGZ1aml0c3UuY29tPg0K
-DQpCVFcsIGkgdG9vayBhIGxvb2sgYXQgdGhlIGhpc3Rvcnkgb2YgJ3NrX2RzdF9yZXNldChxcC0+
-c2stPnNrKScgcm91Z2hseSwgDQppIGRpZG4ndCBnZXQgd2h5IGl0IGNhbiBpbXByb3ZlIHRoZSBw
-ZXJmb3JtYW5jZS4NCnRoaXMgc29jayB3aWxsIGJlIHNodXRkb3duIGFuZCByZWxlYXNlIHNvb24u
-DQoNCjgyNSAgICAgICAgIGlmIChxcF90eXBlKHFwKSA9PSBJQl9RUFRfUkMpIA0KDQo4MjYgICAg
-ICAgICAgICAgICAgIHNrX2RzdF9yZXNldChxcC0+c2stPnNrKTsgDQoNCjgyNyANCg0KODI4ICAg
-ICAgICAgZnJlZV9yZF9hdG9taWNfcmVzb3VyY2VzKHFwKTsgDQoNCjgyOSANCg0KODMwICAgICAg
-ICAgaWYgKHFwLT5zaykgeyANCg0KODMxICAgICAgICAgICAgICAgICBrZXJuZWxfc29ja19zaHV0
-ZG93bihxcC0+c2ssIFNIVVRfUkRXUik7IA0KDQo4MzIgICAgICAgICAgICAgICAgIHNvY2tfcmVs
-ZWFzZShxcC0+c2spOyANCiANCiANCg0KODMzICAgICAgICAgfQ0KDQoNCj4gLS0tDQo+ICAgZHJp
-dmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcXAuYyB8IDIgKy0NCj4gICAxIGZpbGUgY2hhbmdl
-ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL2luZmluaWJhbmQvc3cvcnhlL3J4ZV9xcC5jIGIvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4
-ZS9yeGVfcXAuYw0KPiBpbmRleCBhNjJiYWI4ODQxNWMuLjRiYWI2NDFmZGQ0MiAxMDA2NDQNCj4g
-LS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcXAuYw0KPiArKysgYi9kcml2ZXJz
-L2luZmluaWJhbmQvc3cvcnhlL3J4ZV9xcC5jDQo+IEBAIC04MjksNyArODI5LDcgQEAgc3RhdGlj
-IHZvaWQgcnhlX3FwX2RvX2NsZWFudXAoc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KPiAgIAlp
-ZiAocXAtPnJlc3AubXIpDQo+ICAgCQlyeGVfcHV0KHFwLT5yZXNwLm1yKTsNCj4gICANCj4gLQlp
-ZiAocXBfdHlwZShxcCkgPT0gSUJfUVBUX1JDKQ0KPiArCWlmIChxcF90eXBlKHFwKSA9PSBJQl9R
-UFRfUkMgJiYgcXAtPnNrKQ0KPiAgIAkJc2tfZHN0X3Jlc2V0KHFwLT5zay0+c2spOw0KPiAgIA0K
-DQoNCg0KPiAgIAlmcmVlX3JkX2F0b21pY19yZXNvdXJjZXMocXApOw==
+Steven Rostedt says:
+> The include/trace/events/ directory should only hold files that
+> are to create events, not headers that hold helper functions.
+>
+> Can you please move them out of include/trace/events/ as that
+> directory is "special" in the creation of events.
+
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Acked-by: Leon Romanovsky <leonro@nvidia.com>
+Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ MAINTAINERS                         |    7 +
+ drivers/infiniband/core/cm_trace.h  |    2 
+ drivers/infiniband/core/cma_trace.h |    2 
+ fs/nfs/nfs4trace.h                  |    6 -
+ fs/nfs/nfstrace.h                   |    6 -
+ include/trace/events/fs.h           |  122 -----------
+ include/trace/events/nfs.h          |  375 -----------------------------------
+ include/trace/events/rdma.h         |  168 ----------------
+ include/trace/events/rpcgss.h       |    2 
+ include/trace/events/rpcrdma.h      |    4 
+ include/trace/events/sunrpc.h       |    2 
+ include/trace/events/sunrpc_base.h  |   18 --
+ include/trace/misc/fs.h             |  122 +++++++++++
+ include/trace/misc/nfs.h            |  375 +++++++++++++++++++++++++++++++++++
+ include/trace/misc/rdma.h           |  168 ++++++++++++++++
+ include/trace/misc/sunrpc.h         |   18 ++
+ 16 files changed, 702 insertions(+), 695 deletions(-)
+ delete mode 100644 include/trace/events/fs.h
+ delete mode 100644 include/trace/events/nfs.h
+ delete mode 100644 include/trace/events/rdma.h
+ delete mode 100644 include/trace/events/sunrpc_base.h
+ create mode 100644 include/trace/misc/fs.h
+ create mode 100644 include/trace/misc/nfs.h
+ create mode 100644 include/trace/misc/rdma.h
+ create mode 100644 include/trace/misc/sunrpc.h
+
+Note: with an Acked-by from both the NFS client and RDMA core
+maintainers I can take this through the nfsd for-next tree, unless
+someone has another suggestion.
+
+Still missing Acks from the NFS maintainers.
+
+Changes since v2:
+- Add Acks from Leon and Steven
+- Update MAINTAINERS for RPC-related include files
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 84f7496dd950..181ae044c9f3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10055,6 +10055,7 @@ F:	drivers/infiniband/
+ F:	include/rdma/
+ F:	include/trace/events/ib_mad.h
+ F:	include/trace/events/ib_umad.h
++F:	include/trace/misc/rdma.h
+ F:	include/uapi/linux/if_infiniband.h
+ F:	include/uapi/rdma/
+ F:	samples/bpf/ibumad_kern.c
+@@ -11137,6 +11138,12 @@ F:	fs/nfs_common/
+ F:	fs/nfsd/
+ F:	include/linux/lockd/
+ F:	include/linux/sunrpc/
++F:	include/trace/events/rpcgss.h
++F:	include/trace/events/rpcrdma.h
++F:	include/trace/events/sunrpc.h
++F:	include/trace/misc/fs.h
++F:	include/trace/misc/nfs.h
++F:	include/trace/misc/sunrpc.h
+ F:	include/uapi/linux/nfsd/
+ F:	include/uapi/linux/sunrpc/
+ F:	net/sunrpc/
+diff --git a/drivers/infiniband/core/cm_trace.h b/drivers/infiniband/core/cm_trace.h
+index e9d282679ef1..944d9071245d 100644
+--- a/drivers/infiniband/core/cm_trace.h
++++ b/drivers/infiniband/core/cm_trace.h
+@@ -16,7 +16,7 @@
+ 
+ #include <linux/tracepoint.h>
+ #include <rdma/ib_cm.h>
+-#include <trace/events/rdma.h>
++#include <trace/misc/rdma.h>
+ 
+ /*
+  * enum ib_cm_state, from include/rdma/ib_cm.h
+diff --git a/drivers/infiniband/core/cma_trace.h b/drivers/infiniband/core/cma_trace.h
+index e45264267bcc..47f3c6e4be89 100644
+--- a/drivers/infiniband/core/cma_trace.h
++++ b/drivers/infiniband/core/cma_trace.h
+@@ -15,7 +15,7 @@
+ #define _TRACE_RDMA_CMA_H
+ 
+ #include <linux/tracepoint.h>
+-#include <trace/events/rdma.h>
++#include <trace/misc/rdma.h>
+ 
+ 
+ DECLARE_EVENT_CLASS(cma_fsm_class,
+diff --git a/fs/nfs/nfs4trace.h b/fs/nfs/nfs4trace.h
+index 2cff5901c689..633cc64a04da 100644
+--- a/fs/nfs/nfs4trace.h
++++ b/fs/nfs/nfs4trace.h
+@@ -9,10 +9,10 @@
+ #define _TRACE_NFS4_H
+ 
+ #include <linux/tracepoint.h>
+-#include <trace/events/sunrpc_base.h>
++#include <trace/misc/sunrpc.h>
+ 
+-#include <trace/events/fs.h>
+-#include <trace/events/nfs.h>
++#include <trace/misc/fs.h>
++#include <trace/misc/nfs.h>
+ 
+ #define show_nfs_fattr_flags(valid) \
+ 	__print_flags((unsigned long)valid, "|", \
+diff --git a/fs/nfs/nfstrace.h b/fs/nfs/nfstrace.h
+index 8c6cc58679ff..642f6921852f 100644
+--- a/fs/nfs/nfstrace.h
++++ b/fs/nfs/nfstrace.h
+@@ -11,9 +11,9 @@
+ #include <linux/tracepoint.h>
+ #include <linux/iversion.h>
+ 
+-#include <trace/events/fs.h>
+-#include <trace/events/nfs.h>
+-#include <trace/events/sunrpc_base.h>
++#include <trace/misc/fs.h>
++#include <trace/misc/nfs.h>
++#include <trace/misc/sunrpc.h>
+ 
+ #define nfs_show_cache_validity(v) \
+ 	__print_flags(v, "|", \
+diff --git a/include/trace/events/fs.h b/include/trace/events/fs.h
+deleted file mode 100644
+index 738b97f22f36..000000000000
+--- a/include/trace/events/fs.h
++++ /dev/null
+@@ -1,122 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Display helpers for generic filesystem items
+- *
+- * Author: Chuck Lever <chuck.lever@oracle.com>
+- *
+- * Copyright (c) 2020, Oracle and/or its affiliates.
+- */
+-
+-#include <linux/fs.h>
+-
+-#define show_fs_dirent_type(x) \
+-	__print_symbolic(x, \
+-		{ DT_UNKNOWN,		"UNKNOWN" }, \
+-		{ DT_FIFO,		"FIFO" }, \
+-		{ DT_CHR,		"CHR" }, \
+-		{ DT_DIR,		"DIR" }, \
+-		{ DT_BLK,		"BLK" }, \
+-		{ DT_REG,		"REG" }, \
+-		{ DT_LNK,		"LNK" }, \
+-		{ DT_SOCK,		"SOCK" }, \
+-		{ DT_WHT,		"WHT" })
+-
+-#define show_fs_fcntl_open_flags(x) \
+-	__print_flags(x, "|", \
+-		{ O_WRONLY,		"O_WRONLY" }, \
+-		{ O_RDWR,		"O_RDWR" }, \
+-		{ O_CREAT,		"O_CREAT" }, \
+-		{ O_EXCL,		"O_EXCL" }, \
+-		{ O_NOCTTY,		"O_NOCTTY" }, \
+-		{ O_TRUNC,		"O_TRUNC" }, \
+-		{ O_APPEND,		"O_APPEND" }, \
+-		{ O_NONBLOCK,		"O_NONBLOCK" }, \
+-		{ O_DSYNC,		"O_DSYNC" }, \
+-		{ O_DIRECT,		"O_DIRECT" }, \
+-		{ O_LARGEFILE,		"O_LARGEFILE" }, \
+-		{ O_DIRECTORY,		"O_DIRECTORY" }, \
+-		{ O_NOFOLLOW,		"O_NOFOLLOW" }, \
+-		{ O_NOATIME,		"O_NOATIME" }, \
+-		{ O_CLOEXEC,		"O_CLOEXEC" })
+-
+-#define __fmode_flag(x)	{ (__force unsigned long)FMODE_##x, #x }
+-#define show_fs_fmode_flags(x) \
+-	__print_flags(x, "|", \
+-		__fmode_flag(READ), \
+-		__fmode_flag(WRITE), \
+-		__fmode_flag(EXEC))
+-
+-#ifdef CONFIG_64BIT
+-#define show_fs_fcntl_cmd(x) \
+-	__print_symbolic(x, \
+-		{ F_DUPFD,		"DUPFD" }, \
+-		{ F_GETFD,		"GETFD" }, \
+-		{ F_SETFD,		"SETFD" }, \
+-		{ F_GETFL,		"GETFL" }, \
+-		{ F_SETFL,		"SETFL" }, \
+-		{ F_GETLK,		"GETLK" }, \
+-		{ F_SETLK,		"SETLK" }, \
+-		{ F_SETLKW,		"SETLKW" }, \
+-		{ F_SETOWN,		"SETOWN" }, \
+-		{ F_GETOWN,		"GETOWN" }, \
+-		{ F_SETSIG,		"SETSIG" }, \
+-		{ F_GETSIG,		"GETSIG" }, \
+-		{ F_SETOWN_EX,		"SETOWN_EX" }, \
+-		{ F_GETOWN_EX,		"GETOWN_EX" }, \
+-		{ F_GETOWNER_UIDS,	"GETOWNER_UIDS" }, \
+-		{ F_OFD_GETLK,		"OFD_GETLK" }, \
+-		{ F_OFD_SETLK,		"OFD_SETLK" }, \
+-		{ F_OFD_SETLKW,		"OFD_SETLKW" })
+-#else /* CONFIG_64BIT */
+-#define show_fs_fcntl_cmd(x) \
+-	__print_symbolic(x, \
+-		{ F_DUPFD,		"DUPFD" }, \
+-		{ F_GETFD,		"GETFD" }, \
+-		{ F_SETFD,		"SETFD" }, \
+-		{ F_GETFL,		"GETFL" }, \
+-		{ F_SETFL,		"SETFL" }, \
+-		{ F_GETLK,		"GETLK" }, \
+-		{ F_SETLK,		"SETLK" }, \
+-		{ F_SETLKW,		"SETLKW" }, \
+-		{ F_SETOWN,		"SETOWN" }, \
+-		{ F_GETOWN,		"GETOWN" }, \
+-		{ F_SETSIG,		"SETSIG" }, \
+-		{ F_GETSIG,		"GETSIG" }, \
+-		{ F_GETLK64,		"GETLK64" }, \
+-		{ F_SETLK64,		"SETLK64" }, \
+-		{ F_SETLKW64,		"SETLKW64" }, \
+-		{ F_SETOWN_EX,		"SETOWN_EX" }, \
+-		{ F_GETOWN_EX,		"GETOWN_EX" }, \
+-		{ F_GETOWNER_UIDS,	"GETOWNER_UIDS" }, \
+-		{ F_OFD_GETLK,		"OFD_GETLK" }, \
+-		{ F_OFD_SETLK,		"OFD_SETLK" }, \
+-		{ F_OFD_SETLKW,		"OFD_SETLKW" })
+-#endif /* CONFIG_64BIT */
+-
+-#define show_fs_fcntl_lock_type(x) \
+-	__print_symbolic(x, \
+-		{ F_RDLCK,		"RDLCK" }, \
+-		{ F_WRLCK,		"WRLCK" }, \
+-		{ F_UNLCK,		"UNLCK" })
+-
+-#define show_fs_lookup_flags(flags) \
+-	__print_flags(flags, "|", \
+-		{ LOOKUP_FOLLOW,	"FOLLOW" }, \
+-		{ LOOKUP_DIRECTORY,	"DIRECTORY" }, \
+-		{ LOOKUP_AUTOMOUNT,	"AUTOMOUNT" }, \
+-		{ LOOKUP_EMPTY,		"EMPTY" }, \
+-		{ LOOKUP_DOWN,		"DOWN" }, \
+-		{ LOOKUP_MOUNTPOINT,	"MOUNTPOINT" }, \
+-		{ LOOKUP_REVAL,		"REVAL" }, \
+-		{ LOOKUP_RCU,		"RCU" }, \
+-		{ LOOKUP_OPEN,		"OPEN" }, \
+-		{ LOOKUP_CREATE,	"CREATE" }, \
+-		{ LOOKUP_EXCL,		"EXCL" }, \
+-		{ LOOKUP_RENAME_TARGET,	"RENAME_TARGET" }, \
+-		{ LOOKUP_PARENT,	"PARENT" }, \
+-		{ LOOKUP_NO_SYMLINKS,	"NO_SYMLINKS" }, \
+-		{ LOOKUP_NO_MAGICLINKS,	"NO_MAGICLINKS" }, \
+-		{ LOOKUP_NO_XDEV,	"NO_XDEV" }, \
+-		{ LOOKUP_BENEATH,	"BENEATH" }, \
+-		{ LOOKUP_IN_ROOT,	"IN_ROOT" }, \
+-		{ LOOKUP_CACHED,	"CACHED" })
+diff --git a/include/trace/events/nfs.h b/include/trace/events/nfs.h
+deleted file mode 100644
+index 09ffdbb04134..000000000000
+--- a/include/trace/events/nfs.h
++++ /dev/null
+@@ -1,375 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Display helpers for NFS protocol elements
+- *
+- * Author: Chuck Lever <chuck.lever@oracle.com>
+- *
+- * Copyright (c) 2020, Oracle and/or its affiliates.
+- */
+-
+-#include <linux/nfs.h>
+-#include <linux/nfs4.h>
+-#include <uapi/linux/nfs.h>
+-
+-TRACE_DEFINE_ENUM(NFS_OK);
+-TRACE_DEFINE_ENUM(NFSERR_PERM);
+-TRACE_DEFINE_ENUM(NFSERR_NOENT);
+-TRACE_DEFINE_ENUM(NFSERR_IO);
+-TRACE_DEFINE_ENUM(NFSERR_NXIO);
+-TRACE_DEFINE_ENUM(NFSERR_EAGAIN);
+-TRACE_DEFINE_ENUM(NFSERR_ACCES);
+-TRACE_DEFINE_ENUM(NFSERR_EXIST);
+-TRACE_DEFINE_ENUM(NFSERR_XDEV);
+-TRACE_DEFINE_ENUM(NFSERR_NODEV);
+-TRACE_DEFINE_ENUM(NFSERR_NOTDIR);
+-TRACE_DEFINE_ENUM(NFSERR_ISDIR);
+-TRACE_DEFINE_ENUM(NFSERR_INVAL);
+-TRACE_DEFINE_ENUM(NFSERR_FBIG);
+-TRACE_DEFINE_ENUM(NFSERR_NOSPC);
+-TRACE_DEFINE_ENUM(NFSERR_ROFS);
+-TRACE_DEFINE_ENUM(NFSERR_MLINK);
+-TRACE_DEFINE_ENUM(NFSERR_OPNOTSUPP);
+-TRACE_DEFINE_ENUM(NFSERR_NAMETOOLONG);
+-TRACE_DEFINE_ENUM(NFSERR_NOTEMPTY);
+-TRACE_DEFINE_ENUM(NFSERR_DQUOT);
+-TRACE_DEFINE_ENUM(NFSERR_STALE);
+-TRACE_DEFINE_ENUM(NFSERR_REMOTE);
+-TRACE_DEFINE_ENUM(NFSERR_WFLUSH);
+-TRACE_DEFINE_ENUM(NFSERR_BADHANDLE);
+-TRACE_DEFINE_ENUM(NFSERR_NOT_SYNC);
+-TRACE_DEFINE_ENUM(NFSERR_BAD_COOKIE);
+-TRACE_DEFINE_ENUM(NFSERR_NOTSUPP);
+-TRACE_DEFINE_ENUM(NFSERR_TOOSMALL);
+-TRACE_DEFINE_ENUM(NFSERR_SERVERFAULT);
+-TRACE_DEFINE_ENUM(NFSERR_BADTYPE);
+-TRACE_DEFINE_ENUM(NFSERR_JUKEBOX);
+-
+-#define show_nfs_status(x) \
+-	__print_symbolic(x, \
+-		{ NFS_OK,			"OK" }, \
+-		{ NFSERR_PERM,			"PERM" }, \
+-		{ NFSERR_NOENT,			"NOENT" }, \
+-		{ NFSERR_IO,			"IO" }, \
+-		{ NFSERR_NXIO,			"NXIO" }, \
+-		{ ECHILD,			"CHILD" }, \
+-		{ NFSERR_EAGAIN,		"AGAIN" }, \
+-		{ NFSERR_ACCES,			"ACCES" }, \
+-		{ NFSERR_EXIST,			"EXIST" }, \
+-		{ NFSERR_XDEV,			"XDEV" }, \
+-		{ NFSERR_NODEV,			"NODEV" }, \
+-		{ NFSERR_NOTDIR,		"NOTDIR" }, \
+-		{ NFSERR_ISDIR,			"ISDIR" }, \
+-		{ NFSERR_INVAL,			"INVAL" }, \
+-		{ NFSERR_FBIG,			"FBIG" }, \
+-		{ NFSERR_NOSPC,			"NOSPC" }, \
+-		{ NFSERR_ROFS,			"ROFS" }, \
+-		{ NFSERR_MLINK,			"MLINK" }, \
+-		{ NFSERR_OPNOTSUPP,		"OPNOTSUPP" }, \
+-		{ NFSERR_NAMETOOLONG,		"NAMETOOLONG" }, \
+-		{ NFSERR_NOTEMPTY,		"NOTEMPTY" }, \
+-		{ NFSERR_DQUOT,			"DQUOT" }, \
+-		{ NFSERR_STALE,			"STALE" }, \
+-		{ NFSERR_REMOTE,		"REMOTE" }, \
+-		{ NFSERR_WFLUSH,		"WFLUSH" }, \
+-		{ NFSERR_BADHANDLE,		"BADHANDLE" }, \
+-		{ NFSERR_NOT_SYNC,		"NOTSYNC" }, \
+-		{ NFSERR_BAD_COOKIE,		"BADCOOKIE" }, \
+-		{ NFSERR_NOTSUPP,		"NOTSUPP" }, \
+-		{ NFSERR_TOOSMALL,		"TOOSMALL" }, \
+-		{ NFSERR_SERVERFAULT,		"REMOTEIO" }, \
+-		{ NFSERR_BADTYPE,		"BADTYPE" }, \
+-		{ NFSERR_JUKEBOX,		"JUKEBOX" })
+-
+-TRACE_DEFINE_ENUM(NFS_UNSTABLE);
+-TRACE_DEFINE_ENUM(NFS_DATA_SYNC);
+-TRACE_DEFINE_ENUM(NFS_FILE_SYNC);
+-
+-#define show_nfs_stable_how(x) \
+-	__print_symbolic(x, \
+-		{ NFS_UNSTABLE,			"UNSTABLE" }, \
+-		{ NFS_DATA_SYNC,		"DATA_SYNC" }, \
+-		{ NFS_FILE_SYNC,		"FILE_SYNC" })
+-
+-TRACE_DEFINE_ENUM(NFS4_OK);
+-TRACE_DEFINE_ENUM(NFS4ERR_ACCESS);
+-TRACE_DEFINE_ENUM(NFS4ERR_ATTRNOTSUPP);
+-TRACE_DEFINE_ENUM(NFS4ERR_ADMIN_REVOKED);
+-TRACE_DEFINE_ENUM(NFS4ERR_BACK_CHAN_BUSY);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADCHAR);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADHANDLE);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADIOMODE);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADLAYOUT);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADLABEL);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADNAME);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADOWNER);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADSESSION);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADSLOT);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADTYPE);
+-TRACE_DEFINE_ENUM(NFS4ERR_BADXDR);
+-TRACE_DEFINE_ENUM(NFS4ERR_BAD_COOKIE);
+-TRACE_DEFINE_ENUM(NFS4ERR_BAD_HIGH_SLOT);
+-TRACE_DEFINE_ENUM(NFS4ERR_BAD_RANGE);
+-TRACE_DEFINE_ENUM(NFS4ERR_BAD_SEQID);
+-TRACE_DEFINE_ENUM(NFS4ERR_BAD_SESSION_DIGEST);
+-TRACE_DEFINE_ENUM(NFS4ERR_BAD_STATEID);
+-TRACE_DEFINE_ENUM(NFS4ERR_CB_PATH_DOWN);
+-TRACE_DEFINE_ENUM(NFS4ERR_CLID_INUSE);
+-TRACE_DEFINE_ENUM(NFS4ERR_CLIENTID_BUSY);
+-TRACE_DEFINE_ENUM(NFS4ERR_COMPLETE_ALREADY);
+-TRACE_DEFINE_ENUM(NFS4ERR_CONN_NOT_BOUND_TO_SESSION);
+-TRACE_DEFINE_ENUM(NFS4ERR_DEADLOCK);
+-TRACE_DEFINE_ENUM(NFS4ERR_DEADSESSION);
+-TRACE_DEFINE_ENUM(NFS4ERR_DELAY);
+-TRACE_DEFINE_ENUM(NFS4ERR_DELEG_ALREADY_WANTED);
+-TRACE_DEFINE_ENUM(NFS4ERR_DELEG_REVOKED);
+-TRACE_DEFINE_ENUM(NFS4ERR_DENIED);
+-TRACE_DEFINE_ENUM(NFS4ERR_DIRDELEG_UNAVAIL);
+-TRACE_DEFINE_ENUM(NFS4ERR_DQUOT);
+-TRACE_DEFINE_ENUM(NFS4ERR_ENCR_ALG_UNSUPP);
+-TRACE_DEFINE_ENUM(NFS4ERR_EXIST);
+-TRACE_DEFINE_ENUM(NFS4ERR_EXPIRED);
+-TRACE_DEFINE_ENUM(NFS4ERR_FBIG);
+-TRACE_DEFINE_ENUM(NFS4ERR_FHEXPIRED);
+-TRACE_DEFINE_ENUM(NFS4ERR_FILE_OPEN);
+-TRACE_DEFINE_ENUM(NFS4ERR_GRACE);
+-TRACE_DEFINE_ENUM(NFS4ERR_HASH_ALG_UNSUPP);
+-TRACE_DEFINE_ENUM(NFS4ERR_INVAL);
+-TRACE_DEFINE_ENUM(NFS4ERR_IO);
+-TRACE_DEFINE_ENUM(NFS4ERR_ISDIR);
+-TRACE_DEFINE_ENUM(NFS4ERR_LAYOUTTRYLATER);
+-TRACE_DEFINE_ENUM(NFS4ERR_LAYOUTUNAVAILABLE);
+-TRACE_DEFINE_ENUM(NFS4ERR_LEASE_MOVED);
+-TRACE_DEFINE_ENUM(NFS4ERR_LOCKED);
+-TRACE_DEFINE_ENUM(NFS4ERR_LOCKS_HELD);
+-TRACE_DEFINE_ENUM(NFS4ERR_LOCK_RANGE);
+-TRACE_DEFINE_ENUM(NFS4ERR_MINOR_VERS_MISMATCH);
+-TRACE_DEFINE_ENUM(NFS4ERR_MLINK);
+-TRACE_DEFINE_ENUM(NFS4ERR_MOVED);
+-TRACE_DEFINE_ENUM(NFS4ERR_NAMETOOLONG);
+-TRACE_DEFINE_ENUM(NFS4ERR_NOENT);
+-TRACE_DEFINE_ENUM(NFS4ERR_NOFILEHANDLE);
+-TRACE_DEFINE_ENUM(NFS4ERR_NOMATCHING_LAYOUT);
+-TRACE_DEFINE_ENUM(NFS4ERR_NOSPC);
+-TRACE_DEFINE_ENUM(NFS4ERR_NOTDIR);
+-TRACE_DEFINE_ENUM(NFS4ERR_NOTEMPTY);
+-TRACE_DEFINE_ENUM(NFS4ERR_NOTSUPP);
+-TRACE_DEFINE_ENUM(NFS4ERR_NOT_ONLY_OP);
+-TRACE_DEFINE_ENUM(NFS4ERR_NOT_SAME);
+-TRACE_DEFINE_ENUM(NFS4ERR_NO_GRACE);
+-TRACE_DEFINE_ENUM(NFS4ERR_NXIO);
+-TRACE_DEFINE_ENUM(NFS4ERR_OLD_STATEID);
+-TRACE_DEFINE_ENUM(NFS4ERR_OPENMODE);
+-TRACE_DEFINE_ENUM(NFS4ERR_OP_ILLEGAL);
+-TRACE_DEFINE_ENUM(NFS4ERR_OP_NOT_IN_SESSION);
+-TRACE_DEFINE_ENUM(NFS4ERR_PERM);
+-TRACE_DEFINE_ENUM(NFS4ERR_PNFS_IO_HOLE);
+-TRACE_DEFINE_ENUM(NFS4ERR_PNFS_NO_LAYOUT);
+-TRACE_DEFINE_ENUM(NFS4ERR_RECALLCONFLICT);
+-TRACE_DEFINE_ENUM(NFS4ERR_RECLAIM_BAD);
+-TRACE_DEFINE_ENUM(NFS4ERR_RECLAIM_CONFLICT);
+-TRACE_DEFINE_ENUM(NFS4ERR_REJECT_DELEG);
+-TRACE_DEFINE_ENUM(NFS4ERR_REP_TOO_BIG);
+-TRACE_DEFINE_ENUM(NFS4ERR_REP_TOO_BIG_TO_CACHE);
+-TRACE_DEFINE_ENUM(NFS4ERR_REQ_TOO_BIG);
+-TRACE_DEFINE_ENUM(NFS4ERR_RESOURCE);
+-TRACE_DEFINE_ENUM(NFS4ERR_RESTOREFH);
+-TRACE_DEFINE_ENUM(NFS4ERR_RETRY_UNCACHED_REP);
+-TRACE_DEFINE_ENUM(NFS4ERR_RETURNCONFLICT);
+-TRACE_DEFINE_ENUM(NFS4ERR_ROFS);
+-TRACE_DEFINE_ENUM(NFS4ERR_SAME);
+-TRACE_DEFINE_ENUM(NFS4ERR_SHARE_DENIED);
+-TRACE_DEFINE_ENUM(NFS4ERR_SEQUENCE_POS);
+-TRACE_DEFINE_ENUM(NFS4ERR_SEQ_FALSE_RETRY);
+-TRACE_DEFINE_ENUM(NFS4ERR_SEQ_MISORDERED);
+-TRACE_DEFINE_ENUM(NFS4ERR_SERVERFAULT);
+-TRACE_DEFINE_ENUM(NFS4ERR_STALE);
+-TRACE_DEFINE_ENUM(NFS4ERR_STALE_CLIENTID);
+-TRACE_DEFINE_ENUM(NFS4ERR_STALE_STATEID);
+-TRACE_DEFINE_ENUM(NFS4ERR_SYMLINK);
+-TRACE_DEFINE_ENUM(NFS4ERR_TOOSMALL);
+-TRACE_DEFINE_ENUM(NFS4ERR_TOO_MANY_OPS);
+-TRACE_DEFINE_ENUM(NFS4ERR_UNKNOWN_LAYOUTTYPE);
+-TRACE_DEFINE_ENUM(NFS4ERR_UNSAFE_COMPOUND);
+-TRACE_DEFINE_ENUM(NFS4ERR_WRONGSEC);
+-TRACE_DEFINE_ENUM(NFS4ERR_WRONG_CRED);
+-TRACE_DEFINE_ENUM(NFS4ERR_WRONG_TYPE);
+-TRACE_DEFINE_ENUM(NFS4ERR_XDEV);
+-
+-TRACE_DEFINE_ENUM(NFS4ERR_RESET_TO_MDS);
+-TRACE_DEFINE_ENUM(NFS4ERR_RESET_TO_PNFS);
+-
+-#define show_nfs4_status(x) \
+-	__print_symbolic(x, \
+-		{ NFS4_OK,			"OK" }, \
+-		{ EPERM,			"EPERM" }, \
+-		{ ENOENT,			"ENOENT" }, \
+-		{ EIO,				"EIO" }, \
+-		{ ENXIO,			"ENXIO" }, \
+-		{ EACCES,			"EACCES" }, \
+-		{ EEXIST,			"EEXIST" }, \
+-		{ EXDEV,			"EXDEV" }, \
+-		{ ENOTDIR,			"ENOTDIR" }, \
+-		{ EISDIR,			"EISDIR" }, \
+-		{ EFBIG,			"EFBIG" }, \
+-		{ ENOSPC,			"ENOSPC" }, \
+-		{ EROFS,			"EROFS" }, \
+-		{ EMLINK,			"EMLINK" }, \
+-		{ ENAMETOOLONG,			"ENAMETOOLONG" }, \
+-		{ ENOTEMPTY,			"ENOTEMPTY" }, \
+-		{ EDQUOT,			"EDQUOT" }, \
+-		{ ESTALE,			"ESTALE" }, \
+-		{ EBADHANDLE,			"EBADHANDLE" }, \
+-		{ EBADCOOKIE,			"EBADCOOKIE" }, \
+-		{ ENOTSUPP,			"ENOTSUPP" }, \
+-		{ ETOOSMALL,			"ETOOSMALL" }, \
+-		{ EREMOTEIO,			"EREMOTEIO" }, \
+-		{ EBADTYPE,			"EBADTYPE" }, \
+-		{ EAGAIN,			"EAGAIN" }, \
+-		{ ELOOP,			"ELOOP" }, \
+-		{ EOPNOTSUPP,			"EOPNOTSUPP" }, \
+-		{ EDEADLK,			"EDEADLK" }, \
+-		{ ENOMEM,			"ENOMEM" }, \
+-		{ EKEYEXPIRED,			"EKEYEXPIRED" }, \
+-		{ ETIMEDOUT,			"ETIMEDOUT" }, \
+-		{ ERESTARTSYS,			"ERESTARTSYS" }, \
+-		{ ECONNREFUSED,			"ECONNREFUSED" }, \
+-		{ ECONNRESET,			"ECONNRESET" }, \
+-		{ ENETUNREACH,			"ENETUNREACH" }, \
+-		{ EHOSTUNREACH,			"EHOSTUNREACH" }, \
+-		{ EHOSTDOWN,			"EHOSTDOWN" }, \
+-		{ EPIPE,			"EPIPE" }, \
+-		{ EPFNOSUPPORT,			"EPFNOSUPPORT" }, \
+-		{ EPROTONOSUPPORT,		"EPROTONOSUPPORT" }, \
+-		{ NFS4ERR_ACCESS,		"ACCESS" }, \
+-		{ NFS4ERR_ATTRNOTSUPP,		"ATTRNOTSUPP" }, \
+-		{ NFS4ERR_ADMIN_REVOKED,	"ADMIN_REVOKED" }, \
+-		{ NFS4ERR_BACK_CHAN_BUSY,	"BACK_CHAN_BUSY" }, \
+-		{ NFS4ERR_BADCHAR,		"BADCHAR" }, \
+-		{ NFS4ERR_BADHANDLE,		"BADHANDLE" }, \
+-		{ NFS4ERR_BADIOMODE,		"BADIOMODE" }, \
+-		{ NFS4ERR_BADLAYOUT,		"BADLAYOUT" }, \
+-		{ NFS4ERR_BADLABEL,		"BADLABEL" }, \
+-		{ NFS4ERR_BADNAME,		"BADNAME" }, \
+-		{ NFS4ERR_BADOWNER,		"BADOWNER" }, \
+-		{ NFS4ERR_BADSESSION,		"BADSESSION" }, \
+-		{ NFS4ERR_BADSLOT,		"BADSLOT" }, \
+-		{ NFS4ERR_BADTYPE,		"BADTYPE" }, \
+-		{ NFS4ERR_BADXDR,		"BADXDR" }, \
+-		{ NFS4ERR_BAD_COOKIE,		"BAD_COOKIE" }, \
+-		{ NFS4ERR_BAD_HIGH_SLOT,	"BAD_HIGH_SLOT" }, \
+-		{ NFS4ERR_BAD_RANGE,		"BAD_RANGE" }, \
+-		{ NFS4ERR_BAD_SEQID,		"BAD_SEQID" }, \
+-		{ NFS4ERR_BAD_SESSION_DIGEST,	"BAD_SESSION_DIGEST" }, \
+-		{ NFS4ERR_BAD_STATEID,		"BAD_STATEID" }, \
+-		{ NFS4ERR_CB_PATH_DOWN,		"CB_PATH_DOWN" }, \
+-		{ NFS4ERR_CLID_INUSE,		"CLID_INUSE" }, \
+-		{ NFS4ERR_CLIENTID_BUSY,	"CLIENTID_BUSY" }, \
+-		{ NFS4ERR_COMPLETE_ALREADY,	"COMPLETE_ALREADY" }, \
+-		{ NFS4ERR_CONN_NOT_BOUND_TO_SESSION, "CONN_NOT_BOUND_TO_SESSION" }, \
+-		{ NFS4ERR_DEADLOCK,		"DEADLOCK" }, \
+-		{ NFS4ERR_DEADSESSION,		"DEAD_SESSION" }, \
+-		{ NFS4ERR_DELAY,		"DELAY" }, \
+-		{ NFS4ERR_DELEG_ALREADY_WANTED,	"DELEG_ALREADY_WANTED" }, \
+-		{ NFS4ERR_DELEG_REVOKED,	"DELEG_REVOKED" }, \
+-		{ NFS4ERR_DENIED,		"DENIED" }, \
+-		{ NFS4ERR_DIRDELEG_UNAVAIL,	"DIRDELEG_UNAVAIL" }, \
+-		{ NFS4ERR_DQUOT,		"DQUOT" }, \
+-		{ NFS4ERR_ENCR_ALG_UNSUPP,	"ENCR_ALG_UNSUPP" }, \
+-		{ NFS4ERR_EXIST,		"EXIST" }, \
+-		{ NFS4ERR_EXPIRED,		"EXPIRED" }, \
+-		{ NFS4ERR_FBIG,			"FBIG" }, \
+-		{ NFS4ERR_FHEXPIRED,		"FHEXPIRED" }, \
+-		{ NFS4ERR_FILE_OPEN,		"FILE_OPEN" }, \
+-		{ NFS4ERR_GRACE,		"GRACE" }, \
+-		{ NFS4ERR_HASH_ALG_UNSUPP,	"HASH_ALG_UNSUPP" }, \
+-		{ NFS4ERR_INVAL,		"INVAL" }, \
+-		{ NFS4ERR_IO,			"IO" }, \
+-		{ NFS4ERR_ISDIR,		"ISDIR" }, \
+-		{ NFS4ERR_LAYOUTTRYLATER,	"LAYOUTTRYLATER" }, \
+-		{ NFS4ERR_LAYOUTUNAVAILABLE,	"LAYOUTUNAVAILABLE" }, \
+-		{ NFS4ERR_LEASE_MOVED,		"LEASE_MOVED" }, \
+-		{ NFS4ERR_LOCKED,		"LOCKED" }, \
+-		{ NFS4ERR_LOCKS_HELD,		"LOCKS_HELD" }, \
+-		{ NFS4ERR_LOCK_RANGE,		"LOCK_RANGE" }, \
+-		{ NFS4ERR_MINOR_VERS_MISMATCH,	"MINOR_VERS_MISMATCH" }, \
+-		{ NFS4ERR_MLINK,		"MLINK" }, \
+-		{ NFS4ERR_MOVED,		"MOVED" }, \
+-		{ NFS4ERR_NAMETOOLONG,		"NAMETOOLONG" }, \
+-		{ NFS4ERR_NOENT,		"NOENT" }, \
+-		{ NFS4ERR_NOFILEHANDLE,		"NOFILEHANDLE" }, \
+-		{ NFS4ERR_NOMATCHING_LAYOUT,	"NOMATCHING_LAYOUT" }, \
+-		{ NFS4ERR_NOSPC,		"NOSPC" }, \
+-		{ NFS4ERR_NOTDIR,		"NOTDIR" }, \
+-		{ NFS4ERR_NOTEMPTY,		"NOTEMPTY" }, \
+-		{ NFS4ERR_NOTSUPP,		"NOTSUPP" }, \
+-		{ NFS4ERR_NOT_ONLY_OP,		"NOT_ONLY_OP" }, \
+-		{ NFS4ERR_NOT_SAME,		"NOT_SAME" }, \
+-		{ NFS4ERR_NO_GRACE,		"NO_GRACE" }, \
+-		{ NFS4ERR_NXIO,			"NXIO" }, \
+-		{ NFS4ERR_OLD_STATEID,		"OLD_STATEID" }, \
+-		{ NFS4ERR_OPENMODE,		"OPENMODE" }, \
+-		{ NFS4ERR_OP_ILLEGAL,		"OP_ILLEGAL" }, \
+-		{ NFS4ERR_OP_NOT_IN_SESSION,	"OP_NOT_IN_SESSION" }, \
+-		{ NFS4ERR_PERM,			"PERM" }, \
+-		{ NFS4ERR_PNFS_IO_HOLE,		"PNFS_IO_HOLE" }, \
+-		{ NFS4ERR_PNFS_NO_LAYOUT,	"PNFS_NO_LAYOUT" }, \
+-		{ NFS4ERR_RECALLCONFLICT,	"RECALLCONFLICT" }, \
+-		{ NFS4ERR_RECLAIM_BAD,		"RECLAIM_BAD" }, \
+-		{ NFS4ERR_RECLAIM_CONFLICT,	"RECLAIM_CONFLICT" }, \
+-		{ NFS4ERR_REJECT_DELEG,		"REJECT_DELEG" }, \
+-		{ NFS4ERR_REP_TOO_BIG,		"REP_TOO_BIG" }, \
+-		{ NFS4ERR_REP_TOO_BIG_TO_CACHE,	"REP_TOO_BIG_TO_CACHE" }, \
+-		{ NFS4ERR_REQ_TOO_BIG,		"REQ_TOO_BIG" }, \
+-		{ NFS4ERR_RESOURCE,		"RESOURCE" }, \
+-		{ NFS4ERR_RESTOREFH,		"RESTOREFH" }, \
+-		{ NFS4ERR_RETRY_UNCACHED_REP,	"RETRY_UNCACHED_REP" }, \
+-		{ NFS4ERR_RETURNCONFLICT,	"RETURNCONFLICT" }, \
+-		{ NFS4ERR_ROFS,			"ROFS" }, \
+-		{ NFS4ERR_SAME,			"SAME" }, \
+-		{ NFS4ERR_SHARE_DENIED,		"SHARE_DENIED" }, \
+-		{ NFS4ERR_SEQUENCE_POS,		"SEQUENCE_POS" }, \
+-		{ NFS4ERR_SEQ_FALSE_RETRY,	"SEQ_FALSE_RETRY" }, \
+-		{ NFS4ERR_SEQ_MISORDERED,	"SEQ_MISORDERED" }, \
+-		{ NFS4ERR_SERVERFAULT,		"SERVERFAULT" }, \
+-		{ NFS4ERR_STALE,		"STALE" }, \
+-		{ NFS4ERR_STALE_CLIENTID,	"STALE_CLIENTID" }, \
+-		{ NFS4ERR_STALE_STATEID,	"STALE_STATEID" }, \
+-		{ NFS4ERR_SYMLINK,		"SYMLINK" }, \
+-		{ NFS4ERR_TOOSMALL,		"TOOSMALL" }, \
+-		{ NFS4ERR_TOO_MANY_OPS,		"TOO_MANY_OPS" }, \
+-		{ NFS4ERR_UNKNOWN_LAYOUTTYPE,	"UNKNOWN_LAYOUTTYPE" }, \
+-		{ NFS4ERR_UNSAFE_COMPOUND,	"UNSAFE_COMPOUND" }, \
+-		{ NFS4ERR_WRONGSEC,		"WRONGSEC" }, \
+-		{ NFS4ERR_WRONG_CRED,		"WRONG_CRED" }, \
+-		{ NFS4ERR_WRONG_TYPE,		"WRONG_TYPE" }, \
+-		{ NFS4ERR_XDEV,			"XDEV" }, \
+-		/* ***** Internal to Linux NFS client ***** */ \
+-		{ NFS4ERR_RESET_TO_MDS,		"RESET_TO_MDS" }, \
+-		{ NFS4ERR_RESET_TO_PNFS,	"RESET_TO_PNFS" })
+-
+-#define show_nfs4_verifier(x) \
+-	__print_hex_str(x, NFS4_VERIFIER_SIZE)
+-
+-TRACE_DEFINE_ENUM(IOMODE_READ);
+-TRACE_DEFINE_ENUM(IOMODE_RW);
+-TRACE_DEFINE_ENUM(IOMODE_ANY);
+-
+-#define show_pnfs_layout_iomode(x) \
+-	__print_symbolic(x, \
+-		{ IOMODE_READ,			"READ" }, \
+-		{ IOMODE_RW,			"RW" }, \
+-		{ IOMODE_ANY,			"ANY" })
+-
+-#define show_nfs4_seq4_status(x) \
+-	__print_flags(x, "|", \
+-		{ SEQ4_STATUS_CB_PATH_DOWN,		"CB_PATH_DOWN" }, \
+-		{ SEQ4_STATUS_CB_GSS_CONTEXTS_EXPIRING,	"CB_GSS_CONTEXTS_EXPIRING" }, \
+-		{ SEQ4_STATUS_CB_GSS_CONTEXTS_EXPIRED,	"CB_GSS_CONTEXTS_EXPIRED" }, \
+-		{ SEQ4_STATUS_EXPIRED_ALL_STATE_REVOKED, "EXPIRED_ALL_STATE_REVOKED" }, \
+-		{ SEQ4_STATUS_EXPIRED_SOME_STATE_REVOKED, "EXPIRED_SOME_STATE_REVOKED" }, \
+-		{ SEQ4_STATUS_ADMIN_STATE_REVOKED,	"ADMIN_STATE_REVOKED" }, \
+-		{ SEQ4_STATUS_RECALLABLE_STATE_REVOKED,	"RECALLABLE_STATE_REVOKED" }, \
+-		{ SEQ4_STATUS_LEASE_MOVED,		"LEASE_MOVED" }, \
+-		{ SEQ4_STATUS_RESTART_RECLAIM_NEEDED,	"RESTART_RECLAIM_NEEDED" }, \
+-		{ SEQ4_STATUS_CB_PATH_DOWN_SESSION,	"CB_PATH_DOWN_SESSION" }, \
+-		{ SEQ4_STATUS_BACKCHANNEL_FAULT,	"BACKCHANNEL_FAULT" })
+diff --git a/include/trace/events/rdma.h b/include/trace/events/rdma.h
+deleted file mode 100644
+index 81bb454fc288..000000000000
+--- a/include/trace/events/rdma.h
++++ /dev/null
+@@ -1,168 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Copyright (c) 2017 Oracle.  All rights reserved.
+- */
+-
+-/*
+- * enum ib_event_type, from include/rdma/ib_verbs.h
+- */
+-#define IB_EVENT_LIST				\
+-	ib_event(CQ_ERR)			\
+-	ib_event(QP_FATAL)			\
+-	ib_event(QP_REQ_ERR)			\
+-	ib_event(QP_ACCESS_ERR)			\
+-	ib_event(COMM_EST)			\
+-	ib_event(SQ_DRAINED)			\
+-	ib_event(PATH_MIG)			\
+-	ib_event(PATH_MIG_ERR)			\
+-	ib_event(DEVICE_FATAL)			\
+-	ib_event(PORT_ACTIVE)			\
+-	ib_event(PORT_ERR)			\
+-	ib_event(LID_CHANGE)			\
+-	ib_event(PKEY_CHANGE)			\
+-	ib_event(SM_CHANGE)			\
+-	ib_event(SRQ_ERR)			\
+-	ib_event(SRQ_LIMIT_REACHED)		\
+-	ib_event(QP_LAST_WQE_REACHED)		\
+-	ib_event(CLIENT_REREGISTER)		\
+-	ib_event(GID_CHANGE)			\
+-	ib_event_end(WQ_FATAL)
+-
+-#undef ib_event
+-#undef ib_event_end
+-
+-#define ib_event(x)		TRACE_DEFINE_ENUM(IB_EVENT_##x);
+-#define ib_event_end(x)		TRACE_DEFINE_ENUM(IB_EVENT_##x);
+-
+-IB_EVENT_LIST
+-
+-#undef ib_event
+-#undef ib_event_end
+-
+-#define ib_event(x)		{ IB_EVENT_##x, #x },
+-#define ib_event_end(x)		{ IB_EVENT_##x, #x }
+-
+-#define rdma_show_ib_event(x) \
+-		__print_symbolic(x, IB_EVENT_LIST)
+-
+-/*
+- * enum ib_wc_status type, from include/rdma/ib_verbs.h
+- */
+-#define IB_WC_STATUS_LIST			\
+-	ib_wc_status(SUCCESS)			\
+-	ib_wc_status(LOC_LEN_ERR)		\
+-	ib_wc_status(LOC_QP_OP_ERR)		\
+-	ib_wc_status(LOC_EEC_OP_ERR)		\
+-	ib_wc_status(LOC_PROT_ERR)		\
+-	ib_wc_status(WR_FLUSH_ERR)		\
+-	ib_wc_status(MW_BIND_ERR)		\
+-	ib_wc_status(BAD_RESP_ERR)		\
+-	ib_wc_status(LOC_ACCESS_ERR)		\
+-	ib_wc_status(REM_INV_REQ_ERR)		\
+-	ib_wc_status(REM_ACCESS_ERR)		\
+-	ib_wc_status(REM_OP_ERR)		\
+-	ib_wc_status(RETRY_EXC_ERR)		\
+-	ib_wc_status(RNR_RETRY_EXC_ERR)		\
+-	ib_wc_status(LOC_RDD_VIOL_ERR)		\
+-	ib_wc_status(REM_INV_RD_REQ_ERR)	\
+-	ib_wc_status(REM_ABORT_ERR)		\
+-	ib_wc_status(INV_EECN_ERR)		\
+-	ib_wc_status(INV_EEC_STATE_ERR)		\
+-	ib_wc_status(FATAL_ERR)			\
+-	ib_wc_status(RESP_TIMEOUT_ERR)		\
+-	ib_wc_status_end(GENERAL_ERR)
+-
+-#undef ib_wc_status
+-#undef ib_wc_status_end
+-
+-#define ib_wc_status(x)		TRACE_DEFINE_ENUM(IB_WC_##x);
+-#define ib_wc_status_end(x)	TRACE_DEFINE_ENUM(IB_WC_##x);
+-
+-IB_WC_STATUS_LIST
+-
+-#undef ib_wc_status
+-#undef ib_wc_status_end
+-
+-#define ib_wc_status(x)		{ IB_WC_##x, #x },
+-#define ib_wc_status_end(x)	{ IB_WC_##x, #x }
+-
+-#define rdma_show_wc_status(x) \
+-		__print_symbolic(x, IB_WC_STATUS_LIST)
+-
+-/*
+- * enum ib_cm_event_type, from include/rdma/ib_cm.h
+- */
+-#define IB_CM_EVENT_LIST			\
+-	ib_cm_event(REQ_ERROR)			\
+-	ib_cm_event(REQ_RECEIVED)		\
+-	ib_cm_event(REP_ERROR)			\
+-	ib_cm_event(REP_RECEIVED)		\
+-	ib_cm_event(RTU_RECEIVED)		\
+-	ib_cm_event(USER_ESTABLISHED)		\
+-	ib_cm_event(DREQ_ERROR)			\
+-	ib_cm_event(DREQ_RECEIVED)		\
+-	ib_cm_event(DREP_RECEIVED)		\
+-	ib_cm_event(TIMEWAIT_EXIT)		\
+-	ib_cm_event(MRA_RECEIVED)		\
+-	ib_cm_event(REJ_RECEIVED)		\
+-	ib_cm_event(LAP_ERROR)			\
+-	ib_cm_event(LAP_RECEIVED)		\
+-	ib_cm_event(APR_RECEIVED)		\
+-	ib_cm_event(SIDR_REQ_ERROR)		\
+-	ib_cm_event(SIDR_REQ_RECEIVED)		\
+-	ib_cm_event_end(SIDR_REP_RECEIVED)
+-
+-#undef ib_cm_event
+-#undef ib_cm_event_end
+-
+-#define ib_cm_event(x)		TRACE_DEFINE_ENUM(IB_CM_##x);
+-#define ib_cm_event_end(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
+-
+-IB_CM_EVENT_LIST
+-
+-#undef ib_cm_event
+-#undef ib_cm_event_end
+-
+-#define ib_cm_event(x)		{ IB_CM_##x, #x },
+-#define ib_cm_event_end(x)	{ IB_CM_##x, #x }
+-
+-#define rdma_show_ib_cm_event(x) \
+-		__print_symbolic(x, IB_CM_EVENT_LIST)
+-
+-/*
+- * enum rdma_cm_event_type, from include/rdma/rdma_cm.h
+- */
+-#define RDMA_CM_EVENT_LIST			\
+-	rdma_cm_event(ADDR_RESOLVED)		\
+-	rdma_cm_event(ADDR_ERROR)		\
+-	rdma_cm_event(ROUTE_RESOLVED)		\
+-	rdma_cm_event(ROUTE_ERROR)		\
+-	rdma_cm_event(CONNECT_REQUEST)		\
+-	rdma_cm_event(CONNECT_RESPONSE)		\
+-	rdma_cm_event(CONNECT_ERROR)		\
+-	rdma_cm_event(UNREACHABLE)		\
+-	rdma_cm_event(REJECTED)			\
+-	rdma_cm_event(ESTABLISHED)		\
+-	rdma_cm_event(DISCONNECTED)		\
+-	rdma_cm_event(DEVICE_REMOVAL)		\
+-	rdma_cm_event(MULTICAST_JOIN)		\
+-	rdma_cm_event(MULTICAST_ERROR)		\
+-	rdma_cm_event(ADDR_CHANGE)		\
+-	rdma_cm_event_end(TIMEWAIT_EXIT)
+-
+-#undef rdma_cm_event
+-#undef rdma_cm_event_end
+-
+-#define rdma_cm_event(x)	TRACE_DEFINE_ENUM(RDMA_CM_EVENT_##x);
+-#define rdma_cm_event_end(x)	TRACE_DEFINE_ENUM(RDMA_CM_EVENT_##x);
+-
+-RDMA_CM_EVENT_LIST
+-
+-#undef rdma_cm_event
+-#undef rdma_cm_event_end
+-
+-#define rdma_cm_event(x)	{ RDMA_CM_EVENT_##x, #x },
+-#define rdma_cm_event_end(x)	{ RDMA_CM_EVENT_##x, #x }
+-
+-#define rdma_show_cm_event(x) \
+-		__print_symbolic(x, RDMA_CM_EVENT_LIST)
+diff --git a/include/trace/events/rpcgss.h b/include/trace/events/rpcgss.h
+index c9048f3e471b..3f121eed369e 100644
+--- a/include/trace/events/rpcgss.h
++++ b/include/trace/events/rpcgss.h
+@@ -13,7 +13,7 @@
+ 
+ #include <linux/tracepoint.h>
+ 
+-#include <trace/events/sunrpc_base.h>
++#include <trace/misc/sunrpc.h>
+ 
+ /**
+  ** GSS-API related trace events
+diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
+index fcd3b3f1020a..8f461e04e5f0 100644
+--- a/include/trace/events/rpcrdma.h
++++ b/include/trace/events/rpcrdma.h
+@@ -15,8 +15,8 @@
+ #include <linux/tracepoint.h>
+ #include <rdma/ib_cm.h>
+ 
+-#include <trace/events/rdma.h>
+-#include <trace/events/sunrpc_base.h>
++#include <trace/misc/rdma.h>
++#include <trace/misc/sunrpc.h>
+ 
+ /**
+  ** Event classes
+diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
+index f48f2ab9d238..ffe2679a13ce 100644
+--- a/include/trace/events/sunrpc.h
++++ b/include/trace/events/sunrpc.h
+@@ -14,7 +14,7 @@
+ #include <linux/net.h>
+ #include <linux/tracepoint.h>
+ 
+-#include <trace/events/sunrpc_base.h>
++#include <trace/misc/sunrpc.h>
+ 
+ TRACE_DEFINE_ENUM(SOCK_STREAM);
+ TRACE_DEFINE_ENUM(SOCK_DGRAM);
+diff --git a/include/trace/events/sunrpc_base.h b/include/trace/events/sunrpc_base.h
+deleted file mode 100644
+index 588557d07ea8..000000000000
+--- a/include/trace/events/sunrpc_base.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Copyright (c) 2021 Oracle and/or its affiliates.
+- *
+- * Common types and format specifiers for sunrpc.
+- */
+-
+-#if !defined(_TRACE_SUNRPC_BASE_H)
+-#define _TRACE_SUNRPC_BASE_H
+-
+-#include <linux/tracepoint.h>
+-
+-#define SUNRPC_TRACE_PID_SPECIFIER	"%08x"
+-#define SUNRPC_TRACE_CLID_SPECIFIER	"%08x"
+-#define SUNRPC_TRACE_TASK_SPECIFIER \
+-	"task:" SUNRPC_TRACE_PID_SPECIFIER "@" SUNRPC_TRACE_CLID_SPECIFIER
+-
+-#endif /* _TRACE_SUNRPC_BASE_H */
+diff --git a/include/trace/misc/fs.h b/include/trace/misc/fs.h
+new file mode 100644
+index 000000000000..738b97f22f36
+--- /dev/null
++++ b/include/trace/misc/fs.h
+@@ -0,0 +1,122 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Display helpers for generic filesystem items
++ *
++ * Author: Chuck Lever <chuck.lever@oracle.com>
++ *
++ * Copyright (c) 2020, Oracle and/or its affiliates.
++ */
++
++#include <linux/fs.h>
++
++#define show_fs_dirent_type(x) \
++	__print_symbolic(x, \
++		{ DT_UNKNOWN,		"UNKNOWN" }, \
++		{ DT_FIFO,		"FIFO" }, \
++		{ DT_CHR,		"CHR" }, \
++		{ DT_DIR,		"DIR" }, \
++		{ DT_BLK,		"BLK" }, \
++		{ DT_REG,		"REG" }, \
++		{ DT_LNK,		"LNK" }, \
++		{ DT_SOCK,		"SOCK" }, \
++		{ DT_WHT,		"WHT" })
++
++#define show_fs_fcntl_open_flags(x) \
++	__print_flags(x, "|", \
++		{ O_WRONLY,		"O_WRONLY" }, \
++		{ O_RDWR,		"O_RDWR" }, \
++		{ O_CREAT,		"O_CREAT" }, \
++		{ O_EXCL,		"O_EXCL" }, \
++		{ O_NOCTTY,		"O_NOCTTY" }, \
++		{ O_TRUNC,		"O_TRUNC" }, \
++		{ O_APPEND,		"O_APPEND" }, \
++		{ O_NONBLOCK,		"O_NONBLOCK" }, \
++		{ O_DSYNC,		"O_DSYNC" }, \
++		{ O_DIRECT,		"O_DIRECT" }, \
++		{ O_LARGEFILE,		"O_LARGEFILE" }, \
++		{ O_DIRECTORY,		"O_DIRECTORY" }, \
++		{ O_NOFOLLOW,		"O_NOFOLLOW" }, \
++		{ O_NOATIME,		"O_NOATIME" }, \
++		{ O_CLOEXEC,		"O_CLOEXEC" })
++
++#define __fmode_flag(x)	{ (__force unsigned long)FMODE_##x, #x }
++#define show_fs_fmode_flags(x) \
++	__print_flags(x, "|", \
++		__fmode_flag(READ), \
++		__fmode_flag(WRITE), \
++		__fmode_flag(EXEC))
++
++#ifdef CONFIG_64BIT
++#define show_fs_fcntl_cmd(x) \
++	__print_symbolic(x, \
++		{ F_DUPFD,		"DUPFD" }, \
++		{ F_GETFD,		"GETFD" }, \
++		{ F_SETFD,		"SETFD" }, \
++		{ F_GETFL,		"GETFL" }, \
++		{ F_SETFL,		"SETFL" }, \
++		{ F_GETLK,		"GETLK" }, \
++		{ F_SETLK,		"SETLK" }, \
++		{ F_SETLKW,		"SETLKW" }, \
++		{ F_SETOWN,		"SETOWN" }, \
++		{ F_GETOWN,		"GETOWN" }, \
++		{ F_SETSIG,		"SETSIG" }, \
++		{ F_GETSIG,		"GETSIG" }, \
++		{ F_SETOWN_EX,		"SETOWN_EX" }, \
++		{ F_GETOWN_EX,		"GETOWN_EX" }, \
++		{ F_GETOWNER_UIDS,	"GETOWNER_UIDS" }, \
++		{ F_OFD_GETLK,		"OFD_GETLK" }, \
++		{ F_OFD_SETLK,		"OFD_SETLK" }, \
++		{ F_OFD_SETLKW,		"OFD_SETLKW" })
++#else /* CONFIG_64BIT */
++#define show_fs_fcntl_cmd(x) \
++	__print_symbolic(x, \
++		{ F_DUPFD,		"DUPFD" }, \
++		{ F_GETFD,		"GETFD" }, \
++		{ F_SETFD,		"SETFD" }, \
++		{ F_GETFL,		"GETFL" }, \
++		{ F_SETFL,		"SETFL" }, \
++		{ F_GETLK,		"GETLK" }, \
++		{ F_SETLK,		"SETLK" }, \
++		{ F_SETLKW,		"SETLKW" }, \
++		{ F_SETOWN,		"SETOWN" }, \
++		{ F_GETOWN,		"GETOWN" }, \
++		{ F_SETSIG,		"SETSIG" }, \
++		{ F_GETSIG,		"GETSIG" }, \
++		{ F_GETLK64,		"GETLK64" }, \
++		{ F_SETLK64,		"SETLK64" }, \
++		{ F_SETLKW64,		"SETLKW64" }, \
++		{ F_SETOWN_EX,		"SETOWN_EX" }, \
++		{ F_GETOWN_EX,		"GETOWN_EX" }, \
++		{ F_GETOWNER_UIDS,	"GETOWNER_UIDS" }, \
++		{ F_OFD_GETLK,		"OFD_GETLK" }, \
++		{ F_OFD_SETLK,		"OFD_SETLK" }, \
++		{ F_OFD_SETLKW,		"OFD_SETLKW" })
++#endif /* CONFIG_64BIT */
++
++#define show_fs_fcntl_lock_type(x) \
++	__print_symbolic(x, \
++		{ F_RDLCK,		"RDLCK" }, \
++		{ F_WRLCK,		"WRLCK" }, \
++		{ F_UNLCK,		"UNLCK" })
++
++#define show_fs_lookup_flags(flags) \
++	__print_flags(flags, "|", \
++		{ LOOKUP_FOLLOW,	"FOLLOW" }, \
++		{ LOOKUP_DIRECTORY,	"DIRECTORY" }, \
++		{ LOOKUP_AUTOMOUNT,	"AUTOMOUNT" }, \
++		{ LOOKUP_EMPTY,		"EMPTY" }, \
++		{ LOOKUP_DOWN,		"DOWN" }, \
++		{ LOOKUP_MOUNTPOINT,	"MOUNTPOINT" }, \
++		{ LOOKUP_REVAL,		"REVAL" }, \
++		{ LOOKUP_RCU,		"RCU" }, \
++		{ LOOKUP_OPEN,		"OPEN" }, \
++		{ LOOKUP_CREATE,	"CREATE" }, \
++		{ LOOKUP_EXCL,		"EXCL" }, \
++		{ LOOKUP_RENAME_TARGET,	"RENAME_TARGET" }, \
++		{ LOOKUP_PARENT,	"PARENT" }, \
++		{ LOOKUP_NO_SYMLINKS,	"NO_SYMLINKS" }, \
++		{ LOOKUP_NO_MAGICLINKS,	"NO_MAGICLINKS" }, \
++		{ LOOKUP_NO_XDEV,	"NO_XDEV" }, \
++		{ LOOKUP_BENEATH,	"BENEATH" }, \
++		{ LOOKUP_IN_ROOT,	"IN_ROOT" }, \
++		{ LOOKUP_CACHED,	"CACHED" })
+diff --git a/include/trace/misc/nfs.h b/include/trace/misc/nfs.h
+new file mode 100644
+index 000000000000..09ffdbb04134
+--- /dev/null
++++ b/include/trace/misc/nfs.h
+@@ -0,0 +1,375 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Display helpers for NFS protocol elements
++ *
++ * Author: Chuck Lever <chuck.lever@oracle.com>
++ *
++ * Copyright (c) 2020, Oracle and/or its affiliates.
++ */
++
++#include <linux/nfs.h>
++#include <linux/nfs4.h>
++#include <uapi/linux/nfs.h>
++
++TRACE_DEFINE_ENUM(NFS_OK);
++TRACE_DEFINE_ENUM(NFSERR_PERM);
++TRACE_DEFINE_ENUM(NFSERR_NOENT);
++TRACE_DEFINE_ENUM(NFSERR_IO);
++TRACE_DEFINE_ENUM(NFSERR_NXIO);
++TRACE_DEFINE_ENUM(NFSERR_EAGAIN);
++TRACE_DEFINE_ENUM(NFSERR_ACCES);
++TRACE_DEFINE_ENUM(NFSERR_EXIST);
++TRACE_DEFINE_ENUM(NFSERR_XDEV);
++TRACE_DEFINE_ENUM(NFSERR_NODEV);
++TRACE_DEFINE_ENUM(NFSERR_NOTDIR);
++TRACE_DEFINE_ENUM(NFSERR_ISDIR);
++TRACE_DEFINE_ENUM(NFSERR_INVAL);
++TRACE_DEFINE_ENUM(NFSERR_FBIG);
++TRACE_DEFINE_ENUM(NFSERR_NOSPC);
++TRACE_DEFINE_ENUM(NFSERR_ROFS);
++TRACE_DEFINE_ENUM(NFSERR_MLINK);
++TRACE_DEFINE_ENUM(NFSERR_OPNOTSUPP);
++TRACE_DEFINE_ENUM(NFSERR_NAMETOOLONG);
++TRACE_DEFINE_ENUM(NFSERR_NOTEMPTY);
++TRACE_DEFINE_ENUM(NFSERR_DQUOT);
++TRACE_DEFINE_ENUM(NFSERR_STALE);
++TRACE_DEFINE_ENUM(NFSERR_REMOTE);
++TRACE_DEFINE_ENUM(NFSERR_WFLUSH);
++TRACE_DEFINE_ENUM(NFSERR_BADHANDLE);
++TRACE_DEFINE_ENUM(NFSERR_NOT_SYNC);
++TRACE_DEFINE_ENUM(NFSERR_BAD_COOKIE);
++TRACE_DEFINE_ENUM(NFSERR_NOTSUPP);
++TRACE_DEFINE_ENUM(NFSERR_TOOSMALL);
++TRACE_DEFINE_ENUM(NFSERR_SERVERFAULT);
++TRACE_DEFINE_ENUM(NFSERR_BADTYPE);
++TRACE_DEFINE_ENUM(NFSERR_JUKEBOX);
++
++#define show_nfs_status(x) \
++	__print_symbolic(x, \
++		{ NFS_OK,			"OK" }, \
++		{ NFSERR_PERM,			"PERM" }, \
++		{ NFSERR_NOENT,			"NOENT" }, \
++		{ NFSERR_IO,			"IO" }, \
++		{ NFSERR_NXIO,			"NXIO" }, \
++		{ ECHILD,			"CHILD" }, \
++		{ NFSERR_EAGAIN,		"AGAIN" }, \
++		{ NFSERR_ACCES,			"ACCES" }, \
++		{ NFSERR_EXIST,			"EXIST" }, \
++		{ NFSERR_XDEV,			"XDEV" }, \
++		{ NFSERR_NODEV,			"NODEV" }, \
++		{ NFSERR_NOTDIR,		"NOTDIR" }, \
++		{ NFSERR_ISDIR,			"ISDIR" }, \
++		{ NFSERR_INVAL,			"INVAL" }, \
++		{ NFSERR_FBIG,			"FBIG" }, \
++		{ NFSERR_NOSPC,			"NOSPC" }, \
++		{ NFSERR_ROFS,			"ROFS" }, \
++		{ NFSERR_MLINK,			"MLINK" }, \
++		{ NFSERR_OPNOTSUPP,		"OPNOTSUPP" }, \
++		{ NFSERR_NAMETOOLONG,		"NAMETOOLONG" }, \
++		{ NFSERR_NOTEMPTY,		"NOTEMPTY" }, \
++		{ NFSERR_DQUOT,			"DQUOT" }, \
++		{ NFSERR_STALE,			"STALE" }, \
++		{ NFSERR_REMOTE,		"REMOTE" }, \
++		{ NFSERR_WFLUSH,		"WFLUSH" }, \
++		{ NFSERR_BADHANDLE,		"BADHANDLE" }, \
++		{ NFSERR_NOT_SYNC,		"NOTSYNC" }, \
++		{ NFSERR_BAD_COOKIE,		"BADCOOKIE" }, \
++		{ NFSERR_NOTSUPP,		"NOTSUPP" }, \
++		{ NFSERR_TOOSMALL,		"TOOSMALL" }, \
++		{ NFSERR_SERVERFAULT,		"REMOTEIO" }, \
++		{ NFSERR_BADTYPE,		"BADTYPE" }, \
++		{ NFSERR_JUKEBOX,		"JUKEBOX" })
++
++TRACE_DEFINE_ENUM(NFS_UNSTABLE);
++TRACE_DEFINE_ENUM(NFS_DATA_SYNC);
++TRACE_DEFINE_ENUM(NFS_FILE_SYNC);
++
++#define show_nfs_stable_how(x) \
++	__print_symbolic(x, \
++		{ NFS_UNSTABLE,			"UNSTABLE" }, \
++		{ NFS_DATA_SYNC,		"DATA_SYNC" }, \
++		{ NFS_FILE_SYNC,		"FILE_SYNC" })
++
++TRACE_DEFINE_ENUM(NFS4_OK);
++TRACE_DEFINE_ENUM(NFS4ERR_ACCESS);
++TRACE_DEFINE_ENUM(NFS4ERR_ATTRNOTSUPP);
++TRACE_DEFINE_ENUM(NFS4ERR_ADMIN_REVOKED);
++TRACE_DEFINE_ENUM(NFS4ERR_BACK_CHAN_BUSY);
++TRACE_DEFINE_ENUM(NFS4ERR_BADCHAR);
++TRACE_DEFINE_ENUM(NFS4ERR_BADHANDLE);
++TRACE_DEFINE_ENUM(NFS4ERR_BADIOMODE);
++TRACE_DEFINE_ENUM(NFS4ERR_BADLAYOUT);
++TRACE_DEFINE_ENUM(NFS4ERR_BADLABEL);
++TRACE_DEFINE_ENUM(NFS4ERR_BADNAME);
++TRACE_DEFINE_ENUM(NFS4ERR_BADOWNER);
++TRACE_DEFINE_ENUM(NFS4ERR_BADSESSION);
++TRACE_DEFINE_ENUM(NFS4ERR_BADSLOT);
++TRACE_DEFINE_ENUM(NFS4ERR_BADTYPE);
++TRACE_DEFINE_ENUM(NFS4ERR_BADXDR);
++TRACE_DEFINE_ENUM(NFS4ERR_BAD_COOKIE);
++TRACE_DEFINE_ENUM(NFS4ERR_BAD_HIGH_SLOT);
++TRACE_DEFINE_ENUM(NFS4ERR_BAD_RANGE);
++TRACE_DEFINE_ENUM(NFS4ERR_BAD_SEQID);
++TRACE_DEFINE_ENUM(NFS4ERR_BAD_SESSION_DIGEST);
++TRACE_DEFINE_ENUM(NFS4ERR_BAD_STATEID);
++TRACE_DEFINE_ENUM(NFS4ERR_CB_PATH_DOWN);
++TRACE_DEFINE_ENUM(NFS4ERR_CLID_INUSE);
++TRACE_DEFINE_ENUM(NFS4ERR_CLIENTID_BUSY);
++TRACE_DEFINE_ENUM(NFS4ERR_COMPLETE_ALREADY);
++TRACE_DEFINE_ENUM(NFS4ERR_CONN_NOT_BOUND_TO_SESSION);
++TRACE_DEFINE_ENUM(NFS4ERR_DEADLOCK);
++TRACE_DEFINE_ENUM(NFS4ERR_DEADSESSION);
++TRACE_DEFINE_ENUM(NFS4ERR_DELAY);
++TRACE_DEFINE_ENUM(NFS4ERR_DELEG_ALREADY_WANTED);
++TRACE_DEFINE_ENUM(NFS4ERR_DELEG_REVOKED);
++TRACE_DEFINE_ENUM(NFS4ERR_DENIED);
++TRACE_DEFINE_ENUM(NFS4ERR_DIRDELEG_UNAVAIL);
++TRACE_DEFINE_ENUM(NFS4ERR_DQUOT);
++TRACE_DEFINE_ENUM(NFS4ERR_ENCR_ALG_UNSUPP);
++TRACE_DEFINE_ENUM(NFS4ERR_EXIST);
++TRACE_DEFINE_ENUM(NFS4ERR_EXPIRED);
++TRACE_DEFINE_ENUM(NFS4ERR_FBIG);
++TRACE_DEFINE_ENUM(NFS4ERR_FHEXPIRED);
++TRACE_DEFINE_ENUM(NFS4ERR_FILE_OPEN);
++TRACE_DEFINE_ENUM(NFS4ERR_GRACE);
++TRACE_DEFINE_ENUM(NFS4ERR_HASH_ALG_UNSUPP);
++TRACE_DEFINE_ENUM(NFS4ERR_INVAL);
++TRACE_DEFINE_ENUM(NFS4ERR_IO);
++TRACE_DEFINE_ENUM(NFS4ERR_ISDIR);
++TRACE_DEFINE_ENUM(NFS4ERR_LAYOUTTRYLATER);
++TRACE_DEFINE_ENUM(NFS4ERR_LAYOUTUNAVAILABLE);
++TRACE_DEFINE_ENUM(NFS4ERR_LEASE_MOVED);
++TRACE_DEFINE_ENUM(NFS4ERR_LOCKED);
++TRACE_DEFINE_ENUM(NFS4ERR_LOCKS_HELD);
++TRACE_DEFINE_ENUM(NFS4ERR_LOCK_RANGE);
++TRACE_DEFINE_ENUM(NFS4ERR_MINOR_VERS_MISMATCH);
++TRACE_DEFINE_ENUM(NFS4ERR_MLINK);
++TRACE_DEFINE_ENUM(NFS4ERR_MOVED);
++TRACE_DEFINE_ENUM(NFS4ERR_NAMETOOLONG);
++TRACE_DEFINE_ENUM(NFS4ERR_NOENT);
++TRACE_DEFINE_ENUM(NFS4ERR_NOFILEHANDLE);
++TRACE_DEFINE_ENUM(NFS4ERR_NOMATCHING_LAYOUT);
++TRACE_DEFINE_ENUM(NFS4ERR_NOSPC);
++TRACE_DEFINE_ENUM(NFS4ERR_NOTDIR);
++TRACE_DEFINE_ENUM(NFS4ERR_NOTEMPTY);
++TRACE_DEFINE_ENUM(NFS4ERR_NOTSUPP);
++TRACE_DEFINE_ENUM(NFS4ERR_NOT_ONLY_OP);
++TRACE_DEFINE_ENUM(NFS4ERR_NOT_SAME);
++TRACE_DEFINE_ENUM(NFS4ERR_NO_GRACE);
++TRACE_DEFINE_ENUM(NFS4ERR_NXIO);
++TRACE_DEFINE_ENUM(NFS4ERR_OLD_STATEID);
++TRACE_DEFINE_ENUM(NFS4ERR_OPENMODE);
++TRACE_DEFINE_ENUM(NFS4ERR_OP_ILLEGAL);
++TRACE_DEFINE_ENUM(NFS4ERR_OP_NOT_IN_SESSION);
++TRACE_DEFINE_ENUM(NFS4ERR_PERM);
++TRACE_DEFINE_ENUM(NFS4ERR_PNFS_IO_HOLE);
++TRACE_DEFINE_ENUM(NFS4ERR_PNFS_NO_LAYOUT);
++TRACE_DEFINE_ENUM(NFS4ERR_RECALLCONFLICT);
++TRACE_DEFINE_ENUM(NFS4ERR_RECLAIM_BAD);
++TRACE_DEFINE_ENUM(NFS4ERR_RECLAIM_CONFLICT);
++TRACE_DEFINE_ENUM(NFS4ERR_REJECT_DELEG);
++TRACE_DEFINE_ENUM(NFS4ERR_REP_TOO_BIG);
++TRACE_DEFINE_ENUM(NFS4ERR_REP_TOO_BIG_TO_CACHE);
++TRACE_DEFINE_ENUM(NFS4ERR_REQ_TOO_BIG);
++TRACE_DEFINE_ENUM(NFS4ERR_RESOURCE);
++TRACE_DEFINE_ENUM(NFS4ERR_RESTOREFH);
++TRACE_DEFINE_ENUM(NFS4ERR_RETRY_UNCACHED_REP);
++TRACE_DEFINE_ENUM(NFS4ERR_RETURNCONFLICT);
++TRACE_DEFINE_ENUM(NFS4ERR_ROFS);
++TRACE_DEFINE_ENUM(NFS4ERR_SAME);
++TRACE_DEFINE_ENUM(NFS4ERR_SHARE_DENIED);
++TRACE_DEFINE_ENUM(NFS4ERR_SEQUENCE_POS);
++TRACE_DEFINE_ENUM(NFS4ERR_SEQ_FALSE_RETRY);
++TRACE_DEFINE_ENUM(NFS4ERR_SEQ_MISORDERED);
++TRACE_DEFINE_ENUM(NFS4ERR_SERVERFAULT);
++TRACE_DEFINE_ENUM(NFS4ERR_STALE);
++TRACE_DEFINE_ENUM(NFS4ERR_STALE_CLIENTID);
++TRACE_DEFINE_ENUM(NFS4ERR_STALE_STATEID);
++TRACE_DEFINE_ENUM(NFS4ERR_SYMLINK);
++TRACE_DEFINE_ENUM(NFS4ERR_TOOSMALL);
++TRACE_DEFINE_ENUM(NFS4ERR_TOO_MANY_OPS);
++TRACE_DEFINE_ENUM(NFS4ERR_UNKNOWN_LAYOUTTYPE);
++TRACE_DEFINE_ENUM(NFS4ERR_UNSAFE_COMPOUND);
++TRACE_DEFINE_ENUM(NFS4ERR_WRONGSEC);
++TRACE_DEFINE_ENUM(NFS4ERR_WRONG_CRED);
++TRACE_DEFINE_ENUM(NFS4ERR_WRONG_TYPE);
++TRACE_DEFINE_ENUM(NFS4ERR_XDEV);
++
++TRACE_DEFINE_ENUM(NFS4ERR_RESET_TO_MDS);
++TRACE_DEFINE_ENUM(NFS4ERR_RESET_TO_PNFS);
++
++#define show_nfs4_status(x) \
++	__print_symbolic(x, \
++		{ NFS4_OK,			"OK" }, \
++		{ EPERM,			"EPERM" }, \
++		{ ENOENT,			"ENOENT" }, \
++		{ EIO,				"EIO" }, \
++		{ ENXIO,			"ENXIO" }, \
++		{ EACCES,			"EACCES" }, \
++		{ EEXIST,			"EEXIST" }, \
++		{ EXDEV,			"EXDEV" }, \
++		{ ENOTDIR,			"ENOTDIR" }, \
++		{ EISDIR,			"EISDIR" }, \
++		{ EFBIG,			"EFBIG" }, \
++		{ ENOSPC,			"ENOSPC" }, \
++		{ EROFS,			"EROFS" }, \
++		{ EMLINK,			"EMLINK" }, \
++		{ ENAMETOOLONG,			"ENAMETOOLONG" }, \
++		{ ENOTEMPTY,			"ENOTEMPTY" }, \
++		{ EDQUOT,			"EDQUOT" }, \
++		{ ESTALE,			"ESTALE" }, \
++		{ EBADHANDLE,			"EBADHANDLE" }, \
++		{ EBADCOOKIE,			"EBADCOOKIE" }, \
++		{ ENOTSUPP,			"ENOTSUPP" }, \
++		{ ETOOSMALL,			"ETOOSMALL" }, \
++		{ EREMOTEIO,			"EREMOTEIO" }, \
++		{ EBADTYPE,			"EBADTYPE" }, \
++		{ EAGAIN,			"EAGAIN" }, \
++		{ ELOOP,			"ELOOP" }, \
++		{ EOPNOTSUPP,			"EOPNOTSUPP" }, \
++		{ EDEADLK,			"EDEADLK" }, \
++		{ ENOMEM,			"ENOMEM" }, \
++		{ EKEYEXPIRED,			"EKEYEXPIRED" }, \
++		{ ETIMEDOUT,			"ETIMEDOUT" }, \
++		{ ERESTARTSYS,			"ERESTARTSYS" }, \
++		{ ECONNREFUSED,			"ECONNREFUSED" }, \
++		{ ECONNRESET,			"ECONNRESET" }, \
++		{ ENETUNREACH,			"ENETUNREACH" }, \
++		{ EHOSTUNREACH,			"EHOSTUNREACH" }, \
++		{ EHOSTDOWN,			"EHOSTDOWN" }, \
++		{ EPIPE,			"EPIPE" }, \
++		{ EPFNOSUPPORT,			"EPFNOSUPPORT" }, \
++		{ EPROTONOSUPPORT,		"EPROTONOSUPPORT" }, \
++		{ NFS4ERR_ACCESS,		"ACCESS" }, \
++		{ NFS4ERR_ATTRNOTSUPP,		"ATTRNOTSUPP" }, \
++		{ NFS4ERR_ADMIN_REVOKED,	"ADMIN_REVOKED" }, \
++		{ NFS4ERR_BACK_CHAN_BUSY,	"BACK_CHAN_BUSY" }, \
++		{ NFS4ERR_BADCHAR,		"BADCHAR" }, \
++		{ NFS4ERR_BADHANDLE,		"BADHANDLE" }, \
++		{ NFS4ERR_BADIOMODE,		"BADIOMODE" }, \
++		{ NFS4ERR_BADLAYOUT,		"BADLAYOUT" }, \
++		{ NFS4ERR_BADLABEL,		"BADLABEL" }, \
++		{ NFS4ERR_BADNAME,		"BADNAME" }, \
++		{ NFS4ERR_BADOWNER,		"BADOWNER" }, \
++		{ NFS4ERR_BADSESSION,		"BADSESSION" }, \
++		{ NFS4ERR_BADSLOT,		"BADSLOT" }, \
++		{ NFS4ERR_BADTYPE,		"BADTYPE" }, \
++		{ NFS4ERR_BADXDR,		"BADXDR" }, \
++		{ NFS4ERR_BAD_COOKIE,		"BAD_COOKIE" }, \
++		{ NFS4ERR_BAD_HIGH_SLOT,	"BAD_HIGH_SLOT" }, \
++		{ NFS4ERR_BAD_RANGE,		"BAD_RANGE" }, \
++		{ NFS4ERR_BAD_SEQID,		"BAD_SEQID" }, \
++		{ NFS4ERR_BAD_SESSION_DIGEST,	"BAD_SESSION_DIGEST" }, \
++		{ NFS4ERR_BAD_STATEID,		"BAD_STATEID" }, \
++		{ NFS4ERR_CB_PATH_DOWN,		"CB_PATH_DOWN" }, \
++		{ NFS4ERR_CLID_INUSE,		"CLID_INUSE" }, \
++		{ NFS4ERR_CLIENTID_BUSY,	"CLIENTID_BUSY" }, \
++		{ NFS4ERR_COMPLETE_ALREADY,	"COMPLETE_ALREADY" }, \
++		{ NFS4ERR_CONN_NOT_BOUND_TO_SESSION, "CONN_NOT_BOUND_TO_SESSION" }, \
++		{ NFS4ERR_DEADLOCK,		"DEADLOCK" }, \
++		{ NFS4ERR_DEADSESSION,		"DEAD_SESSION" }, \
++		{ NFS4ERR_DELAY,		"DELAY" }, \
++		{ NFS4ERR_DELEG_ALREADY_WANTED,	"DELEG_ALREADY_WANTED" }, \
++		{ NFS4ERR_DELEG_REVOKED,	"DELEG_REVOKED" }, \
++		{ NFS4ERR_DENIED,		"DENIED" }, \
++		{ NFS4ERR_DIRDELEG_UNAVAIL,	"DIRDELEG_UNAVAIL" }, \
++		{ NFS4ERR_DQUOT,		"DQUOT" }, \
++		{ NFS4ERR_ENCR_ALG_UNSUPP,	"ENCR_ALG_UNSUPP" }, \
++		{ NFS4ERR_EXIST,		"EXIST" }, \
++		{ NFS4ERR_EXPIRED,		"EXPIRED" }, \
++		{ NFS4ERR_FBIG,			"FBIG" }, \
++		{ NFS4ERR_FHEXPIRED,		"FHEXPIRED" }, \
++		{ NFS4ERR_FILE_OPEN,		"FILE_OPEN" }, \
++		{ NFS4ERR_GRACE,		"GRACE" }, \
++		{ NFS4ERR_HASH_ALG_UNSUPP,	"HASH_ALG_UNSUPP" }, \
++		{ NFS4ERR_INVAL,		"INVAL" }, \
++		{ NFS4ERR_IO,			"IO" }, \
++		{ NFS4ERR_ISDIR,		"ISDIR" }, \
++		{ NFS4ERR_LAYOUTTRYLATER,	"LAYOUTTRYLATER" }, \
++		{ NFS4ERR_LAYOUTUNAVAILABLE,	"LAYOUTUNAVAILABLE" }, \
++		{ NFS4ERR_LEASE_MOVED,		"LEASE_MOVED" }, \
++		{ NFS4ERR_LOCKED,		"LOCKED" }, \
++		{ NFS4ERR_LOCKS_HELD,		"LOCKS_HELD" }, \
++		{ NFS4ERR_LOCK_RANGE,		"LOCK_RANGE" }, \
++		{ NFS4ERR_MINOR_VERS_MISMATCH,	"MINOR_VERS_MISMATCH" }, \
++		{ NFS4ERR_MLINK,		"MLINK" }, \
++		{ NFS4ERR_MOVED,		"MOVED" }, \
++		{ NFS4ERR_NAMETOOLONG,		"NAMETOOLONG" }, \
++		{ NFS4ERR_NOENT,		"NOENT" }, \
++		{ NFS4ERR_NOFILEHANDLE,		"NOFILEHANDLE" }, \
++		{ NFS4ERR_NOMATCHING_LAYOUT,	"NOMATCHING_LAYOUT" }, \
++		{ NFS4ERR_NOSPC,		"NOSPC" }, \
++		{ NFS4ERR_NOTDIR,		"NOTDIR" }, \
++		{ NFS4ERR_NOTEMPTY,		"NOTEMPTY" }, \
++		{ NFS4ERR_NOTSUPP,		"NOTSUPP" }, \
++		{ NFS4ERR_NOT_ONLY_OP,		"NOT_ONLY_OP" }, \
++		{ NFS4ERR_NOT_SAME,		"NOT_SAME" }, \
++		{ NFS4ERR_NO_GRACE,		"NO_GRACE" }, \
++		{ NFS4ERR_NXIO,			"NXIO" }, \
++		{ NFS4ERR_OLD_STATEID,		"OLD_STATEID" }, \
++		{ NFS4ERR_OPENMODE,		"OPENMODE" }, \
++		{ NFS4ERR_OP_ILLEGAL,		"OP_ILLEGAL" }, \
++		{ NFS4ERR_OP_NOT_IN_SESSION,	"OP_NOT_IN_SESSION" }, \
++		{ NFS4ERR_PERM,			"PERM" }, \
++		{ NFS4ERR_PNFS_IO_HOLE,		"PNFS_IO_HOLE" }, \
++		{ NFS4ERR_PNFS_NO_LAYOUT,	"PNFS_NO_LAYOUT" }, \
++		{ NFS4ERR_RECALLCONFLICT,	"RECALLCONFLICT" }, \
++		{ NFS4ERR_RECLAIM_BAD,		"RECLAIM_BAD" }, \
++		{ NFS4ERR_RECLAIM_CONFLICT,	"RECLAIM_CONFLICT" }, \
++		{ NFS4ERR_REJECT_DELEG,		"REJECT_DELEG" }, \
++		{ NFS4ERR_REP_TOO_BIG,		"REP_TOO_BIG" }, \
++		{ NFS4ERR_REP_TOO_BIG_TO_CACHE,	"REP_TOO_BIG_TO_CACHE" }, \
++		{ NFS4ERR_REQ_TOO_BIG,		"REQ_TOO_BIG" }, \
++		{ NFS4ERR_RESOURCE,		"RESOURCE" }, \
++		{ NFS4ERR_RESTOREFH,		"RESTOREFH" }, \
++		{ NFS4ERR_RETRY_UNCACHED_REP,	"RETRY_UNCACHED_REP" }, \
++		{ NFS4ERR_RETURNCONFLICT,	"RETURNCONFLICT" }, \
++		{ NFS4ERR_ROFS,			"ROFS" }, \
++		{ NFS4ERR_SAME,			"SAME" }, \
++		{ NFS4ERR_SHARE_DENIED,		"SHARE_DENIED" }, \
++		{ NFS4ERR_SEQUENCE_POS,		"SEQUENCE_POS" }, \
++		{ NFS4ERR_SEQ_FALSE_RETRY,	"SEQ_FALSE_RETRY" }, \
++		{ NFS4ERR_SEQ_MISORDERED,	"SEQ_MISORDERED" }, \
++		{ NFS4ERR_SERVERFAULT,		"SERVERFAULT" }, \
++		{ NFS4ERR_STALE,		"STALE" }, \
++		{ NFS4ERR_STALE_CLIENTID,	"STALE_CLIENTID" }, \
++		{ NFS4ERR_STALE_STATEID,	"STALE_STATEID" }, \
++		{ NFS4ERR_SYMLINK,		"SYMLINK" }, \
++		{ NFS4ERR_TOOSMALL,		"TOOSMALL" }, \
++		{ NFS4ERR_TOO_MANY_OPS,		"TOO_MANY_OPS" }, \
++		{ NFS4ERR_UNKNOWN_LAYOUTTYPE,	"UNKNOWN_LAYOUTTYPE" }, \
++		{ NFS4ERR_UNSAFE_COMPOUND,	"UNSAFE_COMPOUND" }, \
++		{ NFS4ERR_WRONGSEC,		"WRONGSEC" }, \
++		{ NFS4ERR_WRONG_CRED,		"WRONG_CRED" }, \
++		{ NFS4ERR_WRONG_TYPE,		"WRONG_TYPE" }, \
++		{ NFS4ERR_XDEV,			"XDEV" }, \
++		/* ***** Internal to Linux NFS client ***** */ \
++		{ NFS4ERR_RESET_TO_MDS,		"RESET_TO_MDS" }, \
++		{ NFS4ERR_RESET_TO_PNFS,	"RESET_TO_PNFS" })
++
++#define show_nfs4_verifier(x) \
++	__print_hex_str(x, NFS4_VERIFIER_SIZE)
++
++TRACE_DEFINE_ENUM(IOMODE_READ);
++TRACE_DEFINE_ENUM(IOMODE_RW);
++TRACE_DEFINE_ENUM(IOMODE_ANY);
++
++#define show_pnfs_layout_iomode(x) \
++	__print_symbolic(x, \
++		{ IOMODE_READ,			"READ" }, \
++		{ IOMODE_RW,			"RW" }, \
++		{ IOMODE_ANY,			"ANY" })
++
++#define show_nfs4_seq4_status(x) \
++	__print_flags(x, "|", \
++		{ SEQ4_STATUS_CB_PATH_DOWN,		"CB_PATH_DOWN" }, \
++		{ SEQ4_STATUS_CB_GSS_CONTEXTS_EXPIRING,	"CB_GSS_CONTEXTS_EXPIRING" }, \
++		{ SEQ4_STATUS_CB_GSS_CONTEXTS_EXPIRED,	"CB_GSS_CONTEXTS_EXPIRED" }, \
++		{ SEQ4_STATUS_EXPIRED_ALL_STATE_REVOKED, "EXPIRED_ALL_STATE_REVOKED" }, \
++		{ SEQ4_STATUS_EXPIRED_SOME_STATE_REVOKED, "EXPIRED_SOME_STATE_REVOKED" }, \
++		{ SEQ4_STATUS_ADMIN_STATE_REVOKED,	"ADMIN_STATE_REVOKED" }, \
++		{ SEQ4_STATUS_RECALLABLE_STATE_REVOKED,	"RECALLABLE_STATE_REVOKED" }, \
++		{ SEQ4_STATUS_LEASE_MOVED,		"LEASE_MOVED" }, \
++		{ SEQ4_STATUS_RESTART_RECLAIM_NEEDED,	"RESTART_RECLAIM_NEEDED" }, \
++		{ SEQ4_STATUS_CB_PATH_DOWN_SESSION,	"CB_PATH_DOWN_SESSION" }, \
++		{ SEQ4_STATUS_BACKCHANNEL_FAULT,	"BACKCHANNEL_FAULT" })
+diff --git a/include/trace/misc/rdma.h b/include/trace/misc/rdma.h
+new file mode 100644
+index 000000000000..81bb454fc288
+--- /dev/null
++++ b/include/trace/misc/rdma.h
+@@ -0,0 +1,168 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (c) 2017 Oracle.  All rights reserved.
++ */
++
++/*
++ * enum ib_event_type, from include/rdma/ib_verbs.h
++ */
++#define IB_EVENT_LIST				\
++	ib_event(CQ_ERR)			\
++	ib_event(QP_FATAL)			\
++	ib_event(QP_REQ_ERR)			\
++	ib_event(QP_ACCESS_ERR)			\
++	ib_event(COMM_EST)			\
++	ib_event(SQ_DRAINED)			\
++	ib_event(PATH_MIG)			\
++	ib_event(PATH_MIG_ERR)			\
++	ib_event(DEVICE_FATAL)			\
++	ib_event(PORT_ACTIVE)			\
++	ib_event(PORT_ERR)			\
++	ib_event(LID_CHANGE)			\
++	ib_event(PKEY_CHANGE)			\
++	ib_event(SM_CHANGE)			\
++	ib_event(SRQ_ERR)			\
++	ib_event(SRQ_LIMIT_REACHED)		\
++	ib_event(QP_LAST_WQE_REACHED)		\
++	ib_event(CLIENT_REREGISTER)		\
++	ib_event(GID_CHANGE)			\
++	ib_event_end(WQ_FATAL)
++
++#undef ib_event
++#undef ib_event_end
++
++#define ib_event(x)		TRACE_DEFINE_ENUM(IB_EVENT_##x);
++#define ib_event_end(x)		TRACE_DEFINE_ENUM(IB_EVENT_##x);
++
++IB_EVENT_LIST
++
++#undef ib_event
++#undef ib_event_end
++
++#define ib_event(x)		{ IB_EVENT_##x, #x },
++#define ib_event_end(x)		{ IB_EVENT_##x, #x }
++
++#define rdma_show_ib_event(x) \
++		__print_symbolic(x, IB_EVENT_LIST)
++
++/*
++ * enum ib_wc_status type, from include/rdma/ib_verbs.h
++ */
++#define IB_WC_STATUS_LIST			\
++	ib_wc_status(SUCCESS)			\
++	ib_wc_status(LOC_LEN_ERR)		\
++	ib_wc_status(LOC_QP_OP_ERR)		\
++	ib_wc_status(LOC_EEC_OP_ERR)		\
++	ib_wc_status(LOC_PROT_ERR)		\
++	ib_wc_status(WR_FLUSH_ERR)		\
++	ib_wc_status(MW_BIND_ERR)		\
++	ib_wc_status(BAD_RESP_ERR)		\
++	ib_wc_status(LOC_ACCESS_ERR)		\
++	ib_wc_status(REM_INV_REQ_ERR)		\
++	ib_wc_status(REM_ACCESS_ERR)		\
++	ib_wc_status(REM_OP_ERR)		\
++	ib_wc_status(RETRY_EXC_ERR)		\
++	ib_wc_status(RNR_RETRY_EXC_ERR)		\
++	ib_wc_status(LOC_RDD_VIOL_ERR)		\
++	ib_wc_status(REM_INV_RD_REQ_ERR)	\
++	ib_wc_status(REM_ABORT_ERR)		\
++	ib_wc_status(INV_EECN_ERR)		\
++	ib_wc_status(INV_EEC_STATE_ERR)		\
++	ib_wc_status(FATAL_ERR)			\
++	ib_wc_status(RESP_TIMEOUT_ERR)		\
++	ib_wc_status_end(GENERAL_ERR)
++
++#undef ib_wc_status
++#undef ib_wc_status_end
++
++#define ib_wc_status(x)		TRACE_DEFINE_ENUM(IB_WC_##x);
++#define ib_wc_status_end(x)	TRACE_DEFINE_ENUM(IB_WC_##x);
++
++IB_WC_STATUS_LIST
++
++#undef ib_wc_status
++#undef ib_wc_status_end
++
++#define ib_wc_status(x)		{ IB_WC_##x, #x },
++#define ib_wc_status_end(x)	{ IB_WC_##x, #x }
++
++#define rdma_show_wc_status(x) \
++		__print_symbolic(x, IB_WC_STATUS_LIST)
++
++/*
++ * enum ib_cm_event_type, from include/rdma/ib_cm.h
++ */
++#define IB_CM_EVENT_LIST			\
++	ib_cm_event(REQ_ERROR)			\
++	ib_cm_event(REQ_RECEIVED)		\
++	ib_cm_event(REP_ERROR)			\
++	ib_cm_event(REP_RECEIVED)		\
++	ib_cm_event(RTU_RECEIVED)		\
++	ib_cm_event(USER_ESTABLISHED)		\
++	ib_cm_event(DREQ_ERROR)			\
++	ib_cm_event(DREQ_RECEIVED)		\
++	ib_cm_event(DREP_RECEIVED)		\
++	ib_cm_event(TIMEWAIT_EXIT)		\
++	ib_cm_event(MRA_RECEIVED)		\
++	ib_cm_event(REJ_RECEIVED)		\
++	ib_cm_event(LAP_ERROR)			\
++	ib_cm_event(LAP_RECEIVED)		\
++	ib_cm_event(APR_RECEIVED)		\
++	ib_cm_event(SIDR_REQ_ERROR)		\
++	ib_cm_event(SIDR_REQ_RECEIVED)		\
++	ib_cm_event_end(SIDR_REP_RECEIVED)
++
++#undef ib_cm_event
++#undef ib_cm_event_end
++
++#define ib_cm_event(x)		TRACE_DEFINE_ENUM(IB_CM_##x);
++#define ib_cm_event_end(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
++
++IB_CM_EVENT_LIST
++
++#undef ib_cm_event
++#undef ib_cm_event_end
++
++#define ib_cm_event(x)		{ IB_CM_##x, #x },
++#define ib_cm_event_end(x)	{ IB_CM_##x, #x }
++
++#define rdma_show_ib_cm_event(x) \
++		__print_symbolic(x, IB_CM_EVENT_LIST)
++
++/*
++ * enum rdma_cm_event_type, from include/rdma/rdma_cm.h
++ */
++#define RDMA_CM_EVENT_LIST			\
++	rdma_cm_event(ADDR_RESOLVED)		\
++	rdma_cm_event(ADDR_ERROR)		\
++	rdma_cm_event(ROUTE_RESOLVED)		\
++	rdma_cm_event(ROUTE_ERROR)		\
++	rdma_cm_event(CONNECT_REQUEST)		\
++	rdma_cm_event(CONNECT_RESPONSE)		\
++	rdma_cm_event(CONNECT_ERROR)		\
++	rdma_cm_event(UNREACHABLE)		\
++	rdma_cm_event(REJECTED)			\
++	rdma_cm_event(ESTABLISHED)		\
++	rdma_cm_event(DISCONNECTED)		\
++	rdma_cm_event(DEVICE_REMOVAL)		\
++	rdma_cm_event(MULTICAST_JOIN)		\
++	rdma_cm_event(MULTICAST_ERROR)		\
++	rdma_cm_event(ADDR_CHANGE)		\
++	rdma_cm_event_end(TIMEWAIT_EXIT)
++
++#undef rdma_cm_event
++#undef rdma_cm_event_end
++
++#define rdma_cm_event(x)	TRACE_DEFINE_ENUM(RDMA_CM_EVENT_##x);
++#define rdma_cm_event_end(x)	TRACE_DEFINE_ENUM(RDMA_CM_EVENT_##x);
++
++RDMA_CM_EVENT_LIST
++
++#undef rdma_cm_event
++#undef rdma_cm_event_end
++
++#define rdma_cm_event(x)	{ RDMA_CM_EVENT_##x, #x },
++#define rdma_cm_event_end(x)	{ RDMA_CM_EVENT_##x, #x }
++
++#define rdma_show_cm_event(x) \
++		__print_symbolic(x, RDMA_CM_EVENT_LIST)
+diff --git a/include/trace/misc/sunrpc.h b/include/trace/misc/sunrpc.h
+new file mode 100644
+index 000000000000..588557d07ea8
+--- /dev/null
++++ b/include/trace/misc/sunrpc.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (c) 2021 Oracle and/or its affiliates.
++ *
++ * Common types and format specifiers for sunrpc.
++ */
++
++#if !defined(_TRACE_SUNRPC_BASE_H)
++#define _TRACE_SUNRPC_BASE_H
++
++#include <linux/tracepoint.h>
++
++#define SUNRPC_TRACE_PID_SPECIFIER	"%08x"
++#define SUNRPC_TRACE_CLID_SPECIFIER	"%08x"
++#define SUNRPC_TRACE_TASK_SPECIFIER \
++	"task:" SUNRPC_TRACE_PID_SPECIFIER "@" SUNRPC_TRACE_CLID_SPECIFIER
++
++#endif /* _TRACE_SUNRPC_BASE_H */
+
+
