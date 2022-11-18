@@ -2,256 +2,191 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CC562FEF4
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Nov 2022 21:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D53362FFA3
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Nov 2022 22:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbiKRUoS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Nov 2022 15:44:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
+        id S230509AbiKRV7I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Nov 2022 16:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbiKRUoQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Nov 2022 15:44:16 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6B152896
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Nov 2022 12:44:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1668804255; x=1700340255;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=KW2+2Y5Nr+Sp9rIRrSPvUufCYu5DFnEmg/aaE1vNJMM=;
-  b=j8Xi0+XOS0aeNnWQ/ul/JzTg814m4B/IlEccr9Q/Rzz4b/6KfMI5fMQG
-   IkURQdy19LgK5dv75Xnofm07PhAAPkGirZnpVbtj6HqJWk7BgdJxk6Icq
-   sXf/87vfn1WYVzCC0Bun6uA1SRsIPzG/bkJIMvSVVhjXgMIISMFjwi6iE
-   GJckVv/BrLCYemjeZD3faTTueObNvFYdSgUGc3o50/kfVviwlWR50Es7J
-   TXHQcGqUHGIN/AIc8SVPQFvR+usjejNgkI3REaUIafgW/UygHM+dJLHm9
-   8NrcJ6k1QWv4AYhLQsuEc6uYjWaQPgyJfsEqBM8s6L4kjOCyONq0Ty0Cq
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10535"; a="375372429"
-X-IronPort-AV: E=Sophos;i="5.96,175,1665471600"; 
-   d="scan'208";a="375372429"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2022 12:44:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10535"; a="618140229"
-X-IronPort-AV: E=Sophos;i="5.96,175,1665471600"; 
-   d="scan'208";a="618140229"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga006.jf.intel.com with ESMTP; 18 Nov 2022 12:44:14 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 18 Nov 2022 12:44:14 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31 via Frontend Transport; Fri, 18 Nov 2022 12:44:14 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.31; Fri, 18 Nov 2022 12:44:13 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HfJ/0vw6MhmTo3B2KBWfu6OIE/4e/XN1xV18W4XccXW2dARxmR2V/WzPGvg0OGAKNvRS3sRPZL75EhKVqq2FGJ6/phLdjGv+nnCF1gPHUBl9vQAFIn7Z8FTEv/MocexVcZ/TVtpyH44GVhISMmWh7085zx5OAK+ZYYSv2Q+j4apMooykU0AutXpov//sKaUgeOXGjyP4yI3eH6fO/9Ui6CeulfjqCWo03EiWOf+Yan2Thow6geSLtZCUid1CiuPVETRnWcYOe2OXwaeoq659uyrOvKKTvsHW+P4BsfO1v04+1B0JllXsApfniLauHUhClwARRrbugAip7UT2dVnYEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5N+2YNMoKEoqnjg63i5+Dk1KlpjciJdVBl7jH64juQ0=;
- b=D8KYzr3o1a7rqRj3vvLg9hGyfTTiADiHw0f5cS3msJ0L+ZXIF3Z54GUZ9QYSzphHT9eRK9WDQ/M3kIGfeUswFGz60vuv9llo2h/AkwGtTeaLApDw2KwL+3tiEJ+d+CFCgX9Y0QxVlD//bwe2EFShn+eK2F6NjgbisZrocbpxn6FQJUXj2CuwPOenVnuVyhysWUoCQl7z0EVBstb/8+47CF0Rbs/32RJAEIa2XQYIINr19QnBKoIDegjdec4kno5iW0s0/lu6LoaFYG44JyRZ0eRA9l8WN49Z+ZZHcNhuAZKFDKyZ+I0gvb77Lud4jCh/dykoQ+SIS+K4KaE4UmRzLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH7PR11MB6403.namprd11.prod.outlook.com (2603:10b6:510:1f9::9)
- by DM6PR11MB4563.namprd11.prod.outlook.com (2603:10b6:5:28e::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5834.9; Fri, 18 Nov
- 2022 20:44:11 +0000
-Received: from PH7PR11MB6403.namprd11.prod.outlook.com
- ([fe80::b2d5:d5b7:a47d:65fe]) by PH7PR11MB6403.namprd11.prod.outlook.com
- ([fe80::b2d5:d5b7:a47d:65fe%9]) with mapi id 15.20.5813.020; Fri, 18 Nov 2022
- 20:44:11 +0000
-From:   "Ismail, Mustafa" <mustafa.ismail@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Dan Carpenter <error27@gmail.com>
-CC:     "Latif, Faisal" <faisal.latif@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [bug report] iwpm: crash fix for large connections test
-Thread-Topic: [bug report] iwpm: crash fix for large connections test
-Thread-Index: AQHY+maWy9zZC23n/U+SUkTvDQcbnq5FJdjQ
-Date:   Fri, 18 Nov 2022 20:44:11 +0000
-Message-ID: <PH7PR11MB640377FDDE4E242D31DE063E8B099@PH7PR11MB6403.namprd11.prod.outlook.com>
-References: <Y3ORbHXv5M8X8kqN@kili> <Y3X91h5Fla+4mICY@unreal>
-In-Reply-To: <Y3X91h5Fla+4mICY@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR11MB6403:EE_|DM6PR11MB4563:EE_
-x-ms-office365-filtering-correlation-id: 09d4d727-bb9f-4bd4-128f-08dac9a5a5f9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7zYXojuWw0LXQ5Cn5kABhayNsNNhOzXFO1lHf0SJoJEOu9aPTQFwftSj9IUBCP6lZjvTdgDxZUr2k6x3LW62A0q6h1HUGn8ykqJjaOwZL+D5UvkMTDHT4plkbQHE3QXmBSmSvSOnZpz9Iuu6vFKFj4H8y3WYo19aVmjzoQaoCtVvJ+D/NH17PXPu96c4PZ3bN8djs9+TfmZKUEINyHjWMoNy2daYZ1C+pTzAYuTgtU+UhiLGl92RxTBL2OmBwHZFEVDzXiK2KyPRRvAGbt7NBpcTW47p2STZKTq5pYDpU7Ze6OJkTi4a9OuPA6cPLgnSiqeduphZay0RnN2XZjvWlMJrTxNPEkV7DX68Wdfvvyj2tpvkULEciij0OyVBrwguacbVpIqCHcDOX0sKpYXL6rHaK5MnJIocPtjWq/BXP2U/YcbZ8rLVVRUskJB3EKFtenPq/y5UzgB5mx8u8A9HVtTDB5989Jh5qBkXJrE5+95GGfuyBFXuJgqpA+byq+CS1qF+//OsqD2lV5ZZjMnyRq7RHmXMRyp+dc4AxgaTsqy0hTVNqN3FgH7FmXVYVWD6qfoZYI7uBEZccwEqtI6Crb/5cah56DTyXOc6aeCH9SPXJ72rUY6PTiM8R1yIJOpUcTGg4/oZiQqhPJYcdv6p7RBUOH1vVBfbjtj/SYy9HXzP8IQ/Uad1HVdqnY8tPHUgBJ5IA3elBZPDcyw4BQLh/A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6403.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(39860400002)(366004)(346002)(376002)(136003)(396003)(451199015)(186003)(54906003)(110136005)(316002)(26005)(4326008)(64756008)(8676002)(9686003)(478600001)(66946007)(66556008)(71200400001)(6506007)(7696005)(66446008)(76116006)(66476007)(5660300002)(41300700001)(8936002)(52536014)(2906002)(83380400001)(38070700005)(38100700002)(86362001)(82960400001)(33656002)(122000001)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?7ZUlY4+Fhuk75OlZ1LBEWoqfDL/teV1Zi0gRNN3p+ITXIPN1xn9+Fr0BxSGm?=
- =?us-ascii?Q?y/5YWDgrhuEbDIuEi6g5pHsbPkzSUk4WU5Clp01xm41137gHGbf6cVQLkJ01?=
- =?us-ascii?Q?efTFUS2vv+tFI+DwuG9HVLf/3XjItNJW+sWa6hSMJHqEGnH8gsotXEXbSMgy?=
- =?us-ascii?Q?4JeC6NmDfQoCPqu0aBD7+KP3ScKXOQqrHQrM2icnIH7SGlsqrkNJ2qMbcv1c?=
- =?us-ascii?Q?K4rcZiriQcTLOBIJ8QhBl4BaH+68ni35NAyzd2AZrakln1C8DVP5sKDdWIYh?=
- =?us-ascii?Q?AF3zQ0yzfx7TXgQ94pxfzvUulCD2WMVYBDf/edBYkJ4+u/ZPQSJeQEgK8gvP?=
- =?us-ascii?Q?OHsavlI0mkg/kfH3oyxD9Q0hWuG6M57EYazPxh248dzp3t1GsTdNv9lGQHqE?=
- =?us-ascii?Q?kCh1yMjwI8mxo/sWMqeHS0d/GBKX51CvnU1K0I7MmoA137daBQXKe/okieGU?=
- =?us-ascii?Q?Uy6/4eQw43ViHK3rily2qriX/Eax51ZO0CSOHmFGseklZX+K4sbmCSD7nC0R?=
- =?us-ascii?Q?f/PY4hQW1hLdn44CeP7ItcSNALBwIFe9ZWaQB02GDSrdx2Wr2KA+5qH6fO3a?=
- =?us-ascii?Q?SNa+5pfQEXqU9VWdgYSn8GInDU8ujKLOgfevVwjSsgQUxt2PcSGGIeCpTzh7?=
- =?us-ascii?Q?lqZCJxw5ConLJPh3XqBGdna1t32cn/3VwO4MCFfTTm/hXZzpUJWh4Uq/2s/e?=
- =?us-ascii?Q?2ivU3AjxpRRoPMgcTVoXI1BxwEZhRbmp8XNGdXv6Uf2BykOAMumTFKjxuq3V?=
- =?us-ascii?Q?HxBB7tLA621WeVYzcsoEYxUk6bjw06ZVc8t2gA5OEPb1kQGOnhFcAN1bcHwX?=
- =?us-ascii?Q?OfGOH8lIsPjv/lFRWBsgsEWo9cFwW/CwZSRzLEprcV2m31PNZNchB8yaz63/?=
- =?us-ascii?Q?Xld8GCMvGcRdKQxfO5rK/l3uMEls9HuEsgGPRGTzhqOx2NW1RauQbaxwDthk?=
- =?us-ascii?Q?4VNYPmSTVufjVO0DGEj5JgYb9W777bpG4PHdq/8MiAGPvqbQJXQk+t656rZy?=
- =?us-ascii?Q?oE3no3duZQsICuxajSaxCZwCahanAu6L23hWIPtaLHMVB3fl7nDyk6gAYHDg?=
- =?us-ascii?Q?DhoVm25CQH8aWBG1GSsbP0Hor274YRNIqDdgDhZ/xGiqDcnlo/eEo0jK2Dg0?=
- =?us-ascii?Q?+TgatyHelERhrzIuLt2Mvv1gWIZPrlCTynE+suM0R4OaLDG+cHobjpVvz4gF?=
- =?us-ascii?Q?rX4qSF5QS/x8SWDxpd9Ly7ftwW/oPq7XuoPy2aurKroAlTVaGjxFk4kvDV6k?=
- =?us-ascii?Q?nuz+/pTjFTy6aU04GooLmlF25Rz2gFOUnfZh8SycW56n8mP5chahDRjYpbgG?=
- =?us-ascii?Q?O4FHhvPkgXCqMEqKDn4rQHyxqNGZMVJfF1y8r2A7PSRv8L3Caih4xfdnXkqb?=
- =?us-ascii?Q?D0XdKfdEhsi6dX/VbjuuUrNJR9BwRi2Rqgb0NEMrdb5qRuTPxW4oR+ZCsBJd?=
- =?us-ascii?Q?AwJ9STi2BCMgTa/f8DrRElBsFcvWi976u1mSB9E5y2XfMWOMdBjQINtipTT1?=
- =?us-ascii?Q?8LbIWwCikryep//eGkfMxg6X1Gi8r2zTNcAFzHtMsDMKwJCMlUhfYYwQ3Hbv?=
- =?us-ascii?Q?CH0SheDJYDysyxxpvZtm+X3jWt6dhAA9lmHCjz2p?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229451AbiKRV7H (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Nov 2022 16:59:07 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE4D7AF49
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Nov 2022 13:58:54 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id v17so5728281plo.1
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Nov 2022 13:58:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eGuhGDCtJh7U/PfIpJklIgL+pxK6g8kJvzZK0so7MNM=;
+        b=Tt178UvIpw6m9LNmpSg90J7p2S59YIhzSlqVlFy8TPxxLPdEVF8TktBqmiVuBCzXn4
+         FlyL8ygogW1faiejozMX3wwZ15yNYIP1u5l7rjEn6BsKKKdxCcYIMbERkbSedPPS+3Re
+         vBfMkb5LcpP57zzpApKsef+E0pgOLb6K2+cC4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eGuhGDCtJh7U/PfIpJklIgL+pxK6g8kJvzZK0so7MNM=;
+        b=Hkm7dekWP8xyRw6y4a62AVrbSzpWmnRa/bXtzn2eq5iM8yfqFzPBjdQ+/7gMfxGolY
+         HvEN0zwVH9N1JlHqYxCe5VhkTRQDGZ3rKtmtYDk6WEybFhs3sshWE9zEVPtFv+25wC4q
+         DLHs69AulF3PNxufVdWkLVLgZWZ8aRcyoUCAH1gZds1PMOTEHEZaZ78EiudHXymel+SM
+         KZ+E082DEPfF6qpPYttsEqhoO/wJ5Q1t0lmMuVfYzoEaokMXlqLaOkIP3fX7MaRcB4Vt
+         /FY9qBeLh+oBPhqixMMlh4xUlfyThNqzztilETc3oTArX2k7jNByLhpuFffb0rFCF6BA
+         fDxg==
+X-Gm-Message-State: ANoB5pl/bBUeav5wo0y+S9XZBqSYUeYZ7rQu0na/feMzexqGMPjCkqi3
+        ZCz7YUnpQymSQz0OQdYcV68YiQ==
+X-Google-Smtp-Source: AA0mqf7aJHqBHL9c0HthlRZPgI19ioUmFKZkzDkF6JLL+yJtKD8rBUue0bKxJy3kiHh70ZgOcC1a3w==
+X-Received: by 2002:a17:902:f80d:b0:186:5d84:604e with SMTP id ix13-20020a170902f80d00b001865d84604emr1389916plb.85.1668808734108;
+        Fri, 18 Nov 2022 13:58:54 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902654500b00168dadc7354sm4264628pln.78.2022.11.18.13.58.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Nov 2022 13:58:53 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     Kees Cook <keescook@chromium.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, cgel.zte@gmail.com,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] IB/hfi1: Replace 1-element array with singleton
+Date:   Fri, 18 Nov 2022 13:58:51 -0800
+Message-Id: <20221118215847.never.416-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6403.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 09d4d727-bb9f-4bd4-128f-08dac9a5a5f9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2022 20:44:11.7072
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PmxTbNoLN0UELBzI/4ghNS2QDBgbOa0YoTuZQ2HVV1ovC2IYEn1fhORb7dg7yxXkFxsEjyCH+rFBBoSmSAEYCVuBz3PPrEFmfYfOL1t1IoU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4563
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4229; h=from:subject:message-id; bh=CITklIdZXjvaOkKNHxlyvz5+xGxonN3wFS+DWEK5P8E=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjeAAaOgw7tNqzwfhacH7ZWIUVsgnuwKFfdUzSYs3A xrFYbrCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY3gAGgAKCRCJcvTf3G3AJgK9D/ 0enMJo74GYWgMGdD5E2HmAsUoVb9zcqcEQ6DNgNUK4vKfo++zqy4dmFhjLvH1SjXvnY9234fN2g+y7 C6O+5SPDFxzvDK2+gZMsZqVSKLy6Sew6M6zUo1aQnO7sCx9isrTsbI3dBOZ5OyBScg3BlIrusJNybP mUaD4fz/QN2ur0N4SLXbZ7zSguPVbTHH9imSiDAgUYO+mFs+OJEc13LS+j3YbQyp+BWIgF1+LqjQZ5 XY0g7iJGFNvKN49KoXwnlykdUL9BwwRazrOZp3VYMPVeDrjX6XEoyh9NqIU6vxPCSElqP4zh1Q9Rum N/6nJAdz9ug2WGIfhVvNVhtFw8kWrWifYwF9Qe6HZxdy6NuwWhgVDRt5/XgxSFS9JpEnbgzf+zN+uL cJ6QfNuljlkbQzs1z77/B7tu+clWifkhI1ZKakBatU0+j14yUeGqXWxk8CpozZCvN7YFBnri8B+YC+ eQKCssb9O4V1tCHcYtQySwrOSIVujqO+Fe28uD55dKPK8WygFEyy3mx9R6FuYWrSZXSu7XfiOzVRep NTOlfmk/Kb9IsyuJvML4ieFUr43G1NrhzV4KSjZMN8L8TLu/drZ5Z57aTtMbkqwTLV0d6/mXCxOQHY p9Y3RaDYvfuaGqECsjUFQ1fRqHhPiyBCzZq/NaWUTrqd/I8FqQLav3QpUZBQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [bug report] iwpm: crash fix for large connections test
->=20
-> On Tue, Nov 15, 2022 at 04:17:32PM +0300, Dan Carpenter wrote:
-> > [ This isn't really the correct patch to blame.  Sorry! -dan ]
-> >
-> > Hello Faisal Latif,
-> >
-> > The patch dafb5587178a: "iwpm: crash fix for large connections test"
-> > from Feb 26, 2016, leads to the following Smatch static checker
-> > warning:
-> >
-> > drivers/infiniband/core/iwpm_msg.c:437 iwpm_register_pid_cb() warn:
-> 'nlmsg_request' was already freed.
-> > drivers/infiniband/core/iwpm_msg.c:509 iwpm_add_mapping_cb() warn:
-> 'nlmsg_request' was already freed.
-> > drivers/infiniband/core/iwpm_msg.c:607
-> iwpm_add_and_query_mapping_cb() warn: 'nlmsg_request' was already
-> freed.
-> > drivers/infiniband/core/iwpm_msg.c:806 iwpm_mapping_error_cb() warn:
-> 'nlmsg_request' was already freed.
-> >
-> > drivers/infiniband/core/iwpm_msg.c
-> >     385 int iwpm_register_pid_cb(struct sk_buff *skb, struct netlink_ca=
-llback
-> *cb)
-> >     386 {
-> >     387         struct iwpm_nlmsg_request *nlmsg_request =3D NULL;
-> >     388         struct nlattr *nltb[IWPM_NLA_RREG_PID_MAX];
-> >     389         struct iwpm_dev_data *pm_msg;
-> >     390         char *dev_name, *iwpm_name;
-> >     391         u32 msg_seq;
-> >     392         u8 nl_client;
-> >     393         u16 iwpm_version;
-> >     394         const char *msg_type =3D "Register Pid response";
-> >     395
-> >     396         if (iwpm_parse_nlmsg(cb, IWPM_NLA_RREG_PID_MAX,
-> >     397                                 resp_reg_policy, nltb, msg_type=
-))
-> >     398                 return -EINVAL;
-> >     399
-> >     400         msg_seq =3D nla_get_u32(nltb[IWPM_NLA_RREG_PID_SEQ]);
-> >     401         nlmsg_request =3D iwpm_find_nlmsg_request(msg_seq);
-> >     402         if (!nlmsg_request) {
-> >     403                 pr_info("%s: Could not find a matching request =
-(seq =3D
-> %u)\n",
-> >     404                                  __func__, msg_seq);
-> >     405                 return -EINVAL;
-> >     406         }
-> >     407         pm_msg =3D nlmsg_request->req_buffer;
-> >     408         nl_client =3D nlmsg_request->nl_client;
-> >     409         dev_name =3D (char
-> *)nla_data(nltb[IWPM_NLA_RREG_IBDEV_NAME]);
-> >     410         iwpm_name =3D (char
-> *)nla_data(nltb[IWPM_NLA_RREG_ULIB_NAME]);
-> >     411         iwpm_version =3D
-> nla_get_u16(nltb[IWPM_NLA_RREG_ULIB_VER]);
-> >     412
-> >     413         /* check device name, ulib name and version */
-> >     414         if (strcmp(pm_msg->dev_name, dev_name) ||
-> >     415                         strcmp(iwpm_ulib_name, iwpm_name) ||
-> >     416                         iwpm_version < IWPM_UABI_VERSION_MIN) {
-> >     417
-> >     418                 pr_info("%s: Incorrect info (dev =3D %s name =
-=3D %s version =3D
-> %u)\n",
-> >     419                                 __func__, dev_name, iwpm_name, =
-iwpm_version);
-> >     420                 nlmsg_request->err_code =3D IWPM_USER_LIB_INFO_=
-ERR;
-> >     421                 goto register_pid_response_exit;
-> >     422         }
-> >     423         iwpm_user_pid =3D cb->nlh->nlmsg_pid;
-> >     424         iwpm_ulib_version =3D iwpm_version;
-> >     425         if (iwpm_ulib_version < IWPM_UABI_VERSION)
-> >     426                 pr_warn_once("%s: Down level iwpmd/pid %d.
-> Continuing...",
-> >     427                         __func__, iwpm_user_pid);
-> >     428         atomic_set(&echo_nlmsg_seq, cb->nlh->nlmsg_seq);
-> >     429         pr_debug("%s: iWarp Port Mapper (pid =3D %d) is availab=
-le!\n",
-> >     430                         __func__, iwpm_user_pid);
-> >     431         iwpm_set_registration(nl_client, IWPM_REG_VALID);
-> >     432 register_pid_response_exit:
-> >     433         nlmsg_request->request_done =3D 1;
-> >     434         /* always for found nlmsg_request */
-> >     435         kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request)=
-;
-> >
-> > The iwpm_free_nlmsg_request() function will free "nlmsg_request"...
-> > It's not clear what the "/* always for found nlmsg_request */" comment
-> > means.  Maybe it means that the refcount won't drop to zero so the
-> > free function won't be called?
->=20
-> I think so. The nlmsg_request reference counter is elevated when it is fo=
-und
-> in iwpm_find_nlmsg_request(). So I assume that it will be at least
-> 2 before call to kref_put(). Most likely, nlmsg_request->sem prevents fro=
-m
-> parallel threads to decrease that reference counter.
->=20
+Zero-length arrays are deprecated[1] and are being replaced with
+flexible array members in support of the ongoing efforts to tighten the
+FORTIFY_SOURCE routines on memcpy(), correctly instrument array indexing
+with UBSAN_BOUNDS, and to globally enable -fstrict-flex-arrays=3.
 
-I agree with Leon. The ref count should be 2 here.
-However, I don't see why the kref_put() can't be moved after the up(&nlmsg_=
-request->sem) to get rid of the warning.
+Replace zero-length array with flexible-array member "lvs" in struct
+opa_port_data_counters_msg and struct opa_port_error_counters64_msg.
 
-Regards,
+Additionally, the "port" member of several structs is defined as a
+single-element, but is only ever accessed at index 0. Replace it with a
+singleton so that flexible array usage is sane.
 
-Mustafa
+This results in no differences in binary output.
+
+[1] https://github.com/KSPP/linux/issues/78
+
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: cgel.zte@gmail.com
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/infiniband/hw/hfi1/mad.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/mad.c b/drivers/infiniband/hw/hfi1/mad.c
+index 4146a2113a95..e5e783c45810 100644
+--- a/drivers/infiniband/hw/hfi1/mad.c
++++ b/drivers/infiniband/hw/hfi1/mad.c
+@@ -2437,9 +2437,9 @@ struct opa_port_data_counters_msg {
+ 			__be64 port_vl_xmit_wait_data;
+ 			__be64 port_vl_rcv_bubble;
+ 			__be64 port_vl_mark_fecn;
+-		} vls[0];
++		} vls[];
+ 		/* array size defined by #bits set in vl_select_mask*/
+-	} port[1]; /* array size defined by  #ports in attribute modifier */
++	} port;
+ };
+ 
+ struct opa_port_error_counters64_msg {
+@@ -2470,9 +2470,9 @@ struct opa_port_error_counters64_msg {
+ 		u8 reserved3[7];
+ 		struct _vls_ectrs {
+ 			__be64 port_vl_xmit_discards;
+-		} vls[0];
++		} vls[];
+ 		/* array size defined by #bits set in vl_select_mask */
+-	} port[1]; /* array size defined by #ports in attribute modifier */
++	} port;
+ };
+ 
+ struct opa_port_error_info_msg {
+@@ -2543,7 +2543,7 @@ struct opa_port_error_info_msg {
+ 			u8 error_info;
+ 		} __packed fm_config_ei;
+ 		__u32 reserved9;
+-	} port[1]; /* actual array size defined by #ports in attr modifier */
++	} port;
+ };
+ 
+ /* opa_port_error_info_msg error_info_select_mask bit definitions */
+@@ -2966,7 +2966,7 @@ static int pma_get_opa_datacounters(struct opa_pma_mad *pmp,
+ 	}
+ 
+ 	/* Sanity check */
+-	response_data_size = struct_size(req, port[0].vls, num_vls);
++	response_data_size = struct_size(req, port.vls, num_vls);
+ 
+ 	if (response_data_size > sizeof(pmp->data)) {
+ 		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
+@@ -2986,7 +2986,7 @@ static int pma_get_opa_datacounters(struct opa_pma_mad *pmp,
+ 		return reply((struct ib_mad_hdr *)pmp);
+ 	}
+ 
+-	rsp = &req->port[0];
++	rsp = &req->port;
+ 	memset(rsp, 0, sizeof(*rsp));
+ 
+ 	rsp->port_number = port;
+@@ -3182,7 +3182,7 @@ static int pma_get_opa_porterrors(struct opa_pma_mad *pmp,
+ 		return reply((struct ib_mad_hdr *)pmp);
+ 	}
+ 
+-	response_data_size = struct_size(req, port[0].vls, num_vls);
++	response_data_size = struct_size(req, port.vls, num_vls);
+ 
+ 	if (response_data_size > sizeof(pmp->data)) {
+ 		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
+@@ -3201,7 +3201,7 @@ static int pma_get_opa_porterrors(struct opa_pma_mad *pmp,
+ 		return reply((struct ib_mad_hdr *)pmp);
+ 	}
+ 
+-	rsp = &req->port[0];
++	rsp = &req->port;
+ 
+ 	ibp = to_iport(ibdev, port_num);
+ 	ppd = ppd_from_ibp(ibp);
+@@ -3340,7 +3340,7 @@ static int pma_get_opa_errorinfo(struct opa_pma_mad *pmp,
+ 	u64 reg;
+ 
+ 	req = (struct opa_port_error_info_msg *)pmp->data;
+-	rsp = &req->port[0];
++	rsp = &req->port;
+ 
+ 	num_ports = OPA_AM_NPORT(be32_to_cpu(pmp->mad_hdr.attr_mod));
+ 	num_pslm = hweight64(be64_to_cpu(req->port_select_mask[3]));
+@@ -3590,7 +3590,7 @@ static int pma_set_opa_errorinfo(struct opa_pma_mad *pmp,
+ 	u32 error_info_select;
+ 
+ 	req = (struct opa_port_error_info_msg *)pmp->data;
+-	rsp = &req->port[0];
++	rsp = &req->port;
+ 
+ 	num_ports = OPA_AM_NPORT(be32_to_cpu(pmp->mad_hdr.attr_mod));
+ 	num_pslm = hweight64(be64_to_cpu(req->port_select_mask[3]));
+-- 
+2.34.1
+
