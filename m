@@ -2,131 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6649462F356
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Nov 2022 12:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 958E062F600
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Nov 2022 14:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241845AbiKRLJb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Nov 2022 06:09:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
+        id S241638AbiKRN30 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Nov 2022 08:29:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241694AbiKRLJP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Nov 2022 06:09:15 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B2E3B1;
-        Fri, 18 Nov 2022 03:09:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EfRO0ptxO3+ypU2KxCKexp96MUHxMRW8bunXh9MGsDQ=; b=LDGBrfajYbkT9xph6b6097Xb/c
-        syw/S6y4TG1cS360/nd6d+c79/tEze+2e0txBMIoIcDriZE8lsPhASFA+NSJ8eg8EVkJO2kPb4qlI
-        t0uGnwKkqKm3kAMzV9dozjGsuBQAveUb/UOZDYoK75AExM4rxBzbgukAnzxUTKevVJRGZPyPEIYWw
-        gSP3hqrNt8ek+/8tR8KcdqQYYDbVJVIGKeEUat+AOQu3Lb7Rqyh8OcjxgSig6/MAUk9wvWAe8ysnQ
-        uQjyqr2Z5/P12vcorm9ew0TUB/Z1OlxqyFa9I2mva2wnFCskZFBF8h9xXwfF4ZV+daEJb09cWUoJB
-        0tx5p2IQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ovzF8-002Dxl-JB; Fri, 18 Nov 2022 11:09:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8C81300422;
-        Fri, 18 Nov 2022 12:09:02 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7C5AF205A9605; Fri, 18 Nov 2022 12:09:02 +0100 (CET)
-Date:   Fri, 18 Nov 2022 12:09:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Peter Xu <peterx@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH mm-unstable v1 20/20] mm: rename FOLL_FORCE to FOLL_PTRACE
-Message-ID: <Y3dnzgwJpjTQXI9y@hirez.programming.kicks-ass.net>
-References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-21-david@redhat.com>
- <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
+        with ESMTP id S241917AbiKRN3G (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Nov 2022 08:29:06 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820838C4A0
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Nov 2022 05:29:05 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id cn2-20020a056830658200b0066c74617e3dso3058441otb.2
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Nov 2022 05:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cC2JN4ZUsjuEwnjnpajcpS5m9KPPu/uO4FGcPfQVcS4=;
+        b=jUN18wTmj+1ZYiBLq0ATj/xOBRgTuQJR9jqDHN+c8l+d8YniEEXDh7dFTMb2sHXMDV
+         SmTPFJhZFAGJ0xjc94bqvehQQBz2lJO1+mlg2LQkKAYJvyKPDNgOQOuuVom52Ccy0072
+         PPTJ2vlkRZeGK/xUueiFbHK9B5VMpWVW1yHvkl43psWyLwjs7fy4tYqlZTEOVMSQAFXN
+         o6p/hGINRd7mCC/m1wirC0Heq0GKSrk86iv5x3X9OQOzF5tlK25vHXKxvMsDKgI8xbAE
+         t6su0SIVH2uKqE7n1RcGMwqhYmYGR6ys6AwqiID3LAChtDtPnJyTqyQqYBpqFyhT0Vqb
+         5HXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cC2JN4ZUsjuEwnjnpajcpS5m9KPPu/uO4FGcPfQVcS4=;
+        b=YXR5K58C0t3bwSzsASRuSkScdEDLMQCM/lprVlSAgg6aO39wiANBsSAv47LowPArji
+         PJhtalbFZ3JDAwi4DcOJEC8PSr/lexKf4fTJEGJhM84FpDFD0kf4vbnX+kG/9gwKL//g
+         UXgRG5BxCFBn8jJntJByN/5hSHl/tA6rxicMSoPVmawZij2TJxSp1fXbshx+mmavD6/r
+         YzpuOeh1oCQTXTI2HeOazSY0ceFN6rQ/f8QmgpKSH4fu0ITqibyNADRks9kru5CNQaMx
+         TKWT72hRIfuFWij0IXP1IfalbuNkwW9Mj7VCS2bLWtkhHeo62tMh5VPLHfCCDgV8uiDM
+         bIzA==
+X-Gm-Message-State: ANoB5pmThMNAxqW6Vgf3Ors1GKdb45MgV7fs5lONNGLV3OGSAqKylnzo
+        L4Iu4CbyJpYOTGAT7XsmGEXGkCuzFkS+veOXRF/29A==
+X-Google-Smtp-Source: AA0mqf5K0ISjTVWz7ORFlgRvVl+wnmbgFAM22X4Xo5cff4bPY2eHs65n+6z5Dd5IjlVNyeMYLAxeOJS1SBuijdpzp0A=
+X-Received: by 2002:a05:6830:1b62:b0:66c:7982:2d45 with SMTP id
+ d2-20020a0568301b6200b0066c79822d45mr3794575ote.123.1668778144575; Fri, 18
+ Nov 2022 05:29:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <00000000000060c7e305edbd296a@google.com>
+In-Reply-To: <00000000000060c7e305edbd296a@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 18 Nov 2022 14:28:53 +0100
+Message-ID: <CACT4Y+a=HbyJE3A_SnKm3Be-kcQytxXXF89gZ_cN1gwoAW-Zgw@mail.gmail.com>
+Subject: Re: [syzbot] unregister_netdevice: waiting for DEV to become free (7)
+To:     syzbot <syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, chenzhongjin@huawei.com,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 10:16:34AM -0800, Linus Torvalds wrote:
-> Following the history of it is a big of a mess, because there's a
-> number of renamings and re-organizations, but it seems to go back to
-> 2007 and commit b6a2fea39318 ("mm: variable length argument support").
+On Fri, 18 Nov 2022 at 12:39, syzbot
+<syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    9c8774e629a1 net: eql: Use kzalloc instead of kmalloc/memset
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17bf6cc8f00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=9eb259db6b1893cf
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5e70d01ee8985ae62a3b
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1136d592f00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1193ae64f00000
+>
+> Bisection is inconclusive: the issue happens on the oldest tested release.
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=167c33a2f00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=157c33a2f00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=117c33a2f00000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com
+>
+> iwpm_register_pid: Unable to send a nlmsg (client = 2)
+> infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
+> unregister_netdevice: waiting for vlan0 to become free. Usage count = 2
 
-I went back and read parts of the discussions with Ollie, and the
-.force=1 thing just magically appeared one day when we were sending
-work-in-progress patches back and forth without mention of where it came
-from :-/
++RDMA maintainers
 
-And I certainly can't remember now..
+There are 4 reproducers and all contain:
 
-Looking at it now, I have the same reaction as both you and Kees had, it
-seems entirely superflous. So I'm all for trying to remove it.
+r0 = socket$nl_rdma(0x10, 0x3, 0x14)
+sendmsg$RDMA_NLDEV_CMD_NEWLINK(...)
+
+Also the preceding print looks related (a bug in the error handling
+path there?):
+
+infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
+
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
