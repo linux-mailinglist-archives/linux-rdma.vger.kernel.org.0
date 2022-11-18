@@ -2,92 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC29962F8C4
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Nov 2022 16:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A810562FA14
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Nov 2022 17:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242064AbiKRPDy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Nov 2022 10:03:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
+        id S242101AbiKRQUP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Nov 2022 11:20:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235327AbiKRPDT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Nov 2022 10:03:19 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC07F976E7
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Nov 2022 07:00:59 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id bs21so9635300wrb.4
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Nov 2022 07:00:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L+6g7LDbOggoA49OprxaF4UaX30Eo5/HcGQ0G66tllQ=;
-        b=ilftcP2zqQItLaZWEO2S5v1mKv4UTU8z+dXZdc1ZAtc7Dh8nth39gZ+5SXbmVFB+U/
-         B3mgdTL4ga5zKaiVSi8GWOq4e9EZ2X+3wOyloTRTylRrfB5QRzr1w2GPi6ydZuaxTPHo
-         +ioSLkwCFjXqFzrsV+BhN+BFgIU8eoioB88/6O5JcIWqF3lwtmcYLUHVyj8vpRJERgl5
-         uykZoqpr+NhaNW434lh5RQdsSxlltxO2WLpOBQjmlTVGmnt9+nr2OvPlRQuLQ2GCpj0C
-         zdfVd7SnkkzPfg4byqgtJopExMWJnQLcbRHMwTahSUlAik1JAnvNWiuJsLMsvulX7Shh
-         ZFCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L+6g7LDbOggoA49OprxaF4UaX30Eo5/HcGQ0G66tllQ=;
-        b=dq7COm9B+43IuyDTGBA1gpV5AKOVnumExjF+3KonK38+3skQusjgANKJHBP8val7XW
-         NKrb2TLnK/GCILDBRfbry1DVrJ5jBHe2pXGxlW3PXY+yzQaLZ32LvIuNSsnZpTJqfs8L
-         UgBZ8wtaAtqRloYfgLxEA1gz9Bn7VZytnkydX/aCjTT+/LKT9dOlO1wOzXvsv4TJyeVC
-         TCoNaS27kVHB2Hmz7lB/eoihz6q34zVkH8uLysBjQMVLjHjs+C1saLGOtAN82m8SKcj1
-         yrFHBvQS7+tSIt2Fsbc4YejSiEpVMIBQnrV405YZ95NzGRtpz5McjIXNRQvy0Vn+c6XW
-         jF2g==
-X-Gm-Message-State: ANoB5pkbkHr0SOFQzlom7fXF5cQ0NpaOuNZ6uIHd7dQlGuvwfEW0/57D
-        jFIZsugapYnbBAv/1h9xe4w=
-X-Google-Smtp-Source: AA0mqf7oX09D8GtN1uQukrwwHKQsmem60pzXF+e/fWciK0/jmg7AJ5XFX5H4vBXlpy9Xop0OK+8AzQ==
-X-Received: by 2002:a5d:4844:0:b0:230:55fc:5de1 with SMTP id n4-20020a5d4844000000b0023055fc5de1mr4400264wrs.500.1668783658282;
-        Fri, 18 Nov 2022 07:00:58 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o9-20020a056000010900b00228692033dcsm3682177wrx.91.2022.11.18.07.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Nov 2022 07:00:57 -0800 (PST)
-Date:   Fri, 18 Nov 2022 18:00:53 +0300
-From:   Dan Carpenter <error27@gmail.com>
-To:     rpearsonhpe@gmail.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] RDMA/rxe: Replace pr_xxx by rxe_dbg_xxx in rxe_mr.c
-Message-ID: <Y3eeJW0AdyJYhYyQ@kili>
+        with ESMTP id S235084AbiKRQUL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Nov 2022 11:20:11 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2246A1181C;
+        Fri, 18 Nov 2022 08:20:09 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AE6541FD2A;
+        Fri, 18 Nov 2022 16:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1668788407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZdCAdBuUfE3Rqc7NKln9hVuWsUdVVMVjbpiUee2vmvc=;
+        b=gFn628LRme6mgJaZwZXeXxqjVHZ1dhRwig/bm8/PJr2zPCzCtNxBMW9LTId3gWUCMDCXyK
+        TtXWbFh2gTikA3YMbaaroxv4l1XPLUH9rONQd0Dr+UuiMwnQoW4bEdHtBzAdzRgdfTZpOo
+        z5sm6N12GAAOBYVJKj61R24kx7azRZk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1668788407;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZdCAdBuUfE3Rqc7NKln9hVuWsUdVVMVjbpiUee2vmvc=;
+        b=TNP3u8Xx8uZo+sUiWVVILNS2hk5mwr0qssvrZKBXcmmjqp8qeTg4rudZW0WqfwYAgYNMk2
+        poai8KIFEEpddcDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 10E861345B;
+        Fri, 18 Nov 2022 16:20:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id uA9uA7ewd2PXAwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 18 Nov 2022 16:20:07 +0000
+Message-ID: <5104fc7b-7b38-652a-9a3f-6116e48d4129@suse.cz>
+Date:   Fri, 18 Nov 2022 17:20:06 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH mm-unstable v1 01/20] selftests/vm: anon_cow: prepare for
+ non-anonymous COW tests
+Content-Language: en-US
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20221116102659.70287-1-david@redhat.com>
+ <20221116102659.70287-2-david@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20221116102659.70287-2-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Bob Pearson,
+On 11/16/22 11:26, David Hildenbrand wrote:
+> Originally, the plan was to have a separate tests for testing COW of
+> non-anonymous (e.g., shared zeropage) pages.
+> 
+> Turns out, that we'd need a lot of similar functionality and that there
+> isn't a really good reason to separate it. So let's prepare for non-anon
+> tests by renaming to "cow".
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-This is a semi-automatic email about new static checker warnings.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-The patch 2778b72b1df0: "RDMA/rxe: Replace pr_xxx by rxe_dbg_xxx in 
-rxe_mr.c" from Nov 3, 2022, leads to the following Smatch complaint:
-
-    drivers/infiniband/sw/rxe/rxe_mr.c:527 rxe_invalidate_mr()
-    error: we previously assumed 'mr' could be null (see line 526)
-
-drivers/infiniband/sw/rxe/rxe_mr.c
-   525		mr = rxe_pool_get_index(&rxe->mr_pool, key >> 8);
-   526		if (!mr) {
-                    ^^^
-"mr" is NULL.
-
-   527			rxe_dbg_mr(mr, "No MR for key %#x\n", key);
-                                   ^^
-Dereference.
-
-   528			ret = -EINVAL;
-   529			goto err;
-
-regards,
-dan carpenter
