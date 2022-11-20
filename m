@@ -2,132 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4259B630D47
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Nov 2022 09:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045E6630DA5
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Nov 2022 10:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbiKSI0G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 19 Nov 2022 03:26:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42230 "EHLO
+        id S230211AbiKSJCQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 19 Nov 2022 04:02:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbiKSI0F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 19 Nov 2022 03:26:05 -0500
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB3EACEA8;
-        Sat, 19 Nov 2022 00:26:03 -0800 (PST)
-Message-ID: <c806a812-4ecd-226f-109e-84642357fbcb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1668846361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gfn1N8MLZTcJX22BXGXP9eTQh7aXYUOkE4nO8D9F2+U=;
-        b=w701wdjyKQhkOLcG8+obDqjtM+rgbf9kPAXpkBOfaqJ5NYt12Bo81idGEOa9ykQuYnyWUD
-        5kewtMlfuAkScbD2CMHuQiY3Hh65ukbR+x/RNsxuxaQsWV/d/fyqFhTEVUcFlsuJI10Pxe
-        TY2z91jGIiruYG31ow23QeEmYlKRq14=
-Date:   Sat, 19 Nov 2022 16:25:47 +0800
+        with ESMTP id S229836AbiKSJCQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 19 Nov 2022 04:02:16 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E57880999
+        for <linux-rdma@vger.kernel.org>; Sat, 19 Nov 2022 01:02:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1668848535; x=1700384535;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=VthC0u1TdpVjTwgEBLSpZMpSyWc0rij8qGfQTsNmZAk=;
+  b=SilVO4hEIHWz2xphm2UNUGeVN+qxn8ZildHUl8GdFkGUKH1SXb7DDkAi
+   Df6ujKoiN4/IiWpH/QBSZbIB46zK69b616HkF2Ov26aI/3lZ/Fk042E18
+   LvPW0Ih6XqZ9chyUlubyD2LyFSQzTRxjP5NC7U3TztxLrKnbso7gU3cWC
+   ohlACn1HaDZLDWueKzw9CEoBtS38ZriNJbOUHqdATF+wk31urm2skfcgm
+   p9lDFzB2fcRvVljh2EBgljP+0VjntzM6UF/+ggTIuN+KrHLba9grVY0Kb
+   yhHzIdXB6ghU2cY0DhsE5wb46PXPfmHruBWtuB8v7ETWTmKR6Zo37Pnl3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10535"; a="313333135"
+X-IronPort-AV: E=Sophos;i="5.96,176,1665471600"; 
+   d="scan'208";a="313333135"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2022 01:02:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10535"; a="746288995"
+X-IronPort-AV: E=Sophos;i="5.96,176,1665471600"; 
+   d="scan'208";a="746288995"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Nov 2022 01:02:13 -0800
+From:   Zhu Yanjun <yanjun.zhu@intel.com>
+To:     yanjun.zhu@intel.com, zyjzyj2000@gmail.com, jgg@ziepe.ca,
+        leon@kernel.org, linux-rdma@vger.kernel.org
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: [for-next PATCH 1/1] RDMA/rxe: sgt_append from ib_umem_get is not highmem
+Date:   Sat, 19 Nov 2022 20:29:38 -0500
+Message-Id: <20221120012939.539953-1-yanjun.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <c806a812-4ecd-226f-109e-84642357fbcb@linux.dev>
+References: <c806a812-4ecd-226f-109e-84642357fbcb@linux.dev>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-next v2] RDMA/rxe: Fix mr->map double free
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Li Zhijian <lizhijian@fujitsu.com>
-Cc:     zyjzyj2000@gmail.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <1667099073-2-1-git-send-email-lizhijian@fujitsu.com>
- <Y3ggL8RJw6mDaWxT@nvidia.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <Y3ggL8RJw6mDaWxT@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2022/11/19 8:15, Jason Gunthorpe 写道:
-> On Sun, Oct 30, 2022 at 03:04:33AM +0000, Li Zhijian wrote:
->> rxe_mr_cleanup() which tries to free mr->map again will be called
->> when rxe_mr_init_user() fails.
->>
->> [43895.939883] CPU: 0 PID: 4917 Comm: rdma_flush_serv Kdump: loaded Not tainted 6.1.0-rc1-roce-flush+ #25
->> [43895.942341] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
->> [43895.945208] Call Trace:
->> [43895.946130]  <TASK>
->> [43895.946931]  dump_stack_lvl+0x45/0x5d
->> [43895.948049]  panic+0x19e/0x349
->> [43895.949010]  ? panic_print_sys_info.part.0+0x77/0x77
->> [43895.950356]  ? asm_sysvec_apic_timer_interrupt+0x16/0x20
->> [43895.952589]  ? preempt_count_sub+0x14/0xc0
->> [43895.953809]  end_report.part.0+0x54/0x7c
->> [43895.954993]  ? rxe_mr_cleanup+0x9d/0xf0 [rdma_rxe]
->> [43895.956406]  kasan_report.cold+0xa/0xf
->> [43895.957668]  ? rxe_mr_cleanup+0x9d/0xf0 [rdma_rxe]
->> [43895.959090]  rxe_mr_cleanup+0x9d/0xf0 [rdma_rxe]
->> [43895.960502]  __rxe_cleanup+0x10a/0x1e0 [rdma_rxe]
->> [43895.961983]  rxe_reg_user_mr+0xb7/0xd0 [rdma_rxe]
->> [43895.963456]  ib_uverbs_reg_mr+0x26a/0x480 [ib_uverbs]
->> [43895.964921]  ? __lock_acquire+0x876/0x31e0
->> [43895.966182]  ? ib_uverbs_ex_create_wq+0x630/0x630 [ib_uverbs]
->> [43895.967739]  ? uverbs_fill_udata+0x1c6/0x330 [ib_uverbs]
->> [43895.969204]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x1a2/0x250 [ib_uverbs]
->> [43895.971126]  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_CONTEXT+0x1a0/0x1a0 [ib_uverbs]
->> [43895.973094]  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_CONTEXT+0x1a0/0x1a0 [ib_uverbs]
->> [43895.975096]  ? uverbs_fill_udata+0x25f/0x330 [ib_uverbs]
->> [43895.976466]  ib_uverbs_cmd_verbs+0x1397/0x15a0 [ib_uverbs]
->> [43895.977930]  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_CONTEXT+0x1a0/0x1a0 [ib_uverbs]
->> [43895.979937]  ? uverbs_fill_udata+0x330/0x330 [ib_uverbs]
-> 
-> Please dont include timestamps in commit messages
-> 
->> @@ -163,9 +163,8 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
->>   				pr_warn("%s: Unable to get virtual address\n",
->>   						__func__);
->>   				err = -ENOMEM;
->> -				goto err_cleanup_map;
->> +				goto err_release_umem;
->>   			}
->> -
-> 
-> page_address() fails if this is a highmem system and the page hasn't
-> been kmap'd yet. So the right thing to do is to use kmap..
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Sure.
+In ib_umem_get, sgt_append is allocated from the function
+sg_alloc_append_table_from_pages. And it is not from highmem.
 
-sgt_append.sgt is allocated in this function ib_umem_get. And the 
-function sg_alloc_append_table_from_pages is called to allocate memory.
+As such, the return value of page_address will not be NULL.
 
-147 struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long 
-addr,
-148                             size_t size, int access)
-149 {
-...
-230                 ret = sg_alloc_append_table_from_pages(
-231                         &umem->sgt_append, page_list, pinned, 0,
-232                         pinned << PAGE_SHIFT, 
-ib_dma_max_seg_size(device),
-233                         npages, GFP_KERNEL);
-...
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+ drivers/infiniband/sw/rxe/rxe_mr.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-And it seems that it is not highmem.
-
-So page_address will not be NULL?
-
-As such, it is not necessary to test the return vaue of page_address?
-
-If so, can we add a new commit to avoid testing of the return value of 
-page_address?
-
-Zhu Yanjun
-
-> 
-> But this looks right, so applied to for-next
-> 
-> Thanks,
-> Jason
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index b1423000e4bc..3f33a4cdef24 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -119,7 +119,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+ 	struct ib_umem		*umem;
+ 	struct sg_page_iter	sg_iter;
+ 	int			num_buf;
+-	void			*vaddr;
+ 	int err;
+ 
+ 	umem = ib_umem_get(&rxe->ib_dev, start, length, access);
+@@ -149,6 +148,8 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+ 		buf = map[0]->buf;
+ 
+ 		for_each_sgtable_page (&umem->sgt_append.sgt, &sg_iter, 0) {
++			void *vaddr;
++
+ 			if (num_buf >= RXE_BUF_PER_MAP) {
+ 				map++;
+ 				buf = map[0]->buf;
+@@ -156,16 +157,10 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+ 			}
+ 
+ 			vaddr = page_address(sg_page_iter_page(&sg_iter));
+-			if (!vaddr) {
+-				rxe_dbg_mr(mr, "Unable to get virtual address\n");
+-				err = -ENOMEM;
+-				goto err_release_umem;
+-			}
+ 			buf->addr = (uintptr_t)vaddr;
+ 			buf->size = PAGE_SIZE;
+ 			num_buf++;
+ 			buf++;
+-
+ 		}
+ 	}
+ 
+-- 
+2.27.0
 
