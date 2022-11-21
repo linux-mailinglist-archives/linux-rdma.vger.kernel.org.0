@@ -2,113 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2F5632C5D
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Nov 2022 19:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 259B2632C89
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Nov 2022 20:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbiKUSx7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Nov 2022 13:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
+        id S230456AbiKUTB3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Nov 2022 14:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbiKUSx6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Nov 2022 13:53:58 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098D22D749
-        for <linux-rdma@vger.kernel.org>; Mon, 21 Nov 2022 10:53:57 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id cg5so7840319qtb.12
-        for <linux-rdma@vger.kernel.org>; Mon, 21 Nov 2022 10:53:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F3RGtc3hwYzfdRXPootOnNmarmPw3yS/xesmREyhZ8U=;
-        b=i9Cj0cnu73KzMvbiv9kVOA678kptYbCMN6jfQsgdxPJCC1cb1KUs3RzzQkAiIn9bnw
-         /ix8P2GC1eKOesG/hViOqu6yAm6KMYa0qL5WPdmi09xBCVj+wY0e9r9ZPbafHIiDp5vc
-         smkG3aZY/j3jb0w5RbYVE75kTGC5uI8pVPdyn5UvVBmemHWhQtk0ePd128c6tF+jcrdZ
-         J8fYb9yGwJ/o9z4m2K+gIbB7Ck205MMyvpEODzVcFLbhPvkR4iOA3CLE0evQXWUp3jIO
-         A/RPUgbAuCpsWL5ZeB3aXfuOkn7wjlTo97nEWJiwcPK+cG/Yp+PFf9ITm0RQC4iOINUJ
-         bg9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F3RGtc3hwYzfdRXPootOnNmarmPw3yS/xesmREyhZ8U=;
-        b=h0iqooQzrn+5yBrO5RNyy7SIxjIQPdA3+afOMbRFntc4IHK2/kWjZGPMz6NxlZyX+k
-         cRDKRlJ6ctyzFXaMHPi6sYF/QSgHQIv31tMJ2HNcBPLeAUM2YnzTpTUAPUHkVmT44zRf
-         ekemVoaF0NAlnGigsxpuVr07NAVu0PNWsRl4DXZTWoM44qPil77XuWjkfZhx0hxCycr4
-         FukwqRYl02ePooZXhGNWQIiAf0xYXtZpA/NIwVZKhPaLnV7f7RoEaHYvavjzs/u78STm
-         dvdtIML63dzCtX0sSAwpt8PAiZ+4CVd+F0UBhz3qCxEIIvaNeAVI3FrIbVfJZ1THYZjV
-         TAAg==
-X-Gm-Message-State: ANoB5pmUD0NXyD78Pvt3l6/VSGxiCY4UnCn8tK3B8t55ZJetCZ3dswG3
-        dSr3hnI8SMi6wv+eSkzim8poqp9bOjQZgQ==
-X-Google-Smtp-Source: AA0mqf4L9nS3TxiZ7SnyvD+WiiDkebZOY/qRJLIitYHJfXt3Y3jjhCn2FvnVxczP2Tox03hL5jk1Cg==
-X-Received: by 2002:ac8:7513:0:b0:3a5:4442:80fa with SMTP id u19-20020ac87513000000b003a5444280famr5160955qtq.233.1669056836189;
-        Mon, 21 Nov 2022 10:53:56 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.122.23])
-        by smtp.gmail.com with ESMTPSA id y19-20020a05620a44d300b006f9f3c0c63csm9056145qkp.32.2022.11.21.10.53.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Nov 2022 10:53:54 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1oxBvW-009M8u-0v;
-        Mon, 21 Nov 2022 14:53:54 -0400
-Date:   Mon, 21 Nov 2022 14:53:54 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Li Zhijian <lizhijian@fujitsu.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [for-next PATCH 4/5] RDMA/rxe: refactor iova_to_vaddr
-Message-ID: <Y3vJQkc40o5zfM5v@ziepe.ca>
-References: <1668141030-2-1-git-send-email-lizhijian@fujitsu.com>
- <1668141030-2-5-git-send-email-lizhijian@fujitsu.com>
- <CAPj211to20yHUy8o-Lg6TMjB5rpwrfPCUtQqxfeDFHUDR4+wJw@mail.gmail.com>
-MIME-Version: 1.0
+        with ESMTP id S230416AbiKUTBM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Nov 2022 14:01:12 -0500
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2084.outbound.protection.outlook.com [40.107.101.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF69D29A1;
+        Mon, 21 Nov 2022 11:01:05 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nOlEcVLeQaunCq5vb3ByelXDoRx7C/nu2RsTONj5vgOEJ71nPl73qE/rXMEee7mSrJNIg2ayKPoihb8K4Jt0Pv1fmkrovcuy6ifVyRM2HiDY+YDQR/z/Q00UebFP3rSuHoTCg46Eknos/dAtSmobZ1gvsoDIvdaCH1m8acVMByXRcxVwkKBZVAd9FzGP6jqp7uTpIv40JLL4hFu0HhsMb+WEnSempgf43GoXUZNY0HIZoh1/DAMnVAZf6cOTRFo7fByZRFkQMhYjo6J+9uDNNAR7EsBuzhT/DjHqb12BJ2H6V3MsboZoRhTvetT3sACJfnhdwz1UhzcXCnmDCZa8LA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x3fB0v7mPVEVFrCKIUGgsth5Q9/HP3AwQeeNtIB38Bs=;
+ b=RID36Hzq6mIufs61+LZgv38gxjI2bLxTW3Fi/8kSl1qmdzhibZw2ugpSxGqnZrTmWD/jcP1rx/+B2OjZ/5YNXAGHGpTpvursHgIpFHabnReiVjkO146yH5fEikBPpOB4q8iI+NtIoQBgKup5jLaefFIKP5MtaWakbzxmRkSPaNVlOhgE9sb1D2PC6pCKz634uXRIc67Ae8Q8aszkHqARfHySzCXv+vvXMghmiVGPwNro3GWwc7x4jVwYM2mVtE7FwqTt0/BnV+a3ky0Wq6Tfwf7O0wfZBDW/n2rELjzV1DK1XQWpEslxJAIBHorpeUuqHSQ7ZzcLNOqRX8mc6BG3dQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x3fB0v7mPVEVFrCKIUGgsth5Q9/HP3AwQeeNtIB38Bs=;
+ b=Z1iRmCG8NheTVBKmJZAKPgBaLy6HFM4YMh+E6MYq3dHbdbGDHvHKlSrNMK76GlczSZX163xuDyieWSwCUB1H2LF+t8H+Q0XmhOaeFqVfrn/nI+8Oz9Ef5/2wtY4N/0LNPvoVx+dOpEre2u76z6chb7RsIq2sKTZ4SE52h/CZBsnprskB1wiROfIvurTSNLaXOUR2+097ktXzSoD6N2/Sjt/ZMnmKgzsrWHhjPF1n5Kb6s1lPo91OO8DkeFDiCBt9/Gr0/ogfoHd46R1vEz6DWNW4QAEw1u23oim/Me7RQ0aCHavTbN8HCWlDoWqCFU9/UTHVC+jA4MIVp4j1kEHL+w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CY8PR12MB7756.namprd12.prod.outlook.com (2603:10b6:930:85::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5834.15; Mon, 21 Nov
+ 2022 19:01:04 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.5834.011; Mon, 21 Nov 2022
+ 19:01:04 +0000
+Date:   Mon, 21 Nov 2022 15:01:03 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Maurizio Lombardi <mlombard@redhat.com>
+Cc:     sagi@grimberg.me, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org
+Subject: Re: [PATCH] infiniband: use the ISCSI_LOGIN_CURRENT_STAGE macro
+Message-ID: <Y3vK7xy7CVf2s3Sj@nvidia.com>
+References: <20221116094535.138298-1-mlombard@redhat.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPj211to20yHUy8o-Lg6TMjB5rpwrfPCUtQqxfeDFHUDR4+wJw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221116094535.138298-1-mlombard@redhat.com>
+X-ClientProxiedBy: BLAP220CA0024.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:32c::29) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY8PR12MB7756:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5de6e420-abf7-4b29-7c47-08dacbf2bce6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RaMFz6mZfQGTOBf5A6PwchdDiAg29V2XCfGKcJdmFtO/z86c59N1T8pvaAfCt8YeJqROIl0kthOloDW0Q2JPUai2VzhdqpZPPme4nMa6biHpcILvA0YMouUANzjm7DP3nZ1cHaNRKOeckv7aZZJyJ+Vj9mG3GNAckGQYsHRmynQhs4SpIv41K+kKHFoGV82clvON84mzQM2JH4EAyX96/K2gOTGOnSEO1JhBaNaXDPKwPVXpDJP3cUFVYkjYLq2T9loaXOmpq11SDDqET5R0cAXfAPcLy0ymO7Z5teywb68wkh47x4LMnEuYf7MHo+/gNaBjdHCzLEjZCUDOhMXn9KT9C2i5iRW8VoMKz5O8RtvhMlULBiOCPVGb/MhUAlsqYOjmtTi03UwcNg02aANIzD7LWPt0IljgNqJrRf537BSncmihOWXNnYsD6zAh2Ufgn+cbUkT+ZEXrKEWz6Di7Fs3YRXXvZG2n0vpBySxhJviNIV9Gv1u3RGzqfcCmrl5dCFqpTWyUhlskg3It2vVkqpo7Bk4tPiapci5tnX3iMfzIhbK30wydpq5uxxizj3MpzjqP9xeT18jMVukk2MjYs5yU4jo5wITQc2QxUAXuhb68bt7r4rjjPkMSH/MwTI9ONZV+Fotxd+H3OvK2akyRfA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(346002)(39860400002)(396003)(366004)(136003)(451199015)(478600001)(26005)(6506007)(6512007)(41300700001)(6486002)(8676002)(36756003)(2616005)(4326008)(66556008)(5660300002)(66476007)(83380400001)(66946007)(186003)(86362001)(8936002)(4744005)(2906002)(38100700002)(316002)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FpdONi8vppgb0nBCR2jFdeJm4buoRkF5xA2nqDFJZRpue+kNBAnDdX8b/fPP?=
+ =?us-ascii?Q?DMLLBrQ6vEZZYvAyrg28KUqmGyC4i5BYqCr9UY21XSd1zi9B/SNn+/0l0Iw8?=
+ =?us-ascii?Q?CGH444xJsEXnKbGsmRjD46kK6n2AmnO0ssPNKN/EzcjcfwgDK1F2376Cwcsr?=
+ =?us-ascii?Q?dXaO4PUys3P1zeGk6vkdMBQdY9wyzOAa+DNzuAvAyDGUY7WhBJ5dxA8Dc/RS?=
+ =?us-ascii?Q?9YqXyzTo0psK2vcPMmdFq8vLTj5TvqLZWVaS/a+QLay1/J5dst0TjBtiGBYo?=
+ =?us-ascii?Q?Uhtyug1HyZ+/mb2DB94PLeJTvhg2CIT12lJyAI2DoSkE4VxU1i+B5GpEj1oe?=
+ =?us-ascii?Q?nNKPidjpaEDO2NbeLZIAGfXF7tI+0s3ojMabWZt3IpKebKmDLZauKBTj6lO+?=
+ =?us-ascii?Q?7Azz7LUx46QUkhW6CIbsf1hIu903yXyjUXW7RecNqLwxN4x9mtCbB7fnC/RF?=
+ =?us-ascii?Q?jEQqZAlULCS1eGyEytZE3s/RqiZjxGSC+b65VdHIekS06aqoOhhc9cokuYhB?=
+ =?us-ascii?Q?SVIOkFcKWjb2jfIvpR/JPvQ03x7qQUbgBuBpJEYy7aP3Oe8dmqVMt8WdLbCq?=
+ =?us-ascii?Q?w7bA6WgwRhAI+aNxgP/zJVprWl3SzPbN8SZ3rqknA3W+nyxze595aXw8RITo?=
+ =?us-ascii?Q?yvkOMmwis3TjuSrd9u0v/GvHxAWtsV1+TCUKl6STNtAJbuNmCI7q0T06xZYI?=
+ =?us-ascii?Q?WbhUyQiIhLep3o9kmo4eU9o+iah5L4FZQWPHchV27qSTMLhxJW6if8L+zdlt?=
+ =?us-ascii?Q?cHLkyXSB9s+KzHiWampY22LsCnvil6bf+B6FPRwgZ16qEQNKg84hg2OdXd9F?=
+ =?us-ascii?Q?CryUnaSH8nL2BsG3sTw1KKPyRoNU/nVgljfgLCsi02XlAcjUbL3gaYiS/cSK?=
+ =?us-ascii?Q?+ZEf8O8nUiixC4j6gHBeJAl1ZxyijlKxUDoRNHAodHdb6hn7p0ZN1cvRw/O7?=
+ =?us-ascii?Q?Rf4sh5PW4NrX1mmZ8zc/tZeOPUAw1dmd3z6HPM2maT9o6BuShKiajNNIDibB?=
+ =?us-ascii?Q?QIMVbNNUjt949ek0rt7ZYsIGtb5bWg2/wstflPf4wpHTDhQjwMKU/tukfn7k?=
+ =?us-ascii?Q?nAtKarO4IawO5k7St4plLFnL7ABpH+pa+IqqEotg4fGs+LqMGegccWrODi19?=
+ =?us-ascii?Q?yiFii92ntdugkh7IY93wKYDWkbPHzvOx8UkE5OFHwxJbZvWEgFHigwOwheos?=
+ =?us-ascii?Q?KWiazQtjpZs+7/2Me46fCXys0HoZ5/h0cuumBprLwOgIldi6RRkm7HM8blxk?=
+ =?us-ascii?Q?i0yBCwK247J9UVNB9bBoUt/CdlBH7egXXjlya0Hb5J+LIlSymcGaARD6102j?=
+ =?us-ascii?Q?WwrePQCFJlWupqd3Piel/bspHVAWp2u+Kri+miMDfUa6Ns2yLvxrYV1fC9Bj?=
+ =?us-ascii?Q?cjEFkSYqz6JOXu5C17SQPWWgBIYPqBWvYK3teZZXkZ6CB6YOTnsJf7yyxTrl?=
+ =?us-ascii?Q?o7d1aLK+xPXFO2nvApr1gKko27WU3THfv0A3cvHIWbqndQn7JpMJ6OpE73/C?=
+ =?us-ascii?Q?QrykOheE1yteqfAEFXrg4sjRVueuNrKweTbyBTmyOKtSBDrxJe+tB8AMBNaK?=
+ =?us-ascii?Q?+RSfzdpikJwDJs6ZGcQ=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5de6e420-abf7-4b29-7c47-08dacbf2bce6
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2022 19:01:04.1529
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Tn9yf3rO6ff20VSU5vb2uYv8/g6kETEqfwRjpSrk8I7/6h87bmDSHh7wuzZEk+mb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7756
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 01:37:14PM +0100, Fabio M. De Francesco wrote:
-> > -     return (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
-> > +     if (mr->ibmr.type == IB_MR_TYPE_USER) {
-> > +             char *paddr;
-> > +             struct page *pg = mr->map[m]->buf[n].page;
-> > +
-> > +             paddr = kmap_local_page(pg);
-> > +             if (paddr == NULL) {
-> > +                     pr_warn("Failed to map page");
-> > +                     return NULL;
-> > +             }
+On Wed, Nov 16, 2022 at 10:45:35AM +0100, Maurizio Lombardi wrote:
+> Use the proper macro to get the current_stage value.
 > 
-> I know nothing about this code but I am here as a result of regular checks for
-> changes to HIGHMEM mappings across the entire kernel. So please forgive me if
-> I'm objecting to the correct changes.
-> 
-> 1) It looks like this code had a call to page_address() and you converted it
-> to mapping with kmap_local_page().
+> Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+> Reviewed-by: Mike Christie <michael.christie@oracle.com>
+> Acked-by: Sagi Grimberg <sagi@grimberg.me>
+> ---
+>  drivers/infiniband/ulp/isert/ib_isert.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 
-It only worked properly because the kconfig is blocking CONFIG_HIGHMEM
-so ZONE_HIGHMEM doesn't exist. These pages are obtained from GUP and
-could be anything.
-
-This is done indirectly through
-
-config INFINIBAND_VIRT_DMA
-        def_bool !HIGHMEM
-
-But this patch is undoing parts of what are causing that restriction
-by using the proper APIs. Though I'm not sure if we can eventually get
-to remove it for RXE completely.
+Applied to for-next, thanks
 
 Jason
-
-
