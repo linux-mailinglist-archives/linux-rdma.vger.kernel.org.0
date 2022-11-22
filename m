@@ -2,109 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD03633E32
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 14:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0F6633E51
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 15:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbiKVNza (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Nov 2022 08:55:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
+        id S233984AbiKVOFH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Nov 2022 09:05:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232498AbiKVNza (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 08:55:30 -0500
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D620654EB;
-        Tue, 22 Nov 2022 05:55:29 -0800 (PST)
-Received: by mail-oo1-xc34.google.com with SMTP id bp26-20020a056820199a00b0049f4e8f2d95so2264574oob.12;
-        Tue, 22 Nov 2022 05:55:29 -0800 (PST)
+        with ESMTP id S233968AbiKVOFF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 09:05:05 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC44554F5
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 06:03:34 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id h16so845156qtu.2
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 06:03:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2SBGeqgV8aQ4ClE1rxARDUjCn/QaGrg5bogBswoE+Gk=;
-        b=SnJrJJJB+uAOWpogJlqoVY6znPbePuzs8v8E+Jasq1bg9moQq8Gbla8WPFPotFYdUs
-         rdiNTyjJgUOpZ//qEmNSffWMfpXCemCqV4jqqOLcafNGMG3y7VzHk2z9V6YfIYYTp81D
-         df5NkH3zm4zUw3PzBRdPGQ4f8CJIBaeUTQh9hasrwmNEXQM/Q4hIQ6dVrmQyovTykNlk
-         RNdlw5G+f5UCJDWk4RkG0HUq6cWwz+Pat2UDROelcqWZxV0KlNgJCCVHtdzbVNto0nKe
-         fES8l3XJEdiw4y/2lEdykL46NhCsN3MbN/y7RDB/FanhyNqBLX9zLaQeCHNrj9s0p+p2
-         fKaQ==
+        d=ziepe.ca; s=google;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dPo1VJDCFCdypvY/4Rr9xvuWEvz7BM121VJBRjgU86o=;
+        b=iizsXhnKIIQ6of95eoBCkw5wSk6O2ftuDXtXJKqH2nkg4kMwL6naDeVJv8jtQXJx9H
+         80ZQEvMptfeFwueDySvCbN6IJAi0TEGv9eQcs68a4GfZGQwOY3DbX8GVBlppRbk6MnWj
+         /jNW7GetrgS5vYEGxRr/4egvF4XVmSsZdRUZ5/e1h/kd//YNsclkRqaOvqborCe9oE95
+         yvoOhhLqPetq6LoP3RxPPIjXLqZnpmpKgKLtYKWqmQdGn0MbP3/VakvQJWSHnbZ27uSe
+         9tnwAxvfEz+LVdOM1ThrKiXSEuNBMEdrvLITeUiNg7ipbuXXzykB/3dzkDgSJSfRCz8e
+         aWZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2SBGeqgV8aQ4ClE1rxARDUjCn/QaGrg5bogBswoE+Gk=;
-        b=YQ+5sKKE9f9zj3rKyFNBXBc+2w9dFll0gF1aNMIo7+04UCGzeQM+owAwL+cHi51bA4
-         YTpB1iAvFZ7wOdgCeEs6OX13SsQ8MmV3mclWasIJygulwDXO5InIs5CU0Kbhe/Xn1oJp
-         u8Pwp7o5F+PYBnkNalM5t7PiqMbt+kbCf2DSNz4Chdvc/2Lv2TLLGcPfK0oY2/TXof/S
-         5skToxJmsDLpxta41YdVZ98Y97F3MQlBhOjgiWgqjVCFAusGutDfTgTJmAeHALxV72fK
-         u072HFNTKIgmGMp6OlCc5WtnoOrUDlcf+yhHZ2vgge0quyezA5hmDdUTc95uW8FKFGti
-         GiAw==
-X-Gm-Message-State: ANoB5pnhyFQLnIiV4Use9Bo5k6kGkKUck0CZFdqvTuWMhCcnucqDdpEq
-        mGVOZH0087X+oj5MbhNvoZMiqG8s4wo0vgyCb2klnAkprrQ=
-X-Google-Smtp-Source: AA0mqf7ykzweR9BqX2Z1bFr3kRAAU5C3xDVsZgtZl+Svh5PRx1RmM9Dz5FRt4dxqYY1KiJhP24NikZC0YwM35U5Onhk=
-X-Received: by 2002:a4a:d1b2:0:b0:498:ce46:9fb1 with SMTP id
- z18-20020a4ad1b2000000b00498ce469fb1mr6131515oor.97.1669125328656; Tue, 22
- Nov 2022 05:55:28 -0800 (PST)
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dPo1VJDCFCdypvY/4Rr9xvuWEvz7BM121VJBRjgU86o=;
+        b=oCMrX3mDKeHtXmtS6W9L/RyUZQAjMXvVHE1B693/88bYlGdSYwyPdAHh5kWx+zBLB8
+         RMdiMlwWo5klQI4lbuECaO2JRSWFn1bx9QwTsaJ5Hg/sUFhKibRZK1x7XxCr34pcQMZ1
+         8Joy1sdtwxl+Oaz4S9NYL/OgIUHwwwgw3CF9Ngzb1N4oc27EphUyLNnZbKYie2q3WfLj
+         Ee6jhOBGyiABzDCakIJzS4UeWWYEdatC8VSlWazz4chpEUev1FThsw5LCcEVW9ajV6gv
+         I+O+7B0c0MQPC7mX8aJ1WX3lL5Emoi89/otXG43q3q19G9Ew2gKeBPcaD/UzPx37C6AA
+         T8+w==
+X-Gm-Message-State: ANoB5pmPdpM+rOZ7USU87EGCzTOkKNW30jkg3xXVR4VGUZQVYOlv7zYF
+        WMEq6luo5TcI+n6MX+B9Bb/PGQ==
+X-Google-Smtp-Source: AA0mqf79mbqp/6RdyjDQA49XKwtdlQKw/ojQCaMF8zu8rpCbJ4qZ2RqG+xeldZ68B7PzlT1pTZIvwA==
+X-Received: by 2002:ac8:60d3:0:b0:3a5:4678:5b24 with SMTP id i19-20020ac860d3000000b003a546785b24mr21815284qtm.411.1669125813304;
+        Tue, 22 Nov 2022 06:03:33 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.122.23])
+        by smtp.gmail.com with ESMTPSA id bi41-20020a05620a31a900b006f956766f76sm10344180qkb.1.2022.11.22.06.03.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Nov 2022 06:03:32 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1oxTs3-009j8v-S2;
+        Tue, 22 Nov 2022 10:03:31 -0400
+Date:   Tue, 22 Nov 2022 10:03:31 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     leon@kernel.org, markzhang@nvidia.com, haakon.bugge@oracle.com,
+        mbloch@nvidia.com, sean.hefty@intel.com, rolandd@cisco.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] infiniband: cma: fix the dev refcnt leak
+Message-ID: <Y3zWs1m7m5D3+BJW@ziepe.ca>
+References: <1669099673-12213-1-git-send-email-wangyufen@huawei.com>
 MIME-Version: 1.0
-References: <CAHk-=wjKJyzfJmOzBdEOqCFRc8Fh-rdGM4tvMXfW0WXbbHwV0w@mail.gmail.com>
- <20221122105054.4062213-1-geert@linux-m68k.org> <alpine.DEB.2.22.394.2211221154280.284524@ramsan.of.borg>
-In-Reply-To: <alpine.DEB.2.22.394.2211221154280.284524@ramsan.of.borg>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 22 Nov 2022 08:55:17 -0500
-Message-ID: <CADnq5_PvouSKugXxJXqkVeZf+kbP8+hhUKFgVALSO=MOW3jzvA@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v6.1-rc6
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-um@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1669099673-12213-1-git-send-email-wangyufen@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 5:56 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> On Tue, 22 Nov 2022, Geert Uytterhoeven wrote:
-> > JFYI, when comparing v6.1-rc6[1] to v6.1-rc5[3], the summaries are:
-> >  - build errors: +6/-0
->
->    + /kisskb/src/arch/sh/include/asm/io.h: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]:  => 239:34
->
-> sh4-gcc11/sh-allmodconfig (in cvm_oct_free_hw_memory())
->
->    + /kisskb/src/arch/um/include/asm/processor-generic.h: error: called object is not a function or function pointer:  => 94:18
->    + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c: error: control reaches end of non-void function [-Werror=return-type]:  => 1934:1
->
-> um-x86_64/um-all{mod,yes}config (in kfd_cpumask_to_apic_id())
+On Tue, Nov 22, 2022 at 02:47:53PM +0800, Wang Yufen wrote:
+> Syzbot report the following issue:
+>   infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
+>   unregister_netdevice: waiting for vlan0 to become free. Usage count = 2
+> 
+> The causes are as follows:
+> 
+> rdma_listen()
+>   rdma_bind_addr()
+>     cma_acquire_dev_by_src_ip()
+>       cma_attach_to_dev()
+>         _cma_attach_to_dev()
+>           cma_dev_get()
+> 
+>   cma_check_port()
+>   <--The return value is -98， goto err
+> 
+> err:
+> <-- The error handling here is missing the operation of cma_release_dev.
+> 
+> To fix, add cma_release_dev to error handing.
+> 
+> Fixes: e51060f08a61 ("IB: IP address based RDMA connection manager")
+> Reported-by: syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> ---
+>  drivers/infiniband/core/cma.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index 26d1772..3a50a8e 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -4049,6 +4049,9 @@ int rdma_listen(struct rdma_cm_id *id, int backlog)
+>  	return 0;
+>  err:
+>  	id_priv->backlog = 0;
+> +	if (id_priv->cma_dev)
+> +		cma_release_dev(id_priv);
+> +
 
-Presumably cpu_data is not defined on um-x86_64?  Does it even make
-sense to build drivers on um-x86_64?
+I'm not sure about this, the dev is released during _destroy_id()
 
-Alex
+Is something leaking an entire CM id or is there something wrong with
+_destroy_id() ?
 
->
->    + /kisskb/src/drivers/infiniband/hw/qib/qib_wc_x86_64.c: error: 'X86_VENDOR_AMD' undeclared (first use in this function):  => 149:37
->    + /kisskb/src/drivers/infiniband/hw/qib/qib_wc_x86_64.c: error: 'struct cpuinfo_um' has no member named 'x86_vendor':  => 149:22
->    + /kisskb/src/drivers/infiniband/hw/qib/qib_wc_x86_64.c: error: control reaches end of non-void function [-Werror=return-type]:  => 150:1
->
-> um-x86_64/um-allyesconfig
->
-> > [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/eb7081409f94a9a8608593d0fb63a1aa3d6f95d8/ (all 149 configs)
-> > [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/094226ad94f471a9f19e8f8e7140a09c2625abaa/ (all 149 configs)
->
-> Gr{oetje,eeting}s,
->
->                                                 Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                                             -- Linus Torvalds
+Jason
