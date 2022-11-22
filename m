@@ -2,220 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DA963350F
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 07:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C11F63355F
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 07:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbiKVGI2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Nov 2022 01:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
+        id S231899AbiKVGen (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Nov 2022 01:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiKVGIZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 01:08:25 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD5011A25
-        for <linux-rdma@vger.kernel.org>; Mon, 21 Nov 2022 22:08:23 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id f13so551760lfa.6
-        for <linux-rdma@vger.kernel.org>; Mon, 21 Nov 2022 22:08:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wG81Wh9qrMhR3Lrff7YkXwS+Je3Kg0BWjns3OL2FEgI=;
-        b=TnM/I67szxaPFJMlrHYKm+IJlGHJ6sC6IcozL/zGwSzqLge70qKHeIbCJGh6svaXun
-         3jyMDqjDRevtTegNcaDX+DJj0l42WnQgjeQQ176P6a3VXeXBKrXzkTgde8TTNj0bb2R9
-         Hz3wNi+vc/SsWqJHuPN3ZMqrEaPvSLB+xYApWv8Q9scSLbIpe3dfXoQPj0HOOUSnlaAH
-         bR4G8V0rPYYfXk5WvoQN7l8LpX7SmKLh39dKS/HElQIX9s7JjmR67vuYZOcliAV7r7G7
-         zE9N4Poy70qgqGntZyWfJVsgXtus8jYTxbYc/JF4giYMpgycLtxvyIgs7cY5QgrHLHgd
-         ylaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wG81Wh9qrMhR3Lrff7YkXwS+Je3Kg0BWjns3OL2FEgI=;
-        b=2DId5IQWGaqLX6FABr9kP9EB/OjcnfoA3UGdkhYGz2vq30al0sEs22oqyGHZXf/I/K
-         PYoYLr0Wy8VrOgGEoz19j1n+wLuUYa2bdhK97+nmrNElVZaBlp02apReCBmJFeqjGpiF
-         MjHu0e6d1Xy+R3cGb5rEHCQNsMbG++vMcXsLrHxCIz+6Ah9GXerZGIktBLVymj5SVkyu
-         UfcOiTXot2yBx1lnIpXBVrgur/HaeT4Vn2sBxGk2rVaFHshuaxRpaCoRYn46m1zFQOS/
-         oIEhmW07F18A/30nGCmMCc0fcbxYj6NKp8PkkcPveMIF0RIxIPfpZjlhJ3aX7JoIxkuz
-         uGAA==
-X-Gm-Message-State: ANoB5pkKh1r+s0kQMo0f7DaQOrBmO0vJmgTxxci9Pzzm+tabTH6iADfu
-        VjmXmyJ8Wa5DeQ35eiEStcDCgdx4CAEYQgTlG7xL0w==
-X-Google-Smtp-Source: AA0mqf4qO7WqeMkJmS5uCRST/7U1lTcbYKPpMfiHRmtwaCwggoVL9oHof2D2SB0WJzLIRx3BAVFQKxENU2X4STpR4d8=
-X-Received: by 2002:ac2:43bb:0:b0:494:6b75:2c1b with SMTP id
- t27-20020ac243bb000000b004946b752c1bmr8433879lfl.478.1669097301451; Mon, 21
- Nov 2022 22:08:21 -0800 (PST)
+        with ESMTP id S231519AbiKVGem (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 01:34:42 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D402DD8
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Nov 2022 22:34:41 -0800 (PST)
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NGZBs37FpzqSPy;
+        Tue, 22 Nov 2022 14:30:45 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 22 Nov 2022 14:34:39 +0800
+Received: from [10.67.103.121] (10.67.103.121) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 22 Nov 2022 14:34:38 +0800
+Subject: Re: [PATCH] RDMA/hns: fix memory leak in hns_roce_alloc_mr()
+To:     Zhengchao Shao <shaozhengchao@huawei.com>,
+        <linux-rdma@vger.kernel.org>, <liangwenpeng@huawei.com>
+CC:     <jgg@ziepe.ca>, <leon@kernel.org>, <liweihang@huawei.com>,
+        <chenglang@huawei.com>, <wangxi11@huawei.com>,
+        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>
+References: <20221119070834.48502-1-shaozhengchao@huawei.com>
+From:   "xuhaoyue (A)" <xuhaoyue1@hisilicon.com>
+Message-ID: <719e15d3-cda0-ba0b-a749-47fab86c386e@hisilicon.com>
+Date:   Tue, 22 Nov 2022 14:34:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <CAMGffEmiu2BPx6=KW+7_+pzD-=hb8sX9r5cJ1_NovmrWG9xFuA@mail.gmail.com>
- <Y0fJ6P943FuVZ3k1@unreal> <CAMGffEmFCgKv-6XNXjAKzr5g6TtT_=wj6H62AdGCUXx4hruxBQ@mail.gmail.com>
- <Y0foGrlwnYX8lJX2@unreal> <CAMGffEnWmVb_qZFq6_rhZGH5q1Wq=n5ciJmp6uxxE6JLctywng@mail.gmail.com>
- <CAMGffEmY6SGPg8KMMFCFKtv4wiF1VOtVnA7JPnXhz5LKrJsiJA@mail.gmail.com>
- <82a62c6c-1616-ebb4-6308-ce56ec176cf3@nvidia.com> <CAMGffEk5=BWNVROHs185WfNH0DRiGpdQnS7aSgD74yjhT803tw@mail.gmail.com>
- <CAMGffEkaZUDLfXQXK239Nt-DSxqkZpbC=8zUeubv0pxLuoMcZw@mail.gmail.com>
- <54c10b62-5d53-a3a5-48bb-74552e976067@nvidia.com> <CAMGffEk8_1AYbfcamfn9BCxDCvOaTm1ndNsVYsn+hz3GRH9B6w@mail.gmail.com>
- <51b8abeb-f3de-7a3b-ece0-d5e2fd057bba@nvidia.com>
-In-Reply-To: <51b8abeb-f3de-7a3b-ece0-d5e2fd057bba@nvidia.com>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Tue, 22 Nov 2022 07:08:10 +0100
-Message-ID: <CAMGffEnD_qVc4DcPcj4wp1RLWyNu9O-Z36sPD2hQh7RVLPHGvA@mail.gmail.com>
-Subject: Re: [BUG] mlx5_core general protection fault in mlx5_cmd_comp_handler
-To:     Moshe Shemesh <moshe@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>, Shay Drory <shayd@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221119070834.48502-1-shaozhengchao@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.121]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 5:31 AM Moshe Shemesh <moshe@nvidia.com> wrote:
->
->
-> On 11/21/2022 11:11 AM, Jinpu Wang wrote:
-> > External email: Use caution opening links or attachments
-> >
-> >
-> > On Tue, Nov 15, 2022 at 5:41 PM Moshe Shemesh <moshe@nvidia.com> wrote:
-> >>
-> >> On 11/15/2022 5:08 PM, Jinpu Wang wrote:
-> >>> On Tue, Nov 15, 2022 at 6:46 AM Jinpu Wang <jinpu.wang@ionos.com> wrote:
-> >>>> On Tue, Nov 15, 2022 at 6:15 AM Moshe Shemesh <moshe@nvidia.com> wrote:
-> >>>>> On 11/9/2022 11:51 AM, Jinpu Wang wrote:
-> >>>>>> On Mon, Oct 17, 2022 at 7:54 AM Jinpu Wang <jinpu.wang@ionos.com> wrote:
-> >>>>>>> On Thu, Oct 13, 2022 at 12:27 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >>>>>>>> On Thu, Oct 13, 2022 at 10:32:55AM +0200, Jinpu Wang wrote:
-> >>>>>>>>> On Thu, Oct 13, 2022 at 10:18 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >>>>>>>>>> On Wed, Oct 12, 2022 at 01:55:55PM +0200, Jinpu Wang wrote:
-> >>>>>>>>>>> Hi Leon, hi Saeed,
-> >>>>>>>>>>>
-> >>>>>>>>>>> We have seen crashes during server shutdown on both kernel 5.10 and
-> >>>>>>>>>>> kernel 5.15 with GPF in mlx5 mlx5_cmd_comp_handler function.
-> >>>>>>>>>>>
-> >>>>>>>>>>> All of the crashes point to
-> >>>>>>>>>>>
-> >>>>>>>>>>> 1606                         memcpy(ent->out->first.data,
-> >>>>>>>>>>> ent->lay->out, sizeof(ent->lay->out));
-> >>>>>>>>>>>
-> >>>>>>>>>>> I guess, it's kind of use after free for ent buffer. I tried to reprod
-> >>>>>>>>>>> by repeatedly reboot the testing servers, but no success  so far.
-> >>>>>>>>>> My guess is that command interface is not flushed, but Moshe and me
-> >>>>>>>>>> didn't see how it can happen.
-> >>>>>>>>>>
-> >>>>>>>>>>      1206         INIT_DELAYED_WORK(&ent->cb_timeout_work, cb_timeout_handler);
-> >>>>>>>>>>      1207         INIT_WORK(&ent->work, cmd_work_handler);
-> >>>>>>>>>>      1208         if (page_queue) {
-> >>>>>>>>>>      1209                 cmd_work_handler(&ent->work);
-> >>>>>>>>>>      1210         } else if (!queue_work(cmd->wq, &ent->work)) {
-> >>>>>>>>>>                              ^^^^^^^ this is what is causing to the splat
-> >>>>>>>>>>      1211                 mlx5_core_warn(dev, "failed to queue work\n");
-> >>>>>>>>>>      1212                 err = -EALREADY;
-> >>>>>>>>>>      1213                 goto out_free;
-> >>>>>>>>>>      1214         }
-> >>>>>>>>>>
-> >>>>>>>>>> <...>
-> >>>>>>>>>>> Is this problem known, maybe already fixed?
-> >>>>>>>>>> I don't see any missing Fixes that exist in 6.0 and don't exist in 5.5.32.
-> >>>>>>>> Sorry it is 5.15.32
-> >>>>>>>>
-> >>>>>>>>>> Is it possible to reproduce this on latest upstream code?
-> >>>>>>>>> I haven't been able to reproduce it, as mentioned above, I tried to
-> >>>>>>>>> reproduce by simply reboot in loop, no luck yet.
-> >>>>>>>>> do you have suggestions to speedup the reproduction?
-> >>>>>>>> Maybe try to shutdown during filling command interface.
-> >>>>>>>> I think that any query command will do the trick.
-> >>>>>>> Just an update.
-> >>>>>>> I tried to run "saquery" in a loop in one session and do "modproble -r
-> >>>>>>> mlx5_ib && modprobe mlx5_ib" in loop in another session during last
-> >>>>>>> days , but still no luck. --c
-> >>>>>>>>> Once I can reproduce, I can also try with kernel 6.0.
-> >>>>>>>> It will be great.
-> >>>>>>>>
-> >>>>>>>> Thanks
-> >>>>>>> Thanks!
-> >>>>>> Just want to mention, we see more crash during reboot, all the crash
-> >>>>>> we saw are all
-> >>>>>> Intel  Intel(R) Xeon(R) Gold 6338 CPU. We use the same HCA on
-> >>>>>> different servers. So I suspect the bug is related to Ice Lake server.
-> >>>>>>
-> >>>>>> In case it matters, here is lspci attached.
-> >>>>> Please try the following change on 5.15.32, let me know if it solves the
-> >>>>> failure :
-> >>>> Thank you Moshe, I will test it on affected servers and report back the result.
-> >>> Hi Moshe,
-> >>>
-> >>> I've been running the reboot tests on 4 affected machines in parallel
-> >>> for more than 6 hours,  in total did 300+ reboot, I can no longer
-> >>> reproduce the crash. without the fix, I was able to reproduce 2 times
-> >>> in 20 reboots.
-> >>> So I think the bug is fixed.
-> >>
-> >> Great !
-> >>
-> >>> I also did some basic functional test via RNBD/IPOIB, all look good.
-> >>> Tested-by: Jack Wang <jinpu.wang@ionos.com>
-> >>> Please provide a formal fix.
-> >>
-> >> Will do.
-> > Hi Moshe,
-> > A gentle ping, when will you send the fix?
-> >
-> > Thanks!
->
-> Hi, it is part of Saeed's mlx5 fixes patchset.
->
-> He sent it a couple of hours ago.
-Yes, indeed.
-ref: https://lore.kernel.org/netdev/20221122022559.89459-6-saeed@kernel.org/T/#u
+On 2022/11/19 15:08:34, Zhengchao Shao wrote:
+> When hns_roce_mr_enable() failed in hns_roce_alloc_mr(), mr_key is not
+> released. Compiled test only.
+> 
+> Fixes: 9b2cf76c9f05 ("RDMA/hns: Optimize PBL buffer allocation process")
+> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_mr.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+> index 845ac7d3831f..37a5cf62f88b 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+> @@ -392,10 +392,10 @@ struct ib_mr *hns_roce_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+>  
+>  	return &mr->ibmr;
+>  
+> -err_key:
+> -	free_mr_key(hr_dev, mr);
+>  err_pbl:
+>  	free_mr_pbl(hr_dev, mr);
+> +err_key:
+> +	free_mr_key(hr_dev, mr);
+>  err_free:
+>  	kfree(mr);
+>  	return ERR_PTR(ret);
+> 
 
-Thx!
->
-> >
-> >> Thanks!
-> >>
-> >>> Thx!
-> >>>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> >>>>> b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> >>>>> index e06a6104e91f..d45ca9c52a21 100644
-> >>>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> >>>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> >>>>> @@ -971,6 +971,7 @@ static void cmd_work_handler(struct work_struct *work)
-> >>>>>                    cmd_ent_get(ent);
-> >>>>>            set_bit(MLX5_CMD_ENT_STATE_PENDING_COMP, &ent->state);
-> >>>>>
-> >>>>> +       cmd_ent_get(ent); /* for the _real_ FW event on completion */
-> >>>>>            /* Skip sending command to fw if internal error */
-> >>>>>            if (mlx5_cmd_is_down(dev) || !opcode_allowed(&dev->cmd, ent->op)) {
-> >>>>>                    u8 status = 0;
-> >>>>> @@ -984,7 +985,6 @@ static void cmd_work_handler(struct work_struct *work)
-> >>>>>                    return;
-> >>>>>            }
-> >>>>>
-> >>>>> -       cmd_ent_get(ent); /* for the _real_ FW event on completion */
-> >>>>>            /* ring doorbell after the descriptor is valid */
-> >>>>>            mlx5_core_dbg(dev, "writing 0x%x to command doorbell\n", 1 <<
-> >>>>> ent->idx);
-> >>>>>            wmb();
-> >>>>> @@ -1598,8 +1598,8 @@ static void mlx5_cmd_comp_handler(struct
-> >>>>> mlx5_core_dev *dev, u64 vec, bool force
-> >>>>>                                    cmd_ent_put(ent); /* timeout work was
-> >>>>> canceled */
-> >>>>>
-> >>>>>                            if (!forced || /* Real FW completion */
-> >>>>> -                           pci_channel_offline(dev->pdev) || /* FW is
-> >>>>> inaccessible */
-> >>>>> -                           dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR)
-> >>>>> +                            mlx5_cmd_is_down(dev) || /* No real FW
-> >>>>> completion is expected */
-> >>>>> +                            !opcode_allowed(cmd, ent->op))
-> >>>>>                                    cmd_ent_put(ent);
-> >>>>>
-> >>>>>                            ent->ts2 = ktime_get_ns();
-> >>>>>
-> >>>>>> Thx!
+Thank you. For the patch:
+Acked-by Haoyue Xu <xuhaoyue1@hisilicon.com>
+
+Regards,
+Haoyue
