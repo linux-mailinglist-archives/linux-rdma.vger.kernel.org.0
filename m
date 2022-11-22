@@ -2,85 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13327633FBD
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 16:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93193633E8F
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 15:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbiKVPC1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Nov 2022 10:02:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        id S232869AbiKVOLH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Nov 2022 09:11:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234301AbiKVPCD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 10:02:03 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F2718B0B;
-        Tue, 22 Nov 2022 07:00:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=+NFpLSd8ScOHEVd4DHTztoyZ+UkB3J/9rUIzBb7GyY0=;
-        t=1669129239; x=1670338839; b=M4XN9XK1W5a0FSbzeMQpJI7YfGc4KLqku3aIDcoSTviF46U
-        Tjum65SNwV7blxEtkrq70yR1nrlawSGN8RPBRrlaCaQfmfCeBussv6sdgC16zA/JACLvFXglfLGti
-        tyZWeutUSS1t1EL/sf6k/2f4VDe8Kz8dJ8mXHOXIChu2IoRZdI6mxvfX7y6tK8d55o0udNvYnB48l
-        2jkzWhsLco2GCmx3+5zD1AIW1CD/OoEJYSFfeNj5THvmhRamLOzBGllFz3UNBwfvpUOIuD+tQ210r
-        +ftThAwGnUT1rqyknPaGbddy03l14pUZgPE9iJw1rvEzPUXEM/k62gNvbQwIgisQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.96)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1oxUlH-006Ngc-2Z;
-        Tue, 22 Nov 2022 16:00:35 +0100
-Message-ID: <021efb6c9295402cf05406bb319c441c0b0229b3.camel@sipsolutions.net>
-Subject: Re: Build regressions/improvements in v6.1-rc6
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-um@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
-Date:   Tue, 22 Nov 2022 16:00:34 +0100
-In-Reply-To: <CADnq5_PvouSKugXxJXqkVeZf+kbP8+hhUKFgVALSO=MOW3jzvA@mail.gmail.com>
-References: <CAHk-=wjKJyzfJmOzBdEOqCFRc8Fh-rdGM4tvMXfW0WXbbHwV0w@mail.gmail.com>
-         <20221122105054.4062213-1-geert@linux-m68k.org>
-         <alpine.DEB.2.22.394.2211221154280.284524@ramsan.of.borg>
-         <CADnq5_PvouSKugXxJXqkVeZf+kbP8+hhUKFgVALSO=MOW3jzvA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        with ESMTP id S233740AbiKVOKv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 09:10:51 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C491A06A
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 06:10:04 -0800 (PST)
+Received: from dggpeml500023.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NGmN63dQlzHvy3;
+        Tue, 22 Nov 2022 22:09:26 +0800 (CST)
+Received: from localhost.localdomain (10.175.101.6) by
+ dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 22 Nov 2022 22:10:02 +0800
+From:   Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+To:     <linux-rdma@vger.kernel.org>, <zhangxiaoxu5@huawei.com>,
+        <zyjzyj2000@gmail.com>, <jgg@ziepe.ca>, <leon@kernel.org>
+Subject: [PATCH v2] RDMA/rxe: Fix null-ptr-deref in rxe_qp_do_cleanup when socket create failed
+Date:   Tue, 22 Nov 2022 23:14:37 +0800
+Message-ID: <20221122151437.1057671-1-zhangxiaoxu5@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 2022-11-22 at 08:55 -0500, Alex Deucher wrote:
-> >=20
-> >    + /kisskb/src/arch/um/include/asm/processor-generic.h: error: called=
- object is not a function or function pointer:  =3D> 94:18
-> >    + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c: e=
-rror: control reaches end of non-void function [-Werror=3Dreturn-type]:  =
-=3D> 1934:1
-> >=20
-> > um-x86_64/um-all{mod,yes}config (in kfd_cpumask_to_apic_id())
->=20
-> Presumably cpu_data is not defined on um-x86_64?  Does it even make
-> sense to build drivers on um-x86_64?
+There is a null-ptr-deref when mount.cifs over rdma:
 
-Drivers in general yes ;-)
+  BUG: KASAN: null-ptr-deref in rxe_qp_do_cleanup+0x2f3/0x360 [rdma_rxe]
+  Read of size 8 at addr 0000000000000018 by task mount.cifs/3046
 
-This driver, probably not.
+  CPU: 2 PID: 3046 Comm: mount.cifs Not tainted 6.1.0-rc5+ #62
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc3
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x34/0x44
+   kasan_report+0xad/0x130
+   rxe_qp_do_cleanup+0x2f3/0x360 [rdma_rxe]
+   execute_in_process_context+0x25/0x90
+   __rxe_cleanup+0x101/0x1d0 [rdma_rxe]
+   rxe_create_qp+0x16a/0x180 [rdma_rxe]
+   create_qp.part.0+0x27d/0x340
+   ib_create_qp_kernel+0x73/0x160
+   rdma_create_qp+0x100/0x230
+   _smbd_get_connection+0x752/0x20f0
+   smbd_get_connection+0x21/0x40
+   cifs_get_tcp_session+0x8ef/0xda0
+   mount_get_conns+0x60/0x750
+   cifs_mount+0x103/0xd00
+   cifs_smb3_do_mount+0x1dd/0xcb0
+   smb3_get_tree+0x1d5/0x300
+   vfs_get_tree+0x41/0xf0
+   path_mount+0x9b3/0xdd0
+   __x64_sys_mount+0x190/0x1d0
+   do_syscall_64+0x35/0x80
+   entry_SYSCALL_64_after_hwframe+0x46/0xb0
 
-But the issue is that a lot of drivers "depends on X86_64" or such,
-where only "X86" is the arch symbol. You could add "X86 && X86_64" to
-really build on x86 64-bit only.
+The root cause of the issue is the socket create failed in
+rxe_qp_init_req().
 
-I didn't check this driver, but this has mostly popped up since UM got
-PCI support some time ago (which I added.)
+So move the reset rxe_qp_do_cleanup() after the null ptr check.
 
-johannes
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+---
+v2: Move the rxe_qp_do_cleanup() after the null ptr check
+ drivers/infiniband/sw/rxe/rxe_qp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index a62bab88415c..e459fb542b83 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -829,12 +829,12 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
+ 	if (qp->resp.mr)
+ 		rxe_put(qp->resp.mr);
+ 
+-	if (qp_type(qp) == IB_QPT_RC)
+-		sk_dst_reset(qp->sk->sk);
+-
+ 	free_rd_atomic_resources(qp);
+ 
+ 	if (qp->sk) {
++		if (qp_type(qp) == IB_QPT_RC)
++			sk_dst_reset(qp->sk->sk);
++
+ 		kernel_sock_shutdown(qp->sk, SHUT_RDWR);
+ 		sock_release(qp->sk);
+ 	}
+-- 
+2.31.1
 
