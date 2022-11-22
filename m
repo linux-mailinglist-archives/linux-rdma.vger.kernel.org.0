@@ -2,196 +2,203 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7D8633FC1
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 16:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B95633FCA
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 16:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbiKVPES (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Nov 2022 10:04:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
+        id S233550AbiKVPFH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Nov 2022 10:05:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233598AbiKVPD5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 10:03:57 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0685557B74
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 07:03:02 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id b29so14584018pfp.13
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 07:03:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2o1hsoXYUTgGRMJhP1fM0EHK4SGs4Yhs3ofxu4X3RPc=;
-        b=ClncQR4tpaKYbQSpPR/xRoNnuSreQ1n5afQqdIS4wUYJg+HBLvttl9Ngz4oaibFU10
-         YvIalxpNEo6RzOdAqwmWdI7TY1bYUEYTD//57l1zbHQe4kLmGmI+t8DsAMJniLZPctJF
-         koYJWToUdF9Ydsh4l5B73OeU7LCnlrzchLPbU=
+        with ESMTP id S233217AbiKVPFG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 10:05:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DDB6C73B
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 07:03:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669129424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=In9GuqAn29oXIcP45h0iG42nfIf4b++tYbTcRtB/XTA=;
+        b=Wh44xFnp6qsD+t2fiFeiXPxccC/IvClEoRGxbPzx8R7pbGUJ8/X0RBs3cRHp0UBziiTYI5
+        Dx9A0z0ngLgAkHMdH5RIRb+6IJYBv1kIWDG+wUBnWpMZHJlgeRL8ADzYqLHHpYB3ttb07+
+        q7FU/iJHK8lRWp2oUHS+3E7mfL2gP/o=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-216-UDoBGBSiO6uJWeEv5qp9Hg-1; Tue, 22 Nov 2022 10:03:43 -0500
+X-MC-Unique: UDoBGBSiO6uJWeEv5qp9Hg-1
+Received: by mail-wm1-f71.google.com with SMTP id l32-20020a05600c1d2000b003cfefa531c9so914787wms.0
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 07:03:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2o1hsoXYUTgGRMJhP1fM0EHK4SGs4Yhs3ofxu4X3RPc=;
-        b=foMJbiym4onnq0GUU1eSXLZSYQU9YE4eO64smIuHeTWh6YOlceJGoTHUAEp64B1lo8
-         /YzIBO1KcAOs2wmrgrR0fTc2XHj27CEPPVoTP49WAjrWdWBsate401K4/XG6xlMc2Vm4
-         uEBsUeGhF9J030An091bhTznj8NM1zHQ5N0m9te+tiy5yI71C0vI8hPJJGo56FhAcyH+
-         cEk1NuryoggnT9pmh4Fuc5WNd1dWBYVLk1BW/LzsrtniAfn28kTx/NYaqlsHGfoTGJVd
-         kkkPrpbT0s/iaFyuPh1osoBvyeHq04FqAt+4zh96n3sksu6SQPZ6z4v0O3uz5fdog0L0
-         Xe5w==
-X-Gm-Message-State: ANoB5plJ4hhrNPyyRHGw6hzXN7N6w6YoX1t5g2DXFQTicmkxT9HszcN8
-        sSk/L2PBaWtybL4W32LSHlcr2LSt089wQThxmJ97KA==
-X-Google-Smtp-Source: AA0mqf4NR+m8+NfQyNwXPvec+p5/KeWQVOLd1uiDQQ6UHTEz1oChTD/5ZFz4JAoE8NndQy9UAgZc69fuXko8gBcBDyE=
-X-Received: by 2002:a63:6645:0:b0:476:cdb8:28fd with SMTP id
- a66-20020a636645000000b00476cdb828fdmr23010231pgc.358.1669129382242; Tue, 22
- Nov 2022 07:03:02 -0800 (PST)
+        bh=In9GuqAn29oXIcP45h0iG42nfIf4b++tYbTcRtB/XTA=;
+        b=wGvElNIkPFZyPXSSd2g4z+eZUSHHxwQIUkHg540G5s9SIe7UEMXLKK2C/xLPjQxwxh
+         1KD2KWj19x7YtJ8ilyyYR4HYMkJ/ZZ76jKKDU3sm54VZ2/Pc18S4K9/Y2g2aC3tAHWTX
+         Ds8RShjJeULk0ekC8Wr4MurakK06oM/reKEhn1oDUy+2hz31qrp2dC4s4Vz2okXxDAin
+         gtTbX5EbuPGkSMka75hRgRHL/tybRFhPqbIGP9HkM2tMNQytQgaOBLiWxuoE4ChNzbSJ
+         Z7VHVvngmNzbhn35a+oevAeP5gIt2znrUINylLro49MAw76lHpKuNqKDh9RZxqZCfx1z
+         jzfA==
+X-Gm-Message-State: ANoB5pnRreZsoyIXELIpeLvJSGAs24LTAlljTVuZs230TO/7uFHpGgFA
+        4ntrM0rJy2VcbJD3CroQEPt3Yyf/UGixZaOI1n8dztwNf3GzyHwOoE9Lss984XWNvArh5mOAMGH
+        D0Niokbp8IqXZr2deYYf0AA==
+X-Received: by 2002:adf:ea4d:0:b0:22e:38b9:5d6d with SMTP id j13-20020adfea4d000000b0022e38b95d6dmr4031751wrn.276.1669129422183;
+        Tue, 22 Nov 2022 07:03:42 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf54snVDIVC/Upuxil+entzwHNnXxSae3W9n6F4Fs/sye/XpHsJ2iwBQKe4HoNog5OAYgHNY7A==
+X-Received: by 2002:adf:ea4d:0:b0:22e:38b9:5d6d with SMTP id j13-20020adfea4d000000b0022e38b95d6dmr4031700wrn.276.1669129421815;
+        Tue, 22 Nov 2022 07:03:41 -0800 (PST)
+Received: from ?IPV6:2003:cb:c706:c300:b066:75e3:f1d2:b69b? (p200300cbc706c300b06675e3f1d2b69b.dip0.t-ipconnect.de. [2003:cb:c706:c300:b066:75e3:f1d2:b69b])
+        by smtp.gmail.com with ESMTPSA id l13-20020a5d668d000000b00236488f62d6sm14289929wru.79.2022.11.22.07.03.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Nov 2022 07:03:41 -0800 (PST)
+Message-ID: <56fecbe9-ecf1-bdac-4e05-4767aa9d4386@redhat.com>
+Date:   Tue, 22 Nov 2022 16:03:39 +0100
 MIME-Version: 1.0
-References: <20221109184244.7032-1-ajit.khaparde@broadcom.com>
- <Y2zYPOUKgoArq7mM@unreal> <CACZ4nhu_2FoOTmXPuq+amRYAipusq1XcobavytN0cFK=TSE5mQ@mail.gmail.com>
- <Y3Tj/BrskSJPuTFw@unreal>
-In-Reply-To: <Y3Tj/BrskSJPuTFw@unreal>
-From:   Ajit Khaparde <ajit.khaparde@broadcom.com>
-Date:   Tue, 22 Nov 2022 07:02:45 -0800
-Message-ID: <CACZ4nhsv4zyzANrGh90WGKORz0Su=i7+Jmsk6nWoOq4or7Y0=Q@mail.gmail.com>
-Subject: Re: [PATCH v4 0/6] Add Auxiliary driver support
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, jgg@ziepe.ca, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        michael.chan@broadcom.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, selvin.xavier@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000ef8e0605ee107743"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH RFC 16/19] mm/frame-vector: remove FOLL_FORCE usage
+Content-Language: en-US
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20221107161740.144456-1-david@redhat.com>
+ <20221107161740.144456-17-david@redhat.com>
+ <CAAFQd5C3Ba1WhjYJF_7tW06mgvzoz9KTakNo+Tz8h_f6dGKzHQ@mail.gmail.com>
+ <6175d780-3307-854c-448a-8e6c7ad0772c@xs4all.nl>
+ <6ace6cd4-3e13-8ec1-4c2a-49e2e14e81a6@redhat.com>
+ <4d3ef082-f7b3-2b6e-6fcf-5f991ffe14e9@xs4all.nl>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <4d3ef082-f7b3-2b6e-6fcf-5f991ffe14e9@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000ef8e0605ee107743
-Content-Type: text/plain; charset="UTF-8"
+On 22.11.22 15:07, Hans Verkuil wrote:
+> On 11/22/22 13:38, David Hildenbrand wrote:
+>> On 22.11.22 13:25, Hans Verkuil wrote:
+>>> Hi Tomasz, David,
+>>>
+>>> On 11/8/22 05:45, Tomasz Figa wrote:
+>>>> Hi David,
+>>>>
+>>>> On Tue, Nov 8, 2022 at 1:19 AM David Hildenbrand <david@redhat.com> wrote:
+>>>>>
+>>>>> FOLL_FORCE is really only for debugger access. According to commit
+>>>>> 707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are always
+>>>>> writable"), the pinned pages are always writable.
+>>>>
+>>>> Actually that patch is only a workaround to temporarily disable
+>>>> support for read-only pages as they seemed to suffer from some
+>>>> corruption issues in the retrieved user pages. We expect to support
+>>>> read-only pages as hardware input after. That said, FOLL_FORCE doesn't
+>>>> sound like the right thing even in that case, but I don't know the
+>>>> background behind it being added here in the first place. +Hans
+>>>> Verkuil +Marek Szyprowski do you happen to remember anything about it?
+>>>
+>>> I tracked the use of 'force' all the way back to the first git commit
+>>> (2.6.12-rc1) in the very old video-buf.c. So it is very, very old and the
+>>> reason is lost in the mists of time.
+>>>
+>>> I'm not sure if the 'force' argument of get_user_pages() at that time
+>>> even meant the same as FOLL_FORCE today. From what I can tell it has just
+>>> been faithfully used ever since, but I have my doubt that anyone understands
+>>> the reason behind it since it was never explained.
+>>>
+>>> Looking at this old LWN article https://lwn.net/Articles/28548/ suggests
+>>> that it might be related to calling get_user_pages for write buffers
+>>> (non-zero write argument) where you also want to be able to read from the
+>>> buffer. That is certainly something that some drivers need to do post-capture
+>>> fixups.
+>>>
+>>> But 'force' was also always set for read buffers, and I don't know if that
+>>> was something that was actually needed, or just laziness.
+>>>
+>>> I assume that removing FOLL_FORCE from 'FOLL_FORCE|FOLL_WRITE' will still
+>>> allow drivers to read from the buffer?
+>>
+>> Yes. The only problematic corner case I can imagine is if someone has a
+>> VMA without write permissions (no PROT_WRITE/VM_WRITE) and wants to pin
+>> user space pages as a read buffer. We'd specify now FOLL_WRITE without
+>> FOLL_FORCE and GUP would reject that: write access without write
+>> permissions is invalid.
+> 
+> I do not believe this will be an issue.
+> 
+>>
+>> There would be no way around "fixing" this implementation to not specify
+>> FOLL_WRITE when only reading from user-space pages. Not sure what the
+>> implications are regarding that corruption that was mentioned in
+>> 707947247e95.
+> 
+> Before 707947247e95 the FOLL_WRITE flag was only set for write buffers
+> (i.e. video capture, DMA_FROM_DEVICE), not for read buffers (video output,
+> DMA_TO_DEVICE). In the video output case there should never be any need
+> for drivers to write to the buffer to the best of my knowledge.
+> 
+> But I have had some complaints about that commit that it causes problems
+> in some scenarios, and it has been on my todo list for quite some time now
+> to dig deeper into this. I probably should prioritize this for this or
+> next week.
+> 
+>>
+>> Having said that, I assume such a scenario is unlikely -- but you might
+>> know better how user space usually uses this interface. There would be
+>> three options:
+>>
+>> 1) Leave the FOLL_FORCE hack in for now, which I *really* want to avoid.
+>> 2) Remove FOLL_FORCE and see if anybody even notices (this patch) and
+>>      leave the implementation as is for now.
+>> 3) Remove FOLL_FORCE and fixup the implementation to only specify
+>>      FOLL_WRITE if the pages will actually get written to.
+>>
+>> 3) would most probably ideal, however, I am no expert on that code and
+>> can't do it (707947247e95 confuses me). So naive me would go with 2) first.
+>>
+> 
+> Option 3 would be best. And 707947247e95 confuses me as well, and I actually
+> wrote it :-) I am wondering whether it was addressed at the right level, but
+> as I said, I need to dig a bit deeper into this.
 
-On Wed, Nov 16, 2022 at 5:22 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-::snip::
-> > > All PCI management logic and interfaces are needed to be inside eth part
-> > > of your driver and only that part should implement SR-IOV config. Once
-> > > user enabled SR-IOV, the PCI driver should create auxiliary devices for
-> > > each VF. These device will have RDMA capabilities and it will trigger RDMA
-> > > driver to bind to them.
-> > I agree and once the PF creates the auxiliary devices for the VF, the RoCE
-> > Vf indeed get probed and created. But the twist in bnxt_en/bnxt_re
-> > design is that
-> > the RoCE driver is responsible for making adjustments to the RoCE resources.
->
-> You can still do these adjustments by checking type of function that
-> called to RDMA .probe. PCI core exposes some functions to help distinguish between
-> PF and VFs.
->
-> >
-> > So once the VF's are created and the bnxt_en driver enables SRIOV adjusts the
-> > NIC resources for the VF,  and such, it tries to call into the bnxt_re
-> > driver for the
-> > same purpose.
->
-> If I read code correctly, all these resources are for one PCI function.
->
-> Something like this:
->
-> bnxt_re_probe()
-> {
->   ...
->         if (is_virtfn(p))
->                  bnxt_re_sriov_config(p);
->   ...
-> }
-I understand what you are suggesting.
-But what I want is a way to do this in the context of the PF
-preferably before the VFs are probed. So we are trying to call the
-bnxt_re_sriov_config in the context of handling the PF's
-sriov_configure implementation.  Having the ulp_ops is allowing us to
-avoid resource wastage and assumptions in the bnxt_re driver.
+Cool, let me know if I can help!
 
-::snip::
+-- 
+Thanks,
 
---000000000000ef8e0605ee107743
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+David / dhildenb
 
-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
-pZEyqKnwS1lKCzjX7mV5W955rFsFxChdAKfw0HilwtqdY24mhy62+GeaEkD0gYIj1tCmw9gnQToc
-K+0s7xEunfR9pBrzmOwS3OQbcP0nJ8SmQ8R+reroH6LYuFpaqK1rgQIDAQABo4IB2zCCAdcwDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAlBgNVHREEHjAcgRphaml0LmtoYXBhcmRlQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
-BQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUbrcTuh0mr2qP
-xYdtyDgFeRIiE/gwDQYJKoZIhvcNAQELBQADggEBALrc1TljKrDhXicOaZlzIQyqOEkKAZ324i8X
-OwzA0n2EcPGmMZvgARurvanSLD3mLeeuyq1feCcjfGM1CJFh4+EY7EkbFbpVPOIdstSBhbnAJnOl
-aC/q0wTndKoC/xXBhXOZB8YL/Zq4ZclQLMUO6xi/fFRyHviI5/IrosdrpniXFJ9ukJoOXtvdrEF+
-KlMYg/Deg9xo3wddCqQIsztHSkR4XaANdn+dbLRQpctZ13BY1lim4uz5bYn3M0IxyZWkQ1JuPHCK
-aRJv0SfR88PoI4RB7NCEHqFwARTj1KvFPQi8pK/YISFydZYbZrxQdyWDidqm4wSuJfpE6i0cWvCd
-u50xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
-MTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwM2Vrj
-4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIO64/JbtSNM8l5eT7u4u
-z5fpjPO1KcZYaTDafj/ZGAiKMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
-MQ8XDTIyMTEyMjE1MDMwMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
-BAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsG
-CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBlZ910GJplVSf6Flqtc1uSeu0JmG5l1W6Mh1lC
-6h1FW6ouLfOQTRkJ2xC3bpLGusHOMLZ0lNYHmAcoY/5tNl6pDmHsyo2USgR2qsfTSXRjISgSq7sm
-MaLMDGoaE9mSXBlFmpb1TEpj8lYQfSEuL5GsLAQbAw1xIA2+tXiVxRfvc+c2PpOi/gmuOh77UwuU
-/XDL9BvygYtbpC8WhI61ujZriQRhPz7iSWGkmIT3G7h7fqtvc7lQeHOhuCjci25rgsRGSoP+o+a3
-WDw3w+/qJwL1dQF1lxLF072Kf5piZOdduNZ4tqHN+yTgzBfA9aVO+SCvoeiLb3LLfnZUPqWv/5Nr
---000000000000ef8e0605ee107743--
