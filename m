@@ -2,41 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D30D0633547
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 07:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853B26337CE
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 10:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbiKVG2Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Nov 2022 01:28:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
+        id S232991AbiKVJCL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Nov 2022 04:02:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbiKVG2W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 01:28:22 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398ECB7CE;
-        Mon, 21 Nov 2022 22:27:52 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NGZ6x1d9wz15Mps;
-        Tue, 22 Nov 2022 14:27:21 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 22 Nov 2022 14:27:49 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>, <markzhang@nvidia.com>,
-        <haakon.bugge@oracle.com>, <mbloch@nvidia.com>
-CC:     <sean.hefty@intel.com>, <rolandd@cisco.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Wang Yufen <wangyufen@huawei.com>
-Subject: [PATCH] infiniband: cma: fix the dev refcnt leak
-Date:   Tue, 22 Nov 2022 14:47:53 +0800
-Message-ID: <1669099673-12213-1-git-send-email-wangyufen@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        with ESMTP id S232370AbiKVJCK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 04:02:10 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4128BA456
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 01:02:09 -0800 (PST)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NGdXq39dgzHw8f;
+        Tue, 22 Nov 2022 17:01:31 +0800 (CST)
+Received: from huawei.com (10.29.88.127) by canpemm500002.china.huawei.com
+ (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 22 Nov
+ 2022 17:02:06 +0800
+From:   Chao Leng <lengchao@huawei.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <lengchao@huawei.com>
+Subject: [for-next PATCH] infiniband:cma: add a parameter for the packet lifetime
+Date:   Tue, 22 Nov 2022 17:02:06 +0800
+Message-ID: <20221122090206.865-1-lengchao@huawei.com>
+X-Mailer: git-send-email 2.16.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500010.china.huawei.com (7.192.105.118)
+Content-Type: text/plain
+X-Originating-IP: [10.29.88.127]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -46,48 +42,44 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Syzbot report the following issue:
-  infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
-  unregister_netdevice: waiting for vlan0 to become free. Usage count = 2
+Now the default packet lifetime(CMA_IBOE_PACKET_LIFETIME) is 18.
+That means the minimum ack timeout is 2 seconds(2^(18+1)*4us=2.097seconds).
+The packet lifetime means the maximum transmission time of packets
+on the network, the maximum transmission time of packets is closely
+related to the network. 2 seconds is too long for simple lossless networks.
+The packet lifetime should allow the user to adjust according to the
+network situation.
+So add a parameter for the packet lifetime.
 
-The causes are as follows:
-
-rdma_listen()
-  rdma_bind_addr()
-    cma_acquire_dev_by_src_ip()
-      cma_attach_to_dev()
-        _cma_attach_to_dev()
-          cma_dev_get()
-
-  cma_check_port()
-  <--The return value is -98， goto err
-
-err:
-<-- The error handling here is missing the operation of cma_release_dev.
-
-To fix, add cma_release_dev to error handing.
-
-Fixes: e51060f08a61 ("IB: IP address based RDMA connection manager")
-Reported-by: syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+Signed-off-by: Chao Leng <lengchao@huawei.com>
 ---
- drivers/infiniband/core/cma.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/core/cma.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 26d1772..3a50a8e 100644
+index cc2222b85c88..8e2ff5d610e3 100644
 --- a/drivers/infiniband/core/cma.c
 +++ b/drivers/infiniband/core/cma.c
-@@ -4049,6 +4049,9 @@ int rdma_listen(struct rdma_cm_id *id, int backlog)
- 	return 0;
- err:
- 	id_priv->backlog = 0;
-+	if (id_priv->cma_dev)
-+		cma_release_dev(id_priv);
+@@ -50,6 +50,10 @@ MODULE_LICENSE("Dual BSD/GPL");
+ #define CMA_IBOE_PACKET_LIFETIME 18
+ #define CMA_PREFERRED_ROCE_GID_TYPE IB_GID_TYPE_ROCE_UDP_ENCAP
+ 
++static unsigned char cma_packet_lifetime = CMA_IBOE_PACKET_LIFETIME;
++module_param_named(packet_lifetime, cma_packet_lifetime, byte, 0644);
++MODULE_PARM_DESC(packet_lifetime, "max transmission time of the packet");
 +
- 	/*
- 	 * All the failure paths that lead here will not allow the req_handler's
- 	 * to have run.
+ static const char * const cma_events[] = {
+ 	[RDMA_CM_EVENT_ADDR_RESOLVED]	 = "address resolved",
+ 	[RDMA_CM_EVENT_ADDR_ERROR]	 = "address error",
+@@ -3301,7 +3305,7 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
+ 	if (id_priv->timeout_set && id_priv->timeout)
+ 		route->path_rec->packet_life_time = id_priv->timeout - 1;
+ 	else
+-		route->path_rec->packet_life_time = CMA_IBOE_PACKET_LIFETIME;
++		route->path_rec->packet_life_time = cma_packet_lifetime;
+ 	mutex_unlock(&id_priv->qp_mutex);
+ 
+ 	if (!route->path_rec->mtu) {
 -- 
-1.8.3.1
+2.16.4
 
