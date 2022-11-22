@@ -2,149 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A33C06333E9
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 04:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C42633453
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 05:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbiKVD2c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Nov 2022 22:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
+        id S231614AbiKVEHS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Nov 2022 23:07:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbiKVD2c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Nov 2022 22:28:32 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E0725E87;
-        Mon, 21 Nov 2022 19:28:30 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NGV8032Ryz15Mlk;
-        Tue, 22 Nov 2022 11:28:00 +0800 (CST)
-Received: from [10.174.179.191] (10.174.179.191) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 22 Nov 2022 11:28:28 +0800
-Message-ID: <ecc8b532-4e80-b7bd-3621-78cd55fd48fa@huawei.com>
-Date:   Tue, 22 Nov 2022 11:28:28 +0800
+        with ESMTP id S231132AbiKVEHR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Nov 2022 23:07:17 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75C02E9E1
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Nov 2022 20:07:15 -0800 (PST)
+Message-ID: <6cb433cb-c463-7cd8-ee5e-7e922733744a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1669090033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wgWG3+jRHTx4R9aZspcJHjLiQSk6hLRD6kLxtYaQjS0=;
+        b=cwPjNohm64uTspn2tZX+gaWEWtmjmH1pJ84FDJ1cSXbNdvpxYd+iUZdSR2e+Qp80SAJLnA
+        l7RDj4VUYYC6pL3nt+bIWGfFKJ2mABSgAzpLt8tGzFdvOb8dVlrRZ4a3OI2bz1uNmosz/I
+        GTRxj46JGy2NuG5TdTcGoBuuTwMMvyg=
+Date:   Tue, 22 Nov 2022 12:07:06 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [syzbot] unregister_netdevice: waiting for DEV to become free (7)
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Dmitry Vyukov <dvyukov@google.com>
-CC:     syzbot <syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com>,
-        Leon Romanovsky <leon@kernel.org>, <chenzhongjin@huawei.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <syzkaller-bugs@googlegroups.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>
-References: <00000000000060c7e305edbd296a@google.com>
- <CACT4Y+a=HbyJE3A_SnKm3Be-kcQytxXXF89gZ_cN1gwoAW-Zgw@mail.gmail.com>
- <Y3wwOPmH1WoRj0Uo@ziepe.ca>
-From:   wangyufen <wangyufen@huawei.com>
-In-Reply-To: <Y3wwOPmH1WoRj0Uo@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [for-next PATCH 1/1] RDMA/rxe: sgt_append from ib_umem_get is not
+ highmem
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     zyjzyj2000@gmail.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        Zhu Yanjun <yanjun.zhu@linux.dev>
+References: <c806a812-4ecd-226f-109e-84642357fbcb@linux.dev>
+ <20221120012939.539953-1-yanjun.zhu@intel.com> <Y3uZMQJgcNFDhq5L@ziepe.ca>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <Y3uZMQJgcNFDhq5L@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.191]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-在 2022/11/22 10:13, Jason Gunthorpe 写道:
-> On Fri, Nov 18, 2022 at 02:28:53PM +0100, Dmitry Vyukov wrote:
->> On Fri, 18 Nov 2022 at 12:39, syzbot
->> <syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com> wrote:
->>>
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    9c8774e629a1 net: eql: Use kzalloc instead of kmalloc/memset
->>> git tree:       net-next
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=17bf6cc8f00000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9eb259db6b1893cf
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=5e70d01ee8985ae62a3b
->>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1136d592f00000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1193ae64f00000
->>>
->>> Bisection is inconclusive: the issue happens on the oldest tested release.
->>>
->>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=167c33a2f00000
->>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=157c33a2f00000
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=117c33a2f00000
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com
->>>
->>> iwpm_register_pid: Unable to send a nlmsg (client = 2)
->>> infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
->>> unregister_netdevice: waiting for vlan0 to become free. Usage count = 2
+在 2022/11/21 23:28, Jason Gunthorpe 写道:
+> On Sat, Nov 19, 2022 at 08:29:38PM -0500, Zhu Yanjun wrote:
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
 >>
->> +RDMA maintainers
->>
->> There are 4 reproducers and all contain:
->>
->> r0 = socket$nl_rdma(0x10, 0x3, 0x14)
->> sendmsg$RDMA_NLDEV_CMD_NEWLINK(...)
->>
->> Also the preceding print looks related (a bug in the error handling
->> path there?):
->>
->> infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
+>> In ib_umem_get, sgt_append is allocated from the function
+>> sg_alloc_append_table_from_pages. And it is not from highmem.
 > 
-> I'm pretty sure it is an rxe bug
+> You've confused the allocation of the SGL table itself with the
+> page_address called on the struct page * stored inside the SGL table.
 > 
-> ib_device_set_netdev() will hold the netdev until the caller destroys
-> the ib_device
+> Think of the SGL as an array of 'struct page *'
 > 
-> rxe calls it during rxe_register_device() because the user asked for a
-> stacked ib_device on top of the netdev
-> 
-> Presumably rxe needs to have a notifier to also self destroy the rxe
-> device if the underlying net device is to be destroyed?
-> 
-> Can someone from rxe check into this?
+About "The page_address() can return NULL because the 'struct page *' it 
+  contains came from userspace and could very will be highmem.",
 
-The following patch may fix the issue：
+ From the function ib_umem *ib_umem_get(struct ib_device *device, 
+unsigned long addr,size_t size, int access), I agree with you that 
+struct page comes from user space.
 
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -4049,6 +4049,9 @@ int rdma_listen(struct rdma_cm_id *id, int backlog)
-         return 0;
-  err:
-         id_priv->backlog = 0;
-+       if (id_priv->cma_dev)
-+               cma_release_dev(id_priv);
-+
-         /*
-          * All the failure paths that lead here will not allow the 
-req_handler's
-          * to have run.
+But from "Understanding the Linux Kernel", third edition - sections 
+"8.1.3. Memory Zones" and "8.1.6. Kernel Mappings of High-Memory Page 
+Frames".
 
+In the process' virtual address space, the user space occupies the first 
+3GB, and the kernel space the 4th GB of this linear address space.
 
+The first 896MB of the kernel space (not only kernel code, but its data 
+also) is "directly" mapped to the first 896 MB of the physical memory.
 
-The causes are as follows:
+The last 128MB part of the virtual kernel space is where are mapped some 
+pieces of the physical "high memory" (> 896MB) : thus it can only map no 
+more than 128MB of "high memory" at a time.
 
-rdma_listen()
-   rdma_bind_addr()
-     cma_acquire_dev_by_src_ip()
-       cma_attach_to_dev()
-         _cma_attach_to_dev()
-	      cma_dev_get()
-		
-   cma_check_port()
-   <--The return value is not zero， goto err
+It seems that page_address of these "128MB high memory" will return NULL.
 
-err：
-<-- The error handling here is missing the operation of cma_release_dev.
+But can user space access these high memory? From "Understanding the 
+Linux Kernel", third edition, it seems that it is in kernel space.
+
+Thanks and Regards,
+Zhu Yanjun
 
 > 
 > Jason
+
