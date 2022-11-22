@@ -2,156 +2,251 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E83063429D
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 18:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BB76344B0
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 20:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbiKVRkL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Nov 2022 12:40:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
+        id S233106AbiKVTfd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Nov 2022 14:35:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233768AbiKVRkJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 12:40:09 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2D45E3D2
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 09:40:07 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id jr19so9752162qtb.7
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 09:40:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=y0TG7RSDJLBsFmv13T+kVLFnKE/Gs/+y0yFrl/WZR6s=;
-        b=L0dZyDnVDHFIaOItmPGH7qgeLVW0usPCwRH/4nTimj8Xh9l2UXEZKNFm/ei9gDcq24
-         Pk3u7Gq7lJi0kmr8z8NjnWgqP5s/GTGAjlS5nF3Rg8c28BPysVoaAoT/SPX3zkQcRIfE
-         uip9ptnbHvWOX/Zei2bksChNqBhHUUkmXbxVE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y0TG7RSDJLBsFmv13T+kVLFnKE/Gs/+y0yFrl/WZR6s=;
-        b=P8EAByXcr5cha8RHQZcLBxc+sM0CLhq9zTPclYDUbc4Hm2mTr5x5IxtsCQUrbXWJom
-         ZzpjcAbHY8dxAiOAU8rdplWdwBw3VmxNsw2MAQpONpT2JjivUqIl6Dh0S5xUsDCmUikN
-         L07MEf8ME9ppy0LPLAi8pxow0vuFOCtHN147pPiR4efAUNdKGKTptk8zxHI2GbOqRldN
-         g/oiGEYXr8lHQfWRdrdogRpYwhkoQWQbqvTOjg4I7WnFqwU18cI5VXGzNOMmlDI9LO/g
-         k5cgv/Xjull5qX3vbycqvPrUfCmz9NHgiLk30PydeGeO1qlDmTMgPYw6g7Nd2yD95IEY
-         cEdA==
-X-Gm-Message-State: ANoB5pmcN3PCNuT7VKs4mpZ9MUUkGRm8iBUw1TMbEU09+kiBfx7QVZbq
-        QgRXHcJSBPICEwKiqVjjPrSAKeEtBTGT0w==
-X-Google-Smtp-Source: AA0mqf5M3iIisi33jHNDNtDIrEwmeDymyj+WMpTnOJ5WFlrhhRCfXHZ8oTeyQnH8GRQdav/P+2Ng2Q==
-X-Received: by 2002:ac8:539a:0:b0:3a5:1e03:7570 with SMTP id x26-20020ac8539a000000b003a51e037570mr23685832qtp.170.1669138806561;
-        Tue, 22 Nov 2022 09:40:06 -0800 (PST)
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com. [209.85.222.171])
-        by smtp.gmail.com with ESMTPSA id cd4-20020a05622a418400b0035cd6a4ba3csm8548011qtb.39.2022.11.22.09.40.05
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Nov 2022 09:40:06 -0800 (PST)
-Received: by mail-qk1-f171.google.com with SMTP id k4so10764419qkj.8
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 09:40:05 -0800 (PST)
-X-Received: by 2002:a05:620a:1fa:b0:6ee:24d5:b8fc with SMTP id
- x26-20020a05620a01fa00b006ee24d5b8fcmr21656006qkn.336.1669138412298; Tue, 22
- Nov 2022 09:33:32 -0800 (PST)
+        with ESMTP id S232341AbiKVTfc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 14:35:32 -0500
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6EC248E4
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 11:35:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669145732; x=1700681732;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=M4+cMCHtVoxYRGtpdDZNxhaYVl322LlCzg+wZVLaSTE=;
+  b=GQEt7OwHZVgTvBGtnQFiQZoiIpXGh84qvcJj/DilBH/LKlcDzY7opTU1
+   /cERxjoLixwFLC3t1WRvN3HoLb4EJTR8JysTHMPT7D1amrfuTkOIZoAlo
+   ewVhKkDj73SV0oTWT1bokSX8fl+1ICEFTBBrhzKxIkhDESGZB3ZV8CkhP
+   ltC6xfFKZ8a56HMHafiqzUiarpuAISYXDeiN2cy2GkEfmjjngrNbAkBRu
+   FVr1cJ/EZtv09uW/u8/mFv/mLpFtxcCfK75XOUBSQilPbC5Hjfn0d0ewU
+   5kqJb8+3tmooQZiJuldMrX7XkUbDJ0OPLuGfVY+lumrFh7KwuC+bL8jb8
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10539"; a="378156691"
+X-IronPort-AV: E=Sophos;i="5.96,184,1665471600"; 
+   d="scan'208";a="378156691"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2022 11:35:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10539"; a="710312125"
+X-IronPort-AV: E=Sophos;i="5.96,185,1665471600"; 
+   d="scan'208";a="710312125"
+Received: from lkp-server01.sh.intel.com (HELO 64a2d449c951) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Nov 2022 11:35:30 -0800
+Received: from kbuild by 64a2d449c951 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oxZ3J-0001n1-1F;
+        Tue, 22 Nov 2022 19:35:29 +0000
+Date:   Wed, 23 Nov 2022 03:35:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 0c5e259b06a8efc69f929ad777ea49281bb58e37
+Message-ID: <637d2475.DOEgthJcaqYJ2rJS%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20221107161740.144456-1-david@redhat.com> <20221107161740.144456-17-david@redhat.com>
- <CAAFQd5C3Ba1WhjYJF_7tW06mgvzoz9KTakNo+Tz8h_f6dGKzHQ@mail.gmail.com> <6175d780-3307-854c-448a-8e6c7ad0772c@xs4all.nl>
-In-Reply-To: <6175d780-3307-854c-448a-8e6c7ad0772c@xs4all.nl>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 22 Nov 2022 09:33:16 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh0nuSn=zYB1z9bHXJRPi33mmbpv-Z6z7ARkHQupbQ3fQ@mail.gmail.com>
-Message-ID: <CAHk-=wh0nuSn=zYB1z9bHXJRPi33mmbpv-Z6z7ARkHQupbQ3fQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 16/19] mm/frame-vector: remove FOLL_FORCE usage
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        David Hildenbrand <david@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Peter Xu <peterx@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 4:25 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> I tracked the use of 'force' all the way back to the first git commit
-> (2.6.12-rc1) in the very old video-buf.c. So it is very, very old and the
-> reason is lost in the mists of time.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 0c5e259b06a8efc69f929ad777ea49281bb58e37  RDMA/hns: Fix incorrect sge nums calculation
 
-Well, not entirely.
+elapsed time: 5456m
 
-For archaeology reasons, I went back to the old BK history, which
-exists as a git conversion in
+configs tested: 168
+configs skipped: 4
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-and there you can actually find it.
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                            allnoconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+s390                 randconfig-r044-20221121
+riscv                randconfig-r042-20221121
+arc                  randconfig-r043-20221121
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+i386                             allyesconfig
+i386                                defconfig
+s390                                defconfig
+s390                             allmodconfig
+arc                                 defconfig
+alpha                               defconfig
+sh                            migor_defconfig
+sh                          urquell_defconfig
+arm                                 defconfig
+arm                              allyesconfig
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+i386                 randconfig-a014-20221121
+i386                 randconfig-a011-20221121
+i386                 randconfig-a013-20221121
+i386                 randconfig-a016-20221121
+i386                 randconfig-a012-20221121
+i386                 randconfig-a015-20221121
+arc                              allyesconfig
+i386                          randconfig-c001
+x86_64               randconfig-a011-20221121
+x86_64               randconfig-a014-20221121
+x86_64               randconfig-a012-20221121
+x86_64               randconfig-a013-20221121
+x86_64               randconfig-a016-20221121
+x86_64               randconfig-a015-20221121
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+mips                      loongson3_defconfig
+csky                                defconfig
+powerpc                      ppc6xx_defconfig
+sh                             espt_defconfig
+arm                              allmodconfig
+arm                           corgi_defconfig
+powerpc                      bamboo_defconfig
+sh                          r7780mp_defconfig
+arm                        cerfcube_defconfig
+xtensa                           alldefconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+arm                          simpad_defconfig
+sh                          rsk7264_defconfig
+mips                 decstation_r4k_defconfig
+loongarch                           defconfig
+arm                             pxa_defconfig
+mips                        bcm47xx_defconfig
+powerpc                    adder875_defconfig
+mips                           ip32_defconfig
+xtensa                       common_defconfig
+loongarch                         allnoconfig
+powerpc                     sequoia_defconfig
+arm                        shmobile_defconfig
+arc                  randconfig-r043-20221120
+arm                      footbridge_defconfig
+powerpc                       eiger_defconfig
+sh                        sh7763rdp_defconfig
+m68k                            q40_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                 mpc837x_mds_defconfig
+ia64                             allmodconfig
+m68k                          hp300_defconfig
+arm                        realview_defconfig
+powerpc                    sam440ep_defconfig
+sh                         ap325rxa_defconfig
+s390                             allyesconfig
+arm                            hisi_defconfig
+sh                          sdk7786_defconfig
+sparc                       sparc64_defconfig
+sh                           se7712_defconfig
+nios2                               defconfig
+parisc                              defconfig
+arm64                               defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+ia64                                defconfig
+m68k                        m5272c3_defconfig
+arm                         nhk8815_defconfig
+sparc                               defconfig
+x86_64                                  kexec
+mips                             allyesconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20221120
+mips                           jazz_defconfig
+powerpc                      ep88xc_defconfig
+m68k                       m5249evb_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                           sama5_defconfig
+parisc64                            defconfig
+arc                           tb10x_defconfig
+mips                          rb532_defconfig
+sh                               alldefconfig
+m68k                        m5307c3_defconfig
+powerpc                     tqm8541_defconfig
+powerpc                     asp8347_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                      pasemi_defconfig
+sparc                       sparc32_defconfig
+sparc                            alldefconfig
+sh                           se7705_defconfig
+m68k                        stmark2_defconfig
+powerpc                 mpc8540_ads_defconfig
+arm                      jornada720_defconfig
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+arm                        trizeps4_defconfig
+m68k                       m5275evb_defconfig
+arc                          axs103_defconfig
+m68k                             allmodconfig
+alpha                            allyesconfig
+sh                              ul2_defconfig
+sh                           se7780_defconfig
+sh                          sdk7780_defconfig
+m68k                             allyesconfig
 
-Not with a lot of explanations, though - it's commit b7649ef789
-("[PATCH] videobuf update"):
+clang tested configs:
+x86_64               randconfig-a002-20221121
+x86_64               randconfig-a001-20221121
+x86_64               randconfig-a004-20221121
+x86_64               randconfig-a006-20221121
+x86_64               randconfig-a005-20221121
+x86_64               randconfig-a003-20221121
+i386                 randconfig-a001-20221121
+i386                 randconfig-a005-20221121
+i386                 randconfig-a006-20221121
+i386                 randconfig-a004-20221121
+i386                 randconfig-a003-20221121
+i386                 randconfig-a002-20221121
+x86_64                        randconfig-k001
+arm                                 defconfig
+arm                          pxa168_defconfig
+riscv                          rv32_defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                    mvme5100_defconfig
+arm                         bcm2835_defconfig
+arm                         lpc32xx_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+powerpc                    gamecube_defconfig
+powerpc                  mpc866_ads_defconfig
+arm                        neponset_defconfig
+powerpc                     ksi8560_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+powerpc                  mpc885_ads_defconfig
+arm                     am200epdkit_defconfig
+hexagon                             defconfig
 
-    This updates the video-buf.c module (helper module for video buffer
-    management).  Some memory management fixes, also some adaptions to the
-    final v4l2 api.
-
-but it went from
-
-         err = get_user_pages(current,current->mm,
--                            data, dma->nr_pages,
--                            rw == READ, 0, /* don't force */
-+                            data & PAGE_MASK, dma->nr_pages,
-+                            rw == READ, 1, /* force */
-                             dma->pages, NULL);
-
-in that commit.
-
-So it goes back to October 2002.
-
-> Looking at this old LWN article https://lwn.net/Articles/28548/ suggests
-> that it might be related to calling get_user_pages for write buffers
-
-The timing roughly matches.
-
-> I assume that removing FOLL_FORCE from 'FOLL_FORCE|FOLL_WRITE' will still
-> allow drivers to read from the buffer?
-
-The issue with some of the driver hacks has been that
-
- - they only want to read, and the buffer may be read-only
-
- - they then used FOLL_WRITE despite that, because they want to break
-COW (due to the issue that David is now fixing with his series)
-
- - but that means that the VM layer says "nope, you can't write to
-this read-only user mapping"
-
- - ... and then they use FOLL_FORCE to say "yes, I can".
-
-iOW, the FOLL_FORCE may be entirely due to an (incorrect, but
-historically needed) FOLL_WRITE.
-
-             Linus
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
