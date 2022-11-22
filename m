@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E46634058
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 16:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D4E634184
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Nov 2022 17:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234107AbiKVPgh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Nov 2022 10:36:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
+        id S234178AbiKVQ3Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Nov 2022 11:29:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234089AbiKVPgF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 10:36:05 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AFA71F03;
-        Tue, 22 Nov 2022 07:35:54 -0800 (PST)
+        with ESMTP id S233399AbiKVQ3U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 11:29:20 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE802F037;
+        Tue, 22 Nov 2022 08:29:19 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8357A22007;
-        Tue, 22 Nov 2022 15:35:53 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DF6E31F85D;
+        Tue, 22 Nov 2022 16:29:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1669131353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1669134557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xzeEtRVGkBValjf4cAqJIIBnm0WLgHIJrOj2Qpyeryk=;
-        b=hSz8uo53GqZkaSBqbG3aIh16lgMQB2Sw8gZ6Z+fnEjIR6uPvpuBuVkR8TpcuCDJwN2rjjn
-        iqJmydTFhzXH0tY5jw9oJ6zK0Sx7/l0zZrHLYI1mzVvp/woqabMd2RthMdqBUz+tckoXxt
-        gvUiGWpp9yM7xLCq0tNctpGuD1es/pI=
+        bh=i4/RJcDx5W5MDWxatsZO6Jcd+cYSccjZheprFRMkSho=;
+        b=X60dEluFtp4cLi1JihULzmkzaAA9/k4ioOG0n7SnZjElr35p11yH8f4Bssb8T6zKnqjhw2
+        BDEDmmllzzQfnE37AD6LBoQboXkTfOwklpWC3spbAYDRkpU5ZxaFtM8EabO2lg17w4JmPI
+        FG84E0lRMDGpjDhIqVm+gTJfS8SspQg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1669131353;
+        s=susede2_ed25519; t=1669134557;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xzeEtRVGkBValjf4cAqJIIBnm0WLgHIJrOj2Qpyeryk=;
-        b=87yFyDfodelF6paPP+3fZVkcbfCamfu6aYJAmnQjTNh2RXFp/RQ8a0uSheJsgsaRl+tSbc
-        rgSpbkEWiLk/2KDQ==
+        bh=i4/RJcDx5W5MDWxatsZO6Jcd+cYSccjZheprFRMkSho=;
+        b=tytwOJur3SCnNybSVppd+YvRZnEtonPJqvXEuE1IgRt5Krn2SkTFWXTND8eoiVlqfQBoI0
+        i1KrLu2gVmy/a2Bg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E380913B01;
-        Tue, 22 Nov 2022 15:35:52 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4E82B13AA1;
+        Tue, 22 Nov 2022 16:29:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id /ANwNljsfGPGGwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 22 Nov 2022 15:35:52 +0000
-Message-ID: <34835490-57d7-4e26-7474-008b2c4c6b39@suse.cz>
-Date:   Tue, 22 Nov 2022 16:35:52 +0100
+        id h9BSEt34fGMmOQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 22 Nov 2022 16:29:17 +0000
+Message-ID: <8bb93984-a2f4-2029-7cec-bea659e77b6c@suse.cz>
+Date:   Tue, 22 Nov 2022 17:29:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.5.0
-Subject: Re: [PATCH mm-unstable v1 08/20] mm: extend FAULT_FLAG_UNSHARE
- support to anything in a COW mapping
+Subject: Re: [PATCH mm-unstable v1 09/20] mm/gup: reliable R/O long-term
+ pinning in COW mappings
 Content-Language: en-US
 To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, linux-alpha@vger.kernel.org,
@@ -86,9 +86,9 @@ Cc:     x86@kernel.org, linux-alpha@vger.kernel.org,
         Christoph Hellwig <hch@infradead.org>,
         Alex Williamson <alex.williamson@redhat.com>
 References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-9-david@redhat.com>
+ <20221116102659.70287-10-david@redhat.com>
 From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20221116102659.70287-9-david@redhat.com>
+In-Reply-To: <20221116102659.70287-10-david@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -102,71 +102,77 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 11/16/22 11:26, David Hildenbrand wrote:
-> Extend FAULT_FLAG_UNSHARE to break COW on anything mapped into a
-> COW (i.e., private writable) mapping and adjust the documentation
-> accordingly.
+> We already support reliable R/O pinning of anonymous memory. However,
+> assume we end up pinning (R/O long-term) a pagecache page or the shared
+> zeropage inside a writable private ("COW") mapping. The next write access
+> will trigger a write-fault and replace the pinned page by an exclusive
+> anonymous page in the process page tables to break COW: the pinned page no
+> longer corresponds to the page mapped into the process' page table.
 > 
-> FAULT_FLAG_UNSHARE will now also break COW when encountering the shared
-> zeropage, a pagecache page, a PFNMAP, ... inside a COW mapping, by
-> properly replacing the mapped page/pfn by a private copy (an exclusive
-> anonymous page).
+> Now that FAULT_FLAG_UNSHARE can break COW on anything mapped into a
+> COW mapping, let's properly break COW first before R/O long-term
+> pinning something that's not an exclusive anon page inside a COW
+> mapping. FAULT_FLAG_UNSHARE will break COW and map an exclusive anon page
+> instead that can get pinned safely.
 > 
-> Note that only do_wp_page() needs care: hugetlb_wp() already handles
-> FAULT_FLAG_UNSHARE correctly. wp_huge_pmd()/wp_huge_pud() also handles it
-> correctly, for example, splitting the huge zeropage on FAULT_FLAG_UNSHARE
-> such that we can handle FAULT_FLAG_UNSHARE on the PTE level.
+> With this change, we can stop using FOLL_FORCE|FOLL_WRITE for reliable
+> R/O long-term pinning in COW mappings.
 > 
-> This change is a requirement for reliable long-term R/O pinning in
-> COW mappings.
+> With this change, the new R/O long-term pinning tests for non-anonymous
+> memory succeed:
+>   # [RUN] R/O longterm GUP pin ... with shared zeropage
+>   ok 151 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP pin ... with memfd
+>   ok 152 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP pin ... with tmpfile
+>   ok 153 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP pin ... with huge zeropage
+>   ok 154 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP pin ... with memfd hugetlb (2048 kB)
+>   ok 155 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP pin ... with memfd hugetlb (1048576 kB)
+>   ok 156 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP-fast pin ... with shared zeropage
+>   ok 157 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP-fast pin ... with memfd
+>   ok 158 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP-fast pin ... with tmpfile
+>   ok 159 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP-fast pin ... with huge zeropage
+>   ok 160 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP-fast pin ... with memfd hugetlb (2048 kB)
+>   ok 161 Longterm R/O pin is reliable
+>   # [RUN] R/O longterm GUP-fast pin ... with memfd hugetlb (1048576 kB)
+>   ok 162 Longterm R/O pin is reliable
+> 
+> Note 1: We don't care about short-term R/O-pinning, because they have
+> snapshot semantics: they are not supposed to observe modifications that
+> happen after pinning.
+> 
+> As one example, assume we start direct I/O to read from a page and store
+> page content into a file: modifications to page content after starting
+> direct I/O are not guaranteed to end up in the file. So even if we'd pin
+> the shared zeropage, the end result would be as expected -- getting zeroes
+> stored to the file.
+> 
+> Note 2: For shared mappings we'll now always fallback to the slow path to
+> lookup the VMA when R/O long-term pining. While that's the necessary price
+> we have to pay right now, it's actually not that bad in practice: most
+> FOLL_LONGTERM users already specify FOLL_WRITE, for example, along with
+> FOLL_FORCE because they tried dealing with COW mappings correctly ...
+> 
+> Note 3: For users that use FOLL_LONGTERM right now without FOLL_WRITE,
+> such as VFIO, we'd now no longer pin the shared zeropage. Instead, we'd
+> populate exclusive anon pages that we can pin. There was a concern that
+> this could affect the memlock limit of existing setups.
+> 
+> For example, a VM running with VFIO could run into the memlock limit and
+> fail to run. However, we essentially had the same behavior already in
+> commit 17839856fd58 ("gup: document and work around "COW can break either
+> way" issue") which got merged into some enterprise distros, and there were
+> not any such complaints. So most probably, we're fine.
 > 
 > Signed-off-by: David Hildenbrand <david@redhat.com>
 
 Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->  include/linux/mm_types.h | 8 ++++----
->  mm/memory.c              | 4 ----
->  2 files changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 5e7f4fac1e78..5e9aaad8c7b2 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -1037,9 +1037,9 @@ typedef struct {
->   * @FAULT_FLAG_REMOTE: The fault is not for current task/mm.
->   * @FAULT_FLAG_INSTRUCTION: The fault was during an instruction fetch.
->   * @FAULT_FLAG_INTERRUPTIBLE: The fault can be interrupted by non-fatal signals.
-> - * @FAULT_FLAG_UNSHARE: The fault is an unsharing request to unshare (and mark
-> - *                      exclusive) a possibly shared anonymous page that is
-> - *                      mapped R/O.
-> + * @FAULT_FLAG_UNSHARE: The fault is an unsharing request to break COW in a
-> + *                      COW mapping, making sure that an exclusive anon page is
-> + *                      mapped after the fault.
->   * @FAULT_FLAG_ORIG_PTE_VALID: whether the fault has vmf->orig_pte cached.
->   *                        We should only access orig_pte if this flag set.
->   *
-> @@ -1064,7 +1064,7 @@ typedef struct {
->   *
->   * The combination FAULT_FLAG_WRITE|FAULT_FLAG_UNSHARE is illegal.
->   * FAULT_FLAG_UNSHARE is ignored and treated like an ordinary read fault when
-> - * no existing R/O-mapped anonymous page is encountered.
-> + * applied to mappings that are not COW mappings.
->   */
->  enum fault_flag {
->  	FAULT_FLAG_WRITE =		1 << 0,
-> diff --git a/mm/memory.c b/mm/memory.c
-> index d47ad33c6487..56b21ab1e4d2 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3432,10 +3432,6 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
->  		}
->  		wp_page_reuse(vmf);
->  		return 0;
-> -	} else if (unshare) {
-> -		/* No anonymous page -> nothing to do. */
-> -		pte_unmap_unlock(vmf->pte, vmf->ptl);
-> -		return 0;
->  	}
->  copy:
->  	/*
 
