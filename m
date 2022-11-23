@@ -2,92 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F7E634DA5
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Nov 2022 03:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEB8634F23
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Nov 2022 05:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235093AbiKWCNw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Nov 2022 21:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33868 "EHLO
+        id S234936AbiKWEnp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Nov 2022 23:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233625AbiKWCNw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 21:13:52 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88033B9B9E
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Nov 2022 18:13:51 -0800 (PST)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NH4RL64zxzmW2r;
-        Wed, 23 Nov 2022 10:13:18 +0800 (CST)
-Received: from [10.169.59.127] (10.169.59.127) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 23 Nov 2022 10:13:49 +0800
-Subject: Re: [for-next PATCH] infiniband:cma: add a parameter for the packet
- lifetime
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-References: <20221122090206.865-1-lengchao@huawei.com>
- <Y3zX4RnA5yrZHaqV@nvidia.com>
-From:   Chao Leng <lengchao@huawei.com>
-Message-ID: <b33b0ba8-264b-340f-071d-7494c958b081@huawei.com>
-Date:   Wed, 23 Nov 2022 10:13:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        with ESMTP id S234151AbiKWEno (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Nov 2022 23:43:44 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA8BCC16D;
+        Tue, 22 Nov 2022 20:43:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C249461A51;
+        Wed, 23 Nov 2022 04:43:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 046A5C433D6;
+        Wed, 23 Nov 2022 04:43:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669178623;
+        bh=b58VdBqgq0NaqB9sgIa30VbocJ1L94i6622vlfiDO5Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a2yJvPLIRDQOqdwGNBw8OwQ/AmelXp4/WXwW68oM54bNUAEfZx9lIL1giTaBEw/bx
+         /zvTMezK9lTAFG4RueHCFWNGRmQcsYGvcEcoco6wLzE3Diq1UX8BZqdFQyEV3wFDXk
+         I6fBk42lGbJyomFe4UIXG/m3I8LwI6tXaBy1pnCOELX4j8++JV01mrLGsjX9bLcw9E
+         oPA/B8sWRHpAfOymTVYtdUeHbBEiGLNhF6WWkHij7gLnlVyrk9EXkwXuBCzGna7X/6
+         UEVMSVpWNc5aicqA86LwyS0Qnw9b/rR8RFJhZEVZaKvIwULbDBw9KwlZuINL8P9Lgo
+         iW3t5MLZL3zcw==
+Date:   Tue, 22 Nov 2022 20:43:41 -0800
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>, Peter Kosyh <pkosyh@yandex.ru>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Subject: Re: [PATCH] mlx4: use snprintf() instead of sprintf() for safety
+Message-ID: <Y32k/ZGQhNR9iM2F@x130.lan>
+References: <20221122130453.730657-1-pkosyh@yandex.ru>
+ <Y3zhL0/OItHF1R03@unreal>
+ <20221122121223.265d6d97@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Y3zX4RnA5yrZHaqV@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.169.59.127]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20221122121223.265d6d97@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2022/11/22 22:08, Jason Gunthorpe wrote:
-> On Tue, Nov 22, 2022 at 05:02:06PM +0800, Chao Leng wrote:
->> Now the default packet lifetime(CMA_IBOE_PACKET_LIFETIME) is 18.
->> That means the minimum ack timeout is 2 seconds(2^(18+1)*4us=2.097seconds).
->> The packet lifetime means the maximum transmission time of packets
->> on the network, the maximum transmission time of packets is closely
->> related to the network. 2 seconds is too long for simple lossless networks.
->> The packet lifetime should allow the user to adjust according to the
->> network situation.
->> So add a parameter for the packet lifetime.
+On 22 Nov 12:12, Jakub Kicinski wrote:
+>On Tue, 22 Nov 2022 16:48:15 +0200 Leon Romanovsky wrote:
+>> On Tue, Nov 22, 2022 at 04:04:53PM +0300, Peter Kosyh wrote:
+>> > Use snprintf() to avoid the potential buffer overflow. Although in the
+>> > current code this is hardly possible, the safety is unclean.
 >>
->> Signed-off-by: Chao Leng <lengchao@huawei.com>
->> ---
->>   drivers/infiniband/core/cma.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
->> index cc2222b85c88..8e2ff5d610e3 100644
->> --- a/drivers/infiniband/core/cma.c
->> +++ b/drivers/infiniband/core/cma.c
->> @@ -50,6 +50,10 @@ MODULE_LICENSE("Dual BSD/GPL");
->>   #define CMA_IBOE_PACKET_LIFETIME 18
->>   #define CMA_PREFERRED_ROCE_GID_TYPE IB_GID_TYPE_ROCE_UDP_ENCAP
->>   
->> +static unsigned char cma_packet_lifetime = CMA_IBOE_PACKET_LIFETIME;
->> +module_param_named(packet_lifetime, cma_packet_lifetime, byte, 0644);
->> +MODULE_PARM_DESC(packet_lifetime, "max transmission time of the packet");
-> 
-> No new module parameters
-> 
-> Maybe something in netlink would be appropriate, I'm not sure how
-> best to deal with this.
-> 
-> Really, the entire retransmit strategy in CM is not suitable for
-> ethernet networks, this is just one symptom.
-What do you think to change the CMA_IBOE_PACKET_LIFETIME to 16.
-The maximum transmission time of packets will be about 500+ms,
-I think this is long enough for RoCE networks.
-2 seconds is too long to my honest.
+>> Let's fix the tools instead. The kernel code is correct.
+>
+>I'm guessing the code is correct because port can't be a high value?
+>Otherwise, if I'm counting right, large enough port representation
+>(e.g. 99999999) could overflow the string. If that's the case - how
+>would they "fix the tool" to know the port is always a single digit?
+
++1 
+
+FWIW,
+
+Reviewed-by: Saeed Mahameed <saeed@kernel.org>
+
