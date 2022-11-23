@@ -2,120 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B15B76350C0
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Nov 2022 07:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0834C6354CA
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Nov 2022 10:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236167AbiKWG7D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Nov 2022 01:59:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
+        id S237136AbiKWJJF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Nov 2022 04:09:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236165AbiKWG7C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Nov 2022 01:59:02 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8A382BC0;
-        Tue, 22 Nov 2022 22:59:01 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S236907AbiKWJIr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Nov 2022 04:08:47 -0500
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C649515FF4;
+        Wed, 23 Nov 2022 01:08:46 -0800 (PST)
+Received: from mxct.zte.com.cn (unknown [192.168.251.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4NHFfj3khQz8QrkZ;
+        Wed, 23 Nov 2022 17:08:45 +0800 (CST)
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4431261AA5;
-        Wed, 23 Nov 2022 06:59:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAD02C433C1;
-        Wed, 23 Nov 2022 06:58:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669186740;
-        bh=zIbIy/PtmE2LjDQ6u0ycesYy6M+OQfQCW7bQkpgh7Wk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bzgzCfjQd1alk5/e+Spa+hdB0/oWpYut0+k/MsWjFCwQ7L+rdhlvDdNiPab4PBrXI
-         1HArTIHZwB4Er/kcirALZN/UcNcB/AlutbbLSHLsWt8f4fW2GH+VayFQeqoxzgU+Jj
-         +WpqJXCWUj0yZbpxtkjIm6aA3UsNsKdSpwMmsk605B+KVsldgdYgXeDEqhJJaO/cjP
-         1pnH1mFaTORk4pTX6HDFo62VluvlVE00/MmG8ylJj5b0mNC4pZo9fGZYylrfFiR7Vo
-         ji9o0JpZKxLm+OD30GBRvLjBfBYIUNnYYIxcSRH2dWn+gYMgSuQjdzxPxlqI9w9COc
-         O3kE3Uy26wQZQ==
-Date:   Wed, 23 Nov 2022 08:58:53 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ajit Khaparde <ajit.khaparde@broadcom.com>
-Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, jgg@ziepe.ca, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        michael.chan@broadcom.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH v4 0/6] Add Auxiliary driver support
-Message-ID: <Y33ErZHAsX76y34Z@unreal>
-References: <20221109184244.7032-1-ajit.khaparde@broadcom.com>
- <Y2zYPOUKgoArq7mM@unreal>
- <CACZ4nhu_2FoOTmXPuq+amRYAipusq1XcobavytN0cFK=TSE5mQ@mail.gmail.com>
- <Y3Tj/BrskSJPuTFw@unreal>
- <CACZ4nhsv4zyzANrGh90WGKORz0Su=i7+Jmsk6nWoOq4or7Y0=Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACZ4nhsv4zyzANrGh90WGKORz0Su=i7+Jmsk6nWoOq4or7Y0=Q@mail.gmail.com>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+        by mxct.zte.com.cn (FangMail) with ESMTPS id 4NHFfg1TBGz4y0vg;
+        Wed, 23 Nov 2022 17:08:43 +0800 (CST)
+Received: from xaxapp01.zte.com.cn ([10.88.40.50])
+        by mse-fl2.zte.com.cn with SMTP id 2AN98N9L063702;
+        Wed, 23 Nov 2022 17:08:23 +0800 (+08)
+        (envelope-from zhang.songyi@zte.com.cn)
+Received: from mapi (xaxapp02[null])
+        by mapi (Zmail) with MAPI id mid31;
+        Wed, 23 Nov 2022 17:08:25 +0800 (CST)
+Date:   Wed, 23 Nov 2022 17:08:25 +0800 (CST)
+X-Zmail-TransId: 2afa637de309ffffffffa0c49cde
+X-Mailer: Zmail v1.0
+Message-ID: <202211231708254077305@zte.com.cn>
+Mime-Version: 1.0
+From:   <zhang.songyi@zte.com.cn>
+To:     <yishaih@nvidia.com>
+Cc:     <jgg@ziepe.ca>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <zhang.songyi@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIFJETUEvbWx4NDogTlVMTCBjaGVjayBiZWZvcmUgZGV2X3twdXQsIGhvbGR9IGZ1bmN0aW9ucyBpcyBub3QKIG5lZWRlZA==?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl2.zte.com.cn 2AN98N9L063702
+X-Fangmail-Gw-Spam-Type: 0
+X-FangMail-Miltered: at cgslv5.04-192.168.250.137.novalocal with ID 637DE31D.001 by FangMail milter!
+X-FangMail-Envelope: 1669194525/4NHFfj3khQz8QrkZ/637DE31D.001/192.168.251.13/[192.168.251.13]/mxct.zte.com.cn/<zhang.songyi@zte.com.cn>
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 637DE31D.001/4NHFfj3khQz8QrkZ
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 07:02:45AM -0800, Ajit Khaparde wrote:
-> On Wed, Nov 16, 2022 at 5:22 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> ::snip::
-> > > > All PCI management logic and interfaces are needed to be inside eth part
-> > > > of your driver and only that part should implement SR-IOV config. Once
-> > > > user enabled SR-IOV, the PCI driver should create auxiliary devices for
-> > > > each VF. These device will have RDMA capabilities and it will trigger RDMA
-> > > > driver to bind to them.
-> > > I agree and once the PF creates the auxiliary devices for the VF, the RoCE
-> > > Vf indeed get probed and created. But the twist in bnxt_en/bnxt_re
-> > > design is that
-> > > the RoCE driver is responsible for making adjustments to the RoCE resources.
-> >
-> > You can still do these adjustments by checking type of function that
-> > called to RDMA .probe. PCI core exposes some functions to help distinguish between
-> > PF and VFs.
-> >
-> > >
-> > > So once the VF's are created and the bnxt_en driver enables SRIOV adjusts the
-> > > NIC resources for the VF,  and such, it tries to call into the bnxt_re
-> > > driver for the
-> > > same purpose.
-> >
-> > If I read code correctly, all these resources are for one PCI function.
-> >
-> > Something like this:
-> >
-> > bnxt_re_probe()
-> > {
-> >   ...
-> >         if (is_virtfn(p))
-> >                  bnxt_re_sriov_config(p);
-> >   ...
-> > }
-> I understand what you are suggesting.
-> But what I want is a way to do this in the context of the PF
-> preferably before the VFs are probed. 
+From: zhang songyi <zhang.songyi@zte.com.cn>
 
-I don't understand the last sentence. You call to this sriov_config in
-bnxt_re driver without any protection from VFs being probed,
+The call netdev_{put, hold} of dev_{put, hold} will check NULL,
+so there is no need to check before using dev_{put, hold}.
 
-> So we are trying to call the
-> bnxt_re_sriov_config in the context of handling the PF's
-> sriov_configure implementation.  Having the ulp_ops is allowing us to
-> avoid resource wastage and assumptions in the bnxt_re driver.
+Fix the following coccicheck warnings:
+/drivers/infiniband/hw/mlx4/main.c:1311:2-10: WARNING:
+WARNING  NULL check before dev_{put, hold} functions is not needed.
 
-To which resource wastage are you referring?
+/drivers/infiniband/hw/mlx4/main.c:148:2-10: WARNING:
+WARNING  NULL check before dev_{put, hold} functions is not needed.
 
-There are no differences if same limits will be in bnxt_en driver when
-RDMA bnxt device is created or in bnxt_re which will be called once RDMA
-device is created.
+/drivers/infiniband/hw/mlx4/main.c:1959:3-11: WARNING:
+WARNING  NULL check before dev_{put, hold} functions is not needed.
 
-Thanks
+/drivers/infiniband/hw/mlx4/main.c:1962:3-10: WARNING:
+WARNING  NULL check before dev_{put, hold} functions is not needed.
 
-> 
-> ::snip::
+Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
+---
+ drivers/infiniband/hw/mlx4/main.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index ba47874f90d3..dceebcd885bb 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -144,8 +144,7 @@ static struct net_device *mlx4_ib_get_netdev(struct ib_device *device,
+                        }
+                }
+        }
+-       if (dev)
+-               dev_hold(dev);
++       dev_hold(dev);
 
+        rcu_read_unlock();
+        return dev;
+@@ -1307,8 +1306,7 @@ int mlx4_ib_add_mc(struct mlx4_ib_dev *mdev, struct mlx4_ib_qp *mqp,
+
+        spin_lock_bh(&mdev->iboe.lock);
+        ndev = mdev->iboe.netdevs[mqp->port - 1];
+-       if (ndev)
+-               dev_hold(ndev);
++       dev_hold(ndev);
+        spin_unlock_bh(&mdev->iboe.lock);
+
+        if (ndev) {
+@@ -1955,11 +1953,9 @@ static int mlx4_ib_mcg_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
+        if (ge) {
+                spin_lock_bh(&mdev->iboe.lock);
+                ndev = ge->added ? mdev->iboe.netdevs[ge->port - 1] : NULL;
+-               if (ndev)
+-                       dev_hold(ndev);
++               dev_hold(ndev);
+                spin_unlock_bh(&mdev->iboe.lock);
+-               if (ndev)
+-                       dev_put(ndev);
++               dev_put(ndev);
+                list_del(&ge->list);
+                kfree(ge);
+        } else
+--
+2.15.2
