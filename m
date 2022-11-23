@@ -2,190 +2,181 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FE86357F9
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Nov 2022 10:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE183635827
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Nov 2022 10:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238158AbiKWJtM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Nov 2022 04:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46356 "EHLO
+        id S236772AbiKWJwM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Nov 2022 04:52:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238162AbiKWJsv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Nov 2022 04:48:51 -0500
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C12BD14EA;
-        Wed, 23 Nov 2022 01:45:58 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1669196756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W7UAyIb+6WzyZxThrcENP/2tVOncA3VWyaK507FBvV4=;
-        b=W2BTzxko4l5/tZr/RDsZFc4wmrSc6ocE1r7G/mRW0+AW/JQ8TbSks4VSipXeM3IltEpLSc
-        sVn2/24MllnsPvPJo4YSzOqAZijl6Kli5UTma7JGoqgLqlLREYdqoB0KFcCl0c6p2FlWR9
-        8mfo5bCtbPAJHYJwl9XkTP/039TGLMQ=
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Subject: Re: [syzbot] unregister_netdevice: waiting for DEV to become free (7)
-To:     wangyufen <wangyufen@huawei.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com>,
-        Leon Romanovsky <leon@kernel.org>, chenzhongjin@huawei.com,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>
-References: <00000000000060c7e305edbd296a@google.com>
- <CACT4Y+a=HbyJE3A_SnKm3Be-kcQytxXXF89gZ_cN1gwoAW-Zgw@mail.gmail.com>
- <Y3wwOPmH1WoRj0Uo@ziepe.ca> <ecc8b532-4e80-b7bd-3621-78cd55fd48fa@huawei.com>
-Message-ID: <2f54056f-0acf-e088-c6cc-9ffce77bbe24@linux.dev>
-Date:   Wed, 23 Nov 2022 17:45:53 +0800
+        with ESMTP id S238142AbiKWJvI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Nov 2022 04:51:08 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1879A8FF8C
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Nov 2022 01:48:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669196891; x=1700732891;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IHTTSTU+8wdRumG1pHkk7AaVXSw8dpatlNM/8RBfDWk=;
+  b=HoXhSJZFH0LfoOjbdyFh553aklFRIuGDKzhHIKwpE8fxp3keeL14CgLs
+   24rylEUAzb6I9p96MDfMIV2HkLSxsvZaFFTJKucIdf3fcyXmSQ9tGaOZA
+   pFzmE6jKVy1JUYVa/efYyVJ5+JpR/qqqf4lxGX5Ii1MCfCRRoqj/w4Sug
+   lNBxUdeXDlyfNQ2r4CnxOBeAjEiMsX9aJhUZp+FCAlRB7IhBPxkpeI8uG
+   pO2xpDcg9E6InDkZa7SxdaZaBdUQIQOW4MbISx+AsV31nIhpH2GtJkBSW
+   18mrXnO6pF5jInVD2rDJwFPPzst8k14vwwFU1L+r1TeKsWFAUps+W/7tn
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10539"; a="376173240"
+X-IronPort-AV: E=Sophos;i="5.96,187,1665471600"; 
+   d="scan'208";a="376173240"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2022 01:48:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10539"; a="730728096"
+X-IronPort-AV: E=Sophos;i="5.96,187,1665471600"; 
+   d="scan'208";a="730728096"
+Received: from lkp-server01.sh.intel.com (HELO 64a2d449c951) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Nov 2022 01:48:08 -0800
+Received: from kbuild by 64a2d449c951 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oxmMR-0002bF-2u;
+        Wed, 23 Nov 2022 09:48:07 +0000
+Date:   Wed, 23 Nov 2022 17:47:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ a115aa00b18f7b8982b8f458149632caf64a862a
+Message-ID: <637dec1e.ebvRPJ3a3Uf0/SUy%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <ecc8b532-4e80-b7bd-3621-78cd55fd48fa@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: a115aa00b18f7b8982b8f458149632caf64a862a  RDMA/hns: fix memory leak in hns_roce_alloc_mr()
 
+elapsed time: 1093m
 
-On 11/22/22 11:28 AM, wangyufen wrote:
->
-> 在 2022/11/22 10:13, Jason Gunthorpe 写道:
->> On Fri, Nov 18, 2022 at 02:28:53PM +0100, Dmitry Vyukov wrote:
->>> On Fri, 18 Nov 2022 at 12:39, syzbot
->>> <syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com> wrote:
->>>>
->>>> Hello,
->>>>
->>>> syzbot found the following issue on:
->>>>
->>>> HEAD commit:    9c8774e629a1 net: eql: Use kzalloc instead of 
->>>> kmalloc/memset
->>>> git tree:       net-next
->>>> console output: 
->>>> https://syzkaller.appspot.com/x/log.txt?x=17bf6cc8f00000
->>>> kernel config: 
->>>> https://syzkaller.appspot.com/x/.config?x=9eb259db6b1893cf
->>>> dashboard link: 
->>>> https://syzkaller.appspot.com/bug?extid=5e70d01ee8985ae62a3b
->>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU 
->>>> Binutils for Debian) 2.35.2
->>>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=1136d592f00000
->>>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=1193ae64f00000
->>>>
->>>> Bisection is inconclusive: the issue happens on the oldest tested 
->>>> release.
->>>>
->>>> bisection log: 
->>>> https://syzkaller.appspot.com/x/bisect.txt?x=167c33a2f00000
->>>> final oops: 
->>>> https://syzkaller.appspot.com/x/report.txt?x=157c33a2f00000
->>>> console output: 
->>>> https://syzkaller.appspot.com/x/log.txt?x=117c33a2f00000
->>>>
->>>> IMPORTANT: if you fix the issue, please add the following tag to 
->>>> the commit:
->>>> Reported-by: syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com
->>>>
->>>> iwpm_register_pid: Unable to send a nlmsg (client = 2)
->>>> infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
->>>> unregister_netdevice: waiting for vlan0 to become free. Usage count 
->>>> = 2
->>>
->>> +RDMA maintainers
->>>
->>> There are 4 reproducers and all contain:
->>>
->>> r0 = socket$nl_rdma(0x10, 0x3, 0x14)
->>> sendmsg$RDMA_NLDEV_CMD_NEWLINK(...)
->>>
->>> Also the preceding print looks related (a bug in the error handling
->>> path there?):
->>>
->>> infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
->>
->> I'm pretty sure it is an rxe bug
->>
->> ib_device_set_netdev() will hold the netdev until the caller destroys
->> the ib_device
->>
->> rxe calls it during rxe_register_device() because the user asked for a
->> stacked ib_device on top of the netdev
->>
->> Presumably rxe needs to have a notifier to also self destroy the rxe
->> device if the underlying net device is to be destroyed?
->>
->> Can someone from rxe check into this?
->
-> The following patch may fix the issue：
->
-> --- a/drivers/infiniband/core/cma.c
-> +++ b/drivers/infiniband/core/cma.c
-> @@ -4049,6 +4049,9 @@ int rdma_listen(struct rdma_cm_id *id, int backlog)
->         return 0;
->  err:
->         id_priv->backlog = 0;
-> +       if (id_priv->cma_dev)
-> +               cma_release_dev(id_priv);
-> +
->         /*
->          * All the failure paths that lead here will not allow the 
-> req_handler's
->          * to have run.
->
+configs tested: 99
+configs skipped: 3
 
-But it is the caller's responsibility to destroy it since commit 
-dd37d2f59eb8.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> The causes are as follows:
->
-> rdma_listen()
->   rdma_bind_addr()
->     cma_acquire_dev_by_src_ip()
->       cma_attach_to_dev()
->         _cma_attach_to_dev()
->           cma_dev_get()
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+powerpc                           allnoconfig
+arc                                 defconfig
+mips                             allyesconfig
+s390                             allmodconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+alpha                               defconfig
+s390                                defconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+s390                             allyesconfig
+x86_64                           rhel-8.3-syz
+x86_64                           rhel-8.3-kvm
+x86_64                         rhel-8.3-kunit
+x86_64                              defconfig
+i386                 randconfig-a011-20221121
+i386                 randconfig-a013-20221121
+i386                 randconfig-a012-20221121
+i386                 randconfig-a014-20221121
+i386                 randconfig-a015-20221121
+i386                 randconfig-a016-20221121
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+i386                                defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+i386                             allyesconfig
+alpha                            allyesconfig
+m68k                             allyesconfig
+sh                              ul2_defconfig
+sh                           se7780_defconfig
+m68k                                defconfig
+sh                          sdk7780_defconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+x86_64               randconfig-a011-20221121
+x86_64               randconfig-a014-20221121
+x86_64               randconfig-a012-20221121
+x86_64               randconfig-a013-20221121
+x86_64               randconfig-a016-20221121
+x86_64               randconfig-a015-20221121
+sh                   rts7751r2dplus_defconfig
+m68k                        m5307c3_defconfig
+openrisc                    or1ksim_defconfig
+s390                 randconfig-r044-20221121
+riscv                randconfig-r042-20221121
+arc                  randconfig-r043-20221120
+arc                  randconfig-r043-20221121
+i386                          randconfig-c001
+arm                                 defconfig
+arm                              allyesconfig
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+arm                           sunxi_defconfig
+sh                         ap325rxa_defconfig
+arm                          simpad_defconfig
+powerpc                  iss476-smp_defconfig
+sh                             espt_defconfig
+arc                    vdk_hs38_smp_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+loongarch                           defconfig
+loongarch                         allnoconfig
+loongarch                        allmodconfig
+arm64                            allyesconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+nios2                            allyesconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
 
-Thanks for the analysis.
+clang tested configs:
+x86_64                        randconfig-k001
+powerpc                    gamecube_defconfig
+x86_64               randconfig-a002-20221121
+x86_64               randconfig-a001-20221121
+x86_64               randconfig-a004-20221121
+x86_64               randconfig-a006-20221121
+x86_64               randconfig-a005-20221121
+x86_64               randconfig-a003-20221121
+i386                 randconfig-a001-20221121
+i386                 randconfig-a005-20221121
+i386                 randconfig-a006-20221121
+i386                 randconfig-a004-20221121
+i386                 randconfig-a003-20221121
+i386                 randconfig-a002-20221121
+powerpc                 mpc832x_rdb_defconfig
+mips                     cu1000-neo_defconfig
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
 
-And for the two callers of cma_listen_on_dev, looks they have
-different behaviors with regard to handling failure.
-
-1. cma_listen_on_all which calls both
-             list_del_init(&to_destroy->device_item)
-     and
-             rdma_destroy_id(&to_destroy->id)
-
-2. cma_add_one invokes cma_process_remove to delete to_destroy,
-cma_process_remove call both list_del_init(&id_priv->listen_item)
-and list_del_init(&id_priv->device_item), but it doesn't call
-rdma_destroy_id(&dev_id_priv->id) which is also different with
-_cma_cancel_listens.
-
-I am wondering if this is needed.
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index cc2222b85c88..48e283d1389b 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -5231,6 +5231,7 @@ static void cma_process_remove(struct cma_device 
-*cma_dev)
-                 cma_id_get(id_priv);
-                 mutex_unlock(&lock);
-
-+               rdma_destroy_id(&dev_id_priv->id);
-                 cma_send_device_removal_put(id_priv);
-
-                 mutex_lock(&lock);
-
-Thanks,
-Guoqing
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
