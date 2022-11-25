@@ -2,47 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E50637FD5
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Nov 2022 20:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFAB56381F1
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Nov 2022 01:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbiKXTxn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Nov 2022 14:53:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        id S229477AbiKYAnS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Nov 2022 19:43:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiKXTxn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Nov 2022 14:53:43 -0500
-Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399AF18B28;
-        Thu, 24 Nov 2022 11:53:40 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VVc68Ih_1669319617;
-Received: from 30.120.174.82(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VVc68Ih_1669319617)
-          by smtp.aliyun-inc.com;
-          Fri, 25 Nov 2022 03:53:38 +0800
-Message-ID: <4f6d8e70-b3f2-93cd-ae83-77ee733cf716@linux.alibaba.com>
-Date:   Fri, 25 Nov 2022 03:53:36 +0800
+        with ESMTP id S229480AbiKYAnR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Nov 2022 19:43:17 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0504B663DF
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Nov 2022 16:43:15 -0800 (PST)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NJGFw6t2hzqSfP;
+        Fri, 25 Nov 2022 08:39:16 +0800 (CST)
+Received: from [10.169.59.127] (10.169.59.127) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 25 Nov 2022 08:43:13 +0800
+Subject: Re: [for-next PATCH] infiniband:cma: add a parameter for the packet
+ lifetime
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+References: <20221122090206.865-1-lengchao@huawei.com>
+ <Y3zX4RnA5yrZHaqV@nvidia.com>
+ <b33b0ba8-264b-340f-071d-7494c958b081@huawei.com>
+ <Y355I/a/62kl0e07@nvidia.com>
+ <c581c96c-b9a4-d5e8-a8ba-d8fce93fe32d@huawei.com>
+ <Y39wCnlnAkZFDbDa@nvidia.com>
+From:   Chao Leng <lengchao@huawei.com>
+Message-ID: <a6fe3b3b-5de7-807a-6473-508a06ed47c8@huawei.com>
+Date:   Fri, 25 Nov 2022 08:43:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.1
-Subject: Re: [PATCH net-next v5 00/10] optimize the parallelism of SMC-R
- connections
+In-Reply-To: <Y39wCnlnAkZFDbDa@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-To:     Jan Karcher <jaka@linux.ibm.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1669218890-115854-1-git-send-email-alibuda@linux.alibaba.com>
- <c98a8f04-c696-c9e0-4d7e-bc31109a0e04@linux.alibaba.com>
- <352b1e15-3c6d-a398-3fe6-0f438e0e8406@linux.ibm.com>
- <1f87a8c2-7a47-119a-1141-250d05678546@linux.alibaba.com>
- <11182feb-0f41-e9a4-e866-8f917c745a48@linux.ibm.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <11182feb-0f41-e9a4-e866-8f917c745a48@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.169.59.127]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -51,97 +56,72 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 11/24/22 9:30 PM, Jan Karcher wrote:
-> 
-> 
-> On 24/11/2022 09:53, D. Wythe wrote:
+On 2022/11/24 21:22, Jason Gunthorpe wrote:
+> On Thu, Nov 24, 2022 at 04:19:35PM +0800, Chao Leng wrote:
 >>
 >>
->> On 11/24/22 4:33 PM, Jan Karcher wrote:
->>>
->>>
->>> On 24/11/2022 06:55, D. Wythe wrote:
+>> On 2022/11/24 3:48, Jason Gunthorpe wrote:
+>>> On Wed, Nov 23, 2022 at 10:13:48AM +0800, Chao Leng wrote:
 >>>>
 >>>>
->>>> On 11/23/22 11:54 PM, D.Wythe wrote:
->>>>> From: "D.Wythe" <alibuda@linux.alibaba.com>
+>>>> On 2022/11/22 22:08, Jason Gunthorpe wrote:
+>>>>> On Tue, Nov 22, 2022 at 05:02:06PM +0800, Chao Leng wrote:
+>>>>>> Now the default packet lifetime(CMA_IBOE_PACKET_LIFETIME) is 18.
+>>>>>> That means the minimum ack timeout is 2 seconds(2^(18+1)*4us=2.097seconds).
+>>>>>> The packet lifetime means the maximum transmission time of packets
+>>>>>> on the network, the maximum transmission time of packets is closely
+>>>>>> related to the network. 2 seconds is too long for simple lossless networks.
+>>>>>> The packet lifetime should allow the user to adjust according to the
+>>>>>> network situation.
+>>>>>> So add a parameter for the packet lifetime.
+>>>>>>
+>>>>>> Signed-off-by: Chao Leng <lengchao@huawei.com>
+>>>>>> ---
+>>>>>>     drivers/infiniband/core/cma.c | 6 +++++-
+>>>>>>     1 file changed, 5 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+>>>>>> index cc2222b85c88..8e2ff5d610e3 100644
+>>>>>> --- a/drivers/infiniband/core/cma.c
+>>>>>> +++ b/drivers/infiniband/core/cma.c
+>>>>>> @@ -50,6 +50,10 @@ MODULE_LICENSE("Dual BSD/GPL");
+>>>>>>     #define CMA_IBOE_PACKET_LIFETIME 18
+>>>>>>     #define CMA_PREFERRED_ROCE_GID_TYPE IB_GID_TYPE_ROCE_UDP_ENCAP
+>>>>>> +static unsigned char cma_packet_lifetime = CMA_IBOE_PACKET_LIFETIME;
+>>>>>> +module_param_named(packet_lifetime, cma_packet_lifetime, byte, 0644);
+>>>>>> +MODULE_PARM_DESC(packet_lifetime, "max transmission time of the packet");
 >>>>>
->>>>> This patch set attempts to optimize the parallelism of SMC-R connections,
->>>>> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
->>>>> occur after thoses optimization.
+>>>>> No new module parameters
 >>>>>
->>>>
->>>>> D. Wythe (10):
->>>>>    net/smc: Fix potential panic dues to unprotected
->>>>>      smc_llc_srv_add_link()
->>>>>    net/smc: fix application data exception
->>>>>    net/smc: fix SMC_CLC_DECL_ERR_REGRMB without smc_server_lgr_pending
->>>>>    net/smc: remove locks smc_client_lgr_pending and
->>>>>      smc_server_lgr_pending
->>>>>    net/smc: allow confirm/delete rkey response deliver multiplex
->>>>>    net/smc: make SMC_LLC_FLOW_RKEY run concurrently
->>>>>    net/smc: llc_conf_mutex refactor, replace it with rw_semaphore
->>>>>    net/smc: use read semaphores to reduce unnecessary blocking in
->>>>>      smc_buf_create() & smcr_buf_unuse()
->>>>>    net/smc: reduce unnecessary blocking in smcr_lgr_reg_rmbs()
->>>>>    net/smc: replace mutex rmbs_lock and sndbufs_lock with rw_semaphore
+>>>>> Maybe something in netlink would be appropriate, I'm not sure how
+>>>>> best to deal with this.
 >>>>>
->>>>>   net/smc/af_smc.c   |  74 ++++----
->>>>>   net/smc/smc_core.c | 541 +++++++++++++++++++++++++++++++++++++++++++++++------
->>>>>   net/smc/smc_core.h |  53 +++++-
->>>>>   net/smc/smc_llc.c  | 285 ++++++++++++++++++++--------
->>>>>   net/smc/smc_llc.h  |   6 +
->>>>>   net/smc/smc_wr.c   |  10 -
->>>>>   net/smc/smc_wr.h   |  10 +
->>>>>   7 files changed, 801 insertions(+), 178 deletions(-)
->>>>>
->>>>
->>>> Hi Jan and Wenjia,
->>>>
->>>> I'm wondering whether the bug fix patches need to be put together in this series. I'm considering
->>>> sending these bug fix patches separately now, which may be better, in case that our patch
->>>> might have other problems. These bug fix patches are mainly independent, even without my other
->>>> patches, they may be triggered theoretically.
+>>>>> Really, the entire retransmit strategy in CM is not suitable for
+>>>>> ethernet networks, this is just one symptom.
+>>>> What do you think to change the CMA_IBOE_PACKET_LIFETIME to 16.
+>>>> The maximum transmission time of packets will be about 500+ms,
+>>>> I think this is long enough for RoCE networks.
+>>>> 2 seconds is too long to my honest.
 >>>
->>> Hi D.
+>>> I don't have an informed opinion on this. I agree that 2s is too long though
 >>>
->>> Wenjia and i just talked about that. For us it would be better separating the fixes and the new logic.
->>> If the fixes are independent feel free to post them to net.
->>
->>
->> Got it, I will remove those bug fix patches in the next series and send them separately.
->> And thanks a lot for your test, no matter what the final test results are, I will send a new series
->> to separate them after your test finished.
+>>> Do we have any information to back up what this should be?
+>> Assume the network is a clos topology with three layers, every packet
+>> will pass through five hops of switches. Assume the buffer of every
+>> switch is 128MB and the port transmission rate is 25 Gbit/s,
+>> the maximum transmission time of the packet is 200ms(128MB*5/25Gbit/s).
+>> Add double redundancy, it is less than 500ms.
 > 
-> Hi D.,
+> We also have to worry about HCA processing time which is driven by CPU
+> loading more than anything
+The ack timeout retransmission time is affected by the following two factors:
+one is packet life time, another is the HCA processing time.
+The HCA processing time is already considered, it is covered by the HCA ack delay
+which controlled by the HCA driver.
 > 
-> I have some troubles applying your patches.
+>> So change the CMA_IBOE_PACKET_LIFETIME to 16,
+>> the maximum transmission time of the packet will be about 500+ms,
+>> it is long enough.
 > 
->      error: sha1 information is lacking or useless (net/smc/smc_core.c).
->      error: could not build fake ancestor
->      Patch failed at 0001 optimize the parallelism of SMC-R connections
-> 
-> Before merging them by hand could you please send the v6 with the fixes separated and verify that you are basing on the latest net / net-next tree?
-> 
-> That would make it easier for us to test them.
-> 
-> Thank you
-> - Jan
-> 
-
-Hi Jan,
-
-It's quite weird, it seems that my patch did based on the latest net-next tree.
-And I try apply it the latest net tree, it's seems work to me too. Maybe there
-is something wrong with the mirror I use. Can you show me the conflict described
-in the .rej file？
-
-Thanks.
-D. Wythe
-
-
-
-
-
-
-
+> That makes sense to me, put it in a commit message and send a patch
+Ok, thank you very much.
