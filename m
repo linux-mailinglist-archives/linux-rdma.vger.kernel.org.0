@@ -2,165 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1904E6394E4
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Nov 2022 10:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CC663954D
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Nov 2022 11:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbiKZJIf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 26 Nov 2022 04:08:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36898 "EHLO
+        id S229597AbiKZKaL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 26 Nov 2022 05:30:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiKZJIf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 26 Nov 2022 04:08:35 -0500
-Received: from out199-1.us.a.mail.aliyun.com (out199-1.us.a.mail.aliyun.com [47.90.199.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFC02B1B2;
-        Sat, 26 Nov 2022 01:08:32 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VViIOpl_1669453707;
-Received: from 30.236.51.231(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VViIOpl_1669453707)
-          by smtp.aliyun-inc.com;
-          Sat, 26 Nov 2022 17:08:28 +0800
-Message-ID: <029f80b3-1392-b307-ddbd-2db536431a23@linux.alibaba.com>
-Date:   Sat, 26 Nov 2022 17:08:27 +0800
+        with ESMTP id S229495AbiKZKaJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 26 Nov 2022 05:30:09 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B162A286E0;
+        Sat, 26 Nov 2022 02:30:07 -0800 (PST)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NK7Db3pjfzpW8l;
+        Sat, 26 Nov 2022 18:26:07 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 26 Nov 2022 18:30:05 +0800
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 26 Nov 2022 18:30:05 +0800
+From:   Haoyue Xu <xuhaoyue1@hisilicon.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <xuhaoyue1@hisilicon.com>
+Subject: [PATCH for-next 0/6] Bugfix for GID and PBL page
+Date:   Sat, 26 Nov 2022 18:29:05 +0800
+Message-ID: <20221126102911.2921820-1-xuhaoyue1@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.4.1
-Subject: Re: [PATCH net-next v5 00/10] optimize the parallelism of SMC-R
- connections
-To:     Jan Karcher <jaka@linux.ibm.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1669218890-115854-1-git-send-email-alibuda@linux.alibaba.com>
- <c98a8f04-c696-c9e0-4d7e-bc31109a0e04@linux.alibaba.com>
- <352b1e15-3c6d-a398-3fe6-0f438e0e8406@linux.ibm.com>
- <1f87a8c2-7a47-119a-1141-250d05678546@linux.alibaba.com>
- <11182feb-0f41-e9a4-e866-8f917c745a48@linux.ibm.com>
- <4f6d8e70-b3f2-93cd-ae83-77ee733cf716@linux.alibaba.com>
- <22f468cb-106b-1797-0496-e9108773ab9d@linux.ibm.com>
-Content-Language: en-US
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <22f468cb-106b-1797-0496-e9108773ab9d@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This patch set mainly fixes the GID problem caused by free mr.
+The second and third patches fix the error on the PBL.
+The last three patches fix minor errors found while running
+the rdma-core tests.
 
+1.#1: The GID problem caused by free mr
+2.#2-#3: Fix the error on the PBL
+3.#4-#5: Two minor return errors
+4.#6: The default caps error
 
-On 11/25/22 2:54 PM, Jan Karcher wrote:
-> 
-> 
-> On 24/11/2022 20:53, D. Wythe wrote:
->>
->>
->> On 11/24/22 9:30 PM, Jan Karcher wrote:
->>>
->>>
->>> On 24/11/2022 09:53, D. Wythe wrote:
->>>>
->>>>
->>>> On 11/24/22 4:33 PM, Jan Karcher wrote:
->>>>>
->>>>>
->>>>> On 24/11/2022 06:55, D. Wythe wrote:
->>>>>>
->>>>>>
->>>>>> On 11/23/22 11:54 PM, D.Wythe wrote:
->>>>>>> From: "D.Wythe" <alibuda@linux.alibaba.com>
->>>>>>>
->>>>>>> This patch set attempts to optimize the parallelism of SMC-R connections,
->>>>>>> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
->>>>>>> occur after thoses optimization.
->>>>>>>
->>>>>>
->>>>>>> D. Wythe (10):
->>>>>>>    net/smc: Fix potential panic dues to unprotected
->>>>>>>      smc_llc_srv_add_link()
->>>>>>>    net/smc: fix application data exception
->>>>>>>    net/smc: fix SMC_CLC_DECL_ERR_REGRMB without smc_server_lgr_pending
->>>>>>>    net/smc: remove locks smc_client_lgr_pending and
->>>>>>>      smc_server_lgr_pending
->>>>>>>    net/smc: allow confirm/delete rkey response deliver multiplex
->>>>>>>    net/smc: make SMC_LLC_FLOW_RKEY run concurrently
->>>>>>>    net/smc: llc_conf_mutex refactor, replace it with rw_semaphore
->>>>>>>    net/smc: use read semaphores to reduce unnecessary blocking in
->>>>>>>      smc_buf_create() & smcr_buf_unuse()
->>>>>>>    net/smc: reduce unnecessary blocking in smcr_lgr_reg_rmbs()
->>>>>>>    net/smc: replace mutex rmbs_lock and sndbufs_lock with rw_semaphore
->>>>>>>
->>>>>>>   net/smc/af_smc.c   |  74 ++++----
->>>>>>>   net/smc/smc_core.c | 541 +++++++++++++++++++++++++++++++++++++++++++++++------
->>>>>>>   net/smc/smc_core.h |  53 +++++-
->>>>>>>   net/smc/smc_llc.c  | 285 ++++++++++++++++++++--------
->>>>>>>   net/smc/smc_llc.h  |   6 +
->>>>>>>   net/smc/smc_wr.c   |  10 -
->>>>>>>   net/smc/smc_wr.h   |  10 +
->>>>>>>   7 files changed, 801 insertions(+), 178 deletions(-)
->>>>>>>
->>>>>>
->>>>>> Hi Jan and Wenjia,
->>>>>>
->>>>>> I'm wondering whether the bug fix patches need to be put together in this series. I'm considering
->>>>>> sending these bug fix patches separately now, which may be better, in case that our patch
->>>>>> might have other problems. These bug fix patches are mainly independent, even without my other
->>>>>> patches, they may be triggered theoretically.
->>>>>
->>>>> Hi D.
->>>>>
->>>>> Wenjia and i just talked about that. For us it would be better separating the fixes and the new logic.
->>>>> If the fixes are independent feel free to post them to net.
->>>>
->>>>
->>>> Got it, I will remove those bug fix patches in the next series and send them separately.
->>>> And thanks a lot for your test, no matter what the final test results are, I will send a new series
->>>> to separate them after your test finished.
->>>
->>> Hi D.,
->>>
->>> I have some troubles applying your patches.
->>>
->>>      error: sha1 information is lacking or useless (net/smc/smc_core.c).
->>>      error: could not build fake ancestor
->>>      Patch failed at 0001 optimize the parallelism of SMC-R connections
->>>
->>> Before merging them by hand could you please send the v6 with the fixes separated and verify that you are basing on the latest net / net-next tree?
->>>
->>> That would make it easier for us to test them.
->>>
->>> Thank you
->>> - Jan
->>>
->>
->> Hi Jan,
->>
->> It's quite weird, it seems that my patch did based on the latest net-next tree.
->> And I try apply it the latest net tree, it's seems work to me too. Maybe there
->> is something wrong with the mirror I use. Can you show me the conflict described
->> in the .rej file？
-> 
-> Hi D.,
-> 
-> sorry for the delayed reply:
-> I just re-tried it with path instead of git am and i think i messed it up yesterday.
-> Mea culpa. With patch your changes *can* be applied to the latest net-next.
-> I'm very sorry for the inconvenience. Could you still please send the v6. That way i can verify the fixes separate and we can - if the tests succeed - already apply them.
-> 
-> Sorry and thank you
-> - Jan
+Chengchang Tang (5):
+  RDMA/hns: Fix AH attr queried by query_qp
+  RDMA/hns: Fix PBL page MTR find
+  RDMA/hns: Fix page size cap from firmwall
+  RDMA/hns: Fix error code of CMD
+  RDMA/hns: Fix XRC caps on HIP08
 
+Yixing Liu (1):
+  RDMA/hns: Fix the gid problem caused by free mr
 
-Hi Jan,
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 214 ++++++++++++++++-----
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  11 +-
+ 2 files changed, 179 insertions(+), 46 deletions(-)
 
-I have sent the v6 with the fixes patches separated, if you have any suggestion or
-advise, please let us know.
-
-Thanks.
-D. Wythe
-
+-- 
+2.30.0
 
