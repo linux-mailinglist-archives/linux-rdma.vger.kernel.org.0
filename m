@@ -2,153 +2,187 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A73463A1FC
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Nov 2022 08:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA3E63A296
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Nov 2022 09:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbiK1He3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Nov 2022 02:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40178 "EHLO
+        id S230090AbiK1IRP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Nov 2022 03:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbiK1He2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Nov 2022 02:34:28 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F47E0CD
-        for <linux-rdma@vger.kernel.org>; Sun, 27 Nov 2022 23:34:27 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id v1so15284997wrt.11
-        for <linux-rdma@vger.kernel.org>; Sun, 27 Nov 2022 23:34:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MHHiTWSbIumd9i/1CR+3bFaBxhyp1paPVyGE0awhPoo=;
-        b=WjiFcw5IWGGwTGan8DSUvyWpR2xfdTwoNa+Pk4ciYbezQZp8EL/4VrZ4HuWJscuOzZ
-         oG9sNSEQK2Dtx61EWvpRVhHyJY/vvxnEAMYExw/I4MckpnDbFHhFRfRY6eTDR1qepj5e
-         GhUB7Yw6r96wlJ6BMJuN8IVkQEIEaRWSXOtqGbrm12RUv/Uir68AGH0SY0z001PgLRk7
-         nbIt5DtPMSXsSGT7Tz3Rou+vDjQcZpYv9eBnL1Bbdy96zA1oKwa9lxKMfKREyYdyttg7
-         IC/hlnqTTm00jfwo4g4F6ECjCzdSu2PyEijyyLxcxPionDBOHkaX0h+IMD/xoFRgnaHX
-         IXUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MHHiTWSbIumd9i/1CR+3bFaBxhyp1paPVyGE0awhPoo=;
-        b=LSdZuY4er5CprrPnWjwvxOYlO71sXvnKV5/9Y5ywbl3SnJ0A8kZI+PO/4nyqAA0Q/4
-         ISbHBneHKsjgvs6H49AN9CR4Iznb9m4n6RoE7ZKkB3lvtM88vWC5WIu9bgmqWYfVxjLD
-         5hKBSgFKh7LPuiPDvwEV1HwuK4zdvdiHbpXZrmU1k54slRnqcvmV+Jcb+kCgR4Z6rlka
-         8DoopL8WCup4EyEfhr7/2h+HlhlFCAGRtRQDyU3yDpmYOyGcUN+PwVklwHgOzSReh3vs
-         ZRSafDT5EX3FrPgU41GxfTJT1yRuPiEvEjWmydGx6vpox/8gs1pBOIiDu2IWBdm7Gh1a
-         bgFQ==
-X-Gm-Message-State: ANoB5pmWHUYzmuotWcHRxwTRNzJ/322muxtZWY/djj3CX0AAYGh0tVGs
-        yLk7ivUt3Xz/NjzQGVQkGUY=
-X-Google-Smtp-Source: AA0mqf7W+493hXStlEtL+E2D169+dS/PWwof5HYgQLihqraI0836NVXR43/C3cZJBjOyoJcpQ+eAGA==
-X-Received: by 2002:adf:dd42:0:b0:242:127d:406d with SMTP id u2-20020adfdd42000000b00242127d406dmr3691851wrm.328.1669620866288;
-        Sun, 27 Nov 2022 23:34:26 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id q6-20020a1c4306000000b003cf774c31a0sm17337771wma.16.2022.11.27.23.34.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Nov 2022 23:34:25 -0800 (PST)
-Date:   Mon, 28 Nov 2022 10:34:17 +0300
-From:   Dan Carpenter <error27@gmail.com>
-To:     "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "Latif, Faisal" <faisal.latif@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [bug report] iwpm: crash fix for large connections test
-Message-ID: <Y4RkeS9mlTl9uBnO@kadam>
-References: <Y3ORbHXv5M8X8kqN@kili>
- <Y3X91h5Fla+4mICY@unreal>
- <PH7PR11MB640377FDDE4E242D31DE063E8B099@PH7PR11MB6403.namprd11.prod.outlook.com>
+        with ESMTP id S229629AbiK1IRN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Nov 2022 03:17:13 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F5D5FC2;
+        Mon, 28 Nov 2022 00:17:11 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7B7ABB80B3A;
+        Mon, 28 Nov 2022 08:17:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF774C433D6;
+        Mon, 28 Nov 2022 08:17:01 +0000 (UTC)
+Message-ID: <08b65ac6-6786-1080-18f8-d2be109c85fc@xs4all.nl>
+Date:   Mon, 28 Nov 2022 09:17:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH7PR11MB640377FDDE4E242D31DE063E8B099@PH7PR11MB6403.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Content-Language: en-US
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20221116102659.70287-1-david@redhat.com>
+ <20221116102659.70287-17-david@redhat.com>
+ <81fb0fa3-2e06-b765-56ac-a7d981194e59@redhat.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH mm-unstable v1 16/20] mm/frame-vector: remove FOLL_FORCE
+ usage
+In-Reply-To: <81fb0fa3-2e06-b765-56ac-a7d981194e59@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-So the background here is that Smatch sees this:
+Hi David,
 
-	kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
+On 27/11/2022 11:35, David Hildenbrand wrote:
+> On 16.11.22 11:26, David Hildenbrand wrote:
+>> FOLL_FORCE is really only for ptrace access. According to commit
+>> 707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are always
+>> writable"), get_vaddr_frames() currently pins all pages writable as a
+>> workaround for issues with read-only buffers.
+>>
+>> FOLL_FORCE, however, seems to be a legacy leftover as it predates
+>> commit 707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are
+>> always writable"). Let's just remove it.
+>>
+>> Once the read-only buffer issue has been resolved, FOLL_WRITE could
+>> again be set depending on the DMA direction.
+>>
+>> Cc: Hans Verkuil <hverkuil@xs4all.nl>
+>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+>> Cc: Tomasz Figa <tfiga@chromium.org>
+>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+>> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>   drivers/media/common/videobuf2/frame_vector.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+>> index 542dde9d2609..062e98148c53 100644
+>> --- a/drivers/media/common/videobuf2/frame_vector.c
+>> +++ b/drivers/media/common/videobuf2/frame_vector.c
+>> @@ -50,7 +50,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>>       start = untagged_addr(start);
+>>         ret = pin_user_pages_fast(start, nr_frames,
+>> -                  FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+>> +                  FOLL_WRITE | FOLL_LONGTERM,
+>>                     (struct page **)(vec->ptrs));
+>>       if (ret > 0) {
+>>           vec->got_ref = true;
+> 
+> 
+> Hi Andrew,
+> 
+> see the discussion at [1] regarding a conflict and how to proceed with
+> upstreaming. The conflict would be easy to resolve, however, also
+> the patch description doesn't make sense anymore with [1].
 
-and correctly says "if we call iwpm_free_nlmsg_request() then
-dereferencing nlmsg_request is a use after free".  However, the code
-is holding two references at this point so it will never call
-iwpm_free_nlmsg_request().
+Might it be easier and less confusing if you post a v2 of this series
+with my patch first? That way it is clear that 1) my patch has to come
+first, and 2) that it is part of a single series and should be merged
+by the mm subsystem.
 
-Smatch already checks to see if we are holding two references, but it
-doesn't parse this code correctly.  Smatch could be fixed, but there are
-other places with similar warnings that are more difficult to fix.
+Less chances of things going wrong that way.
 
-What we could do is create a kref_no_release() function that just calls
-WARN().  This would silence the warning and, I think, this would make
-the code more readable.
+Just mention in the v2 cover letter that the first patch was added to
+make it easy to backport that fix without being hampered by merge
+conflicts if it was added after your frame_vector.c patch.
 
-What do other people think?
+Regards,
 
-regards,
-dan carpenter
+	Hans
 
-diff --git a/include/linux/kref.h b/include/linux/kref.h
-index d32e21a2538c..f40089f61aa6 100644
---- a/include/linux/kref.h
-+++ b/include/linux/kref.h
-@@ -45,6 +45,11 @@ static inline void kref_get(struct kref *kref)
- 	refcount_inc(&kref->refcount);
- }
- 
-+static inline void kref_no_release(struct kref *kref)
-+{
-+	WARN(1, "Unexpected kref release");
-+}
-+
- /**
-  * kref_put - decrement refcount for object.
-  * @kref: object.
-diff --git a/drivers/infiniband/core/iwpm_msg.c b/drivers/infiniband/core/iwpm_msg.c
-index 3c9a9869212b..1acb96bfaf9c 100644
---- a/drivers/infiniband/core/iwpm_msg.c
-+++ b/drivers/infiniband/core/iwpm_msg.c
-@@ -432,7 +432,7 @@ int iwpm_register_pid_cb(struct sk_buff *skb, struct netlink_callback *cb)
- register_pid_response_exit:
- 	nlmsg_request->request_done = 1;
- 	/* always for found nlmsg_request */
--	kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
-+	kref_put(&nlmsg_request->kref, kref_no_release);
- 	barrier();
- 	up(&nlmsg_request->sem);
- 	return 0;
-@@ -504,7 +504,7 @@ int iwpm_add_mapping_cb(struct sk_buff *skb, struct netlink_callback *cb)
- add_mapping_response_exit:
- 	nlmsg_request->request_done = 1;
- 	/* always for found request */
--	kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
-+	kref_put(&nlmsg_request->kref, kref_no_release);
- 	barrier();
- 	up(&nlmsg_request->sem);
- 	return 0;
-@@ -602,7 +602,7 @@ int iwpm_add_and_query_mapping_cb(struct sk_buff *skb,
- query_mapping_response_exit:
- 	nlmsg_request->request_done = 1;
- 	/* always for found request */
--	kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
-+	kref_put(&nlmsg_request->kref, kref_no_release);
- 	barrier();
- 	up(&nlmsg_request->sem);
- 	return 0;
-@@ -801,7 +801,7 @@ int iwpm_mapping_error_cb(struct sk_buff *skb, struct netlink_callback *cb)
- 	nlmsg_request->err_code = err_code;
- 	nlmsg_request->request_done = 1;
- 	/* always for found request */
--	kref_put(&nlmsg_request->kref, iwpm_free_nlmsg_request);
-+	kref_put(&nlmsg_request->kref, kref_no_release);
- 	barrier();
- 	up(&nlmsg_request->sem);
- 	return 0;
+> 
+> 
+> On top of mm-unstable, reverting this patch and applying [1] gives me
+> an updated patch:
+> 
+> 
+> From 1e66c25f1467c1f1e5f275312f2c6df29308d4df Mon Sep 17 00:00:00 2001
+> From: David Hildenbrand <david@redhat.com>
+> Date: Wed, 16 Nov 2022 11:26:55 +0100
+> Subject: [PATCH] mm/frame-vector: remove FOLL_FORCE usage
+> 
+> GUP now supports reliable R/O long-term pinning in COW mappings, such
+> that we break COW early. MAP_SHARED VMAs only use the shared zeropage so
+> far in one corner case (DAXFS file with holes), which can be ignored
+> because GUP does not support long-term pinning in fsdax (see
+> check_vma_flags()).
+> 
+> Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
+> for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
+> using FOLL_FORCE, which is really only for ptrace access.
+> 
+> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Cc: Hans Verkuil <hverkuil@xs4all.nl>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Tomasz Figa <tfiga@chromium.org>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+> index aad72640f055..8606fdacf5b8 100644
+> --- a/drivers/media/common/videobuf2/frame_vector.c
+> +++ b/drivers/media/common/videobuf2/frame_vector.c
+> @@ -41,7 +41,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames, bool write,
+>      int ret_pin_user_pages_fast = 0;
+>      int ret = 0;
+>      int err;
+> -    unsigned int gup_flags = FOLL_FORCE | FOLL_LONGTERM;
+> +    unsigned int gup_flags = FOLL_LONGTERM;
+>  
+>      if (nr_frames == 0)
+>          return 0;
+
