@@ -2,122 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8FF63A680
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Nov 2022 11:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29ED263A750
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Nov 2022 12:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbiK1K6q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Nov 2022 05:58:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
+        id S231152AbiK1Log (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Nov 2022 06:44:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbiK1K6p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Nov 2022 05:58:45 -0500
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915B5B84F;
-        Mon, 28 Nov 2022 02:58:43 -0800 (PST)
-Received: from mxct.zte.com.cn (unknown [192.168.251.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4NLMsF620Zz8QrkZ;
-        Mon, 28 Nov 2022 18:58:41 +0800 (CST)
-Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+        with ESMTP id S230514AbiK1Lo2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Nov 2022 06:44:28 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAF015FE7
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Nov 2022 03:44:26 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mxct.zte.com.cn (FangMail) with ESMTPS id 4NLMsC1fcRz4y0tv;
-        Mon, 28 Nov 2022 18:58:39 +0800 (CST)
-Received: from xaxapp01.zte.com.cn ([10.88.40.50])
-        by mse-fl2.zte.com.cn with SMTP id 2ASAwWDJ034165;
-        Mon, 28 Nov 2022 18:58:32 +0800 (+08)
-        (envelope-from zhang.songyi@zte.com.cn)
-Received: from mapi (xaxapp02[null])
-        by mapi (Zmail) with MAPI id mid31;
-        Mon, 28 Nov 2022 18:58:35 +0800 (CST)
-Date:   Mon, 28 Nov 2022 18:58:35 +0800 (CST)
-X-Zmail-TransId: 2afa6384945b07c86c35
-X-Mailer: Zmail v1.0
-Message-ID: <202211281858353531369@zte.com.cn>
-Mime-Version: 1.0
-From:   <zhang.songyi@zte.com.cn>
-To:     <leon@kernel.org>, <yishaih@nvidia.com>
-Cc:     <gg@ziepe.ca>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <zhang.songyi@zte.com.cn>
-Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIFJETUEvbWx4NDogTlVMTCBjaGVjayBiZWZvcmUgZGV2X3twdXQsIGhvbGR9IGZ1bmN0aW9ucyBpcyBub3QKIG5lZWRlZA==?=
-Content-Type: text/plain;
-        charset="UTF-8"
-X-MAIL: mse-fl2.zte.com.cn 2ASAwWDJ034165
-X-Fangmail-Gw-Spam-Type: 0
-X-FangMail-Miltered: at cgslv5.04-192.168.250.137.novalocal with ID 63849461.000 by FangMail milter!
-X-FangMail-Envelope: 1669633121/4NLMsF620Zz8QrkZ/63849461.000/192.168.251.13/[192.168.251.13]/mxct.zte.com.cn/<zhang.songyi@zte.com.cn>
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 63849461.000/4NLMsF620Zz8QrkZ
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+        by ams.source.kernel.org (Postfix) with ESMTPS id 33D20B80ABE
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Nov 2022 11:44:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4686FC433D6;
+        Mon, 28 Nov 2022 11:44:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669635863;
+        bh=OYyIaHMB+MkJwmO9p0WDvZzYEVguD+VMEKB4JzVtpIQ=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=BHbn28U7rc3gtP9898isBeqfLON0WdKUdN9RcypEPIwOIolzjj0M2qRbS/bGAJZwn
+         pDL4WkSOai1l0lhHAfMg3ePn6f9fHWUbz8g54LRJwe1UnoCmISTPlAOQ9R8H/gb6gN
+         mEalizLpWooPvsJ83gBOQ/lGwMZ6dj1OzVG6TOCQ731MUwMhmECyhY4pW+ZHAqIt+S
+         33kVPvUTAWi2DXC9251o9ukeY22C+yjZAUfWWQVc7UBhD/UmiDYFdaJtm+kGd0jnGo
+         8ticLzF8TZWC9L48GbEchKv6FUpEsuiE4SfepyBVhouBuVegnvt/qrnss/uEPnN7z8
+         4N3W78VH1hvjA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     linux-rdma@vger.kernel.org, markz@mellanox.com, error27@gmail.com,
+        Yuan Can <yuancan@huawei.com>, majd@mellanox.com, jgg@ziepe.ca,
+        mgurtovoy@nvidia.com, chenzhongjin@huawei.com
+In-Reply-To: <20221126043410.85632-1-yuancan@huawei.com>
+References: <20221126043410.85632-1-yuancan@huawei.com>
+Subject: Re: [PATCH] RDMA/nldev: Add checks for nla_nest_start() in fill_stat_counter_qps()
+Message-Id: <166963585886.603559.6551564096488151896.b4-ty@kernel.org>
+Date:   Mon, 28 Nov 2022 13:44:18 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.11.0-dev-87e0e
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: zhang songyi <zhang.songyi@zte.com.cn>
+On Sat, 26 Nov 2022 04:34:10 +0000, Yuan Can wrote:
+> As the nla_nest_start() may fail with NULL returned, the return value needs
+> to be checked.
+> 
+> 
 
-The call netdev_{put, hold} of dev_{put, hold} will check NULL,
-so there is no need to check before using dev_{put, hold}.
+Applied, thanks!
 
-Fix the following coccicheck warnings:
-/drivers/infiniband/hw/mlx4/main.c:1311:2-10: WARNING:
-WARNING  NULL check before dev_{put, hold} functions is not needed.
+[1/1] RDMA/nldev: Add checks for nla_nest_start() in fill_stat_counter_qps()
+      https://git.kernel.org/rdma/rdma/c/ea5ef136e215fd
 
-/drivers/infiniband/hw/mlx4/main.c:148:2-10: WARNING:
-WARNING  NULL check before dev_{put, hold} functions is not needed.
-
-/drivers/infiniband/hw/mlx4/main.c:1959:3-11: WARNING:
-WARNING  NULL check before dev_{put, hold} functions is not needed.
-
-/drivers/infiniband/hw/mlx4/main.c:1962:3-10: WARNING:
-WARNING  NULL check before dev_{put, hold} functions is not needed.
-
-Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
----
- drivers/infiniband/hw/mlx4/main.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index ba47874f90d3..dceebcd885bb 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -144,8 +144,7 @@ static struct net_device *mlx4_ib_get_netdev(struct ib_device *device,
-                        }
-                }
-        }
--       if (dev)
--               dev_hold(dev);
-+       dev_hold(dev);
-
-        rcu_read_unlock();
-        return dev;
-@@ -1307,8 +1306,7 @@ int mlx4_ib_add_mc(struct mlx4_ib_dev *mdev, struct mlx4_ib_qp *mqp,
-
-        spin_lock_bh(&mdev->iboe.lock);
-        ndev = mdev->iboe.netdevs[mqp->port - 1];
--       if (ndev)
--               dev_hold(ndev);
-+       dev_hold(ndev);
-        spin_unlock_bh(&mdev->iboe.lock);
-
-        if (ndev) {
-@@ -1955,11 +1953,9 @@ static int mlx4_ib_mcg_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
-        if (ge) {
-                spin_lock_bh(&mdev->iboe.lock);
-                ndev = ge->added ? mdev->iboe.netdevs[ge->port - 1] : NULL;
--               if (ndev)
--                       dev_hold(ndev);
-+               dev_hold(ndev);
-                spin_unlock_bh(&mdev->iboe.lock);
--               if (ndev)
--                       dev_put(ndev);
-+               dev_put(ndev);
-                list_del(&ge->list);
-                kfree(ge);
-        } else
---
-2.15.2
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
