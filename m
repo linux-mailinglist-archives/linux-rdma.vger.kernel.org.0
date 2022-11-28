@@ -2,94 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3811D63A779
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Nov 2022 12:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B556063A796
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Nov 2022 13:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbiK1L6m (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Nov 2022 06:58:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34398 "EHLO
+        id S230040AbiK1MA6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Nov 2022 07:00:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbiK1L6l (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Nov 2022 06:58:41 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CF610FD1;
-        Mon, 28 Nov 2022 03:58:39 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S231469AbiK1MAj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Nov 2022 07:00:39 -0500
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C4218B19;
+        Mon, 28 Nov 2022 04:00:36 -0800 (PST)
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 175586112E;
-        Mon, 28 Nov 2022 11:58:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EED63C433D6;
-        Mon, 28 Nov 2022 11:58:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669636718;
-        bh=g0CyFU4AmxgB5ca38CTRgs5/VPoXCC8E4s7YNFf4BMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WAZ1hteQHz/nJ+bYkH2mXPLF+D3peKEbSGzctcmxjBoDWzLJ4Bbvwaq0cSZNfZCzi
-         tWso7EM/gL5H9xiMkG+MZM4oOHTjwyYWKqV1FWzf6Xeal76XYURjfzrniyMjhfrg/2
-         EafBd3OUk+6R4zTeBpk3Q2mg4rkFAosME5AFeY3WBCWjTs0IhoKdFGckp3elQccXev
-         mlxbXmaITJ9z4ZOl5NA04PjERru2z+ttUHkVfPW5iFnZJzR4SbdZgDrMpZbSYMgqCk
-         ueGNqlCLs6xno2Q3DFOHyxVg85BdoqzIoT0L7ss7zQ4yjhn0++XYWZ1V3fuluFaQuS
-         a/8TKEvM+SmHg==
-Date:   Mon, 28 Nov 2022 13:58:34 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Wang Yufen <wangyufen@huawei.com>
-Cc:     bvanassche@acm.org, jgg@ziepe.ca,
-        dennis.dalessandro@cornelisnetworks.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@linux.intel.com, bart.vanassche@wdc.com,
-        easwar.hariharan@intel.com
-Subject: Re: [PATCH v3 2/2] RDMA/srp: Fix error return code in
- srp_parse_options()
-Message-ID: <Y4SiaoUl1PMWDMcG@unreal>
-References: <1669470654-45828-1-git-send-email-wangyufen@huawei.com>
- <1669470654-45828-2-git-send-email-wangyufen@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1669470654-45828-2-git-send-email-wangyufen@huawei.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4NLPDf66jdz5BNS0;
+        Mon, 28 Nov 2022 20:00:34 +0800 (CST)
+Received: from xaxapp01.zte.com.cn ([10.88.40.50])
+        by mse-fl1.zte.com.cn with SMTP id 2ASC0QvF053505;
+        Mon, 28 Nov 2022 20:00:26 +0800 (+08)
+        (envelope-from zhang.songyi@zte.com.cn)
+Received: from mapi (xaxapp02[null])
+        by mapi (Zmail) with MAPI id mid31;
+        Mon, 28 Nov 2022 20:00:29 +0800 (CST)
+Date:   Mon, 28 Nov 2022 20:00:29 +0800 (CST)
+X-Zmail-TransId: 2afa6384a2ddffffffffcdf0581b
+X-Mailer: Zmail v1.0
+Message-ID: <202211282000293202417@zte.com.cn>
+Mime-Version: 1.0
+From:   <zhang.songyi@zte.com.cn>
+To:     <yishaih@nvidia.com>
+Cc:     <jgg@ziepe.ca>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <zhang.songyi@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIFJETUEvbWx4NDogcmVtb3ZlIE5VTEwgY2hlY2sgYmVmb3JlIGRldl97cHV0LCBob2xkfQ==?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl1.zte.com.cn 2ASC0QvF053505
+X-Fangmail-Gw-Spam-Type: 0
+X-FangMail-Miltered: at cgslv5.04-192.168.250.138.novalocal with ID 6384A2E2.001 by FangMail milter!
+X-FangMail-Envelope: 1669636834/4NLPDf66jdz5BNS0/6384A2E2.001/10.5.228.132/[10.5.228.132]/mse-fl1.zte.com.cn/<zhang.songyi@zte.com.cn>
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6384A2E2.001/4NLPDf66jdz5BNS0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Nov 26, 2022 at 09:50:54PM +0800, Wang Yufen wrote:
-> In the previous while loop, "ret" may be assigned zero, , so the error
-> return code may be incorrectly set to 0 instead of -EINVAL.
-> Add out_with_einval goto label and covert all "goto out;" to "goto
-> out_with_einval:" where it's appropriate, alse investigate each case
-> separately as Andy suggessted.
-> 
-> Fixes: e711f968c49c ("IB/srp: replace custom implementation of hex2bin()")
-> Fixes: 2a174df0c602 ("IB/srp: Use kstrtoull() instead of simple_strtoull()")
-> Fixes: 19f313438c77 ("IB/srp: Add RDMA/CM support")
-> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-> ---
->  drivers/infiniband/ulp/srp/ib_srp.c | 86 ++++++++++++++++++++++++++-----------
->  1 file changed, 60 insertions(+), 26 deletions(-)
+From: zhang songyi <zhang.songyi@zte.com.cn>
 
-<...>
+The call netdev_{put, hold} of dev_{put, hold} will check NULL,
+so there is no need to check before using dev_{put, hold}.
 
-> @@ -3623,6 +3653,10 @@ static int srp_parse_options(struct net *net, const char *buf,
->  out:
->  	kfree(options);
->  	return ret;
-> +
-> +out_with_einval:
+Fix the following coccicheck warnings:
+/drivers/infiniband/hw/mlx4/main.c:1311:2-10: WARNING:
+WARNING  NULL check before dev_{put, hold} functions is not needed.
 
-It needs to be changed back.
+/drivers/infiniband/hw/mlx4/main.c:148:2-10: WARNING:
+WARNING  NULL check before dev_{put, hold} functions is not needed.
 
-Thanks
+/drivers/infiniband/hw/mlx4/main.c:1959:3-11: WARNING:
+WARNING  NULL check before dev_{put, hold} functions is not needed.
 
-> +	ret = -EINVAL;
-> +	goto out;
->  }
->  
->  static ssize_t add_target_store(struct device *dev,
-> -- 
-> 1.8.3.1
-> 
+/drivers/infiniband/hw/mlx4/main.c:1962:3-10: WARNING:
+WARNING  NULL check before dev_{put, hold} functions is not needed.
+
+Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
+---
+ drivers/infiniband/hw/mlx4/main.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index ba47874f90d3..dceebcd885bb 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -144,8 +144,7 @@ static struct net_device *mlx4_ib_get_netdev(struct ib_device *device,
+                        }
+                }
+        }
+-       if (dev)
+-               dev_hold(dev);
++       dev_hold(dev);
+
+        rcu_read_unlock();
+        return dev;
+@@ -1307,8 +1306,7 @@ int mlx4_ib_add_mc(struct mlx4_ib_dev *mdev, struct mlx4_ib_qp *mqp,
+
+        spin_lock_bh(&mdev->iboe.lock);
+        ndev = mdev->iboe.netdevs[mqp->port - 1];
+-       if (ndev)
+-               dev_hold(ndev);
++       dev_hold(ndev);
+        spin_unlock_bh(&mdev->iboe.lock);
+
+        if (ndev) {
+@@ -1955,11 +1953,9 @@ static int mlx4_ib_mcg_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
+        if (ge) {
+                spin_lock_bh(&mdev->iboe.lock);
+                ndev = ge->added ? mdev->iboe.netdevs[ge->port - 1] : NULL;
+-               if (ndev)
+-                       dev_hold(ndev);
++               dev_hold(ndev);
+                spin_unlock_bh(&mdev->iboe.lock);
+-               if (ndev)
+-                       dev_put(ndev);
++               dev_put(ndev);
+                list_del(&ge->list);
+                kfree(ge);
+        } else
+--
+2.15.2
