@@ -2,118 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC4063BB0A
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 08:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A281B63BB71
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 09:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbiK2Hya (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Nov 2022 02:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S230205AbiK2IZF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Nov 2022 03:25:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbiK2HyV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 02:54:21 -0500
-X-Greylist: delayed 75338 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 28 Nov 2022 23:54:19 PST
-Received: from mxct.zte.com.cn (mxct.zte.com.cn [183.62.165.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A8351C2E;
-        Mon, 28 Nov 2022 23:54:19 -0800 (PST)
-Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mxct.zte.com.cn (FangMail) with ESMTPS id 4NLvk158g0z4y0vY;
-        Tue, 29 Nov 2022 15:54:17 +0800 (CST)
-Received: from xaxapp01.zte.com.cn ([10.88.40.50])
-        by mse-fl2.zte.com.cn with SMTP id 2AT7s6IS016751;
-        Tue, 29 Nov 2022 15:54:06 +0800 (+08)
-        (envelope-from zhang.songyi@zte.com.cn)
-Received: from mapi (xaxapp02[null])
-        by mapi (Zmail) with MAPI id mid31;
-        Tue, 29 Nov 2022 15:54:07 +0800 (CST)
-Date:   Tue, 29 Nov 2022 15:54:07 +0800 (CST)
-X-Zmail-TransId: 2afa6385ba9fffffffffa9e83e62
-X-Mailer: Zmail v1.0
-Message-ID: <202211291554079687539@zte.com.cn>
-Mime-Version: 1.0
-From:   <zhang.songyi@zte.com.cn>
-To:     <leon@kernel.org>
-Cc:     <yishaih@nvidia.com>, <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <zhangsongyi.cgel@gmail.com>
-Subject: =?UTF-8?B?W1BBVENIIHJkbWEtbmV4dF0gUkRNQS9tbHg0OiByZW1vdmUgTlVMTCBjaGVjayBiZWZvcmUgZGV2X3twdXQsIGhvbGR9?=
-Content-Type: text/plain;
-        charset="UTF-8"
-X-MAIL: mse-fl2.zte.com.cn 2AT7s6IS016751
-X-Fangmail-Gw-Spam-Type: 0
-X-FangMail-Miltered: at cgslv5.04-192.168.251.13.novalocal with ID 6385BAA9.000 by FangMail milter!
-X-FangMail-Envelope: 1669708457/4NLvk158g0z4y0vY/6385BAA9.000/10.5.228.133/[10.5.228.133]/mse-fl2.zte.com.cn/<zhang.songyi@zte.com.cn>
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 6385BAA9.000/4NLvk158g0z4y0vY
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S230155AbiK2IZC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 03:25:02 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F89A57B40
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:25:01 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id vv4so31927760ejc.2
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:25:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gzwrz5/bgJ69VQ8DIOQyNt2ySo14PkY0Tc1TJ/9BxtU=;
+        b=C3d56JtyuNmf974ceEZSavZ1C/FjLRkloGMeX8+h55kDGiXpMMFI1DD4u3feCh4QEE
+         cHA8xuvglY036UQI7H2YQDycFuUAB+Ib26AaNO9jH79I+9iDbRng+Ef7bpZRqFL7xNvT
+         SY8/h8Tq9x1BtXmeT4cenlPJaDiZZKqt7rUqubucGzlpVqsEFbubxrWdx8hjJGh9HFKI
+         VWWvLBBFn5NGDr4OxwMmW2GFst9UcAyIQNWpvHjljD1grLS1hBIkQpasnV1Ykn1nRN8G
+         mHEkyjZbboo827d2YV+/hiHg/UYb6Oq2UWQS3y69VPrqAzY4s2/UVC3JbUtvZ/MrgXD+
+         NTPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gzwrz5/bgJ69VQ8DIOQyNt2ySo14PkY0Tc1TJ/9BxtU=;
+        b=Vnd8i4N9hajqpUI5Qqm3EzJyLJEvqWkg7mPeX4uryGyIELDUaPzgzck16qSksjUImx
+         cwE44KPIIQFlc4cxmwAKmN9af/LlNS0tT0A9EoLJ/M6uA5LIxbxrqJ7rhK7CTNJiMrlG
+         3fM6A0dhF13GHoi/3ntMTk0B40CZgpzz058LLMfUFpxPmxQgYHEGQyug2El2ShdM83JF
+         7iAmhQj2k3dxgRYjCuCGvBEGO3JHVQikVGgGwGKGZyy+uOCO4SwU0U3x2v8aP9ttjjS7
+         xHwMGHnqGuFduLRSG8e5MgaZAGvfhPEAL7N3QHRoC42N92UR5gE0VzuGV2tliHsoeueZ
+         wstQ==
+X-Gm-Message-State: ANoB5pkmuiS0egfVbLj1HKkXy4pbACQ4gDYKu+dpOznYihw2qR1yA3+v
+        Tqi6Bm3Q4NnFnaMlkyO/kAxHYQ==
+X-Google-Smtp-Source: AA0mqf5U6UpqaqLYePD0J8IkftyUluGt51ht3yzDWcsXRz6dM4R3R53yD09NYzQvvlp1i1fCn6EMtQ==
+X-Received: by 2002:a17:906:2645:b0:781:d0c1:4434 with SMTP id i5-20020a170906264500b00781d0c14434mr46698718ejc.756.1669710300002;
+        Tue, 29 Nov 2022 00:25:00 -0800 (PST)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id sa21-20020a1709076d1500b007aec1b39478sm5874240ejc.188.2022.11.29.00.24.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Nov 2022 00:24:59 -0800 (PST)
+Date:   Tue, 29 Nov 2022 09:24:58 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Shannon Nelson <snelson@pensando.io>, drivers@pensando.io,
+        Ariel Elior <aelior@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Vadim Fedorenko <vadfed@fb.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vadim Pasternak <vadimp@mellanox.com>,
+        Shalom Toledo <shalomt@mellanox.com>,
+        linux-crypto@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
+        Jiri Pirko <jiri@mellanox.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hao Chen <chenhao288@hisilicon.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Minghao Chi <chi.minghao@zte.com.cn>,
+        Shijith Thotton <sthotton@marvell.com>
+Subject: Re: [PATCH net-next v5 1/4] net: devlink: let the core report the
+ driver name instead of the drivers
+Message-ID: <Y4XB2iBqceQfFZem@nanopsycho>
+References: <20221129000550.3833570-1-mailhol.vincent@wanadoo.fr>
+ <20221129000550.3833570-2-mailhol.vincent@wanadoo.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221129000550.3833570-2-mailhol.vincent@wanadoo.fr>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: zhang songyi <zhang.songyi@zte.com.cn>
+Tue, Nov 29, 2022 at 01:05:47AM CET, mailhol.vincent@wanadoo.fr wrote:
+>The driver name is available in device_driver::name. Right now,
+>drivers still have to report this piece of information themselves in
+>their devlink_ops::info_get callback function.
+>
+>In order to factorize code, make devlink_nl_info_fill() add the driver
+>name attribute.
+>
+>nla_put() does not check if an attribute already exists and
+>unconditionally reserves new space [1]. To avoid attribute
+>duplication, clean-up all the drivers which are currently reporting
+>the driver name in their callback.
 
-The call netdev_{put, hold} of dev_{put, hold} will check NULL,
-so there is no need to check before using dev_{put, hold}.
+This para with the link below should be removed, no need for it.
 
-Fix the following coccicheck warnings:
-/drivers/infiniband/hw/mlx4/main.c:1311:2-10: WARNING:
-WARNING  NULL check before dev_{put, hold} functions is not needed.
+Otherwise, code looks fine.
 
-/drivers/infiniband/hw/mlx4/main.c:148:2-10: WARNING:
-WARNING  NULL check before dev_{put, hold} functions is not needed.
-
-/drivers/infiniband/hw/mlx4/main.c:1959:3-11: WARNING:
-WARNING  NULL check before dev_{put, hold} functions is not needed.
-
-/drivers/infiniband/hw/mlx4/main.c:1962:3-10: WARNING:
-WARNING  NULL check before dev_{put, hold} functions is not needed.
-
-Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
----
- drivers/infiniband/hw/mlx4/main.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index ba47874f90d3..dceebcd885bb 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -144,8 +144,7 @@ static struct net_device *mlx4_ib_get_netdev(struct ib_device *device,
-                        }
-                }
-        }
--       if (dev)
--               dev_hold(dev);
-+       dev_hold(dev);
-
-        rcu_read_unlock();
-        return dev;
-@@ -1307,8 +1306,7 @@ int mlx4_ib_add_mc(struct mlx4_ib_dev *mdev, struct mlx4_ib_qp *mqp,
-
-        spin_lock_bh(&mdev->iboe.lock);
-        ndev = mdev->iboe.netdevs[mqp->port - 1];
--       if (ndev)
--               dev_hold(ndev);
-+       dev_hold(ndev);
-        spin_unlock_bh(&mdev->iboe.lock);
-
-        if (ndev) {
-@@ -1955,11 +1953,9 @@ static int mlx4_ib_mcg_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
-        if (ge) {
-                spin_lock_bh(&mdev->iboe.lock);
-                ndev = ge->added ? mdev->iboe.netdevs[ge->port - 1] : NULL;
--               if (ndev)
--                       dev_hold(ndev);
-+               dev_hold(ndev);
-                spin_unlock_bh(&mdev->iboe.lock);
--               if (ndev)
--                       dev_put(ndev);
-+               dev_put(ndev);
-                list_del(&ge->list);
-                kfree(ge);
-        } else
---
-2.25.1
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
