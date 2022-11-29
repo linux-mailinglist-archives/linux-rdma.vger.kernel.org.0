@@ -2,113 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C64763BB85
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 09:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A53C63BBFD
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 09:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbiK2I1c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Nov 2022 03:27:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        id S229618AbiK2Itg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Nov 2022 03:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230255AbiK2I1a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 03:27:30 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0069157B5B
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:27:28 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id e27so31880065ejc.12
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:27:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4v7Xp4UFwcIIZYZ0RgIN5pAk6f0FzEGlZBS1d7BjE8M=;
-        b=tRgxpeUumhzLWsC9NVTgDCLb6XS0lv/rpMqGNhMDpPr2Rq/mAUvJvDgqyVE9rVTHr3
-         PLUKB44JXwQ7XIg0oDXwmJ2BDHkmwhB4pzfCWYwM3SrWaYo8wgndawp+QpWpQviZ5Z7+
-         T+q8PhrZYvCH84GnWsBe3i67Jv+D/wyYe9rBax2Wl1B80SP5M0CIIfbzBPPKG/EBm2pf
-         eiEqZ+FEiD7eaqNOT/0oL2A0jJsp39JaFVijnYra2HosHEXTsYyW6Fz9IOeCc5AmZinv
-         rKdJDpSTIqIETiN/h9e/7lmGL6x18E2SIG2b0qPdnsH0pML71bpStt2ATvHcno7vkt8r
-         t9RQ==
+        with ESMTP id S230039AbiK2Itf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 03:49:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869144198A
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:48:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669711719;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+9/SG262uJs5aEn47977HgvoOkAGZaXesrmlGYL/QQU=;
+        b=TRUplZ8JiMKfzb4Bc04YLrOyZbdADW/mzTd3ypL8o6Ck350NukTBLh+Ot4ffwSs8sCvA8Y
+        xqdqKD3HkWgI+XVwWGSNFok9uKLvqdvaPxwB52tFiggUwNFsVNkZeE4d7tCDB7mYzpGkGT
+        oQW14tfDht7LYRQhV9icYzLgV3epDCI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-63-HNUfwTwCNoeCOV7SlvMkZg-1; Tue, 29 Nov 2022 03:48:37 -0500
+X-MC-Unique: HNUfwTwCNoeCOV7SlvMkZg-1
+Received: by mail-wm1-f70.google.com with SMTP id bi19-20020a05600c3d9300b003cf9d6c4016so9851583wmb.8
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:48:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4v7Xp4UFwcIIZYZ0RgIN5pAk6f0FzEGlZBS1d7BjE8M=;
-        b=VL5/oIkKp+p0MFtkPIILr+pwMd/nhMKEPho86UwiMLUNVJt24u/ywVnLob9BZm+IPA
-         s298d4rcCuHUemgwWM2HqgTVJ2Wzz/DitQwYieJNPRDewQ08zvW+bb5TzuHuNsKU+Rii
-         1nqA/g1FwBbFd8zbah4oOSLZ9g6pZKHtFC503VuKcHrzaIkwxDSaZyMOqf7QNQKREOU4
-         t/uzkb9Cpyd96+0Eq5EMqlWZvz/HTJYk94AONEHwRxhCUlKQaP7j+nM6h7P2vb2ml9qE
-         Hm1UTABghFgpxGxqTJpwtljKbvSuC67sB0gYHeIJcl+PbgWycsReWW9ngU/ZhHBZRQH0
-         at9Q==
-X-Gm-Message-State: ANoB5pkqftWRirCfxtB9NCalkGs34UH9PyLljse3fjYtfB+CVM24O8tl
-        hHS1+KS8Mo+BGBGuVWGq+jNABQ==
-X-Google-Smtp-Source: AA0mqf4klzozGLk8G6ChytpzpBsUMkgVkxU4/gqOvr33nL+FktypM4IdS/dR44D+c0D+dCGAFz/q1A==
-X-Received: by 2002:a17:906:5a84:b0:7ae:65e4:7204 with SMTP id l4-20020a1709065a8400b007ae65e47204mr45496813ejq.579.1669710445675;
-        Tue, 29 Nov 2022 00:27:25 -0800 (PST)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id kz1-20020a17090777c100b0078de26f66b9sm5851248ejc.114.2022.11.29.00.27.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Nov 2022 00:27:25 -0800 (PST)
-Date:   Tue, 29 Nov 2022 09:27:24 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Dimitris Michailidis <dmichail@fungible.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Shannon Nelson <snelson@pensando.io>, drivers@pensando.io,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Vadim Fedorenko <vadfed@fb.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vadim Pasternak <vadimp@mellanox.com>,
-        Shalom Toledo <shalomt@mellanox.com>,
-        linux-crypto@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
-        Jiri Pirko <jiri@mellanox.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hao Chen <chenhao288@hisilicon.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Minghao Chi <chi.minghao@zte.com.cn>,
-        Shijith Thotton <sthotton@marvell.com>
-Subject: Re: [PATCH net-next v5 4/4] net: devlink: clean-up empty
- devlink_ops::info_get()
-Message-ID: <Y4XCbMooeWxsovHT@nanopsycho>
-References: <20221129000550.3833570-1-mailhol.vincent@wanadoo.fr>
- <20221129000550.3833570-5-mailhol.vincent@wanadoo.fr>
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+9/SG262uJs5aEn47977HgvoOkAGZaXesrmlGYL/QQU=;
+        b=vl9CJM4gJh0Y89XyOYl3YMYoqQKNNJiMLo9VZ9CxCGVQY+F9pPdy26eY3xOT2eSFza
+         qJxE0L6VV866Wx4utBLD6S2YaenrBhi9VEqFppZoAFvoaYO3/qntuLD9McDSMSGmV5s/
+         kDmLqNR9ml95SGP2LsTF4MskPzNcnLyfXQ6tp9tfYqNk+pzAAmypm5GAg1e2djbLraCx
+         3jzcV0KrGOrwt+Ec47AMYJESMjcGz2KafiSnrg0jXk2JwWTc8LF+ojgeelcPkdEi4edY
+         49qssWonOjqXcgw8sp+kySsAxNtteE8YDHK1jGT90AE9jxERcpL66MH2yHcwB3Tvfe0w
+         xQjg==
+X-Gm-Message-State: ANoB5pnshRAU2WSwDqg/1Q6qHynm2nzEak5IimiqRk2CNikHxKKrONlm
+        CgrbNrGZ+jfOOKO+4zGzNgdkpwzeO/E+ltekPw7YU2zYqpGuKRI/U7GYo01NWtEXmVS2yWb+5H2
+        +9jU7jbBAr4qcZVYzFN/cKg==
+X-Received: by 2002:adf:ed86:0:b0:236:4930:2468 with SMTP id c6-20020adfed86000000b0023649302468mr27266636wro.221.1669711716557;
+        Tue, 29 Nov 2022 00:48:36 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5WObKFiHoIvjAvSDGoBWk7nZS9J8pydo8v+yQ7WbXm3jibFRxv0v14chgZsAxfMxQqYFXPxw==
+X-Received: by 2002:adf:ed86:0:b0:236:4930:2468 with SMTP id c6-20020adfed86000000b0023649302468mr27266600wro.221.1669711716176;
+        Tue, 29 Nov 2022 00:48:36 -0800 (PST)
+Received: from ?IPV6:2003:cb:c705:ca00:3fb8:c253:3bf7:b60e? (p200300cbc705ca003fb8c2533bf7b60e.dip0.t-ipconnect.de. [2003:cb:c705:ca00:3fb8:c253:3bf7:b60e])
+        by smtp.gmail.com with ESMTPSA id j5-20020a5d5645000000b00225307f43fbsm13057331wrw.44.2022.11.29.00.48.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Nov 2022 00:48:35 -0800 (PST)
+Message-ID: <22b1107b-0acc-5772-a883-8f3c4682eb1b@redhat.com>
+Date:   Tue, 29 Nov 2022 09:48:33 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221129000550.3833570-5-mailhol.vincent@wanadoo.fr>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH mm-unstable v1 16/20] mm/frame-vector: remove FOLL_FORCE
+ usage
+Content-Language: en-US
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20221116102659.70287-1-david@redhat.com>
+ <20221116102659.70287-17-david@redhat.com>
+ <81fb0fa3-2e06-b765-56ac-a7d981194e59@redhat.com>
+ <08b65ac6-6786-1080-18f8-d2be109c85fc@xs4all.nl>
+ <9d0bf98a-3d6a-1082-e992-1338e1525935@redhat.com>
+ <20221128145927.df895bf1966cfa125cae9668@linux-foundation.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20221128145927.df895bf1966cfa125cae9668@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,13 +118,34 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Tue, Nov 29, 2022 at 01:05:50AM CET, mailhol.vincent@wanadoo.fr wrote:
->devlink_ops::info_get() is now optional and devlink will continue to
->report information even if that callback gets removed.
->
->Remove all the empty devlink_ops::info_get() callbacks from the
->drivers.
->
->Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+On 28.11.22 23:59, Andrew Morton wrote:
+> On Mon, 28 Nov 2022 09:18:47 +0100 David Hildenbrand <david@redhat.com> wrote:
+> 
+>>> Less chances of things going wrong that way.
+>>>
+>>> Just mention in the v2 cover letter that the first patch was added to
+>>> make it easy to backport that fix without being hampered by merge
+>>> conflicts if it was added after your frame_vector.c patch.
+>>
+>> Yes, that's the way I would naturally do, it, however, Andrew prefers
+>> delta updates for minor changes.
+>>
+>> @Andrew, whatever you prefer!
+> 
+> I'm inclined to let things sit as they are.  Cross-tree conflicts
+> happen, and Linus handles them.  I'll flag this (very simple) conflict
+> in the pull request, if MM merges second.  If v4l merges second then
+> hopefully they will do the same.  But this one is so simple that Linus
+> hardly needs our help.
+> 
+> But Linus won't be editing changelogs so that the changelog makes more
+> sense after both trees are joined.  I'm inclined to let the changelog
+> sit as it is as well.
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Works for me. Thanks Andrew!
+
+-- 
+Thanks,
+
+David / dhildenb
+
