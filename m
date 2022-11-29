@@ -2,161 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC6263BCAC
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 10:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B6563BCB6
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 10:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbiK2JNy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Nov 2022 04:13:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
+        id S229865AbiK2JQV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Nov 2022 04:16:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiK2JNw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 04:13:52 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A311B3E085;
-        Tue, 29 Nov 2022 01:13:51 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 52941B811C1;
-        Tue, 29 Nov 2022 09:13:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 374BBC433D6;
-        Tue, 29 Nov 2022 09:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669713229;
-        bh=WJed+LUowQTwdT/KFPk89HrhM75i746wZq+c/Fp++tI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=teEUDniYsLHbpZmSDgunGybkK/xtYa4EWUN9z4alStPR1Kkvz88lQ8AvXcQT3FqZT
-         rhUOdYSUF6mL8tZ3fCtYFGygGdEFLTcVrPFA5DKA6kdfSwPSzdLcD0LfCrEHQGmI0g
-         EA884jVmCTye504ZMlBsWGImdt+Yiqr1Snwdxx3CPSLkMzfKKegdZv3OrDslDxfwSC
-         ZCkFN8bRbxVs/ZZFtEKL6pNMQpt/O7gToiHKzXRwso0Hzo0VKmpnFPGL/2caakSTnm
-         hY87df//dh9sHcl8imXq6N0E7BHenrDjkB408ZPJPXCkdUyIVhU2Amgj0zJQp9F5GY
-         nVLwNbz2DQ82w==
-Date:   Tue, 29 Nov 2022 11:13:44 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ajit Khaparde <ajit.khaparde@broadcom.com>
-Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, jgg@ziepe.ca, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        michael.chan@broadcom.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH v4 0/6] Add Auxiliary driver support
-Message-ID: <Y4XNSBO+2/YOL9+C@unreal>
-References: <20221109184244.7032-1-ajit.khaparde@broadcom.com>
- <Y2zYPOUKgoArq7mM@unreal>
- <CACZ4nhu_2FoOTmXPuq+amRYAipusq1XcobavytN0cFK=TSE5mQ@mail.gmail.com>
- <Y3Tj/BrskSJPuTFw@unreal>
- <CACZ4nhsv4zyzANrGh90WGKORz0Su=i7+Jmsk6nWoOq4or7Y0=Q@mail.gmail.com>
- <Y33ErZHAsX76y34Z@unreal>
- <CACZ4nhvJV32pmOU7mRfaYYnatN6Ef5T3M=nVTYjuk7mnqcUxtw@mail.gmail.com>
+        with ESMTP id S229514AbiK2JQU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 04:16:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA4C4FFB4
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 01:15:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669713326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kLZwFc2T16+VzxzvdeqP7dZ+DZAGfAAiD+u0EUrSQ8s=;
+        b=OvXTU6p0Ct0GG3VEsw6AOZSjwusuY/Ng6cuNku1asLSrx9F6Mc66uLvd7qxMRAZbOAL+J5
+        Q8DdnyjmltiPLfDTqjLE3SaozLtbjrW5pWS5w+X7WF2iZ/48KkE540YFRqNv9Zfo0kmyyh
+        pze47cOZYmn8QXjChvz5wyc79I3BaI4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-458-u6luOVZMOPWkRvanHe-qEw-1; Tue, 29 Nov 2022 04:15:24 -0500
+X-MC-Unique: u6luOVZMOPWkRvanHe-qEw-1
+Received: by mail-wr1-f72.google.com with SMTP id l8-20020adfc788000000b00241ef50e89eso2650576wrg.0
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 01:15:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kLZwFc2T16+VzxzvdeqP7dZ+DZAGfAAiD+u0EUrSQ8s=;
+        b=QvJrohpu480OiddtX+C1CXjGQPcqHnK0+soDAMuhwou98cRHxDdYStpJMGEyFywGyC
+         qMhZ0KsM4e29jLBi8jnTj4xZlT9qk3MJQ2OvqbrvrjK/IYq11tZ4zeqXKWtf4WydDILZ
+         oL8JmcnlxQv9g5OW0wdowM95d5LaexZjG8d0LKGRhviySOaoZj4V9x+/PhPuN+hi/b+f
+         z270nMMp5DYlNV1VKn9v2O6u0gT1a91pGwjd0BYre6uRKewu4yfdK0fuYNdySmmrwKYr
+         FgRGNiwzLguI5DsUFezFLwW2e4Mpm9Q6htxkI17Gu+MAqa1hWSV7O9En71RKOvSQWOqw
+         QLvw==
+X-Gm-Message-State: ANoB5pl8eUYvC8QuP+b4/e8OVt+kwTM+dgtapX4FNX39uZHCVfLU9uQq
+        rAEGeSAHJveZDSjf17tHKIqHYdxfUEyMV1A0E1jhphIh01/3swDGM92IVaq1Mv8ibQY7jQfH6RX
+        kOcsSaQu08Vssq6t24p4LhQ==
+X-Received: by 2002:a05:600c:430c:b0:3cf:8ed7:7124 with SMTP id p12-20020a05600c430c00b003cf8ed77124mr42243410wme.140.1669713323598;
+        Tue, 29 Nov 2022 01:15:23 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5aMoFyhfTZRz6WGw0GcgDkcONZAiRyZAh+e0PFHXmVnEtFtgvwKaxuOXbIxhdoVgI1OB8H+Q==
+X-Received: by 2002:a05:600c:430c:b0:3cf:8ed7:7124 with SMTP id p12-20020a05600c430c00b003cf8ed77124mr42243382wme.140.1669713323266;
+        Tue, 29 Nov 2022 01:15:23 -0800 (PST)
+Received: from ?IPV6:2003:cb:c705:ca00:3fb8:c253:3bf7:b60e? (p200300cbc705ca003fb8c2533bf7b60e.dip0.t-ipconnect.de. [2003:cb:c705:ca00:3fb8:c253:3bf7:b60e])
+        by smtp.gmail.com with ESMTPSA id n26-20020a05600c3b9a00b003c6b70a4d69sm1498998wms.42.2022.11.29.01.15.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Nov 2022 01:15:22 -0800 (PST)
+Message-ID: <abcba252-13a0-50aa-79ec-28b649c892cd@redhat.com>
+Date:   Tue, 29 Nov 2022 10:15:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACZ4nhvJV32pmOU7mRfaYYnatN6Ef5T3M=nVTYjuk7mnqcUxtw@mail.gmail.com>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH mm-unstable v1 16/20] mm/frame-vector: remove FOLL_FORCE
+ usage
+Content-Language: en-US
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-perf-users@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20221116102659.70287-1-david@redhat.com>
+ <20221116102659.70287-17-david@redhat.com>
+ <81fb0fa3-2e06-b765-56ac-a7d981194e59@redhat.com>
+ <08b65ac6-6786-1080-18f8-d2be109c85fc@xs4all.nl>
+ <9d0bf98a-3d6a-1082-e992-1338e1525935@redhat.com>
+ <20221128145927.df895bf1966cfa125cae9668@linux-foundation.org>
+ <22b1107b-0acc-5772-a883-8f3c4682eb1b@redhat.com>
+ <c2681582-1e24-7ed9-e4fb-e2dd17a93aed@xs4all.nl>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <c2681582-1e24-7ed9-e4fb-e2dd17a93aed@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 06:01:13PM -0800, Ajit Khaparde wrote:
-> On Tue, Nov 22, 2022 at 10:59 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Tue, Nov 22, 2022 at 07:02:45AM -0800, Ajit Khaparde wrote:
-> > > On Wed, Nov 16, 2022 at 5:22 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > ::snip::
-> > > > > > All PCI management logic and interfaces are needed to be inside eth part
-> > > > > > of your driver and only that part should implement SR-IOV config. Once
-> > > > > > user enabled SR-IOV, the PCI driver should create auxiliary devices for
-> > > > > > each VF. These device will have RDMA capabilities and it will trigger RDMA
-> > > > > > driver to bind to them.
-> > > > > I agree and once the PF creates the auxiliary devices for the VF, the RoCE
-> > > > > Vf indeed get probed and created. But the twist in bnxt_en/bnxt_re
-> > > > > design is that
-> > > > > the RoCE driver is responsible for making adjustments to the RoCE resources.
-> > > >
-> > > > You can still do these adjustments by checking type of function that
-> > > > called to RDMA .probe. PCI core exposes some functions to help distinguish between
-> > > > PF and VFs.
-> > > >
-> > > > >
-> > > > > So once the VF's are created and the bnxt_en driver enables SRIOV adjusts the
-> > > > > NIC resources for the VF,  and such, it tries to call into the bnxt_re
-> > > > > driver for the
-> > > > > same purpose.
-> > > >
-> > > > If I read code correctly, all these resources are for one PCI function.
-> > > >
-> > > > Something like this:
-> > > >
-> > > > bnxt_re_probe()
-> > > > {
-> > > >   ...
-> > > >         if (is_virtfn(p))
-> > > >                  bnxt_re_sriov_config(p);
-> > > >   ...
-> > > > }
-> > > I understand what you are suggesting.
-> > > But what I want is a way to do this in the context of the PF
-> > > preferably before the VFs are probed.
-> >
-> > I don't understand the last sentence. You call to this sriov_config in
-> > bnxt_re driver without any protection from VFs being probed,
+On 29.11.22 10:08, Hans Verkuil wrote:
+> On 29/11/2022 09:48, David Hildenbrand wrote:
+>> On 28.11.22 23:59, Andrew Morton wrote:
+>>> On Mon, 28 Nov 2022 09:18:47 +0100 David Hildenbrand <david@redhat.com> wrote:
+>>>
+>>>>> Less chances of things going wrong that way.
+>>>>>
+>>>>> Just mention in the v2 cover letter that the first patch was added to
+>>>>> make it easy to backport that fix without being hampered by merge
+>>>>> conflicts if it was added after your frame_vector.c patch.
+>>>>
+>>>> Yes, that's the way I would naturally do, it, however, Andrew prefers
+>>>> delta updates for minor changes.
+>>>>
+>>>> @Andrew, whatever you prefer!
+>>>
+>>> I'm inclined to let things sit as they are.  Cross-tree conflicts
+>>> happen, and Linus handles them.  I'll flag this (very simple) conflict
+>>> in the pull request, if MM merges second.  If v4l merges second then
+>>> hopefully they will do the same.  But this one is so simple that Linus
+>>> hardly needs our help.
 > 
-> Let me elaborate -
-> When a user sets num_vfs to a non-zero number, the PCI driver hook
-> sriov_configure calls bnxt_sriov_configure(). Once pci_enable_sriov()
-> succeeds, bnxt_ulp_sriov_cfg() is issued under bnxt_sriov_configure().
-> All this happens under bnxt_en.
-> bnxt_ulp_sriov_cfg() ultimately calls into the bnxt_re driver.
-> Since bnxt_sriov_configure() is called only for PFs, bnxt_ulp_sriov_cfg()
-> is called for PFs only.
-> 
-> Once bnxt_ulp_sriov_cfg() calls into the bnxt_re via the ulp_ops,
-> it adjusts the QPs, SRQs, CQs, MRs, GIDs and such.
+> It's not about cross-tree conflicts, it's about the fact that my patch is
+> a fix that needs to be backported to older kernels. It should apply cleanly
+> to those older kernels if my patch goes in first, but if it is the other way
+> around I would have to make a new patch for the stable kernels.
 
-Once you called to pci_enable_sriov(), PCI core created sysfs entries
-and it triggers udev rules and VFs probe. Because you are calling it
-in bnxt_sriov_configure(), you will have inherit protection for PF
-with PCI lock, but not for VFs.
+IIUC, the conflict will be resolved at merge time and the merge 
+resolution will be part of the merge commit. It doesn't matter in which 
+order the patches go upstream, the merge commit resolves the problematic 
+overlap.
 
-> 
-> >
-> > > So we are trying to call the
-> > > bnxt_re_sriov_config in the context of handling the PF's
-> > > sriov_configure implementation.  Having the ulp_ops is allowing us to
-> > > avoid resource wastage and assumptions in the bnxt_re driver.
-> >
-> > To which resource wastage are you referring?
-> Essentially the PF driver reserves a set of above resources for the PF,
-> and divides the remaining resources among the VFs.
-> If the calculation is based on sriov_totalvfs instead of sriov_numvfs,
-> there can be a difference in the resources provisioned for a VF.
-> And that is because a user may create a subset of VFs instead of the
-> total VFs allowed in the PCI SR-IOV capability register.
-> I was referring to the resource wastage in that deployment scenario.
+So your patch will be upstream as intended, where it can be cleanly 
+backported.
 
-It is ok, set all needed limits in bnxt_en. You don't need to call to
-bnxt_re for that.
+Hope I am not twisting reality ;)
 
-> 
-> Thanks
-> Ajit
-> 
-> >
-> > There are no differences if same limits will be in bnxt_en driver when
-> > RDMA bnxt device is created or in bnxt_re which will be called once RDMA
-> > device is created.
-> >
-> > Thanks
-> >
-> > >
-> > > ::snip::
-> >
-> >
+-- 
+Thanks,
 
+David / dhildenb
 
