@@ -2,53 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E80B63BB76
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 09:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3E663BB7C
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 09:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbiK2IZw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Nov 2022 03:25:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
+        id S230232AbiK2I0l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Nov 2022 03:26:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbiK2IZu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 03:25:50 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709C25655D
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:25:49 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id l11so18744870edb.4
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:25:49 -0800 (PST)
+        with ESMTP id S230099AbiK2I0k (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 03:26:40 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4905857B45
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:26:38 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id s5so18690305edc.12
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:26:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=resnulli-us.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rZUenHtKPq2dIPRKUI4YkE7MjW2g3QtOJmpKI+2Qn3o=;
-        b=gGK456z2WRLaCXHOwMFdHGvfFgJhaWZsmslL7bufWhOQ0Q3qvX2aDgMOi2ja03RCnm
-         NdGvjr2n7dxWMSrxhGxBdIDl2jZOfrD+2k5vRWjBh5RgWepcfx9WRx+rVxCdxMmtSCqd
-         RP5hOThgGUF9OdBm1kFhEu9uyjFMq+6Q85Jk+ZycXXoZpEz8zRoxJtLtFqJ8+ncqgmhm
-         4wc2jc5c5JUviaUDl6qOKs8yb5XJn9HImWIJkxqXQPGYXgq9hGuxNfpbERnf/C8bffkT
-         ML/3rEOdCUgRGrRo5SkoyK/r5egDu0LQAvOSnhyiAZR2pCv3GOE3KrvNcIuwQQNDcWF6
-         6mOw==
+        bh=pgrzkkklPcAQYmyQMmCpEE1o3a9ohgeq3WVDc+0vm08=;
+        b=XiAjLYS5j4RwLKJGZxfsDINusHr9CRwW/Y3flS/dZFlY4O60OTBiKSUQjxvGIX+3Rg
+         dWAJ1ca2t+K0d+bi0hYAhKvXStoidmphxQ0TDLO6BSnIL0/DN3PnlJFDIMFRt3mXIa4g
+         ZMPEl75jJykR9z7KbG5TQ2wepgiS9FlevG8+O0tg70kUd7KYg2ugRDQg84wgWnAptk9T
+         NHGqa/dI8nJ2hDhtgvRxfieYv/2wyABK91GuDzW2R+fCWgqEG0yJvCUyqY3kdcbZmt0P
+         gS7yCTuTDX6ORTNxuGB1qv1ErmB0M7sxgSP6i5oaQm/rCTvkHAkTwlvZFSa7282d1MRL
+         RrTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rZUenHtKPq2dIPRKUI4YkE7MjW2g3QtOJmpKI+2Qn3o=;
-        b=n7ocqVYDPeUrRjhzqSIFLeQuNkJZv3n8AJSrH+DGquu2WIkzb+oTtEizuTiDXWA5rw
-         vWY08dIM0POmaZQxcSXB6OqEp49uGtstR015Mk1QH49Yh2T3Jq+64dhuoyV1bxNJ/D2/
-         YVEi+FThtRYMLnaTRqSqxRQjFK0BgWvFyooLS68+0XR6S2pYvMIoHLImkF5DA35KtpD8
-         W9h4yTF+6K35nMqjMK7xO9+d6TwodmbEI1EhSF962yyhXozFMZ4fUlfHNa4W5gluc3G/
-         WjS3uP5dtW4pGCr5HmK+Rw1fYAHWnWmQupsqvLORorf317mdGoG8q7i7xz2JWToHRwFK
-         xB1w==
-X-Gm-Message-State: ANoB5pnu4cIclo8xT3YTJbRvczlTtamGJH7bKBx1FzCRL9luK0dxRFnw
-        SeRed3kLPY5ZY0b9DBoHEw5tYg==
-X-Google-Smtp-Source: AA0mqf7oggbm0ZvKv+OkUU5+fbdLpbPP1G+n+KZSETJmKURydZSHzYM/yx9a/+JnxN4LXSIHKdvoZQ==
-X-Received: by 2002:a05:6402:2421:b0:461:524f:a8f4 with SMTP id t33-20020a056402242100b00461524fa8f4mr50312403eda.260.1669710347875;
-        Tue, 29 Nov 2022 00:25:47 -0800 (PST)
+        bh=pgrzkkklPcAQYmyQMmCpEE1o3a9ohgeq3WVDc+0vm08=;
+        b=AyDONaqg+CyDES5WGbO+gvRQP5U9ZP9nurVwh3Kq0VaGv2nhTgohOmJTuQ5JBefWJn
+         ew+d1VWhPDaw6KLBkT+geN1uGqtYyy5hziybqdegm5RfmdFasVXaRnGxfRqWn6RlLBwC
+         swfgOWTxNH5EhUBzdXfnXkHPn5QfUt89P9GvaFwzrlxPE7nj1sgFqbmXz3JahiU5k+uW
+         xd7jo0QY0KsSJG5GAWPDZhGH947Nv+NxHkMPI3MefTNf2Tmw6ZXfT68twLkHZg2qYngi
+         RDNp3uTNvoi2mSnZnDrSYQANgYHuqQ6T0xZJzdZWJEyKxXp7Ef+hJc8KsYN6XYaHp0rl
+         wURw==
+X-Gm-Message-State: ANoB5pmSjYA4xKP9VKI+LhoNQqrIzPnVu95EmonMNNC62otZCMi1Dnnc
+        NFC8MLampz7Ox0KofwffX32Oow==
+X-Google-Smtp-Source: AA0mqf6AhCTZUtOfuGYDhXfqaKP0HI3CcryljG1Et3fvW7wqzGVxjYaxttb++c6crBKvAOdrZVKVcw==
+X-Received: by 2002:a05:6402:1f14:b0:461:c7ef:b09e with SMTP id b20-20020a0564021f1400b00461c7efb09emr37432404edb.58.1669710397245;
+        Tue, 29 Nov 2022 00:26:37 -0800 (PST)
 Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id u23-20020a056402065700b0046778ce5fdfsm5962890edx.10.2022.11.29.00.25.46
+        by smtp.gmail.com with ESMTPSA id r9-20020a50aac9000000b00461c6e8453dsm6017247edc.23.2022.11.29.00.26.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Nov 2022 00:25:47 -0800 (PST)
-Date:   Tue, 29 Nov 2022 09:25:46 +0100
+        Tue, 29 Nov 2022 00:26:36 -0800 (PST)
+Date:   Tue, 29 Nov 2022 09:26:35 +0100
 From:   Jiri Pirko <jiri@resnulli.us>
 To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Cc:     Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
@@ -98,31 +98,39 @@ Cc:     Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
         Guangbin Huang <huangguangbin2@huawei.com>,
         Minghao Chi <chi.minghao@zte.com.cn>,
         Shijith Thotton <sthotton@marvell.com>
-Subject: Re: [PATCH net-next v5 2/4] net: devlink: remove
- devlink_info_driver_name_put()
-Message-ID: <Y4XCCl6F+N2w+ngn@nanopsycho>
+Subject: Re: [PATCH net-next v5 3/4] net: devlink: make the
+ devlink_ops::info_get() callback optional
+Message-ID: <Y4XCO21nYeJZKUh5@nanopsycho>
 References: <20221129000550.3833570-1-mailhol.vincent@wanadoo.fr>
- <20221129000550.3833570-3-mailhol.vincent@wanadoo.fr>
+ <20221129000550.3833570-4-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221129000550.3833570-3-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20221129000550.3833570-4-mailhol.vincent@wanadoo.fr>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Tue, Nov 29, 2022 at 01:05:48AM CET, mailhol.vincent@wanadoo.fr wrote:
->Now that the core sets the driver name attribute, drivers are not
->supposed to call devlink_info_driver_name_put() anymore. Remove it.
+Tue, Nov 29, 2022 at 01:05:49AM CET, mailhol.vincent@wanadoo.fr wrote:
+>Some drivers only reported the driver name in their
+>devlink_ops::info_get() callback. Now that the core provides this
+>information, the callback became empty. For such drivers, just
+>removing the callback would prevent the core from executing
+>devlink_nl_info_fill() meaning that "devlink dev info" would not
+>return anything.
+>
+>Make the callback function optional by executing
+>devlink_nl_info_fill() even if devlink_ops::info_get() is NULL.
+>
+>N.B.: the drivers with devlink support which previously did not
+>implement devlink_ops::info_get() will now also be able to report
+>the driver name.
 >
 >Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-
-I agree with Jacob that this could be easily squashed to the previous
-patch. One way or another:
 
 Reviewed-by: Jiri Pirko <jiri@nvidia.com>
