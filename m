@@ -2,53 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3E663BB7C
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 09:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C64763BB85
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 09:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbiK2I0l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Nov 2022 03:26:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
+        id S229797AbiK2I1c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Nov 2022 03:27:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbiK2I0k (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 03:26:40 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4905857B45
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:26:38 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id s5so18690305edc.12
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:26:38 -0800 (PST)
+        with ESMTP id S230255AbiK2I1a (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 03:27:30 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0069157B5B
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:27:28 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id e27so31880065ejc.12
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Nov 2022 00:27:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=resnulli-us.20210112.gappssmtp.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pgrzkkklPcAQYmyQMmCpEE1o3a9ohgeq3WVDc+0vm08=;
-        b=XiAjLYS5j4RwLKJGZxfsDINusHr9CRwW/Y3flS/dZFlY4O60OTBiKSUQjxvGIX+3Rg
-         dWAJ1ca2t+K0d+bi0hYAhKvXStoidmphxQ0TDLO6BSnIL0/DN3PnlJFDIMFRt3mXIa4g
-         ZMPEl75jJykR9z7KbG5TQ2wepgiS9FlevG8+O0tg70kUd7KYg2ugRDQg84wgWnAptk9T
-         NHGqa/dI8nJ2hDhtgvRxfieYv/2wyABK91GuDzW2R+fCWgqEG0yJvCUyqY3kdcbZmt0P
-         gS7yCTuTDX6ORTNxuGB1qv1ErmB0M7sxgSP6i5oaQm/rCTvkHAkTwlvZFSa7282d1MRL
-         RrTA==
+        bh=4v7Xp4UFwcIIZYZ0RgIN5pAk6f0FzEGlZBS1d7BjE8M=;
+        b=tRgxpeUumhzLWsC9NVTgDCLb6XS0lv/rpMqGNhMDpPr2Rq/mAUvJvDgqyVE9rVTHr3
+         PLUKB44JXwQ7XIg0oDXwmJ2BDHkmwhB4pzfCWYwM3SrWaYo8wgndawp+QpWpQviZ5Z7+
+         T+q8PhrZYvCH84GnWsBe3i67Jv+D/wyYe9rBax2Wl1B80SP5M0CIIfbzBPPKG/EBm2pf
+         eiEqZ+FEiD7eaqNOT/0oL2A0jJsp39JaFVijnYra2HosHEXTsYyW6Fz9IOeCc5AmZinv
+         rKdJDpSTIqIETiN/h9e/7lmGL6x18E2SIG2b0qPdnsH0pML71bpStt2ATvHcno7vkt8r
+         t9RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pgrzkkklPcAQYmyQMmCpEE1o3a9ohgeq3WVDc+0vm08=;
-        b=AyDONaqg+CyDES5WGbO+gvRQP5U9ZP9nurVwh3Kq0VaGv2nhTgohOmJTuQ5JBefWJn
-         ew+d1VWhPDaw6KLBkT+geN1uGqtYyy5hziybqdegm5RfmdFasVXaRnGxfRqWn6RlLBwC
-         swfgOWTxNH5EhUBzdXfnXkHPn5QfUt89P9GvaFwzrlxPE7nj1sgFqbmXz3JahiU5k+uW
-         xd7jo0QY0KsSJG5GAWPDZhGH947Nv+NxHkMPI3MefTNf2Tmw6ZXfT68twLkHZg2qYngi
-         RDNp3uTNvoi2mSnZnDrSYQANgYHuqQ6T0xZJzdZWJEyKxXp7Ef+hJc8KsYN6XYaHp0rl
-         wURw==
-X-Gm-Message-State: ANoB5pmSjYA4xKP9VKI+LhoNQqrIzPnVu95EmonMNNC62otZCMi1Dnnc
-        NFC8MLampz7Ox0KofwffX32Oow==
-X-Google-Smtp-Source: AA0mqf6AhCTZUtOfuGYDhXfqaKP0HI3CcryljG1Et3fvW7wqzGVxjYaxttb++c6crBKvAOdrZVKVcw==
-X-Received: by 2002:a05:6402:1f14:b0:461:c7ef:b09e with SMTP id b20-20020a0564021f1400b00461c7efb09emr37432404edb.58.1669710397245;
-        Tue, 29 Nov 2022 00:26:37 -0800 (PST)
+        bh=4v7Xp4UFwcIIZYZ0RgIN5pAk6f0FzEGlZBS1d7BjE8M=;
+        b=VL5/oIkKp+p0MFtkPIILr+pwMd/nhMKEPho86UwiMLUNVJt24u/ywVnLob9BZm+IPA
+         s298d4rcCuHUemgwWM2HqgTVJ2Wzz/DitQwYieJNPRDewQ08zvW+bb5TzuHuNsKU+Rii
+         1nqA/g1FwBbFd8zbah4oOSLZ9g6pZKHtFC503VuKcHrzaIkwxDSaZyMOqf7QNQKREOU4
+         t/uzkb9Cpyd96+0Eq5EMqlWZvz/HTJYk94AONEHwRxhCUlKQaP7j+nM6h7P2vb2ml9qE
+         Hm1UTABghFgpxGxqTJpwtljKbvSuC67sB0gYHeIJcl+PbgWycsReWW9ngU/ZhHBZRQH0
+         at9Q==
+X-Gm-Message-State: ANoB5pkqftWRirCfxtB9NCalkGs34UH9PyLljse3fjYtfB+CVM24O8tl
+        hHS1+KS8Mo+BGBGuVWGq+jNABQ==
+X-Google-Smtp-Source: AA0mqf4klzozGLk8G6ChytpzpBsUMkgVkxU4/gqOvr33nL+FktypM4IdS/dR44D+c0D+dCGAFz/q1A==
+X-Received: by 2002:a17:906:5a84:b0:7ae:65e4:7204 with SMTP id l4-20020a1709065a8400b007ae65e47204mr45496813ejq.579.1669710445675;
+        Tue, 29 Nov 2022 00:27:25 -0800 (PST)
 Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id r9-20020a50aac9000000b00461c6e8453dsm6017247edc.23.2022.11.29.00.26.36
+        by smtp.gmail.com with ESMTPSA id kz1-20020a17090777c100b0078de26f66b9sm5851248ejc.114.2022.11.29.00.27.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Nov 2022 00:26:36 -0800 (PST)
-Date:   Tue, 29 Nov 2022 09:26:35 +0100
+        Tue, 29 Nov 2022 00:27:25 -0800 (PST)
+Date:   Tue, 29 Nov 2022 09:27:24 +0100
 From:   Jiri Pirko <jiri@resnulli.us>
 To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Cc:     Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
@@ -98,15 +98,15 @@ Cc:     Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
         Guangbin Huang <huangguangbin2@huawei.com>,
         Minghao Chi <chi.minghao@zte.com.cn>,
         Shijith Thotton <sthotton@marvell.com>
-Subject: Re: [PATCH net-next v5 3/4] net: devlink: make the
- devlink_ops::info_get() callback optional
-Message-ID: <Y4XCO21nYeJZKUh5@nanopsycho>
+Subject: Re: [PATCH net-next v5 4/4] net: devlink: clean-up empty
+ devlink_ops::info_get()
+Message-ID: <Y4XCbMooeWxsovHT@nanopsycho>
 References: <20221129000550.3833570-1-mailhol.vincent@wanadoo.fr>
- <20221129000550.3833570-4-mailhol.vincent@wanadoo.fr>
+ <20221129000550.3833570-5-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221129000550.3833570-4-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20221129000550.3833570-5-mailhol.vincent@wanadoo.fr>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -116,20 +116,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Tue, Nov 29, 2022 at 01:05:49AM CET, mailhol.vincent@wanadoo.fr wrote:
->Some drivers only reported the driver name in their
->devlink_ops::info_get() callback. Now that the core provides this
->information, the callback became empty. For such drivers, just
->removing the callback would prevent the core from executing
->devlink_nl_info_fill() meaning that "devlink dev info" would not
->return anything.
+Tue, Nov 29, 2022 at 01:05:50AM CET, mailhol.vincent@wanadoo.fr wrote:
+>devlink_ops::info_get() is now optional and devlink will continue to
+>report information even if that callback gets removed.
 >
->Make the callback function optional by executing
->devlink_nl_info_fill() even if devlink_ops::info_get() is NULL.
->
->N.B.: the drivers with devlink support which previously did not
->implement devlink_ops::info_get() will now also be able to report
->the driver name.
+>Remove all the empty devlink_ops::info_get() callbacks from the
+>drivers.
 >
 >Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
