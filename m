@@ -2,21 +2,21 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5605263B75D
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 02:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B94263B75F
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Nov 2022 02:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234948AbiK2BoR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Nov 2022 20:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S235135AbiK2BoW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Nov 2022 20:44:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234897AbiK2BoQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Nov 2022 20:44:16 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B7455BB;
-        Mon, 28 Nov 2022 17:44:16 -0800 (PST)
+        with ESMTP id S235125AbiK2BoS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Nov 2022 20:44:18 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE553C6D1;
+        Mon, 28 Nov 2022 17:44:17 -0800 (PST)
 Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NLlVF0cYSzHwFj;
-        Tue, 29 Nov 2022 09:43:33 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NLlVJ12SqzmWHj;
+        Tue, 29 Nov 2022 09:43:36 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.70) by
  canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -27,10 +27,12 @@ To:     <bvanassche@acm.org>, <jgg@ziepe.ca>, <leon@kernel.org>,
 CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <andriy.shevchenko@linux.intel.com>, <bart.vanassche@wdc.com>,
         <easwar.hariharan@intel.com>, Wang Yufen <wangyufen@huawei.com>
-Subject: [PATCH v4 1/2] RDMA/hfi1: Fix error return code in parse_platform_config()
-Date:   Tue, 29 Nov 2022 10:04:18 +0800
-Message-ID: <1669687459-14180-1-git-send-email-wangyufen@huawei.com>
+Subject: [PATCH v4 2/2] RDMA/srp: Fix error return code in srp_parse_options()
+Date:   Tue, 29 Nov 2022 10:04:19 +0800
+Message-ID: <1669687459-14180-2-git-send-email-wangyufen@huawei.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1669687459-14180-1-git-send-email-wangyufen@huawei.com>
+References: <1669687459-14180-1-git-send-email-wangyufen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.175.112.70]
@@ -45,76 +47,212 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In the previous while loop, "ret" may be assigned zero, so the error
-return code may be incorrectly set to 0 instead of -EINVAL.
+In the previous while loop, "ret" may be assigned zero, , so the error
+return code may be incorrectly set to 0 instead of -EINVAL. Alse
+investigate each case separately as Andy suggessted.
 
-Fixes: 97167e813415 ("staging/rdma/hfi1: Tune for unknown channel if configuration file is absent")
+Fixes: e711f968c49c ("IB/srp: replace custom implementation of hex2bin()")
+Fixes: 2a174df0c602 ("IB/srp: Use kstrtoull() instead of simple_strtoull()")
+Fixes: 19f313438c77 ("IB/srp: Add RDMA/CM support")
 Signed-off-by: Wang Yufen <wangyufen@huawei.com>
 ---
- drivers/infiniband/hw/hfi1/firmware.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/infiniband/ulp/srp/ib_srp.c | 71 +++++++++++++++++++++++++++++--------
+ 1 file changed, 56 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/firmware.c b/drivers/infiniband/hw/hfi1/firmware.c
-index 1d77514..9a08c1a 100644
---- a/drivers/infiniband/hw/hfi1/firmware.c
-+++ b/drivers/infiniband/hw/hfi1/firmware.c
-@@ -1730,7 +1730,7 @@ int parse_platform_config(struct hfi1_devdata *dd)
- 	u32 *ptr = NULL;
- 	u32 header1 = 0, header2 = 0, magic_num = 0, crc = 0, file_length = 0;
- 	u32 record_idx = 0, table_type = 0, table_length_dwords = 0;
--	int ret = -EINVAL; /* assume failure */
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index 1075c2a..692c69a 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -3343,7 +3343,7 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 	bool has_port;
+ 	int opt_mask = 0;
+ 	int token;
+-	int ret = -EINVAL;
 +	int ret;
+ 	int i;
  
- 	/*
- 	 * For integrated devices that did not fall back to the default file,
-@@ -1743,6 +1743,7 @@ int parse_platform_config(struct hfi1_devdata *dd)
+ 	options = kstrdup(buf, GFP_KERNEL);
+@@ -3410,7 +3410,8 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 			break;
  
- 	if (!dd->platform_config.data) {
- 		dd_dev_err(dd, "%s: Missing config file\n", __func__);
-+		ret = -EINVAL;
- 		goto bail;
- 	}
- 	ptr = (u32 *)dd->platform_config.data;
-@@ -1751,6 +1752,7 @@ int parse_platform_config(struct hfi1_devdata *dd)
- 	ptr++;
- 	if (magic_num != PLATFORM_CONFIG_MAGIC_NUM) {
- 		dd_dev_err(dd, "%s: Bad config file\n", __func__);
-+		ret = -EINVAL;
- 		goto bail;
- 	}
+ 		case SRP_OPT_PKEY:
+-			if (match_hex(args, &token)) {
++			ret = match_hex(args, &token);
++			if (ret) {
+ 				pr_warn("bad P_Key parameter '%s'\n", p);
+ 				goto out;
+ 			}
+@@ -3470,7 +3471,8 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 			break;
  
-@@ -1774,6 +1776,7 @@ int parse_platform_config(struct hfi1_devdata *dd)
- 	if (file_length > dd->platform_config.size) {
- 		dd_dev_info(dd, "%s:File claims to be larger than read size\n",
- 			    __func__);
-+		ret = -EINVAL;
- 		goto bail;
- 	} else if (file_length < dd->platform_config.size) {
- 		dd_dev_info(dd,
-@@ -1794,6 +1797,7 @@ int parse_platform_config(struct hfi1_devdata *dd)
- 			dd_dev_err(dd, "%s: Failed validation at offset %ld\n",
- 				   __func__, (ptr - (u32 *)
- 					      dd->platform_config.data));
+ 		case SRP_OPT_MAX_SECT:
+-			if (match_int(args, &token)) {
++			ret = match_int(args, &token);
++			if (ret) {
+ 				pr_warn("bad max sect parameter '%s'\n", p);
+ 				goto out;
+ 			}
+@@ -3478,8 +3480,12 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 			break;
+ 
+ 		case SRP_OPT_QUEUE_SIZE:
+-			if (match_int(args, &token) || token < 1) {
++			ret = match_int(args, &token);
++			if (ret)
++				goto out;
++			if (token < 1) {
+ 				pr_warn("bad queue_size parameter '%s'\n", p);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->scsi_host->can_queue = token;
+@@ -3490,25 +3496,34 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 			break;
+ 
+ 		case SRP_OPT_MAX_CMD_PER_LUN:
+-			if (match_int(args, &token) || token < 1) {
++			ret = match_int(args, &token);
++			if (ret)
++				goto out;
++			if (token < 1) {
+ 				pr_warn("bad max cmd_per_lun parameter '%s'\n",
+ 					p);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->scsi_host->cmd_per_lun = token;
+ 			break;
+ 
+ 		case SRP_OPT_TARGET_CAN_QUEUE:
+-			if (match_int(args, &token) || token < 1) {
++			ret = match_int(args, &token);
++			if (ret)
++				goto out;
++			if (token < 1) {
+ 				pr_warn("bad max target_can_queue parameter '%s'\n",
+ 					p);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->target_can_queue = token;
+ 			break;
+ 
+ 		case SRP_OPT_IO_CLASS:
+-			if (match_hex(args, &token)) {
++			ret = match_hex(args, &token);
++			if (ret) {
+ 				pr_warn("bad IO class parameter '%s'\n", p);
+ 				goto out;
+ 			}
+@@ -3517,6 +3532,7 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 				pr_warn("unknown IO class parameter value %x specified (use %x or %x).\n",
+ 					token, SRP_REV10_IB_IO_CLASS,
+ 					SRP_REV16A_IB_IO_CLASS);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->io_class = token;
+@@ -3539,16 +3555,21 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 			break;
+ 
+ 		case SRP_OPT_CMD_SG_ENTRIES:
+-			if (match_int(args, &token) || token < 1 || token > 255) {
++			ret = match_int(args, &token);
++			if (ret)
++				goto out;
++			if (token < 1 || token > 255) {
+ 				pr_warn("bad max cmd_sg_entries parameter '%s'\n",
+ 					p);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->cmd_sg_cnt = token;
+ 			break;
+ 
+ 		case SRP_OPT_ALLOW_EXT_SG:
+-			if (match_int(args, &token)) {
++			ret = match_int(args, &token);
++			if (ret) {
+ 				pr_warn("bad allow_ext_sg parameter '%s'\n", p);
+ 				goto out;
+ 			}
+@@ -3556,43 +3577,62 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 			break;
+ 
+ 		case SRP_OPT_SG_TABLESIZE:
+-			if (match_int(args, &token) || token < 1 ||
+-					token > SG_MAX_SEGMENTS) {
++			ret = match_int(args, &token);
++			if (ret)
++				goto out;
++			if (token < 1 || token > SG_MAX_SEGMENTS) {
+ 				pr_warn("bad max sg_tablesize parameter '%s'\n",
+ 					p);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->sg_tablesize = token;
+ 			break;
+ 
+ 		case SRP_OPT_COMP_VECTOR:
+-			if (match_int(args, &token) || token < 0) {
++			ret = match_int(args, &token);
++			if (ret)
++				goto out;
++			if (token < 0) {
+ 				pr_warn("bad comp_vector parameter '%s'\n", p);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->comp_vector = token;
+ 			break;
+ 
+ 		case SRP_OPT_TL_RETRY_COUNT:
+-			if (match_int(args, &token) || token < 2 || token > 7) {
++			ret = match_int(args, &token);
++			if (ret)
++				goto out;
++			if (token < 2 || token > 7) {
+ 				pr_warn("bad tl_retry_count parameter '%s' (must be a number between 2 and 7)\n",
+ 					p);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->tl_retry_count = token;
+ 			break;
+ 
+ 		case SRP_OPT_MAX_IT_IU_SIZE:
+-			if (match_int(args, &token) || token < 0) {
++			ret = match_int(args, &token);
++			if (ret)
++				goto out;
++			if (token < 0) {
+ 				pr_warn("bad maximum initiator to target IU size '%s'\n", p);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->max_it_iu_size = token;
+ 			break;
+ 
+ 		case SRP_OPT_CH_COUNT:
+-			if (match_int(args, &token) || token < 1) {
++			ret = match_int(args, &token);
++			if (ret)
++				goto out;
++			if (token < 1) {
+ 				pr_warn("bad channel count %s\n", p);
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 			target->ch_count = token;
+@@ -3601,6 +3641,7 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 		default:
+ 			pr_warn("unknown parameter or missing value '%s' in target creation request\n",
+ 				p);
 +			ret = -EINVAL;
- 			goto bail;
+ 			goto out;
  		}
- 
-@@ -1837,6 +1841,7 @@ int parse_platform_config(struct hfi1_devdata *dd)
- 					   __func__, table_type,
- 					   (ptr - (u32 *)
- 					    dd->platform_config.data));
-+				ret = -EINVAL;
- 				goto bail; /* We don't trust this file now */
- 			}
- 			pcfgcache->config_tables[table_type].table = ptr;
-@@ -1856,6 +1861,7 @@ int parse_platform_config(struct hfi1_devdata *dd)
- 					   __func__, table_type,
- 					   (ptr -
- 					    (u32 *)dd->platform_config.data));
-+				ret = -EINVAL;
- 				goto bail; /* We don't trust this file now */
- 			}
- 			pcfgcache->config_tables[table_type].table_metadata =
+ 	}
 -- 
 1.8.3.1
 
