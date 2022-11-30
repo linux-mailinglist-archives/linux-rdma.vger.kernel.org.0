@@ -2,120 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9198363CDD2
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Nov 2022 04:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F7363CE51
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Nov 2022 05:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbiK3Dbg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Nov 2022 22:31:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
+        id S232902AbiK3EUh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Nov 2022 23:20:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbiK3Dbg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 22:31:36 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C6B5ADE1;
-        Tue, 29 Nov 2022 19:31:34 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NMPqZ4gj3zHwDs;
-        Wed, 30 Nov 2022 11:30:50 +0800 (CST)
-Received: from [10.174.179.191] (10.174.179.191) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 30 Nov 2022 11:31:32 +0800
-Message-ID: <65604aae-b722-4caf-3373-d0f1e4492faa@huawei.com>
-Date:   Wed, 30 Nov 2022 11:31:32 +0800
+        with ESMTP id S232859AbiK3EUf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 23:20:35 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1396A76C;
+        Tue, 29 Nov 2022 20:20:35 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FBC1619EC;
+        Wed, 30 Nov 2022 04:20:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD11FC433C1;
+        Wed, 30 Nov 2022 04:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1669782034;
+        bh=rhxe2NS1qMj88hLzeSaLLkIURFc6ENsFHmlnswfI07c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UanXum1bVt5dtWMfNwDK1Ip3MfLXPPCVi9tsG5FYKH1kLlCT4n7WGDOFd8i0weg0R
+         mPSG1iGO0XGTi6NAirfNcf3aprB+5+TBWHXCPFyyvRlHY0Kb4OXexEe2/P1W3nHiM8
+         YIhP1PTIcYaBd/OAjlvzw6U3WrzFoNsFv7BzcizDT7/gvTIPNGUDZNn6KvQwZ9mNLy
+         9WKjFSXncJShNhwBgvtO3Jhm3sq3Rh1M0P6Ygs6M0c6y1O6KdyfmnrxbFrinOgclm2
+         z5qfwJTzAIGc12/F0b9uLAlg1VVZYCZhSgTsNTFuGWJgEzYZFnEZPNfxMJNjy4bB+k
+         +SP+bV8J6wqhw==
+Date:   Tue, 29 Nov 2022 20:20:32 -0800
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Pavan Chebbi <pavan.chebbi@broadcom.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5e: Remove unneeded io-mapping.h #include
+Message-ID: <Y4baEGvozPhBlUZw@fedora>
+References: <7779439b2678fffe7d3e4e0d94bbb1b1eb850f5e.1669565797.git.christophe.jaillet@wanadoo.fr>
+ <CALs4sv1x5kqHVu=q=kifSPXc=yhobowRvQhjkhG-3UwW2ZzbPg@mail.gmail.com>
+ <CALs4sv24PiCW_9svBCLF8W+rkb=w90fBCEYOuFAkozXUQu_kLQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH v4 2/2] RDMA/srp: Fix error return code in
- srp_parse_options()
-To:     Bart Van Assche <bvanassche@acm.org>, <jgg@ziepe.ca>,
-        <leon@kernel.org>, <dennis.dalessandro@cornelisnetworks.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <andriy.shevchenko@linux.intel.com>, <bart.vanassche@wdc.com>,
-        <easwar.hariharan@intel.com>
-References: <1669687459-14180-1-git-send-email-wangyufen@huawei.com>
- <1669687459-14180-2-git-send-email-wangyufen@huawei.com>
- <b4d78eb0-4492-ac7f-d500-3d49b0dc7aa1@acm.org>
-From:   wangyufen <wangyufen@huawei.com>
-In-Reply-To: <b4d78eb0-4492-ac7f-d500-3d49b0dc7aa1@acm.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.191]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CALs4sv24PiCW_9svBCLF8W+rkb=w90fBCEYOuFAkozXUQu_kLQ@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I'm so sorry for the poor patch description. Is the following 
-description OK?
+On 28 Nov 10:27, Pavan Chebbi wrote:
+>Though I think having the target tree specified conventionally in the
+>subject line [PATCH net] would be more complying with the process.
 
-In the previous iteration of the while loop, "ret" may have been 
-assigned a value of 0, so the error return code -EINVAL may have been 
-incorrectly set to 0.
-Also, investigate each case separately as Andy suggessted. If the help 
-function match_int() fails, the error code is returned, which is 
-different from the warning information printed before. If the parsing 
-result token is incorrect, "-EINVAL" is returned and the original 
-warning information is printed.
+For such cleanup patches I think [PATCH net-next] is better.
 
+[...]
 
-Thanks.
+>>
+>> Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
 
-在 2022/11/30 2:43, Bart Van Assche 写道:
-> On 11/28/22 18:04, Wang Yufen wrote:
->> In the previous while loop, "ret" may be assigned zero, , so the error
-> 
-> The word "iteration" is missing from the above sentence. Additionally, 
-> there is a double comma.
-> 
->> return code may be incorrectly set to 0 instead of -EINVAL. Alse
-> 
-> Alse -> Also
-> 
->>           case SRP_OPT_QUEUE_SIZE:
->> -            if (match_int(args, &token) || token < 1) {
->> +            ret = match_int(args, &token);
->> +            if (ret)
->> +                goto out;
->> +            if (token < 1) {
->>                   pr_warn("bad queue_size parameter '%s'\n", p);
->> +                ret = -EINVAL;
->>                   goto out;
->>               }
->>               target->scsi_host->can_queue = token;
-> 
-> Why only to report "bad queue_size parameter" if ret == 0 && token < 1 
-> but not if ret < 0? This is a behavior change that has not been 
-> explained in the patch description.
-> 
->> @@ -3490,25 +3496,34 @@ static int srp_parse_options(struct net *net, 
->> const char *buf,
->>               break;
->>           case SRP_OPT_MAX_CMD_PER_LUN:
->> -            if (match_int(args, &token) || token < 1) {
->> +            ret = match_int(args, &token);
->> +            if (ret)
->> +                goto out;
->> +            if (token < 1) {
->>                   pr_warn("bad max cmd_per_lun parameter '%s'\n",
->>                       p);
->> +                ret = -EINVAL;
->>                   goto out;
->>               }
->>               target->scsi_host->cmd_per_lun = token;
->>               break;
-> 
-> Same comment here and for many other changes below.
-> 
-> Thanks,
-> 
-> Bart.
-> 
-> 
+Thanks you Pavan & Christophe
+applied to net-next-mlx5 will be sent to net-next shortly 
+
