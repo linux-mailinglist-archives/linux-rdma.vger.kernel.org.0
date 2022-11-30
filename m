@@ -2,76 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F7363CE51
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Nov 2022 05:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0844163CFC4
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Nov 2022 08:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbiK3EUh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Nov 2022 23:20:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
+        id S233070AbiK3Hll (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Nov 2022 02:41:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbiK3EUf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Nov 2022 23:20:35 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1396A76C;
-        Tue, 29 Nov 2022 20:20:35 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S230049AbiK3Hll (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Nov 2022 02:41:41 -0500
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04005B5A5;
+        Tue, 29 Nov 2022 23:41:40 -0800 (PST)
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FBC1619EC;
-        Wed, 30 Nov 2022 04:20:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD11FC433C1;
-        Wed, 30 Nov 2022 04:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669782034;
-        bh=rhxe2NS1qMj88hLzeSaLLkIURFc6ENsFHmlnswfI07c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UanXum1bVt5dtWMfNwDK1Ip3MfLXPPCVi9tsG5FYKH1kLlCT4n7WGDOFd8i0weg0R
-         mPSG1iGO0XGTi6NAirfNcf3aprB+5+TBWHXCPFyyvRlHY0Kb4OXexEe2/P1W3nHiM8
-         YIhP1PTIcYaBd/OAjlvzw6U3WrzFoNsFv7BzcizDT7/gvTIPNGUDZNn6KvQwZ9mNLy
-         9WKjFSXncJShNhwBgvtO3Jhm3sq3Rh1M0P6Ygs6M0c6y1O6KdyfmnrxbFrinOgclm2
-         z5qfwJTzAIGc12/F0b9uLAlg1VVZYCZhSgTsNTFuGWJgEzYZFnEZPNfxMJNjy4bB+k
-         +SP+bV8J6wqhw==
-Date:   Tue, 29 Nov 2022 20:20:32 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Pavan Chebbi <pavan.chebbi@broadcom.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5e: Remove unneeded io-mapping.h #include
-Message-ID: <Y4baEGvozPhBlUZw@fedora>
-References: <7779439b2678fffe7d3e4e0d94bbb1b1eb850f5e.1669565797.git.christophe.jaillet@wanadoo.fr>
- <CALs4sv1x5kqHVu=q=kifSPXc=yhobowRvQhjkhG-3UwW2ZzbPg@mail.gmail.com>
- <CALs4sv24PiCW_9svBCLF8W+rkb=w90fBCEYOuFAkozXUQu_kLQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CALs4sv24PiCW_9svBCLF8W+rkb=w90fBCEYOuFAkozXUQu_kLQ@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4NMWNz0ttpz8RTZM;
+        Wed, 30 Nov 2022 15:41:39 +0800 (CST)
+Received: from xaxapp01.zte.com.cn ([10.88.40.50])
+        by mse-fl1.zte.com.cn with SMTP id 2AU7fOKX001717;
+        Wed, 30 Nov 2022 15:41:24 +0800 (+08)
+        (envelope-from zhang.songyi@zte.com.cn)
+Received: from mapi (xaxapp01[null])
+        by mapi (Zmail) with MAPI id mid31;
+        Wed, 30 Nov 2022 15:41:27 +0800 (CST)
+Date:   Wed, 30 Nov 2022 15:41:27 +0800 (CST)
+X-Zmail-TransId: 2af9638709276644dd5b
+X-Mailer: Zmail v1.0
+Message-ID: <202211301541270908055@zte.com.cn>
+Mime-Version: 1.0
+From:   <zhang.songyi@zte.com.cn>
+To:     <saeedm@nvidia.com>, <pabeni@redhat.com>
+Cc:     <leon@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <mbloch@nvidia.com>, <maorg@nvidia.com>,
+        <elic@nvidia.com>, <jerrliu@nvidia.com>, <cmi@nvidia.com>,
+        <vladbu@nvidia.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhang.songyi@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIG5ldC1uZXh0XSBuZXQvbWx4NTogcmVtb3ZlIE5VTEwgY2hlY2sgYmVmb3JlIGRldl97cHV0LCBob2xkfQ==?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl1.zte.com.cn 2AU7fOKX001717
+X-Fangmail-Gw-Spam-Type: 0
+X-FangMail-Miltered: at cgslv5.04-192.168.250.137.novalocal with ID 63870933.000 by FangMail milter!
+X-FangMail-Envelope: 1669794099/4NMWNz0ttpz8RTZM/63870933.000/10.5.228.132/[10.5.228.132]/mse-fl1.zte.com.cn/<zhang.songyi@zte.com.cn>
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 63870933.000/4NMWNz0ttpz8RTZM
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 28 Nov 10:27, Pavan Chebbi wrote:
->Though I think having the target tree specified conventionally in the
->subject line [PATCH net] would be more complying with the process.
+From: zhang songyi <zhang.songyi@zte.com.cn>
 
-For such cleanup patches I think [PATCH net-next] is better.
+The call netdev_{put, hold} of dev_{put, hold} will check NULL,
+so there is no need to check before using dev_{put, hold}.
 
-[...]
+Fix the following coccicheck warning:
+/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c:1450:2-10:
+WARNING:
+WARNING  NULL check before dev_{put, hold} functions is not needed.
 
->>
->> Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks you Pavan & Christophe
-applied to net-next-mlx5 will be sent to net-next shortly 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
+index 32c3e0a649a7..6ab3a6b6dd8d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
+@@ -1448,8 +1448,7 @@ struct net_device *mlx5_lag_get_roce_netdev(struct mlx5_core_dev *dev)
+        } else {
+                ndev = ldev->pf[MLX5_LAG_P1].netdev;
+        }
+-       if (ndev)
+-               dev_hold(ndev);
++       dev_hold(ndev);
 
+ unlock:
+        spin_unlock_irqrestore(&lag_lock, flags);
+--
+2.25.1
