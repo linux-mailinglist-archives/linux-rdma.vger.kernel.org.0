@@ -2,74 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BA163F30C
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEB163F30B
 	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 15:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbiLAOkE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S231238AbiLAOkE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 1 Dec 2022 09:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbiLAOkB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 09:40:01 -0500
-Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com [195.245.230.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00381ABA08
-        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 06:39:58 -0800 (PST)
+        with ESMTP id S231911AbiLAOj4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 09:39:56 -0500
+Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com [195.245.230.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6FCA897B
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 06:39:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1669905596; i=@fujitsu.com;
-        bh=tSWt+WRtlgPCC3kQZfe74/61cw+qJNzqFeDZ1w6llZg=;
+        s=170520fj; t=1669905590; i=@fujitsu.com;
+        bh=9QlUY7MsB2ll2U8ok3nNDZF6dr0ghTqjtnnKEIgCBPE=;
         h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
          MIME-Version:Content-Type;
-        b=FCelKeizaGdkql+cMKcKIVkr6rXYh4dsB6Lr5QwVBpUh6TJd+ELU75nLGAUjEX20g
-         z479dKB+d2bGSvN7UTvT6dKTQGQED502kzTuey2XN3+456MSrfI4w4HBS0Q5EccFUU
-         IvPmhqeMFoZCVKWDDu6ZwUeM4uwsNtFKsSQFQNNZCYs8ynNnLfdbkBzgsJIlDX/v3p
-         wesv4ZlxuTzK1F1tToMcsZq2/YMKhBob7bQw6kA122ft01+rAaj5jN8G+TDjdvDlKP
-         U8QJk2XMOSGXDxBVic7vNX+/PmdX9MlarBRwpJ8V1hfq89FMNveFkr5swX5lcPOoDR
-         4O2MkTJdxCQ5w==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOIsWRWlGSWpSXmKPExsViZ8ORpLtpT0e
-  ywbR5hhZX/u1htJjyaymzxbNDvSwWX6ZOY7Y4f6yf3YHVY+esu+wem1Z1snn0Nr9j8/i8SS6A
-  JYo1My8pvyKBNWPN2UfsBZs4KmYePs3awDiDvYuRi0NIYCOjxMF5G1kgnCVMEpMPX2XuYuQEc
-  vYxSkzZFQ5iswmoSeyc/pIFxBYR8JbYceMEWA2zQL3E4aObGEFsYQFnia1XtgLFOThYBFQkZr
-  +QAQnzCjhKnDnymxXElhBQkJjy8D1YK6eAk8T9n5MYQcqFgGo6/0RClAtKnJz5hAViuoTEwRc
-  vmCFaFSXalvxjh7ArJGbNamOCsNUkrp7bxDyBUXAWkvZZSNoXMDKtYjQtTi0qSy3SNdJLKspM
-  zyjJTczM0Uus0k3USy3VLU8tLtE11EssL9ZLLS7WK67MTc5J0ctLLdnECAz9lGKW2TsYe5b+0
-  TvEKMnBpCTKW93ZkSzEl5SfUpmRWJwRX1Sak1p8iFGGg0NJgvfkTqCcYFFqempFWmYOMA5h0h
-  IcPEoivLzrgdK8xQWJucWZ6RCpU4zGHNs+79vLzDF19r/9zEIsefl5qVLivHW7gUoFQEozSvP
-  gBsHSwyVGWSlhXkYGBgYhnoLUotzMElT5V4ziHIxKwrzbtgFN4cnMK4Hb9wroFCagUyLF2kBO
-  KUlESEk1MGlEWvP0JTE03eCtnXenbulzIZGXbjJa2ev2H3Fg/1x6XvekjtrH7UejWPhfvjtjM
-  Uuy1sHw6/sVOy/krryflFS99AhvzOcP64K8Y9Z9XDonvLZfw7c1pCKKseAsS8pKo72mdpUTVK
-  LqWt7v4fjAJ6rXuezXuou//t6M9D9+JSnp59awpLulFkuuCP3Y2dr8gO3CyRs3T/ma3v4gUCz
-  0SveNgWZe5T5TWY3d8iXvzx9qcdjWvK3Ut4SBraXusr3wpxvPNuZ2lK20WZIguVOzf8Pfv+yr
-  Vn+Z+/RoW/PTBqa83/ETdL60CcaZlOmqhvEf2XZ65pcH7mVTWKMWLvJm8phkqre6zmFRRMBV3
-  f9za5RYijMSDbWYi4oTAeCnvIqKAwAA
+        b=IxfHlCiRSjHKaDuobEu5xPsJ3fQAN/EtyHHlThxOXNyJe8DVs8qO434DQNFale835
+         Oled0U1T1J4PLgDCP0/gYrMjoPjuxToQcMUVM5xzxgczCoyZUgDJ6LEzIE9v+fXYN8
+         SEVtwVjjvIMSoKuDnJDa+hnZvrKti2SMgPrg8ndzm78EywcrOlFcWVHXHYl806yoLK
+         L2pyLIKh4YkY55cpSDD9/BAFSH04FUVM0Z6Mrkji6YibIaaJ2qJPd0xymn5AS1JumM
+         J36jG0CGGcVlpH4cmPPLH8R6a+0fVPv0Wrxl3nVUoUYHTACA5NJ2JWFtnn1b7hxBjm
+         MX8qduqJXNPvw==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBIsWRWlGSWpSXmKPExsViZ8MxSXfrno5
+  kg9W/bSyu/NvDaDHl11Jmi2eHelksvkydxmxx/lg/uwOrx85Zd9k9Nq3qZPPobX7H5vF5k1wA
+  SxRrZl5SfkUCa8am5WfZCm6wVbz795G1gfEaaxcjF4eQwBZGiRcTV7BBOMuZJCac/gbl7GOU+
+  HhmD3sXIycHm4CaxM7pL1lAbBEBb4kdN04wg9jMAvUSh49uYgSxhQX8Ja5PaQaLswioSDxf0s
+  cKYvMKOEqsOQNRIyGgIDHl4XuwGk4BJ4n7PycBxTmAljlKdP6JhCgXlDg58wkLxHgJiYMvXjB
+  DtCpKtC35xw5hV0jMmtXGBGGrSVw9t4l5AqPgLCTts5C0L2BkWsVoVpxaVJZapGtorpdUlJme
+  UZKbmJmjl1ilm6iXWqpbnlpcomuol1herJdaXKxXXJmbnJOil5dasokRGAEpxewCOxiPLPujd
+  4hRkoNJSZS3urMjWYgvKT+lMiOxOCO+qDQntfgQowwHh5IE78mdQDnBotT01Iq0zBxgNMKkJT
+  h4lER4edcDpXmLCxJzizPTIVKnGBWlxHnrdgMlBEASGaV5cG2wBHCJUVZKmJeRgYFBiKcgtSg
+  3swRV/hWjOAejkjDvtm1AU3gy80rgpr8CWswEtDhSrA1kcUkiQkqqgUmiRrLxU2SF36k+7rql
+  Zw8YP2XOmXQgpmHO8qKCzIT7T1WVZpWYib5aExfWsujgSq9/T7iKa+1/SG41efVxgxkj56Yfs
+  pd/Xtm7/qakgcnbCZHmi6uTPniL/c5vtOtQ/PntXqMAb5dBbrKqjvPPfoXS+DY7pfKr258vj/
+  2v0LzjRKXzlbmSh7Lut5m/1Yk5ZNfP/Pr0AUNdszfBt4p/H2Y9vu5I0qev5jw/TjRL98uIH5R
+  WfhPyMmFXBltsYP73oKSJ4Tcr2+Y9zw1nZg/8Ih4+77SPovZDj7+zZ2VaiL1tj5gZ4HF/zfYZ
+  16yjBHZu75N6fF7RY46S5MmYD2HrH6zUcy+fHHcl+KUa484b2UosxRmJhlrMRcWJAMVV/a17A
+  wAA
 X-Env-Sender: yangx.jy@fujitsu.com
-X-Msg-Ref: server-5.tower-591.messagelabs.com!1669905586!125903!1
-X-Originating-IP: [62.60.8.98]
+X-Msg-Ref: server-10.tower-585.messagelabs.com!1669905589!37381!1
+X-Originating-IP: [62.60.8.146]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.101.1; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 30982 invoked from network); 1 Dec 2022 14:39:46 -0000
-Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
-  by server-5.tower-591.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 1 Dec 2022 14:39:46 -0000
-Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id 699171B8;
-        Thu,  1 Dec 2022 14:39:46 +0000 (GMT)
+Received: (qmail 26872 invoked from network); 1 Dec 2022 14:39:49 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+  by server-10.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 1 Dec 2022 14:39:49 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 9317C1000D7;
+        Thu,  1 Dec 2022 14:39:49 +0000 (GMT)
 Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id 5E5EE1B7;
-        Thu,  1 Dec 2022 14:39:46 +0000 (GMT)
+        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 860851000D5;
+        Thu,  1 Dec 2022 14:39:49 +0000 (GMT)
 Received: from fcf4c122d5e4.localdomain (10.167.215.54) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Thu, 1 Dec 2022 14:39:42 +0000
+ (TLS) id 15.0.1497.42; Thu, 1 Dec 2022 14:39:46 +0000
 From:   Xiao Yang <yangx.jy@fujitsu.com>
 To:     <linux-rdma@vger.kernel.org>, <jgg@nvidia.com>,
         <rpearsonhpe@gmail.com>
 CC:     <leon@kernel.org>, <lizhijian@fujitsu.com>, <y-goto@fujitsu.com>,
         <zyjzyj2000@gmail.com>, Xiao Yang <yangx.jy@fujitsu.com>
-Subject: [PATCH v7 7/8] RDMA/rxe: Implement atomic write completion
-Date:   Thu, 1 Dec 2022 14:39:27 +0000
-Message-ID: <1669905568-62-3-git-send-email-yangx.jy@fujitsu.com>
+Subject: [PATCH v7 8/8] RDMA/rxe: Enable atomic write capability for rxe device
+Date:   Thu, 1 Dec 2022 14:39:28 +0000
+Message-ID: <1669905568-62-4-git-send-email-yangx.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1669905568-62-1-git-send-email-yangx.jy@fujitsu.com>
 References: <1669905568-62-1-git-send-email-yangx.jy@fujitsu.com>
@@ -89,36 +89,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Generate an atomic write completion when the atomic write request
-has been finished.
+The capability shows that rxe device supports atomic write operation.
 
 Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
 ---
- drivers/infiniband/sw/rxe/rxe_comp.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_param.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index 4dca4f8bbb5a..1c525325e271 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -104,6 +104,7 @@ static enum ib_wc_opcode wr_to_wc_opcode(enum ib_wr_opcode opcode)
- 	case IB_WR_LOCAL_INV:			return IB_WC_LOCAL_INV;
- 	case IB_WR_REG_MR:			return IB_WC_REG_MR;
- 	case IB_WR_BIND_MW:			return IB_WC_BIND_MW;
-+	case IB_WR_ATOMIC_WRITE:		return IB_WC_ATOMIC_WRITE;
- 
- 	default:
- 		return 0xff;
-@@ -269,6 +270,9 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
- 		if ((syn & AETH_TYPE_MASK) != AETH_ACK)
- 			return COMPST_ERROR;
- 
-+		if (wqe->wr.opcode == IB_WR_ATOMIC_WRITE)
-+			return COMPST_WRITE_SEND;
-+
- 		fallthrough;
- 		/* (IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE doesn't have an AETH)
- 		 */
+diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
+index 86c7a8bf3cbb..bbc88cd71d95 100644
+--- a/drivers/infiniband/sw/rxe/rxe_param.h
++++ b/drivers/infiniband/sw/rxe/rxe_param.h
+@@ -51,7 +51,12 @@ enum rxe_device_param {
+ 					| IB_DEVICE_SRQ_RESIZE
+ 					| IB_DEVICE_MEM_MGT_EXTENSIONS
+ 					| IB_DEVICE_MEM_WINDOW
++#ifdef CONFIG_64BIT
++					| IB_DEVICE_MEM_WINDOW_TYPE_2B
++					| IB_DEVICE_ATOMIC_WRITE,
++#else
+ 					| IB_DEVICE_MEM_WINDOW_TYPE_2B,
++#endif /* CONFIG_64BIT */
+ 	RXE_MAX_SGE			= 32,
+ 	RXE_MAX_WQE_SIZE		= sizeof(struct rxe_send_wqe) +
+ 					  sizeof(struct ib_sge) * RXE_MAX_SGE,
 -- 
 2.34.1
 
