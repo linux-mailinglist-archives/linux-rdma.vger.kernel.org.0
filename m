@@ -2,72 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0429A63EEE1
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 12:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA34963F008
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 12:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbiLALGo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Dec 2022 06:06:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        id S230159AbiLAL7B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Dec 2022 06:59:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbiLALFk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 06:05:40 -0500
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057875AE37
-        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 03:05:03 -0800 (PST)
+        with ESMTP id S230498AbiLAL7A (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 06:59:00 -0500
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C791B9793E
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 03:58:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1669892702; i=@fujitsu.com;
-        bh=5ATzsPe1GEEMgkDo9ZanwQxbHsRnXmINpPnwlyHojfU=;
+        s=170520fj; t=1669895934; i=@fujitsu.com;
+        bh=fnyPTTNyX7LUsAgFz1F/CQokYHNKXxje3DdQeoiMRcI=;
         h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
          In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        b=hRUxmM1KOj1sEsNbkAzEsCVy8WhPH/IdNoBfGxXB6OAbiaSqbtghZLPfpP8UdcwSj
-         Po2YCv6ZdZ131YvebUsoi2Jz1Spptkipd18FQe8qNLJZDKFbfqWFrJ7IC6VHT6xFkb
-         YeivZy312KeSw8UN5dERokwogChXCZjD9nOu/6tF/K4agEQ4btdBms0COMW0uiM5MR
-         J5rj9hvboI4NszZIGFm9GsH6qCdoRgxsRQkUIFioYDwTqwb7LJd8DTSrs4eXfBGs0u
-         XrdMdYAY/iFAG6j9hPHe5qzRWppnNQp8GMkwGZTaP/s/cbQsfN3FiRDmSv6UmWO5ox
-         cf5iDjZqyab0w==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjleJIrShJLcpLzFFi42Kxs+GYpBvb1ZF
-  ssO6PtsWVf3sYLab8Wsps8exQL4vFl6nTmC3OH+tnd2D12DnrLrvHplWdbB69ze/YPD5vkgtg
-  iWLNzEvKr0hgzdj9ajprwQmBih/XX7M1MHbwdjFycggJbGGUWHXXs4uRC8heziTR2dbNCuFsZ
-  ZRovnKBGaSKV8BO4vL6bawgNouAisTiyW/YIeKCEidnPmEBsUUFkiSubrgLViMs4Ccx78xDRh
-  BbBKj+xIkz7CBDmQUWMUksOLqDGWJDG6PE8t9zwTrYBNQkdk5/CTaJU0BLYs+8A2CbmQUsJBa
-  /OcgOYctLbH87BywuIaAo0bbkHzuEXSExa1YbE4StJnH13CbmCYxCs5AcOAvJqFlIRi1gZF7F
-  aFacWlSWWqRrpJdUlJmeUZKbmJmjl1ilm6iXWqqbl19UkqFrqJdYXqyXWlysV1yZm5yTopeXW
-  rKJERg1KcXJYTsYe5f+0TvEKMnBpCTK+9qrI1mILyk/pTIjsTgjvqg0J7X4EKMMB4eSBK9lG1
-  BOsCg1PbUiLTMHGMEwaQkOHiURXrl2oDRvcUFibnFmOkTqFKMux9TZ//YzC7Hk5eelSonzXgA
-  pEgApyijNgxsBSyaXGGWlhHkZGRgYhHgKUotyM0tQ5V8xinMwKgnzVoNM4cnMK4Hb9AroCCag
-  IyLF2kCOKElESEk1MAXt+7jKSzfHi1XX2D3d9BXH/3st+9827ud/1KXMKG7ctyXkjvV2d5snj
-  CeWXON8NXnp3n2Z6k9Wrp7zad3lmdtr20ruePpeeHRyxoWpc7l3rP8js4i/I+a9Zt3zy0If3W
-  UmxnnqxghubZYMZPyqpPSt0+n/3X/PtXazzTzEr778S4haSdoPtdXe584osTh8KP518NB/n0a
-  1Mw1eRjwb16xJXLC7bn75Aib9gOuZWhr3XbNtY/zrOnsZUtq3vLSacXjbVNHsANen3gliwQLW
-  HhOiIhJ/fSo5LZUXpMcpMf1jQs2DT1zV8/V8zFbm39nwvPmnpP50RQW1LE+2dZeMFdNusiYY/
-  Lrbb7nKX0lrrRJLcUaioRZzUXEiAPUPeyWhAwAA
+        b=RgRQQb5BX3oIh+ZgkCnFXauPEJzM0/XSyW7BSih09f10irpZVO/ZKxOco/uL9p1Gf
+         O+iR9BlOYTcVSE0H+N8Dm2U8pIZbHynC93jaCT28zN5cJzAgTQicxEUZ/VJgoBm4As
+         LnTH/f93cuYroSnJ6IdEiup70/oU53YXmv0t6h2PZj6tT8cvRSryKUCEw9wlrR0Mvy
+         T2av4THe4IWSFWYQVfxLpkZ7BympYqX1xdNPiWpyiSlDWJEXTG8gH8mRnMFzBWQaRX
+         QYjfAoFuB0/janoWCQJYAfXGfqmh4AOwJnCSYidJdsmm7MEDtp/eqUuK0f3sUsAZSN
+         1NKX6iP+ci34w==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpkleJIrShJLcpLzFFi42Kxs+HYrPtvWke
+  ywYILHBZX/u1htJjyaymzxbNDvSwWX6ZOY7Y4f6yf3YHVY+esu+wem1Z1snn0Nr9j8/i8SS6A
+  JYo1My8pvyKBNaNzZTNrwQP+ii8Xn7I0MO7m7WLk4hAS2MgosW/7IxYIZwmTxILmG1DOVkaJs
+  /uPMXYxcnLwCthJvF/wnB3EZhFQkVjSuZYZIi4ocXLmExYQW1QgSeLqhrusILawgIPEhXcLwe
+  IiQPUnTpxhBxnKLLAIaMPRHWDNQgIREm3XfzGB2GwCahI7p78EauDg4BTQklhz1RwkzCxgIbH
+  4zUF2CFteYvvbOWCtEgKKEm1L/rFD2BUSs2a1MUHYahJXz21insAoNAvJebOQjJqFZNQCRuZV
+  jGbFqUVlqUW6hpZ6SUWZ6RkluYmZOXqJVbqJeqmluuWpxSW6RnqJ5cV6qcXFesWVuck5KXp5q
+  SWbGIExk1KsuG4H4/Rlf/QOMUpyMCmJ8lZ3diQL8SXlp1RmJBZnxBeV5qQWH2KU4eBQkuBtng
+  qUEyxKTU+tSMvMAcYvTFqCg0dJhNcMJM1bXJCYW5yZDpE6xagoJc5rAJIQAElklObBtcFSxiV
+  GWSlhXkYGBgYhnoLUotzMElT5V4ziHIxKwrzhE4Gm8GTmlcBNfwW0mAlocaRYG8jikkSElFQD
+  k/3teO21MeLek25MPHHkydG/Nc0SldNFcl6yGLEYfXpQv/nOScdb3EdWPesw5lDn+7b34cbyZ
+  XKlDdJrksOEJtj2iaRylbAX1VzrSeFryxYJ/X7cee7M1yynCrxOd0qsTXRu51xfrLNV/CbLpE
+  fq8rcnBJtx3Dgo7Ltrt/JGoT9fjAI/zG48JXl60UYp446lfc+Ohey55KPnP5EnX3F3Q/nTSSv
+  +lRxNX+6n6NpuI7NqjvozTfZUbT3DSK+vde6ZFSbyywy38PJfX2R1g4XNYUtLRcoUl9tFTQqb
+  Qv51uZSJiJY/aeBznc/kvX2/89SZzXeFfuzYcElWmGNl4baVvE9S4j5N3X2v+k3DWu9NSizFG
+  YmGWsxFxYkAwzV7PJQDAAA=
 X-Env-Sender: yangx.jy@fujitsu.com
-X-Msg-Ref: server-17.tower-728.messagelabs.com!1669892701!330689!1
-X-Originating-IP: [62.60.8.146]
+X-Msg-Ref: server-11.tower-548.messagelabs.com!1669895933!58508!1
+X-Originating-IP: [62.60.8.179]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.101.1; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 24395 invoked from network); 1 Dec 2022 11:05:01 -0000
-Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
-  by server-17.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 1 Dec 2022 11:05:01 -0000
-Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 2823C1000DB;
-        Thu,  1 Dec 2022 11:05:01 +0000 (GMT)
+Received: (qmail 2789 invoked from network); 1 Dec 2022 11:58:54 -0000
+Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
+  by server-11.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 1 Dec 2022 11:58:54 -0000
+Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id D0717159;
+        Thu,  1 Dec 2022 11:58:53 +0000 (GMT)
 Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 1B5E81000D7;
-        Thu,  1 Dec 2022 11:05:01 +0000 (GMT)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id C3D1B153;
+        Thu,  1 Dec 2022 11:58:53 +0000 (GMT)
 Received: from [10.167.215.54] (10.167.215.54) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Thu, 1 Dec 2022 11:04:57 +0000
-Message-ID: <4a0e7932-ce2f-2631-eec5-4eb86c4498ab@fujitsu.com>
-Date:   Thu, 1 Dec 2022 19:04:50 +0800
+ (TLS) id 15.0.1497.42; Thu, 1 Dec 2022 11:58:50 +0000
+Message-ID: <c10c62d4-fee9-4824-1383-8c6cdcf1c71c@fujitsu.com>
+Date:   Thu, 1 Dec 2022 19:58:44 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH v6 1/8] RDMA: Extend RDMA user ABI to support atomic write
+Subject: Re: [PATCH v6 0/8] RDMA/rxe: Add atomic write operation
 To:     Jason Gunthorpe <jgg@nvidia.com>
 CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
@@ -76,9 +76,9 @@ CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
         "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>
 References: <20221015063648.52285-1-yangx.jy@fujitsu.com>
- <20221015063648.52285-2-yangx.jy@fujitsu.com> <Y30n4NtOepuzUhxN@nvidia.com>
+ <Y30o/2LDLO5bw+tA@nvidia.com>
 From:   Xiao Yang <yangx.jy@fujitsu.com>
-In-Reply-To: <Y30n4NtOepuzUhxN@nvidia.com>
+In-Reply-To: <Y30o/2LDLO5bw+tA@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.167.215.54]
@@ -95,70 +95,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2022/11/23 3:49, Jason Gunthorpe wrote:
-> On Sat, Oct 15, 2022 at 06:37:04AM +0000, yangx.jy@fujitsu.com wrote:
->> 1) Define new atomic write request/completion in userspace.
->> 2) Define new atomic write capability in userspace.
+On 2022/11/23 3:54, Jason Gunthorpe wrote:
+> On Sat, Oct 15, 2022 at 06:37:03AM +0000, yangx.jy@fujitsu.com wrote:
+>> The IB SPEC v1.5[1] defined new atomic write operation. This patchset
+>> makes SoftRoCE support new atomic write on RC service.
 >>
->> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
->> ---
->>   include/uapi/rdma/ib_user_verbs.h | 4 ++++
->>   1 file changed, 4 insertions(+)
+>> On my rdma-core repository[2], I have introduced atomic write API
+>> for libibverbs and Pyverbs. I also have provided a rdma_atomic_write
+>> example and test_qp_ex_rc_atomic_write python test to verify
+>> the patchset.
 >>
->> diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
->> index 43672cb1fd57..237814815544 100644
->> --- a/include/uapi/rdma/ib_user_verbs.h
->> +++ b/include/uapi/rdma/ib_user_verbs.h
->> @@ -466,6 +466,7 @@ enum ib_uverbs_wc_opcode {
->>   	IB_UVERBS_WC_BIND_MW = 5,
->>   	IB_UVERBS_WC_LOCAL_INV = 6,
->>   	IB_UVERBS_WC_TSO = 7,
->> +	IB_UVERBS_WC_ATOMIC_WRITE = 9,
->>   };
+>> The steps to run the rdma_atomic_write example:
+>> server:
+>> $ ./rdma_atomic_write_server -s [server_address] -p [port_number]
+>> client:
+>> $ ./rdma_atomic_write_client -s [server_address] -p [port_number]
+>>
+>> The steps to run test_qp_ex_rc_atomic_write test:
+>> run_tests.py --dev rxe_enp0s3 --gid 1 -v test_qpex.QpExTestCase.test_qp_ex_rc_atomic_write
+>> test_qp_ex_rc_atomic_write (tests.test_qpex.QpExTestCase) ... ok
+>>
+>> ----------------------------------------------------------------------
+>> Ran 1 test in 0.008s
+>>
+>> OK
+>>
+>> [1]: https://www.infinibandta.org/wp-content/uploads/2021/08/IBTA-Overview-of-IBTA-Volume-1-Release-1.5-and-MPE-2021-08-17-Secure.pptx
+>> [2]: https://github.com/yangx-jy/rdma-core/tree/new_api_with_point
+>>
+>> v5->v6:
+>> 1) Rebase on current for-next
+>> 2) Split the implementation of atomic write into 7 patches
+>> 3) Replace all "RDMA Atomic Write" with "atomic write"
+>> 4) Save 8-byte value in struct rxe_dma_info instead
+>> 5) Remove the print in atomic_write_reply()
 > 
-> Why is this 9? The following patch does
+> I think this looked OK, please fix the enum thing and also resolve all
+> the remarks on the github and rebase/repost/retest both series.
 Hi Jason,
 
-I reserve 8 for IB_UVERBS_WC_FLUSH and 14 for IB_UVERBS_WR_FLUSH.
+Thanks for your reminder. I will do it soon.
+In addition, I have resolved all remarks except the following one on github:
+EdwardSro: "keep an empty line at EoF"
+I: "I wonder why we need to add an empty line at EoF? I think there is 
+no empty line at EOF in other files."
 
-> 
-> @@ -985,6 +986,7 @@ enum ib_wc_opcode {
->          IB_WC_REG_MR,
->          IB_WC_MASKED_COMP_SWAP,
->          IB_WC_MASKED_FETCH_ADD,
-> +       IB_WC_ATOMIC_WRITE = IB_UVERBS_WC_ATOMIC_WRITE,
-> 
-> Which corrupts the enum.
-
-Good catch. I will correct it now.
+I hope you or EdwardSro can answer my question. ^_^
 
 Best Regards,
 Xiao Yang
 > 
-> It should be like this:
-> 
-> +++ b/include/rdma/ib_verbs.h
-> @@ -983,10 +983,10 @@ enum ib_wc_opcode {
->          IB_WC_BIND_MW = IB_UVERBS_WC_BIND_MW,
->          IB_WC_LOCAL_INV = IB_UVERBS_WC_LOCAL_INV,
->          IB_WC_LSO = IB_UVERBS_WC_TSO,
-> +       IB_WC_ATOMIC_WRITE = IB_UVERBS_WC_ATOMIC_WRITE,
->          IB_WC_REG_MR,
->          IB_WC_MASKED_COMP_SWAP,
->          IB_WC_MASKED_FETCH_ADD,
-> -       IB_WC_ATOMIC_WRITE = IB_UVERBS_WC_ATOMIC_WRITE,
->   /*
->    * Set value of IB_WC_RECV so consumers can test if a completion is a
->    * receive by testing (opcode & IB_WC_RECV).
-> +++ b/include/uapi/rdma/ib_user_verbs.h
-> @@ -466,7 +466,7 @@ enum ib_uverbs_wc_opcode {
->          IB_UVERBS_WC_BIND_MW = 5,
->          IB_UVERBS_WC_LOCAL_INV = 6,
->          IB_UVERBS_WC_TSO = 7,
-> -       IB_UVERBS_WC_ATOMIC_WRITE = 9,
-> +       IB_UVERBS_WC_ATOMIC_WRITE = 8,
->   };
->   
->   struct ib_uverbs_wc {
-> 
+> Thanks,
 > Jason
