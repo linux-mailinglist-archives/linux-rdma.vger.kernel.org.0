@@ -2,66 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0AD63F442
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 16:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 283CB63F453
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 16:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbiLAPjX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Dec 2022 10:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
+        id S232059AbiLAPlQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Dec 2022 10:41:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbiLAPjC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 10:39:02 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96F6638A
-        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 07:38:14 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id t62so2368096oib.12
-        for <linux-rdma@vger.kernel.org>; Thu, 01 Dec 2022 07:38:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yeN6GjSK0gxMKJtJJS+11SXwZ6ljxklBKlz0KcqnFrg=;
-        b=k2zfTYwKPszq2Gpno/Slt3dXbyfhIcJjTWJIOy3M/1vBFoXDemRDNunj0TZ4ELEbsg
-         5Kk0YFCVd33KAg7FhOlXUihaCKhq5MyVsOcgz/8RUyH1OGwpJD4qamTDGgXqQIi3FO1N
-         bXYMfsqR8uMrd0aM8KcoXHel9+ujFfbWH8GQFvGXoWpAyUq/z3PK9mLCf1w/ieD8mqKR
-         E8Rlxdz5jAUEwYE/ujcVZ98qxYSzzRVhNLcH6Wulo9zy/4EVNTGhiZwVZ94dgLBIz1o5
-         UqnRrmuaEfI8XSCxTnVIEVF3GLByPz0xm21f0uMyYX0iXpALUAZURTU7GHUrAPk0ECqa
-         WFrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yeN6GjSK0gxMKJtJJS+11SXwZ6ljxklBKlz0KcqnFrg=;
-        b=Czl/rz06uAxFWVD5cWOXOU7d75oJPXCO8LgEB09Ya7vb6ZnCwAY7ml8+EtifPCZEAS
-         z4U9C3d9g8NTe7p4lUB31uG9TbTaFHc7bdnYe8/PQkK1cEoC6MEcyrIwqLN0/nXP4BoW
-         5fEvu5yWkAk5jdLT+QBoZkpUvCn31lEoVSmEy/zPPGoPWyI4u5oRDsRFH/LqsirFNpRw
-         JpMzsO+jQopevrskEy5GD2cy5rtEFYkx0n1L//qHxm41w2n1CZrrXLSWvg3blNU6NvrH
-         2sHx2pehozaKQrxDHTwHZrgM+0c7UBWKdvhUywbmbd9T35jV1JUAQ+YsjuMLIZ3eg1ct
-         7QCQ==
-X-Gm-Message-State: ANoB5pn2425Q3aPxoS/SF71PoXk5Q8I0/aWk4psmLi2s2juzOdgZALNt
-        jmS98/UtsgINEGtBAyc+ijk=
-X-Google-Smtp-Source: AA0mqf5zy9lXZOOYUbqU2QY46Buspy70dwHs3mUpHomfH7HSOFP/4PTf57i+2oNfFbJfi9JLeN/Hog==
-X-Received: by 2002:a05:6808:2110:b0:35b:bae2:d997 with SMTP id r16-20020a056808211000b0035bbae2d997mr8797883oiw.90.1669909091547;
-        Thu, 01 Dec 2022 07:38:11 -0800 (PST)
-Received: from ?IPV6:2603:8081:140c:1a00:edbc:46e8:aba5:dca6? (2603-8081-140c-1a00-edbc-46e8-aba5-dca6.res6.spectrum.com. [2603:8081:140c:1a00:edbc:46e8:aba5:dca6])
-        by smtp.gmail.com with ESMTPSA id cs3-20020a056830678300b006393ea22c1csm2233768otb.16.2022.12.01.07.38.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Dec 2022 07:38:11 -0800 (PST)
-Message-ID: <443943ee-6f79-b6df-4533-723953173a5e@gmail.com>
-Date:   Thu, 1 Dec 2022 09:38:10 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
+        with ESMTP id S232145AbiLAPkz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 10:40:55 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2042.outbound.protection.outlook.com [40.107.237.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DECAB5DA8
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 07:39:57 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FwYm8Lxf7KZwkzmeuaTj1zq6HXwZ0Scmxr68cvufMs8f/jsMDqX5W65pBFPepuKYxtttnaZoYN/IE96WkE+VUhLdOQCr/RmhskVXXwuKxENy/ElcM3JIM5Q4GfD1ZzF4ZQLoKveRhtkFBUXSGXOpGkdQVURTuPku9gHqceIGKqMbYwQvNZVmgN0XrfhNKxoJo7rPr5GS894brKEObJibFINByOymtxs9TMccopLeM5SlEfVpBTaPMsnmQOBEFNTa2rXcwyV+o7qtxDZKCeC/Cp/A4pNZ+igKUmwK70ecQ//SDN2zllBUb3Cbd+8LaknB3HvrWijFXkmbnUe1vqGZcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Bkl0X9nFnQkLqhNxL6BUb4FQLuJzENYSpe5LuxcXI1Y=;
+ b=cxe6ezZjRDuzKoWFOlz9Z3uA0qD448IzI+3SpyhnYvhvM+YaT6QV3DEvXUF44MIPcx2Wyy9qLQzA+9YGFehBhwnSPWvLrGB0dIE+T0hIJ9rZIKcDgu8A2rfWghXg57nYSunbhNlg6isNHicHOLlKzdsyrhUOFU6EY9uChbp31ZBrgTWmg0XzAcbQrKYetm0vkEsFZL5EfBNKBk9o3X0XEXmx086EXV/ZQxrg3Ydixw86Y0EZSJEjv8ZYON0CSju84aYSPQfAHEyM2p8wH0y38zto5Gg6EuSOTvXUNgYmhg0AGiYkHApFYfXnRBz0A+aSVR2qZKlWc86nVT0TInyeww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bkl0X9nFnQkLqhNxL6BUb4FQLuJzENYSpe5LuxcXI1Y=;
+ b=Z8oeyYfn382WdGM/egKFaAj/eoRFn8RAIgaS6x3nT6Dbrh45eqHJq4XRBH1jhfY8QIMzo6tC48vIZIlfUX7bdASrWBkB1+l/IpHIQ5zWDq7c/1D0VVEhu3dHZnzpWcqPAke7PHSmcifSeeoYKodiWTX6VhqsxVMYrfvUYk3OVxrdMhMVwcdC+0bQP0/UCzpsGzv99VVdgTXHfQsz3ssaK/OfrfJUMXdJwTFoSH5Jxu/YyOPE2JFjZQuEwoEhKzMhr5e9ZJdjEhwmASsuyJBjyqY2uBpiIQGysPDF/BA8hf5ntnBMJy8/dAHIB9xE+0n+OP/AJLyrytyq26TmAfRIDw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CY8PR12MB7362.namprd12.prod.outlook.com (2603:10b6:930:52::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.8; Thu, 1 Dec
+ 2022 15:39:55 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%8]) with mapi id 15.20.5857.023; Thu, 1 Dec 2022
+ 15:39:54 +0000
+Date:   Thu, 1 Dec 2022 11:39:52 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     leon@kernel.org, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Subject: Re: [PATCH for-next v2 06/18] RDMA/rxe: Add rxe_add_frag() to
  rxe_mr.c
-Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     leon@kernel.org, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-References: <20221031202805.19138-1-rpearsonhpe@gmail.com>
- <20221031202805.19138-6-rpearsonhpe@gmail.com> <Y3/Bqa7obMROAtr8@nvidia.com>
+Message-ID: <Y4jKyHYosuveRQrj@nvidia.com>
+References: <Y3/Bqa7obMROAtr8@nvidia.com>
  <7ebc82bd-3d1c-e2d3-be4f-2e5c95073a65@gmail.com>
  <Y4fo6tknpuCveRgq@nvidia.com>
  <fd788906-6e40-8109-f6a1-5f281361c68c@gmail.com>
@@ -70,67 +56,80 @@ References: <20221031202805.19138-1-rpearsonhpe@gmail.com>
  <Y4f4NkV+4ZbubQjp@nvidia.com>
  <d80f31c4-2e51-c726-2954-a7039befe329@gmail.com>
  <82449ff1-2602-a6d0-e33d-af783545bcb0@gmail.com>
-In-Reply-To: <82449ff1-2602-a6d0-e33d-af783545bcb0@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+ <443943ee-6f79-b6df-4533-723953173a5e@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <443943ee-6f79-b6df-4533-723953173a5e@gmail.com>
+X-ClientProxiedBy: DM6PR02CA0125.namprd02.prod.outlook.com
+ (2603:10b6:5:1b4::27) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY8PR12MB7362:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3ca1bb44-dbe2-401c-5feb-08dad3b24b32
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KFy2FsqnOsys43zmZxRm7a3S94IUo6D4qSZgAfBrj+gIZE2K9vLL8pHSgAEmlNhee297GyQ6KEMJNz9qfWpFfu0n0a4bMz3HPPeBC7ACA4Ua4pQ1VzBhPsS4bBa2/QFczfyKNtwQhkCNBuo5flV1q2WdhXpyhi+H5cW0/efuDFQvW2UQkBmui3iUMoeKKVpvH/pGW7M5uqVjjJPfN8wd0ZJNUTnltHmNXTuHzHeP00nOo+JLN2Sa+mPoGzoUiE9mXPsUBvfdw7ijlMcqciz5uExHvqO8a133O7mAl2E/s87Wbt281CjWdBJyJIe0VfB0V6f/imzTX3UNr8cg9QjpfphyRAfoREvrpHJ7ieI3Ig+o7Qlb9GRsA81AhDp21SjZTXXV2+j0oQs8EvvHUkDUd1jodNgBEqIjgH7CcRvym1BDMCn0NV14t2fznVL2Bx2hGFSEBTQ8YaZmcw13wBkucns9ndP5yJ4AC60klTT4vLG895RYdbq53X9MOnQan9cHP0j6/8qyVIHrm2t/pgzbHD3U72KwxIef8SWLupgiKrX5Isw0yYwAO5XSaIjU7l1nm1I4sl+7YsbbQCWkgIrprTgJSz6NO3Kp/b2E6CJq4rky3OzT/7ywXdeI9QxwkRGWlDCiIU2pBlqN6Pub+2yR4w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(39860400002)(366004)(396003)(136003)(376002)(451199015)(86362001)(36756003)(6916009)(6486002)(316002)(478600001)(2906002)(4744005)(8676002)(66556008)(66476007)(4326008)(66946007)(8936002)(41300700001)(5660300002)(83380400001)(38100700002)(26005)(6512007)(6506007)(2616005)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4IYz55st4dqTXtMKBFOjO2+jGLjQ09j8jqVMiX2tmqx6wwqG2JsnAG26abGW?=
+ =?us-ascii?Q?C3yaecQ/n+oEaafKkv5DE07rBMxd6n3kxsvsa0ff5pDNgLBQAv7Mt3WaXKBw?=
+ =?us-ascii?Q?MKkDIRokLiPoSjmO8lY2lhDGPZr82SKW0dsZ7nyaZohXxkfuVTx8MACxiwTV?=
+ =?us-ascii?Q?01gO8abEbVQHdSqZD0H6UrDRXdIfW/7gE2tHc4Fg2b37bXlVZ2VxRu/SD0Xd?=
+ =?us-ascii?Q?lYJ6soG9dvx783wUq8gdp7NJYLilCUYB/XfCGw/id+SXmt4J7gX8yYX3Gs24?=
+ =?us-ascii?Q?6L+XJwNRalIGJPgkAhJaofGFBgD6fUFDDtKyqLiwrGaWAWHXPlrO7beHV5DA?=
+ =?us-ascii?Q?lco3gZtUD1c9NjPMUWI/ivgKh7F4+eJz9Hle8ck4yqPUkrEWClmmxJZBOjc4?=
+ =?us-ascii?Q?1jqz5RKlsK3JZX4RY7Uk6Shu607epLqcpYtYBdDRBKodVoyNB6fncPGrOM6F?=
+ =?us-ascii?Q?SVF2BEEBva+FWWz7qTTvH/gOtNXMlW7Ad4UpfxQ97ALIXIjn8iHegWW40kvC?=
+ =?us-ascii?Q?rrrvk2SP7tQIH1vNGbsjHI8u0OwN/m4i1VteFd38YV1DnadtQFlAvK/C9qjA?=
+ =?us-ascii?Q?0FQ1AKuavkmZ2SY5jMOsr8/1uIfMqaQnZwAM6CEqZox2gpQ0gu8/6tyKPAXz?=
+ =?us-ascii?Q?1U8zBXyXR7tyzJiHY3DX4Rq3EowWkqTBRGLNmDFbkUe1+Bt6MDZOY2nV7aKz?=
+ =?us-ascii?Q?jXOFYRUx0CSezHO+l9wVvNUkM2stbgEK+9/kxtbWgt242EgQXbyaChx+L9YA?=
+ =?us-ascii?Q?+YDaPSqb7SvcXxznw2po5Fl5VEbCBiw9jhak0bVIa9/suv2dguMIwbWh2blU?=
+ =?us-ascii?Q?IIJcPZGNDahhSypbTERBkJtNO50afIJ92+0v4RZ3XGVUafjmGXN929m1KEXU?=
+ =?us-ascii?Q?R/gf70kqBHedYKGJ9LxnockgSweyisrnkq2y+xzsOgXwQ1lq9jmk3cP0uaZ+?=
+ =?us-ascii?Q?Un1qxrOLtxyKDo+ASoC9/l79JADyutQXuPyA+yEBAwddWdMco06Y9xoXZ/eL?=
+ =?us-ascii?Q?mrVo3CL7YsU2JCkBwNYe15xPjRWgM8rKIJRikyfyo4b8SNvUJBkbNLUaKZHS?=
+ =?us-ascii?Q?EMT2N+mcIU502ENz5wibsJWLYhRMcRE0O53YaPRyHWHvjgv+PEShvBorCQD8?=
+ =?us-ascii?Q?6bzucQohBfcG0HPfUjuYCl32l8giXUYVnBxFuNQYP+zYtXKK4d7+PNxsctvA?=
+ =?us-ascii?Q?PUc0ZPJG/xu14tSaHyQQjtUTB6ashjzCxM2mnojpWNppi7qss4r//8nxbVl+?=
+ =?us-ascii?Q?8HsGlKkJnyA/0quZhVSNpUpnnuGpvCOzjxYyM0aEnLb/d86JBQPPFqh+Ur3m?=
+ =?us-ascii?Q?Ax3hN/1PyedCJd4P9X/4IgMdo+9N+26rq9flxrJ90d5dyjGFAagMOKwY1HOJ?=
+ =?us-ascii?Q?l5eUn3xOcSYAYLJ6SOMZQwQuhkq8HrkP75Pl3QYCBd9ggySgFocv1XZ5pr5p?=
+ =?us-ascii?Q?vbYq8cwzfY5ZKmrd4z9nF3sWxfb1T4tstbcQGa3ihshuZ+4EJa7pATzbNFfj?=
+ =?us-ascii?Q?SCk8WGhPm0Wj42Vq48LIsHIt2/itP/hHX+CPCTt7HZnTnlqeHc6p1UObOCk3?=
+ =?us-ascii?Q?YRUwJQ9ZgfAzYZ1269w=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ca1bb44-dbe2-401c-5feb-08dad3b24b32
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2022 15:39:54.6671
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m6d6juI8IZxvKHUt4WkXEUORuRsYcEdfFbHOSfYlbR8wyoMYmTsGQptsUOEgT7j3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7362
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 12/1/22 09:16, Bob Pearson wrote:
-> On 12/1/22 09:04, Bob Pearson wrote:
->> On 11/30/22 18:41, Jason Gunthorpe wrote:
->>> On Wed, Nov 30, 2022 at 06:36:56PM -0600, Bob Pearson wrote:
->>>> I'm not looking at my patch you responded to but the one you posted to replace maps
->>>> by xarrays.
->>>
->>> I see, I botched that part
->>>
->>>> The existing rxe driver assumes that if ibmr->type == IB_MR_TYPE_DMA
->>>> that the iova is just a kernel (virtual) address that is already
->>>> mapped.
->>>
->>> No, it is not correct
->>>
->>>> Maybe this is not correct but it has always worked this way. These
->>>> are heavily used by storage stacks (e.g. Lustre) which always use
->>>> DMA mr's. Since we don't actually do any DMAs we don't need to setup
->>>> the iommu for these and just do memcpy's without dealing with pages.
->>>
->>> You still should be doing the kmap
->>>
->>> Jason
->>
->> Something was disconnected in my memory. So I went back and looked at lustre.
->> Turns out it never uses IB_MR_TYPE_DMA and for that matter I can't find any
->> use cases in the rdma tree or online. So, the implementation in rxe has almost
->> certainly never been used.
->>
->> So I need to choose to 'fix' the current implementation or just delete type dma support.
->> I get the idea that I need to convert the iova to a page and kmap it but i'm not
->> clear how to do that. This 64 bit numnber (iova) needs to convert to a struct page *.
->> Without a use case to look at I don't know how to interpret it. Apparently it's not a
->> virtual address.
->>
->> Bob
->>
-> 
-> I did find a single use case for the mr created during alloc_pd. The comments seem
-> to imply that the use is just access to local kernel memory with va=pa. So I am back
-> to my previous thoughts. Memcpy should just work.
-> 
-> Bob
+On Thu, Dec 01, 2022 at 09:38:10AM -0600, Bob Pearson wrote:
 
-Further, looking at ipoib as an example, it builds sge lists using the lkey from get_dma_mr()
-and sets the sge->addr to a kernel virtual memory address after previously calling
-ib_dma_map_single() so the addresses are mapped for dma access and visible before use.
-They are unmapped after the read/write operation completes. What is the point of kmapping
-the address after dma mapping them?
+> Further, looking at ipoib as an example, it builds sge lists using the lkey from get_dma_mr()
+> and sets the sge->addr to a kernel virtual memory address after previously calling
+> ib_dma_map_single() so the addresses are mapped for dma access and visible before use.
+> They are unmapped after the read/write operation completes. What is the point of kmapping
+> the address after dma mapping them?
 
-Bob  
+Because not everything is ipoib, and things like block will map sgls
+with struct pages, not kva.
+
+Jason
