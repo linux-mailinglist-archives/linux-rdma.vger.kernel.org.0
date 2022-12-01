@@ -2,72 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6021E63F719
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 19:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6514563FC10
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Dec 2022 00:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbiLASFa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Dec 2022 13:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59420 "EHLO
+        id S232049AbiLAX3j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Dec 2022 18:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbiLASF3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 13:05:29 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E043DB68CD;
-        Thu,  1 Dec 2022 10:05:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A5A2620A5;
-        Thu,  1 Dec 2022 18:05:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6332AC433D6;
-        Thu,  1 Dec 2022 18:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669917927;
-        bh=zLB1Nh9GGDyIWBvfvHJFIAPcZZ4kNqUaEGoqNwVteK8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ljUvm6l4FHjwYPLmknS6tyH13hRQrpFwTMkv4wiqFLsK2UQJlhg0gBixPkZ9qGoL0
-         jiknIrw74IBNpZmoQQ6cSZg2HkrPzL/kN3a8vXuanT8Y+gyOo0nSbRrNb2X/hAHD1b
-         9W2pVkiwN1/V9RCyi57e5Ixo7NQ+/g4YxDpFrKUbO+hlwp+tCQyMQCIJn7RL2Fc6ze
-         M7SHCW0BsVm7NEEPkgWjwIfXm1t/7k/7xzVhI30gfKu1ZQmMQD2vTUbN2fZb7cLlaV
-         Bb3HkOWD4O55K9chhSUo+FlIocFIHA7Rz6EC6UmblQ8FniZRRyMrWYeqGaFLqiWped
-         oRhCqGL4VWiBA==
-Date:   Thu, 1 Dec 2022 20:05:23 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        linux-rdma@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org
-Subject: Re: [PATCH 1/2 v2] IB/qib: don't use qib_wc_x86_64 for UML
-Message-ID: <Y4js47I/JjCXunzF@unreal>
-References: <20221130200945.24459-1-rdunlap@infradead.org>
- <Y4hyPPzyQiI3i9jh@unreal>
- <Y4jhMwCox6RGI5FM@infradead.org>
+        with ESMTP id S232055AbiLAX3S (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 18:29:18 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FB92C659
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 15:27:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1669937278; x=1701473278;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Ox7RwD9JEOKtzBltE+hDK+4hEdS8fpH6LHDkFLzB3+E=;
+  b=BC35LxIiuxHENOJKllsENXRg8fMi/G62dPejWj1tPFwdOEpwZDC8zgDv
+   yGpVtyp56rMHD3ftNzGhQKlMo7JSxCW319e/z7fKEkgYvoYOCuZas0UK0
+   vpGyLHBGctYeLHeCriFRnWBt0eE6/JxAUEFh5QYuGuzskAFvF/cs+vFcz
+   Q3ouwJuhzBn+u6klibfIoEyWB3Aefl4NEG+JE6EjPiXUpACVRv1aQ7vbF
+   tI0+/bcS1Xiw4rrB6prHgXySB1Ly5tcn5uZKtHMH1Ys7Kqv53wsAnHkKl
+   4JJNXnwuul5z/1rd2zgpZQ+twIDSmXl3/AjF5PXXrv/hmhOZ2o3s5chHH
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="377980898"
+X-IronPort-AV: E=Sophos;i="5.96,210,1665471600"; 
+   d="scan'208";a="377980898"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2022 15:27:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="819231978"
+X-IronPort-AV: E=Sophos;i="5.96,210,1665471600"; 
+   d="scan'208";a="819231978"
+Received: from lkp-server01.sh.intel.com (HELO 64a2d449c951) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 01 Dec 2022 15:27:46 -0800
+Received: from kbuild by 64a2d449c951 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1p0sy2-000D1C-0o;
+        Thu, 01 Dec 2022 23:27:46 +0000
+Date:   Fri, 02 Dec 2022 07:27:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 10aa7cd398a9ead7464a7f8b49d4e4c843806813
+Message-ID: <63893868.MhZlEUNSGPjB/Ndl%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y4jhMwCox6RGI5FM@infradead.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 01, 2022 at 09:15:31AM -0800, Christoph Hellwig wrote:
-> On Thu, Dec 01, 2022 at 11:22:04AM +0200, Leon Romanovsky wrote:
-> > I would advocate to add this line to whole drivers/infiniband.
-> > None of RDMA code makes sense for UML.
-> 
-> software iWarp and RoCE absolutely make sense on UML.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 10aa7cd398a9ead7464a7f8b49d4e4c843806813  IB/hfi1: Switch to netif_napi_add()
 
-Ok, to be more pedantic "none of RDMA HW code ...".
-However does anybody use rxe or siw in UML?
+elapsed time: 844m
 
-Thanks
+configs tested: 58
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
+arc                                 defconfig
+s390                             allmodconfig
+alpha                               defconfig
+s390                                defconfig
+m68k                             allyesconfig
+s390                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+ia64                             allmodconfig
+arc                  randconfig-r043-20221201
+s390                 randconfig-r044-20221201
+riscv                randconfig-r042-20221201
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+i386                          randconfig-a001
+i386                          randconfig-a003
+x86_64                        randconfig-a015
+i386                          randconfig-a005
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+x86_64                            allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+i386                          randconfig-c001
+arc                        vdk_hs38_defconfig
+arm                           stm32_defconfig
+powerpc                 mpc834x_itx_defconfig
+
+clang tested configs:
+hexagon              randconfig-r041-20221201
+hexagon              randconfig-r045-20221201
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+i386                          randconfig-a002
+i386                          randconfig-a004
+x86_64                        randconfig-a016
+i386                          randconfig-a006
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+x86_64                        randconfig-k001
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
