@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1C063E723
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 02:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A444F63E73E
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 02:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbiLABhj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Nov 2022 20:37:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
+        id S229599AbiLABt4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Nov 2022 20:49:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbiLABhh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Nov 2022 20:37:37 -0500
+        with ESMTP id S229513AbiLABtz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Nov 2022 20:49:55 -0500
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0891089;
-        Wed, 30 Nov 2022 17:37:34 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NMz9h6lbGzqSfh;
-        Thu,  1 Dec 2022 09:33:28 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E82D1F0;
+        Wed, 30 Nov 2022 17:49:54 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NMzWp6rzvzmWKj;
+        Thu,  1 Dec 2022 09:49:10 +0800 (CST)
 Received: from [10.174.179.191] (10.174.179.191) by
  canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 1 Dec 2022 09:37:31 +0800
-Message-ID: <d0fecef2-34bb-3e35-cc7f-0035eaaa8a27@huawei.com>
-Date:   Thu, 1 Dec 2022 09:37:31 +0800
+ 15.1.2375.31; Thu, 1 Dec 2022 09:49:52 +0800
+Message-ID: <0b726968-bfb8-ab9a-8d03-4d072d410597@huawei.com>
+Date:   Thu, 1 Dec 2022 09:49:51 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.0
@@ -43,7 +43,7 @@ In-Reply-To: <1d27a774-cf83-6e36-4fa1-c0635ebfd79e@acm.org>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.174.179.191]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -74,14 +74,48 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 > Please reply below instead of above. See also 
 > https://en.wikipedia.org/wiki/Posting_style.
 > 
-
-Thanks, that's helpful.
-
 > Regarding your question: not logging an error message if user input is 
 > rejected is unfriendly to the user. I think it's better to keep the 
 > behavior of reporting an error if a match* function fails instead of 
 > reporting in the patch description that the behavior has changed.
 > 
+
+So the following modification is better?
+
+                 case SRP_OPT_CMD_SG_ENTRIES:
+-                       if (match_int(args, &token) || token < 1 || 
+token > 255) {
++                       ret = match_int(args, &token);
++                       if (ret) {
++                               pr_warn("bad max cmd_sg_entries 
+parameter '%s'\n",
++                                       p);
++                               goto out;
++                       }
++                       if (token < 1 || token > 255) {
+                                 pr_warn("bad max cmd_sg_entries 
+parameter '%s'\n",
+                                         p);
++                               ret = -EINVAL;
+                                 goto out;
+                         }
+                         target->cmd_sg_cnt = token;
+                         break;
+
+
+Or the following is better?
+
+                         if (match_int(args, &token) || token < 1 || 
+token > 255) {
+                                 pr_warn("bad max cmd_sg_entries 
+parameter '%s'\n",
+                                         p);
++                               ret = -EINVAL;
+                                 goto out;
+                         }
+                         target->cmd_sg_cnt = token;
+                         break;
+
 
 > Thanks,
 > 
