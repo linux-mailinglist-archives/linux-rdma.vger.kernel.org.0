@@ -2,106 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D241F63E99F
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 07:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C11A63EC03
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Dec 2022 10:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbiLAGKX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Dec 2022 01:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
+        id S229681AbiLAJKZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Dec 2022 04:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbiLAGKU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 01:10:20 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B01A1A26;
-        Wed, 30 Nov 2022 22:10:19 -0800 (PST)
+        with ESMTP id S229468AbiLAJKY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 04:10:24 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE2E5DB82;
+        Thu,  1 Dec 2022 01:10:23 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AC49BB81DA0;
-        Thu,  1 Dec 2022 06:10:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4876AC43141;
-        Thu,  1 Dec 2022 06:10:17 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 14470B81E65;
+        Thu,  1 Dec 2022 09:10:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 331DFC433D6;
+        Thu,  1 Dec 2022 09:10:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669875017;
-        bh=hozUH6T6PH3Y6/hM/gJcrV49l5jrvVEfOsr88QDqV4A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NMlv2kIdOXXpsxwO6wWMg0z/dfV3LoKJzOMbEvoBJjUIP3ajugPonUv1iXUVq1Za3
-         JHmzOGYQTDkKOcrjgfC12ngt1+qLyDtjSP9+0VEMYEiHzWXEl5Rb7AIWp4vYfSv+Vv
-         lquFGjUBrqCB4h5U06a5UbC3rzJZFVLWf8hTmZdokwK1l1rF/aIpPjoNGLtBFnXY37
-         AaDqGt2RZBdG2tx5Wbg+OH1ik76+BN7jbL40VS8YW7u7l5JT8KBBRQlfyRVhj68bQy
-         4sp5pIdNM5Vrsq20UR1LJu/3iCQ0J2YOi0WcmJzXrscYxQ4yeOaCWxejmyI0MumfM+
-         Z0uiwAXegZgJQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2B4F0E29F38;
-        Thu,  1 Dec 2022 06:10:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1669885820;
+        bh=B4rSBBn+9jnyDFWA3h9tdw7f7e5sffBAfT1JE8gR29k=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Bbug4YKhfGPHOQn/6C9j/vx7Tc4DLK/cnBo3bzUFK8KLhcK2nJjsPyDS6RF4Mw7xq
+         EdtjUVO9YmF7cVgJIz19YESD7PUJ3WgCQEFi6qwwoQF4X9fHfAQX0J857nbkHBXVgv
+         Iyr/lDd1kA3f3aIo+UYTYhWvzJCdC07WTFahUKBXCv0TRBtd0lZFL6y/wXtZkqBCre
+         wiHXyQKw5Uptni0YTZWDdCcNwGUCc+xy+seLuGoEz0OP0YLk34gc5QdjDjQ1ZlwBlD
+         G71NNKJE+bdZmHWgffPw3gAMt0oDXRRMgUA07ifP515qkXFoBeVej7l7qsCTJOSjPQ
+         2puXiD58+Q+jQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     yang.yang29@zte.com.cn, jgg@ziepe.ca,
+        dennis.dalessandro@cornelisnetworks.com
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+In-Reply-To: <202211301744378304494@zte.com.cn>
+References: <202211301744378304494@zte.com.cn>
+Subject: Re: [PATCH] IB/hfi1: switch to netif_napi_add()
+Message-Id: <166988581627.44464.17864367397107451165.b4-ty@kernel.org>
+Date:   Thu, 01 Dec 2022 11:10:16 +0200
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v6 0/3] net: devlink: return the driver name in
- devlink_nl_info_fill
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166987501717.18933.6140637869420910519.git-patchwork-notify@kernel.org>
-Date:   Thu, 01 Dec 2022 06:10:17 +0000
-References: <20221129095140.3913303-1-mailhol.vincent@wanadoo.fr>
-In-Reply-To: <20221129095140.3913303-1-mailhol.vincent@wanadoo.fr>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     jiri@nvidia.com, netdev@vger.kernel.org, kuba@kernel.org,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, bbrezillon@kernel.org,
-        arno@natisbad.org, schalla@marvell.com, kurt@linutronix.de,
-        andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
-        michael.chan@broadcom.com, ioana.ciornei@nxp.com,
-        dmichail@fungible.com, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, sgoutham@marvell.com,
-        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
-        hkelam@marvell.com, sbhatta@marvell.com, tchornyi@marvell.com,
-        saeedm@nvidia.com, leon@kernel.org, idosch@nvidia.com,
-        petrm@nvidia.com, simon.horman@corigine.com, snelson@pensando.io,
-        drivers@pensando.io, aelior@marvell.com, manishc@marvell.com,
-        jonathan.lemon@gmail.com, vadfed@fb.com, richardcochran@gmail.com,
-        vadimp@mellanox.com, shalomt@mellanox.com,
-        linux-crypto@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
-        jiri@mellanox.com, herbert@gondor.apana.org.au,
-        chenhao288@hisilicon.com, huangguangbin2@huawei.com,
-        chi.minghao@zte.com.cn, sthotton@marvell.com
+X-Mailer: b4 0.11.0-dev-87e0e
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Tue, 29 Nov 2022 18:51:37 +0900 you wrote:
-> The driver name is available in device_driver::name. Right now,
-> drivers still have to report this piece of information themselves in
-> their devlink_ops::info_get callback function.
+On Wed, 30 Nov 2022 17:44:37 +0800 (CST), yang.yang29@zte.com.cn wrote:
+> From: Yang Yang <yang.yang29@zte.com.cn>
 > 
-> The goal of this series is to have the devlink core to report this
-> information instead of the drivers.
+> There is no need to use netif_napi_add_weight() when the weight argument
+> is 64. See "net: drop the weight argument from netif_napi_add".
 > 
-> [...]
+> 
 
-Here is the summary with links:
-  - [net-next,v6,1/3] net: devlink: let the core report the driver name instead of the drivers
-    https://git.kernel.org/netdev/net-next/c/226bf9805506
-  - [net-next,v6,2/3] net: devlink: make the devlink_ops::info_get() callback optional
-    https://git.kernel.org/netdev/net-next/c/c5cd7c86847c
-  - [net-next,v6,3/3] net: devlink: clean-up empty devlink_ops::info_get()
-    https://git.kernel.org/netdev/net-next/c/cf4590b91db4
+Applied, thanks!
 
-You are awesome, thank you!
+[1/1] IB/hfi1: switch to netif_napi_add()
+      https://git.kernel.org/rdma/rdma/c/10aa7cd398a9ea
+
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Leon Romanovsky <leon@kernel.org>
