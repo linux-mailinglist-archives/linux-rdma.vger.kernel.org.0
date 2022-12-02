@@ -2,276 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB36063FF24
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Dec 2022 04:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F26E463FFDA
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Dec 2022 06:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbiLBDkr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Dec 2022 22:40:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57136 "EHLO
+        id S232238AbiLBFiO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Dec 2022 00:38:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbiLBDkn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Dec 2022 22:40:43 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D263B874;
-        Thu,  1 Dec 2022 19:40:42 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NNdx94X3wzRpkm;
-        Fri,  2 Dec 2022 11:39:57 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 2 Dec 2022 11:40:40 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <bvanassche@acm.org>, <jgg@ziepe.ca>, <leon@kernel.org>,
-        <dennis.dalessandro@cornelisnetworks.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <andriy.shevchenko@linux.intel.com>, <bart.vanassche@wdc.com>,
-        <easwar.hariharan@intel.com>, Wang Yufen <wangyufen@huawei.com>
-Subject: [PATCH v5 2/2] RDMA/srp: Fix error return code in srp_parse_options()
-Date:   Fri, 2 Dec 2022 12:00:38 +0800
-Message-ID: <1669953638-11747-2-git-send-email-wangyufen@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1669953638-11747-1-git-send-email-wangyufen@huawei.com>
-References: <1669953638-11747-1-git-send-email-wangyufen@huawei.com>
+        with ESMTP id S231195AbiLBFiN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Dec 2022 00:38:13 -0500
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291C974CEE
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 21:38:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+        s=170520fj; t=1669959490; i=@fujitsu.com;
+        bh=OtLPIWZEHRkfHfiAtAoWSGvT6ZWK0GjffQGqV6GTAw8=;
+        h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+         In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        b=eBdluM8orbUwS1iCBiiJs5gCDG+1KbexvKWBVJyZ9t8UEYFP4iJWXBOWvBcRyGtp4
+         uBTyk5IL95UTWfECCBSzy+naGXNifvrLpQWcGos8pLGkpLgcGSBHjy1VWHwiyRLaeH
+         WZoBuuQ1tYMdWCqWNnZx6uDMOZplLSyGQl5tSPL24KBABcSANyPyAWIboZYj5S3lXw
+         hf7oR63weJ4hWBSlfdeUfo6nZ9OR/B/CdgZ+ge7PJCSBaEtFR5Qj9G0fep0yWTu0Oj
+         0ArxsM7Nj+8eP6pXCg5LChBSLSJ1ILjYnWUuvC79nmxT/YvP2NJAwAi7mkTBVNrhHg
+         vKgj2JtBITHww==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgleJIrShJLcpLzFFi42Kxs+FI1HXs70w
+  26N6nYXHl3x5Giym/ljJbPDvUy2LxZeo0Zovzx/rZHVg9ds66y+6xaVUnm0dv8zs2j8+b5AJY
+  olgz85LyKxJYM55+OcFWcJGtouXzccYGxhWsXYxcHEICWxglfjZvZOxi5ARyljNJzG6wg7C3M
+  ko0feEAsXkF7CS6Zz1lB7FZBFQklh88wAgRF5Q4OfMJC4gtKpAkcXXDXVYQW1jAQeLJj2tgNS
+  JA9SdOnGEHWcYsMIVRYl/TLmaIBQkSd09PALPZBNQkdk5/CTaIU0BL4s6cE2A2s4CFxOI3B9k
+  hbHmJ7W/ngNVLCChKtC35xw5hV0jMmtXGBGGrSVw9t4l5AqPQLCT3zUIyahaSUQsYmVcxmhWn
+  FpWlFukamuslFWWmZ5TkJmbm6CVW6SbqpZbqlqcWl+ga6SWWF+ulFhfrFVfmJuek6OWllmxiB
+  EZMSrFiwg7GQ8v+6B1ilORgUhLlTe/uTBbiS8pPqcxILM6ILyrNSS0+xCjDwaEkwXu2BygnWJ
+  SanlqRlpkDjF6YtAQHj5IIrxFIK29xQWJucWY6ROoUo6KUOO/iXqCEAEgiozQPrg2WMC4xyko
+  J8zIyMDAI8RSkFuVmlqDKv2IU52BUEuaNBpnCk5lXAjf9FdBiJqDFkWJtIItLEhFSUg1M9S1F
+  W+bMj+i5Pit9isNK9b1GX8P/PvtxnVV3rr589Z5LAvZawjMeKYn3TgzQOONzsfWh8i9p9Q0B1
+  xTao3PibQ4n6ivPnS+XUHSRYfWEsgR1s+5srf/aLlsOfLSZpbHxif6Xf55/Jhp7sB/yFLko3P
+  gvUrmdc9U8J26Xxd4Fzg3h1fv3ra95W8bfde1t1e4p7Pz/b3Q161oYO2SKV+y/llX/aOfWYsZ
+  A97gol0qLqx+W28jXtv8uXdhpfPzXSY+byWp86jbvW4LfsGQo6IX6GAic1vi4WXsff8WaBfon
+  v/zdeeBH3R3Z/p2/RPcHHn/A/WA3e28gy8NzSxdX59oFzjzmuIW399QdHW2VCj0lluKMREMt5
+  qLiRAB4WOnKkwMAAA==
+X-Env-Sender: yangx.jy@fujitsu.com
+X-Msg-Ref: server-4.tower-548.messagelabs.com!1669959489!121758!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.101.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 20731 invoked from network); 2 Dec 2022 05:38:09 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+  by server-4.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 2 Dec 2022 05:38:09 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 56F62100192;
+        Fri,  2 Dec 2022 05:38:09 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 4A3C210018D;
+        Fri,  2 Dec 2022 05:38:09 +0000 (GMT)
+Received: from [10.167.215.54] (10.167.215.54) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.42; Fri, 2 Dec 2022 05:38:06 +0000
+Message-ID: <949b84bf-b865-a407-b572-d9433082bec4@fujitsu.com>
+Date:   Fri, 2 Dec 2022 13:37:59 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v7 0/8] RDMA/rxe: Add atomic write operation
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <linux-rdma@vger.kernel.org>, <rpearsonhpe@gmail.com>,
+        <leon@kernel.org>, <lizhijian@fujitsu.com>, <y-goto@fujitsu.com>,
+        <zyjzyj2000@gmail.com>
+References: <1669905432-14-1-git-send-email-yangx.jy@fujitsu.com>
+ <Y4k/DKgScOz9vpVc@nvidia.com>
+From:   Xiao Yang <yangx.jy@fujitsu.com>
+In-Reply-To: <Y4k/DKgScOz9vpVc@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.167.215.54]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In the previous iteration of the while loop, the "ret" may have been
-assigned a value of 0, so the error return code -EINVAL may have been
-incorrectly set to 0. To fix set valid return code before calling to
-goto. Also investigate each case separately as Andy suggessted.
+On 2022/12/2 7:55, Jason Gunthorpe wrote:
+> On Thu, Dec 01, 2022 at 02:37:04PM +0000, Xiao Yang wrote:
+> 
+>> Xiao Yang (8):
+>>    RDMA: Extend RDMA user ABI to support atomic write
+>>    RDMA: Extend RDMA kernel ABI to support atomic write
+>>    RDMA/rxe: Extend rxe user ABI to support atomic write
+>>    RDMA/rxe: Extend rxe packet format to support atomic write
+>>    RDMA/rxe: Make requester support atomic write on RC service
+>>    RDMA/rxe: Make responder support atomic write on RC service
+>>    RDMA/rxe: Implement atomic write completion
+>>    RDMA/rxe: Enable atomic write capability for rxe device
+> 
+> Applied to for-next, thanks
+> 
+> Jason
 
-Fixes: e711f968c49c ("IB/srp: replace custom implementation of hex2bin()")
-Fixes: 2a174df0c602 ("IB/srp: Use kstrtoull() instead of simple_strtoull()")
-Fixes: 19f313438c77 ("IB/srp: Add RDMA/CM support")
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
----
- drivers/infiniband/ulp/srp/ib_srp.c | 96 +++++++++++++++++++++++++++++++------
- 1 file changed, 82 insertions(+), 14 deletions(-)
+Hi Jason,
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 1075c2a..b4d6a4a 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -3410,7 +3410,8 @@ static int srp_parse_options(struct net *net, const char *buf,
- 			break;
- 
- 		case SRP_OPT_PKEY:
--			if (match_hex(args, &token)) {
-+			ret = match_hex(args, &token);
-+			if (ret) {
- 				pr_warn("bad P_Key parameter '%s'\n", p);
- 				goto out;
- 			}
-@@ -3470,7 +3471,8 @@ static int srp_parse_options(struct net *net, const char *buf,
- 			break;
- 
- 		case SRP_OPT_MAX_SECT:
--			if (match_int(args, &token)) {
-+			ret = match_int(args, &token);
-+			if (ret) {
- 				pr_warn("bad max sect parameter '%s'\n", p);
- 				goto out;
- 			}
-@@ -3478,8 +3480,15 @@ static int srp_parse_options(struct net *net, const char *buf,
- 			break;
- 
- 		case SRP_OPT_QUEUE_SIZE:
--			if (match_int(args, &token) || token < 1) {
-+			ret = match_int(args, &token);
-+			if (ret) {
-+				pr_warn("match_int() failed for queue_size parameter '%s', Error %d\n",
-+					p, ret);
-+				goto out;
-+			}
-+			if (token < 1) {
- 				pr_warn("bad queue_size parameter '%s'\n", p);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->scsi_host->can_queue = token;
-@@ -3490,25 +3499,40 @@ static int srp_parse_options(struct net *net, const char *buf,
- 			break;
- 
- 		case SRP_OPT_MAX_CMD_PER_LUN:
--			if (match_int(args, &token) || token < 1) {
-+			ret = match_int(args, &token);
-+			if (ret) {
-+				pr_warn("match_int() failed for max cmd_per_lun parameter '%s', Error %d\n",
-+					p, ret);
-+				goto out;
-+			}
-+			if (token < 1) {
- 				pr_warn("bad max cmd_per_lun parameter '%s'\n",
- 					p);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->scsi_host->cmd_per_lun = token;
- 			break;
- 
- 		case SRP_OPT_TARGET_CAN_QUEUE:
--			if (match_int(args, &token) || token < 1) {
-+			ret = match_int(args, &token);
-+			if (ret) {
-+				pr_warn("match_int() failed for max target_can_queue parameter '%s', Error %d\n",
-+					p, ret);
-+				goto out;
-+			}
-+			if (token < 1) {
- 				pr_warn("bad max target_can_queue parameter '%s'\n",
- 					p);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->target_can_queue = token;
- 			break;
- 
- 		case SRP_OPT_IO_CLASS:
--			if (match_hex(args, &token)) {
-+			ret = match_hex(args, &token);
-+			if (ret) {
- 				pr_warn("bad IO class parameter '%s'\n", p);
- 				goto out;
- 			}
-@@ -3517,6 +3541,7 @@ static int srp_parse_options(struct net *net, const char *buf,
- 				pr_warn("unknown IO class parameter value %x specified (use %x or %x).\n",
- 					token, SRP_REV10_IB_IO_CLASS,
- 					SRP_REV16A_IB_IO_CLASS);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->io_class = token;
-@@ -3539,16 +3564,24 @@ static int srp_parse_options(struct net *net, const char *buf,
- 			break;
- 
- 		case SRP_OPT_CMD_SG_ENTRIES:
--			if (match_int(args, &token) || token < 1 || token > 255) {
-+			ret = match_int(args, &token);
-+			if (ret) {
-+				pr_warn("match_int() failed for max cmd_sg_entries parameter '%s', Error %d\n",
-+					p, ret);
-+				goto out;
-+			}
-+			if (token < 1 || token > 255) {
- 				pr_warn("bad max cmd_sg_entries parameter '%s'\n",
- 					p);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->cmd_sg_cnt = token;
- 			break;
- 
- 		case SRP_OPT_ALLOW_EXT_SG:
--			if (match_int(args, &token)) {
-+			ret = match_int(args, &token);
-+			if (ret) {
- 				pr_warn("bad allow_ext_sg parameter '%s'\n", p);
- 				goto out;
- 			}
-@@ -3556,43 +3589,77 @@ static int srp_parse_options(struct net *net, const char *buf,
- 			break;
- 
- 		case SRP_OPT_SG_TABLESIZE:
--			if (match_int(args, &token) || token < 1 ||
--					token > SG_MAX_SEGMENTS) {
-+			ret = match_int(args, &token);
-+			if (ret) {
-+				pr_warn("match_int() failed for max sg_tablesize parameter '%s', Error %d\n",
-+					p, ret);
-+				goto out;
-+			}
-+			if (token < 1 || token > SG_MAX_SEGMENTS) {
- 				pr_warn("bad max sg_tablesize parameter '%s'\n",
- 					p);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->sg_tablesize = token;
- 			break;
- 
- 		case SRP_OPT_COMP_VECTOR:
--			if (match_int(args, &token) || token < 0) {
-+			ret = match_int(args, &token);
-+			if (ret) {
-+				pr_warn("match_int() failed for comp_vector parameter '%s', Error %d\n",
-+					p, ret);
-+				goto out;
-+			}
-+			if (token < 0) {
- 				pr_warn("bad comp_vector parameter '%s'\n", p);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->comp_vector = token;
- 			break;
- 
- 		case SRP_OPT_TL_RETRY_COUNT:
--			if (match_int(args, &token) || token < 2 || token > 7) {
-+			ret = match_int(args, &token);
-+			if (ret) {
-+				pr_warn("match_int() failed for tl_retry_count parameter '%s', Error %d\n",
-+					p, ret);
-+				goto out;
-+			}
-+			if (token < 2 || token > 7) {
- 				pr_warn("bad tl_retry_count parameter '%s' (must be a number between 2 and 7)\n",
- 					p);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->tl_retry_count = token;
- 			break;
- 
- 		case SRP_OPT_MAX_IT_IU_SIZE:
--			if (match_int(args, &token) || token < 0) {
-+			ret = match_int(args, &token);
-+			if (ret) {
-+				pr_warn("match_int() failed for max it_iu_size parameter '%s', Error %d\n",
-+					p, ret);
-+				goto out;
-+			}
-+			if (token < 0) {
- 				pr_warn("bad maximum initiator to target IU size '%s'\n", p);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->max_it_iu_size = token;
- 			break;
- 
- 		case SRP_OPT_CH_COUNT:
--			if (match_int(args, &token) || token < 1) {
-+			ret = match_int(args, &token);
-+			if (ret) {
-+				pr_warn("match_int() failed for channel count parameter '%s', Error %d\n",
-+					p, ret);
-+				goto out;
-+			}
-+			if (token < 1) {
- 				pr_warn("bad channel count %s\n", p);
-+				ret = -EINVAL;
- 				goto out;
- 			}
- 			target->ch_count = token;
-@@ -3601,6 +3668,7 @@ static int srp_parse_options(struct net *net, const char *buf,
- 		default:
- 			pr_warn("unknown parameter or missing value '%s' in target creation request\n",
- 				p);
-+			ret = -EINVAL;
- 			goto out;
- 		}
- 	}
--- 
-1.8.3.1
+Cool, Thank you very much for reviewing and applying the patch set.
+Besides, I have removed the rdma_atomic_write example as you suggested 
+on rdma-core repo.
 
+Best Regards,
+Xiao Yang
