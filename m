@@ -2,89 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F26E463FFDA
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Dec 2022 06:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DE264008F
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Dec 2022 07:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbiLBFiO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Dec 2022 00:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        id S232277AbiLBGbX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Dec 2022 01:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbiLBFiN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Dec 2022 00:38:13 -0500
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291C974CEE
-        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 21:38:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1669959490; i=@fujitsu.com;
-        bh=OtLPIWZEHRkfHfiAtAoWSGvT6ZWK0GjffQGqV6GTAw8=;
-        h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        b=eBdluM8orbUwS1iCBiiJs5gCDG+1KbexvKWBVJyZ9t8UEYFP4iJWXBOWvBcRyGtp4
-         uBTyk5IL95UTWfECCBSzy+naGXNifvrLpQWcGos8pLGkpLgcGSBHjy1VWHwiyRLaeH
-         WZoBuuQ1tYMdWCqWNnZx6uDMOZplLSyGQl5tSPL24KBABcSANyPyAWIboZYj5S3lXw
-         hf7oR63weJ4hWBSlfdeUfo6nZ9OR/B/CdgZ+ge7PJCSBaEtFR5Qj9G0fep0yWTu0Oj
-         0ArxsM7Nj+8eP6pXCg5LChBSLSJ1ILjYnWUuvC79nmxT/YvP2NJAwAi7mkTBVNrhHg
-         vKgj2JtBITHww==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgleJIrShJLcpLzFFi42Kxs+FI1HXs70w
-  26N6nYXHl3x5Giym/ljJbPDvUy2LxZeo0Zovzx/rZHVg9ds66y+6xaVUnm0dv8zs2j8+b5AJY
-  olgz85LyKxJYM55+OcFWcJGtouXzccYGxhWsXYxcHEICWxglfjZvZOxi5ARyljNJzG6wg7C3M
-  ko0feEAsXkF7CS6Zz1lB7FZBFQklh88wAgRF5Q4OfMJC4gtKpAkcXXDXVYQW1jAQeLJj2tgNS
-  JA9SdOnGEHWcYsMIVRYl/TLmaIBQkSd09PALPZBNQkdk5/CTaIU0BL4s6cE2A2s4CFxOI3B9k
-  hbHmJ7W/ngNVLCChKtC35xw5hV0jMmtXGBGGrSVw9t4l5AqPQLCT3zUIyahaSUQsYmVcxmhWn
-  FpWlFukamuslFWWmZ5TkJmbm6CVW6SbqpZbqlqcWl+ga6SWWF+ulFhfrFVfmJuek6OWllmxiB
-  EZMSrFiwg7GQ8v+6B1ilORgUhLlTe/uTBbiS8pPqcxILM6ILyrNSS0+xCjDwaEkwXu2BygnWJ
-  SanlqRlpkDjF6YtAQHj5IIrxFIK29xQWJucWY6ROoUo6KUOO/iXqCEAEgiozQPrg2WMC4xyko
-  J8zIyMDAI8RSkFuVmlqDKv2IU52BUEuaNBpnCk5lXAjf9FdBiJqDFkWJtIItLEhFSUg1M9S1F
-  W+bMj+i5Pit9isNK9b1GX8P/PvtxnVV3rr589Z5LAvZawjMeKYn3TgzQOONzsfWh8i9p9Q0B1
-  xTao3PibQ4n6ivPnS+XUHSRYfWEsgR1s+5srf/aLlsOfLSZpbHxif6Xf55/Jhp7sB/yFLko3P
-  gvUrmdc9U8J26Xxd4Fzg3h1fv3ra95W8bfde1t1e4p7Pz/b3Q161oYO2SKV+y/llX/aOfWYsZ
-  A97gol0qLqx+W28jXtv8uXdhpfPzXSY+byWp86jbvW4LfsGQo6IX6GAic1vi4WXsff8WaBfon
-  v/zdeeBH3R3Z/p2/RPcHHn/A/WA3e28gy8NzSxdX59oFzjzmuIW399QdHW2VCj0lluKMREMt5
-  qLiRAB4WOnKkwMAAA==
-X-Env-Sender: yangx.jy@fujitsu.com
-X-Msg-Ref: server-4.tower-548.messagelabs.com!1669959489!121758!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.101.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 20731 invoked from network); 2 Dec 2022 05:38:09 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
-  by server-4.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 2 Dec 2022 05:38:09 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 56F62100192;
-        Fri,  2 Dec 2022 05:38:09 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126 [10.183.43.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 4A3C210018D;
-        Fri,  2 Dec 2022 05:38:09 +0000 (GMT)
-Received: from [10.167.215.54] (10.167.215.54) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Fri, 2 Dec 2022 05:38:06 +0000
-Message-ID: <949b84bf-b865-a407-b572-d9433082bec4@fujitsu.com>
-Date:   Fri, 2 Dec 2022 13:37:59 +0800
+        with ESMTP id S231395AbiLBGbX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Dec 2022 01:31:23 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB1ACB22D
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Dec 2022 22:31:22 -0800 (PST)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NNjk56vxCzRpbB;
+        Fri,  2 Dec 2022 14:30:37 +0800 (CST)
+Received: from [10.169.59.127] (10.169.59.127) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 2 Dec 2022 14:31:20 +0800
+Subject: Re: [PATCH] infiniband:cma: change iboe packet life time from 18 to
+ 16
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>
+References: <20221125010026.755-1-lengchao@huawei.com>
+From:   Chao Leng <lengchao@huawei.com>
+Message-ID: <227d7bf5-d8da-8a0f-0835-7bfb7d5672fb@huawei.com>
+Date:   Fri, 2 Dec 2022 14:31:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v7 0/8] RDMA/rxe: Add atomic write operation
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <linux-rdma@vger.kernel.org>, <rpearsonhpe@gmail.com>,
-        <leon@kernel.org>, <lizhijian@fujitsu.com>, <y-goto@fujitsu.com>,
-        <zyjzyj2000@gmail.com>
-References: <1669905432-14-1-git-send-email-yangx.jy@fujitsu.com>
- <Y4k/DKgScOz9vpVc@nvidia.com>
-From:   Xiao Yang <yangx.jy@fujitsu.com>
-In-Reply-To: <Y4k/DKgScOz9vpVc@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <20221125010026.755-1-lengchao@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.215.54]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Originating-IP: [10.169.59.127]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,28 +49,41 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2022/12/2 7:55, Jason Gunthorpe wrote:
-> On Thu, Dec 01, 2022 at 02:37:04PM +0000, Xiao Yang wrote:
-> 
->> Xiao Yang (8):
->>    RDMA: Extend RDMA user ABI to support atomic write
->>    RDMA: Extend RDMA kernel ABI to support atomic write
->>    RDMA/rxe: Extend rxe user ABI to support atomic write
->>    RDMA/rxe: Extend rxe packet format to support atomic write
->>    RDMA/rxe: Make requester support atomic write on RC service
->>    RDMA/rxe: Make responder support atomic write on RC service
->>    RDMA/rxe: Implement atomic write completion
->>    RDMA/rxe: Enable atomic write capability for rxe device
-> 
-> Applied to for-next, thanks
-> 
-> Jason
+Hi, jason
+     Gently ping, thank you.
 
-Hi Jason,
-
-Cool, Thank you very much for reviewing and applying the patch set.
-Besides, I have removed the rdma_atomic_write example as you suggested 
-on rdma-core repo.
-
-Best Regards,
-Xiao Yang
+On 2022/11/25 9:00, Chao Leng wrote:
+> The ack timeout retransmission time is affected by the following two
+> factors: one is packet life time, another is the HCA processing time.
+> Now the default packet lifetime(CMA_IBOE_PACKET_LIFETIME) is 18.
+> That means the minimum ack timeout is 2 seconds(2^(18+1)*4us=2.097seconds).
+> The packet lifetime means the maximum transmission time of packets
+> on the network, 2 seconds is too long.
+> Assume the network is a clos topology with three layers, every packet
+> will pass through five hops of switches. Assume the buffer of every
+> switch is 128MB and the port transmission rate is 25 Gbit/s,
+> the maximum transmission time of the packet is 200ms(128MB*5/25Gbit/s).
+> Add double redundancy, it is less than 500ms.
+> So change the CMA_IBOE_PACKET_LIFETIME to 16,
+> the maximum transmission time of the packet will be about 500+ms,
+> it is long enough.
+> 
+> Signed-off-by: Chao Leng <lengchao@huawei.com>
+> ---
+>   drivers/infiniband/core/cma.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index cc2222b85c88..2f5b5e6f3d11 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -47,7 +47,7 @@ MODULE_LICENSE("Dual BSD/GPL");
+>   #define CMA_CM_RESPONSE_TIMEOUT 20
+>   #define CMA_MAX_CM_RETRIES 15
+>   #define CMA_CM_MRA_SETTING (IB_CM_MRA_FLAG_DELAY | 24)
+> -#define CMA_IBOE_PACKET_LIFETIME 18
+> +#define CMA_IBOE_PACKET_LIFETIME 16
+>   #define CMA_PREFERRED_ROCE_GID_TYPE IB_GID_TYPE_ROCE_UDP_ENCAP
+>   
+>   static const char * const cma_events[] = {
+> 
