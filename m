@@ -2,90 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD070641405
-	for <lists+linux-rdma@lfdr.de>; Sat,  3 Dec 2022 04:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5439F641916
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Dec 2022 21:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbiLCDhc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Dec 2022 22:37:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
+        id S229762AbiLCUoE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 3 Dec 2022 15:44:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbiLCDhb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Dec 2022 22:37:31 -0500
-Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com [139.138.36.225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FC8A0557;
-        Fri,  2 Dec 2022 19:37:27 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6500,9779,10549"; a="86269280"
-X-IronPort-AV: E=Sophos;i="5.96,214,1665414000"; 
-   d="scan'208";a="86269280"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
-  by esa10.hc1455-7.c3s2.iphmx.com with ESMTP; 03 Dec 2022 12:37:24 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com [192.168.83.67])
-        by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id CED8BD3EA3;
-        Sat,  3 Dec 2022 12:37:23 +0900 (JST)
-Received: from kws-ab2.gw.nic.fujitsu.com (kws-ab2.gw.nic.fujitsu.com [192.51.206.12])
-        by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 1B3F0F0A2D;
-        Sat,  3 Dec 2022 12:37:23 +0900 (JST)
-Received: from FNSTPC.g08.fujitsu.local (unknown [10.167.226.45])
-        by kws-ab2.gw.nic.fujitsu.com (Postfix) with ESMTP id 2C75D23406A1;
-        Sat,  3 Dec 2022 12:37:22 +0900 (JST)
-From:   Li Zhijian <lizhijian@fujitsu.com>
-To:     leon@kernel.org, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Li Zhijian <lizhijian@fujitsu.com>
-Subject: [PATCH] RDMA/mlx5: no need to kfree NULL pointer
-Date:   Sat,  3 Dec 2022 11:37:14 +0800
-Message-Id: <20221203033714.25870-1-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S229450AbiLCUoC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 3 Dec 2022 15:44:02 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C1A60EA;
+        Sat,  3 Dec 2022 12:44:01 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5DD66B80782;
+        Sat,  3 Dec 2022 20:44:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0BA5C433C1;
+        Sat,  3 Dec 2022 20:43:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670100238;
+        bh=Mjt6xiXtxGYM7hTuzc+6X726pwVTwWJ7KDsMrRCyBqs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sC01FcTHOatBjyQjO1V0AOdBS3VZsPMseu0z32NLF02KYmcabavP0BQk27gQhXiEi
+         ihg2w4Zo9gN38cthfobICA+hj0fetFrqZPIvfRzDZ1Q1Ig54TpcOGzeRkN1oenPffw
+         f+k6FVaXedlo5Kkbt8nmiGixVg9+wk/tSYvrUrn9WXVzJsM08VZO7W686gYCyC1Vhb
+         URKHPmddGQcc4zrhARzfsKDOIMSXnD64i8/UhL2It1x1SEUM7+JbOgMWISwpJpRmdk
+         MT2r/E+7VFmzPdfLCqsdypaO0ZTiCxcBbUWsEKUEC+1kwvZvgusxAchkNiMtgbvP59
+         +NsCF38rTY/3w==
+Date:   Sat, 3 Dec 2022 12:43:57 -0800
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>, zhang.songyi@zte.com.cn,
+        saeedm@nvidia.com, pabeni@redhat.com, davem@davemloft.net,
+        edumazet@google.com, mbloch@nvidia.com, maorg@nvidia.com,
+        elic@nvidia.com, jerrliu@nvidia.com, cmi@nvidia.com,
+        vladbu@nvidia.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net/mlx5: remove NULL check before dev_{put,
+ hold}
+Message-ID: <Y4u1DVbFWFPx3hMf@x130>
+References: <202211301541270908055@zte.com.cn>
+ <Y4cbssiTgsGGNHlh@unreal>
+ <20221130092516.024873db@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27300.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27300.005
-X-TMASE-Result: 10--5.794900-10.000000
-X-TMASE-MatchedRID: rWcK0WiM0yyjC979w1k7DErOO5m0+0gEmSLeIgEDej/AuQ0xDMaXkH4q
-        tYI9sRE/ZNUDHbPZ5K3LtJAGcfCTs8QmX0k7dptpngIgpj8eDcAZ1CdBJOsoY9mzcdRxL+xwKra
-        uXd3MZDUaA0E8UdrP6nF6eQOQrAVPaaC7MUsggjz+CsA1rmXCp5RZ3pKiHPN/
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20221130092516.024873db@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Goto label 'free' where it will kfree the 'in' is not needed though
-it's safe to kfree NULL. Return err code directly to simplify the code.
+On 30 Nov 09:25, Jakub Kicinski wrote:
+>On Wed, 30 Nov 2022 11:00:34 +0200 Leon Romanovsky wrote:
+>> On Wed, Nov 30, 2022 at 03:41:27PM +0800, zhang.songyi@zte.com.cn wrote:
+>> > From: zhang songyi <zhang.songyi@zte.com.cn>
+>> >
+>> > The call netdev_{put, hold} of dev_{put, hold} will check NULL,
+>> > so there is no need to check before using dev_{put, hold}.
+>> >
+>> > Fix the following coccicheck warning:
+>> > /drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c:1450:2-10:
+>> > WARNING:
+>> > WARNING  NULL check before dev_{put, hold} functions is not needed.
+>> >
+>> > Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
+>> > ---
+>> >  drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c | 3 +--
+>> >  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> Please change all places in mlx5 in one patch.
+>
+>Your call as a mlx5 maintainer, but I'd say don't change them at all.
+>All these trivial patches are such a damn waste of time.
 
-1973 free:
-1974         kfree(in);
-1975         return err;
+I agree, let's not waste more time on this, I will accept this patch as is
+since it's already marked awating-upstream.. 
 
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
-I stumbled across this little defect.
----
- drivers/infiniband/hw/mlx5/mr.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 410cc5fd2523..053fe946e45a 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1929,10 +1929,8 @@ int mlx5_ib_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
- 	ndescs = req.num_klms ? roundup(req.num_klms, 4) : roundup(1, 4);
- 
- 	in = kzalloc(inlen, GFP_KERNEL);
--	if (!in) {
--		err = -ENOMEM;
--		goto free;
--	}
-+	if (!in)
-+		return -ENOMEM;
- 
- 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
- 
--- 
-2.38.1
-
+Applied to net-next-mlx5
