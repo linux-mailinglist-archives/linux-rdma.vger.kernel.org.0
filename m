@@ -2,46 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3650A641D3A
-	for <lists+linux-rdma@lfdr.de>; Sun,  4 Dec 2022 14:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F23641D3D
+	for <lists+linux-rdma@lfdr.de>; Sun,  4 Dec 2022 14:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbiLDN2V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 4 Dec 2022 08:28:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
+        id S230028AbiLDNfX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 4 Dec 2022 08:35:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbiLDN2V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Dec 2022 08:28:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2FDBE22;
-        Sun,  4 Dec 2022 05:28:20 -0800 (PST)
+        with ESMTP id S229539AbiLDNfX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Dec 2022 08:35:23 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F60414004;
+        Sun,  4 Dec 2022 05:35:22 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C2C39B80959;
-        Sun,  4 Dec 2022 13:28:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED6E1C433D6;
-        Sun,  4 Dec 2022 13:28:16 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 9CAA3CE0A0C;
+        Sun,  4 Dec 2022 13:35:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C34AC433D6;
+        Sun,  4 Dec 2022 13:35:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670160497;
-        bh=sOYEp5Ei/+BdkhfqzNNGOm8GZMHjSqANOKeZ8LDfjm8=;
+        s=k20201202; t=1670160918;
+        bh=VlKuCgOQ28C212SdnRP/jadsFdbY9F2MPbY8bCGAltk=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=YBNyI16lXT9BtdEfOqfUB/xTrknCNxflFdK1OnVJyFTWd2XjLeoHhvhNIDeq/h5UY
-         9Ixi0LEJUSEzfmM1n7Hbc5ZUJJ+BkCtewwvZreoVMCLvNECVFbAJIKcx6JNtJV2jho
-         j90R9XrkFQrWWbY3fqjdL8i28SArxanGOXWMgfKy+yaFtkTxk1dj7NRUeRJo0rbOx5
-         uexnUtWNPZWxCZDLpmdYAL4A1SecJGJCnZL32DFXDYHMSPYEZZ1VCao7+4qA1JDaTX
-         m2fNv1HhttEjlLhfXEv2h0+XoxWvbfAqEoMlGEWZlrEyctKV7pT3D4AZezFT8Iicpr
-         pRBuZL6tuRckQ==
+        b=ftD9lMIkviQAtO184KO+aoAn20Jjc3vIh19Y2I2f0P8heif44MqUNzOgRSlYIs3dZ
+         0FTz5DSYFZ8YiF8lL29DHqYnGvNocFHS7Yixw+0czRDskGYPvttpJopeGthCwgBuox
+         I8ZGxowV7JfW+Y0jz5Ed9GXXdsBqNFdyvtaiVWSC7Baec5YwxyEy1PaKW0clq+I1fo
+         CKgIraUYtHeyGvFPiVs+fiUWOPwCAav3/Fv2IQu/OY3Q/AAbXAC2NOaiEry7mrEIf7
+         EyF7IZoUKsYchwyOcPipHLmB3GtHVv+Z5MfDORVLxzVFEqkz7GrttHl5PqoeGrTqa8
+         oaeiWD9uMCO/g==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     bvanassche@acm.org, Wang Yufen <wangyufen@huawei.com>,
-        jgg@ziepe.ca, dennis.dalessandro@cornelisnetworks.com
-Cc:     easwar.hariharan@intel.com, andriy.shevchenko@linux.intel.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1669953638-11747-1-git-send-email-wangyufen@huawei.com>
-References: <1669953638-11747-1-git-send-email-wangyufen@huawei.com>
-Subject: Re: [PATCH v5 1/2] RDMA/hfi1: Fix error return code in parse_platform_config()
-Message-Id: <167016049288.37008.2194616492987528748.b4-ty@kernel.org>
-Date:   Sun, 04 Dec 2022 15:28:12 +0200
+To:     jgg@ziepe.ca, Li Zhijian <lizhijian@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20221203033714.25870-1-lizhijian@fujitsu.com>
+References: <20221203033714.25870-1-lizhijian@fujitsu.com>
+Subject: Re: [PATCH] RDMA/mlx5: no need to kfree NULL pointer
+Message-Id: <167016091277.37965.6806153987261665211.b4-ty@kernel.org>
+Date:   Sun, 04 Dec 2022 15:35:12 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,20 +52,20 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 2 Dec 2022 12:00:37 +0800, Wang Yufen wrote:
-> In the previous iteration of the while loop, the "ret" may have been
-> assigned a value of 0, so the error return code -EINVAL may have been
-> incorrectly set to 0. To fix set valid return code before calling to
-> goto.
+On Sat, 3 Dec 2022 11:37:14 +0800, Li Zhijian wrote:
+> Goto label 'free' where it will kfree the 'in' is not needed though
+> it's safe to kfree NULL. Return err code directly to simplify the code.
 > 
+> 1973 free:
+> 1974         kfree(in);
+> 1975         return err;
 > 
+> [...]
 
 Applied, thanks!
 
-[1/2] RDMA/hfi1: Fix error return code in parse_platform_config()
-      https://git.kernel.org/rdma/rdma/c/725349f8ba1e78
-[2/2] RDMA/srp: Fix error return code in srp_parse_options()
-      https://git.kernel.org/rdma/rdma/c/ed461b30b22c8f
+[1/1] RDMA/mlx5: no need to kfree NULL pointer
+      https://git.kernel.org/rdma/rdma/c/6978837ce42f8b
 
 Best regards,
 -- 
