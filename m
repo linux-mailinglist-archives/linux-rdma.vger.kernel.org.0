@@ -2,55 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A07641DCE
-	for <lists+linux-rdma@lfdr.de>; Sun,  4 Dec 2022 17:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C51642137
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Dec 2022 02:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbiLDQKU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 4 Dec 2022 11:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        id S231132AbiLEBsh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 4 Dec 2022 20:48:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbiLDQKT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Dec 2022 11:10:19 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAC614000;
-        Sun,  4 Dec 2022 08:10:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=SscHgH3J9KK5gfwuEQ2NOCwS2DgWLcQspsrNrdeeHD4=; b=jDpJg29vy+4h0K9DFPMjwTY5M8
-        +0TmBmtO9LdaEph0FTtUB5sF/FeEnBywhKv9/PB2hnenbh26uCsJxK68IYS1V6+yQK70Fagas9Rh1
-        V0tMiKY6AmjfgZggJikY/OmK/ecw2IBC9Gj/9hXyi5u/7x3Be6V58uxv8HXe/GTJqU0Mh2BbkVsZA
-        RVtNUZx5s8y8j36ogLeurNY0OVo0OdjaZIkhY1w0nFfbiXuhU4g9pYyq5g3f8tjMJjkZmBrwBi8LO
-        SRCC0gjwhmwQtVDdRAhfGCDjlsdiDMqgYmSFYThAfWiUbOb3pS/saYaitzuALlMT9VApMgXMU29fJ
-        v+S2g5VQ==;
-Received: from [2601:1c2:d80:3110::a2e7]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1p1rZI-009Y2B-Lh; Sun, 04 Dec 2022 16:10:16 +0000
-Message-ID: <12a78373-024a-1e50-01c1-10985815ff1f@infradead.org>
-Date:   Sun, 4 Dec 2022 08:10:14 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v2] infiniband: disable IB HW for UML
-Content-Language: en-US
+        with ESMTP id S230161AbiLEBsg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Dec 2022 20:48:36 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E603D5F46
+        for <linux-rdma@vger.kernel.org>; Sun,  4 Dec 2022 17:48:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670204915; x=1701740915;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uej+EbVbAN8ViEhjGBl9GEONrkQt0PErFwnAbxmBuoo=;
+  b=MaHOxqWjLBqP7VXKEceAbqGWp9qN4yw5piJxo0C9uugB/dm1gKljHuN7
+   pv7yLX7UXQiHuIccr8Kxv4d55Ai+pTEOnCOIBNtp2BDN65+06v01F2vR7
+   zypT+STlT88QLRvjT5xU5HGAW6oeuSYsiWdFKYMfgWn5SeLy9Wh6c4UiQ
+   Mrynhh3LLo4VSQe9Hj2XY0C1hkw/Sqd4m0xEblZvylxkgiXvkQQSwCNZA
+   YmSs7kyDh08GJtMdobHDTc0FBTjDB0pFMtq91IjMQPUclYB4g+p6ed4DJ
+   tHngveX37EctSbtHSAOamXfVaKrBXvWicN6cfcsSVzmU1iY4omr3dAAT/
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="314948487"
+X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; 
+   d="scan'208";a="314948487"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2022 17:48:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="647767192"
+X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; 
+   d="scan'208";a="647767192"
+Received: from lkp-server01.sh.intel.com (HELO 4d912534d779) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 04 Dec 2022 17:48:34 -0800
+Received: from kbuild by 4d912534d779 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1p20av-0001AD-1a;
+        Mon, 05 Dec 2022 01:48:33 +0000
+Date:   Mon, 05 Dec 2022 09:48:08 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-rdma@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org
-References: <20221202211940.29111-1-rdunlap@infradead.org>
- <Y4ye8YOWk0V/BqKL@unreal>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <Y4ye8YOWk0V/BqKL@unreal>
-Content-Type: text/plain; charset=UTF-8
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 6978837ce42f8bea85041fc08c854f4e28852b3e
+Message-ID: <638d4dd8.33W9dUwqxNvivK6A%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,54 +63,121 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 6978837ce42f8bea85041fc08c854f4e28852b3e  RDMA/mlx5: no need to kfree NULL pointer
 
+elapsed time: 725m
 
-On 12/4/22 05:21, Leon Romanovsky wrote:
-> On Fri, Dec 02, 2022 at 01:19:40PM -0800, Randy Dunlap wrote:
->> Disable all of drivers/infiniband/hw/ for UML builds until someone
->> needs it and provides patches to support it.
->>
->> This prevents build errors in hw/qib/qib_wc_x86_64.c.
->>
->> Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Suggested-by: Leon Romanovsky <leon@kernel.org>
->> Cc: Jason Gunthorpe <jgg@nvidia.com>
->> Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
->> Cc: Christoph Hellwig <hch@infradead.org>
->> Cc: linux-rdma@vger.kernel.org
->> Cc: Jeff Dike <jdike@addtoit.com>
->> Cc: Richard Weinberger <richard@nod.at>
->> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->> Cc: Johannes Berg <johannes@sipsolutions.net>
->> Cc: linux-um@lists.infradead.org
->> ---
->> v2: just disable infiniband/hw/, not all of infiniband.
->>
->>  drivers/infiniband/Kconfig |    2 ++
->>  1 file changed, 2 insertions(+)
-> 
-> I added rdmavt to the mix and applied.
+configs tested: 100
+configs skipped: 3
 
-Sounds good. Thanks.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> https://lore.kernel.org/linux-rdma/20221130200958.25305-1-rdunlap@infradead.org/
-> 
-> diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-> index 6ee97c898231..a5827d11e934 100644
-> --- a/drivers/infiniband/Kconfig
-> +++ b/drivers/infiniband/Kconfig
-> @@ -95,8 +95,8 @@ source "drivers/infiniband/hw/qedr/Kconfig"
->  source "drivers/infiniband/hw/qib/Kconfig"
->  source "drivers/infiniband/hw/usnic/Kconfig"
->  source "drivers/infiniband/hw/vmw_pvrdma/Kconfig"
-> -endif # !UML
->  source "drivers/infiniband/sw/rdmavt/Kconfig"
-> +endif # !UML
->  source "drivers/infiniband/sw/rxe/Kconfig"
->  source "drivers/infiniband/sw/siw/Kconfig"
->  endif
-> (END)
+gcc tested configs:
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+i386                                defconfig
+x86_64                               rhel-8.3
+arc                                 defconfig
+alpha                               defconfig
+i386                          randconfig-a012
+x86_64                        randconfig-a011
+s390                                defconfig
+s390                             allmodconfig
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a001
+s390                             allyesconfig
+i386                          randconfig-a014
+arm                                 defconfig
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+mips                             allyesconfig
+x86_64                        randconfig-a004
+i386                          randconfig-a016
+x86_64                           allyesconfig
+x86_64                        randconfig-a002
+m68k                             allmodconfig
+i386                          randconfig-a003
+arc                              allyesconfig
+arm                  randconfig-r046-20221204
+powerpc                           allnoconfig
+x86_64                           rhel-8.3-kvm
+powerpc                          allmodconfig
+ia64                             allmodconfig
+alpha                            allyesconfig
+sh                               allmodconfig
+arc                  randconfig-r043-20221204
+i386                             allyesconfig
+m68k                             allyesconfig
+i386                          randconfig-a005
+x86_64                        randconfig-a006
+arm                              allyesconfig
+arm64                            allyesconfig
+i386                 randconfig-a016-20221205
+i386                 randconfig-a013-20221205
+i386                 randconfig-a012-20221205
+i386                 randconfig-a015-20221205
+i386                 randconfig-a011-20221205
+i386                 randconfig-a014-20221205
+x86_64                            allnoconfig
+x86_64               randconfig-a014-20221205
+x86_64               randconfig-a011-20221205
+x86_64               randconfig-a012-20221205
+x86_64               randconfig-a013-20221205
+x86_64               randconfig-a016-20221205
+x86_64               randconfig-a015-20221205
+arm64                            alldefconfig
+powerpc                 canyonlands_defconfig
+arc                     nsimosci_hs_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+
+clang tested configs:
+hexagon              randconfig-r041-20221204
+x86_64                        randconfig-a012
+s390                 randconfig-r044-20221204
+x86_64                        randconfig-a014
+i386                          randconfig-a011
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+hexagon              randconfig-r045-20221204
+i386                          randconfig-a002
+x86_64                        randconfig-a005
+i386                          randconfig-a015
+x86_64                        randconfig-a001
+riscv                randconfig-r042-20221204
+x86_64                        randconfig-a003
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64               randconfig-a004-20221205
+x86_64               randconfig-a005-20221205
+x86_64               randconfig-a003-20221205
+x86_64               randconfig-a006-20221205
+x86_64               randconfig-a002-20221205
+x86_64               randconfig-a001-20221205
+i386                 randconfig-a003-20221205
+i386                 randconfig-a004-20221205
+i386                 randconfig-a001-20221205
+i386                 randconfig-a002-20221205
+i386                 randconfig-a005-20221205
+i386                 randconfig-a006-20221205
+x86_64                        randconfig-k001
+hexagon              randconfig-r041-20221205
+arm                  randconfig-r046-20221205
+hexagon              randconfig-r045-20221205
 
 -- 
-~Randy
+0-DAY CI Kernel Test Service
+https://01.org/lkp
