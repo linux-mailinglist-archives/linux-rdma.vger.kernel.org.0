@@ -2,88 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BA06443DE
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Dec 2022 14:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853FC644475
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Dec 2022 14:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234978AbiLFNDC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Dec 2022 08:03:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39352 "EHLO
+        id S233419AbiLFNVa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Dec 2022 08:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234885AbiLFNCY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Dec 2022 08:02:24 -0500
-Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com [139.138.61.252])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED891DE97;
-        Tue,  6 Dec 2022 05:02:21 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6500,9779,10552"; a="77665422"
-X-IronPort-AV: E=Sophos;i="5.96,222,1665414000"; 
-   d="scan'208";a="77665422"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
-  by esa7.hc1455-7.c3s2.iphmx.com with ESMTP; 06 Dec 2022 22:02:20 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
-        by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id DEF47D6473;
-        Tue,  6 Dec 2022 22:02:19 +0900 (JST)
-Received: from kws-ab2.gw.nic.fujitsu.com (kws-ab2.gw.nic.fujitsu.com [192.51.206.12])
-        by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 13E90D948A;
-        Tue,  6 Dec 2022 22:02:19 +0900 (JST)
-Received: from FNSTPC.g08.fujitsu.local (unknown [10.167.226.45])
-        by kws-ab2.gw.nic.fujitsu.com (Postfix) with ESMTP id F2CF32340E90;
-        Tue,  6 Dec 2022 22:02:17 +0900 (JST)
-From:   Li Zhijian <lizhijian@fujitsu.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>, yangx.jy@fujitsu.com,
-        y-goto@fujitsu.com, mbloch@nvidia.com, tom@talpey.com,
-        tomasz.gromadzki@intel.com, dan.j.williams@intel.com,
-        linux-kernel@vger.kernel.org, Li Zhijian <lizhijian@fujitsu.com>
-Subject: [for-next PATCH 10/10] RDMA/rxe: Enable RDMA FLUSH capability for rxe device
-Date:   Tue,  6 Dec 2022 21:02:01 +0800
-Message-Id: <20221206130201.30986-11-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221206130201.30986-1-lizhijian@fujitsu.com>
-References: <20221206130201.30986-1-lizhijian@fujitsu.com>
+        with ESMTP id S232910AbiLFNV3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Dec 2022 08:21:29 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7A31CB3B
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Dec 2022 05:21:26 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id t17so6182751eju.1
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Dec 2022 05:21:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4A1/sDedsEMhpagiaSYGQZ4/VZF9EUw1mfdyYLwspKc=;
+        b=tMrnWhIwGP2Gl0gqajcIBQAKu/fg+d/y+m834Den0uq6uTqk882e3GGanbCPQz9l53
+         Wggili/p7rOQ1tdOE/ypHaUqzeJtfY5OT1/PjU5AP5cmIXD1/DF5vTQ6J08NqhdQcI8E
+         /434huhN80gdnAoCbFzDp7Vy3YUJ76rnZue5bIeuOAk2ckE7hxqraYVeGep93lAKDHUA
+         0AjfJvFc8PhO0EJwqR4FN1/UW/xDyYVm60JulEag5a+3rB7LrX4+am7V4Rb43wSqR8Hm
+         avLlOMLpNMJ679jODgRoB3yjQjBo4gZjmNQvuSaPVmHiKFDcAEA2ROg6PA/c3ZCmmA4k
+         i8ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4A1/sDedsEMhpagiaSYGQZ4/VZF9EUw1mfdyYLwspKc=;
+        b=YHJd4VP9gxbZy92xCJv1XFweglXYakt7y/s7i+d53NA9ggcNYG8gCHYWvz9UW9bLmU
+         cDWu2qMRa1iN1OV/E45uOb7JmYXBGxdn6HVy+MuudKMKWWdIM65YV56haBDsZSvADjbd
+         szVxc47xpFEPLSM8IH1bbvRxQ1ETe464NufPwQbHRY+nDTzlQlxIkP+HJ4TUpOysMsus
+         pclar0QOWgdnoFR7jxIIMUe3BUbdS/4wJalR97Eq6HoWpkMBEH89mcUKs7AFeEAvaAec
+         jehJuwOO0+TtaNcVF9g+yrl7EsQMNyWaFYoCoug2No1oGJL/fBkTpOLlgKpS8hm75RAh
+         uqcg==
+X-Gm-Message-State: ANoB5pnASkZw6+fIFkaHqM2KoCg8XwMKSKhvsVVw1I2XzYfeLYS1zqey
+        dK9E8PY341iZAlWtfff9829g6w==
+X-Google-Smtp-Source: AA0mqf6NthG9z1ImHJdswLixYqxWNP9T87diFnLhKiaSRGZswGtMAb061dUvXpe8zghf6GqecOlNww==
+X-Received: by 2002:a17:906:ee2:b0:78d:3f96:b7aa with SMTP id x2-20020a1709060ee200b0078d3f96b7aamr58012848eji.74.1670332885277;
+        Tue, 06 Dec 2022 05:21:25 -0800 (PST)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id y20-20020a50eb94000000b004589da5e5cesm973328edr.41.2022.12.06.05.21.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Dec 2022 05:21:24 -0800 (PST)
+Date:   Tue, 6 Dec 2022 14:21:23 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     zhang.songyi@zte.com.cn
+Cc:     leon@kernel.org, saeedm@nvidia.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        kliteyn@nvidia.com, shunh@nvidia.com, rongweil@nvidia.com,
+        valex@nvidia.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net/mlx5: remove redundant ret variable
+Message-ID: <Y49B08qoVY5WT0s3@nanopsycho>
+References: <202212051424013653827@zte.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27306.007
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27306.007
-X-TMASE-Result: 10-6.925300-10.000000
-X-TMASE-MatchedRID: MqppGi75AUU2TliLLcf2acIkzTqL3E/WnQkHrAHoKqay65WOujyvG78F
-        Hrw7frluf146W0iUu2tDc4lSgrowpa8zfGxMvR+8qdwbW9Wx9tB9LQinZ4QefCP/VFuTOXUT3n8
-        eBZjGmUzkwjHXXC/4I7I7zVffJqTz/Nej2diPFEYkx2mVPK6ijBvXaPMnVH1UBp2GjUpoSSzjMQ
-        1F5tN3gGJN/XOAeBaSxElywQImzRoVIaSRP79Cgv7aLgy40S4H
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202212051424013653827@zte.com.cn>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Now we are ready to enable RDMA FLUSH capability for RXE.
-It can support Global Visibility and Persistence placement types.
+Mon, Dec 05, 2022 at 07:24:01AM CET, zhang.songyi@zte.com.cn wrote:
+>From: zhang songyi <zhang.songyi@zte.com.cn>
+>
+>Return value from mlx5dr_send_postsend_action() directly instead of taking
+>this in another redundant variable.
+>
+>Signed-off-by: zhang songyi <zhang.songyi@zte.com.cn>
 
-Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe_param.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-index bbc88cd71d95..a754fc902e3d 100644
---- a/drivers/infiniband/sw/rxe/rxe_param.h
-+++ b/drivers/infiniband/sw/rxe/rxe_param.h
-@@ -51,6 +51,8 @@ enum rxe_device_param {
- 					| IB_DEVICE_SRQ_RESIZE
- 					| IB_DEVICE_MEM_MGT_EXTENSIONS
- 					| IB_DEVICE_MEM_WINDOW
-+					| IB_DEVICE_FLUSH_GLOBAL
-+					| IB_DEVICE_FLUSH_PERSISTENT
- #ifdef CONFIG_64BIT
- 					| IB_DEVICE_MEM_WINDOW_TYPE_2B
- 					| IB_DEVICE_ATOMIC_WRITE,
--- 
-2.31.1
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
