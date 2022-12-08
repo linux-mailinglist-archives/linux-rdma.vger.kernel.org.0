@@ -2,62 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED47647724
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Dec 2022 21:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7367647764
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Dec 2022 21:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbiLHUWa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Dec 2022 15:22:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        id S229692AbiLHUll (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Dec 2022 15:41:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbiLHUW3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Dec 2022 15:22:29 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A5E5AE1C;
-        Thu,  8 Dec 2022 12:22:28 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id vv4so6727130ejc.2;
-        Thu, 08 Dec 2022 12:22:28 -0800 (PST)
+        with ESMTP id S229677AbiLHUlh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Dec 2022 15:41:37 -0500
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5D084B49;
+        Thu,  8 Dec 2022 12:41:36 -0800 (PST)
+Received: by mail-oo1-xc36.google.com with SMTP id t15-20020a4a96cf000000b0049f7e18db0dso406955ooi.10;
+        Thu, 08 Dec 2022 12:41:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lkh1P1g6SdIbuYu0UMr6qddEILkP0nJO6Y1lmSw3rRI=;
-        b=HfC+cuf95xAP9a2NmUTOfNtQEUuignCAFg9w1eMrFdH6Vo8UMj9zVH4SEFLTl6ra7I
-         wAQoJ4WXvv3xjUOCtCeVj31tds1y+iyM/Sq3m9+eVgf3hNnwvdSJLX5GlZkwxZqDrTLQ
-         3i5cCJDaaHmRj8mscGATkZi3irV4X3C1AJQ4STWcY63q1i8cQYiUjWF1Dg3SzQKh717L
-         RgcjlRxo+ndmNDqS/VKJw4ihlMJ1Bi0WTOEMRfAkHlew1ZE/DnXV837j76uPn0X6AeiO
-         UxoQC8+ffaO2oC3rQ2vTC8toMBaQu4mAglUCbRXC1f0VjU4QSKa81Xt9E1IyXx5535Ib
-         SG4w==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kn6pAPyh7GVd4yH8ZcVetJ6KHkFeBkaGTE995AlcjFw=;
+        b=OgRFSxxKU/XYW75jfxIfe2MfQbklXKHvxUOmEBipoUobgiLU1dSoroxxBEl80631+b
+         PyfzEZBfcqSASDlIh/jsUchLCUq9MfiehjbD7dB2JEVb0NK3W43FBKFuyFh2VQ0sAO1C
+         G9f9tXxLqd8AhZgIQNYvqgRXUlNVHpHzUrd4Q9FBHX9TeDiGAWdk/0jZzVI1l/3Gt9Hr
+         wkLwCMGhMKhk7Camqpa4+s/kdtOUdS0YPSJAJrWcMUkjgB0ZyuqkK+oyHPU2wtATBeKo
+         3loLg1RnDie2HI1kW6lxIragcixGM0Swq7NqhD/CogH0UyepiehKUjzdGN5Sn6cI71vs
+         1hoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lkh1P1g6SdIbuYu0UMr6qddEILkP0nJO6Y1lmSw3rRI=;
-        b=f+EEh/Zl+PUq0D5bz01xfADkpo5hxluzi1yi9aQQOMt0f5i0jWUpRdzuXcMdLt9If2
-         YQf0L9HdJ5crUSWvflh6Taz6OUdbyfO0OyHaLnSfycmfrH0VWF9ooXiXEoM8/Tocw99j
-         lQBblO/lP7VpGhu31Rqv6XgEbLYrFLzVhHRnpO7ch0jK7jokHZQ0qSD5wx6doCSF9mDS
-         xNtqtsK8Yh78Gs3l5E5CC59szb/dR/HnbNytsN0fejaBSFNOO9hDHgDjkZpT+icJp6SM
-         1fkZf8IN5EIVJz2KhkH3OVicqDI/2/nXMuzY+iagGJWdTuxBYazRdbDLBhqtrzw6aTpg
-         dfXg==
-X-Gm-Message-State: ANoB5pmlLYIq5IWLSjpMySkZNydZ4aodstRfdDDQ0UZ2kLUgAeEIMaMz
-        JwJ+jJQibJYZst74d2Ban1Y=
-X-Google-Smtp-Source: AA0mqf4EjMWAqV4kOPGD+L7AFqn8+NNq78OATWVuNAGBCyxTjPGCQQsP8ASH/8u4kktDI/IID9hynA==
-X-Received: by 2002:a17:907:76f2:b0:7c0:eb3c:1037 with SMTP id kg18-20020a17090776f200b007c0eb3c1037mr14884853ejc.663.1670530947039;
-        Thu, 08 Dec 2022 12:22:27 -0800 (PST)
-Received: from [192.168.0.105] ([77.126.19.155])
-        by smtp.gmail.com with ESMTPSA id p10-20020a170906838a00b007c0dacbe00bsm6439680ejx.115.2022.12.08.12.22.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Dec 2022 12:22:26 -0800 (PST)
-Message-ID: <1efd1d75-9c5d-4827-3d28-bef044801859@gmail.com>
-Date:   Thu, 8 Dec 2022 22:22:22 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v3 0/5] cpumask: improve on cpumask_local_spread()
- locality
-Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kn6pAPyh7GVd4yH8ZcVetJ6KHkFeBkaGTE995AlcjFw=;
+        b=6oVdSh2hFW6L9bM5Ty82akDZ+WkHZMBPZHmNGCv90VXNlYDU4th3j14qW9NCFCN0Lj
+         qhV246kj2EItrWys5tYtsE7zKrUeHDvNgNIKaJ85DMdKT88MkK9XggEoU2+T7O8aj6v7
+         58fEw/y5kEGHJNknPC1WIV4OtRjMqaS6smbFRQWSwUNJq0HdeqU3WaLPIXiCEc6u6D/B
+         waiPCcfkD4fDaD96Stp0n/BL2cEGQzDMD/d24TMqZU7GWKMmJigZ89hHqERcJJy3UlH3
+         0zWpSSFyEDXQLhU8FBHAaxg7+dbL1GMM3lpg563Iow0FWPU7iGtI8Fz1sGhE441PH4W1
+         LMMg==
+X-Gm-Message-State: ANoB5pn6VCNLJYDDUNcn/0jWyhLMui5xjXVwDucPMcwdoKUG26l4Y4mz
+        mDVqt9HAv6fXaRfQOUqjZjc=
+X-Google-Smtp-Source: AA0mqf70R0QQ/wCK7uiugWelDJDoVzwW91xBAtjTwhILf09JL4bMpPB6FKRTSaXw8Um9MH57paktXg==
+X-Received: by 2002:a4a:dc8c:0:b0:4a0:c270:2f3f with SMTP id g12-20020a4adc8c000000b004a0c2702f3fmr1887940oou.3.1670532095338;
+        Thu, 08 Dec 2022 12:41:35 -0800 (PST)
+Received: from localhost ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id j2-20020a4a9442000000b0049f0671a23asm10308930ooi.9.2022.12.08.12.41.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Dec 2022 12:41:34 -0800 (PST)
+Date:   Thu, 8 Dec 2022 12:41:33 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Peter Lafreniere <peter@n8pjl.ca>
+Cc:     linux-kernel@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Barry Song <baohua@kernel.org>,
@@ -80,18 +74,24 @@ To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
         Saeed Mahameed <saeedm@nvidia.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Tariq Toukan <tariqt@nvidia.com>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
         Tony Luck <tony.luck@intel.com>,
         Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 5/5] lib/cpumask: reorganize cpumask_local_spread()
+ logic
+Message-ID: <Y5JL/YqlxoC/4j4A@yury-laptop>
 References: <20221208183101.1162006-1-yury.norov@gmail.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20221208183101.1162006-1-yury.norov@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+ <20221208183101.1162006-6-yury.norov@gmail.com>
+ <KQCC2QYXZ6BtFjiUQO-XQNUO5Ub3kGfpKzjfIeUfCQEvMUEMKiZ7ofEMqoZElMYxYFtuRqW6v3UzCpDzDR-QYZk-tpMDVLl_HSl8BEi1hZk=@n8pjl.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <KQCC2QYXZ6BtFjiUQO-XQNUO5Ub3kGfpKzjfIeUfCQEvMUEMKiZ7ofEMqoZElMYxYFtuRqW6v3UzCpDzDR-QYZk-tpMDVLl_HSl8BEi1hZk=@n8pjl.ca>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -100,80 +100,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Dec 08, 2022 at 08:17:22PM +0000, Peter Lafreniere wrote:
+> > Now after moving all NUMA logic into sched_numa_find_nth_cpu(),
+> > else-branch of cpumask_local_spread() is just a function call, and
+> > we can simplify logic by using ternary operator.
+> >
+> > While here, replace BUG() with WARN().
+> Why make this change? It's still as bad to hit the WARN_ON as it was before.
 
+For example, because of this:
 
-On 12/8/2022 8:30 PM, Yury Norov wrote:
-> cpumask_local_spread() currently checks local node for presence of i'th
-> CPU, and then if it finds nothing makes a flat search among all non-local
-> CPUs. We can do it better by checking CPUs per NUMA hops.
-> 
-> This series is inspired by Tariq Toukan and Valentin Schneider's
-> "net/mlx5e: Improve remote NUMA preferences used for the IRQ affinity
-> hints"
-> 
-> https://patchwork.kernel.org/project/netdevbpf/patch/20220728191203.4055-3-tariqt@nvidia.com/
-> 
-> According to their measurements, for mlx5e:
-> 
->          Bottleneck in RX side is released, reached linerate (~1.8x speedup).
->          ~30% less cpu util on TX.
-> 
-> This patch makes cpumask_local_spread() traversing CPUs based on NUMA
-> distance, just as well, and I expect comparable improvement for its
-> users, as in case of mlx5e.
-> 
-> I tested new behavior on my VM with the following NUMA configuration:
-> 
-> root@debian:~# numactl -H
-> available: 4 nodes (0-3)
-> node 0 cpus: 0 1 2 3
-> node 0 size: 3869 MB
-> node 0 free: 3740 MB
-> node 1 cpus: 4 5
-> node 1 size: 1969 MB
-> node 1 free: 1937 MB
-> node 2 cpus: 6 7
-> node 2 size: 1967 MB
-> node 2 free: 1873 MB
-> node 3 cpus: 8 9 10 11 12 13 14 15
-> node 3 size: 7842 MB
-> node 3 free: 7723 MB
-> node distances:
-> node   0   1   2   3
->    0:  10  50  30  70
->    1:  50  10  70  30
->    2:  30  70  10  50
->    3:  70  30  50  10
-> 
-> And the cpumask_local_spread() for each node and offset traversing looks
-> like this:
-> 
-> node 0:   0   1   2   3   6   7   4   5   8   9  10  11  12  13  14  15
-> node 1:   4   5   8   9  10  11  12  13  14  15   0   1   2   3   6   7
-> node 2:   6   7   0   1   2   3   8   9  10  11  12  13  14  15   4   5
-> node 3:   8   9  10  11  12  13  14  15   4   5   6   7   0   1   2   3
-> 
-> v1: https://lore.kernel.org/lkml/20221111040027.621646-5-yury.norov@gmail.com/T/
-> v2: https://lore.kernel.org/all/20221112190946.728270-3-yury.norov@gmail.com/T/
-> v3:
->   - fix typo in find_nth_and_andnot_bit();
->   - add 5th patch that simplifies cpumask_local_spread();
->   - address various coding style nits.
-> 
-> Yury Norov (5):
->    lib/find: introduce find_nth_and_andnot_bit
->    cpumask: introduce cpumask_nth_and_andnot
->    sched: add sched_numa_find_nth_cpu()
->    cpumask: improve on cpumask_local_spread() locality
->    lib/cpumask: reorganize cpumask_local_spread() logic
-> 
->   include/linux/cpumask.h  | 20 ++++++++++++++
->   include/linux/find.h     | 33 +++++++++++++++++++++++
->   include/linux/topology.h |  8 ++++++
->   kernel/sched/topology.c  | 57 ++++++++++++++++++++++++++++++++++++++++
->   lib/cpumask.c            | 26 +++++-------------
->   lib/find_bit.c           |  9 +++++++
->   6 files changed, 134 insertions(+), 19 deletions(-)
-> 
-
-Acked-by: Tariq Toukan <tariqt@nvidia.com>
+  > Greg, please don't do this
+  > 
+  > > ChangeSet@1.614, 2002-09-05 08:33:20-07:00, greg@kroah.com
+  > >   USB: storage driver: replace show_trace() with BUG()
+  > 
+  > that BUG() thing is _way_ out of line, and has killed a few of my machines
+  > several times for no good reason. It actively hurts debuggability, because
+  > the machine is totally dead after it, and the whole and ONLY point of
+  > BUG() messages is to help debugging and make it clear that we can't handle
+  > something.
+  > 
+  > In this case, we _can_ handle it, and we're much better off with a machine
+  > that works and that you can look up the messages with than killing it.
+  > 
+  > Rule of thumb: BUG() is only good for something that never happens and
+  > that we really have no other option for (ie state is so corrupt that
+  > continuing is deadly).
+  > 
+  > 		Linus
