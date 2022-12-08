@@ -2,172 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF1C6477B7
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Dec 2022 22:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E92EB64790C
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Dec 2022 23:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbiLHVJ5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Dec 2022 16:09:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
+        id S229848AbiLHWwB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Dec 2022 17:52:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbiLHVJy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Dec 2022 16:09:54 -0500
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C0492FC8
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Dec 2022 13:09:53 -0800 (PST)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-143ffc8c2b2so3330365fac.2
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Dec 2022 13:09:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vQ8TLLspk6HN0CCvZZOb71fJ+C9zF8+JBHlP6f8Y16A=;
-        b=ZwWm1IITbVv3SNhUdLISHkskmiDUVIQtb5hwBSpzkXc7iqOIh4h0hPqxsILfnWIY7z
-         ghAf5spd/+QckqpPc75aDqG8zzkMh/0QBT9p3ELyczWA3zU1UUcg5EZ+ad8wgtNvglq5
-         x+MwV3+bYKvnMABSS1fvHpKhZF5fQe/YrX1IERy0X1VGz5U5vA7x1DoVrZpIMSepGs+V
-         +WnEdUFGlOYFFv/GDn3y5JO+CR1bGCYxWQm44qxCEd910vFKNaWf3zghGeWejjcbT2xa
-         dnoqruRTkagACfGKQW5CounCwJfO6IzkRgWYfvRv4jlbznuC7rt0JpASi8dK9FPcEAfH
-         E/MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vQ8TLLspk6HN0CCvZZOb71fJ+C9zF8+JBHlP6f8Y16A=;
-        b=jG5szvZbiKBWDIdOK12ibwiP1dGPh54KjJHhgm4HkVhulOmu759U4bwsvAHEr+QnoM
-         xxhqwNK3LmcHwuP4hGS+vGlPs3E3rImdtWVE1gumvOP2QbV+8HUEs8mlGFDXrTsmMA8W
-         CCl+pPNnQyBhgpkENlviWX1N/GskHk09gLH7ay9PmsE6jOAHOgXBOXDEMWbbRyV5BMJM
-         e0jwvo+5TRBLc2eoTJ9lUU+C/c1kNd4jse8G7KuG5VLY2zWx2caBI7UE3I/ijKjat9aR
-         zELyFHe6ecrOrkpB4mJsm7SjlhdJyC6anBRVAZVwsoSGU4Az4ZNqnyWub38OZjTDAaOa
-         H0lw==
-X-Gm-Message-State: ANoB5pnse8EGmGTp3GYzayO397l0J5cxQYehfIbfIad5/tqGxIBevP2z
-        JVaVCJQf+qNXVT/osWyS7p5OIcv+ADI=
-X-Google-Smtp-Source: AA0mqf4GHLk3Fjm3pKUsJU7ZZDRFQmJOOjeZmVX8HJIJZ5fFXWkXA90GtS0z62J39InQYICiVsFehw==
-X-Received: by 2002:a05:6870:8dc7:b0:144:87fd:a8a7 with SMTP id lq7-20020a0568708dc700b0014487fda8a7mr1714296oab.46.1670533792431;
-        Thu, 08 Dec 2022 13:09:52 -0800 (PST)
-Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-a13f-9234-e395-548a.res6.spectrum.com. [2603:8081:140c:1a00:a13f:9234:e395:548a])
-        by smtp.googlemail.com with ESMTPSA id s11-20020a056870ea8b00b00143d4709a38sm14199278oap.55.2022.12.08.13.09.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Dec 2022 13:09:52 -0800 (PST)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next] RDMA/rxe: Fix incorrect responder length checking
-Date:   Thu,  8 Dec 2022 15:09:46 -0600
-Message-Id: <20221208210945.28607-1-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.37.2
+        with ESMTP id S229835AbiLHWwB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Dec 2022 17:52:01 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792A08F72E
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Dec 2022 14:52:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670539920; x=1702075920;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kneJ+lMo6teVmYu5yXWL+ZaKOU8LXyf6IaMh2KDLL54=;
+  b=HUmjej0t06fDoPP2ZkBY76mhxtf9l4l/jwUqhBhjT3F44/qE13ZkyC4i
+   EVwSWQLtW6rgchwdi4qa9O7aQYiq+Q+ndgzYRLrwT/6tHZM+oQcQN3Yup
+   JWZMhHY29657vdhdcuqZP0pI0fFx1zl1JXlAGggAJHlwS7PlOh65DW3G/
+   4bJ/qZfYwWx2VlTAM1sI6vc0Z1CaNOX8S5UE5T8AcXAqQ2lpKKexhScJI
+   MtuL/s7d1Ge83bCJKYLrNBRRRJ5nxvDPzCNXSzRMuBDIjeLr3IhpI0Nxr
+   Vr0BHPm3TSOlaUfZAAoYEl9HiLblQU8k03EaHWj87t0M1M4hwFN/GbgE0
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="314960244"
+X-IronPort-AV: E=Sophos;i="5.96,228,1665471600"; 
+   d="scan'208";a="314960244"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2022 14:52:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="679717786"
+X-IronPort-AV: E=Sophos;i="5.96,228,1665471600"; 
+   d="scan'208";a="679717786"
+Received: from lkp-server01.sh.intel.com (HELO b5d47979f3ad) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 08 Dec 2022 14:51:57 -0800
+Received: from kbuild by b5d47979f3ad with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1p3PkC-0001Tc-2h;
+        Thu, 08 Dec 2022 22:51:56 +0000
+Date:   Fri, 09 Dec 2022 06:51:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 6cfe7bd0dfd33033683639039b5608d6534c19eb
+Message-ID: <63926a83.SbnKeg4iRIQC7f9R%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The code in rxe_resp.c at check_length() is incorrect as it
-compares pkt->opcode an 8 bit value against various mask bits
-which are all higher than 256 so nothing is ever reported.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 6cfe7bd0dfd33033683639039b5608d6534c19eb  RDMA/mlx5: Remove not-used IB_FLOW_SPEC_IB define
 
-This patch rewrites this to compare against pkt->mask which is
-correct. However this now exposes another error. For UD send
-packets the value of the pmtu cannot be determined from qp->mtu.
-All that is required here is to later check if the payload fits
-into the posted receive buffer in that case.
+elapsed time: 728m
 
-Fixes: 837a55847ead ("RDMA/rxe: Implement packet length validation on responder")
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_resp.c | 62 ++++++++++++++++------------
- 1 file changed, 36 insertions(+), 26 deletions(-)
+configs tested: 80
+configs skipped: 2
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 6ac544477f3f..42261537772c 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -392,36 +392,46 @@ static enum resp_states check_resource(struct rxe_qp *qp,
- 	return RESPST_CHK_LENGTH;
- }
- 
--static enum resp_states check_length(struct rxe_qp *qp,
--				     struct rxe_pkt_info *pkt)
-+static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
-+					      struct rxe_pkt_info *pkt)
- {
--	int mtu = qp->mtu;
--	u32 payload = payload_size(pkt);
--	u32 dmalen = reth_len(pkt);
--
--	/* RoCEv2 packets do not have LRH.
--	 * Let's skip checking it.
-+	/*
-+	 * See IBA C9-92
-+	 * For UD QPs we only check if the packet will fit in the
-+	 * receive buffer later. For rmda operations additional
-+	 * length checks are performed in check_rkey.
- 	 */
--
--	if ((pkt->opcode & RXE_START_MASK) &&
--	    (pkt->opcode & RXE_END_MASK)) {
--		/* "only" packets */
--		if (payload > mtu)
--			return RESPST_ERR_LENGTH;
--	} else if ((pkt->opcode & RXE_START_MASK) ||
--		   (pkt->opcode & RXE_MIDDLE_MASK)) {
--		/* "first" or "middle" packets */
--		if (payload != mtu)
--			return RESPST_ERR_LENGTH;
--	} else if (pkt->opcode & RXE_END_MASK) {
--		/* "last" packets */
--		if ((payload == 0) || (payload > mtu))
--			return RESPST_ERR_LENGTH;
-+	if (pkt->mask & RXE_PAYLOAD_MASK && ((qp_type(qp) == IB_QPT_RC) ||
-+					     (qp_type(qp) == IB_QPT_UC))) {
-+		unsigned int mtu = qp->mtu;
-+		unsigned int payload = payload_size(pkt);
-+
-+		if ((pkt->mask & RXE_START_MASK) &&
-+		    (pkt->mask & RXE_END_MASK)) {
-+			if (unlikely(payload > mtu)) {
-+				rxe_dbg_qp(qp, "only packet too long");
-+				return RESPST_ERR_LENGTH;
-+			}
-+		} else if ((pkt->mask & RXE_START_MASK) ||
-+			   (pkt->mask & RXE_MIDDLE_MASK)) {
-+			if (unlikely(payload != mtu)) {
-+				rxe_dbg_qp(qp, "first or middle packet not mtu");
-+				return RESPST_ERR_LENGTH;
-+			}
-+		} else if (pkt->mask & RXE_END_MASK) {
-+			if (unlikely((payload == 0) || (payload > mtu))) {
-+				rxe_dbg_qp(qp, "last packet zero or too long");
-+				return RESPST_ERR_LENGTH;
-+			}
-+		}
- 	}
- 
--	if (pkt->opcode & (RXE_WRITE_MASK | RXE_READ_MASK)) {
--		if (dmalen > (1 << 31))
-+	/* See IBA C9-94 */
-+	if (pkt->mask & RXE_RETH_MASK) {
-+		if (reth_len(pkt) > (1U << 31)) {
-+			rxe_dbg_qp(qp, "dma length too long");
- 			return RESPST_ERR_LENGTH;
-+		}
- 	}
- 
- 	return RESPST_CHK_RKEY;
-@@ -1397,7 +1407,7 @@ int rxe_responder(void *arg)
- 			state = check_resource(qp, pkt);
- 			break;
- 		case RESPST_CHK_LENGTH:
--			state = check_length(qp, pkt);
-+			state = rxe_resp_check_length(qp, pkt);
- 			break;
- 		case RESPST_CHK_RKEY:
- 			state = check_rkey(qp, pkt);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+powerpc                           allnoconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                               rhel-8.3
+sh                               allmodconfig
+arm                  randconfig-r046-20221208
+x86_64                              defconfig
+arc                  randconfig-r043-20221207
+arc                  randconfig-r043-20221208
+x86_64                        randconfig-a013
+mips                             allyesconfig
+arc                                 defconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a011
+arm                                 defconfig
+s390                             allmodconfig
+x86_64                           allyesconfig
+arm                              allyesconfig
+riscv                randconfig-r042-20221207
+x86_64                          rhel-8.3-rust
+arm64                            allyesconfig
+x86_64                        randconfig-a015
+ia64                             allmodconfig
+alpha                               defconfig
+s390                 randconfig-r044-20221207
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
+i386                          randconfig-a014
+s390                                defconfig
+i386                          randconfig-a012
+m68k                             allyesconfig
+m68k                             allmodconfig
+i386                          randconfig-a016
+arc                              allyesconfig
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+alpha                            allyesconfig
+s390                             allyesconfig
+i386                                defconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+x86_64                        randconfig-a004
+i386                             allyesconfig
+x86_64                        randconfig-a002
+i386                          randconfig-a005
+x86_64                        randconfig-a006
+x86_64                            allnoconfig
+arm                           h5000_defconfig
+ia64                      gensparse_defconfig
+arm                     eseries_pxa_defconfig
+arc                        nsimosci_defconfig
+arm                            qcom_defconfig
+powerpc                mpc7448_hpc2_defconfig
+openrisc                       virt_defconfig
+arm                           h3600_defconfig
+arm                          iop32x_defconfig
+openrisc                            defconfig
+sh                         microdev_defconfig
+i386                          randconfig-c001
+
+clang tested configs:
+arm                  randconfig-r046-20221207
+hexagon              randconfig-r041-20221207
+x86_64                        randconfig-a014
+hexagon              randconfig-r041-20221208
+hexagon              randconfig-r045-20221208
+hexagon              randconfig-r045-20221207
+x86_64                        randconfig-a016
+riscv                randconfig-r042-20221208
+s390                 randconfig-r044-20221208
+x86_64                        randconfig-a012
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+i386                          randconfig-a002
+i386                          randconfig-a004
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a006
+x86_64                        randconfig-k001
+
 -- 
-2.37.2
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
