@@ -2,142 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 811DE6471C4
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Dec 2022 15:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA4364758A
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Dec 2022 19:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbiLHO1f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Dec 2022 09:27:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
+        id S229651AbiLHSbH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Dec 2022 13:31:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbiLHO1L (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Dec 2022 09:27:11 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5B198947
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Dec 2022 06:26:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1670509608; x=1702045608;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=nwNNnrVv+02GzRpeIOl8dEz1Vu/hjF2zg4x2GdgcVoQ=;
-  b=j1QR5J02QD1aehqyLigR48SBaTrlM+Wn9uNDroYLkdnG6rypWHglQEXI
-   C8Yh3gLRjngt4p+7QIasLkjbiI9eGeI2ybnlw/MujfBL6T1nqJ62fzieY
-   CmeRodDoc4nAlWeCaXmdAwQCwFDnK+u60EmFuXYPUSK8tthqQp3toTWFH
-   ZRXd5jA82qqiaucM8vc1zvGK+uAApP6FjicMvaccb1CLXXdheI0wYimEM
-   cx4hgFXr82vmVnI9R5/J/7T/TZ4cVMVD71CyH73UaGQ2fzUWaciVtihvm
-   YsPL3yu0OmUuEQimpjpUqLM8PgETezWzkVCkMoAHTwSJaRMtBWJBO9FXd
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="314829601"
-X-IronPort-AV: E=Sophos;i="5.96,227,1665471600"; 
-   d="scan'208";a="314829601"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2022 06:26:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="975877088"
-X-IronPort-AV: E=Sophos;i="5.96,227,1665471600"; 
-   d="scan'208";a="975877088"
-Received: from lkp-server01.sh.intel.com (HELO b5d47979f3ad) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 08 Dec 2022 06:26:46 -0800
-Received: from kbuild by b5d47979f3ad with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1p3HrJ-0001CF-1z;
-        Thu, 08 Dec 2022 14:26:45 +0000
-Date:   Thu, 08 Dec 2022 22:26:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 682c0722addae4b4a1440c9db9d8c86cb8e09ce5
-Message-ID: <6391f400.4lDbI2RuIeW90K1y%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229568AbiLHSbG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Dec 2022 13:31:06 -0500
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD7D85D22;
+        Thu,  8 Dec 2022 10:31:05 -0800 (PST)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-144bd860fdbso2851355fac.0;
+        Thu, 08 Dec 2022 10:31:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XF7XmsI3z9Pewm9QLWRYHW1AFn4kiQyrTYitGbyYOV0=;
+        b=X7yZQIpnNAhUiqJmYPIzNNFCNYaxiM7TSwgUizzX6q5+3xdIGn8EDYfOM5mh9JvgZm
+         jau4dmjTy/lJ3MtqBD78OTglbxR7hkmpdWvHLaGkPZf4n/Ra9wxwDTKJKra0Ruc24HU+
+         IcPOPf2abIOtNRv74pFNGsNE7wCIo5Cz6RljxYJA4Kegwr4zv6g1IAHnAwT0PBPMM1ri
+         7wjhtnF58lTf/WfnpS5YiG2xCB9WE6SzLRkJrpn0rn+dMEAVZuyxb+TnWJRsfaI9CIWf
+         9s98bhjevgrcvTinBLHRrMx1w0x5nkTm5mez6BQLOvvcYkGetKouGqqHwd5U8CyAi/Dp
+         1nEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XF7XmsI3z9Pewm9QLWRYHW1AFn4kiQyrTYitGbyYOV0=;
+        b=v6s2c2qwyazigahKn8SX9LpK737o65HOIzejwt+49GbZK4+LP45vQdsGl6sdjjn2Z3
+         KcP8OYaeEdCBHe8zVGmGFSm8UpCfe3DFgO1lfStO949BZdZZoHpUyjcWDhTWsoZjIy6U
+         aCtysKDDUMLWxtJP3zB2L0qks/srJswcHSVSrt4NGsChGinC9DYj4cdn6kuZ+sJTl2ZH
+         lQYDperSKjF/Qt6hlj9rzB5r48uiy+JsS2T5PFRC0Ae/IEchx7OTZvKPZYfzUnjpFuQJ
+         KwNfnniRvSVdFsqGpdlMAK7C7x56QqVOOWYx3jyAvQta9ohI+SAn5JHsWqNwaYUHOwTu
+         Leiw==
+X-Gm-Message-State: ANoB5pmrcHCUdieyN1tv+DmGHKCe1BeRPQt1D1VaT4RS/6Solt7qYeuF
+        dsvzAsqyFOCE/E8qSBgiT0eqmN/ph9s=
+X-Google-Smtp-Source: AA0mqf6IgUrN864xAfLN0JG81zylBxprTCpDGfMjzGswc9Ykw20KFVxsaXlw/9FyrZMqbfHUTsJ8TA==
+X-Received: by 2002:a05:6870:b9ca:b0:13b:d910:5001 with SMTP id iv10-20020a056870b9ca00b0013bd9105001mr1391780oab.1.1670524264577;
+        Thu, 08 Dec 2022 10:31:04 -0800 (PST)
+Received: from localhost ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id k14-20020a0568080e8e00b0034d8abf42f1sm10910446oil.23.2022.12.08.10.31.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Dec 2022 10:31:03 -0800 (PST)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Barry Song <baohua@kernel.org>,
+        Ben Segall <bsegall@google.com>,
+        haniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Yury Norov <yury.norov@gmail.com>, linux-crypto@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH v3 0/5] cpumask: improve on cpumask_local_spread() locality
+Date:   Thu,  8 Dec 2022 10:30:56 -0800
+Message-Id: <20221208183101.1162006-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 682c0722addae4b4a1440c9db9d8c86cb8e09ce5  RDMA/hns: Fix XRC caps on HIP08
+cpumask_local_spread() currently checks local node for presence of i'th
+CPU, and then if it finds nothing makes a flat search among all non-local
+CPUs. We can do it better by checking CPUs per NUMA hops.
 
-elapsed time: 723m
+This series is inspired by Tariq Toukan and Valentin Schneider's
+"net/mlx5e: Improve remote NUMA preferences used for the IRQ affinity
+hints"
 
-configs tested: 61
-configs skipped: 2
+https://patchwork.kernel.org/project/netdevbpf/patch/20220728191203.4055-3-tariqt@nvidia.com/
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+According to their measurements, for mlx5e:
 
-gcc tested configs:
-powerpc                           allnoconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-arc                                 defconfig
-um                           x86_64_defconfig
-s390                             allmodconfig
-um                             i386_defconfig
-alpha                               defconfig
-sh                               allmodconfig
-m68k                             allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-mips                             allyesconfig
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-powerpc                          allmodconfig
-x86_64                        randconfig-a002
-x86_64                        randconfig-a004
-x86_64                        randconfig-a006
-x86_64                        randconfig-a013
-arc                  randconfig-r043-20221207
-x86_64                              defconfig
-x86_64                        randconfig-a011
-x86_64                        randconfig-a015
-riscv                randconfig-r042-20221207
-s390                 randconfig-r044-20221207
-x86_64                          rhel-8.3-rust
-x86_64                    rhel-8.3-kselftests
-x86_64                          rhel-8.3-func
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                                defconfig
-x86_64                               rhel-8.3
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a005
-arm                                 defconfig
-x86_64                           allyesconfig
-i386                          randconfig-a016
-i386                             allyesconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-ia64                             allmodconfig
-x86_64                            allnoconfig
+        Bottleneck in RX side is released, reached linerate (~1.8x speedup).
+        ~30% less cpu util on TX.
 
-clang tested configs:
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-x86_64                        randconfig-a014
-arm                  randconfig-r046-20221207
-x86_64                        randconfig-a012
-hexagon              randconfig-r041-20221207
-x86_64                        randconfig-a016
-hexagon              randconfig-r045-20221207
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-i386                          randconfig-a006
+This patch makes cpumask_local_spread() traversing CPUs based on NUMA
+distance, just as well, and I expect comparable improvement for its
+users, as in case of mlx5e.
+
+I tested new behavior on my VM with the following NUMA configuration:
+
+root@debian:~# numactl -H
+available: 4 nodes (0-3)
+node 0 cpus: 0 1 2 3
+node 0 size: 3869 MB
+node 0 free: 3740 MB
+node 1 cpus: 4 5
+node 1 size: 1969 MB
+node 1 free: 1937 MB
+node 2 cpus: 6 7
+node 2 size: 1967 MB
+node 2 free: 1873 MB
+node 3 cpus: 8 9 10 11 12 13 14 15
+node 3 size: 7842 MB
+node 3 free: 7723 MB
+node distances:
+node   0   1   2   3
+  0:  10  50  30  70
+  1:  50  10  70  30
+  2:  30  70  10  50
+  3:  70  30  50  10
+
+And the cpumask_local_spread() for each node and offset traversing looks
+like this:
+
+node 0:   0   1   2   3   6   7   4   5   8   9  10  11  12  13  14  15
+node 1:   4   5   8   9  10  11  12  13  14  15   0   1   2   3   6   7
+node 2:   6   7   0   1   2   3   8   9  10  11  12  13  14  15   4   5
+node 3:   8   9  10  11  12  13  14  15   4   5   6   7   0   1   2   3
+
+v1: https://lore.kernel.org/lkml/20221111040027.621646-5-yury.norov@gmail.com/T/
+v2: https://lore.kernel.org/all/20221112190946.728270-3-yury.norov@gmail.com/T/
+v3:
+ - fix typo in find_nth_and_andnot_bit();
+ - add 5th patch that simplifies cpumask_local_spread();
+ - address various coding style nits.
+
+Yury Norov (5):
+  lib/find: introduce find_nth_and_andnot_bit
+  cpumask: introduce cpumask_nth_and_andnot
+  sched: add sched_numa_find_nth_cpu()
+  cpumask: improve on cpumask_local_spread() locality
+  lib/cpumask: reorganize cpumask_local_spread() logic
+
+ include/linux/cpumask.h  | 20 ++++++++++++++
+ include/linux/find.h     | 33 +++++++++++++++++++++++
+ include/linux/topology.h |  8 ++++++
+ kernel/sched/topology.c  | 57 ++++++++++++++++++++++++++++++++++++++++
+ lib/cpumask.c            | 26 +++++-------------
+ lib/find_bit.c           |  9 +++++++
+ 6 files changed, 134 insertions(+), 19 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.34.1
+
