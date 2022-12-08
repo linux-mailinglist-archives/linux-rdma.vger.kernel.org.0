@@ -2,117 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C985647792
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Dec 2022 21:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 165816477A2
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Dec 2022 22:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbiLHU6G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Dec 2022 15:58:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49978 "EHLO
+        id S229523AbiLHVGS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Dec 2022 16:06:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbiLHU5i (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Dec 2022 15:57:38 -0500
-Received: from mail-4018.proton.ch (mail-4018.proton.ch [185.70.40.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855761010;
-        Thu,  8 Dec 2022 12:57:33 -0800 (PST)
-Date:   Thu, 08 Dec 2022 20:57:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
-        s=protonmail; t=1670533050; x=1670792250;
-        bh=hiaxku4ECTjcW+ViXhS5y1VGBf4iN9SgQmqH7d1kyhg=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=ALdD6BUkF8H4ruV1Xbkf6pVWLASu45arsqZf/Hs1yj+Tk4fA+GTfcqjFNGA76RpjF
-         wYOQyQlIC+aeDeROr5fpPbLcH2yLaFieVaNVXEyPP9Gy7EngIcOhxR0wHrkAQKAAaQ
-         Qg09qRacM/v9pwWjTLTIsLV6ZbHdEQqCWvLtGcp+0WxJds0aWLEcH9vq0f4f/9R1WK
-         Y2ZKyexYY2hPO20R+MlImihMxQEq3bglUdUCKVRWc7+KRJTk5+Ff1l3q7JhKBOtsda
-         ZmhYh5T75Ooao1I9+aaD5VrDyjbyZPDaFOKNathPvad+Jc5VzTRdsaCXEzLLBj0iwZ
-         n03z6rvxRo3HA==
-To:     Yury Norov <yury.norov@gmail.com>
-From:   Peter Lafreniere <peter@n8pjl.ca>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Barry Song <baohua@kernel.org>,
-        Ben Segall <bsegall@google.com>,
-        haniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tariq Toukan <ttoukan.linux@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        with ESMTP id S229554AbiLHVGR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Dec 2022 16:06:17 -0500
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6977E54362
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Dec 2022 13:06:16 -0800 (PST)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1443a16b71cso3268896fac.13
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Dec 2022 13:06:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7fP6Flg5tH384o5SL7VqaFTe6O2ILJ2skagZLiwYTc8=;
+        b=Z9woCSedRyN6a7esocyxeeG3XuUfhHtMXxsDTsDmsxjIy7i/dbc+FWcK82pZfySi7w
+         u85EbAxYp00ApJeyE/cdhBR/bI7VQfsqIGFfUcw/kOFyTZtGVCwWgjrLy8ZRx2W/22qu
+         Qg6JeK9f5hfrcSFR+2TpGZAYvWQFwo4Wpbs9oOFBK484SqrsjgqnY5BEqBRBYdEbBaTg
+         out/aw4GeeEBcLt+JSotcql2+4eYH4AX+s9Hm7MqzAJDVKt532r7EKGzwKLH5a8680eh
+         HAC5BSYeMldgeYcg6mnTCJwd+w70qScF3fTJvGsVBQGJ5kGyZo4Zp9VMIARXHNwUO49Z
+         SoJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7fP6Flg5tH384o5SL7VqaFTe6O2ILJ2skagZLiwYTc8=;
+        b=rHr4A/WnRkO7m6CIygJ23pOHQHYGMEsEr9GamuwlTSfnhhQl8wQQlAB5S9wPw1Ww5o
+         NwnbmnTALx/xk82Bd765GX83u/q1nXHrRhTFXkw1vO3hni+F5aH65i5qQ9Yc/4CWm/zi
+         jtxUhlBCNPr6OS0Dg3+2dYKK5TKxwTRw4JJBQxnt7gVWLcyGHUY3lNUXWvjHqVHuJbne
+         jhNxbJt7KBYABGHW1p1lxCXd5GODn6PxZ3DzO1zowy5RdM+ZBF06q1HuPGPlBxsJ7E8P
+         eS+jT2LdLxCxZ7NxaQPcIw5J9PaXs5fCbxD3q4vOI2xro6AOWn+51kgpP1/4DhAfvvep
+         jBPg==
+X-Gm-Message-State: ANoB5pkCYveur2xBN0vRSwlnHINQpH3l/fuwh769wC8G8E27MEy6KkQx
+        x2B/0Y5ugAmFapUcGhHed/Y=
+X-Google-Smtp-Source: AA0mqf5T2y4n1zsvsmPfRcfrbuhb7Z7sDXPKGwGv8XdGMDKJX+tg8OHQBktMxPhuycS0DQDuCTkinA==
+X-Received: by 2002:a05:6871:459a:b0:144:c908:69fc with SMTP id nl26-20020a056871459a00b00144c90869fcmr1820604oab.36.1670533575693;
+        Thu, 08 Dec 2022 13:06:15 -0800 (PST)
+Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-a13f-9234-e395-548a.res6.spectrum.com. [2603:8081:140c:1a00:a13f:9234:e395:548a])
+        by smtp.googlemail.com with ESMTPSA id t11-20020a056870e74b00b0012763819bcasm5739250oak.50.2022.12.08.13.06.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Dec 2022 13:06:15 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, leonro@nvidia.com, zyjzyj2000@gmail.com,
         linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] lib/cpumask: reorganize cpumask_local_spread() logic
-Message-ID: <tWPflu4f2FG07nbY54Gbs5fkI1u8Fjc0dLg60fY6deUx8p4jpZmOpOLr_ffvJz_EYWZDNiVLFHlzwMwMMFqWlF8NwXa0XZqlUWbgXE7zgFQ=@n8pjl.ca>
-In-Reply-To: <Y5JL/YqlxoC/4j4A@yury-laptop>
-References: <20221208183101.1162006-1-yury.norov@gmail.com> <20221208183101.1162006-6-yury.norov@gmail.com> <KQCC2QYXZ6BtFjiUQO-XQNUO5Ub3kGfpKzjfIeUfCQEvMUEMKiZ7ofEMqoZElMYxYFtuRqW6v3UzCpDzDR-QYZk-tpMDVLl_HSl8BEi1hZk=@n8pjl.ca> <Y5JL/YqlxoC/4j4A@yury-laptop>
-Feedback-ID: 53133685:user:proton
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 0/6] RDMA/rxe: Replace mr page map with an xarray
+Date:   Thu,  8 Dec 2022 15:05:42 -0600
+Message-Id: <20221208210547.28562-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> On Thu, Dec 08, 2022 at 08:17:22PM +0000, Peter Lafreniere wrote:
-> > > Now after moving all NUMA logic into sched_numa_find_nth_cpu(),
-> > > else-branch of cpumask_local_spread() is just a function call, and
-> > > we can simplify logic by using ternary operator.
-> > >
-> > > While here, replace BUG() with WARN().
-> > Why make this change? It's still as bad to hit the WARN_ON as it was be=
-fore.
->
-> For example, because of this:
->
->  > Greg, please don't do this
->  >
->  > > ChangeSet@1.614, 2002-09-05 08:33:20-07:00, greg@kroah.com
->  > >   USB: storage driver: replace show_trace() with BUG()
->  >
->  > that BUG() thing is _way_ out of line, and has killed a few of my mach=
-ines
->  > several times for no good reason. It actively hurts debuggability, bec=
-ause
->  > the machine is totally dead after it, and the whole and ONLY point of
->  > BUG() messages is to help debugging and make it clear that we can't ha=
-ndle
->  > something.
->  >
->  > In this case, we _can_ handle it, and we're much better off with a mac=
-hine
->  > that works and that you can look up the messages with than killing it.
->  >
->  > Rule of thumb: BUG() is only good for something that never happens and
->  > that we really have no other option for (ie state is so corrupt that
->  > continuing is deadly).
->  >
->  >            Linus
+This patch series replaces the page map carried in each memory region
+with a struct xarray. It is based on a sketch developed by Jason
+Gunthorpe. The first five patches are preparation that tries to
+cleanly isolate all the mr specific code into rxe_mr.c. The sixth
+patch is the actual change.
 
-Fair enough. It's not like it'll be hit anyway. My concern was for if
-any of the 23 callers get an invalid result. I guess that if that causes
-a crash, then so be it. We have the warning to track down the cause.
+Bob Pearson (6):
+  RDMA/rxe: Cleanup mr_check_range
+  RDMA/rxe: Move rxe_map_mr_sg to rxe_mr.c
+  RDMA-rxe: Isolate mr code from atomic_reply()
+  RDMA-rxe: Isolate mr code from atomic_write_reply()
+  RDMA/rxe: Cleanup page variables in rxe_mr.c
+  RDMA/rxe: Replace rxe_map and rxe_phys_buf by xarray
 
-Thanks for the explanation,
-Peter Lafreniere <peter@n8pjl.ca>
+ drivers/infiniband/sw/rxe/rxe_loc.h   |   6 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c    | 518 ++++++++++++++------------
+ drivers/infiniband/sw/rxe/rxe_resp.c  |  73 ++--
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  36 --
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  32 +-
+ 5 files changed, 327 insertions(+), 338 deletions(-)
+
+
+base-commit: 6978837ce42f8bea85041fc08c854f4e28852b3e
+-- 
+2.37.2
+
