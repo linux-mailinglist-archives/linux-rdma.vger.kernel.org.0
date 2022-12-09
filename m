@@ -2,181 +2,304 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3186483B0
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Dec 2022 15:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9CC6487AA
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Dec 2022 18:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbiLIOXH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Dec 2022 09:23:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
+        id S230190AbiLIRWU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Dec 2022 12:22:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbiLIOWr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Dec 2022 09:22:47 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2088.outbound.protection.outlook.com [40.107.94.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C757A1B5
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Dec 2022 06:21:58 -0800 (PST)
+        with ESMTP id S230199AbiLIRWB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Dec 2022 12:22:01 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A60250;
+        Fri,  9 Dec 2022 09:22:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670606520; x=1702142520;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=o3xPvjCrUytfKcGve85XRQUKuCQ6OY0AzyG1SBxWNTQ=;
+  b=Z0bb/NRTsyIaB1AvyXyR8LCB0QmOfsI1HCvCOX74d7N8Z/PSBpMpLaq+
+   hbpw7k1BuF/bJ3ArOMm9+ZuUoGsl9vw0cbsnLCGx5ZaGBQLWPIBsFHfAH
+   oxuOZLkW7h5Hz5HkKu2XTkUWbxV4ddCN4fnthmyJjGdVCJZvtMKjQqfkh
+   pp1WxLkdQAFmDfUPRv6k82K2Wu5R2qL9fllmm0g02qtif6A2pkrPihHDP
+   VOwoW9jPNt7MDEdoKR6Nf4xKeD5KRUhJziPia0tb2PEi5ZRe4VQMWJlE1
+   zMHWOjrm5h8MjOZ1bxg3s4j6BJMKoHAHbvc9DpXKgd/aG9M7P50CTLpch
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10556"; a="379719566"
+X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; 
+   d="scan'208";a="379719566"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2022 09:21:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10556"; a="821790091"
+X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; 
+   d="scan'208";a="821790091"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga005.jf.intel.com with ESMTP; 09 Dec 2022 09:21:59 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Fri, 9 Dec 2022 09:21:58 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Fri, 9 Dec 2022 09:21:58 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Fri, 9 Dec 2022 09:21:57 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HzpgIIoLx9ppewD4KdaPNeE8/+fq23Tlc+WMUKfGMQcvQEyW4G2wuzBZZTy6MF3hWEV1LhbI1WaQtgQLJ+2Czj/5kvJUC4y3nn2lljc/5jGJo58C+UpJSMnv6c7sYymWEKV6LBAZe2ftknjlSIfaOq5Vd6NP94JNGB2VzR/i4Pw+1UHJPRE7N1Pj050gOqLuS+8YPaPPtWkRqzM7qTDyZQlD3uD1f3az4M6zzxfA5q1syCEcuaVu4c4Exb2mEuhMrA+W0/PsyAoGitzcUpHLk7jWw81H1pP9kmnDXHbAsyQivaAf9u3bmJOxHYxNcZjAadN5njqnOEfUIZAGReqfJA==
+ b=brxhldy4m27iCRyUbDIjJvetk9CmicdiKcOMoXTCyVs8FY/52sK84Ru0Vceso1437aHsC1jzCb1WCJDCZBd82+UnLKuxgbVKFxsWavomnLlx6FOAv8Mo6KXnj4FC5jml0HMFBr66ZL3IJL5MgjG2kgyplnjQrTol2dwxOl4EHru0z8IA3wwSL0wOn6ulxVMxETpLWho2btmod7lGrHQS+qnNK1emsm2ghHKtUcWTpgydzCJERkN2eEy4UkHDmyIsYpIDTHxa0f+58D56UmXs2PZc/vG3dTXGIqOS7HOyhoZPPO5Q4WLCXObdda+vVDmKiHhTB1OuvTd1x+5hClQxtQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x2hy3+JLvC39N71sD49JsoMMLCXWwGvHYp8kbZYOBFk=;
- b=ZVqQM3uBkmAqHrMGEp9jIrFsiVHWAbHAKASSD7EMsGP7r71Q9pLyZG+MzsH7h+4WgoPYdKFRdudQWeCp+mqlB6j3h92XceVBECJfe5Q027RQk7bfNCbar9ZKZoQCEmYvKft6fIhpNyLxcNwvWUxDnRp0Z1YFHIJBJJ39D9/EMUmMjcv3ux8eNKXY3Yhs9P4EV1uGtg8tTTG1akgN0pAuP8Jv6kBFpkr92vVB2onVyC37+xPfx3bSwdG+4EZhNcdZmOnqklpLiw3v5uGp4bTfi4YuuRZ8NqW7XUkVkwde8CoAq5wMGGZZk2aKDtL8kHQ+YR7XLyUW2/nhiAi02sMvIQ==
+ bh=afXKz2ORSZ/x3s30Hx6+q8HfBBUUTRQV6BatJVl1XrI=;
+ b=G329c98GgrfBLJ+7pS8AOisW7Afrj/8XMXyDnSIo0BqScJzGeuy4h2Pkl76kI/JVTsurWtDRNyMpIbRLXx2sDY6QywJ3rujPrCBgMdiL7AvicY07SOZLCsb63dwM1Edp0eRMx4BfX1DTm4yJMvK183fWKiawWwlVkHyFypdceM3kYYQiBV4M7jEw4i90JTzKS1cPORvLM+7V3S7EmdUg9IbCdRIUFJAuN6dvj1i3CFNsZO3E6iiH/Fr8G7STXyAlL1hC5SZiKfVz9ik8aRi7JAUGoydvTNerZQh1HuT+PRHiTjSQPb7kL+lObx1NRzznOC/FGUjomzBrH0veu50iaw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x2hy3+JLvC39N71sD49JsoMMLCXWwGvHYp8kbZYOBFk=;
- b=kIkJAB6Q6bOhkpdmtK+WLuVCdn6wCExL4Vg+deaycglVf5unQRD02xgxjzrLYeaVvIFsFkg1oU763TlLWqS4HP/5Y997AwrBAKOy/GdOjP0ls3jHzewV412p/Hfr7v8grzd87iFe1V8blIo8fpQtNafxHUtikS23+DBjQ4GF6akxmV2RZLDQZLCSWjxVus7t3EgbRarIk4ilHqd6al006/oXgvViXk7Vqa+Uypz7O4uL45LcT8VyS+tEkpOPMaiK3Y8tcsqid2fRK8jmvpfx0x4my8/kbvmyWCYqfPUI62BubHdovbndqRb8qwsJ4vzw1tl9JUTHMyHeR/mX0p7Nbw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM6PR12MB4546.namprd12.prod.outlook.com (2603:10b6:5:2ae::19) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MW5PR11MB5811.namprd11.prod.outlook.com (2603:10b6:303:198::18)
+ by SN7PR11MB7537.namprd11.prod.outlook.com (2603:10b6:806:348::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.18; Fri, 9 Dec
- 2022 14:21:57 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a%7]) with mapi id 15.20.5880.014; Fri, 9 Dec 2022
- 14:21:57 +0000
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        syzbot+3fd8326d9a0812d19218@syzkaller.appspotmail.com,
-        syzbot+8d0a099c8a6d1e4e601c@syzkaller.appspotmail.com,
-        syzbot+a1ed8ffe3121380cd5dd@syzkaller.appspotmail.com
-Subject: [PATCH] RDMA: Add missed netdev_put() for the netdevice_tracker
-Date:   Fri,  9 Dec 2022 10:21:56 -0400
-Message-Id: <0-v1-e99919867b8d+1e2-netdev_tracker2_jgg@nvidia.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BLAPR03CA0160.namprd03.prod.outlook.com
- (2603:10b6:208:32f::25) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.14; Fri, 9 Dec
+ 2022 17:21:55 +0000
+Received: from MW5PR11MB5811.namprd11.prod.outlook.com
+ ([fe80::1bdb:fbd9:b48c:6e6f]) by MW5PR11MB5811.namprd11.prod.outlook.com
+ ([fe80::1bdb:fbd9:b48c:6e6f%5]) with mapi id 15.20.5880.018; Fri, 9 Dec 2022
+ 17:21:55 +0000
+From:   "Ertman, David M" <david.m.ertman@intel.com>
+To:     Saeed Mahameed <saeed@kernel.org>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "leonro@nvidia.com" <leonro@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "G, GurucharanX" <gurucharanx.g@intel.com>
+Subject: RE: [PATCH net 2/4] ice: Correctly handle aux device when num
+ channels change
+Thread-Topic: [PATCH net 2/4] ice: Correctly handle aux device when num
+ channels change
+Thread-Index: AQHZCoBpTdDa1UJnHk2WsWg1c+9BN65jAKQAgALHjtA=
+Date:   Fri, 9 Dec 2022 17:21:55 +0000
+Message-ID: <MW5PR11MB5811E652D63BC5CC934F256DDD1C9@MW5PR11MB5811.namprd11.prod.outlook.com>
+References: <20221207211040.1099708-1-anthony.l.nguyen@intel.com>
+ <20221207211040.1099708-3-anthony.l.nguyen@intel.com> <Y5ES3kmYSINlAQhz@x130>
+In-Reply-To: <Y5ES3kmYSINlAQhz@x130>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW5PR11MB5811:EE_|SN7PR11MB7537:EE_
+x-ms-office365-filtering-correlation-id: dcd95918-169b-4a15-574f-08dada09dea2
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lY4aEhN5ugYWnYZ+H/Uc6fHyeATLggjzoMnZZLDgnpaEG1HA/0EVzqN7MGychTQJE8SSyMr/UZOqunzLZ4vs0psiieoJ4m93NIGvVU8oqVR6/BUSPluqX1Mvj5t6mfJ+VPBBQqvY2d7EaRtTV5JCP26w+PKAtHXPas8MqZbb5HSkQIL5eA2aXFGya5r3xv2WwP6KJoEU8ynD6TvHud+XlAY+IOql1hosXaGb8yrNktSRAk0FWbl1m3W3juXqJe2ehWkt14WgLKscOYcfFi27bT8CBGXE1EE0YD2YDojRD2CuMD4kZbU6KPR8nAgddRE+e87Mgt+iXtKP7cv3dGMb9mnioPNNM+GUaIsb85mhKaeZebXv25YGpNYw0pLkL95nPAWvl2I4OgpA/OtzJRMLA7kPLOiq+jjkLAkDJttvlGsWuIlqT+yvSeKSXwarSj222xqjeFmP7kJB4/JfRF2yrfkHZQJfXJuSECTLxucZZ+nYGYwHe0SX1inFm1hXHB2rDM3JIwKNK4oqZupk1WkQ3mMBeBammA5U/5euRtg4eerixaIkPOmWjuyHdRxxBL+0XebOW61kQS5qgYd0npcFVnvPdSuPWGU2ROO7CT+Zsame1AHYgv/+vNMCPTVqCPvl7YxmC9Mz0X8TPHZOo37m4i4D9tfxiu8K20g5lP/OlMz9YfpA7HcIySh5rZxNztipcAnn40rMoPP1eWP7JzvFSw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5811.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(136003)(346002)(396003)(39860400002)(376002)(451199015)(66946007)(478600001)(66446008)(55016003)(64756008)(33656002)(66556008)(122000001)(66476007)(8676002)(4326008)(107886003)(38100700002)(82960400001)(2906002)(110136005)(186003)(71200400001)(53546011)(26005)(54906003)(86362001)(83380400001)(76116006)(7696005)(6506007)(38070700005)(9686003)(41300700001)(8936002)(52536014)(5660300002)(6636002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VySn2+dtrydjiup4fxevvRanMUyay3EyPj4LEURMMfNEGXqIw/DlCarJLWOF?=
+ =?us-ascii?Q?nJlF8RVH/q87mc251Ky6hoVLqU9Af0AWlPhJXzq4ni5FzlT4SdLyqZkio8I3?=
+ =?us-ascii?Q?CJ6ejhpIRR5N/6IngC0IiRKVhc/LF4wIJMM4mCfl0WXjA1gDJqTtS8vl7owU?=
+ =?us-ascii?Q?7ecDPkRRxNw1ped5ALbiRpiG/VCKzOXuFmesGSyuWpyM3kRrm98fLjuNSdj5?=
+ =?us-ascii?Q?JJGHso1G5M8p46S0pJRRhnjvPRcr6LP7NvtSopOiEGGYsoKqIVxBA8G96Gaa?=
+ =?us-ascii?Q?uwFAEx4wZwpHEHUyhhxxnEdvNThwG5C3Rig1pyv6b99zkLmOA5XKbiXklt6p?=
+ =?us-ascii?Q?IaRJKux+QrK0fexTe6CJniI7UV39mI+6onmzcrGzMTd9Nr1/KhgzUoEOGMP9?=
+ =?us-ascii?Q?fKxJzkF2BHhW/JTF09MjFVhtABexmXjiUnHIGthArLvOiiRdvl5uWlJPmfko?=
+ =?us-ascii?Q?YnJCA/ThSdTYTqd7YXDZ5AM4sqfb5X6iPW2lRMsPle4NCsiodIvI40cGES7n?=
+ =?us-ascii?Q?7X9U//cUDFAPZ9brzuBOIk8UROkEL2813ljcDqSGqdoz6rWN2qvQ/FZThGlE?=
+ =?us-ascii?Q?mLNO8+u1cAbIVWlwZKYPUra6hmCBiwi5PWY+9nROKXrPUzA0WK4Kn3uzvsuw?=
+ =?us-ascii?Q?XB+bWbbmVysemA9SXaGq7Znh3cutUbHYMwQzOICg7NFNBauW6TwozlnzuSnM?=
+ =?us-ascii?Q?FS7c1k011S2eYEePpuou/ZfYXSR5ajZ3NixTs106GFklwfVr8E3hyv26+aPA?=
+ =?us-ascii?Q?fG/U3e3GEnRoBcn3YckuIfpAODPCiRJfbbyDECFrpTtRu1MuJcQLmRM7OSne?=
+ =?us-ascii?Q?9TyLT6x3zl037PY//eUrxNr3OFkqB5ptPfv7jk6Zyr5aL9XfuqhJAwXjz5gc?=
+ =?us-ascii?Q?a4VaxZOcRsLqMoJjKg2HwRLT3dDtP6WJdFEdc13NNGyD2edINAH/5UwSNM7X?=
+ =?us-ascii?Q?JU6hvsA3WosX7wC+IC6yE3AVvbFZrwmsmRz4A8ij9MNbUHKjBX7Hf4iMyYAJ?=
+ =?us-ascii?Q?Kod0rWe1qKb54gCUOiXjmY6hycTFCzDASA9SxRbvrjmCo6WZfGZfhv/cuo0E?=
+ =?us-ascii?Q?8WIsnHib71jaYZWr1wS7I/89fCKeAeQtsmRvAUncM45AG6OCmZXsGbR0owfZ?=
+ =?us-ascii?Q?hJmgPRwQs9IV12+YWW72HiuiGDmWL5Fz4Jlf9UZWHEuCsr3vFEeuqwm+0tLV?=
+ =?us-ascii?Q?kRh8uMjK0Op+15tUjh270z8ztkTMi9mWLCnWYKvUjGu88V3x93mxzdf+9dLK?=
+ =?us-ascii?Q?JdkaEbY6nSbTtNvHJ9xsIonJlqRZCzLS1mCyU9iREBgtbpu5k2y5JlFfGNMP?=
+ =?us-ascii?Q?sgL0NGy+dYyUxi57VlhnAM/A8vzJqxbdfFQZSABJZjEMwnruNY7lXASh/2Jt?=
+ =?us-ascii?Q?tmYTFhHSPD9yC7zL+iP1yFHl6YcphBWcPpEmkh5LJkitlUv6/z5z/ed57UNu?=
+ =?us-ascii?Q?OZ7xr0NEevCVVJ8o/2eukH5OLrUBK1ORvqK0/7bMnsVl/Dw6r+agIGbXPL0T?=
+ =?us-ascii?Q?RlVdvQ9nJIfRUSs5Dgl6XHn9Z6tS+A1HkhQ5rYJnJnuwfO2veNRmekQY6nRZ?=
+ =?us-ascii?Q?pq8BNuRSeFkn/9TPwbOKTLH9eM3g67QmBveIEsfoCS8t9G/t+GG9aVrKb75p?=
+ =?us-ascii?Q?Jg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4546:EE_
-X-MS-Office365-Filtering-Correlation-Id: a9da5d95-f490-4532-dd0b-08dad9f0ba61
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4JbNt673KjWGsfuuQeEA/0GQW1pA8c9hWGwdEDIkSyiaDcrCfcTuXXgWpDBpyhei2eOQfpgTBOQf/FLvX98s009gyDFPBZx4VX4TbT+Wz1Yy7mVfwc4GgmfWKlXnfMjDhvs8Ds7ViIisjl1jwsE2HNK11Cu0oHaeJ7KEMsCzNYc1xxcrFtBnMuROYriKSGCo1+Almx9p3/jOrxnzvZ6sWoVGFOYW/yAgPkA+tK3r3UBw0A88wm0KgAh60KpPF41JlO51tTS4eLHr5pRHgMtEqZ/BDA02Ix0xZPs8tn0s9Eq20WFlBS9ekt1aQ7mNJTvSNKuplobaYutLHrF7EleljV+Ptewbe6CYjO1bOgtXugYPltlOERMgVz+qVOpIEr71QEisf2f8v7EY4hs1DoaJouPyeu3NWVzXbpPBpfTL76eb5X4xNWgbN9dsYyz7Du2C66WlxeGKH+o+eVRoNBomwB/bs09CQi62/WRUC4lxbbFST4aq12WEWtPSFTJoUAFjReKM0EJrCYCjGzkjDWpv2wRfN94skiSUxR6AzNfYwAHlBh7fkYZNWSMKGXQA5KjTduSg+wnvsBvyNEzG6Wa3A48wKLCyuT7u9EGlOodo11lGD8bBjVGKD8oQveunmg2bK5q9JQ8H/0zH5CeoXF9uh1rZ2Vq6lgJENYitLDx4qaqcsnE/amOYaxmvExuc4Cuf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(39860400002)(366004)(396003)(346002)(136003)(451199015)(2906002)(86362001)(186003)(2616005)(6506007)(36756003)(5660300002)(6512007)(26005)(8936002)(38100700002)(478600001)(6486002)(41300700001)(83380400001)(66556008)(4326008)(66476007)(66946007)(316002)(45080400002)(6916009)(8676002)(4216001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kCuoHiF+p1rbNvQ17jyFMKW3/XaXn6hYSt38JVZ0EuaE765D1aR+/yEc1bpM?=
- =?us-ascii?Q?8kszHPuFhLzlroxvCdREbQb1dR5knGnq/RQOSPb7xrN5JvuFZhLJA0/A480u?=
- =?us-ascii?Q?jtMKX4XO65dtCCJJ57ywb927V2beHDyX1JGa29pAr+pj/LpgMtdVYzQrMXhq?=
- =?us-ascii?Q?4onHTKb0lGPpMHsltv/QDqSONk5Kh9GZptZl++vGid/lTjS4AjTrU+LLJryG?=
- =?us-ascii?Q?D8yTz0XKm4/4j7YmHVGOKgb5XY2PSENq2jV76/fGCWn0SDzWNkjyOigG+bW7?=
- =?us-ascii?Q?1tCqmmLgvfX+CveVgsuU8kqrYAPmNDvhDSBMOdGEgXsAJ1ujNUfzjTWq0ujv?=
- =?us-ascii?Q?vLJ5o8hNMj9riaQwK1gCgBUlART06d+jrU2YE7LLlh4Y7ykaBktjEsMEgOk8?=
- =?us-ascii?Q?KWpAzKOgP464tBG9ra/cUYS98UIIzdsq907cxAsa5V4SeMkEwaaMYdZDz2XE?=
- =?us-ascii?Q?G/NGkkDI4BJC7dwmYqBGw1LAIi2tPATN1kJIpro34pgu6m51nVM2+kdHP9dq?=
- =?us-ascii?Q?DnbCN2EvH2Uuvar/JO5cDBiiQjYcdLHEsTbbigkkC4RmwcsvI/lN8OhS0obT?=
- =?us-ascii?Q?V/X3J1DS8P19lqCWAmOdIUV6ySDOwxK+qq9zI7CXvuHLWVmzwHMcdqf2/eyY?=
- =?us-ascii?Q?5qs+y4ccy+VuBA2e6hYoROkFgmkIAoTnY2G/BM3mwwK31LXjOPd0j+wecFcx?=
- =?us-ascii?Q?ifSRngrERWkQbxa+kuaeTKOBx5WlnfQc1nNGwqVa6R066Q9ZIOfXlG+lTuAm?=
- =?us-ascii?Q?aKGuou1vqmCCGRxYjPF8MqZ3KbHshXBcYNF+aUUAzyR1h9wmbSw2sUmpOoJz?=
- =?us-ascii?Q?F/1QcG2elemMmFHId8FMuoSMAxG+JNsSuo0z3Mese1D1V4sG2xpdETcCVfcB?=
- =?us-ascii?Q?FwrRpART35OknvLPteyuwD1dYM3Dt9T+iYIvuIATDPjbv+OwyT6FCCkOs6bn?=
- =?us-ascii?Q?YKLcKo1scWJkcFh1r8UFUKKPZAj7emU/wS05kykHE0Euo2hOaLOzAgM654Ou?=
- =?us-ascii?Q?taF2sV+CPABnnyt3jAf+VyabNs1M5qeKnEEBYX9jEoYqVKDGby3T3aFDGJSZ?=
- =?us-ascii?Q?ysI9wDGamPfKVSFe9uymgatOfil+vXeMKEBPzM0y3TQh3D4U9+qlY9AbjskX?=
- =?us-ascii?Q?x1dOXgCKavxpYBl9D9ABeCs4lQfb1d53B+TNnyevat2CRupOv9af43hUyPOS?=
- =?us-ascii?Q?+vWTm5iMw1P1ZWn+lbBS1IyLMSVw6rFL0Zj76toy5ahaRhYLdWtjDPtwHQLX?=
- =?us-ascii?Q?SoVoOjvS823es1yufxOSQ12SZSx/6UyfVz1SOme8bszztbRyjvIuxKe5Lw/O?=
- =?us-ascii?Q?9lYZrnKf3lNhPqmOfOM6k321uuM5Rg1mKGL0v3cCnxQp5tn2It/k8iWEtGHQ?=
- =?us-ascii?Q?RdTWenfsRRSA3umv2J7SEezXz6wps/l5SFJmeb+kdi3L39J74w1Pn4j1MdgQ?=
- =?us-ascii?Q?IN1zYmC0mZ27S4lYK8mJQqXdn/A4Fcis0aiHBUOIYMdhH5s3aSlRZMsUaAu5?=
- =?us-ascii?Q?W69t2x2Qx2BNF33YrPgrmbnn8xPtpSSljpS8UctFkwBH4FRe2ZjuWa+EdtZh?=
- =?us-ascii?Q?xE+MfkTvEjzPMPXcQAw=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9da5d95-f490-4532-dd0b-08dad9f0ba61
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2022 14:21:57.0262
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5811.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dcd95918-169b-4a15-574f-08dada09dea2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2022 17:21:55.0932
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wL3lplfYn4/jRblKQF0Mt5Py/O2ipAT+IX56LwlL0iv2Q6TRL1Am1irEDC/P+4yz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4546
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FgwHSwOWDIER99tSX54bhJR4QjTnIdZQUPYsChS5Tjc6a9SV+CMhTZiZjJzcnS6lnsm773Pi2Ie1Nfg66oKIkCs6vonjxIbbvIz0RZBK4hQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7537
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The netdev core will detect if any untracked puts are done on tracked
-pointers and throw refcount warnings:
+> -----Original Message-----
+> From: Saeed Mahameed <saeed@kernel.org>
+> Sent: Wednesday, December 7, 2022 2:26 PM
+> To: Nguyen, Anthony L <anthony.l.nguyen@intel.com>
+> Cc: davem@davemloft.net; kuba@kernel.org; pabeni@redhat.com;
+> edumazet@google.com; Ertman, David M <david.m.ertman@intel.com>;
+> netdev@vger.kernel.org; Saleem, Shiraz <shiraz.saleem@intel.com>; Ismail,
+> Mustafa <mustafa.ismail@intel.com>; jgg@nvidia.com; leonro@nvidia.com;
+> linux-rdma@vger.kernel.org; G, GurucharanX <gurucharanx.g@intel.com>
+> Subject: Re: [PATCH net 2/4] ice: Correctly handle aux device when num
+> channels change
+>=20
+> On 07 Dec 13:10, Tony Nguyen wrote:
+> >From: Dave Ertman <david.m.ertman@intel.com>
+> >
+> >When the number of channels/queues changes on an interface, it is
+> necessary
+> >to change how those resources are distributed to the auxiliary device fo=
+r
+> >maintaining RDMA functionality.  To do this, the best way is to unplug, =
+and
+>=20
+> Can you please explain how an ethtool can affect RDMA functionality ?
+> don't you have full bifurcation between the two eth and rdma interfaces .=
+.
+>=20
+This patch is to address a bug where the number of queues for the interface=
+ was
+changed and the RDMA lost functionality due to queues being re-assigned.
 
-  refcount_t: decrement hit 0; leaking memory.
-  WARNING: CPU: 1 PID: 33 at lib/refcount.c:31 refcount_warn_saturate+0x1d7/0x1f0 lib/refcount.c:31
-  Modules linked in:
-  CPU: 1 PID: 33 Comm: kworker/u4:2 Not tainted 6.1.0-rc8-next-20221207-syzkaller #0
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-  Workqueue: ib-unreg-wq ib_unregister_work
-  RIP: 0010:refcount_warn_saturate+0x1d7/0x1f0 lib/refcount.c:31
-  Code: 05 5a 60 51 0a 01 e8 35 0a b5 05 0f 0b e9 d3 fe ff ff e8 6c 9b 75 fd 48 c7 c7 c0 6d a6 8a c6 05 37 60 51 0a 01 e8 16 0a b5 05 <0f> 0b e9 b4 fe
-  +ff ff 48 89 ef e8 5a b5 c3 fd e9 5c fe ff ff 0f 1f
-  RSP: 0018:ffffc90000aa7b30 EFLAGS: 00010082
-  RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-  RDX: ffff8880172f9d40 RSI: ffffffff8166b1dc RDI: fffff52000154f58
-  RBP: ffff88807906c600 R08: 0000000000000005 R09: 0000000000000000
-  R10: 0000000080000001 R11: 0000000000000000 R12: 1ffff92000154f6b
-  R13: 0000000000000000 R14: ffff88807906c600 R15: ffff888046894000
-  FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007ffe350a8ff8 CR3: 000000007a9e7000 CR4: 00000000003526e0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-   <TASK>
-   __refcount_dec include/linux/refcount.h:344 [inline]
-   refcount_dec include/linux/refcount.h:359 [inline]
-   ref_tracker_free+0x539/0x6b0 lib/ref_tracker.c:118
-   netdev_tracker_free include/linux/netdevice.h:4039 [inline]
-   netdev_put include/linux/netdevice.h:4056 [inline]
-   dev_put include/linux/netdevice.h:4082 [inline]
-   free_netdevs+0x1f8/0x470 drivers/infiniband/core/device.c:2204
-   __ib_unregister_device+0xa0/0x1a0 drivers/infiniband/core/device.c:1478
-   ib_unregister_work+0x19/0x30 drivers/infiniband/core/device.c:1586
-   process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
-   worker_thread+0x669/0x1090 kernel/workqueue.c:2436
-   kthread+0x2e8/0x3a0 kernel/kthread.c:376
-   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+The PF is managing and setting aside resources for the RDMA aux dev. Then t=
+he=20
+RDMA aux driver will request resources from the PF driver.  Changes in
+the total number of resources make it so that resources previously
+allocated to RDMA aux driver may not be available any more.  A re-allocatio=
+n
+is necessary to ensure that RDMA has all of the queues that it thinks it do=
+es.
 
-So change the missed dev_put for pdata->netdev to also follow the tracker.
+> >then re-plug the auxiliary device.  This will cause all current resource
+> >allocation to be released, and then re-requested under the new state.
+> >
+>=20
+> I find this really disruptive, changing number of netdev queues to cause
+> full aux devs restart !
+>=20
 
-Fixes: 09f530f0c6d6 ("RDMA: Add netdevice_tracker to ib_device_set_netdev()")
-Reported-by: syzbot+3fd8326d9a0812d19218@syzkaller.appspotmail.com
-Reported-by: syzbot+a1ed8ffe3121380cd5dd@syzkaller.appspotmail.com
-Reported-by: syzbot+8d0a099c8a6d1e4e601c@syzkaller.appspotmail.com
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/infiniband/core/device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changing the number of queues available to the interface *is* a disruptive =
+action.
+The netdev  and VSI have to be re-configured for queues per TC and the RDMA=
+ aux
+driver has to re-allocate qsets to attach queue-pairs to.
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index ff35cebb25e265..4d4f71f9728e13 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2201,7 +2201,7 @@ static void free_netdevs(struct ib_device *ib_dev)
- 			 * comparisons after the put
- 			 */
- 			rcu_assign_pointer(pdata->netdev, NULL);
--			dev_put(ndev);
-+			netdev_put(ndev, &pdata->netdev_tracker);
- 		}
- 		spin_unlock_irqrestore(&pdata->netdev_lock, flags);
- 	}
+> >Since the set_channel command from ethtool comes in while holding the
+> RTNL
+> >lock, it is necessary to offset the plugging and unplugging of auxiliary
+> >device to another context.  For this purpose, set the flags for UNPLUG a=
+nd
+> >PLUG in the PF state, then respond to them in the service task.
+> >
+> >Also, since the auxiliary device will be unplugged/plugged at the end of
+> >the flow, it is better to not send the event for TCs changing in the
+> >middle of the flow.  This will prevent a timing issue between the events
+> >and the probe/release calls conflicting.
+> >
+> >Fixes: 348048e724a0 ("ice: Implement iidc operations")
+> >Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> >Tested-by: Gurucharan G <gurucharanx.g@intel.com> (A Contingent
+> worker at Intel)
+> >Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+> >---
+> > drivers/net/ethernet/intel/ice/ice.h         | 2 ++
+> > drivers/net/ethernet/intel/ice/ice_ethtool.c | 6 ++++++
+> > drivers/net/ethernet/intel/ice/ice_idc.c     | 3 +++
+> > drivers/net/ethernet/intel/ice/ice_main.c    | 3 +++
+> > 4 files changed, 14 insertions(+)
+> >
+> >diff --git a/drivers/net/ethernet/intel/ice/ice.h
+> b/drivers/net/ethernet/intel/ice/ice.h
+> >index 001500afc4a6..092e572768fe 100644
+> >--- a/drivers/net/ethernet/intel/ice/ice.h
+> >+++ b/drivers/net/ethernet/intel/ice/ice.h
+> >@@ -281,6 +281,7 @@ enum ice_pf_state {
+> > 	ICE_FLTR_OVERFLOW_PROMISC,
+> > 	ICE_VF_DIS,
+> > 	ICE_CFG_BUSY,
+> >+	ICE_SET_CHANNELS,
+> > 	ICE_SERVICE_SCHED,
+> > 	ICE_SERVICE_DIS,
+> > 	ICE_FD_FLUSH_REQ,
+> >@@ -485,6 +486,7 @@ enum ice_pf_flags {
+> > 	ICE_FLAG_VF_VLAN_PRUNING,
+> > 	ICE_FLAG_LINK_LENIENT_MODE_ENA,
+> > 	ICE_FLAG_PLUG_AUX_DEV,
+> >+	ICE_FLAG_UNPLUG_AUX_DEV,
+> > 	ICE_FLAG_MTU_CHANGED,
+> > 	ICE_FLAG_GNSS,			/* GNSS successfully
+> initialized */
+> > 	ICE_PF_FLAGS_NBITS		/* must be last */
+> >diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> >index b7be84bbe72d..37e174a19860 100644
+> >--- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> >+++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> >@@ -3536,6 +3536,8 @@ static int ice_set_channels(struct net_device
+> *dev, struct ethtool_channels *ch)
+> > 		return -EINVAL;
+> > 	}
+> >
+> >+	set_bit(ICE_SET_CHANNELS, pf->state);
+> >+
+> > 	ice_vsi_recfg_qs(vsi, new_rx, new_tx);
+> >
+> > 	if (!netif_is_rxfh_configured(dev))
+> >@@ -3543,6 +3545,10 @@ static int ice_set_channels(struct net_device
+> *dev, struct ethtool_channels *ch)
+> >
+> > 	/* Update rss_size due to change in Rx queues */
+> > 	vsi->rss_size =3D ice_get_valid_rss_size(&pf->hw, new_rx);
+> >+	clear_bit(ICE_SET_CHANNELS, pf->state);
+> >+
+>=20
+> you just set this new state a few lines ago, clearing the bit in the same
+> function few lines later seems to be an abuse of the pf state machine,
+> couldn't you just pass a parameter to the functions which needed this
+> information ?
+>=20
 
-base-commit: 682c0722addae4b4a1440c9db9d8c86cb8e09ce5
--- 
-2.38.1
+How is this abusing the PF state machine?  There is a 3 deep function call =
+that needs
+the information that this is a set_channel context, and each of those funct=
+ions is called
+from several locations - how is changing all of those functions to include =
+a parameter
+(that will be false for all of them but this instance) be less abusive than=
+ setting and
+clearing a bit?
+
+> >+	set_bit(ICE_FLAG_UNPLUG_AUX_DEV, pf->flags);
+> >+	set_bit(ICE_FLAG_PLUG_AUX_DEV, pf->flags);
+> >
+> > 	return 0;
+> > }
 
