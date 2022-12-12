@@ -2,163 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD2E64A8E7
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Dec 2022 21:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC9064ABD0
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Dec 2022 00:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbiLLUyC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Dec 2022 15:54:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
+        id S231481AbiLLXyC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Dec 2022 18:54:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbiLLUyB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Dec 2022 15:54:01 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4671030
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Dec 2022 12:54:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1670878440; x=1702414440;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=P/3aEHwZkGrmWXtgTmakvzDMYyNc5m7GGSmrIQDJWqI=;
-  b=H4sOkfhIFVNkOfBBS/xuUBZ7WrQlsZcHvWvUXONmKFt1lXON9EyFn0Wi
-   WDa7L9TNSWfj2+00w0qviDa96FdA2kARegRvq+QxNqEvp/mPz+KLMBI8G
-   Sp9ky61NEY0SyZPKdssOtyJBk9Clq79MEkg4fwDjqnXPwgR2biUtWmEuG
-   fv1XcThVRzmK+y7DCj8Y1xtPMNoL/7E26y8bFh1M+fM0lbkj0bTlUGFVk
-   6Sc9cXoUVNyk8j+3XWYgu8Pmp8UVh+YHD/d3hb0AfteyfpNfQpy1spmDr
-   6WvUfB2TH2Wou0MyTka6KYh2LV4/CqrIqGBEi2Adn3NTYwnrNk8J3JuGj
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10559"; a="345018259"
-X-IronPort-AV: E=Sophos;i="5.96,239,1665471600"; 
-   d="scan'208";a="345018259"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2022 12:53:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10559"; a="822626877"
-X-IronPort-AV: E=Sophos;i="5.96,239,1665471600"; 
-   d="scan'208";a="822626877"
-Received: from lkp-server01.sh.intel.com (HELO b5d47979f3ad) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 12 Dec 2022 12:53:36 -0800
-Received: from kbuild by b5d47979f3ad with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1p4pnr-0003uF-2H;
-        Mon, 12 Dec 2022 20:53:35 +0000
-Date:   Tue, 13 Dec 2022 04:53:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leonro@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 27998322992bcbb2b4ddc4715a5d9064579e3c7a
-Message-ID: <639794cf.Jdi62uVdPRKCpVDo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S233562AbiLLXyB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Dec 2022 18:54:01 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A5A15705
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Dec 2022 15:54:00 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id pv25so3301746qvb.1
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Dec 2022 15:54:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XO6Sw5PYxRUl6S3VXJovGLuPBASsvvommJS9OgDIpNM=;
+        b=bTxCqIxuB9BRrbPIDg2sxGyWRvGic4KhMhP9fnxS0e8lW66/LZY5j4rV8/JZbRXgza
+         PjR1Y0WFd/iuK4Yc/pWqTA0i49imjLySeWGQ6Edn9wgM9x2VokHK5eOmNT5jT9HshlD4
+         eY6KxwZ4i4CKFPApclEjBhzZ3oFmfBdwc7nwVryIGchtfN2L5KCzNrEHDnf9B7SMZshs
+         kPimdNRhVG40ZNcTopkayAxZpB8mFMTaHkxECqN9xWZAdfBEZ2FkzCYUQ0S6MJ6EN5hE
+         kKcg4hcvZ1KR2pvUdpt1OUlm56WZjVnmrPipCKr6q5CL7z4H40zNF235OewUgRJFYxmZ
+         7/9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XO6Sw5PYxRUl6S3VXJovGLuPBASsvvommJS9OgDIpNM=;
+        b=gC9Uba0fisHOE1JVQ/jdSIG3B8FMkhEMhdRpWs6VF8hb2llQpXmFz8QsFeehRBalU1
+         MA7AOQS6XsN45Nj8TWeTREB8Pj3o2auohSO+teMVDQ4h2dUImn4freIELfL21f/AfGlV
+         qFuG0xe011jFlYmoWIICJ8wjlO/NgmZ0n6C5aRaxT37QX694U03StZQgJhZWC0P8dxcl
+         j/dJDSUZVgfZ8OS41e9/3iTWuDJ6L7DgqZO4c9xrXXwpEftZi3y5CUssY17b2Qdsr2Xw
+         d/+Fjs3W8Nq9BhOh3zBZ5X6RfIOBo4F1oXwai3X3ROmoDu/nhbfipv6d+LBMDVo9gW1O
+         IK2Q==
+X-Gm-Message-State: ANoB5plC9G+rbe5FKyzmZeapgEjQHbyv4nvldVO3P8zwM4EPHYwvQU31
+        aGYIB4ELx2EMjsbluWL5ZJDb5g==
+X-Google-Smtp-Source: AA0mqf5BMC9ibrWRA+CvDfV3Zhy69k6S5Mw5+emtf0OtsKgew9mi1x7u3XdO404paUWfcazAIy6low==
+X-Received: by 2002:a05:6214:e6c:b0:4c7:7257:68a2 with SMTP id jz12-20020a0562140e6c00b004c7725768a2mr32678719qvb.15.1670889239715;
+        Mon, 12 Dec 2022 15:53:59 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-50-193.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.50.193])
+        by smtp.gmail.com with ESMTPSA id bj41-20020a05620a192900b006cbe3be300esm6911699qkb.12.2022.12.12.15.53.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Dec 2022 15:53:59 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1p4scQ-00901g-L9;
+        Mon, 12 Dec 2022 19:53:58 -0400
+Date:   Mon, 12 Dec 2022 19:53:58 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Ertman, David M" <david.m.ertman@intel.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "leonro@nvidia.com" <leonro@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "G, GurucharanX" <gurucharanx.g@intel.com>
+Subject: Re: [PATCH net 2/4] ice: Correctly handle aux device when num
+ channels change
+Message-ID: <Y5e/FjounudVaf4p@ziepe.ca>
+References: <20221207211040.1099708-1-anthony.l.nguyen@intel.com>
+ <20221207211040.1099708-3-anthony.l.nguyen@intel.com>
+ <Y5ES3kmYSINlAQhz@x130>
+ <MW5PR11MB5811E652D63BC5CC934F256DDD1C9@MW5PR11MB5811.namprd11.prod.outlook.com>
+ <Y5OMXATsatvNGGS/@x130>
+ <Y5ONXuY+TlvOx1aV@nvidia.com>
+ <MW5PR11MB5811C27393271A563A009821DDE29@MW5PR11MB5811.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Disposition: inline
+In-Reply-To: <MW5PR11MB5811C27393271A563A009821DDE29@MW5PR11MB5811.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 27998322992bcbb2b4ddc4715a5d9064579e3c7a  RDMA/mlx5: Fix validation of max_rd_atomic caps for DC
+On Mon, Dec 12, 2022 at 05:03:39PM +0000, Ertman, David M wrote:
+> > On Fri, Dec 09, 2022 at 11:28:28AM -0800, Saeed Mahameed wrote:
+> > 
+> > > IMO it's wrong to re-initialize a parallel subsystems due to an ethtool,
+> > > ethtool is meant to control the netdev interface, not rdma.
+> > 
+> > We've gotten into locking trouble doing stuff like this before.
+> > 
+> > If you are holding any locks do not try to unplug/plug an aux device.
+> > 
+> > Jason
+> 
+> The unplug/plug is done outside the ethtool context.  No locks are being held.
 
-elapsed time: 727m
+That's a good, trick, so I'm skeptical *no* locks are held.
 
-configs tested: 80
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arc                                 defconfig
-alpha                               defconfig
-powerpc                           allnoconfig
-i386                                defconfig
-x86_64               randconfig-a011-20221212
-x86_64               randconfig-a012-20221212
-x86_64               randconfig-a014-20221212
-ia64                             allmodconfig
-x86_64               randconfig-a013-20221212
-x86_64               randconfig-a015-20221212
-s390                                defconfig
-x86_64               randconfig-a016-20221212
-s390                             allmodconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-rust
-sh                               allmodconfig
-um                           x86_64_defconfig
-i386                 randconfig-a013-20221212
-i386                 randconfig-a016-20221212
-mips                             allyesconfig
-powerpc                          allmodconfig
-s390                             allyesconfig
-x86_64                           rhel-8.3-bpf
-i386                 randconfig-a014-20221212
-arm                                 defconfig
-i386                 randconfig-a012-20221212
-x86_64                           rhel-8.3-syz
-i386                 randconfig-a011-20221212
-m68k                             allyesconfig
-arm                              allyesconfig
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-kvm
-arm64                            allyesconfig
-riscv                randconfig-r042-20221212
-i386                 randconfig-a015-20221212
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-arc                  randconfig-r043-20221211
-i386                             allyesconfig
-x86_64                              defconfig
-arc                  randconfig-r043-20221212
-arm                  randconfig-r046-20221211
-s390                 randconfig-r044-20221212
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-x86_64                            allnoconfig
-mips                        bcm47xx_defconfig
-sh                          polaris_defconfig
-arm                        spear6xx_defconfig
-arm                          pxa910_defconfig
-arm                           u8500_defconfig
-powerpc                   motionpro_defconfig
-m68k                          amiga_defconfig
-powerpc                 mpc834x_mds_defconfig
-
-clang tested configs:
-i386                 randconfig-a002-20221212
-i386                 randconfig-a003-20221212
-x86_64               randconfig-a002-20221212
-x86_64               randconfig-a001-20221212
-x86_64               randconfig-a004-20221212
-x86_64               randconfig-a003-20221212
-i386                 randconfig-a001-20221212
-x86_64               randconfig-a006-20221212
-x86_64               randconfig-a005-20221212
-i386                 randconfig-a004-20221212
-i386                 randconfig-a006-20221212
-i386                 randconfig-a005-20221212
-arm                  randconfig-r046-20221212
-riscv                randconfig-r042-20221211
-hexagon              randconfig-r045-20221211
-hexagon              randconfig-r041-20221211
-hexagon              randconfig-r045-20221212
-s390                 randconfig-r044-20221211
-hexagon              randconfig-r041-20221212
-arm                       imx_v4_v5_defconfig
-powerpc                 mpc8313_rdb_defconfig
-mips                           mtx1_defconfig
-x86_64                        randconfig-k001
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Jason
