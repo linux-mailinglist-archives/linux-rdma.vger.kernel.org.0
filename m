@@ -2,80 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C8364C474
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Dec 2022 08:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E96464C581
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Dec 2022 10:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237440AbiLNHkj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Dec 2022 02:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58760 "EHLO
+        id S237856AbiLNJHW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Dec 2022 04:07:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237539AbiLNHki (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Dec 2022 02:40:38 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D4D19283
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Dec 2022 23:40:37 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8018CB8161C
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Dec 2022 07:40:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93507C433EF;
-        Wed, 14 Dec 2022 07:40:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671003635;
-        bh=EhhzGiWTQ/U6Ns1ANiOxYXj8OjsStAgYCTUm9j3egKQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cnmJMylPiVZknX8qh5Ps1U0CU4rM7IvhXseF2VDdwHw7w/kruehZ5n9ExUm2TkP7o
-         bS3qddG9S71B3J1GTmq8W9LKATSdKQe4JxN/KQcvoGfMFNUV2gow8RX6nB0Vz2CaDp
-         +5XGRdzSXsydLuvjb3zXrSHJzVqfvtPB/lU0IHSAupFVfOvF3RMNP8vCZgAN8wb1QH
-         g2KFK51F1W9c1mS15usJnEpfkx5cmXtJAeQT91oA71TIG3Gm/aRAyx4r/HOFq3vsvf
-         5F12j02Gk8BDNWHld0jKkdnOaD4EtdzcHEiEE0rHsqJlgE4GB0zs94mYTO0ap32mCr
-         BLJyiFHuotATQ==
-Date:   Wed, 14 Dec 2022 09:40:30 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yanjun Zhu <yanjun.zhu@linux.dev>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-Message-ID: <Y5l97q27hU5d8pU2@unreal>
-References: <Y5jpKmpwhTAf+r8B@nvidia.com>
- <7601dc11-f1b5-5488-727a-13b4016c8aa5@linux.dev>
+        with ESMTP id S237858AbiLNJHV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Dec 2022 04:07:21 -0500
+Received: from mail.lokoho.com (mail.lokoho.com [217.61.105.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B3A413F32
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Dec 2022 01:07:20 -0800 (PST)
+Received: by mail.lokoho.com (Postfix, from userid 1001)
+        id D486286790; Wed, 14 Dec 2022 09:06:37 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lokoho.com; s=mail;
+        t=1671008838; bh=Z0N5VlX9/JlryGOL5I747Le9USomZJCRNNGRT3LbbKc=;
+        h=Date:From:To:Subject:From;
+        b=WMyXGV4Papd3JyZpZmv7mls05tN+eJszfloztj/7TeBtSlF/Mv+AiZ+7Ukp+jt428
+         DEUnxDv18A3m8NcJ5tZc7HRIBBwY7356eT2ED9rxJS6MhwdxdaroTR+bv9b+6VFhA2
+         IOIztaLECRHFgUDnS6ckjx3oKZ2gy3tUJicAB+/et6yWLUy3n2W9aIw/nUGFfYVW4j
+         NE2mFnm+6LhNTddtVYvGDDZNJs4w4JSZKZxheExm+ToWAHRdJLbPQID1WibMsyY5Ei
+         owYnKvu9y1gxGpICBEyz7TzWKBEvEyjS6B42wjqhrqLpe1z72lcaB2URjv7I1TdGV5
+         Vqiw+s8G3ky1A==
+Received: by mail.lokoho.com for <linux-rdma@vger.kernel.org>; Wed, 14 Dec 2022 09:05:06 GMT
+Message-ID: <20221214074502-0.1.2t.9run.0.8g0d4pmp2n@lokoho.com>
+Date:   Wed, 14 Dec 2022 09:05:06 GMT
+From:   "Adam Charachuta" <adam.charachuta@lokoho.com>
+To:     <linux-rdma@vger.kernel.org>
+Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
+X-Mailer: mail.lokoho.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7601dc11-f1b5-5488-727a-13b4016c8aa5@linux.dev>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 14, 2022 at 10:23:29AM +0800, Yanjun Zhu wrote:
-> 在 2022/12/14 5:05, Jason Gunthorpe 写道:
-> > Hi Linus,
-> > 
-> > This cycle saw a new driver called MANA get merged and more fixing to
-> > the other recently merged drivers. rxe continues to see a lot of
-> > interest and fixing. Lots more rxe patches already in the works for
-> > the next cycle.
-> > 
-> > Thanks,
-> > Jason
+Dzie=C5=84 dobry,
 
-<...>
+zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
+=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
+o dalszych rozm=C3=B3w.=20
 
-> > Zhu Yanjun (2):
-> >        RDMA/rxe: Remove reliable datagram support
-> >        RDMA/mlx5: Remove not-used IB_FLOW_SPEC_IB define
-> 
-> I do not like this subject. I still like my old one.
-> With the old one, it suggests that IB_FLOW_SPEC is not supported in MLX5 in
-> subject line.
+Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
+=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
+=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
+strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
 
-Right now, mlx5 doesn't implement this IB_FLOW_SPEC and define is not
-used. It doesn't mean that it is not supported.
+Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
 
-Thanks
+
+Pozdrawiam
+Adam Charachuta
