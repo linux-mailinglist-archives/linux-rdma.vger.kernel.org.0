@@ -2,61 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E96464C581
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Dec 2022 10:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FB864CF17
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Dec 2022 19:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237856AbiLNJHW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Dec 2022 04:07:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60632 "EHLO
+        id S239103AbiLNSFv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Dec 2022 13:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237858AbiLNJHV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Dec 2022 04:07:21 -0500
-Received: from mail.lokoho.com (mail.lokoho.com [217.61.105.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B3A413F32
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Dec 2022 01:07:20 -0800 (PST)
-Received: by mail.lokoho.com (Postfix, from userid 1001)
-        id D486286790; Wed, 14 Dec 2022 09:06:37 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lokoho.com; s=mail;
-        t=1671008838; bh=Z0N5VlX9/JlryGOL5I747Le9USomZJCRNNGRT3LbbKc=;
-        h=Date:From:To:Subject:From;
-        b=WMyXGV4Papd3JyZpZmv7mls05tN+eJszfloztj/7TeBtSlF/Mv+AiZ+7Ukp+jt428
-         DEUnxDv18A3m8NcJ5tZc7HRIBBwY7356eT2ED9rxJS6MhwdxdaroTR+bv9b+6VFhA2
-         IOIztaLECRHFgUDnS6ckjx3oKZ2gy3tUJicAB+/et6yWLUy3n2W9aIw/nUGFfYVW4j
-         NE2mFnm+6LhNTddtVYvGDDZNJs4w4JSZKZxheExm+ToWAHRdJLbPQID1WibMsyY5Ei
-         owYnKvu9y1gxGpICBEyz7TzWKBEvEyjS6B42wjqhrqLpe1z72lcaB2URjv7I1TdGV5
-         Vqiw+s8G3ky1A==
-Received: by mail.lokoho.com for <linux-rdma@vger.kernel.org>; Wed, 14 Dec 2022 09:05:06 GMT
-Message-ID: <20221214074502-0.1.2t.9run.0.8g0d4pmp2n@lokoho.com>
-Date:   Wed, 14 Dec 2022 09:05:06 GMT
-From:   "Adam Charachuta" <adam.charachuta@lokoho.com>
-To:     <linux-rdma@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-X-Mailer: mail.lokoho.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        with ESMTP id S238923AbiLNSF0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Dec 2022 13:05:26 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDDF23147;
+        Wed, 14 Dec 2022 10:04:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B7130B819B8;
+        Wed, 14 Dec 2022 18:04:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 58301C433F2;
+        Wed, 14 Dec 2022 18:04:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671041085;
+        bh=juNTL0A67dvslFkB6+bvivV58YYYoa6U9yhFU9rvUFs=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=dtKuhX8hdulFfjPxjmwWAO0KTg/swO+f8ZcWcMi3Nsv+E4ct28LtJe0m7rZ3Rpiw3
+         8Oj7pm0uHRWX2xxAp2uy3at3TOwHLT2Kr4F91DVhpaI93wgPoIeXlSA90EClkDvjjJ
+         gScA1N+hov7SoTl1erp/j0t668F0Xgeq+DA8xfuc6htVVi56cMlx+mwhpi4/FKBNUD
+         blWHFRb3q903KMf3trFBpcp9sQ3e+/YMKhhFYl/7/VfX08aw8jJ7cPp6SdJ9/E1rbB
+         reK9yUkNOUrCyLcIoLZfC+QQoleFWphqTptQ/EcMZVAk1HpgfCmyQmz4noutQnM4qz
+         y6+z2+ozZft3w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 44C6CC41612;
+        Wed, 14 Dec 2022 18:04:45 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <Y5jpKmpwhTAf+r8B@nvidia.com>
+References: <Y5jpKmpwhTAf+r8B@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <Y5jpKmpwhTAf+r8B@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: dbc94a0fb81771a38733c0e8f2ea8c4fa6934dc1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ab425febda94c7d287ea3433cbd0971771d6aeb4
+Message-Id: <167104108527.17244.4207557699245256925.pr-tracker-bot@kernel.org>
+Date:   Wed, 14 Dec 2022 18:04:45 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dzie=C5=84 dobry,
+The pull request you sent on Tue, 13 Dec 2022 17:05:46 -0400:
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ab425febda94c7d287ea3433cbd0971771d6aeb4
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+Thank you!
 
-
-Pozdrawiam
-Adam Charachuta
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
