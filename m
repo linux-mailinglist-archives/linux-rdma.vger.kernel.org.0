@@ -2,63 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E1E64DB2E
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Dec 2022 13:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9807A64DDB5
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Dec 2022 16:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbiLOMbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Dec 2022 07:31:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
+        id S230240AbiLOPVd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Dec 2022 10:21:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbiLOMbT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Dec 2022 07:31:19 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F6D13DED
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 04:31:18 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id b13so15423542lfo.3
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 04:31:18 -0800 (PST)
+        with ESMTP id S230263AbiLOPVA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Dec 2022 10:21:00 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E7362E5
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 07:19:27 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id r2-20020a9d7cc2000000b006718a7f7fbaso3775671otn.2
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 07:19:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bell-sw-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=upI87PN1BH4J6q5AGmeF4ixuNT8JvDXApVOLzXphcqc=;
-        b=c9CWq5cB7AkYryRqnJQAYj8iilu369dsvvBcj5kszKbUey/qnyx7vEfZhXZDg+w8li
-         sEwizJXulHV73YO2pEs+GZZDFIl6lVg8PFAHsn0PnNYPDJL3oQB+mmUoXSx0hT03t9Ot
-         wTdbnE080fmNzJvs1+uJ3ltxqgpLr+x9u8JdaUNqotdJoHma7qXbiN97Ee5qTRl9i8/Q
-         Rt71/vr6hdPeM50ZZftpxk/qVi3hcoJXnlGeF/l9Kl/hMaTfG3LfNSdEMkmJ4y/XNuwy
-         fx0dcvEH0u1PxSK13lQc8CChWjInxWP5wxh/FFpTN/wKJ3WaaHKPak43pJvyKaoHAYRC
-         lfmg==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SS7FD5UcGJIKcui9D+/OEcfu0gF7xKPbG9AxsHECMEo=;
+        b=U4/vgcAvUx/AwoxydS2Vtrp6YPn7MI9dA7rQfX2SWdDVNjMvHOcjhEHr1MnVbUFeZ8
+         jxxK5UIpeELFMY2NVm2m+72uIFrItJuWe1pPTgUuaFb4yHEBu9Tux1AeK3Thfhq2502l
+         t4zernnd/qUZvChYItG/PtZ45JPBKoLsAoqYUN+vXFXRu8+ERSOikdA3hu/2EV/KtTev
+         E9S2TAWB3Hw+HG/VvoXkhRrsm02M+zFN+/yxpXgRgdt7feHECD+vVrRq1Tza2QK4yQYr
+         tHz3oax3n2f+jf8MhI+WcU1+3S2UiVCTRSf7UtEDquHpRzaKbdcCJUdm2gdvjiCnZNdo
+         CGhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=upI87PN1BH4J6q5AGmeF4ixuNT8JvDXApVOLzXphcqc=;
-        b=GsYUKcu1Whvc6GUIdu/zVbKYvIv/aCZWs+pqspLmQBiGBeElaVxl+KHXw5SlFuNynq
-         1qmhBLYGOEg0LnExPQsZfBxDRdMF9BDv5rrOT/dZWFcxTBQ8eetw+pvTSp02IjsKnMDv
-         LY5t07GnVMjOcWGgu8qpyqr+UO1nei2EQqY6AVgVE0qI05ZpuEMvvMUZqqxTFGo2dc7V
-         0wwmLgKmTrDzC4uFldxfw/vedbb3Ig6OEN3l5ZMMjr3sTE65iTi2vd0VAxg2kL4isEwT
-         yX57KAw0ZuYbIcKxRR5/A+WQF9tA7ufEj8x2meQBZgptdUoKOTMHfcVTguxQva5qaddZ
-         hSqg==
-X-Gm-Message-State: ANoB5pkraOo9liV7RH/wooFUhduYpMpzqHzPjTcaoUubfAWLVxL1MBa9
-        MmtIW9O54ejNzU369EQ+sDOAfG2cOQERltA=
-X-Google-Smtp-Source: AA0mqf5RsKxIco83/CRqvvzFk0DE3refkEpmlNImblNRqiiLU61z0KY3Upyn2+UBvDC/517Ku1YJkw==
-X-Received: by 2002:a05:6512:3d0e:b0:4b5:9043:2530 with SMTP id d14-20020a0565123d0e00b004b590432530mr10451691lfv.68.1671107476481;
-        Thu, 15 Dec 2022 04:31:16 -0800 (PST)
-Received: from localhost.localdomain ([95.161.223.113])
-        by smtp.gmail.com with ESMTPSA id s25-20020a195e19000000b004b55cebdbd7sm1147869lfb.120.2022.12.15.04.31.15
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SS7FD5UcGJIKcui9D+/OEcfu0gF7xKPbG9AxsHECMEo=;
+        b=D4fYdzyW0NX6gKjmlbQ2U3Y2HZhM/rPQYUnFaVC9GdYiVh0h3wIXtD5k9bBB5mAyUx
+         sPCQ0GM4dalYkXxaRYMU/5NMPLx3C0QodvmVRb4faASaheKe801VyT1z+AxJm2dkT5D0
+         mFtZ9uOtKY0DeyJC5k+rKlY8ieAIzhjUu+zKgB0DPE5f11V+F0N93Yqa7QEFDj/QMVWa
+         5oLBlDMinl/L9npZfpq1mWZQFpdLI6MBQErHaYTvWMvhlQbELgeAaanMgICwDfRYzpA/
+         OEw1DprGvgGW3pibBSMvazRHNLQkZP8iB1U9GOGPlZtL3ywkiyXuYbO39QecWEKi4h4a
+         MJNQ==
+X-Gm-Message-State: ANoB5pnDcJ+wj6UwvPB8ug66eRYC4K7lA8j4ZEeyTq9WkPCsO9Z+3UwM
+        RDNU79rkf/PY/ymSTp0K89Q=
+X-Google-Smtp-Source: AA0mqf52MZp4QLvPGNxPDIfeQVkGX5Lfqkgrg2pZJTtD/y3+riFc9pemp/4qO/lMR3OVtnMKI66TJw==
+X-Received: by 2002:a05:6830:349f:b0:66e:c096:126c with SMTP id c31-20020a056830349f00b0066ec096126cmr13593528otu.29.1671117566339;
+        Thu, 15 Dec 2022 07:19:26 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h22-20020a9d6f96000000b0066cb9069e0bsm3693532otq.42.2022.12.15.07.19.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Dec 2022 04:31:15 -0800 (PST)
-From:   Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Subject: [PATCH rdma-next] RDMA/cxgb4: remove unnecessary NULL check in __c4iw_poll_cq_one()
-Date:   Thu, 15 Dec 2022 15:30:30 +0300
-Message-Id: <20221215123030.155378-1-aleksei.kodanev@bell-sw.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 15 Dec 2022 07:19:26 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 15 Dec 2022 07:19:24 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Xiao Yang <yangx.jy@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, jgg@nvidia.com, rpearsonhpe@gmail.com,
+        leon@kernel.org, lizhijian@fujitsu.com, y-goto@fujitsu.com,
+        zyjzyj2000@gmail.com
+Subject: Re: [PATCH v7 6/8] RDMA/rxe: Make responder support atomic write on
+ RC service
+Message-ID: <20221215151924.GA2574647@roeck-us.net>
+References: <1669905568-62-1-git-send-email-yangx.jy@fujitsu.com>
+ <1669905568-62-2-git-send-email-yangx.jy@fujitsu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1669905568-62-2-git-send-email-yangx.jy@fujitsu.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,42 +76,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-If 'qhp' is NULL then 'wq' is also NULL:
+On Thu, Dec 01, 2022 at 02:39:26PM +0000, Xiao Yang wrote:
+> Make responder process an atomic write request and send a read response
+> on RC service.
+> 
+> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+> ---
 
-    struct t4_wq *wq = qhp ? &qhp->wq : NULL;
-    ...
-    ret = poll_cq(wq, ...);
-    if (ret)
-        goto out;
+On all 32-bit builds with CONFIG_WERROR enabled:
 
-poll_cq(wq, ...) always returns a non-zero status if 'wq' is NULL,
-either on a t4_next_cqe() error or on a 'wq == NULL' check.
+Error log:
+drivers/infiniband/sw/rxe/rxe_resp.c: In function 'atomic_write_reply':
+drivers/infiniband/sw/rxe/rxe_resp.c:794:13: error: unused variable 'payload' [-Werror=unused-variable]
+  794 |         int payload = payload_size(pkt);
+      |             ^~~~~~~
+drivers/infiniband/sw/rxe/rxe_resp.c:793:24: error: unused variable 'mr' [-Werror=unused-variable]
+  793 |         struct rxe_mr *mr = qp->resp.mr;
+      |                        ^~
+drivers/infiniband/sw/rxe/rxe_resp.c:791:19: error: unused variable 'dst' [-Werror=unused-variable]
+  791 |         u64 src, *dst;
+      |                   ^~~
+drivers/infiniband/sw/rxe/rxe_resp.c:791:13: error: unused variable 'src' [-Werror=unused-variable]
+  791 |         u64 src, *dst;
 
-Therefore, checking 'qhp' again after poll_cq() is redundant.
-
-BTW, there're also 'qhp' dereference cases below poll_cq() without
-any checks (c4iw_invalidate_mr(qhp->rhp,...)).
-
-Detected using the static analysis tool - Svace.
-Fixes: 4ab39e2f98f2 ("RDMA/cxgb4: Make c4iw_poll_cq_one() easier to analyze")
-Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
----
- drivers/infiniband/hw/cxgb4/cq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
-index c7e8d7b3baa1..7e2835dcbc1c 100644
---- a/drivers/infiniband/hw/cxgb4/cq.c
-+++ b/drivers/infiniband/hw/cxgb4/cq.c
-@@ -767,7 +767,7 @@ static int __c4iw_poll_cq_one(struct c4iw_cq *chp, struct c4iw_qp *qhp,
- 		goto out;
- 
- 	wc->wr_id = cookie;
--	wc->qp = qhp ? &qhp->ibqp : NULL;
-+	wc->qp = &qhp->ibqp;
- 	wc->vendor_err = CQE_STATUS(&cqe);
- 	wc->wc_flags = 0;
- 
--- 
-2.25.1
-
+Guenter
