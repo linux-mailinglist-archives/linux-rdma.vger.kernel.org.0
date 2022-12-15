@@ -2,143 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C12364E48A
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Dec 2022 00:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D2264E4B4
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Dec 2022 00:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbiLOXL5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Dec 2022 18:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
+        id S229929AbiLOXcg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Dec 2022 18:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbiLOXLq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Dec 2022 18:11:46 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3433E0BE;
-        Thu, 15 Dec 2022 15:11:45 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id i26-20020a9d68da000000b00672301a1664so416466oto.6;
-        Thu, 15 Dec 2022 15:11:45 -0800 (PST)
+        with ESMTP id S229549AbiLOXcf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Dec 2022 18:32:35 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756DF5EDE8
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 15:32:34 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id m4so617414pls.4
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 15:32:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8DKcMUsVohq1zP2BP4+TD9a9jOkzZ1udLWR6UFI0elg=;
-        b=jQNpm7q53MiBge8cfZpMiioLYSIs1TjfR4UT1bxm8/le/hkbq8Nc06hQAmkpY5kqKt
-         mzdIkkdb8VUMtbXnsBuG0eLFoVVBeYxblUh/yRavCSwmUapTuDLOxHCOcWDa5dYlM5E+
-         SDt3f4IZUjjlc6bVhJDr/Zj9skuAjrLc8O0kYvEc71rIS7hGLW0nHZPjfsXeFA+inZeC
-         jZ6ACE1t+lmjJwpsilyb+VxuXzpLfjOEh09Qf9pQyFoQSnt5Yx5JbTD4DV+paRdujoli
-         Htd3bq6I4msBDBpipaLv6yfqwol+AnXDjOINi1JoLvXcNGhw2OgapQHdAvw/IsoQa152
-         w9BQ==
+        d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:to:cc:subject:date:message-id:reply-to;
+        bh=kQ9ItmDRgbW04LygMs9P/+XkNt2iGLa92u7ZmkVsxPg=;
+        b=3+h2uaJDaSROOvhBboqSxfpmgcWvz1ocI/sUoSk0anox6Ro9tkY+Mpb7qnGlSAWbot
+         HwE6sDES8qP6LiNBAOCrY4R27F6G8EjGIqNMEvtfvP54d17ZfNqltqikhSSphUyAbU4/
+         2yaZ18MrDSAoHsCQkQq663M55YvdNlKljmrvnxnWHkgKuqPMqdVMn4vNQVGY277aTe+H
+         VOXAed9NCFQOPMca8KEXgw/nfixmnkC646RmvPmTXxR3W5+GQ6sOFazodSMi4CcKFYrL
+         AS1xmVxyDVs8DVPbKkdzgbQ9oAL9KpruyhHGWiKLQvCkRJ3vhluI6KkWjTKllhCHzJOD
+         LNQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8DKcMUsVohq1zP2BP4+TD9a9jOkzZ1udLWR6UFI0elg=;
-        b=c/oZm8HDZGj4/aEeCIuJWrsTNdipr5xY4TjIYnT/ygKEczC+i6bmsyv2Vl90Qhd/Rt
-         ZG2hdasfhqdiA23VrQnBn2jIjzWtsf94PO4tWzQy+0sjWkp/7WOmVCL5FfuCnDVwAFqi
-         RSdUF7YiPXrlVLYeSkn/94aX7hLdSr8DA8nUwesRpSWrk0BEbFktDEK6nfkUyO6VQezn
-         VE1cJpLV/+FNh7TQtvJ/fFyTXOL8nDMBqGYAdgvp+8JitQmR5Q2fSZhd3kVFvFmYFc9b
-         WsiSXbyApjpRBY+PUOVAcHuxB+7ivNlEA29KG2zeBpdnQyVikNCHwSRTSf7DDJZ7soha
-         vRNA==
-X-Gm-Message-State: ANoB5pnVdibtlahzY0vEOBDYoR/npJOw2GfjOVv7GvK/7rt7JznSqvCV
-        RIZ3O1sDOrLthhmrO4YIwEM=
-X-Google-Smtp-Source: AA0mqf6r03rxLOA1XWPcc9XnbgjLq3kYNxoATlIVXvJIiQuffQiFz7QhxjraD8tejb7wLZK0hufRnQ==
-X-Received: by 2002:a9d:6006:0:b0:670:6246:8106 with SMTP id h6-20020a9d6006000000b0067062468106mr14896488otj.4.1671145904650;
-        Thu, 15 Dec 2022 15:11:44 -0800 (PST)
-Received: from localhost ([12.97.180.36])
-        by smtp.gmail.com with ESMTPSA id a21-20020a056830101500b00670763270fcsm114511otp.71.2022.12.15.15.11.43
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
+         :subject:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kQ9ItmDRgbW04LygMs9P/+XkNt2iGLa92u7ZmkVsxPg=;
+        b=c+bkMhSkpom+eqdckHEwAvDM0xoMPI0D3Pt5eILMEXFSBfYk1YBplJz2dpcZquokjT
+         BgpmYXs05jhozr91DWGudgLkV+B1XxCgEyRhJP4qgL7Ui8ROWQ91G4YK1enA2ELAR/Wn
+         YsvGauyOYuBLZwIt7EhlwrenYo8Dvowh28lfy0TcUglmNTtxwe3EteX61Q8NLQfSn5eu
+         FXb7Sludz1gHyTrVkbl8H9WNgtGvRPnzgu/TJNfehkia897+Vx3gQ2FVC2s990qxhVlK
+         PpoUBY6igqiqE5h6ZtcLrJVViyKO1WWNgrLezSDMkL0IweVPa0KJ975cZlIW80AG+oJm
+         EFqA==
+X-Gm-Message-State: ANoB5pkc7SEB2vSyyTs+k3CAz9IA8BiWHOQ9A6fr0WBbcr+GMZODDS0O
+        ifZaoqXkWhIS5+zmYcJ2o+9tjvOAaPPZNMc4
+X-Google-Smtp-Source: AA0mqf75MxP2xc7QbEyCwvdrf4xocmKX6dgvBFbdllqKlo95HpGTqG+OONx5pr8F6fsbtubS0YZlVw==
+X-Received: by 2002:a17:902:b087:b0:189:e81b:d25f with SMTP id p7-20020a170902b08700b00189e81bd25fmr29657502plr.56.1671147153845;
+        Thu, 15 Dec 2022 15:32:33 -0800 (PST)
+Received: from localhost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id b4-20020a170902d50400b00182a9c27acfsm167565plg.227.2022.12.15.15.32.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Dec 2022 15:11:44 -0800 (PST)
-Date:   Thu, 15 Dec 2022 15:11:42 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Subject: [GIT PULL] bitmap changes for v6.2-rc1
-Message-ID: <Y5uprmSmSfYechX2@yury-laptop>
+        Thu, 15 Dec 2022 15:32:33 -0800 (PST)
+Subject: [PATCH] RDMA/rxe: Avoid unused variable warnings on 32-bit targets
+Date:   Thu, 15 Dec 2022 15:28:37 -0800
+Message-Id: <20221215232837.30211-1-palmer@rivosinc.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@rivosinc.com, Palmer Dabbelt <palmer@rivosinc.com>
+From:   Palmer Dabbelt <palmer@rivosinc.com>
+To:     jgg@nvidia.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The following changes since commit 76dcd734eca23168cb008912c0f69ff408905235:
+From: Palmer Dabbelt <palmer@rivosinc.com>
 
-  Linux 6.1-rc8 (2022-12-04 14:48:12 -0800)
+These variables are not used on 32-bit targets as there's a big ifdef
+around their use.  This results on a handful of warnings for 32-bit
+RISC-V allyesconfig:
 
-are available in the Git repository at:
+  CC      drivers/infiniband/sw/rxe/rxe_resp.o
+linux/drivers/infiniband/sw/rxe/rxe_resp.c: In function 'atomic_write_reply':
+linux/drivers/infiniband/sw/rxe/rxe_resp.c:794:13: error: unused variable 'payload' [-Werror=unused-variable]
+  794 |         int payload = payload_size(pkt);
+      |             ^~~~~~~
+linux/drivers/infiniband/sw/rxe/rxe_resp.c:793:24: error: unused variable 'mr' [-Werror=unused-variable]
+  793 |         struct rxe_mr *mr = qp->resp.mr;
+      |                        ^~
+linux/drivers/infiniband/sw/rxe/rxe_resp.c:791:19: error: unused variable 'dst' [-Werror=unused-variable]
+  791 |         u64 src, *dst;
+      |                   ^~~
+linux/drivers/infiniband/sw/rxe/rxe_resp.c:791:13: error: unused variable 'src' [-Werror=unused-variable]
+  791 |         u64 src, *dst;
+      |             ^~~
+cc1: all warnings being treated as errors
 
-  git@github.com:/norov/linux.git tags/bitmap-6.2-rc1
+Fixes: 034e285f8b99 ("RDMA/rxe: Make responder support atomic write on RC service")
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ drivers/infiniband/sw/rxe/rxe_resp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-for you to fetch changes up to 2386459394d2a46964829a00c48a08a23ead94ed:
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 7a60c7709da0..18977d5a3316 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -788,10 +788,10 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
+ static enum resp_states atomic_write_reply(struct rxe_qp *qp,
+ 						struct rxe_pkt_info *pkt)
+ {
+-	u64 src, *dst;
+-	struct resp_res *res = qp->resp.res;
+-	struct rxe_mr *mr = qp->resp.mr;
+-	int payload = payload_size(pkt);
++	__maybe_unused u64 src, *dst;
++	__maybe_unused struct resp_res *res = qp->resp.res;
++	__maybe_unused struct rxe_mr *mr = qp->resp.mr;
++	__maybe_unused int payload = payload_size(pkt);
+ 
+ 	if (!res) {
+ 		res = rxe_prepare_res(qp, pkt, RXE_ATOMIC_WRITE_MASK);
+-- 
+2.38.1
 
-  lib/cpumask: update comment for cpumask_local_spread() (2022-12-15 14:44:43 -0800)
-
-----------------------------------------------------------------
-Hi Linus,
-
-Please pull bitmap patches for v6.2. They spent in -next for more than
-a week without any issues. The branch consists of:
-
-- optimize small_const path for find_next_bit() and friends (me);
-
-  Introduces small_const_nbits_off() and uses it in find_next_bit()-like
-  functions to allow static optimization when all bits to search are
-  withing a word boundary, even if not a 1st word.
-
-- cpumask: improve on cpumask_local_spread() locality (me):
-
-  The series makes cpumask_local_spread() picking Nth CPU based on NUMA
-  hop distances, which is better than picking CPUs from a given node and
-  if there's no N cpus - from a random node (how it works now).
-
-- sched, net: NUMA-aware CPU spreading interface (Valentin Schneider,
-  Tariq Toukan):
-
-  Iterators for NUMA-aware CPUs traversing. Better alternative for
-  cpumask_local_spread(), when it's needed to enumerate all CPUs.
-
-Thanks,
-Yury
-
-----------------------------------------------------------------
-Tariq Toukan (1):
-      net/mlx5e: Improve remote NUMA preferences used for the IRQ affinity hints
-
-Valentin Schneider (2):
-      sched/topology: Introduce sched_numa_hop_mask()
-      sched/topology: Introduce for_each_numa_hop_mask()
-
-Yury Norov (9):
-      bitmap: switch from inline to __always_inline
-      bitmap: improve small_const case for find_next() functions
-      bitmap: add tests for find_next_bit()
-      lib/find: introduce find_nth_and_andnot_bit
-      cpumask: introduce cpumask_nth_and_andnot
-      sched: add sched_numa_find_nth_cpu()
-      cpumask: improve on cpumask_local_spread() locality
-      lib/cpumask: reorganize cpumask_local_spread() logic
-      lib/cpumask: update comment for cpumask_local_spread()
-
- drivers/net/ethernet/mellanox/mlx5/core/eq.c |  18 ++-
- include/asm-generic/bitsperlong.h            |  12 ++
- include/linux/bitmap.h                       |  46 ++++----
- include/linux/cpumask.h                      | 164 +++++++++++++++------------
- include/linux/find.h                         | 118 +++++++++++--------
- include/linux/nodemask.h                     |  86 +++++++-------
- include/linux/topology.h                     |  33 ++++++
- kernel/sched/topology.c                      |  90 +++++++++++++++
- lib/cpumask.c                                |  52 +++++----
- lib/find_bit.c                               |   9 ++
- lib/test_bitmap.c                            |  23 +++-
- 11 files changed, 438 insertions(+), 213 deletions(-)
