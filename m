@@ -2,73 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14FB864CF17
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Dec 2022 19:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBC064D544
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Dec 2022 03:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239103AbiLNSFv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Dec 2022 13:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
+        id S229496AbiLOCSc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Dec 2022 21:18:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238923AbiLNSF0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Dec 2022 13:05:26 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDDF23147;
-        Wed, 14 Dec 2022 10:04:48 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B7130B819B8;
-        Wed, 14 Dec 2022 18:04:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 58301C433F2;
-        Wed, 14 Dec 2022 18:04:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671041085;
-        bh=juNTL0A67dvslFkB6+bvivV58YYYoa6U9yhFU9rvUFs=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=dtKuhX8hdulFfjPxjmwWAO0KTg/swO+f8ZcWcMi3Nsv+E4ct28LtJe0m7rZ3Rpiw3
-         8Oj7pm0uHRWX2xxAp2uy3at3TOwHLT2Kr4F91DVhpaI93wgPoIeXlSA90EClkDvjjJ
-         gScA1N+hov7SoTl1erp/j0t668F0Xgeq+DA8xfuc6htVVi56cMlx+mwhpi4/FKBNUD
-         blWHFRb3q903KMf3trFBpcp9sQ3e+/YMKhhFYl/7/VfX08aw8jJ7cPp6SdJ9/E1rbB
-         reK9yUkNOUrCyLcIoLZfC+QQoleFWphqTptQ/EcMZVAk1HpgfCmyQmz4noutQnM4qz
-         y6+z2+ozZft3w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 44C6CC41612;
-        Wed, 14 Dec 2022 18:04:45 +0000 (UTC)
+        with ESMTP id S229451AbiLOCSb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Dec 2022 21:18:31 -0500
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E31537DA
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Dec 2022 18:18:30 -0800 (PST)
+Message-ID: <116df3dc-0ace-d764-1a59-8c1424cfbdc0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1671070707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vnTpNrhdL4sLHx+7xMLZDMAiYovf1R7LxcODHM2B+Ag=;
+        b=UgmKj8KgyYxAcNXyOITEWOpgTp8ic1DUl4TFDjgAUZwzTzXQ6dmNUrhwKhLaKOADfPcWId
+        yDb1Gzfg+tHcG/f+huMuh/7Glfxt+JCR3LTukY7pzsmntMQ91KmAnj3lDu3P1Om1Ws8SFa
+        YCHV/QqNF3qWMNnw/Lcf8x2Q/QSJFSI=
+Date:   Thu, 15 Dec 2022 10:18:22 +0800
+MIME-Version: 1.0
 Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <Y5jpKmpwhTAf+r8B@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
 References: <Y5jpKmpwhTAf+r8B@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Y5jpKmpwhTAf+r8B@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: dbc94a0fb81771a38733c0e8f2ea8c4fa6934dc1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ab425febda94c7d287ea3433cbd0971771d6aeb4
-Message-Id: <167104108527.17244.4207557699245256925.pr-tracker-bot@kernel.org>
-Date:   Wed, 14 Dec 2022 18:04:45 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leonro@nvidia.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <7601dc11-f1b5-5488-727a-13b4016c8aa5@linux.dev> <Y5l97q27hU5d8pU2@unreal>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <Y5l97q27hU5d8pU2@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Tue, 13 Dec 2022 17:05:46 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+在 2022/12/14 15:40, Leon Romanovsky 写道:
+> On Wed, Dec 14, 2022 at 10:23:29AM +0800, Yanjun Zhu wrote:
+>> 在 2022/12/14 5:05, Jason Gunthorpe 写道:
+>>> Hi Linus,
+>>>
+>>> This cycle saw a new driver called MANA get merged and more fixing to
+>>> the other recently merged drivers. rxe continues to see a lot of
+>>> interest and fixing. Lots more rxe patches already in the works for
+>>> the next cycle.
+>>>
+>>> Thanks,
+>>> Jason
+> <...>
+>
+>>> Zhu Yanjun (2):
+>>>         RDMA/rxe: Remove reliable datagram support
+>>>         RDMA/mlx5: Remove not-used IB_FLOW_SPEC_IB define
+>> I do not like this subject. I still like my old one.
+>> With the old one, it suggests that IB_FLOW_SPEC is not supported in MLX5 in
+>> subject line.
+> Right now, mlx5 doesn't implement this IB_FLOW_SPEC and define is not
+> used. It doesn't mean that it is not supported.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ab425febda94c7d287ea3433cbd0971771d6aeb4
+Got you. MLX5 has the capability to support IB_FLOW_SPEC.
 
-Thank you!
+But no user will use IB_FLOW_SPEC, so it is not implemented on MLX5.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Zhu Yanjun
+
+>
+> Thanks
