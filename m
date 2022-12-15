@@ -2,80 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBC064D544
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Dec 2022 03:18:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C9B64D959
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Dec 2022 11:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbiLOCSc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Dec 2022 21:18:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
+        id S230248AbiLOKPF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Dec 2022 05:15:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiLOCSb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Dec 2022 21:18:31 -0500
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E31537DA
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Dec 2022 18:18:30 -0800 (PST)
-Message-ID: <116df3dc-0ace-d764-1a59-8c1424cfbdc0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1671070707;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vnTpNrhdL4sLHx+7xMLZDMAiYovf1R7LxcODHM2B+Ag=;
-        b=UgmKj8KgyYxAcNXyOITEWOpgTp8ic1DUl4TFDjgAUZwzTzXQ6dmNUrhwKhLaKOADfPcWId
-        yDb1Gzfg+tHcG/f+huMuh/7Glfxt+JCR3LTukY7pzsmntMQ91KmAnj3lDu3P1Om1Ws8SFa
-        YCHV/QqNF3qWMNnw/Lcf8x2Q/QSJFSI=
-Date:   Thu, 15 Dec 2022 10:18:22 +0800
+        with ESMTP id S230194AbiLOKPD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Dec 2022 05:15:03 -0500
+Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com [139.138.36.225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7574927169
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 02:15:02 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="87961790"
+X-IronPort-AV: E=Sophos;i="5.96,247,1665414000"; 
+   d="scan'208";a="87961790"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+  by esa10.hc1455-7.c3s2.iphmx.com with ESMTP; 15 Dec 2022 19:15:00 +0900
+Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com [192.168.87.58])
+        by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 3E95FD647B
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 19:14:59 +0900 (JST)
+Received: from m3002.s.css.fujitsu.com (msm3.b.css.fujitsu.com [10.128.233.104])
+        by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 76CD9F68E0
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 19:14:58 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.19.3.107])
+        by m3002.s.css.fujitsu.com (Postfix) with ESMTP id 3B31A200B315;
+        Thu, 15 Dec 2022 19:14:58 +0900 (JST)
+From:   Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+To:     linux-rdma@vger.kernel.org, leonro@nvidia.com, jgg@nvidia.com,
+        zyjzyj2000@gmail.com
+Cc:     rpearsonhpe@gmail.com, Rao.Shoaib@oracle.com,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Subject: [PATCH 1/2] RDMA/rxe: Fix inaccurate constants in rxe_type_info
+Date:   Thu, 15 Dec 2022 19:14:38 +0900
+Message-Id: <20221215101439.3644683-1-matsuda-daisuke@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
-References: <Y5jpKmpwhTAf+r8B@nvidia.com>
- <7601dc11-f1b5-5488-727a-13b4016c8aa5@linux.dev> <Y5l97q27hU5d8pU2@unreal>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <Y5l97q27hU5d8pU2@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+ibv_query_device() has reported incorrect device attributes, which are
+actually not used by the device. Make the constants correspond with the
+attributes shown to users.
 
-在 2022/12/14 15:40, Leon Romanovsky 写道:
-> On Wed, Dec 14, 2022 at 10:23:29AM +0800, Yanjun Zhu wrote:
->> 在 2022/12/14 5:05, Jason Gunthorpe 写道:
->>> Hi Linus,
->>>
->>> This cycle saw a new driver called MANA get merged and more fixing to
->>> the other recently merged drivers. rxe continues to see a lot of
->>> interest and fixing. Lots more rxe patches already in the works for
->>> the next cycle.
->>>
->>> Thanks,
->>> Jason
-> <...>
->
->>> Zhu Yanjun (2):
->>>         RDMA/rxe: Remove reliable datagram support
->>>         RDMA/mlx5: Remove not-used IB_FLOW_SPEC_IB define
->> I do not like this subject. I still like my old one.
->> With the old one, it suggests that IB_FLOW_SPEC is not supported in MLX5 in
->> subject line.
-> Right now, mlx5 doesn't implement this IB_FLOW_SPEC and define is not
-> used. It doesn't mean that it is not supported.
+Fixes: 3ccffe8abf2f ("RDMA/rxe: Move max_elem into rxe_type_info")
+Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by xarrays")
+Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+---
+ drivers/infiniband/sw/rxe/rxe_pool.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-Got you. MLX5 has the capability to support IB_FLOW_SPEC.
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+index f50620f5a0a1..1151c0b5ccea 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.c
++++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+@@ -23,16 +23,16 @@ static const struct rxe_type_info {
+ 		.size		= sizeof(struct rxe_ucontext),
+ 		.elem_offset	= offsetof(struct rxe_ucontext, elem),
+ 		.min_index	= 1,
+-		.max_index	= UINT_MAX,
+-		.max_elem	= UINT_MAX,
++		.max_index	= RXE_MAX_UCONTEXT,
++		.max_elem	= RXE_MAX_UCONTEXT,
+ 	},
+ 	[RXE_TYPE_PD] = {
+ 		.name		= "pd",
+ 		.size		= sizeof(struct rxe_pd),
+ 		.elem_offset	= offsetof(struct rxe_pd, elem),
+ 		.min_index	= 1,
+-		.max_index	= UINT_MAX,
+-		.max_elem	= UINT_MAX,
++		.max_index	= RXE_MAX_PD,
++		.max_elem	= RXE_MAX_PD,
+ 	},
+ 	[RXE_TYPE_AH] = {
+ 		.name		= "ah",
+@@ -40,7 +40,7 @@ static const struct rxe_type_info {
+ 		.elem_offset	= offsetof(struct rxe_ah, elem),
+ 		.min_index	= RXE_MIN_AH_INDEX,
+ 		.max_index	= RXE_MAX_AH_INDEX,
+-		.max_elem	= RXE_MAX_AH_INDEX - RXE_MIN_AH_INDEX + 1,
++		.max_elem	= RXE_MAX_AH,
+ 	},
+ 	[RXE_TYPE_SRQ] = {
+ 		.name		= "srq",
+@@ -49,7 +49,7 @@ static const struct rxe_type_info {
+ 		.cleanup	= rxe_srq_cleanup,
+ 		.min_index	= RXE_MIN_SRQ_INDEX,
+ 		.max_index	= RXE_MAX_SRQ_INDEX,
+-		.max_elem	= RXE_MAX_SRQ_INDEX - RXE_MIN_SRQ_INDEX + 1,
++		.max_elem	= RXE_MAX_SRQ,
+ 	},
+ 	[RXE_TYPE_QP] = {
+ 		.name		= "qp",
+@@ -58,7 +58,7 @@ static const struct rxe_type_info {
+ 		.cleanup	= rxe_qp_cleanup,
+ 		.min_index	= RXE_MIN_QP_INDEX,
+ 		.max_index	= RXE_MAX_QP_INDEX,
+-		.max_elem	= RXE_MAX_QP_INDEX - RXE_MIN_QP_INDEX + 1,
++		.max_elem	= RXE_MAX_QP,
+ 	},
+ 	[RXE_TYPE_CQ] = {
+ 		.name		= "cq",
+@@ -66,8 +66,8 @@ static const struct rxe_type_info {
+ 		.elem_offset	= offsetof(struct rxe_cq, elem),
+ 		.cleanup	= rxe_cq_cleanup,
+ 		.min_index	= 1,
+-		.max_index	= UINT_MAX,
+-		.max_elem	= UINT_MAX,
++		.max_index	= RXE_MAX_CQ,
++		.max_elem	= RXE_MAX_CQ,
+ 	},
+ 	[RXE_TYPE_MR] = {
+ 		.name		= "mr",
+@@ -76,7 +76,7 @@ static const struct rxe_type_info {
+ 		.cleanup	= rxe_mr_cleanup,
+ 		.min_index	= RXE_MIN_MR_INDEX,
+ 		.max_index	= RXE_MAX_MR_INDEX,
+-		.max_elem	= RXE_MAX_MR_INDEX - RXE_MIN_MR_INDEX + 1,
++		.max_elem	= RXE_MAX_MR,
+ 	},
+ 	[RXE_TYPE_MW] = {
+ 		.name		= "mw",
+@@ -85,7 +85,7 @@ static const struct rxe_type_info {
+ 		.cleanup	= rxe_mw_cleanup,
+ 		.min_index	= RXE_MIN_MW_INDEX,
+ 		.max_index	= RXE_MAX_MW_INDEX,
+-		.max_elem	= RXE_MAX_MW_INDEX - RXE_MIN_MW_INDEX + 1,
++		.max_elem	= RXE_MAX_MW,
+ 	},
+ };
+ 
+-- 
+2.31.1
 
-But no user will use IB_FLOW_SPEC, so it is not implemented on MLX5.
-
-Zhu Yanjun
-
->
-> Thanks
