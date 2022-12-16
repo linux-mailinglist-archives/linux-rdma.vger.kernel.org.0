@@ -2,109 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF17E64E623
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Dec 2022 04:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669BF64E7E6
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Dec 2022 08:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbiLPDLy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Dec 2022 22:11:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
+        id S229730AbiLPHq3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Dec 2022 02:46:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbiLPDLx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Dec 2022 22:11:53 -0500
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 460D628E32
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 19:11:48 -0800 (PST)
-Message-ID: <bc1603aa-cdf5-e8d3-d8f4-9e9c4f4d5563@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1671160307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sKoswwgot9/dVp0xHFMFvQzO9Poij7sBhLRfbUb1TDw=;
-        b=uLyI9B3lOZxCdxNU5jyc+noRNaWSZdELWPBx/sqI4mH561vquaTmem+KTz3IRivFThSYb7
-        aJqdKs7MewogCsCS9+vQFlvkuyWBi3M3zkVTf5+WACUbicf1byakhG1I0xcSZcUI0ET5tZ
-        HUzbQX8ucUtlhtur54A1Dzbj4RWH5F4=
-Date:   Fri, 16 Dec 2022 11:11:39 +0800
+        with ESMTP id S229614AbiLPHq2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Dec 2022 02:46:28 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19EC1A80F
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 23:46:27 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-3f15a6f72d0so23127667b3.1
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Dec 2022 23:46:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ARIVIEhVzMm1WujOb1fU30+/MTpfDpTpcOdBHHIxXDk=;
+        b=Z5PSY+rr0YZJxo/46BRMCBdB4+s9PPJNaHDSr458cvabhd/8lnV55pEzoVPmA8SnhX
+         70edyROSqmwWqi0xkou5GKw2I12PGy6+CrstPQ00LQcsLJLV7tqSOnu6fc17gggNY2l3
+         DX+XP0IImJ8Iaf7zwKbZMBQ82m2WLv1jLwOxCgF5OXHt6+egWBzxB88wxhf08y18dEvd
+         S5+4YXDkf9TKmemBuMSui5mAjqx3XulBR/HwoWjz+kQyyOQZq5ARw3Ys03j0GL+pW6fI
+         lq9uNEZUjqE1p+OmlTyo1rKgDlXERWBfduoYdOscFhvrPzsTpPRfrpliARIg3X1kjxG4
+         dhqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ARIVIEhVzMm1WujOb1fU30+/MTpfDpTpcOdBHHIxXDk=;
+        b=xgzXee9lcEi668fGAbMOCMU4HlacHkJ9cMR3TRnHs/RImM87CO8AGNKIR3GXWrasl4
+         lwCAfspn/bqf3syQB/oscQ/qtriuPitdSfCHivVlJVZi8gC/6kB6HS0bIg2Mcw7ouPXs
+         jOhZwoZKNLIA4IMvcLQ6gX7u6wz+I3frSQQur238jQQT1A/gD9YPLTUO7Ddvo49kak2P
+         Iqlm5iBDxLoY7UqadplEiP0sqlE1hJWGKtGHuFpR+z1qOmAGUkNN/hhhiGqwq/cwpY0j
+         KZmfGWepO/xOnb5WLpX+S/pVqhY30Pm9Pmr1jD+7l7QNKVea2BQe1iEGbcyqHmjbSxjs
+         WBzQ==
+X-Gm-Message-State: ANoB5pmQqAvIY8Y9NESkOljPMRvdanJSus7929Sdg8p4IMw6fUsh5a8x
+        8njoqqbIA2qv1bZhjXVTRwfr+/2FtZ78hDZRfMoAZA==
+X-Google-Smtp-Source: AA0mqf6Hom5y28YCRuuXJUd45mqxKlr9fHvmLaBYR1OjpL6PudA+t7yhbCi5diIApiEcgIqa90KLoklYtPsFdIZARjc=
+X-Received: by 2002:a81:6fd5:0:b0:402:3dcf:a262 with SMTP id
+ k204-20020a816fd5000000b004023dcfa262mr6776445ywc.31.1671176786835; Thu, 15
+ Dec 2022 23:46:26 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: Avoid unused variable warnings on 32-bit
- targets
-To:     Palmer Dabbelt <palmer@rivosinc.com>, jgg@nvidia.com
-Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@rivosinc.com
-References: <20221215232837.30211-1-palmer@rivosinc.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <20221215232837.30211-1-palmer@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20221215170347.2612403-1-arnd@kernel.org>
+In-Reply-To: <20221215170347.2612403-1-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 16 Dec 2022 08:46:16 +0100
+Message-ID: <CACRpkdZf15MxtqpTRVq6bYwZoCM6dTFJc2khRt=+cfxf-sOnow@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/siw: fix pointer cast warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2022/12/16 7:28, Palmer Dabbelt 写道:
-> From: Palmer Dabbelt <palmer@rivosinc.com>
-> 
+On Thu, Dec 15, 2022 at 6:03 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-In 
-https://patchwork.kernel.org/project/linux-rdma/patch/1669905568-62-2-git-send-email-yangx.jy@fujitsu.com/
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The previous build fix left a remaining issue in configurations
+> with 64-bit dma_addr_t on 32-bit architectures:
+>
+> drivers/infiniband/sw/siw/siw_qp_tx.c: In function 'siw_get_pblpage':
+> drivers/infiniband/sw/siw/siw_qp_tx.c:32:37: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+>    32 |                 return virt_to_page((void *)paddr);
+>       |                                     ^
+>
+> Use the same double cast here that the driver uses elsewhere
+> to convert between dma_addr_t and void*.
+>
+> It took me a while to figure out why this driver does it
+> like this, as there is no hardware access and it just stores
+> kernel pointers in place of device addresses when communicating
+> with the rdma core and with user space.
+>
+> Fixes: 0d1b756acf60 ("RDMA/siw: Pass a pointer to virt_to_page()")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-In this link, it seems that a similar commit for this problem.
-Please check it.
+This driver is a big confusion for me too.
 
-Thanks
-Zhu Yanjun
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> These variables are not used on 32-bit targets as there's a big ifdef
-> around their use.  This results on a handful of warnings for 32-bit
-> RISC-V allyesconfig:
-> 
->    CC      drivers/infiniband/sw/rxe/rxe_resp.o
-> linux/drivers/infiniband/sw/rxe/rxe_resp.c: In function 'atomic_write_reply':
-> linux/drivers/infiniband/sw/rxe/rxe_resp.c:794:13: error: unused variable 'payload' [-Werror=unused-variable]
->    794 |         int payload = payload_size(pkt);
->        |             ^~~~~~~
-> linux/drivers/infiniband/sw/rxe/rxe_resp.c:793:24: error: unused variable 'mr' [-Werror=unused-variable]
->    793 |         struct rxe_mr *mr = qp->resp.mr;
->        |                        ^~
-> linux/drivers/infiniband/sw/rxe/rxe_resp.c:791:19: error: unused variable 'dst' [-Werror=unused-variable]
->    791 |         u64 src, *dst;
->        |                   ^~~
-> linux/drivers/infiniband/sw/rxe/rxe_resp.c:791:13: error: unused variable 'src' [-Werror=unused-variable]
->    791 |         u64 src, *dst;
->        |             ^~~
-> cc1: all warnings being treated as errors
-> 
-> Fixes: 034e285f8b99 ("RDMA/rxe: Make responder support atomic write on RC service")
-> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_resp.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 7a60c7709da0..18977d5a3316 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -788,10 +788,10 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
->   static enum resp_states atomic_write_reply(struct rxe_qp *qp,
->   						struct rxe_pkt_info *pkt)
->   {
-> -	u64 src, *dst;
-> -	struct resp_res *res = qp->resp.res;
-> -	struct rxe_mr *mr = qp->resp.mr;
-> -	int payload = payload_size(pkt);
-> +	__maybe_unused u64 src, *dst;
-> +	__maybe_unused struct resp_res *res = qp->resp.res;
-> +	__maybe_unused struct rxe_mr *mr = qp->resp.mr;
-> +	__maybe_unused int payload = payload_size(pkt);
->   
->   	if (!res) {
->   		res = rxe_prepare_res(qp, pkt, RXE_ATOMIC_WRITE_MASK);
-
+Yours,
+Linus Walleij
