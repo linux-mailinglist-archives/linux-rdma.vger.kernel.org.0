@@ -2,69 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F65A654CDA
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Dec 2022 08:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95176553B4
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Dec 2022 19:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbiLWH3N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Dec 2022 02:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
+        id S232192AbiLWSo1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Dec 2022 13:44:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbiLWH3M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Dec 2022 02:29:12 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7629DDF24;
-        Thu, 22 Dec 2022 23:29:09 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id q17-20020a17090aa01100b002194cba32e9so8089783pjp.1;
-        Thu, 22 Dec 2022 23:29:09 -0800 (PST)
+        with ESMTP id S232066AbiLWSo0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Dec 2022 13:44:26 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3041EEF0
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Dec 2022 10:44:25 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id z12so4353177qtv.5
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Dec 2022 10:44:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yw9A9yDRou+SgBuMxTAj1XCzlTZaZEsmvQlTnHCOqi8=;
-        b=Za4UBmWPUBlUu8mceW2dmcOspKc5HL3FoyHS/DABwwdSM0V3Ome7WIEms7WjGXdT7f
-         +g/+1g7iUj0NkGqmDG/yq1KOZ+lo2VthXmLaZUbtn0egbjBpHyH+yTuxz/9p4B0azEjr
-         s6PwfXfS482oGDuVTrmAgrzGX/52vwGzIjW5/2G9GKxo6Qfii1bZSMyEweNMwcQJuB9q
-         3V/v8Lb+yQrKyf5wgsVMFm6/CHeyKzUyK4ItUN6n3eOTMZKZyeMlCei6/8UNLkcprfd9
-         tS/Tip/k+gs43hvU7QCH4oUIETmpNG1k6lz9vOBFqiH/ejJkN7zqPqdhGE4oU3q0TlzF
-         KHNw==
+        d=linux-foundation.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ISSNi5g8+83vFNG4zUWTK5It3MNE4YXnaRha+djQqBw=;
+        b=XK7m6VhqBikWWDV2oOx6FkNGmZccdzxHEeN94hRuIrM5cJItYJ5Nyuph1fb1LDQXYV
+         fr/dPlX9rIKq3/rIoVy1E7VXbGiRbsPj9ylXuxCqVqviueaV8OWtW6SwqWYDIK7Dky5h
+         4sHL0aBImzrysKfCzxWKiX2MlyfRQtl8Ph+vg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yw9A9yDRou+SgBuMxTAj1XCzlTZaZEsmvQlTnHCOqi8=;
-        b=6CfhcO4Eovj1HR8vOF74BIXL9ba8D4cZPWtCfyMIRR/uwOjh7QdXVAmO2a2hA1FBXJ
-         ThPWdkVYkARQEqwvgV0W5kZeqfYrJt92KjGIEfc3y4bY2OngXJVPaiB2ECOwHSOK67H9
-         JhKKRFUhdhVL9QOTPDxQqC3j+8Z5uuHbQXQEqKAkBMFgB8aCFfzgWCK1sPIDCTw7G3WO
-         sZlQ687/2TwmxbOMOPp6H+h2TjsBuDypMO1G9apXAedH2p0A4dTnPRlGCjcteBu06E+T
-         zUCKdh17BIDVHxh17lk3AMeY1c1kUQvJMksvFgxv7GxOAcCRd7DPGOqCLF8+/tzsaETz
-         HnBw==
-X-Gm-Message-State: AFqh2kr0jwvcOwIiC1DUHiVQWh88jSlo3s1DbMCjfE8T83pzWFjh2bsp
-        7SF3W2vn0zbW3VvTV3Kp/NI=
-X-Google-Smtp-Source: AMrXdXuxvFe0OV/SJTb5xKE40jcGUrHlgjqvgGyW2m/VD4Q/W0aRURLMwrwV2t3oIaI0viDooaxzTg==
-X-Received: by 2002:a17:903:40ca:b0:192:4a7b:ee27 with SMTP id t10-20020a17090340ca00b001924a7bee27mr9390055pld.53.1671780548806;
-        Thu, 22 Dec 2022 23:29:08 -0800 (PST)
-Received: from localhost.localdomain ([202.120.234.246])
-        by smtp.googlemail.com with ESMTPSA id m12-20020a170902d18c00b00186bc66d2cbsm1722921plb.73.2022.12.22.23.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Dec 2022 23:29:08 -0800 (PST)
-From:   Miaoqian Lin <linmq006@gmail.com>
-To:     Haoyue Xu <xuhaoyue1@hisilicon.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Yixing Liu <liuyixing1@huawei.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linmq006@gmail.com
-Subject: [PATCH v2] RDMA/hns: Fix refcount leak in hns_roce_mmap
-Date:   Fri, 23 Dec 2022 11:29:00 +0400
-Message-Id: <20221223072900.802728-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=ISSNi5g8+83vFNG4zUWTK5It3MNE4YXnaRha+djQqBw=;
+        b=snA2nxZGw8qoSk/jNqXbsj/O4eHdHeeK7i2qmujfdduQWAHOvv1JqO75OGy1WVlGGL
+         xgU9Fgmuw+DEdAtXsYFFUXksTZKmMMfW2/3ahV9RnxSBeZoy8ulmN3lZQ1eTduerkjO4
+         9KmNHD+HR/cnFbixSycJrF4EoLADLXTs498wObMlyRk9Ibqcm4kwNJlnX55s102vgZor
+         pbJBSSoWmORuB3ng15KAuz38/iKqNBAg2H+vrVRb3ukJqwLaHZGxvflI1E/PNV/FbnNV
+         XhHNEDRJldryoPTEdo0h0NZfSmOlVrq/5GAra6AtP300QlmH8gKIeKWAGLWhO23BWyhp
+         ldTA==
+X-Gm-Message-State: AFqh2kpxPYhfrk15Ec957D4Gy1GvHTvk+wlj/33xDLCtZNF9VZFH0K+o
+        JLwlj5zApSRbic+udvQAdxSFti99t2kDCSz9
+X-Google-Smtp-Source: AMrXdXs8z3rjtaU5j9hjp7eoBXILqpZdoPG2Rq1R5mkZEkyizuA2UQq3uUQ6whifG4vjUQZfCP4cow==
+X-Received: by 2002:a05:622a:4291:b0:3a5:fba4:96cf with SMTP id cr17-20020a05622a429100b003a5fba496cfmr19439356qtb.9.1671821064102;
+        Fri, 23 Dec 2022 10:44:24 -0800 (PST)
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
+        by smtp.gmail.com with ESMTPSA id de10-20020a05620a370a00b00704c6263924sm2491731qkb.13.2022.12.23.10.44.23
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Dec 2022 10:44:23 -0800 (PST)
+Received: by mail-qt1-f180.google.com with SMTP id v14so1574456qtq.3
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Dec 2022 10:44:23 -0800 (PST)
+X-Received: by 2002:a05:622a:5daa:b0:3a7:ef7b:6aa5 with SMTP id
+ fu42-20020a05622a5daa00b003a7ef7b6aa5mr301991qtb.436.1671821062915; Fri, 23
+ Dec 2022 10:44:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <Y5uprmSmSfYechX2@yury-laptop>
+In-Reply-To: <Y5uprmSmSfYechX2@yury-laptop>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 23 Dec 2022 10:44:07 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj_4xsWxLqPvkCV6eOJt7quXS8DyXn3zWw3W94wN=6yig@mail.gmail.com>
+Message-ID: <CAHk-=wj_4xsWxLqPvkCV6eOJt7quXS8DyXn3zWw3W94wN=6yig@mail.gmail.com>
+Subject: Re: [GIT PULL] bitmap changes for v6.2-rc1
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,40 +77,102 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-rdma_user_mmap_entry_get_pgoff() takes the reference.
-Add missing rdma_user_mmap_entry_put() to release the reference.
+On Thu, Dec 15, 2022 at 3:11 PM Yury Norov <yury.norov@gmail.com> wrote:
+>
+> Please pull bitmap patches for v6.2. They spent in -next for more than
+> a week without any issues. The branch consists of:
 
-Fixes: 0045e0d3f42e ("RDMA/hns: Support direct wqe of userspace")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
-change in v2:
-- use goto label to manage the release.
----
- drivers/infiniband/hw/hns/hns_roce_main.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+So I've been holding off on this because these bitmap pulls have
+always scared me, and I wanted to have the time to actually look
+through them in detail before pulling.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 8ba68ac12388..946ba1109e87 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -443,14 +443,15 @@ static int hns_roce_mmap(struct ib_ucontext *uctx, struct vm_area_struct *vma)
- 		prot = pgprot_device(vma->vm_page_prot);
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out;
- 	}
- 
- 	ret = rdma_user_mmap_io(uctx, vma, pfn, rdma_entry->npages * PAGE_SIZE,
- 				prot, rdma_entry);
- 
-+out:
- 	rdma_user_mmap_entry_put(rdma_entry);
--
- 	return ret;
- }
- 
--- 
-2.25.1
+I'm back home, over the travel chaos, and while I have other pulls
+pending, they seem to be benign fixes so I started looking at this.
 
+And when looking at it, I did indeed finx what I think is a
+fundamental arithmetic bug.
+
+That small_const_nbits_off() is simply buggy.
+
+Try this:
+
+        small_const_nbits_off(64,-1);
+
+and see it return true.
+
+The thing is, doing divides in C is something you need to be very
+careful about, because they do *not* behave nicely with signed values.
+They do the "mathematically intuitive" thing of truncating towards
+zero, but when you are talking about bit ranges like this, that is
+*NOT* what you want.
+
+The comment is fairly good, but it just doesn't match the code.
+
+If you want to check that 'nbits-1' and 'off' are in the same word,
+you simply should not use division at all. Sure, it would work, if you
+verify that they are both non-negative, but the fact is, even then
+it's just wrong, wrong, wrong. You want a shift operation or a masking
+operation.
+
+Honestly, in this case, I think the logical thing to do is "check that
+the upper bits are the same". The way you do that is probably
+something like
+
+   !((off) ^ ((nbits)-1) & ~(BITS_PER_LONG-1))
+
+which doesn't have the fundamental bug that the divide version has.
+
+So anyway, I won't be pulling this. I appreciate that you are trying
+to micro-optimize the bitop functions, but this is not the first time
+your pull requests have made me worried and caused me to not pull.
+This is such basic functionality that I really need these pull
+requests to be less worrisome.
+
+In other words, not only don't I want to see these kinds of bugs -
+please make sure that there isn't anythign that looks even *remotely*
+scary. The micro-optimizations had better be *so* obvious and so well
+thought through that I not only don't find bugs in them, I don't even
+get nervous about finding bugs.
+
+Side note: that whole small_const_nbits_off() thing could be possibly
+improved in other ways. It's actually unnecessarily strict (if it was
+correct, that is): we don't really require 'off' to be constant, what
+we *do* want is
+
+ - "nbits > off" needs to be a compile-time true constant
+
+ - that "off is in the same word as nbits-1" also needs to be a
+compile-time true constant.
+
+and the compiler could determine both of those to be the case even if
+'off' itself isn't a constant, if there is code around it that
+verifies it.
+
+For example, if you have code like this:
+
+        off = a & 7;
+        n = find_next_bit(bitmap, 64, off);
+
+then the compiler could still see that it's that "last word only"
+case, even though 'off' isn't actually a constant value.
+
+So you could try using a helper macro like
+
+   #define COMPILE_TIME_TRUE(x) (__builtin_constant_p(x) && (x))
+
+to handle those kinds of things. But again - the code needs to be
+OBVIOUSLY CORRECT. Make me feel those warm and fuzzies about it
+because it's so obviously safe and correct.
+
+That said, I see your test-cases for your micro-optimizations, but I'd
+also like to see references to where it actually improves real code.
+
+I know for a fact that 'small_const_nbits()' actually triggers in real
+life. I don't see that your 'small_const_nbits_off()' would trigger in
+real life in any situation that isn't already covered by
+'small_const_nbits()'.
+
+So convince me not only that the optimizations are obviously correct,
+but also that they actually matter.
+
+                Linus
