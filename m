@@ -2,51 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCDD657658
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Dec 2022 13:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC1E657667
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Dec 2022 13:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbiL1MVX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Dec 2022 07:21:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
+        id S230050AbiL1M2d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Dec 2022 07:28:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233072AbiL1MVH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Dec 2022 07:21:07 -0500
+        with ESMTP id S229864AbiL1M2c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Dec 2022 07:28:32 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C0F398;
-        Wed, 28 Dec 2022 04:20:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71427BE4;
+        Wed, 28 Dec 2022 04:28:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A313E61314;
-        Wed, 28 Dec 2022 12:20:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B6D4C433EF;
-        Wed, 28 Dec 2022 12:20:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 08A00614BC;
+        Wed, 28 Dec 2022 12:28:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D69E8C433D2;
+        Wed, 28 Dec 2022 12:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672230057;
-        bh=C7T4NVQ1zeuRB/WdHZAnJLTd1TxXdCWI5njfycxmT7A=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=TGL9rU32ZfsEbz4HQbyF34AC+5SUyfnoWadKg1SThfxBmQvBnQiiMV6EUzMqDxyk/
-         JcLnnRhQ2UxKWdRLX4tWGfkoAyoisOreEjGGG80cybzGYT5bugjDJHrwhIKBpECkVr
-         algkesya59d1CUUtWj8QSfxvQWpCJchdSllyUCqNb6q4G4wtycIG/aTP/FzyWnXHID
-         R8M794CFrFyIab542aEAU2QNTJsvnyUw6ibSgUk/2OjpPgCVEEUIBhCnNPGLKlAheB
-         /4Teig5DSLWi4u0HOEPeu0eO6v23pzbdjbN88YjRb/pjg07zpJA0hf4e4mn2eDCH4a
-         u1aosxqMhLo/w==
+        s=k20201202; t=1672230510;
+        bh=a8qSZ8kNeyt1hXOzWRFUI6os44pceWll+JiIdrCfEOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lRPiW8V8NgAgGJnn0blI+Thqcd33duRPmTWjDiC92RPMTExOhdySKdW4WQkCaVmW8
+         AspNlmXg/8dlZK1H5Ewi8CuM0j8MU43IuVK5iGOgLoSbw7XQ2ItH6Q92CJF5fElXxO
+         YQxIOGbx5KtKWKx9/6kat3ANY0T4Fkgab2ZbHvkH5Ytd4l29v3RtGMZdUdsKz8BPr1
+         kKdBz2d1sD9UT51K4DU0O/JozA9F/uVyc0GrIDHLQ9xZ2dDftvH/rOJSLZ5R3Y0+nP
+         T1eGrUC+OK2yc+6ajk3td7H16vrZ0GZZf76hDDb9uWtwmqdiKeijaIMoZgHGS+gkwo
+         IR+34vyTr4row==
+Date:   Wed, 28 Dec 2022 14:28:25 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yixing Liu <liuyixing1@huawei.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Miaoqian Lin <linmq006@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Haoyue Xu <xuhaoyue1@hisilicon.com>
-In-Reply-To: <20221223072900.802728-1-linmq006@gmail.com>
-References: <20221223072900.802728-1-linmq006@gmail.com>
-Subject: Re: [PATCH v2] RDMA/hns: Fix refcount leak in hns_roce_mmap
-Message-Id: <167223005274.61198.7536575567109139092.b4-ty@kernel.org>
-Date:   Wed, 28 Dec 2022 14:20:52 +0200
+To:     Haoyue Xu <xuhaoyue1@hisilicon.com>
+Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next 0/3] Refactor rq inline and add cqe inline
+Message-ID: <Y6w2aRPSXAv4s5Pp@unreal>
+References: <20221224102201.3114536-1-xuhaoyue1@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.11.0-dev-87e0e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221224102201.3114536-1-xuhaoyue1@hisilicon.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,17 +52,31 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 23 Dec 2022 11:29:00 +0400, Miaoqian Lin wrote:
-> rdma_user_mmap_entry_get_pgoff() takes the reference.
-> Add missing rdma_user_mmap_entry_put() to release the reference.
+On Sat, Dec 24, 2022 at 06:21:58PM +0800, Haoyue Xu wrote:
+> The patchset mainly removes the kernel space
+> rq inline features and supports cqe inline in user space.
 > 
+> Luoyouming (3):
+>   RDMA/hns: Remove rq inline in kernel
+>   RDMA/hns: Add compatibility handling for only support userspace rq
+>     inline
+>   RDMA/hns: Support cqe inline in user space
 > 
+>  drivers/infiniband/hw/hns/hns_roce_device.h |  19 +---
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 109 ++++++--------------
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   3 +-
+>  drivers/infiniband/hw/hns/hns_roce_main.c   |  12 +++
+>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  66 +-----------
+>  include/uapi/rdma/hns-abi.h                 |   4 +
 
-Applied, thanks!
+Your commit messages are too scarce for patches which touch UAPI.
+Please add more details about why you deleted, what users should do next
+and what are the features you are adding,
 
-[1/1] RDMA/hns: Fix refcount leak in hns_roce_mmap
-      https://git.kernel.org/rdma/rdma/c/cf6a05c8494a8a
+Thanks
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+>  6 files changed, 54 insertions(+), 159 deletions(-)
+> 
+> -- 
+> 2.30.0
+> 
