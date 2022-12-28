@@ -2,42 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C746F6576B4
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Dec 2022 13:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B74966576B5
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Dec 2022 13:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbiL1M4Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Dec 2022 07:56:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
+        id S230170AbiL1M41 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Dec 2022 07:56:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbiL1M4Y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Dec 2022 07:56:24 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA151123
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Dec 2022 04:56:22 -0800 (PST)
+        with ESMTP id S230122AbiL1M40 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Dec 2022 07:56:26 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2372E269
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Dec 2022 04:56:25 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6832CB816A1
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Dec 2022 12:56:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F659C433EF;
-        Wed, 28 Dec 2022 12:56:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BC03A61338
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Dec 2022 12:56:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0BAAC433D2;
+        Wed, 28 Dec 2022 12:56:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672232180;
-        bh=TCGmtHwmbBYzEBpuxnov8VjPFOwMJE3WjBr8RjVPAz8=;
+        s=k20201202; t=1672232184;
+        bh=wDn8EhNIwORWzFs0i7uTZO6hM8H/dY6NTwlrZAfVtM0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tJrRxGzh9scc978snF9s2B3sT6sH+iT6supUM+6Fpy1vHoZsEdufZQfG5wmEhOh/x
-         2bAKNrWXj+Nn7CjrHg/vtXo5t49dYP86bhqYZlxWfUyseb4sCUPW/btHZfhlHNworH
-         YI1hoH/9KlXjjXp7+5pZyHm19OXBxv4oWb6hMpyepp+q2IuxN3C4U9Vu3v35OArZ7Z
-         PzaSjZX4XgaKVGtugkqoEaCp+wLv4namyOQGK27oKJwoBS3/p3ZhyL/1byGeriDnnJ
-         mupbup34XfTpLlEixzaWXVZszXA8nxBayOhy+x3MknaJWjJJ8fIc5x1pwP5X/2XGiZ
-         czwcN0mZBvM9A==
+        b=DNNXT98YPeFKaDL5vARMfSiE4WZIOoZZs0wTZvwkl6Krfq7Zy6qDCcZRieC1HoMu+
+         +xSQtuQt44wCpKppTTtwoShzXhXDXMKPxPE9b3CSWM6L/iXrb5WRmwCXCrJTiAKNPC
+         dNOy5MUDk7fCgrO8cRG0xzBtGHw54nLQBJoosAS4nxuH0M1Ium/CiebwSLlMO0WHaT
+         Kio4hY4qxTesQkO3GzZv6r6FhwEwa6uJNMV1G8WS4vPWEwqsChSRVB6D9iGEAgTt1v
+         3jA/J9l18cYCLgx7qEwuEDAveaTzilrRGqWREGzlhmkBRegDFdFBai8FxiNfF2qU0A
+         vqOYo7Z4rag5Q==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Shay Drory <shayd@nvidia.com>, linux-rdma@vger.kernel.org,
-        Patrisious Haddad <phaddad@nvidia.com>
-Subject: [PATCH RESEND rdma-next 1/2] RDMA/mlx5: Fix mlx5_ib_get_hw_stats when used for device
-Date:   Wed, 28 Dec 2022 14:56:09 +0200
-Message-Id: <98b82994c3cd3fa593b8a75ed3f3901e208beb0f.1672231736.git.leonro@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-rdma@vger.kernel.org,
+        Patrisious Haddad <phaddad@nvidia.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: [PATCH RESEND rdma-next 2/2] RDMA/mlx5: Fix validation of max_rd_atomic caps for DC
+Date:   Wed, 28 Dec 2022 14:56:10 +0200
+Message-Id: <0c5aee72cea188c3bb770f4207cce7abc9b6fc74.1672231736.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1672231736.git.leonro@nvidia.com>
 References: <cover.1672231736.git.leonro@nvidia.com>
@@ -52,107 +53,87 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Shay Drory <shayd@nvidia.com>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-Currently, when mlx5_ib_get_hw_stats() is used for device (port_num = 0),
-there is a special handling in order to use the correct counters, but,
-port_num is being passed down the stack without any change.
-Also, some functions assume that port_num >=1. As a result, the
-following oops can occur.
+Currently, when modifying DC, we validate max_rd_atomic
+user attribute against the RC cap, fix it to validate against DC.
 
- BUG: unable to handle page fault for address: ffff89510294f1a8
- #PF: supervisor write access in kernel mode
- #PF: error_code(0x0002) - not-present page
- PGD 0 P4D 0
- Oops: 0002 [#1] SMP
- CPU: 8 PID: 1382 Comm: devlink Tainted: G W          6.1.0-rc4_for_upstream_base_2022_11_10_16_12 #1
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
- RIP: 0010:_raw_spin_lock+0xc/0x20
- Call Trace:
-  <TASK>
-  mlx5_ib_get_native_port_mdev+0x73/0xe0 [mlx5_ib]
-  do_get_hw_stats.constprop.0+0x109/0x160 [mlx5_ib]
-  mlx5_ib_get_hw_stats+0xad/0x180 [mlx5_ib]
-  ib_setup_device_attrs+0xf0/0x290 [ib_core]
-  ib_register_device+0x3bb/0x510 [ib_core]
-  ? atomic_notifier_chain_register+0x67/0x80
-  __mlx5_ib_add+0x2b/0x80 [mlx5_ib]
-  mlx5r_probe+0xb8/0x150 [mlx5_ib]
-  ? auxiliary_match_id+0x6a/0x90
-  auxiliary_bus_probe+0x3c/0x70
-  ? driver_sysfs_add+0x6b/0x90
-  really_probe+0xcd/0x380
-  __driver_probe_device+0x80/0x170
-  driver_probe_device+0x1e/0x90
-  __device_attach_driver+0x7d/0x100
-  ? driver_allows_async_probing+0x60/0x60
-  ? driver_allows_async_probing+0x60/0x60
-  bus_for_each_drv+0x7b/0xc0
-  __device_attach+0xbc/0x200
-  bus_probe_device+0x87/0xa0
-  device_add+0x404/0x940
-  ? dev_set_name+0x53/0x70
-  __auxiliary_device_add+0x43/0x60
-  add_adev+0x99/0xe0 [mlx5_core]
-  mlx5_attach_device+0xc8/0x120 [mlx5_core]
-  mlx5_load_one_devl_locked+0xb2/0xe0 [mlx5_core]
-  devlink_reload+0x133/0x250
-  devlink_nl_cmd_reload+0x480/0x570
-  ? devlink_nl_pre_doit+0x44/0x2b0
-  genl_family_rcv_msg_doit.isra.0+0xc2/0x110
-  genl_rcv_msg+0x180/0x2b0
-  ? devlink_nl_cmd_region_read_dumpit+0x540/0x540
-  ? devlink_reload+0x250/0x250
-  ? devlink_put+0x50/0x50
-  ? genl_family_rcv_msg_doit.isra.0+0x110/0x110
-  netlink_rcv_skb+0x54/0x100
-  genl_rcv+0x24/0x40
-  netlink_unicast+0x1f6/0x2c0
-  netlink_sendmsg+0x237/0x490
-  sock_sendmsg+0x33/0x40
-  __sys_sendto+0x103/0x160
-  ? handle_mm_fault+0x10e/0x290
-  ? do_user_addr_fault+0x1c0/0x5f0
-  __x64_sys_sendto+0x25/0x30
-  do_syscall_64+0x3d/0x90
-  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-
-Fix it by setting port_num to 1 in order to get device status and
-remove unused variable.
-
-Fixes: aac4492ef23a ("IB/mlx5: Update counter implementation for dual port RoCE")
-Signed-off-by: Shay Drory <shayd@nvidia.com>
-Reviewed-by: Patrisious Haddad <phaddad@nvidia.com>
-Link: https://lore.kernel.org/r/ab402f83f04f4a41ffb177583609909c86cef52a.1670749789.git.leonro@nvidia.com
+Fixes: c32a4f296e1d ("IB/mlx5: Add support for DC Initiator QP")
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Link: https://lore.kernel.org/r/193aa04bce4609df7d86250da3e2886f26f266cf.1670749789.git.leonro@nvidia.com
 Signed-off-by: Leon Romanovsky <leon@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/counters.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/mlx5/qp.c | 49 +++++++++++++++++++++++----------
+ 1 file changed, 35 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
-index 945758f39523..3e1272695d99 100644
---- a/drivers/infiniband/hw/mlx5/counters.c
-+++ b/drivers/infiniband/hw/mlx5/counters.c
-@@ -278,7 +278,6 @@ static int do_get_hw_stats(struct ib_device *ibdev,
- 	const struct mlx5_ib_counters *cnts = get_counters(dev, port_num - 1);
- 	struct mlx5_core_dev *mdev;
- 	int ret, num_counters;
--	u32 mdev_port_num;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 40d9410ec303..cf953d23d18d 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -4502,6 +4502,40 @@ static bool mlx5_ib_modify_qp_allowed(struct mlx5_ib_dev *dev,
+ 	return false;
+ }
  
- 	if (!stats)
- 		return -EINVAL;
-@@ -299,8 +298,9 @@ static int do_get_hw_stats(struct ib_device *ibdev,
++static int validate_rd_atomic(struct mlx5_ib_dev *dev, struct ib_qp_attr *attr,
++			      int attr_mask, enum ib_qp_type qp_type)
++{
++	int log_max_ra_res;
++	int log_max_ra_req;
++
++	if (qp_type == MLX5_IB_QPT_DCI) {
++		log_max_ra_res = 1 << MLX5_CAP_GEN(dev->mdev,
++						   log_max_ra_res_dc);
++		log_max_ra_req = 1 << MLX5_CAP_GEN(dev->mdev,
++						   log_max_ra_req_dc);
++	} else {
++		log_max_ra_res = 1 << MLX5_CAP_GEN(dev->mdev,
++						   log_max_ra_res_qp);
++		log_max_ra_req = 1 << MLX5_CAP_GEN(dev->mdev,
++						   log_max_ra_req_qp);
++	}
++
++	if (attr_mask & IB_QP_MAX_QP_RD_ATOMIC &&
++	    attr->max_rd_atomic > log_max_ra_res) {
++		mlx5_ib_dbg(dev, "invalid max_rd_atomic value %d\n",
++			    attr->max_rd_atomic);
++		return false;
++	}
++
++	if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC &&
++	    attr->max_dest_rd_atomic > log_max_ra_req) {
++		mlx5_ib_dbg(dev, "invalid max_dest_rd_atomic value %d\n",
++			    attr->max_dest_rd_atomic);
++		return false;
++	}
++	return true;
++}
++
+ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		      int attr_mask, struct ib_udata *udata)
+ {
+@@ -4589,21 +4623,8 @@ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		goto out;
  	}
  
- 	if (MLX5_CAP_GEN(dev->mdev, cc_query_allowed)) {
--		mdev = mlx5_ib_get_native_port_mdev(dev, port_num,
--						    &mdev_port_num);
-+		if (!port_num)
-+			port_num = 1;
-+		mdev = mlx5_ib_get_native_port_mdev(dev, port_num, NULL);
- 		if (!mdev) {
- 			/* If port is not affiliated yet, its in down state
- 			 * which doesn't have any counters yet, so it would be
+-	if (attr_mask & IB_QP_MAX_QP_RD_ATOMIC &&
+-	    attr->max_rd_atomic >
+-	    (1 << MLX5_CAP_GEN(dev->mdev, log_max_ra_res_qp))) {
+-		mlx5_ib_dbg(dev, "invalid max_rd_atomic value %d\n",
+-			    attr->max_rd_atomic);
+-		goto out;
+-	}
+-
+-	if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC &&
+-	    attr->max_dest_rd_atomic >
+-	    (1 << MLX5_CAP_GEN(dev->mdev, log_max_ra_req_qp))) {
+-		mlx5_ib_dbg(dev, "invalid max_dest_rd_atomic value %d\n",
+-			    attr->max_dest_rd_atomic);
++	if (!validate_rd_atomic(dev, attr, attr_mask, qp_type))
+ 		goto out;
+-	}
+ 
+ 	if (cur_state == new_state && cur_state == IB_QPS_RESET) {
+ 		err = 0;
 -- 
 2.38.1
 
