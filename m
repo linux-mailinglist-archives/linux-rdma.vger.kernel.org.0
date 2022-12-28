@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2016580F0
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Dec 2022 17:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B21658053
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Dec 2022 17:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233314AbiL1QXd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Dec 2022 11:23:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
+        id S230388AbiL1QR2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Dec 2022 11:17:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235021AbiL1QWx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Dec 2022 11:22:53 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541DD1C122;
-        Wed, 28 Dec 2022 08:20:20 -0800 (PST)
+        with ESMTP id S233113AbiL1QQp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Dec 2022 11:16:45 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8E01A07C;
+        Wed, 28 Dec 2022 08:14:32 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E588661577;
-        Wed, 28 Dec 2022 16:20:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6FABC433F0;
-        Wed, 28 Dec 2022 16:20:18 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 69837B81730;
+        Wed, 28 Dec 2022 16:14:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 967FAC433D2;
+        Wed, 28 Dec 2022 16:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1672244419;
+        s=korg; t=1672244070;
         bh=kRTk6nDVGgy/CNk4BdTNcr95TadAdi4NeD1/gJZGOy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZbAmCWjasU89DYy2QKREeS4IVVzUaPUsr3e91J0kWvbY1BxmDIwvG9hmAT/3ccezJ
-         Bd6u9u+waigarpVJ8PNsl07fxyFVOgajaVzDG+Jx+08yo5X8jYZu98eyqa3asgCB6o
-         2BeVbOjxfwRyXeCnKlbGNMmjPg9Uh25XRNoZ9hik=
+        b=xQ+d3ZBR+gZXp58Ww6HB66erW3F66DZ8Qle5N8gUVH+/nWaUk6JzDlJpkmiNByabZ
+         3/Y7pQUubgnI3gotnak4F/5P76tHrCZf40fYqOqsASVYzQob1oRamjY4eQmNlp5l6R
+         PYyuYJ6SutFgGDuncyUalZEmwXyM+UUA1bvUMXzg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -41,12 +41,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Johannes Berg <johannes@sipsolutions.net>,
         linux-um@lists.infradead.org, Leon Romanovsky <leon@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 0666/1146] RDMA: Disable IB HW for UML
-Date:   Wed, 28 Dec 2022 15:36:45 +0100
-Message-Id: <20221228144348.241855464@linuxfoundation.org>
+Subject: [PATCH 6.0 0641/1073] RDMA: Disable IB HW for UML
+Date:   Wed, 28 Dec 2022 15:37:09 +0100
+Message-Id: <20221228144345.450630069@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221228144330.180012208@linuxfoundation.org>
-References: <20221228144330.180012208@linuxfoundation.org>
+In-Reply-To: <20221228144328.162723588@linuxfoundation.org>
+References: <20221228144328.162723588@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
