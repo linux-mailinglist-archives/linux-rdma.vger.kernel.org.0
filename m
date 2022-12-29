@@ -2,156 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E18CB6588A2
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Dec 2022 03:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73ADC6589D1
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Dec 2022 08:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbiL2C2J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Dec 2022 21:28:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
+        id S229822AbiL2HCx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Dec 2022 02:02:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbiL2C1n (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Dec 2022 21:27:43 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E235B12084
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Dec 2022 18:27:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1672280862; x=1703816862;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fpXyqdJc87OR1hDkAhtWos62l/yFcmROgGq+iqbQi2k=;
-  b=c8uH8rKUj5jIbsTCsouewMPWgkC56Oj7TJcyt1CkizBUlDdVHHPjAFwb
-   X2tJ1IsOyQk7UYCCDyMlt/N8MjXe1nCJSUiGLzNzjWvF9O6bdlCU8k3tJ
-   c2nCkzQcJbXMmDzvjvMrGlYLE9qv4Xbthxc5rbz65XBCOzWLS7ev38/L8
-   Ar+4fa8fclIxC8eI3dEHWgFvmqvBXsEymXdaNQkVjqVJ0Fm/Oop2BwcQL
-   OddADzoKMR6VF7Bs9q8/3pyVpcojh+TmXGcZpFyig/EgQTm3l8KZMZ4L1
-   fBc6jDoOPTruajHNfWAwAhkhy9DGzcDsu/DnnDXYafxHhafeA4O3oK/rW
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10574"; a="318647953"
-X-IronPort-AV: E=Sophos;i="5.96,282,1665471600"; 
-   d="scan'208";a="318647953"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2022 18:27:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10574"; a="603510215"
-X-IronPort-AV: E=Sophos;i="5.96,282,1665471600"; 
-   d="scan'208";a="603510215"
-Received: from lkp-server01.sh.intel.com (HELO b5d47979f3ad) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 28 Dec 2022 18:27:40 -0800
-Received: from kbuild by b5d47979f3ad with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pAidv-000GC3-2f;
-        Thu, 29 Dec 2022 02:27:39 +0000
-Date:   Thu, 29 Dec 2022 10:27:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- cf6a05c8494a8ae7fec8e5f1229b45ca5b4bcd30
-Message-ID: <63acfb03.UaHBAiC0MlElQ+f0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229685AbiL2HCw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Dec 2022 02:02:52 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5919C12604;
+        Wed, 28 Dec 2022 23:02:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DA46615FC;
+        Thu, 29 Dec 2022 07:02:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D0DCC433D2;
+        Thu, 29 Dec 2022 07:02:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672297369;
+        bh=ZuXJhWxTiKK7rNV5+l64eAbjpD7WZx3v0R5AYbUoqOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=msZEjdMQFLp6RpIcuVr6Z/h76NOyUxXFChn2R69b9AQdizE2lkG5d+sozkDgu8Ngo
+         CmuMZ1CP0rWTOxLhijuvMv+mao7wspAlchrjQyCV5JpnJzhw5tZT7RpFKZNmanK39l
+         Ze1vflbh2xldEE1sjXV5mv9+Mn3ljI6ii7W5vNcALSb1x+BBJuS8StH/IK1SSPrlb7
+         cDM9Ak9AWGQwoIucVJsVU/j1IymNIAfXfTnsWy1tl+5j33q2PjtTX/l1wVttrm2Wtg
+         z/76m+thVJWXiKN8riGAHG61W7o4Q9nrtdvi9F+qSb9XoX6EM7SCws3tUiWmXg+Oyv
+         z0n9v0hc5AS9w==
+Date:   Thu, 29 Dec 2022 09:02:45 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
+        linux-rdma@vger.kernel.org, jgg@nvidia.com, zyjzyj2000@gmail.com,
+        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        yangx.jy@fujitsu.com, lizhijian@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [PATCH for-next v3 1/7] RDMA/rxe: Convert triple tasklets to use
+ workqueue
+Message-ID: <Y607lVbzs9PTd0m+@unreal>
+References: <cover.1671772917.git.matsuda-daisuke@fujitsu.com>
+ <d2f6b3aca61fe1858a97cda94691eece6b0e60bd.1671772917.git.matsuda-daisuke@fujitsu.com>
+ <53a2fca7-d98a-acef-8b18-d36a5a16d176@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <53a2fca7-d98a-acef-8b18-d36a5a16d176@gmail.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: cf6a05c8494a8ae7fec8e5f1229b45ca5b4bcd30  RDMA/hns: Fix refcount leak in hns_roce_mmap
+On Wed, Dec 28, 2022 at 10:56:11AM -0600, Bob Pearson wrote:
+> On 12/23/22 00:51, Daisuke Matsuda wrote:
+> > In order to implement On-Demand Paging on the rxe driver, triple tasklets
+> > (requester, responder, and completer) must be allowed to sleep so that they
+> > can trigger page fault when pages being accessed are not present.
+> > 
+> > This patch replaces the tasklets with a workqueue, but still allows direct-
+> > call of works from softirq context if it is obvious that MRs are not going
+> > to be accessed and there is no work being processed in the workqueue.
+> 
+> There are already at least two patch sets that do this waiting to get upstream
 
-elapsed time: 795m
+I don't see any unhandled RXE series, except of this one patch [1],
+which is one out larger series.
 
-configs tested: 74
-configs skipped: 2
+[1] https://patchwork.kernel.org/project/linux-rdma/patch/20221029031331.64518-1-rpearsonhpe@gmail.com/
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-arc                                 defconfig
-alpha                               defconfig
-ia64                             allmodconfig
-x86_64                           rhel-8.3-bpf
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-powerpc                           allnoconfig
-s390                                defconfig
-s390                             allmodconfig
-x86_64                              defconfig
-i386                                defconfig
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-x86_64               randconfig-a014-20221226
-x86_64               randconfig-a013-20221226
-x86_64               randconfig-a011-20221226
-x86_64               randconfig-a012-20221226
-x86_64               randconfig-a016-20221226
-x86_64               randconfig-a015-20221226
-arm64                            allyesconfig
-arm                                 defconfig
-s390                             allyesconfig
-i386                 randconfig-a012-20221226
-i386                 randconfig-a011-20221226
-i386                 randconfig-a013-20221226
-i386                 randconfig-a014-20221226
-i386                 randconfig-a016-20221226
-i386                 randconfig-a015-20221226
-x86_64                    rhel-8.3-kselftests
-x86_64                          rhel-8.3-func
-sh                               allmodconfig
-arm                              allyesconfig
-arm                  randconfig-r046-20221225
-arc                  randconfig-r043-20221225
-arc                  randconfig-r043-20221227
-arm                  randconfig-r046-20221227
-arc                              allyesconfig
-powerpc                          allmodconfig
-arc                  randconfig-r043-20221226
-riscv                randconfig-r042-20221226
-mips                             allyesconfig
-alpha                            allyesconfig
-s390                 randconfig-r044-20221226
-m68k                             allyesconfig
-i386                             allyesconfig
-m68k                             allmodconfig
-x86_64                            allnoconfig
-
-clang tested configs:
-i386                 randconfig-a004-20221226
-i386                 randconfig-a001-20221226
-i386                 randconfig-a003-20221226
-i386                 randconfig-a002-20221226
-x86_64               randconfig-a002-20221226
-x86_64               randconfig-a003-20221226
-i386                 randconfig-a005-20221226
-x86_64               randconfig-a001-20221226
-x86_64                          rhel-8.3-rust
-x86_64               randconfig-a004-20221226
-i386                 randconfig-a006-20221226
-x86_64               randconfig-a005-20221226
-x86_64               randconfig-a006-20221226
-hexagon              randconfig-r045-20221225
-riscv                randconfig-r042-20221227
-hexagon              randconfig-r041-20221225
-hexagon              randconfig-r041-20221227
-hexagon              randconfig-r041-20221226
-arm                  randconfig-r046-20221226
-s390                 randconfig-r044-20221225
-hexagon              randconfig-r045-20221226
-riscv                randconfig-r042-20221225
-hexagon              randconfig-r045-20221227
-s390                 randconfig-r044-20221227
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+> Bob
