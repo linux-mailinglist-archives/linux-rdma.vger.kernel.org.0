@@ -2,75 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E395A65A965
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Jan 2023 09:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B1265ABAF
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Jan 2023 22:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229539AbjAAI7W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 1 Jan 2023 03:59:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
+        id S229542AbjAAVWD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 1 Jan 2023 16:22:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjAAI7W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Jan 2023 03:59:22 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D1926C6
-        for <linux-rdma@vger.kernel.org>; Sun,  1 Jan 2023 00:59:21 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D99F60D57
-        for <linux-rdma@vger.kernel.org>; Sun,  1 Jan 2023 08:59:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD240C433D2;
-        Sun,  1 Jan 2023 08:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672563560;
-        bh=xMbfLXNJ0wSTINZTvazbLCFm3Vzji6fR76M9QsCtz4Q=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=m6E5n859jkvrL6oQTdyBChqtt6bjeMPlJVa6btsbARv9bTJydVA8a8u/FeNGtkuRZ
-         vXOBfnyA3nhFQHkUFpMQ7pOOgNRLClhAH1nrxjTDvF5rr/I2pNKVIJkgZtePiUHFJx
-         Tz5ryOwfoDqqGwfB5ahjfxZPS4HR2th/JjE5CjhAysl3MW2iOl/GYuKQUtg7H7GMnx
-         ZsMlhnvYn3Irk52PSaEobjsMYPPRtr1asqkmAK+dlOJQ2LVhLEoumO0FlHcU49qmEt
-         bj4/28Ae4NB1UJtvaCTYOP4FSJ+cc3ICr9mSUIXGajpigm8pQnV4dpo7CX8aGyDvXJ
-         3KHzTbz5zfiZA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Shay Drory <shayd@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-        Patrisious Haddad <phaddad@nvidia.com>,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
-In-Reply-To: <cover.1672231736.git.leonro@nvidia.com>
-References: <cover.1672231736.git.leonro@nvidia.com>
-Subject: Re: [PATCH RESEND rdma-next 0/2] Two mlx5_ib fixes
-Message-Id: <167256355614.625625.17576771181417882532.b4-ty@kernel.org>
-Date:   Sun, 01 Jan 2023 10:59:16 +0200
+        with ESMTP id S229447AbjAAVWC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Jan 2023 16:22:02 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A291141
+        for <linux-rdma@vger.kernel.org>; Sun,  1 Jan 2023 13:22:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1672608121; x=1704144121;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ED1hDHrOXsDeS81YmE+CtPqDpvbCr9z9GFOI07uNLSA=;
+  b=lErfQch6dkpvG0i6WEiqmZ6yPeTQcQ7pJIOdg5a/IIPXfpwsf7E4nj3e
+   mdATwgY/t2+ESmB7BXZasEB3jfOXXAJZ+zmcedfetqFPXUMe4at/IjUdO
+   dBgbyXqOfB1izq8zlRC2T4jm/aIbSLUfA0xvt8P2zcnUte1/dBZOIf+2I
+   hiH3LrLGHhw73P5TKnoOMDN5jDAWxc6woTXS0KHTC37AnBp+x8aRWf7TW
+   lQIxnf+R+mYVfafW7zuUBf04n3KyVTA/7qz12fSRGcofUlGtpusjS0d+c
+   TkyooOfRlnm1zeIxk8ZV15udZN70ABSPeV9uhU34k3UrQV+V7787UDRNZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10577"; a="319110537"
+X-IronPort-AV: E=Sophos;i="5.96,292,1665471600"; 
+   d="scan'208";a="319110537"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2023 13:22:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10577"; a="899729850"
+X-IronPort-AV: E=Sophos;i="5.96,292,1665471600"; 
+   d="scan'208";a="899729850"
+Received: from lkp-server01.sh.intel.com (HELO b5d47979f3ad) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Jan 2023 13:21:59 -0800
+Received: from kbuild by b5d47979f3ad with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pC5mI-000Q3r-2n;
+        Sun, 01 Jan 2023 21:21:58 +0000
+Date:   Mon, 02 Jan 2023 05:21:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
+ 63ce7bc02df1040bce8273fbb92448a382bc7d93
+Message-ID: <63b1f944.kfERpg9aAjB5BdDR%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.11.0-dev-87e0e
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 28 Dec 2022 14:56:08 +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Hi,
-> 
-> This was already posted to ML, but too late to be included in last pull
-> request to Linus, so simply resending them.
-> 
-> [...]
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
+branch HEAD: 63ce7bc02df1040bce8273fbb92448a382bc7d93  RDMA/mlx5: Fix validation of max_rd_atomic caps for DC
 
-Applied, thanks!
+elapsed time: 724m
 
-[1/2] RDMA/mlx5: Fix mlx5_ib_get_hw_stats when used for device
-      (no commit info)
-[2/2] RDMA/mlx5: Fix validation of max_rd_atomic caps for DC
-      (no commit info)
+configs tested: 62
+configs skipped: 2
 
-Best regards,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                                 defconfig
+powerpc                           allnoconfig
+s390                             allmodconfig
+alpha                               defconfig
+sh                               allmodconfig
+x86_64                        randconfig-a006
+s390                                defconfig
+arm                                 defconfig
+i386                          randconfig-a016
+mips                             allyesconfig
+i386                                defconfig
+s390                             allyesconfig
+arc                  randconfig-r043-20230101
+x86_64                              defconfig
+s390                 randconfig-r044-20230101
+x86_64                           rhel-8.3-bpf
+x86_64                           rhel-8.3-syz
+x86_64                               rhel-8.3
+x86_64                        randconfig-a013
+alpha                            allyesconfig
+riscv                randconfig-r042-20230101
+arm64                            allyesconfig
+i386                          randconfig-a014
+m68k                             allyesconfig
+x86_64                           allyesconfig
+x86_64                        randconfig-a011
+i386                          randconfig-a001
+x86_64                        randconfig-a002
+i386                          randconfig-a012
+x86_64                         rhel-8.3-kunit
+x86_64                    rhel-8.3-kselftests
+i386                          randconfig-a003
+x86_64                        randconfig-a015
+x86_64                          rhel-8.3-func
+m68k                             allmodconfig
+x86_64                           rhel-8.3-kvm
+arc                              allyesconfig
+x86_64                        randconfig-a004
+arm                              allyesconfig
+i386                          randconfig-a005
+ia64                             allmodconfig
+i386                             allyesconfig
+x86_64                            allnoconfig
+powerpc                          allmodconfig
+
+clang tested configs:
+hexagon              randconfig-r041-20230101
+i386                          randconfig-a006
+hexagon              randconfig-r045-20230101
+x86_64                        randconfig-a016
+arm                  randconfig-r046-20230101
+x86_64                          rhel-8.3-rust
+x86_64                        randconfig-a012
+i386                          randconfig-a013
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a014
+i386                          randconfig-a002
+i386                          randconfig-a015
+i386                          randconfig-a011
+i386                          randconfig-a004
+x86_64                        randconfig-a005
+
 -- 
-Leon Romanovsky <leon@kernel.org>
+0-DAY CI Kernel Test Service
+https://01.org/lkp
