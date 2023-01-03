@@ -2,117 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC6365B496
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Jan 2023 17:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D2F65BD47
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Jan 2023 10:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbjABQDr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Jan 2023 11:03:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
+        id S233070AbjACJho (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Jan 2023 04:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236478AbjABQDg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Jan 2023 11:03:36 -0500
-Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1C2BF2
-        for <linux-rdma@vger.kernel.org>; Mon,  2 Jan 2023 08:03:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1672675416; x=1704211416;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=xjjupqlsv79AEPQRnRJz/3eJDwLA1UTCFP6jwXCs0Po=;
-  b=VQd4Odnvkgk5Zzi6ZtRtFc+2VK+BpYIwNk5XRsNfHEokNvGXEjzHpRwA
-   Pf9wmU/odN451iLL57xSUCAKHxA9Fcicg0TcqUy6VvQUdw/d09qdii/BJ
-   2BWfkHAe1hnCKGOHTRk9HaVI3c2nuOnY1b/Ju3MyRZF72nbLnlibsoVHd
-   w=;
-X-IronPort-AV: E=Sophos;i="5.96,294,1665446400"; 
-   d="scan'208";a="284353885"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-d8e96288.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2023 16:03:33 +0000
-Received: from EX13D39EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1d-m6i4x-d8e96288.us-east-1.amazon.com (Postfix) with ESMTPS id DA93F86DDD;
-        Mon,  2 Jan 2023 16:03:31 +0000 (UTC)
-Received: from EX19D045EUC003.ant.amazon.com (10.252.61.236) by
- EX13D39EUC003.ant.amazon.com (10.43.164.139) with Microsoft SMTP Server (TLS)
- id 15.0.1497.42; Mon, 2 Jan 2023 16:03:30 +0000
-Received: from 88665a2fa36d.ant.amazon.com.com (10.43.162.56) by
- EX19D045EUC003.ant.amazon.com (10.252.61.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.7;
- Mon, 2 Jan 2023 16:03:28 +0000
-From:   Yonatan Nachum <ynachum@amazon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC:     <mrgolin@amazon.com>
-Subject: [PATCH for-rc] RDMA: Fix ib block iterator counter overflow
-Date:   Mon, 2 Jan 2023 18:03:17 +0200
-Message-ID: <20230102160317.89851-1-ynachum@amazon.com>
-X-Mailer: git-send-email 2.37.2
+        with ESMTP id S230467AbjACJhn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Jan 2023 04:37:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8C8F29
+        for <linux-rdma@vger.kernel.org>; Tue,  3 Jan 2023 01:37:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BC5B61228
+        for <linux-rdma@vger.kernel.org>; Tue,  3 Jan 2023 09:37:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52663C433F0;
+        Tue,  3 Jan 2023 09:37:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672738661;
+        bh=HrZF70KL+uk5zjGG40UB1MOx0acd0dNvtJAlZ55IXIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HLG81xisX/m1pt8WLqaYdbs8f4nJe3fKRZhaENQ622WC7FgAKEB2C2i5vGUegRQba
+         iGx7etwph6A2EUMD7no3nM8aXiu3mdDKvxPAAFc+HpUWO8QuiZqfQ4ysOFJcbMEFZW
+         BCiRbWvyveWbNBLoHeXdanWKKwt3kUdb/ErYuYdPDfFKFgaR3mTmcvhBrwGGbZpRKf
+         heEo8tM1nBrBGrPpu6klCPeFjTYrowSKGpxkr/9KioaXHVa1qWbATSN8/MWU4hF8h9
+         WRvav6vBpgLBvsi6U/9tOGM8OkOGply9MJgXstalk7BFYLDmgEWpPi0fI9rumG9n7V
+         rX5m/eyaw2Gng==
+Date:   Tue, 3 Jan 2023 11:37:37 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: Re: [PATCH 1/1] RDMA/irdma: Add support for dmabuf pin memory regions
+Message-ID: <Y7P3YR6Huf/cS+bS@unreal>
+References: <20230103013433.341997-1-yanjun.zhu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.56]
-X-ClientProxiedBy: EX13D29UWC001.ant.amazon.com (10.43.162.143) To
- EX19D045EUC003.ant.amazon.com (10.252.61.236)
-X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230103013433.341997-1-yanjun.zhu@intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When registering a new DMA MR after selecting the best aligned page size
-for it, we iterate over the given sglist to split each entry to smaller,
-aligned to the selected page size, DMA blocks.
+On Mon, Jan 02, 2023 at 08:34:33PM -0500, Zhu Yanjun wrote:
+> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+> 
+> This is a followup to the EFA dmabuf[1]. Irdma driver currently does
+> not support on-demand-paging(ODP). So it uses habanalabs as the
+> dmabuf exporter, and irdma as the importer to allow for peer2peer
+> access through libibverbs.
+> 
+> In this commit, the function ib_umem_dmabuf_get_pinned() is used.
+> This function is introduced in EFA dmabuf[1] which allows the driver
+> to get a dmabuf umem which is pinned and does not require move_notify
+> callback implementation. The returned umem is pinned and DMA mapped
+> like standard cpu umems, and is released through ib_umem_release().
+> 
+> [1]https://lore.kernel.org/lkml/20211007114018.GD2688930@ziepe.ca/t/
+> 
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> ---
+>  drivers/infiniband/hw/irdma/verbs.c | 158 ++++++++++++++++++++++++++++
+>  1 file changed, 158 insertions(+)
+> 
+> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+> index f6973ea55eda..76dc6e65930a 100644
+> --- a/drivers/infiniband/hw/irdma/verbs.c
+> +++ b/drivers/infiniband/hw/irdma/verbs.c
+> @@ -2912,6 +2912,163 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+>  	return ERR_PTR(err);
+>  }
+>  
+> +struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+> +				       u64 len, u64 virt,
+> +				       int fd, int access,
+> +				       struct ib_udata *udata)
 
-In given circumstances where the sg entry and page size fit certain sizes
-and the sg entry is not aligned to the selected page size, the total size
-of the aligned pages we need to cover the sg entry is >= 4GB. Under this
-circumstances, while iterating page aligned blocks, the counter responsible
-for counting how much we advanced from the start of the sg entry is
-overflowed because its type is u32 and we pass 4GB in size.  This can
-lead to an infinite loop inside the iterator function because in some
-cases the overflow prevents the counter to be larger than the size of
-the sg entry.
+kbuild complained about this line, it should be "static struct ..."
 
-Fix the presented problem with changing the counter type to u64.
+And please use target in your patches: rdma-next/rdma-rc.
 
-Backtrace:
-[  192.374329] efa_reg_user_mr_dmabuf
-[  192.376783] efa_register_mr
-[  192.382579] pgsz_bitmap 0xfffff000 rounddown 0x80000000
-[  192.386423] pg_sz [0x80000000] umem_length[0xc0000000]
-[  192.392657] start 0x0 length 0xc0000000 params.page_shift 31 params.page_num 3
-[  192.399559] hp_cnt[3], pages_in_hp[524288]
-[  192.403690] umem->sgt_append.sgt.nents[1]
-[  192.407905] number entries: [1], pg_bit: [31]
-[  192.411397] biter->__sg_nents [1] biter->__sg [0000000008b0c5d8]
-[  192.415601] biter->__sg_advance [665837568] sg_dma_len[3221225472]
-[  192.419823] biter->__sg_nents [1] biter->__sg [0000000008b0c5d8]
-[  192.423976] biter->__sg_advance [2813321216] sg_dma_len[3221225472]
-[  192.428243] biter->__sg_nents [1] biter->__sg [0000000008b0c5d8]
-[  192.432397] biter->__sg_advance [665837568] sg_dma_len[3221225472]
-
-Fixes: a808273a495c
-
-Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
----
- include/rdma/ib_verbs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 975d6e9efbcb..6821c7951363 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2836,7 +2836,7 @@ struct ib_block_iter {
- 	struct scatterlist *__sg;	/* sg holding the current aligned block */
- 	dma_addr_t __dma_addr;		/* unaligned DMA address of this block */
- 	unsigned int __sg_nents;	/* number of SG entries */
--	unsigned int __sg_advance;	/* number of bytes to advance in sg in next step */
-+	u64 __sg_advance;		/* number of bytes to advance in sg in next step */
- 	unsigned int __pg_bit;		/* alignment of current block */
- };
- 
--- 
-2.38.1
-
+Thanks
