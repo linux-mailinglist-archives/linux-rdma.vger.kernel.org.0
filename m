@@ -2,283 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0037D65D391
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jan 2023 14:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC5065D3AE
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jan 2023 14:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbjADM7g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Jan 2023 07:59:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
+        id S234915AbjADNDf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Jan 2023 08:03:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbjADM7f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Jan 2023 07:59:35 -0500
-Received: from out-137.mta0.migadu.com (out-137.mta0.migadu.com [91.218.175.137])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC72DFCF1
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Jan 2023 04:59:33 -0800 (PST)
-Message-ID: <b6f210db-0946-1c1a-4bd0-030de6ccd6ec@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1672837171;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gpBFyv1kXHBZXlOeMvLCwhcZmZGahoUO60e8REDfmGs=;
-        b=WC1ZXHPcRl4QmDDfQs1K0NDPYa2ze54avYe+bGbF58GtY13Ah8kHOzzC2SfzjVWgLLP2rh
-        rln09FH8rj5tthQymzBJVVGC4RwJoMPucmCyrqoIDXWNbVQ2I369nrozuHwvGhixD23h10
-        j+RNbnAz/RuKr++0oez9TeOcptI8zMo=
-Date:   Wed, 4 Jan 2023 20:59:24 +0800
+        with ESMTP id S234975AbjADNDZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Jan 2023 08:03:25 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2047.outbound.protection.outlook.com [40.107.94.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF1837503;
+        Wed,  4 Jan 2023 05:03:09 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l1kIZ9zG0dbsxmHOu3QbIXpNiYHOp/Nuy+i/pkvK95YeTImF4xsDvzJeHP68SbZh/pAEqPyHeCYz3dsQII+s1tRiPEobq0LEsHRkIzgF43yCHscJ6GKGGEfVqbHbPOqA202kH5Ggkr0CKmAbQrWfk2SNrCdwBwOfelPKIHeA34mWeE7aocCLZhC48P4qMwLYl/Eud6fM/SUwfO+eDqBhRL78M4ey/R8PjEZtvOfHXgJs6ozYe8w4vuWk371uyFwbOpMs6rW5bfR8wXsOCi2LbTBXDg9rYXsCE2Nzh+sfeyVCwVOQtzdicCzXM/Y4dJv7mRPLFeUOrO0TkXoscEvNKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vpQ3IrRtIEy5oSRMBjDtNhfsDh+7W6DiZCb+ga13mLY=;
+ b=XY9RPJ2LpmX9S86X8wOTCOcmXH5ndZjigbpyoVGD9CllA7y7DTdro7VzCmQZ3ViQL9z2+s2Pdv6mHRtIVl1ixEMJh9bvTlTrAwJx/51LBOboAVTa8QITf/TpcLJKxGFoMaNX1nEnnS965zwthYJVswLhIo3aI/YVugzTgwSGADbWeSH1/ZIns7Wz6IVjZd0VzK2vhXJHfjIn+BPLh0CyMxsAtUKOty2Mfpe1wC0gOJ5kLcJNTaeHswbqNlmKCracyQmKO80Ax2Ffc9519ihtFcBcy/vjVOuUkYrCcsGBv2D1XER6Bc3uDQfr7Ty0MLHXSIzeoU4rwDNl8kWwnmqwpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vpQ3IrRtIEy5oSRMBjDtNhfsDh+7W6DiZCb+ga13mLY=;
+ b=hqlvMs5/B6avhhi1yeSucDC3isvv7vT3ul0iOFanzrlW77GjFM17FaPkAD3JvrWsz5mrwdpehbJP79klVaQNolUm1gqBlY9Eo43h8HrbCFiuNB3eyTroqVnVmI4AQ2195lkyutxgWd4HX0XZw5ZY1soxPXJj0UfJNAv/5eaZVEA4ZiLK+3kK7MDUfPffPb/GQgapOAa5z2CkK2w1ZjhPB+rzJv7CLUeRcDJRs2+YyQIlStaFhqWyatHpKdnN+b/KLx87JXVPubxbQqvjkKMkho58Ph9/LN8hj1y7dPJZKil4ghLECtfmrOGOPrRR1gIwkNdyVKmqI5HcYYyQFOIgwQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DS0PR12MB8414.namprd12.prod.outlook.com (2603:10b6:8:fb::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5944.19; Wed, 4 Jan 2023 13:03:07 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.5944.019; Wed, 4 Jan 2023
+ 13:03:07 +0000
+Date:   Wed, 4 Jan 2023 09:03:06 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Or Har-Toov <ohartoov@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH rdma-next 4/4] RDMA/mlx5: Use query_special_contexts for
+ mkeys
+Message-ID: <Y7V5CtJmorEc4u93@nvidia.com>
+References: <cover.1672819469.git.leonro@nvidia.com>
+ <4c58f1aa2e9664b90ecdc478aef12213816cf1b7.1672819469.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c58f1aa2e9664b90ecdc478aef12213816cf1b7.1672819469.git.leonro@nvidia.com>
+X-ClientProxiedBy: BL1PR13CA0323.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::28) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Subject: Re: [PATCHv2 1/1] RDMA/irdma: Add support for dmabuf pin memory
- regions
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Zhu, Yanjun" <yanjun.zhu@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20230103060855.644516-1-yanjun.zhu@intel.com>
- <MWHPR11MB0029F8368BF8A689F9CBD311E9F49@MWHPR11MB0029.namprd11.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <MWHPR11MB0029F8368BF8A689F9CBD311E9F49@MWHPR11MB0029.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS0PR12MB8414:EE_
+X-MS-Office365-Filtering-Correlation-Id: 837fb007-73a5-4bd0-b6ab-08daee540646
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7vsY8vZuJOjr0FRXwj7F4Eeb+0j9MCoX/WuNqIL1F9NYzxMcmq7z7HOfqvuNqBEGqtBKsfjhve+AfYHgUpFwiVCIJt5symjZZVRSRhaT/mSa8KriTRG+8esVwuZphW/saHNWfLIJilKWTsKIqZx7vjkzzQfJwIr5mv/iql1ju6vFOLUlR4a93Xl59dP/PYDx3kINAtW0JTpmFDfrvXCoISNJJW6MJvbQ5DcqLlERY1Fi4bOiN+xic3SRzyoaosMoMY9E+5WgFvyPG8Fw3zI83y02+lt8x4RhyWyefMd/ezCP5cw7k0sQQuDIRP17YsjrUxw/doYBs9bWeTHxi6AFx+/72Q5hLFt35mj81ZD7FJ079I6oiPpQrSa0KeaiSRQXrY/hSGP0TmA0r5dgPTI6p4MgBwa1t86BP/WQL7ALhSO8sxyXLE1E9lFGf9zI8b3+gOKLsuq8yfjPgMwfSN6jrvCDx9T7hKzr3MLcPioqs/PFeK9knQ/TBA5TwfLuqCvDAgB65dOJs4N/Dud/gtRmHJ+kZFTQAWLcgaUzW4XFtUjLoxEU8ADtI1d59QXQu/lRmIaBi6ri7u6bgCcKREhBO/8d1DllQZC1tj4l3mK+x7eDMfd70Cff2e++ZBbEaAwVXnNgWcSUrYsxo94Sm6Zycg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(346002)(376002)(136003)(39860400002)(366004)(451199015)(2616005)(86362001)(36756003)(38100700002)(6916009)(54906003)(316002)(2906002)(8936002)(41300700001)(66476007)(66946007)(66556008)(8676002)(5660300002)(4326008)(26005)(478600001)(186003)(107886003)(6512007)(6486002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4uKeFSuZq43mzC0+zmIwqiDFb7VGGvWKLMs11J/ZOT3HQozEZ49WL2jCyY0z?=
+ =?us-ascii?Q?H/nlsShFR6pMtsKf2L/r7BWzpi3+bfe+NfrR0esq0fzj8W1yycB27hywke6h?=
+ =?us-ascii?Q?N4jq5ncES49I6KkmK6jSVbOWo7aUYdPPtX+oATKgRQ8EZVXFZgqQpjXi5VDu?=
+ =?us-ascii?Q?Uf9l6iKQ00HPV4YKiE6SAi0yaLN5Yd2L6HJ6Qv9irY8XUm/jsDCcwRAxvapE?=
+ =?us-ascii?Q?5Twh305lHbSwEp/SeinEWgYVSTWgnLUKb+ja5E6bVptzqxrPPTDGaChGi2xo?=
+ =?us-ascii?Q?ii8SzU1tOk16QWhTXREziSfRKcMnL1psGJtslmxMHd7Ii4t/rcKTCY/aIOl5?=
+ =?us-ascii?Q?KnE1UWKBoo6XYceikNOQebpUqgsBtCJL7H0ro6oEzm/QCaMUIBPa2IADozv+?=
+ =?us-ascii?Q?N0EvAcNCUJWqvMIEffGRYXm/W9gziNomGmnQrMLsCJGXabLS3imnrWdSr7Xr?=
+ =?us-ascii?Q?XFEhrJ+53wrSPf+dYQNAn6ia1/qsxsWgbxF6yeaMlVJ1wJduYJS2DbuEa0wH?=
+ =?us-ascii?Q?YUq8ZHdTtvZg5lf3Zgk/uMtyVBsfZdkQRv8nLmKkR1A3th/7q983k5q0UjY6?=
+ =?us-ascii?Q?xMh0Kl4Q+9/1ENUdaVOHnEXvjoqchba39y9pKRRIa7yKO3ezVZgyZ3oGizpN?=
+ =?us-ascii?Q?2KhPtQpnb/tUOi72cvbAXm1c9yuVQiS3ov0/P6ezrRHPFkuHBBrnPIXLdB4w?=
+ =?us-ascii?Q?kvThSozSMUs9ngApLyWOOrknq7+F+vF8TS0nswx11Fx315JjU9jKqk6xlHoJ?=
+ =?us-ascii?Q?Qqc7H65SmEImmYcM68goiU1J1/6rTJESs7j3/rJ8B9VFMPNywVbnzzTpMDK3?=
+ =?us-ascii?Q?xbfYxlDo8r8XAD9bffg90brU8008qChZb0w5JQEZacl4KADmmgGW7Y+vbQm0?=
+ =?us-ascii?Q?Tip7YLYLOMRxwqR3YaCyz5TmWO3OWQUfo6hhxShsBicV6BtZY04u7gDes2sd?=
+ =?us-ascii?Q?nAfgbp7HD+YHx64G9jbwoa+xZ9kl5z6qW/IQLJSzkUD2GNIfDc7utvZk7YsG?=
+ =?us-ascii?Q?vc2plgMdE4ipjPFZ+Yg2NvWxfSrOPDkP7ZM4pSXRqWVCln43U5D3QWgE4i9h?=
+ =?us-ascii?Q?X7vdlw0xOspnq9gunKXBjIhoUid6SDaCFQZ4dVpdfTC69/afPmPpD8pxpkDq?=
+ =?us-ascii?Q?e3J4EZl8JrpyR70B+mdNw/RjKC7j00HfMVBEkMeqvpy79mucDA3qtQGmrOdo?=
+ =?us-ascii?Q?x4KUZH27853++5boRssO14oke6QYDvemrEDOGuQW60Z1zcbruqf6BrMxhELO?=
+ =?us-ascii?Q?EH+Jr0VipLZO239EhqrPL4Y8PvwzDoI4P53CvKaEJ+cMQS8QP/1AoaZIqeRS?=
+ =?us-ascii?Q?9JAEdcVwqv8EFsmANvnzKmzVmg9JusjHww9YVmza2Fo4qfBzBLgymnMI+kAy?=
+ =?us-ascii?Q?cRVTNycHm8jVPgiwwxudBy4d8DriPd7rDMbdazqWYBiRXecwti6qj/wzwcT1?=
+ =?us-ascii?Q?p89Yaqjpew5pA7jCy0PHnerboaYgR6aAFiM9+GP6Vf5YzRfMd3ZVqI7Jjtv6?=
+ =?us-ascii?Q?c6q5yh0+l0h0td9evIVkx+lvenJfv5aoQYiKN63Be+m0XsD545LvucRYFXVM?=
+ =?us-ascii?Q?IiwImMNxiV/EtK0yWMOgPwO9BIauXrUwFiUkbIGa?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 837fb007-73a5-4bd0-b6ab-08daee540646
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2023 13:03:07.7869
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jEE4XIpt6GUIbjGU424OpQFhGwyRezvBoE9GSzhgpBczIUEcOgp3N1fqJs8io3do
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8414
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Jan 04, 2023 at 10:11:25AM +0200, Leon Romanovsky wrote:
+> -int mlx5_cmd_null_mkey(struct mlx5_core_dev *dev, u32 *null_mkey)
+> -{
+> -	u32 out[MLX5_ST_SZ_DW(query_special_contexts_out)] = {};
+> -	u32 in[MLX5_ST_SZ_DW(query_special_contexts_in)] = {};
+> -	int err;
+> +	err = mlx5_cmd_exec_inout(dev->mdev, query_special_contexts, in, out);
+> +	if (err)
+> +		return err;
+>  
+> -	MLX5_SET(query_special_contexts_in, in, opcode,
+> -		 MLX5_CMD_OP_QUERY_SPECIAL_CONTEXTS);
+> -	err = mlx5_cmd_exec_inout(dev, query_special_contexts, in, out);
+> -	if (!err)
+> -		*null_mkey = MLX5_GET(query_special_contexts_out, out,
+> -				      null_mkey);
+> -	return err;
+> +	if (MLX5_CAP_GEN(dev->mdev, dump_fill_mkey))
+> +		dev->mkeys.dump_fill_mkey = MLX5_GET(query_special_contexts_out,
+> +						     out, dump_fill_mkey);
+> +
+> +	if (MLX5_CAP_GEN(dev->mdev, null_mkey))
+> +		dev->mkeys.null_mkey = cpu_to_be32(
+> +			MLX5_GET(query_special_contexts_out, out, null_mkey));
+> +
+> +	if (MLX5_CAP_GEN(dev->mdev, terminate_scatter_list_mkey)) {
+> +		dev->mkeys.terminate_scatter_list_mkey =
+> +			cpu_to_be32(MLX5_GET(query_special_contexts_out, out,
+> +					     terminate_scatter_list_mkey));
+> +		return 0;
+> +	}
+> +	dev->mkeys.terminate_scatter_list_mkey =
+> +		MLX5_TERMINATE_SCATTER_LIST_LKEY;
 
-在 2023/1/4 7:35, Saleem, Shiraz 写道:
->> Subject: [PATCHv2 1/1] RDMA/irdma: Add support for dmabuf pin memory
->> regions
->>
->> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>
->> This is a followup to the EFA dmabuf[1]. Irdma driver currently does not support
->> on-demand-paging(ODP). So it uses habanalabs as the dmabuf exporter, and
->> irdma as the importer to allow for peer2peer access through libibverbs.
->>
->> In this commit, the function ib_umem_dmabuf_get_pinned() is used.
->> This function is introduced in EFA dmabuf[1] which allows the driver to get a
->> dmabuf umem which is pinned and does not require move_notify callback
->> implementation. The returned umem is pinned and DMA mapped like standard cpu
->> umems, and is released through ib_umem_release().
->>
->> [1]https://lore.kernel.org/lkml/20211007114018.GD2688930@ziepe.ca/t/
->>
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->
-> Is there a corresponding user-space patch?
+This is already stored in the core dev, why are you recalculating it
+here?
 
-Yes. I will send it out very soon.
-
-Zhu Yanjun
-
->
->
->> ---
->> V1->V2: Fix the build warning by adding a static
->> ---
->>   drivers/infiniband/hw/irdma/verbs.c | 158 ++++++++++++++++++++++++++++
->>   1 file changed, 158 insertions(+)
->>
->> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
->> index f6973ea55eda..1572baa93856 100644
->> --- a/drivers/infiniband/hw/irdma/verbs.c
->> +++ b/drivers/infiniband/hw/irdma/verbs.c
->> @@ -2912,6 +2912,163 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd
->> *pd, u64 start, u64 len,
->>   	return ERR_PTR(err);
->>   }
->>
->> +static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
->> +					      u64 len, u64 virt,
->> +					      int fd, int access,
->> +					      struct ib_udata *udata)
->> +{
->> +	struct irdma_device *iwdev = to_iwdev(pd->device);
->> +	struct irdma_ucontext *ucontext;
->> +	struct irdma_pble_alloc *palloc;
->> +	struct irdma_pbl *iwpbl;
->> +	struct irdma_mr *iwmr;
->> +	struct irdma_mem_reg_req req;
->> +	u32 total, stag = 0;
->> +	u8 shadow_pgcnt = 1;
->> +	bool use_pbles = false;
->> +	unsigned long flags;
->> +	int err = -EINVAL;
->> +	struct ib_umem_dmabuf *umem_dmabuf;
->> +
->> +	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
->> +		return ERR_PTR(-EINVAL);
->> +
->> +	if (udata->inlen < IRDMA_MEM_REG_MIN_REQ_LEN)
->> +		return ERR_PTR(-EINVAL);
->> +
->> +	umem_dmabuf = ib_umem_dmabuf_get_pinned(pd->device, start, len, fd,
->> +						access);
->> +	if (IS_ERR(umem_dmabuf)) {
->> +		err = PTR_ERR(umem_dmabuf);
->> +		ibdev_dbg(&iwdev->ibdev, "Failed to get dmabuf umem[%d]\n",
->> err);
->> +		return ERR_PTR(err);
->> +	}
->> +
->> +	if (ib_copy_from_udata(&req, udata, min(sizeof(req), udata->inlen))) {
->> +		ib_umem_release(&umem_dmabuf->umem);
->> +		return ERR_PTR(-EFAULT);
->> +	}
->> +
->> +	iwmr = kzalloc(sizeof(*iwmr), GFP_KERNEL);
->> +	if (!iwmr) {
->> +		ib_umem_release(&umem_dmabuf->umem);
->> +		return ERR_PTR(-ENOMEM);
->> +	}
->> +
->> +	iwpbl = &iwmr->iwpbl;
->> +	iwpbl->iwmr = iwmr;
->> +	iwmr->region = &umem_dmabuf->umem;
->> +	iwmr->ibmr.pd = pd;
->> +	iwmr->ibmr.device = pd->device;
->> +	iwmr->ibmr.iova = virt;
->> +	iwmr->page_size = PAGE_SIZE;
->> +
->> +	if (req.reg_type == IRDMA_MEMREG_TYPE_MEM) {
->> +		iwmr->page_size = ib_umem_find_best_pgsz(iwmr->region,
->> +							 iwdev->rf-
->>> sc_dev.hw_attrs.page_size_cap,
->> +							 virt);
->> +		if (unlikely(!iwmr->page_size)) {
->> +			kfree(iwmr);
->> +			ib_umem_release(iwmr->region);
->> +			return ERR_PTR(-EOPNOTSUPP);
->> +		}
->> +	}
->> +	iwmr->len = iwmr->region->length;
->> +	iwpbl->user_base = virt;
->> +	palloc = &iwpbl->pble_alloc;
->> +	iwmr->type = req.reg_type;
->> +	iwmr->page_cnt = ib_umem_num_dma_blocks(iwmr->region,
->> +iwmr->page_size);
->> +
->> +	switch (req.reg_type) {
->> +	case IRDMA_MEMREG_TYPE_QP:
->> +		total = req.sq_pages + req.rq_pages + shadow_pgcnt;
->> +		if (total > iwmr->page_cnt) {
->> +			err = -EINVAL;
->> +			goto error;
->> +		}
->> +		total = req.sq_pages + req.rq_pages;
->> +		use_pbles = (total > 2);
->> +		err = irdma_handle_q_mem(iwdev, &req, iwpbl, use_pbles);
->> +		if (err)
->> +			goto error;
->> +
->> +		ucontext = rdma_udata_to_drv_context(udata, struct
->> irdma_ucontext,
->> +						     ibucontext);
->> +		spin_lock_irqsave(&ucontext->qp_reg_mem_list_lock, flags);
->> +		list_add_tail(&iwpbl->list, &ucontext->qp_reg_mem_list);
->> +		iwpbl->on_list = true;
->> +		spin_unlock_irqrestore(&ucontext->qp_reg_mem_list_lock, flags);
->> +		break;
->> +	case IRDMA_MEMREG_TYPE_CQ:
->> +		if (iwdev->rf->sc_dev.hw_attrs.uk_attrs.feature_flags &
->> IRDMA_FEATURE_CQ_RESIZE)
->> +			shadow_pgcnt = 0;
->> +		total = req.cq_pages + shadow_pgcnt;
->> +		if (total > iwmr->page_cnt) {
->> +			err = -EINVAL;
->> +			goto error;
->> +		}
->> +
->> +		use_pbles = (req.cq_pages > 1);
->> +		err = irdma_handle_q_mem(iwdev, &req, iwpbl, use_pbles);
->> +		if (err)
->> +			goto error;
->> +
->> +		ucontext = rdma_udata_to_drv_context(udata, struct
->> irdma_ucontext,
->> +						     ibucontext);
->> +		spin_lock_irqsave(&ucontext->cq_reg_mem_list_lock, flags);
->> +		list_add_tail(&iwpbl->list, &ucontext->cq_reg_mem_list);
->> +		iwpbl->on_list = true;
->> +		spin_unlock_irqrestore(&ucontext->cq_reg_mem_list_lock, flags);
->> +		break;
-> I don't think we want to do this for user QP, CQ pinned memory. In fact, it will just be dead-code.
->
-> The irdma provider implementation of the ibv_reg_dmabuf_mr will just default to IRDMA_MEMREG_TYPE_MEM type similar to how irdma_ureg_mr is implemented.
->
-> https://github.com/linux-rdma/rdma-core/blob/master/providers/irdma/uverbs.c#L128
->
-> It should simplify this function a lot.
->
->
->> +	case IRDMA_MEMREG_TYPE_MEM:
->> +		use_pbles = (iwmr->page_cnt != 1);
->> +
->> +		err = irdma_setup_pbles(iwdev->rf, iwmr, use_pbles, false);
->> +		if (err)
->> +			goto error;
->> +
->> +		if (use_pbles) {
->> +			err = irdma_check_mr_contiguous(palloc,
->> +							iwmr->page_size);
->> +			if (err) {
->> +				irdma_free_pble(iwdev->rf->pble_rsrc, palloc);
->> +				iwpbl->pbl_allocated = false;
->> +			}
->> +		}
->> +
->> +		stag = irdma_create_stag(iwdev);
->> +		if (!stag) {
->> +			err = -ENOMEM;
->> +			goto error;
->> +		}
->> +
->> +		iwmr->stag = stag;
->> +		iwmr->ibmr.rkey = stag;
->> +		iwmr->ibmr.lkey = stag;
->> +		err = irdma_hwreg_mr(iwdev, iwmr, access);
->> +		if (err) {
->> +			irdma_free_stag(iwdev, stag);
->> +			goto error;
->> +		}
->> +
->> +		break;
->> +	default:
->> +		goto error;
->> +	}
->> +
->> +	iwmr->type = req.reg_type;
->> +
->> +	return &iwmr->ibmr;
->> +
->> +error:
->> +	if (palloc->level != PBLE_LEVEL_0 && iwpbl->pbl_allocated)
->> +		irdma_free_pble(iwdev->rf->pble_rsrc, palloc);
->> +	ib_umem_release(iwmr->region);
->> +	kfree(iwmr);
-> Ideally we want unwind in the reverse order of allocation.
->
->> +
->> +	return ERR_PTR(err);
->> +}
->> +
->>   /**
->>    * irdma_reg_phys_mr - register kernel physical memory
->>    * @pd: ibpd pointer
->> @@ -4418,6 +4575,7 @@ static const struct ib_device_ops irdma_dev_ops = {
->>   	.query_port = irdma_query_port,
->>   	.query_qp = irdma_query_qp,
->>   	.reg_user_mr = irdma_reg_user_mr,
->> +	.reg_user_mr_dmabuf = irdma_reg_user_mr_dmabuf,
->>   	.req_notify_cq = irdma_req_notify_cq,
->>   	.resize_cq = irdma_resize_cq,
->>   	INIT_RDMA_OBJ_SIZE(ib_pd, irdma_pd, ibpd),
->> --
->> 2.27.0
+Jason
