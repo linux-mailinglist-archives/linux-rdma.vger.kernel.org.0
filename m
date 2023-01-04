@@ -2,77 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7703D65D159
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jan 2023 12:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7D965D369
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jan 2023 13:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239144AbjADLZL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Jan 2023 06:25:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
+        id S237559AbjADMzi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Jan 2023 07:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234915AbjADLZI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Jan 2023 06:25:08 -0500
-X-Greylist: delayed 391 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 04 Jan 2023 03:25:06 PST
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4E91AA3C
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Jan 2023 03:25:06 -0800 (PST)
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.66.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id E663E40C7B
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Jan 2023 11:18:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-        s=20210803; t=1672831112;
-        bh=VeTy5vNoS5UlAlWubclGKlwWX9XGmqDW+tTxCyyHIMM=;
-        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-         Reply-To;
-        b=LCrZp0U9B2Us707v1h+rAk9Rn22mtEzaWbSaPnT1BaiA+QFc0zFhhwk4+Kb5haSmc
-         weqM5OYWFzICiG/xXKUYW+J+XA1531nq4wd1UuOowghFStxl9jVeEn+m39W4ath8u6
-         RHDMlI/Rh6UOZ0RdRcfRgiQRl5FmNAiHRAoyzJqrxNDrjNKJUTJH3Vs/kjOhWGyZjl
-         Xt8RjuUX+Mp5Gt6G/1FEpZ+ma635nswQ9GzHX+FjwphwUhpM/EIas7KC4cX6ZmyYt8
-         sLF+2629uKbG+tU4MCKAyja37s8i1ge8fZ/ZD3/Tt7e9V5vejjDQZsEKzgy6Pok25P
-         TCnshMFvfOXQg==
-Received: from juju-4112d9-prod-launchpad-manual-servers-4.lp.internal (localhost [127.0.0.1])
-        by buildd-manager.lp.internal (Postfix) with ESMTP id D39B6BB816
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Jan 2023 11:18:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229679AbjADMzU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Jan 2023 07:55:20 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ACCC37391
+        for <linux-rdma@vger.kernel.org>; Wed,  4 Jan 2023 04:54:54 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id f28so16205606qkh.10
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Jan 2023 04:54:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g2m/uNsCm/OsAUZxAnJOSdXXDa9Gh4wg88n4VPL2lMU=;
+        b=BQfo1+41q2NZR57Q7BFlMODaOza2AgrRvUpAp3daCd4t1w84OEhFtXAM1g7CkVTr/y
+         mvXWkJvXCDM96Iy3cSf9E37Th3uZX5TzmwlIsHFzK3DAyLuSjJ8d3uR9drr/ahkzPGkt
+         iW+sw+gZOJCd7bumtfoM4UR2xOfXz6tdmGq2f+IJJhoSBazdofAm5Gs9PxuweXnk264c
+         knSGf1CtrqZScdeov1GoaGbl2sApMUXYjJGPCObPVA0UTlHx2t6+wdp4VOKHmsqLWM8X
+         lQt15zqigA6uJCG+q37n0r4mLK1MKtsniT1i9jhRA9qlN9E2Mf0sYN4W9Jd0n+39BoCK
+         yzWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g2m/uNsCm/OsAUZxAnJOSdXXDa9Gh4wg88n4VPL2lMU=;
+        b=Gt48apA/od72C6eD6S2oJmaTihfXbwGDTq3fj5GD1Lo9/XpTaDPAVm+M8xsS8/XiQq
+         jCBK9tHD6Vu3P3nxGjK8Xei+4WGuyPWw5ICy6JzFnHULMd2YtwWkvR0kUazp4lIVhtRG
+         tJiZQuzyoMVEfBaoFqNNqLBnPQuC2FU+PVKC4os4evh3fxX1nlgYXUhG7ljZrbem7nri
+         C6CD9yZimBukqygA6TVGOH9iLAi9nAF1Uw91nSqiw3+OF+KFwDWznBIR8sAGvrfHcicg
+         PFtT1AP4sKFsPkmQoJgPern9H5Eqm7Zzymo+0p5w9tEt/1hb2EQKm0r54x+GcMF4n4aD
+         J5Bw==
+X-Gm-Message-State: AFqh2krS3d4fQylhGYgiI2ZfC9MfZHBdq0iZXAl6MaFh3/3cHki6jDJF
+        iobUY2cQe7LXZXKMOKVci5GWxwHmDsdOtiGFJBF4SVA050w=
+X-Google-Smtp-Source: AMrXdXuKXTvNK0aSB9vnyjtdhrZfKmRzvU9Jw1W0zhcD7x19AMFVNgTh5oL+8ilZBOfTDf/bL64QVz1mYULxa/ftADs=
+X-Received: by 2002:ac8:568a:0:b0:3a9:688d:fad2 with SMTP id
+ h10-20020ac8568a000000b003a9688dfad2mr1976067qta.646.1672836882017; Wed, 04
+ Jan 2023 04:54:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To:     Linux RDMA <linux-rdma@vger.kernel.org>
-From:   noreply@launchpad.net
-Subject: [recipe build #3474100] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <167283111286.23122.5704298615491148277.launchpad@juju-4112d9-prod-launchpad-manual-servers-4.lp.internal>
-Date:   Wed, 04 Jan 2023 11:18:32 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-X-Generated-By: Launchpad (canonical.com); Revision="31c78762a8046acf7ab47372e5d588ebb3759d2e"; Instance="buildmaster"
-X-Launchpad-Hash: 51fbe912b33793d40c2444782b956f1a7c92d19d
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:6200:5d91:b0:4a5:78e9:2012 with HTTP; Wed, 4 Jan 2023
+ 04:54:41 -0800 (PST)
+Reply-To: Gregdenzell9@gmail.com
+From:   Greg Denzell <mzsophie@gmail.com>
+Date:   Wed, 4 Jan 2023 12:54:41 +0000
+Message-ID: <CAEoj5=ZpJ15GRz-U33Ocbu5-P3Va+3bNv3476+mmJJ52cwx7tA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 3 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3474100/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-116
+Seasons Greetings!
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3474100
-Your team Linux RDMA is the requester of the build.
-
+This will remind you again that I have not yet received your reply to
+my last message to you.
