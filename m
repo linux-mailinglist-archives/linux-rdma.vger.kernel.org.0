@@ -2,234 +2,225 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467DC65CAAB
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jan 2023 01:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C617A65CAB3
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jan 2023 01:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbjADATt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Jan 2023 19:19:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
+        id S238075AbjADAVY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Jan 2023 19:21:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbjADATs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Jan 2023 19:19:48 -0500
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A488C14025
-        for <linux-rdma@vger.kernel.org>; Tue,  3 Jan 2023 16:19:47 -0800 (PST)
-Received: by mail-il1-f197.google.com with SMTP id i20-20020a056e021d1400b0030c306598c6so8173748ila.9
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Jan 2023 16:19:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZvMEon9aNprI7JYdc4rObwMVQwKm8shDYc4iBAlTaoI=;
-        b=n/6LGpkFc/hs3EQhFbQWlhZvDJZ0Umqlpgto2ES47VcaCAptXc/+15bxtjxYOXWw3y
-         ZFDGW4l+4e9rV4Zd9bJnFJizhltKoxi7ROKykzifCmlZAcYw6REatYfCvvwuWZg72/Te
-         wqcRvrsqwutclURUGKXyhd1L4RWhy1jgcXceUI3m+/dPo12RjMNbutc5t7+6IUQFB/To
-         TodA6EvfhnHdSUMQfvxCSh3ivSRWxFjIVw53shC6oen9TN+g0UdbY33sAqfNfF2RtMzf
-         L2GnuxJ5blJPNabWtSVDAndWZ5j7PwKWqhrdQkL+MnqI/Y7ywKeQ/IzlmoQsP7fYQd4P
-         DBzA==
-X-Gm-Message-State: AFqh2koNnmcC9ULY7QpOjKz/SuU0BHUHXZcRQnlxTU2ZZz98euTMGoaP
-        IjLi8iyL3h2H30yAfJElL5RPfXGlFS57DRLSiKPMHKsKh2LQ
-X-Google-Smtp-Source: AMrXdXvxbt/Op/gW1dVwmMcNedERAmLDqEUbZfoQIXlGYB6BKQHvghh8rV00J4YF2ddlj9pPWaRf0Q0w2QYHhy64ze8+w/qgZxvk
+        with ESMTP id S237990AbjADAVV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Jan 2023 19:21:21 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B5F165B2
+        for <linux-rdma@vger.kernel.org>; Tue,  3 Jan 2023 16:21:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1672791679; x=1704327679;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=hN8aqKR191A9Cg6xxcXhoRAteApv+9SXnU/bmhu2IE0=;
+  b=ADIc7DeSXoLx7u5B/zLxyx7Q2SfhSJVlD+KpILohGw464NiS3gjhuRYd
+   /Tq4XbZGeI0lEARAWtGeuQXvsMYJw1+V1uflXlqQrMAYLilWLJr4mVU93
+   FGrLbMDwnJ1PmUMMglg3JtRFp0y+hYNjbg6OBGstms2bmpApHdQ82uE4d
+   bYJhtzA2XDuTMH765aj5e3eZNNDOf46bZAM84VTdB1W1rieSr7Ato3txc
+   yislD0ORJSma5bp2Y/mO4VVcFPw6k/S6qfF56QxXkhWaOKi2G+IczaagR
+   9NF/hgOjw0mO9joJIOMPJ9fMo7ytNnDih4FoKy945VaYBATH3taIOVsmv
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10579"; a="321861081"
+X-IronPort-AV: E=Sophos;i="5.96,297,1665471600"; 
+   d="scan'208";a="321861081"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2023 16:21:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10579"; a="685576118"
+X-IronPort-AV: E=Sophos;i="5.96,297,1665471600"; 
+   d="scan'208";a="685576118"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga008.jf.intel.com with ESMTP; 03 Jan 2023 16:21:19 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Tue, 3 Jan 2023 16:21:18 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Tue, 3 Jan 2023 16:21:18 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Tue, 3 Jan 2023 16:21:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JoNkDQ9AIxRJv0abOfRyMXDg11Hxs81IxGDSD9LbJ6TqDqlEbWhqJcCWPPJDlVy4fOc5kcXpEUXdINj/NGfP9pzeVUgqnn33EylpCDg0DvtiHb2fbBQkoT3a/m9X/KF/NfP9VziYbBIPNeb7QTYtmRx8r00sdQBs6PhR5OD0GwNb8wZ0SXKHxdWcsjAwPwFQmyVTuzOVA5x8WZ1wrL7Vn7JkrYdbxBoym3IZcPtVJgbVyY47k4F7ijtPBhB/29LrvAEqGhjtTZ9aisJNcl7fQn9u2CIWBdg/woK3pqbe3kJnQ8XbFKU9ouswEV8Dg/E8WbEzFlFQhXElBYEj/c/04A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sIOo3WOW8rPcFrfj3opPvdjiswO6ovzh0CY54yNJ/9w=;
+ b=GbJZqbFeTbBLepba0A6C77rNtV1UgxbX3tg+0QOUKkic9c6aA2czL7ucpMFbtyt96HKYzpumP2AYkai0P5UPSeRH6rrOpvBQ9ZoXqRVIcKdbARuuC9wfquZaHIQDJR9e1awgZlFBXnXfGDRczrLSxjpLCnM/gTazHEwJGVELeXLFT4888thcoENyzaBidYWdsD2o8wNzT5T7KhSrfu1JZh/ZMMOKXSnfZA7EWaF0dekknfeEQLkPdCs+UZ6Vr93+lwYkpkjeACc/XT6KsnRjsxLIJkWN1AlWUWMxdOBzrNIAqAAe8/lx4B6HDVc+hyHzlsgB8eD+eaw0MTvEUSXkfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com (2603:10b6:301:67::25)
+ by DS7PR11MB6125.namprd11.prod.outlook.com (2603:10b6:8:9f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Wed, 4 Jan
+ 2023 00:21:16 +0000
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::61f7:7850:6203:bf55]) by MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::61f7:7850:6203:bf55%4]) with mapi id 15.20.5944.019; Wed, 4 Jan 2023
+ 00:21:16 +0000
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Zhu, Yanjun" <yanjun.zhu@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: RE: [PATCHv2 1/1] RDMA/irdma: Add support for dmabuf pin memory
+ regions
+Thread-Topic: [PATCHv2 1/1] RDMA/irdma: Add support for dmabuf pin memory
+ regions
+Thread-Index: AQHZHq/4nu0DPELUqE6mVZi+6ke8S66NUWwwgAAPXvA=
+Date:   Wed, 4 Jan 2023 00:21:16 +0000
+Message-ID: <MWHPR11MB0029214136E67C609CA87C61E9F59@MWHPR11MB0029.namprd11.prod.outlook.com>
+References: <20230103060855.644516-1-yanjun.zhu@intel.com>
+ <MWHPR11MB0029F8368BF8A689F9CBD311E9F49@MWHPR11MB0029.namprd11.prod.outlook.com>
+In-Reply-To: <MWHPR11MB0029F8368BF8A689F9CBD311E9F49@MWHPR11MB0029.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MWHPR11MB0029:EE_|DS7PR11MB6125:EE_
+x-ms-office365-filtering-correlation-id: 1adf22c4-7e7f-46c4-2fdb-08daede99863
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 33ll6gBzS4ZQQcYfWi53Fhj1x/pzr/hjGJj6/GFsHg3AzjP3+AjdVBH3r1P+P27ikm1kXayA16eciEPv1BzFMfwwy+Sd6ukdfKPcczNv0RjoR9Spabj3qX6QcXxm28RDwaE743ZwbepX2aEGH/UTIdVNhpmcb6fmLipjz7OgQF5bQigSyVP9MsPB0tV7f8jRzDe0VDbsFkqt6KcCGtMnWO1IUmB2He2n960cX5sfDoTxYfj88VBlJMplTIkNPaTmQuWe3VZRfvn1zP76aRBPSwyCe/76FiDwquyJk5AfowRVIbFuiot8twNwKJsoA9D5T7uyjwXd1smmW8ut5GbStwJ9p+3+oU7d0SPDh5zWA9mz3ZCQ3ZO0wy4mncptdvK/X7BJStehMS/LzklVYAVbaEWVL0MiRX9Pl0jyulcFwduPrkrz6g8lGPKI0LC1+2F41QqlFl2V3xH37teIAdM+nF4Akc9uZ+AC4vtqdLaMrnht1+ctKrHmqPCgi18Tzl1nCT50IWd5tgWXNZ7fVRRGOe+oF+NP7WOvYgxEGndtD4YWnyUjARqL7PaH0KW7YOzx32SOrMa4QXzXmeaAUdavK8+Xw8BUsyxttOdBWld8Qx5riQQOQ3Z9344Ou1hCFfgka0jjYMOsYC1fdx82WowiGSYPv8knUX9Ih1QWOTS5rpjYPAgPnlU/2Y/4jHo1mKrE6LDeM9V1jkR0wbsVo0P7nOi3V5xKKxsPn6ai4oRLTtE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0029.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(346002)(396003)(366004)(39860400002)(376002)(451199015)(41300700001)(316002)(110136005)(8676002)(4326008)(66446008)(66556008)(64756008)(66946007)(66476007)(76116006)(38070700005)(86362001)(38100700002)(82960400001)(122000001)(83380400001)(55016003)(5660300002)(33656002)(8936002)(52536014)(2906002)(6506007)(478600001)(7696005)(9686003)(71200400001)(186003)(26005)(966005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?6MVBy2oHQ5VJtvdE5qCKMqZ1/5hhATshIZTRa64X9+10J2oRrtYVQf8Og4FH?=
+ =?us-ascii?Q?/AjQrTWEYpHVzPcLCvxbuzzkTyYtmmR7YvylOdykf0uAxWlYtczRy9qbgUi2?=
+ =?us-ascii?Q?vOZu5xQYfGQ63iuT5/sT9sL8DzemNcY33p1cwx1yZQybRm9us2hcF9H55tAg?=
+ =?us-ascii?Q?crl8JOV+6P1wxSGAm6bnvoSL/zsIbUhgWs+/r3YeGheehfU5ywPe5jCWxsUI?=
+ =?us-ascii?Q?SaL9X5QpenKndaaMc1Zs/H6mc7MlRYLiUOOgOwuFQZ8qiNvJ3TvThNGYbOQn?=
+ =?us-ascii?Q?rZWgU3uW5AiRl3LyatciWExmh+GlCp/7Tiyu8U4q6yrnG2lze1mZB82Bhf3P?=
+ =?us-ascii?Q?BkqPDqDpp6hJkybbBWcfARImHrnxa1GfkL/uXaAhSogkrTuzigUgPyLKpYA2?=
+ =?us-ascii?Q?Um5j3vWOcGoE4de7RQ2GuCdqChht+DfRQpspapIVxUY4rW53DkYgmjSqWLRg?=
+ =?us-ascii?Q?cgVGVdUxfWf5D+6qujoTDgwarG1CwvIH8ihAn/wwe6/9ZeKbvRUqIZ0cuOtK?=
+ =?us-ascii?Q?7kZb2D6VsVQfWB9MS0mbNWjMxvBrgzAXEP/LrA3ynSZyEakUvc6NBzpdWe/3?=
+ =?us-ascii?Q?HyXOSdt77oUTr0FBAViRtzb4+xeTTtDcNf5DOSPkPNB04pfDyaEGFZqbPQ0R?=
+ =?us-ascii?Q?1J3hxDdBl8VyBmyMA/CXLKWs8UTnVxdBfQXXKCgNZTVtsMU9RbvuDA2NGIjF?=
+ =?us-ascii?Q?c6GzJ/WOjX2lmCFlxa14ASZ77ibuK4Qn++4etWrhcg5DBidEPLOdSfcjU8DK?=
+ =?us-ascii?Q?ihX0vX/3c46qv9ipbbxaah3cF6Ajsebe98N9PbP7n+OGjLRJzSzXe3OPyxHR?=
+ =?us-ascii?Q?pQB8vMmq39vU6ZQYlNXX+9/bw/bNvitf5xsbzsS0Qpicbx/3RPp7WO8HusuM?=
+ =?us-ascii?Q?5sDsucDGM9ZEcho1VvUhB4k7T1fodDS62nK9qlQ+iuHERQsF2WQzc8JFcxmf?=
+ =?us-ascii?Q?AgD++9h88R3jdkxTHmTHRB1YnngqZk7L2KA3l/GLuk9K3pXCPBXSM1VVi0OH?=
+ =?us-ascii?Q?mCr9zVPpRHSXO4Bbh2Pgz53JrMJH8cBff7cmKRcttYjxvbc27rhqTqyoguIg?=
+ =?us-ascii?Q?bPley7eFnkCGFaRzldz67Yb9Cd3PaibUxOb7tttTYGQLlQOXkkp9g+VvFwCY?=
+ =?us-ascii?Q?mjDswenX+xddCqPvK7Fn+m1OUDZY6JdE3SC486gUZQZ+77jcvUJKi8JBiGyr?=
+ =?us-ascii?Q?4+4sUbZYOHdUsFWOc2yNHXCk2MC7924AzYZWaObHNn7gmFQu/uX/X39bPjNo?=
+ =?us-ascii?Q?QhTzkahsveOKqQF56xLflmy00IVd8v/v/AgAADe3NE1eCgFOFMswwQguJ+Zg?=
+ =?us-ascii?Q?9Ju8jUjQjvoh82qasVeqlCs4wup4WLaXxKZuybWq3LX+OFwKZatW4UhEsIub?=
+ =?us-ascii?Q?ZTqkOleMkrk//KerWK8fZcSVf/qbRxGHzEcAqaURiTulM2IOpSBhHZ95taWR?=
+ =?us-ascii?Q?KEXZPwmtAc7JeC5QYZDcC2vdJ9SAGoUeXhcY4IIqy07rUR8j4cb7kpUIbWfs?=
+ =?us-ascii?Q?ll861JSTKvjAq0S67brNnDcsL9yzP3PQF8fPFHgkZllvouDOULVvKkTX047R?=
+ =?us-ascii?Q?EJzxl2swlExDL/qGax4Z+4jSwGNx1H9e+wmpGXXr?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a02:ac14:0:b0:38a:9b13:b92d with SMTP id
- a20-20020a02ac14000000b0038a9b13b92dmr2764806jao.265.1672791586966; Tue, 03
- Jan 2023 16:19:46 -0800 (PST)
-Date:   Tue, 03 Jan 2023 16:19:46 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005315c105f1652480@google.com>
-Subject: [syzbot] possible deadlock in rds_message_put
-From:   syzbot <syzbot+f9db6ff27b9bfdcfeca0@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, jasowang@redhat.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, mst@redhat.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, rds-devel@oss.oracle.com,
-        santosh.shilimkar@oracle.com, syzkaller-bugs@googlegroups.com,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0029.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1adf22c4-7e7f-46c4-2fdb-08daede99863
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2023 00:21:16.5677
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pEaAtKpKjbbqA5beZdVsmOo1gSWOaUDtHOpwvpPMSDI35vI27vjjyAILfeLI4ADmWCWq27rjNEHMqZxOOnypzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6125
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+> Subject: RE: [PATCHv2 1/1] RDMA/irdma: Add support for dmabuf pin memory
+> regions
+>=20
 
-HEAD commit:    c183e6c3ec34 Merge git://git.kernel.org/pub/scm/linux/kern..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1161aa7c480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8ca07260bb631fb4
-dashboard link: https://syzkaller.appspot.com/bug?extid=f9db6ff27b9bfdcfeca0
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1370b478480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ab141a480000
+[......]
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9b693820fb05/disk-c183e6c3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e449d80e60dc/vmlinux-c183e6c3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/08e31763ce79/bzImage-c183e6c3.xz
+> > +
+> > +	switch (req.reg_type) {
+> > +	case IRDMA_MEMREG_TYPE_QP:
+> > +		total =3D req.sq_pages + req.rq_pages + shadow_pgcnt;
+> > +		if (total > iwmr->page_cnt) {
+> > +			err =3D -EINVAL;
+> > +			goto error;
+> > +		}
+> > +		total =3D req.sq_pages + req.rq_pages;
+> > +		use_pbles =3D (total > 2);
+> > +		err =3D irdma_handle_q_mem(iwdev, &req, iwpbl, use_pbles);
+> > +		if (err)
+> > +			goto error;
+> > +
+> > +		ucontext =3D rdma_udata_to_drv_context(udata, struct
+> > irdma_ucontext,
+> > +						     ibucontext);
+> > +		spin_lock_irqsave(&ucontext->qp_reg_mem_list_lock, flags);
+> > +		list_add_tail(&iwpbl->list, &ucontext->qp_reg_mem_list);
+> > +		iwpbl->on_list =3D true;
+> > +		spin_unlock_irqrestore(&ucontext->qp_reg_mem_list_lock, flags);
+> > +		break;
+> > +	case IRDMA_MEMREG_TYPE_CQ:
+> > +		if (iwdev->rf->sc_dev.hw_attrs.uk_attrs.feature_flags &
+> > IRDMA_FEATURE_CQ_RESIZE)
+> > +			shadow_pgcnt =3D 0;
+> > +		total =3D req.cq_pages + shadow_pgcnt;
+> > +		if (total > iwmr->page_cnt) {
+> > +			err =3D -EINVAL;
+> > +			goto error;
+> > +		}
+> > +
+> > +		use_pbles =3D (req.cq_pages > 1);
+> > +		err =3D irdma_handle_q_mem(iwdev, &req, iwpbl, use_pbles);
+> > +		if (err)
+> > +			goto error;
+> > +
+> > +		ucontext =3D rdma_udata_to_drv_context(udata, struct
+> > irdma_ucontext,
+> > +						     ibucontext);
+> > +		spin_lock_irqsave(&ucontext->cq_reg_mem_list_lock, flags);
+> > +		list_add_tail(&iwpbl->list, &ucontext->cq_reg_mem_list);
+> > +		iwpbl->on_list =3D true;
+> > +		spin_unlock_irqrestore(&ucontext->cq_reg_mem_list_lock, flags);
+> > +		break;
+>=20
+> I don't think we want to do this for user QP, CQ pinned memory. In fact, =
+it will just
+> be dead-code.
+>=20
+> The irdma provider implementation of the ibv_reg_dmabuf_mr will just defa=
+ult to
+> IRDMA_MEMREG_TYPE_MEM type similar to how irdma_ureg_mr is implemented.
+>=20
+> https://github.com/linux-rdma/rdma-
+> core/blob/master/providers/irdma/uverbs.c#L128
+>=20
+> It should simplify this function a lot.
+>=20
+>=20
 
-The issue was bisected to:
+Actually I don't see a need even to use the irdma_mem_reg_req ABI struct to=
+ pass any info from user-space like reg_type.
 
-commit 1628c6877f371194b603330c324828d03e0eacda
-Author: Jason Wang <jasowang@redhat.com>
-Date:   Mon Jan 4 06:55:02 2021 +0000
+Shiraz
 
-    virtio_vdpa: don't warn when fail to disable vq
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1479f7da480000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1679f7da480000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1279f7da480000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f9db6ff27b9bfdcfeca0@syzkaller.appspotmail.com
-Fixes: 1628c6877f37 ("virtio_vdpa: don't warn when fail to disable vq")
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.1.0-syzkaller-11778-gc183e6c3ec34 #0 Not tainted
-------------------------------------------------------
-syz-executor390/18169 is trying to acquire lock:
-ffff8880763af100 (&rm->m_rs_lock){..-.}-{2:2}, at: rds_message_purge net/rds/message.c:138 [inline]
-ffff8880763af100 (&rm->m_rs_lock){..-.}-{2:2}, at: rds_message_put+0x1dd/0xc20 net/rds/message.c:180
-
-but task is already holding lock:
-ffff88802afafa70 (&rs->rs_recv_lock){...-}-{2:2}, at: rds_clear_recv_queue+0x33/0x350 net/rds/recv.c:761
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&rs->rs_recv_lock){...-}-{2:2}:
-       __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:160 [inline]
-       _raw_read_lock_irqsave+0x49/0x90 kernel/locking/spinlock.c:236
-       rds_wake_sk_sleep+0x23/0xe0 net/rds/af_rds.c:109
-       rds_send_remove_from_sock+0xb9/0x9e0 net/rds/send.c:634
-       rds_send_path_drop_acked+0x2f3/0x3d0 net/rds/send.c:710
-       rds_tcp_write_space+0x1b5/0x690 net/rds/tcp_send.c:198
-       tcp_new_space net/ipv4/tcp_input.c:5483 [inline]
-       tcp_check_space+0x11b/0x810 net/ipv4/tcp_input.c:5502
-       tcp_data_snd_check net/ipv4/tcp_input.c:5511 [inline]
-       tcp_rcv_established+0x93e/0x2230 net/ipv4/tcp_input.c:6019
-       tcp_v4_do_rcv+0x670/0x9b0 net/ipv4/tcp_ipv4.c:1721
-       sk_backlog_rcv include/net/sock.h:1113 [inline]
-       __release_sock+0x133/0x3b0 net/core/sock.c:2928
-       release_sock+0x58/0x1b0 net/core/sock.c:3485
-       rds_send_xmit+0xafc/0x2540 net/rds/send.c:422
-       rds_sendmsg+0x27d3/0x3080 net/rds/send.c:1381
-       sock_sendmsg_nosec net/socket.c:714 [inline]
-       sock_sendmsg+0xd3/0x120 net/socket.c:734
-       __sys_sendto+0x23a/0x340 net/socket.c:2117
-       __do_sys_sendto net/socket.c:2129 [inline]
-       __se_sys_sendto net/socket.c:2125 [inline]
-       __x64_sys_sendto+0xe1/0x1b0 net/socket.c:2125
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #0 (&rm->m_rs_lock){..-.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3097 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3216 [inline]
-       validate_chain kernel/locking/lockdep.c:3831 [inline]
-       __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
-       lock_acquire kernel/locking/lockdep.c:5668 [inline]
-       lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
-       rds_message_purge net/rds/message.c:138 [inline]
-       rds_message_put+0x1dd/0xc20 net/rds/message.c:180
-       rds_inc_put net/rds/recv.c:82 [inline]
-       rds_inc_put+0x13e/0x1a0 net/rds/recv.c:76
-       rds_clear_recv_queue+0x14b/0x350 net/rds/recv.c:767
-       rds_release+0xd8/0x3c0 net/rds/af_rds.c:73
-       __sock_release+0xcd/0x280 net/socket.c:650
-       sock_close+0x1c/0x20 net/socket.c:1365
-       __fput+0x27c/0xa90 fs/file_table.c:320
-       task_work_run+0x16f/0x270 kernel/task_work.c:179
-       resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
-       exit_to_user_mode_prepare+0x23c/0x250 kernel/entry/common.c:203
-       __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
-       syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
-       do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&rs->rs_recv_lock);
-                               lock(&rm->m_rs_lock);
-                               lock(&rs->rs_recv_lock);
-  lock(&rm->m_rs_lock);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor390/18169:
- #0: ffff8880719a3210 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:756 [inline]
- #0: ffff8880719a3210 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: __sock_release+0x86/0x280 net/socket.c:649
- #1: ffff88802afafa70 (&rs->rs_recv_lock){...-}-{2:2}, at: rds_clear_recv_queue+0x33/0x350 net/rds/recv.c:761
-
-stack backtrace:
-CPU: 0 PID: 18169 Comm: syz-executor390 Not tainted 6.1.0-syzkaller-11778-gc183e6c3ec34 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2177
- check_prev_add kernel/locking/lockdep.c:3097 [inline]
- check_prevs_add kernel/locking/lockdep.c:3216 [inline]
- validate_chain kernel/locking/lockdep.c:3831 [inline]
- __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5055
- lock_acquire kernel/locking/lockdep.c:5668 [inline]
- lock_acquire+0x1e3/0x630 kernel/locking/lockdep.c:5633
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
- rds_message_purge net/rds/message.c:138 [inline]
- rds_message_put+0x1dd/0xc20 net/rds/message.c:180
- rds_inc_put net/rds/recv.c:82 [inline]
- rds_inc_put+0x13e/0x1a0 net/rds/recv.c:76
- rds_clear_recv_queue+0x14b/0x350 net/rds/recv.c:767
- rds_release+0xd8/0x3c0 net/rds/af_rds.c:73
- __sock_release+0xcd/0x280 net/socket.c:650
- sock_close+0x1c/0x20 net/socket.c:1365
- __fput+0x27c/0xa90 fs/file_table.c:320
- task_work_run+0x16f/0x270 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x23c/0x250 kernel/entry/common.c:203
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:296
- do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f4a3a75f5fb
-Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 03 fd ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 41 fd ff ff 8b 44
-RSP: 002b:00007ffff26fde60 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000005 RCX: 00007f4a3a75f5fb
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
-RBP: 0000000000000032 R08: 0000000000000000 R09: 00007f4a3a7f51ae
-R10: 0000000000000000 R11: 0000000000000293 R12: 00007f4a3a8284ec
-R13: 00007ffff26fdeb0 R14: 00007ffff26fded0 R15: 00007ffff26fdf40
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
