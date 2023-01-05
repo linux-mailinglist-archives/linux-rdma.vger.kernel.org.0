@@ -2,190 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B0E65F6D4
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jan 2023 23:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAEA65F6E7
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jan 2023 23:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236068AbjAEWcy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Jan 2023 17:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
+        id S236176AbjAEWgt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Jan 2023 17:36:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236192AbjAEWcf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Jan 2023 17:32:35 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEC213D5E
-        for <linux-rdma@vger.kernel.org>; Thu,  5 Jan 2023 14:32:34 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id g20so18176569pfb.3
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Jan 2023 14:32:34 -0800 (PST)
+        with ESMTP id S236159AbjAEWgr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Jan 2023 17:36:47 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B838F1B1DF
+        for <linux-rdma@vger.kernel.org>; Thu,  5 Jan 2023 14:36:45 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id jn22so40813556plb.13
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Jan 2023 14:36:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RMspBu+uWa9sfLmLyUJ/wSTZmKLpqqXkwp6DWYRYmTM=;
-        b=ZzyGzoeKKvZaoMdQYk9/JEb/R0fTMTl8jdxKSg3s6JKyfR79CnB4sS8bEQ0ONL6UQB
-         YBcEnGw41a+iNz23j6xzSeW7vrD1JAOeqwfntUXzII3h4d96KHoVSc/4Kb16WiQKOAvq
-         HUM40kmHERgBRNXvQuc2zDBkmB/8ypXu6eaE8=
+        bh=vTnS8YGkz+TFlaH5VylWTT81FwP8SacJ4LHArMeisg0=;
+        b=Od3RSE6LiX0RDr6NqBn7rCVN/9DDDXs0q+tdT8jFQncP6Urx8T2WMJHv89zDyEDp7O
+         4gyuEjWhxh3h7/iqTPH5ceEQX64JBhrM5b5kHvdfaEVQ9hRdLJRNOppjlomjTaI3BIGf
+         w+3D8bNOlw2KFUDHvYyOVXVe4LphI3IDQbgjc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RMspBu+uWa9sfLmLyUJ/wSTZmKLpqqXkwp6DWYRYmTM=;
-        b=TsmXOrUjlxCCK70oE9i4UK5eKnBhaFacJy7NR9YT2klxYXMxaGDrVyOGEfGwsXfp2b
-         u9ijFRFjRUMSx27C9sqbrzQnyqm5TcvVs4p3XEiURrMfedFYOq1HrA+hpTgAIq+hvT4b
-         oDQcMwOf9jk1KIZT7oNv49C8GCSsJqIz3vKIXiagMio9ViY2TvhJAMYJwSKxQklWkmvO
-         KIn8DYVT0I7ZFEwQCstHi1BoUD2sn/jODu+8MIRjp9iGxk+1FDA3xDilM8tv/6EXOLBL
-         dvK42WtsrLL2bAAXUiLiPhD9BJMmOisyUd5DrBEEZ8jWOTMjxfoa7M0vaFWYZV+CtDxY
-         gbQg==
-X-Gm-Message-State: AFqh2koE+a+Gn4dNI067IreJ5NoXGtrdR0D+2SQ6b162QNGxnh4uBhXF
-        1zzv88CuEHpND7UMiHiE+o02Dg==
-X-Google-Smtp-Source: AMrXdXsqq4Mi747oUWhsFhMpsCCbXt0HvHTAJ74J9uJiiSUwowl84oG/P6DbQxUEysWYLcBj9mSczg==
-X-Received: by 2002:a62:1a51:0:b0:581:d46a:343a with SMTP id a78-20020a621a51000000b00581d46a343amr25696694pfa.18.1672957954467;
-        Thu, 05 Jan 2023 14:32:34 -0800 (PST)
+        bh=vTnS8YGkz+TFlaH5VylWTT81FwP8SacJ4LHArMeisg0=;
+        b=bA+zIH/eqHDeSIq9Sl56+okNmpX1Q7c+hTtgcTx6kLXiXbPUCXxJRhYlR+01UqiV0W
+         OHNu+giCvBUe5AVNzfhsrNnLxRql9bsk8RqfrP8kdbTaLHJOrx3EgiiscF6zKRUrszfC
+         yHsFddkQ+1+/fjJ2c18sP6YnMzVNslZysSqwSoyVeI81pft5tLtm3pwyl32kIy601xvw
+         u4MewRbsvgFu70/iwI11SUBE7bXm7MHhDIQ3PKyA1w2/zrlh+8c/xT3zZFin3OPq/oGs
+         5naVCtDwBM9h6gPppKknQwE3UeG1XaHmpstARov4r22n7xgcy567P0zVLNxuYTmYgYwy
+         bCEw==
+X-Gm-Message-State: AFqh2koCFnSd/FNl+99vXOma9CRLwT74o+JPHsqvFQd+o/kheyX1S9fd
+        Pi3bcuIPXqsQKzgGjGg9CSPImw==
+X-Google-Smtp-Source: AMrXdXux9e5NuZPpnskqtYB+XoAQpaU8Ilr5HfAMj1CxdM9IDVskpvaO076O8SqFOoZhA8EsUBypdw==
+X-Received: by 2002:a17:902:f08a:b0:189:efe8:1e with SMTP id p10-20020a170902f08a00b00189efe8001emr51337863pla.68.1672958205276;
+        Thu, 05 Jan 2023 14:36:45 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x74-20020a62864d000000b0058217bbc6f5sm11470796pfd.215.2023.01.05.14.32.33
+        by smtp.gmail.com with ESMTPSA id a11-20020a63e40b000000b00478ca052819sm22392159pgi.47.2023.01.05.14.36.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jan 2023 14:32:34 -0800 (PST)
+        Thu, 05 Jan 2023 14:36:44 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
-To:     Potnuri Bharat Teja <bharat@chelsio.com>
-Cc:     Kees Cook <keescook@chromium.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+To:     Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Kees Cook <keescook@chromium.org>,
         Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] RDMA/cxgb4: Replace 0-length arrays with flexible arrays
-Date:   Thu,  5 Jan 2023 14:32:32 -0800
-Message-Id: <20230105223225.never.252-kees@kernel.org>
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] net/mlx5e: Replace 0-length array with flexible array
+Date:   Thu,  5 Jan 2023 14:36:43 -0800
+Message-Id: <20230105223642.never.980-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3478; h=from:subject:message-id; bh=dxMDzsMc6oaxPr4Do5C0Wr2AT/H+H0SzXI+dU/p0IOo=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjt1AA6TRACNi/UTQWnJlFJAmhMJxt1Q/q61h8WXc3 5MfFzMqJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY7dQAAAKCRCJcvTf3G3AJjVaD/ 9JTizo/XmwroMPtX6agewL84FuMweJSgXJ/ngjmZqAvjA4oSofA1pqyp6qjaTkS7Ffi97TBUNKh731 qz9L0CmgSdP0hBnpfosBkNgfM5pO2u+ag48S3IfVZeg7VsLTTVZp04S2OamHaMqESexB39eRz0uIh8 dcGypx0LM5c6nxKDc5xRL6BnMUiCCiJeHtd/IVQuOZb3yNZoxeIUsHHQoreTaxorIm52+u5eG0bAEJ PRqXLoHf2rbQR3MuRnvASk9NxmIXnL1X+uNshx/DDixHa47N5acBqgPOzz68JBvXVP9SBUCjpjgQce lIuze1Nl9AJB8B4D8ldabt89DnJM7+SHgdm1MWvoi6CRqdzNtvdez7GI4P0pduHVryotdSUjkXjGfQ uwBdIPmBsiE06weLdk1sZD6/sDbB2Ly/8MZBG0ZQqMicHPkJAbuKPgLcOjUxNrpMFemTcWatisk3hH O9d2LDnrcdn3ruLoUyvN5XhiuxK9qdoY0JKyLNfcxBgnHtvN3IZOyAADW13W1hQOZ9E3MtrGwVG867 8sGHv9T6Ph6OtZJWHdcwvI762jAWfFy55Cg2OUCBlko0lKcrVCANTNU94drHuN7dBbFHV3PF16DS2U TikaXuZ026+s1VSX3/FrNaVB4vyaK2bjIONqe8znqyMKfK0n+l3YFgm+IKtg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2058; h=from:subject:message-id; bh=z9zLbe924cMlc9bCRVzAk3TMTpuiLHM3ITNjTKxLEL0=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjt1D68KpUigmLbVjgVr7qwolklCRIkWm8FyY1lEal zrIwQ0OJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY7dQ+gAKCRCJcvTf3G3AJszwD/ 40sd9lxHmJk2Jotmcy0c7sImQsz4M/iSxCz1Jpo1Acu/9tBXHYG1WSg/JM6HXMs25zbP83WqwZz0ta ScdPosftzA9wgmMXb8/vXf5cULI/T6DCXW0ZjMmLqmCK/rwtV3r7z6oheW3142vbpRV16KcUPEG3cd I4F56O0hNGAOds3VxCtoqEVp7piVlUf8dB0bVyBEmFpdaXdPqRdyAOwEq3YODbu6OA/FoiGnHHpg3I ydu80/WoZOPdRL6PkOS3k+bHThq6R5S3STEcXo1ZzL3p9pg5gO2oD73XIWp+O+5oEdQ44XJ5IeQlRB C83oU0jwWetg8xUaErm2gxRVENDxW7kkm3f9H5ua/0O0HqjXbIWmIGe/IW/U7zAS7n0LJihh/aarM5 eBN190UCobxYYRfBwBgDKNaOhyVpdGloA2ctVsKl73uBOYVh22Uiyxdf1kTHlq8jdZXHY4F7c3lcnx V3hmmqzjd9J5X1mX2UixvWWgYi2tElBFI6QWnp826wGAbGWWmo2k/Az3EuzS6KU9Zigo49zT2DPfV2 pCcEPuUsbIXEii75tbJ+5iL0Drqc9BeOHZengIsBO37yKw0hkbNI8ICcqNhFpUR2Y7lvFAOQ2eJy9+ TWP/koLD8R1zAvnL6ic+lKbJeF13un/q+KpvgSiiUvs1+7ynM31ceE79ROkg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Zero-length arrays are deprecated[1]. Replace all remaining
-0-length arrays with flexible arrays. Detected with GCC 13, using
--fstrict-flex-arrays=3:
+Zero-length arrays are deprecated[1]. Replace struct mlx5e_rx_wqe_cyc's
+"data" 0-length array with a flexible array. Detected with GCC 13,
+using -fstrict-flex-arrays=3:
 
-In function 'build_rdma_write',
-    inlined from 'c4iw_post_send' at ../drivers/infiniband/hw/cxgb4/qp.c:1173:10:
-../drivers/infiniband/hw/cxgb4/qp.c:597:38: warning: array subscript 0 is outside array bounds of 'struct fw_ri_immd[0]' [-Warray-bounds=]
-  597 |                 wqe->write.u.immd_src[0].r2 = 0;
-      |                 ~~~~~~~~~~~~~~~~~~~~~^~~
-../drivers/infiniband/hw/cxgb4/t4fw_ri_api.h: In function 'c4iw_post_send':
-../drivers/infiniband/hw/cxgb4/t4fw_ri_api.h:567:35: note: while referencing 'immd_src'
-  567 |                 struct fw_ri_immd immd_src[0];
-      |                                   ^~~~~~~~
-
-Additionally drop the unused C99_NOT_SUPPORTED ifndef lines.
+drivers/net/ethernet/mellanox/mlx5/core/en_main.c: In function 'mlx5e_alloc_rq':
+drivers/net/ethernet/mellanox/mlx5/core/en_main.c:827:42: warning: array subscript f is outside array bounds of 'struct mlx5_wqe_data_seg[0]' [-Warray-bounds=]
+  827 |                                 wqe->data[f].byte_count = 0;
+      |                                 ~~~~~~~~~^~~
+In file included from drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.h:11,
+                 from drivers/net/ethernet/mellanox/mlx5/core/eswitch.h:48,
+                 from drivers/net/ethernet/mellanox/mlx5/core/en_main.c:42:
+drivers/net/ethernet/mellanox/mlx5/core/en.h:250:39: note: while referencing 'data'
+  250 |         struct mlx5_wqe_data_seg      data[0];
+      |                                       ^~~~
 
 [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays
 
-Cc: Potnuri Bharat Teja <bharat@chelsio.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Saeed Mahameed <saeedm@nvidia.com>
 Cc: Leon Romanovsky <leon@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
 Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: netdev@vger.kernel.org
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/infiniband/hw/cxgb4/t4fw_ri_api.h | 26 ++++++-----------------
- 1 file changed, 6 insertions(+), 20 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/t4fw_ri_api.h b/drivers/infiniband/hw/cxgb4/t4fw_ri_api.h
-index a2f5e29ef226..1f79537fc8d1 100644
---- a/drivers/infiniband/hw/cxgb4/t4fw_ri_api.h
-+++ b/drivers/infiniband/hw/cxgb4/t4fw_ri_api.h
-@@ -122,9 +122,7 @@ struct fw_ri_dsgl {
- 	__be16	nsge;
- 	__be32	len0;
- 	__be64	addr0;
--#ifndef C99_NOT_SUPPORTED
- 	struct fw_ri_dsge_pair sge[];
--#endif
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index 2d77fb8a8a01..37cf3b1bb144 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -247,7 +247,7 @@ struct mlx5e_rx_wqe_ll {
  };
  
- struct fw_ri_sge {
-@@ -138,9 +136,7 @@ struct fw_ri_isgl {
- 	__u8	r1;
- 	__be16	nsge;
- 	__be32	r2;
--#ifndef C99_NOT_SUPPORTED
- 	struct fw_ri_sge sge[];
--#endif
+ struct mlx5e_rx_wqe_cyc {
+-	struct mlx5_wqe_data_seg      data[0];
++	DECLARE_FLEX_ARRAY(struct mlx5_wqe_data_seg, data);
  };
  
- struct fw_ri_immd {
-@@ -148,9 +144,7 @@ struct fw_ri_immd {
- 	__u8	r1;
- 	__be16	r2;
- 	__be32	immdlen;
--#ifndef C99_NOT_SUPPORTED
- 	__u8	data[];
--#endif
- };
- 
- struct fw_ri_tpte {
-@@ -320,9 +314,7 @@ struct fw_ri_res_wr {
- 	__be32 op_nres;
- 	__be32 len16_pkd;
- 	__u64  cookie;
--#ifndef C99_NOT_SUPPORTED
- 	struct fw_ri_res res[];
--#endif
- };
- 
- #define FW_RI_RES_WR_NRES_S	0
-@@ -562,12 +554,10 @@ struct fw_ri_rdma_write_wr {
- 	__be32 plen;
- 	__be32 stag_sink;
- 	__be64 to_sink;
--#ifndef C99_NOT_SUPPORTED
- 	union {
--		struct fw_ri_immd immd_src[0];
--		struct fw_ri_isgl isgl_src[0];
-+		DECLARE_FLEX_ARRAY(struct fw_ri_immd, immd_src);
-+		DECLARE_FLEX_ARRAY(struct fw_ri_isgl, isgl_src);
- 	} u;
--#endif
- };
- 
- struct fw_ri_send_wr {
-@@ -581,12 +571,10 @@ struct fw_ri_send_wr {
- 	__be32 plen;
- 	__be32 r3;
- 	__be64 r4;
--#ifndef C99_NOT_SUPPORTED
- 	union {
--		struct fw_ri_immd immd_src[0];
--		struct fw_ri_isgl isgl_src[0];
-+		DECLARE_FLEX_ARRAY(struct fw_ri_immd, immd_src);
-+		DECLARE_FLEX_ARRAY(struct fw_ri_isgl, isgl_src);
- 	} u;
--#endif
- };
- 
- #define FW_RI_SEND_WR_SENDOP_S		0
-@@ -618,12 +606,10 @@ struct fw_ri_rdma_write_cmpl_wr {
- 		struct fw_ri_isgl isgl_src;
- 	} u_cmpl;
- 	__be64 r3;
--#ifndef C99_NOT_SUPPORTED
- 	union fw_ri_write {
--		struct fw_ri_immd immd_src[0];
--		struct fw_ri_isgl isgl_src[0];
-+		DECLARE_FLEX_ARRAY(struct fw_ri_immd, immd_src);
-+		DECLARE_FLEX_ARRAY(struct fw_ri_isgl, isgl_src);
- 	} u;
--#endif
- };
- 
- struct fw_ri_rdma_read_wr {
+ struct mlx5e_umr_wqe {
 -- 
 2.34.1
 
