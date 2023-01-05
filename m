@@ -2,163 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E99BD65DE09
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jan 2023 22:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 894F065E497
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jan 2023 05:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240210AbjADVGd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Jan 2023 16:06:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52732 "EHLO
+        id S230407AbjAEESy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Jan 2023 23:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240289AbjADVGP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Jan 2023 16:06:15 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85741CB2B
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Jan 2023 13:06:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1672866374; x=1704402374;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zoyyn0EhvaAADCDIHizml6ytfcWyNNMmaGghEYuqrko=;
-  b=WpZXbshHCuOELPBivdlUoEOYD+nr3SQccL6fH0lhAGEGFBYlZeOr/TTw
-   P5h5hJLO0mNt4bdYJjjYQYxmp2j/p2b8WAD8rahPnqZlqVXGoekgbVPVt
-   xhcmEgisa+y4GBP3qdAsZiy5FW6W5bYTt5R3ckDlptzXoXxWKFXxXpVpH
-   uIX/WYFdG+KyrBZCeQja3mPVpuAoKl06Lf4XnqQWuFY1lBBaH2lTXF22P
-   D82VKylUIMGIGHAJZJ6rwaaki//nVe1v9/eotdZ871Wvg6Y5f8xKborcr
-   gjyRKwGA9LPAMWzI8rnUvsLDnytjrrM0vLQG/v4df7/mA0HKb5fNjTKRK
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10580"; a="349265173"
-X-IronPort-AV: E=Sophos;i="5.96,301,1665471600"; 
-   d="scan'208";a="349265173"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2023 13:06:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10580"; a="829287600"
-X-IronPort-AV: E=Sophos;i="5.96,301,1665471600"; 
-   d="scan'208";a="829287600"
-Received: from lkp-server02.sh.intel.com (HELO f1920e93ebb5) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 04 Jan 2023 13:06:10 -0800
-Received: from kbuild by f1920e93ebb5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pDAxe-0000mF-0i;
-        Wed, 04 Jan 2023 21:06:10 +0000
-Date:   Thu, 05 Jan 2023 05:05:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- bd99ede8ef2dc03e29a181b755ba4f78da2644e6
-Message-ID: <63b5ea14.7TdXbGgX5zJzJFSF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S230291AbjAEES0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Jan 2023 23:18:26 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B063D9D5;
+        Wed,  4 Jan 2023 20:18:15 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6C7C9B8198C;
+        Thu,  5 Jan 2023 04:18:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A82AC433EF;
+        Thu,  5 Jan 2023 04:18:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672892293;
+        bh=kkJDa+a0mL5jZf4N8yRY6oImqyNPWCQcQMcccP2bC98=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GV3zsEOyUS3TqbJBxe31iEHb+q749l9ESez1W35/kp766inmGp4MkGmkm+ytL5Bh2
+         BSYJA9D0C+x8uO5WVAjP83Gk1b+eUyjs8lgoKyxiYNi87DgfWqoFsqH2Vy2ndANns0
+         95XsHycqYYNBs0/bIx8XPrjYJv7NkTxUKTVrAUYhdJX0OqTq/myVNr4vxgx2bItVnK
+         IRLEYPhBqs3UrI57AvqTWc81HY9+d/zn9wb09PDSw0G2rVOFq/O/wAKzOok1sgA/Cz
+         SCbSnhpUUDZWBM77yaXoqL3DkgF2rb/R2ZOkb4LJxKTsDfGEE7Vjaike/K0JYfUPqf
+         6gMIvRtWkHgUA==
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH mlx5-next 0/8] mlx5 IPsec RoCEv2 support and netdev events fixes in RDMA
+Date:   Wed,  4 Jan 2023 20:17:48 -0800
+Message-Id: <20230105041756.677120-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: bd99ede8ef2dc03e29a181b755ba4f78da2644e6  RDMA/irdma: Remove extra ret variable in favor of existing err
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-elapsed time: 722m
+This series includes mlx5 modifications for both net-next and
+rdma-next trees.
 
-configs tested: 80
-configs skipped: 2
+In case of no objections, this series will be applied to net-mlx5 branch
+first then sent in PR to both rdma and net trees.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+1) From Jiri: fixe a deadlock in mlx5_ib's netdev notifier unregister.
+2) From Mark and Patrisious: add IPsec RoCEv2 support.
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-alpha                            allyesconfig
-arc                                 defconfig
-arc                              allyesconfig
-s390                             allmodconfig
-alpha                               defconfig
-x86_64                            allnoconfig
-s390                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-s390                             allyesconfig
-ia64                             allmodconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-x86_64               randconfig-a004-20230102
-x86_64                              defconfig
-x86_64               randconfig-a002-20230102
-x86_64               randconfig-a003-20230102
-x86_64                           rhel-8.3-bpf
-x86_64               randconfig-a001-20230102
-i386                          randconfig-a005
-i386                                defconfig
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-x86_64               randconfig-a006-20230102
-x86_64               randconfig-a005-20230102
-x86_64                           rhel-8.3-kvm
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-powerpc                           allnoconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                          rhel-8.3-func
-mips                             allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-powerpc                          allmodconfig
-i386                             allyesconfig
-sh                               allmodconfig
-arm64                            allyesconfig
-riscv                randconfig-r042-20230101
-s390                 randconfig-r044-20230101
-arc                  randconfig-r043-20230102
-arm                  randconfig-r046-20230102
-arc                  randconfig-r043-20230101
-i386                 randconfig-a005-20230102
-i386                 randconfig-a006-20230102
-i386                 randconfig-a001-20230102
-i386                 randconfig-a002-20230102
-i386                 randconfig-a003-20230102
-i386                 randconfig-a004-20230102
-i386                          randconfig-c001
-powerpc              randconfig-c003-20230101
-s390                 randconfig-r044-20230103
-arc                  randconfig-r043-20230103
-riscv                randconfig-r042-20230103
+Thanks,
+Saeed.
 
-clang tested configs:
-i386                 randconfig-a012-20230102
-i386                 randconfig-a011-20230102
-i386                 randconfig-a014-20230102
-i386                 randconfig-a013-20230102
-i386                 randconfig-a015-20230102
-i386                 randconfig-a016-20230102
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-x86_64                          rhel-8.3-rust
-hexagon              randconfig-r041-20230102
-s390                 randconfig-r044-20230102
-hexagon              randconfig-r045-20230101
-hexagon              randconfig-r045-20230102
-arm                  randconfig-r046-20230101
-riscv                randconfig-r042-20230102
-hexagon              randconfig-r041-20230101
-x86_64               randconfig-a011-20230102
-x86_64               randconfig-a014-20230102
-x86_64               randconfig-a012-20230102
-x86_64               randconfig-a013-20230102
-x86_64               randconfig-a015-20230102
-x86_64               randconfig-a016-20230102
-x86_64                        randconfig-k001
+Jiri Pirko (3):
+  net/mlx5e: Fix trap event handling
+  net/mlx5e: Propagate an internal event in case uplink netdev changes
+  RDMA/mlx5: Track netdev to avoid deadlock during netdev notifier
+    unregister
+
+Mark Zhang (4):
+  net/mlx5: Implement new destination type TABLE_TYPE
+  net/mlx5: Add IPSec priorities in RDMA namespaces
+  net/mlx5: Configure IPsec steering for ingress RoCEv2 traffic
+  net/mlx5: Configure IPsec steering for egress RoCEv2 traffic
+
+Patrisious Haddad (1):
+  net/mlx5: Introduce new destination type TABLE_TYPE
+
+ drivers/infiniband/hw/mlx5/main.c             |  78 ++--
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   3 +
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   9 +-
+ .../net/ethernet/mellanox/mlx5/core/devlink.h |   5 +
+ .../mellanox/mlx5/core/diag/fs_tracepoint.c   |   4 +
+ .../net/ethernet/mellanox/mlx5/core/en/fs.h   |   1 +
+ .../mellanox/mlx5/core/en_accel/ipsec.h       |   1 +
+ .../mellanox/mlx5/core/en_accel/ipsec_fs.c    |  59 ++-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  15 +-
+ .../net/ethernet/mellanox/mlx5/core/events.c  |   2 +
+ .../net/ethernet/mellanox/mlx5/core/fs_cmd.c  |   6 +
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c |  44 ++-
+ .../mellanox/mlx5/core/lib/ipsec_fs_roce.c    | 372 ++++++++++++++++++
+ .../mellanox/mlx5/core/lib/ipsec_fs_roce.h    |  20 +
+ .../ethernet/mellanox/mlx5/core/lib/mlx5.h    |   5 -
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  20 +
+ include/linux/mlx5/device.h                   |   1 +
+ include/linux/mlx5/driver.h                   |   5 +
+ include/linux/mlx5/fs.h                       |   3 +
+ include/linux/mlx5/mlx5_ifc.h                 |  12 +-
+ 21 files changed, 614 insertions(+), 53 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/lib/ipsec_fs_roce.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/lib/ipsec_fs_roce.h
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.38.1
+
