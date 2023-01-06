@@ -2,161 +2,244 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C8F6605A0
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Jan 2023 18:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D22660676
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Jan 2023 19:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbjAFRYZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Jan 2023 12:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        id S231408AbjAFSjL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Jan 2023 13:39:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235674AbjAFRYQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Jan 2023 12:24:16 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2046.outbound.protection.outlook.com [40.107.243.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8167D1FD;
-        Fri,  6 Jan 2023 09:24:14 -0800 (PST)
+        with ESMTP id S230294AbjAFSjK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Jan 2023 13:39:10 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82167D9F5
+        for <linux-rdma@vger.kernel.org>; Fri,  6 Jan 2023 10:39:09 -0800 (PST)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 306H1jm3024530;
+        Fri, 6 Jan 2023 18:39:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=asobnc3M3bu8CqLDI7GBwFDxhKEpUHvb+YZdYrXfM9A=;
+ b=CXxDfOO8FSBJDikdoWVmxVinr8Mr72VIP/sgMuYU1GXpuTxN9jD3koIlkKvSUQePJg5Z
+ i42B0Wi2XSOkwLjDrRACKsAN1pf5Kp/Qj7U5m5HnH4hba90D5jIDkYAsy7vnnM2m5Waw
+ OiJRulNBlfZYagtpLwF7NmaUz1j2xYeHJfhG/t+vje6Hz7guoyHwhb49wmZTsMj44DKU
+ vV14/twhzjqXgb9jKRpAtraKz04pqW2PI3rsjqkgFAGdbS+P0v98tJ3Cqqe68IiCLuNF
+ uGk52Ilx+vWGyB+Wef4BF9PnJkW6ci7SZbsdfQ3p6RbvmxZrmgAiblWV6CG+osxGakKj /A== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3mtbv33ruk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Jan 2023 18:39:06 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 306IcwPD021198;
+        Fri, 6 Jan 2023 18:39:05 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2049.outbound.protection.outlook.com [104.47.74.49])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3mwevm73x2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Jan 2023 18:39:05 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eS4WQQpuFUVu0BIQ24Tne76BrkHarT20WNH5gB/5ZCjZ2L+s1EdaNDyOqch0er8vtw/9lToOafchyylBbZeuHv+RvAuM8duxVEGJ07Mz2fgG6tyiU0B60Z2MgHkorqOBoXDAMUhoicyK1JN3PbUpyUAfEC2lbMX6wSz9PDJyG7z8JXkc3wEWZWo/hXaW8MQVy8B1NPOVn6jf4MMiwHGFr0VwbXt+fqlRc2P8Jdto5J9qOE+mkt9VpjClLUIxsDNEsjVDa52k6a6V39smSUBd5IpOHEiQPO5YZT0HoPtrrwI7zv0fs8JjwtrpQ6SJl+geNwIuhJ6S6wbYEtmoN6yV0Q==
+ b=IkRqhVKeoXvwurUVbWPJBjFhLA0lyAk7JDTQmzFjx6fXN0mk2j6T1mg0yalz/SM//cnVp1+2AsGAKCWOxw2BEhNnzAgtjzhPjndJ4+vXhMQz8R681bCRSBAu/k/cYkz5YGnayA41q4aVjB2p5mCvRjGy+T6wS89fC4FpNZJEJtst4APyxEyVnTVkExJcBAIfXReT+IObVc62mD9Ullw8cweSojsKOOLWfcUgBF4GJWoUP0rnMZGPJ9PYDLn0xAzcweEhWKYD101wkb2wLKh+pDYcM5rNU8NsBlEjUB5KR+9ZdqU3GRvNKaeBvrbJ0KuLJcjtdqkXc5gn6qIESF4JXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nC8yyf2i/rJX4emyigWAVpCtFlGoeW7cDYHn+lLikTc=;
- b=f8Kz8Bfw5h9iCquFZM+HlJpSwJQF6rMLmXtlDFR350JAV+djauH7kN9fqYBRjQpwUPou3Miju5Kd+QZUIKRDc2jRcoYC8zlAqg7nEtD+4spvf+uLcyZfuM91Sl/zM+YXp5VjA7O55rKfckOTA2Plqc4YK2PCJfSXbxxtDt5BSRzq3oalIwiaGHZIXf3UqCmD5WyQj1jC8lnXyVncOcAR9MpoLC5NPcJDuqsKw3lmEYAXadBRPB7tHokA2rYPfD8vZkvkUdeU58SHYHX3wydiQM+EOFYnpEECVduqSc0UI3VLSfqmWo26YEMgnjBun5PpfoAjXcgWnpQrIp4MFhYFEw==
+ bh=asobnc3M3bu8CqLDI7GBwFDxhKEpUHvb+YZdYrXfM9A=;
+ b=h6qF7oBON9c04lVMjX5oQFS/9lEkWeLdouSshUVHZGGxm2F8gK1NY6aM+m8XtA/IL6wltJBGbzxGlGRZtz0KsOYTJb55KOKEFcaS8BTOMyRyh+sOAYPsAEOlowUQy+zvSzxaEV+6SAgbdwrdEmfqrnvaVgKVyBwdYaB55dYwKpGfieHsY2mY96M3908W5meD/sgzPhP5pGV2ZTJ5PCBHNLnE91724VyEuwvFLqI2Z0S874Ehc0d1suBQNkiUcxbfDY2lcRCFTJI4gWCpHAbKrstRJ5zQkLEB8qRxFH7ejlE1ky0Hdipz5EjB4NHazKeWu0qG4AvJli1vfoUAv6kYUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nC8yyf2i/rJX4emyigWAVpCtFlGoeW7cDYHn+lLikTc=;
- b=dy20YQ0zCwCUynL/UqFT3QUZ6wkH8WAP961E41nFNktXLo5DgWVcTZKTe7YDgLfdAcUIDLJPX/QE3pfrYPzi5jbiSj24JpPmIVKd23pD9DbbQr1F3gQlDH90P2a2V0kniP0DC7a1tpqk89VJ0Z6unmx9H8CUFWpaKHoJhUZsxjVoszhyGWwc6JizHnzZ1MAn1gnAnl5YNZwCu8cwxWx65d1H0hCipwIXGaU5bpWmVJc3qXQJBQGb+aChnmOEzrzYDcNzzbtLJOfTuoSV3asnKKxbYyVdkOA3BqmpbFOYVQbk4fxanA5qkSMXtI3qT1j7dwlWSkanKzhPKrArovVEtg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MW4PR12MB5601.namprd12.prod.outlook.com (2603:10b6:303:168::13) with
+ bh=asobnc3M3bu8CqLDI7GBwFDxhKEpUHvb+YZdYrXfM9A=;
+ b=lKks15ax4x0+kmiPvKCfL8VHIak56HOevDESzSKNnmDory3xiBBllBhwp7yVwSIAaOYfS6fn/1WlJ/TwN7V1p7a7zXhBW3iBTPPmuJ+A/2eWERRAZY6m9X/ijbrtYcD6VK2Xc7hKCrYoUTt+PRA+5Uwqjjd4NfXOFHD3eHXwwiQ=
+Received: from CO6PR10MB5634.namprd10.prod.outlook.com (2603:10b6:303:149::17)
+ by CO1PR10MB4561.namprd10.prod.outlook.com (2603:10b6:303:9d::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Fri, 6 Jan
- 2023 17:24:13 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.5944.019; Fri, 6 Jan 2023
- 17:24:12 +0000
-Date:   Fri, 6 Jan 2023 13:24:11 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        dri-devel@lists.freedesktop.org, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, nouveau@lists.freedesktop.org,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 1/8] iommu: Add a gfp parameter to iommu_map()
-Message-ID: <Y7hZOwerwljDKoQq@nvidia.com>
-References: <1-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
- <4fd1b194-29ef-621d-4059-a8336058f217@arm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4fd1b194-29ef-621d-4059-a8336058f217@arm.com>
-X-ClientProxiedBy: MN2PR12CA0004.namprd12.prod.outlook.com
- (2603:10b6:208:a8::17) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+ 2023 18:39:03 +0000
+Received: from CO6PR10MB5634.namprd10.prod.outlook.com
+ ([fe80::af6d:aa0c:3086:ad13]) by CO6PR10MB5634.namprd10.prod.outlook.com
+ ([fe80::af6d:aa0c:3086:ad13%9]) with mapi id 15.20.5944.019; Fri, 6 Jan 2023
+ 18:39:03 +0000
+Message-ID: <0757d1ae-334b-38ed-883d-f95b72dd04db@oracle.com>
+Date:   Fri, 6 Jan 2023 13:38:59 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+Subject: Re: buildlib/pandoc-prebuilt
+Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+References: <4c29b8d8-c4c8-a7ae-e1f9-ddce3b55d961@oracle.com>
+ <Y7TF8EK/PXiwKRwU@ziepe.ca> <612e156e-d8c7-ee17-430d-9d6d85427a3f@oracle.com>
+ <Y7W3dASpXM7/br4i@ziepe.ca> <Y7XIrX1E78KyfWud@unreal>
+ <3c924ffa-5f6c-4a88-85f3-7995e399fe86@oracle.com> <Y7Zl8k7F1gDNKE9q@unreal>
+From:   Mark Haywood <mark.haywood@oracle.com>
+In-Reply-To: <Y7Zl8k7F1gDNKE9q@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR10CA0011.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::16) To CO6PR10MB5634.namprd10.prod.outlook.com
+ (2603:10b6:303:149::17)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW4PR12MB5601:EE_
-X-MS-Office365-Filtering-Correlation-Id: a380c960-bbc3-4788-e1ef-08daf00ad407
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5634:EE_|CO1PR10MB4561:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9688253a-a557-4af2-f903-08daf01548b9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6qJH666CBhIW5tUF2AsyhSKgkkKCL7qQ+0QvpkGXxA5fosBL2pe5k3FzB+YXv22Q2GysE6xXwb1HuOzGxF+qXLaq+nXCQrFd4y/n1GxEk8+S0bp5z9AYM0xBOoKAYRNbd5PBTl0BT7ABQFgzk9OqAQX5tRnqsTsNUgBG0TB6XpeH2RH6klh8Cza8zimRZeiqwEfNkiY3aK2XlvkEJU3OBi1agbVr2x8o2xq1CGGL+CTyWuYyEAF8w4caTrGQGp4bPYE1xwnPc3b3DyeMDZnVgNbBJD+h3lD+VE60bntuYQaIzJqRiOtJI2ksLPU6h8vEggZPTmS1rG51A3T3uTYAWG+dKn1+SxZ+G8iD4GtUWRVLKbLYNCjLOeHX6LsN6vv0fyQYQc8ud+tt9hIV8CdlrqHrpuAwoFwQ5pRuNvPPewxJ4OZILiGc+u6MVIw8lrm5XwFJG2m5n4m0ru0Y6rlol2eqebZJUSM84fCUCjd2fr4ChBU1OyOi34eIEBiJwDRPe6xIuWahIJSlBbFBY3Fv7/KwkjYRD35ynFav+MidO58TKqaGY2VimiJ/rbDKyPX3SXaN5HGJ0QaWCnld407OD+S9TFDS2mf2CozxQjxNITbgoKZqXwrbfspiAk41amQrhl4+9anZ9rkFCh+0s5XviQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(396003)(136003)(376002)(366004)(346002)(451199015)(54906003)(186003)(26005)(66556008)(66476007)(2616005)(6486002)(478600001)(6512007)(8676002)(8936002)(7416002)(83380400001)(41300700001)(5660300002)(2906002)(4326008)(316002)(66946007)(86362001)(6916009)(6506007)(53546011)(38100700002)(36756003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: kv+1jzMz7IvVJ5/IKx/whfinqjpuUCKsON/NJNqHJ/SvbacXTlWQw8FGlu3TA6GavgTpZI0xavaJvNGBYAB32m1IGMBtqDLEwmEnj9XGkErdR5RsEvKOhGD+8H45UGZIh1z8gSvdBLIf/Dc0vCmY0xwZ+laVJ4yI5vvOM3vO31byx/gjDJna+X7mL8/d6ooCg/+1ZLT2QM+rSNbHfiCEDrfRS3X7P/froHZAHJrdn8jDIS4jRpnPuwUeHjG2HaMMKl7HJrPmjYkdBxjSxVoLAN8nbNtVBNtBPNAudyTaLtf3HW9opdjqY3Cd3t8U938ars1khrErHkQFoGfzK+nR4FN+//0z9vOLkVho1nj7I2Y/qIebsaHNDn//ZoWbN9ckEBQmxS3b2AxgsJsPp4WX5gPXchjem7oXVilsNxyJJ3HmCnfPohq0mh3ubITnrfTkDLtlHZKpb1duDblPRGxRqFo/ibsvqpwSeScoCYrJ/RgbfD6Y4rf3zZNfq3aRIFkV+X3d99aACOkfwXlVMf5tG+OJUIohkuNl1vJH7PmFSMBDktiQPIp2C6TSGnE/D+hntpdkFq72gKkKleLEYIxHdLc3nx2EpvRtWcG2DdMWM7GcAIhpBfHhl5NjqH2lJlEtVEpwEj1oxxx3NqIaO2raB65EMSmk0Pu/5esu4vxc/uVyjicTQR+KrxwBTWitXwx5ZPU7imVQGGP89pwN8xU9Ec/BxOe4F91YPyhTu9rs44p6E4/nCpgG0SIn+h8TG2APoapaloY4CcejqrhebwFIPwps/5r9SBMBd3u6kt1DeWU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5634.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(39860400002)(136003)(366004)(396003)(346002)(451199015)(5660300002)(2906002)(44832011)(8936002)(41300700001)(478600001)(4326008)(316002)(8676002)(66556008)(66476007)(6916009)(66946007)(6486002)(966005)(31686004)(6512007)(26005)(6506007)(6666004)(83380400001)(186003)(53546011)(38100700002)(2616005)(3480700007)(31696002)(86362001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gUtguh/BhjSsWFMyOvOkTocwMW34MIv6f+dQH0dsuXmPdkuOjqZjELhOoCBR?=
- =?us-ascii?Q?jw/9LzWuOml7GUNslDGnwn35hTk3PfwFosS/n//Om1Omq40fna+7KkqQTSF4?=
- =?us-ascii?Q?D6sIJr7h9Gfk0ZeWsJBVRBm11B+Darv7rylsGsY0WKszhDnvMWSWJRA/MqI9?=
- =?us-ascii?Q?hsetMQd/d1+oJdZAlyW1iiJTtgk8PrMuAzfkTs42KLEZ+2QU6H8iSsT1FyBt?=
- =?us-ascii?Q?VSLPzGYe8cQxO1WUF86hM/4N4RWO3dfhARjrkUizubFVbCstcWf4VA2Q4sm9?=
- =?us-ascii?Q?42sdcJJNEd0DrrgSCfk0chB21gvbI14S6UJ6XJhl81+UKR1TlxKjdkfIVroU?=
- =?us-ascii?Q?vHa3qlcSPjUK7l9PJk46XCLZSa7BLIZLIEn2ktcKl47Azrm6LIu/XszuIu+8?=
- =?us-ascii?Q?UZOWwrCt74fT43uZdnZT9Zfbrwn0w7BW0mGaXpCth8FfaFN07Rl2mam0O7D0?=
- =?us-ascii?Q?gxA1/xJcSE7aUKUncuhSvGsSCPeFfgx1T71E+59Z+8/rGdGH6PD0HwxggPz+?=
- =?us-ascii?Q?gFjHo/QAVRvyJqoTqP3N9gzeaLxiWLoaDwWM+O2eCTe3VaEavpuLW+X7ZqaB?=
- =?us-ascii?Q?nZAyRj8OV/ujMXMFsg4pKDLJSWMsd8u/f5t5rjZgfVBkKFGTZ0CVRjEi2OIM?=
- =?us-ascii?Q?HplJ3hvt6yMxfJ8HU7BcD1G2JXVtQhGD/Lxt8braTiN/MSuDWSO6tUoUmIvs?=
- =?us-ascii?Q?4MVTggacoJznwyUTxA7mKHOs3oX1EQD3Bi/0DAxiCXsWKShBaITtJh6m9ucK?=
- =?us-ascii?Q?k5gbShKvKfd8d6t5YWtP1RrTSUXXVxaXGLHzPg8KlSPCNHcUQhQBWTWYY4By?=
- =?us-ascii?Q?NFE5y/n2dynXHdjy2/nIf8Yxd/vSzBW/gx2vDf7m0kJjIAJk/vdXr8x755Up?=
- =?us-ascii?Q?qgnC7KJ8wu3VE42HIMu+T0s0WGsEZlRNtPGlwAxEI+OisFxdreVgEUmHHFpK?=
- =?us-ascii?Q?nJagpumxXtxVoVDp6I4zPrivqQSVZzplcfplE0qu6mXkdj9qZK2F6wL36b3q?=
- =?us-ascii?Q?jrCXpMZaCFpv+Xal25tX6jqHeYX+3OPYeLc+jZYNZzEpqkTyy2VRvTomYZt1?=
- =?us-ascii?Q?PRhA5xSzVWtHhxDWZXLj+Ha4bpATSb8KkyB1f+G0W5F+OX0f3+U44ZXm5G/d?=
- =?us-ascii?Q?nmuL44r/aT8Odag8gE0zL+vnZsYjkif6UEqiH4w1p/fPdVOTy2Ze8kiB6Ecv?=
- =?us-ascii?Q?GeS18tfQFq2kBnYk/+U6iSkDavbJo5rO8mpMqLb+BzxQfpGAQJZMrfOknBnK?=
- =?us-ascii?Q?oBPIbmEe5Jzp/w1D1B+nuoTMCYm0i6YBD+84hAOe06aU2IVF70WG8pa0Lo67?=
- =?us-ascii?Q?y3gr3I894Exe5oQkhznS2TuG3UDApRj7jZQYSxdOp62P83+SwGHOgL1P6jgA?=
- =?us-ascii?Q?GbV53ubvNCNTBM0uP9GhYwb4WWnjh7jjIDhyZELmQDlSTtuh1tOr67dGTqW2?=
- =?us-ascii?Q?nKOaf5OvnXFR3G+ycDWf6znVbK0mGti3bQ51KYU1ieMy+4Oc9L8HJDxAScD+?=
- =?us-ascii?Q?eUzyRx/JZt4JOZ75y4YnKNES9JvIpZjayYtbPSws/bsAm12Qp7pbrpsNv0Bf?=
- =?us-ascii?Q?BLbdROencX9YMTiONhIirY8MXkPGWLo+bBmeTMjI?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a380c960-bbc3-4788-e1ef-08daf00ad407
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eFhzTTNKWWVBN0hkQ1hUR2dYUWV1b05Va3Y0TENYM210RjQ1Z2NaQ2dITEpG?=
+ =?utf-8?B?YXgvc0w4UC9DZVUwSE1YT2V5VGN2SWpyY28rRTVzSGttUW8zK0pVYmJGaHlm?=
+ =?utf-8?B?dGhvSVpuZXJxT0xPTmZlTjY5NW5uNXRkeitnZGJMajR0UTF4cmoxYzZDSWN1?=
+ =?utf-8?B?WStBOHhsR2ZqNUpuWlMzS05WM1FDaER5YTZVdnpUWGNJRi9rUzRveDlPaEh2?=
+ =?utf-8?B?U0c1Z3lEMEcvbEsrMW9EbzZ1L085bXVtSTR1ZGxqRUtyYVhpTUMwakhmbjQ3?=
+ =?utf-8?B?VTVlY2s2RC80Wk1QMU9oWGJCZlhLd2hVZUpRVWRFeis4ckJ1V0ZscVRGWUUz?=
+ =?utf-8?B?aDdpYUorUFpKRFV2SzdabDVDMEFySERObEZpbDZKYTZmai9TUGd2bTlGWE5H?=
+ =?utf-8?B?dERFZ1FuM1E1ekIwZEpmRjUya2hwclFhMk4vV1libHpSZG5KZEhTZkpxNlBW?=
+ =?utf-8?B?Q3k1cVRKcnJ4V0JlOEhBMzhncUlpaEh6NzJhR1hZSk04RFd6RlFKZkRlbzB0?=
+ =?utf-8?B?a2RoQ3d3cXpva29xREZEM0w4SkV1blRObXFiMTIyenRtcmRNbUE5RE1JRm40?=
+ =?utf-8?B?SStCMjc1ZlBtdmVQVis0WSt6MDFVZFd0UnJ5QSttS1E4N01zL3kwSmwrMklq?=
+ =?utf-8?B?L2tyVUREMUNCeGozWHFuaklPWjVldndlbEpML2ZzRERCWW9YZmdiREhQbk85?=
+ =?utf-8?B?a0hYZ2JxdlM4NDdFaGpPSjNGaFB2QVcrWHZIR2RrMC8yTHdZNGlFS3pMUTk3?=
+ =?utf-8?B?Zis0NkVTKzhMU29pYmxwV1V6cnFndWNJTTNsa1pxWHlHVFFLMXhkQnpqOENn?=
+ =?utf-8?B?Mjl4bnQvaXhjbkt0U09DL3p6ajJ0MndzeG1NQ2pEK0ttRlkwbDZOMjYxMzh3?=
+ =?utf-8?B?ZHNJdmI3Q0FJODVYTlVGUnpkUWY2K05wMFpQQklTb3ZaZG5QR214b2FIVWx3?=
+ =?utf-8?B?UG9LdVJYZE5hUHhTYXd4ZFJMUkNNNEpwVkZVTmlSbU41WU9vZGRIeWtNUFBl?=
+ =?utf-8?B?cDJPalhjT3RtbDBOazMwek10cCtiWnUwWVVlU1g4bzNpNU4wd2drd0Y3L2Q4?=
+ =?utf-8?B?elo3KzkvSWcxUHdUTjRWL2c3QndaTFhpVEc4TzU0SFBaV2tBUGdUd1p0NHlF?=
+ =?utf-8?B?Y2loTGJRWmFHd3RBTVpIdUx0U21LWEhMdjI5TDFKb09ub1RwUTd5djh5dUVH?=
+ =?utf-8?B?Z1YwQUczWGVDNEJuRGN4R29WNWNNUkdBeURPYkhCc2JBbEVscWR4M1JlODdH?=
+ =?utf-8?B?TEhyQVA1M2dibWptOEg5dEkyNzFJQjZvSkk0aFMxQ0VFeGMvNXp6aUFDUHBy?=
+ =?utf-8?B?Sm1rSVNZVTlIV3ZaVlRjUFQ1cm4rdHRoQzZCcmxVUnpONnRwdWNORHpHM2Nh?=
+ =?utf-8?B?WVhQcW5mUCtmbklKMm4wMzA0eEJsTzYyb2hrSENiV2FkSkxCenhXR0pUZGZz?=
+ =?utf-8?B?Zm9PUTlUdEp2V1M2Ry9PQi8xYm51Y2tGcnMxSCtpUnlJVHFiaHhMa0F3bEEw?=
+ =?utf-8?B?T3RXK1lodm1VWkd4aWw1dEtRRHl3UmorTE5jZ0tLYzBRckE2NDZCdHR5V1Ju?=
+ =?utf-8?B?TmZMQ0tHVnFJR1JheGZEK1ZkV1hHRVRpVldyWk5Sd0FyK0hVMmNHeGlLUlZJ?=
+ =?utf-8?B?bG13K2NGS04xMHRCT1Ywd245bEJUdzEwQzVSOXJ3VW05dG1OWU5OL2l5R29I?=
+ =?utf-8?B?ZnFFNmUzN0Fmc2thNXZMVld2VEloSmtRbTR3anZWaVdqYzU1bTRJc3ZtdGJ0?=
+ =?utf-8?B?VU95WnJQcDBDVUIvNlFVWXY0Z3llMjVpYWFqSGNOWkNaVXYxczluM0JsY0ll?=
+ =?utf-8?B?OXlheWVONWVWYmhtaG5tcDAwOFhZbWhoZjFualFvbGJFZ0JwR01hck90K2JU?=
+ =?utf-8?B?VTRsQ2txUDlkdDlxTWdJYnZPRlNWNmN6QWRzbkZjNlNOY3hlUDgrWTV5b05t?=
+ =?utf-8?B?bWpDK2VhQlUvN3BwYmwyd2t1TFI1NkxjclRLQzVYSCtpeFY0c2x4ZnpVVG5Y?=
+ =?utf-8?B?YnZVL1ExQzVuYmVQRWZ4Y0RQNFkvcDF4OXMrMXpPMjdLS01neTJYVE1EVzZS?=
+ =?utf-8?B?dWFVNWtMTHNLU2FraGx4UUtCTmRJK1JIdnhEbXNOb1BXU0JVdkNtb0tDa1VG?=
+ =?utf-8?Q?wsloT3eErV0PZZoAnBYs0fTW1?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: IijwtnNhVP1y4GZMEw6rjJ0WimQmffnR1duoVwqlhm2hWqiT/YCyQwWOYD1BBAp+2Oe3GK0yWcxY9W3eQzzdv/35XjiPAan/dTTUCA4enOPS8oZOu8/JEpqQhG79tJWZ7S0p5ViAsDo9KURyGR+YBke0bBSrvVk8CANc+7fNv5UgLUvKMwgmwLTAlAQTZPGmdNlv0+A2UOWagZ7M1lzcnaT3JqdhPDAwirMlzB3viRNdfex/RdJmVIzbh15XW32rvzcyAHWSFR7DjVSdI0qCitvFCEa4nXTjvdWvbcT2XOKcscAnMHms3frGZPD03XEGtpQfWf/oIUtT+Q6oxB5tFTsTKED1fzbRUSMeozz3EzWc2UhgoIBzz0JUYDIfNV0IbO+HdcWXR1tRlPZgerna2B/UdvdicXGmRdYy6g7fm6/WcUBEFA1+Pqm4+8b+H6anWedrTpAvqhd+eX5VwWOjRmvBjPMmdCugJQYKYZziw7Y45kv3n2aZ+OhwX8bFzLjvK3LKDb9KcClgwdLFGWS+0RwwHAHRvmMRw1spRnrpG9RUnscrjGaR0i3Po9ka28FXlx36J0/Pg14cP66QAqyRc07w16zKPilPl4PUenyBH2B6AS2EjHNV1U4aauTpTdNVuo7rSN7i68Q9pCKZpNx4t6gcNCgKOzn74InxBVQNwkVP8/9RSf9S95Gzi/wQ9l2FDTrTYHfF4bnfuL3NYYI7odXGXMFJnfihiaavKp38X37lD0LHzc9ReZG/i3wy3TU0FplFHtlwBVu6Mw6lDOjNJCe1ZpQPtBVByJ5YCOp8M138JZ/7QXAqPT8pqNLuDfJ1
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9688253a-a557-4af2-f903-08daf01548b9
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5634.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2023 17:24:12.7096
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2023 18:39:03.4129
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /G4slPQ9LdfbZ+iK5j2t1fMDw7VqdkXkdo74dzB3f1XOhCF0xdxdWnTliW/zmjfK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5601
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: HmtfLoSosijATHEjcQ662ynRZBZIEpIOOTNZ1frW4eM89tXrB+D1HDaVR84m2M2UvHrtS53XHbtjMX+3J0HDGQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4561
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2023-01-06_12,2023-01-06_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2301060143
+X-Proofpoint-GUID: 8zMvqd6uBopl5DmDEikWBXTU8rN9camo
+X-Proofpoint-ORIG-GUID: 8zMvqd6uBopl5DmDEikWBXTU8rN9camo
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 06, 2023 at 05:15:28PM +0000, Robin Murphy wrote:
-> On 2023-01-06 16:42, Jason Gunthorpe wrote:
-> > The internal mechanisms support this, but instead of exposting the gfp to
-> > the caller it wrappers it into iommu_map() and iommu_map_atomic()
-> > 
-> > Fix this instead of adding more variants for GFP_KERNEL_ACCOUNT.
-> 
-> FWIW, since we *do* have two variants already, I think I'd have a mild
-> preference for leaving the regular map calls as-is (i.e. implicit
-> GFP_KERNEL), and just generalising the _atomic versions for the special
-> cases.
 
-I think it is just better to follow kernel convention and have
-allocation functions include the GFP because it is a clear signal to
-the user that there is an allocation hidden inside the API. The whole
-point of gfp is not to have multitudes of every function for every
-allocation mode.
 
-There are not so many callers that it seems worth worrying about
-removing the extra GFP_KERNEL argument.
+On 1/5/23 12:53 AM, Leon Romanovsky wrote:
+> On Wed, Jan 04, 2023 at 02:18:42PM -0500, Mark Haywood wrote:
+>>
+>> On 1/4/23 1:42 PM, Leon Romanovsky wrote:
+>>> On Wed, Jan 04, 2023 at 01:29:24PM -0400, Jason Gunthorpe wrote:
+>>>> On Wed, Jan 04, 2023 at 11:05:53AM -0500, Mark Haywood wrote:
+>>>>> On 1/3/23 7:18 PM, Jason Gunthorpe wrote:
+>>>>>> On Tue, Jan 03, 2023 at 06:04:21PM -0500, Mark Haywood wrote:
+>>>>>>> I just extracted https://github.com/linux-rdma/rdma-core/releases/download/v44.0/rdma-core-44.0.tar.gz
+>>>>>>> and noticed that buildlib/pandoc-prebuilt does not exist in v44.0. Is that
+>>>>>>> intentional?
+>>>>>> ?
+>>>>>>
+>>>>>> It looks OK:
+>>>>>>
+>>>>>> $ wget https://github.com/linux-rdma/rdma-core/releases/download/v44.0/rdma-core-44.0.tar.gz
+>>>>>> $ tar -tzf rdma-core-44.0.tar.gz  | grep -i /pandoc-prebuilt/
+>>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt/
+>>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt/caaca7667f40fff2095c23c0f40c925f1ff3edea
+>>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt/e2cfc53feeefa2927ad8741ae5964165b27d6aee
+>>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt/971674ea9c99ebc02210ea2412f59a09a2432784
+>>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt/241312b7f23c00b7c2e6311643a22e00e6eedaac
+>>>>>> [..]
+>>>>> I can't explain it. The one I pulled yesterday doesn't have them:
+>>>>>
+>>>>> $ tar -tzf rdma-core-44.0.tar.gz.orig  | grep -i /pandoc-prebuilt
+>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt.py
+>>>>>
+>>>>> The one today does:
+>>>>>
+>>>>> $ tar -tzf rdma-core-44.0.tar.gz  | grep -i /pandoc-prebuilt | less
+>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt.py
+>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt/
+>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt/caaca7667f40fff2095c23c0f40c925f1ff3edea
+>>>>> rdma-core-44.0/buildlib/pandoc-prebuilt/e2cfc53feeefa2927ad8741ae5964165b27d6aee
+>>>>> [..]
+>>>>>
+>>>>> I am sure it was user error on may part, though I don't see how. Regardless,
+>>>>> it's fine now, thanks.
+>>>> There is a second link:
+>>>>
+>>>> https://github.com/linux-rdma/rdma-core/archive/refs/tags/v44.0.tar.gz
+>>>>
+>>>> That does not include the pandoc, perhaps you downloaded it by
+>>>> mistake?
+>>>>
+>>>> I don't think the releae tar file changed at least, it is generated by
+>>>> a script
+>>> Right, I didn't change and/or force push anything after initial release.
+>>
+>> No problem. As I said, I'm sure it was user error on may part. I think Jason
+>> is probably right and I just downloaded from the v44.0.tar.gz link.
+>>
+>> I just noticed that clicking on the v44.0 tar.gz link from
+>> https://github.com/linux-rdma/rdma-core/tags downloads rdma-core-44.0.tar.gz
+>> on my system and it looks like it is different than https://github.com/linux-rdma/rdma-core/releases/download/v44.0/rdma-core-44.0.tar.gz.
+> I tried it now and got same file which includes pandoc.
 
-> However, echoing the recent activity over on the DMA API side of things, I
-> think it's still worth proactively constraining the set of permissible
-> flags, lest we end up with more weird problems if stuff that doesn't really
-> make sense, like GFP_COMP or zone flags, manages to leak through (that may
-> have been part of the reason for having the current wrappers rather than a
-> bare gfp argument in the first place, I forget now).
 
-Yeah, that can be done
+Note that I am talking about the links provided under 
+https://github.com/linux-rdma/rdma-core/tags page, not the 
+https://github.com/linux-rdma/rdma-core/releases/tag/v44.0 page.
 
-Thanks,
-Jason
+When I click on the v44.0 tar.gz link, it downloads a file, 
+rdma-core-44.0.tar.gz. If I just copy the link, it has a value of 
+https://github.com/linux-rdma/rdma-core/archive/refs/tags/v44.0.tar.gz. 
+I am not sure why the file downloaded when I click on the link is named 
+rdma-core-44.0.tar.gz. But I can wget 
+https://github.com/linux-rdma/rdma-core/archive/refs/tags/v44.0.tar.gz 
+and the v44.0.tar.gz and rdma-core-44.0.tar.gz files are identical and 
+do not include the prebuilt pandocs.
+
+That said, this is probably moot since I should be downloading 
+https://github.com/linux-rdma/rdma-core/releases/download/v44.0/rdma-core-44.0.tar.gz 
+and extracting it to get access to the prebuilt pandocs.
+
+Thanks.
+Mark
+
+
+>
+> Thanks
+
