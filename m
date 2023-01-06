@@ -2,183 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73144660960
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Jan 2023 23:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE10660A55
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Jan 2023 00:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjAFWOk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Jan 2023 17:14:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
+        id S233592AbjAFXig (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Jan 2023 18:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236510AbjAFWOH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Jan 2023 17:14:07 -0500
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7297750E76
-        for <linux-rdma@vger.kernel.org>; Fri,  6 Jan 2023 14:13:59 -0800 (PST)
-Received: from pps.filterd (m0134421.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 306L06Dm020557
-        for <linux-rdma@vger.kernel.org>; Fri, 6 Jan 2023 22:13:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : subject :
- date : message-id : content-type : content-transfer-encoding :
- mime-version; s=pps0720; bh=vwoIq5IWHu9YDOmSEhkLjSpDSvgIZcfuEUVeaBmxNrk=;
- b=DX/ZHJaNxqfTBmZnIGuGWyj/XeI6yyEzGpdIr2Q/N35D3G7hEboEX1L6VA3XnMeShJDI
- 3omcH92xfKe348qGxKi7X5Ttc+Jx3HcGhzcFAp0tyVCnzvCaXvaPvWlRQxKZbbmjRveN
- 1bDvIQ2MZmnosN/xXeXPy/fJibBOJLbF/AjnbGG6abZyiXBK5j0eHIWCvVEXyMM+Ovkq
- ilRSTW1AHm95t0VgIks2wLwe3STyff4wASVHUieltox1YvrrOeR3MlYiOQMXl9lJlPi0
- Iy2m0xaJW+TD+T6INZ4jGqLMDDhVlO6vr06ZXEckl0HNXbK/BqkWLPa/0j3Nu3PHk4UH +w== 
-Received: from p1lg14878.it.hpe.com (p1lg14878.it.hpe.com [16.230.97.204])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3mxu5q0bv8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 06 Jan 2023 22:13:59 +0000
-Received: from p1wg14923.americas.hpqcorp.net (unknown [10.119.18.111])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id 9CDA6301AC
-        for <linux-rdma@vger.kernel.org>; Fri,  6 Jan 2023 22:13:57 +0000 (UTC)
-Received: from p1wg14928.americas.hpqcorp.net (10.119.18.116) by
- p1wg14923.americas.hpqcorp.net (10.119.18.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Fri, 6 Jan 2023 10:13:57 -1200
-Received: from p1wg14925.americas.hpqcorp.net (10.119.18.114) by
- p1wg14928.americas.hpqcorp.net (10.119.18.116) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Fri, 6 Jan 2023 10:13:56 -1200
-Received: from p1wg14921.americas.hpqcorp.net (16.230.19.124) by
- p1wg14925.americas.hpqcorp.net (10.119.18.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15
- via Frontend Transport; Fri, 6 Jan 2023 10:13:56 -1200
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (192.58.206.38)
- by edge.it.hpe.com (16.230.19.124) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Fri, 6 Jan 2023 10:13:56 -1200
+        with ESMTP id S229949AbjAFXif (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Jan 2023 18:38:35 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2056.outbound.protection.outlook.com [40.107.223.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3BDF1E;
+        Fri,  6 Jan 2023 15:38:32 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=doFGddcXka76iTHRKOOn9KObmR4Ei5wHZOu4VGX04D/xsSdV4rWP1+az1Qb3AJKxJuKaAwZ9MtAIlF2GmivBa+igWfpiiLGdEq7eYI9UrhqjjBSL8kD41hLQU28g3BttdOLoe307+d00iF4cTGO0EceCh77tXFtZoyoFG3ORGcHdCMzBECq3PPxzP/UdKPTyO4fAhqBjLA3lYOO9zzoZ8pYH3ASCMHRW4QAQBv4n/mkEb2WrNuYeMw4PWFN6yjhen03EQ5P5UFJldjHN64NpEmW60s3DYecF+l/0uAZ2rCMmA02VW6N5fOLMsDSZzFEwq0cRJixRm2pmVfq3tKlXJw==
+ b=dQ32KlZp1FWCfNm6/QUJyW5ZrZSp9r+ZdDoq4/k91p0O9x/fajw0Mi8IST2ilaTqOJR/DhtElPyM5Kwc6tZsTue+uRSHfp2LkC8FdyKsJl3eR251iU3QXYQGJy7Y5Yp0VjjZaC6BGUFmy+KR8pbd1NvArAoy1wVp0u4HfYfEcQwoAOVZBkWI63tUuCed3eRQrzSkr0+mnC9Lnbo9+alHMjyyvun6UwpXFSWS2cn2N5ZtRsrCIPlWOKDI2Qfa2Wjk2YBdvPIXkwQIcGC22a9mCu9vuOlFjiFb3r2UePIup54Tdhr1f9x1USlfMb8vAKTF8FDdVKYRyADpt4glWoZgow==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vwoIq5IWHu9YDOmSEhkLjSpDSvgIZcfuEUVeaBmxNrk=;
- b=Efqi2nd80yo9/87BJZSco243PiSJTbjGAP7p0APXXJu7uk3IVhd6eGetrOsjGN7ibhKbO/UX24EVePfPQpFz/JaDlY4kg3aMP/oySBS10G+ADyG8E2vrqMVdLIk+vWmKg9vAnCB45wtFBEDBSc8MS8je8MjnPPmgwEGQMgNPjPM6jYdklQjr7TUM1r+SHtjZ9CW+wtP//RGoWUjBlJVG/HPQvCiHn3wtwSWsyakI5uSkmQpAap7yMqkQkHKKNXFqgkpwx5LIfYXaipYgv7eJFOkmvaq58lv0rWd66CgakYi/py+QdrwZf88X27tXe73WHljEHGFeBJ0lpEUn9xd0xw==
+ bh=c7VpOdim+FQ1VEvXJYeVAjAhl+KaJWtka4U8AKk7FWU=;
+ b=QnwIZ/kv/XPyRSxwFZUT3aEq60Htk/oLo47Wxv+oUjidOW3w8nrMOfktyTzMs7uuCrXCN8/3Ve6cg9l2fPXCT7hkwcNf80+O/FVPl5miJofsk86Lancljq4rhd2C3tgSEiDRptKec6FOPRZpso21tm6B4RUNQl/7yqYNl41zGtdkjO8DeF4K3KhSOxsLhOwE3l7nbuAWxK13MJwquKmvh8nePkxCD2qdZVczOnLOdpKga2/jJ/F/QKNbcvBpBQCSX5o4a+Y5CVJmB8qrFaOcqEPhBDCzywyhUhihIQ1Nsx9JnWN5gW1owhnYJlaQ4Yvcb8yvH+z8lWnxoTi9fhaB5g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
- header.d=hpe.com; arc=none
-Received: from DS7PR84MB3110.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:8:9a::7) by
- SJ0PR84MB1651.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:a03:432::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5944.19; Fri, 6 Jan 2023 22:13:54 +0000
-Received: from DS7PR84MB3110.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::6506:b63d:b237:5590]) by DS7PR84MB3110.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::6506:b63d:b237:5590%7]) with mapi id 15.20.5944.019; Fri, 6 Jan 2023
- 22:13:54 +0000
-From:   "Haeuptle, Michael" <michael.haeuptle@hpe.com>
-To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: rdma_create_qp_ex fails with EINVAL
-Thread-Topic: rdma_create_qp_ex fails with EINVAL
-Thread-Index: AdkiGeABkWPnBYcZTnSqb1ZbVwyQuQ==
-Date:   Fri, 6 Jan 2023 22:13:54 +0000
-Message-ID: <DS7PR84MB3110FCA7FD0A05FE103DD85495FB9@DS7PR84MB3110.NAMPRD84.PROD.OUTLOOK.COM>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS7PR84MB3110:EE_|SJ0PR84MB1651:EE_
-x-ms-office365-filtering-correlation-id: 4ca45660-8895-4f60-d6fa-08daf0334c97
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vLfFBnQzipXlKExdwY9Cdoa8udMIykUJw76RbyWV181a3Aj2tjq2+x1/nmfigR/gFHjSh1vvw6FHF+mYVYqEEOqNrbLM4muRcW7VfXMY8VX4sco7UkOXWThlFnjBvQIPkOcNiV7omk/zkSiQsWuo8h5mNQXDCtipwd9ij5ILU368Z8a0vNPvTCrVHGBnHnO0zyoDfZTeE9iiQTiv4EB0EH5z1fuonPJ5JzqTFC8uFYzA7vMmTxgkq/gcZbYqVoXCB/u1IpS/whvkHtgVBkOsKzmGJ8kBdhOIuJ08Um+GLTn66pTAcyFDOlccPoXD+hTm8cdFXw/5l+MVAIsSPW/5L4HzXCZyFgU23JvdhsLG68JCR5HdSgLg80npY0UYURwxLguJhnRKQAJtFx5YLkj3+7XQbLDu9jMhauUdDuKwWw9545/3HFbt5ImWBSe5xmXwndPyvTRRX1OFOIDhbGCdxh7ad2N1KtIYNfNzKG5N2Jx+WqsBvVvDkuHmq5fgTB/m9QH2Q3+Ku3Wur+XCLJW5xe5vgIUT9YVw+g5S23FGrHPF8B/bf2JfjmNdlhVM5JaMzqwR49drnNNUVeE7RTPnhI5kN1moclpDqDrNRyEyIkSr8yBipxqImdOv4DULQ+iYgYhQ70Q/cNVmV2NFC8GQ5llREAvlh2JEpcs2OAnA3NclUVNyoJl3QHdpidRZpcn9Mb7CL7fPFV75Z/PCGT3NMA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR84MB3110.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(136003)(39860400002)(376002)(366004)(346002)(396003)(451199015)(41300700001)(66556008)(64756008)(66446008)(76116006)(8676002)(66946007)(2906002)(8936002)(52536014)(316002)(71200400001)(6506007)(7696005)(186003)(478600001)(6916009)(26005)(66476007)(9686003)(5660300002)(55016003)(86362001)(83380400001)(82960400001)(38070700005)(122000001)(38100700002)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?nDoGIdb2ivF0WcvUO2V8Q/CHQF8TB96KefyJS9+H5YacSYOGVAV6sEFf8WoB?=
- =?us-ascii?Q?3oba2I6jbvCAVQeYOV4nu63LnJ+Auve9K1EhXRXtyTS142sJ2NeCmDtEgC9J?=
- =?us-ascii?Q?9DgBJQET4Hyc7trEykoOW0qG2Uh+9yOcO3GG3P2651T1F5mrPBDeIbBcFJ7Y?=
- =?us-ascii?Q?3+5NctebhUw5SyRnbC35PbaYymGdQpYy9pMZLQ41aluA85lzhBG4ldL/G9y0?=
- =?us-ascii?Q?HG6zkZo8entlyGnNPAuW0ovCGUjABhaZ15YFpTfxAVE2NBDZoKY7ORvE+LX6?=
- =?us-ascii?Q?xA9qc4vA+aku7M+U4xqLMNJ4/gD+9OzG335cjouCofYYZDBpE9ba3uiStHIJ?=
- =?us-ascii?Q?h4br/4vXSymp9dgZGCfw8zzdSygzEEi5AaylhjiBsY9No+8jjCXsOmv+Tglb?=
- =?us-ascii?Q?7PnSKc9/nhIlE5Uy4h3yVWMpxbGCIFb+ZbhhHOsZjB0CZhfmwIGPPJKtFGMw?=
- =?us-ascii?Q?r+FRtRyPHfTdhfyjwAyfTgjMEjrRIfzwFA17XpYMsHe+hRHkVhDNUo8PWOfb?=
- =?us-ascii?Q?LADwyR65wS12ofOFFAOaFUIPLw8CLQwnu82V2sLqA14NWTNVgztAkQG7tTfW?=
- =?us-ascii?Q?OWPZHFsj730o9Cu6/m++DiuoOYnBszCZTST5JBMYEQ3GmEIwGpVCF1GhKyiE?=
- =?us-ascii?Q?fXO08spYRewmxTgAlWZQQoxrfsqCg4wdVWH5AfBjTOeQFzymn1oi4BVGimem?=
- =?us-ascii?Q?O3hpYJExWTk1K/J0a1uMcdhCXZq7RaD8vd0cbBGzoqCjLbeq/rmQrdjMuVrt?=
- =?us-ascii?Q?gMh9XMScuTayRXW1/Sk1kVj1m3vagz5+8yuShYJlcTDANF3MRiVkOU23vpgA?=
- =?us-ascii?Q?dC2pQsqR5dCG9AySFeY+YheYfZlDGUW7WULJc9NP5LvOuS/zJEWiBnq2+e6R?=
- =?us-ascii?Q?+y/yacU8pRZHpCKtVGdI1//XOls1WsKEmFwDWsLvC9dcu81YX8QEAa9HK725?=
- =?us-ascii?Q?PO4oIpcXjnnPJIXWfIfsaV80SBylnS6ZkHpBoyKTzESDCjNxWhuuPJ39gKuh?=
- =?us-ascii?Q?8A4M4zymbvZQV9l2ONuzByAGPoZh7Ih6nJ8MZX6DpSTsNwi9wVj1K1tAYYnv?=
- =?us-ascii?Q?IR/zic58kh1sccw1wB4M6frhkaiuRqUj0tYnJ09oexKy08prSHxsJauVXNgR?=
- =?us-ascii?Q?I8qVuADNhHb9VAq5mAc8KyT8eh6zmrfD2icvT2P/QZkhbt2QTLHyo4GsLo7Y?=
- =?us-ascii?Q?bwbE9yGzDQsOKWRvjXBIhhksxzOSSmwQmzLNdAXubZEPLFOA3QIThR4Juv2M?=
- =?us-ascii?Q?N6mEzP+LTMLuTZLI6mgop+++ruQzVFBK0UvvGu8xfHj+f+0SmFuBQ7ybJCqK?=
- =?us-ascii?Q?tPFnlxxoHNDcb38xX4SlnJOn6wdBeCx733PFKvol31j7o3mIdVX1HxXz7NRC?=
- =?us-ascii?Q?Utgodef2wQ9npM+PXUa9WPM7qYww6y9YT1JZ+orHqR+CXYhQZOI4nhEUJbpN?=
- =?us-ascii?Q?Sjc9TGf2+B/2JWGGmVDvDt2ie715RryLqwqPNQRTUk5wOIT9kLHF/PpSI45W?=
- =?us-ascii?Q?HOE7KYpntcrntNwKSyINFIc3EAks/EUVDYPQuzr+XtSaKxtpzoGb88H1vJrf?=
- =?us-ascii?Q?LZQgZ4fUqETN/GDvZFH4I7R9Gkpv2zfxZSSGy3z2?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c7VpOdim+FQ1VEvXJYeVAjAhl+KaJWtka4U8AKk7FWU=;
+ b=FhaPwRDnY5hsTEkKtqLVtRRu02hlzVuW3rKzo6vAVexLHTyizHwEdxdHHEJqhv0WWVxt623yJgBZcp13BtDqXqUkL9s+FKt4a7b+gTvnYK6bye/fmiPU/LErwZ9Q5KtC0yRscbO1wSUz4HMur2K+hUb9XkMU6bfbGjG1Wjvo2DGgCEC0088/TgvV/7cIWsFdlDVphBuluMU0B2pxzWyzr9pB9r/6SlwULM6Fn0g9azp2/CeEjD5B1UrtCnpL8HbR80Lf3qSodZ2mBKkzfoN8VBgD7v9NrbMv0QMYH5fBQ4WExK1KBXzvJe5no1BG19WGOCdR+VjZ0HVc1MSeJtL6ng==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CH3PR12MB8330.namprd12.prod.outlook.com (2603:10b6:610:12c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Fri, 6 Jan
+ 2023 23:38:29 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.5944.019; Fri, 6 Jan 2023
+ 23:38:28 +0000
+Date:   Fri, 6 Jan 2023 19:38:27 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH mlx5-next 0/8] mlx5 IPsec RoCEv2 support and netdev
+ events fixes in RDMA
+Message-ID: <Y7iw8yE295SNGig2@nvidia.com>
+References: <20230105041756.677120-1-saeed@kernel.org>
+ <20230105103846.6dc776a3@kernel.org>
+ <Y7h4Cl/69g2yQzKh@x130>
+ <20230106131723.2c7596e3@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230106131723.2c7596e3@kernel.org>
+X-ClientProxiedBy: BL0PR05CA0023.namprd05.prod.outlook.com
+ (2603:10b6:208:91::33) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH3PR12MB8330:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3f074fa-23df-4648-88f3-08daf03f1cee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c8e5pnylZEvIjjLJsBgYhfJwwyZ2Zkw+6RxHQhUCAJddupkjzPQODGbvbINE/ZUfXcfLF1dn3GTzYJFh4IMWWzj4UApGkAMAdBG2v5iPgsogDPj3oK+ni49qCGLgicAqSU31cqp15YkfHzSr2CgBNdZetWz3lOSGktUuci6DEFRSYXYfPuNGRsizrhWa9MN6zGQlkZ8qO4gBwggQ4H/YSSGEojXF8VKsSdXlKhjGdwN4qo90q4FLJjwkRxvllp39XaGF9GDmvzbVXkZjVeP/NMEUb8bjqj5cXyyz1IGnDJlNZoHVh+UrIT6IdiJexU+UFLZPwydEjg+dF/wtfMjA54Md2a8eWO0wSm6eYgvpp5CaE3uQzA91ztdMBnieYWgKbptSTnraAEFfbojCI9Rpaoc9KHBFb/dIwYkM5BTcjwrZnxL23MWQL4WhVlejzvYkFo5g2tv9BqX5RuqAIT14PL8nUsJ5vqmE1oxyqTDSog45bcbLfTC1jOxhZNje/WCRQVEPZ3+D9lxbNGGO8cSg8trKryleiTbX/IfC0VuD0TZWeIV43Jo7OlqZWDgFvhsWRnEiZVFAA7CCdy/WPEgKYDa/m7KMu6PCQGLAy9BTePJHnfbvcNCyGdzGoQdMWu85WOT5JqP6q43n0mEMSxvC8w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(376002)(346002)(39860400002)(396003)(366004)(451199015)(41300700001)(316002)(8676002)(4326008)(2616005)(66556008)(66476007)(66946007)(36756003)(86362001)(8936002)(5660300002)(38100700002)(4744005)(54906003)(6916009)(2906002)(478600001)(6486002)(6512007)(186003)(6506007)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?byGG5wjxvEJZ4GKSKZM0+A/Ax8H3Xit1eT+na5GbftovOV1BDkRMA9JOeAwm?=
+ =?us-ascii?Q?+xD+Wlcg3uQZxDiY64FoLSy23nlemMtP/wuBb44fWabDduyUGZk7SNPJ641v?=
+ =?us-ascii?Q?0dcvfO5AAKBuEEtEJ7t+5QI5DvFjlZnX5H0Eot2RVxJbk+dhyqZiD7a2CffQ?=
+ =?us-ascii?Q?z6AFMO1af47raHRJWmZuzjxGFvlhR/gRmARqnPsYmHV5zZxxKg6qG69SS2Y9?=
+ =?us-ascii?Q?qOjBY8Xz4URG9EagSMj1aLTzIsNSLWx4bIxGMON5cc4qeOw9cQNezYSYKahg?=
+ =?us-ascii?Q?KJm8XWSyEn8xqChzBRAwfK+9D/is3DSabkaEL5EGDx6Ih8b6O4qlA0AoNR7c?=
+ =?us-ascii?Q?HDvARTNcewh4CBhnevGHIg9Quo7E2ck2pVBMMJqfL4S8ls9IIv6usPpbFCMI?=
+ =?us-ascii?Q?y5dtzsp8IGTUbKBmr5Qq9mLqwQ3Xfv161c3MWndb8AVbA5kXckTsGxlMicUD?=
+ =?us-ascii?Q?5LpXCOZ0CsZTzStkOY1IgwXBWw3r5G4Pp+DVoO+eFehtLiWel5GKFDj3/ZJO?=
+ =?us-ascii?Q?VWELAU0NycZC9Bg2ii+xm4XdT5jZDZuErUdSJR6wemgW4HVtMiw/aT6/YQGF?=
+ =?us-ascii?Q?ah/9zhzNE3WtDnI6Ri5Wam9CaHe2eQoCwCI2PDPdyLcwl+r0/dQ+IE84Zw8d?=
+ =?us-ascii?Q?DNZ+r54rBZMB2VGEeQA1Q68AD9fE2cmltt3Xwm0yr0NC9zYELsV6FblhuEmG?=
+ =?us-ascii?Q?Fec9Z59eFh7rb6shp/qGu+pGa2jcqdqimb5G/n9QbG/Sw31pALg2FK670amc?=
+ =?us-ascii?Q?MmJET5JWxCEOFn6Ci3o1rpWWuGo9zh5K5P8ImMRqJYIuMA27ztmfCRzXhTLw?=
+ =?us-ascii?Q?D4z0fRsE0d8vqi/uMSIUbTrLpF1Y5QMQTyfqZm7lsxLlIqxv3m+lU38jCEP1?=
+ =?us-ascii?Q?BwhNpkhksXrKOv3v8srJyDP8rvmfnXHQ8SpLfK5NOh6sKb2y2ykwMt6i1/3Y?=
+ =?us-ascii?Q?BZZLsjn1rRqpUEcg9ylSVPYc7JFeDXBbi5Hscvil8Ze0P6rHczMf6e4RlIDa?=
+ =?us-ascii?Q?H2IziaOwss7hY0SepPm3XaMW18ATWjCXpm5qVsXzcwaWXrHhKeS4vH9YGltW?=
+ =?us-ascii?Q?+nP0AwZzYiLoW+kgjMprm9pl3uoDuxoupyjDopg5r9sWbKexzJfoaDh4XxAd?=
+ =?us-ascii?Q?qE0Me9Kg03FcQ30k2BUfjbgZJvnRA3NCMUM/7Pkm5fgZTcPgZ4nwKRyZ9t/Y?=
+ =?us-ascii?Q?3QCcxGtmzCOhTO/iPlGtvoAeyYqsE7uJO3a2kvm2My5iFPY9fJN+8HV+nFNy?=
+ =?us-ascii?Q?CPDoMivou8PugTKsn3bU4IpmbklfHxjXsn25e2RnPBe9NBI6zEMGUJ5eZpDM?=
+ =?us-ascii?Q?N0g2glKylaVsqPrIXX7AVxZU0P/kxDGWuqrEM5Pq+pUP9jR37b1Z+6VEq/7p?=
+ =?us-ascii?Q?DQo/rv5CX0kCvzBd1nbiUDFGRnYJ07nDLxlvWjA0yGVi14sTqju13e13eZ8j?=
+ =?us-ascii?Q?VGm/nN1X9gZlODW+gxGMMSd4SxEjlGQrTKWyjW8N1geJ5Ts3VZnyTjeMPjCx?=
+ =?us-ascii?Q?BEz8X6jNvoheVS56V2B5gJpEJNBPPHAFbqor64lDWfIUZUvzvTEaYlN3w8u6?=
+ =?us-ascii?Q?Cnz4aBlcTXjRkIyy8/4BDBc59ZfTqTVzMWiH27Nb?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3f074fa-23df-4648-88f3-08daf03f1cee
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR84MB3110.NAMPRD84.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ca45660-8895-4f60-d6fa-08daf0334c97
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jan 2023 22:13:54.4739
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2023 23:38:28.7077
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bXn9HA9oN1EzvPrZttTPeHiTSV0SBlG9Vh0gGWzPwW6U8XbuN2V4naBp/wWlVAh+l0CuwmezwZKJxP5Fm0SaslmhFRCd17rv7OFPGc3psFQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR84MB1651
-X-OriginatorOrg: hpe.com
-X-Proofpoint-ORIG-GUID: LuYzUKNQp42l68hqmL2njhHh5nGRtoVC
-X-Proofpoint-GUID: LuYzUKNQp42l68hqmL2njhHh5nGRtoVC
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2023-01-06_14,2023-01-06_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- adultscore=0 mlxlogscore=999 impostorscore=0 clxscore=1011
- lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301060172
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OnM+yvbABAMTQrvWrwk8izztCC7Kr4Jz8Mvy70UhJteCFUjwyxBXMTTajSKspMsn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8330
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Fri, Jan 06, 2023 at 01:17:23PM -0800, Jakub Kicinski wrote:
+> On Fri, 6 Jan 2023 11:35:38 -0800 Saeed Mahameed wrote:
+> > On 05 Jan 10:38, Jakub Kicinski wrote:
+> > >On Wed,  4 Jan 2023 20:17:48 -0800 Saeed Mahameed wrote:  
+> > >>   net/mlx5: Configure IPsec steering for ingress RoCEv2 traffic
+> > >>   net/mlx5: Configure IPsec steering for egress RoCEv2 traffic  
+> > >
+> > >How is the TC forwarding coming along?  
+> > 
+> > Not aware of such effort, can you please elaborate ? 
+> 
+> When Leon posted the IPsec patches I correctly guessed that it's for
+> RDMA and expressed my strong preference for RDMA to stop using netdev
+> interfaces for configuration.
 
-I'm running into an issue where rdma_create_qp_ex returns EINVAL and I was =
-hoping that someone could help me understand what is going on here.
+No, this wasn't done "for" RDMA. RDMA work loads have to run over it,
+but not exclusively.
 
-The function that is actually throwing the EINVAL error is the write() call=
- in rdma_init_qp_attr (which is being called by rdma_create_qp_ex):
-...
-    ret =3D write(id->channel->fd, &cmd, sizeof cmd);
-...
+RDMA raw ethernet can already do IPSEC offload, it doesn't need this
+netdev part for configuration.
 
-It returns -1 and sets errno to 22.
+IIRC it was for some non-TC forwarding VM configuration, but Leon
+knows better.
 
-Note, this is an intermittent error and not always reproducible.
-
-The setup and scenario is as follows:
-- SPDK NVMF target on Debian 11.3 with top of tree rdma-core libs
-- NVMe-oF kernel initiator, Debain 11.5 (no change in rdma-core libs)
-- There is a switch between initiator and SPDK NVMF targets
-- The kernel initiator is taking to 2 SPDK NVMF targets via DM and round-ro=
-bin (I don't think this matters)
-- On the initiator system there is a 512k block size fio load against 48 NM=
-F subsystems (2 target apps with 24 subsystems)
-- When I kill the SPDK target and restart it, then I occasionally get this =
-EINVAL on one of the queue pairs
-
-It's unclear to me why the write call is retuning EINVAL. The file descript=
-or should be valid since I see the same fd in later qpair creation requests=
-.
-
-Any insights are appreciated.
-
--- Michael
+Jason
