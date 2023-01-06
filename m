@@ -2,50 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 647E56604D0
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Jan 2023 17:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A3D66056A
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Jan 2023 18:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236029AbjAFQoI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Jan 2023 11:44:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        id S234785AbjAFRPn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Jan 2023 12:15:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236151AbjAFQnb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Jan 2023 11:43:31 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2052.outbound.protection.outlook.com [40.107.244.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47E37CDD0;
-        Fri,  6 Jan 2023 08:42:59 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bxX13QTs3SwIX72p0Dcyb9ZT48dwndwX1Jo0M2SX5IuMehGfI/nJPztS4kY+vqAmD89LPfEDvzVXuFHj1nrceRjmlflqoqHa1VSYHqFufmyRNwz1RThz0HyDPG2fW8qXE8akVdkpnw/zt2kigP3p0omL/IjBMVm0EvBNdOSYRLGZEjiE+NNlWmgGb17CzdqcDGOFIIg006vaMkhJbfdN2Zh4hc7uo1xBoLn7Pps9SCe6Y8dMsRxY1LjDPJuTwY0nK068QvvD/o9JgrkCJbs7TNKQvU9NGtEF5UMu4/cnhHffK1GEAHYHhMJMzUunv+qApwVf2b8/VoDyrHFZNYoZ1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gzG5H4TYc4/7qSv+sCyigoBtM53TeWCoA9jDKKuj2uo=;
- b=Pw8nB48825Gp1Lue95FJaeJWGP4L/GBTHtTDD88ikRvODFD/wvdbda25HjGqwYBohS8hyqEJFjms1SdXpO+R4VV17aaoHvKn/dF0mqBVfmpwFAojKDpmuQjw2i2RaW3JOCaTapN82A+PGfSKQWbVGNiymItw+TatnxKfianOjQW66ncrZzwH/b63HDMAxblDaA8lzhQJRRnf6FU2VbXQdXrpti1xpk/sIH/gsB5TutkY8wubxmYXqZP0Azb7l5MNxniV9wjbf2HiUFMRjxbutiHgd+R64eyaXcuCmcAW0tTmMC4gd0Iil+C04pZanZivajTthn6je8+NunNqnHvzbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gzG5H4TYc4/7qSv+sCyigoBtM53TeWCoA9jDKKuj2uo=;
- b=WyY1TjMVJnlz52coLQeHeH9IznA7WtTmrFyNfjKdDuIoN7WGY8aaC/Js1PrD78O4Qro0koGcwQuLJ2RNDqd//U94QC+edzgI5SHlKJza2pRIbOpctWhrSa64e6xV64U/NRpK/1sAws4dEzALKWXZiZ4p0euOOBkoNgJ3N5OCrrxYlCKYbRYfXlZaNGYdXH1ZLUTo5iGELMRRB17HjiKhUWYyp1qWidHOsDZ4BRImzFNaHkBsylxS5yHEdbcjXxgsp8rhQoGYSj55u/71Y66moL5tQ0KoGBY0fBCxzZXP20o2d4SmzkftVEDekW4qbcAgNNoeNBbZ6fI26kDqmjpv2w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DS0PR12MB6437.namprd12.prod.outlook.com (2603:10b6:8:cb::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Fri, 6 Jan
- 2023 16:42:52 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.5944.019; Fri, 6 Jan 2023
- 16:42:52 +0000
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        with ESMTP id S234746AbjAFRPl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Jan 2023 12:15:41 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EE1C27CBD4;
+        Fri,  6 Jan 2023 09:15:38 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A8E61FB;
+        Fri,  6 Jan 2023 09:16:20 -0800 (PST)
+Received: from [10.57.75.231] (unknown [10.57.75.231])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EAE933F71A;
+        Fri,  6 Jan 2023 09:15:34 -0800 (PST)
+Message-ID: <4fd1b194-29ef-621d-4059-a8336058f217@arm.com>
+Date:   Fri, 6 Jan 2023 17:15:28 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH 1/8] iommu: Add a gfp parameter to iommu_map()
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
         Joerg Roedel <joro@8bytes.org>,
         Kevin Tian <kevin.tian@intel.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Robin Murphy <robin.murphy@arm.com>
+        Matthew Rosato <mjrosato@linux.ibm.com>
 Cc:     Alex Williamson <alex.williamson@redhat.com>,
         ath10k@lists.infradead.org, ath11k@lists.infradead.org,
         Christian Borntraeger <borntraeger@linux.ibm.com>,
@@ -59,284 +45,414 @@ Cc:     Alex Williamson <alex.williamson@redhat.com>,
         netdev@vger.kernel.org, nouveau@lists.freedesktop.org,
         Niklas Schnelle <schnelle@linux.ibm.com>,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH 8/8] iommu/s390: Push the gfp parameter to the kmem_cache_alloc()'s
-Date:   Fri,  6 Jan 2023 12:42:48 -0400
-Message-Id: <8-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
-In-Reply-To: <0-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
-References: 
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR02CA0009.namprd02.prod.outlook.com
- (2603:10b6:208:fc::22) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS0PR12MB6437:EE_
-X-MS-Office365-Filtering-Correlation-Id: a0017374-1d4e-494e-3c18-08daf0050c9a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qhQN2tDydbCVLbhZ93Se++51k+9xCzhFbxHRGUavBJji5EpqwM9abcbsF7V0lzTYHcnucm4+GxrnaZSKNTOWYweqB28MEEVITP40FJ+9Q7SrUFeZAwdVukNeGTgNa5C2GYXKGeiRS8okwrz95MqRBgPgffNlsOnB6tpTX3puABx6FgEEokb9MvvtD19MTYLIThXfrbiQ7fFFcTrQMhvMbhA1P/kTGykB58Ig5S7Qch+Do2ivTlnyuk3wyGiE2VuTKd9ClLMfNacvr9B2zraoBA9mc7Y1SsNZNzrpL2ta/FJQzotvhwF6eQQE9+zcZMccQzk9Vgk8+ineqFhThWWjP22SFFRibPd4gv86NF8dW+YHlc2lBgeQrBCKatHQMyLnUBRwyoNSsVkA6QLKqxYWmDDGC1MIqYoYZiyT4bFY8+rW7OlFBVa7ignf/iiMGBbeDTLX+NMPWW7GXXyZhvViw2Rp1tZnIhOTvH0d6gOyAVmU/9M1LXp8VtiuxDfo50kxenPwQqh8I2ojcsH2VSKB9bswYcnjYb0sotdtK7hTw0naUYV+xk4wsTkd1GhUu4xBEGpFlVSZwHqah5vCDIEQE2v6RCFKIt10uU2SvH3tOYNTR+J9/HBpa1ienutudhs2JsOrxsY0swbL2Dkae6ai1Q0PIhvGX4xPt3J0lh7sGQS90+/t9zC5J1E0Bo6m3bjY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(136003)(376002)(346002)(39860400002)(396003)(451199015)(7416002)(5660300002)(54906003)(2906002)(41300700001)(8676002)(66946007)(8936002)(66476007)(316002)(4326008)(66556008)(83380400001)(6666004)(478600001)(110136005)(6506007)(36756003)(186003)(2616005)(26005)(6512007)(6486002)(86362001)(38100700002)(4216001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Sc5MxYePZ38UOERpbfLkiFylsIZuVor4DKkdlwSgsWKdtdRNjboiT7D2VVA4?=
- =?us-ascii?Q?70ECVb+7YVZNcEd/rpY3fsAYKJZdHDvRCxqyujDdrfDQcgofx7lR5Lom1Aek?=
- =?us-ascii?Q?BF1jDR4ok9WRQmIhusgec1qtLDaUfGcrZXZFcY1D7L4lC6++buac6PDHpJ+m?=
- =?us-ascii?Q?gHvomrtIOB1UO38R894mmdPJZzeycTebpVIdQDfBIOQfxgocNtVBvgTP8qpV?=
- =?us-ascii?Q?y3lBx/NsUNYWpUmuBZOjzarydFuA0eF/ytnRzl4kZAOoUtTuSOE7WBBPW/au?=
- =?us-ascii?Q?y6NwoO1yLzwcKr5JMOw3VnL2RIdQIxEwEDw518bTsmXHFba+8tSOb/OkEyhT?=
- =?us-ascii?Q?BAXVX4/OrDlKOj+5x8qrNwiWzFSJytCDK2oxd+4oijUaf3ZzNHmshuHpShIb?=
- =?us-ascii?Q?e8S33dAK3hcmohqQkygAM/0kbo5rI1aZFyBa7TSx6fz3TlSPPk0+Joqw6Wz6?=
- =?us-ascii?Q?ZaQSDhyUQ1ekmgTcWYmi51h5K9OBAGwGvyRL8SgCSlXmhi4VlupSyRLF4J44?=
- =?us-ascii?Q?Fn5fTqJYvmotixmgzU1EzpqOxS9GIu4/937LK83J57aAs3GXbl89NcEGgEs7?=
- =?us-ascii?Q?53baYdZtFtbWvFa2FQgUS8XxtIDLGxGX40KhylZcFTOFbxjcleQLEXKLObsB?=
- =?us-ascii?Q?XLs+UBAmjn1gYfDOKASu1Dt9ma+Ib0PJn9I1sucMPqh2WWIwjhdiSj4Dnaxt?=
- =?us-ascii?Q?NYhFO9BLJOdLax3Itiq0n54/kQJmcRR0DNYx17HgHGrD90dIM0pjkzUsHtHJ?=
- =?us-ascii?Q?eaquqzx+0IHYUk/HhP++bxIy/n0dKeX+IjbTAaygITTuYxXgqmYc/Vyckq8+?=
- =?us-ascii?Q?PVvyLrN9PFE0EO4q7jj4rRVP4xX8LuPQO5nZW2V76DhOsCiuYkw0hR8ParBB?=
- =?us-ascii?Q?QBLGvPZTjlN+UtkwX9zv8W3YKw+/t2est/7VlOgWRypzP2UmFMekuFSPlt6u?=
- =?us-ascii?Q?XrkSVZBfG2ug/63+wEuH+repKEfZgIspgrnkkvmPOMbB4rf8FHpeq+fjI7kG?=
- =?us-ascii?Q?mzUpvRsmw9qrxvFEW2KNggBHNJtn9Smzmj0eYNP77myqrx5Kb1DpVzDNm2P4?=
- =?us-ascii?Q?wjsRhmQgoFzt9JL1DAMfueID/cvoZkwNN4fttzWDVBOIMAvRBYwgwXAddPdF?=
- =?us-ascii?Q?E8XkyuPB88/i6CWg4lh5NIwQPpdAjc8GjWBVM9PtbUZ11lmpOdhfHx0vrcMp?=
- =?us-ascii?Q?0b9xbKsXWYDAxzkwNHxSg76i3R1oXCSuY4Go1fDOf6x58HtqhdXUgsnxc4u+?=
- =?us-ascii?Q?rFa47+O1fU0UGwaTUZz2uf1GpwKrsQix5bywJ81XtlsaubnDRFXIGDcqWH+p?=
- =?us-ascii?Q?kFtZTL8NY8MsIeFqWiswBPaONdVTr6Lwj8xJj3jlEF1BUdYv1VFNHucc0qOj?=
- =?us-ascii?Q?rz3+vDO/0LaHQ/6ucXF/zr5U1I4Xmv51NIV2qG6DMyzIHRqBsq4nlxZhM7Wc?=
- =?us-ascii?Q?dqT0z6rLcS6XI8ZM4rXn8FNlTnhLzsYr0spsIbe7Z8Y9HRZyqMwQE8lVU2IL?=
- =?us-ascii?Q?A1zXm9hg5IbgPdUXk+IiLp9UmzUTzJs0f2MWB75Y3FFzVvhPez8hQiWzWOpo?=
- =?us-ascii?Q?f1j2eP2ukOEC+LlQ2SQTt5CRuAX9n60a2/UAGuc4?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0017374-1d4e-494e-3c18-08daf0050c9a
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2023 16:42:50.5174
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WGZm3I+oQ+4QRJzUh+HSjTL0W5DpYFauZa8CmmV9xmQuH2FSE6KkMuNfczmmYs+W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6437
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <1-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <1-v1-6e8b3997c46d+89e-iommu_map_gfp_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-dma_alloc_cpu_table() and dma_alloc_page_table() are eventually called by
-iommufd through s390_iommu_map_pages() and it should not be forced to
-atomic. Thread the gfp parameter through the call chain starting from
-s390_iommu_map_pages().
+On 2023-01-06 16:42, Jason Gunthorpe wrote:
+> The internal mechanisms support this, but instead of exposting the gfp to
+> the caller it wrappers it into iommu_map() and iommu_map_atomic()
+> 
+> Fix this instead of adding more variants for GFP_KERNEL_ACCOUNT.
 
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- arch/s390/include/asm/pci_dma.h |  5 +++--
- arch/s390/pci/pci_dma.c         | 31 +++++++++++++++++--------------
- drivers/iommu/s390-iommu.c      | 15 +++++++++------
- 3 files changed, 29 insertions(+), 22 deletions(-)
+FWIW, since we *do* have two variants already, I think I'd have a mild 
+preference for leaving the regular map calls as-is (i.e. implicit 
+GFP_KERNEL), and just generalising the _atomic versions for the special 
+cases.
 
-diff --git a/arch/s390/include/asm/pci_dma.h b/arch/s390/include/asm/pci_dma.h
-index 91e63426bdc53f..7119c04c51c5c8 100644
---- a/arch/s390/include/asm/pci_dma.h
-+++ b/arch/s390/include/asm/pci_dma.h
-@@ -186,9 +186,10 @@ static inline unsigned long *get_st_pto(unsigned long entry)
- 
- /* Prototypes */
- void dma_free_seg_table(unsigned long);
--unsigned long *dma_alloc_cpu_table(void);
-+unsigned long *dma_alloc_cpu_table(gfp_t gfp);
- void dma_cleanup_tables(unsigned long *);
--unsigned long *dma_walk_cpu_trans(unsigned long *rto, dma_addr_t dma_addr);
-+unsigned long *dma_walk_cpu_trans(unsigned long *rto, dma_addr_t dma_addr,
-+				  gfp_t gfp);
- void dma_update_cpu_trans(unsigned long *entry, phys_addr_t page_addr, int flags);
- 
- extern const struct dma_map_ops s390_pci_dma_ops;
-diff --git a/arch/s390/pci/pci_dma.c b/arch/s390/pci/pci_dma.c
-index ea478d11fbd132..2d9b01d7ca4c5c 100644
---- a/arch/s390/pci/pci_dma.c
-+++ b/arch/s390/pci/pci_dma.c
-@@ -27,11 +27,11 @@ static int zpci_refresh_global(struct zpci_dev *zdev)
- 				  zdev->iommu_pages * PAGE_SIZE);
- }
- 
--unsigned long *dma_alloc_cpu_table(void)
-+unsigned long *dma_alloc_cpu_table(gfp_t gfp)
- {
- 	unsigned long *table, *entry;
- 
--	table = kmem_cache_alloc(dma_region_table_cache, GFP_ATOMIC);
-+	table = kmem_cache_alloc(dma_region_table_cache, gfp);
- 	if (!table)
- 		return NULL;
- 
-@@ -45,11 +45,11 @@ static void dma_free_cpu_table(void *table)
- 	kmem_cache_free(dma_region_table_cache, table);
- }
- 
--static unsigned long *dma_alloc_page_table(void)
-+static unsigned long *dma_alloc_page_table(gfp_t gfp)
- {
- 	unsigned long *table, *entry;
- 
--	table = kmem_cache_alloc(dma_page_table_cache, GFP_ATOMIC);
-+	table = kmem_cache_alloc(dma_page_table_cache, gfp);
- 	if (!table)
- 		return NULL;
- 
-@@ -63,7 +63,7 @@ static void dma_free_page_table(void *table)
- 	kmem_cache_free(dma_page_table_cache, table);
- }
- 
--static unsigned long *dma_get_seg_table_origin(unsigned long *rtep)
-+static unsigned long *dma_get_seg_table_origin(unsigned long *rtep, gfp_t gfp)
- {
- 	unsigned long old_rte, rte;
- 	unsigned long *sto;
-@@ -72,7 +72,7 @@ static unsigned long *dma_get_seg_table_origin(unsigned long *rtep)
- 	if (reg_entry_isvalid(rte)) {
- 		sto = get_rt_sto(rte);
- 	} else {
--		sto = dma_alloc_cpu_table();
-+		sto = dma_alloc_cpu_table(gfp);
- 		if (!sto)
- 			return NULL;
- 
-@@ -90,7 +90,7 @@ static unsigned long *dma_get_seg_table_origin(unsigned long *rtep)
- 	return sto;
- }
- 
--static unsigned long *dma_get_page_table_origin(unsigned long *step)
-+static unsigned long *dma_get_page_table_origin(unsigned long *step, gfp_t gfp)
- {
- 	unsigned long old_ste, ste;
- 	unsigned long *pto;
-@@ -99,7 +99,7 @@ static unsigned long *dma_get_page_table_origin(unsigned long *step)
- 	if (reg_entry_isvalid(ste)) {
- 		pto = get_st_pto(ste);
- 	} else {
--		pto = dma_alloc_page_table();
-+		pto = dma_alloc_page_table(gfp);
- 		if (!pto)
- 			return NULL;
- 		set_st_pto(&ste, virt_to_phys(pto));
-@@ -116,18 +116,19 @@ static unsigned long *dma_get_page_table_origin(unsigned long *step)
- 	return pto;
- }
- 
--unsigned long *dma_walk_cpu_trans(unsigned long *rto, dma_addr_t dma_addr)
-+unsigned long *dma_walk_cpu_trans(unsigned long *rto, dma_addr_t dma_addr,
-+				  gfp_t gfp)
- {
- 	unsigned long *sto, *pto;
- 	unsigned int rtx, sx, px;
- 
- 	rtx = calc_rtx(dma_addr);
--	sto = dma_get_seg_table_origin(&rto[rtx]);
-+	sto = dma_get_seg_table_origin(&rto[rtx], gfp);
- 	if (!sto)
- 		return NULL;
- 
- 	sx = calc_sx(dma_addr);
--	pto = dma_get_page_table_origin(&sto[sx]);
-+	pto = dma_get_page_table_origin(&sto[sx], gfp);
- 	if (!pto)
- 		return NULL;
- 
-@@ -170,7 +171,8 @@ static int __dma_update_trans(struct zpci_dev *zdev, phys_addr_t pa,
- 		return -EINVAL;
- 
- 	for (i = 0; i < nr_pages; i++) {
--		entry = dma_walk_cpu_trans(zdev->dma_table, dma_addr);
-+		entry = dma_walk_cpu_trans(zdev->dma_table, dma_addr,
-+					   GFP_ATOMIC);
- 		if (!entry) {
- 			rc = -ENOMEM;
- 			goto undo_cpu_trans;
-@@ -186,7 +188,8 @@ static int __dma_update_trans(struct zpci_dev *zdev, phys_addr_t pa,
- 		while (i-- > 0) {
- 			page_addr -= PAGE_SIZE;
- 			dma_addr -= PAGE_SIZE;
--			entry = dma_walk_cpu_trans(zdev->dma_table, dma_addr);
-+			entry = dma_walk_cpu_trans(zdev->dma_table, dma_addr,
-+						   GFP_ATOMIC);
- 			if (!entry)
- 				break;
- 			dma_update_cpu_trans(entry, page_addr, flags);
-@@ -576,7 +579,7 @@ int zpci_dma_init_device(struct zpci_dev *zdev)
- 
- 	spin_lock_init(&zdev->iommu_bitmap_lock);
- 
--	zdev->dma_table = dma_alloc_cpu_table();
-+	zdev->dma_table = dma_alloc_cpu_table(GFP_KERNEL);
- 	if (!zdev->dma_table) {
- 		rc = -ENOMEM;
- 		goto out;
-diff --git a/drivers/iommu/s390-iommu.c b/drivers/iommu/s390-iommu.c
-index ed33c6cce08362..7dcfffed260e6b 100644
---- a/drivers/iommu/s390-iommu.c
-+++ b/drivers/iommu/s390-iommu.c
-@@ -52,7 +52,7 @@ static struct iommu_domain *s390_domain_alloc(unsigned domain_type)
- 	if (!s390_domain)
- 		return NULL;
- 
--	s390_domain->dma_table = dma_alloc_cpu_table();
-+	s390_domain->dma_table = dma_alloc_cpu_table(GFP_KERNEL);
- 	if (!s390_domain->dma_table) {
- 		kfree(s390_domain);
- 		return NULL;
-@@ -260,7 +260,8 @@ static void s390_iommu_iotlb_sync_map(struct iommu_domain *domain,
- 
- static int s390_iommu_validate_trans(struct s390_domain *s390_domain,
- 				     phys_addr_t pa, dma_addr_t dma_addr,
--				     unsigned long nr_pages, int flags)
-+				     unsigned long nr_pages, int flags,
-+				     gfp_t gfp)
- {
- 	phys_addr_t page_addr = pa & PAGE_MASK;
- 	unsigned long *entry;
-@@ -268,7 +269,8 @@ static int s390_iommu_validate_trans(struct s390_domain *s390_domain,
- 	int rc;
- 
- 	for (i = 0; i < nr_pages; i++) {
--		entry = dma_walk_cpu_trans(s390_domain->dma_table, dma_addr);
-+		entry = dma_walk_cpu_trans(s390_domain->dma_table, dma_addr,
-+					   gfp);
- 		if (unlikely(!entry)) {
- 			rc = -ENOMEM;
- 			goto undo_cpu_trans;
-@@ -284,7 +286,7 @@ static int s390_iommu_validate_trans(struct s390_domain *s390_domain,
- 	while (i-- > 0) {
- 		dma_addr -= PAGE_SIZE;
- 		entry = dma_walk_cpu_trans(s390_domain->dma_table,
--					   dma_addr);
-+					   dma_addr, gfp);
- 		if (!entry)
- 			break;
- 		dma_update_cpu_trans(entry, 0, ZPCI_PTE_INVALID);
-@@ -301,7 +303,8 @@ static int s390_iommu_invalidate_trans(struct s390_domain *s390_domain,
- 	int rc = 0;
- 
- 	for (i = 0; i < nr_pages; i++) {
--		entry = dma_walk_cpu_trans(s390_domain->dma_table, dma_addr);
-+		entry = dma_walk_cpu_trans(s390_domain->dma_table, dma_addr,
-+					   GFP_ATOMIC);
- 		if (unlikely(!entry)) {
- 			rc = -EINVAL;
- 			break;
-@@ -339,7 +342,7 @@ static int s390_iommu_map_pages(struct iommu_domain *domain,
- 		flags |= ZPCI_TABLE_PROTECTED;
- 
- 	rc = s390_iommu_validate_trans(s390_domain, paddr, iova,
--				       pgcount, flags);
-+				       pgcount, flags, gfp);
- 	if (!rc)
- 		*mapped = size;
- 
--- 
-2.39.0
+However, echoing the recent activity over on the DMA API side of things, 
+I think it's still worth proactively constraining the set of permissible 
+flags, lest we end up with more weird problems if stuff that doesn't 
+really make sense, like GFP_COMP or zone flags, manages to leak through 
+(that may have been part of the reason for having the current wrappers 
+rather than a bare gfp argument in the first place, I forget now).
 
+Thanks,
+Robin.
+
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>   arch/arm/mm/dma-mapping.c                       | 11 +++++++----
+>   .../gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c |  3 ++-
+>   drivers/gpu/drm/tegra/drm.c                     |  2 +-
+>   drivers/gpu/host1x/cdma.c                       |  2 +-
+>   drivers/infiniband/hw/usnic/usnic_uiom.c        |  4 ++--
+>   drivers/iommu/dma-iommu.c                       |  2 +-
+>   drivers/iommu/iommu.c                           | 17 ++++++-----------
+>   drivers/iommu/iommufd/pages.c                   |  6 ++++--
+>   drivers/media/platform/qcom/venus/firmware.c    |  2 +-
+>   drivers/net/ipa/ipa_mem.c                       |  6 ++++--
+>   drivers/net/wireless/ath/ath10k/snoc.c          |  2 +-
+>   drivers/net/wireless/ath/ath11k/ahb.c           |  4 ++--
+>   drivers/remoteproc/remoteproc_core.c            |  5 +++--
+>   drivers/vfio/vfio_iommu_type1.c                 |  9 +++++----
+>   drivers/vhost/vdpa.c                            |  2 +-
+>   include/linux/iommu.h                           |  4 ++--
+>   16 files changed, 43 insertions(+), 38 deletions(-)
+> 
+> diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+> index c135f6e37a00ca..8bc01071474ab7 100644
+> --- a/arch/arm/mm/dma-mapping.c
+> +++ b/arch/arm/mm/dma-mapping.c
+> @@ -984,7 +984,8 @@ __iommu_create_mapping(struct device *dev, struct page **pages, size_t size,
+>   
+>   		len = (j - i) << PAGE_SHIFT;
+>   		ret = iommu_map(mapping->domain, iova, phys, len,
+> -				__dma_info_to_prot(DMA_BIDIRECTIONAL, attrs));
+> +				__dma_info_to_prot(DMA_BIDIRECTIONAL, attrs),
+> +				GFP_KERNEL);
+>   		if (ret < 0)
+>   			goto fail;
+>   		iova += len;
+> @@ -1207,7 +1208,8 @@ static int __map_sg_chunk(struct device *dev, struct scatterlist *sg,
+>   
+>   		prot = __dma_info_to_prot(dir, attrs);
+>   
+> -		ret = iommu_map(mapping->domain, iova, phys, len, prot);
+> +		ret = iommu_map(mapping->domain, iova, phys, len, prot,
+> +				GFP_KERNEL);
+>   		if (ret < 0)
+>   			goto fail;
+>   		count += len >> PAGE_SHIFT;
+> @@ -1379,7 +1381,8 @@ static dma_addr_t arm_iommu_map_page(struct device *dev, struct page *page,
+>   
+>   	prot = __dma_info_to_prot(dir, attrs);
+>   
+> -	ret = iommu_map(mapping->domain, dma_addr, page_to_phys(page), len, prot);
+> +	ret = iommu_map(mapping->domain, dma_addr, page_to_phys(page), len,
+> +			prot, GFP_KERNEL);
+>   	if (ret < 0)
+>   		goto fail;
+>   
+> @@ -1443,7 +1446,7 @@ static dma_addr_t arm_iommu_map_resource(struct device *dev,
+>   
+>   	prot = __dma_info_to_prot(dir, attrs) | IOMMU_MMIO;
+>   
+> -	ret = iommu_map(mapping->domain, dma_addr, addr, len, prot);
+> +	ret = iommu_map(mapping->domain, dma_addr, addr, len, prot, GFP_KERNEL);
+>   	if (ret < 0)
+>   		goto fail;
+>   
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c b/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
+> index 648ecf5a8fbc2a..a4ac94a2ab57fc 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
+> @@ -475,7 +475,8 @@ gk20a_instobj_ctor_iommu(struct gk20a_instmem *imem, u32 npages, u32 align,
+>   		u32 offset = (r->offset + i) << imem->iommu_pgshift;
+>   
+>   		ret = iommu_map(imem->domain, offset, node->dma_addrs[i],
+> -				PAGE_SIZE, IOMMU_READ | IOMMU_WRITE);
+> +				PAGE_SIZE, IOMMU_READ | IOMMU_WRITE,
+> +				GFP_KERNEL);
+>   		if (ret < 0) {
+>   			nvkm_error(subdev, "IOMMU mapping failure: %d\n", ret);
+>   
+> diff --git a/drivers/gpu/drm/tegra/drm.c b/drivers/gpu/drm/tegra/drm.c
+> index 7bd2e65c2a16c5..6ca9f396e55be4 100644
+> --- a/drivers/gpu/drm/tegra/drm.c
+> +++ b/drivers/gpu/drm/tegra/drm.c
+> @@ -1057,7 +1057,7 @@ void *tegra_drm_alloc(struct tegra_drm *tegra, size_t size, dma_addr_t *dma)
+>   
+>   	*dma = iova_dma_addr(&tegra->carveout.domain, alloc);
+>   	err = iommu_map(tegra->domain, *dma, virt_to_phys(virt),
+> -			size, IOMMU_READ | IOMMU_WRITE);
+> +			size, IOMMU_READ | IOMMU_WRITE, GFP_KERNEL);
+>   	if (err < 0)
+>   		goto free_iova;
+>   
+> diff --git a/drivers/gpu/host1x/cdma.c b/drivers/gpu/host1x/cdma.c
+> index 103fda055394ab..4ddfcd2138c95b 100644
+> --- a/drivers/gpu/host1x/cdma.c
+> +++ b/drivers/gpu/host1x/cdma.c
+> @@ -105,7 +105,7 @@ static int host1x_pushbuffer_init(struct push_buffer *pb)
+>   
+>   		pb->dma = iova_dma_addr(&host1x->iova, alloc);
+>   		err = iommu_map(host1x->domain, pb->dma, pb->phys, size,
+> -				IOMMU_READ);
+> +				IOMMU_READ, GFP_KERNEL);
+>   		if (err)
+>   			goto iommu_free_iova;
+>   	} else {
+> diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
+> index c301b3be9f303d..aeeaca65ace96a 100644
+> --- a/drivers/infiniband/hw/usnic/usnic_uiom.c
+> +++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
+> @@ -277,7 +277,7 @@ static int usnic_uiom_map_sorted_intervals(struct list_head *intervals,
+>   				usnic_dbg("va 0x%lx pa %pa size 0x%zx flags 0x%x",
+>   					va_start, &pa_start, size, flags);
+>   				err = iommu_map(pd->domain, va_start, pa_start,
+> -							size, flags);
+> +						size, flags, GFP_KERNEL);
+>   				if (err) {
+>   					usnic_err("Failed to map va 0x%lx pa %pa size 0x%zx with err %d\n",
+>   						va_start, &pa_start, size, err);
+> @@ -294,7 +294,7 @@ static int usnic_uiom_map_sorted_intervals(struct list_head *intervals,
+>   				usnic_dbg("va 0x%lx pa %pa size 0x%zx flags 0x%x\n",
+>   					va_start, &pa_start, size, flags);
+>   				err = iommu_map(pd->domain, va_start, pa_start,
+> -						size, flags);
+> +						size, flags, GFP_KERNEL);
+>   				if (err) {
+>   					usnic_err("Failed to map va 0x%lx pa %pa size 0x%zx with err %d\n",
+>   						va_start, &pa_start, size, err);
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index f798c44e090337..8bdb65e7686ff9 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -1615,7 +1615,7 @@ static struct iommu_dma_msi_page *iommu_dma_get_msi_page(struct device *dev,
+>   	if (!iova)
+>   		goto out_free_page;
+>   
+> -	if (iommu_map(domain, iova, msi_addr, size, prot))
+> +	if (iommu_map(domain, iova, msi_addr, size, prot, GFP_KERNEL))
+>   		goto out_free_iova;
+>   
+>   	INIT_LIST_HEAD(&msi_page->list);
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index de91dd88705bd3..fe29fc2140b132 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -930,7 +930,7 @@ static int iommu_create_device_direct_mappings(struct iommu_group *group,
+>   			if (map_size) {
+>   				ret = iommu_map(domain, addr - map_size,
+>   						addr - map_size, map_size,
+> -						entry->prot);
+> +						entry->prot, GFP_KERNEL);
+>   				if (ret)
+>   					goto out;
+>   				map_size = 0;
+> @@ -2360,31 +2360,26 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+>   	return ret;
+>   }
+>   
+> -static int _iommu_map(struct iommu_domain *domain, unsigned long iova,
+> -		      phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+> +int iommu_map(struct iommu_domain *domain, unsigned long iova,
+> +	      phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+>   {
+>   	const struct iommu_domain_ops *ops = domain->ops;
+>   	int ret;
+>   
+> +	might_sleep_if(gfpflags_allow_blocking(gfp));
+> +
+>   	ret = __iommu_map(domain, iova, paddr, size, prot, gfp);
+>   	if (ret == 0 && ops->iotlb_sync_map)
+>   		ops->iotlb_sync_map(domain, iova, size);
+>   
+>   	return ret;
+>   }
+> -
+> -int iommu_map(struct iommu_domain *domain, unsigned long iova,
+> -	      phys_addr_t paddr, size_t size, int prot)
+> -{
+> -	might_sleep();
+> -	return _iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
+> -}
+>   EXPORT_SYMBOL_GPL(iommu_map);
+>   
+>   int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
+>   	      phys_addr_t paddr, size_t size, int prot)
+>   {
+> -	return _iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
+> +	return iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_map_atomic);
+>   
+> diff --git a/drivers/iommu/iommufd/pages.c b/drivers/iommu/iommufd/pages.c
+> index 1e1d3509efae5e..22cc3bb0c6c55a 100644
+> --- a/drivers/iommu/iommufd/pages.c
+> +++ b/drivers/iommu/iommufd/pages.c
+> @@ -456,7 +456,8 @@ static int batch_iommu_map_small(struct iommu_domain *domain,
+>   			size % PAGE_SIZE);
+>   
+>   	while (size) {
+> -		rc = iommu_map(domain, iova, paddr, PAGE_SIZE, prot);
+> +		rc = iommu_map(domain, iova, paddr, PAGE_SIZE, prot,
+> +			       GFP_KERNEL);
+>   		if (rc)
+>   			goto err_unmap;
+>   		iova += PAGE_SIZE;
+> @@ -500,7 +501,8 @@ static int batch_to_domain(struct pfn_batch *batch, struct iommu_domain *domain,
+>   		else
+>   			rc = iommu_map(domain, iova,
+>   				       PFN_PHYS(batch->pfns[cur]) + page_offset,
+> -				       next_iova - iova, area->iommu_prot);
+> +				       next_iova - iova, area->iommu_prot,
+> +				       GFP_KERNEL);
+>   		if (rc)
+>   			goto err_unmap;
+>   		iova = next_iova;
+> diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+> index 142d4c74017c04..07d4dceb5e72c7 100644
+> --- a/drivers/media/platform/qcom/venus/firmware.c
+> +++ b/drivers/media/platform/qcom/venus/firmware.c
+> @@ -158,7 +158,7 @@ static int venus_boot_no_tz(struct venus_core *core, phys_addr_t mem_phys,
+>   	core->fw.mapped_mem_size = mem_size;
+>   
+>   	ret = iommu_map(iommu, VENUS_FW_START_ADDR, mem_phys, mem_size,
+> -			IOMMU_READ | IOMMU_WRITE | IOMMU_PRIV);
+> +			IOMMU_READ | IOMMU_WRITE | IOMMU_PRIV, GFP_KERNEL);
+>   	if (ret) {
+>   		dev_err(dev, "could not map video firmware region\n");
+>   		return ret;
+> diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
+> index 9ec5af323f731d..991a7d39f06661 100644
+> --- a/drivers/net/ipa/ipa_mem.c
+> +++ b/drivers/net/ipa/ipa_mem.c
+> @@ -466,7 +466,8 @@ static int ipa_imem_init(struct ipa *ipa, unsigned long addr, size_t size)
+>   	size = PAGE_ALIGN(size + addr - phys);
+>   	iova = phys;	/* We just want a direct mapping */
+>   
+> -	ret = iommu_map(domain, iova, phys, size, IOMMU_READ | IOMMU_WRITE);
+> +	ret = iommu_map(domain, iova, phys, size, IOMMU_READ | IOMMU_WRITE,
+> +			GFP_KERNEL);
+>   	if (ret)
+>   		return ret;
+>   
+> @@ -574,7 +575,8 @@ static int ipa_smem_init(struct ipa *ipa, u32 item, size_t size)
+>   	size = PAGE_ALIGN(size + addr - phys);
+>   	iova = phys;	/* We just want a direct mapping */
+>   
+> -	ret = iommu_map(domain, iova, phys, size, IOMMU_READ | IOMMU_WRITE);
+> +	ret = iommu_map(domain, iova, phys, size, IOMMU_READ | IOMMU_WRITE,
+> +			GFP_KERNEL);
+>   	if (ret)
+>   		return ret;
+>   
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index cfcb759a87deac..9a82f0336d9537 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1639,7 +1639,7 @@ static int ath10k_fw_init(struct ath10k *ar)
+>   
+>   	ret = iommu_map(iommu_dom, ar_snoc->fw.fw_start_addr,
+>   			ar->msa.paddr, ar->msa.mem_size,
+> -			IOMMU_READ | IOMMU_WRITE);
+> +			IOMMU_READ | IOMMU_WRITE, GFP_KERNEL);
+>   	if (ret) {
+>   		ath10k_err(ar, "failed to map firmware region: %d\n", ret);
+>   		goto err_iommu_detach;
+> diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
+> index d34a4d6325b2b4..df8fdc7067f99c 100644
+> --- a/drivers/net/wireless/ath/ath11k/ahb.c
+> +++ b/drivers/net/wireless/ath/ath11k/ahb.c
+> @@ -1021,7 +1021,7 @@ static int ath11k_ahb_fw_resources_init(struct ath11k_base *ab)
+>   
+>   	ret = iommu_map(iommu_dom, ab_ahb->fw.msa_paddr,
+>   			ab_ahb->fw.msa_paddr, ab_ahb->fw.msa_size,
+> -			IOMMU_READ | IOMMU_WRITE);
+> +			IOMMU_READ | IOMMU_WRITE, GFP_KERNEL);
+>   	if (ret) {
+>   		ath11k_err(ab, "failed to map firmware region: %d\n", ret);
+>   		goto err_iommu_detach;
+> @@ -1029,7 +1029,7 @@ static int ath11k_ahb_fw_resources_init(struct ath11k_base *ab)
+>   
+>   	ret = iommu_map(iommu_dom, ab_ahb->fw.ce_paddr,
+>   			ab_ahb->fw.ce_paddr, ab_ahb->fw.ce_size,
+> -			IOMMU_READ | IOMMU_WRITE);
+> +			IOMMU_READ | IOMMU_WRITE, GFP_KERNEL);
+>   	if (ret) {
+>   		ath11k_err(ab, "failed to map firmware CE region: %d\n", ret);
+>   		goto err_iommu_unmap;
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 1cd4815a6dd197..80072b6b628358 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -643,7 +643,8 @@ static int rproc_handle_devmem(struct rproc *rproc, void *ptr,
+>   	if (!mapping)
+>   		return -ENOMEM;
+>   
+> -	ret = iommu_map(rproc->domain, rsc->da, rsc->pa, rsc->len, rsc->flags);
+> +	ret = iommu_map(rproc->domain, rsc->da, rsc->pa, rsc->len, rsc->flags,
+> +			GFP_KERNEL);
+>   	if (ret) {
+>   		dev_err(dev, "failed to map devmem: %d\n", ret);
+>   		goto out;
+> @@ -737,7 +738,7 @@ static int rproc_alloc_carveout(struct rproc *rproc,
+>   		}
+>   
+>   		ret = iommu_map(rproc->domain, mem->da, dma, mem->len,
+> -				mem->flags);
+> +				mem->flags, GFP_KERNEL);
+>   		if (ret) {
+>   			dev_err(dev, "iommu_map failed: %d\n", ret);
+>   			goto free_mapping;
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 23c24fe98c00d4..e14f86a8ef5258 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -1480,7 +1480,8 @@ static int vfio_iommu_map(struct vfio_iommu *iommu, dma_addr_t iova,
+>   
+>   	list_for_each_entry(d, &iommu->domain_list, next) {
+>   		ret = iommu_map(d->domain, iova, (phys_addr_t)pfn << PAGE_SHIFT,
+> -				npage << PAGE_SHIFT, prot | IOMMU_CACHE);
+> +				npage << PAGE_SHIFT, prot | IOMMU_CACHE,
+> +				GFP_KERNEL);
+>   		if (ret)
+>   			goto unwind;
+>   
+> @@ -1777,8 +1778,8 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
+>   				size = npage << PAGE_SHIFT;
+>   			}
+>   
+> -			ret = iommu_map(domain->domain, iova, phys,
+> -					size, dma->prot | IOMMU_CACHE);
+> +			ret = iommu_map(domain->domain, iova, phys, size,
+> +					dma->prot | IOMMU_CACHE, GFP_KERNEL);
+>   			if (ret) {
+>   				if (!dma->iommu_mapped) {
+>   					vfio_unpin_pages_remote(dma, iova,
+> @@ -1866,7 +1867,7 @@ static void vfio_test_domain_fgsp(struct vfio_domain *domain)
+>   		return;
+>   
+>   	ret = iommu_map(domain->domain, 0, page_to_phys(pages), PAGE_SIZE * 2,
+> -			IOMMU_READ | IOMMU_WRITE | IOMMU_CACHE);
+> +			IOMMU_READ | IOMMU_WRITE | IOMMU_CACHE, GFP_KERNEL);
+>   	if (!ret) {
+>   		size_t unmapped = iommu_unmap(domain->domain, 0, PAGE_SIZE);
+>   
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 166044642fd5cc..e555c3bd1c030b 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -777,7 +777,7 @@ static int vhost_vdpa_map(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
+>   			r = ops->set_map(vdpa, asid, iotlb);
+>   	} else {
+>   		r = iommu_map(v->domain, iova, pa, size,
+> -			      perm_to_iommu_flags(perm));
+> +			      perm_to_iommu_flags(perm), GFP_KERNEL);
+>   	}
+>   	if (r) {
+>   		vhost_iotlb_del_range(iotlb, iova, iova + size - 1);
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 46e1347bfa2286..d2020994f292db 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -467,7 +467,7 @@ extern int iommu_sva_unbind_gpasid(struct iommu_domain *domain,
+>   extern struct iommu_domain *iommu_get_domain_for_dev(struct device *dev);
+>   extern struct iommu_domain *iommu_get_dma_domain(struct device *dev);
+>   extern int iommu_map(struct iommu_domain *domain, unsigned long iova,
+> -		     phys_addr_t paddr, size_t size, int prot);
+> +		     phys_addr_t paddr, size_t size, int prot, gfp_t gfp);
+>   extern int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
+>   			    phys_addr_t paddr, size_t size, int prot);
+>   extern size_t iommu_unmap(struct iommu_domain *domain, unsigned long iova,
+> @@ -773,7 +773,7 @@ static inline struct iommu_domain *iommu_get_domain_for_dev(struct device *dev)
+>   }
+>   
+>   static inline int iommu_map(struct iommu_domain *domain, unsigned long iova,
+> -			    phys_addr_t paddr, size_t size, int prot)
+> +			    phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+>   {
+>   	return -ENODEV;
+>   }
