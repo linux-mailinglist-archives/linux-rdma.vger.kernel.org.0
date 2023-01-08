@@ -2,55 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC8A661482
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jan 2023 11:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA476614E5
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jan 2023 13:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232699AbjAHKdE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 8 Jan 2023 05:33:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
+        id S230498AbjAHMI7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 8 Jan 2023 07:08:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjAHKdC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 Jan 2023 05:33:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888CEE08A;
-        Sun,  8 Jan 2023 02:33:01 -0800 (PST)
+        with ESMTP id S229822AbjAHMI6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 Jan 2023 07:08:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033B410075;
+        Sun,  8 Jan 2023 04:08:57 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 99939B8074A;
-        Sun,  8 Jan 2023 10:32:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8927DC433EF;
-        Sun,  8 Jan 2023 10:32:57 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8710260C4C;
+        Sun,  8 Jan 2023 12:08:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63A38C433D2;
+        Sun,  8 Jan 2023 12:08:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673173978;
-        bh=83bCfOEOYeaD3X1wzJT0rvku8xLuP3HjBPuclmqWHvw=;
+        s=k20201202; t=1673179736;
+        bh=Ax1j9O9mEQL53XYkMPEizE6+XiCM7vjlJy2j1m9CZAU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t3LA+AEo5Q5/cEnEo1UaxkuyQXG1IYjGahw2cIFAxjz4+iV3w1s2Tj3sy5hrTokwQ
-         YuCz8IWTFTou1jBZ2WQfgN6DsVcgGiy7roYvHQL1Id7+ZYY2dTa+PlsP5nID/5oi5G
-         aWiGgeVEEX/cbJX8Vw/Z9MA2SrXqNJSdFEHrk9t7BrcLFk4UN54X/IqV0uHQbpz43P
-         3GMXjbUjM4oZbdUrUitAnwNp2qy1xbum9/8wZxb/tDsUEldmz9Oc9m9eZ0kHBJ/Zg/
-         vfCNbSqK/L9od59lKN5NJqCKvNYpdGKH4cbrvbHpFXjJQU2RWMN2CInmHBIV7ecCQy
-         BS9glS8rH4/Ew==
-Date:   Sun, 8 Jan 2023 12:32:53 +0200
+        b=S39uT1bK99n2VZ3TLxgWoezGcP6IxsCG6rjj5aYHK4nmWeMR18nKZurW4Zn7emPJO
+         Xlq7m2QwpSTkMkftYgazFw+ercjMssKPsj3WbTPqytEhVCfDZi0K7BkmYVltkohhPl
+         X9DnP28tkL3UNsK7pkQcpauUDf9RcUH7r2i0DvGkFRuk9Ubyn9sOW7qwLN9WTiMFhP
+         5y6gvL0Gi7AEiOkmQ+z9C1P8z/VNhyRJ2d7MW9+qDK4F01IvgGOb5if6ZGRh4zqZo9
+         qnIkr3YNkzlKICTJiFrzLCfshDQyODisI16qB5drS15A5yRJJ1fY0WPi/PT7s5gym4
+         iFN872MT4zt1w==
+Date:   Sun, 8 Jan 2023 14:08:52 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Or Har-Toov <ohartoov@nvidia.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH mlx5-next 3/4] net/mlx5: Use query_special_contexts for
- mkeys
-Message-ID: <Y7qb1aeuGowalgzs@unreal>
-References: <cover.1672819469.git.leonro@nvidia.com>
- <849b3e708a147a3e2fc94277b805f5cc388f16ab.1672819469.git.leonro@nvidia.com>
- <Y7dyLlo3T1ibHMNn@x130>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] RDMA/cxgb4: Replace 0-length arrays with flexible arrays
+Message-ID: <Y7qyVPlNBQaGbInf@unreal>
+References: <20230105223225.never.252-kees@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y7dyLlo3T1ibHMNn@x130>
+In-Reply-To: <20230105223225.never.252-kees@kernel.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,131 +55,64 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 04:58:22PM -0800, Saeed Mahameed wrote:
-> On 04 Jan 10:11, Leon Romanovsky wrote:
-> > From: Or Har-Toov <ohartoov@nvidia.com>
-> > 
-> > Using query_sepcial_contexts in order to get the correct value of
-> > terminate_scatter_list_mkey, as FW will change it in some configurations.
-> > This is done one time when the device is loading and the value is being
-> > saved in the device context.
-> > 
-> > Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
-> > Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> > .../net/ethernet/mellanox/mlx5/core/en_main.c |  2 +-
-> > .../net/ethernet/mellanox/mlx5/core/main.c    | 27 +++++++++++++++++++
-> > include/linux/mlx5/driver.h                   |  1 +
-> > 3 files changed, 29 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > index c76f15505a76..33d7a7095988 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > @@ -826,7 +826,7 @@ static int mlx5e_alloc_rq(struct mlx5e_params *params,
-> > 			if (rq->wqe.info.num_frags < (1 << rq->wqe.info.log_num_frags)) {
-> > 				wqe->data[f].byte_count = 0;
-> > 				wqe->data[f].lkey =
-> > -					MLX5_TERMINATE_SCATTER_LIST_LKEY;
-> > +					mdev->terminate_scatter_list_mkey;
-> > 				wqe->data[f].addr = 0;
-> > 			}
-> > 		}
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > index 7f5db13e3550..d39d758744a0 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > @@ -1221,6 +1221,28 @@ static int mlx5_function_teardown(struct mlx5_core_dev *dev, bool boot)
-> > 	return 0;
-> > }
-> > 
-> > +static int mlx5_get_terminate_scatter_list_mkey(struct mlx5_core_dev *dev)
-> > +{
-> > +	u32 out[MLX5_ST_SZ_DW(query_special_contexts_out)] = {};
-> > +	u32 in[MLX5_ST_SZ_DW(query_special_contexts_in)] = {};
-> > +	int err;
-> > +
-> > +	MLX5_SET(query_special_contexts_in, in, opcode,
-> > +		 MLX5_CMD_OP_QUERY_SPECIAL_CONTEXTS);
-> > +	err = mlx5_cmd_exec_inout(dev, query_special_contexts, in, out);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	if (MLX5_CAP_GEN(dev, terminate_scatter_list_mkey)) {
+On Thu, Jan 05, 2023 at 02:32:32PM -0800, Kees Cook wrote:
+> Zero-length arrays are deprecated[1]. Replace all remaining
+> 0-length arrays with flexible arrays. Detected with GCC 13, using
+> -fstrict-flex-arrays=3:
 > 
-> Why did you execute the command unconditionally if the output is only read
-> conditionally?
+> In function 'build_rdma_write',
+>     inlined from 'c4iw_post_send' at ../drivers/infiniband/hw/cxgb4/qp.c:1173:10:
+> ../drivers/infiniband/hw/cxgb4/qp.c:597:38: warning: array subscript 0 is outside array bounds of 'struct fw_ri_immd[0]' [-Warray-bounds=]
+>   597 |                 wqe->write.u.immd_src[0].r2 = 0;
+>       |                 ~~~~~~~~~~~~~~~~~~~~~^~~
+> ../drivers/infiniband/hw/cxgb4/t4fw_ri_api.h: In function 'c4iw_post_send':
+> ../drivers/infiniband/hw/cxgb4/t4fw_ri_api.h:567:35: note: while referencing 'immd_src'
+>   567 |                 struct fw_ri_immd immd_src[0];
+>       |                                   ^~~~~~~~
 > 
-> early exit before executing the command, older FW might fail and driver will
-> be unusable ..
-
-According to the documentation, this functionality was forever, but you
-are presenting valid concern.
-
+> Additionally drop the unused C99_NOT_SUPPORTED ifndef lines.
 > 
-> > +		dev->terminate_scatter_list_mkey =
-> > +			cpu_to_be32(MLX5_GET(query_special_contexts_out, out,
-> > +					     terminate_scatter_list_mkey));
-> > +		return 0;
-> > +	}
-> > +	dev->terminate_scatter_list_mkey = MLX5_TERMINATE_SCATTER_LIST_LKEY;
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays
 > 
-> Another concern, what happens with old driver that is using the hardcoded
-> value with newer fw ? will it fail ? will it be accepted ?
+> Cc: Potnuri Bharat Teja <bharat@chelsio.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: linux-rdma@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/infiniband/hw/cxgb4/t4fw_ri_api.h | 26 ++++++-----------------
+>  1 file changed, 6 insertions(+), 20 deletions(-)
 
-It will be accepted and everything will work without glitches.
-FW keeps backward compatibility and use MLX5_TERMINATE_SCATTER_LIST_LKEY
-internally as a default.
+<...>
 
-> 
-> The commit message doesn't explain what's going on here very well,
-> Let's discuss internally before you submit V2.
+>  #define FW_RI_SEND_WR_SENDOP_S		0
+> @@ -618,12 +606,10 @@ struct fw_ri_rdma_write_cmpl_wr {
+>  		struct fw_ri_isgl isgl_src;
+>  	} u_cmpl;
+>  	__be64 r3;
+> -#ifndef C99_NOT_SUPPORTED
+>  	union fw_ri_write {
+> -		struct fw_ri_immd immd_src[0];
+> -		struct fw_ri_isgl isgl_src[0];
+> +		DECLARE_FLEX_ARRAY(struct fw_ri_immd, immd_src);
+> +		DECLARE_FLEX_ARRAY(struct fw_ri_isgl, isgl_src);
 
-NP.
+smatch built from commit 40351132df3b ("strlen: add __builtin and
+__fortify functions") produces the following warning:
+drivers/infiniband/hw/cxgb4/t4fw_ri_api.h:575:17: warning: array of flexible structures
 
-> 
-> > +	return 0;
-> > +}
-> > +
-> > static int mlx5_load(struct mlx5_core_dev *dev)
-> > {
-> > 	int err;
-> > @@ -1235,6 +1257,11 @@ static int mlx5_load(struct mlx5_core_dev *dev)
-> > 	mlx5_events_start(dev);
-> > 	mlx5_pagealloc_start(dev);
-> > 
-> > +	err = mlx5_get_terminate_scatter_list_mkey(dev);
-> > +	if (err) {
-> > +		mlx5_core_err(dev, "Failed to query special contexts\n");
-> print the err;
-> > +		goto err_irq_table;
-> > +	}
-> 
-> you are querying FW too soon, no issue here but better if you move it after
-> mlx5_eq_table_create() to use the command EQ rather than the primitive cmd
-> interface.
-
-I'll take a look.
+Is it expected? What will prevent from getting this warning from 0-day
+build bots?
 
 Thanks
 
+
+>  	} u;
+> -#endif
+>  };
+>  
+>  struct fw_ri_rdma_read_wr {
+> -- 
+> 2.34.1
 > 
-> > 	err = mlx5_irq_table_create(dev);
-> > 	if (err) {
-> > 		mlx5_core_err(dev, "Failed to alloc IRQs\n");
-> > diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-> > index d476255c9a3f..5f2c4038d638 100644
-> > --- a/include/linux/mlx5/driver.h
-> > +++ b/include/linux/mlx5/driver.h
-> > @@ -801,6 +801,7 @@ struct mlx5_core_dev {
-> > 	struct mlx5_rsc_dump    *rsc_dump;
-> > 	u32                      vsc_addr;
-> > 	struct mlx5_hv_vhca	*hv_vhca;
-> > +	__be32			terminate_scatter_list_mkey;
-> > };
-> > 
-> > struct mlx5_db {
-> > -- 
-> > 2.38.1
-> > 
