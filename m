@@ -2,84 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB787662497
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 12:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF53662756
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 14:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234902AbjAILs4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Jan 2023 06:48:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
+        id S234288AbjAINjz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Jan 2023 08:39:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237075AbjAILst (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 06:48:49 -0500
-Received: from mxct.zte.com.cn (mxct.zte.com.cn [183.62.165.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18801D120;
-        Mon,  9 Jan 2023 03:48:48 -0800 (PST)
-Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mxct.zte.com.cn (FangMail) with ESMTPS id 4NrBzc6Kznz4y3Z8;
-        Mon,  9 Jan 2023 19:48:44 +0800 (CST)
-Received: from szxlzmapp02.zte.com.cn ([10.5.231.79])
-        by mse-fl2.zte.com.cn with SMTP id 309Bmers067416;
-        Mon, 9 Jan 2023 19:48:40 +0800 (+08)
-        (envelope-from yang.yang29@zte.com.cn)
-Received: from mapi (szxlzmapp01[null])
-        by mapi (Zmail) with MAPI id mid14;
-        Mon, 9 Jan 2023 19:48:43 +0800 (CST)
-Date:   Mon, 9 Jan 2023 19:48:43 +0800 (CST)
-X-Zmail-TransId: 2b0363bbff1bffffffffabae1a6f
-X-Mailer: Zmail v1.0
-Message-ID: <202301091948433010050@zte.com.cn>
-Mime-Version: 1.0
-From:   <yang.yang29@zte.com.cn>
-To:     <santosh.shilimkar@oracle.com>
-Cc:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
-        <linux-kernel@vger.kernel.org>, <xu.panda@zte.com.cn>,
-        <yang.yang29@zte.com.cn>
-Subject: =?UTF-8?B?W1BBVENIIG5ldC1uZXh0XSBuZXQvcmRzOiB1c2Ugc3Ryc2NweSgpIHRvIGluc3RlYWQgb2Ygc3RybmNweSgp?=
-Content-Type: text/plain;
-        charset="UTF-8"
-X-MAIL: mse-fl2.zte.com.cn 309Bmers067416
-X-Fangmail-Gw-Spam-Type: 0
-X-FangMail-Miltered: at cgslv5.04-192.168.251.13.novalocal with ID 63BBFF1C.000 by FangMail milter!
-X-FangMail-Envelope: 1673264924/4NrBzc6Kznz4y3Z8/63BBFF1C.000/10.5.228.133/[10.5.228.133]/mse-fl2.zte.com.cn/<yang.yang29@zte.com.cn>
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 63BBFF1C.000/4NrBzc6Kznz4y3Z8
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S237298AbjAINjV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 08:39:21 -0500
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C2B3C717
+        for <linux-rdma@vger.kernel.org>; Mon,  9 Jan 2023 05:37:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1673271440; x=1704807440;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=g/AGCU3dCfM78X+U+AnhkC6pjyXJRaeliPPKhFuUKu8=;
+  b=MCN+n4TBzPM66UIXMYQro5nPpiBHqcvp/hUpuzFHnu98Q7bGsYrfhJW3
+   elEgpMMrSOD7U4zATupmHMCAncBk4LaYkfzIMSKwMbXxlroRNH8W41sse
+   lN8VD9cO89xulfeSlbfBlYlU8sbS9esGvycqQ7ILDf496RJrmRNITVCr5
+   4=;
+X-IronPort-AV: E=Sophos;i="5.96,311,1665446400"; 
+   d="scan'208";a="280866325"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2023 13:37:16 +0000
+Received: from EX13D30EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com (Postfix) with ESMTPS id EE44582134;
+        Mon,  9 Jan 2023 13:37:14 +0000 (UTC)
+Received: from EX19D002EUA004.ant.amazon.com (10.252.50.181) by
+ EX13D30EUA001.ant.amazon.com (10.43.165.138) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.42; Mon, 9 Jan 2023 13:37:13 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX19D002EUA004.ant.amazon.com (10.252.50.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.7; Mon, 9 Jan 2023 13:37:13 +0000
+Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
+ (10.253.69.224) by mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP
+ Server id 15.0.1497.42 via Frontend Transport; Mon, 9 Jan 2023 13:37:11 +0000
+From:   <ynachum@amazon.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <sleybo@amazon.com>, <matua@amazon.com>
+CC:     <mrgolin@amazon.com>, <yatias@habana.ai>,
+        Yonatan Nachum <ynachum@amazon.com>
+Subject: [PATCH for-rc v3] RDMA: Fix ib block iterator counter overflow
+Date:   Mon, 9 Jan 2023 13:37:11 +0000
+Message-ID: <20230109133711.13678-1-ynachum@amazon.com>
+X-Mailer: git-send-email 2.38.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xu Panda <xu.panda@zte.com.cn>
+From: Yonatan Nachum <ynachum@amazon.com>
 
-The implementation of strscpy() is more robust and safer.
-That's now the recommended way to copy NUL-terminated strings.
+When registering a new DMA MR after selecting the best aligned page size
+for it, we iterate over the given sglist to split each entry to smaller,
+aligned to the selected page size, DMA blocks.
 
-Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
-Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+In given circumstances where the sg entry and page size fit certain
+sizes and the sg entry is not aligned to the selected page size, the
+total size of the aligned pages we need to cover the sg entry is >= 4GB.
+Under this circumstances, while iterating page aligned blocks, the
+counter responsible for counting how much we advanced from the start of
+the sg entry is overflowed because its type is u32 and we pass 4GB in
+size. This can lead to an infinite loop inside the iterator function
+because the overflow prevents the counter to be larger
+than the size of the sg entry.
+
+Fix the presented problem by changing the advancement condition to
+eliminate overflow.
+
+Backtrace:
+[  192.374329] efa_reg_user_mr_dmabuf
+[  192.376783] efa_register_mr
+[  192.382579] pgsz_bitmap 0xfffff000 rounddown 0x80000000
+[  192.386423] pg_sz [0x80000000] umem_length[0xc0000000]
+[  192.392657] start 0x0 length 0xc0000000 params.page_shift 31 params.page_num 3
+[  192.399559] hp_cnt[3], pages_in_hp[524288]
+[  192.403690] umem->sgt_append.sgt.nents[1]
+[  192.407905] number entries: [1], pg_bit: [31]
+[  192.411397] biter->__sg_nents [1] biter->__sg [0000000008b0c5d8]
+[  192.415601] biter->__sg_advance [665837568] sg_dma_len[3221225472]
+[  192.419823] biter->__sg_nents [1] biter->__sg [0000000008b0c5d8]
+[  192.423976] biter->__sg_advance [2813321216] sg_dma_len[3221225472]
+[  192.428243] biter->__sg_nents [1] biter->__sg [0000000008b0c5d8]
+[  192.432397] biter->__sg_advance [665837568] sg_dma_len[3221225472]
+
+Fixes: a808273a495c ("RDMA/verbs: Add a DMA iterator to return aligned contiguous memory blocks")
+Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
 ---
- net/rds/stats.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/infiniband/core/verbs.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/net/rds/stats.c b/net/rds/stats.c
-index 9e87da43c004..6a5a60d36d60 100644
---- a/net/rds/stats.c
-+++ b/net/rds/stats.c
-@@ -89,8 +89,7 @@ void rds_stats_info_copy(struct rds_info_iterator *iter,
-
- 	for (i = 0; i < nr; i++) {
- 		BUG_ON(strlen(names[i]) >= sizeof(ctr.name));
--		strncpy(ctr.name, names[i], sizeof(ctr.name) - 1);
--		ctr.name[sizeof(ctr.name) - 1] = '\0';
-+		strscpy(ctr.name, names[i], sizeof(ctr.name));
- 		ctr.value = values[i];
-
- 		rds_info_copy(iter, &ctr, sizeof(ctr));
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 26b021f43ba4..11b1c1603aeb 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -2957,15 +2957,18 @@ EXPORT_SYMBOL(__rdma_block_iter_start);
+ bool __rdma_block_iter_next(struct ib_block_iter *biter)
+ {
+ 	unsigned int block_offset;
++	unsigned int sg_delta;
+ 
+ 	if (!biter->__sg_nents || !biter->__sg)
+ 		return false;
+ 
+ 	biter->__dma_addr = sg_dma_address(biter->__sg) + biter->__sg_advance;
+ 	block_offset = biter->__dma_addr & (BIT_ULL(biter->__pg_bit) - 1);
+-	biter->__sg_advance += BIT_ULL(biter->__pg_bit) - block_offset;
++	sg_delta = BIT_ULL(biter->__pg_bit) - block_offset;
+ 
+-	if (biter->__sg_advance >= sg_dma_len(biter->__sg)) {
++	if (sg_dma_len(biter->__sg) - biter->__sg_advance > sg_delta) {
++		biter->__sg_advance += sg_delta;
++	} else {
+ 		biter->__sg_advance = 0;
+ 		biter->__sg = sg_next(biter->__sg);
+ 		biter->__sg_nents--;
 -- 
-2.15.2
+2.38.1
+
