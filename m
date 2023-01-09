@@ -2,49 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31484661CA8
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 04:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C7B661CA9
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 04:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbjAID1Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 8 Jan 2023 22:27:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
+        id S230175AbjAID1W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 8 Jan 2023 22:27:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233243AbjAID1P (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 Jan 2023 22:27:15 -0500
+        with ESMTP id S234193AbjAID1T (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 Jan 2023 22:27:19 -0500
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948B3559D
-        for <linux-rdma@vger.kernel.org>; Sun,  8 Jan 2023 19:27:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FD35F88
+        for <linux-rdma@vger.kernel.org>; Sun,  8 Jan 2023 19:27:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673234834; x=1704770834;
+  t=1673234838; x=1704770838;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=D5TOZ1AOPJ7hgU++8UqITuibbNA0kpi+Nu3NUol/muI=;
-  b=JZmr7IbB36xXUDgyV7i0dRxhZ9bHy7/xhfZfb0DtBt4QXxYxhjBdhRXI
-   vRYC0wT7BAKWc935yX535vxxjT8MHZJa74PgztwrEIvubAydnImhaSDUv
-   cKoO9rsRfbhzwAIf9kBcC2RCWLkzv5pWWVatRF/aw7v3+DrzpZEi2z9jA
-   8Ux+y11ODgzCnq8vR9jbUNioadbh/EFjjuQ2c2nW23GQZ5oPjQvGAw1f3
-   gj7qBK7TOLBr6EYrgykoV2qgpDU2NjpHxTMrYFx+PI13vP5G7wpUzzeVZ
-   eVapAHhnbvN6I5hRc4nlwGqNBm5uwqSTcwA7Q57032BFDsOnzajiHRB2z
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10584"; a="321487923"
+  bh=pYaNJkEeFaIKWxO+2PWXwvoGZcz6FH7q7/PzNTCPpGs=;
+  b=HMAKphiv/wV5c5o+AutIGoypX1TMOuFuH0VTV8X+f+VZSiOAZY+Ayzoo
+   +lF1YYPQTOkFkfSU5VMsY6T2bTlcMIvnEnbXzoDbgDfBF4An1bE++ukPV
+   mFzZrN31+ZPb1QVLD3taNPxQCdfzJZ/Cq5mBv4xKt45xRljHUFGnBx++5
+   sjm4RzAUzoOgASmnTEo4v1RQ9ldT+3fYre7XMuSg+NBZ7PbZcj6H4ETNM
+   3B7NDwX0tGL5bA2iara99KAjEl4zjeltzLgmMlvsWjSlTw28uWywbEjq0
+   4zUI7FAcba1xTZk5cPiI+oFwuSjj19odmPZC20G1hJWN+POjoE9Lx0ORC
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10584"; a="321487930"
 X-IronPort-AV: E=Sophos;i="5.96,311,1665471600"; 
-   d="scan'208";a="321487923"
+   d="scan'208";a="321487930"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2023 19:27:14 -0800
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2023 19:27:17 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10584"; a="649882054"
+X-IronPort-AV: E=McAfee;i="6500,9779,10584"; a="649882068"
 X-IronPort-AV: E=Sophos;i="5.96,311,1665471600"; 
-   d="scan'208";a="649882054"
+   d="scan'208";a="649882068"
 Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga007.jf.intel.com with ESMTP; 08 Jan 2023 19:27:11 -0800
+  by orsmga007.jf.intel.com with ESMTP; 08 Jan 2023 19:27:14 -0800
 From:   Zhu Yanjun <yanjun.zhu@intel.com>
 To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
         leon@kernel.org, linux-rdma@vger.kernel.org
 Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: [PATCH for-next 1/4] RDMA/irdma: Split MEM handler into irdma_reg_user_mr_type_mem
-Date:   Mon,  9 Jan 2023 14:53:59 -0500
-Message-Id: <20230109195402.1339737-2-yanjun.zhu@intel.com>
+Subject: [PATCH for-next 2/4] RDMA/irdma: Split mr alloc and free into new functions
+Date:   Mon,  9 Jan 2023 14:54:00 -0500
+Message-Id: <20230109195402.1339737-3-yanjun.zhu@intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20230109195402.1339737-1-yanjun.zhu@intel.com>
 References: <20230109195402.1339737-1-yanjun.zhu@intel.com>
@@ -62,148 +62,125 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-The source codes related with IRDMA_MEMREG_TYPE_MEM are split
-into a new function irdma_reg_user_mr_type_mem.
+In the function irdma_reg_user_mr, the mr allocation and free
+will be used by other functions. As such, the source codes related
+with mr allocation and free are split into the new functions.
 
 Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 ---
- drivers/infiniband/hw/irdma/verbs.c | 85 +++++++++++++++++------------
- 1 file changed, 51 insertions(+), 34 deletions(-)
+ drivers/infiniband/hw/irdma/verbs.c | 78 ++++++++++++++++++-----------
+ 1 file changed, 50 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index f6973ea55eda..40109da6489a 100644
+index 40109da6489a..5cff8656d79e 100644
 --- a/drivers/infiniband/hw/irdma/verbs.c
 +++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -2745,6 +2745,55 @@ static int irdma_hwreg_mr(struct irdma_device *iwdev, struct irdma_mr *iwmr,
- 	return ret;
+@@ -2794,6 +2794,52 @@ static int irdma_reg_user_mr_type_mem(struct irdma_device *iwdev,
+ 	return err;
  }
  
-+static int irdma_reg_user_mr_type_mem(struct irdma_device *iwdev,
-+				      struct irdma_mr *iwmr, int access)
++static struct irdma_mr *irdma_alloc_iwmr(struct ib_umem *region,
++					 struct ib_pd *pd, u64 virt,
++					 __u16 reg_type,
++					 struct irdma_device *iwdev)
 +{
-+	int err = 0;
-+	bool use_pbles = false;
-+	u32 stag = 0;
-+	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
++	struct irdma_mr *iwmr;
++	struct irdma_pbl *iwpbl;
 +
-+	use_pbles = (iwmr->page_cnt != 1);
++	iwmr = kzalloc(sizeof(*iwmr), GFP_KERNEL);
++	if (!iwmr)
++		return ERR_PTR(-ENOMEM);
 +
-+	err = irdma_setup_pbles(iwdev->rf, iwmr, use_pbles, false);
-+	if (err)
-+		return err;
++	iwpbl = &iwmr->iwpbl;
++	iwpbl->iwmr = iwmr;
++	iwmr->region = region;
++	iwmr->ibmr.pd = pd;
++	iwmr->ibmr.device = pd->device;
++	iwmr->ibmr.iova = virt;
++	iwmr->page_size = PAGE_SIZE;
++	iwmr->type = reg_type;
 +
-+	if (use_pbles) {
-+		err = irdma_check_mr_contiguous(&iwpbl->pble_alloc,
-+						iwmr->page_size);
-+		if (err) {
-+			irdma_free_pble(iwdev->rf->pble_rsrc, &iwpbl->pble_alloc);
-+			iwpbl->pbl_allocated = false;
-+			return err;
++	if (reg_type == IRDMA_MEMREG_TYPE_MEM) {
++		iwmr->page_size = ib_umem_find_best_pgsz(region,
++							 iwdev->rf->sc_dev.hw_attrs.page_size_cap,
++							 virt);
++		if (unlikely(!iwmr->page_size)) {
++			kfree(iwmr);
++			return ERR_PTR(-EOPNOTSUPP);
 +		}
 +	}
 +
-+	stag = irdma_create_stag(iwdev);
-+	if (!stag) {
-+		if (use_pbles) {
-+			irdma_free_pble(iwdev->rf->pble_rsrc, &iwpbl->pble_alloc);
-+			iwpbl->pbl_allocated = false;
-+		}
-+		return -ENOMEM;
-+	}
++	iwmr->len = region->length;
++	iwpbl->user_base = virt;
++	iwmr->page_cnt = ib_umem_num_dma_blocks(region, iwmr->page_size);
 +
-+	iwmr->stag = stag;
-+	iwmr->ibmr.rkey = stag;
-+	iwmr->ibmr.lkey = stag;
-+	err = irdma_hwreg_mr(iwdev, iwmr, access);
-+	if (err) {
-+		irdma_free_stag(iwdev, stag);
-+		if (use_pbles) {
-+			irdma_free_pble(iwdev->rf->pble_rsrc, &iwpbl->pble_alloc);
-+			iwpbl->pbl_allocated = false;
-+		}
-+		return err;
-+	}
++	return iwmr;
++}
 +
-+	return err;
++/*
++ * This function frees the resources from irdma_alloc_iwmr
++ */
++static void irdma_free_iwmr(struct irdma_mr *iwmr)
++{
++	kfree(iwmr);
 +}
 +
  /**
   * irdma_reg_user_mr - Register a user memory region
   * @pd: ptr of pd
-@@ -2761,17 +2810,15 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
- #define IRDMA_MEM_REG_MIN_REQ_LEN offsetofend(struct irdma_mem_reg_req, sq_pages)
- 	struct irdma_device *iwdev = to_iwdev(pd->device);
- 	struct irdma_ucontext *ucontext;
--	struct irdma_pble_alloc *palloc;
- 	struct irdma_pbl *iwpbl;
- 	struct irdma_mr *iwmr;
- 	struct ib_umem *region;
- 	struct irdma_mem_reg_req req;
--	u32 total, stag = 0;
-+	u32 total;
- 	u8 shadow_pgcnt = 1;
- 	bool use_pbles = false;
- 	unsigned long flags;
- 	int err = -EINVAL;
--	int ret;
- 
- 	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
- 		return ERR_PTR(-EINVAL);
-@@ -2818,7 +2865,6 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+@@ -2839,34 +2885,13 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 		return ERR_PTR(-EFAULT);
  	}
- 	iwmr->len = region->length;
- 	iwpbl->user_base = virt;
--	palloc = &iwpbl->pble_alloc;
- 	iwmr->type = req.reg_type;
- 	iwmr->page_cnt = ib_umem_num_dma_blocks(region, iwmr->page_size);
  
-@@ -2864,36 +2910,9 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
- 		spin_unlock_irqrestore(&ucontext->cq_reg_mem_list_lock, flags);
- 		break;
- 	case IRDMA_MEMREG_TYPE_MEM:
--		use_pbles = (iwmr->page_cnt != 1);
+-	iwmr = kzalloc(sizeof(*iwmr), GFP_KERNEL);
+-	if (!iwmr) {
++	iwmr = irdma_alloc_iwmr(region, pd, virt, req.reg_type, iwdev);
++	if (IS_ERR(iwmr)) {
+ 		ib_umem_release(region);
+-		return ERR_PTR(-ENOMEM);
++		return (struct ib_mr *)iwmr;
+ 	}
+ 
+ 	iwpbl = &iwmr->iwpbl;
+-	iwpbl->iwmr = iwmr;
+-	iwmr->region = region;
+-	iwmr->ibmr.pd = pd;
+-	iwmr->ibmr.device = pd->device;
+-	iwmr->ibmr.iova = virt;
+-	iwmr->page_size = PAGE_SIZE;
 -
--		err = irdma_setup_pbles(iwdev->rf, iwmr, use_pbles, false);
-+		err = irdma_reg_user_mr_type_mem(iwdev, iwmr, access);
- 		if (err)
- 			goto error;
--
--		if (use_pbles) {
--			ret = irdma_check_mr_contiguous(palloc,
--							iwmr->page_size);
--			if (ret) {
--				irdma_free_pble(iwdev->rf->pble_rsrc, palloc);
--				iwpbl->pbl_allocated = false;
--			}
+-	if (req.reg_type == IRDMA_MEMREG_TYPE_MEM) {
+-		iwmr->page_size = ib_umem_find_best_pgsz(region,
+-							 iwdev->rf->sc_dev.hw_attrs.page_size_cap,
+-							 virt);
+-		if (unlikely(!iwmr->page_size)) {
+-			kfree(iwmr);
+-			ib_umem_release(region);
+-			return ERR_PTR(-EOPNOTSUPP);
 -		}
--
--		stag = irdma_create_stag(iwdev);
--		if (!stag) {
--			err = -ENOMEM;
--			goto error;
--		}
--
--		iwmr->stag = stag;
--		iwmr->ibmr.rkey = stag;
--		iwmr->ibmr.lkey = stag;
--		err = irdma_hwreg_mr(iwdev, iwmr, access);
--		if (err) {
--			irdma_free_stag(iwdev, stag);
--			goto error;
--		}
--
- 		break;
- 	default:
+-	}
+-	iwmr->len = region->length;
+-	iwpbl->user_base = virt;
+-	iwmr->type = req.reg_type;
+-	iwmr->page_cnt = ib_umem_num_dma_blocks(region, iwmr->page_size);
+ 
+ 	switch (req.reg_type) {
+ 	case IRDMA_MEMREG_TYPE_QP:
+@@ -2918,13 +2943,10 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
  		goto error;
-@@ -2904,8 +2923,6 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 	}
+ 
+-	iwmr->type = req.reg_type;
+-
  	return &iwmr->ibmr;
- 
+-
  error:
--	if (palloc->level != PBLE_LEVEL_0 && iwpbl->pbl_allocated)
--		irdma_free_pble(iwdev->rf->pble_rsrc, palloc);
  	ib_umem_release(region);
- 	kfree(iwmr);
+-	kfree(iwmr);
++	irdma_free_iwmr(iwmr);
  
+ 	return ERR_PTR(err);
+ }
 -- 
 2.27.0
 
