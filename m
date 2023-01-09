@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E8F662FD6
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 20:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8EE662FD7
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 20:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237305AbjAITEa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Jan 2023 14:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
+        id S237323AbjAITEf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Jan 2023 14:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237323AbjAITE3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 14:04:29 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2104.outbound.protection.outlook.com [40.107.102.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E85392CA
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Jan 2023 11:04:28 -0800 (PST)
+        with ESMTP id S237225AbjAITEe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 14:04:34 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2106.outbound.protection.outlook.com [40.107.96.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6EC32EA2
+        for <linux-rdma@vger.kernel.org>; Mon,  9 Jan 2023 11:04:33 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KAiGRw/ssHty/kmpcs1gQjgCUwbYermkyELMdaYv2X6WgKOUkqom4bK+VL3sRYm32l4GNHFBdZ48gu17NvnYuxstE60PrTKKs1z4pKs0vkbjlvPZbTp6yqdYZyTmfu++nqwJ0kE2flBQNJ+KEjpWcdCjjQbn2Y1WQqJ9njZhecJTMBObGiHx3eWteSMhaaBTmnQqPzJunhmVQZ5NbMMIIzJhgAfqSIjYfgbT4K7HeUPeZMKkNqyNePP9VS0vx0W1iPINWiXxrXx7M0QYY+R3xJXdatCNTbUMWHCmYk8iE0iz6gVNMU2y2oRfuzUelbuMKCbRnUN34e3H+sNXZH5vCg==
+ b=hU9HastQRX0khIGXpM+9kXKqt+6d7CJtp19uAJ1z1Ce7TcHeBPlavJSMHZouPT4wvRgqHhjjr+mkOqP1gwz1jEFxDdLCbH5ehBwt5BK2sq7vIZI1deO9RQnf64kUDatRrLCNh0CCA3ZVE1CDbkabBKZdT6uQMSB+SpPNvs3/p8U4Kt1j1CTOc6036k/UGjlAQHzw/u3sY8dwPfguDujvRPn5lhXIbPnY9bqyq1L5zomKNw2rMbjP1mA5APt+Q0PAxdkpcmU7WWyHVpfASif2hJMw/6FzgiLhnzg7BFh/spX2yzkNllBCeWM4yg1+fAWuvA/Yoxdg18/Z1Z7yYe8Ujw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9LJwKoJLP0snXc8RW9WMN8sZHPQML36iDXo9+QCdilU=;
- b=QHO/e4qdkNyANPUvA03GJLxiMZXmwVn5FJ1Gj5YaJbjED/Aw2EokAq0xSjG0OGcMqHZFDIh/HWMppNf0hFgnXTix5qXYveSZcEUL9xQcqrDfx6wm1NgmoyB2mPPt6uLq58N0FQTTq6ji9iJZYGu4EQW8fgzAiZKFDXClSJgt6LtavMV/dPs+w8SD4MZgZISrDwSi28ZeSPkG+xTpqhKG6rRTeLN7C8bXE+HsWTyEfiBdv9W54f9pQuKiDJQgP9Tar4j4TkpufuUbocdfJreRZB37jpkrXs/IxwNhlop/agvcKClF9TMw7A2zLda5hqCKbC2gDkyKwq1/9jxjfVmTZA==
+ bh=qy28ws4X2FxSiPV+NgaKBr6iU8xsmGUdCP6dSpvcwaE=;
+ b=ZqjFQqdZlSqB4yqlQAvFip9tW7kGjYXHKcbC8CpoqicV1HmjYxLQ9i3fb5UDf5doeKIfFh+ZZ9nsxy9tdgBeSfCa86k02au1nd5EbxOgRdjzc7AhmIioUBCUjhXJbEeG9/eVOBdgMJibsFN6PrPnDhl7UFKS09OGp8/Ttqv8yzyIFvOfJYr/UqQURiXRlah75jLeFaWby9blvSs7oY1TKsIyRuHsmJBVOoOj9V+PzSTebhJ9TmCo7DyZjuCbxA93xqX0L/Elq1ffC52yLbXaAbI1LaStAZhGY1qPoC/FAYcIdfh1tcuocKbSXrvVbPGfHCCkuwXr5jw2QrsagLp5KQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=nvidia.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
@@ -28,17 +28,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9LJwKoJLP0snXc8RW9WMN8sZHPQML36iDXo9+QCdilU=;
- b=ZgmCOUtG5nimvZncEnWL8HZ2GGnBBQiOZxGxTbjcutXDO3Iq+/PkL016soDkoUQC3vEXcuAYonGYpOyOrWPOvyvpmo5oQtEoEfGGv7ra3QBpfWngsk8Jmb5w7bTsMIir/i59bn2Ru6NipViYZpa14GSpjoJRhOeOjikZNX4Q1+LWxntAuq6AAd++BIBLnu2hyiiZblDaaqzYm/VLFUYsIkoeyGWFV4OeuNaXzfVcAi7LmY+0vZpNG4uUGdsFtEbaH1QoA4InCVxkAYAlfL7xXWXXGKOW2WVEIyFBd8ts0Byges2jdRTOavEmrlPOja9y7+4Pnks3xzFlMlth4AEnGg==
-Received: from MW4PR04CA0073.namprd04.prod.outlook.com (2603:10b6:303:6b::18)
- by PH0PR01MB7256.prod.exchangelabs.com (2603:10b6:510:105::9) with Microsoft
+ bh=qy28ws4X2FxSiPV+NgaKBr6iU8xsmGUdCP6dSpvcwaE=;
+ b=J/Tko96TLCHRUfeCrNGMbX21ciwdfmbtF0vkBN84w4zxnOOfDzXM5d4yJul5mjpJGNeI1iuy/gnsYALoixtujYKHJH5trMM3w5lWc358ZPxJfbZ7wV4G5Y78tsTe8chGW4+0fkjMC0lx5bMvDbHcoDxSJ8Nxswt5jGX2k2nNlU+uxy6/eEzx0yXuwXnOn9GNia48/UuW9qC83nNUj3jRERySipAEdI7rFOHfnVNuqjhpJ3+tMwdTzTbdjoYRMiuPxLfMFM+iZm0h4aedY/6mEAldHRdodTc54eiQy/FIwHDQw5SeUWPNaspZfjT9sJWWsyVJyk/sbHzfA5JMLMQglw==
+Received: from MW4PR04CA0357.namprd04.prod.outlook.com (2603:10b6:303:8a::32)
+ by MN2PR01MB5472.prod.exchangelabs.com (2603:10b6:208:113::13) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5986.18; Mon, 9 Jan 2023 19:04:25 +0000
-Received: from CO1NAM11FT102.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:6b:cafe::c0) by MW4PR04CA0073.outlook.office365.com
- (2603:10b6:303:6b::18) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.5986.18; Mon, 9 Jan 2023 19:04:31 +0000
+Received: from CO1NAM11FT047.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8a:cafe::df) by MW4PR04CA0357.outlook.office365.com
+ (2603:10b6:303:8a::32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.18 via Frontend
- Transport; Mon, 9 Jan 2023 19:04:25 +0000
+ Transport; Mon, 9 Jan 2023 19:04:30 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=bestguesspass action=none
@@ -48,19 +48,19 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=awfm-02.cornelisnetworks.com; pr=C
 Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
- CO1NAM11FT102.mail.protection.outlook.com (10.13.175.87) with Microsoft SMTP
+ CO1NAM11FT047.mail.protection.outlook.com (10.13.174.132) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5986.18 via Frontend Transport; Mon, 9 Jan 2023 19:04:25 +0000
+ 15.20.5944.6 via Frontend Transport; Mon, 9 Jan 2023 19:04:30 +0000
 Received: from awfm-02.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 309J4OUL1477937;
-        Mon, 9 Jan 2023 14:04:24 -0500
-Subject: [PATCH for-next 5/7] IB/hfi1: Split IB counter allocation
+        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 309J4TDO1477945;
+        Mon, 9 Jan 2023 14:04:29 -0500
+Subject: [PATCH for-next 6/7] IBh/hfi1: Update RMT size calculation
 From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To:     jgg@nvidia.com, leonro@nvidia.com
 Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
         linux-rdma@vger.kernel.org
-Date:   Mon, 09 Jan 2023 14:04:24 -0500
-Message-ID: <167329106431.1472990.12587703493884915680.stgit@awfm-02.cornelisnetworks.com>
+Date:   Mon, 09 Jan 2023 14:04:29 -0500
+Message-ID: <167329106946.1472990.18385495251650939054.stgit@awfm-02.cornelisnetworks.com>
 In-Reply-To: <167328561962.1472990.9463955313515395755.stgit@awfm-02.cornelisnetworks.com>
 References: <167328561962.1472990.9463955313515395755.stgit@awfm-02.cornelisnetworks.com>
 User-Agent: StGit/1.5.dev2+g9ce680a5
@@ -69,23 +69,23 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT102:EE_|PH0PR01MB7256:EE_
-X-MS-Office365-Filtering-Correlation-Id: a9e5182b-33d3-4dd6-91e5-08daf2745370
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT047:EE_|MN2PR01MB5472:EE_
+X-MS-Office365-Filtering-Correlation-Id: ff91af65-5048-4965-973b-08daf274567e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YJ0qKQdte9qebdAIVr/lphp9ZpxZoWTKDu1pkFFJJFOEtfWRNfYPO19EZRjE9od0yCFwlK2kJFEg4bBzNnQWeFi52fmICnaoExc1ZryZLbzTCt6AMa0Hf9BdN+lvLaclphEASg99JgUETYOrDYwEpdwT+dly3T29HpZ0lAX8ASvUjbk94IQPEnJqLgtZxsLU3Fk8lHCmQIdgry/jyCqoFLS/2wXixJ5AbWjscXT4NeITebazAVSmkJu6LaOmkFz1Xm4TDIPKR/gmDRbm6GnTB8qBROGFK5Du0QeLzrFwWcTzrCg4Auppukka0OF5e7bUwDqxWq/rDunebyo91EQivd7JAJEViVAeIsFm56GEg36VmpvTF9NfVwQfy1LKw4mExsSoc7nmr9+eEDVl3D2mwKWtsUVBMixtqOsALPCoyQWa/Zv1RumALm0hRwO9+ZGn1TG2NanFvQYJhFX0fy3QVsCtzbQpDbBiQsfTkUxd7lIFJg4iDD+p21EFbKJ1RZ/h2nTmLVTfbZ3sfalZuqhCDbBODE+cPgeD/t27WpaqTXv2YEU93XXvejdyOzeshwxJaz3Cj+ZPofeA0daHlRWh/wn2lSypuJ9AXsdldvMX2tb/DfuQeHbnnatVaOB2X5oxm4cKtmMsCGXGnzAqfyKFo0B+9qIKWrTY1oBAcFDRjRSWcuwKTA6DMA4nln2NBIHWonpdAY2cZMO4lJ0kNU/APg==
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230022)(4636009)(136003)(376002)(346002)(396003)(39840400004)(451199015)(46966006)(36840700001)(82310400005)(8936002)(2906002)(5660300002)(47076005)(426003)(41300700001)(81166007)(7696005)(70206006)(4326008)(70586007)(8676002)(316002)(356005)(44832011)(186003)(26005)(40480700001)(7126003)(336012)(55016003)(86362001)(83380400001)(36860700001)(103116003)(478600001)(36900700001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: oZmfo7ElmClcl2gQpQ8aM4UCLFPnC4IGAP/In02Ri3D7QC14rItXL/5FjY5xw8cmddJrUsyzIBuZLo6BcKERERp1WLTtvZPCXADs7im4/4t2ZL9aRJD98MyEcMLiryJWY5SI6WF56iIV0MjsQbdj9F47TXnSnFYfQPuPggxm1TabKcfEy4+044W+i1GtbPWLM58trZHA4G4FmcJDr2Z7ZFHXPH0wMiL4ePnkgPLsZZdGSAJPD2/ge+qcqsW4mal8xsshNbFfD3ZxWVhaR6W3y0WedeeB60nKajzHXHBEgHTqdN7IPd4vccnq38rdIm3VtcGLu//oMBPbNkUo+G3j9/Ww7WetyeAIzcM2RzS/guvIKU6mECCYogmEJO9/VBZAoNI3hSNBuvdoBRnGzeHeImnZa9RAbYFPEfHIJMzQqc5vKUsBgzN0hfxofk3bJZNOFSdU7yEBMzz17nEYmqPoTOZpAlR2fPXsknI4oSCwOJ9/F6+wPPxIKVORCvvLuBaJX+66l2NfI47xoyP0jly6gnnnqrP2mzZ4lUjEeE0GRS83w0DLKaoloYkbLEw52kDNYwf3Yej7yyaLo/fgnes5phCPHKDb1VKLa614lMfwnzWgVgRBu0anx5cVSYHyrk09PqXZ58QsKLtDqs4krhBTEW7+lesFtRQkyIGwl/0HZTC/VY51VH076M1MVtL3ZTrC7ag/7Hz6TB5XCc+kroGVJw==
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230022)(4636009)(396003)(136003)(39840400004)(376002)(346002)(451199015)(36840700001)(46966006)(82310400005)(2906002)(15650500001)(8936002)(44832011)(5660300002)(41300700001)(70586007)(8676002)(70206006)(7696005)(316002)(4326008)(103116003)(478600001)(26005)(40480700001)(186003)(336012)(55016003)(7126003)(426003)(86362001)(47076005)(36860700001)(83380400001)(356005)(81166007)(36900700001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2023 19:04:25.4798
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2023 19:04:30.6049
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9e5182b-33d3-4dd6-91e5-08daf2745370
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff91af65-5048-4965-973b-08daf274567e
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT102.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT047.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB7256
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR01MB5472
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
@@ -98,162 +98,126 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Dean Luick <dean.luick@cornelisnetworks.com>
 
-Split the IB device and port counter allocation.  Remove
-the need for a lock.  Clean up pointer usage.
+Fix possible RMT overflow:  Use the correct netdev size.
+Don't allow adjusted user contexts to go negative.
+
+Fix QOS calculation: Send kernel context count as an argument since
+dd->n_krcv_queues is not yet set up in earliest call.  Do not include
+the control context in the QOS calculation.  Use the same sized
+variable to find the max of krcvq[] entries.
+
+Update the RMT count explanation to make more sense.
 
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- drivers/infiniband/hw/hfi1/verbs.c |   81 ++++++++++++++----------------------
- 1 file changed, 32 insertions(+), 49 deletions(-)
+ drivers/infiniband/hw/hfi1/chip.c |   59 ++++++++++++++++++++-----------------
+ 1 file changed, 32 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
-index e6e17984553c..7f6d7fc7951d 100644
---- a/drivers/infiniband/hw/hfi1/verbs.c
-+++ b/drivers/infiniband/hw/hfi1/verbs.c
-@@ -1598,13 +1598,11 @@ static const char * const driver_cntr_names[] = {
- 	"DRIVER_EgrHdrFull"
- };
- 
--static DEFINE_MUTEX(cntr_names_lock); /* protects the *_cntr_names bufers */
- static struct rdma_stat_desc *dev_cntr_descs;
- static struct rdma_stat_desc *port_cntr_descs;
- int num_driver_cntrs = ARRAY_SIZE(driver_cntr_names);
- static int num_dev_cntrs;
- static int num_port_cntrs;
--static int cntr_names_initialized;
- 
- /*
-  * Convert a list of names separated by '\n' into an array of NULL terminated
-@@ -1615,8 +1613,8 @@ static int init_cntr_names(const char *names_in, const size_t names_len,
- 			   int num_extra_names, int *num_cntrs,
- 			   struct rdma_stat_desc **cntr_descs)
- {
--	struct rdma_stat_desc *q;
--	char *names_out, *p;
-+	struct rdma_stat_desc *names_out;
-+	char *p;
- 	int i, n;
- 
- 	n = 0;
-@@ -1624,65 +1622,45 @@ static int init_cntr_names(const char *names_in, const size_t names_len,
- 		if (names_in[i] == '\n')
- 			n++;
- 
--	names_out =
--		kzalloc((n + num_extra_names) * sizeof(*q) + names_len,
--			GFP_KERNEL);
-+	names_out = kzalloc((n + num_extra_names) * sizeof(*names_out)
-+				+ names_len,
-+			    GFP_KERNEL);
- 	if (!names_out) {
- 		*num_cntrs = 0;
- 		*cntr_descs = NULL;
- 		return -ENOMEM;
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index ebe970f76232..90b672feed83 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -1056,7 +1056,7 @@ static void read_link_down_reason(struct hfi1_devdata *dd, u8 *ldr);
+ static void handle_temp_err(struct hfi1_devdata *dd);
+ static void dc_shutdown(struct hfi1_devdata *dd);
+ static void dc_start(struct hfi1_devdata *dd);
+-static int qos_rmt_entries(struct hfi1_devdata *dd, unsigned int *mp,
++static int qos_rmt_entries(unsigned int n_krcv_queues, unsigned int *mp,
+ 			   unsigned int *np);
+ static void clear_full_mgmt_pkey(struct hfi1_pportdata *ppd);
+ static int wait_link_transfer_active(struct hfi1_devdata *dd, int wait_ms);
+@@ -13362,7 +13362,6 @@ static int set_up_context_variables(struct hfi1_devdata *dd)
+ 	int ret;
+ 	unsigned ngroups;
+ 	int rmt_count;
+-	int user_rmt_reduced;
+ 	u32 n_usr_ctxts;
+ 	u32 send_contexts = chip_send_contexts(dd);
+ 	u32 rcv_contexts = chip_rcv_contexts(dd);
+@@ -13421,28 +13420,34 @@ static int set_up_context_variables(struct hfi1_devdata *dd)
+ 					 (num_kernel_contexts + n_usr_ctxts),
+ 					 &node_affinity.real_cpu_mask);
+ 	/*
+-	 * The RMT entries are currently allocated as shown below:
+-	 * 1. QOS (0 to 128 entries);
+-	 * 2. FECN (num_kernel_context - 1 + num_user_contexts +
+-	 *    num_netdev_contexts);
+-	 * 3. netdev (num_netdev_contexts).
+-	 * It should be noted that FECN oversubscribe num_netdev_contexts
+-	 * entries of RMT because both netdev and PSM could allocate any receive
+-	 * context between dd->first_dyn_alloc_text and dd->num_rcv_contexts,
+-	 * and PSM FECN must reserve an RMT entry for each possible PSM receive
+-	 * context.
++	 * RMT entries are allocated as follows:
++	 * 1. QOS (0 to 128 entries)
++	 * 2. FECN (num_kernel_context - 1 [a] + num_user_contexts +
++	 *          num_netdev_contexts [b])
++	 * 3. netdev (NUM_NETDEV_MAP_ENTRIES)
++	 *
++	 * Notes:
++	 * [a] Kernel contexts (except control) are included in FECN if kernel
++	 *     TID_RDMA is active.
++	 * [b] Netdev and user contexts are randomly allocated from the same
++	 *     context pool, so FECN must cover all contexts in the pool.
+ 	 */
+-	rmt_count = qos_rmt_entries(dd, NULL, NULL) + (num_netdev_contexts * 2);
+-	if (HFI1_CAP_IS_KSET(TID_RDMA))
+-		rmt_count += num_kernel_contexts - 1;
+-	if (rmt_count + n_usr_ctxts > NUM_MAP_ENTRIES) {
+-		user_rmt_reduced = NUM_MAP_ENTRIES - rmt_count;
+-		dd_dev_err(dd,
+-			   "RMT size is reducing the number of user receive contexts from %u to %d\n",
+-			   n_usr_ctxts,
+-			   user_rmt_reduced);
+-		/* recalculate */
+-		n_usr_ctxts = user_rmt_reduced;
++	rmt_count = qos_rmt_entries(num_kernel_contexts - 1, NULL, NULL)
++		    + (HFI1_CAP_IS_KSET(TID_RDMA) ? num_kernel_contexts - 1
++						  : 0)
++		    + n_usr_ctxts
++		    + num_netdev_contexts
++		    + NUM_NETDEV_MAP_ENTRIES;
++	if (rmt_count > NUM_MAP_ENTRIES) {
++		int over = rmt_count - NUM_MAP_ENTRIES;
++		/* try to squish user contexts, minimum of 1 */
++		if (over >= n_usr_ctxts) {
++			dd_dev_err(dd, "RMT overflow: reduce the requested number of contexts\n");
++			return -EINVAL;
++		}
++		dd_dev_err(dd, "RMT overflow: reducing # user contexts from %u to %u\n",
++			   n_usr_ctxts, n_usr_ctxts - over);
++		n_usr_ctxts -= over;
  	}
  
--	p = names_out + (n + num_extra_names) * sizeof(*q);
-+	p = (char *)&names_out[n + num_extra_names];
- 	memcpy(p, names_in, names_len);
- 
--	q = (struct rdma_stat_desc *)names_out;
- 	for (i = 0; i < n; i++) {
--		q[i].name = p;
-+		names_out[i].name = p;
- 		p = strchr(p, '\n');
- 		*p++ = '\0';
- 	}
- 
- 	*num_cntrs = n;
--	*cntr_descs = (struct rdma_stat_desc *)names_out;
-+	*cntr_descs = names_out;
- 	return 0;
+ 	/* the first N are kernel contexts, the rest are user/netdev contexts */
+@@ -14299,15 +14304,15 @@ static void clear_rsm_rule(struct hfi1_devdata *dd, u8 rule_index)
  }
  
--static int init_counters(struct ib_device *ibdev)
--{
--	struct hfi1_devdata *dd = dd_from_ibdev(ibdev);
--	int i, err = 0;
--
--	mutex_lock(&cntr_names_lock);
--	if (cntr_names_initialized)
--		goto out_unlock;
--
--	err = init_cntr_names(dd->cntrnames, dd->cntrnameslen, num_driver_cntrs,
--			      &num_dev_cntrs, &dev_cntr_descs);
--	if (err)
--		goto out_unlock;
--
--	for (i = 0; i < num_driver_cntrs; i++)
--		dev_cntr_descs[num_dev_cntrs + i].name = driver_cntr_names[i];
--
--	err = init_cntr_names(dd->portcntrnames, dd->portcntrnameslen, 0,
--			      &num_port_cntrs, &port_cntr_descs);
--	if (err) {
--		kfree(dev_cntr_descs);
--		dev_cntr_descs = NULL;
--		goto out_unlock;
--	}
--	cntr_names_initialized = 1;
--
--out_unlock:
--	mutex_unlock(&cntr_names_lock);
--	return err;
--}
--
- static struct rdma_hw_stats *hfi1_alloc_hw_device_stats(struct ib_device *ibdev)
+ /* return the number of RSM map table entries that will be used for QOS */
+-static int qos_rmt_entries(struct hfi1_devdata *dd, unsigned int *mp,
++static int qos_rmt_entries(unsigned int n_krcv_queues, unsigned int *mp,
+ 			   unsigned int *np)
  {
--	if (init_counters(ibdev))
--		return NULL;
-+	if (!dev_cntr_descs) {
-+		struct hfi1_devdata *dd = dd_from_ibdev(ibdev);
-+		int i, err;
-+
-+		err = init_cntr_names(dd->cntrnames, dd->cntrnameslen,
-+				      num_driver_cntrs,
-+				      &num_dev_cntrs, &dev_cntr_descs);
-+		if (err)
-+			return NULL;
-+
-+		for (i = 0; i < num_driver_cntrs; i++)
-+			dev_cntr_descs[num_dev_cntrs + i].name =
-+							driver_cntr_names[i];
-+	}
- 	return rdma_alloc_hw_stats_struct(dev_cntr_descs,
- 					  num_dev_cntrs + num_driver_cntrs,
- 					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
-@@ -1691,8 +1669,16 @@ static struct rdma_hw_stats *hfi1_alloc_hw_device_stats(struct ib_device *ibdev)
- static struct rdma_hw_stats *hfi_alloc_hw_port_stats(struct ib_device *ibdev,
- 						     u32 port_num)
- {
--	if (init_counters(ibdev))
--		return NULL;
-+	if (!port_cntr_descs) {
-+		struct hfi1_devdata *dd = dd_from_ibdev(ibdev);
-+		int err;
-+
-+		err = init_cntr_names(dd->portcntrnames, dd->portcntrnameslen,
-+				      0,
-+				      &num_port_cntrs, &port_cntr_descs);
-+		if (err)
-+			return NULL;
-+	}
- 	return rdma_alloc_hw_stats_struct(port_cntr_descs, num_port_cntrs,
- 					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
- }
-@@ -1917,13 +1903,10 @@ void hfi1_unregister_ib_device(struct hfi1_devdata *dd)
- 	del_timer_sync(&dev->mem_timer);
- 	verbs_txreq_exit(dev);
+ 	int i;
+ 	unsigned int m, n;
+-	u8 max_by_vl = 0;
++	uint max_by_vl = 0;
  
--	mutex_lock(&cntr_names_lock);
- 	kfree(dev_cntr_descs);
- 	kfree(port_cntr_descs);
- 	dev_cntr_descs = NULL;
- 	port_cntr_descs = NULL;
--	cntr_names_initialized = 0;
--	mutex_unlock(&cntr_names_lock);
- }
+ 	/* is QOS active at all? */
+-	if (dd->n_krcv_queues <= MIN_KERNEL_KCTXTS ||
++	if (n_krcv_queues < MIN_KERNEL_KCTXTS ||
+ 	    num_vls == 1 ||
+ 	    krcvqsset <= 1)
+ 		goto no_qos;
+@@ -14365,7 +14370,7 @@ static void init_qos(struct hfi1_devdata *dd, struct rsm_map_table *rmt)
  
- void hfi1_cnp_rcv(struct hfi1_packet *packet)
+ 	if (!rmt)
+ 		goto bail;
+-	rmt_entries = qos_rmt_entries(dd, &m, &n);
++	rmt_entries = qos_rmt_entries(dd->n_krcv_queues - 1, &m, &n);
+ 	if (rmt_entries == 0)
+ 		goto bail;
+ 	qpns_per_vl = 1 << m;
 
 
