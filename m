@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8EE662FD7
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 20:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 466E5662FD9
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 20:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237323AbjAITEf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Jan 2023 14:04:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
+        id S237225AbjAITEl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Jan 2023 14:04:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237225AbjAITEe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 14:04:34 -0500
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2106.outbound.protection.outlook.com [40.107.96.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6EC32EA2
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Jan 2023 11:04:33 -0800 (PST)
+        with ESMTP id S236183AbjAITEk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 14:04:40 -0500
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2115.outbound.protection.outlook.com [40.107.102.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848593750A
+        for <linux-rdma@vger.kernel.org>; Mon,  9 Jan 2023 11:04:39 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hU9HastQRX0khIGXpM+9kXKqt+6d7CJtp19uAJ1z1Ce7TcHeBPlavJSMHZouPT4wvRgqHhjjr+mkOqP1gwz1jEFxDdLCbH5ehBwt5BK2sq7vIZI1deO9RQnf64kUDatRrLCNh0CCA3ZVE1CDbkabBKZdT6uQMSB+SpPNvs3/p8U4Kt1j1CTOc6036k/UGjlAQHzw/u3sY8dwPfguDujvRPn5lhXIbPnY9bqyq1L5zomKNw2rMbjP1mA5APt+Q0PAxdkpcmU7WWyHVpfASif2hJMw/6FzgiLhnzg7BFh/spX2yzkNllBCeWM4yg1+fAWuvA/Yoxdg18/Z1Z7yYe8Ujw==
+ b=Vj+C8WJn8lWEZ8vbzmyDhsVTf7R9Cg5+cWUiR8K8z/oSNKHdXPtrEGj7OOe4sp4eimJvGY7AbHbKI3TiILG09rIs1Z7Bfg9z4u1HhqLM3Vcg2SoWgML+sxDg1U01U/MnPJr9OxT8hk4cb0NXRgnp0jeZGCSGxgeWd6JEsPelGStYUm775cL1Nky3/fjEcojy2O7IZbOBGAkDcWoRSPluFVGYREUMbRAFNWNeMzgHNHnlpWvzvc9lz7Ey7wvHEjO0578JwDw4GMCRS2dRZWmf84c3ti8lkKJK8CCJAT70P9YkoWExSB9CNmFrLKv5mFiTBrpNenoJRHA1Mp8Z9aBlkQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qy28ws4X2FxSiPV+NgaKBr6iU8xsmGUdCP6dSpvcwaE=;
- b=ZqjFQqdZlSqB4yqlQAvFip9tW7kGjYXHKcbC8CpoqicV1HmjYxLQ9i3fb5UDf5doeKIfFh+ZZ9nsxy9tdgBeSfCa86k02au1nd5EbxOgRdjzc7AhmIioUBCUjhXJbEeG9/eVOBdgMJibsFN6PrPnDhl7UFKS09OGp8/Ttqv8yzyIFvOfJYr/UqQURiXRlah75jLeFaWby9blvSs7oY1TKsIyRuHsmJBVOoOj9V+PzSTebhJ9TmCo7DyZjuCbxA93xqX0L/Elq1ffC52yLbXaAbI1LaStAZhGY1qPoC/FAYcIdfh1tcuocKbSXrvVbPGfHCCkuwXr5jw2QrsagLp5KQ==
+ bh=x9Gr1MsbFyYrCMFVhwONQDiOyHg5fvC7SXU/PPekGLc=;
+ b=Z48nZiEpK+zHkqzYfxV+58UVCKwF5BiTz9xy9hxpSqtPnvOP36yWCQ/jgLrd46fIhfRdJ74ehseu1Guoa/lu5rJwSTAUxuSix3okUojv3A1SveBSMPMS+2Mm3z2VBUHVkb3xEIWc6isgF88JOCAb9UoTSKoUwLgB3TK1Xz7Ear/kxRn+E+FjxUVilAGclJ/QQPSAet0/AWus7H1LSHqqp6OTDtC/vE80wAz0fCsVaPKbdxn+w0D/d9OvpnK4wkEOzBwNyNQ11tWURBAGEgvQ78DEYluiHxyVnv0jXDyq9TB8t8adLO+4ZRKrIrJiqKRcd6jALvA4xbRMYyTsrbT2Xg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=nvidia.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
@@ -28,17 +28,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qy28ws4X2FxSiPV+NgaKBr6iU8xsmGUdCP6dSpvcwaE=;
- b=J/Tko96TLCHRUfeCrNGMbX21ciwdfmbtF0vkBN84w4zxnOOfDzXM5d4yJul5mjpJGNeI1iuy/gnsYALoixtujYKHJH5trMM3w5lWc358ZPxJfbZ7wV4G5Y78tsTe8chGW4+0fkjMC0lx5bMvDbHcoDxSJ8Nxswt5jGX2k2nNlU+uxy6/eEzx0yXuwXnOn9GNia48/UuW9qC83nNUj3jRERySipAEdI7rFOHfnVNuqjhpJ3+tMwdTzTbdjoYRMiuPxLfMFM+iZm0h4aedY/6mEAldHRdodTc54eiQy/FIwHDQw5SeUWPNaspZfjT9sJWWsyVJyk/sbHzfA5JMLMQglw==
-Received: from MW4PR04CA0357.namprd04.prod.outlook.com (2603:10b6:303:8a::32)
- by MN2PR01MB5472.prod.exchangelabs.com (2603:10b6:208:113::13) with Microsoft
+ bh=x9Gr1MsbFyYrCMFVhwONQDiOyHg5fvC7SXU/PPekGLc=;
+ b=FDBBYVztGhl6Tg4BmpH8cLvFPH4B1nhpA84ZZZF42hkfS6CVRFJHWySKv6wepL8hAZiIzMTr0fvurAWftLUqmPaOWPuUVWL3Iwlr55sRdXuc4PYeemWRASYZiDH27MuFFKsH2L/s9KmF8vPzA+e8o7BQ3DPGBQ8tg/JhBaah3iG5Z+K+8RaI1KB0OXouFm2TsowzCP4X530M1Vst4PSMdoLvkkBVSiwY+aRsSHAJUHWVvySyjBuy/Y2+VBTpyzN2H2z90G/UqhBlQ4+HMMajHUFel7KDmHnEBTLguPaYOQXwXS9xGm8H1pJY/ywXUeP0jGAzgA0pqYdTHCyah9yjhw==
+Received: from MW4P220CA0012.NAMP220.PROD.OUTLOOK.COM (2603:10b6:303:115::17)
+ by SN6PR0102MB3391.prod.exchangelabs.com (2603:10b6:805:2::28) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5986.18; Mon, 9 Jan 2023 19:04:31 +0000
-Received: from CO1NAM11FT047.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:8a:cafe::df) by MW4PR04CA0357.outlook.office365.com
- (2603:10b6:303:8a::32) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.5986.18; Mon, 9 Jan 2023 19:04:36 +0000
+Received: from CO1NAM11FT091.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:115:cafe::cb) by MW4P220CA0012.outlook.office365.com
+ (2603:10b6:303:115::17) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.18 via Frontend
- Transport; Mon, 9 Jan 2023 19:04:30 +0000
+ Transport; Mon, 9 Jan 2023 19:04:36 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=bestguesspass action=none
@@ -48,19 +48,20 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=awfm-02.cornelisnetworks.com; pr=C
 Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
- CO1NAM11FT047.mail.protection.outlook.com (10.13.174.132) with Microsoft SMTP
+ CO1NAM11FT091.mail.protection.outlook.com (10.13.175.146) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5944.6 via Frontend Transport; Mon, 9 Jan 2023 19:04:30 +0000
+ 15.20.5986.18 via Frontend Transport; Mon, 9 Jan 2023 19:04:35 +0000
 Received: from awfm-02.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 309J4TDO1477945;
-        Mon, 9 Jan 2023 14:04:29 -0500
-Subject: [PATCH for-next 6/7] IBh/hfi1: Update RMT size calculation
+        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 309J4YGA1477954;
+        Mon, 9 Jan 2023 14:04:34 -0500
+Subject: [PATCH for-next 7/7] IB/hfi1: Use dma_mmap_coherent for matching
+ buffers
 From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To:     jgg@nvidia.com, leonro@nvidia.com
 Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
         linux-rdma@vger.kernel.org
-Date:   Mon, 09 Jan 2023 14:04:29 -0500
-Message-ID: <167329106946.1472990.18385495251650939054.stgit@awfm-02.cornelisnetworks.com>
+Date:   Mon, 09 Jan 2023 14:04:34 -0500
+Message-ID: <167329107460.1472990.9090255834533222032.stgit@awfm-02.cornelisnetworks.com>
 In-Reply-To: <167328561962.1472990.9463955313515395755.stgit@awfm-02.cornelisnetworks.com>
 References: <167328561962.1472990.9463955313515395755.stgit@awfm-02.cornelisnetworks.com>
 User-Agent: StGit/1.5.dev2+g9ce680a5
@@ -69,23 +70,23 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT047:EE_|MN2PR01MB5472:EE_
-X-MS-Office365-Filtering-Correlation-Id: ff91af65-5048-4965-973b-08daf274567e
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT091:EE_|SN6PR0102MB3391:EE_
+X-MS-Office365-Filtering-Correlation-Id: e01cdcea-252c-4670-509c-08daf274598a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oZmfo7ElmClcl2gQpQ8aM4UCLFPnC4IGAP/In02Ri3D7QC14rItXL/5FjY5xw8cmddJrUsyzIBuZLo6BcKERERp1WLTtvZPCXADs7im4/4t2ZL9aRJD98MyEcMLiryJWY5SI6WF56iIV0MjsQbdj9F47TXnSnFYfQPuPggxm1TabKcfEy4+044W+i1GtbPWLM58trZHA4G4FmcJDr2Z7ZFHXPH0wMiL4ePnkgPLsZZdGSAJPD2/ge+qcqsW4mal8xsshNbFfD3ZxWVhaR6W3y0WedeeB60nKajzHXHBEgHTqdN7IPd4vccnq38rdIm3VtcGLu//oMBPbNkUo+G3j9/Ww7WetyeAIzcM2RzS/guvIKU6mECCYogmEJO9/VBZAoNI3hSNBuvdoBRnGzeHeImnZa9RAbYFPEfHIJMzQqc5vKUsBgzN0hfxofk3bJZNOFSdU7yEBMzz17nEYmqPoTOZpAlR2fPXsknI4oSCwOJ9/F6+wPPxIKVORCvvLuBaJX+66l2NfI47xoyP0jly6gnnnqrP2mzZ4lUjEeE0GRS83w0DLKaoloYkbLEw52kDNYwf3Yej7yyaLo/fgnes5phCPHKDb1VKLa614lMfwnzWgVgRBu0anx5cVSYHyrk09PqXZ58QsKLtDqs4krhBTEW7+lesFtRQkyIGwl/0HZTC/VY51VH076M1MVtL3ZTrC7ag/7Hz6TB5XCc+kroGVJw==
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230022)(4636009)(396003)(136003)(39840400004)(376002)(346002)(451199015)(36840700001)(46966006)(82310400005)(2906002)(15650500001)(8936002)(44832011)(5660300002)(41300700001)(70586007)(8676002)(70206006)(7696005)(316002)(4326008)(103116003)(478600001)(26005)(40480700001)(186003)(336012)(55016003)(7126003)(426003)(86362001)(47076005)(36860700001)(83380400001)(356005)(81166007)(36900700001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: wJj5UrSFA8SXMKQDfM/9oSOHShq9f2BMesnilK0VM8n/hWwX6EZDjgDyzxJ6Oc3lgyh9T9yQyoHy3M+Z0HRuSuDJ3QEL1ITGddCwa8MPFK+bCIpQ5/VlZtM+UyrA5bJfQDM3kyrhbzuCRrHBn6QfpnR8wd3W5yOWuShCOM+Ym0kJ2Zab1PhA94GtDcqNpETws+GLUwIM2LbJWxk2kQ5WiqKXxr+ZGB171vi2uh/tYhxcdIWXuUizOygictnlL9tTly5ngTgnNR3slo9vpwx1TZM2vOkqAuMoRz7ptv2fciRQkJw3y+x07fn+CUmF4gUNrF+rw7Rc1BbsG1JV8YM5m+ESJcH+C0913tPE0Fax6ft4T4hzqm22TSiyueH6RWIcY1svsW97LlSZ//3azQqmjRPLmyWGU6c388TDRdaopmc5uwFkJQ6WYdlzqEE/FLSAnp94SM2e9I5GXvgMt7o/Cz4ffcZBAnMw1S0pxWPEUuNOVF9Itu3ZKuM2Uw+V7xoWmpd8TwQxKwIrRlhIK4V38hgFVG6y+SAdl16uhbgpAJmtIWmJwItwTYNndengwHBqWtY3ZPg9jP9P/0t1eAUuhzApWSPhk7zNlsXBdcDoyjZN98Dre0YzGbcDhPEq3pj/Ko/p5p9ZH2R9JGSEjRykcEWiLQMI5wr3NVSzH+NFZZ6qm2bIXSbx/ZmsvYtXVOEu6yQaIHVCojzQ1TBRxWk8pOJQxufoirtjS9LypaMLvKo=
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230022)(4636009)(346002)(376002)(396003)(136003)(39840400004)(451199015)(36840700001)(46966006)(83380400001)(2906002)(44832011)(82310400005)(47076005)(336012)(36860700001)(426003)(81166007)(7126003)(5660300002)(55016003)(7696005)(40480700001)(26005)(186003)(8936002)(478600001)(70586007)(70206006)(8676002)(103116003)(41300700001)(86362001)(356005)(4326008)(316002)(36900700001)(309714004);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2023 19:04:30.6049
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2023 19:04:35.6992
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff91af65-5048-4965-973b-08daf274567e
+X-MS-Exchange-CrossTenant-Network-Message-Id: e01cdcea-252c-4670-509c-08daf274598a
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT047.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT091.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR01MB5472
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR0102MB3391
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
@@ -98,126 +99,177 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Dean Luick <dean.luick@cornelisnetworks.com>
 
-Fix possible RMT overflow:  Use the correct netdev size.
-Don't allow adjusted user contexts to go negative.
-
-Fix QOS calculation: Send kernel context count as an argument since
-dd->n_krcv_queues is not yet set up in earliest call.  Do not include
-the control context in the QOS calculation.  Use the same sized
-variable to find the max of krcvq[] entries.
-
-Update the RMT count explanation to make more sense.
+For memory allocated with dma_alloc_coherent(), use
+dma_mmap_coherent() to mmap it into user space.
 
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- drivers/infiniband/hw/hfi1/chip.c |   59 ++++++++++++++++++++-----------------
- 1 file changed, 32 insertions(+), 27 deletions(-)
+ drivers/infiniband/hw/hfi1/file_ops.c |   81 +++++++++++++++++++++++----------
+ 1 file changed, 57 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index ebe970f76232..90b672feed83 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -1056,7 +1056,7 @@ static void read_link_down_reason(struct hfi1_devdata *dd, u8 *ldr);
- static void handle_temp_err(struct hfi1_devdata *dd);
- static void dc_shutdown(struct hfi1_devdata *dd);
- static void dc_start(struct hfi1_devdata *dd);
--static int qos_rmt_entries(struct hfi1_devdata *dd, unsigned int *mp,
-+static int qos_rmt_entries(unsigned int n_krcv_queues, unsigned int *mp,
- 			   unsigned int *np);
- static void clear_full_mgmt_pkey(struct hfi1_pportdata *ppd);
- static int wait_link_transfer_active(struct hfi1_devdata *dd, int wait_ms);
-@@ -13362,7 +13362,6 @@ static int set_up_context_variables(struct hfi1_devdata *dd)
- 	int ret;
- 	unsigned ngroups;
- 	int rmt_count;
--	int user_rmt_reduced;
- 	u32 n_usr_ctxts;
- 	u32 send_contexts = chip_send_contexts(dd);
- 	u32 rcv_contexts = chip_rcv_contexts(dd);
-@@ -13421,28 +13420,34 @@ static int set_up_context_variables(struct hfi1_devdata *dd)
- 					 (num_kernel_contexts + n_usr_ctxts),
- 					 &node_affinity.real_cpu_mask);
- 	/*
--	 * The RMT entries are currently allocated as shown below:
--	 * 1. QOS (0 to 128 entries);
--	 * 2. FECN (num_kernel_context - 1 + num_user_contexts +
--	 *    num_netdev_contexts);
--	 * 3. netdev (num_netdev_contexts).
--	 * It should be noted that FECN oversubscribe num_netdev_contexts
--	 * entries of RMT because both netdev and PSM could allocate any receive
--	 * context between dd->first_dyn_alloc_text and dd->num_rcv_contexts,
--	 * and PSM FECN must reserve an RMT entry for each possible PSM receive
--	 * context.
-+	 * RMT entries are allocated as follows:
-+	 * 1. QOS (0 to 128 entries)
-+	 * 2. FECN (num_kernel_context - 1 [a] + num_user_contexts +
-+	 *          num_netdev_contexts [b])
-+	 * 3. netdev (NUM_NETDEV_MAP_ENTRIES)
-+	 *
-+	 * Notes:
-+	 * [a] Kernel contexts (except control) are included in FECN if kernel
-+	 *     TID_RDMA is active.
-+	 * [b] Netdev and user contexts are randomly allocated from the same
-+	 *     context pool, so FECN must cover all contexts in the pool.
- 	 */
--	rmt_count = qos_rmt_entries(dd, NULL, NULL) + (num_netdev_contexts * 2);
--	if (HFI1_CAP_IS_KSET(TID_RDMA))
--		rmt_count += num_kernel_contexts - 1;
--	if (rmt_count + n_usr_ctxts > NUM_MAP_ENTRIES) {
--		user_rmt_reduced = NUM_MAP_ENTRIES - rmt_count;
--		dd_dev_err(dd,
--			   "RMT size is reducing the number of user receive contexts from %u to %d\n",
--			   n_usr_ctxts,
--			   user_rmt_reduced);
--		/* recalculate */
--		n_usr_ctxts = user_rmt_reduced;
-+	rmt_count = qos_rmt_entries(num_kernel_contexts - 1, NULL, NULL)
-+		    + (HFI1_CAP_IS_KSET(TID_RDMA) ? num_kernel_contexts - 1
-+						  : 0)
-+		    + n_usr_ctxts
-+		    + num_netdev_contexts
-+		    + NUM_NETDEV_MAP_ENTRIES;
-+	if (rmt_count > NUM_MAP_ENTRIES) {
-+		int over = rmt_count - NUM_MAP_ENTRIES;
-+		/* try to squish user contexts, minimum of 1 */
-+		if (over >= n_usr_ctxts) {
-+			dd_dev_err(dd, "RMT overflow: reduce the requested number of contexts\n");
-+			return -EINVAL;
-+		}
-+		dd_dev_err(dd, "RMT overflow: reducing # user contexts from %u to %u\n",
-+			   n_usr_ctxts, n_usr_ctxts - over);
-+		n_usr_ctxts -= over;
- 	}
- 
- 	/* the first N are kernel contexts, the rest are user/netdev contexts */
-@@ -14299,15 +14304,15 @@ static void clear_rsm_rule(struct hfi1_devdata *dd, u8 rule_index)
+diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
+index c9fc913db00c..9703e863ef06 100644
+--- a/drivers/infiniband/hw/hfi1/file_ops.c
++++ b/drivers/infiniband/hw/hfi1/file_ops.c
+@@ -306,6 +306,17 @@ static ssize_t hfi1_write_iter(struct kiocb *kiocb, struct iov_iter *from)
+ 	return reqs;
  }
  
- /* return the number of RSM map table entries that will be used for QOS */
--static int qos_rmt_entries(struct hfi1_devdata *dd, unsigned int *mp,
-+static int qos_rmt_entries(unsigned int n_krcv_queues, unsigned int *mp,
- 			   unsigned int *np)
++static inline void mmap_cdbg(u16 ctxt, u8 subctxt, u8 type, u8 mapio, u8 vmf,
++			     u64 memaddr, void *memvirt, dma_addr_t memdma,
++			     ssize_t memlen, struct vm_area_struct *vma)
++{
++	hfi1_cdbg(PROC,
++		  "%u:%u type:%u io/vf/dma:%d/%d/%d, addr:0x%llx, len:%lu(%lu), flags:0x%lx",
++		  ctxt, subctxt, type, mapio, vmf, !!memdma,
++		  memaddr ?: (u64)memvirt, memlen,
++		  vma->vm_end - vma->vm_start, vma->vm_flags);
++}
++
+ static int hfi1_file_mmap(struct file *fp, struct vm_area_struct *vma)
  {
- 	int i;
- 	unsigned int m, n;
--	u8 max_by_vl = 0;
-+	uint max_by_vl = 0;
+ 	struct hfi1_filedata *fd = fp->private_data;
+@@ -315,6 +326,7 @@ static int hfi1_file_mmap(struct file *fp, struct vm_area_struct *vma)
+ 	u64 token = vma->vm_pgoff << PAGE_SHIFT,
+ 		memaddr = 0;
+ 	void *memvirt = NULL;
++	dma_addr_t memdma = 0;
+ 	u8 subctxt, mapio = 0, vmf = 0, type;
+ 	ssize_t memlen = 0;
+ 	int ret = 0;
+@@ -334,6 +346,11 @@ static int hfi1_file_mmap(struct file *fp, struct vm_area_struct *vma)
+ 		goto done;
+ 	}
  
- 	/* is QOS active at all? */
--	if (dd->n_krcv_queues <= MIN_KERNEL_KCTXTS ||
-+	if (n_krcv_queues < MIN_KERNEL_KCTXTS ||
- 	    num_vls == 1 ||
- 	    krcvqsset <= 1)
- 		goto no_qos;
-@@ -14365,7 +14370,7 @@ static void init_qos(struct hfi1_devdata *dd, struct rsm_map_table *rmt)
++	/*
++	 * vm_pgoff is used as a buffer selector cookie.  Always mmap from
++	 * the beginning.
++	 */ 
++	vma->vm_pgoff = 0;
+ 	flags = vma->vm_flags;
  
- 	if (!rmt)
- 		goto bail;
--	rmt_entries = qos_rmt_entries(dd, &m, &n);
-+	rmt_entries = qos_rmt_entries(dd->n_krcv_queues - 1, &m, &n);
- 	if (rmt_entries == 0)
- 		goto bail;
- 	qpns_per_vl = 1 << m;
+ 	switch (type) {
+@@ -355,7 +372,8 @@ static int hfi1_file_mmap(struct file *fp, struct vm_area_struct *vma)
+ 		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+ 		mapio = 1;
+ 		break;
+-	case PIO_CRED:
++	case PIO_CRED: {
++		u64 cr_page_offset;
+ 		if (flags & VM_WRITE) {
+ 			ret = -EPERM;
+ 			goto done;
+@@ -365,10 +383,11 @@ static int hfi1_file_mmap(struct file *fp, struct vm_area_struct *vma)
+ 		 * second or third page allocated for credit returns (if number
+ 		 * of enabled contexts > 64 and 128 respectively).
+ 		 */
+-		memvirt = dd->cr_base[uctxt->numa_id].va;
+-		memaddr = virt_to_phys(memvirt) +
+-			(((u64)uctxt->sc->hw_free -
+-			  (u64)dd->cr_base[uctxt->numa_id].va) & PAGE_MASK);
++		cr_page_offset = ((u64)uctxt->sc->hw_free -
++			  	     (u64)dd->cr_base[uctxt->numa_id].va) &
++				   PAGE_MASK;
++		memvirt = dd->cr_base[uctxt->numa_id].va + cr_page_offset;
++		memdma = dd->cr_base[uctxt->numa_id].dma + cr_page_offset;
+ 		memlen = PAGE_SIZE;
+ 		flags &= ~VM_MAYWRITE;
+ 		flags |= VM_DONTCOPY | VM_DONTEXPAND;
+@@ -378,14 +397,16 @@ static int hfi1_file_mmap(struct file *fp, struct vm_area_struct *vma)
+ 		 * memory been flagged as non-cached?
+ 		 */
+ 		/* vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot); */
+-		mapio = 1;
+ 		break;
++	}
+ 	case RCV_HDRQ:
+ 		memlen = rcvhdrq_size(uctxt);
+ 		memvirt = uctxt->rcvhdrq;
++		memdma = uctxt->rcvhdrq_dma;
+ 		break;
+ 	case RCV_EGRBUF: {
+-		unsigned long addr;
++		unsigned long vm_start_save;
++		unsigned long vm_end_save;
+ 		int i;
+ 		/*
+ 		 * The RcvEgr buffer need to be handled differently
+@@ -404,24 +425,34 @@ static int hfi1_file_mmap(struct file *fp, struct vm_area_struct *vma)
+ 			goto done;
+ 		}
+ 		vma->vm_flags &= ~VM_MAYWRITE;
+-		addr = vma->vm_start;
++		/*
++		 * Mmap multiple separate allocations into a single vma.  From
++		 * here, dma_mmap_coherent() calls dma_direct_mmap(), which
++		 * requires the mmap to exactly fill the vma starting at
++		 * vma_start.  Adjust the vma start and end for each eager
++		 * buffer segment mapped.  Restore the originals when done.
++		 */
++		vm_start_save = vma->vm_start;
++		vm_end_save = vma->vm_end;
++		vma->vm_end = vma->vm_start;
+ 		for (i = 0 ; i < uctxt->egrbufs.numbufs; i++) {
+ 			memlen = uctxt->egrbufs.buffers[i].len;
+ 			memvirt = uctxt->egrbufs.buffers[i].addr;
+-			ret = remap_pfn_range(
+-				vma, addr,
+-				/*
+-				 * virt_to_pfn() does the same, but
+-				 * it's not available on x86_64
+-				 * when CONFIG_MMU is enabled.
+-				 */
+-				PFN_DOWN(__pa(memvirt)),
+-				memlen,
+-				vma->vm_page_prot);
+-			if (ret < 0)
++			memdma = uctxt->egrbufs.buffers[i].dma;
++			vma->vm_end += memlen;
++			mmap_cdbg(ctxt, subctxt, type, mapio, vmf, memaddr,
++				  memvirt, memdma, memlen, vma);
++			ret = dma_mmap_coherent(&dd->pcidev->dev, vma,
++						memvirt, memdma, memlen);
++			if (ret < 0) {
++				vma->vm_start = vm_start_save;
++				vma->vm_end = vm_end_save;
+ 				goto done;
+-			addr += memlen;
++			}
++			vma->vm_start += memlen;
+ 		}
++		vma->vm_start = vm_start_save;
++		vma->vm_end = vm_end_save;
+ 		ret = 0;
+ 		goto done;
+ 	}
+@@ -481,6 +512,7 @@ static int hfi1_file_mmap(struct file *fp, struct vm_area_struct *vma)
+ 		}
+ 		memlen = PAGE_SIZE;
+ 		memvirt = (void *)hfi1_rcvhdrtail_kvaddr(uctxt);
++		memdma = uctxt->rcvhdrqtailaddr_dma;
+ 		flags &= ~VM_MAYWRITE;
+ 		break;
+ 	case SUBCTXT_UREGS:
+@@ -529,14 +561,15 @@ static int hfi1_file_mmap(struct file *fp, struct vm_area_struct *vma)
+ 	}
+ 
+ 	vma->vm_flags = flags;
+-	hfi1_cdbg(PROC,
+-		  "%u:%u type:%u io/vf:%d/%d, addr:0x%llx, len:%lu(%lu), flags:0x%lx\n",
+-		    ctxt, subctxt, type, mapio, vmf, memaddr, memlen,
+-		    vma->vm_end - vma->vm_start, vma->vm_flags);
++	mmap_cdbg(ctxt, subctxt, type, mapio, vmf, memaddr, memvirt, memdma, 
++		  memlen, vma);
+ 	if (vmf) {
+ 		vma->vm_pgoff = PFN_DOWN(memaddr);
+ 		vma->vm_ops = &vm_ops;
+ 		ret = 0;
++	} else if (memdma) {
++		ret = dma_mmap_coherent(&dd->pcidev->dev, vma,
++					memvirt, memdma, memlen);
+ 	} else if (mapio) {
+ 		ret = io_remap_pfn_range(vma, vma->vm_start,
+ 					 PFN_DOWN(memaddr),
 
 
