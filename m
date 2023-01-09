@@ -2,66 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8B066214E
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 10:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB787662497
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jan 2023 12:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237031AbjAIJUx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Jan 2023 04:20:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        id S234902AbjAILs4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Jan 2023 06:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbjAIJUc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 04:20:32 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFBA65E2
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Jan 2023 01:17:45 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id ud5so18446748ejc.4
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Jan 2023 01:17:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gooddata.com; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LeOTgenvbkmcRvMT4UZ6wPxbUX/9wsirYPZTEw+d2jg=;
-        b=P87r5rwXwY7o3tIlGHN3esQOqJ4O8hUXy4tbiSfvV+g77VRYk/UFXnyN2H0JSrXFaZ
-         1ay3hgLsNA8MwFW9v0xQk4+qXCCwBwzXZVlTuBtfyLVKCieT+nsJAe3DyoqmHVeqFoxT
-         CDKBx6Wg5L8EJOJmi4YlL4+XXQckVJuZoz/9Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LeOTgenvbkmcRvMT4UZ6wPxbUX/9wsirYPZTEw+d2jg=;
-        b=B4t6jVHSakvKoJdqIUm5dJx0f9bmUX+J9BPcHrKdJw7GtgeD0PXilW/lshLUDEnW9o
-         NQIm/q7+sYA4pC+Fr4qrodXTzPdbf8ZpqtfxwEPJ/8jNRa4/cjo1gIZ5dam7r8NeSTV7
-         6sesLmkG7GFtiirQyLsiqIWQbxBP+2QF9Vhq54VsU1usl83QCkrdA2af2z5yFDbJEfZ3
-         L41CUd4V+12/ivE+54XGc+1Ca53AW8XzF5wTfqv/m3vms6po8TKhV7gGAx7bk1NMDfZU
-         wEznJc9cBP+ZgjuqDUzBMIzRllg8oXgbSLJatI4FlZOYABI6oHF96xDiayKV7ayvmdoi
-         YpLg==
-X-Gm-Message-State: AFqh2koEWvJzO9FOX80aXC9V5jUdvols3uQfaxpmuuwAd1KJuKlmXC9H
-        sT+gzNX8+tFmkTyvGf/3a9CQ7QubPCJ9kaOtMNEs2g==
-X-Google-Smtp-Source: AMrXdXtYS8N31ZR7tM0udmkekH6MtKeZ5JS2QT+cWxrKzFgVIkymc1KgLL+RNbpg1Fa+uCNHW8gfZglCmxfbpOFtq9s=
-X-Received: by 2002:a17:906:910:b0:7c1:136d:b841 with SMTP id
- i16-20020a170906091000b007c1136db841mr4417414ejd.216.1673255864286; Mon, 09
- Jan 2023 01:17:44 -0800 (PST)
-MIME-Version: 1.0
-References: <CAK8fFZ6A_Gphw_3-QMGKEFQk=sfCw1Qmq0TVZK3rtAi7vb621A@mail.gmail.com>
- <Y7hJJ5hIxDolYIAV@ziepe.ca>
-In-Reply-To: <Y7hJJ5hIxDolYIAV@ziepe.ca>
-From:   Jaroslav Pulchart <jaroslav.pulchart@gooddata.com>
-Date:   Mon, 9 Jan 2023 10:17:17 +0100
-Message-ID: <CAK8fFZ7P_JmgpZ6DCUUimQ+31GF8E+Cw8Baf1jiVZFwDw=G1+Q@mail.gmail.com>
-Subject: Re: Network do not works with linux >= 6.1.2. Issue bisected to
- "425c9bd06b7a70796d880828d15c11321bdfb76d" (RDMA/irdma: Report the correct
- link speed)
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     kamalheib1@gmail.com, shiraz.saleem@intel.com, leon@kernel.org,
-        sashal@kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, Igor Raits <igor.raits@gooddata.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        with ESMTP id S237075AbjAILst (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 06:48:49 -0500
+Received: from mxct.zte.com.cn (mxct.zte.com.cn [183.62.165.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18801D120;
+        Mon,  9 Jan 2023 03:48:48 -0800 (PST)
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxct.zte.com.cn (FangMail) with ESMTPS id 4NrBzc6Kznz4y3Z8;
+        Mon,  9 Jan 2023 19:48:44 +0800 (CST)
+Received: from szxlzmapp02.zte.com.cn ([10.5.231.79])
+        by mse-fl2.zte.com.cn with SMTP id 309Bmers067416;
+        Mon, 9 Jan 2023 19:48:40 +0800 (+08)
+        (envelope-from yang.yang29@zte.com.cn)
+Received: from mapi (szxlzmapp01[null])
+        by mapi (Zmail) with MAPI id mid14;
+        Mon, 9 Jan 2023 19:48:43 +0800 (CST)
+Date:   Mon, 9 Jan 2023 19:48:43 +0800 (CST)
+X-Zmail-TransId: 2b0363bbff1bffffffffabae1a6f
+X-Mailer: Zmail v1.0
+Message-ID: <202301091948433010050@zte.com.cn>
+Mime-Version: 1.0
+From:   <yang.yang29@zte.com.cn>
+To:     <santosh.shilimkar@oracle.com>
+Cc:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
+        <linux-kernel@vger.kernel.org>, <xu.panda@zte.com.cn>,
+        <yang.yang29@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIG5ldC1uZXh0XSBuZXQvcmRzOiB1c2Ugc3Ryc2NweSgpIHRvIGluc3RlYWQgb2Ygc3RybmNweSgp?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl2.zte.com.cn 309Bmers067416
+X-Fangmail-Gw-Spam-Type: 0
+X-FangMail-Miltered: at cgslv5.04-192.168.251.13.novalocal with ID 63BBFF1C.000 by FangMail milter!
+X-FangMail-Envelope: 1673264924/4NrBzc6Kznz4y3Z8/63BBFF1C.000/10.5.228.133/[10.5.228.133]/mse-fl2.zte.com.cn/<yang.yang29@zte.com.cn>
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 63BBFF1C.000/4NrBzc6Kznz4y3Z8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,61 +56,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Jason
+From: Xu Panda <xu.panda@zte.com.cn>
 
-about:
+The implementation of strscpy() is more robust and safer.
+That's now the recommended way to copy NUL-terminated strings.
 
-> We talked about this already - wasn't it on this series?
+Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+---
+ net/rds/stats.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Nope, we do not talk about this. Shall not be someone else in the
-email "TO" section?
+diff --git a/net/rds/stats.c b/net/rds/stats.c
+index 9e87da43c004..6a5a60d36d60 100644
+--- a/net/rds/stats.c
++++ b/net/rds/stats.c
+@@ -89,8 +89,7 @@ void rds_stats_info_copy(struct rds_info_iterator *iter,
 
-Best,
-Jaroslav P.
+ 	for (i = 0; i < nr; i++) {
+ 		BUG_ON(strlen(names[i]) >= sizeof(ctr.name));
+-		strncpy(ctr.name, names[i], sizeof(ctr.name) - 1);
+-		ctr.name[sizeof(ctr.name) - 1] = '\0';
++		strscpy(ctr.name, names[i], sizeof(ctr.name));
+ 		ctr.value = values[i];
 
-
-p=C3=A1 6. 1. 2023 v 17:15 odes=C3=ADlatel Jason Gunthorpe <jgg@ziepe.ca> n=
-apsal:
->
-> On Fri, Jan 06, 2023 at 08:55:29AM +0100, Jaroslav Pulchart wrote:
-> > [  257.967099] task:NetworkManager  state:D stack:0     pid:3387
-> > ppid:1      flags:0x00004002
-> > [  257.975446] Call Trace:
-> > [  257.977901]  <TASK>
-> > [  257.980004]  __schedule+0x1eb/0x630
-> > [  257.983498]  schedule+0x5a/0xd0
-> > [  257.986641]  schedule_timeout+0x11d/0x160
-> > [  257.990654]  __wait_for_common+0x90/0x1e0
-> > [  257.994666]  ? usleep_range_state+0x90/0x90
-> > [  257.998854]  __flush_workqueue+0x13a/0x3f0
-> > [  258.002955]  ? __kernfs_remove.part.0+0x11e/0x1e0
-> > [  258.007661]  ib_cache_cleanup_one+0x1c/0xe0 [ib_core]
-> > [  258.012721]  __ib_unregister_device+0x62/0xa0 [ib_core]
-> > [  258.017959]  ib_unregister_device+0x22/0x30 [ib_core]
-> > [  258.023024]  irdma_remove+0x1a/0x60 [irdma]
-> > [  258.027223]  auxiliary_bus_remove+0x18/0x30
-> > [  258.031414]  device_release_driver_internal+0x1aa/0x230
-> > [  258.036643]  bus_remove_device+0xd8/0x150
-> > [  258.040654]  device_del+0x18b/0x3f0
-> > [  258.044149]  ice_unplug_aux_dev+0x42/0x60 [ice]
->
-> We talked about this already - wasn't it on this series?
->
-> Don't hold locks when removing aux devices.
->
-> > [  258.048707]  ice_lag_changeupper_event+0x287/0x2a0 [ice]
-> > [  258.054038]  ice_lag_event_handler+0x51/0x130 [ice]
-> > [  258.058930]  raw_notifier_call_chain+0x41/0x60
-> > [  258.063381]  __netdev_upper_dev_link+0x1a0/0x370
-> > [  258.068008]  netdev_master_upper_dev_link+0x3d/0x60
-> > [  258.072886]  bond_enslave+0xd16/0x16f0 [bonding]
-> > [  258.077517]  ? nla_put+0x28/0x40
-> > [  258.080756]  do_setlink+0x26c/0xc10
-> > [  258.084249]  ? avc_alloc_node+0x27/0x180
-> > [  258.088173]  ? __nla_validate_parse+0x141/0x190
-> > [  258.092708]  __rtnl_newlink+0x53a/0x620
-> > [  258.096549]  rtnl_newlink+0x44/0x70
->
-> Especially not the rtnl.
->
-> Jason
+ 		rds_info_copy(iter, &ctr, sizeof(ctr));
+-- 
+2.15.2
