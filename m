@@ -2,50 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0A16636CD
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jan 2023 02:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1CA6637E9
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jan 2023 04:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbjAJBko (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Jan 2023 20:40:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
+        id S229700AbjAJDsi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Jan 2023 22:48:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235313AbjAJBkV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 20:40:21 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0212D3D1DE;
-        Mon,  9 Jan 2023 17:40:16 -0800 (PST)
+        with ESMTP id S229559AbjAJDsh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 22:48:37 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37AE3892;
+        Mon,  9 Jan 2023 19:48:36 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E09E614B5;
-        Tue, 10 Jan 2023 01:40:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77ACAC433D2;
-        Tue, 10 Jan 2023 01:40:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 731B5614D0;
+        Tue, 10 Jan 2023 03:48:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41766C433D2;
+        Tue, 10 Jan 2023 03:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673314815;
-        bh=LFcmV1V/W4BleiubFsbg/Yh62d3qLU/7sOhf+QI1wO0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=e+J6F6dAhWy+5bDkNCiVxxp6UNTQZiNCailDjUSTNvAJ0xt9RfcILPT+h7kqWM2UT
-         bXxnb+0HUFo6dmEG4W/Q7A7zogQcp7fnewiErRYrdBD8ZTdZPxvwgvIluQStvK0y99
-         xbKoCrGqdoloO72CtX8OwwuVd/TKeSW0vq2FDHD1Fvm1V+VU6iLtfGCDoQ/dMKQ2D2
-         v0NiYWM/gEzSWvKGmD8FNwCgVxYToUZHjgjS8HYI1H+NsdP1is9Pk1PLq/GsOinVsH
-         2wwv9czE5P5AQixpAHbqnzkn1PGXyzFxJOOuE3O8gLwEuD05oV+gIr/X9wv91loRkX
-         qOKNa0l2XA8aA==
-Date:   Mon, 9 Jan 2023 19:40:22 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Cheng Xu <chengyou@linux.alibaba.com>,
-        Kai Shen <kaishen@linux.alibaba.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] RDMA/erdma: Replace zero-length arrays with
- flexible-array members
-Message-ID: <Y7zCBqwC1LtabRJ9@work>
+        s=k20201202; t=1673322515;
+        bh=k0oxUAg3YrKMFiDeGEKXfTN+oirhrrPZOBzv4qz4G3U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TebNgjhwXV4rK4gud4NX6oOD9b43IzZZzbI6TTND1KHLjTQj82pm7zY6x7avwmF8n
+         fga6Lwtc0etfXzgyAi6JyZNavfYiQRA0SsqODGOL2ADmgosQDOLHf6yYmnBZ7A2c+E
+         T0vUZgee1+uz1ExL9F3TyI56XD1VEvnP+FvxFPYq1FMj5fsVeSs2E/bJCGzwehAMrQ
+         tgazYHyo/zTI9mPUSd3TCrYii1CYYUYJm4D+BebAqCvHXkIM29DDDr3ppou1J0a8Ar
+         ZrLzANVIW40tcrB/XhjHUNheRnRnodMi2PECFHIonHHdv+sOWumd7a4lsSbeu2y6Dw
+         nBr3VM7MxBrzQ==
+Date:   Mon, 9 Jan 2023 19:48:34 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <yang.yang29@zte.com.cn>
+Cc:     <santosh.shilimkar@oracle.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <rds-devel@oss.oracle.com>, <linux-kernel@vger.kernel.org>,
+        <xu.panda@zte.com.cn>
+Subject: Re: [PATCH net-next] net/rds: use strscpy() to instead of strncpy()
+Message-ID: <20230109194834.24e06def@kernel.org>
+In-Reply-To: <202301091948433010050@zte.com.cn>
+References: <202301091948433010050@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,44 +55,11 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Zero-length arrays are deprecated[1] and we are moving towards
-adopting C99 flexible-array members instead. So, replace zero-length
-arrays, in a couple of structures, with flex-array members.
+On Mon, 9 Jan 2023 19:48:43 +0800 (CST) yang.yang29@zte.com.cn wrote:
+>  		BUG_ON(strlen(names[i]) >= sizeof(ctr.name));
+> -		strncpy(ctr.name, names[i], sizeof(ctr.name) - 1);
+> -		ctr.name[sizeof(ctr.name) - 1] = '\0';
+> +		strscpy(ctr.name, names[i], sizeof(ctr.name));
 
-This helps with the ongoing efforts to tighten the FORTIFY_SOURCE
-routines on memcpy() and help us make progress towards globally
-enabling -fstrict-flex-arrays=3 [2].
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays [1]
-Link: https://gcc.gnu.org/pipermail/gcc-patches/2022-October/602902.html [2]
-Link: https://github.com/KSPP/linux/issues/78
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/infiniband/hw/erdma/erdma_hw.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/infiniband/hw/erdma/erdma_hw.h
-index ab371fec610c..4c38d99c73f1 100644
---- a/drivers/infiniband/hw/erdma/erdma_hw.h
-+++ b/drivers/infiniband/hw/erdma/erdma_hw.h
-@@ -397,7 +397,7 @@ struct erdma_write_sqe {
- 
- 	__le32 rsvd;
- 
--	struct erdma_sge sgl[0];
-+	struct erdma_sge sgl[];
- };
- 
- struct erdma_send_sqe {
-@@ -408,7 +408,7 @@ struct erdma_send_sqe {
- 	};
- 
- 	__le32 length;
--	struct erdma_sge sgl[0];
-+	struct erdma_sge sgl[];
- };
- 
- struct erdma_readreq_sqe {
--- 
-2.34.1
-
+You can make use of the fact that strscpy returns useful information
+and the copy and the preceding BUG_ON() together. 
