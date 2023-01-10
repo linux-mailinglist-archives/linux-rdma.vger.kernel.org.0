@@ -2,360 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F09664F29
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jan 2023 23:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C1E66500D
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jan 2023 00:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235341AbjAJWyQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Jan 2023 17:54:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
+        id S234966AbjAJXta (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Jan 2023 18:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235433AbjAJWxh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Jan 2023 17:53:37 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A2363F6B;
-        Tue, 10 Jan 2023 14:51:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 158CB6191F;
-        Tue, 10 Jan 2023 22:51:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10461C433F1;
-        Tue, 10 Jan 2023 22:51:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673391114;
-        bh=o9OeEHKSFKlahP4meTr0ckJWyKeB9yjaFvMZ1lhRkqI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nbd32xmaW9WdO1u/PWOjdJdb+26FTqJao9Sn4v2we5M1eMT3ytIkI5Igxv8PCj6yS
-         H15ViKsK868VH+nPmcUJSG2Rbo5Z8kdSph/JdIGd4sXha9RSQXF6IzjhVijbuF1+6/
-         DOMRusZi9N0mLE0xl7dRLeHHAvc4qGVNw9IjZQ0+2ssQ7L02GFqnXRp+NKk/dASYRt
-         3NU8rFp6CgBdGGYMqTDmQcVf1MQb79lC35/ViyDG0Z85vNNMUqcARAr3oJymwV51VN
-         sUazuUJZrXJvraztzR9CdoWtiCR8j952ZkAw69LLawbwa9H2523ldrw0z+Sx7ukXQM
-         lHMeS5k4au/tg==
-Date:   Tue, 10 Jan 2023 14:51:52 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ajit Khaparde <ajit.khaparde@broadcom.com>
+        with ESMTP id S234841AbjAJXt3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Jan 2023 18:49:29 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37DA3BEA9
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Jan 2023 15:49:28 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 141so9397298pgc.0
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Jan 2023 15:49:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4BEXMCSjAXE67WC5jAZq0Fq1mDD3arIyGkwfnrf4IMA=;
+        b=DaCQMQ3eZPpNoAH+3KYx01BdfNwG6+IqefZG1zsX9+03sd4/o/n5UjJTQB3Myv0YPj
+         sB/1TeB504eiAGz1QX5ORBYkmE4PygheaKO150KotfqAee1xGIuex8VIvI66pegN51wk
+         AkjYiwZKLPdKd5crH0gOiBuLbvWdDY5PLv6oc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4BEXMCSjAXE67WC5jAZq0Fq1mDD3arIyGkwfnrf4IMA=;
+        b=2yHKsHxbAwo5RDbrlclpthd+HRacKQ6Cx/48019DRsdQ+EUycvlufm08SNYbtnkFNI
+         wX7hViwfjFBFACPc6xjJYwHyUZShdXh85USGywLA+6hr0cMhULuWdlxEamfTipXXgQqX
+         uhec12Lm5Nmty2k41eGh34Z+tmswjEwTGLsqPm/5ncgtkaJLQPaJGVtKGK+YjySmVlFA
+         OADVgewp9Wht/JnvAiSZIKQ0/kVaBT8FMXPx2xrhJKSBa5+nWlG+TOj7VyCWeK3VxzbI
+         WbCNfYnTJ2MItJ2cWYOB0rqK489C1NyB/9hxdrjWWaCmmG2UysDdbA3++2ju0YDOFZy4
+         /BXg==
+X-Gm-Message-State: AFqh2kps67gC03waoSmVgnbhz3gjGmkdYGysY7Mwuo79XBNhFF89ROBZ
+        65hquacYTpTgUBIBnR1tG397xcb++QBV+S2x4ZKb9w==
+X-Google-Smtp-Source: AMrXdXt0YJL5PJuF9kI4s3Ab6/iEK4N4WfaQrM4izbGCTToLYJHg+SgShT27iXPGUkGe8YlEK9ZPeWL1bajF6AlPH24=
+X-Received: by 2002:a62:1556:0:b0:58b:87f:9a70 with SMTP id
+ 83-20020a621556000000b0058b087f9a70mr270542pfv.1.1673394568068; Tue, 10 Jan
+ 2023 15:49:28 -0800 (PST)
+MIME-Version: 1.0
+References: <20230108030208.26390-1-ajit.khaparde@broadcom.com>
+ <20230108030208.26390-2-ajit.khaparde@broadcom.com> <20230110145152.3029bd2a@kernel.org>
+In-Reply-To: <20230110145152.3029bd2a@kernel.org>
+From:   Ajit Khaparde <ajit.khaparde@broadcom.com>
+Date:   Tue, 10 Jan 2023 15:49:11 -0800
+Message-ID: <CACZ4nhv+wuSRe6ZvMrHfVuZLzPNphzH=ErgC=90aU-9sWeQi3g@mail.gmail.com>
+Subject: Re: [PATCH 1/8] bnxt_en: Add auxiliary driver support
+To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
         edumazet@google.com, jgg@ziepe.ca, leon@kernel.org,
         linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
         michael.chan@broadcom.com, netdev@vger.kernel.org,
         pabeni@redhat.com, selvin.xavier@broadcom.com
-Subject: Re: [PATCH 1/8] bnxt_en: Add auxiliary driver support
-Message-ID: <20230110145152.3029bd2a@kernel.org>
-In-Reply-To: <20230108030208.26390-2-ajit.khaparde@broadcom.com>
-References: <20230108030208.26390-1-ajit.khaparde@broadcom.com>
-        <20230108030208.26390-2-ajit.khaparde@broadcom.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000d1b41005f1f188af"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat,  7 Jan 2023 19:02:01 -0800 Ajit Khaparde wrote:
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> index 2e54bf4fc7a7..6c697172f042 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> @@ -25,32 +25,37 @@
->  #include "bnxt_hwrm.h"
->  #include "bnxt_ulp.h"
->  
-> +static DEFINE_IDA(bnxt_aux_dev_ids);
-> +
->  static int bnxt_register_dev(struct bnxt_en_dev *edev, unsigned int ulp_id,
->  			     struct bnxt_ulp_ops *ulp_ops, void *handle)
->  {
->  	struct net_device *dev = edev->net;
->  	struct bnxt *bp = netdev_priv(dev);
->  	struct bnxt_ulp *ulp;
-> +	int rc = 0;
->  
-> -	ASSERT_RTNL();
->  	if (ulp_id >= BNXT_MAX_ULP)
->  		return -EINVAL;
->  
->  	ulp = &edev->ulp_tbl[ulp_id];
->  	if (rcu_access_pointer(ulp->ulp_ops)) {
->  		netdev_err(bp->dev, "ulp id %d already registered\n", ulp_id);
-> -		return -EBUSY;
-> +		rc = -EBUSY;
-> +		goto exit;
+--000000000000d1b41005f1f188af
+Content-Type: text/plain; charset="UTF-8"
 
-The change to jump to the return statement rater than return directly
-seems unrelated to the rest of the patch, and wrong.
+On Tue, Jan 10, 2023 at 2:51 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Sat,  7 Jan 2023 19:02:01 -0800 Ajit Khaparde wrote:
+> > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+:::: snip ::::
+>
+> This forward declaration is not needed, at least in this patch.
+>
+> >  struct bnxt;
+> >
+> >  struct bnxt_msix_entry {
+> > @@ -102,10 +103,14 @@ int bnxt_get_ulp_stat_ctxs(struct bnxt *bp);
+> >  void bnxt_ulp_stop(struct bnxt *bp);
+> >  void bnxt_ulp_start(struct bnxt *bp, int err);
+> >  void bnxt_ulp_sriov_cfg(struct bnxt *bp, int num_vfs);
+> > -void bnxt_ulp_shutdown(struct bnxt *bp);
+> >  void bnxt_ulp_irq_stop(struct bnxt *bp);
+> >  void bnxt_ulp_irq_restart(struct bnxt *bp, int err);
+> >  void bnxt_ulp_async_events(struct bnxt *bp, struct hwrm_async_event_cmpl *cmpl);
+> > +void bnxt_aux_dev_release(struct device *dev);
+> > +int bnxt_rdma_aux_device_add(struct bnxt *bp);
+>
+> This is only used in bnxt_ulp.c, please remove the declaration and make
+> it static. Please check other functions for the same problem.
+>
+> > +void bnxt_rdma_aux_device_uninit(struct bnxt *bp);
+> > +void bnxt_rdma_aux_device_init(struct bnxt *bp);
+> > +void bnxt_aux_dev_free(struct bnxt *bp);
+>
+Thanks Kuba. I will go over the comments and send the next version.
 
->  	}
->  	if (ulp_id == BNXT_ROCE_ULP) {
->  		unsigned int max_stat_ctxs;
->  
->  		max_stat_ctxs = bnxt_get_max_func_stat_ctxs(bp);
->  		if (max_stat_ctxs <= BNXT_MIN_ROCE_STAT_CTXS ||
-> -		    bp->cp_nr_rings == max_stat_ctxs)
-> -			return -ENOMEM;
-> +		    bp->cp_nr_rings == max_stat_ctxs) {
-> +			rc = -ENOMEM;
-> +			goto exit;
-> +		}
->  	}
->  
-> -	atomic_set(&ulp->ref_count, 0);
-> +	atomic_set(&ulp->ref_count, 1);
->  	ulp->handle = handle;
->  	rcu_assign_pointer(ulp->ulp_ops, ulp_ops);
->  
-> @@ -59,7 +64,8 @@ static int bnxt_register_dev(struct bnxt_en_dev *edev, unsigned int ulp_id,
->  			bnxt_hwrm_vnic_cfg(bp, 0);
->  	}
->  
-> -	return 0;
-> +exit:
-> +	return rc;
->  }
->  
->  static int bnxt_unregister_dev(struct bnxt_en_dev *edev, unsigned int ulp_id)
-> @@ -69,10 +75,11 @@ static int bnxt_unregister_dev(struct bnxt_en_dev *edev, unsigned int ulp_id)
->  	struct bnxt_ulp *ulp;
->  	int i = 0;
->  
-> -	ASSERT_RTNL();
->  	if (ulp_id >= BNXT_MAX_ULP)
->  		return -EINVAL;
->  
-> +	edev->flags |= BNXT_EN_FLAG_ULP_STOPPED;
-> +
->  	ulp = &edev->ulp_tbl[ulp_id];
->  	if (!rcu_access_pointer(ulp->ulp_ops)) {
->  		netdev_err(bp->dev, "ulp id %d not registered\n", ulp_id);
-> @@ -126,7 +133,6 @@ static int bnxt_req_msix_vecs(struct bnxt_en_dev *edev, unsigned int ulp_id,
->  	int total_vecs;
->  	int rc = 0;
->  
-> -	ASSERT_RTNL();
->  	if (ulp_id != BNXT_ROCE_ULP)
->  		return -EINVAL;
->  
-> @@ -149,6 +155,7 @@ static int bnxt_req_msix_vecs(struct bnxt_en_dev *edev, unsigned int ulp_id,
->  		max_idx = min_t(int, bp->total_irqs, max_cp_rings);
->  		idx = max_idx - avail_msix;
->  	}
-> +
->  	edev->ulp_tbl[ulp_id].msix_base = idx;
->  	edev->ulp_tbl[ulp_id].msix_requested = avail_msix;
->  	hw_resc = &bp->hw_resc;
-> @@ -156,8 +163,10 @@ static int bnxt_req_msix_vecs(struct bnxt_en_dev *edev, unsigned int ulp_id,
->  	if (bp->total_irqs < total_vecs ||
->  	    (BNXT_NEW_RM(bp) && hw_resc->resv_irqs < total_vecs)) {
->  		if (netif_running(dev)) {
-> +			rtnl_lock();
+--000000000000d1b41005f1f188af
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-What prevents the device from going down after you check running 
-but before you take the lock?
-
->  			bnxt_close_nic(bp, true, false);
->  			rc = bnxt_open_nic(bp, true, false);
-> +			rtnl_unlock();
->  		} else {
->  			rc = bnxt_reserve_rings(bp, true);
->  		}
-
-> @@ -475,6 +467,143 @@ static const struct bnxt_en_ops bnxt_en_ops_tbl = {
->  	.bnxt_register_fw_async_events	= bnxt_register_async_events,
->  };
->  
-> +void bnxt_aux_dev_free(struct bnxt *bp)
-> +{
-> +	kfree(bp->aux_dev);
-> +	bp->aux_dev = NULL;
-> +}
-> +
-> +static struct bnxt_aux_dev *bnxt_aux_dev_alloc(struct bnxt *bp)
-> +{
-> +	struct bnxt_aux_dev *bnxt_adev;
-> +
-> +	bnxt_adev =  kzalloc(sizeof(*bnxt_adev), GFP_KERNEL);
-
-double space
-
-> +	if (!bnxt_adev)
-> +		return NULL;
-> +
-> +	return bnxt_adev;
-
-This entire function is rather pointless.
-
-If you really want it - it can be simply written as:
-
-static struct bnxt_aux_dev *bnxt_aux_dev_alloc(struct bnxt *bp)
-{
-	return kzalloc(sizeof(struct bnxt_aux_dev), GFP_KERNEL);
-}
-
-> +}
-> +
-> +void bnxt_rdma_aux_device_uninit(struct bnxt *bp)
-> +{
-> +	struct bnxt_aux_dev *bnxt_adev;
-> +	struct auxiliary_device *adev;
-> +
-> +	/* Skip if no auxiliary device init was done. */
-> +	if (!(bp->flags & BNXT_FLAG_ROCE_CAP))
-> +		return;
-> +
-> +	bnxt_adev = bp->aux_dev;
-> +	adev = &bnxt_adev->aux_dev;
-> +	auxiliary_device_delete(adev);
-
-auxiliary_device_delete() waits for all the references to disappear?
-The lifetime rules between adev and "edev" seem a little odd to me,
-maybe I'm not familiar enough with auxdev.
-
-> +	auxiliary_device_uninit(adev);
-> +	if (bnxt_adev->id >= 0)
-> +		ida_free(&bnxt_aux_dev_ids, bnxt_adev->id);
-> +}
-> +
-> +void bnxt_rdma_aux_device_init(struct bnxt *bp)
-> +{
-> +	int rc;
-> +
-> +	if (bp->flags & BNXT_FLAG_ROCE_CAP) {
-
-flip the condition and return early, don't indent an entire function.
-
-> +		bp->aux_dev = bnxt_aux_dev_alloc(bp);
-> +		if (!bp->aux_dev)
-> +			goto skip_ida_init;
-> +
-> +		bp->aux_dev->id = ida_alloc(&bnxt_aux_dev_ids, GFP_KERNEL);
-> +		if (bp->aux_dev->id < 0) {
-> +			netdev_warn(bp->dev,
-> +				    "ida alloc failed for ROCE auxiliary device\n");
-> +			goto skip_aux_init;
-> +		}
-> +
-> +		/* If aux bus init fails, continue with netdev init. */
-> +		rc = bnxt_rdma_aux_device_add(bp);
-> +		if (rc) {
-> +			netdev_warn(bp->dev,
-> +				    "Failed to add auxiliary device for ROCE\n");
-> +			goto aux_add_failed;
-> +		}
-> +	}
-> +	return;
-> +
-> +aux_add_failed:
-> +	ida_free(&bnxt_aux_dev_ids, bp->aux_dev->id);
-> +	bp->aux_dev->id = -1;
-> +skip_aux_init:
-> +	bnxt_aux_dev_free(bp);
-> +skip_ida_init:
-> +	bp->flags &= ~BNXT_FLAG_ROCE_CAP;
-> +}
-
-> +static inline void bnxt_set_edev_info(struct bnxt_en_dev *edev, struct bnxt *bp)
-
-Please don't use inline for no good reason.
-
-> +{
-> +	edev->en_ops = &bnxt_en_ops_tbl;
-> +	edev->net = bp->dev;
-> +	edev->pdev = bp->pdev;
-> +	edev->l2_db_size = bp->db_size;
-> +	edev->l2_db_size_nc = bp->db_size;
-> +
-> +	if (bp->flags & BNXT_FLAG_ROCEV1_CAP)
-> +		edev->flags |= BNXT_EN_FLAG_ROCEV1_CAP;
-> +	if (bp->flags & BNXT_FLAG_ROCEV2_CAP)
-> +		edev->flags |= BNXT_EN_FLAG_ROCEV2_CAP;
-> +}
-> +
-> +int bnxt_rdma_aux_device_add(struct bnxt *bp)
-> +{
-> +	struct bnxt_aux_dev *bnxt_adev = bp->aux_dev;
-> +	struct bnxt_en_dev *edev = bnxt_adev->edev;
-> +	struct auxiliary_device *aux_dev;
-> +	int ret;
-> +
-> +	edev = kzalloc(sizeof(*edev), GFP_KERNEL);
-> +	if (!edev) {
-> +		ret = -ENOMEM;
-> +		goto cleanup_edev_failure;
-> +	}
-> +
-> +	aux_dev = &bnxt_adev->aux_dev;
-> +	aux_dev->id = bnxt_adev->id;
-> +	aux_dev->name = "rdma";
-> +	aux_dev->dev.parent = &bp->pdev->dev;
-> +	aux_dev->dev.release = bnxt_aux_dev_release;
-> +
-> +	bnxt_adev->edev = edev;
-> +	bp->edev = edev;
-> +	bnxt_set_edev_info(edev, bp);
-> +
-> +	ret = auxiliary_device_init(aux_dev);
-> +	if (ret)
-> +		goto cleanup_init_failure;
-> +
-> +	ret = auxiliary_device_add(aux_dev);
-> +	if (ret)
-> +		goto cleanup_add_failure;
-> +
-> +	return 0;
-> +
-> +cleanup_add_failure:
-
-Name your labels after what you clean up, not what failed.
-
-> +	auxiliary_device_uninit(aux_dev);
-> +cleanup_init_failure:
-> +	kfree(edev);
-> +	bp->edev = NULL;
-> +cleanup_edev_failure:
-
-Don't jump to the return statement, just return.
-
-> +	return ret;
-> +}
-> +
->  struct bnxt_en_dev *bnxt_ulp_probe(struct net_device *dev)
->  {
->  	struct bnxt *bp = netdev_priv(dev);
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> index 42b50abc3e91..647147a68554 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> @@ -17,6 +17,7 @@
->  #define BNXT_MIN_ROCE_STAT_CTXS	1
->  
->  struct hwrm_async_event_cmpl;
-> +struct bnxt_aux_dev;
-
-This forward declaration is not needed, at least in this patch.
-
->  struct bnxt;
->  
->  struct bnxt_msix_entry {
-> @@ -102,10 +103,14 @@ int bnxt_get_ulp_stat_ctxs(struct bnxt *bp);
->  void bnxt_ulp_stop(struct bnxt *bp);
->  void bnxt_ulp_start(struct bnxt *bp, int err);
->  void bnxt_ulp_sriov_cfg(struct bnxt *bp, int num_vfs);
-> -void bnxt_ulp_shutdown(struct bnxt *bp);
->  void bnxt_ulp_irq_stop(struct bnxt *bp);
->  void bnxt_ulp_irq_restart(struct bnxt *bp, int err);
->  void bnxt_ulp_async_events(struct bnxt *bp, struct hwrm_async_event_cmpl *cmpl);
-> +void bnxt_aux_dev_release(struct device *dev);
-> +int bnxt_rdma_aux_device_add(struct bnxt *bp);
-
-This is only used in bnxt_ulp.c, please remove the declaration and make
-it static. Please check other functions for the same problem.
-
-> +void bnxt_rdma_aux_device_uninit(struct bnxt *bp);
-> +void bnxt_rdma_aux_device_init(struct bnxt *bp);
-> +void bnxt_aux_dev_free(struct bnxt *bp);
-
+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
+pZEyqKnwS1lKCzjX7mV5W955rFsFxChdAKfw0HilwtqdY24mhy62+GeaEkD0gYIj1tCmw9gnQToc
+K+0s7xEunfR9pBrzmOwS3OQbcP0nJ8SmQ8R+reroH6LYuFpaqK1rgQIDAQABo4IB2zCCAdcwDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAlBgNVHREEHjAcgRphaml0LmtoYXBhcmRlQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
+BQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUbrcTuh0mr2qP
+xYdtyDgFeRIiE/gwDQYJKoZIhvcNAQELBQADggEBALrc1TljKrDhXicOaZlzIQyqOEkKAZ324i8X
+OwzA0n2EcPGmMZvgARurvanSLD3mLeeuyq1feCcjfGM1CJFh4+EY7EkbFbpVPOIdstSBhbnAJnOl
+aC/q0wTndKoC/xXBhXOZB8YL/Zq4ZclQLMUO6xi/fFRyHviI5/IrosdrpniXFJ9ukJoOXtvdrEF+
+KlMYg/Deg9xo3wddCqQIsztHSkR4XaANdn+dbLRQpctZ13BY1lim4uz5bYn3M0IxyZWkQ1JuPHCK
+aRJv0SfR88PoI4RB7NCEHqFwARTj1KvFPQi8pK/YISFydZYbZrxQdyWDidqm4wSuJfpE6i0cWvCd
+u50xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
+MTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwM2Vrj
+4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJw/mR9nqLihwAR8l1NV
+w87XZvTq/UNtHH4plW6ZsNqWMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
+MQ8XDTIzMDExMDIzNDkyOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
+BAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsG
+CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQChQsXh7oygKDu8tSlvPAMkbqSMd+TbK28TYaTf
+L+dswW9ABszwRly1JV6UOhwsvC74lzekhAtDFH1idfPNAse53RMuRjlaV/8e2aMgB1h7tSGil1BH
+LZSnS7QvC/IxM5cLMJ6PXz3xDPIeQiDwu6Pmzec/Eb5fu9VsnQwaI0SIxmrFoc/SgGOd5UdXgc/Z
+JJyzJ0kKf8lHmTP7n14rog7Yc/za//DGpX1zYYvt2hS0dGspBkSZ0e22h7dqAdnbyk4Dhld2LwFS
+Tn5c9VnLRdYjrQyxZaMzv/IrsUK3EsFRiNZcojmGKBnwuC5S6PcDfRjC1Wk+/9LwuzSOczVUbATS
+--000000000000d1b41005f1f188af--
