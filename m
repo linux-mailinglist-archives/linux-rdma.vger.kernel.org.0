@@ -2,159 +2,185 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A706663902
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jan 2023 07:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8818C6639E0
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jan 2023 08:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbjAJGDn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Jan 2023 01:03:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
+        id S237372AbjAJHZD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Jan 2023 02:25:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237597AbjAJGDF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Jan 2023 01:03:05 -0500
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2712DC26;
-        Mon,  9 Jan 2023 22:02:50 -0800 (PST)
-Message-ID: <276971e8-7eac-6b0c-06a7-30d415fb86c0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1673330567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KrPYN+LFQ7vZhHhi6lQN6JTbpeL3pectrwA8T2cqrOU=;
-        b=SHuiBTv4PG2ZF0jINppB/8edMzc0cNokbDuu6N5sUrAhkO3zFmlxegIYt53soDShoIc4Jv
-        fr0Rj9I3tgruXFyLBsejRzW6R4iXkzfuIZR/oOabjRbz+T8joeMBx4zhzMvnsuh1tgzb67
-        V4qMBvRKdDIElEfn8SQJqLMLZQawzRM=
-Date:   Tue, 10 Jan 2023 14:02:34 +0800
+        with ESMTP id S235227AbjAJHYu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Jan 2023 02:24:50 -0500
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1F04916A;
+        Mon,  9 Jan 2023 23:24:49 -0800 (PST)
+Received: by mail-oo1-xc2b.google.com with SMTP id o5-20020a4a2c05000000b004ac6ea6c75dso3014851ooo.8;
+        Mon, 09 Jan 2023 23:24:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=m+2ACMdQxffLsUo20nRc4xTyrL+eaCgWjSTc/1CsdOQ=;
+        b=XRR6nsQUhHUq5EWmW9gKJaqOb3Hw5ym3IfYXgAx3Hhz43jET+NowDKZMakX2/YA72p
+         qc6Z5Ak88H53tITWK4RX1Gis6dTvn7iz7raH+4etVxzdrudEoVvTz3BkUwiJ+ptP3EfI
+         z2vTLsTXVVkas+5AJ8YnrL+g+CG8gNgQghYO0p18bxCaIE2qroUgZNqanOQdGUQQc146
+         V0cNby3QobNVWqkMmyr7W6/Ow7MBOQH8Et0/kf3ZQE3fButZ2k6R+kLKms37r7FHltG5
+         BliqZwyx1ni+ADrna7vw/HLKAqjcKvEPdwTmujNffw1kPQMYkcl9u2pCS6BAxZ8DEYhm
+         k9WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m+2ACMdQxffLsUo20nRc4xTyrL+eaCgWjSTc/1CsdOQ=;
+        b=iuzyMpx+9b91Xg13Afxypg/0CaBHjqfkVsNiznXoo3U1IR6Gajbyo59nvJtbPf75/L
+         Wv1pqI7fDXCWXGq8qecV00xz5HMStkbo6lKJEVT1ibPqu5QuacVJsK5E1GwXYGhuoDGA
+         hKPtUkWHjOWVPXAac+m/SXx0z4iEOcSxbGOjAg3Kx7RxLV8DiyOgrOL+N4+ju3Sw3izr
+         lYU5NiurIwIh3OkUCi9KpCsEvqJkMtUqLT4erHwH/ITFPm0911G8n7MkW2Cs9FGwotQx
+         sZXBKXNirWpEYe4SRH+Ypq/iTvwE7lU+n7nOKi/F2MRsTajGW/GUxkn59fP+X2wP00MV
+         +YjQ==
+X-Gm-Message-State: AFqh2kpPEoLES/9fJekPK1IBQxdDKxHlVxPaugfkrRrLVtkXNsCOplxi
+        6UJ6UiVYugwxiJ5Esygt5RQ=
+X-Google-Smtp-Source: AMrXdXsjiarDbClht+wd14wjZF+Uko0aLrKPE/1Rp1wlWzb6I5vS908nYgRT77Ec6689eDHFBWCALA==
+X-Received: by 2002:a4a:83c6:0:b0:4a5:4335:100c with SMTP id r6-20020a4a83c6000000b004a54335100cmr27709247oog.7.1673335488326;
+        Mon, 09 Jan 2023 23:24:48 -0800 (PST)
+Received: from localhost ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id n125-20020a4a5383000000b004ce5d00de73sm5316261oob.46.2023.01.09.23.24.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jan 2023 23:24:47 -0800 (PST)
+Date:   Mon, 9 Jan 2023 23:24:46 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [GIT PULL] bitmap changes for v6.2-rc1
+Message-ID: <Y70SvsOZnzV1UPXf@yury-laptop>
+References: <Y5uprmSmSfYechX2@yury-laptop>
+ <CAHk-=wj_4xsWxLqPvkCV6eOJt7quXS8DyXn3zWw3W94wN=6yig@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: RE: Network do not works with linux >= 6.1.2. Issue bisected to
- "425c9bd06b7a70796d880828d15c11321bdfb76d" (RDMA/irdma: Report the correct
- link speed)
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jaroslav Pulchart <jaroslav.pulchart@gooddata.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Wesierski, DawidX" <dawidx.wesierski@intel.com>
-Cc:     "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Igor Raits <igor.raits@gooddata.com>
-References: <CAK8fFZ6A_Gphw_3-QMGKEFQk=sfCw1Qmq0TVZK3rtAi7vb621A@mail.gmail.com>
- <Y7hJJ5hIxDolYIAV@ziepe.ca>
- <MWHPR11MB00299035ECB2E34F60BC2C74E9FE9@MWHPR11MB0029.namprd11.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <MWHPR11MB00299035ECB2E34F60BC2C74E9FE9@MWHPR11MB0029.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj_4xsWxLqPvkCV6eOJt7quXS8DyXn3zWw3W94wN=6yig@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/1/10 3:36, Saleem, Shiraz 写道:
->> Subject: Re: Network do not works with linux >= 6.1.2. Issue bisected to
->> "425c9bd06b7a70796d880828d15c11321bdfb76d" (RDMA/irdma: Report the
->> correct link speed)
->>
->> On Fri, Jan 06, 2023 at 08:55:29AM +0100, Jaroslav Pulchart wrote:
->>> [  257.967099] task:NetworkManager  state:D stack:0     pid:3387
->>> ppid:1      flags:0x00004002
->>> [  257.975446] Call Trace:
->>> [  257.977901]  <TASK>
->>> [  257.980004]  __schedule+0x1eb/0x630 [  257.983498]
->>> schedule+0x5a/0xd0 [  257.986641]  schedule_timeout+0x11d/0x160 [
->>> 257.990654]  __wait_for_common+0x90/0x1e0 [  257.994666]  ?
->>> usleep_range_state+0x90/0x90 [  257.998854]
->>> __flush_workqueue+0x13a/0x3f0 [  258.002955]  ?
->>> __kernfs_remove.part.0+0x11e/0x1e0
->>> [  258.007661]  ib_cache_cleanup_one+0x1c/0xe0 [ib_core] [
->>> 258.012721]  __ib_unregister_device+0x62/0xa0 [ib_core] [  258.017959]
->>> ib_unregister_device+0x22/0x30 [ib_core] [  258.023024]
->>> irdma_remove+0x1a/0x60 [irdma] [  258.027223]
->>> auxiliary_bus_remove+0x18/0x30 [  258.031414]
->>> device_release_driver_internal+0x1aa/0x230
->>> [  258.036643]  bus_remove_device+0xd8/0x150 [  258.040654]
->>> device_del+0x18b/0x3f0 [  258.044149]  ice_unplug_aux_dev+0x42/0x60
->>> [ice]
->>
->> We talked about this already - wasn't it on this series?
+On Fri, Dec 23, 2022 at 10:44:07AM -0800, Linus Torvalds wrote:
+> On Thu, Dec 15, 2022 at 3:11 PM Yury Norov <yury.norov@gmail.com> wrote:
+> >
+> > Please pull bitmap patches for v6.2. They spent in -next for more than
+> > a week without any issues. The branch consists of:
 > 
-> This is yet another path (when ice ports are added to a bond) I believe where the RDMA aux device
-> is removed holding the RTNL lock. It's being exposed now with this recent irdma patch - 425c9bd06b7a,
-> causing a deadlock.
+> So I've been holding off on this because these bitmap pulls have
+> always scared me, and I wanted to have the time to actually look
+> through them in detail before pulling.
 > 
-> ice_lag_event_handler [rtnl_lock]
->   ->ice_lag_changeupper_event
->       ->ice_unplug_aux_dev
->          ->irdma_remove
->              ->ib_unregister_device
->                 ->ib_cache_cleanup_one
->                    ->flush_workqueue(ib)
->                       ->irdma_query_port
->                           -> ib_get_eth_speed [rtnl_lock]
-
-Agree with the above analysis.
-Maybe a quick and direct fix is like this.
-
-@@ -74,6 +74,7 @@ static int irdma_query_port(struct ib_device *ibdev, 
-u32 port,
-  {
-         struct irdma_device *iwdev = to_iwdev(ibdev);
-         struct net_device *netdev = iwdev->netdev;
-+       bool unlock_rtnl = false;
-
-         /* no need to zero out pros here. done by caller */
-
-@@ -91,9 +92,16 @@ static int irdma_query_port(struct ib_device *ibdev, 
-u32 port,
-                 props->phys_state = IB_PORT_PHYS_STATE_DISABLED;
-         }
-
-+       if (rtnl_is_locked()) {
-+               rtnl_unlock();
-+               unlock_rtnl = true;
-+       }
-         ib_get_eth_speed(ibdev, port, &props->active_speed,
-                          &props->active_width);
-
-+       if (unlock_rtnl) {
-+               rtnl_lock();
-+       }
-         if (rdma_protocol_roce(ibdev, 1)) {
-                 props->gid_tbl_len = 32;
-                 props->ip_gids = true;
-
-Zhu Yanjun
-
+> I'm back home, over the travel chaos, and while I have other pulls
+> pending, they seem to be benign fixes so I started looking at this.
 > 
-> Previous discussion was on ethtool channel config change, https://lore.kernel.org/linux-rdma/Y5ES3kmYSINlAQhz@x130/,
-> which David E. is taking care of.
+> And when looking at it, I did indeed finx what I think is a
+> fundamental arithmetic bug.
 > 
-> We are working on a patch for this issue.
+> That small_const_nbits_off() is simply buggy.
 > 
->>
->> Don't hold locks when removing aux devices.
->>
->>> [  258.048707]  ice_lag_changeupper_event+0x287/0x2a0 [ice] [
->>> 258.054038]  ice_lag_event_handler+0x51/0x130 [ice] [  258.058930]
->>> raw_notifier_call_chain+0x41/0x60 [  258.063381]
->>> __netdev_upper_dev_link+0x1a0/0x370
->>> [  258.068008]  netdev_master_upper_dev_link+0x3d/0x60
->>> [  258.072886]  bond_enslave+0xd16/0x16f0 [bonding] [  258.077517]  ?
->>> nla_put+0x28/0x40 [  258.080756]  do_setlink+0x26c/0xc10 [
->>> 258.084249]  ? avc_alloc_node+0x27/0x180 [  258.088173]  ?
->>> __nla_validate_parse+0x141/0x190 [  258.092708]
->>> __rtnl_newlink+0x53a/0x620 [  258.096549]  rtnl_newlink+0x44/0x70
->>
->> Especially not the rtnl.
->>
->> Jason
+> Try this:
+> 
+>         small_const_nbits_off(64,-1);
+> 
+> and see it return true.
 
+Hi Linus,
+
+Sorry for a delayed reply.
+
+small_const_nbits{_off} is used only for bitmap and find_bit functions
+where both offset and size are unsigned types. -1 there will turn into
+UINT_MAX or ULONG_MAX, and small_const_nbits_off(64, -1) returns false.
+
+The bitops.h functions (set_bit et all) also use unsigned type for nr.
+Negative offsets are not used in bit operations from very basic level.
+
+Notice that '(nbits) > 0' part in small_const_nbits() is there to exclude
+0, not negative numbers.
+
+So, support for negative offset/size looks irrelevant for all existing
+users of small_const(). I doubt there'll be new non-bitmap users for
+the macro anytime soon.
+
+small_const_nbits() and proposed small_const_nbits_off() are in fact
+very bitmap-related macros. 'Small' in this context refers to a
+single-word bitmap. 0 is definitely a small and constant number, but
+small_const_nbits(0) will return false - only because inline versions
+of bitmap functions don't handle 0 correctly.
+
+I think, small_const_nbits confuses because it sounds too generic and
+is located in a very generic place. There's a historical reason for
+that.
+
+Originally, the macro was hosted in include/linux/bitmap.h and at that
+time find.h was in include/asm-generic/bitops/. In commit 586eaebea5988
+(lib: extend the scope of small_const_nbits() macro) I moved the macro
+to include/asm-generic/bitsperlong.h to optimize find_bit functions too.
+
+After that, working on other parts I found that having bitmap.h and
+find.h in different include paths is a permanent headache due to things
+like circular dependencies, and moved find.h to include/linux, where it
+should be. And even made it an internal header for bitmap.h. But didn't
+move small_const_nbits(). Looks like I have to move it to somewhere in
+include/linux/bitops.h.
+
+[...]
+ 
+> So convince me not only that the optimizations are obviously correct,
+> but also that they actually matter.
+
+There're no existing users for small_const_nbits_off(). I've been
+reworking bitmap_find_free_region(), added a pile of tests and
+found that some quite trivial cases are not inlined, for example
+find_next_bit(addr, 128, 124).
+
+Let's ignore this patch unless we'll have real users.
+
+
+Regarding the rest of the series. Can you please take a look? It includes
+an optimization for CPUs allocations. With quite a simple rework of
+cpumask_local_spread() we are gaining measurable and significant
+improvement for many subsystems on NUMA machines.
+
+Tariq measured impact of NUMA-based locality on networking in his
+environment, and from his commit message:
+
+    Performance tests:
+    
+    TCP multi-stream, using 16 iperf3 instances pinned to 16 cores (with aRFS on).
+    Active cores: 64,65,72,73,80,81,88,89,96,97,104,105,112,113,120,121
+    
+    +-------------------------+-----------+------------------+------------------+
+    |                         | BW (Gbps) | TX side CPU util | RX side CPU util |
+    +-------------------------+-----------+------------------+------------------+
+    | Baseline                | 52.3      | 6.4 %            | 17.9 %           |
+    +-------------------------+-----------+------------------+------------------+
+    | Applied on TX side only | 52.6      | 5.2 %            | 18.5 %           |
+    +-------------------------+-----------+------------------+------------------+
+    | Applied on RX side only | 94.9      | 11.9 %           | 27.2 %           |
+    +-------------------------+-----------+------------------+------------------+
+    | Applied on both sides   | 95.1      | 8.4 %            | 27.3 %           |
+    +-------------------------+-----------+------------------+------------------+
+    
+    Bottleneck in RX side is released, reached linerate (~1.8x speedup).
+    ~30% less cpu util on TX.
+
+We'd really like to have this work in next kernel release.
+
+Thanks,
+Yury
