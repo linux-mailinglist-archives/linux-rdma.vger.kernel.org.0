@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CF7663805
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jan 2023 05:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABA3663806
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jan 2023 05:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjAJEKv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Jan 2023 23:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
+        id S229747AbjAJELR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Jan 2023 23:11:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjAJEKt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 23:10:49 -0500
+        with ESMTP id S229457AbjAJELL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Jan 2023 23:11:11 -0500
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D103726C
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Jan 2023 20:10:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09ECA13E3C
+        for <linux-rdma@vger.kernel.org>; Mon,  9 Jan 2023 20:11:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673323848; x=1704859848;
+  t=1673323869; x=1704859869;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=6CQrYs2ADnK/E12eqZJ86f47jTX5rwSdZ7IoRRF8f68=;
-  b=VpJ5WwWSIfcf4NEBclBjstaU251rOHrZ5Kz4+v1wdGCUmpM0kw6pHWfq
-   28bFqpJW8LQIT006cAb2iuuDG4w/l1Did1vjEdoSDYstYKFSuw2CwTVm7
-   j+k+XcoAJ3zNgv82yosgYWNXcggRWUY5MxUOu1cmnD4yLUkWgD+NQn8jM
-   N+l+hF4gbtyhueLlDV1DthC7XZAOa10Glixmvo4i+d56LYLpMHAOXezec
-   gWMCau2E7HGXCwOowRwb49ZYLJniXTzaPGPQiwXvo/9uU52K7ohsZOtOf
-   u9qDn9m74IQEcp6c6gDDxWtXeOvrQbbsn0RP2U7NhDXEPHAN7qVm0GLVV
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10585"; a="306569243"
+  bh=f43tv38+GvLCBZ4cZLhT7/Br0NUqq4M2bZSTly8mAgY=;
+  b=MwXiubGgEhSHx/fhUesgBbsl3jVDcW2tfOMHFkhnoow3Y/qNHnjWqHvZ
+   tzpxjlVpe2CkMyHXo+QJwvr1M9KKAOJ5KFldJy5IybouOgQPpcWtm6CJK
+   8hfLdAgi6WcVM6tDttrJscxZtT8FciRjRJRr3h8nfBHaYrfl49Zu5yrFg
+   bGdr2hMGxY+gv2Gu7FkHQZx/0lCqEzkLqgyH5WxwlbkNyHuOv7mQR7P+w
+   NcyMZMyin3lA+0pmLFjVmIxoeoctY0cvgqmM1hgv62YwcqiHI1KTULjiH
+   yA4Dq0RmTqzj3qNixzT9btfp7JZIn02vCx//79tWiyl607v/gEWxuiJ89
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10585"; a="306569299"
 X-IronPort-AV: E=Sophos;i="5.96,314,1665471600"; 
-   d="scan'208";a="306569243"
+   d="scan'208";a="306569299"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2023 20:10:42 -0800
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2023 20:11:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10585"; a="830855014"
+X-IronPort-AV: E=McAfee;i="6500,9779,10585"; a="830855053"
 X-IronPort-AV: E=Sophos;i="5.96,314,1665471600"; 
-   d="scan'208";a="830855014"
+   d="scan'208";a="830855053"
 Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga005.jf.intel.com with ESMTP; 09 Jan 2023 20:10:42 -0800
+  by orsmga005.jf.intel.com with ESMTP; 09 Jan 2023 20:11:09 -0800
 Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
  fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Mon, 9 Jan 2023 20:10:42 -0800
+ 15.1.2507.16; Mon, 9 Jan 2023 20:11:08 -0800
 Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
  fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Mon, 9 Jan 2023 20:10:41 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.108)
+ 15.1.2507.16 via Frontend Transport; Mon, 9 Jan 2023 20:11:08 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
  by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Mon, 9 Jan 2023 20:10:41 -0800
+ 15.1.2507.16; Mon, 9 Jan 2023 20:11:08 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BjLqtQGS4BghQw9/PZ1qy55oviuQ6irlp9aWU4YxykAAi1wS7oaPmEbdx2i+B/SwVS1Lc8Spxk1DlJT93VM1yTmjKO/vKN52g469W+fZWKT+kH2yspZGlKuYh8lRF23z3eFrppEKJ09ejtGTGQRaI5MgBn+LVOVxCErMXznQvvNs8SfmZ/6DUQJWsStZPOYJM/WRmG+UsZfWKc0luXX1ExybOSAB1L0XhykDXyoK8UrdVTcldJuv/XwPuh6S7/dhIYlqpEHAYdMO/FDw14H7AhXYof8AozjQAMxLi2l+DjCWSnmifNW5KO/REJ/FNf1ZEn+CWLCLLP1of00n+llmSA==
+ b=BOSJUynZAisI3L4ooxnk8d0weEw3Hx5clmXOrN3caLsen39bA05/eVwRTw9GPvitSUU5rKR9FB7FgJJV2YZpCE9V9cZvqcBeLj3ehfjXGrS1l5w5Ubg80TSxKVhb7fmX5g6+jzfZUm4i3V0aONwN7Ha/1fxzrq7ktSE6spLvMplUYaU7gzPVkqsOo2casskTJos+A/6D65ZgQiqI35Leq1VPRrcBriH/qo4+QFXwvFvvxItp0OpYUM7zkNkykm6GoSOj5c83GQUNNLS9qPvGE0CK1Rd/9LSpMMFyT6MC0QsCwFsDlE+CfA7TY06NSaa9E9qDWJ7I39bRB+g5JabJ2g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kYZQnwK26wAip3WLnHmEmTxDeYUcTgD2wiSgHK7k398=;
- b=ZyQCaSmKgT8poeGkW75lFz0qTS6IHLnnPzAX31y+m4+b6rzcDJt7q+j27F0OHYLGkm5aC3vl5Pn7Sevftzgx47BaXoN9kogBdqTAkqr4Nh4JXYVntIO9lvMevPcJfwoW6475JKszRnaGOujEZvzkCWy7LHNztM9Ds09IC80uftHQ93G5tLbQwX/YugvPNCZf+2AZTPM10HH09Amu1FYhjuboISR7+hgqOqe1Vk3mixxQMW9w9DkLyZ5bVhB2uzXUIq6W3XP2DeLmNwwMMzuFwJP/1/PifCq8tDpeUCRoXO7WHe90tQZ/9e/JBwbT6EZ9MZOUMchN/66G2src9pdXLw==
+ bh=HkZxGAmH3Lx0O5Dm9VcALkKj+c8NXgCH5S5QE+uo8Ww=;
+ b=N5rSSeELityb1lINw2sxLovKOyAtY5LKRDZV7fbsV6OwcMiyh5N70uXonlyS1lhman/vEmtctPeKzFjt/PBsGYDCAb5snwqqllZ1VOS3F9G2JXcD4kP14/vqoQT68aZbHd7hcQY0hMvIOkzOF91sbSdXHd0ScaZ/1v6GOxp8LJLucOyVHH8U0kAIIRzfBGKM5t4QNZjNOEubRP0/Go7Ftnk/X8vbEdX+0qC8NHWsn2SORmqD2Er73IPoxzxeMqn5wAzMUL67Bk7wAYLQInM8ZvZCeFPvK2JqgSEAq4KTo69Z/pCaWWjbxOTFQkhle6ScvAeix+ElrymnOUUKryNpBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -64,27 +64,27 @@ Received: from MWHPR11MB0029.namprd11.prod.outlook.com (2603:10b6:301:67::25)
  by DM4PR11MB5407.namprd11.prod.outlook.com (2603:10b6:5:396::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.18; Tue, 10 Jan
- 2023 04:10:38 +0000
+ 2023 04:11:06 +0000
 Received: from MWHPR11MB0029.namprd11.prod.outlook.com
  ([fe80::61f7:7850:6203:bf55]) by MWHPR11MB0029.namprd11.prod.outlook.com
  ([fe80::61f7:7850:6203:bf55%4]) with mapi id 15.20.5986.018; Tue, 10 Jan 2023
- 04:10:38 +0000
+ 04:11:06 +0000
 From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
 To:     "Zhu, Yanjun" <yanjun.zhu@intel.com>,
         "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
 CC:     Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: RE: [PATCH for-next 3/4] RDMA/irdma: Split QP handler into
- irdma_reg_user_mr_type_qp
-Thread-Topic: [PATCH for-next 3/4] RDMA/irdma: Split QP handler into
- irdma_reg_user_mr_type_qp
-Thread-Index: AQHZI9pPTvm1vqadU0SLjGzs5JUUVq6W0mWg
-Date:   Tue, 10 Jan 2023 04:10:37 +0000
-Message-ID: <MWHPR11MB00297D796AE392D8FFCFD0A3E9FF9@MWHPR11MB0029.namprd11.prod.outlook.com>
+Subject: RE: [PATCH for-next 2/4] RDMA/irdma: Split mr alloc and free into new
+ functions
+Thread-Topic: [PATCH for-next 2/4] RDMA/irdma: Split mr alloc and free into
+ new functions
+Thread-Index: AQHZI9pO3e60x2CcxUCE97H8FPbeDK6WzO7Q
+Date:   Tue, 10 Jan 2023 04:11:06 +0000
+Message-ID: <MWHPR11MB002992573341AA0ED11BB499E9FF9@MWHPR11MB0029.namprd11.prod.outlook.com>
 References: <20230109195402.1339737-1-yanjun.zhu@intel.com>
- <20230109195402.1339737-4-yanjun.zhu@intel.com>
-In-Reply-To: <20230109195402.1339737-4-yanjun.zhu@intel.com>
+ <20230109195402.1339737-3-yanjun.zhu@intel.com>
+In-Reply-To: <20230109195402.1339737-3-yanjun.zhu@intel.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -93,52 +93,52 @@ authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: MWHPR11MB0029:EE_|DM4PR11MB5407:EE_
-x-ms-office365-filtering-correlation-id: 477cba94-f73e-4584-9513-08daf2c0a14a
+x-ms-office365-filtering-correlation-id: fedbbae1-8842-46ff-2716-08daf2c0b24e
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: v4lLI5v/1ETc9XIBO8ammWv6dAEbQWQ8s6JnQEM4YulNl3L3Dzc+Y2NC05WLCMRevVC/Bx+U2AZdh8xQgHzAPZAxobzCSLwBT01gNjtMSWaAm7BSGDAIsZtjOT68XX1nzh/EWLE04B/MsHSV2u7umDsTJmJcVPknxTKl8jiAWkVLxIF5ngQmE2OBkOeAF+B6E1hnp3tqSizWvPKikbS+JZ3R55PD6h93CfydaWiKYRro/TRTbgj0DPAOtvAg051SK3tFHB9HoV2kA+47EM0708Jk38ZcGn4ESLAz5YjL+f2p9xEpPO0gfzE9+QUOt3uCQ2O3PRS57ixE0frpRmmlo++YvpMnlodeBQaLgGuKcp38ckQBKO2Uqv2JctjfoWzhQARJkf2IoPO85nLLH1FchvbuRwYlT+f+ra8jz5KezJSlmCJdsIXvnctapaO/HOuzX0pbyHmMJUE+BDWveq1eudN5fF7F4bYIFvnTwxlFMbd7gkFujDPuSiLYXROGQHDp/l7iFH5BBnp/Us3PclMZeJe72FTzmc2MiaDRy3L7j00bHI8PgQnGsJ4RFrJ3PskbqQqBLzvqZJ2kuCm4T042BS44+igWQPJyuEKkaMLIRYMtluZ/6ihTo2HVak4z1Vxx4YPjmG7h4jdLgUfRDMpfZZ/c3OrnaUsTak2nO+jE1IdiL7Vl/i8SHt4eFflL7Ts09SGmPy9pUpQq7C6QfWmEcw==
+x-microsoft-antispam-message-info: DlXhPQhi0cHbBApXPyMvBDarf+FVgyd8W5wXDMdQPaDvCLax58mUehJBCKjxMws7HiEjq78NmNBK+eDzPrUNRFB9rxa+u8LDu4IwuBD/sMptG0etAjbIJtYjZNKi2KFSKPUvFWww9Q0M03niG7GmCJdJY7xWlHGGa2jLHpA3sqFCe2rh7aNUpbnb47sbe4GqFblPks6zFuP68BS04NifceouB6jpP9+q1G90mfEtw+MlKHR1jDmAHU6QABw9R2ohArvx+kNJGgBAlFk0lPnVfPRMaLW6EAbrqhULohFb/fc4z8eyBtUtDpOa82WGSRmVcZzaIr/0mqu6K3Pu9O8lsMV3kiT5+cqerCdHt4SQY2xxeC38H6iiLpY3LwtLMeUcoz4ivNeR90WeqFtxwQgSKs1+U+MDErKYe+BchIfdGx3t8UUtvCd8S/xDV3QgqJE6PL3XTf8Y71MkpNIuMyrn1zXpaa9nVJ+AM+YGiEEy7ZEUl6lCux7XDsBhR6gFY6Dhpv3oq86f+6Nz7AAOZi9twPMXNcE+YOpDVd4g4s9JKlkqCYXHhTliecGfdCbp4BsU9VBiJGHbzIg+JCd4cIdTBXZTh2K/e+smxOAn4vcNmPfDdwBNTCLhCOZmaio2Pq39Vnu+mu42lpTZ4uEZFhzRoLrbz8h22usa5Uddx8YaK3XBx4uIVSouaeXRnpEZs3DR3a5/j/xHQ+vVAtZvYW7C7A==
 x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0029.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(136003)(346002)(39860400002)(366004)(376002)(451199015)(66556008)(4326008)(8676002)(64756008)(66946007)(66476007)(76116006)(7696005)(316002)(66446008)(110136005)(38070700005)(2906002)(8936002)(5660300002)(71200400001)(41300700001)(52536014)(83380400001)(33656002)(6506007)(82960400001)(478600001)(186003)(9686003)(38100700002)(26005)(86362001)(122000001)(55016003);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?70MpVgL7Z/fhk6CwxLdTrp+3IaIHOG5R8Z0MBnaYOKWYjOm0LUJ3JtzksZfQ?=
- =?us-ascii?Q?pijZ0oMvvuxE6+LX3vHYiL2z2aQw7KMMWafDeYWSdO9YejcmbMr++zLKEP3x?=
- =?us-ascii?Q?00aAUatTMBeEDmy8dlNAO1CAMf6sNOOL2cgmoKJSb/e+iKwKT4vlpt0GwbgY?=
- =?us-ascii?Q?hPMkSQBWbDqG/wwNtkqsM98fCgmcXUiFMsoKaUmw+0pLnCsrZ55KzdkP+Bcz?=
- =?us-ascii?Q?1CZEf/oUplu7RsD+dmNT4iKq6yc3HaGLgfE+pMVxNyrXkUvhJevYWghXjR4i?=
- =?us-ascii?Q?Zjrs5AEVp9G8CLTBM5ctl0TseLAFfiH5RPiVe64cPQ78xNQqMxcMpnBbwowV?=
- =?us-ascii?Q?5NKv3f5ZYEtW1UlX5eA2yW2A2BjddcChHZHxgNLL4A02sdJ/7I7jN+sxHz8b?=
- =?us-ascii?Q?KLvf5TA73xAiyynHPX0KN/VTSstXfHnhrogK4H3HPBavjEWvE1AwU7jxrjjV?=
- =?us-ascii?Q?k5kwSXgSUkRDkpOY3Ui+bVKulBnJKvf5uV+cz1rPx6s0/Nwf1cVi1RNuToF+?=
- =?us-ascii?Q?ix59EJrF+xZIAs6C+PyqA3NQWMraX7izVH0LcUaGD20xYag+0beOlT6kvv5Y?=
- =?us-ascii?Q?DO6yk4TGeNiuQ9Ht9KSv1rVLJDP/zyM3ayQWTy54kh0+qB3385xuMHZ4e8m0?=
- =?us-ascii?Q?+2zjIOFYXMSxIJVXi0Ly+BR69PwVvReTzq+JU1CSnbynzNY8znXKLcmcMkVF?=
- =?us-ascii?Q?AIMeO/sELiTrrT5h4oApG0y2i0ZH1HWVzhJKKTG/DwX7zyaD7IJIgByygNME?=
- =?us-ascii?Q?jVc+92+ZxFYXtcrHXaNVgRQmlxmfxGEi592SF+YsvYMhVVfQPQ22vk66+ciB?=
- =?us-ascii?Q?KU10U1JMJmZLModoIMxSZ8EizFFcCsMYAfgRvj5gj0krtbORhRGOZQD+dAng?=
- =?us-ascii?Q?P6kgvCkclgHnrxlfzHyWwjdTSxiUdREXEf5cJmzoqLcm3Q7My99/tG4ufd0I?=
- =?us-ascii?Q?HjOVJyloCl0jv7vqiyRRkfPTK9hih0OsEDwqw8IasQ85+BIbPZMjQK5dR27U?=
- =?us-ascii?Q?Q3UuKJ6Zh/ZphXXagEMKHHhdRw2/IAR+hzeM5IQ10K08ZfFWwQSFlnrCb5jl?=
- =?us-ascii?Q?3APcU5TV0C93CmCkvWoqDI50uJOZY4eC8PvYOnMiiaoGuk4l2EciyQ1o7hrp?=
- =?us-ascii?Q?Cns4QhlMNUoxM1CF68AO6YumYQUK3C4F9Os93ryp8wf7Gq9jgr7w4rszuybM?=
- =?us-ascii?Q?wF6DNYaAkl3JHeQa3wrjREe7hFbEVBitU4r/pQY+eywugbE1R3nIKgDSb0dU?=
- =?us-ascii?Q?bJw5sAR2FY+zOZDP997l3zugIbPmrLOCfZ6N/JSu1ZlbBQHiy/u+LdkpV8I6?=
- =?us-ascii?Q?3s9GjODCSAodwd8yQN0wzJh5jEU7CWCBoUY6RqGN7elFGoQVonTzkO1/e2T3?=
- =?us-ascii?Q?RWw8jTFRunLy3tKltGbszFK9YH1tB6Nd5thVEl6zyIgM1lvkJ8CkMx+FA89d?=
- =?us-ascii?Q?eGd7RQkyakJFMBLSwhfxFy1vW3DIaxhLuvU2o2xd9DDvHlNesdoYheOzHPVO?=
- =?us-ascii?Q?7e8xC7DsVq/sWrmBESXEzm+E6Wb08utayXkH8/SfYN6m1hJ1pmYSEyDCAS0H?=
- =?us-ascii?Q?l/3f3a0G93dwLmCHPcq/5JIVOYYUam51ZDocFnS6?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0bqV5xLTnbB7vwF80UQRSxF0tWWBWQdvxlpF4r8+TCGbQde4Tatq/S5Tkz6h?=
+ =?us-ascii?Q?HgFgDe9bd7YbBhCsneWyx94W26AyCWHojdh+wouKInoxb7b01cn/e7K/ZbCS?=
+ =?us-ascii?Q?SQfv/uPfCpaBsVEJkowwCd7h2Mx64yLqmVd9vu0yqbRhkjDVBr+hcy2iHf0/?=
+ =?us-ascii?Q?eu704nn2N+end+6GBhcAhtomzOpAtiBiU8+I8GcHl/Now6Qd3g+NDnCifqpX?=
+ =?us-ascii?Q?NEP3RLUr/S7H1D+Rkdtde1gRDbhf7y3bvDp3Arca6SqGWXBlqVKEAlC9uE0c?=
+ =?us-ascii?Q?gR/TzM75p1E8fpB5nqV0ZTSLzjyYRp9HjJlh5IAvdVWXk2VmJ47JWedbgJtd?=
+ =?us-ascii?Q?mqkfmVbeV5jgRTqQHJcfBJ0efPsLJKJN18DfeqRyNb7MokOUsxDcYE1XrfLr?=
+ =?us-ascii?Q?nBbG+4P52PbYUCqvBlHmafrxFn/rQZOQzFXyUeZQNnJlsr9VwR0s4Cj/VOn9?=
+ =?us-ascii?Q?cWeK3AeV3O7S9tienq/RtuWC9bAWv1iB+60Tb2WCqXdqW2Hm9BMWZOMMJ6eq?=
+ =?us-ascii?Q?WkqrTUM6GfhypS7JzHnpj1zC+muMrma5oyrJ6Q7YSJ5TDr9yisnBhDdcl21r?=
+ =?us-ascii?Q?QTBVuj3BkP5qQ4jCmG2KZOdDYp0tzBxoFlbsqZ5CiAd0ODvrs7zDsS85zQwY?=
+ =?us-ascii?Q?L8EYqeCwJaSZ8n3LCJTLYF7G1G2iu6d78HY+wPjBdcyzPL/Pp3F5p7wCvaXe?=
+ =?us-ascii?Q?nLtcDduMjgH3vxNfaH6ddt5e7+Wn4RZTyQwSuKruCW2gUV++iwUj1G5+7iQT?=
+ =?us-ascii?Q?pHiriVwgnQik2pDeKBw7UYgN2GSFdj93VHN2lX60pkv51SPZbzdB4Pn2iPcu?=
+ =?us-ascii?Q?1DiZWF8qgrFtMQ5p3kon8oXkNCBJDWMA6B0xw8izMVYi6MwFOxNfHRPMc5rL?=
+ =?us-ascii?Q?jPM2LqG0hillfqQ7td40JfHdxXM5OP5GwB11C3+vCpOp3S2g0WV2unL7m/YP?=
+ =?us-ascii?Q?9p0OvwPY9Y6lORL0rWaRZb8FG2CdpZLDdzZG/K2Ggdss1OJk77CFzpI+qaCn?=
+ =?us-ascii?Q?PuI0foE0CtuHbdUx3d0TLZ4ICWqO4LIRThSNDZTTs4kFzkXBwovpTLxq5vXE?=
+ =?us-ascii?Q?95j87dy/qyVby/iaWDFSeKmcMoxRSEGfrj1qjMR7eUAX/Qcwoz+JnMBijS1w?=
+ =?us-ascii?Q?fWFPQEnZrtkcZnCv0geDsPcvXg7S+4JZ89byqcD/Lmv0L4yrhT1+dNbeTXXS?=
+ =?us-ascii?Q?1JZeetrwpjLP+NrwKFsvLC63htdfuKJiUBlEOKk1at3lILIoq+4VHcFtpOoN?=
+ =?us-ascii?Q?0AUjNCxG/jCePxHb8JTn1ZmmYfAvpFVXDD3oKk8IjorCwN3/2DOBD1EByjZG?=
+ =?us-ascii?Q?6DlmI3m4KZzqISSKReXHJNDIK9h6f6vKUPcfKPWmjGzG5tZf0Yy4XbYU+fSx?=
+ =?us-ascii?Q?spUGDTyClhYJicQXBR8aGlUc3xUo2mam2FGHfzKI9vaTjsozxBHzlyS9G0rx?=
+ =?us-ascii?Q?NferlnaleIqxCCHn81CJ2aBtQlk5SxkMdtv3/WD+P7l1zA6VBAOYWAvV+tkL?=
+ =?us-ascii?Q?0h69Fh5DbyF62mt7FkvB0RDMhnKsOX7uRoY6klYOz3OMbT5RqXuDxkdkbin+?=
+ =?us-ascii?Q?NgYD1tO+8Ld89L5pZTNGVRFPr9JLpOBAXKrUBBoV?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0029.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 477cba94-f73e-4584-9513-08daf2c0a14a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2023 04:10:37.9383
+X-MS-Exchange-CrossTenant-Network-Message-Id: fedbbae1-8842-46ff-2716-08daf2c0b24e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2023 04:11:06.5299
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /ZIdDGv+IhgnyGOaJQUHVA7NlJhwHck9m6L/FO2TtGEabeR8igXtHHI68KBitZjIkyYMoHImbU0RF5jIEaoDIg==
+X-MS-Exchange-CrossTenant-userprincipalname: ujVHkO6NS9nmrTUv8MRn4WmSY/cR6JTip/Ji4+JQDNzb1TEtIhKKhg12CaEeYB0722WFUVhiqNOo+ijid/INVg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5407
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -150,104 +150,161 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: [PATCH for-next 3/4] RDMA/irdma: Split QP handler into
-> irdma_reg_user_mr_type_qp
+> Subject: [PATCH for-next 2/4] RDMA/irdma: Split mr alloc and free into ne=
+w
+> functions
 >=20
 > From: Zhu Yanjun <yanjun.zhu@linux.dev>
 >=20
-> Split the source codes related with QP handling into a new function.
+> In the function irdma_reg_user_mr, the mr allocation and free will be use=
+d by other
+> functions. As such, the source codes related with mr allocation and free =
+are split
+> into the new functions.
 >=20
 > Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 > ---
->  drivers/infiniband/hw/irdma/verbs.c | 48 ++++++++++++++++++++---------
->  1 file changed, 34 insertions(+), 14 deletions(-)
+>  drivers/infiniband/hw/irdma/verbs.c | 78 ++++++++++++++++++-----------
+>  1 file changed, 50 insertions(+), 28 deletions(-)
 >=20
 > diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/=
 irdma/verbs.c
-> index 287d4313f14d..e90eba73c396 100644
+> index 40109da6489a..5cff8656d79e 100644
 > --- a/drivers/infiniband/hw/irdma/verbs.c
 > +++ b/drivers/infiniband/hw/irdma/verbs.c
-> @@ -2831,6 +2831,39 @@ static void irdma_free_iwmr(struct irdma_mr *iwmr)
->  	kfree(iwmr);
+> @@ -2794,6 +2794,52 @@ static int irdma_reg_user_mr_type_mem(struct
+> irdma_device *iwdev,
+>  	return err;
 >  }
 >=20
-> +static int irdma_reg_user_mr_type_qp(struct irdma_mem_reg_req req,
-> +				     struct irdma_device *iwdev,
-> +				     struct ib_udata *udata,
-> +				     struct irdma_mr *iwmr)
+> +static struct irdma_mr *irdma_alloc_iwmr(struct ib_umem *region,
+> +					 struct ib_pd *pd, u64 virt,
+> +					 __u16 reg_type,
 
-You could omit iwdev and compute it from iwmr.
+enum irdma_memreg_type
 
+> +					 struct irdma_device *iwdev)
 > +{
-> +	u32 total;
-> +	int err =3D 0;
-
-No need to initialize.
-
-> +	u8 shadow_pgcnt =3D 1;
-
-> +	bool use_pbles =3D false;
-
-
-No need to initialize use_pbles.
-
-
-> +	unsigned long flags;
-> +	struct irdma_ucontext *ucontext;
-> +	struct irdma_pbl *iwpbl =3D &iwmr->iwpbl;
+> +	struct irdma_mr *iwmr;
+> +	struct irdma_pbl *iwpbl;
 > +
-> +	total =3D req.sq_pages + req.rq_pages + shadow_pgcnt;
-> +	if (total > iwmr->page_cnt)
-> +		return -EINVAL;
+> +	iwmr =3D kzalloc(sizeof(*iwmr), GFP_KERNEL);
+> +	if (!iwmr)
+> +		return ERR_PTR(-ENOMEM);
 > +
-> +	total =3D req.sq_pages + req.rq_pages;
-> +	use_pbles =3D (total > 2);
-> +	err =3D irdma_handle_q_mem(iwdev, &req, iwpbl, use_pbles);
-> +	if (err)
-> +		return err;
+> +	iwpbl =3D &iwmr->iwpbl;
+> +	iwpbl->iwmr =3D iwmr;
+> +	iwmr->region =3D region;
+> +	iwmr->ibmr.pd =3D pd;
+> +	iwmr->ibmr.device =3D pd->device;
+> +	iwmr->ibmr.iova =3D virt;
+> +	iwmr->page_size =3D PAGE_SIZE;
+
+Delete this and see comment below,
+
+> +	iwmr->type =3D reg_type;
 > +
-> +	ucontext =3D rdma_udata_to_drv_context(udata, struct irdma_ucontext,
-> +					     ibucontext);
-> +	spin_lock_irqsave(&ucontext->qp_reg_mem_list_lock, flags);
-> +	list_add_tail(&iwpbl->list, &ucontext->qp_reg_mem_list);
-> +	iwpbl->on_list =3D true;
-> +	spin_unlock_irqrestore(&ucontext->qp_reg_mem_list_lock, flags);
+> +	if (reg_type =3D=3D IRDMA_MEMREG_TYPE_MEM) {
+> +		iwmr->page_size =3D ib_umem_find_best_pgsz(region,
+> +							 iwdev->rf-
+> >sc_dev.hw_attrs.page_size_cap,
+
+I think Jason made the comment to always validate the page size with this f=
+unction before use in rdma_umem_for_each_dma_block.
+
+we can move it out of this if block with something like,
+
+pgsz_bitmask =3D reg_type =3D=3D IRDMA_MEMREG_TYPE_MEM ?
+			iwdev->rf->sc_dev.hw_attrs.page_size_cap : PAGE_SIZE;
+
+iwmr->page_size =3D ib_umem_find_best_pgsz(region, pgsz_bitmask, virt);
+
+
+
+> +							 virt);
+> +		if (unlikely(!iwmr->page_size)) {
+> +			kfree(iwmr);
+> +			return ERR_PTR(-EOPNOTSUPP);
+> +		}
+> +	}
 > +
-> +	return err;
+> +	iwmr->len =3D region->length;
+> +	iwpbl->user_base =3D virt;
+> +	iwmr->page_cnt =3D ib_umem_num_dma_blocks(region, iwmr->page_size);
+> +
+> +	return iwmr;
+> +}
+> +
+> +/*
+> + * This function frees the resources from irdma_alloc_iwmr  */ static
+
+This doesn't follow kdoc format? And not very useful. I would delete it.
+
+> +void irdma_free_iwmr(struct irdma_mr *iwmr) {
+> +	kfree(iwmr);
 > +}
 > +
 >  /**
 >   * irdma_reg_user_mr - Register a user memory region
 >   * @pd: ptr of pd
-> @@ -2886,23 +2919,10 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_=
+> @@ -2839,34 +2885,13 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_=
 pd
 > *pd, u64 start, u64 len,
+>  		return ERR_PTR(-EFAULT);
+>  	}
+>=20
+> -	iwmr =3D kzalloc(sizeof(*iwmr), GFP_KERNEL);
+> -	if (!iwmr) {
+> +	iwmr =3D irdma_alloc_iwmr(region, pd, virt, req.reg_type, iwdev);
+> +	if (IS_ERR(iwmr)) {
+>  		ib_umem_release(region);
+> -		return ERR_PTR(-ENOMEM);
+> +		return (struct ib_mr *)iwmr;
+>  	}
+>=20
+>  	iwpbl =3D &iwmr->iwpbl;
+> -	iwpbl->iwmr =3D iwmr;
+> -	iwmr->region =3D region;
+> -	iwmr->ibmr.pd =3D pd;
+> -	iwmr->ibmr.device =3D pd->device;
+> -	iwmr->ibmr.iova =3D virt;
+> -	iwmr->page_size =3D PAGE_SIZE;
+> -
+> -	if (req.reg_type =3D=3D IRDMA_MEMREG_TYPE_MEM) {
+> -		iwmr->page_size =3D ib_umem_find_best_pgsz(region,
+> -							 iwdev->rf-
+> >sc_dev.hw_attrs.page_size_cap,
+> -							 virt);
+> -		if (unlikely(!iwmr->page_size)) {
+> -			kfree(iwmr);
+> -			ib_umem_release(region);
+> -			return ERR_PTR(-EOPNOTSUPP);
+> -		}
+> -	}
+> -	iwmr->len =3D region->length;
+> -	iwpbl->user_base =3D virt;
+> -	iwmr->type =3D req.reg_type;
+> -	iwmr->page_cnt =3D ib_umem_num_dma_blocks(region, iwmr->page_size);
 >=20
 >  	switch (req.reg_type) {
 >  	case IRDMA_MEMREG_TYPE_QP:
-> -		total =3D req.sq_pages + req.rq_pages + shadow_pgcnt;
-> -		if (total > iwmr->page_cnt) {
-> -			err =3D -EINVAL;
-> -			goto error;
-> -		}
-> -		total =3D req.sq_pages + req.rq_pages;
-> -		use_pbles =3D (total > 2);
-> -		err =3D irdma_handle_q_mem(iwdev, &req, iwpbl, use_pbles);
-> +		err =3D irdma_reg_user_mr_type_qp(req, iwdev, udata, iwmr);
->  		if (err)
->  			goto error;
+> @@ -2918,13 +2943,10 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_=
+pd
+> *pd, u64 start, u64 len,
+>  		goto error;
+>  	}
 >=20
-> -		ucontext =3D rdma_udata_to_drv_context(udata, struct
-> irdma_ucontext,
-> -						     ibucontext);
-> -		spin_lock_irqsave(&ucontext->qp_reg_mem_list_lock, flags);
-> -		list_add_tail(&iwpbl->list, &ucontext->qp_reg_mem_list);
-> -		iwpbl->on_list =3D true;
-> -		spin_unlock_irqrestore(&ucontext->qp_reg_mem_list_lock, flags);
->  		break;
->  	case IRDMA_MEMREG_TYPE_CQ:
->  		if (iwdev->rf->sc_dev.hw_attrs.uk_attrs.feature_flags &
-> IRDMA_FEATURE_CQ_RESIZE)
+> -	iwmr->type =3D req.reg_type;
+> -
+>  	return &iwmr->ibmr;
+> -
+>  error:
+>  	ib_umem_release(region);
+> -	kfree(iwmr);
+> +	irdma_free_iwmr(iwmr);
+>=20
+>  	return ERR_PTR(err);
+>  }
 > --
-> 2.31.1
+> 2.27.0
 
