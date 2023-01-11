@@ -2,144 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 839846653A5
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jan 2023 06:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C43346653CA
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jan 2023 06:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbjAKFZE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Jan 2023 00:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
+        id S230262AbjAKFjE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Jan 2023 00:39:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231779AbjAKFYP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Jan 2023 00:24:15 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC24FCCA
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Jan 2023 21:17:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673414272; x=1704950272;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6N3B8IGRP3Ua3OrzU73GRcCRBNdWUgE3dLoSZL0q88Y=;
-  b=FOhYxmABOSvEXBiu80WGkjoQEaVGXp98yVEdt1Yy9ncGpvgdY7HSVIlP
-   Fx4Gi3lrGEDni+vNGeHzn+ohs6FOrgbifnRihr+tDv5GDdxFS2sBy+jQz
-   a/cRqK9v7dQfmoUaDtF7t2qQwRhDxxS+fbzStpZaw7XV7HVKQchOjFCZE
-   8ABtTn8RmomhbngEgboL+62ylP8MLIWXbNEKZmTOyqNlOp/gWiAMx6y6r
-   pQseCn1cHiN+uW5fI7p1PJacDv5N7GPyqyVedIEazm24XZXPZSCGV7oot
-   p1QjhRqwUkaYYpQzoFukw84BiDjFerdpoMGJJGvFNYMAbTTm15I5VVrdN
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="322032670"
-X-IronPort-AV: E=Sophos;i="5.96,315,1665471600"; 
-   d="scan'208";a="322032670"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2023 21:17:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="607232565"
-X-IronPort-AV: E=Sophos;i="5.96,315,1665471600"; 
-   d="scan'208";a="607232565"
-Received: from lkp-server02.sh.intel.com (HELO f1920e93ebb5) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 10 Jan 2023 21:17:50 -0800
-Received: from kbuild by f1920e93ebb5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pFTUj-0008nK-25;
-        Wed, 11 Jan 2023 05:17:49 +0000
-Date:   Wed, 11 Jan 2023 13:17:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 1ec82317a1daac78c04b0c15af89018ccf9fa2b7
-Message-ID: <63be4670.UohTAbkDzNvqdOht%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S231174AbjAKFiY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Jan 2023 00:38:24 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55B110D6;
+        Tue, 10 Jan 2023 21:31:04 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7E73DB819CA;
+        Wed, 11 Jan 2023 05:31:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CC2FC433D2;
+        Wed, 11 Jan 2023 05:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673415062;
+        bh=PNeIzQ0BnCCovzN26qdzCCU+T0YlKNW4vpIvPE3ZHSQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SV9Se2yvGJJbFyAm5bX/oXyPlKZNWcETVgK1zz2U1W8FRiy+YBTnbSEhbS5XABTt7
+         EbTTeF41N2p07sNIzQZmmv/jXzXyM62/PmLHJh7scz2RznV2tFKcfTqWyDOOP2CRGy
+         z360IWf5Pus4cxkH/rYIhd/D/hQ+BCFyt5I+QWsmHqDM7qiP98LhXaiNv28G1lH/iG
+         ZDCupRW2IgnxaeSPAcVPnanOFA8xc9GaEfhc4MrM9cs8vUNWL4MNK1jQjJUEappysT
+         wKjNa5EqxHmtWv97WLEoH/+j/yC6UsMeCF+qdMWLT9Sj9/RzBoDxy9BTmVjbA7oJm4
+         PRmf3eokfnfeA==
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-rdma@vger.kernel.org, Jiri Pirko <jiri@nvidia.com>
+Subject: [net-next 13/15] net/mlx5e: Replace 0-length array with flexible array
+Date:   Tue, 10 Jan 2023 21:30:43 -0800
+Message-Id: <20230111053045.413133-14-saeed@kernel.org>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230111053045.413133-1-saeed@kernel.org>
+References: <20230111053045.413133-1-saeed@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 1ec82317a1daac78c04b0c15af89018ccf9fa2b7  IB/hfi1: Use dma_mmap_coherent for matching buffers
+From: Kees Cook <keescook@chromium.org>
 
-elapsed time: 724m
+Zero-length arrays are deprecated[1]. Replace struct mlx5e_rx_wqe_cyc's
+"data" 0-length array with a flexible array. Detected with GCC 13,
+using -fstrict-flex-arrays=3:
 
-configs tested: 62
-configs skipped: 2
+drivers/net/ethernet/mellanox/mlx5/core/en_main.c: In function 'mlx5e_alloc_rq':
+drivers/net/ethernet/mellanox/mlx5/core/en_main.c:827:42: warning: array subscript f is outside array bounds of 'struct mlx5_wqe_data_seg[0]' [-Warray-bounds=]
+  827 |                                 wqe->data[f].byte_count = 0;
+      |                                 ~~~~~~~~~^~~
+In file included from drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.h:11,
+                 from drivers/net/ethernet/mellanox/mlx5/core/eswitch.h:48,
+                 from drivers/net/ethernet/mellanox/mlx5/core/en_main.c:42:
+drivers/net/ethernet/mellanox/mlx5/core/en.h:250:39: note: while referencing 'data'
+  250 |         struct mlx5_wqe_data_seg      data[0];
+      |                                       ^~~~
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays
 
-gcc tested configs:
-powerpc                           allnoconfig
-arc                                 defconfig
-alpha                               defconfig
-s390                             allmodconfig
-s390                                defconfig
-s390                             allyesconfig
-sh                               allmodconfig
-x86_64                            allnoconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-ia64                             allmodconfig
-x86_64                              defconfig
-arc                  randconfig-r043-20230110
-x86_64                               rhel-8.3
-riscv                randconfig-r042-20230110
-s390                 randconfig-r044-20230110
-x86_64                           rhel-8.3-bpf
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-m68k                             allyesconfig
-x86_64                           allyesconfig
-i386                                defconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-x86_64                        randconfig-a006
-x86_64                        randconfig-a015
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-i386                             allyesconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
+Cc: Saeed Mahameed <saeedm@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-clang tested configs:
-hexagon              randconfig-r041-20230110
-arm                  randconfig-r046-20230110
-hexagon              randconfig-r045-20230110
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-x86_64                        randconfig-a014
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a012
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-x86_64                        randconfig-a016
-x86_64                        randconfig-a005
-x86_64                          rhel-8.3-rust
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index 7cbd71f0b8ae..82573ac722d1 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -247,7 +247,7 @@ struct mlx5e_rx_wqe_ll {
+ };
+ 
+ struct mlx5e_rx_wqe_cyc {
+-	struct mlx5_wqe_data_seg      data[0];
++	DECLARE_FLEX_ARRAY(struct mlx5_wqe_data_seg, data);
+ };
+ 
+ struct mlx5e_umr_wqe {
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.39.0
+
