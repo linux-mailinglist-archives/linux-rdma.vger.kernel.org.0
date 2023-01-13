@@ -2,896 +2,204 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D786B66A710
-	for <lists+linux-rdma@lfdr.de>; Sat, 14 Jan 2023 00:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B29566A747
+	for <lists+linux-rdma@lfdr.de>; Sat, 14 Jan 2023 00:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbjAMX2N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Jan 2023 18:28:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        id S230347AbjAMX5i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Jan 2023 18:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231214AbjAMX2M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Jan 2023 18:28:12 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6058A211
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Jan 2023 15:28:10 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id f88-20020a9d03e1000000b00684c4041ff1so3351689otf.8
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Jan 2023 15:28:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yuUJHhird38rrcbSnnnT+JUzs9dZBnHh/e6yBr8B0G8=;
-        b=YTymKDkAYDbmFl5qC9Org+7MSRIoq+cAA+RMrqxlfznPfAZJihnT/OGQ+4+gSWtSjf
-         VpC2IE/zJM591V9xeViaGTbROe3RSIjtdILJ0Ez7Riym60k4UI56ARJ5MvaBIZWbPXbo
-         25B+OrIGZXyGFWJqZCz2ysJzw26Y7I2+yRYN1Zudn7eQUIfuS01fMJK2YkpMJwqjPwr2
-         Im96iKs9im+mYUKLFgWaLB0XeaToS8EAPppR6FFE2lkBqm+1LnUY7n3qKEPUVKP1JhuI
-         UjguenK9z5oUyRdDJ+ejC5gjrniqp8ZrswKjBOYr5+k4cRvAVLpnsAP38xNZtRelP3Rr
-         RGmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yuUJHhird38rrcbSnnnT+JUzs9dZBnHh/e6yBr8B0G8=;
-        b=IwEOUniA6HLRqI8rkiNjwNMLsQydRlKfKggmcQWJPdtzqOSQcD3ea0Lid7uQrmSPVI
-         C9CvEe18PQTz8X9OA/nRRgex3aQdN5YNn/hNyEvgCr1xPdTOveR34IAwVItUEChuJDiL
-         v6bJa1okgetCZSrbFa7RvO/kKH2ZKM0JWaS/mJLTVBQH1CVtF25Lz1WSePR8K8KCDlQM
-         9jJGHPQtM+KJE7plM1+eTlVlrL+HWYeDIlP0Q8/Ljfn7txOe060moUdRehqfGwOP/Uum
-         7tdpIIcmG6EC07kmeUZ5yhMHr280RikDJ6vL4OwKX7IBnodb+QBiw3m/KU0okKXedSFs
-         zq3Q==
-X-Gm-Message-State: AFqh2krS0EvHyJIPvcKrOSxTUTxiuHICDSKsLonTzMceur9sxcPWWZxp
-        MSjZSRlyfECbW/gXCaaLcxQ=
-X-Google-Smtp-Source: AMrXdXtm5yQx644M5h8ecy5r+17Omr59D/HYWJVDmc5m/MBYo0+befqAIaQ6CipWyFrUj4MIp0ImYQ==
-X-Received: by 2002:a9d:64c2:0:b0:670:74de:ed3e with SMTP id n2-20020a9d64c2000000b0067074deed3emr37442660otl.16.1673652489304;
-        Fri, 13 Jan 2023 15:28:09 -0800 (PST)
-Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-3f47-8433-ec70-f475.res6.spectrum.com. [2603:8081:140c:1a00:3f47:8433:ec70:f475])
-        by smtp.gmail.com with ESMTPSA id q13-20020a9d57cd000000b0066871c3adb3sm11297433oti.28.2023.01.13.15.28.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Jan 2023 15:28:08 -0800 (PST)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, leonro@nvidia.com, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v3 6/6] RDMA/rxe: Replace rxe_map and rxe_phys_buf by xarray
-Date:   Fri, 13 Jan 2023 17:27:06 -0600
-Message-Id: <20230113232704.20072-7-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230113232704.20072-1-rpearsonhpe@gmail.com>
-References: <20230113232704.20072-1-rpearsonhpe@gmail.com>
+        with ESMTP id S229482AbjAMX5h (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Jan 2023 18:57:37 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3387466F
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Jan 2023 15:57:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1673654256; x=1705190256;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=M7BNeHewmqgWc/vInEE7fQokO+KNLKLnxfPB1doR/tw=;
+  b=F4QD8scFEg3Tshc3WdSle5NfMolf0yCfLjfxELk/j0/MYrH8ZvDjTqC1
+   51D8pPR3bfXTDfsZv+mEeohaUVhxD6p5QeNT0H9o2dwUSdFE35qQPCFnI
+   Z6JVSYzVXJguDomK/ll9udNFb5qgNuTr33JaLJv3CtC+JNqBa/s8k+a5q
+   1J6FlASDU1J8eKMVFPO9kUQTwV8nlyIsu78r5h+1P5HuzirSAVzPwU4xP
+   Fo5/Z7lq2+EmuQJ61v8HZtdE/zklEQe9fm1VCusjdn2bKEWDZByoA9Grx
+   uFEw5EXHDsscadPoi6tC2t0Udju+fWSf6dnCY7LmGMcZorDX1NoEFS9Tg
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="311980700"
+X-IronPort-AV: E=Sophos;i="5.97,215,1669104000"; 
+   d="scan'208";a="311980700"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2023 15:57:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="651693263"
+X-IronPort-AV: E=Sophos;i="5.97,215,1669104000"; 
+   d="scan'208";a="651693263"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga007.jf.intel.com with ESMTP; 13 Jan 2023 15:57:35 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Fri, 13 Jan 2023 15:57:35 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Fri, 13 Jan 2023 15:57:34 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Fri, 13 Jan 2023 15:57:34 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Fri, 13 Jan 2023 15:57:34 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rr4lilrbmzSCGub7LXGc2qtMkGjx6919VTJMf0BRgJEX2iEaOmUDznUvrjVHR86EkV7fL0NutdjCp/+xwNz0US7lRnYD0zBoRAUbHUqG6fuCjPe59V/5E+RGWMFFPJ9i3QlI+H8FveGoAxfuw8SaNLMQpGdFnt85uzX3RszgQd1uOOtRiorFpnOIrAiXGpPvvZHT1iDDTkg1IJzUmT56UyxmCc3zBJeXP+xwgicjDKzGNMBYiw5dJFvZ8hY+mDwpZSx3sRIQyj+f7b0vFBju+gum/h1ACVGlFzUta/V5YLuu+rlWTd4DBSrWQlBhBqKLbmXdHwBvMagjwuAVtdXI9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uU2yRb7LCKOU4Qpr62CiJ28mzF/TMn66bVGueOcC0cY=;
+ b=A1PfiCgSBjG7JIJfxsga5UE3ssunx+6LMtoDuX7kkNqFHkjdA48jxl7lqpzJm8sXp1TMz4cyRLWRG8UgbkT7B/0FnFCXLz7RA+UbPXFsF/0aAEgXPyrG/R37evs1akitZmNB9CALvIaJa8l5SRQjJfB34/6zI/QfIr2s6n4zG38Esfsb1BkP14IIU+RKDSHIovo0FciPVGj1UPtj4jWaScXXZjaH/Hh86jfcwcRA+ywWzG82KCYneGqHIJXKRiA6yElhkWPcgN1P2Xo+UGv1sBpHdeRC7IP3xnpu3p+OAOvQCZn7vUKwK5rPe7yIxRRueJxZ+OuD38V0oDUPoRX8Ug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com (2603:10b6:301:67::25)
+ by SJ0PR11MB5133.namprd11.prod.outlook.com (2603:10b6:a03:2ac::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.13; Fri, 13 Jan
+ 2023 23:57:33 +0000
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::61f7:7850:6203:bf55]) by MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::61f7:7850:6203:bf55%4]) with mapi id 15.20.5986.018; Fri, 13 Jan 2023
+ 23:57:33 +0000
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Hefty, Sean" <sean.hefty@intel.com>,
+        "Rimmer, Todd" <todd.rimmer@intel.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH v2 rdma-core] irdma: Add ice and irdma to kernel-boot
+ rules
+Thread-Topic: [PATCH v2 rdma-core] irdma: Add ice and irdma to kernel-boot
+ rules
+Thread-Index: AQHXmDZjOykQbRhbB0OylwgVwYR9l6uBQpMAgA+prJCAAATrgIAcjKoAgAA+ygCAJXODQIAASCMAglozZJCAC6bcAIBmzhEQ
+Date:   Fri, 13 Jan 2023 23:57:33 +0000
+Message-ID: <MWHPR11MB002952D469591FEF43EBC6F6E9C29@MWHPR11MB0029.namprd11.prod.outlook.com>
+References: <20210823154816.2027-1-tatyana.e.nikolova@intel.com>
+ <20210823161116.GO1721383@nvidia.com>
+ <DM6PR11MB46922D3AE92E34B4E1D3AC9FCBCE9@DM6PR11MB4692.namprd11.prod.outlook.com>
+ <20210902154003.GW1721383@nvidia.com>
+ <DM6PR11MB4692517FBBC9AFD046990DCDCBA09@DM6PR11MB4692.namprd11.prod.outlook.com>
+ <20210920232330.GH327412@nvidia.com>
+ <DM6PR11MB4692B56B4C7D1E790B50888DCBB89@DM6PR11MB4692.namprd11.prod.outlook.com>
+ <20211014233644.GA2744544@nvidia.com>
+ <DM6PR11MB4692B502C54F459A2EF9E79CCB399@DM6PR11MB4692.namprd11.prod.outlook.com>
+ <Y2uu4HfKADHiCzGx@nvidia.com>
+In-Reply-To: <Y2uu4HfKADHiCzGx@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MWHPR11MB0029:EE_|SJ0PR11MB5133:EE_
+x-ms-office365-filtering-correlation-id: 92234d96-b654-4a20-3540-08daf5c1f01e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EBVn8oNOPEtTipXiyKdAU0TbOZDB6IZKbPumvFUEDrOdTTIa7tjj7vGSkYL4AbT1crudc8UKXv1TD/Q2XW++vzXuUfizgbVOHmbw2OD7Muf2bkBZk5ap7zD4W0TBssqm25l6v2WG9Be/yeFYTAZZBHhzpHZdT+GSpL+AFgTKLQbOraqoh6R8pjEkvfLE0pK6Q2lvqZ50YY0uQbzvmutIhRFd1K/xHDenGU5T3o++X04/NyzTA212fhH6uDaIVW6JrLcAu7e5baK7lmMPuDHxWomilfU6+7MCYpCujGUAwG7PDIn3KwQdH8Wvcng4LN03suahykYz5diY1pYo8cuqbxOjawyt4RwNpWW3DySYv0VjUh1YW9ZhIyUphPjganA0j8XHl5qbvzCfjIFeTco8tMcN3U5nuQxKBsCbvGnPLsghtF6pdnbCY+GYcamp1BTWYZcJUErHAw58m7goNI6PGPVb8xmo9SmPECmlTzDXXoq3rZ20PMWq0nxgA/8lgSwG6K26FdpzArHxbvU0XUJsrpc7DtVVPEKWyeojoCjDnCN76CMJZASBMwee3buzSu0zGFwQdqgOiPQGUZVkL/3pdeSKhjfgznmjXC4lTmYkCctkoOn7QPLVM1/CP2tKNLSMQgiDvj1ahO9qtqF9kHFu3lPigmu4Sica5vV/zKK+XUYp2EEvUKENK0soFJHcOJ0jO++8xo4LRMtcGhN6TCQtSg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0029.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(136003)(346002)(396003)(39860400002)(366004)(376002)(451199015)(6506007)(2906002)(76116006)(5660300002)(52536014)(8936002)(122000001)(8676002)(4326008)(64756008)(66446008)(9686003)(38100700002)(33656002)(82960400001)(41300700001)(38070700005)(478600001)(66946007)(186003)(66556008)(55016003)(7696005)(66476007)(26005)(86362001)(71200400001)(316002)(6636002)(54906003)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9Lqzy1coMxl7HjFSME2NNkUrmeH0iL68DgnvnpRNbLf7cBxMrSGRLicJiJAn?=
+ =?us-ascii?Q?tv3m+O/UyE8xOs2gyKox1oGPMGpNKu95wxRyMniQXOQ0lvQdh2CXDuexpdkb?=
+ =?us-ascii?Q?qQu+tzB5LZTHoZl5i+n7ty4lPhGljRjn7CuEZjdkZOczjplHaIgrDhaZwz/w?=
+ =?us-ascii?Q?miSf3xo+mWyTtDgA2t0MsF5+q8dkdNuZH/w0AZjl//7SNrFg1qAcMWvY/n49?=
+ =?us-ascii?Q?RM8XbwnKAC521MCva1IrayjSIdZUbXHhTDActZj8WB7cHL5OLdDrWdGgt95B?=
+ =?us-ascii?Q?SNODHPuK9SaqOk805SJQZ2qJVofco/NIE8rGp2T/3hYl81W/dhymfo/7btkJ?=
+ =?us-ascii?Q?hnAQmvVc0xE1a6Cw/qLOEgyEtSN8FOa7Sk4mBeeabNx0KTLl/F5sL7yIox2o?=
+ =?us-ascii?Q?blHZN3ag72scytXpFFr4QYD4UsSSYu6YRYO6R438/x0vFLKuKNq8EX3qxVdF?=
+ =?us-ascii?Q?iv0rFKq5TkaXjpds45eqFWidoP0r4htLI0Vz5R20zPX76pP2TcAQcQdKG3DW?=
+ =?us-ascii?Q?GyeF8NXhLXr6YhiHNmoVBXT5EP03z/7TRh25uOA3WiT4XzmBfPQEra/PILAX?=
+ =?us-ascii?Q?uHii6i4AxJMbkW83Qswh5SlAlBVkZW8BV+oaxB7kVcdFrNTxyrsYByt9PAKK?=
+ =?us-ascii?Q?eW2jCOpU8P8PHb6vZvd3JJTIuOllzocS34VLREqACsCW95p4xAYSsXw0cq0s?=
+ =?us-ascii?Q?AeOcMVCTzxU3bPkwrSUTJqnHvVgMwCPNILFH/NVPcilOr433j0IwE4ulMD1y?=
+ =?us-ascii?Q?YXGdL73BLFRD4RldZ8pImgFteE6drQy0dz9f6mCN45dGB0YaIL2y3oXDjM1J?=
+ =?us-ascii?Q?+s2/AqSEKFyXAqDJTG0BnIK3BQbaVLw33zHPZlkpeChAjljXPqaRo4zVUNnV?=
+ =?us-ascii?Q?ToKWIzNiQbhGmsZQfa78/dhPvYvuY+Hwh0c0XGVBtvndTsMT+hWakukl6rjU?=
+ =?us-ascii?Q?q9vT6SNDEH1VPgr6WXlzZpN3vqjz8dq+ll4o7ow++Ap4yxAjKKiCn5oM2ewA?=
+ =?us-ascii?Q?GTxfhIh42nyxdKTX00Qo8p3EJmJNL7hhZDsc0K8/t/pMAvGa3U9VSsixEotj?=
+ =?us-ascii?Q?Z1KqnvJ8Jro8Zfb+4MVpRLP/OYqm+CqSKrtUZV3OcdNyFiRFrW5HDolMcFH8?=
+ =?us-ascii?Q?yAd1GtWh8EqYXP4lwnqk6rYJxiQ92MlwrcyUP9Ruwc60rm5pRWRjh+86L8v9?=
+ =?us-ascii?Q?2f7LcNfYmSx78Z05DjfUQZ83xCKNOQy9cnC3zeqnilhBr0GQu683lPu/eafX?=
+ =?us-ascii?Q?1tejRHb7YMcepzx9fUKxdszY2Ih4uEr6dQUJKoy6h/IBBRylKLHRAvEFwMTE?=
+ =?us-ascii?Q?6Jjxfc5CqfDDT4kvSeGSm279EdFZ51Wc9L1WvhiymYSCcXaeBptgX8Ma4NRZ?=
+ =?us-ascii?Q?L+xrdeUsKJPRoOlERlUeKC4k25lscuTZcNUVA3olGS5LN1bwBVD2+u+QpqFM?=
+ =?us-ascii?Q?1JEsKjb5xavQ/2IexkHSYuBR2KbpVVXu8VQ2+zivOgUqQydY+SNvl91Of39v?=
+ =?us-ascii?Q?4J3xnrkVCPN9xyD/1T0z+bMf+8FESSA3FE+vhlwWRZXTWe7+gwXztxDUJA92?=
+ =?us-ascii?Q?cKKgy0Y+6nHvbHxI+DaP8r4hxjeCWWFzyYYPmvQn?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0029.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92234d96-b654-4a20-3540-08daf5c1f01e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2023 23:57:33.2038
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VD9atC4+BTMUVCiOzD09W0smOkE7auSTli3rMJQIw+BRTgU7OadEUI/rD4J1D8XcqZkwOFd7Tns+umotSSaI+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5133
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace struct rxe-phys_buf and struct rxe_map by struct xarray
-in rxe_verbs.h. This allows using rcu locking on reads for
-the memory maps stored in each mr.
+> Subject: Re: [PATCH v2 rdma-core] irdma: Add ice and irdma to kernel-boot=
+ rules
+>=20
+> On Wed, Nov 02, 2022 at 04:40:20PM +0000, Nikolova, Tatyana E wrote:
+> > Hi Jason,
+> >
+> > I know it has been a while since we discussed this. Based on your feedb=
+ack, we
+> are proposing another solution for the irdma kernel-boot rules. Could you=
+ please
+> review it?
+> >
+> > > > udevadm info --attribute-walk /sys/class/infiniband/rocep47s0f0
+> > > >
+> > > >   looking at device
+> > > '/devices/pci0000:2e/0000:2e:00.0/0000:2f:00.0/infiniband/rocep47s0f0=
+':
+> > >
+> > > This looks like the problem. For any of this to work the infiniband
+> > > device needs to be parented to the aux device, not the PCI device.
+> > >
+> > > mlx5 did not due this for backwards compat reasons, but this is a
+> > > new driver so it could do it properly.
+> > >
 
-This is based off of a sketch of a patch from Jason Gunthorpe in the
-link below. Some changes were needed to make this work. It applies
-cleanly to the current for-next and passes the pyverbs, perftest
-and the same blktests test cases which run today.
+Hi Jason - This also impacts us in terms of backwards compatibility.
 
-Link: https://lore.kernel.org/linux-rdma/Y3gvZr6%2FNCii9Avy@nvidia.com/
-Co-developed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_loc.h   |   1 -
- drivers/infiniband/sw/rxe/rxe_mr.c    | 533 ++++++++++++--------------
- drivers/infiniband/sw/rxe/rxe_resp.c  |   2 +-
- drivers/infiniband/sw/rxe/rxe_verbs.h |  21 +-
- 4 files changed, 251 insertions(+), 306 deletions(-)
+There are current applications/customers who are looking at "'/sys/class/in=
+finiband/<ib_device>/device/"
+for sysfs attributes like numa_node,  local_cpus etc. under the PCI device.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index fd70c71a9e4e..0cf78f9bb27c 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -71,7 +71,6 @@ int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info *dma,
- 	      void *addr, int length, enum rxe_mr_copy_dir dir);
- int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
- 		  int sg_nents, unsigned int *sg_offset);
--void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
- int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 			u64 compare, u64 swap_add, u64 *orig_val);
- int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, void *addr);
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index fd5537ee7f04..e4634279080a 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -60,145 +60,113 @@ static void rxe_mr_init(int access, struct rxe_mr *mr)
- 	mr->lkey = mr->ibmr.lkey = lkey;
- 	mr->rkey = mr->ibmr.rkey = rkey;
- 
-+	mr->access = access;
- 	mr->ibmr.page_size = PAGE_SIZE;
- 	mr->page_mask = PAGE_MASK;
- 	mr->page_shift = PAGE_SHIFT;
- 	mr->state = RXE_MR_STATE_INVALID;
- }
- 
--static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
--{
--	int i;
--	int num_map;
--	struct rxe_map **map = mr->map;
--
--	num_map = (num_buf + RXE_BUF_PER_MAP - 1) / RXE_BUF_PER_MAP;
--
--	mr->map = kmalloc_array(num_map, sizeof(*map), GFP_KERNEL);
--	if (!mr->map)
--		goto err1;
--
--	for (i = 0; i < num_map; i++) {
--		mr->map[i] = kmalloc(sizeof(**map), GFP_KERNEL);
--		if (!mr->map[i])
--			goto err2;
--	}
--
--	BUILD_BUG_ON(!is_power_of_2(RXE_BUF_PER_MAP));
--
--	mr->map_shift = ilog2(RXE_BUF_PER_MAP);
--	mr->map_mask = RXE_BUF_PER_MAP - 1;
--
--	mr->num_buf = num_buf;
--	mr->num_map = num_map;
--	mr->max_buf = num_map * RXE_BUF_PER_MAP;
--
--	return 0;
--
--err2:
--	for (i--; i >= 0; i--)
--		kfree(mr->map[i]);
--
--	kfree(mr->map);
--	mr->map = NULL;
--err1:
--	return -ENOMEM;
--}
--
- void rxe_mr_init_dma(int access, struct rxe_mr *mr)
- {
- 	rxe_mr_init(access, mr);
- 
--	mr->access = access;
- 	mr->state = RXE_MR_STATE_VALID;
- 	mr->ibmr.type = IB_MR_TYPE_DMA;
- }
- 
--static bool is_pmem_page(struct page *pg)
-+static unsigned long rxe_mr_iova_to_index(struct rxe_mr *mr, u64 iova)
- {
--	unsigned long paddr = page_to_phys(pg);
-+	return (iova >> mr->page_shift) - (mr->ibmr.iova >> mr->page_shift);
-+}
- 
--	return REGION_INTERSECTS ==
--	       region_intersects(paddr, PAGE_SIZE, IORESOURCE_MEM,
--				 IORES_DESC_PERSISTENT_MEMORY);
-+static unsigned long rxe_mr_iova_to_page_offset(struct rxe_mr *mr, u64 iova)
-+{
-+	return iova & (mr_page_size(mr) - 1);
-+}
-+
-+static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *mr, struct sg_table *sgt)
-+{
-+	XA_STATE(xas, &mr->pages, 0);
-+	struct sg_page_iter sg_iter;
-+
-+	xa_init(&mr->pages);
-+
-+	__sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
-+	if (!__sg_page_iter_next(&sg_iter))
-+		return 0;
-+
-+	do {
-+		xas_lock(&xas);
-+		while (true) {
-+			xas_store(&xas, sg_page_iter_page(&sg_iter));
-+			if (xas_error(&xas))
-+				break;
-+			xas_next(&xas);
-+			if (!__sg_page_iter_next(&sg_iter))
-+				break;
-+		}
-+		xas_unlock(&xas);
-+	} while (xas_nomem(&xas, GFP_KERNEL));
-+
-+	return xas_error(&xas);
- }
- 
- int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
- 		     int access, struct rxe_mr *mr)
- {
--	struct rxe_map		**map;
--	struct rxe_phys_buf	*buf = NULL;
--	struct ib_umem		*umem;
--	struct sg_page_iter	sg_iter;
--	int			num_buf;
--	void			*vaddr;
-+	struct ib_umem *umem;
- 	int err;
- 
-+	rxe_mr_init(access, mr);
-+
- 	umem = ib_umem_get(&rxe->ib_dev, start, length, access);
- 	if (IS_ERR(umem)) {
- 		rxe_dbg_mr(mr, "Unable to pin memory region err = %d\n",
- 			(int)PTR_ERR(umem));
--		err = PTR_ERR(umem);
--		goto err_out;
-+		return PTR_ERR(umem);
- 	}
- 
--	num_buf = ib_umem_num_pages(umem);
--
--	rxe_mr_init(access, mr);
--
--	err = rxe_mr_alloc(mr, num_buf);
-+	err = rxe_mr_fill_pages_from_sgt(mr, &umem->sgt_append.sgt);
- 	if (err) {
--		rxe_dbg_mr(mr, "Unable to allocate memory for map\n");
--		goto err_release_umem;
-+		ib_umem_release(umem);
-+		return err;
- 	}
- 
--	num_buf			= 0;
--	map = mr->map;
--	if (length > 0) {
--		bool persistent_access = access & IB_ACCESS_FLUSH_PERSISTENT;
--
--		buf = map[0]->buf;
--		for_each_sgtable_page (&umem->sgt_append.sgt, &sg_iter, 0) {
--			struct page *pg = sg_page_iter_page(&sg_iter);
-+	mr->umem = umem;
-+	mr->ibmr.type = IB_MR_TYPE_USER;
-+	mr->state = RXE_MR_STATE_VALID;
- 
--			if (persistent_access && !is_pmem_page(pg)) {
--				rxe_dbg_mr(mr, "Unable to register persistent access to non-pmem device\n");
--				err = -EINVAL;
--				goto err_release_umem;
--			}
-+	return 0;
-+}
- 
--			if (num_buf >= RXE_BUF_PER_MAP) {
--				map++;
--				buf = map[0]->buf;
--				num_buf = 0;
--			}
-+static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
-+{
-+	XA_STATE(xas, &mr->pages, 0);
-+	int i = 0;
-+	int err;
- 
--			vaddr = page_address(pg);
--			if (!vaddr) {
--				rxe_dbg_mr(mr, "Unable to get virtual address\n");
--				err = -ENOMEM;
--				goto err_release_umem;
--			}
--			buf->addr = (uintptr_t)vaddr;
--			buf->size = mr_page_size(mr);
--			num_buf++;
--			buf++;
-+	xa_init(&mr->pages);
- 
-+	do {
-+		xas_lock(&xas);
-+		while (i != num_buf) {
-+			xas_store(&xas, XA_ZERO_ENTRY);
-+			if (xas_error(&xas))
-+				break;
-+			xas_next(&xas);
-+			i++;
- 		}
--	}
-+		xas_unlock(&xas);
-+	} while (xas_nomem(&xas, GFP_KERNEL));
- 
--	mr->umem = umem;
--	mr->access = access;
--	mr->page_offset = ib_umem_offset(umem);
--	mr->state = RXE_MR_STATE_VALID;
--	mr->ibmr.type = IB_MR_TYPE_USER;
-+	err = xas_error(&xas);
-+	if (err)
-+		return err;
- 
--	return 0;
-+	mr->num_buf = num_buf;
- 
--err_release_umem:
--	ib_umem_release(umem);
--err_out:
--	return err;
-+	return 0;
- }
- 
- int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
-@@ -212,7 +180,6 @@ int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
- 	if (err)
- 		goto err1;
- 
--	mr->max_buf = max_pages;
- 	mr->state = RXE_MR_STATE_FREE;
- 	mr->ibmr.type = IB_MR_TYPE_MEM_REG;
- 
-@@ -222,116 +189,100 @@ int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
- 	return err;
- }
- 
--static int rxe_set_page(struct ib_mr *ibmr, u64 addr)
-+static int rxe_set_page(struct ib_mr *ibmr, u64 iova)
- {
- 	struct rxe_mr *mr = to_rmr(ibmr);
--	struct rxe_map *map;
--	struct rxe_phys_buf *buf;
-+	struct page *page = virt_to_page(iova & mr->page_mask);
-+	XA_STATE(xas, &mr->pages, mr->nbuf);
-+	int err;
- 
- 	if (unlikely(mr->nbuf == mr->num_buf))
- 		return -ENOMEM;
- 
--	map = mr->map[mr->nbuf / RXE_BUF_PER_MAP];
--	buf = &map->buf[mr->nbuf % RXE_BUF_PER_MAP];
-+	do {
-+		xas_lock(&xas);
-+		xas_store(&xas, page);
-+		xas_unlock(&xas);
-+	} while (xas_nomem(&xas, GFP_KERNEL));
- 
--	buf->addr = addr;
--	buf->size = ibmr->page_size;
--	mr->nbuf++;
-+	err = xas_error(&xas);
-+	if (err)
-+		return err;
- 
-+	mr->nbuf++;
- 	return 0;
- }
- 
--int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
-+int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
- 		  int sg_nents, unsigned int *sg_offset)
- {
- 	struct rxe_mr *mr = to_rmr(ibmr);
- 	unsigned int page_size = mr_page_size(mr);
- 
-+	mr->nbuf = 0;
- 	mr->page_shift = ilog2(page_size);
- 	mr->page_mask = ~((u64)page_size - 1);
--	mr->page_offset = ibmr->iova & (page_size - 1);
-+	mr->page_offset = mr->ibmr.iova & (page_size - 1);
- 
--	mr->nbuf = 0;
--
--	return ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, rxe_set_page);
-+	return ib_sg_to_pages(ibmr, sgl, sg_nents, sg_offset, rxe_set_page);
- }
- 
--static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
--			size_t *offset_out)
--{
--	size_t offset = iova - mr->ibmr.iova + mr->page_offset;
--	int			map_index;
--	int			buf_index;
--	u64			length;
--
--	if (likely(mr->page_shift)) {
--		*offset_out = offset & (mr_page_size(mr) - 1);
--		offset >>= mr->page_shift;
--		*n_out = offset & mr->map_mask;
--		*m_out = offset >> mr->map_shift;
--	} else {
--		map_index = 0;
--		buf_index = 0;
--
--		length = mr->map[map_index]->buf[buf_index].size;
--
--		while (offset >= length) {
--			offset -= length;
--			buf_index++;
--
--			if (buf_index == RXE_BUF_PER_MAP) {
--				map_index++;
--				buf_index = 0;
--			}
--			length = mr->map[map_index]->buf[buf_index].size;
--		}
--
--		*m_out = map_index;
--		*n_out = buf_index;
--		*offset_out = offset;
--	}
--}
--
--void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
-+/*
-+ * TODO: Attempting to modify the mr page map between the time
-+ * a packet is received and the map is referenced as here
-+ * in xa_load(&mr->pages) will cause problems. It is OK to
-+ * deregister the mr since the mr reference counts will preserve
-+ * it until memory accesses are complete. Currently reregister mr
-+ * operations are not supported by the rxe driver but could be
-+ * in the future. Invalidate followed by fast_reg mr will change
-+ * the map and then the rkey so delayed packets arriving in the
-+ * middle could use the wrong map entries. This isn't new but was
-+ * already the case in the earlier implementation. This won't be
-+ * a problem for well behaved programs which wait until all the
-+ * outstanding packets for the first FMR before remapping to the
-+ * second.
-+ */
-+static int rxe_mr_copy_xarray(struct rxe_mr *mr, void *addr,
-+			      unsigned long index,
-+			      unsigned int page_offset, unsigned int length,
-+			      enum rxe_mr_copy_dir dir)
- {
--	size_t offset;
--	int m, n;
--	void *addr;
--
--	if (mr->state != RXE_MR_STATE_VALID) {
--		rxe_dbg_mr(mr, "Not in valid state\n");
--		addr = NULL;
--		goto out;
--	}
--
--	if (!mr->map) {
--		addr = (void *)(uintptr_t)iova;
--		goto out;
--	}
-+	struct page *page;
-+	unsigned int bytes;
-+	void *va;
- 
--	if (mr_check_range(mr, iova, length)) {
--		rxe_dbg_mr(mr, "Range violation\n");
--		addr = NULL;
--		goto out;
--	}
--
--	lookup_iova(mr, iova, &m, &n, &offset);
--
--	if (offset + length > mr->map[m]->buf[n].size) {
--		rxe_dbg_mr(mr, "Crosses page boundary\n");
--		addr = NULL;
--		goto out;
-+	while (length) {
-+		page = xa_load(&mr->pages, index);
-+		if (WARN_ON(!page))
-+			return -EINVAL;
-+
-+		bytes = min_t(unsigned int, length,
-+				mr_page_size(mr) - page_offset);
-+		va = kmap_local_page(page);
-+		if (dir == RXE_FROM_MR_OBJ)
-+			memcpy(addr, va + page_offset, bytes);
-+		else
-+			memcpy(va + page_offset, addr, bytes);
-+		kunmap_local(va);
-+
-+		page_offset = 0;
-+		addr += bytes;
-+		length -= bytes;
-+		index++;
- 	}
- 
--	addr = (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
--
--out:
--	return addr;
-+	return 0;
- }
- 
-+// TODO convert iova to va through xarray and then flush
- int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, int length)
- {
--	size_t offset;
-+	unsigned int page_offset;
-+	unsigned long index;
-+	struct page *page;
-+	int bytes;
-+	int err;
-+	u8 *va;
- 
- 	if (length == 0)
- 		return 0;
-@@ -339,104 +290,84 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, int length)
- 	if (mr->ibmr.type == IB_MR_TYPE_DMA)
- 		return -EFAULT;
- 
--	offset = (iova - mr->ibmr.iova + mr->page_offset) & mr->page_mask;
--	while (length > 0) {
--		u8 *va;
--		int bytes;
-+	err = mr_check_range(mr, iova, length);
-+	if (err)
-+		return err;
- 
--		bytes = mr->ibmr.page_size - offset;
-+	while (length > 0) {
-+		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-+		bytes = mr->ibmr.page_size - page_offset;
- 		if (bytes > length)
- 			bytes = length;
- 
--		va = iova_to_vaddr(mr, iova, length);
-+		index = rxe_mr_iova_to_index(mr, iova);
-+		page = xa_load(&mr->pages, index);
-+		if (!page)
-+			return -2;
-+
-+		va = kmap_local_page(page);
- 		if (!va)
- 			return -EFAULT;
- 
--		arch_wb_cache_pmem(va, bytes);
-+		arch_wb_cache_pmem(va + page_offset, bytes);
- 
- 		length -= bytes;
- 		iova += bytes;
--		offset = 0;
-+		page_offset = 0;
- 	}
- 
- 	return 0;
- }
- 
--/* copy data from a range (vaddr, vaddr+length-1) to or from
-- * a mr object starting at iova.
-- */
-+static void rxe_mr_copy_dma(struct rxe_mr *mr, u64 iova, void *addr,
-+			    unsigned int page_offset, unsigned int length,
-+			    enum rxe_mr_copy_dir dir)
-+{
-+	unsigned int bytes;
-+	struct page *page;
-+	u8 *va;
-+
-+	while (length) {
-+		page = virt_to_page(iova & mr->page_mask);
-+		va = kmap_local_page(page);
-+		bytes = min_t(unsigned int, length, PAGE_SIZE - page_offset);
-+
-+		if (dir == RXE_TO_MR_OBJ)
-+			memcpy(va + page_offset, addr, bytes);
-+		else
-+			memcpy(addr, va + page_offset, bytes);
-+
-+		kunmap_local(va);
-+		page_offset = 0;
-+		iova += bytes;
-+		addr += bytes;
-+		length -= bytes;
-+	}
-+}
-+
- int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 		enum rxe_mr_copy_dir dir)
- {
--	int			err;
--	int			bytes;
--	u8			*va;
--	struct rxe_map		**map;
--	struct rxe_phys_buf	*buf;
--	int			m;
--	int			i;
--	size_t			offset;
-+	unsigned int page_offset;
-+	unsigned long index;
-+	int err;
- 
- 	if (length == 0)
- 		return 0;
- 
- 	if (mr->ibmr.type == IB_MR_TYPE_DMA) {
--		u8 *src, *dest;
--
--		src = (dir == RXE_TO_MR_OBJ) ? addr : ((void *)(uintptr_t)iova);
--
--		dest = (dir == RXE_TO_MR_OBJ) ? ((void *)(uintptr_t)iova) : addr;
--
--		memcpy(dest, src, length);
--
-+		page_offset = iova & (PAGE_SIZE - 1);
-+		rxe_mr_copy_dma(mr, iova, addr, page_offset, length, dir);
- 		return 0;
- 	}
- 
--	WARN_ON_ONCE(!mr->map);
--
- 	err = mr_check_range(mr, iova, length);
--	if (err) {
--		err = -EFAULT;
--		goto err1;
--	}
--
--	lookup_iova(mr, iova, &m, &i, &offset);
--
--	map = mr->map + m;
--	buf	= map[0]->buf + i;
--
--	while (length > 0) {
--		u8 *src, *dest;
--
--		va	= (u8 *)(uintptr_t)buf->addr + offset;
--		src = (dir == RXE_TO_MR_OBJ) ? addr : va;
--		dest = (dir == RXE_TO_MR_OBJ) ? va : addr;
--
--		bytes	= buf->size - offset;
--
--		if (bytes > length)
--			bytes = length;
--
--		memcpy(dest, src, bytes);
--
--		length	-= bytes;
--		addr	+= bytes;
--
--		offset	= 0;
--		buf++;
--		i++;
--
--		if (i == RXE_BUF_PER_MAP) {
--			i = 0;
--			map++;
--			buf = map[0]->buf;
--		}
--	}
--
--	return 0;
-+	if (err)
-+		return err;
- 
--err1:
--	return err;
-+	page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-+	index = rxe_mr_iova_to_index(mr, iova);
-+	return rxe_mr_copy_xarray(mr, addr, index, page_offset, length, dir);
- }
- 
- /* copy data in or out of a wqe, i.e. sg list
-@@ -508,7 +439,6 @@ int copy_data(
- 
- 		if (bytes > 0) {
- 			iova = sge->addr + offset;
--
- 			err = rxe_mr_copy(mr, iova, addr, bytes, dir);
- 			if (err)
- 				goto err2;
-@@ -537,20 +467,47 @@ int copy_data(
- 
- static DEFINE_SPINLOCK(atomic_ops_lock);
- 
-+/*
-+ * Returns:
-+ *	 0	on success
-+ *	-1	address is misaligned
-+ *	-2	access violations
-+ */
- int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 			u64 compare, u64 swap_add, u64 *orig_val)
- {
--	u64 *vaddr = iova_to_vaddr(mr, iova, sizeof(u64));
-+	unsigned int page_offset;
-+	struct page *page;
- 	u64 value;
-+	u64 *va;
- 
--	/* needs to match rxe_resp.c */
--	if (mr->state != RXE_MR_STATE_VALID || !vaddr)
--		return -EFAULT;
--	if ((uintptr_t)vaddr & 0x7)
--		return -EINVAL;
-+	if (unlikely(mr->state != RXE_MR_STATE_VALID))
-+		return -2;
-+
-+	if (mr->ibmr.type == IB_MR_TYPE_DMA) {
-+		page_offset = iova & (PAGE_SIZE - 1);
-+		page = virt_to_page(iova & PAGE_MASK);
-+	} else {
-+		unsigned long index;
-+		int err;
-+
-+		err = mr_check_range(mr, iova, 8);
-+		if (err)
-+			return err;
-+		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-+		index = rxe_mr_iova_to_index(mr, iova);
-+		page = xa_load(&mr->pages, index);
-+		if (!page)
-+			return -2;
-+	}
-+
-+	if (unlikely(page_offset & 0x7))
-+		return -1;
-+
-+	va = kmap_local_page(page);
- 
- 	spin_lock_bh(&atomic_ops_lock);
--	value = *orig_val = *vaddr;
-+	*orig_val = value = va[page_offset >> 3];
- 
- 	if (opcode == IB_OPCODE_RC_COMPARE_SWAP) {
- 		if (value == compare)
-@@ -559,9 +516,11 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 		value += swap_add;
- 	}
- 
--	*vaddr = value;
-+	va[page_offset >> 3] = value;
- 	spin_unlock_bh(&atomic_ops_lock);
- 
-+	kunmap_local(va);
-+
- 	return 0;
- }
- 
-@@ -580,9 +539,11 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, void *addr)
- {
- #if defined CONFIG_64BIT
--	u64 *vaddr;
--	u64 value;
-+	unsigned int page_offset;
-+	struct page *page;
- 	unsigned int length = 8;
-+	u64 value;
-+	u64 *va;
- 
- 	/* See IBA oA19-28 */
- 	if (unlikely(mr->state != RXE_MR_STATE_VALID)) {
-@@ -590,23 +551,38 @@ int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, void *addr)
- 		return -2;
- 	}
- 
-+	if (mr->ibmr.type == IB_MR_TYPE_DMA) {
-+		page_offset = iova & (PAGE_SIZE - 1);
-+		page = virt_to_page(iova & PAGE_MASK);
-+	} else {
-+		unsigned long index;
-+		int err;
-+
-+		/* See IBA oA19-28 */
-+		err = mr_check_range(mr, iova, length);
-+		if (unlikely(err)) {
-+			rxe_dbg_mr(mr, "iova out of range");
-+			return -2;
-+		}
-+		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-+		index = rxe_mr_iova_to_index(mr, iova);
-+		page = xa_load(&mr->pages, index);
-+		if (WARN_ON(!page))
-+			return -2;
-+	}
-+
- 	/* See IBA A19.4.2 */
--	if (unlikely((uintptr_t)vaddr & 0x7 || iova & 0x7)) {
-+	if (iova & 0x7) {
- 		rxe_dbg_mr(mr, "misaligned address");
- 		return -1;
- 	}
- 
--	vaddr = iova_to_vaddr(mr, iova, length);
--	if (unlikely(!vaddr)) {
--		rxe_dbg_mr(mr, "iova out of range");
--		return -2;
--	}
--
--	/* this makes no sense. What of payload is not 8? */
-+	va = kmap_local_page(page);
- 	memcpy(&value, addr, length);
- 
- 	/* Do atomic write after all prior operations have completed */
--	smp_store_release(vaddr, value);
-+	smp_store_release(&va[page_offset >> 3], value);
-+	kunmap_local(va);
- 
- 	return 0;
- #else
-@@ -648,12 +624,6 @@ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
- 	return 0;
- }
- 
--/* (1) find the mr corresponding to lkey/rkey
-- *     depending on lookup_type
-- * (2) verify that the (qp) pd matches the mr pd
-- * (3) verify that the mr can support the requested access
-- * (4) verify that mr state is valid
-- */
- struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- 			 enum rxe_mr_lookup_type type)
- {
-@@ -774,15 +744,8 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- void rxe_mr_cleanup(struct rxe_pool_elem *elem)
- {
- 	struct rxe_mr *mr = container_of(elem, typeof(*mr), elem);
--	int i;
- 
- 	rxe_put(mr_pd(mr));
- 	ib_umem_release(mr->umem);
--
--	if (mr->map) {
--		for (i = 0; i < mr->num_map; i++)
--			kfree(mr->map[i]);
--
--		kfree(mr->map);
--	}
-+	xa_destroy(&mr->pages);
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 1083cda22c65..b0ff36f6dc4a 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -744,7 +744,7 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
- 					  atmeth_comp(pkt),
- 					  atmeth_swap_add(pkt),
- 					  &res->atomic.orig_val);
--		if (err == -EINVAL)
-+		if (err == -1)
- 			return RESPST_ERR_MISALIGNED_ATOMIC;
- 		else if (err)
- 			return RESPST_ERR_RKEY_VIOLATION;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index bfc94caaeec5..64551cf354a6 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -283,17 +283,6 @@ enum rxe_mr_lookup_type {
- 	RXE_LOOKUP_REMOTE,
- };
- 
--#define RXE_BUF_PER_MAP		(PAGE_SIZE / sizeof(struct rxe_phys_buf))
--
--struct rxe_phys_buf {
--	u64      addr;
--	u64      size;
--};
--
--struct rxe_map {
--	struct rxe_phys_buf	buf[RXE_BUF_PER_MAP];
--};
--
- static inline int rkey_is_mw(u32 rkey)
- {
- 	u32 index = rkey >> 8;
-@@ -311,22 +300,16 @@ struct rxe_mr {
- 	u32			rkey;
- 	enum rxe_mr_state	state;
- 	int			access;
-+	atomic_t		num_mw;
- 
- 	unsigned int		page_offset;
- 	unsigned int		page_shift;
- 	u64			page_mask;
--	int			map_shift;
--	int			map_mask;
- 
- 	u32			num_buf;
- 	u32			nbuf;
- 
--	u32			max_buf;
--	u32			num_map;
--
--	atomic_t		num_mw;
--
--	struct rxe_map		**map;
-+	struct xarray		pages;
- };
- 
- static inline unsigned int mr_page_size(struct rxe_mr *mr)
--- 
-2.37.2
+i.e. assuming the PCI device is ib device parent.
 
+With parent change to auxiliary device, they won't be able find these attri=
+butes and potentially resort to default
+configurations that are sub-optimal.
+
+Shiraz
