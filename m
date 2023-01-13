@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 118A5668857
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jan 2023 01:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 340D766885B
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jan 2023 01:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbjAMAWa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Jan 2023 19:22:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
+        id S232226AbjAMAWd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Jan 2023 19:22:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240221AbjAMAWC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Jan 2023 19:22:02 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1295E0A3
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Jan 2023 16:22:01 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id c133so16612981oif.1
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Jan 2023 16:22:01 -0800 (PST)
+        with ESMTP id S240248AbjAMAWD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Jan 2023 19:22:03 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474E95E0AA
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Jan 2023 16:22:02 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id d127so16574449oif.12
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Jan 2023 16:22:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+cMYBl2bdj14CeKwrqesCZHwPq5LHtvDyw+b1CHA+zo=;
-        b=GYkvaKDwjxKMieN85UvGuJDcx34Q+/jsGhil3uFcuM1cOeoQVNp+t9mYLFtldJMgzm
-         wXeqhu9C9C7Z+xvxRHyWqWKrhyv4ZwLC8D3FZubHM6B2HmbEnPytRyjZDys3QvlVkAnm
-         OIez0Dx2K0WqJTshGR9iawxM4yJMnACnq0QsNDM7s2vt82Vy+HWRLiAnOhcLPiP0wdLZ
-         Soss408jhLO7jALRkb+e5DTCxZq4+aduRdwz0jjfZP/sr6aUE6Yz4GHBua/kCW3j9DOO
-         M/eY5Dd7dkQvSKjuLeW4t7ZlDMK7/UCWxx+NKUfAQsHEWz+AuVdFXINW4zR1CgpAsvCY
-         zRhg==
+        bh=Skd7HNc9y0RSKtnaGBsVgtGJYkRVee4MlHML5372Liw=;
+        b=EJVWG0/1mH7d9y0VG7CYmmyXIG8zPZ7sCSEqswgLX62ZCMGCrXze7dNXspu7LeD1VM
+         qZs5KFIGBXwBGUqvqI0nG5JOCNsXegj8IU4hD3P8GM0i04IPdF4YPU0UZQdNKeQVYPGP
+         HDOrwm+jhVGNfQyML7jdOWu9Dl/w11X5yGecOgT+7yV49RRGNz6R2+t/3+HZofqsJlHx
+         kswCvY0YJuhHQ/aUPp8pN00Yz6xevqvv89/8h4Tc1fajkplQpwUkNkd17Nj+RI+2LJ9n
+         yI8IqZKQU1zLuJk0xqfjDrLkaiLPKUueTV6u+iuPeDGuLzJ2Zx9u1Ww2h9ZaYRYD5T9M
+         dZdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+cMYBl2bdj14CeKwrqesCZHwPq5LHtvDyw+b1CHA+zo=;
-        b=wxoOMvAwKjQbI38NbuGG3yv2tzRP6TyTH0KVy/DKFYZ7oAh1IcmfW6l1NMqQG5VbeJ
-         9uhi2Mhsx9bzUzYPXvAz+5JXMTvwYUHIx0Vez3X6N3ssCVwlEqp2YEhM5dIm5r/lTqdi
-         FIencGAI1ZqwGbFsuDTQhWVY8AkE6+tzvdrUXFSAnYrpeJE1pxypszX4EFvtZxcz/11V
-         XNIr2CTS+vaxFZZEurP5sC6rT1tBjFY1oNuqTyZprRQkOcol6pWAGQZGW5DDXzxiXuhW
-         xqEsrcixOOHZMORNDWkZQNGRpvz95zqvz4hk0Jyy21JXmLDyh8vVS65LZyVgMUTAHdYn
-         imNw==
-X-Gm-Message-State: AFqh2koPT/qt7pTpmM0r7lsj1T5DZO68xdVfnQrTaIeQR4ZGEgyo3SPj
-        +bXykP8UMkapLqQm6Qi+n38=
-X-Google-Smtp-Source: AMrXdXtVddxlyw0yCGJY+o9KMHn2w/QCEQIpsfuhZLG54vlX+KRnQuW8OrcckD+LLQ21ka7oPEFsXw==
-X-Received: by 2002:a05:6808:4289:b0:35e:d5f9:62c6 with SMTP id dq9-20020a056808428900b0035ed5f962c6mr37101948oib.58.1673569320702;
-        Thu, 12 Jan 2023 16:22:00 -0800 (PST)
+        bh=Skd7HNc9y0RSKtnaGBsVgtGJYkRVee4MlHML5372Liw=;
+        b=GCD91E7ZVuDAkovAITUirnwYrp5H06g6vOVbL1R0XnCRuuU/I8Gc4rRXCEZayNNKOj
+         XY5UY3lIoSgoR6FrfKkyEUggiEVNfR91EIdUh74SKzAzFuGqDDbmgDlZujMU59HJfpfu
+         2dzNJCga/dXAnGh3B4PUTGokFIjBfnIO28k8HmNxXq0aHywKh9eTPSqFL79d86euBkOM
+         yP0OnX8r4DQfAMDz/ARGTz0Jk4x024qNVU7KRFr1BFAJyYlObhBSb4zf6Bj5WN6deWtB
+         8ivKtOLFTr+wCsWNRd0HlFC7NeoF/vUBMeD4pbxtmbUlQrZ3M/n010onYSmrOGwuoESS
+         GpqA==
+X-Gm-Message-State: AFqh2kqS+V8Jx9SjIofl0C35/XPyLmERPibL7OBWXp4dbLuMxPaT2i6u
+        EDm2gcB9baEnO8BE8EMcsJs=
+X-Google-Smtp-Source: AMrXdXv5bHrcVb2XhVZH92sKs2Gxn1Ph5niKpr7Tf8azMxx/MbFOGW7HIwnkNsUtfW8Zn0ScgOo0xw==
+X-Received: by 2002:a05:6808:3092:b0:35e:d78a:706 with SMTP id bl18-20020a056808309200b0035ed78a0706mr4676001oib.23.1673569321666;
+        Thu, 12 Jan 2023 16:22:01 -0800 (PST)
 Received: from ubuntu-22.tx.rr.com (2603-8081-140c-1a00-550f-93bd-b210-47c2.res6.spectrum.com. [2603:8081:140c:1a00:550f:93bd:b210:47c2])
-        by smtp.googlemail.com with ESMTPSA id z25-20020a056808049900b0035a9003b8edsm8480471oid.40.2023.01.12.16.21.59
+        by smtp.googlemail.com with ESMTPSA id z25-20020a056808049900b0035a9003b8edsm8480471oid.40.2023.01.12.16.22.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jan 2023 16:22:00 -0800 (PST)
+        Thu, 12 Jan 2023 16:22:01 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, leonro@nvidia.com, zyjzyj2000@gmail.com,
         linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 4/6] RDMA-rxe: Isolate mr code from atomic_write_reply()
-Date:   Thu, 12 Jan 2023 18:21:14 -0600
-Message-Id: <20230113002116.457324-5-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 5/6] RDMA/rxe: Cleanup page variables in rxe_mr.c
+Date:   Thu, 12 Jan 2023 18:21:15 -0600
+Message-Id: <20230113002116.457324-6-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230113002116.457324-1-rpearsonhpe@gmail.com>
 References: <20230113002116.457324-1-rpearsonhpe@gmail.com>
@@ -71,165 +71,142 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Isolate mr specific code from atomic_write_reply() in rxe_resp.c into
-a subroutine rxe_mr_do_atomic_write() in rxe_mr.c.
-Check length for atomic write operation.
-Make iova_to_vaddr() static.
+Cleanup usage of mr->page_shift and mr->page_mask and introduce
+an extractor for mr->ibmr.page_size. Normal usage in the kernel
+has page_mask masking out offset in page rather than masking out
+the page number. The rxe driver had reversed that which was confusing.
+Implicitly there can be a per mr page_size which was not uniformly
+supported.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
-v2:
-  Fixed missing if() after else in atomic_write_reply().
+ drivers/infiniband/sw/rxe/rxe_mr.c    | 31 ++++++++++++---------------
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 11 +++++++---
+ 2 files changed, 22 insertions(+), 20 deletions(-)
 
- drivers/infiniband/sw/rxe/rxe_loc.h  |  1 +
- drivers/infiniband/sw/rxe/rxe_mr.c   | 39 +++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_resp.c | 56 +++++++++++-----------------
- 3 files changed, 61 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index bcb1bbcf50df..fd70c71a9e4e 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -74,6 +74,7 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
- void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
- int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 			u64 compare, u64 swap_add, u64 *orig_val);
-+int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, void *addr);
- struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- 			 enum rxe_mr_lookup_type type);
- int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
 diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 791731be6067..d11b38117e58 100644
+index d11b38117e58..369062ffaba6 100644
 --- a/drivers/infiniband/sw/rxe/rxe_mr.c
 +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -568,6 +568,45 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 	return 0;
+@@ -60,6 +60,9 @@ static void rxe_mr_init(int access, struct rxe_mr *mr)
+ 	mr->lkey = mr->ibmr.lkey = lkey;
+ 	mr->rkey = mr->ibmr.rkey = rkey;
+ 
++	mr->ibmr.page_size = PAGE_SIZE;
++	mr->page_mask = PAGE_MASK;
++	mr->page_shift = PAGE_SHIFT;
+ 	mr->state = RXE_MR_STATE_INVALID;
  }
  
-+/*
-+ * Returns:
-+ *	 0 on success
-+ *	-1 for misaligned address
-+ *	-2 for access errors
-+ */
-+int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, void *addr)
+@@ -149,9 +152,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+ 		goto err_release_umem;
+ 	}
+ 
+-	mr->page_shift = PAGE_SHIFT;
+-	mr->page_mask = PAGE_SIZE - 1;
+-
+ 	num_buf			= 0;
+ 	map = mr->map;
+ 	if (length > 0) {
+@@ -180,7 +180,7 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+ 				goto err_release_umem;
+ 			}
+ 			buf->addr = (uintptr_t)vaddr;
+-			buf->size = PAGE_SIZE;
++			buf->size = mr_page_size(mr);
+ 			num_buf++;
+ 			buf++;
+ 
+@@ -189,10 +189,9 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+ 
+ 	mr->umem = umem;
+ 	mr->access = access;
+-	mr->offset = ib_umem_offset(umem);
++	mr->page_offset = ib_umem_offset(umem);
+ 	mr->state = RXE_MR_STATE_VALID;
+ 	mr->ibmr.type = IB_MR_TYPE_USER;
+-	mr->ibmr.page_size = PAGE_SIZE;
+ 
+ 	return 0;
+ 
+@@ -246,29 +245,27 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
+ 		  int sg_nents, unsigned int *sg_offset)
+ {
+ 	struct rxe_mr *mr = to_rmr(ibmr);
+-	int n;
+-
+-	mr->nbuf = 0;
++	unsigned int page_size = mr_page_size(mr);
+ 
+-	n = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, rxe_set_page);
++	mr->page_shift = ilog2(page_size);
++	mr->page_mask = ~((u64)page_size - 1);
++	mr->page_offset = ibmr->iova & (page_size - 1);
+ 
+-	mr->page_shift = ilog2(ibmr->page_size);
+-	mr->page_mask = ibmr->page_size - 1;
+-	mr->offset = ibmr->iova & mr->page_mask;
++	mr->nbuf = 0;
+ 
+-	return n;
++	return ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, rxe_set_page);
+ }
+ 
+ static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
+ 			size_t *offset_out)
+ {
+-	size_t offset = iova - mr->ibmr.iova + mr->offset;
++	size_t offset = iova - mr->ibmr.iova + mr->page_offset;
+ 	int			map_index;
+ 	int			buf_index;
+ 	u64			length;
+ 
+ 	if (likely(mr->page_shift)) {
+-		*offset_out = offset & mr->page_mask;
++		*offset_out = offset & (mr_page_size(mr) - 1);
+ 		offset >>= mr->page_shift;
+ 		*n_out = offset & mr->map_mask;
+ 		*m_out = offset >> mr->map_shift;
+@@ -342,7 +339,7 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, int length)
+ 	if (mr->ibmr.type == IB_MR_TYPE_DMA)
+ 		return -EFAULT;
+ 
+-	offset = (iova - mr->ibmr.iova + mr->offset) & mr->page_mask;
++	offset = (iova - mr->ibmr.iova + mr->page_offset) & mr->page_mask;
+ 	while (length > 0) {
+ 		u8 *va;
+ 		int bytes;
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 19ddfa890480..bfc94caaeec5 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -310,11 +310,11 @@ struct rxe_mr {
+ 	u32			lkey;
+ 	u32			rkey;
+ 	enum rxe_mr_state	state;
+-	u32			offset;
+ 	int			access;
+ 
+-	int			page_shift;
+-	int			page_mask;
++	unsigned int		page_offset;
++	unsigned int		page_shift;
++	u64			page_mask;
+ 	int			map_shift;
+ 	int			map_mask;
+ 
+@@ -329,6 +329,11 @@ struct rxe_mr {
+ 	struct rxe_map		**map;
+ };
+ 
++static inline unsigned int mr_page_size(struct rxe_mr *mr)
 +{
-+	u64 *vaddr;
-+	u64 value;
-+	unsigned int length = 8;
-+
-+	/* See IBA oA19-28 */
-+	if (unlikely(mr->state != RXE_MR_STATE_VALID)) {
-+		rxe_dbg_mr(mr, "mr not valid");
-+		return -2;
-+	}
-+
-+	/* See IBA A19.4.2 */
-+	if (unlikely((uintptr_t)vaddr & 0x7 || iova & 0x7)) {
-+		rxe_dbg_mr(mr, "misaligned address");
-+		return -1;
-+	}
-+
-+	vaddr = iova_to_vaddr(mr, iova, length);
-+	if (unlikely(!vaddr)) {
-+		rxe_dbg_mr(mr, "iova out of range");
-+		return -2;
-+	}
-+
-+	/* this makes no sense. What of payload is not 8? */
-+	memcpy(&value, addr, length);
-+
-+	/* Do atomic write after all prior operations have completed */
-+	smp_store_release(vaddr, value);
-+
-+	return 0;
++	return mr ? mr->ibmr.page_size : PAGE_SIZE;
 +}
 +
- int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
- {
- 	struct rxe_sge		*sge	= &dma->sge[dma->cur_sge];
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 02301e3f343c..b60404fd33b0 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -762,26 +762,33 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
- 	return RESPST_ACKNOWLEDGE;
- }
- 
--#ifdef CONFIG_64BIT
--static enum resp_states do_atomic_write(struct rxe_qp *qp,
--					struct rxe_pkt_info *pkt)
-+static enum resp_states atomic_write_reply(struct rxe_qp *qp,
-+					   struct rxe_pkt_info *pkt)
- {
-+	u64 iova = qp->resp.va + qp->resp.offset;
-+	struct resp_res *res = qp->resp.res;
- 	struct rxe_mr *mr = qp->resp.mr;
-+	void *addr = payload_addr(pkt);
- 	int payload = payload_size(pkt);
--	u64 src, *dst;
-+	int err;
- 
--	if (mr->state != RXE_MR_STATE_VALID)
--		return RESPST_ERR_RKEY_VIOLATION;
-+	if (!res) {
-+		res = rxe_prepare_res(qp, pkt, RXE_ATOMIC_WRITE_MASK);
-+		qp->resp.res = res;
-+	}
- 
--	memcpy(&src, payload_addr(pkt), payload);
-+	if (res->replay)
-+		return RESPST_ACKNOWLEDGE;
- 
--	dst = iova_to_vaddr(mr, qp->resp.va + qp->resp.offset, payload);
--	/* check vaddr is 8 bytes aligned. */
--	if (!dst || (uintptr_t)dst & 7)
--		return RESPST_ERR_MISALIGNED_ATOMIC;
-+#if !defined(CONFIG_64BIT)
-+	return RESPST_ERR_UNSUPPORTED_OPCODE;
-+#endif
- 
--	/* Do atomic write after all prior operations have completed */
--	smp_store_release(dst, src);
-+	err = rxe_mr_do_atomic_write(mr, iova, addr);
-+	if (err == -1)
-+		return RESPST_ERR_MISALIGNED_ATOMIC;
-+	else if (err)
-+		return RESPST_ERR_RKEY_VIOLATION;
- 
- 	/* decrease resp.resid to zero */
- 	qp->resp.resid -= sizeof(payload);
-@@ -794,29 +801,8 @@ static enum resp_states do_atomic_write(struct rxe_qp *qp,
- 
- 	qp->resp.opcode = pkt->opcode;
- 	qp->resp.status = IB_WC_SUCCESS;
--	return RESPST_ACKNOWLEDGE;
--}
--#else
--static enum resp_states do_atomic_write(struct rxe_qp *qp,
--					struct rxe_pkt_info *pkt)
--{
--	return RESPST_ERR_UNSUPPORTED_OPCODE;
--}
--#endif /* CONFIG_64BIT */
--
--static enum resp_states atomic_write_reply(struct rxe_qp *qp,
--					   struct rxe_pkt_info *pkt)
--{
--	struct resp_res *res = qp->resp.res;
- 
--	if (!res) {
--		res = rxe_prepare_res(qp, pkt, RXE_ATOMIC_WRITE_MASK);
--		qp->resp.res = res;
--	}
--
--	if (res->replay)
--		return RESPST_ACKNOWLEDGE;
--	return do_atomic_write(qp, pkt);
-+	return RESPST_ACKNOWLEDGE;
- }
- 
- static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
+ enum rxe_mw_state {
+ 	RXE_MW_STATE_INVALID	= RXE_MR_STATE_INVALID,
+ 	RXE_MW_STATE_FREE	= RXE_MR_STATE_FREE,
 -- 
 2.37.2
 
