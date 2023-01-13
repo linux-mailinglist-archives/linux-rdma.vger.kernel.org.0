@@ -2,70 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B678566A23C
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jan 2023 19:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F55066A2EB
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jan 2023 20:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbjAMSlI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Jan 2023 13:41:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48798 "EHLO
+        id S230146AbjAMT2v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Jan 2023 14:28:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjAMSlH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Jan 2023 13:41:07 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC801B1C8
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Jan 2023 10:41:03 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id v23so23251455pju.3
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Jan 2023 10:41:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=c0+Sdo0KEI7o1bohHc1jHwiM206A+991wKrqsl42gBA=;
-        b=PBjE6fpa3XZ0R5lmeJaHS88HKwQd9U/loRunVFiGhmLwRqhpknZ9+P6RbsMgk3PDL1
-         PgLj8+ehJmtj4zrs/d19QRniRQHhylp9ECRge3nOAok3HgG/eSF5Ym1Nqq+DUSeyVh9J
-         GXuA9hPbl/TGZTbC4iwiqwta7/olfZdvm9dJ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c0+Sdo0KEI7o1bohHc1jHwiM206A+991wKrqsl42gBA=;
-        b=uxaNg7bN6rFLm85fBwY8/IA5McdBXWcFIUm7BV+YabLIUn5KDCAVCwRBk42TCZ9w3W
-         OBUgD0Q4Y1BUMDih4knKfUp2Q3JJlR5/AyxF8iuoQZ2EXTDV0bN279g2FgGl77xybVXl
-         ylXDpemMinIb/Yal+UI4e6lfCemgUDh9PBeZzg/Vnkuwcf2nZeNu4BbqXHz8PTBao9j0
-         O6Wp39/fNkPM7CyAqG3WmJDaqo1tio/+Ecos7wpMi+VOwQ/r4HdJps7Hg9pNzSLDq5JJ
-         seFG2FiIsqqRWMEV0/oPnGOUmJBEW8LJp+73oqyum870/vzC3QMcOBpKrQ7yFx74AAXK
-         dYKA==
-X-Gm-Message-State: AFqh2krD2OVQAMa6B8raNs1HtYwlompcojyZLm6ZXfoCd8Flh2+5K43x
-        H9bHhnLAa3PaWbY1rnnRUhM7Ug==
-X-Google-Smtp-Source: AMrXdXtp0c0JUJUWnsyKvdP7j8ZaYi2JqXlPXCfJ6A2WBcV5A5fqLTp0v6thjvEtH6OYKXj/pGtg1g==
-X-Received: by 2002:a17:90a:7e14:b0:219:eeb9:943f with SMTP id i20-20020a17090a7e1400b00219eeb9943fmr82718118pjl.49.1673635262948;
-        Fri, 13 Jan 2023 10:41:02 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w1-20020a17090a1b8100b0022721df27e9sm1724684pjc.11.2023.01.13.10.41.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Jan 2023 10:41:02 -0800 (PST)
-Date:   Fri, 13 Jan 2023 10:41:01 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Yupeng Li <liyupeng@zbhlos.com>, tariqt@nvidia.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Caicai <caizp2008@163.com>
-Subject: Re: [PATCH 1/1] net/mlx4: Fix build error use array_size() helper in
- copy_to_user()
-Message-ID: <202301131039.7354AD35CF@keescook>
-References: <20230107072725.673064-1-liyupeng@zbhlos.com>
- <Y7wb1hCpJiGEdbav@ziepe.ca>
+        with ESMTP id S230192AbjAMT2j (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Jan 2023 14:28:39 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C6C88A2F;
+        Fri, 13 Jan 2023 11:28:20 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E687762309;
+        Fri, 13 Jan 2023 19:28:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1EBDC433A4;
+        Fri, 13 Jan 2023 19:28:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673638099;
+        bh=oGTM2wuzaiQf3hnu49bV1kw3D+nqr4DgGLcbnBAxXKQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BENo1rWjURBUnC+mPcISq8IxkaNLrBFhEWK/AYiGE4tfQSoIP1w7gus2p5DUO58jW
+         jv3F53pjzER1/aDCTJy+eaI6vv+SvSB6rY7AY3QoJAiGcUyiBYYuAoKYG3FygH/6UD
+         y3WGEOSdP5B69oCN27m7Y7eDW2ScRFNhwIHtZ1IXBFfRY4yqhGu2sxfORzFXL/ww5j
+         xS3Rewt5XXYAAhLw6oPB3cjhIIb0yFKyCSOJV690iyL8fTiXf0OGHwm+md7BP5aLhh
+         9k+szzOCOhj77HSBUrxPI385z7729wyoZ6Fc7H9hrFCQOkTtYehgo3DNAR/20pLiRu
+         zY7INFFg05oeQ==
+Date:   Fri, 13 Jan 2023 11:28:17 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <yang.yang29@zte.com.cn>
+Cc:     <santosh.shilimkar@oracle.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <rds-devel@oss.oracle.com>, <linux-kernel@vger.kernel.org>,
+        <xu.panda@zte.com.cn>
+Subject: Re: [PATCH net-next v2] net/rds: use strscpy() to instead of
+ strncpy()
+Message-ID: <20230113112817.623f58fa@kernel.org>
+In-Reply-To: <202301131513124870047@zte.com.cn>
+References: <20230112211707.2abb31ad@kernel.org>
+        <202301131513124870047@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Y7wb1hCpJiGEdbav@ziepe.ca>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,63 +57,24 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 09:51:18AM -0400, Jason Gunthorpe wrote:
-> On Sat, Jan 07, 2023 at 03:27:25PM +0800, Yupeng Li wrote:
-> > When CONFIG_64BIT was disabled, check_copy_size() was declared with
-> > attribute error: copy source size is too small, array_size() for 32BIT
-> > was wrong size, some compiled msg with error like:
-> > 
-> >   CALL    scripts/checksyscalls.sh
-> >   CC [M]  drivers/net/ethernet/mellanox/mlx4/cq.o
-> > In file included from ./arch/x86/include/asm/preempt.h:7,
-> >                  from ./include/linux/preempt.h:78,
-> >                  from ./include/linux/percpu.h:6,
-> >                  from ./include/linux/context_tracking_state.h:5,
-> >                  from ./include/linux/hardirq.h:5,
-> >                  from drivers/net/ethernet/mellanox/mlx4/cq.c:37:
-> > In function ‘check_copy_size’,
-> >     inlined from ‘copy_to_user’ at ./include/linux/uaccess.h:168:6,
-> >     inlined from ‘mlx4_init_user_cqes’ at drivers/net/ethernet/mellanox/mlx4/cq.c:317:9,
-> >     inlined from ‘mlx4_cq_alloc’ at drivers/net/ethernet/mellanox/mlx4/cq.c:394:10:
-> > ./include/linux/thread_info.h:228:4: error: call to ‘__bad_copy_from’ declared with attribute error: copy source size is too small
-> >   228 |    __bad_copy_from();
-> >       |    ^~~~~~~~~~~~~~~~~
-> > make[6]: *** [scripts/Makefile.build:250：drivers/net/ethernet/mellanox/mlx4/cq.o] 错误 1
-> > make[5]: *** [scripts/Makefile.build:500：drivers/net/ethernet/mellanox/mlx4] 错误 2
-> > make[5]: *** 正在等待未完成的任务....
-> > make[4]: *** [scripts/Makefile.build:500：drivers/net/ethernet/mellanox] 错误 2
-> > make[3]: *** [scripts/Makefile.build:500：drivers/net/ethernet] 错误 2
-> > make[3]: *** 正在等待未完成的任务....
-> > make[2]: *** [scripts/Makefile.build:500：drivers/net] 错误 2
-> > make[2]: *** 正在等待未完成的任务....
-> > make[1]: *** [scripts/Makefile.build:500：drivers] 错误 2
-> > make: *** [Makefile:1992：.] 错误 2
-> > 
-> > Signed-off-by: Yupeng Li <liyupeng@zbhlos.com>
-> > Reviewed-by: Caicai <caizp2008@163.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx4/cq.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
-> > index 4d4f9cf9facb..7dadd7227480 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx4/cq.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
-> > @@ -315,7 +315,11 @@ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
-> >  		}
-> >  	} else {
-> >  		err = copy_to_user((void __user *)buf, init_ents,
-> > +#ifdef CONFIG_64BIT
-> >  				   array_size(entries, cqe_size)) ?
-> > +#else
-> > +				   entries * cqe_size) ?
-> > +#endif
-> >  			-EFAULT : 0;
+On Fri, 13 Jan 2023 15:13:12 +0800 (CST) yang.yang29@zte.com.cn wrote:
+> > What are the differences in behavior between strncpy() and strscpy()?  
 > 
-> This can't possibly make sense, Kees?
+> Strscpy() makes the dest string NUL-terminated, and returns more
+> useful value. While strncpy() can initialize the dest string.
+> 
+> Here we use strscpy() to make dest string NUL-terminated, and use
+> return value to check src string size and dest string size. This make
+> the code simpler.
 
-Uuuuh, that's really weird. What compiler version and arch? I'll see if
-I can reproduce this.
+I'm not sure whether in this particular case the output needs 
+to be padded or not. And I'm not sure you understand what the
+implications are.
 
--- 
-Kees Cook
+The code is fine as is, and I don't trust that you know what 
+you're doing. So please don't send any more strncpy() -> strscpy()
+conversions for networking.
+
+If you want to do something useful please start with adding a check 
+to checkpatch to warn people against using strncpy() and suggest using
+strscpy() instead.
