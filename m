@@ -2,472 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA7866BEB8
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Jan 2023 14:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042FC66C062
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Jan 2023 14:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjAPNHL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Jan 2023 08:07:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55186 "EHLO
+        id S231570AbjAPN5G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Jan 2023 08:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbjAPNG6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Jan 2023 08:06:58 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920897EE1;
-        Mon, 16 Jan 2023 05:06:56 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 203C460F9B;
-        Mon, 16 Jan 2023 13:06:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8A0EC433F0;
-        Mon, 16 Jan 2023 13:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673874415;
-        bh=3onQ/rBBcurHQvS6iIFYjN6t3VLGjjleEvgmJokrbgA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NUJkHjzulOFJcMkWyEr4QZGeeBrMIcy+EHSm7ZNEzgiWesNYaqRow8CXR3AlkAQ8i
-         dJvjT8FNvlrkqVq9fs5JF1v5O8p2AJXQrGk7x8i+newd1L8Qc7oAM4Y8faxFFuMm3I
-         qqHPzLr8ApM9FLcq0iPB+rYjUNNpKdpQ1pstknMWu7AfW0R7Y8HpZXx4Em51+CPR8b
-         ZB3Fbt5NLbLtolW/kHQfgw1BIVr7TB3wHpobxPSgBfk55jPas04n8Oz1TpsI+e0FKC
-         rLnD8WKyrb3HBRB++nAeBaQIanu1gD4gW6dZCc76bECmRRIMEPgYDKKGHewU0YMchi
-         fee5Llt2FnYWA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Israel Rukshin <israelr@nvidia.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Keith Busch <kbusch@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>, netdev@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vishnu Dasa <vdasa@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-next 13/13] nvme-rdma: Add inline encryption support
-Date:   Mon, 16 Jan 2023 15:06:00 +0200
-Message-Id: <ab0817fac98d498372fd32e950d1ca6e157b575d.1673873422.git.leon@kernel.org>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <cover.1673873422.git.leon@kernel.org>
-References: <cover.1673873422.git.leon@kernel.org>
+        with ESMTP id S229583AbjAPN4l (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Jan 2023 08:56:41 -0500
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2059.outbound.protection.outlook.com [40.107.102.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC442CFC6
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 05:53:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G7HW8QdTPV2CdeNX1qtKZ8CEzkO9HODtGT1PFo8/ir0ynGJ7QQjY8fMlnmNTabx36AlNcL8LkqGOFXu2/FL4zT7hpOaoGzWlbbPra9uMoscq9P92zukNvZHU9AKvvrKsWD01D4uQxM9ekEO8ZstHy3jmNEB7qoCapD637gV8YgXQ6kbCMJCfiBV3U3IYAMoHP6CytqgoaFMgoqTIE7g6NoOxUoGnazZMVlH8oLf7qQuX3aVYeFHRFrTMyzILmIR9SLGOfabHFjAeDxMcC7xtEweX2Gc06L03Hlk6NZLX9UgXL7zBuKeutM9feNGr3t4qO4ocIMDXao+b4FRdVMiUkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Bz5lmDvXR10RlQSDEG+AjHZ2UFNVJm4uxOPsKEJq8k4=;
+ b=f1lgyInDOmxhhaSmNLT4+kVgp71j+e1TelMyVrW6UXGF5L6HDfQdgr68+dJmS6Y+ikYjfFgnfsoOk5ZVTcV1/qyFp+xb2KgtHAXRjVZsrOvnyeMblU0BPWy936byOIbA2qymzzHU7EXelqsPBf4ZO72JM/WNpvPkU+4v0m+xCTDOrzm4B0nfqQPg4mxiOmV4h3LYTXnD4LKY1U9dqy3r1UvXQrLHeacsOKMhYFhm2DuusPdiDmHMWTgRn6FWDgEZJmPa7UUzNlS2tLszWomF+Qw5kjtc+131beuHBZG9cfgMG18Cu8ED6WxKjez/HLCCDKhEQtp3wFwyM8+KjMWkdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bz5lmDvXR10RlQSDEG+AjHZ2UFNVJm4uxOPsKEJq8k4=;
+ b=tdC0AceFzmBpBx8x0fEbz2euMXNVd98WzZ535f1JBNbQl2v1oubc+MaKNjKeJVGog621RWWAQuHLuQrK3CwA/hqOrtdv/2Z4JukpSX9v5aLIMonxU94W/Lo46cntakjEX+8Sdrt+CQdEHF0giahU14XTobY15+BnCy7D2YMbLFttJQgLX+UugWwJmy3Y7MKYD5y6jM0BJHiOYgD51qFeBGoxcIBIoOM31E9M6kbtlf3MwGGqcnqAiRabePh9RpRHHaX6ZOak972viNhR+cl5mAZshY6VZd8aqWYi6XkjY45uBFX8HxyrfsMZF8n+3E2rSv3gCT2v8Tw+Jy326bwWnA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DS0PR12MB8247.namprd12.prod.outlook.com (2603:10b6:8:f5::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.13; Mon, 16 Jan
+ 2023 13:53:11 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.6002.013; Mon, 16 Jan 2023
+ 13:53:11 +0000
+Date:   Mon, 16 Jan 2023 09:53:10 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
+        "leonro@nvidia.com" <leonro@nvidia.com>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-next v3 4/6] RDMA-rxe: Isolate mr code from
+ atomic_write_reply()
+Message-ID: <Y8VWxleU9P/OPo2i@nvidia.com>
+References: <20230113232704.20072-1-rpearsonhpe@gmail.com>
+ <20230113232704.20072-5-rpearsonhpe@gmail.com>
+ <7ab5a35c-7909-7302-8ce0-79d24a3f6592@fujitsu.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ab5a35c-7909-7302-8ce0-79d24a3f6592@fujitsu.com>
+X-ClientProxiedBy: BL0PR05CA0015.namprd05.prod.outlook.com
+ (2603:10b6:208:91::25) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS0PR12MB8247:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a58c0a9-2d42-4d35-f0ea-08daf7c90155
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M0qE8chavV6Yrv90HHeotHP+bI2nnssxKJpt8Q5o1hs0h2UynmYEY02x7FVARmxzfuillDgmAeMjhKkihACTGO3WzYIYs6EoeNpppoDUbDxCjo9rb429IUeqq2zbMojRgJfjkQun7n6Kuui7JzUKOzOtuOCpZx7+7RiAK/pb0XtUA53ydHCczm+amwRMFeFxoFw3clS3WhrEYE3QnOwwRboQOKrLAIpjwc3XxLAWeZsDbB1zcr7KaDkpR7+lQxbsONL98+nR8rM57XEukNT9k4mdwEwbe+eEcIF9JiTM2WDW6pkMdYbCCfiYmEITSyj4z0f3iKKvr1yRFeWEaoEytrUSo3od6jKNILSyNiouChKr3ETQjcHN/cZSkN7plv7VAi8VAJwJMf0d2xHXEhMtDYH3VahiuK1i3zMdBYZ2QPoGYf5T7xCGJsWHj6/FJeHwp2oZTDFnqMR/6NJDvqCG5PC48Mzgmija/WfCvDXQZQeiPyQ6HUp3xP+kBlI8LVeKSXl/aDNnTHBaN66Vx5S0eaU2NlxSPWWNaB3T6HBbd/KX/DcwJE/OrVCBtMCPaDOd7pY40W3az3fjHrNYZHD59oirowmSGPZ2nBj4upFexHGSrkF2TjezDzsKlL2PV8rnqEBJnSbwLWb3iCaiZfGNsHCAmUYIAZJ8OAISPNRZhX2D+AbkZEqCAwKfG21H/bX0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(396003)(136003)(376002)(346002)(366004)(451199015)(38100700002)(83380400001)(8936002)(6916009)(4326008)(86362001)(5660300002)(66476007)(4744005)(66946007)(8676002)(2906002)(66556008)(41300700001)(6512007)(26005)(186003)(6506007)(2616005)(478600001)(54906003)(6486002)(316002)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?boBSnwmb7jpvOZcS0dPx75bdewnttU3yjBCGVkN9hdw6fEYMVDwVK36AB0+9?=
+ =?us-ascii?Q?uy2x9mq2Fpc9M6VmmJy2+2g2MDbZqgeX2/wf/GWUOBLZCYHxhlvGEwQuYN82?=
+ =?us-ascii?Q?hC1UcRGLyNeDEdWxWxlH1W6NYeATyv7ftpFRGX5wMQKUc78CJp1dMS2hsUjk?=
+ =?us-ascii?Q?+GPeZjs3JcWAibNnsO9Rll6AB4g1LS9CIetOcS8ZodqAgC4wMjXTmr1sRQ8Q?=
+ =?us-ascii?Q?iE9kCK5UyeOkR7EYkhE1+Nf567TjxUEMwVXsvuMjhaio1n3C24oCbClOu/MS?=
+ =?us-ascii?Q?8nWgMuVbeSKQqREdf8qL9pYUjcnnihJ/h/ZKrmfyd87emWE5wevB0jo0d0kU?=
+ =?us-ascii?Q?+kaL3v9jC3P5QutP4llWCHT6gPIPPuJaDhZkRqHKWnHDestN3/UJW1HSnl9z?=
+ =?us-ascii?Q?Mxs8Gx58FmzGXit167LVYHQtv02IfybyxP3YAYvu+/tb/OXV5gNYSgct0e2O?=
+ =?us-ascii?Q?jXPpcLyyYpXfmbf71hf2ZTchWC7z/hTcs3TjBizczvs4yi/pX8ecx4iE8Z0g?=
+ =?us-ascii?Q?1lfwscLfTLrn16lmlv0t8r/Neck27mEP5w4SV21EKhiHexIWKQOVK3D/rbkj?=
+ =?us-ascii?Q?Hf6k9iVCIksliC8+QbtRYWvdQ3fqGff8KZsLc7/FNe3xKg9BAI1HspaMlNXT?=
+ =?us-ascii?Q?ARCWBbCyW4PSasWQ+IZJjwVEOIJZ8FfY9sB9VChvg7IvoUjcPXavf+d8UNmz?=
+ =?us-ascii?Q?jVUa4G6rlJ85VkrJxBuY8S6c/mZtZHGkOr28/jvZLTIpq6cEVld/Z+uKPR/K?=
+ =?us-ascii?Q?L2sMdmFVwRC4XKySnpUlDFkxwl3Iqtr/nYcsV1IdnIop1YxWArUTYgmbJ2dk?=
+ =?us-ascii?Q?AM1VtJBY/dYFZNcRGYaVS/sIUGWuCKROQY3nHxvSenxjZyWthy3jf59KqkWO?=
+ =?us-ascii?Q?L/+wbfAWQ5Gltu1nmfGWEYofsLEx9NaRJ71y7uqwRBaqisUaELkyfXkdeYnq?=
+ =?us-ascii?Q?6Tkqzr0FRZ7CzgSjAY5WZwyvJef9HfRRQQ0bor4qSiyzER97HiINSza+Fn4R?=
+ =?us-ascii?Q?FuT7w3lJQEFUGfV986oB60+pyqb9U1duvRUtmfgXNtliqZRVdIHnRMgILPrd?=
+ =?us-ascii?Q?w+yvyoSm4y2JDzGNmLpbTSVBrNy03/GVExYhLsD4BwyBVdlVgKvOAeZIvmfv?=
+ =?us-ascii?Q?+AH9+JoAPtf+dCGv3bWWZrGPQ0Mnl1uR4mpQIohR9N0jGaJ5i52oczURh91M?=
+ =?us-ascii?Q?P3FIbAJaoLjk/gy+tsE5H6UMItf33PSvUwKaf+HiAGRIDBHxSGdyDyaRBwxQ?=
+ =?us-ascii?Q?jHT9yPeLSdsyVVscwdSMZWC9Xd7TuuKTsdfwwFZKJ/xh7t+zc0wEgHP+PPDH?=
+ =?us-ascii?Q?cTtg6icMnRgnboWvuhSW5w0u8HBZNIxBeuDFUZV85aEc4MlLB9jYf7v4O5EW?=
+ =?us-ascii?Q?DoLkSnJ8qTxVD6hxxh63r/PixVNWpOh+yVCE8IyUwQ9tpjO9RU3GhF5VTQ2U?=
+ =?us-ascii?Q?ZsmMVzSzpVWm1mUyLf8MPSdvzqN7yHXu9wyDgB3gqw0vLDSdTxN4GdwHzgUO?=
+ =?us-ascii?Q?PbCLEiMoBZykALbNblS1wsolwFEBsE4SMQc1pOWgIAQ9gNdB5y5dkoqoCDep?=
+ =?us-ascii?Q?x+cpstrOfb39ywhiinQ=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a58c0a9-2d42-4d35-f0ea-08daf7c90155
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2023 13:53:11.0492
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kMQa4E1IAGbnoz9A7rDCe2nS4fSC9kzNxZ+Bqcc18HwCSJxqwOng9Zm0vRge9OCM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8247
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Israel Rukshin <israelr@nvidia.com>
+On Mon, Jan 16, 2023 at 02:11:29AM +0000, lizhijian@fujitsu.com wrote:
+> > +/**
+> > + * rxe_mr_do_atomic_write() - write 64bit value to iova from addr
+> > + * @mr: memory region
+> > + * @iova: iova in mr
+> > + * @addr: source of data to write
+> > + *
+> > + * Returns:
+> > + *	 0 on success
+> > + *	-1 for misaligned address
+> > + *	-2 for access errors
+> > + *	-3 for cpu without native 64 bit support
+> 
+> Well, i'm not favor of such error code. especialy when it's not a staic subroutine.
+> Any comments from other maintainers ?
 
-Add support for inline encryption/decryption of the data at a
-similar way like integrity is used via a unique Mkey. The feature
-is enabled only when CONFIG_BLK_INLINE_ENCRYPTION is configured.
-There is no special configuration to enable crypto at nvme modules.
+It should at least have proper constants, but can it be structured to
+avoid this in the first place?
 
-The code was tested with fscrypt and BF-3 HW, which had more than
-50% CPU utilization improvement at 64K and bigger I/O sizes when
-comparing to the SW only solution at this case.
-
-Signed-off-by: Israel Rukshin <israelr@nvidia.com>
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
----
- drivers/nvme/host/rdma.c | 236 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 232 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index bbad26b82b56..8bea38eb976f 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -40,6 +40,10 @@
- #define NVME_RDMA_METADATA_SGL_SIZE \
- 	(sizeof(struct scatterlist) * NVME_INLINE_METADATA_SG_CNT)
- 
-+#define NVME_RDMA_NUM_CRYPTO_KEYSLOTS	(32U)
-+/* Bitmask for 512B and 4K data unit sizes */
-+#define NVME_RDMA_DATA_UNIT_SIZES	(512U | 4096U)
-+
- struct nvme_rdma_device {
- 	struct ib_device	*dev;
- 	struct ib_pd		*pd;
-@@ -75,6 +79,7 @@ struct nvme_rdma_request {
- 	struct nvme_rdma_sgl	data_sgl;
- 	struct nvme_rdma_sgl	*metadata_sgl;
- 	bool			use_sig_mr;
-+	bool			use_crypto;
- };
- 
- enum nvme_rdma_queue_flags {
-@@ -97,6 +102,7 @@ struct nvme_rdma_queue {
- 	int			cm_error;
- 	struct completion	cm_done;
- 	bool			pi_support;
-+	bool			crypto_support;
- 	int			cq_size;
- 	struct mutex		queue_lock;
- };
-@@ -126,6 +132,8 @@ struct nvme_rdma_ctrl {
- 	struct nvme_ctrl	ctrl;
- 	bool			use_inline_data;
- 	u32			io_queues[HCTX_MAX_TYPES];
-+
-+	struct ib_dek		*dek[NVME_RDMA_NUM_CRYPTO_KEYSLOTS];
- };
- 
- static inline struct nvme_rdma_ctrl *to_rdma_ctrl(struct nvme_ctrl *ctrl)
-@@ -275,6 +283,8 @@ static int nvme_rdma_create_qp(struct nvme_rdma_queue *queue, const int factor)
- 	init_attr.recv_cq = queue->ib_cq;
- 	if (queue->pi_support)
- 		init_attr.create_flags |= IB_QP_CREATE_INTEGRITY_EN;
-+	if (queue->crypto_support)
-+		init_attr.create_flags |= IB_QP_CREATE_CRYPTO_EN;
- 	init_attr.qp_context = queue;
- 
- 	ret = rdma_create_qp(queue->cm_id, dev->pd, &init_attr);
-@@ -364,6 +374,77 @@ static int nvme_rdma_dev_get(struct nvme_rdma_device *dev)
- 	return kref_get_unless_zero(&dev->ref);
- }
- 
-+static int nvme_rdma_crypto_keyslot_program(struct blk_crypto_profile *profile,
-+					    const struct blk_crypto_key *key,
-+					    unsigned int slot)
-+{
-+	struct nvme_ctrl *nctrl =
-+		container_of(profile, struct nvme_ctrl, crypto_profile);
-+	struct nvme_rdma_ctrl *ctrl = to_rdma_ctrl(nctrl);
-+	struct ib_dek_attr dek_attr = { };
-+	int err = 0;
-+
-+	if (slot > NVME_RDMA_NUM_CRYPTO_KEYSLOTS) {
-+		dev_err(nctrl->device, "slot index reached the limit %d/%d",
-+			slot, NVME_RDMA_NUM_CRYPTO_KEYSLOTS);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (WARN_ON_ONCE(key->crypto_cfg.crypto_mode !=
-+			 BLK_ENCRYPTION_MODE_AES_256_XTS))
-+		return -EOPNOTSUPP;
-+
-+	if (ctrl->dek[slot]) {
-+		dev_dbg(nctrl->device, "slot %d is taken, free DEK ID %d\n",
-+			slot, ctrl->dek[slot]->id);
-+		ib_destroy_dek(ctrl->dek[slot]);
-+	}
-+
-+	dek_attr.key_blob = key->raw;
-+	dek_attr.key_blob_size = key->size;
-+	dek_attr.key_type = IB_CRYPTO_KEY_TYPE_AES_XTS;
-+	ctrl->dek[slot] = ib_create_dek(ctrl->device->pd, &dek_attr);
-+	if (IS_ERR(ctrl->dek[slot])) {
-+		err = PTR_ERR(ctrl->dek[slot]);
-+		dev_err(nctrl->device,
-+			"failed to create DEK at slot %d, err %d\n", slot, err);
-+		ctrl->dek[slot] = NULL;
-+	} else {
-+		dev_dbg(nctrl->device, "DEK ID %d was created at slot %d\n",
-+			ctrl->dek[slot]->id, slot);
-+	}
-+
-+	return err;
-+}
-+
-+static int nvme_rdma_crypto_keyslot_evict(struct blk_crypto_profile *profile,
-+					  const struct blk_crypto_key *key,
-+					  unsigned int slot)
-+{
-+	struct nvme_ctrl *nctrl =
-+		container_of(profile, struct nvme_ctrl, crypto_profile);
-+	struct nvme_rdma_ctrl *ctrl = to_rdma_ctrl(nctrl);
-+
-+	if (slot > NVME_RDMA_NUM_CRYPTO_KEYSLOTS) {
-+		dev_err(nctrl->device, "slot index reached the limit %d/%d\n",
-+			slot, NVME_RDMA_NUM_CRYPTO_KEYSLOTS);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (!ctrl->dek[slot]) {
-+		dev_err(nctrl->device, "slot %d is empty\n", slot);
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(nctrl->device, "Destroy DEK ID %d slot %d\n",
-+		ctrl->dek[slot]->id, slot);
-+
-+	ib_destroy_dek(ctrl->dek[slot]);
-+	ctrl->dek[slot] = NULL;
-+
-+	return 0;
-+}
-+
- static struct nvme_rdma_device *
- nvme_rdma_find_get_device(struct rdma_cm_id *cm_id)
- {
-@@ -430,6 +511,8 @@ static void nvme_rdma_destroy_queue_ib(struct nvme_rdma_queue *queue)
- 	dev = queue->device;
- 	ibdev = dev->dev;
- 
-+	if (queue->crypto_support)
-+		ib_mr_pool_destroy(queue->qp, &queue->qp->crypto_mrs);
- 	if (queue->pi_support)
- 		ib_mr_pool_destroy(queue->qp, &queue->qp->sig_mrs);
- 	ib_mr_pool_destroy(queue->qp, &queue->qp->rdma_mrs);
-@@ -553,10 +636,24 @@ static int nvme_rdma_create_queue_ib(struct nvme_rdma_queue *queue)
- 		}
- 	}
- 
-+	if (queue->crypto_support) {
-+		ret = ib_mr_pool_init(queue->qp, &queue->qp->crypto_mrs,
-+				      queue->queue_size, IB_MR_TYPE_CRYPTO,
-+				      pages_per_mr, 0);
-+		if (ret) {
-+			dev_err(queue->ctrl->ctrl.device,
-+				"failed to initialize crypto MR pool sized %d for QID %d\n",
-+				queue->queue_size, nvme_rdma_queue_idx(queue));
-+			goto out_destroy_sig_mr_pool;
-+		}
-+	}
-+
- 	set_bit(NVME_RDMA_Q_TR_READY, &queue->flags);
- 
- 	return 0;
- 
-+out_destroy_sig_mr_pool:
-+	ib_mr_pool_destroy(queue->qp, &queue->qp->sig_mrs);
- out_destroy_mr_pool:
- 	ib_mr_pool_destroy(queue->qp, &queue->qp->rdma_mrs);
- out_destroy_ring:
-@@ -585,6 +682,9 @@ static int nvme_rdma_alloc_queue(struct nvme_rdma_ctrl *ctrl,
- 		queue->pi_support = true;
- 	else
- 		queue->pi_support = false;
-+
-+	queue->crypto_support = idx && ctrl->ctrl.crypto_enable;
-+
- 	init_completion(&queue->cm_done);
- 
- 	if (idx > 0)
-@@ -805,15 +905,109 @@ static int nvme_rdma_alloc_tag_set(struct nvme_ctrl *ctrl)
- 
- static void nvme_rdma_destroy_admin_queue(struct nvme_rdma_ctrl *ctrl)
- {
-+	unsigned int i;
-+
- 	if (ctrl->async_event_sqe.data) {
- 		cancel_work_sync(&ctrl->ctrl.async_event_work);
- 		nvme_rdma_free_qe(ctrl->device->dev, &ctrl->async_event_sqe,
- 				sizeof(struct nvme_command), DMA_TO_DEVICE);
- 		ctrl->async_event_sqe.data = NULL;
- 	}
-+
-+	for (i = 0; i < NVME_RDMA_NUM_CRYPTO_KEYSLOTS; i++) {
-+		if (!ctrl->dek[i])
-+			continue;
-+		ib_destroy_dek(ctrl->dek[i]);
-+		ctrl->dek[i] = NULL;
-+	}
-+
- 	nvme_rdma_free_queue(&ctrl->queues[0]);
- }
- 
-+#ifdef CONFIG_BLK_INLINE_ENCRYPTION
-+static const struct blk_crypto_ll_ops nvme_rdma_crypto_ops = {
-+	.keyslot_program	= nvme_rdma_crypto_keyslot_program,
-+	.keyslot_evict		= nvme_rdma_crypto_keyslot_evict,
-+};
-+
-+static int nvme_rdma_crypto_profile_init(struct nvme_rdma_ctrl *ctrl, bool new)
-+{
-+	struct blk_crypto_profile *profile = &ctrl->ctrl.crypto_profile;
-+	int ret;
-+
-+	if (!new) {
-+		blk_crypto_reprogram_all_keys(profile);
-+		return 0;
-+	}
-+
-+	ret = devm_blk_crypto_profile_init(ctrl->ctrl.device, profile,
-+					   NVME_RDMA_NUM_CRYPTO_KEYSLOTS);
-+	if (ret) {
-+		dev_err(ctrl->ctrl.device,
-+			"devm_blk_crypto_profile_init failed err %d\n", ret);
-+		return ret;
-+	}
-+
-+	profile->ll_ops = nvme_rdma_crypto_ops;
-+	profile->dev = ctrl->ctrl.device;
-+	profile->max_dun_bytes_supported = IB_CRYPTO_XTS_TWEAK_MAX_SIZE;
-+	profile->modes_supported[BLK_ENCRYPTION_MODE_AES_256_XTS] =
-+		NVME_RDMA_DATA_UNIT_SIZES;
-+
-+	return 0;
-+}
-+
-+static void nvme_rdma_set_crypto_attrs(struct ib_crypto_attrs *crypto_attrs,
-+		struct nvme_rdma_queue *queue, struct nvme_rdma_request *req)
-+{
-+	struct request *rq = blk_mq_rq_from_pdu(req);
-+	u32 slot_idx = blk_crypto_keyslot_index(rq->crypt_keyslot);
-+
-+	memset(crypto_attrs, 0, sizeof(*crypto_attrs));
-+
-+	crypto_attrs->encrypt_domain = IB_CRYPTO_ENCRYPTED_WIRE_DOMAIN;
-+	crypto_attrs->encrypt_standard = IB_CRYPTO_AES_XTS;
-+	crypto_attrs->data_unit_size =
-+		rq->crypt_ctx->bc_key->crypto_cfg.data_unit_size;
-+	crypto_attrs->dek = queue->ctrl->dek[slot_idx]->id;
-+	memcpy(crypto_attrs->xts_init_tweak, rq->crypt_ctx->bc_dun,
-+	       sizeof(crypto_attrs->xts_init_tweak));
-+}
-+
-+static int nvme_rdma_fill_crypto_caps(struct nvme_rdma_ctrl *ctrl, bool new)
-+{
-+	struct ib_crypto_caps *caps = &ctrl->device->dev->attrs.crypto_caps;
-+
-+	if (caps->crypto_engines & IB_CRYPTO_ENGINES_CAP_AES_XTS) {
-+		ctrl->ctrl.crypto_enable = true;
-+		return 0;
-+	}
-+
-+	if (!new && ctrl->ctrl.crypto_enable) {
-+		dev_err(ctrl->ctrl.device, "Must support crypto!\n");
-+		return -EOPNOTSUPP;
-+	}
-+	ctrl->ctrl.crypto_enable = false;
-+
-+	return 0;
-+}
-+#else
-+static int nvme_rdma_crypto_profile_init(struct nvme_rdma_ctrl *ctrl, bool new)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static void nvme_rdma_set_crypto_attrs(struct ib_crypto_attrs *crypto_attrs,
-+		struct nvme_rdma_queue *queue, struct nvme_rdma_request *req)
-+{
-+}
-+
-+static int nvme_rdma_fill_crypto_caps(struct nvme_rdma_ctrl *ctrl, bool new)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_BLK_INLINE_ENCRYPTION */
-+
- static int nvme_rdma_configure_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 		bool new)
- {
-@@ -835,6 +1029,10 @@ static int nvme_rdma_configure_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 	ctrl->max_fr_pages = nvme_rdma_get_max_fr_pages(ctrl->device->dev,
- 							pi_capable);
- 
-+	error = nvme_rdma_fill_crypto_caps(ctrl, new);
-+	if (error)
-+		goto out_free_queue;
-+
- 	/*
- 	 * Bind the async event SQE DMA mapping to the admin queue lifetime.
- 	 * It's safe, since any chage in the underlying RDMA device will issue
-@@ -870,6 +1068,12 @@ static int nvme_rdma_configure_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 	else
- 		ctrl->ctrl.max_integrity_segments = 0;
- 
-+	if (ctrl->ctrl.crypto_enable) {
-+		error = nvme_rdma_crypto_profile_init(ctrl, new);
-+		if (error)
-+			goto out_quiesce_queue;
-+	}
-+
- 	nvme_unquiesce_admin_queue(&ctrl->ctrl);
- 
- 	error = nvme_init_ctrl_finish(&ctrl->ctrl, false);
-@@ -1268,6 +1472,8 @@ static void nvme_rdma_unmap_data(struct nvme_rdma_queue *queue,
- 
- 	if (req->use_sig_mr)
- 		pool = &queue->qp->sig_mrs;
-+	else if (req->use_crypto)
-+		pool = &queue->qp->crypto_mrs;
- 
- 	if (req->mr) {
- 		ib_mr_pool_put(queue->qp, pool, req->mr);
-@@ -1331,9 +1537,13 @@ static int nvme_rdma_map_sg_fr(struct nvme_rdma_queue *queue,
- 		int count)
- {
- 	struct nvme_keyed_sgl_desc *sg = &c->common.dptr.ksgl;
-+	struct list_head *pool = &queue->qp->rdma_mrs;
- 	int nr;
- 
--	req->mr = ib_mr_pool_get(queue->qp, &queue->qp->rdma_mrs);
-+	if (req->use_crypto)
-+		pool = &queue->qp->crypto_mrs;
-+
-+	req->mr = ib_mr_pool_get(queue->qp, pool);
- 	if (WARN_ON_ONCE(!req->mr))
- 		return -EAGAIN;
- 
-@@ -1344,18 +1554,24 @@ static int nvme_rdma_map_sg_fr(struct nvme_rdma_queue *queue,
- 	nr = ib_map_mr_sg(req->mr, req->data_sgl.sg_table.sgl, count, NULL,
- 			  SZ_4K);
- 	if (unlikely(nr < count)) {
--		ib_mr_pool_put(queue->qp, &queue->qp->rdma_mrs, req->mr);
-+		ib_mr_pool_put(queue->qp, pool, req->mr);
- 		req->mr = NULL;
- 		if (nr < 0)
- 			return nr;
- 		return -EINVAL;
- 	}
- 
-+	if (req->use_crypto)
-+		nvme_rdma_set_crypto_attrs(req->mr->crypto_attrs, queue, req);
-+
- 	ib_update_fast_reg_key(req->mr, ib_inc_rkey(req->mr->rkey));
- 
- 	req->reg_cqe.done = nvme_rdma_memreg_done;
- 	memset(&req->reg_wr, 0, sizeof(req->reg_wr));
--	req->reg_wr.wr.opcode = IB_WR_REG_MR;
-+	if (req->use_crypto)
-+		req->reg_wr.wr.opcode = IB_WR_REG_MR_CRYPTO;
-+	else
-+		req->reg_wr.wr.opcode = IB_WR_REG_MR;
- 	req->reg_wr.wr.wr_cqe = &req->reg_cqe;
- 	req->reg_wr.wr.num_sge = 0;
- 	req->reg_wr.mr = req->mr;
-@@ -1571,7 +1787,7 @@ static int nvme_rdma_map_data(struct nvme_rdma_queue *queue,
- 		goto out;
- 	}
- 
--	if (count <= dev->num_inline_segments) {
-+	if (count <= dev->num_inline_segments && !req->use_crypto) {
- 		if (rq_data_dir(rq) == WRITE && nvme_rdma_queue_idx(queue) &&
- 		    queue->ctrl->use_inline_data &&
- 		    blk_rq_payload_bytes(rq) <=
-@@ -2052,6 +2268,18 @@ static blk_status_t nvme_rdma_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	else
- 		req->use_sig_mr = false;
- 
-+#ifdef CONFIG_BLK_INLINE_ENCRYPTION
-+	if (rq->crypt_ctx) {
-+		if (WARN_ON_ONCE(!queue->crypto_support)) {
-+			err = -EIO;
-+			goto err;
-+		}
-+		req->use_crypto = true;
-+	} else {
-+		req->use_crypto = false;
-+	}
-+#endif
-+
- 	err = nvme_rdma_map_data(queue, rq, c);
- 	if (unlikely(err < 0)) {
- 		dev_err(queue->ctrl->ctrl.device,
--- 
-2.39.0
-
+Jason
