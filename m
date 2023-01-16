@@ -2,60 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 897FA66D20C
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Jan 2023 23:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629F866D20D
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Jan 2023 23:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233976AbjAPWxn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Jan 2023 17:53:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
+        id S234743AbjAPWxs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Jan 2023 17:53:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234918AbjAPWxV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Jan 2023 17:53:21 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAC42CFE8
-        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 14:52:57 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id s124so7748882oif.1
-        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 14:52:57 -0800 (PST)
+        with ESMTP id S235046AbjAPWx0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Jan 2023 17:53:26 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D45328868
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 14:53:09 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id i5so6321249oih.11
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 14:53:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wS2QJiiyEkMO2gJl6NWYW/D1zG17H+Y4EKUKme3Ybio=;
-        b=SO3wqfO86O3Qu4fzmjzlE8qj/kLvqClc413iss5McJ2Yz7OgYs3ftyZGemq3ll3avt
-         LPZNJT22z7yxhcaKuSQeAm9KhIAMLfgEgxeTMqKIWRtDhPrcpUrkyzNKvAn9kc7VSj2W
-         29lQlxV6n7dYWSE0A9xClV+lBg2Hm79RBHOymElJEKh/YTDXY+8Ip2me24XZgoA/MhHG
-         Mk34PZzCw6/grxoq/N7GE1nTFTEi+I9emdjg5g1kc5332beu16R9rN3oRW/3TL65+VQK
-         CILqP0OHU/M1dn0VQBqSKy7p0tZvJaJ6BYh595A916sosUPxicHQkd2uY3O922j1Bvry
-         FaCw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sFVv+FTu2viKrddF8zqbqpZJ1cote5/OKzz+8VqeQLQ=;
+        b=CQiAquaWD/qixzw7ZE/zGrIC/taAPph0Iudxa6A7B3wGYRIv2lQAckPvl9DFUPPO4T
+         Dhjt+2QI045ee2HpcItH9kaw9gQeabMbbi7u2d2tBuY+3vab7eqLrdUtgCCEHC0wXcQS
+         dsJP6DNMfS1coRmUJvMePk/S3vfRyYT9Qd/xYcC9KFrM9BX2lfz8IkfIzJDqQsWtBPyJ
+         1aqwYBwyNcGx8lMG5FlaBBdiWspvwtVjIXdyfS6b5Oe1sBFD222sn1gc9XVEwzZxKBQl
+         /+q7iZD2LC0Y2XLzaIeqGqdBJIuuLOCc+cy2DWXp3djBULiYt6pf5vhNKnf09umRqQ13
+         SmjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wS2QJiiyEkMO2gJl6NWYW/D1zG17H+Y4EKUKme3Ybio=;
-        b=XzG4PjTwM91PbBcwZjfLgNnNM9V5u5rrdqxYGoQo/Yk9b/nYMiP988XFaxBYPGQkIu
-         vfYEouACpojaINg9DT3b6YKyDpcVSRy095rZ97BmSPQdCz7KbWyv/ZOj/xa1ydoC9fj9
-         RdRc38Jsg3nxUUIYta482cJoDs4D308pb4TovDE7VawfBJSZs1DvDtOfbxi8xZ0kyolV
-         HaiALPcfW8tMsoUq7oG+JTnfp1QShG8Hm5ukKPtIam/mJU9RPDyU9LUj4eUwuFHJz4gm
-         ynvGdI9KF4poy4coU8IphHH5WVLrVFxW2eTJ9v3cMFwk/zS0spQF6cDDkwy4Crvpn7rJ
-         zi7Q==
-X-Gm-Message-State: AFqh2koSfqe4WZNP46HJtI8Fb6/S13ogzIYURfniW7A253/zmvEAkwg7
-        PdAux8IOGzjI6cstXasNx0s=
-X-Google-Smtp-Source: AMrXdXuZZUqFZFB3Ke2nMfOP1YLabrj17TsQI1sUT6gu+OM0175iWJQEEFRIdbSp7GMbzmQ0kTnoGg==
-X-Received: by 2002:a54:4893:0:b0:35e:506e:4b3e with SMTP id r19-20020a544893000000b0035e506e4b3emr388208oic.37.1673909576122;
-        Mon, 16 Jan 2023 14:52:56 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sFVv+FTu2viKrddF8zqbqpZJ1cote5/OKzz+8VqeQLQ=;
+        b=ry83jDiZ4oAJp5B5a9O7F+E/xd9uMviAjKp7iK70AN2B2JiCdH94drf8cnRxVi62Av
+         WrgHb+hPiPxeZeTC+WK/fkvSQ/WNPjnzKEUi1B9WLArsKyLqiKZYgL19hj/wjw80x7lY
+         oGLOtoYYrjmxcboM4efCfbQfzagHpjRepf0VhnsF6XQQp+fGlWYbZVP5T78ClPbi5ioM
+         itCMlQyDSpby/8g9h5hkzStIn6zkW7GbW6+w45P5WMZpj4tkDQyZnSZN3ylioyYVG98+
+         XDTKdDmsmTSUzWTXYlxIAceRq04Vl7K40v1BkI+8KeeE1RwgLNyY8C8LWmA25aZv8DSy
+         FQ+w==
+X-Gm-Message-State: AFqh2koVKrkoo615rKWaSVNs32R50isNjzmbputdpPtN377TLQIPmfFl
+        f/QxrP1kOjZ7DJjoi9G6Q/s=
+X-Google-Smtp-Source: AMrXdXvH2IloXJ3HWrabd6e2loj5wB1wmkfZVO3sZ0JYvDf78OuIMSXABTZMMawfia5ot9ayX8oNvQ==
+X-Received: by 2002:a54:4816:0:b0:361:25e8:c6d8 with SMTP id j22-20020a544816000000b0036125e8c6d8mr482424oij.34.1673909586923;
+        Mon, 16 Jan 2023 14:53:06 -0800 (PST)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-ea18-3ee9-26d1-7526.res6.spectrum.com. [2603:8081:140c:1a00:ea18:3ee9:26d1:7526])
-        by smtp.gmail.com with ESMTPSA id s4-20020a056808008400b0035028730c90sm13651937oic.1.2023.01.16.14.52.55
+        by smtp.gmail.com with ESMTPSA id s4-20020a056808008400b0035028730c90sm13651937oic.1.2023.01.16.14.53.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Jan 2023 14:52:55 -0800 (PST)
+        Mon, 16 Jan 2023 14:53:06 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, leonro@nvidia.com,
         yangx.jy@fujitsu.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v4 0/6] RDMA/rxe: Replace mr page map with an xarray
-Date:   Mon, 16 Jan 2023 16:52:22 -0600
-Message-Id: <20230116225227.21163-1-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v4 1/6] RDMA/rxe: Cleanup mr_check_range
+Date:   Mon, 16 Jan 2023 16:52:24 -0600
+Message-Id: <20230116225227.21163-2-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230116225227.21163-1-rpearsonhpe@gmail.com>
+References: <20230116225227.21163-1-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -68,41 +71,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch series replaces the page map carried in each memory region
-with a struct xarray. It is based on a sketch developed by Jason
-Gunthorpe. The first five patches are preparation that tries to
-cleanly isolate all the mr specific code into rxe_mr.c. The sixth
-patch is the actual change.
+Remove blank lines and replace EFAULT by EINVAL when an invalid
+mr type is used.
 
-v4:
-  Responded to a comment by Zhu and cleaned up error passing between
-  rxe_mr.c and rxe_resp.c.
-  Other various cleanups including more careful use of unsigned ints.
-  Rebased to current for-next.
-v3:
-  Fixed an error reported by kernel test robot
-v2:
-  Rebased to 6.2.0-rc1+
-  Minor cleanups
-  Fixed error reported by Jason in 4/6 missing if after else.
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_mr.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Bob Pearson (6):
-  RDMA/rxe: Cleanup mr_check_range
-  RDMA/rxe: Move rxe_map_mr_sg to rxe_mr.c
-  RDMA-rxe: Isolate mr code from atomic_reply()
-  RDMA-rxe: Isolate mr code from atomic_write_reply()
-  RDMA/rxe: Cleanup page variables in rxe_mr.c
-  RDMA/rxe: Replace rxe_map and rxe_phys_buf by xarray
-
- drivers/infiniband/sw/rxe/rxe_loc.h   |  13 +-
- drivers/infiniband/sw/rxe/rxe_mr.c    | 610 ++++++++++++++------------
- drivers/infiniband/sw/rxe/rxe_resp.c  | 118 ++---
- drivers/infiniband/sw/rxe/rxe_verbs.c |  36 --
- drivers/infiniband/sw/rxe/rxe_verbs.h |  37 +-
- 5 files changed, 405 insertions(+), 409 deletions(-)
-
-
-base-commit: 1ec82317a1daac78c04b0c15af89018ccf9fa2b7
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index 072eac4b65d2..632ee1e516a1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -26,8 +26,6 @@ u8 rxe_get_next_key(u32 last_key)
+ 
+ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
+ {
+-
+-
+ 	switch (mr->ibmr.type) {
+ 	case IB_MR_TYPE_DMA:
+ 		return 0;
+@@ -41,7 +39,7 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
+ 
+ 	default:
+ 		rxe_dbg_mr(mr, "type (%d) not supported\n", mr->ibmr.type);
+-		return -EFAULT;
++		return -EINVAL;
+ 	}
+ }
+ 
 -- 
 2.37.2
 
