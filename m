@@ -2,184 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A2166D332
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jan 2023 00:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3F566D348
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jan 2023 00:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbjAPXec (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Jan 2023 18:34:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
+        id S233570AbjAPXpM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Jan 2023 18:45:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235224AbjAPXdQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Jan 2023 18:33:16 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2075.outbound.protection.outlook.com [40.107.220.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23BC2F783
-        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 15:24:41 -0800 (PST)
+        with ESMTP id S233886AbjAPXpL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Jan 2023 18:45:11 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2085.outbound.protection.outlook.com [40.107.237.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB15A5EA
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 15:45:10 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=naCwXwUwwc2Nmpa0zdZjCqoVVkOdIPDhf/11jTHBavLHc0+DKddTapIvTKw/uoobzyqnjUv89E/gW3ik5wa/xSWPkHHrs8Id+W5Ct7AGVBL1dH8P8yHxkgINPNIiM5jZXNu9pGQey6AppSRDZPUYy8FBYjJo7D5n4VyaePoQHmaPs9HGlmUqcob95GMxEALi+12g1vWY17SIWqYUW7jeP979TMfYeWQ7qEgDON2fUalxbMpzkVON4cnEH0pCjxClzIizI5xpkPzkkR+rThJ6HXZjSLgL9OD9kbOZvtf8eLmiVgKk/ByjsTdEiHn805J1uiybsgg+hopekk1k1BQEIQ==
+ b=SyLv7ks3vYdVtXaTsUhFHy8cYGiHr9S0N5bvLgslOcbrOzPE7mP6sSdfZ73PpyLxwjE4jOzO5zZe4SxexS3nllFLN40SKrJwstDznuivf8WhKbU9PWdjkYJMVB3BLHpx+QZZOtdvMIsjPf3FEVQi9TzH/M5OacEc2KcYEB8PToAI9NO4AmHoPzY5mGzuhKwjN4gPmh0axx+8EC+lR17jc2pigfmFbXXM06/PojSVKJW/ZjGlcF5rVXEWft7U0crfMmvfGuhJ8DkL1ZCYaEtPAWR3x2Dwwp6SRC7VEE3hO6dRzvSK/CGm97oAXiGTvOEoqWaI9jt5RjCPm65U2V1XEQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bUQT+SgJIjMhVHOz7ODVCIZQoV8vashSNb61cVPqS4Y=;
- b=jIBugKGV6TKduTU/jJf6Y/tG1AM+mLLjeqz63TAoFdSF8WOgUd4UXkjUW5m7WHVCR/gh3evADHEdif2Xh3nqw0UMDr5vbLC2yLFQRfOgnL6jsCgU9HVN+lMy5fcVKcwuzVvrZ7VAN58dWNZzlpkumi9D3lr0iGcH1YUb1DL7c2CATkbIEV34BqAFoJYJt73XA1iTZ7g0+Kr8ukX+KudD667l/thNDDNEP19Clf4G6kld6c7XuCVs/mIiOn/WArbV030DKjsrycYarD6xvcd5tAQM+Z+mEk17Mojdb2IzND8Uzb4Rd626hKOvjIt/wdUK1dS1hvLRzQqYtZ8znTbzhg==
+ bh=6hKpruwuUw/NPx+VDoTPdbks/XiPveqF9BSzb8fRUeg=;
+ b=O1xolv2Z044dtEy9sHAqjWhz87eaDE8ZKiQJ+CGgJ87RPQmFG82IiSJDS62fw/FxXMqceebocGLy+BKbrokEPJOgbsWA5ZhPI5kDaDKOmXLqGaGuC37X9wtt9rV2tPocTNuRI0D8Tc+tl+jQQbGJUBdhEIX9/gapLPxHiQcDoXkE0E0/6BqyNBEcQM8J3y3ZF7lvFK+7j3whyyIUcaVg50vf0jbrPFwdNVCpDnbH96IycDH0v8joSZs1NUBNjgqgSf6HLInmWSyqAmmtVSkEppQeokq+lD7tkQb+Ju22bQoIIsncWrQomVDKMkI0jZqk6/5PSqOPH+V1zOpzDvXzAA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bUQT+SgJIjMhVHOz7ODVCIZQoV8vashSNb61cVPqS4Y=;
- b=t5ZZ1L/wlV1mKkxn3WxwLJ10QNWa41+7lKqyqln1NvmRol2KlywNdKp0nn5NA+wZy4+3XRNJB2tv6ru6SyBZcsdBY+ffx+5KQySZcF0+4o0iMBPxbiXmf+rKumQzsHZTjJ+6u4BF/X+gzOqnonWQo1bfePfu+W3BiroSNZ044rzZPWksvqdsc4Ut2pS38CxU+HaZ3VCI87Ik0DQS+SKN96OZDgJpJZ6jdQhHdHq2Hi8OqWzYdvO3M3dZLgvQDyCLkTZcLDOdbEeoUsA1S+fiTywMann9NI+89fyLFqcg8lm22Z5opRi4dW3l0BTWQ1kSkZjvOdSclwmjQaTP7WMMJw==
+ bh=6hKpruwuUw/NPx+VDoTPdbks/XiPveqF9BSzb8fRUeg=;
+ b=OeaWbpFUjX1OdXr3/RHFJkBgKD4MB0yyeMqnvQxFuj0KbgD56sIKqsdVU69L5Zi3Z6ne5JTsQZyQWJyxKs8vzLVr47IpGr/1TV4R5NKw0OEb47jr/rhZg66aqNUDL6VCGAmPfVstzfgwkhfn0TJybvW9W19EOGHh5Ds0NQqHBP50MWrFxVylO1CIs5NN4y5TrbILl2VVZODqVj/5xbBMI9rbvHGUFs2huUnHlX9D5n9mj9UuSKHTeA4YoWgbwmPcdYcX8ZBqnKTmUtbNEhz6ljyMlQd/AD9Q6ntkB255PM0QnIEj5hhorqtFH0l4JOP0L2lXC2c0AtmM/y6sekuAEQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6084.namprd12.prod.outlook.com (2603:10b6:930:28::7)
- by BL1PR12MB5224.namprd12.prod.outlook.com (2603:10b6:208:319::23) with
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SA1PR12MB6869.namprd12.prod.outlook.com (2603:10b6:806:25d::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.13; Mon, 16 Jan
- 2023 23:24:40 +0000
-Received: from CY5PR12MB6084.namprd12.prod.outlook.com
- ([fe80::c267:a84f:50aa:6645]) by CY5PR12MB6084.namprd12.prod.outlook.com
- ([fe80::c267:a84f:50aa:6645%8]) with mapi id 15.20.6002.013; Mon, 16 Jan 2023
- 23:24:40 +0000
-Message-ID: <5b3e0314-5e60-eb4b-9fcf-7a4e6061eeaf@nvidia.com>
-Date:   Tue, 17 Jan 2023 01:24:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v4 rdma-next 2/6] RDMA/mlx5: Remove explicit ODP cache
- entry
-To:     Jason Gunthorpe <jgg@nvidia.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.22; Mon, 16 Jan
+ 2023 23:45:08 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f8b0:df13:5f8d:12a%9]) with mapi id 15.20.6002.013; Mon, 16 Jan 2023
+ 23:45:08 +0000
+Date:   Mon, 16 Jan 2023 19:45:07 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Michael Guralnik <michaelgur@nvidia.com>
 Cc:     leonro@nvidia.com, linux-rdma@vger.kernel.org, maorg@nvidia.com,
         aharonl@nvidia.com
+Subject: Re: [PATCH v4 rdma-next 2/6] RDMA/mlx5: Remove explicit ODP cache
+ entry
+Message-ID: <Y8Xhg5OY6sJDXfm6@nvidia.com>
 References: <20230115133454.29000-1-michaelgur@nvidia.com>
- <20230115133454.29000-3-michaelgur@nvidia.com> <Y8WCetXDkjH3Au1W@nvidia.com>
-Content-Language: en-US
-From:   Michael Guralnik <michaelgur@nvidia.com>
-In-Reply-To: <Y8WCetXDkjH3Au1W@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0052.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4a::23) To CY5PR12MB6084.namprd12.prod.outlook.com
- (2603:10b6:930:28::7)
+ <20230115133454.29000-3-michaelgur@nvidia.com>
+ <Y8WCetXDkjH3Au1W@nvidia.com>
+ <5b3e0314-5e60-eb4b-9fcf-7a4e6061eeaf@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b3e0314-5e60-eb4b-9fcf-7a4e6061eeaf@nvidia.com>
+X-ClientProxiedBy: MN2PR02CA0017.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::30) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6084:EE_|BL1PR12MB5224:EE_
-X-MS-Office365-Filtering-Correlation-Id: 56d47dd3-e3b6-491e-8adb-08daf818d6f6
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB6869:EE_
+X-MS-Office365-Filtering-Correlation-Id: ab277118-b410-4d5f-8029-08daf81bb35c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y86VcHsikYqGayAcRvbPDNB3k4A64XBBlUnl+1dEFHnaYGQlckzTQKgNJWepqh++ColiOVGt4kuiB741NgMFy5vn788uZIMzq9D++cjuoDxuvPmO680Ypo1lqlBX+hMPtJGrk7bAa8zZcBGBpGSkH+DlA9v4OzMhUTKYRZDyaLRaq9E59De+xePIiL0KBqQV0aPHbnX3heo3g8Ms9aQrbyXpiqbWwhN3y0xUOJHDAo24GLqltt27AR6XjHTWgF5Y53CzqyxOtYun+e6IjtnIX2EHwrjjyElq5cPErMlM70PsSwZCly+jaXEBbJl3Wx2I2LtZPtbTsqEiFwJl7uPambZfxC8/rwZNALT0EMFNgkFzpOleSBMK++iBeVOgYRQ9oEhmWSFZftLOJQS1qIh/T653l6dMuysVfRNTZQ5QMaEbxy+HyMFBv2+0Eqnq0oWDYCa+ZTxSPOHWhFBgx9hKXJEUzkqHdJRwb24j5oLneEI2JdhBdirRvOWH5/2jaCP24vL4p1x58LD+grK2TeyFmPxBqeAKB5/2Cy2fEe6/+vswgt7QQno+RvkTSl/9PYnnIh0C5nH6WRJGsgKwGe1ND1TvLarIQUMAzi6ZFg8tGpvEAUSRT0eJ82ATdRWF8LFJ6WCfLrg9lxvMYLKq3AFrOJpBxZ7m8prDo8/3dvwL/gGHx/L57AVx3TmQxNvem5ABwgucm+8k5BuUqaKns9zyHhUgYtvMqNeXMx/2LtMAlO4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6084.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(346002)(376002)(366004)(39860400002)(136003)(451199015)(8936002)(6862004)(5660300002)(41300700001)(38100700002)(83380400001)(31696002)(36756003)(2906002)(86362001)(6486002)(26005)(186003)(6512007)(6636002)(107886003)(53546011)(66899015)(2616005)(6506007)(478600001)(6666004)(31686004)(66476007)(316002)(37006003)(66556008)(4326008)(8676002)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: x+sN1PuvylkjWoqUhh9q6lIUW4mi986cep/ivEw/MBH9McsMJMd1lhaOevjVW+fi1CsQM85JPLpNd/ctZK6eUOSHTCuj8GpY+2436wyIXizHnZM7ZkI/reeb2DCnClUJb2pcXi7v7dtlOIyBrImr9ya2uVrwRsqYcrwmTp52abVpeczsmko624OsyesBjUEm4ghQWt+9LS1wMz9f5bNXDVtSWn2ZK1ha3WuvOE7SEsAyy6W0LPBqJLSvMJ4GPCEm0p0KUzNrlPoriud84XLsdwbTRypDP772kmjrh1x6j4PpJJ2tG7ffN3DYdSTQ/jakTlZSNTxHD7i8/YrRTrB+2m5arHWCwouXkGgajWdmn/2qR/D4pzZbBEQ3gFoa3cawvnYHr+F1zV5aD3d+ZhbGCUdWmzxKxSN0Rs7PO35a2FbiiSkJZdUrNakkbcEGu0c8Ak6HeGrzY8q1igCGtN0AH+1bE6aVwmy7fdgPi6kzP1MTrZ+tLtH3Hrz5WcWdblmOIjhrqdkyiUCa15xJXI9pjJ+SMqXENZH+gtffjiPtTm8qB6OJUBGJBMOyfi5L7RpMgo86IL5hlWM5fzoT2i9delSTHNJCkrBepvV/2lUmEW7r/npwBnx1W1JZG7zSEdHxc9c32938dAnBycWs0QN/yGvAOeoG8DPaQOMuHmCguDwqUxosnuFWyuSbzZQBrrtG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(396003)(376002)(136003)(346002)(39860400002)(451199015)(6636002)(316002)(37006003)(41300700001)(66476007)(66556008)(4326008)(36756003)(8676002)(66946007)(86362001)(83380400001)(38100700002)(478600001)(107886003)(6486002)(6512007)(6506007)(2616005)(53546011)(26005)(186003)(2906002)(66899015)(5660300002)(8936002)(6862004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1VoZVRSVFduaDArejljNngwbVVSdWFFRmhFeVVHbnhoTjM5UngzM3NheFVE?=
- =?utf-8?B?MDFTVUFYZ09sMTl6NGlaS2l0eUp4VGhvUk5Pc202cm1DYm1JTGt1dE1FTU9G?=
- =?utf-8?B?K2xEdGRLSXBZT0lseW1GK1FBOEczZWpXdVQ4K0RKVmdkdkYzZEtkb2FQa0pR?=
- =?utf-8?B?T1doMHhIOEc0dlNaWVFvZzVaV1VjM2xvZzhTUUU5MG4rVnltZUUyVkFUT3FS?=
- =?utf-8?B?UWdVSUlBWGdRWDJxa0NwR2ZOanpwMHRLdGdtNkxQMDBIaDhBYkpIWGlldEdK?=
- =?utf-8?B?RHhVWDhaWlgrVThnZ21uZjA4WHl2aG5tWDl2UGF5ZXFSQTM0MVBhNkNRdENP?=
- =?utf-8?B?U0hQY3ViQ1lFanQ5RUlIRTluY1Jabkdqd1FWS0MxdVNNNTBWOEFaWmt6RUpF?=
- =?utf-8?B?ODR2STVyYWMzMEZ6OW0yZlhQM0QzdkdsaGczNEpvUUxnZzVwa0xrYlVYUmFW?=
- =?utf-8?B?RXlRYkRxU0p4S2VTQjkxTzA2dXpXd3Q2MS8vU1FJNTZpTkdyUVRFaWZSUmlS?=
- =?utf-8?B?MmdsOTJlYzdRdG1Ja3RsbEFLL3Q0bGp4V3hMRnRncDRJS0V1bTh6MWFuTVNT?=
- =?utf-8?B?NjE0QmVKK0psY0gxd0x6R1BIMHVGTDBiR3RaUEh1SWh0MkQyWlZvRzRueTJ4?=
- =?utf-8?B?V3lHWnJ3V3RRSWVRR0hDcHdsbWljaHN1TTU3RTRVb0h2UmRFNG1MRlM3V3Nh?=
- =?utf-8?B?MEgybXcwNDREc1hnU2d2cng0ZHMzS0FKeCtwNW1tYXNXcWg5VG1VTWlmVmpx?=
- =?utf-8?B?QUdwNXc5ckFVWVBVWkwyOWpyTHBTTERnWklZQnNhNVlpODFrMCtaSkJ2ODB4?=
- =?utf-8?B?WDllTGEremtXd1JqbVdFd0h4SThNeXZ2OElhdzhiZmlLc2ZhZFpYMVJsV3Ux?=
- =?utf-8?B?ZDkybzZxRkFQQUxEUE9NMENKYUcybE1LblpLY1FFNmhJK1k3Z0wxaGx3eTlN?=
- =?utf-8?B?bGkrdm5SVEkxZkI2alZYdllISnhSVWpRTEdyb2hUUEdLenF0MHBaelAvNWZO?=
- =?utf-8?B?dkthZm9ldjNvcEEyaDJZWERDT2I3SzNnVi9ldHZCczZQL2RmazYzWUF1VWZV?=
- =?utf-8?B?SmZzdDV3OFRMMW9xUlRPOEpiWnNNeTVYMy8vQ2Y2azJTZFR1b0NCMHh5OEQ1?=
- =?utf-8?B?OUNNYllMMHZQb3g5N3l6bStwd2pFWGs4VHJZaVh5cDRBa0E2alIrY1Axei9t?=
- =?utf-8?B?enNKd3QxdUVUZk4xWnBmRkVHTThZNHQvZlNEV21hMTk2dHlqeHZxcGluS1dn?=
- =?utf-8?B?VmFmbWhCWEc1TDRveE5IbHpBNVlTeVlqcng0bHNDb3N1aDA4aWZSM3BDeTZa?=
- =?utf-8?B?ckQyOWUwWEdVUkY2ZW44RlU1RlNmNTVkRXJXNUszL05ueXRWRmRHYXdjM21L?=
- =?utf-8?B?Z3JZT3RLUVFpdExvVS85U3hSUSt4VjZjSjJrMlBRS1Fqai9CMXJCdjUyUXE0?=
- =?utf-8?B?QmZueWdEekpROE1NdmhHL1MrS2R0UWpLUVVDQXdJdUJVbTFBd29XYSsvanNC?=
- =?utf-8?B?YStVRkJQbkVsZVh2Q2p6SkEyNVFONGtITnJ1NGpETWxYOTFaSnV6MGdZT1Rw?=
- =?utf-8?B?OWlXYjN1QytMcGVBczltVTd4WXRNbDV5Qm5semhNWXZoRmxzWlgwaTIvQUdV?=
- =?utf-8?B?T25yRXdaTGZkcm5BSzZDenZRSTVKRXJ0d2NqdnZkWVFEYm9ScjVNRUE3YnRD?=
- =?utf-8?B?SWduUDVyUThCRkVDcGdUTDgvUU1Sd1VTWHg0cVhmTFd0ZEpGYTFRRGlLLzk0?=
- =?utf-8?B?RlBncHprd1RJaElqOFMvNndna20vYmwwKzBZNEt1Q01pcllYRnNuSGFPYXFH?=
- =?utf-8?B?UFBLMUtiNzRaVlQ5UkFLUHNVWFZ2WnlrUVJEMjJuMzhFZTlRUnRiNkNGbVhy?=
- =?utf-8?B?Vjg1c1pnenUrU3MrdFpOMGxiKzA5Q0l0Y3daOTlEaXBhWDFGNXpsbWppUlZx?=
- =?utf-8?B?clRwTlpUVGRkNlB0MDJWcjhmWmtMKzU4VDF5alZBN05aU0cxZW9VNDlYYXVJ?=
- =?utf-8?B?WllZeFJlODlJU3hwZlM5SWtCQWpKbEtpYmJBbVFPKzB5M2s2dWJqekRLZ3ph?=
- =?utf-8?B?L0cxbExZbjdSNndMUEtTTHRzSXRhVjhoR0cvSnVzUy9XckRxYWJzOFNnM2x3?=
- =?utf-8?Q?Fo22zAZNXAx3r0IJ62asCKJME?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ixwk6Cx4xdup0lVvL8aLpLMDOju8Qj8dYLym6UWIP/wwZwBJV6/GiczIofzH?=
+ =?us-ascii?Q?QNRyl5w8uL7Z+8nUqZ4rC6ra7EVvy0cotkhC92lZ1FtG4yqtskLahgeTii3u?=
+ =?us-ascii?Q?gDsvlUbyqSKjrNquvjWSN0e4/pjDHPi71zdbanhb1d+NVoaRrIfjhD1K3sXx?=
+ =?us-ascii?Q?Q96M3Q6f1tPWPsgLYpAS45EeNM1NBWNvuBTP+9hWX92clAn/IcH1rarUfIhW?=
+ =?us-ascii?Q?meDpKZ4BzeoNOR6LLyqVldLzDwHrML0O6KWv0h6kh97FG/JL+uoeS+6TM7S6?=
+ =?us-ascii?Q?/gBjGwyXJ3w2fx8V1iBS3PPyie/J1v1lhDsVFy4PQA0AZ8EyoniCikyYQTF/?=
+ =?us-ascii?Q?C5S/p5abXQ8fmK8spYF7jp3uNl7xs+PF7UbKYgbf2jtLOq24OKPcrvn/ERpG?=
+ =?us-ascii?Q?ZsvtqFHndS2huoO1bE7qTFZVYsoRQtS9uocVtvg5gB2ODw0H5CDBkyl7HgMl?=
+ =?us-ascii?Q?+U2vSFfygLoH1pmlFcDqKyvinWX+EuHZYT8Hp2UyrZ3F9dO/ITQyNTLEm+Tz?=
+ =?us-ascii?Q?zqM22RzKduGXFFwzfOQuHAPxel8hDuu4/2PVoJ08/XK/n1tE85J3yhfXqpJJ?=
+ =?us-ascii?Q?tiwd5sIJIer83hNNRBquNveUGsAyHO5++0wFBBck8lhStFair2fEGVyHzOve?=
+ =?us-ascii?Q?OlxD1XQ0bxQw6kVjt7hxQex93R0to+sBfEsKpzflezxRKV8aNhuxEFAwgy8n?=
+ =?us-ascii?Q?pRiMI0Li7ibGFJOhw+l8gn5PHqMoPrDc+9rTkVAh7CWmjkhIAnWcDXLr6TXG?=
+ =?us-ascii?Q?xf2I/nIRd1jm8UwFAM6rd0BAXSEfDyfh9wldBS4Rt1K5KeNyej9pcP/K9mXY?=
+ =?us-ascii?Q?4lXqytvy7VNylWIDfaVH5vlKSITR/cxpKpmtBHaGDi7jdbBgRdM8dAhpkbsX?=
+ =?us-ascii?Q?w1M7zwqjDyezUhLim/Omj7038VDChRFhr8DSNPIQGQlqIxrug0nG1dP++z7+?=
+ =?us-ascii?Q?4iCwkxBU5fMfbJp0EMd+dAl9Z8/MQPzO+V398+ardcVbhSP2Q6Xb7YM1cYY8?=
+ =?us-ascii?Q?80FS7NJGOOTtkP4qv8RDI3xInl6onYNGCwv9yaYVKEzl8PXG4Zvc8LDB0S0k?=
+ =?us-ascii?Q?HHwTX7l17Q1jube5pNTzZSjmrtdWoL/8lXAxnZdsxdhBskU8JKDJz72OuGnY?=
+ =?us-ascii?Q?qyRw0jqF31BqkEg/QRp2RRgK4vthD372PRjWXiT8ygyKWqs9xVDXq1BKtmUd?=
+ =?us-ascii?Q?/fmQ/7xsrZWkvp5sUJM/46b1X+VE5hSaQBY8VJsoepb59FxkChrLP6zRixET?=
+ =?us-ascii?Q?n0XsMwTfyorkIzu66BMLGJGgO1UzDF5wrGKAOPXqxKnrDktzxSEOCC8K3mIZ?=
+ =?us-ascii?Q?smI4ZAPXmdfgF7ZWKtoyNPAtk6ko4uLGT1J1baza2BS8uNR7+z99pJlQ+tc5?=
+ =?us-ascii?Q?/q0w1zMtNnAv2ry7PvNZGXYHGqdA1m4ASrH6eSt2xne24pF4R4qSlAkV0q1j?=
+ =?us-ascii?Q?jeDgYFx22kcCKyX9V2lbN6ubcficbyWLz17Prd8YeEOb0GP+MY0K6B29u2Rr?=
+ =?us-ascii?Q?6GtDHtoMCPxUqu0Jfpxq1rVas85u5kfwRY5r/MJFN3n/F4MR7ehooKK3/z5J?=
+ =?us-ascii?Q?eHvicQAvED2gD2Z/bjCDGf8LlMHJwwndkgChcWYY?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56d47dd3-e3b6-491e-8adb-08daf818d6f6
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6084.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab277118-b410-4d5f-8029-08daf81bb35c
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2023 23:24:39.8543
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2023 23:45:08.4586
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UAcFIAnXsMHrt4Is5S+CmQrH6XUP2jCvdhwwqEALMAO2/rximofIapUGszZDhaoN2E7oF5G6UM1zW4MTN8l4JQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5224
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-MS-Exchange-CrossTenant-UserPrincipalName: SmPKaUqBBNAxHI8GRwbrblcggFWZ3u0cJD7KnEGNjJMUgXt36lYtudYPJwPx9GAp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6869
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Jan 17, 2023 at 01:24:34AM +0200, Michael Guralnik wrote:
+> 
+> On 1/16/2023 6:59 PM, Jason Gunthorpe wrote:
+> > On Sun, Jan 15, 2023 at 03:34:50PM +0200, Michael Guralnik wrote:
+> > > From: Aharon Landau <aharonl@nvidia.com>
+> > > 
+> > > Explicit ODP mkey doesn't have unique properties. It shares the same
+> > > properties as the order 18 cache entry. There is no need to devote a special
+> > > entry for that.
+> > IMR is "implicit mr" for implicit ODP, the commit message is wrong
+> 
+> Yes. I'll change to: "IMR MTT mkeys don't have unique properties..."
+> 
+> > > @@ -1591,20 +1593,8 @@ void mlx5_odp_init_mkey_cache_entry(struct mlx5_cache_ent *ent)
+> > >   {
+> > >   	if (!(ent->dev->odp_caps.general_caps & IB_ODP_SUPPORT_IMPLICIT))
+> > >   		return;
+> > > -
+> > > -	switch (ent->order - 2) {
+> > > -	case MLX5_IMR_MTT_CACHE_ENTRY:
+> > > -		ent->ndescs = MLX5_IMR_MTT_ENTRIES;
+> > > -		ent->access_mode = MLX5_MKC_ACCESS_MODE_MTT;
+> > > -		ent->limit = 0;
+> > > -		break;
+> > > -
+> > > -	case MLX5_IMR_KSM_CACHE_ENTRY:
+> > > -		ent->ndescs = mlx5_imr_ksm_entries;
+> > > -		ent->access_mode = MLX5_MKC_ACCESS_MODE_KSM;
+> > > -		ent->limit = 0;
+> > > -		break;
+> > > -	}
+> > > +	ent->ndescs = mlx5_imr_ksm_entries;
+> > > +	ent->access_mode = MLX5_MKC_ACCESS_MODE_KSM;
+> > And you didn't answer my question, is this URMable?
+> Yes, we can UMR between access modes.
+> > Because I don't quite understand how this can work at this point, for
+> > lower orders the access_mode is assumed to be MTT, a KLM cannot be put
+> > in a low order entry at this point.
+> 
+> In our current code, the only non-MTT mkeys using the cache are the IMR KSM
+> that this patch doesn't change.
 
-On 1/16/2023 6:59 PM, Jason Gunthorpe wrote:
-> On Sun, Jan 15, 2023 at 03:34:50PM +0200, Michael Guralnik wrote:
->> From: Aharon Landau <aharonl@nvidia.com>
->>
->> Explicit ODP mkey doesn't have unique properties. It shares the same
->> properties as the order 18 cache entry. There is no need to devote a special
->> entry for that.
-> IMR is "implicit mr" for implicit ODP, the commit message is wrong
+It does change it, the isolation between the special IMR and the
+normal MTT order is removed right here.
 
-Yes. I'll change to: "IMR MTT mkeys don't have unique properties..."
+Now it is broken
 
->> @@ -1591,20 +1593,8 @@ void mlx5_odp_init_mkey_cache_entry(struct mlx5_cache_ent *ent)
->>   {
->>   	if (!(ent->dev->odp_caps.general_caps & IB_ODP_SUPPORT_IMPLICIT))
->>   		return;
->> -
->> -	switch (ent->order - 2) {
->> -	case MLX5_IMR_MTT_CACHE_ENTRY:
->> -		ent->ndescs = MLX5_IMR_MTT_ENTRIES;
->> -		ent->access_mode = MLX5_MKC_ACCESS_MODE_MTT;
->> -		ent->limit = 0;
->> -		break;
->> -
->> -	case MLX5_IMR_KSM_CACHE_ENTRY:
->> -		ent->ndescs = mlx5_imr_ksm_entries;
->> -		ent->access_mode = MLX5_MKC_ACCESS_MODE_KSM;
->> -		ent->limit = 0;
->> -		break;
->> -	}
->> +	ent->ndescs = mlx5_imr_ksm_entries;
->> +	ent->access_mode = MLX5_MKC_ACCESS_MODE_KSM;
-> And you didn't answer my question, is this URMable?
-Yes, we can UMR between access modes.
-> Because I don't quite understand how this can work at this point, for
-> lower orders the access_mode is assumed to be MTT, a KLM cannot be put
-> in a low order entry at this point.
+> > Ideally you'd teach UMR to switch between MTT/KSM and then the cache
+> > is fine, size the amount of space required based on the number of
+> > bytes in the memory.
 
-In our current code, the only non-MTT mkeys using the cache are the IMR 
-KSM that this patch doesn't change.
+> Agreed, access_mode and ndescs can be dropped from the rb_key that this
+> series introduces and instead we'll add the size of the descriptors as a
+> cache entry property.
+> Doing this will reduce number of entries in the RB tree but will add
+> complexity to the dereg and rereg flows .
 
-> Ideally you'd teach UMR to switch between MTT/KSM and then the cache
-> is fine, size the amount of space required based on the number of
-> bytes in the memory.
->
-> Jason
+Not really, you just always set the access mode in the UMR like
+everything else.
 
-Agreed, access_mode and ndescs can be dropped from the rb_key that this 
-series introduces and instead we'll add the size of the descriptors as a 
-cache entry property.
-Doing this will reduce number of entries in the RB tree but will add 
-complexity to the dereg and rereg flows .
-
-I'd prefer to look into this in a later stage.
-
-Michael
-
+Jason
