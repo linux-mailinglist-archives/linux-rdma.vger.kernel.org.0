@@ -2,68 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F7666D213
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Jan 2023 23:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2D366D296
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jan 2023 00:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235157AbjAPWx4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Jan 2023 17:53:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
+        id S235178AbjAPXJO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Jan 2023 18:09:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235215AbjAPWxb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Jan 2023 17:53:31 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F323627D71
-        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 14:53:19 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id s66so23911094oib.7
-        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 14:53:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mw45/+onr1pgoxHNB/goyJ5gd+/ZzFqP4Lt0hHkxXsM=;
-        b=BwlW8ry4I4+iLBan3prn3Ia9/T2nJWRtnvLrQWydRybkbO/U53PeOOYX5OGhu/ZWHg
-         o9lJ4sGZyFKfXKGffTV/zssBuXSo672GCaeH+mLucjXKRIdb7plrLkgCLHYlATifvEHr
-         zfU/hjKUdsIq+/RXmn0Onmzzwt8hRyMBzMSo2z/Cznf3/gnHcny4M6j/ezd9YHK42Y1c
-         aW49N0U77JPoL+5GjKiccW8E0hN8PapYWxRP2DGQfgH1C2HGC7noQE/sAq1+4PcTw8fh
-         h5hMSsQjv3HvbDPdxgJ5bdavOYHYXKO+FnAdSsk3nM3ooQR8QmbEPaYAllCsO3ef7JQE
-         bBOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mw45/+onr1pgoxHNB/goyJ5gd+/ZzFqP4Lt0hHkxXsM=;
-        b=KtKIBn+alTc7mnPH/smWlVNHUqs2Y5B+v6FCvntS6lUxZpBZcqx5ysH8NFLcDSscOQ
-         kvV/B1OGKbWQ3XeLdWlCgpmQjKidgTZKT/3mBrSFdCZfTgRzjvGBuoCX07yzm3GqSTpr
-         62IM827YUvoeGVYfpaqGgn9tvuHstuwDEwHzswki30LQv7ESxNOEvkjw7VjkAoQYIs9I
-         QxKl7rD1Fh7ZEu6AoS9nkkNaLzrTAHdbTwW9rJYhXVnGhYwqp9zdG7hD7QEC6rrip3zs
-         1EeGbKRr6oDRJUTrrF9H9ZjMdDsSjo4uuV3t5fnnW2JTNNWMGNuwwbOaGEF6dKUsOoRu
-         oRbg==
-X-Gm-Message-State: AFqh2krtlqr3a1r0cx33fDsfDF8V2fTSXl1DISRiMazEE1eKkFQIh6Lm
-        Wp2Ew0zM8FTwCpIzP8RQwvg=
-X-Google-Smtp-Source: AMrXdXsLb54aXf/T2ZoScnrkXR7e4H4m/G8EY+SoIco83NmxlIGAdzJSRLoRvQH8FoCEM3i2UulWmA==
-X-Received: by 2002:aca:5a0b:0:b0:35e:d1f9:d6e8 with SMTP id o11-20020aca5a0b000000b0035ed1f9d6e8mr388790oib.13.1673909599135;
-        Mon, 16 Jan 2023 14:53:19 -0800 (PST)
-Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-ea18-3ee9-26d1-7526.res6.spectrum.com. [2603:8081:140c:1a00:ea18:3ee9:26d1:7526])
-        by smtp.gmail.com with ESMTPSA id s4-20020a056808008400b0035028730c90sm13651937oic.1.2023.01.16.14.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Jan 2023 14:53:18 -0800 (PST)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, leonro@nvidia.com,
-        yangx.jy@fujitsu.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v4 6/6] RDMA/rxe: Replace rxe_map and rxe_phys_buf by xarray
-Date:   Mon, 16 Jan 2023 16:52:29 -0600
-Message-Id: <20230116225227.21163-7-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230116225227.21163-1-rpearsonhpe@gmail.com>
-References: <20230116225227.21163-1-rpearsonhpe@gmail.com>
+        with ESMTP id S233856AbjAPXI6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Jan 2023 18:08:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8802A162
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Jan 2023 15:08:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673910488;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=C0JW58nBSMHYj9bsnV2rJ7yxCnH8Mz39Aj6dzwUznZA=;
+        b=BiTct47pgdzAG7IMAayl0oRevbF56Gm0zRP7n9/GFfOxjox1XeGMypfCSuoAKrYXuHJBcG
+        uTlms8wzA4v77ngkkpQuLfg/gGsu7dmnVemhg+Z7AMjEEh77JrzYP93l5Q6nfD9SZbwH5t
+        PfPJ5rRSDxa8xFn3YZLS4+zeGD7KU94=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-235-GJYj0EjBM4qvyti9d-2JNA-1; Mon, 16 Jan 2023 18:08:06 -0500
+X-MC-Unique: GJYj0EjBM4qvyti9d-2JNA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B588C3815EE7;
+        Mon, 16 Jan 2023 23:08:04 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 08299C15BA0;
+        Mon, 16 Jan 2023 23:07:57 +0000 (UTC)
+Subject: [PATCH v6 00/34] iov_iter: Improve page extraction (ref,
+ pin or just list)
+From:   David Howells <dhowells@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>, Paulo Alcantara <pc@cjr.nz>,
+        linux-scsi@vger.kernel.org, Steve French <sfrench@samba.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Rohith Surabattula <rohiths.msft@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Anna Schumaker <anna@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Tom Talpey <tom@talpey.com>, linux-rdma@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+        linux-nfs@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        linux-fsdevel@vger.kernel.org,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Long Li <longli@microsoft.com>, Jan Kara <jack@suse.cz>,
+        linux-cachefs@redhat.com, linux-block@vger.kernel.org,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-cifs@vger.kernel.org, Steve French <smfrench@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>, dhowells@redhat.com,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        Jeff Layton <jlayton@kernel.org>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 16 Jan 2023 23:07:57 +0000
+Message-ID: <167391047703.2311931.8115712773222260073.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/1.5
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,827 +95,301 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace struct rxe-phys_buf and struct rxe_map by struct xarray
-in rxe_verbs.h. This allows using rcu locking on reads for
-the memory maps stored in each mr.
 
-This is based off of a sketch of a patch from Jason Gunthorpe in the
-link below. Some changes were needed to make this work. It applies
-cleanly to the current for-next and passes the pyverbs, perftest
-and the same blktests test cases which run today.
+Hi Al, Christoph,
 
-Link: https://lore.kernel.org/linux-rdma/Y3gvZr6%2FNCii9Avy@nvidia.com/
-Co-developed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+Here are patches clean up some use of READ/WRITE and ITER_SOURCE/DEST,
+patches to provide support for extracting pages from an iov_iter and a
+patch to use the primary extraction function in the block layer bio code.
+I've also added a bunch of other conversions and had a tentative stab at
+the networking code.
+
+The patches make the following changes:
+
+ (1) Deal with switching from using the iterator data_source to indicate
+     the I/O direction to deriving this from other information, eg.:
+     IOCB_WRITE, IOMAP_WRITE and the REQ_OP_* number.  This allows
+     iov_iter_rw() to be removed eventually.
+
+ (2) Define FOLL_SOURCE_BUF and FOLL_DEST_BUF and pass these into
+     iov_iter_get_pages*() to indicate the I/O direction with regards to
+     how the buffer described by the iterator is to be used.  This is
+     included in the gup_flags passed in with Logan's patches.
+
+     Calls to iov_iter_get_pages*2() are replaced with calls to
+     iov_iter_get_pages*() and the former is removed.
+
+ (3) Add a function, iov_iter_extract_pages() to replace
+     iov_iter_get_pages*() that gets refs, pins or just lists the pages as
+     appropriate to the iterator type and the I/O direction.
+
+     Add a function, iov_iter_extract_mode() that will indicate from the
+     iterator type and the I/O direction how the cleanup is to be
+     performed, returning FOLL_GET, FOLL_PIN or 0.
+
+     Add a function, folio_put_unpin(), and a wrapper, page_put_unpin(),
+     that take a page and the return from iov_iter_extract_mode() and do
+     the right thing to clean up the page.
+
+ (4) Make the bio struct carry a pair of flags to indicate the cleanup
+     mode.  BIO_NO_PAGE_REF is replaced with BIO_PAGE_REFFED (equivalent to
+     FOLL_GET) and BIO_PAGE_PINNED (equivalent to BIO_PAGE_PINNED) is
+     added.  These are forced to have the same value as the FOLL_* flags so
+     they can be passed to the previously mentioned cleanup function.
+
+ (5) Make the iter-to-bio code use iov_iter_extract_pages() to
+     appropriately retain the pages and clean them up later.
+
+ (6) Fix bio_flagged() so that it doesn't prevent a gcc optimisation.
+
+ (7) Add a function in netfslib, netfs_extract_user_iter(), to extract a
+     UBUF- or IOVEC-type iterator to a page list in a BVEC-type iterator,
+     with all the pages suitably ref'd or pinned.
+
+ (8) Add a function in netfslib, netfs_extract_iter_to_sg(), to extract a
+     UBUF-, IOVEC-, BVEC-, XARRAY- or KVEC-type iterator to a scatterlist.
+     The first two types appropriately ref or pin pages; the latter three
+     don't perform any retention, leaving that to the caller.
+
+     Note that I can make use of this in the SCSI and AF_ALG code and
+     possibly the networking code, so this might merit being moved to core
+     code.
+
+ (9) Make AF_ALG use iov_iter_extract_pages() and possibly go further and
+     make it use netfs_extract_iter_to_sg() instead.
+
+(10) Make SCSI vhost use netfs_extract_iter_to_sg().
+
+(11) Make fs/direct-io.c use iov_iter_extract_pages().
+
+(13) Make splice-to-pipe use iov_iter_extract_pages(), but limit the usage
+     to a cleanup mode of FOLL_GET.
+
+(13) Make the 9P, FUSE and NFS filesystems use iov_iter_extract_pages().
+
+(14) Make the CIFS filesystem use iterators from the top all the way down
+     to the socket on the simple path.  Make it use
+     netfs_extract_user_iter() to use an XARRAY-type iterator or to build a
+     BVEC-type iterator in the top layers from a UBUF- or IOVEC-type
+     iterator and attach the iterator to the operation descriptors.
+
+     netfs_extract_iter_to_sg() is used to build scatterlists for doing
+     transport crypto and a function, smb_extract_iter_to_rdma(), is
+     provided to build an RDMA SGE list directly from an iterator without
+     going via a page list and then a scatter list.
+
+(15) A couple of work-in-progress patches to try and make sk_buff fragments
+     record the information needed to clean them up in the lowest two bits
+     of the page pointer in the fragment struct.
+
+This leaves:
+
+ (*) Four calls to iov_iter_get_pages() in CEPH.  That will be helped by
+     patches to pass an iterator down to the transport layer instead of
+     converting to a page list high up and passing that down, but the
+     transport layer could do with some massaging so that it doesn't covert
+     the iterator to a page list and then the pages individually back to
+     iterators to pass to the socket.
+
+ (*) One call to iov_iter_get_pages() each in the networking core, RDS and
+     TLS, all related to zero-copy.  TLS seems to do zerocopy-read (or
+     maybe decrypt-offload) and should be doing FOLL_PIN, not FOLL_GET for
+     user-provided buffers.
+
+
+Changes:
+========
+ver #6)
+ - Fix write() syscall and co. not setting IOCB_WRITE.
+ - Added iocb_is_read() and iocb_is_write() to check IOCB_WRITE.
+ - Use op_is_write() in bio_copy_user_iov().
+ - Drop the iterator direction checks from smbd_recv().
+ - Define FOLL_SOURCE_BUF and FOLL_DEST_BUF and pass them in as part of
+   gup_flags to iov_iter_get/extract_pages*().
+ - Replace iov_iter_get_pages*2() with iov_iter_get_pages*() and remove.
+ - Add back the function to indicate the cleanup mode.
+ - Drop the cleanup_mode return arg to iov_iter_extract_pages().
+ - Provide a helper to clean up a page.
+ - Renumbered FOLL_GET and FOLL_PIN and made BIO_PAGE_REFFED/PINNED have
+   the same numerical values, enforced with an assertion.
+ - Converted AF_ALG, SCSI vhost, generic DIO, FUSE, splice to pipe, 9P and
+   NFS.
+ - Added in the patches to make CIFS do top-to-bottom iterators and use
+   various of the added extraction functions.
+ - Added a pair of work-in-progess patches to make sk_buff fragments store
+   FOLL_GET and FOLL_PIN.
+
+ver #5)
+ - Replace BIO_NO_PAGE_REF with BIO_PAGE_REFFED and split into own patch.
+ - Transcribe FOLL_GET/PIN into BIO_PAGE_REFFED/PINNED flags.
+ - Add patch to allow bio_flagged() to be combined by gcc.
+
+ver #4)
+ - Drop the patch to move the FOLL_* flags to linux/mm_types.h as they're
+   no longer referenced by linux/uio.h.
+ - Add ITER_SOURCE/DEST cleanup patches.
+ - Make iov_iter/netfslib iter extraction patches use ITER_SOURCE/DEST.
+ - Allow additional gup_flags to be passed into iov_iter_extract_pages().
+ - Add struct bio patch.
+
+ver #3)
+ - Switch to using EXPORT_SYMBOL_GPL to prevent indirect 3rd-party access
+   to get/pin_user_pages_fast()[1].
+
+ver #2)
+ - Rolled the extraction cleanup mode query function into the extraction
+   function, returning the indication through the argument list.
+ - Fixed patch 4 (extract to scatterlist) to actually use the new
+   extraction API.
+
+I've pushed the patches (excluding the two WIP networking patches) here
+also:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=iov-extract
+
+David
+
+Link: https://lore.kernel.org/r/Y3zFzdWnWlEJ8X8/@infradead.org/ [1]
+Link: https://lore.kernel.org/r/166697254399.61150.1256557652599252121.stgit@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/166722777223.2555743.162508599131141451.stgit@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/166732024173.3186319.18204305072070871546.stgit@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/166869687556.3723671.10061142538708346995.stgit@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/166920902005.1461876.2786264600108839814.stgit@warthog.procyon.org.uk/ # v2
+Link: https://lore.kernel.org/r/166997419665.9475.15014699817597102032.stgit@warthog.procyon.org.uk/ # v3
+Link: https://lore.kernel.org/r/167305160937.1521586.133299343565358971.stgit@warthog.procyon.org.uk/ # v4
+Link: https://lore.kernel.org/r/167344725490.2425628.13771289553670112965.stgit@warthog.procyon.org.uk/ # v5
+
+Previous versions of the CIFS patch sets can be found here:
+Link: https://lore.kernel.org/r/164311902471.2806745.10187041199819525677.stgit@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/164928615045.457102.10607899252434268982.stgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/165211416682.3154751.17287804906832979514.stgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/165348876794.2106726.9240233279581920208.stgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/165364823513.3334034.11209090728654641458.stgit@warthog.procyon.org.uk/ # v3
+Link: https://lore.kernel.org/r/166126392703.708021.14465850073772688008.stgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/166697254399.61150.1256557652599252121.stgit@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/166732024173.3186319.18204305072070871546.stgit@warthog.procyon.org.uk/ # rfc
+
+
 ---
- drivers/infiniband/sw/rxe/rxe_loc.h   |   8 +-
- drivers/infiniband/sw/rxe/rxe_mr.c    | 544 ++++++++++++--------------
- drivers/infiniband/sw/rxe/rxe_verbs.h |  21 +-
- 3 files changed, 265 insertions(+), 308 deletions(-)
+David Howells (34):
+      vfs: Unconditionally set IOCB_WRITE in call_write_iter()
+      iov_iter: Use IOCB/IOMAP_WRITE/op_is_write rather than iterator direction
+      iov_iter: Pass I/O direction into iov_iter_get_pages*()
+      iov_iter: Remove iov_iter_get_pages2/pages_alloc2()
+      iov_iter: Change the direction macros into an enum
+      iov_iter: Use the direction in the iterator functions
+      iov_iter: Add a function to extract a page list from an iterator
+      mm: Provide a helper to drop a pin/ref on a page
+      bio: Rename BIO_NO_PAGE_REF to BIO_PAGE_REFFED and invert the meaning
+      mm, block: Make BIO_PAGE_REFFED/PINNED the same as FOLL_GET/PIN numerically
+      iov_iter, block: Make bio structs pin pages rather than ref'ing if appropriate
+      bio: Fix bio_flagged() so that gcc can better optimise it
+      netfs: Add a function to extract a UBUF or IOVEC into a BVEC iterator
+      netfs: Add a function to extract an iterator into a scatterlist
+      af_alg: Pin pages rather than ref'ing if appropriate
+      af_alg: [RFC] Use netfs_extract_iter_to_sg() to create scatterlists
+      scsi: [RFC] Use netfs_extract_iter_to_sg()
+      dio: Pin pages rather than ref'ing if appropriate
+      fuse:  Pin pages rather than ref'ing if appropriate
+      vfs: Make splice use iov_iter_extract_pages()
+      9p: Pin pages rather than ref'ing if appropriate
+      nfs: Pin pages rather than ref'ing if appropriate
+      cifs: Implement splice_read to pass down ITER_BVEC not ITER_PIPE
+      cifs: Add a function to build an RDMA SGE list from an iterator
+      cifs: Add a function to Hash the contents of an iterator
+      cifs: Add some helper functions
+      cifs: Add a function to read into an iter from a socket
+      cifs: Change the I/O paths to use an iterator rather than a page list
+      cifs: Build the RDMA SGE list directly from an iterator
+      cifs: Remove unused code
+      cifs: Fix problem with encrypted RDMA data read
+      cifs: DIO to/from KVEC-type iterators should now work
+      net: [RFC][WIP] Mark each skb_frags as to how they should be cleaned up
+      net: [RFC][WIP] Make __zerocopy_sg_from_iter() correctly pin or leave pages unref'd
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index b1dda0cf891b..c1f78ed0f991 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -64,14 +64,14 @@ void rxe_mr_init_dma(int access, struct rxe_mr *mr);
- int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
- 		     int access, struct rxe_mr *mr);
- int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr);
--int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, int length);
--int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
--		enum rxe_mr_copy_dir dir);
-+int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
-+			unsigned int length);
-+int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
-+		unsigned int length, enum rxe_mr_copy_dir dir);
- int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info *dma,
- 	      void *addr, int length, enum rxe_mr_copy_dir dir);
- int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
- 		  int sg_nents, unsigned int *sg_offset);
--void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
- int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 			u64 compare, u64 swap_add, u64 *orig_val);
- int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value);
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index fdf76df4cf3e..cadc3469b64c 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -62,145 +62,113 @@ static void rxe_mr_init(int access, struct rxe_mr *mr)
- 	mr->lkey = mr->ibmr.lkey = lkey;
- 	mr->rkey = mr->ibmr.rkey = rkey;
- 
-+	mr->access = access;
- 	mr->ibmr.page_size = PAGE_SIZE;
- 	mr->page_mask = PAGE_MASK;
- 	mr->page_shift = PAGE_SHIFT;
- 	mr->state = RXE_MR_STATE_INVALID;
- }
- 
--static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
--{
--	int i;
--	int num_map;
--	struct rxe_map **map = mr->map;
--
--	num_map = (num_buf + RXE_BUF_PER_MAP - 1) / RXE_BUF_PER_MAP;
--
--	mr->map = kmalloc_array(num_map, sizeof(*map), GFP_KERNEL);
--	if (!mr->map)
--		goto err1;
--
--	for (i = 0; i < num_map; i++) {
--		mr->map[i] = kmalloc(sizeof(**map), GFP_KERNEL);
--		if (!mr->map[i])
--			goto err2;
--	}
--
--	BUILD_BUG_ON(!is_power_of_2(RXE_BUF_PER_MAP));
--
--	mr->map_shift = ilog2(RXE_BUF_PER_MAP);
--	mr->map_mask = RXE_BUF_PER_MAP - 1;
--
--	mr->num_buf = num_buf;
--	mr->num_map = num_map;
--	mr->max_buf = num_map * RXE_BUF_PER_MAP;
--
--	return 0;
--
--err2:
--	for (i--; i >= 0; i--)
--		kfree(mr->map[i]);
--
--	kfree(mr->map);
--	mr->map = NULL;
--err1:
--	return -ENOMEM;
--}
--
- void rxe_mr_init_dma(int access, struct rxe_mr *mr)
- {
- 	rxe_mr_init(access, mr);
- 
--	mr->access = access;
- 	mr->state = RXE_MR_STATE_VALID;
- 	mr->ibmr.type = IB_MR_TYPE_DMA;
- }
- 
--static bool is_pmem_page(struct page *pg)
-+static unsigned long rxe_mr_iova_to_index(struct rxe_mr *mr, u64 iova)
- {
--	unsigned long paddr = page_to_phys(pg);
-+	return (iova >> mr->page_shift) - (mr->ibmr.iova >> mr->page_shift);
-+}
- 
--	return REGION_INTERSECTS ==
--	       region_intersects(paddr, PAGE_SIZE, IORESOURCE_MEM,
--				 IORES_DESC_PERSISTENT_MEMORY);
-+static unsigned long rxe_mr_iova_to_page_offset(struct rxe_mr *mr, u64 iova)
-+{
-+	return iova & (mr_page_size(mr) - 1);
-+}
-+
-+static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *mr, struct sg_table *sgt)
-+{
-+	XA_STATE(xas, &mr->page_list, 0);
-+	struct sg_page_iter sg_iter;
-+
-+	xa_init(&mr->page_list);
-+
-+	__sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
-+	if (!__sg_page_iter_next(&sg_iter))
-+		return 0;
-+
-+	do {
-+		xas_lock(&xas);
-+		while (true) {
-+			xas_store(&xas, sg_page_iter_page(&sg_iter));
-+			if (xas_error(&xas))
-+				break;
-+			xas_next(&xas);
-+			if (!__sg_page_iter_next(&sg_iter))
-+				break;
-+		}
-+		xas_unlock(&xas);
-+	} while (xas_nomem(&xas, GFP_KERNEL));
-+
-+	return xas_error(&xas);
- }
- 
- int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
- 		     int access, struct rxe_mr *mr)
- {
--	struct rxe_map		**map;
--	struct rxe_phys_buf	*buf = NULL;
--	struct ib_umem		*umem;
--	struct sg_page_iter	sg_iter;
--	int			num_buf;
--	void			*vaddr;
-+	struct ib_umem *umem;
- 	int err;
- 
-+	rxe_mr_init(access, mr);
-+
- 	umem = ib_umem_get(&rxe->ib_dev, start, length, access);
- 	if (IS_ERR(umem)) {
- 		rxe_dbg_mr(mr, "Unable to pin memory region err = %d\n",
- 			(int)PTR_ERR(umem));
--		err = PTR_ERR(umem);
--		goto err_out;
-+		return PTR_ERR(umem);
- 	}
- 
--	num_buf = ib_umem_num_pages(umem);
--
--	rxe_mr_init(access, mr);
--
--	err = rxe_mr_alloc(mr, num_buf);
-+	err = rxe_mr_fill_pages_from_sgt(mr, &umem->sgt_append.sgt);
- 	if (err) {
--		rxe_dbg_mr(mr, "Unable to allocate memory for map\n");
--		goto err_release_umem;
-+		ib_umem_release(umem);
-+		return err;
- 	}
- 
--	num_buf			= 0;
--	map = mr->map;
--	if (length > 0) {
--		bool persistent_access = access & IB_ACCESS_FLUSH_PERSISTENT;
-+	mr->umem = umem;
-+	mr->ibmr.type = IB_MR_TYPE_USER;
-+	mr->state = RXE_MR_STATE_VALID;
- 
--		buf = map[0]->buf;
--		for_each_sgtable_page (&umem->sgt_append.sgt, &sg_iter, 0) {
--			struct page *pg = sg_page_iter_page(&sg_iter);
-+	return 0;
-+}
- 
--			if (persistent_access && !is_pmem_page(pg)) {
--				rxe_dbg_mr(mr, "Unable to register persistent access to non-pmem device\n");
--				err = -EINVAL;
--				goto err_release_umem;
--			}
-+static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
-+{
-+	XA_STATE(xas, &mr->page_list, 0);
-+	int i = 0;
-+	int err;
- 
--			if (num_buf >= RXE_BUF_PER_MAP) {
--				map++;
--				buf = map[0]->buf;
--				num_buf = 0;
--			}
--
--			vaddr = page_address(pg);
--			if (!vaddr) {
--				rxe_dbg_mr(mr, "Unable to get virtual address\n");
--				err = -ENOMEM;
--				goto err_release_umem;
--			}
--			buf->addr = (uintptr_t)vaddr;
--			buf->size = mr_page_size(mr);
--			num_buf++;
--			buf++;
-+	xa_init(&mr->page_list);
- 
-+	do {
-+		xas_lock(&xas);
-+		while (i != num_buf) {
-+			xas_store(&xas, XA_ZERO_ENTRY);
-+			if (xas_error(&xas))
-+				break;
-+			xas_next(&xas);
-+			i++;
- 		}
--	}
-+		xas_unlock(&xas);
-+	} while (xas_nomem(&xas, GFP_KERNEL));
- 
--	mr->umem = umem;
--	mr->access = access;
--	mr->page_offset = ib_umem_offset(umem);
--	mr->state = RXE_MR_STATE_VALID;
--	mr->ibmr.type = IB_MR_TYPE_USER;
-+	err = xas_error(&xas);
-+	if (err)
-+		return err;
- 
--	return 0;
-+	mr->num_buf = num_buf;
- 
--err_release_umem:
--	ib_umem_release(umem);
--err_out:
--	return err;
-+	return 0;
- }
- 
- int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
-@@ -214,7 +182,6 @@ int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
- 	if (err)
- 		goto err1;
- 
--	mr->max_buf = max_pages;
- 	mr->state = RXE_MR_STATE_FREE;
- 	mr->ibmr.type = IB_MR_TYPE_MEM_REG;
- 
-@@ -224,206 +191,138 @@ int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
- 	return err;
- }
- 
--static int rxe_set_page(struct ib_mr *ibmr, u64 addr)
-+static int rxe_set_page(struct ib_mr *ibmr, u64 iova)
- {
- 	struct rxe_mr *mr = to_rmr(ibmr);
--	struct rxe_map *map;
--	struct rxe_phys_buf *buf;
-+	struct page *page = virt_to_page(iova & mr->page_mask);
-+	XA_STATE(xas, &mr->page_list, mr->nbuf);
-+	int err;
- 
- 	if (unlikely(mr->nbuf == mr->num_buf))
- 		return -ENOMEM;
- 
--	map = mr->map[mr->nbuf / RXE_BUF_PER_MAP];
--	buf = &map->buf[mr->nbuf % RXE_BUF_PER_MAP];
-+	do {
-+		xas_lock(&xas);
-+		xas_store(&xas, page);
-+		xas_unlock(&xas);
-+	} while (xas_nomem(&xas, GFP_KERNEL));
- 
--	buf->addr = addr;
--	buf->size = ibmr->page_size;
--	mr->nbuf++;
-+	err = xas_error(&xas);
-+	if (err)
-+		return err;
- 
-+	mr->nbuf++;
- 	return 0;
- }
- 
--int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
-+int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
- 		  int sg_nents, unsigned int *sg_offset)
- {
- 	struct rxe_mr *mr = to_rmr(ibmr);
- 	unsigned int page_size = mr_page_size(mr);
- 
-+	mr->nbuf = 0;
- 	mr->page_shift = ilog2(page_size);
- 	mr->page_mask = ~((u64)page_size - 1);
--	mr->page_offset = ibmr->iova & (page_size - 1);
-+	mr->page_offset = mr->ibmr.iova & (page_size - 1);
- 
--	mr->nbuf = 0;
--
--	return ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, rxe_set_page);
-+	return ib_sg_to_pages(ibmr, sgl, sg_nents, sg_offset, rxe_set_page);
- }
- 
--static void lookup_iova(struct rxe_mr *mr, u64 iova, int *m_out, int *n_out,
--			size_t *offset_out)
-+/*
-+ * TODO: Attempting to modify the mr page map between the time
-+ * a packet is received and the map is referenced as here
-+ * in xa_load(&mr->page_list) will cause problems. It is OK to
-+ * deregister the mr since the mr reference counts will preserve
-+ * it until memory accesses are complete. Currently reregister mr
-+ * operations are not supported by the rxe driver but could be
-+ * in the future. Invalidate followed by fast_reg mr will change
-+ * the map and then the rkey so delayed packets arriving in the
-+ * middle could use the wrong map entries. This isn't new but was
-+ * already the case in the earlier implementation. This won't be
-+ * a problem for well behaved programs which wait until all the
-+ * outstanding packets for the first FMR before remapping to the
-+ * second.
-+ */
-+static int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
-+			      unsigned int length, enum rxe_mr_copy_dir dir)
- {
--	size_t offset = iova - mr->ibmr.iova + mr->page_offset;
--	int			map_index;
--	int			buf_index;
--	u64			length;
--
--	if (likely(mr->page_shift)) {
--		*offset_out = offset & (mr_page_size(mr) - 1);
--		offset >>= mr->page_shift;
--		*n_out = offset & mr->map_mask;
--		*m_out = offset >> mr->map_shift;
--	} else {
--		map_index = 0;
--		buf_index = 0;
--
--		length = mr->map[map_index]->buf[buf_index].size;
-+	unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-+	unsigned long index = rxe_mr_iova_to_index(mr, iova);
-+	unsigned int bytes;
-+	struct page *page;
-+	void *va;
- 
--		while (offset >= length) {
--			offset -= length;
--			buf_index++;
--
--			if (buf_index == RXE_BUF_PER_MAP) {
--				map_index++;
--				buf_index = 0;
--			}
--			length = mr->map[map_index]->buf[buf_index].size;
--		}
-+	while (length) {
-+		page = xa_load(&mr->page_list, index);
-+		if (!page)
-+			return -EFAULT;
- 
--		*m_out = map_index;
--		*n_out = buf_index;
--		*offset_out = offset;
-+		bytes = min_t(unsigned int, length,
-+				mr_page_size(mr) - page_offset);
-+		va = kmap_local_page(page);
-+		if (dir == RXE_FROM_MR_OBJ)
-+			memcpy(addr, va + page_offset, bytes);
-+		else
-+			memcpy(va + page_offset, addr, bytes);
-+		kunmap_local(va);
-+
-+		page_offset = 0;
-+		addr += bytes;
-+		length -= bytes;
-+		index++;
- 	}
--}
--
--void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
--{
--	size_t offset;
--	int m, n;
--
--	if (mr->state != RXE_MR_STATE_VALID)
--		return NULL;
--
--	if (mr->ibmr.type == IB_MR_TYPE_DMA)
--		return (void *)(uintptr_t)iova;
--
--	if (mr_check_range(mr, iova, length))
--		return NULL;
--
--	lookup_iova(mr, iova, &m, &n, &offset);
--
--	if (offset + length > mr->map[m]->buf[n].size)
--		return NULL;
- 
--	return (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
-+	return 0;
- }
- 
--int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, int length)
-+static void rxe_mr_copy_dma(struct rxe_mr *mr, u64 iova, void *addr,
-+			    unsigned int length, enum rxe_mr_copy_dir dir)
- {
--	size_t offset;
--
--	if (length == 0)
--		return 0;
-+	unsigned int page_offset = iova & (PAGE_SIZE - 1);
-+	unsigned int bytes;
-+	struct page *page;
-+	u8 *va;
- 
--	if (mr->ibmr.type == IB_MR_TYPE_DMA)
--		return -EFAULT;
--
--	offset = (iova - mr->ibmr.iova + mr->page_offset) & mr->page_mask;
--	while (length > 0) {
--		u8 *va;
--		int bytes;
--
--		bytes = mr->ibmr.page_size - offset;
--		if (bytes > length)
--			bytes = length;
--
--		va = iova_to_vaddr(mr, iova, length);
--		if (!va)
--			return -EFAULT;
--
--		arch_wb_cache_pmem(va, bytes);
--
--		length -= bytes;
-+	while (length) {
-+		page = virt_to_page(iova & mr->page_mask);
-+		bytes = min_t(unsigned int, length,
-+				PAGE_SIZE - page_offset);
-+		va = kmap_local_page(page);
-+
-+		if (dir == RXE_TO_MR_OBJ)
-+			memcpy(va + page_offset, addr, bytes);
-+		else
-+			memcpy(addr, va + page_offset, bytes);
-+
-+		kunmap_local(va);
-+		page_offset = 0;
- 		iova += bytes;
--		offset = 0;
-+		addr += bytes;
-+		length -= bytes;
- 	}
--
--	return 0;
- }
- 
--/* copy data from a range (vaddr, vaddr+length-1) to or from
-- * a mr object starting at iova.
-- */
--int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
--		enum rxe_mr_copy_dir dir)
-+int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
-+		unsigned int length, enum rxe_mr_copy_dir dir)
- {
--	int			err;
--	int			bytes;
--	u8			*va;
--	struct rxe_map		**map;
--	struct rxe_phys_buf	*buf;
--	int			m;
--	int			i;
--	size_t			offset;
-+	int err;
- 
- 	if (length == 0)
- 		return 0;
- 
- 	if (mr->ibmr.type == IB_MR_TYPE_DMA) {
--		u8 *src, *dest;
--
--		src = (dir == RXE_TO_MR_OBJ) ? addr : ((void *)(uintptr_t)iova);
--
--		dest = (dir == RXE_TO_MR_OBJ) ? ((void *)(uintptr_t)iova) : addr;
--
--		memcpy(dest, src, length);
--
-+		rxe_mr_copy_dma(mr, iova, addr, length, dir);
- 		return 0;
- 	}
- 
--	WARN_ON_ONCE(!mr->map);
--
- 	err = mr_check_range(mr, iova, length);
--	if (err) {
--		err = -EFAULT;
--		goto err1;
--	}
--
--	lookup_iova(mr, iova, &m, &i, &offset);
--
--	map = mr->map + m;
--	buf	= map[0]->buf + i;
--
--	while (length > 0) {
--		u8 *src, *dest;
--
--		va	= (u8 *)(uintptr_t)buf->addr + offset;
--		src = (dir == RXE_TO_MR_OBJ) ? addr : va;
--		dest = (dir == RXE_TO_MR_OBJ) ? va : addr;
--
--		bytes	= buf->size - offset;
--
--		if (bytes > length)
--			bytes = length;
--
--		memcpy(dest, src, bytes);
--
--		length	-= bytes;
--		addr	+= bytes;
--
--		offset	= 0;
--		buf++;
--		i++;
--
--		if (i == RXE_BUF_PER_MAP) {
--			i = 0;
--			map++;
--			buf = map[0]->buf;
--		}
-+	if (unlikely(err)) {
-+		rxe_dbg_mr(mr, "iova out of range");
-+		return err;
- 	}
- 
--	return 0;
--
--err1:
--	return err;
-+	return rxe_mr_copy_xarray(mr, iova, addr, length, dir);
- }
- 
- /* copy data in or out of a wqe, i.e. sg list
-@@ -495,7 +394,6 @@ int copy_data(
- 
- 		if (bytes > 0) {
- 			iova = sge->addr + offset;
--
- 			err = rxe_mr_copy(mr, iova, addr, bytes, dir);
- 			if (err)
- 				goto err2;
-@@ -522,43 +420,104 @@ int copy_data(
- 	return err;
- }
- 
-+int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length)
-+{
-+	unsigned int page_offset;
-+	unsigned long index;
-+	struct page *page;
-+	unsigned int bytes;
-+	int err;
-+	u8 *va;
-+
-+	if (length == 0)
-+		return 0;
-+
-+	if (mr->ibmr.type == IB_MR_TYPE_DMA)
-+		return -EFAULT;
-+
-+	err = mr_check_range(mr, iova, length);
-+	if (err)
-+		return err;
-+
-+	while (length > 0) {
-+		index = rxe_mr_iova_to_index(mr, iova);
-+		page = xa_load(&mr->page_list, index);
-+		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-+		if (!page)
-+			return -EFAULT;
-+		bytes = min_t(unsigned int, length,
-+				mr_page_size(mr) - page_offset);
-+
-+		va = kmap_local_page(page);
-+		if (!va)
-+			return -EFAULT;
-+
-+		arch_wb_cache_pmem(va + page_offset, bytes);
-+
-+		length -= bytes;
-+		iova += bytes;
-+		page_offset = 0;
-+	}
-+
-+	return 0;
-+}
-+
- /* Guarantee atomicity of atomic operations at the machine level. */
- static DEFINE_SPINLOCK(atomic_ops_lock);
- 
- int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 			u64 compare, u64 swap_add, u64 *orig_val)
- {
--	u64 *va;
-+	unsigned int page_offset;
-+	struct page *page;
- 	u64 value;
-+	u64 *va;
- 
--	if (mr->state != RXE_MR_STATE_VALID) {
-+	if (unlikely(mr->state != RXE_MR_STATE_VALID)) {
- 		rxe_dbg_mr(mr, "mr not in valid state");
- 		return -EINVAL;
- 	}
- 
--	va = iova_to_vaddr(mr, iova, sizeof(u64));
--	if (!va) {
--		rxe_dbg_mr(mr, "iova out of range");
--		return -ERANGE;
-+	if (mr->ibmr.type == IB_MR_TYPE_DMA) {
-+		page_offset = iova & (PAGE_SIZE - 1);
-+		page = virt_to_page(iova & PAGE_MASK);
-+	} else {
-+		unsigned long index;
-+		int err;
-+
-+		err = mr_check_range(mr, iova, sizeof(value));
-+		if (err) {
-+			rxe_dbg_mr(mr, "iova out of range");
-+			return -ERANGE;
-+		}
-+		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-+		index = rxe_mr_iova_to_index(mr, iova);
-+		page = xa_load(&mr->page_list, index);
-+		if (!page)
-+			return -EFAULT;
- 	}
- 
--	if ((uintptr_t)va & 0x7) {
-+	if (unlikely(page_offset & 0x7)) {
- 		rxe_dbg_mr(mr, "iova not aligned");
--		return RXE_ERR_NOT_ALIGNED;
-+		return -RXE_ERR_NOT_ALIGNED;
- 	}
- 
-+	va = kmap_local_page(page);
-+
- 	spin_lock_bh(&atomic_ops_lock);
--	value = *orig_val = *va;
-+	value = *orig_val = va[page_offset >> 3];
- 
- 	if (opcode == IB_OPCODE_RC_COMPARE_SWAP) {
- 		if (value == compare)
--			*va = swap_add;
-+			va[page_offset >> 3] = swap_add;
- 	} else {
- 		value += swap_add;
--		*va = value;
-+		va[page_offset >> 3] = value;
- 	}
- 	spin_unlock_bh(&atomic_ops_lock);
- 
-+	kunmap_local(va);
-+
- 	return 0;
- }
- 
-@@ -566,6 +525,8 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- {
- #if defined CONFIG_64BIT
-+	unsigned int page_offset;
-+	struct page *page;
- 	u64 *va;
- 
- 	/* See IBA oA19-28 */
-@@ -574,20 +535,45 @@ int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- 		return -EINVAL;
- 	}
- 
--	va = iova_to_vaddr(mr, iova, sizeof(value));
--	if (unlikely(!va)) {
--		rxe_dbg_mr(mr, "iova out of range");
--		return -ERANGE;
-+	if (mr->ibmr.type == IB_MR_TYPE_DMA) {
-+		page_offset = iova & (PAGE_SIZE - 1);
-+		page = virt_to_page(iova & PAGE_MASK);
-+	} else {
-+		unsigned long index;
-+		int err;
-+
-+		/* See IBA oA19-28 */
-+		err = mr_check_range(mr, iova, sizeof(value));
-+		if (unlikely(err)) {
-+			rxe_dbg_mr(mr, "iova out of range");
-+			return -ERANGE;
-+		}
-+		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-+		index = rxe_mr_iova_to_index(mr, iova);
-+		page = xa_load(&mr->page_list, index);
-+		if (!page)
-+			return -EFAULT;
- 	}
- 
- 	/* See IBA A19.4.2 */
--	if (unlikely((uintptr_t)va & 0x7 || iova & 0x7)) {
-+	if (unlikely(page_offset & 0x7)) {
- 		rxe_dbg_mr(mr, "misaligned address");
- 		return -RXE_ERR_NOT_ALIGNED;
- 	}
- 
-+	va = kmap_local_page(page);
-+
- 	/* Do atomic write after all prior operations have completed */
--	smp_store_release(va, value);
-+	/* TODO: This is what was chosen by the implementer but I am
-+	 * concerned it isn't what they want. This only guarantees that
-+	 * the write will complete before any subsequent reads but the
-+	 * comment says all prior operations have completed. That would
-+	 * require a full mb or matching acquire.
-+	 * Normal usage has a matching load_acquire and store release.
-+	 */
-+	smp_store_release(&va[page_offset >> 3], value);
-+
-+	kunmap_local(va);
- 
- 	return 0;
- #else
-@@ -629,12 +615,6 @@ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
- 	return 0;
- }
- 
--/* (1) find the mr corresponding to lkey/rkey
-- *     depending on lookup_type
-- * (2) verify that the (qp) pd matches the mr pd
-- * (3) verify that the mr can support the requested access
-- * (4) verify that mr state is valid
-- */
- struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- 			 enum rxe_mr_lookup_type type)
- {
-@@ -755,15 +735,9 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- void rxe_mr_cleanup(struct rxe_pool_elem *elem)
- {
- 	struct rxe_mr *mr = container_of(elem, typeof(*mr), elem);
--	int i;
- 
- 	rxe_put(mr_pd(mr));
- 	ib_umem_release(mr->umem);
- 
--	if (mr->map) {
--		for (i = 0; i < mr->num_map; i++)
--			kfree(mr->map[i]);
--
--		kfree(mr->map);
--	}
-+	xa_destroy(&mr->page_list);
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 5c3d1500ca68..09437077ceee 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -288,17 +288,6 @@ enum rxe_mr_lookup_type {
- 	RXE_LOOKUP_REMOTE,
- };
- 
--#define RXE_BUF_PER_MAP		(PAGE_SIZE / sizeof(struct rxe_phys_buf))
--
--struct rxe_phys_buf {
--	u64      addr;
--	u64      size;
--};
--
--struct rxe_map {
--	struct rxe_phys_buf	buf[RXE_BUF_PER_MAP];
--};
--
- static inline int rkey_is_mw(u32 rkey)
- {
- 	u32 index = rkey >> 8;
-@@ -316,22 +305,16 @@ struct rxe_mr {
- 	u32			rkey;
- 	enum rxe_mr_state	state;
- 	int			access;
-+	atomic_t		num_mw;
- 
- 	unsigned int		page_offset;
- 	unsigned int		page_shift;
- 	u64			page_mask;
--	int			map_shift;
--	int			map_mask;
- 
- 	u32			num_buf;
- 	u32			nbuf;
- 
--	u32			max_buf;
--	u32			num_map;
--
--	atomic_t		num_mw;
--
--	struct rxe_map		**map;
-+	struct xarray		page_list;
- };
- 
- static inline unsigned int mr_page_size(struct rxe_mr *mr)
--- 
-2.37.2
+
+ block/bio.c               |   48 +-
+ block/blk-map.c           |   26 +-
+ block/blk.h               |   25 +
+ block/fops.c              |    8 +-
+ crypto/af_alg.c           |   57 +-
+ crypto/algif_hash.c       |   20 +-
+ drivers/net/tun.c         |    2 +-
+ drivers/vhost/scsi.c      |   75 +-
+ fs/9p/vfs_addr.c          |    2 +-
+ fs/affs/file.c            |    4 +-
+ fs/ceph/addr.c            |    2 +-
+ fs/ceph/file.c            |   16 +-
+ fs/cifs/Kconfig           |    1 +
+ fs/cifs/cifsencrypt.c     |  172 +++-
+ fs/cifs/cifsfs.c          |   12 +-
+ fs/cifs/cifsfs.h          |    6 +
+ fs/cifs/cifsglob.h        |   66 +-
+ fs/cifs/cifsproto.h       |   11 +-
+ fs/cifs/cifssmb.c         |   13 +-
+ fs/cifs/connect.c         |   16 +
+ fs/cifs/file.c            | 1851 +++++++++++++++++--------------------
+ fs/cifs/fscache.c         |   22 +-
+ fs/cifs/fscache.h         |   10 +-
+ fs/cifs/misc.c            |  132 +--
+ fs/cifs/smb2ops.c         |  374 ++++----
+ fs/cifs/smb2pdu.c         |   45 +-
+ fs/cifs/smbdirect.c       |  511 ++++++----
+ fs/cifs/smbdirect.h       |    4 +-
+ fs/cifs/transport.c       |   57 +-
+ fs/dax.c                  |    6 +-
+ fs/direct-io.c            |   77 +-
+ fs/exfat/inode.c          |    6 +-
+ fs/ext2/inode.c           |    2 +-
+ fs/f2fs/file.c            |   10 +-
+ fs/fat/inode.c            |    4 +-
+ fs/fuse/dax.c             |    2 +-
+ fs/fuse/dev.c             |   24 +-
+ fs/fuse/file.c            |   34 +-
+ fs/fuse/fuse_i.h          |    1 +
+ fs/hfs/inode.c            |    2 +-
+ fs/hfsplus/inode.c        |    2 +-
+ fs/iomap/direct-io.c      |    6 +-
+ fs/jfs/inode.c            |    2 +-
+ fs/netfs/Makefile         |    1 +
+ fs/netfs/iterator.c       |  371 ++++++++
+ fs/nfs/direct.c           |   32 +-
+ fs/nilfs2/inode.c         |    2 +-
+ fs/ntfs3/inode.c          |    2 +-
+ fs/ocfs2/aops.c           |    2 +-
+ fs/orangefs/inode.c       |    2 +-
+ fs/reiserfs/inode.c       |    2 +-
+ fs/splice.c               |   10 +-
+ fs/udf/inode.c            |    2 +-
+ include/crypto/if_alg.h   |    7 +-
+ include/linux/bio.h       |   23 +-
+ include/linux/blk_types.h |    3 +-
+ include/linux/fs.h        |   11 +
+ include/linux/mm.h        |   32 +-
+ include/linux/netfs.h     |    6 +
+ include/linux/skbuff.h    |  124 ++-
+ include/linux/uio.h       |   83 +-
+ io_uring/net.c            |    2 +-
+ lib/iov_iter.c            |  428 ++++++++-
+ mm/gup.c                  |   47 +
+ mm/vmalloc.c              |    1 +
+ net/9p/trans_common.c     |    6 +-
+ net/9p/trans_common.h     |    3 +-
+ net/9p/trans_virtio.c     |   91 +-
+ net/bpf/test_run.c        |    2 +-
+ net/core/datagram.c       |   23 +-
+ net/core/gro.c            |    2 +-
+ net/core/skbuff.c         |   16 +-
+ net/core/skmsg.c          |    4 +-
+ net/ipv4/ip_output.c      |    2 +-
+ net/ipv4/tcp.c            |    4 +-
+ net/ipv6/esp6.c           |    5 +-
+ net/ipv6/ip6_output.c     |    2 +-
+ net/packet/af_packet.c    |    2 +-
+ net/rds/message.c         |    4 +-
+ net/tls/tls_sw.c          |    5 +-
+ net/xfrm/xfrm_ipcomp.c    |    2 +-
+ 81 files changed, 3006 insertions(+), 2126 deletions(-)
+ create mode 100644 fs/netfs/iterator.c
+
 
