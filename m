@@ -2,139 +2,229 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C50FC66E89C
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jan 2023 22:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC0E670A7A
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jan 2023 23:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbjAQVjz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Jan 2023 16:39:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54388 "EHLO
+        id S229584AbjAQWAt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Jan 2023 17:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjAQViT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Jan 2023 16:38:19 -0500
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA1D2CFE4;
-        Tue, 17 Jan 2023 12:01:25 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 108925C00E9;
-        Tue, 17 Jan 2023 15:01:24 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 17 Jan 2023 15:01:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1673985684; x=1674072084; bh=tMyHBVcYNG
-        0ERO4S5Q8/K/ngC+15RRvO4SZa46EllSw=; b=e/I7Bu6JmmSGgy3u4WX+iD+QMX
-        i2eQ5+cEbaTu38BxSpYEjKFtGNT7PSo4U7WFgF4ABTLwLQ7Xh+N5CCqUebDEkUiX
-        aYahBdbKsHZu43my0QuBJ5Uclm6GNOp/2XmtY1lCkijJdiOeZGWidyeT0pI0OEeb
-        wJf2cmmrFYDhXztF2bQ5jLjW+FIdZ8Fc2YDIC3R8THV7H10UAW1WCJTpGR5lz/s5
-        97JI1LDDjqyYs684EKx673zOjv5kmJbEq81LOYrawAaz6XIpZdS7CVuHnuPp5Atb
-        s8p547yb1vivVMq6SaW6n7fZChEjkoYVlGkFBa4GjtxVPE+VGxQ/EGYEvnoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1673985684; x=1674072084; bh=tMyHBVcYNG0ERO4S5Q8/K/ngC+15
-        RRvO4SZa46EllSw=; b=r0/igWbp96bDczPUdGiDuVQOZk8DlgxsYWPQXTZq9fJ4
-        cbF2zV+baxa3Ca9K/3BAxQEYq/FOgnP/kKebLY6L5cyR6v5a2VWUJjMwWPBW/wg9
-        ohKcrpd4OdmuVIrhfXUQyRzghFXJ4Ra45NcS3FAOlfSxxsSnbTYuS86CpEMzPU8V
-        ypWiQgVmg/llOUBdFWRQfDCnqp7mpBYaEV0xYBNJcA+G27Ba2vreV1jP3AKu0Lp3
-        SmkaMFnDLx3BggpIa8EdbDx/QmqXf6yLAOGZdB3YD34+5tkODhp2VII4p5hE4fLJ
-        1NVEz9GnMx1Hz4KMtAwZz8F/ur/YZdhmbpLH+eGQqA==
-X-ME-Sender: <xms:k_7GY8LW8h2_wNKJSUM2TFzFq56zfzh_EiHL4v4e57MQuLmniUnaUA>
-    <xme:k_7GY8LYJWyfAJs1_c_mWNnr4ZJDz46ELzc_HWIcTPzheWUirzILxNR5Iw5sslUUw
-    tQGWFi3q7cdnAMrfko>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddtiedgudefudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:k_7GY8vuExMOsyJ81lxn_vgndy1Y-xDoEhpmxcsvofAiP-ITIAPkfA>
-    <xmx:k_7GY5Z6Dnp88oXouzKtLwyKb1DWtOu9uC4pnL_E9WIQsHuz7OxO2g>
-    <xmx:k_7GYza62EwHI5CUM1-hB40biML0yder_VcCrH57XwRSnAkME6WnDQ>
-    <xmx:lP7GY5sqpwy3X9FiXGNCey3fbbDJTBqnXvKJjiXMrRfogFAbcVEsUw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 69C92B60086; Tue, 17 Jan 2023 15:01:23 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1187-g678636ba0d-fm-20230113.001-g678636ba
-Mime-Version: 1.0
-Message-Id: <4c4478d3-5b11-450a-9b6d-9e30e52b8f6d@app.fastmail.com>
-In-Reply-To: <98636010-fb0b-1771-e81f-cce90740d358@gmail.com>
-References: <20230117172825.3170190-1-arnd@kernel.org>
- <98636010-fb0b-1771-e81f-cce90740d358@gmail.com>
-Date:   Tue, 17 Jan 2023 21:01:03 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Tariq Toukan" <ttoukan.linux@gmail.com>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Saeed Mahameed" <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        "Tom Rix" <trix@redhat.com>, "Tariq Toukan" <tariqt@nvidia.com>,
-        "Maxim Mikityanskiy" <maximmi@nvidia.com>,
-        "Gal Pressman" <gal@nvidia.com>, "Lama Kayal" <lkayal@nvidia.com>,
-        "Moshe Tal" <moshet@nvidia.com>, Netdev <netdev@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] mlx5: reduce stack usage in mlx5_setup_tc
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229784AbjAQV7R (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Jan 2023 16:59:17 -0500
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7A33B0C4
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Jan 2023 12:27:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1673987273; x=1705523273;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=587qPNhFs0LdkUmWgdeisZb2IZs8z/EqNORFiWgg2WE=;
+  b=JkJdTGp8KBR/n9kez2Tub0ebLBqgf7mf7Ngy8iEgCarV45v4L3zo+bmV
+   CZL8TTFTkUBeesNYk4XyyahcBEDmtpQSxPbaBxBRB6yus6KaHV4B0ocEP
+   DcEnlMX/eQUjiieujtB77TfKSkEU6K4g1zrwDFjVg2+iCszWD5ojkOacl
+   qtJRB5/si+dczMtY0vcYzEOU55JbYjQehzPUSIqkhCdVjZtLRlnSeFLFs
+   CmKNoqIHLgdnjcCPZ1e1uKrNSxQcsBccdQbhrpbX/qBsRWdwTpOFVUMgj
+   rqpCoHeK4k9Zsv6Vd+ikFXN84lifyJzRfOh6T20t2ZxwDR5BCpINjkP0t
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="326883605"
+X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
+   d="scan'208";a="326883605"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 12:27:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="833300566"
+X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
+   d="scan'208";a="833300566"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga005.jf.intel.com with ESMTP; 17 Jan 2023 12:27:51 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Tue, 17 Jan 2023 12:27:51 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Tue, 17 Jan 2023 12:27:51 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Tue, 17 Jan 2023 12:27:51 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QYT+V39KqX+HFoVl/lAxTLzjrrbP1DfyrA57ck0o2DYnZazNPXGWteAIrPT+3ATI/SnG3GTdJzcNRCCjuFKHVQCsYSOH1kclfx5yRJtv4lyULBHhNJfKq2mc1HlR7JnYWtRsF+2DKDfqk3JCtofnC5WIfkApV9aTliUZx7/HkcHGgDcCVRdcEwmgv1UfcH+UVPwyvSJu782r0kNJQAMxmQa5JGKViDjvxIWKMBLsSwmUoM+azm4KQIkcNKAx0JR1vhHIaqMWumSdOH1ut4ukH4txeUQpKCdrzSqsGpiDQBXjNWpD5WfRm/SqSZhPRo6LDBTeR8V/x4k6/7CT7+gqug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HHdYNYYVdzO5Zq2JEokRASLnXSvE1e4USU9cw5B2Vr8=;
+ b=g092kM1qtnt2uHDIBH9t+t71L08TUPlQl/32xLqoyoJ4C/FrnyFPpgp7B0BWRajKQ6LC6+6Y0fE3S9Sbk45UOCz4ooawNzMY1wXpTLnlFEk0+XS6fNZ96jKJ76ZMC+s4/W2O/cHPAKV6UmSTGmuKv09xFXx6veKL3XKRmzTCr2Vhq2jOMcskJDwkqMCWugvDstCppskbMqR/Z2nAo+b3QPXYYNJSwzyRh/Vsprds9CkSD17OFxQ6Zszs4a0WfXj0opVd3c8IzfGK9GBcfyIdehX/prU9imkM9t+eXsxS5iHMi0tPU7ksKMLnYtptVj7mmw6ZZLgsl5abbKxQHsGLaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com (2603:10b6:301:67::25)
+ by SJ2PR11MB7428.namprd11.prod.outlook.com (2603:10b6:a03:4cf::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.23; Tue, 17 Jan
+ 2023 20:27:49 +0000
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::61f7:7850:6203:bf55]) by MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::61f7:7850:6203:bf55%4]) with mapi id 15.20.5986.023; Tue, 17 Jan 2023
+ 20:27:49 +0000
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Hefty, Sean" <sean.hefty@intel.com>,
+        "Rimmer, Todd" <todd.rimmer@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH v2 rdma-core] irdma: Add ice and irdma to kernel-boot
+ rules
+Thread-Topic: [PATCH v2 rdma-core] irdma: Add ice and irdma to kernel-boot
+ rules
+Thread-Index: AQHXmDZjOykQbRhbB0OylwgVwYR9l6uBQpMAgA+prJCAAATrgIAcjKoAgAA+ygCAJXODQIAASCMAglozZJCAC6bcAIBmzhEQgAAFmQCABflH4A==
+Date:   Tue, 17 Jan 2023 20:27:49 +0000
+Message-ID: <MWHPR11MB0029A8CA81DAB3E79F393FC1E9C69@MWHPR11MB0029.namprd11.prod.outlook.com>
+References: <20210823161116.GO1721383@nvidia.com>
+ <DM6PR11MB46922D3AE92E34B4E1D3AC9FCBCE9@DM6PR11MB4692.namprd11.prod.outlook.com>
+ <20210902154003.GW1721383@nvidia.com>
+ <DM6PR11MB4692517FBBC9AFD046990DCDCBA09@DM6PR11MB4692.namprd11.prod.outlook.com>
+ <20210920232330.GH327412@nvidia.com>
+ <DM6PR11MB4692B56B4C7D1E790B50888DCBB89@DM6PR11MB4692.namprd11.prod.outlook.com>
+ <20211014233644.GA2744544@nvidia.com>
+ <DM6PR11MB4692B502C54F459A2EF9E79CCB399@DM6PR11MB4692.namprd11.prod.outlook.com>
+ <Y2uu4HfKADHiCzGx@nvidia.com>
+ <MWHPR11MB002952D469591FEF43EBC6F6E9C29@MWHPR11MB0029.namprd11.prod.outlook.com>
+ <Y8HwxFUb3/NWE1xE@nvidia.com>
+In-Reply-To: <Y8HwxFUb3/NWE1xE@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MWHPR11MB0029:EE_|SJ2PR11MB7428:EE_
+x-ms-office365-filtering-correlation-id: 0c015070-a194-4d38-55c0-08daf8c94d56
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8hOiOAJac2XDMtb9aiKlZR/PuaQjAQB2EPbIcm377iE4m2cwE9CMNPKjbThwVSODQ3SOLxYB00CeYyDgQpoO+O/xCKDRuqn0soSi7V4044kYuqGo8D1z4Li/uay39PHzvjA3q5olx53w6EfwCj5nstTPdRO2e+3CkKzEJmb5MS8ZLHCCzPt9u1MzMnYvVIakoA05++QPstarVw/cu/psJFaEf+SMi4tjtWSKgLiPBB9u+gu2471D8RBD8u6b8il1lb82rQH7nEGf6KUq9Bm8hqowbffuFSbeWSNcXKaKIgY04SlLTjgLmIMe7+GbpT/jjiRnfod75a4yo05OttL1UbP0u+N/jSZ1IC6emJEEnCbrN1ELaGUAm+/gQ9zV+jhHuwGotUCypdxfetHaDCaanAkzfw7U6L2ICFqIUoMaQL6n0Qmjf0W8a3XOi5mdUhhu6a778GfkIKlNxV0e05puxecfYkNA3VKQtW3AZH2Ct6qBys/dop1EWCj1D/gehm1/wBgEPnpPd/fhz2jFK8MWuQiD8WlPerMUBdiedLJjAY6fqm1fv8mAMWHqoDWhqpa7LgJlY5XhpJBl5WLyd/zShM4+7o/UAxmKL5bX1sxG7vraINPCuv1EtFFSM2SgCNum4aS6snXzunic7LVjBidH0NtYy7khzeewIpgayDHs08/amCQBReOUDL1D6p9E0HcJSBaoQ2tcDSNtLDlFDF8OFw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0029.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(136003)(39860400002)(346002)(396003)(376002)(451199015)(26005)(186003)(478600001)(9686003)(6506007)(7696005)(71200400001)(33656002)(66946007)(76116006)(66476007)(54906003)(316002)(64756008)(8676002)(4326008)(66446008)(6916009)(83380400001)(41300700001)(8936002)(52536014)(122000001)(55016003)(2906002)(66556008)(38070700005)(38100700002)(5660300002)(86362001)(82960400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fyeR3QHkIvgg5JKIPn8V1DN053pQ7kQNhhscXRHHWR0rtFkpAyFCR/KsZ1se?=
+ =?us-ascii?Q?xC/bOtIOLw7xU+ZanlhbT0wRDU4p5gEJKL87Ssj6r9dsNmPJXXIQQCHDbqYL?=
+ =?us-ascii?Q?oOTJpXRcZppmYpaxkyJexgzYRx7G6urHZxah6whJ9M67qfPHuatEMqG52jli?=
+ =?us-ascii?Q?H5p08Z/WQYy/FvNUbn8yjJpAQevMbfThIGmFOLGNKXsWtsqCG33pMoN/Wb7y?=
+ =?us-ascii?Q?BeD9P1lYbOTt79xZCUSbRLFYT7M1B+zh/1hDZemPlg2QZriCihxeFWrvjt9z?=
+ =?us-ascii?Q?9BbEn3wSeJ6NxFm1c/WNLFP1kGa7nLbhd1POYHZMbLFEABv2RIVNRSqtBuh8?=
+ =?us-ascii?Q?E358t+R4OTQJj5/aWmE37kkAHwy8/g6HIJj1nMMO/FtmuUBk4N7RGsHxPjoQ?=
+ =?us-ascii?Q?udG177y6oFipyjJLGdwEzwzuJoeoAe4c+FDtrobeAmmSIe16i2UzidTI1wZh?=
+ =?us-ascii?Q?Igb+QpKyzAt174ElzXxqNGxlfDSCUgYlQBK64KNr4frB4gLzzN4VNbtQ1m8P?=
+ =?us-ascii?Q?kunKzM4WNbWARZpUfj503YJjTuCPghtc6l9oL638ZzmsJMNjOgaA5xn6qGSG?=
+ =?us-ascii?Q?v4tVXT0hS8vN2FL+EVZeGfwP1RK1J3BpwZOCutsvzTGiIEa2Ej/gt+8uOa7T?=
+ =?us-ascii?Q?XySY4gGgz+SCDarX+PF0Z4bWNmqSZPjkGhL3xI6GkiJXCh5ogzLtoU5JBcm6?=
+ =?us-ascii?Q?ycl7lcyOGL4J682jPj9Lx1+U1qnRuW4iCvwdxv7eFPoCHOrWOcancvbm/nmZ?=
+ =?us-ascii?Q?b/yeVvS+ls/HCnowtM4+GC2wNid9hPiE4q2qO69G5UfKvzV+I0oRWZmoQxFa?=
+ =?us-ascii?Q?1Z3RRMpZa8ythFdQFAcY6XVJBRjj624NWrnT3kEw7wFrQUqIRfBFG5g4cYzW?=
+ =?us-ascii?Q?Yvrj3kD/qK6nxNjCgbD1H32PRomizNipG433685QhnPr5W9wb8nq9eUtk8QY?=
+ =?us-ascii?Q?1CVM0FoZUj6Z2exXUmQbArT8UzpEWQxc4iv/UuFxNfEFr0VR+cVw84gv0r/c?=
+ =?us-ascii?Q?z6Cmzb0Yc//KMByhcfVn80b2/KYzvhlwVM+FPFGgaXogQEIXNfMrGtruqeRo?=
+ =?us-ascii?Q?uFNf8TfIJJeTyaopyttDh0UtZ49gkIbqEtXCxCVQOJWybie5b6dMSsOYtHOW?=
+ =?us-ascii?Q?1vGzcEczQk01nt5xsthAWTS7MKVV8dZEOadRAiSxD9ctq1jYfaAE/fVVDB1T?=
+ =?us-ascii?Q?6rzr0z1sOyPi8ASa/vo2CvG94QnQopRz/JmpFAn6P28wYgQvYkxeEbDW34MF?=
+ =?us-ascii?Q?wlQL2TWvYPtQ0yJp9xNkAdohqh3k0f/uTk88D/HpFrHuY2A8fI6P9UqO9qIm?=
+ =?us-ascii?Q?QopeA4y36iCWCdkHPJpfW5usCqM3/v877QTmSJ3Ar8MVGU/y9YJN2+54kJsD?=
+ =?us-ascii?Q?Qk8Gn3C1hLBhA80+ueoggtEjIU8ORsUz6HGK0esYqfcMIwCQf1t8T1uQIBhD?=
+ =?us-ascii?Q?MIjfQTt2syn4l8lZZMXoNJveeuA4EwX9YUbTs7CZvvu8SJW8FfGj7hl/rvN1?=
+ =?us-ascii?Q?2v0ay5mej41G9VT2KuqFuYlrjCcilwPFXipNwoQVqEkLHoIpk3JgB9U57EuH?=
+ =?us-ascii?Q?fZtYDCX8CTee71U9wpHo4y0LIzu8kXg0oo6ShNrX?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0029.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c015070-a194-4d38-55c0-08daf8c94d56
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jan 2023 20:27:49.5652
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qLIpR06zwgB89QnRTciQ4GOyJLbYUrswJwT49PUqaXZngVzX/TegdS4IeLNduVDkAgrn5HpkwPjgBNH9p1x3dQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7428
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 17, 2023, at 18:46, Tariq Toukan wrote:
-> On 17/01/2023 19:28, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> Clang warns about excessive stack usage on 32-bit targets:
->> 
->> drivers/net/ethernet/mellanox/mlx5/core/en_main.c:3597:12: error: stack frame size (1184) exceeds limit (1024) in 'mlx5e_setup_tc' [-Werror,-Wframe-larger-than]
->> static int mlx5e_setup_tc(struct net_device *dev, enum tc_setup_type type,
->> 
->> It turns out that both the mlx5e_setup_tc_mqprio_dcb() function and
->> the mlx5e_safe_switch_params() function it calls have a copy of
->> 'struct mlx5e_params' on the stack, and this structure is fairly
->> large.
->> 
->> Use dynamic allocation for both.
->> 
+> Subject: Re: [PATCH v2 rdma-core] irdma: Add ice and irdma to kernel-boot=
+ rules
+>=20
+> On Fri, Jan 13, 2023 at 11:57:33PM +0000, Saleem, Shiraz wrote:
+> > > Subject: Re: [PATCH v2 rdma-core] irdma: Add ice and irdma to
+> > > kernel-boot rules
+> > >
+> > > On Wed, Nov 02, 2022 at 04:40:20PM +0000, Nikolova, Tatyana E wrote:
+> > > > Hi Jason,
+> > > >
+> > > > I know it has been a while since we discussed this. Based on your
+> > > > feedback, we
+> > > are proposing another solution for the irdma kernel-boot rules.
+> > > Could you please review it?
+> > > >
+> > > > > > udevadm info --attribute-walk
+> > > > > > /sys/class/infiniband/rocep47s0f0
+> > > > > >
+> > > > > >   looking at device
+> > > > > '/devices/pci0000:2e/0000:2e:00.0/0000:2f:00.0/infiniband/rocep47=
+s0f0':
+> > > > >
+> > > > > This looks like the problem. For any of this to work the
+> > > > > infiniband device needs to be parented to the aux device, not the=
+ PCI
+> device.
+> > > > >
+> > > > > mlx5 did not due this for backwards compat reasons, but this is
+> > > > > a new driver so it could do it properly.
+> > > > >
+> >
+> > Hi Jason - This also impacts us in terms of backwards compatibility.
+>=20
+> This is a new driver, it by definition does not have backwards compatabil=
+ity.
 
->>   
->> -	err = mlx5e_safe_switch_params(priv, &new_params,
->> +	err = mlx5e_safe_switch_params(priv, new_params,
->>   				       mlx5e_num_channels_changed_ctx, NULL, true);
->>   
->
-> Is this change really required, even after new_chs are dynamically 
-> allocated?
-> As this code pattern of static local new_params repeats in all callers 
-> of mlx5e_safe_switch_params, let's not change this one alone if not 
-> necessary.
+irdma replaces i40iw (to support x722) which has been there for many years.=
+ irdma has been in the kernel since 5.14.
+So we have similar concerns about compatibility.
 
-I'm not sure any more now, I actually did the patch a few weeks ago
-and only now came across it while going through my backlog.
+If we are going with such a sysfs update for the ib_device, is it not bette=
+r it is done across all vendor drivers using auxiliary bus similar to the r=
+estructuring for sysfs HW counters?
 
-Generally speaking, the 'new_params' structure on the stack is
-too large, but I no longer see warnings after my patch.
+For consistency within the subsystem and it could enable a wider ecosystem =
+adoption.
 
-> Same for the noinline_for_stack. Are they really needed even after using 
-> dynamic allocation for new_chs?
-
-I've reverted both of those hunks now, let me try reproducing the
-original randconfig reports and see what still happens.
-
-   Arnd
+>=20
+> What you are talking about is drop in compatability against mlx5 which is=
+ a very
+> different thing.
+>=20
+> > There are current applications/customers who are looking at
+> > "'/sys/class/infiniband/<ib_device>/device/" for sysfs attributes like
+> > numa_node, local_cpus etc. under the PCI device.
+>=20
+> That is just wrong assumptions for how sysfs is structured, sadly.
+>=20
+> > i.e. assuming the PCI device is ib device parent.
+> >
+> > With parent change to auxiliary device, they won't be able find these
+> > attributes and potentially resort to default configurations that are
+> > sub-optimal.
+>=20
+> Introducing new stuff often comes with an ecosystem upgrade as well..
+>=20
+> Jason
