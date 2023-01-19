@@ -2,164 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EB0674419
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Jan 2023 22:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2D76745AF
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Jan 2023 23:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbjASVNM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Jan 2023 16:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
+        id S230117AbjASWQu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Jan 2023 17:16:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbjASVMk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Jan 2023 16:12:40 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2559133
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 13:07:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674162445; x=1705698445;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=kBCQ7BZ5f7EN7r2RwXONC+dS7Zf8GAoTJXBsZ4c8FsA=;
-  b=BI3YEC/QSBqxWQeba9YC6N4nZ9hCtVIQn3RUIqtXqXaBn+9XA8cQhkr5
-   vAZy0OyqP+5nNIyTTK8Un5atAxpe6nl6rj2HlTp6bRxVECeVDIFiXFfEJ
-   Cz1FcnUtuL0Kyl423rvZM83J02z3T7QjZvXO+2spdZ1tu6LwRH8g2L4Hw
-   Ae37odC2uTH4FU5h+JNdoBysHSzVEPKUAaaSdK88lqYn59rOxkZgwqHXt
-   Xs9qHSzgE1CCdA4SGjEk13rrFjTjZxqhRNJ62Gt6zqCLRL1gxb3VhmUsz
-   6dOZpk1JNBP5i0AxZvX15DwlnduhVBRsEcsKFkLUDZjEk1IkzGhiEdfVu
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="327516631"
-X-IronPort-AV: E=Sophos;i="5.97,230,1669104000"; 
-   d="scan'208";a="327516631"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2023 13:07:25 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="662256519"
-X-IronPort-AV: E=Sophos;i="5.97,230,1669104000"; 
-   d="scan'208";a="662256519"
-Received: from ssaleem-mobl1.amr.corp.intel.com ([10.209.49.55])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2023 13:07:23 -0800
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     jgg@nvidia.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        sagi@grimberg.me
-Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH for-rc] IB/isert: Fix hang in iscsit_wait_for_tag
-Date:   Thu, 19 Jan 2023 15:07:00 -0600
-Message-Id: <20230119210659.1871-1-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.39.0
+        with ESMTP id S229944AbjASWQZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Jan 2023 17:16:25 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9927FA3154;
+        Thu, 19 Jan 2023 13:57:10 -0800 (PST)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30JLT8bu030467;
+        Thu, 19 Jan 2023 21:56:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=xHuzXeNDiIwndNWeKonBxc5KI/X0aMeH30RDkuA23Fg=;
+ b=D0cDcR8t7UzfNGwH0forG3q5QiVPdLRMK1YjkWalcDmqA6U2UGQMCtlCBfemNRT2ntfS
+ SR1PhBUFqr9Ao4MsJnQolfs+mkiDm+H6M4jfKa30SWkI1c5tzG3nk65NlFhDhZK8KqY5
+ 0hlNVGLoMZ7FjiR6VVSLb63oge3vJDIHiUObNV1fzayr8835Bl1L9DNUmsMv9Lh3ZtOv
+ +whCbWcBOmd1ZMKKAYksDP5iicxIibLX+kVbwnWxkMxZqnEzhwQEXDYaAaestpqVbOKw
+ rcbzvJJk4qWz8J/US57JALqxYIx14Nln2nL0zUXcEjye2WlvcDnWLl7vq2IeP02YzvRI mA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3n7dtqrkwq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Jan 2023 21:56:48 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30JLulA7031690;
+        Thu, 19 Jan 2023 21:56:47 GMT
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3n7dtqrkwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Jan 2023 21:56:47 +0000
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30JJeXoe005711;
+        Thu, 19 Jan 2023 21:56:46 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([9.208.130.101])
+        by ppma02dal.us.ibm.com (PPS) with ESMTPS id 3n3m180852-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Jan 2023 21:56:46 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30JLuiOH6750758
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Jan 2023 21:56:45 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D8E7E5804B;
+        Thu, 19 Jan 2023 21:56:44 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A2C158055;
+        Thu, 19 Jan 2023 21:56:41 +0000 (GMT)
+Received: from [9.160.87.67] (unknown [9.160.87.67])
+        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 19 Jan 2023 21:56:41 +0000 (GMT)
+Message-ID: <7eac2ce1-7ee9-7783-a9f2-9ec2f7019096@linux.ibm.com>
+Date:   Thu, 19 Jan 2023 16:56:40 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH v2 09/10] iommu/s390: Push the gfp parameter to the
+ kmem_cache_alloc()'s
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, nouveau@lists.freedesktop.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        virtualization@lists.linux-foundation.org
+References: <9-v2-ce66f632bd0d+484-iommu_map_gfp_jgg@nvidia.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+In-Reply-To: <9-v2-ce66f632bd0d+484-iommu_map_gfp_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: a1NkOyV4AkAwQdPDo6-7oJAzOHK_-aAo
+X-Proofpoint-ORIG-GUID: V_h4SUwdpkFLvdx1u4mhG5SO4ES7urEl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-19_14,2023-01-19_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 bulkscore=0 clxscore=1011 adultscore=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=853 priorityscore=1501 mlxscore=0
+ spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301190181
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mustafa Ismail <mustafa.ismail@intel.com>
+On 1/18/23 1:00 PM, Jason Gunthorpe wrote:
+> dma_alloc_cpu_table() and dma_alloc_page_table() are eventually called by
+> iommufd through s390_iommu_map_pages() and it should not be forced to
+> atomic. Thread the gfp parameter through the call chain starting from
+> s390_iommu_map_pages().
+> 
+> Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  arch/s390/include/asm/pci_dma.h |  5 +++--
+>  arch/s390/pci/pci_dma.c         | 31 +++++++++++++++++--------------
+>  drivers/iommu/s390-iommu.c      | 15 +++++++++------
+>  3 files changed, 29 insertions(+), 22 deletions(-)
+> 
 
-Running fio can occasionally cause a hang when sbitmap_queue_get() fails to
-return a tag in iscsit_allocate_cmd() and iscsit_wait_for_tag() is called
-and will never return from the schedule(). This is because the polling
-thread of the CQ is suspended, and will not poll for a SQ completion which
-would free up a tag.
-Fix this by creating a separate CQ for the SQ so that send completions are
-processed on a separate thread and are not blocked when the RQ CQ is
-stalled.
-
-Fixes: 10e9cbb6b531 ("scsi: target: Convert target drivers to use sbitmap")
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/ulp/isert/ib_isert.c | 33 +++++++++++++++++++++++----------
- drivers/infiniband/ulp/isert/ib_isert.h |  3 ++-
- 2 files changed, 25 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index 7540488..f827b91 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.c
-+++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -109,19 +109,27 @@ static int isert_sg_tablesize_set(const char *val, const struct kernel_param *kp
- 	struct ib_qp_init_attr attr;
- 	int ret, factor;
- 
--	isert_conn->cq = ib_cq_pool_get(ib_dev, cq_size, -1, IB_POLL_WORKQUEUE);
--	if (IS_ERR(isert_conn->cq)) {
--		isert_err("Unable to allocate cq\n");
--		ret = PTR_ERR(isert_conn->cq);
-+	isert_conn->snd_cq = ib_cq_pool_get(ib_dev, cq_size, -1,
-+					    IB_POLL_WORKQUEUE);
-+	if (IS_ERR(isert_conn->snd_cq)) {
-+		isert_err("Unable to allocate send cq\n");
-+		ret = PTR_ERR(isert_conn->snd_cq);
- 		return ERR_PTR(ret);
- 	}
-+	isert_conn->rcv_cq = ib_cq_pool_get(ib_dev, cq_size, -1,
-+					    IB_POLL_WORKQUEUE);
-+	if (IS_ERR(isert_conn->rcv_cq)) {
-+		isert_err("Unable to allocate receive cq\n");
-+		ret = PTR_ERR(isert_conn->rcv_cq);
-+		goto create_cq_err;
-+	}
- 	isert_conn->cq_size = cq_size;
- 
- 	memset(&attr, 0, sizeof(struct ib_qp_init_attr));
- 	attr.event_handler = isert_qp_event_callback;
- 	attr.qp_context = isert_conn;
--	attr.send_cq = isert_conn->cq;
--	attr.recv_cq = isert_conn->cq;
-+	attr.send_cq = isert_conn->snd_cq;
-+	attr.recv_cq = isert_conn->rcv_cq;
- 	attr.cap.max_send_wr = ISERT_QP_MAX_REQ_DTOS + 1;
- 	attr.cap.max_recv_wr = ISERT_QP_MAX_RECV_DTOS + 1;
- 	factor = rdma_rw_mr_factor(device->ib_device, cma_id->port_num,
-@@ -137,12 +145,16 @@ static int isert_sg_tablesize_set(const char *val, const struct kernel_param *kp
- 	ret = rdma_create_qp(cma_id, device->pd, &attr);
- 	if (ret) {
- 		isert_err("rdma_create_qp failed for cma_id %d\n", ret);
--		ib_cq_pool_put(isert_conn->cq, isert_conn->cq_size);
--
--		return ERR_PTR(ret);
-+		goto create_qp_err;
- 	}
- 
- 	return cma_id->qp;
-+create_qp_err:
-+	ib_cq_pool_put(isert_conn->rcv_cq, isert_conn->cq_size);
-+create_cq_err:
-+	ib_cq_pool_put(isert_conn->snd_cq, isert_conn->cq_size);
-+
-+	return ERR_PTR(ret);
- }
- 
- static int
-@@ -409,7 +421,8 @@ static int isert_sg_tablesize_set(const char *val, const struct kernel_param *kp
- isert_destroy_qp(struct isert_conn *isert_conn)
- {
- 	ib_destroy_qp(isert_conn->qp);
--	ib_cq_pool_put(isert_conn->cq, isert_conn->cq_size);
-+	ib_cq_pool_put(isert_conn->snd_cq, isert_conn->cq_size);
-+	ib_cq_pool_put(isert_conn->rcv_cq, isert_conn->cq_size);
- }
- 
- static int
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.h b/drivers/infiniband/ulp/isert/ib_isert.h
-index 0b2dfd6..0cd43af 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.h
-+++ b/drivers/infiniband/ulp/isert/ib_isert.h
-@@ -180,7 +180,8 @@ struct isert_conn {
- 	struct iser_tx_desc	login_tx_desc;
- 	struct rdma_cm_id	*cm_id;
- 	struct ib_qp		*qp;
--	struct ib_cq		*cq;
-+	struct ib_cq		*snd_cq;
-+	struct ib_cq		*rcv_cq;
- 	u32			cq_size;
- 	struct isert_device	*device;
- 	struct mutex		mutex;
--- 
-1.8.3.1
+Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
 
