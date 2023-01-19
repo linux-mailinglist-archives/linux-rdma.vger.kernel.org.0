@@ -2,159 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4D2674ABF
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jan 2023 05:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB330674B66
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jan 2023 05:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbjATEdl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Jan 2023 23:33:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
+        id S231200AbjATEyK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Jan 2023 23:54:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbjATEdR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Jan 2023 23:33:17 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33657B4E12
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 20:32:39 -0800 (PST)
+        with ESMTP id S230481AbjATExr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Jan 2023 23:53:47 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA3BCE8A2;
+        Thu, 19 Jan 2023 20:45:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674189159; x=1705725159;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=A3jVD1YvrNsZWiWXDo2s/VyTl8gwaH5Skeq707Ug/AA=;
-  b=n6XqIJ/1LA1C5sgc/QBt20mjpWKG6CKbsL0vcmyYjcpKpgMVFrTr39UW
-   zLbGHqVRqpkcXN+ccbyd3h42ejbSqviqAsKUuquuSasLv6EkpT1IW/PX8
-   ltYYxYe5pOzxYqOT0AeqCkBWzO9lrYylukbjKNFnqXDk977Z+kd30fbcb
-   foFqieFrqPdKhtSRVvkHa+2h/VcHIT4oCGKV25DjWdtCKm7yAZ1hlOMGb
-   6+G1XM10nA6ruelfqK8Et5NHhTxkBm2K9NWmgQSbG5HKl+e2GbGZj6TYZ
-   e6y2A/+4eaxE6xZ7asU0gGdLFpuz8wkIT7Dp2wl8B8AO2uVWwjfX/69uP
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="411436629"
-X-IronPort-AV: E=Sophos;i="5.97,228,1669104000"; 
-   d="scan'208";a="411436629"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2023 21:00:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="661997220"
-X-IronPort-AV: E=Sophos;i="5.97,228,1669104000"; 
-   d="scan'208";a="661997220"
-Received: from lkp-server01.sh.intel.com (HELO 5646d64e7320) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 18 Jan 2023 21:00:33 -0800
-Received: from kbuild by 5646d64e7320 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pIN2O-00016u-2Y;
-        Thu, 19 Jan 2023 05:00:32 +0000
-Date:   Thu, 19 Jan 2023 12:59:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-rc] BUILD SUCCESS
- 0f097f08c9b3c1fdb6cc9f2dd423abc17d13f1a2
-Message-ID: <63c8ce47.S9ePHk1CaPDFHsw6%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+  t=1674189914; x=1705725914;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=DuOBg1V/kEEpNk+BV4bYqVrWJSOOFRR3sdWDamFrvt0=;
+  b=DpH5Gz6m8iV2ch09fwLFA5GAnqlxbeNoa7S3bI/YFsVgN87LhKKoHb0Q
+   cSCYdT3KmY8GtvjtNyqfoyZjFlZdvPRAzezNcOKx6+isXeCmUB45fV3DF
+   026+DbQtNrLVHraaQW0P2BkA1avJfJCRa80U8itPz7XQ3IEFFPIYbClxs
+   28pG13X7QphCrYMsq60VrkQyCLoGnlbwbBVjTPl45e3wWdRgqLxggzixe
+   SAA5swOR1eMGWiVdWM7YFfhsxGvQQy2A0iZNyMvQ//2lqzy3XrGkXktPN
+   QJ1loYld9EDGI/1Qb4zzbto8KYzzKZkmUqKFZsbc6A6sRmm5zTKHoGxD2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="308821076"
+X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; 
+   d="scan'208";a="308821076"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2023 03:47:51 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="988957189"
+X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; 
+   d="scan'208";a="988957189"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.185.248]) ([10.252.185.248])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2023 03:47:45 -0800
+Message-ID: <08c874f6-0c59-0b74-a2c8-7ad61356af6f@linux.intel.com>
+Date:   Thu, 19 Jan 2023 19:47:42 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Cc:     baolu.lu@linux.intel.com,
+        Alex Williamson <alex.williamson@redhat.com>,
+        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, nouveau@lists.freedesktop.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 06/10] iommu/intel: Add a gfp parameter to
+ alloc_pgtable_page()
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <6-v2-ce66f632bd0d+484-iommu_map_gfp_jgg@nvidia.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <6-v2-ce66f632bd0d+484-iommu_map_gfp_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: 0f097f08c9b3c1fdb6cc9f2dd423abc17d13f1a2  lib/scatterlist: Fix to calculate the last_pg properly
+On 2023/1/19 2:00, Jason Gunthorpe wrote:
+> This is eventually called by iommufd through intel_iommu_map_pages() and
+> it should not be forced to atomic. Push the GFP_ATOMIC to all callers.
+> 
+> Signed-off-by: Jason Gunthorpe<jgg@nvidia.com>
 
-elapsed time: 730m
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-configs tested: 78
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-x86_64                            allnoconfig
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-bpf
-x86_64                           rhel-8.3-syz
-x86_64                           rhel-8.3-kvm
-arc                              allyesconfig
-alpha                            allyesconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-arc                                 defconfig
-alpha                               defconfig
-arm                                 defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-s390                             allmodconfig
-s390                                defconfig
-powerpc                           allnoconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-sh                               allmodconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             allmodconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-s390                             allyesconfig
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-riscv                randconfig-r042-20230118
-s390                 randconfig-r044-20230118
-arc                  randconfig-r043-20230118
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-powerpc                      mgcoge_defconfig
-sh                        dreamcast_defconfig
-sh                           se7722_defconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-i386                          randconfig-c001
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-sh                                  defconfig
-powerpc                mpc7448_hpc2_defconfig
-xtensa                              defconfig
-parisc                           allyesconfig
-sparc                               defconfig
-xtensa                           allyesconfig
-csky                                defconfig
-sparc                            allyesconfig
-x86_64                                  kexec
-arm                       omap2plus_defconfig
-microblaze                          defconfig
-nios2                         10m50_defconfig
-arm                               allnoconfig
-sh                           se7705_defconfig
-arc                      axs103_smp_defconfig
-
-clang tested configs:
-x86_64                          rhel-8.3-rust
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-mips                       lemote2f_defconfig
-arm                         socfpga_defconfig
-arm                         orion5x_defconfig
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-arm                        spear3xx_defconfig
-arm                        neponset_defconfig
-x86_64                        randconfig-k001
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Best regards,
+baolu
