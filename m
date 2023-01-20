@@ -2,141 +2,254 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9AA674C60
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jan 2023 06:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E6A674CFB
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jan 2023 07:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbjATFaG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Jan 2023 00:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
+        id S229701AbjATGEj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Jan 2023 01:04:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbjATF2u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Jan 2023 00:28:50 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEADE6E823
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 21:23:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E8537B82424
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 14:06:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E40E2C433EF;
-        Thu, 19 Jan 2023 14:06:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674137179;
-        bh=oRQ4v/BhmCSq09Ar9+rDDuZFh4PvO2NfEsc3G6trIhc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dZsWYCbhf4apWCFw0PekgM7tW+UCOwFzPi/7CvP+9ntP7fs90PzWqJS1PxxBwxxYx
-         OZrMhh7MilgnXPyp6BZQZm2JBkK/UevoUZo6hfYvgJxI3+EahurSS8L5CyzCq9t6F+
-         N4WMgXqy8ZLv3TUNMqwhwo2f8/xHuC1EuaozK4hnLm7K+hdy4pI1yT9MmZGONsWKxM
-         43Cv0hwFSBjE9HR7uhPQdsF3wG+296I/E7O9LQ7ziW9uHq/GN3HwIoSjObGS115l6q
-         cg4MXaLJJuNwJXPRGtRB38NGxb4mTQRLwi+8MFl2Nsl7vQXBLji97BeIV82EoKklV6
-         x1jOWFspC9OHQ==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Dragos Tatulea <dtatulea@nvidia.com>, linux-rdma@vger.kernel.org,
-        Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH rdma-rc] IB/IPoIB: Fix legacy IPoIB due to wrong number of queues
-Date:   Thu, 19 Jan 2023 16:06:13 +0200
-Message-Id: <4a7ecec08ee30ad8004019818fadf1e58057e945.1674137153.git.leon@kernel.org>
-X-Mailer: git-send-email 2.39.0
+        with ESMTP id S229948AbjATGEi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Jan 2023 01:04:38 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466FF49940
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 22:04:36 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id ud5so11395587ejc.4
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 22:04:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JJRvfq0hBo4SnTLFyMlvstj2NsS2P74yEUKCR962NpM=;
+        b=IK/c9NC0/euguefJS33dB3PZebO4VVlYlkdaRUdyel6CcHjRZwGHlnQ6Uk5g0lsT6P
+         335/p2nBykWa4mpAXvd/NtBKaGgQ0yDCAoeKnq2+reW1zMU6xtfUuJw5ESVFJ590HL5j
+         kanfs6mTFyeyRftr/lZSRUsDoVLyq6X95GSdeJOrQSKivzMFtDBUfsTotScBjlCdq1LR
+         uNQIkQGbCFBxoWzcyumfCR1pB9hP2b78XxMOT+oj/f6MYIbdDdd0d40jUx6kk5YI/gaE
+         EgNgUAHdDZi9nRxvPgKGJJVXxbjakeSst+Zos4rK28VWI8FMTTaTbennDAX4v4plTcAi
+         1vjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JJRvfq0hBo4SnTLFyMlvstj2NsS2P74yEUKCR962NpM=;
+        b=6BFgbRG7GbGzWcST0HcApkrMhInraKNNOIqQT98yH89i/bkpIoeXCP3jKSceiRyJkQ
+         vili7BXC9jEGFFokVmH4ifNwCP5qk1kotkf7nQf9MX3NNTKO7UdGUaXzwi8lao/p8MHE
+         47H4vD0usDvDMZ3BAbL0Ri3HAByWxxHfqUvi+PJ6U6tepv1NvxbnemlqGnVyeCIvd52l
+         zCNWlgF5O+is8McfzdYN0zxfYp0Vq+b5PFoZTPI0GbuhNWjTd14ZryNteMGuu8ArPOvU
+         wwE5fFI5jkfYpc3C7D1WXrjCPEWiG1JWc8TMG7i6AzLe5QlqSJfIeVV2ILBwfiAB7kAs
+         vlOg==
+X-Gm-Message-State: AFqh2kqwrnXV/ajbzkXPoLlCmtFZymE4jmxkBxayQqnJDRwWg4i6Xgbv
+        /bYylHiE147oGzb/K8xVlH3gxqrc2+My8rOxzJI=
+X-Google-Smtp-Source: AMrXdXvkm9a7Py5nZILDjatw+euJkFPCDZ1T1TutJBNmoZX0cilVLVLIEkNvIhOwrXnLArYm5DO6wwwwej1hbG0y2ss=
+X-Received: by 2002:a17:906:99c6:b0:863:f322:70df with SMTP id
+ s6-20020a17090699c600b00863f32270dfmr1668503ejn.549.1674194674609; Thu, 19
+ Jan 2023 22:04:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230119190653.6363-1-rpearsonhpe@gmail.com> <CAD=hENcdkWchRrvH+KXLXZoaQcZPpnCdV9V9T9mmzkJ13DJKUA@mail.gmail.com>
+ <20809b59-0d7f-b6b0-e51c-026a78f07a86@gmail.com>
+In-Reply-To: <20809b59-0d7f-b6b0-e51c-026a78f07a86@gmail.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Fri, 20 Jan 2023 14:04:22 +0800
+Message-ID: <CAD=hENd0HiapsN-iTkAamdy+diFYf4GhP+hnSsfOSwMvMjxY1A@mail.gmail.com>
+Subject: Re: [PATCH for-next] RDMA/rxe: Handle zero length cases correctly
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     jgg@nvidia.com, leonro@nvidia.com, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dragos Tatulea <dtatulea@nvidia.com>
+On Fri, Jan 20, 2023 at 12:27 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> On 1/19/23 19:38, Zhu Yanjun wrote:
+> > On Fri, Jan 20, 2023 at 3:09 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+> >>
+> >> Currently the rxe driver, in rare situations, can respond incorrectly
+> >> to zero length operations which are retried. The client does not
+> >> have to provide an rkey for zero length RDMA operations so the rkey
+> >> may be invalid. The driver saves this rkey in the responder resources
+> >> to replay the rdma operation if a retry is required so the second pass
+> >> will use this (potentially) invalid rkey which may result in memory
+> >> faults.
 
-The cited commit creates child PKEY interfaces over netlink will multiple
-tx and rx queues, but some devices doesn't support more than 1 tx and 1 rx
-queues. This causes to a crash when traffic is sent over the PKEY interface
-due to the parent having a single queue but the child having multiple queues.
+In this link:
+https://lore.kernel.org/lkml/TYCPR01MB8455FC418FD61CAEE85D0D9FE5C19@TYCPR01MB8455.jpnprd01.prod.outlook.com/T/#m9ea28d1465dc2fb3469c21659e6b6c7349fc984f
 
-This patch inherits the real_num_tx/rx_queues from the parent netdev.
+Daisuke Matsuda (Fujitsu) made further investigations about this problem.
 
-BUG: kernel NULL pointer dereference, address: 000000000000036b
-PGD 0 P4D 0
-Oops: 0000 [#1] SMP
-CPU: 4 PID: 209665 Comm: python3 Not tainted 6.1.0_for_upstream_min_debug_2022_12_12_17_02 #1
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-RIP: 0010:kmem_cache_alloc+0xcb/0x450
-Code: ce 7e 49 8b 50 08 49 83 78 10 00 4d 8b 28 0f 84 cb 02 00 00 4d 85 ed 0f 84 c2 02 00 00 41 8b 44 24 28 48 8d 4a 01 49 8b 3c 24 <49> 8b 5c 05 00 4c 89 e8 65 48 0f c7 0f 0f 94 c0 84 c0 74 b8 41 8b
-RSP: 0018:ffff88822acbbab8 EFLAGS: 00010202
-RAX: 0000000000000070 RBX: ffff8881c28e3e00 RCX: 00000000064f8dae
-RDX: 00000000064f8dad RSI: 0000000000000a20 RDI: 0000000000030d00
-RBP: 0000000000000a20 R08: ffff8882f5d30d00 R09: ffff888104032f40
-R10: ffff88810fade828 R11: 736f6d6570736575 R12: ffff88810081c000
-R13: 00000000000002fb R14: ffffffff817fc865 R15: 0000000000000000
-FS:  00007f9324ff9700(0000) GS:ffff8882f5d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000000036b CR3: 00000001125af004 CR4: 0000000000370ea0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- skb_clone+0x55/0xd0
- ip6_finish_output2+0x3fe/0x690
- ip6_finish_output+0xfa/0x310
- ip6_send_skb+0x1e/0x60
- udp_v6_send_skb+0x1e5/0x420
- udpv6_sendmsg+0xb3c/0xe60
- ? ip_mc_finish_output+0x180/0x180
- ? __switch_to_asm+0x3a/0x60
- ? __switch_to_asm+0x34/0x60
- sock_sendmsg+0x33/0x40
- __sys_sendto+0x103/0x160
- ? _copy_to_user+0x21/0x30
- ? kvm_clock_get_cycles+0xd/0x10
- ? ktime_get_ts64+0x49/0xe0
- __x64_sys_sendto+0x25/0x30
- do_syscall_64+0x3d/0x90
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-RIP: 0033:0x7f9374f1ed14
-Code: 42 41 f8 ff 44 8b 4c 24 2c 4c 8b 44 24 20 89 c5 44 8b 54 24 28 48 8b 54 24 18 b8 2c 00 00 00 48 8b 74 24 10 8b 7c 24 08 0f 05 <48> 3d 00 f0 ff ff 77 34 89 ef 48 89 44 24 08 e8 68 41 f8 ff 48 8b
-RSP: 002b:00007f9324ff7bd0 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 00007f9324ff7cc8 RCX: 00007f9374f1ed14
-RDX: 00000000000002fb RSI: 00007f93000052f0 RDI: 0000000000000030
-RBP: 0000000000000000 R08: 00007f9324ff7d40 R09: 000000000000001c
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
-R13: 000000012a05f200 R14: 0000000000000001 R15: 00007f9374d57bdc
- </TASK>
+And Daisuke Matsuda (Fujitsu) has delved into this problem.
 
-Fixes: dbc94a0fb817 ("IB/IPoIB: Fix queue count inconsistency for PKEY child interfaces")
-Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/ulp/ipoib/ipoib_netlink.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Let us wait for his comments.
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-index 9ad8d9856275..589ae7af33ea 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-@@ -126,6 +126,18 @@ static int ipoib_new_child_link(struct net *src_net, struct net_device *dev,
- 	} else
- 		child_pkey  = nla_get_u16(data[IFLA_IPOIB_PKEY]);
- 
-+	err = netif_set_real_num_tx_queues(dev, pdev->real_num_tx_queues);
-+	if (err) {
-+		ipoib_warn(ppriv, "failed setting the child tx queue count based on parent\n");
-+		return err;
-+	}
-+
-+	err = netif_set_real_num_rx_queues(dev, pdev->real_num_rx_queues);
-+	if (err) {
-+		ipoib_warn(ppriv, "failed setting the child rx queue count based on parent\m");
-+		return err;
-+	}
-+
- 	err = ipoib_intf_init(ppriv->ca, ppriv->port, dev->name, dev);
- 	if (err) {
- 		ipoib_warn(ppriv, "failed to initialize pkey device\n");
--- 
-2.39.0
+Zhu Yanjun
 
+> >>
+> >> This patch corrects the driver to ignore the provided rkey if the
+> >> reth length is zero and make sure to set the mr to NULL. In read_reply()
+> >> if the length is zero the MR is set to NULL. Warnings are added in
+> >> the routines in rxe_mr.c to catch NULL MRs when the length is non-zero.
+> >>
+> >
+> > There is a patch in the following link:
+> >
+> > https://patchwork.kernel.org/project/linux-rdma/patch/20230113023527.728725-1-baijiaju1990@gmail.com/
+> >
+> > Not sure whether it is similar or not.
+> >
+> > Zhu Yanjun
+> >
+> >> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> >> ---
+> >>  drivers/infiniband/sw/rxe/rxe_mr.c   |  9 +++++++
+> >>  drivers/infiniband/sw/rxe/rxe_resp.c | 36 +++++++++++++++++++++-------
+> >>  2 files changed, 36 insertions(+), 9 deletions(-)
+> >>
+> >> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> >> index 072eac4b65d2..134a74f315c2 100644
+> >> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> >> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> >> @@ -267,6 +267,9 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
+> >>         int m, n;
+> >>         void *addr;
+> >>
+> >> +       if (WARN_ON(!mr))
+> >> +               return NULL;
+> >> +
+> >>         if (mr->state != RXE_MR_STATE_VALID) {
+> >>                 rxe_dbg_mr(mr, "Not in valid state\n");
+> >>                 addr = NULL;
+> >> @@ -305,6 +308,9 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, int length)
+> >>         if (length == 0)
+> >>                 return 0;
+> >>
+> >> +       if (WARN_ON(!mr))
+> >> +               return -EINVAL;
+> >> +
+> >>         if (mr->ibmr.type == IB_MR_TYPE_DMA)
+> >>                 return -EFAULT;
+> >>
+> >> @@ -349,6 +355,9 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+> >>         if (length == 0)
+> >>                 return 0;
+> >>
+> >> +       if (WARN_ON(!mr))
+> >> +               return -EINVAL;
+> >> +
+> >>         if (mr->ibmr.type == IB_MR_TYPE_DMA) {
+> >>                 u8 *src, *dest;
+> >>
+> >> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> >> index c74972244f08..a528dc25d389 100644
+> >> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> >> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> >> @@ -457,13 +457,23 @@ static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
+> >>         return RESPST_CHK_RKEY;
+> >>  }
+> >>
+> >> +/* if the reth length field is zero we can assume nothing
+> >> + * about the rkey value and should not validate or use it.
+> >> + * Instead set qp->resp.rkey to 0 which is an invalid rkey
+> >> + * value since the minimum index part is 1.
+> >> + */
+> >>  static void qp_resp_from_reth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+> >>  {
+> >> +       unsigned int length = reth_len(pkt);
+> >> +
+> >>         qp->resp.va = reth_va(pkt);
+> >>         qp->resp.offset = 0;
+> >> -       qp->resp.rkey = reth_rkey(pkt);
+> >> -       qp->resp.resid = reth_len(pkt);
+> >> -       qp->resp.length = reth_len(pkt);
+> >> +       qp->resp.resid = length;
+> >> +       qp->resp.length = length;
+> >> +       if (length)
+> >> +               qp->resp.rkey = reth_rkey(pkt);
+> >> +       else
+> >> +               qp->resp.rkey = 0;
+> >>  }
+> >>
+> >>  static void qp_resp_from_atmeth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+> >> @@ -512,8 +522,8 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+> >>
+> >>         /* A zero-byte op is not required to set an addr or rkey. See C9-88 */
+> >>         if ((pkt->mask & RXE_READ_OR_WRITE_MASK) &&
+> >> -           (pkt->mask & RXE_RETH_MASK) &&
+> >> -           reth_len(pkt) == 0) {
+> >> +           (pkt->mask & RXE_RETH_MASK) && reth_len(pkt) == 0) {
+> >> +               qp->resp.mr = NULL;
+> >>                 return RESPST_EXECUTE;
+> >>         }
+> >>
+> >> @@ -592,6 +602,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+> >>         return RESPST_EXECUTE;
+> >>
+> >>  err:
+> >> +       qp->resp.mr = NULL;
+> >>         if (mr)
+> >>                 rxe_put(mr);
+> >>         if (mw)
+> >> @@ -966,7 +977,10 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+> >>         }
+> >>
+> >>         if (res->state == rdatm_res_state_new) {
+> >> -               if (!res->replay) {
+> >> +               if (qp->resp.length == 0) {
+> >> +                       mr = NULL;
+> >> +                       qp->resp.mr = NULL;
+> >> +               } else if (!res->replay) {
+> >>                         mr = qp->resp.mr;
+> >>                         qp->resp.mr = NULL;
+> >>                 } else {
+> >> @@ -980,9 +994,13 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+> >>                 else
+> >>                         opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST;
+> >>         } else {
+> >> -               mr = rxe_recheck_mr(qp, res->read.rkey);
+> >> -               if (!mr)
+> >> -                       return RESPST_ERR_RKEY_VIOLATION;
+> >> +               if (qp->resp.length == 0) {
+> >> +                       mr = NULL;
+> >> +               } else {
+> >> +                       mr = rxe_recheck_mr(qp, res->read.rkey);
+> >> +                       if (!mr)
+> >> +                               return RESPST_ERR_RKEY_VIOLATION;
+> >> +               }
+> >>
+> >>                 if (res->read.resid > mtu)
+> >>                         opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE;
+> >> --
+> >> 2.37.2
+> >>
+>
+> Zhu,
+>
+> It relates since he is checking for NULL MRs. But I don't think it addresses the root
+> causes. The patch I sent should eliminate NULL MRs together with length != 0 in
+> the copy routines. I added WARN_ON's in case someone changes things later and
+> we hit this again. (A warning is more useful than a fault which can be very hard
+> to diagnose.)
+>
+> The two changes I made that attack the cause of problems are
+> (1) clearing qp->resp.mr in check_rkey() in the alternate paths. The primary
+> path demands that it get set with a valid mr. But on the alternate paths it isn't
+> set at all and can leave with a stale, invalid or wrong mr value.
+> (2) in read_reply() there is an error path where a zero length read fails to get
+> acked and the requester retries the operation and sends a second request. This
+> will end up in read_reply and as currently written attempt to lookup the rkey and
+> turn it into an MR but no valid rkey is required in a zero length operation so this
+> is likely to fail. The fixes treats length == 0 as a special case and force a NULL mr.
+> This should not trigger a fault in the mr copy/etc. routines since they always
+> check for length == 0 and return or require a non zero length.
+>
+> Thanks,
+>
+> Bob
+>
+>
