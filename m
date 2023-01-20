@@ -2,254 +2,250 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E6A674CFB
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jan 2023 07:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C9A674D30
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jan 2023 07:20:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbjATGEj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Jan 2023 01:04:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
+        id S229553AbjATGUs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Jan 2023 01:20:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbjATGEi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Jan 2023 01:04:38 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466FF49940
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 22:04:36 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id ud5so11395587ejc.4
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 22:04:36 -0800 (PST)
+        with ESMTP id S229740AbjATGUm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Jan 2023 01:20:42 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9254582999
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 22:20:40 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id q15so3511933qtn.0
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 22:20:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JJRvfq0hBo4SnTLFyMlvstj2NsS2P74yEUKCR962NpM=;
-        b=IK/c9NC0/euguefJS33dB3PZebO4VVlYlkdaRUdyel6CcHjRZwGHlnQ6Uk5g0lsT6P
-         335/p2nBykWa4mpAXvd/NtBKaGgQ0yDCAoeKnq2+reW1zMU6xtfUuJw5ESVFJ590HL5j
-         kanfs6mTFyeyRftr/lZSRUsDoVLyq6X95GSdeJOrQSKivzMFtDBUfsTotScBjlCdq1LR
-         uNQIkQGbCFBxoWzcyumfCR1pB9hP2b78XxMOT+oj/f6MYIbdDdd0d40jUx6kk5YI/gaE
-         EgNgUAHdDZi9nRxvPgKGJJVXxbjakeSst+Zos4rK28VWI8FMTTaTbennDAX4v4plTcAi
-         1vjQ==
+        d=broadcom.com; s=google;
+        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=c53BZ9+aLSQtImZcsKDfhHYDk7+Ol9Q5L3V4KI50kqs=;
+        b=NunoyCjiI6sWG+5Ig17LogqARXB0rfFH+tnrdFG69wAabPrsqjRTFNg3xOaCgf4Ilv
+         JpQgT+Pv2j6PWS18ZAxPQW2z6iYAFb+EFM66Drn3fk/t08thDfj15utRa2R/kHnIu9gS
+         uBlZhfyB4ZVw8jel8CKqo2U5dCzyEfZKyzQDc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JJRvfq0hBo4SnTLFyMlvstj2NsS2P74yEUKCR962NpM=;
-        b=6BFgbRG7GbGzWcST0HcApkrMhInraKNNOIqQT98yH89i/bkpIoeXCP3jKSceiRyJkQ
-         vili7BXC9jEGFFokVmH4ifNwCP5qk1kotkf7nQf9MX3NNTKO7UdGUaXzwi8lao/p8MHE
-         47H4vD0usDvDMZ3BAbL0Ri3HAByWxxHfqUvi+PJ6U6tepv1NvxbnemlqGnVyeCIvd52l
-         zCNWlgF5O+is8McfzdYN0zxfYp0Vq+b5PFoZTPI0GbuhNWjTd14ZryNteMGuu8ArPOvU
-         wwE5fFI5jkfYpc3C7D1WXrjCPEWiG1JWc8TMG7i6AzLe5QlqSJfIeVV2ILBwfiAB7kAs
-         vlOg==
-X-Gm-Message-State: AFqh2kqwrnXV/ajbzkXPoLlCmtFZymE4jmxkBxayQqnJDRwWg4i6Xgbv
-        /bYylHiE147oGzb/K8xVlH3gxqrc2+My8rOxzJI=
-X-Google-Smtp-Source: AMrXdXvkm9a7Py5nZILDjatw+euJkFPCDZ1T1TutJBNmoZX0cilVLVLIEkNvIhOwrXnLArYm5DO6wwwwej1hbG0y2ss=
-X-Received: by 2002:a17:906:99c6:b0:863:f322:70df with SMTP id
- s6-20020a17090699c600b00863f32270dfmr1668503ejn.549.1674194674609; Thu, 19
- Jan 2023 22:04:34 -0800 (PST)
+        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c53BZ9+aLSQtImZcsKDfhHYDk7+Ol9Q5L3V4KI50kqs=;
+        b=rVxRhpQaSSjE5DSJGjzyyPjj3EDhRTqFUpJ0ydHQz4EP1fHOaR37mJZcUUBEhhvx+D
+         mhV6tqt4zF54iqW6oYDG9NpM1TUeNAHZTJorlV03EO6Uu/fx9M82w7JOAF606CqYBXVR
+         SFOndbsz6JSABqeglSv1rgmEY9UBtRmGSPlvg+tMwlQ5ZarMVSyQeebX9SewGtelAph8
+         0T4GN4rL1uSxbAnj9zuzdAkrv12v85/uKlQWAkie7EY+YM6p1f9O0Lhcv/RFRRWNsaKr
+         C7BbqLpvQqYskjQ7nkZq0Ak7NfDo7IRp8puy78a7GxOHFZGNC22rJcR9K4S4bp8QcZsf
+         eVKA==
+X-Gm-Message-State: AFqh2kr6x1nKTjmCES+zDSmr7LBC30+ZJMrezaB1j1wH19OUfnauvhuQ
+        zsOc1E+FwFZUditmbkq186lsUQ==
+X-Google-Smtp-Source: AMrXdXv4mjktNFlsGj1V5kfSI/3x7iKmyV8Gp2HZ12WXvlG0vWCcHOJSKbAhW7Vq5xhr7fZxmnubgQ==
+X-Received: by 2002:ac8:5a95:0:b0:3a8:faf:296a with SMTP id c21-20020ac85a95000000b003a80faf296amr25332954qtc.54.1674195639266;
+        Thu, 19 Jan 2023 22:20:39 -0800 (PST)
+Received: from localhost.localdomain ([2605:a601:a780:1400:641c:466b:fa8e:b05a])
+        by smtp.gmail.com with ESMTPSA id e26-20020ac845da000000b003a527d29a41sm6903273qto.75.2023.01.19.22.20.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Jan 2023 22:20:38 -0800 (PST)
+From:   Ajit Khaparde <ajit.khaparde@broadcom.com>
+To:     ajit.khaparde@broadcom.com
+Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
+        edumazet@google.com, jgg@ziepe.ca, kuba@kernel.org,
+        leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, michael.chan@broadcom.com,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        selvin.xavier@broadcom.com
+Subject: [PATCH net-next v8 0/8] Add Auxiliary driver support
+Date:   Thu, 19 Jan 2023 22:05:27 -0800
+Message-Id: <20230120060535.83087-1-ajit.khaparde@broadcom.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-References: <20230119190653.6363-1-rpearsonhpe@gmail.com> <CAD=hENcdkWchRrvH+KXLXZoaQcZPpnCdV9V9T9mmzkJ13DJKUA@mail.gmail.com>
- <20809b59-0d7f-b6b0-e51c-026a78f07a86@gmail.com>
-In-Reply-To: <20809b59-0d7f-b6b0-e51c-026a78f07a86@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Fri, 20 Jan 2023 14:04:22 +0800
-Message-ID: <CAD=hENd0HiapsN-iTkAamdy+diFYf4GhP+hnSsfOSwMvMjxY1A@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA/rxe: Handle zero length cases correctly
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     jgg@nvidia.com, leonro@nvidia.com, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000061de2505f2ac0cf9"
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
+        RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 12:27 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> On 1/19/23 19:38, Zhu Yanjun wrote:
-> > On Fri, Jan 20, 2023 at 3:09 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
-> >>
-> >> Currently the rxe driver, in rare situations, can respond incorrectly
-> >> to zero length operations which are retried. The client does not
-> >> have to provide an rkey for zero length RDMA operations so the rkey
-> >> may be invalid. The driver saves this rkey in the responder resources
-> >> to replay the rdma operation if a retry is required so the second pass
-> >> will use this (potentially) invalid rkey which may result in memory
-> >> faults.
+--00000000000061de2505f2ac0cf9
+Content-Transfer-Encoding: 8bit
 
-In this link:
-https://lore.kernel.org/lkml/TYCPR01MB8455FC418FD61CAEE85D0D9FE5C19@TYCPR01MB8455.jpnprd01.prod.outlook.com/T/#m9ea28d1465dc2fb3469c21659e6b6c7349fc984f
+Add auxiliary device driver for Broadcom devices.
+The bnxt_en driver will register and initialize an aux device
+if RDMA is enabled in the underlying device.
+The bnxt_re driver will then probe and initialize the
+RoCE interfaces with the infiniband stack.
 
-Daisuke Matsuda (Fujitsu) made further investigations about this problem.
+We got rid of the bnxt_en_ops which the bnxt_re driver used to
+communicate with bnxt_en.
+Similarly  We have tried to clean up most of the bnxt_ulp_ops.
+In most of the cases we used the functions and entry points provided
+by the auxiliary bus driver framework.
+And now these are the minimal functions needed to support the functionality.
 
-And Daisuke Matsuda (Fujitsu) has delved into this problem.
+We will try to work on getting rid of the remaining if we find any
+other viable option in future.
 
-Let us wait for his comments.
+v1->v2:
+- Incorporated review comments including usage of ulp_id &
+  complex function indirections.
+- Used function calls provided by the auxiliary bus interface
+  instead of proprietary calls.
+- Refactor code to remove ROCE driver's access to bnxt structure.
 
-Zhu Yanjun
+v2->v3:
+- Addressed review comments including cleanup of some unnecessary wrappers
+- Fixed warnings seen during cross compilation
 
-> >>
-> >> This patch corrects the driver to ignore the provided rkey if the
-> >> reth length is zero and make sure to set the mr to NULL. In read_reply()
-> >> if the length is zero the MR is set to NULL. Warnings are added in
-> >> the routines in rxe_mr.c to catch NULL MRs when the length is non-zero.
-> >>
-> >
-> > There is a patch in the following link:
-> >
-> > https://patchwork.kernel.org/project/linux-rdma/patch/20230113023527.728725-1-baijiaju1990@gmail.com/
-> >
-> > Not sure whether it is similar or not.
-> >
-> > Zhu Yanjun
-> >
-> >> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> >> ---
-> >>  drivers/infiniband/sw/rxe/rxe_mr.c   |  9 +++++++
-> >>  drivers/infiniband/sw/rxe/rxe_resp.c | 36 +++++++++++++++++++++-------
-> >>  2 files changed, 36 insertions(+), 9 deletions(-)
-> >>
-> >> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> >> index 072eac4b65d2..134a74f315c2 100644
-> >> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> >> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> >> @@ -267,6 +267,9 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
-> >>         int m, n;
-> >>         void *addr;
-> >>
-> >> +       if (WARN_ON(!mr))
-> >> +               return NULL;
-> >> +
-> >>         if (mr->state != RXE_MR_STATE_VALID) {
-> >>                 rxe_dbg_mr(mr, "Not in valid state\n");
-> >>                 addr = NULL;
-> >> @@ -305,6 +308,9 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, int length)
-> >>         if (length == 0)
-> >>                 return 0;
-> >>
-> >> +       if (WARN_ON(!mr))
-> >> +               return -EINVAL;
-> >> +
-> >>         if (mr->ibmr.type == IB_MR_TYPE_DMA)
-> >>                 return -EFAULT;
-> >>
-> >> @@ -349,6 +355,9 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
-> >>         if (length == 0)
-> >>                 return 0;
-> >>
-> >> +       if (WARN_ON(!mr))
-> >> +               return -EINVAL;
-> >> +
-> >>         if (mr->ibmr.type == IB_MR_TYPE_DMA) {
-> >>                 u8 *src, *dest;
-> >>
-> >> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> >> index c74972244f08..a528dc25d389 100644
-> >> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> >> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> >> @@ -457,13 +457,23 @@ static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
-> >>         return RESPST_CHK_RKEY;
-> >>  }
-> >>
-> >> +/* if the reth length field is zero we can assume nothing
-> >> + * about the rkey value and should not validate or use it.
-> >> + * Instead set qp->resp.rkey to 0 which is an invalid rkey
-> >> + * value since the minimum index part is 1.
-> >> + */
-> >>  static void qp_resp_from_reth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
-> >>  {
-> >> +       unsigned int length = reth_len(pkt);
-> >> +
-> >>         qp->resp.va = reth_va(pkt);
-> >>         qp->resp.offset = 0;
-> >> -       qp->resp.rkey = reth_rkey(pkt);
-> >> -       qp->resp.resid = reth_len(pkt);
-> >> -       qp->resp.length = reth_len(pkt);
-> >> +       qp->resp.resid = length;
-> >> +       qp->resp.length = length;
-> >> +       if (length)
-> >> +               qp->resp.rkey = reth_rkey(pkt);
-> >> +       else
-> >> +               qp->resp.rkey = 0;
-> >>  }
-> >>
-> >>  static void qp_resp_from_atmeth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
-> >> @@ -512,8 +522,8 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
-> >>
-> >>         /* A zero-byte op is not required to set an addr or rkey. See C9-88 */
-> >>         if ((pkt->mask & RXE_READ_OR_WRITE_MASK) &&
-> >> -           (pkt->mask & RXE_RETH_MASK) &&
-> >> -           reth_len(pkt) == 0) {
-> >> +           (pkt->mask & RXE_RETH_MASK) && reth_len(pkt) == 0) {
-> >> +               qp->resp.mr = NULL;
-> >>                 return RESPST_EXECUTE;
-> >>         }
-> >>
-> >> @@ -592,6 +602,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
-> >>         return RESPST_EXECUTE;
-> >>
-> >>  err:
-> >> +       qp->resp.mr = NULL;
-> >>         if (mr)
-> >>                 rxe_put(mr);
-> >>         if (mw)
-> >> @@ -966,7 +977,10 @@ static enum resp_states read_reply(struct rxe_qp *qp,
-> >>         }
-> >>
-> >>         if (res->state == rdatm_res_state_new) {
-> >> -               if (!res->replay) {
-> >> +               if (qp->resp.length == 0) {
-> >> +                       mr = NULL;
-> >> +                       qp->resp.mr = NULL;
-> >> +               } else if (!res->replay) {
-> >>                         mr = qp->resp.mr;
-> >>                         qp->resp.mr = NULL;
-> >>                 } else {
-> >> @@ -980,9 +994,13 @@ static enum resp_states read_reply(struct rxe_qp *qp,
-> >>                 else
-> >>                         opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST;
-> >>         } else {
-> >> -               mr = rxe_recheck_mr(qp, res->read.rkey);
-> >> -               if (!mr)
-> >> -                       return RESPST_ERR_RKEY_VIOLATION;
-> >> +               if (qp->resp.length == 0) {
-> >> +                       mr = NULL;
-> >> +               } else {
-> >> +                       mr = rxe_recheck_mr(qp, res->read.rkey);
-> >> +                       if (!mr)
-> >> +                               return RESPST_ERR_RKEY_VIOLATION;
-> >> +               }
-> >>
-> >>                 if (res->read.resid > mtu)
-> >>                         opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE;
-> >> --
-> >> 2.37.2
-> >>
->
-> Zhu,
->
-> It relates since he is checking for NULL MRs. But I don't think it addresses the root
-> causes. The patch I sent should eliminate NULL MRs together with length != 0 in
-> the copy routines. I added WARN_ON's in case someone changes things later and
-> we hit this again. (A warning is more useful than a fault which can be very hard
-> to diagnose.)
->
-> The two changes I made that attack the cause of problems are
-> (1) clearing qp->resp.mr in check_rkey() in the alternate paths. The primary
-> path demands that it get set with a valid mr. But on the alternate paths it isn't
-> set at all and can leave with a stale, invalid or wrong mr value.
-> (2) in read_reply() there is an error path where a zero length read fails to get
-> acked and the requester retries the operation and sends a second request. This
-> will end up in read_reply and as currently written attempt to lookup the rkey and
-> turn it into an MR but no valid rkey is required in a zero length operation so this
-> is likely to fail. The fixes treats length == 0 as a special case and force a NULL mr.
-> This should not trigger a fault in the mr copy/etc. routines since they always
-> check for length == 0 and return or require a non zero length.
->
-> Thanks,
->
-> Bob
->
->
+v3->v4:
+- Cleaned up bnxt_ulp.c and bnxt_ulp.h further
+- Removed some more dead code
+- Sending the patchset as a standalone series
+
+v4->v5:
+- Removed the SRIOV config callback which bnxt_en driver was calling into
+  bnxt_re driver.
+- Removed excessive checks for rdev and other pointers.
+
+v5->v6:
+- Removed excessive checks for dev and other pointers
+- Remove runtime interrupt vector allocation. bnxt_en preallocates
+interrupt vectors for bnxt_re to use.
+
+v6->v7:
+- Removed incorrect usage of inline
+- Updated Kconfig to select AUXILIARY BUS support
+- Addressed various comments including removal of unnecessary forward
+  declaration, using static functions where possible, unnecessary jump,
+  cleanup logic, etc..
+- Added Leon's Reviewed-by, to the commit log in the patches, from
+  previous version.
+
+v7->v8:
+- Addressed various comments to remove unnecessary check for id, removed
+  setting pointer to NULL after free, renamed private pointers to avoid
+  confusing them with the auxiliary device names and refactored some
+  code accordingly.
+- Auxiliary device will be released through auxiliary_device_uninit();
+
+
+Commit message uses Leon's Reviewed-by from earlier version.
+
+Please apply. Thanks.
+
+The following are changes since commit 3ef4a8c8963b29813170177899f84ffb93f1a8f1
+  'Merge branch 'net-phy-remove-probe_capabilities'
+and are available in the git repository at:
+  https://github.com/ajitkhaparde1/net-next/tree/aux-bus-v8
+
+
+Ajit Khaparde (7):
+  bnxt_en: Add auxiliary driver support
+  RDMA/bnxt_re: Use auxiliary driver interface
+  bnxt_en: Remove usage of ulp_id
+  bnxt_en: Use direct API instead of indirection
+  bnxt_en: Use auxiliary bus calls over proprietary calls
+  RDMA/bnxt_re: Remove the sriov config callback
+  bnxt_en: Remove runtime interrupt vector allocation
+
+Hongguang Gao (1):
+  bnxt_en: Remove struct bnxt access from RoCE driver
+
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h       |  10 +-
+ drivers/infiniband/hw/bnxt_re/main.c          | 635 +++++++-----------
+ drivers/net/ethernet/broadcom/Kconfig         |   1 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  11 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h     |   8 +
+ .../net/ethernet/broadcom/bnxt/bnxt_sriov.c   |   7 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 506 +++++++-------
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |  52 +-
+ 8 files changed, 494 insertions(+), 736 deletions(-)
+
+-- 
+2.37.1 (Apple Git-137.1)
+
+
+--00000000000061de2505f2ac0cf9
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+pZEyqKnwS1lKCzjX7mV5W955rFsFxChdAKfw0HilwtqdY24mhy62+GeaEkD0gYIj1tCmw9gnQToc
+K+0s7xEunfR9pBrzmOwS3OQbcP0nJ8SmQ8R+reroH6LYuFpaqK1rgQIDAQABo4IB2zCCAdcwDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAlBgNVHREEHjAcgRphaml0LmtoYXBhcmRlQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
+BQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUbrcTuh0mr2qP
+xYdtyDgFeRIiE/gwDQYJKoZIhvcNAQELBQADggEBALrc1TljKrDhXicOaZlzIQyqOEkKAZ324i8X
+OwzA0n2EcPGmMZvgARurvanSLD3mLeeuyq1feCcjfGM1CJFh4+EY7EkbFbpVPOIdstSBhbnAJnOl
+aC/q0wTndKoC/xXBhXOZB8YL/Zq4ZclQLMUO6xi/fFRyHviI5/IrosdrpniXFJ9ukJoOXtvdrEF+
+KlMYg/Deg9xo3wddCqQIsztHSkR4XaANdn+dbLRQpctZ13BY1lim4uz5bYn3M0IxyZWkQ1JuPHCK
+aRJv0SfR88PoI4RB7NCEHqFwARTj1KvFPQi8pK/YISFydZYbZrxQdyWDidqm4wSuJfpE6i0cWvCd
+u50xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
+MTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwM2Vrj
+4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINOnKKGpXLPYDpSgu6e8
+LU4mpWLyV+Kr9f6Bk35HV4MJMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
+MQ8XDTIzMDEyMDA2MjAzOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
+BAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsG
+CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBdckJpMqIm3vuYej3NWX55fyXGmjnNUC0xNpqi
+786J5OC+MmQPSfSH8NM4yMBCgidw9O3Na1/bNAuwxY+DYaxqVmNu0R26MpUCNgVXSvsgXxIb8v3c
+/B/oPsWrRBT84xwz3mIS9HD/wl4jdwZI2lHJ6yFd16cgrEaP/S9aux8Ed2aykewDamXLdjaZ44I0
+s14Xgrs7gon0+rPkrk5h0kFi0cUt6IwbPCePALJqSJnjqaYFWdJGwxobd3raRkc5w0WXhPQ9X/B7
+oDNqq2mgSbeZGieKEyXTMJfRLU3ipCzX3AFIFPfBIn/8LC6TTZK8YjH78dzSQPqlzY40DOvqwZgu
+--00000000000061de2505f2ac0cf9--
