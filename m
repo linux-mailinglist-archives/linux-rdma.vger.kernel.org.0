@@ -2,599 +2,246 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D1C674D4B
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jan 2023 07:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD96674FC4
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jan 2023 09:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbjATGVz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Jan 2023 01:21:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
+        id S229582AbjATIut (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Jan 2023 03:50:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjATGVg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Jan 2023 01:21:36 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F413185342
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 22:20:59 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id e8so3488930qts.1
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Jan 2023 22:20:59 -0800 (PST)
+        with ESMTP id S229652AbjATIur (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Jan 2023 03:50:47 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FF6891ED;
+        Fri, 20 Jan 2023 00:50:34 -0800 (PST)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30K7Nk2U016365;
+        Fri, 20 Jan 2023 00:50:18 -0800
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3n71cexknk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Jan 2023 00:50:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QxhvxKDtU2IxMZTUN2gc95cffywF5hXUV28U3m4Qk3rRCbAMxa8WypDPI58RxfKYPbsM/05ljXXmNxupi4mB08KrvBJHSpdQDJkXQoOb3Xqy1RpPQ0aPMFdKJW3FF4lFT0DJvklAAT7Pb4vMuLWzmTf8FtOFHBhKoWOGVhvWwUMcWFNWwbMuPYmWL0xifRGmfm6SenOzX/1C11oFXa2SmJgzDi5vfbNfK8yaTOn5MUv9Ns0+awpAp5GjGBYIrKoQQ64A7MEoLvjKID5O9wOIQ+fw9SwMBZeYDMo2uRDjPWd5FYTskPicNfn3kod6tKHVHYi6bczfODmqsEiHjwo/JQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c0r+6iK1WPrbyQgNqu9/ZHHxg0xBx65MarE0msWT1xg=;
+ b=U9aXnGAjxIaszAhSaz28hevrsO/iG3Zm4y89sLMuT+QGsTn4I8ga78aNV4sGxGd7XYGy6dLFGkfo4PhItzWAttU9Jh4CprkxqqLGlLQDBGHiBoIuNccW6fC3eMLqOdEgDa7ulw+IkpukduQB3ZRZ9H61zuO2k4QjGPcQc+5ZeKdgduSYwOY4XRGxSGvXbD9gjYHz2W119fCUtQ+aBFC4GMCne5GCOzGQTr8HibpCLDINz2W+QPK69KEZE9IM5g0hL7AyI1Mx8q3v3etwCWg8ldy6SnQzPeXovTpfxo106cIUARS3jG5bqMDyprOXNHJ67jE5vcLddzbKflp50rHVsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rmP0JJoUihiDo9SidkgK0iYmKPkOXDwmzFxUCcMNRUQ=;
-        b=X+qDE5JxNanv3foN+xvPDzghdBycSJwE8Jp0eREelK9ppChEz5HTseu926VG4YmvdF
-         zn8x+dr1N5w5OoXsbqtL0Wb6c+wh/hR7JnnP6oPS7Q6zbjz+urbbDIGpQZ71aS7F31MJ
-         zR1uWWbbmzw2/m6GGnNkHnaVPmWt8vC0pFU4E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rmP0JJoUihiDo9SidkgK0iYmKPkOXDwmzFxUCcMNRUQ=;
-        b=gm0vJ7UhgMp50QCU6Jn3AhwiUb5XOzSZDrsXlC09Wo3REcm8qFKfbL9/8DXnwZZrYV
-         PgjrlSj9NyHdYASE/jO/LFzxP+qZj5EINsqEW6fxCyY0UnWT4KPjsyvuqejO2bJ5Ernb
-         jeM6o1ZgB3MNIl8lqy+VhOpjLJjqbkMj/qhwG9THBrNhyfsHSamnZAxR0gt2Z4nqZzlg
-         G+MRVgEUTIkAC71o2dQT0SwBbq8gEApjsel43o5SdUwPrs55sw2yP8NbBm7Au5bfR7rX
-         X6EfVY+DK3rFJDxREoQW4qIm7ajE2CCEzTyJ0EScQwH3FqrZY4Rfu51TC5OtD6GIH4O3
-         KDYg==
-X-Gm-Message-State: AFqh2kodWTEIyiEY+jeOoL65z5yFP19t/0eMHBhxxZfcvOz9qk0+kJkV
-        CNHF9T16MBBfmngJY64x3j3XuQ==
-X-Google-Smtp-Source: AMrXdXuSXhI3+uCd3urXNgKxNTHCR8HWJJc5WISfg+Y/dYC+M7LVlKns8g0YZKWp0AWs+C10EllZtg==
-X-Received: by 2002:ac8:41c5:0:b0:3b6:33be:34d3 with SMTP id o5-20020ac841c5000000b003b633be34d3mr17118854qtm.1.1674195659452;
-        Thu, 19 Jan 2023 22:20:59 -0800 (PST)
-Received: from localhost.localdomain ([2605:a601:a780:1400:641c:466b:fa8e:b05a])
-        by smtp.gmail.com with ESMTPSA id e26-20020ac845da000000b003a527d29a41sm6903273qto.75.2023.01.19.22.20.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 22:20:58 -0800 (PST)
-From:   Ajit Khaparde <ajit.khaparde@broadcom.com>
-To:     ajit.khaparde@broadcom.com
-Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, jgg@ziepe.ca, kuba@kernel.org,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, michael.chan@broadcom.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        selvin.xavier@broadcom.com, Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH net-next v8 8/8] bnxt_en: Remove runtime interrupt vector allocation
-Date:   Thu, 19 Jan 2023 22:05:35 -0800
-Message-Id: <20230120060535.83087-9-ajit.khaparde@broadcom.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20230120060535.83087-1-ajit.khaparde@broadcom.com>
-References: <20230120060535.83087-1-ajit.khaparde@broadcom.com>
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c0r+6iK1WPrbyQgNqu9/ZHHxg0xBx65MarE0msWT1xg=;
+ b=Vf6ikOBZ31jgRjZtfWIZQbDycxs4zyr4uaU9FQmLnpT6OzBasStAdZFJpo+Eeg7E8UXJuBzfc9+P1599WaFx+uof8lJaIHByIiCbA52QEml32nxQL3nQgZSqf+zq8GKG72Y7bNcbasi3UsqPZeJxCO283H7+uHj8GTSiyvOZq70=
+Received: from PH0PR18MB4474.namprd18.prod.outlook.com (2603:10b6:510:ea::22)
+ by PH0PR18MB5166.namprd18.prod.outlook.com (2603:10b6:510:167::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.24; Fri, 20 Jan
+ 2023 08:50:16 +0000
+Received: from PH0PR18MB4474.namprd18.prod.outlook.com
+ ([fe80::e6ca:f949:a109:b83e]) by PH0PR18MB4474.namprd18.prod.outlook.com
+ ([fe80::e6ca:f949:a109:b83e%2]) with mapi id 15.20.6002.027; Fri, 20 Jan 2023
+ 08:50:16 +0000
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     Maxim Mikityanskiy <maxtram95@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        "jhs@mojatatu.com" <jhs@mojatatu.com>,
+        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
+        "jiri@resnulli.us" <jiri@resnulli.us>,
+        "saeedm@nvidia.com" <saeedm@nvidia.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "tariqt@nvidia.com" <tariqt@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "hariprasad.netdev@gmail.com" <hariprasad.netdev@gmail.com>
+Subject: Re: [net-next Patch v2 4/5] octeontx2-pf: Add devlink support to
+ configure TL1 RR_PRIO
+Thread-Topic: [net-next Patch v2 4/5] octeontx2-pf: Add devlink support to
+ configure TL1 RR_PRIO
+Thread-Index: AQHZLKw3Ph/wPlV6p0Cw/IyBaankiA==
+Date:   Fri, 20 Jan 2023 08:50:16 +0000
+Message-ID: <PH0PR18MB4474FCEAC4FA5907CAC17011DEC59@PH0PR18MB4474.namprd18.prod.outlook.com>
+References: <20230118105107.9516-1-hkelam@marvell.com>
+ <20230118105107.9516-5-hkelam@marvell.com> <Y8hYlYk/7FfGdfy8@mail.gmail.com>
+In-Reply-To: <Y8hYlYk/7FfGdfy8@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-rorf: true
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcaGtlbGFtXGFw?=
+ =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
+ =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctNzMzZjhlYzAtOTg5Zi0xMWVkLWI2ZDItZDQzYjA0?=
+ =?us-ascii?Q?N2UyYjlkXGFtZS10ZXN0XDczM2Y4ZWMyLTk4OWYtMTFlZC1iNmQyLWQ0M2Iw?=
+ =?us-ascii?Q?NDdlMmI5ZGJvZHkudHh0IiBzej0iMjA3MyIgdD0iMTMzMTg2NzgyMTI5MzU2?=
+ =?us-ascii?Q?ODY5IiBoPSJpRXpZTjd2T2MxTWpPQkQvdGF0bXJROFhLZzg9IiBpZD0iIiBi?=
+ =?us-ascii?Q?bD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFOZ0hBQUJG?=
+ =?us-ascii?Q?QUprMXJDelpBU3FQWE5SQTNSb2pLbzljMUVEZEdpTU1BQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBSEFBQUFCb0J3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBUUFCQUFBQTNUekZBQUFBQUFBQUFBQUFBQUFBQUo0QUFBQmhBR1FBWkFC?=
+ =?us-ascii?Q?eUFHVUFjd0J6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdNQWRRQnpBSFFBYndCdEFGOEFjQUJs?=
+ =?us-ascii?Q?QUhJQWN3QnZBRzRBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
+ =?us-ascii?Q?QUFDZUFBQUFZd0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJnQjFB?=
+ =?us-ascii?Q?RzBBWWdCbEFISUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCakFIVUFj?=
+ =?us-ascii?Q?d0IwQUc4QWJRQmZBSE1BY3dCdUFGOEFaQUJoQUhNQWFBQmZBSFlBTUFBeUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01B?=
+ =?us-ascii?Q?ZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdCckFHVUFlUUIzQUc4QWNnQmtB?=
+ =?us-ascii?Q?SE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFY?=
+ =?us-ascii?Q?d0J6QUhNQWJnQmZBRzRBYndCa0FHVUFiQUJwQUcwQWFRQjBBR1VBY2dCZkFI?=
+ =?us-ascii?Q?WUFNQUF5QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUlBQUFBQUFKNEFBQUJqQUhVQWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QWN3?=
+ =?us-ascii?Q?QndBR0VBWXdCbEFGOEFkZ0F3QURJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
+ =?us-ascii?Q?UUFiQUJ3QUY4QWN3QnJBSGtBY0FCbEFGOEFZd0JvQUdFQWRBQmZBRzBBWlFC?=
+ =?us-ascii?Q?ekFITUFZUUJuQUdVQVh3QjJBREFBTWdBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWkFCc0FIQUFYd0J6QUd3?=
+ =?us-ascii?Q?QVlRQmpBR3NBWHdCakFHZ0FZUUIwQUY4QWJRQmxBSE1BY3dCaEFHY0FaUUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reftwo: QUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQmtBR3dBY0FCZkFIUUFaUUJoQUcwQWN3QmZBRzhBYmdCbEFHUUFjZ0JwQUhZQVpRQmZBR1lBYVFCc0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdVQWJRQmhBR2tBYkFCZkFHRUFaQUJrQUhJQVpRQnpBSE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIUUFaUUJ5QUcwQWFRQnVBSFVBY3dBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBQT09Ii8+PC9tZXRhPg==
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR18MB4474:EE_|PH0PR18MB5166:EE_
+x-ms-office365-filtering-correlation-id: e0f2e6f5-e338-4dac-c903-08dafac359fd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oCtlfAMmWjzR8ir9GudSd0+IdxniK9QrlLGVFL5EF+DdUvUxaOnD19/ye+cDhBIBV6kDkI/XEizq/hEjQVS0Itsxq85ZI2GSfGxGA6GbmQJp5iC8xagx1vZ7VxjXE3A2AP0Ia9bmbDjfz+yelqBwt7EQwvAsSaMISDoJHJelrPV3jBS3fyOpcxMdQnuunqOGxR3aMvV5QdiDeb484BS6ic2xRzxX06hW2mWeUHwq/s5zbLrHscs0KnSfC0DpCU7oUYeiLyJU/lnSjPuCjYY73meb0AjnVTdCIMppDxwMVDLKhMqgitSIxbxw8TGIXC1K3KgjcDOuxPxWvJQhL5p2Ejo0ZhPLOS6akcp1NiKoSkIv1/3oZYO818hozDPDlajh4PPP3cXNpQeHPifKGmL+HL8RizM12GbZkGPUyADOineNZxkHXPokYaruJevJr94bQjs7FkrLDtcgpQnq5CjDNTeXxo/Z7GfwhFGoOgaunh+Ju/v2fnqdS8aVca9ZnM24UX64h2+ih3QvEMaS9DT+3jwyHCyDQCxbfVOwX3LdY+jc5TmBtketQjellZdkj8XncJc46wJ7iQcba4zZfliV4fCE29NCjga3A+5AiQT1P9pnjqrxfiHWOd2yqvQDCd0WI6GTQT4ETr8l5Ub1oQBLeqZWI7T1kR56c/RujE0V7wnIQMAPgt5QZLE79dZM3HPi0UpabkIgxS/y99n38w7Bpw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB4474.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(346002)(396003)(39860400002)(136003)(376002)(451199015)(38070700005)(55016003)(66946007)(7416002)(2906002)(52536014)(66556008)(8936002)(66476007)(76116006)(33656002)(5660300002)(122000001)(38100700002)(54906003)(71200400001)(7696005)(6506007)(478600001)(316002)(86362001)(83380400001)(41300700001)(8676002)(4326008)(64756008)(6916009)(186003)(66446008)(26005)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ADnw8G/4+tgljjauPzzX6CQGv46RLQe1y3cy3KTIofRG9duNttpaRs2OPKIH?=
+ =?us-ascii?Q?WB5qAWQYFZUGrASKUZ7/cqa7LJjL7U8AYsuY0kbshVHLdUEvgwuS1wUcW4mZ?=
+ =?us-ascii?Q?ugvGKQkgK+y1tCbNScnTWA7JuBbmqcZm4jkek+1r7Y7/P/Zx5DZKji8jxdnn?=
+ =?us-ascii?Q?iH7sNVx+6rORiiD0ItpodOc42OkS6ctIlXCc9+bL0IDC2yRzxNIcs/k6LqEE?=
+ =?us-ascii?Q?492Q9Yy13xxGO0n1JLS7HHJ+K6S5BSUqpHMkB0WZhhYd9wskrXcW/97hgXku?=
+ =?us-ascii?Q?WpQY7tTtoZ/Rj59nSfHEWL5hoizzx0MkufkJKLP8RaUh525thosNxwrftShy?=
+ =?us-ascii?Q?pKAQ+c8h28Skco3NmS5xwccykrMeGjoNzfpBhaM1GrpK0yqQtqDlgxavByZh?=
+ =?us-ascii?Q?hpxEyhfmCSqFk5kLFA+91vv+V7u6WIC7/a7a10kMPi0cXDp4rR7rLc8Ka8JP?=
+ =?us-ascii?Q?nS5QQ8+OChXW9F2hCSf9bR8589ks2YZ3T0kt9nVgLGXr+W282p2zrlVKyf6R?=
+ =?us-ascii?Q?zUOKgCKKQXquvlCTBPZN1nbBi4DeZaYr+10Qcwn31Q9n7Tzlle/hejt/a21x?=
+ =?us-ascii?Q?vxETT0Exi1bLvtJ6O2Ite3vxmTTlnr+Lonj6jGmXPbfvRb0p0IF3p+kxClUZ?=
+ =?us-ascii?Q?zj3DxjssKA4f77LaTllxT/c3Zv9JzGu73HtkUOFRxmcH3MigbpO6JgEyEOrX?=
+ =?us-ascii?Q?elCyX4ZvuNKCTg73piipYKg3l7oyDuagb7/Vv3CldGAnK42j4ReztL6P3eTr?=
+ =?us-ascii?Q?mMqa4iesO2Azi+n3N98dyA1395lRZwVnVd06BmqqfOTNUqvwPcwgvWpfgnoJ?=
+ =?us-ascii?Q?oW9EvP3WF8KOxC8gDYnSEZwmdbb/QV4egQpqX+KpDd5MMOmQfC19fZtci7VM?=
+ =?us-ascii?Q?LeAyYlVylqZNHV6PlXd6Cpz44XxTjSckAfWkJJKU021vkdAadnMV7RWAKgrq?=
+ =?us-ascii?Q?OF/b27/mf8bNiY+wIaMgKWHJtrBKhnI7eGURcKxPb5njb3yRSwqwjSrCAi4Q?=
+ =?us-ascii?Q?zSsk4MUYcOw0gJTyUDVRHswJ1AWMj3X31pAeucT45PcZiRFONtnbHYOTkXch?=
+ =?us-ascii?Q?rzzSw7bw4nAKLCxdVS0mEW2eriDVR5ik9nIUiQMMfm+uTJ7MW90cRJAd9jig?=
+ =?us-ascii?Q?DdCywRiikGQg9LJ8UdCs7si2KwwNxEydcCkG2oxThBSsHKG1GvDgC/DXOOz9?=
+ =?us-ascii?Q?Tbk5TV2A2MkVTKs9V8i3qz5SWGCm/GMu9sgItYf5NIqsLBl1Q9JJfF1q2kVB?=
+ =?us-ascii?Q?eGYX6gfRE825tJlELxrkzkTXgqjoeUfe9eJSpaXDicjdgq9zdcg5Wp5z6r3Q?=
+ =?us-ascii?Q?p/nDMb28UIvg7NwkVRK2R+nUOAIwmWIry57ISl2Fiba5l9lT5z03AQrI/QOT?=
+ =?us-ascii?Q?hQIl/+B+vSE/A9sNaoN5QVwu3PMa+8zxGuGAL2Jh+1/Tx55ABib6ZMsZ45gT?=
+ =?us-ascii?Q?LO0c77nRF1HSYYfcR/bt1sWyOebMoYR7ti+W+XtrEMnVrb501pVlpF9+4puL?=
+ =?us-ascii?Q?dIqxIdrnRR7ws0HtLipRopRQqjvKBKGBM1PMYx641BzH58kZanVCRLn82n4U?=
+ =?us-ascii?Q?NFqdM3GZkarG7cSqBBuO5rNC2Mn/jDQ6ohPhVlM+?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000973c2d05f2ac0d91"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB4474.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0f2e6f5-e338-4dac-c903-08dafac359fd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2023 08:50:16.1248
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DOyVS538A2M6Wof2Ryu11L3IlZzt7MCurY9MG9HnLlLL0DZpiUDGRfkb/uu0/SpkryXpx8VmQ05TTTuZo2jDPA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR18MB5166
+X-Proofpoint-GUID: inTeMzG1Spxxvhhs-6TepmN6vEsQ4qyB
+X-Proofpoint-ORIG-GUID: inTeMzG1Spxxvhhs-6TepmN6vEsQ4qyB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-20_06,2023-01-19_01,2022-06-22_01
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000973c2d05f2ac0d91
-Content-Transfer-Encoding: 8bit
 
-Modified the bnxt_en code to create and pre-configure RDMA devices
-with the right MSI-X vector count for the ROCE driver to use.
-This is to align the ROCE driver to the auxiliary device model which
-will simply bind the driver without getting into PCI-related handling.
-All PCI-related logic will now be in the bnxt_en driver.
+On Wed, Jan 18, 2023 at 04:21:06PM +0530, Hariprasad Kelam wrote:
+> All VFs and PF netdev shares same TL1 schedular, each interface PF or=20
+> VF will have different TL2 schedulars having same parent TL1. The TL1=20
+> RR_PRIO value is static and PF/VFs use the same value to configure its=20
+> TL2 node priority in case of DWRR children.
+>=20
+> This patch adds support to configure TL1 RR_PRIO value using devlink.
+> The TL1 RR_PRIO can be configured for each PF. The VFs are not allowed=20
+> to configure TL1 RR_PRIO value. The VFs can get the RR_PRIO value from=20
+> the mailbox NIX_TXSCH_ALLOC response parameter aggr_lvl_rr_prio.
 
-Suggested-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/bnxt_re/bnxt_re.h       |   1 -
- drivers/infiniband/hw/bnxt_re/main.c          |  48 ++---
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 166 ++++++------------
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   6 +-
- 4 files changed, 64 insertions(+), 157 deletions(-)
+I asked this question under v1, but didn't get an answer, could you shed so=
+me light?
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index b0465c8d229a..5a2baf49ecaa 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -129,7 +129,6 @@ struct bnxt_re_dev {
- 	unsigned int			version, major, minor;
- 	struct bnxt_qplib_chip_ctx	*chip_ctx;
- 	struct bnxt_en_dev		*en_dev;
--	struct bnxt_msix_entry		msix_entries[BNXT_RE_MAX_MSIX];
- 	int				num_msix;
- 
- 	int				id;
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 60df6809bc60..c5867e78f231 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -262,7 +262,7 @@ static void bnxt_re_stop_irq(void *handle)
- static void bnxt_re_start_irq(void *handle, struct bnxt_msix_entry *ent)
- {
- 	struct bnxt_re_dev *rdev = (struct bnxt_re_dev *)handle;
--	struct bnxt_msix_entry *msix_ent = rdev->msix_entries;
-+	struct bnxt_msix_entry *msix_ent = rdev->en_dev->msix_entries;
- 	struct bnxt_qplib_rcfw *rcfw = &rdev->rcfw;
- 	struct bnxt_qplib_nq *nq;
- 	int indx, rc;
-@@ -281,7 +281,7 @@ static void bnxt_re_start_irq(void *handle, struct bnxt_msix_entry *ent)
- 	 * in device sctructure.
- 	 */
- 	for (indx = 0; indx < rdev->num_msix; indx++)
--		rdev->msix_entries[indx].vector = ent[indx].vector;
-+		rdev->en_dev->msix_entries[indx].vector = ent[indx].vector;
- 
- 	bnxt_qplib_rcfw_start_irq(rcfw, msix_ent[BNXT_RE_AEQ_IDX].vector,
- 				  false);
-@@ -315,32 +315,6 @@ static int bnxt_re_register_netdev(struct bnxt_re_dev *rdev)
- 	return rc;
- }
- 
--static int bnxt_re_request_msix(struct bnxt_re_dev *rdev)
--{
--	int rc = 0, num_msix_want = BNXT_RE_MAX_MSIX, num_msix_got;
--	struct bnxt_en_dev *en_dev;
--
--	en_dev = rdev->en_dev;
--
--	num_msix_want = min_t(u32, BNXT_RE_MAX_MSIX, num_online_cpus());
--
--	num_msix_got = bnxt_req_msix_vecs(en_dev,
--					  rdev->msix_entries,
--					  num_msix_want);
--	if (num_msix_got < BNXT_RE_MIN_MSIX) {
--		rc = -EINVAL;
--		goto done;
--	}
--	if (num_msix_got != num_msix_want) {
--		ibdev_warn(&rdev->ibdev,
--			   "Requested %d MSI-X vectors, got %d\n",
--			   num_msix_want, num_msix_got);
--	}
--	rdev->num_msix = num_msix_got;
--done:
--	return rc;
--}
--
- static void bnxt_re_init_hwrm_hdr(struct bnxt_re_dev *rdev, struct input *hdr,
- 				  u16 opcd, u16 crid, u16 trid)
- {
-@@ -785,7 +759,7 @@ static u32 bnxt_re_get_nqdb_offset(struct bnxt_re_dev *rdev, u16 indx)
- 	return bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx) ?
- 		(rdev->is_virtfn ? BNXT_RE_GEN_P5_VF_NQ_DB :
- 				   BNXT_RE_GEN_P5_PF_NQ_DB) :
--				   rdev->msix_entries[indx].db_offset;
-+				   rdev->en_dev->msix_entries[indx].db_offset;
- }
- 
- static void bnxt_re_cleanup_res(struct bnxt_re_dev *rdev)
-@@ -810,7 +784,7 @@ static int bnxt_re_init_res(struct bnxt_re_dev *rdev)
- 	for (i = 1; i < rdev->num_msix ; i++) {
- 		db_offt = bnxt_re_get_nqdb_offset(rdev, i);
- 		rc = bnxt_qplib_enable_nq(rdev->en_dev->pdev, &rdev->nq[i - 1],
--					  i - 1, rdev->msix_entries[i].vector,
-+					  i - 1, rdev->en_dev->msix_entries[i].vector,
- 					  db_offt, &bnxt_re_cqn_handler,
- 					  &bnxt_re_srqn_handler);
- 		if (rc) {
-@@ -897,7 +871,7 @@ static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
- 		rattr.type = type;
- 		rattr.mode = RING_ALLOC_REQ_INT_MODE_MSIX;
- 		rattr.depth = BNXT_QPLIB_NQE_MAX_CNT - 1;
--		rattr.lrid = rdev->msix_entries[i + 1].ring_idx;
-+		rattr.lrid = rdev->en_dev->msix_entries[i + 1].ring_idx;
- 		rc = bnxt_re_net_ring_alloc(rdev, &rattr, &nq->ring_id);
- 		if (rc) {
- 			ibdev_err(&rdev->ibdev,
-@@ -1217,7 +1191,7 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev)
- 		bnxt_qplib_free_rcfw_channel(&rdev->rcfw);
- 	}
- 	if (test_and_clear_bit(BNXT_RE_FLAG_GOT_MSIX, &rdev->flags))
--		bnxt_free_msix_vecs(rdev->en_dev);
-+		rdev->num_msix = 0;
- 
- 	bnxt_re_destroy_chip_ctx(rdev);
- 	if (test_and_clear_bit(BNXT_RE_FLAG_NETDEV_REGISTERED, &rdev->flags))
-@@ -1262,13 +1236,15 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 	/* Check whether VF or PF */
- 	bnxt_re_get_sriov_func_type(rdev);
- 
--	rc = bnxt_re_request_msix(rdev);
--	if (rc) {
-+	if (!rdev->en_dev->ulp_tbl->msix_requested) {
- 		ibdev_err(&rdev->ibdev,
- 			  "Failed to get MSI-X vectors: %#x\n", rc);
- 		rc = -EINVAL;
- 		goto fail;
- 	}
-+	ibdev_dbg(&rdev->ibdev, "Got %d MSI-X vectors\n",
-+		  rdev->en_dev->ulp_tbl->msix_requested);
-+	rdev->num_msix = rdev->en_dev->ulp_tbl->msix_requested;
- 	set_bit(BNXT_RE_FLAG_GOT_MSIX, &rdev->flags);
- 
- 	bnxt_re_query_hwrm_intf_version(rdev);
-@@ -1292,14 +1268,14 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 	rattr.type = type;
- 	rattr.mode = RING_ALLOC_REQ_INT_MODE_MSIX;
- 	rattr.depth = BNXT_QPLIB_CREQE_MAX_CNT - 1;
--	rattr.lrid = rdev->msix_entries[BNXT_RE_AEQ_IDX].ring_idx;
-+	rattr.lrid = rdev->en_dev->msix_entries[BNXT_RE_AEQ_IDX].ring_idx;
- 	rc = bnxt_re_net_ring_alloc(rdev, &rattr, &creq->ring_id);
- 	if (rc) {
- 		ibdev_err(&rdev->ibdev, "Failed to allocate CREQ: %#x\n", rc);
- 		goto free_rcfw;
- 	}
- 	db_offt = bnxt_re_get_nqdb_offset(rdev, BNXT_RE_AEQ_IDX);
--	vid = rdev->msix_entries[BNXT_RE_AEQ_IDX].vector;
-+	vid = rdev->en_dev->msix_entries[BNXT_RE_AEQ_IDX].vector;
- 	rc = bnxt_qplib_enable_rcfw_channel(&rdev->rcfw,
- 					    vid, db_offt, rdev->is_virtfn,
- 					    &bnxt_re_aeq_handler);
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-index 48d120ee3fab..556f42e86ef1 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-@@ -28,6 +28,30 @@
- 
- static DEFINE_IDA(bnxt_aux_dev_ids);
- 
-+static void bnxt_fill_msix_vecs(struct bnxt *bp, struct bnxt_msix_entry *ent)
-+{
-+	struct bnxt_en_dev *edev = bp->edev;
-+	int num_msix, idx, i;
-+
-+	if (!edev->ulp_tbl->msix_requested) {
-+		netdev_warn(bp->dev, "Requested MSI-X vectors insufficient\n");
-+		return;
-+	}
-+	num_msix = edev->ulp_tbl->msix_requested;
-+	idx = edev->ulp_tbl->msix_base;
-+	for (i = 0; i < num_msix; i++) {
-+		ent[i].vector = bp->irq_tbl[idx + i].vector;
-+		ent[i].ring_idx = idx + i;
-+		if (bp->flags & BNXT_FLAG_CHIP_P5) {
-+			ent[i].db_offset = DB_PF_OFFSET_P5;
-+			if (BNXT_VF(bp))
-+				ent[i].db_offset = DB_VF_OFFSET_P5;
-+		} else {
-+			ent[i].db_offset = (idx + i) * 0x80;
-+		}
-+	}
-+}
-+
- int bnxt_register_dev(struct bnxt_en_dev *edev,
- 		      struct bnxt_ulp_ops *ulp_ops,
- 		      void *handle)
-@@ -42,17 +66,18 @@ int bnxt_register_dev(struct bnxt_en_dev *edev,
- 	    bp->cp_nr_rings == max_stat_ctxs)
- 		return -ENOMEM;
- 
--	ulp = kzalloc(sizeof(*ulp), GFP_KERNEL);
-+	ulp = edev->ulp_tbl;
- 	if (!ulp)
- 		return -ENOMEM;
- 
--	edev->ulp_tbl = ulp;
- 	ulp->handle = handle;
- 	rcu_assign_pointer(ulp->ulp_ops, ulp_ops);
- 
- 	if (test_bit(BNXT_STATE_OPEN, &bp->state))
- 		bnxt_hwrm_vnic_cfg(bp, 0);
- 
-+	bnxt_fill_msix_vecs(bp, bp->edev->msix_entries);
-+	edev->flags |= BNXT_EN_FLAG_MSIX_REQUESTED;
- 	return 0;
- }
- EXPORT_SYMBOL(bnxt_register_dev);
-@@ -66,7 +91,7 @@ void bnxt_unregister_dev(struct bnxt_en_dev *edev)
- 
- 	ulp = edev->ulp_tbl;
- 	if (ulp->msix_requested)
--		bnxt_free_msix_vecs(edev);
-+		edev->flags &= ~BNXT_EN_FLAG_MSIX_REQUESTED;
- 
- 	if (ulp->max_async_event_id)
- 		bnxt_hwrm_func_drv_rgtr(bp, NULL, 0, true);
-@@ -79,126 +104,17 @@ void bnxt_unregister_dev(struct bnxt_en_dev *edev)
- 		msleep(100);
- 		i++;
- 	}
--	kfree(ulp);
--	edev->ulp_tbl = NULL;
- 	return;
- }
- EXPORT_SYMBOL(bnxt_unregister_dev);
- 
--static void bnxt_fill_msix_vecs(struct bnxt *bp, struct bnxt_msix_entry *ent)
--{
--	struct bnxt_en_dev *edev = bp->edev;
--	int num_msix, idx, i;
--
--	num_msix = edev->ulp_tbl->msix_requested;
--	idx = edev->ulp_tbl->msix_base;
--	for (i = 0; i < num_msix; i++) {
--		ent[i].vector = bp->irq_tbl[idx + i].vector;
--		ent[i].ring_idx = idx + i;
--		if (bp->flags & BNXT_FLAG_CHIP_P5) {
--			ent[i].db_offset = DB_PF_OFFSET_P5;
--			if (BNXT_VF(bp))
--				ent[i].db_offset = DB_VF_OFFSET_P5;
--		} else {
--			ent[i].db_offset = (idx + i) * 0x80;
--		}
--	}
--}
--
--int bnxt_req_msix_vecs(struct bnxt_en_dev *edev,
--			      struct bnxt_msix_entry *ent,
--			      int num_msix)
--{
--	struct net_device *dev = edev->net;
--	struct bnxt *bp = netdev_priv(dev);
--	struct bnxt_hw_resc *hw_resc;
--	int max_idx, max_cp_rings;
--	int avail_msix, idx;
--	int total_vecs;
--	int rc = 0;
--
--	if (!(bp->flags & BNXT_FLAG_USING_MSIX))
--		return -ENODEV;
--
--	if (edev->ulp_tbl->msix_requested)
--		return -EAGAIN;
--
--	max_cp_rings = bnxt_get_max_func_cp_rings(bp);
--	avail_msix = bnxt_get_avail_msix(bp, num_msix);
--	if (!avail_msix)
--		return -ENOMEM;
--	if (avail_msix > num_msix)
--		avail_msix = num_msix;
--
--	if (BNXT_NEW_RM(bp)) {
--		idx = bp->cp_nr_rings;
--	} else {
--		max_idx = min_t(int, bp->total_irqs, max_cp_rings);
--		idx = max_idx - avail_msix;
--	}
--
--	edev->ulp_tbl->msix_base = idx;
--	edev->ulp_tbl->msix_requested = avail_msix;
--	hw_resc = &bp->hw_resc;
--	total_vecs = idx + avail_msix;
--	rtnl_lock();
--	if (bp->total_irqs < total_vecs ||
--	    (BNXT_NEW_RM(bp) && hw_resc->resv_irqs < total_vecs)) {
--		if (netif_running(dev)) {
--			bnxt_close_nic(bp, true, false);
--			rc = bnxt_open_nic(bp, true, false);
--		} else {
--			rc = bnxt_reserve_rings(bp, true);
--		}
--	}
--	rtnl_unlock();
--	if (rc) {
--		edev->ulp_tbl->msix_requested = 0;
--		return -EAGAIN;
--	}
--
--	if (BNXT_NEW_RM(bp)) {
--		int resv_msix;
--
--		resv_msix = hw_resc->resv_irqs - bp->cp_nr_rings;
--		avail_msix = min_t(int, resv_msix, avail_msix);
--		edev->ulp_tbl->msix_requested = avail_msix;
--	}
--	bnxt_fill_msix_vecs(bp, ent);
--	edev->flags |= BNXT_EN_FLAG_MSIX_REQUESTED;
--	return avail_msix;
--}
--EXPORT_SYMBOL(bnxt_req_msix_vecs);
--
--void bnxt_free_msix_vecs(struct bnxt_en_dev *edev)
--{
--	struct net_device *dev = edev->net;
--	struct bnxt *bp = netdev_priv(dev);
--
--	if (!(edev->flags & BNXT_EN_FLAG_MSIX_REQUESTED))
--		return;
--
--	edev->ulp_tbl->msix_requested = 0;
--	edev->flags &= ~BNXT_EN_FLAG_MSIX_REQUESTED;
--	rtnl_lock();
--	if (netif_running(dev) && !(edev->flags & BNXT_EN_FLAG_ULP_STOPPED)) {
--		bnxt_close_nic(bp, true, false);
--		bnxt_open_nic(bp, true, false);
--	}
--	rtnl_unlock();
--
--	return;
--}
--EXPORT_SYMBOL(bnxt_free_msix_vecs);
--
- int bnxt_get_ulp_msix_num(struct bnxt *bp)
- {
--	if (bnxt_ulp_registered(bp->edev)) {
--		struct bnxt_en_dev *edev = bp->edev;
-+	u32 roce_msix = BNXT_VF(bp) ?
-+			BNXT_MAX_VF_ROCE_MSIX : BNXT_MAX_ROCE_MSIX;
- 
--		return edev->ulp_tbl->msix_requested;
--	}
--	return 0;
-+	return ((bp->flags & BNXT_FLAG_ROCE_CAP) ?
-+		min_t(u32, roce_msix, num_online_cpus()) : 0);
- }
- 
- int bnxt_get_ulp_msix_base(struct bnxt *bp)
-@@ -414,6 +330,8 @@ static void bnxt_aux_dev_release(struct device *dev)
- 		container_of(dev, struct bnxt_aux_priv, aux_dev.dev);
- 	struct bnxt *bp = netdev_priv(aux_priv->edev->net);
- 
-+	kfree(aux_priv->edev->ulp_tbl);
-+	aux_priv->edev->ulp_tbl = NULL;
- 	kfree(aux_priv->edev);
- 	aux_priv->edev = NULL;
- 	bp->edev = NULL;
-@@ -437,6 +355,8 @@ static void bnxt_set_edev_info(struct bnxt_en_dev *edev, struct bnxt *bp)
- 	edev->hw_ring_stats_size = bp->hw_ring_stats_size;
- 	edev->pf_port_id = bp->pf.port_id;
- 	edev->en_state = bp->state;
-+
-+	edev->ulp_tbl->msix_requested = bnxt_get_ulp_msix_num(bp);
- }
- 
- static int bnxt_rdma_aux_device_add(struct bnxt *bp)
-@@ -444,12 +364,21 @@ static int bnxt_rdma_aux_device_add(struct bnxt *bp)
- 	struct bnxt_aux_priv *aux_priv = bp->aux_priv;
- 	struct bnxt_en_dev *edev = aux_priv->edev;
- 	struct auxiliary_device *aux_dev;
-+	struct bnxt_ulp *ulp;
- 	int ret;
- 
- 	edev = kzalloc(sizeof(*edev), GFP_KERNEL);
- 	if (!edev)
- 		return -ENOMEM;
- 
-+	ulp = kzalloc(sizeof(*ulp), GFP_KERNEL);
-+	if (!ulp) {
-+		ret = -ENOMEM;
-+		goto free_edev;
-+	}
-+
-+	edev->ulp_tbl = ulp;
-+
- 	aux_dev = &aux_priv->aux_dev;
- 	aux_dev->id = aux_priv->id;
- 	aux_dev->name = "rdma";
-@@ -462,7 +391,7 @@ static int bnxt_rdma_aux_device_add(struct bnxt *bp)
- 
- 	ret = auxiliary_device_init(aux_dev);
- 	if (ret)
--		goto free_edev;
-+		goto free_ulp;
- 
- 	ret = auxiliary_device_add(aux_dev);
- 	if (ret)
-@@ -471,6 +400,9 @@ static int bnxt_rdma_aux_device_add(struct bnxt *bp)
- 	return 0;
- aux_dev_uninit:
- 	auxiliary_device_uninit(aux_dev);
-+free_ulp:
-+	kfree(ulp);
-+	bp->edev->ulp_tbl = NULL;
- free_edev:
- 	kfree(edev);
- 	bp->edev = NULL;
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-index beb64d5587d0..5117d1b1527d 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-@@ -15,6 +15,8 @@
- 
- #define BNXT_MIN_ROCE_CP_RINGS	2
- #define BNXT_MIN_ROCE_STAT_CTXS	1
-+#define BNXT_MAX_ROCE_MSIX	9
-+#define BNXT_MAX_VF_ROCE_MSIX	2
- 
- struct hwrm_async_event_cmpl;
- struct bnxt;
-@@ -51,6 +53,7 @@ struct bnxt_ulp {
- struct bnxt_en_dev {
- 	struct net_device *net;
- 	struct pci_dev *pdev;
-+	struct bnxt_msix_entry			msix_entries[BNXT_MAX_ROCE_MSIX];
- 	u32 flags;
- 	#define BNXT_EN_FLAG_ROCEV1_CAP		0x1
- 	#define BNXT_EN_FLAG_ROCEV2_CAP		0x2
-@@ -102,9 +105,6 @@ void bnxt_aux_priv_free(struct bnxt *bp);
- int bnxt_register_dev(struct bnxt_en_dev *edev, struct bnxt_ulp_ops *ulp_ops,
- 		      void *handle);
- void bnxt_unregister_dev(struct bnxt_en_dev *edev);
--int bnxt_req_msix_vecs(struct bnxt_en_dev *edev, struct bnxt_msix_entry *ent,
--		       int num_msix);
--void bnxt_free_msix_vecs(struct bnxt_en_dev *edev);
- int bnxt_send_msg(struct bnxt_en_dev *edev, struct bnxt_fw_msg *fw_msg);
- int bnxt_register_async_events(struct bnxt_en_dev *edev,
- 			       unsigned long *events_bmap, u16 max_id);
--- 
-2.37.1 (Apple Git-137.1)
+"Could you please elaborate how these priorities of Transmit Levels are rel=
+ated to HTB priorities? I don't seem to understand why something has to be =
+configured with devlink in addition to HTB.
+
+SMQ (send meta-descriptor queue) and MDQ (meta-descriptor queue) are the fi=
+rst transmit levels.
+Each send queue is mapped with SMQ.
+=20
+As mentioned in cover letter, each egress packet needs to traverse all tran=
+smit levels starting from TL5 to TL1.
+This applies to non-QOS Send queues as well.
+=20
+                       SMQ/MDQ --> TL4 -->TL3 -->TL2 -->TL1
+
+By default non QOS queues use a default hierarchy  with round robin priorit=
+y.=20
+To avoid conflict with QOS tree priorities, with devlink user can choose ro=
+und-robin priority before Qos tree formation.
 
 
---000000000000973c2d05f2ac0d91
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+BTW, why did you remove the paragraphs with an example and a limitation?
+I think they are pretty useful.
 
-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
-pZEyqKnwS1lKCzjX7mV5W955rFsFxChdAKfw0HilwtqdY24mhy62+GeaEkD0gYIj1tCmw9gnQToc
-K+0s7xEunfR9pBrzmOwS3OQbcP0nJ8SmQ8R+reroH6LYuFpaqK1rgQIDAQABo4IB2zCCAdcwDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAlBgNVHREEHjAcgRphaml0LmtoYXBhcmRlQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
-BQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUbrcTuh0mr2qP
-xYdtyDgFeRIiE/gwDQYJKoZIhvcNAQELBQADggEBALrc1TljKrDhXicOaZlzIQyqOEkKAZ324i8X
-OwzA0n2EcPGmMZvgARurvanSLD3mLeeuyq1feCcjfGM1CJFh4+EY7EkbFbpVPOIdstSBhbnAJnOl
-aC/q0wTndKoC/xXBhXOZB8YL/Zq4ZclQLMUO6xi/fFRyHviI5/IrosdrpniXFJ9ukJoOXtvdrEF+
-KlMYg/Deg9xo3wddCqQIsztHSkR4XaANdn+dbLRQpctZ13BY1lim4uz5bYn3M0IxyZWkQ1JuPHCK
-aRJv0SfR88PoI4RB7NCEHqFwARTj1KvFPQi8pK/YISFydZYbZrxQdyWDidqm4wSuJfpE6i0cWvCd
-u50xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
-MTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwM2Vrj
-4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJCDRdjdNZzbZUhclIfL
-7oUiqvvzRA70KxK0rWLTT7RvMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
-MQ8XDTIzMDEyMDA2MjA1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
-BAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsG
-CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCPkDL5iThDJQXwyhiCPMTdRENSpObo4BsC89xD
-upIeoxbwNEAczsLf2InpqXOfAX8dLBxSsE3zqMS6rAN7tkRes2WlLr7Kc1U2eVvoMIv+X9k7CVPD
-IxY7pd+gRzSUb8XMAMIsfecACIBvLg1BZdRkfMhUvAyq12EhnCVlPn8zSV0N21Vc0bRMYJkqGdUw
-GzzfurEopYIcxxKoFf8YIB4DHx5wJ6zStvbQ+x9lf05mGp0DUrOeGQAm//H2JPLfhw6KSHKy0y1Q
-fJGEbxgk1QzuMcwn31fcZ9hNIGRrkXeGFOC3VAefo+eVZ+0Hxq4+SBZXglHiS5uLbx34bwkNT3Qy
---000000000000973c2d05f2ac0d91--
+Ok , removed them accidentally will correct in the next version.
+
+Another question unanswered under v1 was:
+
+"Is there any technical difficulty or hardware limitation preventing from i=
+mplementing modifications?" (TC_HTB_NODE_MODIFY)
+
+There is no hardware limitation, we are currently implementing it.  once it=
+'s implemented we will submit for review.
