@@ -2,178 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8DB676CF7
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Jan 2023 13:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0372C676D09
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Jan 2023 13:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbjAVMoo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 22 Jan 2023 07:44:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
+        id S229763AbjAVM5J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 22 Jan 2023 07:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjAVMon (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Jan 2023 07:44:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183F81C307
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Jan 2023 04:44:42 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D4F14B80AC6
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Jan 2023 12:44:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10703C4339B;
-        Sun, 22 Jan 2023 12:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674391479;
-        bh=gq1+5tIyY3XniCLqf//F6nUX8CgeDcNp1xLzdXG4FN4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KkVZW91tcyc0i1kdy8E+WlMRL4FSntycVpSzKnzxnE5loxpPnGmiEvwwMPxr3u5ny
-         osV0Rgbvlya/2vQWdyqHNfGq/3ftX4GrFG5fVcr2czTlfhSWpRG6yIuZGRLxMoelmp
-         UqX+XVUTsBWqpcJjNU44xc1fzF6xo6Av5xb8yZGKTOIwEDOVTL1UnsajXEXNAOwdW3
-         1EnTjNbHh5YwwEnRpLtx6NSROKh6hKWnACmRFc9n/2+rfgZz7ThGMIOc4WszkrnmvN
-         37rRGLQIQAI+EJd3R6IRPfF+uef6NU61pbu12wu2TKh3N/+dSvdZV4W+57g1THHpbM
-         5Zn1KtYbetLZA==
-Date:   Sun, 22 Jan 2023 14:44:35 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Dragos Tatulea <dtatulea@nvidia.com>, linux-rdma@vger.kernel.org,
-        Tariq Toukan <tariqt@nvidia.com>
-Subject: Re: [PATCH rdma-rc v1] IB/IPoIB: Fix legacy IPoIB due to wrong
- number of queues
-Message-ID: <Y80vs3KQ1QfB+KBf@unreal>
-References: <752143b0eef72a966662ce94526b1ceb5ba4bbb3.1674234106.git.leon@kernel.org>
- <Y8r/BUdb7XMxwVN+@nvidia.com>
+        with ESMTP id S229622AbjAVM5J (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Jan 2023 07:57:09 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A496D1E2B0;
+        Sun, 22 Jan 2023 04:57:06 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id f12-20020a7bc8cc000000b003daf6b2f9b9so8801242wml.3;
+        Sun, 22 Jan 2023 04:57:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ds9eHrh5fPy69DV2J5X1CR6AKO2KdJRDO5B1jSOga3Q=;
+        b=BMpKQxNbE54yCMh1h/0jzupGK87VXMQfsQ0knLKZCaPvhnBJrZ+AECOoahQXVatgGw
+         SwZBMl2wxUbNvHL8PQ4ItNjnjbs4nlLZwl0G3MVcLTVUyTUq4w0JgsepICHMIlAhInGG
+         Mpx1UPkY7JdCYiRykIZVw5bbRMTi8Z9GW0xZLuFk76iOHQp4lamQsTlbRBJDBuat7QRU
+         I9dAscJVi/xIUbNjnVQl+jrkPqPwB9cVJ6fdso6+Ij/gjk72MnQKn6mYDyHjEcf43sox
+         yPrbCTGzUj3Y5zDbDtU6NPF/P2lExRz3ziZsApPxVojb3umnwlFSUylZoKysfR4qrE1x
+         c1MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ds9eHrh5fPy69DV2J5X1CR6AKO2KdJRDO5B1jSOga3Q=;
+        b=hGlQ3uvsIV9eeOXbF/Fo8tMxJyUCRkE3gk96XmEkYQZiW829LrGnraQ1LbcyxgmFS2
+         Xwvt+yxJcMT2KhNlhOX36wj2b4UIkhy/hzsalX+VnuyXoxJKI8+LVp5czD5kE397mekR
+         WIo196O3dqHsp0x6n+1ijjBaBrU2K2yNGAyJwVhl3ITfcL4d2WPbv8xsY/xC5x2G18Xn
+         OEQkQQN7FcDeQ3xpWJd4gl1Ybuez36ptAZfiou/ZO8/GVB3qhCyYoNCFBF75nMU2f0j4
+         Kcz4JViZRuMg+/cpKbV+Uk1mZezG0e0aW/4OzNXe5BRhIu1xOPA93hIvIn3/bDITeORD
+         dBMA==
+X-Gm-Message-State: AFqh2koyeePHhcRI4Splhkdlz1xkMrZ6Udgk2hTzpcq5pQV0/O/Qok7J
+        oKKJDX4w/OUdqM3HuQssQYc=
+X-Google-Smtp-Source: AMrXdXu21Cw8EDdWLJE+Gx2QhAU+kUhfWLZe3K99P+q3DN9Bvd1zXYiqY7mxt2PlUBK/y56bnEYjNg==
+X-Received: by 2002:a1c:f317:0:b0:3d0:480b:ac53 with SMTP id q23-20020a1cf317000000b003d0480bac53mr20802700wmq.12.1674392225125;
+        Sun, 22 Jan 2023 04:57:05 -0800 (PST)
+Received: from [192.168.0.103] ([77.126.105.148])
+        by smtp.gmail.com with ESMTPSA id r6-20020a05600c458600b003da286f8332sm8081607wmo.18.2023.01.22.04.57.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Jan 2023 04:57:04 -0800 (PST)
+Message-ID: <4dc2a367-d3b1-e73e-5f42-166e9cf84bac@gmail.com>
+Date:   Sun, 22 Jan 2023 14:57:01 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y8r/BUdb7XMxwVN+@nvidia.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH RESEND 0/9] sched: cpumask: improve on
+ cpumask_local_spread() locality
+Content-Language: en-US
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Barry Song <baohua@kernel.org>,
+        Ben Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Haniel Bristot de Oliveira <bristot@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Lafreniere <peter@n8pjl.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <20230121042436.2661843-1-yury.norov@gmail.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20230121042436.2661843-1-yury.norov@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 04:52:21PM -0400, Jason Gunthorpe wrote:
-> On Fri, Jan 20, 2023 at 07:02:48PM +0200, Leon Romanovsky wrote:
-> > From: Dragos Tatulea <dtatulea@nvidia.com>
-> > 
-> > The cited commit creates child PKEY interfaces over netlink will multiple
-> > tx and rx queues, but some devices doesn't support more than 1 tx and 1 rx
-> > queues. This causes to a crash when traffic is sent over the PKEY interface
-> > due to the parent having a single queue but the child having multiple queues.
-> > 
-> > This patch inherits the real_num_tx/rx_queues from the parent netdev.
-> > 
-> > BUG: kernel NULL pointer dereference, address: 000000000000036b
-> > PGD 0 P4D 0
-> > Oops: 0000 [#1] SMP
-> > CPU: 4 PID: 209665 Comm: python3 Not tainted 6.1.0_for_upstream_min_debug_2022_12_12_17_02 #1
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-> > RIP: 0010:kmem_cache_alloc+0xcb/0x450
-> > Code: ce 7e 49 8b 50 08 49 83 78 10 00 4d 8b 28 0f 84 cb 02 00 00 4d 85 ed 0f 84 c2 02 00 00 41 8b 44 24 28 48 8d 4a 01 49 8b 3c 24 <49> 8b 5c 05 00 4c 89 e8 65 48 0f c7 0f 0f 94 c0 84 c0 74 b8 41 8b
-> > RSP: 0018:ffff88822acbbab8 EFLAGS: 00010202
-> > RAX: 0000000000000070 RBX: ffff8881c28e3e00 RCX: 00000000064f8dae
-> > RDX: 00000000064f8dad RSI: 0000000000000a20 RDI: 0000000000030d00
-> > RBP: 0000000000000a20 R08: ffff8882f5d30d00 R09: ffff888104032f40
-> > R10: ffff88810fade828 R11: 736f6d6570736575 R12: ffff88810081c000
-> > R13: 00000000000002fb R14: ffffffff817fc865 R15: 0000000000000000
-> > FS:  00007f9324ff9700(0000) GS:ffff8882f5d00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 000000000000036b CR3: 00000001125af004 CR4: 0000000000370ea0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  <TASK>
-> >  skb_clone+0x55/0xd0
-> >  ip6_finish_output2+0x3fe/0x690
-> >  ip6_finish_output+0xfa/0x310
-> >  ip6_send_skb+0x1e/0x60
-> >  udp_v6_send_skb+0x1e5/0x420
-> >  udpv6_sendmsg+0xb3c/0xe60
-> >  ? ip_mc_finish_output+0x180/0x180
-> >  ? __switch_to_asm+0x3a/0x60
-> >  ? __switch_to_asm+0x34/0x60
-> >  sock_sendmsg+0x33/0x40
-> >  __sys_sendto+0x103/0x160
-> >  ? _copy_to_user+0x21/0x30
-> >  ? kvm_clock_get_cycles+0xd/0x10
-> >  ? ktime_get_ts64+0x49/0xe0
-> >  __x64_sys_sendto+0x25/0x30
-> >  do_syscall_64+0x3d/0x90
-> >  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> > RIP: 0033:0x7f9374f1ed14
-> > Code: 42 41 f8 ff 44 8b 4c 24 2c 4c 8b 44 24 20 89 c5 44 8b 54 24 28 48 8b 54 24 18 b8 2c 00 00 00 48 8b 74 24 10 8b 7c 24 08 0f 05 <48> 3d 00 f0 ff ff 77 34 89 ef 48 89 44 24 08 e8 68 41 f8 ff 48 8b
-> > RSP: 002b:00007f9324ff7bd0 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
-> > RAX: ffffffffffffffda RBX: 00007f9324ff7cc8 RCX: 00007f9374f1ed14
-> > RDX: 00000000000002fb RSI: 00007f93000052f0 RDI: 0000000000000030
-> > RBP: 0000000000000000 R08: 00007f9324ff7d40 R09: 000000000000001c
-> > R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
-> > R13: 000000012a05f200 R14: 0000000000000001 R15: 00007f9374d57bdc
-> >  </TASK>
-> > 
-> > Fixes: dbc94a0fb817 ("IB/IPoIB: Fix queue count inconsistency for PKEY child interfaces")
-> > Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> > Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> > Changelog:
-> > v1:
-> >  * Fixed typo in warning print.
-> > v0: https://lore.kernel.org/all/4a7ecec08ee30ad8004019818fadf1e58057e945.1674137153.git.leon@kernel.org
-> > ---
-> >  drivers/infiniband/ulp/ipoib/ipoib_netlink.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-> > index 9ad8d9856275..0548735a15b5 100644
-> > --- a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-> > +++ b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-> > @@ -126,6 +126,18 @@ static int ipoib_new_child_link(struct net *src_net, struct net_device *dev,
-> >  	} else
-> >  		child_pkey  = nla_get_u16(data[IFLA_IPOIB_PKEY]);
-> >  
-> > +	err = netif_set_real_num_tx_queues(dev, pdev->real_num_tx_queues);
-> > +	if (err) {
-> > +		ipoib_warn(ppriv, "failed setting the child tx queue count based on parent\n");
-> > +		return err;
-> > +	}
-> > +
-> > +	err = netif_set_real_num_rx_queues(dev, pdev->real_num_rx_queues);
-> > +	if (err) {
-> > +		ipoib_warn(ppriv, "failed setting the child rx queue count based on parent\n");
-> > +		return err;
-> > +	}
-> 
-> This still seems flawed.. Netlink does this:
-> 
-> 	unsigned int num_rx_queues = 1;
-> 
-> 	if (tb[IFLA_NUM_RX_QUEUES])
-> 		num_rx_queues = nla_get_u32(tb[IFLA_NUM_RX_QUEUES]);
-> 	else if (ops->get_num_rx_queues)
-> 		num_rx_queues = ops->get_num_rx_queues();
-> 
-> So num_rx_queues can really be any value that userspaces cares to
-> provide.
-> 
-> If pdev->real_num_rx_queues is > the user provided value then
-> netif_set_real_num_rx_queues() just fails.
-> 
-> So at a minimum this should min the actual number of queues requested
-> against the maximum number of queues the driver can provide and use
-> that to set the real queues.
-> 
-> And the return of a really big number from ops->get_num_rx_queues is
-> pretty ugly too, ideally that would be fixed to pass in some function
-> arguments and obtain the ppriv so it can return the actual maximum
-> number of queues and we don't waste a bunch of memory..
 
-.get_num_rx_queues() is declared as void, so it can't have any complex
-logic except returns some global define.
 
-Thanks
+On 21/01/2023 6:24, Yury Norov wrote:
+> cpumask_local_spread() currently checks local node for presence of i'th
+> CPU, and then if it finds nothing makes a flat search among all non-local
+> CPUs. We can do it better by checking CPUs per NUMA hops.
+> 
+> This has significant performance implications on NUMA machines, for example
+> when using NUMA-aware allocated memory together with NUMA-aware IRQ
+> affinity hints.
+> 
+> Performance tests from patch 8 of this series for mellanox network
+> driver show:
+> 
+>    TCP multi-stream, using 16 iperf3 instances pinned to 16 cores (with aRFS on).
+>    Active cores: 64,65,72,73,80,81,88,89,96,97,104,105,112,113,120,121
+>    
+>    +-------------------------+-----------+------------------+------------------+
+>    |                         | BW (Gbps) | TX side CPU util | RX side CPU util |
+>    +-------------------------+-----------+------------------+------------------+
+>    | Baseline                | 52.3      | 6.4 %            | 17.9 %           |
+>    +-------------------------+-----------+------------------+------------------+
+>    | Applied on TX side only | 52.6      | 5.2 %            | 18.5 %           |
+>    +-------------------------+-----------+------------------+------------------+
+>    | Applied on RX side only | 94.9      | 11.9 %           | 27.2 %           |
+>    +-------------------------+-----------+------------------+------------------+
+>    | Applied on both sides   | 95.1      | 8.4 %            | 27.3 %           |
+>    +-------------------------+-----------+------------------+------------------+
+>    
+>    Bottleneck in RX side is released, reached linerate (~1.8x speedup).
+>    ~30% less cpu util on TX.
+> 
+> This series was supposed to be included in v6.2, but that didn't happen. It
+> spent enough in -next without any issues, so I hope we'll finally see it
+> in v6.3.
+> 
+> I believe, the best way would be moving it with scheduler patches, but I'm
+> OK to try again with bitmap branch as well.
+
+Now that Yury dropped several controversial bitmap patches form the PR, 
+the rest are mostly in sched, or new API that's used by sched.
+
+Valentin, what do you think? Can you take it to your sched branch?
 
 > 
-> Jason
+> Tariq Toukan (1):
+>    net/mlx5e: Improve remote NUMA preferences used for the IRQ affinity
+>      hints
+> 
+> Valentin Schneider (2):
+>    sched/topology: Introduce sched_numa_hop_mask()
+>    sched/topology: Introduce for_each_numa_hop_mask()
+> 
+> Yury Norov (6):
+>    lib/find: introduce find_nth_and_andnot_bit
+>    cpumask: introduce cpumask_nth_and_andnot
+>    sched: add sched_numa_find_nth_cpu()
+>    cpumask: improve on cpumask_local_spread() locality
+>    lib/cpumask: reorganize cpumask_local_spread() logic
+>    lib/cpumask: update comment for cpumask_local_spread()
+> 
+>   drivers/net/ethernet/mellanox/mlx5/core/eq.c | 18 +++-
+>   include/linux/cpumask.h                      | 20 +++++
+>   include/linux/find.h                         | 33 +++++++
+>   include/linux/topology.h                     | 33 +++++++
+>   kernel/sched/topology.c                      | 90 ++++++++++++++++++++
+>   lib/cpumask.c                                | 52 ++++++-----
+>   lib/find_bit.c                               |  9 ++
+>   7 files changed, 230 insertions(+), 25 deletions(-)
+> 
