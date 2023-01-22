@@ -2,57 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C8D676BD0
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Jan 2023 10:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5B0676CAE
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Jan 2023 13:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbjAVJOV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 22 Jan 2023 04:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
+        id S229699AbjAVMMj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 22 Jan 2023 07:12:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjAVJOV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Jan 2023 04:14:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762A41F4BC
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Jan 2023 01:14:20 -0800 (PST)
+        with ESMTP id S229566AbjAVMMi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Jan 2023 07:12:38 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7423018176;
+        Sun, 22 Jan 2023 04:12:37 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 36F53B80973
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Jan 2023 09:14:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55214C433EF;
-        Sun, 22 Jan 2023 09:14:17 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2D8C7B80A89;
+        Sun, 22 Jan 2023 12:12:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55D2BC433D2;
+        Sun, 22 Jan 2023 12:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674378857;
-        bh=iMGGRQawfagRHZIHgVi/1Z9dpV+gluGSy+jBPSC6OqY=;
+        s=k20201202; t=1674389554;
+        bh=qZf9DjyIr6Sqezxh73qyreUJPanVpb5ENsMfdqxZy4g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eX5T3isxXOFPBURakgYcBWjJi8EePsIDOm8rBpHIamrgJcXZ69XqynXpZWQmXDWtD
-         t3gD+ylKPbcal2bn0c5bHOCEeI114T7CUtMVsWDKbAFI+O7oGAjgdqvPlVpzxNmC94
-         ajgN6Y92OL0qQXSEjQTlk3rXfQgi0JBbUE6lJwed9ms7gNFXKBDctGKXA1chrVUpgN
-         XZpEiASAIWShhpSZ5QtFVeYbII/XCM1SmehDfeWlIcRWAMJ6MfMk4MQDiMvmchmjPD
-         ei+8NoCX81cMfRFl3Ztt4zKYngrP6ahhJ2cFzlKJkC+hyjtNj//PwGjDy/Qjl9X4hE
-         H1e/baAUxdZ5w==
-Date:   Sun, 22 Jan 2023 11:14:12 +0200
+        b=VOmziaen35IJzgl7/2at5t7ytjIU6Y2ez0+5YAIalgjZlBZYb7zor01lcZaZ4I2xN
+         v7mAecjZ8EWGQxyP1xyK1pdz+lalZxgSneEU4QqomLom6VEI+HlQtRiOIVwhn3gvtD
+         zcPtZ5540NO7pZeNKhC3T/tJlkEXFErNCiNqdSwCjLDLYque8iqggacAPrS1FX/fiK
+         2TBMDzzTpYwpVQCYg/sA9IYtqy1DgavD7BMekDApajg+ibx8P/nze8NQHXiL5pH4Ry
+         48Ktp6i9NeE+xyHFfEODeqc3ehQoHlwEhCOYgkp5KdlolE3pojvXi3f3lkq8zGkBiB
+         MRddXYrvdGnXw==
+Date:   Sun, 22 Jan 2023 14:12:30 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Dean Luick <dean.luick@cornelisnetworks.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 0/7] FIXME and other fixes
-Message-ID: <Y8z+ZH69DRxw+b6c@unreal>
-References: <Y718/h2uSTYq5PTa@nvidia.com>
- <3cf880fa-3374-541f-1996-d30d635db594@cornelisnetworks.com>
- <bce1ab36-66e4-465c-e051-94e397d108ba@cornelisnetworks.com>
- <Y8Pnn8NokWNsKQO/@unreal>
- <472565cb-e99d-95a6-4d20-6a34f77c8cf1@cornelisnetworks.com>
- <Y8T5602bNhscGixb@unreal>
- <a1efafe0-1c8e-60ae-cc77-b3592ea5b989@cornelisnetworks.com>
- <Y8rK16KNpj0lzQ2a@unreal>
- <Y8rSiD5s+ZFV666t@nvidia.com>
- <a830a1f2-0042-4fc6-7416-da8a8d2d1fe6@cornelisnetworks.com>
+To:     "xuhaoyue (A)" <xuhaoyue1@hisilicon.com>
+Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next 0/3] Refactor rq inline and add cqe inline
+Message-ID: <Y80oLiJEDOyywRLU@unreal>
+References: <20221224102201.3114536-1-xuhaoyue1@hisilicon.com>
+ <Y6w2aRPSXAv4s5Pp@unreal>
+ <6aa101b0-970e-9331-4819-7202b6c2bfcf@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a830a1f2-0042-4fc6-7416-da8a8d2d1fe6@cornelisnetworks.com>
+In-Reply-To: <6aa101b0-970e-9331-4819-7202b6c2bfcf@hisilicon.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,25 +54,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 12:50:35PM -0500, Dennis Dalessandro wrote:
-> On 1/20/23 12:42 PM, Jason Gunthorpe wrote:
-> > On Fri, Jan 20, 2023 at 07:09:43PM +0200, Leon Romanovsky wrote:
+On Fri, Jan 20, 2023 at 05:14:53PM +0800, xuhaoyue (A) wrote:
+> On 2022/12/28 20:28:25, Leon Romanovsky wrote:
+> > On Sat, Dec 24, 2022 at 06:21:58PM +0800, Haoyue Xu wrote:
+> >> The patchset mainly removes the kernel space
+> >> rq inline features and supports cqe inline in user space.
+> >>
+> >> Luoyouming (3):
+> >>   RDMA/hns: Remove rq inline in kernel
+> >>   RDMA/hns: Add compatibility handling for only support userspace rq
+> >>     inline
+> >>   RDMA/hns: Support cqe inline in user space
+> >>
+> >>  drivers/infiniband/hw/hns/hns_roce_device.h |  19 +---
+> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 109 ++++++--------------
+> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   3 +-
+> >>  drivers/infiniband/hw/hns/hns_roce_main.c   |  12 +++
+> >>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  66 +-----------
+> >>  include/uapi/rdma/hns-abi.h                 |   4 +
 > > 
-> >> Backmerge will cause to the situation where features are brought to -rc.
-> >> The cherry-pick will be:
-> >> 1. Revert [PATCH for-next 2/7] IB/hfi1: Assign npages earlier] from -next
-> >> 2. Apply [PATCH for-next 2/7] IB/hfi1: Assign npages earlier] to -rc
+> > Your commit messages are too scarce for patches which touch UAPI.
+> > Please add more details about why you deleted, what users should do next
+> > and what are the features you are adding,
 > > 
-> > You don't need to revert, we just need to merge a RC release to -next
-> > and deal with the conflict, if any.
+> > Thanks
+> > 
+> >>  6 files changed, 54 insertions(+), 159 deletions(-)
+> >>
+> >> -- 
+> >> 2.30.0
+> >>
+> > .
+> > 
 > 
-> Thanks this sounds like a good way to go.
+> Hi Leon,
+> Sorry for the late response.
+> 
+> The cqe inline feature works as follows: payloads less than or equal to 32 bytes will be placed in the cqe, and the hardware will no longer need to access the pbl table and move the payload data.
+> Instead, the driver will move the payload to the user data space, which is conducive to improving the latency performance of the send/receive operation.
+> If rq inline and cqe inline are enabled at the same time, the data packet whose payload length is less than or equal to 32 bytes uses the cqe inline feature,
+> and the data packet greater than 32 bytes and less than or equal to 1024 bytes uses the rq inline feature.
+> 
+> For the reason of deleting kernel space rq inline, Since no user currently uses kernel-mode rq inline, then only supports user-mode rq inline in further plans.
+> To reduce maintenance, remove unsupported kernel state rq inline-related code.
+> I will add this to the user-space patch if this explanation is ok?
 
-You talked about broken -rc, but here wants to fix -next.
-https://lore.kernel.org/all/bce1ab36-66e4-465c-e051-94e397d108ba@cornelisnetworks.com/
-https://lore.kernel.org/all/Y8T5602bNhscGixb@unreal/
+Thank you for the explanation.
 
 Thanks
 
 > 
-> -Denny
+> Sincerely,
+> Haoyue
