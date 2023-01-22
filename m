@@ -2,174 +2,185 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0372C676D09
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Jan 2023 13:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8F0676D1A
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Jan 2023 14:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbjAVM5J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 22 Jan 2023 07:57:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
+        id S229566AbjAVNTA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 22 Jan 2023 08:19:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbjAVM5J (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Jan 2023 07:57:09 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A496D1E2B0;
-        Sun, 22 Jan 2023 04:57:06 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id f12-20020a7bc8cc000000b003daf6b2f9b9so8801242wml.3;
-        Sun, 22 Jan 2023 04:57:06 -0800 (PST)
+        with ESMTP id S229735AbjAVNS6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Jan 2023 08:18:58 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5D216AF3;
+        Sun, 22 Jan 2023 05:18:56 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id ud5so24392451ejc.4;
+        Sun, 22 Jan 2023 05:18:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ds9eHrh5fPy69DV2J5X1CR6AKO2KdJRDO5B1jSOga3Q=;
-        b=BMpKQxNbE54yCMh1h/0jzupGK87VXMQfsQ0knLKZCaPvhnBJrZ+AECOoahQXVatgGw
-         SwZBMl2wxUbNvHL8PQ4ItNjnjbs4nlLZwl0G3MVcLTVUyTUq4w0JgsepICHMIlAhInGG
-         Mpx1UPkY7JdCYiRykIZVw5bbRMTi8Z9GW0xZLuFk76iOHQp4lamQsTlbRBJDBuat7QRU
-         I9dAscJVi/xIUbNjnVQl+jrkPqPwB9cVJ6fdso6+Ij/gjk72MnQKn6mYDyHjEcf43sox
-         yPrbCTGzUj3Y5zDbDtU6NPF/P2lExRz3ziZsApPxVojb3umnwlFSUylZoKysfR4qrE1x
-         c1MA==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hFMHxL9sTmdXjv4LtwVeTzLVTX57xBl1PhL16vB1pco=;
+        b=GUW9GHXb/QYUZFeo74w92f63SoZLwuaOLfG1hP0fKApD7WTPY6uX8JuWQAwvSXEpLh
+         YSpz5P2Dgq4OLHku2iriVammMTsVQtJ+Fba3BWTpMGdrAPdfcTyb4S8eq2e/jq2heKVZ
+         DZ1y1m9xYQwwhWQPlBpHapqk8CDzNQZSy2u8rVkMUl1ZuqWfeHbO8zPXlSjyHz0faWrA
+         azaoBJ1X9395bZkR2XuKcbuv48v6j0eW5Hyp4rOOgLjTXGhqxolryA9HW/Q/2DOqx+th
+         BCGPmS3NkYpns6stkQBHg9+8fJ+HwNYD0RyIp6fFXkAu97jLmQlC5pSzq7z1LwHnHbOT
+         s3TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ds9eHrh5fPy69DV2J5X1CR6AKO2KdJRDO5B1jSOga3Q=;
-        b=hGlQ3uvsIV9eeOXbF/Fo8tMxJyUCRkE3gk96XmEkYQZiW829LrGnraQ1LbcyxgmFS2
-         Xwvt+yxJcMT2KhNlhOX36wj2b4UIkhy/hzsalX+VnuyXoxJKI8+LVp5czD5kE397mekR
-         WIo196O3dqHsp0x6n+1ijjBaBrU2K2yNGAyJwVhl3ITfcL4d2WPbv8xsY/xC5x2G18Xn
-         OEQkQQN7FcDeQ3xpWJd4gl1Ybuez36ptAZfiou/ZO8/GVB3qhCyYoNCFBF75nMU2f0j4
-         Kcz4JViZRuMg+/cpKbV+Uk1mZezG0e0aW/4OzNXe5BRhIu1xOPA93hIvIn3/bDITeORD
-         dBMA==
-X-Gm-Message-State: AFqh2koyeePHhcRI4Splhkdlz1xkMrZ6Udgk2hTzpcq5pQV0/O/Qok7J
-        oKKJDX4w/OUdqM3HuQssQYc=
-X-Google-Smtp-Source: AMrXdXu21Cw8EDdWLJE+Gx2QhAU+kUhfWLZe3K99P+q3DN9Bvd1zXYiqY7mxt2PlUBK/y56bnEYjNg==
-X-Received: by 2002:a1c:f317:0:b0:3d0:480b:ac53 with SMTP id q23-20020a1cf317000000b003d0480bac53mr20802700wmq.12.1674392225125;
-        Sun, 22 Jan 2023 04:57:05 -0800 (PST)
-Received: from [192.168.0.103] ([77.126.105.148])
-        by smtp.gmail.com with ESMTPSA id r6-20020a05600c458600b003da286f8332sm8081607wmo.18.2023.01.22.04.57.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Jan 2023 04:57:04 -0800 (PST)
-Message-ID: <4dc2a367-d3b1-e73e-5f42-166e9cf84bac@gmail.com>
-Date:   Sun, 22 Jan 2023 14:57:01 +0200
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hFMHxL9sTmdXjv4LtwVeTzLVTX57xBl1PhL16vB1pco=;
+        b=tS0tyUSV3aSnI7oj1hAfWDxrAVgix8p5iWXBoRFeZ8nj4X0ZtmBJRmXeAvnH5hPJZP
+         3CpRe4LEuyCPRysxmkYEpCnsBvGQ+NfGcJeiB+NuJBORg0y9LEt6cUP+j/g4JuDD6juV
+         5C+ELaouuQG7EjVNYGMVxFWUEaGU02yWjkZGcJjqbW6pZYJUHOYmI5+SKiI/Yo8ChxO0
+         4gqlnw4kPrlGJeL2WtGwOz69HwYYJJQCHP5lUaNfU1McBBBTc55RSanqTtYtFP2ZFY7y
+         ZI51zzgEmif/Ttmpwsbx2tysauaAliL5M2ioKYmARyrr4c8bZLG5QjmzP2Ce+41BLsMv
+         55UA==
+X-Gm-Message-State: AFqh2kq7QF8O9z40AzNa7scr5PFyVwJTtGcTnBoYOVlDGbyncalhqB+E
+        7aPWA4uFEgwvGjrAGmavcIY9UZ9Kf+fDoAKWHxu+BA==
+X-Google-Smtp-Source: AMrXdXuhwyW2ClK79YKnHoPOTe9OFvxhAY8MnyvQp++n384Yp7+RT8k25SGT66iuOMTCOAxa/+K6Ag==
+X-Received: by 2002:a17:906:25c5:b0:84d:47e3:fe49 with SMTP id n5-20020a17090625c500b0084d47e3fe49mr21612806ejb.39.1674393535034;
+        Sun, 22 Jan 2023 05:18:55 -0800 (PST)
+Received: from localhost (tor-exit-at-the.quesadilla.party. [103.251.167.21])
+        by smtp.gmail.com with ESMTPSA id la17-20020a170907781100b0084d3f3f9984sm19038892ejc.114.2023.01.22.05.18.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Jan 2023 05:18:54 -0800 (PST)
+Date:   Sun, 22 Jan 2023 15:18:50 +0200
+From:   Maxim Mikityanskiy <maxtram95@gmail.com>
+To:     Hariprasad Kelam <hkelam@marvell.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        "jhs@mojatatu.com" <jhs@mojatatu.com>,
+        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
+        "jiri@resnulli.us" <jiri@resnulli.us>,
+        "saeedm@nvidia.com" <saeedm@nvidia.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "tariqt@nvidia.com" <tariqt@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "hariprasad.netdev@gmail.com" <hariprasad.netdev@gmail.com>
+Subject: Re: [net-next Patch v2 4/5] octeontx2-pf: Add devlink support to
+ configure TL1 RR_PRIO
+Message-ID: <Y803rePcLc97CGik@mail.gmail.com>
+References: <20230118105107.9516-1-hkelam@marvell.com>
+ <20230118105107.9516-5-hkelam@marvell.com>
+ <Y8hYlYk/7FfGdfy8@mail.gmail.com>
+ <PH0PR18MB4474FCEAC4FA5907CAC17011DEC59@PH0PR18MB4474.namprd18.prod.outlook.com>
+ <Y8qZNhUgsdOMavC4@mail.gmail.com>
+ <PH0PR18MB4474DBEF155EFA4DA6BA5B10DEC59@PH0PR18MB4474.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH RESEND 0/9] sched: cpumask: improve on
- cpumask_local_spread() locality
-Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Barry Song <baohua@kernel.org>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Haniel Bristot de Oliveira <bristot@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Lafreniere <peter@n8pjl.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20230121042436.2661843-1-yury.norov@gmail.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20230121042436.2661843-1-yury.norov@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR18MB4474DBEF155EFA4DA6BA5B10DEC59@PH0PR18MB4474.namprd18.prod.outlook.com>
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Jan 20, 2023 at 05:03:20PM +0000, Hariprasad Kelam wrote:
+> 
+> 
+> On Fri, Jan 20, 2023 at 08:50:16AM +0000, Hariprasad Kelam wrote:
+> > 
+> > On Wed, Jan 18, 2023 at 04:21:06PM +0530, Hariprasad Kelam wrote:
+> > > All VFs and PF netdev shares same TL1 schedular, each interface PF 
+> > > or VF will have different TL2 schedulars having same parent TL1. The 
+> > > TL1 RR_PRIO value is static and PF/VFs use the same value to 
+> > > configure its
+> > > TL2 node priority in case of DWRR children.
+> > > 
+> > > This patch adds support to configure TL1 RR_PRIO value using devlink.
+> > > The TL1 RR_PRIO can be configured for each PF. The VFs are not 
+> > > allowed to configure TL1 RR_PRIO value. The VFs can get the RR_PRIO 
+> > > value from the mailbox NIX_TXSCH_ALLOC response parameter aggr_lvl_rr_prio.
+> > 
+> > I asked this question under v1, but didn't get an answer, could you shed some light?
+> > 
+> > "Could you please elaborate how these priorities of Transmit Levels are related to HTB priorities? I don't seem to understand why something has to be configured with devlink in addition to HTB.
+> > 
+> > SMQ (send meta-descriptor queue) and MDQ (meta-descriptor queue) are the first transmit levels.
+> > Each send queue is mapped with SMQ.
+> >  
+> > As mentioned in cover letter, each egress packet needs to traverse all transmit levels starting from TL5 to TL1.
+> 
+> Yeah, I saw that, just some details about your hardware which might be obvious to you aren't so clear to me...
+> 
+> Do these transmit levels map to "layers" of HTB hierarchy? Does it look like this, or is my understanding completely wrong?
+> 
+> TL1                 [HTB root node]
+>                    /               \
+> TL2          [HTB node]         [HTB node]
+>             /          \             |
+> TL3    [HTB node]  [HTB node]   [HTB node]
+> ...                       ...
+> 
+> Transmit levels to HTB mapping is correct.
+> 
+> 
+> 
+> > This applies to non-QOS Send queues as well.
+> >  
+> >                        SMQ/MDQ --> TL4 -->TL3 -->TL2 -->TL1
+> > 
+> > By default non QOS queues use a default hierarchy  with round robin priority. 
+> > To avoid conflict with QOS tree priorities, with devlink user can choose round-robin priority before Qos tree formation.
+> 
+> So, this priority that you set with devlink is basically a weight of unclassified (default) traffic for round robin between unclassified and classified traffic, right? I.e. you have two hierarchies (one for HTB, another for non-QoS queue), and you do DWRR between them, according to this priority?
+> 
+> 
+>  Not exactly, In the given scenario where  multiple vfs are attached to PF netdev.
+>  each VF unclassified traffic forms a hierarchy and PF also forms a hierarchy for unclassified traffic.
+>  
+> Now traffic from these all tress(multiple vfs and PFs) are aggregated at TL1. HW performs DWRR among them since these TL2 queues (belonging to each pf and vf netdevs) will be configured with the same priority by the driver.
+> 
+> Currently, this priority is hard coded. Now we are providing this as a configurable value to the user.
+> 
+> Now if a user adds a HTB node, this will have strict priority at TL2 level since DWRR priority is different this traffic won't be affected by DWRR unclassified traffic.
 
+So, did I get it right now?
 
-On 21/01/2023 6:24, Yury Norov wrote:
-> cpumask_local_spread() currently checks local node for presence of i'th
-> CPU, and then if it finds nothing makes a flat search among all non-local
-> CPUs. We can do it better by checking CPUs per NUMA hops.
-> 
-> This has significant performance implications on NUMA machines, for example
-> when using NUMA-aware allocated memory together with NUMA-aware IRQ
-> affinity hints.
-> 
-> Performance tests from patch 8 of this series for mellanox network
-> driver show:
-> 
->    TCP multi-stream, using 16 iperf3 instances pinned to 16 cores (with aRFS on).
->    Active cores: 64,65,72,73,80,81,88,89,96,97,104,105,112,113,120,121
->    
->    +-------------------------+-----------+------------------+------------------+
->    |                         | BW (Gbps) | TX side CPU util | RX side CPU util |
->    +-------------------------+-----------+------------------+------------------+
->    | Baseline                | 52.3      | 6.4 %            | 17.9 %           |
->    +-------------------------+-----------+------------------+------------------+
->    | Applied on TX side only | 52.6      | 5.2 %            | 18.5 %           |
->    +-------------------------+-----------+------------------+------------------+
->    | Applied on RX side only | 94.9      | 11.9 %           | 27.2 %           |
->    +-------------------------+-----------+------------------+------------------+
->    | Applied on both sides   | 95.1      | 8.4 %            | 27.3 %           |
->    +-------------------------+-----------+------------------+------------------+
->    
->    Bottleneck in RX side is released, reached linerate (~1.8x speedup).
->    ~30% less cpu util on TX.
-> 
-> This series was supposed to be included in v6.2, but that didn't happen. It
-> spent enough in -next without any issues, so I hope we'll finally see it
-> in v6.3.
-> 
-> I believe, the best way would be moving it with scheduler patches, but I'm
-> OK to try again with bitmap branch as well.
+                                     [strict priority**]
+                           /---------/                 \-----\
+                           |                                 |
+                        [DWRR*]                              |
+        /---------------/  |   \---------------\             |
+        |                  |                   |             |
+[ Hierarchy for ]  [ Hierarchy for  ]  [ Hierarchy for  ]    |
+[ unclassified  ]  [  unclassified  ]  [  unclassified  ]    |
+[traffic from PF]  [traffic from VF1]  [traffic from VF2]    |
+[      ***      ]  [      ***       ]  [      ***       ]    |
+                                                             |
+                                                [HTB hierarchy using]
+                                                [  strict priority  ]
+                                                [   between nodes   ]
 
-Now that Yury dropped several controversial bitmap patches form the PR, 
-the rest are mostly in sched, or new API that's used by sched.
+As far as I understand, you set priorities at ***, which affect DWRR
+balancing at *, but it's not clear to me how the selection at ** works.
+Does the HTB hierarchy have some fixed priority, i.e. the user can set
+priority for unclassified traffic to be higher or lower than HTB
+traffic?
 
-Valentin, what do you think? Can you take it to your sched branch?
+Please also point me at any inaccuracies in my picture, I really want to
+understand the algorithm here, because configuring additional priorities
+outside of HTB looks unusual to me.
 
 > 
-> Tariq Toukan (1):
->    net/mlx5e: Improve remote NUMA preferences used for the IRQ affinity
->      hints
-> 
-> Valentin Schneider (2):
->    sched/topology: Introduce sched_numa_hop_mask()
->    sched/topology: Introduce for_each_numa_hop_mask()
-> 
-> Yury Norov (6):
->    lib/find: introduce find_nth_and_andnot_bit
->    cpumask: introduce cpumask_nth_and_andnot
->    sched: add sched_numa_find_nth_cpu()
->    cpumask: improve on cpumask_local_spread() locality
->    lib/cpumask: reorganize cpumask_local_spread() logic
->    lib/cpumask: update comment for cpumask_local_spread()
-> 
->   drivers/net/ethernet/mellanox/mlx5/core/eq.c | 18 +++-
->   include/linux/cpumask.h                      | 20 +++++
->   include/linux/find.h                         | 33 +++++++
->   include/linux/topology.h                     | 33 +++++++
->   kernel/sched/topology.c                      | 90 ++++++++++++++++++++
->   lib/cpumask.c                                | 52 ++++++-----
->   lib/find_bit.c                               |  9 ++
->   7 files changed, 230 insertions(+), 25 deletions(-)
-> 
+> Thanks,
+> Hariprasad k
