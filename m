@@ -2,132 +2,200 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2938678227
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Jan 2023 17:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DB467827B
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Jan 2023 18:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbjAWQuO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Jan 2023 11:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55248 "EHLO
+        id S232513AbjAWRD0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Jan 2023 12:03:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233448AbjAWQuJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Jan 2023 11:50:09 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2125.outbound.protection.outlook.com [40.107.243.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7CC2CFD3
-        for <linux-rdma@vger.kernel.org>; Mon, 23 Jan 2023 08:50:06 -0800 (PST)
+        with ESMTP id S232517AbjAWRDS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Jan 2023 12:03:18 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D86B7EE6;
+        Mon, 23 Jan 2023 09:03:17 -0800 (PST)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30NEEhBD026059;
+        Mon, 23 Jan 2023 09:03:05 -0800
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3n8e9swkbs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Jan 2023 09:03:04 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AVpHeynQEfHUqfn8kUuODCdpBvRqJPugMLa9Nkf+FzO2PC256ZP42qIc87wEglxYviAg16/JPrXmtL+vHMFMHGRJlQem5fmVB/85o61EzUMJ2HVc3ChrGiLCsxTcYyb3DpmldpZ9kqPsNrTYzrmtgoe1HhGcy0kM/D/ol+TMdEWfBwJu2tVtq2TXQvDU5XNPm9RBOBAXdR9nUPFz3pQlja2u10v8nloMo9UoYIuSoPo/VOKfph+PUYJWaFF4xOvJM2/oWA2DH0h493SBvob337B3HEE0zEVJSBOyPlL8xzaV/vXeG1S0HvlBLuhSvBBiO8Q180P+lUFINv52ZPjV0g==
+ b=SOqMGJgMk/n/EpTtZ9P0KIshgsEsZhQO3Kk3t7Nx83TvE30iIStjAWrdYrsf+DIS1DeiX07WS3T1Qs53J7473uOOgKciEKiw37ANEuAYu9Y3wp1MSqCeIVnFMd0Z9SZ+yxwk2tz2oDxJC89re3xXOiRdwdkoMkBX4+D3w6vlXMNDH1SNzIuSMxDt8XJ1s7GzCj+8/brV3i2nYINX6DQ1275tQ1Lisv3VVKsqTKNbQ4hqP3LFSCpdrtO5PEAY4A21AhMchl87i+Vq4XkH0aECEjbHbUfx4aFrXYaGHoWXef6YglvVlisydUcScneGDppkgc83qZSmS/sPrZ++I45iFg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VEP0RGzCV+3G3ZYrtlZP4JNnqE/HizKZjErs8VztRDs=;
- b=Axv4xNxLcbpzY09tIHy/RtLO5mqJEgM3pVymZwhQD3zgIYkW+dfVRebfZiLnoosjtZXpnDEVaP/AhTJ+rV2WtM08eCO70NCxZysxpoCT68LwnD4Lee47dInrdH4JZUofxXrUFkOQOpmImmu358VfJpSqDeSw3cSbOi7x6AP15nsbVEtReD/R+MBzKEacMTsmEkqJBADRfrllUWoVvFg8xHq5C9+xvXK27nAcfNpf+bOUH1F07ZgIe/QNCT7KR/SnglUW3KoYGE2hWXFr20CQ184JglMVyJSrQBCovLp8sXiBjj57ASSpS2Ku9CRNutgbsUose0mXug585Kb2mH7+IA==
+ bh=0JlsK9hPWfHIm686g8gk+RNNx205vOFK2/oBNhzGyjA=;
+ b=iTMoKXbMjpsdbQlnvg9B4bkwIcpNYXkKXb3ErKmHVBIGllqphW9+7jylmI+QARQh3GIPwo3GJjryAjYOMcXy7jE9Ynd9ecDlP/OpkKCabvF13n9iGhx39F7odXArGmJPuURi8mbctN56xCC/y9X5r1I//Fg0L3i2R/z5VthsH1BaFD/bwIzm8MLnl7A2QlPoaLEzJxZ3tiP9cRtD9c3bA+MTHKzONUYPs2uvkOq7inEK271eZF8Yimtn2UuRzgJdP5pYl8fd/D4fcd4Rxdavtlci4ZsobeqIxe26XdHsC8AvUy5u+hr8c0StY3X4qFnYrz+nX+KG6RKUs08zhN8JzQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VEP0RGzCV+3G3ZYrtlZP4JNnqE/HizKZjErs8VztRDs=;
- b=eLU1ih0fDpU4aR2F7AIyhFGN3mSFqbvc7i9BV8VHOVF9o+evgWkrLrZ72MiUSq8Fcj9m9EBT30PudED/OLw8iWn8L/VUbejPSOu4oXqQdv7XL3lD5KhjjOQ1GtGE2Ff23X+p7Tg97e976judR8+jkksLrPT3qUQb1Lo+MK7LLO90SnsSMHac1NUhQfM5jRzYVBiKY5LcezY/G2u7HQd2u3l9K5BcuY2RuVXAt+eMqRm9FWkrfq/ZozPxZSdCwpzMh6F20P/pRIEA/sR7tccdyHtk1rBkuNw3e4siPUgtQyfLDa4DdM1gp/vX6FORjd1jgwkdTKOubj4VGAU2NrAvYw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from BN6PR01MB2610.prod.exchangelabs.com (2603:10b6:404:d0::7) by
- DM6PR01MB5625.prod.exchangelabs.com (2603:10b6:5:178::16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6002.33; Mon, 23 Jan 2023 16:50:03 +0000
-Received: from BN6PR01MB2610.prod.exchangelabs.com
- ([fe80::5844:6112:4eb1:a8f8]) by BN6PR01MB2610.prod.exchangelabs.com
- ([fe80::5844:6112:4eb1:a8f8%9]) with mapi id 15.20.6002.033; Mon, 23 Jan 2023
- 16:50:02 +0000
-Message-ID: <6a495007-0c84-3c7b-e3bb-9eadb1b92f54@cornelisnetworks.com>
-Date:   Mon, 23 Jan 2023 11:49:59 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.0
-Subject: Re: [PATCH for-next 0/7] FIXME and other fixes
+ bh=0JlsK9hPWfHIm686g8gk+RNNx205vOFK2/oBNhzGyjA=;
+ b=MT0qXVYCJqT9UIsxsbwqJuiwX5AA4AqDdzlfHnInRdRFc5fnXIJvy64VF9nukBQg/utjuSPXO2E/b+JodztX6vVbY51l454jVrYMSFZxIi//S/vkQxMeTDd8g2Bf9TKEV1MQPaNMPExg0qXm/rwe9lv9U4LgmnpJghBFZd+MLfQ=
+Received: from PH0PR18MB4474.namprd18.prod.outlook.com (2603:10b6:510:ea::22)
+ by BN9PR18MB4362.namprd18.prod.outlook.com (2603:10b6:408:100::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.33; Mon, 23 Jan
+ 2023 17:03:02 +0000
+Received: from PH0PR18MB4474.namprd18.prod.outlook.com
+ ([fe80::e6ca:f949:a109:b83e]) by PH0PR18MB4474.namprd18.prod.outlook.com
+ ([fe80::e6ca:f949:a109:b83e%2]) with mapi id 15.20.6002.033; Mon, 23 Jan 2023
+ 17:03:02 +0000
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     Maxim Mikityanskiy <maxtram95@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        "jhs@mojatatu.com" <jhs@mojatatu.com>,
+        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
+        "jiri@resnulli.us" <jiri@resnulli.us>,
+        "saeedm@nvidia.com" <saeedm@nvidia.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "tariqt@nvidia.com" <tariqt@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "hariprasad.netdev@gmail.com" <hariprasad.netdev@gmail.com>,
+        Naveen Mamindlapalli <naveenm@marvell.com>
+Subject: Re: [net-next Patch v2 4/5] octeontx2-pf: Add devlink support to
+ configure TL1 RR_PRIO
+Thread-Topic: [net-next Patch v2 4/5] octeontx2-pf: Add devlink support to
+ configure TL1 RR_PRIO
+Thread-Index: AQHZL0yNZq/codrNv0Szoe9H0a3AXA==
+Date:   Mon, 23 Jan 2023 17:03:01 +0000
+Message-ID: <PH0PR18MB44741D5EBBD7B4010C78C7DFDEC89@PH0PR18MB4474.namprd18.prod.outlook.com>
+References: <20230118105107.9516-1-hkelam@marvell.com>
+ <20230118105107.9516-5-hkelam@marvell.com> <Y8hYlYk/7FfGdfy8@mail.gmail.com>
+ <PH0PR18MB4474FCEAC4FA5907CAC17011DEC59@PH0PR18MB4474.namprd18.prod.outlook.com>
+ <Y8qZNhUgsdOMavC4@mail.gmail.com>
+ <PH0PR18MB4474DBEF155EFA4DA6BA5B10DEC59@PH0PR18MB4474.namprd18.prod.outlook.com>
+ <Y803rePcLc97CGik@mail.gmail.com>
+In-Reply-To: <Y803rePcLc97CGik@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Dean Luick <dean.luick@cornelisnetworks.com>,
-        linux-rdma@vger.kernel.org
-References: <Y718/h2uSTYq5PTa@nvidia.com>
- <3cf880fa-3374-541f-1996-d30d635db594@cornelisnetworks.com>
- <bce1ab36-66e4-465c-e051-94e397d108ba@cornelisnetworks.com>
- <Y8Pnn8NokWNsKQO/@unreal>
- <472565cb-e99d-95a6-4d20-6a34f77c8cf1@cornelisnetworks.com>
- <Y8T5602bNhscGixb@unreal>
- <a1efafe0-1c8e-60ae-cc77-b3592ea5b989@cornelisnetworks.com>
- <Y8rK16KNpj0lzQ2a@unreal> <Y8rSiD5s+ZFV666t@nvidia.com>
- <a830a1f2-0042-4fc6-7416-da8a8d2d1fe6@cornelisnetworks.com>
- <Y8z+ZH69DRxw+b6c@unreal>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <Y8z+ZH69DRxw+b6c@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR07CA0008.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::18) To BN6PR01MB2610.prod.exchangelabs.com
- (2603:10b6:404:d0::7)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-rorf: true
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcaGtlbGFtXGFw?=
+ =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
+ =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctYzgwYWI2N2QtOWIzZi0xMWVkLWI2ZDMtZDQzYjA0?=
+ =?us-ascii?Q?N2UyYjlkXGFtZS10ZXN0XGM4MGFiNjdmLTliM2YtMTFlZC1iNmQzLWQ0M2Iw?=
+ =?us-ascii?Q?NDdlMmI5ZGJvZHkudHh0IiBzej0iNjQyMCIgdD0iMTMzMTg5NjY5NzY5ODk5?=
+ =?us-ascii?Q?ODQ3IiBoPSJsZlEyTzhsL243bG5xaUFMaDc2bFlwUHVLaWM9IiBpZD0iIiBi?=
+ =?us-ascii?Q?bD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFOZ0hBQUJI?=
+ =?us-ascii?Q?NzJLS1RDL1pBUzVJZ1dPUUswYUVMa2lCWTVBclJvUU1BQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBSEFBQUFCb0J3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBUUFCQUFBQTNUekZBQUFBQUFBQUFBQUFBQUFBQUo0QUFBQmhBR1FBWkFC?=
+ =?us-ascii?Q?eUFHVUFjd0J6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdNQWRRQnpBSFFBYndCdEFGOEFjQUJs?=
+ =?us-ascii?Q?QUhJQWN3QnZBRzRBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
+ =?us-ascii?Q?QUFDZUFBQUFZd0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJnQjFB?=
+ =?us-ascii?Q?RzBBWWdCbEFISUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCakFIVUFj?=
+ =?us-ascii?Q?d0IwQUc4QWJRQmZBSE1BY3dCdUFGOEFaQUJoQUhNQWFBQmZBSFlBTUFBeUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01B?=
+ =?us-ascii?Q?ZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdCckFHVUFlUUIzQUc4QWNnQmtB?=
+ =?us-ascii?Q?SE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFY?=
+ =?us-ascii?Q?d0J6QUhNQWJnQmZBRzRBYndCa0FHVUFiQUJwQUcwQWFRQjBBR1VBY2dCZkFI?=
+ =?us-ascii?Q?WUFNQUF5QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUlBQUFBQUFKNEFBQUJqQUhVQWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QWN3?=
+ =?us-ascii?Q?QndBR0VBWXdCbEFGOEFkZ0F3QURJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
+ =?us-ascii?Q?UUFiQUJ3QUY4QWN3QnJBSGtBY0FCbEFGOEFZd0JvQUdFQWRBQmZBRzBBWlFC?=
+ =?us-ascii?Q?ekFITUFZUUJuQUdVQVh3QjJBREFBTWdBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWkFCc0FIQUFYd0J6QUd3?=
+ =?us-ascii?Q?QVlRQmpBR3NBWHdCakFHZ0FZUUIwQUY4QWJRQmxBSE1BY3dCaEFHY0FaUUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reftwo: QUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQmtBR3dBY0FCZkFIUUFaUUJoQUcwQWN3QmZBRzhBYmdCbEFHUUFjZ0JwQUhZQVpRQmZBR1lBYVFCc0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdVQWJRQmhBR2tBYkFCZkFHRUFaQUJrQUhJQVpRQnpBSE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIUUFaUUJ5QUcwQWFRQnVBSFVBY3dBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBQT09Ii8+PC9tZXRhPg==
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR18MB4474:EE_|BN9PR18MB4362:EE_
+x-ms-office365-filtering-correlation-id: 633b58f6-b5f9-476d-b806-08dafd63afcc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bQavtia1qyvLOTgSlqQX93GXuMavWVrAaXqlnuGfsOzuQ1peQvQmXs5M4SNIIxpRMCUt8Fniwk/yZfdGxnmVGndlN5ZpSQmeRu5T/kBQCM+WKjrEE8vDf08+opWqbNMfvXsUH3bT3kbXo+k8bfYd4OYQvjZebKKItzVmwYSSzhjE9rCFcW3Oa3Tej5FCPtz9tGs0RZZjJ1zSZnOXlZevmSRByX6ucwnEhwo94hK0vXB9AMGzB7JnDBDURGOpD1gRcKmG8VJRLGMsxZ/OUzkne1KrNzIITDkXt2Ve9fm2A0YmssXs3IjFdxFTtCmWTCtCqshP21r+BfjlfzY56DlZxXntqtXtbqxwI9gOyVQXt1MjGPwg88gsd86BK2/7UbHttg7XIU2Cdgj1boYpfur9xyLTVm+QGbnFd3b8Xc3RDJy4SeV8xmXyTUKFIInFdnOZlhUM6bcCf6aEH0E3FC3OHL1SFvawtBUwy8IT1KecesClp1zXzAzHxiG7fSF5ZexDe287Mn6wntuseWkqTGoVzAQTWf9vNmUX2Q19tEzSVkP3Tm2frP8fqsTm1zd118KM2KBmhYE2Am1SMEaiZ9PZ2GcDqMPNT8xiUfa0tif4BMrldGn+TEl8q083SMcCkjvibBp5IDsmwkfzjTOqPBRr6XrLBw32diT23ImK1CLVG4KTGKGpMI3AvIr1iF9lX+FGawSK0E/dkbdV79a6IQ3CUw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB4474.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(39860400002)(136003)(366004)(346002)(376002)(451199015)(86362001)(2906002)(38070700005)(76116006)(33656002)(316002)(54906003)(64756008)(83380400001)(107886003)(6506007)(7696005)(478600001)(71200400001)(9686003)(186003)(26005)(7416002)(52536014)(8936002)(38100700002)(5660300002)(66946007)(55016003)(122000001)(4326008)(8676002)(66476007)(66446008)(66556008)(6916009)(41300700001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?iPuddEUtd2hO73Vdph73dI85fpim1S0IS+ilzVs5SMOkPSyUFSSHu2FlMhHx?=
+ =?us-ascii?Q?bBTf20XUmJM8zGT84+hmieu/2bjkJD38nTpO2PjSZGpK+vXvEJV0TgN8x8c4?=
+ =?us-ascii?Q?y/sWNsxtbtpc/YosbACXg1kt19wQ3j+5f7eVBaCBzUY493C83LYhLVL5OVx1?=
+ =?us-ascii?Q?62z4CDzbYcCOBMf6NgIFGOiF69X3Z8xe52cPENZ4BycJZDQjTmdPJ04scSEo?=
+ =?us-ascii?Q?4u/77NCOyXFNE5185x0VsV65iSZDrEMybMIhiO0b/HxiUiy0Muuix9K6E7SN?=
+ =?us-ascii?Q?KrKTWZUMGnebr494YN1uhWMDGdZc1MoSl45y1pAra0RUmtDTiLeP6RwrXr6M?=
+ =?us-ascii?Q?Q3UFQBjizseDIIEd1W2sA/lqhfrGmyDw4AppcRMWQXwHtU8KetrcjXnfzKTO?=
+ =?us-ascii?Q?Wz090wdLeO03DvWnB73mbdcn8N1Oe/JYjXsja/+LAgZw/Wj+Zi7ruEbgBSW9?=
+ =?us-ascii?Q?YkGhWSY8luqZoV0XyV4b+SFn/hSrexAFml4nfgAUm42huVZJDTKeEVbxhbpr?=
+ =?us-ascii?Q?92bNNzYlZaI0PFmVyRdq/h2dNgGBm6yGy+Ku0ipL8DZFm3QrJcit7WweGFXb?=
+ =?us-ascii?Q?OeuwCDf9Q+DN2x3lPbNUzQAPllYlCRAf35kdjMyDrbpY7rr9SoG0Uc8voGwC?=
+ =?us-ascii?Q?bK9oWjfHNE20Q0WM5PlWp0pk3cTGCPbtXk5uSOGvNB6+flFtmVe6TDOpYKJS?=
+ =?us-ascii?Q?Rjv/G1Up/sTciBpiFToC2BvYaB5aG8SjCAmmJOYiaueaaL8W1l9mfHjJTRBQ?=
+ =?us-ascii?Q?ny9OLrLpVBunpytyE15gYP//oMqF163sdJDaZgWlA6NhipvQ+naHeGeIBRJ8?=
+ =?us-ascii?Q?/CNO4tINv803s70/7MT4YFH4jUU7RvLxW1nxBoA+2+tOaW3dbutfGsJTcrbZ?=
+ =?us-ascii?Q?AcdcE/x392ja32KiF5bb827iwdKYL5Lt9F54Mwai7F3NzvvhgfMqnPSRRjw7?=
+ =?us-ascii?Q?AXJC15ntAaWofdQHpXsZ5Dw/WaI5dsv8n3I8ryuWQit0/dm+bBfu7vBCvP4c?=
+ =?us-ascii?Q?MEAjtMLKVFDsTYD1AeJkY/Z/fX6qWw/MwTuF/daKT8GSyGSAGqS+32vcah9F?=
+ =?us-ascii?Q?WCuKHyQMlGkPZyurWQmgr10vCNxI7ys065ySNNJMO1fpduc8t6O5cRmLgU2u?=
+ =?us-ascii?Q?sW+srOYH5V41NbGIQn6IxUzTCpsAUs71pfHqbAP6ID14XUWLsFj5Nan08bxw?=
+ =?us-ascii?Q?5vT2WxGZ5/A+JGw/KSK1O7sze9+vvcRvnHGz8QjIKA9mbSW9I3Zl6LFz/LLC?=
+ =?us-ascii?Q?EB1TWsX+RBRyAKQ0ZwimiJoKVi6+PBpRhcs5nqjkVsnsXLH7SWBnQxmP4wmv?=
+ =?us-ascii?Q?OoqxMcRAxbcWRkgkLEJmzhjOnWnlgiigxVElYl2hL5C4prEDe0LcAw/LaQSf?=
+ =?us-ascii?Q?X9rdYCda9neE95hCRX8vhU0VYMRR2WOxQahGdQSGBBH0xL85gU2g8u6d1+vK?=
+ =?us-ascii?Q?6khEWZGExl106ldgjRsylbUpeZRvph2tpGPUxINLGWZxuk9i90QoAuIizHwG?=
+ =?us-ascii?Q?yHaCDFbh9pYNtJw7F0GL3EJpiGSR0yiWdEIY2d69bycQCBSi8X6HiE7UGslC?=
+ =?us-ascii?Q?bCjezUQ6/JO59tVr+o4JYUFLZ95snjjukz79WqA8?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN6PR01MB2610:EE_|DM6PR01MB5625:EE_
-X-MS-Office365-Filtering-Correlation-Id: d432f415-7b64-4b41-8fd4-08dafd61df42
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CGVp0M7/34CmbLjNNEnoBN1ePd46FLxz4v9G5mrdJXfkwf3VbZSeMkoik3wKFUT25lMLYYLVFiroeDfvbJ4aTjiT8jugJg3WPzVQqtMLpZSzHACMWdl2u6ueGg1NYuOVJVhxnRHyuslL6D4SUkOChCAuuDOinbe35dM+6F9GQRQOTA2cXO9tpzVBaXheEC2xy39SxSwdW72ZyA4mujTQ8rk2RvWmLdXasv8dCJj5thx9wtxc+Wc28nXJmK59Hzo4RsD30HlYnqxArRLmwJXaKkHKKvK8RhzQO470ZT8T7vTbAydAhsh8PiA/nG3Y0ccvf/KRg9dmKmBWJz+cboXC2sA83j6hxNWenemfvhAgX6MX8cSQSn1ZzJcwkGIwUofgnCvk9upT3odty0EwKA/WLRvemkAmjDmlrhMqX42JXwxHdIuR4BiuvR0JuPRqgRR9INB+zRICELztRrD7Yz0W6+PR92TvIGZO5g6+8CNgLxjv3flpejNHdGVlhRrBH6VlJOpFHpn5w2/ZNJLdc2IYIBs/AN7FY5ynMqUfxjEsI3GiiKGu1+0E06APM4k3GjLNW0dIckyn5IhbMVL7Z1my0frphYTga+3KWI/wO3fMvDOoLgrxFGVl6LQyju/87U/yTtM0PWuXSy6k8QvcvVM2vgbPcwkUQxvTzaUTumxex+PNqadnE0cotL8D/BScs4EKvpnrgr/vaQBXWiH1ChO0/Wg85CXPjRpDac6H7BhfCG6H9kvww6SdjGud1z1FjJTIagnXKejCoIsBELcxtJlHf351c79yUnz/UCq/WaMM+xn1BKGYo3w6CPAPJwe+pTWB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR01MB2610.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(346002)(396003)(39830400003)(136003)(376002)(451199015)(66899015)(36756003)(38100700002)(2906002)(5660300002)(38350700002)(8936002)(4326008)(41300700001)(44832011)(31696002)(8676002)(52116002)(478600001)(6486002)(966005)(31686004)(86362001)(26005)(53546011)(6916009)(186003)(6506007)(6512007)(66556008)(66946007)(316002)(66476007)(54906003)(2616005)(6666004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MC9vTmxLTlNraExwdlhuVTBqbkVscWNWSFdmUFZKdGlHWXBWQ3hoT2MxeW1Y?=
- =?utf-8?B?NnJ0SThPWUQ3TmhpYTRaTi9DTGZlUnV3QUUzYkJtV3hEVDBwQ3RMMm5Hdmpt?=
- =?utf-8?B?em5UVnB5Mkpud0ZOUkpTT3dqT3FiRkRybVpWQjBiNzhqZFNwWElwK0VaWGhv?=
- =?utf-8?B?QUx3dzYwNVVFMzFDTEJhbkJRUW9uK1pnd3NnOTFGSGFTYTZ4OTErVlZSZjlG?=
- =?utf-8?B?YW1RNDlidG5nMXptUXQzcXBUcTBRcjRBVUFTU3krWSs5aCt0NFBoQW8yWkZM?=
- =?utf-8?B?WkJZbHpWNTJiZXQ0c2Zva3BVZlpKQ0haQ2pJNzlZTHMrM0FGTk91eDgySUsy?=
- =?utf-8?B?c25Ed0VyQkJ2cUszZldYV1JFWXMvaW4rU01OK3ZZUFNGR3pWT1o3YTVDQThs?=
- =?utf-8?B?TkJ4cUVjNlUyRnJ6SlZSVnZQeDZhQUhLUFpSMkdKM1VUWXcxSHBSd2haT1F1?=
- =?utf-8?B?dHpHK3N1dnNFaGRpWnZLSDh5SzZ3OWtjSTE0cXM1MFVScWI1ZmlrQjA2TmdD?=
- =?utf-8?B?S1NGeDJsVWFiZjh3Z0lGRmwxLzk1UGJkMUJNZlFKYWRCRXRtNmNodlJxeERM?=
- =?utf-8?B?b1J5Z0Y4Y0tpTkthK09tWjZVVk96NUNQdVhxQjN0K3FqZ3laN1JmdVdleDVN?=
- =?utf-8?B?SGJkaW03WkdEY3JDVVRDS3dSY3UyMmJTNmhMcEsxWHZrcHMrczdsczBlaHhy?=
- =?utf-8?B?Q21FbzBVNFBpMmNUeTZOSC8waG1ER0R0TFlrRzlSb3M5WnBXK3B6djc2T0JM?=
- =?utf-8?B?cEp0Sm5wU2JkTlZiRkhza3B0dDZIK3U0TGIxb0U2ZWRLbHY1ZVV0V24zTlFa?=
- =?utf-8?B?VVNkV2NZZkxVckYwOW9VaXdOYWFlV1N5WmtJRjRTakZ5QlVxem01R2VYc2tE?=
- =?utf-8?B?emhmUlZ3RkFONmZlanNZQnJtZEZhQ2RvdjJaczl1T3Z3YnpzL1pudEZDU1ll?=
- =?utf-8?B?R2p3eExOTjAvSlFJSVpaYjVlVlhCUWtybjdUS0tqbmZCZWxMVjQzTVljbk4r?=
- =?utf-8?B?YmpLZGdtbERuTlY4NEpaNFNPTkpzUUJRYTM1MStWUjdzeHpPbC9qcmwydmRX?=
- =?utf-8?B?TlAxRGt4OFlsN1JGRmtpUkJOZit2Y0N5cWRCNUZDdEJkL056MWx6Z1JwbkV3?=
- =?utf-8?B?eGszRjBiYTZXdWg1L2d6d2FLT3k3aWp6UHlzNGM2QnA5aXhMYzV1WElDbFpy?=
- =?utf-8?B?OXhsTGJnclB4UFBYUFZoR2J5cCsxeGhnYkh4RzB1RGpVV3hLU25CblFWUXUy?=
- =?utf-8?B?ZXYxUkdyMDZ0YTRScEZzOFAyeHNKNjN4WG9lYkl0VnY5OEVIcC9qa1d6WHVO?=
- =?utf-8?B?MVgxVG9TOUFMMkZVTXN1dVRjQ2JPZVdmR3NKNnJOSVpEK3dXdThpOVBJOFRW?=
- =?utf-8?B?cDJvYzdlTVltMWxuWjFWRHNUYXZLUkQrd3FXUEdvNk9NSi9VbldXQm9PZ1pW?=
- =?utf-8?B?SnJ0Q3BUVHd3UTNwTUhEY2YzV24zSldWWm5IWnVZRVJJSUg3Q2p2MWJ2YURr?=
- =?utf-8?B?Tjl3VGprbXVLanJGQ2JhY0R5RU1MbHBmUFpCeHFEY1IwWFFzS0o2dWN4cjk2?=
- =?utf-8?B?cTBkdG1lMEgvRDlqY1dtNDNHLzlRRXZ6dml5R1JwWjIxRHFOZ2tzSHUyT0Fl?=
- =?utf-8?B?ZlBPc1dVNHlxZ0VXRm82eW9KQlNaL2t2WGRTVnBKbmZ2a0ZqVzA3R1hUUVp4?=
- =?utf-8?B?amt6OGFRK3Q4T3pWcFhxK0IrSy9CZm1meU1iUVRIQkhJQXMwb3p0Rm9UZVM3?=
- =?utf-8?B?WlN2aVdKYzFrWlF0ZnVRbzVEMnBKaDZpb3FSLzFRbHB2UzE2bm9TWFAyUFVR?=
- =?utf-8?B?SU45YjRJbkFQUlIzektDR283dGtuN1dSM280dnBCc0VEMlVtdXQzdXZDR3J4?=
- =?utf-8?B?Zk5SSWIxMGRHOXNnNFFKTm5FQTFTMFVCTzVVUHdzV2RaZmgySVI1VUJUajRx?=
- =?utf-8?B?dXlHcVd0a3I1QzdQRDFjbGlXNk40aHphemJLeDEya0xvNmRHQ1VsM3NlMHor?=
- =?utf-8?B?cTVMQm1BdEhmRVZXNDBwRmhJc2hNZzF0cnJvQ1Z4NWsyMlFTaGpGamd4MnhW?=
- =?utf-8?B?U3lMeEd1K3FobzJFYnVqdlorREw3NC9rOUF5K2pqZjRvNUI0bGNsU1hYQ0JP?=
- =?utf-8?B?VVA1ekZKYmZwUXVJWVY3aE1qazhUV2JxaHhNTjljTzU4RVJ6V1dONkl6Vm8z?=
- =?utf-8?Q?OrEiuA5wSkiXqASMmtv0Qkc=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d432f415-7b64-4b41-8fd4-08dafd61df42
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR01MB2610.prod.exchangelabs.com
+X-OriginatorOrg: marvell.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2023 16:50:02.8338
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB4474.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 633b58f6-b5f9-476d-b806-08dafd63afcc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2023 17:03:01.8740
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tGaalqcxv/6f7rWWhKpB+AvlJwvQSZiO2BBjCmlr9qT/aQqnf7CGsWOC+CDktgFycIPomV86ieZJImZRSFgwD60H0d0KeFDkCXqcn6sQ9Upi5O+YeQZ73wDEPXeb1YHr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR01MB5625
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Jj8yhDBDUxVF1Wt0IUfIPtHIWixF4avrSCRqUEG2u+63Il3IkDRV42GgSNymX+rX0PERU2tqe5m/g8duUXw//Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR18MB4362
+X-Proofpoint-ORIG-GUID: KHzH7Zuax8HqnrUrFN7nehzTg7fNPU8H
+X-Proofpoint-GUID: KHzH7Zuax8HqnrUrFN7nehzTg7fNPU8H
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-23_12,2023-01-23_01,2022-06-22_01
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -135,35 +203,149 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/22/23 4:14 AM, Leon Romanovsky wrote:
-> On Fri, Jan 20, 2023 at 12:50:35PM -0500, Dennis Dalessandro wrote:
->> On 1/20/23 12:42 PM, Jason Gunthorpe wrote:
->>> On Fri, Jan 20, 2023 at 07:09:43PM +0200, Leon Romanovsky wrote:
->>>
->>>> Backmerge will cause to the situation where features are brought to -rc.
->>>> The cherry-pick will be:
->>>> 1. Revert [PATCH for-next 2/7] IB/hfi1: Assign npages earlier] from -next
->>>> 2. Apply [PATCH for-next 2/7] IB/hfi1: Assign npages earlier] to -rc
->>>
->>> You don't need to revert, we just need to merge a RC release to -next
->>> and deal with the conflict, if any.
->>
->> Thanks this sounds like a good way to go.
-> 
-> You talked about broken -rc, but here wants to fix -next.
-> https://lore.kernel.org/all/bce1ab36-66e4-465c-e051-94e397d108ba@cornelisnetworks.com/
-> https://lore.kernel.org/all/Y8T5602bNhscGixb@unreal/
 
 
-> >> As a side effect of this, can we pull patch 2/7 from this series into the RC?
-> >
-> > No, everything is in for-rc/for-next now.
->
-> Without that patch there will be a regression in 6.2.
+>=20
+> On Fri, Jan 20, 2023 at 08:50:16AM +0000, Hariprasad Kelam wrote:
+> >=20
+> > On Wed, Jan 18, 2023 at 04:21:06PM +0530, Hariprasad Kelam wrote:
+> > > All VFs and PF netdev shares same TL1 schedular, each interface PF=20
+> > > or VF will have different TL2 schedulars having same parent TL1.=20
+> > > The
+> > > TL1 RR_PRIO value is static and PF/VFs use the same value to=20
+> > > configure its
+> > > TL2 node priority in case of DWRR children.
+> > >=20
+> > > This patch adds support to configure TL1 RR_PRIO value using devlink.
+> > > The TL1 RR_PRIO can be configured for each PF. The VFs are not=20
+> > > allowed to configure TL1 RR_PRIO value. The VFs can get the=20
+> > > RR_PRIO value from the mailbox NIX_TXSCH_ALLOC response parameter agg=
+r_lvl_rr_prio.
+> >=20
+> > I asked this question under v1, but didn't get an answer, could you she=
+d some light?
+> >=20
+> > "Could you please elaborate how these priorities of Transmit Levels are=
+ related to HTB priorities? I don't seem to understand why something has to=
+ be configured with devlink in addition to HTB.
+> >=20
+> > SMQ (send meta-descriptor queue) and MDQ (meta-descriptor queue) are th=
+e first transmit levels.
+> > Each send queue is mapped with SMQ.
+> > =20
+> > As mentioned in cover letter, each egress packet needs to traverse all =
+transmit levels starting from TL5 to TL1.
+>=20
+> Yeah, I saw that, just some details about your hardware which might be ob=
+vious to you aren't so clear to me...
+>=20
+> Do these transmit levels map to "layers" of HTB hierarchy? Does it look l=
+ike this, or is my understanding completely wrong?
+>=20
+> TL1                 [HTB root node]
+>                    /               \
+> TL2          [HTB node]         [HTB node]
+>             /          \             |
+> TL3    [HTB node]  [HTB node]   [HTB node]
+> ...                       ...
+>=20
+> Transmit levels to HTB mapping is correct.
+>=20
+>=20
+>=20
+> > This applies to non-QOS Send queues as well.
+> > =20
+> >                        SMQ/MDQ --> TL4 -->TL3 -->TL2 -->TL1
+> >=20
+> > By default non QOS queues use a default hierarchy  with round robin pri=
+ority.=20
+> > To avoid conflict with QOS tree priorities, with devlink user can choos=
+e round-robin priority before Qos tree formation.
+>=20
+> So, this priority that you set with devlink is basically a weight of uncl=
+assified (default) traffic for round robin between unclassified and classif=
+ied traffic, right? I.e. you have two hierarchies (one for HTB, another for=
+ non-QoS queue), and you do DWRR between them, according to this priority?
+>=20
+>=20
+>  Not exactly, In the given scenario where  multiple vfs are attached to P=
+F netdev.
+>  each VF unclassified traffic forms a hierarchy and PF also forms a hiera=
+rchy for unclassified traffic.
+> =20
+> Now traffic from these all tress(multiple vfs and PFs) are aggregated at =
+TL1. HW performs DWRR among them since these TL2 queues (belonging to each =
+pf and vf netdevs) will be configured with the same priority by the driver.
+>=20
+> Currently, this priority is hard coded. Now we are providing this as a co=
+nfigurable value to the user.
+>=20
+> Now if a user adds a HTB node, this will have strict priority at TL2 leve=
+l since DWRR priority is different this traffic won't be affected by DWRR u=
+nclassified traffic.
 
-Sorry it's not clear. Want to move or include patch to keep -rc from being
-broken. Your #2 above. I'm not concerned about #1 b/c it will fix itself in time
-after merging with 6.2-rc.
+So, did I get it right now?
 
--Denny
+                                     [strict priority**]
+                           /---------/                 \-----\
+                           |                                 |
+                        [DWRR*]                              |
+        /---------------/  |   \---------------\             |
+        |                  |                   |             |
+[ Hierarchy for ]  [ Hierarchy for  ]  [ Hierarchy for  ]    |
+[ unclassified  ]  [  unclassified  ]  [  unclassified  ]    |
+[traffic from PF]  [traffic from VF1]  [traffic from VF2]    |
+[      ***      ]  [      ***       ]  [      ***       ]    |
+                                                             |
+                                                [HTB hierarchy using]
+                                                [  strict priority  ]
+                                                [   between nodes   ]
 
+
+
+        Adjusted picture
+
+                        /--------------------------------------------------=
+------------------------------/       Transmit level 1
+                            |                                              =
+                                        |=20
+                        [DWRR*] [ priority 6 ]                             =
+         [strict priority** ]      [ priority 0 ]  Transmit level 2
+        /---------------/  |   \-----------------------------------\       =
+                    |
+             |                   |                                   |     =
+                                      |
+[ Hierarchy for ]  [ Hierarchy for  ]  [ Hierarchy for  ]                 [=
+ Hierarchy for  ]=20
+[ unclassified  ]  [  unclassified  ]  [  unclassified  ]                  =
+    [ strict priority  ]
+[traffic from PF]  [traffic from VF1]  [traffic from VF2]  =20
+[      ***      ]  [      ***       ]  [      ***       ]   =20
+                                               =20
+
+
+As far as I understand, you set priorities at ***, which affect DWRR balanc=
+ing at *, but it's not clear to me how the selection at ** works.
+Does the HTB hierarchy have some fixed priority,  ?
+
+Hardware supports priorities from 0 to 7. lower value has high priority.
+nodes having the same priority are treated as DWRR childs.
+
+i.e. the user can set priority for unclassified traffic to be higher or low=
+er than HTB traffic?
+
+Yes its user configurable, unclassified traffic priority can be higher or l=
+ower than HTB traffic if a user wishes to configure it.
+
+Please also point me at any inaccuracies in my picture, I really want to un=
+derstand the algorithm here, because configuring additional priorities outs=
+ide of HTB looks unusual to me.
+
+  Please check the adjusted picture. Let us assume a user has set the prior=
+ity as 6 for DWRR (unclassified traffic)  and  HTB strict priority as 0.
+Once all traffic reaches  TL2,  Now hardware algorithm first pics HTB stric=
+t priority and processes DWRR later according to their priorities.
+
+>=20
+> Thanks,
+> Hariprasad k
