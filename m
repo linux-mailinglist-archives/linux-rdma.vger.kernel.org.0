@@ -2,64 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01579679193
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jan 2023 08:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D13F67919B
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jan 2023 08:08:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbjAXHH0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Jan 2023 02:07:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
+        id S233429AbjAXHIt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Jan 2023 02:08:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233417AbjAXHHZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Jan 2023 02:07:25 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBF3367D2
-        for <linux-rdma@vger.kernel.org>; Mon, 23 Jan 2023 23:07:24 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id b24-20020a17090a551800b0022beefa7a23so845460pji.5
-        for <linux-rdma@vger.kernel.org>; Mon, 23 Jan 2023 23:07:24 -0800 (PST)
+        with ESMTP id S232588AbjAXHIt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Jan 2023 02:08:49 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D660A222C5
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Jan 2023 23:08:47 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id mm11-20020a17090b358b00b0022bf61de7beso258053pjb.2
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Jan 2023 23:08:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yUNNJnDpVsGtviDl+FUHJwQaYSBUudGj4OkKs1NzH5A=;
-        b=dY3SbDUpidI/7ny3E9uv0L3HOnF0QfXMV0Rwm0alL02fYR6A4F/pDibtrZrYDiRb/x
-         dnJ5IrSWrRlNjSNQzN/ic1CKWpuWEN+XzX/KyiEVopr4HW57kqvYtKF+HXXNxtb+3RaE
-         gJ3ug45ZFCZAj69KvxpC8CMUW0oNGo68NKLZs=
+        bh=cjLU+y37y62a5ffq5WdJhTM59+bJaNUAbZBkhCQFH9o=;
+        b=EAnu6MkvE8zJtdcexGKPpB/yJIJsJmyNcGZ07+f3aO7l1hJeoAl0MKTK6qMv+xv2tT
+         txRN/hS+bsGUXbAmH5ZAf88fK+dulMh8O5ItaqbLQ2Hd1iuITvhZ8O3MZUBwUQkbN3BX
+         frKshQ81a7nUrmIjH4Ot/t8uiMdYCGSTdUObc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yUNNJnDpVsGtviDl+FUHJwQaYSBUudGj4OkKs1NzH5A=;
-        b=VC3lSYSa2oWgyBwkWoUaM6neGU7wGnZ7OSrsulbuvXT+0LEfswurzEkZXN7o8H5yYC
-         tx60l16eUxj/zaYp2MMXn3vx8melxTU1benXjvZjyCebPcAGbaZFBT70oi6QgZHapFok
-         8LWshxRHdn7DfmmiDCnYCs+Zy+XGUJKFQ74OKFiS5PVIDhP9pCNpavPbR3j60Sbyd5VD
-         t6FlHuxtoNBCqyhxYNQIWNApqJRUml1Q4Kpp7fDDhx6/aFRwGJItHX8eDQLAWmyYckpf
-         3qMIVyfDqa/MOLKFNw90rM3/zCepHZz6FV/pJ/ZxYPXgnibIWyG95bMcPlPbOzHngo+c
-         N+oQ==
-X-Gm-Message-State: AFqh2kqrfNOU/2uKjSXsi6rrK0fzYuUuXrDy3RN80jnQ8TUFaz5W0OCb
-        v46r/0orx56aRzElD66F+OeIDvnD76ygxDyN0E9V+Q==
-X-Google-Smtp-Source: AMrXdXt5ZrM4Mt1JyHrJp51N07+176ED5ViMdnJRmKHF90dFCzNLDwgcF+E4NxT/E78psOdV/szeamRJciiztfm0yms=
-X-Received: by 2002:a17:90a:7d10:b0:228:e3ab:18ce with SMTP id
- g16-20020a17090a7d1000b00228e3ab18cemr3232722pjl.3.1674544044044; Mon, 23 Jan
- 2023 23:07:24 -0800 (PST)
+        bh=cjLU+y37y62a5ffq5WdJhTM59+bJaNUAbZBkhCQFH9o=;
+        b=76pPdUNs2Mi/WyoPX2EI16z/VVX7JPNz3r9uKZONYmyKPNTQYPd7cH/yuSwPulucx2
+         QYGm//r71oKCziGsrtp4Aw4OLcZ6wQOTx5PpJ8hFxjqG6G7KRnFbdCR2Sa/4ZrbWPZCL
+         MRICma8Ftd3H5t6NV8oAwbx/TDpUkUIEc0H0ANtSMJ+6QDiH+aHNyoSGKk7qwNUZ9xRu
+         J2x0KJlcOtYFNwRwocYgVPAYUwBDAxjNYAu3g4RdzX3JB3cYUL4FTR7rrn+PqMZC12eN
+         aOMfQuMKnXPeEf66UCMwhXxQUZ1K3TzES/fM/Aumm54W78mAPNfGbCQIRmDFTkUcGDBv
+         hCYQ==
+X-Gm-Message-State: AFqh2kqrFiIPott+mX74nK98fim6XnNirQlvUcddieJS+wDmFaTg6qtg
+        ovxuRloU5HB/nWLNg/2QqiVr2fKatR06kx5oDAjFjA==
+X-Google-Smtp-Source: AMrXdXvoG6790CywueUBKHR3fXHdrH099G4GUmqiLK8rbpkxxckjH5v1btOBkpEDTHdytTo7P2KDRKbaWn4ksfSVMi8=
+X-Received: by 2002:a17:90a:62ca:b0:229:ab8:5f1d with SMTP id
+ k10-20020a17090a62ca00b002290ab85f1dmr2898161pjs.15.1674544127228; Mon, 23
+ Jan 2023 23:08:47 -0800 (PST)
 MIME-Version: 1.0
 References: <20230120060535.83087-1-ajit.khaparde@broadcom.com>
  <20230120060535.83087-2-ajit.khaparde@broadcom.com> <20230123223305.30c586ee@kernel.org>
- <Y89964YCQKwKlyB1@kroah.com>
-In-Reply-To: <Y89964YCQKwKlyB1@kroah.com>
+ <Y89/b4kdiXlFzkOl@unreal>
+In-Reply-To: <Y89/b4kdiXlFzkOl@unreal>
 From:   Ajit Khaparde <ajit.khaparde@broadcom.com>
-Date:   Mon, 23 Jan 2023 23:07:07 -0800
-Message-ID: <CACZ4nhs2pSq73wEiySUgP8Gczmb=rz90pJOe747VtjKmm0yJbA@mail.gmail.com>
+Date:   Mon, 23 Jan 2023 23:08:30 -0800
+Message-ID: <CACZ4nhtek5W2Sp2AUP546RGHmeAxwZ-8x6no3PNVPigTWFJLPw@mail.gmail.com>
 Subject: Re: [PATCH net-next v8 1/8] bnxt_en: Add auxiliary driver support
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, andrew.gospodarek@broadcom.com,
-        davem@davemloft.net, edumazet@google.com, jgg@ziepe.ca,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        andrew.gospodarek@broadcom.com, davem@davemloft.net,
+        edumazet@google.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, michael.chan@broadcom.com,
         netdev@vger.kernel.org, pabeni@redhat.com,
-        selvin.xavier@broadcom.com, Leon Romanovsky <leonro@nvidia.com>
+        selvin.xavier@broadcom.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000ed512e05f2fd2a56"
+        boundary="000000000000e3208605f2fd2f70"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -69,11 +70,10 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000ed512e05f2fd2a56
+--000000000000e3208605f2fd2f70
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 23, 2023 at 10:42 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, Jan 23, 2023 at 10:53 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
 > On Mon, Jan 23, 2023 at 10:33:05PM -0800, Jakub Kicinski wrote:
 > > On Thu, 19 Jan 2023 22:05:28 -0800 Ajit Khaparde wrote:
@@ -86,42 +86,26 @@ On Mon, Jan 23, 2023 at 10:42 PM Greg Kroah-Hartman
 > >
 > > You're still freeing the memory in which struct device sits regardless
 > > of its reference count.
-> >
-> > Greg, is it legal to call:
-> >
-> >       auxiliary_device_delete(adev);  // AKA device_del(&auxdev->dev);
-> >       auxiliary_device_uninit(adev);  // AKA put_device(&auxdev->dev);
-> >       free(adev);                     // frees struct device
 >
-> Ick, the aux device release callback should be doing the freeing of the
-> memory, you shouldn't ever have to free it "manually" like this.  To do
-> so would be a problem (i.e. the release callback would then free it
-> again, right?)
-Yikes!
-Thanks for the refresher.
-
->
-> > ? I tried to explain this three times, maybe there's some wait during
-> > device_del() I'm not seeing which makes this safe :S
-Apologies.
-I thought since the driver was allocating the memory, it had to free it.
-I stand corrected.
+> BTW, Ajit does the same wrong kfree in bnxt_rdma_aux_device_add() too.
+I will address this in the next version. Thanks again.
 
 Thanks
 Ajit
+> +       ret = auxiliary_device_add(aux_dev);
+> +       if (ret)
+> +               goto aux_dev_uninit;
+> +
+> ...
+> +aux_dev_uninit:
+> +       auxiliary_device_uninit(aux_dev);
+> +free_edev:
+> +       kfree(edev); <----- wrong
+> +       bp->edev = NULL;
+>
+> Thanks
 
->
-> Nope, no intentional wait normally.  You can add one by enabling a
-> debugging option to find all of the places where people are doing bad
-> things like this by delaying the freeing of the device memory until a
-> few seconds later, but that's generally not something you should run in
-> a production kernel as it finds all sorts of nasty bugs...
->
-> thanks,
->
-> greg k-h
-
---000000000000ed512e05f2fd2a56
+--000000000000e3208605f2fd2f70
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -192,13 +176,13 @@ KlMYg/Deg9xo3wddCqQIsztHSkR4XaANdn+dbLRQpctZ13BY1lim4uz5bYn3M0IxyZWkQ1JuPHCK
 aRJv0SfR88PoI4RB7NCEHqFwARTj1KvFPQi8pK/YISFydZYbZrxQdyWDidqm4wSuJfpE6i0cWvCd
 u50xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
 MTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwM2Vrj
-4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINch/U90Z+3s66N26cHL
-hE8g9xHaVWOALGZo52l77AtnMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
-MQ8XDTIzMDEyNDA3MDcyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
+4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFY8INA+GoxH+DtW4hbR
+gQNGDE/QgX4M2ZvLMMcq4E6XMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
+MQ8XDTIzMDEyNDA3MDg0N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
 BAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsG
-CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCCy85PB9kJsz61DQitGGpgv60vocAfem2LdNng
-Rv3GdrADY1Y8NXt1jM3NXY5TQhCexpT9zC5GayDRtzo8Hwnvi6cb7at8NbFgXU5nPN4H/og86Fy5
-TkLXIKLRNGHDKq/s+8FNPwT0l49Y4DLM06cVFLvXmQRqVJv8Vx9o9JFvylyxfQzBT94y6LtvZnYs
-xd66XEtvmJuLbBLlHjTWGbHUKWF+JHa+B4w0c5w9LYWq1zQXuZaCivYWhekLOQTnNOhDgS2xye1H
-wZrAi3CMhr5c2DFwKyCM7obhqh/3l5MB+TMC5Z1Xnf8CEQXeDOSjso0HiB64lsZZb5aPHSlUtuQu
---000000000000ed512e05f2fd2a56--
+CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAgGTX7LsRmsfXF74Vq+1bJ8d0ZU1+dpZdSXKHN
+qmflpSb2+jxj3iQrJ8cGMZXGD1ZuEaZ5kidWd3nMPdQoZI8/JrAMdjoYXO92hXLljijWC1bI8VY2
+q4CZJVmnF+lhaNOTfSkPXtOsKzHgtspOcEGoLjCtfbzYeoa0mV/OMmWq6EXPhtoV4D7pcnTjvVg/
+ByxAyEzZRmXZzsK+VaoyGMr+nzFrS2HzZyx13MtHx9yXQVhhZ6vBVwyh8XoZ3yViXQRzVphJRiTt
+NSbedPGH6hbJJllda+vE8441Gxk4ipcdsZxsXcXSgyKEwJS+cYV4lc9/pXKLrJx5NTTHe8/MaRvr
+--000000000000e3208605f2fd2f70--
