@@ -2,192 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5DD679C89
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jan 2023 15:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06331679D33
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jan 2023 16:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235102AbjAXOvq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Jan 2023 09:51:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
+        id S233193AbjAXPRg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Jan 2023 10:17:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235034AbjAXOvb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Jan 2023 09:51:31 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2060a.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5a::60a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D6D4A227;
-        Tue, 24 Jan 2023 06:51:10 -0800 (PST)
+        with ESMTP id S233731AbjAXPRe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Jan 2023 10:17:34 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2062.outbound.protection.outlook.com [40.107.93.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58789274B3
+        for <linux-rdma@vger.kernel.org>; Tue, 24 Jan 2023 07:17:32 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Opu1dnGRiWadW7hmpCW6wwhyFvBp9KurJ88REQywrq/biT9vnTVvbcZ4vJWjL7rF+oPbCqudBvY+ufO646rmyCjHvaXhw0qtnSZrzzRJmhO+FHRVVEPkKj7oLmn6ukubTCImNbAP9A5dcke9kqnpRvJoy3hKibyyB8aUvL9Hay7wUpmYIsmsMREHnoEyeMvfAWWBmjV61bfh0kJ5RlZQ8ZkBn8lTtMgAk8a0tp+DmR25jFcx3TshiZcE4lOSjx8vHQq392pK+9feXZqmah0K9A4P7Jewd00782/Hef+rjsmQ2t8kXlOhMXTam/nfbVTfERKaWWBXqDRAnWnChOysXQ==
+ b=aeqq18mr2c1FXYI48dPPiTdT9Yey1UkMSpgEIlMcZc9isJYCigUAlTNcGtxFdXY8z+yZcLIRREWsinwj6cBAyaYNi6pIpir2kTCxktWqrWib+XCEaH9Q9eugqNZtRAjnOujFPrUphAP7VGq6N5fi/QJYrpgIW8E9V84Y5CtnTjm7w8jM9TtLsQTcimH7BaM2zID4jmwgqhlboFtP0eyDI1cPMu6gYG6jhWFqz6I86ceIj6Pt/50j9AMRBXU4HLjV8QrqvdnxA0uVJZub1xdWwE5jB6b7nD2Lr1gtxC7VhJFaaCb5ZhrgW0O4IGI9nBdHpHD2fXctLOXc3SQ8XRTioA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hdns+ccGmYa5/eT4I1wsgXqZ6qTopVSRHBbDpj6nJQM=;
- b=H8ox8of+DI7AVt+YM7jWmQa2d5IVPJRjdkLIs5PCIksDwm2Dlt+1VksnGOVEcfVDge17RB9+jBt331YUD6syd7eaXM+ibs56dx2Hs7PCmsDN5sNhxRWhZ8egX+oKbdPWzLEBs6wqo1u3SDSnyv2AhVFGBt51JaQicNWOVmhl6B9tiXQHj5y2aoyc72AHKOxa9TRvAM61Es+6JOPY35seoRjQtstp5fWiXgT0xzyNHXOWeYzfzWG2AZ94KOSxg5hGTIQt/9TDhcRBHJxPNQGa5ifRQ3eO4wB1VS+wHjjtdNw/Tb5FI9Ti4iGnjEYDNt/C44CKjvAA7wKAQi7Xqwpzvw==
+ bh=ADchnDq2g3bzDvI7K6zxe8oJWkC17evoONKRsTyOh4Y=;
+ b=JQEGutk859J4jfsRB3u68dr6rg8n1ylF7/Fq4dXNJ6peIT0i75kpctMVO6PLQ4QeX6MqiX2ZMHcRQrkWypfYNpp9AdQhhdwUBz8TDQrhZrpmBzFzZYDkhlMrUmNbxVEBCBuU2wVIAnCcYRxazD7ZfKqx4F7g6yvTj80Bin4ZX5pA4csqz9Ydq/XG80IriEeCnYDthh5MGEy05eCpGv/5nUlW+t5ErgHylxkE1Brfa98ic4/nwtBbSFBYze7kqVHC9Hr1cWkr7skrFFRCUC3cW+xfTqrz2RtThL1lIxJmIVKDsiNPiFIIdEHvaFchnN2PvzXAfjDetOHD3hBsohWfmg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hdns+ccGmYa5/eT4I1wsgXqZ6qTopVSRHBbDpj6nJQM=;
- b=h2ZwJoCKRqW9GalHC+x195fbxhEnmmCjFQmr6XFBFlXetcYXcYScK1lBHCVKDtmgCuKfI4oIoSq5iBm9tlHW8JhEPRuANn+kbPNcPZt9P4+p3TU7GNe7lxYBL2iDSm9CSPSAWqVYKtiNlG3wFq8knU1bhB0yAdOxOMj/w6vklw7pVMKjrpj9nkYQdlucCAb0oBBB6lwK9+Vd2s9tPWHA6yn5AjWpERdb1krBMwxo8ZLpOwm9rN7xpkwncNPtkdDg97CbbT8284tKf4E6RAYuTjaxIk6YPVa3T7otVc4SENeyYNKf+uMdZgaFt/Dh4RtOc97dhUxs+QUZO1oE4xtLsg==
+ bh=ADchnDq2g3bzDvI7K6zxe8oJWkC17evoONKRsTyOh4Y=;
+ b=TZse4m+PhA6UYHQjBqfLhClxEwOijVfzLBVfza/G2NncA/qR4STn1xgjZPcknonGlb0g6DIXBgB0T6pp5p+t05DcliRAZogaJzWLLpmtoIbdU5o9vw45z6CEUd/Sbt4aL1cAIADJS02gfIMSFC9bQbY4dflmWxwwbvVXksWtx+L9jUszUkii7OpUxO8LO/AkY9BkP9kZXQ5oW5+6xvkIieYNkcVr0ZUMHV1fo35DjjCq9PnUu+31fJ/4Tcr+6LbL1eK9nB3WMAcfjxn6eaaDMwEaG2STUWXUhyG8Hm21ojX9/EWaeZXydTTZEyWph193aSrPwNDdc9bi1X/XHk0K/A==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by BL1PR12MB5205.namprd12.prod.outlook.com (2603:10b6:208:308::17) with
+ by SA1PR12MB8118.namprd12.prod.outlook.com (2603:10b6:806:333::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.33; Tue, 24 Jan
- 2023 14:51:07 +0000
+ 2023 15:17:30 +0000
 Received: from LV2PR12MB5869.namprd12.prod.outlook.com
  ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
  ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6002.033; Tue, 24 Jan 2023
- 14:51:07 +0000
-Date:   Tue, 24 Jan 2023 10:51:05 -0400
+ 15:17:30 +0000
+Date:   Tue, 24 Jan 2023 11:17:28 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jhubbard@nvidia.com,
-        tjmercier@google.com, hannes@cmpxchg.org, surenb@google.com,
-        mkoutny@suse.com, daniel@ffwll.ch, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: Re: [RFC PATCH 10/19] net: skb: Switch to using vm_account
-Message-ID: <Y8/wWTOOjyfGBrP0@nvidia.com>
-References: <cover.f52b9eb2792bccb8a9ecd6bc95055705cfe2ae03.1674538665.git-series.apopple@nvidia.com>
- <9b54eef0b41b678cc5f318bd5ae0917bba5b8e21.1674538665.git-series.apopple@nvidia.com>
+To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>
+Cc:     'Zhu Yanjun' <zyjzyj2000@gmail.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        "leonro@nvidia.com" <leonro@nvidia.com>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-next v6 0/6] RDMA/rxe: Replace mr page map with an
+ xarray
+Message-ID: <Y8/2iFQ+RdMQhtTu@nvidia.com>
+References: <20230117172540.33205-1-rpearsonhpe@gmail.com>
+ <Y87h1Cl7aYXDD49M@nvidia.com>
+ <CAD=hENfvup4mwZz9rCjpc5-Oar3mzFDdnvTHoT9FbRVFu28O9g@mail.gmail.com>
+ <TYCPR01MB84555933D77D04649BCDF6C3E5C99@TYCPR01MB8455.jpnprd01.prod.outlook.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9b54eef0b41b678cc5f318bd5ae0917bba5b8e21.1674538665.git-series.apopple@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0365.namprd13.prod.outlook.com
- (2603:10b6:208:2c0::10) To LV2PR12MB5869.namprd12.prod.outlook.com
+In-Reply-To: <TYCPR01MB84555933D77D04649BCDF6C3E5C99@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+X-ClientProxiedBy: CH0PR04CA0065.namprd04.prod.outlook.com
+ (2603:10b6:610:74::10) To LV2PR12MB5869.namprd12.prod.outlook.com
  (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BL1PR12MB5205:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2cf70ce0-71a6-4651-01e2-08dafe1a6c3b
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB8118:EE_
+X-MS-Office365-Filtering-Correlation-Id: cb2a40d7-3225-4cea-c0f0-08dafe1e1c59
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d0pcik2iFgncPCZCjFkfMzQNaBAAADfnWDyS/ENQquG0yJ5c8qyzTJSTAxiYBzqUKRmF70mAYivDwKj8nW3/CxfNCKIGMG+Ro5FKjjYNQaQUYVf5uackWABdFwU0tzdSZyIjROxG/wemgams9FNBRntXGSRKychl4OXDvVE4xY1/LFyBIVvseDlGT0g6oF7G3UGByShO1k7IfqcppeJz/ILU68dG5DF7xC5qyjllyZR435G8Kj0TjvBWUJgNvw9wnRz31DZk4ts/kTRgsN/h8Z6vx+dT2/B7S6jse039rkYzmfNDdZ/WYxb4EEoaR+mtvINxcu3KVGIuCJImmSB1vkk59gnqKxn5DeK0BH9RCKDgAV4tJnDUPM/gbr35kqiwE1CzrkSSSKslITDk5l8N/HWqukzqYECnRxop4XxDd/2TOv+SNA2jUxPapDELLLJTwdAAEbQEskgrzzBWpPuUuhvED38M4IKplbewymSe1BEDIdvvnS3sb8AnLfCxJVc+AqeG22wOIWBzanSOVdOdT5HzjEONYN6I2XxqXAOEvFhmqP9UO/dexBJm7BX71e4FkyM67as6TjDsOtiKvR695dH8qXCyBuPN+iiu3cm3o06j4FGrBbwk/lmC/AmLmbxHUQehMVUdK6A91lwwu6phvA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(136003)(376002)(396003)(366004)(39860400002)(451199015)(36756003)(41300700001)(86362001)(7416002)(8936002)(5660300002)(4326008)(6862004)(2906002)(38100700002)(83380400001)(6486002)(478600001)(66946007)(6512007)(26005)(6506007)(186003)(8676002)(316002)(37006003)(2616005)(6636002)(66476007)(66556008);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: c4pT1QOiGswHkzvvJ+h33CJpnwgmSPmJkXWNdBJ+M0jeDpIQkhXTBuyrlED/v7qLGRN7rvnc8nn8EFTKxTCCrsE8Jn3nDsFDUYyM8SZIcRRdl0gkep7Z9RFUTL9CrgiVoOW3fHrrs3Nn3DvBUBe0U/I/7Seo/s2CwVAORixDCEPPUh+SqR534VoVW6U7eG3XVgb/j8g2HEbcHs8dc+d89uL+V88CTmQoYEHiRdwdE1K8/hqjosZ9vNh3GpZvfTVpyazOTdKyD51mS8VWD4sXJ+IOLR4OI9pMZ8Nu+hETSLFvTwCTOOmK04wp20r4S05YdlZeVTHkOEWDpB55RrZ0MwzOaaTWYtEzE/4pi8qGXeN5R6e6e/kC7Pe4ezgI+kMR7FIrRjfQvER4gH/rxH8JNSgG6eM4FtdWu3+H8hOIwv+w1p1K4/BS88RniPRUcU39eiaTV/977dLfAtPyLLCAT1IWLdsMlta2x6ZA9/KTILMN/m/DNjoH+Outegbd6RGfhBKWb6dtBwCKB9R9ZD83J7Hn3Fv2Oynzl//F5WnyyLIYHD9nQ38b9OrmQ9uj7FfeGlXKcdBGfndQI9rjkPmfYPlasyOV/FZ1SBdWXyKJoKdNKiwXku6LWmQmSG7xJUuiV8KNEKgy/MmujqJU4kRVKw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(366004)(39860400002)(376002)(136003)(346002)(451199015)(83380400001)(86362001)(5660300002)(38100700002)(2906002)(41300700001)(4326008)(8936002)(6512007)(186003)(26005)(6916009)(6506007)(53546011)(8676002)(66556008)(316002)(2616005)(66476007)(54906003)(66946007)(6486002)(478600001)(66899015)(36756003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?skcwf+AbpdWVt23oYoMHZQd4wMWgqhPJouHkPi2dd8uR+QVclL7K44cYbGG0?=
- =?us-ascii?Q?DNtV7v9kHpGlQI4nXH6bhhHa66kxysrDJ0xixftMAaMmBvbo2eMHswpMnPMq?=
- =?us-ascii?Q?NmqSltK2vQyvvmZHX5gh389N3i7fqabcKo+EJ5ntIQ6mMb7DjeJZP2b6F8VL?=
- =?us-ascii?Q?o/nFSteahTchHWh0d3bFYqK9dwTxHP9jsNDB1ZaHpoSbRoGb4lpxF1XnDyJF?=
- =?us-ascii?Q?XxwMs8XkMOCjORpdLY7vxwlE43a5At6KyFJq5KWOcJPrGusF5ZiS7AAKPhL9?=
- =?us-ascii?Q?v+xhCntDDRzs+fzRO9hZzURNNM7muZ/uqcaj03JYZRmV+hkVCTs3ueOvnYMZ?=
- =?us-ascii?Q?w/Liypy9E0mEj8xEJZCCXL6Xf4zNxxx5nYqNYawYtExUKDpoJJyPHc5z356J?=
- =?us-ascii?Q?Jis2RpuhuVxwJYOTtl2HyDgh5XrUt5GApMHmkX1CMgpmVMfHq6I80vIOrdHP?=
- =?us-ascii?Q?DrHTpIRfWkKGh3ntbjjAOdPDKkZd8crjWji8vs+GrM9jNM/t1E+4WQ8wmcOK?=
- =?us-ascii?Q?rBJ9RidokvqOI2ICKxL4bVR2nxKUQj3P6PeBs9gumKSm4I58XWz1KOnH89pC?=
- =?us-ascii?Q?+nFsrxAgi8j207gAfjwH8ZO65NEc0//Gp37WkC/kkKREzRnQe1CN1SANWrTj?=
- =?us-ascii?Q?MHwi30h/teXgDKrZ8NOGBxLhmGDt2P7JCw+EL8WtGT1X9lf8y9fP6PtHhlB0?=
- =?us-ascii?Q?4Rq8JgmyGsCa6Z3h/ksd1UENA6XtqoYuSVkev0m4FxwQqOma6VI/4x1A1+tY?=
- =?us-ascii?Q?QpkKjX8X2WIhfXrH7xyqrSGkY+sGedaJaOvgXiGBHdmLw2obSpUuuwDBiMrd?=
- =?us-ascii?Q?P6ELmiHNvTGeXYGlNKx6h0zqtLRARby0yRsZjjdRs15MQzt5e9jcPe/L421K?=
- =?us-ascii?Q?37LhnjqYKuFrCcAs+upwaZf8gaqMlOsY7RS7HlfERlfzil9NOnQ6Fnt6kmct?=
- =?us-ascii?Q?WycZamxzq6QjEVErYJXk6rEwb8qvb3nZB2A8DbYO/Ab9dJXrbzhkCfmq9YT7?=
- =?us-ascii?Q?gou3mCk1YGkFGkZD8oWveJZTC5AMx04tQl5TZmwHCkJ3xiaC05nQEq528jim?=
- =?us-ascii?Q?DDIYNRRj532Z5Ct4ucoKhWi1VH7lRaYNAKpv9fQi/cpFH/+QIyMsgR2xLKPX?=
- =?us-ascii?Q?ufrWD0WEiJQ/Mb5Go7yTu6hXvxUK91e3BYg1hVeYTeIeak9RFEFynADBnoPD?=
- =?us-ascii?Q?dV2To+5W1ESrqxcpKIohgTNQPpCGsrGqaCMuyeYTHNTK8Hgiq3YRw4Goa8jx?=
- =?us-ascii?Q?phTzFl//4EM0k3gHIFdGr7mTmahAQe3pRML7LkULPQxrTvsjxSevQT39uk82?=
- =?us-ascii?Q?sAk1VWVIUppF4a/FAP0czU5v8gAO1Z+/GOF3ZL9RaPK4LFAx+nK6rI0PtcQQ?=
- =?us-ascii?Q?XkdPbEi/PQ89UQ/fF9isaWxmxyFxCnfCeof7CeeI07nIrSkWQXZffDuYEfvV?=
- =?us-ascii?Q?nxL2P4GIrwkJjQVwb54duHXH2mWSjlDaiJb/ew7sFn0Up4LJZwMdoNvQlBP6?=
- =?us-ascii?Q?hCPTj2vHcAaPeI8YHRGAIL4gM/IPVV00Lq+VbZrRSldheRnioBxCinG2bgFg?=
- =?us-ascii?Q?2e790n3JF01yG4P5dFWuK9RkrAa4JvFDkNNWCosb?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?c7Zkbzo/WG7RXPByIytfmTe2A0h59hU+y5efuL9tweDRgxs62SbkcenLhg8+?=
+ =?us-ascii?Q?m9LurzT/oUsidGW8qopjAAUG01xw9Q3IjeMGJAGT06kEpTjdtON/qGcNxi+B?=
+ =?us-ascii?Q?UVaf9Y58DpFecaQbfxmaqcyxDN4Hp0RDiIIebJCDokzXG5LQMnkDBjMtN2gJ?=
+ =?us-ascii?Q?6eIHemiNREYMljO0X1uW9Pn8INt5HKB9Ny1VA8LdybGRLdUlHVqcDqdr6fVa?=
+ =?us-ascii?Q?fM/4nBgdJ3M8SDy6DWcrCBqdBS3kV6O49vrzZfXTfBoLK8TzUXa1nJzFLVRz?=
+ =?us-ascii?Q?s7qwCUzvVuQnPTrDsXlviiBUVm8OfHGx1Bm0t6Ko9mKAP4S2FONvtzYMWoSv?=
+ =?us-ascii?Q?G/LG/ciL5ESSkfe6M5o0gLwZeavd2U7I2UryYUs4U25I16HmhFxlKm7tNhXc?=
+ =?us-ascii?Q?SarvdP75SdYcnVZcfXWjd9DR8KvfdfyMDmKFQHRg1trxWl2we90KuCGoSU7W?=
+ =?us-ascii?Q?+W55eipmP8h48SM7rZoDlDJyurcuYjy0cRnnL1FzPL/49mpzWoR3jrCIKhBC?=
+ =?us-ascii?Q?mJO1ugl9CABsKhzo9L1St5xcXEgl7DJksuj+0wPc/8nweD+QZslMoDuopP56?=
+ =?us-ascii?Q?P8VkGrRlk0R6Z+fqxZMmS+ovFbTibHFZRmXZzS4au42SRIISYD0082MeU0y/?=
+ =?us-ascii?Q?ipEUIPzKCiMrcVoU/FNma06cs3liSGcwwGhR77GPvuzEhSw44tGIeINknyQZ?=
+ =?us-ascii?Q?ppbnC1ygqbNQtqlHN7kUtDfv/IKMb3KCLERprq2Nbsc7FzQuYBE6Nxbpnt+Q?=
+ =?us-ascii?Q?LpnoTYkMwzMZdDBY8W4lA44QFHG/7MSHreu9JPXY+MAyYwLgVLfxWMQvyywn?=
+ =?us-ascii?Q?MolGJooyxV5h4QMqWULeSCgePs3ZisFlCdz6q3EAsiQo+g0cjI/BVYv0PzI+?=
+ =?us-ascii?Q?uCNl7iYH+IypUdcae0MbPa1L0AQ/6Zc0eh5PriHu4opGFrEHHKgg916vM7EI?=
+ =?us-ascii?Q?Ls8UcXrcq0oLspkjGYPura19w8GF5Q8sfCyjzwCL8coGAEfnVlzIzWb+Rs6X?=
+ =?us-ascii?Q?UNLR6/Rbn0U8mpnGpVFhEsKo3GN0M5ABVxcxdQTgKF5cefvzgMKeqZbwRhb3?=
+ =?us-ascii?Q?SiamGX0lo4auIy4qqdw4XC6/ZKxUv90TWDK/WoLRleahOHVN4DJnInKtzVzj?=
+ =?us-ascii?Q?9bRTiQ31jF4wzqfTBOAZWG50B1uwcn/oGcokFifC7g7sf2apUXhWi0D+Rdo8?=
+ =?us-ascii?Q?giT8reiO+WnPrK13Gb4w4kufJm2bwQMP+5gla7PYaM15KjP1ss27PHi+PRne?=
+ =?us-ascii?Q?segy75M0Y2Z65UsOszhgWjuora3i6f6ZLQYV5oG7pdpdKf7weDGZmXamkE++?=
+ =?us-ascii?Q?4Lh1Zx1kfLEVim8VSA9CYaSVhW//40wZDx3kBW32+BG5dqxKyEfQxrKTrOcL?=
+ =?us-ascii?Q?YaU1lC63B028QdHVNoGoy5fU5OvWE0m02GW4kZqmN484AeGuAKg91cHaUviJ?=
+ =?us-ascii?Q?4DWC+LCHQ3HwFFKrxRq0U4iL1MdxqWYHfbB6FKRxgubT9J+mOhbptD8S/VL1?=
+ =?us-ascii?Q?E/QzwRR577Ol5Q3El5Lkf/kL037IQirwd1BVbVpFM4UdXVCn0y3sblr/tlb3?=
+ =?us-ascii?Q?7GkOmWJpBBrbJaaPlQDb1FEaUAVGxcl24SedBnde?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cf70ce0-71a6-4651-01e2-08dafe1a6c3b
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb2a40d7-3225-4cea-c0f0-08dafe1e1c59
 X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2023 14:51:06.6789
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2023 15:17:30.6026
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iZT+nLqhhW2FA5LppZ0dY5FE6A62/M4boekR0qbuqIgjw/ISqBgzE9Gx3qQWOw91
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5205
+X-MS-Exchange-CrossTenant-UserPrincipalName: UvdWsH7nM4nTwWCBDY3DrSab1hsXElefPmBVGAAUE7ATnUA45Dqb6QIfygDQLkSF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8118
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 04:42:39PM +1100, Alistair Popple wrote:
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index dcd72e6..bc3a868 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -334,6 +334,7 @@ struct sk_filter;
->    *	@sk_security: used by security modules
->    *	@sk_mark: generic packet mark
->    *	@sk_cgrp_data: cgroup data for this cgroup
-> +  *	@sk_vm_account: data for pinned memory accounting
->    *	@sk_memcg: this socket's memory cgroup association
->    *	@sk_write_pending: a write to stream socket waits to start
->    *	@sk_state_change: callback to indicate change in the state of the sock
-> @@ -523,6 +524,7 @@ struct sock {
->  	void			*sk_security;
->  #endif
->  	struct sock_cgroup_data	sk_cgrp_data;
-> +	struct vm_account       sk_vm_account;
->  	struct mem_cgroup	*sk_memcg;
->  	void			(*sk_state_change)(struct sock *sk);
->  	void			(*sk_data_ready)(struct sock *sk);
+On Tue, Jan 24, 2023 at 05:39:34AM +0000, Daisuke Matsuda (Fujitsu) wrote:
+> Tue, Jan 24, 2023 12:43 PM Zhu Yanjun wrote:
+> > On Tue, Jan 24, 2023 at 3:36 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > >
+> > > On Tue, Jan 17, 2023 at 11:25:35AM -0600, Bob Pearson wrote:
+> > > > This patch series replaces the page map carried in each memory region
+> > > > with a struct xarray. It is based on a sketch developed by Jason
+> > > > Gunthorpe. The first five patches are preparation that tries to
+> > > > cleanly isolate all the mr specific code into rxe_mr.c. The sixth
+> > > > patch is the actual change.
+> > >
+> > > I think this is fine, are all the other people satisfied?
+> > 
+> > I noticed that RXE is disabled in RHEL9.x. And in RHEL 8.x, RXE still
+> > is enabled.
+> > It seems that RXE is disabled in RHEL 9.x because of instability.
+> > And recently RXE accepted several patch series.
+> > IMO, we should have more time to make tests and fix bugs before the
+> > new patch series are accepted.
+> 
+> I am relatively a newcomer here, but I think what Zhu says is true.
+> 
+> While there are some pending patch series, there comes a new large
+> patch series that is hard to review, and they get merged without being
+> tested and inspected enough resulting in new bugs. I suppose that is 
+> what have been happening here.
 
-I'm not sure this makes sense in a sock - each sock can be shared with
-different proceses..
+I think the counterpoint is that rxe isn't really a production piece
+of software. If the goal if rxe is to experiment with these new
+features people keep proposing then we should let it advance.
 
-> diff --git a/net/rds/message.c b/net/rds/message.c
-> index b47e4f0..2138a70 100644
-> --- a/net/rds/message.c
-> +++ b/net/rds/message.c
-> @@ -99,7 +99,7 @@ static void rds_rm_zerocopy_callback(struct rds_sock *rs,
->  	struct list_head *head;
->  	unsigned long flags;
->  
-> -	mm_unaccount_pinned_pages(&znotif->z_mmp);
-> +	mm_unaccount_pinned_pages(&rs->rs_sk.sk_vm_account, &znotif->z_mmp);
->  	q = &rs->rs_zcookie_queue;
->  	spin_lock_irqsave(&q->lock, flags);
->  	head = &q->zcookie_head;
-> @@ -367,6 +367,7 @@ static int rds_message_zcopy_from_user(struct rds_message *rm, struct iov_iter *
->  	int ret = 0;
->  	int length = iov_iter_count(from);
->  	struct rds_msg_zcopy_info *info;
-> +	struct vm_account *vm_account = &rm->m_rs->rs_sk.sk_vm_account;
->  
->  	rm->m_inc.i_hdr.h_len = cpu_to_be32(iov_iter_count(from));
->  
-> @@ -380,7 +381,9 @@ static int rds_message_zcopy_from_user(struct rds_message *rm, struct iov_iter *
->  		return -ENOMEM;
->  	INIT_LIST_HEAD(&info->rs_zcookie_next);
->  	rm->data.op_mmp_znotifier = &info->znotif;
-> -	if (mm_account_pinned_pages(&rm->data.op_mmp_znotifier->z_mmp,
-> +	vm_account_init(vm_account, current, current_user(), VM_ACCOUNT_USER);
-> +	if (mm_account_pinned_pages(vm_account,
-> +				    &rm->data.op_mmp_znotifier->z_mmp,
->  				    length)) {
->  		ret = -ENOMEM;
->  		goto err;
-> @@ -399,7 +402,7 @@ static int rds_message_zcopy_from_user(struct rds_message *rm, struct iov_iter *
->  			for (i = 0; i < rm->data.op_nents; i++)
->  				put_page(sg_page(&rm->data.op_sg[i]));
->  			mmp = &rm->data.op_mmp_znotifier->z_mmp;
-> -			mm_unaccount_pinned_pages(mmp);
-> +			mm_unaccount_pinned_pages(vm_account, mmp);
->  			ret = -EFAULT;
->  			goto err;
->  		}
+Stability comes from actual testing, not from time. If people aren't
+testing then waiting longer won't magically make it better.
 
-I wonder if RDS should just not be doing accounting? Usually things
-related to iov_iter are short term and we don't account for them.
+> Blocking new patch series totally will make the rxe less attractive to
+> the contributors. 
 
-But then I don't really know how RDS works, Santos?
-
-Regardless, maybe the vm_account should be stored in the
-rds_msg_zcopy_info ?
+Exactly, I would rather people work on rxe than chase some ideal of
+bug-freeness
 
 Jason
