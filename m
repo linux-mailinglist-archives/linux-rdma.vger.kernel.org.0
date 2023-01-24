@@ -2,282 +2,343 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E246E67A4FA
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jan 2023 22:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36F367A551
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jan 2023 23:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbjAXVa2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Jan 2023 16:30:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53294 "EHLO
+        id S235075AbjAXWDu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Jan 2023 17:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjAXVa1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Jan 2023 16:30:27 -0500
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE4F16ACB
-        for <linux-rdma@vger.kernel.org>; Tue, 24 Jan 2023 13:30:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674595825; x=1706131825;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rknlUi0ps5Ma9KVM47aCx69s2nZPi0dkaBPilmYcYPs=;
-  b=YBByyltww2dvf4GE2pFxBRWKci12bfWr97BPes8+uIqt6t7tjJzVaCYt
-   cnvya8uoBbdeOruqqnORF+ya+pk+3LNZra4CobHVK7yheO2+2fX9R5yBM
-   x55k8GWbaEzG3IlzTu4HLtZvfgFUt+5yK6sqFiZ2ivdMbFJNYSo9Upfkc
-   jFtS8rG7smkjGrlVL8mqrzG0R6Fy1Xhjly9BtydqZm0gKWgOD/nCUIo+U
-   GiY3c0oI7NsZ2z1T0V7hLFJn1duycf7PLAmK0KyDWfEkSfJJSULC7oPDk
-   xT4M2rwhdzQuNwz+U7ElOTVIe//GXFZACEpFK6ZPKRQNTY5qoKlkEO9an
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="314312681"
-X-IronPort-AV: E=Sophos;i="5.97,243,1669104000"; 
-   d="scan'208";a="314312681"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2023 13:30:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="612182894"
-X-IronPort-AV: E=Sophos;i="5.97,243,1669104000"; 
-   d="scan'208";a="612182894"
-Received: from lkp-server01.sh.intel.com (HELO 5646d64e7320) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 24 Jan 2023 13:30:22 -0800
-Received: from kbuild by 5646d64e7320 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pKQs1-0006nN-2g;
-        Tue, 24 Jan 2023 21:30:21 +0000
-Date:   Wed, 25 Jan 2023 05:29:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Michael Guralnik <michaelgur@nvidia.com>, jgg@nvidia.com,
-        leonro@nvidia.com, linux-rdma@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        maorg@nvidia.com, aharonl@nvidia.com,
-        Michael Guralnik <michaelgur@nvidia.com>
-Subject: Re: [PATCH v4 rdma-next 4/6] RDMA/mlx5: Introduce mlx5r_cache_rb_key
-Message-ID: <202301250543.S3rDnUPI-lkp@intel.com>
-References: <20230115133454.29000-5-michaelgur@nvidia.com>
+        with ESMTP id S235093AbjAXWDt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Jan 2023 17:03:49 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036B750840
+        for <linux-rdma@vger.kernel.org>; Tue, 24 Jan 2023 14:03:37 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id a1-20020a056830008100b006864df3b1f8so10071555oto.3
+        for <linux-rdma@vger.kernel.org>; Tue, 24 Jan 2023 14:03:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=302EhWcun9cjkPe3g6G8Pw38phqe+WzcOdhKkQgC8l8=;
+        b=Cb2AgKX6lSgdjL3XbtWovJNtYdUSIIK5MAkI3AkQA8jHdokmZqr/4jL6nlEC9OGzkn
+         IRrlYYhF+pynRDjbNjLloxfY0hGixYAl/JNpIXTglFdPaORVu+ilUX5DqrMUKBwRDzcB
+         33qd/dRO7APiDxsXMMMW5ZdLX42Cm4eNB//XYV95b/QLJYqmGO5ZWPGcbhmyR2Q8AEbt
+         o+QDaVupXuy3izjQk3HipROOj0Pp92FILBYffZhuChLEv3QPGkFaXjiqyut116aVwfIC
+         Qb+2xiumCGBM2s2h5Mk/zKi+y0NQ5y5mABnyx0lrnO5IpM7O+sNFXpFtsRum5me5gjJt
+         5m1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=302EhWcun9cjkPe3g6G8Pw38phqe+WzcOdhKkQgC8l8=;
+        b=CeguPBMHKL/itJErjM73E+vVQ4/iuUaiE3GtjVV1lgdSwu8tROQ7ihbZAc75lEl1YZ
+         Il2jcV6cMHDxrD68NVMism4miR8Ht06cNLhRLIE2wx7SlAYvxr1W4qZAaSfWXrony98o
+         ZWCPbCB4GGUSgt7AAgXk85blrH+lPeV81093Bu/6szMBTZSxT+PzeZ6hxdPqnP5qHbBx
+         SDi3KKbTzUI/8xQTDArh5D3l8ZldYe/mnDeRx/Gl1qIJCPplFbCPfKZaz3rTttYq3y3z
+         sETK3KCnW1FivyFq6D3A0001Kg4lP8QE3ecOvR7P9YnGfnmedVTszNmb/Gh2qhpqgogO
+         wYYg==
+X-Gm-Message-State: AFqh2koARpwdrGjNlfUEMolY89acOGQOH8LbbeODjbgSO3yeGM+bFmLP
+        B09zJNRvE0r1JjR2O9gfpDG/R9n0sv7YIA==
+X-Google-Smtp-Source: AMrXdXszRrMxvTgozgLoq0e/mhTnrnK4ar2OUJdpDdm5GlpTLWpboDhLJCbvD9R0NaaJNWv1bkjtvg==
+X-Received: by 2002:a9d:1b7:0:b0:685:134:b743 with SMTP id e52-20020a9d01b7000000b006850134b743mr13338726ote.11.1674597816113;
+        Tue, 24 Jan 2023 14:03:36 -0800 (PST)
+Received: from [192.168.0.27] (097-099-248-255.res.spectrum.com. [97.99.248.255])
+        by smtp.gmail.com with ESMTPSA id f2-20020a9d6c02000000b00684c9c77754sm1404411otq.69.2023.01.24.14.03.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Jan 2023 14:03:35 -0800 (PST)
+Message-ID: <eb7ce00d-7fea-7b5e-9af6-b8ebbb5592df@gmail.com>
+Date:   Tue, 24 Jan 2023 16:03:34 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230115133454.29000-5-michaelgur@nvidia.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH for-next] RDMA/rxe: Handle zero length cases correctly
+To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        'Zhu Yanjun' <zyjzyj2000@gmail.com>
+Cc:     "jgg@nvidia.com" <jgg@nvidia.com>,
+        "leonro@nvidia.com" <leonro@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20230119190653.6363-1-rpearsonhpe@gmail.com>
+ <CAD=hENcdkWchRrvH+KXLXZoaQcZPpnCdV9V9T9mmzkJ13DJKUA@mail.gmail.com>
+ <20809b59-0d7f-b6b0-e51c-026a78f07a86@gmail.com>
+ <CAD=hENd0HiapsN-iTkAamdy+diFYf4GhP+hnSsfOSwMvMjxY1A@mail.gmail.com>
+ <TYCPR01MB8455A47C60CB11ACCB111A2AE5C89@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+Content-Language: en-US
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <TYCPR01MB8455A47C60CB11ACCB111A2AE5C89@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Michael,
+On 1/23/23 04:20, Daisuke Matsuda (Fujitsu) wrote:
+> On Fri, Jan 20, 2023 3:04 PM Zhu Yanjun wrote:
+>>
+>> On Fri, Jan 20, 2023 at 12:27 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>>
+>>> On 1/19/23 19:38, Zhu Yanjun wrote:
+>>>> On Fri, Jan 20, 2023 at 3:09 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>>>>
+>>>>> Currently the rxe driver, in rare situations, can respond incorrectly
+>>>>> to zero length operations which are retried. The client does not
+>>>>> have to provide an rkey for zero length RDMA operations so the rkey
+>>>>> may be invalid. The driver saves this rkey in the responder resources
+>>>>> to replay the rdma operation if a retry is required so the second pass
+>>>>> will use this (potentially) invalid rkey which may result in memory
+>>>>> faults.
+> 
+> A zero-byte Read request results in one reply packet (RDMA Read Only). 
+> In that case, the responder resource (I interpreted this as qp->resp.res.)
+> is set to NULL soon after sending the reply packet.
+> ~~~~~
+>         err = rxe_xmit_packet(qp, &ack_pkt, skb);
+>         if (err)
+>                 return RESPST_ERR_RNR;
+> 
+>         res->read.va += payload;
+>         res->read.resid -= payload;
+>         res->cur_psn = (res->cur_psn + 1) & BTH_PSN_MASK;
+> 
+>         if (res->read.resid > 0) {
+>                 state = RESPST_DONE;
+>         } else {
+>                 qp->resp.res = NULL;
+>                 if (!res->replay)
+>                         qp->resp.opcode = -1;
+>                 if (psn_compare(res->cur_psn, qp->resp.psn) >= 0)
+>                         qp->resp.psn = res->cur_psn;
+>                 state = RESPST_CLEANUP;
+>         }
+> 
+>         return state;
+> }
+> ~~~~~
+> 
+> According to the code above, the resource is not saved in case responder replies
+> RDMA Read Only packet, so it seems to me that the replay he mentioned is not
+> likely to occur. In my understanding, the replay in read_reply() is used in handling
+> multi-packet Read responses. Please correct me if I am missing anything.
+> 
+> Daisuke
+> 
+>>
+>> In this link:
+>> https://lore.kernel.org/lkml/TYCPR01MB8455FC418FD61CAEE85D0D9FE5C19@TYCPR01MB8455.jpnprd01.prod.outlo
+>> ok.com/T/#m9ea28d1465dc2fb3469c21659e6b6c7349fc984f
+>>
+>> Daisuke Matsuda (Fujitsu) made further investigations about this problem.
+>>
+>> And Daisuke Matsuda (Fujitsu) has delved into this problem.
+>>
+>> Let us wait for his comments.
+>>
+>> Zhu Yanjun
+>>
+>>>>>
+>>>>> This patch corrects the driver to ignore the provided rkey if the
+>>>>> reth length is zero and make sure to set the mr to NULL. In read_reply()
+>>>>> if the length is zero the MR is set to NULL. Warnings are added in
+>>>>> the routines in rxe_mr.c to catch NULL MRs when the length is non-zero.
+>>>>>
+>>>>
+>>>> There is a patch in the following link:
+>>>>
+>>>> https://patchwork.kernel.org/project/linux-rdma/patch/20230113023527.728725-1-baijiaju1990@gmail.com/
+>>>>
+>>>> Not sure whether it is similar or not.
+>>>>
+>>>> Zhu Yanjun
+>>>>
+>>>>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>>>>> ---
+>>>>>  drivers/infiniband/sw/rxe/rxe_mr.c   |  9 +++++++
+>>>>>  drivers/infiniband/sw/rxe/rxe_resp.c | 36 +++++++++++++++++++++-------
+>>>>>  2 files changed, 36 insertions(+), 9 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+>>>>> index 072eac4b65d2..134a74f315c2 100644
+>>>>> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+>>>>> @@ -267,6 +267,9 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
+>>>>>         int m, n;
+>>>>>         void *addr;
+>>>>>
+>>>>> +       if (WARN_ON(!mr))
+>>>>> +               return NULL;
+>>>>> +
+>>>>>         if (mr->state != RXE_MR_STATE_VALID) {
+>>>>>                 rxe_dbg_mr(mr, "Not in valid state\n");
+>>>>>                 addr = NULL;
+>>>>> @@ -305,6 +308,9 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, int length)
+>>>>>         if (length == 0)
+>>>>>                 return 0;
+>>>>>
+>>>>> +       if (WARN_ON(!mr))
+>>>>> +               return -EINVAL;
+>>>>> +
+>>>>>         if (mr->ibmr.type == IB_MR_TYPE_DMA)
+>>>>>                 return -EFAULT;
+>>>>>
+>>>>> @@ -349,6 +355,9 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+>>>>>         if (length == 0)
+>>>>>                 return 0;
+>>>>>
+>>>>> +       if (WARN_ON(!mr))
+>>>>> +               return -EINVAL;
+>>>>> +
+>>>>>         if (mr->ibmr.type == IB_MR_TYPE_DMA) {
+>>>>>                 u8 *src, *dest;
+>>>>>
+>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+>>>>> index c74972244f08..a528dc25d389 100644
+>>>>> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+>>>>> @@ -457,13 +457,23 @@ static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
+>>>>>         return RESPST_CHK_RKEY;
+>>>>>  }
+>>>>>
+>>>>> +/* if the reth length field is zero we can assume nothing
+>>>>> + * about the rkey value and should not validate or use it.
+>>>>> + * Instead set qp->resp.rkey to 0 which is an invalid rkey
+>>>>> + * value since the minimum index part is 1.
+>>>>> + */
+>>>>>  static void qp_resp_from_reth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+>>>>>  {
+>>>>> +       unsigned int length = reth_len(pkt);
+>>>>> +
+>>>>>         qp->resp.va = reth_va(pkt);
+>>>>>         qp->resp.offset = 0;
+>>>>> -       qp->resp.rkey = reth_rkey(pkt);
+>>>>> -       qp->resp.resid = reth_len(pkt);
+>>>>> -       qp->resp.length = reth_len(pkt);
+>>>>> +       qp->resp.resid = length;
+>>>>> +       qp->resp.length = length;
+>>>>> +       if (length)
+>>>>> +               qp->resp.rkey = reth_rkey(pkt);
+>>>>> +       else
+>>>>> +               qp->resp.rkey = 0;
+>>>>>  }
+>>>>>
+>>>>>  static void qp_resp_from_atmeth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+>>>>> @@ -512,8 +522,8 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+>>>>>
+>>>>>         /* A zero-byte op is not required to set an addr or rkey. See C9-88 */
+>>>>>         if ((pkt->mask & RXE_READ_OR_WRITE_MASK) &&
+>>>>> -           (pkt->mask & RXE_RETH_MASK) &&
+>>>>> -           reth_len(pkt) == 0) {
+>>>>> +           (pkt->mask & RXE_RETH_MASK) && reth_len(pkt) == 0) {
+>>>>> +               qp->resp.mr = NULL;
+>>>>>                 return RESPST_EXECUTE;
+>>>>>         }
+>>>>>
+>>>>> @@ -592,6 +602,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+>>>>>         return RESPST_EXECUTE;
+>>>>>
+>>>>>  err:
+>>>>> +       qp->resp.mr = NULL;
+>>>>>         if (mr)
+>>>>>                 rxe_put(mr);
+>>>>>         if (mw)
+>>>>> @@ -966,7 +977,10 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>>>>>         }
+>>>>>
+>>>>>         if (res->state == rdatm_res_state_new) {
+>>>>> -               if (!res->replay) {
+>>>>> +               if (qp->resp.length == 0) {
+>>>>> +                       mr = NULL;
+>>>>> +                       qp->resp.mr = NULL;
+>>>>> +               } else if (!res->replay) {
+>>>>>                         mr = qp->resp.mr;
+>>>>>                         qp->resp.mr = NULL;
+>>>>>                 } else {
+>>>>> @@ -980,9 +994,13 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>>>>>                 else
+>>>>>                         opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST;
+>>>>>         } else {
+>>>>> -               mr = rxe_recheck_mr(qp, res->read.rkey);
+>>>>> -               if (!mr)
+>>>>> -                       return RESPST_ERR_RKEY_VIOLATION;
+>>>>> +               if (qp->resp.length == 0) {
+>>>>> +                       mr = NULL;
+>>>>> +               } else {
+>>>>> +                       mr = rxe_recheck_mr(qp, res->read.rkey);
+>>>>> +                       if (!mr)
+>>>>> +                               return RESPST_ERR_RKEY_VIOLATION;
+>>>>> +               }
+>>>>>
+>>>>>                 if (res->read.resid > mtu)
+>>>>>                         opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE;
+>>>>> --
+>>>>> 2.37.2
+>>>>>
+>>>
+>>> Zhu,
+>>>
+>>> It relates since he is checking for NULL MRs. But I don't think it addresses the root
+>>> causes. The patch I sent should eliminate NULL MRs together with length != 0 in
+>>> the copy routines. I added WARN_ON's in case someone changes things later and
+>>> we hit this again. (A warning is more useful than a fault which can be very hard
+>>> to diagnose.)
+>>>
+>>> The two changes I made that attack the cause of problems are
+>>> (1) clearing qp->resp.mr in check_rkey() in the alternate paths. The primary
+>>> path demands that it get set with a valid mr. But on the alternate paths it isn't
+>>> set at all and can leave with a stale, invalid or wrong mr value.
+>>> (2) in read_reply() there is an error path where a zero length read fails to get
+>>> acked and the requester retries the operation and sends a second request. This
+>>> will end up in read_reply and as currently written attempt to lookup the rkey and
+>>> turn it into an MR but no valid rkey is required in a zero length operation so this
+>>> is likely to fail. The fixes treats length == 0 as a special case and force a NULL mr.
+>>> This should not trigger a fault in the mr copy/etc. routines since they always
+>>> check for length == 0 and return or require a non zero length.
+>>>
+>>> Thanks,
+>>>
+>>> Bob
+>>>
+>>>
 
-Thank you for the patch! Perhaps something to improve:
+Thanks Daisuke,
 
-[auto build test WARNING on rdma/for-next]
-[also build test WARNING on linus/master v6.2-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This reduces the odds of something bad happening but I still like the patch as it is.
+I wrote this because the pyverbs test suite has a test case for a zero length read
+and I saw the test providing an invalid rkey (0x00000020 which is out of range for
+MR indices) and the test failed but that may have been for other reasons.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Guralnik/RDMA-mlx5-Don-t-keep-umrable-page_shift-in-cache-entries/20230115-213631
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/20230115133454.29000-5-michaelgur%40nvidia.com
-patch subject: [PATCH v4 rdma-next 4/6] RDMA/mlx5: Introduce mlx5r_cache_rb_key
-config: x86_64-randconfig-r021-20230123 (https://download.01.org/0day-ci/archive/20230125/202301250543.S3rDnUPI-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/b248641a9895ca71c30d10b95b4be730fd65576a
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Michael-Guralnik/RDMA-mlx5-Don-t-keep-umrable-page_shift-in-cache-entries/20230115-213631
-        git checkout b248641a9895ca71c30d10b95b4be730fd65576a
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/infiniband/
+There are three changes in the patch:
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
+1) check for MR == NULL AND length != 0 in the mr copy/atomic/etc. routines. These
+should not happen unless there is a bug elsewhere in the driver so WARN_ON is
+appropriate.
 
-All warnings (new ones prefixed by >>):
+2) Always set qp->resp.mr in check_rkey. The main purpose of this subroutine is to
+lookup the rkey and find the matching MR by setting qp->resp.mr. But in the alternate
+paths out of the routine it wasn't set. By setting qp->resp.mr = NULL in those paths
+we get predictable behavior which is easy to understand. It may be that mr always
+defaults to NULL but why depend on that when it may change in the future and lead to
+a difficult bug to find. Same for qp_resp_from_reth() since it can legally pass random
+junk in if length == 0.
 
-   In file included from drivers/infiniband/hw/mlx5/ah.c:33:
->> drivers/infiniband/hw/mlx5/mlx5_ib.h:1378:9: warning: incompatible pointer to integer conversion returning 'void *' from a function with result type 'int' [-Wint-conversion]
-           return NULL;
-                  ^~~~
-   include/linux/stddef.h:8:14: note: expanded from macro 'NULL'
-   #define NULL ((void *)0)
-                ^~~~~~~~~~~
-   1 warning generated.
+3) In read_reply don't call rxe_recheck_mr() unless you know rkey is good. The purpose
+of rxe_recheck_mr() is, like check_rkey(), to convert rkey to an MR but this time
+without the length to make sure the rkey should be checked. If the length is zero then
+by spec no rkey is required and it may be invalid (as in pyverbs) so it makes sense
+to handle this case separately.
 
+All of them are obvious and make the code easier to understand and not going to cause
+more bugs. One or two more unlikely if statements isn't going to impact performance.
 
-vim +1378 drivers/infiniband/hw/mlx5/mlx5_ib.h
+Depending on what Jason does with the xarray based mr change this patch may have to
+be sent in again since it doesn't commute with that patch set. I have a newer version
+that applies after the zarray patches and will send it if they get accepted.
 
-  1217	
-  1218	int mlx5_ib_db_map_user(struct mlx5_ib_ucontext *context, unsigned long virt,
-  1219				struct mlx5_db *db);
-  1220	void mlx5_ib_db_unmap_user(struct mlx5_ib_ucontext *context, struct mlx5_db *db);
-  1221	void __mlx5_ib_cq_clean(struct mlx5_ib_cq *cq, u32 qpn, struct mlx5_ib_srq *srq);
-  1222	void mlx5_ib_cq_clean(struct mlx5_ib_cq *cq, u32 qpn, struct mlx5_ib_srq *srq);
-  1223	void mlx5_ib_free_srq_wqe(struct mlx5_ib_srq *srq, int wqe_index);
-  1224	int mlx5_ib_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
-  1225			      struct ib_udata *udata);
-  1226	int mlx5_ib_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *ah_attr);
-  1227	static inline int mlx5_ib_destroy_ah(struct ib_ah *ah, u32 flags)
-  1228	{
-  1229		return 0;
-  1230	}
-  1231	int mlx5_ib_create_srq(struct ib_srq *srq, struct ib_srq_init_attr *init_attr,
-  1232			       struct ib_udata *udata);
-  1233	int mlx5_ib_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
-  1234			       enum ib_srq_attr_mask attr_mask, struct ib_udata *udata);
-  1235	int mlx5_ib_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *srq_attr);
-  1236	int mlx5_ib_destroy_srq(struct ib_srq *srq, struct ib_udata *udata);
-  1237	int mlx5_ib_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
-  1238				  const struct ib_recv_wr **bad_wr);
-  1239	int mlx5_ib_enable_lb(struct mlx5_ib_dev *dev, bool td, bool qp);
-  1240	void mlx5_ib_disable_lb(struct mlx5_ib_dev *dev, bool td, bool qp);
-  1241	int mlx5_ib_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *init_attr,
-  1242			      struct ib_udata *udata);
-  1243	int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
-  1244			      int attr_mask, struct ib_udata *udata);
-  1245	int mlx5_ib_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr, int qp_attr_mask,
-  1246			     struct ib_qp_init_attr *qp_init_attr);
-  1247	int mlx5_ib_destroy_qp(struct ib_qp *qp, struct ib_udata *udata);
-  1248	void mlx5_ib_drain_sq(struct ib_qp *qp);
-  1249	void mlx5_ib_drain_rq(struct ib_qp *qp);
-  1250	int mlx5_ib_read_wqe_sq(struct mlx5_ib_qp *qp, int wqe_index, void *buffer,
-  1251				size_t buflen, size_t *bc);
-  1252	int mlx5_ib_read_wqe_rq(struct mlx5_ib_qp *qp, int wqe_index, void *buffer,
-  1253				size_t buflen, size_t *bc);
-  1254	int mlx5_ib_read_wqe_srq(struct mlx5_ib_srq *srq, int wqe_index, void *buffer,
-  1255				 size_t buflen, size_t *bc);
-  1256	int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
-  1257			      struct ib_udata *udata);
-  1258	int mlx5_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
-  1259	int mlx5_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
-  1260	int mlx5_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
-  1261	int mlx5_ib_modify_cq(struct ib_cq *cq, u16 cq_count, u16 cq_period);
-  1262	int mlx5_ib_resize_cq(struct ib_cq *ibcq, int entries, struct ib_udata *udata);
-  1263	struct ib_mr *mlx5_ib_get_dma_mr(struct ib_pd *pd, int acc);
-  1264	struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
-  1265					  u64 virt_addr, int access_flags,
-  1266					  struct ib_udata *udata);
-  1267	struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
-  1268						 u64 length, u64 virt_addr,
-  1269						 int fd, int access_flags,
-  1270						 struct ib_udata *udata);
-  1271	int mlx5_ib_advise_mr(struct ib_pd *pd,
-  1272			      enum ib_uverbs_advise_mr_advice advice,
-  1273			      u32 flags,
-  1274			      struct ib_sge *sg_list,
-  1275			      u32 num_sge,
-  1276			      struct uverbs_attr_bundle *attrs);
-  1277	int mlx5_ib_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
-  1278	int mlx5_ib_dealloc_mw(struct ib_mw *mw);
-  1279	struct mlx5_ib_mr *mlx5_ib_alloc_implicit_mr(struct mlx5_ib_pd *pd,
-  1280						     int access_flags);
-  1281	void mlx5_ib_free_implicit_mr(struct mlx5_ib_mr *mr);
-  1282	void mlx5_ib_free_odp_mr(struct mlx5_ib_mr *mr);
-  1283	struct ib_mr *mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
-  1284					    u64 length, u64 virt_addr, int access_flags,
-  1285					    struct ib_pd *pd, struct ib_udata *udata);
-  1286	int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
-  1287	struct ib_mr *mlx5_ib_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
-  1288				       u32 max_num_sg);
-  1289	struct ib_mr *mlx5_ib_alloc_mr_integrity(struct ib_pd *pd,
-  1290						 u32 max_num_sg,
-  1291						 u32 max_num_meta_sg);
-  1292	int mlx5_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
-  1293			      unsigned int *sg_offset);
-  1294	int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
-  1295				 int data_sg_nents, unsigned int *data_sg_offset,
-  1296				 struct scatterlist *meta_sg, int meta_sg_nents,
-  1297				 unsigned int *meta_sg_offset);
-  1298	int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u32 port_num,
-  1299				const struct ib_wc *in_wc, const struct ib_grh *in_grh,
-  1300				const struct ib_mad *in, struct ib_mad *out,
-  1301				size_t *out_mad_size, u16 *out_mad_pkey_index);
-  1302	int mlx5_ib_alloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata);
-  1303	int mlx5_ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata);
-  1304	int mlx5_query_ext_port_caps(struct mlx5_ib_dev *dev, unsigned int port);
-  1305	int mlx5_query_mad_ifc_system_image_guid(struct ib_device *ibdev,
-  1306						 __be64 *sys_image_guid);
-  1307	int mlx5_query_mad_ifc_max_pkeys(struct ib_device *ibdev,
-  1308					 u16 *max_pkeys);
-  1309	int mlx5_query_mad_ifc_vendor_id(struct ib_device *ibdev,
-  1310					 u32 *vendor_id);
-  1311	int mlx5_query_mad_ifc_node_desc(struct mlx5_ib_dev *dev, char *node_desc);
-  1312	int mlx5_query_mad_ifc_node_guid(struct mlx5_ib_dev *dev, __be64 *node_guid);
-  1313	int mlx5_query_mad_ifc_pkey(struct ib_device *ibdev, u32 port, u16 index,
-  1314				    u16 *pkey);
-  1315	int mlx5_query_mad_ifc_gids(struct ib_device *ibdev, u32 port, int index,
-  1316				    union ib_gid *gid);
-  1317	int mlx5_query_mad_ifc_port(struct ib_device *ibdev, u32 port,
-  1318				    struct ib_port_attr *props);
-  1319	int mlx5_ib_query_port(struct ib_device *ibdev, u32 port,
-  1320			       struct ib_port_attr *props);
-  1321	void mlx5_ib_populate_pas(struct ib_umem *umem, size_t page_size, __be64 *pas,
-  1322				  u64 access_flags);
-  1323	void mlx5_ib_copy_pas(u64 *old, u64 *new, int step, int num);
-  1324	int mlx5_ib_get_cqe_size(struct ib_cq *ibcq);
-  1325	int mlx5_mkey_cache_init(struct mlx5_ib_dev *dev);
-  1326	int mlx5_mkey_cache_cleanup(struct mlx5_ib_dev *dev);
-  1327	struct mlx5_cache_ent *mlx5r_cache_create_ent(struct mlx5_ib_dev *dev,
-  1328						      struct mlx5r_cache_rb_key rb_key,
-  1329						      bool persistent_entry);
-  1330	
-  1331	struct mlx5_ib_mr *mlx5_mr_cache_alloc(struct mlx5_ib_dev *dev,
-  1332					       int access_flags, int access_mode,
-  1333					       int ndescs);
-  1334	
-  1335	int mlx5_ib_check_mr_status(struct ib_mr *ibmr, u32 check_mask,
-  1336				    struct ib_mr_status *mr_status);
-  1337	struct ib_wq *mlx5_ib_create_wq(struct ib_pd *pd,
-  1338					struct ib_wq_init_attr *init_attr,
-  1339					struct ib_udata *udata);
-  1340	int mlx5_ib_destroy_wq(struct ib_wq *wq, struct ib_udata *udata);
-  1341	int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
-  1342			      u32 wq_attr_mask, struct ib_udata *udata);
-  1343	int mlx5_ib_create_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_table,
-  1344					 struct ib_rwq_ind_table_init_attr *init_attr,
-  1345					 struct ib_udata *udata);
-  1346	int mlx5_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *wq_ind_table);
-  1347	struct ib_mr *mlx5_ib_reg_dm_mr(struct ib_pd *pd, struct ib_dm *dm,
-  1348					struct ib_dm_mr_attr *attr,
-  1349					struct uverbs_attr_bundle *attrs);
-  1350	
-  1351	#ifdef CONFIG_INFINIBAND_ON_DEMAND_PAGING
-  1352	int mlx5_ib_odp_init_one(struct mlx5_ib_dev *ibdev);
-  1353	int mlx5r_odp_create_eq(struct mlx5_ib_dev *dev, struct mlx5_ib_pf_eq *eq);
-  1354	void mlx5_ib_odp_cleanup_one(struct mlx5_ib_dev *ibdev);
-  1355	int __init mlx5_ib_odp_init(void);
-  1356	void mlx5_ib_odp_cleanup(void);
-  1357	int mlx5_odp_init_mkey_cache(struct mlx5_ib_dev *dev);
-  1358	void mlx5_odp_populate_xlt(void *xlt, size_t idx, size_t nentries,
-  1359				   struct mlx5_ib_mr *mr, int flags);
-  1360	
-  1361	int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
-  1362				       enum ib_uverbs_advise_mr_advice advice,
-  1363				       u32 flags, struct ib_sge *sg_list, u32 num_sge);
-  1364	int mlx5_ib_init_odp_mr(struct mlx5_ib_mr *mr);
-  1365	int mlx5_ib_init_dmabuf_mr(struct mlx5_ib_mr *mr);
-  1366	#else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
-  1367	static inline int mlx5_ib_odp_init_one(struct mlx5_ib_dev *ibdev) { return 0; }
-  1368	static inline int mlx5r_odp_create_eq(struct mlx5_ib_dev *dev,
-  1369					      struct mlx5_ib_pf_eq *eq)
-  1370	{
-  1371		return 0;
-  1372	}
-  1373	static inline void mlx5_ib_odp_cleanup_one(struct mlx5_ib_dev *ibdev) {}
-  1374	static inline int mlx5_ib_odp_init(void) { return 0; }
-  1375	static inline void mlx5_ib_odp_cleanup(void)				    {}
-  1376	static inline int mlx5_odp_init_mkey_cache(struct mlx5_ib_dev *dev)
-  1377	{
-> 1378		return NULL;
-  1379	}
-  1380	static inline void mlx5_odp_populate_xlt(void *xlt, size_t idx, size_t nentries,
-  1381						 struct mlx5_ib_mr *mr, int flags) {}
-  1382	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Bob
