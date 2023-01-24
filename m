@@ -2,218 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C03D96798D8
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jan 2023 14:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49965679BE7
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jan 2023 15:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233364AbjAXNCk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Jan 2023 08:02:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
+        id S233951AbjAXOc3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Jan 2023 09:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbjAXNCj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Jan 2023 08:02:39 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F40C2132;
-        Tue, 24 Jan 2023 05:02:38 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id vw16so38764846ejc.12;
-        Tue, 24 Jan 2023 05:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CAvuDW74OPZh1h9grz8bITx0Gg1E0b20n7bNbMIV6hI=;
-        b=HVdnsi7ls0oRQ2fRY5Cnh/CDfACr8/IXLxbXf81T1mk3VLW5s6X0iy8pYcXxPjLyqY
-         Csx1K/6i8ZuMF2z+EUf2Zq15M85jWUgTyky5TwLWGiaRkhyfinhiNw3Hvp/muHddGtSe
-         LDDN+ODIi2tzt9GbFw9ySD2yAl/jrz7ee1E6Pw96wNXibonrAexSzWWmV3yLysxVG5BJ
-         cqzzK49nC2IO2vAKfVyoD4zjT2b+xJNT45HmVxdezglZ6PVYAInDxNz//llmQf+6NuLI
-         AFsuUY9lsn0WQ4k3JepmEloEv1bEYedtMGBap6hraZRJhF0xk9MlV731LRbOcRAPJ7kg
-         Gr+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CAvuDW74OPZh1h9grz8bITx0Gg1E0b20n7bNbMIV6hI=;
-        b=aW0og48J13oGhqzagEHaEKSgZQJsTxl6DZUmOLfcWhiLaNkmatraQ2mPhB04RhMpte
-         xIHO2Lvf1y2sluCqaBKMfX9C2h0rDtO5MtAD7WSpx3x3+s/uDMx1Ur/fvXCa8CIjh8AL
-         ApudN1yZQxwd8SwcQodBTgpTqcKaPoOb1CLJUwRX7P6vHhJuKAjyNNCKAnHz4/cSRCE9
-         YyHtA67tnr+MLe6Z3kPcTAOvbaXAjsGmN42/gm6829Ys4tGPW9xzTJoK7qOQ65nSsPoU
-         T/gGc/dbUggUHDctzKvCSJe2h2jJUhiqakqDj35Sn5nLa7KYAwPKI2iFJoFZuYG5nkoz
-         LEEg==
-X-Gm-Message-State: AFqh2kpWQy/j1IRsQNgsyVosV6y117QbgH5xkGnJZy0zayd0vWaY/pkq
-        NiHSKwprL4akTYoqZkwjLQQ=
-X-Google-Smtp-Source: AMrXdXsHKuG58iJrwYbWLCfGrskbqkMVL6HyvLwGRl86EPx+Yg+Ed6GCWYWbIbXUwq1BNuBNmTs8SA==
-X-Received: by 2002:a17:907:11cd:b0:870:b950:18e7 with SMTP id va13-20020a17090711cd00b00870b95018e7mr30650043ejb.19.1674565356284;
-        Tue, 24 Jan 2023 05:02:36 -0800 (PST)
-Received: from localhost ([185.246.188.67])
-        by smtp.gmail.com with ESMTPSA id jp9-20020a170906f74900b00877800030f2sm851309ejb.169.2023.01.24.05.02.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jan 2023 05:02:35 -0800 (PST)
-Date:   Tue, 24 Jan 2023 15:02:29 +0200
-From:   Maxim Mikityanskiy <maxtram95@gmail.com>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        "jhs@mojatatu.com" <jhs@mojatatu.com>,
-        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
-        "jiri@resnulli.us" <jiri@resnulli.us>,
-        "saeedm@nvidia.com" <saeedm@nvidia.com>,
-        "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        "tariqt@nvidia.com" <tariqt@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "hariprasad.netdev@gmail.com" <hariprasad.netdev@gmail.com>,
-        Naveen Mamindlapalli <naveenm@marvell.com>
-Subject: Re: [net-next Patch v2 4/5] octeontx2-pf: Add devlink support to
- configure TL1 RR_PRIO
-Message-ID: <Y8/W5dMmkqkYFNEb@mail.gmail.com>
-References: <Y8hYlYk/7FfGdfy8@mail.gmail.com>
- <PH0PR18MB4474FCEAC4FA5907CAC17011DEC59@PH0PR18MB4474.namprd18.prod.outlook.com>
- <Y8qZNhUgsdOMavC4@mail.gmail.com>
- <PH0PR18MB4474DBEF155EFA4DA6BA5B10DEC59@PH0PR18MB4474.namprd18.prod.outlook.com>
- <Y803rePcLc97CGik@mail.gmail.com>
- <PH0PR18MB44741D5EBBD7B4010C78C7DFDEC89@PH0PR18MB4474.namprd18.prod.outlook.com>
- <Y87onaDuo8NkFNqC@mail.gmail.com>
- <20230123144548.4a2c06ae@kernel.org>
- <Y88Rug7iaC0nOGvu@mail.gmail.com>
- <PH0PR18MB44748DFCCABCDC2806A2DC2CDEC99@PH0PR18MB4474.namprd18.prod.outlook.com>
-MIME-Version: 1.0
+        with ESMTP id S234385AbjAXOc1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Jan 2023 09:32:27 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2045.outbound.protection.outlook.com [40.107.243.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E09448596;
+        Tue, 24 Jan 2023 06:32:25 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bjdsqVIBzAFjcpch2AlDdp/1oStpJWcNAVmFi/08xeG64S4qX9yDhpBAmd2oDs6teqmjU/uHoab8zjtax6UAkGtxG5mO3MRllYhcUOBnPHH1S6gWYf0UDUg9cFbFLQoy9JtcbuzOKgWqovSpTX7JAOYOK8I4W7JDb87HOxObN7CwRilavsboC8gAhyB5QfGIRP69F0WoLhsDxcWqBvjVy5wVFs5PVaPqeDW8y1t6N7n06MFfJcGdcGElx+7D7VF95yX4c3UPZVPGC8VTTClt8PnTacfd2+LkPVdDwEZzhz+H/790RBtsrYQw8PZGsxvWKfYCY4O6hx3rSxn0OeYBVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vsBlTKh5R4cJPeMAqeQeMUgK8zdy+41wL/FQjMAupEQ=;
+ b=gqCu64KKIMZD+9t5DX2ouvQyF24GM9F1+57VOOQ2CrgE5rAmGFfECs1mO/18RFZe5EEPt9GenJJ5OkaRM+5OOAkdqalPKMEJVF0VtM+XtoUswZ40wmGm2q2vHvriLmSKp+7SQ4SzYABBYkKJhPq0/ScRHjEuMQiReHf2uvn4Rl8cE8YvMW0GEWmKSyhRAbfUZRyLGq6vjsfWfiDMT32h/587z5TJ6CWQKf26sJXUBKgXBBuxBhGEYS/sxsIosKeXU6tRHOUptt5xVujdbkngSWadAxyp/uKWE6KNkW6Ngk9/kIF3/lEruots00llPPFho3bunyf8JNXg4TBZJ/MVOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vsBlTKh5R4cJPeMAqeQeMUgK8zdy+41wL/FQjMAupEQ=;
+ b=fIB4EZKTLSWqGqDyFD6rLHiA0hEEZq8edtlzWQ/2L+zHACQn4KTST7CbpiwLnI8bymb8nf1LEfc/Ut57ufMteWd5Qagx2Zb0nWCVzpQaXBESethtqQb3dPJ6S3XimrqURbI/xWSDS1xgT+J0vtqUohKVJM7vvwrLj9IP98ZVj0ZjD7LDXEBOLbolgCAgeizwI4KexKRBb2CRivjmAHxWton34Shj0+1jJJloDTVBM7otOkSSgY0IIRwRPEXpD/0gt9lRj6zXsP/e69hIn9T0c1a7CxcBNLesEq1MlqCAPbPSyKGQ3OV5cfOWiXPbeCeeB4u5jNinP9v61A/NWNXYkg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM6PR12MB4353.namprd12.prod.outlook.com (2603:10b6:5:2a6::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.33; Tue, 24 Jan
+ 2023 14:32:23 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6002.033; Tue, 24 Jan 2023
+ 14:32:23 +0000
+Date:   Tue, 24 Jan 2023 10:32:23 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jhubbard@nvidia.com,
+        tjmercier@google.com, hannes@cmpxchg.org, surenb@google.com,
+        mkoutny@suse.com, daniel@ffwll.ch, linuxppc-dev@lists.ozlabs.org,
+        linux-fpga@vger.kernel.org, linux-rdma@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org,
+        bpf@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 01/19] mm: Introduce vm_account
+Message-ID: <Y8/r91PGGiY5JJvE@nvidia.com>
+References: <cover.f52b9eb2792bccb8a9ecd6bc95055705cfe2ae03.1674538665.git-series.apopple@nvidia.com>
+ <748338ffe4c42d86669923159fe0426808ecb04d.1674538665.git-series.apopple@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH0PR18MB44748DFCCABCDC2806A2DC2CDEC99@PH0PR18MB4474.namprd18.prod.outlook.com>
-X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+In-Reply-To: <748338ffe4c42d86669923159fe0426808ecb04d.1674538665.git-series.apopple@nvidia.com>
+X-ClientProxiedBy: MN2PR08CA0021.namprd08.prod.outlook.com
+ (2603:10b6:208:239::26) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4353:EE_
+X-MS-Office365-Filtering-Correlation-Id: d6fba86b-cbab-4703-a200-08dafe17cf02
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bpjBOe+AyQreOlwg43PuBAgXiFFmYCCTbEFwZ2w7fcfIlBwNunCOD2rZNMXxnqe8WN05r1zd0oe2W0eZXhxbUlwdHmywxID+ZSy2rEa8fzASysNwbHxILzHFjnv8kD9zfHWADOs9iNMJN3+sqG6aAztztWSGZxT4uSW9AH3r7ALSRC1I5CrdaxTG+j79brO5Von3l1WIUUCvWv3In2k0zD/SAKxMvxTe0IHStIxh5txFjzBsygvSIR9Idcn1SmVd1FOq3eUA9FJtBzJFZ/TJvxfDFnPgDSenWIja9FqRgwGSa7Q3tLMC6N3SVBYgNQempO4cA4QpH297IOlfT6+PpqO/Nsj8e/+xjRwjgVYHs2/f/2GpVqooqXh/owiNOSW6NbqjIDMAx6Ke1yp9CfwME9voi1cBW+z+VpdfxUloWrhj9tavyLNQqEI6z7FGtd/UkVO/c1CkqZWvYIrhxg2V7WQZvuH1B0wCr97/4Wd3CAM0gfwt3jjtU34F1K532UuXJK+IYcIM/ZppzCRDnFOupmMP7yPREsX+VxQW8GBhR6xWm9aGHjNd4VcB3T7mEN9jJeCnQSze2nHizfIeBHYor1PpRTh6T2whll/Gh91eZUlYt0e51Ev9MAshaJZRPj3OMYnKTgG5IctE3Y4EWFv4bQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(136003)(376002)(396003)(366004)(39860400002)(451199015)(36756003)(41300700001)(86362001)(7416002)(8936002)(5660300002)(4326008)(6862004)(2906002)(83380400001)(38100700002)(6486002)(478600001)(66946007)(6512007)(26005)(6506007)(186003)(8676002)(316002)(37006003)(2616005)(6636002)(66476007)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iqD/moe6RmhzboXaYo1NEZEX7vca62fKm3eg/SmFVpSe/1a+sImdMc1AvRHe?=
+ =?us-ascii?Q?fHRR99xnfiB5iA6u67q+z/HbGMjZrd8Kx/MZAVRJtsMDRJK4CUL0EB5T/4ne?=
+ =?us-ascii?Q?Ta5R36WXyAfobPRXHTzfdEqraA6n6ZBaNhyz+C+FPsJEmyCFq9O/sKptqsql?=
+ =?us-ascii?Q?WZ/RqnW8PXuV2sj7q5iiXylMMkpWnFNOVoqOPaYLX0KNRim3BGLlQNZSkZ5r?=
+ =?us-ascii?Q?fqsharArSnrx73l5WGwQGyFbMkTi7ClmEcukIOCp92aXfaxSTcHw8UiU2vFt?=
+ =?us-ascii?Q?w0n9vky9tVSUEKcuzrctnb5XWpddOu7SB6FnRBUZd2DcAGBXAQ/PB9kh/FTX?=
+ =?us-ascii?Q?5MEbb2eaelIwGwHQlya4o7h49OBDH+ycScKFK48Fh6YxZngFdaMx3Swx+vrq?=
+ =?us-ascii?Q?yBNzpqW1SATEQ3YJq/awWdqdY55xrtn5xdz9MKQDCySDwvbL3apSCil0+0ib?=
+ =?us-ascii?Q?uAlQh6OyWQc6kKKO1v6zc4hol+qW80SQkan4++xxmoJIns1WsVkvTa50S/BL?=
+ =?us-ascii?Q?CNBgDmWjl/QthibbegowI3kYkXA9LAhPmPTz8kv5m0j0BxIGvVQlU7ptEZ+5?=
+ =?us-ascii?Q?LNl7B+t3zHfL6VNY+Y+Du+ErebknddA3mYyUo9+sHHWZ0tAQ8PcIzNEh3LCx?=
+ =?us-ascii?Q?R6aduizD/PaSlbUndG1mVvWbi+cvoIISu822lPKVuH1r6Aqh1EUl0OvWHqQ8?=
+ =?us-ascii?Q?YfHRxLrf2lbOdak7P2li9emcAADOYlWVKBQX2bFsrBdwaTNhclwqpxZjlqx0?=
+ =?us-ascii?Q?hLedvwDhh87HCRwdpVjtmPtPqfn0CkGDh6qFqjV0l8QAR6MNPrROCfRfn5CD?=
+ =?us-ascii?Q?u4ymfGRaso6T14UhfP4ZOYcYEx6+WChCH2tYFKkSAod5MGGoaOPNdDqkVOqG?=
+ =?us-ascii?Q?aQTtbD+lqMJOF17SqUnMV4C/G0j+r8NuAS3MPHuP4eUIJNiNy5mOf1bQ/E7a?=
+ =?us-ascii?Q?OEGBj/gAaZio5aE0MlstA5MVcLqSG2tN60KrzlPtiy4Ef45bhJlLe8H0ZhYu?=
+ =?us-ascii?Q?+lAPEOb5Qu9/RwyH0mz5QWGuGu3dzEMlpCJTlHsD2rgIYs8pBZ8QItQU24rf?=
+ =?us-ascii?Q?NMK+kIzTwMwowXtjivosLhqyW67RzRRzV9Lh3KUDfMtzbZMgz5SO2lnFAyNc?=
+ =?us-ascii?Q?1K11+GvOKmlhTK2pv9wgG5Mpg4T6GOF4WGFv7wbw/xgaWptjU4yF9R2Jjk/x?=
+ =?us-ascii?Q?uIOdNBRWaLJv2iiVsZcqoHHdwVJS4/jT93+a7DofIX7Hvcgn1Zcajtddozzq?=
+ =?us-ascii?Q?D7zW30xtz01pzL9X1loBya5U2ytMs06+mqBpN0Soqa70swhUb1xCYQE1n0gv?=
+ =?us-ascii?Q?m8pBPEuK1iPkjqH3ndEEtbXT7QcttcoxagoNzmPHk9ypgsHBDaS6fratdHj5?=
+ =?us-ascii?Q?cpZsllh/AYXPXOGkaLbbUkKA9I6YPEOLEG5aIcUXBnQF5S/8K0kbDtoiqmkp?=
+ =?us-ascii?Q?bw6Pm6bUxMEZfPmWvy95AT05rwqPLFVw7ImA7TGu3RfcGRs0oGO3Me/Lawbb?=
+ =?us-ascii?Q?hObM8oMyxN1KJFpiX29Lqr9PECqB+ppiOgxIzCu2OHgCDCInySzY4+AzBG1I?=
+ =?us-ascii?Q?HrzVWHZAkdi8+iy+USoy3adIYQfXCd0dqcZOVYoE?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6fba86b-cbab-4703-a200-08dafe17cf02
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2023 14:32:23.8355
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oMSKI9iOCEC2XSC2VoTJqBt/X5rOcq2vFitihoENlRaaMkBKWBOuVsWE30CUtqjs
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4353
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 24, 2023 at 11:49:48AM +0000, Hariprasad Kelam wrote:
-> 
-> 
-> > On Mon, Jan 23, 2023 at 02:45:48PM -0800, Jakub Kicinski wrote:
-> > > On Mon, 23 Jan 2023 22:05:58 +0200 Maxim Mikityanskiy wrote:
-> > > > OK, I seem to get it now, thanks for the explanation!
-> > > >
-> > > > How do you set the priority for HTB, though? You mentioned this
-> > > > command to set priority of unclassified traffic:
-> > > >
-> > > > devlink -p dev param set pci/0002:04:00.0 name tl1_rr_prio value 6 \
-> > > > cmode runtime
-> > > >
-> > > > But what is the command to change priority for HTB?
-> > > >
-> > > > What bothers me about using devlink to configure HTB priority is:
-> > > >
-> > > > 1. Software HTB implementation doesn't have this functionality, and
-> > > > it always prioritizes unclassified traffic. As far as I understand,
-> > > > the rule for tc stuff is that all features must have a reference
-> > > > implementation in software.
-> > > >
-> > > > 2. Adding a flag (prefer unclassified vs prefer classified) to HTB
-> > > > itself may be not straightforward, because your devlink command has
-> > > > a second purpose of setting priorities between PFs/VFs, and it may
-> > > > conflict with the HTB flag.
-> > >
-> > > If there is a two-stage hierarchy the lower level should be controlled
-> > > by devlink-rate, no?
-> > 
-> > From the last picture by Hariprasad, I understood that the user sets all
-> > priorities (for unclassified traffic per PF and VF, and for HTB traffic) on the
-> > same TL2 level, i.e. it's not two-stage. (Maybe I got it all wrong again?)
-> > 
-> > I asked about the command to change the HTB priority, cause the
-> > parameters aren't easily guessed, but I assume it's also devlink (i.e.
-> > driver-specific).
-> > 
-> Currently, we don't support changing HTB priority since TC_HTB_MODIFY is not yet supported.
-> The driver implementation is inline with htb tc framework, below are commands we use for setting htb priority
-> 
-> ethtool -K eth0 hw-tc-offload on
-> tc qdisc replace dev eth0 root handle 1: htb offload
-> tc class add dev eth0 parent 1: classid 1:1 htb rate 10Gbit prio 2
-> tc class add dev eth0 parent 1: classid 1:1 htb rate 10Gbit prio 3
+On Tue, Jan 24, 2023 at 04:42:30PM +1100, Alistair Popple wrote:
+> +/**
+> + * enum vm_account_flags - Determine how pinned/locked memory is accounted.
+> + * @VM_ACCOUNT_TASK: Account pinned memory to mm->pinned_vm.
+> + * @VM_ACCOUNT_BYPASS: Don't enforce rlimit on any charges.
+> + * @VM_ACCOUNT_USER: Accounnt locked memory to user->locked_vm.
+> + *
+> + * Determines which statistic pinned/locked memory is accounted
+> + * against. All limits will be enforced against RLIMIT_MEMLOCK and the
+> + * pins cgroup if CONFIG_CGROUP_PINS is enabled.
+> + *
+> + * New drivers should use VM_ACCOUNT_TASK. VM_ACCOUNT_USER is used by
+> + * pre-existing drivers to maintain existing accounting against
+> + * user->locked_mm rather than mm->pinned_mm.
 
-I thought there was a concept of a priority of the whole HTB tree in
-your implementation...
+I thought the guidance was the opposite of this, it is the newer
+places in the kernel that are using VM_ACCOUNT_USER?
 
-So, if I run these commands:
+I haven't got to the rest of the patches yet, but isn't there also a
+mm->pinned_vm vs mm->locked_vm variation in the current drivers as
+well?
 
-devlink -p dev param set pci/0002:04:00.0 name tl1_rr_prio value 2 cmode runtime
-tc class add dev eth0 parent 1: classid 1:1 htb rate 10Gbit prio 1
-tc class add dev eth0 parent 1: classid 1:2 htb rate 10Gbit prio 3
+> +void vm_account_init_current(struct vm_account *vm_account)
+> +{
+> +	vm_account_init(vm_account, current, NULL, VM_ACCOUNT_TASK);
+> +}
+> +EXPORT_SYMBOL_GPL(vm_account_init_current);
 
-Will it prioritize class 1:1 over unclassified traffic, and unclassified
-traffic over class 1:2?
+This can probably just be a static inline
 
-> > If there were two levels (the upper level chooses who goes first: HTB or
-> > unclassified, and the lower level sets priorities per PF and VF for unclassified
-> > traffic), that would be more straightforward to solve: the upper level should
-> > be controlled by a new HTB parameter, and the lower level is device-specific,
-> > thus it goes to devlink.
-> 
-> The PF netdev and VFs share the same physical link and share the same TL1 node.
-> Hardware supports one DWRR group and the rest are strict priority nodes. Driver configures
-> the priority set by devlink to PF and VF traffic TL2 nodes such that traffic is forwarded
-> to TL1 using DWRR algorithm.
-> 
-> Now that if we add htb command for unclassified traffic, at any given point in time HTB
-> rule only applies to a single interface, since we require to set DWRR priority at TL1, 
-> which applies to both PF/VFs, we feel it's a different use case altogether.
+You might consider putting all this in some new vm_account.h - given
+how rarely it is used? Compile times and all
 
-Thanks, with the example above your explanation makes sense to me now.
-
-So, basically, in your implementation, entities prioritized by hardware
-are: each HTB class, each VF and PF; you want to keep user-assigned
-priorities for HTB classes, you want to let the user assign a priority
-for unclassified traffic, but the latter must be equal for all VFs and
-PF (for DWRR to work), correct? And that devlink command is only useful
-in the HTB scenario, i.e. it doesn't matter what tl1_rr_prio you set if
-HTB is not used, right?
-
-What I don't like in the current implementation is that it adds a
-feature to HTB, bypassing HTB (also not providing a software equivalent
-of the feature). I would expect the priority of unclassified traffic to
-be configured with tc commands that set up HTB (by the way, HTB has a
-"default" option to choose a class for unclassified traffic, and a
-priority can be set for this class - this functionality can be leveraged
-for this purpose, or a new option can be added, whatever looks more
-appropriate). On the other hand, I understand your hardware limitation
-requiring to have the same priority for all VFs and PF on the same port.
-
-It's hard to suggest something good here, actually... An obvious thought
-is to let the first netdev that configures HTB choose the priority for
-unclassified traffic, and block attempts from other netdevs to set a
-different one, but this approach also has obvious drawbacks: PF has no
-special powers here, and it can't set the desired priority if PF itself
-doesn't use HTB (or doesn't configure it first, before VFs).
-
-Another idea of mine is to keep the devlink command for enforcement
-purpose, and make the behavior as follows:
-
-1. The user will pick a priority for unclassified traffic when attaching
-HTB.
-
-2. If tl1_rr_prio was set with devlink, block attempts to attach HTB
-with a different default priority.
-
-3. If tl1_rr_prio wasn't set or was reset, allow attaching HTB to PF
-with any default priority. 
-
-This way, VFs can't attach HTB with arbitrary priorities, only with the
-one that the admin has enforced using devlink. At the same time, if VFs
-aren't used, no extra steps are needed to just use HTB on a PF. On the
-other hand, it adds some complexity and may sound controversial to
-someone. Thoughts?
+Jason
