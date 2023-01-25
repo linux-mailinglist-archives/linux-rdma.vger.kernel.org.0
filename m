@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8208B67BB8C
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jan 2023 21:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB4667BB8D
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jan 2023 21:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235528AbjAYUBv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Jan 2023 15:01:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
+        id S230044AbjAYUBx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Jan 2023 15:01:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235590AbjAYUBp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Jan 2023 15:01:45 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7903C36
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Jan 2023 12:01:44 -0800 (PST)
+        with ESMTP id S236093AbjAYUBt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Jan 2023 15:01:49 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2125.outbound.protection.outlook.com [40.107.237.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C171E298EF
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Jan 2023 12:01:48 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OjlnjoLK0lJ24uhUcFypueoxGFntk5VKUGZqMJttA0bbK5E7W7OI+jFUnRnN93lgqX6Rg7ICgolznuPJppsYUq8VO7YyAhVGGH4Yim65TjGfFU2H2PKa2qJQaLj8B/+2UOBJwRbGuxdZwVmDQJ/FvqxThn90GuY0rdxQG9g7E55rvGcl2Tp3VC9pLUwp3PskKuyIKY4rwJ5g08kjHdpeT+wMt+udyS8FKm8vtvWeHYeG9y77LZ3y7k8/ilVq0290D15WNGUUy9tgQbags97ULVHxQ0yvLeCjZe3EdsS10DOld295vdVpJxOm8KzOFWw7Y3EHxeE7bmaYZaf76vRfrw==
+ b=htHkkZbcqWwBjhtb7qoGZKGLP0tlfXtssRbuDWz41RRzHG1CSaKcdt4LcX2swNd4UFhUUgmxUozrTOT2FAi9YmEHzq2JaDJC4egjFNU/kmN1GRhsCSmvsXKz0OCMu4wlcDVUumkNRYlqp+9O6CMNf4ozTECLS6rDv4cqIoig+/aUZfPjdBX1hnxgTY1/aI9F0trWTWbsBP9VOpyXKe+i0Ln88HsLUreyrcix/PQ25ZrXDIWDEbgj5qwbIqmEEQd2zLQmkrjbG4zS2G4hZgG4S6ObetJAGPaB7i4CK9afVm4SkubDbYMvnJlKoskeoigxSsJdXZjDJ9ZUr9uE/M0Fhw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dM9MseBgXWG1G/IyFeNOfhoM5cS02jsRXcEkot0LenI=;
- b=n9w6PcQyB2yxRxGlnKk/cvUt6/v3bTGjlTc5ynSMUu5GFbnPdJq+Sc97XPkPt4j62xIdOQyl1MmJhXtHzPA1EAdKzKBBF+sb3CYM3cAXPSNR9nQ0QoOjotnk2L4s3SVNxIBNPye7fHNU6ElcqYF4wS5i6YCxF9kmbLQYeWQvW3mOHllPZgwhUAmkS6s+Av992mWzydpIOyHwNWicfwo/LLrHSOR9Ps6Wtb7LAYaPoYNiURXmYl/1Ru7GJ3kTK5NagBp217tUrDS7Ujtcwktiy09COKU14bEBy+1xK2h4dAX8QSpCH/SIhR8dJzGYKQDZhjtiuB1Uh0+oXraqmgb/Jg==
+ bh=p5u35seL4Tp43whbztnAcDMAnLc+yBUzR4Y7XSRjiDs=;
+ b=LncZZlL3QWN9Hta0jQ23C5auKzrZBTXXMjEH/y1mOv1MCdLAfFN37/siSyWE2hEUQ2SMiODVVYifRKI+Xh02y0TEpfp7JcagkKpO6A9csjcPa7PrFza93+mtAu5gonzV5vZmzrN3gvy0GxiOIQU43nB2V0Hc9MZsMTwcWYet7IZOmkJSK/4F96DB2ZGXYhucpR4jUbUrlbK7NKSBcJ3Oa/eM3qe4UN+GUJQiLeFBL+Kamkdr8I3YJaPh8ff59ODnNXLdzbBRH0/nPVuC95VyLl1tUxmSOsYjD+itjNIYhgfXOaFHcXvWxo6AeEpkiWS7GU8lOHB370kC+37ErmniHg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=nvidia.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
@@ -28,17 +28,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dM9MseBgXWG1G/IyFeNOfhoM5cS02jsRXcEkot0LenI=;
- b=eJKyyj+ybxWbSj+S1HrBPT5zZ/BPz8/9K+2dYlCIBDjcWjiLNvHZEG8XNcEtdHh6Z4FY/gSkOFBEBQDzovYGCh1SgM7AyxgNFYEIUwt4rUn1rdnK/pkpdVSVWEEfwr0bPjexjFpMUTBPGjzTWIzi2ngbSomgDuueWa9dyGH2Y/vvCJ4YeGTTO0/2e0uBL3wvCfe8PtzL0G14Nfmt4RE2NDGctj/XYzDGdFnwHaBpY3MfHvXm5o6g/Q3dEA1HEp9jBONcUC8diy1viBaQ8jPu++jq+pMvO722MVgBSoPEfOT8Wm7jlMsEgtuKKvTWygZhxE/Eh1YpDsQfpTANEQo2VQ==
-Received: from MW4PR03CA0323.namprd03.prod.outlook.com (2603:10b6:303:dd::28)
- by SN6PR01MB4815.prod.exchangelabs.com (2603:10b6:805:cf::28) with Microsoft
+ bh=p5u35seL4Tp43whbztnAcDMAnLc+yBUzR4Y7XSRjiDs=;
+ b=YmQIdhnPR0A69HGNuFxVpfVO0UbOZuahu+tRZKHWsUbCHp1qrvnVYS2d0gTxjSPhmTwU/gXJbPoRTBygoBjDktWSzWMElzIMRTI+yPsfY7u0JKxABTQbm8quN1aZpcY4m1rpvnjrSbxFIWKShmVfopaVHM7kh0rH06TG0nGdkD2CvtcZ72IlUb3RpvAU6t6qusnDbjX/rkc2IhqN9tKnqJ73smklMUTqlpDf+6Plf5wtVHoY2LpW5N7USLP2q7fF0gPdZt24zvTNZxAQobKViiiaznRxIHjVeja5cZq6FO2coj8UMV22jHg/Fdh75excPoXWLpZvrQ+gseysBT6xiQ==
+Received: from MW2PR16CA0043.namprd16.prod.outlook.com (2603:10b6:907:1::20)
+ by LV2PR01MB7720.prod.exchangelabs.com (2603:10b6:408:172::5) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6002.33; Wed, 25 Jan 2023 20:01:40 +0000
-Received: from CO1NAM11FT079.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:dd:cafe::b7) by MW4PR03CA0323.outlook.office365.com
- (2603:10b6:303:dd::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.33 via Frontend
- Transport; Wed, 25 Jan 2023 20:01:40 +0000
+ 15.20.6002.33; Wed, 25 Jan 2023 20:01:46 +0000
+Received: from CO1NAM11FT064.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:907:1:cafe::7c) by MW2PR16CA0043.outlook.office365.com
+ (2603:10b6:907:1::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.21 via Frontend
+ Transport; Wed, 25 Jan 2023 20:01:45 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=bestguesspass action=none
@@ -48,21 +48,21 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=awfm-02.cornelisnetworks.com; pr=C
 Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
- CO1NAM11FT079.mail.protection.outlook.com (10.13.175.134) with Microsoft SMTP
+ CO1NAM11FT064.mail.protection.outlook.com (10.13.175.77) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6023.16 via Frontend Transport; Wed, 25 Jan 2023 20:01:40 +0000
+ 15.20.6023.16 via Frontend Transport; Wed, 25 Jan 2023 20:01:45 +0000
 Received: from awfm-02.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 30PK1cmR3649756;
-        Wed, 25 Jan 2023 15:01:38 -0500
-Subject: [PATCH for-next v2 1/3] IB/hfi1: Fix math bugs in
- hfi1_can_pin_pages()
+        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 30PK1iGc3649767;
+        Wed, 25 Jan 2023 15:01:44 -0500
+Subject: [PATCH for-next v2 2/3] IB/hfi1: Fix sdma.h tx->num_descs off-by-one
+ errors
 From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To:     jgg@nvidia.com, leonro@nvidia.com
 Cc:     Brendan Cunningham <bcunningham@cornelisnetworks.com>,
         Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
         linux-rdma@vger.kernel.org
-Date:   Wed, 25 Jan 2023 15:01:38 -0500
-Message-ID: <167467689891.3649436.5979603883827786631.stgit@awfm-02.cornelisnetworks.com>
+Date:   Wed, 25 Jan 2023 15:01:44 -0500
+Message-ID: <167467690409.3649436.3092170819675547492.stgit@awfm-02.cornelisnetworks.com>
 In-Reply-To: <167467667721.3649436.2151007723733044404.stgit@awfm-02.cornelisnetworks.com>
 References: <167467667721.3649436.2151007723733044404.stgit@awfm-02.cornelisnetworks.com>
 User-Agent: StGit/1.5.dev2+g9ce680a5
@@ -71,23 +71,23 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT079:EE_|SN6PR01MB4815:EE_
-X-MS-Office365-Filtering-Correlation-Id: ac3a00ab-fa99-4787-3ccb-08daff0ef93d
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT064:EE_|LV2PR01MB7720:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f13b3c8-f7e6-41b5-2f65-08daff0efc5e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zi35fm6UPbFaxhSUnIOed9wh8oC3LDFlNukUQ2Y3UG870/AOkHsxJB6V0A4uY+vfm2b9L7NfhLHt+4mL+XSYaI5Qib+imJ6Gc8LOAVtPDQU+yWm0XESXAN/GJBuvSZ4/lCNXRXFFXw49H2BtbvgPdq9wwCNVSSWFfA//rey6QnVfsR4wmKMY76SLMIhe8q+TdoE0OAceff9nlWmSEBvG/cwRWBWjoI+REDvte6+5uvMXRiuCGp8zXYz7cidwFb27KwHX1MzvPX9mSB608pZZSyyXUiYeg78rXKA/yvK0wmGjT/yGoOMV5ERN+jeVVPCqUTB/Rk3ERB1O8GnzncGsR9quNFu10V4XU56jik7tXequR2GZ2PmhdC37xKDGa187xlbfGHsq0D3J1d7nih0RXCCESq6Z4yYFs+yPtVX/mruEVWIxOcvV2tfDrVNPbBJAFMPc1aGwt8zUZMEDH81lBq9qLdclT4ZTSKMHKn5JhoSnVUsdjQMs6i9DJzl/qY/YR6617yx2zXL7+0KRTpaAjntwOKCZGuyffxwP8kEiCA7bauFAOrhxJzXDr6ugfMH8yqjxA6ey5/ILV/7dUd+8THIDkFSFdAcXfr7yWloUL1UhYKxzyjFsIO2pJ8Zxql3dO+ep9VtAtGx3NbzBk3ns90fzJ5DblMs08q9QwGsjqL3/ZzPMN2zdKj2gL6xlfQOCGXM1X/VdXxEF5dWz96tBCQ==
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(376002)(39840400004)(396003)(346002)(136003)(451199018)(36840700001)(46966006)(2906002)(36860700001)(81166007)(5660300002)(4326008)(83380400001)(7126003)(7696005)(316002)(54906003)(26005)(8936002)(41300700001)(55016003)(86362001)(40480700001)(44832011)(103116003)(356005)(478600001)(426003)(336012)(47076005)(70586007)(8676002)(186003)(70206006)(82310400005)(36900700001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: B0AWu0VfcghPX9/Pwt+qLSqt8qzNREAnZVn2Zcb08LU14ETXHtvPV6koPUqYXvkDl0tKD5n26d91cu/mKapP1TZxPnE06t0JB8fDIP5C9qflupaZd1C4/p/XQ8GPj9vwdRsJ2nuiTwmHwp1cDqWA31LA9HW+Q9h1T43vO2l30I/T5hjQcJcUfgbOgXhQa+xOk8cuHf+m504yni6mX9YOghmrw3H7VEsl0quo5V3uVYGvDH610oHlBkj3eqrL7kM20aSLfYteMQRQixFfOVfZxQTv9soUOID256o87E98DNYUyxVSUZ6d3XcdjTwyNFef1SdQMRCpgFKQVvDv9PMrAPss9xOv6cvBhjbHlhJEPXQPXFjMQ/qvtiHxh2LFQaRW6aMy5YF3IVVUvjA+8NsgaSpMS1CTSCsfYNiWGdS+yW9o1bCogK3IPD0R7ggnqPC9PWpH31/ldO3bV4fnvm3JzT6TrV7YF6GsD2ZJbRgLaYc+cBjgCzEwHomrLjNaEx7iiuv91qtANo99Pn71kV+uzoaNSe/OXJpgBFpfnEc/gh6BBdi3d0BZmCffSF6rdIIv0ux5Lp2x654aEtPe0mEBn7lLbGQT0IsrA+dp6Yln/XiuDNhzTK3psQHB1bwqWnFJgwWAzFHwgpum18ygFiZX+TtrzrVDOf2d6kNbhcslHUN7ljGKkVErJOPayQUhJ5f0438kO6jsFuVo7WRbWW7vTQ==
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(136003)(39840400004)(376002)(346002)(396003)(451199018)(36840700001)(46966006)(356005)(82310400005)(41300700001)(55016003)(4326008)(47076005)(26005)(7696005)(5660300002)(36860700001)(186003)(8936002)(40480700001)(2906002)(70206006)(70586007)(83380400001)(478600001)(54906003)(81166007)(336012)(316002)(44832011)(103116003)(426003)(86362001)(8676002)(7126003)(36900700001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2023 20:01:40.0792
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2023 20:01:45.3283
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac3a00ab-fa99-4787-3ccb-08daff0ef93d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f13b3c8-f7e6-41b5-2f65-08daff0efc5e
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT079.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT064.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR01MB4815
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR01MB7720
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
@@ -100,94 +100,99 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Patrick Kelsey <pat.kelsey@cornelisnetworks.com>
 
-Fix arithmetic and logic errors in hfi1_can_pin_pages() that  would allow
-hfi1 to attempt pinning pages in cases where it should not because of
-resource limits or lack of required capability.
+Fix three sources of error involving struct sdma_txreq.num_descs.
+
+When _extend_sdma_tx_descs() extends the descriptor array, it uses the
+value of tx->num_descs to determine how many existing entries from the
+tx's original, internal descriptor array to copy to the newly allocated
+one.  As this value was incremented before the call, the copy loop will
+access one entry past the internal descriptor array, copying its contents
+into the corresponding slot in the new array.
+
+If the call to _extend_sdma_tx_descs() fails, _pad_smda_tx_descs() then
+invokes __sdma_tx_clean() which uses the value of tx->num_desc to drive a
+loop that unmaps all descriptor entries in use.  As this value was
+incremented before the call, the unmap loop will invoke sdma_unmap_desc()
+on a descriptor entry whose contents consist of whatever random data was
+copied into it during (1), leading to cascading further calls into the
+kernel and driver using arbitrary data.
+
+_sdma_close_tx() was using tx->num_descs instead of tx->num_descs - 1.
+
+Fix all of the above by:
+- Only increment .num_descs after .descp is extended.
+- Use .num_descs - 1 instead of .num_descs for last .descp entry.
 
 Signed-off-by: Brendan Cunningham <bcunningham@cornelisnetworks.com>
 Signed-off-by: Patrick Kelsey <pat.kelsey@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- drivers/infiniband/hw/hfi1/user_pages.c |   61 ++++++++++++++++++++-----------
- 1 file changed, 40 insertions(+), 21 deletions(-)
+ drivers/infiniband/hw/hfi1/sdma.c |    4 ++--
+ drivers/infiniband/hw/hfi1/sdma.h |   15 +++++++--------
+ 2 files changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/user_pages.c b/drivers/infiniband/hw/hfi1/user_pages.c
-index 7bce963e2ae6..36aaedc65145 100644
---- a/drivers/infiniband/hw/hfi1/user_pages.c
-+++ b/drivers/infiniband/hw/hfi1/user_pages.c
-@@ -29,33 +29,52 @@ MODULE_PARM_DESC(cache_size, "Send and receive side cache size limit (in MB)");
- bool hfi1_can_pin_pages(struct hfi1_devdata *dd, struct mm_struct *mm,
- 			u32 nlocked, u32 npages)
+diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
+index a95b654f5254..8ed20392e9f0 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.c
++++ b/drivers/infiniband/hw/hfi1/sdma.c
+@@ -3160,8 +3160,7 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
  {
--	unsigned long ulimit = rlimit(RLIMIT_MEMLOCK), pinned, cache_limit,
--		size = (cache_size * (1UL << 20)); /* convert to bytes */
--	unsigned int usr_ctxts =
--			dd->num_rcv_contexts - dd->first_dyn_alloc_ctxt;
--	bool can_lock = capable(CAP_IPC_LOCK);
-+	unsigned long ulimit_pages;
-+	unsigned long cache_limit_pages;
-+	unsigned int usr_ctxts;
+ 	int rval = 0;
  
- 	/*
--	 * Calculate per-cache size. The calculation below uses only a quarter
--	 * of the available per-context limit. This leaves space for other
--	 * pinning. Should we worry about shared ctxts?
-+	 * Perform RLIMIT_MEMLOCK based checks unless CAP_IPC_LOCK is present.
- 	 */
--	cache_limit = (ulimit / usr_ctxts) / 4;
--
--	/* If ulimit isn't set to "unlimited" and is smaller than cache_size. */
--	if (ulimit != (-1UL) && size > cache_limit)
--		size = cache_limit;
--
--	/* Convert to number of pages */
--	size = DIV_ROUND_UP(size, PAGE_SIZE);
--
--	pinned = atomic64_read(&mm->pinned_vm);
-+	if (!capable(CAP_IPC_LOCK)) {
-+		ulimit_pages =
-+			DIV_ROUND_DOWN_ULL(rlimit(RLIMIT_MEMLOCK), PAGE_SIZE);
+-	tx->num_desc++;
+-	if ((unlikely(tx->num_desc == tx->desc_limit))) {
++	if ((unlikely(tx->num_desc + 1 == tx->desc_limit))) {
+ 		rval = _extend_sdma_tx_descs(dd, tx);
+ 		if (rval) {
+ 			__sdma_txclean(dd, tx);
+@@ -3174,6 +3173,7 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
+ 		SDMA_MAP_NONE,
+ 		dd->sdma_pad_phys,
+ 		sizeof(u32) - (tx->packet_len & (sizeof(u32) - 1)));
++	tx->num_desc++;
+ 	_sdma_close_tx(dd, tx);
+ 	return rval;
+ }
+diff --git a/drivers/infiniband/hw/hfi1/sdma.h b/drivers/infiniband/hw/hfi1/sdma.h
+index d8170fcbfbdd..b023fc461bd5 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.h
++++ b/drivers/infiniband/hw/hfi1/sdma.h
+@@ -631,14 +631,13 @@ static inline void sdma_txclean(struct hfi1_devdata *dd, struct sdma_txreq *tx)
+ static inline void _sdma_close_tx(struct hfi1_devdata *dd,
+ 				  struct sdma_txreq *tx)
+ {
+-	tx->descp[tx->num_desc].qw[0] |=
+-		SDMA_DESC0_LAST_DESC_FLAG;
+-	tx->descp[tx->num_desc].qw[1] |=
+-		dd->default_desc1;
++	u16 last_desc = tx->num_desc - 1;
 +
-+		/*
-+		 * Pinning these pages would exceed this process's locked memory
-+		 * limit.
-+		 */
-+		if (atomic64_read(&mm->pinned_vm) + npages > ulimit_pages)
-+			return false;
-+
-+		/*
-+		 * Only allow 1/4 of the user's RLIMIT_MEMLOCK to be used for HFI
-+		 * caches.  This fraction is then equally distributed among all
-+		 * existing user contexts.  Note that if RLIMIT_MEMLOCK is
-+		 * 'unlimited' (-1), the value of this limit will be > 2^42 pages
-+		 * (2^64 / 2^12 / 2^8 / 2^2).
-+		 *
-+		 * The effectiveness of this check may be reduced if I/O occurs on
-+		 * some user contexts before all user contexts are created.  This
-+		 * check assumes that this process is the only one using this
-+		 * context (e.g., the corresponding fd was not passed to another
-+		 * process for concurrent access) as there is no per-context,
-+		 * per-process tracking of pinned pages.  It also assumes that each
-+		 * user context has only one cache to limit.
-+		 */
-+		usr_ctxts = dd->num_rcv_contexts - dd->first_dyn_alloc_ctxt;
-+		if (nlocked + npages > (ulimit_pages / usr_ctxts / 4))
-+			return false;
-+	}
- 
--	/* First, check the absolute limit against all pinned pages. */
--	if (pinned + npages >= ulimit && !can_lock)
-+	/*
-+	 * Pinning these pages would exceed the size limit for this cache.
-+	 */
-+	cache_limit_pages = cache_size * (1024 * 1024) / PAGE_SIZE;
-+	if (nlocked + npages > cache_limit_pages)
- 		return false;
- 
--	return ((nlocked + npages) <= size) || can_lock;
-+	return true;
++	tx->descp[last_desc].qw[0] |= SDMA_DESC0_LAST_DESC_FLAG;
++	tx->descp[last_desc].qw[1] |= dd->default_desc1;
+ 	if (tx->flags & SDMA_TXREQ_F_URGENT)
+-		tx->descp[tx->num_desc].qw[1] |=
+-			(SDMA_DESC1_HEAD_TO_HOST_FLAG |
+-			 SDMA_DESC1_INT_REQ_FLAG);
++		tx->descp[last_desc].qw[1] |= (SDMA_DESC1_HEAD_TO_HOST_FLAG |
++					       SDMA_DESC1_INT_REQ_FLAG);
  }
  
- int hfi1_acquire_user_pages(struct mm_struct *mm, unsigned long vaddr, size_t npages,
+ static inline int _sdma_txadd_daddr(
+@@ -655,6 +654,7 @@ static inline int _sdma_txadd_daddr(
+ 		type,
+ 		addr, len);
+ 	WARN_ON(len > tx->tlen);
++	tx->num_desc++;
+ 	tx->tlen -= len;
+ 	/* special cases for last */
+ 	if (!tx->tlen) {
+@@ -666,7 +666,6 @@ static inline int _sdma_txadd_daddr(
+ 			_sdma_close_tx(dd, tx);
+ 		}
+ 	}
+-	tx->num_desc++;
+ 	return rval;
+ }
+ 
 
 
