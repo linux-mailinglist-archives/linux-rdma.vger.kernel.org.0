@@ -2,413 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4534667BF0A
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jan 2023 22:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BBA67BFEB
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jan 2023 23:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235791AbjAYVrt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Jan 2023 16:47:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40574 "EHLO
+        id S229458AbjAYW2h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Jan 2023 17:28:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236535AbjAYVrf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Jan 2023 16:47:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EA85CE57
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Jan 2023 13:46:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674683178;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lFNFB5o9hIqypPIx6Vklcw5xd9odjnjhSbsuxZfyh1E=;
-        b=R2paPiCkFWfryQqo8zpskeeFjr5wzTJQPFHN22D/C0V4g9gOzRdDNl+mpoIxadxPmHZQF1
-        jeMLs4GGchNsBz7le7KXJDY3VWiY23vbnNlTLH6MhBLN2dTVu8QX+cIynjTuP93AFy7tAz
-        HfbRZVox7ApG4MIQByc2jY4VCKwdwmk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-182-VEP3o4fkOeKuedE9PRErFg-1; Wed, 25 Jan 2023 16:46:14 -0500
-X-MC-Unique: VEP3o4fkOeKuedE9PRErFg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1A5C1857F44;
-        Wed, 25 Jan 2023 21:46:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk.com (unknown [10.33.36.97])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E83F1400AFC;
-        Wed, 25 Jan 2023 21:46:12 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     Steve French <smfrench@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Rohith Surabattula <rohiths.msft@gmail.com>,
-        Tom Talpey <tom@talpey.com>,
-        Stefan Metzmacher <metze@samba.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>, linux-cifs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steve French <sfrench@samba.org>, linux-rdma@vger.kernel.org
-Subject: [RFC 10/13] cifs: Build the RDMA SGE list directly from an iterator
-Date:   Wed, 25 Jan 2023 21:45:40 +0000
-Message-Id: <20230125214543.2337639-11-dhowells@redhat.com>
-In-Reply-To: <20230125214543.2337639-1-dhowells@redhat.com>
-References: <20230125214543.2337639-1-dhowells@redhat.com>
+        with ESMTP id S236291AbjAYW2f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Jan 2023 17:28:35 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2061.outbound.protection.outlook.com [40.107.96.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5CF5EF96
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Jan 2023 14:28:34 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jvLKQxANTcEiKb135ZbXLfBv6tkDzyvFZmij9462ZGSidvKalH7G6F8RH8CT6q3rVSXAszDT8aeYKypCc3chBIkOkeE9/oBJaP3Ageds7Mlno42V1Noxw9sfA3O6N4jcp2jrJBCcCgzY7XNw2O+w6jSeWUadeYwzKA/fcVksAHIH2CQD3JCnI6z56bRXanARy3LWkkdNsaFqPfe2Vd8Yjvq+Jg2Ud8Z+Nj+WMDJkHiN8Sa36lIyY2wSzsodLp5JWLaJLuRCc88fTt829dJehYwQuMJborwTHCjUZy8f0gC2kg05bGEv2DslzLms86xL0ANgri0k9yF708ZNcYH2glg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ayRMCzDzXXBmw43ubl1XvrbVbhCEH4ZtPmhfYYWd2Pw=;
+ b=GcQeWU9snIsBW3WDGzyTuKJ45HqtgjnYIZwVMMJ4Xv3uuifFwW/aLL4YIPer9XUwCTyeTLZ3Ub5qoxLDQrdJB0wwx3IPFEUFKbkRqsxNfEb5ayinSuPFGmSMmn5lDzpLtO2QQjSJNszKpUxM3EPmxIY14rnZ1mQXBXeQsAAudb8whd4w8hzLzjDKq2e3A67P9S+jrQCah+NY6IDgBRnt4Fh0C0TUZwOGybhLom8/CDph8YOB7DlJ/WdIpjd9fMWfyuGP48/aLCY4ZBeBETrRZl4pUIwQQ8g3LMgFtXoJXHTlNzIQjEntjx8go06YUO5EIFc8wIJHM72ow+V90zGmyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ayRMCzDzXXBmw43ubl1XvrbVbhCEH4ZtPmhfYYWd2Pw=;
+ b=HOF3jWACZpjEnAh6YFxnScmfTfGLcw9PGo48wUJXwcwG9XRnKCGqQHiklhk5pZNyONAb7GVkSDcNxoyHCdEWXsNHM+IIuH/lBANVX/Lbc2Q/WBzU2YuPrD+RuiVlIyX84Y/6M+gjw3Lv4g5EPZkBKLo51NRU3s4kSXyLRCg3TlbIMZCApCkFGWFW4noCLpRMQ9ZHDs0Ch23xctXkEPrPGoT9mMp3tLU/FnNtSOlLmiQd7qpR3BhCGVJmpTNXZ1RwIAfLMrWiOApmVKtqIKZc3y5ocRoAtfxxM2UvhoqFU6a/ZwCPX6VwKVRTjDb99s1FoMZv3xNM/ht0uJSa13SX/Q==
+Received: from MW4P221CA0022.NAMP221.PROD.OUTLOOK.COM (2603:10b6:303:8b::27)
+ by DM4PR12MB5149.namprd12.prod.outlook.com (2603:10b6:5:390::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.33; Wed, 25 Jan
+ 2023 22:28:33 +0000
+Received: from CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8b:cafe::91) by MW4P221CA0022.outlook.office365.com
+ (2603:10b6:303:8b::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.21 via Frontend
+ Transport; Wed, 25 Jan 2023 22:28:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ CO1NAM11FT011.mail.protection.outlook.com (10.13.175.186) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6043.21 via Frontend Transport; Wed, 25 Jan 2023 22:28:33 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Wed, 25 Jan
+ 2023 14:28:24 -0800
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.36; Wed, 25 Jan 2023 14:28:23 -0800
+Received: from vdi.nvidia.com (10.127.8.13) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.986.36 via Frontend
+ Transport; Wed, 25 Jan 2023 14:28:22 -0800
+From:   Michael Guralnik <michaelgur@nvidia.com>
+To:     <jgg@nvidia.com>, <leonro@nvidia.com>, <linux-rdma@vger.kernel.org>
+CC:     <maorg@nvidia.com>, <aharonl@nvidia.com>,
+        Michael Guralnik <michaelgur@nvidia.com>
+Subject: [PATCH v5 rdma-next 0/6] RDMA/mlx5: Switch MR cache to use RB-tree
+Date:   Thu, 26 Jan 2023 00:28:01 +0200
+Message-ID: <20230125222807.6921-1-michaelgur@nvidia.com>
+X-Mailer: git-send-email 2.17.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT011:EE_|DM4PR12MB5149:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8dfbdc75-87c0-434c-b79a-08daff237e40
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Wgfvj6d7wJIwLSCjqNLtCCIIeE30PnYCTmcY0EmOi/QvqoFztTEqcRzV+4Tf6Jn5FeK90Oln4X1iwLFSHywZzmrtwjlZUUC05nVgjPjnmUFDRRhzveMPvOF9B11mJMWhQxOEd6B+larlaxRm6k7wkSC+dMfq3RM3wmAV9ZMmhpy3qXHqbDEPIiecml9p8QraeK4yyvTiSETq556oTUk+tbcFFUO7S1waHk0t3kgktahOFtzoJSWpEkfn7lKYW5WbLIwOvp4ndJ3GDjH5dMLycUkSEHVTSXKUvW8p2Y/cavI5cBk7tF5VMZkOWrspXeDnGwZJXKRYN3cwT7+0hwJ9BGfB1FSCHOZHspeY/x9871Qr5Zoizyaa3RCzvpEkSAXcu+ly3UsZ3pG2X4vJ13TnUnVyvk/6iQQZDG/GMTl6hhpmEGX7KHoiFSnJKwqRQp6D0wLRRy0y6nDqi7W8WqgrkGpUeG7hE769o2gvUoiiMWTZjVeJ6IMjGaEWtB9sF7UWa0laiP11v1GgLaA2xefaXkTkj5aB3jGCdemxCCIaNS3kXn6xluvr2gSsNwiFj7QmgL7Lh0wBX1mlgDl0uFOqXGrZocYQ89yYrNd/d7/g94BkbUaL/0YCQiNY2QQ3vISBnslP5GbwDGTgp1ojOt8roO4jzEO7UMm6WGFMaajctk1d+vHK3AdWZbGU7yBY57QJCwmkSxrhghtKIEw0nAoOka0tAeXJQIu+HjtvH/OOTOU=
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230025)(4636009)(346002)(376002)(136003)(39860400002)(396003)(451199018)(36840700001)(40470700004)(46966006)(36860700001)(36756003)(86362001)(5660300002)(40460700003)(4326008)(2906002)(1076003)(110136005)(26005)(83380400001)(6666004)(54906003)(7696005)(316002)(107886003)(8936002)(41300700001)(186003)(7636003)(40480700001)(82740400003)(356005)(478600001)(426003)(2616005)(336012)(47076005)(70586007)(8676002)(70206006)(82310400005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2023 22:28:33.2674
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8dfbdc75-87c0-434c-b79a-08daff237e40
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5149
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In the depths of the cifs RDMA code, extract part of an iov iterator
-directly into an SGE list without going through an intermediate
-scatterlist.
+This series moves the MR cache to use RB tree to store the entries of the
+cache. By doing so, enabling more flexibility when managing the cache
+entries.
 
-Note that this doesn't support extraction from an IOBUF- or UBUF-type
-iterator (ie. user-supplied buffer).  The assumption is that the higher
-layers will extract those to a BVEC-type iterator first and do whatever is
-required to stop the pages from going away.
+The MR cache will now cache mkeys returned by the user even if they are
+not from one of the predefined pools, by that allowing restarting
+applications to reuse their released mkey and improve restart times.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Steve French <sfrench@samba.org>
-cc: Shyam Prasad N <nspmangalore@gmail.com>
-cc: Rohith Surabattula <rohiths.msft@gmail.com>
-cc: Tom Talpey <tom@talpey.com>
-cc: Jeff Layton <jlayton@kernel.org>
-cc: linux-cifs@vger.kernel.org
-cc: linux-rdma@vger.kernel.org
+v4->v5:
+- Commit message fix: 'Remove implicit ODP' instead of 'explicit'
+- Fix return value of init function in case of no ODP in configuration
 
-Link: https://lore.kernel.org/r/166697260361.61150.5064013393408112197.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/166732032518.3186319.1859601819981624629.stgit@warthog.procyon.org.uk/ # rfc
----
- fs/cifs/smbdirect.c | 163 +++++++++++++++++---------------------------
- fs/cifs/smbdirect.h |   3 +-
- 2 files changed, 65 insertions(+), 101 deletions(-)
+v3->v4:
+- remove 'change-id' and 'issue' git trailers
 
-diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
-index 7f0a9a8ce9f7..fad75c5ac5b8 100644
---- a/fs/cifs/smbdirect.c
-+++ b/fs/cifs/smbdirect.c
-@@ -828,16 +828,16 @@ static int smbd_post_send(struct smbd_connection *info,
- 	return rc;
- }
- 
--static int smbd_post_send_sgl(struct smbd_connection *info,
--	struct scatterlist *sgl, int data_length, int remaining_data_length)
-+static int smbd_post_send_iter(struct smbd_connection *info,
-+			       struct iov_iter *iter,
-+			       int *_remaining_data_length)
- {
--	int num_sgs;
- 	int i, rc;
- 	int header_length;
-+	int data_length;
- 	struct smbd_request *request;
- 	struct smbd_data_transfer *packet;
- 	int new_credits;
--	struct scatterlist *sg;
- 
- wait_credit:
- 	/* Wait for send credits. A SMBD packet needs one credit */
-@@ -881,6 +881,30 @@ static int smbd_post_send_sgl(struct smbd_connection *info,
- 	}
- 
- 	request->info = info;
-+	memset(request->sge, 0, sizeof(request->sge));
-+
-+	/* Fill in the data payload to find out how much data we can add */
-+	if (iter) {
-+		struct smb_extract_to_rdma extract = {
-+			.nr_sge		= 1,
-+			.max_sge	= SMBDIRECT_MAX_SEND_SGE,
-+			.sge		= request->sge,
-+			.device		= info->id->device,
-+			.local_dma_lkey	= info->pd->local_dma_lkey,
-+			.direction	= DMA_TO_DEVICE,
-+		};
-+
-+		rc = smb_extract_iter_to_rdma(iter, *_remaining_data_length,
-+					      &extract);
-+		if (rc < 0)
-+			goto err_dma;
-+		data_length = rc;
-+		request->num_sge = extract.nr_sge;
-+		*_remaining_data_length -= data_length;
-+	} else {
-+		data_length = 0;
-+		request->num_sge = 1;
-+	}
- 
- 	/* Fill in the packet header */
- 	packet = smbd_request_payload(request);
-@@ -902,7 +926,7 @@ static int smbd_post_send_sgl(struct smbd_connection *info,
- 	else
- 		packet->data_offset = cpu_to_le32(24);
- 	packet->data_length = cpu_to_le32(data_length);
--	packet->remaining_data_length = cpu_to_le32(remaining_data_length);
-+	packet->remaining_data_length = cpu_to_le32(*_remaining_data_length);
- 	packet->padding = 0;
- 
- 	log_outgoing(INFO, "credits_requested=%d credits_granted=%d data_offset=%d data_length=%d remaining_data_length=%d\n",
-@@ -918,7 +942,6 @@ static int smbd_post_send_sgl(struct smbd_connection *info,
- 	if (!data_length)
- 		header_length = offsetof(struct smbd_data_transfer, padding);
- 
--	request->num_sge = 1;
- 	request->sge[0].addr = ib_dma_map_single(info->id->device,
- 						 (void *)packet,
- 						 header_length,
-@@ -932,23 +955,6 @@ static int smbd_post_send_sgl(struct smbd_connection *info,
- 	request->sge[0].length = header_length;
- 	request->sge[0].lkey = info->pd->local_dma_lkey;
- 
--	/* Fill in the packet data payload */
--	num_sgs = sgl ? sg_nents(sgl) : 0;
--	for_each_sg(sgl, sg, num_sgs, i) {
--		request->sge[i+1].addr =
--			ib_dma_map_page(info->id->device, sg_page(sg),
--			       sg->offset, sg->length, DMA_TO_DEVICE);
--		if (ib_dma_mapping_error(
--				info->id->device, request->sge[i+1].addr)) {
--			rc = -EIO;
--			request->sge[i+1].addr = 0;
--			goto err_dma;
--		}
--		request->sge[i+1].length = sg->length;
--		request->sge[i+1].lkey = info->pd->local_dma_lkey;
--		request->num_sge++;
--	}
--
- 	rc = smbd_post_send(info, request);
- 	if (!rc)
- 		return 0;
-@@ -987,8 +993,10 @@ static int smbd_post_send_sgl(struct smbd_connection *info,
-  */
- static int smbd_post_send_empty(struct smbd_connection *info)
- {
-+	int remaining_data_length = 0;
-+
- 	info->count_send_empty++;
--	return smbd_post_send_sgl(info, NULL, 0, 0);
-+	return smbd_post_send_iter(info, NULL, &remaining_data_length);
- }
- 
- /*
-@@ -1933,42 +1941,6 @@ int smbd_recv(struct smbd_connection *info, struct msghdr *msg)
- 	return rc;
- }
- 
--/*
-- * Send the contents of an iterator
-- * @iter: The iterator to send
-- * @_remaining_data_length: remaining data to send in this payload
-- */
--static int smbd_post_send_iter(struct smbd_connection *info,
--			       struct iov_iter *iter,
--			       int *_remaining_data_length)
--{
--	struct scatterlist sgl[SMBDIRECT_MAX_SEND_SGE - 1];
--	unsigned int max_payload = info->max_send_size - sizeof(struct smbd_data_transfer);
--	ssize_t rc;
--
--	/* We're not expecting a user-backed iter */
--	WARN_ON(iov_iter_extract_will_pin(iter));
--
--	do {
--		struct sg_table sgtable = { .sgl = sgl };
--		size_t maxlen = min_t(size_t, *_remaining_data_length, max_payload);
--
--		sg_init_table(sgtable.sgl, ARRAY_SIZE(sgl));
--		rc = netfs_extract_iter_to_sg(iter, maxlen,
--					      &sgtable, ARRAY_SIZE(sgl), 0);
--		if (rc < 0)
--			break;
--		if (WARN_ON_ONCE(sgtable.nents == 0))
--			return -EIO;
--
--		sg_mark_end(&sgl[sgtable.nents - 1]);
--		*_remaining_data_length -= rc;
--		rc = smbd_post_send_sgl(info, sgl, rc, *_remaining_data_length);
--	} while (rc == 0 && iov_iter_count(iter) > 0);
--
--	return rc;
--}
--
- /*
-  * Send data to transport
-  * Each rqst is transported as a SMBDirect payload
-@@ -2129,10 +2101,10 @@ static void destroy_mr_list(struct smbd_connection *info)
- 	cancel_work_sync(&info->mr_recovery_work);
- 	list_for_each_entry_safe(mr, tmp, &info->mr_list, list) {
- 		if (mr->state == MR_INVALIDATED)
--			ib_dma_unmap_sg(info->id->device, mr->sgl,
--				mr->sgl_count, mr->dir);
-+			ib_dma_unmap_sg(info->id->device, mr->sgt.sgl,
-+				mr->sgt.nents, mr->dir);
- 		ib_dereg_mr(mr->mr);
--		kfree(mr->sgl);
-+		kfree(mr->sgt.sgl);
- 		kfree(mr);
- 	}
- }
-@@ -2167,11 +2139,10 @@ static int allocate_mr_list(struct smbd_connection *info)
- 				    info->mr_type, info->max_frmr_depth);
- 			goto out;
- 		}
--		smbdirect_mr->sgl = kcalloc(
--					info->max_frmr_depth,
--					sizeof(struct scatterlist),
--					GFP_KERNEL);
--		if (!smbdirect_mr->sgl) {
-+		smbdirect_mr->sgt.sgl = kcalloc(info->max_frmr_depth,
-+						sizeof(struct scatterlist),
-+						GFP_KERNEL);
-+		if (!smbdirect_mr->sgt.sgl) {
- 			log_rdma_mr(ERR, "failed to allocate sgl\n");
- 			ib_dereg_mr(smbdirect_mr->mr);
- 			goto out;
-@@ -2190,7 +2161,7 @@ static int allocate_mr_list(struct smbd_connection *info)
- 
- 	list_for_each_entry_safe(smbdirect_mr, tmp, &info->mr_list, list) {
- 		ib_dereg_mr(smbdirect_mr->mr);
--		kfree(smbdirect_mr->sgl);
-+		kfree(smbdirect_mr->sgt.sgl);
- 		kfree(smbdirect_mr);
- 	}
- 	return -ENOMEM;
-@@ -2244,22 +2215,20 @@ static struct smbd_mr *get_mr(struct smbd_connection *info)
- 
- /*
-  * Transcribe the pages from an iterator into an MR scatterlist.
-- * @iter: The iterator to transcribe
-- * @_remaining_data_length: remaining data to send in this payload
-  */
- static int smbd_iter_to_mr(struct smbd_connection *info,
- 			   struct iov_iter *iter,
--			   struct scatterlist *sgl,
--			   unsigned int num_pages)
-+			   struct sg_table *sgt,
-+			   unsigned int max_sg)
- {
--	struct sg_table sgtable = { .sgl = sgl };
- 	int ret;
- 
--	sg_init_table(sgl, num_pages);
-+	memset(sgt->sgl, 0, max_sg * sizeof(struct scatterlist));
- 
--	ret = netfs_extract_iter_to_sg(iter, iov_iter_count(iter),
--				       &sgtable, num_pages, 0);
-+	ret = netfs_extract_iter_to_sg(iter, iov_iter_count(iter), sgt, max_sg, 0);
- 	WARN_ON(ret < 0);
-+	if (sgt->nents > 0)
-+		sg_mark_end(&sgt->sgl[sgt->nents - 1]);
- 	return ret;
- }
- 
-@@ -2296,25 +2265,27 @@ struct smbd_mr *smbd_register_mr(struct smbd_connection *info,
- 	dir = writing ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
- 	smbdirect_mr->dir = dir;
- 	smbdirect_mr->need_invalidate = need_invalidate;
--	smbdirect_mr->sgl_count = num_pages;
-+	smbdirect_mr->sgt.nents = 0;
-+	smbdirect_mr->sgt.orig_nents = 0;
- 
--	log_rdma_mr(INFO, "num_pages=0x%x count=0x%zx\n",
--		    num_pages, iov_iter_count(iter));
--	smbd_iter_to_mr(info, iter, smbdirect_mr->sgl, num_pages);
-+	log_rdma_mr(INFO, "num_pages=0x%x count=0x%zx depth=%u\n",
-+		    num_pages, iov_iter_count(iter), info->max_frmr_depth);
-+	smbd_iter_to_mr(info, iter, &smbdirect_mr->sgt, info->max_frmr_depth);
- 
--	rc = ib_dma_map_sg(info->id->device, smbdirect_mr->sgl, num_pages, dir);
-+	rc = ib_dma_map_sg(info->id->device, smbdirect_mr->sgt.sgl,
-+			   smbdirect_mr->sgt.nents, dir);
- 	if (!rc) {
- 		log_rdma_mr(ERR, "ib_dma_map_sg num_pages=%x dir=%x rc=%x\n",
- 			num_pages, dir, rc);
- 		goto dma_map_error;
- 	}
- 
--	rc = ib_map_mr_sg(smbdirect_mr->mr, smbdirect_mr->sgl, num_pages,
--		NULL, PAGE_SIZE);
--	if (rc != num_pages) {
-+	rc = ib_map_mr_sg(smbdirect_mr->mr, smbdirect_mr->sgt.sgl,
-+			  smbdirect_mr->sgt.nents, NULL, PAGE_SIZE);
-+	if (rc != smbdirect_mr->sgt.nents) {
- 		log_rdma_mr(ERR,
--			"ib_map_mr_sg failed rc = %d num_pages = %x\n",
--			rc, num_pages);
-+			"ib_map_mr_sg failed rc = %d nents = %x\n",
-+			rc, smbdirect_mr->sgt.nents);
- 		goto map_mr_error;
- 	}
- 
-@@ -2346,8 +2317,8 @@ struct smbd_mr *smbd_register_mr(struct smbd_connection *info,
- 
- 	/* If all failed, attempt to recover this MR by setting it MR_ERROR*/
- map_mr_error:
--	ib_dma_unmap_sg(info->id->device, smbdirect_mr->sgl,
--		smbdirect_mr->sgl_count, smbdirect_mr->dir);
-+	ib_dma_unmap_sg(info->id->device, smbdirect_mr->sgt.sgl,
-+			smbdirect_mr->sgt.nents, smbdirect_mr->dir);
- 
- dma_map_error:
- 	smbdirect_mr->state = MR_ERROR;
-@@ -2414,8 +2385,8 @@ int smbd_deregister_mr(struct smbd_mr *smbdirect_mr)
- 
- 	if (smbdirect_mr->state == MR_INVALIDATED) {
- 		ib_dma_unmap_sg(
--			info->id->device, smbdirect_mr->sgl,
--			smbdirect_mr->sgl_count,
-+			info->id->device, smbdirect_mr->sgt.sgl,
-+			smbdirect_mr->sgt.nents,
- 			smbdirect_mr->dir);
- 		smbdirect_mr->state = MR_READY;
- 		if (atomic_inc_return(&info->mr_ready_count) == 1)
-@@ -2607,13 +2578,6 @@ static ssize_t smb_extract_iter_to_rdma(struct iov_iter *iter, size_t len,
- 	ssize_t ret;
- 	int before = rdma->nr_sge;
- 
--	if (iov_iter_is_discard(iter) ||
--	    iov_iter_is_pipe(iter) ||
--	    user_backed_iter(iter)) {
--		WARN_ON_ONCE(1);
--		return -EIO;
--	}
--
- 	switch (iov_iter_type(iter)) {
- 	case ITER_BVEC:
- 		ret = smb_extract_bvec_to_rdma(iter, rdma, len);
-@@ -2625,7 +2589,8 @@ static ssize_t smb_extract_iter_to_rdma(struct iov_iter *iter, size_t len,
- 		ret = smb_extract_xarray_to_rdma(iter, rdma, len);
- 		break;
- 	default:
--		BUG();
-+		WARN_ON_ONCE(1);
-+		return -EIO;
- 	}
- 
- 	if (ret > 0) {
-diff --git a/fs/cifs/smbdirect.h b/fs/cifs/smbdirect.h
-index be2cf18b7fec..83f239f376f0 100644
---- a/fs/cifs/smbdirect.h
-+++ b/fs/cifs/smbdirect.h
-@@ -288,8 +288,7 @@ struct smbd_mr {
- 	struct list_head	list;
- 	enum mr_state		state;
- 	struct ib_mr		*mr;
--	struct scatterlist	*sgl;
--	int			sgl_count;
-+	struct sg_table		sgt;
- 	enum dma_data_direction	dir;
- 	union {
- 		struct ib_reg_wr	wr;
+v2->v3:
+- Refactor MR cache init flow
+- Move rb_key decleration to rome unnecessary change in following
+  patches
+
+v1->v2:
+- Rearrange patch order to first introduce the RB-tree and only then
+  introduce the caching of previously non-cachable mkeys
+
+v0->v1:
+- Fix rb tree search from memcmp to dedicated cmp function
+- Rewording of some commit messages
+
+Aharon Landau (2):
+  RDMA/mlx5: Don't keep umrable 'page_shift' in cache entries
+  RDMA/mlx5: Remove explicit ODP cache entry
+
+Michael Guralnik (4):
+  RDMA/mlx5: Change the cache structure to an RB-tree
+  RDMA/mlx5: Introduce mlx5r_cache_rb_key
+  RDMA/mlx5: Cache all user cacheable mkeys on dereg MR flow
+  RDMA/mlx5: Add work to remove temporary entries from the cache
+
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  38 ++-
+ drivers/infiniband/hw/mlx5/mr.c      | 478 +++++++++++++++++++++------
+ drivers/infiniband/hw/mlx5/odp.c     |  40 +--
+ include/linux/mlx5/driver.h          |   1 -
+ 4 files changed, 417 insertions(+), 140 deletions(-)
+
+-- 
+2.17.2
 
