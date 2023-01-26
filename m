@@ -2,83 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBFD67C950
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jan 2023 12:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B78867C956
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jan 2023 12:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236664AbjAZK76 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Jan 2023 05:59:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        id S237092AbjAZLBK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Jan 2023 06:01:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237109AbjAZK7t (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Jan 2023 05:59:49 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADAABB8D
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Jan 2023 02:59:48 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 45B226179F
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Jan 2023 10:59:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29A7AC4339B;
-        Thu, 26 Jan 2023 10:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674730787;
-        bh=kCXB5RvF2sOqJzh07hVx5auZY97rpXFU1utjqn1EL9k=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=muA5M9MpfjvcIk30fpNVofS86f+fSHPVo/WwG18uT5Eauj9JV7IMAKxcxWURD7MTp
-         cIRam7NMuMG5ful+X9idBQryzsEmyqIO5YZlbLmC8LB6pcv9RCF/yskqzJJz8PmVUi
-         LYNTNXhCoUkNY8V29883WWzbkGWm5xX6zR1cCe+0dF/Wzl8BUtAcukHYCbXOasrZ/6
-         lWNUAKKcq47OfJndEmMj6Ejp8IrumSFSncaoNTZ3q1OlZ1enrL6MG85EE8L7+ylqr/
-         hmHqy4EvQA+e+gdHTLsxbtSha0c8tw2u8fIFoPOiEyHrfPiZPUbUYah6i1ceQ73jVW
-         4TcCtDQNKC7Ow==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, Zhu Yanjun <yanjun.zhu@intel.com>
-In-Reply-To: <20230116193502.66540-1-yanjun.zhu@intel.com>
-References: <20230116193502.66540-1-yanjun.zhu@intel.com>
-Subject: Re: [PATCHv3 for-next 0/4] RDMA/irdma: Refactor irdma_reg_user_mr function
-Message-Id: <167473078373.1419317.7357804127786397921.b4-ty@kernel.org>
-Date:   Thu, 26 Jan 2023 12:59:43 +0200
+        with ESMTP id S237094AbjAZLA6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Jan 2023 06:00:58 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825A72ED5D;
+        Thu, 26 Jan 2023 03:00:57 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id n7so1363080wrx.5;
+        Thu, 26 Jan 2023 03:00:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VehCcPc5oamf6yJ895qNayFJF7UKM6woflLaenVwWu8=;
+        b=nYDIPiJhQdGxnkUxCb7vz5Fn1JLaz2Nf06P9u3I6PhW8Q+hkC8nuNyZ18qToAZt1mh
+         CObz/55kCZZNhCOZoZfhTK5Ma2F25n/4c6qhPCadKwjgsB3DIbIVDOU8+r4q+RsXMwl9
+         IixFwdNZ4bxC7EOD3mBzqGHDWdTowpI+I55SAr5hfrFWXISZFMfiUG6cxN7hRf8QEr31
+         ahcqC3OLA+ZmwPAueu9Ose0Zzr6yNW8iwknJ20Wfgb2JLHlcM6u73/4AVA1AL9X1uDLp
+         f0sNGNShD38Trd0uV0/maneIQ7mQ2NQOvEJg3p08C1dVh7Ix27dzRdzclQYM39DDWqmk
+         GgQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VehCcPc5oamf6yJ895qNayFJF7UKM6woflLaenVwWu8=;
+        b=bEaqL0TBQG8uV7WgfiuzOkmtwvheZowrXsha5dUmaqwmgHrw5jIMM1ldbrnbuv7Zr+
+         KVKaYTTcmHCGxx7bDErPbf7Ow22h+yaW5QALlqZ3HwhEA4UTh1Pl/hUacHFANHs0e13M
+         WobCXRfmA/O+4h7eeQc/mBwZadxD6993OSdAtMJzRIXMLUWTJqk/vm6YhpzTC+UlZ/W+
+         jieiAYblUtrcYUNZbPlBfdEmrwGIS+ksnPN8yc+4hzqmaqM7CRxkQnTZ5qNMPlpbUvCL
+         C7nHMRrulm0bNa6Xaw6B4zlI45yCMB96oDqnW6znW5L3Cb5NP77iC0TnUh6y0LzjKDAc
+         +LDQ==
+X-Gm-Message-State: AO0yUKVghW2UCN6Ryc3vdb6tdpdWGOAiD4M82YxyjCn+LAFFtvnUqjp3
+        kFNrMGFmsHiKr8mgw1Sgah0=
+X-Google-Smtp-Source: AK7set8dIuJOVQgCVuzoQ0w6XBThN40o/xychVKQ79ukoCcUgu9EZHpKEzVCBfcuqEZQYsJTHGCxjQ==
+X-Received: by 2002:a5d:4dc1:0:b0:2bf:b2fe:a2ca with SMTP id f1-20020a5d4dc1000000b002bfb2fea2camr8439459wru.20.1674730856022;
+        Thu, 26 Jan 2023 03:00:56 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id i6-20020adff306000000b002425be3c9e2sm1000897wro.60.2023.01.26.03.00.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Jan 2023 03:00:55 -0800 (PST)
+Date:   Thu, 26 Jan 2023 14:00:45 +0300
+From:   Dan Carpenter <error27@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Long Li <longli@microsoft.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dexuan Cui <decui@microsoft.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mana_ib: Prevent array underflow in
+ mana_ib_create_qp_raw()
+Message-ID: <Y9JdXfJvGhrJeLF7@kadam>
+References: <Y8/3Vn8qx00kE9Kk@kili>
+ <Y9JThu/RSCGKAnTH@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y9JThu/RSCGKAnTH@unreal>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On Mon, 16 Jan 2023 14:34:58 -0500, Zhu Yanjun wrote:
-> V2->V3: 1) Use netdev reverse Christmas tree rule;
-> 	2) Return 0 instead of err;
-> 	3) Remove unnecessary brackets;
-> 	4) Add an error label in error handler;
-> 	5) Initialize the structured variables;
+On Thu, Jan 26, 2023 at 12:18:46PM +0200, Leon Romanovsky wrote:
+> On Tue, Jan 24, 2023 at 06:20:54PM +0300, Dan Carpenter wrote:
+> > The "port" comes from the user and if it is zero then the:
+> > 
+> > 	ndev = mc->ports[port - 1];
+> > 
+> > assignment does an out of bounds read.  I have changed the if
+> > statement to fix this and to mirror how it is done in
+> > mana_ib_create_qp_rss().
+> > 
+> > Fixes: 0266a177631d ("RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter")
+> > Signed-off-by: Dan Carpenter <error27@gmail.com>
+> > ---
+> >  drivers/infiniband/hw/mana/qp.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+> > index ea15ec77e321..54b61930a7fd 100644
+> > --- a/drivers/infiniband/hw/mana/qp.c
+> > +++ b/drivers/infiniband/hw/mana/qp.c
+> > @@ -289,7 +289,7 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+> >  
+> >  	/* IB ports start with 1, MANA Ethernet ports start with 0 */
+> >  	port = ucmd.port;
+> > -	if (ucmd.port > mc->num_ports)
+> > +	if (port < 1 || port > mc->num_ports)
 > 
-> V1->V2: Thanks Saleem, Shiraz.
->         1) Remove the unnecessary variable initializations;
->         2) Get iwdev by to_iwdev;
-> 	3) Use the label free_pble to handle errors;
-> 	4) Validate the page size before rdma_umem_for_each_dma_block
-> 
-> [...]
+> Why do I see port in mana_ib_create_qp? It should come from ib_qp_init_attr.
 
-Applied, thanks!
+I am so confused by this question.  Are you asking me?  This is the _raw
+function.  I'm now sure what mana_ib_create_qp() has to do with it.
 
-[1/4] RDMA/irdma: Split MEM handler into irdma_reg_user_mr_type_mem
-      https://git.kernel.org/rdma/rdma/c/01798df19878e8
-[2/4] RDMA/irdma: Split mr alloc and free into new functions
-      https://git.kernel.org/rdma/rdma/c/693a5386eff0ba
-[3/4] RDMA/irdma: Split QP handler into irdma_reg_user_mr_type_qp
-      https://git.kernel.org/rdma/rdma/c/e965ef0e7b2ce2
-[4/4] RDMA/irdma: Split CQ handler into irdma_reg_user_mr_type_cq
-      https://git.kernel.org/rdma/rdma/c/2f25e3bab00e97
+The port comes from ib_copy_from_udata() which is just a wrapper around
+copy_from_user().
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+regards,
+dan carpenter
+
