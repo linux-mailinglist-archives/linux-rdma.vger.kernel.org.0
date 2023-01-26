@@ -2,110 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AE167D505
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jan 2023 20:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A69F67D509
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jan 2023 20:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbjAZTCf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Jan 2023 14:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47450 "EHLO
+        id S229777AbjAZTEG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Jan 2023 14:04:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbjAZTCe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Jan 2023 14:02:34 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7672569503
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Jan 2023 11:02:12 -0800 (PST)
+        with ESMTP id S231629AbjAZTEE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Jan 2023 14:04:04 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB62810D0
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Jan 2023 11:04:03 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hrAcErO0c5Np/I48NMqSXKnAhxkWsXu5cFtrVHpBfFP1CPr6XYAdhLbpK0gnZjMQE03YFhUrQ1gi3f95W86qVFFlprg9ykGjE9OJdtkK3F4kJnqPifco4A9SqC237BpG/3rJhKI+LdHRgShd4aJ6hhQRHGYMQaQdSMJtdkZeiGPCFcT0CmD57pwizfddauxCtrydh5yCE/ALI55A8r3EufR+3O6PV2MXTOYnl1PYT3RIMztO066weOLmjxVt7+fqy7Gw8b65ieAHrUzXcaKr9NMjWTM0tJ7DoF7e+9GWznAC8XMQaCDBE0Mk+LgU/KFHct6e597CB4/GRXn273DdXA==
+ b=QYLmCe1UpT97mXuW4Hfv+BmuC+dJqkXPR2dOErj+3C5qkraWIERIhuya2jXNkxeamILX+1ivuRdc22hVl75LiCEb2mlmsx4TaQHE73cwyYm6r1B1Z7qyOmQgQAnmZZ7eVHt0/BKi03jlCEKT9xviHqkQjOk3LRoK5EBcs1DyTLTmrsPWfRvOgrj3/A8HMOQFCzeA9ydkyxv5T0hd2rW++nYC3BtsL/p49jRjwfKzV9O7G8vYxPMdPRgYN9Pro/LPeaD2UqEp1MeVqvUfW3ztUOnPOoQ8BAtQwmrE5dx+lqbyj8oy2syIfJdtQC5NOVTM5HVmz0Qoi7ZC3oCf96xTRg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Llu4JaXYleV91sjY71RcUaXeHq/K43HolhwNAvHJwk4=;
- b=kSQbdfNunFAx7BirZf+Kt0iTqWGpYswmtgJq7t79MvjiQwLLz3mDMD+oHOMhB8FE1Uv8eZa3hv06q1OfYtzQRHjZeJmt6AcHRgUCSGg6F/UcuLV9Gb3ULape29lISG1VIXLEAYm1M8kRAN4H0AC7Qsk9Lf8SgjPg9bdnXKXEXLnnEcxKt4E9PsfhoHBVTbJMlgIqqU4fdDBRqsaBMfzyBQQ36YxB1zpIqRNk5kE0QqdKsRtWKQgCS5Cqa9QWcR/9oyjAW8cP9y7hleYqzCwuLN3NfsBu5DZ1T/a4Sc/Pu9MDFy3R8o3+UhL0qxxafK3L5ai4UFsON5NUGMxamCCESw==
+ bh=D+knIM1ZXODlVCHSL59KY/UjqLWY6BiZMoLtohA53HA=;
+ b=hEbkUEootsj9ou9p2WBhUns3PvhSSlL+zt5DYO85xvCJEEKxf49Oyoqk9ff0eN4IavzufNgvtIzDK4MiBYeMz8ipcaGeQV4CbX1b8yrKaK5z0zkuAveJk8vYTFK/eUNnrlcNArlf/AhuL61Ln/xmc66lPay3rm8MdhrAUDPMiyDTMHTTnqV20kZKLIJfKw0xogzuPUe2E36uUx8OykifhFFYeD4oYo1CsePO6In8COmZHOEdEl3iNEJHzDz8bl8UME+m7gsVgA6mNS9MKPU+Y+LE+r7GZ9Gc1ZAhAe7WB0JP7IYckjOxfSsBCNThjfQdOKmFLTmNjo8HWON2+ETZQQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Llu4JaXYleV91sjY71RcUaXeHq/K43HolhwNAvHJwk4=;
- b=KWB7is+y1MBKKwiUfROIP62f5p08PA22s9PZKPg3KbqakzcX6QtidCMJveKHgoykk/DNLQhcdHka+HaizwHxhv97R+UkUOmh+IY937RX/slCt15MbZxitb3PrILtk/MaH1AU3lMz0Fl/GcEuXxZvryKmY/QnXxHKTk3dQtIutcHsiibYSadtB8692qqURaWmhQqVelDgg+xODX12fbt3SX9UjY/pQZ2EwaXbMwU6xfPg6zEvmIIz3n5foqgmFC7kvQzLrSMEvPMOmYPBAoQNLuR8vtZCtQfUJqBGpzG4dHhIdDQxW3SwS77Q2WWTClwq0eJoSrrcJK14Xn+cQR7ukg==
+ bh=D+knIM1ZXODlVCHSL59KY/UjqLWY6BiZMoLtohA53HA=;
+ b=Qgqw/zkW5cgv6ME+QVsq8BoFBNoGWR/gjlwo9kxLrzBZFw6P2kxXmq1RoySEOfVftnuowF1weGz183bsnF9oluNumoe3hlS7t7BQFc0ydLWPX7sYjcgYxtjo1XE4SAWQsDHmAHcXjI8Zx0rCGuM/OYh5iIKJzt0syNrMaVIMr0QXlJBm5HAk5dZO8rU7hahQyifBkSzdGlx4rlh75H8ox7jq+r71t5o/36FQJ4tOVbsexkyrYneUUrtnMxINBpR8oeJP8yhATCDO2NwGrjzNbD4swH6LfVDCZ4ubNLIC0DNzStQ9sT80pp0LLxrqVcpiqcuj3ceiVf79N303wT5uKg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
- by PH0PR12MB7905.namprd12.prod.outlook.com (2603:10b6:510:28b::21) with
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MN6PR12MB8513.namprd12.prod.outlook.com (2603:10b6:208:472::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.33; Thu, 26 Jan
- 2023 19:02:06 +0000
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::37c6:70c5:2b29:befd]) by DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::37c6:70c5:2b29:befd%3]) with mapi id 15.20.6002.033; Thu, 26 Jan 2023
- 19:02:06 +0000
-Date:   Thu, 26 Jan 2023 20:02:00 +0100
-From:   Dragos Tatulea <dtatulea@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.27; Thu, 26 Jan
+ 2023 19:04:02 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6043.021; Thu, 26 Jan 2023
+ 19:04:02 +0000
+Date:   Thu, 26 Jan 2023 15:04:01 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
 Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
 Subject: Re: [PATCH rdma-rc v2] IB/IPoIB: Fix queue count for non-enhanced
  IPoIB over netlink
-Message-ID: <20230126190200.tsrewoziq5gf7wae@goatcheese>
+Message-ID: <Y9LOoU5SBy3SNqoo@nvidia.com>
 References: <95eb6b74c7cf49fa46281f9d056d685c9fa11d38.1674584576.git.leon@kernel.org>
  <Y9LH5kim0d5rBKOR@unreal>
  <Y9LJOHWYidVHBDMO@nvidia.com>
  <Y9LMDRBWH+L5CTio@unreal>
+ <20230126190200.tsrewoziq5gf7wae@goatcheese>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y9LMDRBWH+L5CTio@unreal>
-X-ClientProxiedBy: FR3P281CA0166.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a0::9) To DM6PR12MB5565.namprd12.prod.outlook.com
- (2603:10b6:5:1b6::13)
+In-Reply-To: <20230126190200.tsrewoziq5gf7wae@goatcheese>
+X-ClientProxiedBy: BL1P222CA0015.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c7::20) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB5565:EE_|PH0PR12MB7905:EE_
-X-MS-Office365-Filtering-Correlation-Id: 38a95e6d-4c04-4d3e-ab0d-08daffcfd172
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN6PR12MB8513:EE_
+X-MS-Office365-Filtering-Correlation-Id: fed1cbf4-500b-47e1-0fdc-08daffd01665
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rmcVz6Z9DEVjgSd2Q8J+Rar6mX4wPZ7rKUvoZ0lVOflWACtxb0qvQr9pQSu5o/kLuAgUgSCfptMbIwlu6shwwcMi8B8pp4bVN9nDE+E28hdQ0DtrvWoIVsMY/bNzE2C+YISJ24iUx19sdvRHWuaKNhOKgNjQy26Z7gVyTToRa0mFJcoqNWKtCShgrSXLunh4LdIHVCDfLhyxLLSjKBxYQoAUCzPJ+ZOqUBI+vp6/6bEQNsrQnVHbgxpKPeIYuICmAbJewBs8QIsjhtnEtJu0vx2VW5wCILu6Klg6o+Yjc3qkQiI66aSWXLAU2Ki/xVJ0YVlQ4X08tH7TFourMdOu1au6uWLdgh1pUmwVC/qcZEkrgkXVO6cd4nbb4mgOT43cCB9vPORYc5onj34f9r+MVNwiYCJeJN3/cYg5yiBg8Eu6239zdDVXK56uWjGp/8MW/cTsNqckhWu3AuowbNF7It2ZpOlKGRqwKqh6e1Gmmq6jvOAPzrdt+ty+N130lZXLwNxTkils+F4AZI/D4P7OegqwcMTXDnyrpVy5s+qTFoSROav1gRv8Un/GlcBYXXZiyj8a619NCuvYhyoZYgwhS+FUDa37q4xscUh/JcipovC9HtGoYpwy1C9wdzp8/0aqGIi+PM4La/Zy5VkHIIrpwRYLOUAomuUvJNrapPe/MLa0wsY6bAmYHsGCvYIrN3dlIpvOVPAWjvi6jE0R0eU/kYphJq+Q/u7hkdyhG6hMXJSiRAIkkYLILBbKsasX5t4k7664yTzi2S7vhxGIEWTo0Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(7916004)(136003)(39860400002)(366004)(346002)(396003)(376002)(451199018)(9686003)(4326008)(66476007)(316002)(66556008)(86362001)(66946007)(8676002)(6636002)(6512007)(966005)(33716001)(83380400001)(478600001)(8936002)(186003)(6666004)(5660300002)(1076003)(2906002)(6486002)(6862004)(38100700002)(41300700001)(6506007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: irmN7UiRvIVAH45okUCD3dowWtgg4sfcsbjZ7Gz7bZQbmC94GHv7t5+Yl1/Z7BJrh+dVMznjWDFBp9xAaHix7jJCetvBBP+OQ1ZqMyBXbbztprbyEDFX5FuwsYV197I1/LZsfcsBf73jwLIi8JrjpZKUSs2PgbhEONZlytcBdrwYBrSUqNAT5MqaYupTkZpqMGEa1NUdMfXTwReYWtwkqaODy2M3/JhJHZYFd3LQp/qk6cnyXybI5mQB8KH3luIowUp7IutWng6yri8KJZq/p4WQy0pYrVQz1+KCGVm4rtuMxnIpI/g/4dHVe5CKG1PG2Yu6gl6hdUHaYSoAP7c3xhiYBlT29JtGkC+GukGiHeUcyG40k9TOxpHFa3zOjCOjew43Y10qqAuKblu1H09ygyncYEWi/Ttv2HU9zMsgjU5voaKVljj8h0EFMIJWFrFkoA4GMBD727la2jOUjnUysmJN30IFSaxxBhE4t6fBWuD4xtVKSkop7wKb2iiKQkJmTSE3pebMYEixZ1ulEdwEDhLMZfKN7UyNDLKmZ9Q42P0o3SDJ1eoukAr97B3gy2a5XM6gshKsQAUnarE+NnauV1NO2roZGtvtwZvcm4Slu6kYkWFSfHb6A2qZA+Lbo5LSR1BTK0ugeu+yydseYJN7aKd+G57Ll+AICSMqbg82NfG/W7uVhVXCSNUw7Jz2IWz3bXBQKWRE+fAePbTvU88k/d7CKzMb1AI6kRH7QYB125hUykyw1q8+kzBBtWQgNExGwgO5u2/E918gsJ682wLfLA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(346002)(39860400002)(376002)(366004)(136003)(451199018)(66946007)(66556008)(37006003)(8676002)(36756003)(8936002)(5660300002)(6636002)(4326008)(6862004)(41300700001)(2616005)(83380400001)(86362001)(186003)(2906002)(38100700002)(26005)(316002)(478600001)(66476007)(6512007)(966005)(6506007)(6486002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1DDcIO3Y5vyI9opr/cbVPALlRZ8bSqiduE2p7Az9pqIjjWZcKY4zYC7q8nGt?=
- =?us-ascii?Q?jyEcSJ+yoWCxfRPhwsJq0qZuxQTrEYi7i1r8KfAVOX3AdxatrBECPZHD6RXV?=
- =?us-ascii?Q?pqC1fgS9tvfYeg/Wls2/kWEjujKdqHWa6tXVW0d5gNkmUDwZA8kySVLacxUV?=
- =?us-ascii?Q?bKzCU9BuxYEuoeG/JRxjXqR24CfIgIjN7rOCO4Ulyn3mNGzc1XBNCyn7+MFk?=
- =?us-ascii?Q?LTMA0jN+OBNR51J3A6emuVRTZBR/kv6VhZ6926avNGW6XsN9hh0zd6G9g231?=
- =?us-ascii?Q?WlwdcMVO/LJtJEFfatw7oACRpz1pNAH80LDIWVeYt997IunVxWY4y5JUwroj?=
- =?us-ascii?Q?13KuQtNhJEhYmhkgqz0Ux5ywClwWXJ4xXrRwIVVBwlEO1CDAZD/KNsArQyw4?=
- =?us-ascii?Q?1QpjKN6y4w3oslKyrnZF1g+ZgbX166o8jzv5FZ7xPJAGv5JEinAw1HPUHWep?=
- =?us-ascii?Q?2g5D9K4RTWgoRQKX4+bcHBt3V9ECeDvN25T5x923UEe7PoDzIgQPwDxkshWV?=
- =?us-ascii?Q?krjWa1sA+UKx8Nb2pDdCrMSZap+B0tPZeRXDM1WIUcpm6shWMu7cGLtQtZsG?=
- =?us-ascii?Q?QYSKtveCNODr5JMo6LSDkcP9hPtwpEgyTQ3MQL9++JCMVJKd6pb2yQM/9J+c?=
- =?us-ascii?Q?UGLYNrtKFmmOaQJdfTkODykPSzPn40j6qEVPKhwybLKGy9vAGlR520/Vj/V6?=
- =?us-ascii?Q?aZ18gfI2npjZuehv/9o4YKUfN6xbVHcSYQp3nDVzMzabneEqQQlxc+O46q+/?=
- =?us-ascii?Q?oVK75b4rGh19MEOjclRXc1+Ts+xaqfjdKaPswjmdyQvCKrFQrZ2PylHfj7DY?=
- =?us-ascii?Q?dix6KDMslnEwdFE9LdAxpUlfw36Z2JSOyzhnfggCVrU51OEjC+ZHQCjIWS98?=
- =?us-ascii?Q?NQtkQctXRlYKhXCxQ9x0IdQcbSwy6vnSr4y8nwVQi+Q8mYPVFQNh/5RFEeYK?=
- =?us-ascii?Q?ry6K8/UDuKnUzTmCvFf/6SsSDUJd0pQ5/ETmAdgCi3LQTPEN2WJsDx9w5Y03?=
- =?us-ascii?Q?dETkHYedOgniOv1qmy4K7k1wyByxXR+6puq/2lHl0UE3SAXQeG9eV84IK5Es?=
- =?us-ascii?Q?1rmQTbQDeLMN9SqRrm+kI8FCIYCTPioFfcWqFXzDSw/svueUyX1g0E1rzEah?=
- =?us-ascii?Q?hFUDS6ylYIX0GmceuHnMbOg18ux/1BtWD/EkmcRAlHBEvxEsBRXbeQjjaQFA?=
- =?us-ascii?Q?6PYAKlumyyMbI0XEi0qHVAJegy+83x+KNMF0/pDo77P3UgaUwKXrpOidJtyJ?=
- =?us-ascii?Q?OvWLaVJZbolMugBB+v0frV/WGsls4pp0au2FwMSqSKT/q2d8mXfixcAyA2Lt?=
- =?us-ascii?Q?fSX1Rq7ng5RDVlHhr8zJMe7a0oVie2dvfG2eq6aaGINLmqbViB+qHZBEFHtu?=
- =?us-ascii?Q?lNFKcg+52rlJxDNvmxbhbJb70aJAe7NCWvYeuDra0tCor3uwsL84jd9olBO6?=
- =?us-ascii?Q?9NORTYNIB/7f+spTmvLhUjSe1Y0TW4TnM3Q5JeW8jNXR+W9oKSDCP9lEFuLX?=
- =?us-ascii?Q?toCBeBt0gIPTUrMZ/KE58DViQT2nlYTW8AosUS1KeUw8sLaOPcChx79lKjoY?=
- =?us-ascii?Q?PsWtVKzT7J4hVb/GU0BNx6Eym+mLL/9i/AYRt96L1Oa4vwIlhRjLJJrBgu3u?=
- =?us-ascii?Q?3H1tJI6upHfuh8/ssP5eiTtvyoRTp1I2BtTIMP3MHQFU?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8lnl1c+tz+VzUtNKAwDBuKJkFABXCLf60opcXQUSWFfp3hevc4djTF0EJgTh?=
+ =?us-ascii?Q?L3hWz3/hHrISUfBgorNQqcCMSmBZ5PuaCrkW1nwD3x7gIQZdzJXcOAeoCfyR?=
+ =?us-ascii?Q?kFJAFIkpNQtTw0tCYFr7MlZDq6qsauzkTtFO3mKldI/IkRQC4Rrk5eUR1Z3F?=
+ =?us-ascii?Q?A9Gy2rBXhMXhgMn7RglFiWnqlOsG0MqDJ/sCpg26b5zth/bRNPgdiPZPd5+c?=
+ =?us-ascii?Q?ZdmG/6OzljktQbMrlQ1KshBTGZCs8QWpjyRGXPj9fipk3upWxqPOpNAHQUCZ?=
+ =?us-ascii?Q?cNMh6MGd8PWwXIGkOsYWynPisQZWhR/Qf2iyeUNW15ng7HtWpeNhKLIMrOBu?=
+ =?us-ascii?Q?+RLT2ku8nrI8uwayAOUaPdwzHJEOASYqjxEf86YTl+0zLhkylFFqZrR2PBUD?=
+ =?us-ascii?Q?LS3EYvjcP3QxyulcHVooIG6FPBO8Nk6tQs1N5QPWXGy6N5NDffuQbzw2aFmQ?=
+ =?us-ascii?Q?dXwkdm9Wyoarg+T/26JrG1BSG/PqLi34CcG3tp5RZXwi6RYutpA9VeQQ8rGj?=
+ =?us-ascii?Q?fG6hN+BAv837SpoqsJ/K46ztjGwpOgeQeFs/Bq/dLSWymanRtEJ12QxsK2tF?=
+ =?us-ascii?Q?zOkNu2uDCV9rvndnqU3oyocQs3D0vuqr29F4KyUtRc2suuvDlxnH+cFaNOmO?=
+ =?us-ascii?Q?JBv2FtIqNo3FglMfquwXK7HifcoB+qQBydxsqLBZMV8foklkohZ6aAn6T1ui?=
+ =?us-ascii?Q?n8w4t9lvZ47oElOboP3jdDYhBwGIpCkEmfeK4V6wXqDjs0Bs2oku6sIEmqKC?=
+ =?us-ascii?Q?n87oYdwg7gAjApDY0QThglouwcvW+D9Et7b3RHodneFJpl7lUqa+g7GsQZcq?=
+ =?us-ascii?Q?KPbNGibtz80HzBhDGeSi6F1hI1770M9qKTmjETnQqgYR+uEwmjHr67JCqzsN?=
+ =?us-ascii?Q?lBDCUVgv47SWeL119mVeHAC7E3GmLFqQDzvCoeafmkf1OuMV24dZ1MgtYU48?=
+ =?us-ascii?Q?5a3wUqVEKraRsN06mCZ6R34xCi1sKA3IFD1lKfxBMZF3QdukSt6enOwfN0V0?=
+ =?us-ascii?Q?WyvS25i4UgtFs6GAJE81aaXRbb7UKEETfoI9Qg7dIKYozKrQ3xvLrJurWaBK?=
+ =?us-ascii?Q?MoGquR27HrD2fAwOTjFEUbOJUhmUztIsf40U05G2fHvmdamEjDqQSIYL046Y?=
+ =?us-ascii?Q?LDVLHWVdcfGc/YUD2eYqoJQoHRzg7KQrZSR+xtf9qn91t9jtKU4ctRCpjbHK?=
+ =?us-ascii?Q?yopbeMzWqOHy97NRsBtadpmxLIGhmDn2gWFwCyQC2sv3825XN2aMrvD8TikX?=
+ =?us-ascii?Q?ifXczhK6avlj9MWDpxvnNl//mFc0GoMpeXETToA9M7zjCs0OxklGSvxIEMEj?=
+ =?us-ascii?Q?iKIievl27Z1paEgKkbFpUO8PutFqt5l/pa/huObJ3rrX6NRl82oh+OcBPDNm?=
+ =?us-ascii?Q?jtRBjIjVFpKY0eRLePZ9TzYNHUNNC/hPdbyn7cuwrs9PgiifRc63k8I8wJiT?=
+ =?us-ascii?Q?9b4jgr9ncB+ywzU3AJLc2mGN9/u6dNZKEXzHvMMZWjOhTt/9kQQ47VkSLTy8?=
+ =?us-ascii?Q?y7qziwrEycg+VVQyzdIGUTLww8SJpOBparHpSAASat9j9N/m8Bf4Lax1pUl5?=
+ =?us-ascii?Q?DUQVvaXbM3ZRTMG1HmpS2n75mOqjNoFsn3r3tAix?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38a95e6d-4c04-4d3e-ab0d-08daffcfd172
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fed1cbf4-500b-47e1-0fdc-08daffd01665
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2023 19:02:06.5331
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2023 19:04:02.1598
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3tGCiyRvXRYnraQgIVoZVg6Tv3aI855XFq2tMIfbcJKbrZaJO/voBbqLlUU8zfEW24XGTTA+wUdls1bkqrJO+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7905
+X-MS-Exchange-CrossTenant-UserPrincipalName: L9VDVB/TqBHvxra3Lm5SnmAOqc1BBd4SbuSwLpaftRTzVtCfOIB+2gDckWt+n0JT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8513
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -116,50 +116,54 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 01/26, Leon Romanovsky wrote:
-> On Thu, Jan 26, 2023 at 02:40:56PM -0400, Jason Gunthorpe wrote:
-> > On Thu, Jan 26, 2023 at 08:35:18PM +0200, Leon Romanovsky wrote:
-> > > On Tue, Jan 24, 2023 at 08:24:18PM +0200, Leon Romanovsky wrote:
-> > > > From: Dragos Tatulea <dtatulea@nvidia.com>
+On Thu, Jan 26, 2023 at 08:02:00PM +0100, Dragos Tatulea wrote:
+> On 01/26, Leon Romanovsky wrote:
+> > On Thu, Jan 26, 2023 at 02:40:56PM -0400, Jason Gunthorpe wrote:
+> > > On Thu, Jan 26, 2023 at 08:35:18PM +0200, Leon Romanovsky wrote:
+> > > > On Tue, Jan 24, 2023 at 08:24:18PM +0200, Leon Romanovsky wrote:
+> > > > > From: Dragos Tatulea <dtatulea@nvidia.com>
+> > > > > 
+> > > > > Make sure that non-enhanced IPoIB queues are configured with only
+> > > > > 1 tx and rx queues over netlink. This behavior is consistent with the
+> > > > > sysfs child_create configuration.
+> > > > > 
+> > > > > The cited commit opened up the possibility for child PKEY interface
+> > > > > to have multiple tx/rx queues. It is the driver's responsibility to
+> > > > > re-adjust the queue count accordingly. This patch does exactly that:
+> > > > > non-enhanced IPoIB supports only 1 tx and 1 rx queue.
+> > > > > 
+> > > > > Fixes: dbc94a0fb817 ("IB/IPoIB: Fix queue count inconsistency for PKEY child interfaces")
+> > > > > Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> > > > > Signed-off-by: Leon Romanovsky <leon@nvidia.coma
+> > > > > ---
+> > > > > Changelog:
+> > > > > v2:
+> > > > >  * Changed implementation
+> > > > > v1: https://lore.kernel.org/all/752143b0eef72a966662ce94526b1ceb5ba4bbb3.1674234106.git.leon@kernel.org
+> > > > >  * Fixed typo in warning print.
+> > > > > v0: https://lore.kernel.org/all/4a7ecec08ee30ad8004019818fadf1e58057e945.1674137153.git.leon@kernel.org>
+> > > > > ---
+> > > > >  drivers/infiniband/ulp/ipoib/ipoib_main.c | 8 ++++++++
+> > > > >  1 file changed, 8 insertions(+)
 > > > > 
-> > > > Make sure that non-enhanced IPoIB queues are configured with only
-> > > > 1 tx and rx queues over netlink. This behavior is consistent with the
-> > > > sysfs child_create configuration.
 > > > > 
-> > > > The cited commit opened up the possibility for child PKEY interface
-> > > > to have multiple tx/rx queues. It is the driver's responsibility to
-> > > > re-adjust the queue count accordingly. This patch does exactly that:
-> > > > non-enhanced IPoIB supports only 1 tx and 1 rx queue.
+> > > > Dragos pointed to me that I sent commit with "old" commit message.
+> > > > The right one is below and I'll fix it locally once will apply it.
 > > > > 
-> > > > Fixes: dbc94a0fb817 ("IB/IPoIB: Fix queue count inconsistency for PKEY child interfaces")
-> > > > Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> > > > Signed-off-by: Leon Romanovsky <leon@nvidia.coma
-> > > > ---
-> > > > Changelog:
-> > > > v2:
-> > > >  * Changed implementation
-> > > > v1: https://lore.kernel.org/all/752143b0eef72a966662ce94526b1ceb5ba4bbb3.1674234106.git.leon@kernel.org
-> > > >  * Fixed typo in warning print.
-> > > > v0: https://lore.kernel.org/all/4a7ecec08ee30ad8004019818fadf1e58057e945.1674137153.git.leon@kernel.org>
-> > > > ---
-> > > >  drivers/infiniband/ulp/ipoib/ipoib_main.c | 8 ++++++++
-> > > >  1 file changed, 8 insertions(+)
+> > > > Jason, are you happy with the patch?
 > > > 
-> > > 
-> > > Dragos pointed to me that I sent commit with "old" commit message.
-> > > The right one is below and I'll fix it locally once will apply it.
-> > > 
-> > > Jason, are you happy with the patch?
+> > > Why not use min?
 > > 
-> > Why not use min?
+> > It doesn't give anything as we are in legacy IPoIB path and it will be
+> > min with 1 anyway.
+> > 
+> To add to Leon's comment:
 > 
-> It doesn't give anything as we are in legacy IPoIB path and it will be
-> min with 1 anyway.
-> 
-To add to Leon's comment:
+> It is making it explicit that IPoIB is using only one queue. Similar to
+> how ipoib_alloc_netdev() calls alloc_netdev_mq() with 1 tx and 1 rx queue
+> for legacy IPoIB when the parent interface is created and also when
+> child interfaces are created over sysfs.
 
-It is making it explicit that IPoIB is using only one queue. Similar to
-how ipoib_alloc_netdev() calls alloc_netdev_mq() with 1 tx and 1 rx queue
-for legacy IPoIB when the parent interface is created and also when
-child interfaces are created over sysfs.
+Ok then, Leon please apply it and fix the commit message
 
+Jason
