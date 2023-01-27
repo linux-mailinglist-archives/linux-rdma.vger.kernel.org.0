@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2275D67F003
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jan 2023 21:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB7F67F020
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jan 2023 22:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbjA0U5a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Jan 2023 15:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        id S229593AbjA0VJq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Jan 2023 16:09:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbjA0U53 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Jan 2023 15:57:29 -0500
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C34F8497E
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Jan 2023 12:57:26 -0800 (PST)
-Received: by mail-oo1-xc30.google.com with SMTP id h3-20020a4ac443000000b004fb2954e7c3so741901ooq.10
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Jan 2023 12:57:26 -0800 (PST)
+        with ESMTP id S229782AbjA0VJo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Jan 2023 16:09:44 -0500
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D2C88CCC
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Jan 2023 13:09:42 -0800 (PST)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-15ff0a1f735so8160958fac.5
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Jan 2023 13:09:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=H257jgKZbmcZ9vru3Ro9XPHkmQHSIBXhW6WxZzRrRbQ=;
-        b=Jq4lCRmSGnfqx3f09no/Vc0oE2lprc30w6NlMmZNgALfpktGnUXyqmEPxTlpxf+CXU
-         t4fwo3vc4tPLNI6KWTxhTv0wj0ojX3TQsJeux9Ywwl4SaF9pGfdVS7aGCu8xneeO4HnY
-         VewqJIWVSQ6uKUdCadazJDsJQwPh0G9sAGACDG/pNg17MNymVzPSCBTzTGM2met42BgA
-         6S1PsWNmhMAhOZoe0+qCPkFkHituOCE36/8LW83d0NdQHdDY1hTOB93dgwnBWsEuqjug
-         agmekZF+LxKMnyd18PJAcSs0MH8JD9Qjs7fVLXEwYb2HlmNtPaAxRbysPCG73auXnIGG
-         HsPQ==
+        bh=IfzPov0IOMaXRm7fK+JrphQk4qNL7fhkGwIRLQDy6xM=;
+        b=N3ypDSM24KmzfNdZnqW/T/PN52sTOSgeNVYH2a+szh6xf0b6MO2MaFjrs8jOlTmcbz
+         eG6auyAO4jcD9x2v3bCPla432c0JaDtZOpd2fvh6Wdu/D9yvom4nZbCxmRmIsq+1tlXD
+         Fu83lgb4cTo14AEZseKGU81BhJeIw8f7/j4kmQyMZfSG1QasPjMmkpOOO67y1c2+iRZu
+         lR+G+xcz8qAu+W7dbyr6FLLLTabjWW4SS/sPBPjHVKkhEOLHTaqycrGDaZhygrwBDZE6
+         obXoIDv7ZkqakSa1SnLJ0v3zv0eekUGK9kHZUiR+HyTTYYI5AljjdyQ9Tf65p+KCcEQD
+         3FrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=H257jgKZbmcZ9vru3Ro9XPHkmQHSIBXhW6WxZzRrRbQ=;
-        b=VETFygDB0NFB5MDmogQBeWfXhYUtXdrqAbE1nK6IKB191Ffo2wSxCH1czgcWynOT+3
-         xi0UOfz9R8RM7wxZj1VDMl2X/AMzHjhBpQ7F2XLK6GVcE3T6QCCF8ZCTAviQm7tlmbB6
-         VrKUFD4kWADNjeFrCJa6cR8S7HAHh66k85a98CQqiBNU2vGbx0y/My8CdGaZ4smigMYR
-         NCgVnV3gA1XjDi6Dj4wP00/gXhC3SqfL1cg8OHmTFfaa9Vnsa5+PxZH9bMIoMDvqvRo0
-         fvosLpaJrgLH74lf1kFCW1kjb1LodWxSU9M1R03Ma36RC9cwNI8pDtskuBoAtKMINY7n
-         8lDg==
-X-Gm-Message-State: AFqh2kqNRia8vJ7iKQJbwtQmzaQ4jR0FCKKpBrycLeAStnAXWALPe7zq
-        qNHLvj/wgweLterHrPvsZTcA4H31+AkgWw==
-X-Google-Smtp-Source: AMrXdXuFAhsJEvZxngjhAXlFBgSqRE9zJZkwHplUna9uLE0B0TIb6Hyg+Te2l3gTV5UvDsnOSrkz0A==
-X-Received: by 2002:a4a:b5cb:0:b0:4a3:c9f5:c1ab with SMTP id u11-20020a4ab5cb000000b004a3c9f5c1abmr16868081ooo.6.1674853045356;
-        Fri, 27 Jan 2023 12:57:25 -0800 (PST)
+        bh=IfzPov0IOMaXRm7fK+JrphQk4qNL7fhkGwIRLQDy6xM=;
+        b=0ifPnhSwqN0dCIbK6DX5ulgecRZv52RYYlubt7b3yFzbxDU9BNefBB/G3BDFbWoTTg
+         84UGaw+TNuzX4qLqny1mYwai2f8sk4GAodObQf8wN/U0zzvjpzf+wmxhZ/XbyCrisyJi
+         lpkr34AUjpDhQZHc0s4Crvrh97wT68FZ2LAG03Hr52sHX/zyNKmJU4JxJUS5L1FqHLuc
+         p42EM2YDaqAxrqZvCFxi437YoxSA3JzyyJfLVDIYUkCiUMFxWloNtieopuOW+jWBrNFj
+         vIZmwXjHtdcan7xJDboT86X1howP4G6tNm8OuOxYVMKpi8TRgKGg9Ri5ob4lWYrrob0K
+         o8Xw==
+X-Gm-Message-State: AO0yUKWmVxNvKhDXxC1MDoepWbd5utKh2NjgOSlSsvGGybQyAdPUY7ct
+        4d3klgc9EYgJwxbPz5dIKuM=
+X-Google-Smtp-Source: AK7set9JZ1OY43ahvIx09xT2BaR1k14memFEHhPvLa976w00Q2jZ1wEJEeodzwXcwaIIf/b/hDnTOw==
+X-Received: by 2002:a05:6870:e304:b0:163:3bae:2436 with SMTP id z4-20020a056870e30400b001633bae2436mr6851915oad.33.1674853782242;
+        Fri, 27 Jan 2023 13:09:42 -0800 (PST)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (097-099-248-255.res.spectrum.com. [97.99.248.255])
-        by smtp.gmail.com with ESMTPSA id c22-20020a4a2856000000b004fb2935d0e7sm2078452oof.36.2023.01.27.12.57.24
+        by smtp.gmail.com with ESMTPSA id gq11-20020a056870d90b00b001435fe636f2sm2358336oab.53.2023.01.27.13.09.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jan 2023 12:57:24 -0800 (PST)
+        Fri, 27 Jan 2023 13:09:41 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, leonro@nvidia.com,
         yangx.jy@fujitsu.com, lizhijia@fujitsu.com,
         matsuda-daisuke@fujitsu.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2] Subject: RDMA/rxe: Handle zero length rdma
-Date:   Fri, 27 Jan 2023 14:56:44 -0600
-Message-Id: <20230127205643.29801-1-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v3] Subject: RDMA/rxe: Handle zero length rdma
+Date:   Fri, 27 Jan 2023 15:09:38 -0600
+Message-Id: <20230127210938.30051-1-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -81,25 +81,107 @@ the routines in rxe_mr.c to catch NULL MRs when the length is non-zero.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
+v3:
+  Fixed my fat finger typing on v2. Mangled the patch.
+
 v2:
   Rebased to current for-next.
   Cleaned up description to be a little more accurate.
+---
+ drivers/infiniband/sw/rxe/rxe_mr.c   |  6 +++
+ drivers/infiniband/sw/rxe/rxe_resp.c | 55 +++++++++++++++++++++-------
+ 2 files changed, 47 insertions(+), 14 deletions(-)
 
- drivers/infiniband/sw/rxe/rxe_resp.c | 43 ++++++++++++++++------------
- 1 file changed, 24 insertions(+), 19 deletions(-)
-
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index c80458634962..5b7ede1d2b08 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -314,6 +314,9 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
+ 	if (length == 0)
+ 		return 0;
+ 
++	if (WARN_ON(!mr))
++		return -EINVAL;
++
+ 	if (mr->ibmr.type == IB_MR_TYPE_DMA) {
+ 		rxe_mr_copy_dma(mr, iova, addr, length, dir);
+ 		return 0;
+@@ -435,6 +438,9 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length)
+ 	if (length == 0)
+ 		return 0;
+ 
++	if (WARN_ON(!mr))
++		return -EINVAL;
++
+ 	if (mr->ibmr.type == IB_MR_TYPE_DMA)
+ 		return -EFAULT;
+ 
 diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 21b2af948662..b13ae98400c1 100644
+index cd2d88de287c..b13ae98400c1 100644
 --- a/drivers/infiniband/sw/rxe/rxe_resp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -900,10 +900,11 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+@@ -420,13 +420,23 @@ static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
+ 	return RESPST_CHK_RKEY;
+ }
+ 
++/* if the reth length field is zero we can assume nothing
++ * about the rkey value and should not validate or use it.
++ * Instead set qp->resp.rkey to 0 which is an invalid rkey
++ * value since the minimum index part is 1.
++ */
+ static void qp_resp_from_reth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+ {
++	unsigned int length = reth_len(pkt);
++
+ 	qp->resp.va = reth_va(pkt);
+ 	qp->resp.offset = 0;
+-	qp->resp.rkey = reth_rkey(pkt);
+-	qp->resp.resid = reth_len(pkt);
+-	qp->resp.length = reth_len(pkt);
++	qp->resp.resid = length;
++	qp->resp.length = length;
++	if (length)
++		qp->resp.rkey = reth_rkey(pkt);
++	else
++		qp->resp.rkey = 0;
+ }
+ 
+ static void qp_resp_from_atmeth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+@@ -437,6 +447,10 @@ static void qp_resp_from_atmeth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+ 	qp->resp.resid = sizeof(u64);
+ }
+ 
++/* resolve the packet rkey to qp->resp.mr or set qp->resp.mr to NULL
++ * if an invalid rkey is received or the rdma length is zero. For middle
++ * or last packets use the stored value of mr.
++ */
+ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 				   struct rxe_pkt_info *pkt)
+ {
+@@ -475,8 +489,8 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 
+ 	/* A zero-byte op is not required to set an addr or rkey. See C9-88 */
+ 	if ((pkt->mask & RXE_READ_OR_WRITE_MASK) &&
+-	    (pkt->mask & RXE_RETH_MASK) &&
+-	    reth_len(pkt) == 0) {
++	    (pkt->mask & RXE_RETH_MASK) && reth_len(pkt) == 0) {
++		qp->resp.mr = NULL;
+ 		return RESPST_EXECUTE;
+ 	}
+ 
+@@ -555,6 +569,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+ 	return RESPST_EXECUTE;
+ 
+ err:
++	qp->resp.mr = NULL;
+ 	if (mr)
+ 		rxe_put(mr);
+ 	if (mw)
+@@ -885,7 +900,11 @@ static enum resp_states read_reply(struct rxe_qp *qp,
  	}
  
  	if (res->state == rdatm_res_state_new) {
--		if (qp->resp.length == 0) {
--			mr = NULL;
--			qp->resp.mr = NULL;
--		} else if (!res->replay) {
+-		if (!res->replay) {
 +		if (!res->replay || qp->resp.length == 0) {
 +			/* if length == 0 mr will be NULL (is ok)
 +			 * otherwise qp->resp.mr holds a ref on mr
@@ -108,28 +190,18 @@ index 21b2af948662..b13ae98400c1 100644
  			mr = qp->resp.mr;
  			qp->resp.mr = NULL;
  		} else {
-@@ -917,13 +918,13 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+@@ -899,6 +918,10 @@ static enum resp_states read_reply(struct rxe_qp *qp,
  		else
  			opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST;
  	} else {
--		if (qp->resp.length == 0) {
--			mr = NULL;
--		} else {
--			mr = rxe_recheck_mr(qp, res->read.rkey);
--			if (!mr)
--				return RESPST_ERR_RKEY_VIOLATION;
--		}
 +		/* re-lookup mr from rkey on all later packets.
 +		 * length will be non-zero. This can fail if someone
 +		 * modifies or destroys the mr since the first packet.
 +		 */
-+		mr = rxe_recheck_mr(qp, res->read.rkey);
-+		if (!mr)
-+			return RESPST_ERR_RKEY_VIOLATION;
- 
- 		if (res->read.resid > mtu)
- 			opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE;
-@@ -938,18 +939,16 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+ 		mr = rxe_recheck_mr(qp, res->read.rkey);
+ 		if (!mr)
+ 			return RESPST_ERR_RKEY_VIOLATION;
+@@ -916,18 +939,16 @@ static enum resp_states read_reply(struct rxe_qp *qp,
  	skb = prepare_ack_packet(qp, &ack_pkt, opcode, payload,
  				 res->cur_psn, AETH_ACK_UNLIMITED);
  	if (!skb) {
@@ -152,7 +224,7 @@ index 21b2af948662..b13ae98400c1 100644
  	}
  
  	if (bth_pad(&ack_pkt)) {
-@@ -958,9 +957,12 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+@@ -936,9 +957,12 @@ static enum resp_states read_reply(struct rxe_qp *qp,
  		memset(pad, 0, bth_pad(&ack_pkt));
  	}
  
@@ -167,7 +239,7 @@ index 21b2af948662..b13ae98400c1 100644
  
  	res->read.va += payload;
  	res->read.resid -= payload;
-@@ -977,6 +979,9 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+@@ -955,6 +979,9 @@ static enum resp_states read_reply(struct rxe_qp *qp,
  		state = RESPST_CLEANUP;
  	}
  
@@ -177,8 +249,6 @@ index 21b2af948662..b13ae98400c1 100644
  	return state;
  }
  
-
-base-commit: ff33dcb55ca3860092ebb98ad01211159842d566
 -- 
 2.37.2
 
