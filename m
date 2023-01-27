@@ -2,156 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B46DE67EC46
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jan 2023 18:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D20F67EE22
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jan 2023 20:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjA0RRZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Jan 2023 12:17:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
+        id S229908AbjA0T0e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Jan 2023 14:26:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235138AbjA0RRX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Jan 2023 12:17:23 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2040.outbound.protection.outlook.com [40.107.237.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23FE1C5BF
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Jan 2023 09:17:21 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WuHa9OxgOXNXQnOunMuxFA+HfCKrE2Ry/3ox/jJNbrYpvxGjmHJg1LvSeXERkxn2vng0v9/63xV3RMf7QUJtAB0KZxWFTG68xW05nXWv+W9N5vuzbfQc7ZgDXEdaB3AENhSSh1OgZR3vNjaVilamRIodhZWJ0r9qjVRKzOWwbh/VprZGZSWzGITe0UXivwE6VAhZOTFeknuKx1l6vECH1rr0mo6tpn9Qq+eNCDf4dl3UMR0nY/+T3ntW6JxvrZGfy4F4EEvI9MZOqVQYngmdtRsFRmM1oPKES86tVsIiTu3s71ExCzSmNTicjw7ODLe4Rk9E2TsFawnFwjiYWYfhPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UhLe+Z5YHYsMX0a1i1QTSnstkAfZULlMpyHeCVx0kUE=;
- b=JfgGMjjn2hTC+WRiLfC6XuivGPTETjYFDjDnGj/jNvs105E7z4BgNKiF0nqBpFpImR4qLC/3KrNDC8jhPQmxQiodBVeTwoRuHpvONDruyxZeGTygVf9jBNWU0Cr3tblQ9V9qTE0+W6H+1hsGTELNL6FY60R0aKujDid6Kz4pfeYhifVrQlesc8vXuGM3yqS6BTPvlAPAPyctTwrYlvobg3ZpWGcaTviVNbV/Lty5ZjPuQ/H4SflvA4K/Io5V1dKA04hjjXELHkyww7CwxoXUIRzyKoYravu+SqpAFu8v81hcYa3qDAKZZzSm4Nnpe7jbigMd6gcTOktftn8hN0YhgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UhLe+Z5YHYsMX0a1i1QTSnstkAfZULlMpyHeCVx0kUE=;
- b=jBCS38jeRqN0CNC8cpfa6tOz9bahGqhNkywan0NM82EGLukOtQZmiKo2UWRo+mz10rUpdeGRqYt2FNLtO5kbb/QSaxMs4azdOaAguZBonNhROhwYLZ2FDAo+15M1nDLiK7M/NMR7SwuxijgYJ90f31/gb1+6YiAIVyLCpgTM7hA0foU0s21Ws+l7fdZvo0WpsSeXtOwbl/bPa17xovppLhZeR5F5bNSHJJTOzrlz95iLTWhS8fFvthunHYagoiES9hAuUUcinY/+C8l+Pbk1nbyTCQwr0VbrfRC6NqeolJhQ0lc1rQ1RdWEU9MbZ7cFgthYCmrRYfcTw9FizNEdFCw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SA1PR12MB7221.namprd12.prod.outlook.com (2603:10b6:806:2bd::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.22; Fri, 27 Jan
- 2023 17:17:18 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6043.021; Fri, 27 Jan 2023
- 17:17:18 +0000
-Date:   Fri, 27 Jan 2023 13:17:17 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Michael Guralnik <michaelgur@nvidia.com>
-Cc:     leonro@nvidia.com, linux-rdma@vger.kernel.org, maorg@nvidia.com,
-        aharonl@nvidia.com
-Subject: Re: [PATCH v5 rdma-next 0/6] RDMA/mlx5: Switch MR cache to use
- RB-tree
-Message-ID: <Y9QHHR1bTQo69Gz7@nvidia.com>
-References: <20230125222807.6921-1-michaelgur@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230125222807.6921-1-michaelgur@nvidia.com>
-X-ClientProxiedBy: MN2PR01CA0020.prod.exchangelabs.com (2603:10b6:208:10c::33)
- To LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+        with ESMTP id S231274AbjA0T0b (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Jan 2023 14:26:31 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDDA7EFF1
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Jan 2023 11:26:29 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id i5so4968086oih.11
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Jan 2023 11:26:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NbNPwmAeNcooNjD7hToop0Et6uMnvb7rq8ZJxgwcOJY=;
+        b=ooFTaw0aV9mC2CIq9mbqvoyIbQ/PNomzed7uWtAm2uPSSD8+KGHNWopSsbvQSyU3ha
+         yqOq77njLyVkGeofc9ISQr6VarR6RFPTSb4OePgQsfRAeI6aPiiW9Oi9JiSHko5dAAXJ
+         b3fyaV8XLpYnUdp5M99IEYP+NdBHTdYwrC5+C76xlIhEtAJ0Gnf4uFryQROhY98v3Q6b
+         4mXjM3+dv+qDztSpw0MNMRYj3etPi13i5ZiXXQcTLlBbYkfpdEmHjkbMJk5xAcjCjgTA
+         bSLgI7rLQCt2C3WCJRFqQO0lKxKF1crrhQ1RgJyPc/33uvDYBq71lHm8yEMgg5ktpYja
+         l1/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NbNPwmAeNcooNjD7hToop0Et6uMnvb7rq8ZJxgwcOJY=;
+        b=5AW94/b4Pybba72JnAEFYeEWjUw1DvjDFKDszlMMeYdjxHfU1kHCyHpAZp2cQR3mvY
+         8wsKyp+EsAihUdlytIlyFN2vhnYzJK8Ltfq4GFAocY0cVNvAZtLVAyhdmBx6TjqMfYl2
+         0U8Dv+vuNqbMvUYrDmABmxD0Da1g+PZoQOdANKntuPpEDs6pMVg+NqlI5LJUsC1Ka9KD
+         IFz0vsfmrbMiDLie3gsSJytd67kdrVakayE4FSJ/LMUeweA3W0U4RJ0m+G/cfxPhSEE0
+         UlnmUgR3opocYJK2VVt+UsMtoY2//ki1TwIv75G4wzqX5wgHf78U7hQeJM17VlU+vDMr
+         +LhA==
+X-Gm-Message-State: AO0yUKU11ff3dsmjh3ejbPRgiVszRNM1uUqb6RDh8PALtJeqKoQCRMQM
+        HPDyw9jzCpfquaFMS++AW7bd55faqBUmcQ==
+X-Google-Smtp-Source: AK7set9CD/ouVVPTmg4M6TNl3CsHZ+TkqiFWSu63PdmC9fWvXsRDojCczgVojBoq4T5xCJ5BUmiodw==
+X-Received: by 2002:a05:6808:2087:b0:36e:adf1:d0a8 with SMTP id s7-20020a056808208700b0036eadf1d0a8mr4036552oiw.8.1674847589296;
+        Fri, 27 Jan 2023 11:26:29 -0800 (PST)
+Received: from [192.168.0.27] (097-099-248-255.res.spectrum.com. [97.99.248.255])
+        by smtp.gmail.com with ESMTPSA id g131-20020acab689000000b0036e9160f57csm1919668oif.20.2023.01.27.11.26.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Jan 2023 11:26:28 -0800 (PST)
+Message-ID: <94cccc32-f7fa-2307-29de-2549833d2d2e@gmail.com>
+Date:   Fri, 27 Jan 2023 13:26:27 -0600
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB7221:EE_
-X-MS-Office365-Filtering-Correlation-Id: d73b1d80-f5bf-4751-ea82-08db008a57cd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bwL6I9uofAIzS7mThB4A/6iCFRpE54zKd8llqtKWKJM5Y1yEDofSXAwNKg8jMVtVF5ApjCUgE0F7T9g9BXZwMLl5x3OfRt33gBbyF3xijwu03VzV5LNzkRkv33sMlu/686K0SaUM82ArHFAv3j5B0gUokpTZW7GCaLjAqqONu8sUbjXxSBsOFnHheiZBiVNQtQscS6bINyovum7k7Xu0I3SMN+NzPUsZDxuLkpAUvMhIXg+Zkheo30ylwCPxzSwylrdCKFkzbpfPgUW7y9vYEdMZVCSQdWY5OzMirM5mcpe8FJu8J98XlX9hcsnli+Dc16D0M6sZJT6gsgQOUfaHqoEpGdVsbDkHPZEpf+Hs7KSfKVLyRVNrNgpJNz/dN48VpIhFe1wRevnWvMg48oyeKEoF0Dum47i+jGJkClHnGVK6xQmO5yKnymyUCo/PuqJWTaM/kG/G/wp9Nb28Bt+Bx8OtnpuowDk89Hs1WoJaPqdjpF7Lmuc0XqpQSey+RGlEyMgclwhnH914juWcJWszDPBmhSuQWsnQpdzoHtfux2Vg1fsA+BFD9LEnhtz5P7BsUbq8Eb092z3E2oLuQFKEnx/O6MDLoUgGhRntigmtSG8/J3i4+4shHDwL1fwAgyu3uPMT7AztD341ZNe4vXI7sw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(136003)(396003)(39860400002)(346002)(376002)(366004)(451199018)(6486002)(186003)(26005)(478600001)(6512007)(2616005)(83380400001)(107886003)(316002)(37006003)(41300700001)(8676002)(38100700002)(6636002)(6506007)(8936002)(86362001)(4326008)(5660300002)(66946007)(66556008)(66476007)(36756003)(2906002)(6862004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+vF5wDnl8L5hInQZhfnxgu+51XJgob2wyOYIsZkUJOCtcNaW5nD0LGKzdvy8?=
- =?us-ascii?Q?VIBgRXa1bsvI2ACBjsQXI7dq2aVT3nXWkAdGn3RFWSajtZZ3XJeZpswZiZUg?=
- =?us-ascii?Q?fSOnY0yFL/3VpNEG9D6XbK3u80guArxb/IbB5YkyM6qK72aWYj0uOVK+4A/P?=
- =?us-ascii?Q?oSdl+Ogl5ln4yn9451q+tcD8hWtoAg6xJ7SZbdUTdfy2PT63LGUfpjZ12e+s?=
- =?us-ascii?Q?AyQurKpGDx1TqB6sBto584OFx0Z1ZgxlBwI5n9dhKA08xJueReahBV/vhYKM?=
- =?us-ascii?Q?tAk+Jww+RYKQix6PwVqC0ia2bgq8dlTiB6orNyIDGeNleTYntnfSdqhET7kW?=
- =?us-ascii?Q?zoU/vfcc6lS7u4TGyLNqLNg9m1FQwibkCDQf7vzHb+VOjdLUxyxNtXeENy6l?=
- =?us-ascii?Q?lCz0fUwBVbW3hmKnG1Xnzuqg2NnqNJKhLL6s6QoS6EcMMeeJmHW09gjCGvRG?=
- =?us-ascii?Q?SmDcMqea0/CUMeNKfzooJgq71xpsB7w+khQ93M8azeHZS8xwf5lPvtNusrCM?=
- =?us-ascii?Q?VVDzLkI/He3+07NsBSjIN6GQ/zBiZiAkdZQhmQoKq0Px1fwEI5XWptLjFJrf?=
- =?us-ascii?Q?dD+SyFWLqIj/9+xlwklmrejCCd0XYQ6Nph4kHiRTf7boL1eXtgEO1vwIhBBk?=
- =?us-ascii?Q?oQ3nTaiay010MmJ4alfWgvXf2rmWnVRSKU+bp6E8JhqEpGExpiGVYcua6L7C?=
- =?us-ascii?Q?zBHk93slT/xXHOU5QSnXeCDeQCaRjwYcAPb/d211l8rXa0hGqurGoktWNU3b?=
- =?us-ascii?Q?+QXFJA0nLC9SKsIRE6usKwo/jV8ZFmDRyhaZDa2HYxDdrliyYY3jtf00EKx8?=
- =?us-ascii?Q?HyxpTGh1sPezY5CL3Bm9ajM4MIuztPULvpS+1jATj8230ibcxdiErqex8pK9?=
- =?us-ascii?Q?uUiOp1123MX0ilYCpaSPQfaE/LdIXqP6oPK2MVbFpfM8GIId2VLF4a7Rog+i?=
- =?us-ascii?Q?jbE385nqm/HWrmnw2jZmLhU72hiUwMh08pCIJ3l9DCAZUMGr0h+l0adT1ZEy?=
- =?us-ascii?Q?x+yGgzgWyPnue/u65Lh5UOvTzfR2yg3H3U4svODASyJbA4Rr3CGYPXUN10Sl?=
- =?us-ascii?Q?dY8ocWLnR+cdM/UcA6byac71dTed0Y7rWr37B1ys90EjgLNYj/1mj2d1GhOd?=
- =?us-ascii?Q?AFZabo76V0R/1Q2EoAp0fLvrpGvfHy9sCKHkmiGVRZm9WPcvJL2gtLwqw5vr?=
- =?us-ascii?Q?3P7bzu5z9W4LVYObVaDVQA7XPMFyD2XeAvveu6F55uKTDOZzGpqjKhVO44G6?=
- =?us-ascii?Q?H4ljP303p5saZKB0YTMDEEh8eCaWWXZlRxKjaiJu/VnNsLnyW2WiaQakvHpN?=
- =?us-ascii?Q?M8SntcUmF5wqKCPud4Dkj7ztBHTxDfICPObFCVZOpUUXREr32B/KzkT5c56O?=
- =?us-ascii?Q?Ny4L/BiJSBOnLthGa9uZNswvd5Ndk0c8A18qyOUzN1jq45rsct7h9utlCFau?=
- =?us-ascii?Q?koPDjdytusmX+fs5kU5ArzDGG84m3n9sOXIMNSu9cVSz7yDfEhYxqw9XR+kN?=
- =?us-ascii?Q?I1MHzyd+QQtUGfYPUIxfhUbdSbFCjrCyEqFWFo+lovU4ih3u+TvwKorIb3pt?=
- =?us-ascii?Q?Aix/s3WKdlzndkTFhPTXyBr+0hKrMpXsTBA3PCWj?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d73b1d80-f5bf-4751-ea82-08db008a57cd
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2023 17:17:18.3375
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y3wRjeJzuCsPd05PhGDjn1Tz82XsA4Zzj6BxH8DBFY9CIidesRpw2cu8/w18h5AT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7221
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH for-next v7 0/6] RDMA/rxe: Replace mr page map with an
+ xarray
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     zyjzyj2000@gmail.com, leonro@nvidia.com, yangx.jy@fujitsu.com,
+        lizhijian@fujitsu.com, linux-rdma@vger.kernel.org
+References: <20230119235936.19728-1-rpearsonhpe@gmail.com>
+ <Y9P6bGbtTNYIdoWN@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <Y9P6bGbtTNYIdoWN@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 12:28:01AM +0200, Michael Guralnik wrote:
-> This series moves the MR cache to use RB tree to store the entries of the
-> cache. By doing so, enabling more flexibility when managing the cache
-> entries.
+On 1/27/23 10:23, Jason Gunthorpe wrote:
+> On Thu, Jan 19, 2023 at 05:59:31PM -0600, Bob Pearson wrote:
+>> This patch series replaces the page map carried in each memory region
+>> with a struct xarray. It is based on a sketch developed by Jason
+>> Gunthorpe. The first five patches are preparation that tries to
+>> cleanly isolate all the mr specific code into rxe_mr.c. The sixth
+>> patch is the actual change.
+>>
+>> v7:
+>>   Link: https://lore.kernel.org/linux-rdma/Y8f53jdDAN0B9qy7@nvidia.com/
+>>   Made changes requested by Jason to return RESPST_ERR_XXX from rxe_mr.c
+>>   to rxe_resp.c.
 > 
-> The MR cache will now cache mkeys returned by the user even if they are
-> not from one of the predefined pools, by that allowing restarting
-> applications to reuse their released mkey and improve restart times.
+> I took it to for-next, but I made these changes, please check:
 > 
-> v4->v5:
-> - Commit message fix: 'Remove implicit ODP' instead of 'explicit'
-> - Fix return value of init function in case of no ODP in configuration
-> 
-> v3->v4:
-> - remove 'change-id' and 'issue' git trailers
-> 
-> v2->v3:
-> - Refactor MR cache init flow
-> - Move rb_key decleration to rome unnecessary change in following
->   patches
-> 
-> v1->v2:
-> - Rearrange patch order to first introduce the RB-tree and only then
->   introduce the caching of previously non-cachable mkeys
-> 
-> v0->v1:
-> - Fix rb tree search from memcmp to dedicated cmp function
-> - Rewording of some commit messages
-> 
-> Aharon Landau (2):
->   RDMA/mlx5: Don't keep umrable 'page_shift' in cache entries
->   RDMA/mlx5: Remove explicit ODP cache entry
-> 
-> Michael Guralnik (4):
->   RDMA/mlx5: Change the cache structure to an RB-tree
->   RDMA/mlx5: Introduce mlx5r_cache_rb_key
->   RDMA/mlx5: Cache all user cacheable mkeys on dereg MR flow
->   RDMA/mlx5: Add work to remove temporary entries from the cache
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index fe4049330c9f19..c80458634962c6 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -114,7 +114,8 @@ static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *mr, struct sg_table *sgt)
+>  
+>  			if (persistent && !is_pmem_page(page)) {
+>  				rxe_dbg_mr(mr, "Page can't be persistent\n");
+> -				return -EINVAL;
+> +				xas_set_err(&xas, -EINVAL);
+> +				break;
+>  			}
+>  
+>  			xas_store(&xas, page);
 
-Applied to for-next
+Looks good. Good catch.
+
+> @@ -213,7 +214,6 @@ static int rxe_set_page(struct ib_mr *ibmr, u64 iova)
+>  {
+>  	struct rxe_mr *mr = to_rmr(ibmr);
+>  	struct page *page = virt_to_page(iova & mr->page_mask);
+> -	XA_STATE(xas, &mr->page_list, mr->nbuf);
+>  	bool persistent = !!(mr->access & IB_ACCESS_FLUSH_PERSISTENT);
+>  	int err;
+>  
+> @@ -225,13 +225,7 @@ static int rxe_set_page(struct ib_mr *ibmr, u64 iova)
+>  	if (unlikely(mr->nbuf == mr->num_buf))
+>  		return -ENOMEM;
+>  
+> -	do {
+> -		xas_lock(&xas);
+> -		xas_store(&xas, page);
+> -		xas_unlock(&xas);
+> -	} while (xas_nomem(&xas, GFP_KERNEL));
+> -
+> -	err = xas_error(&xas);
+> +	err = xa_err(xa_store(&mr->page_list, mr->nbuf, page, GFP_KERNEL));
+
+Looks good.
+
+>  	if (err)
+>  		return err;
+>  
+> @@ -458,10 +452,8 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length)
+>  				mr_page_size(mr) - page_offset);
+>  
+>  		va = kmap_local_page(page);
+> -		if (!va)
+> -			return -EFAULT;
+> -
+>  		arch_wb_cache_pmem(va + page_offset, bytes);
+> +		kunmap_local(va);
+>  
+>  		length -= bytes;
+>  		iova += bytes;
+
+Looks good. Good catch. I take it kmap_local_page shouldn't fail.
 
 Thanks,
-Jason
+
+Bob
+
