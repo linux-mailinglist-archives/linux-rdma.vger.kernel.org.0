@@ -2,165 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0136D67F8AD
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Jan 2023 15:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE47B67FD84
+	for <lists+linux-rdma@lfdr.de>; Sun, 29 Jan 2023 09:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbjA1OZp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 28 Jan 2023 09:25:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
+        id S229999AbjA2III (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 29 Jan 2023 03:08:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233810AbjA1OZo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 28 Jan 2023 09:25:44 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866E81BE8
-        for <linux-rdma@vger.kernel.org>; Sat, 28 Jan 2023 06:25:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1674915943; x=1706451943;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Kb46h7l9HDxuDgT+rxRKP6p3Av+D5+rRUDu7/hZhrZs=;
-  b=Ks/b2PBsHXMats8jDSnbnvc1fDCi3Q9+55YtbirQWE++yaXyn7ZbdTXv
-   OGKPMV5vDZ6QCPHaQZSNi3PPIF+cstA/EBH4TerJtiWSOkjnG4MMCIU2U
-   GUpPhQ88Izttq6J9MRGQUvMm2hXy/KxVrVcHNsPhbTOEaZBbE7PR0W6Ur
-   WpfamyiJ8M6SX2+/Vk1iqlaaclF8zunFgRWZUSJwl9mL3iLFhOV06ow7a
-   QC+Y6/I78SnM+F31KOBxkR7dpmpBXz8jxGGC1ZDT2K3OM5laSedLoKMXs
-   +Tq59fOsHehrZ6B3aARYDar9TYQbJfxJU8vKiBBzHApxKeLN7NegSxIgp
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10604"; a="389672969"
-X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
-   d="scan'208";a="389672969"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2023 06:25:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10604"; a="641038235"
-X-IronPort-AV: E=Sophos;i="5.97,254,1669104000"; 
-   d="scan'208";a="641038235"
-Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 28 Jan 2023 06:25:39 -0800
-Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pLm98-0000nF-1w;
-        Sat, 28 Jan 2023 14:25:34 +0000
-Date:   Sat, 28 Jan 2023 22:24:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 2f25e3bab00e97658a454a3e017b49157909321f
-Message-ID: <63d53029.hMVXQvo+b14Dd5Av%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229741AbjA2IIH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 29 Jan 2023 03:08:07 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BBC12F24;
+        Sun, 29 Jan 2023 00:08:03 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id d14so8456001wrr.9;
+        Sun, 29 Jan 2023 00:08:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lfLvX+h7dXHOBDCZOU5BYDr/d44mVPnFEAIaaBtTNZ4=;
+        b=HyVwwWfU8Ll50zyC1wvl0OKDx170Y7xZxKQwMToKvkqboqnQ1W6ZLDXgwPiqp7YuUK
+         fmAKg8T/D/3ROlqGy7SA61kapillDEmpYVPt8OybaXp/OSOsLsQezTyUrHiyN1fDoM3e
+         EMu4YUTn6ocUnXjDTVd9Slb1N4HDb2nAbr7oGL4vli+BNST04RTir/tVHVSPvoOQl6mf
+         ONf2EzdLP6wg5bcoCK04bOJKFOXoA0vEYIbK3/AC3Spm9JEkYei8fBFDXUrIUcMowBqd
+         +Z/CbiLYoXxa7kfz53T6FqSwixqEmh5k8G9EvkEaKg++O+ksyX5MZEnr60jxkayadloN
+         SkeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lfLvX+h7dXHOBDCZOU5BYDr/d44mVPnFEAIaaBtTNZ4=;
+        b=xEGBeoHRG4SNgS0gQDoDOJh8+FwpuQKpv25jFJj7TQVqHd5Yxbgk3d1UeYzGrP+46v
+         17qRKhO092GdFuZKrSeT0oqXDJTAS6qnyKE6Ujo4dD27tJCWJTFtX6ScVYmq0Uwv7K7N
+         rJDZma8pSNZLBxXxQ553/rnHju6jMPSZ6YGVCslns8QMM5OC/pnQfrTREd7qedzKxshI
+         Hb4z+bGWVf4EVRsc3/Q0Z8i11CyQ/MP7KIhxR+2g7AkXiyxjYbKY/oI4If3QRreYHthJ
+         +efSjg4kB/gCOoq0H3ry1Q1pZ40CJOcobz8B73EF+dHC0Qvt27Sr96GW7K2CwyIEMsdP
+         pijQ==
+X-Gm-Message-State: AFqh2kpR6arAdD61FkWDX0HLN74M9Am+IGt3Nf/RuZ/+ziEQnaaQCFTF
+        6b0Lj3Wwlm0u7g71ukuVPTI=
+X-Google-Smtp-Source: AMrXdXuQ2DLZwgyUgnmklx1KxRouHizUxMiWIQHG9FtBZ8QWbiK7lW5/sM2Q0SGTw4fZIdPaUSZbOQ==
+X-Received: by 2002:a05:6000:1708:b0:2bd:db1c:8dfe with SMTP id n8-20020a056000170800b002bddb1c8dfemr45534383wrc.48.1674979682420;
+        Sun, 29 Jan 2023 00:08:02 -0800 (PST)
+Received: from [192.168.0.106] ([77.126.163.156])
+        by smtp.gmail.com with ESMTPSA id q4-20020adff944000000b002bfae3f6802sm8469044wrr.58.2023.01.29.00.07.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Jan 2023 00:08:01 -0800 (PST)
+Message-ID: <4fa5d53d-d614-33b6-2d33-156281420507@gmail.com>
+Date:   Sun, 29 Jan 2023 10:07:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH RESEND 0/9] sched: cpumask: improve on
+ cpumask_local_spread() locality
+Content-Language: en-US
+To:     Valentin Schneider <vschneid@redhat.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Barry Song <baohua@kernel.org>,
+        Ben Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Haniel Bristot de Oliveira <bristot@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Lafreniere <peter@n8pjl.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <20230121042436.2661843-1-yury.norov@gmail.com>
+ <4dc2a367-d3b1-e73e-5f42-166e9cf84bac@gmail.com>
+ <xhsmhv8kxh8tk.mognet@vschneid.remote.csb>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <xhsmhv8kxh8tk.mognet@vschneid.remote.csb>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 2f25e3bab00e97658a454a3e017b49157909321f  RDMA/irdma: Split CQ handler into irdma_reg_user_mr_type_cq
 
-elapsed time: 738m
 
-configs tested: 83
-configs skipped: 2
+On 23/01/2023 11:57, Valentin Schneider wrote:
+> On 22/01/23 14:57, Tariq Toukan wrote:
+>> On 21/01/2023 6:24, Yury Norov wrote:
+>>>
+>>> This series was supposed to be included in v6.2, but that didn't happen. It
+>>> spent enough in -next without any issues, so I hope we'll finally see it
+>>> in v6.3.
+>>>
+>>> I believe, the best way would be moving it with scheduler patches, but I'm
+>>> OK to try again with bitmap branch as well.
+>>
+>> Now that Yury dropped several controversial bitmap patches form the PR,
+>> the rest are mostly in sched, or new API that's used by sched.
+>>
+>> Valentin, what do you think? Can you take it to your sched branch?
+>>
+> 
+> I would if I had one :-)
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Oh I see :)
 
-gcc tested configs:
-x86_64                            allnoconfig
-arm64                            allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             allmodconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64               randconfig-a002-20230123
-x86_64               randconfig-a005-20230123
-x86_64               randconfig-a001-20230123
-x86_64               randconfig-a006-20230123
-x86_64               randconfig-a003-20230123
-x86_64               randconfig-a004-20230123
-x86_64                           rhel-8.3-kvm
-x86_64                           rhel-8.3-syz
-x86_64                           rhel-8.3-bpf
-x86_64                         rhel-8.3-kunit
-i386                 randconfig-a004-20230123
-i386                 randconfig-a006-20230123
-i386                 randconfig-a005-20230123
-i386                 randconfig-a002-20230123
-i386                 randconfig-a003-20230123
-i386                 randconfig-a001-20230123
-um                           x86_64_defconfig
-um                             i386_defconfig
-s390                                defconfig
-s390                             allmodconfig
-arc                                 defconfig
-alpha                               defconfig
-s390                             allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-powerpc                           allnoconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-sh                               allmodconfig
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-i386                 randconfig-c001-20230123
-i386                          randconfig-c001
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-m68k                         amcore_defconfig
-powerpc                      makalu_defconfig
-m68k                        mvme147_defconfig
-m68k                          amiga_defconfig
-mips                          rb532_defconfig
+> Peter/Ingo, any objections to stashing this in tip/sched/core?
+> 
 
-clang tested configs:
-x86_64               randconfig-a013-20230123
-x86_64               randconfig-a011-20230123
-x86_64               randconfig-a016-20230123
-x86_64               randconfig-a012-20230123
-x86_64               randconfig-a015-20230123
-x86_64               randconfig-a014-20230123
-riscv                randconfig-r042-20230123
-hexagon              randconfig-r041-20230123
-hexagon              randconfig-r045-20230123
-s390                 randconfig-r044-20230123
-i386                 randconfig-a013-20230123
-i386                 randconfig-a016-20230123
-i386                 randconfig-a012-20230123
-i386                 randconfig-a015-20230123
-i386                 randconfig-a011-20230123
-i386                 randconfig-a014-20230123
-powerpc                 mpc832x_mds_defconfig
-powerpc                      walnut_defconfig
-arm                        mvebu_v5_defconfig
-arm                           sama7_defconfig
-x86_64                          rhel-8.3-rust
-hexagon              randconfig-r041-20230124
-hexagon              randconfig-r045-20230124
-arm                  randconfig-r046-20230124
+Hi Peter and Ingo,
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Can you please look into it? So we'll have enough time to act (in 
+case...) during this kernel.
+
+We already missed one kernel...
+
+Thanks,
+Tariq
