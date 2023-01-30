@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA0D68116B
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 15:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1425768129C
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 15:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237271AbjA3ONZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Jan 2023 09:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        id S237623AbjA3OXT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Jan 2023 09:23:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237289AbjA3ONT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Jan 2023 09:13:19 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5C037B5B;
-        Mon, 30 Jan 2023 06:13:06 -0800 (PST)
+        with ESMTP id S236731AbjA3OXC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Jan 2023 09:23:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7424402D9;
+        Mon, 30 Jan 2023 06:22:00 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 106E5B8117B;
-        Mon, 30 Jan 2023 14:13:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A7FFC433D2;
-        Mon, 30 Jan 2023 14:13:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4347261049;
+        Mon, 30 Jan 2023 14:22:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B970C4339C;
+        Mon, 30 Jan 2023 14:21:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1675087983;
-        bh=sRHtvw+ovoZY11QOQItx8cHaleNwdkkqv03jsMtLQN8=;
+        s=korg; t=1675088519;
+        bh=SYbamkHUAh7SO2/XCkhZFZVPZCew/g1XBLcll1P10J4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mRFplPSpXvabR/8DYkfCIArP0QHvimB63Hd8by3AAnczDn/Z8wngqjqzaOYbQIbQO
-         tNfdKlsMekUIEtG8T/mOR0IKiarWxVT9RO6M5NtblUq3SJ/EVW+zG+3DIC8F+ui4NR
-         HQ1hkicgH4uF6YvLRSY4v8I+dw4R7/vs82gv59wI=
+        b=QzR328xYoriI/9gy+Kf92PAOUxrbZBMlBjZz2nnTVcT6QjeZv+ZaK6MwB4UZYxM3I
+         bUW08RkC/BVVD7RBpaaPNjvlr2PGWVZr1RrWp3JeAvEg+YTM3jCSomQ7EtDM9W0AbH
+         9ZMUaKZs980ct6Z6B6IV3xLRT8oxWhWeAWnYDGjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -38,12 +38,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ira Weiny <ira.weiny@intel.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 068/204] net: mlx5: eliminate anonymous module_init & module_exit
-Date:   Mon, 30 Jan 2023 14:50:33 +0100
-Message-Id: <20230130134319.313551271@linuxfoundation.org>
+Subject: [PATCH 5.10 046/143] net: mlx5: eliminate anonymous module_init & module_exit
+Date:   Mon, 30 Jan 2023 14:51:43 +0100
+Message-Id: <20230130134308.762370156@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230130134316.327556078@linuxfoundation.org>
-References: <20230130134316.327556078@linuxfoundation.org>
+In-Reply-To: <20230130134306.862721518@linuxfoundation.org>
+References: <20230130134306.862721518@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -96,10 +96,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 145e56f5eeee..9e15eea9743f 100644
+index 29bc1df28aeb..112eaef186e1 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1849,7 +1849,7 @@ static void mlx5_core_verify_params(void)
+@@ -1642,7 +1642,7 @@ static void mlx5_core_verify_params(void)
  	}
  }
  
@@ -108,16 +108,16 @@ index 145e56f5eeee..9e15eea9743f 100644
  {
  	int err;
  
-@@ -1885,7 +1885,7 @@ static int __init init(void)
+@@ -1667,7 +1667,7 @@ static int __init init(void)
  	return err;
  }
  
 -static void __exit cleanup(void)
 +static void __exit mlx5_cleanup(void)
  {
+ #ifdef CONFIG_MLX5_CORE_EN
  	mlx5e_cleanup();
- 	mlx5_sf_driver_unregister();
-@@ -1893,5 +1893,5 @@ static void __exit cleanup(void)
+@@ -1676,5 +1676,5 @@ static void __exit cleanup(void)
  	mlx5_unregister_debugfs();
  }
  
