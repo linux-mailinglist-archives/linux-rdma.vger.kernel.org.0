@@ -2,106 +2,181 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787BB6813C1
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 15:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7979681896
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 19:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233505AbjA3OuV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Jan 2023 09:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+        id S237511AbjA3ST5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Jan 2023 13:19:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjA3OuU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Jan 2023 09:50:20 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1A71E1F4
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Jan 2023 06:50:19 -0800 (PST)
-Received: from [192.168.2.197] (109-252-117-89.nat.spd-mgts.ru [109.252.117.89])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 995E46602CFF;
-        Mon, 30 Jan 2023 14:50:17 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1675090218;
-        bh=ibQoCtrC5IR8slzaYDDOugeFP/LewvHrc+4USqcyzTM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=fofENOqKHlnCHP56xH0193OVWMcF2Fbi/KNGk9JtQOVe087I48GafJwSvyOnxsi1u
-         cUhudmef5HBVNJy2cq9QFgUHH+Ziq9rPpcIICMvxxQ9M+gYzOdWdl3T0/Tu7xObmVq
-         DbPDgO9gCplK2sqFdLZcOpC11FiLLO0p+0FVsOTEpdxg/hPvvNy6zhVTRA6DOgt4W7
-         5kFa0sgi/A7Fe/yir0UItkTX/VqYP92G4nx9NiMHLhV8llzsRM3N69tgXYZSARuZf0
-         UYc/eoWEnz0dy/t+aBIPLW1BhQzQ3gzCu1+OHJg0GE7twDnW+cuk6/jyKCERJwOdDF
-         Mk9cX70cVvaXw==
-Message-ID: <c872f49e-5522-d162-8360-093d7131ff9c@collabora.com>
-Date:   Mon, 30 Jan 2023 17:50:14 +0300
+        with ESMTP id S237501AbjA3STn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Jan 2023 13:19:43 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2187F38EAD
+        for <linux-rdma@vger.kernel.org>; Mon, 30 Jan 2023 10:19:41 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id d10so5466778ilc.12
+        for <linux-rdma@vger.kernel.org>; Mon, 30 Jan 2023 10:19:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CAFjNasnKQN5LUWGdN7AtadW817QQm7F4FvMhjCHwb0=;
+        b=RfZdv5XTG+8uD8qkRBhdwNBF0cK8e8hji8B33Gj95Q6avMrpQVnYUAuUvQ6T7IR8+p
+         MYCxMzFUWeWWkyawSiU0lbQwLFknwHfAQy3hsCbXbZdWrjCG2Tc3YHS7D6WPN1oWkG0f
+         eFMyiUb05xok2QkhaK8jh7WLReqLeYSqv2qpU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CAFjNasnKQN5LUWGdN7AtadW817QQm7F4FvMhjCHwb0=;
+        b=FNPOovKc4B9wRTDOw6EudzjAlR9u7SAEv4jhR+wLEoKP/VH7TQ4NMTqV1zaB3GXBSz
+         D30qb8IRHIV845igEf5dJUJmBvzsw+rXTOAKLozXOXZSSuFXAxmwCXe/oyuNDUzzkl0Q
+         SIgawhsXzYGHkaeERKEdJRTg4m2Brr5DqYka6HHONHmYBWICQvyuSyo4f36RE7YrYOTm
+         wVPOMIk93Lsi+cSx1/DPScqaPVGiyHSOavqP4dPGCo2/+LhYKEE8wofKSvRIBxFfUx4T
+         1eYMxKYsqbZyX5aOHS4SrdHiBzCiwmkZgCay0Ut8Z0IV1ru1Jtan0SfULrnsuuk5kVZ5
+         IXNA==
+X-Gm-Message-State: AO0yUKWSqOnhzZ4KCeDgHdzCiKXzai2HK+xoas9/lWHQjGb7jYtqMizq
+        dlbN4MwPnrW2xb/LeOwhZYmjnQ==
+X-Google-Smtp-Source: AK7set+mwFjhaqPt63RqulQxBusxgMUOOgqwMk/p2L94uGQONgxdBYrhcYQqNFbg7qLSnkSytLx+CQ==
+X-Received: by 2002:a05:6e02:1541:b0:310:c510:780c with SMTP id j1-20020a056e02154100b00310c510780cmr12382570ilu.11.1675102780494;
+        Mon, 30 Jan 2023 10:19:40 -0800 (PST)
+Received: from ravnica.bld.corp.google.com ([2620:15c:183:200:fc8a:dd2f:5914:df14])
+        by smtp.gmail.com with ESMTPSA id o16-20020a056e02115000b002f139ba4135sm4189801ill.86.2023.01.30.10.19.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jan 2023 10:19:40 -0800 (PST)
+From:   Ross Zwisler <zwisler@chromium.org>
+X-Google-Original-From: Ross Zwisler <zwisler@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ross Zwisler <zwisler@google.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Tobin C. Harding" <me@tobin.cc>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>, Huang Rui <ray.huang@amd.com>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Wang <jasowang@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Todd E Brandt <todd.e.brandt@linux.intel.com>,
+        Tycho Andersen <tycho@tycho.pizza>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, kvm@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: [PATCH 0/9] use canonical ftrace path whenever possible
+Date:   Mon, 30 Jan 2023 11:19:06 -0700
+Message-Id: <20230130181915.1113313-1-zwisler@google.com>
+X-Mailer: git-send-email 2.39.1.456.gfc5497dd1b-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH rdma-rc] RDMA/umem: Use dma-buf locked API to solve
- deadlock
-Content-Language: en-US
-To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        linux-rdma@vger.kernel.org
-References: <311c2cb791f8af75486df446819071357353db1b.1675088709.git.leon@kernel.org>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <311c2cb791f8af75486df446819071357353db1b.1675088709.git.leon@kernel.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/30/23 17:25, Leon Romanovsky wrote:
-> From: Maor Gottlieb <maorg@nvidia.com>
-> 
-> The cited commit moves umem to call the unlocked versions of dmabuf
-> unmap/map attachment, but the lock is held while calling to these
-> functions, hence move back to the locked versions of these APIs.
-> 
-> Fixes: 21c9c5c0784f ("RDMA/umem: Prepare to dynamic dma-buf locking specification")
-> Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-> Reviewed-by: Christian König <christian.koenig@amd.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/umem_dmabuf.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-> index 43b26bc12288..39357dc2d229 100644
-> --- a/drivers/infiniband/core/umem_dmabuf.c
-> +++ b/drivers/infiniband/core/umem_dmabuf.c
-> @@ -26,8 +26,8 @@ int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
->  	if (umem_dmabuf->sgt)
->  		goto wait_fence;
->  
-> -	sgt = dma_buf_map_attachment_unlocked(umem_dmabuf->attach,
-> -					      DMA_BIDIRECTIONAL);
-> +	sgt = dma_buf_map_attachment(umem_dmabuf->attach,
-> +				     DMA_BIDIRECTIONAL);
->  	if (IS_ERR(sgt))
->  		return PTR_ERR(sgt);
->  
-> @@ -103,8 +103,8 @@ void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf)
->  		umem_dmabuf->last_sg_trim = 0;
->  	}
->  
-> -	dma_buf_unmap_attachment_unlocked(umem_dmabuf->attach, umem_dmabuf->sgt,
-> -					  DMA_BIDIRECTIONAL);
-> +	dma_buf_unmap_attachment(umem_dmabuf->attach, umem_dmabuf->sgt,
-> +				 DMA_BIDIRECTIONAL);
->  
->  	umem_dmabuf->sgt = NULL;
->  }
+The canonical location for the tracefs filesystem is at /sys/kernel/tracing.
 
-Reviewed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+But, from Documentation/trace/ftrace.rst:
+
+  Before 4.1, all ftrace tracing control files were within the debugfs
+  file system, which is typically located at /sys/kernel/debug/tracing.
+  For backward compatibility, when mounting the debugfs file system,
+  the tracefs file system will be automatically mounted at:
+
+  /sys/kernel/debug/tracing
+
+There are many places where this older debugfs path is still used in
+code comments, selftests, examples and tools, so let's update them to
+avoid confusion.
+
+I've broken up the series as best I could by maintainer or directory,
+and I've only sent people the patches that I think they care about to
+avoid spamming everyone.
+
+Ross Zwisler (9):
+  tracing: always use canonical ftrace path
+  bpf: use canonical ftrace path
+  selftests/bpf: use canonical ftrace path
+  perf docs: use canonical ftrace path
+  tools/power: use canonical ftrace path
+  selftests: use canonical ftrace path
+  tools/virtio: use canonical ftrace path
+  leaking_addresses: also skip canonical ftrace path
+  tools/kvm_stat: use canonical ftrace path
+
+ include/linux/kernel.h                        |  2 +-
+ include/linux/tracepoint.h                    |  4 ++--
+ include/uapi/linux/bpf.h                      |  8 ++++----
+ kernel/trace/Kconfig                          | 20 +++++++++----------
+ kernel/trace/kprobe_event_gen_test.c          |  2 +-
+ kernel/trace/ring_buffer.c                    |  2 +-
+ kernel/trace/synth_event_gen_test.c           |  2 +-
+ kernel/trace/trace.c                          |  2 +-
+ samples/bpf/cpustat_kern.c                    |  4 ++--
+ samples/bpf/hbm.c                             |  4 ++--
+ samples/bpf/ibumad_kern.c                     |  4 ++--
+ samples/bpf/lwt_len_hist.sh                   |  2 +-
+ samples/bpf/offwaketime_kern.c                |  2 +-
+ samples/bpf/task_fd_query_user.c              |  4 ++--
+ samples/bpf/test_lwt_bpf.sh                   |  2 +-
+ samples/bpf/test_overhead_tp_kern.c           |  4 ++--
+ samples/user_events/example.c                 |  4 ++--
+ scripts/leaking_addresses.pl                  |  1 +
+ scripts/tracing/draw_functrace.py             |  6 +++---
+ scripts/tracing/ftrace-bisect.sh              |  4 ++--
+ tools/include/uapi/linux/bpf.h                |  8 ++++----
+ tools/kvm/kvm_stat/kvm_stat                   |  2 +-
+ tools/lib/api/fs/tracing_path.c               |  4 ++--
+ tools/lib/traceevent/event-parse.c            |  8 ++++----
+ tools/perf/Documentation/perf-list.txt        |  2 +-
+ tools/perf/Documentation/perf-script-perl.txt |  2 +-
+ .../perf/Documentation/perf-script-python.txt |  4 ++--
+ tools/power/pm-graph/sleepgraph.py            |  4 ++--
+ .../x86/amd_pstate_tracer/amd_pstate_trace.py |  4 ++--
+ .../intel_pstate_tracer.py                    | 10 +++++-----
+ .../selftests/bpf/get_cgroup_id_user.c        |  2 +-
+ .../bpf/prog_tests/kprobe_multi_test.c        |  2 +-
+ .../bpf/prog_tests/task_fd_query_tp.c         |  2 +-
+ .../bpf/prog_tests/tp_attach_query.c          |  2 +-
+ .../selftests/bpf/prog_tests/trace_printk.c   |  2 +-
+ .../selftests/bpf/prog_tests/trace_vprintk.c  |  2 +-
+ .../selftests/bpf/progs/test_stacktrace_map.c |  2 +-
+ .../selftests/bpf/progs/test_tracepoint.c     |  2 +-
+ tools/testing/selftests/bpf/test_ftrace.sh    |  2 +-
+ tools/testing/selftests/bpf/test_tunnel.sh    |  8 ++++----
+ tools/testing/selftests/bpf/trace_helpers.c   |  4 ++--
+ .../testing/selftests/user_events/dyn_test.c  |  2 +-
+ .../selftests/user_events/ftrace_test.c       | 10 +++++-----
+ .../testing/selftests/user_events/perf_test.c |  8 ++++----
+ tools/testing/selftests/vm/protection_keys.c  |  4 ++--
+ tools/tracing/latency/latency-collector.c     |  2 +-
+ tools/virtio/virtio-trace/README              |  2 +-
+ tools/virtio/virtio-trace/trace-agent.c       |  2 +-
+ 48 files changed, 96 insertions(+), 95 deletions(-)
 
 -- 
-Best regards,
-Dmitry
+2.39.1.456.gfc5497dd1b-goog
 
