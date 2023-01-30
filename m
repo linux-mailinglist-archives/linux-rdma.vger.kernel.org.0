@@ -2,52 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B625C6809C3
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 10:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298A3680B51
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 11:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236259AbjA3JkW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Jan 2023 04:40:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
+        id S235596AbjA3KvQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Jan 2023 05:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236312AbjA3JkS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Jan 2023 04:40:18 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E05EB40
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Jan 2023 01:39:53 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 313D3B80EC0
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Jan 2023 09:39:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 171D3C433D2;
-        Mon, 30 Jan 2023 09:39:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675071585;
-        bh=vi+Z4hK4tBDwG/xD3H2Zi6q9VM/H0tQYbrOJlQ4BE6U=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=CFJJhig/3BHIDjL4s7CNEj4u0w5ogHoz9BGViG/ww4ZgR7ReWlzK+lxwYeuI3mwyj
-         TKOR+ee5moIxEcYK5nwNgDC3mGwTsC27vxXrSkHtaon5mZwMDy0F4wAkTo+6bcsZtV
-         lfMPeJ1sCshE8CZNWUGRNfw7/T1+GA7ITtlL+LnF+B6rBZtbgpo1+/5LRqAyGisJy5
-         k1coNGkdsB0cKvtiwcWXuVlEeZLEt2/OC2yqhvb7SO5KcTlpZgDv0moQ0FJf3Ni1fE
-         kYwCcI8WxTGEutjgjJZAXVtptW1pPWq/nk5c+6QS/xeaVXM9VDPL7+7j0e7GfjYP8N
-         u89FyYdMRuSpg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     linux-rdma@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>
-Cc:     benve@cisco.com, neescoba@cisco.com, jgg@ziepe.ca,
-        umalhi@cisco.com, roland@purestorage.com
-In-Reply-To: <20230129093757.637354-1-yangyingliang@huawei.com>
-References: <20230129093757.637354-1-yangyingliang@huawei.com>
-Subject: Re: [PATCH] RDMA/usnic: use iommu_map_atomic() under spin_lock()
-Message-Id: <167507158087.744400.14055091849454298048.b4-ty@kernel.org>
-Date:   Mon, 30 Jan 2023 11:39:40 +0200
+        with ESMTP id S235907AbjA3KvP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Jan 2023 05:51:15 -0500
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C117831E09;
+        Mon, 30 Jan 2023 02:51:09 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VaSWaKW_1675075866;
+Received: from 30.221.148.230(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VaSWaKW_1675075866)
+          by smtp.aliyun-inc.com;
+          Mon, 30 Jan 2023 18:51:07 +0800
+Message-ID: <a0de12ab-dd9a-acfe-4324-78815d6ebc35@linux.alibaba.com>
+Date:   Mon, 30 Jan 2023 18:51:05 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+Subject: Re: [PATCH net-next v6 1/7] net/smc: remove locks
+ smc_client_lgr_pending and smc_server_lgr_pending
+Content-Language: en-US
+To:     Wenjia Zhang <wenjia@linux.ibm.com>, jaka@linux.ibm.com,
+        kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1669453422-38152-1-git-send-email-alibuda@linux.alibaba.com>
+ <1669453422-38152-2-git-send-email-alibuda@linux.alibaba.com>
+ <2ad147d3-b127-b192-c2a5-29fa704cf3a1@linux.alibaba.com>
+ <c45960d9-c358-e47b-0a33-1de8c3a8f94c@linux.ibm.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <c45960d9-c358-e47b-0a33-1de8c3a8f94c@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,18 +49,66 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On Sun, 29 Jan 2023 17:37:57 +0800, Yang Yingliang wrote:
-> usnic_uiom_map_sorted_intervals() is called under spin_lock(), iommu_map()
-> might sleep, use iommu_map_atomic() to avoid potential sleep in atomic
-> context.
+
+On 1/30/23 4:37 PM, Wenjia Zhang wrote:
 > 
 > 
+> On 29.01.23 16:11, D. Wythe wrote:
+>>
+>>
+>> On 11/26/22 5:03 PM, D.Wythe wrote:
+>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>
+>>> This patch attempts to remove locks named smc_client_lgr_pending and
+>>> smc_server_lgr_pending, which aim to serialize the creation of link
+>>> group. However, once link group existed already, those locks are
+>>> meaningless, worse still, they make incoming connections have to be
+>>> queued one after the other.
+>>>
+>>> Now, the creation of link group is no longer generated by competition,
+>>> but allocated through following strategy.
+>>>
+>>
+>>
+>> Hi, all
+>>
+>> I have noticed that there may be some difficulties in the advancement of this series of patches.
+>> I guess the main problem is to try remove the global lock in this patch, the risks of removing locks
+>> do harm to SMC-D, at the same time, this patch of removing locks is also a little too complex.
+>>
+>> So, I am considering that we can temporarily delay the advancement of this patch. We can works on
+>> other patches first. Other patches are either simple enough or have no obvious impact on SMC-D.
+>>
+>> What do you think?
+>>
+>> Best wishes.
+>> D. Wythe
+>>
+>>
+> Hi D. Wythe,
+> 
+> that sounds good. Thank you for your consideration about SMC-D!
 
-Applied, thanks!
+Hi Wenjia,
 
-[1/1] RDMA/usnic: use iommu_map_atomic() under spin_lock()
-      https://git.kernel.org/rdma/rdma/c/b7e08a5a63a116
+Thanks for your reply.
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+> Removing locks is indeed a big issue, those patches make us difficult to accept without thoroughly testing in every corner.
+> 
+> Best
+> Wenjia
+
+What do you mean by those patches? My plan is to delete the first patch in this series,
+that is, 'remove locks smc_client_lgr_pending and smc_server_lgr_pending', while other patches
+should be retained.
+
+They has almost nothing impact on SMC-D or simple enough to be tested. If you agree with this,
+I can then issue the next version as soon as possible to remove the first patch, and I think
+we can quickly promote those patches.
+
+Thanks.
+Wenjia
+
+
+
+
