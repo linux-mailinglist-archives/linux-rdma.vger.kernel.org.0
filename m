@@ -2,170 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3725680391
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 02:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83ECC680443
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 04:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbjA3Brp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 29 Jan 2023 20:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58756 "EHLO
+        id S229592AbjA3DZv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 29 Jan 2023 22:25:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjA3Bro (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 29 Jan 2023 20:47:44 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A101ABC0
-        for <linux-rdma@vger.kernel.org>; Sun, 29 Jan 2023 17:47:43 -0800 (PST)
+        with ESMTP id S229965AbjA3DZu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 29 Jan 2023 22:25:50 -0500
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DF11350B
+        for <linux-rdma@vger.kernel.org>; Sun, 29 Jan 2023 19:25:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675043263; x=1706579263;
-  h=date:from:to:cc:subject:message-id:mime-version:
+  t=1675049150; x=1706585150;
+  h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=lIfVP13RAr+Ol+qfCjf44gOFzP6H+AvyuoNL5rhm1qQ=;
-  b=Pis8nS4MJ/VNNpC0fW39+kiWqYVobcbG7jXZM/FyJvpJtjsW33QvKJWV
-   GOxYiCtZF2mKpjSGWU+pMGvHvur4p4QH+dSdFkqvP91ZYS/sO9c43O7Sk
-   I0U7FFSc8uI+fcfCVA+x98uO71pqA8BbU3OWICIlMjOEe24OcPYya7hwM
-   64TkYhBSHh+XbKSresU0VzT3ryq0Igovr6Xr6WHNcJOiLM35NYKLfjsfl
-   4KH4JqtF2sVuaC0OPMrb6K8pEb0EBove8QEvEkDvVDYqGRXnhwSvelGuw
-   8CwP/FP/eEOSYTdu2HvFwbGPrhB+GculawUNXgM3WG+aRgd0zj2n8Nm0i
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="307799692"
-X-IronPort-AV: E=Sophos;i="5.97,256,1669104000"; 
-   d="scan'208";a="307799692"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2023 17:47:42 -0800
+  bh=fk/NXso13qUbReYbd9ymYZdw7PHMoOO0/2CBD9/SwQ0=;
+  b=KGNmeuYl3yV7mbsQJ98ZuU1H4owsGF02WFdqkg+rsWP2lH3h5zpJ73q4
+   0v07tEL3EOMYfP62JWMhimmE9pwrdZY3JNJSp1IZ1NlK7V87nkO16o+j8
+   tVyqBi6wqoiCvA7MU4TYbPE4hEOCzhGEyCIkcQyT3g6qMPr1Sdtw3ITjU
+   RCaGBI6oEnpK16jKgTX2MlwCsZY6zqJ248bDHySeSxR8hEy4ID4SHmZlb
+   zbeNYK4UUNp8//dzstv1qsENHrOqDm1NTITOD+SUGnKoE2FmL3cMTPvuf
+   gTb6bPMtVxNZ8QF6ii7hDVvOpCtYgusdPI13+4Mv7jsoOSpFz5UtI2q/6
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="354782064"
+X-IronPort-AV: E=Sophos;i="5.97,257,1669104000"; 
+   d="scan'208";a="354782064"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2023 19:25:49 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="772307165"
-X-IronPort-AV: E=Sophos;i="5.97,256,1669104000"; 
-   d="scan'208";a="772307165"
-Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jan 2023 17:47:40 -0800
-Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pMJGl-0003GQ-30;
-        Mon, 30 Jan 2023 01:47:39 +0000
-Date:   Mon, 30 Jan 2023 09:46:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
- 5d9745cead1f121974322b94ceadfb4d1e67960e
-Message-ID: <63d7217b.m7zE6YLqMlvyJPAz%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="727341576"
+X-IronPort-AV: E=Sophos;i="5.97,257,1669104000"; 
+   d="scan'208";a="727341576"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Jan 2023 19:25:47 -0800
+From:   Zhu Yanjun <yanjun.zhu@intel.com>
+To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
+        leon@kernel.org, linux-rdma@vger.kernel.org
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: [PATCHv2 for-next 1/1] RDMA/irdma: Add support for dmabuf pin memory regions
+Date:   Mon, 30 Jan 2023 11:24:07 +0800
+Message-Id: <20230130032407.259855-1-yanjun.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
-branch HEAD: 5d9745cead1f121974322b94ceadfb4d1e67960e  RDMA/irdma: Fix potential NULL-ptr-dereference
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-elapsed time: 725m
+This is a followup to the EFA dmabuf[1]. Irdma driver currently does
+not support on-demand-paging(ODP). So it uses habanalabs as the
+dmabuf exporter, and irdma as the importer to allow for peer2peer
+access through libibverbs.
 
-configs tested: 88
-configs skipped: 2
+In this commit, the function ib_umem_dmabuf_get_pinned() is used.
+This function is introduced in EFA dmabuf[1] which allows the driver
+to get a dmabuf umem which is pinned and does not require move_notify
+callback implementation. The returned umem is pinned and DMA mapped
+like standard cpu umems, and is released through ib_umem_release().
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[1]https://lore.kernel.org/lkml/20211007114018.GD2688930@ziepe.ca/t/
 
-gcc tested configs:
-x86_64                            allnoconfig
-um                             i386_defconfig
-arc                                 defconfig
-um                           x86_64_defconfig
-alpha                               defconfig
-powerpc                           allnoconfig
-s390                             allmodconfig
-x86_64                              defconfig
-x86_64                         rhel-8.3-kunit
-i386                                defconfig
-s390                             allyesconfig
-x86_64                        randconfig-a004
-s390                                defconfig
-x86_64                           rhel-8.3-kvm
-i386                          randconfig-a001
-x86_64                        randconfig-a002
-x86_64                               rhel-8.3
-x86_64                        randconfig-a013
-i386                          randconfig-a003
-x86_64                           rhel-8.3-bpf
-arc                  randconfig-r043-20230129
-x86_64                           rhel-8.3-syz
-x86_64                        randconfig-a011
-i386                          randconfig-a005
-mips                           ci20_defconfig
-sh                               allmodconfig
-x86_64                        randconfig-a006
-arm                  randconfig-r046-20230129
-arm                                 defconfig
-x86_64                    rhel-8.3-kselftests
-i386                          randconfig-a014
-x86_64                          rhel-8.3-func
-ia64                             allmodconfig
-i386                          randconfig-a012
-x86_64                        randconfig-a015
-parisc                              defconfig
-mips                             allyesconfig
-i386                          randconfig-a016
-x86_64                           allyesconfig
-powerpc                    amigaone_defconfig
-powerpc                          allmodconfig
-sh                         apsh4a3a_defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-i386                             allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-powerpc                      ppc40x_defconfig
-sh                           sh2007_defconfig
-sh                      rts7751r2d1_defconfig
-mips                      fuloong2e_defconfig
-powerpc                        warp_defconfig
-um                                  defconfig
-arc                           tb10x_defconfig
-i386                          randconfig-c001
-sh                          kfr2r09_defconfig
-sh                           se7705_defconfig
-m68k                       m5475evb_defconfig
-loongarch                 loongson3_defconfig
-mips                          rb532_defconfig
-loongarch                         allnoconfig
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+V1->V2: Thanks Shiraz Saleem, he gave me a lot of good suggestions.
+        This commit is based on the shared functions from refactored
+        irdma_reg_user_mr.
+---
+ drivers/infiniband/hw/irdma/verbs.c | 43 +++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-clang tested configs:
-s390                 randconfig-r044-20230129
-i386                          randconfig-a002
-i386                          randconfig-a004
-x86_64                        randconfig-a001
-hexagon              randconfig-r041-20230129
-riscv                randconfig-r042-20230129
-x86_64                        randconfig-a003
-hexagon              randconfig-r045-20230129
-i386                          randconfig-a013
-x86_64                          rhel-8.3-rust
-x86_64                        randconfig-a016
-i386                          randconfig-a006
-x86_64                        randconfig-a012
-i386                          randconfig-a015
-x86_64                        randconfig-a005
-i386                          randconfig-a011
-x86_64                        randconfig-a014
-x86_64                        randconfig-k001
-arm                      pxa255-idp_defconfig
-
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 6982f38596c8..a638861689c2 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -2977,6 +2977,48 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 	return ERR_PTR(err);
+ }
+ 
++static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
++					      u64 len, u64 virt,
++					      int fd, int access,
++					      struct ib_udata *udata)
++{
++	struct irdma_device *iwdev = to_iwdev(pd->device);
++	struct ib_umem_dmabuf *umem_dmabuf = NULL;
++	struct irdma_mr *iwmr = NULL;
++	int err;
++
++	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
++		return ERR_PTR(-EINVAL);
++
++	if (udata->inlen < IRDMA_MEM_REG_MIN_REQ_LEN)
++		return ERR_PTR(-EINVAL);
++
++	umem_dmabuf = ib_umem_dmabuf_get_pinned(pd->device, start, len, fd, access);
++	if (IS_ERR(umem_dmabuf)) {
++		err = PTR_ERR(umem_dmabuf);
++		ibdev_dbg(&iwdev->ibdev, "Failed to get dmabuf umem[%d]\n", err);
++		return ERR_PTR(err);
++	}
++
++	iwmr = irdma_alloc_iwmr(&umem_dmabuf->umem, pd, virt, IRDMA_MEMREG_TYPE_MEM);
++	if (IS_ERR(iwmr)) {
++		ib_umem_release(&umem_dmabuf->umem);
++		return (struct ib_mr *)iwmr;
++	}
++
++	err = irdma_reg_user_mr_type_mem(iwmr, access);
++	if (err)
++		goto error;
++
++	return &iwmr->ibmr;
++
++error:
++	irdma_free_iwmr(iwmr);
++	ib_umem_release(&umem_dmabuf->umem);
++
++	return ERR_PTR(err);
++}
++
+ /**
+  * irdma_reg_phys_mr - register kernel physical memory
+  * @pd: ibpd pointer
+@@ -4483,6 +4525,7 @@ static const struct ib_device_ops irdma_dev_ops = {
+ 	.query_port = irdma_query_port,
+ 	.query_qp = irdma_query_qp,
+ 	.reg_user_mr = irdma_reg_user_mr,
++	.reg_user_mr_dmabuf = irdma_reg_user_mr_dmabuf,
+ 	.req_notify_cq = irdma_req_notify_cq,
+ 	.resize_cq = irdma_resize_cq,
+ 	INIT_RDMA_OBJ_SIZE(ib_pd, irdma_pd, ibpd),
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.27.0
+
