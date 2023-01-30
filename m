@@ -2,147 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83ECC680443
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 04:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB0E68078B
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jan 2023 09:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjA3DZv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 29 Jan 2023 22:25:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
+        id S234199AbjA3IiI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Jan 2023 03:38:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjA3DZu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 29 Jan 2023 22:25:50 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DF11350B
-        for <linux-rdma@vger.kernel.org>; Sun, 29 Jan 2023 19:25:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675049150; x=1706585150;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fk/NXso13qUbReYbd9ymYZdw7PHMoOO0/2CBD9/SwQ0=;
-  b=KGNmeuYl3yV7mbsQJ98ZuU1H4owsGF02WFdqkg+rsWP2lH3h5zpJ73q4
-   0v07tEL3EOMYfP62JWMhimmE9pwrdZY3JNJSp1IZ1NlK7V87nkO16o+j8
-   tVyqBi6wqoiCvA7MU4TYbPE4hEOCzhGEyCIkcQyT3g6qMPr1Sdtw3ITjU
-   RCaGBI6oEnpK16jKgTX2MlwCsZY6zqJ248bDHySeSxR8hEy4ID4SHmZlb
-   zbeNYK4UUNp8//dzstv1qsENHrOqDm1NTITOD+SUGnKoE2FmL3cMTPvuf
-   gTb6bPMtVxNZ8QF6ii7hDVvOpCtYgusdPI13+4Mv7jsoOSpFz5UtI2q/6
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="354782064"
-X-IronPort-AV: E=Sophos;i="5.97,257,1669104000"; 
-   d="scan'208";a="354782064"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2023 19:25:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="727341576"
-X-IronPort-AV: E=Sophos;i="5.97,257,1669104000"; 
-   d="scan'208";a="727341576"
-Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Jan 2023 19:25:47 -0800
-From:   Zhu Yanjun <yanjun.zhu@intel.com>
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
-        leon@kernel.org, linux-rdma@vger.kernel.org
-Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: [PATCHv2 for-next 1/1] RDMA/irdma: Add support for dmabuf pin memory regions
-Date:   Mon, 30 Jan 2023 11:24:07 +0800
-Message-Id: <20230130032407.259855-1-yanjun.zhu@intel.com>
-X-Mailer: git-send-email 2.27.0
+        with ESMTP id S235394AbjA3IiG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Jan 2023 03:38:06 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CAE1204A;
+        Mon, 30 Jan 2023 00:38:05 -0800 (PST)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30U6vN4M007482;
+        Mon, 30 Jan 2023 08:38:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Cdkxg+xW+8P0QPbYyaaXnEj5NpJbFcN8CrtjbSiNIBo=;
+ b=tdWHv+dxb4FDFNIL99L/+WtKsbmQW/Hpp9i/nw+0Uy5duwJ3gZW8H07XMIqQSxAI41Zz
+ dfOWRyXM87ouii25gkD/I0dclfX4B0lzZQEfywPU/fs1Lw9UbwzmBGw0ihopE2B6koEi
+ txcolqoB2MnSqHzC7Y8iDvPQErUTvOtkBuy8Zrw8f40TpxZq3YKL0E1Fx3RzvFduwCrw
+ jDJJ9zPZSPRG1Ywr1pHC4tJ6su3QiAlYeimziKaID6dyzJPFu5XwV0PaHIuA+CVIBYBR
+ lngQ2H22KlFs0qHPvRRAoMI54CRSgBi8twD1VdbgKhUbyyCxGBmZgVG+qDUc4zpUfcIV xQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ne934abak-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Jan 2023 08:38:01 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 30U7Ecrv027301;
+        Mon, 30 Jan 2023 08:38:00 GMT
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ne934aba4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Jan 2023 08:38:00 +0000
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30U5xOq2006488;
+        Mon, 30 Jan 2023 08:37:59 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([9.208.130.100])
+        by ppma01dal.us.ibm.com (PPS) with ESMTPS id 3ncvtm45an-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Jan 2023 08:37:59 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30U8bwD77406164
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Jan 2023 08:37:58 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A9F45806C;
+        Mon, 30 Jan 2023 08:37:58 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7D77E5806A;
+        Mon, 30 Jan 2023 08:37:56 +0000 (GMT)
+Received: from [9.163.16.35] (unknown [9.163.16.35])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 30 Jan 2023 08:37:56 +0000 (GMT)
+Message-ID: <c45960d9-c358-e47b-0a33-1de8c3a8f94c@linux.ibm.com>
+Date:   Mon, 30 Jan 2023 09:37:54 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+Subject: Re: [PATCH net-next v6 1/7] net/smc: remove locks
+ smc_client_lgr_pending and smc_server_lgr_pending
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, jaka@linux.ibm.com,
+        kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1669453422-38152-1-git-send-email-alibuda@linux.alibaba.com>
+ <1669453422-38152-2-git-send-email-alibuda@linux.alibaba.com>
+ <2ad147d3-b127-b192-c2a5-29fa704cf3a1@linux.alibaba.com>
+From:   Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <2ad147d3-b127-b192-c2a5-29fa704cf3a1@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sJBST1Bs0wF95BoQDITdhkGdIGoC763i
+X-Proofpoint-ORIG-GUID: 6MZ82YTCMQfVAXZkuHMTsR-T-r0cMhve
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-30_07,2023-01-27_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
+ suspectscore=0 adultscore=0 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301300081
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-This is a followup to the EFA dmabuf[1]. Irdma driver currently does
-not support on-demand-paging(ODP). So it uses habanalabs as the
-dmabuf exporter, and irdma as the importer to allow for peer2peer
-access through libibverbs.
 
-In this commit, the function ib_umem_dmabuf_get_pinned() is used.
-This function is introduced in EFA dmabuf[1] which allows the driver
-to get a dmabuf umem which is pinned and does not require move_notify
-callback implementation. The returned umem is pinned and DMA mapped
-like standard cpu umems, and is released through ib_umem_release().
+On 29.01.23 16:11, D. Wythe wrote:
+> 
+> 
+> On 11/26/22 5:03 PM, D.Wythe wrote:
+>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>
+>> This patch attempts to remove locks named smc_client_lgr_pending and
+>> smc_server_lgr_pending, which aim to serialize the creation of link
+>> group. However, once link group existed already, those locks are
+>> meaningless, worse still, they make incoming connections have to be
+>> queued one after the other.
+>>
+>> Now, the creation of link group is no longer generated by competition,
+>> but allocated through following strategy.
+>>
+> 
+> 
+> Hi, all
+> 
+> I have noticed that there may be some difficulties in the advancement of 
+> this series of patches.
+> I guess the main problem is to try remove the global lock in this patch, 
+> the risks of removing locks
+> do harm to SMC-D, at the same time, this patch of removing locks is also 
+> a little too complex.
+> 
+> So, I am considering that we can temporarily delay the advancement of 
+> this patch. We can works on
+> other patches first. Other patches are either simple enough or have no 
+> obvious impact on SMC-D.
+> 
+> What do you think?
+> 
+> Best wishes.
+> D. Wythe
+> 
+> 
+Hi D. Wythe,
 
-[1]https://lore.kernel.org/lkml/20211007114018.GD2688930@ziepe.ca/t/
+that sounds good. Thank you for your consideration about SMC-D!
+Removing locks is indeed a big issue, those patches make us difficult to 
+accept without thoroughly testing in every corner.
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
-V1->V2: Thanks Shiraz Saleem, he gave me a lot of good suggestions.
-        This commit is based on the shared functions from refactored
-        irdma_reg_user_mr.
----
- drivers/infiniband/hw/irdma/verbs.c | 43 +++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
-
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 6982f38596c8..a638861689c2 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -2977,6 +2977,48 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
- 	return ERR_PTR(err);
- }
- 
-+static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
-+					      u64 len, u64 virt,
-+					      int fd, int access,
-+					      struct ib_udata *udata)
-+{
-+	struct irdma_device *iwdev = to_iwdev(pd->device);
-+	struct ib_umem_dmabuf *umem_dmabuf = NULL;
-+	struct irdma_mr *iwmr = NULL;
-+	int err;
-+
-+	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (udata->inlen < IRDMA_MEM_REG_MIN_REQ_LEN)
-+		return ERR_PTR(-EINVAL);
-+
-+	umem_dmabuf = ib_umem_dmabuf_get_pinned(pd->device, start, len, fd, access);
-+	if (IS_ERR(umem_dmabuf)) {
-+		err = PTR_ERR(umem_dmabuf);
-+		ibdev_dbg(&iwdev->ibdev, "Failed to get dmabuf umem[%d]\n", err);
-+		return ERR_PTR(err);
-+	}
-+
-+	iwmr = irdma_alloc_iwmr(&umem_dmabuf->umem, pd, virt, IRDMA_MEMREG_TYPE_MEM);
-+	if (IS_ERR(iwmr)) {
-+		ib_umem_release(&umem_dmabuf->umem);
-+		return (struct ib_mr *)iwmr;
-+	}
-+
-+	err = irdma_reg_user_mr_type_mem(iwmr, access);
-+	if (err)
-+		goto error;
-+
-+	return &iwmr->ibmr;
-+
-+error:
-+	irdma_free_iwmr(iwmr);
-+	ib_umem_release(&umem_dmabuf->umem);
-+
-+	return ERR_PTR(err);
-+}
-+
- /**
-  * irdma_reg_phys_mr - register kernel physical memory
-  * @pd: ibpd pointer
-@@ -4483,6 +4525,7 @@ static const struct ib_device_ops irdma_dev_ops = {
- 	.query_port = irdma_query_port,
- 	.query_qp = irdma_query_qp,
- 	.reg_user_mr = irdma_reg_user_mr,
-+	.reg_user_mr_dmabuf = irdma_reg_user_mr_dmabuf,
- 	.req_notify_cq = irdma_req_notify_cq,
- 	.resize_cq = irdma_resize_cq,
- 	INIT_RDMA_OBJ_SIZE(ib_pd, irdma_pd, ibpd),
--- 
-2.27.0
+Best
+Wenjia
 
