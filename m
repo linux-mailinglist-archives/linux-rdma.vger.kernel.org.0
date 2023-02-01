@@ -2,111 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BA4685D80
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Feb 2023 03:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C2E685D94
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Feb 2023 03:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjBACtd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 31 Jan 2023 21:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
+        id S229615AbjBAC7n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 31 Jan 2023 21:59:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjBACtd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 31 Jan 2023 21:49:33 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DA334336
-        for <linux-rdma@vger.kernel.org>; Tue, 31 Jan 2023 18:49:31 -0800 (PST)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30VIiNJv005645;
-        Wed, 1 Feb 2023 02:49:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-transfer-encoding;
- s=corp-2022-7-12; bh=esgEXmFFWt9FbN498o94pbB7QkM207D7d1kWGEz4JrA=;
- b=jp9rTA+VEmtTEgflIioByWTN11M1mFtZ2vjLKy6tvgCaYxAyYyLgRn6MsJdS1obkfZhZ
- in2alE3SIgqRN5WMIk5DecyC1Hwb/vkrgud3bQwMvrnYbdo5/sxYYafgXEK3nMCFt8pg
- xmsllOfj+9wB5ENpyZ8eXSuRi8Wauuply8rBbD96n7GPji3d9BPrQ4woSnjkV03Nni6Z
- +kEzRgiMBooHs7NC8/rsvSwjxAhkUMQAgL9IVcQdE5l6ZnQKJA1SOsZOs8kmwV6/fv23
- LpIhpKuyrUS/m0qtYcDfum6ARSwchf55D/19NNOPBRMz98wRks8PAxU/F9ci2460+zHD oQ== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ncvm179sd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Feb 2023 02:49:30 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 3110x1xg013006;
-        Wed, 1 Feb 2023 02:49:29 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3nct5dfarq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Feb 2023 02:49:29 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3112nSWw013273;
-        Wed, 1 Feb 2023 02:49:28 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3nct5dfar6-1;
-        Wed, 01 Feb 2023 02:49:28 +0000
-From:   Jack Vogel <jack.vogel@oracle.com>
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        linux-rdma@vger.kernel.org, linux_uek_grp@oracle.com
-Subject: [PATCH] RDMA/irdma: Fix warning in utils.c build
-Date:   Tue, 31 Jan 2023 18:49:21 -0800
-Message-Id: <20230201024921.122711-1-jack.vogel@oracle.com>
-X-Mailer: git-send-email 2.39.1
+        with ESMTP id S229911AbjBAC7m (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 31 Jan 2023 21:59:42 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D7F20075
+        for <linux-rdma@vger.kernel.org>; Tue, 31 Jan 2023 18:59:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675220381; x=1706756381;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Ep8oVQHuFvJJw9b67U+oHlTOF4Iym2+duvw+Mopleug=;
+  b=mdLcxdW8pbkiMkYVvDqpvD4DPeVN2Df2tdciGJAA1VAg4l8OqYBlxcoK
+   Nt86i7jlPP+1e9QK8BeyXzatExiry/2FFve1E+9S+KmZQ1c3yrraQWFiA
+   bWIx2iJJYRgf4ROFUE4I0b1TSZa6ZfNBmOPpHR+1SPFZDgCYb0oXQNHvX
+   lY2VW9tV62z53JnPM01RmONAUTlcCcz9v6ZB/bXht3kk9qRijUcEfcc97
+   0B9kvChjFVV+XTg2aUSVPfOe7iSmb7nLDjGT7eZmQ/QP6HXtmNlyyFe7Y
+   3DX8YeyasPWewKAiMqgckJVW61oNF1JtxPEO/pql3IPo+4qEu/zjT47ob
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="311648612"
+X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; 
+   d="scan'208";a="311648612"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2023 18:59:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="807376005"
+X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; 
+   d="scan'208";a="807376005"
+Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 31 Jan 2023 18:59:39 -0800
+Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pN3LW-0004xm-1z;
+        Wed, 01 Feb 2023 02:59:38 +0000
+Date:   Wed, 01 Feb 2023 10:58:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-rc] BUILD SUCCESS
+ c956940a4ab73a87d0165e911c001dbdd2c8200f
+Message-ID: <63d9d568.WQp8Y3hehAtI5jfb%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-31_08,2023-01-31_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- adultscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2302010021
-X-Proofpoint-GUID: oHh-y3JyBOOmH1E1PPBoPkrFfGxlTJAI
-X-Proofpoint-ORIG-GUID: oHh-y3JyBOOmH1E1PPBoPkrFfGxlTJAI
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When defining CONFIG_INIT_STACK_ALL_ZERO a warning is emitted
-due to this variable in the switch, moving it into the case 
-solves the problem.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
+branch HEAD: c956940a4ab73a87d0165e911c001dbdd2c8200f  RDMA/umem: Use dma-buf locked API to solve deadlock
 
-Signed-off-by: Jack Vogel <jack.vogel@oracle.com>
----
- drivers/infiniband/hw/irdma/utils.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+elapsed time: 720m
 
-diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
-index 445e69e86409..fe6dd59fcf5b 100644
---- a/drivers/infiniband/hw/irdma/utils.c
-+++ b/drivers/infiniband/hw/irdma/utils.c
-@@ -1218,12 +1218,11 @@ int irdma_hw_modify_qp(struct irdma_device *iwdev, struct irdma_qp *iwqp,
- 			return status;
- 
- 		switch (m_info->next_iwarp_state) {
--			struct irdma_gen_ae_info ae_info;
--
- 		case IRDMA_QP_STATE_RTS:
- 		case IRDMA_QP_STATE_IDLE:
- 		case IRDMA_QP_STATE_TERMINATE:
--		case IRDMA_QP_STATE_CLOSING:
-+		case IRDMA_QP_STATE_CLOSING: {
-+			struct irdma_gen_ae_info ae_info;
- 			if (info->curr_iwarp_state == IRDMA_QP_STATE_IDLE)
- 				irdma_send_reset(iwqp->cm_node);
- 			else
-@@ -1250,7 +1249,7 @@ int irdma_hw_modify_qp(struct irdma_device *iwdev, struct irdma_qp *iwqp,
- 				irdma_handle_cqp_op(rf, cqp_request);
- 				irdma_put_cqp_request(&rf->cqp, cqp_request);
- 			}
--			break;
-+		} break;
- 		case IRDMA_QP_STATE_ERROR:
- 		default:
- 			break;
+configs tested: 84
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+x86_64                    rhel-8.3-kselftests
+x86_64                          rhel-8.3-func
+x86_64                            allnoconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+s390                             allmodconfig
+alpha                            allyesconfig
+x86_64                              defconfig
+arc                              allyesconfig
+um                           x86_64_defconfig
+powerpc                           allnoconfig
+alpha                               defconfig
+x86_64                               rhel-8.3
+s390                                defconfig
+ia64                             allmodconfig
+um                             i386_defconfig
+arc                                 defconfig
+i386                 randconfig-a001-20230130
+i386                 randconfig-a004-20230130
+s390                             allyesconfig
+i386                 randconfig-a003-20230130
+i386                 randconfig-a002-20230130
+i386                 randconfig-a005-20230130
+i386                 randconfig-a006-20230130
+x86_64                           allyesconfig
+x86_64               randconfig-a001-20230130
+x86_64               randconfig-a003-20230130
+x86_64               randconfig-a004-20230130
+x86_64               randconfig-a002-20230130
+x86_64               randconfig-a006-20230130
+x86_64               randconfig-a005-20230130
+sh                               allmodconfig
+powerpc                          allmodconfig
+mips                             allyesconfig
+i386                                defconfig
+arc                  randconfig-r043-20230129
+arm                  randconfig-r046-20230129
+x86_64                           rhel-8.3-syz
+arm                  randconfig-r046-20230130
+x86_64                         rhel-8.3-kunit
+arc                  randconfig-r043-20230130
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-bpf
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+i386                             allyesconfig
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+parisc                generic-32bit_defconfig
+m68k                          amiga_defconfig
+loongarch                           defconfig
+arm                            pleb_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                       holly_defconfig
+arm                            mps2_defconfig
+arm                      jornada720_defconfig
+i386                          randconfig-c001
+
+clang tested configs:
+x86_64                          rhel-8.3-rust
+x86_64               randconfig-a014-20230130
+x86_64               randconfig-a012-20230130
+x86_64               randconfig-a013-20230130
+x86_64               randconfig-a011-20230130
+x86_64               randconfig-a015-20230130
+x86_64               randconfig-a016-20230130
+hexagon              randconfig-r041-20230129
+riscv                randconfig-r042-20230129
+hexagon              randconfig-r045-20230130
+hexagon              randconfig-r041-20230130
+hexagon              randconfig-r045-20230129
+s390                 randconfig-r044-20230129
+riscv                randconfig-r042-20230130
+s390                 randconfig-r044-20230130
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+i386                 randconfig-a014-20230130
+i386                 randconfig-a013-20230130
+i386                 randconfig-a015-20230130
+i386                 randconfig-a016-20230130
+i386                 randconfig-a012-20230130
+i386                 randconfig-a011-20230130
+x86_64                        randconfig-k001
+
 -- 
-2.39.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
