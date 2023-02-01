@@ -2,156 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E9568659E
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Feb 2023 12:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5214268684A
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Feb 2023 15:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbjBALzz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Feb 2023 06:55:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
+        id S232115AbjBAObA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Feb 2023 09:31:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjBALzx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Feb 2023 06:55:53 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FA41BCB
-        for <linux-rdma@vger.kernel.org>; Wed,  1 Feb 2023 03:55:52 -0800 (PST)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 311AHsdM027765;
-        Wed, 1 Feb 2023 11:55:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=4TK/j9fyH6rr4tqfeeVo7CayhCbU+Um+kYIAH/VfIBo=;
- b=K1Z6jyCo+AMEWbb1Y6cJ56+uQ/U0eZd7MuO0qJUMT7Fme0IqBkDs/1L+D3N+H91cWNZG
- bAMnqGhCHOfhtXTgO4o1Xzj6uUqY+kWOMTfXSysNHxFXHIL0sJqDO+dzq7D4bDexY/qN
- PFdrL6E8lTzYmflSSeuVh0GmTZfXGZ729M1XLgJcrknqeaKWFTVRPN1bSk/qeeZ+I3B5
- 9LLVziXju7MJgUSDGtGIGLyyCxDgYP8X88scsWW7KD/e2YF/BRMSaMfbDbM5s/bLKW52
- MLZSwgdwXQDC08JB114BoBFtA+n5DnU43l6aKsSMNvPxODcMMoY4MaBCAa3culiu38Tz 2A== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nfnuh2qa9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Feb 2023 11:55:49 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3114LhfU020640;
-        Wed, 1 Feb 2023 11:55:48 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma02fra.de.ibm.com (PPS) with ESMTPS id 3ncvv6befv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Feb 2023 11:55:47 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 311Btj7g48300330
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Feb 2023 11:55:45 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A37C20043;
-        Wed,  1 Feb 2023 11:55:45 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5AD1B20040;
-        Wed,  1 Feb 2023 11:55:45 +0000 (GMT)
-Received: from rims.zurich.ibm.com (unknown [9.4.69.56])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  1 Feb 2023 11:55:45 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     jgg@nvidia.com, leonro@nvidia.com, apopple@nvidia.com,
-        Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH] RDMA/siw: Fix user page pinning accounting
-Date:   Wed,  1 Feb 2023 12:55:40 +0100
-Message-Id: <20230201115540.360353-1-bmt@zurich.ibm.com>
-X-Mailer: git-send-email 2.32.0
+        with ESMTP id S231302AbjBAOa7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Feb 2023 09:30:59 -0500
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94877C161;
+        Wed,  1 Feb 2023 06:30:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+        s=170520fj; t=1675261856; i=@fujitsu.com;
+        bh=0ZDzmk/46NIteFVAff959RyjgW31rh1zhUtYYCkV5hk=;
+        h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=esPXAnOJMYtx3QqOwNFcer1ITu+62ZTn6x+Pk5fjZVN1knR/Ju31awhxNklp4yAwB
+         aAhpvwAEI0yC3z+xjOStOjqTKJNBa3EuNrZh9uF/1uVJvyjYfo5eize+2ZNpCFCrXN
+         zvXSrgFWZA6X4QhpfuJGGZEdsrD6qCmWXZhON7N46xgKUMJKKjzisD8b1ymF2NT8TD
+         pg3qwujS/cxPnGuN1WW+XNJ04HlaVcl8LOa1x+FGIj29m7XvrepqkzovLMf0NNkoED
+         B0bsai0fBSEKoxSfOZgLkhA5ZqnqzKQV0JGS5ywEFUcyZcaXpiRJ7eg48/A6Yxkd+K
+         HdOjD12WmWnug==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNIsWRWlGSWpSXmKPExsViZ8ORqDu//Fa
+  ywaR1khY3pslZbDu9gd1i5owTjBZvN01hsZjyaymzxeVdc9gsnh3qZXFg9zj95g6Tx6ZVnWwe
+  CxumMnt83iTnsfXzbZYA1ijWzLyk/IoE1oye19MZCx7LVGxbf5+5gfGNRBcjF4eQwBZGiR23V
+  rFAOCuYJJbfe8MI4RxglHg86TJbFyMnB5uAhsS9lpuMILaIQJDE0jWvmUCKmAVaGSWONE1iBk
+  kIC3hK/L55DcxmEVCReLXkPSuIzSvgKNH59As7iC0hoCAx5eF7Zoi4oMTJmU9YQGxmAQmJgy9
+  eAMU5gGqUJGZ2x0OUV0q0fvjFAmGrSVw9t4l5AiP/LCTds5B0L2BkWsVoVpxaVJZapGtoqJdU
+  lJmeUZKbmJmjl1ilm6iXWqpbnlpcomukl1herJdaXKxXXJmbnJOil5dasokRGO4pxcoeOxif9
+  v3VO8QoycGkJMrbkHorWYgvKT+lMiOxOCO+qDQntfgQowwHh5IE784CoJxgUWp6akVaZg4w9m
+  DSEhw8SiK8hoVAad7igsTc4sx0iNQpRl2ODQ8O7GUWYsnLz0uVEuf9VwZUJABSlFGaBzcClgY
+  uMcpKCfMyMjAwCPEUpBblZpagyr9iFOdgVBLm1S8BmsKTmVcCt+kV0BFMQEfctb4JckRJIkJK
+  qoFp+s/1UYeLOwSvpHx1tm7UeHYvfjHDjeKVO82CbJcdYY2eXr5XoWv7yYxUoQmT1Z1l7uSv4
+  DzdPy03uFvBMHjVd56dj/cIvTbU0r/24syOCF0RXhnrd7s535wQmLp4f9i3G9ZqC/1PsKXtX3
+  Vuw+3p3022MnG33Ll/rv3jXVczzcapSU465TeW3zlbtfN1rT2n+wKJ8I4LAnZHF4u89T+6eYr
+  dtzA25Wc2e+p2WOnMsttvdML1+tvayf/l9z/68zj7t0Pncqm2+7OusGpEWc42DwgInXa9WUtd
+  fN3C0ETbygeFjldnGrnNeBj6at6ziwvTjy9315+d+aCq6uCCxwtrLNP0NohPutwqzaux2SE4S
+  omlOCPRUIu5qDgRANFsO4J+AwAA
+X-Env-Sender: lizhijian@fujitsu.com
+X-Msg-Ref: server-6.tower-571.messagelabs.com!1675261855!123222!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.102.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 23045 invoked from network); 1 Feb 2023 14:30:55 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+  by server-6.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 1 Feb 2023 14:30:55 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 0B959100195;
+        Wed,  1 Feb 2023 14:30:55 +0000 (GMT)
+Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223 [10.182.185.121])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id EF95F100194;
+        Wed,  1 Feb 2023 14:30:54 +0000 (GMT)
+Received: from 2754e32d63a1.localdomain (10.167.225.141) by
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.42; Wed, 1 Feb 2023 14:30:51 +0000
+From:   Li Zhijian <lizhijian@fujitsu.com>
+To:     <haris.iqbal@ionos.com>, <jinpu.wang@ionos.com>,
+        <linux-rdma@vger.kernel.org>
+CC:     <jgg@ziepe.ca>, <leon@kernel.org>, <guoqing.jiang@linux.dev>,
+        <linux-kernel@vger.kernel.org>, Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH RFC] RDMA/rtrs: Don't call kobject_del for srv_path->kobj
+Date:   Wed, 1 Feb 2023 14:30:33 +0000
+Message-ID: <1675261833-2-1-git-send-email-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XXmw6H8nrkO99xMmYMTI9DgEAGVJ1jP-
-X-Proofpoint-GUID: XXmw6H8nrkO99xMmYMTI9DgEAGVJ1jP-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-02-01_04,2023-01-31_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- phishscore=0 adultscore=0 mlxlogscore=669 impostorscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302010100
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121)
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-To avoid racing with other user memory reservations, immediately
-account full amount of pages to be pinned.
+As the mention in commmit f7452a7e96c1 ("RDMA/rtrs-srv: fix memory leak by missing kobject free"),
+it's intended to remove the kobject_del for srv_path->kobj.
 
-Fixes: 2251334dcac9 ("rdma/siw: application buffer management")
-Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-Suggested-by: Alistair Popple <apopple@nvidia.com>
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+A kernel panic will be triggered by following script
+-----------------------
+$ while true;
+do
+        echo "sessname=foo path=ip:<ip address> device_path=/dev/nvme0n1" > /sys/devices/virtual/rnbd-client/ctl/map_device
+        echo "normal" > /sys/block/rnbd0/rnbd/unmap_device
+done
+-----------------------
+The bisection pointed to commit 6af4609c18b3 ("RDMA/rtrs-srv: Fix several issues in rtrs_srv_destroy_path_files")
+at last.
+
+ rnbd_server L777: </dev/nvme0n1@foo>: Opened device 'nvme0n1'
+ general protection fault, probably for non-canonical address 0x765f766564753aea: 0000 [#1] PREEMPT SMP PTI
+ CPU: 0 PID: 3558 Comm: systemd-udevd Kdump: loaded Not tainted 6.1.0-rc3-roce-flush+ #51
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+ RIP: 0010:kernfs_dop_revalidate+0x36/0x180
+ Code: 00 00 41 55 41 54 55 53 48 8b 47 68 48 89 fb 48 85 c0 0f 84 db 00 00 00 48 8b a8 60 04 00 00 48 8b 45 30 48 85 c0 48 0f 44 c5 <4c> 8b 60 78 49 81 c4 d8 00 00 00 4c 89 e7 e8 b7 78 7b 00 8b 05 3d
+ RSP: 0018:ffffaf1700b67c78 EFLAGS: 00010206
+ RAX: 765f766564753a72 RBX: ffff89e2830849c0 RCX: 0000000000000000
+ RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff89e2830849c0
+ RBP: ffff89e280361bd0 R08: 0000000000000000 R09: 0000000000000001
+ R10: 0000000000000065 R11: 0000000000000000 R12: ffff89e2830849c0
+ R13: ffff89e283084888 R14: d0d0d0d0d0d0d0d0 R15: 2f2f2f2f2f2f2f2f
+ FS:  00007f13fbce7b40(0000) GS:ffff89e2bbc00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007f93e055d340 CR3: 0000000104664002 CR4: 00000000001706f0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  <TASK>
+  lookup_fast+0x7b/0x100
+  walk_component+0x21/0x160
+  link_path_walk.part.0+0x24d/0x390
+  path_openat+0xad/0x9a0
+  do_filp_open+0xa9/0x150
+  ? lock_release+0x13c/0x2e0
+  ? _raw_spin_unlock+0x29/0x50
+  ? alloc_fd+0x124/0x1f0
+  do_sys_openat2+0x9b/0x160
+  __x64_sys_openat+0x54/0xa0
+  do_syscall_64+0x3b/0x90
+  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+ RIP: 0033:0x7f13fc9d701b
+ Code: 25 00 00 41 00 3d 00 00 41 00 74 4b 64 8b 04 25 18 00 00 00 85 c0 75 67 44 89 e2 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 91 00 00 00 48 8b 54 24 28 64 48 2b 14 25
+ RSP: 002b:00007ffddf242640 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+ RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f13fc9d701b
+ RDX: 0000000000080000 RSI: 00007ffddf2427c0 RDI: 00000000ffffff9c
+ RBP: 00007ffddf2427c0 R08: 00007f13fcc5b440 R09: 21b2131aa64b1ef2
+ R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000080000
+ R13: 00007ffddf2427c0 R14: 000055ed13be8db0 R15: 0000000000000000
+
+Fixes: 6af4609c18b3 ("RDMA/rtrs-srv: Fix several issues in rtrs_srv_destroy_path_files")
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- drivers/infiniband/sw/siw/siw_mem.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-index b2b33dd3b4fa..f51ab2ccf151 100644
---- a/drivers/infiniband/sw/siw/siw_mem.c
-+++ b/drivers/infiniband/sw/siw/siw_mem.c
-@@ -398,7 +398,7 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+index da8e205ce331..7fe905424109 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+@@ -313,7 +313,6 @@ void rtrs_srv_destroy_path_files(struct rtrs_srv_path *srv_path)
  
- 	mlock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
- 
--	if (num_pages + atomic64_read(&mm_s->pinned_vm) > mlock_limit) {
-+	if (atomic64_add_return(num_pages, &mm_s->pinned_vm) > mlock_limit) {
- 		rv = -ENOMEM;
- 		goto out_sem_up;
+ 	if (srv_path->kobj.state_in_sysfs) {
+ 		sysfs_remove_group(&srv_path->kobj, &rtrs_srv_path_attr_group);
+-		kobject_del(&srv_path->kobj);
+ 		kobject_put(&srv_path->kobj);
  	}
-@@ -411,30 +411,27 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
- 		goto out_sem_up;
- 	}
- 	for (i = 0; num_pages; i++) {
--		int got, nents = min_t(int, num_pages, PAGES_PER_CHUNK);
--
--		umem->page_chunk[i].plist =
-+		int nents = min_t(int, num_pages, PAGES_PER_CHUNK);
-+		struct page **plist =
- 			kcalloc(nents, sizeof(struct page *), GFP_KERNEL);
--		if (!umem->page_chunk[i].plist) {
-+
-+		if (!plist) {
- 			rv = -ENOMEM;
- 			goto out_sem_up;
- 		}
--		got = 0;
-+		umem->page_chunk[i].plist = plist;
- 		while (nents) {
--			struct page **plist = &umem->page_chunk[i].plist[got];
--
- 			rv = pin_user_pages(first_page_va, nents, foll_flags,
- 					    plist, NULL);
- 			if (rv < 0)
- 				goto out_sem_up;
  
- 			umem->num_pages += rv;
--			atomic64_add(rv, &mm_s->pinned_vm);
- 			first_page_va += rv * PAGE_SIZE;
-+			plist += rv;
- 			nents -= rv;
--			got += rv;
-+			num_pages -= rv;
- 		}
--		num_pages -= got;
- 	}
- out_sem_up:
- 	mmap_read_unlock(mm_s);
-@@ -442,6 +439,10 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
- 	if (rv > 0)
- 		return umem;
- 
-+	/* Adjust accounting for pages not pinned */
-+	if (num_pages)
-+		atomic64_sub(num_pages, &mm_s->pinned_vm);
-+
- 	siw_umem_release(umem, false);
- 
- 	return ERR_PTR(rv);
 -- 
-2.32.0
+1.8.3.1
 
