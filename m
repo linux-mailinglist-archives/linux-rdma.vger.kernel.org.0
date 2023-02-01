@@ -2,94 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1632686E87
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Feb 2023 19:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F49686FFF
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Feb 2023 21:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbjBAS7I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Feb 2023 13:59:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
+        id S231434AbjBAUph (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Feb 2023 15:45:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjBAS7H (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Feb 2023 13:59:07 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF1A7EDC
-        for <linux-rdma@vger.kernel.org>; Wed,  1 Feb 2023 10:59:00 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id o13so18214128pjg.2
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Feb 2023 10:59:00 -0800 (PST)
+        with ESMTP id S230462AbjBAUp2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Feb 2023 15:45:28 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966BB7B79B
+        for <linux-rdma@vger.kernel.org>; Wed,  1 Feb 2023 12:45:05 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id h9so11102800plf.9
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Feb 2023 12:45:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/I40ELb106YFS8wwtfslMk8uZPeQ5jjh6o56o75nrrs=;
-        b=YJLXgF0UHcNDB72PALVah0JjggZXDwiKJ01M1uMpiMF7MvTGejiqJMprhXGXygT8au
-         dUIXc4xS/Mvjpc/1e5kErUF8//Q+i8cYaH06tbkhbfMG9/pd18qtTBvL8bFCNro2dRJl
-         W1AM+psa8nnyDeHjaLsG7nNBkTj9tyMFgAa8Q=
+        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uNvCK3lGeTOcM8o4OPUSpmtkSBzGVa3Rhypkk5AEF9Y=;
+        b=AmGy47eD222meuKCcdai+022MIL04vUN4jNKbnY9ocB7PB/7Ob18qUPW3SqEdR5JSt
+         iXHE9lWzrnUQbGFa/gJiDusLFfZvZP9dWV8S5tjE/iwfQJMAZEqjwJUYHCDvjheRN5ym
+         ka4ivI/QfzIfpMZKi/sOV+y+dkuNynYBSX8O0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/I40ELb106YFS8wwtfslMk8uZPeQ5jjh6o56o75nrrs=;
-        b=RCbZTK55b/bxOWgKDFRyHAFuim0vGr8lSlabLoRn4zf6MlrcyjbmNTNupxHTv+nAEp
-         h5xbCNIkDQGQzuUd1W5Klniop7S/TmfHxpBCt4o2kIYNXccuvrviEOLUkZAqx8cR7wjo
-         EK6iI/jpsZWv/Y0Zpjq7/Sg7OgDHNJB5qQmtwK/USve/FkNR5ZIYcHit+P9PxREeEg+W
-         2EDEejw5Z+MjXNRxPJLN6gFAXSMymzFcsTy+dHV+7vnrMrDlZiuAz7YyuL/yccYBD3QC
-         blqzLxuBjdIudzFgyen1/RK0V8Z2bqcIsd2XZt9rlE9rtXAfbQ9ypCfFZgSFUZ2yrDiu
-         6jZQ==
-X-Gm-Message-State: AO0yUKXKISlnk7kYfFyRpmsMYFWmUQ27dtfQm2vyJtos8Cl0eEHO8/B+
-        oh25UdnBJp21vZwn1i1v+iHUxZzraOfmNmgNVVWC31/tbfSnXg==
-X-Google-Smtp-Source: AK7set/oVJLgezDKGlaOyFb2Gp5ryHlmcSfxNB9qz+tx1XizI+Tdea6qIplSx1HftmwFjpLllgiUb51Ir6eWB7iTnAI=
-X-Received: by 2002:a17:902:f54b:b0:196:1c45:6fa6 with SMTP id
- h11-20020a170902f54b00b001961c456fa6mr824547plf.25.1675277939855; Wed, 01 Feb
- 2023 10:58:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20230131052557.99119-1-ajit.khaparde@broadcom.com> <20230201105610.709139bf@kernel.org>
-In-Reply-To: <20230201105610.709139bf@kernel.org>
+        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uNvCK3lGeTOcM8o4OPUSpmtkSBzGVa3Rhypkk5AEF9Y=;
+        b=NjH9IYxxgsC6ThOx40GbMGLfGhPJx2XtwkCcL+H6Ttr4ZberWlzi90ZfrPUdmF//o2
+         PvBVnMLcSoeMiUTLpQZ81txv3v8fPd4h7KkGsBOAVqmhFqcjJkkdCwnKYBICwO5zeaan
+         cPiR8Z7E94eVMjuhMZOCiwqf5jGswoQcVMq2Rf5jXExfTPemsWE66w3VjKSHe4HSE38f
+         UrQ7ouBP+TcDe/T8LQLynjJcOeTXdoyC92iQ1vXnm7lZRCboloJ+FG+Lq06pyP19IPzh
+         biDEPqiaX85AAHlZlDB4ViAxuoLo+X0orh4jof+TdKUWV8xvR1XHePUZVXXWV+Fxpvfl
+         9UAw==
+X-Gm-Message-State: AO0yUKVqR2W49y/ocO7IMZhu9CRJNR4szI6TY+w3rIdb7y3Fp82nu1cI
+        ZzLcIN7b0FyZbeZ/hNK6ZjNFDYg4NL8YlgYb
+X-Google-Smtp-Source: AK7set+TuT7DT9hSoePQ+pHx9KtX96KVLsrNnRxFmt5ZKYd3y0acK3W5V2oSyiKPsMQQn265iGtTFA==
+X-Received: by 2002:a17:903:214d:b0:196:8292:e879 with SMTP id s13-20020a170903214d00b001968292e879mr3420338ple.1.1675284304967;
+        Wed, 01 Feb 2023 12:45:04 -0800 (PST)
+Received: from C02GC2QQMD6T.wifi.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id w9-20020a1709027b8900b0019682e27995sm6485795pll.223.2023.02.01.12.45.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Feb 2023 12:45:03 -0800 (PST)
 From:   Ajit Khaparde <ajit.khaparde@broadcom.com>
-Date:   Wed, 1 Feb 2023 10:58:43 -0800
-Message-ID: <CACZ4nhvFL4k6k85wEmgCgUiaQ-npf_=PKqE-+PC-GpTK4p8WOA@mail.gmail.com>
-Subject: Re: [PATCH net-next v9 0/8] Add Auxiliary driver support
-To:     Jakub Kicinski <kuba@kernel.org>
+To:     ajit.khaparde@broadcom.com
 Cc:     andrew.gospodarek@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        michael.chan@broadcom.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, selvin.xavier@broadcom.com,
-        gregkh@linuxfoundation.org
+        edumazet@google.com, jgg@ziepe.ca, kuba@kernel.org,
+        leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, michael.chan@broadcom.com,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        selvin.xavier@broadcom.com, gregkh@linuxfoundation.org
+Subject: [PATCH net-next v10 0/8] Add Auxiliary driver support
+Date:   Wed,  1 Feb 2023 12:44:52 -0800
+Message-Id: <20230201204500.19420-1-ajit.khaparde@broadcom.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000086a3e205f3a80a87"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        boundary="000000000000eb4a9505f3a98531"
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000086a3e205f3a80a87
-Content-Type: text/plain; charset="UTF-8"
+--000000000000eb4a9505f3a98531
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 1, 2023 at 10:56 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Mon, 30 Jan 2023 21:25:49 -0800 Ajit Khaparde wrote:
-> > The following are changes since commit 90e8ca0abb05ada6c1e2710eaa21688dafca26f2
-> >   Merge branch 'devlink-next'
-> > and are available in the git repository at:
-> >   https://github.com/ajitkhaparde1/net-next/tree/aux-bus-v9
->
-> This is not a valid pull URL, try running git pull on it yourself.
-Let me do that.
+Add auxiliary device driver for Broadcom devices.
+The bnxt_en driver will register and initialize an aux device
+if RDMA is enabled in the underlying device.
+The bnxt_re driver will then probe and initialize the
+RoCE interfaces with the infiniband stack.
 
-> Also the tree must be based on commits in Linus's tree if you want
-> both us and RDMA to pull it.
+We got rid of the bnxt_en_ops which the bnxt_re driver used to
+communicate with bnxt_en.
+Similarly  We have tried to clean up most of the bnxt_ulp_ops.
+In most of the cases we used the functions and entry points provided
+by the auxiliary bus driver framework.
+And now these are the minimal functions needed to support the functionality.
 
-OK. I will rebase against Linus's tree and send it again.
-While I am at it, I will address the last comment from Leon as well.
+We will try to work on getting rid of the remaining if we find any
+other viable option in future.
 
-Thanks
+v1->v2:
+- Incorporated review comments including usage of ulp_id &
+  complex function indirections.
+- Used function calls provided by the auxiliary bus interface
+  instead of proprietary calls.
+- Refactor code to remove ROCE driver's access to bnxt structure.
 
---00000000000086a3e205f3a80a87
+v2->v3:
+- Addressed review comments including cleanup of some unnecessary wrappers
+- Fixed warnings seen during cross compilation
+
+v3->v4:
+- Cleaned up bnxt_ulp.c and bnxt_ulp.h further
+- Removed some more dead code
+- Sending the patchset as a standalone series
+
+v4->v5:
+- Removed the SRIOV config callback which bnxt_en driver was calling into
+  bnxt_re driver.
+- Removed excessive checks for rdev and other pointers.
+
+v5->v6:
+- Removed excessive checks for dev and other pointers
+- Remove runtime interrupt vector allocation. bnxt_en preallocates
+interrupt vectors for bnxt_re to use.
+
+v6->v7:
+- Removed incorrect usage of inline
+- Updated Kconfig to select AUXILIARY BUS support
+- Addressed various comments including removal of unnecessary forward
+  declaration, using static functions where possible, unnecessary jump,
+  cleanup logic, etc..
+- Added Leon's Reviewed-by, to the commit log in the patches, from
+  previous version.
+
+v7->v8:
+- Addressed various comments to remove unnecessary check for id, removed
+  setting pointer to NULL after free, renamed private pointers to avoid
+  confusing them with the auxiliary device names and refactored some
+  code accordingly.
+- Auxiliary device will be released through auxiliary_device_uninit();
+
+v8->v9:
+- Fixed the cleanup code to use the auxiliary driver release function to
+  free allocated memory. This allows the cleanup to be performed once
+  the device reference count drops to 0.
+- Refactored the code to address the above.
+
+v9->v10:
+- Fixed residual comments like useless NULL assignments and variable
+  initializations.
+
+Commit message uses Leon's Reviewed-by from earlier version.
+
+Please apply. Thanks.
+
+The following are changes since commit c0b67534c95c537f7a506a06b98e5e85d72e2b7d:
+  Merge tag 'cgroup-for-6.2-fixes' in Linus's tree
+and are available in the git repository at:
+  https://github.com/ajitkhaparde1/linux aux-bus-v10
+for you to fetch changes upto 2daf6059f4cf2cd3f5f09e6beb4bba3e3a89b977:
+   bnxt_en: Remove runtime interrupt vector allocation
+
+----
+
+Ajit Khaparde (7):
+  bnxt_en: Add auxiliary driver support
+  RDMA/bnxt_re: Use auxiliary driver interface
+  bnxt_en: Remove usage of ulp_id
+  bnxt_en: Use direct API instead of indirection
+  bnxt_en: Use auxiliary bus calls over proprietary calls
+  RDMA/bnxt_re: Remove the sriov config callback
+  bnxt_en: Remove runtime interrupt vector allocation
+
+Hongguang Gao (1):
+  bnxt_en: Remove struct bnxt access from RoCE driver
+
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h       |  10 +-
+ drivers/infiniband/hw/bnxt_re/main.c          | 635 +++++++-----------
+ drivers/net/ethernet/broadcom/Kconfig         |   1 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  10 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h     |   8 +
+ .../net/ethernet/broadcom/bnxt/bnxt_sriov.c   |   7 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 475 ++++++-------
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |  51 +-
+ 8 files changed, 462 insertions(+), 735 deletions(-)
+
+-- 
+2.37.1 (Apple Git-137.1)
+
+
+--000000000000eb4a9505f3a98531
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -160,13 +250,13 @@ KlMYg/Deg9xo3wddCqQIsztHSkR4XaANdn+dbLRQpctZ13BY1lim4uz5bYn3M0IxyZWkQ1JuPHCK
 aRJv0SfR88PoI4RB7NCEHqFwARTj1KvFPQi8pK/YISFydZYbZrxQdyWDidqm4wSuJfpE6i0cWvCd
 u50xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
 MTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwM2Vrj
-4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGbauHvHItqBNitxqHKK
-4796xu1Qp7yqRaG+JJi3z3GgMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
-MQ8XDTIzMDIwMTE4NTkwMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
+4nZK0WWosNswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKVFmWeSnQZ/UYpH9YIx
+ij3re/xb6FU9cS8Nq3FqpebfMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkF
+MQ8XDTIzMDIwMTIwNDUwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUD
 BAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsG
-CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCBaowNoGIJrYSE+uO7BTzMvqmvqrdRWPZRC0wA
-XAURj0b3NLwA0ZRIsGJuyZUTQT/MZ+doyUOkSdtGjFVc79VJNN6asGHvXY8nB5BQPqItM9CzEOHt
-L91to2QCynwKjbphxKc7uV7TwYOFbQH6YbEqc7EtkV2B0e92y+50HA97NuDpFME1CcluNI1wEeu1
-WorAPfEQ+Yh6ss/wWz0xgaaqTD5SOdUIep7BCISzOzXRkdeAAjo3n0CkIjPsrYyXknp5shoDGF2Z
-lsVq+QEJkPhA7Mxk/r632D68g0A1YkCINs+Ea2cc1yORcO7z70pkoUMXSLFqO62bkYZDH7qTpxAM
---00000000000086a3e205f3a80a87--
+CWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCizJnjYPLgFWgrK/IKXGg+dBJh46vxr4FmKYgC
+R/Sukg16GaQg/55KDK9pDetzvwB+9y7i8EAAjhI3BXeaPQFYtyEsl44aIRg1i4yiYmEWfgu8u8Dp
+Nb3NJ3k9GUZ0RPXUrHm7AF3WMFhq54bU0zpFKqnFBOCXN/hSIi0TtPRe4C5myy3i3Q9GNTVejNs9
+e23+L3pgM2SJKovxm2aoseT2RSBaYxMrjdZAryPMIMEaJOc4B5+KzwxwhyhmgbZUIjoKkdRVsguD
+LMV0aIUQPSPA1dmxQ6PE/V0FFFD9i9dbS5BDkhVHJu3bVNIoNK675Vt9JuXPI/GgnglJ9SVgYfGj
+--000000000000eb4a9505f3a98531--
