@@ -2,95 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 404C2688626
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 19:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A1168862E
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 19:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbjBBSMd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Feb 2023 13:12:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
+        id S231635AbjBBSQC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Feb 2023 13:16:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjBBSMc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 13:12:32 -0500
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DB36DB24
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Feb 2023 10:12:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675361551; x=1706897551;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=avOGKTAZFPdlrFPfSEf/yFHiwgaOh5IwIB/x5IRWKQA=;
-  b=k6IhI7+BpWrFMr7kCg90rFTwisdk+6wt6kx9nF3zSWGG1EOIb1/C9C6g
-   jNwJuQCuGHO98/xsqQxedeckNfLCUR6Zjg0euc1ssfrTQCYoFSMZIrnOM
-   f9NmIhMdMn2v87BlfzDZtm1VH+j83wHMmbR+jLsMK+ey4mRVnULkOgvo4
-   gvMnInKSz4a48qN/XTDj/ilv6v9Iob9wsw/EDIBTHv14GMcFz95hh4HPm
-   bYaWXnD+4CCodJXiguut1cEq70HvW4zotLMBt/XYkNMn0xxVzrhqUrLlL
-   b0VVZ7HJFm6v1Cg3HFX28qKGm4tkbqiSck7KU9LK7Cg/r5v7I0LuOursA
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10609"; a="393113566"
-X-IronPort-AV: E=Sophos;i="5.97,268,1669104000"; 
-   d="scan'208";a="393113566"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2023 10:12:30 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10609"; a="994198650"
-X-IronPort-AV: E=Sophos;i="5.97,268,1669104000"; 
-   d="scan'208";a="994198650"
-Received: from sindhude-mobl.amr.corp.intel.com ([10.255.34.164])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2023 10:12:29 -0800
-From:   Sindhu Devale <sindhu.devale@intel.com>
-To:     jgg@nvidia.com, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, shiraz.saleem@intel.com,
-        mustafa.ismail@intel.com, Sindhu Devale <sindhu.devale@intel.com>
-Subject: [PATCH for-rc] RDMA/irdma: Cap MSIX used to online CPUs + 1
-Date:   Thu,  2 Feb 2023 12:12:11 -0600
-Message-Id: <20230202181211.1123-1-sindhu.devale@intel.com>
-X-Mailer: git-send-email 2.32.0
+        with ESMTP id S231731AbjBBSQB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 13:16:01 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830D55356D;
+        Thu,  2 Feb 2023 10:15:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D75161C83;
+        Thu,  2 Feb 2023 18:15:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76F91C433D2;
+        Thu,  2 Feb 2023 18:15:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675361758;
+        bh=G3bxvNOGrAnML7LXFiqFZvt5gM1/U0tbusvEZ2bH+4g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DhIKRMjatY7cUFvhzm215hYxGrYmtVxvvFEi36tclahYz8fizJzVgFlz5YP+GMyfc
+         f7Q34x2cxvpcYpPq9GDDNOS3IaM9ckMhpAFosSlxz4YsBGdMefp/sjwcGulhZCexRk
+         U1nzr1mr509B2qQdUN+0VnpOjx6xuov4jqAmCqiDxladbuahEsbhuW27CVbbNOwZhf
+         ixVkb6K/cmpp+Zz7AGf0ABOkDFYXI2hXVFdb+lrtTPvRwNvHMtgucroH9WPTZ53K7A
+         9yXS+hIKRv0fSuVIyKNukQeT1VqB/o4C/yHbSTtA2Fo1cVAzPMz5t77ElwJX2x5nUF
+         6goerugxDbQZQ==
+Date:   Thu, 2 Feb 2023 10:15:57 -0800
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: pull-request: mlx5-next 2023-01-24 V2
+Message-ID: <Y9v93cy0s9HULnWq@x130>
+References: <20230126230815.224239-1-saeed@kernel.org>
+ <Y9tqQ0RgUtDhiVsH@unreal>
+ <20230202091312.578aeb03@kernel.org>
+ <Y9vvcSHlR5PW7j6D@nvidia.com>
+ <20230202092507.57698495@kernel.org>
+ <Y9v2ZW3mahPBXbvg@nvidia.com>
+ <20230202095453.68f850bc@kernel.org>
+ <Y9v61gb3ADT9rsLn@unreal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <Y9v61gb3ADT9rsLn@unreal>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mustafa Ismail <mustafa.ismail@intel.com>
+On 02 Feb 20:03, Leon Romanovsky wrote:
+>On Thu, Feb 02, 2023 at 09:54:53AM -0800, Jakub Kicinski wrote:
+>> On Thu, 2 Feb 2023 13:44:05 -0400 Jason Gunthorpe wrote:
+>> > > You don't remember me trying to convince you to keep the RoCE stuff
+>> > > away from our open source IPsec implementation?
+>> >
+>> > Huh? What does this:
+>> >
+>> > https://lore.kernel.org/all/cover.1673960981.git.leon@kernel.org/
+>> >
+>> > Have to do with IPsec?
+>>
+>> Dunno. But I don't know what it has to do with the PR we're commenting
+>> on either..
+>
+>It has to do, because I need shared branch to put net/mlx5 patches from
+>that "special keys" series and I patiently waited for any response.
+>
 
-The irdma driver can use a maximum number of msix
-vectors equal to num_online_cpus() + 1 and the Kernel
-warning stack below is shown if that number is exceeded.
-The kernel throws a warning as the driver tries to update
-the affinity hint with a CPU mask greater than the max CPU IDs.
-Fix this by capping the MSIX vectors to num_online_cpus() + 1.
+Hi Jakub, in a nutshell, my PR adds the steering rules needed for ipsec
+RoCE purely in mlx5 only, ipsec tables are shared between netdev and rdma
+It's a reality that mlx5_core is serving both netdev and rdma, it's not
+about who has the keys for approving, it's that the fact the mlx5_core is
+not just a netdev driver, this is true for all vendors who serve both
+worlds it's not just mlx5.
 
-kernel: WARNING: CPU: 7 PID: 23655 at include/linux/cpumask.h:106 irdma_cfg_ceq_vector+0x34c/0x3f0 [irdma]
-kernel: RIP: 0010:irdma_cfg_ceq_vector+0x34c/0x3f0 [irdma]
-kernel: Call Trace:
-kernel: irdma_rt_init_hw+0xa62/0x1290 [irdma]
-
-Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
----
- drivers/infiniband/hw/irdma/hw.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-index ab246447520b..2e1e2bad0401 100644
---- a/drivers/infiniband/hw/irdma/hw.c
-+++ b/drivers/infiniband/hw/irdma/hw.c
-@@ -483,6 +483,8 @@ static int irdma_save_msix_info(struct irdma_pci_f *rf)
- 	iw_qvlist->num_vectors = rf->msix_count;
- 	if (rf->msix_count <= num_online_cpus())
- 		rf->msix_shared = true;
-+	else if (rf->msix_count > num_online_cpus() + 1)
-+		rf->msix_count = num_online_cpus() + 1;
- 
- 	pmsix = rf->msix_entries;
- 	for (i = 0, ceq_idx = 0; i < rf->msix_count; i++, iw_qvinfo++) {
--- 
-2.27.0
 
