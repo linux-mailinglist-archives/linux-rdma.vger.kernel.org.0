@@ -2,57 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F26688554
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 18:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63692688574
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 18:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbjBBRZ0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Feb 2023 12:25:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
+        id S231748AbjBBRdp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Feb 2023 12:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232585AbjBBRZQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 12:25:16 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D6974A4F;
-        Thu,  2 Feb 2023 09:25:11 -0800 (PST)
+        with ESMTP id S229916AbjBBRdo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 12:33:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A0C74A44;
+        Thu,  2 Feb 2023 09:33:40 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D03A9B82761;
-        Thu,  2 Feb 2023 17:25:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 074A5C433D2;
-        Thu,  2 Feb 2023 17:25:07 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B99A8B82768;
+        Thu,  2 Feb 2023 17:33:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E4DCC4339B;
+        Thu,  2 Feb 2023 17:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675358708;
-        bh=aFUKxEYj2bSJTHl1ZIDwksbFFAUrelSXYfcj1KzrkGk=;
+        s=k20201202; t=1675359217;
+        bh=jWpsupyz5OCnrBf7xdkbmxZaIA2WX22mnR+/HQKkP3Y=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G8zOcswmsshx1dc+j9LHmPe5OPyl2J/FiRH4MSLGIT3jr292a2xnkB5c/0EC/XR13
-         lb+rcGN8LFuXAEga3ZDN2uWH3fQRgNR8/R+hfTq/X4X5DKnjF4J5cLPpUQTkM23QQz
-         uydTtWtS5NArhae3ImpaIeQCAOhqbf+DFmzLpzvfcr10QlTLaWSh3JRMNOgPZG12U0
-         K1R2APOPAn3LQ1k3orC6wcdXU3cTD2tW6xA01V3LZHX0cfU0lCjs0g0ygptuWLEQfb
-         PnT2f/1mVXs+kNZecJ/rgTPJ+euHd+Td1obZngRhKpsRvIVKycueJawpUWGnVuAKeo
-         82wCq9IAatQnw==
-Date:   Thu, 2 Feb 2023 09:25:07 -0800
+        b=OhFq/JiPBa5ABY88fWTVqNuxugI2btGa9Q5645hYmS+5CqgOej38MY46FshP77q6c
+         a+2pJJOASsY7M5EEWV7JsOXUUmECPRfdPUTrBoj6mOP9yUku06jpHWWfZoS6Z+SI4G
+         eW3PD49Bt5ogYj2wxo3NYgvisBi0nOl1/0E+4KHyFCp54Ku048DIpn0U/8iQImwsqw
+         O2JAdJptdKps/x3oJGFEvouviGFitVu61LIphCLiECS2w5OUnAx6VBuUp2pK0fqLj0
+         gMXbTdW2jxJENrA7x2ncpRXj4h5KW9zAZZUeUDt75Qpwr7FgHkrRdNm9o11dT8+wp5
+         AiN2tQ2lPWnJg==
+Date:   Thu, 2 Feb 2023 09:33:35 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Saeed Mahameed <saeed@kernel.org>,
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Tariq Toukan <ttoukan.linux@gmail.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        linux-kernel@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: pull-request: mlx5-next 2023-01-24 V2
-Message-ID: <20230202092507.57698495@kernel.org>
-In-Reply-To: <Y9vvcSHlR5PW7j6D@nvidia.com>
-References: <20230126230815.224239-1-saeed@kernel.org>
-        <Y9tqQ0RgUtDhiVsH@unreal>
-        <20230202091312.578aeb03@kernel.org>
-        <Y9vvcSHlR5PW7j6D@nvidia.com>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Barry Song <baohua@kernel.org>,
+        Ben Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Haniel Bristot de Oliveira <bristot@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Lafreniere <peter@n8pjl.ca>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RESEND 0/9] sched: cpumask: improve on
+ cpumask_local_spread() locality
+Message-ID: <20230202093335.43586ecf@kernel.org>
+In-Reply-To: <20230130122206.3b55a0a7@kernel.org>
+References: <20230121042436.2661843-1-yury.norov@gmail.com>
+        <4dc2a367-d3b1-e73e-5f42-166e9cf84bac@gmail.com>
+        <xhsmhv8kxh8tk.mognet@vschneid.remote.csb>
+        <4fa5d53d-d614-33b6-2d33-156281420507@gmail.com>
+        <20230130122206.3b55a0a7@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,27 +86,16 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 2 Feb 2023 13:14:25 -0400 Jason Gunthorpe wrote:
-> On Thu, Feb 02, 2023 at 09:13:12AM -0800, Jakub Kicinski wrote:
-> > On Thu, 2 Feb 2023 09:46:11 +0200 Leon Romanovsky wrote:  
-> > > I don't see it in net-next yet, can you please pull it?
-> > > 
-> > > There are outstanding RDMA patches which depend on this shared branch.
-> > > https://lore.kernel.org/all/cover.1673960981.git.leon@kernel.org  
+On Mon, 30 Jan 2023 12:22:06 -0800 Jakub Kicinski wrote:
+> On Sun, 29 Jan 2023 10:07:58 +0200 Tariq Toukan wrote:
+> > > Peter/Ingo, any objections to stashing this in tip/sched/core?  
 > > 
-> > FWIW I'm not nacking this but I'm not putting my name on the merge,
-> > either. You need to convince one of the other netdev maintainers to
-> > pull.  
+> > Can you please look into it? So we'll have enough time to act (in 
+> > case...) during this kernel.
+> > 
+> > We already missed one kernel...  
 > 
-> What is the issue with this PR?
+> We really need this in linux-next by the end of the week. PTAL.
 
-You don't remember me trying to convince you to keep the RoCE stuff
-away from our open source IPsec implementation?
-
-> It looks all driver internal to me?
-
-Typical in a proprietary world, like RDMA, isn't it?
-
-
-I'm just letting you know why I'm not merging it. I'm not the only one
-with the keys, find someone else to convince, please.
+Peter, could you please take a look? Linux doesn't have an API for
+basic, common sense IRQ distribution on AMD systems. It's important :(
