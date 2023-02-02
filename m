@@ -2,338 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8293687758
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 09:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F166877AD
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 09:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbjBBI1I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Feb 2023 03:27:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
+        id S229801AbjBBIj1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Feb 2023 03:39:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbjBBI1F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 03:27:05 -0500
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98DCCC17;
-        Thu,  2 Feb 2023 00:27:03 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vak2b.G_1675326421;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vak2b.G_1675326421)
-          by smtp.aliyun-inc.com;
-          Thu, 02 Feb 2023 16:27:01 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        "D. Wythe" <alibuda@linux.alibaba.com>
-Subject: [net-next v7 4/4] net/smc: replace mutex rmbs_lock and sndbufs_lock with rw_semaphore
-Date:   Thu,  2 Feb 2023 16:26:42 +0800
-Message-Id: <1675326402-109943-5-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1675326402-109943-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1675326402-109943-1-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231681AbjBBIj0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 03:39:26 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D137C316;
+        Thu,  2 Feb 2023 00:39:24 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5F0E2B82527;
+        Thu,  2 Feb 2023 08:39:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87164C43442;
+        Thu,  2 Feb 2023 08:39:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675327162;
+        bh=wzKUkVCJCO/oGRtpBDbUTJ2aEswSrBNW52fyN0531Mo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g0XTxONHSH6MXmd8eSJ04/p4mUWkxXkAUwphC4hf80smxS4hj7ceyDD0hrU6Ht38l
+         vb6aA0jpVZqJd3oOcQ4EkdzfV0+7RPNQPD3imRPqYZqY0j7wD/qlbuFxI42m/vG0aL
+         /fD28MeCB0EZ+HwyHZ1f2NvuOecEYjnPZDeIiBJz5KxTLfViZYFNdRmvAdvJY0z7ua
+         FaQO539lJO7vrYULzNKmtmV+Pzy2iORM8bHxTmelaN+/o+EjhO76gu5EzJ1JX9yCio
+         1reXKM854INH0tgwFy4m0TxUDiGZimds2YrNBNLDMd8+RXh1uLSSYVqTCTruJRin38
+         Xorlf/5zjsP8w==
+Date:   Thu, 2 Feb 2023 10:39:17 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Dan Carpenter <error27@gmail.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/mana_ib: Prevent array underflow in
+ mana_ib_create_qp_raw()
+Message-ID: <Y9t2tfNHhrz2uKBK@unreal>
+References: <Y8/3Vn8qx00kE9Kk@kili>
+ <Y9JThu/RSCGKAnTH@unreal>
+ <Y9JdXfJvGhrJeLF7@kadam>
+ <Y9JvrfOezthLscEP@unreal>
+ <PH7PR21MB3263241A29DFFDD72A30B888CECC9@PH7PR21MB3263.namprd21.prod.outlook.com>
+ <Y9ZYC/4fEJoqV/1S@unreal>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y9ZYC/4fEJoqV/1S@unreal>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Sun, Jan 29, 2023 at 01:27:07PM +0200, Leon Romanovsky wrote:
+> On Fri, Jan 27, 2023 at 06:41:51AM +0000, Long Li wrote:
+> > > Subject: Re: [PATCH] RDMA/mana_ib: Prevent array underflow in
+> > > mana_ib_create_qp_raw()
+> > > 
+> > > On Thu, Jan 26, 2023 at 02:00:45PM +0300, Dan Carpenter wrote:
+> > > > On Thu, Jan 26, 2023 at 12:18:46PM +0200, Leon Romanovsky wrote:
+> > > > > On Tue, Jan 24, 2023 at 06:20:54PM +0300, Dan Carpenter wrote:
+> > > > > > The "port" comes from the user and if it is zero then the:
+> > > > > >
+> > > > > > 	ndev = mc->ports[port - 1];
+> > > > > >
+> > > > > > assignment does an out of bounds read.  I have changed the if
+> > > > > > statement to fix this and to mirror how it is done in
+> > > > > > mana_ib_create_qp_rss().
+> > > > > >
+> > > > > > Fixes: 0266a177631d ("RDMA/mana_ib: Add a driver for Microsoft
+> > > > > > Azure Network Adapter")
+> > > > > > Signed-off-by: Dan Carpenter <error27@gmail.com>
+> > > > > > ---
+> > > > > >  drivers/infiniband/hw/mana/qp.c | 2 +-
+> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/drivers/infiniband/hw/mana/qp.c
+> > > > > > b/drivers/infiniband/hw/mana/qp.c index ea15ec77e321..54b61930a7fd
+> > > > > > 100644
+> > > > > > --- a/drivers/infiniband/hw/mana/qp.c
+> > > > > > +++ b/drivers/infiniband/hw/mana/qp.c
+> > > > > > @@ -289,7 +289,7 @@ static int mana_ib_create_qp_raw(struct ib_qp
+> > > > > > *ibqp, struct ib_pd *ibpd,
+> > > > > >
+> > > > > >  	/* IB ports start with 1, MANA Ethernet ports start with 0 */
+> > > > > >  	port = ucmd.port;
+> > > > > > -	if (ucmd.port > mc->num_ports)
+> > > > > > +	if (port < 1 || port > mc->num_ports)
+> > > > >
+> > > > > Why do I see port in mana_ib_create_qp? It should come from ib_qp_init_attr.
+> > > >
+> > > > I am so confused by this question.  Are you asking me?
+> > > 
+> > > I asked *@microsoft folks.
+> > > 
+> > > > This is the _raw function.
+> > > 
+> > > _raw comes from QP type, it is not raw (basic) in a sense you imagine.
+> > > 
+> > > > I'm now sure what mana_ib_create_qp() has to do with it.
+> > > 
+> > > All create QP calls come through same verbs interface.
+> > > ib_create_qp_user->create_qp->.create_qp->mana_ib_create_qp-
+> > > >mana_ib_create_qp_raw
+> > 
+> > MANA requires passing a port number when creating a RAW QP on a RDMA(Ethernet) port.
+> > At the hardware layer, the RDMA port and ethernet port share the same hardware resources, 
+> > the port number needs to be known in advance when QP is created. If we don't' specify the port,
+> > the QP needs to take all the ports on the MANA device, some of them may have been assigned to
+> > Ethernet usage and can't be used for RDMA.
+> > 
+> > The reason is that unlike Nvidia CX hardware, MANA doesn't support bifurcation (for RAW QP) at the hardware level.
+> > [https://www.dpdk.org/wp-content/uploads/sites/35/2018/06/Mellanox-bifurcated-driver-model.pdf]
+> > To support RAW QP on a hardware port, we need to know the port number before configuring it on the hardware.
+> > And Ethernet can't use this port if a RAW QP is created on it. The coordination needs to be done in software.
+> > 
+> > In production environment, there are multiple ports on the same MANA device assigned to a VM. Customer can
+> > configure some of the ports for Ethernet and some for RDMA/DPDK.
+> > 
+> > I have investigated using the port_num in struct ib_qp_init_attr, but it seems it can't be used for this purpose
+> > because the port needs to be specified by the user-mode.
+> 
+> And this is the most problematic part for me. I don't think that it is
+> RDMA user responsibility to dig in netdev port numbers.
 
-It's clear that rmbs_lock and sndbufs_lock are aims to protect the
-rmbs list or the sndbufs list.
+ok, I don't like it, but bug is here, let's fix it.
 
-During connection establieshment, smc_buf_get_slot() will always
-be invoked, and it only performs read semantics in rmbs list and
-sndbufs list.
-
-Based on the above considerations, we replace mutex with rw_semaphore.
-Only smc_buf_get_slot() use down_read() to allow smc_buf_get_slot()
-run concurrently, other part use down_write() to keep exclusive
-semantics.
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- net/smc/smc_core.c | 55 +++++++++++++++++++++++++++---------------------------
- net/smc/smc_core.h |  4 ++--
- net/smc/smc_llc.c  | 16 ++++++++--------
- 3 files changed, 38 insertions(+), 37 deletions(-)
-
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index 10a9e09..b330a1f 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -854,8 +854,8 @@ static int smc_lgr_create(struct smc_sock *smc, struct smc_init_info *ini)
- 	lgr->freeing = 0;
- 	lgr->vlan_id = ini->vlan_id;
- 	refcount_set(&lgr->refcnt, 1); /* set lgr refcnt to 1 */
--	mutex_init(&lgr->sndbufs_lock);
--	mutex_init(&lgr->rmbs_lock);
-+	init_rwsem(&lgr->sndbufs_lock);
-+	init_rwsem(&lgr->rmbs_lock);
- 	rwlock_init(&lgr->conns_lock);
- 	for (i = 0; i < SMC_RMBE_SIZES; i++) {
- 		INIT_LIST_HEAD(&lgr->sndbufs[i]);
-@@ -1098,7 +1098,7 @@ struct smc_link *smc_switch_conns(struct smc_link_group *lgr,
- static void smcr_buf_unuse(struct smc_buf_desc *buf_desc, bool is_rmb,
- 			   struct smc_link_group *lgr)
- {
--	struct mutex *lock;	/* lock buffer list */
-+	struct rw_semaphore *lock;	/* lock buffer list */
- 	int rc;
- 
- 	if (is_rmb && buf_desc->is_conf_rkey && !list_empty(&lgr->list)) {
-@@ -1118,9 +1118,9 @@ static void smcr_buf_unuse(struct smc_buf_desc *buf_desc, bool is_rmb,
- 		/* buf registration failed, reuse not possible */
- 		lock = is_rmb ? &lgr->rmbs_lock :
- 				&lgr->sndbufs_lock;
--		mutex_lock(lock);
-+		down_write(lock);
- 		list_del(&buf_desc->list);
--		mutex_unlock(lock);
-+		up_write(lock);
- 
- 		smc_buf_free(lgr, is_rmb, buf_desc);
- 	} else {
-@@ -1224,15 +1224,16 @@ static void smcr_buf_unmap_lgr(struct smc_link *lnk)
- 	int i;
- 
- 	for (i = 0; i < SMC_RMBE_SIZES; i++) {
--		mutex_lock(&lgr->rmbs_lock);
-+		down_write(&lgr->rmbs_lock);
- 		list_for_each_entry_safe(buf_desc, bf, &lgr->rmbs[i], list)
- 			smcr_buf_unmap_link(buf_desc, true, lnk);
--		mutex_unlock(&lgr->rmbs_lock);
--		mutex_lock(&lgr->sndbufs_lock);
-+		up_write(&lgr->rmbs_lock);
-+
-+		down_write(&lgr->sndbufs_lock);
- 		list_for_each_entry_safe(buf_desc, bf, &lgr->sndbufs[i],
- 					 list)
- 			smcr_buf_unmap_link(buf_desc, false, lnk);
--		mutex_unlock(&lgr->sndbufs_lock);
-+		up_write(&lgr->sndbufs_lock);
- 	}
- }
- 
-@@ -1990,19 +1991,19 @@ int smc_uncompress_bufsize(u8 compressed)
-  * buffer size; if not available, return NULL
-  */
- static struct smc_buf_desc *smc_buf_get_slot(int compressed_bufsize,
--					     struct mutex *lock,
-+					     struct rw_semaphore *lock,
- 					     struct list_head *buf_list)
- {
- 	struct smc_buf_desc *buf_slot;
- 
--	mutex_lock(lock);
-+	down_read(lock);
- 	list_for_each_entry(buf_slot, buf_list, list) {
- 		if (cmpxchg(&buf_slot->used, 0, 1) == 0) {
--			mutex_unlock(lock);
-+			up_read(lock);
- 			return buf_slot;
- 		}
- 	}
--	mutex_unlock(lock);
-+	up_read(lock);
- 	return NULL;
- }
- 
-@@ -2111,13 +2112,13 @@ int smcr_link_reg_buf(struct smc_link *link, struct smc_buf_desc *buf_desc)
- 	return 0;
- }
- 
--static int _smcr_buf_map_lgr(struct smc_link *lnk, struct mutex *lock,
-+static int _smcr_buf_map_lgr(struct smc_link *lnk, struct rw_semaphore *lock,
- 			     struct list_head *lst, bool is_rmb)
- {
- 	struct smc_buf_desc *buf_desc, *bf;
- 	int rc = 0;
- 
--	mutex_lock(lock);
-+	down_write(lock);
- 	list_for_each_entry_safe(buf_desc, bf, lst, list) {
- 		if (!buf_desc->used)
- 			continue;
-@@ -2126,7 +2127,7 @@ static int _smcr_buf_map_lgr(struct smc_link *lnk, struct mutex *lock,
- 			goto out;
- 	}
- out:
--	mutex_unlock(lock);
-+	up_write(lock);
- 	return rc;
- }
- 
-@@ -2159,37 +2160,37 @@ int smcr_buf_reg_lgr(struct smc_link *lnk)
- 	int i, rc = 0;
- 
- 	/* reg all RMBs for a new link */
--	mutex_lock(&lgr->rmbs_lock);
-+	down_write(&lgr->rmbs_lock);
- 	for (i = 0; i < SMC_RMBE_SIZES; i++) {
- 		list_for_each_entry_safe(buf_desc, bf, &lgr->rmbs[i], list) {
- 			if (!buf_desc->used)
- 				continue;
- 			rc = smcr_link_reg_buf(lnk, buf_desc);
- 			if (rc) {
--				mutex_unlock(&lgr->rmbs_lock);
-+				up_write(&lgr->rmbs_lock);
- 				return rc;
- 			}
- 		}
- 	}
--	mutex_unlock(&lgr->rmbs_lock);
-+	up_write(&lgr->rmbs_lock);
- 
- 	if (lgr->buf_type == SMCR_PHYS_CONT_BUFS)
- 		return rc;
- 
- 	/* reg all vzalloced sndbufs for a new link */
--	mutex_lock(&lgr->sndbufs_lock);
-+	down_write(&lgr->sndbufs_lock);
- 	for (i = 0; i < SMC_RMBE_SIZES; i++) {
- 		list_for_each_entry_safe(buf_desc, bf, &lgr->sndbufs[i], list) {
- 			if (!buf_desc->used || !buf_desc->is_vm)
- 				continue;
- 			rc = smcr_link_reg_buf(lnk, buf_desc);
- 			if (rc) {
--				mutex_unlock(&lgr->sndbufs_lock);
-+				up_write(&lgr->sndbufs_lock);
- 				return rc;
- 			}
- 		}
- 	}
--	mutex_unlock(&lgr->sndbufs_lock);
-+	up_write(&lgr->sndbufs_lock);
- 	return rc;
- }
- 
-@@ -2309,8 +2310,8 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
- 	struct smc_link_group *lgr = conn->lgr;
- 	struct list_head *buf_list;
- 	int bufsize, bufsize_short;
-+	struct rw_semaphore *lock;	/* lock buffer list */
- 	bool is_dgraded = false;
--	struct mutex *lock;	/* lock buffer list */
- 	int sk_buf_size;
- 
- 	if (is_rmb)
-@@ -2358,9 +2359,9 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
- 		SMC_STAT_RMB_ALLOC(smc, is_smcd, is_rmb);
- 		SMC_STAT_RMB_SIZE(smc, is_smcd, is_rmb, bufsize);
- 		buf_desc->used = 1;
--		mutex_lock(lock);
-+		down_write(lock);
- 		list_add(&buf_desc->list, buf_list);
--		mutex_unlock(lock);
-+		up_write(lock);
- 		break; /* found */
- 	}
- 
-@@ -2434,9 +2435,9 @@ int smc_buf_create(struct smc_sock *smc, bool is_smcd)
- 	/* create rmb */
- 	rc = __smc_buf_create(smc, is_smcd, true);
- 	if (rc) {
--		mutex_lock(&smc->conn.lgr->sndbufs_lock);
-+		down_write(&smc->conn.lgr->sndbufs_lock);
- 		list_del(&smc->conn.sndbuf_desc->list);
--		mutex_unlock(&smc->conn.lgr->sndbufs_lock);
-+		up_write(&smc->conn.lgr->sndbufs_lock);
- 		smc_buf_free(smc->conn.lgr, false, smc->conn.sndbuf_desc);
- 		smc->conn.sndbuf_desc = NULL;
- 	}
-diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
-index bd7198b..08b457c 100644
---- a/net/smc/smc_core.h
-+++ b/net/smc/smc_core.h
-@@ -252,9 +252,9 @@ struct smc_link_group {
- 	unsigned short		vlan_id;	/* vlan id of link group */
- 
- 	struct list_head	sndbufs[SMC_RMBE_SIZES];/* tx buffers */
--	struct mutex		sndbufs_lock;	/* protects tx buffers */
-+	struct rw_semaphore	sndbufs_lock;	/* protects tx buffers */
- 	struct list_head	rmbs[SMC_RMBE_SIZES];	/* rx buffers */
--	struct mutex		rmbs_lock;	/* protects rx buffers */
-+	struct rw_semaphore	rmbs_lock;	/* protects rx buffers */
- 
- 	u8			id[SMC_LGR_ID_SIZE];	/* unique lgr id */
- 	struct delayed_work	free_work;	/* delayed freeing of an lgr */
-diff --git a/net/smc/smc_llc.c b/net/smc/smc_llc.c
-index c0e73e4..a0840b8 100644
---- a/net/smc/smc_llc.c
-+++ b/net/smc/smc_llc.c
-@@ -608,7 +608,7 @@ static int smc_llc_fill_ext_v2(struct smc_llc_msg_add_link_v2_ext *ext,
- 
- 	prim_lnk_idx = link->link_idx;
- 	lnk_idx = link_new->link_idx;
--	mutex_lock(&lgr->rmbs_lock);
-+	down_write(&lgr->rmbs_lock);
- 	ext->num_rkeys = lgr->conns_num;
- 	if (!ext->num_rkeys)
- 		goto out;
-@@ -628,7 +628,7 @@ static int smc_llc_fill_ext_v2(struct smc_llc_msg_add_link_v2_ext *ext,
- 	}
- 	len += i * sizeof(ext->rt[0]);
- out:
--	mutex_unlock(&lgr->rmbs_lock);
-+	up_write(&lgr->rmbs_lock);
- 	return len;
- }
- 
-@@ -889,7 +889,7 @@ static int smc_llc_cli_rkey_exchange(struct smc_link *link,
- 	int rc = 0;
- 	int i;
- 
--	mutex_lock(&lgr->rmbs_lock);
-+	down_write(&lgr->rmbs_lock);
- 	num_rkeys_send = lgr->conns_num;
- 	buf_pos = smc_llc_get_first_rmb(lgr, &buf_lst);
- 	do {
-@@ -916,7 +916,7 @@ static int smc_llc_cli_rkey_exchange(struct smc_link *link,
- 			break;
- 	} while (num_rkeys_send || num_rkeys_recv);
- 
--	mutex_unlock(&lgr->rmbs_lock);
-+	up_write(&lgr->rmbs_lock);
- 	return rc;
- }
- 
-@@ -999,14 +999,14 @@ static void smc_llc_save_add_link_rkeys(struct smc_link *link,
- 	ext = (struct smc_llc_msg_add_link_v2_ext *)((u8 *)lgr->wr_rx_buf_v2 +
- 						     SMC_WR_TX_SIZE);
- 	max = min_t(u8, ext->num_rkeys, SMC_LLC_RKEYS_PER_MSG_V2);
--	mutex_lock(&lgr->rmbs_lock);
-+	down_write(&lgr->rmbs_lock);
- 	for (i = 0; i < max; i++) {
- 		smc_rtoken_set(lgr, link->link_idx, link_new->link_idx,
- 			       ext->rt[i].rmb_key,
- 			       ext->rt[i].rmb_vaddr_new,
- 			       ext->rt[i].rmb_key_new);
- 	}
--	mutex_unlock(&lgr->rmbs_lock);
-+	up_write(&lgr->rmbs_lock);
- }
- 
- static void smc_llc_save_add_link_info(struct smc_link *link,
-@@ -1313,7 +1313,7 @@ static int smc_llc_srv_rkey_exchange(struct smc_link *link,
- 	int rc = 0;
- 	int i;
- 
--	mutex_lock(&lgr->rmbs_lock);
-+	down_write(&lgr->rmbs_lock);
- 	num_rkeys_send = lgr->conns_num;
- 	buf_pos = smc_llc_get_first_rmb(lgr, &buf_lst);
- 	do {
-@@ -1338,7 +1338,7 @@ static int smc_llc_srv_rkey_exchange(struct smc_link *link,
- 		smc_llc_flow_qentry_del(&lgr->llc_flow_lcl);
- 	} while (num_rkeys_send || num_rkeys_recv);
- out:
--	mutex_unlock(&lgr->rmbs_lock);
-+	up_write(&lgr->rmbs_lock);
- 	return rc;
- }
- 
--- 
-1.8.3.1
-
+> 
+> Jason, what do you think? It looks like layering violation.
+> 
+> Thanks
+> 
+> > 
+> > Thanks,
+> > Long
+> > 
+> > > 
+> > > >
+> > > > The port comes from ib_copy_from_udata() which is just a wrapper
+> > > > around copy_from_user().
+> > > 
+> > > Right, and it shouldn't.
+> > > 
+> > > >
+> > > > regards,
+> > > > dan carpenter
+> > > >
