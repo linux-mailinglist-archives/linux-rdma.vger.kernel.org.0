@@ -2,80 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0776968870A
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 19:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C52D688846
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 21:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjBBSs6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Feb 2023 13:48:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
+        id S229881AbjBBUbG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Feb 2023 15:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjBBSs6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 13:48:58 -0500
-Received: from exchange.fintech.ru (e10edge.fintech.ru [195.54.195.159])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E83D4;
-        Thu,  2 Feb 2023 10:48:55 -0800 (PST)
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 2 Feb
- 2023 21:48:54 +0300
-Received: from localhost (10.0.253.157) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 2 Feb 2023
- 21:48:53 +0300
-From:   Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To:     Potnuri Bharat Teja <bharat@chelsio.com>
-CC:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+        with ESMTP id S230057AbjBBUbG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 15:31:06 -0500
+X-Greylist: delayed 450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Feb 2023 12:31:05 PST
+Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E8FECA03
+        for <linux-rdma@vger.kernel.org>; Thu,  2 Feb 2023 12:31:05 -0800 (PST)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id Ng7FpzaaXkc0dNg7FpPXWm; Thu, 02 Feb 2023 21:23:32 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 02 Feb 2023 21:23:32 +0100
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lvc-project@linuxtesting.org>
-Subject: [PATCH v2] RDMA/cxgb4: Fix potential null-ptr-deref in pass_establish()
-Date:   Thu, 2 Feb 2023 10:48:50 -0800
-Message-ID: <20230202184850.29882-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <Y9vdndjG0e9cCaI/@ziepe.ca>
-References: 
+        Leon Romanovsky <leon@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH] RDMA/irdma: Slightly optimize irdma_form_ah_cm_frame()
+Date:   Thu,  2 Feb 2023 21:23:24 +0100
+Message-Id: <098e3c397be0436f1867899245ecfe656c472110.1675369386.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.0.253.157]
-X-ClientProxiedBy: Ex16-01.fintech.ru (10.0.10.18) To Ex16-01.fintech.ru
- (10.0.10.18)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-If get_ep_from_tid() fails to lookup non-NULL value for ep, ep is
-dereferenced later regardless of whether it is empty.
-This patch adds a simple sanity check to fix the issue.
+There is no need to zero 'pktsize' bytes of 'buf', only the header needs
+to be cleared, to be safe.
+All the other bytes are already written with some memcpy() at the end of
+the function.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Doing so also gives the opportunity to the compiler to avoid the memset()
+call. It can be inlined now that the length is known as compile time.
 
-Fixes: 944661dd97f4 ("RDMA/iw_cxgb4: atomically lookup ep and get a reference")
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-v2: do not use pr_warn() when get_ep_from_tid() returns NULL as
-Jason Gunthorpe <jgg@ziepe.ca> suggested.
+Just in case, here is the diff of what is generated by gcc 11.3.0 before
+and after the patch.
 
- drivers/infiniband/hw/cxgb4/cm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .L736:
+-# drivers/infiniband/hw/irdma/cm.c:340: 	memset(buf, 0, pktsize);
++# drivers/infiniband/hw/irdma/cm.c:340: 	memset(buf, 0, sizeof(*tcph));
+ 	call	__sanitizer_cov_trace_pc	#
+-	xorl	%esi, %esi	#
+-	movzwl	%r13w, %edx	# _194, __fortify_size
+-	movq	%rbp, %rdi	# buf,
+-	call	memset	#
+-	leaq	104(%r12), %rax	#, _259
++	movl	$0, 16(%rbp)	#, MEM <char[1:20]> [(void *)buf_114]
++	leaq	104(%r12), %rax	#, _295
++# drivers/infiniband/hw/irdma/cm.c:342: 	sqbuf->totallen = pktsize;
++	movzwl	%r13w, %r13d	# _192, _192
++# drivers/infiniband/hw/irdma/cm.c:340: 	memset(buf, 0, sizeof(*tcph));
++	movq	$0, 0(%rbp)	#, MEM <char[1:20]> [(void *)buf_114]
++# drivers/infiniband/hw/irdma/cm.c:342: 	sqbuf->totallen = pktsize;
++	movq	%rax, %rdi	# _295,
++# drivers/infiniband/hw/irdma/cm.c:340: 	memset(buf, 0, sizeof(*tcph));
++	movq	$0, 8(%rbp)	#, MEM <char[1:20]> [(void *)buf_114]
++	movq	%rax, 64(%rsp)	# _295, %sfp
+ # drivers/infiniband/hw/irdma/cm.c:342: 	sqbuf->totallen = pktsize;
+---
+ drivers/infiniband/hw/irdma/cm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index 499a425a3379..f5f4579f037c 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -2676,6 +2676,8 @@ static int pass_establish(struct c4iw_dev *dev, struct sk_buff *skb)
- 	u16 tcp_opt = ntohs(req->tcp_opt);
+diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
+index 195aa9ea18b6..48c2a303e9ec 100644
+--- a/drivers/infiniband/hw/irdma/cm.c
++++ b/drivers/infiniband/hw/irdma/cm.c
+@@ -337,7 +337,7 @@ static struct irdma_puda_buf *irdma_form_ah_cm_frame(struct irdma_cm_node *cm_no
  
- 	ep = get_ep_from_tid(dev, tid);
-+	if (!ep)
-+		return 0;
- 	pr_debug("ep %p tid %u\n", ep, ep->hwtid);
- 	ep->snd_seq = be32_to_cpu(req->snd_isn);
- 	ep->rcv_seq = be32_to_cpu(req->rcv_isn);
+ 	pktsize = sizeof(*tcph) + opts_len + hdr_len + pd_len;
+ 
+-	memset(buf, 0, pktsize);
++	memset(buf, 0, sizeof(*tcph));
+ 
+ 	sqbuf->totallen = pktsize;
+ 	sqbuf->tcphlen = sizeof(*tcph) + opts_len;
 -- 
-2.25.1
+2.34.1
 
