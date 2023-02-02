@@ -2,81 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C2D68868F
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 19:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0776968870A
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 19:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbjBBSdA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Feb 2023 13:33:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
+        id S229761AbjBBSs6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Feb 2023 13:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbjBBScm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 13:32:42 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5287466036;
-        Thu,  2 Feb 2023 10:31:30 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B782E61C67;
-        Thu,  2 Feb 2023 18:30:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB4C3C433D2;
-        Thu,  2 Feb 2023 18:30:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675362606;
-        bh=5Jf+yddjXP7I6lxGihpoPmhwLthqmwwGVtt9aEdNhhI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fZxJUisT/bmTOq50LSDkkMBt/OvYDXoLznvvibb0XmHAkQBQo8SnKybIuVZtFrSHv
-         iH7qDVVp1gYIQMIwJsKbncCk9u7OCpoVIDb0uLtwL9cLah+8HbgOU9ne1OXI1PIyLO
-         TvgDhJiC+ALcdUls/Ate+bZyrvo0uSOmOoA+9G3Hwz0UIC9r76p6CWGkxFRjCXIvtp
-         gNIttoP+bPqSbeHGt9GSL2OjMyW6TPaExI+G/7g8HHk0rkSHWzGft0/U60XBzHeK3+
-         E4zSjspdUgniMPIc+YyRg/TBTjpahdM2gkHY9OcBVztJqlaxhUCIUt6eXGMgPFCOWL
-         KgbWGxsUxLDRg==
-Date:   Thu, 2 Feb 2023 10:30:04 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: pull-request: mlx5-next 2023-01-24 V2
-Message-ID: <20230202103004.26ab6ae9@kernel.org>
-In-Reply-To: <Y9v93cy0s9HULnWq@x130>
-References: <20230126230815.224239-1-saeed@kernel.org>
-        <Y9tqQ0RgUtDhiVsH@unreal>
-        <20230202091312.578aeb03@kernel.org>
-        <Y9vvcSHlR5PW7j6D@nvidia.com>
-        <20230202092507.57698495@kernel.org>
-        <Y9v2ZW3mahPBXbvg@nvidia.com>
-        <20230202095453.68f850bc@kernel.org>
-        <Y9v61gb3ADT9rsLn@unreal>
-        <Y9v93cy0s9HULnWq@x130>
+        with ESMTP id S229667AbjBBSs6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Feb 2023 13:48:58 -0500
+Received: from exchange.fintech.ru (e10edge.fintech.ru [195.54.195.159])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E83D4;
+        Thu,  2 Feb 2023 10:48:55 -0800 (PST)
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 2 Feb
+ 2023 21:48:54 +0300
+Received: from localhost (10.0.253.157) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 2 Feb 2023
+ 21:48:53 +0300
+From:   Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To:     Potnuri Bharat Teja <bharat@chelsio.com>
+CC:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lvc-project@linuxtesting.org>
+Subject: [PATCH v2] RDMA/cxgb4: Fix potential null-ptr-deref in pass_establish()
+Date:   Thu, 2 Feb 2023 10:48:50 -0800
+Message-ID: <20230202184850.29882-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <Y9vdndjG0e9cCaI/@ziepe.ca>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.0.253.157]
+X-ClientProxiedBy: Ex16-01.fintech.ru (10.0.10.18) To Ex16-01.fintech.ru
+ (10.0.10.18)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 2 Feb 2023 10:15:57 -0800 Saeed Mahameed wrote:
-> It's a reality that mlx5_core is serving both netdev and rdma, it's not
-> about who has the keys for approving, it's that the fact the mlx5_core is
-> not just a netdev driver
+If get_ep_from_tid() fails to lookup non-NULL value for ep, ep is
+dereferenced later regardless of whether it is empty.
+This patch adds a simple sanity check to fix the issue.
 
-Nah, nah, nah, don't play with me. You put in "full IPsec offload" 
-with little netdev use, then start pushing RDMA IPsec patches.
-Don't make it sound like netdev and rdma are separate entities which
-just share the HW when you're using APIs of one to configure the other.
-If RDMA invented its own API for IPsec without touching xfrm, we would
-not be having this conversation. That'd be fine by me.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-You used our APIs to make your proprietary thing easier to integrate and
-configure - now you have to find someone who will pull the PR and still
-sleep at night. Not me.
+Fixes: 944661dd97f4 ("RDMA/iw_cxgb4: atomically lookup ep and get a reference")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+v2: do not use pr_warn() when get_ep_from_tid() returns NULL as
+Jason Gunthorpe <jgg@ziepe.ca> suggested.
+
+ drivers/infiniband/hw/cxgb4/cm.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index 499a425a3379..f5f4579f037c 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2676,6 +2676,8 @@ static int pass_establish(struct c4iw_dev *dev, struct sk_buff *skb)
+ 	u16 tcp_opt = ntohs(req->tcp_opt);
+ 
+ 	ep = get_ep_from_tid(dev, tid);
++	if (!ep)
++		return 0;
+ 	pr_debug("ep %p tid %u\n", ep, ep->hwtid);
+ 	ep->snd_seq = be32_to_cpu(req->snd_isn);
+ 	ep->rcv_seq = be32_to_cpu(req->rcv_isn);
+-- 
+2.25.1
+
