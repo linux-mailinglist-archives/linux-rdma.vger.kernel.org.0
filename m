@@ -2,66 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E42F687313
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 02:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA81668732D
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Feb 2023 02:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjBBBfH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Feb 2023 20:35:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
+        id S229612AbjBBBrX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Feb 2023 20:47:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjBBBfG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Feb 2023 20:35:06 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3866F217;
-        Wed,  1 Feb 2023 17:35:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675301705; x=1706837705;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=J/ZbnOOWGQyaltpY5ZXjym/QBf6OsO4SuT5wCLUEGkg=;
-  b=aNXu8Rb+ddH5uQFHrMGPuXtdErRAISZq87h1K4hM8I5IvDIf0FeWdQpc
-   Xjsb6+Su+Q+gtuzUf2IlrEeguC6EZsCjw4BDHgEsJFp6F3UKdoa5SKoMS
-   b0f+UAGueMTFbim4rJ+XCCiVanTbMygtRXXo6fjTvDLbbCsA+IsZpmzwC
-   K3TgXK3TTkprj3CBnKaFuGT5e1cZK9KfuXQ1O0hvJUPTZiPe5xfXwZq7+
-   DpFJedL+q6dLt/d+0DNhg6xN5yiB0MVNR+ZJlJ6YNhTScCAs/ZJxQ+mon
-   KUn/RmKwUMhWMX3dHePe/1/1uFeEcl+bjiSJ7jGu6sl/J/iDjBp1jqpT1
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="355658942"
-X-IronPort-AV: E=Sophos;i="5.97,266,1669104000"; 
-   d="scan'208";a="355658942"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2023 17:35:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="728647972"
-X-IronPort-AV: E=Sophos;i="5.97,266,1669104000"; 
-   d="scan'208";a="728647972"
-Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Feb 2023 17:35:01 -0800
-Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pNOVB-0005zs-0I;
-        Thu, 02 Feb 2023 01:35:01 +0000
-Date:   Thu, 2 Feb 2023 09:34:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ajit Khaparde <ajit.khaparde@broadcom.com>
-Cc:     oe-kbuild-all@lists.linux.dev, andrew.gospodarek@broadcom.com,
-        davem@davemloft.net, edumazet@google.com, jgg@ziepe.ca,
-        kuba@kernel.org, leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, michael.chan@broadcom.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        selvin.xavier@broadcom.com, gregkh@linuxfoundation.org,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH net-next v10 1/8] bnxt_en: Add auxiliary driver support
-Message-ID: <202302020909.KDHYiYu4-lkp@intel.com>
-References: <20230201204500.19420-2-ajit.khaparde@broadcom.com>
+        with ESMTP id S231542AbjBBBrW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Feb 2023 20:47:22 -0500
+X-Greylist: delayed 363 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 01 Feb 2023 17:47:21 PST
+Received: from out-237.mta1.migadu.com (out-237.mta1.migadu.com [95.215.58.237])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E65877526
+        for <linux-rdma@vger.kernel.org>; Wed,  1 Feb 2023 17:47:20 -0800 (PST)
+Message-ID: <6bcba397-f4f1-26df-f8cd-1dbebf111932@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1675302075;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ElhoAreAYR1TbjbwQ16BwanBaQNglPJB2VKy5kIlALI=;
+        b=IL+ConhL4Aq1PfgSd0YNZLsUVNPapOJ3rbBhwqsJyPz4heUDPwzsvUmMl5hXz4N1WdqeDp
+        6AGvve0L0sFRyrInv32g0DLSYiWPlHT6qiApq2fpfSkU82jj7gCT/l+sXiSEL9pyZ5+262
+        TR+t8CZLAfdk+HvNCltkGakB9uvIxrQ=
+Date:   Thu, 2 Feb 2023 09:41:19 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230201204500.19420-2-ajit.khaparde@broadcom.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Subject: Re: [PATCH RFC] RDMA/rtrs: Don't call kobject_del for srv_path->kobj
+To:     Li Zhijian <lizhijian@fujitsu.com>, haris.iqbal@ionos.com,
+        jinpu.wang@ionos.com, linux-rdma@vger.kernel.org
+Cc:     jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org
+References: <1675261833-2-1-git-send-email-lizhijian@fujitsu.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+In-Reply-To: <1675261833-2-1-git-send-email-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,53 +49,86 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Ajit,
-
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on net-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Ajit-Khaparde/bnxt_en-Add-auxiliary-driver-support/20230202-044848
-patch link:    https://lore.kernel.org/r/20230201204500.19420-2-ajit.khaparde%40broadcom.com
-patch subject: [PATCH net-next v10 1/8] bnxt_en: Add auxiliary driver support
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230202/202302020909.KDHYiYu4-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/896eba0b6cd806dd11640cafa66d35f8b483f550
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Ajit-Khaparde/bnxt_en-Add-auxiliary-driver-support/20230202-044848
-        git checkout 896eba0b6cd806dd11640cafa66d35f8b483f550
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 olddefconfig
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/net/ethernet/broadcom/bnxt/
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c: In function 'bnxt_aux_dev_release':
->> drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c:483:22: warning: unused variable 'bp' [-Wunused-variable]
-     483 |         struct bnxt *bp = netdev_priv(aux_priv->edev->net);
-         |                      ^~
 
 
-vim +/bp +483 drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+On 2/1/23 22:30, Li Zhijian wrote:
+> As the mention in commmit f7452a7e96c1 ("RDMA/rtrs-srv: fix memory leak by missing kobject free"),
+> it's intended to remove the kobject_del for srv_path->kobj.
+>
+> A kernel panic will be triggered by following script
+> -----------------------
+> $ while true;
+> do
+>          echo "sessname=foo path=ip:<ip address> device_path=/dev/nvme0n1" > /sys/devices/virtual/rnbd-client/ctl/map_device
+>          echo "normal" > /sys/block/rnbd0/rnbd/unmap_device
+> done
+> -----------------------
+> The bisection pointed to commit 6af4609c18b3 ("RDMA/rtrs-srv: Fix several issues in rtrs_srv_destroy_path_files")
+> at last.
+>
+>   rnbd_server L777: </dev/nvme0n1@foo>: Opened device 'nvme0n1'
+>   general protection fault, probably for non-canonical address 0x765f766564753aea: 0000 [#1] PREEMPT SMP PTI
+>   CPU: 0 PID: 3558 Comm: systemd-udevd Kdump: loaded Not tainted 6.1.0-rc3-roce-flush+ #51
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+>   RIP: 0010:kernfs_dop_revalidate+0x36/0x180
+>   Code: 00 00 41 55 41 54 55 53 48 8b 47 68 48 89 fb 48 85 c0 0f 84 db 00 00 00 48 8b a8 60 04 00 00 48 8b 45 30 48 85 c0 48 0f 44 c5 <4c> 8b 60 78 49 81 c4 d8 00 00 00 4c 89 e7 e8 b7 78 7b 00 8b 05 3d
+>   RSP: 0018:ffffaf1700b67c78 EFLAGS: 00010206
+>   RAX: 765f766564753a72 RBX: ffff89e2830849c0 RCX: 0000000000000000
+>   RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff89e2830849c0
+>   RBP: ffff89e280361bd0 R08: 0000000000000000 R09: 0000000000000001
+>   R10: 0000000000000065 R11: 0000000000000000 R12: ffff89e2830849c0
+>   R13: ffff89e283084888 R14: d0d0d0d0d0d0d0d0 R15: 2f2f2f2f2f2f2f2f
+>   FS:  00007f13fbce7b40(0000) GS:ffff89e2bbc00000(0000) knlGS:0000000000000000
+>   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 00007f93e055d340 CR3: 0000000104664002 CR4: 00000000001706f0
+>   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>   Call Trace:
+>    <TASK>
+>    lookup_fast+0x7b/0x100
+>    walk_component+0x21/0x160
+>    link_path_walk.part.0+0x24d/0x390
+>    path_openat+0xad/0x9a0
+>    do_filp_open+0xa9/0x150
+>    ? lock_release+0x13c/0x2e0
+>    ? _raw_spin_unlock+0x29/0x50
+>    ? alloc_fd+0x124/0x1f0
+>    do_sys_openat2+0x9b/0x160
+>    __x64_sys_openat+0x54/0xa0
+>    do_syscall_64+0x3b/0x90
+>    entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>   RIP: 0033:0x7f13fc9d701b
+>   Code: 25 00 00 41 00 3d 00 00 41 00 74 4b 64 8b 04 25 18 00 00 00 85 c0 75 67 44 89 e2 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 91 00 00 00 48 8b 54 24 28 64 48 2b 14 25
+>   RSP: 002b:00007ffddf242640 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+>   RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f13fc9d701b
+>   RDX: 0000000000080000 RSI: 00007ffddf2427c0 RDI: 00000000ffffff9c
+>   RBP: 00007ffddf2427c0 R08: 00007f13fcc5b440 R09: 21b2131aa64b1ef2
+>   R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000080000
+>   R13: 00007ffddf2427c0 R14: 000055ed13be8db0 R15: 0000000000000000
+>
+> Fixes: 6af4609c18b3 ("RDMA/rtrs-srv: Fix several issues in rtrs_srv_destroy_path_files")
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>   drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 1 -
+>   1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> index da8e205ce331..7fe905424109 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
+> @@ -313,7 +313,6 @@ void rtrs_srv_destroy_path_files(struct rtrs_srv_path *srv_path)
+>   
+>   	if (srv_path->kobj.state_in_sysfs) {
+>   		sysfs_remove_group(&srv_path->kobj, &rtrs_srv_path_attr_group);
+> -		kobject_del(&srv_path->kobj);
+>   		kobject_put(&srv_path->kobj);
+>   	}
+>   
 
-   478	
-   479	static void bnxt_aux_dev_release(struct device *dev)
-   480	{
-   481		struct bnxt_aux_priv *aux_priv =
-   482			container_of(dev, struct bnxt_aux_priv, aux_dev.dev);
- > 483		struct bnxt *bp = netdev_priv(aux_priv->edev->net);
-   484	
-   485		ida_free(&bnxt_aux_dev_ids, aux_priv->id);
-   486		kfree(aux_priv->edev);
-   487		kfree(aux_priv);
-   488	}
-   489	
+Thanks for the fix, it would be better to comment that why kobject_del can't
+be called here.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Anyway, Acked-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+
+Thanks,
+Guoqing
