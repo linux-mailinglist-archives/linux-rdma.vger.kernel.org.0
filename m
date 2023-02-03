@@ -2,131 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A74E689688
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Feb 2023 11:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBDD689C19
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Feb 2023 15:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbjBCK1P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Feb 2023 05:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
+        id S229785AbjBCOoS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Feb 2023 09:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233671AbjBCK0o (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Feb 2023 05:26:44 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E81929E07;
-        Fri,  3 Feb 2023 02:26:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E4159B82A64;
-        Fri,  3 Feb 2023 10:26:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 341F7C433EF;
-        Fri,  3 Feb 2023 10:26:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1675419970;
-        bh=VcV/YUL7hzCBqPMmzwqjqpefyyMIj0Z33w9qYR1G+Vg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ya1CmiFde+fAMrEHJzZoOJCCuGqCM/Mz0DUZQ0aFQBm/NqX62Nrbhz4mrOiGc7CYO
-         TOTyeJ03LGplczN3Dr8Y/5Cu4y0qomH+RZM/tVVnk7DDjF8a6nhXX9qQuiyHPV3Nsd
-         B5lQmgJsCLGWYHGvxWYexpOdniAda8caPHPWFveI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Randy Dunlap <rdunlap@infradead.org>,
-        Eli Cohen <eli@mellanox.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 038/134] net: mlx5: eliminate anonymous module_init & module_exit
-Date:   Fri,  3 Feb 2023 11:12:23 +0100
-Message-Id: <20230203101025.566572539@linuxfoundation.org>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230203101023.832083974@linuxfoundation.org>
-References: <20230203101023.832083974@linuxfoundation.org>
-User-Agent: quilt/0.67
+        with ESMTP id S233384AbjBCOoR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Feb 2023 09:44:17 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347259EE19
+        for <linux-rdma@vger.kernel.org>; Fri,  3 Feb 2023 06:44:12 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id g7so5600534qto.11
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Feb 2023 06:44:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=iB3tI2+N9F2REljMdJ+knWCcyYIg8YTZr/IyyWC2wDE=;
+        b=ojiqolLBROgj8GcZznGGLsIE8QnMSk6djuYWhZnmwVbOHVFNfz5m3jWQZ+vGBPQUlt
+         P2SGhoLSbozv8VdF17fc/3q8uofEM97w41fkfTxzcUHU2tlFWplcFbRcDnQ4kUo0V5Kx
+         cHMrsjhC/8EWgEVxCUwqcwkmVT/0DUEyuhr34XDeBMg9VfOvWteRzVFD6T34AiGLzzR1
+         4LsLFZNf+3tLfifa1NMFcNd09tGCq499jN8qyNMkj1h5563q306MpG5hhPLyR2XOuW2L
+         psFxjE+UvypO2lWWcUpcjyXJzxGvmaWDWUv46xfkAALHDcaKCvpMxU454pOqQU/NSDOa
+         3v5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iB3tI2+N9F2REljMdJ+knWCcyYIg8YTZr/IyyWC2wDE=;
+        b=6x3lSf4FAYUagB91XK2AAPsA9LMKK8rg5Uej3beiSUTz5u012VtkslNWUloC7/v0GK
+         8H6+4GW/Nt78xJX3Ho0riNwct++TmTn9u+3CXjVMGz7mT0Z912tOJLFoMB5nfSjwrqhX
+         LCubHDKGp+h+A0uk1qL1Z3fEpi/Y9ytQ01llZh3Gs6SRNQPAO1eoZCg0kB6TAJ2xpKto
+         ZscS16e+zoN/WgkDv4WRNa8b1vwqhII47zrGSuYBHJUvHMzgUb5+9yAeb6Ce0Mb9kcOz
+         6S9SNl4dSTSEoWkocOLI3sQODpS+VrkNbxykLkozzOwg7KTEvZyqBkMKUGIwXKlXrYuz
+         IqeA==
+X-Gm-Message-State: AO0yUKVuYm7Qk2i9gDs4EbhEU2JOpLM6546Uqq/+jM23gt62S4dZxU+o
+        TSCEkOvkaxG+sxn3o9ocRWw/gA==
+X-Google-Smtp-Source: AK7set86aAwVVlRleiwoQ5W5JA7bZvzYdyH2TizWi+XxEXXshuEU7MJAXMNBgKrQ78j/BAnAbqHjvA==
+X-Received: by 2002:ac8:4e81:0:b0:3b8:5a02:eb43 with SMTP id 1-20020ac84e81000000b003b85a02eb43mr20271979qtp.64.1675435451227;
+        Fri, 03 Feb 2023 06:44:11 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-167-59-176.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.59.176])
+        by smtp.gmail.com with ESMTPSA id r144-20020a37a896000000b0070638ad5986sm1888064qke.85.2023.02.03.06.44.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Feb 2023 06:44:10 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1pNxIP-0035Eb-Le;
+        Fri, 03 Feb 2023 10:44:09 -0400
+Date:   Fri, 3 Feb 2023 10:44:09 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jack Vogel <jack.vogel@oracle.com>,
+        "mustafa.ismail@intel.com" <mustafa.ismail@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/irdma: Move variable into switch case
+Message-ID: <Y90duSmdXMo4dR85@ziepe.ca>
+References: <20230201012823.105150-1-jack.vogel@oracle.com>
+ <Y9o6xnalM+R4DE3D@unreal>
+ <997C66D5-3298-4F64-8784-3FDAA438C66C@oracle.com>
+ <Y9ttN4tB1mwB6bSU@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Y9ttN4tB1mwB6bSU@unreal>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URI_DOTEDU autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Thu, Feb 02, 2023 at 09:58:47AM +0200, Leon Romanovsky wrote:
+> On Thu, Feb 02, 2023 at 12:09:50AM +0000, Jack Vogel wrote:
+> > Hey Leon,
+> > 
+> > Oracle switched to GCC11 in our UEK7/OL9 releases recently, leading up to that release we added the ALL_ZERO config option, and then ran into some warnings, our build treats warnings as errors and would fail. For instance this thread: 
+> > 
+> > https://lkml.iu.edu/hypermail/linux/kernel/2202.1/05558.html
+> > 
+> > A number of changes were made in the mainline code by Kees Cook and even made it into the linux-5.15.y branch, but a couple of them we have carried as specials for the past year, I was recently prodded about the matter again by an internal group, so I thought I would submit these patches upstream. 
+> > 
+> > I must apologize though, for unbeknownst to me, our tools team actually back ported the fix from gcc12 regarding these warnings and forgot to tell the UEK group about it :) It wasn’t until you asked about the warnings, I reverted the commits and did a build to capture them, then I discovered they no longer occur. So, sorry about the noise. I will be reverting our own changes as unnecessary now.
+> 
+> Glad to hear.
 
-[ Upstream commit 2c1e1b949024989e20907b84e11a731a50778416 ]
+Regardless, it is really weird coding style to have a variable
+block immediately after the switch statement
 
-Eliminate anonymous module_init() and module_exit(), which can lead to
-confusion or ambiguity when reading System.map, crashes/oops/bugs,
-or an initcall_debug log.
-
-Give each of these init and exit functions unique driver-specific
-names to eliminate the anonymous names.
-
-Example 1: (System.map)
- ffffffff832fc78c t init
- ffffffff832fc79e t init
- ffffffff832fc8f8 t init
-
-Example 2: (initcall_debug log)
- calling  init+0x0/0x12 @ 1
- initcall init+0x0/0x12 returned 0 after 15 usecs
- calling  init+0x0/0x60 @ 1
- initcall init+0x0/0x60 returned 0 after 2 usecs
- calling  init+0x0/0x9a @ 1
- initcall init+0x0/0x9a returned 0 after 74 usecs
-
-Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Eli Cohen <eli@mellanox.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/main.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index f2657cd3ffa4..83ee9429e7c6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1640,7 +1640,7 @@ static void mlx5_core_verify_params(void)
- 	}
- }
- 
--static int __init init(void)
-+static int __init mlx5_init(void)
- {
- 	int err;
- 
-@@ -1665,7 +1665,7 @@ static int __init init(void)
- 	return err;
- }
- 
--static void __exit cleanup(void)
-+static void __exit mlx5_cleanup(void)
- {
- #ifdef CONFIG_MLX5_CORE_EN
- 	mlx5e_cleanup();
-@@ -1674,5 +1674,5 @@ static void __exit cleanup(void)
- 	mlx5_unregister_debugfs();
- }
- 
--module_init(init);
--module_exit(cleanup);
-+module_init(mlx5_init);
-+module_exit(mlx5_cleanup);
--- 
-2.39.0
-
-
-
+Jason
