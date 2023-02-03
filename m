@@ -2,250 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5700068A079
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Feb 2023 18:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF75668A235
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Feb 2023 19:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbjBCRhQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Feb 2023 12:37:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        id S232369AbjBCSrW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Feb 2023 13:47:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233058AbjBCRhK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Feb 2023 12:37:10 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29D6AA25F;
-        Fri,  3 Feb 2023 09:36:51 -0800 (PST)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 313HHnqY003249;
-        Fri, 3 Feb 2023 17:36:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=TSxDEBmRifL/9qGJzi+cnHy93kLLSmu3sNQPp6mziH0=;
- b=bMUAuLOG+bjQ3KLQEeTtZTE/6d2zK6K3yJaAwD6yRsoXATzPqrjtkOYRFVzMvhS7ePdR
- u5ZFCyMaMWsFc/DMBxW10vBmcQFdzJsHV+ZpAGMPXeYIHEkqjhvcGDLYMBrLd8PRY3/3
- Sr1IWw8wgtD8khDhdXUu15YfvRI8BFIZ3HiI5/Vnly3Aq6NqtKajcVRsk0skL9cCiFSF
- IT6tXICVSPLNxXy1gbyemjhJx00BHnubVzA3YqReF09ZAUoo/NQjagrnPtbRFMP4rr4o
- EEfJX8HmtHt0NYwbBj1WwiPDDxiWz9qACUVWk551nYr3ZN3ZWV+KcE7fSirittMSdD2N 9g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3nh6hp8fsn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Feb 2023 17:36:39 +0000
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 313HKLW6013677;
-        Fri, 3 Feb 2023 17:36:39 GMT
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3nh6hp8frs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Feb 2023 17:36:39 +0000
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 313Fcv7I026861;
-        Fri, 3 Feb 2023 17:36:38 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([9.208.129.118])
-        by ppma01wdc.us.ibm.com (PPS) with ESMTPS id 3ncvtnhwmj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Feb 2023 17:36:38 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 313HaaC86357644
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Feb 2023 17:36:37 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A064C58062;
-        Fri,  3 Feb 2023 17:36:36 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4B0D758059;
-        Fri,  3 Feb 2023 17:36:35 +0000 (GMT)
-Received: from [9.163.93.135] (unknown [9.163.93.135])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Feb 2023 17:36:35 +0000 (GMT)
-Message-ID: <47a5d56c-ec68-5966-031f-5dfa85fd4e06@linux.ibm.com>
-Date:   Fri, 3 Feb 2023 18:36:34 +0100
+        with ESMTP id S232372AbjBCSrU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Feb 2023 13:47:20 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DF49A829
+        for <linux-rdma@vger.kernel.org>; Fri,  3 Feb 2023 10:47:19 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id r9so4907530oig.12
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Feb 2023 10:47:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=M9vLlcLIzkLhQq7ZFKGvz2guLCfvFTBGx2ygCe4aLvo=;
+        b=LEfP6TQNySPiN+QdIiFl41SKcaqz+fYGzWCmUi/QZNI5bs8Aoy7UrXbb49lr3o5Leq
+         nRGG4cZv8KFfo49MjfPfRh7EWkYIoP/fozfBrmo13RUpuiCs0GWDub23rPPv++z7erSV
+         PVE8yM5Lky2nsx1ceHNOZQTmuXbFlwkdmY6JqEAYtQXw772kCGKNllsXyTY3PzT+8tbm
+         +yHDiefdEfplYECFE45WonG/ulqFFVSaVuniVu39hQAqC8h+1k2NpjUyUYNY4Dh43a1J
+         W7oGMBdpnJbxlQfZIdoN8IV5zpd1+QCQ9hvrr9cVkPIXwkr/dz9ofWDGvHyIVRg4oYDs
+         Ci4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=M9vLlcLIzkLhQq7ZFKGvz2guLCfvFTBGx2ygCe4aLvo=;
+        b=iHc5pOdCrN3w0JV3M6+0gLoc3jzpoGpQ16o3zY3uGSIBpgpgWvnhvBHJVCnyCPP22I
+         FQZsNZLF7po+TNOcqdBiRMlls8h8v587lDSWIX0IpaoU2+KjPT2Le3xJa4/rpcdAryuU
+         wlCkYa+3Y28974DEDoANCBE3L+X6PQQV99XoD32ZKlf+snnLA4iH3/9Wx3x49xmlTiWt
+         RmLdNE3AzlJgOYzpMV3ZBBD8basDXpsMulcoCHoHQn+vCl8KhvCxPmmy1jiMTv4uU9nm
+         Rg4zCjLVVwZ4MSuCmaXHRR9xY/TNDd8aLh9BM/qNxTQVO8ncfSRhm287wW+zGbIDGWRJ
+         Uvmg==
+X-Gm-Message-State: AO0yUKUccEspp4GNZ/KnLGCmvbqkkIaOQEgFDxrhnO/QnpejBLxZ/EbK
+        89yyeWICWOcNi6UdBCcc5fE11TQjeHctdg==
+X-Google-Smtp-Source: AK7set9EOERCnch8Yd3mbOhJmT5VwWoIMfBDkzy4lcSrMr/KprF1cAyUaTSFlXAzA8Nfre/hLdCJ/g==
+X-Received: by 2002:aca:a907:0:b0:36f:9de:40c2 with SMTP id s7-20020acaa907000000b0036f09de40c2mr4556186oie.2.1675450038573;
+        Fri, 03 Feb 2023 10:47:18 -0800 (PST)
+Received: from [192.168.0.27] (097-099-248-255.res.spectrum.com. [97.99.248.255])
+        by smtp.gmail.com with ESMTPSA id t16-20020a056808159000b00369ec58932csm1068626oiw.45.2023.02.03.10.47.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Feb 2023 10:47:18 -0800 (PST)
+Message-ID: <cd9fda7b-3613-c5a4-7dc9-95433cf4dee4@gmail.com>
+Date:   Fri, 3 Feb 2023 12:47:17 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [net-next v7 0/4] net/smc: optimize the parallelism of SMC-R
- connections
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1675326402-109943-1-git-send-email-alibuda@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <1675326402-109943-1-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH for-next v4] Subject: RDMA/rxe: Handle zero length rdma
+Content-Language: en-US
+To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "leonro@nvidia.com" <leonro@nvidia.com>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20230202044240.6304-1-rpearsonhpe@gmail.com>
+ <TYCPR01MB84555DAEE984472F7B209B80E5D79@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <TYCPR01MB84555DAEE984472F7B209B80E5D79@TYCPR01MB8455.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 4-P1rsR1f7lNuCX0jzl9E4wyyBRykRIH
-X-Proofpoint-GUID: XMD3veZ87V-bqX3kCY0Q2YjbQGDGiunB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-02-03_16,2023-02-03_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- mlxscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- impostorscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2302030152
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 2/3/23 04:00, Daisuke Matsuda (Fujitsu) wrote:
+> On Thu, Feb 2, 2023 1:43 PM Bob Pearson wrote:
+>>
+>> Currently the rxe driver does not handle all cases of zero length
+>> rdma operations correctly. The client does not have to provide an
+>> rkey for zero length RDMA read or write operations so the rkey
+>> provided may be invalid and should not be used to lookup an mr.
+>>
+>> This patch corrects the driver to ignore the provided rkey if the
+>> reth length is zero for read or write operations and make sure to
+>> set the mr to NULL. In read_reply() if length is zero rxe_recheck_mr()
+>> is not called. Warnings are added in the routines in rxe_mr.c to
+>> catch NULL MRs when the length is non-zero.
+>>
+> 
+> <...>
+> 
+>> @@ -432,6 +435,10 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length)
+>>  	int err;
+>>  	u8 *va;
+>>
+>> +	/* mr must be valid even if length is zero */
+>> +	if (WARN_ON(!mr))
+>> +		return -EINVAL;
+> 
+> If 'mr' is NULL, NULL pointer dereference can occur in process_flush()
+> before reaching here. Isn't it better to do the check in process_flush()?
+> 
+>> +
+>>  	if (length == 0)
+>>  		return 0;
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+>> index cccf7c6c21e9..c8e7b4ca456b 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+>> @@ -420,13 +420,23 @@ static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
+>>  	return RESPST_CHK_RKEY;
+>>  }
+>>
+>> +/* if the reth length field is zero we can assume nothing
+>> + * about the rkey value and should not validate or use it.
+>> + * Instead set qp->resp.rkey to 0 which is an invalid rkey
+>> + * value since the minimum index part is 1.
+>> + */
+>>  static void qp_resp_from_reth(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+>>  {
+>> +	unsigned int length = reth_len(pkt);
+>> +
+>>  	qp->resp.va = reth_va(pkt);
+>>  	qp->resp.offset = 0;
+>> -	qp->resp.rkey = reth_rkey(pkt);
+>> -	qp->resp.resid = reth_len(pkt);
+>> -	qp->resp.length = reth_len(pkt);
+>> +	qp->resp.resid = length;
+>> +	qp->resp.length = length;
+> 
+> As you know, the comment above this function is applicable only
+> to RDMA Read and Write. What do you say to mentioning FLUSH
+> here rather than at the one in rxe_flush_pmem_iova().
+> 
+> Thanks,
+> Daisuke
+> 
+>> +	if (pkt->mask & RXE_READ_OR_WRITE_MASK && length == 0)
+>> +		qp->resp.rkey = 0;
+>> +	else
+>> +		qp->resp.rkey = reth_rkey(pkt);
+>>  }
+>>
+> 
+> <...>
+> 
+Daisuke,
 
+The updated patch no longer sets mr = NULL for flush. This check is mainly to defend against someone changing
+it again in the future and is near where mr is dereferenced. You are correct about the comment I can change it.
+Will give it a day or two to see if anything else comes in.
 
-On 02.02.23 09:26, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> This patch set attempts to optimize the parallelism of SMC-R connections,
-> mainly to reduce unnecessary blocking on locks, and to fix exceptions that
-> occur after thoses optimization.
-> 
-> According to Off-CPU graph, SMC worker's off-CPU as that:
-> 
-> smc_close_passive_work                  (1.09%)
->          smcr_buf_unuse                  (1.08%)
->                  smc_llc_flow_initiate   (1.02%)
-> 
-> smc_listen_work                         (48.17%)
->          __mutex_lock.isra.11            (47.96%)
-> 
-> 
-> An ideal SMC-R connection process should only block on the IO events
-> of the network, but it's quite clear that the SMC-R connection now is
-> queued on the lock most of the time.
-> 
-> The goal of this patchset is to achieve our ideal situation where
-> network IO events are blocked for the majority of the connection lifetime.
-> 
-> There are three big locks here:
-> 
-> 1. smc_client_lgr_pending & smc_server_lgr_pending
-> 
-> 2. llc_conf_mutex
-> 
-> 3. rmbs_lock & sndbufs_lock
-> 
-> And an implementation issue:
-> 
-> 1. confirm/delete rkey msg can't be sent concurrently while
-> protocol allows indeed.
-> 
-> Unfortunately,The above problems together affect the parallelism of
-> SMC-R connection. If any of them are not solved. our goal cannot
-> be achieved.
-> 
-> After this patch set, we can get a quite ideal off-CPU graph as
-> following:
-> 
-> smc_close_passive_work                                  (41.58%)
->          smcr_buf_unuse                                  (41.57%)
->                  smc_llc_do_delete_rkey                  (41.57%)
-> 
-> smc_listen_work                                         (39.10%)
->          smc_clc_wait_msg                                (13.18%)
->                  tcp_recvmsg_locked                      (13.18)
->          smc_listen_find_device                          (25.87%)
->                  smcr_lgr_reg_rmbs                       (25.87%)
->                          smc_llc_do_confirm_rkey         (25.87%)
-> 
-> We can see that most of the waiting times are waiting for network IO
-> events. This also has a certain performance improvement on our
-> short-lived conenction wrk/nginx benchmark test:
-> 
-> +--------------+------+------+-------+--------+------+--------+
-> |conns/qps     |c4    | c8   |  c16  |  c32   | c64  |  c200  |
-> +--------------+------+------+-------+--------+------+--------+
-> |SMC-R before  |9.7k  | 10k  |  10k  |  9.9k  | 9.1k |  8.9k  |
-> +--------------+------+------+-------+--------+------+--------+
-> |SMC-R now     |13k   | 19k  |  18k  |  16k   | 15k  |  12k   |
-> +--------------+------+------+-------+--------+------+--------+
-> |TCP           |15k   | 35k  |  51k  |  80k   | 100k |  162k  |
-> +--------------+------+------+-------+--------+------+--------+
-> 
-> The reason why the benefit is not obvious after the number of connections
-> has increased dues to workqueue. If we try to change workqueue to UNBOUND,
-> we can obtain at least 4-5 times performance improvement, reach up to half
-> of TCP. However, this is not an elegant solution, the optimization of it
-> will be much more complicated. But in any case, we will submit relevant
-> optimization patches as soon as possible.
-> 
-> Please note that the premise here is that the lock related problem
-> must be solved first, otherwise, no matter how we optimize the workqueue,
-> there won't be much improvement.
-> 
-> Because there are a lot of related changes to the code, if you have
-> any questions or suggestions, please let me know.
-> 
-> Thanks
-> D. Wythe
-> 
-> v1 -> v2:
-> 
-> 1. Fix panic in SMC-D scenario
-> 2. Fix lnkc related hashfn calculation exception, caused by operator
-> priority
-> 3. Only wake up one connection if the lnk is not active
-> 4. Delete obsolete unlock logic in smc_listen_work()
-> 5. PATCH format, do Reverse Christmas tree
-> 6. PATCH format, change all xxx_lnk_xxx function to xxx_link_xxx
-> 7. PATCH format, add correct fix tag for the patches for fixes.
-> 8. PATCH format, fix some spelling error
-> 9. PATCH format, rename slow to do_slow
-> 
-> v2 -> v3:
-> 
-> 1. add SMC-D support, remove the concept of link cluster since SMC-D has
-> no link at all. Replace it by lgr decision maker, who provides suggestions
-> to SMC-D and SMC-R on whether to create new link group.
-> 
-> 2. Fix the corruption problem described by PATCH 'fix application
-> data exception' on SMC-D.
-> 
-> v3 -> v4:
-> 
-> 1. Fix panic caused by uninitialization map.
-> 
-> v4 -> v5:
-> 
-> 1. Make SMC-D buf creation be serial to avoid Potential error
-> 2. Add a flag to synchronize the success of the first contact
-> with the ready of the link group, including SMC-D and SMC-R.
-> 3. Fixed possible reference count leak in smc_llc_flow_start().
-> 4. reorder the patch, make bugfix PATCH be ahead.
-> 
-> v5 -> v6:
-> 
-> 1. Separate the bugfix patches to make it independent.
-> 2. Merge patch 'fix SMC_CLC_DECL_ERR_REGRMB without smc_server_lgr_pending'
-> with patch 'remove locks smc_client_lgr_pending and smc_server_lgr_pending'
-> 3. Format code styles, including alignment and reverse christmas tree
-> style.
-> 4. Fix a possible memory leak in smc_llc_rmt_delete_rkey()
-> and smc_llc_rmt_conf_rkey().
-> 
-> v6 -> v7:
-> 
-> 1. Discard patch attempting to remove global locks
-> 2. Discard patch attempting make confirm/delete rkey process concurrently
-> 
-> D. Wythe (4):
->    net/smc: llc_conf_mutex refactor, replace it with rw_semaphore
->    net/smc: use read semaphores to reduce unnecessary blocking in
->      smc_buf_create() & smcr_buf_unuse()
->    net/smc: reduce unnecessary blocking in smcr_lgr_reg_rmbs()
->    net/smc: replace mutex rmbs_lock and sndbufs_lock with rw_semaphore
-> 
->   net/smc/af_smc.c   | 25 ++++++++++++++----
->   net/smc/smc_core.c | 75 +++++++++++++++++++++++++++---------------------------
->   net/smc/smc_core.h |  6 ++---
->   net/smc/smc_llc.c  | 34 ++++++++++++-------------
->   4 files changed, 78 insertions(+), 62 deletions(-)
-> 
-Thank you for the patches!
-First a good news, I did some tests by running SMC_LLC_FLOW_RKEY 
-concurrently on one peer while on another peer not, it looks good. So I 
-don't think that the communication with z/OS would be broken through 
-these patches.
-But I still need some time to test them thoghouly, I'll let you know ASAP.
+Regards,
+
+Bob Pearson
