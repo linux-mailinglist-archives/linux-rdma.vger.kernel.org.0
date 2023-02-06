@@ -2,44 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7CB68BC88
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Feb 2023 13:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304A768BD3B
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Feb 2023 13:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjBFMMO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Feb 2023 07:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
+        id S229759AbjBFMsh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Feb 2023 07:48:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbjBFMMM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Feb 2023 07:12:12 -0500
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AF2EC43;
-        Mon,  6 Feb 2023 04:12:04 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vb36paa_1675685520;
-Received: from 30.221.149.210(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vb36paa_1675685520)
-          by smtp.aliyun-inc.com;
-          Mon, 06 Feb 2023 20:12:01 +0800
-Message-ID: <93bc1405-2f76-54b6-bae3-39da4542e618@linux.alibaba.com>
-Date:   Mon, 6 Feb 2023 20:11:59 +0800
+        with ESMTP id S230034AbjBFMsg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Feb 2023 07:48:36 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D2E14EBF
+        for <linux-rdma@vger.kernel.org>; Mon,  6 Feb 2023 04:48:31 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E88E360EC8
+        for <linux-rdma@vger.kernel.org>; Mon,  6 Feb 2023 12:48:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8E46C433EF;
+        Mon,  6 Feb 2023 12:48:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675687710;
+        bh=JVxlqlz08cUhM1e5KxEKB8DvFpBBrbStY5uz1fXjVvM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=eL9eOzWKzPKF2A1faad09cpdvAXYiZwW/brKaD1Y5BmbWkjfTvAFD36r4hjkhVe71
+         1l3qG+Ex5Bq2YQHb4Qti9xoFmLFSdbAyXYBH/9CK7YbF3uDl1WacxjCyGUjhOFB3Rz
+         szP7WabkmhzpePUlEvaQNJUoDcIcF7E89TJsi6l/Cf1543Wsw1g31GVJG5EdDqGR9l
+         FVOZ0D0I7NXPFgKxKs6NafEku4Mh+dYqbmydJLwyTKXre9zLIo833BZuJxA6au0y8U
+         dFDewt9PSIABZzFKbH5PMH1wu9X0oHKhBR8aMRpuO7if0pXxHRtxoL8RnxdqnkzE8K
+         f8f2hlYdW27rA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     linux-rdma@vger.kernel.org, Bernard Metzler <bmt@zurich.ibm.com>
+Cc:     apopple@nvidia.com, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <20230202101000.402990-1-bmt@zurich.ibm.com>
+References: <20230202101000.402990-1-bmt@zurich.ibm.com>
+Subject: Re: [PATCH] RDMA/siw: Fix user page pinning accounting
+Message-Id: <167568770698.125328.17381455127017651737.b4-ty@kernel.org>
+Date:   Mon, 06 Feb 2023 14:48:26 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [net-next v7 0/4] net/smc: optimize the parallelism of SMC-R
- connections
-Content-Language: en-US
-To:     Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1675326402-109943-1-git-send-email-alibuda@linux.alibaba.com>
- <273e8c67-fbb0-edd8-600f-512c1a6812f3@linux.ibm.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <273e8c67-fbb0-edd8-600f-512c1a6812f3@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Mailer: b4 0.12-dev-a055d
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -47,26 +54,17 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-
-
-On 2/6/23 7:06 PM, Wenjia Zhang wrote:
+On Thu, 02 Feb 2023 11:10:00 +0100, Bernard Metzler wrote:
+> To avoid racing with other user memory reservations, immediately
+> account full amount of pages to be pinned.
 > 
 > 
-> On 02.02.23 09:26, D. Wythe wrote:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
 
-> This answer seems too late ;-)
-> 
-> I did some test as thoroughly as I can, it looks good to me.
-> 
-> Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Applied, thanks!
 
-Hi, wenjia
+[1/1] RDMA/siw: Fix user page pinning accounting
+      https://git.kernel.org/rdma/rdma/c/65a8fc30fb6722
 
-Thank you very much for your test. I'm very glad that you it passed.
-I will resend those as soon as possible. (make confirm/delete rkey process concurrently)
-
-Best wishes.
-D. Wythe
-
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
