@@ -2,44 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0067568B6A7
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Feb 2023 08:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A633568B6B2
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Feb 2023 08:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbjBFHsb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Feb 2023 02:48:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
+        id S229910AbjBFHtf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Feb 2023 02:49:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbjBFHs1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Feb 2023 02:48:27 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4175C18A9B;
-        Sun,  5 Feb 2023 23:48:23 -0800 (PST)
+        with ESMTP id S229921AbjBFHtP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Feb 2023 02:49:15 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2051.outbound.protection.outlook.com [40.107.220.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F8B1E1FE;
+        Sun,  5 Feb 2023 23:48:50 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aLsp8OkfnvgUX+LaCm1Dc+hdKUsiL3axpftCKUHDm1OQkZpSVWKd41QJpSxq9ko55snTctoS/hMmNjRr+itI3WbB3Q3AzmA6538HBTiXXlDO0S3AaJVzGqI3eu5++vIHZ28QtTlNa+k+dSpLAd+wLCU2EFbS1oHBSxKOk5zueaVmKcpYV50EsgXkylZrJGkkEePSOvrV9I/Bsj2oa8vxDvjsc+kGnGm5e5xycHnK4lkQOFyzYKvS14dWfW/63g0BN0S08F1XDTOjdIwd3UKL6vwTI7+T6eKerf0GqbZqLxKFY5wI1baz3a/2JfDv/WRas+jgQG8iAAdpSy/yR16sQg==
+ b=E3zRX50/Lp7tD2TtC29nYwzq6A4eIeezs2ezZLJbj5liFzIktI7OS/65Hdh0xdp/PbjYV4dFv+Sfu+uAVbcPXM8eyXcRocoD2zYb2z/CjuVbgm8wovpcT3YDm8Xc6nM8tbGiKCvwSE23Wky+fOWMCzGDoPVmQRD3fA1WLL3UwycdPIC5/p+uybOlCh1MzBl+B75jF/G774DNZqcRUJ+0Op60U7lfa4JnFF0616GDdrUQxuI69isqjPKJaTg25VkAYWAM4tk6zwg9aJvrbGYMRcMXK9TLfMTmDixIohIc98CIWnJmGhPE8kG3ZO3sYzL8rIXc/P5PRKjgvYqAmfNTMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xC0ascId9hC0FQ0mqA9gGlsD4Tec21nIaiiKW1ANuos=;
- b=e2vefkFqyA3sW3pHTN46sHlZlBtRrXMyAf4In3Tgp7gdMSg10ziiTG5iwAIpdN+Nv9Oog6rQy/dMDY2dO6w3grxgRGp9gRCGkURF3SWuxdZ5pDPWPjWfF80aA0GfSO+a7RMpi+RETUh04airuQKTuoiT7NdVEbit7kL7o+ESiApp+a+LNO8scmfZwfOWs/wTgyVxb6qqRBkFNcpqOIFrxMM0d+LT8KWcaV3OeF5iSjB1ePBi+f8eg+llIHnurirOEwoKyueOezpUAMsA1l275ngrS9mwcE1qemLfX/zE+eYf570QvCXAfD87djcKO8wu77Flv39WV5CzVvqq2LSVCQ==
+ bh=Ggww8xGqVkEn1m6fFSqIeGeKfBiyQH3gSOfKyWdB+MU=;
+ b=nRqcU8SlI5ozKvuRTjwIW7R1YRuy+MsMXgCydX2k1NVuRPIGWcYO8v5Xv4jnYToHxkvADsrPTDLwrUvNDhxWy8WF0yPBNQPUG+jlpNQTy7572cdqNHgV+oP/R2sRd05uPR3VcyUY/5LKmnMIkDEz0ta3etjkfVH4U8FOVAI/uD8OqMf6iaK8edHggSwZSUXatrSS6TxXu3XNiH8Z/RTEtSkKO7FZBpkm/7kMghp8mEqm0sECRqs5QO4kYWsHR3s1zM61ZQCwbZKmhjgXiYWJm2i6jVGaV4H+Gyxw2V9KsoEGgTDt1E4tWgvsWNXfQ5u9CVTPHm9aVfyXpwIVtnLWpA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xC0ascId9hC0FQ0mqA9gGlsD4Tec21nIaiiKW1ANuos=;
- b=A+FFKqJYzlIAVESoxZN19dbMh3tOUmAXg71BZGbiuV4HgT2WwNhXvo9H+EqVd1hYY7W1iy9x2eJ4H3XwaGr2jO5d9GIETU1TZlbpbaiAHeuE5em9pnJ4MNG1/6OKDbNRjYa1RYLSWzUTRajUam0hS8av8ruJv6K2TuFY+X4QQbLJGSDzZBmJnFND8gFdvARudQbQbxKxMrYh7Rhm7JbL033fzE2OtsmZD+IYJ1sO5/fcSIk019OYzNFb21GL+KvbDlEwCq+4mkJl2w71KvdFVvoO4dgzK/vrr1yASUdmbDEzRitZTTs59gTXhfNc79Z05lPOjSUH1lVBxsi65AXCxA==
+ bh=Ggww8xGqVkEn1m6fFSqIeGeKfBiyQH3gSOfKyWdB+MU=;
+ b=Y4HQgHQbpd91DuQaDucY1BFD5ChpJLapbErCJK2J+Qdg5Zx3stAKxZfg6VuRoL8s4vyXjQXCzFra6r6nA+gOs06zJbufQur7eGvFXmHJbzoSFxkGL6DF+KhHE3q3v1ciT5JfcQtrpuAa7n1zHzaXkTUZEZfvuMMfQKE71BIrdvzHusNUsFlE0TrMLO/PV0c0lXrVjw4CBw7P+B5+SVnn04YuhMPSKptsOCYFvaEaexRvZykf3inWlxlrpw8GKCfR1+2MVlVy2sYAd831w0X9oO2VtIruCF1GfWwqfQyAItcM+2e0HwP31U+iWy2oh1Y/G8H42/B1RHbxRGtzlWnuuA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
  by CY8PR12MB7097.namprd12.prod.outlook.com (2603:10b6:930:63::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.34; Mon, 6 Feb
- 2023 07:48:21 +0000
+ 2023 07:48:42 +0000
 Received: from BYAPR12MB3176.namprd12.prod.outlook.com
  ([fe80::4bd4:de67:b676:67df]) by BYAPR12MB3176.namprd12.prod.outlook.com
  ([fe80::4bd4:de67:b676:67df%6]) with mapi id 15.20.6064.032; Mon, 6 Feb 2023
- 07:48:21 +0000
+ 07:48:42 +0000
 From:   Alistair Popple <apopple@nvidia.com>
 To:     linux-mm@kvack.org, cgroups@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
@@ -48,70 +48,66 @@ Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com, jhubbard@nvidia.com,
         "Daniel P . Berrange" <berrange@redhat.com>,
         Alex Williamson <alex.williamson@redhat.com>,
         Alistair Popple <apopple@nvidia.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-fpga@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org,
-        bpf@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH 01/19] mm: Introduce vm_account
-Date:   Mon,  6 Feb 2023 18:47:38 +1100
-Message-Id: <e80b61561f97296a6c08faeebe281cb949333d1d.1675669136.git-series.apopple@nvidia.com>
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH 04/19] infiniband/umem: Convert to use vm_account
+Date:   Mon,  6 Feb 2023 18:47:41 +1100
+Message-Id: <e0783b0b0f869cea19b45ee58f10618862daf6be.1675669136.git-series.apopple@nvidia.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
 References: <cover.c238416f0e82377b449846dbb2459ae9d7030c8e.1675669136.git-series.apopple@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SY6PR01CA0010.ausprd01.prod.outlook.com
- (2603:10c6:10:e8::15) To BYAPR12MB3176.namprd12.prod.outlook.com
+X-ClientProxiedBy: SYXPR01CA0103.ausprd01.prod.outlook.com
+ (2603:10c6:0:2d::12) To BYAPR12MB3176.namprd12.prod.outlook.com
  (2603:10b6:a03:134::26)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|CY8PR12MB7097:EE_
-X-MS-Office365-Filtering-Correlation-Id: f1f32d26-9f86-4df0-cce9-08db081684ae
+X-MS-Office365-Filtering-Correlation-Id: 5a73dbe3-3319-4ce2-5ac6-08db08169148
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d9R20AXDYdOn6o7fqjRKlbn88gfGEhrLB0K3l/C7lo/hVvC76CZp4upyM7QvG93ysjuMVTpq/EYzK3rKe+gwBlyHxY43+Hqd/7szzD+TETPh4YIz49dsl8Pco7UcHmIYR1jDb462M2A51jpFSyZ6+sGx3FpEttvQxlIDeCWQn6283qmfDF4QeL0MGLkLR28DA19JymNK1RtyPkmfKZ09MLSCaFGJ3h12WGdvnJ5w7VGFIKFvz5stxIwwdIt0+gYERQCSlt2L26GRq9KV2GcYX8YE/OcLGZSrecKGGipuwqQm8Z7Ynh+TybkKzd+Y+ZdZKAXFYvSW5vAWUTT6n5GHEu+1RV85ersB37hzKHCRBbBjQk2dt2lN4HS7GS390bwhNfyVDFRZjE/rWx/Sf6l81vQ0i636fN5go+YWW9m/Cs2GeJ2kUXo2o5oo3aZ6hLhWLaDc2cMg8f+dO2hQNOm31Wmf2fNIgwK112xrMKjJwP7uMzzPMRVJHnTwtouclvVkulpeSj9ZswUbyFtJMziahx/BcMaIlFXt789djlRAEZlvA5Dolz1bNDtuZdc6P5ZWA0RBVH2YzDo/Bl5+FviW2ege3AA0jp0C20IRSY3uXiO/9yQxMIEjpPmWqNjE32CPYcudf9GcWGjjbN/MTX2aSQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(366004)(39860400002)(396003)(136003)(346002)(376002)(451199018)(38100700002)(36756003)(6506007)(6666004)(6512007)(26005)(186003)(478600001)(86362001)(6486002)(8676002)(66476007)(83380400001)(66946007)(2616005)(66556008)(4326008)(316002)(54906003)(7416002)(2906002)(8936002)(5660300002)(41300700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: F/B80LQTVpL3jSLjBEjJ9QzNuXDWASskW1lHet9GroRZuF0YWlRLQJ2l6+dKcvBNT4uIdj3tgA50O6uDks7H3QyeQQ2mmNBfrQwGddxplhOX+lzizG0xwlfnhw733kRTbNW5m9EF7VmCDQU/ksswQ0Xvfq8Zq5s/1UC4s79qXLLvWzyRqJah4PaY4VukpAf2mK2sTLhRsGaV6p8fdYqI3lR4POWM93c/dKkAxlQRI1TzhldgsdwWxlXfew/fjG+QalrH9eRuTwPNLzgF/9s4+R239SOVYyzPdOq//F8y2RIxBal2+R78/9ZQkj7F/8dFZ0z8ET88cIyClSZIqNkOYA8/1YeyVWPGUG84L8qdhCssAy54zvJBGXlpzMkl4XjBp0yo9xqHAqwmu84/gql6ORMSdWpkFbleqf0pxocB31fOAliRLE26qLtbqQ5/1Lca0tKOMITqd7aBQJe8IrKMOSwTmj4A+z8CJ1yt7E9cQo19MW0LjJsqd5DhISCVs0UdExjs44vaMeUT/xLHO1DHOzY/Sbk/juEiillJDTHT6z++t33Sss25mBfe3AwjY4SPgZ2HzujYCccPx1VNfUfWbHNgowcQCR+Y6K0iLAeGv3EktxQpf8nahk4jzTTFBrN2
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(366004)(39860400002)(396003)(136003)(346002)(376002)(451199018)(38100700002)(36756003)(6506007)(6512007)(26005)(186003)(478600001)(86362001)(6486002)(8676002)(66476007)(83380400001)(66946007)(2616005)(66556008)(4326008)(316002)(54906003)(7416002)(2906002)(8936002)(5660300002)(41300700001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+Q21fH/s4Vq+Fkqt0pEjMYKv/M0hPKFwEmzpwjecwZ8dEKYu6PTd6B1USsF/?=
- =?us-ascii?Q?VIewWV1Iy7hIjEqgKdvNy9XCHb6UCEjDlG2t6luAcyANcpffEfiNXj358C55?=
- =?us-ascii?Q?PHbMpnatLbnb82LSxL2sxcLHQRbRVzZM4h6g/3499Op4qz4eIG6rIq3sP9GR?=
- =?us-ascii?Q?rHx6Tqds5OHj2oy53ycVE3dECU0kComR0bp0U7UTdqpK3MVIK9uKGtcSo4Ek?=
- =?us-ascii?Q?Cbqps8ws+uJxEI5RpRZ5p7iBSlY1ReOPfXul3U6G9MPEBkweNR5Wo4HcAc+B?=
- =?us-ascii?Q?jX1x0G6BMm8BJAXdvBORkAl4CFmowC8Z7E5ZKBPUT5ioGLu+OjJVqhEa8hve?=
- =?us-ascii?Q?ZC2M2WJRwoyMFTyjy2k0f0mQRnvj+PbEIX9nx0SvfTjUFABqKwU2Z/1Fm7Xv?=
- =?us-ascii?Q?9WusQn3HTFnsyEhVU+QqZxtf77029QaAn7uZJvEiblZXE7TUUdcHfTdyjgSV?=
- =?us-ascii?Q?OCgszweWtFLTMBCKcBoMx6yuvAiU7de3NbVmKBBV8LRfJqjM7RFqUHnRfyvt?=
- =?us-ascii?Q?K1pKsfXe4zb2OgYq63aCbk2+0hF6r+nw/5hVzf3oLt+yiapdrUwdK204DQoA?=
- =?us-ascii?Q?k7KTXc0CUaKI+YNGo7bKPIG5cPGui7kSYT8ZHQawvSD5trq1ErBFkeBBXADo?=
- =?us-ascii?Q?ptjHtDfi3Pg7Ff9bjSqv6u42noCshGmM1eBj496JFjjjXcJhMESM0UuKS0F2?=
- =?us-ascii?Q?TKDR4mzK8GH/muRsjSoL0JfMn014g6VRrKHh+a22/xsmKrh3u4HljrqaMeDB?=
- =?us-ascii?Q?4He5JHwM8s6+kyeU3CkKgOVeyN4xgfwHQ6JVUOEPzp4X3pKkge5V1WIX3TkA?=
- =?us-ascii?Q?s/DwB8n2QfUb6ruFRychXQVgfdrAn7N5YcN5N2pPqmatRWTthyyJoTWcZlP3?=
- =?us-ascii?Q?5J8yKRhYIQwQbIQ2MaYqf5KLWk134Bzhxzo196snfUec2RW4rFit/7Kw9A1e?=
- =?us-ascii?Q?mZZT6nrbdKxVMb2x4rLRIxM6jc3snl4WQrocd8r+Jex/vzsh4zSwhhQK/Zei?=
- =?us-ascii?Q?tOfxrewOqeLpG4hAG6rV+1VYTwlTQSKpvx/dthFLHcaIWOWtpB7h22PdCdxl?=
- =?us-ascii?Q?4ctObXm+w4mkFr6WPaoITf8lxJbTwuYTIvy/Mq7HbwmfN07KQI8tkrtcRQ3i?=
- =?us-ascii?Q?ewm7r0HFtWQlYXGN5XBXsek/Aegzb5gF66fpZ5YIsbXbHelBwOnZo3v5sLif?=
- =?us-ascii?Q?uZO8AKQCMFaIOK1Twc761o7A+q72PinuISoun30BXs8bsrh8ysRQpqLPQZ+x?=
- =?us-ascii?Q?f48dz4zs6W4s9UdVoaLqG6poioJSXQUKEZX9xL5SLtn6VQrm9k6GtYtOTt9B?=
- =?us-ascii?Q?qPFEyEwU4aQb7bAr9tjtFNFQyul65a2UajRWmTk8oOjmPQjG+0Na8AIoKRBX?=
- =?us-ascii?Q?DTYolD25NtClc2GWUtxdF/r0g6WMambOrmoQN6PDvnNKiH2Y3LfxvCe/hoG9?=
- =?us-ascii?Q?6VD9Gr2SfaI7ut/DvIDGvS6cWJREA9GsI7fQpkHJD5us1nkC88mmR73jv99T?=
- =?us-ascii?Q?+Zys5Jd8GStZTQDKhn9QFylG+VJvDSWAbh1nlVL/o3r8ujdUkBp+ttAnY5R8?=
- =?us-ascii?Q?3qnC7BMvidrwhW6C5R1H2kqzZKGGZ+24X44EGeMu?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ubW3xrU0eGbFRq+G6RJcwlsfu6Ao+kgomSilgOyEGWZ8GnBsXzXYNDlWM32S?=
+ =?us-ascii?Q?9LpWG3caLY+45OVebDiKsG9RjYQeSCNLseBRz9Q/nsngnSZ44QPcejoiJJjH?=
+ =?us-ascii?Q?zbe+9ASDL3KZ8Vd0FbNgelO3asfiSNs0ykO57Hd+OOqppUqmwpg7qGk4FHDR?=
+ =?us-ascii?Q?1rZAQZHVxbyBswPbqdDLmXVPJRxyCYz4g/dIWPObS6YibcM90G1kPud6Gd5b?=
+ =?us-ascii?Q?lcwePU/DQnD4ZbnfqTi9NAxTLz826/zRE4QvOemkr6fxeGr3PGVoSADxhqbu?=
+ =?us-ascii?Q?3CVMSY0Gq+0slPx+k9H6FuCEXqCS+wCVlcLsb3rNn4KJzc9RR6qwUx1IAXOL?=
+ =?us-ascii?Q?DhhxzkHWeRWm7RpWkM353mwqX5pqx7c2zklTbKFIvUzos4hva0ZzNjGOZJKk?=
+ =?us-ascii?Q?XRguAFsTKMyK8Tt26D/Ns1IxMBNu0ogQD9zsGTvBcvoq2mdnjJkH+x8SU8+r?=
+ =?us-ascii?Q?2xdUC2IC48OwBPfd9O68iZybjp5hi0m69EU3qrtcrReabHCrO8UdlOL7243A?=
+ =?us-ascii?Q?CaNmlyABkfU7nkpKepp9R/Y+ScXtI7UMtyNAuVB5UluoNjLx5SATikTtw3Pt?=
+ =?us-ascii?Q?XPj7herx2KK1/o4QHS4ytiLWQRauR0Ws5IsuY34yrO46U72rdx1OhHXfLQ5F?=
+ =?us-ascii?Q?fPdDIYm+ygPb5/6WSDtwnf6pYl/41nKB46r8CqJpsGKRxl+fXlc6aLTc0HUf?=
+ =?us-ascii?Q?X++4VycAwoCRmWeM3cQXQehFj22YVnMpSUZ72bvYKsBKZvBwAS2e6VpDieFx?=
+ =?us-ascii?Q?3qm2e7di/Q7qfeNmeY3uMX91421Vq9H+jPqS6i2NbI84Z8PkJPevUu+1jyhZ?=
+ =?us-ascii?Q?F6+MZ2fee+SoP0ej9TZOPhjjP6k0bUJHvHRgNXNrfe5doszBcgA8QxcXajOI?=
+ =?us-ascii?Q?PoQDnzbS/aADmmNO0lmPTRh3sfBtZo+Y/9OywcgJS2X/JKVA+KWID+sg/Mj8?=
+ =?us-ascii?Q?JQT6Mf0B+7Yc9IrP76s7IdRSyVbwCBhqFbSnSRy6NbEGh8EPkIQs/coWPsjz?=
+ =?us-ascii?Q?qdN77uueeJ19G3sj6OZTe4kcqMm/bmGB4ckjmBJ919mPyo55zKyQWnDcjsPx?=
+ =?us-ascii?Q?CzWlkzdNhB3K5qPbi7G3kAaz8qYId16bwGZPrtOwpf5EelwU35o2B7ndMRLq?=
+ =?us-ascii?Q?lEyGSpWH7fNS6fW9hlNlG+jcFpO6rRe79QlXH8I9m4iEbxiySI3St6d0lzO+?=
+ =?us-ascii?Q?cUX8H+0kcAMswl5HYwzMJpYKvRsQMEnzR255R2ocS4daaQwzJsP1RBaLJ52c?=
+ =?us-ascii?Q?us8zYbOpvYvQSjy2a5LDeu73N4hMIbrEhUQT5ChLS1NLaVdjr8gbt1akfdL6?=
+ =?us-ascii?Q?bpbbMnnWV8bv0aC54TcvNKS+Ea8b5udNZfZWD1J4odCyKsX2QXxwIs4UP5+C?=
+ =?us-ascii?Q?wYxbY4AGVtxB5nc1i9UQRCLplKteBtBcmzKOF6ugM99Dyo8d1JzOejv5dkdX?=
+ =?us-ascii?Q?CneCfDsamuTe/PKBihj2UHA0YSZdSzOY3vjXsyfib9hdwrNQmS+uL+u6Rxer?=
+ =?us-ascii?Q?WAXuDRWa7M8M0C/HudBP80dHFEgxiVEn7NnRTfXODB3v3WRylzD02OaypRCs?=
+ =?us-ascii?Q?1sYhWDuc649+9Wfhf4wF6+wFKVpWik+fdBDInjfZ?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1f32d26-9f86-4df0-cce9-08db081684ae
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a73dbe3-3319-4ce2-5ac6-08db08169148
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2023 07:48:21.2970
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2023 07:48:42.3891
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VKLsBrolhjVwe4eRftYA1HkxxQ/SlJh07YGyjddLzMudWGCcOJdVx+UWim/wuIqJ+Bp6tmOMG+wJxI7NtMvsPg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7xkdaR23n6b0+bhaWr+Avl1uc+gTnm7SJDHdHr2AR6iQKfTKWkLr3YjTvCIVM1p3eNklwHEvskiS3YS7BrKIEA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7097
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
@@ -123,253 +119,152 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Kernel drivers that pin pages should account these pages against
-either user->locked_vm and/or mm->pinned_vm and fail the pinning if
-RLIMIT_MEMLOCK is exceeded and CAP_IPC_LOCK isn't held.
-
-Currently drivers open-code this accounting and use various methods to
-update the atomic variables and check against the limits leading to
-various bugs and inconsistencies. To fix this introduce a standard
-interface for charging pinned and locked memory. As this involves
-taking references on kernel objects such as mm_struct or user_struct
-we introduce a new vm_account struct to hold these references. Several
-helper functions are then introduced to grab references and check
-limits.
-
-As the way these limits are charged and enforced is visible to
-userspace we need to be careful not to break existing applications by
-charging to different counters. As a result the vm_account functions
-support accounting to different counters as required.
-
-A future change will extend this to also account against a cgroup for
-pinned pages.
+Converts the infiniband core umem code to use the vm_account structure
+so that pinned pages can be charged to the correct cgroup with
+account_pinned_vm().
 
 Signed-off-by: Alistair Popple <apopple@nvidia.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-fpga@vger.kernel.org
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
 Cc: linux-rdma@vger.kernel.org
-Cc: virtualization@lists.linux-foundation.org
-Cc: kvm@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: cgroups@vger.kernel.org
-Cc: io-uring@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: bpf@vger.kernel.org
-Cc: rds-devel@oss.oracle.com
-Cc: linux-kselftest@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 ---
- include/linux/vm_account.h |  56 +++++++++++++++++-
- mm/util.c                  | 127 ++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 183 insertions(+)
- create mode 100644 include/linux/vm_account.h
+ drivers/infiniband/core/umem.c     | 16 ++++++----------
+ drivers/infiniband/core/umem_odp.c |  6 ++++++
+ include/rdma/ib_umem.h             |  2 ++
+ 3 files changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/vm_account.h b/include/linux/vm_account.h
-new file mode 100644
-index 0000000..b4b2e90
---- /dev/null
-+++ b/include/linux/vm_account.h
-@@ -0,0 +1,56 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_VM_ACCOUNT_H
-+#define _LINUX_VM_ACCOUNT_H
-+
-+/**
-+ * enum vm_account_flags - Determine how pinned/locked memory is accounted.
-+ * @VM_ACCOUNT_TASK: Account pinned memory to mm->pinned_vm.
-+ * @VM_ACCOUNT_BYPASS: Don't enforce rlimit on any charges.
-+ * @VM_ACCOUNT_USER: Account locked memory to user->locked_vm.
-+ *
-+ * Determines which statistic pinned/locked memory is accounted
-+ * against. All limits will be enforced against RLIMIT_MEMLOCK and the
-+ * pins cgroup if CONFIG_CGROUP_PINS is enabled.
-+ *
-+ * New drivers should use VM_ACCOUNT_USER. VM_ACCOUNT_TASK is used by
-+ * pre-existing drivers to maintain existing accounting against
-+ * mm->pinned_mm rather than user->locked_mm.
-+ *
-+ * VM_ACCOUNT_BYPASS may also be specified to bypass rlimit
-+ * checks. Typically this is used to cache CAP_IPC_LOCK from when a
-+ * driver is first initialised. Note that this does not bypass cgroup
-+ * limit checks.
-+ */
-+enum vm_account_flags {
-+	VM_ACCOUNT_USER = 0,
-+	VM_ACCOUNT_BYPASS = 1,
-+	VM_ACCOUNT_TASK = 1,
-+};
-+
-+struct vm_account {
-+	struct task_struct *task;
-+	struct mm_struct *mm;
-+	struct user_struct *user;
-+	enum vm_account_flags flags;
-+};
-+
-+void vm_account_init(struct vm_account *vm_account, struct task_struct *task,
-+		struct user_struct *user, enum vm_account_flags flags);
-+
-+/**
-+ * vm_account_init_current - Initialise a new struct vm_account.
-+ * @vm_account: pointer to uninitialised vm_account.
-+ *
-+ * Helper to initialise a vm_account for the common case of charging
-+ * with VM_ACCOUNT_TASK against current.
-+ */
-+static inline void vm_account_init_current(struct vm_account *vm_account)
-+{
-+	vm_account_init(vm_account, current, NULL, VM_ACCOUNT_TASK);
-+}
-+
-+void vm_account_release(struct vm_account *vm_account);
-+int vm_account_pinned(struct vm_account *vm_account, unsigned long npages);
-+void vm_unaccount_pinned(struct vm_account *vm_account, unsigned long npages);
-+
-+#endif /* _LINUX_VM_ACCOUNT_H */
-diff --git a/mm/util.c b/mm/util.c
-index b56c92f..d8c19f8 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -23,6 +23,7 @@
- #include <linux/processor.h>
- #include <linux/sizes.h>
- #include <linux/compat.h>
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 755a9c5..479b7f0 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -149,8 +149,6 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ {
+ 	struct ib_umem *umem;
+ 	struct page **page_list;
+-	unsigned long lock_limit;
+-	unsigned long new_pinned;
+ 	unsigned long cur_base;
+ 	unsigned long dma_attr = 0;
+ 	struct mm_struct *mm;
+@@ -186,6 +184,7 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 	umem->writable   = ib_access_writable(access);
+ 	umem->owning_mm = mm = current->mm;
+ 	mmgrab(mm);
++	vm_account_init_current(&umem->vm_account);
+ 
+ 	page_list = (struct page **) __get_free_page(GFP_KERNEL);
+ 	if (!page_list) {
+@@ -199,11 +198,7 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 		goto out;
+ 	}
+ 
+-	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+-
+-	new_pinned = atomic64_add_return(npages, &mm->pinned_vm);
+-	if (new_pinned > lock_limit && !capable(CAP_IPC_LOCK)) {
+-		atomic64_sub(npages, &mm->pinned_vm);
++	if (vm_account_pinned(&umem->vm_account, npages)) {
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+@@ -248,12 +243,13 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 
+ umem_release:
+ 	__ib_umem_release(device, umem, 0);
+-	atomic64_sub(ib_umem_num_pages(umem), &mm->pinned_vm);
++	vm_unaccount_pinned(&umem->vm_account, ib_umem_num_pages(umem));
+ out:
+ 	free_page((unsigned long) page_list);
+ umem_kfree:
+ 	if (ret) {
+ 		mmdrop(umem->owning_mm);
++		vm_account_release(&umem->vm_account);
+ 		kfree(umem);
+ 	}
+ 	return ret ? ERR_PTR(ret) : umem;
+@@ -275,8 +271,8 @@ void ib_umem_release(struct ib_umem *umem)
+ 
+ 	__ib_umem_release(umem->ibdev, umem, 1);
+ 
+-	atomic64_sub(ib_umem_num_pages(umem), &umem->owning_mm->pinned_vm);
+-	mmdrop(umem->owning_mm);
++	vm_unaccount_pinned(&umem->vm_account, ib_umem_num_pages(umem));
++	vm_account_release(&umem->vm_account);
+ 	kfree(umem);
+ }
+ EXPORT_SYMBOL(ib_umem_release);
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index e9fa22d..4fbca3e 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -130,6 +130,7 @@ struct ib_umem_odp *ib_umem_odp_alloc_implicit(struct ib_device *device,
+ 	umem->ibdev = device;
+ 	umem->writable = ib_access_writable(access);
+ 	umem->owning_mm = current->mm;
++	vm_account_init_current(&umem->vm_account);
+ 	umem_odp->is_implicit_odp = 1;
+ 	umem_odp->page_shift = PAGE_SHIFT;
+ 
+@@ -137,6 +138,7 @@ struct ib_umem_odp *ib_umem_odp_alloc_implicit(struct ib_device *device,
+ 	ret = ib_init_umem_odp(umem_odp, NULL);
+ 	if (ret) {
+ 		put_pid(umem_odp->tgid);
++		vm_account_release(&umem->vm_account);
+ 		kfree(umem_odp);
+ 		return ERR_PTR(ret);
+ 	}
+@@ -179,6 +181,7 @@ ib_umem_odp_alloc_child(struct ib_umem_odp *root, unsigned long addr,
+ 	umem->address    = addr;
+ 	umem->writable   = root->umem.writable;
+ 	umem->owning_mm  = root->umem.owning_mm;
++	umem->vm_account = root->umem.vm_account;
+ 	odp_data->page_shift = PAGE_SHIFT;
+ 	odp_data->notifier.ops = ops;
+ 
+@@ -239,6 +242,7 @@ struct ib_umem_odp *ib_umem_odp_get(struct ib_device *device,
+ 	umem_odp->umem.address = addr;
+ 	umem_odp->umem.writable = ib_access_writable(access);
+ 	umem_odp->umem.owning_mm = current->mm;
++	vm_account_init_current(&umem_odp->umem.vm_account);
+ 	umem_odp->notifier.ops = ops;
+ 
+ 	umem_odp->page_shift = PAGE_SHIFT;
+@@ -255,6 +259,7 @@ struct ib_umem_odp *ib_umem_odp_get(struct ib_device *device,
+ 
+ err_put_pid:
+ 	put_pid(umem_odp->tgid);
++	vm_account_release(&umem_odp->umem.vm_account);
+ 	kfree(umem_odp);
+ 	return ERR_PTR(ret);
+ }
+@@ -278,6 +283,7 @@ void ib_umem_odp_release(struct ib_umem_odp *umem_odp)
+ 		kvfree(umem_odp->pfn_list);
+ 	}
+ 	put_pid(umem_odp->tgid);
++	vm_account_release(&umem_odp->umem.vm_account);
+ 	kfree(umem_odp);
+ }
+ EXPORT_SYMBOL(ib_umem_odp_release);
+diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+index 92a673c..065cd2c 100644
+--- a/include/rdma/ib_umem.h
++++ b/include/rdma/ib_umem.h
+@@ -10,6 +10,7 @@
+ #include <linux/list.h>
+ #include <linux/scatterlist.h>
+ #include <linux/workqueue.h>
 +#include <linux/vm_account.h>
+ #include <rdma/ib_verbs.h>
  
- #include <linux/uaccess.h>
- 
-@@ -431,6 +432,132 @@ void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
- #endif
- 
- /**
-+ * vm_account_init - Initialise a new struct vm_account.
-+ * @vm_account: pointer to uninitialised vm_account.
-+ * @task: task to charge against.
-+ * @user: user to charge against. Must be non-NULL for VM_ACCOUNT_USER.
-+ * @flags: flags to use when charging to vm_account.
-+ *
-+ * Initialise a new uninitialised struct vm_account. Takes references
-+ * on the task/mm/user/cgroup as required although callers must ensure
-+ * any references passed in remain valid for the duration of this
-+ * call.
-+ */
-+void vm_account_init(struct vm_account *vm_account, struct task_struct *task,
-+		struct user_struct *user, enum vm_account_flags flags)
-+{
-+	vm_account->task = get_task_struct(task);
-+
-+	if (flags & VM_ACCOUNT_USER)
-+		vm_account->user = get_uid(user);
-+
-+	mmgrab(task->mm);
-+	vm_account->mm = task->mm;
-+	vm_account->flags = flags;
-+}
-+EXPORT_SYMBOL_GPL(vm_account_init);
-+
-+/**
-+ * vm_account_release - Initialise a new struct vm_account.
-+ * @vm_account: pointer to initialised vm_account.
-+ *
-+ * Drop any object references obtained by vm_account_init(). The
-+ * vm_account must not be used after calling this unless reinitialised
-+ * with vm_account_init().
-+ */
-+void vm_account_release(struct vm_account *vm_account)
-+{
-+	put_task_struct(vm_account->task);
-+	if (vm_account->flags & VM_ACCOUNT_USER)
-+		free_uid(vm_account->user);
-+
-+	mmdrop(vm_account->mm);
-+}
-+EXPORT_SYMBOL_GPL(vm_account_release);
-+
-+/*
-+ * Charge pages with an atomic compare and swap. Returns -ENOMEM on
-+ * failure, 1 on success and 0 for retry.
-+ */
-+static int vm_account_cmpxchg(struct vm_account *vm_account,
-+				unsigned long npages, unsigned long lock_limit)
-+{
-+	u64 cur_pages, new_pages;
-+
-+	if (vm_account->flags & VM_ACCOUNT_USER)
-+		cur_pages = atomic_long_read(&vm_account->user->locked_vm);
-+	else
-+		cur_pages = atomic64_read(&vm_account->mm->pinned_vm);
-+
-+	new_pages = cur_pages + npages;
-+	if (lock_limit != RLIM_INFINITY && new_pages > lock_limit)
-+		return -ENOMEM;
-+
-+	if (vm_account->flags & VM_ACCOUNT_USER) {
-+		return atomic_long_cmpxchg(&vm_account->user->locked_vm,
-+					   cur_pages, new_pages) == cur_pages;
-+	} else {
-+		return atomic64_cmpxchg(&vm_account->mm->pinned_vm,
-+					   cur_pages, new_pages) == cur_pages;
-+	}
-+}
-+
-+/**
-+ * vm_account_pinned - Charge pinned or locked memory to the vm_account.
-+ * @vm_account: pointer to an initialised vm_account.
-+ * @npages: number of pages to charge.
-+ *
-+ * Return: 0 on success, -ENOMEM if a limit would be exceeded.
-+ *
-+ * Note: All pages must be explicitly uncharged with
-+ * vm_unaccount_pinned() prior to releasing the vm_account with
-+ * vm_account_release().
-+ */
-+int vm_account_pinned(struct vm_account *vm_account, unsigned long npages)
-+{
-+	unsigned long lock_limit = RLIM_INFINITY;
-+	int ret;
-+
-+	if (!(vm_account->flags & VM_ACCOUNT_BYPASS) && !capable(CAP_IPC_LOCK))
-+		lock_limit = task_rlimit(vm_account->task,
-+					RLIMIT_MEMLOCK) >> PAGE_SHIFT;
-+
-+	while (true) {
-+		ret = vm_account_cmpxchg(vm_account, npages, lock_limit);
-+		if (ret > 0)
-+			break;
-+		else if (ret < 0)
-+			return ret;
-+	}
-+
-+	/*
-+	 * Always add pinned pages to mm->pinned_vm even when we're
-+	 * not enforcing the limit against that.
-+	 */
-+	if (vm_account->flags & VM_ACCOUNT_USER)
-+		atomic64_add(npages, &vm_account->mm->pinned_vm);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(vm_account_pinned);
-+
-+/**
-+ * vm_unaccount_pinned - Uncharge pinned or locked memory to the vm_account.
-+ * @vm_account: pointer to an initialised vm_account.
-+ * @npages: number of pages to uncharge.
-+ */
-+void vm_unaccount_pinned(struct vm_account *vm_account, unsigned long npages)
-+{
-+	if (vm_account->flags & VM_ACCOUNT_USER) {
-+		atomic_long_sub(npages, &vm_account->user->locked_vm);
-+		atomic64_sub(npages, &vm_account->mm->pinned_vm);
-+	} else {
-+		atomic64_sub(npages, &vm_account->mm->pinned_vm);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(vm_unaccount_pinned);
-+
-+/**
-  * __account_locked_vm - account locked pages to an mm's locked_vm
-  * @mm:          mm to account against
-  * @pages:       number of pages to account
+ struct ib_ucontext;
+@@ -19,6 +20,7 @@ struct dma_buf_attach_ops;
+ struct ib_umem {
+ 	struct ib_device       *ibdev;
+ 	struct mm_struct       *owning_mm;
++	struct vm_account vm_account;
+ 	u64 iova;
+ 	size_t			length;
+ 	unsigned long		address;
 -- 
 git-series 0.9.1
