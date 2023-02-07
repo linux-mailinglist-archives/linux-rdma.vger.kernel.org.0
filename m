@@ -2,87 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C1268CD1E
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Feb 2023 04:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CA268CEBE
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Feb 2023 06:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbjBGDJt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Feb 2023 22:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
+        id S230297AbjBGFKs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Feb 2023 00:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjBGDJs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Feb 2023 22:09:48 -0500
-Received: from smtpbgeu2.qq.com (smtpbgeu2.qq.com [18.194.254.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE8313D49
-        for <linux-rdma@vger.kernel.org>; Mon,  6 Feb 2023 19:09:42 -0800 (PST)
-X-QQ-mid: bizesmtp62t1675739377tg1rlx4l
-Received: from [172.20.10.25] ( [182.150.116.99])
-        by bizesmtp.qq.com (ESMTP) with SMTP id 0
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Feb 2023 11:09:37 +0800 (CST)
-X-QQ-SSF: 0140000000000070H000000A0001000
-X-QQ-FEAT: HPkwb3INVpDp57fDtp4oWZZ3EEtSvTDICO0CkL5ldXQUuJLIC7VSG7ZD90Usj
-        W1ec3a/IvXa8ToUPYnhdCKfenUwgDpuGX5D0e30qFp7a7Zj7pTleoDJ6+CI0DLrqoNio2tF
-        wmmugG0iztFdD3p8mNdnTFupb0vuGQpxJhhj/ubIiI/zv6KKoJU2ijWvgBxxGabji+DGgOm
-        hjgURd+uSK0JHJD+4dI/f/1/rB/CeUietA3169JKMaMYGBDSm2rQR6bdbP0wng8PJpc72MZ
-        znvJkmrnOK/rCQWV4+L9aQu0QL6DBj8Y7fBdcfWIkRi6rFJTyTm948qyDBaGr1sTMFOaR+r
-        0mU0WW3qlEnOFgCHgmujsq1uZnKJNm1LYkxg7JX2ALm/Wlq4Kw=
-X-QQ-GoodBg: 2
-Message-ID: <8DDFF0AC89400BC0+76d0cfd8-78d8-ba3a-9685-fa1596e5a8c9@enmotech.com>
-Date:   Tue, 7 Feb 2023 11:09:38 +0800
+        with ESMTP id S231264AbjBGFKM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Feb 2023 00:10:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B77A1E5D2;
+        Mon,  6 Feb 2023 21:09:49 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A897BB816D5;
+        Tue,  7 Feb 2023 05:09:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07DFDC433D2;
+        Tue,  7 Feb 2023 05:09:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675746586;
+        bh=3LepokumWhsUfcne4ek1k9dUXAWx6TVmsA0QwbcNahI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Rps20H7gpxHZwRFmaICD5lE3X/hCpzp0GCH5RNI99H2bEh28AQqc09qVX4t+6TeT5
+         KPqk1Fp0d4bx634U2129pxvgrVaoc1RQuogI98WcEPu0goQgpaqliXOCn6kyuv6Z7o
+         /lySGAv5Sdm1lmhLMTOEn3xdPn5MKk0IsSDO/jT2cEsM0S4MgOnzVDuN9ydMpGGA/Q
+         hR9lfyDWTjhUogG0vtQQ2FzGrMApoIanAWnGzCdDq1yHwoVqPB6xgRBIV8yfCYnnFb
+         VvroBOcsQ4SOxTbIyWGqKwSdyz9hwo+TuRua6HWHYix5cun28O+dPf/3gCqq2p2sKU
+         DIKBN0Pw0wodQ==
+Date:   Mon, 6 Feb 2023 21:09:43 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Barry Song <baohua@kernel.org>,
+        Ben Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Haniel Bristot de Oliveira <bristot@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Lafreniere <peter@n8pjl.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 3/9] sched: add sched_numa_find_nth_cpu()
+Message-ID: <20230206210943.79e01af9@kernel.org>
+In-Reply-To: <20230121042436.2661843-4-yury.norov@gmail.com>
+References: <20230121042436.2661843-1-yury.norov@gmail.com>
+        <20230121042436.2661843-4-yury.norov@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-To:     linux-rdma@vger.kernel.org
-From:   yang <wei.xin@enmotech.com>
-Subject: ibv_reg_mr hang
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:enmotech.com:qybglogicsvr:qybglogicsvr2
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_PASS,T_SPF_HELO_TEMPERROR
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-when I test with command `ib_send_bw -D5 -d mlx5_1` it hangs forever, 
-the stack I get from `/proc/pid/stack` is
+On Fri, 20 Jan 2023 20:24:30 -0800 Yury Norov wrote:
+> The function finds Nth set CPU in a given cpumask starting from a given
+> node.
+> 
+> Leveraging the fact that each hop in sched_domains_numa_masks includes the
+> same or greater number of CPUs than the previous one, we can use binary
+> search on hops instead of linear walk, which makes the overall complexity
+> of O(log n) in terms of number of cpumask_weight() calls.
 
-
-mlx5_ib_post_send_wait+0xce/0x200 [mlx5_ib]
-
-mlx5_ib_update_mr-pas+0x299/0x370 [mlx5_ib]
-
-create_real_mr+0x1a4/0x200 [mlx5_ib]
-
-ib_uverbs_reg_mr+0x17e/0x270 [ib_uverbs]
-
-ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xdd/0x140 [ib_uverbs]
-
-ib_uverbs_run_method+0x229/0x7a0 [ib_uverbs]
-
-ib_uverbs_cmd_verbs.isra.5+0x1a5/0x390 [ib_uverbs]
-
-ib_uverbs_ioctl+0xb8/0x110 [ib_uverbs]
-
-do_vfs_ioctl+0xa4/0x640
-
-ksys_vfs_ioctl+0x70/0x80
-
-do_syscall_64+0x61/0x250
-
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
--------------------------------------------------------------------
-
-OS:  openEuler 20.03
-
-Kernel: 4.19.90-2112.8.0.0131.oel
-
-ofed: MLNX_OFED_LINUX-5.7-1.0.2.0
-
-
-
-
+Valentin, would you be willing to give us a SoB or Review tag for 
+this one?  We'd like to take the whole series via networking, if 
+that's okay.
