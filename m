@@ -2,168 +2,334 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5341068CA8E
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Feb 2023 00:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A9168CB4D
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Feb 2023 01:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbjBFXaX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Feb 2023 18:30:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S229740AbjBGAir (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Feb 2023 19:38:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjBFXaP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Feb 2023 18:30:15 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE17433447;
-        Mon,  6 Feb 2023 15:30:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675726208; x=1707262208;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=YKKtgW2jayV35nbolLF0YWGVcZUyTqXDujmlKkijIaY=;
-  b=bxt17gKHdGQG/yDn8eYiVSPLzRAAPuHRzLtpMwexCtRcNMgjMhuOXitM
-   TQfwWbqpeq3RLVUQTJR4OR7X3Qt+fxUUgzpE0m3e9IQQyfj/YrAcXE71X
-   h9IgqwCjArs41XthHnPJ/ADh/3iGv8uSotZ+T0qCPNOZCjMn9ye03tniH
-   4jockPEgCfItljZ47FweefZbzO6BnJ6getfQeH+PJcy5h9n5NUEzH0QQ/
-   jqYxpKLM+re1JtBm2BzGzGo4w3wtIDWbDcth1ijOYwbowdiNJkZfU267B
-   BkBrekj6so9dM0mlB3ncVpAn368jbv33WrqggciWNYjCydkEs3ZMy7j9E
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="309678392"
-X-IronPort-AV: E=Sophos;i="5.97,276,1669104000"; 
-   d="scan'208";a="309678392"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2023 15:29:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="809305659"
-X-IronPort-AV: E=Sophos;i="5.97,276,1669104000"; 
-   d="scan'208";a="809305659"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by fmsmga001.fm.intel.com with ESMTP; 06 Feb 2023 15:29:55 -0800
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com
-Cc:     Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
-        shiraz.saleem@intel.com, mustafa.ismail@intel.com, jgg@nvidia.com,
-        leonro@nvidia.com, linux-rdma@vger.kernel.org,
-        Marcin Szycik <marcin.szycik@linux.intel.com>,
-        Jakub Andrysiak <jakub.andrysiak@intel.com>
-Subject: [PATCH net v2 1/5] ice: Do not use WQ_MEM_RECLAIM flag for workqueue
-Date:   Mon,  6 Feb 2023 15:29:30 -0800
-Message-Id: <20230206232934.634298-2-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20230206232934.634298-1-anthony.l.nguyen@intel.com>
-References: <20230206232934.634298-1-anthony.l.nguyen@intel.com>
+        with ESMTP id S229517AbjBGAiq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Feb 2023 19:38:46 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC6924100;
+        Mon,  6 Feb 2023 16:38:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1220C60FBF;
+        Tue,  7 Feb 2023 00:38:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20FB5C433D2;
+        Tue,  7 Feb 2023 00:38:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675730323;
+        bh=zNV+0uHbpe0bjBw8jZUtcWUbFLSylhHBwHohP4sGmRE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T4BWqmRbNIXxM7ZClxKFV8iKGLYm5FpxR/Up7aXBALxwIfHmLfHBRSAbk4oxh458D
+         DxGQfrdIAQKpBu2l3zte4GdHR/Cud8KhQdetCvbMB62/XmPOqo3FyH8VxTb4RWJchP
+         952O1i5maf2mD8ycfy5oMHH1YAUD/NAGv7lBQddg8ljb1BVFcR3FRfVOSO9X2WNYbV
+         UnhKSUmdQdqI6LnocS7biX4dW8t/sGEPf4IO0m2/LgrnSW3TrPu9G6aijXn3a6Ih6Y
+         VTGcBm8kyn9jMxM8srQaQcHV4Sx/LH20DfVM6BIYSwu4/V1033EM61uydVo1L0o5QK
+         zAWWq+Y7NhyOg==
+Date:   Mon, 6 Feb 2023 16:38:41 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: pull-request: mlx5-next 2023-01-24 V2
+Message-ID: <20230206163841.0c653ced@kernel.org>
+In-Reply-To: <Y+EVsObwG4MDzeRN@nvidia.com>
+References: <20230202092507.57698495@kernel.org>
+        <Y9v2ZW3mahPBXbvg@nvidia.com>
+        <20230202095453.68f850bc@kernel.org>
+        <Y9v61gb3ADT9rsLn@unreal>
+        <Y9v93cy0s9HULnWq@x130>
+        <20230202103004.26ab6ae9@kernel.org>
+        <Y91pJHDYRXIb3rXe@x130>
+        <20230203131456.42c14edc@kernel.org>
+        <Y92kaqJtum3ImPo0@nvidia.com>
+        <20230203174531.5e3d9446@kernel.org>
+        <Y+EVsObwG4MDzeRN@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+On Mon, 6 Feb 2023 10:58:56 -0400 Jason Gunthorpe wrote:
+> On Fri, Feb 03, 2023 at 05:45:31PM -0800, Jakub Kicinski wrote:
+> > Perfectly irrelevant comparisons :/ How many times do I have to say
+> > that all I'm asking is that you stay away from us and our APIs?  
+> 
+> What I'm reacting to is your remarks that came across as trying to
+> saying that the particular netdev subystem approach to open-ness was
+> in fact the same as the larger Linux values on open source and
+> community.
+>
+> netdev is clearly more restrictive, so is DRM, and that's fine. But it
+> should stay in netdev and not be exported to the rest of the
+> kernel. Eg don't lock away APIs for what are really shared resources.
 
-When both ice and the irdma driver are loaded, a warning in
-check_flush_dependency is being triggered. This is due to ice driver
-workqueue being allocated with the WQ_MEM_RECLAIM flag and the irdma one
-is not.
+I think you're misrepresenting. The DRM example is pertinent.
+The DRM disagreement as I recall it was whether Dave gets to nack
+random drivers in misc/ which are implementing GPU-like functionality
+but do _not_ use DRM APIs.
 
-According to kernel documentation, this flag should be set if the
-workqueue will be involved in the kernel's memory reclamation flow.
-Since it is not, there is no need for the ice driver's WQ to have this
-flag set so remove it.
+Whether one subsystem can use another subsystem's API over maintainer's
+NACK has a pretty obvious answer.
 
-Example trace:
+"Don't touch my APIs" separation is the simplest and most effective
+solution to the problem of hosting code with different standards.
 
-[  +0.000004] workqueue: WQ_MEM_RECLAIM ice:ice_service_task [ice] is flushing !WQ_MEM_RECLAIM infiniband:0x0
-[  +0.000139] WARNING: CPU: 0 PID: 728 at kernel/workqueue.c:2632 check_flush_dependency+0x178/0x1a0
-[  +0.000011] Modules linked in: bonding tls xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_cha
-in_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink bridge stp llc rfkill vfat fat intel_rapl_msr intel
-_rapl_common isst_if_common skx_edac nfit libnvdimm x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm irqbypass crct1
-0dif_pclmul crc32_pclmul ghash_clmulni_intel rapl intel_cstate rpcrdma sunrpc rdma_ucm ib_srpt ib_isert iscsi_target_mod target_
-core_mod ib_iser libiscsi scsi_transport_iscsi rdma_cm ib_cm iw_cm iTCO_wdt iTCO_vendor_support ipmi_ssif irdma mei_me ib_uverbs
-ib_core intel_uncore joydev pcspkr i2c_i801 acpi_ipmi mei lpc_ich i2c_smbus intel_pch_thermal ioatdma ipmi_si acpi_power_meter
-acpi_pad xfs libcrc32c sd_mod t10_pi crc64_rocksoft crc64 sg ahci ixgbe libahci ice i40e igb crc32c_intel mdio i2c_algo_bit liba
-ta dca wmi dm_mirror dm_region_hash dm_log dm_mod ipmi_devintf ipmi_msghandler fuse
-[  +0.000161]  [last unloaded: bonding]
-[  +0.000006] CPU: 0 PID: 728 Comm: kworker/0:2 Tainted: G S                 6.2.0-rc2_next-queue-13jan-00458-gc20aabd57164 #1
-[  +0.000006] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0010.010620200716 01/06/2020
-[  +0.000003] Workqueue: ice ice_service_task [ice]
-[  +0.000127] RIP: 0010:check_flush_dependency+0x178/0x1a0
-[  +0.000005] Code: 89 8e 02 01 e8 49 3d 40 00 49 8b 55 18 48 8d 8d d0 00 00 00 48 8d b3 d0 00 00 00 4d 89 e0 48 c7 c7 e0 3b 08
-9f e8 bb d3 07 01 <0f> 0b e9 be fe ff ff 80 3d 24 89 8e 02 00 0f 85 6b ff ff ff e9 06
-[  +0.000004] RSP: 0018:ffff88810a39f990 EFLAGS: 00010282
-[  +0.000005] RAX: 0000000000000000 RBX: ffff888141bc2400 RCX: 0000000000000000
-[  +0.000004] RDX: 0000000000000001 RSI: dffffc0000000000 RDI: ffffffffa1213a80
-[  +0.000003] RBP: ffff888194bf3400 R08: ffffed117b306112 R09: ffffed117b306112
-[  +0.000003] R10: ffff888bd983088b R11: ffffed117b306111 R12: 0000000000000000
-[  +0.000003] R13: ffff888111f84d00 R14: ffff88810a3943ac R15: ffff888194bf3400
-[  +0.000004] FS:  0000000000000000(0000) GS:ffff888bd9800000(0000) knlGS:0000000000000000
-[  +0.000003] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  +0.000003] CR2: 000056035b208b60 CR3: 000000017795e005 CR4: 00000000007706f0
-[  +0.000003] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  +0.000003] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  +0.000002] PKRU: 55555554
-[  +0.000003] Call Trace:
-[  +0.000002]  <TASK>
-[  +0.000003]  __flush_workqueue+0x203/0x840
-[  +0.000006]  ? mutex_unlock+0x84/0xd0
-[  +0.000008]  ? __pfx_mutex_unlock+0x10/0x10
-[  +0.000004]  ? __pfx___flush_workqueue+0x10/0x10
-[  +0.000006]  ? mutex_lock+0xa3/0xf0
-[  +0.000005]  ib_cache_cleanup_one+0x39/0x190 [ib_core]
-[  +0.000174]  __ib_unregister_device+0x84/0xf0 [ib_core]
-[  +0.000094]  ib_unregister_device+0x25/0x30 [ib_core]
-[  +0.000093]  irdma_ib_unregister_device+0x97/0xc0 [irdma]
-[  +0.000064]  ? __pfx_irdma_ib_unregister_device+0x10/0x10 [irdma]
-[  +0.000059]  ? up_write+0x5c/0x90
-[  +0.000005]  irdma_remove+0x36/0x90 [irdma]
-[  +0.000062]  auxiliary_bus_remove+0x32/0x50
-[  +0.000007]  device_release_driver_internal+0xfa/0x1c0
-[  +0.000005]  bus_remove_device+0x18a/0x260
-[  +0.000007]  device_del+0x2e5/0x650
-[  +0.000005]  ? __pfx_device_del+0x10/0x10
-[  +0.000003]  ? mutex_unlock+0x84/0xd0
-[  +0.000004]  ? __pfx_mutex_unlock+0x10/0x10
-[  +0.000004]  ? _raw_spin_unlock+0x18/0x40
-[  +0.000005]  ice_unplug_aux_dev+0x52/0x70 [ice]
-[  +0.000160]  ice_service_task+0x1309/0x14f0 [ice]
-[  +0.000134]  ? __pfx___schedule+0x10/0x10
-[  +0.000006]  process_one_work+0x3b1/0x6c0
-[  +0.000008]  worker_thread+0x69/0x670
-[  +0.000005]  ? __kthread_parkme+0xec/0x110
-[  +0.000007]  ? __pfx_worker_thread+0x10/0x10
-[  +0.000005]  kthread+0x17f/0x1b0
-[  +0.000005]  ? __pfx_kthread+0x10/0x10
-[  +0.000004]  ret_from_fork+0x29/0x50
-[  +0.000009]  </TASK>
+IMO netdev should not stand in the way of scale-out fabrics (IB etc.)
+or IPUs, even tho they don't meet our standards of openness.
+Good fences make good neighbors so I'd like to build a fence and avoid
+having to discuss this over and over.
 
-Fixes: 940b61af02f4 ("ice: Initialize PF and setup miscellaneous interrupt")
-Signed-off-by: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
-Signed-off-by: Marcin Szycik <marcin.szycik@linux.intel.com>
-Tested-by: Jakub Andrysiak <jakub.andrysiak@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/net/ethernet/intel/ice/ice_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > Heck, we both have quite interesting employers that bring their own
+> > > bias's and echo chambers.  
+> > 
+> > My employer has no influence on my opinions and is completely
+> > irrelevant here :/ I hope the same is true for you.  
+> 
+> Well, I sit in an echo-chamber that is different than yours. I'm
+> doubtful it doesn't have at least some effect on all of us to hear the
+> same themes over and over.
+> 
+> What you posted about your goals for netdev is pretty consistent with
+> the typical approach from a hyperscaler purchasing department: Make it
+> all the same. Grind the competing vendors on price.
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index 5f86e4111fa9..b288a01a321a 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -5541,7 +5541,7 @@ static int __init ice_module_init(void)
- 	pr_info("%s\n", ice_driver_string);
- 	pr_info("%s\n", ice_copyright);
- 
--	ice_wq = alloc_workqueue("%s", WQ_MEM_RECLAIM, 0, KBUILD_MODNAME);
-+	ice_wq = alloc_workqueue("%s", 0, 0, KBUILD_MODNAME);
- 	if (!ice_wq) {
- 		pr_err("Failed to create workqueue\n");
- 		return -ENOMEM;
--- 
-2.38.1
+Hyperscalers perhaps drive harder bargains, but the volume is so high
+I'd imagine it's much easier for a hyperscaler to spin up a team of
+people to support a new vendor.
 
+Everyone is familiar with the term "vendor lock-in". The principles
+I listed are hardly hyperscaler driven.
+
+> I'd say here things are more like "lets innovate!" "lets
+> differentiate!" "customers pay a premium for uniquess"
+
+Which favors complex and hard-to-copy offloads, over
+iterating on incremental common sense improvements.
+
+> Which side of the purchasing table is better for the resilience and
+> vibrancy of our community? I don't know. I prefer not to decide, I
+> think there is room for both to advance their interests. I don't view
+> one as taking away from the other in terms of open source.
+
+The distinction between large users vs vendors is moderately meaningful.
+Both will occasionally try to benefit themselves to the detriment of
+the community. One has to take the developments case by case.
+
+FWIW the "sides of the purchasing table" phrasing brings to mind
+industry forums rather than open source communities... Whether Linux
+is turning into an industry forum, and what Joreen would have to say
+about that*.. discussion for another time.
+
+(*  https://en.wikipedia.org/wiki/The_Tyranny_of_Structurelessness )
+
+> > I think that's accurate. Only dissent I'd like to register is for use
+> > of "HW" when the devices I'm concerned with run piles and piles of FW.
+> > To avoid misunderstanding prefer the term "device".  
+> 
+> I use the term "HW" because Linux doesn't care what is under that HW
+> interface. Like I said, the AWS, GCP, HyperV stuff is often all SW
+> pretending to be HW. Nobody really knows what is hiding under the
+> register interface of a PCI device.
+
+I understand, but it can be very misleading in context of discussions
+about open source.
+
+> Even the purest most simple NIC is ultimately connected to a switch
+> which usually runs loads of proprietary software, so people can make
+> all kinds of idological arguments about openness and freeness in the
+> space.
+> 
+> I would say, what the Linux community primarily concerns itself with
+> is the openness of the drivers and in-kernel code and the openness of
+> the userspace that consumes it. We've even walked back from demanding
+> an openness of the HW programming specification over the years.
+> 
+> Personally I feel the openness of the userspace is much more important
+> to the vibrancy of the community than openness of the HW/FW/SW thing
+> the device driver talks to.
+
+Hard to comment in abstract terms, but for me as a networking guy - 
+I can fix bugs and experiment with TCP/IP. Take the patches that come
+out of Google, or Cloudflare, or anyone else and use them.
+Experience very different to those of folks who work on RDMA networks.
+
+> I don't like what I see as a dangerous
+> trend of large cloud operators pushing things into the kernel where
+> the gold standard userspace is kept as some internal proprietary
+> application.
+
+Curious what you mean here.
+
+> At least here in this thread the IPSEC work is being built with and
+> tested against fully open source strong/openswan. So, I'm pretty
+> happy on ideological grounds.
+> 
+> > > That is a very creative definition of proprietary.
+> > > 
+> > > If you said "open source software to operate standards based fixed
+> > > function HW engines" you'd have a lot more accuracy and credibility,
+> > > but it doesn't sound as scary when you say it like that, does it?  
+> > 
+> > Here you go again with the HW :)  
+> 
+> In the early 2000's when this debate was had and Dave set the course
+> it really was almost pure HW in some of the devices. IIRC a few of the
+> TCP Offload vendors were doing TCP offload in SW cores, but that
+> wasn't universal. Certainly the first true RDMA devices (back in the
+> 1990's!) were more HW that SW.
+> 
+> Even today the mlx devices are largely fixed function HW engines with
+> a bunch of software to configure them and babysit them when they get
+> grouchy.
+> 
+> This is why I don't like the HW/FW distinction as something relevant
+> to Linux - a TOE built in nearly pure HW RTL or a TOE that is all SW
+> are both equally unfree and proprietary. The SW/FW is just more vexing
+> because it is easier to imagine it as something that could be freed,
+> while ASIC gates are more accepted as unrealistic.
+
+Agreed, and that's why saying "device" without specifying HW/FW/SW 
+at all should be acceptable middle ground. Not misleading or triggering.
+
+> > Maybe to you it's all the same because you're not interested in network
+> > protocols and networking in general? Apologies if that's a
+> > misrepresentation, I don't really know you. I'm trying to understand
+> > how can you possibly not see the difference, tho.  
+> 
+> I'm interested in the Linux software - and maintaining the open source
+> ecosystem. I've spent almost my whole career in this kind of space.
+> 
+> So I feel much closer to what I see as Linus's perspective: Bring your
+> open drivers, bring your open userspace, everyone is welcome.
+
+(*as long as they are on a side of the purchasing table) ?
+
+> In most cases I don't feel threatened by HW that absorbed SW
+> functions. I like NVMe as an example because NVMe sucked in,
+> basically, the entire MTD subsystem and a filesystem into drive FW and
+> made it all proprietary. But the MTD stuff still exists in Linux, if
+> you want to use it. We, as a community, haven't lost anything - we
+> just got out-competed by a better proprietary solution. Can't win them
+> all.
+> 
+> Port your essential argument over to the storage world - what would
+> you say if the MTD developers insisted that proprietary NVMe shouldn't
+> be allowed to use "their" block APIs in Linux?
+> 
+> Or the MD/DM developers said no RAID controller drivers were allowed
+> to use "their" block stack?
+> 
+> I think as an overall community we would loose more than we gain.
+> 
+> So, why in your mind is networking so different from storage?
+
+Networking is about connecting devices. It requires standards,
+interoperability and backward compatibility.
+
+I'm not an expert on storage but my understanding is that the
+standardization of the internals is limited and seen as unnecessary.
+So there is no real potential for open source implementations of
+disk FW. Movement of data from point (a) to point (b) is not interesting
+either so NVMe is perfectly fine. Developers innovate in filesystems 
+instead.
+
+In networking we have strong standards so you can (and do) write
+open source software all the way down to the PHYs (serdes is where
+things get quite tricky). At the same time movement of data from point
+a to point b is _the_ problem so we need the ability to innovate in
+the transport space.
+
+Now we have strayed quite far from the initial problem under discussion,
+but you can't say "networking is just like storage" and not expect
+a tirade from a networking guy :-D 
+
+> > > We've never once said "you can't do that" to netdev because of
+> > > something RDMA is doing. I've been strict about that, rdma is on the
+> > > side of netdev and does not shackle netdev.  
+> > 
+> > There were multiple cases when I was trying to refactor some code,
+> > run into RDMA using it in odd ways and had to stop :/  
+> 
+> Yes, that is true, but the same can be said about drivers using code
+> in odd ways and so on. Heck Alistair just hit some wonky netdev code
+> while working on MM cgroup stuff. I think this is normal and expected.
+> 
+> My threshold is more that if we do the hard work we can overcome
+> it. I never want to see netdev say "even with hard work we can't do
+> it because RDMA".  Just as I'd be unhappy for netdev to say MM can't
+> do the refactor they want (and I guess we will see what becomes of
+> Alistair's series because he has problems with skbuff that are not
+> obviously solvable)
+
+Core kernel is not a good comparison. The example in DRM vs misc/
+would be more fitting.
+
+> What I mean, is we've never said something like - netdev can't
+> implement VXLAN in netdev because RDMA devices can't HW offload
+> that. That's obviously ridiculous. I've always thought that the
+> discussion around the TOE issue way back then was more around concepts
+> similar to stable-api-nonsense.rst (ie don't tie our SW API to HW
+> choices) than it was to ideological openness.
+> 
+> > > You've made it very clear you don't like the RDMA technology, but you
+> > > have no right to try and use your position as a kernel maintainer to
+> > > try and kill it by refusing PRs to shared driver code.  
+> > 
+> > For the n-th time, not my intention. RDMA may be more open than NVMe.
+> > Do your thing. Just do it with your own APIs.  
+> 
+> The standards being implemented broadly require the use of the APIs -
+> particularly the shared IP address.
+
+No point talking about IP addresses, that ship has sailed.
+I bet the size of both communities was also orders of magnitude
+smaller back then. Different conditions different outcomes.
+
+> Try to take them away and it is effectively killing the whole thing.
+> 
+> The shared IP comes along with a lot of baggage, including things like
+> IPSEC, VLAN, MACSEC, tc, routing, etc, etc. You can't really use just
+> the IP without the whole kit.
+> 
+> We've tried to keep RDMA implementations away from the TCP/UDP stack
+> (at Dave's request long ago) but even that is kind of a loosing battle
+> because the standards bodies have said to use TCP and UDP headers as
+> well.
+> 
+> If you accept my philosophy "All are welcome" then how can I square
+> that with your demand to reject entire legitimate standards from
+> Linux?
+
+We don't support black-box transport offloads in netdev. I thought that
+it'd come across but maybe I should spell it out - just because you
+are welcome in Linux does not mean RDMA devices are welcome in netdev.
+
+As much as we got distracted by our ideological differences over the
+course of this thread - the issue is that I believe we had an agreement
+which was not upheld.
+
+I thought we compromised that to make the full offload sensible in
+netdev world nVidia would implement forwarding to xfrm tunnels using 
+tc rules. You want to add a feature in netdev, it needs to be usable 
+in a non-trivial way in netdev. Seems fair.
+
+The simplest way forward would be to commit to when mlx5 will support
+redirects to xfrm tunnel via tc...
