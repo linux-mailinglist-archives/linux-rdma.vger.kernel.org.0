@@ -2,146 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AA968D72E
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Feb 2023 13:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A70E68DC4C
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Feb 2023 15:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbjBGMtQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Feb 2023 07:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
+        id S232321AbjBGO56 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Feb 2023 09:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbjBGMtM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Feb 2023 07:49:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D45125A8
-        for <linux-rdma@vger.kernel.org>; Tue,  7 Feb 2023 04:48:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675774103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3pNnVVvvF8/Ot6Ip5i4hvaULShyHI18MUkSy36eZSxE=;
-        b=YS6HOubElUaqNqip3S5OwnrNYs15OQHaPqLZvj15+XkAblHRIRaYprtRrIL8u32z6u/M+v
-        QStWO8oU0qKJS161LrTawH2uRxZ0oYycBH+KvXra3e9jTl8RHTEtlKDtKEGpQzb0DB+kqr
-        BVNv2k3+Nc+pBz1nN+s6RzTkj7VJqPI=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-496-En_1ad9YM06Furl8axQ44w-1; Tue, 07 Feb 2023 07:48:22 -0500
-X-MC-Unique: En_1ad9YM06Furl8axQ44w-1
-Received: by mail-qk1-f197.google.com with SMTP id a6-20020a05620a102600b00729952b4c73so9610947qkk.6
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Feb 2023 04:48:22 -0800 (PST)
+        with ESMTP id S232271AbjBGO55 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Feb 2023 09:57:57 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6727D13525
+        for <linux-rdma@vger.kernel.org>; Tue,  7 Feb 2023 06:57:54 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id m1so1306171ejx.7
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Feb 2023 06:57:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=diag.uniroma1.it; s=google;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rSN+gCXhLmK6XFmTGEQoC/f2vmDaSDoOGNlOWvo6ELM=;
+        b=pfYzR9mD7dYztX0PF4DSe69cyNHcWL6JRJwjp6ns70iRKoeGoOqB+fxGKz67ZjwB9j
+         2epyEwQmX6VfthGmO6ttM++aLn675tv0A3+m7KgKBCkzpGRkwbuZqPyC6GcxDS/7pLNm
+         EDlUOeCZQIQnHvr2ZRVm1E3dnElAlxM2HtNPs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3pNnVVvvF8/Ot6Ip5i4hvaULShyHI18MUkSy36eZSxE=;
-        b=QT0g1KWneC4FaN3RR4sIcbeHikEWmuFflF2Whx697SOh11ajlTzOKLlvEnbD4uMVzF
-         CiU0nt9KlmZR93CnRJtHP4qWDz3DEcHxdGXyp4oHA99Wv8dQWeV5DJK+v8+QMOy3iOUm
-         bqwd17ej0icLM1JyZuXSk6cx08iKXIlgGb4DnPCMB3fYBWUzeAN5ayqIL9bMIJ2Y8qx3
-         BNTMui7fHspi2U2eIdFzGMGu7zWYOxbQb0o/u6YQlO3yyWbQ/DZbm3IgE2JoAW3EAmeO
-         LINNDU2HzbXi85LiW1ivxSzF4LiaYeDICFY9vRt5v307o/8RUW9IXDkz2AN0p7Bzs4st
-         shvA==
-X-Gm-Message-State: AO0yUKVEyO2zLGlYEbqCSrUCMY8haLZquzxh4qAG1Vno3VuSnkhQUP5q
-        BmmsgAvrKFWg6y7ECCv6a6n4MnpPIo5nNn2vBunF55nua0wHYs2cUf2QE1i8PxNnqnnyNFe1gGT
-        JWTe3mJIJPxH2oxypt4IY+g==
-X-Received: by 2002:a05:622a:4d2:b0:3b6:35cb:b944 with SMTP id q18-20020a05622a04d200b003b635cbb944mr6044710qtx.2.1675774101595;
-        Tue, 07 Feb 2023 04:48:21 -0800 (PST)
-X-Google-Smtp-Source: AK7set+mQoNSGATnBKIkXvsLl6p0m/4Ku460QBMKXR+jCVcof7QL6e4N6h/kUynB2ZQZ4hY6I+ltGg==
-X-Received: by 2002:a05:622a:4d2:b0:3b6:35cb:b944 with SMTP id q18-20020a05622a04d200b003b635cbb944mr6044667qtx.2.1675774101255;
-        Tue, 07 Feb 2023 04:48:21 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-113-28.dyn.eolo.it. [146.241.113.28])
-        by smtp.gmail.com with ESMTPSA id f18-20020a05620a20d200b007090f7a4f2asm9344737qka.82.2023.02.07.04.48.17
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rSN+gCXhLmK6XFmTGEQoC/f2vmDaSDoOGNlOWvo6ELM=;
+        b=o9NCEqYQSf6Uf4gpN5i/XMGekqCt31kD2pynfo6ra179UCzAOiuXYquMbloqNhIoD3
+         PjrbnTR8HdVB0qC0HKWpJLpLTE7DSeDtfwBCWgSzpkxrbxhB6Ns/KcT0Y138fRv6igdb
+         ifncF4Vjznzmo+4zHhiZGduDe+g5mjjwpNTFw1Ak+h12SCVw7v0z4qTlxxU2VVTJ9HK/
+         S7PUURzj1tFsY+uXKoTJcUoRB+Lzu1a1vMfEPjIMErNZV9q+QddCY3fdGPTEeCljyRqI
+         PJmZ52NTwKPnO+vP2QBOdN1a/c0J5ABW+YODFKAds5WEovnuvzdCod+BIlZ88IhBL1OG
+         ukKQ==
+X-Gm-Message-State: AO0yUKXIvVtJIvrSxtlrSW5SlXnl7KuF1TKab+wP8U4fIPMbn5yfvW8C
+        zxRiMy4bsxb55v2CpHqCGPuvDA==
+X-Google-Smtp-Source: AK7set/uZ4rLCFuor89/DZU+t+30ehfkikR4/mkrOoLFeEJWUaObhM31ZP+pyRjRaao5NZO9ftHgOA==
+X-Received: by 2002:a17:907:8e88:b0:8aa:f74:3263 with SMTP id tx8-20020a1709078e8800b008aa0f743263mr2401984ejc.51.1675781873007;
+        Tue, 07 Feb 2023 06:57:53 -0800 (PST)
+Received: from [192.168.17.2] (wolkje-127.labs.vu.nl. [130.37.198.127])
+        by smtp.gmail.com with ESMTPSA id v4-20020a170906564400b0088ee56fb24dsm6963073ejr.103.2023.02.07.06.57.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 04:48:20 -0800 (PST)
-Message-ID: <b25f37e4e11d9da5b6d61cbfaa0cafe9889c3926.camel@redhat.com>
-Subject: Re: [net-next PATCH V3 4/4] octeontx2-pf: Add support for HTB
- offload
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Hariprasad Kelam <hkelam@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
-        sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, sbhatta@marvell.com, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, saeedm@nvidia.com,
-        richardcochran@gmail.com, tariqt@nvidia.com,
-        linux-rdma@vger.kernel.org, maxtram95@gmail.com,
-        naveenm@marvell.com, hariprasad.netdev@gmail.com
-Date:   Tue, 07 Feb 2023 13:48:11 +0100
-In-Reply-To: <20230206054640.5854-5-hkelam@marvell.com>
-References: <20230206054640.5854-1-hkelam@marvell.com>
-         <20230206054640.5854-5-hkelam@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
+        Tue, 07 Feb 2023 06:57:52 -0800 (PST)
+From:   Pietro Borrello <borrello@diag.uniroma1.it>
+Date:   Tue, 07 Feb 2023 14:57:48 +0000
+Subject: [PATCH net-next v2] rds: rds_rm_zerocopy_callback() use
+ list_first_entry()
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230202-rds-zerocopy-v2-1-c999755075db@diag.uniroma1.it>
+X-B4-Tracking: v=1; b=H4sIAOtm4mMC/22OTQ6CMBCFr0K6dggtKNSV9zAu2jLCLGjJFAlIu
+ LuFtZuXvHx5P5uIyIRR3LNNMM4UKfhk1CUTrje+Q6A2eaEKVRZJgNsIX+TgwriCRa1tU8lSuka
+ kiDURwbLxrj9Cg4kT8gFGxjct585TeJzA4zKJVyI9xSnweh6Y5cn/b80SJGiF9lrVN13V+tGS6
+ fKPJw6DkTmlvn3ff0de2ybSAAAA
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemb@google.com>
+Cc:     Cristiano Giuffrida <c.giuffrida@vu.nl>,
+        "Bos, H.J." <h.j.bos@vu.nl>, Jakob Koschel <jkl820.git@gmail.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        Pietro Borrello <borrello@diag.uniroma1.it>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1675781872; l=1331;
+ i=borrello@diag.uniroma1.it; s=20221223; h=from:subject:message-id;
+ bh=C5CIo8jerNHCxckEuqqrroe2dMawqbDhJuIQdmf27dA=;
+ b=Tvff2+5O2E1YCJSWDaIcctk0TLnj/z5ts1dQryYNGB0frC/Agk0HAfUUsDhBBdSoxjNpb1Is2BZZ
+ KG/mOoMCCy5QyfHazEzMSrgQ1+KDvNCk6Zd0xAKENHcaZjQIbwea
+X-Developer-Key: i=borrello@diag.uniroma1.it; a=ed25519;
+ pk=4xRQbiJKehl7dFvrG33o2HpveMrwQiUPKtIlObzKmdY=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2023-02-06 at 11:16 +0530, Hariprasad Kelam wrote:
-> +static int otx2_qos_txschq_alloc(struct otx2_nic *pfvf,
-> +				 struct otx2_qos_cfg *cfg)
-> +{
-> +	struct nix_txsch_alloc_req *req;
-> +	struct nix_txsch_alloc_rsp *rsp;
-> +	struct mbox *mbox =3D &pfvf->mbox;
-> +	int lvl, rc, schq;
-> +
-> +	mutex_lock(&mbox->lock);
-> +	req =3D otx2_mbox_alloc_msg_nix_txsch_alloc(&pfvf->mbox);
-> +	if (!req)
-> +		return -ENOMEM;
+rds_rm_zerocopy_callback() uses list_entry() on the head of a list
+causing a type confusion.
+Use list_first_entry() to actually access the first element of the
+rs_zcookie_queue list.
 
-This does not releases the mbox->lock mutex on error (another
-occurrence below).
+Fixes: 9426bbc6de99 ("rds: use list structure to track information for zerocopy completion notification")
+Signed-off-by: Pietro Borrello <borrello@diag.uniroma1.it>
+---
+ net/rds/message.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-[...]
+diff --git a/net/rds/message.c b/net/rds/message.c
+index b47e4f0a1639..c19c93561227 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -104,9 +104,9 @@ static void rds_rm_zerocopy_callback(struct rds_sock *rs,
+ 	spin_lock_irqsave(&q->lock, flags);
+ 	head = &q->zcookie_head;
+ 	if (!list_empty(head)) {
+-		info = list_entry(head, struct rds_msg_zcopy_info,
+-				  rs_zcookie_next);
+-		if (info && rds_zcookie_add(info, cookie)) {
++		info = list_first_entry(head, struct rds_msg_zcopy_info,
++					rs_zcookie_next);
++		if (rds_zcookie_add(info, cookie)) {
+ 			spin_unlock_irqrestore(&q->lock, flags);
+ 			kfree(rds_info_from_znotifier(znotif));
+ 			/* caller invokes rds_wake_sk_sleep() */
 
+---
+base-commit: 6d796c50f84ca79f1722bb131799e5a5710c4700
+change-id: 20230202-rds-zerocopy-be99b84131c8
 
-> +static int otx2_qos_txschq_update_config(struct otx2_nic *pfvf,
-> +					 struct otx2_qos_node *node,
-> +					 struct otx2_qos_cfg *cfg)
-> +{
-> +	int ret =3D 0;
-> +
-> +	otx2_qos_txschq_fill_cfg(pfvf, node, cfg);
-> +	ret =3D otx2_qos_txschq_push_cfg(pfvf, node, cfg);
-> +
-> +	return ret;
-
-I personally find the plain:
-
-	return <function>
-
-more easy to read - more instances below.
-
-[...]
-
-> +static void otx2_reset_qdisc(struct net_device *dev, u16 qid)
-> +{
-> +	struct netdev_queue *dev_queue =3D netdev_get_tx_queue(dev, qid);
-> +	struct Qdisc *qdisc =3D dev_queue->qdisc_sleeping;
-> +
-> +	if (!qdisc)
-> +		return;
-> +
-> +	spin_lock_bh(qdisc_lock(qdisc));
-> +	qdisc_reset(qdisc);
-> +	spin_unlock_bh(qdisc_lock(qdisc));
-> +}
-
-The above looks like a possible shared helper, as mlx code implements a
-quite identical function.
-
-Cheers,
-
-Paolo
+Best regards,
+-- 
+Pietro Borrello <borrello@diag.uniroma1.it>
 
