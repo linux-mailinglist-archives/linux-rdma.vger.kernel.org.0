@@ -2,113 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C503068CD17
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Feb 2023 04:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C1268CD1E
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Feb 2023 04:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbjBGDFo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Feb 2023 22:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
+        id S229478AbjBGDJt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Feb 2023 22:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbjBGDFe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Feb 2023 22:05:34 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA642D58
-        for <linux-rdma@vger.kernel.org>; Mon,  6 Feb 2023 19:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675739132; x=1707275132;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ipJgHJBL43UvpckzuTR+ZaC6we4rAPBfNpPVsZD+lRI=;
-  b=BqSiV+iIhAFUl0vQYwabnQHLdx4LNxqkwnMi95AVwF57s7Rgu0YsKHvc
-   Itajxb4iaugnCJP9xLHRl3oB0PwEEY9qTpYFhCv3e0LBQg+cvlBys6DUa
-   q9AjzkkWHWyLqHp8vIVLCeKDWEXGOqH8x3OzT53XesfdTRLbO8zMxRv6B
-   vC9f+hs43Vo0PXNme+VTPtN9VWTOrOyX0+wR4V/Zz8D0PgJtU9Is5jfMp
-   rEky+RwL1pSHyAovmQ+tAYbPryJlaySQNznugqiPMwVoAIUGL750hJ73k
-   JoACXDBmJgYT9K1BizGJVgnQPDIieS4GUbFAU6yDblp6QWCnWkYy0hUqk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="329406315"
-X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="329406315"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2023 19:05:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="666686369"
-X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="666686369"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 06 Feb 2023 19:05:29 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pPEIS-0002zS-0v;
-        Tue, 07 Feb 2023 03:05:28 +0000
-Date:   Tue, 07 Feb 2023 11:05:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 283861a4c52c1ea4df3dd1b6fc75a50796ce3524
-Message-ID: <63e1bfe4.eHAAWSMU6wQWxDuM%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229460AbjBGDJs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Feb 2023 22:09:48 -0500
+Received: from smtpbgeu2.qq.com (smtpbgeu2.qq.com [18.194.254.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE8313D49
+        for <linux-rdma@vger.kernel.org>; Mon,  6 Feb 2023 19:09:42 -0800 (PST)
+X-QQ-mid: bizesmtp62t1675739377tg1rlx4l
+Received: from [172.20.10.25] ( [182.150.116.99])
+        by bizesmtp.qq.com (ESMTP) with SMTP id 0
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Feb 2023 11:09:37 +0800 (CST)
+X-QQ-SSF: 0140000000000070H000000A0001000
+X-QQ-FEAT: HPkwb3INVpDp57fDtp4oWZZ3EEtSvTDICO0CkL5ldXQUuJLIC7VSG7ZD90Usj
+        W1ec3a/IvXa8ToUPYnhdCKfenUwgDpuGX5D0e30qFp7a7Zj7pTleoDJ6+CI0DLrqoNio2tF
+        wmmugG0iztFdD3p8mNdnTFupb0vuGQpxJhhj/ubIiI/zv6KKoJU2ijWvgBxxGabji+DGgOm
+        hjgURd+uSK0JHJD+4dI/f/1/rB/CeUietA3169JKMaMYGBDSm2rQR6bdbP0wng8PJpc72MZ
+        znvJkmrnOK/rCQWV4+L9aQu0QL6DBj8Y7fBdcfWIkRi6rFJTyTm948qyDBaGr1sTMFOaR+r
+        0mU0WW3qlEnOFgCHgmujsq1uZnKJNm1LYkxg7JX2ALm/Wlq4Kw=
+X-QQ-GoodBg: 2
+Message-ID: <8DDFF0AC89400BC0+76d0cfd8-78d8-ba3a-9685-fa1596e5a8c9@enmotech.com>
+Date:   Tue, 7 Feb 2023 11:09:38 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+To:     linux-rdma@vger.kernel.org
+From:   yang <wei.xin@enmotech.com>
+Subject: ibv_reg_mr hang
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:enmotech.com:qybglogicsvr:qybglogicsvr2
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_PASS,T_SPF_HELO_TEMPERROR
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 283861a4c52c1ea4df3dd1b6fc75a50796ce3524  RDMA/cxgb4: Fix potential null-ptr-deref in pass_establish()
+when I test with command `ib_send_bw -D5 -d mlx5_1` it hangs forever, 
+the stack I get from `/proc/pid/stack` is
 
-elapsed time: 724m
 
-configs tested: 31
-configs skipped: 2
+mlx5_ib_post_send_wait+0xce/0x200 [mlx5_ib]
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+mlx5_ib_update_mr-pas+0x299/0x370 [mlx5_ib]
 
-gcc tested configs:
-alpha                            allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-m68k                             allyesconfig
-powerpc                           allnoconfig
-um                           x86_64_defconfig
-arc                                 defconfig
-um                             i386_defconfig
-s390                             allmodconfig
-alpha                               defconfig
-x86_64                           rhel-8.3-bpf
-x86_64                         rhel-8.3-kunit
-s390                                defconfig
-x86_64                           rhel-8.3-kvm
-x86_64                           rhel-8.3-syz
-s390                             allyesconfig
-x86_64                              defconfig
-i386                                defconfig
-x86_64                               rhel-8.3
-sh                               allmodconfig
-arm                                 defconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                          rhel-8.3-func
-x86_64                           allyesconfig
-i386                             allyesconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-x86_64                            allnoconfig
+create_real_mr+0x1a4/0x200 [mlx5_ib]
 
-clang tested configs:
-x86_64                          rhel-8.3-rust
+ib_uverbs_reg_mr+0x17e/0x270 [ib_uverbs]
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xdd/0x140 [ib_uverbs]
+
+ib_uverbs_run_method+0x229/0x7a0 [ib_uverbs]
+
+ib_uverbs_cmd_verbs.isra.5+0x1a5/0x390 [ib_uverbs]
+
+ib_uverbs_ioctl+0xb8/0x110 [ib_uverbs]
+
+do_vfs_ioctl+0xa4/0x640
+
+ksys_vfs_ioctl+0x70/0x80
+
+do_syscall_64+0x61/0x250
+
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-------------------------------------------------------------------
+
+OS:  openEuler 20.03
+
+Kernel: 4.19.90-2112.8.0.0131.oel
+
+ofed: MLNX_OFED_LINUX-5.7-1.0.2.0
+
+
+
+
