@@ -2,124 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DB168E678
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Feb 2023 04:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE5D68E6FF
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Feb 2023 05:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjBHDJ7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Feb 2023 22:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
+        id S230171AbjBHEU0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Feb 2023 23:20:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjBHDJ4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Feb 2023 22:09:56 -0500
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DA442DF2;
-        Tue,  7 Feb 2023 19:09:53 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vb9Z4mF_1675825789;
-Received: from 30.221.145.160(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vb9Z4mF_1675825789)
-          by smtp.aliyun-inc.com;
-          Wed, 08 Feb 2023 11:09:51 +0800
-Message-ID: <51391bb7-9334-ea24-7a93-e2f1847d7ce8@linux.alibaba.com>
-Date:   Wed, 8 Feb 2023 11:09:48 +0800
+        with ESMTP id S229674AbjBHEUY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Feb 2023 23:20:24 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8202823E;
+        Tue,  7 Feb 2023 20:20:23 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id BA102CE1DD9;
+        Wed,  8 Feb 2023 04:20:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E82F1C4339B;
+        Wed,  8 Feb 2023 04:20:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675830020;
+        bh=U4GQLJyTsARaBKfrYmycFh9XU5Dd+XRhoXk8AVmi44c=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=rTXE9i6EJ8FWzrCwW3x3191Atwiqu21zFMj1pf4OP4oxWA14MtVzlYz0DQcDRwLVX
+         HketLz37EpmPFqt1JXEOFKE0Ox0sDD7TDg6FUbD+xYENTvAMDQnhtXViJCPCmHdelC
+         ra+QKLvw3039QXimEkQwq8qv3Diz/eaEdIDmN2Z2R+leWgHMCu2j6Wk1NGUljPQN4O
+         KcEkrtO/Kz0DtYZxTV/VVz+FNMpB/DTFizmy+xSBtCvCwvobQx2EHy0ofSKdPmzehj
+         Cb6uKoK1GDFZQrbPu58kR9pR+qwjLIPPqsmncKxWXDPZ2SseHSZG8jsvy2M9RJkrh2
+         dC30CjjQM/sNA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BF85DE4D032;
+        Wed,  8 Feb 2023 04:20:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [net-next 0/2] Deliver confirm/delete rkey message in parallel
-Content-Language: en-US
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1675755374-107598-1-git-send-email-alibuda@linux.alibaba.com>
- <fe0d2dae-1a3e-e32f-e8b3-285a33d29422@linux.ibm.com>
- <04e65f58-3ef3-6f5a-6f95-35d5b1555c7e@linux.alibaba.com>
-In-Reply-To: <04e65f58-3ef3-6f5a-6f95-35d5b1555c7e@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH RESEND 0/9] sched: cpumask: improve on cpumask_local_spread()
+ locality
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167583001977.19489.3612592708687977676.git-patchwork-notify@kernel.org>
+Date:   Wed, 08 Feb 2023 04:20:19 +0000
+References: <20230121042436.2661843-1-yury.norov@gmail.com>
+In-Reply-To: <20230121042436.2661843-1-yury.norov@gmail.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
+        andriy.shevchenko@linux.intel.com, baohua@kernel.org,
+        bsegall@google.com, dietmar.eggemann@arm.com, gal@nvidia.com,
+        gregkh@linuxfoundation.org, bristot@redhat.com, hca@linux.ibm.com,
+        mingo@redhat.com, jacob.e.keller@intel.com, kuba@kernel.org,
+        jgg@nvidia.com, jesse.brandeburg@intel.com,
+        Jonathan.Cameron@huawei.com, juri.lelli@redhat.com,
+        leonro@nvidia.com, torvalds@linux-foundation.org, mgorman@suse.de,
+        peter@n8pjl.ca, peterz@infradead.org, linux@rasmusvillemoes.dk,
+        saeedm@nvidia.com, rostedt@goodmis.org, tariqt@nvidia.com,
+        ttoukan.linux@gmail.com, tony.luck@intel.com, vschneid@redhat.com,
+        vincent.guittot@linaro.org, linux-crypto@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hello:
 
+This series was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On 2/8/23 11:04 AM, D. Wythe wrote:
+On Fri, 20 Jan 2023 20:24:27 -0800 you wrote:
+> cpumask_local_spread() currently checks local node for presence of i'th
+> CPU, and then if it finds nothing makes a flat search among all non-local
+> CPUs. We can do it better by checking CPUs per NUMA hops.
 > 
+> This has significant performance implications on NUMA machines, for example
+> when using NUMA-aware allocated memory together with NUMA-aware IRQ
+> affinity hints.
 > 
-> On 2/8/23 7:29 AM, Wenjia Zhang wrote:
->>
->>
->> On 07.02.23 08:36, D. Wythe wrote:
->>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>>
->>> According to the SMC protocol specification, we know that all flows except
->>> confirm_rkey adn delete_rkey are exclusive, confirm/delete rkey flows
->>> can run concurrently (local and remote).
->>>
->>> However, although the protocol allows, all flows are actually mutually
->>> exclusive in implementation, deus to we are waiting for LLC message
->>> in serial.
->>>
->>> On the one hand, this implementation does not conform to the protocol
->>> specification, on the other hand, this implementation aggravates the
->>> time for establishing or destroying a SMC-R connection, connection
->>> have to be queued in smc_llc_wait.
->>>
->>> This patch will improve the performance of the short link scenario
->>> by about 5%. In fact, we all know that the performance bottleneck
->>> of the short link scenario is not here.
->>>
->>> This patch try use rtokens or rkey to correlate a confirm/delete
->>> rkey message with its response.
->>>
->>> This patch contains two parts.
->>>
->>> At first, we have added the process
->>> of asynchronously waiting for the response of confirm/delete rkey
->>> messages, using rtokens or rkey to be correlate with.
->>>
->>> And then, we try to send confirm/delete rkey message in parallel,
->>> allowing parallel execution of start (remote) or initialization (local)
->>> SMC_LLC_FLOW_RKEY flows.
->>>
->>> D. Wythe (2):
->>>    net/smc: allow confirm/delete rkey response deliver multiplex
->>>    net/smc: make SMC_LLC_FLOW_RKEY run concurrently
->>>
->>>   net/smc/smc_core.h |   1 +
->>>   net/smc/smc_llc.c  | 263 +++++++++++++++++++++++++++++++++++++++++------------
->>>   net/smc/smc_llc.h  |   6 ++
->>>   net/smc/smc_wr.c   |  10 --
->>>   net/smc/smc_wr.h   |  10 ++
->>>   5 files changed, 220 insertions(+), 70 deletions(-)
->>>
->>
->> As we already discussed, on this changes we need to test them carefully so that we have to be sure that the communicating with z/OS should not be broken. We'll let you know as soon as the testing is finished.
-> 
-> 
-> Hi, Wenjia
-> 
-> Thanks again for your test.
-> 
-> Considering that we have reached an agreement on protocol extension,
-> we can temporarily postpone this modification until we introduce the protocol extension
-> into the Linux community version. Then we can avoid the compatibility with z/OS.
-> 
-> 
-> Best wishes.
-> D. Wythe
-> 
+> [...]
 
-We can temporarily postpone this modification until we introduce the protocol extension
-into the Linux community version IF we can't pass the z/OS compatible test. :-)
+Here is the summary with links:
+  - [1/9] lib/find: introduce find_nth_and_andnot_bit
+    https://git.kernel.org/netdev/net-next/c/43245117806f
+  - [2/9] cpumask: introduce cpumask_nth_and_andnot
+    https://git.kernel.org/netdev/net-next/c/62f4386e564d
+  - [3/9] sched: add sched_numa_find_nth_cpu()
+    https://git.kernel.org/netdev/net-next/c/cd7f55359c90
+  - [4/9] cpumask: improve on cpumask_local_spread() locality
+    https://git.kernel.org/netdev/net-next/c/406d394abfcd
+  - [5/9] lib/cpumask: reorganize cpumask_local_spread() logic
+    https://git.kernel.org/netdev/net-next/c/b1beed72b8b7
+  - [6/9] sched/topology: Introduce sched_numa_hop_mask()
+    https://git.kernel.org/netdev/net-next/c/9feae65845f7
+  - [7/9] sched/topology: Introduce for_each_numa_hop_mask()
+    https://git.kernel.org/netdev/net-next/c/06ac01721f7d
+  - [8/9] net/mlx5e: Improve remote NUMA preferences used for the IRQ affinity hints
+    https://git.kernel.org/netdev/net-next/c/2acda57736de
+  - [9/9] lib/cpumask: update comment for cpumask_local_spread()
+    https://git.kernel.org/netdev/net-next/c/2ac4980c57f5
 
-Sorry for the problem in my description.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks.
-D. Wythe
 
