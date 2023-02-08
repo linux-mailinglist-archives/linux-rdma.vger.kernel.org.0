@@ -2,150 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB51F68F983
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Feb 2023 22:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B1C68FB07
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Feb 2023 00:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbjBHVNW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Feb 2023 16:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
+        id S229634AbjBHXT0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Feb 2023 18:19:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbjBHVNS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Feb 2023 16:13:18 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C733B0D2
-        for <linux-rdma@vger.kernel.org>; Wed,  8 Feb 2023 13:13:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675890797; x=1707426797;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4WOlAH+CpzCOS9aw41oI98dYR/PX2N9gmAlBaQqfyrY=;
-  b=EgVSVyAlGdV1pJmsKbQbHb6llHdgSAyFYsZsf0QKIgyYNMeAqPy+taY8
-   fu45LeN3wS2xGgSjl5vUEqpokiSh/8hPuNbF1nyQjc3HR54A9i+vfKvk2
-   5/5pv2hrD7VqdcUdkD0w30Hf/Sxln3N49ljP7expx9lcCo7qEswneLnvL
-   M1OHZU0fEPa8MjxESh73ADMiXFFDTI4ReW4bIiRlYvlwKpr+ULWRu37lk
-   whNCsR2KSBW+e/rK4wb8LkOexXe1xUmkFw/Nc739Xw5mS80jiGotIhZCr
-   Vu9POiLIEypNSKxLUKqdth9BIBRUAJNxr32uemhXq2MtP19aMu4PMUJDl
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="310285229"
-X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="310285229"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 13:13:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="810073995"
-X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="810073995"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Feb 2023 13:13:15 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pPrkg-0004ee-1a;
-        Wed, 08 Feb 2023 21:13:14 +0000
-Date:   Thu, 09 Feb 2023 05:12:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 9cd9842c46996ef62173c36619c746f57416bcb0
-Message-ID: <63e4105a.M57MBZOPJqc1tq+P%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229629AbjBHXT0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Feb 2023 18:19:26 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1595A26B7;
+        Wed,  8 Feb 2023 15:19:25 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A111061804;
+        Wed,  8 Feb 2023 23:19:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACC5EC433D2;
+        Wed,  8 Feb 2023 23:19:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675898364;
+        bh=ljJtmLj+jfDmiXRtLQ/OLV+zy7HbJNg4XPHu95w/4Ss=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YtOqZACNsGX3pfnX+Z90UBxyU6awBMwkY89ozQpFb6BH2jScoT2OYY5gwN6Wq9Ndl
+         0pXlQmfhEWwpfaaWD/nggv7bC6AdmWuRExwmdcQiOOnICfi5VHXVsfmXROYI+v9VQW
+         /OlY5rgcPO03cpKy+VipSOqSEON0wpCGqvpmg3Kccg81EZFWxTMVmy9EC/Asz1LcJj
+         rwus4Ekz3ep4Ssiz6ZDQlyjZYuPho4crl8Za+VNPkJupZ/zmOg0e9Ye0Qs2pNziGFN
+         +flBgsHJRgL6hwCpnKq968SGZe/HxXpwwx5YFKDeX+Gu/xAb/jT9rJftwyi0UQxXkP
+         4EOcn+EwHaLYA==
+Date:   Wed, 8 Feb 2023 15:19:22 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: pull-request: mlx5-next 2023-01-24 V2
+Message-ID: <20230208151922.3d2d790d@kernel.org>
+In-Reply-To: <Y+PKDOyUeU/GwA3W@nvidia.com>
+References: <Y9v93cy0s9HULnWq@x130>
+        <20230202103004.26ab6ae9@kernel.org>
+        <Y91pJHDYRXIb3rXe@x130>
+        <20230203131456.42c14edc@kernel.org>
+        <Y92kaqJtum3ImPo0@nvidia.com>
+        <20230203174531.5e3d9446@kernel.org>
+        <Y+EVsObwG4MDzeRN@nvidia.com>
+        <20230206163841.0c653ced@kernel.org>
+        <Y+KsG1zLabXexB2k@nvidia.com>
+        <20230207140330.0bbb92c3@kernel.org>
+        <Y+PKDOyUeU/GwA3W@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 9cd9842c46996ef62173c36619c746f57416bcb0  RDMA/irdma: Cap MSIX used to online CPUs + 1
+On Wed, 8 Feb 2023 12:13:00 -0400 Jason Gunthorpe wrote:
+> On Tue, Feb 07, 2023 at 02:03:30PM -0800, Jakub Kicinski wrote:
+> > > I also would like to not discuss this :)  
+> > 
+> > Well, then... Suggest a delineation or a way forward if you don't like
+> > mine. The circular conversation + RDMA gets its way has to end sooner
+> > or later.  
+> 
+> I can't accept yours because it means RDMA stops existing. So we must
+> continue with what has been done for the last 15 years - RDMA
+> (selectively) mirrors the IP and everything running at or below the IP
+> header level.
 
-elapsed time: 720m
+Re-implement bits you need for configuration, not stop existing.
 
-configs tested: 68
-configs skipped: 2
+> > > An open source kernel implementation of a private standard for HW that
+> > > only one company can purchase that is only usable with a proprietary
+> > > userspace. Not exactly what I'd like to see.  
+> > 
+> > You switched your argument 180 degrees.
+> > 
+> > Fist you said:
+> > 
+> >   What you posted about your goals for netdev is pretty consistent with
+> >   the typical approach from a hyperscaler purchasing department: Make it
+> >   all the same. Grind the competing vendors on price.
+> > 
+> > So "Make it all the same". Now you're saying hyperscalers have their
+> > own standards.  
+> 
+> What do you mean? "make it all the same" can be done with private or
+> open standards?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Oh. If it's someone private specs its probably irrelevant to the open
+source community?
 
-gcc tested configs:
-x86_64                            allnoconfig
-um                             i386_defconfig
-x86_64                           rhel-8.3-bpf
-um                           x86_64_defconfig
-i386                                defconfig
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-x86_64                           rhel-8.3-syz
-x86_64                              defconfig
-arm                                 defconfig
-x86_64                        randconfig-a015
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-i386                             allyesconfig
-x86_64                               rhel-8.3
-arc                                 defconfig
-i386                 randconfig-a011-20230206
-s390                             allmodconfig
-m68k                             allyesconfig
-i386                 randconfig-a014-20230206
-alpha                               defconfig
-m68k                             allmodconfig
-arm64                            allyesconfig
-s390                                defconfig
-arm                              allyesconfig
-powerpc                           allnoconfig
-x86_64                           allyesconfig
-powerpc                          allmodconfig
-x86_64                    rhel-8.3-kselftests
-i386                 randconfig-a012-20230206
-s390                             allyesconfig
-mips                             allyesconfig
-x86_64                          rhel-8.3-func
-i386                 randconfig-a016-20230206
-arc                              allyesconfig
-i386                 randconfig-a013-20230206
-i386                 randconfig-a015-20230206
-ia64                             allmodconfig
-s390                 randconfig-r044-20230206
-arc                  randconfig-r043-20230205
-sh                               allmodconfig
-alpha                            allyesconfig
-arm                  randconfig-r046-20230205
-arc                  randconfig-r043-20230206
-riscv                randconfig-r042-20230206
+> > > Ah, I stumble across stuff from time to time - KVM and related has
+> > > some interesting things. Especially with this new confidential compute
+> > > stuff. AMD just tried to get something into their mainline iommu
+> > > driver to support their out of tree kernel, for instance.
+> > > 
+> > > People try to bend the rules all the time.  
+> > 
+> > AMD is a vendor, tho, you said "trend of large cloud operators pushing
+> > things into the kernel". I was curious to hear the hyperscaler example
+> > 'cause I'd like to be vigilant.  
+> 
+> I'm looking at it from the perspective of who owns, operates and
+> monetizes the propritary close source kernel fork. It is not AMD.
+> 
+> AMD/Intel/ARM provided open patches to a hyperscaler(s) for their CC
+> solutions that haven't been merged yet. The hyperscaler is the one
+> that forked Linux into closed source, integrated them and is operating
+> the closed solution.
+> 
+> That the vendor pushes little parts of the hyperscaler solution to the
+> kernel & ecosystem in a trickle doesn't make the sad state of affairs
+> exclusively the vendors fault, even if their name is on the patches,
+> IMHO.
 
-clang tested configs:
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-hexagon              randconfig-r041-20230205
-i386                 randconfig-a002-20230206
-riscv                randconfig-r042-20230205
-hexagon              randconfig-r045-20230206
-x86_64                          rhel-8.3-rust
-i386                 randconfig-a003-20230206
-i386                 randconfig-a001-20230206
-i386                 randconfig-a006-20230206
-hexagon              randconfig-r041-20230206
-i386                 randconfig-a005-20230206
-i386                 randconfig-a004-20230206
-x86_64               randconfig-a001-20230206
-x86_64               randconfig-a005-20230206
-x86_64               randconfig-a002-20230206
-arm                  randconfig-r046-20230206
-s390                 randconfig-r044-20230205
-hexagon              randconfig-r045-20230205
-x86_64               randconfig-a004-20230206
-x86_64               randconfig-a003-20230206
-x86_64               randconfig-a006-20230206
+Sad situation. Not my employer and not in netdev, I hope.
+I may have forgotten already what brought us down this rabbit hole...
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+> > > The ipsec patches here have almost 0 impact on netdev because it is a
+> > > tiny steering engine configuration. I'd have more sympathy to the
+> > > argument if it was consuming a huge API surface to do this.  
+> > 
+> > The existence of the full IPsec offload in its entirety is questionable.
+> > We let the earlier patches in trusting that you'll deliver the
+> > forwarding support. We're calling "stop" here because when the patches
+> > from this PR were posted to the list we learned for the first time
+> > that the forwarding is perhaps less real than expected.  
+> 
+> ipsec offload works within netdev for non switch use cases fine. I
+> would think that alone is enough to be OK for netdev.
+> 
+> I have no idea how you are jumping to some conclusion that since the
+> RDMA team made their patches it somehow has anything to do with the
+> work Leon and the netdev team will deliver in future?
+
+We shouldn't reneg what was agreed on earlier.
+
+> > > He needs to fix the bugs he created and found first :)
+> > > 
+> > > As far as I'm concerned TC will stay on his list until it is done.  
+> > 
+> > This is what I get for trusting a vendor :/
+> > 
+> > If you can't make a commitment my strong recommendation is for this code
+> > to not be accepted upstream until TC patches emerge.  
+> 
+> This is the strongest commitment I am allowed to make in public.
+
+As priorities shift it may never happen.
+
+> I honestly have no idea why you are so fixated on TC, or what it has
+> to do with RDMA.
+
+It's a strong justification for having full xfrm offload.
+You can't forward without full offload.
+Anything else could theoretically be improved on the SW side.
+The VF switching offload was the winning argument in the past
+discussion.
+
+> Hasn't our netdev team done enough work on TC stuff to earn some
+> faith that we do actually care about TC as part of our portfolio?
+
+Shouldn't have brought it up in the past discussion then :|
+Being asked to implement something tangential to your goals for 
+the community to accept your code is hardly unheard of.
