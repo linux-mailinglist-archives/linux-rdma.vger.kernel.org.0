@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0244568FC06
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Feb 2023 01:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7740B68FC24
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Feb 2023 01:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjBIAgX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Feb 2023 19:36:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
+        id S229925AbjBIAsN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Feb 2023 19:48:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjBIAgW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Feb 2023 19:36:22 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50B21042D;
-        Wed,  8 Feb 2023 16:36:20 -0800 (PST)
+        with ESMTP id S229849AbjBIAsN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Feb 2023 19:48:13 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F221A948;
+        Wed,  8 Feb 2023 16:48:12 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 39BA961835;
-        Thu,  9 Feb 2023 00:36:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B129C433D2;
-        Thu,  9 Feb 2023 00:36:19 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B7ED2B81FDB;
+        Thu,  9 Feb 2023 00:48:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6494C433EF;
+        Thu,  9 Feb 2023 00:48:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675902979;
-        bh=H4MvkZOoKYJgCisttzOTiTmlGN7VAbZohVsTiQOqwKc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EjxmHN3kPQo52M5MVlD0He4LK5Ky1bvnlVe+ucQCsbvqhSUtRAITtCmCjjWLB3K5t
-         IeAj1pPpQa7oy37ZY029ySwQXp0IynhtjbiiCgeMtf43cBk6dCk3h2NPeZzDQwmWrc
-         HfvdaJLwDD+eM3xkojmHDwzU97wxBusCR6BQ3f4pTWeG/1fWBglbdPliWoF+mgQOa/
-         Z5/K7uteQ/SYN4GG6V1ZmF/ShuLDcpBQsJqev26I/OrUIo9yfwtIh/0mzS44ZCITeV
-         7+C7dRh8GKc0Zt3qNizeeXNlhOti2J1ADYrEJnY2Ve9wPnS2F3fJhocdjfTUcIYxSa
-         KW3MI7VaDxhRQ==
-Date:   Wed, 8 Feb 2023 16:36:18 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        s=k20201202; t=1675903689;
+        bh=3c0hexa1YYrmxVLwEZ3WOjGCeQvFP2vjS060t04wVcc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WR1ATR8BQoMQ/uxW3ax04CnlCLZy18Lupc2BVVuj6J2oPh/4pCC9uPUxQPg9fIYcJ
+         2JW+kzqU+EM65mfdKDoIogx+/D5Gmc8+Nqvf89Db0GGJzfM/JXl6Fwc7JUdkrrm+9g
+         EPISQNCx+CXU/k6uysfOc+HhqvVAr3KrjhZVPnY1w88m9ZQjdmOk3flkP0g4LFY6+u
+         YGWkm3pcwXYFDyecqJA1QZvgp8qjKv08ZNsLV5zMn3Ck/4rJLKlEVcxRoW1pt86T9u
+         gvCxDsPiD+pEK2m2gUa56zqdsLe/DtF+DUvopK8vKtpPidfaYgTlJut06+1CCot/Bn
+         ns5Z+91TkNCkg==
+Date:   Wed, 8 Feb 2023 16:48:07 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
         Leon Romanovsky <leon@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Paolo Abeni <pabeni@redhat.com>,
@@ -42,21 +42,22 @@ Cc:     Jason Gunthorpe <jgg@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
         netdev@vger.kernel.org
 Subject: Re: pull-request: mlx5-next 2023-01-24 V2
-Message-ID: <Y+RAAowqXn1JmMY4@x130>
+Message-ID: <20230208164807.291d232f@kernel.org>
+In-Reply-To: <Y+Q95U+61VaLC+RJ@nvidia.com>
 References: <Y91pJHDYRXIb3rXe@x130>
- <20230203131456.42c14edc@kernel.org>
- <Y92kaqJtum3ImPo0@nvidia.com>
- <20230203174531.5e3d9446@kernel.org>
- <Y+EVsObwG4MDzeRN@nvidia.com>
- <20230206163841.0c653ced@kernel.org>
- <Y+KsG1zLabXexB2k@nvidia.com>
- <20230207140330.0bbb92c3@kernel.org>
- <Y+PKDOyUeU/GwA3W@nvidia.com>
- <20230208151922.3d2d790d@kernel.org>
+        <20230203131456.42c14edc@kernel.org>
+        <Y92kaqJtum3ImPo0@nvidia.com>
+        <20230203174531.5e3d9446@kernel.org>
+        <Y+EVsObwG4MDzeRN@nvidia.com>
+        <20230206163841.0c653ced@kernel.org>
+        <Y+KsG1zLabXexB2k@nvidia.com>
+        <20230207140330.0bbb92c3@kernel.org>
+        <Y+PKDOyUeU/GwA3W@nvidia.com>
+        <20230208151922.3d2d790d@kernel.org>
+        <Y+Q95U+61VaLC+RJ@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230208151922.3d2d790d@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -66,132 +67,72 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 08 Feb 15:19, Jakub Kicinski wrote:
->On Wed, 8 Feb 2023 12:13:00 -0400 Jason Gunthorpe wrote:
->> On Tue, Feb 07, 2023 at 02:03:30PM -0800, Jakub Kicinski wrote:
->> > > I also would like to not discuss this :)
->> >
->> > Well, then... Suggest a delineation or a way forward if you don't like
->> > mine. The circular conversation + RDMA gets its way has to end sooner
->> > or later.
->>
->> I can't accept yours because it means RDMA stops existing. So we must
->> continue with what has been done for the last 15 years - RDMA
->> (selectively) mirrors the IP and everything running at or below the IP
->> header level.
->
->Re-implement bits you need for configuration, not stop existing.
->
+On Wed, 8 Feb 2023 20:27:17 -0400 Jason Gunthorpe wrote:
+> On Wed, Feb 08, 2023 at 03:19:22PM -0800, Jakub Kicinski wrote:
+> > On Wed, 8 Feb 2023 12:13:00 -0400 Jason Gunthorpe wrote:  
+> > > I can't accept yours because it means RDMA stops existing. So we must
+> > > continue with what has been done for the last 15 years - RDMA
+> > > (selectively) mirrors the IP and everything running at or below the IP
+> > > header level.  
+> > 
+> > Re-implement bits you need for configuration, not stop existing.  
+> 
+> This is completely technically infeasible. They share IP addresess, we
+> cannot have two stacks running IPSEC on top of othe same IP address
+> without co-ordinating. Almost every part is like that to some degree.
+> 
+> And even if we somehow did keep things 100% seperated, with seperated
+> IPs - Linus isn't going to let me copy and paste the huge swaths of
+> core netdev code required to do IP stuff (arp, nd, routing, icmp,
+> bonding, etc) into RDMA for a reason like this.
+> 
+> So, it really is a complete death blow to demand to keep these things
+> separated.
+> 
+> Let alone what would happen if we applied the same logic to all the
+> places sharing the IP with HW - remember iscsi? FCoE?
 
-Why ?? we will end up with the same code in this PULL plus some redundant
-rdma API, please see explanation below.
+Who said IP configuration.
 
->> > > An open source kernel implementation of a private standard for HW that
->> > > only one company can purchase that is only usable with a proprietary
->> > > userspace. Not exactly what I'd like to see.
->> >
->> > You switched your argument 180 degrees.
->> >
->> > Fist you said:
->> >
->> >   What you posted about your goals for netdev is pretty consistent with
->> >   the typical approach from a hyperscaler purchasing department: Make it
->> >   all the same. Grind the competing vendors on price.
->> >
->> > So "Make it all the same". Now you're saying hyperscalers have their
->> > own standards.
->>
->> What do you mean? "make it all the same" can be done with private or
->> open standards?
->
->Oh. If it's someone private specs its probably irrelevant to the open
->source community?
->
->> > > Ah, I stumble across stuff from time to time - KVM and related has
->> > > some interesting things. Especially with this new confidential compute
->> > > stuff. AMD just tried to get something into their mainline iommu
->> > > driver to support their out of tree kernel, for instance.
->> > >
->> > > People try to bend the rules all the time.
->> >
->> > AMD is a vendor, tho, you said "trend of large cloud operators pushing
->> > things into the kernel". I was curious to hear the hyperscaler example
->> > 'cause I'd like to be vigilant.
->>
->> I'm looking at it from the perspective of who owns, operates and
->> monetizes the propritary close source kernel fork. It is not AMD.
->>
->> AMD/Intel/ARM provided open patches to a hyperscaler(s) for their CC
->> solutions that haven't been merged yet. The hyperscaler is the one
->> that forked Linux into closed source, integrated them and is operating
->> the closed solution.
->>
->> That the vendor pushes little parts of the hyperscaler solution to the
->> kernel & ecosystem in a trickle doesn't make the sad state of affairs
->> exclusively the vendors fault, even if their name is on the patches,
->> IMHO.
->
->Sad situation. Not my employer and not in netdev, I hope.
->I may have forgotten already what brought us down this rabbit hole...
->
->> > > The ipsec patches here have almost 0 impact on netdev because it is a
->> > > tiny steering engine configuration. I'd have more sympathy to the
->> > > argument if it was consuming a huge API surface to do this.
->> >
->> > The existence of the full IPsec offload in its entirety is questionable.
->> > We let the earlier patches in trusting that you'll deliver the
->> > forwarding support. We're calling "stop" here because when the patches
->> > from this PR were posted to the list we learned for the first time
->> > that the forwarding is perhaps less real than expected.
->>
->> ipsec offload works within netdev for non switch use cases fine. I
->> would think that alone is enough to be OK for netdev.
->>
->> I have no idea how you are jumping to some conclusion that since the
->> RDMA team made their patches it somehow has anything to do with the
->> work Leon and the netdev team will deliver in future?
->
->We shouldn't reneg what was agreed on earlier.
->
->> > > He needs to fix the bugs he created and found first :)
->> > >
->> > > As far as I'm concerned TC will stay on his list until it is done.
->> >
->> > This is what I get for trusting a vendor :/
->> >
->> > If you can't make a commitment my strong recommendation is for this code
->> > to not be accepted upstream until TC patches emerge.
->>
->> This is the strongest commitment I am allowed to make in public.
->
->As priorities shift it may never happen.
->
->> I honestly have no idea why you are so fixated on TC, or what it has
->> to do with RDMA.
->
->It's a strong justification for having full xfrm offload.
->You can't forward without full offload.
+> > > What do you mean? "make it all the same" can be done with private or
+> > > open standards?  
+> > 
+> > Oh. If it's someone private specs its probably irrelevant to the open
+> > source community?  
+> 
+> No, it's what I said I dislike. Private specs, private HW, private
+> userspace, proprietary kernel forks, but people still try to get
+> incomplete pieces of stuff into the mainline kernel.
+> 
+> > Sad situation. Not my employer and not in netdev, I hope.  
+> 
+> AFAIK your and my employer have done a good job together on joint
+> projects over the years and have managed to end up with open source
+> user spaces for almost everything subtantive in the kernel.
 
-This pull has nothing to do with "full" xfrm offload, 
-For RoCE to exist it has to rely on netdev attributes, such as 
-IP, vlan, mac, etc .. in this series we do the same for ipsec,
-we setup the steering pipeline with the proper attributes for
-RoCE to function.
+Great. Let's make a note of that so there are not more accusations 
+that my objectives for netdev are somehow driven by evil hyperscalers.
 
-I don't see it will be reasonable for the rdma user to setup these
-attributes twice, once via netdev API and once via rdma APIs,
-this will be torture for that user, just because rdma bits are not allowed
-in netdev, it's exactly that, some rdma/roce bits purely mlx5_core logic,
-and it has to be in mlx5_core due to the sharing of hardware resources
-between rdma and netdev.
+> > > I have no idea how you are jumping to some conclusion that since the
+> > > RDMA team made their patches it somehow has anything to do with the
+> > > work Leon and the netdev team will deliver in future?  
+> > 
+> > We shouldn't reneg what was agreed on earlier.  
+> 
+> Who reneg'd? We always said we'd do it and we are still saying we plan
+> to do it.
+> 
+> > > Hasn't our netdev team done enough work on TC stuff to earn some
+> > > faith that we do actually care about TC as part of our portfolio?  
+> > 
+> > Shouldn't have brought it up in the past discussion then :|
+> > Being asked to implement something tangential to your goals for 
+> > the community to accept your code is hardly unheard of.  
+> 
+> We agreed to implement. I'm asking for patience since we have a good
+> historical track record.
 
->Anything else could theoretically be improved on the SW side.
->The VF switching offload was the winning argument in the past
->discussion.
->
->> Hasn't our netdev team done enough work on TC stuff to earn some
->> faith that we do actually care about TC as part of our portfolio?
->
->Shouldn't have brought it up in the past discussion then :|
->Being asked to implement something tangential to your goals for
->the community to accept your code is hardly unheard of.
+If you can't make a strong commitment, what's the point in time,
+at which if I were angry that the tc redirect was not posted yet -
+you'd consider it understandable?
+Perhaps that's sufficiently not legally binding? :)
