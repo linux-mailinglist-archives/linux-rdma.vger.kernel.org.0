@@ -2,57 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A42E068FF8B
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Feb 2023 05:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E3468FFA8
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Feb 2023 06:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbjBIEwQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Feb 2023 23:52:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44408 "EHLO
+        id S230005AbjBIFKY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Feb 2023 00:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjBIEwO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Feb 2023 23:52:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35989EB51;
-        Wed,  8 Feb 2023 20:52:00 -0800 (PST)
+        with ESMTP id S229981AbjBIFKX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Feb 2023 00:10:23 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A74A243;
+        Wed,  8 Feb 2023 21:10:21 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF1A1618A6;
-        Thu,  9 Feb 2023 04:51:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05981C433EF;
-        Thu,  9 Feb 2023 04:51:58 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DA058B81FCE;
+        Thu,  9 Feb 2023 05:10:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 85E44C4339B;
+        Thu,  9 Feb 2023 05:10:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675918319;
-        bh=IZSF2T8MHcH6eT5q1V0597aOE/zm1eE8ir+LFWgpNWg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ck2l5bhqnhtey7rZ6cn+oIrjL7h/k6F0/wvhZN3sqe8TtZlUBwc8R+pKcApXY1fNP
-         aKd/zSAzb5XxTqqK6eFT4yKDIPzLIhpGkuCrCg9i83aoH8KBhio/WdzF1JFTT4VVnP
-         pSMUICzlKvV+d2dve/+2i4iotariesmMJaL6zPnUJkDNJRoDZyhCev0lyFQoNhtULx
-         3mdeHB0SsZHFlXczSFsGlb8EcxtCC9Y+YQyQRvP/e/NbBzqj/DArRfVHtYBAwxN5zE
-         lBxOYiXc3+BqTrTQYM8crAPLd2A5TudX3gxzjqm/rifFEtUZ7zShY/mbbMe0PAltR2
-         bLpa8to4JNkKw==
-Date:   Wed, 8 Feb 2023 20:51:57 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
-        Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org
-Subject: Re: pull-request: mlx5-next netdev notifier deadlock 2023-02-07
-Message-ID: <Y+R77fsgVjof6cIZ@x130>
-References: <20230208005626.72930-1-saeed@kernel.org>
- <20230208191250.45b23b6f@kernel.org>
- <20230208191605.719b19db@kernel.org>
- <Y+RseKpYCBnXzImH@x130>
- <20230208202714.5b3ecc3e@kernel.org>
+        s=k20201202; t=1675919418;
+        bh=eDI57/LzqUVY+qTf/jG2cQsw1+OgqTTTCWIWL/hRgKo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=T+6hn8mRUi4+wEf9sN3E0ZtgA81FrUxabXw+OPcwv3RPa7v+r2HyCpctLo0B3E+fa
+         +1YQowlRtIx1k+d8HrbTuQfRNBeQMMdnaw/YkLubtlMa0kbODI+706h8EJnRCN3jJi
+         bpr4Uh9e/Qyi/ZSY/VH7qUE3Oz15RQtdgTp833/nVBJbXFQ/Goixir8JorGK18qnBt
+         8aUQsDIOcVuS6r27CI9F6aWVZsIrKAqX0TmOjqbvIzHjbEhGZbW/CzkeVJMlUK7OBr
+         EA8c+UpdZE7JjPfR9FnLdzYrtq585ZxCldX6W2OlGlEeDXD9KT8MM7MMpNzzAQcqUL
+         Ta23jfB4wRI0w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6AAFAE21ECB;
+        Thu,  9 Feb 2023 05:10:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230208202714.5b3ecc3e@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: mlx5-next netdev notifier deadlock 2023-02-07
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167591941843.2876.6131720358641221887.git-patchwork-notify@kernel.org>
+Date:   Thu, 09 Feb 2023 05:10:18 +0000
+References: <20230208005626.72930-1-saeed@kernel.org>
+In-Reply-To: <20230208005626.72930-1-saeed@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, jgg@nvidia.com, saeedm@nvidia.com,
+        linux-rdma@vger.kernel.org, leonro@nvidia.com,
+        netdev@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,22 +57,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 08 Feb 20:27, Jakub Kicinski wrote:
->On Wed, 8 Feb 2023 19:46:00 -0800 Saeed Mahameed wrote:
->> On 08 Feb 19:16, Jakub Kicinski wrote:
->> >Ooh, maybe I'm not supposed to pull?
->> >Jiri's changes have Change-Ids on them:
->>
->> Fixed now, same tag, if you wanna go ahead and pull.
->> Please let me know if you prefer V2..
->
->One more, on:
->
-> 94b3ec5464f6323e1cd6be72b84c2d98c942ea13
->
->FETCH_HEAD  8946287ba8513c1c
+Hello:
 
-Now should be fixed, sorry I was trying to preserve the sha of
-"net/mlx5: Introduce CQE error syndrome" and I was off by one.
-Thanks for the tolerance.. 
+This pull request was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue,  7 Feb 2023 16:56:26 -0800 you wrote:
+> The following changes since commit b7bfaa761d760e72a969d116517eaa12e404c262:
+> 
+>   Linux 6.2-rc3 (2023-01-08 11:49:43 -0600)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git tags/mlx5-next-netdev-deadlock
+> 
+> [...]
+
+Here is the summary with links:
+  - pull-request: mlx5-next netdev notifier deadlock 2023-02-07
+    https://git.kernel.org/netdev/net-next/c/9245b518c89f
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
