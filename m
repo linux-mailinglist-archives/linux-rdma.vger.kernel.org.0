@@ -2,147 +2,322 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0970269243D
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Feb 2023 18:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8333692B3E
+	for <lists+linux-rdma@lfdr.de>; Sat, 11 Feb 2023 00:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbjBJRPJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Feb 2023 12:15:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S229802AbjBJXdt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Feb 2023 18:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232647AbjBJRPG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Feb 2023 12:15:06 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2086.outbound.protection.outlook.com [40.107.243.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3616227BB;
-        Fri, 10 Feb 2023 09:15:05 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ClEmRUtKNKj1OZ1liHot9ufBrGQBuIqDkDqf7FZuR6m6HX4Gyk4QGTo1miEosCe+yXaTj1lqFgjCmqVsZAGYvisgWo7GHj/ymkmAQ1BJyvcezecHtTdPrxOQXpmexpwjT7gy017DW6oW5fMr0c/SO7BRQhEf9wLFDTk092v8k+XAhU8X1IK0kz1UEW7hkll1mR6KHpW5tE2XDPTX55McIzHWdTHEvrjjFMoUXWKGUWVmHE8qIwJt2rB+PNHKxPnaqpoVbj1ZLolixQray2rt8N3mjmMZuQUN3R3fhke0MiAWJHKKDgfWDRlIe4ieMpVGMN7JsldjbPzbmDkKAh9HYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a9Xh0wLENKAKQPPUCCW+NjkWmJIYvEASu8O0KfXrmhk=;
- b=URm22s6T4bjLMSbXwAO3Edy/l8ud0fZuAzmTTkdw87ZtOjWb/XTVCrcV4CHDZDaRBlarxy8oxHmThX55K9TpHsJddJwBRB3ptfktpRSYPZWHeD3yHH7EKuSVyeo41p2SD8e1w9CbMNmA6ZL19PYm2Qf6h/wJpUrOTQ3bTzJjaby82eEnBOottjl5k/kfLfIx+ApiYmiPyQ/PjAtNrgHDWpNPoJ9oxYNSAix8SYr877XVobiUUNPRnkirrik+153xz8m+v3elA25MhbGTdZqVSmgWRqXE87itTxAyPdiMXxudLrZQ9CceRHFsSGCzwJGPdx2b/btLvUMoxBdghKcNkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a9Xh0wLENKAKQPPUCCW+NjkWmJIYvEASu8O0KfXrmhk=;
- b=CIjKNUr84eH7q1Tc4QnNcQjgFVan1Bf3sQZO5JVe9w3lQWpYwsIy8qGkcvOjc8XajNStn/cK8TzXEOefsB+TsKDi7b1t3u8Ienqt00dBZu+205tS3LKlOz3WgbtzSFCjAls3mqHO2FXfBcxXQ7XqMXTES/FidLEvZOW8MGTovPvKxe0dWCYZIshKhRQfNBxgGzdPfuurKWu34tf/1i41dXu9q/B5qo5QAGq5yngqX1Zp2gxzOwwbmUZLg1VyX/gIuHk1loiJetFe6AqbHuEm/xKTGRbWr7yEeGFsgEPz27djQ5CGx4CpVyoK8cnb+9ZB45KWY9VhsmCTDeptR0IGTQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by IA1PR12MB7568.namprd12.prod.outlook.com (2603:10b6:208:42c::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.19; Fri, 10 Feb
- 2023 17:15:03 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6086.019; Fri, 10 Feb 2023
- 17:15:03 +0000
-Date:   Fri, 10 Feb 2023 13:15:01 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Saeed Mahameed <saeed@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: pull-request: mlx5-next 2023-01-24 V2
-Message-ID: <Y+Z7lVVWqnRBiPh2@nvidia.com>
-References: <Y+EVsObwG4MDzeRN@nvidia.com>
- <20230206163841.0c653ced@kernel.org>
- <Y+KsG1zLabXexB2k@nvidia.com>
- <20230207140330.0bbb92c3@kernel.org>
- <Y+PKDOyUeU/GwA3W@nvidia.com>
- <20230208151922.3d2d790d@kernel.org>
- <Y+Q95U+61VaLC+RJ@nvidia.com>
- <20230208164807.291d232f@kernel.org>
- <Y+RFj3QfGIsmvTab@nvidia.com>
- <20230208171646.052e62fd@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230208171646.052e62fd@kernel.org>
-X-ClientProxiedBy: MN2PR18CA0026.namprd18.prod.outlook.com
- (2603:10b6:208:23c::31) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S229786AbjBJXds (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Feb 2023 18:33:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76FD74062
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Feb 2023 15:32:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676071940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e8eQEU7H5KI+mR6DaJwt19VwGfbirTBzTPLMp2PHuNY=;
+        b=LKG8QOOPEKzhnV5lFUCaoRkX4v3AojqACoPY5Dg6EqS0sm0txsIT8fmLCyeO+tOAl8vL9q
+        Wrr8Ox6q6F8ejZw9G0T6R2IX47Da1BD1G+PwXkoyFfY28IydZzLJCupajt4cfJrzd5wTlr
+        66DYVb7RdH1YBEIhnUulM+9pV9aKaVE=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-169-7PeJLcj5NDuyFTWYoFrm6A-1; Fri, 10 Feb 2023 18:32:17 -0500
+X-MC-Unique: 7PeJLcj5NDuyFTWYoFrm6A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ED6121C05142;
+        Fri, 10 Feb 2023 23:32:16 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 46DFD1121315;
+        Fri, 10 Feb 2023 23:32:15 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     Steve French <smfrench@gmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Rohith Surabattula <rohiths.msft@gmail.com>,
+        Tom Talpey <tom@talpey.com>,
+        Stefan Metzmacher <metze@samba.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>, linux-cifs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steve French <sfrench@samba.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH 03/11] cifs: Add a function to build an RDMA SGE list from an iterator
+Date:   Fri, 10 Feb 2023 23:31:57 +0000
+Message-Id: <20230210233205.1517459-4-dhowells@redhat.com>
+In-Reply-To: <20230210233205.1517459-1-dhowells@redhat.com>
+References: <20230210233205.1517459-1-dhowells@redhat.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA1PR12MB7568:EE_
-X-MS-Office365-Filtering-Correlation-Id: 84297d97-7a90-422b-bcee-08db0b8a590e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qLicxIMO/4bVZY6/KfWnt3BVHBcARWQb9VuuFXjpI+1fv4ast7gfNox2jNUR3ioadePht0WW7VDJEHZmim0KRLXkBzS6ZRzzyhOIJOcE9KWCzc5sjkiqNJOF57CYASzoCG5L7P9MUBwsvIJ3oqfQGXx3ld+EyuhudDFdOX8tiI/bavU01Z00rjsBcIJ5TbTvw1uMOfuRdycZ/nOCc/r6tw5v+kZ3iZis1igsk9iE3IoM0gb9kfa5413yxvhe1cVaGp4gjjFgRJTJsIP/+Tt6G24CsqsiS8FWURPQla76zilEAhqbsAkPT8xPi/0v9+PiXvZ7R+822IbdpEyE9pY2nOc8VKvER/OvIvzYrpxjglTfU0dIuy4rUQshmTtK+CiG3NcJ3WI+OSF9ODt4zs/RKry62dExf0VjeWjKObSnZPtOsPq9D5zWr0c6JdBavcav5X2Y76XuPUrs7aLwgDVl2njqKWKJwqGeVZ/EsrSeVA31Qb3pdFd+pga/SLE7laKmTCXyjKlEHuncB9nSwYBSHZRfrHjsx8/Rtxemqv/r0Bbck9rVtox4sGtoJDs9HHE56iit3+u+CGn6QUa5UMnN1Q4K2ROKWfJGaVtBClobMq8ZhUxjaQ+C5YtPfX2mdqajNDf7hoMulsGBqvCZB1Tt5QCl8e/GqxAkPld7qXEiKn9+KCEQc/xWku9J1g9I+v/7
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(346002)(396003)(39860400002)(376002)(366004)(136003)(451199018)(2616005)(478600001)(6486002)(36756003)(6506007)(86362001)(54906003)(316002)(66946007)(66556008)(66476007)(38100700002)(6916009)(6512007)(8676002)(8936002)(4326008)(41300700001)(186003)(26005)(5660300002)(4744005)(2906002)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PSaOIZl6DNnrkcT7ByFozzZU9fAlK4L5HL25lrdlkBzzddm76WZ5H/sq1tIg?=
- =?us-ascii?Q?LfBVTnzypQFYo/eQQs6b+p3ynBqAm0kWhG70HmKFVq01ZbkovPJOpO7JGrFE?=
- =?us-ascii?Q?jST0bY//4B9H+AVLp7n+ZwYXVkwR30VdUmUcyE1jjhqki2w+14aeoga9S/wF?=
- =?us-ascii?Q?xO/WyWBt5ekjHi+8gRcdkkVllfkaqVc0ofFUJRxB0lyutbAKs5r7asSbYqqV?=
- =?us-ascii?Q?Y/yVKzl6vTfLU9sYdsuX7VzWNeDD/IvhvWTomQjY7wKAWUVS1K5ucWVmjJ/3?=
- =?us-ascii?Q?+mNeWizKhVqtWAVVtdfIw9lZ8GST1XEl7frwZXu6t9aumCaxU38q5twPuUZe?=
- =?us-ascii?Q?SH5jcEcs4/kU+EntPiedhROktCs/FQbKrp9vIhYnrGKuW+l5VUK1Wcnh9gDk?=
- =?us-ascii?Q?hx5QSceGDGZAzmFDhfucpifujzFhuoXWcJeEUL7gycFLvD1B5r9lblhDIqix?=
- =?us-ascii?Q?KVyRv9RJjWu31D62578u+EwVwNo4o6m2LaxDglYehv4tfyO2DAMLQUEaiL+8?=
- =?us-ascii?Q?O8Hfv65PVwiuWG2pUPC1BGcYDKLJlI+3VLi7qIrc3xlSSU0w8FwBWWyYTOuq?=
- =?us-ascii?Q?uzy4sONMZ9uCdzQTRo3HsUWfFykopnl+LV830HirxHW9TK+Ev/ZVoDCqHJLL?=
- =?us-ascii?Q?gnUqlcxLPE2ZCeU3NTeJe3WbDXlg2lPcfrQ7aua1E9qTH4dNkyi7C/tS2hr7?=
- =?us-ascii?Q?1eA1laKc/g94rPy2bCo4aVSRX03MSDq2DowPeAFLjdIN9uzXU+NVkZTt5Ro9?=
- =?us-ascii?Q?RjEHC62JBlFHUiPIxfhtnUoo7mqQFtxl47I3iEh/4hpTFSphJ52/IMt3kvFi?=
- =?us-ascii?Q?dfK3GwRDTiYDSGF4GWTAK/9WOOoit3vQQ5fPwDdbJDKaLQ5CX3JLvkXlArTN?=
- =?us-ascii?Q?5O75SJznPID666KHCgnRroNAkZY7x1Oj9jHsPUdkHqOb6lxY4T0g1RzNK0yf?=
- =?us-ascii?Q?Tyhfkp90CTRRAX5R4wVSWnkfLN3D+nIPa2PA6X3J5Gu0FvJLWMins8cFwumD?=
- =?us-ascii?Q?09ASdp4r/nkb7YHE+Nyx4TSBhkK2I5DRzJZGfNiC8TeB0cIp/D6DaxkHgd4Z?=
- =?us-ascii?Q?G6ZcP+IM1J/RFe3D/Fu3LgSY7CgG0v4oNSEtGwkpdpsCVNVJCL3C24MNReH/?=
- =?us-ascii?Q?oXeAZsEM0R9rncz32QpQiax7937pd20av9nBjLx4dbytl+gpopGuCwIYYbqz?=
- =?us-ascii?Q?UVMdYinQBqtw9nHaQKzYZqmHNpJbum+VfpxPsN5vdNHE6MoK0VFcQeXPi5aO?=
- =?us-ascii?Q?hWD1L3j5qIQhADS6ESKFDVwhrr2XmHhcaMHVj+1B6ey9ldfBL+2Ov8zjhQYZ?=
- =?us-ascii?Q?vB81z1evQ/t41O4LWdwx+PRpi3VRZvPqFlIgPna0EyUZ63FncNJxa9Mr5WBI?=
- =?us-ascii?Q?hPbGpLJQAaJbU5yMMq0AeFcHh8hAAE7OdpcufgKyTxLmrK12b/zYGWcwYW3j?=
- =?us-ascii?Q?9+JaTu6fYXNf2KYoSrWhGF2BwwFTZEeBPtdIknfxBI/pGCRR3aSZkRDNioNQ?=
- =?us-ascii?Q?KrJHTA+TuObVOalrb72le5KAe1Kn5NDSPrzapQkqfLv7nQxdA3n6hW1VaMPJ?=
- =?us-ascii?Q?b2ORr0g9i3S0903D8INbrgXTKfnXQOjtQ1QLzR7+?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84297d97-7a90-422b-bcee-08db0b8a590e
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2023 17:15:03.3134
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Hz0PpGG/Kd8kZb5AtzHbDmsyF9AwhpTs/DGgwbaYTpgEXVrcSke7lZm4ht+XL+Qu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7568
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 05:16:46PM -0800, Jakub Kicinski wrote:
-> On Wed, 8 Feb 2023 20:59:59 -0400 Jason Gunthorpe wrote:
-> > > Who said IP configuration.  
-> > 
-> > Please explain to me your vision how we could do IPSEC in rdma and
-> > continue to use an IP address owned by netdev while netdev is also
-> > running IPSEC on the same IP address for netdev traffic.
-> 
-> I'm no expert on IPsec but AFAIK it doesn't treat the entire endpoint
-> as a single unit.
+Add a function to add elements onto an RDMA SGE list representing page
+fragments extracted from a BVEC-, KVEC- or XARRAY-type iterator and DMA
+mapped until the maximum number of elements is reached.
 
-It does, the SA #'s in the ESP header have to be globally allocated.
+Nothing is done to make sure the pages remain present - that must be done
+by the caller.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Steve French <sfrench@samba.org>
+cc: Shyam Prasad N <nspmangalore@gmail.com>
+cc: Rohith Surabattula <rohiths.msft@gmail.com>
+cc: Tom Talpey <tom@talpey.com>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: linux-cifs@vger.kernel.org
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-rdma@vger.kernel.org
+
+Link: https://lore.kernel.org/r/166697256704.61150.17388516338310645808.stgit@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/166732028840.3186319.8512284239779728860.stgit@warthog.procyon.org.uk/ # rfc
+---
+ fs/cifs/smbdirect.c | 214 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 214 insertions(+)
+
+diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
+index 8c816b25ce7c..3e0aacddc291 100644
+--- a/fs/cifs/smbdirect.c
++++ b/fs/cifs/smbdirect.c
+@@ -44,6 +44,17 @@ static int smbd_post_send_page(struct smbd_connection *info,
+ static void destroy_mr_list(struct smbd_connection *info);
+ static int allocate_mr_list(struct smbd_connection *info);
  
-> Could you please go back to answering the question of how we deliver
-> on the compromise that was established to merge the full xfrm offload?
++struct smb_extract_to_rdma {
++	struct ib_sge		*sge;
++	unsigned int		nr_sge;
++	unsigned int		max_sge;
++	struct ib_device	*device;
++	u32			local_dma_lkey;
++	enum dma_data_direction	direction;
++};
++static ssize_t smb_extract_iter_to_rdma(struct iov_iter *iter, size_t len,
++					struct smb_extract_to_rdma *rdma);
++
+ /* SMBD version number */
+ #define SMBD_V1	0x0100
+ 
+@@ -2490,3 +2501,206 @@ int smbd_deregister_mr(struct smbd_mr *smbdirect_mr)
+ 
+ 	return rc;
+ }
++
++static bool smb_set_sge(struct smb_extract_to_rdma *rdma,
++			struct page *lowest_page, size_t off, size_t len)
++{
++	struct ib_sge *sge = &rdma->sge[rdma->nr_sge];
++	u64 addr;
++
++	addr = ib_dma_map_page(rdma->device, lowest_page,
++			       off, len, rdma->direction);
++	if (ib_dma_mapping_error(rdma->device, addr))
++		return false;
++
++	sge->addr   = addr;
++	sge->length = len;
++	sge->lkey   = rdma->local_dma_lkey;
++	rdma->nr_sge++;
++	return true;
++}
++
++/*
++ * Extract page fragments from a BVEC-class iterator and add them to an RDMA
++ * element list.  The pages are not pinned.
++ */
++static ssize_t smb_extract_bvec_to_rdma(struct iov_iter *iter,
++					struct smb_extract_to_rdma *rdma,
++					ssize_t maxsize)
++{
++	const struct bio_vec *bv = iter->bvec;
++	unsigned long start = iter->iov_offset;
++	unsigned int i;
++	ssize_t ret = 0;
++
++	for (i = 0; i < iter->nr_segs; i++) {
++		size_t off, len;
++
++		len = bv[i].bv_len;
++		if (start >= len) {
++			start -= len;
++			continue;
++		}
++
++		len = min_t(size_t, maxsize, len - start);
++		off = bv[i].bv_offset + start;
++
++		if (!smb_set_sge(rdma, bv[i].bv_page, off, len))
++			return -EIO;
++
++		ret += len;
++		maxsize -= len;
++		if (rdma->nr_sge >= rdma->max_sge || maxsize <= 0)
++			break;
++		start = 0;
++	}
++
++	return ret;
++}
++
++/*
++ * Extract fragments from a KVEC-class iterator and add them to an RDMA list.
++ * This can deal with vmalloc'd buffers as well as kmalloc'd or static buffers.
++ * The pages are not pinned.
++ */
++static ssize_t smb_extract_kvec_to_rdma(struct iov_iter *iter,
++					struct smb_extract_to_rdma *rdma,
++					ssize_t maxsize)
++{
++	const struct kvec *kv = iter->kvec;
++	unsigned long start = iter->iov_offset;
++	unsigned int i;
++	ssize_t ret = 0;
++
++	for (i = 0; i < iter->nr_segs; i++) {
++		struct page *page;
++		unsigned long kaddr;
++		size_t off, len, seg;
++
++		len = kv[i].iov_len;
++		if (start >= len) {
++			start -= len;
++			continue;
++		}
++
++		kaddr = (unsigned long)kv[i].iov_base + start;
++		off = kaddr & ~PAGE_MASK;
++		len = min_t(size_t, maxsize, len - start);
++		kaddr &= PAGE_MASK;
++
++		maxsize -= len;
++		do {
++			seg = min_t(size_t, len, PAGE_SIZE - off);
++
++			if (is_vmalloc_or_module_addr((void *)kaddr))
++				page = vmalloc_to_page((void *)kaddr);
++			else
++				page = virt_to_page(kaddr);
++
++			if (!smb_set_sge(rdma, page, off, seg))
++				return -EIO;
++
++			ret += seg;
++			len -= seg;
++			kaddr += PAGE_SIZE;
++			off = 0;
++		} while (len > 0 && rdma->nr_sge < rdma->max_sge);
++
++		if (rdma->nr_sge >= rdma->max_sge || maxsize <= 0)
++			break;
++		start = 0;
++	}
++
++	return ret;
++}
++
++/*
++ * Extract folio fragments from an XARRAY-class iterator and add them to an
++ * RDMA list.  The folios are not pinned.
++ */
++static ssize_t smb_extract_xarray_to_rdma(struct iov_iter *iter,
++					  struct smb_extract_to_rdma *rdma,
++					  ssize_t maxsize)
++{
++	struct xarray *xa = iter->xarray;
++	struct folio *folio;
++	loff_t start = iter->xarray_start + iter->iov_offset;
++	pgoff_t index = start / PAGE_SIZE;
++	ssize_t ret = 0;
++	size_t off, len;
++	XA_STATE(xas, xa, index);
++
++	rcu_read_lock();
++
++	xas_for_each(&xas, folio, ULONG_MAX) {
++		if (xas_retry(&xas, folio))
++			continue;
++		if (WARN_ON(xa_is_value(folio)))
++			break;
++		if (WARN_ON(folio_test_hugetlb(folio)))
++			break;
++
++		off = offset_in_folio(folio, start);
++		len = min_t(size_t, maxsize, folio_size(folio) - off);
++
++		if (!smb_set_sge(rdma, folio_page(folio, 0), off, len)) {
++			rcu_read_lock();
++			return -EIO;
++		}
++
++		maxsize -= len;
++		ret += len;
++		if (rdma->nr_sge >= rdma->max_sge || maxsize <= 0)
++			break;
++	}
++
++	rcu_read_unlock();
++	return ret;
++}
++
++/*
++ * Extract page fragments from up to the given amount of the source iterator
++ * and build up an RDMA list that refers to all of those bits.  The RDMA list
++ * is appended to, up to the maximum number of elements set in the parameter
++ * block.
++ *
++ * The extracted page fragments are not pinned or ref'd in any way; if an
++ * IOVEC/UBUF-type iterator is to be used, it should be converted to a
++ * BVEC-type iterator and the pages pinned, ref'd or otherwise held in some
++ * way.
++ */
++static ssize_t smb_extract_iter_to_rdma(struct iov_iter *iter, size_t len,
++					struct smb_extract_to_rdma *rdma)
++{
++	ssize_t ret;
++	int before = rdma->nr_sge;
++
++	switch (iov_iter_type(iter)) {
++	case ITER_BVEC:
++		ret = smb_extract_bvec_to_rdma(iter, rdma, len);
++		break;
++	case ITER_KVEC:
++		ret = smb_extract_kvec_to_rdma(iter, rdma, len);
++		break;
++	case ITER_XARRAY:
++		ret = smb_extract_xarray_to_rdma(iter, rdma, len);
++		break;
++	default:
++		WARN_ON_ONCE(1);
++		return -EIO;
++	}
++
++	if (ret > 0) {
++		iov_iter_advance(iter, ret);
++	} else if (ret < 0) {
++		while (rdma->nr_sge > before) {
++			struct ib_sge *sge = &rdma->sge[rdma->nr_sge--];
++
++			ib_dma_unmap_single(rdma->device, sge->addr, sge->length,
++					    rdma->direction);
++			sge->addr = 0;
++		}
++	}
++
++	return ret;
++}
 
-I've said repeatedly it is in our plans, we have people working on it,
-and I'm not allowed to commit to specific dates in public.
-
-Jason
