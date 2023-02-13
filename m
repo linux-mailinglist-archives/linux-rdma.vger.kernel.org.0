@@ -2,288 +2,306 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D93826953AB
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Feb 2023 23:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C267695448
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Feb 2023 00:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjBMWSv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Feb 2023 17:18:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
+        id S229836AbjBMXAL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Feb 2023 18:00:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjBMWSt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Feb 2023 17:18:49 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D731C328
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Feb 2023 14:18:46 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id n2so5734315ili.11
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Feb 2023 14:18:46 -0800 (PST)
+        with ESMTP id S229558AbjBMXAL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Feb 2023 18:00:11 -0500
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66ECBDCD
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Feb 2023 15:00:09 -0800 (PST)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-16df32f2ffdso6319163fac.1
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Feb 2023 15:00:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eRWQduPmN91iFAS5BBJCNCcuPyWFBW+Nj2BiZbIFrWo=;
-        b=cHwRGNoPEWFDIRtyTqHsxecvM7OojiMb4qU1yfogG5wYgk3a+8u4GK/+uwjhJinaSw
-         TwQw+90Cj+tjRsaZ0tRq8TdcUS+mt/pkVIjprDUpUan5qxlCWiLng+/WWHknceaVVIDk
-         Oo11X/cLi3F1fvUU983xzgJ/0lfpiU3Fr8UuM=
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SoCr9JTtVEW6K/46OOIa543PKuNUerL1zGJwiWuO490=;
+        b=T7REzfNhBjAgqmY9SKJlp+MOAdCQ9eEjO0yB7i9ighNMrZwTXTYPuPJ+eWq16by/rB
+         3pLjoc0SCC+EVKqBhvTXt/TZz3ESfjwynYrEU3ew3cbWiQObl6ud9yrrx+oej/WdPO4p
+         w9q0ieUM2Xklk5kmxBVGZKyFwPEgCFuX6ka4lAziD406x4CgH3026gqxOfVpTTSZQWMn
+         u05ZSxrvrcfXBTodRY3Il4Q9yLS9zdwXe7BNDSK29KC9jeq01hVrQJxJW2EI9vuyM/0Y
+         39DP03zlxC/70P/bCf7nmLYZWSavn6DzqYkEUgnNjOmFIeXxZICrvDYcNC53b7BhoN1o
+         gw3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eRWQduPmN91iFAS5BBJCNCcuPyWFBW+Nj2BiZbIFrWo=;
-        b=htWi+ZONQ2c1XKzwsRpXENM33xJy8OgtjOt9d4nzE4g7h9ph6WkVn2cVBvJejPLHp0
-         9GSdmWS7hLA2+fo+CQ5z3E3SilhomagPsfiQHPPPDV/4eKUQucCcNlxZEK54Tp8XpA3l
-         yI3ayNd9fdU82jTVDXza84KaxELZZp7FR4PgbWMcEUxdjooMzFEsp3i9V3tljrt0AJQt
-         9mcNHbEY3AiNJr1MTIyNYU8XV8oT1gfqRmshaoleQu+skKpxB8oxu2kTf+F6t3X0bQO6
-         97myi1DGc0wDC/Vr324tNsj3QwT9kcSHmjyDgaYhnQflnmMOT7VsRAzWNyD6lo5+NPEr
-         llOQ==
-X-Gm-Message-State: AO0yUKVODqXgx73me7zS4cIbfEg2iwqvg8yhNqAe0bzf7OPAlapr/fLp
-        8x0MWgS5xroLEJZwbtDyBRJHhw==
-X-Google-Smtp-Source: AK7set89VlubTgzaLUf91OOFVU/glsOKFNCyHhNv+9INbUdipmkq/oitdjYBwf2S79zB5BALj4KMwQ==
-X-Received: by 2002:a92:c54f:0:b0:315:4b70:8376 with SMTP id a15-20020a92c54f000000b003154b708376mr221388ilj.29.1676326725758;
-        Mon, 13 Feb 2023 14:18:45 -0800 (PST)
-Received: from ravnica.bld.corp.google.com ([2620:15c:183:200:d644:5bf8:7c67:1ab8])
-        by smtp.gmail.com with ESMTPSA id s8-20020a02cc88000000b003a60e5a2638sm4233508jap.94.2023.02.13.14.18.44
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SoCr9JTtVEW6K/46OOIa543PKuNUerL1zGJwiWuO490=;
+        b=oPc9P4rdOJyXcOQEmzSjYqOWYFoetBzGwWwLsEbm9aDAn/SmeUY5hFVqL0LTpEo8gg
+         U+yTsTDGxFpJKUjBOvz5lVZEuhpq2bFcf9LpAUXmn+yUyOPfA3QAml+TTQ0KEUfb61GH
+         tv/zV9DYGDy5+QbPi8YuBQxpYo1nR6p/oo9SaEx3NfHjJmzGFw7fdK3m3WGctMMjlJcs
+         IooKlAR4kOjCDYTkufagkggU+Sta4oTM7T1Jzn8Odzt1QkvMNbn0rP9u67j42t2YqL4L
+         qXtKNSrwv4l0468D6GnIvdPFJviyIxD0HR9Lh/OIRLdRlgQ5BT56mG9Jbou24+Pxv8vc
+         rsGw==
+X-Gm-Message-State: AO0yUKWqwK5pXoouetYQmSgf2WR6PAexGPXWNGEY5SmZ1QJvbh7RWe45
+        YUJlN4T1izTTsIfwGHo2SBE=
+X-Google-Smtp-Source: AK7set+HRCvYCyumyPcyyWDXr/BONiDYLBM/0ZkNvEVb1fT4R4Ngt8C3gqHPu/mHtI4XDfn37E25zA==
+X-Received: by 2002:a05:6870:6587:b0:16d:ec6a:71e2 with SMTP id fp7-20020a056870658700b0016dec6a71e2mr4552424oab.24.1676329209177;
+        Mon, 13 Feb 2023 15:00:09 -0800 (PST)
+Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (097-099-248-255.res.spectrum.com. [97.99.248.255])
+        by smtp.gmail.com with ESMTPSA id b19-20020a4ae213000000b0051a2a5c8ac6sm5309896oot.36.2023.02.13.15.00.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Feb 2023 14:18:45 -0800 (PST)
-From:   Ross Zwisler <zwisler@chromium.org>
-X-Google-Original-From: Ross Zwisler <zwisler@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ross Zwisler <zwisler@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        "Michael S . Tsirkin" <mst@redhat.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: use canonical ftrace path
-Date:   Mon, 13 Feb 2023 15:18:35 -0700
-Message-Id: <20230213221835.592763-2-zwisler@google.com>
-X-Mailer: git-send-email 2.39.1.581.gbfd45094c4-goog
-In-Reply-To: <20230213221835.592763-1-zwisler@google.com>
-References: <20230213221835.592763-1-zwisler@google.com>
+        Mon, 13 Feb 2023 15:00:08 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>, rpearson@hpe.com
+Subject: [PATCH for-next] RDMA/rxe: Remove rxe_alloc()
+Date:   Mon, 13 Feb 2023 16:55:52 -0600
+Message-Id: <20230213225551.12437-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The canonical location for the tracefs filesystem is at /sys/kernel/tracing.
+Currently all the object types in the rxe driver are allocated in
+rdma-core except for MRs. By moving tha kzalloc() call outside of
+the pool code the rxe_alloc() subroutine can be eliminated and code
+checking for MR as a special case can be removed.
 
-But, from Documentation/trace/ftrace.rst:
+This patch moves the kzalloc() and kfree_rcu() calls into the mr
+registration and destruction verbs. It removes that code from
+rxe_pool.c including the rxe_alloc() subroutine which is no longer
+used.
 
-  Before 4.1, all ftrace tracing control files were within the debugfs
-  file system, which is typically located at /sys/kernel/debug/tracing.
-  For backward compatibility, when mounting the debugfs file system,
-  the tracefs file system will be automatically mounted at:
-
-  /sys/kernel/debug/tracing
-
-Many tests in the bpf selftest code still refer to this older debugfs
-path, so let's update them to avoid confusion.
-
-Signed-off-by: Ross Zwisler <zwisler@google.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
+ drivers/infiniband/sw/rxe/rxe_mr.c    |  2 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 46 --------------------
+ drivers/infiniband/sw/rxe/rxe_pool.h  |  3 --
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 61 +++++++++++++++++++--------
+ 4 files changed, 45 insertions(+), 67 deletions(-)
 
-[ Per Alexei's request, resending towards bpf-next ]
-
- tools/testing/selftests/bpf/get_cgroup_id_user.c          | 2 +-
- .../testing/selftests/bpf/prog_tests/kprobe_multi_test.c  | 2 +-
- tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c | 2 +-
- tools/testing/selftests/bpf/prog_tests/tp_attach_query.c  | 2 +-
- tools/testing/selftests/bpf/prog_tests/trace_printk.c     | 2 +-
- tools/testing/selftests/bpf/prog_tests/trace_vprintk.c    | 2 +-
- tools/testing/selftests/bpf/progs/test_stacktrace_map.c   | 2 +-
- tools/testing/selftests/bpf/progs/test_tracepoint.c       | 2 +-
- tools/testing/selftests/bpf/test_ftrace.sh                | 2 +-
- tools/testing/selftests/bpf/test_tunnel.sh                | 8 ++++----
- tools/testing/selftests/bpf/trace_helpers.c               | 4 ++--
- 11 files changed, 15 insertions(+), 15 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/get_cgroup_id_user.c b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-index 156743cf5870..478e080128be 100644
---- a/tools/testing/selftests/bpf/get_cgroup_id_user.c
-+++ b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-@@ -87,7 +87,7 @@ int main(int argc, char **argv)
- 	bpf_map_update_elem(pidmap_fd, &key, &pid, 0);
- 
- 	snprintf(buf, sizeof(buf),
--		 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-+		 "/sys/kernel/tracing/events/%s/id", probe_name);
- 	efd = open(buf, O_RDONLY, 0);
- 	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
- 		goto close_prog;
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index c6f37e825f11..6f0f2d8984db 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -338,7 +338,7 @@ static int get_syms(char ***symsp, size_t *cntp)
- 	 * Filtering out duplicates by using hashmap__add, which won't
- 	 * add existing entry.
- 	 */
--	f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
-+	f = fopen("/sys/kernel/tracing/available_filter_functions", "r");
- 	if (!f)
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index c80458634962..c79a4161a6ae 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -724,7 +724,7 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
  		return -EINVAL;
  
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-index c717741bf8b6..6d70559fc19b 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-@@ -18,7 +18,7 @@ static void test_task_fd_query_tp_core(const char *probe_name,
- 		goto close_prog;
- 
- 	snprintf(buf, sizeof(buf),
--		 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-+		 "/sys/kernel/tracing/events/%s/id", probe_name);
- 	efd = open(buf, O_RDONLY, 0);
- 	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
- 		goto close_prog;
-diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-index a479080533db..4308e3a828d8 100644
---- a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-@@ -17,7 +17,7 @@ void serial_test_tp_attach_query(void)
- 		obj[i] = NULL;
- 
- 	snprintf(buf, sizeof(buf),
--		 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
-+		 "/sys/kernel/tracing/events/sched/sched_switch/id");
- 	efd = open(buf, O_RDONLY, 0);
- 	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
- 		return;
-diff --git a/tools/testing/selftests/bpf/prog_tests/trace_printk.c b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
-index cade7f12315f..ff50a928cb98 100644
---- a/tools/testing/selftests/bpf/prog_tests/trace_printk.c
-+++ b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
-@@ -5,7 +5,7 @@
- 
- #include "trace_printk.lskel.h"
- 
--#define TRACEBUF	"/sys/kernel/debug/tracing/trace_pipe"
-+#define TRACEBUF	"/sys/kernel/tracing/trace_pipe"
- #define SEARCHMSG	"testing,testing"
- 
- void serial_test_trace_printk(void)
-diff --git a/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c b/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c
-index 7a4e313e8558..e568d7f247ec 100644
---- a/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c
-+++ b/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c
-@@ -5,7 +5,7 @@
- 
- #include "trace_vprintk.lskel.h"
- 
--#define TRACEBUF	"/sys/kernel/debug/tracing/trace_pipe"
-+#define TRACEBUF	"/sys/kernel/tracing/trace_pipe"
- #define SEARCHMSG	"1,2,3,4,5,6,7,8,9,10"
- 
- void serial_test_trace_vprintk(void)
-diff --git a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
-index 728dbd39eff0..47568007b668 100644
---- a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
-@@ -38,7 +38,7 @@ struct {
- 	__type(value, stack_trace_t);
- } stack_amap SEC(".maps");
- 
--/* taken from /sys/kernel/debug/tracing/events/sched/sched_switch/format */
-+/* taken from /sys/kernel/tracing/events/sched/sched_switch/format */
- struct sched_switch_args {
- 	unsigned long long pad;
- 	char prev_comm[TASK_COMM_LEN];
-diff --git a/tools/testing/selftests/bpf/progs/test_tracepoint.c b/tools/testing/selftests/bpf/progs/test_tracepoint.c
-index 43bd7a20cc50..4cb8bbb6a320 100644
---- a/tools/testing/selftests/bpf/progs/test_tracepoint.c
-+++ b/tools/testing/selftests/bpf/progs/test_tracepoint.c
-@@ -4,7 +4,7 @@
- #include <vmlinux.h>
- #include <bpf/bpf_helpers.h>
- 
--/* taken from /sys/kernel/debug/tracing/events/sched/sched_switch/format */
-+/* taken from /sys/kernel/tracing/events/sched/sched_switch/format */
- struct sched_switch_args {
- 	unsigned long long pad;
- 	char prev_comm[TASK_COMM_LEN];
-diff --git a/tools/testing/selftests/bpf/test_ftrace.sh b/tools/testing/selftests/bpf/test_ftrace.sh
-index 20de7bb873bc..e3e2328a1b65 100755
---- a/tools/testing/selftests/bpf/test_ftrace.sh
-+++ b/tools/testing/selftests/bpf/test_ftrace.sh
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
--TR=/sys/kernel/debug/tracing/
-+TR=/sys/kernel/tracing/
- clear_trace() { # reset trace output
-     echo > $TR/trace
+ 	rxe_cleanup(mr);
+-
++	kfree_rcu(mr);
+ 	return 0;
  }
-diff --git a/tools/testing/selftests/bpf/test_tunnel.sh b/tools/testing/selftests/bpf/test_tunnel.sh
-index 2eaedc1d9ed3..bbbd242f7cef 100755
---- a/tools/testing/selftests/bpf/test_tunnel.sh
-+++ b/tools/testing/selftests/bpf/test_tunnel.sh
-@@ -543,7 +543,7 @@ setup_xfrm_tunnel()
- test_xfrm_tunnel()
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+index f50620f5a0a1..3f6bd672cc2d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.c
++++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+@@ -116,55 +116,12 @@ void rxe_pool_cleanup(struct rxe_pool *pool)
+ 	WARN_ON(!xa_empty(&pool->xa));
+ }
+ 
+-void *rxe_alloc(struct rxe_pool *pool)
+-{
+-	struct rxe_pool_elem *elem;
+-	void *obj;
+-	int err;
+-
+-	if (WARN_ON(!(pool->type == RXE_TYPE_MR)))
+-		return NULL;
+-
+-	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
+-		goto err_cnt;
+-
+-	obj = kzalloc(pool->elem_size, GFP_KERNEL);
+-	if (!obj)
+-		goto err_cnt;
+-
+-	elem = (struct rxe_pool_elem *)((u8 *)obj + pool->elem_offset);
+-
+-	elem->pool = pool;
+-	elem->obj = obj;
+-	kref_init(&elem->ref_cnt);
+-	init_completion(&elem->complete);
+-
+-	/* allocate index in array but leave pointer as NULL so it
+-	 * can't be looked up until rxe_finalize() is called
+-	 */
+-	err = xa_alloc_cyclic(&pool->xa, &elem->index, NULL, pool->limit,
+-			      &pool->next, GFP_KERNEL);
+-	if (err < 0)
+-		goto err_free;
+-
+-	return obj;
+-
+-err_free:
+-	kfree(obj);
+-err_cnt:
+-	atomic_dec(&pool->num_elem);
+-	return NULL;
+-}
+-
+ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem,
+ 				bool sleepable)
  {
- 	config_device
--	> /sys/kernel/debug/tracing/trace
-+	> /sys/kernel/tracing/trace
- 	setup_xfrm_tunnel
- 	mkdir -p ${BPF_PIN_TUNNEL_DIR}
- 	bpftool prog loadall ${BPF_FILE} ${BPF_PIN_TUNNEL_DIR}
-@@ -552,11 +552,11 @@ test_xfrm_tunnel()
- 		${BPF_PIN_TUNNEL_DIR}/xfrm_get_state
- 	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
- 	sleep 1
--	grep "reqid 1" /sys/kernel/debug/tracing/trace
-+	grep "reqid 1" /sys/kernel/tracing/trace
- 	check_err $?
--	grep "spi 0x1" /sys/kernel/debug/tracing/trace
-+	grep "spi 0x1" /sys/kernel/tracing/trace
- 	check_err $?
--	grep "remote ip 0xac100164" /sys/kernel/debug/tracing/trace
-+	grep "remote ip 0xac100164" /sys/kernel/tracing/trace
- 	check_err $?
- 	cleanup
+ 	int err;
+ 	gfp_t gfp_flags;
  
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 09a16a77bae4..d2816aa35a9b 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -12,7 +12,7 @@
- #include <sys/mman.h>
- #include "trace_helpers.h"
+-	if (WARN_ON(pool->type == RXE_TYPE_MR))
+-		return -EINVAL;
+-
+ 	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
+ 		goto err_cnt;
  
--#define DEBUGFS "/sys/kernel/debug/tracing/"
-+#define TRACEFS "/sys/kernel/tracing/"
+@@ -275,9 +232,6 @@ int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
+ 	if (pool->cleanup)
+ 		pool->cleanup(elem);
  
- #define MAX_SYMS 300000
- static struct ksym syms[MAX_SYMS];
-@@ -136,7 +136,7 @@ void read_trace_pipe(void)
- {
- 	int trace_fd;
+-	if (pool->type == RXE_TYPE_MR)
+-		kfree_rcu(elem->obj);
+-
+ 	atomic_dec(&pool->num_elem);
  
--	trace_fd = open(DEBUGFS "trace_pipe", O_RDONLY, 0);
-+	trace_fd = open(TRACEFS "trace_pipe", O_RDONLY, 0);
- 	if (trace_fd < 0)
- 		return;
+ 	return err;
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
+index 9d83cb32092f..b42e26427a70 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.h
++++ b/drivers/infiniband/sw/rxe/rxe_pool.h
+@@ -54,9 +54,6 @@ void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
+ /* free resources from object pool */
+ void rxe_pool_cleanup(struct rxe_pool *pool);
  
+-/* allocate an object from pool */
+-void *rxe_alloc(struct rxe_pool *pool);
+-
+ /* connect already allocated object to pool */
+ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem,
+ 				bool sleepable);
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 7a902e0a0607..268be6983c1e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -869,10 +869,17 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
+ 	struct rxe_dev *rxe = to_rdev(ibpd->device);
+ 	struct rxe_pd *pd = to_rpd(ibpd);
+ 	struct rxe_mr *mr;
++	int err;
+ 
+-	mr = rxe_alloc(&rxe->mr_pool);
+-	if (!mr)
+-		return ERR_PTR(-ENOMEM);
++	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
++	if (!mr) {
++		err = -ENOMEM;
++		goto err_out;
++	}
++
++	err = rxe_add_to_pool(&rxe->mr_pool, mr);
++	if (err)
++		goto err_free;
+ 
+ 	rxe_get(pd);
+ 	mr->ibmr.pd = ibpd;
+@@ -880,8 +887,12 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
+ 
+ 	rxe_mr_init_dma(access, mr);
+ 	rxe_finalize(mr);
+-
+ 	return &mr->ibmr;
++
++err_free:
++	kfree(mr);
++err_out:
++	return ERR_PTR(err);
+ }
+ 
+ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
+@@ -895,9 +906,15 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
+ 	struct rxe_pd *pd = to_rpd(ibpd);
+ 	struct rxe_mr *mr;
+ 
+-	mr = rxe_alloc(&rxe->mr_pool);
+-	if (!mr)
+-		return ERR_PTR(-ENOMEM);
++	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
++	if (!mr) {
++		err = -ENOMEM;
++		goto err_out;
++	}
++
++	err = rxe_add_to_pool(&rxe->mr_pool, mr);
++	if (err)
++		goto err_free;
+ 
+ 	rxe_get(pd);
+ 	mr->ibmr.pd = ibpd;
+@@ -905,14 +922,16 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
+ 
+ 	err = rxe_mr_init_user(rxe, start, length, iova, access, mr);
+ 	if (err)
+-		goto err1;
++		goto err_cleanup;
+ 
+ 	rxe_finalize(mr);
+-
+ 	return &mr->ibmr;
+ 
+-err1:
++err_cleanup:
+ 	rxe_cleanup(mr);
++err_free:
++	kfree(mr);
++err_out:
+ 	return ERR_PTR(err);
+ }
+ 
+@@ -927,24 +946,32 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+ 	if (mr_type != IB_MR_TYPE_MEM_REG)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	mr = rxe_alloc(&rxe->mr_pool);
+-	if (!mr)
+-		return ERR_PTR(-ENOMEM);
++	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
++	if (!mr) {
++		err = -ENOMEM;
++		goto err_out;
++	}
++
++	err = rxe_add_to_pool(&rxe->mr_pool, mr);
++	if (err)
++		goto err_free;
+ 
+ 	rxe_get(pd);
+ 	mr->ibmr.pd = ibpd;
+ 	mr->ibmr.device = ibpd->device;
+ 
+ 	err = rxe_mr_init_fast(max_num_sg, mr);
+-	if (err)
+-		goto err1;
++	if (err)
++		goto err_cleanup;
+ 
+ 	rxe_finalize(mr);
+-
+ 	return &mr->ibmr;
+ 
+-err1:
++err_cleanup:
+ 	rxe_cleanup(mr);
++err_free:
++	kfree(mr);
++err_out:
+ 	return ERR_PTR(err);
+ }
+ 
+
+base-commit: 9cd9842c46996ef62173c36619c746f57416bcb0
 -- 
-2.39.1.581.gbfd45094c4-goog
+2.37.2
 
