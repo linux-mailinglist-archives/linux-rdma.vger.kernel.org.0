@@ -2,135 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE5969633F
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Feb 2023 13:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 224316963F3
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Feb 2023 13:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbjBNMOp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Feb 2023 07:14:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
+        id S232139AbjBNMyL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Feb 2023 07:54:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbjBNMOo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Feb 2023 07:14:44 -0500
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869725FC8;
-        Tue, 14 Feb 2023 04:14:42 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vbg7mNU_1676376878;
-Received: from 30.221.150.50(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vbg7mNU_1676376878)
-          by smtp.aliyun-inc.com;
-          Tue, 14 Feb 2023 20:14:39 +0800
-Message-ID: <31a1c0ae-dbc9-60e5-254b-b5e2bf782f9a@linux.alibaba.com>
-Date:   Tue, 14 Feb 2023 20:14:37 +0800
+        with ESMTP id S232090AbjBNMyK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Feb 2023 07:54:10 -0500
+Received: from smtp.smtpout.orange.fr (smtp-18.smtpout.orange.fr [80.12.242.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9C522783
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Feb 2023 04:53:57 -0800 (PST)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id Ruokph5lwOJaFRuolpOzce; Tue, 14 Feb 2023 13:53:55 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 14 Feb 2023 13:53:55 +0100
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH] RDMA/restrack: Reorder fields in 'struct rdma_restrack_entry'
+Date:   Tue, 14 Feb 2023 13:53:52 +0100
+Message-Id: <d47800d9fd5ac7c33d01af04b12b6d43ad23c96e.1676379187.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.1
-Subject: Re: [PATCH net] net/smc: fix application data exception
-Content-Language: en-US
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1669450950-27681-1-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1669450950-27681-1-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,NORMAL_HTTP_TO_IP,NUMERIC_HTTP_ADDR,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Group some variables based on their sizes to reduce hole and avoid padding.
+On x86_64, this shrinks the size from 136 to 128 bytes.
 
-Hi, wenjia
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Using pahole
 
-This patch of bugfix seems to have been hanging for a long time.
-If you have any concerns, please let us know.
+Before:
+======
+struct rdma_restrack_entry {
+	bool                       valid;                /*     0     1 */
+	u8                         no_track:1;           /*     1: 0  1 */
 
-Best wishes.
-D. Wythe
+	/* XXX 7 bits hole, try to pack */
+	/* XXX 2 bytes hole, try to pack */
 
+	struct kref                kref;                 /*     4     4 */
+	struct completion          comp;                 /*     8    96 */
+	/* --- cacheline 1 boundary (64 bytes) was 40 bytes ago --- */
+	struct task_struct *       task;                 /*   104     8 */
+	const char  *              kern_name;            /*   112     8 */
+	enum rdma_restrack_type    type;                 /*   120     4 */
+	bool                       user;                 /*   124     1 */
 
-On 11/26/22 4:22 PM, D.Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> There is a certain probability that following
-> exceptions will occur in the wrk benchmark test:
-> 
-> Running 10s test @ http://11.213.45.6:80
->    8 threads and 64 connections
->    Thread Stats   Avg      Stdev     Max   +/- Stdev
->      Latency     3.72ms   13.94ms 245.33ms   94.17%
->      Req/Sec     1.96k   713.67     5.41k    75.16%
->    155262 requests in 10.10s, 23.10MB read
-> Non-2xx or 3xx responses: 3
-> 
-> We will find that the error is HTTP 400 error, which is a serious
-> exception in our test, which means the application data was
-> corrupted.
-> 
-> Consider the following scenarios:
-> 
-> CPU0                            CPU1
-> 
-> buf_desc->used = 0;
->                                  cmpxchg(buf_desc->used, 0, 1)
->                                  deal_with(buf_desc)
-> 
-> memset(buf_desc->cpu_addr,0);
-> 
-> This will cause the data received by a victim connection to be cleared,
-> thus triggering an HTTP 400 error in the server.
-> 
-> This patch exchange the order between clear used and memset, add
-> barrier to ensure memory consistency.
-> 
-> Fixes: 1c5526968e27 ("net/smc: Clear memory when release and reuse buffer")
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->   net/smc/smc_core.c | 17 ++++++++---------
->   1 file changed, 8 insertions(+), 9 deletions(-)
-> 
-> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-> index c305d8d..c19d4b7 100644
-> --- a/net/smc/smc_core.c
-> +++ b/net/smc/smc_core.c
-> @@ -1120,8 +1120,9 @@ static void smcr_buf_unuse(struct smc_buf_desc *buf_desc, bool is_rmb,
->   
->   		smc_buf_free(lgr, is_rmb, buf_desc);
->   	} else {
-> -		buf_desc->used = 0;
-> -		memset(buf_desc->cpu_addr, 0, buf_desc->len);
-> +		/* memzero_explicit provides potential memory barrier semantics */
-> +		memzero_explicit(buf_desc->cpu_addr, buf_desc->len);
-> +		WRITE_ONCE(buf_desc->used, 0);
->   	}
->   }
->   
-> @@ -1132,19 +1133,17 @@ static void smc_buf_unuse(struct smc_connection *conn,
->   		if (!lgr->is_smcd && conn->sndbuf_desc->is_vm) {
->   			smcr_buf_unuse(conn->sndbuf_desc, false, lgr);
->   		} else {
-> -			conn->sndbuf_desc->used = 0;
-> -			memset(conn->sndbuf_desc->cpu_addr, 0,
-> -			       conn->sndbuf_desc->len);
-> +			memzero_explicit(conn->sndbuf_desc->cpu_addr, conn->sndbuf_desc->len);
-> +			WRITE_ONCE(conn->sndbuf_desc->used, 0);
->   		}
->   	}
->   	if (conn->rmb_desc) {
->   		if (!lgr->is_smcd) {
->   			smcr_buf_unuse(conn->rmb_desc, true, lgr);
->   		} else {
-> -			conn->rmb_desc->used = 0;
-> -			memset(conn->rmb_desc->cpu_addr, 0,
-> -			       conn->rmb_desc->len +
-> -			       sizeof(struct smcd_cdc_msg));
-> +			memzero_explicit(conn->rmb_desc->cpu_addr,
-> +					 conn->rmb_desc->len + sizeof(struct smcd_cdc_msg));
-> +			WRITE_ONCE(conn->rmb_desc->used, 0);
->   		}
->   	}
->   }
+	/* XXX 3 bytes hole, try to pack */
+
+	/* --- cacheline 2 boundary (128 bytes) --- */
+	u32                        id;                   /*   128     4 */
+
+	/* size: 136, cachelines: 3, members: 9 */
+	/* sum members: 126, holes: 2, sum holes: 5 */
+	/* sum bitfield members: 1 bits, bit holes: 1, sum bit holes: 7 bits */
+	/* padding: 4 */
+	/* last cacheline: 8 bytes */
+};
+
+After:
+=====
+struct rdma_restrack_entry {
+	bool                       valid;                /*     0     1 */
+	u8                         no_track:1;           /*     1: 0  1 */
+
+	/* XXX 7 bits hole, try to pack */
+
+	bool                       user;                 /*     2     1 */
+
+	/* XXX 1 byte hole, try to pack */
+
+	struct kref                kref;                 /*     4     4 */
+	struct completion          comp;                 /*     8    96 */
+	/* --- cacheline 1 boundary (64 bytes) was 40 bytes ago --- */
+	struct task_struct *       task;                 /*   104     8 */
+	const char  *              kern_name;            /*   112     8 */
+	enum rdma_restrack_type    type;                 /*   120     4 */
+	u32                        id;                   /*   124     4 */
+
+	/* size: 128, cachelines: 2, members: 9 */
+	/* sum members: 126, holes: 1, sum holes: 1 */
+	/* sum bitfield members: 1 bits, bit holes: 1, sum bit holes: 7 bits */
+};
+---
+ include/rdma/restrack.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
+index 8b7c46daeb07..da53fefe6f9e 100644
+--- a/include/rdma/restrack.h
++++ b/include/rdma/restrack.h
+@@ -80,6 +80,10 @@ struct rdma_restrack_entry {
+ 	 * query stage.
+ 	 */
+ 	u8			no_track : 1;
++	/**
++	 * @user: user resource
++	 */
++	bool			user;
+ 	/*
+ 	 * @kref: Protect destroy of the resource
+ 	 */
+@@ -106,10 +110,6 @@ struct rdma_restrack_entry {
+ 	 * @type: various objects in restrack database
+ 	 */
+ 	enum rdma_restrack_type	type;
+-	/**
+-	 * @user: user resource
+-	 */
+-	bool			user;
+ 	/**
+ 	 * @id: ID to expose to users
+ 	 */
+-- 
+2.34.1
+
