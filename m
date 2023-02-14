@@ -2,71 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3818A696882
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Feb 2023 16:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96060696961
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Feb 2023 17:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbjBNPvI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Feb 2023 10:51:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        id S232248AbjBNQYf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Feb 2023 11:24:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbjBNPvH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Feb 2023 10:51:07 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1719F10F6;
-        Tue, 14 Feb 2023 07:51:06 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id m14so16113857wrg.13;
-        Tue, 14 Feb 2023 07:51:06 -0800 (PST)
+        with ESMTP id S231901AbjBNQYR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Feb 2023 11:24:17 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3152BEDE
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Feb 2023 08:23:55 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id h4so3032341ile.5
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Feb 2023 08:23:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wzAUyHtfoHuSnIcDKMQpUmStqp8uBg0Ef5hbSbh32Pc=;
-        b=M1Jn2v07w8RE5r5b6Kx65c7YeYnFWwStF19DpbwmUBYCvawZakOcHpsuaJ9rh3Uiwa
-         rZBRh00UDb+YpTbzYnpgeBRhZk2SQpKcLSmcHPIVnYep1O05Zr5yw9orZfGGB18MKgi6
-         01JIPf8tVY6fCKQ0KCr9TVBLinKFpm3ndCMrPOfdAc4S1s/mgdezqyQOrTcFM3iTvWbP
-         cGndravD15y78TQFvGKfI2EW+FVuehN9TDtxiu5vihswWzU5Dp26B8uNyWR1wDhgGHXR
-         1rbiq2uRWU6MplUCDTlaOEpW3lJP6yYD1cYmIOYReXfZXsyfLY6Hl53IgMtn/Z3myu3z
-         jz4A==
+        bh=3MCeZLLD36scDNZoKo/i+quNrCjBM4LKtgguziA0l4w=;
+        b=nrdh9Z84zfj9LOzMn+lI3fFgOtcYXOWVU476R4GXqb9T+5knOUZpcH0VWXUlyLOxUk
+         QqBT0KIl0spl/VcfYVEgjfpa3reZeqFn6LkRNAou/eWgMwMxs0xNytzbFVOBdoRfsYQf
+         08f8GdbBGvf0cxHosWyzpCaaf8teMxqt2IuA1Hux58Ax11ArqRxzzee3UVrvjGb9Ok8v
+         xsBBmAlBuDXdGClv7qD+kVheX0zIaa6rHgmcpMaZqvZb1dEntk7oe7e8Kp/brO8/EJD/
+         3v8nzTfxjOjv+AGP5Fg9AYOPYaLWx8JaN9SV1SQC7NsuBwhCqUOGxJLyOxRjd1l0/N2m
+         XSnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wzAUyHtfoHuSnIcDKMQpUmStqp8uBg0Ef5hbSbh32Pc=;
-        b=PYrVDveSUtQq2iU0MiC/aSeqs/8I381KkG99u4EktwlwJoYI5xzu6qkcfMLC+mRANd
-         8QexbiKLJeiAFkQOyivJpLRpyjsZ94/tIpH+SpwG/e9rcWdAxipwY9zlUBKH1T82x9Cj
-         HBTmfaebkddCWK+0NGGTHddGblaGnvifusHfIC5VaA5QYfDHnhAD7UobDS4L8lDvhQBk
-         mqx3IVXLAQxpJBCIeoBGgdohtzeJyvu7TapMr2fX6MVjXpYZweSW2jlf3Q3a+JMaWVL0
-         Tb91balrb6mMMWVN13OoH3u4YHS04N5sD2Z16mf0WbGelF5GkaGEXBeGpgQPZIfKrLvg
-         iCcQ==
-X-Gm-Message-State: AO0yUKVTQoCiIHnhyzXnsH3L5Qs9Pb3t2m+Tkx6JE+xEyuei3z+CLkM5
-        gGxYo4Esnt4L1LZBNdHUsIc=
-X-Google-Smtp-Source: AK7set+Et6EXBwEJ4gK6KhDjAWS7SBFOOZDLF5vFM5RbW56sXRp/GXJ3A+Qqlyw/EpF5z+Lm80TbVQ==
-X-Received: by 2002:a5d:6652:0:b0:2c5:56f7:51ec with SMTP id f18-20020a5d6652000000b002c556f751ecmr2590115wrw.1.1676389864679;
-        Tue, 14 Feb 2023 07:51:04 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o7-20020a056000010700b002c559def236sm4681612wrx.57.2023.02.14.07.51.03
+        bh=3MCeZLLD36scDNZoKo/i+quNrCjBM4LKtgguziA0l4w=;
+        b=KUTrAFeX/fjPmaCZNIiPeEF5zBVavxlANvwnjxjTNwQnBT9CGPj+lwfRJhMH8VTShn
+         uuJwEA7me0lyL/i3wT+mob8VHqKZroKtuKUEgycErPkfsldqihOP7GVJcdhPpKxkufpp
+         bFbAbVpJwZAuZzcN7PqO1RmDS9Sg95dvWAJACsELX/gnXfmpd3NJn+0Lbs614hkNQFmT
+         3uPtJf6hxcJqsyrbTsAFmb9wHaRWLfnkRd773xRDidNN0Id6CdIwttkO1CmWm7OeP3BJ
+         2rk6cgOiaTuNE/+jg6NT89iZYJMq+NXNOTTeWEXMVfMmrQ/bzeYCEzu2Iv98pteyW7Y3
+         pMxg==
+X-Gm-Message-State: AO0yUKV+cL3atAhAwZd9hdov/nZ+B88lYlrutPLa8JoJ6T04VLit7td+
+        gJXOkmspbA1eRf6iVg0jGyBz6g==
+X-Google-Smtp-Source: AK7set+wJTuQl8bVzZfJEVNUDl1DwEE7qqT3W2fILJ4rTMV1GNjuooGt41tO4/tI3+LbmRiqF1wXoA==
+X-Received: by 2002:a05:6e02:160a:b0:312:5834:f6cf with SMTP id t10-20020a056e02160a00b003125834f6cfmr2942825ilu.1.1676391833204;
+        Tue, 14 Feb 2023 08:23:53 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:5ac1:1b03:ce8:c64b])
+        by smtp.gmail.com with ESMTPSA id h10-20020a056e021b8a00b00313be472e06sm4870411ili.67.2023.02.14.08.23.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Feb 2023 07:51:04 -0800 (PST)
-Date:   Tue, 14 Feb 2023 18:51:00 +0300
-From:   Dan Carpenter <error27@gmail.com>
-To:     Steve Wise <larrystevenwise@gmail.com>
-Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        Tue, 14 Feb 2023 08:23:52 -0800 (PST)
+Date:   Tue, 14 Feb 2023 09:23:48 -0700
+From:   Ross Zwisler <zwisler@google.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Ross Zwisler <zwisler@chromium.org>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
         Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] iw_cxgb4: potential NULL dereference in
- c4iw_fill_res_cm_id_entry()
-Message-ID: <Y+ut5OhZFnIO2JtZ@kadam>
-References: <Y+utb9JSKpgAeiWC@kili>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-kernel@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: use canonical ftrace path
+Message-ID: <Y+u1lL49CB86VSuE@google.com>
+References: <20230213221835.592763-1-zwisler@google.com>
+ <Y+r4jLwWvhcvyuih@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y+utb9JSKpgAeiWC@kili>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <Y+r4jLwWvhcvyuih@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,21 +86,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 14, 2023 at 06:49:03PM +0300, Dan Carpenter wrote:
-> This condition needs to match the previous "if (epcp->state == LISTEN) {"
-> exactly to avoid a NULL dereference of either "listen_ep" or "ep". The
-> problem is that "epcp" has been re-assigned so just testing
-> "if (epcp->state == LISTEN) {" a second time is not sufficient.
+On Mon, Feb 13, 2023 at 06:57:16PM -0800, Stanislav Fomichev wrote:
+> On 02/13, Ross Zwisler wrote:
+> > The canonical location for the tracefs filesystem is at
+> > /sys/kernel/tracing.
 > 
-> Fixes: 116aeb887371 ("iw_cxgb4: provide detailed provider-specific CM_ID information")
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
-> ---
-> >From static analysis, not from testing.  It's possible that the current
-> code works but this change makes it more Obviously Correct[tm].
+> > But, from Documentation/trace/ftrace.rst:
 > 
+> >    Before 4.1, all ftrace tracing control files were within the debugfs
+> >    file system, which is typically located at /sys/kernel/debug/tracing.
+> >    For backward compatibility, when mounting the debugfs file system,
+> >    the tracefs file system will be automatically mounted at:
+> 
+> >    /sys/kernel/debug/tracing
+> 
+> > Many comments and samples in the bpf code still refer to this older
+> > debugfs path, so let's update them to avoid confusion.  There are a few
+> > spots where the bpf code explicitly checks both tracefs and debugfs
+> > (tools/bpf/bpftool/tracelog.c and tools/lib/api/fs/fs.c) and I've left
+> > those alone so that the tools can continue to work with both paths.
+> 
+> Doesn't seem to apply cleanly to bpf-next?
+> 
+> https://github.com/kernel-patches/bpf/pull/4584
 
-Oops.  I accidentally sent this twice.  Sorry!
-
-regards,
-dan carpenter
-
+Oh, apologies, I was using Linus's master branch as my baseline.
+I'll send out a v2.
