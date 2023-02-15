@@ -2,296 +2,192 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2E3697226
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Feb 2023 00:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C356978FB
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Feb 2023 10:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbjBNXzy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Feb 2023 18:55:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
+        id S230522AbjBOJ2b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Feb 2023 04:28:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjBNXzx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Feb 2023 18:55:53 -0500
-Received: from out-17.mta0.migadu.com (out-17.mta0.migadu.com [IPv6:2001:41d0:1004:224b::11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A44193E8
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Feb 2023 15:55:51 -0800 (PST)
-Message-ID: <ee983dce-0f26-3e1a-e792-a57bba6ca7e4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1676418948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FQbzqPsY16Z/ZmQDJDHNb75dV90gulWNxNWV49DqzuU=;
-        b=olrykl7ESOQ1uK3xqKRWLOjHi44Z7welIUNswXZ6h5nbfr9DAeCiBSO/LzZmmF6Kp0Ej4n
-        0vjMiI98anEWxaeOKexQpN9mDl6Cb0+hy9QbRFIWHph3A4+PlOZ955K0tY/E8NBvS/3OYn
-        dUNWIDiqdKW2TfZx7MWtDu+D+140SZ8=
-Date:   Wed, 15 Feb 2023 07:55:40 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH for-next] RDMA/rxe: Remove rxe_alloc()
-To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
-        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     rpearson@hpe.com
-References: <20230213225551.12437-1-rpearsonhpe@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230213225551.12437-1-rpearsonhpe@gmail.com>
+        with ESMTP id S234002AbjBOJ2N (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Feb 2023 04:28:13 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED0C3756D;
+        Wed, 15 Feb 2023 01:28:11 -0800 (PST)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31F9QHts030084;
+        Wed, 15 Feb 2023 09:28:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=KtrD5MzuKc+1zQ4PbqZJg2u9nWvwjF3DPSp+E8uKgzw=;
+ b=Ota31XnjbdKJ+TogdU3X/8ne65t+zLWMNEJ8I18RpGydlpNcm26kAsO1THgPv+THrfMc
+ 5GtmG5dXymkL9fKYNt6RwYKEUQRuhL0Yo31+ByMD97jFVDwdFSntba5XvC7Ox5P+pW/k
+ UqMRP2le156ZB0jra7m8twX61IyTudp3uchfHKQr4RZ5MkCZJIETqQiNvoND7u680kMh
+ qAzZ7VM6VbYJzTRzeq5IBR4SPVDh4xi2vF8XYHFEdCT5qRurJaT2YU0iBVugycS97b7f
+ +R8jFMohyMhRLC8pLxQhutNxoS5TFMhDiA+qOdr+Lvtzbfp7Vlr4+xBCMbWEpvOL++xi Yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nrvrwr0yp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Feb 2023 09:28:02 +0000
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31F9S14W005194;
+        Wed, 15 Feb 2023 09:28:01 GMT
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nrvrwr0yb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Feb 2023 09:28:01 +0000
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31F7Y3Ap000883;
+        Wed, 15 Feb 2023 09:28:00 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([9.208.129.119])
+        by ppma04dal.us.ibm.com (PPS) with ESMTPS id 3np2n7h391-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Feb 2023 09:28:00 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31F9Rw4G36373128
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Feb 2023 09:27:58 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7F9025804E;
+        Wed, 15 Feb 2023 09:27:58 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E8DAD5803F;
+        Wed, 15 Feb 2023 09:27:56 +0000 (GMT)
+Received: from [9.211.88.109] (unknown [9.211.88.109])
+        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 15 Feb 2023 09:27:56 +0000 (GMT)
+Message-ID: <ca058775-5fa2-e770-ef32-588bcb84ac6e@linux.ibm.com>
+Date:   Wed, 15 Feb 2023 10:27:55 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.7.2
+Subject: Re: [PATCH net] net/smc: fix application data exception
+To:     "D.Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1669450950-27681-1-git-send-email-alibuda@linux.alibaba.com>
+From:   Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <1669450950-27681-1-git-send-email-alibuda@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XXq6rq6IZce_4k7pOrl_nQv-ib0G2ZVr
+X-Proofpoint-ORIG-GUID: N8dsmhw7uf8nBi2Py5czWTpiPtrMHxaX
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-15_05,2023-02-14_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302150077
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,NORMAL_HTTP_TO_IP,
+        NUMERIC_HTTP_ADDR,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/2/14 6:55, Bob Pearson 写道:
-> Currently all the object types in the rxe driver are allocated in
-> rdma-core except for MRs. By moving tha kzalloc() call outside of
-> the pool code the rxe_alloc() subroutine can be eliminated and code
-> checking for MR as a special case can be removed.
+
+
+On 26.11.22 09:22, D.Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
 > 
-> This patch moves the kzalloc() and kfree_rcu() calls into the mr
-> registration and destruction verbs. It removes that code from
-> rxe_pool.c including the rxe_alloc() subroutine which is no longer
-> used.
-
-No bug fixes and no function changes.
-In this commit, refactoring the some code snippet.
-
-Not sure if this will introduce risks.
-
-But to now, it seems fine to me.
-
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
+> There is a certain probability that following
+> exceptions will occur in the wrk benchmark test:
 > 
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> Running 10s test @ http://11.213.45.6:80
+>    8 threads and 64 connections
+>    Thread Stats   Avg      Stdev     Max   +/- Stdev
+>      Latency     3.72ms   13.94ms 245.33ms   94.17%
+>      Req/Sec     1.96k   713.67     5.41k    75.16%
+>    155262 requests in 10.10s, 23.10MB read
+> Non-2xx or 3xx responses: 3
+> 
+> We will find that the error is HTTP 400 error, which is a serious
+> exception in our test, which means the application data was
+> corrupted.
+> 
+> Consider the following scenarios:
+> 
+> CPU0                            CPU1
+> 
+> buf_desc->used = 0;
+>                                  cmpxchg(buf_desc->used, 0, 1)
+>                                  deal_with(buf_desc)
+> 
+> memset(buf_desc->cpu_addr,0);
+> 
+> This will cause the data received by a victim connection to be cleared,
+> thus triggering an HTTP 400 error in the server.
+> 
+> This patch exchange the order between clear used and memset, add
+> barrier to ensure memory consistency.
+> 
+> Fixes: 1c5526968e27 ("net/smc: Clear memory when release and reuse buffer")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 > ---
->   drivers/infiniband/sw/rxe/rxe_mr.c    |  2 +-
->   drivers/infiniband/sw/rxe/rxe_pool.c  | 46 --------------------
->   drivers/infiniband/sw/rxe/rxe_pool.h  |  3 --
->   drivers/infiniband/sw/rxe/rxe_verbs.c | 61 +++++++++++++++++++--------
->   4 files changed, 45 insertions(+), 67 deletions(-)
+>   net/smc/smc_core.c | 17 ++++++++---------
+>   1 file changed, 8 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index c80458634962..c79a4161a6ae 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -724,7 +724,7 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->   		return -EINVAL;
+> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+> index c305d8d..c19d4b7 100644
+> --- a/net/smc/smc_core.c
+> +++ b/net/smc/smc_core.c
+> @@ -1120,8 +1120,9 @@ static void smcr_buf_unuse(struct smc_buf_desc *buf_desc, bool is_rmb,
 >   
->   	rxe_cleanup(mr);
-> -
-> +	kfree_rcu(mr);
->   	return 0;
+>   		smc_buf_free(lgr, is_rmb, buf_desc);
+>   	} else {
+> -		buf_desc->used = 0;
+> -		memset(buf_desc->cpu_addr, 0, buf_desc->len);
+> +		/* memzero_explicit provides potential memory barrier semantics */
+> +		memzero_explicit(buf_desc->cpu_addr, buf_desc->len);
+> +		WRITE_ONCE(buf_desc->used, 0);
+>   	}
 >   }
 >   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-> index f50620f5a0a1..3f6bd672cc2d 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-> @@ -116,55 +116,12 @@ void rxe_pool_cleanup(struct rxe_pool *pool)
->   	WARN_ON(!xa_empty(&pool->xa));
+> @@ -1132,19 +1133,17 @@ static void smc_buf_unuse(struct smc_connection *conn,
+>   		if (!lgr->is_smcd && conn->sndbuf_desc->is_vm) {
+>   			smcr_buf_unuse(conn->sndbuf_desc, false, lgr);
+>   		} else {
+> -			conn->sndbuf_desc->used = 0;
+> -			memset(conn->sndbuf_desc->cpu_addr, 0,
+> -			       conn->sndbuf_desc->len);
+> +			memzero_explicit(conn->sndbuf_desc->cpu_addr, conn->sndbuf_desc->len);
+> +			WRITE_ONCE(conn->sndbuf_desc->used, 0);
+>   		}
+>   	}
+>   	if (conn->rmb_desc) {
+>   		if (!lgr->is_smcd) {
+>   			smcr_buf_unuse(conn->rmb_desc, true, lgr);
+>   		} else {
+> -			conn->rmb_desc->used = 0;
+> -			memset(conn->rmb_desc->cpu_addr, 0,
+> -			       conn->rmb_desc->len +
+> -			       sizeof(struct smcd_cdc_msg));
+> +			memzero_explicit(conn->rmb_desc->cpu_addr,
+> +					 conn->rmb_desc->len + sizeof(struct smcd_cdc_msg));
+> +			WRITE_ONCE(conn->rmb_desc->used, 0);
+>   		}
+>   	}
 >   }
->   
-> -void *rxe_alloc(struct rxe_pool *pool)
-> -{
-> -	struct rxe_pool_elem *elem;
-> -	void *obj;
-> -	int err;
-> -
-> -	if (WARN_ON(!(pool->type == RXE_TYPE_MR)))
-> -		return NULL;
-> -
-> -	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
-> -		goto err_cnt;
-> -
-> -	obj = kzalloc(pool->elem_size, GFP_KERNEL);
-> -	if (!obj)
-> -		goto err_cnt;
-> -
-> -	elem = (struct rxe_pool_elem *)((u8 *)obj + pool->elem_offset);
-> -
-> -	elem->pool = pool;
-> -	elem->obj = obj;
-> -	kref_init(&elem->ref_cnt);
-> -	init_completion(&elem->complete);
-> -
-> -	/* allocate index in array but leave pointer as NULL so it
-> -	 * can't be looked up until rxe_finalize() is called
-> -	 */
-> -	err = xa_alloc_cyclic(&pool->xa, &elem->index, NULL, pool->limit,
-> -			      &pool->next, GFP_KERNEL);
-> -	if (err < 0)
-> -		goto err_free;
-> -
-> -	return obj;
-> -
-> -err_free:
-> -	kfree(obj);
-> -err_cnt:
-> -	atomic_dec(&pool->num_elem);
-> -	return NULL;
-> -}
-> -
->   int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem,
->   				bool sleepable)
->   {
->   	int err;
->   	gfp_t gfp_flags;
->   
-> -	if (WARN_ON(pool->type == RXE_TYPE_MR))
-> -		return -EINVAL;
-> -
->   	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
->   		goto err_cnt;
->   
-> @@ -275,9 +232,6 @@ int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
->   	if (pool->cleanup)
->   		pool->cleanup(elem);
->   
-> -	if (pool->type == RXE_TYPE_MR)
-> -		kfree_rcu(elem->obj);
-> -
->   	atomic_dec(&pool->num_elem);
->   
->   	return err;
-> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-> index 9d83cb32092f..b42e26427a70 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_pool.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-> @@ -54,9 +54,6 @@ void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
->   /* free resources from object pool */
->   void rxe_pool_cleanup(struct rxe_pool *pool);
->   
-> -/* allocate an object from pool */
-> -void *rxe_alloc(struct rxe_pool *pool);
-> -
->   /* connect already allocated object to pool */
->   int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem,
->   				bool sleepable);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> index 7a902e0a0607..268be6983c1e 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> @@ -869,10 +869,17 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
->   	struct rxe_dev *rxe = to_rdev(ibpd->device);
->   	struct rxe_pd *pd = to_rpd(ibpd);
->   	struct rxe_mr *mr;
-> +	int err;
->   
-> -	mr = rxe_alloc(&rxe->mr_pool);
-> -	if (!mr)
-> -		return ERR_PTR(-ENOMEM);
-> +	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
-> +	if (!mr) {
-> +		err = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +
-> +	err = rxe_add_to_pool(&rxe->mr_pool, mr);
-> +	if (err)
-> +		goto err_free;
->   
->   	rxe_get(pd);
->   	mr->ibmr.pd = ibpd;
-> @@ -880,8 +887,12 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
->   
->   	rxe_mr_init_dma(access, mr);
->   	rxe_finalize(mr);
-> -
->   	return &mr->ibmr;
-> +
-> +err_free:
-> +	kfree(mr);
-> +err_out:
-> +	return ERR_PTR(err);
->   }
->   
->   static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
-> @@ -895,9 +906,15 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
->   	struct rxe_pd *pd = to_rpd(ibpd);
->   	struct rxe_mr *mr;
->   
-> -	mr = rxe_alloc(&rxe->mr_pool);
-> -	if (!mr)
-> -		return ERR_PTR(-ENOMEM);
-> +	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
-> +	if (!mr) {
-> +		err = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +
-> +	err = rxe_add_to_pool(&rxe->mr_pool, mr);
-> +	if (err)
-> +		goto err_free;
->   
->   	rxe_get(pd);
->   	mr->ibmr.pd = ibpd;
-> @@ -905,14 +922,16 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
->   
->   	err = rxe_mr_init_user(rxe, start, length, iova, access, mr);
->   	if (err)
-> -		goto err1;
-> +		goto err_cleanup;
->   
->   	rxe_finalize(mr);
-> -
->   	return &mr->ibmr;
->   
-> -err1:
-> +err_cleanup:
->   	rxe_cleanup(mr);
-> +err_free:
-> +	kfree(mr);
-> +err_out:
->   	return ERR_PTR(err);
->   }
->   
-> @@ -927,24 +946,32 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->   	if (mr_type != IB_MR_TYPE_MEM_REG)
->   		return ERR_PTR(-EINVAL);
->   
-> -	mr = rxe_alloc(&rxe->mr_pool);
-> -	if (!mr)
-> -		return ERR_PTR(-ENOMEM);
-> +	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
-> +	if (!mr) {
-> +		err = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +
-> +	err = rxe_add_to_pool(&rxe->mr_pool, mr);
-> +	if (err)
-> +		goto err_free;
->   
->   	rxe_get(pd);
->   	mr->ibmr.pd = ibpd;
->   	mr->ibmr.device = ibpd->device;
->   
->   	err = rxe_mr_init_fast(max_num_sg, mr);
-> -	if (err)
-> -		goto err1;
-> +	if (err)
-> +		goto err_cleanup;
->   
->   	rxe_finalize(mr);
-> -
->   	return &mr->ibmr;
->   
-> -err1:
-> +err_cleanup:
->   	rxe_cleanup(mr);
-> +err_free:
-> +	kfree(mr);
-> +err_out:
->   	return ERR_PTR(err);
->   }
->   
-> 
-> base-commit: 9cd9842c46996ef62173c36619c746f57416bcb0
+
+Hi David,
+
+Thank you for remembering me again about this patch. I did forget to 
+answer you, sorry!
+
+My consideration was if memzero_explicit() is necessary in this case. 
+But sure, it makes sense, especiall when the dereferencing is in 
+somewhere else.
+
+Thank you for the fix!
+
+Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
 
