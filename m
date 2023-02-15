@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFAA698657
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Feb 2023 21:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEA7698678
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Feb 2023 21:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbjBOUtc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Feb 2023 15:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
+        id S230090AbjBOUuZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Feb 2023 15:50:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbjBOUsR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Feb 2023 15:48:17 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA7B442DD;
-        Wed, 15 Feb 2023 12:47:13 -0800 (PST)
+        with ESMTP id S230202AbjBOUtk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Feb 2023 15:49:40 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D1C4347D;
+        Wed, 15 Feb 2023 12:47:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 523F0B823B9;
-        Wed, 15 Feb 2023 20:47:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9E61C433A8;
-        Wed, 15 Feb 2023 20:47:11 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id C3681CE2706;
+        Wed, 15 Feb 2023 20:47:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C53C433EF;
+        Wed, 15 Feb 2023 20:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676494032;
-        bh=nRpIeyEMuN4BvGGQ2eoLRNuI/3S2JMDIP23IaNMwRHM=;
+        s=k20201202; t=1676494035;
+        bh=Wrgszqam3H0U9ZtK88EhXjGfJ2dTvh+1ZrPpUc7MA10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DJlsoGENndQ5Oz4P+KD82HnEL1mNsER8cZoQwjiW/zNCKnn0cKVJTPAHwpIza0QZM
-         WB52zbPVytqdb4/ihm5CHgxbpVmYCmRG967Hj83gbWzrM9ww9lZ6PDJkfXmTuyVFUl
-         7Rcr81UjKmhHmDMaBSSGFhYUl17+buX43GQ7ammQggQqYXyCz7kjhPqYi8fgtoOEQz
-         l50ui0ngVNL2WUOARd/kCV4188458aIHA8IPt+mUqIBKSBcUYnxPS/lVdf9ysIm+iM
-         kwY3slDeErvHIdfVPJORioD24bGka34ym4fouvbCc/U1AomhVkiXIJWnXuGxTHYABw
-         hrjNZpFooNzLQ==
+        b=NieRs/RmfwNrGAlY65GraEGx/XTnQiL2xeZiMWVciq55/C2J99hpvFtV34LKBu3uj
+         kS7Rrwdoa5vCYu1lNJATMmbH6O3/Qkott63B5eDyta+0iAjHtumuXgncalnUCHId3n
+         NEsUevXTOG2kyaYXHFPkdVgqTm3AA5IRhEki9USMVQneHmczjoAPZYFYpEkIaYjWmd
+         E80LFHyTZAj/V9kPA+YZM+pu9OGWhJ2sypSahH/Dz5kaXdHQLIh5eB7X66H6+YCZmR
+         5SicuYxX2VkiGtBQ/4MDAXLQnqZDomHFwyEww4UhBzKQFnnj/pzL5ivlMAMAIs/nSm
+         jdHHoDq8tinew==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
@@ -38,12 +38,12 @@ Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
         Leon Romanovsky <leon@kernel.org>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 4/4] IB/hfi1: Assign npages earlier
-Date:   Wed, 15 Feb 2023 15:47:08 -0500
-Message-Id: <20230215204708.2761432-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 3/3] IB/hfi1: Assign npages earlier
+Date:   Wed, 15 Feb 2023 15:47:12 -0500
+Message-Id: <20230215204712.2761492-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230215204708.2761432-1-sashal@kernel.org>
-References: <20230215204708.2761432-1-sashal@kernel.org>
+In-Reply-To: <20230215204712.2761492-1-sashal@kernel.org>
+References: <20230215204712.2761492-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -76,10 +76,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hfi1/user_exp_rcv.c b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-index dab823aac95e1..2619a7a9f27cf 100644
+index b17c1fc59f7e4..1987bb8412a23 100644
 --- a/drivers/infiniband/hw/hfi1/user_exp_rcv.c
 +++ b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-@@ -215,16 +215,11 @@ static void unpin_rcv_pages(struct hfi1_filedata *fd,
+@@ -213,16 +213,11 @@ static void unpin_rcv_pages(struct hfi1_filedata *fd,
  static int pin_rcv_pages(struct hfi1_filedata *fd, struct tid_user_buf *tidbuf)
  {
  	int pinned;
@@ -97,7 +97,7 @@ index dab823aac95e1..2619a7a9f27cf 100644
  	if (npages > fd->uctxt->expected_count) {
  		dd_dev_err(dd, "Expected buffer too big\n");
  		return -EINVAL;
-@@ -258,7 +253,6 @@ static int pin_rcv_pages(struct hfi1_filedata *fd, struct tid_user_buf *tidbuf)
+@@ -256,7 +251,6 @@ static int pin_rcv_pages(struct hfi1_filedata *fd, struct tid_user_buf *tidbuf)
  		return pinned;
  	}
  	tidbuf->pages = pages;
@@ -105,7 +105,7 @@ index dab823aac95e1..2619a7a9f27cf 100644
  	fd->tid_n_pinned += pinned;
  	return pinned;
  }
-@@ -334,6 +328,7 @@ int hfi1_user_exp_rcv_setup(struct hfi1_filedata *fd,
+@@ -332,6 +326,7 @@ int hfi1_user_exp_rcv_setup(struct hfi1_filedata *fd,
  
  	tidbuf->vaddr = tinfo->vaddr;
  	tidbuf->length = tinfo->length;
