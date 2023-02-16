@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92321699AA5
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 17:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9D5699AA8
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 17:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbjBPQ4i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Feb 2023 11:56:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50232 "EHLO
+        id S229462AbjBPQ4s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Feb 2023 11:56:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjBPQ4i (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 11:56:38 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2126.outbound.protection.outlook.com [40.107.94.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCD82686D
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 08:56:36 -0800 (PST)
+        with ESMTP id S229673AbjBPQ4r (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 11:56:47 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2112.outbound.protection.outlook.com [40.107.237.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A964ECDB
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 08:56:41 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mpq0iGORRFMLd5ZUM8EbiS3Nqg+H1zzQ65TuZ6rYeAUD/MGqGTCPLuTziFaaW754fidSZsPqWOX6bzBt+H9yQsC9JBRTJoFi+1b+jpHAytEQKb0A2Kp/s00ir15Q/vEmjnY6L+UY2lFPcLJJoHY5HhoJ2E4ss7Hp+fgHisYUPvS2J8rHMrvo6J0hW6DQJBzpH0O1ec860OScxneXleNZj9WW9zzv+zPxdAYb+vimUP5Jx2e6VlST1cn/JAWEihWFldcltYf3N/CeI4bJUKlJX8aJ73K4nYVhL4ALQdJvN/yR2uKivdmaT/GbCKfDD2edd4nFSNHteM3+smbKoIS1zg==
+ b=GipSDp9/5dniFq/66WKa66HUE14p8fcd3xyGod1/6lS7FIdlayJTa2pW2QGeYoprgPiefcUK9xDXEMFjk+BiXnzC8a0IxaKfgtOwYDAZgwmaOCRLm+Az9uYgMFtuTXLFOCcKU8Ig/CWgf+ca4SHyFVYJutzVr0CPRNvBh3B1RyBQx8dCpYVT18ZZjuzaO/ds7jOongxaweBzQ8kSwdrFxNJAcPsju5qHhwixAbeOEZEu+wl7aWLfKO4KRl1E7ZzXo5CpAVweePJinQKyI7YYJQ8CH58zVxsNpcKsJGLt4vOnxl0SOn0XsLqUty4U3uIzoujcEjPGVge/edvnlIg14Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WCxf/R3s4WfO+SeD/m5eM4lYgYcdEZojuXFabrdye28=;
- b=NlAr2fkz/knuxK+wQJfSw5JJPQMVKeiznTGzKBLOiSK7UkU7EvYe3K5VUTxn24CEQVr4rhgApBnTT8Qou4FvhWjvVCMgm7Hhh2xtCkhpHDv9CYrtuj3ry2Da4jRw2FQ4Hc2JDx08O3d4/d0/pspyIMGNG8eA8nCdndX+C6P00dYRjs/7gdk3p5IrvV+GLSzLwTppq8F/z4KJyqOqGnRD9RhxBPon5qHtyiwxb/tOEZ8bS2tL0jUf7YH3FfxSlJ+wgiV3izlMgeNGs45PfPW+R6G5kZgposbDAMxEDF26t2fSefGeTm7wfSPFNbB1HhoGAwntCgJshzEFVsnf3GZBTQ==
+ bh=aAgddcEKzVUHf9Onb3Eflz7BJVMlFXUgpSIjJa+m3o8=;
+ b=IA1teHMRleMdeNlA79pSVcm1SWoMHpmB3ReK51EEtFYXYlOKkdWR7IyOhIRah6vA1OMLx86UjFvUyGvyiH/eddk52DRXf/QSDa3pvZ1MM3DA+HuJSvBJobD1QIv+Zi8NSUq+RgdKwFP1i0Tb72tDycV3/l5fnwl8DmDodk8J01aqE4dWVnfM2NvoH3ndRBDS56bi6lhYpPVQMvedCXorZAi8zt7DYkfCa/cICMLh/sQdZef2PliFVSTOvEZe3bR3Iub9EYZ0iQtSGGJrZjiYBvYpi2zrbd3Eq7Nn782wIudUaz+EVZYujIpxosioqFyS4vFbZsmk6IdQB8EGdGZzgA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=vger.kernel.org
  smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
@@ -28,18 +28,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WCxf/R3s4WfO+SeD/m5eM4lYgYcdEZojuXFabrdye28=;
- b=Q/x+ZMb7oyLDWBC8nBbrQN8FGJYFvNTozoGP49eZ9ifHrPVp1lR6/cITkA1Js6qvyEqS9xWl0Y9c5pssqpnlpcDlrQ3sqx2yDTRx34MX3V33QZPD6v2pEW0oc+38COwKY1Z4mrVtsu4EdXT/wDzLTAVKFCS/jH4GuQMQtIIQyCu4Rjt/Txqfrkzvano+ItcSNQw8VHbjPhIQ8OrZUvKSf48nMd9kFztlJDFuLRzAvYFPCenfHyuuuSz0MAB6ztCeVHh9FyxEqam0FUx4Hwi/T80FdCMIL54BKYX2+RzRztyJkGfJ9CLNEL6KamMyguxio4boEFeOUJ+RpYZXk76EDw==
-Received: from DS7PR03CA0020.namprd03.prod.outlook.com (2603:10b6:5:3b8::25)
- by MWHPR0101MB3005.prod.exchangelabs.com (2603:10b6:301:31::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.23; Thu, 16 Feb
- 2023 16:56:30 +0000
-Received: from DM6NAM11FT112.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b8:cafe::11) by DS7PR03CA0020.outlook.office365.com
- (2603:10b6:5:3b8::25) with Microsoft SMTP Server (version=TLS1_2,
+ bh=aAgddcEKzVUHf9Onb3Eflz7BJVMlFXUgpSIjJa+m3o8=;
+ b=dCSlBdu6cTFjBcs5iDOR+FFxz0vWtDn5zEs47xZcegIEwft/DYAaZI2CVJYNP4qYgip2wBGqaT2Yoycalbo0//MCa1O0++zVF4u2jHfu7P6QPbQCdFJeC+u3Hj2cEWk8wP9ENh5JNP+2rU+AXhOPepB4flBYJyYGLW+BGMEoO0ZwnyqoUPFtXgZE3PCw6tIYilcajjeSkkWmS0b3YsDeaTFG7HsUgsorDR8iOLw7dK4tsvgd3t9PaSKXtlIr3jU0VTaLdjBxqD2RPpz+8KtxcB3gonB/xCAFhRhniXX2i0A8JbXGEPyI5SKpEpdgHjsSNGrbHcgSF2Z7Du6IL0gejQ==
+Received: from DM5PR07CA0101.namprd07.prod.outlook.com (2603:10b6:4:ae::30) by
+ DM6PR01MB4057.prod.exchangelabs.com (2603:10b6:5:2e::30) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6111.13; Thu, 16 Feb 2023 16:56:35 +0000
+Received: from DM6NAM11FT084.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:4:ae:cafe::c2) by DM5PR07CA0101.outlook.office365.com
+ (2603:10b6:4:ae::30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.13 via Frontend
- Transport; Thu, 16 Feb 2023 16:56:30 +0000
+ Transport; Thu, 16 Feb 2023 16:56:35 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=bestguesspass action=none
@@ -49,21 +48,21 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=awfm-02.cornelisnetworks.com; pr=C
 Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
- DM6NAM11FT112.mail.protection.outlook.com (10.13.173.77) with Microsoft SMTP
+ DM6NAM11FT084.mail.protection.outlook.com (10.13.172.132) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6111.13 via Frontend Transport; Thu, 16 Feb 2023 16:56:29 +0000
+ 15.20.6111.13 via Frontend Transport; Thu, 16 Feb 2023 16:56:34 +0000
 Received: from awfm-02.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 31GGuSq22223758;
-        Thu, 16 Feb 2023 11:56:28 -0500
-Subject: [PATCH for-next 2/3] IB/hfi1: Fix sdma.h tx->num_descs off-by-one
- errors
+        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 31GGuXvV2223766;
+        Thu, 16 Feb 2023 11:56:33 -0500
+Subject: [PATCH for-next 3/3] IB/hfi1: Do SDMA memory-pinning through hfi1's
+ pinning interface
 From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To:     jgg@nvidia.com, leonro@nvidia.com
 Cc:     Brendan Cunningham <bcunningham@cornelisnetworks.com>,
         Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
         linux-rdma@vger.kernel.org
-Date:   Thu, 16 Feb 2023 11:56:28 -0500
-Message-ID: <167656658879.2223096.10026561343022570690.stgit@awfm-02.cornelisnetworks.com>
+Date:   Thu, 16 Feb 2023 11:56:33 -0500
+Message-ID: <167656659393.2223096.7236176737926599166.stgit@awfm-02.cornelisnetworks.com>
 In-Reply-To: <167656602090.2223096.15523567129751109800.stgit@awfm-02.cornelisnetworks.com>
 References: <167656602090.2223096.15523567129751109800.stgit@awfm-02.cornelisnetworks.com>
 User-Agent: StGit/1.5.dev2+g9ce680a5
@@ -72,23 +71,23 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT112:EE_|MWHPR0101MB3005:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6868d335-6cf7-4ef7-b9b1-08db103ec025
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT084:EE_|DM6PR01MB4057:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2c998310-21d5-42c7-26ab-08db103ec30e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jGK9HL+X8xYDW/1YYe63eN4SUlwBgkqlvq4ASp0VSEty3YD74AMNDvIa17uHBCHhXt/I/c/nbZ7k26pngP1OAP+Z/x6a9IjIs2peeGvPsMNNT5JKbMH+LupoofiKrdTTZL+hmCzfzvjuU0w+JhoRzeTyyouYgy9qV/KQ6pozWeSUyvojEliteop38xLVtW27M4QvEFnxytyEXhLqKRKjXe2/BU3Ut5hGIT5eApO/hBHIiXt1XXB3vaDsvELkFEnU9kFEGnMonnGkBSMV4Ss+vnZ4ovUMYq2RFszgLBe3OR21PtoGJek14K4PF6wj4JxCHU9R7ZyDMawsORBuvgEhzybTIHrrlt/EKn2ptNdOc2mqc88pInjG6LOp4IAa12rNub4YU2T2Ck/BUCLFzSzo3cZTp6855B+ep980C9iy2vi0sDD37Y4RqJy89PkIhZ4Ep5bvDezrW7yL0E+LFLNMDFDmy7zKxkqSaCSut17bUGns5mI2QyDctVT6iSfA5GgWEJ3Bc2JC9h7wh7PVrPuMTdU6EZ8gYLL6Gxq+/Bvj+yijJ3i2vSsmYekVmJM2In03JvJF1B6NkEGjdA8+2wwg5p8UuPim4byJvsGYUAnv9GzG+gukmbTuwajMceUS1l5e8xAYCZyyWKOTYz6TIAQs+nYLvXOS1Yqlbg0fS8huYlEChSDfYPrJGyup07mcb/x3WH8vYo1jXQUXfX5Bak/IRw==
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(346002)(396003)(39840400004)(376002)(136003)(451199018)(36840700001)(46966006)(5660300002)(2906002)(44832011)(186003)(26005)(426003)(478600001)(83380400001)(55016003)(47076005)(36860700001)(40480700001)(7126003)(356005)(316002)(70206006)(8676002)(54906003)(4326008)(8936002)(70586007)(336012)(41300700001)(81166007)(86362001)(103116003)(7696005)(82310400005)(36900700001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: HejSsvzjj4MEYn34WhymyI7oAwreOtaIw25mK6e3/xWePklxO7A5GjXR5mkvVpcvMbwGoXAskGZW6p+uFHq1KriDbe8/kIQWAKAFeYWX3zuinBQp6HqQ+2FqL9ozGJPe3r8ARkySKhER3l76on5JkOA5GahiiAMrSuLYpDgcXO25KbjJsdZxslYI0/5r9EFVLP/Op8+iwAoCnbfgN0EDlUIvcWZhUW3Swrxtr3mMVrJEDCOUGsjx6DCBsGZKPSjiJnMNpz8rNNpbXfLuZSsIIkTrC4mOTzFSmoRBN6IS+klbPRd2TgLn0itpjEC6mNmFEAvQAWEjwUgItr1v7shOEOu87+9uU+3INHnKPbcktw9ByG+ms5VRfkyuyMkgGPTJMMQE73d5SIoJqkacS/SAfxoeeLdUx5HKZNHtjgxacu+ZQvNPOWKbWh7kN+7DBrYJn4Dsz6TW5Q1b4o+Bw/pNr7MlCX51Ypq+4A3hBBfWKd7PPFWP/bRjSyRfC09vp20l51J8Tg/F14XBqY4LU/XN5kPd4zKmpcmxSsOVIDg5Wq7TopzGdoLnGxhFUzfeR7WxYtobErU7zXKyqH2+1Eu2cnxPsK4R0e0o0Br2NB/D6oFi4iTo0q6UxFBvtU90a0axqEUaXTnDvMVowHQougksbBmpX7I19wI/W0MxarlGntUueDo5j+//9LveZrGrSZhxxHkIQufUND2T4Io9zzKkXA==
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(396003)(376002)(136003)(39840400004)(346002)(451199018)(46966006)(36840700001)(86362001)(54906003)(316002)(8936002)(30864003)(5660300002)(44832011)(2906002)(70586007)(356005)(70206006)(41300700001)(4326008)(8676002)(7696005)(7126003)(426003)(47076005)(55016003)(186003)(26005)(103116003)(478600001)(82310400005)(40480700001)(336012)(81166007)(36860700001)(83380400001)(36900700001)(559001)(579004);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 16:56:29.9678
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 16:56:34.8464
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6868d335-6cf7-4ef7-b9b1-08db103ec025
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c998310-21d5-42c7-26ab-08db103ec30e
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT112.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT084.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0101MB3005
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR01MB4057
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
@@ -101,104 +100,1909 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Patrick Kelsey <pat.kelsey@cornelisnetworks.com>
 
-Fix three sources of error involving struct sdma_txreq.num_descs.
+Modify hfi1 memory pinning so hfi1 SDMA memory pinning operations go
+through hfi1's internal pinning interface. This allows hfi1 to maintain
+a virtual->physical address cache for pinned pages without having to
+know the pinned pages' backing memory type.
 
-When _extend_sdma_tx_descs() extends the descriptor array, it uses the
-value of tx->num_descs to determine how many existing entries from the
-tx's original, internal descriptor array to copy to the newly allocated
-one.  As this value was incremented before the call, the copy loop will
-access one entry past the internal descriptor array, copying its contents
-into the corresponding slot in the new array.
-
-If the call to _extend_sdma_tx_descs() fails, _pad_smda_tx_descs() then
-invokes __sdma_tx_clean() which uses the value of tx->num_desc to drive a
-loop that unmaps all descriptor entries in use.  As this value was
-incremented before the call, the unmap loop will invoke sdma_unmap_desc()
-on a descriptor entry whose contents consist of whatever random data was
-copied into it during (1), leading to cascading further calls into the
-kernel and driver using arbitrary data.
-
-_sdma_close_tx() was using tx->num_descs instead of tx->num_descs - 1.
-
-Fix all of the above by:
-- Only increment .num_descs after .descp is extended.
-- Use .num_descs - 1 instead of .num_descs for last .descp entry.
-
-Fixes: f4d26d81ad7f ("staging/rdma/hfi1: Add coalescing support for SDMA TX descriptors"
 Signed-off-by: Brendan Cunningham <bcunningham@cornelisnetworks.com>
 Signed-off-by: Patrick Kelsey <pat.kelsey@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
 ---
-Changes since v1:
-Add fixes line
+V2 -> V3: Removed HFI1_IOCTL_PIN_STATS ioctl from uapi and backing code
+from hfi1. Removed declarations for functions that were not defined or
+used. Clarify in commit message that pinning changes apply to hfi1 SDMA
+path.
 ---
- drivers/infiniband/hw/hfi1/sdma.c |    4 ++--
- drivers/infiniband/hw/hfi1/sdma.h |   15 +++++++--------
- 2 files changed, 9 insertions(+), 10 deletions(-)
+ drivers/infiniband/hw/hfi1/Makefile     |    2 
+ drivers/infiniband/hw/hfi1/init.c       |    5 
+ drivers/infiniband/hw/hfi1/ipoib_tx.c   |    7 
+ drivers/infiniband/hw/hfi1/mmu_rb.c     |   96 ++----
+ drivers/infiniband/hw/hfi1/mmu_rb.h     |   30 +-
+ drivers/infiniband/hw/hfi1/pin_system.c |  516 +++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi1/pinning.c    |   55 +++
+ drivers/infiniband/hw/hfi1/pinning.h    |   88 +++++
+ drivers/infiniband/hw/hfi1/sdma.c       |   29 --
+ drivers/infiniband/hw/hfi1/sdma.h       |   62 ++--
+ drivers/infiniband/hw/hfi1/sdma_txreq.h |    2 
+ drivers/infiniband/hw/hfi1/trace_mmu.h  |    4 
+ drivers/infiniband/hw/hfi1/user_sdma.c  |  354 +++------------------
+ drivers/infiniband/hw/hfi1/user_sdma.h  |   24 +
+ drivers/infiniband/hw/hfi1/verbs.c      |    5 
+ drivers/infiniband/hw/hfi1/vnic_sdma.c  |    6 
+ include/uapi/rdma/hfi/hfi1_user.h       |   31 ++
+ 17 files changed, 869 insertions(+), 447 deletions(-)
+ create mode 100644 drivers/infiniband/hw/hfi1/pin_system.c
+ create mode 100644 drivers/infiniband/hw/hfi1/pinning.c
+ create mode 100644 drivers/infiniband/hw/hfi1/pinning.h
 
+diff --git a/drivers/infiniband/hw/hfi1/Makefile b/drivers/infiniband/hw/hfi1/Makefile
+index 2e89ec10efed..9daea77f4164 100644
+--- a/drivers/infiniband/hw/hfi1/Makefile
++++ b/drivers/infiniband/hw/hfi1/Makefile
+@@ -31,6 +31,8 @@ hfi1-y := \
+ 	netdev_rx.o \
+ 	opfn.o \
+ 	pcie.o \
++	pinning.o \
++	pin_system.o \
+ 	pio.o \
+ 	pio_copy.o \
+ 	platform.o \
+diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
+index 62b6c5020039..cab12407049d 100644
+--- a/drivers/infiniband/hw/hfi1/init.c
++++ b/drivers/infiniband/hw/hfi1/init.c
+@@ -29,6 +29,7 @@
+ #include "vnic.h"
+ #include "exp_rcv.h"
+ #include "netdev.h"
++#include "pinning.h"
+ 
+ #undef pr_fmt
+ #define pr_fmt(fmt) DRIVER_NAME ": " fmt
+@@ -1380,6 +1381,8 @@ static int __init hfi1_mod_init(void)
+ {
+ 	int ret;
+ 
++	register_system_pinning_interface();
++
+ 	ret = dev_init();
+ 	if (ret)
+ 		goto bail;
+@@ -1473,6 +1476,8 @@ static void __exit hfi1_mod_cleanup(void)
+ 	WARN_ON(!xa_empty(&hfi1_dev_table));
+ 	dispose_firmware();	/* asymmetric with obtain_firmware() */
+ 	dev_cleanup();
++
++	deregister_system_pinning_interface();
+ }
+ 
+ module_exit(hfi1_mod_cleanup);
+diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+index 5d9a7b09ca37..dc2e0bb65a06 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
++++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+@@ -214,11 +214,8 @@ static int hfi1_ipoib_build_ulp_payload(struct ipoib_txreq *tx,
+ 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+ 		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+ 
+-		ret = sdma_txadd_page(dd,
+-				      txreq,
+-				      skb_frag_page(frag),
+-				      frag->bv_offset,
+-				      skb_frag_size(frag));
++		ret = sdma_txadd_page(dd, NULL, txreq, skb_frag_page(frag),
++				      frag->bv_offset, skb_frag_size(frag));
+ 		if (unlikely(ret))
+ 			break;
+ 	}
+diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
+index 7333646021bb..8617024d9cf8 100644
+--- a/drivers/infiniband/hw/hfi1/mmu_rb.c
++++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
+@@ -46,12 +46,14 @@ int hfi1_mmu_rb_register(void *ops_arg,
+ 			 struct mmu_rb_handler **handler)
+ {
+ 	struct mmu_rb_handler *h;
++	void *free_ptr;
+ 	int ret;
+ 
+-	h = kzalloc(sizeof(*h), GFP_KERNEL);
+-	if (!h)
++	free_ptr = kzalloc(sizeof(*h) + cache_line_size() - 1, GFP_KERNEL);
++	if (!free_ptr)
+ 		return -ENOMEM;
+ 
++	h = PTR_ALIGN(free_ptr, cache_line_size());
+ 	h->root = RB_ROOT_CACHED;
+ 	h->ops = ops;
+ 	h->ops_arg = ops_arg;
+@@ -62,10 +64,11 @@ int hfi1_mmu_rb_register(void *ops_arg,
+ 	INIT_LIST_HEAD(&h->del_list);
+ 	INIT_LIST_HEAD(&h->lru_list);
+ 	h->wq = wq;
++	h->free_ptr = free_ptr;
+ 
+ 	ret = mmu_notifier_register(&h->mn, current->mm);
+ 	if (ret) {
+-		kfree(h);
++		kfree(free_ptr);
+ 		return ret;
+ 	}
+ 
+@@ -108,7 +111,7 @@ void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler)
+ 	/* Now the mm may be freed. */
+ 	mmdrop(handler->mn.mm);
+ 
+-	kfree(handler);
++	kfree(handler->free_ptr);
+ }
+ 
+ int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
+@@ -126,11 +129,11 @@ int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
+ 	spin_lock_irqsave(&handler->lock, flags);
+ 	node = __mmu_rb_search(handler, mnode->addr, mnode->len);
+ 	if (node) {
+-		ret = -EINVAL;
++		ret = -EEXIST;
+ 		goto unlock;
+ 	}
+ 	__mmu_int_rb_insert(mnode, &handler->root);
+-	list_add(&mnode->list, &handler->lru_list);
++	list_add_tail(&mnode->list, &handler->lru_list);
+ 
+ 	ret = handler->ops->insert(handler->ops_arg, mnode);
+ 	if (ret) {
+@@ -143,6 +146,19 @@ int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
+ 	return ret;
+ }
+ 
++/* Caller must hold handler lock */
++struct mmu_rb_node *hfi1_mmu_rb_get_first(struct mmu_rb_handler *handler,
++					  unsigned long addr, unsigned long len)
++{
++	struct mmu_rb_node *node;
++
++	trace_hfi1_mmu_rb_search(addr, len);
++	node = __mmu_int_rb_iter_first(&handler->root, addr, (addr + len) - 1);
++	if (node)
++		list_move_tail(&node->list, &handler->lru_list);
++	return node;
++}
++
+ /* Caller must hold handler lock */
+ static struct mmu_rb_node *__mmu_rb_search(struct mmu_rb_handler *handler,
+ 					   unsigned long addr,
+@@ -167,32 +183,6 @@ static struct mmu_rb_node *__mmu_rb_search(struct mmu_rb_handler *handler,
+ 	return node;
+ }
+ 
+-bool hfi1_mmu_rb_remove_unless_exact(struct mmu_rb_handler *handler,
+-				     unsigned long addr, unsigned long len,
+-				     struct mmu_rb_node **rb_node)
+-{
+-	struct mmu_rb_node *node;
+-	unsigned long flags;
+-	bool ret = false;
+-
+-	if (current->mm != handler->mn.mm)
+-		return ret;
+-
+-	spin_lock_irqsave(&handler->lock, flags);
+-	node = __mmu_rb_search(handler, addr, len);
+-	if (node) {
+-		if (node->addr == addr && node->len == len)
+-			goto unlock;
+-		__mmu_int_rb_remove(node, &handler->root);
+-		list_del(&node->list); /* remove from LRU list */
+-		ret = true;
+-	}
+-unlock:
+-	spin_unlock_irqrestore(&handler->lock, flags);
+-	*rb_node = node;
+-	return ret;
+-}
+-
+ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
+ {
+ 	struct mmu_rb_node *rbnode, *ptr;
+@@ -206,47 +196,42 @@ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
+ 	INIT_LIST_HEAD(&del_list);
+ 
+ 	spin_lock_irqsave(&handler->lock, flags);
+-	list_for_each_entry_safe_reverse(rbnode, ptr, &handler->lru_list,
+-					 list) {
++	list_for_each_entry_safe(rbnode, ptr, &handler->lru_list, list) {
+ 		if (handler->ops->evict(handler->ops_arg, rbnode, evict_arg,
+ 					&stop)) {
+ 			__mmu_int_rb_remove(rbnode, &handler->root);
+ 			/* move from LRU list to delete list */
+ 			list_move(&rbnode->list, &del_list);
++			++handler->internal_evictions;
+ 		}
+ 		if (stop)
+ 			break;
+ 	}
+ 	spin_unlock_irqrestore(&handler->lock, flags);
+ 
+-	while (!list_empty(&del_list)) {
+-		rbnode = list_first_entry(&del_list, struct mmu_rb_node, list);
+-		list_del(&rbnode->list);
++	list_for_each_entry_safe(rbnode, ptr, &del_list, list) {
+ 		handler->ops->remove(handler->ops_arg, rbnode);
+ 	}
+ }
+ 
+-/*
+- * It is up to the caller to ensure that this function does not race with the
+- * mmu invalidate notifier which may be calling the users remove callback on
+- * 'node'.
+- */
+-void hfi1_mmu_rb_remove(struct mmu_rb_handler *handler,
+-			struct mmu_rb_node *node)
++unsigned long hfi1_mmu_rb_for_n(struct mmu_rb_handler *handler,
++				unsigned long start, int count,
++				void (*fn)(const struct mmu_rb_node *rb_node, void *),
++				void *arg)
+ {
+-	unsigned long flags;
+-
+-	if (current->mm != handler->mn.mm)
+-		return;
++	struct mmu_rb_node *node = NULL, *next;
++	int i;
+ 
+-	/* Validity of handler and node pointers has been checked by caller. */
+-	trace_hfi1_mmu_rb_remove(node->addr, node->len);
+-	spin_lock_irqsave(&handler->lock, flags);
+-	__mmu_int_rb_remove(node, &handler->root);
+-	list_del(&node->list); /* remove from LRU list */
+-	spin_unlock_irqrestore(&handler->lock, flags);
++	next = __mmu_int_rb_iter_first(&handler->root, start, ~0ULL - start);
++	for (i = 0; i < count; i++) {
++		node = next;
++		if (!node)
++			return ~0UL;
+ 
+-	handler->ops->remove(handler->ops_arg, node);
++		next = __mmu_int_rb_iter_next(node, start + node->len, ~0ULL);
++		fn(node, arg);
++	}
++	return node->addr;
+ }
+ 
+ static int mmu_notifier_range_start(struct mmu_notifier *mn,
+@@ -269,6 +254,7 @@ static int mmu_notifier_range_start(struct mmu_notifier *mn,
+ 		if (handler->ops->invalidate(handler->ops_arg, node)) {
+ 			__mmu_int_rb_remove(node, root);
+ 			/* move from LRU list to delete list */
++			handler->external_evictions++;
+ 			list_move(&node->list, &handler->del_list);
+ 			added = true;
+ 		}
+diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.h b/drivers/infiniband/hw/hfi1/mmu_rb.h
+index 7417be2b9dc8..508a7a7c568a 100644
+--- a/drivers/infiniband/hw/hfi1/mmu_rb.h
++++ b/drivers/infiniband/hw/hfi1/mmu_rb.h
+@@ -33,15 +33,29 @@ struct mmu_rb_ops {
+ };
+ 
+ struct mmu_rb_handler {
++	/*
++	 * struct mmu_notifier is 56 bytes, and spinlock_t is 4 bytes, so
++	 * they fit together in one cache line.  mn is relatively rarely
++	 * accessed, so co-locating the spinlock with it achieves much of
++	 * the cacheline contention reduction of giving the spinlock its own
++	 * cacheline without the overhead of doing so.
++	 */
+ 	struct mmu_notifier mn;
+-	struct rb_root_cached root;
+-	void *ops_arg;
+ 	spinlock_t lock;        /* protect the RB tree */
++
++	/* Begin on a new cachline boundary here */
++	struct rb_root_cached root ____cacheline_aligned_in_smp;
++	void *ops_arg;
+ 	struct mmu_rb_ops *ops;
+ 	struct list_head lru_list;
+ 	struct work_struct del_work;
+ 	struct list_head del_list;
+ 	struct workqueue_struct *wq;
++	size_t hits;
++	size_t misses;
++	size_t internal_evictions;
++	size_t external_evictions;
++	void *free_ptr;
+ };
+ 
+ int hfi1_mmu_rb_register(void *ops_arg,
+@@ -52,10 +66,12 @@ void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler);
+ int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
+ 		       struct mmu_rb_node *mnode);
+ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg);
+-void hfi1_mmu_rb_remove(struct mmu_rb_handler *handler,
+-			struct mmu_rb_node *mnode);
+-bool hfi1_mmu_rb_remove_unless_exact(struct mmu_rb_handler *handler,
+-				     unsigned long addr, unsigned long len,
+-				     struct mmu_rb_node **rb_node);
++struct mmu_rb_node *hfi1_mmu_rb_get_first(struct mmu_rb_handler *handler,
++					  unsigned long addr,
++					  unsigned long len);
++unsigned long hfi1_mmu_rb_for_n(struct mmu_rb_handler *handler,
++				unsigned long start, int count,
++				void (*fn)(const struct mmu_rb_node *rb_node, void *),
++				void *arg);
+ 
+ #endif /* _HFI1_MMU_RB_H */
+diff --git a/drivers/infiniband/hw/hfi1/pin_system.c b/drivers/infiniband/hw/hfi1/pin_system.c
+new file mode 100644
+index 000000000000..07bfdde0da2c
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi1/pin_system.c
+@@ -0,0 +1,516 @@
++// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++/*
++ * Copyright(c) 2022 - Cornelis Networks, Inc.
++ */
++
++#include <linux/types.h>
++
++#include "hfi.h"
++#include "common.h"
++#include "device.h"
++#include "pinning.h"
++#include "mmu_rb.h"
++#include "sdma.h"
++#include "user_sdma.h"
++#include "trace.h"
++
++static bool sdma_rb_filter(struct mmu_rb_node *node, unsigned long addr,
++			   unsigned long len);
++static int sdma_rb_insert(void *arg, struct mmu_rb_node *mnode);
++static int sdma_rb_evict(void *arg, struct mmu_rb_node *mnode, void *arg2,
++			 bool *stop);
++static void sdma_rb_remove(void *arg, struct mmu_rb_node *mnode);
++static int sdma_rb_invalidate(void *arg, struct mmu_rb_node *mnode);
++
++static struct mmu_rb_ops sdma_rb_ops = { .filter = sdma_rb_filter,
++					 .insert = sdma_rb_insert,
++					 .evict = sdma_rb_evict,
++					 .remove = sdma_rb_remove,
++					 .invalidate = sdma_rb_invalidate };
++
++static int add_system_pages_to_sdma_packet(struct user_sdma_request *req,
++					   struct user_sdma_txreq *tx,
++					   struct user_sdma_iovec *iovec,
++					   u32 *pkt_remaining);
++
++static int init_system_pinning_interface(struct hfi1_user_sdma_pkt_q *pq)
++{
++	struct hfi1_devdata *dd = pq->dd;
++	struct mmu_rb_handler **handler = (struct mmu_rb_handler **)
++		&PINNING_STATE(pq, HFI1_MEMINFO_TYPE_SYSTEM);
++	int ret;
++
++	ret = hfi1_mmu_rb_register(pq, &sdma_rb_ops, dd->pport->hfi1_wq,
++				   handler);
++	if (ret)
++		dd_dev_err(dd,
++			   "[%u:%u] Failed to register system memory DMA support with MMU: %d\n",
++			   pq->ctxt, pq->subctxt, ret);
++	return ret;
++}
++
++static void free_system_pinning_interface(struct hfi1_user_sdma_pkt_q *pq)
++{
++	struct mmu_rb_handler *handler =
++		PINNING_STATE(pq, HFI1_MEMINFO_TYPE_SYSTEM);
++
++	if (handler)
++		hfi1_mmu_rb_unregister(handler);
++}
++
++static u32 sdma_cache_evict(struct hfi1_user_sdma_pkt_q *pq, u32 npages)
++{
++	struct evict_data evict_data;
++	struct mmu_rb_handler *handler =
++		PINNING_STATE(pq, HFI1_MEMINFO_TYPE_SYSTEM);
++
++	evict_data.cleared = 0;
++	evict_data.target = npages;
++	hfi1_mmu_rb_evict(handler, &evict_data);
++	return evict_data.cleared;
++}
++
++static void unpin_vector_pages(struct mm_struct *mm, struct page **pages,
++			       unsigned int start, unsigned int npages)
++{
++	hfi1_release_user_pages(mm, pages + start, npages, false);
++	kfree(pages);
++}
++
++static void free_system_node(struct sdma_mmu_node *node)
++{
++	if (node->npages) {
++		unpin_vector_pages(mm_from_sdma_node(node), node->pages, 0,
++				   node->npages);
++		atomic_sub(node->npages, &node->pq->n_locked);
++	}
++	kfree(node);
++}
++
++static inline void acquire_node(struct sdma_mmu_node *node)
++{
++	atomic_inc(&node->refcount);
++	WARN_ON(atomic_read(&node->refcount) < 0);
++}
++
++static inline void release_node(struct mmu_rb_handler *handler,
++				struct sdma_mmu_node *node)
++{
++	atomic_dec(&node->refcount);
++	WARN_ON(atomic_read(&node->refcount) < 0);
++}
++
++static struct sdma_mmu_node *find_system_node(struct mmu_rb_handler *handler,
++					      unsigned long start,
++					      unsigned long end)
++{
++	struct mmu_rb_node *rb_node;
++	struct sdma_mmu_node *node;
++	unsigned long flags;
++
++	spin_lock_irqsave(&handler->lock, flags);
++	rb_node = hfi1_mmu_rb_get_first(handler, start, (end - start));
++	if (!rb_node) {
++		handler->misses++;
++		spin_unlock_irqrestore(&handler->lock, flags);
++		return NULL;
++	}
++	handler->hits++;
++	node = container_of(rb_node, struct sdma_mmu_node, rb);
++	acquire_node(node);
++	spin_unlock_irqrestore(&handler->lock, flags);
++
++	return node;
++}
++
++static int pin_system_pages(struct user_sdma_request *req,
++			    uintptr_t start_address, size_t length,
++			    struct sdma_mmu_node *node, int npages)
++{
++	struct hfi1_user_sdma_pkt_q *pq = req->pq;
++	int pinned, cleared;
++	struct page **pages;
++
++	pages = kcalloc(npages, sizeof(*pages), GFP_KERNEL);
++	if (!pages)
++		return -ENOMEM;
++
++retry:
++	if (!hfi1_can_pin_pages(pq->dd, current->mm, atomic_read(&pq->n_locked),
++				npages)) {
++		SDMA_DBG(req, "Evicting: nlocked %u npages %u",
++			 atomic_read(&pq->n_locked), npages);
++		cleared = sdma_cache_evict(pq, npages);
++		if (cleared >= npages)
++			goto retry;
++	}
++
++	SDMA_DBG(req, "Acquire user pages start_address %lx node->npages %u npages %u",
++		 start_address, node->npages, npages);
++	pinned = hfi1_acquire_user_pages(current->mm, start_address, npages, 0,
++					 pages);
++
++	if (pinned < 0) {
++		kfree(pages);
++		SDMA_DBG(req, "pinned %d", pinned);
++		return pinned;
++	}
++	if (pinned != npages) {
++		unpin_vector_pages(current->mm, pages, node->npages, pinned);
++		SDMA_DBG(req, "npages %u pinned %d", npages, pinned);
++		return -EFAULT;
++	}
++	node->rb.addr = start_address;
++	node->rb.len = length;
++	node->pages = pages;
++	node->npages = npages;
++	atomic_add(pinned, &pq->n_locked);
++	SDMA_DBG(req, "done. pinned %d", pinned);
++	return 0;
++}
++
++static int add_system_pinning(struct user_sdma_request *req,
++			      struct sdma_mmu_node **node_p,
++			      unsigned long start, unsigned long len)
++
++{
++	struct hfi1_user_sdma_pkt_q *pq = req->pq;
++	struct sdma_mmu_node *node;
++	int ret;
++
++	node = kzalloc(sizeof(*node), GFP_KERNEL);
++	if (!node)
++		return -ENOMEM;
++
++	node->pq = pq;
++	ret = pin_system_pages(req, start, len, node, PFN_DOWN(len));
++	if (ret == 0) {
++		ret = hfi1_mmu_rb_insert(PINNING_STATE(pq, HFI1_MEMINFO_TYPE_SYSTEM), &node->rb);
++		if (ret)
++			free_system_node(node);
++		else
++			*node_p = node;
++
++		return ret;
++	}
++
++	kfree(node);
++	return ret;
++}
++
++static int get_system_cache_entry(struct user_sdma_request *req,
++				  struct sdma_mmu_node **node_p,
++				  size_t req_start, size_t req_len)
++{
++	struct hfi1_user_sdma_pkt_q *pq = req->pq;
++	u64 start = ALIGN_DOWN(req_start, PAGE_SIZE);
++	u64 end = PFN_ALIGN(req_start + req_len);
++	struct mmu_rb_handler *handler =
++		PINNING_STATE(pq, HFI1_MEMINFO_TYPE_SYSTEM);
++	int ret;
++
++	if ((end - start) == 0) {
++		SDMA_DBG(req,
++			 "Request for empty cache entry req_start %lx req_len %lx start %llx end %llx",
++			 req_start, req_len, start, end);
++		return -EINVAL;
++	}
++
++	SDMA_DBG(req, "req_start %lx req_len %lu", req_start, req_len);
++
++	while (1) {
++		struct sdma_mmu_node *node =
++			find_system_node(handler, start, end);
++		u64 prepend_len = 0;
++
++		SDMA_DBG(req, "node %p start %llx end %llu", node, start, end);
++		if (!node) {
++			ret = add_system_pinning(req, node_p, start,
++						 end - start);
++			if (ret == -EEXIST) {
++				/*
++				 * Another execution context has inserted a
++				 * conficting entry first.
++				 */
++				continue;
++			}
++			return ret;
++		}
++
++		if (node->rb.addr <= start) {
++			/*
++			 * This entry covers at least part of the region. If it doesn't extend
++			 * to the end, then this will be called again for the next segment.
++			 */
++			*node_p = node;
++			return 0;
++		}
++
++		SDMA_DBG(req, "prepend: node->rb.addr %lx, node->refcount %d",
++			 node->rb.addr, atomic_read(&node->refcount));
++		prepend_len = node->rb.addr - start;
++
++		/*
++		 * This node will not be returned, instead a new node
++		 * will be. So release the reference.
++		 */
++		release_node(handler, node);
++
++		/* Prepend a node to cover the beginning of the allocation */
++		ret = add_system_pinning(req, node_p, start, prepend_len);
++		if (ret == -EEXIST) {
++			/* Another execution context has inserted a conficting entry first. */
++			continue;
++		}
++		return ret;
++	}
++}
++
++static int add_mapping_to_sdma_packet(struct user_sdma_request *req,
++				      struct user_sdma_txreq *tx,
++				      struct sdma_mmu_node *cache_entry,
++				      size_t start,
++				      size_t from_this_cache_entry)
++{
++	struct hfi1_user_sdma_pkt_q *pq = req->pq;
++	unsigned int page_offset;
++	unsigned int from_this_page;
++	size_t page_index;
++	void *ctx;
++	int ret;
++
++	/*
++	 * Because the cache may be more fragmented than the memory that is being accessed,
++	 * it's not strictly necessary to have a descriptor per cache entry.
++	 */
++
++	while (from_this_cache_entry) {
++		page_index = PFN_DOWN(start - cache_entry->rb.addr);
++
++		if (page_index >= cache_entry->npages) {
++			SDMA_DBG(req,
++				 "Request for page_index %zu >= cache_entry->npages %u",
++				 page_index, cache_entry->npages);
++			return -EINVAL;
++		}
++
++		page_offset = start - ALIGN_DOWN(start, PAGE_SIZE);
++		from_this_page = PAGE_SIZE - page_offset;
++
++		if (from_this_page < from_this_cache_entry) {
++			ctx = NULL;
++		} else {
++			/*
++			 * In the case they are equal the next line has no practical effect,
++			 * but it's better to do a register to register copy than a conditional
++			 * branch.
++			 */
++			from_this_page = from_this_cache_entry;
++			ctx = cache_entry;
++		}
++
++		ret = sdma_txadd_page(pq->dd, ctx, &tx->txreq,
++				      cache_entry->pages[page_index],
++				      page_offset, from_this_page);
++		if (ret) {
++			/*
++			 * When there's a failure, the entire request is freed by
++			 * user_sdma_send_pkts().
++			 */
++			SDMA_DBG(req,
++				 "sdma_txadd_page failed %d page_index %lu page_offset %u from_this_page %u",
++				 ret, page_index, page_offset, from_this_page);
++			return ret;
++		}
++		start += from_this_page;
++		from_this_cache_entry -= from_this_page;
++	}
++	return 0;
++}
++
++static int add_system_iovec_to_sdma_packet(struct user_sdma_request *req,
++					   struct user_sdma_txreq *tx,
++					   struct user_sdma_iovec *iovec,
++					   size_t from_this_iovec)
++{
++	struct mmu_rb_handler *handler =
++		PINNING_STATE(req->pq, HFI1_MEMINFO_TYPE_SYSTEM);
++
++	while (from_this_iovec > 0) {
++		struct sdma_mmu_node *cache_entry;
++		size_t from_this_cache_entry;
++		size_t start;
++		int ret;
++
++		start = (uintptr_t)iovec->iov.iov_base + iovec->offset;
++		ret = get_system_cache_entry(req, &cache_entry, start,
++					     from_this_iovec);
++		if (ret) {
++			SDMA_DBG(req, "pin system segment failed %d", ret);
++			return ret;
++		}
++
++		from_this_cache_entry = cache_entry->rb.len - (start - cache_entry->rb.addr);
++		if (from_this_cache_entry > from_this_iovec)
++			from_this_cache_entry = from_this_iovec;
++
++		ret = add_mapping_to_sdma_packet(req, tx, cache_entry, start,
++						 from_this_cache_entry);
++		if (ret) {
++			/*
++			 * We're guaranteed that there will be no descriptor
++			 * completion callback that releases this node
++			 * because only the last descriptor referencing it
++			 * has a context attached, and a failure means the
++			 * last descriptor was never added.
++			 */
++			release_node(handler, cache_entry);
++			SDMA_DBG(req, "add system segment failed %d", ret);
++			return ret;
++		}
++
++		iovec->offset += from_this_cache_entry;
++		from_this_iovec -= from_this_cache_entry;
++	}
++
++	return 0;
++}
++
++static int add_system_pages_to_sdma_packet(struct user_sdma_request *req,
++					   struct user_sdma_txreq *tx,
++					   struct user_sdma_iovec *iovec,
++					   u32 *pkt_data_remaining)
++{
++	size_t remaining_to_add = *pkt_data_remaining;
++	/*
++	 * Walk through iovec entries, ensure the associated pages
++	 * are pinned and mapped, add data to the packet until no more
++	 * data remains to be added or the iovec entry type changes.
++	 */
++	while ((remaining_to_add > 0) &&
++	       (iovec->type == HFI1_MEMINFO_TYPE_SYSTEM)) {
++		struct user_sdma_iovec *cur_iovec;
++		size_t from_this_iovec;
++		int ret;
++
++		cur_iovec = iovec;
++		from_this_iovec = iovec->iov.iov_len - iovec->offset;
++
++		if (from_this_iovec > remaining_to_add) {
++			from_this_iovec = remaining_to_add;
++		} else {
++			/* The current iovec entry will be consumed by this pass. */
++			req->iov_idx++;
++			iovec++;
++		}
++
++		ret = add_system_iovec_to_sdma_packet(req, tx, cur_iovec,
++						      from_this_iovec);
++		if (ret)
++			return ret;
++
++		remaining_to_add -= from_this_iovec;
++	}
++	*pkt_data_remaining = remaining_to_add;
++
++	return 0;
++}
++
++static void system_descriptor_complete(struct hfi1_devdata *dd,
++				       struct sdma_desc *descp)
++{
++	switch (sdma_mapping_type(descp)) {
++	case SDMA_MAP_SINGLE:
++		dma_unmap_single(&dd->pcidev->dev, sdma_mapping_addr(descp),
++				 sdma_mapping_len(descp), DMA_TO_DEVICE);
++		break;
++	case SDMA_MAP_PAGE:
++		dma_unmap_page(&dd->pcidev->dev, sdma_mapping_addr(descp),
++			       sdma_mapping_len(descp), DMA_TO_DEVICE);
++		break;
++	}
++
++	if (descp->pinning_ctx) {
++		struct sdma_mmu_node *node = descp->pinning_ctx;
++
++		release_node(node->rb.handler, node);
++	}
++}
++
++static struct pinning_interface system_pinning_interface = {
++	.init = init_system_pinning_interface,
++	.free = free_system_pinning_interface,
++	.add_to_sdma_packet = add_system_pages_to_sdma_packet,
++	.descriptor_complete = system_descriptor_complete,
++};
++
++void register_system_pinning_interface(void)
++{
++	register_pinning_interface(HFI1_MEMINFO_TYPE_SYSTEM,
++				   &system_pinning_interface);
++	pr_info("%s System memory DMA support enabled\n", class_name());
++}
++
++void deregister_system_pinning_interface(void)
++{
++	deregister_pinning_interface(HFI1_MEMINFO_TYPE_SYSTEM);
++}
++
++static bool sdma_rb_filter(struct mmu_rb_node *node, unsigned long addr,
++			   unsigned long len)
++{
++	return (bool)(node->addr == addr);
++}
++
++static int sdma_rb_insert(void *arg, struct mmu_rb_node *mnode)
++{
++	struct sdma_mmu_node *node =
++		container_of(mnode, struct sdma_mmu_node, rb);
++
++	atomic_inc(&node->refcount);
++	return 0;
++}
++
++/*
++ * Return 1 to remove the node from the rb tree and call the remove op.
++ *
++ * Called with the rb tree lock held.
++ */
++static int sdma_rb_evict(void *arg, struct mmu_rb_node *mnode, void *evict_arg,
++			 bool *stop)
++{
++	struct sdma_mmu_node *node =
++		container_of(mnode, struct sdma_mmu_node, rb);
++	struct evict_data *evict_data = evict_arg;
++
++	/* is this node still being used? */
++	if (atomic_read(&node->refcount))
++		return 0; /* keep this node */
++
++	/* this node will be evicted, add its pages to our count */
++	evict_data->cleared += node->npages;
++
++	/* have enough pages been cleared? */
++	if (evict_data->cleared >= evict_data->target)
++		*stop = true;
++
++	return 1; /* remove this node */
++}
++
++static void sdma_rb_remove(void *arg, struct mmu_rb_node *mnode)
++{
++	struct sdma_mmu_node *node =
++		container_of(mnode, struct sdma_mmu_node, rb);
++
++	free_system_node(node);
++}
++
++static int sdma_rb_invalidate(void *arg, struct mmu_rb_node *mnode)
++{
++	struct sdma_mmu_node *node =
++		container_of(mnode, struct sdma_mmu_node, rb);
++
++	if (!atomic_read(&node->refcount))
++		return 1;
++	return 0;
++}
+diff --git a/drivers/infiniband/hw/hfi1/pinning.c b/drivers/infiniband/hw/hfi1/pinning.c
+new file mode 100644
+index 000000000000..82e99128478e
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi1/pinning.c
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++/*
++ * Copyright(c) 2022 - Cornelis Networks, Inc.
++ */
++
++#include <linux/types.h>
++#include <linux/string.h>
++
++#include "pinning.h"
++
++struct pinning_interface pinning_interfaces[PINNING_MAX_INTERFACES];
++
++void register_pinning_interface(unsigned int type,
++				struct pinning_interface *interface)
++{
++	pinning_interfaces[type] = *interface;
++}
++
++void deregister_pinning_interface(unsigned int type)
++{
++	memset(&pinning_interfaces[type], 0, sizeof(pinning_interfaces[type]));
++}
++
++int init_pinning_interfaces(struct hfi1_user_sdma_pkt_q *pq)
++{
++	int i;
++	int ret;
++
++	for (i = 0; i < PINNING_MAX_INTERFACES; i++) {
++		if (pinning_interfaces[i].init) {
++			ret = pinning_interfaces[i].init(pq);
++			if (ret)
++				goto fail;
++		}
++	}
++
++	return 0;
++
++fail:
++	while (--i >= 0) {
++		if (pinning_interfaces[i].free)
++			pinning_interfaces[i].free(pq);
++	}
++	return ret;
++}
++
++void free_pinning_interfaces(struct hfi1_user_sdma_pkt_q *pq)
++{
++	unsigned int i;
++
++	for (i = 0; i < PINNING_MAX_INTERFACES; i++) {
++		if (pinning_interfaces[i].free)
++			pinning_interfaces[i].free(pq);
++	}
++}
+diff --git a/drivers/infiniband/hw/hfi1/pinning.h b/drivers/infiniband/hw/hfi1/pinning.h
+new file mode 100644
+index 000000000000..ae36606dc9cd
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi1/pinning.h
+@@ -0,0 +1,88 @@
++/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/*
++ * Copyright(c) 2022 Cornelis Networks, Inc.
++ */
++#ifndef _HFI1_PINNING_H
++#define _HFI1_PINNING_H
++
++#include <rdma/hfi/hfi1_user.h>
++
++struct page;
++struct sg_table;
++
++struct hfi1_devdata;
++struct hfi1_user_sdma_pkt_q;
++struct sdma_desc;
++struct user_sdma_request;
++struct user_sdma_txreq;
++struct user_sdma_iovec;
++
++struct pinning_interface {
++	int (*init)(struct hfi1_user_sdma_pkt_q *pq);
++	void (*free)(struct hfi1_user_sdma_pkt_q *pq);
++
++	/*
++	 * Add up to pkt_data_remaining bytes to the txreq, starting at the
++	 * current offset in the given iovec entry and continuing until all
++	 * data has been added to the iovec or the iovec entry type changes.
++	 * On success, prior to returning, the implementation must adjust
++	 * pkt_data_remaining, req->iov_idx, and the offset value in
++	 * req->iov[req->iov_idx] to reflect the data that has been
++	 * consumed.
++	 */
++	int (*add_to_sdma_packet)(struct user_sdma_request *req,
++				  struct user_sdma_txreq *tx,
++				  struct user_sdma_iovec *iovec,
++				  u32 *pkt_data_remaining);
++
++	/*
++	 * At completion of a txreq, this is invoked for each descriptor.
++	 */
++	void (*descriptor_complete)(struct hfi1_devdata *dd,
++				    struct sdma_desc *descp);
++};
++
++#define PINNING_MAX_INTERFACES (1 << HFI1_MEMINFO_TYPE_ENTRY_BITS)
++
++struct pinning_state {
++	void *interface[PINNING_MAX_INTERFACES];
++};
++
++#define PINNING_STATE(pq, i) ((pq)->pinning_state.interface[(i)])
++
++extern struct pinning_interface pinning_interfaces[PINNING_MAX_INTERFACES];
++
++void register_pinning_interface(unsigned int type,
++				struct pinning_interface *interface);
++void deregister_pinning_interface(unsigned int type);
++
++void register_system_pinning_interface(void);
++void deregister_system_pinning_interface(void);
++
++int init_pinning_interfaces(struct hfi1_user_sdma_pkt_q *pq);
++void free_pinning_interfaces(struct hfi1_user_sdma_pkt_q *pq);
++
++static inline bool pinning_type_supported(unsigned int type)
++{
++	return (type < PINNING_MAX_INTERFACES &&
++		pinning_interfaces[type].add_to_sdma_packet);
++}
++
++static inline int add_to_sdma_packet(unsigned int type,
++				     struct user_sdma_request *req,
++				     struct user_sdma_txreq *tx,
++				     struct user_sdma_iovec *iovec,
++				     u32 *pkt_data_remaining)
++{
++	return pinning_interfaces[type].add_to_sdma_packet(req, tx, iovec,
++							   pkt_data_remaining);
++}
++
++static inline void sdma_descriptor_complete(unsigned int type,
++					    struct hfi1_devdata *dd,
++					    struct sdma_desc *descp)
++{
++	pinning_interfaces[type].descriptor_complete(dd, descp);
++}
++
++#endif /* _HFI1_PINNING_H */
 diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index a95b654f5254..8ed20392e9f0 100644
+index 8ed20392e9f0..38d4e69df71e 100644
 --- a/drivers/infiniband/hw/hfi1/sdma.c
 +++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -3160,8 +3160,7 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
+@@ -1593,22 +1593,7 @@ static inline void sdma_unmap_desc(
+ 	struct hfi1_devdata *dd,
+ 	struct sdma_desc *descp)
+ {
+-	switch (sdma_mapping_type(descp)) {
+-	case SDMA_MAP_SINGLE:
+-		dma_unmap_single(
+-			&dd->pcidev->dev,
+-			sdma_mapping_addr(descp),
+-			sdma_mapping_len(descp),
+-			DMA_TO_DEVICE);
+-		break;
+-	case SDMA_MAP_PAGE:
+-		dma_unmap_page(
+-			&dd->pcidev->dev,
+-			sdma_mapping_addr(descp),
+-			sdma_mapping_len(descp),
+-			DMA_TO_DEVICE);
+-		break;
+-	}
++	sdma_descriptor_complete(descp->mem_type, dd, descp);
+ }
+ 
+ /*
+@@ -3128,7 +3113,8 @@ int ext_coal_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx,
+ 
+ 		/* Add descriptor for coalesce buffer */
+ 		tx->desc_limit = MAX_DESC;
+-		return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, tx,
++		return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE,
++					 HFI1_MEMINFO_TYPE_SYSTEM, NULL, tx,
+ 					 addr, tx->tlen);
+ 	}
+ 
+@@ -3167,12 +3153,11 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
+ 			return rval;
+ 		}
+ 	}
++
+ 	/* finish the one just added */
+-	make_tx_sdma_desc(
+-		tx,
+-		SDMA_MAP_NONE,
+-		dd->sdma_pad_phys,
+-		sizeof(u32) - (tx->packet_len & (sizeof(u32) - 1)));
++	make_tx_sdma_desc(tx, SDMA_MAP_NONE, HFI1_MEMINFO_TYPE_SYSTEM, NULL,
++			  dd->sdma_pad_phys,
++			  sizeof(u32) - (tx->packet_len & (sizeof(u32) - 1)));
+ 	tx->num_desc++;
+ 	_sdma_close_tx(dd, tx);
+ 	return rval;
+diff --git a/drivers/infiniband/hw/hfi1/sdma.h b/drivers/infiniband/hw/hfi1/sdma.h
+index b023fc461bd5..45266b14d327 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.h
++++ b/drivers/infiniband/hw/hfi1/sdma.h
+@@ -591,27 +591,27 @@ static inline dma_addr_t sdma_mapping_addr(struct sdma_desc *d)
+ 		>> SDMA_DESC0_PHY_ADDR_SHIFT;
+ }
+ 
+-static inline void make_tx_sdma_desc(
+-	struct sdma_txreq *tx,
+-	int type,
+-	dma_addr_t addr,
+-	size_t len)
++static inline void make_tx_sdma_desc(struct sdma_txreq *tx, int map_type,
++				     int mem_type, void *pinning_ctx,
++				     dma_addr_t addr, size_t len)
+ {
+ 	struct sdma_desc *desc = &tx->descp[tx->num_desc];
+ 
+ 	if (!tx->num_desc) {
+ 		/* qw[0] zero; qw[1] first, ahg mode already in from init */
+-		desc->qw[1] |= ((u64)type & SDMA_DESC1_GENERATION_MASK)
+-				<< SDMA_DESC1_GENERATION_SHIFT;
++		desc->qw[1] |= ((u64)map_type & SDMA_DESC1_GENERATION_MASK)
++			       << SDMA_DESC1_GENERATION_SHIFT;
+ 	} else {
+ 		desc->qw[0] = 0;
+-		desc->qw[1] = ((u64)type & SDMA_DESC1_GENERATION_MASK)
+-				<< SDMA_DESC1_GENERATION_SHIFT;
++		desc->qw[1] = ((u64)map_type & SDMA_DESC1_GENERATION_MASK)
++			      << SDMA_DESC1_GENERATION_SHIFT;
+ 	}
+ 	desc->qw[0] |= (((u64)addr & SDMA_DESC0_PHY_ADDR_MASK)
+ 				<< SDMA_DESC0_PHY_ADDR_SHIFT) |
+ 			(((u64)len & SDMA_DESC0_BYTE_COUNT_MASK)
+ 				<< SDMA_DESC0_BYTE_COUNT_SHIFT);
++	desc->mem_type = mem_type;
++	desc->pinning_ctx = pinning_ctx;
+ }
+ 
+ /* helper to extend txreq */
+@@ -640,19 +640,14 @@ static inline void _sdma_close_tx(struct hfi1_devdata *dd,
+ 					       SDMA_DESC1_INT_REQ_FLAG);
+ }
+ 
+-static inline int _sdma_txadd_daddr(
+-	struct hfi1_devdata *dd,
+-	int type,
+-	struct sdma_txreq *tx,
+-	dma_addr_t addr,
+-	u16 len)
++static inline int _sdma_txadd_daddr(struct hfi1_devdata *dd, int map_type,
++				    int mem_type, void *pinning_ctx,
++				    struct sdma_txreq *tx, dma_addr_t addr,
++				    u16 len)
  {
  	int rval = 0;
  
--	tx->num_desc++;
--	if ((unlikely(tx->num_desc == tx->desc_limit))) {
-+	if ((unlikely(tx->num_desc + 1 == tx->desc_limit))) {
- 		rval = _extend_sdma_tx_descs(dd, tx);
- 		if (rval) {
- 			__sdma_txclean(dd, tx);
-@@ -3174,6 +3173,7 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- 		SDMA_MAP_NONE,
- 		dd->sdma_pad_phys,
- 		sizeof(u32) - (tx->packet_len & (sizeof(u32) - 1)));
-+	tx->num_desc++;
- 	_sdma_close_tx(dd, tx);
- 	return rval;
- }
-diff --git a/drivers/infiniband/hw/hfi1/sdma.h b/drivers/infiniband/hw/hfi1/sdma.h
-index d8170fcbfbdd..b023fc461bd5 100644
---- a/drivers/infiniband/hw/hfi1/sdma.h
-+++ b/drivers/infiniband/hw/hfi1/sdma.h
-@@ -631,14 +631,13 @@ static inline void sdma_txclean(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- static inline void _sdma_close_tx(struct hfi1_devdata *dd,
- 				  struct sdma_txreq *tx)
+-	make_tx_sdma_desc(
+-		tx,
+-		type,
+-		addr, len);
++	make_tx_sdma_desc(tx, map_type, mem_type, pinning_ctx, addr, len);
+ 	WARN_ON(len > tx->tlen);
+ 	tx->num_desc++;
+ 	tx->tlen -= len;
+@@ -672,6 +667,7 @@ static inline int _sdma_txadd_daddr(
+ /**
+  * sdma_txadd_page() - add a page to the sdma_txreq
+  * @dd: the device to use for mapping
++ * @pinning_ctx: supplied to pinning interface at descriptor retirement
+  * @tx: tx request to which the page is added
+  * @page: page to map
+  * @offset: offset within the page
+@@ -685,12 +681,9 @@ static inline int _sdma_txadd_daddr(
+  * 0 - success, -ENOSPC - mapping fail, -ENOMEM - couldn't
+  * extend/coalesce descriptor array
+  */
+-static inline int sdma_txadd_page(
+-	struct hfi1_devdata *dd,
+-	struct sdma_txreq *tx,
+-	struct page *page,
+-	unsigned long offset,
+-	u16 len)
++static inline int sdma_txadd_page(struct hfi1_devdata *dd, void *pinning_ctx,
++				  struct sdma_txreq *tx, struct page *page,
++				  unsigned long offset, u16 len)
  {
--	tx->descp[tx->num_desc].qw[0] |=
--		SDMA_DESC0_LAST_DESC_FLAG;
--	tx->descp[tx->num_desc].qw[1] |=
--		dd->default_desc1;
-+	u16 last_desc = tx->num_desc - 1;
-+
-+	tx->descp[last_desc].qw[0] |= SDMA_DESC0_LAST_DESC_FLAG;
-+	tx->descp[last_desc].qw[1] |= dd->default_desc1;
- 	if (tx->flags & SDMA_TXREQ_F_URGENT)
--		tx->descp[tx->num_desc].qw[1] |=
--			(SDMA_DESC1_HEAD_TO_HOST_FLAG |
--			 SDMA_DESC1_INT_REQ_FLAG);
-+		tx->descp[last_desc].qw[1] |= (SDMA_DESC1_HEAD_TO_HOST_FLAG |
-+					       SDMA_DESC1_INT_REQ_FLAG);
+ 	dma_addr_t addr;
+ 	int rval;
+@@ -714,8 +707,8 @@ static inline int sdma_txadd_page(
+ 		return -ENOSPC;
+ 	}
+ 
+-	return _sdma_txadd_daddr(
+-			dd, SDMA_MAP_PAGE, tx, addr, len);
++	return _sdma_txadd_daddr(dd, SDMA_MAP_PAGE, HFI1_MEMINFO_TYPE_SYSTEM,
++				 pinning_ctx, tx, addr, len);
  }
  
- static inline int _sdma_txadd_daddr(
-@@ -655,6 +654,7 @@ static inline int _sdma_txadd_daddr(
- 		type,
- 		addr, len);
- 	WARN_ON(len > tx->tlen);
-+	tx->num_desc++;
- 	tx->tlen -= len;
- 	/* special cases for last */
- 	if (!tx->tlen) {
-@@ -666,7 +666,6 @@ static inline int _sdma_txadd_daddr(
- 			_sdma_close_tx(dd, tx);
+ /**
+@@ -734,11 +727,9 @@ static inline int sdma_txadd_page(
+  * 0 - success, -ENOMEM - couldn't extend descriptor array
+  */
+ 
+-static inline int sdma_txadd_daddr(
+-	struct hfi1_devdata *dd,
+-	struct sdma_txreq *tx,
+-	dma_addr_t addr,
+-	u16 len)
++static inline int sdma_txadd_daddr(struct hfi1_devdata *dd, int mem_type,
++				   void *pinning_ctx, struct sdma_txreq *tx,
++				   dma_addr_t addr, u16 len)
+ {
+ 	int rval;
+ 
+@@ -749,7 +740,8 @@ static inline int sdma_txadd_daddr(
+ 			return rval;
+ 	}
+ 
+-	return _sdma_txadd_daddr(dd, SDMA_MAP_NONE, tx, addr, len);
++	return _sdma_txadd_daddr(dd, SDMA_MAP_NONE, mem_type, pinning_ctx, tx,
++				 addr, len);
+ }
+ 
+ /**
+@@ -795,8 +787,8 @@ static inline int sdma_txadd_kvaddr(
+ 		return -ENOSPC;
+ 	}
+ 
+-	return _sdma_txadd_daddr(
+-			dd, SDMA_MAP_SINGLE, tx, addr, len);
++	return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, HFI1_MEMINFO_TYPE_SYSTEM,
++				 NULL, tx, addr, len);
+ }
+ 
+ struct iowait_work;
+diff --git a/drivers/infiniband/hw/hfi1/sdma_txreq.h b/drivers/infiniband/hw/hfi1/sdma_txreq.h
+index e262fb5c5ec6..6cbb3f6966b1 100644
+--- a/drivers/infiniband/hw/hfi1/sdma_txreq.h
++++ b/drivers/infiniband/hw/hfi1/sdma_txreq.h
+@@ -19,6 +19,8 @@
+ struct sdma_desc {
+ 	/* private:  don't use directly */
+ 	u64 qw[2];
++	u8 mem_type;
++	void *pinning_ctx;
+ };
+ 
+ /**
+diff --git a/drivers/infiniband/hw/hfi1/trace_mmu.h b/drivers/infiniband/hw/hfi1/trace_mmu.h
+index 187e9244fe5e..57900ebb7702 100644
+--- a/drivers/infiniband/hw/hfi1/trace_mmu.h
++++ b/drivers/infiniband/hw/hfi1/trace_mmu.h
+@@ -37,10 +37,6 @@ DEFINE_EVENT(hfi1_mmu_rb_template, hfi1_mmu_rb_search,
+ 	     TP_PROTO(unsigned long addr, unsigned long len),
+ 	     TP_ARGS(addr, len));
+ 
+-DEFINE_EVENT(hfi1_mmu_rb_template, hfi1_mmu_rb_remove,
+-	     TP_PROTO(unsigned long addr, unsigned long len),
+-	     TP_ARGS(addr, len));
+-
+ DEFINE_EVENT(hfi1_mmu_rb_template, hfi1_mmu_mem_invalidate,
+ 	     TP_PROTO(unsigned long addr, unsigned long len),
+ 	     TP_ARGS(addr, len));
+diff --git a/drivers/infiniband/hw/hfi1/user_sdma.c b/drivers/infiniband/hw/hfi1/user_sdma.c
+index a71c5a36ceba..54d73edb4597 100644
+--- a/drivers/infiniband/hw/hfi1/user_sdma.c
++++ b/drivers/infiniband/hw/hfi1/user_sdma.c
+@@ -24,7 +24,6 @@
+ 
+ #include "hfi.h"
+ #include "sdma.h"
+-#include "mmu_rb.h"
+ #include "user_sdma.h"
+ #include "verbs.h"  /* for the headers */
+ #include "common.h" /* for struct hfi1_tid_info */
+@@ -39,11 +38,7 @@ static unsigned initial_pkt_count = 8;
+ static int user_sdma_send_pkts(struct user_sdma_request *req, u16 maxpkts);
+ static void user_sdma_txreq_cb(struct sdma_txreq *txreq, int status);
+ static inline void pq_update(struct hfi1_user_sdma_pkt_q *pq);
+-static void user_sdma_free_request(struct user_sdma_request *req, bool unpin);
+-static int pin_vector_pages(struct user_sdma_request *req,
+-			    struct user_sdma_iovec *iovec);
+-static void unpin_vector_pages(struct mm_struct *mm, struct page **pages,
+-			       unsigned start, unsigned npages);
++static void user_sdma_free_request(struct user_sdma_request *req);
+ static int check_header_template(struct user_sdma_request *req,
+ 				 struct hfi1_pkt_header *hdr, u32 lrhlen,
+ 				 u32 datalen);
+@@ -65,21 +60,6 @@ static int defer_packet_queue(
+ 	uint seq,
+ 	bool pkts_sent);
+ static void activate_packet_queue(struct iowait *wait, int reason);
+-static bool sdma_rb_filter(struct mmu_rb_node *node, unsigned long addr,
+-			   unsigned long len);
+-static int sdma_rb_insert(void *arg, struct mmu_rb_node *mnode);
+-static int sdma_rb_evict(void *arg, struct mmu_rb_node *mnode,
+-			 void *arg2, bool *stop);
+-static void sdma_rb_remove(void *arg, struct mmu_rb_node *mnode);
+-static int sdma_rb_invalidate(void *arg, struct mmu_rb_node *mnode);
+-
+-static struct mmu_rb_ops sdma_rb_ops = {
+-	.filter = sdma_rb_filter,
+-	.insert = sdma_rb_insert,
+-	.evict = sdma_rb_evict,
+-	.remove = sdma_rb_remove,
+-	.invalidate = sdma_rb_invalidate
+-};
+ 
+ static int defer_packet_queue(
+ 	struct sdma_engine *sde,
+@@ -189,12 +169,9 @@ int hfi1_user_sdma_alloc_queues(struct hfi1_ctxtdata *uctxt,
+ 
+ 	cq->nentries = hfi1_sdma_comp_ring_size;
+ 
+-	ret = hfi1_mmu_rb_register(pq, &sdma_rb_ops, dd->pport->hfi1_wq,
+-				   &pq->handler);
+-	if (ret) {
+-		dd_dev_err(dd, "Failed to register with MMU %d", ret);
++	ret = init_pinning_interfaces(pq);
++	if (ret)
+ 		goto pq_mmu_fail;
+-	}
+ 
+ 	rcu_assign_pointer(fd->pq, pq);
+ 	fd->cq = cq;
+@@ -247,14 +224,13 @@ int hfi1_user_sdma_free_queues(struct hfi1_filedata *fd,
+ 		spin_unlock(&fd->pq_rcu_lock);
+ 		synchronize_srcu(&fd->pq_srcu);
+ 		/* at this point there can be no more new requests */
+-		if (pq->handler)
+-			hfi1_mmu_rb_unregister(pq->handler);
+ 		iowait_sdma_drain(&pq->busy);
+ 		/* Wait until all requests have been freed. */
+ 		wait_event_interruptible(
+ 			pq->wait,
+ 			!atomic_read(&pq->n_reqs));
+ 		kfree(pq->reqs);
++		free_pinning_interfaces(pq);
+ 		bitmap_free(pq->req_in_use);
+ 		kmem_cache_destroy(pq->txreq_cache);
+ 		flush_pq_iowait(pq);
+@@ -312,6 +288,7 @@ int hfi1_user_sdma_process_request(struct hfi1_filedata *fd,
+ 	u8 pcount = initial_pkt_count;
+ 	struct sdma_req_info info;
+ 	struct user_sdma_request *req;
++	size_t header_offset;
+ 	u8 opcode, sc, vl;
+ 	u16 pkey;
+ 	u32 slid;
+@@ -396,8 +373,7 @@ int hfi1_user_sdma_process_request(struct hfi1_filedata *fd,
+ 	if (req_opcode(info.ctrl) == EXPECTED) {
+ 		/* expected must have a TID info and at least one data vector */
+ 		if (req->data_iovs < 2) {
+-			SDMA_DBG(req,
+-				 "Not enough vectors for expected request");
++			SDMA_DBG(req, "Not enough vectors for expected request: 0x%x", info.ctrl);
+ 			ret = -EINVAL;
+ 			goto free_req;
+ 		}
+@@ -410,8 +386,25 @@ int hfi1_user_sdma_process_request(struct hfi1_filedata *fd,
+ 		ret = -EINVAL;
+ 		goto free_req;
+ 	}
++
++	if (req_has_meminfo(info.ctrl)) {
++		/* Copy the meminfo from the user buffer */
++		ret = copy_from_user(&req->meminfo,
++				     iovec[idx].iov_base + sizeof(info),
++				     sizeof(req->meminfo));
++		if (ret) {
++			SDMA_DBG(req, "Failed to copy meminfo (%d)", ret);
++			ret = -EFAULT;
++			goto free_req;
++		}
++		header_offset = sizeof(info) + sizeof(req->meminfo);
++	} else {
++		req->meminfo.types = 0;
++		header_offset = sizeof(info);
++	}
++
+ 	/* Copy the header from the user buffer */
+-	ret = copy_from_user(&req->hdr, iovec[idx].iov_base + sizeof(info),
++	ret = copy_from_user(&req->hdr, iovec[idx].iov_base + header_offset,
+ 			     sizeof(req->hdr));
+ 	if (ret) {
+ 		SDMA_DBG(req, "Failed to copy header template (%d)", ret);
+@@ -451,6 +444,7 @@ int hfi1_user_sdma_process_request(struct hfi1_filedata *fd,
+ 	slid = be16_to_cpu(req->hdr.lrh[3]);
+ 	if (egress_pkey_check(dd->pport, slid, pkey, sc, PKEY_CHECK_INVALID)) {
+ 		ret = -EINVAL;
++		SDMA_DBG(req, "P_KEY check failed\n");
+ 		goto free_req;
+ 	}
+ 
+@@ -479,14 +473,23 @@ int hfi1_user_sdma_process_request(struct hfi1_filedata *fd,
+ 
+ 	/* Save all the IO vector structures */
+ 	for (i = 0; i < req->data_iovs; i++) {
++		req->iovs[i].type =
++			HFI1_MEMINFO_TYPE_ENTRY_GET(req->meminfo.types, i);
++		if (!pinning_type_supported(req->iovs[i].type)) {
++			SDMA_DBG(req, "Pinning type not supported: %u\n",
++				 req->iovs[i].type);
++			req->data_iovs = i;
++			ret = -EINVAL;
++			goto free_req;
++		}
++		req->iovs[i].context = req->meminfo.context[i];
+ 		req->iovs[i].offset = 0;
+ 		INIT_LIST_HEAD(&req->iovs[i].list);
+ 		memcpy(&req->iovs[i].iov,
+ 		       iovec + idx++,
+ 		       sizeof(req->iovs[i].iov));
+-		ret = pin_vector_pages(req, &req->iovs[i]);
+-		if (ret) {
+-			req->data_iovs = i;
++		if (req->iovs[i].iov.iov_len == 0) {
++			ret = -EINVAL;
+ 			goto free_req;
+ 		}
+ 		req->data_len += req->iovs[i].iov.iov_len;
+@@ -584,7 +587,7 @@ int hfi1_user_sdma_process_request(struct hfi1_filedata *fd,
+ 		if (req->seqsubmitted)
+ 			wait_event(pq->busy.wait_dma,
+ 				   (req->seqcomp == req->seqsubmitted - 1));
+-		user_sdma_free_request(req, true);
++		user_sdma_free_request(req);
+ 		pq_update(pq);
+ 		set_comp_state(pq, cq, info.comp_idx, ERROR, ret);
+ 	}
+@@ -696,48 +699,6 @@ static int user_sdma_txadd_ahg(struct user_sdma_request *req,
+ 	return ret;
+ }
+ 
+-static int user_sdma_txadd(struct user_sdma_request *req,
+-			   struct user_sdma_txreq *tx,
+-			   struct user_sdma_iovec *iovec, u32 datalen,
+-			   u32 *queued_ptr, u32 *data_sent_ptr,
+-			   u64 *iov_offset_ptr)
+-{
+-	int ret;
+-	unsigned int pageidx, len;
+-	unsigned long base, offset;
+-	u64 iov_offset = *iov_offset_ptr;
+-	u32 queued = *queued_ptr, data_sent = *data_sent_ptr;
+-	struct hfi1_user_sdma_pkt_q *pq = req->pq;
+-
+-	base = (unsigned long)iovec->iov.iov_base;
+-	offset = offset_in_page(base + iovec->offset + iov_offset);
+-	pageidx = (((iovec->offset + iov_offset + base) - (base & PAGE_MASK)) >>
+-		   PAGE_SHIFT);
+-	len = offset + req->info.fragsize > PAGE_SIZE ?
+-		PAGE_SIZE - offset : req->info.fragsize;
+-	len = min((datalen - queued), len);
+-	ret = sdma_txadd_page(pq->dd, &tx->txreq, iovec->pages[pageidx],
+-			      offset, len);
+-	if (ret) {
+-		SDMA_DBG(req, "SDMA txreq add page failed %d\n", ret);
+-		return ret;
+-	}
+-	iov_offset += len;
+-	queued += len;
+-	data_sent += len;
+-	if (unlikely(queued < datalen && pageidx == iovec->npages &&
+-		     req->iov_idx < req->data_iovs - 1)) {
+-		iovec->offset += iov_offset;
+-		iovec = &req->iovs[++req->iov_idx];
+-		iov_offset = 0;
+-	}
+-
+-	*queued_ptr = queued;
+-	*data_sent_ptr = data_sent;
+-	*iov_offset_ptr = iov_offset;
+-	return ret;
+-}
+-
+ static int user_sdma_send_pkts(struct user_sdma_request *req, u16 maxpkts)
+ {
+ 	int ret = 0;
+@@ -769,8 +730,7 @@ static int user_sdma_send_pkts(struct user_sdma_request *req, u16 maxpkts)
+ 		maxpkts = req->info.npkts - req->seqnum;
+ 
+ 	while (npkts < maxpkts) {
+-		u32 datalen = 0, queued = 0, data_sent = 0;
+-		u64 iov_offset = 0;
++		u32 datalen = 0;
+ 
+ 		/*
+ 		 * Check whether any of the completions have come back
+@@ -863,27 +823,17 @@ static int user_sdma_send_pkts(struct user_sdma_request *req, u16 maxpkts)
+ 				goto free_txreq;
+ 		}
+ 
+-		/*
+-		 * If the request contains any data vectors, add up to
+-		 * fragsize bytes to the descriptor.
+-		 */
+-		while (queued < datalen &&
+-		       (req->sent + data_sent) < req->data_len) {
+-			ret = user_sdma_txadd(req, tx, iovec, datalen,
+-					      &queued, &data_sent, &iov_offset);
+-			if (ret)
+-				goto free_txreq;
+-		}
+-		/*
+-		 * The txreq was submitted successfully so we can update
+-		 * the counters.
+-		 */
+ 		req->koffset += datalen;
+ 		if (req_opcode(req->info.ctrl) == EXPECTED)
+ 			req->tidoffset += datalen;
+-		req->sent += data_sent;
+-		if (req->data_len)
+-			iovec->offset += iov_offset;
++		req->sent += datalen;
++		while (datalen) {
++			ret = add_to_sdma_packet(iovec->type, req, tx, iovec,
++						 &datalen);
++			if (ret)
++				goto free_txreq;
++			iovec = &req->iovs[req->iov_idx];
++		}
+ 		list_add_tail(&tx->txreq.list, &req->txps);
+ 		/*
+ 		 * It is important to increment this here as it is used to
+@@ -917,136 +867,6 @@ static int user_sdma_send_pkts(struct user_sdma_request *req, u16 maxpkts)
+ 	return ret;
+ }
+ 
+-static u32 sdma_cache_evict(struct hfi1_user_sdma_pkt_q *pq, u32 npages)
+-{
+-	struct evict_data evict_data;
+-
+-	evict_data.cleared = 0;
+-	evict_data.target = npages;
+-	hfi1_mmu_rb_evict(pq->handler, &evict_data);
+-	return evict_data.cleared;
+-}
+-
+-static int pin_sdma_pages(struct user_sdma_request *req,
+-			  struct user_sdma_iovec *iovec,
+-			  struct sdma_mmu_node *node,
+-			  int npages)
+-{
+-	int pinned, cleared;
+-	struct page **pages;
+-	struct hfi1_user_sdma_pkt_q *pq = req->pq;
+-
+-	pages = kcalloc(npages, sizeof(*pages), GFP_KERNEL);
+-	if (!pages)
+-		return -ENOMEM;
+-	memcpy(pages, node->pages, node->npages * sizeof(*pages));
+-
+-	npages -= node->npages;
+-retry:
+-	if (!hfi1_can_pin_pages(pq->dd, current->mm,
+-				atomic_read(&pq->n_locked), npages)) {
+-		cleared = sdma_cache_evict(pq, npages);
+-		if (cleared >= npages)
+-			goto retry;
+-	}
+-	pinned = hfi1_acquire_user_pages(current->mm,
+-					 ((unsigned long)iovec->iov.iov_base +
+-					 (node->npages * PAGE_SIZE)), npages, 0,
+-					 pages + node->npages);
+-	if (pinned < 0) {
+-		kfree(pages);
+-		return pinned;
+-	}
+-	if (pinned != npages) {
+-		unpin_vector_pages(current->mm, pages, node->npages, pinned);
+-		return -EFAULT;
+-	}
+-	kfree(node->pages);
+-	node->rb.len = iovec->iov.iov_len;
+-	node->pages = pages;
+-	atomic_add(pinned, &pq->n_locked);
+-	return pinned;
+-}
+-
+-static void unpin_sdma_pages(struct sdma_mmu_node *node)
+-{
+-	if (node->npages) {
+-		unpin_vector_pages(mm_from_sdma_node(node), node->pages, 0,
+-				   node->npages);
+-		atomic_sub(node->npages, &node->pq->n_locked);
+-	}
+-}
+-
+-static int pin_vector_pages(struct user_sdma_request *req,
+-			    struct user_sdma_iovec *iovec)
+-{
+-	int ret = 0, pinned, npages;
+-	struct hfi1_user_sdma_pkt_q *pq = req->pq;
+-	struct sdma_mmu_node *node = NULL;
+-	struct mmu_rb_node *rb_node;
+-	struct iovec *iov;
+-	bool extracted;
+-
+-	extracted =
+-		hfi1_mmu_rb_remove_unless_exact(pq->handler,
+-						(unsigned long)
+-						iovec->iov.iov_base,
+-						iovec->iov.iov_len, &rb_node);
+-	if (rb_node) {
+-		node = container_of(rb_node, struct sdma_mmu_node, rb);
+-		if (!extracted) {
+-			atomic_inc(&node->refcount);
+-			iovec->pages = node->pages;
+-			iovec->npages = node->npages;
+-			iovec->node = node;
+-			return 0;
+-		}
+-	}
+-
+-	if (!node) {
+-		node = kzalloc(sizeof(*node), GFP_KERNEL);
+-		if (!node)
+-			return -ENOMEM;
+-
+-		node->rb.addr = (unsigned long)iovec->iov.iov_base;
+-		node->pq = pq;
+-		atomic_set(&node->refcount, 0);
+-	}
+-
+-	iov = &iovec->iov;
+-	npages = num_user_pages((unsigned long)iov->iov_base, iov->iov_len);
+-	if (node->npages < npages) {
+-		pinned = pin_sdma_pages(req, iovec, node, npages);
+-		if (pinned < 0) {
+-			ret = pinned;
+-			goto bail;
+-		}
+-		node->npages += pinned;
+-		npages = node->npages;
+-	}
+-	iovec->pages = node->pages;
+-	iovec->npages = npages;
+-	iovec->node = node;
+-
+-	ret = hfi1_mmu_rb_insert(req->pq->handler, &node->rb);
+-	if (ret) {
+-		iovec->node = NULL;
+-		goto bail;
+-	}
+-	return 0;
+-bail:
+-	unpin_sdma_pages(node);
+-	kfree(node);
+-	return ret;
+-}
+-
+-static void unpin_vector_pages(struct mm_struct *mm, struct page **pages,
+-			       unsigned start, unsigned npages)
+-{
+-	hfi1_release_user_pages(mm, pages + start, npages, false);
+-	kfree(pages);
+-}
+-
+ static int check_header_template(struct user_sdma_request *req,
+ 				 struct hfi1_pkt_header *hdr, u32 lrhlen,
+ 				 u32 datalen)
+@@ -1388,7 +1208,7 @@ static void user_sdma_txreq_cb(struct sdma_txreq *txreq, int status)
+ 	if (req->seqcomp != req->info.npkts - 1)
+ 		return;
+ 
+-	user_sdma_free_request(req, false);
++	user_sdma_free_request(req);
+ 	set_comp_state(pq, cq, req->info.comp_idx, state, status);
+ 	pq_update(pq);
+ }
+@@ -1399,10 +1219,8 @@ static inline void pq_update(struct hfi1_user_sdma_pkt_q *pq)
+ 		wake_up(&pq->wait);
+ }
+ 
+-static void user_sdma_free_request(struct user_sdma_request *req, bool unpin)
++static void user_sdma_free_request(struct user_sdma_request *req)
+ {
+-	int i;
+-
+ 	if (!list_empty(&req->txps)) {
+ 		struct sdma_txreq *t, *p;
+ 
+@@ -1415,21 +1233,6 @@ static void user_sdma_free_request(struct user_sdma_request *req, bool unpin)
  		}
  	}
--	tx->num_desc++;
- 	return rval;
+ 
+-	for (i = 0; i < req->data_iovs; i++) {
+-		struct sdma_mmu_node *node = req->iovs[i].node;
+-
+-		if (!node)
+-			continue;
+-
+-		req->iovs[i].node = NULL;
+-
+-		if (unpin)
+-			hfi1_mmu_rb_remove(req->pq->handler,
+-					   &node->rb);
+-		else
+-			atomic_dec(&node->refcount);
+-	}
+-
+ 	kfree(req->tids);
+ 	clear_bit(req->info.comp_idx, req->pq->req_in_use);
+ }
+@@ -1447,62 +1250,3 @@ static inline void set_comp_state(struct hfi1_user_sdma_pkt_q *pq,
+ 					idx, state, ret);
  }
  
+-static bool sdma_rb_filter(struct mmu_rb_node *node, unsigned long addr,
+-			   unsigned long len)
+-{
+-	return (bool)(node->addr == addr);
+-}
+-
+-static int sdma_rb_insert(void *arg, struct mmu_rb_node *mnode)
+-{
+-	struct sdma_mmu_node *node =
+-		container_of(mnode, struct sdma_mmu_node, rb);
+-
+-	atomic_inc(&node->refcount);
+-	return 0;
+-}
+-
+-/*
+- * Return 1 to remove the node from the rb tree and call the remove op.
+- *
+- * Called with the rb tree lock held.
+- */
+-static int sdma_rb_evict(void *arg, struct mmu_rb_node *mnode,
+-			 void *evict_arg, bool *stop)
+-{
+-	struct sdma_mmu_node *node =
+-		container_of(mnode, struct sdma_mmu_node, rb);
+-	struct evict_data *evict_data = evict_arg;
+-
+-	/* is this node still being used? */
+-	if (atomic_read(&node->refcount))
+-		return 0; /* keep this node */
+-
+-	/* this node will be evicted, add its pages to our count */
+-	evict_data->cleared += node->npages;
+-
+-	/* have enough pages been cleared? */
+-	if (evict_data->cleared >= evict_data->target)
+-		*stop = true;
+-
+-	return 1; /* remove this node */
+-}
+-
+-static void sdma_rb_remove(void *arg, struct mmu_rb_node *mnode)
+-{
+-	struct sdma_mmu_node *node =
+-		container_of(mnode, struct sdma_mmu_node, rb);
+-
+-	unpin_sdma_pages(node);
+-	kfree(node);
+-}
+-
+-static int sdma_rb_invalidate(void *arg, struct mmu_rb_node *mnode)
+-{
+-	struct sdma_mmu_node *node =
+-		container_of(mnode, struct sdma_mmu_node, rb);
+-
+-	if (!atomic_read(&node->refcount))
+-		return 1;
+-	return 0;
+-}
+diff --git a/drivers/infiniband/hw/hfi1/user_sdma.h b/drivers/infiniband/hw/hfi1/user_sdma.h
+index ea56eb57e656..fc0b0bae0dc3 100644
+--- a/drivers/infiniband/hw/hfi1/user_sdma.h
++++ b/drivers/infiniband/hw/hfi1/user_sdma.h
+@@ -13,9 +13,13 @@
+ #include "iowait.h"
+ #include "user_exp_rcv.h"
+ #include "mmu_rb.h"
++#include "pinning.h"
++#include "sdma.h"
+ 
+ /* The maximum number of Data io vectors per message/request */
+ #define MAX_VECTORS_PER_REQ 8
++static_assert(MAX_VECTORS_PER_REQ <= HFI1_MAX_MEMINFO_ENTRIES);
++
+ /*
+  * Maximum number of packet to send from each message/request
+  * before moving to the next one.
+@@ -30,6 +34,8 @@
+ 	(((x) >> HFI1_SDMA_REQ_VERSION_SHIFT) & HFI1_SDMA_REQ_OPCODE_MASK)
+ #define req_iovcnt(x) \
+ 	(((x) >> HFI1_SDMA_REQ_IOVCNT_SHIFT) & HFI1_SDMA_REQ_IOVCNT_MASK)
++#define req_has_meminfo(x) \
++	(((x) >> HFI1_SDMA_REQ_MEMINFO_SHIFT) & HFI1_SDMA_REQ_MEMINFO_MASK)
+ 
+ /* Number of BTH.PSN bits used for sequence number in expected rcvs */
+ #define BTH_SEQ_MASK 0x7ffull
+@@ -78,6 +84,10 @@ enum pkt_q_sdma_state {
+ 		 (req)->pq->ctxt, (req)->pq->subctxt, (req)->info.comp_idx, \
+ 		 ##__VA_ARGS__)
+ 
++#define SDMA_PQ_DBG(pq, fmt, ...)                                      \
++	hfi1_cdbg(SDMA, "[%u:%u:%u] " fmt, (pq)->dd->unit, (pq)->ctxt, \
++		  (pq)->subctxt, ##__VA_ARGS__)
++
+ struct hfi1_user_sdma_pkt_q {
+ 	u16 ctxt;
+ 	u16 subctxt;
+@@ -92,7 +102,7 @@ struct hfi1_user_sdma_pkt_q {
+ 	enum pkt_q_sdma_state state;
+ 	wait_queue_head_t wait;
+ 	unsigned long unpinned;
+-	struct mmu_rb_handler *handler;
++	struct pinning_state pinning_state;
+ 	atomic_t n_locked;
+ };
+ 
+@@ -112,16 +122,15 @@ struct sdma_mmu_node {
+ struct user_sdma_iovec {
+ 	struct list_head list;
+ 	struct iovec iov;
+-	/* number of pages in this vector */
+-	unsigned int npages;
+-	/* array of pinned pages for this vector */
+-	struct page **pages;
++	/* memory type for this vector */
++	unsigned int type;
++	/* memory type context for this vector */
++	u64 context;
+ 	/*
+ 	 * offset into the virtual address space of the vector at
+ 	 * which we last left off.
+ 	 */
+ 	u64 offset;
+-	struct sdma_mmu_node *node;
+ };
+ 
+ /* evict operation argument */
+@@ -134,6 +143,9 @@ struct user_sdma_request {
+ 	/* This is the original header from user space */
+ 	struct hfi1_pkt_header hdr;
+ 
++	/* Memory type information for each data iovec entry. */
++	struct sdma_req_meminfo meminfo;
++
+ 	/* Read mostly fields */
+ 	struct hfi1_user_sdma_pkt_q *pq ____cacheline_aligned_in_smp;
+ 	struct hfi1_user_sdma_comp_q *cq;
+diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+index 7f6d7fc7951d..8c2b000affef 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.c
++++ b/drivers/infiniband/hw/hfi1/verbs.c
+@@ -778,8 +778,9 @@ static int build_verbs_tx_desc(
+ 
+ 	/* add icrc, lt byte, and padding to flit */
+ 	if (extra_bytes)
+-		ret = sdma_txadd_daddr(sde->dd, &tx->txreq,
+-				       sde->dd->sdma_pad_phys, extra_bytes);
++		ret = sdma_txadd_daddr(sde->dd, HFI1_MEMINFO_TYPE_SYSTEM, NULL,
++				       &tx->txreq, sde->dd->sdma_pad_phys,
++				       extra_bytes);
+ 
+ bail_txadd:
+ 	return ret;
+diff --git a/drivers/infiniband/hw/hfi1/vnic_sdma.c b/drivers/infiniband/hw/hfi1/vnic_sdma.c
+index c3f0f8d877c3..ed7a167a0ad7 100644
+--- a/drivers/infiniband/hw/hfi1/vnic_sdma.c
++++ b/drivers/infiniband/hw/hfi1/vnic_sdma.c
+@@ -63,10 +63,8 @@ static noinline int build_vnic_ulp_payload(struct sdma_engine *sde,
+ 		skb_frag_t *frag = &skb_shinfo(tx->skb)->frags[i];
+ 
+ 		/* combine physically continuous fragments later? */
+-		ret = sdma_txadd_page(sde->dd,
+-				      &tx->txreq,
+-				      skb_frag_page(frag),
+-				      skb_frag_off(frag),
++		ret = sdma_txadd_page(sde->dd, NULL, &tx->txreq,
++				      skb_frag_page(frag), skb_frag_off(frag),
+ 				      skb_frag_size(frag));
+ 		if (unlikely(ret))
+ 			goto bail_txadd;
+diff --git a/include/uapi/rdma/hfi/hfi1_user.h b/include/uapi/rdma/hfi/hfi1_user.h
+index 1106a7c90b29..f79d3d03be86 100644
+--- a/include/uapi/rdma/hfi/hfi1_user.h
++++ b/include/uapi/rdma/hfi/hfi1_user.h
+@@ -192,14 +192,17 @@ enum sdma_req_opcode {
+ #define HFI1_SDMA_REQ_VERSION_SHIFT 0x0
+ #define HFI1_SDMA_REQ_OPCODE_MASK 0xF
+ #define HFI1_SDMA_REQ_OPCODE_SHIFT 0x4
+-#define HFI1_SDMA_REQ_IOVCNT_MASK 0xFF
++#define HFI1_SDMA_REQ_IOVCNT_MASK 0x7F
+ #define HFI1_SDMA_REQ_IOVCNT_SHIFT 0x8
++#define HFI1_SDMA_REQ_MEMINFO_MASK 0x1
++#define HFI1_SDMA_REQ_MEMINFO_SHIFT 0xF
+ 
+ struct sdma_req_info {
+ 	/*
+ 	 * bits 0-3 - version (currently unused)
+ 	 * bits 4-7 - opcode (enum sdma_req_opcode)
+-	 * bits 8-15 - io vector count
++	 * bits 8-14 - io vector count
++	 * bit  15 - meminfo present
+ 	 */
+ 	__u16 ctrl;
+ 	/*
+@@ -222,6 +225,30 @@ struct sdma_req_info {
+ 	__u16 comp_idx;
+ } __attribute__((__packed__));
+ 
++#define HFI1_MEMINFO_TYPE_ENTRY_BITS 4
++#define HFI1_MEMINFO_TYPE_ENTRY_MASK ((1 << HFI1_MEMINFO_TYPE_ENTRY_BITS) - 1)
++#define HFI1_MEMINFO_TYPE_ENTRY_GET(m, n)              \
++	(((m) >> ((n) * HFI1_MEMINFO_TYPE_ENTRY_BITS)) & \
++	 HFI1_MEMINFO_TYPE_ENTRY_MASK)
++#define HFI1_MEMINFO_TYPE_ENTRY_SET(m, n, e)    \
++	((m) |= ((e) & HFI1_MEMINFO_TYPE_ENTRY_MASK) \
++	     << ((n) * HFI1_MEMINFO_TYPE_ENTRY_BITS))
++#define HFI1_MAX_MEMINFO_ENTRIES \
++	(sizeof(__u64) * 8 / HFI1_MEMINFO_TYPE_ENTRY_BITS)
++
++#define HFI1_MEMINFO_TYPE_SYSTEM 0
++
++struct sdma_req_meminfo {
++	/*
++	 * Packed memory type indicators for each data iovec entry.
++	 */
++	__u64 types;
++	/*
++	 * Type-specific context for each data iovec entry.
++	 */
++	__u64 context[HFI1_MAX_MEMINFO_ENTRIES];
++};
++
+ /*
+  * SW KDETH header.
+  * swdata is SW defined portion.
 
 
