@@ -2,126 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 006F66999BD
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 17:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EF0699AA2
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 17:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbjBPQTB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Feb 2023 11:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        id S229539AbjBPQ4Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Feb 2023 11:56:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjBPQTA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 11:19:00 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2139.outbound.protection.outlook.com [40.107.94.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D84083DD
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 08:18:57 -0800 (PST)
+        with ESMTP id S229462AbjBPQ4X (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 11:56:23 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2135.outbound.protection.outlook.com [40.107.244.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702B1135
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 08:56:22 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L04fi20SJeHNevyWbrLTxDX7/bIeeWcSbUVIyxQI9lKbh9HErGh+LgLSCQtEsS+6OZAfHIeJAzbkWgwTlJr2Yqxru+Mg5TL+Z/eOpp0pXyCsbFs5vkeyzMmD25mLwzXI921nNWBRrsGgaHwZEsexw1rhIFMbKy2Oxg1lDRTTTqki3cea0RyArwvBvN0nLuHanjISvLY5CbEQmvXT638s/ruGHWVxsk31Bd8+GnLpSEPlNuy/O9965QkEMN52PTwK2gV1qbJ+AoAiOtYeZfbhZhHffrf+HrMhpSAx/5/wlJHvLgMTrTExNTlrRJ3efjE9ABqWvpsEnfbf7x8Grcyj5Q==
+ b=TXpL9tHVU5jbVY9FsRzFHqaTP06HPfAnbB1E0UUlrliYK6ZqwKy7I1VyjE4klLons6Nuv9m+P+l069jmEfErE6jtHalaB+xi88af5Bhwmf6Uv/+5KkTsh6QQhw7hD902LkrR1U+J4ynllKSe/wRr7RXVEXv/BIajW5xdKM8JTtFlUFyLZKxlAQA37ZcswILWETDL6DHvrqTH5cFgXAj+1GV6ZWnyKsGXaF6a/M581OnOD9ziCr0NEa9S3mxnPpkY4tpwh/pOVcWwm0ziBHoo/WKRdOEaAOBAzDaFlkgs1azzA13cq3qwGkI6iO7A/DmxrATvh4FRyDkXpYjeAbL/Gw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fQzHPDmVo/Xbybt9qVg1PrGj33unKcopMqJ63Htk8+E=;
- b=TgySqfpnviIgDrA0oBiSR2Soj8Zz2BfymqHmkfx53cJY56BRsV599jKNBRUbwTr/GBA6hHqSGqnEXq6d2n3TSt1wJXGmWCopa/I/ph8iuqM4drofun2isTk8xJAmgRkybrDoZ4G8FZi8+z33bSbJDkU2Vdp584+oyJwvCDZ5jiT+AEDjRULx0oqlW1FS4sileizeqpu9ZEcvY2CRe/xCXDPNWF7ywKKBweq2mCJxeJ3vwg4KB5rGIFZfpPoZELutfY+AegRdAHuCUQDu78Fg5d5LoD1kVmzqMoVdGbGi0hzvjzlCZOpkhJmJ15i38yJga40veRvsUJp6p5gjdwBRBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
+ bh=mp13FoppRJCaVD9YgUeE/7uE8opVq9Ebm7OVJzUog90=;
+ b=THtm4tjzKEQw7TmxLd2jz85J7X1BAB4/ZctbWZKnPyXDt7/hujYKYFkbODXRj7fMoa56yp3jnVxoueW5E3UaYps3BXOPwEomHMeIb03Q1DCMfNO6mYE9rc4bFHWex5WBCjAJ2ADV+x/dhDPdWdfUKSltg4jmApBmRFdatwLhI4tIp//ZXgfIG/rHz4SExZe4+5eKqTodI9SNfLxBomXDL47QA5GexcB6ztiInEOGj6Tdg+Bm+KVj7eUYs+NvsMQp1YAzXB1iVwrLVwujeyZ4O2MyAQOcV4PJ9pwO0e5J4HETHRaDzdrYBj6xDjxmL2NY5EAzUR7IiUXLp3jar/FnkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 208.255.156.42) smtp.rcpttodomain=vger.kernel.org
+ smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
+ header.from=cornelisnetworks.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fQzHPDmVo/Xbybt9qVg1PrGj33unKcopMqJ63Htk8+E=;
- b=Vqw4M26xwo3TpQmoFBxeG+xMv7VhIcjACAqvpM0ZIc2o6gjpGNMY1afJLlNpZD83ipITNOvbYcLuA27S0G8QTK0Jue6DeUJSzoptZ3taa9kIc08E6+hTzoTDsifUkXgEklfdMgLSOne5Wq4OtM66h0DCkKmA43l08cwvaJFJGmNQAjyRwwctrHvnBgIc6mT/R9GPDaC9vu2CMrrY+tGhaJdAm3eOP65kqyBDM59yxIwYIVzPyzxvgWKg89Fo3dtYYMgCeHMSRumJS3veVFgulNBhtRPQBMUGaGcOfWrB1si9BUsYpM+m419Faamf1QdeekH8LflAwOxN+8ZlPhyniA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from BN6PR01MB2610.prod.exchangelabs.com (2603:10b6:404:d0::7) by
- CO1PR01MB6776.prod.exchangelabs.com (2603:10b6:303:f4::5) with Microsoft SMTP
+ bh=mp13FoppRJCaVD9YgUeE/7uE8opVq9Ebm7OVJzUog90=;
+ b=hSeklk+NzOpXWfNe21dcD24ja6Qup1mPmoqHd9p1QUwD8djaPSbeDn1m8KPYUG+sjiWteav50xGLAcmu82vcVVCAypa8yxTH5KWvCdNsbBlyNjBJ5XFjIE/g87zmSQWCVeVzJQsnWRD7BpRQXUqT7Rnwxtjj1CSQz4mkHOgB6av+2YyJ1ruwWtChXDNmV6KCYJc9YHsaySidR9XoZp9aCZ40kuwLl/i0LxIYI95hEvIh1bJYBSq7JoGFVxuFXr9uwMtFeN94MLt1Pp0gl5Fjwu1uuUN+m18mQjX34r/BoMP3wnxvGo3LbQzD/Ctp3YI84XzNTdTs9xHnbK/UPlbQiw==
+Received: from MW4PR04CA0221.namprd04.prod.outlook.com (2603:10b6:303:87::16)
+ by BN6PR01MB2580.prod.exchangelabs.com (2603:10b6:404:54::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6111.13; Thu, 16 Feb 2023 16:56:20 +0000
+Received: from CO1NAM11FT065.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:87:cafe::c1) by MW4PR04CA0221.outlook.office365.com
+ (2603:10b6:303:87::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.13 via Frontend
+ Transport; Thu, 16 Feb 2023 16:56:19 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
+ smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
+ header.d=none;dmarc=bestguesspass action=none
+ header.from=cornelisnetworks.com;
+Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
+ designates 208.255.156.42 as permitted sender)
+ receiver=protection.outlook.com; client-ip=208.255.156.42;
+ helo=awfm-02.cornelisnetworks.com; pr=C
+Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
+ CO1NAM11FT065.mail.protection.outlook.com (10.13.174.62) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6111.13; Thu, 16 Feb 2023 16:18:51 +0000
-Received: from BN6PR01MB2610.prod.exchangelabs.com
- ([fe80::5844:6112:4eb1:a8f8]) by BN6PR01MB2610.prod.exchangelabs.com
- ([fe80::5844:6112:4eb1:a8f8%9]) with mapi id 15.20.6111.013; Thu, 16 Feb 2023
- 16:18:51 +0000
-Message-ID: <c95b844a-7354-bbb3-0404-7e4040c7484c@cornelisnetworks.com>
-Date:   Thu, 16 Feb 2023 11:18:48 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.7.2
-Subject: Re: [PATCH for-next v2 1/3] IB/hfi1: Fix math bugs in
- hfi1_can_pin_pages()
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     leonro@nvidia.com,
-        Brendan Cunningham <bcunningham@cornelisnetworks.com>,
+ 15.20.6111.13 via Frontend Transport; Thu, 16 Feb 2023 16:56:19 +0000
+Received: from awfm-02.cornelisnetworks.com (localhost [127.0.0.1])
+        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 31GGuIFo2223737;
+        Thu, 16 Feb 2023 11:56:18 -0500
+Subject: [PATCH for-next 0/3] Respin: Rework system pinning
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+To:     jgg@nvidia.com, leonro@nvidia.com
+Cc:     Brendan Cunningham <bcunningham@cornelisnetworks.com>,
         Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
         linux-rdma@vger.kernel.org
-References: <167467667721.3649436.2151007723733044404.stgit@awfm-02.cornelisnetworks.com>
- <167467689891.3649436.5979603883827786631.stgit@awfm-02.cornelisnetworks.com>
- <Y+5H1nw0Kyse8xyi@nvidia.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <Y+5H1nw0Kyse8xyi@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BLAPR03CA0128.namprd03.prod.outlook.com
- (2603:10b6:208:32e::13) To BN6PR01MB2610.prod.exchangelabs.com
- (2603:10b6:404:d0::7)
+Date:   Thu, 16 Feb 2023 11:56:18 -0500
+Message-ID: <167656602090.2223096.15523567129751109800.stgit@awfm-02.cornelisnetworks.com>
+User-Agent: StGit/1.5.dev2+g9ce680a5
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN6PR01MB2610:EE_|CO1PR01MB6776:EE_
-X-MS-Office365-Filtering-Correlation-Id: 07151f0f-0edf-4544-ccd5-08db10397de1
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT065:EE_|BN6PR01MB2580:EE_
+X-MS-Office365-Filtering-Correlation-Id: 796f9ce4-118f-49f1-1436-08db103eba0a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YdkYq4Da2GIgx0GEpA8CPtWig8NA+cpmyvWUNwfQ390/kyBi0CNft74DuCkQ4OV7QcbKEAWD9rQKtWzMp5RmynEYtWKE7xUCO6weJN2sAFcKfQ1qLt/pfnn2HT+xcj/aH+xb4ejD+002c/bkyyiX48Hi9p75W7XUActpN1qu5vpyslWOxhbhpx6sjdyEo2LNAxfqYdkgfmsQWi7jgWOWgJxEUIjuU0s6+SDPCpHyH0OGsmBWvPdcL/r6A24HLD52Z72YSkfCaXQA4hN2rREhOv3APumBE2bHXTOhzu9LcHWVkiT46bUnRa6NW7aToXRklah7kVKyYu1VH3dFrSKmuTnqEH8g/Jfp9fOG28pGyEatSz1qoLX/r1Sqk46bqPAJFSvTfKJ5ZOvoiKtn0cNQH8RdSjE+W32/wCDVQQDHtoyEuJT9C5bK1CHbysRgFVY7p9FR+Ha+Nj7aRSOMW7oyARFhe+UzrUgdTldPK1eGt43sxAIcmQz4AqctFv64lIIo4775lnwLL7jZfcqZwEj8ZofTsy+jEyIcLT/4m8wvFsi2FswGtKjuyb3vSv5gDyoPxqLm/ZdMOEjcnPPJNlyO+85sDglKdpYcehqguEJApWDm6VmyFQQJn5BjNXbQYLk+3jO748vXwRnS3lvkD7QPEcO/HQkWtoKjkb8yGFC1vk6Z/Yj8MgDgGhklDp664TEz/BIiuMxIJ3tkc0f4fqNE3NuImF2zUvqzYJ2/4uU2Rso=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR01MB2610.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(136003)(346002)(366004)(396003)(39840400004)(376002)(451199018)(5660300002)(66556008)(8936002)(44832011)(54906003)(2906002)(316002)(6916009)(52116002)(4744005)(4326008)(478600001)(8676002)(66946007)(66476007)(41300700001)(36756003)(38350700002)(2616005)(38100700002)(83380400001)(31696002)(6486002)(6506007)(26005)(6512007)(186003)(53546011)(6666004)(86362001)(31686004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z05OZnpBNUNXUHpBSUdXYWVHZTVLTWhZTGZFc1g4TWcxazVCUno3M3crbjgw?=
- =?utf-8?B?SjAzT0lTQUpVdUFobU5MQmhTZEJrVng5dzVnR2hLUHB6L0FISTluRG16M1k0?=
- =?utf-8?B?NmVYWitDQ2VqUkE3eFV1OXF1TEJxVlZSa0xtdFdwcTByaU12NDdQM2M1ZDd5?=
- =?utf-8?B?dm5jRVB1VlJBZU1zdTFFbFkzYm90MHlEd1RYWnJpdEJLYXRZRTE3QjZBVGpE?=
- =?utf-8?B?VzZpbGk3TFlseGhlU0JzaG5qQ0ZiZkp0WDR5QzkrZGtUVVpKb0x6ZmUrbUpG?=
- =?utf-8?B?eVE5a2JER0FXNXJOVGRJT0l6bVpuUjhOVjJnOHh3d3BlbzNkYURUc01ENHNv?=
- =?utf-8?B?UmNVWWNtc0NyTG5Qc2xHTXZ5bHc1TTRXdUNEVU45Zm5zaUhXMExPd2lDTHFi?=
- =?utf-8?B?M24vWVY0Qnp2c0F3d2g3aS93VkZIdFZHcFU0eXpNYUQ1M3lFRldaTUV3UThH?=
- =?utf-8?B?alZwelcrQXlXV2NxNzRUOTNEZmdhTHNDcXh1aWV5THdRM0syb1RCYmJjRWtH?=
- =?utf-8?B?WGljZFhDRFhZdDEzWXhhdndiWTZ0ekxPR2VnamJtVlpmT3VMWFJ0Q2JOcm5X?=
- =?utf-8?B?aTJVYVZ0ZzExZTVSdGtacExJak1rZkZmVk5iS3g2MjJUMmYrNm9RU3QwMDdq?=
- =?utf-8?B?UmVEa3l1cFdtckhMRVE1SWUzdGtiVVR5VTAvS2RKc053K20wei8vaG1PU0ti?=
- =?utf-8?B?R0VEMWo5elRFNmFndEtkWWU3MmxWRVZ2T3RlR2w1cXJuTzQrNEsybitxbTF4?=
- =?utf-8?B?U3liVjllbEJkbHZhU1RPUnZ0aVRIRW55dGZFalQxM081eUVoSUhBOVRORTZX?=
- =?utf-8?B?Z1FjbXJCbE5MSjN5M09XQUo5QkxBcVRJU2tnRitJajdlOVFqbFFKTFpPdlhN?=
- =?utf-8?B?WWhZYmdvb21lais1ZzdXMTVaaTBlMnRoRDZ4S3E2dWQ5VEpCZkdxTG5HUnNN?=
- =?utf-8?B?YVRPTTF6U000VnZSbHFlbFlUTHljcWFkQ1ZqYm9nSEN2d0VHWXNPNko4YnJJ?=
- =?utf-8?B?YVorbWRQZjVvQytHdnpSTDFnbHZpMXVzd1lveXp2YUZhbWJNc1ZaUDZ5M3Jq?=
- =?utf-8?B?Y1JVR3YzUHRoNGpNNXB3bW9CWWxlNXJXcDNkWitUWmFPV3Q0NktWa0ZOOXZy?=
- =?utf-8?B?Y0ZQN2RNRyt1ZjNnRWRsQkpGTGJZOWVzTE1WRUFVakRSaFNuYWM1NVF2WlZW?=
- =?utf-8?B?WjNCUWhJQnZrS1hCczNNbDc5dE91MU5MdmhnRlJzalFSYVB2SkhXbThXcERX?=
- =?utf-8?B?S2IraWZ0em5BOWppOTNTQnBITjlQN0Q1d25reE1hT0VuU0s3bW44RWlNZHA0?=
- =?utf-8?B?dk5LSnc5L2dEQ1NKMHFtMktvTnNUbG1OTEZZTVVjc2VtZmRqaHA3cXBaM1RG?=
- =?utf-8?B?bTdtV3NTQVBoUlhicGYrZmsrQUt6Vmx1a09GQzJMU2xVOE1TR3RiT0hENG9L?=
- =?utf-8?B?WWVhYWplYXZTUUhDLzRVM29XODYxRE5RQ0VYKzJQZVBWRi92dFZEVWpzemRN?=
- =?utf-8?B?eFJ5bzhoTzFVZmJIb2JvL3g2bmZpc0dYVXVMWVJvS281Y2JSK2tiL2lCSER3?=
- =?utf-8?B?aFZVRDNDYjhSUjNmWUFsMjRLSXZJcFRWYVhEQlB6cmx2eDU1TXQyM3RkK1Nq?=
- =?utf-8?B?VEpQSVpiTTdVQlNiOS92NUZHaUtQU1NVNit2azBuNHphY0VmUGlod04wV3do?=
- =?utf-8?B?MVF0S0dBUXFPeW9GZGlxVmlzQnU1c25jNnlFRDVnMWNWS0RISms3RGZhalJt?=
- =?utf-8?B?enN2bm84KzBKMmlWRDh4TEZ6VE03eXlQaU4yL3pObEd5YXo2cTJFRWJoRUdZ?=
- =?utf-8?B?ZVZQVXNKb05sTHVhazR3UzRoeDN6NnJlVGRXdVphbU9GZDB4Y1VCZXdhTEdV?=
- =?utf-8?B?YWcwSEc2eXYrSU5vdEhJaFhxWFIxU0JZVHF0dTUyZDlualdFL1dOT3BFRm1p?=
- =?utf-8?B?QnZPQS92ZTJ2MDRuVWMvQXhTbTJSaThwMlJJYzhMKy9FWFdTR0Iwa2FDTXMv?=
- =?utf-8?B?blVSMklEckpxNjBSSEdPUmRFeVBkVnNHVDdTc0pyN1AzZXQyTmRpenY0WXZv?=
- =?utf-8?B?eGkwQTdxTGtNbitjbHlxakMvaFJ4VnIzSHBDUGZiQ2xNcDU5M2E4N05lOXV4?=
- =?utf-8?B?VXdEcUd4YUY1UTVJTlNnQ2ZvR0pHeStLZEdMM1FIem9YLzZmOUZkOGlDVVRZ?=
- =?utf-8?Q?X/Lnpdfbe743W3qIZ4RefYo=3D?=
+X-Microsoft-Antispam-Message-Info: VNZwWi7ji2O/LhmN9lxuogrulfYRrnnwP8ZI1yEFrj91y0snfH330RoYwdc2Tn7ToXIEJFhNYFSBCbBZWj/VQxyZsvzqjTL5CcGkCXl3US+sfEREE7k/8jZONq9m9vNKa5Ry/Ub4wKFgHK1Chmu707+4kvabT7VyoAwuKyqhJbpTuw3N2aMxTQvTiLdQFPdAMDzNbRCfIK7UOGAqP4yxrxXT25YuUH7ISbJZSofFSQ961KUSCcHyRcQy0NcfxWFoaovoLqMpP9MzX4cXCMxsfHwJLPvtF+ElnxYx56H4NooBxMop4hE9oAFiAMLB3a6dDj0IM5FL3cRyPfsewreTl0eo3xxhJOEb1c80XKHOyraOCstx2NHSSyVyr0NL9AnMYiS649sNI0Si0JcveoyLy6Y4ZmzQJjwHZht+cvBFFzLeZjLkzbfmKBNQXVqmJQAQb152SCLr/mecXba0TpGPeXCaSRbL6OrzOWgY400S+Gn5Q8gkB6gasF9gKQHGdmGfRRxBfOqxQZrnSp4BbRZJcGuyc7VpgHhNxkqGy2IFl83U58MCY8Gc3vBezVaI9ZIa4j1mIseQQN5kRybC87oZFEfxjcEc7cXahSPAkUcdpdSDBo1O+CP5mdg9KNklECbdOs56ImhdT0SgyMe2WuSgS1bBTJjlb1TqLm4GYTvxWBiZ3Q8BriP+JxUpFO/0Dqwz
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(346002)(396003)(136003)(39840400004)(376002)(451199018)(36840700001)(46966006)(83380400001)(86362001)(44832011)(8936002)(4326008)(40480700001)(55016003)(8676002)(41300700001)(356005)(103116003)(5660300002)(36860700001)(54906003)(316002)(70206006)(70586007)(81166007)(7696005)(186003)(26005)(478600001)(966005)(82310400005)(47076005)(426003)(336012)(2906002)(7126003)(36900700001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07151f0f-0edf-4544-ccd5-08db10397de1
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR01MB2610.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 16:18:51.6218
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 16:56:19.6734
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Network-Message-Id: 796f9ce4-118f-49f1-1436-08db103eba0a
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wG0cebhBUWiEyDWNymSWfnfvl1tegDBZ+fgZDy4mIkgXHvIkMKuiBdkXYWp1Tpw+lVCfMPeLx7FbQd0iSWDciwM+JfASZ+WmSVhzrQcxGh00+yAgcZqFAuCxLALopcU3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB6776
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT065.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR01MB2580
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -130,24 +95,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/16/23 10:12 AM, Jason Gunthorpe wrote:
-> On Wed, Jan 25, 2023 at 03:01:38PM -0500, Dennis Dalessandro wrote:
->> From: Patrick Kelsey <pat.kelsey@cornelisnetworks.com>
->>
->> Fix arithmetic and logic errors in hfi1_can_pin_pages() that  would allow
->> hfi1 to attempt pinning pages in cases where it should not because of
->> resource limits or lack of required capability.
->>
->> Signed-off-by: Brendan Cunningham <bcunningham@cornelisnetworks.com>
->> Signed-off-by: Patrick Kelsey <pat.kelsey@cornelisnetworks.com>
->> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
->> ---
->>  drivers/infiniband/hw/hfi1/user_pages.c |   61 ++++++++++++++++++++-----------
->>  1 file changed, 40 insertions(+), 21 deletions(-)
-> 
-> I was going to take these first two patches, but where are the fixes
-> lines for things that are clearly bug fixes?
+This is a respin on top of the latest rdma/for-next branch
+of the series being discussed on the list here:
+https://lore.kernel.org/linux-rdma/Y+EbyU4HkGyzPoFO@nvidia.com/T/#ma3d153151adf1dbe2b9800000fa9a01f95a80c1f
 
-Let me resubmit the entire series. I think the patches cleared 0-day builds already.
+We have added fixes lines, and Brendan has discovered a couple code hunks that
+do not need to be here in this submission. We have also removed the stats stuff
+until the user side code is readily available.
 
+---
+
+Patrick Kelsey (3):
+      IB/hfi1: Fix math bugs in hfi1_can_pin_pages()
+      IB/hfi1: Fix sdma.h tx->num_descs off-by-one errors
+      IB/hfi1: Do SDMA memory-pinning through hfi1's pinning interface
+
+
+ drivers/infiniband/hw/hfi1/Makefile     |   2 +
+ drivers/infiniband/hw/hfi1/init.c       |   5 +
+ drivers/infiniband/hw/hfi1/ipoib_tx.c   |   7 +-
+ drivers/infiniband/hw/hfi1/mmu_rb.c     |  96 ++---
+ drivers/infiniband/hw/hfi1/mmu_rb.h     |  30 +-
+ drivers/infiniband/hw/hfi1/pin_system.c | 516 ++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi1/pinning.c    |  55 +++
+ drivers/infiniband/hw/hfi1/pinning.h    |  88 ++++
+ drivers/infiniband/hw/hfi1/sdma.c       |  33 +-
+ drivers/infiniband/hw/hfi1/sdma.h       |  77 ++--
+ drivers/infiniband/hw/hfi1/sdma_txreq.h |   2 +
+ drivers/infiniband/hw/hfi1/trace_mmu.h  |   4 -
+ drivers/infiniband/hw/hfi1/user_pages.c |  61 ++-
+ drivers/infiniband/hw/hfi1/user_sdma.c  | 354 +++-------------
+ drivers/infiniband/hw/hfi1/user_sdma.h  |  24 +-
+ drivers/infiniband/hw/hfi1/verbs.c      |   5 +-
+ drivers/infiniband/hw/hfi1/vnic_sdma.c  |   6 +-
+ include/uapi/rdma/hfi/hfi1_user.h       |  31 +-
+ 18 files changed, 918 insertions(+), 478 deletions(-)
+ create mode 100644 drivers/infiniband/hw/hfi1/pin_system.c
+ create mode 100644 drivers/infiniband/hw/hfi1/pinning.c
+ create mode 100644 drivers/infiniband/hw/hfi1/pinning.h
+
+--
 -Denny
+
