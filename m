@@ -2,107 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1CE699842
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 16:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9F0699878
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 16:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbjBPPD1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Feb 2023 10:03:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
+        id S229532AbjBPPM2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Feb 2023 10:12:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbjBPPD1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 10:03:27 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2071.outbound.protection.outlook.com [40.107.92.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30C52F7B2
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 07:03:25 -0800 (PST)
+        with ESMTP id S229538AbjBPPM2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 10:12:28 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2072.outbound.protection.outlook.com [40.107.237.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B241330FF
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 07:12:25 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PbQze/JLuVL3j08bIUfZMNeYUQ/3Qm3TfTyX+GKzAZ60huV59qnWsUO1GIvp6mFWqaHIn94CsCMIAbnLU1+SvHY/QYq1FLjTkDQDZkc+daYiiP+3tg4vvrwb+sHereXeJgZjCn6XJbuWfRlYlOOJQ7Yc1oXVBpIJkynuCh7+qw+KlPh5rZNwmeg9cAfXXU1BtvkbyvgCyTa9YoEkztbOCsuuTDtFgdm4Q5iOYKHNzlIUAi2DWyF67SmNKK9pHZ/xT95+IvfpvLMbaFOdyA2vdtO5E9W5p415QSIhhewhuWbwcz/rqyNs1H710A2PIvlaHzTXx77E/R1pbWiV1nVdIA==
+ b=m1mkCRDN4+weGr6Q1dXDx8AmWX12LrFIMQwvEgBloSPUoWttQ++bRXt8rWKKmPE9ifnVQ0Kv+bRD+BdJrKA5a7VcSYE4CSDFmjtjtVHwoTgkg3eziIckT4nNAXW/ndYPeWzuIwj1qo+7l9owmGXx8wqJWk4pp5xXc6VsCPHUJj3wXNTHdxXXiw/JGPDIM99ZzBvgFyBc6/JgDixz128ibOD16FbpQG4upySnzpZgjzc4/rubF4ydD5dFo0xfTdtLLxrg5BRA0nZ0jIwtrWVGoso3dBpVHOEKixICufAWgjeCsmoeWhVWY/37mPghMzE8JSv1tv4xxCNv9UO1/saSjg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IngYMVFOFRUjBLaFiY4d4JhcmSI8qb+NXfg2cGKSOak=;
- b=R0S7XbzqZ5YfSnSZxpCym5zknPLR8S/GiKxpsQpuR+iJjEhvA2kBVNIOmnksSIQMlGwRjX8V/+y439s9seOLhsrWPsai2PGIpc+XlkRPzAIiokGQk4xdagvRVzCTKQNuEKmCUs/Ed7x8FAKgrKBumfzrg6dYbQy4k8jOqxL69DNb3hQ23Gqytxtxj3hc4R+QINw4pP+9oIKM8wed6xPfaqifEKFpTppBcEuiEYidhPq8bK8t6bENiG7hY8Z8gwcYRcxiSSUZs8gH8OVOn8ZMvbNqWr9YWCpImcgkcn8RaMVQseZH2Ti5CWFev5IKcRGt9d68NWhBqEbLj1s0vHzzIg==
+ bh=fpsQXoshNZ7ou2L2FNMB/vwMsWan+n5CH45FjjYYOrs=;
+ b=lVl5AleQjSYgJLTXrVNZoavDPuuWCiuPlgyZ+aLEdWplwKiBp3ffVD2qlR91aUN1sLPd+1MeuhlB5cviUNxcuZbxnyOUJbfpByAbYTEUIjzjlHvxS6OAu5DN5zChI+gqBvx4GuFWZD9PhUgRqRRVHisVmP9I7NMHzVzQJRAMa/V3jmpbTn4tUgePp8o/It39Duwme9OIhZdOo0x9ZBVQ6mfpNfRWGkf5OJmN8VK9Ejx0S98BDdbIQTGv0r1pv80hAbmfa/xfMYJDolRH3AVn184Gh0VY7Zr3xaZwBDw8kJuq4I5Hm6dN/c4H3ZJeB6oNjF2C8L0chcMtvOA4G1cQHA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IngYMVFOFRUjBLaFiY4d4JhcmSI8qb+NXfg2cGKSOak=;
- b=LJOMsmfN8WdJRP0ETGRshDMyA9XGdKmVzYV2migeYilEYLDWY8xMxG1jP5Txef5nJhEgBr0dntBgxIT8vhRROtAfEMApj+BlRuQbmuJW2+Xmxw8sP5LmJqthAPeyltiC1m2iA5U/wwLEzNFMW+SfJ/BSJ7+iTR0TMH3w+zcZ5U7nf85/ykzy/BKMhZ/c3sCZqWehIe6sjVpW1PhxokmPVVp3rs6izDGDN19+GXS7l7eB5ZOQiiUiUEdK6LSqGyhkD/Qn45DWtH5bq4fA3lw4LkBrlVbMYakoc9galT2lhPj7m/eE7vRC1L0QdOtTmedkJfe+TijPcyN4aIjtaubJVw==
+ bh=fpsQXoshNZ7ou2L2FNMB/vwMsWan+n5CH45FjjYYOrs=;
+ b=M6JaKLiie0nw+eOdT1Sqqq0Tcu6SZO0gnaUV5+TK9kaIn4RLpT161upS+AVmAvqssFwmZ1lQ5IyupQDDcr+y5ur3DaZSF+2NlnUhY313JlvJ88WQ/176FZ2eST2Hluiyro5VKL4ftvyADgAVVGjM4vFZK2U2BW8J9bCD169IIYHc6EUVkNfPTsGJ3QIIlDPJ5xhgWvepwbYhT2rC8yHH7PBuQrCPRSHUzKHvzCu7K2gH8yjO0dBTlNZSTuKVI5DdGAdb1p4qOOIYvju/I4NGdpTQ4Y71B3meEQ/TuGj67KhP/EAuCA5lBRIPbCznrGDhenXgvYcquzaaT3JRGRwF+g==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by IA0PR12MB7508.namprd12.prod.outlook.com (2603:10b6:208:440::7) with
+ by MN2PR12MB4485.namprd12.prod.outlook.com (2603:10b6:208:269::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.13; Thu, 16 Feb
- 2023 15:03:24 +0000
+ 2023 15:12:24 +0000
 Received: from LV2PR12MB5869.namprd12.prod.outlook.com
  ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
  ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6111.013; Thu, 16 Feb 2023
- 15:03:24 +0000
-Date:   Thu, 16 Feb 2023 11:03:21 -0400
+ 15:12:24 +0000
+Date:   Thu, 16 Feb 2023 11:12:22 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org, Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: Re: [PATCHv3 for-next 1/1] RDMA/irdma: Add support for dmabuf pin
- memory regions
-Message-ID: <Y+5FuSxVrtmCawC8@nvidia.com>
-References: <20230201032115.631656-1-yanjun.zhu@intel.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     leonro@nvidia.com,
+        Brendan Cunningham <bcunningham@cornelisnetworks.com>,
+        Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next v2 1/3] IB/hfi1: Fix math bugs in
+ hfi1_can_pin_pages()
+Message-ID: <Y+5H1nw0Kyse8xyi@nvidia.com>
+References: <167467667721.3649436.2151007723733044404.stgit@awfm-02.cornelisnetworks.com>
+ <167467689891.3649436.5979603883827786631.stgit@awfm-02.cornelisnetworks.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230201032115.631656-1-yanjun.zhu@intel.com>
-X-ClientProxiedBy: MN2PR19CA0042.namprd19.prod.outlook.com
- (2603:10b6:208:19b::19) To LV2PR12MB5869.namprd12.prod.outlook.com
+In-Reply-To: <167467689891.3649436.5979603883827786631.stgit@awfm-02.cornelisnetworks.com>
+X-ClientProxiedBy: MN2PR16CA0009.namprd16.prod.outlook.com
+ (2603:10b6:208:134::22) To LV2PR12MB5869.namprd12.prod.outlook.com
  (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA0PR12MB7508:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6b330f4b-fbb1-44b2-faf7-08db102ef30f
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN2PR12MB4485:EE_
+X-MS-Office365-Filtering-Correlation-Id: cf3ffdd3-ae59-4ac5-aa62-08db1030350f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dnqS97mvdviocUrkIczG/TEdGz5xmgJyJzrIyjaLJkurxdittzamSzQ6+93u52aLXA6yAmMlrh4vVltUVZJOijj9DZWJ2N+HaMcOi/3FqbfOEytup/m+juIVsYTSlV8oBrcYwVacalFEmCiCooAeM6dSuKkH6wuXsq5oV5ZMHAlZbVB0yTYpFqzyFEEUKZLOhUoEbpUygcm4bB+iNfCx1+eFPxSS96hKg/+Wk86Lkhm6rYn2yTtN5FqIuaVcYOf5IZKb/XtXEbJILFem6rZX1R/dsuu4qPfKU90TEDRTdVBkpxoRxxovfUaM/a7XIECePA3fI060+ItwFdrv8XLf7oaS8hwXcUeIJdOqBHTDqW4oYSu/cp276gqIiFZhI4G76pMHKQgDldBAnrbnBpOoNTTD4YWM2drxObv577lo5r/ESjzf8AtBYzMEnOs3GUHCjhVeG97ftdpYV0cMKZtW4OI/VH0v32E+q7KMKLjTKiXbK8GSbcwj4eR6vz1F14PFXwRhrn48fm0wWH9yfK+hpvvP+Otpu6MhaNUGIomKYCxI+SlK5jsULNTzWIfbi/rmaZqq9HPf9CcWAdGSirQzq1iv7+qrV4EYOo7PtJ4GBJZ7DXwG+X31CKvK68uMEr//ApCrs5C5CqE5jzXTPAszr5myQOqXkdVlYtrusc4ORl/G8MjdU+Y2OqL5LjrPQxpOpIqgBDDdjPW/WRBAidvEXv0esvjKx3cObJzLjnfQtXY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(39860400002)(376002)(346002)(366004)(136003)(451199018)(36756003)(2906002)(5660300002)(8936002)(66946007)(66476007)(316002)(66556008)(6916009)(4326008)(41300700001)(478600001)(8676002)(6486002)(86362001)(6512007)(186003)(26005)(6506007)(6666004)(2616005)(83380400001)(38100700002)(67856001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: DrVsQweBol6qGWHOWdjkpt8NFGoUkTIr9xh3NBfcqehfBy1OHd4h3Ok9E7NBq+5nKf6aLywZvwQh9mwPpcWGrW0knbypb9FqUqD+KW23a2HRXBFLtQtQqbcfkmIy3STV9BuoxPTI1Nmc1yOfdI7YSQgHTSvF4qkeI62ELTYPr9tBNZ68R4HHsQUxkiKvSEG9CSX50jo0SFtLnFZu7tA+4USLCMZf6QU+i4ZZXsl6uVaDTkbfb74pArw0DR75VQFJXBowr8H72MussKBAGoz2Lh347G3JJbxq4DuU1H2w4iftMbQjwk5wNIMKqCGVfcXIXgH80U41SMUiqtQcILDN9xejUaw37dFtOSQVYXPNxZvaZdppoqaJv09hwzODHS+gmR81t2ZW2l7In9mMc6Q5imbUoMBKTKzmi80SNaXzwcpMzixMuIhP8L2q29AHzLsaypZuHK0WQ74HF8piSr53odD9SNjbd7Fw2axjxAH753gl0J0mnc+GwD1lZeM0jB2tZYw9b/LvURJpPWL85H23qFVOJKnzYqDCFY1kE3P+7buM5v4nNiksdcpGMLu5Zf2Li0BT5XwbjT8MgUQkM7dTTYoLN8hruvRL6aMNtU4j3+PM03hKEu5OWiUdfqhwLIvLR/W9KvCgVwwut8gdV2a9LJo5lePGJHpISe+R10mzHm1BuoeZJutPComebJBxEN62
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(39860400002)(376002)(346002)(366004)(136003)(451199018)(36756003)(2906002)(54906003)(5660300002)(8936002)(66946007)(66476007)(316002)(66556008)(6916009)(4326008)(41300700001)(478600001)(8676002)(4744005)(6486002)(86362001)(6512007)(186003)(26005)(6506007)(2616005)(83380400001)(38100700002)(67856001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CXX8X9ZAtRVsTFQ4MxS+rTo26unJIxrKwSVGqySZHrih+vsr4pe1h1sZ5sKg?=
- =?us-ascii?Q?fIzDHrU0JCNs2Lehxbv/MZcII5NsrTcU2Km9zVfbkDEVny7esR8ZWRhkZ6HE?=
- =?us-ascii?Q?TM1Egq/cX7KBrI0zONv0eZ5qkZtR+vvDJ87P7P4wkgPMkqy8DrNQ0gRACpI2?=
- =?us-ascii?Q?6EU7VYzZatGA1rtTL6ZdP3txh48dJ29oaHoHFuqPJbTQSDIhEnoM8TGVTcUR?=
- =?us-ascii?Q?P1bVHfueoYcCf6Tumdcm8S6s6fVDLjyQdtghWeHw6+P9O3cDEykcHlXtvMmU?=
- =?us-ascii?Q?u85Ah8RAVIjuW8Mg5dHhSOIAtmej0ILk8+6Us0XS8gi3mYGJff/nXPD7YDZx?=
- =?us-ascii?Q?Re5IWiXdud3M6lWsLUu+VFXvxzJuE4E9U0ksjL44CLxFeCItzMZ2kBXjuSDC?=
- =?us-ascii?Q?VFmgQsBiQF4Ms21ME6pbLJvukeVVeE/f+3eS6OvAX5/zOYnc8oF/TeDRuJi/?=
- =?us-ascii?Q?cU/Jrl5D+RDq9/dwpwYTWZTWlKj/auTCk0HvjlENEjrKZTkJCcXhoRXi0Es1?=
- =?us-ascii?Q?YVBtzdFeUbhLR4SPxPRPrwQ4X6XHMq4pfMdWHFPf3LwKnLR9NWnt4+1ZP3TB?=
- =?us-ascii?Q?8BUi255LRtFi5yAVNnJP6xRj0HEc0dMyAYYQP4zCDahloPEDdmc1hoAf8F8Y?=
- =?us-ascii?Q?X713LoOWO/A34M1axIleN5cvmLVtdpnqsBdhAz1DtL9VuNNaRkWXxOZcHqGb?=
- =?us-ascii?Q?E32or2r5L64EEcYxLTTyUuJKYXv1gsTDtE4u4v6V+JfjsqYlUEZm7fffYwcM?=
- =?us-ascii?Q?4nIrezFGdy88F2KFjGVRv/0fFfLi1gYM0bPiKNMJ/obO06JGArmmlhio0Agx?=
- =?us-ascii?Q?xM8Dhn/Gtf6wSvyD+QcGA17iMcCBW/v3imSJbSK4qLl3/APDP+MPgG6Tn3QG?=
- =?us-ascii?Q?9Wv5glpsv2hcf+Ak01brQwgLRJruBr6z36UO9P0R7Z+3pVEGxlr+0i4Cs3gR?=
- =?us-ascii?Q?beOHfzNxoeJFi1Dwi6kbwXamAZd0Kp21RFwv9wi7aqLB3EnF6gQrjwS2c2zh?=
- =?us-ascii?Q?bi7L8H2LyOTOGKiuR7p4euZCcgweC+Fy6W0ixbLT/iNQJjIwc/ZqCxt7Xmfn?=
- =?us-ascii?Q?J8S9EegVW1Q/Y5zlzNPAlCFKSuGw2ax1uwSopcBcOmoFIuZlZ6NFNICkWyu3?=
- =?us-ascii?Q?a80Ro37G5v7ee6pMt9qU8CaAIu1F3q+jvsFIGb2Jl0NLOg3RQcmsCM537qy3?=
- =?us-ascii?Q?8sakF5Zg/pSApxMVe3wMgtoWd1w6kPi/+xem0rPOJSkx5AdcXeY8niZyM90m?=
- =?us-ascii?Q?7hfAnJxmyuHbneh3MB1SuGNb6RXu1wfevN5eScMTg2oBiiCXzL0zk5r117kX?=
- =?us-ascii?Q?qp42mzYIqMzbarpB2Na049trxFV1uyql+bTt0EpThC4NTzZroLNQC+7moi9z?=
- =?us-ascii?Q?b9Q3v6UHprnHOK1CWxv/zHtvJ3IBKgcSstZLwd89sEDNfBCyAAwf5O+982BV?=
- =?us-ascii?Q?oTDqYh6z4ioVLlBMNhIX0SL/VM48RFLJstW7ylHKNh4YO+z0t5YNBpwUCpVg?=
- =?us-ascii?Q?UnrfkG3agNm2gSBPXTtzak7teH9uMhcaBET9cxrQNZ4EdbT4xiCM9VgQopkx?=
- =?us-ascii?Q?+h6GAmCks7/yeWI5rByPuA8qYC3t0oYbPkgtzzhD?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8/LfpKw4Ls7C4momHu/gEtKz8SVHNSuQJi2+B8n9dr99uupuXIKITMBB+137?=
+ =?us-ascii?Q?CHDt64i9UWN5T7Jlj03BHFiAEwGw0w6goCAKXPuqW9QbAIXirpNmJPEUryGZ?=
+ =?us-ascii?Q?/SRFc8i/dvUOiYifxUZexEHP+ZOMk+pX0C0sO6joLUdF4NUubhoXEEaelwti?=
+ =?us-ascii?Q?Ivd6BZZkEoQzlEiFhAAlC4xngLCx1uRiusKfbvIdt9xNX81pvHHUuF6GqxQb?=
+ =?us-ascii?Q?H4k/E/+mWGVaDV4BE+Sn9x5QT+Vs2AZO6ZuCqo+ix1AvtvAoKXd4YifiWgTu?=
+ =?us-ascii?Q?G9e7YvQw3IsyF6KSRyqJM23jDeCWiacwn6HUNmxMclic2SR4y9bj8p2Fgy+b?=
+ =?us-ascii?Q?Mgv70DlbFf39ZUGf26L1u8L8erytaKrwFtWVFeFp+JoYSQQiXYndT+v6gv6T?=
+ =?us-ascii?Q?Ujgur2PsqAVDRAOM9Ep8u2TiVX3kimIzyzZhGv1hELwVpJVdxMzdfkg/mITO?=
+ =?us-ascii?Q?Nmk6CWIe/zAggYfwYv8K9obElMz5Ct9lw4vuYX53fp6hK5Tfzx5K3xUiU+hG?=
+ =?us-ascii?Q?LMVgR56nqIep5X5iNYEtOZ1YC/yaXznpaKQFIJJKnc0oIt4ctnZLKi4AHtaQ?=
+ =?us-ascii?Q?yvaLtCuzETGDI6SJDlQ8Uce3vwZLVLdEZN1ENqfoKipHuzseayGCaJNmEayq?=
+ =?us-ascii?Q?a+VbEuqN9bku+lrua/ci5If5w4cfTSuGPs2aS4P2QEisI+Aie5P/izj99k/K?=
+ =?us-ascii?Q?0ix6ZIXfzE17iTP/cuy5y2ATWVwGHJfePinBZw38U9auTW24l0LbU+1JrOWI?=
+ =?us-ascii?Q?VDB57uonUkD/eXrgJtD/TTt0zSPbM793NIzfdrUrasGxQkAbzQNl1pZC6ePT?=
+ =?us-ascii?Q?1nZHVXvvJ51R0ULT5ZwwC/gif23Y/gcggyiA7oentNJe+xAYppbxyqacjGc+?=
+ =?us-ascii?Q?kgGwWHGIXiFFELe8d84/Sd2h2yB98P07uZBHvxOy5gFC9Sp1ZUq1zG75S0KA?=
+ =?us-ascii?Q?CSzM21V/g/PRhwJAuC1/N3R6XQRTrIymGik5CILXglbG3pbssNnR/PmavV31?=
+ =?us-ascii?Q?Xtg2b6u84BJ2EE4L5zUk2Q2ko8YRHwZUwRI0UIashaKYqeMlLr69JzTceOBy?=
+ =?us-ascii?Q?EZHcKfE9MxEi2tn4//lTCLWtwwyDqznmTtnuernRgZpkZBv3WVhQx4JR7iOv?=
+ =?us-ascii?Q?EYiZadmPml1I6p4aU8SZ1+h6Z1CzB1FOsA6Ki2os8txc2dFPxn81FL1i4Xmr?=
+ =?us-ascii?Q?4EHNlspc7PkEqBP1sv4BCaQWiWBqjfQa0SDJjj1vObJTlgO/pA+FEKha0z7z?=
+ =?us-ascii?Q?DpjnhdN3Bs93zLeSuScknwQcOKDYjZFlI9/1RhDI6geuiG17qBvUo1DWZd2B?=
+ =?us-ascii?Q?tOKgqb4TKzKjHzQIGwDxHVKlW1G4OLG39aL/Edb6/Rnh+kazohwTjwjiHOiW?=
+ =?us-ascii?Q?XsthWCN/e2XFTlVc6qZ+Y2OTDE7ifBkHVyoGDCuZ0fv2HdVrMXRpPY3qjWFA?=
+ =?us-ascii?Q?J698Uh6wVIa5WWTfc2wuz36mx+skSmmiiojIkEkVqOUjHXvl6CLQ0vFVsmAz?=
+ =?us-ascii?Q?cEjohqoAWX1w/+R5Im3kFuQrbZmx8LsVQIKaIX7tll4ypntbb1Iy1sFwaCZ3?=
+ =?us-ascii?Q?OsIy2Q+ZWxVuIT4HUJ/i4V1XesxAJie8KTIK5lKa?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b330f4b-fbb1-44b2-faf7-08db102ef30f
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf3ffdd3-ae59-4ac5-aa62-08db1030350f
 X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 15:03:24.0341
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 15:12:23.9763
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hPT0YPOZLZwUcR5Eif+leSIKEv8+aYCz+R829k7uyfcPxx0+UDRsSf85pS6u+I/e
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7508
+X-MS-Exchange-CrossTenant-UserPrincipalName: 43/FhAttgRzVZa8Y6jZQOIMkrSlnyMiZP6hUQNFOw8PVXVvl71CcBm6Q2iJnpn1F
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4485
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -113,61 +116,21 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 01, 2023 at 11:21:15AM +0800, Zhu Yanjun wrote:
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+On Wed, Jan 25, 2023 at 03:01:38PM -0500, Dennis Dalessandro wrote:
+> From: Patrick Kelsey <pat.kelsey@cornelisnetworks.com>
 > 
-> This is a followup to the EFA dmabuf[1]. Irdma driver currently does
-> not support on-demand-paging(ODP). So it uses habanalabs as the
-> dmabuf exporter, and irdma as the importer to allow for peer2peer
-> access through libibverbs.
+> Fix arithmetic and logic errors in hfi1_can_pin_pages() that  would allow
+> hfi1 to attempt pinning pages in cases where it should not because of
+> resource limits or lack of required capability.
 > 
-> In this commit, the function ib_umem_dmabuf_get_pinned() is used.
-> This function is introduced in EFA dmabuf[1] which allows the driver
-> to get a dmabuf umem which is pinned and does not require move_notify
-> callback implementation. The returned umem is pinned and DMA mapped
-> like standard cpu umems, and is released through ib_umem_release().
-> 
-> [1]https://lore.kernel.org/lkml/20211007114018.GD2688930@ziepe.ca/t/
-> 
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Signed-off-by: Brendan Cunningham <bcunningham@cornelisnetworks.com>
+> Signed-off-by: Patrick Kelsey <pat.kelsey@cornelisnetworks.com>
+> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 > ---
-> V2->V3: Remove unnecessary variable initialization;
->         Use error handler;
-> V1->V2: Thanks Shiraz Saleem, he gave me a lot of good suggestions.
->         This commit is based on the shared functions from refactored
->         irdma_reg_user_mr.
-> ---
->  drivers/infiniband/hw/irdma/verbs.c | 45 +++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
-> 
-> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-> index 6982f38596c8..7525f4cdf6fb 100644
-> --- a/drivers/infiniband/hw/irdma/verbs.c
-> +++ b/drivers/infiniband/hw/irdma/verbs.c
-> @@ -2977,6 +2977,50 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
->  	return ERR_PTR(err);
->  }
->  
-> +static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
-> +					      u64 len, u64 virt,
-> +					      int fd, int access,
-> +					      struct ib_udata *udata)
-> +{
-> +	struct irdma_device *iwdev = to_iwdev(pd->device);
-> +	struct ib_umem_dmabuf *umem_dmabuf;
-> +	struct irdma_mr *iwmr;
-> +	int err;
-> +
-> +	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (udata->inlen < IRDMA_MEM_REG_MIN_REQ_LEN)
-> +		return ERR_PTR(-EINVAL);
+>  drivers/infiniband/hw/hfi1/user_pages.c |   61 ++++++++++++++++++++-----------
+>  1 file changed, 40 insertions(+), 21 deletions(-)
 
-Shiraz is correct, I'm wondering how this even works. This is a new
-style uAPI without UVERBS_ATTR_UHW so inlen should always be 0.
-
-How did you manage to test this??
+I was going to take these first two patches, but where are the fixes
+lines for things that are clearly bug fixes?
 
 Jason
