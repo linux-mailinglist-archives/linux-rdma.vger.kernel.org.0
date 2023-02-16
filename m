@@ -2,122 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D178698D35
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 07:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A32E9698F10
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 09:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjBPGjQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Feb 2023 01:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
+        id S229738AbjBPIx1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Feb 2023 03:53:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjBPGjP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 01:39:15 -0500
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F78C35B4;
-        Wed, 15 Feb 2023 22:39:12 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VbnN6.x_1676529545;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VbnN6.x_1676529545)
-          by smtp.aliyun-inc.com;
-          Thu, 16 Feb 2023 14:39:09 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH net v2] net/smc: fix application data exception
-Date:   Thu, 16 Feb 2023 14:39:05 +0800
-Message-Id: <1676529545-32741-1-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NORMAL_HTTP_TO_IP,NUMERIC_HTTP_ADDR,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229508AbjBPIx0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 03:53:26 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75163B3E1
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 00:53:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676537605; x=1708073605;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=N/3pb/YgRygtVh1GstbXoK52tTXKN9ZjEeE4oFtbabk=;
+  b=aIgxrfB+V1CnaJ0HaSwn8PAthcR8sFEnuBDHHRqrFFCeXNQTbw6oPnVQ
+   m9iMVJlGHIfigFf7tfth4hZpCRkrvAMf6GhBdB6lRF8dqVC4FksF1pO1A
+   kbF/y7nB9cp0XoIM49M31EiKa7Wy3DEtJbVSRzS21/oN89bF1UdyGbznC
+   C/ghW5VxrYnJboWGpw8Fe0VKKXwOy19X9yGp4RhTzikwTVieqXpk4Nxqa
+   Vy8fTP5KvLs88cl2o9nu1yAKiss2m4L/9IYfEw0AWhaxbFSdGhORooeor
+   QHMs5pMnIg25YYFXDmDOJ4nJGRp2+Z25ov6GJKcaeiIeXXQcVdL8T5dWv
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="329385180"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="329385180"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 00:53:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="812888929"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="812888929"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 16 Feb 2023 00:53:23 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pSa14-000AA1-0a;
+        Thu, 16 Feb 2023 08:53:22 +0000
+Date:   Thu, 16 Feb 2023 16:52:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 4ca446b127c568b59cb8d9748b6f70499624bb18
+Message-ID: <63edeecc.WazBXjemtQVSSljb%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LONGWORDS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 4ca446b127c568b59cb8d9748b6f70499624bb18  iw_cxgb4: Fix potential NULL dereference in c4iw_fill_res_cm_id_entry()
 
-There is a certain probability that following
-exceptions will occur in the wrk benchmark test:
+elapsed time: 1189m
 
-Running 10s test @ http://11.213.45.6:80
-  8 threads and 64 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     3.72ms   13.94ms 245.33ms   94.17%
-    Req/Sec     1.96k   713.67     5.41k    75.16%
-  155262 requests in 10.10s, 23.10MB read
-Non-2xx or 3xx responses: 3
+configs tested: 85
+configs skipped: 3
 
-We will find that the error is HTTP 400 error, which is a serious
-exception in our test, which means the application data was
-corrupted.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Consider the following scenarios:
+gcc tested configs:
+alpha                            allyesconfig
+alpha                               defconfig
+arc                              allyesconfig
+arc                                 defconfig
+arc                  randconfig-r043-20230212
+arc                  randconfig-r043-20230213
+arc                  randconfig-r043-20230214
+arm                              allmodconfig
+arm                              allyesconfig
+arm                                 defconfig
+arm                  randconfig-r046-20230212
+arm                  randconfig-r046-20230214
+arm64                            allyesconfig
+arm64                               defconfig
+csky                                defconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                                defconfig
+i386                 randconfig-a011-20230213
+i386                 randconfig-a012-20230213
+i386                 randconfig-a013-20230213
+i386                 randconfig-a014-20230213
+i386                 randconfig-a015-20230213
+i386                 randconfig-a016-20230213
+ia64                             allmodconfig
+ia64                                defconfig
+loongarch                        allmodconfig
+loongarch                         allnoconfig
+loongarch                           defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc64                            defconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                randconfig-r042-20230213
+riscv                          rv32_defconfig
+s390                             allmodconfig
+s390                             allyesconfig
+s390                                defconfig
+s390                 randconfig-r044-20230213
+sh                               allmodconfig
+sparc                               defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                            allnoconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                                  kexec
+x86_64               randconfig-a011-20230213
+x86_64               randconfig-a012-20230213
+x86_64               randconfig-a013-20230213
+x86_64               randconfig-a014-20230213
+x86_64               randconfig-a015-20230213
+x86_64               randconfig-a016-20230213
+x86_64                               rhel-8.3
 
-CPU0                            CPU1
+clang tested configs:
+arm                  randconfig-r046-20230213
+hexagon              randconfig-r041-20230212
+hexagon              randconfig-r041-20230213
+hexagon              randconfig-r041-20230214
+hexagon              randconfig-r045-20230212
+hexagon              randconfig-r045-20230213
+hexagon              randconfig-r045-20230214
+i386                 randconfig-a001-20230213
+i386                 randconfig-a002-20230213
+i386                 randconfig-a003-20230213
+i386                 randconfig-a004-20230213
+i386                 randconfig-a005-20230213
+i386                 randconfig-a006-20230213
+riscv                randconfig-r042-20230212
+riscv                randconfig-r042-20230214
+s390                 randconfig-r044-20230212
+s390                 randconfig-r044-20230214
+x86_64               randconfig-a001-20230213
+x86_64               randconfig-a002-20230213
+x86_64               randconfig-a003-20230213
+x86_64               randconfig-a004-20230213
+x86_64               randconfig-a005-20230213
+x86_64               randconfig-a006-20230213
 
-buf_desc->used = 0;
-                                cmpxchg(buf_desc->used, 0, 1)
-                                deal_with(buf_desc)
-
-memset(buf_desc->cpu_addr,0);
-
-This will cause the data received by a victim connection to be cleared,
-thus triggering an HTTP 400 error in the server.
-
-This patch exchange the order between clear used and memset, add
-barrier to ensure memory consistency.
-
-Fixes: 1c5526968e27 ("net/smc: Clear memory when release and reuse buffer")
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
-v2: rebase it with latest net tree.
-
- net/smc/smc_core.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index c305d8d..c19d4b7 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -1120,8 +1120,9 @@ static void smcr_buf_unuse(struct smc_buf_desc *buf_desc, bool is_rmb,
- 
- 		smc_buf_free(lgr, is_rmb, buf_desc);
- 	} else {
--		buf_desc->used = 0;
--		memset(buf_desc->cpu_addr, 0, buf_desc->len);
-+		/* memzero_explicit provides potential memory barrier semantics */
-+		memzero_explicit(buf_desc->cpu_addr, buf_desc->len);
-+		WRITE_ONCE(buf_desc->used, 0);
- 	}
- }
- 
-@@ -1132,19 +1133,17 @@ static void smc_buf_unuse(struct smc_connection *conn,
- 		if (!lgr->is_smcd && conn->sndbuf_desc->is_vm) {
- 			smcr_buf_unuse(conn->sndbuf_desc, false, lgr);
- 		} else {
--			conn->sndbuf_desc->used = 0;
--			memset(conn->sndbuf_desc->cpu_addr, 0,
--			       conn->sndbuf_desc->len);
-+			memzero_explicit(conn->sndbuf_desc->cpu_addr, conn->sndbuf_desc->len);
-+			WRITE_ONCE(conn->sndbuf_desc->used, 0);
- 		}
- 	}
- 	if (conn->rmb_desc) {
- 		if (!lgr->is_smcd) {
- 			smcr_buf_unuse(conn->rmb_desc, true, lgr);
- 		} else {
--			conn->rmb_desc->used = 0;
--			memset(conn->rmb_desc->cpu_addr, 0,
--			       conn->rmb_desc->len +
--			       sizeof(struct smcd_cdc_msg));
-+			memzero_explicit(conn->rmb_desc->cpu_addr,
-+					 conn->rmb_desc->len + sizeof(struct smcd_cdc_msg));
-+			WRITE_ONCE(conn->rmb_desc->used, 0);
- 		}
- 	}
- }
 -- 
-1.8.3.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
