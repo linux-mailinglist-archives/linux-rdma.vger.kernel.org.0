@@ -2,185 +2,210 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B8D698F73
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 10:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4ED3699090
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Feb 2023 10:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjBPJNx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Feb 2023 04:13:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
+        id S229652AbjBPJ5h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Feb 2023 04:57:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjBPJNx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 04:13:53 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AE61A490
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 01:13:52 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D061061EDE
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 09:13:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9BAEC433EF;
-        Thu, 16 Feb 2023 09:13:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676538831;
-        bh=FT4Fib+1oVfphg29nhoqcb0tjxSHjNPGsZyynaa0wwA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Z2MSwW564XRS3qgaqxYsFFT1mMs5Iu2bBkp88SG10PS+OwMTnFWLFgo1iuzGHBTCE
-         n2Mq6ou3cp4GrGil1+cYrSZV1KRfbrUtt04DoRj5iPjk1Y+CZns3dY0HIHLwGE5V0e
-         dGS59fDaIfVU0DPpQwVHmwRJF58dzM8M9dEo4F4egctTcwMIPe+o1FLFpSXtb6nwP8
-         f/Gg2eKwVOVWXNXBBuwhqn0J09oL+fZF8znQ2fUQlK7Y4zURXPeBQQYcL79EluF53+
-         KrDjkkz2gAPN2/hw6USRL/VrW0uz2BrXM69cd8FtVjiuHrK1sCn22ZKT/AIa0BzLoQ
-         rQLsnwvDnUPGg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>
-Subject: [PATCH rdma-next] IB/mlx5: Extend debug control for CC parameters
-Date:   Thu, 16 Feb 2023 11:13:45 +0200
-Message-Id: <1dcc3440ee53c688f19f579a051ded81a2aaa70a.1676538714.git.leon@kernel.org>
-X-Mailer: git-send-email 2.39.1
+        with ESMTP id S229525AbjBPJ5f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 04:57:35 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFD637726;
+        Thu, 16 Feb 2023 01:57:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676541454; x=1708077454;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=5ogfL/EATN4MUDktzE4Xoq5B3oF10jE2dC4gTPXwaAU=;
+  b=bZ21gI3j1uggew1t4jleRc4fSVYnfD1p5ZRSRSl9QIj74AzQqZ3q9Zvm
+   WLRb/an6+ha8WrtpTBSRgxb8h6GZugQiYHp+iwwYSIIWQ1P16yU5zgKQK
+   nCVgBSr0wfTRL6ea/OXUMXUuxXqekGG5iommPll3t/Crmv1dC9wjpFkA6
+   HarqWfMPcaoEc9Xmq8r523rKEFAsk2PrOdBwz5CToR6iVadURppyZz0qv
+   XYLex7Y8CNRpn5pqjiUNZkoInbsuc6ZicIqrmTF//AdEc8As5WFE1Sf7o
+   H74grau2Gf6VUCo2au1URVxU6I6hLjSLufvYuREYylnmFSGI4kk4cfrGh
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="331676220"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="331676220"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 01:57:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10622"; a="844092565"
+X-IronPort-AV: E=Sophos;i="5.97,302,1669104000"; 
+   d="scan'208";a="844092565"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga005.jf.intel.com with ESMTP; 16 Feb 2023 01:57:33 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Thu, 16 Feb 2023 01:57:33 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Thu, 16 Feb 2023 01:57:33 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Thu, 16 Feb 2023 01:57:33 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.175)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Thu, 16 Feb 2023 01:57:32 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kVaNDwuh/sVTR712oELAcVFo06IvtZJowQlkQu99kYtdAnLqCSUBEz9EoVu53W5efH7JBWErdYfOZwsj4TqQndHpoL6tplbYtemLisFBU7SzU+98L/Ye/WWNijHaC7tE8crys/Nimr/Qd5bS5ZGEMRmSUljO/2V7DOBXXupyOu+FnRxUZdZjywNhOi7o23pl65LI1zhnmtCMbEeBozXqvga+CQj197TYpAXJT6gzYdDmRKQOHpojHv8PPiw62n8azf/qL2oTDX6DJRcK4/wnbM9pFt9o5OpIj32ycYF+BtnZOSi1D01bywQNWTq6fWqhteFbBdkgGu0Y68IHcb4OCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VOnsPv5F0+TLXJc3uQ09fJV895ppbVQ+XwMgaizlcds=;
+ b=G4TMrgt/fOSJxuknIZocnuJu0rXA/t+K2z8T6SJIydM8MeK1UCjqN7Jcxh4GfL+ClbBnyQCT6u/9JfN/iOgn4fwou9zgTYaZ/p1ygUk99ZwO7FDFs0W0/DWBAHlQHTZDfKZKmXrVQLsELU7fZLyiB8rrSKsGvLRomcpYI+bLRG3GGeN2c0sLdCrCSqgWh1BFPnfbl2qrLXf1wMo0Q+oejrk6sO4ZwZyUFOZ6FrqzQGas4hEirT/m0MU9SvnAtUF4f/Z0DiHMGun+N9yMjtF3ZgfO4Itu957sMo3lTrcToINzrhfVvyjUCMWiJr+bhz1HtbfpqBqPsoVMxfp0AAGFbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CH0PR11MB5460.namprd11.prod.outlook.com (2603:10b6:610:d3::9)
+ by IA1PR11MB7365.namprd11.prod.outlook.com (2603:10b6:208:423::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.26; Thu, 16 Feb
+ 2023 09:57:26 +0000
+Received: from CH0PR11MB5460.namprd11.prod.outlook.com
+ ([fe80::47ef:28b0:73f2:84a2]) by CH0PR11MB5460.namprd11.prod.outlook.com
+ ([fe80::47ef:28b0:73f2:84a2%8]) with mapi id 15.20.6111.013; Thu, 16 Feb 2023
+ 09:57:26 +0000
+Date:   Thu, 16 Feb 2023 10:39:05 +0100
+From:   Larysa Zaremba <larysa.zaremba@intel.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+CC:     <kgraul@linux.ibm.com>, <wenjia@linux.ibm.com>,
+        <jaka@linux.ibm.com>, <kuba@kernel.org>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net v2] net/smc: fix potential panic dues to unprotected
+ smc_llc_srv_add_link()
+Message-ID: <Y+35uaLd03AqlWdG@lincoln>
+References: <1676529456-30988-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1676529456-30988-1-git-send-email-alibuda@linux.alibaba.com>
+X-ClientProxiedBy: FR0P281CA0149.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:96::16) To CH0PR11MB5460.namprd11.prod.outlook.com
+ (2603:10b6:610:d3::9)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH0PR11MB5460:EE_|IA1PR11MB7365:EE_
+X-MS-Office365-Filtering-Correlation-Id: 582759c5-685f-400f-7b82-08db1004350b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NQovB1loGl4WYyyE5K0niE6prJVNyajmKo9FaKrtKSW+ipKpLQ2+m3qFON1caW5MIus5lUyzbuAqW0E7iEhRJ2pVAvYp+vTlHZkpbQvpbYfAd1vyx4XNeGRqp9L94IuHE1KB8AIdhuB/746k445n5RACHIS5AlWZheMnfb5BZ0iOamXLlvi/n5z2ZzhWwqNwQ0BB50mzM3OXvyddcr3rlx0AC73OOJXPjNz3u82atSpLsIDXgnSBfRr1uAVwsvnt0wU/rHlAnaFxLFQ6pPDau+X75gxiQgrA5DMGlPlwRqa1Y5ycrj3VmnmJH9a30BXcD3WqvseTW4bsVn5wLwEchcrZO6sOEFSzTDeyNux5/TM6cfhLJ2fzVKQYKfR9nLZEllsAmqnzsVe6cqiqE+48LVL8NOxPvSLbjxbgPtzTxqI34O4mQ8QaJl/mgneKH7o/0odV94Lc/wob/hjSAlofhtDCsFcDiQafbH1MoAcqsp/D3mjdBrYVcZublHNkCqx0D+N5yGHehwrG0dn/zFXmmgEqNR/lBO9H5byHOJ5KP1X5laxikG34K6/FBXvaNcJT/aI5K9VoxkL/7qV1i/kY7/twTwSjIcqngdCjlmoVMWV64dSv8zqMJ4Fym/LOHVu0JkdyvLVKNaN0DlYp0R3VCwPenvWvfwURQ7BDKrQVz8hEFGX2DS7eFht06LBRBBYg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5460.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(7916004)(366004)(39860400002)(136003)(396003)(376002)(346002)(451199018)(44832011)(26005)(2906002)(186003)(5660300002)(8936002)(82960400001)(6512007)(6506007)(9686003)(38100700002)(316002)(83380400001)(6666004)(86362001)(66556008)(33716001)(41300700001)(66476007)(66946007)(478600001)(8676002)(4326008)(6916009)(6486002)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4SxqGsVR2TqFHtFbV2Pqpvuhn4m/2OhgAoxiCa0q2lrFW/Q9QOolTEcuNome?=
+ =?us-ascii?Q?yLCP8LWSyBZZmi2+cUw315U7UuGWdm5LyEfakd2OH/vMNmqJTQlRWuqvjvyr?=
+ =?us-ascii?Q?S94hdLoTyVvheET/PIZI/Nm10jL14W7dBNYFdJ72FrbptVUf6NASWlPj0OfF?=
+ =?us-ascii?Q?1lO4hC1RowwDUTcS/ps2e6GjXOWAChPxP5ltfDBcvZQzFvM4gObxNTgdSZDL?=
+ =?us-ascii?Q?p5/La8oKI9C/GyZ41I4lH5tRVkNgtSSEPQXobdBkhgKcI7J2nFa1FbvyBeWo?=
+ =?us-ascii?Q?4DHpDYDnNshF4G2kSuj118osZFztQLj29WXh2D64Dj+iv2q1Xgy4Tolw4Ouf?=
+ =?us-ascii?Q?ewb50ma6x9SHczF7bjSv1kCj9t2vAlxijgNGQ31Bf3kzFqAvP4xb32MUsEtb?=
+ =?us-ascii?Q?hvdT2SdYCjXBEOSKRfJ9Odnxc4+vbtT9Pnn/Heyp18RBDA2D/8vCJ+dvpI+D?=
+ =?us-ascii?Q?MTRui5MHuMMjLmcu6cYiGPzn/l2hOz1g9tedMEFdXXJzGlbzrWlbg+Y3SvGS?=
+ =?us-ascii?Q?u4QCG8a6ia+N4yaJe9H/EghLK10gOPVeJJh1+A6nvFQHzF+Wvkyw6MAA13Xo?=
+ =?us-ascii?Q?E4NEt7w+2PTeM9NnVpMXQNuoplZmOGYH+59XGl178Aj2VNGHUidOOFXfN7lP?=
+ =?us-ascii?Q?Kibc5wkCcaxYp65tct/fZ1u9NjsdmC4jbd8TpIUUYyBx+01aCJzdXe9oaKRC?=
+ =?us-ascii?Q?kwzT7mVjkj6OXAPHCKb4pTFufwfBog2GRbgFCKJKaPYkJoOh5xYooy/doKYN?=
+ =?us-ascii?Q?rLBV9quU/0rNSYMXcdCKFcXqMKBgTyo1s9REqBDae6ng0fPTyJdBtfP+upuF?=
+ =?us-ascii?Q?f2rabMZjtdCvCjpMy32bCW9HY37yhHhqbM31heA7NjEtaHc84JEFdWi/tLZi?=
+ =?us-ascii?Q?irB5fqIA4vzXJBAVdqFTYITYfpijgzSnua1QfC1cfH9AeLgFVODDp/+8nSMe?=
+ =?us-ascii?Q?mtZJnsDAuCtOOKqg71rHUppMdYspf4GnCewAeakEK7dOMxeo6RY3+vOMjVRn?=
+ =?us-ascii?Q?kUGNGR3S/lkD9a44BM+/N5OQ6X/s7UUXJ36I8ICJv6LbK3Bh835fj3UjDW6r?=
+ =?us-ascii?Q?ZA6f/sWgoBjWPlo+YCxVfhUQoFRL6m8z3JJp318Bdvmu7x+spkpCFE62BuhJ?=
+ =?us-ascii?Q?JYqRa/97YLCJlGPxoJ4hiwjSu6eqnVzRYJikI823+aAHwoEPgs9CIPTtxxYr?=
+ =?us-ascii?Q?Z0GE2//A2uDRSsGpIKeX3gOqrSz8c1rwNwkSJwODAYb+r3Wd8Bo3iFW0w/TG?=
+ =?us-ascii?Q?LhByaZW5jEcJd+L46ysmbdfg1FOcDelZ2q9PVJN7wlcjbrxv3GRIUWeCurrw?=
+ =?us-ascii?Q?P6iBFVxQg2ZnshNax+/zV4I1dQNTfGIzItJpVD5Ihirv676IpWBTVQ7PeoiT?=
+ =?us-ascii?Q?LXKbQIy1MkjyEdpOR1ZKxB9iH8AkQR/fAwaIv3NZhQZ9wHReHPtscrEd5Kg8?=
+ =?us-ascii?Q?5cAPiQvKUJaj5TqxL4/NrTOro2xX5ZDbS91T4cLnQVapTMlhyi5XCYsRSnkV?=
+ =?us-ascii?Q?ez97JyWzfN8WwgseDqhm5PzuN2Lku7htdAP+AXSizvBuPKHuJMVvG0vY5En3?=
+ =?us-ascii?Q?AlV0z3xdsTAZZA6lRiKiMb2/rw8CsgMkWXsn1fDSpRWNMQL1nlAYS50GoYfY?=
+ =?us-ascii?Q?Dg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 582759c5-685f-400f-7b82-08db1004350b
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5460.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 09:57:26.0321
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PyyKH7IT+yvT7O8o9ekA6hbziLGPpoYCec1YwJ8CD5dwm7rxTtDKye00prRD9KppewmA1NVsxhG0x9vzGMiDFIHSSaQKDjOjs68PVbapjV4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7365
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Edward Srouji <edwards@nvidia.com>
+On Thu, Feb 16, 2023 at 02:37:36PM +0800, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> There is a certain chance to trigger the following panic:
+> 
+> PID: 5900   TASK: ffff88c1c8af4100  CPU: 1   COMMAND: "kworker/1:48"
+>  #0 [ffff9456c1cc79a0] machine_kexec at ffffffff870665b7
+>  #1 [ffff9456c1cc79f0] __crash_kexec at ffffffff871b4c7a
+>  #2 [ffff9456c1cc7ab0] crash_kexec at ffffffff871b5b60
+>  #3 [ffff9456c1cc7ac0] oops_end at ffffffff87026ce7
+>  #4 [ffff9456c1cc7ae0] page_fault_oops at ffffffff87075715
+>  #5 [ffff9456c1cc7b58] exc_page_fault at ffffffff87ad0654
+>  #6 [ffff9456c1cc7b80] asm_exc_page_fault at ffffffff87c00b62
+>     [exception RIP: ib_alloc_mr+19]
+>     RIP: ffffffffc0c9cce3  RSP: ffff9456c1cc7c38  RFLAGS: 00010202
+>     RAX: 0000000000000000  RBX: 0000000000000002  RCX: 0000000000000004
+>     RDX: 0000000000000010  RSI: 0000000000000000  RDI: 0000000000000000
+>     RBP: ffff88c1ea281d00   R8: 000000020a34ffff   R9: ffff88c1350bbb20
+>     R10: 0000000000000000  R11: 0000000000000001  R12: 0000000000000000
+>     R13: 0000000000000010  R14: ffff88c1ab040a50  R15: ffff88c1ea281d00
+>     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>  #7 [ffff9456c1cc7c60] smc_ib_get_memory_region at ffffffffc0aff6df [smc]
+>  #8 [ffff9456c1cc7c88] smcr_buf_map_link at ffffffffc0b0278c [smc]
+>  #9 [ffff9456c1cc7ce0] __smc_buf_create at ffffffffc0b03586 [smc]
+> 
+> The reason here is that when the server tries to create a second link,
+> smc_llc_srv_add_link() has no protection and may add a new link to
+> link group. This breaks the security environment protected by
+> llc_conf_mutex.
+> 
+> Fixes: 2d2209f20189 ("net/smc: first part of add link processing as SMC server")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 
-This patch adds rtt_resp_dscp to the current debug controllability of
-congestion control (CC) parameters.
-rtt_resp_dscp can be read or written through debugfs.
-If set, its value overwrites the DSCP of the generated RTT response.
+Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
 
-Signed-off-by: Edward Srouji <edwards@nvidia.com>
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/cong.c    | 28 +++++++++++++++++++++++++---
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 ++
- include/linux/mlx5/mlx5_ifc.h        | 12 ++++++++++++
- 3 files changed, 39 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/cong.c b/drivers/infiniband/hw/mlx5/cong.c
-index 290ea8ac3838..f87531318feb 100644
---- a/drivers/infiniband/hw/mlx5/cong.c
-+++ b/drivers/infiniband/hw/mlx5/cong.c
-@@ -38,6 +38,7 @@
- enum mlx5_ib_cong_node_type {
- 	MLX5_IB_RROCE_ECN_RP = 1,
- 	MLX5_IB_RROCE_ECN_NP = 2,
-+	MLX5_IB_RROCE_GENERAL = 3,
- };
- 
- static const char * const mlx5_ib_dbg_cc_name[] = {
-@@ -61,6 +62,8 @@ static const char * const mlx5_ib_dbg_cc_name[] = {
- 	"np_cnp_dscp",
- 	"np_cnp_prio_mode",
- 	"np_cnp_prio",
-+	"rtt_resp_dscp_valid",
-+	"rtt_resp_dscp",
- };
- 
- #define MLX5_IB_RP_CLAMP_TGT_RATE_ATTR			BIT(1)
-@@ -84,14 +87,18 @@ static const char * const mlx5_ib_dbg_cc_name[] = {
- #define MLX5_IB_NP_CNP_DSCP_ATTR			BIT(3)
- #define MLX5_IB_NP_CNP_PRIO_MODE_ATTR			BIT(4)
- 
-+#define MLX5_IB_GENERAL_RTT_RESP_DSCP_ATTR		BIT(0)
-+
- static enum mlx5_ib_cong_node_type
- mlx5_ib_param_to_node(enum mlx5_ib_dbg_cc_types param_offset)
- {
--	if (param_offset >= MLX5_IB_DBG_CC_RP_CLAMP_TGT_RATE &&
--	    param_offset <= MLX5_IB_DBG_CC_RP_GD)
-+	if (param_offset <= MLX5_IB_DBG_CC_RP_GD)
- 		return MLX5_IB_RROCE_ECN_RP;
--	else
-+
-+	if (param_offset <= MLX5_IB_DBG_CC_NP_CNP_PRIO)
- 		return MLX5_IB_RROCE_ECN_NP;
-+
-+	return MLX5_IB_RROCE_GENERAL;
- }
- 
- static u32 mlx5_get_cc_param_val(void *field, int offset)
-@@ -157,6 +164,12 @@ static u32 mlx5_get_cc_param_val(void *field, int offset)
- 	case MLX5_IB_DBG_CC_NP_CNP_PRIO:
- 		return MLX5_GET(cong_control_r_roce_ecn_np, field,
- 				cnp_802p_prio);
-+	case MLX5_IB_DBG_CC_GENERAL_RTT_RESP_DSCP_VALID:
-+		return MLX5_GET(cong_control_r_roce_general, field,
-+				rtt_resp_dscp_valid);
-+	case MLX5_IB_DBG_CC_GENERAL_RTT_RESP_DSCP:
-+		return MLX5_GET(cong_control_r_roce_general, field,
-+				rtt_resp_dscp);
- 	default:
- 		return 0;
- 	}
-@@ -264,6 +277,15 @@ static void mlx5_ib_set_cc_param_mask_val(void *field, int offset,
- 		MLX5_SET(cong_control_r_roce_ecn_np, field, cnp_prio_mode, 0);
- 		MLX5_SET(cong_control_r_roce_ecn_np, field, cnp_802p_prio, var);
- 		break;
-+	case MLX5_IB_DBG_CC_GENERAL_RTT_RESP_DSCP_VALID:
-+		*attr_mask |= MLX5_IB_GENERAL_RTT_RESP_DSCP_ATTR;
-+		MLX5_SET(cong_control_r_roce_general, field, rtt_resp_dscp_valid, var);
-+		break;
-+	case MLX5_IB_DBG_CC_GENERAL_RTT_RESP_DSCP:
-+		*attr_mask |= MLX5_IB_GENERAL_RTT_RESP_DSCP_ATTR;
-+		MLX5_SET(cong_control_r_roce_general, field, rtt_resp_dscp_valid, 1);
-+		MLX5_SET(cong_control_r_roce_general, field, rtt_resp_dscp, var);
-+		break;
- 	}
- }
- 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 6a21695eaa6e..e0e80bf31824 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -885,6 +885,8 @@ enum mlx5_ib_dbg_cc_types {
- 	MLX5_IB_DBG_CC_NP_CNP_DSCP,
- 	MLX5_IB_DBG_CC_NP_CNP_PRIO_MODE,
- 	MLX5_IB_DBG_CC_NP_CNP_PRIO,
-+	MLX5_IB_DBG_CC_GENERAL_RTT_RESP_DSCP_VALID,
-+	MLX5_IB_DBG_CC_GENERAL_RTT_RESP_DSCP,
- 	MLX5_IB_DBG_CC_MAX,
- };
- 
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index 8bbf15433bb2..5203af3565e7 100644
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -2151,6 +2151,17 @@ struct mlx5_ifc_cong_control_r_roce_ecn_rp_bits {
- 	u8         reserved_at_360[0x4a0];
- };
- 
-+struct mlx5_ifc_cong_control_r_roce_general_bits {
-+	u8         reserved_at_0[0x80];
-+
-+	u8         reserved_at_80[0x10];
-+	u8         rtt_resp_dscp_valid[0x1];
-+	u8         reserved_at_91[0x9];
-+	u8         rtt_resp_dscp[0x6];
-+
-+	u8         reserved_at_a0[0x760];
-+};
-+
- struct mlx5_ifc_cong_control_802_1qau_rp_bits {
- 	u8         reserved_at_0[0x80];
- 
-@@ -4296,6 +4307,7 @@ union mlx5_ifc_cong_control_roce_ecn_auto_bits {
- 	struct mlx5_ifc_cong_control_802_1qau_rp_bits cong_control_802_1qau_rp;
- 	struct mlx5_ifc_cong_control_r_roce_ecn_rp_bits cong_control_r_roce_ecn_rp;
- 	struct mlx5_ifc_cong_control_r_roce_ecn_np_bits cong_control_r_roce_ecn_np;
-+	struct mlx5_ifc_cong_control_r_roce_general_bits cong_control_r_roce_general;
- 	u8         reserved_at_0[0x800];
- };
- 
--- 
-2.39.1
-
+> ---
+> v2: rebase it with lastest net tree
+> 
+>  net/smc/af_smc.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index e12d4fa..d9413d4 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -1826,8 +1826,10 @@ static int smcr_serv_conf_first_link(struct smc_sock *smc)
+>  	smc_llc_link_active(link);
+>  	smcr_lgr_set_type(link->lgr, SMC_LGR_SINGLE);
+>  
+> +	mutex_lock(&link->lgr->llc_conf_mutex);
+>  	/* initial contact - try to establish second link */
+>  	smc_llc_srv_add_link(link, NULL);
+> +	mutex_unlock(&link->lgr->llc_conf_mutex);
+>  	return 0;
+>  }
+>  
+> -- 
+> 1.8.3.1
+> 
