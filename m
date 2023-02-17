@@ -2,161 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B8369A30D
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Feb 2023 01:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0432669A314
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Feb 2023 01:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjBQAnw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Feb 2023 19:43:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        id S229587AbjBQArD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Feb 2023 19:47:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjBQAnw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 19:43:52 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2BC54D5F;
-        Thu, 16 Feb 2023 16:43:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676594631; x=1708130631;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=qySiZkvggoa24YJ/7eU/T7MEfg7x97LfSVCbgqbZKlA=;
-  b=gH2SPDiPVm9jgxddl0kVgFj6a1UqRvpYnyfNwW9BWR7qOMa70Rikm03T
-   U4TZSwvNufKP50QFmMzlzuX7trYG32nSlINbqy591zlRFg1BitiXvsqdI
-   Tkt9JxRpNGqPKQHStQWOL0gu0TzHIlnItsAZ7RDMaWzqLXGVTzhInMQ+g
-   o4AgLw1tbu4fZezq6iAl0rL/c5OOIvQhnaG/4gC1nlxsZbioJHnpkYs3Y
-   JxUkOQKSpE7CVN51ELkJNQrtjrzlpEDP28psqQs+JW/iFYQZ/A6WSKPaG
-   /VHqlhrpkPZXFxviBKEH+QJVTtPxcj8YzugJGDtERAeRFVXO84oLry//C
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="330536422"
-X-IronPort-AV: E=Sophos;i="5.97,304,1669104000"; 
-   d="scan'208";a="330536422"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 16:42:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="759180044"
-X-IronPort-AV: E=Sophos;i="5.97,304,1669104000"; 
-   d="scan'208";a="759180044"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Feb 2023 16:42:48 -0800
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com
-Cc:     Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        anthony.l.nguyen@intel.com, shiraz.saleem@intel.com,
-        mustafa.ismail@intel.com, jgg@nvidia.com, leonro@nvidia.com,
-        linux-rdma@vger.kernel.org, poros@redhat.com, ivecera@redhat.com,
-        stable@vger.kernel.org,
-        Jaroslav Pulchart <jaroslav.pulchart@gooddata.com>
-Subject: [PATCH net v2 1/1] ice: avoid bonding causing auxiliary plug/unplug under RTNL lock
-Date:   Thu, 16 Feb 2023 16:42:01 -0800
-Message-Id: <20230217004201.2895321-1-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S229534AbjBQArC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 19:47:02 -0500
+Received: from out-31.mta0.migadu.com (out-31.mta0.migadu.com [IPv6:2001:41d0:1004:224b::1f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710D3902F
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 16:47:00 -0800 (PST)
+Message-ID: <073e4d3b-f451-27f9-716a-2cd2e51d8535@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1676594818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RC557aVONVMdVK0QFB5eJuq97sjVB9j1idVVdauUZSw=;
+        b=GSQiWRIwJgXKC+LmXJ832yTR7zgDiG3La5xEGZsDlK3SnrZKV5+CGqkovgVFQ8N6fGtPz+
+        HgA8xRRQ9uXF2Wkem9fd+qWvB7+rwEpjQlNQPLaB4+yJ0y+t9De6Kt6yP+KoZQVTdBsx8g
+        I0NrnGaWUeIkV0Ai879Fw+hB8LFQkyw=
+Date:   Fri, 17 Feb 2023 08:46:52 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCHv3 for-next 1/1] RDMA/irdma: Add support for dmabuf pin
+ memory regions
+To:     Jason Gunthorpe <jgg@nvidia.com>, Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+References: <20230201032115.631656-1-yanjun.zhu@intel.com>
+ <Y+5FuSxVrtmCawC8@nvidia.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <Y+5FuSxVrtmCawC8@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dave Ertman <david.m.ertman@intel.com>
 
-RDMA is not supported in ice on a PF that has been added to a bonded
-interface. To enforce this, when an interface enters a bond, we unplug
-the auxiliary device that supports RDMA functionality.  This unplug
-currently happens in the context of handling the netdev bonding event.
-This event is sent to the ice driver under RTNL context.  This is causing
-a deadlock where the RDMA driver is waiting for the RTNL lock to complete
-the removal.
+在 2023/2/16 23:03, Jason Gunthorpe 写道:
+> On Wed, Feb 01, 2023 at 11:21:15AM +0800, Zhu Yanjun wrote:
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> This is a followup to the EFA dmabuf[1]. Irdma driver currently does
+>> not support on-demand-paging(ODP). So it uses habanalabs as the
+>> dmabuf exporter, and irdma as the importer to allow for peer2peer
+>> access through libibverbs.
+>>
+>> In this commit, the function ib_umem_dmabuf_get_pinned() is used.
+>> This function is introduced in EFA dmabuf[1] which allows the driver
+>> to get a dmabuf umem which is pinned and does not require move_notify
+>> callback implementation. The returned umem is pinned and DMA mapped
+>> like standard cpu umems, and is released through ib_umem_release().
+>>
+>> [1]https://lore.kernel.org/lkml/20211007114018.GD2688930@ziepe.ca/t/
+>>
+>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+>> ---
+>> V2->V3: Remove unnecessary variable initialization;
+>>          Use error handler;
+>> V1->V2: Thanks Shiraz Saleem, he gave me a lot of good suggestions.
+>>          This commit is based on the shared functions from refactored
+>>          irdma_reg_user_mr.
+>> ---
+>>   drivers/infiniband/hw/irdma/verbs.c | 45 +++++++++++++++++++++++++++++
+>>   1 file changed, 45 insertions(+)
+>>
+>> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+>> index 6982f38596c8..7525f4cdf6fb 100644
+>> --- a/drivers/infiniband/hw/irdma/verbs.c
+>> +++ b/drivers/infiniband/hw/irdma/verbs.c
+>> @@ -2977,6 +2977,50 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+>>   	return ERR_PTR(err);
+>>   }
+>>   
+>> +static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+>> +					      u64 len, u64 virt,
+>> +					      int fd, int access,
+>> +					      struct ib_udata *udata)
+>> +{
+>> +	struct irdma_device *iwdev = to_iwdev(pd->device);
+>> +	struct ib_umem_dmabuf *umem_dmabuf;
+>> +	struct irdma_mr *iwmr;
+>> +	int err;
+>> +
+>> +	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
+>> +		return ERR_PTR(-EINVAL);
+>> +
+>> +	if (udata->inlen < IRDMA_MEM_REG_MIN_REQ_LEN)
+>> +		return ERR_PTR(-EINVAL);
+> Shiraz is correct, I'm wondering how this even works. This is a new
+> style uAPI without UVERBS_ATTR_UHW so inlen should always be 0.
 
-Defer the unplugging/re-plugging of the auxiliary device to the service
-task so that it is not performed under the RTNL lock context.
+Got it. Thanks Shiraz and Jason.
 
-Cc: stable@vger.kernel.org # 6.1.x
-Reported-by: Jaroslav Pulchart <jaroslav.pulchart@gooddata.com>
-Link: https://lore.kernel.org/netdev/CAK8fFZ6A_Gphw_3-QMGKEFQk=sfCw1Qmq0TVZK3rtAi7vb621A@mail.gmail.com/
-Fixes: 5cb1ebdbc434 ("ice: Fix race condition during interface enslave")
-Fixes: 4eace75e0853 ("RDMA/irdma: Report the correct link speed")
-Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
-v2:
- (Removed from original pull request)
-- Reversed order of bit processing in ice_service_task for PLUG/UNPLUG
+I will remove the test of inlen in the latest commit.
 
-v1: https://lore.kernel.org/netdev/20230131213703.1347761-2-anthony.l.nguyen@intel.com/
+Best Regards,
 
- drivers/net/ethernet/intel/ice/ice.h      | 14 +++++---------
- drivers/net/ethernet/intel/ice/ice_main.c | 19 ++++++++-----------
- 2 files changed, 13 insertions(+), 20 deletions(-)
+Zhu Yanjun
 
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index 713069f809ec..3cad5e6b2ad1 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -506,6 +506,7 @@ enum ice_pf_flags {
- 	ICE_FLAG_VF_VLAN_PRUNING,
- 	ICE_FLAG_LINK_LENIENT_MODE_ENA,
- 	ICE_FLAG_PLUG_AUX_DEV,
-+	ICE_FLAG_UNPLUG_AUX_DEV,
- 	ICE_FLAG_MTU_CHANGED,
- 	ICE_FLAG_GNSS,			/* GNSS successfully initialized */
- 	ICE_PF_FLAGS_NBITS		/* must be last */
-@@ -950,16 +951,11 @@ static inline void ice_set_rdma_cap(struct ice_pf *pf)
-  */
- static inline void ice_clear_rdma_cap(struct ice_pf *pf)
- {
--	/* We can directly unplug aux device here only if the flag bit
--	 * ICE_FLAG_PLUG_AUX_DEV is not set because ice_unplug_aux_dev()
--	 * could race with ice_plug_aux_dev() called from
--	 * ice_service_task(). In this case we only clear that bit now and
--	 * aux device will be unplugged later once ice_plug_aux_device()
--	 * called from ice_service_task() finishes (see ice_service_task()).
-+	/* defer unplug to service task to avoid RTNL lock and
-+	 * clear PLUG bit so that pending plugs don't interfere
- 	 */
--	if (!test_and_clear_bit(ICE_FLAG_PLUG_AUX_DEV, pf->flags))
--		ice_unplug_aux_dev(pf);
--
-+	clear_bit(ICE_FLAG_PLUG_AUX_DEV, pf->flags);
-+	set_bit(ICE_FLAG_UNPLUG_AUX_DEV, pf->flags);
- 	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
- }
- #endif /* _ICE_H_ */
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index 8ec24f6cf6be..10d1c5b10d2a 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -2316,18 +2316,15 @@ static void ice_service_task(struct work_struct *work)
- 		}
- 	}
- 
--	if (test_bit(ICE_FLAG_PLUG_AUX_DEV, pf->flags)) {
--		/* Plug aux device per request */
--		ice_plug_aux_dev(pf);
-+	/* unplug aux dev per request, if an unplug request came in
-+	 * while processing a plug request, this will handle it
-+	 */
-+	if (test_and_clear_bit(ICE_FLAG_UNPLUG_AUX_DEV, pf->flags))
-+		ice_unplug_aux_dev(pf);
- 
--		/* Mark plugging as done but check whether unplug was
--		 * requested during ice_plug_aux_dev() call
--		 * (e.g. from ice_clear_rdma_cap()) and if so then
--		 * plug aux device.
--		 */
--		if (!test_and_clear_bit(ICE_FLAG_PLUG_AUX_DEV, pf->flags))
--			ice_unplug_aux_dev(pf);
--	}
-+	/* Plug aux device per request */
-+	if (test_and_clear_bit(ICE_FLAG_PLUG_AUX_DEV, pf->flags))
-+		ice_plug_aux_dev(pf);
- 
- 	if (test_and_clear_bit(ICE_FLAG_MTU_CHANGED, pf->flags)) {
- 		struct iidc_event *event;
--- 
-2.38.1
-
+>
+> How did you manage to test this??
+>
+> Jason
