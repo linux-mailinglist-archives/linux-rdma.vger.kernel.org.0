@@ -2,161 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFCA69A4EA
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Feb 2023 05:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AC169A88A
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Feb 2023 10:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbjBQEgG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Feb 2023 23:36:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52278 "EHLO
+        id S230035AbjBQJqm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Feb 2023 04:46:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjBQEgF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Feb 2023 23:36:05 -0500
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5182822F
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Feb 2023 20:36:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676608561; x=1708144561;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=lE2QC2IbAmnciGS2qmUZ1OUjk3jI1GZc9tNXf5C+zMw=;
-  b=N54X9o/BvxJr1Yap+kgfVbpCs6EasgXAY/xs/VBSHAxnX9ZZlOGf5OyH
-   7In6VAvlQ/5FWPWoQquspqtCvU6qGnT66gdb6e4uU04U04elJB/djjq3s
-   IncZnyF4R+exxqfD3TLubZY7Novd13ORoDN5NmKQVyXfeUlEwSprpntqv
-   EUz2Wxyd6Qhh6Hi0qosqWLbRyN6o4qk3Rgn74BfF79T1CzfUrOa2u5Pxl
-   eqL8xwHMIzjlWAMrgovuWQ1A3yoorKn7Hyks414GBGfD5HvVqygUXBGRB
-   hoVujTAJEt0BbaXXVjXYSGKZAP3P5K477Nc+pWKPEeTneFbrd+TxKmJRg
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="320009622"
-X-IronPort-AV: E=Sophos;i="5.97,304,1669104000"; 
-   d="scan'208";a="320009622"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2023 20:36:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10623"; a="672467001"
-X-IronPort-AV: E=Sophos;i="5.97,304,1669104000"; 
-   d="scan'208";a="672467001"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Feb 2023 20:35:59 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pSsTX-000B7P-0P;
-        Fri, 17 Feb 2023 04:35:59 +0000
-Date:   Fri, 17 Feb 2023 12:35:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- a77a52385e9a761f896a88a4162e69fb7ccafe3f
-Message-ID: <63ef0413.3A77FejVYbYqBVdU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229725AbjBQJqi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Feb 2023 04:46:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57476EBD
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Feb 2023 01:45:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676627151;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=J7JYXyzu7HeaLauJruraDYc3KfnEEgDfWko7tD975N0=;
+        b=R4Iwk2Akap0hJ2cfBm5HezP2PqOVIbK3KEbTKfQrvduobZAk12k5NmVmhGZY7IahtyGFmD
+        laps2utwBbLI68qtTApMxZzdqd3un4DMc8xaNF7kaEgvpd2wpF0Q/GnU+bzXdH/tfijmnT
+        +am6avh2PEm9Ya6nvpLw1RsrnSDqcy4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-421-xTLq94TZMyaxh9fkygDAXA-1; Fri, 17 Feb 2023 04:45:46 -0500
+X-MC-Unique: xTLq94TZMyaxh9fkygDAXA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7B86A886462;
+        Fri, 17 Feb 2023 09:45:45 +0000 (UTC)
+Received: from TPP1.redhat.com (ovpn-193-244.brq.redhat.com [10.40.193.244])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 75EF5492C18;
+        Fri, 17 Feb 2023 09:45:43 +0000 (UTC)
+From:   Josef Oskera <joskera@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Josef Oskera <joskera@redhat.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] mlx4: supress fortify for inlined xmit
+Date:   Fri, 17 Feb 2023 10:45:41 +0100
+Message-Id: <20230217094541.2362873-1-joskera@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LONGWORDS,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: a77a52385e9a761f896a88a4162e69fb7ccafe3f  RDMA/rxe: Fix missing memory barriers in rxe_queue.h
+This call "skb_copy_from_linear_data(skb, inl + 1, spc)" triggers FORTIFY memcpy()
+warning on ppc64 platform.
 
-elapsed time: 720m
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘skb_copy_from_linear_data’ at ./include/linux/skbuff.h:4029:2,
+    inlined from ‘build_inline_wqe’ at drivers/net/ethernet/mellanox/mlx4/en_tx.c:722:4,
+    inlined from ‘mlx4_en_xmit’ at drivers/net/ethernet/mellanox/mlx4/en_tx.c:1066:3:
+./include/linux/fortify-string.h:513:25: error: call to ‘__write_overflow_field’ declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
+  513 |                         __write_overflow_field(p_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-configs tested: 79
-configs skipped: 3
+Same behaviour on x86 you can get if you use "__always_inline" instead of
+"inline" for skb_copy_from_linear_data() in skbuff.h
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The call here copies data into inlined tx destricptor, which has 104 bytes
+(MAX_INLINE) space for data payload. In this case "spc" is known in compile-time
+but the destination is used with hidden knowledge (real structure of destination
+is different from that the compiler can see). That cause the fortify warning
+because compiler can check bounds, but the real bounds are different.
+"spc" can't be bigger than 64 bytes (MLX4_INLINE_ALIGN), so the data can always
+fit into inlined tx descriptor.
+The fact that "inl" points into inlined tx descriptor is determined earlier
+in mlx4_en_xmit().
 
-gcc tested configs:
-alpha                            allyesconfig
-alpha                               defconfig
-arc                              allyesconfig
-arc                                 defconfig
-arc                  randconfig-r043-20230212
-arc                  randconfig-r043-20230213
-arm                              allmodconfig
-arm                              allyesconfig
-arm                                 defconfig
-arm                  randconfig-r046-20230212
-arm64                            allyesconfig
-arm64                               defconfig
-csky                                defconfig
-i386                             allyesconfig
-i386                              debian-10.3
-i386                                defconfig
-i386                 randconfig-a011-20230213
-i386                 randconfig-a012-20230213
-i386                 randconfig-a013-20230213
-i386                 randconfig-a014-20230213
-i386                 randconfig-a015-20230213
-i386                 randconfig-a016-20230213
-ia64                             allmodconfig
-ia64                                defconfig
-loongarch                        allmodconfig
-loongarch                         allnoconfig
-loongarch                           defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-mips                             allmodconfig
-mips                             allyesconfig
-nios2                               defconfig
-parisc                              defconfig
-parisc64                            defconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                randconfig-r042-20230213
-riscv                          rv32_defconfig
-s390                             allmodconfig
-s390                             allyesconfig
-s390                                defconfig
-s390                 randconfig-r044-20230213
-sh                               allmodconfig
-sparc                               defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                            allnoconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-x86_64                               rhel-8.3
+Fixes: f68f2ff91512c1 fortify: Detect struct member overflows in memcpy() at compile-time
+Signed-off-by: Josef Oskera <joskera@redhat.com>
+---
+ drivers/net/ethernet/mellanox/mlx4/en_tx.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-clang tested configs:
-arm                  randconfig-r046-20230213
-hexagon              randconfig-r041-20230212
-hexagon              randconfig-r041-20230213
-hexagon              randconfig-r045-20230212
-hexagon              randconfig-r045-20230213
-i386                 randconfig-a001-20230213
-i386                 randconfig-a002-20230213
-i386                 randconfig-a003-20230213
-i386                 randconfig-a004-20230213
-i386                 randconfig-a005-20230213
-i386                 randconfig-a006-20230213
-riscv                randconfig-r042-20230212
-s390                 randconfig-r044-20230212
-x86_64               randconfig-a001-20230213
-x86_64               randconfig-a002-20230213
-x86_64               randconfig-a003-20230213
-x86_64               randconfig-a004-20230213
-x86_64               randconfig-a005-20230213
-x86_64               randconfig-a006-20230213
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_tx.c b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+index c5758637b7bed6..f30ca9fe90e5b4 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+@@ -719,7 +719,16 @@ static void build_inline_wqe(struct mlx4_en_tx_desc *tx_desc,
+ 			inl = (void *) (inl + 1) + spc;
+ 			memcpy(((void *)(inl + 1)), fragptr, skb->len - spc);
+ 		} else {
+-			skb_copy_from_linear_data(skb, inl + 1, spc);
++			unsafe_memcpy(inl + 1, skb->data, spc,
++					/* This copies data into inlined tx descriptor, which has
++					 * 104 bytes (MAX_INLINE) space for data.
++					 * Real structure of destination is in this case hidden for
++					 * the compiler
++					 * "spc" is compile-time known variable and can't be bigger
++					 * than 64 (MLX4_INLINE_ALIGN).
++					 * Bounds and other conditions are checked in current
++					 * function and earlier in mlx4_en_xmit()
++					 */);
+ 			inl = (void *) (inl + 1) + spc;
+ 			skb_copy_from_linear_data_offset(skb, spc, inl + 1,
+ 							 hlen - spc);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.39.0
+
