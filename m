@@ -2,67 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F77669BB6E
-	for <lists+linux-rdma@lfdr.de>; Sat, 18 Feb 2023 19:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7E169BB7F
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Feb 2023 19:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbjBRSi5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 18 Feb 2023 13:38:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
+        id S229682AbjBRS5J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 18 Feb 2023 13:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjBRSi4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Feb 2023 13:38:56 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C275B12BEF
-        for <linux-rdma@vger.kernel.org>; Sat, 18 Feb 2023 10:38:54 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id i12so552139pgj.11
-        for <linux-rdma@vger.kernel.org>; Sat, 18 Feb 2023 10:38:54 -0800 (PST)
+        with ESMTP id S229683AbjBRS5J (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Feb 2023 13:57:09 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D737514481
+        for <linux-rdma@vger.kernel.org>; Sat, 18 Feb 2023 10:57:07 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id w9-20020a17090a028900b00236679bc70cso1970628pja.4
+        for <linux-rdma@vger.kernel.org>; Sat, 18 Feb 2023 10:57:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iTKepua2kscIuNx6W8BDWIkKKvbZQVVeOdAhbCfO3SE=;
-        b=Qr1HSZdE5f37YaHkVPA3tyWNxnLYtwoHRGIrYCxG0ZpB9c/gk2gOp4/kWGR2xhedzD
-         o3h/1htLKKVe6YmdGl9eXPNgzXTr6WsV9jYr4L6koLUCC3TpOmTYQwYhfGrQB5dZmN+J
-         S/cmEbce17loFmkRuhZSKRwSV44Kee71UcC54=
+        bh=khZrsJSUbGfXiIFHZOzdW4XxaJRpRDKuFefHfpZk7VQ=;
+        b=U6L3h3+huPvbAl1pYzB7644CU3KslDuSDX/rnUVdVSE8EO/jCl8KSq+HcTUmNsUE+l
+         MWVVQtZ3n5ZeIMx6Q3sC7M3riG3dy2sD18l8bUQ1a0sb5qb7hU3bBz+hKrcrS0eE2KKL
+         vOPUl845OwdVRpTXc9K7AP2A5q5DeYBvq2lts=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iTKepua2kscIuNx6W8BDWIkKKvbZQVVeOdAhbCfO3SE=;
-        b=fMr9ZJUJNpCRoZAkg0Olc/vrD6mq/mBjS85Stp3VIRle0P1XPibNcazW1nQ8C9yL5y
-         hJD5YWuBOuT0AGndq32fBurm1uf/aAbwzhFDXBNE6v9Y1yrVsqQzGGSdyhhE8XVoKyOV
-         rKTeD168n/i8LL840pEdhM2CFM756TxafCxHrQHQaZ0plnyu0G0bofNvoKMKi/8GV2ej
-         DCZv5dwa1Aw8oj/7uqU9iHKGtpUlArUU/jUcdiquQzEh8exqoBvAvTB2RkbxUzm4XEkY
-         8cL54kLopXUM27CKV5Gd86xWagX7BQT6Tufsf0LSN2WRHTWN4kizBReZiCBIKP8TMcjs
-         ODzQ==
-X-Gm-Message-State: AO0yUKUyySVuDsQrDmHAJAEWOE2b5CYzPIL4xZxYgc4C/TLr8auWAMBD
-        joaSxijNPMxKvD1TOyK/4kq/jg==
-X-Google-Smtp-Source: AK7set+Gcx6ssrL1CUCt4P4+IZA7KQVyN/WF/pbSuKZGBRUq406XL4EeLCrbyHjWeAeUhK45htmQXg==
-X-Received: by 2002:a62:1753:0:b0:5a8:d364:62ab with SMTP id 80-20020a621753000000b005a8d36462abmr4793539pfx.17.1676745534045;
-        Sat, 18 Feb 2023 10:38:54 -0800 (PST)
+        bh=khZrsJSUbGfXiIFHZOzdW4XxaJRpRDKuFefHfpZk7VQ=;
+        b=GUYOSxbtLJEJBJyuZu+wkeu7JOQlKAQdmIlFGUiay/2r0X/maa8M4vnJ4YavzoV4eL
+         PD8j1t9UoosV7A0uz8tXmKPN05dgU9k0N/W/gREdstp8BqHrEgqNs7jLiBwJS2/dtcxd
+         sCIftmsbpTcRgGzSASMqsY7Fm2Hc0TVMkCrgsSbjCptHbM20EK7ghLoBtfJohmU4ULhR
+         ueDMQM7O51dNs3b6rZDU5hdESEaMXcH/B3mVuu1NEFeXPfHQaHIpVephIfhzsV2aITkW
+         Z2f/4ef97565bfY2hVP5p1SJdRW9ulzZD70ZfeKdRhTgRZRO7hUDXE8nReKWTQ3ujaqN
+         YVxQ==
+X-Gm-Message-State: AO0yUKUbkEVMe+ZDwc6RMjSeaJqahLTB4YCJJSLh5HEwGbfFn+pWfyp4
+        rx3zTPI+z/2RwP3H1u7Rxw6Zfw==
+X-Google-Smtp-Source: AK7set95Ml42LR0aoYZ5jPoLyq1v3GWS3Edju77aaI6PR7qVPaby8Nb58nQ1Fv3u+8cYbCr1oIxDJg==
+X-Received: by 2002:a17:90b:314b:b0:234:68d:b8ea with SMTP id ip11-20020a17090b314b00b00234068db8eamr1256773pjb.39.1676746627369;
+        Sat, 18 Feb 2023 10:57:07 -0800 (PST)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h5-20020a62b405000000b005ae8e94b0d5sm1402624pfn.107.2023.02.18.10.38.52
+        by smtp.gmail.com with ESMTPSA id t13-20020a63b70d000000b004fd0feae70fsm2858542pgf.92.2023.02.18.10.57.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Feb 2023 10:38:53 -0800 (PST)
+        Sat, 18 Feb 2023 10:57:06 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
-To:     Tariq Toukan <tariqt@nvidia.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Josef Oskera <joskera@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] net/mlx4_en: Introduce flexible array to silence overflow warning
-Date:   Sat, 18 Feb 2023 10:38:50 -0800
-Message-Id: <20230218183842.never.954-kees@kernel.org>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     Kees Cook <keescook@chromium.org>, Zhang Yi <yizhan@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] IB/rdmavt: Fix target union member for rvt_post_one_wr()
+Date:   Sat, 18 Feb 2023 10:57:05 -0800
+Message-Id: <20230218185701.never.779-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4923; h=from:subject:message-id; bh=L+7mU/t7sXYwZ0oG57R81et2rDvNWl61qF2TMIxSz1g=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBj8Rs6xlqKlp/Ege1Wry6d43MG23RfmhUBBkucpD8j FHxqogeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY/EbOgAKCRCJcvTf3G3AJk/bD/ 4zEc1/cSH6OhQfMpSJnszACML9ZMpDTAHpqhLxshfcauGOHxH8Mbbny9Hfk1GbiSs3VNuiLLibJ9Ea MNQMf03saSs6SUHdtpKnjT9pBQe0Mn346nS1bH7/JCPjFDgmG/0sgf7eEN/v8Idpbj7bji81Jnguae jSUGZbNky0J43bqynylqQ4z/GOrYx/RWtyTRPQw7MKc+sHM+rYELvYs33Z8c/19OZpFzs5BfJXnPaB pHgNkYlYc1mYktPxe8SYFw4c3kadZ3cwx8WohmAffJ1gcTSipH2xA0Qcz11+ij1m2kbfQPw2NzJXt3 cOvOHe4CVgwLR4s0OxyRf6L9A+eDqsuzMJFPbxJcokgaJV580FBIQxz8Al8AGV4kvDVD5KbxgXmgui 8lMrCSq704uA4vzlZRc1rizoAb72tZlVSBnvkbLgYHp20p3Q/9oLuMEzu3rUKFf4koq23WKlSsdrQ+ XwTxMuY9mRzwKSn+ja0wgoNsiP7vBGEx7ZGmVLnfJqodpRJ8T8qlW4FtvWLPoGylzWu5OhbUgNWVIT ZZTgGovPPx19taMVvE/LNSlf/IhL45K5IpQT3nUvouQ97ikCHni/2VJ2zm60Fg7PPD6OxkdzLoJORP TqLU9ifrO+z7nnoT31HBKCmgw7hnlnETPzunGXGBsOZC120Z4xIudTk/A3mA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1516; h=from:subject:message-id; bh=/HzWdAZi2mss32NkJTT96+rWSz+FBTRF7/tT4SPTBks=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBj8R+ARt1rH8yQPogZEw9kSqe4GVamEa1N1HdO1wYS 1JDcxkeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY/EfgAAKCRCJcvTf3G3AJoPNEA Cjcju+UTd4rwsspQF9f1FONGLufsnWQl92vAKO2OOksXhZcW1WDdhCoDrJdWXaHw5wgQOSIMpspIUd ZksDF5Jp3W6IfXPM/bN7slCBF3BUViF38ztE+3jKL4kSKQ887pa29Yc1J8diepEAOGqgIA39dZkCiU nOeB/ZMcnDEoX/I60yQ3OmdNdnsTAmfu6J8lpO9pKBh4MVjwcYI9S0IB8NPEUdW0MzO02N7qE7nV+V 0er2MeeJHAcXxIUZ991WMIpd47H+gc24LT2LdagmoJYsoegbKgnC1kZuguQtVtb0Isjy59nfuTn4ou os2K04AXXrCdSrQ6YthE0hn51kH/Gww1NR7dcuqNfFudn9XlaxEg+rmLvdwFMfcGgsxf2E9t0sWqty LiUUfGP7N/hEGIOXz5r6/oAUztcDqTDGuSftulNTwrMsl8diNNfwiLmDSD5x0yL5oeyjY1sQXkjMIV KuLbgKnHjFC8SibUkJjZkPiMIVnJ7rONXhholiK8QNj6iUlzwTa1wMlJjF92Lk8YMSmI0fsmQASd77 fKwzOGpFK65V7IkbD+GR5eRkkpSimTgBAS11oYySch5Rjp1RdDr9m88F3LHIAhzOYkb4rRK5skmHVc Kh78SYU1rT0z7iUppS95kwWZapnmpmA7Nog+eysw8adTM+dGGrJdQ7W682QQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -75,116 +69,48 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The call "skb_copy_from_linear_data(skb, inl + 1, spc)" triggers a FORTIFY
-memcpy() warning on ppc64 platform:
+The "cplen" result used by the memcpy() into struct rvt_swqe "wqe" may
+be sized to 80 for struct rvt_ud_wr (which is member "ud_wr", not "wr"
+which is only 40 bytes in size). Change the destination union member so
+the compiler can use the correct bounds check.
 
-In function ‘fortify_memcpy_chk’,
-    inlined from ‘skb_copy_from_linear_data’ at ./include/linux/skbuff.h:4029:2,
-    inlined from ‘build_inline_wqe’ at drivers/net/ethernet/mellanox/mlx4/en_tx.c:722:4,
-    inlined from ‘mlx4_en_xmit’ at drivers/net/ethernet/mellanox/mlx4/en_tx.c:1066:3:
-./include/linux/fortify-string.h:513:25: error: call to ‘__write_overflow_field’ declared with
-attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()?
-[-Werror=attribute-warning]
-  513 |                         __write_overflow_field(p_size_field, size);
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+struct rvt_swqe {
+        union {
+                struct ib_send_wr wr;   /* don't use wr.sg_list */
+                struct rvt_ud_wr ud_wr;
+		...
+	};
+	...
+};
 
-Same behaviour on x86 you can get if you use "__always_inline" instead of
-"inline" for skb_copy_from_linear_data() in skbuff.h
+Silences false positive memcpy() run-time warning:
 
-The call here copies data into inlined tx destricptor, which has 104
-bytes (MAX_INLINE) space for data payload. In this case "spc" is known
-in compile-time but the destination is used with hidden knowledge
-(real structure of destination is different from that the compiler
-can see). That cause the fortify warning because compiler can check
-bounds, but the real bounds are different.  "spc" can't be bigger than
-64 bytes (MLX4_INLINE_ALIGN), so the data can always fit into inlined
-tx descriptor. The fact that "inl" points into inlined tx descriptor is
-determined earlier in mlx4_en_xmit().
+  memcpy: detected field-spanning write (size 80) of single field "&wqe->wr" at drivers/infiniband/sw/rdmavt/qp.c:2043 (size 40)
 
-Avoid confusing the compiler with "inl + 1" constructions to get to past
-the inl header by introducing a flexible array "data" to the struct so
-that the compiler can see that we are not dealing with an array of inl
-structs, but rather, arbitrary data following the structure. There are
-no changes to the structure layout reported by pahole, and the resulting
-machine code is actually smaller.
-
-Reported-by: Josef Oskera <joskera@redhat.com>
-Link: https://lore.kernel.org/lkml/20230217094541.2362873-1-joskera@redhat.com
-Fixes: f68f2ff91512 ("fortify: Detect struct member overflows in memcpy() at compile-time")
-Cc: Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Yishai Hadas <yishaih@nvidia.com>
-Cc: netdev@vger.kernel.org
+Reported-by: Zhang Yi <yizhan@redhat.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216561
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_tx.c | 22 +++++++++++-----------
- include/linux/mlx4/qp.h                    |  1 +
- 2 files changed, 12 insertions(+), 11 deletions(-)
+ drivers/infiniband/sw/rdmavt/qp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_tx.c b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-index c5758637b7be..2f79378fbf6e 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-@@ -699,32 +699,32 @@ static void build_inline_wqe(struct mlx4_en_tx_desc *tx_desc,
- 			inl->byte_count = cpu_to_be32(1 << 31 | skb->len);
- 		} else {
- 			inl->byte_count = cpu_to_be32(1 << 31 | MIN_PKT_LEN);
--			memset(((void *)(inl + 1)) + skb->len, 0,
-+			memset(inl->data + skb->len, 0,
- 			       MIN_PKT_LEN - skb->len);
- 		}
--		skb_copy_from_linear_data(skb, inl + 1, hlen);
-+		skb_copy_from_linear_data(skb, inl->data, hlen);
- 		if (shinfo->nr_frags)
--			memcpy(((void *)(inl + 1)) + hlen, fragptr,
-+			memcpy(inl->data + hlen, fragptr,
- 			       skb_frag_size(&shinfo->frags[0]));
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 3acab569fbb9..3f707e1fa517 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -2040,7 +2040,7 @@ static int rvt_post_one_wr(struct rvt_qp *qp,
+ 	wqe = rvt_get_swqe_ptr(qp, qp->s_head);
  
- 	} else {
- 		inl->byte_count = cpu_to_be32(1 << 31 | spc);
- 		if (hlen <= spc) {
--			skb_copy_from_linear_data(skb, inl + 1, hlen);
-+			skb_copy_from_linear_data(skb, inl->data, hlen);
- 			if (hlen < spc) {
--				memcpy(((void *)(inl + 1)) + hlen,
-+				memcpy(inl->data + hlen,
- 				       fragptr, spc - hlen);
- 				fragptr +=  spc - hlen;
- 			}
--			inl = (void *) (inl + 1) + spc;
--			memcpy(((void *)(inl + 1)), fragptr, skb->len - spc);
-+			inl = (void *)inl->data + spc;
-+			memcpy(inl->data, fragptr, skb->len - spc);
- 		} else {
--			skb_copy_from_linear_data(skb, inl + 1, spc);
--			inl = (void *) (inl + 1) + spc;
--			skb_copy_from_linear_data_offset(skb, spc, inl + 1,
-+			skb_copy_from_linear_data(skb, inl->data, spc);
-+			inl = (void *)inl->data + spc;
-+			skb_copy_from_linear_data_offset(skb, spc, inl->data,
- 							 hlen - spc);
- 			if (shinfo->nr_frags)
--				memcpy(((void *)(inl + 1)) + hlen - spc,
-+				memcpy(inl->data + hlen - spc,
- 				       fragptr,
- 				       skb_frag_size(&shinfo->frags[0]));
- 		}
-diff --git a/include/linux/mlx4/qp.h b/include/linux/mlx4/qp.h
-index c78b90f2e9a1..b9a7b1319f5d 100644
---- a/include/linux/mlx4/qp.h
-+++ b/include/linux/mlx4/qp.h
-@@ -446,6 +446,7 @@ enum {
+ 	/* cplen has length from above */
+-	memcpy(&wqe->wr, wr, cplen);
++	memcpy(&wqe->ud_wr, wr, cplen);
  
- struct mlx4_wqe_inline_seg {
- 	__be32			byte_count;
-+	__u8			data[];
- };
- 
- enum mlx4_update_qp_attr {
+ 	wqe->length = 0;
+ 	j = 0;
 -- 
 2.34.1
 
