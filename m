@@ -2,156 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E54C69BAD2
-	for <lists+linux-rdma@lfdr.de>; Sat, 18 Feb 2023 16:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D6569BAFD
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Feb 2023 17:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjBRP7j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 18 Feb 2023 10:59:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
+        id S229605AbjBRQ0n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 18 Feb 2023 11:26:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjBRP7i (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Feb 2023 10:59:38 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2069.outbound.protection.outlook.com [40.107.93.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEEA18A91
-        for <linux-rdma@vger.kernel.org>; Sat, 18 Feb 2023 07:59:36 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TAqj+G+hrpMsqcS1n0GN7c0A+QkSgy9lOtd2JphJzkToe2pQiTo/hUycBW3z/kgnNHW60VNv1QNTNBFZYwMC2VRepesl4n4NrCeW38iI5O1xp5DNeaQUsSQ1PXbtNjZkJyBpkIOQIoXT4xUpQm2Dh2mbwMOc9gJhUqjSxoXMFcGTAh8DXQFNoV+iohmj5SUAvSt5juO04PgyiuyM8wnhXry+BmRo0mVlP4I2Uv66KBEyS0IDcoBEDalGx9yDlnBQPK3ESiIz1HbmZQ7HG4s8vySJ9sOPlg8f3EXhK6lhBlRvnsRXIu23d8CMo/r6ChwDl5ftUA+YtQ682T6nbqvOYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OYEbkHUCZjEl5bdFrpsg+CPclEQ6vnsw0fJOci4oa00=;
- b=Ei7+vjyCl3T30GydlwQzUQNrT8Rdz1L3hMNQSGK1R3RuJeYkolZ5IltJWw8/XAqcQ6MEQAEmfDmZB/QHxZELwlHRETsimRciff+yzerjZd9MhOIbGzIXp6F9zupqazQMgXt5bEzshMa2XH0STtCtFjKEc8/tRvtGyhL/UaOqR4FVjeC2NFLTyH4MkBrPT1PT+xxFNlmiK8VIlaN3IKIV2z91lddswVav36acZJmU6D++tHYo1OaIdeUMRmLfmXIZgvjJ3cVDV8yCXrVKzYcFuC8Rt1dQCE9dSRBFCXfIPjB+oHJ0HfBADIx6q3X5Qzryo4m9/UhqEjvVrrB+nVZAkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OYEbkHUCZjEl5bdFrpsg+CPclEQ6vnsw0fJOci4oa00=;
- b=kxO3T3GB3/mG+AYl0eILNbWE/nyg+3DbkT8HnWOemnsToUK0L8y9yrMKiY+moQeH5PFddPtuejkcTcX9WtsLuyn/C+yPP414wvVjEShgPdQ/oMzMtP1vmwQXMp3vh3076568iwxbU3Mo3F48LED5+9PO0Ua0NRxR1K6O97pPOdP8ZLXutCMNxEfBaBRxana8/j67Qzo+jBpFdEfFCCitzkdvfg7jRHkTUqj+9VMJESM0TUR71TnAC28xRi3Dmw+IJi8A58QLYKdanyT7YBncpHslg2ZgnKoAku7Ivm33zUjegM4AJ1XvKAPezLi3p2URW2tJiJJUra/o5iq5bVNZIg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM6PR12MB4252.namprd12.prod.outlook.com (2603:10b6:5:211::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.18; Sat, 18 Feb
- 2023 15:59:34 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6111.013; Sat, 18 Feb 2023
- 15:59:34 +0000
-Date:   Sat, 18 Feb 2023 11:59:34 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     leonro@nvidia.com,
-        Brendan Cunningham <bcunningham@cornelisnetworks.com>,
-        Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 0/3] Respin: Rework system pinning
-Message-ID: <Y/D15urtDi5ZyZJ6@nvidia.com>
-References: <167656602090.2223096.15523567129751109800.stgit@awfm-02.cornelisnetworks.com>
- <Y+/maP/69VMafscx@nvidia.com>
- <e21f555b-4429-fca0-b8b1-e3e1470261b4@cornelisnetworks.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e21f555b-4429-fca0-b8b1-e3e1470261b4@cornelisnetworks.com>
-X-ClientProxiedBy: BL0PR02CA0046.namprd02.prod.outlook.com
- (2603:10b6:207:3d::23) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S229570AbjBRQ0m (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Feb 2023 11:26:42 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A612D78;
+        Sat, 18 Feb 2023 08:26:41 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E8AAFB803F5;
+        Sat, 18 Feb 2023 16:26:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D907C433D2;
+        Sat, 18 Feb 2023 16:26:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676737598;
+        bh=zUcJfJZk8tfAqsjf/uINW4J+WzQDryAf+30+DUdKJxQ=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=K/8fw7virAe90XsMLDmkak6nV2AScenBc4dZSeZ6QOpz+fxFlZZK6RjL+5VNQD4dh
+         uqUYjU7ZuyJIWytgk5NomjZDHZEqBUJE6G1fg2tB7Mr1yRft6APMbDACNhlWjhO6ql
+         aJjZ9RhvFlZu2fYiqzbJNNX+ZhT4eC9T8+8tk0U+C6sPUvHqf0e1RwRRTQjfmK8iHm
+         fBdfbXKUm6L2scYwzO8ObQRi4Btllze7vgsDs+liwOLG3DxX4R0qft9lr4ZB42V3xM
+         lgk/SJeI6Wv0CPvUmUZplu9wLbv/JR/JxOuQx7MkfoHATqxVMOw5ogZklNCZxPWz+4
+         HQyKotm8nK8KA==
+Date:   Sat, 18 Feb 2023 08:26:35 -0800
+From:   Kees Cook <kees@kernel.org>
+To:     Josef Oskera <joskera@redhat.com>, netdev@vger.kernel.org
+CC:     Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kees Cook <keescook@chromium.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] mlx4: supress fortify for inlined xmit
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20230217094541.2362873-1-joskera@redhat.com>
+References: <20230217094541.2362873-1-joskera@redhat.com>
+Message-ID: <2E9A091B-ABA3-4B99-965A-EA893F402F25@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4252:EE_
-X-MS-Office365-Filtering-Correlation-Id: 33a837d8-4590-424f-6978-08db11c92142
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ET+1Sr6Wewv/o7U5cCWY0nC6LHib3pwxgE1HhwUHdP7RGhvlT9rA8FMAgyAZ0C1wbHn6faX+K6mz3Et8mpDdDdwXV0pDUiTATBw9Yd6Cbg4+f/eEhUkUyo7qzov4VLu5kZf9GA2j5xkZiQ9/knyURE8Qqbu/j6aUiuMfG+7/eC0WmwO2EapVMuvdMS/GG0svo6z56Ie5NMnaYF6bEDZELrAEeGicd+odfQJu1k+VAxmOrxDOq8Tis4eE7xGUXSeWRxjwY32sHSQNrjg8jhZcGgyELq7+LjSLYbat+S8q7BMYvvBP0uyDPtcuUY5AJrqf2MyX92GQJN3ktnmrHeEWsGtJVBtn447VhVFU10sEbfu2L0ophgVcc4MLMSoyYba6wdxBSx1fDQ7dY2NarUCCI7m6DfiJr2Ot+LdO5Hmi7i89LCPthu0CoODt0f1IRmNusVHx37wyXKmNsmhtfxB4gYKQNeDFZiXrdWqmI3S9IQ6cPeRvyjCwJHQyAM0hVvm1atR3gYcXL6w6AE4ri1jdqEw9369du69K1+gGX4qhlbmR6Bt1F3KhxTPtHiGEa0YixJHwGtk5cS0dJ9Yu8DPm6OqYxztkA1SaiwOjrqot18N4uWfqIFsWi4Mw1GOFTz4mBEwlBRJXPAXq9EJqTKGlxeJZ1KQAGOcUwPfZM93nMR4YvvYycL52VF4/2h9mZloX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(396003)(136003)(346002)(366004)(376002)(451199018)(2906002)(38100700002)(53546011)(2616005)(86362001)(316002)(66946007)(8936002)(54906003)(36756003)(66556008)(5660300002)(6916009)(66476007)(8676002)(4326008)(41300700001)(478600001)(6512007)(6506007)(26005)(186003)(966005)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?b+Ndf6rfUhVJPeCswrZOsRFVdDdIrIS3bEBFaIBdj8cj0yIr1sUiYC+OWuxp?=
- =?us-ascii?Q?1PWBi+o4QX2uDCzfuaMF3E4KU6hKnnYrsOAL5HBEsZKIsYJfmhHChbI0VNgt?=
- =?us-ascii?Q?3ZpvqoTkDY89v2RUHGGPHKu8idVxZcyXtaNs/AZOwHYv19/7BxfYPZGjnbiR?=
- =?us-ascii?Q?098Gvp7IR0VmRTmsDaIkhfDWNyFpHWqwXhfc7rg6kWMtg7s53lrteiYP1hr7?=
- =?us-ascii?Q?s6lHDpxIfIDfagVLnS06GV1eNaRyjC4DabZ4snFJTSJMbQGEA9FLI5gLYIAU?=
- =?us-ascii?Q?3vbFJDKYa+6q1eEBj9+TDaCmDZHZlrxXHX0lb8wX+BYCWsEeO5k9uucHr9fb?=
- =?us-ascii?Q?seshyH2qFR9V+oZK2ih/vG7B/8Opm4g11ggFuZEePZG5M37z1aoRzkjBjUK3?=
- =?us-ascii?Q?FAmzBxzE5dMwBIiYsx27kXxt//+4QbiXkhjj1QvFOkcPtqy0pBxem670VQFa?=
- =?us-ascii?Q?Oi5kpJGkvoI0adNTRDzQ4JQFp+lUUbBpO5q5OXAvWmEF0E7dpSM3qLueHRHL?=
- =?us-ascii?Q?ULQ2auEZDhXv0FRI9jmp+ZyKfNjzUmENroQz/yAywzB21yIeg0GdUZXDadr4?=
- =?us-ascii?Q?WqNtEZ+r7PdcMqSb+RisEKq38QWeguGpoqB1HVs6xnKbZFyZB6SlU19zNl2n?=
- =?us-ascii?Q?7dZraVmk47SYzi9/md+pZlQOHlb4q8a3SGaIICk6D6Ig5Jn6hpDXkhQDfCQc?=
- =?us-ascii?Q?R3wIvvDvdlG8aHUoSKUb51dGuVETaBRbCPZLxxfgw6r/1P+1XGTbUvNX9HyN?=
- =?us-ascii?Q?DYMmmmm4zRpGRJ6H5TQ1VvtyA1XOFMiWJG1CpQioD5+9arI8ri1vRUqfwNaN?=
- =?us-ascii?Q?B6xABJ0YOpceJbZzaoAR2z1QINLO+TE4va6MTn7Na1oV34SquO8RBraK3vHo?=
- =?us-ascii?Q?IEW3gUYi0Pc0r7qM6/nj/CZ9vgKfTDb+N3TC6r8qalGoJ31oPIix7TWqMSFg?=
- =?us-ascii?Q?YHUC2BZLjFNG0dqecYnIpAJa2d2vZJk3fXxucr2AGY2HRKWKmHVFmkwCDUOF?=
- =?us-ascii?Q?dzrBF24XDcZqDikZYALVnKnBNzhxI1AY/botgrESkroc9AaOnopZrpDFsy85?=
- =?us-ascii?Q?84j+L4dWjT16z767dFD042/GfGy8pjGvI+IDwPzMD9FnMzzmkwwJUjFgwzO1?=
- =?us-ascii?Q?g9FL7GevoCZOgEwivwfTllE6VSRGblrpaxwozz/6CYJkKzFfCTupvfKDgrBK?=
- =?us-ascii?Q?CFfRKUNvyVmakcoKvQ+R8aTFR5AbOsk64dKJpeBwVIXZ0/aOyni2m+PO5dwR?=
- =?us-ascii?Q?sxMha/kTE5QS6YUMkQEcQr9+kswBQ3wAQusKDzy3TsZGB032ls1vwaROUUQm?=
- =?us-ascii?Q?eHSaSo9yQeaaB/YHATxV+cBe6ts0h74cJVnsCouxN3XKkJP5B5OyxPOS/hhi?=
- =?us-ascii?Q?4WMpRida3RrfUDId477oCfsCPA5kGv5QJOW9WKNGPSc4ef2oJUZTaJ3TWNGU?=
- =?us-ascii?Q?53JIT1DL8W64x1chKkHV6ikgNjSSOJ/DxObkX/gW2TEAJYzY+EjK3UArRSrS?=
- =?us-ascii?Q?awf0jDYY+iiB8F7uiBGDIc1UJEYSG3LjD2E6siuEHcxNBcviQnQLtR56ZDvM?=
- =?us-ascii?Q?Ipyry17/fPbVNopuRsjy4F3LZ52JLlbBpRH7g1gV?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33a837d8-4590-424f-6978-08db11c92142
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2023 15:59:34.8093
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: onX5OVdd/kChYTetQHdjKZMMoJZ8d5JE758RfXTobkzU5S9yJTfNcZxwRim0wlEN
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4252
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 17, 2023 at 04:40:32PM -0500, Dennis Dalessandro wrote:
-> On 2/17/23 3:41 PM, Jason Gunthorpe wrote:
-> > On Thu, Feb 16, 2023 at 11:56:18AM -0500, Dennis Dalessandro wrote:
-> >> This is a respin on top of the latest rdma/for-next branch
-> >> of the series being discussed on the list here:
-> >> https://lore.kernel.org/linux-rdma/Y+EbyU4HkGyzPoFO@nvidia.com/T/#ma3d153151adf1dbe2b9800000fa9a01f95a80c1f
-> >>
-> >> We have added fixes lines, and Brendan has discovered a couple code hunks that
-> >> do not need to be here in this submission. We have also removed the stats stuff
-> >> until the user side code is readily available.
-> >>
-> >> ---
-> >>
-> >> Patrick Kelsey (3):
-> >>       IB/hfi1: Fix math bugs in hfi1_can_pin_pages()
-> >>       IB/hfi1: Fix sdma.h tx->num_descs off-by-one errors
-> > 
-> > I took these two
-> > 
-> >>       IB/hfi1: Do SDMA memory-pinning through hfi1's pinning interface
-> > 
-> > But really? This is almost a thousand lines in just one patch, is that
-> > really justified? Can you break it up?
-> 
-> The bulk of the code is moving functions from user_sdma.c and others into a new
-> file, pin_system.c.
-> 
-> Not sure a bunch of commits "move XZY to pin_system.c" would be very
-> helpful.
+On February 17, 2023 1:45:41 AM PST, Josef Oskera <joskera@redhat=2Ecom> wr=
+ote:
+>This call "skb_copy_from_linear_data(skb, inl + 1, spc)" triggers FORTIFY=
+ memcpy()
+>warning on ppc64 platform=2E
+>
+>In function =E2=80=98fortify_memcpy_chk=E2=80=99,
+>    inlined from =E2=80=98skb_copy_from_linear_data=E2=80=99 at =2E/inclu=
+de/linux/skbuff=2Eh:4029:2,
+>    inlined from =E2=80=98build_inline_wqe=E2=80=99 at drivers/net/ethern=
+et/mellanox/mlx4/en_tx=2Ec:722:4,
+>    inlined from =E2=80=98mlx4_en_xmit=E2=80=99 at drivers/net/ethernet/m=
+ellanox/mlx4/en_tx=2Ec:1066:3:
+>=2E/include/linux/fortify-string=2Eh:513:25: error: call to =E2=80=98__wr=
+ite_overflow_field=E2=80=99 declared with attribute warning: detected write=
+ beyond size of field (1st parameter); maybe use struct_group()? [-Werror=
+=3Dattribute-warning]
+>  513 |                         __write_overflow_field(p_size_field, size=
+);
+>      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~
+>
+>Same behaviour on x86 you can get if you use "__always_inline" instead of
+>"inline" for skb_copy_from_linear_data() in skbuff=2Eh
+>
+>The call here copies data into inlined tx destricptor, which has 104 byte=
+s
+>(MAX_INLINE) space for data payload=2E In this case "spc" is known in com=
+pile-time
+>but the destination is used with hidden knowledge (real structure of dest=
+ination
+>is different from that the compiler can see)=2E That cause the fortify wa=
+rning
+>because compiler can check bounds, but the real bounds are different=2E
+>"spc" can't be bigger than 64 bytes (MLX4_INLINE_ALIGN), so the data can =
+always
+>fit into inlined tx descriptor=2E
+>The fact that "inl" points into inlined tx descriptor is determined earli=
+er
+>in mlx4_en_xmit()=2E
+>
+>Fixes: f68f2ff91512c1 fortify: Detect struct member overflows in memcpy()=
+ at compile-time
+>Signed-off-by: Josef Oskera <joskera@redhat=2Ecom>
+>---
+> drivers/net/ethernet/mellanox/mlx4/en_tx=2Ec | 11 ++++++++++-
+> 1 file changed, 10 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/net/ethernet/mellanox/mlx4/en_tx=2Ec b/drivers/net/e=
+thernet/mellanox/mlx4/en_tx=2Ec
+>index c5758637b7bed6=2E=2Ef30ca9fe90e5b4 100644
+>--- a/drivers/net/ethernet/mellanox/mlx4/en_tx=2Ec
+>+++ b/drivers/net/ethernet/mellanox/mlx4/en_tx=2Ec
+>@@ -719,7 +719,16 @@ static void build_inline_wqe(struct mlx4_en_tx_desc =
+*tx_desc,
+> 			inl =3D (void *) (inl + 1) + spc;
+> 			memcpy(((void *)(inl + 1)), fragptr, skb->len - spc);
 
-One doing code motion would be fine
+Using "unsafe" isn't the right solution here=2E What needs fixing is the "=
+inl + 1" pattern which lacks any sense from the compilet's perspective=2E T=
+he struct of inl needs to end with a flex array, and it should be used for =
+all the accesses=2E i=2Ee=2E replace all the "inl + 1" instances with "inl-=
+>data"=2E This makes it more readable for humans too=2E :)
 
-> To be fair, the patch was posted originally almost 6 weeks ago. In that time no
-> one has said anything so I don't think there are a bunch of people chomping at
-> the bit to review this. Any suggestions to make it easier for your review?
+I can send a patch=2E=2E=2E
 
-Linus will look at it, it can't be totally crazy
+-Kees
 
-Jason
+> 		} else {
+>-			skb_copy_from_linear_data(skb, inl + 1, spc);
+>+			unsafe_memcpy(inl + 1, skb->data, spc,
+>+					/* This copies data into inlined tx descriptor, which has
+>+					 * 104 bytes (MAX_INLINE) space for data=2E
+>+					 * Real structure of destination is in this case hidden for
+>+					 * the compiler
+>+					 * "spc" is compile-time known variable and can't be bigger
+>+					 * than 64 (MLX4_INLINE_ALIGN)=2E
+>+					 * Bounds and other conditions are checked in current
+>+					 * function and earlier in mlx4_en_xmit()
+>+					 */);
+> 			inl =3D (void *) (inl + 1) + spc;
+> 			skb_copy_from_linear_data_offset(skb, spc, inl + 1,
+> 							 hlen - spc);
+
+
+--=20
+Kees Cook
