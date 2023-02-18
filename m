@@ -2,155 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B41F069B930
-	for <lists+linux-rdma@lfdr.de>; Sat, 18 Feb 2023 10:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E54C69BAD2
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Feb 2023 16:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjBRJyA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 18 Feb 2023 04:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
+        id S229585AbjBRP7j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 18 Feb 2023 10:59:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjBRJx7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Feb 2023 04:53:59 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB0D34F73
-        for <linux-rdma@vger.kernel.org>; Sat, 18 Feb 2023 01:53:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676714037; x=1708250037;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=aeQdf319+1RvRpEjfcuoI1ZSHB9BLqtVm7zgylNVdRQ=;
-  b=ATXFLm0dDtbuxaU/m2+CatmYBUuau5QB+xHdcsG08XOmubA2AiEJXdRE
-   Z0FUx4roWfAZN/MlvOVtM+varX3G3pxNu8kAHmiC5QgBviwkV/GvBMfhn
-   pJyEVKHWd06z7mU1+n3OmMyXsdfLhUy9fw8yneVI2o6sLX4p3Ra5ipPQ+
-   hrpMjkq/rtuXOnIW0S+ecvaF6nqu2V157Y3JzwXn6H4mTSfBdXfgJ9I43
-   L10cHForFTi8y8hSAc6YVMgnOBhI8SA10enQUv+M1a8WIsGMYvbKkqSlu
-   NE5oArnOYEgooWd2hrAmJnNDDHQQ5VF5z2h2mL6QMzH8wWh7BoyG3MaJL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10624"; a="334358476"
-X-IronPort-AV: E=Sophos;i="5.97,306,1669104000"; 
-   d="scan'208";a="334358476"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2023 01:53:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10624"; a="780076403"
-X-IronPort-AV: E=Sophos;i="5.97,306,1669104000"; 
-   d="scan'208";a="780076403"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 18 Feb 2023 01:53:55 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pTJul-000CHU-0P;
-        Sat, 18 Feb 2023 09:53:55 +0000
-Date:   Sat, 18 Feb 2023 17:53:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- fd8958efe8779d3db19c9124fce593ce681ac709
-Message-ID: <63f0a02d.OSm4KOFxRYVP/fZI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
+        with ESMTP id S229689AbjBRP7i (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Feb 2023 10:59:38 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2069.outbound.protection.outlook.com [40.107.93.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEEA18A91
+        for <linux-rdma@vger.kernel.org>; Sat, 18 Feb 2023 07:59:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TAqj+G+hrpMsqcS1n0GN7c0A+QkSgy9lOtd2JphJzkToe2pQiTo/hUycBW3z/kgnNHW60VNv1QNTNBFZYwMC2VRepesl4n4NrCeW38iI5O1xp5DNeaQUsSQ1PXbtNjZkJyBpkIOQIoXT4xUpQm2Dh2mbwMOc9gJhUqjSxoXMFcGTAh8DXQFNoV+iohmj5SUAvSt5juO04PgyiuyM8wnhXry+BmRo0mVlP4I2Uv66KBEyS0IDcoBEDalGx9yDlnBQPK3ESiIz1HbmZQ7HG4s8vySJ9sOPlg8f3EXhK6lhBlRvnsRXIu23d8CMo/r6ChwDl5ftUA+YtQ682T6nbqvOYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OYEbkHUCZjEl5bdFrpsg+CPclEQ6vnsw0fJOci4oa00=;
+ b=Ei7+vjyCl3T30GydlwQzUQNrT8Rdz1L3hMNQSGK1R3RuJeYkolZ5IltJWw8/XAqcQ6MEQAEmfDmZB/QHxZELwlHRETsimRciff+yzerjZd9MhOIbGzIXp6F9zupqazQMgXt5bEzshMa2XH0STtCtFjKEc8/tRvtGyhL/UaOqR4FVjeC2NFLTyH4MkBrPT1PT+xxFNlmiK8VIlaN3IKIV2z91lddswVav36acZJmU6D++tHYo1OaIdeUMRmLfmXIZgvjJ3cVDV8yCXrVKzYcFuC8Rt1dQCE9dSRBFCXfIPjB+oHJ0HfBADIx6q3X5Qzryo4m9/UhqEjvVrrB+nVZAkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OYEbkHUCZjEl5bdFrpsg+CPclEQ6vnsw0fJOci4oa00=;
+ b=kxO3T3GB3/mG+AYl0eILNbWE/nyg+3DbkT8HnWOemnsToUK0L8y9yrMKiY+moQeH5PFddPtuejkcTcX9WtsLuyn/C+yPP414wvVjEShgPdQ/oMzMtP1vmwQXMp3vh3076568iwxbU3Mo3F48LED5+9PO0Ua0NRxR1K6O97pPOdP8ZLXutCMNxEfBaBRxana8/j67Qzo+jBpFdEfFCCitzkdvfg7jRHkTUqj+9VMJESM0TUR71TnAC28xRi3Dmw+IJi8A58QLYKdanyT7YBncpHslg2ZgnKoAku7Ivm33zUjegM4AJ1XvKAPezLi3p2URW2tJiJJUra/o5iq5bVNZIg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM6PR12MB4252.namprd12.prod.outlook.com (2603:10b6:5:211::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.18; Sat, 18 Feb
+ 2023 15:59:34 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6111.013; Sat, 18 Feb 2023
+ 15:59:34 +0000
+Date:   Sat, 18 Feb 2023 11:59:34 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     leonro@nvidia.com,
+        Brendan Cunningham <bcunningham@cornelisnetworks.com>,
+        Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next 0/3] Respin: Rework system pinning
+Message-ID: <Y/D15urtDi5ZyZJ6@nvidia.com>
+References: <167656602090.2223096.15523567129751109800.stgit@awfm-02.cornelisnetworks.com>
+ <Y+/maP/69VMafscx@nvidia.com>
+ <e21f555b-4429-fca0-b8b1-e3e1470261b4@cornelisnetworks.com>
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LONGWORDS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Disposition: inline
+In-Reply-To: <e21f555b-4429-fca0-b8b1-e3e1470261b4@cornelisnetworks.com>
+X-ClientProxiedBy: BL0PR02CA0046.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::23) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4252:EE_
+X-MS-Office365-Filtering-Correlation-Id: 33a837d8-4590-424f-6978-08db11c92142
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ET+1Sr6Wewv/o7U5cCWY0nC6LHib3pwxgE1HhwUHdP7RGhvlT9rA8FMAgyAZ0C1wbHn6faX+K6mz3Et8mpDdDdwXV0pDUiTATBw9Yd6Cbg4+f/eEhUkUyo7qzov4VLu5kZf9GA2j5xkZiQ9/knyURE8Qqbu/j6aUiuMfG+7/eC0WmwO2EapVMuvdMS/GG0svo6z56Ie5NMnaYF6bEDZELrAEeGicd+odfQJu1k+VAxmOrxDOq8Tis4eE7xGUXSeWRxjwY32sHSQNrjg8jhZcGgyELq7+LjSLYbat+S8q7BMYvvBP0uyDPtcuUY5AJrqf2MyX92GQJN3ktnmrHeEWsGtJVBtn447VhVFU10sEbfu2L0ophgVcc4MLMSoyYba6wdxBSx1fDQ7dY2NarUCCI7m6DfiJr2Ot+LdO5Hmi7i89LCPthu0CoODt0f1IRmNusVHx37wyXKmNsmhtfxB4gYKQNeDFZiXrdWqmI3S9IQ6cPeRvyjCwJHQyAM0hVvm1atR3gYcXL6w6AE4ri1jdqEw9369du69K1+gGX4qhlbmR6Bt1F3KhxTPtHiGEa0YixJHwGtk5cS0dJ9Yu8DPm6OqYxztkA1SaiwOjrqot18N4uWfqIFsWi4Mw1GOFTz4mBEwlBRJXPAXq9EJqTKGlxeJZ1KQAGOcUwPfZM93nMR4YvvYycL52VF4/2h9mZloX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(396003)(136003)(346002)(366004)(376002)(451199018)(2906002)(38100700002)(53546011)(2616005)(86362001)(316002)(66946007)(8936002)(54906003)(36756003)(66556008)(5660300002)(6916009)(66476007)(8676002)(4326008)(41300700001)(478600001)(6512007)(6506007)(26005)(186003)(966005)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?b+Ndf6rfUhVJPeCswrZOsRFVdDdIrIS3bEBFaIBdj8cj0yIr1sUiYC+OWuxp?=
+ =?us-ascii?Q?1PWBi+o4QX2uDCzfuaMF3E4KU6hKnnYrsOAL5HBEsZKIsYJfmhHChbI0VNgt?=
+ =?us-ascii?Q?3ZpvqoTkDY89v2RUHGGPHKu8idVxZcyXtaNs/AZOwHYv19/7BxfYPZGjnbiR?=
+ =?us-ascii?Q?098Gvp7IR0VmRTmsDaIkhfDWNyFpHWqwXhfc7rg6kWMtg7s53lrteiYP1hr7?=
+ =?us-ascii?Q?s6lHDpxIfIDfagVLnS06GV1eNaRyjC4DabZ4snFJTSJMbQGEA9FLI5gLYIAU?=
+ =?us-ascii?Q?3vbFJDKYa+6q1eEBj9+TDaCmDZHZlrxXHX0lb8wX+BYCWsEeO5k9uucHr9fb?=
+ =?us-ascii?Q?seshyH2qFR9V+oZK2ih/vG7B/8Opm4g11ggFuZEePZG5M37z1aoRzkjBjUK3?=
+ =?us-ascii?Q?FAmzBxzE5dMwBIiYsx27kXxt//+4QbiXkhjj1QvFOkcPtqy0pBxem670VQFa?=
+ =?us-ascii?Q?Oi5kpJGkvoI0adNTRDzQ4JQFp+lUUbBpO5q5OXAvWmEF0E7dpSM3qLueHRHL?=
+ =?us-ascii?Q?ULQ2auEZDhXv0FRI9jmp+ZyKfNjzUmENroQz/yAywzB21yIeg0GdUZXDadr4?=
+ =?us-ascii?Q?WqNtEZ+r7PdcMqSb+RisEKq38QWeguGpoqB1HVs6xnKbZFyZB6SlU19zNl2n?=
+ =?us-ascii?Q?7dZraVmk47SYzi9/md+pZlQOHlb4q8a3SGaIICk6D6Ig5Jn6hpDXkhQDfCQc?=
+ =?us-ascii?Q?R3wIvvDvdlG8aHUoSKUb51dGuVETaBRbCPZLxxfgw6r/1P+1XGTbUvNX9HyN?=
+ =?us-ascii?Q?DYMmmmm4zRpGRJ6H5TQ1VvtyA1XOFMiWJG1CpQioD5+9arI8ri1vRUqfwNaN?=
+ =?us-ascii?Q?B6xABJ0YOpceJbZzaoAR2z1QINLO+TE4va6MTn7Na1oV34SquO8RBraK3vHo?=
+ =?us-ascii?Q?IEW3gUYi0Pc0r7qM6/nj/CZ9vgKfTDb+N3TC6r8qalGoJ31oPIix7TWqMSFg?=
+ =?us-ascii?Q?YHUC2BZLjFNG0dqecYnIpAJa2d2vZJk3fXxucr2AGY2HRKWKmHVFmkwCDUOF?=
+ =?us-ascii?Q?dzrBF24XDcZqDikZYALVnKnBNzhxI1AY/botgrESkroc9AaOnopZrpDFsy85?=
+ =?us-ascii?Q?84j+L4dWjT16z767dFD042/GfGy8pjGvI+IDwPzMD9FnMzzmkwwJUjFgwzO1?=
+ =?us-ascii?Q?g9FL7GevoCZOgEwivwfTllE6VSRGblrpaxwozz/6CYJkKzFfCTupvfKDgrBK?=
+ =?us-ascii?Q?CFfRKUNvyVmakcoKvQ+R8aTFR5AbOsk64dKJpeBwVIXZ0/aOyni2m+PO5dwR?=
+ =?us-ascii?Q?sxMha/kTE5QS6YUMkQEcQr9+kswBQ3wAQusKDzy3TsZGB032ls1vwaROUUQm?=
+ =?us-ascii?Q?eHSaSo9yQeaaB/YHATxV+cBe6ts0h74cJVnsCouxN3XKkJP5B5OyxPOS/hhi?=
+ =?us-ascii?Q?4WMpRida3RrfUDId477oCfsCPA5kGv5QJOW9WKNGPSc4ef2oJUZTaJ3TWNGU?=
+ =?us-ascii?Q?53JIT1DL8W64x1chKkHV6ikgNjSSOJ/DxObkX/gW2TEAJYzY+EjK3UArRSrS?=
+ =?us-ascii?Q?awf0jDYY+iiB8F7uiBGDIc1UJEYSG3LjD2E6siuEHcxNBcviQnQLtR56ZDvM?=
+ =?us-ascii?Q?Ipyry17/fPbVNopuRsjy4F3LZ52JLlbBpRH7g1gV?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33a837d8-4590-424f-6978-08db11c92142
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2023 15:59:34.8093
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: onX5OVdd/kChYTetQHdjKZMMoJZ8d5JE758RfXTobkzU5S9yJTfNcZxwRim0wlEN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4252
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: fd8958efe8779d3db19c9124fce593ce681ac709  IB/hfi1: Fix sdma.h tx->num_descs off-by-one errors
+On Fri, Feb 17, 2023 at 04:40:32PM -0500, Dennis Dalessandro wrote:
+> On 2/17/23 3:41 PM, Jason Gunthorpe wrote:
+> > On Thu, Feb 16, 2023 at 11:56:18AM -0500, Dennis Dalessandro wrote:
+> >> This is a respin on top of the latest rdma/for-next branch
+> >> of the series being discussed on the list here:
+> >> https://lore.kernel.org/linux-rdma/Y+EbyU4HkGyzPoFO@nvidia.com/T/#ma3d153151adf1dbe2b9800000fa9a01f95a80c1f
+> >>
+> >> We have added fixes lines, and Brendan has discovered a couple code hunks that
+> >> do not need to be here in this submission. We have also removed the stats stuff
+> >> until the user side code is readily available.
+> >>
+> >> ---
+> >>
+> >> Patrick Kelsey (3):
+> >>       IB/hfi1: Fix math bugs in hfi1_can_pin_pages()
+> >>       IB/hfi1: Fix sdma.h tx->num_descs off-by-one errors
+> > 
+> > I took these two
+> > 
+> >>       IB/hfi1: Do SDMA memory-pinning through hfi1's pinning interface
+> > 
+> > But really? This is almost a thousand lines in just one patch, is that
+> > really justified? Can you break it up?
+> 
+> The bulk of the code is moving functions from user_sdma.c and others into a new
+> file, pin_system.c.
+> 
+> Not sure a bunch of commits "move XZY to pin_system.c" would be very
+> helpful.
 
-elapsed time: 767m
+One doing code motion would be fine
 
-configs tested: 73
-configs skipped: 3
+> To be fair, the patch was posted originally almost 6 weeks ago. In that time no
+> one has said anything so I don't think there are a bunch of people chomping at
+> the bit to review this. Any suggestions to make it easier for your review?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Linus will look at it, it can't be totally crazy
 
-gcc tested configs:
-alpha                            allyesconfig
-alpha                               defconfig
-arc                              allyesconfig
-arc                                 defconfig
-arc                  randconfig-r043-20230217
-arm                              allmodconfig
-arm                              allyesconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-csky                                defconfig
-i386                             allyesconfig
-i386                              debian-10.3
-i386                                defconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-ia64                             allmodconfig
-ia64                                defconfig
-loongarch                        allmodconfig
-loongarch                         allnoconfig
-loongarch                           defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-mips                             allmodconfig
-mips                             allyesconfig
-nios2                               defconfig
-parisc                              defconfig
-parisc64                            defconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                randconfig-r042-20230217
-riscv                          rv32_defconfig
-s390                             allmodconfig
-s390                             allyesconfig
-s390                                defconfig
-s390                 randconfig-r044-20230217
-sh                               allmodconfig
-sparc                               defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                            allnoconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                        randconfig-a002
-x86_64                        randconfig-a004
-x86_64                        randconfig-a006
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-x86_64                               rhel-8.3
-
-clang tested configs:
-arm                  randconfig-r046-20230217
-hexagon              randconfig-r041-20230217
-hexagon              randconfig-r045-20230217
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Jason
