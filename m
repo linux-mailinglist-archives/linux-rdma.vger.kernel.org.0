@@ -2,74 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AC969C6B1
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Feb 2023 09:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C88069C6B3
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Feb 2023 09:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbjBTIaf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Feb 2023 03:30:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        id S231229AbjBTIbD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Feb 2023 03:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjBTIac (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Feb 2023 03:30:32 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A0013D46;
-        Mon, 20 Feb 2023 00:30:19 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id t15so308685wrz.7;
-        Mon, 20 Feb 2023 00:30:19 -0800 (PST)
+        with ESMTP id S231185AbjBTIbA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Feb 2023 03:31:00 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE06A13D7F;
+        Mon, 20 Feb 2023 00:30:42 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id bg25-20020a05600c3c9900b003e21af96703so1260957wmb.2;
+        Mon, 20 Feb 2023 00:30:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VgPzqSQESn15Hy9eYP0tvbIKK9Eg8jsN9T7ptRq/d64=;
-        b=lesBfLDhuZMdjd7WwVl9vGUJ8u9y8h9h408IcwB5VqaIf+ZJfPmpaULMS9grpSzRFe
-         YqCHj0FSOHol5kDESczrYElfo5GtBRxDJcLQOXBWpfzpt9zKGepavo0CEAsFoJns5dAq
-         bpFbXqu5dc+VtqgwGGTZUmBaD1pMekfNhY6keQ/UFPKs+yTy8AW06Y9MXGqfjnJ4IBMG
-         W5CmTyyHQ/oK2C+Tx3szP+VwLNVK2kTENie49LFD9CVSLW3Rt48PZvGIxUBlK3AQuyIh
-         6ZJ0pyMOlEnHtVvOhfyPE/G46MFCu1FbnQUOxQN8UNkY46v4Dr24i8nAM2NLRanBb+gD
-         4ccw==
+        bh=38iBZGa7mhNZ+ybXNGzs0YzZQaRgPLDUglmvTZSdzf8=;
+        b=BsV5zdPskSj8ghH5JlJqRFefi7fNHP2JNs7LiuqtoTEuZw5vhwy9OCzDhPUZHEbxIQ
+         1fYiNp7947ovMQX67Svb38s1tj0jHXDe85g1Ayl7XLPF3MaaawYySEV+MZ9sEPWJQCsd
+         kPhaaFFX/4E3OHWQe5rcmWND/mtQzJhML44Y91zs6ARXUTHx3158xlAod1aCAKkXW5CH
+         sgMcB17Z6SJpC8z7kkKJR+/GQQ01Z2LscndGD3mhc+HbOUvM8gnkcx52vw/EjYVh6hR3
+         ee0rtGeEas1nugZ5yyVG+O/VVQUMTyBi4SWFh6dyzxbPGl/rM+FwTNEe6w/2YeFuVRGr
+         0u8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VgPzqSQESn15Hy9eYP0tvbIKK9Eg8jsN9T7ptRq/d64=;
-        b=hZdxBq1OgLJqWhVQEio9cAmtF22PDzKmcK5xE92puNgBuCvF0yToBea+rbo3HU5M56
-         m+cnEdDQxnyR5UqxnvbDJVJB60IBTBGVsA+a1Ndl/nefWHnGA5/PhCEO4c3RjTLNpYpX
-         vtlSyMsw2KnlLLo3DYunZdjxnC9QwM3l+RpbD4vRJyXeLMUL8cXCxdox4y3SRFoBgVdZ
-         s9CgSx7//A9UKOBSLJ0FKyH+5sMAHfItrVXgsKTFb4MCSVzwwfnrNk1RQFCNl/OzrKVe
-         C794HxvDYqMb8WDhra1zc+U98TtUgUfJgqdXe/h5/XuY+xrI2a5h3M9NVK8EQDyelMii
-         +Uqw==
-X-Gm-Message-State: AO0yUKVyYT7ktmefWSPf4ZM7MTTWaay+oX8MQuxln6NBjc1djRMGvrtC
-        hdtRPJ6yiWHkt+gBPhl0IXbWO3DyHng=
-X-Google-Smtp-Source: AK7set9Ea53Z2FgK27fMofUSVbW+R32Gx3MvdczNOshe2uNIXBxf3i0O/XEWa00S2LjGuIZfZ7oaHw==
-X-Received: by 2002:a5d:4046:0:b0:2c5:5ff8:6aff with SMTP id w6-20020a5d4046000000b002c55ff86affmr1236772wrp.3.1676881817750;
-        Mon, 20 Feb 2023 00:30:17 -0800 (PST)
+        bh=38iBZGa7mhNZ+ybXNGzs0YzZQaRgPLDUglmvTZSdzf8=;
+        b=RSURK9c3L90R6Veo9eiEjSue3iuZCGlVKsABrkpiyZI9KS/Kpn/PzDJdTBRgFSO9Hh
+         PGX7sbu5JNuF9A3xUC6wQGKlmHzb7SBR9sOqW1pxQpYGIvK8n6S/TkpBF3iRN2oJZRqk
+         Mgzw7LvXV87r2YUYSlUOjFOzvehNbU7E3GohDNddnrJrWRSOQ9Z90MngCX/lzL2S85B0
+         YUtwI+ZRhmQCyPeckfg8d8luflZgpS6choCdBmzqF5ODlXx9+XTHyKCl1dhG7brK6Fvc
+         dQYt8S4iCQFTtuQz01H82Ynlcb/zRalAoDLwwd47K0o9tDb1lgmNFl/RS7ts5H7+uIVI
+         u6JQ==
+X-Gm-Message-State: AO0yUKXrpxhmb8r2x9CnhEQrCoUsd1jdvk/HbF1y6BChqYUe3ahXnq3N
+        DCLa9ztARHnFkzq7MtIdjQQ=
+X-Google-Smtp-Source: AK7set/qzxLQRKHaj6GQzJWNraXjbW3LuAlEL2csLSRSz7eHOVKxOLZGQbn+89Bs4fr/SJOwF5zOvQ==
+X-Received: by 2002:a05:600c:1f06:b0:3df:9858:c03c with SMTP id bd6-20020a05600c1f0600b003df9858c03cmr417216wmb.17.1676881841332;
+        Mon, 20 Feb 2023 00:30:41 -0800 (PST)
 Received: from [192.168.1.115] ([77.124.87.109])
-        by smtp.gmail.com with ESMTPSA id s14-20020a5d510e000000b002c569acab1esm1102877wrt.73.2023.02.20.00.30.16
+        by smtp.gmail.com with ESMTPSA id l18-20020adfe9d2000000b002bfe08c566fsm1505663wrn.106.2023.02.20.00.30.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Feb 2023 00:30:17 -0800 (PST)
-Message-ID: <e8551085-30b8-dce3-28b7-233b47a7ddc1@gmail.com>
-Date:   Mon, 20 Feb 2023 10:30:15 +0200
+        Mon, 20 Feb 2023 00:30:40 -0800 (PST)
+Message-ID: <19004c92-6913-9e8e-7dc3-7d9173f131c1@gmail.com>
+Date:   Mon, 20 Feb 2023 10:30:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.2
-Subject: Re: [PATCH net] mlx4: supress fortify for inlined xmit
+Subject: Re: [PATCH] net/mlx4_en: Introduce flexible array to silence overflow
+ warning
 Content-Language: en-US
-To:     Kees Cook <kees@kernel.org>, Josef Oskera <joskera@redhat.com>,
-        netdev@vger.kernel.org
-Cc:     Tariq Toukan <tariqt@nvidia.com>,
+To:     Josef Oskera <joskera@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Kees Cook <keescook@chromium.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230217094541.2362873-1-joskera@redhat.com>
- <2E9A091B-ABA3-4B99-965A-EA893F402F25@kernel.org>
- <febbc959-4cc7-a810-8000-db37f2de53cc@gmail.com>
+        Yishai Hadas <yishaih@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20230218183842.never.954-kees@kernel.org>
+ <07b5c523-7174-ac30-65cb-182e07db08dc@gmail.com>
+ <CA+hmzGDGRTOv9RBe8Kt9b8LdKpHLiGNTA5DkivatraXigWbDjg@mail.gmail.com>
 From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <febbc959-4cc7-a810-8000-db37f2de53cc@gmail.com>
+In-Reply-To: <CA+hmzGDGRTOv9RBe8Kt9b8LdKpHLiGNTA5DkivatraXigWbDjg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,90 +86,14 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 19/02/2023 11:16, Tariq Toukan wrote:
+On 20/02/2023 4:09, Josef Oskera wrote:
+> I've tried Kees's patch and it works for me. I am able to compile mlx4
+> without the fortify warning.
 > 
-> 
-> On 18/02/2023 18:26, Kees Cook wrote:
->> On February 17, 2023 1:45:41 AM PST, Josef Oskera <joskera@redhat.com> 
->> wrote:
->>> This call "skb_copy_from_linear_data(skb, inl + 1, spc)" triggers 
->>> FORTIFY memcpy()
->>> warning on ppc64 platform.
->>>
->>> In function ‘fortify_memcpy_chk’,
->>>     inlined from ‘skb_copy_from_linear_data’ at 
->>> ./include/linux/skbuff.h:4029:2,
->>>     inlined from ‘build_inline_wqe’ at 
->>> drivers/net/ethernet/mellanox/mlx4/en_tx.c:722:4,
->>>     inlined from ‘mlx4_en_xmit’ at 
->>> drivers/net/ethernet/mellanox/mlx4/en_tx.c:1066:3:
->>> ./include/linux/fortify-string.h:513:25: error: call to 
->>> ‘__write_overflow_field’ declared with attribute warning: detected 
->>> write beyond size of field (1st parameter); maybe use struct_group()? 
->>> [-Werror=attribute-warning]
->>>   513 |                         __write_overflow_field(p_size_field, 
->>> size);
->>>       |                         
->>> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>
->>> Same behaviour on x86 you can get if you use "__always_inline" 
->>> instead of
->>> "inline" for skb_copy_from_linear_data() in skbuff.h
->>>
->>> The call here copies data into inlined tx destricptor, which has 104 
->>> bytes
->>> (MAX_INLINE) space for data payload. In this case "spc" is known in 
->>> compile-time
->>> but the destination is used with hidden knowledge (real structure of 
->>> destination
->>> is different from that the compiler can see). That cause the fortify 
->>> warning
->>> because compiler can check bounds, but the real bounds are different.
->>> "spc" can't be bigger than 64 bytes (MLX4_INLINE_ALIGN), so the data 
->>> can always
->>> fit into inlined tx descriptor.
->>> The fact that "inl" points into inlined tx descriptor is determined 
->>> earlier
->>> in mlx4_en_xmit().
->>>
->>> Fixes: f68f2ff91512c1 fortify: Detect struct member overflows in 
->>> memcpy() at compile-time
->>> Signed-off-by: Josef Oskera <joskera@redhat.com>
->>> ---
->>> drivers/net/ethernet/mellanox/mlx4/en_tx.c | 11 ++++++++++-
->>> 1 file changed, 10 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_tx.c 
->>> b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
->>> index c5758637b7bed6..f30ca9fe90e5b4 100644
->>> --- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
->>> +++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
->>> @@ -719,7 +719,16 @@ static void build_inline_wqe(struct 
->>> mlx4_en_tx_desc *tx_desc,
->>>             inl = (void *) (inl + 1) + spc;
->>>             memcpy(((void *)(inl + 1)), fragptr, skb->len - spc);
->>
->> Using "unsafe" isn't the right solution here. What needs fixing is the 
->> "inl + 1" pattern which lacks any sense from the compilet's 
->> perspective. The struct of inl needs to end with a flex array, and it 
->> should be used for all the accesses. i.e. replace all the "inl + 1" 
->> instances with "inl->data". This makes it more readable for humans 
->> too. :)
->>
->> I can send a patch...
->>
-> 
-> Although expanding the mlx4_wqe_inline_seg struct with a flex array 
-> sounds valid, I wouldn't go that way as it requires a larger change, 
-> touching common and RDMA code as well, for a driver in it's end-of-life 
-> stage.
-> 
-> We already have such unsafe_memcpy usage in mlx5 driver, so I can accept 
-> it here as well.
-> 
-> Let's keep the change as contained as possible.
-> 
-> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+> ne 19. 2. 2023 v 10:43 odesílatel Tariq Toukan <ttoukan.linux@gmail.com> napsal:
 
-Kees posted a contained alternative solution.
-Let's go with that one. Thanks.
+Thanks Josef.
+Then let's go with this one.
+
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+
