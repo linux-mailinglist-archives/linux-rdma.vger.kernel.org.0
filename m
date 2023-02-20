@@ -2,166 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A61669C41E
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Feb 2023 03:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4AC969C6B1
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Feb 2023 09:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjBTCZA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 19 Feb 2023 21:25:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
+        id S231176AbjBTIaf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Feb 2023 03:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbjBTCY7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 19 Feb 2023 21:24:59 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A98BDE3
-        for <linux-rdma@vger.kernel.org>; Sun, 19 Feb 2023 18:24:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676859896; x=1708395896;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=dYLrBZEcqbQ/OFekmCbY4/PFl7irVw3VbnSV9ibjPHo=;
-  b=hHHQ704I852W0YdnZXWb5l+cImEPGctmEMMQ4ZU63vhm1ow3Z7ZFWXsj
-   W/6lLtm0So34UYu3HynGAXN11r7IFgYml+sgEVl4wMBLbfderA+pIo/Zu
-   kJ69XGT8D+FZdlw6Yy60UYC3sJjZmN/ZUSboPFdJByvqbIYZsvQmWJZXG
-   Hsi5zo78dCU2qMvSW0quHXIXROCcVv1BQKmT8hFmNck/QpHmbOLrq0Mvb
-   A75NSDISSN2kP9/O/HrdxA4x8+z0FfwWYgRyD5PSUrEi1n9LOwC1E1+Re
-   OXT4QKV7i9nYdZGBW6fRdLaIB7qa+LzuEc6iwVQB0kFJG4R9Xfovfoe/8
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10626"; a="332315106"
-X-IronPort-AV: E=Sophos;i="5.97,311,1669104000"; 
-   d="scan'208";a="332315106"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2023 18:24:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10626"; a="795026187"
-X-IronPort-AV: E=Sophos;i="5.97,311,1669104000"; 
-   d="scan'208";a="795026187"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 19 Feb 2023 18:24:54 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pTvrJ-000DYz-1s;
-        Mon, 20 Feb 2023 02:24:53 +0000
-Date:   Mon, 20 Feb 2023 10:23:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 66fb1d5df6ace316a4a6e2c31e13fc123ea2b644
-Message-ID: <63f2d9bc.NGzfx4gIwlEBRS4L%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229663AbjBTIac (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Feb 2023 03:30:32 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A0013D46;
+        Mon, 20 Feb 2023 00:30:19 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id t15so308685wrz.7;
+        Mon, 20 Feb 2023 00:30:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VgPzqSQESn15Hy9eYP0tvbIKK9Eg8jsN9T7ptRq/d64=;
+        b=lesBfLDhuZMdjd7WwVl9vGUJ8u9y8h9h408IcwB5VqaIf+ZJfPmpaULMS9grpSzRFe
+         YqCHj0FSOHol5kDESczrYElfo5GtBRxDJcLQOXBWpfzpt9zKGepavo0CEAsFoJns5dAq
+         bpFbXqu5dc+VtqgwGGTZUmBaD1pMekfNhY6keQ/UFPKs+yTy8AW06Y9MXGqfjnJ4IBMG
+         W5CmTyyHQ/oK2C+Tx3szP+VwLNVK2kTENie49LFD9CVSLW3Rt48PZvGIxUBlK3AQuyIh
+         6ZJ0pyMOlEnHtVvOhfyPE/G46MFCu1FbnQUOxQN8UNkY46v4Dr24i8nAM2NLRanBb+gD
+         4ccw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VgPzqSQESn15Hy9eYP0tvbIKK9Eg8jsN9T7ptRq/d64=;
+        b=hZdxBq1OgLJqWhVQEio9cAmtF22PDzKmcK5xE92puNgBuCvF0yToBea+rbo3HU5M56
+         m+cnEdDQxnyR5UqxnvbDJVJB60IBTBGVsA+a1Ndl/nefWHnGA5/PhCEO4c3RjTLNpYpX
+         vtlSyMsw2KnlLLo3DYunZdjxnC9QwM3l+RpbD4vRJyXeLMUL8cXCxdox4y3SRFoBgVdZ
+         s9CgSx7//A9UKOBSLJ0FKyH+5sMAHfItrVXgsKTFb4MCSVzwwfnrNk1RQFCNl/OzrKVe
+         C794HxvDYqMb8WDhra1zc+U98TtUgUfJgqdXe/h5/XuY+xrI2a5h3M9NVK8EQDyelMii
+         +Uqw==
+X-Gm-Message-State: AO0yUKVyYT7ktmefWSPf4ZM7MTTWaay+oX8MQuxln6NBjc1djRMGvrtC
+        hdtRPJ6yiWHkt+gBPhl0IXbWO3DyHng=
+X-Google-Smtp-Source: AK7set9Ea53Z2FgK27fMofUSVbW+R32Gx3MvdczNOshe2uNIXBxf3i0O/XEWa00S2LjGuIZfZ7oaHw==
+X-Received: by 2002:a5d:4046:0:b0:2c5:5ff8:6aff with SMTP id w6-20020a5d4046000000b002c55ff86affmr1236772wrp.3.1676881817750;
+        Mon, 20 Feb 2023 00:30:17 -0800 (PST)
+Received: from [192.168.1.115] ([77.124.87.109])
+        by smtp.gmail.com with ESMTPSA id s14-20020a5d510e000000b002c569acab1esm1102877wrt.73.2023.02.20.00.30.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Feb 2023 00:30:17 -0800 (PST)
+Message-ID: <e8551085-30b8-dce3-28b7-233b47a7ddc1@gmail.com>
+Date:   Mon, 20 Feb 2023 10:30:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [PATCH net] mlx4: supress fortify for inlined xmit
+Content-Language: en-US
+To:     Kees Cook <kees@kernel.org>, Josef Oskera <joskera@redhat.com>,
+        netdev@vger.kernel.org
+Cc:     Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kees Cook <keescook@chromium.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230217094541.2362873-1-joskera@redhat.com>
+ <2E9A091B-ABA3-4B99-965A-EA893F402F25@kernel.org>
+ <febbc959-4cc7-a810-8000-db37f2de53cc@gmail.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <febbc959-4cc7-a810-8000-db37f2de53cc@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 66fb1d5df6ace316a4a6e2c31e13fc123ea2b644  IB/mlx5: Extend debug control for CC parameters
 
-elapsed time: 761m
 
-configs tested: 84
-configs skipped: 4
+On 19/02/2023 11:16, Tariq Toukan wrote:
+> 
+> 
+> On 18/02/2023 18:26, Kees Cook wrote:
+>> On February 17, 2023 1:45:41 AM PST, Josef Oskera <joskera@redhat.com> 
+>> wrote:
+>>> This call "skb_copy_from_linear_data(skb, inl + 1, spc)" triggers 
+>>> FORTIFY memcpy()
+>>> warning on ppc64 platform.
+>>>
+>>> In function ‘fortify_memcpy_chk’,
+>>>     inlined from ‘skb_copy_from_linear_data’ at 
+>>> ./include/linux/skbuff.h:4029:2,
+>>>     inlined from ‘build_inline_wqe’ at 
+>>> drivers/net/ethernet/mellanox/mlx4/en_tx.c:722:4,
+>>>     inlined from ‘mlx4_en_xmit’ at 
+>>> drivers/net/ethernet/mellanox/mlx4/en_tx.c:1066:3:
+>>> ./include/linux/fortify-string.h:513:25: error: call to 
+>>> ‘__write_overflow_field’ declared with attribute warning: detected 
+>>> write beyond size of field (1st parameter); maybe use struct_group()? 
+>>> [-Werror=attribute-warning]
+>>>   513 |                         __write_overflow_field(p_size_field, 
+>>> size);
+>>>       |                         
+>>> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>
+>>> Same behaviour on x86 you can get if you use "__always_inline" 
+>>> instead of
+>>> "inline" for skb_copy_from_linear_data() in skbuff.h
+>>>
+>>> The call here copies data into inlined tx destricptor, which has 104 
+>>> bytes
+>>> (MAX_INLINE) space for data payload. In this case "spc" is known in 
+>>> compile-time
+>>> but the destination is used with hidden knowledge (real structure of 
+>>> destination
+>>> is different from that the compiler can see). That cause the fortify 
+>>> warning
+>>> because compiler can check bounds, but the real bounds are different.
+>>> "spc" can't be bigger than 64 bytes (MLX4_INLINE_ALIGN), so the data 
+>>> can always
+>>> fit into inlined tx descriptor.
+>>> The fact that "inl" points into inlined tx descriptor is determined 
+>>> earlier
+>>> in mlx4_en_xmit().
+>>>
+>>> Fixes: f68f2ff91512c1 fortify: Detect struct member overflows in 
+>>> memcpy() at compile-time
+>>> Signed-off-by: Josef Oskera <joskera@redhat.com>
+>>> ---
+>>> drivers/net/ethernet/mellanox/mlx4/en_tx.c | 11 ++++++++++-
+>>> 1 file changed, 10 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_tx.c 
+>>> b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+>>> index c5758637b7bed6..f30ca9fe90e5b4 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+>>> @@ -719,7 +719,16 @@ static void build_inline_wqe(struct 
+>>> mlx4_en_tx_desc *tx_desc,
+>>>             inl = (void *) (inl + 1) + spc;
+>>>             memcpy(((void *)(inl + 1)), fragptr, skb->len - spc);
+>>
+>> Using "unsafe" isn't the right solution here. What needs fixing is the 
+>> "inl + 1" pattern which lacks any sense from the compilet's 
+>> perspective. The struct of inl needs to end with a flex array, and it 
+>> should be used for all the accesses. i.e. replace all the "inl + 1" 
+>> instances with "inl->data". This makes it more readable for humans 
+>> too. :)
+>>
+>> I can send a patch...
+>>
+> 
+> Although expanding the mlx4_wqe_inline_seg struct with a flex array 
+> sounds valid, I wouldn't go that way as it requires a larger change, 
+> touching common and RDMA code as well, for a driver in it's end-of-life 
+> stage.
+> 
+> We already have such unsafe_memcpy usage in mlx5 driver, so I can accept 
+> it here as well.
+> 
+> Let's keep the change as contained as possible.
+> 
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-alpha                            allyesconfig
-alpha                               defconfig
-arc                              allyesconfig
-arc                                 defconfig
-arc                  randconfig-r043-20230219
-arc                        vdk_hs38_defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm                                 defconfig
-arm                      footbridge_defconfig
-arm                            zeus_defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-csky                                defconfig
-i386                             allyesconfig
-i386                              debian-10.3
-i386                                defconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                      gensparse_defconfig
-loongarch                        allmodconfig
-loongarch                         allnoconfig
-loongarch                           defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-mips                             allmodconfig
-mips                             allyesconfig
-nios2                               defconfig
-parisc                              defconfig
-parisc64                            defconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                     asp8347_defconfig
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                    nommu_k210_defconfig
-riscv                randconfig-r042-20230219
-riscv                          rv32_defconfig
-s390                             allmodconfig
-s390                             allyesconfig
-s390                                defconfig
-s390                 randconfig-r044-20230219
-sh                               allmodconfig
-sh                         apsh4a3a_defconfig
-sh                          rsk7203_defconfig
-sparc                               defconfig
-sparc64                             defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                            allnoconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                        randconfig-a002
-x86_64                        randconfig-a004
-x86_64                        randconfig-a006
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-x86_64                               rhel-8.3
-
-clang tested configs:
-arm                  randconfig-r046-20230219
-hexagon              randconfig-r041-20230219
-hexagon              randconfig-r045-20230219
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-mips                        maltaup_defconfig
-powerpc                    gamecube_defconfig
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Kees posted a contained alternative solution.
+Let's go with that one. Thanks.
