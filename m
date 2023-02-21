@@ -2,97 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCA069D63D
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Feb 2023 23:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7B669D79A
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Feb 2023 01:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbjBTWQo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Feb 2023 17:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        id S232556AbjBUAkT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Feb 2023 19:40:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232022AbjBTWQn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Feb 2023 17:16:43 -0500
-Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF8F1ADD0
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Feb 2023 14:16:37 -0800 (PST)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id UESYpyOTplrplUESYpdBva; Mon, 20 Feb 2023 23:16:35 +0100
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 20 Feb 2023 23:16:35 +0100
-X-ME-IP: 86.243.2.178
-Message-ID: <e92c7992-303a-0f71-13b2-f33efbba4b22@wanadoo.fr>
-Date:   Mon, 20 Feb 2023 23:16:34 +0100
+        with ESMTP id S232149AbjBUAkT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Feb 2023 19:40:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9E71A66E;
+        Mon, 20 Feb 2023 16:40:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BFF5D60F58;
+        Tue, 21 Feb 2023 00:40:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1472CC433EF;
+        Tue, 21 Feb 2023 00:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676940017;
+        bh=VhTw6+ty7Uy7+7gPWBXLZ20yxCWQedsCuDqOZ/YlgEg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=evKo+/LxHtHqQziyotx04ypCXrRCodUs41h4o7IpwaRL8cD4ZPOBvoiGX/SGIjnNh
+         dh47Wf2uz2YDLPv9rBSM3RVG75bxBbdJxn9S8YikvrV7vNmKcptQvposkZ5Ld1Ra+F
+         Iz3E+yjpqpqHtbPgyg+uQJkzj2gyc7+NaeLDrPzwSXNXRe6+hJbg8RTwGQA/aYz46f
+         G0+WkO6EiFS7Feu9mg01iivlzCUbmS9yAXGSiROjdTS18VW9RA55jsAGskYfpOb9vW
+         N6HHAs2YTHE1dhgn4DYkMsFKRsRPcEruVkbUqc8lRPFnYWQazyQ3DAmHmn4AFP3FYV
+         q/afxOrJ9Oj2A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EE8DBC691DE;
+        Tue, 21 Feb 2023 00:40:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] RDMA/restrack: Reorder fields in 'struct
- rdma_restrack_entry'
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <d47800d9fd5ac7c33d01af04b12b6d43ad23c96e.1676379187.git.christophe.jaillet@wanadoo.fr>
- <Y+uH0k0OBzPip1P8@ziepe.ca> <75480cf9-8d06-7a7d-4624-6ddbb7d6053a@wanadoo.fr>
- <Y+uiLCB7H2xVvQZW@ziepe.ca> <Y+zCkwTgevj0zDFK@unreal>
-Content-Language: fr, en-US
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <Y+zCkwTgevj0zDFK@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] net/mlx4_en: Introduce flexible array to silence overflow
+ warning
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167694001697.5796.9907214630396973552.git-patchwork-notify@kernel.org>
+Date:   Tue, 21 Feb 2023 00:40:16 +0000
+References: <20230218183842.never.954-kees@kernel.org>
+In-Reply-To: <20230218183842.never.954-kees@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     tariqt@nvidia.com, joskera@redhat.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        yishaih@nvidia.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Le 15/02/2023 à 12:31, Leon Romanovsky a écrit :
-> On Tue, Feb 14, 2023 at 11:01:00AM -0400, Jason Gunthorpe wrote:
->> On Tue, Feb 14, 2023 at 03:34:21PM +0100, Christophe JAILLET wrote:
->>> Le 14/02/2023 à 14:08, Jason Gunthorpe a écrit :
->>>> On Tue, Feb 14, 2023 at 01:53:52PM +0100, Christophe JAILLET wrote:
->>>>> diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
->>>>> index 8b7c46daeb07..da53fefe6f9e 100644
->>>>> --- a/include/rdma/restrack.h
->>>>> +++ b/include/rdma/restrack.h
->>>>> @@ -80,6 +80,10 @@ struct rdma_restrack_entry {
->>>>>    	 * query stage.
->>>>>    	 */
->>>>>    	u8			no_track : 1;
->>>>> +	/**
->>>>> +	 * @user: user resource
->>>>> +	 */
->>>>> +	bool			user;
->>>>
->>>> Can we combine this into the bitfield above?
->>>>
->>>> Jason
->>>>
->>> Hi,
->>>
->>> and even above, we have
->>> 	bool	valid;
->>>
->>> I wanted to keep the changes as minimal as possible, but I can change them
->>> all in a single bitfield.
->>
->> IIRC it needs to be checked, I vaugely remember valid can't be a
->> bitfield because it is an atomic
+Hello:
+
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Sat, 18 Feb 2023 10:38:50 -0800 you wrote:
+> The call "skb_copy_from_linear_data(skb, inl + 1, spc)" triggers a FORTIFY
+> memcpy() warning on ppc64 platform:
 > 
-> I don't remember anything like this.
+> In function ‘fortify_memcpy_chk’,
+>     inlined from ‘skb_copy_from_linear_data’ at ./include/linux/skbuff.h:4029:2,
+>     inlined from ‘build_inline_wqe’ at drivers/net/ethernet/mellanox/mlx4/en_tx.c:722:4,
+>     inlined from ‘mlx4_en_xmit’ at drivers/net/ethernet/mellanox/mlx4/en_tx.c:1066:3:
+> ./include/linux/fortify-string.h:513:25: error: call to ‘__write_overflow_field’ declared with
+> attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()?
+> [-Werror=attribute-warning]
+>   513 |                         __write_overflow_field(p_size_field, size);
+>       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> Thanks
-> 
+> [...]
 
-If I understand code correctly, 'valid' is only used in 
-rdma_restrack_add() and rdma_restrack_del().
+Here is the summary with links:
+  - net/mlx4_en: Introduce flexible array to silence overflow warning
+    https://git.kernel.org/netdev/net-next/c/f8f185e39b4d
 
-I don't think that any atomic behavior is in place in these functions.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-I'll send in the coming days a v2 which changes 'valid', 'no_track' and 
-'user' as bool:1.
-
-CJ
