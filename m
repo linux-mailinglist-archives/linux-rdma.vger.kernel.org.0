@@ -2,79 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1DB69DAAA
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Feb 2023 07:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A1769DB1F
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Feb 2023 08:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbjBUGjs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Feb 2023 01:39:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
+        id S233575AbjBUHZQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Feb 2023 02:25:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjBUGjs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Feb 2023 01:39:48 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4560D23679;
-        Mon, 20 Feb 2023 22:39:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DC572B8068F;
-        Tue, 21 Feb 2023 06:39:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23631C433EF;
-        Tue, 21 Feb 2023 06:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676961584;
-        bh=YkFOO9aM1K8Qut5IqFRyX6dRKUEyTubYWucTE1mbxLE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=APnLhJFFs9hjDS/jPj8WNQluDdj+BTiX6SwX+dRfBct1/UaSdOxCrr+k8szsMMMFu
-         lm4uueZ8xO/nrKIUVQKAtrfdE8xTvn16wwK8B8T0eGGueo3n9lsh5Xdyd/DQY3ZU8W
-         MngBp22cq1rmfj437KHzAFS8hUtsyegIychXzRZVhcknesAmS9c8txTVxxwhAKJBko
-         IVBXOycbm93a7+wZeUPRDM4J7tX+a+eMazZxCe/Nzj7Rp1XFtBoeiB+2JvEKW7n68p
-         X14ZNqBwQhdrzhQibospJTY7GJc2xTozRArnW6eMbltQdswZk3S9IsWx6V7VAiT50I
-         XR/ukxwL9eNjw==
-Date:   Tue, 21 Feb 2023 08:39:40 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Patrisious Haddad <phaddad@nvidia.com>,
-        Eric Dumazet <edumazet@google.com>, linux-rdma@vger.kernel.org,
-        Mark Zhang <markzhang@nvidia.com>, netdev@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>, Raed Salem <raeds@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH net-next] net/mlx5: Fix memory leak in IPsec RoCE creation
-Message-ID: <Y/RnLCPZPaR4WSUC@unreal>
-References: <1b414ea3a92aa0d07b6261cf641445f27bc619d8.1676811549.git.leon@kernel.org>
- <20230220165000.1eda0afb@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230220165000.1eda0afb@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232640AbjBUHZP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Feb 2023 02:25:15 -0500
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416D67EFC;
+        Mon, 20 Feb 2023 23:25:13 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VcBEick_1676964305;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VcBEick_1676964305)
+          by smtp.aliyun-inc.com;
+          Tue, 21 Feb 2023 15:25:09 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH net-next 0/2] net/smc: Introduce BPF injection capability
+Date:   Tue, 21 Feb 2023 15:25:03 +0800
+Message-Id: <1676964305-1093-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 20, 2023 at 04:50:00PM -0800, Jakub Kicinski wrote:
-> On Sun, 19 Feb 2023 14:59:57 +0200 Leon Romanovsky wrote:
-> > -rule_fail:
-> > +fail_rule:
-> >  	mlx5_destroy_flow_group(roce->g);
-> > -fail:
-> > +fail_group:
-> >  	mlx5_destroy_flow_table(ft);
-> > +fail_table:
-> > +	kvfree(in);
-> >  	return err;
-> 
-> If you're touching all of them please name them after what they do.
-> Much easier to review.
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-I can change it, but all mlx* drivers and randomly chosen place in ice
-use label to show what fail and not what will be done. Such notation
-gives an ability to refactor code without changing label names if
-failed part of code is not removed.
+This PATCHes attempts to introduce BPF injection capability for SMC,
+and add selftest to ensure code stability.
 
-Thanks
+As we all know that the SMC protocol is not suitable for all scenarios,
+especially for short-lived. However, for most applications, they cannot
+guarantee that there are no such scenarios at all. Therefore, apps
+may need some specific strategies to decide shall we need to use SMC
+or not, for example, apps can limit the scope of the SMC to a specific
+IP address or port.
+
+Based on the consideration of transparent replacement, we hope that apps
+can remain transparent even if they need to formulate some specific
+strategies for SMC using. That is, do not need to recompile their code.
+
+On the other hand, we need to ensure the scalability of strategies
+implementation. Although it is simple to use socket options or sysctl,
+it will bring more complexity to subsequent expansion.
+
+Fortunately, BPF can solve these concerns very well, users can write
+thire own strategies in eBPF to choose whether to use SMC or not.
+And it's quite easy for them to modify their strategies in the future.
+
+This PATCHes implement injection capability for SMC via struct_ops.
+In that way, we can add new injection scenarios in the future.
+
+D. Wythe (2):
+  net/smc: Introduce BPF injection capability for SMC
+  net/smc: add selftest for SMC bpf capability
+
+ include/linux/btf_ids.h                          |  15 ++
+ include/net/smc.h                                | 254 ++++++++++++++++++
+ kernel/bpf/bpf_struct_ops_types.h                |   4 +
+ net/Makefile                                     |   5 +
+ net/smc/af_smc.c                                 |  10 +-
+ net/smc/bpf_smc_struct_ops.c                     | 146 +++++++++++
+ net/smc/smc.h                                    | 220 ----------------
+ tools/testing/selftests/bpf/prog_tests/bpf_smc.c |  39 +++
+ tools/testing/selftests/bpf/progs/bpf_smc.c      | 315 +++++++++++++++++++++++
+ 9 files changed, 787 insertions(+), 221 deletions(-)
+ create mode 100644 net/smc/bpf_smc_struct_ops.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
+-- 
+1.8.3.1
+
