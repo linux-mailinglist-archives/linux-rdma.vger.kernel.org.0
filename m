@@ -2,275 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BD869FE97
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Feb 2023 23:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E497A69FF99
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Feb 2023 00:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbjBVWgN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Feb 2023 17:36:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        id S230281AbjBVXfg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Feb 2023 18:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232925AbjBVWgJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Feb 2023 17:36:09 -0500
-Received: from out-32.mta0.migadu.com (out-32.mta0.migadu.com [91.218.175.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A37D460B1
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Feb 2023 14:36:04 -0800 (PST)
-Message-ID: <60991e56-dad5-c310-86bb-102ebf756b6b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1677105363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r79egUsv3m15L79oiKMJ2QqVMrMgUCfpCEuXDmIUhy8=;
-        b=KjjRKlsm9oF+NyrmhMWWStcjmM3g6yaNWc+2WQhuCY41nVlzhSV8VCANksN7lBkcXjyj1t
-        RK44wu9ltjAeS3AnuUPO3Wb0W7c5KUu0jZJRpkmeigHdkI5kWnmIOSHzgqii6T7O9T9ZEa
-        DrEp4iUDrFijc9LdfDzkX5+5Az6h24s=
-Date:   Wed, 22 Feb 2023 14:35:59 -0800
+        with ESMTP id S232782AbjBVXff (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Feb 2023 18:35:35 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BB4474F7
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Feb 2023 15:35:23 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id v17-20020a0568301bd100b0068dc615ee44so1833405ota.10
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Feb 2023 15:35:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dfau05t/szdUqvGJGr72ktanrWPm1nUDAg0gheyIgp4=;
+        b=P5d5TuWkJQnAwxvlADRZeE0fS590duHfg67dgvSzxLnxYOuLOnVZCJVLZ0Bh69oiKs
+         UvTtnxGPPtY6Hv+LKlKxcqMioeptA34v+csxxL+3E7jqjTDuH4E3JGkQOFwUtIg5cYQ+
+         8yCDpc7K/a17LLy0lt3RfeIZ+VbwSezXVoiSM8rKclb1P1Pk9oXHVGsahM+Bk7nQyVkc
+         73PaSlF480na0Ntiurc0tqHWE9YGVJcHAlGnxXtD42xEALUbeMHhAcM4nBwEuMGkJgXi
+         dxQUsS/PAXqC2seXMuhwc0zUXBhV6l0rbHF095lb8rOnM7639cBnMwujW27+HT2Ph9sY
+         85bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Dfau05t/szdUqvGJGr72ktanrWPm1nUDAg0gheyIgp4=;
+        b=bLvNHrUe/1rQ0iqTGpuztoWjVB3sdQ6/kVlH35jpYnjX5oROPM78DNxCZBeQcpnIfS
+         5fOo4V2aFLDTJofOP7WTRi8lVZI6UCIXmClIY9lnETOxn4A9cZKMtzun8JTQ5V73iVcD
+         waMA0Yu9HoXLa/AYXX2L0ENalFxk7vsuE63dlyXqG1RLXPM6CvaqgIzEQUCC2+setfdg
+         mSeDbz1E2sUjE3phbCt+gK34Wl38xFWJFga/HpRc3+EHxSQ+pHA+khS6z/t2hzc//4/F
+         Szzbl/kn36ZrCUeaWHpB9E/ucdEChFWKC+RHridJMZ1905fid3NTaF82+NcINrNbg3As
+         QHew==
+X-Gm-Message-State: AO0yUKXrN5K2nDTuNrBBxkQmcHcQ7e7a0gglqrMJkHLKVutPFMr4BmCx
+        L0D+Glug++Xyg0rmlo97a4c=
+X-Google-Smtp-Source: AK7set+6exJ/fFRXkBAOH3aSw0dnKEQmSMIG4ETGAzmcof7VZ535op2sF/P70+dPpmCPjGktoYGrFA==
+X-Received: by 2002:a9d:848:0:b0:68b:c6c4:f665 with SMTP id 66-20020a9d0848000000b0068bc6c4f665mr5004355oty.16.1677108922801;
+        Wed, 22 Feb 2023 15:35:22 -0800 (PST)
+Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-e92c-8850-3fad-351f.res6.spectrum.com. [2603:8081:140c:1a00:e92c:8850:3fad:351f])
+        by smtp.gmail.com with ESMTPSA id l19-20020a9d7093000000b0068663820588sm2723281otj.44.2023.02.22.15.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Feb 2023 15:35:21 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, matsuda-daisuke@fujitsu.com,
+        jhack@hpe.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 0/9] RDMA/rxe: Correct qp reference counting
+Date:   Wed, 22 Feb 2023 17:32:29 -0600
+Message-Id: <20230222233237.48940-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/2] bpf/selftests: add selftest for SMC bpf
- capability
-Content-Language: en-US
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, kgraul@linux.ibm.com, wenjia@linux.ibm.com,
-        jaka@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-References: <1676981919-64884-1-git-send-email-alibuda@linux.alibaba.com>
- <1676981919-64884-3-git-send-email-alibuda@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <1676981919-64884-3-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/21/23 4:18 AM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> This PATCH adds a tiny selftest for SMC bpf capability,
-> making decisions on whether to use SMC by collecting
-> certain information from kernel smc sock.
-> 
-> Follow the steps below to run this test.
-> 
-> make -C tools/testing/selftests/bpf
-> cd tools/testing/selftests/bpf
-> sudo ./test_progs -t bpf_smc
-> 
-> Results shows:
-> 18      bpf_smc:OK
-> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->   tools/testing/selftests/bpf/prog_tests/bpf_smc.c |  39 +++
->   tools/testing/selftests/bpf/progs/bpf_smc.c      | 315 +++++++++++++++++++++++
->   2 files changed, 354 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
->   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-> new file mode 100644
-> index 0000000..b143932
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-> @@ -0,0 +1,39 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2019 Facebook */
+This patch series corrects qp reference counting issues
+related to deferred execution of tasklets. These issues were
+discovered in attempting to resolve soft lockups of the rxe
+driver observed by Daisuke Matsuda in a version of the driver
+using work queues where the workqueue implementation was based
+on the current tasklet based driver. An attempt to find the
+root cause of those lockups lead to an error in the tasklet
+implementation that has been present since the driver went
+upstream. This patch series corrects that error.
 
-copy-and-paste left-over...
+In the course of this work it was necessary to improve the
+logging capabilities of the driver and these are included as
+well.
 
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
-> new file mode 100644
-> index 0000000..78c7976
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
-> @@ -0,0 +1,315 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +#include <linux/bpf.h>
-> +#include <linux/stddef.h>
-> +#include <linux/smc.h>
-> +#include <stdbool.h>
-> +#include <linux/types.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_core_read.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +#define BPF_STRUCT_OPS(name, args...) \
-> +	SEC("struct_ops/"#name) \
-> +	BPF_PROG(name, args)
-> +
-> +#define SMC_LISTEN		(10)
-> +#define SMC_SOCK_CLOSED_TIMING	(0)
-> +extern unsigned long CONFIG_HZ __kconfig;
-> +#define HZ CONFIG_HZ
-> +
-> +char _license[] SEC("license") = "GPL";
-> +#define max(a, b) ((a) > (b) ? (a) : (b))
-> +
-> +struct sock_common {
-> +	unsigned char	skc_state;
-> +	__u16	skc_num;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct sock {
-> +	struct sock_common	__sk_common;
-> +	int	sk_sndbuf;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct inet_sock {
-> +	struct sock	sk;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct inet_connection_sock {
-> +	struct inet_sock	icsk_inet;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct tcp_sock {
-> +	struct inet_connection_sock	inet_conn;
-> +	__u32	rcv_nxt;
-> +	__u32	snd_nxt;
-> +	__u32	snd_una;
-> +	__u32	delivered;
-> +	__u8	syn_data:1,	/* SYN includes data */
-> +		syn_fastopen:1,	/* SYN includes Fast Open option */
-> +		syn_fastopen_exp:1,/* SYN includes Fast Open exp. option */
-> +		syn_fastopen_ch:1, /* Active TFO re-enabling probe */
-> +		syn_data_acked:1,/* data in SYN is acked by SYN-ACK */
-> +		save_syn:1,	/* Save headers of SYN packet */
-> +		is_cwnd_limited:1,/* forward progress limited by snd_cwnd? */
-> +		syn_smc:1;	/* SYN includes SMC */
-> +} __attribute__((preserve_access_index));
-> +
-> +struct socket {
-> +	struct sock *sk;
-> +} __attribute__((preserve_access_index));
+This patch series is based on the current for-next branch. It
+has been tested with long simultaneous runs of pyverbs
+and perftest.
 
-All these tcp_sock, socket, inet_sock definitions can go away if it includes 
-"vmlinux.h". tcp_ca_write_sk_pacing.c is a better example to follow. Try to 
-define the "common" (eg. tcp, tc...etc) missing macros in bpf_tracing_net.h. The 
-smc specific macros can stay in this file.
+Link: https://lore.kernel.org/linux-rdma/TYCPR01MB845522FD536170D75068DD41E5099@TYCPR01MB8455.jpnprd01.prod.outlook.com/
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 
-> +static inline struct smc_prediction *smc_prediction_get(const struct smc_sock *smc,
-> +							const struct tcp_sock *tp, __u64 tstamp)
-> +{
-> +	struct smc_prediction zero = {}, *smc_predictor;
-> +	__u16 key;
-> +	__u32 gap;
-> +	int err;
-> +
-> +	err = bpf_core_read(&key, sizeof(__u16), &tp->inet_conn.icsk_inet.sk.__sk_common.skc_num);
-> +	if (err)
-> +		return NULL;
-> +
-> +	/* BAD key */
-> +	if (key == 0)
-> +		return NULL;
-> +
-> +	smc_predictor = bpf_map_lookup_elem(&negotiator_map, &key);
-> +	if (!smc_predictor) {
-> +		zero.start_tstamp = bpf_jiffies64();
-> +		zero.pacing_delta = SMC_PREDICTION_MIN_PACING_DELTA;
-> +		bpf_map_update_elem(&negotiator_map, &key, &zero, 0);
-> +		smc_predictor =  bpf_map_lookup_elem(&negotiator_map, &key);
-> +		if (!smc_predictor)
-> +			return NULL;
-> +	}
-> +
-> +	if (tstamp) {
-> +		bpf_spin_lock(&smc_predictor->lock);
-> +		gap = (tstamp - smc_predictor->start_tstamp) / smc_predictor->pacing_delta;
-> +		/* new splice */
-> +		if (gap > 0) {
-> +			smc_predictor->start_tstamp = tstamp;
-> +			smc_predictor->last_rate_of_lcc =
-> +				(smc_prediction_calt_rate(smc_predictor) * 7) >> (2 + gap);
-> +			smc_predictor->closed_long_cc = 0;
-> +			smc_predictor->closed_total_cc = 0;
-> +			smc_predictor->incoming_long_cc = 0;
-> +		}
-> +		bpf_spin_unlock(&smc_predictor->lock);
-> +	}
-> +	return smc_predictor;
-> +}
-> +
-> +/* BPF struct ops for smc protocol negotiator */
-> +struct smc_sock_negotiator_ops {
-> +	/* ret for negotiate */
-> +	int (*negotiate)(struct smc_sock *smc);
-> +
-> +	/* info gathering timing */
-> +	void (*collect_info)(struct smc_sock *smc, int timing);
-> +};
-> +
-> +int BPF_STRUCT_OPS(bpf_smc_negotiate, struct smc_sock *smc)
-> +{
-> +	struct smc_prediction *smc_predictor;
-> +	struct tcp_sock *tp;
-> +	struct sock *clcsk;
-> +	int ret = SK_DROP;
-> +	__u32 rate = 0;
-> +
-> +	/* Only make decison during listen */
-> +	if (smc->sk.__sk_common.skc_state != SMC_LISTEN)
-> +		return SK_PASS;
-> +
-> +	clcsk = BPF_CORE_READ(smc, clcsock, sk);
+Bob Pearson (9):
+  RDMA/rxe: Extend debug log messages
+  RDMA/rxe: Add error messages
+  RDMA/rxe: Convert tasklet args to queue pairs
+  RDMA/rxe: Remove extra rxe_get(qp) in rxe_rcv_mcast_pkt
+  RDMA/rxe: Add a warning if refcnt zero in rxe_put
+  RDMA/rxe: Replace some __rxe_do_task by rxe_sched_task
+  RDMA/rxe: Check for unsupported wr opcodes
+  RDMA/rxe: Remove qp reference counting in tasks
+  RDMA/rxe: Rewrite rxe_task.c
 
-Instead of using bpf_core_read here, why not directly gets the clcsk like the 
-'smc->sk.__sk_common.skc_state' above.
+ drivers/infiniband/sw/rxe/rxe.c       |  28 +-
+ drivers/infiniband/sw/rxe/rxe.h       |  45 +-
+ drivers/infiniband/sw/rxe/rxe_comp.c  |  11 +-
+ drivers/infiniband/sw/rxe/rxe_cq.c    |   6 +-
+ drivers/infiniband/sw/rxe/rxe_icrc.c  |   4 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h   |   7 +-
+ drivers/infiniband/sw/rxe/rxe_mmap.c  |   6 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c    |  13 -
+ drivers/infiniband/sw/rxe/rxe_net.c   |   4 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c  |   2 +
+ drivers/infiniband/sw/rxe/rxe_qp.c    |  53 +-
+ drivers/infiniband/sw/rxe/rxe_recv.c  |   1 -
+ drivers/infiniband/sw/rxe/rxe_req.c   |   8 +-
+ drivers/infiniband/sw/rxe/rxe_resp.c  |  11 +-
+ drivers/infiniband/sw/rxe/rxe_srq.c   |   6 +-
+ drivers/infiniband/sw/rxe/rxe_task.c  | 275 ++++++--
+ drivers/infiniband/sw/rxe/rxe_task.h  |  17 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 866 +++++++++++++++++++-------
+ 18 files changed, 969 insertions(+), 394 deletions(-)
 
-> +	if (!clcsk)
-> +		goto error;
-> +
-> +	tp = tcp_sk(clcsk);
 
-There is a bpf_skc_to_tcp_sock(). Give it a try after changing the above 
-BPF_CORE_READ.
-
-> +	if (!tp)
-> +		goto error;
-> +
-> +	smc_predictor = smc_prediction_get(smc, tp, bpf_jiffies64());
-> +	if (!smc_predictor)
-> +		return SK_PASS;
-> +
-> +	bpf_spin_lock(&smc_predictor->lock);
-> +
-> +	if (smc_predictor->incoming_long_cc == 0)
-> +		goto out_locked_pass;
-> +
-> +	if (smc_predictor->incoming_long_cc > SMC_PREDICTION_MAX_LONGCC_PER_SPLICE) {
-> +		ret = 100;
-> +		goto out_locked_drop;
-> +	}
-> +
-> +	rate = smc_prediction_calt_rate(smc_predictor);
-> +	if (rate < SMC_PREDICTION_LONGCC_RATE_THRESHOLD) {
-> +		ret = 200;
-> +		goto out_locked_drop;
-> +	}
-> +out_locked_pass:
-> +	smc_predictor->incoming_long_cc++;
-> +	bpf_spin_unlock(&smc_predictor->lock);
-> +	return SK_PASS;
-> +out_locked_drop:
-> +	bpf_spin_unlock(&smc_predictor->lock);
-> +error:
-> +	return SK_DROP;
-> +}
-> +
-> +void BPF_STRUCT_OPS(bpf_smc_collect_info, struct smc_sock *smc, int timing)
-
-Try to stay with SEC("struct_ops/...") void BPF_PROG(....)
+base-commit: 66fb1d5df6ace316a4a6e2c31e13fc123ea2b644
+-- 
+2.37.2
 
