@@ -2,64 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A373A69ECE8
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Feb 2023 03:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8BC69EFDB
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Feb 2023 09:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbjBVChf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Feb 2023 21:37:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
+        id S229579AbjBVIED (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Feb 2023 03:04:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjBVChe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Feb 2023 21:37:34 -0500
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F22033472;
-        Tue, 21 Feb 2023 18:37:31 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VcEEUPh_1677033448;
-Received: from 30.221.149.248(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VcEEUPh_1677033448)
-          by smtp.aliyun-inc.com;
-          Wed, 22 Feb 2023 10:37:29 +0800
-Message-ID: <8742afeb-afbf-3079-21e7-a52b32ff3ecd@linux.alibaba.com>
-Date:   Wed, 22 Feb 2023 10:37:28 +0800
+        with ESMTP id S231305AbjBVIEB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Feb 2023 03:04:01 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30847B757;
+        Wed, 22 Feb 2023 00:04:01 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D9B8AB81150;
+        Wed, 22 Feb 2023 08:03:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EB5BC433D2;
+        Wed, 22 Feb 2023 08:03:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677053038;
+        bh=swXxx9RNJ09x46wuShXggNr6B3DaBo/3ASromWck2vM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k49k5l/tMnQJiHhmdaqOqSSX0cl3XIbH/1kkyb4xZdKvpEpQIEc7d95MXiN3xassu
+         3f2bRBUXUuVoCZ2c1GuFSI27ZwrYO9XUpOZAP0B/CgCWtO1WkLO92w/WjpEHZCekWk
+         F+zQU6q/YAp0C1TIPM74VdCQ4yIPXxuQ3m6NZxHsUmcZ7TjJD041hm6f3hk3ZTXIRk
+         ICdnBzR1QPl+wnnw1xFX87IY+sb7kadZwHZICCmwqeqXmDrI40PxaqgVxgPp4Qdlt7
+         mKgUym+3zlZ+W2zoM8gcZKX83hNjPK6hDUjpf3HuDxVow+lyqlrAW+V5P7/zjCQGNQ
+         Pbi3OMCtQGMKA==
+Date:   Wed, 22 Feb 2023 10:03:54 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Rohit Chavan <roheetchavan@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx5: Coding style fix
+Message-ID: <Y/XMao1jNTbK0GE5@unreal>
+References: <20230220122116.2047-1-roheetchavan@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.7.2
-Subject: Re: [PATCH net-next 0/2] net/smc: Introduce BPF injection capability
-Content-Language: en-US
-To:     Simon Horman <simon.horman@corigine.com>
-Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1676964305-1093-1-git-send-email-alibuda@linux.alibaba.com>
- <89600917-ec58-3a30-dea7-bae2d67cc838@linux.alibaba.com>
- <Y/Twbebt2p1TEsrl@corigine.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <Y/Twbebt2p1TEsrl@corigine.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230220122116.2047-1-roheetchavan@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Feb 20, 2023 at 05:51:16PM +0530, Rohit Chavan wrote:
+> Signed-off-by: Rohit Chavan <roheetchavan@gmail.com>
+> ---
+>  drivers/infiniband/hw/mlx5/qp.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 
 
-On 2/22/23 12:25 AM, Simon Horman wrote:
-> On Tue, Feb 21, 2023 at 03:29:59PM +0800, D. Wythe wrote:
->>
->> Sorry for forgot to cc the maintainer of BPF,
->> please ignore this. I will resend a new version.
-> 
-> net-next is closed.
-> 
-> You'll need to repost it, either as an RFC, or wait until after
-> v6.3-rc1 has been tagged.
+Please try to avoid empty commit messages.
 
-I had repost it to bpf-next, but thank you for your reminding!
+And we are in merge window now, so new version of this patch will need
+to wait till -rc1.
 
-Best wishes.
-D. Wythe
+Thanks
