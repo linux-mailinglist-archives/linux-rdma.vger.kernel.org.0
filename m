@@ -2,66 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8BC69EFDB
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Feb 2023 09:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0974E69F03E
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Feb 2023 09:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbjBVIED (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Feb 2023 03:04:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
+        id S229755AbjBVIbY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Feb 2023 03:31:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbjBVIEB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Feb 2023 03:04:01 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30847B757;
-        Wed, 22 Feb 2023 00:04:01 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D9B8AB81150;
-        Wed, 22 Feb 2023 08:03:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EB5BC433D2;
-        Wed, 22 Feb 2023 08:03:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677053038;
-        bh=swXxx9RNJ09x46wuShXggNr6B3DaBo/3ASromWck2vM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k49k5l/tMnQJiHhmdaqOqSSX0cl3XIbH/1kkyb4xZdKvpEpQIEc7d95MXiN3xassu
-         3f2bRBUXUuVoCZ2c1GuFSI27ZwrYO9XUpOZAP0B/CgCWtO1WkLO92w/WjpEHZCekWk
-         F+zQU6q/YAp0C1TIPM74VdCQ4yIPXxuQ3m6NZxHsUmcZ7TjJD041hm6f3hk3ZTXIRk
-         ICdnBzR1QPl+wnnw1xFX87IY+sb7kadZwHZICCmwqeqXmDrI40PxaqgVxgPp4Qdlt7
-         mKgUym+3zlZ+W2zoM8gcZKX83hNjPK6hDUjpf3HuDxVow+lyqlrAW+V5P7/zjCQGNQ
-         Pbi3OMCtQGMKA==
-Date:   Wed, 22 Feb 2023 10:03:54 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Rohit Chavan <roheetchavan@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: Coding style fix
-Message-ID: <Y/XMao1jNTbK0GE5@unreal>
-References: <20230220122116.2047-1-roheetchavan@gmail.com>
+        with ESMTP id S230462AbjBVIbX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Feb 2023 03:31:23 -0500
+Received: from mail.corrib.pl (mail.corrib.pl [185.58.226.145])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36C130B11
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Feb 2023 00:31:22 -0800 (PST)
+Received: by mail.corrib.pl (Postfix, from userid 1001)
+        id CA317A4259; Wed, 22 Feb 2023 08:31:03 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=corrib.pl; s=mail;
+        t=1677054686; bh=X6IEpSISwJiYlJ3uA866lskXve3r+4o2hf4z7VM6m5o=;
+        h=Date:From:To:Subject:From;
+        b=DpORD35w3ZltKLB/lYsSIqhE6RIPjI1XZ12CcknB2WHlt8xyZDoXG0bW+9wuoJbmm
+         n6O4V8dAY3EPnsv0oyK9w0p1KUEjZ3Rid4nAyAJ8zE+etS7M3saJ06We9C88pO4w2z
+         x24nIsz7RBwJmXF0eSKk1iqF3rG3NsoBA+QTHziK/lK3TQnMfmTiaohgjBn62xitGd
+         +j8nPI5CZKK+7iyvHctxWVsXhbjsV9/q8THsvlEiXRnPD23bGYV/VfjwalyjsghfBa
+         9lASZsBqeDOB7kFWx6MASveb9NLu59ABxnwwvHfuNjGLNBsGLYTLzWfpT0ip2GRbaC
+         7phTl1S+Lpy9g==
+Received: by mail.corrib.pl for <linux-rdma@vger.kernel.org>; Wed, 22 Feb 2023 08:30:41 GMT
+Message-ID: <20230222074502-0.1.5n.fiei.0.sxojnmh5pj@corrib.pl>
+Date:   Wed, 22 Feb 2023 08:30:41 GMT
+From:   =?UTF-8?Q? "Szczepan_Kie=C5=82basa" ?= 
+        <szczepan.kielbasa@corrib.pl>
+To:     <linux-rdma@vger.kernel.org>
+Subject: Faktoring
+X-Mailer: mail.corrib.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230220122116.2047-1-roheetchavan@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 20, 2023 at 05:51:16PM +0530, Rohit Chavan wrote:
-> Signed-off-by: Rohit Chavan <roheetchavan@gmail.com>
-> ---
->  drivers/infiniband/hw/mlx5/qp.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+Dzie=C5=84 dobry,
+
+rozwa=C5=BCali Pa=C5=84stwo wyb=C3=B3r finansowania, kt=C3=B3re spe=C5=82=
+ni potrzeby firmy, zapewniaj=C4=85c natychmiastowy dost=C4=99p do got=C3=B3=
+wki, bez zb=C4=99dnych przestoj=C3=B3w?=20
+
+Przygotowali=C5=9Bmy rozwi=C4=85zania faktoringowe dopasowane do Pa=C5=84=
+stwa bran=C5=BCy i wielko=C5=9Bci firmy, dzi=C4=99ki kt=C3=B3rym, nie mus=
+z=C4=85 Pa=C5=84stwo martwi=C4=87 si=C4=99 o niewyp=C5=82acalno=C5=9B=C4=87=
+ kontrahent=C3=B3w, poniewa=C5=BC transakcje s=C4=85 zabezpieczone i posi=
+adaj=C4=85 gwarancj=C4=99 sp=C5=82aty.=20
+Chc=C4=85 Pa=C5=84stwo przeanalizowa=C4=87 dost=C4=99pne opcje?
 
 
-Please try to avoid empty commit messages.
-
-And we are in merge window now, so new version of this patch will need
-to wait till -rc1.
-
-Thanks
+Pozdrawiam
+Szczepan Kie=C5=82basa
