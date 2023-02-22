@@ -2,177 +2,285 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED8C69F7AE
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Feb 2023 16:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFCF69FA1F
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Feb 2023 18:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbjBVPZH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Feb 2023 10:25:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
+        id S232253AbjBVRZ5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Feb 2023 12:25:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjBVPZG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Feb 2023 10:25:06 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365F236FFA;
-        Wed, 22 Feb 2023 07:25:05 -0800 (PST)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31MEbtPh001967;
-        Wed, 22 Feb 2023 15:24:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=2u3wfG/YjRdUxLDNaAK1qN5vV7Op3y/upBI7BXKxu8Y=;
- b=szXXQ0tUICqnWzWknQn51Wp+TPJb5OBixTOWJTYh8DPK5nfURlpNHBMON/Jg/PvVM8aq
- ANH7oUswblq4XzyyccuGcpbt4e/xsYKjABynqS0+w5AUBgc8vbcZUXh+POf5kHZ8dgeG
- VJQ3uc3a4pya67zzoFBboBMfY/PYSy/17WOs1cRb0+CGa3NMJraIaIp56IyoCMVyR0gA
- RvvG3mq2ttJwIVL7fGGj83Lb7aCz70eFfq538u9xQXgxq04pz/UEa/5rwZdz0nGnvUkZ
- FlfR7GLgHdoIecBHeLfCZiiP06m9L+1/MPKKlyOJ2RapY4vkf9ZHuVGo/fCLvfBfwu2R aQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nwmyr9bjc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Feb 2023 15:24:44 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31MFMqBU032503;
-        Wed, 22 Feb 2023 15:24:43 GMT
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nwmyr9bhj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Feb 2023 15:24:43 +0000
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31MDIbRV015818;
-        Wed, 22 Feb 2023 15:24:42 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([9.208.129.116])
-        by ppma01wdc.us.ibm.com (PPS) with ESMTPS id 3ntpa70xcj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Feb 2023 15:24:42 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31MFOfGZ64356814
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Feb 2023 15:24:41 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 67CA55805F;
-        Wed, 22 Feb 2023 15:24:41 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4ED0358043;
-        Wed, 22 Feb 2023 15:24:40 +0000 (GMT)
-Received: from sig-9-65-243-31.ibm.com (unknown [9.65.243.31])
-        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 22 Feb 2023 15:24:40 +0000 (GMT)
-Message-ID: <5785f9eff97341214e81a1950ac6a4d2ce0cef8d.camel@linux.ibm.com>
-Subject: Re: [PATCH 4.19 v2 0/5] Backport handling -ESTALE policy update
- failure to 4.19
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     GUO Zihua <guozihua@huawei.com>, paul@paul-moore.com
-Cc:     linux-security-module@vger.kernel.org, linux-rdma@vger.kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca
-Date:   Wed, 22 Feb 2023 10:24:39 -0500
-In-Reply-To: <20230216124227.44058-1-guozihua@huawei.com>
-References: <20230216124227.44058-1-guozihua@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: gZ84qKvd0rBbIWN5x9BNVRfBowKzEFIm
-X-Proofpoint-ORIG-GUID: oJPMTlt1P02RkyEVGkLNf6kpXAbVsFS1
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S232282AbjBVRZu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Feb 2023 12:25:50 -0500
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851093E0B8;
+        Wed, 22 Feb 2023 09:25:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677086737; x=1708622737;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QqvKHblnDf2/TVh9n0CqiC0hBqmmlzHaD81SoAUATbA=;
+  b=kJK9PCyzTuycm84CSvpQcRuQCWOZ2pV6Qk+NDKoBgK2dPgnsQEda7oZH
+   DJ++cgb2jmzkblW9oln0aEQ5x6l4Bd4nqQu+vfFlgls8kwPZZRcWeCafW
+   uH4nQUGqE64Tmu8xyRZnw43arXJ90OtVxdQ7mMu55KIM+2mr3fpqAaf4D
+   drajuaojzLBfsZo+EUej/3CaFn6UOnzimV7ytbZtGWIibss951wvPXTSc
+   BR4Zc0qja3R0q7AEu/IpQ2iWkTl3pfSqD0sDzhCSyDIy8S2NJy1MaQyH3
+   qIZL2viVMYw9W+bq0Jg1jD6iMbPVD1XUyrl3lOrPIfliQ7mFEYquFz4es
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10629"; a="360472235"
+X-IronPort-AV: E=Sophos;i="5.97,319,1669104000"; 
+   d="scan'208";a="360472235"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 09:25:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10629"; a="735982064"
+X-IronPort-AV: E=Sophos;i="5.97,319,1669104000"; 
+   d="scan'208";a="735982064"
+Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Feb 2023 09:25:26 -0800
+Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pUsru-0000bx-12;
+        Wed, 22 Feb 2023 17:25:26 +0000
+Date:   Thu, 23 Feb 2023 01:24:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, asahi@lists.linux.dev,
+        amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ aaf70d5ad5e2b06a8050c51e278b0c3a14fabef5
+Message-ID: <63f64fe7.ONl1tGtlJc4Z5MEF%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-22_05,2023-02-22_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- adultscore=0 clxscore=1011 impostorscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 phishscore=0 mlxscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302220131
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Scott,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: aaf70d5ad5e2b06a8050c51e278b0c3a14fabef5  Add linux-next specific files for 20230222
 
-On Thu, 2023-02-16 at 20:42 +0800, GUO Zihua wrote:
-> This series backports patches in order to resolve the issue discussed here:
-> https://lore.kernel.org/selinux/389334fe-6e12-96b2-6ce9-9f0e8fcb85bf@huawei.com/
-> 
-> This required backporting the non-blocking LSM policy update mechanism
-> prerequisite patches. As well as bugfixes that follows.
+Error/Warning reports:
 
-For ease of reading, the above sentence should end with a colon and be
-followed with the list of commits.
-> 
-> 66f67414c1f ("IB/core: Don't register each MAD agent for LSM notifier")
-> is merged as the prerequisite of 42df744c4166 ("LSM: switch to blocking
-> policy update notifiers"). 
+https://lore.kernel.org/oe-kbuild-all/202302062224.ByzeTXh1-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302092211.54EYDhYH-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302111601.jtY4lKrA-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302112104.g75cGHZd-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302170355.Ljqlzucu-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202302210350.lynWcL4t-lkp@intel.com
 
-> e144d6b26541 ("ima: Evaluate error in
-> init_ima()") is merged as a follow up bugfix for b16942455193 ("ima:
-> use the lsm policy update notifier").
+Error/Warning: (recently discovered and may have been fixed)
 
-> 483ec26eed42 ("ima: ima/lsm policy
-> rule loading logic bug fixes") and 9ff8a616dfab ("ima: Have the LSM free
-> its audit rule") is also followup bugfixes. The former would change the
-> behavior of rule loading without fixing any criticial bug so I don't
-> think it's necessary, while the latter has already been merged.
+Documentation/sphinx/templates/kernel-toc.html: 1:36 Invalid token: #}
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_optc.c:294:6: warning: no previous prototype for 'optc3_wait_drr_doublebuffer_pending_clear' [-Wmissing-prototypes]
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn32/dcn32_resource_helpers.c:62:18: warning: variable 'cursor_bpp' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_detection.c:1199: warning: expecting prototype for dc_link_detect_connection_type(). Prototype was for link_detect_connection_type() instead
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_capability.c:1292:32: warning: variable 'result_write_min_hblank' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training.c:1586:38: warning: variable 'result' set but not used [-Wunused-but-set-variable]
+include/asm-generic/div64.h:238:36: error: passing argument 1 of '__div64_32' from incompatible pointer type [-Werror=incompatible-pointer-types]
 
-Prior to the non-blocking LSM notifier was upstreamed, a custom IMA
-policy with LSM  based policy rules could not be loaded until the LSM
-policy had been initialized.  Commit 483ec26eed42 ("ima: ima/lsm policy
-rule loading logic bug fixes") reverts the unintended change in
-behavior.
+Unverified Error/Warning (likely false positive, please contact us if interested):
 
-> 
-> I've tested the patches against said issue and can confirm that the
-> issue is fixed.
-> 
-> This is a re-send of the original patchset as the original patchset
-> might have a faulty cover letter. The original patchset could be found
-> here:
-> https://patchwork.kernel.org/project/linux-integrity/list/?series=709367
+drivers/iommu/apple-dart.c:1281:1: sparse: sparse: symbol 'apple_dart_pm_ops' was not declared. Should it be static?
+drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c:1087:28: warning: 'tracker' is used uninitialized [-Wuninitialized]
+drivers/thermal/qcom/tsens-v0_1.c:106:40: sparse: sparse: symbol 'tsens_9607_nvmem' was not declared. Should it be static?
+drivers/thermal/qcom/tsens-v0_1.c:26:40: sparse: sparse: symbol 'tsens_8916_nvmem' was not declared. Should it be static?
+drivers/thermal/qcom/tsens-v0_1.c:42:40: sparse: sparse: symbol 'tsens_8939_nvmem' was not declared. Should it be static?
+drivers/thermal/qcom/tsens-v0_1.c:62:40: sparse: sparse: symbol 'tsens_8974_nvmem' was not declared. Should it be static?
+drivers/thermal/qcom/tsens-v0_1.c:84:40: sparse: sparse: symbol 'tsens_8974_backup_nvmem' was not declared. Should it be static?
+drivers/thermal/qcom/tsens-v1.c:24:40: sparse: sparse: symbol 'tsens_qcs404_nvmem' was not declared. Should it be static?
+drivers/thermal/qcom/tsens-v1.c:45:40: sparse: sparse: symbol 'tsens_8976_nvmem' was not declared. Should it be static?
+drivers/usb/gadget/composite.c:2082:33: sparse: sparse: restricted __le16 degrades to integer
 
-In addition to a "faulty cover letter", included in this version
-additional patches are being backported.
+Error/Warning ids grouped by kconfigs:
 
-Probably better to drop this comment or to include a "Link:" to the
-mailing list discussion, as described in
-Documentation/process/submitting-patches.
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|   `-- include-asm-generic-div64.h:error:passing-argument-of-__div64_32-from-incompatible-pointer-type
+|-- arm-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|   `-- include-asm-generic-div64.h:error:passing-argument-of-__div64_32-from-incompatible-pointer-type
+|-- arm-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|   `-- include-asm-generic-div64.h:error:passing-argument-of-__div64_32-from-incompatible-pointer-type
+|-- arm64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dcn30-dcn30_optc.c:warning:no-previous-prototype-for-optc3_wait_drr_doublebuffer_pending_clear
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dcn32-dcn32_resource_helpers.c:warning:variable-cursor_bpp-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|-- i386-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dcn30-dcn30_optc.c:warning:no-previous-prototype-for-optc3_wait_drr_doublebuffer_pending_clear
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dcn32-dcn32_resource_helpers.c:warning:variable-cursor_bpp-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|-- i386-randconfig-s001
+|   |-- drivers-gpu-drm-i915-gem-i915_gem_ttm.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-vm_fault_t-assigned-usertype-ret-got-int
+|   `-- drivers-usb-gadget-composite.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- i386-randconfig-s002
+|   `-- drivers-gpu-drm-i915-gem-i915_gem_ttm.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-vm_fault_t-assigned-usertype-ret-got-int
+|-- i386-randconfig-s003
+|   `-- drivers-usb-gadget-composite.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- ia64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training.c:warning:variable-result-set-but-not-used
+|-- ia64-randconfig-s032-20230222
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
+|   |-- drivers-iommu-apple-dart.c:sparse:sparse:symbol-apple_dart_pm_ops-was-not-declared.-Should-it-be-static
+|   `-- drivers-usb-gadget-composite.c:sparse:sparse:restricted-__le16-degrades-to-integer
+|-- loongarch-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_detection.c:warning:expecting-prototype-for-dc_link_detect_connection_type().-Prototype-was-for-link_detect_connection_type()-instead
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_capability.c:warning:variable-result_write_min_hblank-set-but-not-used
 
-> 
-> Change log:
->   v2: Fixed build issue and backport bugfix commits for backported
-> patches.
-> 
-> Daniel Jurgens (1):
->   IB/core: Don't register each MAD agent for LSM notifier
-> 
-> GUO Zihua (1):
->   ima: Handle -ESTALE returned by ima_filter_rule_match()
-> 
-> Janne Karhunen (2):
->   LSM: switch to blocking policy update notifiers
->   ima: use the lsm policy update notifier
-> 
-> Roberto Sassu (1):
->   ima: Evaluate error in init_ima()
-> 
->  drivers/infiniband/core/core_priv.h |   5 +
->  drivers/infiniband/core/device.c    |   5 +-
->  drivers/infiniband/core/security.c  |  51 +++++-----
->  include/linux/security.h            |  12 +--
->  include/rdma/ib_mad.h               |   3 +-
->  security/integrity/ima/ima.h        |   2 +
->  security/integrity/ima/ima_main.c   |  11 ++
->  security/integrity/ima/ima_policy.c | 151 ++++++++++++++++++++++------
->  security/security.c                 |  23 +++--
->  security/selinux/hooks.c            |   2 +-
->  security/selinux/selinuxfs.c        |   2 +-
->  11 files changed, 193 insertions(+), 74 deletions(-)
-> 
+elapsed time: 721m
+
+configs tested: 114
+configs skipped: 3
+
+gcc tested configs:
+alpha                            allyesconfig
+alpha                               defconfig
+arc                              allyesconfig
+arc                                 defconfig
+arc                  randconfig-r043-20230222
+arm                              allmodconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                                 defconfig
+arm                           h3600_defconfig
+arm                            hisi_defconfig
+arm                  randconfig-r046-20230222
+arm64                            allyesconfig
+arm64                               defconfig
+csky                                defconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                         debian-10.3-func
+i386                   debian-10.3-kselftests
+i386                        debian-10.3-kunit
+i386                          debian-10.3-kvm
+i386                                defconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+i386                          randconfig-c001
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                        generic_defconfig
+ia64                            zx1_defconfig
+loongarch                        allmodconfig
+loongarch                         allnoconfig
+loongarch                           defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+mips                         db1xxx_defconfig
+mips                      maltasmvp_defconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc                generic-32bit_defconfig
+parisc64                            defconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                     asp8347_defconfig
+powerpc                      chrp32_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                 linkstation_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                      pasemi_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                         wii_defconfig
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+s390                             allmodconfig
+s390                             allyesconfig
+s390                                defconfig
+sh                               allmodconfig
+sh                         ap325rxa_defconfig
+sh                            migor_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                          urquell_defconfig
+sparc                               defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                            allnoconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                                  kexec
+x86_64                        randconfig-a002
+x86_64                        randconfig-a004
+x86_64                        randconfig-a006
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+x86_64                               rhel-8.3
+xtensa                    smp_lx200_defconfig
+
+clang tested configs:
+arm                     am200epdkit_defconfig
+arm                          ep93xx_defconfig
+arm                          moxart_defconfig
+arm                         socfpga_defconfig
+hexagon                          alldefconfig
+hexagon              randconfig-r041-20230222
+hexagon              randconfig-r045-20230222
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+mips                       lemote2f_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                      maltaaprp_defconfig
+mips                      pic32mzda_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                          g5_defconfig
+powerpc                     ksi8560_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                      obs600_defconfig
+riscv                randconfig-r042-20230222
+s390                 randconfig-r044-20230222
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+x86_64                        randconfig-k001
+
 -- 
-thanks,
-
-Mimi
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
