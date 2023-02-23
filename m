@@ -2,43 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2F86A0793
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Feb 2023 12:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 895F96A09D4
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Feb 2023 14:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbjBWLmO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Feb 2023 06:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
+        id S234401AbjBWNKW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Feb 2023 08:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233044AbjBWLmO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Feb 2023 06:42:14 -0500
+        with ESMTP id S234432AbjBWNKR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Feb 2023 08:10:17 -0500
 Received: from out-4.mta0.migadu.com (out-4.mta0.migadu.com [IPv6:2001:41d0:1004:224b::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7513851FBD
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Feb 2023 03:42:12 -0800 (PST)
-Message-ID: <c623e3d0-c31c-6535-457d-d9c888f17a77@linux.dev>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A4E56791
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Feb 2023 05:10:11 -0800 (PST)
+Message-ID: <611f1770-982a-e09f-bd1e-616dcc2303d4@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1677152530;
+        t=1677157809;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IlRun0sxQkrtkZQkswZ/qHzOAQd1JteeBh4pUkMb+r8=;
-        b=REyLgldk3UO7PiN892X53wfkzbDI3PgN1aZlQqjqHWGn/a9GqAfVwtggLcOrptFYZDWyug
-        Zl72hDgbwT8A9M4hD5AtL46BCs/K9Cz3yFcfUXX5FNcaNMljcv8ZHQj4gmvYH8i5YLVolF
-        HcuuYzNkvMEYZ217Mh6c9xjL/xb6vYs=
-Date:   Thu, 23 Feb 2023 19:42:01 +0800
+        bh=ymmkMOcLF7AW+Hx15KTLNa7RDkkDpBqEAX76cQN74JE=;
+        b=RlbqgkJgPNVZVp7+tB2+oQ0VwYRrg8NqqLBkMQHZA/ik9cDMKQwWQ7vg7D1WozXibClZsO
+        p1Q1yE0eaI3l51zUfqKz9+8CdIYgX06y0q6Qcn7Y0+hz0bG5MntFbksXCwuvbdFAVvx06j
+        n6Dimlf4/GWYuTe0iYPveMzc1iaKqsE=
+Date:   Thu, 23 Feb 2023 21:10:01 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCHv3 0/8] Fix the problem that rxe can not work in net
- namespace
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Zhu Yanjun <yanjun.zhu@intel.com>, jgg@ziepe.ca, leon@kernel.org,
+Subject: Re: [PATCHv3 1/8] RDMA/rxe: Creating listening sock in newlink
+ function
+To:     Zhu Yanjun <yanjun.zhu@intel.com>, jgg@ziepe.ca, leon@kernel.org,
         zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org, parav@nvidia.com,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
 References: <20230214060634.427162-1-yanjun.zhu@intel.com>
- <0f33e8d9-1643-25bf-d508-692c628c381b@linux.dev>
- <20230222205605.6819c02c@kernel.org>
+ <20230214060634.427162-2-yanjun.zhu@intel.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230222205605.6819c02c@kernel.org>
+In-Reply-To: <20230214060634.427162-2-yanjun.zhu@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -51,15 +50,52 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+在 2023/2/14 14:06, Zhu Yanjun 写道:
+> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+> 
+> Originally when the module rdma_rxe is loaded, the sock listening on udp
+> port 4791 is created. Currently moving the creating listening port to
+> newlink function.
+> 
+> So when running "rdma link add" command, the sock listening on udp port
+> 4791 is created.
+> 
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-在 2023/2/23 12:56, Jakub Kicinski 写道:
-> On Thu, 23 Feb 2023 08:31:49 +0800 Zhu Yanjun wrote:
->>> V1->V2: Add the explicit initialization of sk6.
->> Add netdev@vger.kernel.org.
-> On the commit letter? Thanks, but that's not how it works.
-> Repost the patches if you want us to see them.
-
-Got it. I will resend all the commits.
+Add netdev@vger.kernel.org.
 
 Zhu Yanjun
+
+> ---
+>   drivers/infiniband/sw/rxe/rxe.c | 10 ++++------
+>   1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+> index 136c2efe3466..64644cb0bb38 100644
+> --- a/drivers/infiniband/sw/rxe/rxe.c
+> +++ b/drivers/infiniband/sw/rxe/rxe.c
+> @@ -192,6 +192,10 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+>   		goto err;
+>   	}
+>   
+> +	err = rxe_net_init();
+> +	if (err)
+> +		return err;
+> +
+>   	err = rxe_net_add(ibdev_name, ndev);
+>   	if (err) {
+>   		rxe_dbg(exists, "failed to add %s\n", ndev->name);
+> @@ -208,12 +212,6 @@ static struct rdma_link_ops rxe_link_ops = {
+>   
+>   static int __init rxe_module_init(void)
+>   {
+> -	int err;
+> -
+> -	err = rxe_net_init();
+> -	if (err)
+> -		return err;
+> -
+>   	rdma_link_register(&rxe_link_ops);
+>   	pr_info("loaded\n");
+>   	return 0;
 
