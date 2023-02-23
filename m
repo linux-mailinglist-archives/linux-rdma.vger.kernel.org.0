@@ -2,203 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D54896A0014
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Feb 2023 01:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 364066A009E
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Feb 2023 02:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbjBWAcB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Feb 2023 19:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
+        id S229795AbjBWBb4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Feb 2023 20:31:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjBWAcA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Feb 2023 19:32:00 -0500
-Received: from out-11.mta0.migadu.com (out-11.mta0.migadu.com [91.218.175.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADCA1E5FC
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Feb 2023 16:31:58 -0800 (PST)
-Message-ID: <0f33e8d9-1643-25bf-d508-692c628c381b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1677112316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fA7t017qCWaxkOJg2uoJ+VsM0SMWMXYCIbCKOk1Lea0=;
-        b=vksgWrrt3lu6tLYUjbR1eJzymjpgKoDXc7e9PmMamMVpDNnmdzEiqmxytKO4F5BRKK3W1N
-        4WFd5aEDmOAjXuqm5IuAB+W1YzCgQ4h/bx4h1c7NLPZ8DERNXxTj767hwo4arn8LYr0Wwd
-        iLMtaAmmVy8wDhA7D6tbrxcLW6cz5rE=
-Date:   Thu, 23 Feb 2023 08:31:49 +0800
+        with ESMTP id S232935AbjBWBbz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Feb 2023 20:31:55 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F263E0B0;
+        Wed, 22 Feb 2023 17:31:45 -0800 (PST)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PMb600gCWzbcH2;
+        Thu, 23 Feb 2023 09:29:12 +0800 (CST)
+Received: from [10.67.110.173] (10.67.110.173) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 23 Feb 2023 09:31:43 +0800
+Message-ID: <069a55a5-381b-cb3a-9574-d6e91110d761@huawei.com>
+Date:   Thu, 23 Feb 2023 09:31:42 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCHv3 0/8] Fix the problem that rxe can not work in net
- namespace
-To:     Zhu Yanjun <yanjun.zhu@intel.com>, jgg@ziepe.ca, leon@kernel.org,
-        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org, parav@nvidia.com,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
-References: <20230214060634.427162-1-yanjun.zhu@intel.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230214060634.427162-1-yanjun.zhu@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+Subject: Re: [PATCH 4.19 v2 0/5] Backport handling -ESTALE policy update
+ failure to 4.19
+Content-Language: en-US
+To:     Mimi Zohar <zohar@linux.ibm.com>, <paul@paul-moore.com>
+CC:     <linux-security-module@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
+References: <20230216124227.44058-1-guozihua@huawei.com>
+ <5785f9eff97341214e81a1950ac6a4d2ce0cef8d.camel@linux.ibm.com>
+From:   "Guozihua (Scott)" <guozihua@huawei.com>
+In-Reply-To: <5785f9eff97341214e81a1950ac6a4d2ce0cef8d.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.110.173]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500024.china.huawei.com (7.185.36.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/2/14 14:06, Zhu Yanjun 写道:
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+On 2023/2/22 23:24, Mimi Zohar wrote:
+> Hi Scott,
 > 
-> When run "ip link add" command to add a rxe rdma link in a net
-> namespace, normally this rxe rdma link can not work in a net
-> name space.
+> On Thu, 2023-02-16 at 20:42 +0800, GUO Zihua wrote:
+>> This series backports patches in order to resolve the issue discussed here:
+>> https://lore.kernel.org/selinux/389334fe-6e12-96b2-6ce9-9f0e8fcb85bf@huawei.com/
+>>
+>> This required backporting the non-blocking LSM policy update mechanism
+>> prerequisite patches. As well as bugfixes that follows.
 > 
-> The root cause is that a sock listening on udp port 4791 is created
-> in init_net when the rdma_rxe module is loaded into kernel. That is,
-> the sock listening on udp port 4791 is created in init_net. Other net
-> namespace is difficult to use this sock.
+> For ease of reading, the above sentence should end with a colon and be
+> followed with the list of commits.
+Sure thing. Will make the change.
+>>
+>> 66f67414c1f ("IB/core: Don't register each MAD agent for LSM notifier")
+>> is merged as the prerequisite of 42df744c4166 ("LSM: switch to blocking
+>> policy update notifiers"). 
 > 
-> The following commits will solve this problem.
+>> e144d6b26541 ("ima: Evaluate error in
+>> init_ima()") is merged as a follow up bugfix for b16942455193 ("ima:
+>> use the lsm policy update notifier").
 > 
-> In the first commit, move the creating sock listening on udp port 4791
-> from module_init function to rdma link creating functions. That is,
-> after the module rdma_rxe is loaded, the sock will not be created.
-> When run "rdma link add ..." command, the sock will be created. So
-> when creating a rdma link in the net namespace, the sock will be
-> created in this net namespace.
+>> 483ec26eed42 ("ima: ima/lsm policy
+>> rule loading logic bug fixes") and 9ff8a616dfab ("ima: Have the LSM free
+>> its audit rule") is also followup bugfixes. The former would change the
+>> behavior of rule loading without fixing any criticial bug so I don't
+>> think it's necessary, while the latter has already been merged.
 > 
-> In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
-> will check the sock exists in the net namespace or not. If yes, rdma
-> link will increase the reference count of this sock, then continue other
-> jobs instead of creating a new sock to listen on udp port 4791. Since the
-> network notifier is global, when the module rdma_rxe is loaded, this
-> notifier will be registered.
+> Prior to the non-blocking LSM notifier was upstreamed, a custom IMA
+> policy with LSM  based policy rules could not be loaded until the LSM
+> policy had been initialized.  Commit 483ec26eed42 ("ima: ima/lsm policy
+> rule loading logic bug fixes") reverts the unintended change in
+> behavior.
+Right. I thought that commit was an "feature addition" rather than a
+fix. I'll include that in the backport.
 > 
-> After the rdma link is created, the command "rdma link del" is to
-> delete rdma link at the same time the sock is checked. If the reference
-> count of this sock is greater than the sock reference count needed by
-> udp tunnel, the sock reference count is decreased by one. If equal, it
-> indicates that this rdma link is the last one. As such, the udp tunnel
-> is shut down and the sock is closed. The above work should be
-> implemented in linkdel function. But currently no dellink function in
-> rxe. So the 3rd commit addes dellink function pointer. And the 4th
-> commit implements the dellink function in rxe.
+>>
+>> I've tested the patches against said issue and can confirm that the
+>> issue is fixed.
+>>
+>> This is a re-send of the original patchset as the original patchset
+>> might have a faulty cover letter. The original patchset could be found
+>> here:
+>> https://patchwork.kernel.org/project/linux-integrity/list/?series=709367
 > 
-> To now, it is not necessary to keep a global variable to store the sock
-> listening udp port 4791. This global variable can be replaced by the
-> functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
-> function udp6_lib_lookup is in the fast path, a member variable l_sk6
-> is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
-> to lookup the sock, then the sock is stored in l_sk6, in the future,it
-> can be used directly.
+> In addition to a "faulty cover letter", included in this version
+> additional patches are being backported.
 > 
-> All the above work has been done in init_net. And it can also work in
-> the net namespace. So the init_net is replaced by the individual net
-> namespace. This is what the 6th commit does. Because rxe device is
-> dependent on the net device and the sock listening on udp port 4791,
-> every rxe device is in exclusive mode in the individual net namespace.
-> Other rdma netns operations will be considerred in the future.
+> Probably better to drop this comment or to include a "Link:" to the
+> mailing list discussion, as described in
+> Documentation/process/submitting-patches.
+Got it.
 > 
-> In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
-> functions are added. When a new net namespace is created, the init
-> function will initialize the sk4 and sk6 socks. Then the 2 socks will
-> be released when the net namespace is destroyed. The functions
-> rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
-> namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
-> handle sk6. Then sk4 and sk6 are used in the previous commits.
-> 
-> As the sk4 and sk6 in pernet namespace can be accessed, it is not
-> necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
-> replaced with the sk6 in pernet namespace.
-> 
-> Test steps:
-> 1) Suppose that 2 NICs are in 2 different net namespaces.
-> 
->    # ip netns exec net0 ip link
->    3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
->       link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
->       altname enp5s0
-> 
->    # ip netns exec net1 ip link
->    4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
->       link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
-> 
-> 2) Add rdma link in the different net namespace
->      net0:
->      # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
-> 
->      net1:
->      # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
-> 
-> 3) Run rping test.
->      net0
->      # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
->      [1] 1737
->      # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
->      verbose
->      count 1
->      ...
->      ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
->      ...
-> 
-> 4) Remove the rdma links from the net namespaces.
->      net0:
->      # ip netns exec net0 ss -lu
->      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
->      UNCONN    0         0         [::]:4791             [::]:*
-> 
->      # ip netns exec net0 rdma link del rxe0
->      
->      # ip netns exec net0 ss -lu
->      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->      
->      net1:
->      # ip netns exec net0 ss -lu
->      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
->      UNCONN    0         0         [::]:4791             [::]:*
->      
->      # ip netns exec net1 rdma link del rxe1
-> 
->      # ip netns exec net0 ss -lu
->      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
-> 
-> V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
->             verify rdma link is removed.
->          2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
->          3) Replace l_sk6 with sk6 of pernet_name_space
-> 
-> V1->V2: Add the explicit initialization of sk6.
+>>
+>> Change log:
+>>   v2: Fixed build issue and backport bugfix commits for backported
+>> patches.
+>>
+>> Daniel Jurgens (1):
+>>   IB/core: Don't register each MAD agent for LSM notifier
+>>
+>> GUO Zihua (1):
+>>   ima: Handle -ESTALE returned by ima_filter_rule_match()
+>>
+>> Janne Karhunen (2):
+>>   LSM: switch to blocking policy update notifiers
+>>   ima: use the lsm policy update notifier
+>>
+>> Roberto Sassu (1):
+>>   ima: Evaluate error in init_ima()
+>>
+>>  drivers/infiniband/core/core_priv.h |   5 +
+>>  drivers/infiniband/core/device.c    |   5 +-
+>>  drivers/infiniband/core/security.c  |  51 +++++-----
+>>  include/linux/security.h            |  12 +--
+>>  include/rdma/ib_mad.h               |   3 +-
+>>  security/integrity/ima/ima.h        |   2 +
+>>  security/integrity/ima/ima_main.c   |  11 ++
+>>  security/integrity/ima/ima_policy.c | 151 ++++++++++++++++++++++------
+>>  security/security.c                 |  23 +++--
+>>  security/selinux/hooks.c            |   2 +-
+>>  security/selinux/selinuxfs.c        |   2 +-
+>>  11 files changed, 193 insertions(+), 74 deletions(-)
+>>
 
-Add netdev@vger.kernel.org.
-
-Zhu Yanjun
-
-> 
-> Zhu Yanjun (8):
->    RDMA/rxe: Creating listening sock in newlink function
->    RDMA/rxe: Support more rdma links in init_net
->    RDMA/nldev: Add dellink function pointer
->    RDMA/rxe: Implement dellink in rxe
->    RDMA/rxe: Replace global variable with sock lookup functions
->    RDMA/rxe: add the support of net namespace
->    RDMA/rxe: Add the support of net namespace notifier
->    RDMA/rxe: Replace l_sk6 with sk6 in net namespace
-> 
->   drivers/infiniband/core/nldev.c     |   6 ++
->   drivers/infiniband/sw/rxe/Makefile  |   3 +-
->   drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
->   drivers/infiniband/sw/rxe/rxe_net.c | 113 +++++++++++++++++-------
->   drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
->   drivers/infiniband/sw/rxe/rxe_ns.c  | 128 ++++++++++++++++++++++++++++
->   drivers/infiniband/sw/rxe/rxe_ns.h  |  11 +++
->   include/rdma/rdma_netlink.h         |   2 +
->   8 files changed, 267 insertions(+), 40 deletions(-)
->   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
->   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
-> 
+-- 
+Best
+GUO Zihua
 
