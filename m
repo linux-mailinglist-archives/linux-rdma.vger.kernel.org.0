@@ -2,85 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D196A0646
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Feb 2023 11:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2F86A0793
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Feb 2023 12:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbjBWKar (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Feb 2023 05:30:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        id S233248AbjBWLmO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Feb 2023 06:42:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233712AbjBWKao (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Feb 2023 05:30:44 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8234ECEF;
-        Thu, 23 Feb 2023 02:30:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B55A61689;
-        Thu, 23 Feb 2023 10:30:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id ABC0CC4339C;
-        Thu, 23 Feb 2023 10:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677148216;
-        bh=Y9tEj5S8MFTKwz7UntsPwS+3EshDQz0ehhziSrDe5kQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dXAcm/+9S8JrWbAppeeGQtMX0A8pRqoDl/Vbo6kcgSMJR3G04CbNBKYzyG7xq95Hh
-         iXcMkfhGt69OqPl8wePs/9F8xH9MdbkpLSjcp+RkDW7aWKW6RlnRGncsvPXa0gv5Es
-         +o9i1itgE7tF6XW1bwrfzvnoloIzL4H4JpSKxaq9/r3tOG6fkSl0To0/JBsoH37apN
-         olHvnU+rHjBQAgcaJ3wXIjLYHPoWoNR1OGlHNtfnw+Rao2tMit5lmPxKqlC/dGDC6K
-         m7p9hSpWCMhHS4vkJ1ZIZqD5fQNT8jNvScwGWOXnqINwbfjabwd7S1kiNxopSDPDC/
-         AQ5s73fihRHOg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 93609C395E0;
-        Thu, 23 Feb 2023 10:30:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S233044AbjBWLmO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Feb 2023 06:42:14 -0500
+Received: from out-4.mta0.migadu.com (out-4.mta0.migadu.com [IPv6:2001:41d0:1004:224b::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7513851FBD
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Feb 2023 03:42:12 -0800 (PST)
+Message-ID: <c623e3d0-c31c-6535-457d-d9c888f17a77@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1677152530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IlRun0sxQkrtkZQkswZ/qHzOAQd1JteeBh4pUkMb+r8=;
+        b=REyLgldk3UO7PiN892X53wfkzbDI3PgN1aZlQqjqHWGn/a9GqAfVwtggLcOrptFYZDWyug
+        Zl72hDgbwT8A9M4hD5AtL46BCs/K9Cz3yFcfUXX5FNcaNMljcv8ZHQj4gmvYH8i5YLVolF
+        HcuuYzNkvMEYZ217Mh6c9xjL/xb6vYs=
+Date:   Thu, 23 Feb 2023 19:42:01 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCHv3 0/8] Fix the problem that rxe can not work in net
+ namespace
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Zhu Yanjun <yanjun.zhu@intel.com>, jgg@ziepe.ca, leon@kernel.org,
+        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org, parav@nvidia.com,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20230214060634.427162-1-yanjun.zhu@intel.com>
+ <0f33e8d9-1643-25bf-d508-692c628c381b@linux.dev>
+ <20230222205605.6819c02c@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20230222205605.6819c02c@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v1] net/mlx5: Fix memory leak in IPsec RoCE creation
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <167714821660.3301.1148990623254072691.git-patchwork-notify@kernel.org>
-Date:   Thu, 23 Feb 2023 10:30:16 +0000
-References: <a69739482cca7176d3a466f87bbf5af1250b09bb.1677056384.git.leon@kernel.org>
-In-Reply-To: <a69739482cca7176d3a466f87bbf5af1250b09bb.1677056384.git.leon@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, phaddad@nvidia.com,
-        edumazet@google.com, linux-rdma@vger.kernel.org,
-        markzhang@nvidia.com, netdev@vger.kernel.org, pabeni@redhat.com,
-        raeds@nvidia.com, saeedm@nvidia.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (master)
-by Paolo Abeni <pabeni@redhat.com>:
+在 2023/2/23 12:56, Jakub Kicinski 写道:
+> On Thu, 23 Feb 2023 08:31:49 +0800 Zhu Yanjun wrote:
+>>> V1->V2: Add the explicit initialization of sk6.
+>> Add netdev@vger.kernel.org.
+> On the commit letter? Thanks, but that's not how it works.
+> Repost the patches if you want us to see them.
 
-On Wed, 22 Feb 2023 11:06:40 +0200 you wrote:
-> From: Patrisious Haddad <phaddad@nvidia.com>
-> 
-> During IPsec RoCE TX creation a struct for the flow group creation is
-> allocated, but never freed. Free that struct once it is no longer in use.
-> 
-> Fixes: 22551e77e550 ("net/mlx5: Configure IPsec steering for egress RoCEv2 traffic")
-> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> 
-> [...]
+Got it. I will resend all the commits.
 
-Here is the summary with links:
-  - [net,v1] net/mlx5: Fix memory leak in IPsec RoCE creation
-    https://git.kernel.org/netdev/net/c/c749e3f82a15
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Zhu Yanjun
 
