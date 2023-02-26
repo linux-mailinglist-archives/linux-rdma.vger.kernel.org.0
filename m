@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE016A3066
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Feb 2023 15:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9914D6A314A
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Feb 2023 15:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjBZOt0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Feb 2023 09:49:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
+        id S230451AbjBZO4q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Feb 2023 09:56:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjBZOsP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Feb 2023 09:48:15 -0500
+        with ESMTP id S231612AbjBZOzw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Feb 2023 09:55:52 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC8E13D63;
-        Sun, 26 Feb 2023 06:47:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAC31716E;
+        Sun, 26 Feb 2023 06:51:44 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 881D2B80BAA;
-        Sun, 26 Feb 2023 14:46:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D27C7C433EF;
-        Sun, 26 Feb 2023 14:46:14 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0BCA7B80C72;
+        Sun, 26 Feb 2023 14:49:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62CC9C433D2;
+        Sun, 26 Feb 2023 14:49:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677422776;
-        bh=pp/g9vm9Cb2lnnkKuyBHUrAFUuTlOytsITEtaRe4ZcA=;
+        s=k20201202; t=1677422989;
+        bh=uhhpwRVRK17lQtwuhzc1VnNa7K5oKBlu//PlJj6Lwv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o3asbe1Xs6loN2m9vKg6hPkfVii/qXvo+DanrAKO+UMVbk0cjqQTHASCWcYXUa2lQ
-         +9Hr9mXDVssENadckkqF8mIEU16qgIbgts3ej77x5rFZHz9UDTAmgamO/3UyjeexuF
-         1ZfFaAdmoz9qFLJb8i+u8Aj54Y42iLeijurWNbi+e7sOFnVn1H2XVbpiiTps83IkWQ
-         58bZT8qTaWt+NdTTh29tbT1d06Xgk0+mXEoUbz8aZNA2Dv9qR03L99uJM5Jz6gneon
-         ll0DDW1nc3kKjKMgR6X7LD1BPMLLGrLXUXymw7H9CQ5sQcnbIR0CNJqoQjOfs0NJ1J
-         ez0xMM1UJVOVw==
+        b=DEeCmrn/ZrVgP6qVQKc6KDouDEtc+AkGhM4vxaTPXyiI0qx7lVfIQikoci0ZyP7N1
+         ZuuEQETScYO7DQCE6+WHEbLrNwLJEdZwgjb8wsjPxqIWNkY6SqGw4cMzA2nICwRpQI
+         gLARlbyRWQ9RGstbGtagGkgBGWixfnQSFPU4PyxHhSoXBQre/e1/c0172qoA5ABazt
+         kP8HAgC1J8I6O+okPpzgGM11BmcoOx5uPUNNmaJDbuyuNIPrZ7z7uhe9v31d892iUn
+         hYX0gH1VHucX8GnI76J1EGIZHlwcrBtU2pxHMBVpJfQm5tF+kK9S+z0fvh2DL3hnnx
+         Sn0ocb2KwgwGg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Shay Drory <shayd@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
@@ -39,12 +39,12 @@ Cc:     Shay Drory <shayd@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
         edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
         ferasda@nvidia.com, royno@nvidia.com, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.2 38/53] net/mlx5: fw_tracer: Fix debug print
-Date:   Sun, 26 Feb 2023 09:44:30 -0500
-Message-Id: <20230226144446.824580-38-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 26/36] net/mlx5: fw_tracer: Fix debug print
+Date:   Sun, 26 Feb 2023 09:48:34 -0500
+Message-Id: <20230226144845.827893-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226144446.824580-1-sashal@kernel.org>
-References: <20230226144446.824580-1-sashal@kernel.org>
+In-Reply-To: <20230226144845.827893-1-sashal@kernel.org>
+References: <20230226144845.827893-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -74,7 +74,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-index 5b05b884b5fb3..d7b2ee5de1158 100644
+index 1c72fc0b7b68a..05c7c2140909f 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
 @@ -603,7 +603,7 @@ static int mlx5_tracer_handle_string_trace(struct mlx5_fw_tracer *tracer,
