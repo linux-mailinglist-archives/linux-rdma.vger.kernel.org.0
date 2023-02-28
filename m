@@ -2,172 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6686A5ED9
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 19:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4D36A5FE7
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 20:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbjB1Sho (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 13:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
+        id S229883AbjB1TqT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 14:46:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjB1Shn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 13:37:43 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC3621282;
-        Tue, 28 Feb 2023 10:37:41 -0800 (PST)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31SHmNLW027972;
-        Tue, 28 Feb 2023 18:37:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=E4vLYHn5+muNXpB+DuhGrT5rOn/ajMyCNdy6BAyMlgA=;
- b=FmH0RIcS+6O+Nl4bNs1HZSJbV2dlS8XWGQEzKCMmU7UeXtDxvKy3RXLysszGHdVUFHUX
- okHURavgZZ1sG36NuOmLm8F1AeU18kV17sApHNfG1vg1iSwFwGCkzbc8SUCnnoRzFrFO
- tBLEASkOT8VfxrO2Ml0qnrLqnwoAlNXyQuQhPeFttVFiUBW8stkr/2VeM0crxVtoL4jc
- z6Yh29yc2FSVrhDjSbrASv+wigQxkNWZGooln2mUwU6UDWAk9JCMrP994Cra2MNtiAxl
- qN8Exo6cylBlKm3JxP2zjMY6ZVsEW3EKjt52tvgGv3RQ0dAQRCPrspgtm5UoEm38KB6R IA== 
+        with ESMTP id S229969AbjB1TqS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 14:46:18 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934AE1BAFE;
+        Tue, 28 Feb 2023 11:46:17 -0800 (PST)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31SIJv9g006935;
+        Tue, 28 Feb 2023 19:46:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=zXLbJQnUztunJ+IAJYxPhkwQ5LnDz7KnX8kAeWB2rW4=;
+ b=Ggrm3lPbk1/rNbTtyitCi88YinILxdnxMB//+SvZRyK9MMzMB8QOWwjsgtWsmY6KQz2F
+ ciVcf46rWI1Oo/z7a6XYloPb8cOKwe1ieKccPndkCFIoOC5cV5v3b/WKjU/yzecYip+A
+ 0iCs2t1ZRI1N4f5Fl7DGghfWbwGeL78R+ehBEb/O8DStyxcaqAEkoE5TTzlRSuddYCqQ
+ w7WRlotluHx91kqCpxbQSKWepk4x3hyGJ2Bj+WXDT3I6SohJ/UtzUuluZLG6YK/fo/yl
+ uEAfRXqIv9wliGvGglvrDZzXUbSlqMphwOx0vgHfwJ0nYPvYm0kL7sF9gyYkhmmt22Lf Aw== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1ny21uh9-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1pswjg6j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 18:37:28 +0000
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31SHmON1028192;
-        Tue, 28 Feb 2023 18:37:27 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1ny21ugp-1
+        Tue, 28 Feb 2023 19:46:08 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31SIKV2v008505;
+        Tue, 28 Feb 2023 19:46:08 GMT
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1pswjg6d-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 18:37:27 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31RNV9Q2021296;
-        Tue, 28 Feb 2023 18:37:25 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3nybbyth86-1
+        Tue, 28 Feb 2023 19:46:08 +0000
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31SIna7q024474;
+        Tue, 28 Feb 2023 19:45:07 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([9.208.129.117])
+        by ppma05wdc.us.ibm.com (PPS) with ESMTPS id 3nybe9js7d-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 18:37:24 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31SIbLfI590394
+        Tue, 28 Feb 2023 19:45:07 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31SJj6QD7471674
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Feb 2023 18:37:21 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 413D82004B;
-        Tue, 28 Feb 2023 18:37:21 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 87A1B20049;
-        Tue, 28 Feb 2023 18:37:20 +0000 (GMT)
-Received: from osiris (unknown [9.171.64.87])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue, 28 Feb 2023 18:37:20 +0000 (GMT)
-Date:   Tue, 28 Feb 2023 19:37:19 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH net v2] net/smc: fix application data exception
-Message-ID: <Y/5J30kmv1cPc7nE@osiris>
-References: <1676529545-32741-1-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1676529545-32741-1-git-send-email-alibuda@linux.alibaba.com>
+        Tue, 28 Feb 2023 19:45:06 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C9B75805C;
+        Tue, 28 Feb 2023 19:45:06 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F0FE58051;
+        Tue, 28 Feb 2023 19:45:05 +0000 (GMT)
+Received: from sig-9-65-248-59.ibm.com (unknown [9.65.248.59])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 28 Feb 2023 19:45:05 +0000 (GMT)
+Message-ID: <57ebd18a95caa0a8df9ad542478d5dca3ff5760c.camel@linux.ibm.com>
+Subject: Re: [PATCH 4.19 v3 0/6] Backport handling -ESTALE policy update
+ failure to 4.19
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Paul Moore <paul@paul-moore.com>, GUO Zihua <guozihua@huawei.com>
+Cc:     linux-security-module@vger.kernel.org, linux-rdma@vger.kernel.org,
+        dledford@redhat.com, jgg@ziepe.ca
+Date:   Tue, 28 Feb 2023 14:45:04 -0500
+In-Reply-To: <CAHC9VhR1UxGQnsWU1bhG1_XMVfdt_j-cVZkKnQ+rjzqcEP_NHw@mail.gmail.com>
+References: <20230228080630.52370-1-guozihua@huawei.com>
+         <CAHC9VhR1UxGQnsWU1bhG1_XMVfdt_j-cVZkKnQ+rjzqcEP_NHw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jg0w_04plgICG-S-7JHveK1cZn1hxG5q
-X-Proofpoint-ORIG-GUID: il7R5c62d3eiLbuJBovPh_j-YILtXwAv
+X-Proofpoint-GUID: QyVMhysK9XYRtHg8Eq-M0c1YYVoXsWzk
+X-Proofpoint-ORIG-GUID: xsW4uq7gDxrB2Uc1jJH5xv_A_AHr3tk3
+Content-Transfer-Encoding: 8bit
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-02-28_15,2023-02-28_03,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=704 spamscore=0
- suspectscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
- bulkscore=0 clxscore=1011 impostorscore=0 malwarescore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302280154
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NORMAL_HTTP_TO_IP,NUMERIC_HTTP_ADDR,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
+ malwarescore=0 adultscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302280162
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 02:39:05PM +0800, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> There is a certain probability that following
-> exceptions will occur in the wrk benchmark test:
-> 
-> Running 10s test @ http://11.213.45.6:80
->   8 threads and 64 connections
->   Thread Stats   Avg      Stdev     Max   +/- Stdev
->     Latency     3.72ms   13.94ms 245.33ms   94.17%
->     Req/Sec     1.96k   713.67     5.41k    75.16%
->   155262 requests in 10.10s, 23.10MB read
-> Non-2xx or 3xx responses: 3
-> 
-> We will find that the error is HTTP 400 error, which is a serious
-> exception in our test, which means the application data was
-> corrupted.
-> 
-> Consider the following scenarios:
-> 
-> CPU0                            CPU1
-> 
-> buf_desc->used = 0;
->                                 cmpxchg(buf_desc->used, 0, 1)
->                                 deal_with(buf_desc)
-> 
-> memset(buf_desc->cpu_addr,0);
-> 
-> This will cause the data received by a victim connection to be cleared,
-> thus triggering an HTTP 400 error in the server.
-> 
-> This patch exchange the order between clear used and memset, add
-> barrier to ensure memory consistency.
-> 
-> Fixes: 1c5526968e27 ("net/smc: Clear memory when release and reuse buffer")
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
-> v2: rebase it with latest net tree.
-> 
->  net/smc/smc_core.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
-> 
-> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-> index c305d8d..c19d4b7 100644
-> --- a/net/smc/smc_core.c
-> +++ b/net/smc/smc_core.c
-> @@ -1120,8 +1120,9 @@ static void smcr_buf_unuse(struct smc_buf_desc *buf_desc, bool is_rmb,
->  
->  		smc_buf_free(lgr, is_rmb, buf_desc);
->  	} else {
-> -		buf_desc->used = 0;
-> -		memset(buf_desc->cpu_addr, 0, buf_desc->len);
-> +		/* memzero_explicit provides potential memory barrier semantics */
-> +		memzero_explicit(buf_desc->cpu_addr, buf_desc->len);
-> +		WRITE_ONCE(buf_desc->used, 0);
+On Tue, 2023-02-28 at 11:25 -0500, Paul Moore wrote:
+> On Tue, Feb 28, 2023 at 3:09 AM GUO Zihua <guozihua@huawei.com> wrote:
+> >
+> > This series backports patches in order to resolve the issue discussed here:
+> > https://lore.kernel.org/selinux/389334fe-6e12-96b2-6ce9-9f0e8fcb85bf@huawei.com/
+> >
+> > This required backporting the non-blocking LSM policy update mechanism
+> > prerequisite patches. As well as bugfixes that follows:
+> >
+> > c66f67414c1f ("IB/core: Don't register each MAD agent for LSM notifier")
+> > 42df744c4166 ("LSM: switch to blocking policy update notifiers")
+> > b16942455193 ("ima: use the lsm policy update notifier")
+> > 483ec26eed42 ("ima: ima/lsm policy rule loading logic bug fixes")
+> > e144d6b26541 ("ima: Evaluate error in init_ima()")
+> > c7423dbdbc9e ("ima: Handle -ESTALE returned by ima_filter_rule_match()")
+> >
+> > c66f67414c1f ("IB/core: Don't register each MAD agent for LSM notifier")
+> > is merged as the prerequisite of 42df744c4166 ("LSM: switch to blocking
+> > policy update notifiers"). e144d6b26541 ("ima: Evaluate error in
+> > init_ima()"), 483ec26eed42 ("ima: ima/lsm policy rule loading logic bug
+> > fixes") and 9ff8a616dfab ("ima: Have the LSM free its audit rule") are
+> > merged as a follow up bugfix for b16942455193 ("ima: use the lsm policy
+> > update notifier").
 
-This looks odd to me. memzero_explicit() is only sort of a compiler
-barrier, since it is a function call, but not a real memory barrier.
+Scott, there's no need to duplicate the list of commits like this. 
+Having an unordered list would have been fine.
 
-You may want to check Documentation/memory-barriers.txt and
-Documentation/atomic_t.txt.
+> >
+> > I've tested the patches against said issue and can confirm that the
+> > issue is fixed.
+> >
+> > Link to the original maillist discussion:
+> > https://lore.kernel.org/all/389334fe-6e12-96b2-6ce9-9f0e8fcb85bf@huawei.com/
+> >
+> > Change log:
+> >   v2: Fixed build issue and backport bugfix commits for backported
+> > patches.
+> 
+> Is there a quick summary of the changes in v3 of this patchset?
 
-To me the proper solution looks like buf_desc->used should be converted to
-an atomic_t, and then you could do:
+v3:  Backport commit 483ec26eed42b ("ima: ima/lsm policy rule loading
+logic bug fixes")  as well.
 
-	memset(buf_desc->cpu_addr, 0, buf_desc->len);
-	smp_mb__before_atomic();
-	atomic_set(&buf_desc->used, 0);
+-- 
+thanks,
 
-and in a similar way use atomic_cmpxchg() instead of the now used cmpxchg()
-for the part that sets buf_desc->used to 1.
+Mimi
 
-Adding experts to cc, since s390 has such strong memory ordering semantics
-that you can basically do whatever you want without breaking anything. So I
-don't consider myself an expert here at all. :)
 
-But given that this is common code, let's make sure this is really correct.
