@@ -2,318 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 450846A5A96
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 15:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8796A5B77
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 16:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjB1OIn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 09:08:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        id S229569AbjB1POt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 10:14:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjB1OIm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 09:08:42 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39E53A8E;
-        Tue, 28 Feb 2023 06:08:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677593320; x=1709129320;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yAwcbAOwAi/KQOX9wO7C7PL0NtrHIuaW6wPZPUh9D+s=;
-  b=apm6g/IqgWPf0Acn3NkQs4qCW44lpY/DZXogoe0YhbAWrAoH4xYWsaTI
-   ES0xlwHovA97Qjf4GUcYM8kczJ9OSuaCZLOxv9ObuCa3eZ9C21P7Zcng7
-   SBU4Ch7uZzYlETIiAqyxH6+yX+t6/l8niON+RlcUEv16gIuOmedzghu4V
-   iyUndf7SRURKSFp/hXH1sOUbu2tVKJxzzWRukAgicmH0MO8em9+nZKurL
-   cfdizpSLRkPQdwMk9kR8IH8INAbqQAZHhd3/FwlxR1J83Xqp+V8ADQ4FV
-   T4AuqGxdmoI1/Op1OBU6aOUEp1K1h0KlHQRcfnstT+PpkQMxFriTWodOf
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10635"; a="336430121"
-X-IronPort-AV: E=Sophos;i="5.98,222,1673942400"; 
-   d="scan'208";a="336430121"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2023 06:08:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10635"; a="651620316"
-X-IronPort-AV: E=Sophos;i="5.98,222,1673942400"; 
-   d="scan'208";a="651620316"
-Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 28 Feb 2023 06:08:36 -0800
-Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pX0eh-0005RX-1d;
-        Tue, 28 Feb 2023 14:08:35 +0000
-Date:   Tue, 28 Feb 2023 22:08:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 3/4] net/smc: add BPF injection on smc
- negotiation
-Message-ID: <202302282100.x7qq7PGX-lkp@intel.com>
-References: <1677576294-33411-4-git-send-email-alibuda@linux.alibaba.com>
+        with ESMTP id S229788AbjB1POq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 10:14:46 -0500
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CC31CF56
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 07:14:45 -0800 (PST)
+Received: by mail-io1-f69.google.com with SMTP id l7-20020a0566022dc700b0074cc9aba965so5844697iow.11
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 07:14:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=r/aMelHf7Ei0qvgQkk0g/w6wUpHmD3dnt1rTP2g0+sw=;
+        b=fI9StU4/MvOfLnzXLKBTDNYNsYarUkB4/3op4d9mQSUo82v9w2jrsW9woTqPOAhbU5
+         t25R3Zqov+ulklrB8vbPPd6galWFkeLx1vO3/FG5bRA+Fpjj6oWNGchwubRnWYH/4eSu
+         ZzPw/hdRze9zhbgr8NfMAHjPakwQ/33Bw3+5bZ0FTpkw6hJfYvE2erzcngUVTBL8E64+
+         ZCraJJa6mrYWjnqGdWvG44X0aiem+4GoP+28kM0xycM3c4FDCxFBkUOOMYis24rOfzD/
+         Qxkd8d0jB/eWCaViaAHkxe4fTxYCNIdRN3Sr7FUFFbwHii5PKaq8+7nrYaO7e7uj9bLv
+         QUGQ==
+X-Gm-Message-State: AO0yUKUrPaBpeQT4EFuqRmYLnetq/rMf/UYlm67oZfo9Rv0GO6cSNreP
+        dcJO74GE8wyp1xFd7eGS1mhBhSVquhN8LSqy1EVFkUCnCXHO
+X-Google-Smtp-Source: AK7set+Sg6XTovJLAE3vAhTNVY/sOQ2od/c4TBI3LfdFAw12Q8sC9j0tDmd9fWm2dgJNR9zxYVngcHawjbAzboRrk/S1KTtfdJ3k
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1677576294-33411-4-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:b10c:0:b0:3ec:dc1f:12d8 with SMTP id
+ r12-20020a02b10c000000b003ecdc1f12d8mr1434977jah.4.1677597284949; Tue, 28 Feb
+ 2023 07:14:44 -0800 (PST)
+Date:   Tue, 28 Feb 2023 07:14:44 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003ee4ee05f5c40e99@google.com>
+Subject: [syzbot] [rdma?] INFO: trying to register non-static key in
+ rxe_cleanup_task (2)
+From:   syzbot <syzbot+cfcc1a3c85be15a40cba@syzkaller.appspotmail.com>
+To:     jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        zyjzyj2000@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Wythe,
+Hello,
 
-Thank you for the patch! Yet something to improve:
+syzbot found the following issue on:
 
-[auto build test ERROR on bpf-next/master]
+HEAD commit:    982818426a0f Merge tag 'arm-fixes-6.3-1' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1194800f480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=90a4de3f96747e3f
+dashboard link: https://syzkaller.appspot.com/bug?extid=cfcc1a3c85be15a40cba
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230228-173007
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/1677576294-33411-4-git-send-email-alibuda%40linux.alibaba.com
-patch subject: [PATCH bpf-next v3 3/4] net/smc: add BPF injection on smc negotiation
-config: x86_64-randconfig-a015-20230227 (https://download.01.org/0day-ci/archive/20230228/202302282100.x7qq7PGX-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/aa482ab82f4bf9b99d490f8ba5d88e1491156ccf
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230228-173007
-        git checkout aa482ab82f4bf9b99d490f8ba5d88e1491156ccf
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 olddefconfig
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+Unfortunately, I don't have any reproducer for this issue yet.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202302282100.x7qq7PGX-lkp@intel.com/
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/225d8c8e9264/disk-98281842.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/87a9e2a89842/vmlinux-98281842.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/39bdeb741f2e/bzImage-98281842.xz
 
-All errors (new ones prefixed by >>):
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cfcc1a3c85be15a40cba@syzkaller.appspotmail.com
 
-   ld: net/smc/af_smc.o: in function `smc_hs_congested':
->> net/smc/af_smc.c:169: undefined reference to `smc_sock_should_select_smc'
-   ld: net/smc/af_smc.o: in function `smc_release':
->> net/smc/af_smc.c:327: undefined reference to `smc_sock_perform_collecting_info'
-   ld: net/smc/af_smc.o: in function `smc_connect':
-   net/smc/af_smc.c:1637: undefined reference to `smc_sock_should_select_smc'
+Node 1 hugepages_total=2 hugepages_free=2 hugepages_surp=0 hugepages_size=2048kB
+14586 total pagecache pages
+0 pages in swap cache
+Free swap  = 0kB
+Total swap = 0kB
+2097051 pages RAM
+0 pages HighMem/MovableOnly
+392145 pages reserved
+0 pages cma reserved
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 1 PID: 5486 Comm: syz-executor.2 Not tainted 6.2.0-syzkaller-12765-g982818426a0f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/16/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ assign_lock_key kernel/locking/lockdep.c:982 [inline]
+ register_lock_class+0xdb6/0x1120 kernel/locking/lockdep.c:1295
+ __lock_acquire+0x108/0x5d40 kernel/locking/lockdep.c:4935
+ lock_acquire kernel/locking/lockdep.c:5669 [inline]
+ lock_acquire+0x1e3/0x670 kernel/locking/lockdep.c:5634
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:355 [inline]
+ rxe_cleanup_task+0x73/0xc0 drivers/infiniband/sw/rxe/rxe_task.c:119
+ rxe_qp_do_cleanup+0x8c/0x7c0 drivers/infiniband/sw/rxe/rxe_qp.c:776
+ execute_in_process_context+0x3b/0x150 kernel/workqueue.c:3458
+ __rxe_cleanup+0x21e/0x370 drivers/infiniband/sw/rxe/rxe_pool.c:233
+ rxe_create_qp+0x2c2/0x340 drivers/infiniband/sw/rxe/rxe_verbs.c:430
+ create_qp+0x5ac/0x970 drivers/infiniband/core/verbs.c:1233
+ ib_create_qp_kernel+0xa1/0x310 drivers/infiniband/core/verbs.c:1344
+ ib_create_qp include/rdma/ib_verbs.h:3743 [inline]
+ create_mad_qp+0x177/0x380 drivers/infiniband/core/mad.c:2905
+ ib_mad_port_open drivers/infiniband/core/mad.c:2986 [inline]
+ ib_mad_init_device+0xf40/0x1a90 drivers/infiniband/core/mad.c:3077
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:721
+ enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1332
+ ib_register_device drivers/infiniband/core/device.c:1420 [inline]
+ ib_register_device+0x8b1/0xbc0 drivers/infiniband/core/device.c:1366
+ rxe_register_device+0x317/0x3f0 drivers/infiniband/sw/rxe/rxe_verbs.c:1096
+ rxe_net_add+0x90/0xf0 drivers/infiniband/sw/rxe/rxe_net.c:524
+ rxe_newlink+0xd5/0x140 drivers/infiniband/sw/rxe/rxe.c:195
+ nldev_newlink+0x332/0x5e0 drivers/infiniband/core/nldev.c:1731
+ rdma_nl_rcv_msg+0x371/0x6a0 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb.constprop.0.isra.0+0x2fc/0x440 drivers/infiniband/core/netlink.c:239
+ netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
+ netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
+ netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1942
+ sock_sendmsg_nosec net/socket.c:722 [inline]
+ sock_sendmsg+0xde/0x190 net/socket.c:745
+ ____sys_sendmsg+0x71c/0x900 net/socket.c:2504
+ ___sys_sendmsg+0x110/0x1b0 net/socket.c:2558
+ __sys_sendmsg+0xf7/0x1c0 net/socket.c:2587
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fd95868c0f9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd9594b3168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007fd9587abf80 RCX: 00007fd95868c0f9
+RDX: 0000000000000000 RSI: 0000000020000200 RDI: 0000000000000003
+RBP: 00007fd9586e7ae9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fff9db7c9ef R14: 00007fd9594b3300 R15: 0000000000022000
+ </TASK>
+infiniband syz1: Couldn't create ib_mad QP1
+infiniband syz1: Couldn't open port 1
+RDS/IB: syz1: added
+smc: adding ib device syz1 with port count 1
+smc:    ib device syz1 port 1 has pnetid 
+syz-executor.2 (5486) used greatest stack depth: 22840 bytes left
 
 
-vim +169 net/smc/af_smc.c
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-   156	
-   157	static bool smc_hs_congested(const struct sock *sk)
-   158	{
-   159		const struct smc_sock *smc;
-   160	
-   161		smc = smc_clcsock_user_data(sk);
-   162	
-   163		if (!smc)
-   164			return true;
-   165	
-   166		if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
-   167			return true;
-   168	
- > 169		if (!smc_sock_should_select_smc(smc))
-   170			return true;
-   171	
-   172		return false;
-   173	}
-   174	
-   175	static struct smc_hashinfo smc_v4_hashinfo = {
-   176		.lock = __RW_LOCK_UNLOCKED(smc_v4_hashinfo.lock),
-   177	};
-   178	
-   179	static struct smc_hashinfo smc_v6_hashinfo = {
-   180		.lock = __RW_LOCK_UNLOCKED(smc_v6_hashinfo.lock),
-   181	};
-   182	
-   183	int smc_hash_sk(struct sock *sk)
-   184	{
-   185		struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
-   186		struct hlist_head *head;
-   187	
-   188		head = &h->ht;
-   189	
-   190		write_lock_bh(&h->lock);
-   191		sk_add_node(sk, head);
-   192		write_unlock_bh(&h->lock);
-   193		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
-   194	
-   195		return 0;
-   196	}
-   197	EXPORT_SYMBOL_GPL(smc_hash_sk);
-   198	
-   199	void smc_unhash_sk(struct sock *sk)
-   200	{
-   201		struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
-   202	
-   203		write_lock_bh(&h->lock);
-   204		if (sk_del_node_init(sk))
-   205			sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
-   206		write_unlock_bh(&h->lock);
-   207	}
-   208	EXPORT_SYMBOL_GPL(smc_unhash_sk);
-   209	
-   210	/* This will be called before user really release sock_lock. So do the
-   211	 * work which we didn't do because of user hold the sock_lock in the
-   212	 * BH context
-   213	 */
-   214	static void smc_release_cb(struct sock *sk)
-   215	{
-   216		struct smc_sock *smc = smc_sk(sk);
-   217	
-   218		if (smc->conn.tx_in_release_sock) {
-   219			smc_tx_pending(&smc->conn);
-   220			smc->conn.tx_in_release_sock = false;
-   221		}
-   222	}
-   223	
-   224	struct proto smc_proto = {
-   225		.name		= "SMC",
-   226		.owner		= THIS_MODULE,
-   227		.keepalive	= smc_set_keepalive,
-   228		.hash		= smc_hash_sk,
-   229		.unhash		= smc_unhash_sk,
-   230		.release_cb	= smc_release_cb,
-   231		.obj_size	= sizeof(struct smc_sock),
-   232		.h.smc_hash	= &smc_v4_hashinfo,
-   233		.slab_flags	= SLAB_TYPESAFE_BY_RCU,
-   234	};
-   235	EXPORT_SYMBOL_GPL(smc_proto);
-   236	
-   237	struct proto smc_proto6 = {
-   238		.name		= "SMC6",
-   239		.owner		= THIS_MODULE,
-   240		.keepalive	= smc_set_keepalive,
-   241		.hash		= smc_hash_sk,
-   242		.unhash		= smc_unhash_sk,
-   243		.release_cb	= smc_release_cb,
-   244		.obj_size	= sizeof(struct smc_sock),
-   245		.h.smc_hash	= &smc_v6_hashinfo,
-   246		.slab_flags	= SLAB_TYPESAFE_BY_RCU,
-   247	};
-   248	EXPORT_SYMBOL_GPL(smc_proto6);
-   249	
-   250	static void smc_fback_restore_callbacks(struct smc_sock *smc)
-   251	{
-   252		struct sock *clcsk = smc->clcsock->sk;
-   253	
-   254		write_lock_bh(&clcsk->sk_callback_lock);
-   255		clcsk->sk_user_data = NULL;
-   256	
-   257		smc_clcsock_restore_cb(&clcsk->sk_state_change, &smc->clcsk_state_change);
-   258		smc_clcsock_restore_cb(&clcsk->sk_data_ready, &smc->clcsk_data_ready);
-   259		smc_clcsock_restore_cb(&clcsk->sk_write_space, &smc->clcsk_write_space);
-   260		smc_clcsock_restore_cb(&clcsk->sk_error_report, &smc->clcsk_error_report);
-   261	
-   262		write_unlock_bh(&clcsk->sk_callback_lock);
-   263	}
-   264	
-   265	static void smc_restore_fallback_changes(struct smc_sock *smc)
-   266	{
-   267		if (smc->clcsock->file) { /* non-accepted sockets have no file yet */
-   268			smc->clcsock->file->private_data = smc->sk.sk_socket;
-   269			smc->clcsock->file = NULL;
-   270			smc_fback_restore_callbacks(smc);
-   271		}
-   272	}
-   273	
-   274	static int __smc_release(struct smc_sock *smc)
-   275	{
-   276		struct sock *sk = &smc->sk;
-   277		int rc = 0;
-   278	
-   279		if (!smc->use_fallback) {
-   280			rc = smc_close_active(smc);
-   281			sock_set_flag(sk, SOCK_DEAD);
-   282			sk->sk_shutdown |= SHUTDOWN_MASK;
-   283		} else {
-   284			if (sk->sk_state != SMC_CLOSED) {
-   285				if (sk->sk_state != SMC_LISTEN &&
-   286				    sk->sk_state != SMC_INIT)
-   287					sock_put(sk); /* passive closing */
-   288				if (sk->sk_state == SMC_LISTEN) {
-   289					/* wake up clcsock accept */
-   290					rc = kernel_sock_shutdown(smc->clcsock,
-   291								  SHUT_RDWR);
-   292				}
-   293				sk->sk_state = SMC_CLOSED;
-   294				sk->sk_state_change(sk);
-   295			}
-   296			smc_restore_fallback_changes(smc);
-   297		}
-   298	
-   299		sk->sk_prot->unhash(sk);
-   300	
-   301		if (sk->sk_state == SMC_CLOSED) {
-   302			if (smc->clcsock) {
-   303				release_sock(sk);
-   304				smc_clcsock_release(smc);
-   305				lock_sock(sk);
-   306			}
-   307			if (!smc->use_fallback)
-   308				smc_conn_free(&smc->conn);
-   309		}
-   310	
-   311		return rc;
-   312	}
-   313	
-   314	static int smc_release(struct socket *sock)
-   315	{
-   316		struct sock *sk = sock->sk;
-   317		struct smc_sock *smc;
-   318		int old_state, rc = 0;
-   319	
-   320		if (!sk)
-   321			goto out;
-   322	
-   323		sock_hold(sk); /* sock_put below */
-   324		smc = smc_sk(sk);
-   325	
-   326		/* trigger info gathering if needed.*/
- > 327		smc_sock_perform_collecting_info(sk, SMC_SOCK_CLOSED_TIMING);
-   328	
-   329		old_state = sk->sk_state;
-   330	
-   331		/* cleanup for a dangling non-blocking connect */
-   332		if (smc->connect_nonblock && old_state == SMC_INIT)
-   333			tcp_abort(smc->clcsock->sk, ECONNABORTED);
-   334	
-   335		if (cancel_work_sync(&smc->connect_work))
-   336			sock_put(&smc->sk); /* sock_hold in smc_connect for passive closing */
-   337	
-   338		if (sk->sk_state == SMC_LISTEN)
-   339			/* smc_close_non_accepted() is called and acquires
-   340			 * sock lock for child sockets again
-   341			 */
-   342			lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
-   343		else
-   344			lock_sock(sk);
-   345	
-   346		if (old_state == SMC_INIT && sk->sk_state == SMC_ACTIVE &&
-   347		    !smc->use_fallback)
-   348			smc_close_active_abort(smc);
-   349	
-   350		rc = __smc_release(smc);
-   351	
-   352		/* detach socket */
-   353		sock_orphan(sk);
-   354		sock->sk = NULL;
-   355		release_sock(sk);
-   356	
-   357		sock_put(sk); /* sock_hold above */
-   358		sock_put(sk); /* final sock_put */
-   359	out:
-   360		return rc;
-   361	}
-   362	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
