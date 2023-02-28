@@ -2,124 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B246A5C17
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 16:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7576A5C6E
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 16:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjB1Phc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 10:37:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
+        id S229774AbjB1PyU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 10:54:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbjB1Pha (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 10:37:30 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2111.outbound.protection.outlook.com [40.107.93.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4520F30B37;
-        Tue, 28 Feb 2023 07:37:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mX2s38qQ3uOuoM0lXvg9jXOjkvY4HIWvUeXLsLY/DLl6O9drevwTws9ObBe6tXuankqRccEUbJJTG+5bl9AcdIp7eb0GAGBUOqDm6vXPeDSUiiOLuSnOKAV4XVcchB1Seo5CweryXZvFp1o+d4580DnNHdi1t3SENRAXQKovUq7qa1ukxtX8IULfDcyZynKl5n6c0rqNqTKG7oiuEog4gInE8D1TCvExeemyXHe/33kEUNTpxJfyHV9sI0AihEs8tqf7WATWzAwNvRlBPpClNzvBrwmnB+spkUk0Mqxhtgysvg5lphr7MjhQJvf9eOymkp92TqoHnBQai6b0mz5STQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oATAFSZ1NDAEiB5OvJcqbp/Jtzr3zGU4eKvkwrsp4YQ=;
- b=PfC8okNy7F1apWSotqiS47Y/pXWE9pMSG4UEc4nPHVlxR2qq6gSXWzH5M9b+1Xrl9IdJyEbR0v0WjzoztcnesQACF4ypjWhBJjPKoTVC4nSyPFhsuYTcjxWHSOu+u5eINREORNGB5KO4JKtr2zG4+IGYEHCHiBwHRtLPa4z6a9pJDPCtZ3bMCykvY4nJhurYHYhRB+iahSl0KzO0gHrq+PjpPKAXdNUx4hZp9AHIdm/IFnvSoA8e9LM+hsegnY0uPznuAyge2ANFkei2k/ivMUrb/Lc3ZLiKz5t/sRnXzobNb+MDgj9v+x2fIJisC85+1jlehxhfxDy8ER9BBeTSKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oATAFSZ1NDAEiB5OvJcqbp/Jtzr3zGU4eKvkwrsp4YQ=;
- b=VC2ATWk0l5dybidaPg4TRRVVXr0P65PbD3KIXU4hL0VOk5g+cu6X/LiOLFhBVO0/HAUEDmq/yCNRrmu9gH1iojbIFaVr8aO1DZWdVOin1CFgJ+2lXmq2XCRNuvWdNOtsG6fzrJZkHXlPuDnyTFmlnUS7L3dgJM/01G1ahWl1XSIv3SQKoynaD/sw/fvinaCCeaBQYQeTmnn5pY8tZ3q1Q0j/gRRaM9zf/Pa93ZEsYca9ItVAayWX4gcoYssnj0B+qIKW9cGV2q7oT6xdM09xp1CP4jNsvT7qNcRSrUJ+ncwMJ2cTdQzSB+lFAcmw9/ffIrzPA2aQ9NjFRGnmayZrXw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from BN6PR01MB2610.prod.exchangelabs.com (2603:10b6:404:d0::7) by
- BY3PR01MB6756.prod.exchangelabs.com (2603:10b6:a03:364::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6134.26; Tue, 28 Feb 2023 15:37:21 +0000
-Received: from BN6PR01MB2610.prod.exchangelabs.com
- ([fe80::5844:6112:4eb1:a8f8]) by BN6PR01MB2610.prod.exchangelabs.com
- ([fe80::5844:6112:4eb1:a8f8%9]) with mapi id 15.20.6134.029; Tue, 28 Feb 2023
- 15:37:20 +0000
-Message-ID: <81922cc5-4de3-bcd6-b0c3-8f9e61a1e7c5@cornelisnetworks.com>
-Date:   Tue, 28 Feb 2023 10:37:17 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH] IB/rdmavt: Fix target union member for rvt_post_one_wr()
-Content-Language: en-US
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Zhang Yi <yizhan@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20230218185701.never.779-kees@kernel.org>
- <6d2fe281-891c-8909-5330-f05d4407431a@cornelisnetworks.com>
-In-Reply-To: <6d2fe281-891c-8909-5330-f05d4407431a@cornelisnetworks.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR15CA0025.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::38) To BN6PR01MB2610.prod.exchangelabs.com
- (2603:10b6:404:d0::7)
+        with ESMTP id S230207AbjB1PyR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 10:54:17 -0500
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7F81A652;
+        Tue, 28 Feb 2023 07:54:13 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VcjvWG2_1677599645;
+Received: from 30.0.161.21(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VcjvWG2_1677599645)
+          by smtp.aliyun-inc.com;
+          Tue, 28 Feb 2023 23:54:06 +0800
+Message-ID: <e54522dd-5e20-3c98-a148-867cb692a53c@linux.alibaba.com>
+Date:   Tue, 28 Feb 2023 23:54:05 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN6PR01MB2610:EE_|BY3PR01MB6756:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1060d8e9-77d8-43a5-8bb1-08db19a1adde
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1DDhC/5LDJFfkJ9nIpWTPJtWRXOJ8tKe+0zXwmORayOgqMwyhDhXhNe4PZgI3jj0umxh87OOX8ILHlXbx71Fc9BNauxxpM/emvyt5qHk8K7payUanqhIHRreGhrf9/pTuymjhsZH6A1NnuNxoPlH6jVQgE0XoMYMCs6BNugtjTSnaSnrSWUh36C3OHAJtIFjRDEu1vuFJzxivbwVHITaBtebkea6FzH1rhORX2nYR5v3bDeRSzPMGw3EQNfjw7vdFQtf+C8H3IA5FsHyYaQC5VR/m7ZW8TdROnEufpfXAtjnWaRCbzZr7fQn2AF6JF0LePEUCAGyVETeHQL8UL654IdzOAxI2s2JpLFlXCTBcqwYJhehA31WWIReKP7QQpycfxyMas/+EwDFvhGDxa5kRWlic+Lx7mYxkK0YUh3iKP3fTbKWM83vVBPGAgB8/edJPnKq4Bz5kGwJcbtiyOP7uldK17k1VxKMGMVmejalJAMzjoJbxSMRsRr/RJAix0yxmkoaV5MjUbb72o36a040d99JeIBlX2IqKj42dx1/xPDebS5zcX6/iMKiB89ro0FZW00MgFkeyS6W6mnT9B5AWbyN6T5MX8bquV4lliOXfvFAQLPc0EMzWiJiVkyZmREJmRnDCxrTmMjj3YWCJYezy5DM4Pxr7VaX5HGKcJydEYTAXtxqFKI1fEwRTSn4Y3eBT4njmx9RqwWBAAzdN6T/Wg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR01MB2610.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(136003)(346002)(366004)(39840400004)(376002)(451199018)(186003)(5660300002)(38100700002)(2906002)(83380400001)(38350700002)(8936002)(66476007)(66946007)(4326008)(6506007)(66556008)(6916009)(44832011)(8676002)(41300700001)(26005)(478600001)(52116002)(6512007)(2616005)(6666004)(53546011)(966005)(316002)(31696002)(86362001)(54906003)(36756003)(31686004)(6486002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MTVEbmM4K050ZkJ0YXVkdmJ4VXJVU1JldkE2dVQ1TklaR1c4aFB5VWtFZGE1?=
- =?utf-8?B?c3RaU01pYmxKT3JGSkVyUzFoRG04bTJJU3JTQjM1bDJJQnpiYmlxQXdCOVpN?=
- =?utf-8?B?cTZSUGl0UXJtNWtxSEpiMkdLaWoxTmsreU03Z250ZnhLUDY2Mjl1ZjE4UE5y?=
- =?utf-8?B?aW5rMDRJZElnM3VTRTRRRXNSbmlxeEtxSG9zSTNtTTl4eFhMbDB0SEFvTDNW?=
- =?utf-8?B?RWMwSEVaWUFDQzIvb0syLzY1Q2VzNDBNTGczLzRwWk1OdkJJRmJib0YzWUZ1?=
- =?utf-8?B?cC9MUUR5M1Q4cmNWYTVzTWFxVktzRnZ0RDNMZE45UlR3QkNhdWJXMTBkVXUv?=
- =?utf-8?B?ekEvMVExVkJWZnVOanlMNjZtM1dmU3dmMmFCR2hQUHJVazRiRE90R1Noc3ZG?=
- =?utf-8?B?ZDBDZWh1SExyWVZyMEgxWTkxaUpjbDZrQVB1NklVR083MndTUUNaRFRrY3pZ?=
- =?utf-8?B?TVN3TFo0eCtTTnU3WDRYUnZDQml6TnlCTlJ2OVdBK2FEaExRelJOL0ZHekQx?=
- =?utf-8?B?RWhKNTdxWlZneC9NTk5QaWFON1BRWENoQ3pKTXBuS1Y5M0xudEUzbGgrczFD?=
- =?utf-8?B?Zi9oWlhMQ0VhTjFOZlZleDdUSjZWM2RWcm41djk3UEpTZk85VHBkQmlaT0hz?=
- =?utf-8?B?N0loaW9Gb1NSV1dhSTRLMFRMWGd2UmppQVBmN0kzaW5FdnJvNVpXajVpTEpR?=
- =?utf-8?B?WG1WNXVGUHgxK2RXbWRDMUNQSlVrakJpc0dVeDhVYVhMMHk5ZFFnditvM0VD?=
- =?utf-8?B?OEFRaHdJNnEzM2JHMjFwdFMyMjE4b1ZCOUN2TEd0SXpKS0tYU0xVTnZQNk1M?=
- =?utf-8?B?d2d3aUFnMkxoc2tjUU05UGVNY0o4anM0MmovSk1LVEJESERFRktIOXg5a29x?=
- =?utf-8?B?U3NZbUpkU1lXa3kxTG1obGNFcnBmWURYdXl0U0wyRXZiTko2NVh3NThtaGlI?=
- =?utf-8?B?Q2F0cXJqdnVnSGpPaHpzUmwreTYxZXpCa2lWSzVTU3pRT1V5WVAwTXpBeHgr?=
- =?utf-8?B?dmdFZ2NMazhZOTBaK1hUTW8yd1pnY1V4bG9odmtIaTZvUFc0bzVBOXJCMzQ0?=
- =?utf-8?B?ZksyUzF6M0JzUDJETUVqaUpxdmFZYktXSkhKNnYrNEZwbUVzcWtNaHowK1ZV?=
- =?utf-8?B?RW5rMHF3YUlCQ2pWWHBhZXhWWjAwVDUrK2ZYYVZ2VkI2cWliNmRxQUZ0ZUJv?=
- =?utf-8?B?d29DbTNGQUN6eDErMXhWbDBHeHNwMmZXckZsNGVFM0xueS9BVU5YOWluaUFR?=
- =?utf-8?B?cldIdVg1eGNaZllFNTdyZWVDMkdySGJQclhxN3JPaXFHQXRvdndWS0dSYlYz?=
- =?utf-8?B?cDQ2WGJKQXhxdTBDSWlkQlZlOG0wai9EWURKOGRzWTFKRWFudFhjcnYxRFJC?=
- =?utf-8?B?SUI4SlJ4STRUbTdMUGNoTmFpL2N3RFNXYXRCMnlLNUtRbm9QOTI0ZU1jSUVk?=
- =?utf-8?B?Q0xKRWFGU2ZBbnQ5NUlLUzZwWlpJKy9UKzhmZkQwQmFBN1pTTmdSTkZoVGpk?=
- =?utf-8?B?cW9ybDQvQVYxR05MY29zZXFVNk10QmtRUzA2QXhMMDhGc2ZGcmpET2lDWEZi?=
- =?utf-8?B?ZjlsUlRXUm1yUDE1c2RzZEIrNHRSd0xwWUsvNE1ZblBQKzh3RjhsZEhVd1kx?=
- =?utf-8?B?NEJvT1dFQllvWDNUZ29BakZra3lDQ1V0bTlLTVRCVUxNVlZUR0NQcS9BNlZL?=
- =?utf-8?B?dndSVVUwVWFISzhmb0NPQ1B1RGJVcEt1a0duRHZZSU9MMGk1UjdxU28rb2Jk?=
- =?utf-8?B?eFo1ZjZ5RjF3RXVRZ0o5SzN5UWJoc3U2SHlxa1Z2bjNvTDhpaTJieG9WWU5Q?=
- =?utf-8?B?MkhCdHJUdXNLVUVpdEVmZmw5UkJXall5U29QSjBCRnhZclNETklGZVh3UHV1?=
- =?utf-8?B?eW8vRHZpV2FMT2dvR01LaXFqcG43L0JTMnBpYjdEbng5a3pOQ1EvSlF0bmFM?=
- =?utf-8?B?YWNmbGUxQ0JvaXJZeW95cUVOeHNwRWkyZnlXVEFwSTNTMXdiaG1TWEZla2w1?=
- =?utf-8?B?Qmc4MzRDcDdKRHpGZVVjSjNwMnNsUXMxVVgveVJaTjUvZU5jYThsKy9odytN?=
- =?utf-8?B?UXRqbGN5TGo3MzRJanYxdzh4SGY5TVl6d3grYjNDaUU5SmQxa1RRMWtIcUxZ?=
- =?utf-8?B?YklucUNBajZOWi9ma3dUQmJ5ay9LRFFtalhTMFVobEtwdGo3cG92QXVocWc5?=
- =?utf-8?Q?CDo56jdzrNEPJaH9Zm4H/d4=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1060d8e9-77d8-43a5-8bb1-08db19a1adde
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR01MB2610.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2023 15:37:20.1935
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x/+/UIHKyANlv9a5EmhVAajrvMOV67UBOI79hNX+BcD5O09PQjXEbB8VFDU7eqO8GewiGQE3l7pWylfz67XftQ6KFv5QQ0jgkI2lYXWQN772SIzCGdaGDFegRgi4qMl9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR01MB6756
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.7.2
+Subject: Re: [PATCH bpf-next v3 3/4] net/smc: add BPF injection on smc
+ negotiation
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <1677576294-33411-4-git-send-email-alibuda@linux.alibaba.com>
+ <202302282100.x7qq7PGX-lkp@intel.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <202302282100.x7qq7PGX-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -128,57 +50,258 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
+Hi robot,
 
-On 2/21/23 8:00 AM, Dennis Dalessandro wrote:
-> On 2/18/23 1:57 PM, Kees Cook wrote:
->> The "cplen" result used by the memcpy() into struct rvt_swqe "wqe" may
->> be sized to 80 for struct rvt_ud_wr (which is member "ud_wr", not "wr"
->> which is only 40 bytes in size). Change the destination union member so
->> the compiler can use the correct bounds check.
->>
->> struct rvt_swqe {
->>         union {
->>                 struct ib_send_wr wr;   /* don't use wr.sg_list */
->>                 struct rvt_ud_wr ud_wr;
->> 		...
->> 	};
->> 	...
->> };
->>
->> Silences false positive memcpy() run-time warning:
->>
->>   memcpy: detected field-spanning write (size 80) of single field "&wqe->wr" at drivers/infiniband/sw/rdmavt/qp.c:2043 (size 40)
->>
->> Reported-by: Zhang Yi <yizhan@redhat.com>
->> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216561
->> Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
->> Cc: Jason Gunthorpe <jgg@ziepe.ca>
->> Cc: Leon Romanovsky <leon@kernel.org>
->> Cc: linux-rdma@vger.kernel.org
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->> ---
->>  drivers/infiniband/sw/rdmavt/qp.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
->> index 3acab569fbb9..3f707e1fa517 100644
->> --- a/drivers/infiniband/sw/rdmavt/qp.c
->> +++ b/drivers/infiniband/sw/rdmavt/qp.c
->> @@ -2040,7 +2040,7 @@ static int rvt_post_one_wr(struct rvt_qp *qp,
->>  	wqe = rvt_get_swqe_ptr(qp, qp->s_head);
->>  
->>  	/* cplen has length from above */
->> -	memcpy(&wqe->wr, wr, cplen);
->> +	memcpy(&wqe->ud_wr, wr, cplen);
->>  
->>  	wqe->length = 0;
->>  	j = 0;
+It's seems impossible. I have compiled and tested this patch locally for many times.
+Maybe you compiled this patch separately. However, this patch depends on the previous one.
+
+Thanks
+D. Wythe
+
+On 2/28/23 10:08 PM, kernel test robot wrote:
+> Hi Wythe,
 > 
-> Thanks for the patch. We've been debating this issue internally since last week.
-> The problem I have is this makes it look like everything is a "UD" req when it
-> could be a different QP type. Maybe we just need a comment explaining.
-
-For what it's worth I did test this patch. If you could add the comment that'd
-be great. If not I can touch it up later.
-
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on bpf-next/master]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230228-173007
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> patch link:    https://lore.kernel.org/r/1677576294-33411-4-git-send-email-alibuda%40linux.alibaba.com
+> patch subject: [PATCH bpf-next v3 3/4] net/smc: add BPF injection on smc negotiation
+> config: x86_64-randconfig-a015-20230227 (https://download.01.org/0day-ci/archive/20230228/202302282100.x7qq7PGX-lkp@intel.com/config)
+> compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+> reproduce (this is a W=1 build):
+>          # https://github.com/intel-lab-lkp/linux/commit/aa482ab82f4bf9b99d490f8ba5d88e1491156ccf
+>          git remote add linux-review https://github.com/intel-lab-lkp/linux
+>          git fetch --no-tags linux-review D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230228-173007
+>          git checkout aa482ab82f4bf9b99d490f8ba5d88e1491156ccf
+>          # save the config file
+>          mkdir build_dir && cp config build_dir/.config
+>          make W=1 O=build_dir ARCH=x86_64 olddefconfig
+>          make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag where applicable
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Link: https://lore.kernel.org/oe-kbuild-all/202302282100.x7qq7PGX-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>     ld: net/smc/af_smc.o: in function `smc_hs_congested':
+>>> net/smc/af_smc.c:169: undefined reference to `smc_sock_should_select_smc'
+>     ld: net/smc/af_smc.o: in function `smc_release':
+>>> net/smc/af_smc.c:327: undefined reference to `smc_sock_perform_collecting_info'
+>     ld: net/smc/af_smc.o: in function `smc_connect':
+>     net/smc/af_smc.c:1637: undefined reference to `smc_sock_should_select_smc'
+> 
+> 
+> vim +169 net/smc/af_smc.c
+> 
+>     156	
+>     157	static bool smc_hs_congested(const struct sock *sk)
+>     158	{
+>     159		const struct smc_sock *smc;
+>     160	
+>     161		smc = smc_clcsock_user_data(sk);
+>     162	
+>     163		if (!smc)
+>     164			return true;
+>     165	
+>     166		if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>     167			return true;
+>     168	
+>   > 169		if (!smc_sock_should_select_smc(smc))
+>     170			return true;
+>     171	
+>     172		return false;
+>     173	}
+>     174	
+>     175	static struct smc_hashinfo smc_v4_hashinfo = {
+>     176		.lock = __RW_LOCK_UNLOCKED(smc_v4_hashinfo.lock),
+>     177	};
+>     178	
+>     179	static struct smc_hashinfo smc_v6_hashinfo = {
+>     180		.lock = __RW_LOCK_UNLOCKED(smc_v6_hashinfo.lock),
+>     181	};
+>     182	
+>     183	int smc_hash_sk(struct sock *sk)
+>     184	{
+>     185		struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
+>     186		struct hlist_head *head;
+>     187	
+>     188		head = &h->ht;
+>     189	
+>     190		write_lock_bh(&h->lock);
+>     191		sk_add_node(sk, head);
+>     192		write_unlock_bh(&h->lock);
+>     193		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
+>     194	
+>     195		return 0;
+>     196	}
+>     197	EXPORT_SYMBOL_GPL(smc_hash_sk);
+>     198	
+>     199	void smc_unhash_sk(struct sock *sk)
+>     200	{
+>     201		struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
+>     202	
+>     203		write_lock_bh(&h->lock);
+>     204		if (sk_del_node_init(sk))
+>     205			sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
+>     206		write_unlock_bh(&h->lock);
+>     207	}
+>     208	EXPORT_SYMBOL_GPL(smc_unhash_sk);
+>     209	
+>     210	/* This will be called before user really release sock_lock. So do the
+>     211	 * work which we didn't do because of user hold the sock_lock in the
+>     212	 * BH context
+>     213	 */
+>     214	static void smc_release_cb(struct sock *sk)
+>     215	{
+>     216		struct smc_sock *smc = smc_sk(sk);
+>     217	
+>     218		if (smc->conn.tx_in_release_sock) {
+>     219			smc_tx_pending(&smc->conn);
+>     220			smc->conn.tx_in_release_sock = false;
+>     221		}
+>     222	}
+>     223	
+>     224	struct proto smc_proto = {
+>     225		.name		= "SMC",
+>     226		.owner		= THIS_MODULE,
+>     227		.keepalive	= smc_set_keepalive,
+>     228		.hash		= smc_hash_sk,
+>     229		.unhash		= smc_unhash_sk,
+>     230		.release_cb	= smc_release_cb,
+>     231		.obj_size	= sizeof(struct smc_sock),
+>     232		.h.smc_hash	= &smc_v4_hashinfo,
+>     233		.slab_flags	= SLAB_TYPESAFE_BY_RCU,
+>     234	};
+>     235	EXPORT_SYMBOL_GPL(smc_proto);
+>     236	
+>     237	struct proto smc_proto6 = {
+>     238		.name		= "SMC6",
+>     239		.owner		= THIS_MODULE,
+>     240		.keepalive	= smc_set_keepalive,
+>     241		.hash		= smc_hash_sk,
+>     242		.unhash		= smc_unhash_sk,
+>     243		.release_cb	= smc_release_cb,
+>     244		.obj_size	= sizeof(struct smc_sock),
+>     245		.h.smc_hash	= &smc_v6_hashinfo,
+>     246		.slab_flags	= SLAB_TYPESAFE_BY_RCU,
+>     247	};
+>     248	EXPORT_SYMBOL_GPL(smc_proto6);
+>     249	
+>     250	static void smc_fback_restore_callbacks(struct smc_sock *smc)
+>     251	{
+>     252		struct sock *clcsk = smc->clcsock->sk;
+>     253	
+>     254		write_lock_bh(&clcsk->sk_callback_lock);
+>     255		clcsk->sk_user_data = NULL;
+>     256	
+>     257		smc_clcsock_restore_cb(&clcsk->sk_state_change, &smc->clcsk_state_change);
+>     258		smc_clcsock_restore_cb(&clcsk->sk_data_ready, &smc->clcsk_data_ready);
+>     259		smc_clcsock_restore_cb(&clcsk->sk_write_space, &smc->clcsk_write_space);
+>     260		smc_clcsock_restore_cb(&clcsk->sk_error_report, &smc->clcsk_error_report);
+>     261	
+>     262		write_unlock_bh(&clcsk->sk_callback_lock);
+>     263	}
+>     264	
+>     265	static void smc_restore_fallback_changes(struct smc_sock *smc)
+>     266	{
+>     267		if (smc->clcsock->file) { /* non-accepted sockets have no file yet */
+>     268			smc->clcsock->file->private_data = smc->sk.sk_socket;
+>     269			smc->clcsock->file = NULL;
+>     270			smc_fback_restore_callbacks(smc);
+>     271		}
+>     272	}
+>     273	
+>     274	static int __smc_release(struct smc_sock *smc)
+>     275	{
+>     276		struct sock *sk = &smc->sk;
+>     277		int rc = 0;
+>     278	
+>     279		if (!smc->use_fallback) {
+>     280			rc = smc_close_active(smc);
+>     281			sock_set_flag(sk, SOCK_DEAD);
+>     282			sk->sk_shutdown |= SHUTDOWN_MASK;
+>     283		} else {
+>     284			if (sk->sk_state != SMC_CLOSED) {
+>     285				if (sk->sk_state != SMC_LISTEN &&
+>     286				    sk->sk_state != SMC_INIT)
+>     287					sock_put(sk); /* passive closing */
+>     288				if (sk->sk_state == SMC_LISTEN) {
+>     289					/* wake up clcsock accept */
+>     290					rc = kernel_sock_shutdown(smc->clcsock,
+>     291								  SHUT_RDWR);
+>     292				}
+>     293				sk->sk_state = SMC_CLOSED;
+>     294				sk->sk_state_change(sk);
+>     295			}
+>     296			smc_restore_fallback_changes(smc);
+>     297		}
+>     298	
+>     299		sk->sk_prot->unhash(sk);
+>     300	
+>     301		if (sk->sk_state == SMC_CLOSED) {
+>     302			if (smc->clcsock) {
+>     303				release_sock(sk);
+>     304				smc_clcsock_release(smc);
+>     305				lock_sock(sk);
+>     306			}
+>     307			if (!smc->use_fallback)
+>     308				smc_conn_free(&smc->conn);
+>     309		}
+>     310	
+>     311		return rc;
+>     312	}
+>     313	
+>     314	static int smc_release(struct socket *sock)
+>     315	{
+>     316		struct sock *sk = sock->sk;
+>     317		struct smc_sock *smc;
+>     318		int old_state, rc = 0;
+>     319	
+>     320		if (!sk)
+>     321			goto out;
+>     322	
+>     323		sock_hold(sk); /* sock_put below */
+>     324		smc = smc_sk(sk);
+>     325	
+>     326		/* trigger info gathering if needed.*/
+>   > 327		smc_sock_perform_collecting_info(sk, SMC_SOCK_CLOSED_TIMING);
+>     328	
+>     329		old_state = sk->sk_state;
+>     330	
+>     331		/* cleanup for a dangling non-blocking connect */
+>     332		if (smc->connect_nonblock && old_state == SMC_INIT)
+>     333			tcp_abort(smc->clcsock->sk, ECONNABORTED);
+>     334	
+>     335		if (cancel_work_sync(&smc->connect_work))
+>     336			sock_put(&smc->sk); /* sock_hold in smc_connect for passive closing */
+>     337	
+>     338		if (sk->sk_state == SMC_LISTEN)
+>     339			/* smc_close_non_accepted() is called and acquires
+>     340			 * sock lock for child sockets again
+>     341			 */
+>     342			lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
+>     343		else
+>     344			lock_sock(sk);
+>     345	
+>     346		if (old_state == SMC_INIT && sk->sk_state == SMC_ACTIVE &&
+>     347		    !smc->use_fallback)
+>     348			smc_close_active_abort(smc);
+>     349	
+>     350		rc = __smc_release(smc);
+>     351	
+>     352		/* detach socket */
+>     353		sock_orphan(sk);
+>     354		sock->sk = NULL;
+>     355		release_sock(sk);
+>     356	
+>     357		sock_put(sk); /* sock_hold above */
+>     358		sock_put(sk); /* final sock_put */
+>     359	out:
+>     360		return rc;
+>     361	}
+>     362	
+> 
