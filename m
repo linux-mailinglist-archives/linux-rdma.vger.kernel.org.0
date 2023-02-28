@@ -2,437 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E93E6A55AF
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 10:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBF86A564A
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 11:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbjB1JZV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 04:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        id S229824AbjB1KFy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 05:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbjB1JZK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 04:25:10 -0500
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E17B55A7;
-        Tue, 28 Feb 2023 01:25:06 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vcix4zZ_1677576303;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vcix4zZ_1677576303)
-          by smtp.aliyun-inc.com;
-          Tue, 28 Feb 2023 17:25:03 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next v3 4/4] bpf/selftests: add selftest for SMC bpf capability
-Date:   Tue, 28 Feb 2023 17:24:54 +0800
-Message-Id: <1677576294-33411-5-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1677576294-33411-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1677576294-33411-1-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S231202AbjB1KFs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 05:05:48 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA17E2D162;
+        Tue, 28 Feb 2023 02:05:45 -0800 (PST)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31S8jQoU021744;
+        Tue, 28 Feb 2023 10:05:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : date :
+ message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version : subject; s=pp1;
+ bh=P/1rJnMaradjfHLVwjpSMklU5Jy5NaaGVr1INxHKuNM=;
+ b=auHiDG/Qx3HOVp0VvItx2UgVzbUXVc69Ou9uRTINUGwjmtI6YmjmMz3Ny/yoZ4ucs745
+ NWmrAyA2+NHYCi6NC4zjAKy6SlJS/kTJZW6f9IxsLqrSeKOkFywIJvav0RyQqsCtZSKx
+ /uHFRIRdXyA/1DU6VUmfStSSdNVGSBc/TpKZk4fjvqnYnUUxgItktDj335iayY8tAOVy
+ kYYSQHUpg20x+87+xo14JBJ5JdK7HM/ziqgPrw7o4bDz9fuDrZMoZWNGPZfoAxphqky9
+ QGO8IdlryEzwU63JKTzp7juKAz1Mbf6uPFLYWL5mQxhsFzf8fvY/dSEx21IkHxW4zhSc rg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1ecs1y5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Feb 2023 10:05:32 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31SA0b5n012934;
+        Tue, 28 Feb 2023 10:05:31 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1ecs1y54-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Feb 2023 10:05:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KJLkVR4/ArDYzSU8ie3DdINiPCH0nWHVT7SGCHuzm2SYejhhsj5iqFSGuE6+ISO6S04fHA7gpIMWItIi9DD3JLF0CzwYHPwNwn4hpDOfmwNWQ6c9IJCX+WmtgTCd75yTKx3Ii4kUbSh60vgqbBz6hNy+VVEk1WkX1aP40ETHmq7+0Zhr/kLbAOP1poF4eVPbfRl3gYQ9rjMQv/DHVdKPTXKCb3rUQk9ToIAGHA/bl6CSCdbIKdgaylOOtAQS+DREAyKs15CDcUd7j5Oa1d2MaxRwYyNwVu1LgNCEJN4FUXc1FDVv/IIiu5tcBSC55L6Q67mKmNi9Hz+tP7uDhowLAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P/1rJnMaradjfHLVwjpSMklU5Jy5NaaGVr1INxHKuNM=;
+ b=n1eyWQDumLA4fH/TqvSIHxHOLgfCGE7kixJ92CTye5m2JBvchxCNyet+tL+Zm8Y4kytXMlTtu6GHYEc22o3AxYUWtviVi85+6IKaWNWnhHNV5pJvTULlPBLKWCKRrDeePncRHTYIqCnX/HZGuSSXS6OuTWZxGi0h1q1gIUj/uP8D2DdKhubQe7FdITXNWLFyRWD7nK042Z0GF8F4mzWJHclTOz09QUiYkpVvC82nu9Uc5P3tKhrIktbkC0IzSr6YqwS40G7xnSlb7Exb7X/QX+l1b1QPVfj0lz6ZSeZLgoENrezCfotUY8eQkaVKgDi63yo7Y1aGbwKWgeQsgjB/gg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=zurich.ibm.com; dmarc=pass action=none
+ header.from=zurich.ibm.com; dkim=pass header.d=zurich.ibm.com; arc=none
+Received: from SA0PR15MB3919.namprd15.prod.outlook.com (2603:10b6:806:91::20)
+ by SN7PR15MB5731.namprd15.prod.outlook.com (2603:10b6:806:34f::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.29; Tue, 28 Feb
+ 2023 10:05:29 +0000
+Received: from SA0PR15MB3919.namprd15.prod.outlook.com
+ ([fe80::2f90:a221:4b7b:7f99]) by SA0PR15MB3919.namprd15.prod.outlook.com
+ ([fe80::2f90:a221:4b7b:7f99%5]) with mapi id 15.20.6134.029; Tue, 28 Feb 2023
+ 10:05:29 +0000
+From:   Bernard Metzler <BMT@zurich.ibm.com>
+To:     Daniil Dulov <d.dulov@aladdin.ru>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Thread-Topic: [EXTERNAL] [PATCH] RDMA/siw: Fix potential page_array out of
+ range access
+Thread-Index: AQHZSoxwTqfI0qCJq0u8FLWy0dCSsq7kIpTQ
+Date:   Tue, 28 Feb 2023 10:05:29 +0000
+Message-ID: <SA0PR15MB39195D9A37167945185F819F99AC9@SA0PR15MB3919.namprd15.prod.outlook.com>
+References: <20230227091751.589612-1-d.dulov@aladdin.ru>
+In-Reply-To: <20230227091751.589612-1-d.dulov@aladdin.ru>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA0PR15MB3919:EE_|SN7PR15MB5731:EE_
+x-ms-office365-filtering-correlation-id: ecb0e5be-49ca-4ae8-58cf-08db19735229
+x-ld-processed: fcf67057-50c9-4ad4-98f3-ffca64add9e9,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EYCTmKB+JqfyAfw0tKyMoJobKrkcN/QOi7LmCYM0wdCoV0yM5G6pEJOh8ozA1G1cKr/mc0e07NsJl34zn0z1xl3+HgJBIQE1oq6WaYDruSNmwkkuMnX46FNmwkij3X5vTlZkf1FiJounuOnFMp6XcawtZc9d/W3G7g6LgN/CXpj87aJkdWxKTvKn16EvNE7FLP7A5J6zBmvTgqs7Qu+Ik86QuE8uBeGPpYUxNV2R6RsF85/CsfNpEx9c35gjQJB0MOr5BFcbUVDtD4jxYQPAIJyZJhp5K5GnVbH6buB7ZVHKLU7Mvm2aWPaka3EMgwnAOa/EhxpiJH8xZPW8cbl+3kVroa0qxaV4tExOM0HKeG/yrzbYy2StAnDbxPD93Bx3hXgTjpKERSAIAtvRfGDI/sj67K+n81SNB6jVfC0n9TFPKTPE6DJbtoM6+VmQemLEGAt7iWMWfk7cAJK9nPal6U01F4UTxHfgtq4Wg/FbZvQ6JqAfoJWSk2TWsTdFmWmL8aL+LXp+LhePXiFxSPKtMH5qYP90yzpZqXjVb6piH8mdEdTNMY9ZoHSq+SGLOHpeqe3NnYy5pgutdml8INe83dNFbRVPGznIRnom8XTk1xkBP38AQSjxBU1ljS5LexL/aTFAR1cybafN/UBY6oiAgvnt1DdwOGjzwQORf3soUdhtbR2YNM1KBJij/GeuXMayMuJj6ANdbE1XdX8AGr//mg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR15MB3919.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(366004)(136003)(346002)(39860400002)(376002)(396003)(451199018)(83380400001)(316002)(54906003)(33656002)(4326008)(122000001)(38100700002)(66446008)(6916009)(55016003)(64756008)(8676002)(6506007)(186003)(9686003)(7696005)(71200400001)(66556008)(76116006)(86362001)(66946007)(478600001)(66476007)(41300700001)(5660300002)(38070700005)(53546011)(8936002)(52536014)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UTk0QW1OTHR2eHdYekVJNFVkVFc4ZGxwem4wWTRhbmRTUWdOb3Z5QzFUTXBK?=
+ =?utf-8?B?UEhlSDRMZXNSUW94VzdhNVZhT1lxQWw0elBGSkNkVDREYXRBU011UytiZ1I4?=
+ =?utf-8?B?c282eml2TzdFaGVYSk54Mm9KMEg5NjZETVArNG5iZDlCMlN3NEhCRk5ST0dB?=
+ =?utf-8?B?UzlMVzdxMzBrSjBicUZhVCtvTmg5WE0xcG1RMkJXMEVrbWRtSVp5bkgwNlQw?=
+ =?utf-8?B?ckVzTHV6V0ZENmg3UkdNVER4azh4NEhBOHVlRjVic3NxRlU2SmVXL0VvZzZG?=
+ =?utf-8?B?OGFoem9DTmYvMmVFOGFuSjMzZ0NHaXRSNi9oUnd0eWRCdDR5Z0ViVW83RkYv?=
+ =?utf-8?B?NXhiMzI2VkdoMUIvTncxSEhSVDJpSFRaYnJsMjNrQXQ4a0liSCtuTjZwdlV2?=
+ =?utf-8?B?YjNYNHRzd3BHSVQ3bVNvRDRBSlhXNUIvU0xlTGw1YTU1empVVkFsczZ6b29x?=
+ =?utf-8?B?WlZZMlJNNDBQdCtISTkzaEJ5TS91OW9nQnhpUkZmYVhEeUZSditJcjdtODRE?=
+ =?utf-8?B?aWorYmRuSUR0WHNtcExCMGpDOXkyQjdTamRIRm85ZW9zV2RoeGpvdjFsaG5Z?=
+ =?utf-8?B?bFRwOHZtSDF4OXE5VDhJZGxsVjc3NzZ5OEhWQmtrTlhIS1pQdDVIOGlzWG53?=
+ =?utf-8?B?MnpoK0dkajVhWHRQazdCbXVoMUUzZ3gya3hFcEgrOW9HTnBmQ0FnR3dXVUxj?=
+ =?utf-8?B?TThyRHgyZ056VFhHaHZqSzZOQzBPZ0tiUCtmcGtaOTBIMEo2L1UrTEhJUTdO?=
+ =?utf-8?B?SHJEUWF4U1Fpamlkc0kxQjhjNWlLTmNaTDdPSFNQdElnUkx0TmRJcTYrY3hJ?=
+ =?utf-8?B?SXZGNENtWk0zZWFoQmtaaVBXbkp4ZUhGSHhVMUZJQ2JTZ2FiK2RDZStqbEcw?=
+ =?utf-8?B?Nlg4WGZWWS8wd0dkcEZkdmhENjZLU0ptL01lTDBKVkYrNmN0R1UrQ3Z3b0t4?=
+ =?utf-8?B?SDZMNWFWV2dtZGxiUVAyb3kvbTRrbVVYODRWWEtNN0QxOGlGM3NZUkVrb1dj?=
+ =?utf-8?B?YnF2Z1UxRURzVG16em1sdFo4eXN2d28wbmNEaFlHQ0d1SkVNTThyUXJlT1Vm?=
+ =?utf-8?B?NjZDajhVRk8wSDY5RzRVeHM1eEY5RUd1WVArUlcrWmUvSUl6SVhuVFByM2RR?=
+ =?utf-8?B?NkZNS3lidUdqNDBMMExXZytOK0dpblBpbWdoeS8wRzl6TUlBbkdxVlk0TldH?=
+ =?utf-8?B?WnhnejlTYzdPek5zK1Z6OUZBRjU0WElXcnNMNm9DR1BnSzZQbThkVlZia0tn?=
+ =?utf-8?B?NENEYi9KemhMRVBId1krWmRrWUxyWUF3dEZMNVpCMGdWOGRwK085MEowaXd2?=
+ =?utf-8?B?enl4Tnc0RXJMUDNWcXREdHNZVE5XNWFVOWd0MGc4WVJLYldUMkJjRjB4UytI?=
+ =?utf-8?B?cGdULysrOHBwaG5kQmQ3UjlMbm8rNTN3Yml3ZFB2WmgxVXpobnBhMWRjdHdO?=
+ =?utf-8?B?bHY2bHU1Skw1RksyQUszMzFFUnpvcmpXakYzeENtNS9aaldKNThJRW1uOWll?=
+ =?utf-8?B?UWUyUTRxSUk5ZUViOWpPeEVNM28xMzNIS3BIWmdKdlRxdUpINUtzZmtYQXlU?=
+ =?utf-8?B?N0twUHJKRDNEeEY5S3pjUGNmbC9PVmNjamdNM1lrN3FVS0F3eUcxZFBoWHJk?=
+ =?utf-8?B?M0VkT0wyUVRjWm5HZXJaM1YxclhPOWFoNWZBdEh2SU5nTXVXSGIwclRKbDMv?=
+ =?utf-8?B?MUdKVHhtamFsYU0yTFUweHB0Y09QZ1gzckNycnVnQnpaQlpac3pQMmlFSEZp?=
+ =?utf-8?B?K3A4ZVlLaG1CbGpvWnhRQUFBOVhZaUtTdEdLbVJwbVpuZHAxYzJXbFR4U1Rh?=
+ =?utf-8?B?RUlNWkIxbWRLdmhCWmNJdnVmMHdFYnNBWVU3MGcyOVFpaWg2eGVZa0cvZDRy?=
+ =?utf-8?B?Qm5iSEt1ZU15VXlGeGlza2hHcHFNV3dXL0pZNEpVeUYvV016MjZOYjR5S3Rm?=
+ =?utf-8?B?eis1T1lqNmhoTHVIUkJKZ2ZSNTZHekkxVlY3NTZmYUY2VHNKL1U4Z2NINDc5?=
+ =?utf-8?B?TlU5Y3VpMEVMVzc1SmR2cVd5a0V6TVZZQ2pPUG9EMEhIUzhTYXNzcHhDVFZC?=
+ =?utf-8?B?azI1Q1BiQ3BPSzlvMjhvN3UraWdFcWFHV3oxUHQxeFp0N1ovS2x2d1c2dkt6?=
+ =?utf-8?B?R3RvTllBMEdRSEp1ei9KQXFETmx4S0tJOXpZY0pFQnpodTEvc0pTYjFqaHN1?=
+ =?utf-8?Q?29qCsf4uD58Gm1frXn5p/Mo=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Zurich.ibm.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR15MB3919.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ecb0e5be-49ca-4ae8-58cf-08db19735229
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Feb 2023 10:05:29.2807
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fcf67057-50c9-4ad4-98f3-ffca64add9e9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KgfeA2KP89yh88oNfeCHuu79nY28q00/Zy2m60siqnwUXtxmgt6y1FueastGPIpfUV4xd47ZwANjiS9CLNWOLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB5731
+X-Proofpoint-GUID: cjnwM1qNmpFhabqLUBo35AjVzbJ0-no-
+X-Proofpoint-ORIG-GUID: CunBswya_EWIcKCxwVSLRKS13TwePvZw
+Subject: RE:  [PATCH] RDMA/siw: Fix potential page_array out of range access
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-28_06,2023-02-28_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ bulkscore=0 phishscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
+ impostorscore=0 suspectscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2302280080
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-
-This PATCH adds a tiny selftest for SMC bpf capability,
-making decisions on whether to use SMC by collecting
-certain information from kernel smc sock.
-
-Follow the steps below to run this test.
-
-make -C tools/testing/selftests/bpf
-cd tools/testing/selftests/bpf
-sudo ./test_progs -t bpf_smc
-
-Results shows:
-18      bpf_smc:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- tools/testing/selftests/bpf/prog_tests/bpf_smc.c |  37 +++
- tools/testing/selftests/bpf/progs/bpf_smc.c      | 320 +++++++++++++++++++++++
- 2 files changed, 357 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-new file mode 100644
-index 0000000..b57326c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/err.h>
-+#include <netinet/tcp.h>
-+#include <test_progs.h>
-+#include "bpf_smc.skel.h"
-+
-+void test_bpf_smc(void)
-+{
-+	struct bpf_smc *smc_skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	smc_skel = bpf_smc__open();
-+	if (!ASSERT_OK_PTR(smc_skel, "skel_open"))
-+		return;
-+
-+	err = bpf_map__set_type(smc_skel->maps.negotiator_map, BPF_MAP_TYPE_HASH);
-+	if (!ASSERT_OK(err, "bpf_map__set_type"))
-+		goto error;
-+
-+	err = bpf_map__set_max_entries(smc_skel->maps.negotiator_map, 1);
-+	if (!ASSERT_OK(err, "bpf_map__set_type"))
-+		goto error;
-+
-+	err =  bpf_smc__load(smc_skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto error;
-+
-+	link = bpf_map__attach_struct_ops(smc_skel->maps.ops);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-+		goto error;
-+
-+	bpf_link__destroy(link);
-+error:
-+	bpf_smc__destroy(smc_skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
-new file mode 100644
-index 0000000..4f4a541
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
-@@ -0,0 +1,320 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/bpf.h>
-+#include <linux/stddef.h>
-+#include <linux/smc.h>
-+#include <stdbool.h>
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_SMC			(43)
-+#define SMC_LISTEN		(10)
-+#define SMC_SOCK_CLOSED_TIMING	(0)
-+extern unsigned long CONFIG_HZ __kconfig;
-+#define HZ CONFIG_HZ
-+
-+char _license[] SEC("license") = "GPL";
-+#define max(a, b) ((a) > (b) ? (a) : (b))
-+
-+struct sock_common {
-+	unsigned char	skc_state;
-+	unsigned short	skc_family;
-+	__u16	skc_num;
-+} __attribute__((preserve_access_index));
-+
-+struct sock {
-+	struct sock_common	__sk_common;
-+	int	sk_sndbuf;
-+} __attribute__((preserve_access_index));
-+
-+struct inet_sock {
-+	struct sock	sk;
-+} __attribute__((preserve_access_index));
-+
-+struct inet_connection_sock {
-+	struct inet_sock	icsk_inet;
-+} __attribute__((preserve_access_index));
-+
-+struct tcp_sock {
-+	struct inet_connection_sock	inet_conn;
-+	__u32	rcv_nxt;
-+	__u32	snd_nxt;
-+	__u32	snd_una;
-+	__u32	delivered;
-+	__u8	syn_data:1,	/* SYN includes data */
-+		syn_fastopen:1,	/* SYN includes Fast Open option */
-+		syn_fastopen_exp:1,/* SYN includes Fast Open exp. option */
-+		syn_fastopen_ch:1, /* Active TFO re-enabling probe */
-+		syn_data_acked:1,/* data in SYN is acked by SYN-ACK */
-+		save_syn:1,	/* Save headers of SYN packet */
-+		is_cwnd_limited:1,/* forward progress limited by snd_cwnd? */
-+		syn_smc:1;	/* SYN includes SMC */
-+} __attribute__((preserve_access_index));
-+
-+struct socket {
-+	struct sock *sk;
-+} __attribute__((preserve_access_index));
-+
-+union smc_host_cursor {
-+	struct {
-+		__u16	reserved;
-+		__u16	wrap;
-+		__u32	count;
-+	};
-+} __attribute__((preserve_access_index));
-+
-+struct smc_connection {
-+	union smc_host_cursor	tx_curs_sent;
-+	union smc_host_cursor	rx_curs_confirmed;
-+} __attribute__((preserve_access_index));
-+
-+struct smc_sock {
-+	struct sock	sk;
-+	struct socket	*clcsock;	/* internal tcp socket */
-+	struct smc_connection	conn;
-+	int use_fallback;
-+} __attribute__((preserve_access_index));
-+
-+static __always_inline struct tcp_sock *tcp_sk(const struct sock *sk)
-+{
-+	return (struct tcp_sock *)sk;
-+}
-+
-+static __always_inline struct smc_sock *smc_sk(struct sock *sk)
-+{
-+	return (struct smc_sock *)sk;
-+}
-+
-+struct smc_prediction {
-+	/* protection for smc_prediction */
-+	struct bpf_spin_lock lock;
-+	/* start of time slice */
-+	__u64	start_tstamp;
-+	/* delta of pacing */
-+	__u64	pacing_delta;
-+	/* N of closed connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	closed_long_cc;
-+	/* N of closed connections in this time slice */
-+	__u32	closed_total_cc;
-+	/* N of incoming connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	incoming_long_cc;
-+	/* last splice rate of long cc */
-+	__u32	last_rate_of_lcc;
-+};
-+
-+#define SMC_PREDICTION_MIN_PACING_DELTA                (1llu)
-+#define SMC_PREDICTION_MAX_PACING_DELTA                (HZ << 3)
-+#define SMC_PREDICTION_MAX_LONGCC_PER_SPLICE           (8)
-+#define SMC_PREDICTION_MAX_PORT                        (64)
-+#define SMC_PREDICTION_MAX_SPLICE_GAP                  (1)
-+#define SMC_PREDICTION_LONGCC_RATE_THRESHOLD           (13189)
-+#define SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD        (100)
-+#define SMC_PREDICTION_LONGCC_BYTES_THRESHOLD	\
-+		(SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD * 1024)
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, SMC_PREDICTION_MAX_PORT);
-+	__type(key, __u16);
-+	__type(value, struct smc_prediction);
-+} negotiator_map SEC(".maps");
-+
-+
-+static inline __u32 smc_prediction_calt_rate(struct smc_prediction *smc_predictor)
-+{
-+	if (!smc_predictor->closed_total_cc)
-+		return smc_predictor->last_rate_of_lcc;
-+
-+	return (smc_predictor->closed_long_cc << 14) / smc_predictor->closed_total_cc;
-+}
-+
-+static inline struct smc_prediction *smc_prediction_get(__u16 key, __u64 tstamp)
-+{
-+	struct smc_prediction zero = {}, *smc_predictor;
-+	__u32 gap;
-+	int err;
-+
-+	smc_predictor = bpf_map_lookup_elem(&negotiator_map, &key);
-+	if (!smc_predictor) {
-+		zero.start_tstamp = bpf_jiffies64();
-+		zero.pacing_delta = SMC_PREDICTION_MIN_PACING_DELTA;
-+		err = bpf_map_update_elem(&negotiator_map, &key, &zero, 0);
-+		if (err)
-+			return NULL;
-+		smc_predictor =  bpf_map_lookup_elem(&negotiator_map, &key);
-+		if (!smc_predictor)
-+			return NULL;
-+	}
-+
-+	if (tstamp) {
-+		bpf_spin_lock(&smc_predictor->lock);
-+		gap = (tstamp - smc_predictor->start_tstamp) / smc_predictor->pacing_delta;
-+		/* new splice */
-+		if (gap > 0) {
-+			smc_predictor->start_tstamp = tstamp;
-+			smc_predictor->last_rate_of_lcc =
-+				(smc_prediction_calt_rate(smc_predictor) * 7) >> (2 + gap);
-+			smc_predictor->closed_long_cc = 0;
-+			smc_predictor->closed_total_cc = 0;
-+			smc_predictor->incoming_long_cc = 0;
-+		}
-+		bpf_spin_unlock(&smc_predictor->lock);
-+	}
-+	return smc_predictor;
-+}
-+
-+/* BPF struct ops for smc protocol negotiator */
-+struct smc_sock_negotiator_ops {
-+	/* ret for negotiate */
-+	int (*negotiate)(struct smc_sock *smc);
-+
-+	/* info gathering timing */
-+	void (*collect_info)(struct smc_sock *smc, int timing);
-+};
-+
-+int SEC("struct_ops/bpf_smc_negotiate")
-+BPF_PROG(bpf_smc_negotiate, struct smc_sock *smc)
-+{
-+	struct smc_prediction *smc_predictor;
-+	int err, ret = SK_DROP;
-+	struct tcp_sock *tp;
-+	struct sock *clcsk;
-+	__u32 rate = 0;
-+	__u16 key;
-+
-+	/* client side */
-+	if (smc == NULL || smc->sk.__sk_common.skc_state != SMC_LISTEN) {
-+		/* use Global smc_predictor */
-+		key = 0;
-+	} else {	/* server side */
-+		clcsk = BPF_CORE_READ(smc, clcsock, sk);
-+		if (!clcsk)
-+			goto error;
-+		tp = tcp_sk(clcsk);
-+		err = bpf_core_read(&key, sizeof(__u16),
-+				    &tp->inet_conn.icsk_inet.sk.__sk_common.skc_num);
-+		if (err)
-+			goto error;
-+	}
-+
-+	smc_predictor = smc_prediction_get(key, bpf_jiffies64());
-+	if (!smc_predictor)
-+		return SK_PASS;
-+
-+	bpf_spin_lock(&smc_predictor->lock);
-+
-+	if (smc_predictor->incoming_long_cc == 0)
-+		goto out_locked_pass;
-+
-+	if (smc_predictor->incoming_long_cc > SMC_PREDICTION_MAX_LONGCC_PER_SPLICE)
-+		goto out_locked_drop;
-+
-+	rate = smc_prediction_calt_rate(smc_predictor);
-+	if (rate < SMC_PREDICTION_LONGCC_RATE_THRESHOLD)
-+		goto out_locked_drop;
-+
-+out_locked_pass:
-+	smc_predictor->incoming_long_cc++;
-+	bpf_spin_unlock(&smc_predictor->lock);
-+	return SK_PASS;
-+out_locked_drop:
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return SK_DROP;
-+}
-+
-+void SEC("struct_ops/bpf_smc_collect_info")
-+BPF_PROG(bpf_smc_collect_info, struct sock *sk, int timing)
-+{
-+	struct smc_prediction *smc_predictor;
-+	int use_fallback, sndbuf, err;
-+	struct smc_sock *smc;
-+	struct tcp_sock *tp;
-+	struct sock *clcsk;
-+	bool match = false;
-+	__u16 wrap, count;
-+	__u32 delivered;
-+	__u16 key;
-+
-+	/* no info can collect */
-+	if (sk == NULL)
-+		return;
-+
-+	/* only fouces on closed */
-+	if (timing != SMC_SOCK_CLOSED_TIMING)
-+		return;
-+
-+	/* first check the sk type */
-+	if (sk->__sk_common.skc_family == AF_SMC) {
-+		smc = smc_sk(sk);
-+		clcsk = BPF_CORE_READ(smc, clcsock, sk);
-+		if (!clcsk)
-+			goto error;
-+		tp = tcp_sk(clcsk);
-+		/* check if it's fallback */
-+		err = bpf_core_read(&use_fallback, sizeof(use_fallback), &smc->use_fallback);
-+		if (err)
-+			goto error;
-+		if (use_fallback)
-+			goto fallback;
-+		err = bpf_core_read(&wrap, sizeof(__u16), &smc->conn.tx_curs_sent.wrap);
-+		if (err)
-+			goto error;
-+		err = bpf_core_read(&count, sizeof(__u16), &smc->conn.tx_curs_sent.count);
-+		if (err)
-+			goto error;
-+		err = bpf_core_read(&sndbuf, sizeof(int), &clcsk->sk_sndbuf);
-+		if (err)
-+			goto error;
-+		 match = (count + wrap * sndbuf) > SMC_PREDICTION_LONGCC_BYTES_THRESHOLD;
-+	} else {
-+		smc = NULL;
-+		tp = tcp_sk(sk);
-+		use_fallback = 1;
-+fallback:
-+		err = bpf_core_read(&delivered, sizeof(delivered), &tp->delivered);
-+		if (err)
-+			goto error;
-+		match = (delivered > SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD);
-+	}
-+
-+	/* whatever, tp is never NULL */
-+	err = bpf_core_read(&key, sizeof(__u16), &tp->inet_conn.icsk_inet.sk.__sk_common.skc_num);
-+	if (err)
-+		goto error;
-+
-+	smc_predictor = smc_prediction_get(key, 0);
-+	if (!smc_predictor)
-+		goto error;
-+
-+	bpf_spin_lock(&smc_predictor->lock);
-+	smc_predictor->closed_total_cc++;
-+	if (match) {
-+		/* increase stats */
-+		smc_predictor->closed_long_cc++;
-+		/* try more aggressive */
-+		if (smc_predictor->pacing_delta > SMC_PREDICTION_MIN_PACING_DELTA) {
-+			if (use_fallback) {
-+				smc_predictor->pacing_delta = max(SMC_PREDICTION_MIN_PACING_DELTA,
-+						(smc_predictor->pacing_delta * 3) >> 2);
-+			}
-+		}
-+	} else if (!use_fallback) {
-+		smc_predictor->pacing_delta <<= 1;
-+	}
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return;
-+}
-+
-+SEC(".struct_ops")
-+struct smc_sock_negotiator_ops ops = {
-+	.negotiate	= (void *)bpf_smc_negotiate,
-+	.collect_info	= (void *)bpf_smc_collect_info,
-+};
--- 
-1.8.3.1
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRGFuaWlsIER1bG92IDxk
+LmR1bG92QGFsYWRkaW4ucnU+DQo+IFNlbnQ6IE1vbmRheSwgMjcgRmVicnVhcnkgMjAyMyAxMDox
+OA0KPiBUbzogQmVybmFyZCBNZXR6bGVyIDxCTVRAenVyaWNoLmlibS5jb20+DQo+IENjOiBEYW5p
+aWwgRHVsb3YgPGQuZHVsb3ZAYWxhZGRpbi5ydT47IERvdWcgTGVkZm9yZCA8ZGxlZGZvcmRAcmVk
+aGF0LmNvbT47DQo+IEphc29uIEd1bnRob3JwZSA8amdnQHppZXBlLmNhPjsgbGludXgtcmRtYUB2
+Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsdmMtcHJv
+amVjdEBsaW51eHRlc3Rpbmcub3JnDQo+IFN1YmplY3Q6IFtFWFRFUk5BTF0gW1BBVENIXSBSRE1B
+L3NpdzogRml4IHBvdGVudGlhbCBwYWdlX2FycmF5IG91dCBvZiByYW5nZQ0KPiBhY2Nlc3MNCj4g
+DQo+IFdoZW4gc2VnIGlzIGVxdWFsIHRvIE1BWF9BUlJBWSwgdGhlIGxvb3Agc2hvdWxkIGJyZWFr
+LCBvdGhlcndpc2UNCj4gaXQgd2lsbCByZXN1bHQgaW4gb3V0IG9mIHJhbmdlIGFjY2Vzcy4NCj4g
+DQo+IEZvdW5kIGJ5IExpbnV4IFZlcmlmaWNhdGlvbiBDZW50ZXIgKGxpbnV4dGVzdGluZy5vcmcp
+IHdpdGggU1ZBQ0UuDQo+IA0KPiBGaXhlczogYjliZTZmMThjZjllICgicmRtYS9zaXc6IHRyYW5z
+bWl0IHBhdGgiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBEYW5paWwgRHVsb3YgPGQuZHVsb3ZAYWxhZGRp
+bi5ydT4NCj4gLS0tDQo+ICBkcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd19xcF90eC5jIHwg
+MiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+
+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXdfcXBfdHguYw0K
+PiBiL2RyaXZlcnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X3FwX3R4LmMNCj4gaW5kZXggM2MzYWU1
+ZWYyOTQyLi5mOWViMzE0YzZlMTQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9z
+dy9zaXcvc2l3X3FwX3R4LmMNCj4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXdf
+cXBfdHguYw0KPiBAQCAtNTQ4LDcgKzU0OCw3IEBAIHN0YXRpYyBpbnQgc2l3X3R4X2hkdChzdHJ1
+Y3Qgc2l3X2l3YXJwX3R4ICpjX3R4LCBzdHJ1Y3QNCj4gc29ja2V0ICpzKQ0KPiAgCQkJZGF0YV9s
+ZW4gLT0gcGxlbjsNCj4gIAkJCWZwX29mZiA9IDA7DQo+IA0KPiAtCQkJaWYgKCsrc2VnID4gKGlu
+dClNQVhfQVJSQVkpIHsNCj4gKwkJCWlmICgrK3NlZyA9PSAoaW50KU1BWF9BUlJBWSkgew0KDQpB
+YnNvbHV0ZWx5ISBGb3Igc3VwZXJzdGl0aW91cyBwZW9wbGUgbGlrZSBtZSwNCm1heWJlIGV2ZW4g
+d3JpdGUgJz49JyBoZXJlLiBUaGFuayB5b3UhDQoNCj4gIAkJCQlzaXdfZGJnX3FwKHR4X3FwKGNf
+dHgpLCAidG8gbWFueSBmcmFnbWVudHNcbiIpOw0KPiAgCQkJCXNpd191bm1hcF9wYWdlcyhwYWdl
+X2FycmF5LCBrbWFwX21hc2spOw0KPiAgCQkJCXdxZS0+cHJvY2Vzc2VkIC09IGNfdHgtPmJ5dGVz
+X3Vuc2VudDsNCj4gLS0NCj4gMi4yNS4xDQoNCg==
