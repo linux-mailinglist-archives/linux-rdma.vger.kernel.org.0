@@ -2,95 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C73876A54F2
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 09:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B208A6A55A0
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 10:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbjB1I6o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 03:58:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
+        id S229720AbjB1JZH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 04:25:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbjB1I6m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 03:58:42 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7233093F2;
-        Tue, 28 Feb 2023 00:58:41 -0800 (PST)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31S8LoQL003639;
-        Tue, 28 Feb 2023 08:58:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=t2P4EUxi876yuUZ8prqHnCoRIWZA9XloTg454sy35eE=;
- b=WwOCZd2TxrC/f4uQRlQ466DYxMPwhEiIPiEZ1BIGRGnkWVYw2vpO/ijbWNS0UPuucxON
- t5ynrMdpVhaXk64PIgLJ4VmpWB35OgnpRx9mCokrfvBd+n4kQT97M+B+nfhn2bJabYVB
- /ZvIrgXWHgH7EnHfPs4DH3eDUg0zob/fslHLQHy/UnbHhb+40Lki7Q4WhCaQm03j+deA
- IZDInNITRKZgIjWJPAXaTop78wleApQD4uPxbLkz6jn3g871fiyrpmNXRaoHeGCDb9x+
- GfE/LVoLJ15IjIVZXHIfI6YfateS3U0TKsTRS9KD0EFhIdiVeOESAMqKYcpZahDeGwlQ Rg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1e1n8wyb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 08:58:20 +0000
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31S8NJ3w012921;
-        Tue, 28 Feb 2023 08:58:19 GMT
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1e1n8wxk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 08:58:19 +0000
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31S88K1T005832;
-        Tue, 28 Feb 2023 08:58:18 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([9.208.130.97])
-        by ppma01wdc.us.ibm.com (PPS) with ESMTPS id 3nybcg01u6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 08:58:18 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31S8wHQT44499506
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Feb 2023 08:58:17 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E1D3F58043;
-        Tue, 28 Feb 2023 08:58:16 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C34B958059;
-        Tue, 28 Feb 2023 08:58:14 +0000 (GMT)
-Received: from [9.211.152.15] (unknown [9.211.152.15])
-        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Feb 2023 08:58:14 +0000 (GMT)
-Message-ID: <fafc5ef1-724f-1831-2d99-ef80a5540faf@linux.ibm.com>
-Date:   Tue, 28 Feb 2023 09:58:13 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH bpf-next v2 1/2] net/smc: Introduce BPF injection
- capability for SMC
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
+        with ESMTP id S229565AbjB1JZG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 04:25:06 -0500
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BFF55A7;
+        Tue, 28 Feb 2023 01:25:03 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vcix4w._1677576294;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vcix4w._1677576294)
+          by smtp.aliyun-inc.com;
+          Tue, 28 Feb 2023 17:25:00 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
         bpf@vger.kernel.org
-References: <1676981919-64884-1-git-send-email-alibuda@linux.alibaba.com>
- <1676981919-64884-2-git-send-email-alibuda@linux.alibaba.com>
- <2972ad09-291b-0c34-fa35-b7852038b32f@linux.ibm.com>
- <5cef1246-5a84-b6e9-86aa-86a1cb6bd217@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <5cef1246-5a84-b6e9-86aa-86a1cb6bd217@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rkPXXLgAKMTUG6H8f8FKdhpr2YH2vkUX
-X-Proofpoint-ORIG-GUID: -RyTYozpRHq63kZLVlndxXaIl8FF18a1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-28_04,2023-02-27_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
- clxscore=1015 suspectscore=0 priorityscore=1501 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2302280068
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
+Subject: [PATCH bpf-next v3 0/4] net/smc: Introduce BPF injection capability
+Date:   Tue, 28 Feb 2023 17:24:50 +0800
+Message-Id: <1677576294-33411-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,79 +38,61 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
+This patches attempt to introduce BPF injection capability for SMC,
+and add selftest to ensure code stability.
 
-On 28.02.23 09:50, D. Wythe wrote:
-> 
-> 
-> On 2/27/23 3:58 PM, Wenjia Zhang wrote:
->>
->>
->> On 21.02.23 13:18, D. Wythe wrote:
->>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>>
->>> This PATCH attempts to introduce BPF injection capability for SMC.
->>> As we all know that the SMC protocol is not suitable for all scenarios,
->>> especially for short-lived. However, for most applications, they cannot
->>> guarantee that there are no such scenarios at all. Therefore, apps
->>> may need some specific strategies to decide shall we need to use SMC
->>> or not, for example, apps can limit the scope of the SMC to a specific
->>> IP address or port.
-> 
-> ...
-> 
->>> +static int bpf_smc_passive_sk_ops_check_member(const struct btf_type 
->>> *t,
->>> +                           const struct btf_member *member,
->>> +                           const struct bpf_prog *prog)
->>> +{
->>> +    return 0;
->>> +}
->>
->> Please check the right pointer type of check_member:
->>
->> int (*check_member)(const struct btf_type *t,
->>              const struct btf_member *member);
->>
-> 
-> Hi Wenjia,
-> 
-> That's weird. the prototype of check_member on
-> latested net-next and bpf-next is:
-> 
-> struct bpf_struct_ops {
->      const struct bpf_verifier_ops *verifier_ops;
->      int (*init)(struct btf *btf);
->      int (*check_member)(const struct btf_type *t,
->                  const struct btf_member *member,
->                  const struct bpf_prog *prog);
->      int (*init_member)(const struct btf_type *t,
->                 const struct btf_member *member,
->                 void *kdata, const void *udata);
->      int (*reg)(void *kdata);
->      void (*unreg)(void *kdata);
->      const struct btf_type *type;
->      const struct btf_type *value_type;
->      const char *name;
->      struct btf_func_model func_models[BPF_STRUCT_OPS_MAX_NR_MEMBERS];
->      u32 type_id;
->      u32 value_id;
-> };
-> 
-> I wonder if there is any code out of sync?
-> 
-> And also I found that this patch is too complex and mixed with the code 
-> of two modules (smc & bpf).
-> I will split them out for easier review today.
-> 
-> Best wishes
-> D. Wythe
-> 
+As we all know that the SMC protocol is not suitable for all scenarios,
+especially for short-lived. However, for most applications, they cannot
+guarantee that there are no such scenarios at all. Therefore, apps
+may need some specific strategies to decide shall we need to use SMC
+or not, for example, apps can limit the scope of the SMC to a specific
+IP address or port.
 
-Good question, the base I used is the current torvalds tree, maybe some 
-code there is still not up-to-date.
+Based on the consideration of transparent replacement, we hope that apps
+can remain transparent even if they need to formulate some specific
+strategies for SMC using. That is, do not need to recompile their code.
 
-But it would be great if you can split them out for better review.
+On the other hand, we need to ensure the scalability of strategies
+implementation. Although it is simple to use socket options or sysctl,
+it will bring more complexity to subsequent expansion.
 
-Thanks
-Wenjia
+Fortunately, BPF can solve these concerns very well, users can write
+thire own strategies in eBPF to choose whether to use SMC or not.
+And it's quite easy for them to modify their strategies in the future.
+
+This patches implement injection capability for SMC via struct_ops.
+In that way, we can add new injection scenarios in the future.
+
+v3 -> v2: 
+    1. fix checkpatch error and warning.
+    2. split patch for better review.
+    3. enhance selftest to cover more scenarios.
+
+v2 -> v1:
+    1. fix compile error and warning.
+
+D. Wythe (4):
+  net/smc: move smc_sock related structure definition
+  bpf: add SMC support in BPF struct_ops
+  net/smc: add BPF injection on smc negotiation
+  bpf/selftests: add selftest for SMC bpf capability
+
+ include/linux/btf_ids.h                          |  12 +
+ include/net/smc.h                                | 248 ++++++++++++++++++
+ kernel/bpf/bpf_struct_ops_types.h                |   4 +
+ net/Makefile                                     |   5 +
+ net/smc/af_smc.c                                 |  15 +-
+ net/smc/bpf_smc_struct_ops.c                     | 148 +++++++++++
+ net/smc/smc.h                                    | 224 ----------------
+ tools/testing/selftests/bpf/prog_tests/bpf_smc.c |  37 +++
+ tools/testing/selftests/bpf/progs/bpf_smc.c      | 320 +++++++++++++++++++++++
+ 9 files changed, 788 insertions(+), 225 deletions(-)
+ create mode 100644 net/smc/bpf_smc_struct_ops.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
+-- 
+1.8.3.1
+
