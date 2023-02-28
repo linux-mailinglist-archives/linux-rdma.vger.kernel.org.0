@@ -2,437 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 830EF6A5D4A
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 17:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6686A5ED9
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 19:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjB1Qi5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 11:38:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
+        id S229745AbjB1Sho (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 13:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbjB1Qiq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 11:38:46 -0500
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8512411A;
-        Tue, 28 Feb 2023 08:38:23 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vck899Q_1677602298;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vck899Q_1677602298)
-          by smtp.aliyun-inc.com;
-          Wed, 01 Mar 2023 00:38:18 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        with ESMTP id S229486AbjB1Shn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 13:37:43 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC3621282;
+        Tue, 28 Feb 2023 10:37:41 -0800 (PST)
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31SHmNLW027972;
+        Tue, 28 Feb 2023 18:37:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=E4vLYHn5+muNXpB+DuhGrT5rOn/ajMyCNdy6BAyMlgA=;
+ b=FmH0RIcS+6O+Nl4bNs1HZSJbV2dlS8XWGQEzKCMmU7UeXtDxvKy3RXLysszGHdVUFHUX
+ okHURavgZZ1sG36NuOmLm8F1AeU18kV17sApHNfG1vg1iSwFwGCkzbc8SUCnnoRzFrFO
+ tBLEASkOT8VfxrO2Ml0qnrLqnwoAlNXyQuQhPeFttVFiUBW8stkr/2VeM0crxVtoL4jc
+ z6Yh29yc2FSVrhDjSbrASv+wigQxkNWZGooln2mUwU6UDWAk9JCMrP994Cra2MNtiAxl
+ qN8Exo6cylBlKm3JxP2zjMY6ZVsEW3EKjt52tvgGv3RQ0dAQRCPrspgtm5UoEm38KB6R IA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1ny21uh9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Feb 2023 18:37:28 +0000
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31SHmON1028192;
+        Tue, 28 Feb 2023 18:37:27 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1ny21ugp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Feb 2023 18:37:27 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31RNV9Q2021296;
+        Tue, 28 Feb 2023 18:37:25 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3nybbyth86-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Feb 2023 18:37:24 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31SIbLfI590394
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Feb 2023 18:37:21 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 413D82004B;
+        Tue, 28 Feb 2023 18:37:21 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 87A1B20049;
+        Tue, 28 Feb 2023 18:37:20 +0000 (GMT)
+Received: from osiris (unknown [9.171.64.87])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue, 28 Feb 2023 18:37:20 +0000 (GMT)
+Date:   Tue, 28 Feb 2023 19:37:19 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next v4 4/4] bpf/selftests: add selftest for SMC bpf capability
-Date:   Wed,  1 Mar 2023 00:38:11 +0800
-Message-Id: <1677602291-1666-5-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1677602291-1666-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1677602291-1666-1-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        David Howells <dhowells@redhat.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH net v2] net/smc: fix application data exception
+Message-ID: <Y/5J30kmv1cPc7nE@osiris>
+References: <1676529545-32741-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1676529545-32741-1-git-send-email-alibuda@linux.alibaba.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: jg0w_04plgICG-S-7JHveK1cZn1hxG5q
+X-Proofpoint-ORIG-GUID: il7R5c62d3eiLbuJBovPh_j-YILtXwAv
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-02-28_15,2023-02-28_03,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=704 spamscore=0
+ suspectscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1011 impostorscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302280154
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NORMAL_HTTP_TO_IP,NUMERIC_HTTP_ADDR,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Thu, Feb 16, 2023 at 02:39:05PM +0800, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> There is a certain probability that following
+> exceptions will occur in the wrk benchmark test:
+> 
+> Running 10s test @ http://11.213.45.6:80
+>   8 threads and 64 connections
+>   Thread Stats   Avg      Stdev     Max   +/- Stdev
+>     Latency     3.72ms   13.94ms 245.33ms   94.17%
+>     Req/Sec     1.96k   713.67     5.41k    75.16%
+>   155262 requests in 10.10s, 23.10MB read
+> Non-2xx or 3xx responses: 3
+> 
+> We will find that the error is HTTP 400 error, which is a serious
+> exception in our test, which means the application data was
+> corrupted.
+> 
+> Consider the following scenarios:
+> 
+> CPU0                            CPU1
+> 
+> buf_desc->used = 0;
+>                                 cmpxchg(buf_desc->used, 0, 1)
+>                                 deal_with(buf_desc)
+> 
+> memset(buf_desc->cpu_addr,0);
+> 
+> This will cause the data received by a victim connection to be cleared,
+> thus triggering an HTTP 400 error in the server.
+> 
+> This patch exchange the order between clear used and memset, add
+> barrier to ensure memory consistency.
+> 
+> Fixes: 1c5526968e27 ("net/smc: Clear memory when release and reuse buffer")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> ---
+> v2: rebase it with latest net tree.
+> 
+>  net/smc/smc_core.c | 17 ++++++++---------
+>  1 file changed, 8 insertions(+), 9 deletions(-)
+> 
+> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+> index c305d8d..c19d4b7 100644
+> --- a/net/smc/smc_core.c
+> +++ b/net/smc/smc_core.c
+> @@ -1120,8 +1120,9 @@ static void smcr_buf_unuse(struct smc_buf_desc *buf_desc, bool is_rmb,
+>  
+>  		smc_buf_free(lgr, is_rmb, buf_desc);
+>  	} else {
+> -		buf_desc->used = 0;
+> -		memset(buf_desc->cpu_addr, 0, buf_desc->len);
+> +		/* memzero_explicit provides potential memory barrier semantics */
+> +		memzero_explicit(buf_desc->cpu_addr, buf_desc->len);
+> +		WRITE_ONCE(buf_desc->used, 0);
 
-This PATCH adds a tiny selftest for SMC bpf capability,
-making decisions on whether to use SMC by collecting
-certain information from kernel smc sock.
+This looks odd to me. memzero_explicit() is only sort of a compiler
+barrier, since it is a function call, but not a real memory barrier.
 
-Follow the steps below to run this test.
+You may want to check Documentation/memory-barriers.txt and
+Documentation/atomic_t.txt.
 
-make -C tools/testing/selftests/bpf
-cd tools/testing/selftests/bpf
-sudo ./test_progs -t bpf_smc
+To me the proper solution looks like buf_desc->used should be converted to
+an atomic_t, and then you could do:
 
-Results shows:
-18      bpf_smc:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+	memset(buf_desc->cpu_addr, 0, buf_desc->len);
+	smp_mb__before_atomic();
+	atomic_set(&buf_desc->used, 0);
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- tools/testing/selftests/bpf/prog_tests/bpf_smc.c |  37 +++
- tools/testing/selftests/bpf/progs/bpf_smc.c      | 320 +++++++++++++++++++++++
- 2 files changed, 357 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+and in a similar way use atomic_cmpxchg() instead of the now used cmpxchg()
+for the part that sets buf_desc->used to 1.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-new file mode 100644
-index 0000000..b57326c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/err.h>
-+#include <netinet/tcp.h>
-+#include <test_progs.h>
-+#include "bpf_smc.skel.h"
-+
-+void test_bpf_smc(void)
-+{
-+	struct bpf_smc *smc_skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	smc_skel = bpf_smc__open();
-+	if (!ASSERT_OK_PTR(smc_skel, "skel_open"))
-+		return;
-+
-+	err = bpf_map__set_type(smc_skel->maps.negotiator_map, BPF_MAP_TYPE_HASH);
-+	if (!ASSERT_OK(err, "bpf_map__set_type"))
-+		goto error;
-+
-+	err = bpf_map__set_max_entries(smc_skel->maps.negotiator_map, 1);
-+	if (!ASSERT_OK(err, "bpf_map__set_type"))
-+		goto error;
-+
-+	err =  bpf_smc__load(smc_skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto error;
-+
-+	link = bpf_map__attach_struct_ops(smc_skel->maps.ops);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-+		goto error;
-+
-+	bpf_link__destroy(link);
-+error:
-+	bpf_smc__destroy(smc_skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
-new file mode 100644
-index 0000000..4f4a541
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
-@@ -0,0 +1,320 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/bpf.h>
-+#include <linux/stddef.h>
-+#include <linux/smc.h>
-+#include <stdbool.h>
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_SMC			(43)
-+#define SMC_LISTEN		(10)
-+#define SMC_SOCK_CLOSED_TIMING	(0)
-+extern unsigned long CONFIG_HZ __kconfig;
-+#define HZ CONFIG_HZ
-+
-+char _license[] SEC("license") = "GPL";
-+#define max(a, b) ((a) > (b) ? (a) : (b))
-+
-+struct sock_common {
-+	unsigned char	skc_state;
-+	unsigned short	skc_family;
-+	__u16	skc_num;
-+} __attribute__((preserve_access_index));
-+
-+struct sock {
-+	struct sock_common	__sk_common;
-+	int	sk_sndbuf;
-+} __attribute__((preserve_access_index));
-+
-+struct inet_sock {
-+	struct sock	sk;
-+} __attribute__((preserve_access_index));
-+
-+struct inet_connection_sock {
-+	struct inet_sock	icsk_inet;
-+} __attribute__((preserve_access_index));
-+
-+struct tcp_sock {
-+	struct inet_connection_sock	inet_conn;
-+	__u32	rcv_nxt;
-+	__u32	snd_nxt;
-+	__u32	snd_una;
-+	__u32	delivered;
-+	__u8	syn_data:1,	/* SYN includes data */
-+		syn_fastopen:1,	/* SYN includes Fast Open option */
-+		syn_fastopen_exp:1,/* SYN includes Fast Open exp. option */
-+		syn_fastopen_ch:1, /* Active TFO re-enabling probe */
-+		syn_data_acked:1,/* data in SYN is acked by SYN-ACK */
-+		save_syn:1,	/* Save headers of SYN packet */
-+		is_cwnd_limited:1,/* forward progress limited by snd_cwnd? */
-+		syn_smc:1;	/* SYN includes SMC */
-+} __attribute__((preserve_access_index));
-+
-+struct socket {
-+	struct sock *sk;
-+} __attribute__((preserve_access_index));
-+
-+union smc_host_cursor {
-+	struct {
-+		__u16	reserved;
-+		__u16	wrap;
-+		__u32	count;
-+	};
-+} __attribute__((preserve_access_index));
-+
-+struct smc_connection {
-+	union smc_host_cursor	tx_curs_sent;
-+	union smc_host_cursor	rx_curs_confirmed;
-+} __attribute__((preserve_access_index));
-+
-+struct smc_sock {
-+	struct sock	sk;
-+	struct socket	*clcsock;	/* internal tcp socket */
-+	struct smc_connection	conn;
-+	int use_fallback;
-+} __attribute__((preserve_access_index));
-+
-+static __always_inline struct tcp_sock *tcp_sk(const struct sock *sk)
-+{
-+	return (struct tcp_sock *)sk;
-+}
-+
-+static __always_inline struct smc_sock *smc_sk(struct sock *sk)
-+{
-+	return (struct smc_sock *)sk;
-+}
-+
-+struct smc_prediction {
-+	/* protection for smc_prediction */
-+	struct bpf_spin_lock lock;
-+	/* start of time slice */
-+	__u64	start_tstamp;
-+	/* delta of pacing */
-+	__u64	pacing_delta;
-+	/* N of closed connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	closed_long_cc;
-+	/* N of closed connections in this time slice */
-+	__u32	closed_total_cc;
-+	/* N of incoming connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	incoming_long_cc;
-+	/* last splice rate of long cc */
-+	__u32	last_rate_of_lcc;
-+};
-+
-+#define SMC_PREDICTION_MIN_PACING_DELTA                (1llu)
-+#define SMC_PREDICTION_MAX_PACING_DELTA                (HZ << 3)
-+#define SMC_PREDICTION_MAX_LONGCC_PER_SPLICE           (8)
-+#define SMC_PREDICTION_MAX_PORT                        (64)
-+#define SMC_PREDICTION_MAX_SPLICE_GAP                  (1)
-+#define SMC_PREDICTION_LONGCC_RATE_THRESHOLD           (13189)
-+#define SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD        (100)
-+#define SMC_PREDICTION_LONGCC_BYTES_THRESHOLD	\
-+		(SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD * 1024)
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, SMC_PREDICTION_MAX_PORT);
-+	__type(key, __u16);
-+	__type(value, struct smc_prediction);
-+} negotiator_map SEC(".maps");
-+
-+
-+static inline __u32 smc_prediction_calt_rate(struct smc_prediction *smc_predictor)
-+{
-+	if (!smc_predictor->closed_total_cc)
-+		return smc_predictor->last_rate_of_lcc;
-+
-+	return (smc_predictor->closed_long_cc << 14) / smc_predictor->closed_total_cc;
-+}
-+
-+static inline struct smc_prediction *smc_prediction_get(__u16 key, __u64 tstamp)
-+{
-+	struct smc_prediction zero = {}, *smc_predictor;
-+	__u32 gap;
-+	int err;
-+
-+	smc_predictor = bpf_map_lookup_elem(&negotiator_map, &key);
-+	if (!smc_predictor) {
-+		zero.start_tstamp = bpf_jiffies64();
-+		zero.pacing_delta = SMC_PREDICTION_MIN_PACING_DELTA;
-+		err = bpf_map_update_elem(&negotiator_map, &key, &zero, 0);
-+		if (err)
-+			return NULL;
-+		smc_predictor =  bpf_map_lookup_elem(&negotiator_map, &key);
-+		if (!smc_predictor)
-+			return NULL;
-+	}
-+
-+	if (tstamp) {
-+		bpf_spin_lock(&smc_predictor->lock);
-+		gap = (tstamp - smc_predictor->start_tstamp) / smc_predictor->pacing_delta;
-+		/* new splice */
-+		if (gap > 0) {
-+			smc_predictor->start_tstamp = tstamp;
-+			smc_predictor->last_rate_of_lcc =
-+				(smc_prediction_calt_rate(smc_predictor) * 7) >> (2 + gap);
-+			smc_predictor->closed_long_cc = 0;
-+			smc_predictor->closed_total_cc = 0;
-+			smc_predictor->incoming_long_cc = 0;
-+		}
-+		bpf_spin_unlock(&smc_predictor->lock);
-+	}
-+	return smc_predictor;
-+}
-+
-+/* BPF struct ops for smc protocol negotiator */
-+struct smc_sock_negotiator_ops {
-+	/* ret for negotiate */
-+	int (*negotiate)(struct smc_sock *smc);
-+
-+	/* info gathering timing */
-+	void (*collect_info)(struct smc_sock *smc, int timing);
-+};
-+
-+int SEC("struct_ops/bpf_smc_negotiate")
-+BPF_PROG(bpf_smc_negotiate, struct smc_sock *smc)
-+{
-+	struct smc_prediction *smc_predictor;
-+	int err, ret = SK_DROP;
-+	struct tcp_sock *tp;
-+	struct sock *clcsk;
-+	__u32 rate = 0;
-+	__u16 key;
-+
-+	/* client side */
-+	if (smc == NULL || smc->sk.__sk_common.skc_state != SMC_LISTEN) {
-+		/* use Global smc_predictor */
-+		key = 0;
-+	} else {	/* server side */
-+		clcsk = BPF_CORE_READ(smc, clcsock, sk);
-+		if (!clcsk)
-+			goto error;
-+		tp = tcp_sk(clcsk);
-+		err = bpf_core_read(&key, sizeof(__u16),
-+				    &tp->inet_conn.icsk_inet.sk.__sk_common.skc_num);
-+		if (err)
-+			goto error;
-+	}
-+
-+	smc_predictor = smc_prediction_get(key, bpf_jiffies64());
-+	if (!smc_predictor)
-+		return SK_PASS;
-+
-+	bpf_spin_lock(&smc_predictor->lock);
-+
-+	if (smc_predictor->incoming_long_cc == 0)
-+		goto out_locked_pass;
-+
-+	if (smc_predictor->incoming_long_cc > SMC_PREDICTION_MAX_LONGCC_PER_SPLICE)
-+		goto out_locked_drop;
-+
-+	rate = smc_prediction_calt_rate(smc_predictor);
-+	if (rate < SMC_PREDICTION_LONGCC_RATE_THRESHOLD)
-+		goto out_locked_drop;
-+
-+out_locked_pass:
-+	smc_predictor->incoming_long_cc++;
-+	bpf_spin_unlock(&smc_predictor->lock);
-+	return SK_PASS;
-+out_locked_drop:
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return SK_DROP;
-+}
-+
-+void SEC("struct_ops/bpf_smc_collect_info")
-+BPF_PROG(bpf_smc_collect_info, struct sock *sk, int timing)
-+{
-+	struct smc_prediction *smc_predictor;
-+	int use_fallback, sndbuf, err;
-+	struct smc_sock *smc;
-+	struct tcp_sock *tp;
-+	struct sock *clcsk;
-+	bool match = false;
-+	__u16 wrap, count;
-+	__u32 delivered;
-+	__u16 key;
-+
-+	/* no info can collect */
-+	if (sk == NULL)
-+		return;
-+
-+	/* only fouces on closed */
-+	if (timing != SMC_SOCK_CLOSED_TIMING)
-+		return;
-+
-+	/* first check the sk type */
-+	if (sk->__sk_common.skc_family == AF_SMC) {
-+		smc = smc_sk(sk);
-+		clcsk = BPF_CORE_READ(smc, clcsock, sk);
-+		if (!clcsk)
-+			goto error;
-+		tp = tcp_sk(clcsk);
-+		/* check if it's fallback */
-+		err = bpf_core_read(&use_fallback, sizeof(use_fallback), &smc->use_fallback);
-+		if (err)
-+			goto error;
-+		if (use_fallback)
-+			goto fallback;
-+		err = bpf_core_read(&wrap, sizeof(__u16), &smc->conn.tx_curs_sent.wrap);
-+		if (err)
-+			goto error;
-+		err = bpf_core_read(&count, sizeof(__u16), &smc->conn.tx_curs_sent.count);
-+		if (err)
-+			goto error;
-+		err = bpf_core_read(&sndbuf, sizeof(int), &clcsk->sk_sndbuf);
-+		if (err)
-+			goto error;
-+		 match = (count + wrap * sndbuf) > SMC_PREDICTION_LONGCC_BYTES_THRESHOLD;
-+	} else {
-+		smc = NULL;
-+		tp = tcp_sk(sk);
-+		use_fallback = 1;
-+fallback:
-+		err = bpf_core_read(&delivered, sizeof(delivered), &tp->delivered);
-+		if (err)
-+			goto error;
-+		match = (delivered > SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD);
-+	}
-+
-+	/* whatever, tp is never NULL */
-+	err = bpf_core_read(&key, sizeof(__u16), &tp->inet_conn.icsk_inet.sk.__sk_common.skc_num);
-+	if (err)
-+		goto error;
-+
-+	smc_predictor = smc_prediction_get(key, 0);
-+	if (!smc_predictor)
-+		goto error;
-+
-+	bpf_spin_lock(&smc_predictor->lock);
-+	smc_predictor->closed_total_cc++;
-+	if (match) {
-+		/* increase stats */
-+		smc_predictor->closed_long_cc++;
-+		/* try more aggressive */
-+		if (smc_predictor->pacing_delta > SMC_PREDICTION_MIN_PACING_DELTA) {
-+			if (use_fallback) {
-+				smc_predictor->pacing_delta = max(SMC_PREDICTION_MIN_PACING_DELTA,
-+						(smc_predictor->pacing_delta * 3) >> 2);
-+			}
-+		}
-+	} else if (!use_fallback) {
-+		smc_predictor->pacing_delta <<= 1;
-+	}
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return;
-+}
-+
-+SEC(".struct_ops")
-+struct smc_sock_negotiator_ops ops = {
-+	.negotiate	= (void *)bpf_smc_negotiate,
-+	.collect_info	= (void *)bpf_smc_collect_info,
-+};
--- 
-1.8.3.1
+Adding experts to cc, since s390 has such strong memory ordering semantics
+that you can basically do whatever you want without breaking anything. So I
+don't consider myself an expert here at all. :)
 
+But given that this is common code, let's make sure this is really correct.
