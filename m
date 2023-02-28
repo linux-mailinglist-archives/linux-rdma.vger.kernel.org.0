@@ -2,120 +2,318 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CCC6A5977
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 13:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450846A5A96
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Feb 2023 15:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbjB1Mwa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 07:52:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
+        id S229582AbjB1OIn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 09:08:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjB1Mw3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 07:52:29 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5687E301BA;
-        Tue, 28 Feb 2023 04:52:28 -0800 (PST)
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31SClJOF022908;
-        Tue, 28 Feb 2023 12:52:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=y1p6F/CJ518kYLZkFaSzDgF34ZKZzZv0KqTatFnWR0M=;
- b=n37g6FcDCSOFTVQ6m0u2cU8LOPOLmFQpP9U3X+oEz6JuZZTX0HhFfML/LbLkwKC7kv6M
- KLUz/kjmJ5NmnbjqTfGE5z7dMLHl+oXeNu+ovx71reqKesxDI+2ODMhStEEKgzaVc0ol
- iuFgP8H9Io24096Mx2jRtPUKi5XScuVw7HGQoo9q87MWEpt6OM1k+j0KiKzCoHtVmH8u
- 7XFES5SqMVjZss4Wqr+XbTb6AznYP4tZ03E6zQ8HgpKNE8tFO+gOnqv+IpNNCRZQVG8e
- lPW1+UMIruvomaWT9cFIKoDPBG0OpzAnwbrpMseG92qytrvBj4lQWu4mt0KyBOu2lUJz Pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1hx5g2tw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 12:52:25 +0000
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31SCnKwT027111;
-        Tue, 28 Feb 2023 12:52:24 GMT
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3p1hx5g2t6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 12:52:24 +0000
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31SC8u91017424;
-        Tue, 28 Feb 2023 12:52:23 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([9.208.130.99])
-        by ppma01dal.us.ibm.com (PPS) with ESMTPS id 3nybchd6t3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Feb 2023 12:52:23 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 31SCqL5E31130346
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Feb 2023 12:52:21 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3DBA058053;
-        Tue, 28 Feb 2023 12:52:21 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88C3B58043;
-        Tue, 28 Feb 2023 12:52:19 +0000 (GMT)
-Received: from [9.211.152.15] (unknown [9.211.152.15])
-        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Feb 2023 12:52:19 +0000 (GMT)
-Message-ID: <d1b06606-f01c-918e-0921-5d6c697f9c89@linux.ibm.com>
-Date:   Tue, 28 Feb 2023 13:52:18 +0100
+        with ESMTP id S229496AbjB1OIm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 09:08:42 -0500
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39E53A8E;
+        Tue, 28 Feb 2023 06:08:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677593320; x=1709129320;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yAwcbAOwAi/KQOX9wO7C7PL0NtrHIuaW6wPZPUh9D+s=;
+  b=apm6g/IqgWPf0Acn3NkQs4qCW44lpY/DZXogoe0YhbAWrAoH4xYWsaTI
+   ES0xlwHovA97Qjf4GUcYM8kczJ9OSuaCZLOxv9ObuCa3eZ9C21P7Zcng7
+   SBU4Ch7uZzYlETIiAqyxH6+yX+t6/l8niON+RlcUEv16gIuOmedzghu4V
+   iyUndf7SRURKSFp/hXH1sOUbu2tVKJxzzWRukAgicmH0MO8em9+nZKurL
+   cfdizpSLRkPQdwMk9kR8IH8INAbqQAZHhd3/FwlxR1J83Xqp+V8ADQ4FV
+   T4AuqGxdmoI1/Op1OBU6aOUEp1K1h0KlHQRcfnstT+PpkQMxFriTWodOf
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10635"; a="336430121"
+X-IronPort-AV: E=Sophos;i="5.98,222,1673942400"; 
+   d="scan'208";a="336430121"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2023 06:08:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10635"; a="651620316"
+X-IronPort-AV: E=Sophos;i="5.98,222,1673942400"; 
+   d="scan'208";a="651620316"
+Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 28 Feb 2023 06:08:36 -0800
+Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pX0eh-0005RX-1d;
+        Tue, 28 Feb 2023 14:08:35 +0000
+Date:   Tue, 28 Feb 2023 22:08:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 3/4] net/smc: add BPF injection on smc
+ negotiation
+Message-ID: <202302282100.x7qq7PGX-lkp@intel.com>
+References: <1677576294-33411-4-git-send-email-alibuda@linux.alibaba.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH net-next v2] net/smc: Use percpu ref for wr tx reference
-To:     Guangguan Wang <guangguan.wang@linux.alibaba.com>,
-        Kai <KaiShen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20230227121616.448-1-KaiShen@linux.alibaba.com>
- <b869713b-7f1d-4093-432c-9f958f5bd719@linux.ibm.com>
- <e10d76c4-3b2c-b906-07c3-9a42b1c485bb@linux.alibaba.com>
- <b0669898-f7b3-fa88-7365-e7e05a587d86@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <b0669898-f7b3-fa88-7365-e7e05a587d86@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: VO6XmPbSJ4DgcY25mJR-90bHsGE0I4j-
-X-Proofpoint-GUID: J1sVcHuvNGSYXAC95IfV2Egh_Vqqy9DI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-02-28_08,2023-02-28_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- bulkscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 mlxlogscore=950 phishscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302280101
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1677576294-33411-4-git-send-email-alibuda@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hi Wythe,
+
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230228-173007
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/1677576294-33411-4-git-send-email-alibuda%40linux.alibaba.com
+patch subject: [PATCH bpf-next v3 3/4] net/smc: add BPF injection on smc negotiation
+config: x86_64-randconfig-a015-20230227 (https://download.01.org/0day-ci/archive/20230228/202302282100.x7qq7PGX-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/aa482ab82f4bf9b99d490f8ba5d88e1491156ccf
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230228-173007
+        git checkout aa482ab82f4bf9b99d490f8ba5d88e1491156ccf
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 olddefconfig
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202302282100.x7qq7PGX-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: net/smc/af_smc.o: in function `smc_hs_congested':
+>> net/smc/af_smc.c:169: undefined reference to `smc_sock_should_select_smc'
+   ld: net/smc/af_smc.o: in function `smc_release':
+>> net/smc/af_smc.c:327: undefined reference to `smc_sock_perform_collecting_info'
+   ld: net/smc/af_smc.o: in function `smc_connect':
+   net/smc/af_smc.c:1637: undefined reference to `smc_sock_should_select_smc'
 
 
-On 28.02.23 13:15, Guangguan Wang wrote:
-> 
-> On 2023/2/28 19:34, Kai wrote:
->>
->>
->> On 2023/2/28 6:55 下午, Wenjia Zhang wrote:
->>
->>> @Kai, the performance improvement seems not so giant, but the method looks good, indeed. However, to keep the consistency of the code, I'm wondering why you only use the perf_ref for wr_tx_wait, but not for wr_reg_refcnt?
->> Didn't check the similar refcnt, my bad.
->> On the other hand, Our work is inspired by performance analysis, it seems wr_reg_refcnt is not on the IO path. It may not contribute to performance improvement.
->> And inspired by your comment, it seems we can also make the refcnt cdc_pend_tx_wr a perfcpu one. I will look into this.
->>
->> Thanks
-> 
-> cdc_pend_tx_wr needs to be zero value tested every time it decreases in smc_cdc_tx_handler.
-> I don't think this is the right scenario for percpu_ref.
+vim +169 net/smc/af_smc.c
 
-I agree, that's why I didn't mention it;)
+   156	
+   157	static bool smc_hs_congested(const struct sock *sk)
+   158	{
+   159		const struct smc_sock *smc;
+   160	
+   161		smc = smc_clcsock_user_data(sk);
+   162	
+   163		if (!smc)
+   164			return true;
+   165	
+   166		if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+   167			return true;
+   168	
+ > 169		if (!smc_sock_should_select_smc(smc))
+   170			return true;
+   171	
+   172		return false;
+   173	}
+   174	
+   175	static struct smc_hashinfo smc_v4_hashinfo = {
+   176		.lock = __RW_LOCK_UNLOCKED(smc_v4_hashinfo.lock),
+   177	};
+   178	
+   179	static struct smc_hashinfo smc_v6_hashinfo = {
+   180		.lock = __RW_LOCK_UNLOCKED(smc_v6_hashinfo.lock),
+   181	};
+   182	
+   183	int smc_hash_sk(struct sock *sk)
+   184	{
+   185		struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
+   186		struct hlist_head *head;
+   187	
+   188		head = &h->ht;
+   189	
+   190		write_lock_bh(&h->lock);
+   191		sk_add_node(sk, head);
+   192		write_unlock_bh(&h->lock);
+   193		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
+   194	
+   195		return 0;
+   196	}
+   197	EXPORT_SYMBOL_GPL(smc_hash_sk);
+   198	
+   199	void smc_unhash_sk(struct sock *sk)
+   200	{
+   201		struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
+   202	
+   203		write_lock_bh(&h->lock);
+   204		if (sk_del_node_init(sk))
+   205			sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
+   206		write_unlock_bh(&h->lock);
+   207	}
+   208	EXPORT_SYMBOL_GPL(smc_unhash_sk);
+   209	
+   210	/* This will be called before user really release sock_lock. So do the
+   211	 * work which we didn't do because of user hold the sock_lock in the
+   212	 * BH context
+   213	 */
+   214	static void smc_release_cb(struct sock *sk)
+   215	{
+   216		struct smc_sock *smc = smc_sk(sk);
+   217	
+   218		if (smc->conn.tx_in_release_sock) {
+   219			smc_tx_pending(&smc->conn);
+   220			smc->conn.tx_in_release_sock = false;
+   221		}
+   222	}
+   223	
+   224	struct proto smc_proto = {
+   225		.name		= "SMC",
+   226		.owner		= THIS_MODULE,
+   227		.keepalive	= smc_set_keepalive,
+   228		.hash		= smc_hash_sk,
+   229		.unhash		= smc_unhash_sk,
+   230		.release_cb	= smc_release_cb,
+   231		.obj_size	= sizeof(struct smc_sock),
+   232		.h.smc_hash	= &smc_v4_hashinfo,
+   233		.slab_flags	= SLAB_TYPESAFE_BY_RCU,
+   234	};
+   235	EXPORT_SYMBOL_GPL(smc_proto);
+   236	
+   237	struct proto smc_proto6 = {
+   238		.name		= "SMC6",
+   239		.owner		= THIS_MODULE,
+   240		.keepalive	= smc_set_keepalive,
+   241		.hash		= smc_hash_sk,
+   242		.unhash		= smc_unhash_sk,
+   243		.release_cb	= smc_release_cb,
+   244		.obj_size	= sizeof(struct smc_sock),
+   245		.h.smc_hash	= &smc_v6_hashinfo,
+   246		.slab_flags	= SLAB_TYPESAFE_BY_RCU,
+   247	};
+   248	EXPORT_SYMBOL_GPL(smc_proto6);
+   249	
+   250	static void smc_fback_restore_callbacks(struct smc_sock *smc)
+   251	{
+   252		struct sock *clcsk = smc->clcsock->sk;
+   253	
+   254		write_lock_bh(&clcsk->sk_callback_lock);
+   255		clcsk->sk_user_data = NULL;
+   256	
+   257		smc_clcsock_restore_cb(&clcsk->sk_state_change, &smc->clcsk_state_change);
+   258		smc_clcsock_restore_cb(&clcsk->sk_data_ready, &smc->clcsk_data_ready);
+   259		smc_clcsock_restore_cb(&clcsk->sk_write_space, &smc->clcsk_write_space);
+   260		smc_clcsock_restore_cb(&clcsk->sk_error_report, &smc->clcsk_error_report);
+   261	
+   262		write_unlock_bh(&clcsk->sk_callback_lock);
+   263	}
+   264	
+   265	static void smc_restore_fallback_changes(struct smc_sock *smc)
+   266	{
+   267		if (smc->clcsock->file) { /* non-accepted sockets have no file yet */
+   268			smc->clcsock->file->private_data = smc->sk.sk_socket;
+   269			smc->clcsock->file = NULL;
+   270			smc_fback_restore_callbacks(smc);
+   271		}
+   272	}
+   273	
+   274	static int __smc_release(struct smc_sock *smc)
+   275	{
+   276		struct sock *sk = &smc->sk;
+   277		int rc = 0;
+   278	
+   279		if (!smc->use_fallback) {
+   280			rc = smc_close_active(smc);
+   281			sock_set_flag(sk, SOCK_DEAD);
+   282			sk->sk_shutdown |= SHUTDOWN_MASK;
+   283		} else {
+   284			if (sk->sk_state != SMC_CLOSED) {
+   285				if (sk->sk_state != SMC_LISTEN &&
+   286				    sk->sk_state != SMC_INIT)
+   287					sock_put(sk); /* passive closing */
+   288				if (sk->sk_state == SMC_LISTEN) {
+   289					/* wake up clcsock accept */
+   290					rc = kernel_sock_shutdown(smc->clcsock,
+   291								  SHUT_RDWR);
+   292				}
+   293				sk->sk_state = SMC_CLOSED;
+   294				sk->sk_state_change(sk);
+   295			}
+   296			smc_restore_fallback_changes(smc);
+   297		}
+   298	
+   299		sk->sk_prot->unhash(sk);
+   300	
+   301		if (sk->sk_state == SMC_CLOSED) {
+   302			if (smc->clcsock) {
+   303				release_sock(sk);
+   304				smc_clcsock_release(smc);
+   305				lock_sock(sk);
+   306			}
+   307			if (!smc->use_fallback)
+   308				smc_conn_free(&smc->conn);
+   309		}
+   310	
+   311		return rc;
+   312	}
+   313	
+   314	static int smc_release(struct socket *sock)
+   315	{
+   316		struct sock *sk = sock->sk;
+   317		struct smc_sock *smc;
+   318		int old_state, rc = 0;
+   319	
+   320		if (!sk)
+   321			goto out;
+   322	
+   323		sock_hold(sk); /* sock_put below */
+   324		smc = smc_sk(sk);
+   325	
+   326		/* trigger info gathering if needed.*/
+ > 327		smc_sock_perform_collecting_info(sk, SMC_SOCK_CLOSED_TIMING);
+   328	
+   329		old_state = sk->sk_state;
+   330	
+   331		/* cleanup for a dangling non-blocking connect */
+   332		if (smc->connect_nonblock && old_state == SMC_INIT)
+   333			tcp_abort(smc->clcsock->sk, ECONNABORTED);
+   334	
+   335		if (cancel_work_sync(&smc->connect_work))
+   336			sock_put(&smc->sk); /* sock_hold in smc_connect for passive closing */
+   337	
+   338		if (sk->sk_state == SMC_LISTEN)
+   339			/* smc_close_non_accepted() is called and acquires
+   340			 * sock lock for child sockets again
+   341			 */
+   342			lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
+   343		else
+   344			lock_sock(sk);
+   345	
+   346		if (old_state == SMC_INIT && sk->sk_state == SMC_ACTIVE &&
+   347		    !smc->use_fallback)
+   348			smc_close_active_abort(smc);
+   349	
+   350		rc = __smc_release(smc);
+   351	
+   352		/* detach socket */
+   353		sock_orphan(sk);
+   354		sock->sk = NULL;
+   355		release_sock(sk);
+   356	
+   357		sock_put(sk); /* sock_hold above */
+   358		sock_put(sk); /* final sock_put */
+   359	out:
+   360		return rc;
+   361	}
+   362	
 
-But could you please check about wr_reg_refcnt? Because we do need to 
-find the right balance between the code consistency and improvement
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
