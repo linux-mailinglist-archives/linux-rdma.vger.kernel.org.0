@@ -2,61 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 907936A6652
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Mar 2023 04:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDBB6A6653
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Mar 2023 04:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjCADKv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 22:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
+        id S229656AbjCADKw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 22:10:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbjCADKu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 22:10:50 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600482E807
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 19:10:49 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id o4-20020a9d6d04000000b00694127788f4so2936221otp.6
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 19:10:49 -0800 (PST)
+        with ESMTP id S229891AbjCADKv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 22:10:51 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF4537737
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 19:10:50 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id h6-20020a9d7986000000b0068bd8c1e836so6823661otm.3
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 19:10:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V2m04tGdbkYnf0yeeUfD6L79N5NJTAfwmqc3JhLZLeA=;
-        b=PVd3mvPdvCYxhWllIsopTsuMX86fovDWbRktGp0Z8BxXq9JxXijw6G/EvkBB5ymQXu
-         IA+OtiUw8iLXfAoO1GPQFrkzxnHTfjyh7+hAxURBMJURyRBOGDN8oqr7aHfkyEFcIZOv
-         mjaWvb9aVRJyEKwXYs9xzqexJVWUCtajWG57r1XvtRhYw9YcrG4KfbqV9BTLwSrOIK4y
-         aBsRezdItsPIqF+Eef+HB/TMsK9AcRFE6ZBOqFxYboNB4MIpWyj2LsW+FFHWb2pC0Jlr
-         KO3CW9qKF76xRpZ+APd1CPpxjuPL3mJWVGsVTMdTUAW0E+Tx2whp0zFwscrBJh0hfzbg
-         Ha1w==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0TniLffpyCgHkUgRabzidVT07H3CKHA6Trs2Hwl6tk4=;
+        b=OrQJj/clS64bOhqpa946dskrvRwWDoaWmAEeE30Hba4WJDrg6jWLPKN+DOGdIIVtBi
+         ss4UNT9Rq48pujlpoYX7dmwffYVQ84l840MpYFV2VMhF/rzOimHorO3qW76RCuUnFdc7
+         Yxm2MNQSDnNSOh4+lJHcLNZWbOmcV+AsVserv/+9NRxL22dovNyDSHEm05M0lguj88Xh
+         wy9ofcilsPUMRHzqK7s9abiAQ0zcbACpquGkTfZvAwDrz3i8uLC3Mm6+lDrkDLR9zkwh
+         8/CH1z/lRlSE4ozciqs/iDbrqvsbTOEjEWxCOiOzgI0qiMzYFDO+OC2s6JvqOAvc/US5
+         6rCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V2m04tGdbkYnf0yeeUfD6L79N5NJTAfwmqc3JhLZLeA=;
-        b=OrisXhR2jpzndI9HmP+MQZsgcTtVjwGptTp1VRA2mRjAYsLKiCLuwwOL060Z+qnIpR
-         8xZvZ/0TaVd2nK9rOyvZ5TLzF5oSlGqBToOg7XfS/YDoA7OnIlrqcMRzfPMb7XLymEzn
-         96ANmXyIzwhGHH2gpVYtMKW/j94p6bG5pTgV4EK1N9+Nvj+77UEo/y4+O02Rj/985ngZ
-         xfZKhp/XhfPq68a+cd+f4f+9xspi33Y9yErrN4fYjac4fNcuMpBNWUtYFjc8rkafks76
-         jf5EIPfnMsOrYNHSJzO4Yy3WYNCDxh4bsdDT0Ilapvb1QJOT+DR2ZhIIUWZghYYjjZMN
-         hp0A==
-X-Gm-Message-State: AO0yUKV4NMWozF7GXy0QgcuIygVlA2qr1yqidIOKLoNmNPXGvkxzJz9g
-        Gq3e6hnlgg9O0gX015YVCY0=
-X-Google-Smtp-Source: AK7set8PX9nUYQcu5nWMMoXL72IN+wbZ2wbgESBU0OFpIvOyMuvlZyYWyLWJj+EQe1JjCHtjyKqwwg==
-X-Received: by 2002:a05:6830:440b:b0:68d:5bc9:7ac2 with SMTP id q11-20020a056830440b00b0068d5bc97ac2mr3090817otv.10.1677640248668;
-        Tue, 28 Feb 2023 19:10:48 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0TniLffpyCgHkUgRabzidVT07H3CKHA6Trs2Hwl6tk4=;
+        b=xRGwaTqw7tRmSXiBB5wVbwnJU2gGCjw7DxLTs8yNmYktM7AZl1mId+fomGelpvj8cX
+         PlFuRueslxXpgP3tBF/8x+QCe0+Vhy0Rahhde68CnnTApqmzAKeAU7l/1YNjwSoeLwWf
+         XkUGVyUdmYVPLGodxrPKXw2QWjPlH+BLRKTNOjTmEbbN4nFlvFMCvns1PF2MJkTMJb0+
+         1cTElV/AgkyPB3q0sm9re2nnrVsU4B4O544pq/5gcEcm3RCtYHQzGi+iQujIibokjhK3
+         /PiAE7NYo+UBP272oIEtaatPVKX0t0l9axjWIaHukmDJ3dQXWSz4BdVQgBj89qWv+9US
+         fTyQ==
+X-Gm-Message-State: AO0yUKXJkEUudKJZKNj6gsi30z0D/GtY3hia35/rTwniZ3JcQ5iSnTEI
+        UMaJqizTfuiVAWh8iT86ICW/32U+fNo=
+X-Google-Smtp-Source: AK7set/g7zGiNMKSvRGnuxEN1bQ/ko57zvhPVhRnfe4eBqQfAoh3ix6Zibrpn9pMCOgSgzlIaQZNrA==
+X-Received: by 2002:a05:6830:4128:b0:68b:b532:f411 with SMTP id w40-20020a056830412800b0068bb532f411mr3068377ott.27.1677640249684;
+        Tue, 28 Feb 2023 19:10:49 -0800 (PST)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-759b-a469-60fc-ba97.res6.spectrum.com. [2603:8081:140c:1a00:759b:a469:60fc:ba97])
-        by smtp.gmail.com with ESMTPSA id e7-20020a05683013c700b00684152e9ff2sm4484942otq.0.2023.02.28.19.10.47
+        by smtp.gmail.com with ESMTPSA id e7-20020a05683013c700b00684152e9ff2sm4484942otq.0.2023.02.28.19.10.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Feb 2023 19:10:48 -0800 (PST)
+        Tue, 28 Feb 2023 19:10:49 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
         jhack@hpe.com
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH for-next v3 0/4] Add error logging to rxe
-Date:   Tue, 28 Feb 2023 21:10:35 -0600
-Message-Id: <20230301031038.10851-1-rpearsonhpe@gmail.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v3 1/4] RDMA/rxe: Replace exists by rxe in rxe.c
+Date:   Tue, 28 Feb 2023 21:10:36 -0600
+Message-Id: <20230301031038.10851-2-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230301031038.10851-1-rpearsonhpe@gmail.com>
+References: <20230301031038.10851-1-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,47 +71,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Primarily to make debugging more efficient, log message types
-are added and error logging messages are added to the verbs API
-to rxe driver with the goal that each error reported up to
-rdma-core will generate at least one message with additional
-details and internal errors restricted to debug messages which can
-be dynamically turned on.
+'exists' looks like a boolean. This patch replaces it by the
+normal name used for the rxe device, 'rxe', which should be a
+little less confusing. The second rxe_dbg() message is
+incorrect since rxe is known to be NULL and this will cause a
+seg fault if this message were ever sent. Replace it by pr_debug
+for the moment.
 
-v3:
-  Corrected a debug message referring to err before err was set in
-  patch 4/4.
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/oe-kbuild-all/202302250056.mgmG5a52-lkp@intel.com/
+Fixes: c6aba5ea0055 ("RDMA/rxe: Replace pr_xxx by rxe_dbg_xxx in rxe.c")
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-v2:
-  This set of four patches was split off an earlier series called
-  "RDMA/rxe: Correct qp reference counting" since it is not really
-  related.
-
-Bob Pearson (4):
-  RDMA/rxe: Replace exists by rxe in rxe.c
-  RDMA/rxe: Change rxe_dbg to rxe_dbg_dev
-  RDMA/rxe: Extend dbg log messages to err and info
-  RDMA/rxe: Add error messages
-
- drivers/infiniband/sw/rxe/rxe.c       |  16 +-
- drivers/infiniband/sw/rxe/rxe.h       |  45 +-
- drivers/infiniband/sw/rxe/rxe_comp.c  |   4 +
- drivers/infiniband/sw/rxe/rxe_cq.c    |   6 +-
- drivers/infiniband/sw/rxe/rxe_icrc.c  |   4 +-
- drivers/infiniband/sw/rxe/rxe_loc.h   |   1 -
- drivers/infiniband/sw/rxe/rxe_mmap.c  |   6 +-
- drivers/infiniband/sw/rxe/rxe_mr.c    |  13 -
- drivers/infiniband/sw/rxe/rxe_net.c   |   4 +-
- drivers/infiniband/sw/rxe/rxe_qp.c    |  16 +-
- drivers/infiniband/sw/rxe/rxe_resp.c  |   4 +
- drivers/infiniband/sw/rxe/rxe_srq.c   |   6 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c | 831 +++++++++++++++++++-------
- 13 files changed, 685 insertions(+), 271 deletions(-)
-
-
-base-commit: 66fb1d5df6ace316a4a6e2c31e13fc123ea2b644
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 136c2efe3466..a3f05fdd9fac 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -175,7 +175,7 @@ int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name)
+ 
+ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+ {
+-	struct rxe_dev *exists;
++	struct rxe_dev *rxe;
+ 	int err = 0;
+ 
+ 	if (is_vlan_dev(ndev)) {
+@@ -184,17 +184,17 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+ 		goto err;
+ 	}
+ 
+-	exists = rxe_get_dev_from_net(ndev);
+-	if (exists) {
+-		ib_device_put(&exists->ib_dev);
+-		rxe_dbg(exists, "already configured on %s\n", ndev->name);
++	rxe = rxe_get_dev_from_net(ndev);
++	if (rxe) {
++		ib_device_put(&rxe->ib_dev);
++		rxe_dbg(rxe, "already configured on %s\n", ndev->name);
+ 		err = -EEXIST;
+ 		goto err;
+ 	}
+ 
+ 	err = rxe_net_add(ibdev_name, ndev);
+ 	if (err) {
+-		rxe_dbg(exists, "failed to add %s\n", ndev->name);
++		pr_debug("failed to add %s\n", ndev->name);
+ 		goto err;
+ 	}
+ err:
 -- 
 2.37.2
 
