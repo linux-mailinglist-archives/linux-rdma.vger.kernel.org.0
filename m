@@ -2,73 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9B86A6674
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Mar 2023 04:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2456A671D
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Mar 2023 05:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbjCADYc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 22:24:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
+        id S229667AbjCAEwm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 23:52:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjCADYb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 22:24:31 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E316F158AF;
-        Tue, 28 Feb 2023 19:24:30 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 78CF96122E;
-        Wed,  1 Mar 2023 03:24:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FCD9C4339C;
-        Wed,  1 Mar 2023 03:24:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677641069;
-        bh=VNUiYHTK1WmTQNHzsmJaVBzgcpH8B55pyube1Ia3Fvs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c9SR42IIbZ4yZSGobj6hJEq88zt7jTRltAJsX5QxL30SKT40Vprrr0m/0su9lCUp8
-         ZjHu2Hku+8PsKurVCpeh/KZjviLtvBwxAmuwR2OcPukWnlVdoNvvRLg3GDw0Kt7Pdn
-         V9qi4E/JkdvFN9/7hJd9xHlU+EZOuub2Bop8JALCvHrhekBEpyBxYYUJcTbZ5mIPFn
-         uKZvjLcamSXebshdu/1anQ3F46VF/qGvHOwQSClFEXUIFQBybfrYLdQ+TuMlSpWWjs
-         zvwm//OCbY1qSvDKBTJ990thy8U8QYxyqJVlm2Ub8QGtHU4ZdbJqCvAcyDzd/M20J2
-         frQTU/NKdFaRg==
-Date:   Tue, 28 Feb 2023 19:24:28 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 0/4] net/smc: Introduce BPF injection
- capability
-Message-ID: <20230228192428.447ceddc@kernel.org>
-In-Reply-To: <Y/67dZ8X+VoOi10b@TONYMAC-ALIBABA.local>
-References: <1677576294-33411-1-git-send-email-alibuda@linux.alibaba.com>
-        <20230228150051.4eeaa121@kernel.org>
-        <Y/67dZ8X+VoOi10b@TONYMAC-ALIBABA.local>
+        with ESMTP id S229437AbjCAEwl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 23:52:41 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995669757
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:40 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id q15so9837160oiw.11
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g0EuiMX6POWXkAkP3FkRqTUzvLxPW1Dg5W+nWJLnl84=;
+        b=a/A7KQaCFqyGESCPkYKGWUGSc2aXRLhGLq7pgYrNLLljaCWY5DuXyHo53Rb3e/RuFr
+         lrJ97nledi2TjPNIT4gYT7fBu7WuI5KsfIHCxgG4UOvVcuOe4jD2gKMM5YgaoCz/chOT
+         aNH2Otbl9iK/9REkQqwE7IZzcElLeZRnZZ9xhfBciwt5VM3CFfcduOjCXZFVTFfP1FRb
+         2Y4jQ5S7PnHqjyz7564IcIEe9jeZYCfnvvmg25muOFHcJ/v/3kEMQNWyKqqzQcyc1CRz
+         YpFKr+fSvPXRkqe4r7RmZIsnZmqeiT+JD4b8JkTW8FUOpgkOLF1Z+GVW6UiHVODpYSYR
+         lDyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g0EuiMX6POWXkAkP3FkRqTUzvLxPW1Dg5W+nWJLnl84=;
+        b=wI/q60OaTlNk+aBOvssdoPTqUSySCGPx/r8N2JF/s29+G2DkS7p0A7P+IhHC4dn+jj
+         1wbntCDQirM8XsC0Gw8TdZtYjfd05pQZDBQ/vor6vgwnaHjznTd2fyeSIZaqTUzJCdyg
+         WLHCNwFIEZ7BSimZ1kVrPX3oOopYZxWZqv0WlhV9rIN25zAXxnXEBPbzpbQxsDjNrygL
+         3u+T/A4BlSnO9Qw4Gez1pfpf583Ls2tKZve/FElR+b6Eix9Rxz/z+HpxMOBqKoe1i7Oo
+         zgzyfrUTNe5i1C3nFnlh8b5mZcjTcKd6KsfTtuRg4RkqDkOlmDWjbF0+9CbXxWwXZFv5
+         yOBA==
+X-Gm-Message-State: AO0yUKUuXTo/rtFQEwHCVLhdPUcSdpw0hgwySUQ6oFe0Y1cgG7HmNdkQ
+        XsmB6lZ7ZRqk4FvnWRm5M9A=
+X-Google-Smtp-Source: AK7set94mn0B6Ymey1UhdEjheTGQtHrVGp97y9bDDb0Tzy6t0Y94E9q6UknLAgbyshk9ZrVG6k70NQ==
+X-Received: by 2002:aca:2407:0:b0:384:f4c:7ee2 with SMTP id n7-20020aca2407000000b003840f4c7ee2mr2586603oic.30.1677646359930;
+        Tue, 28 Feb 2023 20:52:39 -0800 (PST)
+Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-759b-a469-60fc-ba97.res6.spectrum.com. [2603:8081:140c:1a00:759b:a469:60fc:ba97])
+        by smtp.gmail.com with ESMTPSA id ex16-20020a056808299000b0037fcc1fd34bsm5309604oib.13.2023.02.28.20.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Feb 2023 20:52:39 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, jhack@hpe.com,
+        matsuda-daisuke@fujitsu.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 0/8] RDMA/rxe: Correct qp reference counting
+Date:   Tue, 28 Feb 2023 22:51:47 -0600
+Message-Id: <20230301045154.23733-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 1 Mar 2023 10:41:57 +0800 Tony Lu wrote:
-> Actually, this patch set is going to replace the patch of TCP ULP for
-> SMC. If this patch set is accepted, I am going to revert that patch.
-> 
-> For the reasons, the TCP ULP for SMC doesn't use wildly. It's not
-> possible to know which applications are suitable to be replaced with
-> SMC. But it's easier to detect the behavior of applications and
-> determine whether to replace applications with SMC. And this patch set
-> is going to fallback to TCP by behavior with eBPF.
-> 
-> So this is the _fix_ for that patch.
+This patch series corrects qp reference counting issues
+related to deferred execution of tasklets. These issues were
+discovered in attempting to resolve soft lockups of the rxe
+driver observed by Daisuke Matsuda in a version of the driver
+using work queues where the workqueue implementation was based
+on the current tasklet based driver. An attempt to find the
+root cause of those lockups lead to an error in the tasklet
+implementation that has been present since the driver went
+upstream. This patch series corrects that error.
 
-Good to hear, I was worried you'd still want to install the ULP at some
-point whether the decision is via BPF or user space.
+With this patch series applied the rxe driver is more stable and
+has run the test cases reported by Matsuda for over 24 hours without
+errors.
+
+The series also corrects some errors in qp reference counting
+related to qp cleanup.
+
+This series depends on the RDMA/rxe: Add error logging to rxe"
+series as a prerequisite.
+
+Link: https://lore.kernel.org/linux-rdma/TYCPR01MB845522FD536170D75068DD41E5099@TYCPR01MB8455.jpnprd01.prod.outlook.com/
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+
+v2:
+  This version of this series split off the changes to rxe debug code
+  which have been submitted as "RDMA/rxe: Add error logging to rxe".
+  One unrelated patch was dropped and other patches earlier included
+  in a series to convert from tasklets to workqueues were moved into
+  this series because they are relevant both for the tasklet version
+  and the workqueue version of the driver.
+
+Bob Pearson (8):
+  RDMA/rxe: Convert tasklet args to queue pairs
+  RDMA/rxe: warn if refcnt zero in rxe_put
+  RDMA/rxe: Cleanup reset state handling in rxe_resp.c
+  RDMA/rxe: Cleanup error state handling in rxe_comp.c
+  RDMA/rxe: Remove qp reference counting in tasks
+  RDMA/rxe: Remove __rxe_do_task()
+  RDMA/rxe: Make tasks schedule each other
+  RDMA/rxe: Rewrite rxe_task.c
+
+ drivers/infiniband/sw/rxe/rxe.h      |   1 -
+ drivers/infiniband/sw/rxe/rxe_comp.c |  71 +++++--
+ drivers/infiniband/sw/rxe/rxe_loc.h  |   6 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c |   2 +
+ drivers/infiniband/sw/rxe/rxe_qp.c   |  56 ++----
+ drivers/infiniband/sw/rxe/rxe_req.c  |  12 +-
+ drivers/infiniband/sw/rxe/rxe_resp.c | 114 ++++++------
+ drivers/infiniband/sw/rxe/rxe_task.c | 268 +++++++++++++++++++++------
+ drivers/infiniband/sw/rxe/rxe_task.h |  23 ++-
+ 9 files changed, 352 insertions(+), 201 deletions(-)
+
+
+base-commit: bceed5834cd43a0ed67e35ec16197a5c882d3a6d
+-- 
+2.37.2
+
