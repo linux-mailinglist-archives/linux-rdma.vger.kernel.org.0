@@ -2,60 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A026A6722
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Mar 2023 05:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF306A6723
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Mar 2023 05:52:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbjCAEws (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 23:52:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32976 "EHLO
+        id S229788AbjCAEww (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 23:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjCAEwr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 23:52:47 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9493403A
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:45 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id bj30so4113810oib.6
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:45 -0800 (PST)
+        with ESMTP id S229771AbjCAEws (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 23:52:48 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB8338015
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:46 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id bm20so9872529oib.7
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+oO4zS5VDWvEFX/eQvXfDUh+dVC58M0RwnbDvyWKYzI=;
-        b=C2QFr9pxAwNSkcNXX/xfzmNEnSvGuyj4ZiwirkWJaQ1hcaGb8iFWsp7u57R95Gj8Wb
-         UXCEoWl4h2Rv1lCC7/n8MhN1vPCcxak2t3zg+B2BaFckX8eDTXkCLMymFTeXBrQPOYSA
-         b/6W0rIQEeoKBCnHdFlQ0dV6XRbq8Ix5GZ2y31XrNlHU7Zaxkm1tYBgfZUDMViwWFq6X
-         Zar1SsfrzdIB+YzUL3n0YBCXsmc8nIY5+622q7EA99xrP3u7nbjFLcAlyYVWcDqpwgZ1
-         ibalpiRtkmUZ/NPwbjPTgBsGrJ/JY9XpniOKssXR9XGIOYGcf8jnXs+YrylQ5uIQ8pn+
-         GkXQ==
+        bh=Jv6kagLBc5L/7qIzPYC6G0WZ1fByyFireELn/eI6LR8=;
+        b=cp3ba4MS1pT7O+ORK67moLm5dMPLCKef9at6iZ0VfgAhIQffB+t9oNel+ajY4w7F30
+         sAbMRWeUdP7xeTRI9a7NsnxmJ8gOnUManBFo01ZkKtl/S0tBD+g85Kkj8RgktphxcCLR
+         zeWGNmFK0E2RXRKO1bTwmidWuO2Ux+ckj74HngZt+xN+erkVxvyT1JfTvcLRoCErIep1
+         kOTqftXhkJX4578SaizaAgv8GokNpUobYJIJZ/JAIEZfe7Lp17hvsFPqxLwouH+Rupnb
+         7yC6EBDfCwIUsqyFMPijlngGUUJP2J2z+e6bP+dLxZeRXz1m37q23IJaV8gPnRo7Oqi7
+         KroQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+oO4zS5VDWvEFX/eQvXfDUh+dVC58M0RwnbDvyWKYzI=;
-        b=7Hy62IlQwPyhF70NiKxXrw+kF4VCxyDNyVYj6jxDR5X2CJm/AFx52HefLrUn8dz+w0
-         k7irmXK4+xZ1R1REmdQd4m9TzCXVuoTJMQnKqlA/AIQBmdb12KbD7SSeddRq5x+eAKqC
-         d7V5Oi8l2J6W1/uZ6kj9gpDGfhWHPaknznoY9QEUe9k/7fOkVHY56u4Li+bR6Hs6Usfl
-         Vy1/AmZ/Ik4IQDZ3360WBj2f+xQVY3VfnRNKEgn8HRwm9vSXbDz0qptb6CfjdYAoneS+
-         0mJCaoYiLRkKz95WavFu1tPRez+4JpBVjdEULGAsHZvtCxBTD1/OJ66oP9w+v0qmJADr
-         BFWw==
-X-Gm-Message-State: AO0yUKVIJRfa0u57HKWjtf5UuXceichgoYBinD3hBCW7uZ+Cp5Qa5fAR
-        5pvTO+Qlj2QHsRE+TY2pyLo=
-X-Google-Smtp-Source: AK7set8cBOJybu4I+9md6EBYb3q+bZ1nJ9F491Yq3cBPRFe1fD3Zy9gv5gUc3YNEPtl5O7yRbHZgnw==
-X-Received: by 2002:aca:2201:0:b0:384:28d6:b99c with SMTP id b1-20020aca2201000000b0038428d6b99cmr2443193oic.7.1677646365075;
-        Tue, 28 Feb 2023 20:52:45 -0800 (PST)
+        bh=Jv6kagLBc5L/7qIzPYC6G0WZ1fByyFireELn/eI6LR8=;
+        b=KkaUlZ6N8ggeK4cCq1oa6uBIMsVBk+K4Ux+lbNOHHYknq6hopR2WonpJfbIYYmiHfj
+         Op6UiSKVvzXDvdMx4ThyjqEFtToCAIRdQiQn/sWKbZGEJL5JyxnPTpLrkuY4xvf6XsjU
+         r0a7OIZhHHuVKGFllDDFN7AzDMWlZUfdam90LuvwofAYoVxVYm+QudTc0I13pkXyaVxO
+         80AdnrSm6HREledVSSCFYRU91DCUkiG7b7kSRGYFicGzhZNPqnue/58CXVT1qT+Zy3pA
+         9mVcVK+k5RI1t28HyzVDMUlU1G7M62HxInvkEg1IR+2cCRdDKgXi2KNRuUqIqsNjT0+x
+         nyjQ==
+X-Gm-Message-State: AO0yUKURECkWfKDlwgcE6espWOBSiZGld1s0VUzq/d56ZqznaB7t9CrP
+        JlnS7KlWNDGUMCms9JfSaw0=
+X-Google-Smtp-Source: AK7set8mEJwCsw6KJkwSwxQ5uPVCa7fgA5ZERKGysHuqNwngkzxUT85LzxzsO0lfZ9IjgtSwYlrFqg==
+X-Received: by 2002:a05:6808:3c7:b0:384:24d7:cdcd with SMTP id o7-20020a05680803c700b0038424d7cdcdmr2687182oie.50.1677646366029;
+        Tue, 28 Feb 2023 20:52:46 -0800 (PST)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-759b-a469-60fc-ba97.res6.spectrum.com. [2603:8081:140c:1a00:759b:a469:60fc:ba97])
-        by smtp.gmail.com with ESMTPSA id ex16-20020a056808299000b0037fcc1fd34bsm5309604oib.13.2023.02.28.20.52.44
+        by smtp.gmail.com with ESMTPSA id ex16-20020a056808299000b0037fcc1fd34bsm5309604oib.13.2023.02.28.20.52.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Feb 2023 20:52:44 -0800 (PST)
+        Tue, 28 Feb 2023 20:52:45 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, jhack@hpe.com,
         matsuda-daisuke@fujitsu.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 5/8] RDMA/rxe: Remove qp reference counting in tasks
-Date:   Tue, 28 Feb 2023 22:51:52 -0600
-Message-Id: <20230301045154.23733-6-rpearsonhpe@gmail.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Ian Ziemba <ian.ziemba@hpe.com>
+Subject: [PATCH for-next v2 6/8] RDMA/rxe: Remove __rxe_do_task()
+Date:   Tue, 28 Feb 2023 22:51:53 -0600
+Message-Id: <20230301045154.23733-7-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230301045154.23733-1-rpearsonhpe@gmail.com>
 References: <20230301045154.23733-1-rpearsonhpe@gmail.com>
@@ -71,91 +72,184 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently each of the three tasklets requester, completer and
-responder in the rxe driver take and release a reference to the
-qp argument at the beginning and end of the subroutines. The
-caller passing in the qp argument should be responsible for holding
-a reference to qp so these are not required. Further doing so
-breaks the qp cleanup code in rxe_qp_do_cleanup which calls these
-routines after all the references have been dropped so they cannot
-drain the packet and work request queues as intended.
+The subroutine __rxe_do_task is not thread safe and it has
+no way to guarantee that the tasks, which are designed
+with the assumption that they are non-reentrant, are not
+reentered. All of its uses are non-performance critical.
 
-In fact if these routines are deferred by calling tasklet_schedule
-there is no guarantee that the calling code does have a qp reference.
-That is a bug in rxe_task.c which will be fixed later in this series.
+This patch replaces calls to __rxe_do_task with calls to
+rxe_sched_task. It also removes irrelevant or unneeded
+if tests.
 
+Instead of calling the task machinery a single call to
+the tasklet function (rxe_requester, etc.) is sufficient
+to draing the queues if task execution has been disabled
+or stopped.
+
+Together these changes allow the removal of __rxe_do_task.
+
+Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_comp.c | 5 -----
- drivers/infiniband/sw/rxe/rxe_req.c  | 5 -----
- drivers/infiniband/sw/rxe/rxe_resp.c | 4 ----
- 3 files changed, 14 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_qp.c   | 56 +++++++++-------------------
+ drivers/infiniband/sw/rxe/rxe_task.c | 13 -------
+ drivers/infiniband/sw/rxe/rxe_task.h |  6 ---
+ 3 files changed, 17 insertions(+), 58 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index ebece584a020..fa864c6704ac 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -619,9 +619,6 @@ int rxe_completer(struct rxe_qp *qp)
- 	enum comp_state state;
- 	int ret;
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index c954dd9394ba..49891f8ed4e6 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -473,29 +473,23 @@ static void rxe_qp_reset(struct rxe_qp *qp)
+ {
+ 	/* stop tasks from running */
+ 	rxe_disable_task(&qp->resp.task);
+-
+-	/* stop request/comp */
+-	if (qp->sq.queue) {
+-		if (qp_type(qp) == IB_QPT_RC)
+-			rxe_disable_task(&qp->comp.task);
+-		rxe_disable_task(&qp->req.task);
+-	}
++	rxe_disable_task(&qp->comp.task);
++	rxe_disable_task(&qp->req.task);
  
--	if (!rxe_get(qp))
--		return -EAGAIN;
+ 	/* move qp to the reset state */
+ 	qp->req.state = QP_STATE_RESET;
+ 	qp->comp.state = QP_STATE_RESET;
+ 	qp->resp.state = QP_STATE_RESET;
+ 
+-	/* let state machines reset themselves drain work and packet queues
+-	 * etc.
+-	 */
+-	__rxe_do_task(&qp->resp.task);
++	/* drain work and packet queuesc */
++	rxe_requester(qp);
++	rxe_completer(qp);
++	rxe_responder(qp);
+ 
+-	if (qp->sq.queue) {
+-		__rxe_do_task(&qp->comp.task);
+-		__rxe_do_task(&qp->req.task);
++	if (qp->rq.queue)
++		rxe_queue_reset(qp->rq.queue);
++	if (qp->sq.queue)
+ 		rxe_queue_reset(qp->sq.queue);
+-	}
+ 
+ 	/* cleanup attributes */
+ 	atomic_set(&qp->ssn, 0);
+@@ -518,13 +512,8 @@ static void rxe_qp_reset(struct rxe_qp *qp)
+ 
+ 	/* reenable tasks */
+ 	rxe_enable_task(&qp->resp.task);
 -
- 	if (!qp->valid || qp->comp.state == QP_STATE_ERROR ||
- 	    qp->comp.state == QP_STATE_RESET) {
- 		bool notify = qp->valid &&
-@@ -824,7 +821,5 @@ int rxe_completer(struct rxe_qp *qp)
- out:
- 	if (pkt)
- 		free_pkt(pkt);
--	rxe_put(qp);
+-	if (qp->sq.queue) {
+-		if (qp_type(qp) == IB_QPT_RC)
+-			rxe_enable_task(&qp->comp.task);
 -
- 	return ret;
+-		rxe_enable_task(&qp->req.task);
+-	}
++	rxe_enable_task(&qp->comp.task);
++	rxe_enable_task(&qp->req.task);
  }
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index f2dc2d191e16..abc65c54bfd6 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -653,9 +653,6 @@ int rxe_requester(struct rxe_qp *qp)
- 	struct rxe_ah *ah;
- 	struct rxe_av *av;
  
--	if (!rxe_get(qp))
--		return -EAGAIN;
--
- 	if (unlikely(!qp->valid))
- 		goto exit;
+ /* drain the send queue */
+@@ -533,10 +522,7 @@ static void rxe_qp_drain(struct rxe_qp *qp)
+ 	if (qp->sq.queue) {
+ 		if (qp->req.state != QP_STATE_DRAINED) {
+ 			qp->req.state = QP_STATE_DRAIN;
+-			if (qp_type(qp) == IB_QPT_RC)
+-				rxe_sched_task(&qp->comp.task);
+-			else
+-				__rxe_do_task(&qp->comp.task);
++			rxe_sched_task(&qp->comp.task);
+ 			rxe_sched_task(&qp->req.task);
+ 		}
+ 	}
+@@ -552,11 +538,7 @@ void rxe_qp_error(struct rxe_qp *qp)
  
-@@ -844,7 +841,5 @@ int rxe_requester(struct rxe_qp *qp)
- exit:
- 	ret = -EAGAIN;
- out:
--	rxe_put(qp);
+ 	/* drain work and packet queues */
+ 	rxe_sched_task(&qp->resp.task);
 -
- 	return ret;
+-	if (qp_type(qp) == IB_QPT_RC)
+-		rxe_sched_task(&qp->comp.task);
+-	else
+-		__rxe_do_task(&qp->comp.task);
++	rxe_sched_task(&qp->comp.task);
+ 	rxe_sched_task(&qp->req.task);
  }
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 2f71183449f9..01e3cbea8445 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -1464,9 +1464,6 @@ int rxe_responder(struct rxe_qp *qp)
- 	struct rxe_pkt_info *pkt = NULL;
- 	int ret;
  
--	if (!rxe_get(qp))
--		return -EAGAIN;
+@@ -773,24 +755,20 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
+ 
+ 	qp->valid = 0;
+ 	qp->qp_timeout_jiffies = 0;
+-	rxe_cleanup_task(&qp->resp.task);
+ 
+ 	if (qp_type(qp) == IB_QPT_RC) {
+ 		del_timer_sync(&qp->retrans_timer);
+ 		del_timer_sync(&qp->rnr_nak_timer);
+ 	}
+ 
++	rxe_cleanup_task(&qp->resp.task);
+ 	rxe_cleanup_task(&qp->req.task);
+ 	rxe_cleanup_task(&qp->comp.task);
+ 
+ 	/* flush out any receive wr's or pending requests */
+-	if (qp->req.task.func)
+-		__rxe_do_task(&qp->req.task);
 -
- 	if (!qp->valid || qp->resp.state == QP_STATE_ERROR ||
- 	    qp->resp.state == QP_STATE_RESET) {
- 		bool notify = qp->valid &&
-@@ -1658,6 +1655,5 @@ int rxe_responder(struct rxe_qp *qp)
- exit:
- 	ret = -EAGAIN;
- out:
--	rxe_put(qp);
- 	return ret;
- }
+-	if (qp->sq.queue) {
+-		__rxe_do_task(&qp->comp.task);
+-		__rxe_do_task(&qp->req.task);
+-	}
++	rxe_requester(qp);
++	rxe_completer(qp);
++	rxe_responder(qp);
+ 
+ 	if (qp->sq.queue)
+ 		rxe_queue_cleanup(qp->sq.queue);
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+index 959cc6229a34..a67f48545443 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -6,19 +6,6 @@
+ 
+ #include "rxe.h"
+ 
+-int __rxe_do_task(struct rxe_task *task)
+-
+-{
+-	int ret;
+-
+-	while ((ret = task->func(task->qp)) == 0)
+-		;
+-
+-	task->ret = ret;
+-
+-	return ret;
+-}
+-
+ /*
+  * this locking is due to a potential race where
+  * a second caller finds the task already running
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
+index 41efd5fd49b0..99585e40cef9 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.h
++++ b/drivers/infiniband/sw/rxe/rxe_task.h
+@@ -39,12 +39,6 @@ int rxe_init_task(struct rxe_task *task, struct rxe_qp *qp,
+ /* cleanup task */
+ void rxe_cleanup_task(struct rxe_task *task);
+ 
+-/*
+- * raw call to func in loop without any checking
+- * can call when tasklets are disabled
+- */
+-int __rxe_do_task(struct rxe_task *task);
+-
+ void rxe_run_task(struct rxe_task *task);
+ 
+ void rxe_sched_task(struct rxe_task *task);
 -- 
 2.37.2
 
