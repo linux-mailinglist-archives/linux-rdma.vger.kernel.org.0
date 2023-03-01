@@ -2,61 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96E66A6721
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Mar 2023 05:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A026A6722
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Mar 2023 05:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjCAEwq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Feb 2023 23:52:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32918 "EHLO
+        id S229740AbjCAEws (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Feb 2023 23:52:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjCAEwp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 23:52:45 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6BA29414
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:44 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id r40so8846129oiw.0
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:44 -0800 (PST)
+        with ESMTP id S229748AbjCAEwr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Feb 2023 23:52:47 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9493403A
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:45 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id bj30so4113810oib.6
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Feb 2023 20:52:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hb4W3eRdGXxFck4oRRG5xPXA7mfBtsT9lcIN41QQXlM=;
-        b=Tsvs8HH+STiwuYwZmlQfbbX9oaUmKW11LEKbVCbZZJMBethvaInvxHeP84FOTwqKm2
-         jUM0B0+kyCAW03orqgOcA9Vnetg8uqnrFVOh+l1dQYPUEqnTIEt2Z8hLfRrZ2Fmajiqa
-         +19VBlUrgczEvF3Cbq/Nw+FuEHT/xVdtTMUx8wNPI3UOqyCUTVxmgYOLTLM6fg3m+18i
-         kE8NOdQ3p2CTM09R2S1Wih771n9yHdJ6cjThYvHnEGEdgEDq9ou9qqvkF70fitp7imYo
-         Z4F4Bj7xGKcZh8ugLoiMM1YRkYcQUjSnUGmSLLr5Q0eInHTpMXBiKRJFQCn5VOsNAWNu
-         mcoA==
+        bh=+oO4zS5VDWvEFX/eQvXfDUh+dVC58M0RwnbDvyWKYzI=;
+        b=C2QFr9pxAwNSkcNXX/xfzmNEnSvGuyj4ZiwirkWJaQ1hcaGb8iFWsp7u57R95Gj8Wb
+         UXCEoWl4h2Rv1lCC7/n8MhN1vPCcxak2t3zg+B2BaFckX8eDTXkCLMymFTeXBrQPOYSA
+         b/6W0rIQEeoKBCnHdFlQ0dV6XRbq8Ix5GZ2y31XrNlHU7Zaxkm1tYBgfZUDMViwWFq6X
+         Zar1SsfrzdIB+YzUL3n0YBCXsmc8nIY5+622q7EA99xrP3u7nbjFLcAlyYVWcDqpwgZ1
+         ibalpiRtkmUZ/NPwbjPTgBsGrJ/JY9XpniOKssXR9XGIOYGcf8jnXs+YrylQ5uIQ8pn+
+         GkXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Hb4W3eRdGXxFck4oRRG5xPXA7mfBtsT9lcIN41QQXlM=;
-        b=2Yi+Kz5BDeYNVrAoktrwinMY6YUgSsnzWdy5AOaBjAdZWQrWrMUOSvmZMHvT6hDzcS
-         0+cH3ya6idlHH02M6qex8VtVJwiVFtjFy6w3Y5Y51SDfTVYi0O/tKme6oFg3Pmxyrq7H
-         WOqzfdj6VP5J7/0/jNe55EHeOIy3ugAmxp82SYBNJScN5K89dT6z8iGTi5QcF8ddklTX
-         xSaie4aEFvDlnKNHdLTv65ohWEggOtCQtlWWuG6k9heK9dn1JNfVCehxdLQYg/iK2LYN
-         Qh1+2PhDAosWsSptgQ0KGTNYlSRkDkvHYpCYo7ddTibsGqi+T2CNDzu1p+xFBWcT18Ys
-         aSfA==
-X-Gm-Message-State: AO0yUKXo/d/rvwvHYuiLlG2bTdDsJu8boDu9R51g0fzbIcqit6rNy1DT
-        beqsV2YfpT+2HQH08lHzDIE=
-X-Google-Smtp-Source: AK7set8wmvmPlnFldMX4tdK6vCbBooEAeTEaKipx7YUPuxcSRwBMZue8uUQX+Sh5B/5tQvvlN+F9rA==
-X-Received: by 2002:a05:6808:f04:b0:37a:2bf0:5014 with SMTP id m4-20020a0568080f0400b0037a2bf05014mr7531211oiw.2.1677646364038;
-        Tue, 28 Feb 2023 20:52:44 -0800 (PST)
+        bh=+oO4zS5VDWvEFX/eQvXfDUh+dVC58M0RwnbDvyWKYzI=;
+        b=7Hy62IlQwPyhF70NiKxXrw+kF4VCxyDNyVYj6jxDR5X2CJm/AFx52HefLrUn8dz+w0
+         k7irmXK4+xZ1R1REmdQd4m9TzCXVuoTJMQnKqlA/AIQBmdb12KbD7SSeddRq5x+eAKqC
+         d7V5Oi8l2J6W1/uZ6kj9gpDGfhWHPaknznoY9QEUe9k/7fOkVHY56u4Li+bR6Hs6Usfl
+         Vy1/AmZ/Ik4IQDZ3360WBj2f+xQVY3VfnRNKEgn8HRwm9vSXbDz0qptb6CfjdYAoneS+
+         0mJCaoYiLRkKz95WavFu1tPRez+4JpBVjdEULGAsHZvtCxBTD1/OJ66oP9w+v0qmJADr
+         BFWw==
+X-Gm-Message-State: AO0yUKVIJRfa0u57HKWjtf5UuXceichgoYBinD3hBCW7uZ+Cp5Qa5fAR
+        5pvTO+Qlj2QHsRE+TY2pyLo=
+X-Google-Smtp-Source: AK7set8cBOJybu4I+9md6EBYb3q+bZ1nJ9F491Yq3cBPRFe1fD3Zy9gv5gUc3YNEPtl5O7yRbHZgnw==
+X-Received: by 2002:aca:2201:0:b0:384:28d6:b99c with SMTP id b1-20020aca2201000000b0038428d6b99cmr2443193oic.7.1677646365075;
+        Tue, 28 Feb 2023 20:52:45 -0800 (PST)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-759b-a469-60fc-ba97.res6.spectrum.com. [2603:8081:140c:1a00:759b:a469:60fc:ba97])
-        by smtp.gmail.com with ESMTPSA id ex16-20020a056808299000b0037fcc1fd34bsm5309604oib.13.2023.02.28.20.52.42
+        by smtp.gmail.com with ESMTPSA id ex16-20020a056808299000b0037fcc1fd34bsm5309604oib.13.2023.02.28.20.52.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Feb 2023 20:52:43 -0800 (PST)
+        Tue, 28 Feb 2023 20:52:44 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, jhack@hpe.com,
         matsuda-daisuke@fujitsu.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Ian Ziemba <ian.ziemba@hpe.com>
-Subject: [PATCH for-next v2 4/8] RDMA/rxe: Cleanup error state handling in rxe_comp.c
-Date:   Tue, 28 Feb 2023 22:51:51 -0600
-Message-Id: <20230301045154.23733-5-rpearsonhpe@gmail.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 5/8] RDMA/rxe: Remove qp reference counting in tasks
+Date:   Tue, 28 Feb 2023 22:51:52 -0600
+Message-Id: <20230301045154.23733-6-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230301045154.23733-1-rpearsonhpe@gmail.com>
 References: <20230301045154.23733-1-rpearsonhpe@gmail.com>
@@ -72,182 +71,91 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Cleanup the handling of qp in the error state, reset state and
-during rxe_qp_do_cleanup. Make the same as rxe_resp.c
+Currently each of the three tasklets requester, completer and
+responder in the rxe driver take and release a reference to the
+qp argument at the beginning and end of the subroutines. The
+caller passing in the qp argument should be responsible for holding
+a reference to qp so these are not required. Further doing so
+breaks the qp cleanup code in rxe_qp_do_cleanup which calls these
+routines after all the references have been dropped so they cannot
+drain the packet and work request queues as intended.
 
-Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
+In fact if these routines are deferred by calling tasklet_schedule
+there is no guarantee that the calling code does have a qp reference.
+That is a bug in rxe_task.c which will be fixed later in this series.
+
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_comp.c | 55 +++++++++++++++++++++++-----
- drivers/infiniband/sw/rxe/rxe_resp.c | 28 +++++++-------
- 2 files changed, 60 insertions(+), 23 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_comp.c | 5 -----
+ drivers/infiniband/sw/rxe/rxe_req.c  | 5 -----
+ drivers/infiniband/sw/rxe/rxe_resp.c | 4 ----
+ 3 files changed, 14 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index cbfa16b3a490..ebece584a020 100644
+index ebece584a020..fa864c6704ac 100644
 --- a/drivers/infiniband/sw/rxe/rxe_comp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -542,25 +542,60 @@ static inline enum comp_state complete_wqe(struct rxe_qp *qp,
- 	return COMPST_GET_WQE;
- }
+@@ -619,9 +619,6 @@ int rxe_completer(struct rxe_qp *qp)
+ 	enum comp_state state;
+ 	int ret;
  
--static void rxe_drain_resp_pkts(struct rxe_qp *qp, bool notify)
-+/* drain incoming response packet queue */
-+static void drain_resp_pkts(struct rxe_qp *qp)
- {
- 	struct sk_buff *skb;
--	struct rxe_send_wqe *wqe;
--	struct rxe_queue *q = qp->sq.queue;
- 
- 	while ((skb = skb_dequeue(&qp->resp_pkts))) {
- 		rxe_put(qp);
- 		kfree_skb(skb);
- 		ib_device_put(qp->ibqp.device);
- 	}
-+}
-+
-+/* complete send wqe with flush error */
-+static int flush_send_wqe(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
-+{
-+	struct rxe_cqe cqe = {};
-+	struct ib_wc *wc = &cqe.ibwc;
-+	struct ib_uverbs_wc *uwc = &cqe.uibwc;
-+	int err;
-+
-+	if (qp->is_user) {
-+		uwc->wr_id = wqe->wr.wr_id;
-+		uwc->status = wqe->status;
-+		uwc->qp_num = qp->ibqp.qp_num;
-+	} else {
-+		wc->wr_id = wqe->wr.wr_id;
-+		wc->status = wqe->status;
-+		wc->qp = &qp->ibqp;
-+	}
-+
-+	err = rxe_cq_post(qp->scq, &cqe, 0);
-+	if (err)
-+		rxe_dbg_cq(qp->scq, "post cq failed, err = %d", err);
-+
-+	return err;
-+}
-+
-+/* drain and optionally complete the send queue
-+ * if unable to complete a wqe stop completing
-+ * and flush the remaining wqes
-+ */
-+static void flush_send_queue(struct rxe_qp *qp, bool notify)
-+{
-+	struct rxe_send_wqe *wqe;
-+	struct rxe_queue *q = qp->sq.queue;
-+	int err;
- 
- 	while ((wqe = queue_head(q, q->type))) {
- 		if (notify) {
--			wqe->status = IB_WC_WR_FLUSH_ERR;
--			do_complete(qp, wqe);
--		} else {
--			queue_advance_consumer(q, q->type);
-+			err = flush_send_wqe(qp, wqe);
-+			if (err)
-+				notify = 0;
- 		}
-+		queue_advance_consumer(q, q->type);
- 	}
- }
- 
-@@ -589,8 +624,10 @@ int rxe_completer(struct rxe_qp *qp)
- 
+-	if (!rxe_get(qp))
+-		return -EAGAIN;
+-
  	if (!qp->valid || qp->comp.state == QP_STATE_ERROR ||
  	    qp->comp.state == QP_STATE_RESET) {
--		rxe_drain_resp_pkts(qp, qp->valid &&
--				    qp->comp.state == QP_STATE_ERROR);
-+		bool notify = qp->valid &&
-+				(qp->comp.state == QP_STATE_ERROR);
-+		drain_resp_pkts(qp);
-+		flush_send_queue(qp, notify);
- 		goto exit;
- 	}
+ 		bool notify = qp->valid &&
+@@ -824,7 +821,5 @@ int rxe_completer(struct rxe_qp *qp)
+ out:
+ 	if (pkt)
+ 		free_pkt(pkt);
+-	rxe_put(qp);
+-
+ 	return ret;
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index f2dc2d191e16..abc65c54bfd6 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -653,9 +653,6 @@ int rxe_requester(struct rxe_qp *qp)
+ 	struct rxe_ah *ah;
+ 	struct rxe_av *av;
  
+-	if (!rxe_get(qp))
+-		return -EAGAIN;
+-
+ 	if (unlikely(!qp->valid))
+ 		goto exit;
+ 
+@@ -844,7 +841,5 @@ int rxe_requester(struct rxe_qp *qp)
+ exit:
+ 	ret = -EAGAIN;
+ out:
+-	rxe_put(qp);
+-
+ 	return ret;
+ }
 diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 8f9bbb14fa7a..2f71183449f9 100644
+index 2f71183449f9..01e3cbea8445 100644
 --- a/drivers/infiniband/sw/rxe/rxe_resp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -1396,7 +1396,7 @@ static enum resp_states do_class_d1e_error(struct rxe_qp *qp)
- }
+@@ -1464,9 +1464,6 @@ int rxe_responder(struct rxe_qp *qp)
+ 	struct rxe_pkt_info *pkt = NULL;
+ 	int ret;
  
- /* drain incoming request packet queue */
--static void rxe_drain_req_pkts(struct rxe_qp *qp)
-+static void drain_req_pkts(struct rxe_qp *qp)
- {
- 	struct sk_buff *skb;
- 
-@@ -1408,33 +1408,35 @@ static void rxe_drain_req_pkts(struct rxe_qp *qp)
- }
- 
- /* complete receive wqe with flush error */
--static int complete_flush(struct rxe_qp *qp, struct rxe_recv_wqe *wqe)
-+static int flush_recv_wqe(struct rxe_qp *qp, struct rxe_recv_wqe *wqe)
- {
- 	struct rxe_cqe cqe = {};
- 	struct ib_wc *wc = &cqe.ibwc;
- 	struct ib_uverbs_wc *uwc = &cqe.uibwc;
-+	int err;
- 
- 	if (qp->rcq->is_user) {
-+		uwc->wr_id = wqe->wr_id;
- 		uwc->status = IB_WC_WR_FLUSH_ERR;
- 		uwc->qp_num = qp_num(qp);
--		uwc->wr_id = wqe->wr_id;
- 	} else {
-+		wc->wr_id = wqe->wr_id;
- 		wc->status = IB_WC_WR_FLUSH_ERR;
- 		wc->qp = &qp->ibqp;
--		wc->wr_id = wqe->wr_id;
- 	}
- 
--	if (rxe_cq_post(qp->rcq, &cqe, 0))
--		return -ENOMEM;
-+	err = rxe_cq_post(qp->rcq, &cqe, 0);
-+	if (err)
-+		rxe_dbg_cq(qp->rcq, "post cq failed err = %d", err);
- 
--	return 0;
-+	return err;
- }
- 
- /* drain and optionally complete the recive queue
-  * if unable to complete a wqe stop completing and
-  * just flush the remaining wqes
-  */
--static void rxe_drain_recv_queue(struct rxe_qp *qp, bool notify)
-+static void flush_recv_queue(struct rxe_qp *qp, bool notify)
- {
- 	struct rxe_queue *q = qp->rq.queue;
- 	struct rxe_recv_wqe *wqe;
-@@ -1445,11 +1447,9 @@ static void rxe_drain_recv_queue(struct rxe_qp *qp, bool notify)
- 
- 	while ((wqe = queue_head(q, q->type))) {
- 		if (notify) {
--			err = complete_flush(qp, wqe);
--			if (err) {
--				rxe_dbg_qp(qp, "complete failed for recv wqe");
-+			err = flush_recv_wqe(qp, wqe);
-+			if (err)
- 				notify = 0;
--			}
- 		}
- 		queue_advance_consumer(q, q->type);
- 	}
-@@ -1471,8 +1471,8 @@ int rxe_responder(struct rxe_qp *qp)
+-	if (!rxe_get(qp))
+-		return -EAGAIN;
+-
+ 	if (!qp->valid || qp->resp.state == QP_STATE_ERROR ||
  	    qp->resp.state == QP_STATE_RESET) {
  		bool notify = qp->valid &&
- 				(qp->resp.state == QP_STATE_ERROR);
--		rxe_drain_req_pkts(qp);
--		rxe_drain_recv_queue(qp, notify);
-+		drain_req_pkts(qp);
-+		flush_recv_queue(qp, notify);
- 		goto exit;
- 	}
- 
+@@ -1658,6 +1655,5 @@ int rxe_responder(struct rxe_qp *qp)
+ exit:
+ 	ret = -EAGAIN;
+ out:
+-	rxe_put(qp);
+ 	return ret;
+ }
 -- 
 2.37.2
 
