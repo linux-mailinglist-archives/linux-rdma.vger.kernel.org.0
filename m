@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B106AA39C
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Mar 2023 23:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734126AA4D0
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Mar 2023 23:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbjCCWCB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Mar 2023 17:02:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
+        id S231991AbjCCWyO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Mar 2023 17:54:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233790AbjCCWAu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Mar 2023 17:00:50 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5F765105;
-        Fri,  3 Mar 2023 13:52:21 -0800 (PST)
+        with ESMTP id S232060AbjCCWyM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Mar 2023 17:54:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30811B2CF;
+        Fri,  3 Mar 2023 14:53:46 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 40E79B81A12;
-        Fri,  3 Mar 2023 21:45:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43519C4339B;
-        Fri,  3 Mar 2023 21:45:33 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 729ACB818A4;
+        Fri,  3 Mar 2023 21:47:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75D8DC4339E;
+        Fri,  3 Mar 2023 21:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677879934;
-        bh=mAAWQfEHiJU8oqnbapWIBjR2/+TiM7vVK2p+Y5vtBmc=;
+        s=k20201202; t=1677880038;
+        bh=kiILXqGGq0h+wtqtWnvVR1ipqj4Zf0m1sKRPOcQmT0A=;
         h=From:To:Cc:Subject:Date:From;
-        b=gbYEZ67yvvm532AIU8dJDQ3GMmQR4QZHDx0Yi+/XfTm/dYrWnjMnNcMNGeKo67+jw
-         sMavURX565Zt+hEm1FyRnNrXvDvIw+FA5h6YsJ0c2j3GW4dPV78ATyq8xLTbkVIuDw
-         Cedz74GHAJwO9eL8k2gAJ0Ea5Mi/ZnZvVSvHIIZq7DaXqWyHLPRyagGiDFuupNjzCQ
-         0vMwpeAeUWtFyCpiRC66FFFKZgBlNNjEFu5Bs7d7iVNODvEioJAuo6Kw3HXBEUgFSx
-         17nMJ0DK2Yr3qKlo3qIDiDahnvcBnVM3xY55bm0tDe/5HaDqJhcUFizWqxH/0cCYuV
-         e7bxJSeLhfQQg==
+        b=C4uv9dOCkbMYY53RvYVMyxK4L1fS14wljcwvCH/GPeg8auugjYIr32gWkO5lG4BBY
+         JFcv4i/P4V0ek18zERh25VihLEJe/wE6iVq4wszreD+oRHZzu+Yfkt1mj7vqiOQJEi
+         hiDMMaCQ0/vs/U6m10aWcdSHzwOxlhFUd9edsI/N5u3zEsl8jPu1ky4QloXYibANeZ
+         Jtn5TBiVxK0h2UhPnjxwx/1HgJCoM3HXLa9DeCO+RjOn4FcxwMnLUQ7OyxehnJDbTa
+         /FFd/Wf7LUqd3wPs8sgN/0zJE8/ID3Wt/9l8yGilbCBLD5yr1FYn9PxH1fV2W4fPIp
+         qbWk3RUGg2Lcw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Leon Romanovsky <leon@kernel.org>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 01/50] IB/hfi1: Update RMT size calculation
-Date:   Fri,  3 Mar 2023 16:44:42 -0500
-Message-Id: <20230303214531.1450154-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 01/30] IB/hfi1: Update RMT size calculation
+Date:   Fri,  3 Mar 2023 16:46:46 -0500
+Message-Id: <20230303214715.1452256-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,10 +78,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 32 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index b0d587254fe66..689921dc3d4a8 100644
+index 88476a1a601a4..4b41f35668b20 100644
 --- a/drivers/infiniband/hw/hfi1/chip.c
 +++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -1055,7 +1055,7 @@ static void read_link_down_reason(struct hfi1_devdata *dd, u8 *ldr);
+@@ -1097,7 +1097,7 @@ static void read_link_down_reason(struct hfi1_devdata *dd, u8 *ldr);
  static void handle_temp_err(struct hfi1_devdata *dd);
  static void dc_shutdown(struct hfi1_devdata *dd);
  static void dc_start(struct hfi1_devdata *dd);
@@ -90,7 +90,7 @@ index b0d587254fe66..689921dc3d4a8 100644
  			   unsigned int *np);
  static void clear_full_mgmt_pkey(struct hfi1_pportdata *ppd);
  static int wait_link_transfer_active(struct hfi1_devdata *dd, int wait_ms);
-@@ -13361,7 +13361,6 @@ static int set_up_context_variables(struct hfi1_devdata *dd)
+@@ -13403,7 +13403,6 @@ static int set_up_context_variables(struct hfi1_devdata *dd)
  	int ret;
  	unsigned ngroups;
  	int rmt_count;
@@ -98,7 +98,7 @@ index b0d587254fe66..689921dc3d4a8 100644
  	u32 n_usr_ctxts;
  	u32 send_contexts = chip_send_contexts(dd);
  	u32 rcv_contexts = chip_rcv_contexts(dd);
-@@ -13420,28 +13419,34 @@ static int set_up_context_variables(struct hfi1_devdata *dd)
+@@ -13462,28 +13461,34 @@ static int set_up_context_variables(struct hfi1_devdata *dd)
  					 (num_kernel_contexts + n_usr_ctxts),
  					 &node_affinity.real_cpu_mask);
  	/*
@@ -154,7 +154,7 @@ index b0d587254fe66..689921dc3d4a8 100644
  	}
  
  	/* the first N are kernel contexts, the rest are user/netdev contexts */
-@@ -14298,15 +14303,15 @@ static void clear_rsm_rule(struct hfi1_devdata *dd, u8 rule_index)
+@@ -14340,15 +14345,15 @@ static void clear_rsm_rule(struct hfi1_devdata *dd, u8 rule_index)
  }
  
  /* return the number of RSM map table entries that will be used for QOS */
@@ -173,7 +173,7 @@ index b0d587254fe66..689921dc3d4a8 100644
  	    num_vls == 1 ||
  	    krcvqsset <= 1)
  		goto no_qos;
-@@ -14364,7 +14369,7 @@ static void init_qos(struct hfi1_devdata *dd, struct rsm_map_table *rmt)
+@@ -14406,7 +14411,7 @@ static void init_qos(struct hfi1_devdata *dd, struct rsm_map_table *rmt)
  
  	if (!rmt)
  		goto bail;
