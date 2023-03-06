@@ -2,104 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5C36AB885
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Mar 2023 09:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E606ABA21
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Mar 2023 10:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbjCFIkX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Mar 2023 03:40:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42100 "EHLO
+        id S230023AbjCFJlA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Mar 2023 04:41:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjCFIkW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Mar 2023 03:40:22 -0500
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E72B7AB9;
-        Mon,  6 Mar 2023 00:40:21 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VdCwLpQ_1678092018;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0VdCwLpQ_1678092018)
-          by smtp.aliyun-inc.com;
-          Mon, 06 Mar 2023 16:40:18 +0800
-Date:   Mon, 6 Mar 2023 16:40:17 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net] net/smc: fix NULL sndbuf_desc in smc_cdc_tx_handler()
-Message-ID: <ZAWm8YHr77t4N29F@TONYMAC-ALIBABA.local>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <1678073786-110013-1-git-send-email-alibuda@linux.alibaba.com>
+        with ESMTP id S230100AbjCFJk5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Mar 2023 04:40:57 -0500
+X-Greylist: delayed 1175 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 06 Mar 2023 01:40:53 PST
+Received: from mail.ettrick.pl (mail.ettrick.pl [141.94.21.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EC72331C
+        for <linux-rdma@vger.kernel.org>; Mon,  6 Mar 2023 01:40:53 -0800 (PST)
+Received: by mail.ettrick.pl (Postfix, from userid 1002)
+        id 2399FA4992; Mon,  6 Mar 2023 09:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ettrick.pl; s=mail;
+        t=1678093355; bh=KHux3km3Civcx5ChslOYQZwQRBjoJa4kWJfGcMIuN6w=;
+        h=Date:From:To:Subject:From;
+        b=s93n/fkKTH6BPJrlrkfitwL9iyixmc0IVb5QQ3ftSIfIFPfCg6JefWL6O/WCLebyB
+         LtbT+2GNxu+05gHyAfGC2yfwUjvE3sR8FyUzYqZKJxrYGdR+jBH0CsNFZrZZEADRFH
+         uKt4btuL0v7/d4sx44gU1peZdf8/706dB6OFRmTsu77mZ2TjaC4SMupWdX3hX6FWuN
+         7N6WdQ8h4naaaiijTOHDQeYMCFRsP+GY57bz02iaNCbdhLZOe1YI8DUl+X0lcm0Q+a
+         CnZfpvFFya8vtW6Duy2TnOedAXxbr6RadWFumuQI89e4oZkjvkDbMSAnh6nU48Kuy+
+         3Sj/UURmiavOQ==
+Received: by mail.ettrick.pl for <linux-rdma@vger.kernel.org>; Mon,  6 Mar 2023 09:00:53 GMT
+Message-ID: <20230306074500-0.1.97.36z5f.0.yddpuqgpdt@ettrick.pl>
+Date:   Mon,  6 Mar 2023 09:00:53 GMT
+From:   "Norbert Karecki" <norbert.karecki@ettrick.pl>
+To:     <linux-rdma@vger.kernel.org>
+Subject: Fotowoltaika - nowe warunki
+X-Mailer: mail.ettrick.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1678073786-110013-1-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,URIBL_ABUSE_SURBL,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  1.2 URIBL_ABUSE_SURBL Contains an URL listed in the ABUSE SURBL
+        *      blocklist
+        *      [URIs: ettrick.pl]
+        *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
+        *      blocklist
+        *      [URIs: ettrick.pl]
+        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [141.94.21.111 listed in zen.spamhaus.org]
+        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
+        *      blocklist
+        *      [URIs: ettrick.pl]
+        * -0.5 BAYES_05 BODY: Bayes spam probability is 1 to 5%
+        *      [score: 0.0139]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 06, 2023 at 11:36:26AM +0800, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> When performing a stress test on SMC-R by rmmod mlx5_ib driver
-> during the wrk/nginx test, we found that there is a probability
-> of triggering a panic while terminating all link groups.
-> 
-> This issue dues to the race between smc_smcr_terminate_all()
-> and smc_buf_create().
-> 
-> 			smc_smcr_terminate_all
-> 
-> smc_buf_create
-> /* init */
-> conn->sndbuf_desc = NULL;
-> ...
-> 
-> 			__smc_lgr_terminate
-> 				smc_conn_kill
-> 					smc_close_abort
-> 						smc_cdc_get_slot_and_msg_send
-> 
-> 			__softirqentry_text_start
-> 				smc_wr_tx_process_cqe
-> 					smc_cdc_tx_handler
-> 						READ(conn->sndbuf_desc->len);
-> 						/* panic dues to NULL sndbuf_desc */
-> 
-> conn->sndbuf_desc = xxx;
-> 
-> This patch tries to fix the issue by always to check the sndbuf_desc
-> before send any cdc msg, to make sure that no null pointer is
-> seen during cqe processing.
-> 
-> Fixes: 0b29ec643613 ("net/smc: immediate termination for SMCR link groups")
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+Dzie=C5=84 dobry,
 
-LGTM.
+chcia=C5=82bym poinformowa=C4=87, i=C5=BC mog=C4=85 Pa=C5=84stwo uzyska=C4=
+=87 dofinansowanie na systemy fotowoltaiczne w ramach nowej edycji progra=
+mu M=C3=B3j Pr=C4=85d.
 
-Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
+Program zapewnia 6000 z=C5=82 dofinansowania na instalacj=C4=99 paneli i =
+16 000 z=C5=82 na magazyn energii, ni=C5=BCsze cen pr=C4=85du i mo=C5=BCl=
+iwo=C5=9B=C4=87 odliczenia koszt=C3=B3w zwi=C4=85zanych z instalacj=C4=85=
+ fotowoltaiki w ramach rozliczenia PIT (tzw. ulga termomodernizacyjna).
 
-> ---
->  net/smc/smc_cdc.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
-> index 53f63bf..2f0e2ee 100644
-> --- a/net/smc/smc_cdc.c
-> +++ b/net/smc/smc_cdc.c
-> @@ -114,6 +114,9 @@ int smc_cdc_msg_send(struct smc_connection *conn,
->  	union smc_host_cursor cfed;
->  	int rc;
->  
-> +	if (unlikely(!READ_ONCE(conn->sndbuf_desc)))
-> +		return -EINVAL;
-> +
->  	smc_cdc_add_pending_send(conn, pend);
->  
->  	conn->tx_cdc_seq++;
-> -- 
-> 1.8.3.1
+Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
+temacie?
+
+
+Pozdrawiam,
+Norbert Karecki
