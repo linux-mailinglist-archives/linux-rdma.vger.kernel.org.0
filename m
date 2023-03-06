@@ -2,70 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9782F6AC776
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Mar 2023 17:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B41F6AC860
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Mar 2023 17:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjCFQQf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Mar 2023 11:16:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
+        id S229830AbjCFQmb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Mar 2023 11:42:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbjCFQQC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Mar 2023 11:16:02 -0500
-Received: from out199-17.us.a.mail.aliyun.com (out199-17.us.a.mail.aliyun.com [47.90.199.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC5F55528;
-        Mon,  6 Mar 2023 08:12:22 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VdI7ZWY_1678118984;
-Received: from 192.168.50.70(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VdI7ZWY_1678118984)
-          by smtp.aliyun-inc.com;
-          Tue, 07 Mar 2023 00:09:45 +0800
-Message-ID: <59209406-037b-3b6a-fa71-731ace92d509@linux.alibaba.com>
-Date:   Tue, 7 Mar 2023 00:09:44 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH net] net/smc: fix fallback failed while sendmsg with
- fastopen
-Content-Language: en-US
-To:     Simon Horman <simon.horman@corigine.com>
-Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        with ESMTP id S230471AbjCFQlp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Mar 2023 11:41:45 -0500
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C50F410B7;
+        Mon,  6 Mar 2023 08:41:03 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id v11so11029657plz.8;
+        Mon, 06 Mar 2023 08:41:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678120734;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AKshk2TgFt5gDSPmPYc9r3UR+qbqqGSRRPYk81A3xdc=;
+        b=DbLuxUxQqGzccl6Odt7acKe19prnsM6WdaP6bauyrhsMyQyI42TcOjeoZtiZyZDzt7
+         CJKgEOh6gahky9B9KYTWapNDSXhf329cvHHwlKqjsJX1p5SWKyHOCrEc40/Ij89GPtJg
+         jh4Lbjhltf6LT5dKLkwf+/yBBAA04vbDuo1DKaVg8Ivf6kf7ATX3EGTtYy1bf0ZzlslJ
+         PalgQ6vhD1K8arbBsFRF9zKt2jRpSMa+qk6WrWaScVaibQoPUTZEjETp0HxB9dlJvea5
+         jD3nNWQCAZizc008uHyyoUn5mhT4bAYjeR/phegtdVNk0MdCg5b3Gw+80ArFZ9DodL2h
+         2xvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678120734;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AKshk2TgFt5gDSPmPYc9r3UR+qbqqGSRRPYk81A3xdc=;
+        b=ev/J6d+qIf9SXDnb+NPbRSvD/EoKpIwCZhU0KUiI6NETX2Dj3SsVaXVZ/C3DwXo3JB
+         X6mA+2k0aGG8gD7WIReTutpPlXn7xtTO/MDbIRWXlwOj8yM9qtZB0+UE2gINCQf00Rz9
+         djQfo1WTy1BqbazgZ/KikFrI36Szke3EEP1flx300CaamvsLeZ7/PNSrj4DhMkQPbTlA
+         BapHh4K1KW7G5baXvQfJEuk++nlmpXMGoz0HiPwyET4mNjhxBC9MNwDPJdmJ7tgdIgqY
+         ttkDS5ChcYsUc98SIaRjAIR3aB35POx7TQ0z1YNu7XtdsuzQZJaT8rmPxN7XYAgQUvky
+         Idrg==
+X-Gm-Message-State: AO0yUKUjlXDl1yc95/guLl039leux3gkIwmuZhnXuCXXH63REzmk6aMi
+        1MQvFG+xHD5oOpa/N3633ef1lAjqgM4=
+X-Google-Smtp-Source: AK7set8u5t1kTcKA2gaCJvvlkswCUv1hJg2P+yPJEb8eDD8uhzOirB0wrwddDwwAL4fZcYeHFpXwyw==
+X-Received: by 2002:a05:6a20:7aaf:b0:cc:f39:5094 with SMTP id u47-20020a056a207aaf00b000cc0f395094mr10040199pzh.30.1678120734456;
+        Mon, 06 Mar 2023 08:38:54 -0800 (PST)
+Received: from [192.168.0.128] ([98.97.39.127])
+        by smtp.googlemail.com with ESMTPSA id b4-20020aa78704000000b005a8c60ce93bsm6737372pfo.149.2023.03.06.08.38.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Mar 2023 08:38:54 -0800 (PST)
+Message-ID: <a4a6c3381239d1297f218c5b6d01828bac016660.camel@gmail.com>
+Subject: Re: [PATCH net] net/smc: fix NULL sndbuf_desc in
+ smc_cdc_tx_handler()
+From:   Alexander H Duyck <alexander.duyck@gmail.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1678075728-18812-1-git-send-email-alibuda@linux.alibaba.com>
- <ZAXbkUh4h2rIJdR2@corigine.com>
- <5e64b96e-5c8e-a631-287d-f960f52d8aaa@linux.alibaba.com>
- <ZAYOmSy9+pbZpTag@corigine.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <ZAYOmSy9+pbZpTag@corigine.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Date:   Mon, 06 Mar 2023 08:38:52 -0800
+In-Reply-To: <1678073786-110013-1-git-send-email-alibuda@linux.alibaba.com>
+References: <1678073786-110013-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Roger that.
+On Mon, 2023-03-06 at 11:36 +0800, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>=20
+> When performing a stress test on SMC-R by rmmod mlx5_ib driver
+> during the wrk/nginx test, we found that there is a probability
+> of triggering a panic while terminating all link groups.
+>=20
+> This issue dues to the race between smc_smcr_terminate_all()
+> and smc_buf_create().
+>=20
+> 			smc_smcr_terminate_all
+>=20
+> smc_buf_create
+> /* init */
+> conn->sndbuf_desc =3D NULL;
+> ...
+>=20
+> 			__smc_lgr_terminate
+> 				smc_conn_kill
+> 					smc_close_abort
+> 						smc_cdc_get_slot_and_msg_send
+>=20
+> 			__softirqentry_text_start
+> 				smc_wr_tx_process_cqe
+> 					smc_cdc_tx_handler
+> 						READ(conn->sndbuf_desc->len);
+> 						/* panic dues to NULL sndbuf_desc */
+>=20
+> conn->sndbuf_desc =3D xxx;
+>=20
+> This patch tries to fix the issue by always to check the sndbuf_desc
+> before send any cdc msg, to make sure that no null pointer is
+> seen during cqe processing.
+>=20
+> Fixes: 0b29ec643613 ("net/smc: immediate termination for SMCR link groups=
+")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 
-Thanks for you information.  I will issue the next version after the 
-community
+Looking at the code for __smc_buf_create it seems like you might have
+more issues hiding in the code. From what I can tell smc_buf_get_slot
+can only return a pointer or NULL but it is getting checked for being
+being a PTR_ERR or IS_ERR in several spots that are likely all dead
+code.
 
-has no more comments.
+> ---
+>  net/smc/smc_cdc.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
+> index 53f63bf..2f0e2ee 100644
+> --- a/net/smc/smc_cdc.c
+> +++ b/net/smc/smc_cdc.c
+> @@ -114,6 +114,9 @@ int smc_cdc_msg_send(struct smc_connection *conn,
+>  	union smc_host_cursor cfed;
+>  	int rc;
+> =20
+> +	if (unlikely(!READ_ONCE(conn->sndbuf_desc)))
+> +		return -EINVAL;
+> +
+
+This return value doesn't seem right to me. Rather than en EINVAL
+should this be something like a ENOBUFS just to make it easier to debug
+when this issue is encountered?
+
+>  	smc_cdc_add_pending_send(conn, pend);
+> =20
+>  	conn->tx_cdc_seq++;
 
 
-On 3/7/23 12:02 AM, Simon Horman wrote:
-> On Tue, Mar 07, 2023 at 12:01:01AM +0800, D. Wythe wrote:
->> Hi Simon,
->>
->> Thank you for your suggestion.  Your writing style is more elegant.
->>
->> I will modify it according to your plan. Can I add your name as a
->> co-developer?
-> Sure, thanks!
->
-> If you need it, my code can be:
->
-> Signed-off-by: Simon Horman <simon.horman@corigine.com>
