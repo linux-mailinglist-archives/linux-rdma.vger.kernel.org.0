@@ -2,132 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E8C6AB62F
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Mar 2023 07:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5C36AB885
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Mar 2023 09:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbjCFGCq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Mar 2023 01:02:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
+        id S229698AbjCFIkX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Mar 2023 03:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjCFGCp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Mar 2023 01:02:45 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D491C593
-        for <linux-rdma@vger.kernel.org>; Sun,  5 Mar 2023 22:02:42 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id i34so33790992eda.7
-        for <linux-rdma@vger.kernel.org>; Sun, 05 Mar 2023 22:02:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678082560;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UyPfBNx8LPIGmYs/NMBy7TrzoJMIbpZ0pZ6dTRCeHlM=;
-        b=p7MsSXrW4J/3GMlaGGadxi/wSLJWQkO9PXKfT9+GwsWUzEQkfLes/86CIjyCsnP76n
-         pr/UCFN5gB18NUFEUEK7MyPrfz1eEdGYmkbWHhEVEe2/F9GZO+Y8pOI9ls9Wc+o2qeDb
-         mkBXPTZufVZiWUeAH6X3ICxKL87TsxuVDiFoxoDCH7F1sSz5G8tUqsJd1fClkb1MpW0v
-         u/yzJEBd2ulfzndEf3Pjv63eGVdXxhtnpqs9kmBBqoSShcEGs/Vn7Hu4qv8qbzD6s0A6
-         axsZWw7CNds1ij4T/aU11VLZLPR76fwiH9WHLR7gcS4/cTwmKsMQ7buYRbniZAdjWQO5
-         PtjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678082560;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UyPfBNx8LPIGmYs/NMBy7TrzoJMIbpZ0pZ6dTRCeHlM=;
-        b=hUWiESvhH7crhx7I2ozUDsxa+fbg0P8sgOOsJKtb41j5P8ZEW5zJGgH5LNxH9oLxNs
-         HJn7Xc6ApIhgzfskBUWB33mPMxjP5RtEzxfIgPkSiPfAmQiIHUubMxpmeVQeJ7eSmWag
-         Ls+6x2bCpEY3TyPCmHal+mmOhNYESvbT9W7264NeT2jNdOk3bl0QCHYr/N9M1T2muBXV
-         YoCWYC5VlnsKYS3Dexp6uYg3ig1AFRWHhbDhrFoRb7Iv1VD92vB0SLUSdbI44cj0o9sG
-         vA6BawXovQpZMyibRAL4ASLk31NBs0x79bngrcRfVi0U6Nv7uN6YhqRAgxL6WWENfGwv
-         SzPA==
-X-Gm-Message-State: AO0yUKUyMVIoMCCDUTDlCXxKTvgOnQ7r4B2buMevq0R5PekuHOe60XyV
-        qiXfMDkLl+MJvLGcpHaHc1GTsk7qRj6rXPAiGO4=
-X-Google-Smtp-Source: AK7set9hKFKKBvilHH/VAPxI+f3fRvsfi0EjQ/7GhFGM2K9VpNdvvkPuo0oK0rsokTyF1mEDXMRBxPWoFA7vKt+mACE=
-X-Received: by 2002:a17:906:a01a:b0:8f5:2e0e:6dc5 with SMTP id
- p26-20020a170906a01a00b008f52e0e6dc5mr4710622ejy.0.1678082560626; Sun, 05 Mar
- 2023 22:02:40 -0800 (PST)
+        with ESMTP id S229651AbjCFIkW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Mar 2023 03:40:22 -0500
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E72B7AB9;
+        Mon,  6 Mar 2023 00:40:21 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VdCwLpQ_1678092018;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0VdCwLpQ_1678092018)
+          by smtp.aliyun-inc.com;
+          Mon, 06 Mar 2023 16:40:18 +0800
+Date:   Mon, 6 Mar 2023 16:40:17 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net] net/smc: fix NULL sndbuf_desc in smc_cdc_tx_handler()
+Message-ID: <ZAWm8YHr77t4N29F@TONYMAC-ALIBABA.local>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <1678073786-110013-1-git-send-email-alibuda@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20230301031038.10851-1-rpearsonhpe@gmail.com> <20230301031038.10851-2-rpearsonhpe@gmail.com>
-In-Reply-To: <20230301031038.10851-2-rpearsonhpe@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Mon, 6 Mar 2023 14:02:28 +0800
-Message-ID: <CAD=hENexoV2gMvOKqmOH+jB=2b67eLkpCUH4aqgSHi+dDDGNzg@mail.gmail.com>
-Subject: Re: [PATCH for-next v3 1/4] RDMA/rxe: Replace exists by rxe in rxe.c
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, jhack@hpe.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1678073786-110013-1-git-send-email-alibuda@linux.alibaba.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 1, 2023 at 11:10=E2=80=AFAM Bob Pearson <rpearsonhpe@gmail.com>=
- wrote:
->
-> 'exists' looks like a boolean. This patch replaces it by the
-> normal name used for the rxe device, 'rxe', which should be a
-> little less confusing. The second rxe_dbg() message is
-> incorrect since rxe is known to be NULL and this will cause a
-> seg fault if this message were ever sent. Replace it by pr_debug
-> for the moment.
->
-> Fixes: c6aba5ea0055 ("RDMA/rxe: Replace pr_xxx by rxe_dbg_xxx in rxe.c")
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+On Mon, Mar 06, 2023 at 11:36:26AM +0800, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> When performing a stress test on SMC-R by rmmod mlx5_ib driver
+> during the wrk/nginx test, we found that there is a probability
+> of triggering a panic while terminating all link groups.
+> 
+> This issue dues to the race between smc_smcr_terminate_all()
+> and smc_buf_create().
+> 
+> 			smc_smcr_terminate_all
+> 
+> smc_buf_create
+> /* init */
+> conn->sndbuf_desc = NULL;
+> ...
+> 
+> 			__smc_lgr_terminate
+> 				smc_conn_kill
+> 					smc_close_abort
+> 						smc_cdc_get_slot_and_msg_send
+> 
+> 			__softirqentry_text_start
+> 				smc_wr_tx_process_cqe
+> 					smc_cdc_tx_handler
+> 						READ(conn->sndbuf_desc->len);
+> 						/* panic dues to NULL sndbuf_desc */
+> 
+> conn->sndbuf_desc = xxx;
+> 
+> This patch tries to fix the issue by always to check the sndbuf_desc
+> before send any cdc msg, to make sure that no null pointer is
+> seen during cqe processing.
+> 
+> Fixes: 0b29ec643613 ("net/smc: immediate termination for SMCR link groups")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 
-Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+LGTM.
 
-Zhu Yanjun
+Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
 
 > ---
->  drivers/infiniband/sw/rxe/rxe.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/=
-rxe.c
-> index 136c2efe3466..a3f05fdd9fac 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -175,7 +175,7 @@ int rxe_add(struct rxe_dev *rxe, unsigned int mtu, co=
-nst char *ibdev_name)
->
->  static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
->  {
-> -       struct rxe_dev *exists;
-> +       struct rxe_dev *rxe;
->         int err =3D 0;
->
->         if (is_vlan_dev(ndev)) {
-> @@ -184,17 +184,17 @@ static int rxe_newlink(const char *ibdev_name, stru=
-ct net_device *ndev)
->                 goto err;
->         }
->
-> -       exists =3D rxe_get_dev_from_net(ndev);
-> -       if (exists) {
-> -               ib_device_put(&exists->ib_dev);
-> -               rxe_dbg(exists, "already configured on %s\n", ndev->name)=
-;
-> +       rxe =3D rxe_get_dev_from_net(ndev);
-> +       if (rxe) {
-> +               ib_device_put(&rxe->ib_dev);
-> +               rxe_dbg(rxe, "already configured on %s\n", ndev->name);
->                 err =3D -EEXIST;
->                 goto err;
->         }
->
->         err =3D rxe_net_add(ibdev_name, ndev);
->         if (err) {
-> -               rxe_dbg(exists, "failed to add %s\n", ndev->name);
-> +               pr_debug("failed to add %s\n", ndev->name);
->                 goto err;
->         }
->  err:
-> --
-> 2.37.2
->
+>  net/smc/smc_cdc.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
+> index 53f63bf..2f0e2ee 100644
+> --- a/net/smc/smc_cdc.c
+> +++ b/net/smc/smc_cdc.c
+> @@ -114,6 +114,9 @@ int smc_cdc_msg_send(struct smc_connection *conn,
+>  	union smc_host_cursor cfed;
+>  	int rc;
+>  
+> +	if (unlikely(!READ_ONCE(conn->sndbuf_desc)))
+> +		return -EINVAL;
+> +
+>  	smc_cdc_add_pending_send(conn, pend);
+>  
+>  	conn->tx_cdc_seq++;
+> -- 
+> 1.8.3.1
