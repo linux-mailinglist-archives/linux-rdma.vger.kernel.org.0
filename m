@@ -2,102 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9746AD5A4
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Mar 2023 04:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7886AD721
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Mar 2023 07:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjCGDX6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Mar 2023 22:23:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        id S229813AbjCGGH5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Mar 2023 01:07:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbjCGDX5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Mar 2023 22:23:57 -0500
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BD430E95;
-        Mon,  6 Mar 2023 19:23:53 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VdJR.LG_1678159426;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VdJR.LG_1678159426)
-          by smtp.aliyun-inc.com;
-          Tue, 07 Mar 2023 11:23:51 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        simon.horman@corigine.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH net v2] net/smc: fix fallback failed while sendmsg with fastopen
-Date:   Tue,  7 Mar 2023 11:23:46 +0800
-Message-Id: <1678159426-72671-1-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230320AbjCGGHz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Mar 2023 01:07:55 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC67D6F639;
+        Mon,  6 Mar 2023 22:07:50 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id cw28so48035427edb.5;
+        Mon, 06 Mar 2023 22:07:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678169269;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NaaJ5mwp2B7vcZxepa8ael4JwFO3FvkcfAQA0ygTwxs=;
+        b=mNytflcnoXuCs8IiRPnXYvDyR3rhOzSwHkfCamZmHh5C+9wBPL+OWZnI4ACmotADvt
+         nkRHZEKEvCOeCwP7Hg/6bVgUdO5hJabWjReZsjEZW5JanndolH3cjpGK4WXtu5+lnyUF
+         OJGldBUy/JKwC/kDUqYLkAWWC5I0oXcFWl770FRJe69IQcw2gnftZXWz8JyUtDelFoQO
+         NAXD7b6PLQGk8x51M+UjPhjw9X10epCKUzCGBiMvQ0+b4qoQ2IKdDFFTXQdlsr5r7rFE
+         0oz7esXyqtmQYGe+CTimsCq/RHK7itf95EiHDS2kwVYngJxNXxV8TWrCprgkH+PDiTV3
+         M+rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678169269;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NaaJ5mwp2B7vcZxepa8ael4JwFO3FvkcfAQA0ygTwxs=;
+        b=11RmVZnpvQUNERJUypiewekoRoaLhRRqe9FwuxaqYP4ov/xXPydBgcU/OR2WjNLH3U
+         9DLQyVbhnCnUWSgrl45rD1MxbpnHnjkeYPwYUiGW/plth95ggSG+/q9uYOa5Inu5Dpde
+         sD21dqzbemmDfOzwa6sY6DQ9cou3XnHJCABCe3B7CO08jFoL0ErXcxCGNQ0s75Z+5ZuK
+         Rw6DhfXVAWa3oPyBhzyICiOGBJcxN4C/zRvIa9jvd891ofBqq4+aWaWSCtLYtdOnRnS+
+         Sb01EwQSEVUQNoXyvttaqB7hwWjwAVUlQV/c3hw/v934Uye/G6CPO5BjoRzekUM20Jd5
+         Bulw==
+X-Gm-Message-State: AO0yUKXW6n7qeuzcmLz9Kan2NgYbD6L6wBafzAtcy7yeeYq8NWjNG2Rv
+        nFWU1TUO4T9DaSZdUJgB6sE=
+X-Google-Smtp-Source: AK7set9hxHeh9sazqSlyf+hBXCxINb64stdSubzvzrbRx4sTUJKOCsLZhjebVa+SFeEIIjaJjt92jg==
+X-Received: by 2002:a17:906:a08f:b0:8f8:35c2:1357 with SMTP id q15-20020a170906a08f00b008f835c21357mr11938387ejy.23.1678169269288;
+        Mon, 06 Mar 2023 22:07:49 -0800 (PST)
+Received: from [192.168.0.106] ([77.126.33.94])
+        by smtp.gmail.com with ESMTPSA id n8-20020a17090695c800b008c76facbbf7sm5636760ejy.171.2023.03.06.22.07.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Mar 2023 22:07:48 -0800 (PST)
+Message-ID: <dcebc99b-0e30-773f-3ae9-209463939751@gmail.com>
+Date:   Tue, 7 Mar 2023 08:07:46 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH][next] net/mlx4_en: Replace fake flex-array with
+ flexible-array member
+Content-Language: en-US
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <ZAZ8mNbphtPyZWM6@work>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <ZAZ8mNbphtPyZWM6@work>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-Before determining whether the msg has unsupported options, it has been
-prematurely terminated by the wrong status check.
 
-For the application, the general usages of MSG_FASTOPEN likes
+On 07/03/2023 1:51, Gustavo A. R. Silva wrote:
+> Zero-length arrays as fake flexible arrays are deprecated and we are
+> moving towards adopting C99 flexible-array members instead.
+> 
+> Transform zero-length array into flexible-array member in struct
+> mlx4_en_rx_desc.
+> 
+> Address the following warnings found with GCC-13 and
+> -fstrict-flex-arrays=3 enabled:
+> drivers/net/ethernet/mellanox/mlx4/en_rx.c:88:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
+> drivers/net/ethernet/mellanox/mlx4/en_rx.c:149:30: warning: array subscript 0 is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
+> drivers/net/ethernet/mellanox/mlx4/en_rx.c:127:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
+> drivers/net/ethernet/mellanox/mlx4/en_rx.c:128:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
+> drivers/net/ethernet/mellanox/mlx4/en_rx.c:129:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
+> drivers/net/ethernet/mellanox/mlx4/en_rx.c:117:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
+> drivers/net/ethernet/mellanox/mlx4/en_rx.c:119:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
+> 
+> This helps with the ongoing efforts to tighten the FORTIFY_SOURCE
+> routines on memcpy() and help us make progress towards globally
+> enabling -fstrict-flex-arrays=3 [1].
+> 
+> Link: https://github.com/KSPP/linux/issues/21
+> Link: https://github.com/KSPP/linux/issues/264
+> Link: https://gcc.gnu.org/pipermail/gcc-patches/2022-October/602902.html [1]
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+> index 544e09b97483..034733b13b1a 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+> @@ -323,7 +323,7 @@ struct mlx4_en_tx_ring {
+>   
+>   struct mlx4_en_rx_desc {
+>   	/* actual number of entries depends on rx ring stride */
+> -	struct mlx4_wqe_data_seg data[0];
+> +	DECLARE_FLEX_ARRAY(struct mlx4_wqe_data_seg, data);
+>   };
+>   
+>   struct mlx4_en_rx_ring {
 
-fd = socket(...)
-/* rather than connect */
-sendto(fd, data, len, MSG_FASTOPEN)
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-Hence, We need to check the flag before state check, because the sock
-state here is always SMC_INIT when applications tries MSG_FASTOPEN.
-Once we found unsupported options, fallback it to TCP.
-
-Fixes: ee9dfbef02d1 ("net/smc: handle sockopts forcing fallback")
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-Signed-off-by: Simon Horman <simon.horman@corigine.com>
-
-v2 -> v1: Optimize code style
-
----
- net/smc/af_smc.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index b233c94..1c580ac 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -2659,16 +2659,14 @@ static int smc_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- {
- 	struct sock *sk = sock->sk;
- 	struct smc_sock *smc;
--	int rc = -EPIPE;
-+	int rc;
- 
- 	smc = smc_sk(sk);
- 	lock_sock(sk);
--	if ((sk->sk_state != SMC_ACTIVE) &&
--	    (sk->sk_state != SMC_APPCLOSEWAIT1) &&
--	    (sk->sk_state != SMC_INIT))
--		goto out;
- 
-+	/* SMC does not support connect with fastopen */
- 	if (msg->msg_flags & MSG_FASTOPEN) {
-+		/* not connected yet, fallback */
- 		if (sk->sk_state == SMC_INIT && !smc->connect_nonblock) {
- 			rc = smc_switch_to_fallback(smc, SMC_CLC_DECL_OPTUNSUPP);
- 			if (rc)
-@@ -2677,6 +2675,11 @@ static int smc_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 			rc = -EINVAL;
- 			goto out;
- 		}
-+	} else if ((sk->sk_state != SMC_ACTIVE) &&
-+		   (sk->sk_state != SMC_APPCLOSEWAIT1) &&
-+		   (sk->sk_state != SMC_INIT)) {
-+		rc = -EPIPE;
-+		goto out;
- 	}
- 
- 	if (smc->use_fallback) {
--- 
-1.8.3.1
-
+Thanks for your patch.
