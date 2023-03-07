@@ -2,77 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7886AD721
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Mar 2023 07:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E59E6ADB38
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Mar 2023 10:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbjCGGH5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Mar 2023 01:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
+        id S231175AbjCGJ55 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Mar 2023 04:57:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbjCGGHz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Mar 2023 01:07:55 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC67D6F639;
-        Mon,  6 Mar 2023 22:07:50 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id cw28so48035427edb.5;
-        Mon, 06 Mar 2023 22:07:50 -0800 (PST)
+        with ESMTP id S230484AbjCGJ5k (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Mar 2023 04:57:40 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A033570B8;
+        Tue,  7 Mar 2023 01:57:36 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id s11so49920941edy.8;
+        Tue, 07 Mar 2023 01:57:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678169269;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20210112; t=1678183055;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NaaJ5mwp2B7vcZxepa8ael4JwFO3FvkcfAQA0ygTwxs=;
-        b=mNytflcnoXuCs8IiRPnXYvDyR3rhOzSwHkfCamZmHh5C+9wBPL+OWZnI4ACmotADvt
-         nkRHZEKEvCOeCwP7Hg/6bVgUdO5hJabWjReZsjEZW5JanndolH3cjpGK4WXtu5+lnyUF
-         OJGldBUy/JKwC/kDUqYLkAWWC5I0oXcFWl770FRJe69IQcw2gnftZXWz8JyUtDelFoQO
-         NAXD7b6PLQGk8x51M+UjPhjw9X10epCKUzCGBiMvQ0+b4qoQ2IKdDFFTXQdlsr5r7rFE
-         0oz7esXyqtmQYGe+CTimsCq/RHK7itf95EiHDS2kwVYngJxNXxV8TWrCprgkH+PDiTV3
-         M+rw==
+        bh=jJQB/5gXipfe1LU3X5YR10NL53UE8w0mr0UyzsB03S8=;
+        b=KgForhX7LM+oAiVt4CMKCwzpS5UjfFx+wa0BXt8jHwe4HGGLchHyxDx1JwtjhlMLLT
+         te6qYLEimW3JJIYuiWxca+4xwipsprmTbjweRbqPMPez2Ji7tC+Qb30OAydugxB7RXvc
+         MHmxdti6v0oXo0opMGL/ONHwhcDmI7jK0Fp/m93CPpRnpFU3WbZe06EIfioIrv7utSWw
+         VZc7KL3aly+WaCTVXTaTi3ikbgqIy4JFaYL2TugKsXybFQtHgazymY5zMF/0HauldZ8U
+         1R1gqoCCjkRu9QEVG1UA3I24W5Rt3Gy0SXC6MaRCJg1QenbZpH4ZOrVbXOfpYi70Va3d
+         1BBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678169269;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20210112; t=1678183055;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NaaJ5mwp2B7vcZxepa8ael4JwFO3FvkcfAQA0ygTwxs=;
-        b=11RmVZnpvQUNERJUypiewekoRoaLhRRqe9FwuxaqYP4ov/xXPydBgcU/OR2WjNLH3U
-         9DLQyVbhnCnUWSgrl45rD1MxbpnHnjkeYPwYUiGW/plth95ggSG+/q9uYOa5Inu5Dpde
-         sD21dqzbemmDfOzwa6sY6DQ9cou3XnHJCABCe3B7CO08jFoL0ErXcxCGNQ0s75Z+5ZuK
-         Rw6DhfXVAWa3oPyBhzyICiOGBJcxN4C/zRvIa9jvd891ofBqq4+aWaWSCtLYtdOnRnS+
-         Sb01EwQSEVUQNoXyvttaqB7hwWjwAVUlQV/c3hw/v934Uye/G6CPO5BjoRzekUM20Jd5
-         Bulw==
-X-Gm-Message-State: AO0yUKXW6n7qeuzcmLz9Kan2NgYbD6L6wBafzAtcy7yeeYq8NWjNG2Rv
-        nFWU1TUO4T9DaSZdUJgB6sE=
-X-Google-Smtp-Source: AK7set9hxHeh9sazqSlyf+hBXCxINb64stdSubzvzrbRx4sTUJKOCsLZhjebVa+SFeEIIjaJjt92jg==
-X-Received: by 2002:a17:906:a08f:b0:8f8:35c2:1357 with SMTP id q15-20020a170906a08f00b008f835c21357mr11938387ejy.23.1678169269288;
-        Mon, 06 Mar 2023 22:07:49 -0800 (PST)
-Received: from [192.168.0.106] ([77.126.33.94])
-        by smtp.gmail.com with ESMTPSA id n8-20020a17090695c800b008c76facbbf7sm5636760ejy.171.2023.03.06.22.07.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Mar 2023 22:07:48 -0800 (PST)
-Message-ID: <dcebc99b-0e30-773f-3ae9-209463939751@gmail.com>
-Date:   Tue, 7 Mar 2023 08:07:46 +0200
+        bh=jJQB/5gXipfe1LU3X5YR10NL53UE8w0mr0UyzsB03S8=;
+        b=kM/qkZGRNYJ7jgE1xbg6wi8ZXZKsBBmCtK0nVaViZyxKGX6e6GJNLd43bK6ZlovJlt
+         Qw5PGIxNProege9rZf241VcFGWjPlacfnYjvk4wx0OpKGmswOTGhneW/EZEfeiQljewl
+         n8PJP1C8tCq/SrXGcrrzy0B8FkxNiqPUbfelmpUiIKo5D0DnjQyY5pE3NMHH6JKhooQf
+         JT0kDjsjVMS/goRmxqYhfMKrNOkzTessKM/6P1RrsTzlTMD9GYFSCY42gQkGd8lSjAXA
+         BZqtxeThXPbt68oLAIlh1d/YOMB2L/ZGdfXe7sMh12IJ7NgVfkSV+J0EqpVp34mYtPgr
+         TW0Q==
+X-Gm-Message-State: AO0yUKX9AdLF6qR8oagOqefC/iOuRsMENrs5wmcNmOsFrtIrFkD5zsYk
+        +Q9aeoAqg6opyZtx3PBfKSBeSXbOMJ0=
+X-Google-Smtp-Source: AK7set8YRCPqJl/SKCS3F9pCBfL7k/OKqg2EWwsuALLrsybrjJ8XFz2YkuY03YTcWtjFO9ltIsLKbw==
+X-Received: by 2002:aa7:cf90:0:b0:4bc:502e:e7de with SMTP id z16-20020aa7cf90000000b004bc502ee7demr12996835edx.32.1678183054977;
+        Tue, 07 Mar 2023 01:57:34 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id d27-20020a50f69b000000b004acb696a0f6sm6435229edn.91.2023.03.07.01.57.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Mar 2023 01:57:34 -0800 (PST)
+Date:   Tue, 7 Mar 2023 12:51:27 +0300
+From:   Dan Carpenter <error27@gmail.com>
+To:     Jack Morgenstein <jackm@dev.mellanox.co.il>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Roland Dreier <rolandd@cisco.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] RDMA/mlx: prevent shift wrapping in set_user_sq_size()
+Message-ID: <a8dfbd1d-c019-4556-930b-bab1ded73b10@kili.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH][next] net/mlx4_en: Replace fake flex-array with
- flexible-array member
-Content-Language: en-US
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <ZAZ8mNbphtPyZWM6@work>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <ZAZ8mNbphtPyZWM6@work>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,51 +69,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+The ucmd->log_sq_bb_count variable is controlled by the user so this
+shift can wrap.  Fix it by using check_shl_overflow() in the same way
+that it was done in commit 515f60004ed9 ("RDMA/hns: Prevent undefined
+behavior in hns_roce_set_user_sq_size()").
 
+Fixes: 839041329fd3 ("IB/mlx4: Sanity check userspace send queue sizes")
+Signed-off-by: Dan Carpenter <error27@gmail.com>
+---
+ drivers/infiniband/hw/mlx4/qp.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-On 07/03/2023 1:51, Gustavo A. R. Silva wrote:
-> Zero-length arrays as fake flexible arrays are deprecated and we are
-> moving towards adopting C99 flexible-array members instead.
-> 
-> Transform zero-length array into flexible-array member in struct
-> mlx4_en_rx_desc.
-> 
-> Address the following warnings found with GCC-13 and
-> -fstrict-flex-arrays=3 enabled:
-> drivers/net/ethernet/mellanox/mlx4/en_rx.c:88:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
-> drivers/net/ethernet/mellanox/mlx4/en_rx.c:149:30: warning: array subscript 0 is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
-> drivers/net/ethernet/mellanox/mlx4/en_rx.c:127:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
-> drivers/net/ethernet/mellanox/mlx4/en_rx.c:128:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
-> drivers/net/ethernet/mellanox/mlx4/en_rx.c:129:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
-> drivers/net/ethernet/mellanox/mlx4/en_rx.c:117:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
-> drivers/net/ethernet/mellanox/mlx4/en_rx.c:119:30: warning: array subscript i is outside array bounds of ‘struct mlx4_wqe_data_seg[0]’ [-Warray-bounds=]
-> 
-> This helps with the ongoing efforts to tighten the FORTIFY_SOURCE
-> routines on memcpy() and help us make progress towards globally
-> enabling -fstrict-flex-arrays=3 [1].
-> 
-> Link: https://github.com/KSPP/linux/issues/21
-> Link: https://github.com/KSPP/linux/issues/264
-> Link: https://gcc.gnu.org/pipermail/gcc-patches/2022-October/602902.html [1]
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> index 544e09b97483..034733b13b1a 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> @@ -323,7 +323,7 @@ struct mlx4_en_tx_ring {
->   
->   struct mlx4_en_rx_desc {
->   	/* actual number of entries depends on rx ring stride */
-> -	struct mlx4_wqe_data_seg data[0];
-> +	DECLARE_FLEX_ARRAY(struct mlx4_wqe_data_seg, data);
->   };
->   
->   struct mlx4_en_rx_ring {
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 884825b2e5f7..456656617c33 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -447,9 +447,13 @@ static int set_user_sq_size(struct mlx4_ib_dev *dev,
+ 			    struct mlx4_ib_qp *qp,
+ 			    struct mlx4_ib_create_qp *ucmd)
+ {
++	u32 cnt;
++
+ 	/* Sanity check SQ size before proceeding */
+-	if ((1 << ucmd->log_sq_bb_count) > dev->dev->caps.max_wqes	 ||
+-	    ucmd->log_sq_stride >
++	if (check_shl_overflow(1, ucmd->log_sq_bb_count, &cnt) ||
++	    cnt > dev->dev->caps.max_wqes)
++		return -EINVAL;
++	if (ucmd->log_sq_stride >
+ 		ilog2(roundup_pow_of_two(dev->dev->caps.max_sq_desc_sz)) ||
+ 	    ucmd->log_sq_stride < MLX4_IB_MIN_SQ_STRIDE)
+ 		return -EINVAL;
+-- 
+2.39.1
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-
-Thanks for your patch.
