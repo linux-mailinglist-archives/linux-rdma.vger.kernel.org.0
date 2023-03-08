@@ -2,38 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CC76B00F0
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Mar 2023 09:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0E06B0174
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Mar 2023 09:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbjCHIZF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Mar 2023 03:25:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
+        id S230203AbjCHIbL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Mar 2023 03:31:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbjCHIYj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Mar 2023 03:24:39 -0500
+        with ESMTP id S230128AbjCHIap (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Mar 2023 03:30:45 -0500
 Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF4CA4012;
-        Wed,  8 Mar 2023 00:24:18 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VdOh35C_1678263855;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0VdOh35C_1678263855)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E487B3715;
+        Wed,  8 Mar 2023 00:30:18 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VdOtNzQ_1678264201;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0VdOtNzQ_1678264201)
           by smtp.aliyun-inc.com;
-          Wed, 08 Mar 2023 16:24:15 +0800
-Date:   Wed, 8 Mar 2023 16:24:15 +0800
+          Wed, 08 Mar 2023 16:30:02 +0800
+Date:   Wed, 8 Mar 2023 16:30:01 +0800
 From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
+To:     Kai <KaiShen@linux.alibaba.com>
 Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        simon.horman@corigine.com, kuba@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net v2] net/smc: fix fallback failed while sendmsg with
- fastopen
-Message-ID: <ZAhGL4mp/U34ipGP@TONYMAC-ALIBABA.local>
+        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v3] net/smc: Use percpu ref for wr tx reference
+Message-ID: <ZAhHiZ5/3Q3dcL4c@TONYMAC-ALIBABA.local>
 Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <1678159426-72671-1-git-send-email-alibuda@linux.alibaba.com>
+References: <20230303082115.449-1-KaiShen@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1678159426-72671-1-git-send-email-alibuda@linux.alibaba.com>
+In-Reply-To: <20230303082115.449-1-KaiShen@linux.alibaba.com>
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
         SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
@@ -44,71 +42,165 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 07, 2023 at 11:23:46AM +0800, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Fri, Mar 03, 2023 at 08:21:15AM +0000, Kai wrote:
+> The refcount wr_tx_refcnt may cause cache thrashing problems among
+> cores and we can use percpu ref to mitigate this issue here. We
+> gain some performance improvement with percpu ref here on our
+> customized smc-r verion. Applying cache alignment may also mitigate
+> this problem but it seem more reasonable to use percpu ref here.
+> We can also replace wr_reg_refcnt with one percpu reference like
+> wr_tx_refcnt.
 > 
-> Before determining whether the msg has unsupported options, it has been
-> prematurely terminated by the wrong status check.
+> redis-benchmark on smc-r with atomic wr_tx_refcnt:
+> SET: 525817.62 requests per second, p50=0.087 msec
+> GET: 570841.44 requests per second, p50=0.087 msec
 > 
-> For the application, the general usages of MSG_FASTOPEN likes
-> 
-> fd = socket(...)
-> /* rather than connect */
-> sendto(fd, data, len, MSG_FASTOPEN)
-> 
-> Hence, We need to check the flag before state check, because the sock
-> state here is always SMC_INIT when applications tries MSG_FASTOPEN.
-> Once we found unsupported options, fallback it to TCP.
-> 
-> Fixes: ee9dfbef02d1 ("net/smc: handle sockopts forcing fallback")
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> Signed-off-by: Simon Horman <simon.horman@corigine.com>
+> redis-benchmark on the percpu_ref version:
+> SET: 539956.81 requests per second, p50=0.087 msec
+> GET: 587613.12 requests per second, p50=0.079 msec
 
-Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
+Does the test data need to be refreshed?
+
+> 
+> Signed-off-by: Kai <KaiShen@linux.alibaba.com>
+> 
+> v1->v2:
+> - Modify patch prefix
+> 
+> v2->v3:
+> - Make wr_reg_refcnt a percpu one as well
+> - Init percpu ref with 0 flag instead of ALLOW_REINIT flag
+> ---
+>  net/smc/smc_core.h | 10 ++++++++--
+>  net/smc/smc_wr.c   | 35 ++++++++++++++++++++++++++++-------
+>  net/smc/smc_wr.h   |  5 ++---
+>  3 files changed, 38 insertions(+), 12 deletions(-)
+> 
+> diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
+> index 08b457c2d294..1645fba0d2d3 100644
+> --- a/net/smc/smc_core.h
+> +++ b/net/smc/smc_core.h
+> @@ -106,7 +106,10 @@ struct smc_link {
+>  	unsigned long		*wr_tx_mask;	/* bit mask of used indexes */
+>  	u32			wr_tx_cnt;	/* number of WR send buffers */
+>  	wait_queue_head_t	wr_tx_wait;	/* wait for free WR send buf */
+> -	atomic_t		wr_tx_refcnt;	/* tx refs to link */
+> +	struct {
+> +		struct percpu_ref	wr_tx_refs;
+> +	} ____cacheline_aligned_in_smp;
+> +	struct completion	tx_ref_comp;
+
+For the variable names suffixed with wr_*_refs, should we continue to
+use wr_*_refcnt?
 
 Thanks.
 
-> v2 -> v1: Optimize code style
-> 
-> ---
->  net/smc/af_smc.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index b233c94..1c580ac 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -2659,16 +2659,14 @@ static int smc_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+>  
+>  	struct smc_wr_buf	*wr_rx_bufs;	/* WR recv payload buffers */
+>  	struct ib_recv_wr	*wr_rx_ibs;	/* WR recv meta data */
+> @@ -122,7 +125,10 @@ struct smc_link {
+>  
+>  	struct ib_reg_wr	wr_reg;		/* WR register memory region */
+>  	wait_queue_head_t	wr_reg_wait;	/* wait for wr_reg result */
+> -	atomic_t		wr_reg_refcnt;	/* reg refs to link */
+> +	struct {
+> +		struct percpu_ref	wr_reg_refs;
+> +	} ____cacheline_aligned_in_smp;
+> +	struct completion	reg_ref_comp;
+>  	enum smc_wr_reg_state	wr_reg_state;	/* state of wr_reg request */
+>  
+>  	u8			gid[SMC_GID_SIZE];/* gid matching used vlan id*/
+> diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
+> index b0678a417e09..0021065a600a 100644
+> --- a/net/smc/smc_wr.c
+> +++ b/net/smc/smc_wr.c
+> @@ -377,12 +377,11 @@ int smc_wr_reg_send(struct smc_link *link, struct ib_mr *mr)
+>  	if (rc)
+>  		return rc;
+>  
+> -	atomic_inc(&link->wr_reg_refcnt);
+> +	percpu_ref_get(&link->wr_reg_refs);
+>  	rc = wait_event_interruptible_timeout(link->wr_reg_wait,
+>  					      (link->wr_reg_state != POSTED),
+>  					      SMC_WR_REG_MR_WAIT_TIME);
+> -	if (atomic_dec_and_test(&link->wr_reg_refcnt))
+> -		wake_up_all(&link->wr_reg_wait);
+> +	percpu_ref_put(&link->wr_reg_refs);
+>  	if (!rc) {
+>  		/* timeout - terminate link */
+>  		smcr_link_down_cond_sched(link);
+> @@ -647,8 +646,10 @@ void smc_wr_free_link(struct smc_link *lnk)
+>  	smc_wr_wakeup_tx_wait(lnk);
+>  
+>  	smc_wr_tx_wait_no_pending_sends(lnk);
+> -	wait_event(lnk->wr_reg_wait, (!atomic_read(&lnk->wr_reg_refcnt)));
+> -	wait_event(lnk->wr_tx_wait, (!atomic_read(&lnk->wr_tx_refcnt)));
+> +	percpu_ref_kill(&lnk->wr_reg_refs);
+> +	wait_for_completion(&lnk->reg_ref_comp);
+> +	percpu_ref_kill(&lnk->wr_tx_refs);
+> +	wait_for_completion(&lnk->tx_ref_comp);
+>  
+>  	if (lnk->wr_rx_dma_addr) {
+>  		ib_dma_unmap_single(ibdev, lnk->wr_rx_dma_addr,
+> @@ -847,6 +848,20 @@ void smc_wr_add_dev(struct smc_ib_device *smcibdev)
+>  	tasklet_setup(&smcibdev->send_tasklet, smc_wr_tx_tasklet_fn);
+>  }
+>  
+> +static void smcr_wr_tx_refs_free(struct percpu_ref *ref)
+> +{
+> +	struct smc_link *lnk = container_of(ref, struct smc_link, wr_tx_refs);
+> +
+> +	complete(&lnk->tx_ref_comp);
+> +}
+> +
+> +static void smcr_wr_reg_refs_free(struct percpu_ref *ref)
+> +{
+> +	struct smc_link *lnk = container_of(ref, struct smc_link, wr_reg_refs);
+> +
+> +	complete(&lnk->reg_ref_comp);
+> +}
+> +
+>  int smc_wr_create_link(struct smc_link *lnk)
 >  {
->  	struct sock *sk = sock->sk;
->  	struct smc_sock *smc;
-> -	int rc = -EPIPE;
-> +	int rc;
+>  	struct ib_device *ibdev = lnk->smcibdev->ibdev;
+> @@ -890,9 +905,15 @@ int smc_wr_create_link(struct smc_link *lnk)
+>  	smc_wr_init_sge(lnk);
+>  	bitmap_zero(lnk->wr_tx_mask, SMC_WR_BUF_CNT);
+>  	init_waitqueue_head(&lnk->wr_tx_wait);
+> -	atomic_set(&lnk->wr_tx_refcnt, 0);
+> +	rc = percpu_ref_init(&lnk->wr_tx_refs, smcr_wr_tx_refs_free, 0, GFP_KERNEL);
+> +	if (rc)
+> +		goto dma_unmap;
+> +	init_completion(&lnk->tx_ref_comp);
+>  	init_waitqueue_head(&lnk->wr_reg_wait);
+> -	atomic_set(&lnk->wr_reg_refcnt, 0);
+> +	rc = percpu_ref_init(&lnk->wr_reg_refs, smcr_wr_reg_refs_free, 0, GFP_KERNEL);
+> +	if (rc)
+> +		goto dma_unmap;
+> +	init_completion(&lnk->reg_ref_comp);
+>  	init_waitqueue_head(&lnk->wr_rx_empty_wait);
+>  	return rc;
 >  
->  	smc = smc_sk(sk);
->  	lock_sock(sk);
-> -	if ((sk->sk_state != SMC_ACTIVE) &&
-> -	    (sk->sk_state != SMC_APPCLOSEWAIT1) &&
-> -	    (sk->sk_state != SMC_INIT))
-> -		goto out;
+> diff --git a/net/smc/smc_wr.h b/net/smc/smc_wr.h
+> index 45e9b894d3f8..f3008dda222a 100644
+> --- a/net/smc/smc_wr.h
+> +++ b/net/smc/smc_wr.h
+> @@ -63,14 +63,13 @@ static inline bool smc_wr_tx_link_hold(struct smc_link *link)
+>  {
+>  	if (!smc_link_sendable(link))
+>  		return false;
+> -	atomic_inc(&link->wr_tx_refcnt);
+> +	percpu_ref_get(&link->wr_tx_refs);
+>  	return true;
+>  }
 >  
-> +	/* SMC does not support connect with fastopen */
->  	if (msg->msg_flags & MSG_FASTOPEN) {
-> +		/* not connected yet, fallback */
->  		if (sk->sk_state == SMC_INIT && !smc->connect_nonblock) {
->  			rc = smc_switch_to_fallback(smc, SMC_CLC_DECL_OPTUNSUPP);
->  			if (rc)
-> @@ -2677,6 +2675,11 @@ static int smc_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
->  			rc = -EINVAL;
->  			goto out;
->  		}
-> +	} else if ((sk->sk_state != SMC_ACTIVE) &&
-> +		   (sk->sk_state != SMC_APPCLOSEWAIT1) &&
-> +		   (sk->sk_state != SMC_INIT)) {
-> +		rc = -EPIPE;
-> +		goto out;
->  	}
+>  static inline void smc_wr_tx_link_put(struct smc_link *link)
+>  {
+> -	if (atomic_dec_and_test(&link->wr_tx_refcnt))
+> -		wake_up_all(&link->wr_tx_wait);
+> +	percpu_ref_put(&link->wr_tx_refs);
+>  }
 >  
->  	if (smc->use_fallback) {
+>  static inline void smc_wr_drain_cq(struct smc_link *lnk)
 > -- 
-> 1.8.3.1
+> 2.31.1
