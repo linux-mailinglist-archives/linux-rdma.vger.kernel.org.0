@@ -2,122 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 445CC6B2677
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Mar 2023 15:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6166B2BF1
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Mar 2023 18:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbjCIOPE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Mar 2023 09:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        id S229928AbjCIRXv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Mar 2023 12:23:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbjCIOO0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Mar 2023 09:14:26 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849D55B5DA;
-        Thu,  9 Mar 2023 06:13:17 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id h3so1943818lja.12;
-        Thu, 09 Mar 2023 06:13:17 -0800 (PST)
+        with ESMTP id S230179AbjCIRX3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Mar 2023 12:23:29 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7401E1164F
+        for <linux-rdma@vger.kernel.org>; Thu,  9 Mar 2023 09:23:18 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id u3-20020a17090a450300b00239db6d7d47so2622407pjg.4
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Mar 2023 09:23:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678371192;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0L3e2Gc1woVMAVlvcEHWXDzcW7MDDTkeZvDGMyuHmDM=;
-        b=ZiP8eNuayA+2CcmAR5fDLa1MnQvzgU7G68TvxH2IoGFLGtrWnjeJnXBLCh2l9HMstZ
-         ZcsR2pVrQZXCuPdIwYjs2PQGRO1NtijEFZni5RC8W4tlLosV8KpxEq7s0N6vV/gFEKf+
-         GbUCvkKR6j5GVeK/BomL0ZZ4n5k790VtN1eHSKO98Ly4i+jO7Qaxeo0ppAWkGEJ0A+0h
-         gqpz0jvCe0A/WpvvHDtZ+6bYE0X8wGzle6tbA5HWQW4iZIVpogJE73oHPZyOExHxF4e6
-         UJPH5y8H8psogpWsAxR/fziAK9q9SVCWYRO/u+278qkRguOSL1jH8yoNIkJpWZiVAcM7
-         OYmw==
+        d=gmail.com; s=20210112; t=1678382598;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=28ktjE1NMsXfKN9t4WPAwEL52FnPF3RT3R2lcaspUbo=;
+        b=Qo3cB964p1W2pTSU00f/OlMv0zN+Ok1XYUictYaTZ4y2nvAfEFM3XmRFLEPV2QufUA
+         m0qJnZU9dGSRrYDpsEke3LYaxkQUoes8c7P9yYNewXP86Ehbi2eDT53XxPtrKsj4RrNB
+         oNsbMwIWR1H2DLhNugFI7aoHEPf/IVQwC1ulQCAt6tQEVR/Rk54TQJfJPb2H8TQMCYhf
+         fsgn51ouKd++Lp02u3Ne9MWllSKI0Hya67tvJDxg+ZbP7aLUc0w8JWqfergezpuDKXyj
+         s2xSt8uIRV2Yo6YB1yfUGCF4F9k1ykV8rCJ6HtDHxmjCRKXOp0n9D5YZPSdYH5sByGdZ
+         KPzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678371192;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0L3e2Gc1woVMAVlvcEHWXDzcW7MDDTkeZvDGMyuHmDM=;
-        b=XnZI2WsVMJTjYrwqBBPIQwU2VHXlF4rHewRNpx/EY0JbqPBgtV/nXnhptMwVAIzX6M
-         s3INjqxFgc4yvgGK/CwmGJ7i7VX6KfRR6fMwiiFa2vw4MLXPtqBP9SQDF6jtRu9pRE3b
-         2C+t7sf9AA6LbnJ4DPg6l6l1w0qcJWcybnJVOyUcqNt0HUdjbWagYo93f2UNaSwaw/F2
-         68916GYzoHQdTwB/KdWA0pnJNSmwOP8HcP5ENWG3nesfTVI7UYk9dZNSEJXR+orOUpau
-         2C599D7xwmoNXZ4ZSKtRT7fEeKjAXqzteOiSOqVgVpbTeJ3oPKakr13gu36okoVPGRDF
-         Id6g==
-X-Gm-Message-State: AO0yUKXjcTNLzdVJ8GXkv0IrLa2vi3heJ+lUYSL2Mm7K4yH8XHx1otjr
-        /yEzAAou5yNjvvxyj59+jnU=
-X-Google-Smtp-Source: AK7set/wGRG6DZwH1goQYuwyWeVqUPotbXSii8soBGsA0hvgGcEXtX1zIA8XR5JqSVge5Z0JqI+ZpQ==
-X-Received: by 2002:a2e:6109:0:b0:294:7028:c66a with SMTP id v9-20020a2e6109000000b002947028c66amr5600373ljb.38.1678371192149;
-        Thu, 09 Mar 2023 06:13:12 -0800 (PST)
-Received: from pc636 (host-95-193-108-241.mobileonline.telia.com. [95.193.108.241])
-        by smtp.gmail.com with ESMTPSA id r19-20020a2e9953000000b00293534d9760sm2963887ljj.127.2023.03.09.06.13.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Mar 2023 06:13:11 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 9 Mar 2023 15:13:08 +0100
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-Subject: Re: [PATCH 07/13] RDMA/rxe: Rename kfree_rcu() to
- kfree_rcu_mightsleep()
-Message-ID: <ZAnpdKV/VvvX0TZz@pc636>
-References: <20230201150815.409582-1-urezki@gmail.com>
- <20230201150815.409582-8-urezki@gmail.com>
- <ZAnjnRC1wY3RIFhM@pc636>
+        d=1e100.net; s=20210112; t=1678382598;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=28ktjE1NMsXfKN9t4WPAwEL52FnPF3RT3R2lcaspUbo=;
+        b=hbGmcHhS2qQeaDn72O4EGWoS0Na5xdq+MMPGHY+91hxqWdwXa+x7FB6b2kIzDk2sBB
+         cvTlJBjzYDKgP9ClZcoTu2PComyrZAOMm6/SCmkkiH6TrdxTvx+1tnckDq+IZo4x/kpF
+         bQLetvxxOhtNAQ9ThBf1Zrhc86xnTCLpHquws3hX/bgGhiQNrmBo7iXBim8FtdSyArnT
+         wd+x/TsihDztZWvyKYL9AwBKbSOHarFzVsE4SESO/niuHMftph2gP8giJmDapJBApKh1
+         h8JlkiwA3bBqiwtzFKMrAXbEIItJ2wvcNPSPqsCmxTriYCreMY4XPfLvcRWa4JmwEd73
+         Q8ig==
+X-Gm-Message-State: AO0yUKV9SIopFBwEbHrnBlUQYGXKz1QBf4TeWfI+KxGDJYdYw1dzASpc
+        k3jWWQeW4NPFrpi5TNCShjKxaTNV3IX21u8czpw=
+X-Google-Smtp-Source: AK7set+uI2SfZmzCaW2wOFl+DYv5bkN3aAbZU4JJUAQwLS0FuMurOWrQTaWOzH7KISXSCKPwx2aPet3yGWJdJnpvZss=
+X-Received: by 2002:a17:902:7e09:b0:199:6fd:ecf6 with SMTP id
+ b9-20020a1709027e0900b0019906fdecf6mr8486553plm.9.1678382597901; Thu, 09 Mar
+ 2023 09:23:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZAnjnRC1wY3RIFhM@pc636>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:7022:388c:b0:5e:6c60:d87f with HTTP; Thu, 9 Mar 2023
+ 09:23:17 -0800 (PST)
+Reply-To: fionahill.usa@outlook.com
+From:   Fiona Hill <ekon9169@gmail.com>
+Date:   Thu, 9 Mar 2023 09:23:17 -0800
+Message-ID: <CAH8kvD2fgdsvQiqbsg=fRktGiktvGRzz1wLtBe0OEbzV2eM1Mg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> On Wed, Feb 01, 2023 at 04:08:13PM +0100, Uladzislau Rezki (Sony) wrote:
-> > The kfree_rcu()'s single argument name is deprecated therefore
-> > rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
-> > underline that it is for sleepable contexts.
-> > 
-> > Please check the RXE driver in a way that a single argument can
-> > be used. Briefly looking at it and rcu_head should be embed to
-> > free an obj over RCU-core. The context might be atomic.
-> > 
-> > Cc: Bob Pearson <rpearsonhpe@gmail.com>
-> > Cc: Jason Gunthorpe <jgg@nvidia.com>
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  drivers/infiniband/sw/rxe/rxe_pool.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> Could you please add you reviwed-by or Acked-by tags so we can bring
-> our series with renaming for the next merge window?
-> 
-> Thanks!
-> 
-__rxe_cleanup() can be called in two contexts, sleepable and not.
-Therefore usage of a single argument of the kvfree_rcu() is not correct
-here.
-
-Could you please fix and check your driver? If my above statement
-is not correct, please provide Acked-by or Reviwed-by tags to the
-path that is in question.
-
-Otherwise please add an rcu_head in your data to free objects over
-kvfree_rcu() using double argument API.
-
-Could you please support?
-
---
-Uladzislau Rezki
+-- 
+ Hello  did you receive my message?
