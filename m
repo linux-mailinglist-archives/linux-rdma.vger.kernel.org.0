@@ -2,82 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 430F46B76FD
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Mar 2023 12:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F13D6B784E
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Mar 2023 14:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjCML5Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Mar 2023 07:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
+        id S229666AbjCMNCD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Mar 2023 09:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjCML5M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Mar 2023 07:57:12 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A23A49E8;
-        Mon, 13 Mar 2023 04:57:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S230126AbjCMNBx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Mar 2023 09:01:53 -0400
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E619F222EC
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Mar 2023 06:01:50 -0700 (PDT)
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.66.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0E141B80DFD;
-        Mon, 13 Mar 2023 11:57:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61F31C433EF;
-        Mon, 13 Mar 2023 11:57:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678708628;
-        bh=QavBPPZ0mNNEzUh/31J0LQBKpXwXqiqNCg0R9a4pGmY=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=SIWV2JJ/AntNt7BYwvdZSn/6HXmKgdR67KrfzbK1dBeCV1yPI3s+gmMbmpwbPQaZM
-         if8+X7HCT0YfCzjS/qbSCzmRTjCisWlAA+c56xENbSWyaTJl57mAk2N7d63fr9jnRn
-         m3O79+2QJGW2jko19JCabQ+w4kMyKLXjiq+YlfBkNYfjICYsnGziooeUES8p3+9LFv
-         kv7L3QFkqFbknvtH0PRxHRM9qUz0vgyodYYLGMW8B5LDHocU/4YXkEDQFok7OiZtSp
-         BuhBFYWLYzrhNhgRF5hJYHiro4ouKmS3t+JQYTIGII6UpfMgBGcHt0F0YLp1pB8zNR
-         JRz8ps1nUCKCg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Zhang Yi <yizhan@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-In-Reply-To: <20230218185701.never.779-kees@kernel.org>
-References: <20230218185701.never.779-kees@kernel.org>
-Subject: Re: [PATCH] IB/rdmavt: Fix target union member for rvt_post_one_wr()
-Message-Id: <167870862523.139716.15466485320886964551.b4-ty@kernel.org>
-Date:   Mon, 13 Mar 2023 13:57:05 +0200
-MIME-Version: 1.0
+        by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 1FF613F6D3
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Mar 2023 13:01:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+        s=20210803; t=1678712509;
+        bh=tX6JDGJDhd9f5W7Sf7mCz8MRTpwCGcsgp8WQDVJuZzY=;
+        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+         Reply-To;
+        b=mBVxnxJBk2kDSEgrqVs8FuYobm90jzdmzL7oAJtJEvTwRFTUDPhd8QrpbGiPb+ktI
+         Kn1Cbg1JOlDgpWVgBWXgw561gCyrOIwPT3tJt8+fBiemaM3O+rQplTMB9tYniapP9U
+         VpalDnfCI8Pq8/9Q9pbIXhhSUjKr5Fg3O6nn8PEaOuA7fYCC8sJ68MRJ/2NoC7lOL3
+         RNtLjEeVDUrMOG72G94VYPpKjebkht8HAzPQN6hsaSyAPEk9CVH6ES+aPKCiaUIQ8I
+         LedG+P5+hgtu/ecVOe3mjmcuqFO7uZeLJAtfFaWty+4H3/NeugaylST4/OSz1+VlBA
+         9kaDdlWkDW/6Q==
+Received: from juju-4112d9-prod-launchpad-manual-servers-4.lp.internal (localhost [127.0.0.1])
+        by buildd-manager.lp.internal (Postfix) with ESMTP id 5298BBDEE6
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Mar 2023 13:01:46 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To:     Linux RDMA <linux-rdma@vger.kernel.org>
+From:   noreply@launchpad.net
+Subject: [recipe build #3509473] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <167871250630.7405.2483401991937109784.launchpad@juju-4112d9-prod-launchpad-manual-servers-4.lp.internal>
+Date:   Mon, 13 Mar 2023 13:01:46 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+X-Generated-By: Launchpad (canonical.com); Revision="997ba17554f0ee82f56d9282fce82d3e09a43780"; Instance="buildmaster"
+X-Launchpad-Hash: 94c9a2222106d7842f88c35a765259316012207f
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 1 minute
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3509473/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-111
 
-On Sat, 18 Feb 2023 10:57:05 -0800, Kees Cook wrote:
-> The "cplen" result used by the memcpy() into struct rvt_swqe "wqe" may
-> be sized to 80 for struct rvt_ud_wr (which is member "ud_wr", not "wr"
-> which is only 40 bytes in size). Change the destination union member so
-> the compiler can use the correct bounds check.
-> 
-> struct rvt_swqe {
->         union {
->                 struct ib_send_wr wr;   /* don't use wr.sg_list */
->                 struct rvt_ud_wr ud_wr;
-> 		...
-> 	};
-> 	...
-> };
-> 
-> [...]
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3509473
+Your team Linux RDMA is the requester of the build.
 
-Applied, thanks!
-
-[1/1] IB/rdmavt: Fix target union member for rvt_post_one_wr()
-      https://git.kernel.org/rdma/rdma/c/f2f6e1661d38fb
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
