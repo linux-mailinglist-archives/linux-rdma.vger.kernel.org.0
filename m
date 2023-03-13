@@ -2,199 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F9F6B6F5B
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Mar 2023 07:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142C16B76E8
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Mar 2023 12:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbjCMGEc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Mar 2023 02:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S231361AbjCMLyR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Mar 2023 07:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbjCMGEc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Mar 2023 02:04:32 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC273432C;
-        Sun, 12 Mar 2023 23:04:29 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=kaishen@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VdguB9l_1678687466;
-Received: from localhost(mailfrom:KaiShen@linux.alibaba.com fp:SMTPD_---0VdguB9l_1678687466)
-          by smtp.aliyun-inc.com;
-          Mon, 13 Mar 2023 14:04:27 +0800
-From:   Kai <KaiShen@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v4] net/smc: Use percpu ref for wr tx reference
-Date:   Mon, 13 Mar 2023 06:04:25 +0000
-Message-Id: <20230313060425.115939-1-KaiShen@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S231492AbjCMLxR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Mar 2023 07:53:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E8E67015;
+        Mon, 13 Mar 2023 04:52:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id ECF4FB80DFD;
+        Mon, 13 Mar 2023 11:52:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52A23C433D2;
+        Mon, 13 Mar 2023 11:52:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678708358;
+        bh=u7ciXzaxMyBkt6kojTny0z24aQnIZXt5ygzCX2whg20=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XRq6aqFChRZdAq+wZCPlA/EridxtvSAaFH9w2i0r4h+h60cUws/LHsqKWeM9+NKSo
+         yZ6cCb2jfwM8auMbrISfjAKSDVmo2K7+fJfNnKvuY9wDglqt9tcKXcqL8XP5mohXcJ
+         Kcyt0dYjryZbITjhOKKJHiL6sMiRSkBydaJUzM7f3U/+vwGBtZAFWdU+8EDt1l/TvE
+         kvXoyIzfdI28QpbMZ9NAYijikrNmpnXeiikyI2UhcXWjOKVsJtSIQyI/rC4yhuvWBg
+         enADPQTpDwEpn3QyQbyBUJfNT2pDycUl4AQEsI3U/tJjMBWA0TERAt+5A1qLQlaIFE
+         n1aG83y377YNQ==
+Date:   Mon, 13 Mar 2023 13:52:35 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     void0red <void0red@gmail.com>
+Cc:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/hifi1: add a null check of kzalloc_node in
+ hfi1_ipoib_txreq_init
+Message-ID: <20230313115235.GA135453@unreal>
+References: <20230227100212.910820-1-void0red@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230227100212.910820-1-void0red@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The refcount wr_tx_refcnt may cause cache thrashing problems among
-cores and we can use percpu ref to mitigate this issue here. We
-gain some performance improvement with percpu ref here on our
-customized smc-r verion. Applying cache alignment may also mitigate
-this problem but it seem more reasonable to use percpu ref here.
-We can also replace wr_reg_refcnt with one percpu reference like
-wr_tx_refcnt.
+On Mon, Feb 27, 2023 at 06:02:12PM +0800, void0red wrote:
+> From: Kang Chen <void0red@gmail.com>
+> 
+> kzalloc_node may fails, check it and do the cleanup.
+> 
+> Signed-off-by: Kang Chen <void0red@gmail.com>
+> ---
+>  drivers/infiniband/hw/hfi1/ipoib_tx.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
-redis-benchmark on smc-r with atomic wr_tx_refcnt:
-SET: 525707.06 requests per second, p50=0.087 msec
-GET: 554877.38 requests per second, p50=0.087 msec
+Added Fixes line and applied.
+Fixes: b1151b74ff68 ("IB/hfi1: Fix alloc failure with larger txqueuelen")
 
-redis-benchmark on the percpu_ref version:
-SET: 540482.06 requests per second, p50=0.087 msec
-GET: 570711.12 requests per second, p50=0.079 msec
+Thanks
 
-Cases are like "redis-benchmark -h x.x.x.x -q -t set,get -P 1 -n
-5000000 -c 50 -d 10 --threads 4".
-
-Signed-off-by: Kai <KaiShen@linux.alibaba.com>
-
-v1->v2:
-- Modify patch prefix
-
-v2->v3:
-- Make wr_reg_refcnt a percpu one as well
-- Init percpu ref with 0 flag instead of ALLOW_REINIT flag
-
-v3->v4:
-- Update performance data, this data may differ from previous data
-  as I ran cases on other machines
----
- net/smc/smc_core.h | 10 ++++++++--
- net/smc/smc_wr.c   | 35 ++++++++++++++++++++++++++++-------
- net/smc/smc_wr.h   |  5 ++---
- 3 files changed, 38 insertions(+), 12 deletions(-)
-
-diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
-index 08b457c2d294..1645fba0d2d3 100644
---- a/net/smc/smc_core.h
-+++ b/net/smc/smc_core.h
-@@ -106,7 +106,10 @@ struct smc_link {
- 	unsigned long		*wr_tx_mask;	/* bit mask of used indexes */
- 	u32			wr_tx_cnt;	/* number of WR send buffers */
- 	wait_queue_head_t	wr_tx_wait;	/* wait for free WR send buf */
--	atomic_t		wr_tx_refcnt;	/* tx refs to link */
-+	struct {
-+		struct percpu_ref	wr_tx_refs;
-+	} ____cacheline_aligned_in_smp;
-+	struct completion	tx_ref_comp;
- 
- 	struct smc_wr_buf	*wr_rx_bufs;	/* WR recv payload buffers */
- 	struct ib_recv_wr	*wr_rx_ibs;	/* WR recv meta data */
-@@ -122,7 +125,10 @@ struct smc_link {
- 
- 	struct ib_reg_wr	wr_reg;		/* WR register memory region */
- 	wait_queue_head_t	wr_reg_wait;	/* wait for wr_reg result */
--	atomic_t		wr_reg_refcnt;	/* reg refs to link */
-+	struct {
-+		struct percpu_ref	wr_reg_refs;
-+	} ____cacheline_aligned_in_smp;
-+	struct completion	reg_ref_comp;
- 	enum smc_wr_reg_state	wr_reg_state;	/* state of wr_reg request */
- 
- 	u8			gid[SMC_GID_SIZE];/* gid matching used vlan id*/
-diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
-index b0678a417e09..0021065a600a 100644
---- a/net/smc/smc_wr.c
-+++ b/net/smc/smc_wr.c
-@@ -377,12 +377,11 @@ int smc_wr_reg_send(struct smc_link *link, struct ib_mr *mr)
- 	if (rc)
- 		return rc;
- 
--	atomic_inc(&link->wr_reg_refcnt);
-+	percpu_ref_get(&link->wr_reg_refs);
- 	rc = wait_event_interruptible_timeout(link->wr_reg_wait,
- 					      (link->wr_reg_state != POSTED),
- 					      SMC_WR_REG_MR_WAIT_TIME);
--	if (atomic_dec_and_test(&link->wr_reg_refcnt))
--		wake_up_all(&link->wr_reg_wait);
-+	percpu_ref_put(&link->wr_reg_refs);
- 	if (!rc) {
- 		/* timeout - terminate link */
- 		smcr_link_down_cond_sched(link);
-@@ -647,8 +646,10 @@ void smc_wr_free_link(struct smc_link *lnk)
- 	smc_wr_wakeup_tx_wait(lnk);
- 
- 	smc_wr_tx_wait_no_pending_sends(lnk);
--	wait_event(lnk->wr_reg_wait, (!atomic_read(&lnk->wr_reg_refcnt)));
--	wait_event(lnk->wr_tx_wait, (!atomic_read(&lnk->wr_tx_refcnt)));
-+	percpu_ref_kill(&lnk->wr_reg_refs);
-+	wait_for_completion(&lnk->reg_ref_comp);
-+	percpu_ref_kill(&lnk->wr_tx_refs);
-+	wait_for_completion(&lnk->tx_ref_comp);
- 
- 	if (lnk->wr_rx_dma_addr) {
- 		ib_dma_unmap_single(ibdev, lnk->wr_rx_dma_addr,
-@@ -847,6 +848,20 @@ void smc_wr_add_dev(struct smc_ib_device *smcibdev)
- 	tasklet_setup(&smcibdev->send_tasklet, smc_wr_tx_tasklet_fn);
- }
- 
-+static void smcr_wr_tx_refs_free(struct percpu_ref *ref)
-+{
-+	struct smc_link *lnk = container_of(ref, struct smc_link, wr_tx_refs);
-+
-+	complete(&lnk->tx_ref_comp);
-+}
-+
-+static void smcr_wr_reg_refs_free(struct percpu_ref *ref)
-+{
-+	struct smc_link *lnk = container_of(ref, struct smc_link, wr_reg_refs);
-+
-+	complete(&lnk->reg_ref_comp);
-+}
-+
- int smc_wr_create_link(struct smc_link *lnk)
- {
- 	struct ib_device *ibdev = lnk->smcibdev->ibdev;
-@@ -890,9 +905,15 @@ int smc_wr_create_link(struct smc_link *lnk)
- 	smc_wr_init_sge(lnk);
- 	bitmap_zero(lnk->wr_tx_mask, SMC_WR_BUF_CNT);
- 	init_waitqueue_head(&lnk->wr_tx_wait);
--	atomic_set(&lnk->wr_tx_refcnt, 0);
-+	rc = percpu_ref_init(&lnk->wr_tx_refs, smcr_wr_tx_refs_free, 0, GFP_KERNEL);
-+	if (rc)
-+		goto dma_unmap;
-+	init_completion(&lnk->tx_ref_comp);
- 	init_waitqueue_head(&lnk->wr_reg_wait);
--	atomic_set(&lnk->wr_reg_refcnt, 0);
-+	rc = percpu_ref_init(&lnk->wr_reg_refs, smcr_wr_reg_refs_free, 0, GFP_KERNEL);
-+	if (rc)
-+		goto dma_unmap;
-+	init_completion(&lnk->reg_ref_comp);
- 	init_waitqueue_head(&lnk->wr_rx_empty_wait);
- 	return rc;
- 
-diff --git a/net/smc/smc_wr.h b/net/smc/smc_wr.h
-index 45e9b894d3f8..f3008dda222a 100644
---- a/net/smc/smc_wr.h
-+++ b/net/smc/smc_wr.h
-@@ -63,14 +63,13 @@ static inline bool smc_wr_tx_link_hold(struct smc_link *link)
- {
- 	if (!smc_link_sendable(link))
- 		return false;
--	atomic_inc(&link->wr_tx_refcnt);
-+	percpu_ref_get(&link->wr_tx_refs);
- 	return true;
- }
- 
- static inline void smc_wr_tx_link_put(struct smc_link *link)
- {
--	if (atomic_dec_and_test(&link->wr_tx_refcnt))
--		wake_up_all(&link->wr_tx_wait);
-+	percpu_ref_put(&link->wr_tx_refs);
- }
- 
- static inline void smc_wr_drain_cq(struct smc_link *lnk)
--- 
-2.31.1
-
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+> index 5d9a7b09c..349eb4139 100644
+> --- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
+> +++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+> @@ -737,10 +737,13 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
+>  		txq->tx_ring.shift = ilog2(tx_item_size);
+>  		txq->tx_ring.avail = hfi1_ipoib_ring_hwat(txq);
+>  		tx_ring = &txq->tx_ring;
+> -		for (j = 0; j < tx_ring_size; j++)
+> +		for (j = 0; j < tx_ring_size; j++) {
+>  			hfi1_txreq_from_idx(tx_ring, j)->sdma_hdr =
+>  				kzalloc_node(sizeof(*tx->sdma_hdr),
+>  					     GFP_KERNEL, priv->dd->node);
+> +			if (!hfi1_txreq_from_idx(tx_ring, j)->sdma_hdr)
+> +				goto free_txqs;
+> +		}
+>  
+>  		netif_napi_add_tx(dev, &txq->napi, hfi1_ipoib_poll_tx_ring);
+>  	}
+> -- 
+> 2.34.1
+> 
