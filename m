@@ -2,56 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2BE6B83AC
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Mar 2023 22:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D476B84DF
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Mar 2023 23:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbjCMVCn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Mar 2023 17:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
+        id S229831AbjCMWj5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Mar 2023 18:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbjCMVCW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Mar 2023 17:02:22 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13B38C96C
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Mar 2023 14:01:14 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id h11so2333249ild.11
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Mar 2023 14:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678741261;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MMqHKIxdMm3dM36ZLNxuSyWdPqYMqCbdnka0e38R2kM=;
-        b=pCSbxY1IuGxxgCsf0OZvGcJr4x3ejeAiZt5AqE/8KtXUT6a+XnM4fYT0xGMmfxKIZB
-         z24W/gF6BCKBX3jZg7GUjSMyrN1JLCgtWHPzTCkc1T4ZkN6ofeusc7MX224Gw+4eGVCb
-         bSiHxzOPnT/tgh1eTvMv6Td9mt0ppgKWiHP4rp5LrH8qmMbSAAHcV0hm/Mz1Kh4vxNvf
-         +MNCXtxGIF7aN+DnLGiAZJKL0CTcYgt5S+QDG+Fr4w1wJbW39XzCpwVt5tDuWg7gHetc
-         kqTodPJZj/HZGb3LZqnXeZ/M7vi3ZXd8SkOEbpkZDfg5BL1eS9pgZvYvhU/VxS7z02ci
-         i5ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678741261;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MMqHKIxdMm3dM36ZLNxuSyWdPqYMqCbdnka0e38R2kM=;
-        b=UM29wcVfnQGHsE3ExQdb1anIxqIoJEQFefBW/qR+rpxVUBe4VWacrVL37TxrfZ9jyK
-         OQVvEx/AHxyHb8wCEybrzI2CPksUuFatDNCorl01hDZ2a/yZVfmXmxdB5FGEZ9Oj98OR
-         Qbj3SPq1yTp+H7m8v5cQmL5ZgYSrc7h3WbxOpJQLTcssFJC30Fm7wzaE4bF2OXo/7U5Y
-         89tWt1z3IrFh88IGY947OApDkEchJKv2GGcHQN4lpZJQNCFQ/9bKzA2Y2K9DShz6zK+w
-         mTllKUZ5vcY6rbLSGrxsOEciGKbVlhQ6e+X9wxny3y3++lFit2bO4WU8E2me2+UlpnBA
-         XXHg==
-X-Gm-Message-State: AO0yUKXukfd6CSsgfF+l1gnG7MGnyQKoIhmZHHd4IZGxu8UzE+5C0swc
-        WjWegnPZHmc42J+DAur3dHGtWw==
-X-Google-Smtp-Source: AK7set87hROC3DrRy/WHpgTl+q0g7aJEMwmTNpv2ADoDCdSubwZnPqmWHhNg4NYrayS39Mj3cpUa+Q==
-X-Received: by 2002:a92:7302:0:b0:315:6fc5:ea46 with SMTP id o2-20020a927302000000b003156fc5ea46mr746590ilc.2.1678741261504;
-        Mon, 13 Mar 2023 14:01:01 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:a33c:9b70:2c95:9544])
-        by smtp.gmail.com with ESMTPSA id e12-20020a02a78c000000b004046f72271esm32031jaj.100.2023.03.13.14.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Mar 2023 14:01:01 -0700 (PDT)
-Date:   Mon, 13 Mar 2023 15:00:57 -0600
-From:   Ross Zwisler <zwisler@google.com>
+        with ESMTP id S229610AbjCMWj4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Mar 2023 18:39:56 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AD76FFF7;
+        Mon, 13 Mar 2023 15:39:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0B4A3B815E9;
+        Mon, 13 Mar 2023 22:39:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F03BC433D2;
+        Mon, 13 Mar 2023 22:39:49 +0000 (UTC)
+Date:   Mon, 13 Mar 2023 18:39:46 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Ross Zwisler <zwisler@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org, Ross Zwisler <zwisler@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Hao Luo <haoluo@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
@@ -65,59 +39,58 @@ Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
         Song Liu <song@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
         linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v4 0/2] use canonical ftrace path whenever
- possible
-Message-ID: <20230313210057.GB592900@google.com>
+        linux-trace-kernel@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: use canonical ftrace
+ path
+Message-ID: <20230313183946.1a98ef01@gandalf.local.home>
+In-Reply-To: <20230313205628.1058720-3-zwisler@kernel.org>
 References: <20230310192050.4096886-1-zwisler@kernel.org>
- <20230313205628.1058720-1-zwisler@kernel.org>
+        <20230313205628.1058720-1-zwisler@kernel.org>
+        <20230313205628.1058720-3-zwisler@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230313205628.1058720-1-zwisler@kernel.org>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 13, 2023 at 02:56:26PM -0600, Ross Zwisler wrote:
+On Mon, 13 Mar 2023 14:56:28 -0600
+Ross Zwisler <zwisler@kernel.org> wrote:
+
 > From: Ross Zwisler <zwisler@google.com>
 > 
-> v3 here:
-> https://lore.kernel.org/all/20230310192050.4096886-1-zwisler@kernel.org/
+> The canonical location for the tracefs filesystem is at
+> /sys/kernel/tracing.
+> 
+> But, from Documentation/trace/ftrace.rst:
+> 
+>   Before 4.1, all ftrace tracing control files were within the debugfs
+>   file system, which is typically located at /sys/kernel/debug/tracing.
+>   For backward compatibility, when mounting the debugfs file system,
+>   the tracefs file system will be automatically mounted at:
+> 
+>   /sys/kernel/debug/tracing
+> 
+> Many tests in the bpf selftest code still refer to this older debugfs
+> path, so let's update them to avoid confusion.
+> 
+> Signed-off-by: Ross Zwisler <zwisler@google.com>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-Sorry, this should have been:
-https://lore.kernel.org/all/20230310175209.2130880-1-zwisler@kernel.org/
+Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-> 
-> Changes since v3:
->  * Added braces around a few multi-line if/else statements (Steven Rostedt)
->  * Added Reviewed-by from Steven to patch 1
->  * Rebased onto the current bpf/bpf-next
-> 
-> Ross Zwisler (2):
->   bpf: use canonical ftrace path
->   selftests/bpf: use canonical ftrace path
-> 
->  include/uapi/linux/bpf.h                            |  8 ++++----
->  samples/bpf/cpustat_kern.c                          |  4 ++--
->  samples/bpf/hbm.c                                   |  4 ++--
->  samples/bpf/ibumad_kern.c                           |  4 ++--
->  samples/bpf/lwt_len_hist.sh                         |  2 +-
->  samples/bpf/offwaketime_kern.c                      |  2 +-
->  samples/bpf/task_fd_query_user.c                    |  4 ++--
->  samples/bpf/test_lwt_bpf.sh                         |  2 +-
->  samples/bpf/test_overhead_tp.bpf.c                  |  4 ++--
->  tools/include/uapi/linux/bpf.h                      |  8 ++++----
+-- Steve
+
+> ---
 >  tools/testing/selftests/bpf/get_cgroup_id_user.c    |  9 +++++++--
 >  .../selftests/bpf/prog_tests/kprobe_multi_test.c    |  7 ++++++-
 >  .../selftests/bpf/prog_tests/task_fd_query_tp.c     |  9 +++++++--
@@ -129,10 +102,5 @@ https://lore.kernel.org/all/20230310175209.2130880-1-zwisler@kernel.org/
 >  tools/testing/selftests/bpf/test_ftrace.sh          |  7 ++++++-
 >  tools/testing/selftests/bpf/test_tunnel.sh          | 13 +++++++++----
 >  tools/testing/selftests/bpf/trace_helpers.c         |  8 ++++++--
->  21 files changed, 85 insertions(+), 43 deletions(-)
-> 
-> 
-> base-commit: 22df776a9a866713d9decfb92b633bcfdb571954
-> -- 
-> 2.40.0.rc1.284.g88254d51c5-goog
-> 
+>  11 files changed, 64 insertions(+), 22 deletions(-)
+
