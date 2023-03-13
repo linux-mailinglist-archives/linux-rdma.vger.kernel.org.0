@@ -2,92 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7416B5B98
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Mar 2023 13:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3AC6B6D07
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Mar 2023 02:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjCKMY5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Mar 2023 07:24:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        id S229824AbjCMBUd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 12 Mar 2023 21:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbjCKMYx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 11 Mar 2023 07:24:53 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33ED61220BA
-        for <linux-rdma@vger.kernel.org>; Sat, 11 Mar 2023 04:24:43 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id x3so31050347edb.10
-        for <linux-rdma@vger.kernel.org>; Sat, 11 Mar 2023 04:24:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678537481;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mM4D/H21YxqRWkmTnoD2+rbp+XKo+/P1KeNC9uoVsMU=;
-        b=jVrIE37aJBIFUhwyWZ3BfLlD8oJchWWytD5SDPToiH+XOw0EK9vnjxZiFfbPQOOfL8
-         2VvKiuCh6oX5aC3ocdWFhF+AuLZpnvjnYw7Q5zkWZ2lzRYab58PFLEBLdXyRETLLn6nH
-         zpYuI3KSL8s5oTS55bml1FvsD3jKzjLvwPj282WQZpWqXpPAQWQJd3Ka3NEJfpNTXirE
-         W342yk5WCc8ZIfG+/Tk2I3jGGE1uxbtJ5P4aCtW/4/KuZFTsZkvxAG0vqwPLTPEQszmG
-         DaD9P4iftd69FZaJ+YponxQ7SKKzdb9sOzG3VYja5dFVQHdJyUCTSPILs660wdMxe3SA
-         2cwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678537481;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mM4D/H21YxqRWkmTnoD2+rbp+XKo+/P1KeNC9uoVsMU=;
-        b=3SRhhMFzVwn1drIUW9/SSqy645/MeRvZGGnNm2pRZ/RlixDjLnJIBjjF7TJt6pwWpW
-         oeCIt7Lxp4JqJQ4lwDCO76S4Nuq7WN09xRVDbbTUcgDWJYRR2P2f4mgAKHsfutS/3o10
-         E5Uo/pSVFhSPJ8Pl9l8WNxY/mrpU6dyYgOx8aRIc4/A7KIM3T5RBum5U+7fFF4MjbokO
-         9nJP/mv4GNHLnzAFQu92ZUIPRKW48lKskcF8h6oCutGzoMh56NZe7lzk1IXLjQQzGYDr
-         VYpAYPD/4ng+YHHfkJc+rn3BUFZn/Hc4XGAyumGyYt46Lo2nrDieo0bHN2ZAe70iVDKw
-         +1UQ==
-X-Gm-Message-State: AO0yUKXbt97GuaIE2EG8UxsUHARkh35JEIhcJeZIl+o/PZ1Yp0q4d96U
-        xrRUbvDS6SneiQ0B4JONQ4hNetGnrDs1gmL1vys=
-X-Google-Smtp-Source: AK7set9RYy6nHfB25XTqtzarTBtIgFwf+bhPe9vNusOukRzxpblNxPqmNt9NHatlSSwxmiC/wvFC07v0HjI+0OIwVqs=
-X-Received: by 2002:a50:d543:0:b0:4af:6e08:30c with SMTP id
- f3-20020a50d543000000b004af6e08030cmr2810891edj.4.1678537481679; Sat, 11 Mar
- 2023 04:24:41 -0800 (PST)
+        with ESMTP id S229826AbjCMBUc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 12 Mar 2023 21:20:32 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5537836086;
+        Sun, 12 Mar 2023 18:20:29 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=kaishen@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VdeSqPR_1678670425;
+Received: from 30.221.113.94(mailfrom:KaiShen@linux.alibaba.com fp:SMTPD_---0VdeSqPR_1678670425)
+          by smtp.aliyun-inc.com;
+          Mon, 13 Mar 2023 09:20:26 +0800
+Message-ID: <43cd6283-c8c4-7764-f828-39a59596e33c@linux.alibaba.com>
+Date:   Mon, 13 Mar 2023 09:20:25 +0800
 MIME-Version: 1.0
-Received: by 2002:a05:640c:2907:b0:1a5:721b:4611 with HTTP; Sat, 11 Mar 2023
- 04:24:41 -0800 (PST)
-Reply-To: fiona.hill.2023@outlook.com
-From:   FIONA HILL <barr.xaviergbesse.tg@gmail.com>
-Date:   Sat, 11 Mar 2023 04:24:41 -0800
-Message-ID: <CADK-NB3p==sKjWKghgSeMJ9FcmG-NfjAJM6xMjvoV=zYEeh9dQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_60,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:52f listed in]
-        [list.dnswl.org]
-        *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
-        *      [score: 0.7682]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [barr.xaviergbesse.tg[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [fiona.hill.2023[at]outlook.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.8.0
+From:   Kai <KaiShen@linux.alibaba.com>
+Subject: Re: [PATCH net-next v3] net/smc: Use percpu ref for wr tx reference
+To:     Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20230303082115.449-1-KaiShen@linux.alibaba.com>
+ <ZAhHiZ5/3Q3dcL4c@TONYMAC-ALIBABA.local>
+Content-Language: en-US
+In-Reply-To: <ZAhHiZ5/3Q3dcL4c@TONYMAC-ALIBABA.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
--- 
-Please with honesty did you receive my last message i sent to you?
+
+
+On 3/8/23 4:30 PM, Tony Lu wrote:
+>> redis-benchmark on smc-r with atomic wr_tx_refcnt:
+>> SET: 525817.62 requests per second, p50=0.087 msec
+>> GET: 570841.44 requests per second, p50=0.087 msec
+>>
+>> redis-benchmark on the percpu_ref version:
+>> SET: 539956.81 requests per second, p50=0.087 msec
+>> GET: 587613.12 requests per second, p50=0.079 msec
+> 
+> Does the test data need to be refreshed?
+> 
+Will do.
+>> diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
+>> index 08b457c2d294..1645fba0d2d3 100644
+>> --- a/net/smc/smc_core.h
+>> +++ b/net/smc/smc_core.h
+>> @@ -106,7 +106,10 @@ struct smc_link {
+>>   	unsigned long		*wr_tx_mask;	/* bit mask of used indexes */
+>>   	u32			wr_tx_cnt;	/* number of WR send buffers */
+>>   	wait_queue_head_t	wr_tx_wait;	/* wait for free WR send buf */
+>> -	atomic_t		wr_tx_refcnt;	/* tx refs to link */
+>> +	struct {
+>> +		struct percpu_ref	wr_tx_refs;
+>> +	} ____cacheline_aligned_in_smp;
+>> +	struct completion	tx_ref_comp;
+> 
+> For the variable names suffixed with wr_*_refs, should we continue to
+> use wr_*_refcnt?
+> 
+> Thanks.
+In my opinion, we can't get the count of the percpu reference until it 
+we start to destroy it. So maybe using wr_*_refcnt here is more 
+appropriate？
