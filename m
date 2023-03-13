@@ -2,57 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 862B06B82FC
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Mar 2023 21:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB356B8338
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Mar 2023 21:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjCMUlh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Mar 2023 16:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
+        id S229977AbjCMU5f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Mar 2023 16:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjCMUle (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Mar 2023 16:41:34 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D1F233F8
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Mar 2023 13:41:00 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id k17so5561390iob.1
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Mar 2023 13:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678740054;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0T+Km9cavSQaDYPpPQXfU9zdS3Tn01gJlo4SYSaGTsQ=;
-        b=TQATrXuUbv73UnY+1AoZezSFrjnoWb6XBb4KKmy55Dz6xoRMZMU5Lk5mVbE/yBcLoS
-         uielXBVD5Xil2P2hsyGwgq3sdGc01SpHIjc9oWqTjvvue5SLYFhijuaVnRJjZY8gDNOh
-         ZTvdnJYkRVLx6HpXv7gMdi7CWdOgEwoykKcbtHLrJZ8A/WwLPpcEoLzGE7malfTUYJjd
-         iSVCqvSgQAD7jOwK0C0ecMYOFtRxx6gjS8WryAOQFoPuQV79KsFJoh8X2QvDhTcPIfs9
-         qELFz6z7V3giyT7opexr6QgITwDZrGVqYPaijuP+BS4ZDSv/mCQxNh03E+/46usgG7CZ
-         zZrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678740054;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0T+Km9cavSQaDYPpPQXfU9zdS3Tn01gJlo4SYSaGTsQ=;
-        b=ArNFNoW77eDBN/p5LjkMYovfi6OPJ1d1XHg4KjTDlCzIAUbvVSby4Mp8ZiyjcpCEMV
-         WtBVpCWKaVR5cTONel63CInYcKr4pFFXnHRDwshFQd6XH2kVoV8p6vPQA1PYQdNZFO14
-         R6lxSS4p8bY9uTCBJZCNNBsldFgqdbbqsJuznXOdz4dqKMJeEK14/CtR7rfbXKewAHbg
-         ktf2HzWQsYepmFQxXYhsRUZEEHn8480lPG04W11fiMRXINPzGYOxXksGrph0KOSVVOTJ
-         G6CwG5RNVnpdXDxbiREcM8PMZPKt7Tzz2ZXx0PggQ5TJO0Iq7LQNdbbWOBOnMH1hJ5Ev
-         8BVA==
-X-Gm-Message-State: AO0yUKXYwrJBMFMW5LwhAfr2/LoZeaMOHLSzBTNX63OVjEKq5mL76Kka
-        hUsnJKBo/JJn2j+cfnI4NJ0bpA==
-X-Google-Smtp-Source: AK7set/xW8ytFvQ8KfIVjFvFDObW2b6jVdvNOP69AGFe4AmpmWOEiHtIGspIfm9vNvggXDisP45jHw==
-X-Received: by 2002:a5e:8819:0:b0:74d:114c:832b with SMTP id l25-20020a5e8819000000b0074d114c832bmr24055572ioj.20.1678740054335;
-        Mon, 13 Mar 2023 13:40:54 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:a33c:9b70:2c95:9544])
-        by smtp.gmail.com with ESMTPSA id h14-20020a0566380f8e00b003c4e3ecb02dsm189549jal.24.2023.03.13.13.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Mar 2023 13:40:54 -0700 (PDT)
-Date:   Mon, 13 Mar 2023 14:40:50 -0600
-From:   Ross Zwisler <zwisler@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     zwisler@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229987AbjCMU5d (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Mar 2023 16:57:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DFC8B317;
+        Mon, 13 Mar 2023 13:57:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B2D9614D5;
+        Mon, 13 Mar 2023 20:57:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41405C433D2;
+        Mon, 13 Mar 2023 20:57:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678741051;
+        bh=FvPsyX72CjxlJgwPPQ0SI92LE0LVha0nXzy8vJXXD6c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nZJfd+Pifk1LQRZ1I+PomQWtGL7T7PIhrwQ9xX45ipw8VPKKm6gopnobZI/NB1IvX
+         DJnROndP/zkxNKHGBet4zV97JQfOSyammDQvaIzUyjMw8OyJWnk5DsV1cutwzXqpKh
+         nNdOjx23vydtQFfvtD31BxJMnehnCSLlgnhyigu5scLhmENX9QpK+1pTOS/mwJbmXT
+         3iURODJ89aOgEXrJLgZgLPFSZ9GbKPRdcnF404vxFRPzXJBRvhNElfOY1p2rGdfoWl
+         kGJBSZOnnAKzHDFwjVHSSrooxRBKLtYuJE1xnQ+g290oUg4ADJ40Rr2+Gkbwr+xGbs
+         /TSopWQH4wPyQ==
+From:   Ross Zwisler <zwisler@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ross Zwisler <zwisler@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Hao Luo <haoluo@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
@@ -60,132 +42,72 @@ Cc:     zwisler@kernel.org, bpf@vger.kernel.org,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Leon Romanovsky <leon@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Martin KaFai Lau <martin.lau@linux.dev>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
         Song Liu <song@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Yonghong Song <yhs@fb.com>, linux-kselftest@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        "Michael S . Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: use canonical ftrace path
-Message-ID: <20230313204050.GA592900@google.com>
-References: <20230310175209.2130880-1-zwisler@kernel.org>
- <20230310175209.2130880-2-zwisler@kernel.org>
- <20230310183352.2943e633@gandalf.local.home>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v4 0/2] use canonical ftrace path whenever possible
+Date:   Mon, 13 Mar 2023 14:56:26 -0600
+Message-Id: <20230313205628.1058720-1-zwisler@kernel.org>
+X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
+In-Reply-To: <20230310192050.4096886-1-zwisler@kernel.org>
+References: <20230310192050.4096886-1-zwisler@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230310183352.2943e633@gandalf.local.home>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 06:33:52PM -0500, Steven Rostedt wrote:
-> On Fri, 10 Mar 2023 10:52:09 -0700
-> zwisler@kernel.org wrote:
-> 
-> > diff --git a/tools/testing/selftests/bpf/get_cgroup_id_user.c b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-> > index 156743cf5870..4fa61ac8a0ee 100644
-> > --- a/tools/testing/selftests/bpf/get_cgroup_id_user.c
-> > +++ b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-> > @@ -86,8 +86,12 @@ int main(int argc, char **argv)
-> >  	pid = getpid();
-> >  	bpf_map_update_elem(pidmap_fd, &key, &pid, 0);
-> >  
-> > -	snprintf(buf, sizeof(buf),
-> > -		 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > +		snprintf(buf, sizeof(buf),
-> > +			 "/sys/kernel/tracing/events/%s/id", probe_name);
-> > +	else
-> > +		snprintf(buf, sizeof(buf),
-> > +			 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> 
-> I don't know how the BPF folks feel, but I do know some kernel developers
-> prefer that if you need to break a single command into multiple lines that
-> you then need to add brackets around it. As it makes it easier to read.
-> 
-> 	if (access("/sys/kernel/tracing/trace", F_OK) == 0) {
-> 		snprintf(buf, sizeof(buf),
-> 			 "/sys/kernel/tracing/events/%s/id", probe_name);
-> 	} else {
-> 		snprintf(buf, sizeof(buf),
-> 			 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> 	}
-> 
-> 
-> 
-> >  	efd = open(buf, O_RDONLY, 0);
-> >  	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-> >  		goto close_prog;
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > index 113dba349a57..22be0a9a5a0a 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > @@ -338,7 +338,12 @@ static int get_syms(char ***symsp, size_t *cntp, bool kernel)
-> >  	 * Filtering out duplicates by using hashmap__add, which won't
-> >  	 * add existing entry.
-> >  	 */
-> > -	f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
-> > +
-> > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > +		f = fopen("/sys/kernel/tracing/available_filter_functions", "r");
-> > +	else
-> > +		f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
-> > +
-> >  	if (!f)
-> >  		return -EINVAL;
-> >  
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-> > index c717741bf8b6..60f92fd3c37a 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-> > @@ -17,8 +17,12 @@ static void test_task_fd_query_tp_core(const char *probe_name,
-> >  	if (CHECK(err, "bpf_prog_test_load", "err %d errno %d\n", err, errno))
-> >  		goto close_prog;
-> >  
-> > -	snprintf(buf, sizeof(buf),
-> > -		 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > +		snprintf(buf, sizeof(buf),
-> > +			 "/sys/kernel/tracing/events/%s/id", probe_name);
-> > +	else
-> > +		snprintf(buf, sizeof(buf),
-> > +			 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> 
-> Same here.
-> 
-> >  	efd = open(buf, O_RDONLY, 0);
-> >  	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-> >  		goto close_prog;
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> > index 770fcc3bb1ba..d3e377fa8e9b 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> > @@ -16,8 +16,12 @@ void serial_test_tp_attach_query(void)
-> >  	for (i = 0; i < num_progs; i++)
-> >  		obj[i] = NULL;
-> >  
-> > -	snprintf(buf, sizeof(buf),
-> > -		 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
-> > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > +		snprintf(buf, sizeof(buf),
-> > +			 "/sys/kernel/tracing/events/sched/sched_switch/id");
-> > +	else
-> > +		snprintf(buf, sizeof(buf),
-> > +			 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
-> 
-> and here.
-> 
-> But perhaps the BPF folks don't care?
+From: Ross Zwisler <zwisler@google.com>
 
-Sure, I agree that this is more readable.  I'll gather your Reviewed-by for
-patch #1, make this change, rebase to the current bpf/bpf-next and send out
-v4.
+v3 here:
+https://lore.kernel.org/all/20230310192050.4096886-1-zwisler@kernel.org/
+
+Changes since v3:
+ * Added braces around a few multi-line if/else statements (Steven Rostedt)
+ * Added Reviewed-by from Steven to patch 1
+ * Rebased onto the current bpf/bpf-next
+
+Ross Zwisler (2):
+  bpf: use canonical ftrace path
+  selftests/bpf: use canonical ftrace path
+
+ include/uapi/linux/bpf.h                            |  8 ++++----
+ samples/bpf/cpustat_kern.c                          |  4 ++--
+ samples/bpf/hbm.c                                   |  4 ++--
+ samples/bpf/ibumad_kern.c                           |  4 ++--
+ samples/bpf/lwt_len_hist.sh                         |  2 +-
+ samples/bpf/offwaketime_kern.c                      |  2 +-
+ samples/bpf/task_fd_query_user.c                    |  4 ++--
+ samples/bpf/test_lwt_bpf.sh                         |  2 +-
+ samples/bpf/test_overhead_tp.bpf.c                  |  4 ++--
+ tools/include/uapi/linux/bpf.h                      |  8 ++++----
+ tools/testing/selftests/bpf/get_cgroup_id_user.c    |  9 +++++++--
+ .../selftests/bpf/prog_tests/kprobe_multi_test.c    |  7 ++++++-
+ .../selftests/bpf/prog_tests/task_fd_query_tp.c     |  9 +++++++--
+ .../selftests/bpf/prog_tests/tp_attach_query.c      |  9 +++++++--
+ .../testing/selftests/bpf/prog_tests/trace_printk.c | 10 +++++++---
+ .../selftests/bpf/prog_tests/trace_vprintk.c        | 10 +++++++---
+ .../selftests/bpf/progs/test_stacktrace_map.c       |  2 +-
+ tools/testing/selftests/bpf/progs/test_tracepoint.c |  2 +-
+ tools/testing/selftests/bpf/test_ftrace.sh          |  7 ++++++-
+ tools/testing/selftests/bpf/test_tunnel.sh          | 13 +++++++++----
+ tools/testing/selftests/bpf/trace_helpers.c         |  8 ++++++--
+ 21 files changed, 85 insertions(+), 43 deletions(-)
+
+
+base-commit: 22df776a9a866713d9decfb92b633bcfdb571954
+-- 
+2.40.0.rc1.284.g88254d51c5-goog
+
