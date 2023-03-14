@@ -2,47 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A29F26B8F21
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Mar 2023 11:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085E46B8FC0
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Mar 2023 11:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229483AbjCNKB2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Mar 2023 06:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40508 "EHLO
+        id S230162AbjCNKYi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Mar 2023 06:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjCNKB1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Mar 2023 06:01:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972778C533
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Mar 2023 03:01:26 -0700 (PDT)
+        with ESMTP id S230229AbjCNKYY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Mar 2023 06:24:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B991C5A0
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Mar 2023 03:23:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 314C9616E4
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Mar 2023 10:01:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A65DC433D2;
-        Tue, 14 Mar 2023 10:01:24 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2AC70B818DF
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Mar 2023 10:23:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4109FC433EF;
+        Tue, 14 Mar 2023 10:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678788085;
-        bh=H4lsA5TRTWRbavAQfXGuBzuSKmjFtOp3+squAMZUT8w=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=puGnAd7LhAcv9aV7TikUK4qGvO+jgBuuZhc8sIG4zJqF5QTJnBSiB/NtM7PWU5pHT
-         W6s3VKDXCSJjX/CUdVFnQi1dfZ8p129fLSvmVpMR4T4UsTmUOTGiJpgQ2z5LlWnmSd
-         bSaKB3zN5XimiP3GiISSwMzqvNNKYFXDnOQ+Mm/itqcxOtNgfVsOUK03Eh8xga+Ec/
-         A4pbkBjPPOs219F15NgOX5V84AhzWrl2FP1EV12AD88abJNaufWopUb5hEuuHjDnAc
-         dqlMph15rytz2S04wAlYFGviEd7GgApH9HOQzewOpdAP4/b+6kAdRpwoB50peP1iMZ
-         ky5iYC83xoCRQ==
+        s=k20201202; t=1678789399;
+        bh=Colmwe/i6OWYobVhwYkFbfzZHjZnyzrcBxYvy058VFI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jtMOZPWuupvnSG1fIiwNLMGZ/CFURsLQTvuM1EWdcnQKmiMivkJ9cA3L8LwrIkRl7
+         CXChAl+us7qctLoZirei1QwBK3oUByQlhtrtLE0MmjUUFU2QxyoNG3zCfHzjQvpF4W
+         ECiWbcMKs3IH4YHDhiXUdYJgrGWN2/MokQqr2w4+23UkiH5PsIPIBotRZdsK4i0RQL
+         4xAxct1kBEkxHshfErJXGoHGmjrjOQ9Sqdyw7gC8ivLI5at2XdbX1UlLHsYVqh22ye
+         MF2MJ539uRscbH+AkOAc1Dv+32xsjliFr9HiilWnYF70QccsWp8DUP8raR/GD9CpiU
+         0v0+wENEj/8Cw==
+Date:   Tue, 14 Mar 2023 12:23:13 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Haoyue Xu <xuhaoyue1@hisilicon.com>
-Cc:     linux-rdma@vger.kernel.org, linuxarm@huawei.com
-In-Reply-To: <20230304091555.2241298-1-xuhaoyue1@hisilicon.com>
-References: <20230304091555.2241298-1-xuhaoyue1@hisilicon.com>
-Subject: Re: [PATCH for-next 0/2] Support query vf caps
-Message-Id: <167878807830.136753.8799011229827347077.b4-ty@kernel.org>
-Date:   Tue, 14 Mar 2023 12:01:18 +0200
+To:     Cheng Xu <chengyou@linux.alibaba.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
+Subject: Re: [PATCH for-next v2 2/2] RDMA/erdma: Support non-4K page size in
+ doorbell allocation
+Message-ID: <20230314102313.GB36557@unreal>
+References: <20230307102924.70577-1-chengyou@linux.alibaba.com>
+ <20230307102924.70577-3-chengyou@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230307102924.70577-3-chengyou@linux.alibaba.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,25 +53,13 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Mar 07, 2023 at 06:29:24PM +0800, Cheng Xu wrote:
+> Doorbell resources are exposed to userspace by mmap. The size unit of mmap
+> is PAGE_SIZE, previous implementation can not work correctly if PAGE_SIZE
+> is not 4K. We support non-4K page size in this commit.
 
-On Sat, 04 Mar 2023 17:15:53 +0800, Haoyue Xu wrote:
-> VF originally used default caps in the driver.
-> The patchset add a command to query the VF's caps,
-> which makes it more extensible.
-> 
-> Yixing Liu (2):
->   RDMA/hns: Add new cmq command to support query vf caps
->   RDMA/hns: remove set_default function
-> 
-> [...]
+Why do you need this information in rdma-core?
+Can you use sysconf(_SC_PAGESIZE) there to understand the page size like
+other providers?
 
-Applied, thanks!
-
-[1/2] RDMA/hns: Add new command to support query vf caps
-      https://git.kernel.org/rdma/rdma/c/faa63656fc361e
-[2/2] RDMA/hns: Remove set_default function
-      (no commit info)
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Thanks
