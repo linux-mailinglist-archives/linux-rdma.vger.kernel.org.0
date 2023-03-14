@@ -2,199 +2,392 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8506A6B8A47
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Mar 2023 06:27:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DB16B8A57
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Mar 2023 06:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbjCNF1h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Mar 2023 01:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
+        id S229483AbjCNFbL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Mar 2023 01:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjCNF1f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Mar 2023 01:27:35 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A4F8F529;
-        Mon, 13 Mar 2023 22:27:34 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id fy10-20020a17090b020a00b0023b4bcf0727so6518350pjb.0;
-        Mon, 13 Mar 2023 22:27:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678771654;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4D03rED555IfCoQrbUz4ZWLp8DNJPBkSCZrRpWNZxMU=;
-        b=PHK/eH6cxnMBDS+FpMlgzW09AXUjOoOlj8ASxxz2aTuLTVeKSUp7xKHTxKB7/Vcnkl
-         CwrVvnjVsspQikiPLvqlnnjBDOxS40eWdvJsSUGxDU9E81cNPnOowcX7tvis4axPax1e
-         vSywQecGqxKImEGF0uFw76T+kBlaJxqgol80grFJZkUz5kLNctM8vh3mtCgSko4Br0zB
-         XYfcFPVNVBkNm0OVf5Gv+KmHUfO9wlIw6xyR7Qh9BkdAGnnE+V6K5jyl3saNZFDyiF2U
-         BQBfFni82qvs4AvD+UDTygqlI33Uc561jC+hN2hOzrWdEFbRj8XdWiOJvOYvh9ZCYTSI
-         vyTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678771654;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4D03rED555IfCoQrbUz4ZWLp8DNJPBkSCZrRpWNZxMU=;
-        b=DlsHwLFi6G4pF6Bh7cnD+PkE3ygxTqhqwtepAkiFWzjy58spAdQGK+D0Xhcs/pvguT
-         BM141plrOlYp7gPDh151BxpbH+vrlTHbE8N2Msed0zEhVmSgC59v7y1t3VO9lOeahOQU
-         ZlYQJA5a30l/0mDwBLCAkosaI3g3MkmlxThsbib7bkvp7AosCPo5gfbH+vaaRwZQXBFB
-         TBDuhg8EPS2oXRxkMieRdX429l4Lf/mCSKDX3P22EjzJWxqXFHVuZx+peTVJx2nMvrQq
-         Wu8xD2g1EEiE6lA+PVXY76NJs1SbhY5bdSvsVvaVasYmB/JKMgMKROSsGE/GAbBTxGSz
-         PFbg==
-X-Gm-Message-State: AO0yUKURnHXDkAOK+QAwPsf7wcNMPBO+mSCqMAvi6BcHUEu/sznu74HC
-        fxCSZzihvXAMBpuQd+wJuLY=
-X-Google-Smtp-Source: AK7set/4mOlSqk9UfChalfQ+S/QeZHZ3bmvtWmPxEpzecYyp26RBTvUEq8a4As4Nzv6DpHtOhUGiNw==
-X-Received: by 2002:a17:902:d54f:b0:19e:73a9:c21b with SMTP id z15-20020a170902d54f00b0019e73a9c21bmr34729856plf.45.1678771654019;
-        Mon, 13 Mar 2023 22:27:34 -0700 (PDT)
-Received: from localhost ([98.97.116.12])
-        by smtp.gmail.com with ESMTPSA id jx2-20020a170903138200b0019a7d6a9a76sm758621plb.111.2023.03.13.22.27.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Mar 2023 22:27:33 -0700 (PDT)
-Date:   Mon, 13 Mar 2023 22:27:32 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Ross Zwisler <zwisler@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     zwisler@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        with ESMTP id S229464AbjCNFbK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Mar 2023 01:31:10 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D2CD56781D;
+        Mon, 13 Mar 2023 22:30:55 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+        id 4B0442056B4A; Mon, 13 Mar 2023 22:30:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4B0442056B4A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1678771855;
+        bh=C5J3FaqbEAYH7wT0wff5nHEPVDjVfGOplfQ4kyDngYY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VrjrJCJdJB2jR1+ntoqy7uOdgg4TROvecitdXf/2uv24RlYHFfjrhTUrDgk8+D9U2
+         n67ga9z8sFKVmsOaJHWXppmpGPMrPKWOUzf4pX7vVdwjg/IuQW+gHxHh+oUJ5sAlM2
+         7g8urrc//IwJIAmvQNU0A+TG3yEqMiYuREroiHKA=
+From:   Shradha Gupta <shradhagupta@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Shradha Gupta <shradhagupta@linux.microsoft.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Yonghong Song <yhs@fb.com>, linux-kselftest@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        "Michael S . Tsirkin" <mst@redhat.com>
-Message-ID: <641005c453661_4258120826@john.notmuch>
-In-Reply-To: <20230313204050.GA592900@google.com>
-References: <20230310175209.2130880-1-zwisler@kernel.org>
- <20230310175209.2130880-2-zwisler@kernel.org>
- <20230310183352.2943e633@gandalf.local.home>
- <20230313204050.GA592900@google.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: use canonical ftrace path
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: [PATCH] net: mana: Add new MANA VF performance counters for easier troubleshooting
+Date:   Mon, 13 Mar 2023 22:30:10 -0700
+Message-Id: <1678771810-21050-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Ross Zwisler wrote:
-> On Fri, Mar 10, 2023 at 06:33:52PM -0500, Steven Rostedt wrote:
-> > On Fri, 10 Mar 2023 10:52:09 -0700
-> > zwisler@kernel.org wrote:
-> > 
-> > > diff --git a/tools/testing/selftests/bpf/get_cgroup_id_user.c b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-> > > index 156743cf5870..4fa61ac8a0ee 100644
-> > > --- a/tools/testing/selftests/bpf/get_cgroup_id_user.c
-> > > +++ b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-> > > @@ -86,8 +86,12 @@ int main(int argc, char **argv)
-> > >  	pid = getpid();
-> > >  	bpf_map_update_elem(pidmap_fd, &key, &pid, 0);
-> > >  
-> > > -	snprintf(buf, sizeof(buf),
-> > > -		 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/tracing/events/%s/id", probe_name);
-> > > +	else
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > 
-> > I don't know how the BPF folks feel, but I do know some kernel developers
-> > prefer that if you need to break a single command into multiple lines that
-> > you then need to add brackets around it. As it makes it easier to read.
-> > 
-> > 	if (access("/sys/kernel/tracing/trace", F_OK) == 0) {
-> > 		snprintf(buf, sizeof(buf),
-> > 			 "/sys/kernel/tracing/events/%s/id", probe_name);
-> > 	} else {
-> > 		snprintf(buf, sizeof(buf),
-> > 			 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > 	}
-> > 
-> > 
-> > 
-> > >  	efd = open(buf, O_RDONLY, 0);
-> > >  	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-> > >  		goto close_prog;
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > > index 113dba349a57..22be0a9a5a0a 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> > > @@ -338,7 +338,12 @@ static int get_syms(char ***symsp, size_t *cntp, bool kernel)
-> > >  	 * Filtering out duplicates by using hashmap__add, which won't
-> > >  	 * add existing entry.
-> > >  	 */
-> > > -	f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
-> > > +
-> > > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > > +		f = fopen("/sys/kernel/tracing/available_filter_functions", "r");
-> > > +	else
-> > > +		f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
-> > > +
-> > >  	if (!f)
-> > >  		return -EINVAL;
-> > >  
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-> > > index c717741bf8b6..60f92fd3c37a 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-> > > @@ -17,8 +17,12 @@ static void test_task_fd_query_tp_core(const char *probe_name,
-> > >  	if (CHECK(err, "bpf_prog_test_load", "err %d errno %d\n", err, errno))
-> > >  		goto close_prog;
-> > >  
-> > > -	snprintf(buf, sizeof(buf),
-> > > -		 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/tracing/events/%s/id", probe_name);
-> > > +	else
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > 
-> > Same here.
-> > 
-> > >  	efd = open(buf, O_RDONLY, 0);
-> > >  	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-> > >  		goto close_prog;
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> > > index 770fcc3bb1ba..d3e377fa8e9b 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> > > @@ -16,8 +16,12 @@ void serial_test_tp_attach_query(void)
-> > >  	for (i = 0; i < num_progs; i++)
-> > >  		obj[i] = NULL;
-> > >  
-> > > -	snprintf(buf, sizeof(buf),
-> > > -		 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
-> > > +	if (access("/sys/kernel/tracing/trace", F_OK) == 0)
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/tracing/events/sched/sched_switch/id");
-> > > +	else
-> > > +		snprintf(buf, sizeof(buf),
-> > > +			 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
-> > 
-> > and here.
-> > 
-> > But perhaps the BPF folks don't care?
-> 
-> Sure, I agree that this is more readable.  I'll gather your Reviewed-by for
-> patch #1, make this change, rebase to the current bpf/bpf-next and send out
-> v4.
+Extended performance counter stats in 'ethtool -S <interface>' output
+for MANA VF to facilitate troubleshooting.
 
+Tested-on: Ubuntu22
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 67 ++++++++++++++++++-
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 52 +++++++++++++-
+ include/net/mana/mana.h                       | 18 +++++
+ 3 files changed, 133 insertions(+), 4 deletions(-)
 
-Also for the patch. LGTM
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 6120f2b6684f..9762bdda6df1 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -156,6 +156,8 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 	struct mana_txq *txq;
+ 	struct mana_cq *cq;
+ 	int err, len;
++	u16 ihs;
++	int hopbyhop = 0;
+ 
+ 	if (unlikely(!apc->port_is_up))
+ 		goto tx_drop;
+@@ -166,6 +168,7 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 	txq = &apc->tx_qp[txq_idx].txq;
+ 	gdma_sq = txq->gdma_sq;
+ 	cq = &apc->tx_qp[txq_idx].tx_cq;
++	tx_stats = &txq->stats;
+ 
+ 	pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
+ 	pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
+@@ -179,10 +182,17 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 
+ 	pkg.tx_oob.s_oob.pkt_fmt = pkt_fmt;
+ 
+-	if (pkt_fmt == MANA_SHORT_PKT_FMT)
++	if (pkt_fmt == MANA_SHORT_PKT_FMT) {
+ 		pkg.wqe_req.inline_oob_size = sizeof(struct mana_tx_short_oob);
+-	else
++		u64_stats_update_begin(&tx_stats->syncp);
++		tx_stats->short_pkt_fmt++;
++		u64_stats_update_end(&tx_stats->syncp);
++	} else {
+ 		pkg.wqe_req.inline_oob_size = sizeof(struct mana_tx_oob);
++		u64_stats_update_begin(&tx_stats->syncp);
++		tx_stats->long_pkt_fmt++;
++		u64_stats_update_end(&tx_stats->syncp);
++	}
+ 
+ 	pkg.wqe_req.inline_oob_data = &pkg.tx_oob;
+ 	pkg.wqe_req.flags = 0;
+@@ -232,9 +242,37 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 						 &ipv6_hdr(skb)->daddr, 0,
+ 						 IPPROTO_TCP, 0);
+ 		}
++
++		if (skb->encapsulation) {
++			ihs = skb_inner_tcp_all_headers(skb);
++			u64_stats_update_begin(&tx_stats->syncp);
++			tx_stats->tso_inner_packets++;
++			tx_stats->tso_inner_bytes += skb->len - ihs;
++			u64_stats_update_end(&tx_stats->syncp);
++		} else {
++			if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
++				ihs = skb_transport_offset(skb) + sizeof(struct udphdr);
++			} else {
++				ihs = skb_tcp_all_headers(skb);
++				if (ipv6_has_hopopt_jumbo(skb)) {
++					hopbyhop = sizeof(struct hop_jumbo_hdr);
++					ihs -= sizeof(struct hop_jumbo_hdr);
++				}
++			}
++
++			u64_stats_update_begin(&tx_stats->syncp);
++			tx_stats->tso_packets++;
++			tx_stats->tso_bytes += skb->len - ihs - hopbyhop;
++			u64_stats_update_end(&tx_stats->syncp);
++		}
++
+ 	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
+ 		csum_type = mana_checksum_info(skb);
+ 
++		u64_stats_update_begin(&tx_stats->syncp);
++		tx_stats->csum_partial++;
++		u64_stats_update_end(&tx_stats->syncp);
++
+ 		if (csum_type == IPPROTO_TCP) {
+ 			pkg.tx_oob.s_oob.is_outer_ipv4 = ipv4;
+ 			pkg.tx_oob.s_oob.is_outer_ipv6 = ipv6;
+@@ -254,8 +292,12 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 		}
+ 	}
+ 
+-	if (mana_map_skb(skb, apc, &pkg))
++	if (mana_map_skb(skb, apc, &pkg)) {
++		u64_stats_update_begin(&tx_stats->syncp);
++		tx_stats->mana_map_err++;
++		u64_stats_update_end(&tx_stats->syncp);
+ 		goto free_sgl_ptr;
++	}
+ 
+ 	skb_queue_tail(&txq->pending_skbs, skb);
+ 
+@@ -1038,6 +1080,8 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+ 	if (comp_read < 1)
+ 		return;
+ 
++	apc->eth_stats.tx_cqes = comp_read;
++
+ 	for (i = 0; i < comp_read; i++) {
+ 		struct mana_tx_comp_oob *cqe_oob;
+ 
+@@ -1064,6 +1108,7 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+ 		case CQE_TX_VLAN_TAGGING_VIOLATION:
+ 			WARN_ONCE(1, "TX: CQE error %d: ignored.\n",
+ 				  cqe_oob->cqe_hdr.cqe_type);
++			apc->eth_stats.tx_cqe_err++;
+ 			break;
+ 
+ 		default:
+@@ -1072,6 +1117,7 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+ 			 */
+ 			WARN_ONCE(1, "TX: Unexpected CQE type %d: HW BUG?\n",
+ 				  cqe_oob->cqe_hdr.cqe_type);
++			apc->eth_stats.tx_cqe_unknown_type++;
+ 			return;
+ 		}
+ 
+@@ -1118,6 +1164,8 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+ 		WARN_ON_ONCE(1);
+ 
+ 	cq->work_done = pkt_transmitted;
++
++	apc->eth_stats.tx_cqes -= pkt_transmitted;
+ }
+ 
+ static void mana_post_pkt_rxq(struct mana_rxq *rxq)
+@@ -1255,9 +1303,12 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 	struct device *dev = gc->dev;
+ 	void *new_buf, *old_buf;
+ 	struct page *new_page;
++	struct mana_port_context *apc;
+ 	u32 curr, pktlen;
+ 	dma_addr_t da;
+ 
++	apc = netdev_priv(ndev);
++
+ 	switch (oob->cqe_hdr.cqe_type) {
+ 	case CQE_RX_OKAY:
+ 		break;
+@@ -1270,6 +1321,7 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 
+ 	case CQE_RX_COALESCED_4:
+ 		netdev_err(ndev, "RX coalescing is unsupported\n");
++		apc->eth_stats.rx_coalesced_err++;
+ 		return;
+ 
+ 	case CQE_RX_OBJECT_FENCE:
+@@ -1279,6 +1331,7 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 	default:
+ 		netdev_err(ndev, "Unknown RX CQE type = %d\n",
+ 			   oob->cqe_hdr.cqe_type);
++		apc->eth_stats.rx_cqe_unknown_type++;
+ 		return;
+ 	}
+ 
+@@ -1341,11 +1394,17 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+ {
+ 	struct gdma_comp *comp = cq->gdma_comp_buf;
+ 	struct mana_rxq *rxq = cq->rxq;
++	struct net_device *ndev;
++	struct mana_port_context *apc;
+ 	int comp_read, i;
+ 
++	ndev = rxq->ndev;
++	apc = netdev_priv(ndev);
++
+ 	comp_read = mana_gd_poll_cq(cq->gdma_cq, comp, CQE_POLLING_BUFFER);
+ 	WARN_ON_ONCE(comp_read > CQE_POLLING_BUFFER);
+ 
++	apc->eth_stats.rx_cqes = comp_read;
+ 	rxq->xdp_flush = false;
+ 
+ 	for (i = 0; i < comp_read; i++) {
+@@ -1357,6 +1416,8 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+ 			return;
+ 
+ 		mana_process_rx_cqe(rxq, cq, &comp[i]);
++
++		apc->eth_stats.rx_cqes--;
+ 	}
+ 
+ 	if (rxq->xdp_flush)
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index 5b776a33a817..a64c81410dc1 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -13,6 +13,15 @@ static const struct {
+ } mana_eth_stats[] = {
+ 	{"stop_queue", offsetof(struct mana_ethtool_stats, stop_queue)},
+ 	{"wake_queue", offsetof(struct mana_ethtool_stats, wake_queue)},
++	{"tx_cqes", offsetof(struct mana_ethtool_stats, tx_cqes)},
++	{"tx_cq_err", offsetof(struct mana_ethtool_stats, tx_cqe_err)},
++	{"tx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
++					tx_cqe_unknown_type)},
++	{"rx_cqes", offsetof(struct mana_ethtool_stats, rx_cqes)},
++	{"rx_coalesced_err", offsetof(struct mana_ethtool_stats,
++					rx_coalesced_err)},
++	{"rx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
++					rx_cqe_unknown_type)},
+ };
+ 
+ static int mana_get_sset_count(struct net_device *ndev, int stringset)
+@@ -23,7 +32,8 @@ static int mana_get_sset_count(struct net_device *ndev, int stringset)
+ 	if (stringset != ETH_SS_STATS)
+ 		return -EINVAL;
+ 
+-	return ARRAY_SIZE(mana_eth_stats) + num_queues * 8;
++	return ARRAY_SIZE(mana_eth_stats) + num_queues *
++				(MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT);
+ }
+ 
+ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
+@@ -61,6 +71,22 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
+ 		p += ETH_GSTRING_LEN;
+ 		sprintf(p, "tx_%d_xdp_xmit", i);
+ 		p += ETH_GSTRING_LEN;
++		sprintf(p, "tx_%d_tso_packets", i);
++		p += ETH_GSTRING_LEN;
++		sprintf(p, "tx_%d_tso_bytes", i);
++		p += ETH_GSTRING_LEN;
++		sprintf(p, "tx_%d_tso_inner_packets", i);
++		p += ETH_GSTRING_LEN;
++		sprintf(p, "tx_%d_tso_inner_bytes", i);
++		p += ETH_GSTRING_LEN;
++		sprintf(p, "tx_%d_long_pkt_fmt", i);
++		p += ETH_GSTRING_LEN;
++		sprintf(p, "tx_%d_short_pkt_fmt", i);
++		p += ETH_GSTRING_LEN;
++		sprintf(p, "tx_%d_csum_partial", i);
++		p += ETH_GSTRING_LEN;
++		sprintf(p, "tx_%d_mana_map_err", i);
++		p += ETH_GSTRING_LEN;
+ 	}
+ }
+ 
+@@ -78,6 +104,14 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
+ 	u64 xdp_xmit;
+ 	u64 xdp_drop;
+ 	u64 xdp_tx;
++	u64 tso_packets;
++	u64 tso_bytes;
++	u64 tso_inner_packets;
++	u64 tso_inner_bytes;
++	u64 long_pkt_fmt;
++	u64 short_pkt_fmt;
++	u64 csum_partial;
++	u64 mana_map_err;
+ 	int q, i = 0;
+ 
+ 	if (!apc->port_is_up)
+@@ -113,11 +147,27 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
+ 			packets = tx_stats->packets;
+ 			bytes = tx_stats->bytes;
+ 			xdp_xmit = tx_stats->xdp_xmit;
++			tso_packets = tx_stats->tso_packets;
++			tso_bytes = tx_stats->tso_bytes;
++			tso_inner_packets = tx_stats->tso_inner_packets;
++			tso_inner_bytes = tx_stats->tso_inner_bytes;
++			long_pkt_fmt = tx_stats->long_pkt_fmt;
++			short_pkt_fmt = tx_stats->short_pkt_fmt;
++			csum_partial = tx_stats->csum_partial;
++			mana_map_err = tx_stats->mana_map_err;
+ 		} while (u64_stats_fetch_retry(&tx_stats->syncp, start));
+ 
+ 		data[i++] = packets;
+ 		data[i++] = bytes;
+ 		data[i++] = xdp_xmit;
++		data[i++] = tso_packets;
++		data[i++] = tso_bytes;
++		data[i++] = tso_inner_packets;
++		data[i++] = tso_inner_bytes;
++		data[i++] = long_pkt_fmt;
++		data[i++] = short_pkt_fmt;
++		data[i++] = csum_partial;
++		data[i++] = mana_map_err;
+ 	}
+ }
+ 
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 3bb579962a14..bb11a6535d80 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -48,6 +48,10 @@ enum TRI_STATE {
+ 
+ #define MAX_PORTS_IN_MANA_DEV 256
+ 
++/* Update this count whenever the respective structures are changed */
++#define MANA_STATS_RX_COUNT 5
++#define MANA_STATS_TX_COUNT 11
++
+ struct mana_stats_rx {
+ 	u64 packets;
+ 	u64 bytes;
+@@ -61,6 +65,14 @@ struct mana_stats_tx {
+ 	u64 packets;
+ 	u64 bytes;
+ 	u64 xdp_xmit;
++	u64 tso_packets;
++	u64 tso_bytes;
++	u64 tso_inner_packets;
++	u64 tso_inner_bytes;
++	u64 short_pkt_fmt;
++	u64 long_pkt_fmt;
++	u64 csum_partial;
++	u64 mana_map_err;
+ 	struct u64_stats_sync syncp;
+ };
+ 
+@@ -331,6 +343,12 @@ struct mana_tx_qp {
+ struct mana_ethtool_stats {
+ 	u64 stop_queue;
+ 	u64 wake_queue;
++	u64 tx_cqes;
++	u64 tx_cqe_err;
++	u64 tx_cqe_unknown_type;
++	u64 rx_cqes;
++	u64 rx_coalesced_err;
++	u64 rx_cqe_unknown_type;
+ };
+ 
+ struct mana_context {
+-- 
+2.37.2
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
