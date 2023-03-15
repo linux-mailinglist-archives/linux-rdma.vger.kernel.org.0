@@ -2,306 +2,228 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDA56BB6BA
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Mar 2023 15:56:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 041A46BBBAE
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Mar 2023 19:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbjCOO4w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Mar 2023 10:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37336 "EHLO
+        id S231903AbjCOSH7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Mar 2023 14:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233326AbjCOO4f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Mar 2023 10:56:35 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B5B8FBF9
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Mar 2023 07:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678892155; x=1710428155;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ITjaVN9jfWhz2poej8dQmfGty39nDEqPm+IsmjNf9EE=;
-  b=MJh4NZ3ffsR535ugXZnoNh/WaHed8e50wKQUHexZHQaQ47DiumVpzdug
-   /hItHmH/C1YZpXcFMkC+fkwdaw5659LF4QHrrGe6PokR1NZv6zjU3fAGM
-   nW+sLbE+yra+yQjZbcrGwjQ6NDCIGsN5tql3Db09HtCwLoDVXmsgExODi
-   v3cveCH0jTtmoWCsOp/XhDzjFdAHsRQTLMU+/g/ufBz8grd1kL/WQqxMa
-   E9JByHHcEThKfivea0ZsTCI8pAzDmjjcQSqy2EaC0ZN2a9cLACj9oFY+l
-   BDMlnqKNy5rZNQ1C4cnqRqG2aPi60ZmqqjFJ0Xb+bDRAmPlNoE+yD4ftk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10649"; a="321561731"
-X-IronPort-AV: E=Sophos;i="5.98,262,1673942400"; 
-   d="scan'208";a="321561731"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2023 07:53:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10649"; a="743714362"
-X-IronPort-AV: E=Sophos;i="5.98,262,1673942400"; 
-   d="scan'208";a="743714362"
-Received: from ssaleem-mobl1.amr.corp.intel.com ([10.255.35.84])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2023 07:53:32 -0700
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     jgg@nvidia.com, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, Sindhu Devale <sindhu.devale@intel.com>
-Subject: [PATCH for-next 4/4] RDMA/irdma: Refactor PBLE functions
-Date:   Wed, 15 Mar 2023 09:53:05 -0500
-Message-Id: <20230315145305.955-5-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230315145305.955-1-shiraz.saleem@intel.com>
-References: <20230315145305.955-1-shiraz.saleem@intel.com>
+        with ESMTP id S230248AbjCOSH6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Mar 2023 14:07:58 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964F114201;
+        Wed, 15 Mar 2023 11:07:57 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id bd36so3947277oib.12;
+        Wed, 15 Mar 2023 11:07:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678903677;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bswk4wkeUv+Xxd0NDqkMooJeA4YdJa/+8yZXmuwomxg=;
+        b=JybN+y1Hx2ekfETb9GZtFLZVRJwjs8YyEYEyo2vnyLZNjX6kxF+Fdc/jxQmibdaZRq
+         mevgnjWdpUMGpXX9jzaPMz2iyX3RpVh0+ef2WQf4TPWUe/azYdCh/h20E3J5oPFD7LBb
+         WFBMOvywJCylytgjg4IA832CjBej+EraoiuONBAv4gAk2hdF449Xur6t8IJz1EIhoqoA
+         6aSaghwrfTycG54OWtIF6dcrdEYGEox8Jiq8H7wCPAVzfuP1rBoI5nSrhPm5u4fvIuqO
+         DvLgl6Lj6LAOQaU4co6aRiWmbhWCocDHL8lkUXpE9wVKzG/7uPj0uX7KQT9pov6xivJO
+         KpXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678903677;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bswk4wkeUv+Xxd0NDqkMooJeA4YdJa/+8yZXmuwomxg=;
+        b=UFeJv97H7ILH75TOS1dvthx5V6jtrG0/9CpwK8Sozw0YrT39aEA/B+CE3TZqBNJo7U
+         9A5VR4AD+rYeAmSNJC0F0msmHYoQEJe20P354//2yJwlDefug1bKFJij4a1iM97ISFb2
+         40QbEYWLJwFMF0ooAzS7x5yokU+TR7CIaSDSBo9P39HakdwZyROEwur5njBEj6IkF9Ua
+         FWdSse666V4tUC6tn9xWwRT+ZZ029AS8W8i+1WOcAWufR/ms5I5iJdNabaDL5dkMKbsI
+         sDTreqet4fWEZmRXMj6c9e9GD/SF5VxUJPO6NGhY7SZXQOJpmkXexAu94o6MrPLi6rl8
+         TFNw==
+X-Gm-Message-State: AO0yUKWqIBaHh15tyCPJmh1eNl0WqQ5dy7mASK0Jk9FS1lR292Wr8QJ1
+        PpWpkMcoy5nmqyVK9BBR+2o=
+X-Google-Smtp-Source: AK7set9vKCFoc3Wv5kWXBT9PoDc+xloD8ch3irDduMkdfZlsgouZZIXNaKHiCFuige8aJlPteUtctw==
+X-Received: by 2002:a05:6808:280d:b0:383:c6f1:306c with SMTP id et13-20020a056808280d00b00383c6f1306cmr1326182oib.42.1678903675393;
+        Wed, 15 Mar 2023 11:07:55 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:ebd0:e160:a3dd:fe9a? (2603-8081-140c-1a00-ebd0-e160-a3dd-fe9a.res6.spectrum.com. [2603:8081:140c:1a00:ebd0:e160:a3dd:fe9a])
+        by smtp.gmail.com with ESMTPSA id p130-20020acaf188000000b00383ebc74edasm2488540oih.7.2023.03.15.11.07.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Mar 2023 11:07:54 -0700 (PDT)
+Message-ID: <d5453f77-1e23-003b-6706-ce1f9c71a668@gmail.com>
+Date:   Wed, 15 Mar 2023 13:07:53 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 07/13] RDMA/rxe: Rename kfree_rcu() to
+ kfree_rcu_mightsleep()
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+References: <20230201150815.409582-1-urezki@gmail.com>
+ <20230201150815.409582-8-urezki@gmail.com> <ZAnjnRC1wY3RIFhM@pc636>
+ <ZAnpdKV/VvvX0TZz@pc636> <20230310005529.GA339498@google.com>
+ <67fbe385-3682-be4e-15fe-f26cc56fd56b@gmail.com>
+ <20230315115053.GA3784687@google.com>
+Content-Language: en-US
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <20230315115053.GA3784687@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Sindhu Devale <sindhu.devale@intel.com>
+On 3/15/23 06:50, Joel Fernandes wrote:
+> On Mon, Mar 13, 2023 at 02:43:43PM -0500, Bob Pearson wrote:
+>> On 3/9/23 18:55, Joel Fernandes wrote:
+>>> On Thu, Mar 09, 2023 at 03:13:08PM +0100, Uladzislau Rezki wrote:
+>>>>> On Wed, Feb 01, 2023 at 04:08:13PM +0100, Uladzislau Rezki (Sony) wrote:
+>>>>>> The kfree_rcu()'s single argument name is deprecated therefore
+>>>>>> rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
+>>>>>> underline that it is for sleepable contexts.
+>>>>>>
+>>>>>> Please check the RXE driver in a way that a single argument can
+>>>>>> be used. Briefly looking at it and rcu_head should be embed to
+>>>>>> free an obj over RCU-core. The context might be atomic.
+>>>>>>
+>>>>>> Cc: Bob Pearson <rpearsonhpe@gmail.com>
+>>>>>> Cc: Jason Gunthorpe <jgg@nvidia.com>
+>>>>>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+>>>>>> ---
+>>>>>>  drivers/infiniband/sw/rxe/rxe_pool.c | 2 +-
+>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>
+>>>>> Could you please add you reviwed-by or Acked-by tags so we can bring
+>>>>> our series with renaming for the next merge window?
+>>>>>
+>>>>> Thanks!
+>>>>>
+>>>> __rxe_cleanup() can be called in two contexts, sleepable and not.
+>>>> Therefore usage of a single argument of the kvfree_rcu() is not correct
+>>>> here.
+>>>>
+>>>> Could you please fix and check your driver? If my above statement
+>>>> is not correct, please provide Acked-by or Reviwed-by tags to the
+>>>> path that is in question.
+>>>>
+>>>> Otherwise please add an rcu_head in your data to free objects over
+>>>> kvfree_rcu() using double argument API.
+>>>>
+>>>> Could you please support?
+>>>
+>>> Also this one needs renaming? It came in because of the commit in 6.3-rc1:
+>>> 72a03627443d ("RDMA/rxe: Remove rxe_alloc()")
+>>>
+>>> It could be squashed into this patch itself since it is infiniband related.
+>>>
+>>> Paul noticed that this breaks dropping the old API on -next, so it is
+>>> blocking the renaming.
+>>>
+>>> ---8<-----------------------
+>>>
+>>> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+>>> index b10aa1580a64..ae3a100e18fb 100644
+>>> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+>>> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+>>> @@ -731,7 +731,7 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>>>  		return -EINVAL;
+>>>  
+>>>  	rxe_cleanup(mr);
+>>> -	kfree_rcu(mr);
+>>> +	kfree_rcu_mightsleep(mr);
+>>>  	return 0;
+>>>  }
+>>>  
+>> I just got back from a 1 week vacation and missed all this.
+>>
+>> The "RDMA/rxe: Remove rxe_alloc()" patch just moved the memory allocation
+>> for MR (verbs) objects outside of the rxe_pool code since it only applied
+>> to MRs and not the other verbs objects (AH, QP, CQ, ...).  That code has to
+>> handle a unique situation for AH objects which can be created or destroyed
+>> by connection manager code in atomic context while all the other ones
+>> including MRs are always created/destroyed in process context. All objects
+>> other than MR's are created/destroyed in the rdma-core code
+>> (drivers/infiniband/core).
+>>
+>> The rxe driver keeps xarray's of pointers to the various objects which are
+>> protected by rcu locking and so it made sense to use kfree_rcu to delete
+>> the object with a delay. In the MR case ..._mightsleep seems harmless and
+>> should not be an issue.
+>>
+>> However on reflection, all the references to the MR objects are ref counted
+>> and they have been dropped before reaching the kfree and so there really
+>> never was a good reason to use kfree_rcu in the first place. So a better
+>> solution would be to replace kfree_rcu with kfree. There is a timeout in
+>> completion_done() that triggers a WARN_ON() and this is only seen if the
+>> driver is broken for some reason but that is equivalent to getting a seg
+>> fault so no reason to further delay the kfree.
+>>
+>> Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+> 
+> Thanks, I am planning to send the following patch for 6.4 consideration,
+> please let me know if you disagree. Still testing it.
+> 
+> ----8<---
+> 
+> From: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Subject: [PATCH] RDMA/rxe: Rename kfree_rcu() to kvfree_rcu_mightsleep()
+> 
+> The k[v]free_rcu() macro's single-argument form is deprecated.
+> Therefore switch to the new k[v]free_rcu_mightsleep() variant. The goal
+> is to avoid accidental use of the single-argument forms, which can
+> introduce functionality bugs in atomic contexts and latency bugs in
+> non-atomic contexts.
+> 
+> There is no functionality change with this patch.
+> 
+> Link: https://lore.kernel.org/rcu/20230201150815.409582-1-urezki@gmail.com
+> Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+> Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> Fixes: 72a03627443d ("RDMA/rxe: Remove rxe_alloc()")
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index b10aa1580a64..ae3a100e18fb 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -731,7 +731,7 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>  		return -EINVAL;
+>  
+>  	rxe_cleanup(mr);
+> -	kfree_rcu(mr);
+> +	kfree_rcu_mightsleep(mr);
+>  	return 0;
+>  }
+>  
 
-Refactor PBLE functions using a bit mask to represent the PBLE level
-desired versus 2 parameters use_pble and lvl_one_only which makes the
-code confusing.
+I would prefer just
 
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
----
- drivers/infiniband/hw/irdma/pble.c  | 16 ++++++-------
- drivers/infiniband/hw/irdma/pble.h  |  2 +-
- drivers/infiniband/hw/irdma/verbs.c | 45 ++++++++++++++++++-------------------
- 3 files changed, 31 insertions(+), 32 deletions(-)
+-	kfree_rcu(mr);
++	kfree(mr);
 
-diff --git a/drivers/infiniband/hw/irdma/pble.c b/drivers/infiniband/hw/irdma/pble.c
-index cdc0b8a..c0bef114 100644
---- a/drivers/infiniband/hw/irdma/pble.c
-+++ b/drivers/infiniband/hw/irdma/pble.c
-@@ -423,15 +423,15 @@ static int get_lvl1_pble(struct irdma_hmc_pble_rsrc *pble_rsrc,
-  * get_lvl1_lvl2_pble - calls get_lvl1 and get_lvl2 pble routine
-  * @pble_rsrc: pble resources
-  * @palloc: contains all inforamtion regarding pble (idx + pble addr)
-- * @level1_only: flag for a level 1 PBLE
-+ * @lvl: Bitmask for requested pble level
-  */
- static int get_lvl1_lvl2_pble(struct irdma_hmc_pble_rsrc *pble_rsrc,
--			      struct irdma_pble_alloc *palloc, bool level1_only)
-+			      struct irdma_pble_alloc *palloc, u8 lvl)
- {
- 	int status = 0;
- 
- 	status = get_lvl1_pble(pble_rsrc, palloc);
--	if (!status || level1_only || palloc->total_cnt <= PBLE_PER_PAGE)
-+	if (!status || lvl == PBLE_LEVEL_1 || palloc->total_cnt <= PBLE_PER_PAGE)
- 		return status;
- 
- 	status = get_lvl2_pble(pble_rsrc, palloc);
-@@ -444,11 +444,11 @@ static int get_lvl1_lvl2_pble(struct irdma_hmc_pble_rsrc *pble_rsrc,
-  * @pble_rsrc: pble resources
-  * @palloc: contains all inforamtion regarding pble (idx + pble addr)
-  * @pble_cnt: #of pbles requested
-- * @level1_only: true if only pble level 1 to acquire
-+ * @lvl: requested pble level mask
-  */
- int irdma_get_pble(struct irdma_hmc_pble_rsrc *pble_rsrc,
- 		   struct irdma_pble_alloc *palloc, u32 pble_cnt,
--		   bool level1_only)
-+		   u8 lvl)
- {
- 	int status = 0;
- 	int max_sds = 0;
-@@ -462,7 +462,7 @@ int irdma_get_pble(struct irdma_hmc_pble_rsrc *pble_rsrc,
- 	/*check first to see if we can get pble's without acquiring
- 	 * additional sd's
- 	 */
--	status = get_lvl1_lvl2_pble(pble_rsrc, palloc, level1_only);
-+	status = get_lvl1_lvl2_pble(pble_rsrc, palloc, lvl);
- 	if (!status)
- 		goto exit;
- 
-@@ -472,9 +472,9 @@ int irdma_get_pble(struct irdma_hmc_pble_rsrc *pble_rsrc,
- 		if (status)
- 			break;
- 
--		status = get_lvl1_lvl2_pble(pble_rsrc, palloc, level1_only);
-+		status = get_lvl1_lvl2_pble(pble_rsrc, palloc, lvl);
- 		/* if level1_only, only go through it once */
--		if (!status || level1_only)
-+		if (!status || lvl)
- 			break;
- 	}
- 
-diff --git a/drivers/infiniband/hw/irdma/pble.h b/drivers/infiniband/hw/irdma/pble.h
-index 29d29546..b31b7c5 100644
---- a/drivers/infiniband/hw/irdma/pble.h
-+++ b/drivers/infiniband/hw/irdma/pble.h
-@@ -114,7 +114,7 @@ void irdma_free_pble(struct irdma_hmc_pble_rsrc *pble_rsrc,
- 		     struct irdma_pble_alloc *palloc);
- int irdma_get_pble(struct irdma_hmc_pble_rsrc *pble_rsrc,
- 		   struct irdma_pble_alloc *palloc, u32 pble_cnt,
--		   bool level1_only);
-+		   u8 lvl);
- int irdma_prm_add_pble_mem(struct irdma_pble_prm *pprm,
- 			   struct irdma_chunk *pchunk);
- int irdma_prm_get_pbles(struct irdma_pble_prm *pprm,
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index d906f59..ab5cdf7 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -2325,11 +2325,10 @@ static bool irdma_check_mr_contiguous(struct irdma_pble_alloc *palloc,
-  * irdma_setup_pbles - copy user pg address to pble's
-  * @rf: RDMA PCI function
-  * @iwmr: mr pointer for this memory registration
-- * @use_pbles: flag if to use pble's
-- * @lvl_1_only: request only level 1 pble if true
-+ * @lvl: requested pble levels
-  */
- static int irdma_setup_pbles(struct irdma_pci_f *rf, struct irdma_mr *iwmr,
--			     bool use_pbles, bool lvl_1_only)
-+			     u8 lvl)
- {
- 	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
- 	struct irdma_pble_alloc *palloc = &iwpbl->pble_alloc;
-@@ -2338,9 +2337,9 @@ static int irdma_setup_pbles(struct irdma_pci_f *rf, struct irdma_mr *iwmr,
- 	int status;
- 	enum irdma_pble_level level = PBLE_LEVEL_1;
- 
--	if (use_pbles) {
-+	if (lvl) {
- 		status = irdma_get_pble(rf->pble_rsrc, palloc, iwmr->page_cnt,
--					lvl_1_only);
-+					lvl);
- 		if (status)
- 			return status;
- 
-@@ -2355,7 +2354,7 @@ static int irdma_setup_pbles(struct irdma_pci_f *rf, struct irdma_mr *iwmr,
- 
- 	irdma_copy_user_pgaddrs(iwmr, pbl, level);
- 
--	if (use_pbles)
-+	if (lvl)
- 		iwmr->pgaddrmem[0] = *pbl;
- 
- 	return 0;
-@@ -2366,11 +2365,11 @@ static int irdma_setup_pbles(struct irdma_pci_f *rf, struct irdma_mr *iwmr,
-  * @iwdev: irdma device
-  * @req: information for q memory management
-  * @iwpbl: pble struct
-- * @use_pbles: flag to use pble
-+ * @lvl: pble level mask
-  */
- static int irdma_handle_q_mem(struct irdma_device *iwdev,
- 			      struct irdma_mem_reg_req *req,
--			      struct irdma_pbl *iwpbl, bool use_pbles)
-+			      struct irdma_pbl *iwpbl, u8 lvl)
- {
- 	struct irdma_pble_alloc *palloc = &iwpbl->pble_alloc;
- 	struct irdma_mr *iwmr = iwpbl->iwmr;
-@@ -2383,11 +2382,11 @@ static int irdma_handle_q_mem(struct irdma_device *iwdev,
- 	bool ret = true;
- 
- 	pg_size = iwmr->page_size;
--	err = irdma_setup_pbles(iwdev->rf, iwmr, use_pbles, true);
-+	err = irdma_setup_pbles(iwdev->rf, iwmr, lvl);
- 	if (err)
- 		return err;
- 
--	if (use_pbles)
-+	if (lvl)
- 		arr = palloc->level1.addr;
- 
- 	switch (iwmr->type) {
-@@ -2396,7 +2395,7 @@ static int irdma_handle_q_mem(struct irdma_device *iwdev,
- 		hmc_p = &qpmr->sq_pbl;
- 		qpmr->shadow = (dma_addr_t)arr[total];
- 
--		if (use_pbles) {
-+		if (lvl) {
- 			ret = irdma_check_mem_contiguous(arr, req->sq_pages,
- 							 pg_size);
- 			if (ret)
-@@ -2421,7 +2420,7 @@ static int irdma_handle_q_mem(struct irdma_device *iwdev,
- 		if (!cqmr->split)
- 			cqmr->shadow = (dma_addr_t)arr[req->cq_pages];
- 
--		if (use_pbles)
-+		if (lvl)
- 			ret = irdma_check_mem_contiguous(arr, req->cq_pages,
- 							 pg_size);
- 
-@@ -2435,7 +2434,7 @@ static int irdma_handle_q_mem(struct irdma_device *iwdev,
- 		err = -EINVAL;
- 	}
- 
--	if (use_pbles && ret) {
-+	if (lvl && ret) {
- 		irdma_free_pble(iwdev->rf->pble_rsrc, palloc);
- 		iwpbl->pbl_allocated = false;
- 	}
-@@ -2745,17 +2744,17 @@ static int irdma_reg_user_mr_type_mem(struct irdma_mr *iwmr, int access)
- {
- 	struct irdma_device *iwdev = to_iwdev(iwmr->ibmr.device);
- 	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
--	bool use_pbles;
- 	u32 stag;
-+	u8 lvl;
- 	int err;
- 
--	use_pbles = iwmr->page_cnt != 1;
-+	lvl = iwmr->page_cnt != 1 ? PBLE_LEVEL_1 | PBLE_LEVEL_2 : PBLE_LEVEL_0;
- 
--	err = irdma_setup_pbles(iwdev->rf, iwmr, use_pbles, false);
-+	err = irdma_setup_pbles(iwdev->rf, iwmr, lvl);
- 	if (err)
- 		return err;
- 
--	if (use_pbles) {
-+	if (lvl) {
- 		err = irdma_check_mr_contiguous(&iwpbl->pble_alloc,
- 						iwmr->page_size);
- 		if (err) {
-@@ -2839,17 +2838,17 @@ static int irdma_reg_user_mr_type_qp(struct irdma_mem_reg_req req,
- 	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
- 	struct irdma_ucontext *ucontext = NULL;
- 	unsigned long flags;
--	bool use_pbles;
- 	u32 total;
- 	int err;
-+	u8 lvl;
- 
- 	total = req.sq_pages + req.rq_pages + 1;
- 	if (total > iwmr->page_cnt)
- 		return -EINVAL;
- 
- 	total = req.sq_pages + req.rq_pages;
--	use_pbles = total > 2;
--	err = irdma_handle_q_mem(iwdev, &req, iwpbl, use_pbles);
-+	lvl = total > 2 ? PBLE_LEVEL_1 : PBLE_LEVEL_0;
-+	err = irdma_handle_q_mem(iwdev, &req, iwpbl, lvl);
- 	if (err)
- 		return err;
- 
-@@ -2872,9 +2871,9 @@ static int irdma_reg_user_mr_type_cq(struct irdma_mem_reg_req req,
- 	struct irdma_ucontext *ucontext = NULL;
- 	u8 shadow_pgcnt = 1;
- 	unsigned long flags;
--	bool use_pbles;
- 	u32 total;
- 	int err;
-+	u8 lvl;
- 
- 	if (iwdev->rf->sc_dev.hw_attrs.uk_attrs.feature_flags & IRDMA_FEATURE_CQ_RESIZE)
- 		shadow_pgcnt = 0;
-@@ -2882,8 +2881,8 @@ static int irdma_reg_user_mr_type_cq(struct irdma_mem_reg_req req,
- 	if (total > iwmr->page_cnt)
- 		return -EINVAL;
- 
--	use_pbles = req.cq_pages > 1;
--	err = irdma_handle_q_mem(iwdev, &req, iwpbl, use_pbles);
-+	lvl = req.cq_pages > 1 ? PBLE_LEVEL_1 : PBLE_LEVEL_0;
-+	err = irdma_handle_q_mem(iwdev, &req, iwpbl, lvl);
- 	if (err)
- 		return err;
- 
--- 
-1.8.3.1
+but either one will work.
 
+Bob
