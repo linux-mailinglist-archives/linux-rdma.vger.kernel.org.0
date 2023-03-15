@@ -2,77 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C586BAB06
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Mar 2023 09:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A5C6BACC8
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Mar 2023 10:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbjCOIpq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Mar 2023 04:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
+        id S229542AbjCOJ5d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Mar 2023 05:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjCOIpo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Mar 2023 04:45:44 -0400
-Received: from mail.amblevebiz.com (mail.amblevebiz.com [80.211.239.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954613E63A
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Mar 2023 01:45:43 -0700 (PDT)
-Received: by mail.amblevebiz.com (Postfix, from userid 1002)
-        id 4B32082BCB; Wed, 15 Mar 2023 09:45:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=amblevebiz.com;
-        s=mail; t=1678869942;
-        bh=mG5KF9rXIT2hCcIXZaMY449X9Ndwb1czFhgZLlqDg7A=;
-        h=Date:From:To:Subject:From;
-        b=R6sX0TZWTyJ5o7Q/0cf5iKEG8juDzNX6PjYLXnh+/ATyWaELQcVlSHAU4nf7iLM0V
-         nZUFdu57eEDlldE66Y/ZIB5jbXEJDowBPDj9AtDkozzNn9D7PJnO8r8dNw1Pdgwsyu
-         3uE/2janlikknYFjBvqkheYkqulNMBvWntxIXVY5PLMWL26dDR+xFUvylJBQLjkIOq
-         qzCUYzrvt9XFU6PksRlhO7kfSgZc95Dzu5b3oVehv8IuuEMdIJs+DdlWICsGvRm2xU
-         8AvjlkexT7Z6tBUJa1zfSaiHhqdToPuRrlQwqO7n+sAQ1L9bBiyrIgT04DU9z0oukY
-         MxvoAdBKn4Xtw==
-Received: by mail.amblevebiz.com for <linux-rdma@vger.kernel.org>; Wed, 15 Mar 2023 08:45:25 GMT
-Message-ID: <20230315084500-0.1.p.1h22.0.35bycxg8hi@amblevebiz.com>
-Date:   Wed, 15 Mar 2023 08:45:25 GMT
-From:   =?UTF-8?Q? "Luk=C3=A1=C5=A1_Horv=C3=A1th" ?= 
-        <lukas.horvath@amblevebiz.com>
-To:     <linux-rdma@vger.kernel.org>
-Subject: =?UTF-8?Q?Technick=C3=BD_audit_podlah?=
-X-Mailer: mail.amblevebiz.com
+        with ESMTP id S232056AbjCOJ5H (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Mar 2023 05:57:07 -0400
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E4629432;
+        Wed, 15 Mar 2023 02:55:39 -0700 (PDT)
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 15 Mar
+ 2023 12:55:27 +0300
+Received: from [10.0.253.157] (10.0.253.157) by Ex16-01.fintech.ru
+ (10.0.10.18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 15 Mar
+ 2023 12:55:27 +0300
+Message-ID: <e837a9a1-d5ed-ae97-3a55-7e4525a315ae@fintech.ru>
+Date:   Wed, 15 Mar 2023 02:55:18 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 5.4/5.10 1/1] RDMA/i40iw: Fix potential
+ NULL-ptr-dereference
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Leon Romanovsky" <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+References: <20230314134456.3557-1-n.zhandarovich@fintech.ru>
+ <20230314134456.3557-2-n.zhandarovich@fintech.ru>
+ <ZBF7A87Ph+O2y7KY@kroah.com>
+Content-Language: en-US
+From:   Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+In-Reply-To: <ZBF7A87Ph+O2y7KY@kroah.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URIBL_CSS_A,
-        URIBL_DBL_SPAM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.0.253.157]
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dobr=C3=A9 r=C3=A1no,
+On 3/15/23 01:00, Greg Kroah-Hartman wrote:
+> On Tue, Mar 14, 2023 at 06:44:56AM -0700, Nikita Zhandarovich wrote:
+>> From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+>>
+>> commit 5d9745cead1f121974322b94ceadfb4d1e67960e upstream.
+>>
+>> in_dev_get() can return NULL which will cause a failure once idev is
+>> dereferenced in in_dev_for_each_ifa_rtnl(). This patch adds a
+>> check for NULL value in idev beforehand.
+>>
+>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>
+>> Changes made to the original patch during backporting:
+>> Apply patch to drivers/infiniband/hw/i40iw/i40iw_cm.c instead of
+>> drivers/infiniband/hw/irdma/cm.c due to the fact that kernel versions
+>> 5.10 and below use i40iw driver, not irdma.
+>>
+>> Fixes: f27b4746f378 ("i40iw: add connection management code")
+>> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+>> Link: https://lore.kernel.org/r/20230126185230.62464-1-n.zhandarovich@fintech.ru
+>> ---
+>>  drivers/infiniband/hw/i40iw/i40iw_cm.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+>> index 3053c345a5a3..e1236ac502f2 100644
+>> --- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
+>> +++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+>> @@ -1776,6 +1776,8 @@ static enum i40iw_status_code i40iw_add_mqh_4(
+>>  			const struct in_ifaddr *ifa;
+>>  
+>>  			idev = in_dev_get(dev);
+>> +			if (!idev)
+>> +				continue;
+>>  
+>>  			in_dev_for_each_ifa_rtnl(ifa, idev) {
+>>  				i40iw_debug(&iwdev->sc_dev,
+> 
+> As this isn't anything that can be triggered by a normal system
+> operation, I'm going to drop it from the review queue.  Unless you have
+> a reproducer that can cause this to happen from userspace?
+> 
+> thanks,
+> 
+> greg k-h
 
-uva=C5=BEujete o bezesp=C3=A1rov=C3=A9 podlaze pro v=C3=BDrobn=C3=AD prov=
-oz?
+Currently working on seeing whether a reproducer is feasible. It makes
+sense to not include the patch until then.
 
-Jako sv=C4=9Btov=C3=BD l=C3=ADdr ve v=C3=BDrob=C4=9B a pokl=C3=A1dce podl=
-ah =C5=99e=C5=A1=C3=ADme probl=C3=A9my vypl=C3=BDvaj=C3=ADc=C3=AD z vlivu=
- chemick=C3=BDch slou=C4=8Denin, ot=C4=9Bru, n=C3=A1raz=C5=AF, vlhkosti n=
-ebo n=C3=A1hl=C3=BDch zm=C4=9Bn teplot - na=C5=A1e podlahov=C3=A9 syst=C3=
-=A9my jsou p=C5=99izp=C5=AFsobeny nejt=C4=9B=C5=BE=C5=A1=C3=ADm podm=C3=AD=
-nk=C3=A1m prost=C5=99ed=C3=AD.
+thanks for your time,
 
-Garantujeme v=C3=A1m =C5=99e=C5=A1en=C3=AD, kter=C3=A1 jsou =C5=A1etrn=C3=
-=A1 k =C5=BEivotn=C3=ADmu prost=C5=99ed=C3=AD, odoln=C3=A1 a snadno se =C4=
-=8Dist=C3=AD, hygienick=C3=A1, protiskluzov=C3=A1 a bezpe=C4=8Dn=C3=A1 pr=
-o zam=C4=9Bstnance.
-
-Poskytujeme kr=C3=A1tkou dobu instalace a nep=C5=99etr=C5=BEit=C3=BD prov=
-oz i o v=C3=ADkendech a sv=C3=A1tc=C3=ADch, =C4=8D=C3=ADm=C5=BE eliminuje=
-me riziko prostoj=C5=AF.
-
-Mohu V=C3=A1m zdarma nab=C3=ADdnout technick=C3=BD audit podlah s komplex=
-n=C3=ADm rozborem podkladu.
-
-M=C5=AF=C5=BEeme pro v=C3=A1s mluvit o =C5=99e=C5=A1en=C3=ADch?
-
-
-Luk=C3=A1=C5=A1 Horv=C3=A1th
+Nikita
