@@ -2,51 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A5C6BACC8
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Mar 2023 10:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931F16BAD8F
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Mar 2023 11:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbjCOJ5d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Mar 2023 05:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46532 "EHLO
+        id S232288AbjCOKXH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Mar 2023 06:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbjCOJ5H (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Mar 2023 05:57:07 -0400
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E4629432;
-        Wed, 15 Mar 2023 02:55:39 -0700 (PDT)
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 15 Mar
- 2023 12:55:27 +0300
-Received: from [10.0.253.157] (10.0.253.157) by Ex16-01.fintech.ru
- (10.0.10.18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 15 Mar
- 2023 12:55:27 +0300
-Message-ID: <e837a9a1-d5ed-ae97-3a55-7e4525a315ae@fintech.ru>
-Date:   Wed, 15 Mar 2023 02:55:18 -0700
+        with ESMTP id S232365AbjCOKXF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Mar 2023 06:23:05 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134E1856BA
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Mar 2023 03:22:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 0CDEBCE1985
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Mar 2023 10:22:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9180C433EF;
+        Wed, 15 Mar 2023 10:22:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678875735;
+        bh=FGtBM5scWfwrxSnuaJjgnq1axHBMvrer2bFWMZ4eZtU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=InMYaAJH73yUgdOk4J3bh8daJyxprJmM04c+9ovlgpYF6jdeKhiWhE4Ed7Q6wTVfE
+         mr4G6MJm5zKAO+lWKc4G/Z6c2GbsiMBBw4pYlp+at52vaTHFB1afK2Ns3MApoetrVC
+         KygedPavT44oRoYMB1W7Pscj9Pd3vbLCDJtMrmXYybF7h6WTj5OWXjvRNkzRG4ZDAS
+         /c74NaARriDlomwB6paWanvB1RpazAU9t+thikKIFoLEg38txMAuiZY4TQ63Bu02Nf
+         +S3Phh+/tcK3a7B89dj6uWupgMvhv0FmZ3tt7WudcJcY6EH1QehgUTibqizJ/AOhs+
+         4hBYSqhopl26w==
+Date:   Wed, 15 Mar 2023 12:22:10 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Cheng Xu <chengyou@linux.alibaba.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
+Subject: Re: [PATCH for-next v2 2/2] RDMA/erdma: Support non-4K page size in
+ doorbell allocation
+Message-ID: <20230315102210.GT36557@unreal>
+References: <20230307102924.70577-1-chengyou@linux.alibaba.com>
+ <20230307102924.70577-3-chengyou@linux.alibaba.com>
+ <20230314102313.GB36557@unreal>
+ <e6eec8de-7442-7f2b-8c90-af9222b2e12b@linux.alibaba.com>
+ <20230314141020.GL36557@unreal>
+ <1604d654-583f-52eb-ff76-fd92647d3625@linux.alibaba.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 5.4/5.10 1/1] RDMA/i40iw: Fix potential
- NULL-ptr-dereference
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <stable@vger.kernel.org>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Leon Romanovsky" <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-References: <20230314134456.3557-1-n.zhandarovich@fintech.ru>
- <20230314134456.3557-2-n.zhandarovich@fintech.ru>
- <ZBF7A87Ph+O2y7KY@kroah.com>
-Content-Language: en-US
-From:   Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-In-Reply-To: <ZBF7A87Ph+O2y7KY@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.0.253.157]
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604d654-583f-52eb-ff76-fd92647d3625@linux.alibaba.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,55 +57,46 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/15/23 01:00, Greg Kroah-Hartman wrote:
-> On Tue, Mar 14, 2023 at 06:44:56AM -0700, Nikita Zhandarovich wrote:
->> From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
->>
->> commit 5d9745cead1f121974322b94ceadfb4d1e67960e upstream.
->>
->> in_dev_get() can return NULL which will cause a failure once idev is
->> dereferenced in in_dev_for_each_ifa_rtnl(). This patch adds a
->> check for NULL value in idev beforehand.
->>
->> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->>
->> Changes made to the original patch during backporting:
->> Apply patch to drivers/infiniband/hw/i40iw/i40iw_cm.c instead of
->> drivers/infiniband/hw/irdma/cm.c due to the fact that kernel versions
->> 5.10 and below use i40iw driver, not irdma.
->>
->> Fixes: f27b4746f378 ("i40iw: add connection management code")
->> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
->> Link: https://lore.kernel.org/r/20230126185230.62464-1-n.zhandarovich@fintech.ru
->> ---
->>  drivers/infiniband/hw/i40iw/i40iw_cm.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
->> index 3053c345a5a3..e1236ac502f2 100644
->> --- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
->> +++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
->> @@ -1776,6 +1776,8 @@ static enum i40iw_status_code i40iw_add_mqh_4(
->>  			const struct in_ifaddr *ifa;
->>  
->>  			idev = in_dev_get(dev);
->> +			if (!idev)
->> +				continue;
->>  
->>  			in_dev_for_each_ifa_rtnl(ifa, idev) {
->>  				i40iw_debug(&iwdev->sc_dev,
+On Wed, Mar 15, 2023 at 09:58:06AM +0800, Cheng Xu wrote:
 > 
-> As this isn't anything that can be triggered by a normal system
-> operation, I'm going to drop it from the review queue.  Unless you have
-> a reproducer that can cause this to happen from userspace?
 > 
-> thanks,
+> On 3/14/23 10:10 PM, Leon Romanovsky wrote:
+> > On Tue, Mar 14, 2023 at 07:50:19PM +0800, Cheng Xu wrote:
+> >>
+> >>
+> <...>
+> >>
+> >> Our doorbell space is aligned to 4096, this works fine when PAGE_SIZE is
+> >> also 4096, and the doorbell space starts from the mapped page. When
+> >> PAGE_SIZE is not 4096, the doorbell space may starts from the middle of
+> >> the mapped page.
+> >>
+> >> For example, our SQ doorbell starts from the offset 4096 in PCIe bar 0.
+> >> When we map the first SQ doorbell to userspace when PAGE_SIZE is 64K,
+> >> the doorbell space starts from the offset 4096 in mmap returned address.
+> >>
+> >> So the userspace needs to know the doorbell space offset in mmaped page.
+> > 
+> > And can't you preserve same alignment in the kernel for doorbells for every page size?
+> > Just always start from 0.
+> > 
 > 
-> greg k-h
+> I've considered this option before, but unfortunately can't, at least for CQ DB.
+> The size of our PCIe bar 0 is 512K, and offset [484K, 508K] are CQ doorbells.
+> CQ doorbell space is located in offset [36K, 60K] when PAGE_SIZE = 64K, and can't
+> start from offset 0 in this case.
+> 
+> Another reason is that we want to organize SQ doorbell space in unit of 4096.
+> In current implementation, each ucontext will be assigned a SQ doorbell space
+> for both normal doorbell and direct wqe usage. Unit of 4096, compared with
+> larger unit, more ucontexts can be assigned exclusive doorbell space for direct
+> wqe.
 
-Currently working on seeing whether a reproducer is feasible. It makes
-sense to not include the patch until then.
+I have a feeling that there is an existing API for it already.
+Let's give a chance for Jason to chime in.
 
-thanks for your time,
+Thanks
 
-Nikita
+> 
+> Thanks,
+> Cheng Xu
