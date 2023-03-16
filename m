@@ -2,138 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBD16BD6CE
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Mar 2023 18:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5AE6BD709
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Mar 2023 18:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjCPROf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Mar 2023 13:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
+        id S229832AbjCPR3B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Mar 2023 13:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjCPROe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Mar 2023 13:14:34 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A6BE049
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Mar 2023 10:14:32 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id o19-20020a056820041300b005259de79accso344539oou.9
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Mar 2023 10:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678986871;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=//2Z9tV4ZQN/6ZFiA+gFuz5b8FvMnmMwEU8H8wd4zZQ=;
-        b=KrqlPI3Gm5h+KMe0XkXJ1zfs423mVJ0/MWAkULdOfOWwL582lWs/obm2Cpqa4DChxe
-         bdNMwOoJqHL4S6w0fUNRy2QT5zh5fqYtUqHpQfLbaTLfZ3d0PhLgkVWBvQAybvSqIwGy
-         71wZ1Q3v0pws0cbOvN4pqJEQzcwYEw8P3MpZgsK9JGMyrB5VZwtkFa5uOP5pfP8fOlEb
-         JCdHJrDY1/p9tuLA+tElQFfz+pvq3iikr1dsItMX+Qr0V0niNACneV6aLKretYx2+ZJB
-         j6dHM7TKPMJIlbibWfwnYVOm/9EI2p22QugKlz6LgqnKBhbU0V/aikMf4RCoX5Jtzacc
-         pCwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678986871;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=//2Z9tV4ZQN/6ZFiA+gFuz5b8FvMnmMwEU8H8wd4zZQ=;
-        b=XmZI5MHJOKSHFKGiRAKpCPuyr0XFF0qy7eUSHiQ8u+iWRIkGang9yk7exex/1c2uZi
-         Sqp6FA7kc0NPeIfGqxlU3XUSZqrGHeWiEJ9vM2nJBK0vPD7gL+bkfQu/QXpQTmsWQ1w1
-         WLFjgnN6B5bnxNk4ev0hx4ScKpj5yPl4T9LjdXqKYV8xq/v48cjpNZP8qCAgUhAp8ipa
-         /Ve6viJd8J4OqUjSNsKeUXB4Awxf95T6cPnLW8t7eqjSt7H3QzPksVrs3pEwj2I1ZD0Z
-         zmaBA5f0u2DVkzJstfa1jw5+i5MjQMHgBGz1PU2Jikp3bJLYGLWZ+6kK51gsWOp95+gI
-         nrrw==
-X-Gm-Message-State: AO0yUKUEhcVPGPnNmZBeycAmTU0RGWLYORHgR5Gc2jVlB7/vRKhJ8E5V
-        Ucb03PPAWqjJB7+tOzkw8tJsT3gqD9s=
-X-Google-Smtp-Source: AK7set+eA5Y5/i84pIOfodyFwKtZdsaMSbs81kHAQf6H5qQMZ7/2qlmo3uahjx8hE3P6j7LJSlpW7g==
-X-Received: by 2002:a05:6820:1522:b0:520:f76:11e2 with SMTP id ay34-20020a056820152200b005200f7611e2mr22874699oob.9.1678986871399;
-        Thu, 16 Mar 2023 10:14:31 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:fede:bff3:4cac:d43b? (2603-8081-140c-1a00-fede-bff3-4cac-d43b.res6.spectrum.com. [2603:8081:140c:1a00:fede:bff3:4cac:d43b])
-        by smtp.gmail.com with ESMTPSA id b25-20020a4ad899000000b0051763d6497fsm3421837oov.38.2023.03.16.10.14.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Mar 2023 10:14:31 -0700 (PDT)
-Message-ID: <3d8576fc-eab5-c962-95bb-badadd18c85f@gmail.com>
-Date:   Thu, 16 Mar 2023 12:14:30 -0500
+        with ESMTP id S229494AbjCPR3A (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Mar 2023 13:29:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA913A9D;
+        Thu, 16 Mar 2023 10:28:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SEN+HKxo7EQ3q5D6tuhe44Eox24eDP+iTTu9PwnX/OM=; b=r+edEyVdE8CHzECGKqBOw2z/6K
+        pmwPgko9E9SA73wK+2z4oOZWpCopkXUaE5ym0bys0jdwzPDo6kraGswMtU87rc/adnU9rk/zyFN/h
+        5ICv8yRV71KH4jem5zFLwoESEv41E4dclTYq5L4qs/1EegQkOxHIyoRxw8HKBGcgeTN2ARXr8oz23
+        0eYYj2EHDmhrqCz2dDGjCTGHKBsgzqCO0FDLUtedrD3mnegEZybLCRJuWXhKOqJJYh8u7uwUY+xxc
+        xbrG0pH/tRc2U9v4mUJrLqa22NZ6uIr5MTBVRFYhWDGL2gA/WyyAEVT1H6yFIrBPnlo06u+othVO6
+        OaUm+ZdA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pcrP8-00F226-M0; Thu, 16 Mar 2023 17:28:42 +0000
+Date:   Thu, 16 Mar 2023 17:28:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Tom Talpey <tom@talpey.com>, linux-rdma@vger.kernel.org
+Subject: Re: [RFC PATCH 02/28] Add a special allocator for staging netfs
+ protocol to MSG_SPLICE_PAGES
+Message-ID: <ZBNRysLdgZsfVaSj@casper.infradead.org>
+References: <20230316152618.711970-1-dhowells@redhat.com>
+ <20230316152618.711970-3-dhowells@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: question about the completion tasklet in the rxe driver
-Content-Language: en-US
-To:     Bernard Metzler <BMT@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <d61963cf-77ef-ef0a-8c94-2de89cb6a5a6@gmail.com>
- <SA0PR15MB3919EAF4C949E82D2887C1AA99BC9@SA0PR15MB3919.namprd15.prod.outlook.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <SA0PR15MB3919EAF4C949E82D2887C1AA99BC9@SA0PR15MB3919.namprd15.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230316152618.711970-3-dhowells@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/16/23 04:40, Bernard Metzler wrote:
+On Thu, Mar 16, 2023 at 03:25:52PM +0000, David Howells wrote:
+> If a network protocol sendmsg() sees MSG_SPLICE_DATA, it expects that the
+> iterator is of ITER_BVEC type and that all the pages can have refs taken on
+> them with get_page() and discarded with put_page().  Bits of network
+> filesystem protocol data, however, are typically contained in slab memory
+> for which the cleanup method is kfree(), not put_page(), so this doesn't
+> work.
 > 
-> 
->> -----Original Message-----
->> From: Bob Pearson <rpearsonhpe@gmail.com>
->> Sent: Wednesday, 15 March 2023 22:56
->> To: Jason Gunthorpe <jgg@nvidia.com>; Zhu Yanjun <zyjzyj2000@gmail.com>;
->> linux-rdma@vger.kernel.org; Bernard Metzler <BMT@zurich.ibm.com>
->> Subject: [EXTERNAL] question about the completion tasklet in the rxe driver
->>
->> I have a goal of trying to get rid of all the tasklets in the rxe driver
->> and with the replacement of the
->> three QP tasklets by workqueues the only remaining one is the tasklet that
->> defers the CQ completion
->> handler. This has been in there since the driver went upstream so the
->> history of why it is there is lost.
->>
->> I notice that the mlx5 driver does have a deferral mechanism for the
->> completion handler but the siw driver
->> does not. I really do not see what advantage, if any, this has for the rxe
->> driver. Perhaps there is some
->> reason it shouldn't run in hard interrupt context but the CQ tasklet is a
->> soft interrupt so the completion
->> handler can't sleep anyway.
->>
->> As an experiment I removed the CQ tasklet in the rxe driver and it runs
->> fine. In fact the performance is
->> slightly better with the completion handler called inline rather than
->> deferred to another tasklet.
-> 
-> That is what I would suggest to do. Why would you leave receive
-> processing or failing send processing w/o creating the CQE and
-> kicking the CQ handler, if you are in a context with
-> all information available to build a CQE, signal its availability
-> to the consumer and kick a user handler if registered and armed?
-> 
-> Only exception I see: If you process the SQ in post_send() user context
-> and a failure results in immediate CQE creation, direct CQ handler calling
-> is not allowed - see Documentation/infiniband/core_locking.rst
-> Not sure though, if rxe allows for direct SQ processing out of user
-> context.
-> 
-> Cheers,
-> Bernard.
+> Provide a simple allocator, zcopy_alloc(), that allocates a page at a time
+> per-cpu and sequentially breaks off pieces and hands them out with a ref as
+> it's asked for them.  The caller disposes of the memory it was given by
+> calling put_page().  When a page is all parcelled out, it is abandoned by
+> the allocator and another page is obtained.  The page will get cleaned up
+> when the last skbuff fragment is destroyed.
 
-And you did. I am not sure why the mlx5 driver defers the completion handler call
-to a tasklet. I could be that it gets called in a hard interrupt and completion
-handling is deferred to a soft interrupt context. But for rxe the completion
-is always already in a soft interrupt context or a process context.
-
-Bob
-
-> 
->> If we can eliminate this there won't be anymore tasklets in the rxe driver.
->>
->> Does anyone know why the tasklet was put in in the first place?
->>
->> Thanks,
->>
->> Bob
-
+This feels a _lot_ like the page_frag allocator.  Can the two be
+unified?
