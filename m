@@ -2,65 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0EA6C0C76
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Mar 2023 09:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF7F6C0DC0
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Mar 2023 10:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjCTIrI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Mar 2023 04:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
+        id S229869AbjCTJzI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Mar 2023 05:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbjCTIrH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Mar 2023 04:47:07 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5890C11C
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Mar 2023 01:47:05 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VeEvyys_1679302022;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VeEvyys_1679302022)
-          by smtp.aliyun-inc.com;
-          Mon, 20 Mar 2023 16:47:02 +0800
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
-Subject: [PATCH for-rc 4/4] RDMA/erdma: Defer probing if netdevice can not be found
-Date:   Mon, 20 Mar 2023 16:46:52 +0800
-Message-Id: <20230320084652.16807-5-chengyou@linux.alibaba.com>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <20230320084652.16807-1-chengyou@linux.alibaba.com>
-References: <20230320084652.16807-1-chengyou@linux.alibaba.com>
+        with ESMTP id S229851AbjCTJzG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Mar 2023 05:55:06 -0400
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE7D2706
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Mar 2023 02:55:00 -0700 (PDT)
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.66.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 06A1D406D4
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Mar 2023 09:47:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+        s=20210803; t=1679305630;
+        bh=pr90rsyVGt7gN7/qeQ1SZFwbO8BRygfXP5TtsX10wdw=;
+        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+         Reply-To;
+        b=FwYCisegZn2bK4crsI3H9pyQvGkU3I535PuT3VJBaHD+5eJXZCUpVmmf3K7KPqXdM
+         8F3gpZWBAlSGddJMG/jF/M7breevpOtYH6x+CIl1Uahfqrj31p1w7O85LAuStFFpGI
+         gddq3OSoL4oyXv4l/5JBWT+g/xa6iGvSJcISu0aR9FhN9GhxyStQ/JHdLxTT+biWtZ
+         pCuelsvAsLvGVU+b0IlCHs4fE/hSAASG/Ti2u/p4wJIDO2zTCkpkDMyJgplK54lPNn
+         nSJG8bKJHU/ZpEVVlgH7niuc7DPitBIccz7YjcTtEZ4EDFuRApWIU4x8N5kCZYt+EI
+         8tG4T8LLuudYA==
+Received: from juju-4112d9-prod-launchpad-manual-servers-4.lp.internal (localhost [127.0.0.1])
+        by buildd-manager.lp.internal (Postfix) with ESMTP id BA703BDEE6
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Mar 2023 09:46:57 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Build-State: MANUALDEPWAIT
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+To:     Linux RDMA <linux-rdma@vger.kernel.org>
+From:   noreply@launchpad.net
+Subject: [recipe build #3513090] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <167930561773.23548.5885952154526916791.launchpad@juju-4112d9-prod-launchpad-manual-servers-4.lp.internal>
+Date:   Mon, 20 Mar 2023 09:46:57 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+X-Generated-By: Launchpad (canonical.com); Revision="997ba17554f0ee82f56d9282fce82d3e09a43780"; Instance="buildmaster"
+X-Launchpad-Hash: 57e37499c319a87ce3f1a35621a8114b0d4179ed
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-ERDMA device may be probed before its associated netdevice, returning
--EPROBE_DEFER allows OS try to probe erdma device later.
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 2 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3513090/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-030
 
-Fixes: d55e6fb4803c ("RDMA/erdma: Add the erdma module")
-Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
----
- drivers/infiniband/hw/erdma/erdma_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
-index 5dc31e5df5cb..4a29a53a6652 100644
---- a/drivers/infiniband/hw/erdma/erdma_main.c
-+++ b/drivers/infiniband/hw/erdma/erdma_main.c
-@@ -56,7 +56,7 @@ static int erdma_netdev_event(struct notifier_block *nb, unsigned long event,
- static int erdma_enum_and_get_netdev(struct erdma_dev *dev)
- {
- 	struct net_device *netdev;
--	int ret = -ENODEV;
-+	int ret = -EPROBE_DEFER;
- 
- 	/* Already binded to a net_device, so we skip. */
- 	if (dev->netdev)
--- 
-2.31.1
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3513090
+Your team Linux RDMA is the requester of the build.
 
