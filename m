@@ -2,43 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEED6C3E4D
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Mar 2023 00:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2D96C3EC0
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Mar 2023 00:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbjCUXLj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Mar 2023 19:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        id S229464AbjCUXqh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Mar 2023 19:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjCUXLj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Mar 2023 19:11:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5427591C0;
-        Tue, 21 Mar 2023 16:11:37 -0700 (PDT)
+        with ESMTP id S229847AbjCUXqg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Mar 2023 19:46:36 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309BF5653F;
+        Tue, 21 Mar 2023 16:46:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4EA7361ECC;
-        Tue, 21 Mar 2023 23:11:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DFDCC433EF;
-        Tue, 21 Mar 2023 23:11:35 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CCF1EB81ABA;
+        Tue, 21 Mar 2023 23:46:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86D8AC433EF;
+        Tue, 21 Mar 2023 23:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679440296;
-        bh=tDiICHqkPMBPN9OVtC1mzD4rYR11CDpxr5L1uilFt+U=;
+        s=k20201202; t=1679442392;
+        bh=ctESsV/yrTyc22yO7NKqlpVKkZMOWrOvz07ZHazO3WE=;
         h=Date:From:To:Cc:Subject:From;
-        b=SvwiwnJ14sUZ+r7kQDZRcJoQyhP263E3Flb5/TxoU76vFOpwDeA2m2z1FwV2VvVzv
-         9Zbdfmsz8mUHHogfBOBo22vjSKDsQGd5gfhSyWjvYfjbFlpnidlmQwpFOaIV+NCmEh
-         tgCyRqJmdNy3l+M/XkLoXW6TSVGMUMCYiv9TugKIgaaXCCF5jJDW6XyMaU/oCTV43m
-         qrjMu+TBg9FXu31qpQSAgKImKb2IMkk0JbpvyLmhWibYQ3kHdDoEmoogc6FjboSfN0
-         1WIn/CZCARXa1rjXIwkOowMNxcXSkii8+UFSEPhQ01uYgNcf6fmj/oZ7XdX828i880
-         q/jR6FqyjmBQg==
-Date:   Tue, 21 Mar 2023 17:12:07 -0600
+        b=KWxfD98I2rYiODnhLi/oaQFC2J2Nbzr3bx5hgZWNvmlPEWLsuay8f49wFtERXyOh0
+         OqOUe+mTKFkRveyzm1KCfFjUoWDi2L75Ve0BTCLVD6FfZLh42c2zuy7vCics6O6tKW
+         EfUDjTltodEzgNbDnw1PKD4N6s4FKSvueyl58tL4LVJCKADhmlZHn96lT2OcWht6t+
+         5bND/X1GJ3BugsgBgKhLVDZq9lONGxJx4IwRhYr4VNkO8FTYS/KnDBCb/6kB51NSE7
+         QnLQSGy7pSSNLrDKx1NcUcC49kEpP9RofWfo0reapzaLxHJy+yKm5OZPU0Ne1d3il5
+         DNkIv7+QnBpzA==
+Date:   Tue, 21 Mar 2023 17:47:03 -0600
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
 Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         linux-hardening@vger.kernel.org
-Subject: [PATCH][next] RDMA/core: Fix multiple -Warray-bounds warnings
-Message-ID: <ZBo5x5e7B25hHr4F@work>
+Subject: [PATCH v2][next] RDMA/core: Fix multiple -Warray-bounds warnings
+Message-ID: <ZBpB91qQcB10m3Fw@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
@@ -121,11 +121,19 @@ for which not enough memory was allocated.
 
 Apparently, the only members of struct ib_rmpp_mad that are relevant
 (that are actually being used) in function ib_umad_write() are mad_hdr
-and rmpp_hdr. So, instead of casting packet->mad.data to (struct ib_rmpp_mad *)
-cast it just to the two members for which enough memory was allocated. That's
-actually the reason why
+and rmpp_hdr. So, instead of casting packet->mad.data to
+(struct ib_rmpp_mad *) create a new structure
 
-        IB_MGMT_RMPP_HDR == sizeof(struct ib_mad_hdr) + sizeof(struct ib_rmpp_hdr) == 36 bytes
+struct ib_rmpp_mad_hdr {
+        struct ib_mad_hdr       mad_hdr;
+        struct ib_rmpp_hdr      rmpp_hdr;
+} __packed;
+
+and cast packet->mad.data to (struct ib_rmpp_mad_hdr *).
+
+Notice that
+
+        IB_MGMT_RMPP_HDR == sizeof(struct ib_rmpp_mad_hdr) == 36 bytes
 
 Refactor the rest of the code, accordingly.
 
@@ -139,25 +147,54 @@ Link: https://github.com/KSPP/linux/issues/273
 Link: https://godbolt.org/z/oYWaGM4Yb [1]
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/infiniband/core/user_mad.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+Hi!
+
+Another way to fix this is to create a new structure. I think I like
+this better; it avoids this horrid hack:
+
+rmpp_hdr = *(struct ib_rmpp_hdr *)((u8 *)packet->mad.data + sizeof(struct ib_mad_hdr));
+
+but it's up to you to pick the one you prefer. :)
+
+Changes in v2:
+ - Create new struct ib_rmpp_mad_hdr.
+
+v1:
+ Link: https://lore.kernel.org/linux-hardening/ZBo5x5e7B25hHr4F@work/
+
+ drivers/infiniband/core/user_mad.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index f83954180a33..ba847ccf1bf0 100644
+index f83954180a33..d21c0a042f0a 100644
 --- a/drivers/infiniband/core/user_mad.c
 +++ b/drivers/infiniband/core/user_mad.c
-@@ -497,8 +497,9 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
+@@ -131,6 +131,11 @@ struct ib_umad_packet {
+ 	struct ib_user_mad mad;
+ };
+ 
++struct ib_rmpp_mad_hdr {
++	struct ib_mad_hdr	mad_hdr;
++	struct ib_rmpp_hdr      rmpp_hdr;
++} __packed;
++
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/ib_umad.h>
+ 
+@@ -494,11 +499,11 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
+ 			     size_t count, loff_t *pos)
+ {
+ 	struct ib_umad_file *file = filp->private_data;
++	struct ib_rmpp_mad_hdr *rmpp_mad_hdr;
  	struct ib_umad_packet *packet;
  	struct ib_mad_agent *agent;
  	struct rdma_ah_attr ah_attr;
-+	struct ib_rmpp_hdr rmpp_hdr;
-+	struct ib_mad_hdr mad_hdr;
  	struct ib_ah *ah;
 -	struct ib_rmpp_mad *rmpp_mad;
  	__be64 *tid;
  	int ret, data_len, hdr_len, copy_offset, rmpp_active;
  	u8 base_version;
-@@ -506,7 +507,7 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
+@@ -506,7 +511,7 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
  	if (count < hdr_size(file) + IB_MGMT_RMPP_HDR)
  		return -EINVAL;
  
@@ -166,38 +203,37 @@ index f83954180a33..ba847ccf1bf0 100644
  	if (!packet)
  		return -ENOMEM;
  
-@@ -560,13 +561,14 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
+@@ -560,13 +565,13 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
  		goto err_up;
  	}
  
 -	rmpp_mad = (struct ib_rmpp_mad *) packet->mad.data;
 -	hdr_len = ib_get_mad_data_offset(rmpp_mad->mad_hdr.mgmt_class);
-+	mad_hdr = *(struct ib_mad_hdr *)packet->mad.data;
-+	rmpp_hdr = *(struct ib_rmpp_hdr *)((u8 *)packet->mad.data + sizeof(struct ib_mad_hdr));
-+	hdr_len = ib_get_mad_data_offset(mad_hdr.mgmt_class);
++	rmpp_mad_hdr = (struct ib_rmpp_mad_hdr *)packet->mad.data;
++	hdr_len = ib_get_mad_data_offset(rmpp_mad_hdr->mad_hdr.mgmt_class);
  
 -	if (ib_is_mad_class_rmpp(rmpp_mad->mad_hdr.mgmt_class)
-+	if (ib_is_mad_class_rmpp(mad_hdr.mgmt_class)
++	if (ib_is_mad_class_rmpp(rmpp_mad_hdr->mad_hdr.mgmt_class)
  	    && ib_mad_kernel_rmpp_agent(agent)) {
  		copy_offset = IB_MGMT_RMPP_HDR;
 -		rmpp_active = ib_get_rmpp_flags(&rmpp_mad->rmpp_hdr) &
-+		rmpp_active = ib_get_rmpp_flags(&rmpp_hdr) &
++		rmpp_active = ib_get_rmpp_flags(&rmpp_mad_hdr->rmpp_hdr) &
  						IB_MGMT_RMPP_FLAG_ACTIVE;
  	} else {
  		copy_offset = IB_MGMT_MAD_HDR;
-@@ -615,12 +617,12 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
+@@ -615,12 +620,12 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
  		tid = &((struct ib_mad_hdr *) packet->msg->mad)->tid;
  		*tid = cpu_to_be64(((u64) agent->hi_tid) << 32 |
  				   (be64_to_cpup(tid) & 0xffffffff));
 -		rmpp_mad->mad_hdr.tid = *tid;
-+		mad_hdr.tid = *tid;
++		rmpp_mad_hdr->mad_hdr.tid = *tid;
  	}
  
  	if (!ib_mad_kernel_rmpp_agent(agent)
 -	   && ib_is_mad_class_rmpp(rmpp_mad->mad_hdr.mgmt_class)
 -	   && (ib_get_rmpp_flags(&rmpp_mad->rmpp_hdr) & IB_MGMT_RMPP_FLAG_ACTIVE)) {
-+	    && ib_is_mad_class_rmpp(mad_hdr.mgmt_class)
-+	    && (ib_get_rmpp_flags(&rmpp_hdr) & IB_MGMT_RMPP_FLAG_ACTIVE)) {
++	    && ib_is_mad_class_rmpp(rmpp_mad_hdr->mad_hdr.mgmt_class)
++	    && (ib_get_rmpp_flags(&rmpp_mad_hdr->rmpp_hdr) & IB_MGMT_RMPP_FLAG_ACTIVE)) {
  		spin_lock_irq(&file->send_lock);
  		list_add_tail(&packet->list, &file->send_list);
  		spin_unlock_irq(&file->send_lock);
