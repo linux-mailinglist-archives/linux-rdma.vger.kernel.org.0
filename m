@@ -2,449 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C676C51F0
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Mar 2023 18:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6493E6C535F
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Mar 2023 19:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbjCVRKA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Mar 2023 13:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
+        id S229913AbjCVSOW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Mar 2023 14:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbjCVRKA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Mar 2023 13:10:00 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84C212872;
-        Wed, 22 Mar 2023 10:09:58 -0700 (PDT)
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32MGt5lZ030391;
-        Wed, 22 Mar 2023 17:09:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=vf706j/q8zAoF+Y1g3q6v/SeTXyELu+wV3+Yl/NGnK8=;
- b=Mi+gKx+0/fo8w72jO9ASKKswlWVlhYzh7hUBWbd3CNKc67aqGNIL7UdEHcujkLQrF42+
- Cxcn/hqFO5E8S/6sCpydpn68Of9fCwDxMNuGWRlvPfX+ByoIXFlUZiGn6wZHk+zO1Z8L
- tPdGkW2HVE1oMlBLBBQrvmiB5uhQbEscSjbjF30B+E4pBjwxKkuFww9bqONacfpidodV
- 3HeUf/6VVgE96omKZLW8a7CEVk462LE3BoSWaCH6fY7QQ3r2wPXVhVQrVQ5O81B0RR4F
- LiFL1E1bQIyrL4PlZhkqcJlLK8VPm1eVcz+hBdGpceX1crxboszdrj7cp24oyVUFrBIF vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pg5m70hsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Mar 2023 17:09:47 +0000
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32MGtF9i030718;
-        Wed, 22 Mar 2023 17:09:47 GMT
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pg5m70hrc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Mar 2023 17:09:46 +0000
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32MG5XA7014977;
-        Wed, 22 Mar 2023 17:09:45 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([9.208.130.102])
-        by ppma01dal.us.ibm.com (PPS) with ESMTPS id 3pd4x7qp5r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Mar 2023 17:09:45 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32MH9iDB11272720
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Mar 2023 17:09:44 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 25B2358053;
-        Wed, 22 Mar 2023 17:09:44 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4287D5805D;
-        Wed, 22 Mar 2023 17:09:42 +0000 (GMT)
-Received: from [9.163.26.126] (unknown [9.163.26.126])
-        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 22 Mar 2023 17:09:42 +0000 (GMT)
-Message-ID: <170b35d9-2071-caf3-094e-6abfb7cefa75@linux.ibm.com>
-Date:   Wed, 22 Mar 2023 18:09:41 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.0
-Subject: Re: [PATCH net-next] net/smc: introduce shadow sockets for fallback
- connections
-To:     Kai Shen <KaiShen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, kuba@kernel.org, davem@davemloft.net,
-        dsahern@kernel.org
-Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20230321071959.87786-1-KaiShen@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <20230321071959.87786-1-KaiShen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: bP6G5GaKNxIDsWoie4owz1UXHITzbQUR
-X-Proofpoint-ORIG-GUID: n13PFWurJKxknnqg_Q9H7v6nQ-U9_SRm
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S229513AbjCVSOU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Mar 2023 14:14:20 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2065.outbound.protection.outlook.com [40.107.244.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4ADB61897;
+        Wed, 22 Mar 2023 11:14:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gEdfnGwJhAGjIABpaC2Mk5IOA0MriJbOatJ/5Lg921F6TBBsX0pnaSFcCdCJS0RKd9kQ/frKeeuIydc016sqAu/obBFXL9glsKXo3N8jymZ5gyZ4fmXq68wpmgmgw5a0GiIRMnOGUZH4wVgnAHI8bzOONQfvP0Y9G2YeKQyV6YbQiMNJyqDwOT+p7pzwp5waOK38OCZI/tzzrEm03ZmhdBD6Y80iJcWTsGgxARlZmtuOeZbIzg/XkLi67vVl4JtpaaDcbFwdp/4nvbIXnxuEi6L3XOmB5RcsDy3jMlKobHRIphp3C9OrvuK8BYSEgP8CrLRi/fkkjKGZ+/AB0x0qHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JsU6zMgugdbSwrhZSqil6LLbB66MRDHg1WYgVomhVQE=;
+ b=E2X2IUUMcZtJeE2ogkvz/30N1Z2GpTLv5TO4q7y5SwwM3zqKwkUqTGj+R7WKK9jU1xqVlEp3yXOBig6aMZSOQLqWATwaFsiNhkBX6QiUDekhvl6crbp/22dhbAZfUBryfF6JmEWvU+ONvb844QWQ1DAI5coGifw3F37SGny6KSEBqXeQxlGBaDt3WqnsKzS/Kiw6BxQjXm9lanz309YW0BIgNJ0ML7OSGkHqwBGWlpZPsZPB50wT9LCFfXS3S/YPXWyH3ULSCTQi5z31fZESPX859v0eMQXNDCM9zyA63VVyTUi5NoSnG4PeYZKWx+iGoKca0eewcQQZRNVe/mBKpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JsU6zMgugdbSwrhZSqil6LLbB66MRDHg1WYgVomhVQE=;
+ b=JDMklHB3s8/PG85rPT1AapXpSIYs2yuJD6Y6/AXtdwsvvm2wpmiWWDxgDrR06IT9z9u7LCXb/4n6CaD/gIdTbE7CbEJWGQFZIJ1FB34pKM6JUB7X2POWlSR7r2yAyUxuT31GZS9BmC2sNRNcChjhPDMZE/rD2Cjo3YxMWiYH44fKNQgobTGpsHmDZkTb9nvnasWj/+Eu4/XKRPWv5Smt98cBqD4vekjEXfwxviM4PA8Vd47ZWlYL8uyeSWDygQTIEyYiadxumA/bllB1jUnLX7p+hLz0g/xHs2jjfZGmMRY5Vh+TNS/GfyoQaOu7ogpxb7sLIvKtR1nYHwD9UsgDFg==
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com (2603:10b6:302:12::28)
+ by CH0PR12MB5298.namprd12.prod.outlook.com (2603:10b6:610:d5::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Wed, 22 Mar
+ 2023 18:14:17 +0000
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::9f90:cf3d:d640:a90b]) by MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::9f90:cf3d:d640:a90b%4]) with mapi id 15.20.6178.037; Wed, 22 Mar 2023
+ 18:14:17 +0000
+From:   Chaitanya Kulkarni <chaitanyak@nvidia.com>
+To:     Sagi Grimberg <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
+CC:     Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] blk-mq-rdma: remove queue mapping helper for rdma devices
+Thread-Topic: [PATCH] blk-mq-rdma: remove queue mapping helper for rdma
+ devices
+Thread-Index: AQHZXLsKHjYMnEpKYkmjsZYFemgSBK8HGsSA
+Date:   Wed, 22 Mar 2023 18:14:17 +0000
+Message-ID: <28cee6ea-3802-aaf9-755f-3cdedd12d2b4@nvidia.com>
+References: <20230322123703.485544-1-sagi@grimberg.me>
+In-Reply-To: <20230322123703.485544-1-sagi@grimberg.me>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW2PR12MB4667:EE_|CH0PR12MB5298:EE_
+x-ms-office365-filtering-correlation-id: bb6f5f7e-712f-468b-977b-08db2b014023
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BNHC3oilGUL2LYRQbJpQUDxQykpCZ2Y4mywbN7J8JNvickL1tQtrLZ0NA0aTgZ+NBQVjrgGneyfIaxQbVHsX5GgllTbq0vUm/pW/GUsYgl/z+o/HwIqofYYBiq7vTi8OyjcjJehHM8tzVDDtE+UjoYeigFHphg3ss3U20xjlzeyirrZfPhfGIS2kYhpgIlqm4durZX4aquv9bZyMSiwd9FwIlLHHRY3ERTeuiJkkcIy8FygHZdX0dK0Kiy3ywdJ0wlzKnluorh0QjEIi9C0fAMt4kFWTJ2ULnEKpqmHGr/D/KKI1VzDxh2iLHiO13ZQFAMVABCu5nc+pOXzJqc5+IQG5vkklmbDFBYL3i47Ue2rhY9q2MzNy5GR19ZGoERyIhpyk+FYwdA3AMYUSznFxs0F/behtlzFRlksWhJOvvxcVyGwSGL7goDwLTNBWRb+7e1sXe0l793f2qMP96UvqfAAhtMhD26+OlFDss85lHSn/5NdQ06o/MJn87CYlxD2ZFlq/KVbW2gx5wedYnQEs7wtjRive1irUg2QcV9LL/khP/kTgD9EV2xmA4KlrY4xlQ74jJ0WeDbCmTtNtfuUWv4C/KfjC22l/E6nUFWqou/Zz1mjlt4Axx5o7lJ32L6AewED6qVCe7+FWT0eTxZ0tZa8cSkGw5c8BXQRB+iMdIqDcdh8HqFjNN2yd9CUIjwFOhSZkaz4ViZk3IiF6dX3sJ3HYBJJ/FlfMHB9UpYZE597uP59cTFNT6JQ9l9sUyVgkl+xb4pD6sK5kqRwZG3rC5A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB4667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(136003)(396003)(346002)(376002)(366004)(39860400002)(451199018)(86362001)(31686004)(2616005)(6486002)(38070700005)(26005)(6506007)(6512007)(53546011)(186003)(71200400001)(31696002)(38100700002)(478600001)(122000001)(2906002)(4326008)(91956017)(66476007)(4744005)(54906003)(66946007)(8676002)(110136005)(64756008)(316002)(5660300002)(66446008)(8936002)(41300700001)(66556008)(76116006)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZlJCQTF3UWdiZG53QXk4L0FIY2lFYWNJMFZUb1dRZER0TVpqeVcyOEJoZys1?=
+ =?utf-8?B?ck9US2g2TUZVaWdqYUVGK1dsa3hQL0JwbS9zUkQySnJXd1poTWV4WThSOHZa?=
+ =?utf-8?B?dkIxZ2ZyVXVSdTJhT0RSazhwTUNqRFYxQ2lWN00rVUltUDg0TzUwU2U3WVpz?=
+ =?utf-8?B?dS9hczZqYkdSdXdGRHplQnZTZXd2MnA5N0NyckFoVzlBbXpYWUtkODh4VEFP?=
+ =?utf-8?B?MTFRR2x2d1pDTGNSTmdONS9xUmt4NVlFVVA0clJYSlo0aFFxTlRZOTIzRGth?=
+ =?utf-8?B?Q1ppdnRsd0o3TzJiWUFLTGg5WU9NTUtMbkxLbk1xdG9uMFVBZ3NNTTJWTjRW?=
+ =?utf-8?B?VEFveUdsampVUzJFNHFMWEZWNDB2Zyt2dDhQTFZVTU5aYnIwbnhyYVpXa2t1?=
+ =?utf-8?B?bE1IYmtzN3ZBMmR2aURZMjBQc2FUakw2ZlczVjJMQ25DUEtUSklhUG8zM0Rt?=
+ =?utf-8?B?V1M5L01MOHpHTHJydTRpcWc2UHdieGpCSnY2Q3Brc0ZRWkJCUWZreVlOZmZq?=
+ =?utf-8?B?dVVaQVYzQm84VFVvYldCazNVdlN0UkxtWlZHTEszaEVSc0FoVHVhZWxMZ0tz?=
+ =?utf-8?B?dGpDMnZjVGhXRys0QVZCamVqeGROcWcraDRaMEltbitPN1RpNDBSbk1xd3dq?=
+ =?utf-8?B?S0NyendDQy9TVXQ3bTJiMFJwZ3RNdS83WXdtSkRzN3grMEg2WDR5aFBxOVIy?=
+ =?utf-8?B?YUY3OFdiYXhQV3FrZXZCSHJmL1ZRam5aQWxBVmtnUUV6cFFMbkhrcUU0d1lB?=
+ =?utf-8?B?VGhpNkpCWEh0UjRaTjFGMDZJeFNPZk5CZ3BnQUhBdXRDYzZyVTdTSVZneExY?=
+ =?utf-8?B?NXlpb0hPY3RMZjFEdTV1dmV0ckF2Z0pwUmRnRTFiYk5FaU9vOW5XNkw0TTM2?=
+ =?utf-8?B?YkZGNS80SEJWZmdWVlpwUUxWZmw5VXVJRlZtU04zU3J6ZFo3ampRcW5qekxl?=
+ =?utf-8?B?UVYrcjlYdHBOdDRldmwySktQYzYwTk1FbjRWS0hoenVJM3AxcG5PaU9vdXB2?=
+ =?utf-8?B?dm56dis2Y1R6aTd1cDMyUnFSZFhLampnbUhHOURHbFhidFdlQ0ZRaXh5SThn?=
+ =?utf-8?B?WFNEN0ZnNmVFb1ZaUzMxb1QyS1pvWmYwTmwyd0lBNThBRlJTVkFRa2JtY3hM?=
+ =?utf-8?B?ZkdPQk5hTDVSTm5McjI0ZWNIV2ZMU0V1SURzZTZLb1NJRFZQQ0p1K3d5cGdQ?=
+ =?utf-8?B?MXN3L2NJbXlaUWRnaC9MMlRLTzJqb3hoTDNtc0haNldBajhyNkZ2UndmUGpH?=
+ =?utf-8?B?WFhHUHdpWG9qRkFOMTVDU09vNGlDWHV1cVBlQVhtRmEwVCtjNlBocEVGL0NE?=
+ =?utf-8?B?aWRUMURhZHNnY3QwSXBLS0xHVkd3ZGExWnpnYlFMam52a3hDaGRNenpQUHpl?=
+ =?utf-8?B?MGVwd2szTmpyYm9jdjZQNUc1M1BrQjJrUFJtQ1FpTmwyb01MSnkveGduNXRk?=
+ =?utf-8?B?T2NTWDZhMVh1Q0Vxb0RpYjZoOThxclUralNTbzBDWkFTb3RFc0VoLzFnbkZj?=
+ =?utf-8?B?TktiQjVNRXFZd2lmQjFkNm9ZVGFaQUxwQ1BpNDdmWHdiRTkrU0tnL29RNzRT?=
+ =?utf-8?B?RzdoSjJ3U3cycU1EV2FiaFNlNHJsT0Fta3BhSExVdkNobHRQWlovZ3VBa016?=
+ =?utf-8?B?bkF6TnhmT3JCYmU4bTUvUnBIOUl1Zmw4WjBmWHlvL0w4a3lSKzIzVjlpY1Jz?=
+ =?utf-8?B?aGZWMmU4bVZlTm95VC9lM0VIaW93bWRLeWZQb041RTQ1T0orek1Qdi9peHpI?=
+ =?utf-8?B?Z2V3bUZ3bklNZUtpR2IwSkdVVFQ2ZjI2Ly9DTm1TNytHTFRaRHA3WGcxVUNo?=
+ =?utf-8?B?cFFZVTlkTE1pamFiVFVtQ0p4eXdkcGtpWU1QYisxM3p4VTl4RWkwNXdnUDJQ?=
+ =?utf-8?B?QWdwT3cxcWx0bjVDSjdOWW85OFVlNVZFWHRTSkRGRVhjaEFNQjBub1poNW9R?=
+ =?utf-8?B?aE0rMmpqZFFuOEZ3RXFBUVljWEZwZTVXOGNDV3ZSWWFJUVl0dkZRQ2VDcm9z?=
+ =?utf-8?B?WjhyUzkvbnl5bENNank3TFBhMndPbTlnV0JkdHFtUW9QcUFLYzZnSk9CQVFI?=
+ =?utf-8?B?YlBKaGMxc2NPc0xMbmZEdTUzd3ZNcS9RSWlCV2ltWTRhWE95RHlXbUVRbGhP?=
+ =?utf-8?Q?M9KkYAOcGN59Z2d0+Xti2f6AG?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <07CD4E70615934468B626F4B8D65F667@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-22_13,2023-03-22_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 impostorscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303150002 definitions=main-2303220117
-X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB4667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb6f5f7e-712f-468b-977b-08db2b014023
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2023 18:14:17.3936
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DQZ6EoKGxxZltg4MWoRNRQw/d/lcQV7rLJlPtTb6AQ86c5x0wg3L8oObOtpKahLk+9e+Sg1CItikBRAM3YrOOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5298
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 21.03.23 08:19, Kai Shen wrote:
-> SMC-R performs not so well on fallback situations right now,
-> especially on short link server fallback occasions. We are planning
-> to make SMC-R widely used and handling this fallback performance
-> issue is really crucial to us. Here we introduce a shadow socket
-> method to try to relief this problem.
-> 
-Could you please elaborate the problem?
-> Basicly, we use two more accept queues to hold incoming connections,
-> one for fallback connections and the other for smc-r connections.
-> We implement this method by using two more 'shadow' sockets and
-> make the connection path of fallback connections almost the same as
-> normal tcp connections.
-> 
-> Now the SMC-R accept path is like:
->    1. incoming connection
->    2. schedule work to smc sock alloc, tcp accept and push to smc
->       acceptq
->    3. wake up user to accept
-> 
-> When fallback happens on servers, the accepting path is the same
-> which costs more than normal tcp accept path. In fallback
-> situations, the step 2 above is not necessary and the smc sock is
-> also not needed. So we use two more shadow sockets when one smc
-> socket start listening. When new connection comes, we pop the req
-> to the fallback socket acceptq or the non-fallback socket acceptq
-> according to its syn_smc flag. As a result, when fallback happen we
-> can graft the user socket with a normal tcp sock instead of a smc
-> sock and get rid of the cost generated by step 2 and smc sock
-> releasing.
-> 
->                 +-----> non-fallback socket acceptq
->                 |
-> incoming req --+
->                 |
->                 +-----> fallback socket acceptq
-> 
-> With the help of shadow socket, we gain similar performance as tcp
-> connections on short link nginx server fallback occasions as what
-> is illustrated below.
-> 
-> Cases are like "./wrk http://x.x.x.x:x/
-> 	-H 'Connection: Close' -c 1600 -t 32 -d 20 --latency"
-> 
-> TCP:
->      Requests/sec: 145438.65
->      Transfer/sec:     21.64MB
-> 
-> Server fallback occasions on original SMC-R:
->      Requests/sec: 114192.82
->      Transfer/sec:     16.99MB
-> 
-> Server fallback occasions on SMC-R with shadow sockets:
->      Requests/sec: 143528.11
->      Transfer/sec:     21.35MB
-> 
-
-Generally, I don't have a good feeling about the two non-listenning 
-sockets, and I can not see why it is necessary to introduce the socket 
-actsock instead of using the clcsock itself. Maybe you can convince me 
-with a good reason.
-
-> On the other hand, as a result of using another accept queue, the
-> fastopenq lock is not the right lock to access when accepting. So
-> we need to find the right fastopenq lock in inet_csk_accept.
-> 
-> Signed-off-by: Kai Shen <KaiShen@linux.alibaba.com>
-> ---
->   net/ipv4/inet_connection_sock.c |  13 ++-
->   net/smc/af_smc.c                | 143 ++++++++++++++++++++++++++++++--
->   net/smc/smc.h                   |   2 +
->   3 files changed, 150 insertions(+), 8 deletions(-)
-> 
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index 65ad4251f6fd..ba2ec5ad4c04 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -658,6 +658,7 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
->   {
->   	struct inet_connection_sock *icsk = inet_csk(sk);
->   	struct request_sock_queue *queue = &icsk->icsk_accept_queue;
-> +	spinlock_t *fastopenq_lock = &queue->fastopenq.lock;
->   	struct request_sock *req;
->   	struct sock *newsk;
->   	int error;
-> @@ -689,7 +690,15 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
->   
->   	if (sk->sk_protocol == IPPROTO_TCP &&
->   	    tcp_rsk(req)->tfo_listener) {
-> -		spin_lock_bh(&queue->fastopenq.lock);
-> +#if IS_ENABLED(CONFIG_SMC)
-> +		if (tcp_sk(sk)->syn_smc) {
-> +			struct request_sock_queue *orig_queue;
-> +
-> +			orig_queue = &inet_csk(req->rsk_listener)->icsk_accept_queue;
-> +			fastopenq_lock = &orig_queue->fastopenq.lock;
-> +		}
-> +#endif
-> +		spin_lock_bh(fastopenq_lock);
->   		if (tcp_rsk(req)->tfo_listener) {
->   			/* We are still waiting for the final ACK from 3WHS
->   			 * so can't free req now. Instead, we set req->sk to
-> @@ -700,7 +709,7 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
->   			req->sk = NULL;
->   			req = NULL;
->   		}
-> -		spin_unlock_bh(&queue->fastopenq.lock);
-> +		spin_unlock_bh(fastopenq_lock);
->   	}
->   
->   out:
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index a4cccdfdc00a..ad6c3b9ec9a6 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -126,7 +126,9 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
->   
->   	smc = smc_clcsock_user_data(sk);
->   
-> -	if (READ_ONCE(sk->sk_ack_backlog) + atomic_read(&smc->queued_smc_hs) >
-> +	if (READ_ONCE(sk->sk_ack_backlog) + atomic_read(&smc->queued_smc_hs)
-> +			+ READ_ONCE(smc->actsock->sk->sk_ack_backlog)
-> +			+ READ_ONCE(smc->fbsock->sk->sk_ack_backlog) >
->   				sk->sk_max_ack_backlog)
->   		goto drop;
->   
-> @@ -286,6 +288,10 @@ static int __smc_release(struct smc_sock *smc)
->   				/* wake up clcsock accept */
->   				rc = kernel_sock_shutdown(smc->clcsock,
->   							  SHUT_RDWR);
-> +				if (smc->fbsock)
-> +					sock_release(smc->fbsock);
-> +				if (smc->actsock)
-> +					sock_release(smc->actsock);
->   			}
->   			sk->sk_state = SMC_CLOSED;
->   			sk->sk_state_change(sk);
-> @@ -1681,7 +1687,7 @@ static int smc_clcsock_accept(struct smc_sock *lsmc, struct smc_sock **new_smc)
->   
->   	mutex_lock(&lsmc->clcsock_release_lock);
->   	if (lsmc->clcsock)
-> -		rc = kernel_accept(lsmc->clcsock, &new_clcsock, SOCK_NONBLOCK);
-> +		rc = kernel_accept(lsmc->actsock, &new_clcsock, SOCK_NONBLOCK);
->   	mutex_unlock(&lsmc->clcsock_release_lock);
->   	lock_sock(lsk);
->   	if  (rc < 0 && rc != -EAGAIN)
-> @@ -2486,9 +2492,46 @@ static void smc_tcp_listen_work(struct work_struct *work)
->   	sock_put(&lsmc->sk); /* sock_hold in smc_clcsock_data_ready() */
->   }
->   
-> +#define SMC_LINK 1
-> +#define FALLBACK_LINK 2
-> +static inline int smc_sock_pop_to_another_acceptq(struct smc_sock *lsmc)
-> +{
-> +	struct sock *lsk = lsmc->clcsock->sk;
-> +	struct inet_connection_sock *icsk = inet_csk(lsk);
-> +	struct inet_connection_sock *dest_icsk;
-> +	struct request_sock_queue *queue = &icsk->icsk_accept_queue;
-> +	struct request_sock_queue *dest_queue;
-> +	struct request_sock *req;
-> +	struct sock *dst_sock;
-> +	int ret;
-> +
-> +	req = reqsk_queue_remove(queue, lsk);
-> +	if (!req)
-> +		return -EINVAL;
-> +
-> +	if (tcp_sk(req->sk)->syn_smc || lsmc->sockopt_defer_accept) {
-> +		dst_sock = lsmc->actsock->sk;
-> +		ret = SMC_LINK;
-> +	} else {
-> +		dst_sock = lsmc->fbsock->sk;
-> +		ret = FALLBACK_LINK;
-> +	}
-> +
-> +	dest_icsk = inet_csk(dst_sock);
-> +	dest_queue = &dest_icsk->icsk_accept_queue;
-> +
-> +	spin_lock_bh(&dest_queue->rskq_lock);
-> +	WRITE_ONCE(req->dl_next, dest_queue->rskq_accept_head);
-> +	sk_acceptq_added(dst_sock);
-> +	dest_queue->rskq_accept_head = req;
-> +	spin_unlock_bh(&dest_queue->rskq_lock);
-> +	return ret;
-> +}
-> +
->   static void smc_clcsock_data_ready(struct sock *listen_clcsock)
->   {
->   	struct smc_sock *lsmc;
-> +	int ret;
->   
->   	read_lock_bh(&listen_clcsock->sk_callback_lock);
->   	lsmc = smc_clcsock_user_data(listen_clcsock);
-> @@ -2496,14 +2539,41 @@ static void smc_clcsock_data_ready(struct sock *listen_clcsock)
->   		goto out;
->   	lsmc->clcsk_data_ready(listen_clcsock);
->   	if (lsmc->sk.sk_state == SMC_LISTEN) {
-> -		sock_hold(&lsmc->sk); /* sock_put in smc_tcp_listen_work() */
-> -		if (!queue_work(smc_tcp_ls_wq, &lsmc->tcp_listen_work)) > -			sock_put(&lsmc->sk);
-> +		ret = smc_sock_pop_to_another_acceptq(lsmc);
-> +		if (ret == SMC_LINK) {
-> +			sock_hold(&lsmc->sk); /* sock_put in smc_tcp_listen_work() */
-> +			if (!queue_work(smc_tcp_ls_wq, &lsmc->tcp_listen_work))
-> +				sock_put(&lsmc->sk);
-> +		} else if (ret == FALLBACK_LINK) {
-> +			lsmc->sk.sk_data_ready(&lsmc->sk);
-> +		}
->   	}
->   out:
->   	read_unlock_bh(&listen_clcsock->sk_callback_lock);
->   }
->   
-> +static void smc_shadow_socket_init(struct socket *sock)
-> +{
-> +	struct inet_connection_sock *icsk = inet_csk(sock->sk);
-> +	struct request_sock_queue *queue = &icsk->icsk_accept_queue;
-> +
-> +	tcp_set_state(sock->sk, TCP_LISTEN);
-> +	sock->sk->sk_ack_backlog = 0;
-> +
-> +	inet_csk_delack_init(sock->sk);
-> +
-> +	spin_lock_init(&queue->rskq_lock);
-> +
-> +	spin_lock_init(&queue->fastopenq.lock);
-> +	queue->fastopenq.rskq_rst_head = NULL;
-> +	queue->fastopenq.rskq_rst_tail = NULL;
-> +	queue->fastopenq.qlen = 0;
-> +
-> +	queue->rskq_accept_head = NULL;
-> +
-> +	tcp_sk(sock->sk)->syn_smc = 1;
-> +}
-> +
->   static int smc_listen(struct socket *sock, int backlog)
->   {
->   	struct sock *sk = sock->sk;
-> @@ -2551,6 +2621,18 @@ static int smc_listen(struct socket *sock, int backlog)
->   	if (smc->limit_smc_hs)
->   		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
->   
-> +	rc = sock_create_kern(sock_net(sk), PF_INET, SOCK_STREAM, IPPROTO_TCP,
-> +			      &smc->fbsock);
-> +	if (rc)
-> +		goto out;
-> +	smc_shadow_socket_init(smc->fbsock);
-> +
-> +	rc = sock_create_kern(sock_net(sk), PF_INET, SOCK_STREAM, IPPROTO_TCP,
-> +			      &smc->actsock);
-> +	if (rc)
-> +		goto out;
-> +	smc_shadow_socket_init(smc->actsock);
-> +
->   	rc = kernel_listen(smc->clcsock, backlog);
->   	if (rc) {
->   		write_lock_bh(&smc->clcsock->sk->sk_callback_lock);
-> @@ -2569,6 +2651,30 @@ static int smc_listen(struct socket *sock, int backlog)
->   	return rc;
->   }
->   
-> +static inline bool tcp_reqsk_queue_empty(struct sock *sk)
-> +{
-> +	struct inet_connection_sock *icsk = inet_csk(sk);
-> +	struct request_sock_queue *queue = &icsk->icsk_accept_queue;
-> +
-> +	return reqsk_queue_empty(queue);
-> +}
-> +
-Since this is only used by smc, I'd like to suggest to use 
-smc_tcp_reqsk_queue_empty instead of tcp_reqsk_queue_empty.
-
-> +static inline void
-> +smc_restore_fbsock_protocol_family(struct socket *new_sock, struct socket *sock)
-> +{
-> +	struct smc_sock *lsmc = smc_sk(sock->sk);
-> +
-> +	new_sock->sk->sk_data_ready = lsmc->fbsock->sk->sk_data_ready;
-> +	new_sock->ops = lsmc->fbsock->ops;
-> +	new_sock->type = lsmc->fbsock->type;
-> +
-> +	module_put(sock->ops->owner);
-> +	__module_get(new_sock->ops->owner);
-> +
-> +	if (tcp_sk(new_sock->sk)->syn_smc)
-> +		pr_err("new sock is not fallback.\n");
-> +}
-> +
->   static int smc_accept(struct socket *sock, struct socket *new_sock,
->   		      int flags, bool kern)
->   {
-> @@ -2579,6 +2685,18 @@ static int smc_accept(struct socket *sock, struct socket *new_sock,
->   	int rc = 0;
->   
->   	lsmc = smc_sk(sk);
-> +	/* There is a lock in inet_csk_accept, so to make a fast path we do not lock_sock here */
-> +	if (lsmc->sk.sk_state == SMC_LISTEN && !tcp_reqsk_queue_empty(lsmc->fbsock->sk)) {
-> +		rc = lsmc->clcsock->ops->accept(lsmc->fbsock, new_sock, O_NONBLOCK, true);
-> +		if (rc == -EAGAIN)
-> +			goto normal_path;
-> +		if (rc < 0)
-> +			return rc;
-> +		smc_restore_fbsock_protocol_family(new_sock, sock);
-> +		return rc;
-> +	}
-> +
-> +normal_path:
->   	sock_hold(sk); /* sock_put below */
->   	lock_sock(sk);
->   
-> @@ -2593,6 +2711,18 @@ static int smc_accept(struct socket *sock, struct socket *new_sock,
->   	add_wait_queue_exclusive(sk_sleep(sk), &wait);
->   	while (!(nsk = smc_accept_dequeue(sk, new_sock))) {
->   		set_current_state(TASK_INTERRUPTIBLE);
-> +		if (!tcp_reqsk_queue_empty(lsmc->fbsock->sk)) {
-> +			rc = lsmc->clcsock->ops->accept(lsmc->fbsock, new_sock, O_NONBLOCK, true);
-> +			if (rc == -EAGAIN)
-> +				goto next_round;
-> +			if (rc < 0)
-> +				break;
-> +
-> +			smc_restore_fbsock_protocol_family(new_sock, sock);
-> +			nsk = new_sock->sk;
-> +			break;
-> +		}
-> +next_round:
->   		if (!timeo) {
->   			rc = -EAGAIN;
->   			break;
-> @@ -2731,7 +2861,8 @@ static __poll_t smc_accept_poll(struct sock *parent)
->   	__poll_t mask = 0;
->   
->   	spin_lock(&isk->accept_q_lock);
-> -	if (!list_empty(&isk->accept_q))
-> +	if (!list_empty(&isk->accept_q) ||
-> +	    !reqsk_queue_empty(&inet_csk(isk->fbsock->sk)->icsk_accept_queue))
->   		mask = EPOLLIN | EPOLLRDNORM;
->   	spin_unlock(&isk->accept_q_lock);
->   
-> diff --git a/net/smc/smc.h b/net/smc/smc.h
-> index 5ed765ea0c73..9a62c8f37e26 100644
-> --- a/net/smc/smc.h
-> +++ b/net/smc/smc.h
-> @@ -241,6 +241,8 @@ struct smc_connection {
->   struct smc_sock {				/* smc sock container */
->   	struct sock		sk;
->   	struct socket		*clcsock;	/* internal tcp socket */
-> +	struct socket		*fbsock;	/* socket for fallback connection */
-> +	struct socket		*actsock;	/* socket for non-fallback conneciotn */
->   	void			(*clcsk_state_change)(struct sock *sk);
->   						/* original stat_change fct. */
->   	void			(*clcsk_data_ready)(struct sock *sk);
+T24gMy8yMi8yMyAwNTozNywgU2FnaSBHcmltYmVyZyB3cm90ZToNCj4gTm8gcmRtYSBkZXZpY2Ug
+ZXhwb3NlcyBpdHMgaXJxIHZlY3RvcnMgYWZmaW5pdHkgdG9kYXkuIFNvIHRoZSBvbmx5DQo+IG1h
+cHBpbmcgdGhhdCB3ZSBoYXZlIGxlZnQsIGlzIHRoZSBkZWZhdWx0IGJsa19tcV9tYXBfcXVldWVz
+LCB3aGljaA0KPiB3ZSBmYWxsYmFjayB0byBhbnl3YXlzLiBBbHNvIGZpeHVwIHRoZSBvbmx5IGNv
+bnN1bWVyIG9mIHRoaXMgaGVscGVyDQo+IChudm1lLXJkbWEpLg0KPg0KPiBSZW1vdmUgdGhpcyBu
+b3cgZGVhZCBjb2RlLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBTYWdpIEdyaW1iZXJnIDxzYWdpQGdy
+aW1iZXJnLm1lPg0KPiAtLS0NCj4NCg0KQmFzZWQgb24gdGhlIGRpc2N1c3Npb24gb24gdGhlIG90
+aGVyIHRocmVhZCBvbiB0aGUgS2VpdGgncyBwYXRjaA0KdGhpcyBsb29rcyBnb29kLg0KDQpSZXZp
+ZXdlZC1ieTogQ2hhaXRhbnlhIEt1bGthcm5pIDxrY2hAbnZpZGlhLmNvbT4NCg0KLWNrDQoNCg0K
