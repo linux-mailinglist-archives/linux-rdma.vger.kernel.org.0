@@ -2,241 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2D96C3EC0
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Mar 2023 00:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8CB6C43D2
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Mar 2023 08:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbjCUXqh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Mar 2023 19:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38380 "EHLO
+        id S229663AbjCVHFj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Mar 2023 03:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjCUXqg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Mar 2023 19:46:36 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309BF5653F;
-        Tue, 21 Mar 2023 16:46:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CCF1EB81ABA;
-        Tue, 21 Mar 2023 23:46:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86D8AC433EF;
-        Tue, 21 Mar 2023 23:46:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679442392;
-        bh=ctESsV/yrTyc22yO7NKqlpVKkZMOWrOvz07ZHazO3WE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KWxfD98I2rYiODnhLi/oaQFC2J2Nbzr3bx5hgZWNvmlPEWLsuay8f49wFtERXyOh0
-         OqOUe+mTKFkRveyzm1KCfFjUoWDi2L75Ve0BTCLVD6FfZLh42c2zuy7vCics6O6tKW
-         EfUDjTltodEzgNbDnw1PKD4N6s4FKSvueyl58tL4LVJCKADhmlZHn96lT2OcWht6t+
-         5bND/X1GJ3BugsgBgKhLVDZq9lONGxJx4IwRhYr4VNkO8FTYS/KnDBCb/6kB51NSE7
-         QnLQSGy7pSSNLrDKx1NcUcC49kEpP9RofWfo0reapzaLxHJy+yKm5OZPU0Ne1d3il5
-         DNkIv7+QnBpzA==
-Date:   Tue, 21 Mar 2023 17:47:03 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2][next] RDMA/core: Fix multiple -Warray-bounds warnings
-Message-ID: <ZBpB91qQcB10m3Fw@work>
+        with ESMTP id S229541AbjCVHFj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Mar 2023 03:05:39 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A25758B60
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Mar 2023 00:05:37 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VePnhn6_1679468734;
+Received: from 30.221.102.45(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VePnhn6_1679468734)
+          by smtp.aliyun-inc.com;
+          Wed, 22 Mar 2023 15:05:35 +0800
+Message-ID: <2c82439c-15d0-d5dd-b1c5-46053d3dd202@linux.alibaba.com>
+Date:   Wed, 22 Mar 2023 15:05:29 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.0
+Subject: Re: [PATCH for-next v2 2/2] RDMA/erdma: Support non-4K page size in
+ doorbell allocation
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
+References: <20230307102924.70577-1-chengyou@linux.alibaba.com>
+ <20230307102924.70577-3-chengyou@linux.alibaba.com>
+ <20230314102313.GB36557@unreal>
+ <e6eec8de-7442-7f2b-8c90-af9222b2e12b@linux.alibaba.com>
+ <20230314141020.GL36557@unreal>
+ <1604d654-583f-52eb-ff76-fd92647d3625@linux.alibaba.com>
+ <20230315102210.GT36557@unreal> <ZBm/deQgMYfdPt/u@ziepe.ca>
+Content-Language: en-US
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <ZBm/deQgMYfdPt/u@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-GCC-13 (and Clang)[1] does not like to access a partially allocated
-object, since it cannot reason about it for bounds checking.
 
-In this case 140 bytes are allocated for an object of type struct
-ib_umad_packet:
 
-        packet = kzalloc(sizeof(*packet) + IB_MGMT_RMPP_HDR, GFP_KERNEL);
+On 3/21/23 10:30 PM, Jason Gunthorpe wrote:
+> On Wed, Mar 15, 2023 at 12:22:10PM +0200, Leon Romanovsky wrote:
+<...>
+> 
+> This sounds similar to how mlx5 chops up its doorbell space
+> 
+> But I don't understand your device security model.
+> 
+> In mlx5 it is not allowed to share doorbells between unrelated
+> processes. Doorbells have built in security and a doorbell can only
+> trigger QP/CQ's that are explicitly linked to that doorbell.
+> 
+> Thus mlx5 is careful to only mmap doorbells that are linked to the
+> QPs. On 64K page size userspace receives alot of doorbells per mmap,
+> all linked to the same security context.
+> 
+> Improperly sharing MMIO pages can result in various security problems
+> if a hostile userspace can write arbitary things to MMIO space.
+> 
+> Here you seem to be talking about overmapping stuff. What is the
+> security argument that it is safe to leak to userspace parts of the
+> device MMIO BAR beyond that strictly cotnained to the single doorbell?
 
-However, notice that sizeof(*packet) is only 104 bytes:
+Thank you for your explanation. IIUC, this security mechanism of mlx5
+needs the support of HW, and the HW can reject doorbells from unauthorized
+doorbell space.
 
-struct ib_umad_packet {
-        struct ib_mad_send_buf *   msg;                  /*     0     8 */
-        struct ib_mad_recv_wc *    recv_wc;              /*     8     8 */
-        struct list_head           list;                 /*    16    16 */
-        int                        length;               /*    32     4 */
+The current generation of erdma devices do not have this capability due to
+implementation complexity. Without this HW capability, isolating the MMIO
+space in software doesn't prevent the attack, because the malicious APPs
+can map mmio itself, not through verbs interface.
 
-        /* XXX 4 bytes hole, try to pack */
+Our consideration of security is mainly focused on the VM/VF level,
+not at the process/ucontext level: no matter what the user does inside the
+VM, it cannot affect other VMs. Therefore, The userspace isolation of mmio
+inside one VM is incomplete and shared mmio pages cannot be avoided in
+this generation.
 
-        struct ib_user_mad         mad __attribute__((__aligned__(8))); /*    40    64 */
+> This has to be clearly explained in the commit message and a comment.
 
-        /* size: 104, cachelines: 2, members: 5 */
-        /* sum members: 100, holes: 1, sum holes: 4 */
-        /* forced alignments: 1, forced holes: 1, sum forced holes: 4 */
-        /* last cacheline: 40 bytes */
-} __attribute__((__aligned__(8)));
+All right, I will do this in v3.
 
-and 36 bytes extra bytes are allocated for a flexible-array member in
-struct ib_user_mad:
-
-include/rdma/ib_mad.h:
-120 enum {
-...
-123         IB_MGMT_RMPP_HDR = 36,
-... }
-
-struct ib_user_mad {
-        struct ib_user_mad_hdr     hdr;                  /*     0    64 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        __u64                      data[] __attribute__((__aligned__(8))); /*    64     0 */
-
-        /* size: 64, cachelines: 1, members: 2 */
-        /* forced alignments: 1 */
-} __attribute__((__aligned__(8)));
-
-So we have sizeof(*packet) + IB_MGMT_RMPP_HDR == 140 bytes
-
-Then the address of the flex-array member (for which only 36 bytes were
-allocated) is casted and copied into a pointer to struct ib_rmpp_mad,
-which, in turn, is of size 256 bytes:
-
-        rmpp_mad = (struct ib_rmpp_mad *) packet->mad.data;
-
-struct ib_rmpp_mad {
-        struct ib_mad_hdr          mad_hdr;              /*     0    24 */
-        struct ib_rmpp_hdr         rmpp_hdr;             /*    24    12 */
-        u8                         data[220];            /*    36   220 */
-
-        /* size: 256, cachelines: 4, members: 3 */
-};
-
-The thing is that those 36 bytes allocated for flex-array member data
-in struct ib_user_mad onlly account for the size of both struct ib_mad_hdr
-and struct ib_rmpp_hdr, but nothing is left for array u8 data[220].
-So, the compiler is legitimately complaining about accessing an object
-for which not enough memory was allocated.
-
-Apparently, the only members of struct ib_rmpp_mad that are relevant
-(that are actually being used) in function ib_umad_write() are mad_hdr
-and rmpp_hdr. So, instead of casting packet->mad.data to
-(struct ib_rmpp_mad *) create a new structure
-
-struct ib_rmpp_mad_hdr {
-        struct ib_mad_hdr       mad_hdr;
-        struct ib_rmpp_hdr      rmpp_hdr;
-} __packed;
-
-and cast packet->mad.data to (struct ib_rmpp_mad_hdr *).
-
-Notice that
-
-        IB_MGMT_RMPP_HDR == sizeof(struct ib_rmpp_mad_hdr) == 36 bytes
-
-Refactor the rest of the code, accordingly.
-
-Fix the following warnings seen under GCC-13 and -Warray-bounds:
-drivers/infiniband/core/user_mad.c:564:50: warning: array subscript ‘struct ib_rmpp_mad[0]’ is partly outside array bounds of ‘unsigned char[140]’ [-Warray-bounds=]
-drivers/infiniband/core/user_mad.c:566:42: warning: array subscript ‘struct ib_rmpp_mad[0]’ is partly outside array bounds of ‘unsigned char[140]’ [-Warray-bounds=]
-drivers/infiniband/core/user_mad.c:618:25: warning: array subscript ‘struct ib_rmpp_mad[0]’ is partly outside array bounds of ‘unsigned char[140]’ [-Warray-bounds=]
-drivers/infiniband/core/user_mad.c:622:44: warning: array subscript ‘struct ib_rmpp_mad[0]’ is partly outside array bounds of ‘unsigned char[140]’ [-Warray-bounds=]
-
-Link: https://github.com/KSPP/linux/issues/273
-Link: https://godbolt.org/z/oYWaGM4Yb [1]
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Hi!
-
-Another way to fix this is to create a new structure. I think I like
-this better; it avoids this horrid hack:
-
-rmpp_hdr = *(struct ib_rmpp_hdr *)((u8 *)packet->mad.data + sizeof(struct ib_mad_hdr));
-
-but it's up to you to pick the one you prefer. :)
-
-Changes in v2:
- - Create new struct ib_rmpp_mad_hdr.
-
-v1:
- Link: https://lore.kernel.org/linux-hardening/ZBo5x5e7B25hHr4F@work/
-
- drivers/infiniband/core/user_mad.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index f83954180a33..d21c0a042f0a 100644
---- a/drivers/infiniband/core/user_mad.c
-+++ b/drivers/infiniband/core/user_mad.c
-@@ -131,6 +131,11 @@ struct ib_umad_packet {
- 	struct ib_user_mad mad;
- };
- 
-+struct ib_rmpp_mad_hdr {
-+	struct ib_mad_hdr	mad_hdr;
-+	struct ib_rmpp_hdr      rmpp_hdr;
-+} __packed;
-+
- #define CREATE_TRACE_POINTS
- #include <trace/events/ib_umad.h>
- 
-@@ -494,11 +499,11 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
- 			     size_t count, loff_t *pos)
- {
- 	struct ib_umad_file *file = filp->private_data;
-+	struct ib_rmpp_mad_hdr *rmpp_mad_hdr;
- 	struct ib_umad_packet *packet;
- 	struct ib_mad_agent *agent;
- 	struct rdma_ah_attr ah_attr;
- 	struct ib_ah *ah;
--	struct ib_rmpp_mad *rmpp_mad;
- 	__be64 *tid;
- 	int ret, data_len, hdr_len, copy_offset, rmpp_active;
- 	u8 base_version;
-@@ -506,7 +511,7 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
- 	if (count < hdr_size(file) + IB_MGMT_RMPP_HDR)
- 		return -EINVAL;
- 
--	packet = kzalloc(sizeof *packet + IB_MGMT_RMPP_HDR, GFP_KERNEL);
-+	packet = kzalloc(sizeof(*packet) + IB_MGMT_RMPP_HDR, GFP_KERNEL);
- 	if (!packet)
- 		return -ENOMEM;
- 
-@@ -560,13 +565,13 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
- 		goto err_up;
- 	}
- 
--	rmpp_mad = (struct ib_rmpp_mad *) packet->mad.data;
--	hdr_len = ib_get_mad_data_offset(rmpp_mad->mad_hdr.mgmt_class);
-+	rmpp_mad_hdr = (struct ib_rmpp_mad_hdr *)packet->mad.data;
-+	hdr_len = ib_get_mad_data_offset(rmpp_mad_hdr->mad_hdr.mgmt_class);
- 
--	if (ib_is_mad_class_rmpp(rmpp_mad->mad_hdr.mgmt_class)
-+	if (ib_is_mad_class_rmpp(rmpp_mad_hdr->mad_hdr.mgmt_class)
- 	    && ib_mad_kernel_rmpp_agent(agent)) {
- 		copy_offset = IB_MGMT_RMPP_HDR;
--		rmpp_active = ib_get_rmpp_flags(&rmpp_mad->rmpp_hdr) &
-+		rmpp_active = ib_get_rmpp_flags(&rmpp_mad_hdr->rmpp_hdr) &
- 						IB_MGMT_RMPP_FLAG_ACTIVE;
- 	} else {
- 		copy_offset = IB_MGMT_MAD_HDR;
-@@ -615,12 +620,12 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
- 		tid = &((struct ib_mad_hdr *) packet->msg->mad)->tid;
- 		*tid = cpu_to_be64(((u64) agent->hi_tid) << 32 |
- 				   (be64_to_cpup(tid) & 0xffffffff));
--		rmpp_mad->mad_hdr.tid = *tid;
-+		rmpp_mad_hdr->mad_hdr.tid = *tid;
- 	}
- 
- 	if (!ib_mad_kernel_rmpp_agent(agent)
--	   && ib_is_mad_class_rmpp(rmpp_mad->mad_hdr.mgmt_class)
--	   && (ib_get_rmpp_flags(&rmpp_mad->rmpp_hdr) & IB_MGMT_RMPP_FLAG_ACTIVE)) {
-+	    && ib_is_mad_class_rmpp(rmpp_mad_hdr->mad_hdr.mgmt_class)
-+	    && (ib_get_rmpp_flags(&rmpp_mad_hdr->rmpp_hdr) & IB_MGMT_RMPP_FLAG_ACTIVE)) {
- 		spin_lock_irq(&file->send_lock);
- 		list_add_tail(&packet->list, &file->send_list);
- 		spin_unlock_irq(&file->send_lock);
--- 
-2.34.1
-
+Thanks,
+Cheng Xu
