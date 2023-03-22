@@ -2,78 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92496C4B4F
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Mar 2023 14:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FB06C4BB8
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Mar 2023 14:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbjCVNJc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Mar 2023 09:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36154 "EHLO
+        id S230369AbjCVNaw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Mar 2023 09:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjCVNJ3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Mar 2023 09:09:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC85856166
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Mar 2023 06:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679490520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B/qTj/CR/P8toNku1F2rSJCL567n91Rdrj6XCHder5E=;
-        b=PDa+qHk4SB6nYvFxLgdU/okJbJtmelwhmf7f0MwafGt/8/qAZFoQr/zFJOX6cuyu2VQfqT
-        fEmPofe7wz9lc9Unf5GCT0GMNee67ZDRBnHPofUPpXR711H1z1fuzvbe6X7dTopbStvb38
-        FGF+0tCn0uc1m/EW/2aPggB9o4A41mc=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-532-uY5_RtrMOEm0Hsdao594Tw-1; Wed, 22 Mar 2023 09:08:39 -0400
-X-MC-Unique: uY5_RtrMOEm0Hsdao594Tw-1
-Received: by mail-qv1-f71.google.com with SMTP id g6-20020ad45426000000b005a33510e95aso9260814qvt.16
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Mar 2023 06:08:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679490519; x=1682082519;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B/qTj/CR/P8toNku1F2rSJCL567n91Rdrj6XCHder5E=;
-        b=n5aNjX5ePGsZF87yG0G3LWBKYnXcYKjZgKES9IxXmg07OzMGXXEaEgyYDzHGA6tfNh
-         jaPuLSWGT+nZ3inhjnnXlnStTEXJLt0WzP5T23IWTXgdeSZZeDJY/vUzOjfoGoQ+9uS+
-         vHFaJNSO8taED+GcloEukQHYZwSkud9wo8vyWCOweHbXHSReQ8rHTWDS9jgAfJS0ZUDW
-         eohCrzVRc8dfXYV6ntGcqE+m+3M54qnA8ceiqDxMq633zA/kltHg+q9Q1jZ5jNqqMKx+
-         f3mlMDtsW1JS1vwTvcYNitY4b6BQTKJEAZDnrkzhmjaEAMPK0MGm0Lu++Io9ZRilC4Jz
-         bq9g==
-X-Gm-Message-State: AO0yUKUECgUK7XkE/QW446EacTEsXiy1aJtJ9usS5paNfOZoJBSZ9miY
-        yoxMnzzpDD/awF1RFsyzWyzel+uDpp+Mn9H2SmPmL85gWorpZaOfoagjZvnaXUqCnUWROa6ItVX
-        EE0nLWvu5UMBCM76GriJEnA==
-X-Received: by 2002:a05:622a:1ba6:b0:3bf:a3d0:9023 with SMTP id bp38-20020a05622a1ba600b003bfa3d09023mr9839479qtb.5.1679490518805;
-        Wed, 22 Mar 2023 06:08:38 -0700 (PDT)
-X-Google-Smtp-Source: AK7set8BplPahQbCnWKiKMft+baibysjjTwWtI3aCzJY2m/60IP8OZzIl2kBLJuT+hOG6SbaWsA/rg==
-X-Received: by 2002:a05:622a:1ba6:b0:3bf:a3d0:9023 with SMTP id bp38-20020a05622a1ba600b003bfa3d09023mr9839444qtb.5.1679490518441;
-        Wed, 22 Mar 2023 06:08:38 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-244-168.dyn.eolo.it. [146.241.244.168])
-        by smtp.gmail.com with ESMTPSA id f25-20020ac84659000000b003e37db253c6sm3765802qto.57.2023.03.22.06.08.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Mar 2023 06:08:38 -0700 (PDT)
-Message-ID: <8f4bd9333117eda4c5ff324f92b969d9a6b57b65.camel@redhat.com>
-Subject: Re: [PATCH net-next] net/smc: introduce shadow sockets for fallback
- connections
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Kai Shen <KaiShen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, kuba@kernel.org,
-        davem@davemloft.net, dsahern@kernel.org
-Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Date:   Wed, 22 Mar 2023 14:08:34 +0100
-In-Reply-To: <20230321071959.87786-1-KaiShen@linux.alibaba.com>
-References: <20230321071959.87786-1-KaiShen@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        with ESMTP id S229487AbjCVNau (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Mar 2023 09:30:50 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E8D10D1
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Mar 2023 06:30:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VeQxEIf_1679491845;
+Received: from 30.221.102.45(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VeQxEIf_1679491845)
+          by smtp.aliyun-inc.com;
+          Wed, 22 Mar 2023 21:30:46 +0800
+Message-ID: <6c982b76-61b2-7317-ab76-8ff0b4fb4471@linux.alibaba.com>
+Date:   Wed, 22 Mar 2023 21:30:41 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.0
+Subject: Re: [PATCH for-next v2 2/2] RDMA/erdma: Support non-4K page size in
+ doorbell allocation
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        KaiShen@linux.alibaba.com
+References: <20230307102924.70577-1-chengyou@linux.alibaba.com>
+ <20230307102924.70577-3-chengyou@linux.alibaba.com>
+ <20230314102313.GB36557@unreal>
+ <e6eec8de-7442-7f2b-8c90-af9222b2e12b@linux.alibaba.com>
+ <20230314141020.GL36557@unreal>
+ <1604d654-583f-52eb-ff76-fd92647d3625@linux.alibaba.com>
+ <20230315102210.GT36557@unreal> <ZBm/deQgMYfdPt/u@ziepe.ca>
+ <2c82439c-15d0-d5dd-b1c5-46053d3dd202@linux.alibaba.com>
+ <ZBrsexPDqDIej/2/@ziepe.ca>
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <ZBrsexPDqDIej/2/@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
+        NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,57 +52,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 2023-03-21 at 07:19 +0000, Kai Shen wrote:
-> SMC-R performs not so well on fallback situations right now,
-> especially on short link server fallback occasions. We are planning
-> to make SMC-R widely used and handling this fallback performance
-> issue is really crucial to us. Here we introduce a shadow socket
-> method to try to relief this problem.
->=20
-> Basicly, we use two more accept queues to hold incoming connections,
-> one for fallback connections and the other for smc-r connections.
-> We implement this method by using two more 'shadow' sockets and
-> make the connection path of fallback connections almost the same as
-> normal tcp connections.
->=20
-> Now the SMC-R accept path is like:
->   1. incoming connection
->   2. schedule work to smc sock alloc, tcp accept and push to smc
->      acceptq
->   3. wake up user to accept
->=20
-> When fallback happens on servers, the accepting path is the same
-> which costs more than normal tcp accept path. In fallback
-> situations, the step 2 above is not necessary and the smc sock is
-> also not needed. So we use two more shadow sockets when one smc
-> socket start listening. When new connection comes, we pop the req
-> to the fallback socket acceptq or the non-fallback socket acceptq
-> according to its syn_smc flag. As a result, when fallback happen we
-> can graft the user socket with a normal tcp sock instead of a smc
-> sock and get rid of the cost generated by step 2 and smc sock
-> releasing.
->=20
->                +-----> non-fallback socket acceptq
->                |
-> incoming req --+
->                |
->                +-----> fallback socket acceptq
->=20
-> With the help of shadow socket, we gain similar performance as tcp
-> connections on short link nginx server fallback occasions as what
-> is illustrated below.
 
-It looks like only the shadow sockets' receive queue is needed/used.
 
-Have you considered instead adding 2 receive queues to smc_sock, and
-implement a custom accept() variant fetching the accepted sockets from
-there?
+On 3/22/23 7:54 PM, Jason Gunthorpe wrote:
+> On Wed, Mar 22, 2023 at 03:05:29PM +0800, Cheng Xu wrote:
+> 
+>> The current generation of erdma devices do not have this capability due to
+>> implementation complexity. Without this HW capability, isolating the MMIO
+>> space in software doesn't prevent the attack, because the malicious APPs
+>> can map mmio itself, not through verbs interface.
+> 
+> This doesn't meet the security model of Linux, verbs HW is expected to
+> protect one process from another process.
 
-That will allow better encapsulating the changes into the smc code and
-will avoid creating that 2 non-listening but almost listening sockets
-which look quite strange.
+OK, I see.
 
-Cheers,
+So the key point is that HW should restrict each process to use its own doorbell
+space. If hardware can do this, share or do not share MMIO pages both will meet
+the security requirement. Do I get it right? 
 
-Paolo
+It seems that EFA uses shared MMIO pages with hardware security assurance.
 
+> if this is the case we should consider restricting this HW to
+> CAP_SYS_RAW_IO only.
+> 
+
+Please give us a chance to fix this issue first.
+
+> You should come with an explanation why this HW is safe enough to
+> avoid this.
+
+I need to discuss with our HW guys and implement the similar security check
+in HW, and this won't be long.
+
+Thanks,
+Cheng Xu
