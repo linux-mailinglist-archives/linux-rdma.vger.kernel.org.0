@@ -2,86 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5A96C6EBF
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 18:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E656C71CE
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 21:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbjCWRZW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Mar 2023 13:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S229738AbjCWUrB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Mar 2023 16:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbjCWRZM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 13:25:12 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E80712F35
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 10:25:09 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id v1so15336604wrv.1
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 10:25:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fungible.com; s=google; t=1679592308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ibZehAMU95QClUuNoAJiAG9Xi+jaU1H+meb4jOWGkvI=;
-        b=AQmsj3kxE5fcbMyPL49KBLJiR9dS/o8sI/0QCe9HwVJD0JitvR2v2bbXRolFAaz9hp
-         zWWx0yLcYfgAlpAxaJ0jUY2kia2UQ/X/HFF5JzceuF/aEEmbr2g3rlW6U4nAB4uGl7Lu
-         rUGLQWZtiAQ/j/EgPPcYZIuzwZwPmBs/cSJcU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679592308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ibZehAMU95QClUuNoAJiAG9Xi+jaU1H+meb4jOWGkvI=;
-        b=7GfSJLLiTMSTMfY/ovggyYwZsWdAnAVYyELAZ6Vq1L8IUk65iR/Lf6LEEP962dcF3C
-         lOVEABw8pOMHvbPX/4pKdkUewto1nwRQM/QObykBR72Xl/gVAiHJ2mYre95ErQ+xQS0w
-         vOaoBv10dDXKWTVRvZCbfVFLh7oOdtphvoBCvqtgyuqPHvj+oOQgsQAUvUDh1Px4JYd7
-         7u2tfd4RDXlQwdtXhvnYkKPz+MozhPT6FF8lZ0NClC2MN+njF5uVTKP/NGeVt2mcC8I/
-         X6lJyGqH+i1anSNwDgP5lYlmUJfE1GKDR7XnngP04bpwQ89x82D3ArEZ/vec2lrORlsx
-         wxkg==
-X-Gm-Message-State: AAQBX9egiLG0GYq95JrZcYij6g11dhMpjdNGhhepUQqsw0opXDhHlrue
-        eoG6x2tvSAnwhaoIgR2E7RhlEPtnKA8XxDTHpCzp+g==
-X-Google-Smtp-Source: AKy350auvmdyBglcTfV86qYfWUmp7zJ4yneypHrnpQYCgYYkY1qt4i6NnbUZrQQy/EJj4CrUmqewHs30B0Bkh6nQLtA=
-X-Received: by 2002:a5d:48c9:0:b0:2d5:bc78:15f3 with SMTP id
- p9-20020a5d48c9000000b002d5bc7815f3mr795212wrs.10.1679592307818; Thu, 23 Mar
- 2023 10:25:07 -0700 (PDT)
+        with ESMTP id S230321AbjCWUrA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 16:47:00 -0400
+Received: from out-49.mta0.migadu.com (out-49.mta0.migadu.com [91.218.175.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DB119694
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 13:46:56 -0700 (PDT)
+Message-ID: <366b9486-9a00-6add-d54b-5c3f4d35afe9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1679604412;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6+GSINJMGgmTxXNiTw2ylsqugVHlWlCO9tBE/Mc8vbA=;
+        b=ini74+NpbGOtOqFBntZhuoiX0dFpv4Z89uAEvQtk6WH0aGrgfrX695wAumDN6qKza8Hs16
+        7FzRFk8+knRwzixoC1qZAbZDU3aHc9vndZjRJ08hcjbvhfMF5qKx5rjETnW7VXBDE71SDa
+        Lm7mNNQyFO+hyEewOCT3HakjkV3pvyU=
+Date:   Thu, 23 Mar 2023 13:46:40 -0700
 MIME-Version: 1.0
-References: <20230323090314.22431-1-cai.huoqing@linux.dev> <20230323090314.22431-4-cai.huoqing@linux.dev>
-In-Reply-To: <20230323090314.22431-4-cai.huoqing@linux.dev>
-From:   Dimitris Michailidis <d.michailidis@fungible.com>
-Date:   Thu, 23 Mar 2023 10:24:55 -0700
-Message-ID: <CAOkoqZk0GRRZb5PyZdQ8THK+oZ+b9PKYUR8jRf2f2e8imEPaGQ@mail.gmail.com>
-Subject: Re: [PATCH 4/8] net/fungible: Remove redundant pci_clear_master
-To:     Cai Huoqing <cai.huoqing@linux.dev>
-Cc:     Derek Chickles <dchickles@marvell.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Dariusz Marcinkiewicz <reksio@newterm.pl>,
-        Dimitris Michailidis <dmichail@fungible.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Jian Shen <shenjian15@huawei.com>, Hao Lan <lanhao@huawei.com>,
-        Jie Wang <wangjie125@huawei.com>,
-        Long Li <longli@microsoft.com>, Jiri Pirko <jiri@resnulli.us>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v2 1/2] net/smc: Introduce BPF injection
+ capability for SMC
+Content-Language: en-US
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, kgraul@linux.ibm.com, wenjia@linux.ibm.com,
+        jaka@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+References: <1676981919-64884-1-git-send-email-alibuda@linux.alibaba.com>
+ <1676981919-64884-2-git-send-email-alibuda@linux.alibaba.com>
+ <76e226e6-f3bf-f740-c86c-6ee214aff07d@linux.dev>
+ <72030784-451a-2042-cbb7-98e1f9a544d5@linux.alibaba.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <72030784-451a-2042-cbb7-98e1f9a544d5@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,58 +55,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 2:04=E2=80=AFAM Cai Huoqing <cai.huoqing@linux.dev>=
- wrote:
->
-> Remove pci_clear_master to simplify the code,
-> the bus-mastering is also cleared in do_pci_disable_device,
-> like this:
-> ./drivers/pci/pci.c:2197
-> static void do_pci_disable_device(struct pci_dev *dev)
-> {
->         u16 pci_command;
->
->         pci_read_config_word(dev, PCI_COMMAND, &pci_command);
->         if (pci_command & PCI_COMMAND_MASTER) {
->                 pci_command &=3D ~PCI_COMMAND_MASTER;
->                 pci_write_config_word(dev, PCI_COMMAND, pci_command);
->         }
->
->         pcibios_disable_device(dev);
-> }.
-> And dev->is_busmaster is set to 0 in pci_disable_device.
->
-> Signed-off-by: Cai Huoqing <cai.huoqing@linux.dev>
+On 3/9/23 3:49 AM, D. Wythe wrote:
+>>> --- /dev/null
+>>> +++ b/net/smc/bpf_smc_struct_ops.c
+>>> @@ -0,0 +1,146 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +#include <linux/kernel.h>
+>>> +#include <linux/bpf_verifier.h>
+>>> +#include <linux/btf_ids.h>
+>>> +#include <linux/bpf.h>
+>>> +#include <linux/btf.h>
+>>> +#include <net/sock.h>
+>>> +#include <net/smc.h>
+>>> +
+>>> +extern struct bpf_struct_ops smc_sock_negotiator_ops;
+>>> +
+>>> +DEFINE_RWLOCK(smc_sock_negotiator_ops_rwlock);
+>>> +struct smc_sock_negotiator_ops *negotiator;
+>>
+>> Is it sure one global negotiator (policy) will work for all smc_sock? or each 
+>> sk should have its own negotiator and the negotiator is selected by setsockopt.
+>>
+> This is really a good question,  we can really consider adding an independent 
+> negotiator for each sock.
+> 
+> But just like the TCP congestion control , the global negotiator can be used for 
+> sock without
+> 
+> special requirements.
 
-Acked-by: Dimitris Michailidis <dmichail@fungible.com>
+It is different from TCP congestion control (CC). TCP CC has a global default 
+but each sk can select what tcp-cc to use and there can be multiple tcp-cc 
+registered under different names.
 
+It sounds like smc using tcp_sock should be able to have different negotiator 
+also (eg. based on dst IP or some other tcp connection characteristic). The 
+tcp-cc registration, per-sock selection and the rcu_read_lock+refcnt are well 
+understood and there are other bpf infrastructure to support the per sock tcp-cc 
+selection (like bpf_setsockopt).
 
-> ---
->  drivers/net/ethernet/fungible/funcore/fun_dev.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/net/ethernet/fungible/funcore/fun_dev.c b/drivers/ne=
-t/ethernet/fungible/funcore/fun_dev.c
-> index 3680f83feba2..a7fbd4cd560a 100644
-> --- a/drivers/net/ethernet/fungible/funcore/fun_dev.c
-> +++ b/drivers/net/ethernet/fungible/funcore/fun_dev.c
-> @@ -746,7 +746,6 @@ void fun_dev_disable(struct fun_dev *fdev)
->         bitmap_free(fdev->irq_map);
->         pci_free_irq_vectors(pdev);
->
-> -       pci_clear_master(pdev);
->         pci_disable_device(pdev);
->
->         fun_unmap_bars(fdev);
-> @@ -821,7 +820,6 @@ int fun_dev_enable(struct fun_dev *fdev, struct pci_d=
-ev *pdev,
->  disable_admin:
->         fun_disable_admin_queue(fdev);
->  free_irq_mgr:
-> -       pci_clear_master(pdev);
->         bitmap_free(fdev->irq_map);
->  free_irqs:
->         pci_free_irq_vectors(pdev);
-> --
-> 2.34.1
->
+For the network stack, there is little reason other af_* should not follow at 
+the beginning considering the infrastructure has already been built. The one 
+single global negotiator and reader/writer lock in this patch reads like an 
+effort wanted to give it a try and see if it will be useful before implementing 
+the whole thing. It is better to keep it off the tree for now until it is more 
+ready.
