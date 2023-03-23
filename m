@@ -2,79 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3DE6C6CBF
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 16:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF79D6C6DAD
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 17:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbjCWP56 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Mar 2023 11:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
+        id S231895AbjCWQeJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Mar 2023 12:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbjCWP55 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 11:57:57 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36CF241C1
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 08:57:54 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id t19so13003942qta.12
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 08:57:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1679587074;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gGyjbK25A5fLzkX+hIsW9kQZpkrTVOcdb2FDSKVkFPQ=;
-        b=E0rgqX50pLyXP+81+1VFu1+NvLWajW6EaC3lQOvlQNz/J96UCIafgWL1SnIW6Z3a6b
-         nX+J4CA4xizxiSkXAXeSTQRXfD6uANpHRDaDuMJN95SzmcBLSE3pZo0fGsFzTjFlrRDu
-         5xaxx0qu0JhEPzo6krnUO7av0rJslRwPNXE+c9dOKobwZhqu4d7arwob0WlS2MiPrHzN
-         LiQNBbizMO9hdSZLEJyCjyyfq/99Byf9WYTWxHP4Wgvjq4Dm73jKUR590EKwZZKl3u1S
-         3oNI0bP5sc6q01/oh46moJXIW/BeQcwlyp0vJWZx4PTw7H+UDl51LHzn8FSZIxYFWmwU
-         3UxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679587074;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gGyjbK25A5fLzkX+hIsW9kQZpkrTVOcdb2FDSKVkFPQ=;
-        b=gcfALu6slC2d9WDID1z7sgez284GFdx5WxAoG9nT9z8rZnHaDuqcRZ+Ke57qBLudBq
-         RZ2dY7IelmE0zeFy3uAl3PadM3rCoSGO4HjaHydGBvYOcvVgi8Tw/HOcuwgRSSCcwtlv
-         8qSaWaJ+7UH/gDBNRzLLK2S5YAKGNH+SSczjPhc0Fg5w7OskL+V+YQvc/suske3yIf4/
-         l7adIdbRjM6iYnNSbtATwx1AxtmeMqYkhXR1QA3dZpVdbWVv5wacBgvXE70f1OhTHCAK
-         QXabhkKUn1uDHe0HFWxulnbo2B4vrD1jr5Zn1XZKVKQ3YlEdm/qB+3bH2TyasqzCZh4A
-         ZoyA==
-X-Gm-Message-State: AO0yUKXGuTpGUh2dnQSSqd76AZ5MTYzKkQ9orzqpDValCAsfShEsB3EN
-        V7GKK9Xkv7XMAXJPr6rJHBpM+g==
-X-Google-Smtp-Source: AK7set+C0r03cEybZ+1MOP3W3s0zXKghh6HbhSu+aoQAuNc5b+ZpVQmRxxUfyLjMcNbp/TYds5SVyw==
-X-Received: by 2002:a05:622a:18f:b0:3bf:e13e:438f with SMTP id s15-20020a05622a018f00b003bfe13e438fmr9905893qtw.36.1679587074059;
-        Thu, 23 Mar 2023 08:57:54 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id n69-20020a374048000000b00743a0096e8csm13480280qka.39.2023.03.23.08.57.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 08:57:53 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1pfNK4-001UO9-Ei;
-        Thu, 23 Mar 2023 12:57:52 -0300
-Date:   Thu, 23 Mar 2023 12:57:52 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-block@vger.kernel.org,
-        linux-nvme@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] blk-mq-rdma: remove queue mapping helper for rdma devices
-Message-ID: <ZBx3AI5pothCuvTx@ziepe.ca>
-References: <20230322123703.485544-1-sagi@grimberg.me>
- <ZBr6kNVoa5RbNzSa@ziepe.ca>
- <c51d3d99-5bc9-cb47-6efa-5371ef3cc0f4@grimberg.me>
- <ZBsHnq6FlpO0p10A@ziepe.ca>
- <20230323120515.GE36557@unreal>
- <ZBxOHZwre3x8DkWN@ziepe.ca>
- <e1b00740-3c75-8b90-4d68-76a5f341a117@grimberg.me>
+        with ESMTP id S231649AbjCWQdo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 12:33:44 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2086.outbound.protection.outlook.com [40.107.237.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6995B2A9B7;
+        Thu, 23 Mar 2023 09:32:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DxiSUq2eJbqlkSmAkh6UJs3Jb+arYfkk7pChDiI/qkBHWvy/4bZ6hLGOTBikRfsVeS558UvN8YZCV5K+sjQ2fklR4R1nmjedspNMUilKqtL3P9nsEk8N+yTgNv22NO1vNTiI6QN9QtPXqCV5t0RI1EjicGeVWDcQQXS0iXd0E5eOOABWFupVFaNOEC3/G5BQMnWqvxFeNz4hTYybhkBXyaLMbSq8riYgO/UefUORti/VSNCpvON8opFGWtOCzNpI+1SFhtRcnC0n3ypauLojHy30uELbf6iVXjuA3Wpxe8iBpczJUWHCsdD7Eg86zjW5F/pAMj61SfwLp71IjB4fxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RQKVxgLehqVPkozYhyuaLBqqKvu2gByk6Px+XxdGAHQ=;
+ b=D+l7C4otXjmFNgtXn9zTQMC1xw52IhdlTp5pzh84kpuyxHEbvRuUkrOVD21f1GIpTS7X6n7UvHWtITFsfAVJUO5fzvxQqCYw7nis5t9IRo4Oz4acmXEYO2kJzpASjs/L7iupRolqC36/0T8LdGodgJlUpnTxzlf2Vc5YXVQJEoKyjDX3t7KGbZsGte6qcvQ6zSCZdnVlj12Flmw+irUkJ7TnnT7HetbbwscUV50/Cx5dW36O38+2I8mlG1SzfFKo5PxR9e0MS+Ae1lyEgNsLDvppGPf3yw/kfIpL5/lzEWtSLmQ1YCZrgiF+0Lg2xcL4N6rpYak8ThGFAjY8jaDF2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RQKVxgLehqVPkozYhyuaLBqqKvu2gByk6Px+XxdGAHQ=;
+ b=YbMa8m1YO0Qtm/R4UJRXAvEPRDLYKNlk46isAVDfWbXH/N0HDOjhMnE2VcT86F7y4WXX5b4H0ooyx1i4JL+KfcmzzhjvUriFWx6eOpJRlia/CgGUpxDzbqSJP4KYi6uEedlL1GZ6DfONN10ZDAcuRGtWTZYxS4pJiRMqalcVtGo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
+ SN7PR12MB6982.namprd12.prod.outlook.com (2603:10b6:806:262::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6178.37; Thu, 23 Mar 2023 16:32:31 +0000
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::f6fc:b028:b0da:afab]) by DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::f6fc:b028:b0da:afab%7]) with mapi id 15.20.6178.037; Thu, 23 Mar 2023
+ 16:32:31 +0000
+Message-ID: <9852b241-2fd0-7d71-9dd1-d240b1303cd4@amd.com>
+Date:   Thu, 23 Mar 2023 09:32:26 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.0
+Subject: Re: [PATCH 7/8] ionic: Remove redundant pci_clear_master
+To:     Cai Huoqing <cai.huoqing@linux.dev>
+Cc:     Derek Chickles <dchickles@marvell.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Dariusz Marcinkiewicz <reksio@newterm.pl>,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Jian Shen <shenjian15@huawei.com>, Hao Lan <lanhao@huawei.com>,
+        Jie Wang <wangjie125@huawei.com>,
+        Long Li <longli@microsoft.com>, Jiri Pirko <jiri@resnulli.us>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org
+References: <20230323090314.22431-1-cai.huoqing@linux.dev>
+ <20230323090314.22431-7-cai.huoqing@linux.dev>
+Content-Language: en-US
+From:   Shannon Nelson <shannon.nelson@amd.com>
+In-Reply-To: <20230323090314.22431-7-cai.huoqing@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR05CA0205.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::30) To DS0PR12MB6583.namprd12.prod.outlook.com
+ (2603:10b6:8:d1::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e1b00740-3c75-8b90-4d68-76a5f341a117@grimberg.me>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|SN7PR12MB6982:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3f90d8ea-287b-4a4e-57ca-08db2bbc32b8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9PPM2AG8weNxsZvAC1mTHna5wPHLeB3p3KQw+iMRLVxMvS3CqDumhqN5cEP0oteNlTSzoYBtWuWann7Z3RhvNe9vaEtKWpW0jxkPm3soHJcHBjKPKR5e1wj4Fm/VJBymrAXOHMksV88y6TmLqTYd+r08HD89RzFe4fv3oXh0qSftd81izq0YHB981CYK5AJl02qLzxhS98iP797POrN1/fxhKhLjhipw7GU1UppBeQM6HYylrvTBhHHJ5AKjpWL01FIcujA8jDQgNlg7Jxp9JKtqkms0WFbdbFq2SWEt3pUL214wAGL6kNrFwB89gzRF7L4ogID6LR13/dL86lN9Nav9MQbD6An5+LCW00J4lkDacBktkJDPy/+cxzzQSKKXuBCinLjXbZfqTdNEqc9VsG/OzA6TtzNnomkVBlkL8qKa8hEg6BXGFXeOHxmyyqmMBITIevZLMxczU2JhMuH87kY7qhmiEUeqR/Zx2e2feMAj5XG2Cwf/6FGALw5lbhhhmDGDFGOCNcsIneYIXC/Ibeqa3AsQVxzEZxVpJX57V1ZjklrKTAEu2Plq/HilIcM9QNSf0+gCa73NcwS4IIM/Qarg9UsPgCFQQOFSYbfOKnFqeOapj/wmozgpmS17Nh8j/aTe+CGzgrddjflO8ZsVjz/4WKNGViVNrYhePc9RRsq+GkjvClKivWl93FMdVYUyZ1toX6K/REXdudN7r8sOzLXAt4NpQGrOBSpc4o/yu1Y=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(396003)(136003)(346002)(366004)(39860400002)(451199018)(31686004)(41300700001)(66476007)(6916009)(7416002)(5660300002)(7406005)(4326008)(66556008)(2906002)(44832011)(31696002)(86362001)(36756003)(8676002)(38100700002)(6486002)(66946007)(6666004)(26005)(478600001)(316002)(8936002)(6506007)(54906003)(6512007)(83380400001)(2616005)(186003)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ODNhRVlZYno0WjluQnEvdHFHSllRZU5kMEVzRzRPMHdUMXJjQ3E3ZGFBcnQw?=
+ =?utf-8?B?ZXV4czlsZ01CR01LQUJlaGxUcGoreXdsaCtDK09nMlo3MTZRMENnQVdqWlRR?=
+ =?utf-8?B?Qk9JeTRuYVpUQXJyRkZLKzhFaEVkcFNPaFZjTDF1QXFrYUxlTG51a0VCM3VZ?=
+ =?utf-8?B?eCtuVEdkNGtGS3F0dHVBMUl5TzFWaUJXWDExVVFBOEVDamZJd0RiVmpqUUhF?=
+ =?utf-8?B?V0JlcTRvZTVDRDg4MFg3Z3NDY0hPTHdzWVI2SDEzT2FNa0VKekZoenkzWTIz?=
+ =?utf-8?B?STRBWFEwVldnRG5LcHIyYTRpY1pGUjdrQTJTSWtWS2lJcTM3Mlh4dFB3ZU1P?=
+ =?utf-8?B?OGJBNjV2bEhIUVQ2NjQ0OXdaSnJ5a3FKNlJMNDl3bHlTajJIMi9tdyt1RVRZ?=
+ =?utf-8?B?dktIVVlFVHdXK1RUN0MrOWYwYTM4R2l2QkFPY2VQZVZ0QlBoQnRWNEI0OUZP?=
+ =?utf-8?B?SXMxYWt0OFJwRE9SYjk1bmZWcE1HNzRTeHRvdWpIVFBBbnhTMGtaOXJFNEZM?=
+ =?utf-8?B?Z3pJbHgyV2R2cThOU2RSS08zMi9mYk4yZG1RMW40Q2IvQjkwOEdDU0xLRFFQ?=
+ =?utf-8?B?TW9XMVhQaFN5Yzk3TzFXRTU4NkpJR2RROUR5cnFCMmdFUFFWM29SRnN5K0xD?=
+ =?utf-8?B?cFFrWjV4cFRVc2d1dFo1ZGJzNm1ocmFlbWlsNWZ6MFpobkhxUVNvc1VaQ1VU?=
+ =?utf-8?B?UWd6NlZ5QVV4ekxMbVF0ZzFreHVFeDJBSEJEQTcrbTliNThEcTRLakU2VDQw?=
+ =?utf-8?B?ZG1RVHpncHVldGtUU1JTaWJOYjJmMlplVWdZSkpMamgvWEdQY2xydTNvTXpZ?=
+ =?utf-8?B?SktaZCtxVHZxd3lLUFVpdWJtNG5IN2t6djRLMlRPT0tybGlXMnJaWCtEK3FM?=
+ =?utf-8?B?dmIwYjRHQXViQ1dxeE9XaVNUK3RGQTJnOEI1NWRXWnYvTVVCN1JEbSsrS21E?=
+ =?utf-8?B?QTYyMm02cTZnei91V0NjRGhxR2Q3NWU4VGc4cFBlS3hhRzczcDRjK3ZrTVN1?=
+ =?utf-8?B?eTRhQU9ncjgrblJCSWFhNDh0clhUMU9JdUo4WGRKQkNuR0QzclNDSDBRRldi?=
+ =?utf-8?B?c0hWREJiU3BtSy83UmVWRlU5MEZFaEJlMHdndjZyTnNaM0hzbFZSZGx2R1BZ?=
+ =?utf-8?B?eHFSM1c3M1ZURVdUVnZrazg1RGV3UDZBbnhQUUxzR2RTUS9kOFBJRC9kWFBk?=
+ =?utf-8?B?MUl5ZTV0Uk1pMzhPQnk0S3RNYmx2bDBqcm1pNTRWeGV5K3RTZ0xvQU5pUlhP?=
+ =?utf-8?B?T3hiK0tLdUovZmZRL2YyTkl2V1hFRHhmMDViVkpYRHltM3lncnB2V3AwRy82?=
+ =?utf-8?B?bkdGNTlPSTlTejh1Z3krQUR4enZOSjdVRFBaVXN3THBhMG5uWHh0clphc2ZZ?=
+ =?utf-8?B?bHA3dzhGMzJXNUlGZFZ3OTJ6YUJ5R2VTbHFHVzNRRU8xUHNpNlNHR0xVRmlX?=
+ =?utf-8?B?cWd3aFpjVVB3eDNnZG15NTZpbU9yUHFZeUlVQ0JOZnVGZCs1WktZU251MTVT?=
+ =?utf-8?B?NWZrN25xWW9LUmg5YTBwQzF4dVhkNkFrNlFpcS92NTBwVTZ3eWxqaVJWZzdT?=
+ =?utf-8?B?c0ZJNXRLMUhtdlVHb2FmNUdVUVk2SzJES1BOSGhvcjgvSFdJQ1VYajBUekJD?=
+ =?utf-8?B?clpZY0NNNzVhQWpjUEg3K3RKWkRHdTl1ZWFBZXdqNlVRaVcwRng4OU1sMFFB?=
+ =?utf-8?B?VlFDd2FhOEJWMU13NnV2b3J1TUxlVXZpcThNOGwyVkFPS0FOYitPclBKWC9D?=
+ =?utf-8?B?bzJhNjJYTnNJenZveFNRSGhaem9YbEY4NmE1aWRDMEZFNFlpZlNQUC9yZVIw?=
+ =?utf-8?B?dVoxRWt0VTg4SktsdVlsTzIxWERQb0k5TDRvS3F6dFZKOHc5OXlkemtnd1hW?=
+ =?utf-8?B?eTZQWkJKNHBGTFVpelBZMm1VU1c0dWdzL2ViK0grZTM4OHpEa1VweWc0MUE1?=
+ =?utf-8?B?M2lDQUtHcWdyb3lXK2dQa3p5WjlvY2JienhGbklUT2s0MEMyZVJodVB6R0VP?=
+ =?utf-8?B?ZjdvUllxQUdCTWZ0c08zU0Z2dFpPN2pSdGhkQ28zRXlFcEFjZ2NXVWNQMHdw?=
+ =?utf-8?B?ZXBBdDFkc084M054T3pGS0tPbHpyenhrc3VkUXN4aUF4QzBDczBXaTZHdUpN?=
+ =?utf-8?Q?+ZfgZaPIi2BpA2yGMEHT3d26P?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f90d8ea-287b-4a4e-57ca-08db2bbc32b8
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2023 16:32:30.9875
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aAoNQhp9xqMJs8taJMF2KSeyA2H7ulvpcrI1w8lpf8UALKcObE89SBBbl3IS2ejiFP0HbSshMU/qQwRjeJRUfA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6982
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,49 +147,48 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 05:07:24PM +0200, Sagi Grimberg wrote:
+On 3/23/23 2:03 AM, Cai Huoqing wrote:
+> Remove pci_clear_master to simplify the code,
+> the bus-mastering is also cleared in do_pci_disable_device,
+> like this:
+> ./drivers/pci/pci.c:2197
+> static void do_pci_disable_device(struct pci_dev *dev)
+> {
+>          u16 pci_command;
 > 
-> > > > > > > No rdma device exposes its irq vectors affinity today. So the only
-> > > > > > > mapping that we have left, is the default blk_mq_map_queues, which
-> > > > > > > we fallback to anyways. Also fixup the only consumer of this helper
-> > > > > > > (nvme-rdma).
-> > > > > > 
-> > > > > > This was the only caller of ib_get_vector_affinity() so please delete
-> > > > > > op get_vector_affinity and ib_get_vector_affinity() from verbs as well
-> > > > > 
-> > > > > Yep, no problem.
-> > > > > 
-> > > > > Given that nvme-rdma was the only consumer, do you prefer this goes from
-> > > > > the nvme tree?
-> > > > 
-> > > > Sure, it is probably fine
-> > > 
-> > > I tried to do it two+ years ago:
-> > > https://lore.kernel.org/all/20200929091358.421086-1-leon@kernel.org
-> > 
-> > Christoph's points make sense, but I think we should still purge this
-> > code.
-> > 
-> > If we want to do proper managed affinity the right RDMA API is to
-> > directly ask for the desired CPU binding when creating the CQ, and
-> > optionally a way to change the CPU binding of the CQ at runtime.
+>          pci_read_config_word(dev, PCI_COMMAND, &pci_command);
+>          if (pci_command & PCI_COMMAND_MASTER) {
+>                  pci_command &= ~PCI_COMMAND_MASTER;
+>                  pci_write_config_word(dev, PCI_COMMAND, pci_command);
+>          }
 > 
-> I think the affinity management is referring to IRQD_AFFINITY_MANAGED
-> which IIRC is the case when the device passes `struct irq_affinity` to
-> pci_alloc_irq_vectors_affinity.
+>          pcibios_disable_device(dev);
+> }.
+> And dev->is_busmaster is set to 0 in pci_disable_device.
 > 
-> Not sure what that has to do with passing a cpu to create_cq.
+> Signed-off-by: Cai Huoqing <cai.huoqing@linux.dev>
 
-I took Christoph's remarks to be that the system should auto configure
-interrupts sensibly and not rely on userspace messing around in proc.
+Thanks!
+sln
 
-For instance, I would expect that the NVMe driver work the same way on
-RDMA and PCI. For PCI it calls pci_alloc_irq_vectors_affinity(), RDMA
-should call some ib_alloc_cq_affinity() and generate the affinity in
-exactly the same way.
+Acked-by: Shannon Nelson <shannon.nelson@amd.com>
 
-So, I have no problem to delete these things as the
-get_vector_affinity API is not part of solving the affinity problem,
-and it seems NVMe PCI doesn't need blk_mq_rdma_map_queues() either.
-
-Jason
+> ---
+>   drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c b/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+> index e508f8eb43bf..b8678da1cce5 100644
+> --- a/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+> +++ b/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+> @@ -392,7 +392,6 @@ static void ionic_remove(struct pci_dev *pdev)
+>          ionic_port_reset(ionic);
+>          ionic_reset(ionic);
+>          ionic_dev_teardown(ionic);
+> -       pci_clear_master(pdev);
+>          ionic_unmap_bars(ionic);
+>          pci_release_regions(pdev);
+>          pci_disable_device(pdev);
+> --
+> 2.34.1
+> 
