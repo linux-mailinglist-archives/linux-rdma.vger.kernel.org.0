@@ -2,30 +2,29 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 844B86C62A4
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 10:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CB16C62AD
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 10:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbjCWJEw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Mar 2023 05:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
+        id S231534AbjCWJFT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Mar 2023 05:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbjCWJEf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 05:04:35 -0400
-X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Mar 2023 02:04:30 PDT
-Received: from out-46.mta0.migadu.com (out-46.mta0.migadu.com [IPv6:2001:41d0:1004:224b::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BBF1E1F1
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 02:04:29 -0700 (PDT)
+        with ESMTP id S231127AbjCWJEy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 05:04:54 -0400
+Received: from out-5.mta0.migadu.com (out-5.mta0.migadu.com [IPv6:2001:41d0:1004:224b::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEFC211CB
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 02:04:41 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1679562268;
+        t=1679562279;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WkdvHrdmTL100mQnwE6Lnhv0ImSnOgCjctLH9bKwcXE=;
-        b=Ql7dbPkwPtVVv40kbYJwCExR/7AdHzcbhdBNTehLR3XeqZu/Jmv/PmcxjnWsYUAjuxdZh0
-        YVpI/JPA/YWsSxKClzdFA+R8LA3IgJXs9Ndmn9o8WKA+M3Cb8tqdRkAnfBjpwjaIjVUpfu
-        a3RhpJyDXW5ay6bF9gTQ/ek5kUR7/5s=
+        bh=5nEaPllgZlxaf5JlJz0X6lv294PfQyE1/LsvcdyaxrU=;
+        b=qhKtb/HZfXNjw65QQis9iDr7t12r8yC3e/GHiq2ISPlR53hm9nC2bBV57WUaDAiLAs978S
+        ZB/Mibd2UwHRqjET0dnaGyZuc+OnYPxpYA6rADKF6JWQivgTJLZ0bKaSnsVXVYAnZdYUoF
+        jeSQxTFo1iuIN6pZglrK93L10B3qGtM=
 From:   Cai Huoqing <cai.huoqing@linux.dev>
 To:     cai.huoqing@linux.dev
 Cc:     Derek Chickles <dchickles@marvell.com>,
@@ -55,9 +54,9 @@ Cc:     Derek Chickles <dchickles@marvell.com>,
         Long Li <longli@microsoft.com>, Jiri Pirko <jiri@resnulli.us>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: [PATCH 6/8] net: mana: Remove redundant pci_clear_master
-Date:   Thu, 23 Mar 2023 17:03:05 +0800
-Message-Id: <20230323090314.22431-6-cai.huoqing@linux.dev>
+Subject: [PATCH 7/8] ionic: Remove redundant pci_clear_master
+Date:   Thu, 23 Mar 2023 17:03:06 +0800
+Message-Id: <20230323090314.22431-7-cai.huoqing@linux.dev>
 In-Reply-To: <20230323090314.22431-1-cai.huoqing@linux.dev>
 References: <20230323090314.22431-1-cai.huoqing@linux.dev>
 MIME-Version: 1.0
@@ -92,29 +91,21 @@ And dev->is_busmaster is set to 0 in pci_disable_device.
 
 Signed-off-by: Cai Huoqing <cai.huoqing@linux.dev>
 ---
- drivers/net/ethernet/microsoft/mana/gdma_main.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index f9b8f372ec8a..8f3f78b68592 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -1439,7 +1439,6 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- release_region:
- 	pci_release_regions(pdev);
- disable_dev:
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c b/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+index e508f8eb43bf..b8678da1cce5 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+@@ -392,7 +392,6 @@ static void ionic_remove(struct pci_dev *pdev)
+ 	ionic_port_reset(ionic);
+ 	ionic_reset(ionic);
+ 	ionic_dev_teardown(ionic);
 -	pci_clear_master(pdev);
- 	pci_disable_device(pdev);
- 	dev_err(&pdev->dev, "gdma probe failed: err = %d\n", err);
- 	return err;
-@@ -1458,7 +1457,6 @@ static void mana_gd_remove(struct pci_dev *pdev)
- 	vfree(gc);
- 
+ 	ionic_unmap_bars(ionic);
  	pci_release_regions(pdev);
--	pci_clear_master(pdev);
  	pci_disable_device(pdev);
- }
- 
 -- 
 2.34.1
 
