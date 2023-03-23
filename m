@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7481C6C6305
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 10:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDB96C6306
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 10:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbjCWJNU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Mar 2023 05:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
+        id S231476AbjCWJNZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Mar 2023 05:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbjCWJNM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 05:13:12 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BCE1A95B
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 02:13:09 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id i15so8711239pfo.8
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 02:13:09 -0700 (PDT)
+        with ESMTP id S231561AbjCWJNQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 05:13:16 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312F61E9F1
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 02:13:12 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id dw14so7342676pfb.6
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 02:13:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1679562789;
+        d=broadcom.com; s=google; t=1679562791;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=CXE6NWV1wQ2VAW6XWzTt/QoRXeEA9TZDCJ3HKrwwYSU=;
-        b=hA2cWZKaUMzSNqHe/mAl7gWD14za8xX1MhkAV9MrgH8d8V3uhbHOHvWXrlqBwDUavf
-         3aowknOtr9gTpFve8iSuNMxIyQIS6mk70T9cCdb7HVuSgOxsgBiXe83onoGPJJje0AOj
-         0BvmsAVh1mlcG0UFXlc6P4HQNPapABthfy5BI=
+        bh=hfUY3HU5rkyxMSY3RJQ+TA0FLs+oJZs0Ba7dCtEUyZg=;
+        b=AJUM31X3Bcnl0UruI4NA2QXo3BRC/XzvLYOTrmhkvypODtNucd7rNqmcREl8WdSP5Y
+         xrGYzKEZEMjO34ozZ4j+MJUupeT/27sfQFQmzwQCe8HgkYClk4vr8WUE+KKcMIZnedni
+         x5lGLVckWUYnwC0QeI0Fbdag5ywQ+AhbG3GB8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679562789;
+        d=1e100.net; s=20210112; t=1679562791;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CXE6NWV1wQ2VAW6XWzTt/QoRXeEA9TZDCJ3HKrwwYSU=;
-        b=eLJsxa97sZUMCeyHjG6piX3ph40MB0CvEJAFdMT2BOWc0n/BmStyXKh4G/BrHfuuBC
-         iguAirS09bQupNm5iLEYuEmv8L476aoLU3sLKpeZtVXa7rP+nIm98MJc97goTRW/eFRJ
-         Ou67Zn56aHBRnYvxLuyJJhm+nNqoySjJmO7Ow85aPYT5fWMdNt8aKmwY/XGqGqJsk5mW
-         jxlGEp6yNhETefj6WFd6mvNb7FhKjU9fCpjQoZw+Z3CC8maw/hTC6kxvUrpaUus5fKw/
-         DsVIwRkQzEGn7jWBpk7NUcQR/WnxhtIfUz0twrQJt92PbsCj5Ysv64BypySt/SoxfkJe
-         T6pA==
-X-Gm-Message-State: AO0yUKXXm0HYurd7MXlCTPqPRAgSHYtJ/4SS6fU7ZdR91yMLirj3+Kme
-        7R/SmDqMq60Dcq4DYV3CBoafttOIVushdcyDZlE=
-X-Google-Smtp-Source: AK7set+oPoxZcOFF0SF01HHDGzNv8a4QsPKpVDxOSfkg7CS/s5QaVVzx7vJ0eut6xLhEoV31KKLKbw==
-X-Received: by 2002:a62:62c3:0:b0:5e0:a86:a76f with SMTP id w186-20020a6262c3000000b005e00a86a76fmr6102616pfb.0.1679562788763;
-        Thu, 23 Mar 2023 02:13:08 -0700 (PDT)
+        bh=hfUY3HU5rkyxMSY3RJQ+TA0FLs+oJZs0Ba7dCtEUyZg=;
+        b=rGlxNJ0B5Vd/+BUIH59+6C1pZrjHCZZqjEmZ3uMP32inuy4KJhPKX/NoS90Fj+Pb82
+         vocYtcfPzHJDBkmMIRLBFL1r3J9zAXU9T+MevAKXQ/nsSLxG6EvNYXMXwRu516w2jVLQ
+         MOvw9bsGVQwrDZMfTJKgaty4LporlEC53EBU46tPCWr7ekxtMY4+4GBoOWb9i7eSPxmg
+         hDOuX1owaWx+75nvYY9eRdndBW7B/u6WXRnY1M7etFM4n4nkGzZrFGQpvsIIsKYngpeD
+         kZztBfhnwnPWVl0Dud8mKYve0xm92yWqkjqz3RQhMCDS2sWPB0O2h16jTO81Y2VkNvtc
+         HIAA==
+X-Gm-Message-State: AO0yUKXTj87PwMx78KF5T7tT2jHBV07vv2AwNu2bjDbaTh08+UUpFG5G
+        ZyC7F/CnH05VioHgEfwgEPOSSQX6993dd3Cgmss=
+X-Google-Smtp-Source: AK7set8GEVaBMmodWy2DxdjXPR3zKfc5kvuAKVbeifpoX51Hhv2aZMHsfqvFhUmUcSSSKGgfeNL6UA==
+X-Received: by 2002:a62:2581:0:b0:626:6a3:6b81 with SMTP id l123-20020a622581000000b0062606a36b81mr5046811pfl.15.1679562791598;
+        Thu, 23 Mar 2023 02:13:11 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id l20-20020a62be14000000b00627e9ab34b3sm9055114pff.91.2023.03.23.02.13.06
+        by smtp.gmail.com with ESMTPSA id l20-20020a62be14000000b00627e9ab34b3sm9055114pff.91.2023.03.23.02.13.09
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 Mar 2023 02:13:07 -0700 (PDT)
+        Thu, 23 Mar 2023 02:13:10 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 6/7] RDAM/bnxt_re: Use tlv apis while processing the slow path commands
-Date:   Thu, 23 Mar 2023 02:12:18 -0700
-Message-Id: <1679562739-24472-7-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 7/7] RDMA/bnxt_re: Enable congestion control by default
+Date:   Thu, 23 Mar 2023 02:12:19 -0700
+Message-Id: <1679562739-24472-8-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1679562739-24472-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1679562739-24472-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000006bebe605f78daf88"
+        boundary="0000000000009795c205f78daf4b"
 X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_HEADER_CTYPE_ONLY,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_TVD_MIME_NO_HEADERS
@@ -66,88 +66,369 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000006bebe605f78daf88
+--0000000000009795c205f78daf4b
 
-Use the new TLV APIs for existing slow path commands. The TLV
-APIs will be used to populate extended headers for some of the
-Firmware commands, which will be introduced in the patches that
-follow.
+Enable Congesion control by default. Issue FW command
+enable the CC during driver load and disable it during
+unload.
 
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c       |  24 ++++++-
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  15 ++--
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  20 ++++--
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c   | 109 +++++++++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h   |  67 ++++++++++++++++++
+ 5 files changed, 222 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 7403a4e..06979f7 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -49,6 +49,7 @@
- #include "qplib_rcfw.h"
- #include "qplib_sp.h"
- #include "qplib_fp.h"
-+#include "qplib_tlv.h"
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 4aa3442..b9e2f89 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1332,6 +1332,27 @@ static int bnxt_re_add_device(struct auxiliary_device *adev, u8 wqe_mode)
+ 	return rc;
+ }
  
- static void bnxt_qplib_service_creq(struct tasklet_struct *t);
- 
-@@ -101,7 +102,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
- 
- 	pdev = rcfw->pdev;
- 
--	opcode = msg->req->opcode;
-+	opcode = __get_cmdq_base_opcode(msg->req, msg->req_sz);
- 	if (!test_bit(FIRMWARE_INITIALIZED_FLAG, &cmdq->flags) &&
- 	    (opcode != CMDQ_BASE_OPCODE_QUERY_FUNC &&
- 	     opcode != CMDQ_BASE_OPCODE_INITIALIZE_FW &&
-@@ -137,7 +138,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
- 		cookie |= RCFW_CMD_IS_BLOCKING;
- 
- 	set_bit(cbit, cmdq->cmdq_bitmap);
--	msg->req->cookie = cpu_to_le16(cookie);
-+	__set_cmdq_base_cookie(msg->req, msg->req_sz, cpu_to_le16(cookie));
- 	crsqe = &rcfw->crsqe_tbl[cbit];
- 	if (crsqe->resp) {
- 		spin_unlock_irqrestore(&hwq->lock, flags);
-@@ -153,13 +154,12 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
- 	memset(msg->resp, 0, sizeof(*msg->resp));
- 	crsqe->resp = (struct creq_qp_event *)msg->resp;
- 	crsqe->resp->cookie = msg->req->cookie;
--	crsqe->req_size = msg->req->cmd_size;
--	if (msg->req->resp_size && msg->sb) {
-+	crsqe->req_size = __get_cmdq_base_cmd_size(msg->req, msg->req_sz);
-+	if (__get_cmdq_base_resp_size(msg->req, msg->req_sz) && msg->sb) {
- 		struct bnxt_qplib_rcfw_sbuf *sbuf = msg->sb;
++static void bnxt_re_setup_cc(struct bnxt_re_dev *rdev, bool enable)
++{
++	struct bnxt_qplib_cc_param cc_param = {};
++
++	/* Currently enabling only for GenP5 adapters */
++	if (!bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx))
++		return;
++
++	if (enable) {
++		cc_param.enable  = 1;
++		cc_param.cc_mode = CMDQ_MODIFY_ROCE_CC_CC_MODE_PROBABILISTIC_CC_MODE;
++	}
++
++	cc_param.mask = (CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_CC_MODE |
++			 CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_ENABLE_CC |
++			 CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_TOS_ECN);
++
++	if (bnxt_qplib_modify_cc(&rdev->qplib_res, &cc_param))
++		ibdev_err(&rdev->ibdev, "Failed to setup CC enable = %d\n", enable);
++}
++
+ /*
+  * "Notifier chain callback can be invoked for the same chain from
+  * different CPUs at the same time".
+@@ -1400,7 +1421,7 @@ static void bnxt_re_remove(struct auxiliary_device *adev)
+ 		 */
+ 		goto skip_remove;
+ 	}
 -
--		msg->req->resp_addr = cpu_to_le64(sbuf->dma_addr);
--		msg->req->resp_size = (sbuf->size + BNXT_QPLIB_CMDQE_UNITS - 1) /
--				  BNXT_QPLIB_CMDQE_UNITS;
-+		__set_cmdq_base_resp_addr(msg->req, msg->req_sz, cpu_to_le64(sbuf->dma_addr));
-+		__set_cmdq_base_resp_size(msg->req, msg->req_sz,
-+					  ALIGN(sbuf->size, BNXT_QPLIB_CMDQE_UNITS));
++	bnxt_re_setup_cc(rdev, false);
+ 	ib_unregister_device(&rdev->ibdev);
+ 	ib_dealloc_device(&rdev->ibdev);
+ 	bnxt_re_dev_uninit(rdev);
+@@ -1432,6 +1453,7 @@ static int bnxt_re_probe(struct auxiliary_device *adev,
+ 		goto err;
  	}
  
- 	preq = (u8 *)msg->req;
-@@ -214,12 +214,12 @@ int bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 		return 0;
++	bnxt_re_setup_cc(rdev, true);
+ 	mutex_unlock(&bnxt_re_mutex);
+ 	return 0;
  
- 	do {
--		opcode = msg->req->opcode;
-+		opcode = __get_cmdq_base_opcode(msg->req, msg->req_sz);
- 		rc = __send_message(rcfw, msg);
--		cookie = le16_to_cpu(msg->req->cookie) & RCFW_MAX_COOKIE_VALUE;
-+		cookie = le16_to_cpu(__get_cmdq_base_cookie(msg->req, msg->req_sz)) &
-+				RCFW_MAX_COOKIE_VALUE;
- 		if (!rc)
- 			break;
--
- 		if (!retry_cnt || (rc != -EAGAIN && rc != -EBUSY)) {
- 			/* send failed */
- 			dev_err(&rcfw->pdev->dev, "cmdq[%#x]=%#x send failed\n",
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index 06979f7..73f936c 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -96,7 +96,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	u32 sw_prod, cmdq_prod;
+ 	struct pci_dev *pdev;
+ 	unsigned long flags;
+-	u32 size, opcode;
++	u32 bsize, opcode;
+ 	u16 cookie, cbit;
+ 	u8 *preq;
+ 
+@@ -145,15 +145,14 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 		return -EBUSY;
+ 	}
+ 
+-	size = msg->req->cmd_size;
+ 	/* change the cmd_size to the number of 16byte cmdq unit.
+ 	 * req->cmd_size is modified here
+ 	 */
+-	bnxt_qplib_set_cmd_slots(msg->req);
++	bsize = bnxt_qplib_set_cmd_slots(msg->req);
+ 
+ 	memset(msg->resp, 0, sizeof(*msg->resp));
+ 	crsqe->resp = (struct creq_qp_event *)msg->resp;
+-	crsqe->resp->cookie = msg->req->cookie;
++	crsqe->resp->cookie = cookie;
+ 	crsqe->req_size = __get_cmdq_base_cmd_size(msg->req, msg->req_sz);
+ 	if (__get_cmdq_base_resp_size(msg->req, msg->req_sz) && msg->sb) {
+ 		struct bnxt_qplib_rcfw_sbuf *sbuf = msg->sb;
+@@ -174,11 +173,11 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 		}
+ 		/* Copy a segment of the req cmd to the cmdq */
+ 		memset(cmdqe, 0, sizeof(*cmdqe));
+-		memcpy(cmdqe, preq, min_t(u32, size, sizeof(*cmdqe)));
+-		preq += min_t(u32, size, sizeof(*cmdqe));
+-		size -= min_t(u32, size, sizeof(*cmdqe));
++		memcpy(cmdqe, preq, min_t(u32, bsize, sizeof(*cmdqe)));
++		preq += min_t(u32, bsize, sizeof(*cmdqe));
++		bsize -= min_t(u32, bsize, sizeof(*cmdqe));
+ 		hwq->prod++;
+-	} while (size > 0);
++	} while (bsize > 0);
+ 	cmdq->seq_num++;
+ 
+ 	cmdq_prod = hwq->prod;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+index 5d619ce..dd56514 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+@@ -39,6 +39,8 @@
+ #ifndef __BNXT_QPLIB_RCFW_H__
+ #define __BNXT_QPLIB_RCFW_H__
+ 
++#include "qplib_tlv.h"
++
+ #define RCFW_CMDQ_TRIG_VAL		1
+ #define RCFW_COMM_PCI_BAR_REGION	0
+ #define RCFW_COMM_CONS_PCI_BAR_REGION	2
+@@ -87,11 +89,21 @@ static inline u32 bnxt_qplib_cmdqe_page_size(u32 depth)
+ 	return (bnxt_qplib_cmdqe_npages(depth) * PAGE_SIZE);
+ }
+ 
+-/* Set the cmd_size to a factor of CMDQE unit */
+-static inline void bnxt_qplib_set_cmd_slots(struct cmdq_base *req)
++static inline u32 bnxt_qplib_set_cmd_slots(struct cmdq_base *req)
+ {
+-	req->cmd_size = (req->cmd_size + BNXT_QPLIB_CMDQE_UNITS - 1) /
+-			 BNXT_QPLIB_CMDQE_UNITS;
++	u32 cmd_byte = 0;
++
++	if (HAS_TLV_HEADER(req)) {
++		struct roce_tlv *tlv_req = (struct roce_tlv *)req;
++
++		cmd_byte = tlv_req->total_size * BNXT_QPLIB_CMDQE_UNITS;
++	} else {
++		cmd_byte = req->cmd_size;
++		req->cmd_size = (req->cmd_size + BNXT_QPLIB_CMDQE_UNITS - 1) /
++				 BNXT_QPLIB_CMDQE_UNITS;
++	}
++
++	return cmd_byte;
+ }
+ 
+ #define RCFW_MAX_COOKIE_VALUE		0x7FFF
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+index 54c26c5..b7331d4 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+@@ -48,6 +48,7 @@
+ #include "qplib_res.h"
+ #include "qplib_rcfw.h"
+ #include "qplib_sp.h"
++#include "qplib_tlv.h"
+ 
+ const struct bnxt_qplib_gid bnxt_qplib_gid_zero = {{ 0, 0, 0, 0, 0, 0, 0, 0,
+ 						     0, 0, 0, 0, 0, 0, 0, 0 } };
+@@ -849,3 +850,111 @@ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
+ 	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
+ 	return rc;
+ }
++
++void bnxt_qplib_fill_cc_gen1(struct cmdq_modify_roce_cc_gen1_tlv *ext_req,
++			     struct bnxt_qplib_cc_param_ext *cc_ext)
++{
++	ext_req->modify_mask = cpu_to_le64(cc_ext->ext_mask);
++	cc_ext->ext_mask = 0;
++	ext_req->inactivity_th_hi = cpu_to_le16(cc_ext->inact_th_hi);
++	ext_req->min_time_between_cnps = cpu_to_le16(cc_ext->min_delta_cnp);
++	ext_req->init_cp = cpu_to_le16(cc_ext->init_cp);
++	ext_req->tr_update_mode = cc_ext->tr_update_mode;
++	ext_req->tr_update_cycles = cc_ext->tr_update_cyls;
++	ext_req->fr_num_rtts = cc_ext->fr_rtt;
++	ext_req->ai_rate_increase = cc_ext->ai_rate_incr;
++	ext_req->reduction_relax_rtts_th = cpu_to_le16(cc_ext->rr_rtt_th);
++	ext_req->additional_relax_cr_th = cpu_to_le16(cc_ext->ar_cr_th);
++	ext_req->cr_min_th = cpu_to_le16(cc_ext->cr_min_th);
++	ext_req->bw_avg_weight = cc_ext->bw_avg_weight;
++	ext_req->actual_cr_factor = cc_ext->cr_factor;
++	ext_req->max_cp_cr_th = cpu_to_le16(cc_ext->cr_th_max_cp);
++	ext_req->cp_bias_en = cc_ext->cp_bias_en;
++	ext_req->cp_bias = cc_ext->cp_bias;
++	ext_req->cnp_ecn = cc_ext->cnp_ecn;
++	ext_req->rtt_jitter_en = cc_ext->rtt_jitter_en;
++	ext_req->link_bytes_per_usec = cpu_to_le16(cc_ext->bytes_per_usec);
++	ext_req->reset_cc_cr_th = cpu_to_le16(cc_ext->cc_cr_reset_th);
++	ext_req->cr_width = cc_ext->cr_width;
++	ext_req->quota_period_min = cc_ext->min_quota;
++	ext_req->quota_period_max = cc_ext->max_quota;
++	ext_req->quota_period_abs_max = cc_ext->abs_max_quota;
++	ext_req->tr_lower_bound = cpu_to_le16(cc_ext->tr_lb);
++	ext_req->cr_prob_factor = cc_ext->cr_prob_fac;
++	ext_req->tr_prob_factor = cc_ext->tr_prob_fac;
++	ext_req->fairness_cr_th = cpu_to_le16(cc_ext->fair_cr_th);
++	ext_req->red_div = cc_ext->red_div;
++	ext_req->cnp_ratio_th = cc_ext->cnp_ratio_th;
++	ext_req->exp_ai_rtts = cpu_to_le16(cc_ext->ai_ext_rtt);
++	ext_req->exp_ai_cr_cp_ratio = cc_ext->exp_crcp_ratio;
++	ext_req->use_rate_table = cc_ext->low_rate_en;
++	ext_req->cp_exp_update_th = cpu_to_le16(cc_ext->cpcr_update_th);
++	ext_req->high_exp_ai_rtts_th1 = cpu_to_le16(cc_ext->ai_rtt_th1);
++	ext_req->high_exp_ai_rtts_th2 = cpu_to_le16(cc_ext->ai_rtt_th2);
++	ext_req->actual_cr_cong_free_rtts_th = cpu_to_le16(cc_ext->cf_rtt_th);
++	ext_req->severe_cong_cr_th1 = cpu_to_le16(cc_ext->sc_cr_th1);
++	ext_req->severe_cong_cr_th2 = cpu_to_le16(cc_ext->sc_cr_th2);
++	ext_req->link64B_per_rtt = cpu_to_le32(cc_ext->l64B_per_rtt);
++	ext_req->cc_ack_bytes = cc_ext->cc_ack_bytes;
++}
++
++int bnxt_qplib_modify_cc(struct bnxt_qplib_res *res,
++			 struct bnxt_qplib_cc_param *cc_param)
++{
++	struct bnxt_qplib_tlv_modify_cc_req tlv_req = {};
++	struct creq_modify_roce_cc_resp resp = {};
++	struct bnxt_qplib_cmdqmsg msg = {};
++	struct cmdq_modify_roce_cc *req;
++	int req_size;
++	void *cmd;
++	int rc;
++
++	/* Prepare the older base command */
++	req = &tlv_req.base_req;
++	cmd = req;
++	req_size = sizeof(*req);
++	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)req, CMDQ_BASE_OPCODE_MODIFY_ROCE_CC,
++				 sizeof(*req));
++	req->modify_mask = cpu_to_le32(cc_param->mask);
++	req->enable_cc = cc_param->enable;
++	req->g = cc_param->g;
++	req->num_phases_per_state = cc_param->nph_per_state;
++	req->time_per_phase = cc_param->time_pph;
++	req->pkts_per_phase = cc_param->pkts_pph;
++	req->init_cr = cpu_to_le16(cc_param->init_cr);
++	req->init_tr = cpu_to_le16(cc_param->init_tr);
++	req->tos_dscp_tos_ecn = (cc_param->tos_dscp << CMDQ_MODIFY_ROCE_CC_TOS_DSCP_SFT) |
++				(cc_param->tos_ecn & CMDQ_MODIFY_ROCE_CC_TOS_ECN_MASK);
++	req->alt_vlan_pcp = cc_param->alt_vlan_pcp;
++	req->alt_tos_dscp = cpu_to_le16(cc_param->alt_tos_dscp);
++	req->rtt = cpu_to_le16(cc_param->rtt);
++	req->tcp_cp = cpu_to_le16(cc_param->tcp_cp);
++	req->cc_mode = cc_param->cc_mode;
++	req->inactivity_th = cpu_to_le16(cc_param->inact_th);
++
++	/* For chip gen P5 onwards fill extended cmd and header */
++	if (bnxt_qplib_is_chip_gen_p5(res->cctx)) {
++		struct roce_tlv *hdr;
++		u32 payload;
++		u32 chunks;
++
++		cmd = &tlv_req;
++		req_size = sizeof(tlv_req);
++		/* Prepare primary tlv header */
++		hdr = &tlv_req.tlv_hdr;
++		chunks = CHUNKS(sizeof(struct bnxt_qplib_tlv_modify_cc_req));
++		payload = sizeof(struct cmdq_modify_roce_cc);
++		__roce_1st_tlv_prep(hdr, chunks, payload, true);
++		/* Prepare secondary tlv header */
++		hdr = (struct roce_tlv *)&tlv_req.ext_req;
++		payload = sizeof(struct cmdq_modify_roce_cc_gen1_tlv) -
++			  sizeof(struct roce_tlv);
++		__roce_ext_tlv_prep(hdr, TLV_TYPE_MODIFY_ROCE_CC_GEN1, payload, false, true);
++		bnxt_qplib_fill_cc_gen1(&tlv_req.ext_req, &cc_param->cc_ext);
++	}
++
++	bnxt_qplib_fill_cmdqmsg(&msg, cmd, &resp, NULL, req_size,
++				sizeof(resp), 0);
++	rc = bnxt_qplib_rcfw_send_message(res->rcfw, &msg);
++	return rc;
++}
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+index 96e61db..5de87465 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -244,6 +244,71 @@ struct bnxt_qplib_ext_stat {
+ 	u64  rx_ecn_marked;
+ };
+ 
++struct bnxt_qplib_cc_param_ext {
++	u64 ext_mask;
++	u16 inact_th_hi;
++	u16 min_delta_cnp;
++	u16 init_cp;
++	u8 tr_update_mode;
++	u8 tr_update_cyls;
++	u8 fr_rtt;
++	u8 ai_rate_incr;
++	u16 rr_rtt_th;
++	u16 ar_cr_th;
++	u16 cr_min_th;
++	u8 bw_avg_weight;
++	u8 cr_factor;
++	u16 cr_th_max_cp;
++	u8 cp_bias_en;
++	u8 cp_bias;
++	u8 cnp_ecn;
++	u8 rtt_jitter_en;
++	u16 bytes_per_usec;
++	u16 cc_cr_reset_th;
++	u8 cr_width;
++	u8 min_quota;
++	u8 max_quota;
++	u8 abs_max_quota;
++	u16 tr_lb;
++	u8 cr_prob_fac;
++	u8 tr_prob_fac;
++	u16 fair_cr_th;
++	u8 red_div;
++	u8 cnp_ratio_th;
++	u16 ai_ext_rtt;
++	u8 exp_crcp_ratio;
++	u8 low_rate_en;
++	u16 cpcr_update_th;
++	u16 ai_rtt_th1;
++	u16 ai_rtt_th2;
++	u16 cf_rtt_th;
++	u16 sc_cr_th1; /* severe congestion cr threshold 1 */
++	u16 sc_cr_th2; /* severe congestion cr threshold 2 */
++	u32 l64B_per_rtt;
++	u8 cc_ack_bytes;
++	u16 reduce_cf_rtt_th;
++};
++
++struct bnxt_qplib_cc_param {
++	u8 alt_vlan_pcp;
++	u16 alt_tos_dscp;
++	u8 cc_mode;
++	u8 enable;
++	u16 inact_th;
++	u16 init_cr;
++	u16 init_tr;
++	u16 rtt;
++	u8 g;
++	u8 nph_per_state;
++	u8 time_pph;
++	u8 pkts_pph;
++	u8 tos_ecn;
++	u8 tos_dscp;
++	u16 tcp_cp;
++	struct bnxt_qplib_cc_param_ext cc_ext;
++	u32 mask;
++};
++
+ int bnxt_qplib_get_sgid(struct bnxt_qplib_res *res,
+ 			struct bnxt_qplib_sgid_tbl *sgid_tbl, int index,
+ 			struct bnxt_qplib_gid *gid);
+@@ -281,5 +346,7 @@ int bnxt_qplib_get_roce_stats(struct bnxt_qplib_rcfw *rcfw,
+ 			      struct bnxt_qplib_roce_stats *stats);
+ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
+ 			 struct bnxt_qplib_ext_stat *estat);
++int bnxt_qplib_modify_cc(struct bnxt_qplib_res *res,
++			 struct bnxt_qplib_cc_param *cc_param);
+ 
+ #endif /* __BNXT_QPLIB_SP_H__*/
 -- 
 2.5.5
 
 
---0000000000006bebe605f78daf88
+--0000000000009795c205f78daf4b
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -218,14 +499,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOEf56DqjVlm
-GvHT0yjveC/KEeK/DuTbWq9Q9AjH1z76MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDMyMzA5MTMwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIJR5EH98Xn2
+UX/UrhsxAxzwuK8xG9vZ3ekR4E81ehXdMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDMyMzA5MTMxMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBJlY8yoyhcGgB+EyaDNKrwq+k1sJZs
-kHgDutpYo5/+QtsxlbUsImf51BIpFY4oj+YZBFSEHoR/Sb0wCrw4S2nZpjxHSmZNnBvwcveWAeWV
-oYA6cA6szdOc4CSSR876itwQlQDUoGKql/KeVE+okaBeO7wLQHeraZzeogiWsrrAGY2J0NJPr2Az
-Al9AuZtQBQD0XE3jd4xjDUbvBDx4UPE4oGiTrOT+Z68Z+5AYJ90uiEZGGUel5SMl8VtReo5Hlmcq
-zb3ggxDRlffwzS6hS7MaN7UlRYkKps2yhKnwlo2dCjPhVeAD6S18S1sCfZv7w9Jw7Wira5Q6yonA
-Qn4L1Bf0
---0000000000006bebe605f78daf88--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB4Y57Qj3ijEDs7jTQb8MfRXelJr97Q
+lIfjWiKZqZqx89dx7Bbg8vAyNddR1Ogx5jnYOn1f0qFBJXN4zTDgtZcIVLNbBwEYS5dKWlhNMFL/
+P5tC5g1biQGz2/aObvyibW8mjrpfuYJL5X59DhiM0FCZ9qrWpk2+UBbWh1IN19mGzLCz94F3cMse
+xQg34hszKV/4FcVSlKMBmK9JDnu/Ogywu4vXwQEKD7bM/UeVWCYPtD62Qh8WjoAPq7Snpl5kNtGE
+pOQeu+nUVEpcv0zTYoDzcKj1qUjl2znlpkfJARlWZKnz9dhVCdaU5+AA2t/FjSZrcaxWy7VnH5zO
+k6Ixib0D
+--0000000000009795c205f78daf4b--
