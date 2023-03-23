@@ -2,116 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5595D6C6027
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 07:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4A06C60F0
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 08:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjCWG6S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Mar 2023 02:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
+        id S229834AbjCWHlh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Mar 2023 03:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbjCWG6S (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 02:58:18 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC197A87
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Mar 2023 23:58:02 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VeTMz1Y_1679554672;
-Received: from 30.221.102.45(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VeTMz1Y_1679554672)
-          by smtp.aliyun-inc.com;
-          Thu, 23 Mar 2023 14:57:52 +0800
-Message-ID: <8c446431-9f86-7267-6051-9c016e23215e@linux.alibaba.com>
-Date:   Thu, 23 Mar 2023 14:57:49 +0800
+        with ESMTP id S230213AbjCWHlg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 03:41:36 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB8317CF7
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 00:41:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679557295; x=1711093295;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SBVAt7+I/4TPKZasuElnWuuLVoWj6YYz7aH2tIqWfsM=;
+  b=Pxe7tgekS3zfeqlnCA4zmSmdh0V3zkv3AZowoP2OF1B9rs1e6bsmQ8ud
+   z6zeLHCXCuWJLETlU4H8744hcDITE3l71BII5VhCkPKe0SCvSRD/tfxK0
+   YnOFT/T5lMfuk2r3TtLKJ535+XLa2ukyBu8EjjByjeIW7DzX96ZfAatXx
+   bFe99E7O1VLjlPIgI3aXQvsTS76kG986saUNdiqfBgqELTMP0zfBTe1KN
+   HbJ+WwGS4RCRqh7js+kogV7vIu7u6vGmyVFe0Jlvgibuen0ZmFenF1Lob
+   9Fhr/y7eHF0E6o4Wt/6pMrQewfUC/s3IsAVQRZqzCssnq7yMji3a6Jdj4
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="319071194"
+X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
+   d="scan'208";a="319071194"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 00:41:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="714701910"
+X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
+   d="scan'208";a="714701910"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 23 Mar 2023 00:41:15 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pfFZS-000E7F-1t;
+        Thu, 23 Mar 2023 07:41:14 +0000
+Date:   Thu, 23 Mar 2023 15:41:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 6dddd93938b3651cfeba7158ac179b4e6d3c1553
+Message-ID: <641c0291.0Xc0znUs0y5vVtIh%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.0
-Subject: Re: [PATCH for-next v2 2/2] RDMA/erdma: Support non-4K page size in
- doorbell allocation
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        KaiShen@linux.alibaba.com, Yossi Leybovich <sleybo@amazon.com>,
-        Gal Pressman <gal@nvidia.com>
-References: <20230307102924.70577-3-chengyou@linux.alibaba.com>
- <20230314102313.GB36557@unreal>
- <e6eec8de-7442-7f2b-8c90-af9222b2e12b@linux.alibaba.com>
- <20230314141020.GL36557@unreal>
- <1604d654-583f-52eb-ff76-fd92647d3625@linux.alibaba.com>
- <20230315102210.GT36557@unreal> <ZBm/deQgMYfdPt/u@ziepe.ca>
- <2c82439c-15d0-d5dd-b1c5-46053d3dd202@linux.alibaba.com>
- <ZBrsexPDqDIej/2/@ziepe.ca>
- <6c982b76-61b2-7317-ab76-8ff0b4fb4471@linux.alibaba.com>
- <ZBsKHBN2NIFA6/YD@ziepe.ca>
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <ZBsKHBN2NIFA6/YD@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 6dddd93938b3651cfeba7158ac179b4e6d3c1553  RDMA/efa: Add data polling capability feature bit
 
+elapsed time: 730m
 
-On 3/22/23 10:01 PM, Jason Gunthorpe wrote:
-> On Wed, Mar 22, 2023 at 09:30:41PM +0800, Cheng Xu wrote:
->>
->>
->> On 3/22/23 7:54 PM, Jason Gunthorpe wrote:
->>> On Wed, Mar 22, 2023 at 03:05:29PM +0800, Cheng Xu wrote:
->>>
->>>> The current generation of erdma devices do not have this capability due to
->>>> implementation complexity. Without this HW capability, isolating the MMIO
->>>> space in software doesn't prevent the attack, because the malicious APPs
->>>> can map mmio itself, not through verbs interface.
->>>
->>> This doesn't meet the security model of Linux, verbs HW is expected to
->>> protect one process from another process.
->>
->> OK, I see.
->>
->> So the key point is that HW should restrict each process to use its own doorbell
->> space. If hardware can do this, share or do not share MMIO pages both will meet
->> the security requirement. Do I get it right? 
-> 
-> HW can never do that, HW is supposed to rely on the system MMU to
-> isolate doorbell registers
-> 
-> The HW responsibility is to make doorbell MMIO registers safe in the
-> hands of other processes.
-> 
-> Simple doorbells that only 'kick' and don't convey any information are
-> probably safe to share, and don't require HW checks between the
-> doorbell page and the PD/QP/CQ/etc
-> 
-> Doorbells that deliver data - eg a head pointer - are not safe because
-> the wrong head pointer can corrupt the HW state. Process B must not be
-> able to corrupt the head pointer of a QP/CQ owned by Process A under
-> any circumstances. Definitely they cannot have access to the MMIO and
-> also the HW must ensure that writes coming from process B are rejected
-> if they touch resources owned by process a (eg by PD/QPN/CQN checks in
-> HW)
-> 
-> Doorbells that accept entire WQE's are definately not safe as a
-> hostile process could execute a WQE on a QP it does not own.
-> 
+configs tested: 78
+configs skipped: 4
 
-It's much clear, thanks for your explanation and patience.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Back to erdma context, we have rethought our implementation. For QPs,
-we have a field *wqe_index* in SQE/RQE, which indicates the validity
-of the current WQE. Incorrect doorbell value from other processes can
-not corrupt the QPC in hardware due to PI range and WQE content
-validation in HW.
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r043-20230322   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r024-20230322   gcc  
+csky                 randconfig-r026-20230322   gcc  
+hexagon              randconfig-r004-20230322   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                          randconfig-a002   clang
+i386                          randconfig-a004   clang
+i386                          randconfig-a006   clang
+i386                          randconfig-a012   gcc  
+i386                          randconfig-a014   gcc  
+i386                          randconfig-a016   gcc  
+i386                          randconfig-c001   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r031-20230322   gcc  
+ia64                 randconfig-r032-20230322   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r015-20230322   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r034-20230322   gcc  
+nios2                               defconfig   gcc  
+openrisc             randconfig-r023-20230322   gcc  
+openrisc             randconfig-r033-20230322   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r013-20230322   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r021-20230322   gcc  
+riscv                randconfig-r042-20230322   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r001-20230322   clang
+s390                 randconfig-r003-20230322   clang
+s390                 randconfig-r022-20230322   gcc  
+s390                 randconfig-r044-20230322   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r016-20230322   gcc  
+sh                   randconfig-r036-20230322   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r014-20230322   gcc  
+sparc                randconfig-r035-20230322   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                        randconfig-a001   clang
+x86_64                        randconfig-a003   clang
+x86_64                        randconfig-a005   clang
+x86_64                        randconfig-a012   clang
+x86_64                        randconfig-a014   clang
+x86_64                        randconfig-a016   clang
+x86_64                        randconfig-k001   clang
+x86_64                               rhel-8.3   gcc  
 
-Unlike SQ/RQ, for CQ doorbell, It seems that we need some more works
-to protect it. We have started analyzing the details.
-
-Thanks,
-Cheng Xu
-
-
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
