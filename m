@@ -2,179 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F4B6C7DEF
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Mar 2023 13:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0CC6C7E09
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Mar 2023 13:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbjCXMUf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Mar 2023 08:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
+        id S229522AbjCXM2z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Mar 2023 08:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbjCXMUd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Mar 2023 08:20:33 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA9D6241CB
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Mar 2023 05:20:26 -0700 (PDT)
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32OBCDgX029096;
-        Fri, 24 Mar 2023 12:20:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : date :
- message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version : subject; s=pp1;
- bh=+pIBotb4vvIGNX/d3XoEwkMKjGezoYazZKTtUYOHqcQ=;
- b=Z8EBBqk03/7XYZOvv+pCL3NIj7zB2NC16MhcTS89Uz7ExkrzoZeFVcsGpFyGYR1lYYoa
- 1yXLU1Zi0nRVk3CM3NI/gdvr1wnBgdamkxS8ypClhumIRDtkkCxu86WONJl/BXwyECWI
- mrDBvBU7pev9y0/HG4L2zcBhdNSfIZmqKv1vbgpjKyguiGhLKybSFZsD9nyKW53yLNFk
- lP9zJOIzQVvHoDt/+5LJlreI2k6qRTLjpydHe86Ze53lxUjQyuo0bt5hYiHL0scwzYrz
- SzWXh4Npfg9IXNkWIh+6BsjNJRy5k4pexqxJglBc+6FcdaBZLOrrs3yYgHA9SYMkQh2U Kg== 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3phas9sjss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Mar 2023 12:20:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M5YYR8lw6rPYcIpDoktsc8NO+Dmz5/LgQCuyBUi8WOb1RG6IvtYsBznVCeaQGgnaOLQAeHAudhL3PS48fJEFbiACusp7Vs0Ix4o9U1s9/0TPaGU5UBztlE0wyeQDXd/7+xMc55UcfIr3tto5+jYj4Aquw8XasYRaMCUAY3gGGCbFrwfHLiJ9oBDMS+e2rTpGHChIxbWw+aSg5zoluD6rqK09eB8dyHwDZbA6Vs0XThXcsjbWmdu5maMLp2NoeRGf5VU3UFY/qb/zWp7kr9N8kSA3hg5YbgCE2AV0Woi+l3acbtAM/iTWkjUt4olShVTCPnc4woRAuOP5M4FbrFBM8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3HvduSGrLUYBXNDUbjlZpUC7ovUwTmaBxmGDqP0lXxs=;
- b=PsGGBXLMukjVPkpYrUFNZttt8JZlwdT+Sb7gdUn4yZlppoy4ZCYOJy+0jok50eOyJP2YhRzty1J1Kzx7jl9pX7R+0vLHBWkkhrHrdBCDsqyh8xlX5AF0LyhjO78G18I2Lx6nBGoZGM7YEJZ+2kbGh8i0pzobEc/d2+qNvNY+/MpidvwRZ51PYRP45x7og5JrLKH225h4rXo+odCm4v7USeAe/Iw0rQkHOMrzVSrV33kiryj/ycLW+EO5NFcTdBsM7azn2bW0JThwpAuWPuPac+ErFyTu9XYmfI2L7x98EmUYlgSbXTzkknq9XVkerE5r97nl/dv/VUsi5tbkIooNAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=zurich.ibm.com; dmarc=pass action=none
- header.from=zurich.ibm.com; dkim=pass header.d=zurich.ibm.com; arc=none
-Received: from SA0PR15MB3919.namprd15.prod.outlook.com (2603:10b6:806:91::20)
- by CH0PR15MB6234.namprd15.prod.outlook.com (2603:10b6:610:18e::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.38; Fri, 24 Mar
- 2023 12:20:17 +0000
-Received: from SA0PR15MB3919.namprd15.prod.outlook.com
- ([fe80::2f90:a221:4b7b:7f99]) by SA0PR15MB3919.namprd15.prod.outlook.com
- ([fe80::2f90:a221:4b7b:7f99%4]) with mapi id 15.20.6178.038; Fri, 24 Mar 2023
- 12:20:16 +0000
-From:   Bernard Metzler <BMT@zurich.ibm.com>
-To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     OFED mailing list <linux-rdma@vger.kernel.org>
-Thread-Topic: [EXTERNAL] [PATCH] RDMA/siw: fix a refcount leak in
- siw_newlink()
-Thread-Index: AQHZXkPZyMWFzyNKYE+CrkP68an5jK8J1m+A
-Date:   Fri, 24 Mar 2023 12:20:16 +0000
-Message-ID: <SA0PR15MB391911C8375361CCE0D67C8B99849@SA0PR15MB3919.namprd15.prod.outlook.com>
-References: <0ae07b18-e384-5d5d-54e8-8fe508af4f6a@I-love.SAKURA.ne.jp>
-In-Reply-To: <0ae07b18-e384-5d5d-54e8-8fe508af4f6a@I-love.SAKURA.ne.jp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA0PR15MB3919:EE_|CH0PR15MB6234:EE_
-x-ms-office365-filtering-correlation-id: fb5e83de-1e02-4fd7-e31c-08db2c6220a6
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6eSR08RkNwicyYnPAYayp1zHrGlMzZqcrZ/A3grORxZYVPWRSVFklpu/wx/ZluOE3QFkh/wAy8wFkjd467XoMU3rppHPoiCH+OLO3wA/V6o1W2PXR+I0GCFTH+1RdmVT7QzCb8gzdSGB9oqx3fdQvL0Erpz8E0lqdqDuCXKxHmYhQNcadYhqdfhNTI3n4NLGoUOo685Hsoccr+SI6Re6qm+b0QnNhdnsz1/pFml/e482h6vHbdcOAlDxyCrBnJqIH/V4BBDRsGmswhmygdmhfAnXvttQHw4/CZ0bGolvQF4IqLEt60a/SO60hdkZ4ed+zU20blEkxZ2NEzdgPB6pPrF5DPiapfHYw0nAvwjaELl+TXtRi/3YXAyWB0LYB7rz1MANkKS/R3zKJhEpMagGuc85DofCZBHyIQCD6SpqY6s38Bjb92RBbvB4+XAbiOSpPF3jX2rxmsDm1Vwq9d29KAsvPt5KfkZyF9spq5ZMFmoBcmK9voLDlHx+E1cIvsy34XJ6i3DVG74KpjEgEfp25T/7B6fP25CoQMNavlHW1OhpL+086peILzYCNPYlVfWncDA1y9qqssVriy6D7U4ramYEbps+CUOO3GY1dbJ7xGXkHnTprdC5AKzuweQ4uJiTCgBVwlASF7we6GszqOW+9g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR15MB3919.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(366004)(39860400002)(136003)(346002)(376002)(396003)(451199018)(966005)(83380400001)(478600001)(110136005)(41300700001)(6506007)(53546011)(4326008)(66556008)(8676002)(66446008)(66476007)(64756008)(76116006)(66946007)(186003)(5660300002)(52536014)(9686003)(8936002)(2906002)(122000001)(38070700005)(71200400001)(7696005)(38100700002)(316002)(66899018)(33656002)(86362001)(55016003)(99710200001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TnpSS0tnVlArT2I5QjIyT0h1dDNSYUlicTc5RkZLbmx5ZkQ1YXQwV0Z1TE91?=
- =?utf-8?B?eVROVGRkT2F0SzVJekN1OWNzSlJRcE16UzVJUHI2QnpXcW1LVmdQbTNLTWoz?=
- =?utf-8?B?WitrWFFtdHU0QmJHcHM1TXo4WnVyWVVUWmJPeFRmV1dHbnNxVmwxQ0FzZnpW?=
- =?utf-8?B?d21vWjJrZmhuSitrV3ljYW1CR2xhMldzUXVKU253ZkhGUGNMaWNJQUV5T3BD?=
- =?utf-8?B?WUJzaHU5bmF4Y0NwT1o4OExBWXZCT0pFRnJINDdXc3hlZk44RUF2SGl3WTlD?=
- =?utf-8?B?U2dVbDhmV2RSblBCLzhlemYxKy9FYytzWnIzSlorcUhLYmNaVHlnV1RreUhm?=
- =?utf-8?B?YjF0cEkwOFJmdE5SQWFGeStPRDFHRDF6Q1U4U0p0YWpTSlBlTWFkOVd0eXNW?=
- =?utf-8?B?WjRsSmU5Y2dYS1VjN1kwUVE1MHl6akVTdFFOS01jWjAyRzYvOWdVakhQQ2lU?=
- =?utf-8?B?TXBCeVFtcmh2QVJsUEUvcFExUWpYakk5VXVOQ0tETXBBU0ZnVEFaSU14TE9N?=
- =?utf-8?B?QklydTl3bndrNk5SdmJvQWoreGpuT3g2M2tNT0pFcysyeWpxL1ZUYTZEOC96?=
- =?utf-8?B?aWdMKzRtWTN0WHlDZGloMy9PL1pEYnJJWmJpY05TSTJQejVTNkJISFlDTDg5?=
- =?utf-8?B?RGpvZGFOa3l4V1pxMmVtZDd2bktrcUtGMnlPY0FNeEFZUzJWK2VsY1UxME42?=
- =?utf-8?B?eFR0TWRtS09obDRjV0l6eHRrYkhoaGhZYk1nRExqNTR6Z0JWQkF1OThRdTk0?=
- =?utf-8?B?V21oYlJ4bzBoaFVEWkRxOWdEbnVDemFMTk5SVzZvdW5vQzN1NHZqbm1tVlA0?=
- =?utf-8?B?NE9ncDdyeUxXdmQ4Rloxa2dqWUVRZmQ2TkFocmMxUFJyUlYzaE5MVU5mYjF2?=
- =?utf-8?B?cGQ1STFQakZycWZzZ08yZ0Rxc3BHeWVUS0txWUoyektvL09NeWErdXUxT3hB?=
- =?utf-8?B?QlduUDN4Q2NsT1JXUmZPWnNjL3pRT200VW5pS2NMUWNjaWFzNHBqTkVLcnJN?=
- =?utf-8?B?cjFPcEJJd0JTK3RNejJYTVhRdjQrUWIxbmtCRWgvOS9ZMVZNOWpFM3JZSmRD?=
- =?utf-8?B?M21BRW5QSWdqbmpmcGVGUEh1NWF0WDh1SnNMK01XT3pDNmNoeENuNloxZEE0?=
- =?utf-8?B?aEg2VHg1U0o0RUdkY0xkNUlHU1djZ2xXc05rTXlXWHdPUDMydVhwZGNML2Fy?=
- =?utf-8?B?SkplTUdwWmlLeDRWR0xMSGd0dWdXWDZHdjZGYXZDazhneDhHY1huUWhHL3p6?=
- =?utf-8?B?bEI0MVB1NGlrSTJrbVNQL3NRZHVIRGRYeXpxc0dYRzBuUEFzQnJDU0xoZXlZ?=
- =?utf-8?B?cXFncm8xdzVTSFQ1NHhKUDE1U0kyUkl4cG4xTEpldDBWREYwSVBmVjJudVhm?=
- =?utf-8?B?ZkRPZTZzeWVDUTlYTlR0a0dwTVo5MUFpSzJIbHc2RllVQXVaa2F0cW5RZWRB?=
- =?utf-8?B?NlV4Zi9SbmJRcEQzR2dPMjBRZGRDVUZsUHhQR3IweGZXTGszR3p4V0kweXBN?=
- =?utf-8?B?cTBtR01BcEtnd29qRVBsUWtyTFVPSUFtN0E0Q3E5OGQzNkFwYkozM3A2TUhw?=
- =?utf-8?B?M3BmMHFsRGtGTHhKM0FBdXF0UUdrTWVzNDN3SFlVVFRNWlpPY1lvRnNrVVph?=
- =?utf-8?B?QktLVk9KOHNyKzhsSkxKZlpaYWVEVE9KWmE0L2RkSnEzMlhiUS9hY3ovbXZM?=
- =?utf-8?B?WWdkQ2JtdCtKK2hrTUpLdlV6VXZDRFVCd2N1czRYdDhwRmRHeC9XYUpHOGdn?=
- =?utf-8?B?NnJEY1RIY1k5QmN6UTFmVEdqblpKTFNTbnh4VmZoNTZlMmNBUUc1WEdvQnVP?=
- =?utf-8?B?a1VqUGpnSnV1aWhYNHhrVVFndGI4Zjcxek1GWklIVzU5aFZDbVc3WjFNaEht?=
- =?utf-8?B?STJTd0ZkaGl0dzJhS2t5MDB4alRqankwQ2FLM0tRemxKZ0h1SHhRV3V3SHRv?=
- =?utf-8?B?RjY3M3VZOEJvN0hoK04rcWoyS29QRlBEeS9qRW9qd2hmVkwwdlBDVkhuWVE1?=
- =?utf-8?B?aXIxa2gxaVZkZmI5VW5NSEhOOURvVHkrNHQramNJS2pqdXVMWjlOT1FuMzVZ?=
- =?utf-8?B?b05yOTZnU0lrL29xYitUdERPV0FyeHpvU0RUMDR2U0g4RDlVMHp0MVlhZzlM?=
- =?utf-8?B?aU1maitXU1FRdUYwOGJHeXhiK2FEcXY4ME9HeVlhSGtZWCt3a2J2MFRFZjNQ?=
- =?utf-8?Q?ZYeY6GIOypb06jiSkmgOsV2Mt5GRxCfVq34OBc4s6z73?=
-Content-Type: text/plain; charset="utf-8"
-X-OriginatorOrg: Zurich.ibm.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR15MB3919.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb5e83de-1e02-4fd7-e31c-08db2c6220a6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Mar 2023 12:20:16.8813
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fcf67057-50c9-4ad4-98f3-ffca64add9e9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cUbLt08qI6JWLqs7YzyLBRX07YYrO3OUTHjrUj0wbP09fR/rjYmJjdebeXnwxhNiCMJ+ViBKJmRXuQmQeg9vjA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR15MB6234
-X-Proofpoint-ORIG-GUID: Z4xLQiRDuflGWfKhEmaXnfb7vyrorrSs
-X-Proofpoint-GUID: Z4xLQiRDuflGWfKhEmaXnfb7vyrorrSs
-Content-Transfer-Encoding: base64
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S231716AbjCXM2a (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Mar 2023 08:28:30 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AD81A661
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Mar 2023 05:28:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679660897; x=1711196897;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Bj2wGLDUkyzJKrD5t65t2ML1HC1u4hulruUloRKcFZo=;
+  b=AETAU5eYg+eF2mKHbdPE3tNAtrm9rcDmN1QNWHdkSHOKbbfG9VwFTGIv
+   /wAli0Huj5Jgw/6o35/sSxS5HYhQkxR+MB/E/UYHq6IfrG/ghjGkvB24I
+   DZLmOarDkFu6r0ACI19tqVEdlz9IVvstCxLpmrLNVmQn/VLiDg2P25mls
+   CdN7AvMVDcAX4lxf1My5/svkfhqm8aKdZC7/JUc6YtMEfIXHi+cvi7TFr
+   JKGo+fGNbKyC64UVfYqH5WBGJmgIbedF82WyhYbSoScnWiThn0OVxvDw5
+   r45k4xNPbkNwXxqQb3avJnrr8sMDR/2fLflyWlYYNZCeF3jOgemuDiG18
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="338486320"
+X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
+   d="scan'208";a="338486320"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2023 05:28:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="682685074"
+X-IronPort-AV: E=Sophos;i="5.98,287,1673942400"; 
+   d="scan'208";a="682685074"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 24 Mar 2023 05:28:15 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pfgWk-000FIq-24;
+        Fri, 24 Mar 2023 12:28:14 +0000
+Date:   Fri, 24 Mar 2023 20:27:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] RDMA/rxe: Pass a pointer to virt_to_page()
+Message-ID: <202303242000.HmTaa6yB-lkp@intel.com>
+References: <20230324103252.712107-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-Subject: RE:  [PATCH] RDMA/siw: fix a refcount leak in siw_newlink()
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-24_06,2023-03-24_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- impostorscore=0 bulkscore=0 adultscore=0 mlxlogscore=870 spamscore=0
- clxscore=1011 lowpriorityscore=0 phishscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2303240099
-X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230324103252.712107-1-linus.walleij@linaro.org>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVGV0c3VvIEhhbmRhIDxw
-ZW5ndWluLWtlcm5lbEBJLWxvdmUuU0FLVVJBLm5lLmpwPg0KPiBTZW50OiBGcmlkYXksIDI0IE1h
-cmNoIDIwMjMgMTI6MjkNCj4gVG86IEJlcm5hcmQgTWV0emxlciA8Qk1UQHp1cmljaC5pYm0uY29t
-PjsgSmFzb24gR3VudGhvcnBlIDxqZ2dAemllcGUuY2E+Ow0KPiBMZW9uIFJvbWFub3Zza3kgPGxl
-b25Aa2VybmVsLm9yZz4NCj4gQ2M6IE9GRUQgbWFpbGluZyBsaXN0IDxsaW51eC1yZG1hQHZnZXIu
-a2VybmVsLm9yZz4NCj4gU3ViamVjdDogW0VYVEVSTkFMXSBbUEFUQ0hdIFJETUEvc2l3OiBmaXgg
-YSByZWZjb3VudCBsZWFrIGluIHNpd19uZXdsaW5rKCkNCj4gDQo+IHNpd19uZXdsaW5rKCkgaXMg
-bGVha2luZyBhIHJlZmNvdW50IG9uICJiYXNlX2RldiIgd2hlbiBremFsbG9jKCkgZnJvbQ0KPiBf
-aWJfYWxsb2NfZGV2aWNlKCkgZnJvbSBpYl9hbGxvY19kZXZpY2UoKSBmcm9tIHNpd19kZXZpY2Vf
-Y3JlYXRlKCkNCj4gcmV0dXJuZWQgTlVMTC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFRldHN1byBI
-YW5kYSA8cGVuZ3Vpbi1rZXJuZWxASS1sb3ZlLlNBS1VSQS5uZS5qcD4NCj4gRml4ZXM6IGJkY2Yy
-NmJmOWIzYSAoInJkbWEvc2l3OiBuZXR3b3JrIGFuZCBSRE1BIGNvcmUgaW50ZXJmYWNlIikNCj4g
-LS0tDQo+IEkgZG9uJ3Qga25vdyB3aGV0aGVyIHRoaXMgaXMgYSBidWcgc3l6Ym90IGlzIGN1cnJl
-bnRseSByZXBvcnRpbmcgYXQNCj4gSU5WQUxJRCBVUkkgUkVNT1ZFRA0KPiAzQV9fc3l6a2FsbGVy
-LmFwcHNwb3QuY29tX2J1Zy0zRmV4dGlkLQ0KPiAzRDVlNzBkMDFlZTg5ODVhZTYyYTNiJmQ9RHdJ
-Q2FRJmM9amZfaWFTSHZKT2JUYngtc2lBMVpPZyZyPTJUYVlYUTBULQ0KPiByOFpPMVBQMWFsTndV
-X1FKY1JSTGZtWVRBZ2QzUUN2cVNjJm09aVdmcjFfMS1zUUhCYzJPNnlxYmxwLXhNU2VMUmEydi0N
-Cj4gdG5naVc0Mk5hTk1Oa1BlSFJWVXdzWkhOOExKdHJhRmwmcz1YOU9SZ0VOdkttNWtQVk9jOEdJ
-blhmSzhhRTVWZWlTS1JfLQ0KPiBCQjhpaVRfQSZlPSAgLg0KPiBQbGVhc2UgY2hlY2sgaWYgdGhp
-cyBwYXRjaCBoZWxwcy4NCj4gDQo+ICBkcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd19tYWlu
-LmMgfCAyICsrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXdfbWFpbi5jDQo+IGIvZHJpdmVy
-cy9pbmZpbmliYW5kL3N3L3Npdy9zaXdfbWFpbi5jDQo+IGluZGV4IGRhY2MxNzQ2MDRiZi4uYWVm
-ZWRhNjMzNjU1IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd19t
-YWluLmMNCj4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXdfbWFpbi5jDQo+IEBA
-IC01MjIsNiArNTIyLDggQEAgc3RhdGljIGludCBzaXdfbmV3bGluayhjb25zdCBjaGFyICpiYXNl
-ZGV2X25hbWUsIHN0cnVjdA0KPiBuZXRfZGV2aWNlICpuZXRkZXYpDQo+ICAJCXJ2ID0gc2l3X2Rl
-dmljZV9yZWdpc3RlcihzZGV2LCBiYXNlZGV2X25hbWUpOw0KPiAgCQlpZiAocnYpDQo+ICAJCQlp
-Yl9kZWFsbG9jX2RldmljZSgmc2Rldi0+YmFzZV9kZXYpOw0KPiArCX0gZWxzZSB7DQo+ICsJCWli
-X2RldmljZV9wdXQoYmFzZV9kZXYpOw0KDQpiYXNlX2RldiBpcyBhbHdheXMgTlVMTCBoZXJlLCBz
-byBub3RoaW5nIHRvIHB1dCwNCnJpZ2h0Pw0KDQoNCj4gIAl9DQo+ICAJcmV0dXJuIHJ2Ow0KPiAg
-fQ0KPiAtLQ0KPiAyLjE4LjQNCg==
+Hi Linus,
+
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on linus/master v6.3-rc3 next-20230324]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Linus-Walleij/RDMA-rxe-Pass-a-pointer-to-virt_to_page/20230324-183329
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/20230324103252.712107-1-linus.walleij%40linaro.org
+patch subject: [PATCH] RDMA/rxe: Pass a pointer to virt_to_page()
+config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20230324/202303242000.HmTaa6yB-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/f162d87e28eb5241d1a0e2085b80bfc70f626536
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Linus-Walleij/RDMA-rxe-Pass-a-pointer-to-virt_to_page/20230324-183329
+        git checkout f162d87e28eb5241d1a0e2085b80bfc70f626536
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=parisc olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=parisc SHELL=/bin/bash drivers/infiniband/
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303242000.HmTaa6yB-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from arch/parisc/include/asm/page.h:181,
+                    from include/linux/mm_types_task.h:16,
+                    from include/linux/mm_types.h:5,
+                    from include/linux/mmzone.h:22,
+                    from include/linux/gfp.h:7,
+                    from include/linux/xarray.h:15,
+                    from include/linux/list_lru.h:14,
+                    from include/linux/fs.h:13,
+                    from include/linux/highmem.h:5,
+                    from include/linux/bvec.h:10,
+                    from include/linux/blk_types.h:10,
+                    from include/linux/bio.h:10,
+                    from include/linux/libnvdimm.h:14,
+                    from drivers/infiniband/sw/rxe/rxe_mr.c:7:
+   drivers/infiniband/sw/rxe/rxe_mr.c: In function 'rxe_set_page':
+>> drivers/infiniband/sw/rxe/rxe_mr.c:216:42: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+     216 |         struct page *page = virt_to_page((void *)(iova & mr->page_mask));
+         |                                          ^
+   include/asm-generic/memory_model.h:18:46: note: in definition of macro '__pfn_to_page'
+      18 | #define __pfn_to_page(pfn)      (mem_map + ((pfn) - ARCH_PFN_OFFSET))
+         |                                              ^~~
+   arch/parisc/include/asm/page.h:179:45: note: in expansion of macro '__pa'
+     179 | #define virt_to_page(kaddr)     pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+         |                                             ^~~~
+   drivers/infiniband/sw/rxe/rxe_mr.c:216:29: note: in expansion of macro 'virt_to_page'
+     216 |         struct page *page = virt_to_page((void *)(iova & mr->page_mask));
+         |                             ^~~~~~~~~~~~
+   drivers/infiniband/sw/rxe/rxe_mr.c: In function 'rxe_mr_copy_dma':
+   drivers/infiniband/sw/rxe/rxe_mr.c:291:37: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+     291 |                 page = virt_to_page((void *)(iova & mr->page_mask));
+         |                                     ^
+   include/asm-generic/memory_model.h:18:46: note: in definition of macro '__pfn_to_page'
+      18 | #define __pfn_to_page(pfn)      (mem_map + ((pfn) - ARCH_PFN_OFFSET))
+         |                                              ^~~
+   arch/parisc/include/asm/page.h:179:45: note: in expansion of macro '__pa'
+     179 | #define virt_to_page(kaddr)     pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+         |                                             ^~~~
+   drivers/infiniband/sw/rxe/rxe_mr.c:291:24: note: in expansion of macro 'virt_to_page'
+     291 |                 page = virt_to_page((void *)(iova & mr->page_mask));
+         |                        ^~~~~~~~~~~~
+   drivers/infiniband/sw/rxe/rxe_mr.c: In function 'rxe_mr_do_atomic_op':
+   drivers/infiniband/sw/rxe/rxe_mr.c:491:37: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+     491 |                 page = virt_to_page((void *)(iova & PAGE_MASK));
+         |                                     ^
+   include/asm-generic/memory_model.h:18:46: note: in definition of macro '__pfn_to_page'
+      18 | #define __pfn_to_page(pfn)      (mem_map + ((pfn) - ARCH_PFN_OFFSET))
+         |                                              ^~~
+   arch/parisc/include/asm/page.h:179:45: note: in expansion of macro '__pa'
+     179 | #define virt_to_page(kaddr)     pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+         |                                             ^~~~
+   drivers/infiniband/sw/rxe/rxe_mr.c:491:24: note: in expansion of macro 'virt_to_page'
+     491 |                 page = virt_to_page((void *)(iova & PAGE_MASK));
+         |                        ^~~~~~~~~~~~
+
+
+vim +216 drivers/infiniband/sw/rxe/rxe_mr.c
+
+   212	
+   213	static int rxe_set_page(struct ib_mr *ibmr, u64 iova)
+   214	{
+   215		struct rxe_mr *mr = to_rmr(ibmr);
+ > 216		struct page *page = virt_to_page((void *)(iova & mr->page_mask));
+   217		bool persistent = !!(mr->access & IB_ACCESS_FLUSH_PERSISTENT);
+   218		int err;
+   219	
+   220		if (persistent && !is_pmem_page(page)) {
+   221			rxe_dbg_mr(mr, "Page cannot be persistent\n");
+   222			return -EINVAL;
+   223		}
+   224	
+   225		if (unlikely(mr->nbuf == mr->num_buf))
+   226			return -ENOMEM;
+   227	
+   228		err = xa_err(xa_store(&mr->page_list, mr->nbuf, page, GFP_KERNEL));
+   229		if (err)
+   230			return err;
+   231	
+   232		mr->nbuf++;
+   233		return 0;
+   234	}
+   235	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
