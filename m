@@ -2,80 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9DF6C7997
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Mar 2023 09:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7688A6C7B13
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Mar 2023 10:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjCXIV7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Mar 2023 04:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
+        id S231928AbjCXJU2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Mar 2023 05:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjCXIV6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Mar 2023 04:21:58 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7ED2413E;
-        Fri, 24 Mar 2023 01:21:53 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=kaishen@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VeX2MDu_1679646108;
-Received: from 30.221.112.234(mailfrom:KaiShen@linux.alibaba.com fp:SMTPD_---0VeX2MDu_1679646108)
-          by smtp.aliyun-inc.com;
-          Fri, 24 Mar 2023 16:21:49 +0800
-Message-ID: <c7434855-b569-4e10-fd19-7f7d525cad7f@linux.alibaba.com>
-Date:   Fri, 24 Mar 2023 16:21:48 +0800
+        with ESMTP id S231949AbjCXJUZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Mar 2023 05:20:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A4C21969;
+        Fri, 24 Mar 2023 02:20:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C4CC629E9;
+        Fri, 24 Mar 2023 09:20:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id AE2C3C433A0;
+        Fri, 24 Mar 2023 09:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679649620;
+        bh=JrqCAgedwzPSgLvyyB7cQkB4eQeV28GZrSBiQ4c5iOo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=JY/nSEUup2E+eVTUzJbQpk+bo5rREDVDrf2c3fq5X7AnDARlkff9qH8LUPw7DgolV
+         Of+oVZ4rfz/LLOvu4/wh0kpJ3myGlgYgSfaFAQ68u1KRVhyUPU+l3iemJ20u4XV2RC
+         KoDLpDXT0iw4Qt3PuZGvI0m8gdTGG0mP526jyskU5iiqofuW2q8zTCqdE4w478Ex+r
+         xl7A0hQKIV79jGk8prL3+v2ZcELV1ZXNFQ1bBNh4UHJYwTsUdEi3lBBvVpMWEjI9pz
+         +uTxuEaF+AZ6SsuYq7ad8rhN7Zp9Cn8ynB77EbYr13muXsvRgmf5RcMVpuRvh9Jkbt
+         klPIfKex0RsUQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7A437C41612;
+        Fri, 24 Mar 2023 09:20:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH net-next] net/smc: introduce shadow sockets for fallback
- connections
-Content-Language: en-US
-To:     Paolo Abeni <pabeni@redhat.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, kuba@kernel.org,
-        davem@davemloft.net, dsahern@kernel.org
-Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20230321071959.87786-1-KaiShen@linux.alibaba.com>
- <8f4bd9333117eda4c5ff324f92b969d9a6b57b65.camel@redhat.com>
-From:   Kai <KaiShen@linux.alibaba.com>
-In-Reply-To: <8f4bd9333117eda4c5ff324f92b969d9a6b57b65.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/8] net: liquidio: Remove redundant pci_clear_master
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167964962049.21111.12008257993257432253.git-patchwork-notify@kernel.org>
+Date:   Fri, 24 Mar 2023 09:20:20 +0000
+References: <20230323090314.22431-1-cai.huoqing@linux.dev>
+In-Reply-To: <20230323090314.22431-1-cai.huoqing@linux.dev>
+To:     Cai Huoqing <cai.huoqing@linux.dev>
+Cc:     dchickles@marvell.com, sburla@marvell.com, fmanlunas@marvell.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, rajur@chelsio.com, reksio@newterm.pl,
+        dmichail@fungible.com, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, saeedm@nvidia.com, leon@kernel.org,
+        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, shannon.nelson@amd.com, brett.creeley@amd.com,
+        drivers@pensando.io, bhelgaas@google.com,
+        jesse.brandeburg@intel.com, huangguangbin2@huawei.com,
+        shenjian15@huawei.com, lanhao@huawei.com, wangjie125@huawei.com,
+        longli@microsoft.com, jiri@resnulli.us, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Thu, 23 Mar 2023 17:03:00 +0800 you wrote:
+> Remove pci_clear_master to simplify the code,
+> the bus-mastering is also cleared in do_pci_disable_device,
+> like this:
+> ./drivers/pci/pci.c:2197
+> static void do_pci_disable_device(struct pci_dev *dev)
+> {
+> 	u16 pci_command;
+> 
+> [...]
+
+Here is the summary with links:
+  - [1/8] net: liquidio: Remove redundant pci_clear_master
+    https://git.kernel.org/netdev/net-next/c/fc5aba60c244
+  - [2/8] net: hisilicon: Remove redundant pci_clear_master
+    https://git.kernel.org/netdev/net-next/c/fc3e07e83e8e
+  - [3/8] net: cxgb4vf: Remove redundant pci_clear_master
+    https://git.kernel.org/netdev/net-next/c/aae964bb7800
+  - [4/8] net/fungible: Remove redundant pci_clear_master
+    https://git.kernel.org/netdev/net-next/c/8b91d5b62ce8
+  - [5/8] net/mlx5: Remove redundant pci_clear_master
+    https://git.kernel.org/netdev/net-next/c/5b6f4bd24c8d
+  - [6/8] net: mana: Remove redundant pci_clear_master
+    https://git.kernel.org/netdev/net-next/c/2d59af830752
+  - [7/8] ionic: Remove redundant pci_clear_master
+    https://git.kernel.org/netdev/net-next/c/f686e9592734
+  - [8/8] ethernet: ec_bhf: Remove redundant pci_clear_master
+    https://git.kernel.org/netdev/net-next/c/3228150ba688
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-On 3/22/23 9:08 PM, Paolo Abeni wrote:
-> 
-> It looks like only the shadow sockets' receive queue is needed/used.
-> 
-> Have you considered instead adding 2 receive queues to smc_sock, and
-> implement a custom accept() variant fetching the accepted sockets from
-> there?
-> 
-> That will allow better encapsulating the changes into the smc code and
-> will avoid creating that 2 non-listening but almost listening sockets
-> which look quite strange.
-> 
-> Cheers,
-> 
-> Paolo
-
-I am not so sure about this two sockets implementation but Here are my
-concerns:
-1. When I tried to implement a custom accept, I found the function.
-mem_cgroup_charge_skmem is not exported and SMC-R couldn't access it as
-a module. If there are more functions like this in future updates this
-could be a problem.
-3. The custom accept should synchronize with future updates of TCP
-accept.
-2. SMC-R is trying to behave like TCP and if we implement custom accept,
-there may be repeated code and looks not good.
-
-Thanks,
-
-Kai
