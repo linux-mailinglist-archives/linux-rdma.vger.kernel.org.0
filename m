@@ -2,238 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB326C733A
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Mar 2023 23:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 113726C75F7
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Mar 2023 03:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbjCWWlv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Mar 2023 18:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        id S230335AbjCXCic (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Mar 2023 22:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjCWWlu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 18:41:50 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31422A994
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 15:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679611309; x=1711147309;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2D1Ry8N1K+PpntxXW26XscV8YG27aVDyhZqaAFcVUbw=;
-  b=SaULdnzpU1Bj6n3ZkCP8hAHObluTpx4vnem5nDpMce6GmD1GkXk3Uw4e
-   8wvSAR20eLK3mEgyL1GzikTsNSvEz2l4dQcqifxD52rLz+xXYsoLvxIlP
-   Xg9817FE6w+r/XeKHKqlRQch6cIEcX8MIm6meFSVhIIpXipRIlUUsL4uo
-   CRaf6oXPLTWXOjvRN03S7zv2oZFgJ4Hr6EKLRy+xgMv1x80Nng+0Bmbkx
-   MdllKX7PlJeB/h9DfyNQEs2EAYEZx+uIzml2p96skytIhF947cydj0DLg
-   ydQMkuoNZCh9OGGvWHBIPtxc+N9oUy1VNijdcs+9abT7uaSKwNrRwV8Dr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="342024969"
-X-IronPort-AV: E=Sophos;i="5.98,286,1673942400"; 
-   d="scan'208";a="342024969"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 15:41:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="684929694"
-X-IronPort-AV: E=Sophos;i="5.98,286,1673942400"; 
-   d="scan'208";a="684929694"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Mar 2023 15:41:47 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pfTcw-000Elm-2Q;
-        Thu, 23 Mar 2023 22:41:46 +0000
-Date:   Fri, 24 Mar 2023 06:41:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- aa4d540b4150052ae3b36d286b9c833a961ce291
-Message-ID: <641cd57d.hHO3+XXT+V5J3p8V%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S230004AbjCXCic (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Mar 2023 22:38:32 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0670C1588B
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 19:38:30 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id bj20so368502oib.3
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Mar 2023 19:38:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679625510;
+        h=content-transfer-encoding:in-reply-to:from:to:references
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5PDWEHeHVhC/41hzMKzG13okIfQ0/xarVHK1KJr1JQg=;
+        b=ZD3SA5ABFBt0puEbkWlffp57J4EGqPYFKVZZOtef16c0xzjazsw7nMeHMx/RVx38Rh
+         hlc/LHVWykVmqIJZf3T5e/IzUzavANNNso8t1nEo7wIUBgTXhQh7VPcw22KQKqJA6Wmn
+         +SY+mRyu75Zfy7sEX5aIA/lv5sJ+TbvawjNShvMl7AZPz11uQ3ZLiJkj1GZ+teIjX2MT
+         Yoy+WAsPCMp7FPetN7waP3VI/QpegZ4W82zbCocJ/wPCsO8/xueDszeZCH+3h4q1ruCq
+         MJjxGzipNCmy2QLsLgmAM5oySuXlmiv4QMVZvWQfERX98VYv76XGKzCyb7S6+SIEmPt3
+         QcVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679625510;
+        h=content-transfer-encoding:in-reply-to:from:to:references
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5PDWEHeHVhC/41hzMKzG13okIfQ0/xarVHK1KJr1JQg=;
+        b=K98K2Cq2PIlflMSBsycgB6LEXPsW8KGMyXIuzzKeX2mURVsXXqS5VW+RLv1uSbl2//
+         p44cCizSbZi7YBsXwjEw82w+X6a+nUoI409LgWixLIoJyg4QEDBWJ+XPTrzCxE8/n4SM
+         LshuXeVMyRxLQDvYdu8VbqvJTLFrjrSnUCmSog7SUCRXnK9HimrKEyB1kxlIvXFw98dv
+         TTU3BtBVf8z/Vgnt4iwLYa7E/LroV7e4sJejuacY9mW2X6FLdNiPHvcZvAHzcbZCWn1p
+         9Hw9OrIOrBX3TDI0wgPsWJo0ypMwWo03TXI8EshNMNcV0cP/jdy8baTnkxLVgH/w6nvw
+         N5Lg==
+X-Gm-Message-State: AO0yUKV1K4IlWwfqhnJgPFbu0WCeCeQ004mkONMZNOd2WlCx2K7YU9ZI
+        +y8hV2hF/lveNCdFKNfRsbc0syS10i8=
+X-Google-Smtp-Source: AK7set+lq1Ps7WG6hp22r/xFFUP1NT5x6FvE1Qme3LKoAgDfk1jbEFpbxHPt7mp4fN6fAhcWxNP9vQ==
+X-Received: by 2002:a54:4792:0:b0:387:1b0f:c03e with SMTP id o18-20020a544792000000b003871b0fc03emr316814oic.17.1679625509907;
+        Thu, 23 Mar 2023 19:38:29 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:1c3a:5f4c:c6c8:a181? (2603-8081-140c-1a00-1c3a-5f4c-c6c8-a181.res6.spectrum.com. [2603:8081:140c:1a00:1c3a:5f4c:c6c8:a181])
+        by smtp.gmail.com with ESMTPSA id s4-20020a0568080b0400b0038755008179sm1658994oij.26.2023.03.23.19.38.28
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Mar 2023 19:38:29 -0700 (PDT)
+Message-ID: <b43c8172-a1c3-2ebd-e70e-198ae68248b5@gmail.com>
+Date:   Thu, 23 Mar 2023 21:38:28 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Fwd: pyverbs test_resize_cq fails in some cases
+Content-Language: en-US
+References: <f218337a-b975-bfa7-635d-bafc42c2df04@gmail.com>
+To:     linux-rdma@vger.kernel.org
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <f218337a-b975-bfa7-635d-bafc42c2df04@gmail.com>
+X-Forwarded-Message-Id: <f218337a-b975-bfa7-635d-bafc42c2df04@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: aa4d540b4150052ae3b36d286b9c833a961ce291  RDMA/core: Fix multiple -Warray-bounds warnings
 
-elapsed time: 727m
 
-configs tested: 158
-configs skipped: 7
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+-------- Forwarded Message --------
+Subject: pyverbs test_resize_cq fails in some cases
+Date: Thu, 23 Mar 2023 21:37:28 -0500
+From: Bob Pearson <rpearsonhpe@gmail.com>
+To: Edward Srouji <edwards@nvidia.com>
+CC: Jason Gunthorpe <jgg@nvidia.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r006-20230322   gcc  
-alpha                randconfig-r025-20230322   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r035-20230322   gcc  
-arc                  randconfig-r036-20230322   gcc  
-arc                  randconfig-r043-20230322   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm          buildonly-randconfig-r001-20230322   clang
-arm                                 defconfig   gcc  
-arm                       imx_v4_v5_defconfig   clang
-arm                        neponset_defconfig   clang
-arm                  randconfig-r003-20230322   gcc  
-arm                  randconfig-r035-20230322   gcc  
-arm                  randconfig-r046-20230322   clang
-arm                           stm32_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64        buildonly-randconfig-r002-20230322   clang
-arm64        buildonly-randconfig-r006-20230322   clang
-arm64                               defconfig   gcc  
-arm64                randconfig-r023-20230322   gcc  
-arm64                randconfig-r031-20230322   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r013-20230322   gcc  
-csky                 randconfig-r023-20230322   gcc  
-csky                 randconfig-r034-20230322   gcc  
-hexagon      buildonly-randconfig-r004-20230322   clang
-hexagon              randconfig-r004-20230322   clang
-hexagon              randconfig-r011-20230322   clang
-hexagon              randconfig-r015-20230322   clang
-hexagon              randconfig-r025-20230322   clang
-hexagon              randconfig-r041-20230322   clang
-hexagon              randconfig-r045-20230322   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                          randconfig-a001   gcc  
-i386                          randconfig-a002   clang
-i386                          randconfig-a003   gcc  
-i386                          randconfig-a004   clang
-i386                          randconfig-a005   gcc  
-i386                          randconfig-a006   clang
-i386                          randconfig-a011   clang
-i386                          randconfig-a012   gcc  
-i386                          randconfig-a013   clang
-i386                          randconfig-a014   gcc  
-i386                          randconfig-a015   clang
-i386                          randconfig-a016   gcc  
-i386                          randconfig-c001   gcc  
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r005-20230322   gcc  
-ia64                 randconfig-r024-20230322   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch    buildonly-randconfig-r004-20230322   gcc  
-loongarch    buildonly-randconfig-r005-20230322   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r002-20230322   gcc  
-loongarch            randconfig-r023-20230322   gcc  
-m68k                             allmodconfig   gcc  
-m68k         buildonly-randconfig-r001-20230322   gcc  
-m68k                                defconfig   gcc  
-m68k                        mvme147_defconfig   gcc  
-m68k                        mvme16x_defconfig   gcc  
-m68k                 randconfig-r015-20230322   gcc  
-m68k                 randconfig-r024-20230322   gcc  
-m68k                 randconfig-r026-20230322   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze           randconfig-r021-20230322   gcc  
-microblaze           randconfig-r036-20230322   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          rb532_defconfig   gcc  
-mips                           xway_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r003-20230322   gcc  
-nios2                randconfig-r004-20230322   gcc  
-nios2                randconfig-r021-20230322   gcc  
-nios2                randconfig-r034-20230322   gcc  
-openrisc             randconfig-r001-20230322   gcc  
-openrisc             randconfig-r005-20230322   gcc  
-parisc                           alldefconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r004-20230322   gcc  
-parisc               randconfig-r012-20230322   gcc  
-parisc               randconfig-r013-20230322   gcc  
-parisc               randconfig-r016-20230322   gcc  
-parisc               randconfig-r022-20230322   gcc  
-parisc               randconfig-r024-20230322   gcc  
-parisc               randconfig-r025-20230322   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc      buildonly-randconfig-r003-20230322   gcc  
-powerpc      buildonly-randconfig-r005-20230322   gcc  
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                 mpc836x_mds_defconfig   clang
-powerpc                     mpc83xx_defconfig   gcc  
-powerpc                  mpc885_ads_defconfig   clang
-powerpc                     powernv_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230322   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r001-20230322   clang
-s390                 randconfig-r003-20230322   clang
-s390                 randconfig-r044-20230322   gcc  
-sh                               allmodconfig   gcc  
-sh                   randconfig-r016-20230322   gcc  
-sh                   randconfig-r026-20230322   gcc  
-sh                          rsk7264_defconfig   gcc  
-sh                           se7206_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
-sh                     sh7710voipgw_defconfig   gcc  
-sh                  sh7785lcr_32bit_defconfig   gcc  
-sparc        buildonly-randconfig-r004-20230322   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r003-20230322   gcc  
-sparc                randconfig-r006-20230322   gcc  
-sparc                randconfig-r014-20230322   gcc  
-sparc64      buildonly-randconfig-r001-20230322   gcc  
-sparc64      buildonly-randconfig-r006-20230322   gcc  
-sparc64              randconfig-r032-20230322   gcc  
-sparc64              randconfig-r033-20230322   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                        randconfig-a001   clang
-x86_64                        randconfig-a002   gcc  
-x86_64                        randconfig-a003   clang
-x86_64                        randconfig-a004   gcc  
-x86_64                        randconfig-a005   clang
-x86_64                        randconfig-a006   gcc  
-x86_64                        randconfig-a011   gcc  
-x86_64                        randconfig-a012   clang
-x86_64                        randconfig-a013   gcc  
-x86_64                        randconfig-a014   clang
-x86_64                        randconfig-a015   gcc  
-x86_64                        randconfig-a016   clang
-x86_64                        randconfig-k001   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r001-20230322   gcc  
-xtensa               randconfig-r002-20230322   gcc  
-xtensa               randconfig-r031-20230322   gcc  
-xtensa               randconfig-r032-20230322   gcc  
-xtensa                    smp_lx200_defconfig   gcc  
-xtensa                    xip_kc705_defconfig   gcc  
+Edward,
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+The pyverbs test: test_resize_cq fails for the rxe driver in some cases.
+
+The code is definitely racy:
+
+def test_resize_cq(self):
+        """
+        Test resize CQ, start with specific value and then increase and decrease
+        the CQ size. The test also check bad flow of decrease the CQ size when
+        there are more completions on it than the new value.
+        """
+        self.create_players(CQUDResources, cq_depth=3)
+        # Decrease the CQ size.
+        new_cq_size = 1
+        try:
+            self.client.cq.resize(new_cq_size)
+        except PyverbsRDMAError as ex:
+            if ex.error_code == errno.EOPNOTSUPP:
+                raise unittest.SkipTest('Resize CQ is not supported')
+            raise ex
+        self.assertTrue(self.client.cq.cqe >= new_cq_size,
+                        f'The actual CQ size ({self.client.cq.cqe}) is less '
+                        'than guaranteed ({new_cq_size})')
+
+        # Increase the CQ size.
+        new_cq_size = 7
+        self.client.cq.resize(new_cq_size)
+        self.assertTrue(self.client.cq.cqe >= new_cq_size,
+                        f'The actual CQ size ({self.client.cq.cqe}) is less '
+                        'than guaranteed ({new_cq_size})')
+
+        # Fill the CQ entries except one for avoid cq_overrun warnings.
+        send_wr, _ = u.get_send_elements(self.client, False)
+        ah_client = u.get_global_ah(self.client, self.gid_index, self.ib_port)
+        for i in range(self.client.cq.cqe - 1):
+            u.send(self.client, send_wr, ah=ah_client)
+
+	### This posts 6 send work requests but does not wait for them to complete
+	### The following proceeds while the sends are executing in the background
+	### and the test can fail. An easy fix is to add the line
+        time.sleep(1/1000)  ### or maybe something a little larger but this works for me.
+	### alternatively you could test the data at the destination.
+
+        # Decrease the CQ size to less than the CQ unpolled entries.
+        new_cq_size = 1
+        with self.assertRaises(PyverbsRDMAError) as ex:
+            self.client.cq.resize(new_cq_size)
+        self.assertEqual(ex.exception.error_code, errno.EINVAL)
+
+Bob
