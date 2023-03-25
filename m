@@ -2,104 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 030D86C893D
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Mar 2023 00:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C22A6C8A09
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Mar 2023 02:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjCXX2G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Mar 2023 19:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S231572AbjCYBq5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Mar 2023 21:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbjCXX2F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Mar 2023 19:28:05 -0400
-Received: from out-23.mta0.migadu.com (out-23.mta0.migadu.com [91.218.175.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811292101
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Mar 2023 16:28:03 -0700 (PDT)
-Message-ID: <fe3db636-2f89-3175-a605-2124b43ae4fa@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1679700481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=znY78L98weuBiMgEonJQOPxggC8U4iELkUSqycl27gU=;
-        b=VryzPjcKbZ2RosICjRNFYfs1mlJfvbCTcNbx5vDMSyHDIJDr+ksGwR1gd4N+wmsCo+Hshp
-        aPfkCsYxzIIUcTfezg61qVf6AYVyKGvoo1V1YKQFPDXaWkDriTpzPq7GDO/sBEaomOckTk
-        enbmAKhyDlSYgIbCvFOnPrN1ZHiTb6Y=
-Date:   Fri, 24 Mar 2023 16:27:51 -0700
+        with ESMTP id S229623AbjCYBq4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Mar 2023 21:46:56 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30247AF31
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Mar 2023 18:46:55 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id s8so4413973lfr.8
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Mar 2023 18:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679708813;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z1cRiDtZyjpH8UUowiP+C7FXClzy38HXhFY9Gfav+GA=;
+        b=k2+w05t9K0XTZ1IgTYdK9ekRbeXV+H1OsyR0xAPrL/ENiqECYMnnIBuM29c4rmG5M2
+         gtCE7sYxPOlm1OMIv8PvglkI7f9K1e222bMwWu1WUkQraCf1DdNEtQJXpoERrBcYtUIy
+         Zd86wsr4CGqSrp5tH9Rdf1AnRx5sFZV8OIaXJ1j2OKuNH+EFHgWSVwdcsIdhd/9K9OHJ
+         6sq3rb2GRc+ksZ4JfKS+j3flGxvHfByEsAeT0yaNy5UvbViAREzuPB115IyTLu1Ngrez
+         qE2VpdxWv+yWeyVBnn4MI5p5c2j75xIjZTr0p2w7lI2qPIT9pAcCsPwtrBwTTDEXpOAx
+         xe0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679708813;
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z1cRiDtZyjpH8UUowiP+C7FXClzy38HXhFY9Gfav+GA=;
+        b=hr1Qw6nTIvLpKfMdQGQkOmHav3s+DSfNd/uYd/ux+cZhYy8GUxoJ89j5mEpIKElF/Y
+         i7zgGURTBOimtFPe4bBfVbXlrY7KZOHDmrbpgqYQjL2Ba31zgSLieXgHaS1CXrrRD4LJ
+         4xFDSoPeTNxxIIKb7N4K9es/qUizwkf4cBkigmgmUBW7N32pc9Vw08U4B1isR8VvhRcl
+         f1pau4HPgVs0J9VgjZJu+L+U+66NgP1QgoLLA+L1FFitxVsBs88+ccDTQ/PHC7fprtP+
+         J0tguPK/mVCZqbKINrpSkkLhij0/dEmUXr+8jTuRwDKJmELLenoKejYKv8uT26ivi6pD
+         9Fyg==
+X-Gm-Message-State: AAQBX9e3XuDgS3rjIIqsy8z7frMSAsE0sqejo+osTbF75NMzkxeCzash
+        Xm7VzhgwRLDBn9FRbPuzHHBoIVv6HtQhqfhaOA==
+X-Google-Smtp-Source: AKy350ZGtnS1q+aVSgLMA1ZQXn8aqrpRbEn8Asjp5XxIHLqIZ1NC8eAMD1oPBGBhC8dOiZnl8VYt4220ONVkCt00KVM=
+X-Received: by 2002:ac2:5dd7:0:b0:4ea:fa82:7f73 with SMTP id
+ x23-20020ac25dd7000000b004eafa827f73mr1324844lfq.5.1679708813180; Fri, 24 Mar
+ 2023 18:46:53 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] net/smc: Introduce BPF injection
- capability for SMC
-Content-Language: en-US
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, kgraul@linux.ibm.com, wenjia@linux.ibm.com,
-        jaka@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-References: <1676981919-64884-1-git-send-email-alibuda@linux.alibaba.com>
- <1676981919-64884-2-git-send-email-alibuda@linux.alibaba.com>
- <76e226e6-f3bf-f740-c86c-6ee214aff07d@linux.dev>
- <72030784-451a-2042-cbb7-98e1f9a544d5@linux.alibaba.com>
- <366b9486-9a00-6add-d54b-5c3f4d35afe9@linux.dev>
- <6b4728e0-dfb7-ec7b-630f-87ee42233fe8@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <6b4728e0-dfb7-ec7b-630f-87ee42233fe8@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Sender: raheemsterling419111@gmail.com
+Received: by 2002:ab2:2988:0:b0:1ae:ed93:3365 with HTTP; Fri, 24 Mar 2023
+ 18:46:52 -0700 (PDT)
+From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
+Date:   Fri, 24 Mar 2023 18:46:52 -0700
+X-Google-Sender-Auth: Fdy4y8lEqKJTpe14cbPHNSV0BqI
+Message-ID: <CAN26_+GtEf+YTV7jEgNNx2nsS+RehVetO11ruiUazPK0LpyeUw@mail.gmail.com>
+Subject: Your Urgent Reply Will Be Appreciated
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        LOTS_OF_MONEY,MILLION_HUNDRED,MILLION_USD,MONEY_FRAUD_5,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY,URG_BIZ
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:141 listed in]
+        [list.dnswl.org]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [raheemsterling419111[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [raheemsterling419111[at]gmail.com]
+        *  1.0 MILLION_USD BODY: Talks about millions of dollars
+        *  1.7 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.9 URG_BIZ Contains urgent matter
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  1.4 MONEY_FRAUD_5 Lots of money and many fraud phrases
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/23/23 9:08 PM, D. Wythe wrote:
-> 
-> The latest design is that users can register a negotiator implementation indexed 
-> by name, smc_sock can use bpf_setsockopt to specify
-> whether a specific negotiation implementation is required via name. If there are 
-> no settings, there will be no negotiators.
-> 
-> What do you think?
-
-tbh, bpf_setsockopt is many steps away. It needs to begin with a syscall 
-setsockopt first. There is little reason it can only be done with a bpf prog. 
-and how does the user know which negotiator a smc sock is using? Currently, ss 
-can learn the tcp-cc of a sk.
-
-~~~~~~~~
-
-If this effort is serious, the code quality has to be much improved. The obvious 
-bug and unused variables make this set at most a RFC.
-
- From the bpf perspective, it is ok-ish to start with a global negotiator first 
-and skip the setsockopt details for now. However, it needs to be have a name. 
-The new link_update 
-(https://lore.kernel.org/bpf/20230323032405.3735486-1-kuifeng@meta.com/) has to 
-work also. The struct_ops is rcu reader safe, so leverage it whenever it can 
-instead of the read/write lock. It is how struct_ops work for tcp, so try to 
-stay consistent as much as possible in the networking stack.
-
-> 
-> In addition, I am very sorry that I have not issued my implementation for such a 
-> long time, and I have encountered some problems with the implementation because
-> the SMC needs to be built as kernel module, I have struggled with the 
-> bpf_setsockopt implementation, and there are some new self-testes that need to 
-> be written.
-> 
-
-Regarding compiling as module,
-
-+ifneq ($(CONFIG_SMC),)
-+ifeq ($(CONFIG_BPF_SYSCALL),y)
-+obj-y				+= smc/bpf_smc_struct_ops.o
-+endif
-
-struct_ops does not support module now. It is on the todo list. The 
-bpf_smc_struct_ops.o above can only be used when CONFIG_SMC=y. Otherwise, the 
-bpf_smc_struct_ops is always built in while most users will never load the smc 
-module.
+I came across your e-mail contact prior to a private search while in need
+of your assistance. I am Aisha Al-Qaddafi, the only biological Daughter of
+Former President of Libya Col. Muammar Al-Qaddafi. Am a single Mother and a
+Widow with three Children.
+I have investment funds worth Twenty Seven Million Five Hundred Thousand
+United States Dollars ($27.500.000.00 )   I am interested in you for
+investment project assistance in your country, may be from there, we can
+build business relationship in the nearest future. I am willing to
+negotiate an investment/business profit sharing ratio with you based on the
+future investment earning profits.
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the investment
+funds.
+Best Regards
+Mrs Aisha Al-Qaddafi
