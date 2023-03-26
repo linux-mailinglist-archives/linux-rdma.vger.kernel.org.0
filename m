@@ -2,171 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA106C920F
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Mar 2023 03:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A61F6C92EE
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Mar 2023 09:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjCZBaX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Mar 2023 21:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
+        id S229711AbjCZHMm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Mar 2023 03:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjCZBaW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Mar 2023 21:30:22 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03D59EC5
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Mar 2023 18:30:21 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-53d277c1834so106693247b3.10
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Mar 2023 18:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1679794221;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tagWeGgfVGnIB4RlQwLRFva0m9TrbXZ6r7ODnT3Bbe8=;
-        b=A4URbGfzFnXlAAoXBnFXE4tY2vVGGuZHWDicHdD4q5h8z8DcouQ3BvKFXK4YiJRBr0
-         V0NAbxi/GhcznLi1gDkblDtACEXchZmTzmBeS6CRsYsk8EaoHSqBzQyRpay1wkZDbFFf
-         pv6lapUn60XkFkt5W/fRGLasQagheZsrtZfpU=
+        with ESMTP id S229582AbjCZHMl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Mar 2023 03:12:41 -0400
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370FB9EDF;
+        Sun, 26 Mar 2023 00:12:37 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id i5so23956353eda.0;
+        Sun, 26 Mar 2023 00:12:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679794221;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tagWeGgfVGnIB4RlQwLRFva0m9TrbXZ6r7ODnT3Bbe8=;
-        b=To5SmRWxybXM2myaJTE1UUO9WErRQL07h309pxjOsD1ZYwxUnmsKMATWFUcYzq3jAB
-         Nm8RM2ud3BDsy0+xrL/JHd6/lQl9oB7vqnqyICebMqiiExzKy++gG6zHyL/0fb/loM+t
-         2qwYIq8MSwTEz8ZRfjwnGl8b4B8o2DJLD47aSef8S752Vublo7ry8QW7Fd0y5uoa2ykG
-         Zl30GWM1rWwe5tYYhFm46KPba9esktcrZCBqvEcZlBX22AkkfHyf6xFiRlzhQuyru06X
-         /Y6AopAx9Qga/c/kGDDhHp841Dlbfs1XAegEcHVmhLuJ2jRAJ86QVNkAzXaKbe6dNBGY
-         EudA==
-X-Gm-Message-State: AAQBX9cNX9zzHAPuQa2Jk55WQbxeTLSckxv1JhvnJ2yu3sP+74q6oecR
-        TT6LHfPXaHVA9RsJUum1PKKGSI290PXp13A/sMfyAQ==
-X-Google-Smtp-Source: AKy350bY64tEMTOa5w3aoxVxkpn3Sch7Bbwjq4s5D6y9snRF4v9FxRKkYoQ9sAbPUEVf62g5JCAiyIV8s8Y1jlmZr3w=
-X-Received: by 2002:a81:b149:0:b0:543:9065:b225 with SMTP id
- p70-20020a81b149000000b005439065b225mr3270686ywh.5.1679794221042; Sat, 25 Mar
- 2023 18:30:21 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1679814755;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2s6cgqtyHQC9upsmEZAwdtb5aFvaLxCWNrBqYDjKU6k=;
+        b=INNa02fO3qkdCqgkLA6cU5yOoBJjyhG+ImiD33e8VkBJ/qYpNloTG1VAIiFc1fLBXs
+         QaobtCJ7stzIwhAIdn3htb5soZ5db8gYlN0W7H6rcmgHpaxKj3cHZw+iyuqTkphaIKWE
+         /4Pn3635cafj8i9jwZkhFU49fuD60VBxf/DngHi/o5VT8Wn7X0Zsl1mx8enKAn5DOfhq
+         eecI791PRSI1qcPiAu9bpG5oz2oOtYqBKiEEmCLqir/VgwOwvbj7Vtywo9MRUOv8d622
+         2GPhcD2fvzF5srqwwnQnKfoGX2iS0MhZtq8k5+YMoqsm6fhXKwgFpplSUv74ogTbUs/D
+         aoDQ==
+X-Gm-Message-State: AAQBX9cXyn4OzDdB4SzBmVxgYtSdZAFbIWcSNX+RD4HjvIN+XCTEu79G
+        AycdYG32AtAbNk/cmgcAbXU=
+X-Google-Smtp-Source: AKy350Z59FFbxqYQ3c6FUFkwDSCe0WvmExH2hVkE5OBDnCeIYjbMxg9DNM6zlzenSjxa9M44P7rC2w==
+X-Received: by 2002:a05:6402:268e:b0:502:ffd:74a0 with SMTP id w14-20020a056402268e00b005020ffd74a0mr9556077edd.2.1679814755521;
+        Sun, 26 Mar 2023 00:12:35 -0700 (PDT)
+Received: from [10.100.102.33] (109-186-69-235.bb.netvision.net.il. [109.186.69.235])
+        by smtp.gmail.com with ESMTPSA id m23-20020a509317000000b004fb95f51f54sm13066442eda.12.2023.03.26.00.12.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Mar 2023 00:12:35 -0700 (PDT)
+Message-ID: <9a59298e-bdac-09ad-d648-ae00c55b8653@grimberg.me>
+Date:   Sun, 26 Mar 2023 10:12:33 +0300
 MIME-Version: 1.0
-References: <20230325140559.1336056-1-trix@redhat.com>
-In-Reply-To: <20230325140559.1336056-1-trix@redhat.com>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Sun, 26 Mar 2023 07:00:08 +0530
-Message-ID: <CA+sbYW0hyYmB1cA_Ai0uEYiccra9eL-RGpXwgi9+9+Akj4ksEQ@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/bnxt_re: remove unused num_srqne_processed and
- num_cqne_processed variables
-To:     Tom Rix <trix@redhat.com>
-Cc:     jgg@ziepe.ca, leon@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000dbf6a005f7c39183"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] blk-mq-rdma: remove queue mapping helper for rdma devices
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-block@vger.kernel.org,
+        linux-nvme@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
+        Keith Busch <kbusch@kernel.org>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        linux-rdma@vger.kernel.org
+References: <20230322123703.485544-1-sagi@grimberg.me>
+ <ZBr6kNVoa5RbNzSa@ziepe.ca>
+ <c51d3d99-5bc9-cb47-6efa-5371ef3cc0f4@grimberg.me>
+ <ZBsHnq6FlpO0p10A@ziepe.ca> <20230323120515.GE36557@unreal>
+ <ZBxOHZwre3x8DkWN@ziepe.ca>
+ <e1b00740-3c75-8b90-4d68-76a5f341a117@grimberg.me>
+ <ZBx3AI5pothCuvTx@ziepe.ca>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <ZBx3AI5pothCuvTx@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.5 required=5.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000dbf6a005f7c39183
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 25, 2023 at 7:36=E2=80=AFPM Tom Rix <trix@redhat.com> wrote:
->
-> clang with W=3D1 reports
-> drivers/infiniband/hw/bnxt_re/qplib_fp.c:303:6: error: variable
->   'num_srqne_processed' set but not used [-Werror,-Wunused-but-set-variab=
-le]
->         int num_srqne_processed =3D 0;
->             ^
-> drivers/infiniband/hw/bnxt_re/qplib_fp.c:304:6: error: variable
->   'num_cqne_processed' set but not used [-Werror,-Wunused-but-set-variabl=
-e]
->         int num_cqne_processed =3D 0;
->             ^
-> These variables are not used so remove them.
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
+>>>>>>>> No rdma device exposes its irq vectors affinity today. So the only
+>>>>>>>> mapping that we have left, is the default blk_mq_map_queues, which
+>>>>>>>> we fallback to anyways. Also fixup the only consumer of this helper
+>>>>>>>> (nvme-rdma).
+>>>>>>>
+>>>>>>> This was the only caller of ib_get_vector_affinity() so please delete
+>>>>>>> op get_vector_affinity and ib_get_vector_affinity() from verbs as well
+>>>>>>
+>>>>>> Yep, no problem.
+>>>>>>
+>>>>>> Given that nvme-rdma was the only consumer, do you prefer this goes from
+>>>>>> the nvme tree?
+>>>>>
+>>>>> Sure, it is probably fine
+>>>>
+>>>> I tried to do it two+ years ago:
+>>>> https://lore.kernel.org/all/20200929091358.421086-1-leon@kernel.org
+>>>
+>>> Christoph's points make sense, but I think we should still purge this
+>>> code.
+>>>
+>>> If we want to do proper managed affinity the right RDMA API is to
+>>> directly ask for the desired CPU binding when creating the CQ, and
+>>> optionally a way to change the CPU binding of the CQ at runtime.
+>>
+>> I think the affinity management is referring to IRQD_AFFINITY_MANAGED
+>> which IIRC is the case when the device passes `struct irq_affinity` to
+>> pci_alloc_irq_vectors_affinity.
+>>
+>> Not sure what that has to do with passing a cpu to create_cq.
+> 
+> I took Christoph's remarks to be that the system should auto configure
+> interrupts sensibly and not rely on userspace messing around in proc.
 
---000000000000dbf6a005f7c39183
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Yes, that is correct.
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEII0htgrnC+Ih
-iDa2cU67+0h/Sf+ebmdqjyczMEsYgICNMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDMyNjAxMzAyMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAA/bwdI4RpXrdcnH05OtUw1h4sgWrz
-M57/NcfP8uGGg9H/RD4o01QirqN/OJfN+jc7qTm2EuKburAVP/cd01GKz+m4ZmUMXwTskSYNTUlS
-1lsAjwfgV3JvUICZAcDblEO5EO97bQTzDDV4m//i+h35EJjRgdBdnbNL6VLcHWqzzxpf3hJAvjP7
-wOXXCHE8lYKRroEzbUDHD/p3vD0J7yQuix/O9Q126RZrLZ3iTGIE27fklbtkvuOn6IzzoT1eyJ8R
-021SLTm7ARRuM6LdWJbBehVSGS+tv49k/mnZyQeU5Yplot/rJbA3eghkks/lurwGBXrs5tOCcqoO
-Vx+Fcqod
---000000000000dbf6a005f7c39183--
+> For instance, I would expect that the NVMe driver work the same way on
+> RDMA and PCI. For PCI it calls pci_alloc_irq_vectors_affinity(), RDMA
+> should call some ib_alloc_cq_affinity() and generate the affinity in
+> exactly the same way.
+
+But an RDMA ulp does not own the EQs like the nvme driver does.
+That is why NVMe is fine with managed affinity, and RDMA is not.
+The initial attempt was to make RDMA use managed affinity, but then
+users started complaining that they are unable to mangle with irq
+vector affinity via procfs.
+
+> So, I have no problem to delete these things as the
+> get_vector_affinity API is not part of solving the affinity problem,
+> and it seems NVMe PCI doesn't need blk_mq_rdma_map_queues() either.
+
+Cool.
