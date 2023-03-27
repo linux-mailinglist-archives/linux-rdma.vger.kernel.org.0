@@ -2,149 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AFA6CA8A1
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Mar 2023 17:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1306CA9ED
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Mar 2023 18:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbjC0PJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Mar 2023 11:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
+        id S232159AbjC0QFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Mar 2023 12:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjC0PJN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Mar 2023 11:09:13 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94A32D71;
-        Mon, 27 Mar 2023 08:09:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A5914B81617;
-        Mon, 27 Mar 2023 15:09:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54113C433D2;
-        Mon, 27 Mar 2023 15:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679929749;
-        bh=MCExPz9vDop0E9u20UEk1fhx2X1UnQ3FTZ4kvpzLi4I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n3Wr+YsBC4b5ofeiyF7AZ8XOKtnhgVwMd56Akpe2478YCnSOxNfZykMSxd1ezJWt9
-         eLvBt7+AQjCg4Gm8iPomjAqEIkyB/ICjxiyDGH5j6bPp0QXaZN0Ar22tve2OMYDa9y
-         auDvF7+xYZH9xy3zPnij6oPD6GqTEwDVXcNGLFu54mBUzXspLxLUllTUj8HOs6/5xU
-         DA/dk9NYSRHAFDDkRbn+Zc0uUblb474Dvi0ounSpmsVyrFUUCEeY4HTtL/iKR6bJOe
-         qQmwmnjPCgH7ruYFH4tWLP+VlQLZcasKZbsVbKbYu/4TFA9PoVIO+q6Ej5wQ8Q4kx8
-         r2KiPMfwyurmQ==
-Date:   Mon, 27 Mar 2023 08:09:07 -0700
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
+        with ESMTP id S230289AbjC0QFP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Mar 2023 12:05:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A74271D;
+        Mon, 27 Mar 2023 09:05:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RGwHI36+26alMOPcJARCf4i+u/nuff7mObHUT3LcJRU=; b=LPLf/jCvgk6BbAdu2sWsjs0oNX
+        30l+yYDMt7lIPUZlX1xLPKvd+VVVQITd3MBjp55UXnh0lC27yas9PjZ1X8/Ke/FN2w5Z7mgrMqRNS
+        NMe2iIKVClT29RE+YYzmxZbB3MjqVTlPCvQNedD6+P2DTM3qoHKrTsXd9k/l+Z6LWIlrLqO0i0LPP
+        WcUrCoUENmgBRd1TwHHhU6kKgkRvL9EW+Kwg4gKazSQbHimCznogGlrnIrlhrYbEsmEYHmZgBhRO2
+        txegvcMIwswcdkNGLcJijBEGxeQVIVJr1oRDPP6IWPp68b1YWWkcPAIa7dwiPZZpdkAy2Plhs+eAH
+        tVStJIQg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pgpLM-00Beeh-0e;
+        Mon, 27 Mar 2023 16:05:12 +0000
+Date:   Mon, 27 Mar 2023 09:05:12 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 06/14] net/mlx5: Rename kfree_rcu() to
- kfree_rcu_mightsleep()
-Message-ID: <ZCGxk5k2yRGg3o33@x130>
-References: <20230315181902.4177819-1-joel@joelfernandes.org>
- <20230315181902.4177819-6-joel@joelfernandes.org>
- <CAEXW_YQLQqB9CAzEyddzOJkKx3y268T7g-E313mDsjXVQRT0Dw@mail.gmail.com>
+        Russ Weight <russell.h.weight@intel.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steve French <sfrench@samba.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-cifs@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] driver core: class: mark the struct class for sysfs
+ callbacks as constant
+Message-ID: <ZCG+uH4Dh16Gwonj@bombadil.infradead.org>
+References: <20230325084537.3622280-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YQLQqB9CAzEyddzOJkKx3y268T7g-E313mDsjXVQRT0Dw@mail.gmail.com>
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230325084537.3622280-1-gregkh@linuxfoundation.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 26 Mar 08:34, Joel Fernandes wrote:
->On Wed, Mar 15, 2023 at 2:19 PM Joel Fernandes (Google)
-><joel@joelfernandes.org> wrote:
->>
->> From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
->>
->> The kfree_rcu() and kvfree_rcu() macros' single-argument forms are
->> deprecated.  Therefore switch to the new kfree_rcu_mightsleep() and
->> kvfree_rcu_mightsleep() variants. The goal is to avoid accidental use
->> of the single-argument forms, which can introduce functionality bugs in
->> atomic contexts and latency bugs in non-atomic contexts.
->
->In a world where patches anxiously await their precious Ack, could
->today be our lucky day on this one?
->
->We need Acks to take this in for 6.4. David? Others?
->
+On Sat, Mar 25, 2023 at 09:45:37AM +0100, Greg Kroah-Hartman wrote:
+> struct class should never be modified in a sysfs callback as there is
+> nothing in the structure to modify, and frankly, the structure is almost
+> never used in a sysfs callback, so mark it as constant to allow struct
+> class to be moved to read-only memory.
+> 
+> While we are touching all class sysfs callbacks also mark the attribute
+> as constant as it can not be modified.  The bonding code still uses this
+> structure so it can not be removed from the function callbacks.
+> 
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-For mlx5 usually me, but since this is a larger series that is not mlx5
-centric and targeting multiple tree, I really don't know which subsystem
-you should be targeting.. for netdev submissions you need to specify the
-targeted branch e.g. [PATCH v2 net-next 06/14] ... 
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
-
-FWIW:
-
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-
-
-> - Joel
->
->
->>
->> Cc: Ariel Levkovich <lariel@nvidia.com>
->> Cc: Saeed Mahameed <saeedm@nvidia.com>
->> Cc: Vlad Buslov <vladbu@nvidia.com>
->> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->> ---
->>  drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c  | 2 +-
->>  drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c | 4 ++--
->>  2 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c
->> index ca834bbcb44f..8afcec0c5d3c 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c
->> @@ -242,7 +242,7 @@ mlx5e_int_port_remove(struct mlx5e_tc_int_port_priv *priv,
->>                 mlx5_del_flow_rules(int_port->rx_rule);
->>         mapping_remove(ctx, int_port->mapping);
->>         mlx5e_int_port_metadata_free(priv, int_port->match_metadata);
->> -       kfree_rcu(int_port);
->> +       kfree_rcu_mightsleep(int_port);
->>         priv->num_ports--;
->>  }
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
->> index 08d0929e8260..b811dad7370a 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
->> @@ -670,7 +670,7 @@ static int mlx5e_macsec_del_txsa(struct macsec_context *ctx)
->>
->>         mlx5e_macsec_cleanup_sa(macsec, tx_sa, true);
->>         mlx5_destroy_encryption_key(macsec->mdev, tx_sa->enc_key_id);
->> -       kfree_rcu(tx_sa);
->> +       kfree_rcu_mightsleep(tx_sa);
->>         macsec_device->tx_sa[assoc_num] = NULL;
->>
->>  out:
->> @@ -849,7 +849,7 @@ static void macsec_del_rxsc_ctx(struct mlx5e_macsec *macsec, struct mlx5e_macsec
->>         xa_erase(&macsec->sc_xarray, rx_sc->sc_xarray_element->fs_id);
->>         metadata_dst_free(rx_sc->md_dst);
->>         kfree(rx_sc->sc_xarray_element);
->> -       kfree_rcu(rx_sc);
->> +       kfree_rcu_mightsleep(rx_sc);
->>  }
->>
->>  static int mlx5e_macsec_del_rxsc(struct macsec_context *ctx)
->> --
->> 2.40.0.rc1.284.g88254d51c5-goog
->>
+  Luis
