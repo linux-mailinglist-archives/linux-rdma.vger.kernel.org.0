@@ -2,140 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEBE6CA4F7
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Mar 2023 14:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AFA6CA8A1
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Mar 2023 17:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbjC0M5W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Mar 2023 08:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        id S232065AbjC0PJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Mar 2023 11:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232592AbjC0M5P (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Mar 2023 08:57:15 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2060c.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::60c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466B010C4
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Mar 2023 05:56:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CUfa8LduKQc1T2qn3JBkKgQ5GeG+mGs2E6msfioZi1fyyC+SNx5FF5Lkurd/RQqz6yIWqMIFGJxEgSIxzmYAkHjw+Zkb61ECUN9eaBs10R53SNCM9WE2w+3kUAdjgTiX0D+WA6N2bE+VFch8g9qKw6h53AA4HNGo9c7p89+Wc0pOSdD0MDY+T4Uaj9dGY9WPdgVA4TGyWMfW+hNj9h8qhdktqLA3tFf00xaSOO3J5TDGoMezmxj7hjbrmVrOMPj5vwO16GEMLqDbfCm9wSYIX9lqJQi9YFKbrNB1WrFDRwOUihGRxIHTs6a929a73KAwm4PwCsjiJWmP9vdwmZSqKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Z9lqyjDeYgk5Rn//syr89bt0JlEtHpZdBAIA2MScfL8=;
- b=g0wP/fm+mKOR/x2GcqCAjkDeFrjSsz7Qqmvt1nM4CXCMCedIw99k/haVhgG8N6R9/lUUfvCFm7MBvVNUBg5qmvZkyP9Y1DpiPiqT4IdP5GQONyS/1i77RQrpjnCuy/bp4akMn1PbVoHdvcKHFaFC5B+azpHlavoxJASi21Zi+XGMru6Ipx7jUELMrFVE+PrxzChI4NkxuUhev1KwmNgxS2JyOrcIw8VpNqIpbUe8kM3DU3Pje1CXYGgZwKb0yH8RrcAESBcrsEyJ4JDahXtUGmCcNVx1fBG4TDps1lag/ANQHBULEFVs/UbQsOQBubvhN5SiYp9WSQcNsaMAbDplvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z9lqyjDeYgk5Rn//syr89bt0JlEtHpZdBAIA2MScfL8=;
- b=cyvCvup5p3IaptBHxqpxnMCjqY/psL2NGhBTT+fyZD2/ECLRLX0TEzF/rnUZaop6zq3DqNH4d93nJ8mBfDPWR2yLa+Z9nZyhDyR4gD9w2nJ4DqyaL3VAuVEmjfHfRldrNn5AigIWGIsdUKYvXdsxQTwcvCrb5ZV3RbIczR1+NzG+IrmaKEqSeGubG8qk4C4H25uwlwRyd8UbW7vMA4Ht4FaNbfq45b1vEBPT6E8XM4e8wHQatm0cGt8LktM828vpucwtu99sHyZljGN4APtjafYZJadYuvw6fAkrimk3SFWfe2lVY7KW1nX/ah1ZMfRpkxnYodDB2nY2Z6TyY6rFqg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by BN9PR12MB5131.namprd12.prod.outlook.com (2603:10b6:408:118::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.41; Mon, 27 Mar
- 2023 12:56:01 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::ef6d:fdf6:352f:efd1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::ef6d:fdf6:352f:efd1%3]) with mapi id 15.20.6178.037; Mon, 27 Mar 2023
- 12:56:00 +0000
-Date:   Mon, 27 Mar 2023 09:55:59 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "xuhaoyue (A)" <xuhaoyue1@hisilicon.com>
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [RFC PATCH for-next 3/3] libhns: Add support for SVE Direct WQE
- function
-Message-ID: <ZCGSXzD8LJqsXHTF@nvidia.com>
-References: <20230225100253.3993383-1-xuhaoyue1@hisilicon.com>
- <20230225100253.3993383-4-xuhaoyue1@hisilicon.com>
- <ZBtQ1/3WjWNXAT/b@nvidia.com>
- <53ff5576-3469-1264-aab9-6eed7956238c@hisilicon.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53ff5576-3469-1264-aab9-6eed7956238c@hisilicon.com>
-X-ClientProxiedBy: YT3PR01CA0136.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:83::21) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S229577AbjC0PJN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Mar 2023 11:09:13 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94A32D71;
+        Mon, 27 Mar 2023 08:09:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A5914B81617;
+        Mon, 27 Mar 2023 15:09:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54113C433D2;
+        Mon, 27 Mar 2023 15:09:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679929749;
+        bh=MCExPz9vDop0E9u20UEk1fhx2X1UnQ3FTZ4kvpzLi4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n3Wr+YsBC4b5ofeiyF7AZ8XOKtnhgVwMd56Akpe2478YCnSOxNfZykMSxd1ezJWt9
+         eLvBt7+AQjCg4Gm8iPomjAqEIkyB/ICjxiyDGH5j6bPp0QXaZN0Ar22tve2OMYDa9y
+         auDvF7+xYZH9xy3zPnij6oPD6GqTEwDVXcNGLFu54mBUzXspLxLUllTUj8HOs6/5xU
+         DA/dk9NYSRHAFDDkRbn+Zc0uUblb474Dvi0ounSpmsVyrFUUCEeY4HTtL/iKR6bJOe
+         qQmwmnjPCgH7ruYFH4tWLP+VlQLZcasKZbsVbKbYu/4TFA9PoVIO+q6Ej5wQ8Q4kx8
+         r2KiPMfwyurmQ==
+Date:   Mon, 27 Mar 2023 08:09:07 -0700
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/14] net/mlx5: Rename kfree_rcu() to
+ kfree_rcu_mightsleep()
+Message-ID: <ZCGxk5k2yRGg3o33@x130>
+References: <20230315181902.4177819-1-joel@joelfernandes.org>
+ <20230315181902.4177819-6-joel@joelfernandes.org>
+ <CAEXW_YQLQqB9CAzEyddzOJkKx3y268T7g-E313mDsjXVQRT0Dw@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BN9PR12MB5131:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99266f42-a601-41c9-8822-08db2ec29dc2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oCb3p7/x2inJ6VkWW/Y39d+o9NA4zxU8iiZ6vQaRm/LDv1S08aIQDn/hpRCnPW6kwArbRisBV6GvPpc8yOSwWPW9dxeWdgOapp7C6rh6cYeq0FYu+lDsGjai956WEtdRXCZ+lNVgg6vtpgptw8x+hjsfJyu6I32GjoXB8Yl/4zZBH5+AWd9B9TIW7zP+1rvUo4tHB0IT9uO31OX4htT//nZ1Xm0a3l1pYeii5GBGfrSj3MVkP+Yr6hpC6iQbTCHTxktrYTj9dqMfsc7nEXy5H+VtIshgjaUoUtDpWqsuAB/Jqt5YNzYzowzfoIT4jDmDoGdsYtVjwGaKV/csLur3e1FHCjL2u71P/xVE46fpgMRAh+WAghkydPYUgGWQZSZpdA/f0krfUafK+0a8ajFA9BI3ufP00fToiSjnTayYkyndeT4ibWbplSuMWH/QzOaksbgiS7Z9R1o9TWq9wE6yNyUQb5OYbK3HFJPuwJuufcaxGdQxqZ9kG1sZ+jQKppmAOiVXX9wHc+ByTFabCsV0jzGBE4B66+/WNf75MQADoFqkPCH3QP561fNo6L3d+PbV
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(346002)(39860400002)(366004)(396003)(451199021)(478600001)(6506007)(6512007)(316002)(6486002)(66476007)(66946007)(66556008)(8676002)(6916009)(4326008)(41300700001)(26005)(2616005)(8936002)(186003)(2906002)(83380400001)(36756003)(5660300002)(86362001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HWc8y6PMiHuF6Lu3EkKzmxtUnB+CdRyAVPSVas9vJ75HGVkoVTEu3Xxx4DPY?=
- =?us-ascii?Q?421o80wZISsUsyRfpxfAa3rwNCQG6U20Hej9Yg6D9Io0Sjsm0RA2oP3Hf9zv?=
- =?us-ascii?Q?nLYzWMjDXW7S9Bz8Dwthz0bfZGdLAr3S+ji5AtVkv1XeM8X6RP8FxyK3JkMH?=
- =?us-ascii?Q?TPPby/gei3WDJbzqgpIBf2e+q3h8kMYcdO33Q7sYsffoK3KBbriYcGOjdZl2?=
- =?us-ascii?Q?IJ1G8OH8mONMXpBIsmLEQGDQNKu7omtiznXTtRevaZGdFNYqwzmZi95fRbTd?=
- =?us-ascii?Q?sisAkziArDNHdvielDXNjudVESmE8idqlmVhhMbtw9p1AKC2NdJbHwzUp5HM?=
- =?us-ascii?Q?NIswyFY+5ZCGPZa97RVvEAP6HcP+cVPuT6G72+cgrl+dmWhdOL5O07S7Xm08?=
- =?us-ascii?Q?wMu3Fg0g90bPxbnrr64Z97Z44x8TS8FHxAFrulC9UD5QOBfpJkFAeGZhXOqd?=
- =?us-ascii?Q?pJNTKHS9grRpjx67biLYWKNcpKtF2k//m/PCvgzMHCm66nBCJhKtn10BIbeV?=
- =?us-ascii?Q?KjHp08NNbtO+FKv1ehBeDwbv904aO9VlvV/7EH9Sr6Rmqu9UOoYy7Co6S9GG?=
- =?us-ascii?Q?45fAE8qOMgV3+HjHdw+au0oII9hIoZNikHyay43F9CGqjDkg86GMKVuL7Elk?=
- =?us-ascii?Q?x7HQ8lRigwM/XL+xDirIXVH6T9vF6NnGyd/BVw64czUEo+I1Rrd5Kjvz2Qns?=
- =?us-ascii?Q?jKDlqAQHnX9tdr45qTwQ5cA/t1zJCIBaVH5nKXYj+MC11owEiYicO2I4u9bl?=
- =?us-ascii?Q?yCwBRtupTKs8rn+I95JypxJm/Hkmo6UgkmAVnTBQ2ht64P8RUX5UqQ74lb8R?=
- =?us-ascii?Q?ZpVN7VHf4Y7j3whdKVI3+wJxGIFcRFxsuJG3QSyidN/uZEXv7U6FtMuS5PAR?=
- =?us-ascii?Q?ov/elwjHNp4GZqIQvDWFPF9XoAHOBs4bfnAH/a5S5kyZYy9sp9EDBnaiBzLY?=
- =?us-ascii?Q?IXTz2hwmDVQR6eHEFa8ghtgBTOewrU+oEgK23sWRYUw4vk/87pBSuVxP4BNZ?=
- =?us-ascii?Q?grXzDzTuqqltl4DCoCOWPz4/DRo7K4zYmKYS2obqO+loujfHorYJaLA0ufCr?=
- =?us-ascii?Q?ohJ/Bu8fQkBwqiHGhpIveHggaxrvjWrzzvxTStGZN7Q97ucKiqdV5NBRgFwI?=
- =?us-ascii?Q?twExHRcmtXixyJGzfQQlF5ahhHmpL1OxPXs1RRanvfU/R6hMF0HKmBcJiNyd?=
- =?us-ascii?Q?R6vxlJ5cI4Lj1EhgwnfWNEDLd7b2I1GqfC/bi4KIjRHrbvf+Uspq41nERbtr?=
- =?us-ascii?Q?2MzwrUmgPyd/boCmFx9MRHNOK6WJOG9JaIoskulpB9Vb8dzpywhCaZGkUA6f?=
- =?us-ascii?Q?QhN+r/gedFygsA3L/bTCyur4A5/bQHZ9H8pkaW8kPP2EwuSoPPFVPnf4tizH?=
- =?us-ascii?Q?wlmT9ul0MCgxxVywZ4NBgWc8dqe2dwRd7raDDW3fBdbXMPmzrst+3BNcYa3A?=
- =?us-ascii?Q?4Iw+UZ+wSrwjn1k7T2viNimNEBdGI4HVL9/F23dpdoI3FcBzF8RzlsVLKraV?=
- =?us-ascii?Q?3TGlat7r01O1+ctR3COU5OmKktF5te/eXgvQQEIBZhRs8emE1wz95uAQ+lIf?=
- =?us-ascii?Q?2AvAS/jHE3DGitn7/P4v1IrT9qhhMayRqZQBPsfe?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99266f42-a601-41c9-8822-08db2ec29dc2
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2023 12:56:00.9143
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Gd5Sgr/5vzAtHmng83V8GIe8QnrhZLGxKiymBBtzngaW8JwIyLB4dMa1va3dExRq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5131
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,SPF_HELO_PASS,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YQLQqB9CAzEyddzOJkKx3y268T7g-E313mDsjXVQRT0Dw@mail.gmail.com>
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 27, 2023 at 08:53:35PM +0800, xuhaoyue (A) wrote:
+On 26 Mar 08:34, Joel Fernandes wrote:
+>On Wed, Mar 15, 2023 at 2:19 PM Joel Fernandes (Google)
+><joel@joelfernandes.org> wrote:
+>>
+>> From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+>>
+>> The kfree_rcu() and kvfree_rcu() macros' single-argument forms are
+>> deprecated.  Therefore switch to the new kfree_rcu_mightsleep() and
+>> kvfree_rcu_mightsleep() variants. The goal is to avoid accidental use
+>> of the single-argument forms, which can introduce functionality bugs in
+>> atomic contexts and latency bugs in non-atomic contexts.
+>
+>In a world where patches anxiously await their precious Ack, could
+>today be our lucky day on this one?
+>
+>We need Acks to take this in for 6.4. David? Others?
+>
 
-> >>  static void hns_roce_write512(uint64_t *dest, uint64_t *val)
-> >>  {
-> >>  	mmio_memcpy_x64(dest, val, sizeof(struct hns_roce_rc_sq_wqe));
-> >> @@ -314,7 +319,10 @@ static void hns_roce_write_dwqe(struct hns_roce_qp *qp, void *wqe)
-> >>  	hr_reg_write(rc_sq_wqe, RCWQE_DB_SL_H, qp->sl >> HNS_ROCE_SL_SHIFT);
-> >>  	hr_reg_write(rc_sq_wqe, RCWQE_WQE_IDX, qp->sq.head);
-> >>  
-> >> -	hns_roce_write512(qp->sq.db_reg, wqe);
-> >> +	if (qp->flags & HNS_ROCE_QP_CAP_SVE_DIRECT_WQE)
-> > 
-> > Why do you need a device flag here?
-> 
-> Our CPU die can support NEON instructions and SVE instructions,
-> but some CPU dies only have SVE instructions that can accelerate our direct WQE performance.
-> Therefore, we need to add such a flag bit to distinguish.
+For mlx5 usually me, but since this is a larger series that is not mlx5
+centric and targeting multiple tree, I really don't know which subsystem
+you should be targeting.. for netdev submissions you need to specify the
+targeted branch e.g. [PATCH v2 net-next 06/14] ... 
 
-NEON vs SVE is available to userspace already, it shouldn't come
-throuhg a driver flag. You need another reason to add this flag
 
-The userspace should detect the right instruction to use based on the
-cpu flags using the attribute stuff I pointed you at
+FWIW:
 
-Jason
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+
+
+> - Joel
+>
+>
+>>
+>> Cc: Ariel Levkovich <lariel@nvidia.com>
+>> Cc: Saeed Mahameed <saeedm@nvidia.com>
+>> Cc: Vlad Buslov <vladbu@nvidia.com>
+>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>> ---
+>>  drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c  | 2 +-
+>>  drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c | 4 ++--
+>>  2 files changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c
+>> index ca834bbcb44f..8afcec0c5d3c 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c
+>> @@ -242,7 +242,7 @@ mlx5e_int_port_remove(struct mlx5e_tc_int_port_priv *priv,
+>>                 mlx5_del_flow_rules(int_port->rx_rule);
+>>         mapping_remove(ctx, int_port->mapping);
+>>         mlx5e_int_port_metadata_free(priv, int_port->match_metadata);
+>> -       kfree_rcu(int_port);
+>> +       kfree_rcu_mightsleep(int_port);
+>>         priv->num_ports--;
+>>  }
+>>
+>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+>> index 08d0929e8260..b811dad7370a 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+>> @@ -670,7 +670,7 @@ static int mlx5e_macsec_del_txsa(struct macsec_context *ctx)
+>>
+>>         mlx5e_macsec_cleanup_sa(macsec, tx_sa, true);
+>>         mlx5_destroy_encryption_key(macsec->mdev, tx_sa->enc_key_id);
+>> -       kfree_rcu(tx_sa);
+>> +       kfree_rcu_mightsleep(tx_sa);
+>>         macsec_device->tx_sa[assoc_num] = NULL;
+>>
+>>  out:
+>> @@ -849,7 +849,7 @@ static void macsec_del_rxsc_ctx(struct mlx5e_macsec *macsec, struct mlx5e_macsec
+>>         xa_erase(&macsec->sc_xarray, rx_sc->sc_xarray_element->fs_id);
+>>         metadata_dst_free(rx_sc->md_dst);
+>>         kfree(rx_sc->sc_xarray_element);
+>> -       kfree_rcu(rx_sc);
+>> +       kfree_rcu_mightsleep(rx_sc);
+>>  }
+>>
+>>  static int mlx5e_macsec_del_rxsc(struct macsec_context *ctx)
+>> --
+>> 2.40.0.rc1.284.g88254d51c5-goog
+>>
