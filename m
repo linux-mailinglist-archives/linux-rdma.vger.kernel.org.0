@@ -2,41 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7666CB885
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Mar 2023 09:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893DD6CBCE4
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Mar 2023 12:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbjC1Hrk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Mar 2023 03:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
+        id S230052AbjC1Kwz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Mar 2023 06:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232303AbjC1Hrf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Mar 2023 03:47:35 -0400
-Received: from mail.lokoho.com (mail.lokoho.com [217.61.105.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AEA4202
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Mar 2023 00:47:34 -0700 (PDT)
-Received: by mail.lokoho.com (Postfix, from userid 1001)
-        id B9BD484606; Tue, 28 Mar 2023 08:46:04 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lokoho.com; s=mail;
-        t=1679989567; bh=Z0N5VlX9/JlryGOL5I747Le9USomZJCRNNGRT3LbbKc=;
-        h=Date:From:To:Subject:From;
-        b=SACuBnPRNvFglGF33zNop3jp0QC5dLoS2L9/ANKhqG8qmiv7p+6LFI/nrqU1WENps
-         VIV3VGmVT71hcIg15G+7zKnYYQV7ePQZJa0qs1Q6Usb+ilmv+/IKNE/0T0mCa3jVX8
-         Oc7OUHYmaslZi0p/yfZvkGt4s6/xJYuMp1lnnPKrArJip23AjvAn8jKDwk+5HrSMs5
-         iB6pHip0HD9G+gX94dse1wXXY0Ig9ORyKF4wzBRuP3Ng635g7/mXv3whHtP9H/qf7L
-         YQM80YLy6bfQCph6fUgixcDX7a8cFSRFnaG/wiH3uGM0uzbh0KJMxIcYeSdGFoRw5z
-         6xj1HGQWuzlPw==
-Received: by mail.lokoho.com for <linux-rdma@vger.kernel.org>; Tue, 28 Mar 2023 07:45:59 GMT
-Message-ID: <20230328074501-0.1.4x.1n0eh.0.ngf7vjo1ml@lokoho.com>
-Date:   Tue, 28 Mar 2023 07:45:59 GMT
-From:   "Adam Charachuta" <adam.charachuta@lokoho.com>
-To:     <linux-rdma@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-X-Mailer: mail.lokoho.com
+        with ESMTP id S230403AbjC1Kwt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Mar 2023 06:52:49 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30B6618A
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Mar 2023 03:52:47 -0700 (PDT)
+Received: from fsav413.sakura.ne.jp (fsav413.sakura.ne.jp [133.242.250.112])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 32SAqWcb059087;
+        Tue, 28 Mar 2023 19:52:32 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav413.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav413.sakura.ne.jp);
+ Tue, 28 Mar 2023 19:52:32 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav413.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 32SAqW6J059079
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 28 Mar 2023 19:52:32 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <0e031582-aed6-58ee-3477-6d787f06560a@I-love.SAKURA.ne.jp>
+Date:   Tue, 28 Mar 2023 19:52:32 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Content-Language: en-US
+To:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Ursula Braun <ubraun@linux.ibm.com>
+Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH] RDMA: don't ignore client->add() failures
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,19 +51,46 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dzie=C5=84 dobry,
+syzbot is reporting refcount leak when client->add() from
+add_client_context() fails, for commit 11a0ae4c4bff ("RDMA: Allow
+ib_client's to fail when add() is called") for unknown reason ignores
+error from client->add(). We need to return an error in order to indicate
+that client could not be added, otherwise the caller will get confused.
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+Reported-by: syzbot <syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com>
+Link: https://syzkaller.appspot.com/bug?extid=5e70d01ee8985ae62a3b
+Fixes: 11a0ae4c4bff ("RDMA: Allow ib_client's to fail when add() is called")
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ drivers/infiniband/core/device.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
-
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
-
-
-Pozdrawiam
-Adam Charachuta
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index a666847bd714..c72f810ceae1 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -718,17 +718,17 @@ static int add_client_context(struct ib_device *device,
+ 		goto out;
+ 	downgrade_write(&device->client_data_rwsem);
+ 	if (client->add) {
+-		if (client->add(device)) {
++		ret = client->add(device);
++		if (ret) {
+ 			/*
+-			 * If a client fails to add then the error code is
+-			 * ignored, but we won't call any more ops on this
+-			 * client.
++			 * If a client fails to add, we won't call any more
++			 * ops on this client.
+ 			 */
+ 			xa_erase(&device->client_data, client->client_id);
+ 			up_read(&device->client_data_rwsem);
+ 			ib_device_put(device);
+ 			ib_client_put(client);
+-			return 0;
++			return ret;
+ 		}
+ 	}
+ 
+-- 
+2.18.4
