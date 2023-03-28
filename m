@@ -2,315 +2,246 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8C36CBF9B
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Mar 2023 14:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB7C6CC41E
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Mar 2023 17:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbjC1Mrs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Mar 2023 08:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
+        id S233712AbjC1PAN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Mar 2023 11:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbjC1Mrq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Mar 2023 08:47:46 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2130.outbound.protection.outlook.com [40.107.215.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C695AAD30;
-        Tue, 28 Mar 2023 05:47:26 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kkci1T1FNw/lxH+0JGEPOB49IZOTGal/hK95DN9zte5VRQaTziXNZscUtOSDtHfgCKQa8y+1r7GsLb5fU6h2SZyMNwFvlH3HHMGOCPffxw6+pDau2MlC761U6Cg5+wEhtvHiS/I/KdF1JTyvwRWHC5ujFYBFrSN1RL6i5SWytAyCkHsnLzhl45BuloZbKM3f1F/PUWFwNz4yvvlc3oOPR94QrGO6jRw72ZW6nR9bUDLFOePAOvOZkW1XIckbVwfPpeptzc45QdEurfdMc7KDoct7mIwA9JLUuFR5VI2BfiKmpPnCsSsPUg2XnO3q4WDED9TV1BCTKLJx2oVvDDWbGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2///radriASgoMMVoBruNQdwW0R9yiuSvMrK8QDhYdY=;
- b=QAhR4izeyPR/I+ocv5kgjH3gpfjqlTaWNHPaf5/qdLncs8yuQPK8T6tNjjIEcFNMWRlxKWdXasrrJR1/0Pv6E8g94wHU/ed4kzsrG0yUwSTm6by/EwA+GvbnGDgE28ITfSgH9L9rfsZFRNvRpjJC5oJfSjSvRXZfp3iGqJGIUsYIt0iT0/OtdcKuNSFCDjei8vXahDoraetQQBCZUfdSMUG4f9h+dsSRCWEM8yMWXHsS98RGLezo6MtWcuPRDZYcwrtDh7jnQzdQtp3J+Yz5Rqe0qaJafFcL8Mi4yO3Ze6KYlK7zLQBX9EbaeU4XtOlKxAbzuWO8RHxt/BknvtYTfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2///radriASgoMMVoBruNQdwW0R9yiuSvMrK8QDhYdY=;
- b=TCZ/K8Z8lrAwRvXN5ZdfacGR30LwUGvPgbA+qR5k852HvFkCYnlZ2H8NLB0PMzWnV/lNnRdoaZKJ+posKa4EpEyzDOIaM0x9Sh/dPjrvSKkzmEbGYN4O2b1nFFsGlZZcmIBMAaWbBElCCaQxY8w3Re6PkWlF280bRXmmwQWBZWw=
-Received: from SI2P153MB0441.APCP153.PROD.OUTLOOK.COM (2603:1096:4:fc::7) by
- SEZP153MB0693.APCP153.PROD.OUTLOOK.COM (2603:1096:101:90::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6277.7; Tue, 28 Mar 2023 12:46:51 +0000
-Received: from SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
- ([fe80::9544:9f03:90e7:b2cb]) by SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
- ([fe80::9544:9f03:90e7:b2cb%5]) with mapi id 15.20.6277.006; Tue, 28 Mar 2023
- 12:46:50 +0000
-From:   Wei Hu <weh@microsoft.com>
-To:     Dexuan Cui <decui@microsoft.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jake Oshins <jakeo@microsoft.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, "kw@linux.com" <kw@linux.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "saeedm@nvidia.com" <saeedm@nvidia.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH 4/6] Revert "PCI: hv: Fix a timing issue which causes
- kdump to fail occasionally"
-Thread-Topic: [PATCH 4/6] Revert "PCI: hv: Fix a timing issue which causes
- kdump to fail occasionally"
-Thread-Index: AQHZYTE02QJw3cJyrE2OQ7EX2SDB268Pu6LwgABofbA=
-Date:   Tue, 28 Mar 2023 12:46:49 +0000
-Message-ID: <SI2P153MB0441C7535564992D4972F786BB889@SI2P153MB0441.APCP153.PROD.OUTLOOK.COM>
-References: <20230328045122.25850-1-decui@microsoft.com>
- <20230328045122.25850-5-decui@microsoft.com>
- <SA1PR21MB13356A77700580DF0C742856BF889@SA1PR21MB1335.namprd21.prod.outlook.com>
-In-Reply-To: <SA1PR21MB13356A77700580DF0C742856BF889@SA1PR21MB1335.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=6f6d75c5-e156-425e-9f36-09272bf9a5a0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-03-28T06:32:03Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SI2P153MB0441:EE_|SEZP153MB0693:EE_
-x-ms-office365-filtering-correlation-id: 64424f59-6b04-4aa8-68fc-08db2f8a7fd4
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uZe1jlk1EGg6wCMPv88HonYCT2NQkJvVpBkPEUO4QuezRNfag7PryMpV/0xE2/Lpn4B5KfRjf4A2m1CgLTZ3jjRS1ZaErEqebCW2bfKYPVZJPPa9ngEr46Ia31kJt7RHcvr62MEywQwvlG61P1l7AmboS0JCjPbuQbjNHyY907WlO+HiMAhHc5fKViuPfQ1Kg4hG7b9n2OGBS3jH2406W4CoUqwzGb/hDW9x5/jw5G3Jtdfd1kVLV46stROjhbuR+DKudHb1XorUKJMEbR/NQIQ/cSEZCxIp+3tlGrhjK4knJYJWbnVX08j9J4+EUB7unIO07cZj5d8YB+te/T0PO+MdlZfl42OpCjAxHdxC1Fj7P88/u3MZ+Ob/xe7L0aopm8KQ+tu59t81f9TVowFETNooXivkXQo4O/5QzC0CNpjxCrvwhE7mONmpN3H1Er/GEBFl/Zu2TGgafoZRC43bQFd7KYNfO4S60Ewxg5gGZfKllt64HbrPRVVccZLOTQL5EL4Vf3b30rGWyCjCnQfu5wdiUWhEp7ik5M4sAEL+8EQX4Hw31RmNejb5Nq7L96zuZFHtxyFIUCefTqQPDCUXzLfM2z5vxWTgSIVt08fRAqpxKKJR2ct2MI16f0ajn8e77nJGxh534OYQaH9NrC1QJynClgAQ9arwMfATI669V4+xAwf4RmCpfI8L6zZ8UMOv
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:cs;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2P153MB0441.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(451199021)(41300700001)(76116006)(64756008)(66446008)(66476007)(8676002)(66556008)(66946007)(4326008)(186003)(2906002)(8990500004)(7416002)(5660300002)(83380400001)(38100700002)(38070700005)(86362001)(82950400001)(82960400001)(921005)(122000001)(33656002)(55016003)(52536014)(8936002)(10290500003)(478600001)(54906003)(7696005)(71200400001)(53546011)(9686003)(6506007)(110136005)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UbGhhXW0xbmjKXDWPbZ7c7/IN4iUkBXKamgpfTxmgHOwTiLqmRdHqJitxBRj?=
- =?us-ascii?Q?HXgcF7BdYbBLONw05dHDdkVy12tyHBIHN6Oczt7bqYDWx4QAsKqzIx6c6ncJ?=
- =?us-ascii?Q?+wfmXI+8P2LS6QfpxJtT3vey7m9COByqEL/tg/u/ztNFkweC5ZyRmcczjk8p?=
- =?us-ascii?Q?HU+S9SoD4NKCamW/RepVR3e1H8ZSpuDa4IIRZmMqtfgvWpI5Rx0wB1BY386v?=
- =?us-ascii?Q?v9AIoGEM+NuUJ5WZnIatHr4CZwq+30W1Zu3NqHvPrh7rViiGYPAq9EuzRbdB?=
- =?us-ascii?Q?WKenQwXbnmGPDCxvfUZn6Fh7KG/DrWX9mf2KPjQgGiyHE/eWJON91yKacSjZ?=
- =?us-ascii?Q?L/LcBxcX/NiAQxp7YHOq0522GTUpVhuyxdwEe59CrEKNbdAiSfmf4ZLw1c9U?=
- =?us-ascii?Q?XU0QAcLIToM5ls90aM2MdZaw8DcGOAuwbLHs6JIGJuPGSVDOQcDIa2Vau2Qt?=
- =?us-ascii?Q?RqK5EIZfL6Vi7kdJBsfN4QSssZvc/Ll2gK4Xt2aUZGTVJC/xwOqiS2BudDpg?=
- =?us-ascii?Q?5APpah5STN3U+A7+4k5xgKaTH+zGfyvVRgocAMaWfeMBVDNdEGp9B3boVNPH?=
- =?us-ascii?Q?zqBXFp2qpIpUiScJfEbUm6v3DIOybcyCbzmzdEvqkq4EHigijmL2x6nkMlne?=
- =?us-ascii?Q?wuUBGRlx18f3KMAEhpik/rwS9EZsbLQ8B5htEX+HBGVR5wNGtAnvb//9lnww?=
- =?us-ascii?Q?uQJFhK0NI2PWLt/JE+TjTKuz6+DzamBdQCMnw6WY6aUpmMm2afo0BtQoDrPM?=
- =?us-ascii?Q?Ih02hP3pKzNczECvkcfzt/13fdmj0K9Zwd4/1Cbk6fxtwJjpQexPNhfs2zjW?=
- =?us-ascii?Q?rTYbTvic3lAIGG48Yqv//QS9Dks1F5Hmq/hG3qIXLX01r75/2ve23IdMCclY?=
- =?us-ascii?Q?eQpum3TxAEJhIaKs3BeNLQt0A3A8z6MiWV0642zb11PLgCUhaR+Fcb5366kX?=
- =?us-ascii?Q?8NHj0hD2aNoM+5S4Q/KpJ2GkKgMFC5vpA945NWYUyxzQdkiyk4sfUB3MKFvk?=
- =?us-ascii?Q?dnUoLBvfZssjVpYHYg8Ig2YaY821M9RM+Icbzdeaus1HmfGeghgU/OKpT1vK?=
- =?us-ascii?Q?5wXLA2mHKQTLn0C4ZiuyAya191gtpoCPelpsFiUMe1g5FV44IBARVC2CE86+?=
- =?us-ascii?Q?VVlrhtVKdD16jLprqcEpFzMgsOouZbNeWWz1UvX04j4BWsk9gZoQh/lmkHpM?=
- =?us-ascii?Q?w7B+10b1mt3TOenjPIFvGmQG5ZkvYDG2I0vSPIk/cElUSg27KLN0RMsuzwqq?=
- =?us-ascii?Q?IGfIP4X2ZOBGJUnqRgzpCrwt4FuHCKOMPxERRAz3oSuagtfH1g27Y801/sk1?=
- =?us-ascii?Q?MYavE9Wv1IpdoBgLmmt4CvdB7vpKzRyKXKRm1ezz72nyU96eU0Ed4RvmyHZ5?=
- =?us-ascii?Q?2p8lNeq/LlWC+Zf8o/jxl+l00FrYDFK8ShwsKncM4BRkuReJXZVCABD2h6AR?=
- =?us-ascii?Q?g18T5LJhrVb8I/IFwwSSdqXKbQBWLvClNRMdU14TghDtIABHPr1GaLEEo4aT?=
- =?us-ascii?Q?HY8RNBSyBOON2maVXFvLL+6afFEIZxzN+9qfXKVofOBQfKvlK4iHzLvrxT4o?=
- =?us-ascii?Q?7jH0zZOOQyYkya7LD4DI68RSdZF89qDi8FdTn3/OGT6DhzjrR4UJNaHXZDLQ?=
- =?us-ascii?Q?Xw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S233751AbjC1PAC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Mar 2023 11:00:02 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7352FEB5E
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Mar 2023 07:59:56 -0700 (PDT)
+Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 32SExm54016651;
+        Tue, 28 Mar 2023 23:59:48 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
+ Tue, 28 Mar 2023 23:59:48 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 32SExmha016648
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 28 Mar 2023 23:59:48 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <ec025592-3390-cf4f-ed03-c3c6c43d9310@I-love.SAKURA.ne.jp>
+Date:   Tue, 28 Mar 2023 23:59:48 +0900
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64424f59-6b04-4aa8-68fc-08db2f8a7fd4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2023 12:46:49.9080
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aF4IIZTqsSDal1mP/OAB7XR4GpYAS2X+ZBx4JiaG6o6Hs62EuGW1sZA5J2XfY9MSqEoOYGN6U/QiW2VZy3aHFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZP153MB0693
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] RDMA: don't ignore client->add() failures
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Ursula Braun <ubraun@linux.ibm.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+References: <0e031582-aed6-58ee-3477-6d787f06560a@I-love.SAKURA.ne.jp>
+ <ZCLOYznKQQKfoqzI@ziepe.ca>
+ <a9960371-ef94-de6e-466f-0922a5e3acf3@I-love.SAKURA.ne.jp>
+ <ZCLQ0XVSKVHV1MB2@ziepe.ca>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <ZCLQ0XVSKVHV1MB2@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.0 required=5.0 tests=NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 2023/03/28 20:34, Jason Gunthorpe wrote:
+> On Tue, Mar 28, 2023 at 08:33:21PM +0900, Tetsuo Handa wrote:
+>> On 2023/03/28 20:24, Jason Gunthorpe wrote:
+>>> On Tue, Mar 28, 2023 at 07:52:32PM +0900, Tetsuo Handa wrote:
+>>>> syzbot is reporting refcount leak when client->add() from
+>>>> add_client_context() fails, for commit 11a0ae4c4bff ("RDMA: Allow
+>>>> ib_client's to fail when add() is called") for unknown reason ignores
+>>>> error from client->add(). We need to return an error in order to indicate
+>>>> that client could not be added, otherwise the caller will get confused.
+>>>>
+>>>> Reported-by: syzbot <syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com>
+>>>> Link: https://syzkaller.appspot.com/bug?extid=5e70d01ee8985ae62a3b
+>>>> Fixes: 11a0ae4c4bff ("RDMA: Allow ib_client's to fail when add() is called")
+>>>> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>>>> ---
+>>>>  drivers/infiniband/core/device.c | 10 +++++-----
+>>>>  1 file changed, 5 insertions(+), 5 deletions(-)
+>>>
+>>> This doesn't make any sense, you need to explain what "caller will get
+>>> confused" actually means
+>>
+>> The caller cannot perform cleanup upon error, which in turn manifests as
+>> "unregister_netdevice: waiting for DEV to become free" message.
+>> Please check https://lkml.kernel.org/r/710ef3ef-cd0a-5630-a68f-628d123180bf@I-love.SAKURA.ne.jp .
+> 
+> Describe exactly where the "cannot perform cleanup upon error" is.
+> 
 
+Here is a debug printk() patch for explanation.
+----------------------------------------
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index a666847bd714..2b9fc90d5cc4 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1327,15 +1327,21 @@ static int enable_device_and_get(struct ib_device *device)
+ 			goto out;
+ 	}
+ 
++	pr_info("before add_client_context() loop: device=%p usage=%d\n", device, refcount_read(&device->refcount));
++	ret = 0;
+ 	down_read(&clients_rwsem);
+ 	xa_for_each_marked (&clients, index, client, CLIENT_REGISTERED) {
+-		ret = add_client_context(device, client);
+-		if (ret)
+-			break;
++		const int ret2 = add_client_context(device, client);
++		pr_info("add_client_context()=%d\n", ret2);
++		if (!ret)
++			ret = ret2;
+ 	}
+ 	up_read(&clients_rwsem);
+-	if (!ret)
++	pr_info("after add_client_context() loop: ret=%d device=%p usage=%d\n", ret, device, refcount_read(&device->refcount));
++	if (!ret) {
+ 		ret = add_compat_devs(device);
++	}
++	pr_info("return from add_client_context(): ret=%d device=%p usage=%d\n", ret, device, refcount_read(&device->refcount));
+ out:
+ 	up_read(&devices_rwsem);
+ 	return ret;
+@@ -1417,7 +1423,9 @@ int ib_register_device(struct ib_device *device, const char *name,
+ 		goto dev_cleanup;
+ 	}
+ 
++	pr_info("before0: device=%p usage=%d\n", device, refcount_read(&device->refcount));
+ 	ret = enable_device_and_get(device);
++	pr_info("after0: ret=%d device=%p usage=%d\n", ret, device, refcount_read(&device->refcount));
+ 	if (ret) {
+ 		void (*dealloc_fn)(struct ib_device *);
+ 
+@@ -1435,7 +1443,9 @@ int ib_register_device(struct ib_device *device, const char *name,
+ 		dealloc_fn = device->ops.dealloc_driver;
+ 		device->ops.dealloc_driver = prevent_dealloc_device;
+ 		ib_device_put(device);
++		pr_info("after1: device=%p usage=%d\n", device, refcount_read(&device->refcount));
+ 		__ib_unregister_device(device);
++		pr_info("after2: device=%p usage=%d\n", device, refcount_read(&device->refcount));
+ 		device->ops.dealloc_driver = dealloc_fn;
+ 		dev_set_uevent_suppress(&device->dev, false);
+ 		return ret;
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index dacc174604bf..bc353b254257 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -519,7 +519,9 @@ static int siw_newlink(const char *basedev_name, struct net_device *netdev)
+ 		else
+ 			sdev->state = IB_PORT_DOWN;
+ 
++		pr_info("before siw_device_register(): device=%p usage=%d\n", &sdev->base_dev, refcount_read(&sdev->base_dev.refcount));
+ 		rv = siw_device_register(sdev, basedev_name);
++		pr_info("after siw_device_register(): rv=%d device=%p usage=%d\n", rv, &sdev->base_dev, refcount_read(&sdev->base_dev.refcount));
+ 		if (rv)
+ 			ib_dealloc_device(&sdev->base_dev);
+ 	}
+----------------------------------------
 
-> -----Original Message-----
-> From: Dexuan Cui <decui@microsoft.com>
-> Sent: Tuesday, March 28, 2023 2:33 PM
-> To: bhelgaas@google.com; davem@davemloft.net; edumazet@google.com;
-> Haiyang Zhang <haiyangz@microsoft.com>; Jake Oshins
-> <jakeo@microsoft.com>; kuba@kernel.org; kw@linux.com; KY Srinivasan
-> <kys@microsoft.com>; leon@kernel.org; linux-pci@vger.kernel.org;
-> lpieralisi@kernel.org; Michael Kelley (LINUX) <mikelley@microsoft.com>;
-> pabeni@redhat.com; robh@kernel.org; saeedm@nvidia.com;
-> wei.liu@kernel.org; Long Li <longli@microsoft.com>; boqun.feng@gmail.com;
-> Wei Hu <weh@microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> rdma@vger.kernel.org; netdev@vger.kernel.org
-> Subject: RE: [PATCH 4/6] Revert "PCI: hv: Fix a timing issue which causes
-> kdump to fail occasionally"
->=20
-> > From: Dexuan Cui <decui@microsoft.com>
-> > Sent: Monday, March 27, 2023 9:51 PM
-> > To: bhelgaas@google.com; davem@davemloft.net; Dexuan Cui
-> > <decui@microsoft.com>; edumazet@google.com; Haiyang Zhang
-> > <haiyangz@microsoft.com>; Jake Oshins <jakeo@microsoft.com>;
-> > kuba@kernel.org; kw@linux.com; KY Srinivasan <kys@microsoft.com>;
-> > leon@kernel.org; linux-pci@vger.kernel.org; lpieralisi@kernel.org;
-> > Michael Kelley (LINUX) <mikelley@microsoft.com>; pabeni@redhat.com;
-> > robh@kernel.org; saeedm@nvidia.com; wei.liu@kernel.org; Long Li
-> > <longli@microsoft.com>; boqun.feng@gmail.com
-> > Cc: linux-hyperv@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > linux-rdma@vger.kernel.org; netdev@vger.kernel.org
-> > Subject: [PATCH 4/6] Revert "PCI: hv: Fix a timing issue which causes
-> > kdump to fail occasionally"
-> >
-> > This reverts commit d6af2ed29c7c1c311b96dac989dcb991e90ee195.
-> >
-> > The statement "the hv_pci_bus_exit() call releases structures of all
-> > its child devices" in commit d6af2ed29c7c is not true: in the path
-> > hv_pci_probe() -> hv_pci_enter_d0() -> hv_pci_bus_exit(hdev, true):
-> > the parameter "keep_devs" is true, so hv_pci_bus_exit() does *not*
-> > release the child "struct hv_pci_dev *hpdev" that is created earlier
-> > in
-> > pci_devices_present_work() -> new_pcichild_device().
-> >
-> > The commit d6af2ed29c7c was originally made in July 2020 for RHEL 7.7,
-> > where the old version of hv_pci_bus_exit() was used; when the commit
-> > was rebased and merged into the upstream, people didn't notice that
-> > it's not really necessary. The commit itself doesn't cause any issue,
-> > but it makes hv_pci_probe() more complicated. Revert it to facilitate
-> > some upcoming changes to hv_pci_probe().
-> >
-> > Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> > ---
-> >  drivers/pci/controller/pci-hyperv.c | 71
-> > ++++++++++++++---------------
-> >  1 file changed, 34 insertions(+), 37 deletions(-)
-> >
-> > diff --git a/drivers/pci/controller/pci-hyperv.c
-> > b/drivers/pci/controller/pci-hyperv.c
-> > index 46df6d093d68..48feab095a14 100644
-> > --- a/drivers/pci/controller/pci-hyperv.c
-> > +++ b/drivers/pci/controller/pci-hyperv.c
-> > @@ -3225,8 +3225,10 @@ static int hv_pci_enter_d0(struct hv_device
-> *hdev)
-> >  	struct pci_bus_d0_entry *d0_entry;
-> >  	struct hv_pci_compl comp_pkt;
-> >  	struct pci_packet *pkt;
-> > +	bool retry =3D true;
-> >  	int ret;
-> >
-> > +enter_d0_retry:
-> >  	/*
-> >  	 * Tell the host that the bus is ready to use, and moved into the
-> >  	 * powered-on state.  This includes telling the host which region @@
-> > -3253,6 +3255,38 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
-> >  	if (ret)
-> >  		goto exit;
-> >
-> > +	/*
-> > +	 * In certain case (Kdump) the pci device of interest was
-> > +	 * not cleanly shut down and resource is still held on host
-> > +	 * side, the host could return invalid device status.
-> > +	 * We need to explicitly request host to release the resource
-> > +	 * and try to enter D0 again.
-> > +	 */
-> > +	if (comp_pkt.completion_status < 0 && retry) {
-> > +		retry =3D false;
-> > +
-> > +		dev_err(&hdev->device, "Retrying D0 Entry\n");
-> > +
-> > +		/*
-> > +		 * Hv_pci_bus_exit() calls hv_send_resource_released()
-> > +		 * to free up resources of its child devices.
-> > +		 * In the kdump kernel we need to set the
-> > +		 * wslot_res_allocated to 255 so it scans all child
-> > +		 * devices to release resources allocated in the
-> > +		 * normal kernel before panic happened.
-> > +		 */
-> > +		hbus->wslot_res_allocated =3D 255;
-> > +
-> > +		ret =3D hv_pci_bus_exit(hdev, true);
-> > +
-> > +		if (ret =3D=3D 0) {
-> > +			kfree(pkt);
-> > +			goto enter_d0_retry;
-> > +		}
-> > +		dev_err(&hdev->device,
-> > +			"Retrying D0 failed with ret %d\n", ret);
-> > +	}
-> > +
-> >  	if (comp_pkt.completion_status < 0) {
-> >  		dev_err(&hdev->device,
-> >  			"PCI Pass-through VSP failed D0 Entry with
-> status %x\n", @@
-> > -3493,7 +3527,6 @@ static int hv_pci_probe(struct hv_device *hdev,
-> >  	struct hv_pcibus_device *hbus;
-> >  	u16 dom_req, dom;
-> >  	char *name;
-> > -	bool enter_d0_retry =3D true;
-> >  	int ret;
-> >
-> >  	/*
-> > @@ -3633,47 +3666,11 @@ static int hv_pci_probe(struct hv_device *hdev,
-> >  	if (ret)
-> >  		goto free_fwnode;
-> >
-> > -retry:
-> >  	ret =3D hv_pci_query_relations(hdev);
-> >  	if (ret)
-> >  		goto free_irq_domain;
-> >
-> >  	ret =3D hv_pci_enter_d0(hdev);
-> > -	/*
-> > -	 * In certain case (Kdump) the pci device of interest was
-> > -	 * not cleanly shut down and resource is still held on host
-> > -	 * side, the host could return invalid device status.
-> > -	 * We need to explicitly request host to release the resource
-> > -	 * and try to enter D0 again.
-> > -	 * Since the hv_pci_bus_exit() call releases structures
-> > -	 * of all its child devices, we need to start the retry from
-> > -	 * hv_pci_query_relations() call, requesting host to send
-> > -	 * the synchronous child device relations message before this
-> > -	 * information is needed in hv_send_resources_allocated()
-> > -	 * call later.
-> > -	 */
-> > -	if (ret =3D=3D -EPROTO && enter_d0_retry) {
-> > -		enter_d0_retry =3D false;
-> > -
-> > -		dev_err(&hdev->device, "Retrying D0 Entry\n");
-> > -
-> > -		/*
-> > -		 * Hv_pci_bus_exit() calls hv_send_resources_released()
-> > -		 * to free up resources of its child devices.
-> > -		 * In the kdump kernel we need to set the
-> > -		 * wslot_res_allocated to 255 so it scans all child
-> > -		 * devices to release resources allocated in the
-> > -		 * normal kernel before panic happened.
-> > -		 */
-> > -		hbus->wslot_res_allocated =3D 255;
-> > -		ret =3D hv_pci_bus_exit(hdev, true);
-> > -
-> > -		if (ret =3D=3D 0)
-> > -			goto retry;
-> > -
-> > -		dev_err(&hdev->device,
-> > -			"Retrying D0 failed with ret %d\n", ret);
-> > -	}
-> >  	if (ret)
-> >  		goto free_irq_domain;
-> >
-> > --
-> > 2.25.1
+Without this patch, __ib_unregister_device(device) is not called because
+enable_device_and_get() returns 0 because add_client_context() returns 0
+because add_client_context() ignores client->add() faiulures. As a result,
+device's refcount remains 7, which later prevents unregister_netdevice()
+ from unregistering this device.
+----------------------------------------
+[   32.366225][ T3491] netdevsim netdevsim0 netdevsim0: set [1, 0] type 2 family 0 port 6081 - 0
+[   32.369414][ T3491] netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+[   32.372875][ T3491] netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+[   32.376025][ T3491] netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+[   32.390366][   T22] IPv6: ADDRCONF(NETDEV_CHANGE): veth1_to_batadv: link becomes ready
+[   32.394826][ T3491] before siw_device_register(): device=ffff888108206000 usage=0
+[   32.397861][ T3491] before0: device=ffff888108206000 usage=0
+[   32.400057][ T3491] before add_client_context() loop: device=ffff888108206000 usage=2
+[   32.407313][ T3491] add_client_context()=0
+[   32.409077][ T3491] add_client_context()=0
+[   32.411592][ T3491] add_client_context()=0
+[   32.413276][ T3491] add_client_context()=0
+[   32.414931][ T3491] add_client_context()=0
+[   32.416596][ T3491] add_client_context()=0
+[   32.418288][ T3491] iwpm_register_pid: Unable to send a nlmsg (client = 2)
+[   32.423042][ T3491] infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
+[   32.425622][ T3491] add_client_context()=0
+[   32.428176][ T3491] add_client_context()=0
+[   32.429835][ T3491] add_client_context()=0
+[   32.435844][ T3491] add_client_context()=0
+[   32.438270][ T3491] add_client_context()=0
+[   32.439967][ T3491] add_client_context()=0
+[   32.441667][ T3491] add_client_context()=0
+[   32.443575][ T3491] add_client_context()=0
+[   32.445507][ T3491] add_client_context()=0
+[   32.447142][ T3491] after add_client_context() loop: ret=0 device=ffff888108206000 usage=8
+[   32.450930][ T3491] return from add_client_context(): ret=0 device=ffff888108206000 usage=8
+[   32.454207][ T3491] after0: ret=0 device=ffff888108206000 usage=8
+[   32.456541][ T3491] after siw_device_register(): rv=0 device=ffff888108206000 usage=7
+[  172.605175][ T3491] unregister_netdevice: waiting for vlan0 (ffff8881075ba000) to become free. Usage count = 2
+[  172.634645][ T3491] leaked reference.
+[  172.645548][ T3491]  ib_device_set_netdev+0x20c/0x3e0
+[  172.651096][ T3491]  siw_newlink+0x2e0/0x540
+[  172.659445][ T3491]  nldev_newlink+0x31f/0x3c0
+[  172.666976][ T3491]  rdma_nl_rcv+0x379/0x4a0
+[  172.683027][ T3491]  netlink_unicast+0x3b8/0x480
+[  172.693245][ T3491]  netlink_sendmsg+0x574/0x660
+[  172.702226][ T3491]  ____sys_sendmsg+0x2b7/0x3d0
+[  172.715316][ T3491]  __sys_sendmsg+0x352/0x3c0
+[  172.740055][ T3491]  do_syscall_64+0x41/0x90
+[  172.788179][ T3491]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+----------------------------------------
 
-Looks good to me. Thanks for fixing this.
+With this patch, __ib_unregister_device(device) is called because
+enable_device_and_get() returns error because add_client_context() returns error
+because add_client_context() does not ignore client->add() faiulures. As a result,
+device's refcount properly drops to 0, which allows unregister_netdevice() to
+unregister this device.
+----------------------------------------
+[   26.351298][ T3504] netdevsim netdevsim0 netdevsim0: set [1, 0] type 2 family 0 port 6081 - 0
+[   26.373714][ T3504] netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+[   26.376967][ T3504] netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+[   26.380105][ T3504] netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+[   26.383755][  T160] IPv6: ADDRCONF(NETDEV_CHANGE): veth1_to_batadv: link becomes ready
+[   26.396376][ T3504] before siw_device_register(): device=ffff8880075fc000 usage=0
+[   26.402221][ T3504] before0: device=ffff8880075fc000 usage=0
+[   26.404461][ T3504] before add_client_context() loop: device=ffff8880075fc000 usage=2
+[   26.408205][ T3504] add_client_context()=-95
+[   26.416782][ T3504] add_client_context()=-95
+[   26.419042][ T3504] add_client_context()=-95
+[   26.420843][ T3504] add_client_context()=0
+[   26.422506][ T3504] add_client_context()=0
+[   26.424163][ T3504] add_client_context()=-95
+[   26.425958][ T3504] iwpm_register_pid: Unable to send a nlmsg (client = 2)
+[   26.428983][ T3504] infiniband syj1: RDMA CMA: cma_listen_on_dev, error -98
+[   26.431641][ T3504] add_client_context()=-98
+[   26.433457][ T3504] add_client_context()=-95
+[   26.435729][ T3504] add_client_context()=0
+[   26.438326][ T3504] add_client_context()=0
+[   26.439989][ T3504] add_client_context()=0
+[   26.441629][ T3504] add_client_context()=-95
+[   26.443411][ T3504] add_client_context()=0
+[   26.445082][ T3504] add_client_context()=-95
+[   26.446974][ T3504] add_client_context()=-95
+[   26.449578][ T3504] after add_client_context() loop: ret=-95 device=ffff8880075fc000 usage=8
+[   26.452833][ T3504] return from add_client_context(): ret=-95 device=ffff8880075fc000 usage=8
+[   26.456563][ T3504] after0: ret=-95 device=ffff8880075fc000 usage=8
+[   26.459548][ T3504] after1: device=ffff8880075fc000 usage=7
+[   26.462257][ T3504] after2: device=ffff8880075fc000 usage=0
+[   26.464377][ T3504] siw: device registration error -95
+[   26.466639][ T3504] after siw_device_register(): rv=-95 device=ffff8880075fc000 usage=0
+[   29.593478][  T821] netdevsim netdevsim0 netdevsim3 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+[   32.039458][  T821] netdevsim netdevsim0 netdevsim2 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+[   32.099082][  T821] netdevsim netdevsim0 netdevsim1 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+[   32.138972][  T821] netdevsim netdevsim0 netdevsim0 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+----------------------------------------
 
-Wei
