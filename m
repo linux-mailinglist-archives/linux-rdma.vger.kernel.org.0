@@ -2,68 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4826CF26B
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 20:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE14E6CF2C6
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 21:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbjC2SoS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Mar 2023 14:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48866 "EHLO
+        id S230119AbjC2TJV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Mar 2023 15:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbjC2SoR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 14:44:17 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467EC5FCB
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 11:44:16 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id r11so16734364wrr.12
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 11:44:16 -0700 (PDT)
+        with ESMTP id S230143AbjC2TJU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 15:09:20 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2807FCD
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 12:09:19 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id m6-20020a4ae846000000b0053b9059edd5so2603244oom.3
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 12:09:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680115454;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wzLiOvTFePp4SmkKVJ5FbHc01Qo7u4rWRNeReLelqTI=;
-        b=pTxqfza4OBIKfjURDbo87vmb7BsC+SOK0TkgTTGdPD2FYryzvu+Ja3pU4yGfpStWzV
-         JWC2wn9mLps4qYyZV8BthUA38WELw54mhTuy1aLV9CahwFC8rXXoLMGqeLavJh/iX4ST
-         gpu4mfJ7L3CgS01PqEVBqykiNJMhJMftZpAljimdSI12Imj6VEwHUh/LrNgGDMaqBRJh
-         kts8jWP5K102sQxx34lzHXY/m93+LaJh5Cdc6tsABl+FI8AO7VW/H+foAouvq/DwFf4C
-         Z8Q47mpkgpfkx40wKBvj1e1TCc54LGzvCRL1aQM69eAIth50ucxYG5LG1xT23fRRwPED
-         2dZA==
+        d=gmail.com; s=20210112; t=1680116958;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iTRImo5FJXrdtvjFg6pDeFus6BeQJR21d5ZrCiNDziU=;
+        b=XhBzeHqUwmzCGKMpRHKbEWiAsUAO+ENUWLySfDhHetcMoAFE2C1zvxZlBlGL4apiqI
+         m4U2tdp+zO2CjuB4GXrifWMl/Rm5gAQL/xN/YJKvOCcB3DPVtKXWkguscLf+DWncEeYI
+         mR9yYFF1GTcmbHiCwCctL09HFoo1gdXShoetBMMWTOHdp9JXWhEHfb3Y6tgaKc793QhM
+         u99SqMIi4F7fYjCd6EbWRfm/B9gMgiZa+McpG11eDVsz/EGLJ+KpKjdzGo9O5t2VymXL
+         AVzPnFZzkF+dKjUlwxO0xMiWeflrhKDaUBmSyFpyXNo9ABmAp5q1Yp/opOrOgyzFi+xk
+         +KMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680115454;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wzLiOvTFePp4SmkKVJ5FbHc01Qo7u4rWRNeReLelqTI=;
-        b=6rLmVjORrK4ZpsbTk0mKSQYUWIyNfe7w30sYzI923ctaRFJ8vcdiQpl73WLOB5Kst0
-         zYACAdPs3z/AAOteQxE9z09Y5O6JBQg2ujDoyqlS5fqQGxI1sGV/+NoEL+C0TevyClLM
-         YCf2EnwvqerySSMi0p2Dtae7iLDWfp/WeotwbtXhQIY6Rd8nlrZJ4PdaDSI1Wm/N6/r0
-         U3u8TEskA2dYFJwD5qPt+m1QZ7UmZm++wRDGR+i6jz2sAii+jpoU0lzlWEOLJUbAuYpH
-         cFbWRlQFvBMR76LeXZ55vFGoLZEcim/rlF0t9lvbV0Eux5LPZycbVWR+9yy+IhyKX/z6
-         ylFQ==
-X-Gm-Message-State: AAQBX9dfC8/HMfirQVxfQm7eHsarP2U/NCoqDQHRaV4YX5h/TvEy+e1s
-        ITXod5OpAcu47RPxa2yfuaM=
-X-Google-Smtp-Source: AKy350bhKw2wVhJlvN3FrA4Du1EBWvDZ95tnjtUvDM8iC1KY1nL7Zl8jWVdS/QjE0H5WwYvTDscJ0A==
-X-Received: by 2002:adf:e848:0:b0:2c7:fde:f7e0 with SMTP id d8-20020adfe848000000b002c70fdef7e0mr14876519wrn.65.1680115454529;
-        Wed, 29 Mar 2023 11:44:14 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id a7-20020a5d5087000000b002c55306f6edsm30780596wrt.54.2023.03.29.11.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 11:44:14 -0700 (PDT)
-Date:   Wed, 29 Mar 2023 21:44:09 +0300
-From:   Dan Carpenter <error27@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        linux-rdma@vger.kernel.org, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next] RDMA/rxe: Clean kzalloc failure paths
-Message-ID: <88b57490-4260-42f6-88e0-ff8a3d30ce51@kili.mountain>
-References: <d3cedf723b84e73e8062a67b7489d33802bafba2.1680113597.git.leon@kernel.org>
+        d=1e100.net; s=20210112; t=1680116958;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iTRImo5FJXrdtvjFg6pDeFus6BeQJR21d5ZrCiNDziU=;
+        b=MhBELbNAqDc12LGo5An7SFn2WtgiXLs2Ejrr+dHlPuXfc3e5oy3eCKWZIuJstinOMW
+         otlIQM+NHCjKmbbl3V6i3A3cJNTorPuHOzMEpP3uHY5gaa0tEYRvL6ebAfkL1QkwCoO3
+         T/F+AUzXUtPuHNvIC6VJ/8mIhVOOfd9GgaPb3W+jALvUrm48EmdZeiJGwlDMymIF0gY+
+         77OMWSS09G+TyV7XQ+20PfLP6NfKLRHegipHrvae6EiWK5E0U6cv2yCijxOag7rk7wb7
+         6Q8QOVtrH0fFvwSqzkTLXJZ6x2oTS5vX6mQuxxZb5Rxti6L55HrKpo1f+EvzRpVlx37z
+         Xw7A==
+X-Gm-Message-State: AO0yUKUyU5pP16v0Tb+MDGFFXz/7fzvCK31na1vv5CGwzTS8n7jcbGeF
+        1X04X1aKTaf+2VhWHDQxdAI4+p+KUic=
+X-Google-Smtp-Source: AK7set/BDmkLw2mWpMxPzpmebHTgz5xD+ueCpGd0zxLP4oh3aXZpw4RZhFXvDOZV8CjSsCwyOLU5MQ==
+X-Received: by 2002:a4a:4f16:0:b0:53b:54d1:b3d0 with SMTP id c22-20020a4a4f16000000b0053b54d1b3d0mr9681571oob.5.1680116958465;
+        Wed, 29 Mar 2023 12:09:18 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:5b9e:1cc2:c3f7:6f9c? (2603-8081-140c-1a00-5b9e-1cc2-c3f7-6f9c.res6.spectrum.com. [2603:8081:140c:1a00:5b9e:1cc2:c3f7:6f9c])
+        by smtp.gmail.com with ESMTPSA id s22-20020a4a2d56000000b00525240c6149sm14002817oof.31.2023.03.29.12.09.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Mar 2023 12:09:18 -0700 (PDT)
+Message-ID: <ea0968af-4c12-dbc3-6b5d-67def5e039d0@gmail.com>
+Date:   Wed, 29 Mar 2023 14:09:17 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d3cedf723b84e73e8062a67b7489d33802bafba2.1680113597.git.leon@kernel.org>
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [bug report] RDMA/rxe: Rewrite rxe_task.c
+To:     Dan Carpenter <error27@gmail.com>
+Cc:     linux-rdma@vger.kernel.org
+References: <480b32b6-0f1c-4646-9ecc-e0760004cd24@kili.mountain>
+ <8a054b78-6d50-4bc6-8d8a-83f85fbdb82f@kili.mountain>
+Content-Language: en-US
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <8a054b78-6d50-4bc6-8d8a-83f85fbdb82f@kili.mountain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,30 +74,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 29, 2023 at 09:14:01PM +0300, Leon Romanovsky wrote:
-> @@ -1287,11 +1279,8 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->  	}
->  
->  	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
-> -	if (!mr) {
-> -		err = -ENOMEM;
-> -		rxe_dbg_mr(mr, "no memory for mr");
-> -		goto err_out;
-> -	}
-> +	if (!mr)
-> +		return ERR_PTR(-ENOMEM);
->  
->  	err = rxe_add_to_pool(&rxe->mr_pool, mr);
->  	if (err) {
-        ^^^^^^^^^^
-If the rxe_add_to_pool() fails then it calls:
+On 3/29/23 01:48, Dan Carpenter wrote:
+> On Wed, Mar 29, 2023 at 09:27:26AM +0300, Dan Carpenter wrote:
+>> Hello Bob Pearson,
+>>
+>> The patch d94671632572: "RDMA/rxe: Rewrite rxe_task.c" from Mar 4,
+>> 2023, leads to the following Smatch static checker warning:
+>>
+>> 	drivers/infiniband/sw/rxe/rxe_task.c:24 __reserve_if_idle()
+>> 	warn: bitwise AND condition is false here
+>>
+>> drivers/infiniband/sw/rxe/rxe_task.c
+>>     20 static bool __reserve_if_idle(struct rxe_task *task)
+>>     21 {
+>>     22         WARN_ON(rxe_read(task->qp) <= 0);
+>>     23 
+>> --> 24         if (task->tasklet.state & TASKLET_STATE_SCHED)
+>>                                          ^^^^^^^^^^^^^^^^^^^
+>> This is zero.  Should the check be == TASKLET_STATE_SCHED?
+>>
+> 
+> The next function as well.
+> 
+> drivers/infiniband/sw/rxe/rxe_task.c:49 __is_done() warn: bitwise AND condition is false here
+> 
+> regards,
+> dan carpenter
+> 
 
-	rxe_dbg_mr(mr, "unable to create mr, err = %d", err);
-                   ^^
+Good catch. I was trying to open code the test in tasklet_schedule which was
+test_and_set_bit(TASKLET_STATE_SCHED, &t->state). I should have typed
 
-"rm" is zeroed mem and not useful at this point.  Possibly in a later
-patch though.
+	if (task->tasklet.state & (1 << TASKLET_STATE_BIT)) or similar.
 
-regards,
-dan carpenter
+Thanks,
 
+Bob
