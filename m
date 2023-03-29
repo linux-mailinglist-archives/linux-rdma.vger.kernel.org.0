@@ -2,133 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A9D6CDC9B
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 16:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8706CEBF5
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 16:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbjC2OeZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Mar 2023 10:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
+        id S229939AbjC2Onm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Mar 2023 10:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbjC2OeJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 10:34:09 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E70A266
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 07:29:36 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-536af432ee5so296932677b3.0
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 07:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680100099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x3djInWaUtEWPhLVpy4iK06nvHmU5DHgZ4gtyh/VJwc=;
-        b=mI3V70UvgWaRYY9oiPFKFWbodcY/wX9VsrYJuuCTrwbiLww8hqIVraYm2a0TUxk7Fj
-         5ayO/CEDT+1WUd56CXqfHCYn82y6PyTaB325G6nTnEPXOj0pg3CVEdo9SurKwV4U9AbI
-         WI1nP2GFTbEDWpXgOrTXuzm1DzlkwcldDyfwIQYy+jv4qREbMU/Y6MvjHxsT6TZ5tYmk
-         XZv/1qrNrViGvjJJuzvSSx7WikJQJ4pLswSctiPD+sgaq5DLIcdYyeakJrJqTpP34CeC
-         yyG0gHlIxff63ZwhJWXtPN7CkdrbXSMH8tlw8AHd5td4ZnptqJbodTI71oqZ9AGpsfOs
-         YwXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680100099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x3djInWaUtEWPhLVpy4iK06nvHmU5DHgZ4gtyh/VJwc=;
-        b=Ur/C6gfUkUFz/p0+blU2cWY3m9Ed7lX+yJDn1fA22KN8wDY4VLgf0QuWGzoIbP06iy
-         sxsybjhNmhOkaTyaS74ZtmLVhC/n/o+pvqi7B4Xx8j24DcBzHeUpnXWpqy6Iu9X0a+UA
-         16OEp0vxQiGXF5FX1J5tlbrwJCivex10IxtCKakuaxSOD8HA/I+0HqFVwXLMkvWrA+KV
-         Qq8UaPd10n9nWsuIU/vBVJtXxlg0dMQV5R8Y4O34r6Z5mkxNl8ns0bzSX7us9urwB0fM
-         r/YgtZ9DmeSr8MllKkP85Azx1HtodIaHahi+l61A1GU61tcEI35uRRf1Vm2pqD2aBkGB
-         vybg==
-X-Gm-Message-State: AAQBX9ds1tNaHeJ3cXBFj3EbIymXJuoL4+vSXbIczHOSvtuNpcTh/JLA
-        ZK2g2knj3e5MGiKWFaCEGBiVPP/hTtkUwjtvbm9e1Q==
-X-Google-Smtp-Source: AKy350aqh0eEYrYXlwPbOZOhGzoroZsq14N6X2PLd49EdAWFnIMdbVbc4Hdav/GRReSbNjQR3OCf2W2qkxW/YdPwmsE=
-X-Received: by 2002:a81:d007:0:b0:546:81f:a89e with SMTP id
- v7-20020a81d007000000b00546081fa89emr3792403ywi.9.1680100099427; Wed, 29 Mar
- 2023 07:28:19 -0700 (PDT)
+        with ESMTP id S229749AbjC2OnQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 10:43:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FC36E8E
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 07:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680100783;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eOGvCBK3xTc7UhN8iQW8f99rBt5fCj0lar0/GGKSAUo=;
+        b=H1gL32Xd8l9r+stE1zqaSSIkEvool+TK9K3ywF5RPyJqZ4sgmRtPTgRVYnmlMTGYU/8nou
+        8Olg5i+vH8R7M1uuLjxAiD5odE14uqNlBNiK7W8L7rnAQzOAyH6DFlZh0/s476DBoVL3yC
+        XRVleiX1YtKOUEaKP7JcDg7WRS3eQ6M=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-586-OX_M3mnhOyOLIjTwhOpgsw-1; Wed, 29 Mar 2023 10:39:40 -0400
+X-MC-Unique: OX_M3mnhOyOLIjTwhOpgsw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 52F783C10ED2;
+        Wed, 29 Mar 2023 14:39:38 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 900FA2166B33;
+        Wed, 29 Mar 2023 14:39:34 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <e128356a-f56f-4c02-7437-dfea38e4194b@suse.de>
+References: <e128356a-f56f-4c02-7437-dfea38e4194b@suse.de> <20230329141354.516864-1-dhowells@redhat.com> <20230329141354.516864-49-dhowells@redhat.com>
+To:     Hannes Reinecke <hare@suse.de>
+cc:     David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-sctp@vger.kernel.org, linux-afs@lists.infradead.org,
+        rds-devel@oss.oracle.com, linux-x25@vger.kernel.org,
+        dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-wpan@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-hams@vger.kernel.org,
+        mptcp@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <brauner@kernel.org>, netdev@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        tipc-discussion@lists.sourceforge.net,
+        linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        bpf@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [RFC PATCH v2 48/48] sock: Remove ->sendpage*() in favour of sendmsg(MSG_SPLICE_PAGES)
 MIME-Version: 1.0
-References: <20230324103252.712107-1-linus.walleij@linaro.org> <ZB2s3GeaN/FBpR5K@nvidia.com>
-In-Reply-To: <ZB2s3GeaN/FBpR5K@nvidia.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 29 Mar 2023 16:28:08 +0200
-Message-ID: <CACRpkdYTynQS3XwW8j_vamb7wcRwu0Ji1ZZ-HDDs0wQQy4SRzA@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rxe: Pass a pointer to virt_to_page()
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Bernard Metzler <BMT@zurich.ibm.com>,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <518630.1680100773.1@warthog.procyon.org.uk>
+Date:   Wed, 29 Mar 2023 15:39:33 +0100
+Message-ID: <518631.1680100773@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 3:00=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
-> On Fri, Mar 24, 2023 at 11:32:52AM +0100, Linus Walleij wrote:
-> > Like the other calls in this function virt_to_page() expects
-> > a pointer, not an integer.
-> >
-> > However since many architectures implement virt_to_pfn() as
-> > a macro, this function becomes polymorphic and accepts both a
-> > (unsigned long) and a (void *).
-> >
-> > Fix this up with an explicit cast.
-> >
-> > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> > ---
-> >  drivers/infiniband/sw/rxe/rxe_mr.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw=
-/rxe/rxe_mr.c
-> > index b10aa1580a64..5c90d83002f0 100644
-> > --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> > +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> > @@ -213,7 +213,7 @@ int rxe_mr_init_fast(int max_pages, struct rxe_mr *=
-mr)
-> >  static int rxe_set_page(struct ib_mr *ibmr, u64 iova)
-> >  {
->
-> All these functions have the wrong names, they are kva not IOVA.
+Hannes Reinecke <hare@suse.de> wrote:
 
-This escalated quickly. :D
+> > [!] Note: This is a work in progress.  At the moment, some things won't
+> >      build if this patch is applied.  nvme, kcm, smc, tls.
 
-I'm trying to do the right thing, I try to fix the technical issues first,
-and I can follow up with a rename patch if you want.
+Actually, that needs updating.  nvme and smc now build.
 
-> > @@ -288,7 +288,7 @@ static void rxe_mr_copy_dma(struct rxe_mr *mr, u64 =
-iova, void *addr,
-> >       u8 *va;
->
-> >       while (length) {
-> > -             page =3D virt_to_page(iova & mr->page_mask);
-> > +             page =3D virt_to_page((void *)(iova & mr->page_mask));
-> >               bytes =3D min_t(unsigned int, length,
-> >                               PAGE_SIZE - page_offset);
->
-> This is actually a bug, this function is only called on IB_MR_TYPE_DMA
-> and in that case 'iova' is actually a phys addr
->
-> So iova should be called phys and the above should be:
->
->                 page =3D pfn_to_page(phys >> PAGE_SHIFT);
+> Weelll ... what happens to consumers of kernel_sendpage()?
+> (Let's call them nvme ...)
+> Should they be moved over, too?
 
-I tried to make a patch fixing all of these up and prepended to v2 of this
-patch (which also needed adjustments).
+Patch 42 should address NVMe, I think.  I can't test it, though, as I don't
+have hardware.
 
-This is a bit tricky so bear with me, also I have no idea how to test this
-so hoping for some help there.
+There should be no callers of kernel_sendmsg() by the end of this patchset,
+and the only remaining implementors of sendpage are Chelsio-TLS, AF_TLS and
+AF_KCM, which as stated in the cover, aren't yet converted and won't build.
 
-I'm a bit puzzled: could the above code (which exist in
-three instances in the driver) even work as it is? Or is it not used?
-Or is there some failover from DMA to something else that is constantly
-happening?
+> Or what is the general consensus here?
+> 
+> (And what do we do with TLS? It does have a ->sendpage() version, too ...)
 
-Yours,
-Linus Walleij
+I know.  There are three things left that I need to tackle, but I'd like to
+get opinions on some of the other bits and I might need some help with AF_TLS
+and AF_KCM.
+
+That said, should I just remove tls_sw_do_sendpage() since presumably the data
+is going to get copied(?) and encrypted and the source pages aren't going to
+be held onto?
+
+David
+
