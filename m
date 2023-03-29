@@ -2,51 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC8E6CD2A9
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 09:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1256CD2E0
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 09:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbjC2HJ7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Mar 2023 03:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
+        id S229963AbjC2HYI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Mar 2023 03:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjC2HJ6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 03:09:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508FF137;
-        Wed, 29 Mar 2023 00:09:57 -0700 (PDT)
+        with ESMTP id S229985AbjC2HXu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 03:23:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE483AB8
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 00:23:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B069DB820CA;
-        Wed, 29 Mar 2023 07:09:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 003E0C433D2;
-        Wed, 29 Mar 2023 07:09:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A1C461A4F
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 07:23:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40CBBC4339B;
+        Wed, 29 Mar 2023 07:23:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680073794;
-        bh=mv36Q6rubWqizgAKGk0ONtnaEc6x+Na33/hRaN9TfFw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=gQ0Ic5F9cQlCdxL7rPGBm3xNM6HBUzh/kRN3tplBe0sAKmqHjw5Dy8rCTrFMN36/n
-         367UUODgzsEK0944DhfzPMdAg9NxC26xJKY/GEYo9vIPNb6qW3uw7fiThFLlEb7FO6
-         jnYLSzjBeaLUuUEl4JfRAp+kOYZ4pmMt2J7opIVqcvbi7Ufsy7bagBTDptGVI8+SSR
-         1XS7KzmIlLaZbtP4wpu7GORVhSAdpAEXbEtg2NjXxgarAbpMa5H6JhDPsuP23KDjY5
-         kyhU6fmsO7MPnrX9m3aAC3NBN1x2vKbG1yYkqlQkFq/ePn/Mg7nkr2ZOBjIMzSisV8
-         R5yCUxZ+0WfQw==
+        s=k20201202; t=1680074623;
+        bh=YpXZD7wouBKyLJ94ohtW5dFZZXReAJU908gcsRQxZfA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oi59h7dZnkShH0B9LThWHjV/qeg3L4P8x8SlQhKXtY2MV/V85LGpbwAUGKWp05wx7
+         EMJxNKMIWHHzABUbawWLka4V3odHM/yeAMuC2qQ93wFtfQr1T1UmAh9GZZ/x8AokLH
+         kFGtt0q3o9fQh+sgl33cZmFw+zDWIrbpJGiI4MwzVa7xBU3Q/GS9xWsVBiGkQ9eW6s
+         mB4TZpaNdVvx+QPnVIImidpLq+QrOfXK9FbcEPraMzOc4iCia252qpiYSkwd7gaT6E
+         0HzQmnZZVAPdqn2HkLjQXuc8+nglE1qs6p6ruYrfYpKrFLCZCpEHkgpk5CDLjI6lXr
+         XLHnbqND4dT7A==
+Date:   Wed, 29 Mar 2023 10:23:39 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        netdev@vger.kernel.org, Patrisious Haddad <phaddad@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <cover.1679566038.git.leon@kernel.org>
-References: <cover.1679566038.git.leon@kernel.org>
-Subject: Re: (subset) [PATCH rdma-next v1 0/2] Add Q-counters for representors
-Message-Id: <168007379060.938793.1513443971003859888.b4-ty@kernel.org>
-Date:   Wed, 29 Mar 2023 10:09:50 +0300
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        andrew.gospodarek@broadcom.com
+Subject: Re: [PATCH for-next 7/7] RDMA/bnxt_re: Enable congestion control by
+ default
+Message-ID: <20230329072339.GD831478@unreal>
+References: <1679562739-24472-1-git-send-email-selvin.xavier@broadcom.com>
+ <1679562739-24472-8-git-send-email-selvin.xavier@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1679562739-24472-8-git-send-email-selvin.xavier@broadcom.com>
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
@@ -56,23 +54,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On Thu, 23 Mar 2023 12:13:50 +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Thu, Mar 23, 2023 at 02:12:19AM -0700, Selvin Xavier wrote:
+> Enable Congesion control by default. Issue FW command
+> enable the CC during driver load and disable it during
+> unload.
 > 
-> Changelog:
-> v1:
->  * Properly separated between uplink and representors counters
-> v0: https://lore.kernel.org/all/cover.1678974109.git.leon@kernel.org
-> ----------------------------------------------------------------------
-> 
-> [...]
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/main.c       |  24 ++++++-
+>  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  15 ++--
+>  drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  20 ++++--
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.c   | 109 +++++++++++++++++++++++++++++
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.h   |  67 ++++++++++++++++++
+>  5 files changed, 222 insertions(+), 13 deletions(-)
 
-Applied, thanks!
+<...>
 
-[2/2] RDMA/mlx5: Expand switchdev Q-counters to expose representor statistics
-      https://git.kernel.org/rdma/rdma/c/d22467a71ebe96
+> index 06979f7..73f936c 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+> @@ -96,7 +96,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+>  	u32 sw_prod, cmdq_prod;
+>  	struct pci_dev *pdev;
+>  	unsigned long flags;
+> -	u32 size, opcode;
+> +	u32 bsize, opcode;
+>  	u16 cookie, cbit;
+>  	u8 *preq;
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+<...>
+
+>  	memset(msg->resp, 0, sizeof(*msg->resp));
+>  	crsqe->resp = (struct creq_qp_event *)msg->resp;
+> -	crsqe->resp->cookie = msg->req->cookie;
+> +	crsqe->resp->cookie = cookie;
+
+I see that you didn't change cookie type in this patch, but it is better
+to fix smatch/sparse warnings while you are changing the code.
+
+I don't want to see any warnings generated by new patches even for old code.
+
+drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:155:29: warning: incorrect type in assignment (different base types)
+drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:155:29:    expected restricted __le16 [usertype] cookie
+drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:155:29:    got unsigned short [assigned] [usertype] cookie
+drivers/infiniband/hw/bnxt_re/qplib_rcfw.h:96:13: warning: restricted __le16 degrades to integer
+
+Thanks
