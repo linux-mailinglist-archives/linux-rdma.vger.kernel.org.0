@@ -2,147 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6716CED0E
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 17:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6996CED39
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 17:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbjC2Pe3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Mar 2023 11:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
+        id S230155AbjC2Pou (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Mar 2023 11:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbjC2PeN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 11:34:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDDB5593
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 08:33:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680104003;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NeCkkPoa7tXS33oTjWiTv3O34+xg2iZRZ8XP3QkDkJA=;
-        b=PKrR2yA88fI1a299seFCGzDpRjtJTtcu1ObWfILUqnwOm44NmFcJFMvzCWNeh01Q25y+SO
-        iwTbzW+bIhC0rKMeg5ZEoo5V0AUDxEGqqh1FPM1oKVUXUdhZzOsDNPkdYEZ1HbtSmOi4qC
-        RHOVaZUlqkvPoLnsQXwd5FfXNhjZ610=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-341-EMw0FyvuP6ivsPNFD8FRkA-1; Wed, 29 Mar 2023 11:33:20 -0400
-X-MC-Unique: EMw0FyvuP6ivsPNFD8FRkA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C594438149D4;
-        Wed, 29 Mar 2023 15:32:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AB1F41121330;
-        Wed, 29 Mar 2023 15:32:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <SA0PR15MB391946EE72BC969337CF695299899@SA0PR15MB3919.namprd15.prod.outlook.com>
-References: <SA0PR15MB391946EE72BC969337CF695299899@SA0PR15MB3919.namprd15.prod.outlook.com> <20230329141354.516864-1-dhowells@redhat.com> <20230329141354.516864-31-dhowells@redhat.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Tom Talpey <tom@talpey.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 30/48] siw: Use sendmsg(MSG_SPLICE_PAGES) rather than sendpage to transmit
+        with ESMTP id S230416AbjC2Pos (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 11:44:48 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB0855AA
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 08:44:40 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id c18so15309675ple.11
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Mar 2023 08:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1680104680;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nlJRl8unuKE1aCfBdVRKi5WW2RTIZ7b4J3MrkN7spUA=;
+        b=C4g/W1VXFQo0M44uyoPG57i9G6iB3Na6m7Yw7bGIpDMRZZUnxP8ITMcg7jUR9AN/Yv
+         4dJFO6xlg3YTgB17qI5KJpweVXb6TzSzi8ClGkAvEDUVqfH774V3/T4pRjkLZn/yZ4rW
+         rlN+COTzaHMVQNidV25UY31zZ8Hwsk8AZTpM4RwerFD2/9KZCwDNGi1NXCJqR8nlQv+u
+         1EbdvU5u8opqGFnM/WBEX+pWXJYr04bTPy3dUi1N5/At7WdlrBvSpIMWc2SRXzI6fyyv
+         qk681EZjJXxi+Mtkk1A/MpnGkdvcqU4eAuZyJtl17dpb8dFH6r1aFPcFCplUvbIHq/ar
+         56Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680104680;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nlJRl8unuKE1aCfBdVRKi5WW2RTIZ7b4J3MrkN7spUA=;
+        b=NbutHhY0bN+LVYr5P/VkU63eg3tG04kmate8zJbDBaan8Jl1wK4UNEz1Ie/BavIWJA
+         3Wf2kU0D4d5t1XOySUwOyEwfuDn7+aLGuHCACXocpv9m0+IeaXQu4CoiGq0LK+zq33QS
+         OcIvnwujolEvz4NGJAqwM+qYVGTQAQtgTNHcus3PAY6lCZKuGE2h7RbEweYmALhBsl/z
+         90+y/ZwA1gNUpqI3qmblUXM8D11I7GrP5grZWnYwC60kQhBszWRaScPdKMhI4zxDGLZm
+         f1Gs27scpxux+2QecFuf4sopPReTYFu1cuqonTA67lUPorWC5zTOoPi53xUElVHs75gO
+         NlvQ==
+X-Gm-Message-State: AAQBX9cVab4EmlRlRwRiqL4gWFwTUcVFIunBw7rL5n8yZztoQGsa+iuh
+        AJT2mgR6sAAexPauufk4KkoD+A==
+X-Google-Smtp-Source: AKy350Z6UvGVWZ8sMr8s17h+m9nEHH3UJIf4AYCblxmKoR14WSjiq3KJP8jjGV5h6SvTQOpj6Ze95Q==
+X-Received: by 2002:a17:90b:1d86:b0:23b:3f18:a8fe with SMTP id pf6-20020a17090b1d8600b0023b3f18a8femr22367612pjb.31.1680104680149;
+        Wed, 29 Mar 2023 08:44:40 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id i19-20020a17090adc1300b0023a8d3a0a6fsm1558970pjv.44.2023.03.29.08.44.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Mar 2023 08:44:39 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1phXyX-004coE-Ol;
+        Wed, 29 Mar 2023 12:44:37 -0300
+Date:   Wed, 29 Mar 2023 12:44:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Ursula Braun <ubraun@linux.ibm.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] RDMA: don't ignore client->add() failures
+Message-ID: <ZCRc5S9QGZqcZhNg@ziepe.ca>
+References: <0e031582-aed6-58ee-3477-6d787f06560a@I-love.SAKURA.ne.jp>
+ <ZCLOYznKQQKfoqzI@ziepe.ca>
+ <a9960371-ef94-de6e-466f-0922a5e3acf3@I-love.SAKURA.ne.jp>
+ <ZCLQ0XVSKVHV1MB2@ziepe.ca>
+ <ec025592-3390-cf4f-ed03-c3c6c43d9310@I-love.SAKURA.ne.jp>
+ <ZCMTZWdY7D7mxJuE@ziepe.ca>
+ <d2dfb901-50b1-8e34-8217-d29e63f421c7@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <522641.1680103968.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 29 Mar 2023 16:32:48 +0100
-Message-ID: <522642.1680103968@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d2dfb901-50b1-8e34-8217-d29e63f421c7@I-love.SAKURA.ne.jp>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Bernard Metzler <BMT@zurich.ibm.com> wrote:
+On Wed, Mar 29, 2023 at 07:17:26AM +0900, Tetsuo Handa wrote:
+> On 2023/03/29 1:18, Jason Gunthorpe wrote:
+> > On Tue, Mar 28, 2023 at 11:59:48PM +0900, Tetsuo Handa wrote:
+> >> Without this patch, __ib_unregister_device(device) is not called because
+> >> enable_device_and_get() returns 0 because add_client_context() returns 0
+> >> because add_client_context() ignores client->add() failures. As a result,
+> >> device's refcount remains 7, which later prevents unregister_netdevice()
+> >>  from unregistering this device.
+> > 
+> > That is completely correct, the device was successfully registered
+> > without one of the clients.
+> 
+> ib_register_device() is responsible for unregistering that device (by calling
+> __ib_unregister_device(device)) if ib_register_device() failed to
+> initialize a device, isn't it?
 
-> > When transmitting data, call down into TCP using a single sendmsg with
-> > MSG_SPLICE_PAGES to indicate that content should be spliced rather tha=
-n
-> > performing several sendmsg and sendpage calls to transmit header, data
-> > pages and trailer.
-> > =
+Yes, if it fails. It isn't returning a failure code, so of course it
+doesn't fail.
 
-> > To make this work, the data is assembled in a bio_vec array and attach=
-ed to
-> > a BVEC-type iterator.  The header and trailer (if present) are copied =
-into
-> > page fragments that can be freed with put_page().
-> =
+You changed this code and forced it to always fail, so of course it
+radically changes everything about the bug you are looking at.
 
-> I like it a lot if it still keeps zero copy sendpage() semantics for
-> the cases the driver can make use of data transfers w/o copy. =
+> The caller of ib_register_device() (i.e. siw_device_register() from
+> siw_newlink()) is assuming that somebody will call __ib_unregister_device(),
+> but nobody is calling __ib_unregister_device().
 
-> Is 'msg.msg_flags |=3D MSG_SPLICE_PAGES' doing that magic?
+On the success path this stuff happens during dellink
 
-Yes.  MSG_SPLICE_PAGES indicates that you want the socket to retain your
-buffer and pass it directly to the device.  Note that it's just a hint,
-however, pages that are unspliceable (eg. they belong to the slab) will ge=
-t
-copied into a page fragment instead.  Further, if the device cannot suppor=
-t a
-vector, then the hint can be ignored and all the data can be copied as nor=
-mal.
-
-> 'splicing' suggest just merging pages to me.
-
-'splicing' as in what the splice system call does.
-
-Unfortunately, MSG_ZEROCOPY is already a (different) thing.
-
-> It would simplify the transmit code path substantially, also getting
-> rid of kmap_local_page()/kunmap_local() sequences for multi-fragment
-> sendmsg()'s.
-
-If the ITER_ITERLIST iterator is accepted, then siw would be able to do mi=
-x
-KVEC and BVEC iterators, e.g. what I did for sunrpc here:
-
-	https://lore.kernel.org/linux-fsdevel/20230329141354.516864-42-dhowells@r=
-edhat.com/T/#u
-
-This means that in siw_tx_hdt() where I made it copy data into page fragme=
-nts
-using page_frag_memdup() and attach that to a bvec:
-
-	hdr_len =3D c_tx->ctrl_len - c_tx->ctrl_sent;
-	h =3D page_frag_memdup(NULL, hdr, hdr_len, GFP_NOFS, ULONG_MAX);
-	if (!h)
-		goto done;
-	bvec_set_virt(&bvec[0], h, hdr_len);
-	seg =3D 1;
-
-it can just set up a kvec instead.
-
-Unfortunately, it's not so easy to get rid of all of the kmap'ing as we ne=
-ed
-to do some of it to do the hashing.
-
-David
-
+Jason 
