@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA5C6CD212
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 08:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E315E6CD21B
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 08:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjC2G1d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Mar 2023 02:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
+        id S229470AbjC2Gar (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Mar 2023 02:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjC2G1c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 02:27:32 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB1819C
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Mar 2023 23:27:31 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id j24so14515821wrd.0
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Mar 2023 23:27:31 -0700 (PDT)
+        with ESMTP id S229530AbjC2Gaq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 02:30:46 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A87C2D57
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Mar 2023 23:30:39 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id d17so14465187wrb.11
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Mar 2023 23:30:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680071250;
+        d=gmail.com; s=20210112; t=1680071437;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3CfbpEIIrvOiPUvNg+LdcKBr1JjimTbsMfXYo2weXHM=;
-        b=NRfjVWJIZHAh05aNQW03LmMsXp/Djazp/gXGuFEU7ArUeRjxhL0VEbZfyHP/I4VMai
-         5H/daducjaEkEjuCN4GfeigeLIJntFqOKOegSmu3fr62qv2G/KKsrtbymDLMXvwHU+gJ
-         kyya2o6HWDRNTbsGd+rffrcD0PSEY8YOVDGMTUtqaHatZGt915uI5bQBRzCBk73d9aQN
-         1W1/NsKbIsq8gLkUqXkME1m4jHmjP4oTYcO+0JSj5u2zFU0wBqnER6zIkvQViNLtNfUQ
-         rPOj78kSPYPLt9P4X+jqTI+svJDCZ8Yqz0IFPAHVs4IRZQsQSfuU0N35x5UWt2rbCKqs
-         b1RA==
+        bh=ek9xJrdFx3kViRSaiQrcL3YJMjjS9+ARqI+2xiES+cY=;
+        b=i2KcprwSxL2iwyw6EyzW71gUxDSr/6EWW0P+Q2w1B9y3GZOFHVa/gMCWgEYPAYmHzx
+         SoSmOLcT/LErZG18kvbYuTRZQKmZtFf4EMkSPufefMahQIafMibgCCb6rs3fnz3j6a9a
+         OVPO0XKMWrgzIrH6da9BFuEeO164SSYP3EyCG1sd7txW3KLYEfy9iJlaLTMahu9m24dt
+         t0M59s+3jzFZi7cwaVS46z3wtdRNEBmxKKaZGMB53E22JXeTKEPOm6bheecCr4cOK6Zw
+         Rl3b0e003VV16nbUti5cT6lNiV0RXLVbJ8LQCjDcuDfRuy+9NB3l5FjHT3WDttic/af3
+         3l4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680071250;
+        d=1e100.net; s=20210112; t=1680071437;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3CfbpEIIrvOiPUvNg+LdcKBr1JjimTbsMfXYo2weXHM=;
-        b=ZmyYSiggflRJwPetAFqc+mhYa4iIdiJtS//LWRKnpM3kO86Xpam+u9WrAVHoGrg1ds
-         +mZ0bPu+Lz6fDsOZ4J0RF66+JRAUQVTxtoU8xotCVo2Bf8rQmUr0WJXLFYAi2tOPU602
-         Efj6PcDuU4jXHI2YDqQEiSPf8VGzZ1Xj/1slW3egAmcRB4j6lI81pZRn9oGgzB0Z92vT
-         9g3BUs7OIGXOEJnK9qHBSEMKG0S257wLPX9jC2VKV1QS+V0iLn0m5fd1c8H6HUIjEZX+
-         /FelYH2MCF9uApsmjj//ZD9WD1TDUjoI8Ija738JUBwCRD0S2J3dGBjFOaD37tjz3jv1
-         amQQ==
-X-Gm-Message-State: AAQBX9dawrEqFXqg2MMNiA4Ll0R+swrkAj/aYz00Bp9LjGZuA4OQLUpO
-        Bvd6VjLvVli12IQvRJu2j3yuu5ar7VmCI33h
-X-Google-Smtp-Source: AKy350YBRy0rX1kECZzV3izDuiX7nUns+BAMOWb55/R8ImdJ1DF4hrZydxlYJ72HEqh7f/IoaZrGqg==
-X-Received: by 2002:a5d:4a46:0:b0:2d4:766d:e02f with SMTP id v6-20020a5d4a46000000b002d4766de02fmr14397990wrs.59.1680071250053;
-        Tue, 28 Mar 2023 23:27:30 -0700 (PDT)
+        bh=ek9xJrdFx3kViRSaiQrcL3YJMjjS9+ARqI+2xiES+cY=;
+        b=HAIAzCBsVb/zkR1cyvrRbAdbfzguvyGG7GqlCUYMtuOStfKU0aYMetDOFdbs8G+Cyn
+         FjbWZWEs6T61ehAdnIsT+lauycRWyxvQoaTjOjorEEwAi9xqPlnaGRucSNflRMnROpB7
+         zR6O01C/m/jxqudIpeq8seHs3/NS7b3WqB3vfxFw1XFtJlYK506z+ye0ZHMM6llkOw42
+         VSe4UhqK5aKrWFUcSINGCtLdDtcAXhVb5zPisqa+ZtIhAuIpYlWCTK/avTZ9/nxLAh7Z
+         UgLQa5K5yiUm/hKWcsGIZ0hiWX8pJzXXmU/t2ZHXsfiNPxt4GUl3Todq1oUS4z/IckuX
+         y3qQ==
+X-Gm-Message-State: AAQBX9dUYOIKjjqeKRaZImdRj6CFMt0hrS4A8CKZmdXklKrPH+FIUijb
+        OKagcRz4ZOE35hPwaoWTNAE=
+X-Google-Smtp-Source: AKy350baO45bp+V351Qn38hNU/TlTFfH6BCVSQgEUTCvf0aUIbTN5JExsGp6W/79j2cIN+fAeD3KEA==
+X-Received: by 2002:a5d:4d4c:0:b0:2ce:aad8:9bee with SMTP id a12-20020a5d4d4c000000b002ceaad89beemr14606941wru.46.1680071437265;
+        Tue, 28 Mar 2023 23:30:37 -0700 (PDT)
 Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id c15-20020adffb0f000000b002c6e8cb612fsm29129462wrr.92.2023.03.28.23.27.29
+        by smtp.gmail.com with ESMTPSA id c15-20020adffb4f000000b002c7107ce17fsm29409502wrs.3.2023.03.28.23.30.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Mar 2023 23:27:29 -0700 (PDT)
-Date:   Wed, 29 Mar 2023 09:27:26 +0300
+        Tue, 28 Mar 2023 23:30:36 -0700 (PDT)
+Date:   Wed, 29 Mar 2023 09:30:33 +0300
 From:   Dan Carpenter <error27@gmail.com>
 To:     rpearsonhpe@gmail.com
 Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] RDMA/rxe: Rewrite rxe_task.c
-Message-ID: <480b32b6-0f1c-4646-9ecc-e0760004cd24@kili.mountain>
+Subject: [bug report] RDMA/rxe: Add error messages
+Message-ID: <ea43486f-43dd-4054-b1d5-3a0d202be621@kili.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -68,35 +68,72 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Hello Bob Pearson,
 
-The patch d94671632572: "RDMA/rxe: Rewrite rxe_task.c" from Mar 4,
+The patch 5bf944f24129: "RDMA/rxe: Add error messages" from Mar 3,
 2023, leads to the following Smatch static checker warning:
 
-	drivers/infiniband/sw/rxe/rxe_task.c:24 __reserve_if_idle()
-	warn: bitwise AND condition is false here
+	drivers/infiniband/sw/rxe/rxe_verbs.c:1294 rxe_alloc_mr()
+	error: potential null dereference 'mr'.  (kzalloc returns null)
 
-drivers/infiniband/sw/rxe/rxe_task.c
-    20 static bool __reserve_if_idle(struct rxe_task *task)
-    21 {
-    22         WARN_ON(rxe_read(task->qp) <= 0);
-    23 
---> 24         if (task->tasklet.state & TASKLET_STATE_SCHED)
-                                         ^^^^^^^^^^^^^^^^^^^
-This is zero.  Should the check be == TASKLET_STATE_SCHED?
+drivers/infiniband/sw/rxe/rxe_verbs.c
+    1276 static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+    1277                                   u32 max_num_sg)
+    1278 {
+    1279         struct rxe_dev *rxe = to_rdev(ibpd->device);
+    1280         struct rxe_pd *pd = to_rpd(ibpd);
+    1281         struct rxe_mr *mr;
+    1282         int err, cleanup_err;
+    1283 
+    1284         if (mr_type != IB_MR_TYPE_MEM_REG) {
+    1285                 err = -EINVAL;
+    1286                 rxe_dbg_pd(pd, "mr type %d not supported, err = %d",
+    1287                            mr_type, err);
+    1288                 goto err_out;
+    1289         }
+    1290 
+    1291         mr = kzalloc(sizeof(*mr), GFP_KERNEL);
+    1292         if (!mr) {
+    1293                 err = -ENOMEM;
+--> 1294                 rxe_dbg_mr(mr, "no memory for mr");
+                                    ^^
+NULL dereference.
 
-    25                 return false;
-    26 
-    27         if (task->state == TASK_STATE_IDLE) {
-    28                 rxe_get(task->qp);
-    29                 task->state = TASK_STATE_BUSY;
-    30                 task->num_sched++;
-    31                 return true;
-    32         }
-    33 
-    34         if (task->state == TASK_STATE_BUSY)
-    35                 task->state = TASK_STATE_ARMED;
-    36 
-    37         return false;
-    38 }
+    1295                 goto err_out;
+    1296         }
+    1297 
+    1298         err = rxe_add_to_pool(&rxe->mr_pool, mr);
+    1299         if (err) {
+    1300                 rxe_dbg_mr(mr, "unable to create mr, err = %d", err);
+                                    ^^
+mr->ibmr.device is not set yet so this doesn't work.
+
+    1301                 goto err_free;
+    1302         }
+    1303 
+    1304         rxe_get(pd);
+    1305         mr->ibmr.pd = ibpd;
+    1306         mr->ibmr.device = ibpd->device;
+                 ^^^^^^^^^^^^^^^
+
+    1307 
+    1308         err = rxe_mr_init_fast(max_num_sg, mr);
+    1309         if (err) {
+    1310                 rxe_dbg_mr(mr, "alloc_mr failed, err = %d", err);
+    1311                 goto err_cleanup;
+    1312         }
+    1313 
+    1314         rxe_finalize(mr);
+    1315         return &mr->ibmr;
+    1316 
+    1317 err_cleanup:
+    1318         cleanup_err = rxe_cleanup(mr);
+    1319         if (cleanup_err)
+    1320                 rxe_err_mr(mr, "cleanup failed, err = %d", err);
+    1321 err_free:
+    1322         kfree(mr);
+    1323 err_out:
+    1324         rxe_err_pd(pd, "returned err = %d", err);
+    1325         return ERR_PTR(err);
+    1326 }
 
 regards,
 dan carpenter
