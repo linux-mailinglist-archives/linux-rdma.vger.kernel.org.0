@@ -2,51 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B166CD7BF
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 12:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5DF6CD824
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Mar 2023 13:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbjC2Kdg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Mar 2023 06:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40430 "EHLO
+        id S229513AbjC2LFk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Mar 2023 07:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbjC2Kdf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 06:33:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD336422C;
-        Wed, 29 Mar 2023 03:33:01 -0700 (PDT)
+        with ESMTP id S229585AbjC2LFj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Mar 2023 07:05:39 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F052746AC;
+        Wed, 29 Mar 2023 04:05:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1154961C36;
-        Wed, 29 Mar 2023 10:32:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7F03C4339B;
-        Wed, 29 Mar 2023 10:32:43 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 85EB7B82244;
+        Wed, 29 Mar 2023 11:04:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB6CCC433EF;
+        Wed, 29 Mar 2023 11:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680085964;
-        bh=vOYzi7+hcrsUCs2akSC8CMn6+Kisn3S6b62l189uz+E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YVeEcyKDS5PnyOWRVI5S+hVao9X9AT3TdMiTGVrzB6m8Shf1WrV/2hPTFyuIgynrA
-         dGAhql7lqrx070bz7/0bfKTMCvIBSh6pnd9+PhsQvE+ra7C2UsrPBeVomDERrMUXG5
-         Ce6ou4DnDAPgcU3D15fa3Xb7HTXSev/fR/5x6Xb0yWiV6aK4ZQyCL1KA7P3zSYIVO6
-         F3vWjsKT4lV8qKAYVbGFtebfHex3aQq7zhZ62FkhODiy6NoZgtdKPfDdasJAPNYjdp
-         DxOHH4bTzeUMpbR7+Z9fMyyYwyYoD+NiEDZzx/EFZXrREvmEd9EuAzuk6fO5jpvrGy
-         3bbn8hIzqx7sw==
-Date:   Wed, 29 Mar 2023 13:32:40 +0300
+        s=k20201202; t=1680087858;
+        bh=E1W5dQwRJc5iBQxZu5QBFBSKcRmTwI7TzyhXlc8ZUeg=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=giQJ2fA/3tWZ6/LWVxb2cS7yJs0MjROBx6/1hdJisvcJqJ6i/Tz3enVrlIiDFkYxs
+         gtKel7KWnFbP8yDEx1uFGywGdd51mn2q7ZoTb/A1aEYIZDEtFW/w6qdb0T1zczPT0H
+         F8ghBFZAnJMq8hzcqOGzuHVkXWy+AEQh0Bw6ztXM+5d1QRfvle8B/vd3TqlEyh27Nz
+         Qo+WsBGNWpVoHPwPzozmgyJKK2PMMf5XDpqFAUTqLFlVL4sVk7ly7Me6hTCZ92uHyk
+         yxPXQgGX3zLbpbwtDNbpQfRA4cJXuxMoHylasAd3silasugnQmzZHv3wvJi8qKpmZ8
+         f/QjgWNuWPa1g==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     saeedm@nvidia.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH 2/2] net/mlx5e: Fix missing error code in
- mlx5e_rx_reporter_err_icosq_cqe_recover()
-Message-ID: <20230329103240.GK831478@unreal>
-References: <20230324025541.38458-1-jiapeng.chong@linux.alibaba.com>
- <20230324025541.38458-2-jiapeng.chong@linux.alibaba.com>
+To:     Cai Huoqing <cai.huoqing@linux.dev>
+Cc:     Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230323115742.13836-1-cai.huoqing@linux.dev>
+References: <20230323115742.13836-1-cai.huoqing@linux.dev>
+Subject: Re: [PATCH] RDMA/usnic: Remove redundant pci_clear_master
+Message-Id: <168008785405.1076930.5923655020998036907.b4-ty@kernel.org>
+Date:   Wed, 29 Mar 2023 14:04:14 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230324025541.38458-2-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
@@ -56,38 +55,23 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 10:55:41AM +0800, Jiapeng Chong wrote:
-> The error code is missing in this code scenario, add the error code
-> '-EINVAL' to the return value 'err'.
-> 
-> drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:105 mlx5e_tx_reporter_err_cqe_recover() warn: missing error code 'err'.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4600
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-> index 44c1926843a1..5e2e2449668d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-> @@ -101,8 +101,10 @@ static int mlx5e_tx_reporter_err_cqe_recover(void *ctx)
->  		goto out;
->  	}
->  
-> -	if (state != MLX5_SQC_STATE_ERR)
-> +	if (state != MLX5_SQC_STATE_ERR) {
-> +		err = -EINVAL;
 
-Same comment as for patch #1.
-
->  		goto out;
-> +	}
->  
->  	mlx5e_tx_disable_queue(sq->txq);
->  
-> -- 
-> 2.20.1.7.g153144c
+On Thu, 23 Mar 2023 19:57:42 +0800, Cai Huoqing wrote:
+> Remove pci_clear_master to simplify the code,
+> the bus-mastering is also cleared in do_pci_disable_device,
+> like this:
+> ./drivers/pci/pci.c:2197
+> static void do_pci_disable_device(struct pci_dev *dev)
+> {
+> 	u16 pci_command;
 > 
+> [...]
+
+Applied, thanks!
+
+[1/1] RDMA/usnic: Remove redundant pci_clear_master
+      https://git.kernel.org/rdma/rdma/c/fc36ce35e94585
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
