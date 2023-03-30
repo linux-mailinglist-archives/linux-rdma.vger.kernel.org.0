@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDF76D001D
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Mar 2023 11:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AA76D001E
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Mar 2023 11:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjC3Jrf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Mar 2023 05:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S230359AbjC3Jrg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Mar 2023 05:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbjC3JrG (ORCPT
+        with ESMTP id S230361AbjC3JrG (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Mar 2023 05:47:06 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F68869F
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 02:46:30 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id fd25so12097901pfb.1
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 02:46:30 -0700 (PDT)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C3986A2
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 02:46:31 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id l14so12080914pfc.11
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 02:46:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1680169583;
+        d=broadcom.com; s=google; t=1680169585;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=sBPJq15UfOFAC7MDN/Vempxo84fv3SX+927bdRP3XFg=;
-        b=GmTSFJJkUZri03Y3BW03ED2jfyie0DNqRq0CgDwvntBE825Us/I3IY/YMX0OSJrqzA
-         XqG6TdNeaA46GuLtMl/keJYYqbTR2ssmW9VFKJsRRfQ+yRJs+f0RB09M2RLLJlWV87BZ
-         hluck+EBE0PIXB4MMX6ObVF0KfzOfgZSoQeW0=
+        bh=GqLITbZ60zVDq+mCpxcEVaT/3F6rhsIXh9f67DkSI5M=;
+        b=duOr4MuMUlKH980TogqxmMsidlVZ2hMB0fzt8l0sM6SDBrtFomW7f3QlVzpJAcNzE3
+         eO9aPIkPd9jd4hAoreVBqZghtrnDZdom5HlqFbNE4bfAM9h3wthzPIMOUhQPsI4GDkol
+         XNFpwsHliqLDPRDRR19kQ3iRut/zuTI5iYM8c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680169583;
+        d=1e100.net; s=20210112; t=1680169585;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sBPJq15UfOFAC7MDN/Vempxo84fv3SX+927bdRP3XFg=;
-        b=M5M4BupCtR34iVVrgRN1N3HbkAQfHNRE79hRptOIlVlIWRBhSyFQZggR1R3tfHK9+q
-         C23pZTaiqFicSAB94mcivYGHNzCmfOcRrRbP4JmeN3LGTM1Pd4SaKTaztAcu9i6vJLkQ
-         y1lI7TjeFzeEBTh3SZoyzCFV2aeUexuKqKcfDq3wEgGz0Dz0M/Xv8iNYQJuoQDY0V189
-         lvNXsYpH+qrmQRxa2Snr79u4VDopdVoTYvZArnDrDtgT5p6gDQ9kpPZ+xwjYwKNWJXDF
-         huS48Opi4ErLOjLtxZFyT64hWuEVkbOXKx+JOxAR0Q3tUMUkfNbpU9cGsT9oNoGVICA1
-         UlDQ==
-X-Gm-Message-State: AAQBX9dTu5DUBOmkGmk5IRejc7VkuKggc0CY8bJQMjCMGzQLIkf6vbxD
-        nEmLrSZpJHg+Ny0I3FXX8bsBcmcSfuZfg5r7cTQ=
-X-Google-Smtp-Source: AKy350YL+AkH5w+YMWR5Vk87I5jr3cu+xrvVJ/rwuaNwniBeLxGRdWu+UR16Yb7KAOIm2663QbVQ7Q==
-X-Received: by 2002:a62:1b95:0:b0:62a:5769:25f9 with SMTP id b143-20020a621b95000000b0062a576925f9mr19240319pfb.28.1680169582789;
-        Thu, 30 Mar 2023 02:46:22 -0700 (PDT)
+        bh=GqLITbZ60zVDq+mCpxcEVaT/3F6rhsIXh9f67DkSI5M=;
+        b=zJ/Hz+x0hB2caLd2BOBSctxm7Pq3BhpNZYTz/37UrxQF3+R7j4BiM4Jidma1QN3ibO
+         jTIWwN6oh4aOdda3n/FhK5DtrM/ZJkMgIiLW+d/lHl96nrUXofeUSTHOjpuoqrQ7dzGy
+         +e5+RVMeXvKbHO9mT3gS4Bj8q/IZNmYeyTLtoJ4jqv5LPIbTMtdD5TM235FfRmUSL/Mx
+         AadzwhxD1zwFPhhlNgLohumGZFkNzZCCWlKAqVSRqPb2u+3xa5QdAJhuZ0beQGGE1qB2
+         +7NkXk+/IHIrFbnnC8cT0/IlxEhO0BrAo0w92vJaiYEXnf/y/EwwUG9UWEHmsp3+gZDt
+         80DQ==
+X-Gm-Message-State: AAQBX9flf3gHAQ9feRuWCUB2N7S0rYEmMgxXmVZ3qW8+PnNVTiss6ZKQ
+        i4bg0oa4db6GJPZWPsNras89RQ==
+X-Google-Smtp-Source: AKy350bfFW6fzYa8RcwJoABOFKR8wNfQArU8O2wHpv655GFlWYC+JMCTx6DNSEjt7xL+o4YZAIGupQ==
+X-Received: by 2002:aa7:971c:0:b0:625:7acb:bf0e with SMTP id a28-20020aa7971c000000b006257acbbf0emr20998702pfg.19.1680169585583;
+        Thu, 30 Mar 2023 02:46:25 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id c26-20020aa78e1a000000b00625616f59a1sm24468857pfr.73.2023.03.30.02.46.19
+        by smtp.gmail.com with ESMTPSA id c26-20020aa78e1a000000b00625616f59a1sm24468857pfr.73.2023.03.30.02.46.23
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Mar 2023 02:46:21 -0700 (PDT)
+        Thu, 30 Mar 2023 02:46:24 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v3 5/7] RDMA/bnxt_re: RoCE slow path TLV support
-Date:   Thu, 30 Mar 2023 02:45:38 -0700
-Message-Id: <1680169540-10029-6-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v3 6/7] RDAM/bnxt_re: Use tlv apis while processing the slow path commands
+Date:   Thu, 30 Mar 2023 02:45:39 -0700
+Message-Id: <1680169540-10029-7-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1680169540-10029-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1680169540-10029-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000002ac00205f81af790"
+        boundary="00000000000055286505f81af7f2"
 X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_HEADER_CTYPE_ONLY,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_TVD_MIME_NO_HEADERS
@@ -66,193 +66,88 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000002ac00205f81af790
+--00000000000055286505f81af7f2
 
-Header file to support  TLV encapsulated commands. These
-functions will be used by the driver in the follow up patches.
+Use the new TLV APIs for existing slow path commands. The TLV
+APIs will be used to populate extended headers for some of the
+Firmware commands, which will be introduced in the patches that
+follow.
 
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
-v2->v3:
- - Fix sparse warnings
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
- drivers/infiniband/hw/bnxt_re/qplib_tlv.h | 162 ++++++++++++++++++++++++++++++
- 1 file changed, 162 insertions(+)
- create mode 100644 drivers/infiniband/hw/bnxt_re/qplib_tlv.h
-
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_tlv.h b/drivers/infiniband/hw/bnxt_re/qplib_tlv.h
-new file mode 100644
-index 0000000..402c220
---- /dev/null
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_tlv.h
-@@ -0,0 +1,162 @@
-+/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
-+
-+#ifndef __QPLIB_TLV_H__
-+#define __QPLIB_TLV_H__
-+
-+struct roce_tlv {
-+	struct tlv tlv;
-+	u8 total_size; // in units of 16 byte chunks
-+	u8 unused[7];  // for 16 byte alignment
-+};
-+
-+#define CHUNK_SIZE 16
-+#define CHUNKS(x) (((x) + CHUNK_SIZE - 1) / CHUNK_SIZE)
-+
-+static inline  void __roce_1st_tlv_prep(struct roce_tlv *rtlv, u8 tot_chunks,
-+					u16 content_bytes, u8 flags)
-+{
-+	rtlv->tlv.cmd_discr = cpu_to_le16(CMD_DISCR_TLV_ENCAP);
-+	rtlv->tlv.tlv_type = cpu_to_le16(TLV_TYPE_ROCE_SP_COMMAND);
-+	rtlv->tlv.length = cpu_to_le16(content_bytes);
-+	rtlv->tlv.flags = TLV_FLAGS_REQUIRED;
-+	rtlv->tlv.flags |= flags ? TLV_FLAGS_MORE : 0;
-+	rtlv->total_size = (tot_chunks);
-+}
-+
-+static inline void __roce_ext_tlv_prep(struct roce_tlv *rtlv, u16 tlv_type,
-+				       u16 content_bytes, u8 more, u8 flags)
-+{
-+	rtlv->tlv.cmd_discr = cpu_to_le16(CMD_DISCR_TLV_ENCAP);
-+	rtlv->tlv.tlv_type = cpu_to_le16(tlv_type);
-+	rtlv->tlv.length = cpu_to_le16(content_bytes);
-+	rtlv->tlv.flags |= more ? TLV_FLAGS_MORE : 0;
-+	rtlv->tlv.flags |= flags ? TLV_FLAGS_REQUIRED : 0;
-+}
-+
-+/*
-+ * TLV size in units of 16 byte chunks
-+ */
-+#define TLV_SIZE ((sizeof(struct roce_tlv) + 15) / 16)
-+/*
-+ * TLV length in bytes
-+ */
-+#define TLV_BYTES (TLV_SIZE * 16)
-+
-+#define HAS_TLV_HEADER(msg) (le16_to_cpu(((struct tlv *)(msg))->cmd_discr) == CMD_DISCR_TLV_ENCAP)
-+#define GET_TLV_DATA(tlv)   ((void *)&((uint8_t *)(tlv))[TLV_BYTES])
-+
-+static inline u8 __get_cmdq_base_opcode(struct cmdq_base *req, u32 size)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		return ((struct cmdq_base *)GET_TLV_DATA(req))->opcode;
-+	else
-+		return req->opcode;
-+}
-+
-+static inline void __set_cmdq_base_opcode(struct cmdq_base *req,
-+					  u32 size, u8 val)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		((struct cmdq_base *)GET_TLV_DATA(req))->opcode = val;
-+	else
-+		req->opcode = val;
-+}
-+
-+static inline __le16 __get_cmdq_base_cookie(struct cmdq_base *req, u32 size)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		return ((struct cmdq_base *)GET_TLV_DATA(req))->cookie;
-+	else
-+		return req->cookie;
-+}
-+
-+static inline void __set_cmdq_base_cookie(struct cmdq_base *req,
-+					  u32 size, __le16 val)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		((struct cmdq_base *)GET_TLV_DATA(req))->cookie = val;
-+	else
-+		req->cookie = val;
-+}
-+
-+static inline __le64 __get_cmdq_base_resp_addr(struct cmdq_base *req, u32 size)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		return ((struct cmdq_base *)GET_TLV_DATA(req))->resp_addr;
-+	else
-+		return req->resp_addr;
-+}
-+
-+static inline void __set_cmdq_base_resp_addr(struct cmdq_base *req,
-+					     u32 size, __le64 val)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		((struct cmdq_base *)GET_TLV_DATA(req))->resp_addr = val;
-+	else
-+		req->resp_addr = val;
-+}
-+
-+static inline u8 __get_cmdq_base_resp_size(struct cmdq_base *req, u32 size)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		return ((struct cmdq_base *)GET_TLV_DATA(req))->resp_size;
-+	else
-+		return req->resp_size;
-+}
-+
-+static inline void __set_cmdq_base_resp_size(struct cmdq_base *req,
-+					     u32 size, u8 val)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		((struct cmdq_base *)GET_TLV_DATA(req))->resp_size = val;
-+	else
-+		req->resp_size = val;
-+}
-+
-+static inline u8 __get_cmdq_base_cmd_size(struct cmdq_base *req, u32 size)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		return ((struct roce_tlv *)(req))->total_size;
-+	else
-+		return req->cmd_size;
-+}
-+
-+static inline void __set_cmdq_base_cmd_size(struct cmdq_base *req,
-+					    u32 size, u8 val)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		((struct cmdq_base *)GET_TLV_DATA(req))->cmd_size = val;
-+	else
-+		req->cmd_size = val;
-+}
-+
-+static inline __le16 __get_cmdq_base_flags(struct cmdq_base *req, u32 size)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		return ((struct cmdq_base *)GET_TLV_DATA(req))->flags;
-+	else
-+		return req->flags;
-+}
-+
-+static inline void __set_cmdq_base_flags(struct cmdq_base *req,
-+					 u32 size, __le16 val)
-+{
-+	if (HAS_TLV_HEADER(req) && size > TLV_BYTES)
-+		((struct cmdq_base *)GET_TLV_DATA(req))->flags = val;
-+	else
-+		req->flags = val;
-+}
-+
-+struct bnxt_qplib_tlv_modify_cc_req {
-+	struct roce_tlv				tlv_hdr;
-+	struct cmdq_modify_roce_cc		base_req;
-+	__le64					tlvpad;
-+	struct cmdq_modify_roce_cc_gen1_tlv	ext_req;
-+};
-+
-+struct bnxt_qplib_tlv_query_rcc_sb {
-+	struct roce_tlv					tlv_hdr;
-+	struct creq_query_roce_cc_resp_sb		base_sb;
-+	struct creq_query_roce_cc_gen1_resp_sb_tlv	gen1_sb;
-+};
-+#endif /* __QPLIB_TLV_H__ */
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index 7403a4e..06979f7 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -49,6 +49,7 @@
+ #include "qplib_rcfw.h"
+ #include "qplib_sp.h"
+ #include "qplib_fp.h"
++#include "qplib_tlv.h"
+ 
+ static void bnxt_qplib_service_creq(struct tasklet_struct *t);
+ 
+@@ -101,7 +102,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 
+ 	pdev = rcfw->pdev;
+ 
+-	opcode = msg->req->opcode;
++	opcode = __get_cmdq_base_opcode(msg->req, msg->req_sz);
+ 	if (!test_bit(FIRMWARE_INITIALIZED_FLAG, &cmdq->flags) &&
+ 	    (opcode != CMDQ_BASE_OPCODE_QUERY_FUNC &&
+ 	     opcode != CMDQ_BASE_OPCODE_INITIALIZE_FW &&
+@@ -137,7 +138,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 		cookie |= RCFW_CMD_IS_BLOCKING;
+ 
+ 	set_bit(cbit, cmdq->cmdq_bitmap);
+-	msg->req->cookie = cpu_to_le16(cookie);
++	__set_cmdq_base_cookie(msg->req, msg->req_sz, cpu_to_le16(cookie));
+ 	crsqe = &rcfw->crsqe_tbl[cbit];
+ 	if (crsqe->resp) {
+ 		spin_unlock_irqrestore(&hwq->lock, flags);
+@@ -153,13 +154,12 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	memset(msg->resp, 0, sizeof(*msg->resp));
+ 	crsqe->resp = (struct creq_qp_event *)msg->resp;
+ 	crsqe->resp->cookie = msg->req->cookie;
+-	crsqe->req_size = msg->req->cmd_size;
+-	if (msg->req->resp_size && msg->sb) {
++	crsqe->req_size = __get_cmdq_base_cmd_size(msg->req, msg->req_sz);
++	if (__get_cmdq_base_resp_size(msg->req, msg->req_sz) && msg->sb) {
+ 		struct bnxt_qplib_rcfw_sbuf *sbuf = msg->sb;
+-
+-		msg->req->resp_addr = cpu_to_le64(sbuf->dma_addr);
+-		msg->req->resp_size = (sbuf->size + BNXT_QPLIB_CMDQE_UNITS - 1) /
+-				  BNXT_QPLIB_CMDQE_UNITS;
++		__set_cmdq_base_resp_addr(msg->req, msg->req_sz, cpu_to_le64(sbuf->dma_addr));
++		__set_cmdq_base_resp_size(msg->req, msg->req_sz,
++					  ALIGN(sbuf->size, BNXT_QPLIB_CMDQE_UNITS));
+ 	}
+ 
+ 	preq = (u8 *)msg->req;
+@@ -214,12 +214,12 @@ int bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
+ 		return 0;
+ 
+ 	do {
+-		opcode = msg->req->opcode;
++		opcode = __get_cmdq_base_opcode(msg->req, msg->req_sz);
+ 		rc = __send_message(rcfw, msg);
+-		cookie = le16_to_cpu(msg->req->cookie) & RCFW_MAX_COOKIE_VALUE;
++		cookie = le16_to_cpu(__get_cmdq_base_cookie(msg->req, msg->req_sz)) &
++				RCFW_MAX_COOKIE_VALUE;
+ 		if (!rc)
+ 			break;
+-
+ 		if (!retry_cnt || (rc != -EAGAIN && rc != -EBUSY)) {
+ 			/* send failed */
+ 			dev_err(&rcfw->pdev->dev, "cmdq[%#x]=%#x send failed\n",
 -- 
 2.5.5
 
 
---0000000000002ac00205f81af790
+--00000000000055286505f81af7f2
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -323,14 +218,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIADwbHBv5851
-w0v0Zbuo020pUsDTjJVpMaRIU/eDGTCGMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDMzMDA5NDYyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOEf56DqjVlm
+GvHT0yjveC/KEeK/DuTbWq9Q9AjH1z76MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDMzMDA5NDYyNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCP32l0m1GgdLgnL2w7MkZEJS0kvqAY
-eHuojI4gEhQQpbaTR+cj3FBGm9LmLHmoD/Kg/DdAYMFUolHiBHinKfnPga8VuBhJch/m6tUCu/NM
-N6ua01l16Pfm/k1mUwvx94+REUJe5yaClz8O1QaVFVE+gvzZn18Kz54wzAbazvtCKtY+FIsoETd3
-qp0gr+0cSA2m57t2CXMpAqzRZXlQj4SSwpQj0IOipSo8aMI3QNX8LKfg/zVRQENLrnHHsNHGpgoa
-bd2ou/IV1UjG3WWhXWyGehTM8qavYvyP3ywKAo3m//prQOYCxRTAIpd1CuiUy8u25IJhM2aeVawC
-3Mtn/mV3
---0000000000002ac00205f81af790--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBnCW59o/JK8s0VNOD3MeUMQ4FWZAN7
+EmNdYfjNed1Upoz28U53fOExGXwS1PZW6r2+in2oP7JUTobrzYigi5i3z/rEPG2tGuXOxfNa6seT
+y2jvr6RHL2Istu9iP0doeFzQfWxAFskRXQQVKC3NjKjrQ/trDXUGlEBxlZsRHH4vFQbq3zvJyB+M
+L3tGUvp6vCOSZcccXvuJCItXm4uV6jgBFtJHC0lw8uM56LCCKHvY6IvWfAix98OS52Cq21Qhg/Oy
+eJu9X2uSKtGsufJ+A7JYCMgN8wUmf8qxz3UQFDAw7MYNXDLyQjLT6h5imGGnYhdKGsdclee7CFwq
+XgKQ/Lvw
+--00000000000055286505f81af7f2--
