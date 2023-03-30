@@ -2,127 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 471276D062F
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Mar 2023 15:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257146D074F
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Mar 2023 15:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbjC3NNy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Mar 2023 09:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
+        id S230427AbjC3NwA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Mar 2023 09:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjC3NNw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Mar 2023 09:13:52 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2069.outbound.protection.outlook.com [40.107.223.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA42AF1D
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 06:13:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SfLYKtV4ft5Qg3YYqHuufAhu4iRYbrqr2rJJjZoa6pLbo7Xa4DdPlEj94RAXJKQRO8fYBIynVdsXFtNT6Nvzo294/Wq+vYLAAf4nOg7pXpOooysHe5APuVTWWfiGZZWJEROUscPQPG61Mm2qFAy/2IAOlgJFko1tBaiZW+FVnX6C7qPehyTaSYzq50I71jsomjf/q/7OA7tUiNNOX6ERTBedR9tkUbtNW8aDoCOzzQr1/VnJ1YNNSZ8PBmh/+j7kX9BnfUksNjvelV4IBpfb08640x0kMCsvPET1eVxxSA2mDNak7NbEotydggHCGLnNhkgz0W0C/KMmRrkr8yf0Ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=P6W8y2/d2QQJqS2g3SEgm4WE5Xlj2uDgwT4EPBVbxrA=;
- b=kR58AdmcQRekw776lrpp0iNPh6i53LfD7BUhyPKbopht3PUYp0lZ032GXUPVXY+PqRvbdKNQfKPzhqRp+aibIV7V0tR+b0X6InKkGMnniT4v+b1Nh++qeOhpsLoQg25wkPtxOQa5wM7UhMTP/v5dLBGT+yhgkqb8NiYUfoQ5F+zLeFpbeLoyFuSSwL8eJJauORjorea6pqpDt/gmrsN6TDRUTF+D73/CqB/McGBOWeIG8xvlHhdvh1e4UHnzBdHQoVYbfbGcNhCeUD1pNZa7lYnYrQdr1dKavAn3lpxboLy2VqoQhHY2dbD3QlxhLQBpBoKZHSZzJebRVjTMs06xwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=grimberg.me smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P6W8y2/d2QQJqS2g3SEgm4WE5Xlj2uDgwT4EPBVbxrA=;
- b=YeC2sGj2Z7uzrsSYcxjDzW+8xGUQg2MlHi+tou/BeN/X+56M5x9ModJGS3a30o/KVskwGqAULSFQ+hiYaOpLc6MCKu09Gfw4uzjcHZ95PDUZQ+4CS0eefRCvAyXlbWuCqZA1G3DcpJUObez4UlG0C01WNW9r6FK2TEdmx/RQGBrfzS3MILRg5n3qzrBJa7wtuEX60Daii06jb1DzwJA9zGKkrLo1OBkxePcKC9IQ9XQdbuXj1c0NgPdXgaluxQyTJNAaUSOgrCJWHdd9N8WMW/IDlj3BZrFFzXtD1VzubahXgE6uVPYntfXd/HA2WzhniVqWC+WRnW/H5xHDkXyWBQ==
-Received: from DM6PR13CA0047.namprd13.prod.outlook.com (2603:10b6:5:134::24)
- by MW6PR12MB8733.namprd12.prod.outlook.com (2603:10b6:303:24c::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6222.30; Thu, 30 Mar
- 2023 13:13:45 +0000
-Received: from DS1PEPF0000B076.namprd05.prod.outlook.com
- (2603:10b6:5:134:cafe::14) by DM6PR13CA0047.outlook.office365.com
- (2603:10b6:5:134::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.20 via Frontend
- Transport; Thu, 30 Mar 2023 13:13:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DS1PEPF0000B076.mail.protection.outlook.com (10.167.17.7) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6178.30 via Frontend Transport; Thu, 30 Mar 2023 13:13:44 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 30 Mar 2023
- 06:13:42 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Thu, 30 Mar 2023 06:13:41 -0700
-Received: from r-arch-stor03.mtr.labs.mlnx (10.127.8.14) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.986.37 via Frontend
- Transport; Thu, 30 Mar 2023 06:13:39 -0700
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-To:     <sagi@grimberg.me>, <leonro@nvidia.com>,
-        <linux-rdma@vger.kernel.org>, <jgg@nvidia.com>
-CC:     <israelr@nvidia.com>, <oren@nvidia.com>, <sergeygo@nvidia.com>,
-        "Max Gurtovoy" <mgurtovoy@nvidia.com>
-Subject: [PATCH 3/3] IB/iser: remove redundant new line
-Date:   Thu, 30 Mar 2023 16:13:33 +0300
-Message-ID: <20230330131333.37900-3-mgurtovoy@nvidia.com>
-X-Mailer: git-send-email 2.18.1
-In-Reply-To: <20230330131333.37900-1-mgurtovoy@nvidia.com>
-References: <20230330131333.37900-1-mgurtovoy@nvidia.com>
+        with ESMTP id S231618AbjC3Nv7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Mar 2023 09:51:59 -0400
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233C45598
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 06:51:55 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id l15-20020a05600c4f0f00b003ef6d684102so8175156wmq.3
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 06:51:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680184313; x=1682776313;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=dx+C2QiGXfNqHR7M1cuV5zjunaU96hGhvjBl3bER+U1xOQDbetM/jF7kj5XKawmLD1
+         HA71Ur1bf+TVjngyqn46d9d67dz2gDABVueV3a8SL9XdIo2dwpP0Q8HrEHq7IYfAKRrh
+         xMMe4U1W4XbDraKEO40ySXzzkrUcPvAz7qmq9Z7bFv2IhiZcjoSoOAxjEiGVPktWtjm2
+         DiAapTK7kz3/Mtyi03rlF4PSb1dji+x9fJayRxiAuWNMsm3yMiVID5y93Mkot4mTrCZd
+         44cZJUpDD0XtxRqX0cHoeJ4hMH8tMKnfTl1JNPmHzAx3H1HklOrEEpavaHmlWTUPS1Yg
+         AljA==
+X-Gm-Message-State: AAQBX9eafRdhD4jLUJq4S2Jyo/oQ29Sir/fEX2LO11/QYaJaMSPTFEQx
+        QjLLhlJNRXdz3Mnay4maM+M=
+X-Google-Smtp-Source: AKy350Y/IlypsBm7tsBXwT/rNGGpVX1QsdnpnymCT01grApKSTONb1djLyZjom0qOp9v2x4s4dtRYQ==
+X-Received: by 2002:a05:600c:1d13:b0:3e8:7ca3:8424 with SMTP id l19-20020a05600c1d1300b003e87ca38424mr1987468wms.1.1680184313541;
+        Thu, 30 Mar 2023 06:51:53 -0700 (PDT)
+Received: from [10.100.102.14] (85.65.206.11.dynamic.barak-online.net. [85.65.206.11])
+        by smtp.gmail.com with ESMTPSA id p5-20020a1c7405000000b003eb596cbc54sm5969551wmc.0.2023.03.30.06.51.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Mar 2023 06:51:53 -0700 (PDT)
+Message-ID: <82ed8b38-c659-05d5-b140-0323747f7f36@grimberg.me>
+Date:   Thu, 30 Mar 2023 16:51:52 +0300
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF0000B076:EE_|MW6PR12MB8733:EE_
-X-MS-Office365-Filtering-Correlation-Id: 23218639-7ad4-4358-4527-08db31209730
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QuvpJ37V9VkWYB8xNkC4QIdQEULocVssKV0/LrNqycfANUlQf168Tfkw0vOIFEyxVZIa7CYBZ1Uu3NICLu4uJByOyTQdS5xkAaAp7zVYvp7KX6RLCtLRWzE35e3Ow61RD2BOfAaIFn9h/B9+YnoHT0y1YVblhahjNa9R3yXwTJxWW+GdPZWIgtTvMmDqPBao13UqjfZ4S1lcYkWvgptm89AXC783GAC75pPnX7zxk59qxNkUR4cXPjwGYaWy+eU1EKLpO6mBvKIVoBBoXeRumzDeNxWiiXmzZ0iRKTEd2w5PcxsKI0+yuf23zsB9Hk9CA14Fzvt9zDt12dRKASH4f4fCSjVMWnd8C6sCQ+qyX0Q3PRHoj4NefAg9ZTEzmLVeOcKW8XwkgYHxG3jUsZ3/3ngqRbXrzNu7XwZ6MNTIYQ9q2R9zeUFh9VWKJjSR5y7FwHnyfcCxM322tG2RiXswuOI2UFV4q7ToL7tBQ4AfnkB/CkUe+HZ7J9Td7ab6b3Xrz2QIIKhrOj8kvT+RUmc3h+TNEW9+7Bj4yYzkLv2QQfPr4I9YOZhTcgfHygWc3J9YQSbHf9Z1t/WMxu1JppQ50bN0tPohKfWnmZw7D5gTGLDe0kRgF5dgFPcgBVgsHKLl+FN2X7weTAA39SCuvLR3gMI/RV6uxK4AcQBI7SfdyigFZLT/6/jm4JHaSKj5WXbSee9gGm8h9zWlsw15VvewV4hJgKVd50sey+2w8uuEl5+vvvYtBJ1+eO8RV6iqagObhPA8GDCpZm2Ry4t5nrM6Sw==
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(346002)(136003)(376002)(451199021)(40470700004)(46966006)(36840700001)(1076003)(316002)(26005)(47076005)(107886003)(110136005)(6666004)(54906003)(4326008)(6636002)(186003)(70586007)(8676002)(70206006)(478600001)(36860700001)(41300700001)(82740400003)(4744005)(356005)(5660300002)(7636003)(36756003)(2906002)(40460700003)(83380400001)(40480700001)(2616005)(336012)(426003)(86362001)(8936002)(82310400005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2023 13:13:44.7044
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23218639-7ad4-4358-4527-08db31209730
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF0000B076.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8733
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 1/3] IB/iser: remove unused macros
+Content-Language: en-US
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>, leonro@nvidia.com,
+        linux-rdma@vger.kernel.org, jgg@nvidia.com
+Cc:     israelr@nvidia.com, oren@nvidia.com, sergeygo@nvidia.com
+References: <20230330131333.37900-1-mgurtovoy@nvidia.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20230330131333.37900-1-mgurtovoy@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.5 required=5.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This commit doesn't change any logic.
-
-Reviewed-by: Sergey Gorenko <sergeygo@nvidia.com>
-Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
----
- drivers/infiniband/ulp/iser/iser_initiator.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/infiniband/ulp/iser/iser_initiator.c b/drivers/infiniband/ulp/iser/iser_initiator.c
-index 354928408399..39ea73f69016 100644
---- a/drivers/infiniband/ulp/iser/iser_initiator.c
-+++ b/drivers/infiniband/ulp/iser/iser_initiator.c
-@@ -460,7 +460,6 @@ int iser_send_data_out(struct iscsi_conn *conn, struct iscsi_task *task,
- 	iser_dbg("data-out itt: %d, offset: %ld, sz: %ld\n",
- 		 itt, buf_offset, data_seg_len);
- 
--
- 	err = iser_post_send(&iser_conn->ib_conn, tx_desc);
- 	if (!err)
- 		return 0;
--- 
-2.18.1
-
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
