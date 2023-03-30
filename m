@@ -2,112 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8764D6D1361
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 01:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE50E6D13CE
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 01:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbjC3XjU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Mar 2023 19:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
+        id S231521AbjC3X6x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Mar 2023 19:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbjC3XjS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Mar 2023 19:39:18 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B644EA27A
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 16:39:17 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id m16so15262741qvi.12
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 16:39:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1680219557;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ySdXcyCl4jss1/HoCykrtGsTlf7azWh5rmfqZoRs+c=;
-        b=G9wN/HHm6gvzmfhV3SBS2/U+SW40WZ+TUfZVES/A7lG/tLtvdl9JOcF1Gezf4ZY1Wb
-         y4fk8hEWu2mKrgHI0DJDoZILiQsTT5HJk4S9fu1FXpuKmuylouuyAwjiq6s6YEEeVegr
-         cacB2GI1D58DEev390xU14Ixr/xrT0OQffC/s1YO9L6RCCyrzzHw9bV81LeT2miqkLAq
-         czsQyfNvArHcRV+ZSRZ/fteaJuFhGma29goWPgNKI5XnPt4d+NvLGQ7dywvufMjNSJUC
-         qroPZJvuWYtXsVcbi6Rfypwtri43W4TQoMeAQEXTOqJU4fF1IYOlyGXH6tNFtpt/dKTr
-         we1Q==
+        with ESMTP id S230340AbjC3X6w (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Mar 2023 19:58:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1B5B776
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 16:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680220686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1xy3Si82hsoX5OufaGVk7KtbhEZkZn8SmKdNVmGxaE4=;
+        b=OrGN1BMQOiKv9ktrVZudB8vMqBUy+HTx3Ws/L6U+FoRkqNMKDR95GFr8SwHQUGJjxAX98B
+        2cDhriWaVkSnRifAXAPtthm70uOwYjjxSBn+jkqz/DYHKtfGaqtBu0ZTo1CaPn5Yd8nmap
+        tQmHWb5RvN7tpQCb2B0vR4a7DropQGI=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-591-f7hI2xaQNpGAoMqQzsj4TQ-1; Thu, 30 Mar 2023 19:58:04 -0400
+X-MC-Unique: f7hI2xaQNpGAoMqQzsj4TQ-1
+Received: by mail-qv1-f70.google.com with SMTP id y19-20020ad445b3000000b005a5123cb627so9017291qvu.20
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 16:58:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680219557;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3ySdXcyCl4jss1/HoCykrtGsTlf7azWh5rmfqZoRs+c=;
-        b=j59WpwCovh7xuiTcd8HWqZlWAc6PBS52SO1WF3f3+9cA9UIeQOukgrD/bUBzdv8Ssa
-         d4XnqN8lDldgXe4TiAMjAu2obrJ3uryh5XXC+LTK+yUWLowxroPw1CmmVFyxwopmQH2n
-         jbxHRX023LCN0naQ/NoU7La1NkA2QnBzvxAu2hFH+kGRuI+vgZh78QqwKHO8+pH1yV2M
-         3o9IOgWyKpo18v2wQwZWYUMn0WXWyLyDO8e+44L70jVSeqAh6s718yMdFmMm3LNBguW3
-         x4InqFP24LPgjzI7K//Ko89gJMbKVmkrN/Xu0bude64l9nhvFM/vnne/POxRIxksFhfJ
-         PNIA==
-X-Gm-Message-State: AAQBX9dXxq3dCVSp2rVs+1n49ov1/rxEd84Sg66t+gFzyAvbgegdM43z
-        HrvUAzApJP1ubu2s3kzTrJGoKE8oa77Cw/3IO4A=
-X-Google-Smtp-Source: AKy350ZtocP6HQMspn4mTiZQ807RDdc9KCBZC31jC3xHthPIg267UdmU/1VyXRineUV/FY7YtidPhA==
-X-Received: by 2002:a05:6214:240a:b0:56e:f9a2:3eba with SMTP id fv10-20020a056214240a00b0056ef9a23ebamr44679064qvb.41.1680219556843;
-        Thu, 30 Mar 2023 16:39:16 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id dg15-20020a056214084f00b005dd8b9345afsm191821qvb.71.2023.03.30.16.39.15
+        d=1e100.net; s=20210112; t=1680220683;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1xy3Si82hsoX5OufaGVk7KtbhEZkZn8SmKdNVmGxaE4=;
+        b=lW7LwMX5IcT1u2WXcQlLlfRiTpymPwDfw4CgcX2VtuGuiJa7sx8ydw+H9dlO8cVA9u
+         KGCk2o6Se61gvRiNnct3GBpAD1uZ3lXOEBDgqOx6wXv3y5CIkAMteQpkbp2u2/0+l09n
+         PgxzHvKc/A3/yDM6rsGKRdwnktIV/SvQl+0GE48pXI2ycWysAxK9G37u3LrS0etDpMCe
+         Ll/HKsRmFcq0yLhoqoS8V92impaWFtLJag6RqLDsX008mXdRerHsoddBv7WEq5Nqz5bt
+         3XvIcyMEZAxTHN7tO9R2QJ4bgtA0/pv63eDKWw9pkSB6yALcj2L07jfWZhVy3iSlABY6
+         jsog==
+X-Gm-Message-State: AO0yUKXR3ccP4EgJSIfxTcIrl2kdUg8h5xfmj1LR8IzyaLmvGLcY/g0l
+        wA5WxXCl7sRHUlGZIWovNQ9Eg2GGI1KzdPf7d1fHym17OQfdN/FKGoTK6pUqmoNipbiMe+hM80e
+        Fe02Cx9zCBUwRr2cwqUFQ0w==
+X-Received: by 2002:ac8:5a81:0:b0:3e3:9532:fa06 with SMTP id c1-20020ac85a81000000b003e39532fa06mr41800170qtc.45.1680220683459;
+        Thu, 30 Mar 2023 16:58:03 -0700 (PDT)
+X-Google-Smtp-Source: AK7set+jNIid0RKyvmGE9Vcm0M+oEDEwii4d1YpbtTLE1M5k3iMBeqHTdXCI512CI6VH0VLZqDCgMg==
+X-Received: by 2002:ac8:5a81:0:b0:3e3:9532:fa06 with SMTP id c1-20020ac85a81000000b003e39532fa06mr41800149qtc.45.1680220683222;
+        Thu, 30 Mar 2023 16:58:03 -0700 (PDT)
+Received: from dell-per740-01.7a2m.lab.eng.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id i2-20020ac84882000000b003d5aae2182dsm229182qtq.29.2023.03.30.16.58.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 16:39:16 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1pi1rP-005CNR-CM;
-        Thu, 30 Mar 2023 20:39:15 -0300
-Date:   Thu, 30 Mar 2023 20:39:15 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] RDMA: don't ignore client->add() failures
-Message-ID: <ZCYdo8pcS947JOgI@ziepe.ca>
-References: <0e031582-aed6-58ee-3477-6d787f06560a@I-love.SAKURA.ne.jp>
- <ZCLOYznKQQKfoqzI@ziepe.ca>
- <a9960371-ef94-de6e-466f-0922a5e3acf3@I-love.SAKURA.ne.jp>
- <ZCLQ0XVSKVHV1MB2@ziepe.ca>
- <ec025592-3390-cf4f-ed03-c3c6c43d9310@I-love.SAKURA.ne.jp>
- <ZCMTZWdY7D7mxJuE@ziepe.ca>
- <d2dfb901-50b1-8e34-8217-d29e63f421c7@I-love.SAKURA.ne.jp>
- <ZCRc5S9QGZqcZhNg@ziepe.ca>
- <9186f5f5-2f88-1247-2d24-61d090a1da83@I-love.SAKURA.ne.jp>
+        Thu, 30 Mar 2023 16:58:02 -0700 (PDT)
+From:   Tom Rix <trix@redhat.com>
+To:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+        leon@kernel.org, nathan@kernel.org, ndesaulniers@google.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Tom Rix <trix@redhat.com>
+Subject: [PATCH] IB/qib: remove unused cnt variable
+Date:   Thu, 30 Mar 2023 19:58:00 -0400
+Message-Id: <20230330235800.1845815-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9186f5f5-2f88-1247-2d24-61d090a1da83@I-love.SAKURA.ne.jp>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 30, 2023 at 08:51:44AM +0900, Tetsuo Handa wrote:
-> On 2023/03/30 0:44, Jason Gunthorpe wrote:
-> >> The caller of ib_register_device() (i.e. siw_device_register() from
-> >> siw_newlink()) is assuming that somebody will call __ib_unregister_device(),
-> >> but nobody is calling __ib_unregister_device().
-> > 
-> > On the success path this stuff happens during dellink
-> > 
-> 
-> "struct rdma_link_ops" has "newlink" callback but does not have "dellink" callback.
-> "struct rtnl_link_ops" has both "newlink" callback and "dellink" callback, but
-> only ipoib_netlink.c defines it inside drivers/infiniband/ directory.
-> 
-> Where is the dellink you are talking about?
-> I'm not familiar with rdma code. Please explain using specific function/symbol names.
+clang with W=1 reports
+drivers/infiniband/hw/qib/qib_file_ops.c:487:20: error: variable
+  'cnt' set but not used [-Werror,-Wunused-but-set-variable]
+        u32 tid, ctxttid, cnt, limit, tidcnt;
+                          ^
+drivers/infiniband/hw/qib/qib_file_ops.c:1771:9: error: variable
+  'cnt' set but not used [-Werror,-Wunused-but-set-variable]
+        int i, cnt = 0, maxtid = ctxt_tidbase + dd->rcvtidcnt;
+               ^
+This variable is not used so remove it.
 
-Your test code deletes a vlan
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/infiniband/hw/qib/qib_file_ops.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-If SIW is attached to a vlan then SIW will destroy itself based on a
-net notifier
+diff --git a/drivers/infiniband/hw/qib/qib_file_ops.c b/drivers/infiniband/hw/qib/qib_file_ops.c
+index 108520e53928..bf0c90eb3129 100644
+--- a/drivers/infiniband/hw/qib/qib_file_ops.c
++++ b/drivers/infiniband/hw/qib/qib_file_ops.c
+@@ -484,7 +484,7 @@ static int qib_tid_free(struct qib_ctxtdata *rcd, unsigned subctxt,
+ 			const struct qib_tid_info *ti)
+ {
+ 	int ret = 0;
+-	u32 tid, ctxttid, cnt, limit, tidcnt;
++	u32 tid, ctxttid, limit, tidcnt;
+ 	struct qib_devdata *dd = rcd->dd;
+ 	u64 __iomem *tidbase;
+ 	unsigned long tidmap[8];
+@@ -520,7 +520,7 @@ static int qib_tid_free(struct qib_ctxtdata *rcd, unsigned subctxt,
+ 		/* just in case size changes in future */
+ 		limit = tidcnt;
+ 	tid = find_first_bit(tidmap, limit);
+-	for (cnt = 0; tid < limit; tid++) {
++	for (; tid < limit; tid++) {
+ 		/*
+ 		 * small optimization; if we detect a run of 3 or so without
+ 		 * any set, use find_first_bit again.  That's mainly to
+@@ -530,7 +530,7 @@ static int qib_tid_free(struct qib_ctxtdata *rcd, unsigned subctxt,
+ 		 */
+ 		if (!test_bit(tid, tidmap))
+ 			continue;
+-		cnt++;
++
+ 		if (dd->pageshadow[ctxttid + tid]) {
+ 			struct page *p;
+ 			dma_addr_t phys;
+@@ -1768,7 +1768,7 @@ static void unlock_expected_tids(struct qib_ctxtdata *rcd)
+ {
+ 	struct qib_devdata *dd = rcd->dd;
+ 	int ctxt_tidbase = rcd->ctxt * dd->rcvtidcnt;
+-	int i, cnt = 0, maxtid = ctxt_tidbase + dd->rcvtidcnt;
++	int i, maxtid = ctxt_tidbase + dd->rcvtidcnt;
+ 
+ 	for (i = ctxt_tidbase; i < maxtid; i++) {
+ 		struct page *p = dd->pageshadow[i];
+@@ -1783,7 +1783,6 @@ static void unlock_expected_tids(struct qib_ctxtdata *rcd)
+ 		dma_unmap_page(&dd->pcidev->dev, phys, PAGE_SIZE,
+ 			       DMA_FROM_DEVICE);
+ 		qib_release_user_pages(&p, 1);
+-		cnt++;
+ 	}
+ }
+ 
+-- 
+2.27.0
 
-Look at siw_netdev_event:
-
-	case NETDEV_UNREGISTER:
-		ib_unregister_device_queued(&sdev->base_dev);
-		break;
-
-Jason
