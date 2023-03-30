@@ -2,63 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A00FF6D001F
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Mar 2023 11:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8356D044D
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Mar 2023 14:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjC3Jrh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Mar 2023 05:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
+        id S229640AbjC3MG3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Mar 2023 08:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjC3JrH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Mar 2023 05:47:07 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941C083FF
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 02:46:31 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id x15so16723617pjk.2
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 02:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1680169588;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZyAHktSP2IgO6TJxLwGKfdiR2FP9TPKr3/SD1q4sSjA=;
-        b=BlcRKUWYKL/Fo/K0sH8+7DPVdKaq+runKbkz+wSiGo/Ia7CU5VpJunMPpqS+RDADlO
-         N5u9e5kME+jPsQltzQfSCuPn1bLkfrm1Mr/umOQhffbc4suYwcjyTiIrrU30bpdE1Qud
-         yuXGwFbMtipuYO2xeXF9Ck4iqDGRTBtMAeP0s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680169588;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZyAHktSP2IgO6TJxLwGKfdiR2FP9TPKr3/SD1q4sSjA=;
-        b=yWjCqBWaM+PvU3dL6+MrqZ8wDjCIhbklNPE1dKbQznJun4Ho986bw78GV27ewgMkg8
-         ebhEjWpf/Mhc0ZA5hKhjPx46IQHfPkFah3FfM8A//SmEGS6i5GqqHNJ30rMf4GycQW42
-         iP11ekUhIarIzx8irs/s9qMWHY07JrfA8z50Se3zPkQu99Cy3slQHEWf3rm6iaYmV1DN
-         0QjUunJ+nAg5zPpXJ4HzTUTsCYvttxBf10B1cCZt7bOekW7pW2QHuSgHFMVDrj2cg2Rf
-         wOTD+HIyCyBegBlZ0M+JcvZlCCt3AwmgUTdDljnrlfTxBXGJ1iE7WEIEGq+KovWqF9EJ
-         bdVA==
-X-Gm-Message-State: AO0yUKVNqZjLBOTgHmceZqYIwNoZW4GW15JXJNZCAQFm2Q/o/5WtVntG
-        xdd3qWLU6rTwzltGDEB0G9iVxA==
-X-Google-Smtp-Source: AK7set+7crZMbE40BCJuNA7V7VmlRgkZtIxJOpZFWgiGgQze2h5W4aDBMuW3RzyG56suPSwgvZoqDw==
-X-Received: by 2002:a05:6a20:8c14:b0:db:da69:3deb with SMTP id j20-20020a056a208c1400b000dbda693debmr18412415pzh.21.1680169588430;
-        Thu, 30 Mar 2023 02:46:28 -0700 (PDT)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id c26-20020aa78e1a000000b00625616f59a1sm24468857pfr.73.2023.03.30.02.46.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Mar 2023 02:46:27 -0700 (PDT)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v3 7/7] RDMA/bnxt_re: Enable congestion control by default
-Date:   Thu, 30 Mar 2023 02:45:40 -0700
-Message-Id: <1680169540-10029-8-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1680169540-10029-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1680169540-10029-1-git-send-email-selvin.xavier@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000008229c305f81af774"
-X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_HEADER_CTYPE_ONLY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_TVD_MIME_NO_HEADERS
+        with ESMTP id S230286AbjC3MG3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Mar 2023 08:06:29 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B164204
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 05:06:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QRQmAQgs5D6W3NR77drfw58W7slNlaYWIweQwYrgBreBaZI3vQIhwyio6B2L68MrKxBDfmznpQ4lonGmSun4vTE/rc09WEQKrrLf9WzKiuDVgmLVwd+gAvomAeVXKUspgq0fgzPOsnkNWYTyVe/aOnwpUBx8d6EWI0eCT+Dol6R+vE58i/CE19Z1m7BEHALRnd963V/dA/iAKdoWCIza38FmpSTeMaq23+rAkFdLL/UOBROUt4i/eshSHLXaig/IKymTBJLXn9i823bLapOo19R05lbYQEpA9oVuLfpPkjhwI1cyl8L480AVFOqOvnjNv9nTXimZ+ju3UcFLnJiU1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=y27dv2oLegFYwjR42q6gQvyy5qSgJEL96fWZHAwARw4=;
+ b=UAgxtGWxEjuOUBGBM3Y3pFtyin7rDrPMhNnD0LNLR46sGdGPGdpfuprlq2r1KG7H+BLiJCqkhO3lF1WjAPqpSaVx/TVRYZNPF6lvDftOtY9hhpGQJJBjlzh/4OEG8u5H8PqWIPucLmV8RwF+xTRPcR7uTpWUMSWFyog9WlTNXnPbmUqu1BrRRXbKXoELYLGrF01pXeom2YbnVgJZJHrx+VbpRw86oK/adDJ9/KYMOcxO//YEt8/gVIzV7k/rW1wCL72gvB15PDoUZbqq0yhpLw/HIa3SY6FUyolozD6y3lMZlRbw4ANlE90yHrytTA5YbEK4lyWpo5wH5Bipz3Wbow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y27dv2oLegFYwjR42q6gQvyy5qSgJEL96fWZHAwARw4=;
+ b=tpF6RpsGgiHdrdqPoZVUaBMO/yXQSIiHNcDHoZjejMyclHUmQyBXVY8kJSjJQg05ofTGB9IJ50vDJhJCo+JQGMRroS9uyQIBthfWibiE4xalhcPpxsf66QHGOUbKPaB7G0BILRH1i2FxM7+v+WePkrL0vv2hx0BOs8VAlKPstdqhdgKOi64lili6bv5XR4kZwlFLO3C9Zue/UkCBLZp0331+fBmhDzZq+NmtDxGf2YM8Pen1ZUwnrxjPb410zCke5mHfMhDDBrmnrX9mPTPMrPSqNsulMD8pPHo13EzwEP3FaZpDnWSoModObWhH+Czvb3coE5Q2p3qdK/bPLzvfpQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DS7PR12MB6288.namprd12.prod.outlook.com (2603:10b6:8:93::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6254.20; Thu, 30 Mar 2023 12:06:25 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::ef6d:fdf6:352f:efd1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::ef6d:fdf6:352f:efd1%3]) with mapi id 15.20.6178.037; Thu, 30 Mar 2023
+ 12:06:25 +0000
+Date:   Thu, 30 Mar 2023 09:06:23 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Bernard Metzler <BMT@zurich.ibm.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/rxe: Pass a pointer to virt_to_page()
+Message-ID: <ZCV7PwYwLVXGS202@nvidia.com>
+References: <20230324103252.712107-1-linus.walleij@linaro.org>
+ <ZB2s3GeaN/FBpR5K@nvidia.com>
+ <CACRpkdYTynQS3XwW8j_vamb7wcRwu0Ji1ZZ-HDDs0wQQy4SRzA@mail.gmail.com>
+ <ZCTGw3+9rYQAmlJS@nvidia.com>
+ <66639a8e-e8b8-64b4-5b04-dec357db86a8@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66639a8e-e8b8-64b4-5b04-dec357db86a8@gmail.com>
+X-ClientProxiedBy: BLAP220CA0018.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:32c::23) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS7PR12MB6288:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b9d0f94-19c0-498b-2ccd-08db31172f42
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aGeAjEZnhv0lC+Mgzg0x92n4HUGomX2SeONYUjdoekjI7EFygqHGj9F/ua3zC1NWfH/MbZ7BZOsLa+kXLLnS+unNCAPh/eU+QogNaOZqvxAqVFMb1OeLJxAFlbY7+fLLNKPevuas03C7LUj84CimAdP3TVDi7YUVUVbdX0gbZ/HvLpuIUdUAlOGUa3DKbQX6N5tHyG+0XP+6fa7ga1ydDOhsr7EVeG1ppP3EiH7BXSdwGmqIiAspDB4ygegFWy7Tg9qAOi6NAQvVs0OhCnq1XaW1FmueLYWKnOb75UV4LisLRy6k0JfKvSEYfS3v61pPz6sRNzQKcra67lmdE1yuoiAgZHqlXaOeT+czVVA71vrSGi972J03cfD7WhUZrdzJ+j1IJWXVqUHKisZvJES/1TReghl1+29VsMINu3LES98O8a2wRX2FNcrQNBjlyGzwMVbzuugsJQA48XJjyLCQ1hdYBIDEXvz+2N90l0dVFIgracLrAmqRdVbgLya5NQTYO0o0VxnDKr1P44wb/bJDOTXyxPy68HXs/6dgZW3WqZO7s9qvu1q1aPB+p0yVnKDl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(39860400002)(396003)(136003)(376002)(451199021)(4326008)(41300700001)(6916009)(6486002)(54906003)(8676002)(2906002)(5660300002)(8936002)(66556008)(478600001)(53546011)(6512007)(26005)(6506007)(86362001)(38100700002)(186003)(36756003)(66476007)(316002)(2616005)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ehqWG3y0Lmc90nYzIVRz1d2VSPaIEussAtQI4r9aZTD5Ha89t33RmG7vh9zs?=
+ =?us-ascii?Q?ZkaQ8kkEet3/L7a7PoFPWKC1tNB/PloOlP96hz93e1QcwyBR5eWh/WPT4Y1t?=
+ =?us-ascii?Q?9Cxw1ieZeGvSsViU/jhfW7vuMPGay9hhX+qDN6z3RXiG7dUYyVMoaOR7b8Tj?=
+ =?us-ascii?Q?6yfm487YYUM9JqtFBYMd3l+EEfr0WhoGzx2zKwmf3Yv4ihdtHP0i16l7i0oT?=
+ =?us-ascii?Q?yIAyBZAdH8SOjUNihisH9U4qgJifeO21ToZwM8eif44pkF3eb2UaLcHr6KUT?=
+ =?us-ascii?Q?8IEFOtV8IlUEu9syVN+cy+300r56YtGkD0QpOcACdFXhpSrSkv1EzG4B2uTf?=
+ =?us-ascii?Q?kdued49YphiJqilO09sCmjpZ18CdTnLexWJOmyKgkUxa7i8l4kpW5YaoJYZu?=
+ =?us-ascii?Q?jUzK2P6Uk7KD4f2Yfe/U3H1eSEHWVlrPq+k3W8G7EsNLofR5I5+Cs/Xd5rS8?=
+ =?us-ascii?Q?bpPaByOo0FF+EHKM7Cv04vIfvs6/OICxIfK2EDp86uCUa9tJmzsIWcWJQwNy?=
+ =?us-ascii?Q?+XQtt1qsKEvPSRC3scba6BUyfi1QdA5mZ2VfaOOGvpmUjAJRzZGe9hkYKolm?=
+ =?us-ascii?Q?Rba4Aqs1OC4XxWOFebzW1iWDBJQyvcSXKfVwOukxRaPCSL59x4ruxD85VCt8?=
+ =?us-ascii?Q?7asVVkmLtAgKh0WWrYsaT1X5wjKVGF3Zp59N/m0WRU0e9TRnQjRV5M0xGvqr?=
+ =?us-ascii?Q?z00Sv6z4dxHq3/m2yAEHHGAlX5EggBmRlHdbTf1MtoDbLI6yf2AxqCRcwmG+?=
+ =?us-ascii?Q?rg08snuDGU7aZ2UdYI82h2i9ALA9BOvbCE4JzpbnV3PWcogzfTaa1WBs9LsC?=
+ =?us-ascii?Q?0xGmlGRqrfZz5aZoUKTRLo21eTugJ/Lewu5dWsq48Mchmf60sfx0U1NeCeya?=
+ =?us-ascii?Q?BaqZUsmOUfGL3RR9Ea3e5vgd6tAIAcl7epVVEzFfFbk2uO4s7bQBuzcm34RK?=
+ =?us-ascii?Q?O2BogcyJLrzWJm4QM98UEr9rkp/IMqB3C/RhgJUF16V/5NzWlel8pV59KKJI?=
+ =?us-ascii?Q?EiuL4o+HENGiyst/7xnVEehYCh52bSn6wSJtrt3GFbQEK1o2ikzoalLx2wGp?=
+ =?us-ascii?Q?XkdB90X7LkmL1vu57eFWJRUihosOahUc5wskB/k9ceiuEx82ND63jnxmWGlz?=
+ =?us-ascii?Q?feMINROyHrq10FwV9xK+q1hkx/6K/XbHTfbUgCEMOlqlLqTy+8Lv6Y+rBPhb?=
+ =?us-ascii?Q?gnAuLZesciezyFTFXQCFsiDSYlpZKlBjXzyvx2XcTVjcKL6kexGzxXBiFhUi?=
+ =?us-ascii?Q?0KbImBvyVX0Q12JYujQRvHlaf++IwOBigeSXNx3SLQA2u23dhuTq9CP05zUK?=
+ =?us-ascii?Q?MmYgx6tl2o/RHr8L9nX/JvkUHLJ5DZSXUGWX0HbhLj7k6DPgpQwJAKG072Iw?=
+ =?us-ascii?Q?HHJ2YKjXjtQD3BE2aql3RZxxh3B4bsrtHkF6cxcbmdmk4orWCkuJrKQEhW4p?=
+ =?us-ascii?Q?IURs4Zp4+AE4ptjjoBu/bMOmB6ZK1Z/IcbamAYdrClxZ3uG5FkS5srSm9j4P?=
+ =?us-ascii?Q?h0E46RmBKEigRRTe6yWnCap2NXcgjWGHT97asm+NKU1TGt0NzVFHivR/y6Zr?=
+ =?us-ascii?Q?117VlJpQXwEjXEP1BCcUiTaQ4pYnbHN/vp28NTe0?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b9d0f94-19c0-498b-2ccd-08db31172f42
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2023 12:06:25.1025
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CulvRxkps4mlTb6C7yxLVIAizwmuRtGCHMiwbq0/8zccJTb9Ym41VdEOxtflJb1j
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6288
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,450 +117,31 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000008229c305f81af774
+On Wed, Mar 29, 2023 at 09:45:45PM -0500, Bob Pearson wrote:
+> On 3/29/23 18:16, Jason Gunthorpe wrote:
+> > On Wed, Mar 29, 2023 at 04:28:08PM +0200, Linus Walleij wrote:
+> > 
+> >> I'm a bit puzzled: could the above code (which exist in
+> >> three instances in the driver) even work as it is? Or is it not used?
+> >> Or is there some failover from DMA to something else that is constantly
+> >> happening?
+> > 
+> > The physical address dma type IB_MR_TYPE_DMA is rarely used and maybe
+> > nobody ever tested it, at least in a configuration where kva != pa
+> > 
+> > Then again, maybe I got it wrong and it is still a kva in this case
+> > because it is still ultimately DMA mapped when using IB_MR_TYPE_DMA?
+> > 
+> > Bob?
+> > 
+> > Jason
+> 
+> In the amd64 environment I use to dev and test there is no difference AFAIK.
+> I have to go on faith that other platforms work but have very little experience.
 
-Enable Congesion control by default. Issue FW command
-enable the CC during driver load and disable it during
-unload.
+Honestly, I would be much happier if the virtual wrappers used
+physical not kva :\ But that is too much to ask
 
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
-v2->v3:
- - Fix sparse warning related to cookie setting
+So I suspsect I got it wrong and it is a kva still
 
- drivers/infiniband/hw/bnxt_re/main.c       |  24 ++++++-
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  15 ++--
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  20 ++++--
- drivers/infiniband/hw/bnxt_re/qplib_sp.c   | 109 +++++++++++++++++++++++++++++
- drivers/infiniband/hw/bnxt_re/qplib_sp.h   |  67 ++++++++++++++++++
- 5 files changed, 222 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 4aa3442..b9e2f89 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1332,6 +1332,27 @@ static int bnxt_re_add_device(struct auxiliary_device *adev, u8 wqe_mode)
- 	return rc;
- }
- 
-+static void bnxt_re_setup_cc(struct bnxt_re_dev *rdev, bool enable)
-+{
-+	struct bnxt_qplib_cc_param cc_param = {};
-+
-+	/* Currently enabling only for GenP5 adapters */
-+	if (!bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx))
-+		return;
-+
-+	if (enable) {
-+		cc_param.enable  = 1;
-+		cc_param.cc_mode = CMDQ_MODIFY_ROCE_CC_CC_MODE_PROBABILISTIC_CC_MODE;
-+	}
-+
-+	cc_param.mask = (CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_CC_MODE |
-+			 CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_ENABLE_CC |
-+			 CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_TOS_ECN);
-+
-+	if (bnxt_qplib_modify_cc(&rdev->qplib_res, &cc_param))
-+		ibdev_err(&rdev->ibdev, "Failed to setup CC enable = %d\n", enable);
-+}
-+
- /*
-  * "Notifier chain callback can be invoked for the same chain from
-  * different CPUs at the same time".
-@@ -1400,7 +1421,7 @@ static void bnxt_re_remove(struct auxiliary_device *adev)
- 		 */
- 		goto skip_remove;
- 	}
--
-+	bnxt_re_setup_cc(rdev, false);
- 	ib_unregister_device(&rdev->ibdev);
- 	ib_dealloc_device(&rdev->ibdev);
- 	bnxt_re_dev_uninit(rdev);
-@@ -1432,6 +1453,7 @@ static int bnxt_re_probe(struct auxiliary_device *adev,
- 		goto err;
- 	}
- 
-+	bnxt_re_setup_cc(rdev, true);
- 	mutex_unlock(&bnxt_re_mutex);
- 	return 0;
- 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 06979f7..de90691 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -96,7 +96,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
- 	u32 sw_prod, cmdq_prod;
- 	struct pci_dev *pdev;
- 	unsigned long flags;
--	u32 size, opcode;
-+	u32 bsize, opcode;
- 	u16 cookie, cbit;
- 	u8 *preq;
- 
-@@ -145,15 +145,14 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
- 		return -EBUSY;
- 	}
- 
--	size = msg->req->cmd_size;
- 	/* change the cmd_size to the number of 16byte cmdq unit.
- 	 * req->cmd_size is modified here
- 	 */
--	bnxt_qplib_set_cmd_slots(msg->req);
-+	bsize = bnxt_qplib_set_cmd_slots(msg->req);
- 
- 	memset(msg->resp, 0, sizeof(*msg->resp));
- 	crsqe->resp = (struct creq_qp_event *)msg->resp;
--	crsqe->resp->cookie = msg->req->cookie;
-+	crsqe->resp->cookie = cpu_to_le16(cookie);
- 	crsqe->req_size = __get_cmdq_base_cmd_size(msg->req, msg->req_sz);
- 	if (__get_cmdq_base_resp_size(msg->req, msg->req_sz) && msg->sb) {
- 		struct bnxt_qplib_rcfw_sbuf *sbuf = msg->sb;
-@@ -174,11 +173,11 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
- 		}
- 		/* Copy a segment of the req cmd to the cmdq */
- 		memset(cmdqe, 0, sizeof(*cmdqe));
--		memcpy(cmdqe, preq, min_t(u32, size, sizeof(*cmdqe)));
--		preq += min_t(u32, size, sizeof(*cmdqe));
--		size -= min_t(u32, size, sizeof(*cmdqe));
-+		memcpy(cmdqe, preq, min_t(u32, bsize, sizeof(*cmdqe)));
-+		preq += min_t(u32, bsize, sizeof(*cmdqe));
-+		bsize -= min_t(u32, bsize, sizeof(*cmdqe));
- 		hwq->prod++;
--	} while (size > 0);
-+	} while (bsize > 0);
- 	cmdq->seq_num++;
- 
- 	cmdq_prod = hwq->prod;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-index 5d619ce..dd56514 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-@@ -39,6 +39,8 @@
- #ifndef __BNXT_QPLIB_RCFW_H__
- #define __BNXT_QPLIB_RCFW_H__
- 
-+#include "qplib_tlv.h"
-+
- #define RCFW_CMDQ_TRIG_VAL		1
- #define RCFW_COMM_PCI_BAR_REGION	0
- #define RCFW_COMM_CONS_PCI_BAR_REGION	2
-@@ -87,11 +89,21 @@ static inline u32 bnxt_qplib_cmdqe_page_size(u32 depth)
- 	return (bnxt_qplib_cmdqe_npages(depth) * PAGE_SIZE);
- }
- 
--/* Set the cmd_size to a factor of CMDQE unit */
--static inline void bnxt_qplib_set_cmd_slots(struct cmdq_base *req)
-+static inline u32 bnxt_qplib_set_cmd_slots(struct cmdq_base *req)
- {
--	req->cmd_size = (req->cmd_size + BNXT_QPLIB_CMDQE_UNITS - 1) /
--			 BNXT_QPLIB_CMDQE_UNITS;
-+	u32 cmd_byte = 0;
-+
-+	if (HAS_TLV_HEADER(req)) {
-+		struct roce_tlv *tlv_req = (struct roce_tlv *)req;
-+
-+		cmd_byte = tlv_req->total_size * BNXT_QPLIB_CMDQE_UNITS;
-+	} else {
-+		cmd_byte = req->cmd_size;
-+		req->cmd_size = (req->cmd_size + BNXT_QPLIB_CMDQE_UNITS - 1) /
-+				 BNXT_QPLIB_CMDQE_UNITS;
-+	}
-+
-+	return cmd_byte;
- }
- 
- #define RCFW_MAX_COOKIE_VALUE		0x7FFF
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index 54c26c5..1714a1e 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -48,6 +48,7 @@
- #include "qplib_res.h"
- #include "qplib_rcfw.h"
- #include "qplib_sp.h"
-+#include "qplib_tlv.h"
- 
- const struct bnxt_qplib_gid bnxt_qplib_gid_zero = {{ 0, 0, 0, 0, 0, 0, 0, 0,
- 						     0, 0, 0, 0, 0, 0, 0, 0 } };
-@@ -849,3 +850,111 @@ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
- 	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
- 	return rc;
- }
-+
-+static void bnxt_qplib_fill_cc_gen1(struct cmdq_modify_roce_cc_gen1_tlv *ext_req,
-+				    struct bnxt_qplib_cc_param_ext *cc_ext)
-+{
-+	ext_req->modify_mask = cpu_to_le64(cc_ext->ext_mask);
-+	cc_ext->ext_mask = 0;
-+	ext_req->inactivity_th_hi = cpu_to_le16(cc_ext->inact_th_hi);
-+	ext_req->min_time_between_cnps = cpu_to_le16(cc_ext->min_delta_cnp);
-+	ext_req->init_cp = cpu_to_le16(cc_ext->init_cp);
-+	ext_req->tr_update_mode = cc_ext->tr_update_mode;
-+	ext_req->tr_update_cycles = cc_ext->tr_update_cyls;
-+	ext_req->fr_num_rtts = cc_ext->fr_rtt;
-+	ext_req->ai_rate_increase = cc_ext->ai_rate_incr;
-+	ext_req->reduction_relax_rtts_th = cpu_to_le16(cc_ext->rr_rtt_th);
-+	ext_req->additional_relax_cr_th = cpu_to_le16(cc_ext->ar_cr_th);
-+	ext_req->cr_min_th = cpu_to_le16(cc_ext->cr_min_th);
-+	ext_req->bw_avg_weight = cc_ext->bw_avg_weight;
-+	ext_req->actual_cr_factor = cc_ext->cr_factor;
-+	ext_req->max_cp_cr_th = cpu_to_le16(cc_ext->cr_th_max_cp);
-+	ext_req->cp_bias_en = cc_ext->cp_bias_en;
-+	ext_req->cp_bias = cc_ext->cp_bias;
-+	ext_req->cnp_ecn = cc_ext->cnp_ecn;
-+	ext_req->rtt_jitter_en = cc_ext->rtt_jitter_en;
-+	ext_req->link_bytes_per_usec = cpu_to_le16(cc_ext->bytes_per_usec);
-+	ext_req->reset_cc_cr_th = cpu_to_le16(cc_ext->cc_cr_reset_th);
-+	ext_req->cr_width = cc_ext->cr_width;
-+	ext_req->quota_period_min = cc_ext->min_quota;
-+	ext_req->quota_period_max = cc_ext->max_quota;
-+	ext_req->quota_period_abs_max = cc_ext->abs_max_quota;
-+	ext_req->tr_lower_bound = cpu_to_le16(cc_ext->tr_lb);
-+	ext_req->cr_prob_factor = cc_ext->cr_prob_fac;
-+	ext_req->tr_prob_factor = cc_ext->tr_prob_fac;
-+	ext_req->fairness_cr_th = cpu_to_le16(cc_ext->fair_cr_th);
-+	ext_req->red_div = cc_ext->red_div;
-+	ext_req->cnp_ratio_th = cc_ext->cnp_ratio_th;
-+	ext_req->exp_ai_rtts = cpu_to_le16(cc_ext->ai_ext_rtt);
-+	ext_req->exp_ai_cr_cp_ratio = cc_ext->exp_crcp_ratio;
-+	ext_req->use_rate_table = cc_ext->low_rate_en;
-+	ext_req->cp_exp_update_th = cpu_to_le16(cc_ext->cpcr_update_th);
-+	ext_req->high_exp_ai_rtts_th1 = cpu_to_le16(cc_ext->ai_rtt_th1);
-+	ext_req->high_exp_ai_rtts_th2 = cpu_to_le16(cc_ext->ai_rtt_th2);
-+	ext_req->actual_cr_cong_free_rtts_th = cpu_to_le16(cc_ext->cf_rtt_th);
-+	ext_req->severe_cong_cr_th1 = cpu_to_le16(cc_ext->sc_cr_th1);
-+	ext_req->severe_cong_cr_th2 = cpu_to_le16(cc_ext->sc_cr_th2);
-+	ext_req->link64B_per_rtt = cpu_to_le32(cc_ext->l64B_per_rtt);
-+	ext_req->cc_ack_bytes = cc_ext->cc_ack_bytes;
-+}
-+
-+int bnxt_qplib_modify_cc(struct bnxt_qplib_res *res,
-+			 struct bnxt_qplib_cc_param *cc_param)
-+{
-+	struct bnxt_qplib_tlv_modify_cc_req tlv_req = {};
-+	struct creq_modify_roce_cc_resp resp = {};
-+	struct bnxt_qplib_cmdqmsg msg = {};
-+	struct cmdq_modify_roce_cc *req;
-+	int req_size;
-+	void *cmd;
-+	int rc;
-+
-+	/* Prepare the older base command */
-+	req = &tlv_req.base_req;
-+	cmd = req;
-+	req_size = sizeof(*req);
-+	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)req, CMDQ_BASE_OPCODE_MODIFY_ROCE_CC,
-+				 sizeof(*req));
-+	req->modify_mask = cpu_to_le32(cc_param->mask);
-+	req->enable_cc = cc_param->enable;
-+	req->g = cc_param->g;
-+	req->num_phases_per_state = cc_param->nph_per_state;
-+	req->time_per_phase = cc_param->time_pph;
-+	req->pkts_per_phase = cc_param->pkts_pph;
-+	req->init_cr = cpu_to_le16(cc_param->init_cr);
-+	req->init_tr = cpu_to_le16(cc_param->init_tr);
-+	req->tos_dscp_tos_ecn = (cc_param->tos_dscp << CMDQ_MODIFY_ROCE_CC_TOS_DSCP_SFT) |
-+				(cc_param->tos_ecn & CMDQ_MODIFY_ROCE_CC_TOS_ECN_MASK);
-+	req->alt_vlan_pcp = cc_param->alt_vlan_pcp;
-+	req->alt_tos_dscp = cpu_to_le16(cc_param->alt_tos_dscp);
-+	req->rtt = cpu_to_le16(cc_param->rtt);
-+	req->tcp_cp = cpu_to_le16(cc_param->tcp_cp);
-+	req->cc_mode = cc_param->cc_mode;
-+	req->inactivity_th = cpu_to_le16(cc_param->inact_th);
-+
-+	/* For chip gen P5 onwards fill extended cmd and header */
-+	if (bnxt_qplib_is_chip_gen_p5(res->cctx)) {
-+		struct roce_tlv *hdr;
-+		u32 payload;
-+		u32 chunks;
-+
-+		cmd = &tlv_req;
-+		req_size = sizeof(tlv_req);
-+		/* Prepare primary tlv header */
-+		hdr = &tlv_req.tlv_hdr;
-+		chunks = CHUNKS(sizeof(struct bnxt_qplib_tlv_modify_cc_req));
-+		payload = sizeof(struct cmdq_modify_roce_cc);
-+		__roce_1st_tlv_prep(hdr, chunks, payload, true);
-+		/* Prepare secondary tlv header */
-+		hdr = (struct roce_tlv *)&tlv_req.ext_req;
-+		payload = sizeof(struct cmdq_modify_roce_cc_gen1_tlv) -
-+			  sizeof(struct roce_tlv);
-+		__roce_ext_tlv_prep(hdr, TLV_TYPE_MODIFY_ROCE_CC_GEN1, payload, false, true);
-+		bnxt_qplib_fill_cc_gen1(&tlv_req.ext_req, &cc_param->cc_ext);
-+	}
-+
-+	bnxt_qplib_fill_cmdqmsg(&msg, cmd, &resp, NULL, req_size,
-+				sizeof(resp), 0);
-+	rc = bnxt_qplib_rcfw_send_message(res->rcfw, &msg);
-+	return rc;
-+}
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-index 96e61db..5de87465 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-@@ -244,6 +244,71 @@ struct bnxt_qplib_ext_stat {
- 	u64  rx_ecn_marked;
- };
- 
-+struct bnxt_qplib_cc_param_ext {
-+	u64 ext_mask;
-+	u16 inact_th_hi;
-+	u16 min_delta_cnp;
-+	u16 init_cp;
-+	u8 tr_update_mode;
-+	u8 tr_update_cyls;
-+	u8 fr_rtt;
-+	u8 ai_rate_incr;
-+	u16 rr_rtt_th;
-+	u16 ar_cr_th;
-+	u16 cr_min_th;
-+	u8 bw_avg_weight;
-+	u8 cr_factor;
-+	u16 cr_th_max_cp;
-+	u8 cp_bias_en;
-+	u8 cp_bias;
-+	u8 cnp_ecn;
-+	u8 rtt_jitter_en;
-+	u16 bytes_per_usec;
-+	u16 cc_cr_reset_th;
-+	u8 cr_width;
-+	u8 min_quota;
-+	u8 max_quota;
-+	u8 abs_max_quota;
-+	u16 tr_lb;
-+	u8 cr_prob_fac;
-+	u8 tr_prob_fac;
-+	u16 fair_cr_th;
-+	u8 red_div;
-+	u8 cnp_ratio_th;
-+	u16 ai_ext_rtt;
-+	u8 exp_crcp_ratio;
-+	u8 low_rate_en;
-+	u16 cpcr_update_th;
-+	u16 ai_rtt_th1;
-+	u16 ai_rtt_th2;
-+	u16 cf_rtt_th;
-+	u16 sc_cr_th1; /* severe congestion cr threshold 1 */
-+	u16 sc_cr_th2; /* severe congestion cr threshold 2 */
-+	u32 l64B_per_rtt;
-+	u8 cc_ack_bytes;
-+	u16 reduce_cf_rtt_th;
-+};
-+
-+struct bnxt_qplib_cc_param {
-+	u8 alt_vlan_pcp;
-+	u16 alt_tos_dscp;
-+	u8 cc_mode;
-+	u8 enable;
-+	u16 inact_th;
-+	u16 init_cr;
-+	u16 init_tr;
-+	u16 rtt;
-+	u8 g;
-+	u8 nph_per_state;
-+	u8 time_pph;
-+	u8 pkts_pph;
-+	u8 tos_ecn;
-+	u8 tos_dscp;
-+	u16 tcp_cp;
-+	struct bnxt_qplib_cc_param_ext cc_ext;
-+	u32 mask;
-+};
-+
- int bnxt_qplib_get_sgid(struct bnxt_qplib_res *res,
- 			struct bnxt_qplib_sgid_tbl *sgid_tbl, int index,
- 			struct bnxt_qplib_gid *gid);
-@@ -281,5 +346,7 @@ int bnxt_qplib_get_roce_stats(struct bnxt_qplib_rcfw *rcfw,
- 			      struct bnxt_qplib_roce_stats *stats);
- int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
- 			 struct bnxt_qplib_ext_stat *estat);
-+int bnxt_qplib_modify_cc(struct bnxt_qplib_res *res,
-+			 struct bnxt_qplib_cc_param *cc_param);
- 
- #endif /* __BNXT_QPLIB_SP_H__*/
--- 
-2.5.5
-
-
---0000000000008229c305f81af774
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEID2hN4CS8N/C
-nFMOtAwsX0vGbXA8iwHc2I8n84i+PSZaMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDMzMDA5NDYyOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBPClIrUuhT8aTEhLB3T5dB/0FR1FTG
-Xmk73a3tLo9xZlgnEZyjD/utGUvAs+a9HFAKpLX3Ts7F69UxO0Awm2v/fUPB1UgKaBqcUcFqq+UN
-gxdp3byPW0pyveCebNT03m4EkFVuz5veDMmmVdDV2W1OuN0DzWObAris5NyxCI+eVaeFNgeE2FcI
-hqvyEqR9RWFtHRGiRW/hMP53K+miwyaMPRo18G3xr6/NvKRUS8bfuOEREvmXpldlMIOXaC1DzFZm
-v50Hw9CunCMHrzGvwEu9Qbd7b7LdF8HGzVHIrxNGKRBkIluCc5XfJ0MxvYWS+J/k2AkZH1alnrHe
-Sc/TQKFy
---0000000000008229c305f81af774--
+Jason
