@@ -2,46 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8706D2572
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 18:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D9B6D2579
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 18:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbjCaQ0f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Mar 2023 12:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
+        id S233119AbjCaQ3C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Mar 2023 12:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233235AbjCaQ0U (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 12:26:20 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA20624AC6
-        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 09:21:31 -0700 (PDT)
-Received: from fsav411.sakura.ne.jp (fsav411.sakura.ne.jp [133.242.250.110])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 32VGJnpH078963;
-        Sat, 1 Apr 2023 01:19:49 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav411.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp);
- Sat, 01 Apr 2023 01:19:49 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 32VGJl2m078956
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 1 Apr 2023 01:19:48 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <747eaa78-5773-c2fd-5a8f-97998a0c9883@I-love.SAKURA.ne.jp>
-Date:   Sat, 1 Apr 2023 01:19:47 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH] RDMA: don't ignore client->add() failures
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
+        with ESMTP id S231342AbjCaQ2u (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 12:28:50 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02F22BEC5
+        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 09:24:30 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id t13so16750411qvn.2
+        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 09:24:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1680279814;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gOvtk4fTPu3cA/Z4LuQWfzQ/ZQig6kQxnH99hLgyu9k=;
+        b=jG2PeLcjx0O3+8NKi1n9W7NPJMmPlWP12mSStHW/eOavnBa3nHIN2vslutXEc+Yxpy
+         JMAKhFWirKGxLSh8rSih2+8sQ5IC+JqQmUj9TpFLL9qe/HBowyd1kEtbEiV0NqcQhSDo
+         Tm9wIKKJxEdVq794HgX6DTv8pAz2PcMRjRuZyi80MFuz98pY1Um9ZKhAD/vvY/VnAaKa
+         Scw1aaUPaJbFPw59FlSrALUEUqwUsfF6rSjL8Ab53pBRsxCjz2ZuMJ95D1XunQ6hLxum
+         WTICYnV6d5e8f58BDP/aOzAdit99WHMYupH6NcGHNTOzEoxpF8RLCkQjLH89MtqK4Svn
+         9xgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680279814;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gOvtk4fTPu3cA/Z4LuQWfzQ/ZQig6kQxnH99hLgyu9k=;
+        b=fFIBIoxaD3JyfgdYK+KyiRIMR5XPyg2E/ZWWyYRVnkOvR09nV78uBe/iCH9yOf8CsK
+         ZnmVjr8lbt6GoDvIOsRW0Mx/A7M9PqXPBKRDTz/u9Kp6ilLKgjO4h1NHme0Ry103YE3d
+         n2MhRSMFS0gXtOj/wE7Oyjd8JSROewENu+3kZQ6hsqKBBzEs2jm+hP3AcUWdtY9YuNfd
+         vyKMNx/OaTVAqD1LZ0OW13ukrAyL/D2cgzyQsBUIZ1dr/LcKniNNT53PlXu2v6GombSV
+         EXwKYeN3zrQElDp0+Dl7WHo4kayVV8EPqTkKSlUtg42dpds6ous96jXTLhBbwqTFQp4U
+         p77w==
+X-Gm-Message-State: AAQBX9exrKDcGA+HibhhiuDa13TL81O0OZ7xr9rGT0aO2URlp37BcqRE
+        VsLQMfNfkXjtSHmV+bpiMVNTqGDYxRnms1PLqFk=
+X-Google-Smtp-Source: AKy350bivMvDTImIECAcEdaCSn7X+ia7Br8l5i8karOQ7EPjfMSpNUXxD0m9G7vKyero5C93dALmNw==
+X-Received: by 2002:a05:6214:5015:b0:5ad:9d3f:b05e with SMTP id jo21-20020a056214501500b005ad9d3fb05emr50967842qvb.47.1680279813836;
+        Fri, 31 Mar 2023 09:23:33 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id k5-20020a0cebc5000000b005dd8b9345d3sm684243qvq.107.2023.03.31.09.23.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Mar 2023 09:23:33 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1piHXI-005jSW-OB;
+        Fri, 31 Mar 2023 13:23:32 -0300
+Date:   Fri, 31 Mar 2023 13:23:32 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
         Leon Romanovsky <leon@kernel.org>,
         Ursula Braun <ubraun@linux.ibm.com>,
         OFED mailing list <linux-rdma@vger.kernel.org>
-References: <0e031582-aed6-58ee-3477-6d787f06560a@I-love.SAKURA.ne.jp>
- <ZCLOYznKQQKfoqzI@ziepe.ca>
+Subject: Re: [PATCH] RDMA: don't ignore client->add() failures
+Message-ID: <ZCcJBPbOlmx0he9Y@ziepe.ca>
+References: <ZCLOYznKQQKfoqzI@ziepe.ca>
  <a9960371-ef94-de6e-466f-0922a5e3acf3@I-love.SAKURA.ne.jp>
  <ZCLQ0XVSKVHV1MB2@ziepe.ca>
  <ec025592-3390-cf4f-ed03-c3c6c43d9310@I-love.SAKURA.ne.jp>
@@ -50,81 +70,41 @@ References: <0e031582-aed6-58ee-3477-6d787f06560a@I-love.SAKURA.ne.jp>
  <ZCRc5S9QGZqcZhNg@ziepe.ca>
  <9186f5f5-2f88-1247-2d24-61d090a1da83@I-love.SAKURA.ne.jp>
  <ZCYdo8pcS947JOgI@ziepe.ca>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <ZCYdo8pcS947JOgI@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.0 required=5.0 tests=NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+ <747eaa78-5773-c2fd-5a8f-97998a0c9883@I-love.SAKURA.ne.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <747eaa78-5773-c2fd-5a8f-97998a0c9883@I-love.SAKURA.ne.jp>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2023/03/31 8:39, Jason Gunthorpe wrote:
-> Look at siw_netdev_event:
+On Sat, Apr 01, 2023 at 01:19:47AM +0900, Tetsuo Handa wrote:
+> On 2023/03/31 8:39, Jason Gunthorpe wrote:
+> > Look at siw_netdev_event:
+> > 
+> > 	case NETDEV_UNREGISTER:
+> > 		ib_unregister_device_queued(&sdev->base_dev);
+> > 		break;
 > 
-> 	case NETDEV_UNREGISTER:
-> 		ib_unregister_device_queued(&sdev->base_dev);
-> 		break;
+> I see. We can observe that
+> 
+>   net vlan0: siw: event 6
+> 
+> is emitted for every second, but unfortunately ib_unregister_device_queued() is
+> never called because dev_net(netdev) != &init_net is true. Changing like below
+> avoids this problem.
+> 
+> I guess that either dev_net(netdev) is not appropriately initialized or
+> dev_net(netdev) != &init_net is too restrictive to call ib_unregister_device_queued().
+> Where is dev_net(netdev) initialized?
 
-I see. We can observe that
+Bernard? What is this net ns check for? It seems surprising this would
+be here
 
-  net vlan0: siw: event 6
-
-is emitted for every second, but unfortunately ib_unregister_device_queued() is
-never called because dev_net(netdev) != &init_net is true. Changing like below
-avoids this problem.
-
-I guess that either dev_net(netdev) is not appropriately initialized or
-dev_net(netdev) != &init_net is too restrictive to call ib_unregister_device_queued().
-Where is dev_net(netdev) initialized?
-
-----------------------------------------
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index dacc174604bf..6f125e282dfc 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -434,13 +434,20 @@ static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
- 	struct net_device *netdev = netdev_notifier_info_to_dev(arg);
- 	struct ib_device *base_dev;
- 	struct siw_device *sdev;
-+	bool flag = false;
- 
--	dev_dbg(&netdev->dev, "siw: event %lu\n", event);
-+	dev_info(&netdev->dev, "siw: event %lu\n", event);
- 
--	if (dev_net(netdev) != &init_net)
--		return NOTIFY_OK;
-+	if (dev_net(netdev) != &init_net) {
-+		pr_info("dev_net(netdev)=%px init_net=%px\n", dev_net(netdev), &init_net);
-+		if (event != NETDEV_UNREGISTER)
-+			return NOTIFY_OK;
-+		flag = true;
-+	}
- 
- 	base_dev = ib_device_get_by_netdev(netdev, RDMA_DRIVER_SIW);
-+	if (flag)
-+		pr_info("base_dev=%px for netdev=%px\n", base_dev, netdev);
- 	if (!base_dev)
- 		return NOTIFY_OK;
- 
-@@ -471,6 +478,8 @@ static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
- 		break;
- 
- 	case NETDEV_UNREGISTER:
-+		if (flag)
-+			pr_info("ib_unregister_device_queued(%px)\n", &sdev->base_dev);
- 		ib_unregister_device_queued(&sdev->base_dev);
- 		break;
- 
-----------------------------------------
-
-----------------------------------------
-[   47.201976] net vlan0: siw: event 6
-[   47.203645] dev_net(netdev)=ffff88800ef58000 init_net=ffffffff86435700
-[   47.206277] base_dev=ffff888100e32000 for netdev=ffff88810389f000
-[   47.208708] ib_unregister_device_queued(ffff888100e32000)
-----------------------------------------
-
+Jason
