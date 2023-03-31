@@ -2,111 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C81FE6D1610
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 05:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532B96D1804
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 09:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjCaDid (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Mar 2023 23:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
+        id S230392AbjCaHES (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Mar 2023 03:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjCaDib (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Mar 2023 23:38:31 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BF3B44C
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Mar 2023 20:38:29 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4PnmF90J1wzrYN6;
-        Fri, 31 Mar 2023 11:37:17 +0800 (CST)
-Received: from [10.67.103.121] (10.67.103.121) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 31 Mar 2023 11:38:27 +0800
-Subject: Re: [RFC PATCH for-next 3/3] libhns: Add support for SVE Direct WQE
- function
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <20230225100253.3993383-1-xuhaoyue1@hisilicon.com>
- <20230225100253.3993383-4-xuhaoyue1@hisilicon.com>
- <ZBtQ1/3WjWNXAT/b@nvidia.com>
- <53ff5576-3469-1264-aab9-6eed7956238c@hisilicon.com>
- <ZCGSXzD8LJqsXHTF@nvidia.com>
- <3789bfe9-f96e-8d87-9322-6f1476757704@hisilicon.com>
- <ZCWIIK2iC3MdrJO1@nvidia.com>
-From:   "xuhaoyue (A)" <xuhaoyue1@hisilicon.com>
-Message-ID: <35c1bb98-7be4-52b5-a747-babfa02e4818@hisilicon.com>
-Date:   Fri, 31 Mar 2023 11:38:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        with ESMTP id S230372AbjCaHEJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 03:04:09 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6A6DBC0;
+        Fri, 31 Mar 2023 00:04:04 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id h17so21344740wrt.8;
+        Fri, 31 Mar 2023 00:04:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680246242;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q76zbQtochwncIhZQ7riDl3gHgHlJYYkEWfwyJ/lNpY=;
+        b=qKNvf2gF/MwZtKDkInE84Zi4oN4T3JqsKXqmTGpzkCucunNaUfwyUCHpSL2cAZoRX6
+         OtY4Q5KPpWKWOhBPIGoTq8xDYVm0nEPh7hcO26GpLxwJ3af/vGAK/tBkM7ka0jCpRYSH
+         u8KoEtAbnY5BE+jADqIiQiFzINGe3znwoPqx9bYMzokq/Cx9ct8FO47Ap94YLaT3zFdz
+         dIeUsOdWc6GhhU5n32Gf/E6MUL7HGbG3p6d/3AnFvztYiyoBZFFFnLvLHirzOJnPngd4
+         CGp4BD5074ugTr+OoXZUxl3FYKbmaA8km5QB11ZC/7Fg5OXx6PV6qSCVWvTw0fOAnSxe
+         nK/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680246242;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q76zbQtochwncIhZQ7riDl3gHgHlJYYkEWfwyJ/lNpY=;
+        b=icf0gQQ/c6cO3qUlHclDaiTBsqnVgJaBthYms6YpBfuhkybw6Q3nTwPPRYa7f8wtVo
+         celhfdQYfYd9J91av7iBSIO/AtkVdFuptwfzF4ymTDtTmO+RXH1a0arDIHWndGfZwaQk
+         WAzuICF22fgIX0gkSzwaDJzA1qdnp0u1yTOZ7Z7xhazPz43HAUns0V1gw//Z85h0Vkjv
+         YX0CPlohL0olln2LS4Av86QFwjLhIHv8xDektYwgVrqRr+cNVkWQN9jjmSUMvU7hWapy
+         4k+iKqooqdewrGRYiceRz71OJKOPS6rwHwY5PyC5zsK/9cwoWP0iKgYNDAZaZpJo8/Ou
+         g86A==
+X-Gm-Message-State: AAQBX9feNJKam03SOB8AjuLw8ksSPO+z2bMabsNB9w/XW4reWZQAjpC3
+        i0l+h71Tv7joayLwHW9X2DY=
+X-Google-Smtp-Source: AKy350bdI8Q2NH/F7m6vHYXtic18Ow44dO9xjGWXAxzu6ncylxQ3s4eH+bA57APmJrDgPAl+G6TpxQ==
+X-Received: by 2002:a5d:464d:0:b0:2e5:5439:6b4c with SMTP id j13-20020a5d464d000000b002e554396b4cmr1985571wrs.27.1680246242351;
+        Fri, 31 Mar 2023 00:04:02 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id r16-20020a05600c35d000b003ee9f396dcesm8746643wmq.30.2023.03.31.00.03.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Mar 2023 00:04:01 -0700 (PDT)
+Date:   Fri, 31 Mar 2023 10:03:47 +0300
+From:   Dan Carpenter <error27@gmail.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Shay Drory <shayd@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH net-next] net/mlx5: Fix check for allocation failure in
+ comp_irqs_request_pci()
+Message-ID: <6652003b-e89c-4011-9e7d-a730a50bcfce@kili.mountain>
 MIME-Version: 1.0
-In-Reply-To: <ZCWIIK2iC3MdrJO1@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.121]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.3 required=5.0 tests=HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This function accidentally dereferences "cpus" instead of returning
+directly.
 
+Fixes: b48a0f72bc3e ("net/mlx5: Refactor completion irq request/release code")
+Signed-off-by: Dan Carpenter <error27@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2023/3/30 21:01:20, Jason Gunthorpe wrote:
-> On Thu, Mar 30, 2023 at 08:57:41PM +0800, xuhaoyue (A) wrote:
->>
->>
->> On 2023/3/27 20:55:59, Jason Gunthorpe wrote:
->>> On Mon, Mar 27, 2023 at 08:53:35PM +0800, xuhaoyue (A) wrote:
->>>
->>>>>>  static void hns_roce_write512(uint64_t *dest, uint64_t *val)
->>>>>>  {
->>>>>>  	mmio_memcpy_x64(dest, val, sizeof(struct hns_roce_rc_sq_wqe));
->>>>>> @@ -314,7 +319,10 @@ static void hns_roce_write_dwqe(struct hns_roce_qp *qp, void *wqe)
->>>>>>  	hr_reg_write(rc_sq_wqe, RCWQE_DB_SL_H, qp->sl >> HNS_ROCE_SL_SHIFT);
->>>>>>  	hr_reg_write(rc_sq_wqe, RCWQE_WQE_IDX, qp->sq.head);
->>>>>>  
->>>>>> -	hns_roce_write512(qp->sq.db_reg, wqe);
->>>>>> +	if (qp->flags & HNS_ROCE_QP_CAP_SVE_DIRECT_WQE)
->>>>>
->>>>> Why do you need a device flag here?
->>>>
->>>> Our CPU die can support NEON instructions and SVE instructions,
->>>> but some CPU dies only have SVE instructions that can accelerate our direct WQE performance.
->>>> Therefore, we need to add such a flag bit to distinguish.
->>>
->>> NEON vs SVE is available to userspace already, it shouldn't come
->>> throuhg a driver flag. You need another reason to add this flag
->>>
->>> The userspace should detect the right instruction to use based on the
->>> cpu flags using the attribute stuff I pointed you at
->>>
->>> Jason
->>> .
->>>
->>
->> We optimized direct wqe based on different instructions for
->> different CPUs, but the architecture of the CPUs is the same and
->> supports both SVE and NEON instructions.  We plan to use cpuid to
->> distinguish between them. Is this more reasonable?
-> 
-> Uhh, do you mean certain CPUs won't work with SVE and others won't
-> work with NEON?
-> 
-> That is quite horrible
-> 
-> Jason
-> .
-> 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index eb41f0abf798..13491246c9e9 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -824,7 +824,7 @@ static int comp_irqs_request_pci(struct mlx5_core_dev *dev)
+ 	ncomp_eqs = table->num_comp_eqs;
+ 	cpus = kcalloc(ncomp_eqs, sizeof(*cpus), GFP_KERNEL);
+ 	if (!cpus)
+-		ret = -ENOMEM;
++		return -ENOMEM;
+ 
+ 	i = 0;
+ 	rcu_read_lock();
+-- 
+2.39.1
 
-No, acctually for general scenarios, our CPU supports two types of instructions, SVE and NEON.
-However, for the CPU that requires high fp64 floating-point computing power, the SVE instruction is enhanced and the NEON instruction is weakened.
-
-Sincerely,
-Haoyue
