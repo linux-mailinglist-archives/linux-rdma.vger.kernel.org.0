@@ -2,81 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D9B6D2579
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 18:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C6E6D26D5
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 19:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbjCaQ3C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Mar 2023 12:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
+        id S232039AbjCaRjy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Mar 2023 13:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231342AbjCaQ2u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 12:28:50 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02F22BEC5
-        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 09:24:30 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id t13so16750411qvn.2
-        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 09:24:30 -0700 (PDT)
+        with ESMTP id S232478AbjCaRjx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 13:39:53 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2090.outbound.protection.outlook.com [40.107.223.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504D422211;
+        Fri, 31 Mar 2023 10:39:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K1hs7buYxVboezJPJyPk8FGI3BC9E3kMuoQEpS/8iDrfjrSicKTUkbkyirAofBmzMIHuMEjIboAuDHOfL0kPNCfa9as/knYxmw7FASpdTAABwtgmQ6f6nt53p2nP17EFEKj0hIQGOX3Da0nQSefPdC+Q58PjSE/qJv3JwBwZxwKXfWAOpal9c9r4UVZ4zxjjVAmczmiz5A685a89FDXqE1M6z6ub5ocPFPj514z2eLtQt1J9WGYJtnwvoL+Hs67CUHvOscuWevFqsK6u2j3fK5lzWE24GQgU/xmsnWSaHaNUDYRBabeWc/DofmOj+k2+Ngxx3uj33nK5FYvFj1E+Hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rnxYmF4hGURY3qmTg2RXCxLiKEYXB8qu5iZXvTHy880=;
+ b=TmW388UgGUNJM3xVgSubnhMqOryPJAycTWyrKOMVlKA/LH80pPvffLZwKy80axTK0e7AgQCRsLlObvr6M6TAlFdxs0UahxlBfR/y+2rBi4toYJyKZHh57CcXmtnotXVQ1e8ngbrWbSDKOXc79gT3QwiU3YExW3wLdzbGTHjhEn+Kul1TRk62trbdbVN3Ogf5M9RULq5k07kjWsXrp1VSXtpcIF2fH10yEGoVjiyobXxOA/Bjp/9S9JC0aiXNwYpDpeda45ZI8HWQMm+X0qIDYwSLvucpJbIfdVbuO6/ypHFKJM0TQeRX0DzbSozwIAgu3+Em9JkQxmnFoOqPrW4fNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1680279814;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gOvtk4fTPu3cA/Z4LuQWfzQ/ZQig6kQxnH99hLgyu9k=;
-        b=jG2PeLcjx0O3+8NKi1n9W7NPJMmPlWP12mSStHW/eOavnBa3nHIN2vslutXEc+Yxpy
-         JMAKhFWirKGxLSh8rSih2+8sQ5IC+JqQmUj9TpFLL9qe/HBowyd1kEtbEiV0NqcQhSDo
-         Tm9wIKKJxEdVq794HgX6DTv8pAz2PcMRjRuZyi80MFuz98pY1Um9ZKhAD/vvY/VnAaKa
-         Scw1aaUPaJbFPw59FlSrALUEUqwUsfF6rSjL8Ab53pBRsxCjz2ZuMJ95D1XunQ6hLxum
-         WTICYnV6d5e8f58BDP/aOzAdit99WHMYupH6NcGHNTOzEoxpF8RLCkQjLH89MtqK4Svn
-         9xgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680279814;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gOvtk4fTPu3cA/Z4LuQWfzQ/ZQig6kQxnH99hLgyu9k=;
-        b=fFIBIoxaD3JyfgdYK+KyiRIMR5XPyg2E/ZWWyYRVnkOvR09nV78uBe/iCH9yOf8CsK
-         ZnmVjr8lbt6GoDvIOsRW0Mx/A7M9PqXPBKRDTz/u9Kp6ilLKgjO4h1NHme0Ry103YE3d
-         n2MhRSMFS0gXtOj/wE7Oyjd8JSROewENu+3kZQ6hsqKBBzEs2jm+hP3AcUWdtY9YuNfd
-         vyKMNx/OaTVAqD1LZ0OW13ukrAyL/D2cgzyQsBUIZ1dr/LcKniNNT53PlXu2v6GombSV
-         EXwKYeN3zrQElDp0+Dl7WHo4kayVV8EPqTkKSlUtg42dpds6ous96jXTLhBbwqTFQp4U
-         p77w==
-X-Gm-Message-State: AAQBX9exrKDcGA+HibhhiuDa13TL81O0OZ7xr9rGT0aO2URlp37BcqRE
-        VsLQMfNfkXjtSHmV+bpiMVNTqGDYxRnms1PLqFk=
-X-Google-Smtp-Source: AKy350bivMvDTImIECAcEdaCSn7X+ia7Br8l5i8karOQ7EPjfMSpNUXxD0m9G7vKyero5C93dALmNw==
-X-Received: by 2002:a05:6214:5015:b0:5ad:9d3f:b05e with SMTP id jo21-20020a056214501500b005ad9d3fb05emr50967842qvb.47.1680279813836;
-        Fri, 31 Mar 2023 09:23:33 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id k5-20020a0cebc5000000b005dd8b9345d3sm684243qvq.107.2023.03.31.09.23.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 09:23:33 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1piHXI-005jSW-OB;
-        Fri, 31 Mar 2023 13:23:32 -0300
-Date:   Fri, 31 Mar 2023 13:23:32 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] RDMA: don't ignore client->add() failures
-Message-ID: <ZCcJBPbOlmx0he9Y@ziepe.ca>
-References: <ZCLOYznKQQKfoqzI@ziepe.ca>
- <a9960371-ef94-de6e-466f-0922a5e3acf3@I-love.SAKURA.ne.jp>
- <ZCLQ0XVSKVHV1MB2@ziepe.ca>
- <ec025592-3390-cf4f-ed03-c3c6c43d9310@I-love.SAKURA.ne.jp>
- <ZCMTZWdY7D7mxJuE@ziepe.ca>
- <d2dfb901-50b1-8e34-8217-d29e63f421c7@I-love.SAKURA.ne.jp>
- <ZCRc5S9QGZqcZhNg@ziepe.ca>
- <9186f5f5-2f88-1247-2d24-61d090a1da83@I-love.SAKURA.ne.jp>
- <ZCYdo8pcS947JOgI@ziepe.ca>
- <747eaa78-5773-c2fd-5a8f-97998a0c9883@I-love.SAKURA.ne.jp>
-MIME-Version: 1.0
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rnxYmF4hGURY3qmTg2RXCxLiKEYXB8qu5iZXvTHy880=;
+ b=flv1cyGIEWRzosdyXsjDtIYgi2HPV+LMaPqfGAHFu1docLTq8dorHc9xcwWLJjpQ0XgmGkLlCz690/55qqxAlWou9jtAbHmUYO/rFGwtiUF61celn51Z32NqWMoXidNxDvouXOHap7FotWq4F8pr7rYMBQHgBxvZr6w5TG+LSPc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by CO1PR13MB5029.namprd13.prod.outlook.com (2603:10b6:303:d5::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.24; Fri, 31 Mar
+ 2023 17:39:37 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::c506:5243:557e:82cb]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::c506:5243:557e:82cb%5]) with mapi id 15.20.6254.021; Fri, 31 Mar 2023
+ 17:39:37 +0000
+Date:   Fri, 31 Mar 2023 19:39:31 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Dan Carpenter <error27@gmail.com>
+Cc:     Eli Cohen <elic@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Shay Drory <shayd@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net-next] net/mlx5: Fix check for allocation failure in
+ comp_irqs_request_pci()
+Message-ID: <ZCca09894IqLudkZ@corigine.com>
+References: <6652003b-e89c-4011-9e7d-a730a50bcfce@kili.mountain>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <747eaa78-5773-c2fd-5a8f-97998a0c9883@I-love.SAKURA.ne.jp>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+In-Reply-To: <6652003b-e89c-4011-9e7d-a730a50bcfce@kili.mountain>
+X-ClientProxiedBy: AS4P195CA0007.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5e2::7) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|CO1PR13MB5029:EE_
+X-MS-Office365-Filtering-Correlation-Id: a1cac688-275c-4c55-7390-08db320ee5a4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mcKtqugBo5Jqhk9ozuoX9W1qSepw007IBc425I/q/uPyxsP4bQxf26Vjz/6N/oRZefMLW36lVpqbvZK0leW7xVFVp3efVbtme0Xo9+sEVY6ujnVn2xvDntQBj7J8l2b5bfhF71LBYyoEi3GeHzto4fIhYqdRMMC7Q7QNdNYguSwUPulluFqG31fNm4jnJ0yynDEODLhVzRuL1Rz7O5tjMc20oamNkZxZjGPJWdPT91i4EFak4yQ+r/cObOknn1i7EGuKwM4yasrVJL7UqbiTD9OpeN5wCkSqxPNtSFDxU1qUq86NBU8ib8MfJRC0tzRVeh2mldAmSLmoFDFjwZxBNWrIj/7gUf7bPutkwZ6nGyyTpFhwieTjh50BnP4bTmogbYRJUSdh1I3AOzl4qmN3l3bLAN6XEWzwiMfhHlpnv+zRFV+R4Y/ddLjsrtiX5vhBPdwkdjPf4ykOaAMOzKn1cWIXFvbiWJcO4f1DXY115H6dpU6LCRCCTgPrQS8lG8wgHmpF7mTqsuit0Ohnxji+IqDlb/phrdE5Kh+bPgV/AjDViw1BxvqBLHWkfwAg06wkGZvie7vICp9q58Cw6OPq7ah447c3eb0CCp3vVbSOuaI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(376002)(346002)(136003)(39840400004)(451199021)(36756003)(8676002)(4326008)(6916009)(316002)(66556008)(66476007)(66946007)(54906003)(6486002)(478600001)(41300700001)(8936002)(5660300002)(6512007)(2906002)(7416002)(4744005)(44832011)(86362001)(38100700002)(2616005)(186003)(6506007)(6666004)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IO3O0s+79SEOSZTZPJr3WGlBRSq3krblSh/IZgPeoppbPY2xyCab79mGS3fl?=
+ =?us-ascii?Q?HCchMeKVS/Y2+j0wdTSeC67e9I9i6f0aiYjk/jo7/7BeadaRCdGu0KYdh+KS?=
+ =?us-ascii?Q?CqLQFoNFeib7G9HbaIGh5Sol5sroeFH0DaJqVRL2afBqXyWx1/nclKeIdqrE?=
+ =?us-ascii?Q?gDWqLZb46WFP7FVoGsIs2R7RIDMQBsd/Su3RY0WvBnI6DxSJb7HoSjbwFdsy?=
+ =?us-ascii?Q?XEXCvkQESInueZ7eCN3eawhUkPvvt6qDxABEQIWYtnoMfz9uAQTvY3RYIK6/?=
+ =?us-ascii?Q?X7qicTmyoWT206BbiLGwxxK292N4vD5kPmejJc+3Wq3Y5vq6KEjp+ajdJtMV?=
+ =?us-ascii?Q?vg+oMsPSTIGJ4NMlAdiWcC+UveYu2NJc2dGX0MV0KHtoYsSijs1lLQ85Su3t?=
+ =?us-ascii?Q?yG9EOZqLaLaCYAIIipwnoDj++EgPmEtISUKZAG+q350pBwpEGI09Wgq/oA0+?=
+ =?us-ascii?Q?ne+tyPc6D5HtoZAcv1spGH7B6cQziV36tXErxIUxuoNJ6gnoXzjXy8ickfCX?=
+ =?us-ascii?Q?JOuY0h+LIX+Ic5HPYv7HmBcCorDAcsz/zMAv/QpIzkqFy0Yfhaj2bSxOZWn+?=
+ =?us-ascii?Q?cbHlUNP0CDyjJnVq0wCy7is16Rf5Jl3W25O4JAdtBc3mleO5Q460WzrcciHz?=
+ =?us-ascii?Q?neVESprduQQQjT/Sj/eqTYe72CgQxKQXKT6kiite0wFhAMnq9/VpkdkRyJ+A?=
+ =?us-ascii?Q?e6DWDfAs8WmND0DhaKV9KT1D0uIm3GdMtHgiTkv+rInvCoV12ecmey1Lctcy?=
+ =?us-ascii?Q?qLPxuN0tS4F2bvyCE1vQKUmASxIxdgFJz3ykHur4DiGlbhuLki1rlyglbxHb?=
+ =?us-ascii?Q?pYq6cLFdWxE/8SjRgFnkg0FWalJElgmZOh99hxSumPjUvz4HJcwaZrHBm8nU?=
+ =?us-ascii?Q?QaPbFtkQmpOUejlq9K1eP6Cm4FM2tae91fnOesKO39PNxuEsrz+nnR8NPYbG?=
+ =?us-ascii?Q?ARoGl2vi6zDjqY0yusH9b5xBIgpBJJWSB7Z5hTHe8B5TC3Qb23qkCtsRU69N?=
+ =?us-ascii?Q?uz0DVURjj8mXrzxQSkcU6LQjoN8guf3qT6xC6nxO06j4okgrvHacmb1nHgOn?=
+ =?us-ascii?Q?y+0DLxx0lgnBZHXjA6CmIEmegos3i3Uj8CnH35IGKqG9lU8bPHrfHpgpOUSe?=
+ =?us-ascii?Q?p9R9dRA5O9SvEc+WHSvlJYn+7MAtlX0az1wV7FRy5vM12GpfnRjIX+vn6qGK?=
+ =?us-ascii?Q?ymBqpdDkVa7haHNCdpxUyabhgvX0JbZv6BFtFfNppvpAu4/AYSJZyjKlqsSP?=
+ =?us-ascii?Q?EZZ+WVuDCwI4pVWxQ5QKVKkFXx+yjgVBwmtJnm9bjILwRyY5b8q5SQEYkAD9?=
+ =?us-ascii?Q?8sh/VGOkxZPjKT/rPKrRJeGD8MUKjEgSKyxozy/Bpk5XPkuTtOvGfWeVyc1B?=
+ =?us-ascii?Q?h+4RJ9u5ZK+RcykSm4hqIqfiF3A2R3bl3BQwjheIjb850aluU9uZfn6jqbbg?=
+ =?us-ascii?Q?Vd+62+BOomZJJVcx+7kJyg08MZ6hWVTmlgBzhhEBbVjg56WvSE4H9J9e8hTz?=
+ =?us-ascii?Q?k0yfH0sYmoQbgYUC3kVQUoFzV0HJ4v72ORHpWN//NTIGRW6sbVydYP17NVwa?=
+ =?us-ascii?Q?eq4vQAvSyHqOL8O4EwLPZABlrRkPD4uLOOKoE/cWrqFtSkv6Fmrp9LbQjxw4?=
+ =?us-ascii?Q?Xd1Bc4hBkwZl7jLjZcPGms5Gmu3AakYoYxKLklgOqvoatPlobn/5le7vvLxw?=
+ =?us-ascii?Q?7nWuIA=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1cac688-275c-4c55-7390-08db320ee5a4
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2023 17:39:36.9225
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dqtAsx2vr6vr6ex1pERCCwHMJPMEPV0lQTBfnDv6A5U6wp16osh3ydpjfOjfrncoqE6HPRqxwXX2FGnuUxER+1693UjxNqyJzPyR3vnrvxA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR13MB5029
+X-Spam-Status: No, score=-0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,27 +120,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Apr 01, 2023 at 01:19:47AM +0900, Tetsuo Handa wrote:
-> On 2023/03/31 8:39, Jason Gunthorpe wrote:
-> > Look at siw_netdev_event:
-> > 
-> > 	case NETDEV_UNREGISTER:
-> > 		ib_unregister_device_queued(&sdev->base_dev);
-> > 		break;
+On Fri, Mar 31, 2023 at 10:03:47AM +0300, Dan Carpenter wrote:
+> This function accidentally dereferences "cpus" instead of returning
+> directly.
 > 
-> I see. We can observe that
-> 
->   net vlan0: siw: event 6
-> 
-> is emitted for every second, but unfortunately ib_unregister_device_queued() is
-> never called because dev_net(netdev) != &init_net is true. Changing like below
-> avoids this problem.
-> 
-> I guess that either dev_net(netdev) is not appropriately initialized or
-> dev_net(netdev) != &init_net is too restrictive to call ib_unregister_device_queued().
-> Where is dev_net(netdev) initialized?
+> Fixes: b48a0f72bc3e ("net/mlx5: Refactor completion irq request/release code")
+> Signed-off-by: Dan Carpenter <error27@gmail.com>
 
-Bernard? What is this net ns check for? It seems surprising this would
-be here
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
-Jason
