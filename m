@@ -2,130 +2,256 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C6E6D26D5
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 19:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA986D2963
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 22:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbjCaRjy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Mar 2023 13:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36596 "EHLO
+        id S233114AbjCaU0c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Mar 2023 16:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbjCaRjx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 13:39:53 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2090.outbound.protection.outlook.com [40.107.223.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504D422211;
-        Fri, 31 Mar 2023 10:39:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K1hs7buYxVboezJPJyPk8FGI3BC9E3kMuoQEpS/8iDrfjrSicKTUkbkyirAofBmzMIHuMEjIboAuDHOfL0kPNCfa9as/knYxmw7FASpdTAABwtgmQ6f6nt53p2nP17EFEKj0hIQGOX3Da0nQSefPdC+Q58PjSE/qJv3JwBwZxwKXfWAOpal9c9r4UVZ4zxjjVAmczmiz5A685a89FDXqE1M6z6ub5ocPFPj514z2eLtQt1J9WGYJtnwvoL+Hs67CUHvOscuWevFqsK6u2j3fK5lzWE24GQgU/xmsnWSaHaNUDYRBabeWc/DofmOj+k2+Ngxx3uj33nK5FYvFj1E+Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rnxYmF4hGURY3qmTg2RXCxLiKEYXB8qu5iZXvTHy880=;
- b=TmW388UgGUNJM3xVgSubnhMqOryPJAycTWyrKOMVlKA/LH80pPvffLZwKy80axTK0e7AgQCRsLlObvr6M6TAlFdxs0UahxlBfR/y+2rBi4toYJyKZHh57CcXmtnotXVQ1e8ngbrWbSDKOXc79gT3QwiU3YExW3wLdzbGTHjhEn+Kul1TRk62trbdbVN3Ogf5M9RULq5k07kjWsXrp1VSXtpcIF2fH10yEGoVjiyobXxOA/Bjp/9S9JC0aiXNwYpDpeda45ZI8HWQMm+X0qIDYwSLvucpJbIfdVbuO6/ypHFKJM0TQeRX0DzbSozwIAgu3+Em9JkQxmnFoOqPrW4fNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rnxYmF4hGURY3qmTg2RXCxLiKEYXB8qu5iZXvTHy880=;
- b=flv1cyGIEWRzosdyXsjDtIYgi2HPV+LMaPqfGAHFu1docLTq8dorHc9xcwWLJjpQ0XgmGkLlCz690/55qqxAlWou9jtAbHmUYO/rFGwtiUF61celn51Z32NqWMoXidNxDvouXOHap7FotWq4F8pr7rYMBQHgBxvZr6w5TG+LSPc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by CO1PR13MB5029.namprd13.prod.outlook.com (2603:10b6:303:d5::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.24; Fri, 31 Mar
- 2023 17:39:37 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::c506:5243:557e:82cb]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::c506:5243:557e:82cb%5]) with mapi id 15.20.6254.021; Fri, 31 Mar 2023
- 17:39:37 +0000
-Date:   Fri, 31 Mar 2023 19:39:31 +0200
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Dan Carpenter <error27@gmail.com>
-Cc:     Eli Cohen <elic@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Shay Drory <shayd@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net-next] net/mlx5: Fix check for allocation failure in
- comp_irqs_request_pci()
-Message-ID: <ZCca09894IqLudkZ@corigine.com>
-References: <6652003b-e89c-4011-9e7d-a730a50bcfce@kili.mountain>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6652003b-e89c-4011-9e7d-a730a50bcfce@kili.mountain>
-X-ClientProxiedBy: AS4P195CA0007.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:20b:5e2::7) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+        with ESMTP id S231701AbjCaU0c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 16:26:32 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA642221D;
+        Fri, 31 Mar 2023 13:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680294388; x=1711830388;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=JigzRH1XS4gxfuOXH7Yq62hsAr9z5CZh7n41T3Wd6XQ=;
+  b=I2zUmQwKweaM5V7rc6DRnfNR8IurJwcME+weaIu8a1WF5F96sd+TUBQX
+   95/X8uggowmCcQ0FhiO0yCrKZpQHs+6KXvB9E3vpyG+uSUZFDDZxZPceK
+   k0Rkz26SbxPLSaKPkcKQxoACsd3CGUVwRVXiBahwIeH92RR9Vk9+1xdkz
+   hIYDxfz4FOAS2iN+Hi+aklMQV6P8FTF9cW1bN6Ivl3UxK7wY6CLxZI3u9
+   CMlTwQ1KY+yAavnUImDF6zK0hcvFTnXSGaebh3XcLv95DUOE63c7qyLZM
+   F/WHnWRPRKfphaifAgSEM0IMkP6zPIuIWqGSp2KKLF/lcveBcdGY0TaFU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10666"; a="341569011"
+X-IronPort-AV: E=Sophos;i="5.98,307,1673942400"; 
+   d="scan'208";a="341569011"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2023 13:26:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10666"; a="678738121"
+X-IronPort-AV: E=Sophos;i="5.98,307,1673942400"; 
+   d="scan'208";a="678738121"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 31 Mar 2023 13:25:56 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1piLJr-000M8f-07;
+        Fri, 31 Mar 2023 20:25:55 +0000
+Date:   Sat, 01 Apr 2023 04:25:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-acpi@vger.kernel.org,
+        bpf@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ 4b0f4525dc4fe8af17b3daefe585f0c2eb0fe0a5
+Message-ID: <642741a2.Iacn1LRMRFiPMcQb%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|CO1PR13MB5029:EE_
-X-MS-Office365-Filtering-Correlation-Id: a1cac688-275c-4c55-7390-08db320ee5a4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mcKtqugBo5Jqhk9ozuoX9W1qSepw007IBc425I/q/uPyxsP4bQxf26Vjz/6N/oRZefMLW36lVpqbvZK0leW7xVFVp3efVbtme0Xo9+sEVY6ujnVn2xvDntQBj7J8l2b5bfhF71LBYyoEi3GeHzto4fIhYqdRMMC7Q7QNdNYguSwUPulluFqG31fNm4jnJ0yynDEODLhVzRuL1Rz7O5tjMc20oamNkZxZjGPJWdPT91i4EFak4yQ+r/cObOknn1i7EGuKwM4yasrVJL7UqbiTD9OpeN5wCkSqxPNtSFDxU1qUq86NBU8ib8MfJRC0tzRVeh2mldAmSLmoFDFjwZxBNWrIj/7gUf7bPutkwZ6nGyyTpFhwieTjh50BnP4bTmogbYRJUSdh1I3AOzl4qmN3l3bLAN6XEWzwiMfhHlpnv+zRFV+R4Y/ddLjsrtiX5vhBPdwkdjPf4ykOaAMOzKn1cWIXFvbiWJcO4f1DXY115H6dpU6LCRCCTgPrQS8lG8wgHmpF7mTqsuit0Ohnxji+IqDlb/phrdE5Kh+bPgV/AjDViw1BxvqBLHWkfwAg06wkGZvie7vICp9q58Cw6OPq7ah447c3eb0CCp3vVbSOuaI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(376002)(346002)(136003)(39840400004)(451199021)(36756003)(8676002)(4326008)(6916009)(316002)(66556008)(66476007)(66946007)(54906003)(6486002)(478600001)(41300700001)(8936002)(5660300002)(6512007)(2906002)(7416002)(4744005)(44832011)(86362001)(38100700002)(2616005)(186003)(6506007)(6666004)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IO3O0s+79SEOSZTZPJr3WGlBRSq3krblSh/IZgPeoppbPY2xyCab79mGS3fl?=
- =?us-ascii?Q?HCchMeKVS/Y2+j0wdTSeC67e9I9i6f0aiYjk/jo7/7BeadaRCdGu0KYdh+KS?=
- =?us-ascii?Q?CqLQFoNFeib7G9HbaIGh5Sol5sroeFH0DaJqVRL2afBqXyWx1/nclKeIdqrE?=
- =?us-ascii?Q?gDWqLZb46WFP7FVoGsIs2R7RIDMQBsd/Su3RY0WvBnI6DxSJb7HoSjbwFdsy?=
- =?us-ascii?Q?XEXCvkQESInueZ7eCN3eawhUkPvvt6qDxABEQIWYtnoMfz9uAQTvY3RYIK6/?=
- =?us-ascii?Q?X7qicTmyoWT206BbiLGwxxK292N4vD5kPmejJc+3Wq3Y5vq6KEjp+ajdJtMV?=
- =?us-ascii?Q?vg+oMsPSTIGJ4NMlAdiWcC+UveYu2NJc2dGX0MV0KHtoYsSijs1lLQ85Su3t?=
- =?us-ascii?Q?yG9EOZqLaLaCYAIIipwnoDj++EgPmEtISUKZAG+q350pBwpEGI09Wgq/oA0+?=
- =?us-ascii?Q?ne+tyPc6D5HtoZAcv1spGH7B6cQziV36tXErxIUxuoNJ6gnoXzjXy8ickfCX?=
- =?us-ascii?Q?JOuY0h+LIX+Ic5HPYv7HmBcCorDAcsz/zMAv/QpIzkqFy0Yfhaj2bSxOZWn+?=
- =?us-ascii?Q?cbHlUNP0CDyjJnVq0wCy7is16Rf5Jl3W25O4JAdtBc3mleO5Q460WzrcciHz?=
- =?us-ascii?Q?neVESprduQQQjT/Sj/eqTYe72CgQxKQXKT6kiite0wFhAMnq9/VpkdkRyJ+A?=
- =?us-ascii?Q?e6DWDfAs8WmND0DhaKV9KT1D0uIm3GdMtHgiTkv+rInvCoV12ecmey1Lctcy?=
- =?us-ascii?Q?qLPxuN0tS4F2bvyCE1vQKUmASxIxdgFJz3ykHur4DiGlbhuLki1rlyglbxHb?=
- =?us-ascii?Q?pYq6cLFdWxE/8SjRgFnkg0FWalJElgmZOh99hxSumPjUvz4HJcwaZrHBm8nU?=
- =?us-ascii?Q?QaPbFtkQmpOUejlq9K1eP6Cm4FM2tae91fnOesKO39PNxuEsrz+nnR8NPYbG?=
- =?us-ascii?Q?ARoGl2vi6zDjqY0yusH9b5xBIgpBJJWSB7Z5hTHe8B5TC3Qb23qkCtsRU69N?=
- =?us-ascii?Q?uz0DVURjj8mXrzxQSkcU6LQjoN8guf3qT6xC6nxO06j4okgrvHacmb1nHgOn?=
- =?us-ascii?Q?y+0DLxx0lgnBZHXjA6CmIEmegos3i3Uj8CnH35IGKqG9lU8bPHrfHpgpOUSe?=
- =?us-ascii?Q?p9R9dRA5O9SvEc+WHSvlJYn+7MAtlX0az1wV7FRy5vM12GpfnRjIX+vn6qGK?=
- =?us-ascii?Q?ymBqpdDkVa7haHNCdpxUyabhgvX0JbZv6BFtFfNppvpAu4/AYSJZyjKlqsSP?=
- =?us-ascii?Q?EZZ+WVuDCwI4pVWxQ5QKVKkFXx+yjgVBwmtJnm9bjILwRyY5b8q5SQEYkAD9?=
- =?us-ascii?Q?8sh/VGOkxZPjKT/rPKrRJeGD8MUKjEgSKyxozy/Bpk5XPkuTtOvGfWeVyc1B?=
- =?us-ascii?Q?h+4RJ9u5ZK+RcykSm4hqIqfiF3A2R3bl3BQwjheIjb850aluU9uZfn6jqbbg?=
- =?us-ascii?Q?Vd+62+BOomZJJVcx+7kJyg08MZ6hWVTmlgBzhhEBbVjg56WvSE4H9J9e8hTz?=
- =?us-ascii?Q?k0yfH0sYmoQbgYUC3kVQUoFzV0HJ4v72ORHpWN//NTIGRW6sbVydYP17NVwa?=
- =?us-ascii?Q?eq4vQAvSyHqOL8O4EwLPZABlrRkPD4uLOOKoE/cWrqFtSkv6Fmrp9LbQjxw4?=
- =?us-ascii?Q?Xd1Bc4hBkwZl7jLjZcPGms5Gmu3AakYoYxKLklgOqvoatPlobn/5le7vvLxw?=
- =?us-ascii?Q?7nWuIA=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1cac688-275c-4c55-7390-08db320ee5a4
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2023 17:39:36.9225
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dqtAsx2vr6vr6ex1pERCCwHMJPMEPV0lQTBfnDv6A5U6wp16osh3ydpjfOjfrncoqE6HPRqxwXX2FGnuUxER+1693UjxNqyJzPyR3vnrvxA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR13MB5029
-X-Spam-Status: No, score=-0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 10:03:47AM +0300, Dan Carpenter wrote:
-> This function accidentally dereferences "cpus" instead of returning
-> directly.
-> 
-> Fixes: b48a0f72bc3e ("net/mlx5: Refactor completion irq request/release code")
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 4b0f4525dc4fe8af17b3daefe585f0c2eb0fe0a5  Add linux-next specific files for 20230331
 
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Error/Warning reports:
 
+https://lore.kernel.org/oe-kbuild-all/202303161521.jbGbaFjJ-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202304010037.jagzIuJZ-lkp@intel.com
+
+Error/Warning: (recently discovered and may have been fixed)
+
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_validation.c:351:13: warning: variable 'bw_needed' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_validation.c:352:25: warning: variable 'link' set but not used [-Wunused-but-set-variable]
+drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c:148:31: error: implicit declaration of function 'pci_msix_can_alloc_dyn' [-Werror=implicit-function-declaration]
+drivers/net/wireless/legacy/ray_cs.c:628:17: warning: 'strncpy' specified bound 32 equals destination size [-Wstringop-truncation]
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+drivers/acpi/property.c:985 acpi_data_prop_read_single() error: potentially dereferencing uninitialized 'obj'.
+drivers/cdx/cdx.c:393:20: error: initialization of 'ssize_t (*)(const struct bus_type *, const char *, size_t)' {aka 'long int (*)(const struct bus_type *, const char *, long unsigned int)'} from incompatible pointer type 'ssize_t (*)(struct bus_type *, const char *, size_t)' {aka 'long int (*)(struct bus_type *, const char *, long unsigned int)'} [-Werror=incompatible-pointer-types]
+kernel/bpf/verifier.c:10148:11: warning: Assigned value is garbage or undefined [clang-analyzer-core.uninitialized.Assign]
+lib/cpu_rmap.c:272:2: warning: Use of memory after it is freed [clang-analyzer-unix.Malloc]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|   `-- drivers-net-wireless-legacy-ray_cs.c:warning:strncpy-specified-bound-equals-destination-size
+|-- alpha-randconfig-r003-20230329
+|   `-- drivers-net-ethernet-mellanox-mlx5-core-pci_irq.c:error:implicit-declaration-of-function-pci_msix_can_alloc_dyn
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arc-buildonly-randconfig-r005-20230329
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm64-allyesconfig
+|   |-- drivers-cdx-cdx.c:error:initialization-of-ssize_t-(-)(const-struct-bus_type-const-char-size_t)-aka-long-int-(-)(const-struct-bus_type-const-char-long-unsigned-int)-from-incompatible-pointer-type-ssize
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- arm64-buildonly-randconfig-r001-20230329
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- i386-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- i386-randconfig-m021
+|   `-- drivers-acpi-property.c-acpi_data_prop_read_single()-error:potentially-dereferencing-uninitialized-obj-.
+|-- ia64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|   `-- drivers-net-wireless-legacy-ray_cs.c:warning:strncpy-specified-bound-equals-destination-size
+|-- loongarch-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- loongarch-defconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- loongarch-randconfig-r014-20230329
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- mips-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- mips-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-bw_needed-set-but-not-used
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-link_validation.c:warning:variable-link-set-but-not-used
+|-- powerpc-allmodconfig
+clang_recent_errors
+`-- s390-randconfig-c005-20230329
+    |-- kernel-bpf-verifier.c:warning:Assigned-value-is-garbage-or-undefined-clang-analyzer-core.uninitialized.Assign
+    `-- lib-cpu_rmap.c:warning:Use-of-memory-after-it-is-freed-clang-analyzer-unix.Malloc
+
+elapsed time: 867m
+
+configs tested: 100
+configs skipped: 6
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc          buildonly-randconfig-r005-20230329   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r033-20230329   gcc  
+arc                  randconfig-r043-20230329   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r034-20230329   clang
+arm                  randconfig-r046-20230329   gcc  
+arm64                            allyesconfig   gcc  
+arm64        buildonly-randconfig-r001-20230329   gcc  
+arm64        buildonly-randconfig-r002-20230329   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r001-20230329   gcc  
+arm64                randconfig-r003-20230329   gcc  
+arm64                randconfig-r013-20230329   clang
+csky                                defconfig   gcc  
+hexagon              randconfig-r041-20230329   clang
+hexagon              randconfig-r045-20230329   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                          randconfig-a001   gcc  
+i386                          randconfig-a002   clang
+i386                          randconfig-a003   gcc  
+i386                          randconfig-a004   clang
+i386                          randconfig-a005   gcc  
+i386                          randconfig-a006   clang
+i386                          randconfig-a011   clang
+i386                          randconfig-a012   gcc  
+i386                          randconfig-a013   clang
+i386                          randconfig-a014   gcc  
+i386                          randconfig-a015   clang
+i386                          randconfig-a016   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r004-20230329   gcc  
+loongarch            randconfig-r006-20230329   gcc  
+loongarch            randconfig-r014-20230329   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r023-20230331   gcc  
+microblaze           randconfig-r022-20230331   gcc  
+microblaze           randconfig-r024-20230331   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips         buildonly-randconfig-r004-20230329   clang
+mips                 randconfig-r036-20230329   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r016-20230329   gcc  
+parisc       buildonly-randconfig-r006-20230329   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r032-20230329   gcc  
+riscv                randconfig-r035-20230329   gcc  
+riscv                randconfig-r042-20230329   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r002-20230329   gcc  
+s390                 randconfig-r044-20230329   clang
+sh                               allmodconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r005-20230329   gcc  
+sparc64      buildonly-randconfig-r003-20230329   gcc  
+sparc64              randconfig-r012-20230329   gcc  
+sparc64              randconfig-r026-20230331   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                        randconfig-a001   clang
+x86_64                        randconfig-a002   gcc  
+x86_64                        randconfig-a003   clang
+x86_64                        randconfig-a004   gcc  
+x86_64                        randconfig-a005   clang
+x86_64                        randconfig-a006   gcc  
+x86_64                        randconfig-a011   gcc  
+x86_64                        randconfig-a012   clang
+x86_64                        randconfig-a013   gcc  
+x86_64                        randconfig-a014   clang
+x86_64                        randconfig-a015   gcc  
+x86_64                        randconfig-a016   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r021-20230331   gcc  
+xtensa               randconfig-r031-20230329   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
