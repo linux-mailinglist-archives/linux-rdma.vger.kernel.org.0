@@ -2,116 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 360F06D1F4E
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 13:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D011D6D243F
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 17:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjCaLkY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Mar 2023 07:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        id S233231AbjCaPoN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Mar 2023 11:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjCaLkW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 07:40:22 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2044.outbound.protection.outlook.com [40.107.100.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612651FD3A
-        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 04:39:56 -0700 (PDT)
+        with ESMTP id S232520AbjCaPoM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 11:44:12 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2117.outbound.protection.outlook.com [40.107.243.117])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249516A62;
+        Fri, 31 Mar 2023 08:44:11 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y07UIyVPM834Tk25eyKLfwZ1ykpZ4Pyp/+cJZdzB2A6RCLbeceh05BTfNQF3mGt6eRO+NeY6mLTl4MboUyUbETF0ZIWsueJSqfi/PymOlM8IExM+QcWOiXMQ2VAZJi6NlVJzAltngBVriQijXjDR0fkT13FmSoeRWlGl+kpGe9w+fCS2foioSrCeB5jCtk/+9RPrjE8B2Z2FCVIFAPDKRm5Os6BDwNfEglVExg6skNBfGbh/GYsTC5aCr5PuJ8RBy3dd5jshaZ+xECzz39AH+uo2DAUT2WYdZQ5Kh9YORMj16nOabnt/8nz+S7Nr4i/UVohx4ORcWSNRQSRc1WXaIw==
+ b=XC7U5NvRYRdWAsAgIlTLy3BtNPW+j8vgpvVZk3ROTaTpsDsEa3nydFdwvdV9sQp3zofT09kgAZSwWk7FGqYlcQudqeElIpnwXwrwYmfYfl/riBfdUJF2FKMUHM1lOd1waKa6zJ3QLqZmyGjmOk9IDnY6kPSNhFiw4Etoy6R6germl1RLBgdGA6fJ/8xRz5Z4nqTj8zhrNO9fB29Zv89xWxAqKgL//EigavLZ8Eg5aDlY25LlUo2UmiZegEea++WuDs/No0XnXwxQBXnHwON6bTEsehyN5S56uE7zJHvMsXlD8M789qNty85Tbdeto8unmgsrUgJmaxda7ZusB/e0sg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FgE7nIwnL2jvoT+7CP0HLYgBefxpClPzLs1N8RP0WA0=;
- b=OdKXWXd6w1/35Mw8Jsmg/6i0vMBrVd2k9XjmzyhiV/DY+djMX5nrG1f2ixmJSDdDUzsP+i91ph/FlxPbuXLmGsmX58Wbqi1IGXen2tYgew67WD3D+vua/jLGhVccmcBcHLh9uDMdEuewdJuuBcMs8XrBfu4Q3qm8yCFMvDEG1Muy+wewnAoG7hZIfC+hmaKPG7EiGAfewR2j/V2twbMOyhZ8nK6+iuseTSpSZSar7M2DfQkT4/NBkjQbl22FgvnmiGJnELafJVea+pk728Acwl6TUPeUD/bhaAp6vLEPB20Mxds/SgY+YRT7XkAauzrC7E3TzKD5jTQ4NnJDl3wE5A==
+ bh=DiUlDLyBbY3j5gSEGGUbSxYFWAM+EVb0Q8mZcfckYfc=;
+ b=lyBE+4+Vp8+0s5FAVveZgrUNWvFUah8ZmxhwvyM4DlAJ3L4u0k6/6oOnqyFoMRgLMQg8vTXEKRbfy9pUWXIbwLTDIVsOpWcIuGnMJ0AUyLhGkpsnRnnBcZRFlW8azSSG2VgrvBwVxPab1qG6a1kCU+vvcXwwT41djLtBiJ3hCoGiZDPdrDFcNfai16gfvuxMDQrvnpCO8a+omWMQAjcoUg2WeoP++Mm69LIeZOMEbQIPkq8XvVAQ1ZM+SUAHtE4AuJeCNPaEQ9e4wkjSP1JWKTRXn1yrYEt2i+l2o7NDw7pxx8P8WjMZ9448papzJ2ghbCCBCPXf/0KoN1fFJeScBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FgE7nIwnL2jvoT+7CP0HLYgBefxpClPzLs1N8RP0WA0=;
- b=XEIVustokUhQLuTSAoIyeFjXS9IbIKFxdXJkcfIiz5ESbo/Io7pWFoMYCJFQOf/5d+nTXegXq+cZ3UEFxYX/aCRNDrsP0beIkopbxrAYHC5NDGliiP0qIiYaVkxggfwBDkmhixOKo5pe9Lu/ZzauKOlhoqd9D1UMK3F1jlVdSL3CtIWN1H0emioqNryaTziJl8JYzB7HcAWgNz54uL3Eqw8ldSwqdyXCyhv+eNrjnChE46dRkAPRYcfkaTcZNT+1m/EwIb9woivWFyxwZzkIu+b8y1P4JEflUc4Im7ukiX8dW8gNYI7qNvpwuCQWga68NfzxKkfXQ78hED9TrVE5cQ==
+ bh=DiUlDLyBbY3j5gSEGGUbSxYFWAM+EVb0Q8mZcfckYfc=;
+ b=F78Qk4VYdgAQRWTfLEccrH2deIx5+n0CL63sO9NHbjT2di6TlUOIa9T2uRWj2ZTFdFu2TlKhP0Bo1umMkj2Bb2zzNJjV4WLRGvDWvRVsBJ3IK69N/nUVIWxg426DtXFec6L4i2Y9kV+Bj4slXSHgK5Rwp4FFdBgd6iC3356Dxzo=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SA1PR12MB8118.namprd12.prod.outlook.com (2603:10b6:806:333::9) with
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by MW5PR13MB5534.namprd13.prod.outlook.com (2603:10b6:303:195::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.22; Fri, 31 Mar
- 2023 11:39:30 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::ef6d:fdf6:352f:efd1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::ef6d:fdf6:352f:efd1%3]) with mapi id 15.20.6178.037; Fri, 31 Mar 2023
- 11:39:30 +0000
-Date:   Fri, 31 Mar 2023 08:39:29 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "xuhaoyue (A)" <xuhaoyue1@hisilicon.com>
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [RFC PATCH for-next 3/3] libhns: Add support for SVE Direct WQE
- function
-Message-ID: <ZCbGcZEVmQXTr8R5@nvidia.com>
-References: <20230225100253.3993383-1-xuhaoyue1@hisilicon.com>
- <20230225100253.3993383-4-xuhaoyue1@hisilicon.com>
- <ZBtQ1/3WjWNXAT/b@nvidia.com>
- <53ff5576-3469-1264-aab9-6eed7956238c@hisilicon.com>
- <ZCGSXzD8LJqsXHTF@nvidia.com>
- <3789bfe9-f96e-8d87-9322-6f1476757704@hisilicon.com>
- <ZCWIIK2iC3MdrJO1@nvidia.com>
- <35c1bb98-7be4-52b5-a747-babfa02e4818@hisilicon.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.24; Fri, 31 Mar
+ 2023 15:44:06 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::c506:5243:557e:82cb]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::c506:5243:557e:82cb%5]) with mapi id 15.20.6254.021; Fri, 31 Mar 2023
+ 15:44:06 +0000
+Date:   Fri, 31 Mar 2023 17:44:00 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH net-next] net/mlx5e: Remove NULL check before dev_{put,
+ hold}
+Message-ID: <ZCb/wM+2Bz7HvFxl@corigine.com>
+References: <20230331005718.50060-1-yang.lee@linux.alibaba.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <35c1bb98-7be4-52b5-a747-babfa02e4818@hisilicon.com>
-X-ClientProxiedBy: BL1PR13CA0070.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::15) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+In-Reply-To: <20230331005718.50060-1-yang.lee@linux.alibaba.com>
+Organisation: Horms Solutions BV
+X-ClientProxiedBy: AM0PR01CA0173.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:aa::42) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB8118:EE_
-X-MS-Office365-Filtering-Correlation-Id: a3d4f189-3bcf-43d1-1551-08db31dc9730
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|MW5PR13MB5534:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1b136985-baac-48db-3673-08db31fec28f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2DUXxoMsIXNzNVClKNaI3JyCUjPaU4UJyMpiL9YWRYYz/+g6PxkDVHkr1QwYEudOLpUKoDVDMTkqWHM/30n/TLp7FFfnWmY0RJjnIOndTI2515YwoIVsCIOGscV1BgWCHwG7EX1AQWdJ5eRw2zN9ZX3XMndr/ROs5sV7VkW3m9uP2tZ2FXg7o6eUfzXQzERrHHv8B6umwkYrFuAAL8VCvMpMfWXkTTVQjmqWJSRMKb3gMliNl6n60rzYCdqxcLZAyNpQMWNNAEWGZ7Z/xFNEDdafhTWmNv2bBqZj7S1G506va0mssiyMXG+4gNhZsyFsRTQP/7ej1rIzA6+F/mvDJwlbNMtF0WQWwU4cCHRUC+PJkuCqYRuMzj5im/Qs8Gg1MBJ2EV9McwptKldSjGoOlQnXeRpmQGfv3SCI2epo3/ZU8gqkGmLk3Bix5EBWPR6r+Z/BqRPutIIvQ4//Fqbpx1z3gukP3tkvxVdQro6iMoZbBIvZyH7QTL73cc0iZAeus2cgoslha7LOBWLp3AvsJUx+4mg2rsbzfKy8kRBDARKTqc9tL6jgJtHuLXgYGEHM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(39860400002)(376002)(136003)(346002)(451199021)(2616005)(8676002)(26005)(83380400001)(53546011)(86362001)(186003)(6512007)(6506007)(38100700002)(36756003)(8936002)(41300700001)(316002)(5660300002)(66946007)(4326008)(6916009)(66476007)(478600001)(6486002)(66556008)(2906002)(66899021);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 6Va7jlkL+v+vQffQjxMtiYTdWLhgou0NLoUE/GnqfbeAnAuhpplZpDzCrVzn4H2Y1k7U+2H1yjXkG1KuSn10FXZUOu4b53pIk0PvoDRNFAPqGhpybU37mwgNcqerMtjXhPHDf7O/Ls4wcssv4V1/rYibkDssug7R/012UzPWmgAtvDblLZ7dTlu3paOSNgQCvzG23d4Yws0K9OpNjkK5tJqbEq+Jkc+bsjBKc3sJlkcayTT/rkaSeyVlKwOtU2ocSCcl2Km8Un6QYbatUkV4C7xDHM7Rq2Pxl6+YNS7pHkGI5ra6Zpa8D2v5Pu8fOlEELEMHv6gsEnrKVELpH5l3WpI+rCqWSetiN0Yw3IOWJukZ+d0FK01Dr2ZdFQ6VJA5j0eV3EEsNKkx2g+0Gm8OhUx0SyyZyOtHe3GQxDnU3P8ZrztGsz0g7KWL6flNEHwM42g3kizr/UGHM/R7MDPwNKzBHmbsblx6kCshPEN6zjleuGeIjhubJQv5zk7n7el4YP7VFa0IF5m8NRIAbHqtfyFtPlyKGXa3Sut1YpfFXe4g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(376002)(366004)(39840400004)(396003)(451199021)(6666004)(6916009)(8676002)(4326008)(316002)(6486002)(66946007)(966005)(66556008)(66476007)(36756003)(6512007)(2616005)(38100700002)(186003)(83380400001)(5660300002)(8936002)(41300700001)(478600001)(86362001)(2906002)(7416002)(6506007)(44832011);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OqQYt5f+69dRCyj3fvjBlGYreAvtFCconovBMJtRz9jz7PE8z8GryQinFSTn?=
- =?us-ascii?Q?8kAMAa45KwtQkAvBOxEiSckiQ0OlRuWRGbwru9HxNfJkC/N9psLajOmnp2Vp?=
- =?us-ascii?Q?QUygSmZiNKG9b9MbtUOGDxuZjzCurXm+rYiw15sGd5jkNWqHhqfhEzYCJDQQ?=
- =?us-ascii?Q?MLQOTpqYHA2d+VXqeOXGOPX0fh63zjRD+iFPqbkriAi7wxSFcKAHHlVK286T?=
- =?us-ascii?Q?2Xwo9vPZmL2Fi05KJiUApwp9xztOS7K0biIQCfI4GpWlWfsRw9EfnK6AAJNq?=
- =?us-ascii?Q?BREMSVMtzTEr13EwIkTLCJbBdzEiy2KerkBJfnJdwsWQXQTd+ZAXQ8a2+WDw?=
- =?us-ascii?Q?hgpFbxk/tHULCbV3qGaJaYKnP9rkiE5R0FhuiZ7BxBb7TNm3wLbn44QdSXTB?=
- =?us-ascii?Q?pJqbK8yQ/U9VLvpEizyH4Ec+02QcSBUxJ34Po9+HJ8+LtyrlwOeHtv2t6bHu?=
- =?us-ascii?Q?MCPLeAVWmpwqAvdccNlfxNx3Vfi+kkszN2NCJk36x4c/Mqrw6871kRCwBUwb?=
- =?us-ascii?Q?5pE/HgHmfB5hZ64v1s0GhjNDork9YWwtX6quKiRQaCHwFuFVnpMKeTQClW8p?=
- =?us-ascii?Q?RQzpAe/sEZv6bq7EFW4/IWDklK/F+04xNW4EsfD1I6T6ivtiprJlLmn7kvyk?=
- =?us-ascii?Q?NbTyIefnrW7yYL01eZrH/JditFciH3hZEg/j/q4KImK2yMt22NnYBC2QzAe1?=
- =?us-ascii?Q?EmgS3d3dCYIfgt5H7knFPwAy3NcFcjRIm9n6/kMaHqCwfyWoAlvhpPo2XGQG?=
- =?us-ascii?Q?sp8au6dGww4S6gqqeKOmKCZFPivFeA50p7cd6u1M5DvuuDjoduM/xkoBJr+N?=
- =?us-ascii?Q?8F/B4Oj23QvyUca/NT9QMrhmzavDV8MAAftR/yo3KqRqUxaYTVsZQb2n8CAp?=
- =?us-ascii?Q?9upfCZy3rVKDHKSZE2HMQo0It3iIGQkCZAiYqmzHDqyuzsBWII4JKkho3bEE?=
- =?us-ascii?Q?HBie3gwNQyut6JQ/M78EeRjirxb0xxolVmHYHOH2v6vuM3YzryQBbbRA8qbz?=
- =?us-ascii?Q?9z2uD9wj/qcRRFSLI/FYPDJOSm0EmXzuxteB8I/hSsKgN+BAlh0hahar/p/p?=
- =?us-ascii?Q?1kb6m9eKGIU92RiU/jz5ITf58GGPxuyFUcVFrbpmV2joMvwb0HRwv3Pl77y8?=
- =?us-ascii?Q?+QTz+tkWlZkCxq2yGisogJgd8ReavgQUH7RYESDEP4u2dv21/6w+RRau0L6q?=
- =?us-ascii?Q?uYsINf/xlTQj3fD/PEuaRKtiYNjbnmkch/uS3XujK8sqNp3Cgzey5H78XRqq?=
- =?us-ascii?Q?2MTc8+nODdEfB0JpWOLiSduWryJZaHvePpr3p/8C5mGx6S9F4JZhz8RfIp88?=
- =?us-ascii?Q?JlGAXRtusWl9ohhpIY1Pd3OkREBs/95ZGCQMoilOdhrlp36PavxJYkOCEmBx?=
- =?us-ascii?Q?5REbEK2V9fjRkDeY6A3UU+BwuT6Cd1r6MyRa4UQE2VgfxRFZv6nqOKXovEmp?=
- =?us-ascii?Q?gUWzuy1SNcFdYhScWbN+gBJQhnr2wndftQ07YNoQNEuqDDYCU7cLRPfP6Nro?=
- =?us-ascii?Q?L6+2TPwCSAAPpcj4C9+pOXaMU4jngzlkcZtIZlMldc+khlkRnERI8zFBcsY9?=
- =?us-ascii?Q?DsB7LnZaWe4QoIfQryHb/3mGxRzObMOJLQ22UVjX?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3d4f189-3bcf-43d1-1551-08db31dc9730
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1Anta3QtgAGlhsdiUyT6MkIWMcoWE69+QtzPLzJnULWjMSf2gCNyTh3hY6BJ?=
+ =?us-ascii?Q?ZOzPMDOTaWmczhcXv/G109XuLfyYdYHba9MW3EXLOkNMwkrRpzyfPent2iXN?=
+ =?us-ascii?Q?Oxq4bCURsdheLyoy7U2r/1tDWcdT2nqPYYiEVJu0zII9W3VX3j83p1OaTOb2?=
+ =?us-ascii?Q?kxGjr0GRAMZ4QI9mf4vJM35y+v+yMBT5wdZZXnorUB5dc/LIxnEIU4oyiHDq?=
+ =?us-ascii?Q?Chm124tW9+pbJnb0mFwyyOiw0QJJ/5etz4IPCh1rYsoU3w1pH1ngVvfogLuo?=
+ =?us-ascii?Q?/sj15l78Y3gGQjztGOVON+Ui7YfH0kwxfeNzFAhJh4yCGr3wyQA3jgCQuTRN?=
+ =?us-ascii?Q?80AkYRNp1WMpbx0hBP9geUbmJPfB4+EQmFl64v074K6wgMf8GZA7X4+r/vI9?=
+ =?us-ascii?Q?S1fUo+tr22NgGMnjvj9ZbsEgfBrpY0HWUQt7xsRqPTKkDO2AWAc9KJRceK48?=
+ =?us-ascii?Q?hQnWSZUsPrS4xaMvKWiUjELixunkL8ZsJJY/Qb74l/XttVyfcnH9ZpKX9EyI?=
+ =?us-ascii?Q?VKXQFtztTnqp2EAnPwREz9LDwo0uHllyIyFloHKu2ptcATUxuYWpKlHKFz0L?=
+ =?us-ascii?Q?MTjW3KZ99HV/xE3i5lWg1eUhtFNSWNXX9f471Y8vCskGfMgX6ebZxCpsLu/+?=
+ =?us-ascii?Q?VAoh13uGjsjbsvhcYjvTJKVrKCwbnr4b7N5HYi38D+1Gyf+NObg6471KQYNV?=
+ =?us-ascii?Q?goIx6XRDovqc+g/trds1+D2qMUUirLLqE300z5WFoaB/IqiJKNNIMB9VecaZ?=
+ =?us-ascii?Q?xN+a4F4dx2OYoDGaEeP71D51wp/K3cmDtFQV+gG5lrYXO1Na1cJminjqf/Uh?=
+ =?us-ascii?Q?+oWboYLtEhUhg/x1/faeuvlhmsGGay6SpDf0ETwjnBfe1cgnXt+n8JuaJPfM?=
+ =?us-ascii?Q?lfYsXBq7CRlHXl7BQ9Fbojm2xgfCWpKYfasY7GH1y0nk1WFAB1AeI48wSNMM?=
+ =?us-ascii?Q?WGjiVrSBsJS3/P9SQchHzFPooTDQIDmhCRM+YhN/l9UGd5rJKAubkEu5TCFm?=
+ =?us-ascii?Q?9kaXu0A/I13src4apdzMFybM2nAtl94E/oNtdovm+NE0MF222qLGyrH3141z?=
+ =?us-ascii?Q?ktSlXG1eFjA561VZQhNIUZfAhLz2fuPlxo9Pbv1RZW31k2PubJkKAHM9ugDQ?=
+ =?us-ascii?Q?7JfkSozgMvHLXLJGE9UHoM6lvgQ3MzMJgC/ScuY3JMQYT28Dku6fuF6P+EfU?=
+ =?us-ascii?Q?037KRsj1cnqrLDmydrXyAq5aWuDcGNw70Rc0oJDTV2kTRWYY0d2flXhjN7bK?=
+ =?us-ascii?Q?AOIARE2WnMrC3YucGmdT7buDLPk0K5RqnzfRGB6F34v5rmlIaVSRMoRm6mJv?=
+ =?us-ascii?Q?X5MWsk46gGRmxRyxyRqmCw06VFe4k8/X6cEsGA5R77rQqf5JeN6WrZ9mWBTM?=
+ =?us-ascii?Q?srpza7+OoXjRcP+O1f32jqw9npjez1G5nkgED9ocza52Lb7/EokjdhIKI0Sa?=
+ =?us-ascii?Q?+ZQTKoi7W9ULo8iJPKR86ol2CB4+TD5daqkou9jwd0c/sOVf0Atk/++/uJCV?=
+ =?us-ascii?Q?FNxrObr/Dz8+ir8Q8dkrV0w+p12hGZiUyY5C0eBuGFvsjYvrX4Ky3B4H830e?=
+ =?us-ascii?Q?0lFTHY06Vwyy6842eda1+8uX25yUXcxtErQ+uHUcVL0SP9CgtvCAcK2u8BuN?=
+ =?us-ascii?Q?mOVOmLlUp7RJFg4xc2Vl/XfQ/8Ek5Rcq5D7RtU/N7PtvlLon+54xOhd/YXBU?=
+ =?us-ascii?Q?iEUsjg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b136985-baac-48db-3673-08db31fec28f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2023 11:39:30.3696
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2023 15:44:06.0535
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rIcYT853jO2p2tWhiA2+TjVCTAD2wXwO4X4ZABL8990bzVU/aqCGBqExuTvAYDhf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8118
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+X-MS-Exchange-CrossTenant-UserPrincipalName: TJixN0IlO/46g46Xczv1c0CcgIc/d91qFvXZxftZWhYRZLeOhDs8x9qL73pD+EqCBJewKrDYA7Kwz6gg4/Fw3TD5FNzaMws/q4ifzvlZRkE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR13MB5534
+X-Spam-Status: No, score=-0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -119,63 +117,48 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 11:38:26AM +0800, xuhaoyue (A) wrote:
+On Fri, Mar 31, 2023 at 08:57:18AM +0800, Yang Li wrote:
+> The call netdev_{put, hold} of dev_{put, hold} will check NULL,
+> so there is no need to check before using dev_{put, hold},
+> remove it to silence the warnings:
 > 
+> ./drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:734:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
+> ./drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:769:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
 > 
-> On 2023/3/30 21:01:20, Jason Gunthorpe wrote:
-> > On Thu, Mar 30, 2023 at 08:57:41PM +0800, xuhaoyue (A) wrote:
-> >>
-> >>
-> >> On 2023/3/27 20:55:59, Jason Gunthorpe wrote:
-> >>> On Mon, Mar 27, 2023 at 08:53:35PM +0800, xuhaoyue (A) wrote:
-> >>>
-> >>>>>>  static void hns_roce_write512(uint64_t *dest, uint64_t *val)
-> >>>>>>  {
-> >>>>>>  	mmio_memcpy_x64(dest, val, sizeof(struct hns_roce_rc_sq_wqe));
-> >>>>>> @@ -314,7 +319,10 @@ static void hns_roce_write_dwqe(struct hns_roce_qp *qp, void *wqe)
-> >>>>>>  	hr_reg_write(rc_sq_wqe, RCWQE_DB_SL_H, qp->sl >> HNS_ROCE_SL_SHIFT);
-> >>>>>>  	hr_reg_write(rc_sq_wqe, RCWQE_WQE_IDX, qp->sq.head);
-> >>>>>>  
-> >>>>>> -	hns_roce_write512(qp->sq.db_reg, wqe);
-> >>>>>> +	if (qp->flags & HNS_ROCE_QP_CAP_SVE_DIRECT_WQE)
-> >>>>>
-> >>>>> Why do you need a device flag here?
-> >>>>
-> >>>> Our CPU die can support NEON instructions and SVE instructions,
-> >>>> but some CPU dies only have SVE instructions that can accelerate our direct WQE performance.
-> >>>> Therefore, we need to add such a flag bit to distinguish.
-> >>>
-> >>> NEON vs SVE is available to userspace already, it shouldn't come
-> >>> throuhg a driver flag. You need another reason to add this flag
-> >>>
-> >>> The userspace should detect the right instruction to use based on the
-> >>> cpu flags using the attribute stuff I pointed you at
-> >>>
-> >>> Jason
-> >>> .
-> >>>
-> >>
-> >> We optimized direct wqe based on different instructions for
-> >> different CPUs, but the architecture of the CPUs is the same and
-> >> supports both SVE and NEON instructions.  We plan to use cpuid to
-> >> distinguish between them. Is this more reasonable?
-> > 
-> > Uhh, do you mean certain CPUs won't work with SVE and others won't
-> > work with NEON?
-> > 
-> > That is quite horrible
-> > 
-> > Jason
-> > .
-> > 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4667
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+
+Looks good, but I think you missed the one in mlx5e_set_int_port_tunnel().
+
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> No, acctually for general scenarios, our CPU supports two types of instructions, SVE and NEON.
-> However, for the CPU that requires high fp64 floating-point computing power, the SVE instruction is enhanced and the NEON instruction is weakened.
-
-Ideally the decision of what CPU instruction to use will be made by
-rdma-core, using the the various schemes for dynamic link time
-selection
-
-It should apply universally to all providers
-
-Jason
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> index 20c2d2ecaf93..69ac30a728f4 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> @@ -730,8 +730,7 @@ static int mlx5e_set_vf_tunnel(struct mlx5_eswitch *esw,
+>  	}
+>  
+>  out:
+> -	if (route_dev)
+> -		dev_put(route_dev);
+> +	dev_put(route_dev);
+>  	return err;
+>  }
+>  
+> @@ -765,8 +764,7 @@ static int mlx5e_update_vf_tunnel(struct mlx5_eswitch *esw,
+>  	mlx5e_tc_match_to_reg_mod_hdr_change(esw->dev, mod_hdr_acts, VPORT_TO_REG, act_id, data);
+>  
+>  out:
+> -	if (route_dev)
+> -		dev_put(route_dev);
+> +	dev_put(route_dev);
+>  	return err;
+>  }
+>  
+> -- 
+> 2.20.1.7.g153144c
+> 
