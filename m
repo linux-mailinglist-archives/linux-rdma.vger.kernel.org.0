@@ -2,41 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD2E6D2562
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 18:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654DE6D2542
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Mar 2023 18:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbjCaQYj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Mar 2023 12:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        id S233463AbjCaQTD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Mar 2023 12:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233204AbjCaQYZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 12:24:25 -0400
+        with ESMTP id S233471AbjCaQR5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Mar 2023 12:17:57 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C632523689
-        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 09:18:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDF02781B
+        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 09:12:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680279441;
+        s=mimecast20190719; t=1680279093;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uOfuvlKLCw3PwI6FlP4CG+iWtw5a+KyQbWE9E7aqyN8=;
-        b=A0KhC05hR3ByUDVWRLqQZWsF352uc6iGc9kxnUd0s9M7amgFzX77SHj4Qq7vaIlWygA2NN
-        sHewrnMMQLOBHf3yIYSGoJ/JufO6TpiLSO43j/+HEeUQVjuVWUqpUW1y3d/BQ/A1HAZ/ba
-        FJdi6y4hQqVRXIVuPdc+E9VjwwtEfTA=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=pMIF11EWm/8cej/KXQhM8DA1wUu2yCmqcuxOX1F+AiY=;
+        b=h8bwMiLmhys0FZ010tAMaYe063cgK0+OrbCwYI3qQGgOMC9ErPZhyMxhf33w/ygMoc9jm5
+        I9RlSLMx+PlZMMpKSCOLG3Y8WpXgezvW6XqZF7qJKcV+lejIK6BcDyzgoBJI9pIk5nSito
+        xCAWdrQtb5vpNF7DlxY7u6MVGPvj2Sk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-122-i1BP4N28P-Gza7I8sd9Uyg-1; Fri, 31 Mar 2023 12:11:06 -0400
-X-MC-Unique: i1BP4N28P-Gza7I8sd9Uyg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+ us-mta-237-7dchcmswOjSwjHDFElj0Zg-1; Fri, 31 Mar 2023 12:11:30 -0400
+X-MC-Unique: 7dchcmswOjSwjHDFElj0Zg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A8F453C025B9;
-        Fri, 31 Mar 2023 16:11:05 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9D36988904B;
+        Fri, 31 Mar 2023 16:11:28 +0000 (UTC)
 Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A3281415139;
-        Fri, 31 Mar 2023 16:11:03 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 724AC4020C82;
+        Fri, 31 Mar 2023 16:11:26 +0000 (UTC)
 From:   David Howells <dhowells@redhat.com>
 To:     Matthew Wilcox <willy@infradead.org>,
         "David S. Miller" <davem@davemloft.net>,
@@ -52,16 +52,16 @@ Cc:     David Howells <dhowells@redhat.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Tom Talpey <tom@talpey.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH v3 38/55] siw: Use sendmsg(MSG_SPLICE_PAGES) rather than sendpage to transmit
-Date:   Fri, 31 Mar 2023 17:08:57 +0100
-Message-Id: <20230331160914.1608208-39-dhowells@redhat.com>
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+Subject: [PATCH v3 46/55] rds: Use sendmsg(MSG_SPLICE_PAGES) rather than sendpage
+Date:   Fri, 31 Mar 2023 17:09:05 +0100
+Message-Id: <20230331160914.1608208-47-dhowells@redhat.com>
 In-Reply-To: <20230331160914.1608208-1-dhowells@redhat.com>
 References: <20230331160914.1608208-1-dhowells@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
@@ -74,16 +74,16 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 When transmitting data, call down into TCP using a single sendmsg with
 MSG_SPLICE_PAGES to indicate that content should be spliced rather than
-performing several sendmsg and sendpage calls to transmit header, data
-pages and trailer.
+performing several sendmsg and sendpage calls to transmit header and data
+pages.
 
 To make this work, the data is assembled in a bio_vec array and attached to
-a BVEC-type iterator.  The header and trailer (if present) are copied into
-page fragments that can be freed with put_page().
+a BVEC-type iterator.  The header are copied into memory acquired from
+zcopy_alloc() which just breaks a page up into small pieces that can be
+freed with put_page().
 
 Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Bernard Metzler <bmt@zurich.ibm.com>
-cc: Tom Talpey <tom@talpey.com>
+cc: Santosh Shilimkar <santosh.shilimkar@oracle.com>
 cc: "David S. Miller" <davem@davemloft.net>
 cc: Eric Dumazet <edumazet@google.com>
 cc: Jakub Kicinski <kuba@kernel.org>
@@ -91,340 +91,135 @@ cc: Paolo Abeni <pabeni@redhat.com>
 cc: Jens Axboe <axboe@kernel.dk>
 cc: Matthew Wilcox <willy@infradead.org>
 cc: linux-rdma@vger.kernel.org
+cc: rds-devel@oss.oracle.com
 cc: netdev@vger.kernel.org
 ---
- drivers/infiniband/sw/siw/siw_qp_tx.c | 234 ++++++--------------------
- 1 file changed, 48 insertions(+), 186 deletions(-)
+ net/rds/tcp_send.c | 86 +++++++++++++++++++++-------------------------
+ 1 file changed, 40 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index fa5de40d85d5..fbe80c06d0ca 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -312,114 +312,8 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
- 	return rv;
+diff --git a/net/rds/tcp_send.c b/net/rds/tcp_send.c
+index 8c4d1d6e9249..660d9f203d99 100644
+--- a/net/rds/tcp_send.c
++++ b/net/rds/tcp_send.c
+@@ -52,29 +52,24 @@ void rds_tcp_xmit_path_complete(struct rds_conn_path *cp)
+ 	tcp_sock_set_cork(tc->t_sock->sk, false);
  }
  
--/*
-- * 0copy TCP transmit interface: Use MSG_SPLICE_PAGES.
-- *
-- * Using sendpage to push page by page appears to be less efficient
-- * than using sendmsg, even if data are copied.
-- *
-- * A general performance limitation might be the extra four bytes
-- * trailer checksum segment to be pushed after user data.
-- */
--static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
--			     size_t size)
+-/* the core send_sem serializes this with other xmit and shutdown */
+-static int rds_tcp_sendmsg(struct socket *sock, void *data, unsigned int len)
 -{
--	struct bio_vec bvec;
--	struct msghdr msg = {
--		.msg_flags = (MSG_MORE | MSG_DONTWAIT | MSG_SENDPAGE_NOTLAST |
--			      MSG_SPLICE_PAGES),
+-	struct kvec vec = {
+-		.iov_base = data,
+-		.iov_len = len,
 -	};
--	struct sock *sk = s->sk;
--	int i = 0, rv = 0, sent = 0;
+-	struct msghdr msg = {
+-		.msg_flags = MSG_DONTWAIT | MSG_NOSIGNAL,
+-	};
 -
--	while (size) {
--		size_t bytes = min_t(size_t, PAGE_SIZE - offset, size);
--
--		if (size + offset <= PAGE_SIZE)
--			msg.msg_flags = MSG_MORE | MSG_DONTWAIT;
--
--		tcp_rate_check_app_limited(sk);
--		bvec_set_page(&bvec, page[i], bytes, offset);
--		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
--
--try_page_again:
--		lock_sock(sk);
--		rv = tcp_sendmsg_locked(sk, &msg, size);
--		release_sock(sk);
--
--		if (rv > 0) {
--			size -= rv;
--			sent += rv;
--			if (rv != bytes) {
--				offset += rv;
--				bytes -= rv;
--				goto try_page_again;
--			}
--			offset = 0;
--		} else {
--			if (rv == -EAGAIN || rv == 0)
--				break;
--			return rv;
--		}
--		i++;
--	}
--	return sent;
+-	return kernel_sendmsg(sock, &msg, &vec, 1, vec.iov_len);
 -}
 -
--/*
-- * siw_0copy_tx()
-- *
-- * Pushes list of pages to TCP socket. If pages from multiple
-- * SGE's, all referenced pages of each SGE are pushed in one
-- * shot.
-- */
--static int siw_0copy_tx(struct socket *s, struct page **page,
--			struct siw_sge *sge, unsigned int offset,
--			unsigned int size)
--{
--	int i = 0, sent = 0, rv;
--	int sge_bytes = min(sge->length - offset, size);
--
--	offset = (sge->laddr + offset) & ~PAGE_MASK;
--
--	while (sent != size) {
--		rv = siw_tcp_sendpages(s, &page[i], offset, sge_bytes);
--		if (rv >= 0) {
--			sent += rv;
--			if (size == sent || sge_bytes > rv)
--				break;
--
--			i += PAGE_ALIGN(sge_bytes + offset) >> PAGE_SHIFT;
--			sge++;
--			sge_bytes = min(sge->length, size - sent);
--			offset = sge->laddr & ~PAGE_MASK;
--		} else {
--			sent = rv;
--			break;
--		}
--	}
--	return sent;
--}
--
- #define MAX_TRAILER (MPA_CRC_SIZE + 4)
- 
--static void siw_unmap_pages(struct kvec *iov, unsigned long kmap_mask, int len)
--{
--	int i;
--
--	/*
--	 * Work backwards through the array to honor the kmap_local_page()
--	 * ordering requirements.
--	 */
--	for (i = (len-1); i >= 0; i--) {
--		if (kmap_mask & BIT(i)) {
--			unsigned long addr = (unsigned long)iov[i].iov_base;
--
--			kunmap_local((void *)(addr & PAGE_MASK));
--		}
--	}
--}
--
- /*
-  * siw_tx_hdt() tries to push a complete packet to TCP where all
-  * packet fragments are referenced by the elements of one iovec.
-@@ -439,15 +333,14 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ /* the core send_sem serializes this with other xmit and shutdown */
+ int rds_tcp_xmit(struct rds_connection *conn, struct rds_message *rm,
+ 		 unsigned int hdr_off, unsigned int sg, unsigned int off)
  {
- 	struct siw_wqe *wqe = &c_tx->wqe_active;
- 	struct siw_sge *sge = &wqe->sqe.sge[c_tx->sge_idx];
--	struct kvec iov[MAX_ARRAY];
--	struct page *page_array[MAX_ARRAY];
-+	struct bio_vec bvec[MAX_ARRAY];
- 	struct msghdr msg = { .msg_flags = MSG_DONTWAIT | MSG_EOR };
-+	void *trl, *t;
- 
- 	int seg = 0, do_crc = c_tx->do_crc, is_kva = 0, rv;
- 	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len = 0,
- 		     sge_off = c_tx->sge_off, sge_idx = c_tx->sge_idx,
- 		     pbl_idx = c_tx->pbl_idx;
--	unsigned long kmap_mask = 0L;
- 
- 	if (c_tx->state == SIW_SEND_HDR) {
- 		if (c_tx->use_sendpage) {
-@@ -457,10 +350,15 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 
- 			c_tx->state = SIW_SEND_DATA;
- 		} else {
--			iov[0].iov_base =
--				(char *)&c_tx->pkt.ctrl + c_tx->ctrl_sent;
--			iov[0].iov_len = hdr_len =
--				c_tx->ctrl_len - c_tx->ctrl_sent;
-+			const void *hdr = &c_tx->pkt.ctrl + c_tx->ctrl_sent;
-+			void *h;
+ 	struct rds_conn_path *cp = rm->m_inc.i_conn_path;
+ 	struct rds_tcp_connection *tc = cp->cp_transport_data;
++	struct msghdr msg = {
++		.msg_flags = MSG_SPLICE_PAGES | MSG_DONTWAIT | MSG_NOSIGNAL,
++	};
++	struct bio_vec *bvec;
++	unsigned int i, size = 0, ix = 0;
++	bool free_hdr = false;
+ 	int done = 0;
+-	int ret = 0;
+-	int more;
++	int ret = -ENOMEM;
 +
-+			rv = -ENOMEM;
-+			hdr_len = c_tx->ctrl_len - c_tx->ctrl_sent;
-+			h = page_frag_memdup(NULL, hdr, hdr_len, GFP_NOFS, ULONG_MAX);
-+			if (!h)
-+				goto done;
-+			bvec_set_virt(&bvec[0], h, hdr_len);
- 			seg = 1;
- 		}
++	bvec = kmalloc_array(1 + sg, sizeof(struct bio_vec), GFP_KERNEL);
++	if (!bvec)
++		goto out;
+ 
+ 	if (hdr_off == 0) {
+ 		/*
+@@ -99,43 +94,37 @@ int rds_tcp_xmit(struct rds_connection *conn, struct rds_message *rm,
+ 
+ 	if (hdr_off < sizeof(struct rds_header)) {
+ 		/* see rds_tcp_write_space() */
++		void *p;
++
+ 		set_bit(SOCK_NOSPACE, &tc->t_sock->sk->sk_socket->flags);
+ 
+-		ret = rds_tcp_sendmsg(tc->t_sock,
+-				      (void *)&rm->m_inc.i_hdr + hdr_off,
+-				      sizeof(rm->m_inc.i_hdr) - hdr_off);
+-		if (ret < 0)
+-			goto out;
+-		done += ret;
+-		if (hdr_off + done != sizeof(struct rds_header))
++		ret = -ENOMEM;
++		p = page_frag_memdup(NULL,
++				     (void *)&rm->m_inc.i_hdr + hdr_off,
++				     sizeof(rm->m_inc.i_hdr) - hdr_off,
++				     GFP_KERNEL, ULONG_MAX);
++		if (!p)
+ 			goto out;
++		bvec_set_virt(&bvec[ix], p, sizeof(rm->m_inc.i_hdr) - hdr_off);
++		free_hdr = true;
++		size += bvec[ix].bv_len;
++		ix++;
  	}
-@@ -478,28 +376,9 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 		} else {
- 			is_kva = 1;
- 		}
--		if (is_kva && !c_tx->use_sendpage) {
--			/*
--			 * tx from kernel virtual address: either inline data
--			 * or memory region with assigned kernel buffer
--			 */
--			iov[seg].iov_base =
--				(void *)(uintptr_t)(sge->laddr + sge_off);
--			iov[seg].iov_len = sge_len;
+ 
+-	more = rm->data.op_nents > 1 ? (MSG_MORE | MSG_SENDPAGE_NOTLAST) : 0;
+-	while (sg < rm->data.op_nents) {
+-		int flags = MSG_DONTWAIT | MSG_NOSIGNAL | more;
 -
--			if (do_crc)
--				crypto_shash_update(c_tx->mpa_crc_hd,
--						    iov[seg].iov_base,
--						    sge_len);
--			sge_off += sge_len;
--			data_len -= sge_len;
--			seg++;
--			goto sge_done;
+-		ret = tc->t_sock->ops->sendpage(tc->t_sock,
+-						sg_page(&rm->data.op_sg[sg]),
+-						rm->data.op_sg[sg].offset + off,
+-						rm->data.op_sg[sg].length - off,
+-						flags);
+-		rdsdebug("tcp sendpage %p:%u:%u ret %d\n", (void *)sg_page(&rm->data.op_sg[sg]),
+-			 rm->data.op_sg[sg].offset + off, rm->data.op_sg[sg].length - off,
+-			 ret);
+-		if (ret <= 0)
+-			break;
+-
+-		off += ret;
+-		done += ret;
+-		if (off == rm->data.op_sg[sg].length) {
+-			off = 0;
+-			sg++;
 -		}
- 
- 		while (sge_len) {
- 			size_t plen = min((int)PAGE_SIZE - fp_off, sge_len);
--			void *kaddr;
- 
- 			if (!is_kva) {
- 				struct page *p;
-@@ -512,33 +391,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 					p = siw_get_upage(mem->umem,
- 							  sge->laddr + sge_off);
- 				if (unlikely(!p)) {
--					siw_unmap_pages(iov, kmap_mask, seg);
- 					wqe->processed -= c_tx->bytes_unsent;
- 					rv = -EFAULT;
- 					goto done_crc;
- 				}
--				page_array[seg] = p;
--
--				if (!c_tx->use_sendpage) {
--					void *kaddr = kmap_local_page(p);
--
--					/* Remember for later kunmap() */
--					kmap_mask |= BIT(seg);
--					iov[seg].iov_base = kaddr + fp_off;
--					iov[seg].iov_len = plen;
--
--					if (do_crc)
--						crypto_shash_update(
--							c_tx->mpa_crc_hd,
--							iov[seg].iov_base,
--							plen);
--				} else if (do_crc) {
--					kaddr = kmap_local_page(p);
--					crypto_shash_update(c_tx->mpa_crc_hd,
--							    kaddr + fp_off,
--							    plen);
--					kunmap_local(kaddr);
--				}
-+
-+				bvec_set_page(&bvec[seg], p, plen, fp_off);
- 			} else {
- 				/*
- 				 * Cast to an uintptr_t to preserve all 64 bits
-@@ -552,12 +410,15 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 				 * bits on a 64 bit platform and 32 bits on a
- 				 * 32 bit platform.
- 				 */
--				page_array[seg] = virt_to_page((void *)(va & PAGE_MASK));
--				if (do_crc)
--					crypto_shash_update(
--						c_tx->mpa_crc_hd,
--						(void *)va,
--						plen);
-+				bvec_set_virt(&bvec[seg], (void *)va, plen);
-+			}
-+
-+			if (do_crc) {
-+				void *kaddr = kmap_local_page(bvec[seg].bv_page);
-+				crypto_shash_update(c_tx->mpa_crc_hd,
-+						    kaddr + bvec[seg].bv_offset,
-+						    bvec[seg].bv_len);
-+				kunmap_local(kaddr);
- 			}
- 
- 			sge_len -= plen;
-@@ -567,13 +428,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 
- 			if (++seg > (int)MAX_ARRAY) {
- 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
--				siw_unmap_pages(iov, kmap_mask, seg-1);
- 				wqe->processed -= c_tx->bytes_unsent;
- 				rv = -EMSGSIZE;
- 				goto done_crc;
- 			}
- 		}
--sge_done:
-+
- 		/* Update SGE variables at end of SGE */
- 		if (sge_off == sge->length &&
- 		    (data_len != 0 || wqe->processed < wqe->bytes)) {
-@@ -582,15 +442,8 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 			sge_off = 0;
- 		}
+-		if (sg == rm->data.op_nents - 1)
+-			more = 0;
++	for (i = sg; i < rm->data.op_nents; i++) {
++		bvec_set_page(&bvec[ix],
++			      sg_page(&rm->data.op_sg[i]),
++			      rm->data.op_sg[i].length - off,
++			      rm->data.op_sg[i].offset + off);
++		off = 0;
++		size += bvec[ix].bv_len;
++		ix++;
  	}
--	/* trailer */
--	if (likely(c_tx->state != SIW_SEND_TRAILER)) {
--		iov[seg].iov_base = &c_tx->trailer.pad[4 - c_tx->pad];
--		iov[seg].iov_len = trl_len = MAX_TRAILER - (4 - c_tx->pad);
--	} else {
--		iov[seg].iov_base = &c_tx->trailer.pad[c_tx->ctrl_sent];
--		iov[seg].iov_len = trl_len = MAX_TRAILER - c_tx->ctrl_sent;
--	}
  
-+	/* Set the CRC in the trailer */
- 	if (c_tx->pad) {
- 		*(u32 *)c_tx->trailer.pad = 0;
- 		if (do_crc)
-@@ -603,23 +456,29 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	else if (do_crc)
- 		crypto_shash_final(c_tx->mpa_crc_hd, (u8 *)&c_tx->trailer.crc);
- 
--	data_len = c_tx->bytes_unsent;
--
--	if (c_tx->use_sendpage) {
--		rv = siw_0copy_tx(s, page_array, &wqe->sqe.sge[c_tx->sge_idx],
--				  c_tx->sge_off, data_len);
--		if (rv == data_len) {
--			rv = kernel_sendmsg(s, &msg, &iov[seg], 1, trl_len);
--			if (rv > 0)
--				rv += data_len;
--			else
--				rv = data_len;
--		}
-+	/* Copy the trailer and add it to the output list */
-+	if (likely(c_tx->state != SIW_SEND_TRAILER)) {
-+		trl = &c_tx->trailer.pad[4 - c_tx->pad];
-+		trl_len = MAX_TRAILER - (4 - c_tx->pad);
- 	} else {
--		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
--				    hdr_len + data_len + trl_len);
--		siw_unmap_pages(iov, kmap_mask, seg);
-+		trl = &c_tx->trailer.pad[c_tx->ctrl_sent];
-+		trl_len = MAX_TRAILER - c_tx->ctrl_sent;
++	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, bvec, ix, size);
++	ret = sock_sendmsg(tc->t_sock, &msg);
++	rdsdebug("tcp sendmsg-splice %u,%u ret %d\n", ix, size, ret);
++
+ out:
+ 	if (ret <= 0) {
+ 		/* write_space will hit after EAGAIN, all else fatal */
+@@ -158,6 +147,11 @@ int rds_tcp_xmit(struct rds_connection *conn, struct rds_message *rm,
  	}
-+
-+	rv = -ENOMEM;
-+	t = page_frag_memdup(NULL, trl, trl_len, GFP_NOFS, ULONG_MAX);
-+	if (!t)
-+		goto done_crc;
-+	bvec_set_virt(&bvec[seg], t, trl_len);
-+
-+	data_len = c_tx->bytes_unsent;
-+
-+	if (c_tx->use_sendpage)
-+		msg.msg_flags |= MSG_SPLICE_PAGES;
-+	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, bvec, seg + 1,
-+		      hdr_len + data_len + trl_len);
-+	rv = sock_sendmsg(s, &msg);
-+
- 	if (rv < (int)hdr_len) {
- 		/* Not even complete hdr pushed or negative rv */
- 		wqe->processed -= data_len;
-@@ -680,6 +539,9 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	}
- done_crc:
- 	c_tx->do_crc = 0;
-+	if (c_tx->state == SIW_SEND_HDR)
-+		folio_put(page_folio(bvec[0].bv_page));
-+	folio_put(page_folio(bvec[seg].bv_page));
- done:
- 	return rv;
+ 	if (done == 0)
+ 		done = ret;
++	if (bvec) {
++		if (free_hdr)
++			put_page(bvec[0].bv_page);
++		kfree(bvec);
++	}
+ 	return done;
  }
+ 
 
