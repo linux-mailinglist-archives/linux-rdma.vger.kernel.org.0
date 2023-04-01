@@ -2,60 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A06326D2E98
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Apr 2023 08:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC456D2EBA
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 Apr 2023 08:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbjDAGem (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 1 Apr 2023 02:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
+        id S233511AbjDAGjG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 1 Apr 2023 02:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjDAGem (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Apr 2023 02:34:42 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1307E1D85C
-        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 23:34:40 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id l9-20020a17090a3f0900b0023d32684e7fso9940816pjc.1
-        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 23:34:40 -0700 (PDT)
+        with ESMTP id S233525AbjDAGip (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Apr 2023 02:38:45 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD0620C01
+        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 23:38:22 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id r7-20020a17090b050700b002404be7920aso23773856pjz.5
+        for <linux-rdma@vger.kernel.org>; Fri, 31 Mar 2023 23:38:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1680330879;
+        d=broadcom.com; s=google; t=1680331095;
         h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=gm1+fyxqSXiQgof6Mw752G/xnCV7mpvHo6PrdyKmD8I=;
-        b=ATVnDlHqNTseuQhRDRo+FV2LSfxs5JQvrkLYvVDmEQe9gkI6w5agRmIlU2t6jI5hOl
-         KNqAcZYRfNYJRSiNo23JAcBb8RcUzqfMmS/Er7kDKzwjMfmIKV5YaXRa5aRN7NHXBI7r
-         1/PS/IJ67OSDB6zVKKbKvPe/4ZuWWCqvKBAWY=
+        bh=tXE0+earW/yc9PR5Ch2dVMpBcTMVxdDOWwuUrgBYHMc=;
+        b=N/maePfnCS8aULUtUFQcSP6WBroZnGY6BEBQLmcN+oNxBwagyetrky/v52UZ/FS9jf
+         wijBQFSXF21C7/MoKpgAlVLGmhbpqToihnc5qF9DY1uiPnfBucS70U2srHdM+kVJS/HN
+         TnQabD+mYDeiHv4wwhZiYZOi4GzEGIL7JnjlU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680330879;
+        d=1e100.net; s=20210112; t=1680331095;
         h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gm1+fyxqSXiQgof6Mw752G/xnCV7mpvHo6PrdyKmD8I=;
-        b=Bzgd/G3qk2fuk4tWX/cvvF8qXYNYhFHhf2C0+6m3kt9YzbiVhQIxtWhD8J7vD+Qe/r
-         nIyp2zeZPp+X3YnJ2K8OFQoAb0PHk6QphWge/xzu/wgr0VqgPuqN+O7yQOZ1pR0HB7M0
-         9zaS8AMXwbqtTXHT6zt0k/BseTDPNSptVPwMXEgxmMVhnoAETJAEEo2HT7ecD45GwHvZ
-         E4KjjCR8WHmNmDhZ3E2jIzUXZz1Rkgpptaj5AHHL6h2hjkvaPtpJzmZGb7UsECSMJQEo
-         lGfOqF6hKkdc8rkmjp/FpckmO5J/mGuFJ7jMGPxoBk/zCanBw517cpwhPcfXS6Z/VvEd
-         kIrg==
-X-Gm-Message-State: AAQBX9fKmOBsDZ3qzlJ+JdIWmhPgJEaJaWMGinO1q5FmzsxXakI2FhwF
-        MER2rfo3lENufsyzNhepLtdEKztX0ht1qlmA9Vg=
-X-Google-Smtp-Source: AKy350Y0FoWgvkkCEAoX037Msgh9BlC13kKGNsv9WvTJRNnXcu4OGGcUCJ07Q7y+j1MfXUW1E5oB6Q==
-X-Received: by 2002:a17:90a:1951:b0:237:373e:9dfa with SMTP id 17-20020a17090a195100b00237373e9dfamr32979308pjh.20.1680330879183;
-        Fri, 31 Mar 2023 23:34:39 -0700 (PDT)
+        bh=tXE0+earW/yc9PR5Ch2dVMpBcTMVxdDOWwuUrgBYHMc=;
+        b=AUdvW9TP5x4FsmP0UO4/RZFCJ+AdnvGV5gZMj6HjrlfH7p5sLodvrQMVQaDMwOsgnJ
+         X9hLman+zH0gJeKtePhKZZlzzdi0Cv27r5GNPWXjmIKsFgfLnNC+gz933nUbChqJiWH6
+         k0nYSw0UtC2R0h4cXUUt4Jv1666dzXddT2TQI0eoGTYUbnqZB+hNYaZBMrXm/V25KGfg
+         /cVs9HEBTlzbqu9ZIloCmFPZA6K1kkFoe3g0YaUMqZWCIppj3Lr8Nfib8DYAQeicTyKu
+         OYr1tBf1EMzdrLyEo9q657gXwIApK9ESXZ8fJLBkK+1VoZxZ6GMo+qt0FfZUjiWDkK+D
+         gTIg==
+X-Gm-Message-State: AAQBX9cGxvAqXT1Gui/+P45Dngr8ufganu1oy4/xQURYwYjhdXkjQlId
+        zNv3iDVwv0XJ3phRX4WTZOzaYAsrUgIlscFoHtg=
+X-Google-Smtp-Source: AKy350Yayz0cgDl9CYvTZOvk5Jzq1b/HWs4eZLnBXSj0XujYX9jeXGs+lIEh9RaD025qMgvAi2uJ6A==
+X-Received: by 2002:a17:902:d503:b0:19d:1720:3873 with SMTP id b3-20020a170902d50300b0019d17203873mr35554888plg.57.1680331094610;
+        Fri, 31 Mar 2023 23:38:14 -0700 (PDT)
 Received: from localhost.localdomain ([192.19.252.250])
-        by smtp.gmail.com with ESMTPSA id t2-20020a17090ae50200b00240404fe949sm5972622pjy.40.2023.03.31.23.34.36
+        by smtp.gmail.com with ESMTPSA id u8-20020a170902a60800b001a045f45d49sm2590060plq.281.2023.03.31.23.38.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 23:34:38 -0700 (PDT)
+        Fri, 31 Mar 2023 23:38:14 -0700 (PDT)
 From:   Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org,
         Saravanan Vajravel <saravanan.vajravel@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v2 for-rc] RDMA/core: Fix GID entry ref leak when create_ah fails
-Date:   Fri, 31 Mar 2023 23:34:24 -0700
-Message-Id: <20230401063424.342204-1-saravanan.vajravel@broadcom.com>
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>
+Subject: [PATCH for-rc] RDMA/srpt: Add a check for valid 'mad_agent' pointer
+Date:   Fri, 31 Mar 2023 23:38:00 -0700
+Message-Id: <20230401063800.342432-1-saravanan.vajravel@broadcom.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000326b7105f8408585"
+        boundary="000000000000085da705f840929d"
 X-Spam-Status: No, score=0.8 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
@@ -65,41 +66,74 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000326b7105f8408585
+--000000000000085da705f840929d
 Content-Transfer-Encoding: 8bit
 
-If AH create request fails, release sgid_attr to avoid
-GID entry referrence leak reported while releasing GID
-table
+When unregistering MAD agent, srpt module has a non-null check
+for 'mad_agent' pointer before invoking ib_unregister_mad_agent().
+This check can pass if 'mad_agent' variable holds an error value.
+The 'mad_agent' can have an error value for a short window when
+srpt_add_one() and srpt_remove_one() is executed simultaneously.
 
-Fixes: 1a1f460ff151 ("RDMA: Hold the sgid_attr inside the struct ib_ah/qp")
+In srpt module, added a valid pointer check for 'sport->mad_agent'
+before unregistering MAD agent.
+
+This issue can hit when RoCE driver unregisters ib_device
+
+Stack Trace:
+------------
+BUG: kernel NULL pointer dereference, address: 000000000000004d
+PGD 145003067 P4D 145003067 PUD 2324fe067 PMD 0
+Oops: 0002 [#1] PREEMPT SMP NOPTI
+CPU: 10 PID: 4459 Comm: kworker/u80:0 Kdump: loaded Tainted: P
+Hardware name: Dell Inc. PowerEdge R640/06NR82, BIOS 2.5.4 01/13/2020
+Workqueue: bnxt_re bnxt_re_task [bnxt_re]
+RIP: 0010:_raw_spin_lock_irqsave+0x19/0x40
+Call Trace:
+  ib_unregister_mad_agent+0x46/0x2f0 [ib_core]
+  IPv6: ADDRCONF(NETDEV_CHANGE): bond0: link becomes ready
+  ? __schedule+0x20b/0x560
+  srpt_unregister_mad_agent+0x93/0xd0 [ib_srpt]
+  srpt_remove_one+0x20/0x150 [ib_srpt]
+  remove_client_context+0x88/0xd0 [ib_core]
+  bond0: (slave p2p1): link status definitely up, 100000 Mbps full duplex
+  disable_device+0x8a/0x160 [ib_core]
+  bond0: active interface up!
+  ? kernfs_name_hash+0x12/0x80
+ (NULL device *): Bonding Info Received: rdev: 000000006c0b8247
+  __ib_unregister_device+0x42/0xb0 [ib_core]
+ (NULL device *):         Master: mode: 4 num_slaves:2
+  ib_unregister_device+0x22/0x30 [ib_core]
+ (NULL device *):         Slave: id: 105069936 name:p2p1 link:0 state:0
+  bnxt_re_stopqps_and_ib_uninit+0x83/0x90 [bnxt_re]
+  bnxt_re_alloc_lag+0x12e/0x4e0 [bnxt_re]
+
+Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
 Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Reviewed-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 ---
-v1->v2:
- - Fix email trailer message
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/infiniband/core/verbs.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 11b1c1603aeb..b99b3cc283b6 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -532,6 +532,8 @@ static struct ib_ah *_rdma_create_ah(struct ib_pd *pd,
- 	else
- 		ret = device->ops.create_ah(ah, &init_attr, NULL);
- 	if (ret) {
-+		if (ah->sgid_attr)
-+			rdma_put_gid_attr(ah->sgid_attr);
- 		kfree(ah);
- 		return ERR_PTR(ret);
- 	}
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 3c3fae738c3e..07c24182b085 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -634,7 +634,7 @@ static void srpt_unregister_mad_agent(struct srpt_device *sdev, int port_cnt)
+ 	for (i = 1; i <= port_cnt; i++) {
+ 		sport = &sdev->port[i - 1];
+ 		WARN_ON(sport->port != i);
+-		if (sport->mad_agent) {
++		if (!IS_ERR_OR_NULL(sport->mad_agent)) {
+ 			ib_modify_port(sdev->device, i, 0, &port_modify);
+ 			ib_unregister_mad_agent(sport->mad_agent);
+ 			sport->mad_agent = NULL;
 -- 
 2.31.1
 
 
---000000000000326b7105f8408585
+--000000000000085da705f840929d
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -170,14 +204,14 @@ pb/Gi74xj8wc5zCrVpXS1UNVJ8B6Jib+vas1cAtL6RFi0RDtFbUXe9U4wB07Ker1yMtBA6QzfZW2
 d0VRyjqv9NL22cjJ4ffotr8ZKbiSVEHbnDRxAgeuMxkkpjQQk/y1S1fk0wDOYNfV0zIkWtVMNBzY
 Ttmt2pp+/hwLYVAxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxT
 aWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAy
-MDIwAgwz1tXFZ7RRpYwmQDswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJ0bxN/D
-K9ArJ+xlz8dkCpdA27gTZhN36n6bbqDDsOp6MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
-KoZIhvcNAQkFMQ8XDTIzMDQwMTA2MzQzOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
+MDIwAgwz1tXFZ7RRpYwmQDswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIN+l+mpk
+hID2dF/iQxN2rP0ucRQx0OZIW1YzPz8YULDDMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
+KoZIhvcNAQkFMQ8XDTIzMDQwMTA2MzgxNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
 CwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZI
-hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBAYmpxM2dX++IvgAvwPVIjDqx/
-8mjvrU4HiJGXjLG5NMEoFEPex+Ka4N0qvqASAVFE6WhNOz33r+MklygnXyd21TT3xwEJDw0D436R
-EjFV5NAjqgOUR6zsDDXXziUCiOQlvbwCtrMzLW+owDXqQxmNLdhVX+NxztJ2UY+L2orwlS5p/wjz
-cjDGeA5vuwe4hlGK0fGKZPVQO8Db10kWG7taxEcAh9kPTNRMT6iTyzW0rBkimtrlwXvBV4SF+gg7
-O+vrt9kRepzw+mc0yjt+61kHFX855SM4xCffYmSrVxhtkUHN1YZMGs+V4khtOps7GUIS3JoMFelI
-IwU/Ln8nSAQ8
---000000000000326b7105f8408585--
+hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBLNqKxxefL7doCupcUEcQ+1A1C
+J8hzTOzbYpWmu2NgJG/VAvqF78dk55VTbyZx5ZFjKOfUlPitv4WQ+EilkQyc7VD1cI3xdqq+SLO5
+9sM+ZF8JgNLcFRujm/2rAxcK8j1bgU5d5C+WYTINdfJehTBZb+ezMahjctQi2Ulm8Lxh2XAZ3z9R
+RTD/+46RY46yzCzJ52YGDtRfc0CsD5bMERtG2UQx/fs6irDw7GJsXP1TmmT8OSLePXjXDITRMRrv
+4xOrtjt2ZNrJcCAz0h9rVDHllWUCqJTVjXAyxeYHmrINtJ81GgbixV2HKgkzMsClYVksyLJGzr4Z
+WTGHmPlL1vU7
+--000000000000085da705f840929d--
