@@ -2,83 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E23116D3590
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Apr 2023 07:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCD16D363A
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Apr 2023 10:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbjDBFKb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 2 Apr 2023 01:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42754 "EHLO
+        id S229583AbjDBIa3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 2 Apr 2023 04:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjDBFKa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Apr 2023 01:10:30 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BE5A27B
-        for <linux-rdma@vger.kernel.org>; Sat,  1 Apr 2023 22:10:28 -0700 (PDT)
-Received: from fsav413.sakura.ne.jp (fsav413.sakura.ne.jp [133.242.250.112])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 3325AE8p026436;
-        Sun, 2 Apr 2023 14:10:14 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav413.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav413.sakura.ne.jp);
- Sun, 02 Apr 2023 14:10:14 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav413.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 3325ADTW026433
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 2 Apr 2023 14:10:13 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <a44e9ac5-44e2-d575-9e30-02483cc7ffd1@I-love.SAKURA.ne.jp>
-Date:   Sun, 2 Apr 2023 14:10:13 +0900
+        with ESMTP id S229459AbjDBIa2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Apr 2023 04:30:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAE0F755
+        for <linux-rdma@vger.kernel.org>; Sun,  2 Apr 2023 01:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680424186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fjMU4p9+DXZHNmOHLlNl/8Bfex0ApnD0yNYoZFOYHXs=;
+        b=UlE/2/gknE9BmPRSTX+7FApRWBgBePfLBd+di1PQ/fw/aQK2cc1DISiabFVcMzv4wiaQhP
+        0XPcOQtP5O/WF2qKJ0w46VQ6jmdeS7xsnNrTCa9vqD3oq/hFXXdB8sC0XtYte+wO+AQDfD
+        SZGCuAbYVLMfUEQLsVYNwY93fIC8Ajk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-497-pC-a7scgODqWaQKYKe72UQ-1; Sun, 02 Apr 2023 04:29:40 -0400
+X-MC-Unique: pC-a7scgODqWaQKYKe72UQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BC516811E7C;
+        Sun,  2 Apr 2023 08:29:39 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.45.242.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 26D1E175AD;
+        Sun,  2 Apr 2023 08:29:39 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 2459830736C72;
+        Sun,  2 Apr 2023 10:29:38 +0200 (CEST)
+Subject: [PATCH bpf V6 0/5] XDP-hints: API change for RX-hash kfunc
+ bpf_xdp_metadata_rx_hash
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
+        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
+        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net, tariqt@nvidia.com, saeedm@nvidia.com,
+        leon@kernel.org, linux-rdma@vger.kernel.org
+Date:   Sun, 02 Apr 2023 10:29:38 +0200
+Message-ID: <168042409059.4051476.8176861613304493950.stgit@firesoul>
+User-Agent: StGit/1.4
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Content-Language: en-US
-To:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     OFED mailing list <linux-rdma@vger.kernel.org>,
-        syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH] RDMA/siw: remove namespace check from siw_netdev_event()
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-syzbot is reporting that siw_netdev_event(NETDEV_UNREGISTER) cannot destroy
-siw_device created after unshare(CLONE_NEWNET) due to net namespace check.
-It seems that this check was by error there and should be removed.
+Current API for bpf_xdp_metadata_rx_hash() returns the raw RSS hash value,
+but doesn't provide information on the RSS hash type (part of 6.3-rc).
 
-Reported-by: syzbot <syzbot+5e70d01ee8985ae62a3b@syzkaller.appspotmail.com>
-Link: https://syzkaller.appspot.com/bug?extid=5e70d01ee8985ae62a3b
-Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-Suggested-by: Leon Romanovsky <leon@kernel.org>
-Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+This patchset proposal is to change the function call signature via adding
+a pointer value argument for providing the RSS hash type. 
+
 ---
- drivers/infiniband/sw/siw/siw_main.c | 3 ---
- 1 file changed, 3 deletions(-)
+V6:
+ - Resend: selftest failure is unrelated (in xdp_do_redirect)
+   Issue in fccca038f300 ("veth: take into account device reconfiguration for xdp_features flag")
+V5:
+ - Fixes for checkpatch.pl
+ - Change function signature for all xmo_rx_hash calls
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index dacc174604bf..65b5cda5457b 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -437,9 +437,6 @@ static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
- 
- 	dev_dbg(&netdev->dev, "siw: event %lu\n", event);
- 
--	if (dev_net(netdev) != &init_net)
--		return NOTIFY_OK;
--
- 	base_dev = ib_device_get_by_netdev(netdev, RDMA_DRIVER_SIW);
- 	if (!base_dev)
- 		return NOTIFY_OK;
--- 
-2.18.4
+Jesper Dangaard Brouer (5):
+      xdp: rss hash types representation
+      mlx5: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      veth: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      mlx4: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      selftests/bpf: Adjust bpf_xdp_metadata_rx_hash for new arg
+
+
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    | 22 ++++++-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 63 ++++++++++++++++++-
+ drivers/net/veth.c                            | 10 ++-
+ include/linux/mlx5/device.h                   | 14 ++++-
+ include/linux/netdevice.h                     |  3 +-
+ include/net/xdp.h                             | 47 ++++++++++++++
+ net/core/xdp.c                                | 10 ++-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   |  2 +
+ .../selftests/bpf/progs/xdp_hw_metadata.c     | 14 +++--
+ .../selftests/bpf/progs/xdp_metadata.c        |  6 +-
+ .../selftests/bpf/progs/xdp_metadata2.c       |  7 ++-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c |  2 +-
+ tools/testing/selftests/bpf/xdp_metadata.h    |  1 +
+ 14 files changed, 180 insertions(+), 24 deletions(-)
+
+--
+
