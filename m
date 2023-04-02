@@ -2,146 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED566D3824
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Apr 2023 15:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754366D38E1
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Apr 2023 17:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjDBNwB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 2 Apr 2023 09:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
+        id S230497AbjDBPuD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 2 Apr 2023 11:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjDBNwB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Apr 2023 09:52:01 -0400
-Received: from out-63.mta1.migadu.com (out-63.mta1.migadu.com [IPv6:2001:41d0:203:375::3f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51F97EEE
-        for <linux-rdma@vger.kernel.org>; Sun,  2 Apr 2023 06:51:59 -0700 (PDT)
-Message-ID: <020c55e0-0b6d-9807-b021-b0b99fa5dd92@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1680443515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j2E9/WeVM4TGeNySCHOnz9KtvQ+UAFk8cP9H49XfTqQ=;
-        b=RqXwaJ9KwXxMxFvENR17n3xXNJ1HoB57zjRdKnVODAaer2Vbny0f/H5+nYFkc4YrukjqVj
-        vSSNR0nGOBv8oNrUZeenkusP5qpWHFlFxYQdyjutEylvYW0QKRBEP0masgVygdwiuqNNA2
-        7JkNl+rj3Cbz20xiYovQFN3VKvD0D7E=
-Date:   Sun, 2 Apr 2023 21:51:43 +0800
+        with ESMTP id S230283AbjDBPuD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Apr 2023 11:50:03 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCD7E042;
+        Sun,  2 Apr 2023 08:50:01 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id cn12so108143938edb.4;
+        Sun, 02 Apr 2023 08:50:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680450600; x=1683042600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A3H+yKErz+asdo8QewHRhcyQgjCu7p9+bA2Tn/wzQyc=;
+        b=AXrfuLSQ2rAeeY46rK+Ifd00OqdmfpQpSBpyMtqEIYfzKeOIpil2Yr1FMG4TG2kyIU
+         sM2807/dLEcUCCq7F3iTsJjroIsEdp3/6uyqKLWztzzZPmFHAeYTkclQizNuFjxOO2L2
+         MLCoOPenyvuv9yxgFCMU9dbt+OCF4E5KvvHWZonDhVPBxWmin07ve190M9A0/w60VcUn
+         n+EY/QLp3zkRDIAYQnnlXVZeCRw6E3ZVBWwV1EvPae2AA/s4jIjc9IAuMI01l4WhLSj4
+         72QguFFCOrWWAkczf5Jz0ihnb5MMLHh9vPHB4eiUjQCVqBWEYuYDBTVMf7tLx4wteBdx
+         RGxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680450600; x=1683042600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A3H+yKErz+asdo8QewHRhcyQgjCu7p9+bA2Tn/wzQyc=;
+        b=v/Bkafwi6LXLqc5SCQD5meFY3poQdNfODp16mbKszdcimcVROhT6onqjMsB/6lfWzG
+         Lhb99pTsHkG8iVwRI7EtWQlV7BXJUoLw/nUr9DIQE/kZPCTi/quf+eXNIC0zCcFcBg7w
+         Xd0L2eZGUSSkQe9mz+xX2i7OGBoKn20HDhOjhW8gLg8abTaC4ZlY5shf0XAEZ/G79YZ9
+         POWMZS/eWTS0iOFtLEHKnV/TTX0Gl7/nzdreYeZ+pEffrs1u9DWlfF6Gp42FEDr9Cj3T
+         9mSzxTsIbtzBIqnEQoZ7AMgO4Y1F9+hvlkglAxEwJuPE1UbdmSmr75jJuRdH+bbK2u5t
+         z+OA==
+X-Gm-Message-State: AAQBX9ff6imp1hwK6b6bUsdSiF2JvwiNPStLxCG77OxsvXnGB3I9wjIj
+        zUwgct3wjUqjuK7yHFlz1fUEdbiHus8ZbHWu3H4=
+X-Google-Smtp-Source: AKy350ax2HWtO6rXgzdemCo1alFkS8HV4Clz+W1EVu6BR1XzxsyNuc7e1sTnlgfbloPRYVtbjT3fruEPtP2eFcoMP5Y=
+X-Received: by 2002:a50:9502:0:b0:4fb:2593:846 with SMTP id
+ u2-20020a509502000000b004fb25930846mr3463253eda.3.1680450600264; Sun, 02 Apr
+ 2023 08:50:00 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/2] RDMA/rxe: Treat physical addresses right
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Bob Pearson <rpearsonhpe@gmail.com>
-References: <20230329142341.863175-1-linus.walleij@linaro.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230329142341.863175-1-linus.walleij@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <168042409059.4051476.8176861613304493950.stgit@firesoul> <168042420344.4051476.9107061652824513113.stgit@firesoul>
+In-Reply-To: <168042420344.4051476.9107061652824513113.stgit@firesoul>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 2 Apr 2023 08:49:49 -0700
+Message-ID: <CAADnVQ+JEP0sOyOOWbYKHackb4PmNYYcDGXnksucJt2mQGwi7g@mail.gmail.com>
+Subject: Re: [PATCH bpf V6 5/5] selftests/bpf: Adjust bpf_xdp_metadata_rx_hash
+ for new arg
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/3/29 22:23, Linus Walleij 写道:
-> Whenever the IB_MR_TYPE_DMA flag is set in imbr.type, the "iova"
-> (I/O virtual address) is not really a virtual address but a physical
-> address.
-> 
-> This means that the use of virt_to_page() on these addresses is also
-> incorrect, this needs to be treated and converted to a page using
-> the page frame number and pfn_to_page().
-> 
-> Fix up all users in this file.
-
-It is better to have a summary to these 2 commits.
-Anyway, thanks.
-
-Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-
-Zhu Yanjun
-
-> 
-> Fixes: 592627ccbdff ("RDMA/rxe: Replace rxe_map and rxe_phys_buf by xarray")
-> Cc: Bob Pearson <rpearsonhpe@gmail.com>
-> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-> Link: https://lore.kernel.org/linux-rdma/ZB2s3GeaN%2FFBpR5K@nvidia.com/
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+On Sun, Apr 2, 2023 at 1:30=E2=80=AFAM Jesper Dangaard Brouer <brouer@redha=
+t.com> wrote:
+>
+> Update BPF selftests to use the new RSS type argument for kfunc
+> bpf_xdp_metadata_rx_hash.
+>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Acked-by: Stanislav Fomichev <sdf@google.com>
 > ---
-> ChangeLog v1->v2:
-> - New patch prepended to patch set.
-> ---
->   drivers/infiniband/sw/rxe/rxe_mr.c | 26 ++++++++++++++++++--------
->   1 file changed, 18 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index b10aa1580a64..8e8250652f9d 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -279,16 +279,20 @@ static int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
->   	return 0;
->   }
->   
-> -static void rxe_mr_copy_dma(struct rxe_mr *mr, u64 iova, void *addr,
-> +/*
-> + * This function is always called with a physical address as parameter,
-> + * since DMA only operates on physical addresses.
-> + */
-> +static void rxe_mr_copy_dma(struct rxe_mr *mr, u64 phys, void *addr,
->   			    unsigned int length, enum rxe_mr_copy_dir dir)
->   {
-> -	unsigned int page_offset = iova & (PAGE_SIZE - 1);
-> +	unsigned int page_offset = phys & (PAGE_SIZE - 1);
->   	unsigned int bytes;
->   	struct page *page;
->   	u8 *va;
->   
->   	while (length) {
-> -		page = virt_to_page(iova & mr->page_mask);
-> +		page = pfn_to_page(phys >> PAGE_SHIFT);
->   		bytes = min_t(unsigned int, length,
->   				PAGE_SIZE - page_offset);
->   		va = kmap_local_page(page);
-> @@ -300,7 +304,7 @@ static void rxe_mr_copy_dma(struct rxe_mr *mr, u64 iova, void *addr,
->   
->   		kunmap_local(va);
->   		page_offset = 0;
-> -		iova += bytes;
-> +		phys += bytes;
->   		addr += bytes;
->   		length -= bytes;
->   	}
-> @@ -487,8 +491,11 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
->   	}
->   
->   	if (mr->ibmr.type == IB_MR_TYPE_DMA) {
-> -		page_offset = iova & (PAGE_SIZE - 1);
-> -		page = virt_to_page(iova & PAGE_MASK);
-> +		/* In this case iova is a physical address */
-> +		u64 phys = iova;
+>  .../selftests/bpf/prog_tests/xdp_metadata.c        |    2 ++
+>  .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   14 +++++++++-----
+>  tools/testing/selftests/bpf/progs/xdp_metadata.c   |    6 +++---
+>  tools/testing/selftests/bpf/progs/xdp_metadata2.c  |    7 ++++---
+>  tools/testing/selftests/bpf/xdp_hw_metadata.c      |    2 +-
+>  tools/testing/selftests/bpf/xdp_metadata.h         |    1 +
+>  6 files changed, 20 insertions(+), 12 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tool=
+s/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> index aa4beae99f4f..8c5e98da9ae9 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> @@ -273,6 +273,8 @@ static int verify_xsk_metadata(struct xsk *xsk)
+>         if (!ASSERT_NEQ(meta->rx_hash, 0, "rx_hash"))
+>                 return -1;
+>
+> +       ASSERT_EQ(meta->rx_hash_type, 0, "rx_hash_type");
 > +
-> +		page_offset = phys & (PAGE_SIZE - 1);
-> +		page = pfn_to_page(phys >> PAGE_SHIFT);
->   	} else {
->   		unsigned long index;
->   		int err;
-> @@ -544,8 +551,11 @@ int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
->   	}
->   
->   	if (mr->ibmr.type == IB_MR_TYPE_DMA) {
-> -		page_offset = iova & (PAGE_SIZE - 1);
-> -		page = virt_to_page(iova & PAGE_MASK);
-> +		/* In this case iova is a physical address */
-> +		u64 phys = iova;
-> +
-> +		page_offset = phys & (PAGE_SIZE - 1);
-> +		page = pfn_to_page(phys >> PAGE_SHIFT);
->   	} else {
->   		unsigned long index;
->   		int err;
+>         xsk_ring_cons__release(&xsk->rx, 1);
+>         refill_rx(xsk, comp_addr);
+>
+> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/=
+testing/selftests/bpf/progs/xdp_hw_metadata.c
+> index 4c55b4d79d3d..7b3fc12e96d6 100644
+> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> @@ -14,8 +14,8 @@ struct {
+>
+>  extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
+>                                          __u64 *timestamp) __ksym;
+> -extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
+> -                                   __u32 *hash) __ksym;
+> +extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *has=
+h,
+> +                                   enum xdp_rss_hash_type *rss_type) __k=
+sym;
+>
+>  SEC("xdp")
+>  int rx(struct xdp_md *ctx)
+> @@ -74,10 +74,14 @@ int rx(struct xdp_md *ctx)
+>         else
+>                 meta->rx_timestamp =3D 0; /* Used by AF_XDP as not avail =
+signal */
+>
+> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
+> -               bpf_printk("populated rx_hash with %u", meta->rx_hash);
+> -       else
+> +       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash=
+_type)) {
+> +               bpf_printk("populated rx_hash:0x%X type:0x%X",
+> +                          meta->rx_hash, meta->rx_hash_type);
+> +               if (!(meta->rx_hash_type & XDP_RSS_L4))
+> +                       bpf_printk("rx_hash low quality L3 hash type");
+> +       } else {
+>                 meta->rx_hash =3D 0; /* Used by AF_XDP as not avail signa=
+l */
+> +       }
 
+Didn't we agree in the previous thread to remove these printks and
+replace them with actual stats that user space can see?
