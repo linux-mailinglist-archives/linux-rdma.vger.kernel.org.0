@@ -2,142 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF5D6D3E7B
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Apr 2023 09:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA31A6D3ED5
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Apr 2023 10:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbjDCH5O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Apr 2023 03:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        id S231656AbjDCIVi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Apr 2023 04:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbjDCH5N (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Apr 2023 03:57:13 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9797FE6;
-        Mon,  3 Apr 2023 00:57:11 -0700 (PDT)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3336QW3w024232;
-        Mon, 3 Apr 2023 07:57:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=YdnMwkUzrc1nb3ZjPZ9/4LYT9dsKuEGu0ZW1tbsxwrM=;
- b=FC1ifGw/j8tZDR1rlCspjnCxym/ZUD1DtrscT/GzN37qj04nTaXXUN3ss/nVJiq3uwKj
- hTdwqO0rlbQlyGQgIF6E5n8c+ZBIsDvsPjuxRzpy4OYv087UNAYj4mDhmLgCi6YiW89T
- LkjsJ8fCmQcBouXYnjXt6Gtpg15hfPUPpWyn6MjS00/tLWQEBcOjfEmbsLk99Ys5+Bbw
- SxGRiGb5roagY2FuATfki8hilTDwZLY0bMgxIxZWuyVCRhHZCfE6brbN53zQEO2t7M7a
- Yn/4OwB7t3tkTmzYXn57/NwMZyQfFJq4nKHnkkJdz6GOYQAx/iGr4yVg1wx9dDkzYEfu xg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ppxf78pwf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 Apr 2023 07:57:04 +0000
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3337IYYj028032;
-        Mon, 3 Apr 2023 07:57:03 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ppxf78pvp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 Apr 2023 07:57:03 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3332OCEL015082;
-        Mon, 3 Apr 2023 07:57:01 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3ppc8712ya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 03 Apr 2023 07:57:01 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3337uvs718154174
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 3 Apr 2023 07:56:57 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 78AA820043;
-        Mon,  3 Apr 2023 07:56:57 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 337F020040;
-        Mon,  3 Apr 2023 07:56:57 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  3 Apr 2023 07:56:57 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Gerd Bayer <gbayer@linux.ibm.com>,
-        Alexander Schmidt <alexs@linux.ibm.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5: stop waiting for PCI link if reset is required
-Date:   Mon,  3 Apr 2023 09:56:56 +0200
-Message-Id: <20230403075657.168294-1-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.37.2
+        with ESMTP id S231664AbjDCIVc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Apr 2023 04:21:32 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2897CEC6E;
+        Mon,  3 Apr 2023 01:21:21 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VfFpMZ3_1680510077;
+Received: from 30.221.149.127(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VfFpMZ3_1680510077)
+          by smtp.aliyun-inc.com;
+          Mon, 03 Apr 2023 16:21:18 +0800
+Message-ID: <ee61468e-8eb3-3949-1a82-0eb2e0b6a279@linux.alibaba.com>
+Date:   Mon, 3 Apr 2023 16:21:16 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.8.0
+Subject: Re: [PATCH bpf-next v2 1/2] net/smc: Introduce BPF injection
+ capability for SMC
+Content-Language: en-US
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, kgraul@linux.ibm.com, wenjia@linux.ibm.com,
+        jaka@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+References: <1676981919-64884-1-git-send-email-alibuda@linux.alibaba.com>
+ <1676981919-64884-2-git-send-email-alibuda@linux.alibaba.com>
+ <76e226e6-f3bf-f740-c86c-6ee214aff07d@linux.dev>
+ <72030784-451a-2042-cbb7-98e1f9a544d5@linux.alibaba.com>
+ <366b9486-9a00-6add-d54b-5c3f4d35afe9@linux.dev>
+ <6b4728e0-dfb7-ec7b-630f-87ee42233fe8@linux.alibaba.com>
+ <fe3db636-2f89-3175-a605-2124b43ae4fa@linux.dev>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <fe3db636-2f89-3175-a605-2124b43ae4fa@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: CLIiDkG56GBiyFPv8unp_FXTbc_CM9Gh
-X-Proofpoint-ORIG-GUID: zpYQrEWcmu7FPuGX05_3WOtrFlCfYVzO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-03_04,2023-03-31_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- clxscore=1011 malwarescore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2304030057
-X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-10.4 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-after an error on the PCI link, the driver does not need to wait
-for the link to become functional again as a reset is required. Stop
-the wait loop in this case to accelerate the recovery flow.
 
-Co-developed-by: Alexander Schmidt <alexs@linux.ibm.com>
-Signed-off-by: Alexander Schmidt <alexs@linux.ibm.com>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/health.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+Hi Martin,
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-index f9438d4e43ca..81ca44e0705a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-@@ -325,6 +325,8 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev *dev)
- 	while (sensor_pci_not_working(dev)) {
- 		if (time_after(jiffies, end))
- 			return -ETIMEDOUT;
-+		if (pci_channel_offline(dev->pdev))
-+			return -EIO;
- 		msleep(100);
- 	}
- 	return 0;
-@@ -332,10 +334,16 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev *dev)
- 
- static int mlx5_health_try_recover(struct mlx5_core_dev *dev)
- {
-+	int rc;
-+
- 	mlx5_core_warn(dev, "handling bad device here\n");
- 	mlx5_handle_bad_state(dev);
--	if (mlx5_health_wait_pci_up(dev)) {
--		mlx5_core_err(dev, "health recovery flow aborted, PCI reads still not working\n");
-+	rc = mlx5_health_wait_pci_up(dev);
-+	if (rc) {
-+		if (rc == -ETIMEDOUT)
-+			mlx5_core_err(dev, "health recovery flow aborted, PCI reads still not working\n");
-+		else
-+			mlx5_core_err(dev, "health recovery flow aborted, PCI channel offline\n");
- 		return -EIO;
- 	}
- 	mlx5_core_err(dev, "starting health recovery flow\n");
+Sorry to have been responding so late,  I've been working on the 
+link_update you mentioned in last week,
+I have completed the support and testing of the related functions of it. 
+and it is expected to be released in the
+next few days.
 
-base-commit: 7e364e56293bb98cae1b55fd835f5991c4e96e7d
--- 
-2.37.2
+As you mentioned, I do have much experience in kernel network 
+development, so I plan to resend the PATCH in the form of RFC.
+I really hope to receive your suggestions in next serials. Thank you.😉
+
+Best wishes.
+D. Wythe
+
+
+On 3/25/23 7:27 AM, Martin KaFai Lau wrote:
+> On 3/23/23 9:08 PM, D. Wythe wrote:
+>>
+>> The latest design is that users can register a negotiator 
+>> implementation indexed by name, smc_sock can use bpf_setsockopt to 
+>> specify
+>> whether a specific negotiation implementation is required via name. 
+>> If there are no settings, there will be no negotiators.
+>>
+>> What do you think?
+>
+> tbh, bpf_setsockopt is many steps away. It needs to begin with a 
+> syscall setsockopt first. There is little reason it can only be done 
+> with a bpf prog. and how does the user know which negotiator a smc 
+> sock is using? Currently, ss can learn the tcp-cc of a sk.
+>
+> ~~~~~~~~
+>
+> If this effort is serious, the code quality has to be much improved. 
+> The obvious bug and unused variables make this set at most a RFC.
+>
+> From the bpf perspective, it is ok-ish to start with a global 
+> negotiator first and skip the setsockopt details for now. However, it 
+> needs to be have a name. The new link_update 
+> (https://lore.kernel.org/bpf/20230323032405.3735486-1-kuifeng@meta.com/) 
+> has to work also. The struct_ops is rcu reader safe, so leverage it 
+> whenever it can instead of the read/write lock. It is how struct_ops 
+> work for tcp, so try to stay consistent as much as possible in the 
+> networking stack.
+>
+>>
+>> In addition, I am very sorry that I have not issued my implementation 
+>> for such a long time, and I have encountered some problems with the 
+>> implementation because
+>> the SMC needs to be built as kernel module, I have struggled with the 
+>> bpf_setsockopt implementation, and there are some new self-testes 
+>> that need to be written.
+>>
+>
+> Regarding compiling as module,
+>
+> +ifneq ($(CONFIG_SMC),)
+> +ifeq ($(CONFIG_BPF_SYSCALL),y)
+> +obj-y                += smc/bpf_smc_struct_ops.o
+> +endif
+>
+> struct_ops does not support module now. It is on the todo list. The 
+> bpf_smc_struct_ops.o above can only be used when CONFIG_SMC=y. 
+> Otherwise, the bpf_smc_struct_ops is always built in while most users 
+> will never load the smc module.
 
