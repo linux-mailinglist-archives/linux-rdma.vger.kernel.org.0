@@ -2,162 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 754366D38E1
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Apr 2023 17:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF5D6D3E7B
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Apr 2023 09:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbjDBPuD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 2 Apr 2023 11:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
+        id S231534AbjDCH5O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Apr 2023 03:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjDBPuD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Apr 2023 11:50:03 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCD7E042;
-        Sun,  2 Apr 2023 08:50:01 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id cn12so108143938edb.4;
-        Sun, 02 Apr 2023 08:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680450600; x=1683042600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A3H+yKErz+asdo8QewHRhcyQgjCu7p9+bA2Tn/wzQyc=;
-        b=AXrfuLSQ2rAeeY46rK+Ifd00OqdmfpQpSBpyMtqEIYfzKeOIpil2Yr1FMG4TG2kyIU
-         sM2807/dLEcUCCq7F3iTsJjroIsEdp3/6uyqKLWztzzZPmFHAeYTkclQizNuFjxOO2L2
-         MLCoOPenyvuv9yxgFCMU9dbt+OCF4E5KvvHWZonDhVPBxWmin07ve190M9A0/w60VcUn
-         n+EY/QLp3zkRDIAYQnnlXVZeCRw6E3ZVBWwV1EvPae2AA/s4jIjc9IAuMI01l4WhLSj4
-         72QguFFCOrWWAkczf5Jz0ihnb5MMLHh9vPHB4eiUjQCVqBWEYuYDBTVMf7tLx4wteBdx
-         RGxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680450600; x=1683042600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A3H+yKErz+asdo8QewHRhcyQgjCu7p9+bA2Tn/wzQyc=;
-        b=v/Bkafwi6LXLqc5SCQD5meFY3poQdNfODp16mbKszdcimcVROhT6onqjMsB/6lfWzG
-         Lhb99pTsHkG8iVwRI7EtWQlV7BXJUoLw/nUr9DIQE/kZPCTi/quf+eXNIC0zCcFcBg7w
-         Xd0L2eZGUSSkQe9mz+xX2i7OGBoKn20HDhOjhW8gLg8abTaC4ZlY5shf0XAEZ/G79YZ9
-         POWMZS/eWTS0iOFtLEHKnV/TTX0Gl7/nzdreYeZ+pEffrs1u9DWlfF6Gp42FEDr9Cj3T
-         9mSzxTsIbtzBIqnEQoZ7AMgO4Y1F9+hvlkglAxEwJuPE1UbdmSmr75jJuRdH+bbK2u5t
-         z+OA==
-X-Gm-Message-State: AAQBX9ff6imp1hwK6b6bUsdSiF2JvwiNPStLxCG77OxsvXnGB3I9wjIj
-        zUwgct3wjUqjuK7yHFlz1fUEdbiHus8ZbHWu3H4=
-X-Google-Smtp-Source: AKy350ax2HWtO6rXgzdemCo1alFkS8HV4Clz+W1EVu6BR1XzxsyNuc7e1sTnlgfbloPRYVtbjT3fruEPtP2eFcoMP5Y=
-X-Received: by 2002:a50:9502:0:b0:4fb:2593:846 with SMTP id
- u2-20020a509502000000b004fb25930846mr3463253eda.3.1680450600264; Sun, 02 Apr
- 2023 08:50:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <168042409059.4051476.8176861613304493950.stgit@firesoul> <168042420344.4051476.9107061652824513113.stgit@firesoul>
-In-Reply-To: <168042420344.4051476.9107061652824513113.stgit@firesoul>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 2 Apr 2023 08:49:49 -0700
-Message-ID: <CAADnVQ+JEP0sOyOOWbYKHackb4PmNYYcDGXnksucJt2mQGwi7g@mail.gmail.com>
-Subject: Re: [PATCH bpf V6 5/5] selftests/bpf: Adjust bpf_xdp_metadata_rx_hash
- for new arg
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        with ESMTP id S230095AbjDCH5N (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Apr 2023 03:57:13 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9797FE6;
+        Mon,  3 Apr 2023 00:57:11 -0700 (PDT)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3336QW3w024232;
+        Mon, 3 Apr 2023 07:57:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=YdnMwkUzrc1nb3ZjPZ9/4LYT9dsKuEGu0ZW1tbsxwrM=;
+ b=FC1ifGw/j8tZDR1rlCspjnCxym/ZUD1DtrscT/GzN37qj04nTaXXUN3ss/nVJiq3uwKj
+ hTdwqO0rlbQlyGQgIF6E5n8c+ZBIsDvsPjuxRzpy4OYv087UNAYj4mDhmLgCi6YiW89T
+ LkjsJ8fCmQcBouXYnjXt6Gtpg15hfPUPpWyn6MjS00/tLWQEBcOjfEmbsLk99Ys5+Bbw
+ SxGRiGb5roagY2FuATfki8hilTDwZLY0bMgxIxZWuyVCRhHZCfE6brbN53zQEO2t7M7a
+ Yn/4OwB7t3tkTmzYXn57/NwMZyQfFJq4nKHnkkJdz6GOYQAx/iGr4yVg1wx9dDkzYEfu xg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ppxf78pwf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Apr 2023 07:57:04 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3337IYYj028032;
+        Mon, 3 Apr 2023 07:57:03 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ppxf78pvp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Apr 2023 07:57:03 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3332OCEL015082;
+        Mon, 3 Apr 2023 07:57:01 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3ppc8712ya-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Apr 2023 07:57:01 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3337uvs718154174
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 Apr 2023 07:56:57 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 78AA820043;
+        Mon,  3 Apr 2023 07:56:57 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 337F020040;
+        Mon,  3 Apr 2023 07:56:57 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  3 Apr 2023 07:56:57 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Gerd Bayer <gbayer@linux.ibm.com>,
+        Alexander Schmidt <alexs@linux.ibm.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5: stop waiting for PCI link if reset is required
+Date:   Mon,  3 Apr 2023 09:56:56 +0200
+Message-Id: <20230403075657.168294-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.37.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: CLIiDkG56GBiyFPv8unp_FXTbc_CM9Gh
+X-Proofpoint-ORIG-GUID: zpYQrEWcmu7FPuGX05_3WOtrFlCfYVzO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-03_04,2023-03-31_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ clxscore=1011 malwarescore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501
+ phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2304030057
+X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 2, 2023 at 1:30=E2=80=AFAM Jesper Dangaard Brouer <brouer@redha=
-t.com> wrote:
->
-> Update BPF selftests to use the new RSS type argument for kfunc
-> bpf_xdp_metadata_rx_hash.
->
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> ---
->  .../selftests/bpf/prog_tests/xdp_metadata.c        |    2 ++
->  .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   14 +++++++++-----
->  tools/testing/selftests/bpf/progs/xdp_metadata.c   |    6 +++---
->  tools/testing/selftests/bpf/progs/xdp_metadata2.c  |    7 ++++---
->  tools/testing/selftests/bpf/xdp_hw_metadata.c      |    2 +-
->  tools/testing/selftests/bpf/xdp_metadata.h         |    1 +
->  6 files changed, 20 insertions(+), 12 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tool=
-s/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> index aa4beae99f4f..8c5e98da9ae9 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> @@ -273,6 +273,8 @@ static int verify_xsk_metadata(struct xsk *xsk)
->         if (!ASSERT_NEQ(meta->rx_hash, 0, "rx_hash"))
->                 return -1;
->
-> +       ASSERT_EQ(meta->rx_hash_type, 0, "rx_hash_type");
-> +
->         xsk_ring_cons__release(&xsk->rx, 1);
->         refill_rx(xsk, comp_addr);
->
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/=
-testing/selftests/bpf/progs/xdp_hw_metadata.c
-> index 4c55b4d79d3d..7b3fc12e96d6 100644
-> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> @@ -14,8 +14,8 @@ struct {
->
->  extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
->                                          __u64 *timestamp) __ksym;
-> -extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
-> -                                   __u32 *hash) __ksym;
-> +extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *has=
-h,
-> +                                   enum xdp_rss_hash_type *rss_type) __k=
-sym;
->
->  SEC("xdp")
->  int rx(struct xdp_md *ctx)
-> @@ -74,10 +74,14 @@ int rx(struct xdp_md *ctx)
->         else
->                 meta->rx_timestamp =3D 0; /* Used by AF_XDP as not avail =
-signal */
->
-> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
-> -               bpf_printk("populated rx_hash with %u", meta->rx_hash);
-> -       else
-> +       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash=
-_type)) {
-> +               bpf_printk("populated rx_hash:0x%X type:0x%X",
-> +                          meta->rx_hash, meta->rx_hash_type);
-> +               if (!(meta->rx_hash_type & XDP_RSS_L4))
-> +                       bpf_printk("rx_hash low quality L3 hash type");
-> +       } else {
->                 meta->rx_hash =3D 0; /* Used by AF_XDP as not avail signa=
-l */
-> +       }
+after an error on the PCI link, the driver does not need to wait
+for the link to become functional again as a reset is required. Stop
+the wait loop in this case to accelerate the recovery flow.
 
-Didn't we agree in the previous thread to remove these printks and
-replace them with actual stats that user space can see?
+Co-developed-by: Alexander Schmidt <alexs@linux.ibm.com>
+Signed-off-by: Alexander Schmidt <alexs@linux.ibm.com>
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/health.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+index f9438d4e43ca..81ca44e0705a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+@@ -325,6 +325,8 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev *dev)
+ 	while (sensor_pci_not_working(dev)) {
+ 		if (time_after(jiffies, end))
+ 			return -ETIMEDOUT;
++		if (pci_channel_offline(dev->pdev))
++			return -EIO;
+ 		msleep(100);
+ 	}
+ 	return 0;
+@@ -332,10 +334,16 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev *dev)
+ 
+ static int mlx5_health_try_recover(struct mlx5_core_dev *dev)
+ {
++	int rc;
++
+ 	mlx5_core_warn(dev, "handling bad device here\n");
+ 	mlx5_handle_bad_state(dev);
+-	if (mlx5_health_wait_pci_up(dev)) {
+-		mlx5_core_err(dev, "health recovery flow aborted, PCI reads still not working\n");
++	rc = mlx5_health_wait_pci_up(dev);
++	if (rc) {
++		if (rc == -ETIMEDOUT)
++			mlx5_core_err(dev, "health recovery flow aborted, PCI reads still not working\n");
++		else
++			mlx5_core_err(dev, "health recovery flow aborted, PCI channel offline\n");
+ 		return -EIO;
+ 	}
+ 	mlx5_core_err(dev, "starting health recovery flow\n");
+
+base-commit: 7e364e56293bb98cae1b55fd835f5991c4e96e7d
+-- 
+2.37.2
+
