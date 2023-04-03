@@ -2,47 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D066D41C7
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Apr 2023 12:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C726D4496
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Apr 2023 14:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbjDCKTd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Apr 2023 06:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
+        id S230105AbjDCMkX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Apr 2023 08:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbjDCKTL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Apr 2023 06:19:11 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7AD12BD2;
-        Mon,  3 Apr 2023 03:18:58 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=kaishen@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VfHQgtD_1680517135;
-Received: from 30.221.116.42(mailfrom:KaiShen@linux.alibaba.com fp:SMTPD_---0VfHQgtD_1680517135)
-          by smtp.aliyun-inc.com;
-          Mon, 03 Apr 2023 18:18:56 +0800
-Message-ID: <a32eff21-fe49-5284-2485-25b4f14a7239@linux.alibaba.com>
-Date:   Mon, 3 Apr 2023 18:18:54 +0800
+        with ESMTP id S230175AbjDCMkX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Apr 2023 08:40:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E307685
+        for <linux-rdma@vger.kernel.org>; Mon,  3 Apr 2023 05:40:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E45DCB819CB
+        for <linux-rdma@vger.kernel.org>; Mon,  3 Apr 2023 12:40:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7C58C433D2;
+        Mon,  3 Apr 2023 12:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680525619;
+        bh=jdbLvzUEX3tzbYSJcP6utY2hU23PZ0C67Kkmc6mCUqk=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=dsLP1K9K4E1Q/90O+R1oyQMnlkwWy6V52NTeI3kV4VBrIWPBTmNZAZlf6/4CRJzWm
+         apDwswsZddUNpZagGbXjV81iqvoDjM6mShxj3bfdx7v6tCrH00yYNE9gncqRYn4Wqu
+         BVaKVTDUMhOXQnVjU6inC5LGcXq2Z0hOr12Rqm7D8ISNpJBKKInlkDcB8D4R+oICpd
+         usCsVB5Wt8+tHGDzy9m4E3F4CQqmm/+9jaKptM+j7f4P7FZgYRiUL08YzY9OiLMonV
+         /vfyhiudVAGXcjrOaIOgEjdwsY2XVrasD7olJiPtyzMeyZdcjnMzrWdkTt8JJlC9RK
+         gmGXCgv5wf6PQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     sagi@grimberg.me, linux-rdma@vger.kernel.org,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     israelr@nvidia.com, oren@nvidia.com, sergeygo@nvidia.com
+In-Reply-To: <20230330131333.37900-1-mgurtovoy@nvidia.com>
+References: <20230330131333.37900-1-mgurtovoy@nvidia.com>
+Subject: Re: [PATCH 1/3] IB/iser: remove unused macros
+Message-Id: <168052561618.175957.10886078005080789036.b4-ty@kernel.org>
+Date:   Mon, 03 Apr 2023 15:40:16 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.1
-From:   Kai <KaiShen@linux.alibaba.com>
-Subject: Re: [PATCH net-next] net/smc: introduce shadow sockets for fallback
- connections
-To:     Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, kuba@kernel.org, davem@davemloft.net,
-        dsahern@kernel.org
-Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20230321071959.87786-1-KaiShen@linux.alibaba.com>
- <170b35d9-2071-caf3-094e-6abfb7cefa75@linux.ibm.com>
- <7fa69883-9af5-4b2a-7853-9697ff30beba@linux.alibaba.com>
- <df825d71-eb6d-ac73-7f7f-33277fde6b12@linux.ibm.com>
-Content-Language: en-US
-In-Reply-To: <df825d71-eb6d-ac73-7f7f-33277fde6b12@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.3 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Mailer: b4 0.12-dev-a055d
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -50,49 +56,20 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-
-On 3/29/23 5:41 PM, Wenjia Zhang wrote:
+On Thu, 30 Mar 2023 16:13:31 +0300, Max Gurtovoy wrote:
+> The removed macros are old leftovers.
 > 
-> 
-> 
-> On 24.03.23 08:26, Kai wrote:
->>
->>
->> On 3/23/23 1:09 AM, Wenjia Zhang wrote:
->>>
->>>
->>> On 21.03.23 08:19, Kai Shen wrote:
->>>> SMC-R performs not so well on fallback situations right now,
->>>> especially on short link server fallback occasions. We are planning
->>>> to make SMC-R widely used and handling this fallback performance
->>>> issue is really crucial to us. Here we introduce a shadow socket
->>>> method to try to relief this problem.
->>>>
->>> Could you please elaborate the problem?
->>
->> Here is the background. We are using SMC-R to accelerate server-client 
->> applications by using SMC-R on server side, but not all clients use 
->> SMC-R. So in these occasions we hope that the clients using SMC-R get 
->> acceleration while the clients that fallback to TCP will get the 
->> performance no worse than TCP.
-> 
-> I'm wondering how the usecase works? How are the server-client 
-> applications get accelerated by using SMC-R? If your case rely on the 
-> fallback, why don't use TCP/IP directly?
 > 
 
-Our goal is to replace TCP with SMC-R on Cloud as much as possible.
-Many applications will use SMC-R by default but not all(like they are
-not using then latest OS). So a SMC-R using server must be ready to
-serve SMC-R clients and TCP clients in the mean time. As a result
-fallback will happend.
+Applied, thanks!
 
-In these cases we hope clients using SMC-R get accelerated and clients
-using TCP get no performance loss. The server using SMC-R can't tell if
-the next client use SMC-R or TCP util their TCP SYN comes and this lead
-to fallback when a client use TCP. But the current SMC-R server fallback
-path which handles incoming TCP connection requests will compromise the
-performance of TCP clients. So we want to optimize SMC-R server fallback
-path.
+[1/3] IB/iser: remove unused macros
+      https://git.kernel.org/rdma/rdma/c/b7727e231dad51
+[2/3] IB/iser: centralize setting desc type and done callback
+      https://git.kernel.org/rdma/rdma/c/92363895b6c31b
+[3/3] IB/iser: remove redundant new line
+      https://git.kernel.org/rdma/rdma/c/070fc1c0e272a0
 
-Thanks.
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
