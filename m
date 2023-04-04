@@ -2,95 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 745E26D5696
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 04:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842F46D5740
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 05:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbjDDCLj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Apr 2023 22:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
+        id S231634AbjDDDhN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Apr 2023 23:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbjDDCLj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Apr 2023 22:11:39 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC091728;
-        Mon,  3 Apr 2023 19:11:19 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VfJXedw_1680574263;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VfJXedw_1680574263)
-          by smtp.aliyun-inc.com;
-          Tue, 04 Apr 2023 10:11:04 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     davem@davemloft.net
-Cc:     edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        saeedm@nvidia.com, leon@kernel.org, simon.horman@corigine.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH net-next v2] net/mlx5e: Remove NULL check before dev_{put, hold}
-Date:   Tue,  4 Apr 2023 10:11:02 +0800
-Message-Id: <20230404021102.25122-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.0 required=5.0 tests=ENV_AND_HDR_SPF_MATCH,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229449AbjDDDhM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Apr 2023 23:37:12 -0400
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 66EECE47;
+        Mon,  3 Apr 2023 20:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=k1rQvXrNNJdd31+9AY
+        3b02aZnuxnFQyMxmz0+mFMwKE=; b=e8OIhkaG1Qphn6JcA+hIYz3Ctf+ha+rJhN
+        BbCKFUBRrUIvyA8fJ69QYc8E2IrTpTtCZHHFxd7hPuxQAupAkLIpn5gn+If6px7K
+        XROLYLQacJnIGVvzTeVc/VuZjNEET9WrkgVHKzgWN6XebQzx+4PUrIZxmyOwySeW
+        1/5Zf6jZM=
+Received: from localhost.localdomain (unknown [116.128.244.169])
+        by zwqz-smtp-mta-g5-1 (Coremail) with SMTP id _____wC3p0_2kytkxp+dAw--.17217S2;
+        Tue, 04 Apr 2023 11:05:27 +0800 (CST)
+From:   xiaolinkui <xiaolinkui@126.com>
+To:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+        leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linkui Xiao <xiaolinkui@kylinos.cn>
+Subject: [PATCH] RDMA/hfi: add a judgment on the availability of cpumask
+Date:   Tue,  4 Apr 2023 11:05:25 +0800
+Message-Id: <20230404030525.24020-1-xiaolinkui@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: _____wC3p0_2kytkxp+dAw--.17217S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZF47trWUWw4kZF47WrWUtwb_yoW8JFW8pF
+        45ZFWjgFW8Xa10ga1kAa17ArW5tas7JayvyF9Fqw1Sv345Xan0qrZ8K3W5ZryIkFykGr1a
+        qrsavr1Y9r17WFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uh18PUUUUU=
+X-Originating-IP: [116.128.244.169]
+X-CM-SenderInfo: p0ld0z5lqn3xa6rslhhfrp/1tbiHBxH1lpEJlhTQwAAsh
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-./drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:35:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
-./drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:734:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
-./drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:769:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
+From: Linkui Xiao <xiaolinkui@kylinos.cn>
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4667
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+When CONFIG_CPUMASK_OFFSTACK is n, cpumask may fail to allocate, cpumask may
+be NULL, and performing a bitmap operation on cpumask may cause problems at
+this time.
+
+Of course, this is a unlikely event.
+
+Signed-off-by: Linkui Xiao <xiaolinkui@kylinos.cn>
 ---
+ drivers/infiniband/hw/hfi1/affinity.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-change in v2:
---According to Simon's suggestion, add the one in mlx5e_set_int_port_tunnel().
-
- .../net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c  | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
-index 20c2d2ecaf93..2cb2ba857155 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
-@@ -32,9 +32,7 @@ static int mlx5e_set_int_port_tunnel(struct mlx5e_priv *priv,
- 						&attr->action, out_index);
+diff --git a/drivers/infiniband/hw/hfi1/affinity.c b/drivers/infiniband/hw/hfi1/affinity.c
+index 77ee77d4000f..3caa861f4d1d 100644
+--- a/drivers/infiniband/hw/hfi1/affinity.c
++++ b/drivers/infiniband/hw/hfi1/affinity.c
+@@ -1047,16 +1047,16 @@ int hfi1_get_proc_affinity(int node)
+ 	 */
  
- out:
--	if (route_dev)
--		dev_put(route_dev);
--
-+	dev_put(route_dev);
- 	return err;
- }
+ 	ret = zalloc_cpumask_var(&diff, GFP_KERNEL);
+-	if (!ret)
++	if (!ret || unlikely(!diff))
+ 		goto done;
+ 	ret = zalloc_cpumask_var(&hw_thread_mask, GFP_KERNEL);
+-	if (!ret)
++	if (!ret || unlikely(!hw_thread_mask))
+ 		goto free_diff;
+ 	ret = zalloc_cpumask_var(&available_mask, GFP_KERNEL);
+-	if (!ret)
++	if (!ret || unlikely(!available_mask))
+ 		goto free_hw_thread_mask;
+ 	ret = zalloc_cpumask_var(&intrs_mask, GFP_KERNEL);
+-	if (!ret)
++	if (!ret || unlikely(!intrs_mask))
+ 		goto free_available_mask;
  
-@@ -730,8 +728,7 @@ static int mlx5e_set_vf_tunnel(struct mlx5_eswitch *esw,
- 	}
- 
- out:
--	if (route_dev)
--		dev_put(route_dev);
-+	dev_put(route_dev);
- 	return err;
- }
- 
-@@ -765,8 +762,7 @@ static int mlx5e_update_vf_tunnel(struct mlx5_eswitch *esw,
- 	mlx5e_tc_match_to_reg_mod_hdr_change(esw->dev, mod_hdr_acts, VPORT_TO_REG, act_id, data);
- 
- out:
--	if (route_dev)
--		dev_put(route_dev);
-+	dev_put(route_dev);
- 	return err;
- }
- 
+ 	mutex_lock(&affinity->lock);
 -- 
-2.20.1.7.g153144c
+2.17.1
 
