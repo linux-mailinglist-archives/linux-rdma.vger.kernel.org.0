@@ -2,110 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1639D6D58DD
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 08:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A574E6D5918
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 09:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbjDDGml (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Apr 2023 02:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
+        id S233128AbjDDHDc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Apr 2023 03:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjDDGmk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Apr 2023 02:42:40 -0400
-Received: from out-22.mta1.migadu.com (out-22.mta1.migadu.com [IPv6:2001:41d0:203:375::16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A3E1BE3
-        for <linux-rdma@vger.kernel.org>; Mon,  3 Apr 2023 23:42:38 -0700 (PDT)
-Message-ID: <be9eab80-05f9-21f1-e45d-d859a6bb3324@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1680590556;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RzmsM9ms8EYeNXDDQhWrUbm9nu0xKNLnQDrazYhQIl8=;
-        b=mIwt9mAYPF49de5sT0o6hYSD8WN4+EGfy6/3Slyx/YTyHDkWPnF7YpriP5y4AYZchGwF15
-        BtlEa/dccgXMOtz1jrwapcYGtZUXx8sko8/99jf07YGeiWFYrMwP+kEV4k0UP/qdDll5Nd
-        7sW9Z0kLMh+9QU7+IC/0VivWDtE3s3A=
-Date:   Tue, 4 Apr 2023 14:42:28 +0800
+        with ESMTP id S231767AbjDDHDP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Apr 2023 03:03:15 -0400
+X-Greylist: delayed 14194 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 04 Apr 2023 00:03:13 PDT
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 25F922D72;
+        Tue,  4 Apr 2023 00:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
+        Content-Type; bh=hLbeGhYUN7RnG6++2RqONKQkGZVwfn8OaLboDI884hQ=;
+        b=ZjTO67EfPOZHIeqnL6m+MPONfHpZAHvRG9KZP6VJqIuAtJ3vi7Ez5DLs+Ly7HK
+        suGBNPgX3xeE0/wMXGeV+I0ywRm1UhD89xE/lgvBn+KFDrGSH7A/GIiDb/J/N/5D
+        rojzmrs8irpchHUbN7oPXure5hos7Pss2Hrg51E1pLZrg=
+Received: from [172.20.125.11] (unknown [116.128.244.169])
+        by zwqz-smtp-mta-g0-1 (Coremail) with SMTP id _____wBnX89myytkEaGrAw--.283S2;
+        Tue, 04 Apr 2023 15:01:59 +0800 (CST)
+Message-ID: <940e1807-7e89-4de0-ee69-9346d231a59f@126.com>
+Date:   Tue, 4 Apr 2023 15:01:58 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Fix the error "trying to register
- non-static key in rxe_cleanup_task"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [PATCH] RDMA/hfi: add a judgment on the availability of cpumask
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        syzbot+cfcc1a3c85be15a40cba@syzkaller.appspotmail.com
-References: <095b1562-0c5e-4390-adf3-59ec0ed3e97e@linux.dev>
- <20230401024417.3334889-1-yanjun.zhu@intel.com>
- <20230403181026.GB4514@unreal>
- <8ddeafc2-bc5d-e84a-0abd-9b48ab68e68e@linux.dev>
- <20230404055801.GF4514@unreal>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230404055801.GF4514@unreal>
+Cc:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linkui Xiao <xiaolinkui@kylinos.cn>
+References: <20230404030525.24020-1-xiaolinkui@126.com>
+ <20230404060522.GH4514@unreal>
+Content-Language: en-US
+From:   xiaolinkui <xiaolinkui@126.com>
+In-Reply-To: <20230404060522.GH4514@unreal>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: _____wBnX89myytkEaGrAw--.283S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Gw1fKFW8Wry5CrW8uF1xXwb_yoW8JF4rpF
+        4fWa1j9ay5Xay0ga1ktay3ArZ8tayfJ3yqyFyqyw18XF98X3ZrX345K3WF9r97Gr4ku3WS
+        qF4DXFs0kF4xAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j17KsUUUUU=
+X-Originating-IP: [116.128.244.169]
+X-CM-SenderInfo: p0ld0z5lqn3xa6rslhhfrp/1tbiig9H1lpEDPhFrQAAsW
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Thanks for your reply.
 
-在 2023/4/4 13:58, Leon Romanovsky 写道:
-> On Tue, Apr 04, 2023 at 08:13:22AM +0800, Zhu Yanjun wrote:
->> 在 2023/4/4 2:10, Leon Romanovsky 写道:
->>> On Sat, Apr 01, 2023 at 10:44:17AM +0800, Zhu Yanjun wrote:
->>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>>
->>>> In the function rxe_create_qp(), rxe_qp_from_init() is called to
->>>> initialize qp, internally things like rxe_init_task are not setup until
->>>> rxe_qp_init_req().
->>>>
->>>> If an error occures before this point then the unwind will call
->>>> rxe_cleanup() and eventually to rxe_qp_do_cleanup()/rxe_cleanup_task()
->>>> which will oops when trying to access the uninitialized spinlock.
->>>>
->>>> If rxe_init_task is not executed, rxe_cleanup_task will not be called.
->>>>
->>>> Reported-by: syzbot+cfcc1a3c85be15a40cba@syzkaller.appspotmail.com
->>>> Link: https://syzkaller.appspot.com/bug?id=fd85757b74b3eb59f904138486f755f71e090df8
->>>>
->>>> Fixes: 8700e3e7c485 ("Soft RoCE driver")
->>>> Fixes: 2d4b21e0a291 ("IB/rxe: Prevent from completer to operate on non valid QP")
->>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>> ---
->>>>    drivers/infiniband/sw/rxe/rxe_qp.c | 15 ++++++++++++---
->>>>    1 file changed, 12 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
->>>> index ab72db68b58f..7856c02c1b46 100644
->>>> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
->>>> @@ -176,6 +176,10 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
->>>>    	spin_lock_init(&qp->rq.producer_lock);
->>>>    	spin_lock_init(&qp->rq.consumer_lock);
->>>> +	memset(&qp->req.task, 0, sizeof(struct rxe_task));
->>>> +	memset(&qp->comp.task, 0, sizeof(struct rxe_task));
->>>> +	memset(&qp->resp.task, 0, sizeof(struct rxe_task));
->>> IMHO QP is already zeroed here.
->> Sure. Exactly. Here I just confirm that req.task, comp.task and resp.task
->> are zeroed explicitly.
-> There is no need to do so. It is quite misleading to read the code and
-> see these memset() functions as they give false impression that QP is
-> not zeroed.
+When CONFIG_CPUMASK_OFFSTACK=y, "ret" will be false if diff==NULL.
 
-I will remove these memset function in the latest commit.
+However, when CONFIG_CPUMASK_OFFSTACK=n, these two are not necessarily 
+equivalent.
 
-Thanks,
+Thanks
 
-Zhu Yanjun
-
->
->> If you think it had better remove these memset functions, I will follow your
->> advice.
-> Yes, please.
+On 4/4/23 14:05, Leon Romanovsky wrote:
+> On Tue, Apr 04, 2023 at 11:05:25AM +0800, xiaolinkui wrote:
+>> From: Linkui Xiao <xiaolinkui@kylinos.cn>
+>>
+>> When CONFIG_CPUMASK_OFFSTACK is n, cpumask may fail to allocate, cpumask may
+>> be NULL, and performing a bitmap operation on cpumask may cause problems at
+>> this time.
+>>
+>> Of course, this is a unlikely event.
+>>
+>> Signed-off-by: Linkui Xiao <xiaolinkui@kylinos.cn>
+>> ---
+>>   drivers/infiniband/hw/hfi1/affinity.c | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hfi1/affinity.c b/drivers/infiniband/hw/hfi1/affinity.c
+>> index 77ee77d4000f..3caa861f4d1d 100644
+>> --- a/drivers/infiniband/hw/hfi1/affinity.c
+>> +++ b/drivers/infiniband/hw/hfi1/affinity.c
+>> @@ -1047,16 +1047,16 @@ int hfi1_get_proc_affinity(int node)
+>>   	 */
+>>   
+>>   	ret = zalloc_cpumask_var(&diff, GFP_KERNEL);
+>> -	if (!ret)
+>> +	if (!ret || unlikely(!diff))
+> Why do you think that check of "ret" is not enough?
+> "ret" will be false if diff == NULL.
 >
 > Thanks
+
