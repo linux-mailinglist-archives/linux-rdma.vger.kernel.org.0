@@ -2,140 +2,167 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 566306D556B
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 02:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE406D5667
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 04:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbjDDANg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Apr 2023 20:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        id S232797AbjDDCHF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Apr 2023 22:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbjDDANd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Apr 2023 20:13:33 -0400
-Received: from out-57.mta0.migadu.com (out-57.mta0.migadu.com [91.218.175.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E80AB
-        for <linux-rdma@vger.kernel.org>; Mon,  3 Apr 2023 17:13:31 -0700 (PDT)
-Message-ID: <8ddeafc2-bc5d-e84a-0abd-9b48ab68e68e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1680567208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YQQ++PmjIebgaQWnJGOAxs8KzI+PU6D7AydCyE2QKWc=;
-        b=QRmW6RKqznGNLZwDdQBr0jpTeRlbYDauw7hxuMAv+goisqeK66J2upfM5HHv6b5fW3v9Yo
-        sv9T7M/+huiaO6/TOxvCqlp73anvgAjhAQ6GpAiqXt8w3UM/q50XU4MLLg8kLsXNVhIpQ8
-        EYejJvqm5oOifJjggJ4B6ksxRF4EUJQ=
-Date:   Tue, 4 Apr 2023 08:13:22 +0800
+        with ESMTP id S232676AbjDDCHC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Apr 2023 22:07:02 -0400
+Received: from DM5PR00CU002.outbound.protection.outlook.com (mail-centralusazon11021027.outbound.protection.outlook.com [52.101.62.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C481BC9;
+        Mon,  3 Apr 2023 19:07:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ba/g2AC2i3t3THuqOp/m4EwyDjB/3i21WfboiwzV/F3fujCq/k517D5YzLgWIacxWwLlsPmI28hz+cF/AUHMhyLaBEzkJu5WYjHlTFEBqEekV48h2OS2EhIOBBs6AWliPGO3sVn/2kxG8YSTI1xMH9ZzA3rLprNNgdWd4J0xEPmmgfT3hqZE5RcZ/lsQmfUn2ekdpISGdSPYPIL+sFVkS2vJqRUDvyH+3NwSWGGrVs6JzjlPVXJ8uWoJb4VDv854XQ7wJL31B6BSb4ugpx7/aTKphpe0O18NUUcOxENstgL05DVNTsTNjcLWq0QXYy43eTeV/z+vMLvoQq6HhYL7pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l5P8l4br+1d9DXbcCdavHVwhDuEVJ0uH+LnGsJjs4KU=;
+ b=eGr6EayJVP17yA+gQ5VRjtUXuopZkZIrQmQoJ4Zk4zBCCitqrhWqLrTZdTMvADojB6dS3y/hD18gNoVOHaG2zy9YfP8zuwTU29EAajQgiPRbgdskhFodblz7LFV6uGItQHzqdNfmp58jKDx2jn/nnGKtkSd6ieo5qg4Nqfc/3INBl+/SW9P9OB9TgzZoVm7ouLJIlJf9dzLY5LaSyhJMEG+nF+T6QLOk/TnEfoOD6pH2D6fUYbaEJaYeD0hHtg4eNu7LaIFeDbzAkjnlBlwAMIAqI9Iuf2InOUNeLhgATLqSC4utBFlJiNZa0OMzFrOx5CZX1qSIyfWn3cPi1pIMPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l5P8l4br+1d9DXbcCdavHVwhDuEVJ0uH+LnGsJjs4KU=;
+ b=HudTc0aZ9RXTeXtmqnuoBfXWjSs9mfAb1lWoyh3T+Fpya/BfMfxAcg+AXPiPYYclMuz6Px3GshQttzzeZ7FAwdqKE7bJ9Pa8Wv3qywQJn632DX8Q1/dLeMp8VKDkiKQIq3573vQviNLyc6ilEA401Vg1educJlkmAtLYqLSq3lA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:30::23) by PH8PR21MB3959.namprd21.prod.outlook.com
+ (2603:10b6:510:23b::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.11; Tue, 4 Apr
+ 2023 02:06:57 +0000
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::97b2:25ca:c44:9b7]) by BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::97b2:25ca:c44:9b7%6]) with mapi id 15.20.6298.010; Tue, 4 Apr 2023
+ 02:06:57 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     bhelgaas@google.com, davem@davemloft.net, decui@microsoft.com,
+        edumazet@google.com, haiyangz@microsoft.com, jakeo@microsoft.com,
+        kuba@kernel.org, kw@linux.com, kys@microsoft.com, leon@kernel.org,
+        linux-pci@vger.kernel.org, lpieralisi@kernel.org,
+        mikelley@microsoft.com, pabeni@redhat.com, robh@kernel.org,
+        saeedm@nvidia.com, wei.liu@kernel.org, longli@microsoft.com,
+        boqun.feng@gmail.com, ssengar@microsoft.com, helgaas@kernel.org
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v2 0/6] pci-hyper: Fix race condition bugs for fast device hotplug
+Date:   Mon,  3 Apr 2023 19:05:39 -0700
+Message-Id: <20230404020545.32359-1-decui@microsoft.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW4P221CA0019.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:303:8b::24) To BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:30::23)
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Fix the error "trying to register
- non-static key in rxe_cleanup_task"
-To:     Leon Romanovsky <leon@kernel.org>,
-        Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        syzbot+cfcc1a3c85be15a40cba@syzkaller.appspotmail.com
-References: <095b1562-0c5e-4390-adf3-59ec0ed3e97e@linux.dev>
- <20230401024417.3334889-1-yanjun.zhu@intel.com>
- <20230403181026.GB4514@unreal>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230403181026.GB4514@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR2101MB1092:EE_|PH8PR21MB3959:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9a669683-ff62-48b4-6071-08db34b14499
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MsZLbRU8zyx+jA8PySaE1qY8TIOErziQL95/Q8AdrTY5ttFWDeXcKAus/Tegsbz/IFb+Tn1i+9q7y9yVhIZewxOCS4tBsIWHlS6tKyV5J43mO8EW9nXjq583O/QL4wOIUQ1O4g79HVj3s/8A+xhrCNh4KgrOBathcDLwxUdGPMWhuA9hbZkkpVxRHa5LSChGavuFb9iWo3+qIseevayDM7nSt5Opgy1K8mDgqPLuutThEvwZUFqzFnQrettUpdhhsKhaG5im+33PHiQ/R5kyA39pl3lOqqQClFi4C02/w+kyndYGyfeTxuay2sWjMHh/D2givV2xDnMxvMPCS0yOWLNvOBVlmgxRzn04j8JotWUdvLA2AsPhg8j18RQVhVBPNGvLPQaAeZhumSf2orpIxkLvSSBB0H8ZGSW0MkGT3Z943y7S26ptKcZPgWrFhQbboH+4EDHtyQPpA8JwfEWmAGsn9gJpdVs7/7D0aGtUnseU9YLmvAhBqgcrYCuOzgXrUDAhXVt2F2d16hKzw6C5cANHpq+0kmTAysM9MaBlY8z1ZJxQC/YaVXSIHRwaWdgurEjUJ6thM54gAe6ObwcZVGvAtyir1u65hGn8unpxrDdrnGoTRHYCQ3e4vNMU6d6y0sfGxTuaGgMg9hq53F6F6A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB1092.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(366004)(396003)(136003)(39860400002)(451199021)(966005)(6486002)(5660300002)(82950400001)(82960400001)(36756003)(478600001)(921005)(10290500003)(38100700002)(66946007)(66556008)(66476007)(8676002)(4326008)(86362001)(41300700001)(786003)(316002)(52116002)(8936002)(2616005)(186003)(6512007)(6506007)(1076003)(2906002)(6666004)(7416002)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UqMTRDxSb6p47fmuw/cujRWhtIj8v2EDaQ39wDRB4rlAaIVP9VSkOOIeB3cm?=
+ =?us-ascii?Q?HnppvCxY8PfcP8IZ7O0UPWJ0SgebrnzTkfyNFVnpLG6UbBBuywllNQ3gPcye?=
+ =?us-ascii?Q?xvPCeYvPRW1drUgRVQonkeMqCj4TciVTsTswNBi5bEkCIgmwmfGeG+tqjZSZ?=
+ =?us-ascii?Q?TRpkYu2CckRzbUBSRu4Gh3gBtedIYx5lhCvcFAe85rnDOovJycwe9eRr44en?=
+ =?us-ascii?Q?2zMrhkdqxljcj08KcUoNRgXsdopmLgVLXdFeVPMKtnkPOBiggXE5ntzZVHPi?=
+ =?us-ascii?Q?m9Xo2rnqkIlJun4x6aplWw3Jsr9J+ocweahwWiwHMCyxKGB7zyDCmhGhhVp5?=
+ =?us-ascii?Q?Sl734FSHJYyvZ+I0A3yeFpKjtcceveAMjuls3ZHz2nuyJk7hpsp6M5p6ay/D?=
+ =?us-ascii?Q?uZNe+G7dBzKAPZrUY+zWeyDy1Q9ndAMTZfcYRIiOLjRH010osecYinjLkNM/?=
+ =?us-ascii?Q?25BYPjHJxbwQWx/WzG3h/meIXDk0k3uQZo/1WrIpbnYWYarfZdW/nTToL+qT?=
+ =?us-ascii?Q?T2U7bsb2/V/EOHkLCc/4ZoL8Tg5Lkv3Ug7HeWjc+U0iGfWs65loOt8YAM5YZ?=
+ =?us-ascii?Q?sHYYB3rr1mvhTtadUmGyYg6ForndKDDMsj4DFJurbQ1JchsvYPsgLFj+Tgbb?=
+ =?us-ascii?Q?zQSzuqbTWtbblVA3zls6gT+AfRyzAB+T6NE1fyrr1HOieQWddBNGVuVDVzno?=
+ =?us-ascii?Q?JuLuZt1pa7R7ikZ9oAzLGA6lqQWu3fiPrivDx1+QVJ9IURCzhry41nEIYVfq?=
+ =?us-ascii?Q?ihIBBxL/FQwV2Z2pacqkGiD5am3+yGtSfnAtpwv5K9/ycA88OGtcRQzBneFP?=
+ =?us-ascii?Q?teM3Xi2/NvGOsPPEkpviO8LEHv4jWlPnINzu5hAxRwwvtNqPF6Vfwl3hpPk7?=
+ =?us-ascii?Q?/gEe+JNJzaCeko+i+AfjRmNfq4TEt+M6q+Op9elldlJBepZpsPSfAjLF0myS?=
+ =?us-ascii?Q?dbUkO17VXNjZqlMr8nChlN3zOg4fAxti6J/dLmmUa3wpfxufdFs40QcjQAHZ?=
+ =?us-ascii?Q?trXChouLq7ASro88Usip+2RKX75eQaomWKeIh0CJ7jW9XIOUXdvYLS/jioZF?=
+ =?us-ascii?Q?5Z7WCzZFW12V0UUuiOfStnOAYw4uGo8C1R1TYKTJfuqYdXlX/fVHiNMmlRmE?=
+ =?us-ascii?Q?WXZI8EcPCFMibpC+GZQa85xy+BGYCZNBR0uFGnkwBwhApnNlb2bnvOFF7fHY?=
+ =?us-ascii?Q?+HkYzA5SuL/vcxEYSKGyAQnaAAT02Dm451lZhW6yOafvzrUz9H/Zv/Tw1+hm?=
+ =?us-ascii?Q?pWduiqtiUzTQ2brXh/VqBojyKhXWDCgOKk2Mr9EPjZeNXU4peEXUKC+yeInw?=
+ =?us-ascii?Q?L0oJ13HnR1pleu1ZdrxMuIk0vQNPGRuwkDNsxikVp1mzX7NynLDyctrb21cm?=
+ =?us-ascii?Q?oxki++MaG6GuZPHpp6LytwhmRcIN+palYzj91SQLGXvsj+w5hBnaEO65q+QF?=
+ =?us-ascii?Q?ZDCo/cGoTafx3k4cncTnNFHOFF8+tWMU2KEfibSXfVtgvrZuP+Yds351AaB9?=
+ =?us-ascii?Q?N3g7VUhVjVpHw6tO5BNtx5Lf3dBn9v6yu7w6sxJoet/S+BnYoiXX5YsETSKP?=
+ =?us-ascii?Q?GLRnCn0l7lCuN//XV9pk349XTfxReZ/OcaKlNSgL2Y78lHkitGwVXmiVyJPC?=
+ =?us-ascii?Q?qk5VDQLewuKsr4pQYckeRy6aBgOVu+Bl3vJVZ6sC/8/0?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a669683-ff62-48b4-6071-08db34b14499
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB1092.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2023 02:06:57.4476
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qkck1vu8RJ70N/6y20OaFS1Zn5crk2e6ZCcZC7htwLkb5Y85IAg063F5Qf4GX624CFJYRkUnwa/AheNVjQVc0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR21MB3959
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Before the guest finishes probing a device, the host may be already starting
+to remove the device. Currently there are multiple race condition bugs in the
+pci-hyperv driver, which can cause the guest to panic.  The patchset fixes
+the crashes.
 
-在 2023/4/4 2:10, Leon Romanovsky 写道:
-> On Sat, Apr 01, 2023 at 10:44:17AM +0800, Zhu Yanjun wrote:
->> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>
->> In the function rxe_create_qp(), rxe_qp_from_init() is called to
->> initialize qp, internally things like rxe_init_task are not setup until
->> rxe_qp_init_req().
->>
->> If an error occures before this point then the unwind will call
->> rxe_cleanup() and eventually to rxe_qp_do_cleanup()/rxe_cleanup_task()
->> which will oops when trying to access the uninitialized spinlock.
->>
->> If rxe_init_task is not executed, rxe_cleanup_task will not be called.
->>
->> Reported-by: syzbot+cfcc1a3c85be15a40cba@syzkaller.appspotmail.com
->> Link: https://syzkaller.appspot.com/bug?id=fd85757b74b3eb59f904138486f755f71e090df8
->>
->> Fixes: 8700e3e7c485 ("Soft RoCE driver")
->> Fixes: 2d4b21e0a291 ("IB/rxe: Prevent from completer to operate on non valid QP")
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->> ---
->>   drivers/infiniband/sw/rxe/rxe_qp.c | 15 ++++++++++++---
->>   1 file changed, 12 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
->> index ab72db68b58f..7856c02c1b46 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
->> @@ -176,6 +176,10 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
->>   	spin_lock_init(&qp->rq.producer_lock);
->>   	spin_lock_init(&qp->rq.consumer_lock);
->>   
->> +	memset(&qp->req.task, 0, sizeof(struct rxe_task));
->> +	memset(&qp->comp.task, 0, sizeof(struct rxe_task));
->> +	memset(&qp->resp.task, 0, sizeof(struct rxe_task));
-> IMHO QP is already zeroed here.
+The patchset also does some cleanup work: patch 3 removes the useless
+hv_pcichild_state, and patch 4 reverts an old patch which is not really
+useful (without patch 4, it would be hard to make patch 5 clean).
 
-Sure. Exactly. Here I just confirm that req.task, comp.task and 
-resp.task are zeroed explicitly.
+Patch 6 removes the use of a global mutex lock, and enables async-probing
+to allow concurrent device probing for faster boot.
 
-If you think it had better remove these memset functions, I will follow 
-your advice.
+In v2, I dropped the "debug code" before the real patch body to avoid
+confusion; I fixed some minor issues pointed out by Michael Kelely:
+fixed "goto release_state_lock" in patch 5, and improved the commit log
+of patch 6; I added Wei Hu's Acked-by to patch 4. I added the cc:stable
+tag to all the 6 patches.
 
-Please let me know your advice.
+v2 is based on v6.3-rc5.
 
-> Please don't send patches as reply-to.
+I have been testing the patchset with
+https://lwn.net/ml/linux-kernel/20230316091540.494366-1-alexander.stein%40ew.tq-group.com/
+for several days, and no panic/hang is observed (earlier the kernel
+would panic/hang within 1 day in my long haul testing).
 
-Got it. I will follow your advice.
+The patchset is also availsble in my github branch:
+https://github.com/dcui/tdx/commits/decui/vpci/v6.3-rc5-v2
 
-Thanks,
+v1 can be found here:
+https://lwn.net/ml/linux-kernel/20230328045122.25850-1-decui%40microsoft.com/
 
-Zhu Yanjun
+Please review. Thanks!
 
->
-> Thanks
->
->> +
->>   	atomic_set(&qp->ssn, 0);
->>   	atomic_set(&qp->skb_out, 0);
->>   }
->> @@ -773,15 +777,20 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
->>   
->>   	qp->valid = 0;
->>   	qp->qp_timeout_jiffies = 0;
->> -	rxe_cleanup_task(&qp->resp.task);
->> +
->> +	if (qp->resp.task.func)
->> +		rxe_cleanup_task(&qp->resp.task);
->>   
->>   	if (qp_type(qp) == IB_QPT_RC) {
->>   		del_timer_sync(&qp->retrans_timer);
->>   		del_timer_sync(&qp->rnr_nak_timer);
->>   	}
->>   
->> -	rxe_cleanup_task(&qp->req.task);
->> -	rxe_cleanup_task(&qp->comp.task);
->> +	if (qp->req.task.func)
->> +		rxe_cleanup_task(&qp->req.task);
->> +
->> +	if (qp->comp.task.func)
->> +		rxe_cleanup_task(&qp->comp.task);
->>   
->>   	/* flush out any receive wr's or pending requests */
->>   	if (qp->req.task.func)
->> -- 
->> 2.27.0
->>
+Dexuan Cui (6):
+  PCI: hv: Fix a race condition bug in hv_pci_query_relations()
+  PCI: hv: Fix a race condition in hv_irq_unmask() that can cause panic
+  PCI: hv: Remove the useless hv_pcichild_state from struct hv_pci_dev
+  Revert "PCI: hv: Fix a timing issue which causes kdump to fail
+    occasionally"
+  PCI: hv: Add a per-bus mutex state_lock
+  PCI: hv: Use async probing to reduce boot time
+
+ drivers/pci/controller/pci-hyperv.c | 145 +++++++++++++++++-----------
+ 1 file changed, 86 insertions(+), 59 deletions(-)
+
+-- 
+2.25.1
+
