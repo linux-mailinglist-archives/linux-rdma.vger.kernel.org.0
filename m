@@ -2,96 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCF66D6744
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 17:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A906D67C8
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 17:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbjDDP16 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Apr 2023 11:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
+        id S235900AbjDDPob (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Apr 2023 11:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjDDP15 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Apr 2023 11:27:57 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EEC4491;
-        Tue,  4 Apr 2023 08:27:56 -0700 (PDT)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 334EgTuB004246;
-        Tue, 4 Apr 2023 15:27:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=O9XrjVx+x40QVB09UmyJ8DMy2DCEub230J9/Ih3XMtA=;
- b=tl4hrMf8ebrGfBvICt3Wwk/AeYdLJ7zjc3HUMt0i4bbLfJRe+uRdGpW37llSj/0zhLSe
- hvL1eiJsCQpMpNFjL6C+er+YLe5n8ITbwT60aJGXLp+FwAhHyyDyqD55Q3bERn+oBQFf
- NIM8sks4X6wF164LyIdAeKHxTvCgOjprbPiiUNRtC3TCC2gmrFn304eSzE+xRwy++XkJ
- 9sM+67qceVabiVNFbguOSkZzWuSCfhttDIAYRLUE3tBKBi6VYnaTNHVOZ7jiK2aOQH3E
- K1gkrH285OQjmte2wG3P5TMCgcIVQULKpa63Cjj2Cqlmjh5IDTUJ0E7KSd8zuR/7UcYL SQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3prmh4mupe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Apr 2023 15:27:42 +0000
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 334FGxbb012836;
-        Tue, 4 Apr 2023 15:27:42 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3prmh4munj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Apr 2023 15:27:41 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3341lc4m023645;
-        Tue, 4 Apr 2023 15:27:39 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3ppbvg2m91-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Apr 2023 15:27:39 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 334FRa1N47317518
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 4 Apr 2023 15:27:36 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 489F72004B;
-        Tue,  4 Apr 2023 15:27:36 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC8A520040;
-        Tue,  4 Apr 2023 15:27:35 +0000 (GMT)
-Received: from [9.155.211.163] (unknown [9.155.211.163])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue,  4 Apr 2023 15:27:35 +0000 (GMT)
-Message-ID: <a25455eac6a02eeb9710d9204dfe0b91938f61a1.camel@linux.ibm.com>
-Subject: Re: [PATCH] net/mlx5: stop waiting for PCI link if reset is required
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Gerd Bayer <gbayer@linux.ibm.com>,
-        Alexander Schmidt <alexs@linux.ibm.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 04 Apr 2023 17:27:35 +0200
-In-Reply-To: <20230403182105.GC4514@unreal>
-References: <20230403075657.168294-1-schnelle@linux.ibm.com>
-         <20230403182105.GC4514@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        with ESMTP id S235793AbjDDPo3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Apr 2023 11:44:29 -0400
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74615592
+        for <linux-rdma@vger.kernel.org>; Tue,  4 Apr 2023 08:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1680623053; x=1712159053;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0sV43QZm4PxuJn77hJHwmajdZm6EJrKz9UbWDiyQy3I=;
+  b=hQJJ4yd6yXljFFMrJrMX+Hih0QNGg9uBhGlreL5TxnlI5fJNgh3U1rgP
+   ksYH9+Z0ndS79elTg65n7uBcvCNh9si50iQed/8PqbD2GviHRxt2XJP7C
+   aRyCzd+0nnaaDm6Rue4h0jsjeLBSiByl4QenOJMojdkWGSVR9sLk63sAb
+   c=;
+X-IronPort-AV: E=Sophos;i="5.98,318,1673913600"; 
+   d="scan'208";a="314683094"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2023 15:43:18 +0000
+Received: from EX19D007EUA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com (Postfix) with ESMTPS id 417AA819C6;
+        Tue,  4 Apr 2023 15:43:15 +0000 (UTC)
+Received: from EX19D031EUC003.ant.amazon.com (10.252.61.172) by
+ EX19D007EUA002.ant.amazon.com (10.252.50.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 4 Apr 2023 15:43:15 +0000
+Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
+ EX19D031EUC003.ant.amazon.com (10.252.61.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 4 Apr 2023 15:43:15 +0000
+Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
+ (10.253.69.224) by mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP
+ Server id 15.2.1118.26 via Frontend Transport; Tue, 4 Apr 2023 15:43:14 +0000
+From:   <ynachum@amazon.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <sleybo@amazon.com>, <matua@amazon.com>
+CC:     <mrgolin@amazon.com>, Yonatan Nachum <ynachum@amazon.com>,
+        Firas Jahjah <firasj@amazon.com>
+Subject: [PATCH] RDMA/efa: Add rdma write capability to device caps
+Date:   Tue, 4 Apr 2023 15:43:13 +0000
+Message-ID: <20230404154313.35194-1-ynachum@amazon.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KSOKikWBu51tUSlcAoH1KzvH5iF1Nxvk
-X-Proofpoint-ORIG-GUID: 36_dKQ-S0GYJnTH2R6MItLTu3i7Wr5Yd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-04_06,2023-04-04_04,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- bulkscore=0 spamscore=0 malwarescore=0 clxscore=1015 impostorscore=0
- phishscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2304040139
-X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-10.0 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,92 +64,218 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2023-04-03 at 21:21 +0300, Leon Romanovsky wrote:
-> On Mon, Apr 03, 2023 at 09:56:56AM +0200, Niklas Schnelle wrote:
-> > after an error on the PCI link, the driver does not need to wait
-> > for the link to become functional again as a reset is required. Stop
-> > the wait loop in this case to accelerate the recovery flow.
-> >=20
-> > Co-developed-by: Alexander Schmidt <alexs@linux.ibm.com>
-> > Signed-off-by: Alexander Schmidt <alexs@linux.ibm.com>
-> > Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/health.c | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers=
-/net/ethernet/mellanox/mlx5/core/health.c
-> > index f9438d4e43ca..81ca44e0705a 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> > @@ -325,6 +325,8 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev *d=
-ev)
-> >  	while (sensor_pci_not_working(dev)) {
->=20
-> According to the comment in sensor_pci_not_working(), this loop is
-> supposed to wait till PCI will be ready again. Otherwise, already in
-> first iteration, we will bail out with pci_channel_offline() error.
->=20
-> Thanks
+From: Yonatan Nachum <ynachum@amazon.com>
 
-Well yes. The problem is that this works for intermittent errors
-including when the card resets itself which seems to be the use case in
-mlx5_fw_reset_complete_reload() and mlx5_devlink_reload_fw_activate().
-If there is a PCI error that requires a link reset though we see some
-problems though it does work after running into the timeout.
+Add rdma write capability that is propagated from the device to
+rdma-core.
+Enable MR creation with remote write permissions according to this
+device capability.
 
-As I understand it and as implemented at least on s390,
-pci_channel_io_frozen is only set for fatal errors that require a reset
-while non fatal errors will have pci_channel_io_normal (see also
-Documentation/PCI/pcieaer-howto.rst) thus I think pci_channel_offline()
-should only be true if a reset is required or there is a permanent
-error. Furthermore in the pci_channel_io_frozen state the PCI function
-may be isolated and the reads will not reach the endpoint, this is the
-case at least on s390.  Thus for errors requiring a reset the loop
-without pci_channel_offline() will run until the reset is performed or
-the timeout is reached. In the mlx5_health_try_recover() case during
-error recovery we will then indeed always loop until timeout, because
-the loop blocks mlx5_pci_err_detected() from returning thus blocking
-the reset (see Documentation/PCI/pci-error-recovery.rst). Adding Bjorn,
-maybe he can confirm or correct my assumptions here.
+Reviewed-by: Firas Jahjah <firasj@amazon.com>
+Reviewed-by: Michael Margolin <mrgolin@amazon.com>
+Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+---
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 12 ++++--
+ drivers/infiniband/hw/efa/efa_io_defs.h       | 42 +++++++++++++------
+ drivers/infiniband/hw/efa/efa_verbs.c         |  6 ++-
+ include/uapi/rdma/efa-abi.h                   |  1 +
+ 4 files changed, 44 insertions(+), 17 deletions(-)
 
-Thanks,
-Niklas
-
->=20
-> >  		if (time_after(jiffies, end))
-> >  			return -ETIMEDOUT;
-> > +		if (pci_channel_offline(dev->pdev))
-> > +			return -EIO;
-> >  		msleep(100);
-> >  	}
-> >  	return 0;
-> > @@ -332,10 +334,16 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev =
-*dev)
-> > =20
-> >  static int mlx5_health_try_recover(struct mlx5_core_dev *dev)
-> >  {
-> > +	int rc;
-> > +
-> >  	mlx5_core_warn(dev, "handling bad device here\n");
-> >  	mlx5_handle_bad_state(dev);
-> > -	if (mlx5_health_wait_pci_up(dev)) {
-> > -		mlx5_core_err(dev, "health recovery flow aborted, PCI reads still no=
-t working\n");
-> > +	rc =3D mlx5_health_wait_pci_up(dev);
-> > +	if (rc) {
-> > +		if (rc =3D=3D -ETIMEDOUT)
-> > +			mlx5_core_err(dev, "health recovery flow aborted, PCI reads still n=
-ot working\n");
-> > +		else
-> > +			mlx5_core_err(dev, "health recovery flow aborted, PCI channel offli=
-ne\n");
-> >  		return -EIO;
-> >  	}
-> >  	mlx5_core_err(dev, "starting health recovery flow\n");
-> >=20
-> > base-commit: 7e364e56293bb98cae1b55fd835f5991c4e96e7d
-> > --=20
-> > 2.37.2
-> >=20
+diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+index 3db791e6c030..4e93ef7f84ee 100644
+--- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
++++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+@@ -376,7 +376,9 @@ struct efa_admin_reg_mr_cmd {
+ 	 * 0 : local_write_enable - Local write permissions:
+ 	 *    must be set for RQ buffers and buffers posted for
+ 	 *    RDMA Read requests
+-	 * 1 : reserved1 - MBZ
++	 * 1 : remote_write_enable - Remote write
++	 *    permissions: must be set to enable RDMA write to
++	 *    the region
+ 	 * 2 : remote_read_enable - Remote read permissions:
+ 	 *    must be set to enable RDMA read from the region
+ 	 * 7:3 : reserved2 - MBZ
+@@ -620,7 +622,9 @@ struct efa_admin_feature_device_attr_desc {
+ 	 *    modify QP command
+ 	 * 2 : data_polling_128 - If set, 128 bytes data
+ 	 *    polling is supported
+-	 * 31:3 : reserved - MBZ
++	 * 3 : rdma_write - If set, RDMA Write is supported
++	 *    on TX queues
++	 * 31:4 : reserved - MBZ
+ 	 */
+ 	u32 device_caps;
+ 
+@@ -674,7 +678,7 @@ struct efa_admin_feature_queue_attr_desc {
+ 	/* The maximum size of LLQ in bytes */
+ 	u32 max_llq_size;
+ 
+-	/* Maximum number of SGEs for a single RDMA read WQE */
++	/* Maximum number of SGEs for a single RDMA read/write WQE */
+ 	u16 max_wr_rdma_sges;
+ 
+ 	/*
+@@ -979,6 +983,7 @@ struct efa_admin_host_info {
+ #define EFA_ADMIN_REG_MR_CMD_PHYS_PAGE_SIZE_SHIFT_MASK      GENMASK(4, 0)
+ #define EFA_ADMIN_REG_MR_CMD_MEM_ADDR_PHY_MODE_EN_MASK      BIT(7)
+ #define EFA_ADMIN_REG_MR_CMD_LOCAL_WRITE_ENABLE_MASK        BIT(0)
++#define EFA_ADMIN_REG_MR_CMD_REMOTE_WRITE_ENABLE_MASK       BIT(1)
+ #define EFA_ADMIN_REG_MR_CMD_REMOTE_READ_ENABLE_MASK        BIT(2)
+ 
+ /* create_cq_cmd */
+@@ -994,6 +999,7 @@ struct efa_admin_host_info {
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RDMA_READ_MASK   BIT(0)
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RNR_RETRY_MASK   BIT(1)
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_DATA_POLLING_128_MASK BIT(2)
++#define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RDMA_WRITE_MASK  BIT(3)
+ 
+ /* create_eq_cmd */
+ #define EFA_ADMIN_CREATE_EQ_CMD_ENTRY_SIZE_WORDS_MASK       GENMASK(4, 0)
+diff --git a/drivers/infiniband/hw/efa/efa_io_defs.h b/drivers/infiniband/hw/efa/efa_io_defs.h
+index 17ba8984b11e..2d8eb96eaa81 100644
+--- a/drivers/infiniband/hw/efa/efa_io_defs.h
++++ b/drivers/infiniband/hw/efa/efa_io_defs.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2022 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_IO_H_
+@@ -23,6 +23,8 @@ enum efa_io_send_op_type {
+ 	EFA_IO_SEND                                 = 0,
+ 	/* RDMA read */
+ 	EFA_IO_RDMA_READ                            = 1,
++	/* RDMA write */
++	EFA_IO_RDMA_WRITE                           = 2,
+ };
+ 
+ enum efa_io_comp_status {
+@@ -62,8 +64,7 @@ struct efa_io_tx_meta_desc {
+ 
+ 	/*
+ 	 * control flags
+-	 * 3:0 : op_type - operation type: send/rdma/fast mem
+-	 *    ops/etc
++	 * 3:0 : op_type - enum efa_io_send_op_type
+ 	 * 4 : has_imm - immediate_data field carries valid
+ 	 *    data.
+ 	 * 5 : inline_msg - inline mode - inline message data
+@@ -219,21 +220,22 @@ struct efa_io_cdesc_common {
+ 	 * 2:1 : q_type - enum efa_io_queue_type: send/recv
+ 	 * 3 : has_imm - indicates that immediate data is
+ 	 *    present - for RX completions only
+-	 * 7:4 : reserved28 - MBZ
++	 * 6:4 : op_type - enum efa_io_send_op_type
++	 * 7 : reserved31 - MBZ
+ 	 */
+ 	u8 flags;
+ 
+ 	/* local QP number */
+ 	u16 qp_num;
+-
+-	/* Transferred length */
+-	u16 length;
+ };
+ 
+ /* Tx completion descriptor */
+ struct efa_io_tx_cdesc {
+ 	/* Common completion info */
+ 	struct efa_io_cdesc_common common;
++
++	/* MBZ */
++	u16 reserved16;
+ };
+ 
+ /* Rx Completion Descriptor */
+@@ -241,6 +243,9 @@ struct efa_io_rx_cdesc {
+ 	/* Common completion info */
+ 	struct efa_io_cdesc_common common;
+ 
++	/* Transferred length bits[15:0] */
++	u16 length;
++
+ 	/* Remote Address Handle FW index, 0xFFFF indicates invalid ah */
+ 	u16 ah;
+ 
+@@ -250,16 +255,26 @@ struct efa_io_rx_cdesc {
+ 	u32 imm;
+ };
+ 
++/* Rx Completion Descriptor RDMA write info */
++struct efa_io_rx_cdesc_rdma_write {
++	/* Transferred length bits[31:16] */
++	u16 length_hi;
++};
++
+ /* Extended Rx Completion Descriptor */
+ struct efa_io_rx_cdesc_ex {
+ 	/* Base RX completion info */
+-	struct efa_io_rx_cdesc rx_cdesc_base;
++	struct efa_io_rx_cdesc base;
+ 
+-	/*
+-	 * Valid only in case of unknown AH (0xFFFF) and CQ set_src_addr is
+-	 * enabled.
+-	 */
+-	u8 src_addr[16];
++	union {
++		struct efa_io_rx_cdesc_rdma_write rdma_write;
++
++		/*
++		 * Valid only in case of unknown AH (0xFFFF) and CQ
++		 * set_src_addr is enabled.
++		 */
++		u8 src_addr[16];
++	} u;
+ };
+ 
+ /* tx_meta_desc */
+@@ -285,5 +300,6 @@ struct efa_io_rx_cdesc_ex {
+ #define EFA_IO_CDESC_COMMON_PHASE_MASK                      BIT(0)
+ #define EFA_IO_CDESC_COMMON_Q_TYPE_MASK                     GENMASK(2, 1)
+ #define EFA_IO_CDESC_COMMON_HAS_IMM_MASK                    BIT(3)
++#define EFA_IO_CDESC_COMMON_OP_TYPE_MASK                    GENMASK(6, 4)
+ 
+ #endif /* _EFA_IO_H_ */
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index c27c36418f7f..a394011a598c 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -253,6 +253,9 @@ int efa_query_device(struct ib_device *ibdev,
+ 		if (EFA_DEV_CAP(dev, DATA_POLLING_128))
+ 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_DATA_POLLING_128;
+ 
++		if (EFA_DEV_CAP(dev, RDMA_WRITE))
++			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_RDMA_WRITE;
++
+ 		if (dev->neqs)
+ 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS;
+ 
+@@ -1571,7 +1574,8 @@ static struct efa_mr *efa_alloc_mr(struct ib_pd *ibpd, int access_flags,
+ 
+ 	supp_access_flags =
+ 		IB_ACCESS_LOCAL_WRITE |
+-		(EFA_DEV_CAP(dev, RDMA_READ) ? IB_ACCESS_REMOTE_READ : 0);
++		(EFA_DEV_CAP(dev, RDMA_READ) ? IB_ACCESS_REMOTE_READ : 0) |
++		(EFA_DEV_CAP(dev, RDMA_WRITE) ? IB_ACCESS_REMOTE_WRITE : 0);
+ 
+ 	access_flags &= ~IB_ACCESS_OPTIONAL;
+ 	if (access_flags & ~supp_access_flags) {
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+index 74406b4817ce..d94c32f28804 100644
+--- a/include/uapi/rdma/efa-abi.h
++++ b/include/uapi/rdma/efa-abi.h
+@@ -121,6 +121,7 @@ enum {
+ 	EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS = 1 << 2,
+ 	EFA_QUERY_DEVICE_CAPS_CQ_WITH_SGID     = 1 << 3,
+ 	EFA_QUERY_DEVICE_CAPS_DATA_POLLING_128 = 1 << 4,
++	EFA_QUERY_DEVICE_CAPS_RDMA_WRITE = 1 << 5,
+ };
+ 
+ struct efa_ibv_ex_query_device_resp {
+-- 
+2.39.2
 
