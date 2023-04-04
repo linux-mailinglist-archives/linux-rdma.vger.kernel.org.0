@@ -2,55 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC296D5849
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 07:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA12F6D5858
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Apr 2023 08:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233453AbjDDF6J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Apr 2023 01:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        id S233483AbjDDGBq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Apr 2023 02:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbjDDF6J (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Apr 2023 01:58:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F346910F2
-        for <linux-rdma@vger.kernel.org>; Mon,  3 Apr 2023 22:58:06 -0700 (PDT)
+        with ESMTP id S233482AbjDDGBq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Apr 2023 02:01:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE101BCD;
+        Mon,  3 Apr 2023 23:01:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7DFCD62E7B
-        for <linux-rdma@vger.kernel.org>; Tue,  4 Apr 2023 05:58:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55ECDC433EF;
-        Tue,  4 Apr 2023 05:58:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27B1C62E7F;
+        Tue,  4 Apr 2023 06:01:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF0BDC433D2;
+        Tue,  4 Apr 2023 06:01:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680587885;
-        bh=inq7mYSGGmNHdMHCVdY475GQfAVbZGDg2CwBISmR+14=;
+        s=k20201202; t=1680588103;
+        bh=RK4VZ75qSBBAx7Gsq7WJjDEbHiYI+P1+h52AvLecL3A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UJJeP1CVX6QubZwQDhjj+EYqrLHkhH8cJcJ3urmaa9F8IGQ8M63kIPl+kH5Y9ugMK
-         czwt02q3Va9f2VRcnFrntn5NVd4FknbQVwYXLtRrXwAauwE5gggJCx9gxqm6mt56Nd
-         COV0MePgFr6IlIOv2yrxBZiflu7FO1bk/W2cvvXXMmn+x3L85lLDaaUMhZnFLa5OiH
-         7j6mpa2Udb680n5bN1hXyy17TACdWEthCwamBYltn/gorvudzyXLZrqLzTnwymdLFH
-         KotC55F01nEgZqlTRASsN/vk0UakkT7+aRaPGtQAtGAngXEFdGD9tThptju2gMfnK4
-         +FHQFePGZboqw==
-Date:   Tue, 4 Apr 2023 08:58:01 +0300
+        b=pgpUjsS2hPt1cZIE1DhG+iwykKcCAhiOmaODfVuaR7bzh5dWvt4eANQbB4b12vn1c
+         ML2IH3DnetDH8jUqhAIfGfuesaSrnM792uMiDOA0alHR6C40xcIqL1eXAvJ127keYO
+         3SmD8CUSi1SmJmeD/3ZJUUvWgHI4pHHzfOGvAEKPUbWDMR5yLSW/iVVCBovt42Krzv
+         56CeZlKOJ6t5jQ0Zc9q/tODlUtxf3oUipeNYNOHthjF4OlCJBVRjiSzuYoxe3SSMXO
+         AdSqRTQBYY9agj7Bhhd6kKSJfX8bze/Gof1tARr73vJcenh82IPhLDYIIe3y+EZJDT
+         L+ouVFdC5dpyQ==
+Date:   Tue, 4 Apr 2023 09:01:38 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc:     Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        syzbot+cfcc1a3c85be15a40cba@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/1] RDMA/rxe: Fix the error "trying to register
- non-static key in rxe_cleanup_task"
-Message-ID: <20230404055801.GF4514@unreal>
-References: <095b1562-0c5e-4390-adf3-59ec0ed3e97e@linux.dev>
- <20230401024417.3334889-1-yanjun.zhu@intel.com>
- <20230403181026.GB4514@unreal>
- <8ddeafc2-bc5d-e84a-0abd-9b48ab68e68e@linux.dev>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, saeedm@nvidia.com, simon.horman@corigine.com,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH net-next v2] net/mlx5e: Remove NULL check before
+ dev_{put, hold}
+Message-ID: <20230404060138.GG4514@unreal>
+References: <20230404021102.25122-1-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8ddeafc2-bc5d-e84a-0abd-9b48ab68e68e@linux.dev>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <20230404021102.25122-1-yang.lee@linux.alibaba.com>
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,55 +56,78 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 08:13:22AM +0800, Zhu Yanjun wrote:
+On Tue, Apr 04, 2023 at 10:11:02AM +0800, Yang Li wrote:
+> ./drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:35:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
+> ./drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:734:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
+> ./drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:769:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
 > 
-> 在 2023/4/4 2:10, Leon Romanovsky 写道:
-> > On Sat, Apr 01, 2023 at 10:44:17AM +0800, Zhu Yanjun wrote:
-> > > From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> > > 
-> > > In the function rxe_create_qp(), rxe_qp_from_init() is called to
-> > > initialize qp, internally things like rxe_init_task are not setup until
-> > > rxe_qp_init_req().
-> > > 
-> > > If an error occures before this point then the unwind will call
-> > > rxe_cleanup() and eventually to rxe_qp_do_cleanup()/rxe_cleanup_task()
-> > > which will oops when trying to access the uninitialized spinlock.
-> > > 
-> > > If rxe_init_task is not executed, rxe_cleanup_task will not be called.
-> > > 
-> > > Reported-by: syzbot+cfcc1a3c85be15a40cba@syzkaller.appspotmail.com
-> > > Link: https://syzkaller.appspot.com/bug?id=fd85757b74b3eb59f904138486f755f71e090df8
-> > > 
-> > > Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> > > Fixes: 2d4b21e0a291 ("IB/rxe: Prevent from completer to operate on non valid QP")
-> > > Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> > > ---
-> > >   drivers/infiniband/sw/rxe/rxe_qp.c | 15 ++++++++++++---
-> > >   1 file changed, 12 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> > > index ab72db68b58f..7856c02c1b46 100644
-> > > --- a/drivers/infiniband/sw/rxe/rxe_qp.c
-> > > +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> > > @@ -176,6 +176,10 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
-> > >   	spin_lock_init(&qp->rq.producer_lock);
-> > >   	spin_lock_init(&qp->rq.consumer_lock);
-> > > +	memset(&qp->req.task, 0, sizeof(struct rxe_task));
-> > > +	memset(&qp->comp.task, 0, sizeof(struct rxe_task));
-> > > +	memset(&qp->resp.task, 0, sizeof(struct rxe_task));
-> > IMHO QP is already zeroed here.
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4667
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
 > 
-> Sure. Exactly. Here I just confirm that req.task, comp.task and resp.task
-> are zeroed explicitly.
+> change in v2:
+> --According to Simon's suggestion, add the one in mlx5e_set_int_port_tunnel().
 
-There is no need to do so. It is quite misleading to read the code and
-see these memset() functions as they give false impression that QP is
-not zeroed.
+Once you are doing such cleanup, please do it in one pass for whole driver.
 
-> 
-> If you think it had better remove these memset functions, I will follow your
-> advice.
-
-Yes, please.
+➜  kernel git:(net-next) git grep -B1 dev_put drivers/net/ethernet/mellanox/mlx5/core/ | grep if -A1
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c-	if (attr->route_dev)
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c:		dev_put(attr->route_dev);
+--
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c-	if (uplink_upper)
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c:		dev_put(uplink_upper);
+--
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c-	if (route_dev)
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:		dev_put(route_dev);
+--
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c-	if (route_dev)
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:		dev_put(route_dev);
+--
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c-	if (route_dev)
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:		dev_put(route_dev);
 
 Thanks
+
+> 
+>  .../net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c  | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> index 20c2d2ecaf93..2cb2ba857155 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> @@ -32,9 +32,7 @@ static int mlx5e_set_int_port_tunnel(struct mlx5e_priv *priv,
+>  						&attr->action, out_index);
+>  
+>  out:
+> -	if (route_dev)
+> -		dev_put(route_dev);
+> -
+> +	dev_put(route_dev);
+>  	return err;
+>  }
+>  
+> @@ -730,8 +728,7 @@ static int mlx5e_set_vf_tunnel(struct mlx5_eswitch *esw,
+>  	}
+>  
+>  out:
+> -	if (route_dev)
+> -		dev_put(route_dev);
+> +	dev_put(route_dev);
+>  	return err;
+>  }
+>  
+> @@ -765,8 +762,7 @@ static int mlx5e_update_vf_tunnel(struct mlx5_eswitch *esw,
+>  	mlx5e_tc_match_to_reg_mod_hdr_change(esw->dev, mod_hdr_acts, VPORT_TO_REG, act_id, data);
+>  
+>  out:
+> -	if (route_dev)
+> -		dev_put(route_dev);
+> +	dev_put(route_dev);
+>  	return err;
+>  }
+>  
+> -- 
+> 2.20.1.7.g153144c
+> 
