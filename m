@@ -2,139 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDC76D844B
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Apr 2023 18:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9186D8935
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Apr 2023 23:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbjDEQ4j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Apr 2023 12:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33300 "EHLO
+        id S231828AbjDEVGT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Apr 2023 17:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233676AbjDEQ4S (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Apr 2023 12:56:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F61B65BA
-        for <linux-rdma@vger.kernel.org>; Wed,  5 Apr 2023 09:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680713665;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pP5V7G7GRqo/82ZWWApO+0CTJP1pdqvbg0H8r7V6l6c=;
-        b=Eng3yHgcfAuQ02ojazpM+W/HudjSPJJ7ZXgRrO4fDQaoIGFY3hq9kjc5mkg3X/RHhQ2sVR
-        20WWJZ3Ywr6se6rtWGvK0cP/50fv2hkVH/4ZsqE4byqTnvQA81po6jIZ2z40PRR9E9GQOa
-        21VobiXyBH4rDesSIk/j+PSP6E/1mkI=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-523-jkYT3UqJN2e1IEz58PiLDA-1; Wed, 05 Apr 2023 12:54:21 -0400
-X-MC-Unique: jkYT3UqJN2e1IEz58PiLDA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S231906AbjDEVGR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Apr 2023 17:06:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6745B65A0;
+        Wed,  5 Apr 2023 14:06:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6F2AA3823A07;
-        Wed,  5 Apr 2023 16:54:20 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 227C72027061;
-        Wed,  5 Apr 2023 16:54:18 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E4E0963CF8;
+        Wed,  5 Apr 2023 21:06:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04EDFC433EF;
+        Wed,  5 Apr 2023 21:06:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680728775;
+        bh=R71QHKkeUfH8VYzRdCdAeQ6B2BQkF7BrfCwK1Xovuwo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=d8bWqodR70r6m+e7Zu9a800cEEUnjBsaw3dijXkqKvp7K97SMthAI4HrP63SuFNY9
+         9I9RB3l3Jd32V4DfJdFskhNcalupz6weZkbLCZU/+LPYtE+Jz5IkW1ZjNdBT5LViRv
+         15/NH0M45k3ZnDMVcNTtXK3aP/QrW9LrHDKDLdgAOY0y6ZC6Z2yuCEsJjOzuVTvH0/
+         B4elU0ltk5e+D/1KeoN6xmVOzwKf0GIIzualjtyPPWMPFZXCegtTHmr+qgfSGpJewY
+         vD4p6com0bWhX5yWkD/j0UP7L6E7y//sFnHMbQ19EW3dlk/pyBHvYx+RMw7hH1yF1J
+         CAsQzqO8gL/LA==
+Date:   Wed, 5 Apr 2023 16:06:13 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Bernard Metzler <bmt@zurich.ibm.com>,
-        Tom Talpey <tom@talpey.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v4 12/20] siw: Inline do_tcp_sendpages()
-Date:   Wed,  5 Apr 2023 17:53:31 +0100
-Message-Id: <20230405165339.3468808-13-dhowells@redhat.com>
-In-Reply-To: <20230405165339.3468808-1-dhowells@redhat.com>
-References: <20230405165339.3468808-1-dhowells@redhat.com>
+        Gerd Bayer <gbayer@linux.ibm.com>,
+        Alexander Schmidt <alexs@linux.ibm.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5: stop waiting for PCI link if reset is required
+Message-ID: <20230405210613.GA3638573@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a25455eac6a02eeb9710d9204dfe0b91938f61a1.camel@linux.ibm.com>
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-do_tcp_sendpages() is now just a small wrapper around tcp_sendmsg_locked(),
-so inline it, allowing do_tcp_sendpages() to be removed.  This is part of
-replacing ->sendpage() with a call to sendmsg() with MSG_SPLICE_PAGES set.
+On Tue, Apr 04, 2023 at 05:27:35PM +0200, Niklas Schnelle wrote:
+> On Mon, 2023-04-03 at 21:21 +0300, Leon Romanovsky wrote:
+> > On Mon, Apr 03, 2023 at 09:56:56AM +0200, Niklas Schnelle wrote:
+> > > after an error on the PCI link, the driver does not need to wait
+> > > for the link to become functional again as a reset is required. Stop
+> > > the wait loop in this case to accelerate the recovery flow.
+> > > 
+> > > Co-developed-by: Alexander Schmidt <alexs@linux.ibm.com>
+> > > Signed-off-by: Alexander Schmidt <alexs@linux.ibm.com>
+> > > Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> > > ---
+> > >  drivers/net/ethernet/mellanox/mlx5/core/health.c | 12 ++++++++++--
+> > >  1 file changed, 10 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+> > > index f9438d4e43ca..81ca44e0705a 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+> > > @@ -325,6 +325,8 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev *dev)
+> > >  	while (sensor_pci_not_working(dev)) {
+> > 
+> > According to the comment in sensor_pci_not_working(), this loop is
+> > supposed to wait till PCI will be ready again. Otherwise, already in
+> > first iteration, we will bail out with pci_channel_offline() error.
+> 
+> Well yes. The problem is that this works for intermittent errors
+> including when the card resets itself which seems to be the use case in
+> mlx5_fw_reset_complete_reload() and mlx5_devlink_reload_fw_activate().
+> If there is a PCI error that requires a link reset though we see some
+> problems though it does work after running into the timeout.
+> 
+> As I understand it and as implemented at least on s390,
+> pci_channel_io_frozen is only set for fatal errors that require a reset
+> while non fatal errors will have pci_channel_io_normal (see also
+> Documentation/PCI/pcieaer-howto.rst)
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Bernard Metzler <bmt@zurich.ibm.com>
-cc: Tom Talpey <tom@talpey.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: linux-rdma@vger.kernel.org
-cc: netdev@vger.kernel.org
----
- drivers/infiniband/sw/siw/siw_qp_tx.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+Yes, I think that's true, see handle_error_source().
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 05052b49107f..fa5de40d85d5 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -313,7 +313,7 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
- }
- 
- /*
-- * 0copy TCP transmit interface: Use do_tcp_sendpages.
-+ * 0copy TCP transmit interface: Use MSG_SPLICE_PAGES.
-  *
-  * Using sendpage to push page by page appears to be less efficient
-  * than using sendmsg, even if data are copied.
-@@ -324,20 +324,27 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
- static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
- 			     size_t size)
- {
-+	struct bio_vec bvec;
-+	struct msghdr msg = {
-+		.msg_flags = (MSG_MORE | MSG_DONTWAIT | MSG_SENDPAGE_NOTLAST |
-+			      MSG_SPLICE_PAGES),
-+	};
- 	struct sock *sk = s->sk;
--	int i = 0, rv = 0, sent = 0,
--	    flags = MSG_MORE | MSG_DONTWAIT | MSG_SENDPAGE_NOTLAST;
-+	int i = 0, rv = 0, sent = 0;
- 
- 	while (size) {
- 		size_t bytes = min_t(size_t, PAGE_SIZE - offset, size);
- 
- 		if (size + offset <= PAGE_SIZE)
--			flags = MSG_MORE | MSG_DONTWAIT;
-+			msg.msg_flags = MSG_MORE | MSG_DONTWAIT;
- 
- 		tcp_rate_check_app_limited(sk);
-+		bvec_set_page(&bvec, page[i], bytes, offset);
-+		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
-+
- try_page_again:
- 		lock_sock(sk);
--		rv = do_tcp_sendpages(sk, page[i], offset, bytes, flags);
-+		rv = tcp_sendmsg_locked(sk, &msg, size);
- 		release_sock(sk);
- 
- 		if (rv > 0) {
+> thus I think pci_channel_offline()
+> should only be true if a reset is required or there is a permanent
+> error.
 
+Yes, I think pci_channel_offline() will only be true when a fatal
+error has been reported via AER or DPC (or a hotplug driver says the
+device has been removed).  The driver resetting the device should not
+cause such a fatal error.
+
+> Furthermore in the pci_channel_io_frozen state the PCI function
+> may be isolated and the reads will not reach the endpoint, this is the
+> case at least on s390.  Thus for errors requiring a reset the loop
+> without pci_channel_offline() will run until the reset is performed or
+> the timeout is reached. In the mlx5_health_try_recover() case during
+> error recovery we will then indeed always loop until timeout, because
+> the loop blocks mlx5_pci_err_detected() from returning thus blocking
+> the reset (see Documentation/PCI/pci-error-recovery.rst). Adding Bjorn,
+> maybe he can confirm or correct my assumptions here.
+
+> > >  		if (time_after(jiffies, end))
+> > >  			return -ETIMEDOUT;
+> > > +		if (pci_channel_offline(dev->pdev))
+> > > +			return -EIO;
+> > >  		msleep(100);
+> > >  	}
+> > >  	return 0;
+> > > @@ -332,10 +334,16 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev *dev)
+> > >  
+> > >  static int mlx5_health_try_recover(struct mlx5_core_dev *dev)
+> > >  {
+> > > +	int rc;
+> > > +
+> > >  	mlx5_core_warn(dev, "handling bad device here\n");
+> > >  	mlx5_handle_bad_state(dev);
+> > > -	if (mlx5_health_wait_pci_up(dev)) {
+> > > -		mlx5_core_err(dev, "health recovery flow aborted, PCI reads still not working\n");
+> > > +	rc = mlx5_health_wait_pci_up(dev);
+> > > +	if (rc) {
+> > > +		if (rc == -ETIMEDOUT)
+> > > +			mlx5_core_err(dev, "health recovery flow aborted, PCI reads still not working\n");
+> > > +		else
+> > > +			mlx5_core_err(dev, "health recovery flow aborted, PCI channel offline\n");
+> > >  		return -EIO;
+> > >  	}
+> > >  	mlx5_core_err(dev, "starting health recovery flow\n");
+> > > 
+> > > base-commit: 7e364e56293bb98cae1b55fd835f5991c4e96e7d
+> > > -- 
+> > > 2.37.2
+> > > 
+> 
