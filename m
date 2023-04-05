@@ -2,194 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 634A06D76AE
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Apr 2023 10:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49C16D920C
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Apr 2023 10:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237152AbjDEITe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Apr 2023 04:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
+        id S233581AbjDFIy5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Apr 2023 04:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237267AbjDEITc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Apr 2023 04:19:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB13F1BCD
-        for <linux-rdma@vger.kernel.org>; Wed,  5 Apr 2023 01:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1680682724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L9CXlkWxa5SdW4THJZQP2BBn3FZZ8UI6SlqgD7wH/ew=;
-        b=UbvpM0wXW1DzXZXzYdh0UX3KOe6v9N+v0DRxgpgeUKxKM1mYYOf+4BJLtUWuZX1OEBZx+f
-        aOnDsIVsz3oKjbpi8kcHEHs2pM0Zq5Ug8aO0JP931fbAoEIyXdPrMEHB8nqXpbMXWUygYg
-        q9aNLM5PPo1DyidgC8GOGdTzKAzWW+A=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-368-nUYnXXrKNLKOkXBWn5--hQ-1; Wed, 05 Apr 2023 04:18:41 -0400
-X-MC-Unique: nUYnXXrKNLKOkXBWn5--hQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C2C1B3813F40;
-        Wed,  5 Apr 2023 08:18:39 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2DC842027061;
-        Wed,  5 Apr 2023 08:18:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <SA0PR15MB3919AD9D232B3CA789A3FD6F99939@SA0PR15MB3919.namprd15.prod.outlook.com>
-References: <SA0PR15MB3919AD9D232B3CA789A3FD6F99939@SA0PR15MB3919.namprd15.prod.outlook.com> <20230331160914.1608208-1-dhowells@redhat.com> <20230331160914.1608208-39-dhowells@redhat.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     dhowells@redhat.com, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Tom Talpey <tom@talpey.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v3 38/55] siw: Use sendmsg(MSG_SPLICE_PAGES) rather than sendpage to transmit
+        with ESMTP id S234723AbjDFIyz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Apr 2023 04:54:55 -0400
+X-Greylist: delayed 87419 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 06 Apr 2023 01:54:55 PDT
+Received: from mail.feshiecree.pl (mail.feshiecree.pl [89.40.114.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8724EFD
+        for <linux-rdma@vger.kernel.org>; Thu,  6 Apr 2023 01:54:55 -0700 (PDT)
+Received: by mail.feshiecree.pl (Postfix, from userid 1001)
+        id 1FB64829F4; Wed,  5 Apr 2023 09:27:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=feshiecree.pl;
+        s=mail; t=1680683269;
+        bh=hFxZwVw4rIL+JwfEOGI47p+fdoVOAeqVswP6NWoHSHQ=;
+        h=Date:From:To:Subject:From;
+        b=oAQhGeVA05tUfd+dap+dPWjDzETezOKN3w3SD1mXQmNUM8nOFcjOfLD/+VyYy0Bql
+         kvnU1F+Q/0o6SQ4K2V7f5SisrosFYylrRtA6I3JaMPi7KxlFTk+/c0WkUl5niGUNXH
+         a0+ahT1w/iLN5kxZg/iT3ulO9PknGYE1yyzYvqGYQ5gU9HGtL0AA5SUZSiiI6L000K
+         GNA3Xir89dY1COeVIoSh9x/Bi/P47XaVkE8siG3P9J32Tn8mrXAr5hjvvhUntNNYDP
+         J3qRwzqMB1LwiiKN73aYJPDzecdKSGahaE2RDhU88kLB/0ltQ2178aqKVC7ywFM83t
+         wDNZL1uNAVKhA==
+Received: by feshiecree.pl for <linux-rdma@vger.kernel.org>; Wed,  5 Apr 2023 08:27:41 GMT
+Message-ID: <20230405084211-0.1.1u.6hek.0.m5apft526n@feshiecree.pl>
+Date:   Wed,  5 Apr 2023 08:27:41 GMT
+From:   "Krystian Wieczorek" <krystian.wieczorek@feshiecree.pl>
+To:     <linux-rdma@vger.kernel.org>
+Subject: W sprawie samochodu
+X-Mailer: mail.feshiecree.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2904968.1680682716.1@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 05 Apr 2023 09:18:36 +0100
-Message-ID: <2904969.1680682716@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=1.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SORBS_DUL,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Bernard Metzler <BMT@zurich.ibm.com> wrote:
+Dzie=C5=84 dobry,
 
-> >  	if (c_tx->state =3D=3D SIW_SEND_HDR) {
-> >  		if (c_tx->use_sendpage) {
-> > @@ -457,10 +350,15 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
-> > struct socket *s)
-> > =
+chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
+, je=C5=9Bli chodzi o system monitoringu GPS.
 
-> =
+Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
+e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
+a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
 
-> Couldn't we now collapse the two header handling paths
-> into one, avoiding extra =
+Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
+dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
+szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
+mne znaczenie.
 
-> 'if (c_tx->use_sendpage) {} else {}' conditions?
+Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
+b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
 
-Okay, see the attached incremental change.
 
-Note that the calls to page_frag_memdup() I previously added are probably =
-not
-going to be necessary as copying unspliceable data is now done in the
-protocols (TCP, IP/UDP, UNIX, etc.).  See patch 08 for the TCP version.
-
-David
----
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw=
-/siw/siw_qp_tx.c
-index 28076832da20..edf66a97cf5f 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -335,7 +335,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struc=
-t socket *s)
- 	struct siw_sge *sge =3D &wqe->sqe.sge[c_tx->sge_idx];
- 	struct bio_vec bvec[MAX_ARRAY];
- 	struct msghdr msg =3D { .msg_flags =3D MSG_DONTWAIT | MSG_EOR };
--	void *trl, *t;
-+	void *trl;
- =
-
- 	int seg =3D 0, do_crc =3D c_tx->do_crc, is_kva =3D 0, rv;
- 	unsigned int data_len =3D c_tx->bytes_unsent, hdr_len =3D 0, trl_len =3D=
- 0,
-@@ -343,25 +343,11 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, str=
-uct socket *s)
- 		     pbl_idx =3D c_tx->pbl_idx;
- =
-
- 	if (c_tx->state =3D=3D SIW_SEND_HDR) {
--		if (c_tx->use_sendpage) {
--			rv =3D siw_tx_ctrl(c_tx, s, MSG_DONTWAIT | MSG_MORE);
--			if (rv)
--				goto done;
-+		void *hdr =3D &c_tx->pkt.ctrl + c_tx->ctrl_sent;
- =
-
--			c_tx->state =3D SIW_SEND_DATA;
--		} else {
--			const void *hdr =3D &c_tx->pkt.ctrl + c_tx->ctrl_sent;
--			void *h;
--
--			rv =3D -ENOMEM;
--			hdr_len =3D c_tx->ctrl_len - c_tx->ctrl_sent;
--			h =3D page_frag_memdup(NULL, hdr, hdr_len, GFP_NOFS,
--					     ULONG_MAX);
--			if (!h)
--				goto done;
--			bvec_set_virt(&bvec[0], h, hdr_len);
--			seg =3D 1;
--		}
-+		hdr_len =3D c_tx->ctrl_len - c_tx->ctrl_sent;
-+		bvec_set_virt(&bvec[0], hdr, hdr_len);
-+		seg =3D 1;
- 	}
- =
-
- 	wqe->processed +=3D data_len;
-@@ -466,12 +452,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, stru=
-ct socket *s)
- 		trl =3D &c_tx->trailer.pad[c_tx->ctrl_sent];
- 		trl_len =3D MAX_TRAILER - c_tx->ctrl_sent;
- 	}
--
--	rv =3D -ENOMEM;
--	t =3D page_frag_memdup(NULL, trl, trl_len, GFP_NOFS, ULONG_MAX);
--	if (!t)
--		goto done_crc;
--	bvec_set_virt(&bvec[seg], t, trl_len);
-+	bvec_set_virt(&bvec[seg], trl, trl_len);
- =
-
- 	data_len =3D c_tx->bytes_unsent;
- =
-
-@@ -480,7 +461,6 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struc=
-t socket *s)
- 	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, bvec, seg + 1,
- 		      hdr_len + data_len + trl_len);
- 	rv =3D sock_sendmsg(s, &msg);
--
- 	if (rv < (int)hdr_len) {
- 		/* Not even complete hdr pushed or negative rv */
- 		wqe->processed -=3D data_len;
-@@ -541,10 +521,6 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, stru=
-ct socket *s)
- 	}
- done_crc:
- 	c_tx->do_crc =3D 0;
--	if (c_tx->state =3D=3D SIW_SEND_HDR)
--		folio_put(page_folio(bvec[0].bv_page));
--	folio_put(page_folio(bvec[seg].bv_page));
--done:
- 	return rv;
- }
- =
-
+Pozdrawiam
+Krystian Wieczorek
