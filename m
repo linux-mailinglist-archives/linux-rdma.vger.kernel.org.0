@@ -2,376 +2,254 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4996D8BBF
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Apr 2023 02:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A286D8E51
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Apr 2023 06:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234710AbjDFAW0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Apr 2023 20:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
+        id S232797AbjDFE0G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Apr 2023 00:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234514AbjDFAWE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Apr 2023 20:22:04 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5A8126A41;
-        Wed,  5 Apr 2023 17:21:34 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id BEF3392009D; Thu,  6 Apr 2023 02:21:31 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id B898E92009B;
-        Thu,  6 Apr 2023 01:21:31 +0100 (BST)
-Date:   Thu, 6 Apr 2023 01:21:31 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Stefan Roese <sr@denx.de>, Jim Wilson <wilson@tuliptree.org>,
-        David Abdurachmanov <david.abdurachmanov@gmail.com>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8 7/7] PCI: Work around PCIe link training failures
-In-Reply-To: <alpine.DEB.2.21.2304060100160.13659@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2304060116380.13659@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2304060100160.13659@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        with ESMTP id S231696AbjDFE0E (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Apr 2023 00:26:04 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9072D7AAC
+        for <linux-rdma@vger.kernel.org>; Wed,  5 Apr 2023 21:26:03 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id mp3-20020a17090b190300b0023fcc8ce113so41707540pjb.4
+        for <linux-rdma@vger.kernel.org>; Wed, 05 Apr 2023 21:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1680755163; x=1683347163;
+        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SR3Rk1MtedXhtg26U+8+OSNXS80zF5zmlSqQIur/4+o=;
+        b=LWFjYwhw7bXCqrmIPok1nuXz8PSxQHXSjHMyYegDdMUvWio+lj86Kppoa0CEdM7CNw
+         RdGZ1z3tFLTIexIpo6U86S2rzQMxzrb3qmiVeaCnbHhcaD0bw0jpznh98/pEpZySeh0a
+         7ObVKwF6XFW3LF7ZI5QpAWojea1/DD27ObaW4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680755163; x=1683347163;
+        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SR3Rk1MtedXhtg26U+8+OSNXS80zF5zmlSqQIur/4+o=;
+        b=u/26y1YDxQEn/wAngc1vPLyArQDSBRR2GSNaBYmgSEs1vdmmh5RuVvT90OQ0dDMJFe
+         DFGva902sE0/CaOj0GqQjPMXLXQVEe2PE+uF3FoK+fJpicOLycCWYjh2/inu4azZdB9X
+         AeU1EsRWLpMZAvvQHeiDs6FvGwFqBRr8ekQdtaXK6OjcK2whHx4eujpRcarAarioK/iB
+         wCqz8dmgh6VHmzuefC6L2z2U3KXgclb+iOFHpg3nLl9p7lF7ncGCS9yehnx4mgu89AFj
+         Gb+CVV59ILUpTzPQhzOMQc9LXNCmdkpIReb2Ezi8dGraBAM8rIOyOuEmjONBb0U793uf
+         lBlg==
+X-Gm-Message-State: AAQBX9ei7Pc/kios/j3t35KS7Gp2n1rEOjmupnTkije6IAPNXFd/Rm4M
+        AloG+M0tolwUJEEUnIdpDKUkEQ==
+X-Google-Smtp-Source: AKy350alKZPjCqOJQ3BWFA+kDx2IE4lC173ROymKm8I62VF3pMmpR1FXSQ5oXSftANUNEEPIbtVh+A==
+X-Received: by 2002:a17:903:1246:b0:1a2:9ce6:6483 with SMTP id u6-20020a170903124600b001a29ce66483mr9917125plh.64.1680755162593;
+        Wed, 05 Apr 2023 21:26:02 -0700 (PDT)
+Received: from localhost.localdomain ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id s7-20020a170902988700b0019f1027f88bsm309911plp.307.2023.04.05.21.25.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Apr 2023 21:26:01 -0700 (PDT)
+From:   Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+To:     jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org,
+        Saravanan Vajravel <saravanan.vajravel@broadcom.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>
+Subject: [PATCH v2 for-rc] RDMA/srpt: Add a check for valid 'mad_agent' pointer
+Date:   Wed,  5 Apr 2023 21:25:49 -0700
+Message-Id: <20230406042549.507328-1-saravanan.vajravel@broadcom.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000077062105f8a34e83"
+X-Spam-Status: No, score=0.8 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Attempt to handle cases such as with a downstream port of the ASMedia 
-ASM2824 PCIe switch where link training never completes and the link 
-continues switching between speeds indefinitely with the data link layer 
-never reaching the active state.
+--00000000000077062105f8a34e83
+Content-Transfer-Encoding: 8bit
 
-It has been observed with a downstream port of the ASMedia ASM2824 Gen 3 
-switch wired to the upstream port of the Pericom PI7C9X2G304 Gen 2 
-switch, using a Delock Riser Card PCI Express x1 > 2 x PCIe x1 device, 
-P/N 41433, wired to a SiFive HiFive Unmatched board.  In this setup the 
-switches are supposed to negotiate the link speed of preferably 5.0GT/s, 
-falling back to 2.5GT/s.
+When unregistering MAD agent, srpt module has a non-null check
+for 'mad_agent' pointer before invoking ib_unregister_mad_agent().
+This check can pass if 'mad_agent' variable holds an error value.
+The 'mad_agent' can have an error value for a short window when
+srpt_add_one() and srpt_remove_one() is executed simultaneously.
 
-Instead the link continues oscillating between the two speeds, at the 
-rate of 34-35 times per second, with link training reported repeatedly 
-active ~84% of the time.  Forcibly limiting the target link speed to 
-2.5GT/s with the upstream ASM2824 device however makes the two switches 
-communicate correctly.  Removing the speed restriction afterwards makes 
-the two devices switch to 5.0GT/s then.
+In srpt module, added a valid pointer check for 'sport->mad_agent'
+before unregistering MAD agent.
 
-Make use of these observations then and detect the inability to train 
-the link, by checking for the Data Link Layer Link Active status bit 
-being off while the Link Bandwidth Management Status indicating that 
-hardware has changed the link speed or width in an attempt to correct 
-unreliable link operation.
+This issue can hit when RoCE driver unregisters ib_device
 
-Restrict the speed to 2.5GT/s then with the Target Link Speed field, 
-request a retrain and wait 200ms for the data link to go up.  If this 
-turns out successful, then lift the restriction, letting the devices 
-negotiate a higher speed.
+Stack Trace:
+------------
+BUG: kernel NULL pointer dereference, address: 000000000000004d
+PGD 145003067 P4D 145003067 PUD 2324fe067 PMD 0
+Oops: 0002 [#1] PREEMPT SMP NOPTI
+CPU: 10 PID: 4459 Comm: kworker/u80:0 Kdump: loaded Tainted: P
+Hardware name: Dell Inc. PowerEdge R640/06NR82, BIOS 2.5.4 01/13/2020
+Workqueue: bnxt_re bnxt_re_task [bnxt_re]
+RIP: 0010:_raw_spin_lock_irqsave+0x19/0x40
+Call Trace:
+  ib_unregister_mad_agent+0x46/0x2f0 [ib_core]
+  IPv6: ADDRCONF(NETDEV_CHANGE): bond0: link becomes ready
+  ? __schedule+0x20b/0x560
+  srpt_unregister_mad_agent+0x93/0xd0 [ib_srpt]
+  srpt_remove_one+0x20/0x150 [ib_srpt]
+  remove_client_context+0x88/0xd0 [ib_core]
+  bond0: (slave p2p1): link status definitely up, 100000 Mbps full duplex
+  disable_device+0x8a/0x160 [ib_core]
+  bond0: active interface up!
+  ? kernfs_name_hash+0x12/0x80
+ (NULL device *): Bonding Info Received: rdev: 000000006c0b8247
+  __ib_unregister_device+0x42/0xb0 [ib_core]
+ (NULL device *):         Master: mode: 4 num_slaves:2
+  ib_unregister_device+0x22/0x30 [ib_core]
+ (NULL device *):         Slave: id: 105069936 name:p2p1 link:0 state:0
+  bnxt_re_stopqps_and_ib_uninit+0x83/0x90 [bnxt_re]
+  bnxt_re_alloc_lag+0x12e/0x4e0 [bnxt_re]
 
-Also check for a 2.5GT/s speed restriction the firmware may have already 
-arranged and lift it too with ports of devices known to continue working 
-afterwards, currently the ASM2824 only, that already report their data 
-link being up.
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Link: https://lore.kernel.org/r/alpine.DEB.2.21.2203022037020.56670@angie.orcam.me.uk/
-Link: https://source.denx.de/u-boot/u-boot/-/commit/a398a51ccc68
+Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
+Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Reviewed-by: Kashyap Desai <kashyap.desai@broadcom.com>
+Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 ---
-No changes from v7.
+v1->v2:
+   - Return pointer of mad_agent is stored in local pointer to verify
+     if it is successfully registered
 
-Changes from v6:
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-- Regenerate against 6.3-rc5.
-
-- Shorten the lore.kernel.org archive link in the change description.
-
-Changes from v5:
-
-- Move from a quirk into PCI core and call at device probing, hot-plug,
-  reset and resume.  Keep the ASMedia part under CONFIG_PCI_QUIRKS.
-
-- Rely on `dev->link_active_reporting' rather than re-retrieving the 
-  capability.
-
-Changes from v4:
-
-- Remove <linux/bug.h> inclusion no longer needed.
-
-- Make the quirk generic based on probing device features rather than 
-  specific to the ASM2824 part only; take the Retrain Link bit erratum 
-  into account.
-
-- Still lift the 2.5GT/s speed restriction with the ASM2824 only.
-
-- Increase retrain timeout from 200ms to 1s (PCIE_LINK_RETRAIN_TIMEOUT).
-
-- Remove retrain success notification.
-
-- Use PCIe helpers rather than generic PCI functions throughout.
-
-- Trim down and update the wording of the change description for the 
-  switch from an ASM2824-specific to a generic fixup.
-
-Changes from v3:
-
-- Remove the <linux/pci_ids.h> entry for the ASM2824.
-
-Changes from v2:
-
-- Regenerate for 5.17-rc2 for a merge conflict.
-
-- Replace BUG_ON for a missing PCI Express capability with WARN_ON and an
-  early return.
-
-Changes from v1:
-
-- Regenerate for a merge conflict.
----
- drivers/pci/pci.c   |  154 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- drivers/pci/pci.h   |    1 
- drivers/pci/probe.c |    2 
- 3 files changed, 152 insertions(+), 5 deletions(-)
-
-linux-pcie-asm2824-manual-retrain.diff
-Index: linux-macro/drivers/pci/pci.c
-===================================================================
---- linux-macro.orig/drivers/pci/pci.c
-+++ linux-macro/drivers/pci/pci.c
-@@ -859,6 +859,132 @@ int pci_wait_for_pending(struct pci_dev
- 	return 0;
- }
- 
-+/*
-+ * Retrain the link of a downstream PCIe port by hand if necessary.
-+ *
-+ * This is needed at least where a downstream port of the ASMedia ASM2824
-+ * Gen 3 switch is wired to the upstream port of the Pericom PI7C9X2G304
-+ * Gen 2 switch, and observed with the Delock Riser Card PCI Express x1 >
-+ * 2 x PCIe x1 device, P/N 41433, plugged into the SiFive HiFive Unmatched
-+ * board.
-+ *
-+ * In such a configuration the switches are supposed to negotiate the link
-+ * speed of preferably 5.0GT/s, falling back to 2.5GT/s.  However the link
-+ * continues switching between the two speeds indefinitely and the data
-+ * link layer never reaches the active state, with link training reported
-+ * repeatedly active ~84% of the time.  Forcing the target link speed to
-+ * 2.5GT/s with the upstream ASM2824 device makes the two switches talk to
-+ * each other correctly however.  And more interestingly retraining with a
-+ * higher target link speed afterwards lets the two successfully negotiate
-+ * 5.0GT/s.
-+ *
-+ * With the ASM2824 we can rely on the otherwise optional Data Link Layer
-+ * Link Active status bit and in the failed link training scenario it will
-+ * be off along with the Link Bandwidth Management Status indicating that
-+ * hardware has changed the link speed or width in an attempt to correct
-+ * unreliable link operation.  For a port that has been left unconnected
-+ * both bits will be clear.  So use this information to detect the problem
-+ * rather than polling the Link Training bit and watching out for flips or
-+ * at least the active status.
-+ *
-+ * Since the exact nature of the problem isn't known and in principle this
-+ * could trigger where an ASM2824 device is downstream rather upstream,
-+ * apply this erratum workaround to any downstream ports as long as they
-+ * support Link Active reporting and have the Link Control 2 register.
-+ * Restrict the speed to 2.5GT/s then with the Target Link Speed field,
-+ * request a retrain and wait 200ms for the data link to go up.
-+ *
-+ * If this turns out successful and we know by the Vendor:Device ID it is
-+ * safe to do so, then lift the restriction, letting the devices negotiate
-+ * a higher speed.  Also check for a similar 2.5GT/s speed restriction the
-+ * firmware may have already arranged and lift it with ports that already
-+ * report their data link being up.
-+ *
-+ * Return 0 if the link has been successfully retrained, otherwise -1.
-+ */
-+int pcie_downstream_link_retrain(struct pci_dev *dev)
-+{
-+	static const struct pci_device_id ids[] = {
-+		{ PCI_VDEVICE(ASMEDIA, 0x2824) }, /* ASMedia ASM2824 */
-+		{}
-+	};
-+	u16 lnksta, lnkctl2;
-+
-+	if (!pci_is_pcie(dev) || !pcie_downstream_port(dev) ||
-+	    !pcie_cap_has_lnkctl2(dev) || !dev->link_active_reporting)
-+		return -1;
-+
-+	pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &lnkctl2);
-+	pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
-+	if ((lnksta & (PCI_EXP_LNKSTA_LBMS | PCI_EXP_LNKSTA_DLLLA)) ==
-+	    PCI_EXP_LNKSTA_LBMS) {
-+		unsigned long timeout;
-+		u16 lnkctl;
-+
-+		pci_info(dev, "broken device, retraining non-functional downstream link at 2.5GT/s\n");
-+
-+		pcie_capability_read_word(dev, PCI_EXP_LNKCTL, &lnkctl);
-+		lnkctl |= PCI_EXP_LNKCTL_RL;
-+		lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
-+		lnkctl2 |= PCI_EXP_LNKCTL2_TLS_2_5GT;
-+		pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
-+		pcie_capability_write_word(dev, PCI_EXP_LNKCTL, lnkctl);
-+		/*
-+		 * Due to an erratum in some devices the Retrain Link bit
-+		 * needs to be cleared again manually to allow the link
-+		 * training to succeed.
-+		 */
-+		lnkctl &= ~PCI_EXP_LNKCTL_RL;
-+		if (dev->clear_retrain_link)
-+			pcie_capability_write_word(dev, PCI_EXP_LNKCTL,
-+						   lnkctl);
-+
-+		timeout = jiffies + PCIE_LINK_RETRAIN_TIMEOUT;
-+		do {
-+			pcie_capability_read_word(dev, PCI_EXP_LNKSTA,
-+					     &lnksta);
-+			if (lnksta & PCI_EXP_LNKSTA_DLLLA)
-+				break;
-+			usleep_range(10000, 20000);
-+		} while (time_before(jiffies, timeout));
-+
-+		if (!(lnksta & PCI_EXP_LNKSTA_DLLLA)) {
-+			pci_info(dev, "retraining failed\n");
-+			return -1;
-+		}
-+	}
-+
-+	if (IS_ENABLED(CONFIG_PCI_QUIRKS) && (lnksta & PCI_EXP_LNKSTA_DLLLA) &&
-+	    (lnkctl2 & PCI_EXP_LNKCTL2_TLS) == PCI_EXP_LNKCTL2_TLS_2_5GT &&
-+	    pci_match_id(ids, dev)) {
-+		u32 lnkcap;
-+		u16 lnkctl;
-+
-+		pci_info(dev, "removing 2.5GT/s downstream link speed restriction\n");
-+		pcie_capability_read_dword(dev, PCI_EXP_LNKCAP, &lnkcap);
-+		pcie_capability_read_word(dev, PCI_EXP_LNKCTL, &lnkctl);
-+		lnkctl |= PCI_EXP_LNKCTL_RL;
-+		lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
-+		lnkctl2 |= lnkcap & PCI_EXP_LNKCAP_SLS;
-+		pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
-+		pcie_capability_write_word(dev, PCI_EXP_LNKCTL, lnkctl);
-+	}
-+
-+	return 0;
-+}
-+
-+/* Same as above, but called for a downstream device.  */
-+static int pcie_upstream_link_retrain(struct pci_dev *dev)
-+{
-+	struct pci_dev *bridge;
-+
-+	bridge = pci_upstream_bridge(dev);
-+	if (bridge)
-+		return pcie_downstream_link_retrain(bridge);
-+	else
-+		return -1;
-+}
-+
- static int pci_acs_enable;
- 
- /**
-@@ -1148,8 +1274,8 @@ void pci_resume_bus(struct pci_bus *bus)
- 
- static int pci_dev_wait(struct pci_dev *dev, char *reset_type, int timeout)
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 3c3fae738c3e..b4cb88563bb2 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -549,6 +549,7 @@ static int srpt_format_guid(char *buf, unsigned int size, const __be64 *guid)
+  */
+ static int srpt_refresh_port(struct srpt_port *sport)
  {
-+	int retrain = 0;
- 	int delay = 1;
--	u32 id;
++	struct ib_mad_agent *mad_agent;
+ 	struct ib_mad_reg_req reg_req;
+ 	struct ib_port_modify port_modify;
+ 	struct ib_port_attr port_attr;
+@@ -593,23 +594,24 @@ static int srpt_refresh_port(struct srpt_port *sport)
+ 		set_bit(IB_MGMT_METHOD_GET, reg_req.method_mask);
+ 		set_bit(IB_MGMT_METHOD_SET, reg_req.method_mask);
  
- 	/*
- 	 * After reset, the device should not silently discard config
-@@ -1163,21 +1289,37 @@ static int pci_dev_wait(struct pci_dev *
- 	 * Command register instead of Vendor ID so we don't have to
- 	 * contend with the CRS SV value.
- 	 */
--	pci_read_config_dword(dev, PCI_COMMAND, &id);
--	while (PCI_POSSIBLE_ERROR(id)) {
-+	for (;;) {
-+		u32 id;
-+
-+		pci_read_config_dword(dev, PCI_COMMAND, &id);
-+		if (!PCI_POSSIBLE_ERROR(id)) {
-+			if (delay > PCI_RESET_WAIT)
-+				pci_info(dev, "ready %dms after %s\n",
-+					 delay - 1, reset_type);
-+			break;
-+		}
-+
- 		if (delay > timeout) {
- 			pci_warn(dev, "not ready %dms after %s; giving up\n",
- 				 delay - 1, reset_type);
- 			return -ENOTTY;
+-		sport->mad_agent = ib_register_mad_agent(sport->sdev->device,
+-							 sport->port,
+-							 IB_QPT_GSI,
+-							 &reg_req, 0,
+-							 srpt_mad_send_handler,
+-							 srpt_mad_recv_handler,
+-							 sport, 0);
+-		if (IS_ERR(sport->mad_agent)) {
++		mad_agent = ib_register_mad_agent(sport->sdev->device,
++						  sport->port,
++						  IB_QPT_GSI,
++						  &reg_req, 0,
++						  srpt_mad_send_handler,
++						  srpt_mad_recv_handler,
++						  sport, 0);
++		if (IS_ERR(mad_agent)) {
+ 			pr_err("%s-%d: MAD agent registration failed (%ld). Note: this is expected if SR-IOV is enabled.\n",
+ 			       dev_name(&sport->sdev->device->dev), sport->port,
+-			       PTR_ERR(sport->mad_agent));
++			       PTR_ERR(mad_agent));
+ 			sport->mad_agent = NULL;
+ 			memset(&port_modify, 0, sizeof(port_modify));
+ 			port_modify.clr_port_cap_mask = IB_PORT_DEVICE_MGMT_SUP;
+ 			ib_modify_port(sport->sdev->device, sport->port, 0,
+ 				       &port_modify);
+-
++		} else {
++			sport->mad_agent = mad_agent;
  		}
- 
--		if (delay > PCI_RESET_WAIT)
-+		if (delay > PCI_RESET_WAIT) {
-+			if (!retrain) {
-+				retrain = 1;
-+				if (pcie_upstream_link_retrain(dev) == 0) {
-+					delay = 1;
-+					continue;
-+				}
-+			}
- 			pci_info(dev, "not ready %dms after %s; waiting\n",
- 				 delay - 1, reset_type);
-+		}
- 
- 		msleep(delay);
- 		delay *= 2;
--		pci_read_config_dword(dev, PCI_COMMAND, &id);
  	}
  
- 	if (delay > PCI_RESET_WAIT)
-@@ -4894,6 +5036,8 @@ static bool pcie_wait_for_link_delay(str
- 		msleep(10);
- 		timeout -= 10;
- 	}
-+	if (active && !ret)
-+		ret = pcie_downstream_link_retrain(pdev) == 0;
- 	if (active && ret)
- 		msleep(delay);
- 
-Index: linux-macro/drivers/pci/pci.h
-===================================================================
---- linux-macro.orig/drivers/pci/pci.h
-+++ linux-macro/drivers/pci/pci.h
-@@ -37,6 +37,7 @@ int pci_mmap_fits(struct pci_dev *pdev,
- 		  enum pci_mmap_api mmap_api);
- 
- bool pci_reset_supported(struct pci_dev *dev);
-+int pcie_downstream_link_retrain(struct pci_dev *dev);
- void pci_init_reset_methods(struct pci_dev *dev);
- int pci_bridge_secondary_bus_reset(struct pci_dev *dev);
- int pci_bus_error_reset(struct pci_dev *dev);
-Index: linux-macro/drivers/pci/probe.c
-===================================================================
---- linux-macro.orig/drivers/pci/probe.c
-+++ linux-macro/drivers/pci/probe.c
-@@ -2549,6 +2549,8 @@ void pci_device_add(struct pci_dev *dev,
- 	dma_set_max_seg_size(&dev->dev, 65536);
- 	dma_set_seg_boundary(&dev->dev, 0xffffffff);
- 
-+	pcie_downstream_link_retrain(dev);
-+
- 	/* Fix up broken headers */
- 	pci_fixup_device(pci_fixup_header, dev);
- 
+-- 
+2.31.1
+
+
+--00000000000077062105f8a34e83
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIQfwYJKoZIhvcNAQcCoIIQcDCCEGwCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3WMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBV4wggRGoAMCAQICDDPW1cVntFGljCZAOzANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwOTE0NTZaFw0yNTA5MTAwOTE0NTZaMIGa
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGzAZBgNVBAMTElNhcmF2YW5hbiBWYWpyYXZlbDEuMCwGCSqG
+SIb3DQEJARYfc2FyYXZhbmFuLnZhanJhdmVsQGJyb2FkY29tLmNvbTCCASIwDQYJKoZIhvcNAQEB
+BQADggEPADCCAQoCggEBAOWUDY8+1Pq6qzzsf5oTzGO7etyb0HT08NkGz7Ymb6gL2BcSxf00xj2f
+fgOR3x1R5vZCQL+NXGnk27IMYe6P1jT2e49wq24CtJxpjbdCgiY+wM0iowrqj+xHJyGEyFK7BEOB
+1cEV+/7fNvlT+wzsiB6LI7YO2jnJoqRyxiuCXWXQteLT5u5dJd79gUxenL2sOdzc9QDElI3VQMfh
+lU2WOYSpsHwmuzI2n56f4qqAd0KTzesYpT4jUkHrpARqokmK62nwak/mVjpP1xxKkerBRTDplTRj
+PPaP6wQe1OY7fOWrqgKUrMkQ8uzH68KFHiA/+zIzyFmYwY+S3kdoi+SvK08CAwEAAaOCAeAwggHc
+MA4GA1UdDwEB/wQEAwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9z
+ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+dDBBBggrBgEFBQcwAYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFs
+c2lnbjJjYTIwMjAwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBz
+Oi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+
+oDygOoY4aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MC5jcmwwKgYDVR0RBCMwIYEfc2FyYXZhbmFuLnZhanJhdmVsQGJyb2FkY29tLmNvbTATBgNVHSUE
+DDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU
+0Bq3qvsz+PB5FAu5iL1KRdtSBTgwDQYJKoZIhvcNAQELBQADggEBAHXOk8r6/lLV2Fb8uE3tUP2E
+MFD67H9X0roxhLywKzY+SM6abiUqsRxlcBwNgp0r/SwFG1o+frLlj7gynwfkzfsRzLRf//DYTUOF
+qs8Os28DFCa/KvX0e56+c7xOOP9cwgHO3Tl2ri3MAGpxEB5r4PcgmWd4f9zmlmBGE9oNyoyntToB
+pb/Gi74xj8wc5zCrVpXS1UNVJ8B6Jib+vas1cAtL6RFi0RDtFbUXe9U4wB07Ker1yMtBA6QzfZW2
+d0VRyjqv9NL22cjJ4ffotr8ZKbiSVEHbnDRxAgeuMxkkpjQQk/y1S1fk0wDOYNfV0zIkWtVMNBzY
+Ttmt2pp+/hwLYVAxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxT
+aWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAy
+MDIwAgwz1tXFZ7RRpYwmQDswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIA6SES2t
+7nRF/de7OLg1ejzUDy9D0xfZjMwgB+1dw3Z8MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
+KoZIhvcNAQkFMQ8XDTIzMDQwNjA0MjYwM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
+CwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZI
+hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBKCeNiLO5FxpbTti7py0PM55c4
+2dOm4Bz21BnpyV1/plwPW5/UrC90hsazx3c9FaUO5ZxE9E3kXbw+XjpWWr2+GVsV6bDBCZ+NXDFu
+c730cH2ipKsW4MOJI5iRpaAZh79btuuG+sUWyOACKYLBRqbRCu1WVdWFQ7b4E302u9a/FbaAsM9F
+p0PfCjBFK+fNq+BI87GQ224STcPXnWYBLb9qcxFEbuIPBJVYCCZHM4J4QcgNgSUMDc8wtCW3hk8l
+HAji48H3WW7xpsIplcoUd+mpwYjqN1uue3h78zGOUWMGN4tdPNh4ZOyw0PqBrBNlZ3mTvrlJBRZu
+u5jeNLVjZqrR
+--00000000000077062105f8a34e83--
