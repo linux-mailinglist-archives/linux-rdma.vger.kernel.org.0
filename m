@@ -2,138 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB196DB0A0
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Apr 2023 18:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2EA6DB0F1
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Apr 2023 18:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjDGQde (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Apr 2023 12:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
+        id S229816AbjDGQwk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Apr 2023 12:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjDGQdd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Apr 2023 12:33:33 -0400
-Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-cusazon11020020.outbound.protection.outlook.com [52.101.61.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F68346B3;
-        Fri,  7 Apr 2023 09:33:24 -0700 (PDT)
+        with ESMTP id S229570AbjDGQwj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Apr 2023 12:52:39 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2094.outbound.protection.outlook.com [40.107.244.94])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE7655B4
+        for <linux-rdma@vger.kernel.org>; Fri,  7 Apr 2023 09:52:38 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FKNtV0jn0JoCYkM/NcAbMvBWzxT42/eIFWJ+OZo7vwoovkamt/0IkBzJw4SNJdC0uZ0kxqsO1ylYP5LADvmJL7Z9kv8/PXm1v6D7uSJE1kJ6Eo+qlSz5fPElofN4bOjyifH2XqJAq2Mimiu9PKo03oEchSiDDLIYuckTHMCDP9XxHkMyTdxPxWnEifwSQlw6JOWlen1GYeDfpZc58UDS9I5CF1lT+5q40FMuQo+smoQYpjGJdiHpHn6ieqgFVusr+83MMyczzNG9KsSNPH02WIgIICnxQTwuERPTYdooItd8cD08YUKLmbPUl1H2nPZEJGdT/dzAyKLdfpVe/t16Xg==
+ b=Jae6zoIwq4g+sdScC5mQVMCFLKMotJr/9rEJJgLrpDS0O6FRsanKV9XyaQvsjZ+hlJIHysh/wBefqrbx1bGHgcaSDoWWi2DpCWOjBCssVyR6KZH3OtQmLX9sgxzF59iDu8RV5mRQSXZW3azNlF1yiABkItA1Cmj3AVz2Go7l/DzdNthvTAzYXusWhAqVWGqV9/wzeGcjz0qcSwIdWTCF35AMyb106QYE6azqadbyVNxxGNV06JmbRT3zfJX3dFtyfk5wbmf+vpZBwsuPMeWrwMwkOL0tp2MyQPaQ0dL0XPI2dHzRwVRrdELlFr/WGOdqV1lIRaMwMBs1zbO/F8HHcg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OaxRUfVwr0B4GhbaRw2ixKbe8Ce4kFEaMx/imqMjom8=;
- b=NNO0V6fOi7da6T7upSd5Xr8YgnVPL9QBqzfdKX4YMKI3utGdz42hsMacRBslTsISQvArPr/ONUwL0Yz9SbzNVoZIGqFJJaAhNxNBMS6pHaYwaTFVjXbBjJ2ak0s1HDD6AmXQVOtQzYKe2zMPXl1Q5I5r+5n7RavoGPSzUKVAlYWQjkWJcpKqY9ChCVbPopP44VIsajuAxRUsdQu+glxJFFd5S9Kkvn3bOCntQVCXw5v+Q6Wxs+S0RadS1JunKfAF01qKZ8bD5gOTLD4UQMDML+J1q4k6bmn0w2eWiudr1G/znXmVOOaXbYojcRTD6c6ZtVXVgU1KFdv4J1xxlmanYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
+ bh=xv8T9Ki4+9pnS04dHE87FY1gKL0O4ijH3MV1Y8wrWvU=;
+ b=IrI4HzSVgBtuNf1qkgz2aeoCvJZPgqYwI9p7rsNWYOEutYwmZrTWsj+VapS5Nkl/Nht2AaagSy24/kE8O2m/ZZoAOOoHreCifCoP3K6nN0MXwc0ab5kIGJkEOEhxmUydEuWTwErOMxKl7AImxEQMpgSHWcQct6MY1GortScyiGOvHTsFhfz3WqnBwipdeHWbLs34bHK2tJMxiEMD68wAifWXxg/DAG+aP2x20+WYkftYVM4rAfIB6ifynFoo+5rfFZWl8/8qK6+LdGVG7jB/oJMlmc81WnMX6TKqiIL9zU4wnPsjARJaDD9nh2McdLftlpT8Qe9c2aFD8d8Lh28F2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
+ smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
+ header.from=cornelisnetworks.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OaxRUfVwr0B4GhbaRw2ixKbe8Ce4kFEaMx/imqMjom8=;
- b=XHIOAAhlkBvTK404uoTm+9laqWTa8h5y23o2WlnI31tO9Gj7PFOZVJiprHJBGPDhJKae65yu+mZ7k+clsxLVI5pdjaOTViyRa+k3y45WmAseKEtcWyTuo/P1FFIfqs9+IFyaEgw0UdqONOEYnW2yvzKjZq8fj4jD10QIfOSpedY=
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com (2603:10b6:a02:bf::26)
- by BL1PR21MB3138.namprd21.prod.outlook.com (2603:10b6:208:396::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.16; Fri, 7 Apr
- 2023 16:33:21 +0000
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::acd0:6aec:7be2:719c]) by BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::acd0:6aec:7be2:719c%7]) with mapi id 15.20.6298.018; Fri, 7 Apr 2023
- 16:33:21 +0000
-From:   "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-To:     Dexuan Cui <decui@microsoft.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jake Oshins <jakeo@microsoft.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, "kw@linux.com" <kw@linux.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "saeedm@nvidia.com" <saeedm@nvidia.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        Saurabh Singh Sengar <ssengar@microsoft.com>,
-        "helgaas@kernel.org" <helgaas@kernel.org>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v2 4/6] Revert "PCI: hv: Fix a timing issue which causes
- kdump to fail occasionally"
-Thread-Topic: [PATCH v2 4/6] Revert "PCI: hv: Fix a timing issue which causes
- kdump to fail occasionally"
-Thread-Index: AQHZZpopUQZ8ge3HAEe7nozotRXSl68gDtTw
-Date:   Fri, 7 Apr 2023 16:33:21 +0000
-Message-ID: <BYAPR21MB168827C0DBCB46B8159873CDD7969@BYAPR21MB1688.namprd21.prod.outlook.com>
-References: <20230404020545.32359-1-decui@microsoft.com>
- <20230404020545.32359-5-decui@microsoft.com>
-In-Reply-To: <20230404020545.32359-5-decui@microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0646763c-c920-4a7d-929b-d542dcfd3725;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-04-07T16:28:42Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BYAPR21MB1688:EE_|BL1PR21MB3138:EE_
-x-ms-office365-filtering-correlation-id: 8e2888a6-f3b4-40a3-f0f7-08db3785ccf2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KX7KniZCgV+vD49iSTmmlWgJ1dw1jCpj0qQqZsUIxqYv9nHTec63O8WaWbOQQ9jwyLek6VNvvOvE8uKUaOYTjd6QdiNIqpgH1kRVcIXQjFtQwq8nnY+oNKfOrYLK0umSccnl9p5kPTLI9JwgGU2rf6k7fx2S63OTuwhoLg0HAIBStPKtns3RG+FsayQ+yekYIbsJVkOW0ZpvEkZdO8eKNsA8Ke0scIoUoSZE4bpIWUuGkVmTpLOZlhdZUETPBRk5TgTQvktth57Ez6MozcWfs72nP5selSmy4hF9wIunafcIRUGEP4vFyFyMEk4CP+1uwpmamm+k1nF9OctK8lz7mue1WuVimakWm1aEI+OFA+fWdZBzyZD84HTL/iChw3dUJ08GkXfsEmZrME5ATO/KrTOQMS4TcjLWQix6Vl+uWvAaFZmhad6RmjwoWlVjdjBYeaVjwQD5zAIn4renEllLfQXIIdo8S1GMo1pxwcZdmy6ugsOqPJ52gmXK3q2bl18FjSqz+XVd55C+qHuS5z1Nl8ABvruFfcVNmbCav+UDel9BrQjj10XwFpZ0GMskCfRNcjGHhTpbJ1XqLfYIJ7stw7G9LnHuA0J0kCpmlru279MmBCwKtQ/QAaqUoQgz0lmGK6bQ4GBZdB/J8Mre1B+A7KOQ1zXsPTZqaN1D8rXvpGExftw5gMNTHtsMZ3H3ASS0
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:cs;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1688.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(396003)(39860400002)(376002)(366004)(451199021)(55016003)(122000001)(66446008)(38100700002)(33656002)(38070700005)(2906002)(7416002)(5660300002)(52536014)(786003)(66946007)(8936002)(86362001)(8676002)(66556008)(41300700001)(921005)(82950400001)(64756008)(76116006)(66476007)(82960400001)(4326008)(83380400001)(110136005)(54906003)(26005)(9686003)(8990500004)(6506007)(316002)(71200400001)(10290500003)(7696005)(478600001)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9nj8Xji5801wmyc6GnsHHM7/k5tn/Y9PO9VvmMEP/emshvglZLWafuroLoa7?=
- =?us-ascii?Q?/dCAtmEX5fGgLp1ikiHBS9yyQS3h6Kyf9lrGvRw2OIGXFm5FsKkB2ck7g0Fd?=
- =?us-ascii?Q?YpYqymlRvytayx/FuqRmapdkrmHFeChN1jqs4rcs9ZgeduhkRxGyyJKjEKex?=
- =?us-ascii?Q?/2oEoeArLIhMN9EyellpfczYs5kGyhfEOibOgd2R2p8AAyrh6vIjSdoS+e0c?=
- =?us-ascii?Q?7IFt5x6R+bK6In7L+YLJuTJpXS0onOogsoJFjMeCm3oJOhCWh9XCC+KRD42v?=
- =?us-ascii?Q?z6Lp9BsUrQuATMosiuxxXeXCdDbnR33WAcOJoNYCVpMmQNVa2C7cKHGyDgJD?=
- =?us-ascii?Q?HQKlYPbE19jnXczX0qDKWB+NHd+kNc0H1VKPbTQ/VnBntVhcy29JpxdzG92o?=
- =?us-ascii?Q?FTNll+xF9NEQS1J1vkWLP403OAQLEIUemDHyaOxSV9f8jBeZo97hgKbo06b2?=
- =?us-ascii?Q?2UKEoS+7kb4VaCzGJE0EEPeFbVLsRUM7BPNaLPG/L/UyiDXVOf9Gxs0eQRwI?=
- =?us-ascii?Q?qZEkr8LvxaNjuFBSeGbzkZ28yX5HLGb832c7bSvAghoQ7oqywyZlFVVIwClm?=
- =?us-ascii?Q?1OGhlVv9AAcKnkB2rJwtVmoqkVm08/0AG9AA5UrGOZJE37ouuBYFyJWkBy4Z?=
- =?us-ascii?Q?thSGhgbQFbjAjhB0Z6O96Wbwh0ZptSMpTqE+TZsJ82OrGyoxgMUcFVxUea4g?=
- =?us-ascii?Q?YqvfWrIDOtwwn5+Up0YaW4tTvwzerZrn6hPn6rmiLqEZWCynzrwbmLMrOh2u?=
- =?us-ascii?Q?ad5Q2Pm/cKauZRLVngc0oizhdxDtlNYaaQYGhiCaREnJ+NJKcM7LZrf6vGDr?=
- =?us-ascii?Q?iXL9QBaJLR5CPm4FKWeKx6RMUF35h9Nd9Exa4G8pMtHyhRciQg5kriTOcmeL?=
- =?us-ascii?Q?x8FtlSmokSEynCCAnIWxSuzQDFAu8wOmTCjoBi8Pmv+HVgZ7DJUBgjfmcfg2?=
- =?us-ascii?Q?XnDOUzuhesF6l7s6QCtKCYgJZcLUuo/IrPf0DaiqOsGo2Nc3z2a6CwzHlUdS?=
- =?us-ascii?Q?WMMf0RJ40OL205USdDdM1oEllk2FQ1S18BpwtyHYN0ReF0jAyhRcFdJBKf5u?=
- =?us-ascii?Q?N88qAYyuKbOpYmqVTq4FZ6zyg7MmjrWmC6ZfxgCPDw4pmGzXvgXeF+Kh0Q/X?=
- =?us-ascii?Q?+WMqmBQh+VuCpRvnYWt+Uk6zUX+dyH2KM52xjfhyWWo5N8FZDJGVmGTmeogC?=
- =?us-ascii?Q?soYfZ4eeRHMc/TqfKTZsk05aaJf8VJNov695OBnWaDbxChxJ3vLUmjZK9N3R?=
- =?us-ascii?Q?Nn0UAhJkIMunaYeqfy5MEt42TmRStZBvkLBXfaCPeDhj94j3uusqIoKFXqFe?=
- =?us-ascii?Q?/PaTCypX8gfj4FnoXRdhgWgIM0j62WlYIs+M1pmsvTXuBIIEtymyCD/r8lmZ?=
- =?us-ascii?Q?HNlzSmC+u4y3lzaD5Qthyp5HstNNYRM69fgfZtv+4q4C+G+1czJIVDUrf77T?=
- =?us-ascii?Q?XDYFQmGObqaBxAiBIuyLPeHD3PDmFFMFJ6hwvKTKWDrkO6W0MBGUZkrJeUcS?=
- =?us-ascii?Q?UyCMn2ldBxFEc9x5ceTKZ6vrZUBiufATNLnRn1f4dHFpYONfH+rG4XwjCTk/?=
- =?us-ascii?Q?7pHCnBNs2QinM508rHad2qXQIEgBiPu7Tqpl7RoYiUfkur9hKlJUEB404TzY?=
- =?us-ascii?Q?dA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=xv8T9Ki4+9pnS04dHE87FY1gKL0O4ijH3MV1Y8wrWvU=;
+ b=iZ1fUimm+9hQNNRIegnUl29Omrz9X5sdo9lNK304UrhYbbsKQzEwNMnP9RjqQQ9Ufz5E9ism6w0oEk4FzdqMYIpKMA+QE+w+Ou/gF8doHCK9vwSX/DChtuTr3CnHqqCxIeOscnHCuJ0wd7+XDY8dcQVY7BBeKdiXvLWdyRlYz3R88HcMFDA0jbNZn35qFAPrQF/CPX8q51FJPx+4Gj6BuZK/pW5xjYx2pgO+A0c9LwKiowWGL++zdcVqH5kNEy+4F2MXFZ0wEyGhPS7IbBKtaq7FmrlSLh/ucv5wdKgNo2HV5kpqPtXAMvhZOsJS/+DiRF0oGArL3Crspj9fgIgPyg==
+Received: from DS7PR03CA0078.namprd03.prod.outlook.com (2603:10b6:5:3bb::23)
+ by BYAPR01MB4776.prod.exchangelabs.com (2603:10b6:a03:84::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6277.27; Fri, 7 Apr 2023 16:52:26 +0000
+Received: from DM6NAM11FT101.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:3bb:cafe::46) by DS7PR03CA0078.outlook.office365.com
+ (2603:10b6:5:3bb::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6277.31 via Frontend
+ Transport; Fri, 7 Apr 2023 16:52:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
+ smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
+ header.d=none;dmarc=bestguesspass action=none
+ header.from=cornelisnetworks.com;
+Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
+ designates 208.255.156.42 as permitted sender)
+ receiver=protection.outlook.com; client-ip=208.255.156.42;
+ helo=awfm-02.cornelisnetworks.com; pr=C
+Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
+ DM6NAM11FT101.mail.protection.outlook.com (10.13.172.208) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6298.20 via Frontend Transport; Fri, 7 Apr 2023 16:52:25 +0000
+Received: from 252.162.96.66.static.eigbox.net (localhost [127.0.0.1])
+        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 337GqNpt3027362;
+        Fri, 7 Apr 2023 12:52:23 -0400
+Subject: [PATCH for-next 0/5] Updates for next cycle
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+To:     jgg@nvidia.com, leonro@nvidia.com
+Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
+        Brendan Cunningham <bcunningham@cornelisnetworks.com>,
+        Ehab Ababneh <ehab.ababneh@cornelisnetworks.com>,
+        Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
+        linux-rdma@vger.kernel.org
+Date:   Fri, 07 Apr 2023 12:52:23 -0400
+Message-ID: <168088607365.3027109.2194306496858796762.stgit@252.162.96.66.static.eigbox.net>
+User-Agent: StGit/1.5.dev2+g9ce680a5
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1688.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e2888a6-f3b4-40a3-f0f7-08db3785ccf2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Apr 2023 16:33:21.1462
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT101:EE_|BYAPR01MB4776:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7c9c93ec-baf2-43b7-3864-08db378876f4
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NmxPvKu/aSDooxk5wEsrZMvrh3bsLXybaLY9hAKuDsldoKz8cuk78k+Ew3Zjjm1juIqajX6r6b1hnhEtQwohv91drhAifdQ4/5OomxpVgl3x8F1dEDaOowsl6TB91Kq/Nw0vRcWoTObKPW3zgWsoFqbwBhxjh0o4yVfdcLC+J78HXv4Gre2B05LzjWL0CCBMg5lCHrqA5LAn2l/x96vUFsqa4W8987Z35JWnubvsBFw7uQHgXuyJXZMqL7QGXhgolN0p2E3g2L0IbERBhdJCieunbNBIWABiCIWaxl1aEpxe1ESNdn6NyDSOe7e3DO/z97V4O+uVbp3TD5SuJV3i4usq2uyZ7i6BIJYWw2N8ibWykGrTj48LVFsZLijsY0HDVhVGg5sESUIIQFNs+vuBVZt+AJa6QYscYEopfA6KP7W4EUimMMlEiy7e8tT7eGsoXuJ3J7T4KqbP2dcl6mJ8FEmt7y2X8aF+A3uBUx7eYH0jOYlPDquKkAhkAuEIL1oGeAhhqdkM1YIKbRJfBu1SbZro/LOTb78uRXgLnzKguPa4nHI/C2Gjbizlw+RzpfRYFWMoa7ZXW+DFSMD4lMJau/zsuLSqH9mWMuqSrkyQu6iMj8tIwPQf9qeEFQf6HeONfurqbpyqzS0rJHi6+r4FuRVMVpjrnFItzPP6STEzFD+xM9xkEajvlZerqUVZQmYcnEUmDI3jHe2C+MB89fnBkL4eKQ0jE7xZ45gMD5bIWcsaND3+ZpCGUO5BfLrYCw48eOvVU9e8JFeT8XrG/nvDow==
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(136003)(376002)(39840400004)(451199021)(36840700001)(46966006)(83380400001)(356005)(5660300002)(47076005)(70206006)(426003)(70586007)(336012)(2906002)(54906003)(41300700001)(44832011)(8936002)(7126003)(316002)(81166007)(4326008)(8676002)(86362001)(478600001)(36860700001)(9686003)(26005)(966005)(186003)(40480700001)(55016003)(103116003)(82310400005)(7696005)(9916002)(24686002)(102196002)(36900700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2023 16:52:25.2447
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cCNJRowe1oPyNpxH0ECvF7YexIf/OgNseZjW7Y6WYw4eNGFwMnU82Ef1lromVJZbnb9ZSkL/VEtqLPP3wDp8QcI3Xwcr5uNudIWQmwE6Fg8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR21MB3138
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c9c93ec-baf2-43b7-3864-08db378876f4
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT101.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4776
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -141,37 +98,46 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com> Sent: Monday, April 3, 2023 7:06 PM
->=20
-> This reverts commit d6af2ed29c7c1c311b96dac989dcb991e90ee195.
->=20
-> The statement "the hv_pci_bus_exit() call releases structures of all its
-> child devices" in commit d6af2ed29c7c is not true: in the path
-> hv_pci_probe() -> hv_pci_enter_d0() -> hv_pci_bus_exit(hdev, true): the
-> parameter "keep_devs" is true, so hv_pci_bus_exit() does *not* release th=
-e
-> child "struct hv_pci_dev *hpdev" that is created earlier in
-> pci_devices_present_work() -> new_pcichild_device().
->=20
-> The commit d6af2ed29c7c was originally made in July 2020 for RHEL 7.7,
-> where the old version of hv_pci_bus_exit() was used; when the commit was
-> rebased and merged into the upstream, people didn't notice that it's
-> not really necessary. The commit itself doesn't cause any issue, but it
-> makes hv_pci_probe() more complicated. Revert it to facilitate some
-> upcoming changes to hv_pci_probe().
->=20
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> Acked-by: Wei Hu <weh@microsoft.com>
-> Cc: stable@vger.kernel.org
-> ---
->=20
-> v2:
->   No change to the patch body.
->   Added Wei Hu's Acked-by.
->   Added Cc:stable
->=20
->  drivers/pci/controller/pci-hyperv.c | 71 ++++++++++++++---------------
->  1 file changed, 34 insertions(+), 37 deletions(-)
->=20
+The patches from Patrick by way of Brendan are part of that monster patch [1].
+Brendan has been working on whittling it down to make it more consumable. 
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+The other two are minor cleanups.
+
+[1] https://lore.kernel.org/linux-rdma/167467690923.3649436.11426965323185168102.stgit@awfm-02.cornelisnetworks.com/
+
+---
+
+Dean Luick (1):
+      IB/hfi1: Remove trace newlines
+
+Ehab Ababneh (1):
+      IB/hfi1: Suppress useless compiler warnings
+
+Patrick Kelsey (3):
+      IB/hfi1: Fix SDMA mmu_rb_node not being evicted in LRU order
+      IB/hfi1: Fix bugs with non-PAGE_SIZE-end multi-iovec user SDMA requests
+      IB/hfi1: Place struct mmu_rb_handler on cache line start
+
+
+ drivers/infiniband/hw/hfi1/chip.c       |  18 +-
+ drivers/infiniband/hw/hfi1/driver.c     |   2 +-
+ drivers/infiniband/hw/hfi1/file_ops.c   |   2 +-
+ drivers/infiniband/hw/hfi1/init.c       |  12 +-
+ drivers/infiniband/hw/hfi1/ipoib_tx.c   |   1 +
+ drivers/infiniband/hw/hfi1/mmu_rb.c     |  84 +---
+ drivers/infiniband/hw/hfi1/mmu_rb.h     |  22 +-
+ drivers/infiniband/hw/hfi1/pio.c        |   2 +-
+ drivers/infiniband/hw/hfi1/sdma.c       |  21 +-
+ drivers/infiniband/hw/hfi1/sdma.h       |  16 +-
+ drivers/infiniband/hw/hfi1/sdma_txreq.h |   1 +
+ drivers/infiniband/hw/hfi1/trace_dbg.h  |   7 +
+ drivers/infiniband/hw/hfi1/trace_mmu.h  |   4 -
+ drivers/infiniband/hw/hfi1/user_sdma.c  | 600 +++++++++++++++---------
+ drivers/infiniband/hw/hfi1/user_sdma.h  |   5 -
+ drivers/infiniband/hw/hfi1/verbs.c      |   4 +-
+ drivers/infiniband/hw/hfi1/vnic_sdma.c  |   1 +
+ 17 files changed, 470 insertions(+), 332 deletions(-)
+
+--
+-Denny
+
