@@ -2,326 +2,194 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9C16DA823
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Apr 2023 06:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CA76DB013
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Apr 2023 18:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbjDGEHd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Apr 2023 00:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        id S230306AbjDGQED (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Apr 2023 12:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjDGEHc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Apr 2023 00:07:32 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4F259F9;
-        Thu,  6 Apr 2023 21:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680840450; x=1712376450;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7C/GtLnvGaUf0LTn+dJO3q6KCE+5wcx6XCokPeAFBSs=;
-  b=W/t4nKcFTgT8OMp5vk2ZW15XUg26k9oMX/5kioGkYRGnbFrhNUnX52QL
-   +qcHPPhs/tPArsklIqv71pfLLSAOAfZHzGy4UQ0B5g+7F+dtIFSWIqdy9
-   RX7YpDVEk70eMbl9Vy/C2a5AArBim1mdehq0ZMr19tonJnLpGb6SDGu8+
-   djAumsOlivnGQBwff5ftRfsSNmxM31LHUv3fLgXhcxh+xn/0tkAUiNMc6
-   qoCZs0foO2qEozvPID9fOkGteIDzIad7N6ceowiZBJ5XGMg+jwv/o1r6J
-   crXxtxhQBUHCIWT2oXwAK0O7PDghydFVgzvbRw7WFaX3MY+l9incQhG3P
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="326993443"
-X-IronPort-AV: E=Sophos;i="5.98,324,1673942400"; 
-   d="scan'208";a="326993443"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2023 21:07:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="751903619"
-X-IronPort-AV: E=Sophos;i="5.98,324,1673942400"; 
-   d="scan'208";a="751903619"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Apr 2023 21:07:27 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pkdNm-000S6Q-0A;
-        Fri, 07 Apr 2023 04:07:26 +0000
-Date:   Fri, 7 Apr 2023 12:07:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     xiaolinkui <xiaolinkui@126.com>,
-        dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        leon@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Linkui Xiao <xiaolinkui@kylinos.cn>
-Subject: Re: [PATCH] RDMA/hfi: add a judgment on the availability of cpumask
-Message-ID: <202304071125.xK1fezQ1-lkp@intel.com>
-References: <20230404030525.24020-1-xiaolinkui@126.com>
+        with ESMTP id S229437AbjDGQEC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Apr 2023 12:04:02 -0400
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021026.outbound.protection.outlook.com [52.101.57.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF030B8;
+        Fri,  7 Apr 2023 09:04:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n+vjYHV2RpPELqP1VAb94F//wwKLfeTQWolzJxXT1PMJEyymKGAbfC+kUJ3H6YojqmW5plhxDbASmzEO2sveYfCCLUWZU1teYt70AvTL1SUypc5hgJRrnD3w3//ltH1aXQnSxG/oV5rrlKCYhcyf5dP3PB+7/0fkUMJ3gz9u2iTL6Nth/mau3Wnai8rTw/qXXO+RtAYNUEp7pA5OZBTudQ/vp9MUmBXlpA4tCxlVn+qHa9n+ahBuT1Nv9tRWnrOOm5nv3wrxvF5uuQjh7D5AkIsLy94cWOmLJMY1UAov1W+AZykkDFqLtuA3s73MtLkQRbmKzWgQfS4laX4eFhnx8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G4lmz2FnmJIjoziYKrqG7Nr3moOZVo1SjROCAn7lFiE=;
+ b=eODVmQiK2XvSBMLJwgWMD7wLxSmCWnbXXs3VdfEjqD18Z10CPTvR5DMhIhH1bsnM2IlvJOn0TPat90ML+uOa9QmrAK2g3ZF9zI08YLEE8T0b5rqW08E3XqhYTmuTg76Llk936o4tN77jmdMurtu54PWUVGiCuMT5RMPbqXQSKRhHb3HVZAjGGbOdBRR2K0OSsdwIn4NAIzw54sC95S8mtgcQ594oxkUiere01A+DE9QCZ8w2Yt//uHkDw66eR3luB/v8m0i2ppxdUmdaq+/bDx1yJbC6EmqM1TgqptOPzVsUeDgQVLONyW1cKewzYNt1XzVd6e8qg7Z2Pb6J15NoAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G4lmz2FnmJIjoziYKrqG7Nr3moOZVo1SjROCAn7lFiE=;
+ b=Ybr3BVaABrPP+jNM2kRWnsnaUTiRtnjwBGumrPDRWorIP4hQ2NcNp+x1PRKuW0sbWL0yBn6xo+uDtnNMN8JVf7L8Tqe+yrreF0/UM9nVyOkpokWhXXqHx53MZCJgxc2En/4ipxf/Qz6/585ud9eVQvohMFXtPoWy8ca18Yw0foQ=
+Received: from BYAPR21MB1688.namprd21.prod.outlook.com (2603:10b6:a02:bf::26)
+ by BY5PR21MB1377.namprd21.prod.outlook.com (2603:10b6:a03:23c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.20; Fri, 7 Apr
+ 2023 16:03:57 +0000
+Received: from BYAPR21MB1688.namprd21.prod.outlook.com
+ ([fe80::acd0:6aec:7be2:719c]) by BYAPR21MB1688.namprd21.prod.outlook.com
+ ([fe80::acd0:6aec:7be2:719c%7]) with mapi id 15.20.6298.018; Fri, 7 Apr 2023
+ 16:03:57 +0000
+From:   "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+To:     Dexuan Cui <decui@microsoft.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jake Oshins <jakeo@microsoft.com>,
+        "kuba@kernel.org" <kuba@kernel.org>, "kw@linux.com" <kw@linux.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "saeedm@nvidia.com" <saeedm@nvidia.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        Saurabh Singh Sengar <ssengar@microsoft.com>,
+        "helgaas@kernel.org" <helgaas@kernel.org>
+CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v2 1/6] PCI: hv: Fix a race condition bug in
+ hv_pci_query_relations()
+Thread-Topic: [PATCH v2 1/6] PCI: hv: Fix a race condition bug in
+ hv_pci_query_relations()
+Thread-Index: AQHZZpomvbk4R6YhiUi3EzsVimhRK68gB8Zw
+Date:   Fri, 7 Apr 2023 16:03:57 +0000
+Message-ID: <BYAPR21MB16883C7A762A013B791B6091D7969@BYAPR21MB1688.namprd21.prod.outlook.com>
+References: <20230404020545.32359-1-decui@microsoft.com>
+ <20230404020545.32359-2-decui@microsoft.com>
+In-Reply-To: <20230404020545.32359-2-decui@microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0114b784-c581-4e48-ad4f-ba61c10da6d0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-04-07T16:03:27Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BYAPR21MB1688:EE_|BY5PR21MB1377:EE_
+x-ms-office365-filtering-correlation-id: 29821df9-01df-4c50-8273-08db3781b1b9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jdSJUZo5te8WXLg+/W4wLzf4uGhAmgOPKWov2AoRXif0bWUpwJrsiBFY7UZ6b/RcHPiZFEVQhtFu9e5mmaFEUFn/F/7oWQzcjrAyAQQcnpHC282B9Qna0rqPZT/HO+x+jftDXgKSwa6Ctef5pPzA2Tx/8W8mQY25zvS/9ZLhSAjqxBCkks8jMP3bHoe2L/45WlYugBuZGAQwYytJorx23EjF0ZhKM3OIuQv0ap1wdAqmeEi/BDtuwlZ1IoRbXRxhbQR2ms0BRY174Au2KAFT1/xRZs+H3/X76eKQ2MzvXtMueEB6NiqAZxvNFHuF7Zj6kcv3Cl++h+A08jh9OxTHT48Tehk2FuhZBoP9ZKmLnjJWnyNS59bWc/ONQXwFwEgWd3Infuo1pxl8rYdV2Ua1c3SP5ibvGhRZDu+esI/qdH3V1p0JkEgWVWiQFsz2v6tVrmrS4LG+lTaJXh9VaF8O8V/ufE2tnC+BUwCYlfT/YPAbYG3lOojJlVcdnUPySbBHJSuLhNWhqh5xbueLuBUmp8Ic3zkSyGl1hT15ZAZBEeKSO97eCJFtsslBydUsia55BGKuJyB2+SAyB0TlbpsT2fy1vI5v2KbjWrNY6sSvyAPVixMKpcD+Mp/nAF23l/9za+cEm0ZnbzCMYJIKVMpljWtyDEizG8kwaiN7kEW9I3lss1rS+kT9A3MSbqeXG5F+
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:cs;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1688.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(136003)(396003)(346002)(39860400002)(451199021)(66556008)(8676002)(4326008)(66946007)(478600001)(64756008)(66476007)(66446008)(71200400001)(54906003)(7696005)(41300700001)(316002)(786003)(76116006)(110136005)(33656002)(86362001)(83380400001)(9686003)(6506007)(26005)(8936002)(2906002)(5660300002)(7416002)(10290500003)(8990500004)(55016003)(52536014)(82960400001)(38100700002)(82950400001)(921005)(186003)(122000001)(38070700005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?L89sphVyD2l59ZndUEwJFFcYTyQYiOkqGIHZXxaF+TPH37doQgUhIf/sPVc9?=
+ =?us-ascii?Q?ZaOOrk2Sfegv4LSDKp1XYFDZBTXHE315vZkm/T1/2E0QSFz10iRr5Ms3Atgr?=
+ =?us-ascii?Q?kGGmrN3f/e26jnF6TXH8Lc5i+PxFq2TnEtHkecSwP8tJW3CS3ZcWXufMgabU?=
+ =?us-ascii?Q?jDd6uXmv/YBUqfPDuTMrNYSQfu1DAyRnYK/0B04Cciffrjb/E0Kls/qUEJy0?=
+ =?us-ascii?Q?RAhBJvpkJGX/2PLMs6R8kobT0/YA7q/qtCs5Va8ed5UhnlN0yvNKo/anhp9/?=
+ =?us-ascii?Q?6KvkImUZymZJxAxSD5rMxaVwtApnI5uZ664+vHWEtHcB/mPAyWlVOixXukoz?=
+ =?us-ascii?Q?hF4woKH8IfKj1RFqepZmyXIIQ4mBD4JOsR/a50zaHfIQTU97rIEjq2OHcD7m?=
+ =?us-ascii?Q?QVoWAwLNs0mtZ/cgY9YnfT8UNM1EQo/oUrwSnp70U2DVKXlVnf6i3LqHWK6J?=
+ =?us-ascii?Q?ljXtLlkHXgDybaZi7WSRQ6I3TlQoWnwOQZdk3RsTRW4EEzMWegpxdBg6N/OD?=
+ =?us-ascii?Q?heSymViawgrI22cjoD83e5xXU8yty9OtDCdUGNmndO+uj4BECDv+Ci9dJJd7?=
+ =?us-ascii?Q?F4bl0N8MZRPtieQdLphVaXzaVAHlwq6K+8DCV19QDiyN99Z4nn19WkuSGGdm?=
+ =?us-ascii?Q?e0cY8W59T18mSNXHNNFweRzkRF7jmK25Am7lZ9g3M8jEMI6eaEq6OvZWTPBe?=
+ =?us-ascii?Q?S8VrdbDzA39DycLkKmluE1r8rtjb8BUcHIVsuucQSeOqpsqHu98MEOtkO3ki?=
+ =?us-ascii?Q?1WIsnkReNfgXdDC0LP2slpPkteEtsEiRBn6Rwg7PlZ99V9OXMmV5pmnzLXEf?=
+ =?us-ascii?Q?Ggy/QACuYybuZjh+sE9hP2wLREJnk+EZl4VKqT5W0OrdXXwBIA2GhwEgDwik?=
+ =?us-ascii?Q?6BQPZsKBxeW7+lXnm1xFovb4uP6Nu21D21/N4cL5on/fexYwXQxMvmpLoDPt?=
+ =?us-ascii?Q?vu6FZ53eRNNeZhOponDWJoRY/yRpoWyd3IphXwlW77cqgi5xE5HNR5gW9Qjv?=
+ =?us-ascii?Q?QQp2wrGsvfMKWLwI7ZjYoyELDd7HX90bIJh57+KMFmQxSTjCer1y6UA2t3W+?=
+ =?us-ascii?Q?fF1Goi3zosLhzMAYQ7S6+bAPMa4X+3ZdNIXTG6XZ3CwWeevDKaI2uG34XxLP?=
+ =?us-ascii?Q?ZfZ0AEujXDEuvNkgsGymSsHtVO35wDFHmcqbWJzEaDTs+TRIxGGpjG9e+Gd9?=
+ =?us-ascii?Q?EcFK7x7TNzN5szJz0GAA5QN3xCKQ1pHcbcKJDFk97kZW8nufpf1Azy/0/dg1?=
+ =?us-ascii?Q?8RcsYRicXhJ+8yuFlOpnnxv8bI90MxpyAlnGt7cQaTFjlwLMmWZu9CmwEuMv?=
+ =?us-ascii?Q?mEzSd+0BpBHxyC062sTr2fs51ypdaTLl+X3woO6tgtTrEDu69/dQyxhm03eS?=
+ =?us-ascii?Q?w7+Nchb4v75hEOJX0SPpsjeSUhU+tRqACsLKQZwyzHUCwBjutndZBh6N0e7T?=
+ =?us-ascii?Q?m5zdN9B2wBSV7NOko3sFa/50zSJzwoOuzKi9KJ4Djyor+KbxG2UL7SdZx1Kz?=
+ =?us-ascii?Q?vfy9S+XDtKSj4XMRZq536dGBzn2T4Kxwm4S5JKBrtNHhtNKHVHv7mtwnn1FL?=
+ =?us-ascii?Q?y1epLoIkNJCawbTP0DiCucbP/rJHJG77Oi4axD1WkvP5pOss+1yY8+IzhZ26?=
+ =?us-ascii?Q?qQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230404030525.24020-1-xiaolinkui@126.com>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1688.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29821df9-01df-4c50-8273-08db3781b1b9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Apr 2023 16:03:57.4911
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zVDP+by0qg3pT8KLOMOon3Fbz1rWhSd+eq/y5BvyjpTzMHDAJAdiponQIfQ/QWbFuTOz6Q6wzuMO7ZUSn+gHFvVmAM4h7XWv5R35EK6PrnY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR21MB1377
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi xiaolinkui,
+From: Dexuan Cui <decui@microsoft.com> Sent: Monday, April 3, 2023 7:06 PM
+>=20
+> Fix the longstanding race between hv_pci_query_relations() and
+> survey_child_resources() by flushing the workqueue before we exit from
+> hv_pci_query_relations().
+>=20
+> Fixes: 4daace0d8ce8 ("PCI: hv: Add paravirtual PCI front-end for Microsof=
+t Hyper-V
+> VMs")
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> Cc: stable@vger.kernel.org
+> ---
+>=20
+> v2:
+>   Removed the "debug code".
+>   No change to the patch body.
+>   Added Cc:stable
+>=20
+>  drivers/pci/controller/pci-hyperv.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>=20
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller=
+/pci-hyperv.c
+> index f33370b756283..b82c7cde19e66 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -3308,6 +3308,19 @@ static int hv_pci_query_relations(struct hv_device=
+ *hdev)
+>  	if (!ret)
+>  		ret =3D wait_for_response(hdev, &comp);
+>=20
+> +	/*
+> +	 * In the case of fast device addition/removal, it's possible that
+> +	 * vmbus_sendpacket() or wait_for_response() returns -ENODEV but we
+> +	 * already got a PCI_BUS_RELATIONS* message from the host and the
+> +	 * channel callback already scheduled a work to hbus->wq, which can be
+> +	 * running survey_child_resources() -> complete(&hbus->survey_event),
+> +	 * even after hv_pci_query_relations() exits and the stack variable
+> +	 * 'comp' is no longer valid. This can cause a strange hang issue
+> +	 * or sometimes a page fault. Flush hbus->wq before we exit from
+> +	 * hv_pci_query_relations() to avoid the issues.
+> +	 */
+> +	flush_workqueue(hbus->wq);
+> +
+>  	return ret;
+>  }
+>=20
+> --
+> 2.25.1
 
-kernel test robot noticed the following build warnings:
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
-[auto build test WARNING on rdma/for-next]
-[also build test WARNING on linus/master v6.3-rc5 next-20230406]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/xiaolinkui/RDMA-hfi-add-a-judgment-on-the-availability-of-cpumask/20230404-113847
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/20230404030525.24020-1-xiaolinkui%40126.com
-patch subject: [PATCH] RDMA/hfi: add a judgment on the availability of cpumask
-config: x86_64-randconfig-a003-20220117 (https://download.01.org/0day-ci/archive/20230407/202304071125.xK1fezQ1-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/206c6fc9aa5afd354f4201216ca8c2c0057fb49d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review xiaolinkui/RDMA-hfi-add-a-judgment-on-the-availability-of-cpumask/20230404-113847
-        git checkout 206c6fc9aa5afd354f4201216ca8c2c0057fb49d
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 olddefconfig
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/infiniband/hw/hfi1/
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304071125.xK1fezQ1-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/asm-generic/bug.h:5,
-                    from arch/x86/include/asm/bug.h:87,
-                    from include/linux/bug.h:5,
-                    from include/linux/mmdebug.h:5,
-                    from include/linux/percpu.h:5,
-                    from include/linux/arch_topology.h:9,
-                    from include/linux/topology.h:30,
-                    from drivers/infiniband/hw/hfi1/affinity.c:6:
-   drivers/infiniband/hw/hfi1/affinity.c: In function 'hfi1_get_proc_affinity':
->> drivers/infiniband/hw/hfi1/affinity.c:1050:30: warning: the address of 'diff' will always evaluate as 'true' [-Waddress]
-    1050 |         if (!ret || unlikely(!diff))
-         |                              ^
-   include/linux/compiler.h:78:45: note: in definition of macro 'unlikely'
-      78 | # define unlikely(x)    __builtin_expect(!!(x), 0)
-         |                                             ^
->> drivers/infiniband/hw/hfi1/affinity.c:1053:30: warning: the address of 'hw_thread_mask' will always evaluate as 'true' [-Waddress]
-    1053 |         if (!ret || unlikely(!hw_thread_mask))
-         |                              ^
-   include/linux/compiler.h:78:45: note: in definition of macro 'unlikely'
-      78 | # define unlikely(x)    __builtin_expect(!!(x), 0)
-         |                                             ^
->> drivers/infiniband/hw/hfi1/affinity.c:1056:30: warning: the address of 'available_mask' will always evaluate as 'true' [-Waddress]
-    1056 |         if (!ret || unlikely(!available_mask))
-         |                              ^
-   include/linux/compiler.h:78:45: note: in definition of macro 'unlikely'
-      78 | # define unlikely(x)    __builtin_expect(!!(x), 0)
-         |                                             ^
->> drivers/infiniband/hw/hfi1/affinity.c:1059:30: warning: the address of 'intrs_mask' will always evaluate as 'true' [-Waddress]
-    1059 |         if (!ret || unlikely(!intrs_mask))
-         |                              ^
-   include/linux/compiler.h:78:45: note: in definition of macro 'unlikely'
-      78 | # define unlikely(x)    __builtin_expect(!!(x), 0)
-         |                                             ^
-
-
-vim +1050 drivers/infiniband/hw/hfi1/affinity.c
-
-   995	
-   996	int hfi1_get_proc_affinity(int node)
-   997	{
-   998		int cpu = -1, ret, i;
-   999		struct hfi1_affinity_node *entry;
-  1000		cpumask_var_t diff, hw_thread_mask, available_mask, intrs_mask;
-  1001		const struct cpumask *node_mask,
-  1002			*proc_mask = current->cpus_ptr;
-  1003		struct hfi1_affinity_node_list *affinity = &node_affinity;
-  1004		struct cpu_mask_set *set = &affinity->proc;
-  1005	
-  1006		/*
-  1007		 * check whether process/context affinity has already
-  1008		 * been set
-  1009		 */
-  1010		if (current->nr_cpus_allowed == 1) {
-  1011			hfi1_cdbg(PROC, "PID %u %s affinity set to CPU %*pbl",
-  1012				  current->pid, current->comm,
-  1013				  cpumask_pr_args(proc_mask));
-  1014			/*
-  1015			 * Mark the pre-set CPU as used. This is atomic so we don't
-  1016			 * need the lock
-  1017			 */
-  1018			cpu = cpumask_first(proc_mask);
-  1019			cpumask_set_cpu(cpu, &set->used);
-  1020			goto done;
-  1021		} else if (current->nr_cpus_allowed < cpumask_weight(&set->mask)) {
-  1022			hfi1_cdbg(PROC, "PID %u %s affinity set to CPU set(s) %*pbl",
-  1023				  current->pid, current->comm,
-  1024				  cpumask_pr_args(proc_mask));
-  1025			goto done;
-  1026		}
-  1027	
-  1028		/*
-  1029		 * The process does not have a preset CPU affinity so find one to
-  1030		 * recommend using the following algorithm:
-  1031		 *
-  1032		 * For each user process that is opening a context on HFI Y:
-  1033		 *  a) If all cores are filled, reinitialize the bitmask
-  1034		 *  b) Fill real cores first, then HT cores (First set of HT
-  1035		 *     cores on all physical cores, then second set of HT core,
-  1036		 *     and, so on) in the following order:
-  1037		 *
-  1038		 *     1. Same NUMA node as HFI Y and not running an IRQ
-  1039		 *        handler
-  1040		 *     2. Same NUMA node as HFI Y and running an IRQ handler
-  1041		 *     3. Different NUMA node to HFI Y and not running an IRQ
-  1042		 *        handler
-  1043		 *     4. Different NUMA node to HFI Y and running an IRQ
-  1044		 *        handler
-  1045		 *  c) Mark core as filled in the bitmask. As user processes are
-  1046		 *     done, clear cores from the bitmask.
-  1047		 */
-  1048	
-  1049		ret = zalloc_cpumask_var(&diff, GFP_KERNEL);
-> 1050		if (!ret || unlikely(!diff))
-  1051			goto done;
-  1052		ret = zalloc_cpumask_var(&hw_thread_mask, GFP_KERNEL);
-> 1053		if (!ret || unlikely(!hw_thread_mask))
-  1054			goto free_diff;
-  1055		ret = zalloc_cpumask_var(&available_mask, GFP_KERNEL);
-> 1056		if (!ret || unlikely(!available_mask))
-  1057			goto free_hw_thread_mask;
-  1058		ret = zalloc_cpumask_var(&intrs_mask, GFP_KERNEL);
-> 1059		if (!ret || unlikely(!intrs_mask))
-  1060			goto free_available_mask;
-  1061	
-  1062		mutex_lock(&affinity->lock);
-  1063		/*
-  1064		 * If we've used all available HW threads, clear the mask and start
-  1065		 * overloading.
-  1066		 */
-  1067		_cpu_mask_set_gen_inc(set);
-  1068	
-  1069		/*
-  1070		 * If NUMA node has CPUs used by interrupt handlers, include them in the
-  1071		 * interrupt handler mask.
-  1072		 */
-  1073		entry = node_affinity_lookup(node);
-  1074		if (entry) {
-  1075			cpumask_copy(intrs_mask, (entry->def_intr.gen ?
-  1076						  &entry->def_intr.mask :
-  1077						  &entry->def_intr.used));
-  1078			cpumask_or(intrs_mask, intrs_mask, (entry->rcv_intr.gen ?
-  1079							    &entry->rcv_intr.mask :
-  1080							    &entry->rcv_intr.used));
-  1081			cpumask_or(intrs_mask, intrs_mask, &entry->general_intr_mask);
-  1082		}
-  1083		hfi1_cdbg(PROC, "CPUs used by interrupts: %*pbl",
-  1084			  cpumask_pr_args(intrs_mask));
-  1085	
-  1086		cpumask_copy(hw_thread_mask, &set->mask);
-  1087	
-  1088		/*
-  1089		 * If HT cores are enabled, identify which HW threads within the
-  1090		 * physical cores should be used.
-  1091		 */
-  1092		if (affinity->num_core_siblings > 0) {
-  1093			for (i = 0; i < affinity->num_core_siblings; i++) {
-  1094				find_hw_thread_mask(i, hw_thread_mask, affinity);
-  1095	
-  1096				/*
-  1097				 * If there's at least one available core for this HW
-  1098				 * thread number, stop looking for a core.
-  1099				 *
-  1100				 * diff will always be not empty at least once in this
-  1101				 * loop as the used mask gets reset when
-  1102				 * (set->mask == set->used) before this loop.
-  1103				 */
-  1104				cpumask_andnot(diff, hw_thread_mask, &set->used);
-  1105				if (!cpumask_empty(diff))
-  1106					break;
-  1107			}
-  1108		}
-  1109		hfi1_cdbg(PROC, "Same available HW thread on all physical CPUs: %*pbl",
-  1110			  cpumask_pr_args(hw_thread_mask));
-  1111	
-  1112		node_mask = cpumask_of_node(node);
-  1113		hfi1_cdbg(PROC, "Device on NUMA %u, CPUs %*pbl", node,
-  1114			  cpumask_pr_args(node_mask));
-  1115	
-  1116		/* Get cpumask of available CPUs on preferred NUMA */
-  1117		cpumask_and(available_mask, hw_thread_mask, node_mask);
-  1118		cpumask_andnot(available_mask, available_mask, &set->used);
-  1119		hfi1_cdbg(PROC, "Available CPUs on NUMA %u: %*pbl", node,
-  1120			  cpumask_pr_args(available_mask));
-  1121	
-  1122		/*
-  1123		 * At first, we don't want to place processes on the same
-  1124		 * CPUs as interrupt handlers. Then, CPUs running interrupt
-  1125		 * handlers are used.
-  1126		 *
-  1127		 * 1) If diff is not empty, then there are CPUs not running
-  1128		 *    non-interrupt handlers available, so diff gets copied
-  1129		 *    over to available_mask.
-  1130		 * 2) If diff is empty, then all CPUs not running interrupt
-  1131		 *    handlers are taken, so available_mask contains all
-  1132		 *    available CPUs running interrupt handlers.
-  1133		 * 3) If available_mask is empty, then all CPUs on the
-  1134		 *    preferred NUMA node are taken, so other NUMA nodes are
-  1135		 *    used for process assignments using the same method as
-  1136		 *    the preferred NUMA node.
-  1137		 */
-  1138		cpumask_andnot(diff, available_mask, intrs_mask);
-  1139		if (!cpumask_empty(diff))
-  1140			cpumask_copy(available_mask, diff);
-  1141	
-  1142		/* If we don't have CPUs on the preferred node, use other NUMA nodes */
-  1143		if (cpumask_empty(available_mask)) {
-  1144			cpumask_andnot(available_mask, hw_thread_mask, &set->used);
-  1145			/* Excluding preferred NUMA cores */
-  1146			cpumask_andnot(available_mask, available_mask, node_mask);
-  1147			hfi1_cdbg(PROC,
-  1148				  "Preferred NUMA node cores are taken, cores available in other NUMA nodes: %*pbl",
-  1149				  cpumask_pr_args(available_mask));
-  1150	
-  1151			/*
-  1152			 * At first, we don't want to place processes on the same
-  1153			 * CPUs as interrupt handlers.
-  1154			 */
-  1155			cpumask_andnot(diff, available_mask, intrs_mask);
-  1156			if (!cpumask_empty(diff))
-  1157				cpumask_copy(available_mask, diff);
-  1158		}
-  1159		hfi1_cdbg(PROC, "Possible CPUs for process: %*pbl",
-  1160			  cpumask_pr_args(available_mask));
-  1161	
-  1162		cpu = cpumask_first(available_mask);
-  1163		if (cpu >= nr_cpu_ids) /* empty */
-  1164			cpu = -1;
-  1165		else
-  1166			cpumask_set_cpu(cpu, &set->used);
-  1167	
-  1168		mutex_unlock(&affinity->lock);
-  1169		hfi1_cdbg(PROC, "Process assigned to CPU %d", cpu);
-  1170	
-  1171		free_cpumask_var(intrs_mask);
-  1172	free_available_mask:
-  1173		free_cpumask_var(available_mask);
-  1174	free_hw_thread_mask:
-  1175		free_cpumask_var(hw_thread_mask);
-  1176	free_diff:
-  1177		free_cpumask_var(diff);
-  1178	done:
-  1179		return cpu;
-  1180	}
-  1181	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
