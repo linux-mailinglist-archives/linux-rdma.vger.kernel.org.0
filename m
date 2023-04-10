@@ -2,73 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A18D96DC39F
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Apr 2023 08:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776606DC3A1
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Apr 2023 08:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbjDJGnc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Apr 2023 02:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
+        id S229714AbjDJGnf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Apr 2023 02:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjDJGnb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Apr 2023 02:43:31 -0400
-Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com [195.245.230.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB842D47;
-        Sun,  9 Apr 2023 23:43:29 -0700 (PDT)
+        with ESMTP id S229711AbjDJGne (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Apr 2023 02:43:34 -0400
+Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com [195.245.230.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7402D47;
+        Sun,  9 Apr 2023 23:43:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1681109008; i=@fujitsu.com;
-        bh=lz2fI0gpznOYEVET54zSAl1n0IRovlfLa0r/idjEk1w=;
-        h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=d1pHysgimmoV7X2JKFbYJgttT37v7dBF8WSiO73AKPlDXgKiWCdRobdlDUtQEfRxf
-         VSHlNayFMFudbyl3eaWlzmH+DAOeT0RZeFoFv2UfDmJoNRgfTHeRCYID6M4HDcBEJM
-         sdREHTD/Mt4/S1MQUlmAd9ZvVmNKG3U7S67p7XwRkISycRutW7ebseyMC7AClLda0z
-         zy4ysVPlGOSVgRA9KMkzrB15MBbfDjHAnLE686/PKJV12SMfKxVh5+CIxSS5rePtUx
-         xs4B8IR3q9db5D9MwCyLV4ZN1ydGODP0BrOi+GG8s1LVDZnktaW+kUcUCl3OJeS6gv
-         dj40sry45YI3Q==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRWlGSWpSXmKPExsViZ8ORpMu/wTj
-  FoOsmq8WNaXIW205vYLeYOeMEo8XbTVNYLKb8WspscXnXHDaLZ4d6WRzYPU6/ucPksWlVJ5vH
-  woapzB6fN8l5bP18myWANYo1My8pvyKBNaOrMbhgPVvFvol7WBoY57J2MXJxCAlsZJTYP+EqE
-  4SzhEmiubmZDcLZzyix7VgfUIaTg01AQ+Jey01GEFtEoFTicNs+dhCbWSBJYt7tt8wgtrCAmc
-  S0pm1sIDaLgKrE0hc/WUFsXgFHiUN3t4DNkRBQkJjy8D0zRFxQ4uTMJywQcyQkDr54wQxRoyh
-  xpPMvC4RdIdE4/RBUr5rE1XObmCcw8s9C0j4LSfsCRqZVjGbFqUVlqUW6hmZ6SUWZ6RkluYmZ
-  OXqJVbqJeqmluuWpxSW6hnqJ5cV6qcXFesWVuck5KXp5qSWbGIHBnlLM/HIH44m+v3qHGCU5m
-  JREebu4jFOE+JLyUyozEosz4otKc1KLDzHKcHAoSfB+XwCUEyxKTU+tSMvMAUYeTFqCg0dJhP
-  fEMqA0b3FBYm5xZjpE6hSjopQ47691QAkBkERGaR5cGyzaLzHKSgnzMjIwMAjxFKQW5WaWoMq
-  /YhTnYFQS5p0EMp4nM68EbvoroMVMQIu5XAxAFpckIqSkGpiyPNO7uE/+2jFF1XGe9n/Z49Pr
-  Zm2ueMh1r4yvlV3+sZDoI/fIl/++v2+Nca5t298jkyh/6twku+Pp2TqX/phlvt5xdlXBm8k3K
-  wxflc26fzXvv7nNjfdvZ/geffWtQv991OQTpxXmz09NyaoOWLjppvbjGueoiIyvi10fMAlols
-  7dLCDoESpZu8nUv+fKLaND2Qd2+KvPX+i8PnPrhv3PF+7U9P/EebX30r4l/puU/Tf3cN1a8W7
-  qrb8ua/ln7xUUXPpRutSlPmLF8sY/aztCuJ0KX5y+ssqm+uO+Tby35hy7vdnfuDdx9gax6NkK
-  0RGf3h79+EhJcYtT7irDtYfM1q273RF15gp7Xl3B0fbrH5RYijMSDbWYi4oTAbC+cRdxAwAA
+        s=170520fj; t=1681109011; i=@fujitsu.com;
+        bh=iAKmY6Rq8qBoVB2F0jD25UDcsKK0ZHwfKH5rHjKCtoI=;
+        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=iHXTs0ZocBp7BXI9t24Fv1NRl28IFnlBd4lzD73WlPKfMulhkoW9ENvOzXXXYApMW
+         672Lpppw3M2SNmZ3kv6qjMLdGVaA6HUdItq6jk7c4olXvYHjFOOxu6CkuVgglvgC1I
+         Fk3dw4HYjZvDUYNElXmqJWJiyCwHH9l+lHhP0St9J1ayFLxouCRmOPQ3shixL625et
+         EtQW3/OSRImZzaY2yeDUHI0R+yRM1L4KVfH4zEHyzfv/uR9E92ISqb3tCzxTzTLqN1
+         bkbBCDXs/YYa5+fgvzoCgk5N0uEp/GyCnyUgiqFt2FNPT2W7xnWzkSTXebhSJXR7Lg
+         jiSRBj2UP7y9A==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpkleJIrShJLcpLzFFi42Kxs+GYpCu0wTj
+  FYFevrMWNaXIW205vYLeYOeMEo8XbTVNYLKb8WspscXnXHDaLZ4d6WRzYPU6/ucPksWlVJ5vH
+  woapzB6fN8l5bP18myWANYo1My8pvyKBNePs1Wa2gpfcFZen+TUwzuHoYuTiEBLYwiix/cwmF
+  ghnOZPE50lbWSGc/UCZT/eZuhg5OdgENCTutdxkBLFFBEolDrftYwexmQWSJObdfssMYgsLeE
+  usWXMYrJ5FQFXi8OXXbCA2r4CjxM7Fp8HiEgIKElMevger5xRwkmhovcgKYgsB1VxZ38gIUS8
+  ocXLmExaI+RISB1+8YIboVZQ40vmXBcKukGicfghqpprE1XObmCcwCs5C0j4LSfsCRqZVjKbF
+  qUVlqUW6RnpJRZnpGSW5iZk5eolVuol6qaW65anFJbqGeonlxXqpxcV6xZW5yTkpenmpJZsYg
+  bGRUszWvYNxfe9fvUOMkhxMSqK8XVzGKUJ8SfkplRmJxRnxRaU5qcWHGDU4OARmnJs7nUmKJS
+  8/L1VJgvf7AqA6waLU9NSKtMwcYPzClEpw8CiJ8J5YBpTmLS5IzC3OTIdInWJUlBLn/bUOKCE
+  AksgozYNrg6WMS4yyUsK8jAwMDEI8BalFuZklqPKvGMU5GJWEeSeBjOfJzCuBm/4KaDET0GIu
+  FwOQxSWJCCmpBiaO5dNF66uldyzz+sy0bdr61U2u158ZVpgs3Zf6wc//XZ8b214BW2tvI0Mf9
+  dN+6xhvNjzUuL7zGx9T4cP2bdLnVr09bNDukfb+8Z/Pk17tP/BqbXL5skJOtdt3c/9N2y/erK
+  Tc+TG7qDjRdPr+RzeFKyPOaR5efED9d9S/OSnbX4ruXRia3LRpm4Bg0aR3RouvMDM+3rQhL5R
+  XK8EpSqs34GPrBbscxvyHzM84T14rVnnPyej5iTnwoF74cs8Hbn8T5UJ916/6rb7pscPxX/Lm
+  k9YlCM54GbslbSKL140zsZ1CxuWPvq4/Grcv85KgzQLdDrkPper1DTmmoXGaNoHrQ2X59h3hj
+  Sri+flrroUSS3FGoqEWM9CZAMXtRZ+UAwAA
 X-Env-Sender: lizhijian@fujitsu.com
-X-Msg-Ref: server-12.tower-587.messagelabs.com!1681109006!373208!1
-X-Originating-IP: [62.60.8.98]
+X-Msg-Ref: server-15.tower-585.messagelabs.com!1681109010!186112!1
+X-Originating-IP: [62.60.8.146]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
-X-StarScan-Version: 9.104.1; banners=-,-,-
+X-StarScan-Version: 9.104.2; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 1604 invoked from network); 10 Apr 2023 06:43:27 -0000
-Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
-  by server-12.tower-587.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 10 Apr 2023 06:43:27 -0000
-Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id A320C1CD;
-        Mon, 10 Apr 2023 07:43:26 +0100 (BST)
+Received: (qmail 7567 invoked from network); 10 Apr 2023 06:43:30 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+  by server-15.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 10 Apr 2023 06:43:30 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 10B55100323;
+        Mon, 10 Apr 2023 07:43:30 +0100 (BST)
 Received: from R01UKEXCASM121.r01.fujitsu.local (R01UKEXCASM121 [10.183.43.173])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id 97C791C8;
-        Mon, 10 Apr 2023 07:43:26 +0100 (BST)
+        by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 021941000EE;
+        Mon, 10 Apr 2023 07:43:30 +0100 (BST)
 Received: from 31d618797ed9.localdomain (10.167.226.45) by
  R01UKEXCASM121.r01.fujitsu.local (10.183.43.173) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Mon, 10 Apr 2023 07:43:23 +0100
+ (TLS) id 15.0.1497.42; Mon, 10 Apr 2023 07:43:26 +0100
 From:   Li Zhijian <lizhijian@fujitsu.com>
 To:     <haris.iqbal@ionos.com>, <jinpu.wang@ionos.com>, <jgg@ziepe.ca>,
         <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 CC:     <guoqing.jiang@linux.dev>, <linux-kernel@vger.kernel.org>,
         Li Zhijian <lizhijian@fujitsu.com>
-Subject: [PATCH for-next 0/3] rtrs bugfix and cleanups
-Date:   Mon, 10 Apr 2023 06:43:01 +0000
-Message-ID: <1681108984-2-1-git-send-email-lizhijian@fujitsu.com>
+Subject: [PATCH for-next 1/3] RDMA/rtrs: Remove duplicate cq_num assignment
+Date:   Mon, 10 Apr 2023 06:43:02 +0000
+Message-ID: <1681108984-2-2-git-send-email-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1681108984-2-1-git-send-email-lizhijian@fujitsu.com>
+References: <1681108984-2-1-git-send-email-lizhijian@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.167.226.45]
@@ -85,34 +89,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It's trying to fix 2 issues caused by the following script which
-connect/disconnect rnbd frequently.
+line 1701 and 1713 are duplicate:
+> 1701         cq_num = max_send_wr + max_recv_wr;
+ 1702         /* alloc iu to recv new rkey reply when server reports flags set */
+ 1703         if (clt_path->flags & RTRS_MSG_NEW_RKEY_F || con->c.cid == 0) {
+ 1704                 con->rsp_ius = rtrs_iu_alloc(cq_num, sizeof(*rsp),
+ 1705                                               GFP_KERNEL,
+ 1706                                               clt_path->s.dev->ib_dev,
+ 1707                                               DMA_FROM_DEVICE,
+ 1708                                               rtrs_clt_rdma_done);
+ 1709                 if (!con->rsp_ius)
+ 1710                         return -ENOMEM;
+ 1711                 con->queue_num = cq_num;
+ 1712         }
+> 1713         cq_num = max_send_wr + max_recv_wr;
 
-# cat rnbd-self.sh 
-#!/bin/bash
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-/root/rpma/tools/config_softroce.sh eth0
-modprobe rnbd_server
-modprobe rnbd_client
-
-while true;
-do
-        echo "sessname=xyz path=ip:<server-ip> device_path=/dev/nvme0n1" > /sys/devices/virtual/rnbd-client/ctl/map_device
-        for i in /sys/block/rnbd*/rnbd/unmap_device
-        do
-                echo "normal" > $i
-        done
-done
-
-Li Zhijian (3):
-  RDMA/rtrs: remove duplicate cq_num assignment
-  RDMA/rtrs: Fix rxe_dealloc_pd warning
-  RDMA/rtrs: Fix use-after-free in rtrs_clt_rdma_cm_handler
-
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 19 ++++++++++++++-----
- drivers/infiniband/ulp/rtrs/rtrs-clt.h |  1 +
- 2 files changed, 15 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 80abf45a197a..c2065fc33a56 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1710,7 +1710,6 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 			return -ENOMEM;
+ 		con->queue_num = cq_num;
+ 	}
+-	cq_num = max_send_wr + max_recv_wr;
+ 	cq_vector = con->cpu % clt_path->s.dev->ib_dev->num_comp_vectors;
+ 	if (con->c.cid >= clt_path->s.irq_con_num)
+ 		err = rtrs_cq_qp_create(&clt_path->s, &con->c, max_send_sge,
 -- 
 2.29.2
 
