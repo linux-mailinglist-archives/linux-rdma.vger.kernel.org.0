@@ -2,54 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 654C26DC6D1
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Apr 2023 14:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AF86DC70F
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Apr 2023 15:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjDJMiS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Apr 2023 08:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52708 "EHLO
+        id S229700AbjDJNIC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Apr 2023 09:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjDJMiS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Apr 2023 08:38:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574203C29
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Apr 2023 05:38:17 -0700 (PDT)
+        with ESMTP id S229614AbjDJNIB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Apr 2023 09:08:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AB0212F;
+        Mon, 10 Apr 2023 06:07:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E5F0E60E05
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Apr 2023 12:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC394C433EF;
-        Mon, 10 Apr 2023 12:38:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 32DC260F55;
+        Mon, 10 Apr 2023 13:07:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 110A5C433D2;
+        Mon, 10 Apr 2023 13:07:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681130296;
-        bh=RRVOZG8VdmIs0vIGnBr2kpSGGW/asmymLSnnTB60Ljo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mMxNkfqLE2SEw+86JUdpPhq31/esve3tKZUncW0Xi7Cahafsfcunyl/XDhNKJuMZ3
-         X1iG5xdHSo6FGeD9doT7CSUqeYDijc5HjsEP1dOSOc2oDpJ0I36vaV4oOvdjEN34C0
-         mR8lWw33ctEt3FRMFG1B4AZyopbZoQWVaez7F/O4YFQ+vOZFoLOXUWOc39SxRQM3L3
-         JX7vx601UQ5l7xckbvYTqJGkLB5bW1nHpsknthiJMUv0wn0+PlGbjdxmmo+T1d7Jfz
-         yqQY617+WtbcVtNDYRJnbFkwl6oy+tBhr0fu9jxKmYDvVd/sGUqcLR2IgCqGPehzpp
-         G2bSDia5/utFQ==
-Date:   Mon, 10 Apr 2023 15:38:12 +0300
+        s=k20201202; t=1681132078;
+        bh=3aM8xzi3Ejc9lw0KWj0iPFmTjjhZiJ/W+M8ER7GMoLE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uYs88a7cywe+vk7/CcSmdMTe1aljB6GFFqTWSGvZ7drx6m8BpaW+9afYDCXMw/sxq
+         usn7CgaZBdEEhTpIePVtUo67enAq/bKpz5yahqfo8M9rDwHtdmWiqkk3mydBRr1jKw
+         Nk9EqgZdK4Qqwcahzpx0PTeCG4ggpFbg2EW4/UAV4IBS8XhGk5NY8zGrGL5rr8T7pi
+         i66sDu5JEYVjY/l4j6UL1U/foOZouVfGYMuXmAtrTqqVeVT8CPLw/kdEz3uIyG4QeE
+         Gno4vrMOn3spYcZ4uFK/d9lSe2EiMtUgMzNRxOdGdSXAWXtBj9lHQw0KqH7CPygwz6
+         iA/Pi1NHHzU8w==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     "Nachum, Yonatan" <ynachum@amazon.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, sleybo@amazon.com,
-        mrgolin@amazon.com, Firas Jahjah <firasj@amazon.com>
-Subject: Re: [PATCH] RDMA/efa: Add rdma write capability to device caps
-Message-ID: <20230410123812.GT182481@unreal>
-References: <20230404154313.35194-1-ynachum@amazon.com>
- <20230409073228.GA14869@unreal>
- <f738b558-f0d9-e69e-0939-a80594063d4c@amazon.com>
- <20230409172146.GJ182481@unreal>
- <0c307561-8ee1-061b-6ba3-ceb74eb3a1c8@amazon.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>, Aya Levin <ayal@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Meir Lichtinger <meirl@mellanox.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: [PATCH rdma-next 0/4] Allow relaxed ordering read in VFs and VMs
+Date:   Mon, 10 Apr 2023 16:07:49 +0300
+Message-Id: <cover.1681131553.git.leon@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0c307561-8ee1-061b-6ba3-ceb74eb3a1c8@amazon.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,44 +57,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 10, 2023 at 03:24:27PM +0300, Nachum, Yonatan wrote:
-> 
-> >>>>
-> >>>>       access_flags &= ~IB_ACCESS_OPTIONAL;
-> >>>>       if (access_flags & ~supp_access_flags) {
-> >>>> diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
-> >>>> index 74406b4817ce..d94c32f28804 100644
-> >>>> --- a/include/uapi/rdma/efa-abi.h
-> >>>> +++ b/include/uapi/rdma/efa-abi.h
-> >>>> @@ -121,6 +121,7 @@ enum {
-> >>>>       EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS = 1 << 2,
-> >>>>       EFA_QUERY_DEVICE_CAPS_CQ_WITH_SGID     = 1 << 3,
-> >>>>       EFA_QUERY_DEVICE_CAPS_DATA_POLLING_128 = 1 << 4,
-> >>>> +     EFA_QUERY_DEVICE_CAPS_RDMA_WRITE = 1 << 5,
-> >>>
-> >>> Why do you need special device capability while all rdma-core users
-> >>> set IBV_ACCESS_REMOTE_WRITE anyway without relying on anything from
-> >>> providers?
-> >>>
-> >>> Thanks
-> >>
-> >> We need to query the device because not every device supprort the same RDMA capabilities. Upper layers in the SW stack needs this supported flags to indicate which flows they can use. In addition this is identical to the existing RDMA read support in our code.
-> > 
-> > Nice, but it doesn't answer my question. Please pay attention to the
-> > second part of my question "while all rdma-core ....".
-> > 
-> > Thanks
-> > 
-> 
-> There are rdma-core users that doesn’t fail on unsupported features but fallback to supported ones. One example is Libfabric EFA provider that emulates RDMA write by read if device write isn’t supported but there are other similar examples. Correct way doing this in user code is by querying rdma-core for device supported capabilities, then selecting a suitable work flow. This is why existing and the additional capability bits are required.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-AFAIK, RDMA write is different here as fallback is performed in the kernel and
-not in the rdma-core provider. So why should EFA be different here?
+From Avihai,
 
-BTW, Please fix your mailer to break lines, so we will be able to reply
-on specific sentence with less effort.
+Currently, Relaxed Ordering (RO) can't be used in VFs directly and in
+VFs assigned to QEMU, even if the PF supports RO. This is due to issues
+in reporting/emulation of PCI config space RO bit and due to current
+HCA capability behavior.
+
+This series fixes it by using a new HCA capability and by relying on FW
+to do the "right thing" according to the PF's PCI config space RO value.
+
+Allowing RO in VFs and VMs is valuable since it can greatly improve
+performance on some setups. For example, testing throughput of a VF on
+an AMD EPYC 7763 and ConnectX-6 Dx setup showed roughly 60% performance
+improvement.
 
 Thanks
 
-> 
-> Thanks
+Avihai Horon (4):
+  RDMA/mlx5: Remove pcie_relaxed_ordering_enabled() check for RO write
+  RDMA/mlx5: Check pcie_relaxed_ordering_enabled() in UMR
+  net/mlx5: Update relaxed ordering read HCA capabilities
+  RDMA/mlx5: Allow relaxed ordering read in VFs and VMs
+
+ drivers/infiniband/hw/mlx5/mr.c                     | 12 ++++++++----
+ drivers/infiniband/hw/mlx5/umr.c                    |  7 +++++--
+ drivers/infiniband/hw/mlx5/umr.h                    |  3 ++-
+ drivers/net/ethernet/mellanox/mlx5/core/en/params.c |  3 +--
+ drivers/net/ethernet/mellanox/mlx5/core/en_common.c |  9 +++++----
+ include/linux/mlx5/mlx5_ifc.h                       |  5 +++--
+ 6 files changed, 24 insertions(+), 15 deletions(-)
+
+-- 
+2.39.2
+
