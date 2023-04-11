@@ -2,138 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFB76DE282
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Apr 2023 19:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06726DE607
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Apr 2023 22:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbjDKRb2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Apr 2023 13:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
+        id S229765AbjDKUxH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Apr 2023 16:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjDKRbZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Apr 2023 13:31:25 -0400
-Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020019.outbound.protection.outlook.com [52.101.56.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7090B5BB5;
-        Tue, 11 Apr 2023 10:31:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mOLujY7HIeYRD1wYkpNlFYPlNeOHjU6Q6fTUW8ux+vTd6PKgYPrgi0T6Il4PKdKUJfkPDDqTotQMsfwK7M7KB8x4Vm9/vjCNlui01nIo0CzF9m6YUrahJLEYs/j5e36eQZZkd2skDKFtsN2zydVdcbpRUfDQlaG+Fb7jJPnnwomqbUUnaNnGc7Ip7rKdgsb1hpjx5cwHMqbcFp3ck/+8ius7C68ZwHwjjlYKbfdW4Wbgr+TkrjMAToG+v2YlI6lMRk0PwlQ/CNSyXQek1/vEzAemjFjkDZoOoEVaFtCZ8M9Dx/zAfwwlPb5XuWAzjG7pYrUcllN/LtgmlN7o0EMykg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=srzIySN1kkvZcHqxyUMKsLLFBBMcduHViz5FvXaoD3Y=;
- b=cnCUE+PU1u8HpA1eOMHJrp69gYCJ1z/A1y/7tAEzvNhWNbpwkP5YrCoCgMAD/rTUjjRmZb4XJBPoLovToasUh4Q8+KJ07+GoAhaEEedNaltwviq4JRCoFx2RtWc7/FktCskR++cdkd78XuGSnnk7frQ8RcX+Dw5TzuQYpBJmQnLkBKwFiXzvcELY7TltThlXob5WjsfUfZz9FtTBpYLDStcNc8MYfzTrLXKKDJXP16hgNRbztVhuY1hxq0kqIk+Ot18FBrezKBFVvhUNiZGSINQKjOj0hZnklLD6/Xofic4IkggB+8pNfQZ+jBRUqpj5vb1f4NzGiF2PwN+NviikQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=srzIySN1kkvZcHqxyUMKsLLFBBMcduHViz5FvXaoD3Y=;
- b=X2TAOTeHkctncW6nOF3VDstcDTU/fwBWC1kNOHdGVOlPu60B85VpmGPR35u55LPHvnXGC8RJ8zLCOf3VIHq9Nde/3wxobdB3IDHuUSgKO973lFKEukfRV/+5UAWF9QTXZiEv+95ivx/1YZHxQFcLNPwj9ZjEAGFWM87Uqvc9lnA=
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com (2603:10b6:510:1db::16)
- by SN6PR2101MB1327.namprd21.prod.outlook.com (2603:10b6:805:107::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.3; Tue, 11 Apr
- 2023 17:31:21 +0000
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::4d56:4d4b:3785:a1ca]) by PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::4d56:4d4b:3785:a1ca%4]) with mapi id 15.20.6319.003; Tue, 11 Apr 2023
- 17:31:21 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Dexuan Cui <decui@microsoft.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jake Oshins <jakeo@microsoft.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, "kw@linux.com" <kw@linux.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "saeedm@nvidia.com" <saeedm@nvidia.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        Saurabh Singh Sengar <ssengar@microsoft.com>,
-        "helgaas@kernel.org" <helgaas@kernel.org>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v2 6/6] PCI: hv: Use async probing to reduce boot time
-Thread-Topic: [PATCH v2 6/6] PCI: hv: Use async probing to reduce boot time
-Thread-Index: AQHZZposLyPmEnK8/0ezLJ7cpG8SzK8gCgaAgAAA2gCAAIiLAIAF1f/A
-Date:   Tue, 11 Apr 2023 17:31:21 +0000
-Message-ID: <PH7PR21MB326385AE4EBCB897DD4959DDCE9A9@PH7PR21MB3263.namprd21.prod.outlook.com>
-References: <20230404020545.32359-1-decui@microsoft.com>
- <20230404020545.32359-7-decui@microsoft.com>
- <BYAPR21MB168842E38534BD00CB1D27ABD7969@BYAPR21MB1688.namprd21.prod.outlook.com>
- <BYAPR21MB168864316A9E2523BD74F270D7969@BYAPR21MB1688.namprd21.prod.outlook.com>
- <SA1PR21MB1335E6B2D4D01649712FBF96BF979@SA1PR21MB1335.namprd21.prod.outlook.com>
-In-Reply-To: <SA1PR21MB1335E6B2D4D01649712FBF96BF979@SA1PR21MB1335.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=4268d2ca-a28f-4b1b-ac19-612f0da0821a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-04-07T16:10:36Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3263:EE_|SN6PR2101MB1327:EE_
-x-ms-office365-filtering-correlation-id: 0f98c61b-338f-4e0e-f227-08db3ab290cc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ue+y3GlYW2j9vq6xGDEKkndHrp8dmoEnprnULBh48CRED5cVVkOIhuB4ozyKVj3hhdGo7VPuZIVqSkV/FqmaUSPwb6HYZtE/f9v/UoQ7rbpkRAwVxncN6w/d61iAC+pons/bJKNCteg/ZuJNSgid8QyMx4e96et6kdXV6Mo3M7YgGXoQKMMQzjE7KDaSP75NaHd9lhV1lkP9I959Jcbc2BewpkqvNfEodMHWXaADLX6G3gf01DPortVvTbFBmjpA4yBYqDvHQNPq771RW2g3xWTCKcMvXlN4mtCjg8ZycdRBul9hoefUxlf8OMYfpDf9qb8B9bvf7LodI8v7Qlul9w7DiZzEG2vuuMCNIwxYjOvEDnFxPljKCMC/xjhfDuaFM8zrO550FfCLBi447vOjM2fuatGHebUnUR0T6q2FKMrcKuxL3eKRkN+i0slvW8Xydi1Mh/9SvbtG/erMXMK+y7aTTp0xenE+XUFEOOG4iEPL5F7TUSA545wAIoxQG6HZMUJvv9JkdaRDQggjifORS4JXYDEN2yLn+S0tJBGMBtdP11dkUb53JmT9rBfiQVfSZuySC35s7kOmv9S3ryWrqqMsQPur65THX4tUIFz0nYy0C+eV0I30XIBcsyL/m0riy9tMLzbBgyMJhligPL1EdQRzH9tTRNJgmUabqIHfqOgMGHoVTJeeeB4f82yC5/JN
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:cs;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3263.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(366004)(136003)(396003)(376002)(451199021)(8990500004)(2906002)(5660300002)(52536014)(7416002)(8936002)(41300700001)(64756008)(66446008)(66476007)(66556008)(33656002)(83380400001)(4326008)(8676002)(76116006)(66946007)(10290500003)(71200400001)(316002)(786003)(7696005)(478600001)(54906003)(110136005)(4744005)(921005)(186003)(38070700005)(38100700002)(55016003)(122000001)(86362001)(26005)(6506007)(9686003)(82950400001)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?U7axgaDQzR9WOI7CAHIe05VUK/q3yZzUtCmJfbQXQgfWq3che6DRiKrkj0k1?=
- =?us-ascii?Q?u4yAuBjQax+NBOsm12KDk8ZUCs4AKGFHkqNLjjVPP/oRe8LBKTxaXl4Y1M8g?=
- =?us-ascii?Q?TicqnUnoe5mUCsTNuz/YQCQ33P91+Acbx9LKQ/rFGjIhWNIgaD4SrmxqD5ik?=
- =?us-ascii?Q?c3L3lr8tf2vqY0S/6l7wqc1T6NBi7XbufTJQg1dvI1SRw4AAlLebytkacI3U?=
- =?us-ascii?Q?u29plfsjzmXEGJUjDswHxigOuIt83tDhuALYrwXsmS+Chp6xloFbFeQhS/cQ?=
- =?us-ascii?Q?RhbtUv7lVDRXjvuItCLTX6YX5BZ9TiFncXOdTwiZ6W+PKU5jJ2yn5zS8kq0P?=
- =?us-ascii?Q?dqUZzJPyutY2O7bbkUzL10h/sU5VO4i6W75IgQhFQsPiUfcDodW8RiII+pGG?=
- =?us-ascii?Q?siAj8VQosGFF4lEFHhCYDDWrA/lCAb6cUi8zZqqzyTPR/O3cU3Pfb395GHQO?=
- =?us-ascii?Q?RNjFbttmbBQ5Qm3d4NA8eEwDVCSt6Ia+2yxtRQ2f4z+kMekf+iuC6RYTvSs3?=
- =?us-ascii?Q?o1WevULdcr2Yh+howIyv0W+WwKO4nKsVPSH0noVlsi1b23Bf4B68JIpycAJP?=
- =?us-ascii?Q?Rr6pEFc15IESVU91OsLWMgI3fJhqUFqFuNEHO1PofivDOhRBcOcQ4wqVx4Yq?=
- =?us-ascii?Q?cSdgwA3ygj4cuWR6Pf20Dpk06pjaxjoJPtgMvV48xlefFp5kVpfaMG+d1h8D?=
- =?us-ascii?Q?+j9gBfZRQWvYV7gnav5cLIHjN/7ZuslNAWrGAZY4psUN+ARBUBfcpdkSN0xA?=
- =?us-ascii?Q?ikElVAktNszF5iPsSSWExmJVIYF1uQGhg7aEQIz3kDnV88+BewEqWvxDuWTE?=
- =?us-ascii?Q?VqPOYJMNL8i74TqzwCk8/muEScoSOEcDujSFvgTHlqVsCDqSdKpC68eVY+Um?=
- =?us-ascii?Q?zvFJR5U5LLIItNNgXjw0iT6BZwwW5GAkZc0iy7g+hXTTlGqlQwrcjPup3Q/P?=
- =?us-ascii?Q?qAAMDjf4seOhzudy2OsmUMIzTkI/dCJcRa+cMHbwAeK11MS7esxPirE6Qviy?=
- =?us-ascii?Q?n2JyG0YTJlgW92O0EcFelZ6NnjJ3m7ZiQfRejOp4fmZ5kzMkquTFbViRshiW?=
- =?us-ascii?Q?asVjeOp9vIeCbzY28kWKEdzjZFXosDgOjNMIyz9YFKLa05uipsDk0/2gzRnJ?=
- =?us-ascii?Q?fvAI+hFVfTNCZFjPjEH9j0HlvVUszah+qBrKrx4HQoqYv6re1ENsEoqxNoIY?=
- =?us-ascii?Q?p+4NjVo7uxJ8EUfPwR2omahXtKLWesvHi0TJFOm5a9AUeaZ6oR/GKeA2yYii?=
- =?us-ascii?Q?BbiEdqvW1ydtT2p/2v94oQr5vorRmWyotPICfzVX+aNo/N+OSpqLgK7ulQVM?=
- =?us-ascii?Q?t74LdWvWrEFy75QcZXZPPC580gIaCUj/yccIa3oW1M+yf8rlySonrhcIq4a+?=
- =?us-ascii?Q?3lVAMytGpJAwgtuu5Dw1wZsMs/jLrSvg/Eu1/D3l9/dlnTmG7ogQM7i3yGUN?=
- =?us-ascii?Q?RavuBHEFd7eosUI+yprSojpuSAW5BJ9OWUereS7imb9b0r2ocpBbAybJ0bMs?=
- =?us-ascii?Q?uTHbqJfxYOqAICsr/w8vwof2NLCNlNac7skUSujdIZHVP37y75md5nAoOAT7?=
- =?us-ascii?Q?w6Wl/D9Lmkf9+UHNxrA=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229571AbjDKUxG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Apr 2023 16:53:06 -0400
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2802683
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 13:53:05 -0700 (PDT)
+Received: by mail-io1-f79.google.com with SMTP id 188-20020a6b15c5000000b007590817bcfbso6292459iov.12
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 13:53:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681246384; x=1683838384;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5FraGnenFeAHzE7pcyamjrVHwZFel3GRzsifdZZaBZA=;
+        b=HEW/oJnNCaRngJGColH55LG7/4SpeNsIZk+LBIW3qDcbWpf08kDjYbk81VIkVgv9QU
+         x3+8wi/zpE89YDhyj+pEDee265m674ylUgwlUyxkOuux2jYXepyfvROeGCV5bAJluVJ7
+         QOrrz4P+U7A/Q0HsxzfFQRIoyMBK0qyf3Cv/mt6P0XEMtfbqFtQrIJt+PXz6azDOPE0/
+         /F4YRlkpxVM5bJDY8n0TX5ADnKyj1eLrE6vMQVorpVyTVyZe0y/3kRqKzvJ/Z79naUCH
+         cXUvFmoNTGfU/kmEFu+GLinD2qA809rfaBuRTqqyYj/uucPxFUC/wfx8R53cht4j4yYi
+         N+XQ==
+X-Gm-Message-State: AAQBX9fe/v3B9b13/+MU/0MNb2cti2/zv/38uG5wepJr8apK82PZMwX7
+        fBiSgILXtmEAPa+L8nuLnhrK5+hz9IKrcMBjossQv7TS5n5g
+X-Google-Smtp-Source: AKy350a7rCOrUZbqRJzVQnelk1N+sOACB0HgSXGmodSV8jnGfJWPcTRqKf8bo2bKBsq849HWHQgGG7N2UXYD9lO76wpbblzK6C26
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3263.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f98c61b-338f-4e0e-f227-08db3ab290cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Apr 2023 17:31:21.0536
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CUYwWOyFm+TuNO5stPYAFHHdS0OFt6TAjFSdO5JdZJtk54slnKhNqJSXfkSZGEYPY3C7RIJ+XfUCzkRQqeBZlA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR2101MB1327
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+X-Received: by 2002:a02:8563:0:b0:3c5:1971:1b7b with SMTP id
+ g90-20020a028563000000b003c519711b7bmr1537580jai.1.1681246384070; Tue, 11 Apr
+ 2023 13:53:04 -0700 (PDT)
+Date:   Tue, 11 Apr 2023 13:53:04 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000080c6c805f915ade0@google.com>
+Subject: [syzbot] [rds?] WARNING in rds_conn_connect_if_down
+From:   syzbot <syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -141,29 +56,71 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: RE: [PATCH v2 6/6] PCI: hv: Use async probing to reduce boot tim=
-e
->=20
-> > From: Michael Kelley (LINUX) <mikelley@microsoft.com>
-> > Sent: Friday, April 7, 2023 9:15 AM
-> > ...
-> > > > Commit 414428c5da1c ("PCI: hv: Lock PCI bus on device eject")
-> > > > added
-> > > > pci_lock_rescan_remove() and pci_unlock_rescan_remove() in
-> > > > create_root_hv_pci_bus() and in hv_eject_device_work() to address
-> > > > the race between create_root_hv_pci_bus() and
-> > > > hv_eject_device_work(), but it turns that grubing the
-> pci_rescan_remove_lock mutex is not enough:
-> >
-> > There's some kind of spelling error or typo above.  Should "grubing"
-> > be "grabbing"?  Or did you intend something else?
-> >
-> > Michael
->=20
-> Sorry, it's a typo. The "grubing" should be "grabbing".
-> I suppose the PCI maintainers can help fix this. Let me know if v3 is nee=
-ded.
+Hello,
 
-Other than the typo,
+syzbot found the following issue on:
 
-Reviewed-by: Long Li <longli@microsoft.com>
+HEAD commit:    b9881d9a761a Merge branch 'bonding-ns-validation-fixes'
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=123c531dc80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d3500b143c204867
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4faee732755bba9838e
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/4b4a5a4a2f01/disk-b9881d9a.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f3d2bf6e2e9e/vmlinux-b9881d9a.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/26469aa699ef/bzImage-b9881d9a.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 21117 at net/rds/connection.c:933 rds_conn_connect_if_down+0x97/0xb0 net/rds/connection.c:933
+Modules linked in:
+CPU: 1 PID: 21117 Comm: syz-executor.3 Not tainted 6.3.0-rc5-syzkaller-00143-gb9881d9a761a #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
+RIP: 0010:rds_conn_connect_if_down+0x97/0xb0 net/rds/connection.c:933
+Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 25 48 8b bb 90 00 00 00 5b 5d e9 be fa ff ff e8 49 f9 2c f8 <0f> 0b eb c6 e8 f0 05 7e f8 eb aa e8 49 06 7e f8 eb 80 e8 42 06 7e
+RSP: 0018:ffffc900055d7910 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff8880526ba5f0 RCX: 0000000000000000
+RDX: ffff888027cb9d40 RSI: ffffffff8955de77 RDI: 0000000000000001
+RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000000 R12: 00000000fffffff5
+R13: 0000000000000008 R14: ffff88806fd2db00 R15: ffff88807644e4c0
+FS:  00007f9b3b641700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002001e000 CR3: 0000000027523000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rds_sendmsg+0x2366/0x31a0 net/rds/send.c:1319
+ sock_sendmsg_nosec net/socket.c:724 [inline]
+ sock_sendmsg+0xde/0x190 net/socket.c:747
+ ____sys_sendmsg+0x71c/0x900 net/socket.c:2501
+ ___sys_sendmsg+0x110/0x1b0 net/socket.c:2555
+ __sys_sendmsg+0xf7/0x1c0 net/socket.c:2584
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f9b3a88c169
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9b3b641168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f9b3a9abf80 RCX: 00007f9b3a88c169
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
+RBP: 00007f9b3a8e7ca1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffe6c474d8f R14: 00007f9b3b641300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
