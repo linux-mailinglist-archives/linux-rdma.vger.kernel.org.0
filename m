@@ -2,149 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FB46DE0A6
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Apr 2023 18:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9EC46DE173
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Apr 2023 18:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbjDKQLh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Apr 2023 12:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
+        id S229977AbjDKQty (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Apr 2023 12:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjDKQLK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Apr 2023 12:11:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C435590
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 09:09:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681229395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rMhKzvuG7s1VjfB4heYphcINA7j4rSAbIEKmxFNidXY=;
-        b=OjXjhZleUhQjoA5N1P5m1j7AE2w59ZAMYBPjvMCH4HLrRLKPOW7oHyv+CTGXpyx2hHLIkz
-        sEISjwPMu528o03D0lRACRhvzq0OT/wsnX8PuvmRlcii8F9UDh4zFshGNKOMz9AYDKCKP6
-        FBtXhK7XE3C76Wd1zNEfyhkb3+JYZxU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-552-Zov1PRTBPSW9DUg0cv7v9g-1; Tue, 11 Apr 2023 12:09:48 -0400
-X-MC-Unique: Zov1PRTBPSW9DUg0cv7v9g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 794D6185A7A2;
-        Tue, 11 Apr 2023 16:09:47 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B3F9D47CDC;
-        Tue, 11 Apr 2023 16:09:44 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Bernard Metzler <bmt@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, Tom Talpey <tom@talpey.com>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v6 12/18] siw: Inline do_tcp_sendpages()
-Date:   Tue, 11 Apr 2023 17:08:56 +0100
-Message-Id: <20230411160902.4134381-13-dhowells@redhat.com>
-In-Reply-To: <20230411160902.4134381-1-dhowells@redhat.com>
-References: <20230411160902.4134381-1-dhowells@redhat.com>
+        with ESMTP id S230272AbjDKQtt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Apr 2023 12:49:49 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8BCE5E
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 09:49:48 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-51aac8f68cdso90671a12.0
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 09:49:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1681231788;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fKM/Au7LCIa72XM+Je2Si+gvd0HziYllwF6Cjpb4PW8=;
+        b=hC9E32DRv7+pS1N6/5j+hRh+3GNBj12qEbIu5CBChxbihc1mcVdcB3o23NOHq3WqVK
+         Q3+eJ8iiHJZiRaFUPl/ACzYB1d1ylldWdHZOg3XCk1iKQEJmurjpMn1N4fi8i7Z4iI9O
+         PDl5gQBYAP63BIM7P4TeNO6uHdN4yP90zfboEjHaib4J5FpvDaJWhv2rmBL7rGpJzOBo
+         hG5djZsQaRyAny935yx0c/KO0RANRZ8AtFXJy1Om7UbSIxgIHBcN4/idw5lGutuAtSQq
+         jwH7sxOmPJI+BA8XAeKlLzAVVgVxPXQ4jVZGc+3WA3X1Uz2G6LLytRScMlQk3aeFbpSg
+         4HLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681231788;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fKM/Au7LCIa72XM+Je2Si+gvd0HziYllwF6Cjpb4PW8=;
+        b=LwzKnS6A/XMlaxD2YFNItZfUblAmCzUCknQUQdfswta/nvWBsqLDdrX1gNt0dlTZOJ
+         a96I9Sk99Ly//u0U/9cTbTS579sg8q9hhvX63qeqKT/EChLg1eD6hkr+vblYZsw2sTeB
+         3EgZgiZPAhCVfuSBui8ocUmVF3Av6ZsioV4nEUiYX0zO6PdI0idSVHEqbpnayO26ZRn3
+         mSt0WWvV59cCFVrJmC835LWn5fk8hw8f9lHzK7PIMyBF16wSp8F0tBgRuHuSFAqnvNxl
+         pj5JSOfJndMBLYKRW8ux794hwloCQ4oyUOdZinadklH3AtM+nJdC8RGlDacpoe1Y6Cgg
+         apcA==
+X-Gm-Message-State: AAQBX9ckD1s3XhzzNzz+LqsDXXwIgUmqVZx/g4m/OHmzHVBtyUs7cRN6
+        8oRDVPFxq1eToSUu421w2wnnmw==
+X-Google-Smtp-Source: AKy350bJLjPUo8R4b3qITkC/Ivl06N6uJsPpV6H3CXIECCLKzbXY7TcJ8REBG5bcNaoXUB+YOKRWJw==
+X-Received: by 2002:aa7:96ba:0:b0:63a:fb40:891a with SMTP id g26-20020aa796ba000000b0063afb40891amr648726pfk.2.1681231787969;
+        Tue, 11 Apr 2023 09:49:47 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id a20-20020a62bd14000000b00625f5aaa1d9sm10007903pff.83.2023.04.11.09.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Apr 2023 09:49:47 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1pmHBh-009Phv-H1;
+        Tue, 11 Apr 2023 13:49:45 -0300
+Date:   Tue, 11 Apr 2023 13:49:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com
+Subject: Re: [PATCH for-next 2/6] RDMA/bnxt_re: Add disassociate ucontext
+ support
+Message-ID: <ZDWPqXhlkhMKXv04@ziepe.ca>
+References: <1681125115-7127-1-git-send-email-selvin.xavier@broadcom.com>
+ <1681125115-7127-3-git-send-email-selvin.xavier@broadcom.com>
+ <20230410122701.GQ182481@unreal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230410122701.GQ182481@unreal>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-do_tcp_sendpages() is now just a small wrapper around tcp_sendmsg_locked(),
-so inline it, allowing do_tcp_sendpages() to be removed.  This is part of
-replacing ->sendpage() with a call to sendmsg() with MSG_SPLICE_PAGES set.
+On Mon, Apr 10, 2023 at 03:27:01PM +0300, Leon Romanovsky wrote:
+> On Mon, Apr 10, 2023 at 04:11:51AM -0700, Selvin Xavier wrote:
+> > Add empty stub for disassociate ucontext as done in other vendor
+> > drivers.
+> 
+> It will be great to mention in commit message that the reason to this
+> stub is because you use rdma_user_mmap_io().
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
-cc: Jason Gunthorpe <jgg@ziepe.ca>
-cc: Leon Romanovsky <leon@kernel.org>
-cc: Tom Talpey <tom@talpey.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: linux-rdma@vger.kernel.org
-cc: netdev@vger.kernel.org
----
+That isn't the reason to do this stub..
 
-Notes:
-    ver #6)
-     - Don't clear MSG_SPLICE_PAGES on the last page.
+It is some yet-to-be-cleaned-up way for the driver to indicate it
+*fully* supports driver disassociation.
 
- drivers/infiniband/sw/siw/siw_qp_tx.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+rdma_user_mmap_io() is part of that support, but the whole
+functionality should be tested before setting this.
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 05052b49107f..5552e60bb927 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -313,7 +313,7 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
- }
- 
- /*
-- * 0copy TCP transmit interface: Use do_tcp_sendpages.
-+ * 0copy TCP transmit interface: Use MSG_SPLICE_PAGES.
-  *
-  * Using sendpage to push page by page appears to be less efficient
-  * than using sendmsg, even if data are copied.
-@@ -324,20 +324,27 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
- static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
- 			     size_t size)
- {
-+	struct bio_vec bvec;
-+	struct msghdr msg = {
-+		.msg_flags = (MSG_MORE | MSG_DONTWAIT | MSG_SENDPAGE_NOTLAST |
-+			      MSG_SPLICE_PAGES),
-+	};
- 	struct sock *sk = s->sk;
--	int i = 0, rv = 0, sent = 0,
--	    flags = MSG_MORE | MSG_DONTWAIT | MSG_SENDPAGE_NOTLAST;
-+	int i = 0, rv = 0, sent = 0;
- 
- 	while (size) {
- 		size_t bytes = min_t(size_t, PAGE_SIZE - offset, size);
- 
- 		if (size + offset <= PAGE_SIZE)
--			flags = MSG_MORE | MSG_DONTWAIT;
-+			msg.msg_flags &= ~MSG_SENDPAGE_NOTLAST;
- 
- 		tcp_rate_check_app_limited(sk);
-+		bvec_set_page(&bvec, page[i], bytes, offset);
-+		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
-+
- try_page_again:
- 		lock_sock(sk);
--		rv = do_tcp_sendpages(sk, page[i], offset, bytes, flags);
-+		rv = tcp_sendmsg_locked(sk, &msg, size);
- 		release_sock(sk);
- 
- 		if (rv > 0) {
-
+Jason
