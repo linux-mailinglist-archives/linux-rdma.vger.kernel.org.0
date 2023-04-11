@@ -2,125 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B06726DE607
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Apr 2023 22:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C806DE766
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 00:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbjDKUxH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Apr 2023 16:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
+        id S229456AbjDKWm1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Apr 2023 18:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjDKUxG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Apr 2023 16:53:06 -0400
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2802683
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 13:53:05 -0700 (PDT)
-Received: by mail-io1-f79.google.com with SMTP id 188-20020a6b15c5000000b007590817bcfbso6292459iov.12
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 13:53:05 -0700 (PDT)
+        with ESMTP id S229451AbjDKWm0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Apr 2023 18:42:26 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF488E7D
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 15:42:25 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id mn5-20020a17090b188500b00246eddf34f6so1848865pjb.0
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 15:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1681252945;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E0xO9Bx9i5tldfd7adzq3NuOgykDM+T3WB8seKN/9fM=;
+        b=uKwy/ailVcOdYbsnJvdxytCFTrv0n9YS+0ARjJFB00iUjwbkqRfGDfF4iYzZ1iG9Kv
+         82FGZ/RpThSY7QFxdhSjPl4N6pfaAYAQMd9Ex1gbWk6CB/OpsWHbkyHE5HbkBtCln6AE
+         CCetfIcGqIF201lBE0Y2PEFqvyxG/rYdrihtSshNnCdmy+JT1Jp8YKvBWU+bzR94zy3Y
+         gb0f4CVOuc7NI5ZIKEg3JU+1EpjqKZ28E3JxVlDdNU6OSXDzHwfO/rXmhyT3vdqjpb9S
+         lWZdb+Ngq9YKJhhVvmPUq+K8pUbhytxE29NwfYYWpcUSUjgY+3DZpEWJQCeBrv1S5tuK
+         3KDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681246384; x=1683838384;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5FraGnenFeAHzE7pcyamjrVHwZFel3GRzsifdZZaBZA=;
-        b=HEW/oJnNCaRngJGColH55LG7/4SpeNsIZk+LBIW3qDcbWpf08kDjYbk81VIkVgv9QU
-         x3+8wi/zpE89YDhyj+pEDee265m674ylUgwlUyxkOuux2jYXepyfvROeGCV5bAJluVJ7
-         QOrrz4P+U7A/Q0HsxzfFQRIoyMBK0qyf3Cv/mt6P0XEMtfbqFtQrIJt+PXz6azDOPE0/
-         /F4YRlkpxVM5bJDY8n0TX5ADnKyj1eLrE6vMQVorpVyTVyZe0y/3kRqKzvJ/Z79naUCH
-         cXUvFmoNTGfU/kmEFu+GLinD2qA809rfaBuRTqqyYj/uucPxFUC/wfx8R53cht4j4yYi
-         N+XQ==
-X-Gm-Message-State: AAQBX9fe/v3B9b13/+MU/0MNb2cti2/zv/38uG5wepJr8apK82PZMwX7
-        fBiSgILXtmEAPa+L8nuLnhrK5+hz9IKrcMBjossQv7TS5n5g
-X-Google-Smtp-Source: AKy350a7rCOrUZbqRJzVQnelk1N+sOACB0HgSXGmodSV8jnGfJWPcTRqKf8bo2bKBsq849HWHQgGG7N2UXYD9lO76wpbblzK6C26
+        d=1e100.net; s=20210112; t=1681252945;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E0xO9Bx9i5tldfd7adzq3NuOgykDM+T3WB8seKN/9fM=;
+        b=Rn1Wn35a3Q7v2xurv8jhrovzlsFH7sChn8tYLRrfRifaGcZBE8M3vTjPA2zH6zDt/C
+         FIc3P+K/MHiA1IOds5OkLa5xxRmJex2sYMP1lV58y4Y/tGXPHmmWNl/UNg9M4w5KYoR/
+         i/5oqLgIsTd8GLq0IRcJLpcFNC7NfS7Ybvaoot5zoYCIvHYrp2mOySRGxE7J9W/uAXSg
+         hBm+C5suzXhEC4ysRJcNk8fDABZwwH9qKapWb/4f1uvAcqeb2hIhDlLrXG+8Wwv79KXT
+         tdKYrSpA3Fs8diyr47bCVIwK/tpeX3eoX4MArsYncTy1DkI6y0rqXRumKu0J0c8pubbd
+         gdbw==
+X-Gm-Message-State: AAQBX9dDUU+T2U5iFDWaNWlc6pdvGZ1eBVgyaBU1PRzDWLwFjN43JJO9
+        ugLJhKOJcpzJsk+SZ+p5BgJ9FQq7ZacbfUohr7pGnQ==
+X-Google-Smtp-Source: AKy350Yke3xHvPIcVDrfJDNbsXAC8S4tRog/pB48r6EGnMKgP8FWKKWc/STPyg9eHg7eVsBk44WhbqLGoyLPXsVzwRk=
+X-Received: by 2002:a17:90a:6bc3:b0:23b:36cc:f347 with SMTP id
+ w61-20020a17090a6bc300b0023b36ccf347mr3906797pjj.9.1681252945157; Tue, 11 Apr
+ 2023 15:42:25 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:8563:0:b0:3c5:1971:1b7b with SMTP id
- g90-20020a028563000000b003c519711b7bmr1537580jai.1.1681246384070; Tue, 11 Apr
- 2023 13:53:04 -0700 (PDT)
-Date:   Tue, 11 Apr 2023 13:53:04 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000080c6c805f915ade0@google.com>
-Subject: [syzbot] [rds?] WARNING in rds_conn_connect_if_down
-From:   syzbot <syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
-        syzkaller-bugs@googlegroups.com
+References: <168098183268.96582.7852359418481981062.stgit@firesoul> <168098188134.96582.7870014252568928901.stgit@firesoul>
+In-Reply-To: <168098188134.96582.7870014252568928901.stgit@firesoul>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 11 Apr 2023 15:42:13 -0700
+Message-ID: <CAKH8qBu2ieR+puSkF30-df3YikOvDZErxc2qjjVXPPAvCecihA@mail.gmail.com>
+Subject: Re: [PATCH bpf V7 1/7] selftests/bpf: xdp_hw_metadata default disable bpf_printk
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
+        tariqt@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Sat, Apr 8, 2023 at 12:24=E2=80=AFPM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
+>
+> The tool xdp_hw_metadata can be used by driver developers
+> implementing XDP-hints kfuncs.  The tool transfers the
+> XDP-hints via metadata information to an AF_XDP userspace
+> process. When everything works the bpf_printk calls are
+> unncesssary.  Thus, disable bpf_printk by default, but
+> make it easy to reenable for driver developers to use
+> when debugging their driver implementation.
+>
+> This also converts bpf_printk "forwarding UDP:9091 to AF_XDP"
+> into a code comment.  The bpf_printk's that are important
+> to the driver developers is when bpf_xdp_adjust_meta fails.
+> The likely mistake from driver developers is expected to
+> be that they didn't implement XDP metadata adjust support.
+>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   16 ++++++++++++++=
+--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/=
+testing/selftests/bpf/progs/xdp_hw_metadata.c
+> index 4c55b4d79d3d..980eb60d8e5b 100644
+> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> @@ -5,6 +5,19 @@
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_endian.h>
+>
+> +/* Per default below bpf_printk() calls are disabled.  Can be
+> + * reenabled manually for convenience by XDP-hints driver developer,
+> + * when troublshooting the drivers kfuncs implementation details.
+> + *
+> + * Remember BPF-prog bpf_printk info output can be access via:
+> + *  /sys/kernel/debug/tracing/trace_pipe
+> + */
+> +//#define DEBUG        1
+> +#ifndef DEBUG
+> +#undef  bpf_printk
+> +#define bpf_printk(fmt, ...) ({})
+> +#endif
 
-syzbot found the following issue on:
+Are you planning to eventually do somethike similar to what I've
+mentioned in [0]? If not, should I try to send a patch?
 
-HEAD commit:    b9881d9a761a Merge branch 'bonding-ns-validation-fixes'
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=123c531dc80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d3500b143c204867
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4faee732755bba9838e
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+0: https://lore.kernel.org/netdev/CAKH8qBupRYEg+SPMTMb4h532GESG7P1QdaFJ-+zr=
+bARVN9xrdA@mail.gmail.com/
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4b4a5a4a2f01/disk-b9881d9a.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f3d2bf6e2e9e/vmlinux-b9881d9a.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/26469aa699ef/bzImage-b9881d9a.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 21117 at net/rds/connection.c:933 rds_conn_connect_if_down+0x97/0xb0 net/rds/connection.c:933
-Modules linked in:
-CPU: 1 PID: 21117 Comm: syz-executor.3 Not tainted 6.3.0-rc5-syzkaller-00143-gb9881d9a761a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
-RIP: 0010:rds_conn_connect_if_down+0x97/0xb0 net/rds/connection.c:933
-Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 25 48 8b bb 90 00 00 00 5b 5d e9 be fa ff ff e8 49 f9 2c f8 <0f> 0b eb c6 e8 f0 05 7e f8 eb aa e8 49 06 7e f8 eb 80 e8 42 06 7e
-RSP: 0018:ffffc900055d7910 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8880526ba5f0 RCX: 0000000000000000
-RDX: ffff888027cb9d40 RSI: ffffffff8955de77 RDI: 0000000000000001
-RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000000 R12: 00000000fffffff5
-R13: 0000000000000008 R14: ffff88806fd2db00 R15: ffff88807644e4c0
-FS:  00007f9b3b641700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002001e000 CR3: 0000000027523000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- rds_sendmsg+0x2366/0x31a0 net/rds/send.c:1319
- sock_sendmsg_nosec net/socket.c:724 [inline]
- sock_sendmsg+0xde/0x190 net/socket.c:747
- ____sys_sendmsg+0x71c/0x900 net/socket.c:2501
- ___sys_sendmsg+0x110/0x1b0 net/socket.c:2555
- __sys_sendmsg+0xf7/0x1c0 net/socket.c:2584
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f9b3a88c169
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9b3b641168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f9b3a9abf80 RCX: 00007f9b3a88c169
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000003
-RBP: 00007f9b3a8e7ca1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe6c474d8f R14: 00007f9b3b641300 R15: 0000000000022000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +
+>  struct {
+>         __uint(type, BPF_MAP_TYPE_XSKMAP);
+>         __uint(max_entries, 256);
+> @@ -49,11 +62,10 @@ int rx(struct xdp_md *ctx)
+>         if (!udp)
+>                 return XDP_PASS;
+>
+> +       /* Forwarding UDP:9091 to AF_XDP */
+>         if (udp->dest !=3D bpf_htons(9091))
+>                 return XDP_PASS;
+>
+> -       bpf_printk("forwarding UDP:9091 to AF_XDP");
+> -
+>         ret =3D bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
+>         if (ret !=3D 0) {
+>                 bpf_printk("bpf_xdp_adjust_meta returned %d", ret);
+>
+>
