@@ -2,71 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EC46DE173
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Apr 2023 18:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629796DE18B
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Apr 2023 18:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjDKQty (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Apr 2023 12:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
+        id S230291AbjDKQx0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Apr 2023 12:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbjDKQtt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Apr 2023 12:49:49 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8BCE5E
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 09:49:48 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-51aac8f68cdso90671a12.0
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 09:49:48 -0700 (PDT)
+        with ESMTP id S230102AbjDKQxU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Apr 2023 12:53:20 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA9A25241
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 09:53:19 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5140cca9dbbso723343a12.3
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Apr 2023 09:53:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1681231788;
+        d=ziepe.ca; s=google; t=1681231999;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fKM/Au7LCIa72XM+Je2Si+gvd0HziYllwF6Cjpb4PW8=;
-        b=hC9E32DRv7+pS1N6/5j+hRh+3GNBj12qEbIu5CBChxbihc1mcVdcB3o23NOHq3WqVK
-         Q3+eJ8iiHJZiRaFUPl/ACzYB1d1ylldWdHZOg3XCk1iKQEJmurjpMn1N4fi8i7Z4iI9O
-         PDl5gQBYAP63BIM7P4TeNO6uHdN4yP90zfboEjHaib4J5FpvDaJWhv2rmBL7rGpJzOBo
-         hG5djZsQaRyAny935yx0c/KO0RANRZ8AtFXJy1Om7UbSIxgIHBcN4/idw5lGutuAtSQq
-         jwH7sxOmPJI+BA8XAeKlLzAVVgVxPXQ4jVZGc+3WA3X1Uz2G6LLytRScMlQk3aeFbpSg
-         4HLQ==
+        bh=rg4IHVJYm1jFUD6UI345qIdjmJzrQpPe8h8tbVM40Rs=;
+        b=AbTJ0m9/Hhxao9/CnfkafPYQ/kl813XSGPjD+RPxhvztW6b8Mv0dSmQ22s+RgCMxVx
+         guAnwh/yrYzqsA65NQkof9xPB/wn9p73zzclHNMhbHkf5fE3eCFOA1lndmpvEIATxauA
+         BPOYvS648fZRmmhQNy1tafVPg6bITIY9lGHGP3omwEK7ERXUgB29AUMhPlxt/KtWyuzy
+         t/sughUgpU4gssXNu3H8m3Da2ww+iFADSjRI2cdGOeJIfGNsx+OBT0N21tg7NBXfgMr9
+         R0zCsgbWae7jK2VWMnAlc3CvIYLbc5p4Uva86dINh1HzG1HwCcQcd8guXy2/htEvo6Ki
+         IsIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681231788;
+        d=1e100.net; s=20210112; t=1681231999;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fKM/Au7LCIa72XM+Je2Si+gvd0HziYllwF6Cjpb4PW8=;
-        b=LwzKnS6A/XMlaxD2YFNItZfUblAmCzUCknQUQdfswta/nvWBsqLDdrX1gNt0dlTZOJ
-         a96I9Sk99Ly//u0U/9cTbTS579sg8q9hhvX63qeqKT/EChLg1eD6hkr+vblYZsw2sTeB
-         3EgZgiZPAhCVfuSBui8ocUmVF3Av6ZsioV4nEUiYX0zO6PdI0idSVHEqbpnayO26ZRn3
-         mSt0WWvV59cCFVrJmC835LWn5fk8hw8f9lHzK7PIMyBF16wSp8F0tBgRuHuSFAqnvNxl
-         pj5JSOfJndMBLYKRW8ux794hwloCQ4oyUOdZinadklH3AtM+nJdC8RGlDacpoe1Y6Cgg
-         apcA==
-X-Gm-Message-State: AAQBX9ckD1s3XhzzNzz+LqsDXXwIgUmqVZx/g4m/OHmzHVBtyUs7cRN6
-        8oRDVPFxq1eToSUu421w2wnnmw==
-X-Google-Smtp-Source: AKy350bJLjPUo8R4b3qITkC/Ivl06N6uJsPpV6H3CXIECCLKzbXY7TcJ8REBG5bcNaoXUB+YOKRWJw==
-X-Received: by 2002:aa7:96ba:0:b0:63a:fb40:891a with SMTP id g26-20020aa796ba000000b0063afb40891amr648726pfk.2.1681231787969;
-        Tue, 11 Apr 2023 09:49:47 -0700 (PDT)
+        bh=rg4IHVJYm1jFUD6UI345qIdjmJzrQpPe8h8tbVM40Rs=;
+        b=0G/O0dUVVTEkpJHM0+FBWPztgSATGYrawPbKwcvwTCal/1Kh7li77HyWTY/jJlx7bN
+         C9cxp1/liLvYtftHyFByXbd0LjEr7AiWuowxW0BhHTldg38sZzNDqci7C9t0nSJLObki
+         /mOUE697XykwPf2l1AwFabkaH4SPeWsBwenokglg3UZ4Nd1f8T45qPM5IoXi0vJC3rrk
+         T+ldby2C7FYgJtjavuTlzNOxCVy/eSjkS8QaahGBzIm+eQOvAWJmkFOi/zR4BowQFTEa
+         U8JhF7pW0GzyqCHnhPcoTzu6toWl939phb6olizx60++DXNoB/aaKZx5HKFryAXrSois
+         jFig==
+X-Gm-Message-State: AAQBX9d3HFH1476syYpvx4+IVSoQyWybSJtx/ZOqc8/LvnKUEMR6L5l6
+        izZ3+NLEyzG51zgasrr8X+82GQ==
+X-Google-Smtp-Source: AKy350ZFCFspOgJYQSaYuuLeWC2AbVJj/2ZVwZKJ6pXjDsPDyWLxb3mC78rEixFvJmEulnXZRKSVIg==
+X-Received: by 2002:aa7:9507:0:b0:632:34ef:7669 with SMTP id b7-20020aa79507000000b0063234ef7669mr3765415pfp.7.1681231999137;
+        Tue, 11 Apr 2023 09:53:19 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id a20-20020a62bd14000000b00625f5aaa1d9sm10007903pff.83.2023.04.11.09.49.47
+        by smtp.gmail.com with ESMTPSA id v6-20020aa78506000000b00637b0c719c5sm4250832pfn.201.2023.04.11.09.53.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Apr 2023 09:49:47 -0700 (PDT)
+        Tue, 11 Apr 2023 09:53:18 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.95)
         (envelope-from <jgg@ziepe.ca>)
-        id 1pmHBh-009Phv-H1;
-        Tue, 11 Apr 2023 13:49:45 -0300
-Date:   Tue, 11 Apr 2023 13:49:45 -0300
+        id 1pmHF7-009Pmw-D4;
+        Tue, 11 Apr 2023 13:53:17 -0300
+Date:   Tue, 11 Apr 2023 13:53:17 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
-        linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com
-Subject: Re: [PATCH for-next 2/6] RDMA/bnxt_re: Add disassociate ucontext
- support
-Message-ID: <ZDWPqXhlkhMKXv04@ziepe.ca>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
+        andrew.gospodarek@broadcom.com
+Subject: Re: [PATCH for-next 1/6] RDMA/bnxt_re: Use the common mmap helper
+ functions
+Message-ID: <ZDWQfWeTqfuvc3Dl@ziepe.ca>
 References: <1681125115-7127-1-git-send-email-selvin.xavier@broadcom.com>
- <1681125115-7127-3-git-send-email-selvin.xavier@broadcom.com>
- <20230410122701.GQ182481@unreal>
+ <1681125115-7127-2-git-send-email-selvin.xavier@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230410122701.GQ182481@unreal>
+In-Reply-To: <1681125115-7127-2-git-send-email-selvin.xavier@broadcom.com>
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -76,20 +75,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 10, 2023 at 03:27:01PM +0300, Leon Romanovsky wrote:
-> On Mon, Apr 10, 2023 at 04:11:51AM -0700, Selvin Xavier wrote:
-> > Add empty stub for disassociate ucontext as done in other vendor
-> > drivers.
-> 
-> It will be great to mention in commit message that the reason to this
-> stub is because you use rdma_user_mmap_io().
+On Mon, Apr 10, 2023 at 04:11:50AM -0700, Selvin Xavier wrote:
+> -		rc = ib_copy_to_udata(udata, &resp, sizeof(resp));
+> +		pd->pd_db_mmap = bnxt_re_mmap_entry_insert(ucntx, (u64)ucntx->dpi.umdbr,
+> +							   BNXT_RE_MMAP_UC_DB, &resp.dbr);
+> +
+> +		if (!pd->pd_db_mmap) {
+> +			ibdev_err(&rdev->ibdev,
+> +				  "Failed to insert mmap entry\n");
 
-That isn't the reason to do this stub..
+No prints from drivers on failure paths. dbg at worst.
 
-It is some yet-to-be-cleaned-up way for the driver to indicate it
-*fully* supports driver disassociation.
+> +	switch (bnxt_entry->mmap_flag) {
+> +	case BNXT_RE_MMAP_UC_DB:
+> +		pfn = bnxt_entry->mem_offset >> PAGE_SHIFT;
+> +		ret = rdma_user_mmap_io(ib_uctx, vma, pfn, PAGE_SIZE,
+> +					pgprot_noncached(vma->vm_page_prot),
+> +				rdma_entry);
+> +		if (ret)
+> +			ibdev_err(&rdev->ibdev, "Failed to map shared page");
+> +		break;
+> +	case BNXT_RE_MMAP_SH_PAGE:
+>  		pfn = virt_to_phys(uctx->shpg) >> PAGE_SHIFT;
+>  		if (remap_pfn_range(vma, vma->vm_start,
+>  				    pfn, PAGE_SIZE, vma->vm_page_prot)) {
+>  			ibdev_err(&rdev->ibdev, "Failed to map shared page");
+> -			return -EAGAIN;
+> +			ret =  -EAGAIN;
+>  		}
+> +		break;
 
-rdma_user_mmap_io() is part of that support, but the whole
-functionality should be tested before setting this.
+What is this? You can't enable disassociate support until all the mmap's
+in the driver have been fixed.
 
 Jason
+
