@@ -2,146 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CE86DFAD0
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 18:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974156DFAF9
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 18:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbjDLQGs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Apr 2023 12:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
+        id S230136AbjDLQOm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Apr 2023 12:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjDLQGr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 12:06:47 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA0D270D
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 09:06:45 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-54f8a3ded60so32754787b3.8
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 09:06:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681315604;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qOZ3tRdzr0hGyj65SmYqR8EOiBJrMHU9wHV0sWwy2Pc=;
-        b=dMmMg50RH6pfkUoOxPzCVX7IU5ikGtbDFWmi2r45KgXj3VCwZ1lQFQ0bIIx1lIKc50
-         d1WFq5ChEvU+YNUSCURdJK2alRsAFNduI2SihG0yD1+2CBU/p3WMVxRopmIfzG55ooVv
-         HzaorBxvGSvBalSCOiMk8iBKIJL3W2uYkrjRACRJWafTyIaGMdzo01QjKtqsqFxFHv20
-         +fVbNuhtLK3PsF1eFNMHGRfbPXvGJL/j8HAohE2fRqQTs74Y48KXU7jHNwIVkJze/8GX
-         cEgdk9j0CRkn9iMUPQquIVeBv+4ewh6v/U8cBwSst+bZ2H2Ou1yJa8aOjt7VEPELxbY6
-         q6Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681315604;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qOZ3tRdzr0hGyj65SmYqR8EOiBJrMHU9wHV0sWwy2Pc=;
-        b=o/Q45abZ5no0P2+Q1OeOCFzM4iwPLTQOJ+6kNRT5b+dmh42V3vNkZM90DBCJCRnSpL
-         1SbxrtuTWRHCRbWT1iNq/jxPmiwtD+pk9tFeDg8/VH0zXXfIEQMku1dQ5pqhRNDwemyJ
-         s+g8niwPCu8im9Xrd+7OQvOkcI6mYK4Vcs3PeNyRVyGVb4UrQlSR7vgOb9XukP92e5ML
-         +PMshfAXfxO4J86fTs9fR/tJfTWRe9VXYgLvAkzr6VDqnv+M/kuOCzlObARI34kL1W6l
-         /tmNNaSYxPzQL24AgSC9X5pIgPPj/h3Ui5pXjlXiqAdrjDz0cuAtaa7cg2mB4FzdhEA3
-         437g==
-X-Gm-Message-State: AAQBX9dOiU3f1vgqRaYYojX2vCXSO0uTP2Yzx53rglekQlQBCjKUIy5n
-        WTM7e9TtAUpUWEElNwuPTVpQpaE=
-X-Google-Smtp-Source: AKy350alO6Bi7nwBbBUyvXEpvPDdFjOYyG+3EN768sevyKcN5qXz8S1F1xuMmrr51w4VCv+w61ymJ58=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:d988:0:b0:997:c919:4484 with SMTP id
- q130-20020a25d988000000b00997c9194484mr7803210ybg.6.1681315604689; Wed, 12
- Apr 2023 09:06:44 -0700 (PDT)
-Date:   Wed, 12 Apr 2023 09:06:42 -0700
-In-Reply-To: <402a3c73-d26d-3619-d69a-c90eb3f0e9ee@redhat.com>
-Mime-Version: 1.0
-References: <168098183268.96582.7852359418481981062.stgit@firesoul>
- <168098188134.96582.7870014252568928901.stgit@firesoul> <CAKH8qBu2ieR+puSkF30-df3YikOvDZErxc2qjjVXPPAvCecihA@mail.gmail.com>
- <402a3c73-d26d-3619-d69a-c90eb3f0e9ee@redhat.com>
-Message-ID: <ZDbXEqQc3MpKPmGv@google.com>
-Subject: Re: [PATCH bpf V7 1/7] selftests/bpf: xdp_hw_metadata default disable bpf_printk
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     brouer@redhat.com, bpf@vger.kernel.org,
-        "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
-        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
-        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
-        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
-        tariqt@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230219AbjDLQOk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 12:14:40 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2045.outbound.protection.outlook.com [40.107.102.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE141993
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 09:14:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V/Vy4ikIO1Wmqrasc9+n6NYsdzwI6Qwsi9jxOjgQV9u9ygqKPmCmE5pA+ZQbbartY2jaIRCbZmkFuy7AnGxxz5c5vHR61dJr86CqWq4ZoUVmmhr/t1cLzR4RCILQaDgulNxSAF4X5AeBS/1nzvEec98XBG2SPaJdwLDetnGMgob45rcIp4t3ePhsNF5i2TiMKp0lcE+2UqVLnFLaSR56+NzZ6AQ8i4fupEjUka6XNuxO/ei3whg79u18rwIoljFL4rkKmvnhEUZrB8/SuVNXR++5L2Tg7eW/r4fMDQQgp9dTdOvZUsB+KJqw91O1SoseuwOUN2PrGVuymHSilJI4jA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sgGfN3qMS2ENloaPNyBaOnHAfujHwpQxABeoZInQlVY=;
+ b=fGORfUSVnYyOZv94gTaSXcWpuR2/K949ExVutPMD9ZnX67yzPmiOEzhgBlBB1EVntMuuMFfEqS9/pETXVTgmNPDmw6FT9S/+aF+fEts9uoaa8i5a60wYzEUiP9eFhTyQOLql28djm+mdfbzeVQMFuos9PLZ3tVuDkJXuRwFTQhomm0SJzyyfIv+Jt8wMIXGrQlzTyBsqkz9sWW39wu3W7fQI+WxZ4YcXmW4Xi05pCNAvnais3oBDX6PwxqkUciuYKFdwBqtu86HU137/BQQ8e+fVMDVgcnLLVhBu6DnR1JCveCv1cAQ81QYsK9YMbL4vLcKYxyardpzzz87CL4/5Yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sgGfN3qMS2ENloaPNyBaOnHAfujHwpQxABeoZInQlVY=;
+ b=JSa7+QPpH17MLSgflCGfIM9+pMD0ajz8NEq9q2Vs9JJkxnSKTbMP4h7hFfY+UJZy6P4YVSbirYTC7ieJc9pwWprIvRYswTXGu6zMLZ+Vvmjd3YL6cNpqaDSwbumFQMBjpZ7ZfNeAnRgepCE6lTPnkNUxUvERBd/USAbLApd7NuxWm/MVmv3ov7iN+BbvXwItMcAjHSq6oYOyf5Quct8TiOe/nQRCsH8/vK0AD4wB1iAIeBtBBr/0TqdmtKhZ6+iIKncOttz0kbvvzMMMkrxW7P3jS7m8MO4lIbxtAQznZlBEsS7YdbjkZ8Z9/tMZqh7NJaZWHbhXPhlpFQtXr0gcsg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ1PR12MB6146.namprd12.prod.outlook.com (2603:10b6:a03:45b::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6277.34; Wed, 12 Apr
+ 2023 16:14:27 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::6045:ad97:10b7:62a2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::6045:ad97:10b7:62a2%9]) with mapi id 15.20.6277.038; Wed, 12 Apr 2023
+ 16:14:27 +0000
+Date:   Wed, 12 Apr 2023 13:14:23 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     error27@gmail.com, leon@kernel.org, zyjzyj2000@gmail.com,
+        jhack@hpe.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/rxe: Fix error in rxe_task.c
+Message-ID: <ZDbY39Oh9oue6VRm@nvidia.com>
+References: <20230329193308.7489-1-rpearsonhpe@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230329193308.7489-1-rpearsonhpe@gmail.com>
+X-ClientProxiedBy: BYAPR05CA0039.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::16) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ1PR12MB6146:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3db4dcf9-c98d-424a-bebb-08db3b70fcb3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ns+dkV2+rMU2OySoZ97xDdBPgV4ZjbWiawcFOGZaF+DGMZnNBxFttGw3oZoD3e8UhgjOdnrKNsRcoYEOU/ETAxyMWQV1dtiCWHIxDU0xl+oORlDfWv1xq2n6gDm5TagSPC3lNPpVT6lKTzCX8tR3sAzsZtUBZZTsBO4NDWGJy22kFX0H5athbNtTOqadOrWcaG7pizZ26fDG/+do13uZv+fO7ANHEHNHe2tvW9skR9w77TbC6hmoQnQH2KgfFcWf8WB6BAiCrpLA8BIYlHWERYf3WKbui9vof8SYntR7pPM1qnbW/JE11gahxvxFD4e2N1UYZCV5GlwkjQJflWgor0uRhSy9DJVfkvOuNLxShveRBHXTjDRDNgpNfT4/xQ7sXDM3k5DfSGGyA9tmV19q8YJJnVFwWji9ET6to8cCDXavQNsbD8GnJpYQ+9S4xBbLYQU3R17H5sv2ZhR4rcQjfxo3hZ/MjuHKco2Jq3rT0oWvEbUReUU3mIuvoOQqaU6Rvzcw57O9br/bB0MHNbIpl6Zmci3um7Bmre9yH83K85fhnASBjf0d3/uR0M6NI0Ky/JPZmtfkV3oQN1rKcTAv7iqwHGh2ffkfZBT0N0wJwFE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(366004)(396003)(39860400002)(136003)(451199021)(6486002)(66946007)(41300700001)(6916009)(478600001)(4326008)(8676002)(66476007)(66556008)(966005)(86362001)(316002)(36756003)(83380400001)(2616005)(26005)(6666004)(6506007)(6512007)(4744005)(8936002)(5660300002)(186003)(2906002)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MczW9p9L4VPrLVDB/YDdogrxfDFMgq022jIeG9rzomMHct2HKL1/aQB8RsHN?=
+ =?us-ascii?Q?Ux4D+RKL9mImMvwvLzNYPlx9Nji639DBhzARRdei0l2xVa6sNXLNDK3+d/PV?=
+ =?us-ascii?Q?1yMb3jmRf/P351ZgA9NxuLD2oKs5GeEiBw6XZg81HHMBESNSzxB5smKgqXBy?=
+ =?us-ascii?Q?0IYYuucKV2THSyRLdkaUi4USErfbALO//j9YJcojTsFfeYx0uQXPHnP+uqPh?=
+ =?us-ascii?Q?ElT+uFrlbxIs46lRdFE6a3+tZj0pjnV4wV+exQlljU05yxOKb+bemn6UJxzy?=
+ =?us-ascii?Q?1XRieeedwXcj52iQNx9v9cc4URG+T66J9SCmZlh2Cx7LusOJt4uwJVAKRlR4?=
+ =?us-ascii?Q?2Rv5QcQSloSQrxdGP2J8CJQdOacTIN2nW0A/6IO3uoyx7q05QoDRFlo/B/9p?=
+ =?us-ascii?Q?m04Rr62rdcSB9SQH6WjTkXqhUCxqbzr9BtEnlAlHOZX87oFytvjdHz4ycNuP?=
+ =?us-ascii?Q?OX76OCEdvuKzkxranq7sHWUB6RB61+KUhc653Nrtp+IhnPib0CzfHlIBqCm8?=
+ =?us-ascii?Q?4sDnNCdQHLTqnpN+h+WYlAm+pWJ6vLuUAcfpwxxSL8/urMeatFfHr+b0Q2gH?=
+ =?us-ascii?Q?zlbw/z9tJJWI2cVwkvotZpujfrSS4sUMOecWSJ2gpIXgzQcgELPXDyZBT/+N?=
+ =?us-ascii?Q?sXPpWt9vgJ+pyygLHKFkLZdvKvdmWjnkcKbsD/PBGeYuzG/T2FKN6Q+yfdzx?=
+ =?us-ascii?Q?ntZL9dMaJHGL2Ejit/pKelPHvj+9T00W7Er1MbK6/5+MSXBJg5+Oc+olvu9Z?=
+ =?us-ascii?Q?wqt8GvFfML/9v0JiNOeDqgsAmjSGWP0Z/0rto8qSKzQQvPkOTtyPIZ44asPX?=
+ =?us-ascii?Q?ReqNJsTqnjKwM8yD9oHFQbszshOBCh0y9O4PPvxYKvZzK5Fc2mZFloJze1Wm?=
+ =?us-ascii?Q?5Iumm3uCRU4DQx7vra3nqFFODfmG82pK9DWp2inaeMu05rY87hI+Vvw3M7bA?=
+ =?us-ascii?Q?G0TOBikyZ4BRuZmNBjUkGM6+I+sO5gTyZiOi+MhL6hCBgJsI39SqkAE+Gp34?=
+ =?us-ascii?Q?dJLLzh+X6JlUEHqwaCIUD5BlWBtq+5Luqh/0rwB2OnnoauE94gsuRk/N3Sea?=
+ =?us-ascii?Q?K64gfdi0kRhA6xgsThC0kepRA7f4PSRHaAiHqOu/NahqE9OXy+k0H3LgsKiA?=
+ =?us-ascii?Q?mneFzhi3/pOKjWqE1/8qWWAlWoPiyZObQV/oGCHp2PXgYdgnM5tbz3juQSZ1?=
+ =?us-ascii?Q?jtzYAoS154IyqijNXVUJBj7vsRbm6Td9YAdgBQ+TwKboWl+33jWhOFXzK8Mu?=
+ =?us-ascii?Q?/XBnpOik8P16mF5KlgaQvjXle7R4kKV5b/H+y9IG1AgVZW60+xNl5pgUisco?=
+ =?us-ascii?Q?xVUX0KxYcmjdeBHY8+S0Jtpvrz+8pE9CyeHdZGiKBCTay1eAYdQQ+VGuogmI?=
+ =?us-ascii?Q?jxIju87D7+yG46JHWarFQmo7h8WH6AvlTvV9GDm3ecnyUf8UvZSyzSdeA3YL?=
+ =?us-ascii?Q?xphl0E4uKNrI7/rHPebTysdAMEaf7EAvOOTxf1OIKYCbScnlO/WWXpDggkEP?=
+ =?us-ascii?Q?S7vpsVSUEXN09GqIjZYgQ0Bzy4+RF6rECRU0ZoUGBcGjiF1v1dW/AqskHD6d?=
+ =?us-ascii?Q?2+PYvXVbY2bEs2CSE/nPwfW10LTyUkY8jf1tNrzb?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3db4dcf9-c98d-424a-bebb-08db3b70fcb3
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2023 16:14:27.3199
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +KMx+BOIvzwnlHJ8TruC2iLHMSlWXDOOY3g2R4axmw8y9NQtnGqPNKDfZJhUdUY5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6146
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 04/12, Jesper Dangaard Brouer wrote:
->=20
-> On 12/04/2023 00.42, Stanislav Fomichev wrote:
-> > On Sat, Apr 8, 2023 at 12:24=E2=80=AFPM Jesper Dangaard Brouer
-> > <brouer@redhat.com> wrote:
-> > >=20
-> > > The tool xdp_hw_metadata can be used by driver developers
-> > > implementing XDP-hints kfuncs.  The tool transfers the
-> > > XDP-hints via metadata information to an AF_XDP userspace
-> > > process. When everything works the bpf_printk calls are
-> > > unncesssary.  Thus, disable bpf_printk by default, but
-> > > make it easy to reenable for driver developers to use
-> > > when debugging their driver implementation.
-> > >=20
-> > > This also converts bpf_printk "forwarding UDP:9091 to AF_XDP"
-> > > into a code comment.  The bpf_printk's that are important
-> > > to the driver developers is when bpf_xdp_adjust_meta fails.
-> > > The likely mistake from driver developers is expected to
-> > > be that they didn't implement XDP metadata adjust support.
-> > >=20
-> > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > > ---
-> > >   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   16 +++++++++=
-+++++--
-> > >   1 file changed, 14 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/to=
-ols/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> > > index 4c55b4d79d3d..980eb60d8e5b 100644
-> > > --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> > > +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> > > @@ -5,6 +5,19 @@
-> > >   #include <bpf/bpf_helpers.h>
-> > >   #include <bpf/bpf_endian.h>
-> > >=20
-> > > +/* Per default below bpf_printk() calls are disabled.  Can be
-> > > + * reenabled manually for convenience by XDP-hints driver developer,
-> > > + * when troublshooting the drivers kfuncs implementation details.
-> > > + *
-> > > + * Remember BPF-prog bpf_printk info output can be access via:
-> > > + *  /sys/kernel/debug/tracing/trace_pipe
-> > > + */
-> > > +//#define DEBUG        1
-> > > +#ifndef DEBUG
-> > > +#undef  bpf_printk
-> > > +#define bpf_printk(fmt, ...) ({})
-> > > +#endif
-> >=20
-> > Are you planning to eventually do somethike similar to what I've
-> > mentioned in [0]? If not, should I try to send a patch?
->=20
-> See next patch:
->  - [PATCH bpf V7 2/7] selftests/bpf: Add counters to xdp_hw_metadata
->=20
-> where I add these counters :-)
+On Wed, Mar 29, 2023 at 02:33:09PM -0500, Bob Pearson wrote:
+> In a previous patch TASKLET_STATE_SCHED was used as a bit but it
+> is a bit position instead. This patch corrects that error.
+> 
+> Reported-by: Dan Carpenter <error27@gmail.com>
+> Link: https://lore.kernel.org/linux-rdma/8a054b78-6d50-4bc6-8d8a-83f85fbdb82f@kili.mountain/
+> Fixes: d94671632572 ("RDMA/rxe: Rewrite rxe_task.c")
+> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_task.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Oh, nice, let me take a look. I was assuming v7 is mostly the same as
-v6..
-=20
-> >=20
-> > 0: https://lore.kernel.org/netdev/CAKH8qBupRYEg+SPMTMb4h532GESG7P1QdaFJ=
--+zrbARVN9xrdA@mail.gmail.com/
-> >=20
->=20
+Applied to for-next
+
+Thanks,
+Jason
