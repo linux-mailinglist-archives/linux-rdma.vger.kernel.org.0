@@ -2,115 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5FE6DEDE2
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 10:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2506DF248
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 12:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjDLIgp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Apr 2023 04:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
+        id S229575AbjDLKzm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Apr 2023 06:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbjDLIgV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 04:36:21 -0400
-Received: from out199-3.us.a.mail.aliyun.com (out199-3.us.a.mail.aliyun.com [47.90.199.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E696EAF;
-        Wed, 12 Apr 2023 01:34:47 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VfvlHTJ_1681288402;
-Received: from 30.221.150.135(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VfvlHTJ_1681288402)
-          by smtp.aliyun-inc.com;
-          Wed, 12 Apr 2023 16:33:23 +0800
-Message-ID: <acb77026-c8eb-39e8-b3a8-23c348cbd60c@linux.alibaba.com>
-Date:   Wed, 12 Apr 2023 16:33:21 +0800
+        with ESMTP id S229491AbjDLKzi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 06:55:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5315365B0
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 03:54:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681296889;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9alFis21lp3H1PeQGiwFBeiCWEcrStDft1SvCWrv9fk=;
+        b=FQT6jJGu3OYTx1455515yVvDwRtzkD0nmiVHVDt3/PA9u4tf9gSjMbeFKHXmDhBdNpx+R8
+        dAaBXRd80u7yj8mx0ar/l/Gnsi0STW1FaULk4Oexu7TvXuRcuQQuIHqG+Jizwsry0vViZj
+        KSyqPsth4mgQTwblZByG2pYgqAlJu2o=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-596-JCGdLZ96NyGdhsF7HHFehA-1; Wed, 12 Apr 2023 06:54:48 -0400
+X-MC-Unique: JCGdLZ96NyGdhsF7HHFehA-1
+Received: by mail-ed1-f69.google.com with SMTP id z34-20020a509e25000000b00504ed11e0c5so1151997ede.1
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 03:54:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681296887; x=1683888887;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9alFis21lp3H1PeQGiwFBeiCWEcrStDft1SvCWrv9fk=;
+        b=mUO9KTgsmZmBKypzZm1gzb5kz+ZidPts08DXqzqsr93UQhSW9xHg6C1CIQFWynm3S5
+         TJuIDvY2GWGy3z6f6o23+B0JLl6w9FCvJmyxDc9u2nNoCZzFPwSQIlKkhvu4oZttHi2j
+         AcAonwrOaXDdMP4S2tD9qfd/aiSkkv7/L7Wo7XP2Dx0PPnAhRWgkZzGaiz1Cp7u7KUGS
+         M4cwDdCU/9QBv0xynmelLq7Str/NCHgiXMdzUQpX1pm9zpUsoV/KBQSJYw3svkdIHe/0
+         H31XiTsmEuFjrKZ+HKD2KSw/B/g+3JWSXa3F41PvX+6KikRIRoeTslcKwq1u8lbPzgP/
+         xYLQ==
+X-Gm-Message-State: AAQBX9cyD6dbT+DcdRf1VOwTHWvS8XKKmSRchbGJ8mmg8NlPFN1VP4Sr
+        IBMYqflS+XrckYCkr/pEdCZG76eEiPvIr5lqDxLwIwqX9VcJD9BgTgLIkS1SIFjU7emLU87hyjC
+        QKMGZbqcI3Ki/5FOZbB/31Q==
+X-Received: by 2002:a17:906:6d16:b0:948:c047:467d with SMTP id m22-20020a1709066d1600b00948c047467dmr5713210ejr.23.1681296887177;
+        Wed, 12 Apr 2023 03:54:47 -0700 (PDT)
+X-Google-Smtp-Source: AKy350bMaqa5uHrrM7B5IePYN1OMBi6DPhLMgrCl1TykvEZOYX14RUF+y2TD0HStIwcvwi/F7K0XRg==
+X-Received: by 2002:a17:906:6d16:b0:948:c047:467d with SMTP id m22-20020a1709066d1600b00948c047467dmr5713173ejr.23.1681296886799;
+        Wed, 12 Apr 2023 03:54:46 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id g19-20020a1709065d1300b00928e0ea53e5sm7083290ejt.84.2023.04.12.03.54.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Apr 2023 03:54:46 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <402a3c73-d26d-3619-d69a-c90eb3f0e9ee@redhat.com>
+Date:   Wed, 12 Apr 2023 12:54:45 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [RFC PATCH bpf-next 0/5] net/smc: Introduce BPF injection
- capability
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, bpf@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
+        tariqt@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH bpf V7 1/7] selftests/bpf: xdp_hw_metadata default disable
+ bpf_printk
 Content-Language: en-US
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <1680795034-86384-1-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1680795034-86384-1-git-send-email-alibuda@linux.alibaba.com>
+To:     Stanislav Fomichev <sdf@google.com>
+References: <168098183268.96582.7852359418481981062.stgit@firesoul>
+ <168098188134.96582.7870014252568928901.stgit@firesoul>
+ <CAKH8qBu2ieR+puSkF30-df3YikOvDZErxc2qjjVXPPAvCecihA@mail.gmail.com>
+In-Reply-To: <CAKH8qBu2ieR+puSkF30-df3YikOvDZErxc2qjjVXPPAvCecihA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi everyone,
 
-It's seems the RFC patch been hanging for some time.  I would like to 
-politely inquire if there are any suggestions or criticisms.
-Compared to previous patches, this patch has several main features:
+On 12/04/2023 00.42, Stanislav Fomichev wrote:
+> On Sat, Apr 8, 2023 at 12:24 PM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+>>
+>> The tool xdp_hw_metadata can be used by driver developers
+>> implementing XDP-hints kfuncs.  The tool transfers the
+>> XDP-hints via metadata information to an AF_XDP userspace
+>> process. When everything works the bpf_printk calls are
+>> unncesssary.  Thus, disable bpf_printk by default, but
+>> make it easy to reenable for driver developers to use
+>> when debugging their driver implementation.
+>>
+>> This also converts bpf_printk "forwarding UDP:9091 to AF_XDP"
+>> into a code comment.  The bpf_printk's that are important
+>> to the driver developers is when bpf_xdp_adjust_meta fails.
+>> The likely mistake from driver developers is expected to
+>> be that they didn't implement XDP metadata adjust support.
+>>
+>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>> ---
+>>   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   16 ++++++++++++++--
+>>   1 file changed, 14 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> index 4c55b4d79d3d..980eb60d8e5b 100644
+>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> @@ -5,6 +5,19 @@
+>>   #include <bpf/bpf_helpers.h>
+>>   #include <bpf/bpf_endian.h>
+>>
+>> +/* Per default below bpf_printk() calls are disabled.  Can be
+>> + * reenabled manually for convenience by XDP-hints driver developer,
+>> + * when troublshooting the drivers kfuncs implementation details.
+>> + *
+>> + * Remember BPF-prog bpf_printk info output can be access via:
+>> + *  /sys/kernel/debug/tracing/trace_pipe
+>> + */
+>> +//#define DEBUG        1
+>> +#ifndef DEBUG
+>> +#undef  bpf_printk
+>> +#define bpf_printk(fmt, ...) ({})
+>> +#endif
+> 
+> Are you planning to eventually do somethike similar to what I've
+> mentioned in [0]? If not, should I try to send a patch?
 
-1. Allow registration of multiple negotiators, each SMC negotiator has a 
-name and can be indexed that name
-2. no read/write lock anymore
-3. support bpf update
+See next patch:
+  - [PATCH bpf V7 2/7] selftests/bpf: Add counters to xdp_hw_metadata
 
-If you have any suggestions or criticisms, please let me know.
+where I add these counters :-)
 
-Thanks
-D. Wythe
-
-On 4/6/23 11:30 PM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
->
-> This patches attempt to introduce BPF injection capability for SMC,
-> and add selftest to ensure code stability.
->
-> As we all know that the SMC protocol is not suitable for all scenarios,
-> especially for short-lived. However, for most applications, they cannot
-> guarantee that there are no such scenarios at all. Therefore, apps
-> may need some specific strategies to decide shall we need to use SMC
-> or not, for example, apps can limit the scope of the SMC to a specific
-> IP address or port.
->
-> Based on the consideration of transparent replacement, we hope that apps
-> can remain transparent even if they need to formulate some specific
-> strategies for SMC using. That is, do not need to recompile their code.
->
-> On the other hand, we need to ensure the scalability of strategies
-> implementation. Although it is simple to use socket options or sysctl,
-> it will bring more complexity to subsequent expansion.
->
-> Fortunately, BPF can solve these concerns very well, users can write
-> thire own strategies in eBPF to choose whether to use SMC or not.
-> And it's quite easy for them to modify their strategies in the future.
->
-> This patches implement injection capability for SMC via struct_ops.
-> In that way, we can add new injection scenarios in the future.
->
-> D. Wythe (5):
->    net/smc: move smc_sock related structure definition
->    net/smc: net/smc: allow smc to negotiate protocols on policies
->    net/smc: allow set or get smc negotiator by sockopt
->    bpf: add smc negotiator support in BPF struct_ops
->    bpf/selftests: add selftest for SMC bpf capability
->
->   include/net/smc.h                                | 268 +++++++++++++++++
->   include/uapi/linux/smc.h                         |   1 +
->   kernel/bpf/bpf_struct_ops_types.h                |   4 +
->   net/Makefile                                     |   1 +
->   net/smc/Kconfig                                  |  13 +
->   net/smc/af_smc.c                                 | 203 ++++++++++---
->   net/smc/bpf_smc.c                                | 359 +++++++++++++++++++++++
->   net/smc/smc.h                                    | 224 --------------
->   tools/testing/selftests/bpf/prog_tests/bpf_smc.c | 107 +++++++
->   tools/testing/selftests/bpf/progs/bpf_smc.c      | 265 +++++++++++++++++
->   10 files changed, 1186 insertions(+), 259 deletions(-)
->   create mode 100644 net/smc/bpf_smc.c
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
->   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
->
+> 
+> 0: https://lore.kernel.org/netdev/CAKH8qBupRYEg+SPMTMb4h532GESG7P1QdaFJ-+zrbARVN9xrdA@mail.gmail.com/
+> 
 
