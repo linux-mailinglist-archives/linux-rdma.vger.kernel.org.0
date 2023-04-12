@@ -2,253 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C6E6DFC9B
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 19:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A856DFD11
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 19:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjDLRW6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Apr 2023 13:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        id S230111AbjDLRxp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Apr 2023 13:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjDLRW5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 13:22:57 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501F52D55
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 10:22:55 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id cg4so3600397qtb.11
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 10:22:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681320174; x=1683912174;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hCmnbNBkMz1sibsoINRecaXpVAo2jliVnlnN+PE5CQI=;
-        b=XDKHXdmSS+wCInDF6umUKzTGDY7EQkp3XvovwCPrP3Sq/xFQSdZ1Fs+lNUNApXVIZ1
-         UVrP8C4ENXe2cGROnE+sjG8ucwQF9HZOWpXB8sVzqqo/h8FYsolCvsIBjUCqSI2RQxUQ
-         BMac/cWY3/Kv4qmSGq2T2/E5EKLRsXJGGh/vPKM5ugW8m4J/6vIFvwneNMDeVcffUiBx
-         CeoXXg/btX8ONcQ1zXlPPqZiKs2YFH/sGXL0FtVJYLyLU0AKdYAGhioEATyi4wpQ4WmX
-         DMU0NkuSmLidi9ZFha5bdXPfkd/pMIsN2s0+J4tV0S3iDKVkC9lAFVMv4xB55Gd3fzWs
-         whzA==
+        with ESMTP id S230061AbjDLRxo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 13:53:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B873059F3
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 10:52:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681321969;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iI47pUzxcqmCcEC2rps2dXJyXHbQhHmBAwXMcIIXiyw=;
+        b=HERI1+tmmXnO1oPb+2TQ8Kh5jl+lfGNNQfMQSLrgABLoZyz0NiGjuITrvNXqMmY8BTbvmO
+        lEh/j4eH0xPaczpkS6/yGznirG3C6fMEsgkvx8gne1/mScFrVB9kXgJ9acfQJssccIx2NF
+        nas875KyXOWdSQDslBvY8rkMziBxAs4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-515-wVVzbWQrOVGujq-C1UVY0A-1; Wed, 12 Apr 2023 13:52:48 -0400
+X-MC-Unique: wVVzbWQrOVGujq-C1UVY0A-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5048993067dso9537078a12.0
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 10:52:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681320174; x=1683912174;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hCmnbNBkMz1sibsoINRecaXpVAo2jliVnlnN+PE5CQI=;
-        b=TRC2wT/fo+iw/rYcBM6dLccGaDCSGphCJw2EYSJ3Ou3J/MLE0is7kLB+G5jBD1ngM8
-         Od5qUyLi9B4wqkTpDXS+C2UoewGjhDFYbvaFxx9ahhUEHIFTpbe7DIKdmkMDehhKLu8c
-         Fgq2Bw6KZD5PFVGbhnpgLtA4tP5p0BM9bT9Ci1PT5Ib2he9FaZPcZ2nbf7sL64h6UTAw
-         f8R8RhEI3b2zu+MYBT5JtQL5usiwbVP9GiWsfNkyeqAWPAacWgkeyxmofy96NOHuI76k
-         /Ha+IWOKJqe6a5kwnlS6SSZYV00u4O1dcBmB5XGm0ass/YqkIXK+pILQRbHFGWNiZd2g
-         CVRA==
-X-Gm-Message-State: AAQBX9c/uRr70YZbnIjpK8ROlpuwQ9oZN9f2Xg0+B714vBif8FQV8pc5
-        F64JGxUG9/A6GTL9qZheigjW+vUPV9YJcAIr+p0=
-X-Google-Smtp-Source: AKy350aHtc4JHJ+GG/iYGCAfo1Kj+JMZDeQZr8c3liIDNDLtpFGKquurNBfE7T1Ncio53R+4FxB4p2YTPpsjyV9LEqU=
-X-Received: by 2002:ac8:7c53:0:b0:3e8:316e:3dd4 with SMTP id
- o19-20020ac87c53000000b003e8316e3dd4mr1088811qtv.11.1681320174299; Wed, 12
- Apr 2023 10:22:54 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681321967; x=1683913967;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iI47pUzxcqmCcEC2rps2dXJyXHbQhHmBAwXMcIIXiyw=;
+        b=actlcjRReLau0ZAtPmjkwCegwdXpdJNyLtVNMg2sfRigrGx36Az/eyLEihqd7ckvsb
+         TRj5n+ql7sVTN7F7g44qBADdfUNbvioaa4wHs8KIvXvQQB3HgcbL2Zb7ANRtUhOr/kZ3
+         v6APdxbYlqPiI9U+B4uzgba65EKJ40cLS0oXqoRyep1yImorCJ/8HawoEpYdptMdhOOH
+         Q0lpnlLvqI7tT4+yoXsm1IsO+q3G5ZQpZcxAKu7X7uTb31+lwOlWJ27eiZnICjm59+8e
+         aur5DSJ8LRn89tLTvMjou4KgX1+eyZGtgreWxyNZ2YGmmkD6kkPgW5sWxXN0ShsVrEPn
+         DZsA==
+X-Gm-Message-State: AAQBX9d1ZtT1tJ5ik6pE2JYyo5usQzSDJ//pgX48i0xCKLVrgVPFkw4N
+        xxhG7YyU/EAg/t8v15LQLComcxZs+HWBESHKHMitr2qqeGjpvQomRQPZV7QeI+SQwfeQFnmPrka
+        ZtLffrihmTI1D8Dez/rt3KA==
+X-Received: by 2002:a05:6402:5186:b0:4bf:b2b1:84d8 with SMTP id q6-20020a056402518600b004bfb2b184d8mr3511181edd.19.1681321967071;
+        Wed, 12 Apr 2023 10:52:47 -0700 (PDT)
+X-Google-Smtp-Source: AKy350Y0MTpGveF2HoFghji3+UpGQyjGIi40MatPabg821fgSW3yWZotqgAFPc2Jo3Kxr8gD41BAKQ==
+X-Received: by 2002:a05:6402:5186:b0:4bf:b2b1:84d8 with SMTP id q6-20020a056402518600b004bfb2b184d8mr3511145edd.19.1681321966733;
+        Wed, 12 Apr 2023 10:52:46 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id e14-20020a50d4ce000000b00502b0b0d75csm7149567edj.46.2023.04.12.10.52.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Apr 2023 10:52:46 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <34152b76-88c8-0848-9f30-bd9755b1ee25@redhat.com>
+Date:   Wed, 12 Apr 2023 19:52:45 +0200
 MIME-Version: 1.0
-References: <20230214060634.427162-1-yanjun.zhu@intel.com>
-In-Reply-To: <20230214060634.427162-1-yanjun.zhu@intel.com>
-From:   Mark Lehrer <lehrer@gmail.com>
-Date:   Wed, 12 Apr 2023 11:22:43 -0600
-Message-ID: <CADvaNzUvWA56BnZqNy3niEC-B0w41TPB+YFGJbn=3bKBi9Orcg@mail.gmail.com>
-Subject: Re: [PATCHv3 0/8] Fix the problem that rxe can not work in net namespace
-To:     Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org, parav@nvidia.com,
-        Zhu Yanjun <yanjun.zhu@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, bpf@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
+        tariqt@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH bpf V8 2/7] selftests/bpf: Add counters to xdp_hw_metadata
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+References: <168130333143.150247.11159481574477358816.stgit@firesoul>
+ <168130336725.150247.12193228778654006957.stgit@firesoul>
+ <ZDbiofWhQhFEfIsr@google.com>
+In-Reply-To: <ZDbiofWhQhFEfIsr@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> When run "ip link add" command to add a rxe rdma link in a net
-> namespace, normally this rxe rdma link can not work in a net
-> name space.
 
-Thank you for this patch, Yanjun!  It is very helpful for some
-research I'm doing.  I just tested the patch and now I have success
-with utilities like rping and ib_send_bw.  It looks like rdma_cm is at
-least doing the basics with no problems.
+On 12/04/2023 18.56, Stanislav Fomichev wrote:
+> On 04/12, Jesper Dangaard Brouer wrote:
+>> Add counters for skipped, failed and redirected packets.
+>> The xdp_hw_metadata program only redirects UDP port 9091.
+>> This helps users to quickly identify then packets are
+>> skipped and identify failures of bpf_xdp_adjust_meta.
+>>
+>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>> ---
+>>   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   15 +++++++++++++--
+>>   tools/testing/selftests/bpf/xdp_hw_metadata.c      |    4 +++-
+>>   2 files changed, 16 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> index b0104763405a..a07ef7534013 100644
+>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> @@ -25,6 +25,10 @@ struct {
+>>   	__type(value, __u32);
+>>   } xsk SEC(".maps");
+>>   
+>> +volatile __u64 pkts_skip = 0;
+>> +volatile __u64 pkts_fail = 0;
+>> +volatile __u64 pkts_redir = 0;
+>> +
+>>   extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
+>>   					 __u64 *timestamp) __ksym;
+>>   extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
+>> @@ -59,16 +63,21 @@ int rx(struct xdp_md *ctx)
+>>   			udp = NULL;
+>>   	}
+>>   
+>> -	if (!udp)
+>> +	if (!udp) {
+>> +		pkts_skip++;
+>>   		return XDP_PASS;
+>> +	}
+>>   
+>>   	/* Forwarding UDP:9091 to AF_XDP */
+>> -	if (udp->dest != bpf_htons(9091))
+>> +	if (udp->dest != bpf_htons(9091)) {
+>> +		pkts_skip++;
+>>   		return XDP_PASS;
+>> +	}
+>>   
+>>   	ret = bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
+>>   	if (ret != 0) {
+> 
+> [..]
+> 
+>>   		bpf_printk("bpf_xdp_adjust_meta returned %d", ret);
+> 
+> Maybe let's remove these completely? Merge patch 1 and 2, remove printk,
+> add counters. We can add more counters in the future if the existing
+> ones are not enough.. WDYT?
+> 
 
-However, I am still not able to "nvme discover" - this fails with
-rdma_resolve_addr error -101.  It looks like this function is part of
-rdma_cma.  Is this expected to work, or is more patching needed for
-nvme-cli to have success?
+Sure, lets just remove all of the bpf_printk, and add these counter instead.
+Rolling V9.
 
-It looks like the kernel nvme-fabrics driver is making the call to
-rdma_resolve_addr here.  According to strace, nvme-cli is just opening
-the fabrics device and writing the host NQN etc.  Is there an easy way
-to prove that rdma_resolve_addr is working from userland?
+>> +		pkts_fail++;
 
-Thanks,
-Mark
+This fail counter should be enough for driver devel to realize that they
+also need to implement/setup XDP metadata pointers correctly (for
+bpf_xdp_adjust_meta to work).
 
+>>   		return XDP_PASS;
+>>   	}
 
-
-On Mon, Feb 13, 2023 at 11:13=E2=80=AFPM Zhu Yanjun <yanjun.zhu@intel.com> =
-wrote:
->
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->
-> When run "ip link add" command to add a rxe rdma link in a net
-> namespace, normally this rxe rdma link can not work in a net
-> name space.
->
-> The root cause is that a sock listening on udp port 4791 is created
-> in init_net when the rdma_rxe module is loaded into kernel. That is,
-> the sock listening on udp port 4791 is created in init_net. Other net
-> namespace is difficult to use this sock.
->
-> The following commits will solve this problem.
->
-> In the first commit, move the creating sock listening on udp port 4791
-> from module_init function to rdma link creating functions. That is,
-> after the module rdma_rxe is loaded, the sock will not be created.
-> When run "rdma link add ..." command, the sock will be created. So
-> when creating a rdma link in the net namespace, the sock will be
-> created in this net namespace.
->
-> In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
-> will check the sock exists in the net namespace or not. If yes, rdma
-> link will increase the reference count of this sock, then continue other
-> jobs instead of creating a new sock to listen on udp port 4791. Since the
-> network notifier is global, when the module rdma_rxe is loaded, this
-> notifier will be registered.
->
-> After the rdma link is created, the command "rdma link del" is to
-> delete rdma link at the same time the sock is checked. If the reference
-> count of this sock is greater than the sock reference count needed by
-> udp tunnel, the sock reference count is decreased by one. If equal, it
-> indicates that this rdma link is the last one. As such, the udp tunnel
-> is shut down and the sock is closed. The above work should be
-> implemented in linkdel function. But currently no dellink function in
-> rxe. So the 3rd commit addes dellink function pointer. And the 4th
-> commit implements the dellink function in rxe.
->
-> To now, it is not necessary to keep a global variable to store the sock
-> listening udp port 4791. This global variable can be replaced by the
-> functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
-> function udp6_lib_lookup is in the fast path, a member variable l_sk6
-> is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
-> to lookup the sock, then the sock is stored in l_sk6, in the future,it
-> can be used directly.
->
-> All the above work has been done in init_net. And it can also work in
-> the net namespace. So the init_net is replaced by the individual net
-> namespace. This is what the 6th commit does. Because rxe device is
-> dependent on the net device and the sock listening on udp port 4791,
-> every rxe device is in exclusive mode in the individual net namespace.
-> Other rdma netns operations will be considerred in the future.
->
-> In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
-> functions are added. When a new net namespace is created, the init
-> function will initialize the sk4 and sk6 socks. Then the 2 socks will
-> be released when the net namespace is destroyed. The functions
-> rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
-> namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
-> handle sk6. Then sk4 and sk6 are used in the previous commits.
->
-> As the sk4 and sk6 in pernet namespace can be accessed, it is not
-> necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
-> replaced with the sk6 in pernet namespace.
->
-> Test steps:
-> 1) Suppose that 2 NICs are in 2 different net namespaces.
->
->   # ip netns exec net0 ip link
->   3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
->      link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
->      altname enp5s0
->
->   # ip netns exec net1 ip link
->   4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
->      link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
->
-> 2) Add rdma link in the different net namespace
->     net0:
->     # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
->
->     net1:
->     # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
->
-> 3) Run rping test.
->     net0
->     # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
->     [1] 1737
->     # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
->     verbose
->     count 1
->     ...
->     ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklm=
-nopqr
->     ...
->
-> 4) Remove the rdma links from the net namespaces.
->     net0:
->     # ip netns exec net0 ss -lu
->     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port=
-    Process
->     UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
->     UNCONN    0         0         [::]:4791             [::]:*
->
->     # ip netns exec net0 rdma link del rxe0
->
->     # ip netns exec net0 ss -lu
->     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port=
-    Process
->
->     net1:
->     # ip netns exec net0 ss -lu
->     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port=
-    Process
->     UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
->     UNCONN    0         0         [::]:4791             [::]:*
->
->     # ip netns exec net1 rdma link del rxe1
->
->     # ip netns exec net0 ss -lu
->     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port=
-    Process
->
-> V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -=
-lu" to
->            verify rdma link is removed.
->         2) Add register_pernet_subsys/unregister_pernet_subsys net namesp=
-ace
->         3) Replace l_sk6 with sk6 of pernet_name_space
->
-> V1->V2: Add the explicit initialization of sk6.
->
-> Zhu Yanjun (8):
->   RDMA/rxe: Creating listening sock in newlink function
->   RDMA/rxe: Support more rdma links in init_net
->   RDMA/nldev: Add dellink function pointer
->   RDMA/rxe: Implement dellink in rxe
->   RDMA/rxe: Replace global variable with sock lookup functions
->   RDMA/rxe: add the support of net namespace
->   RDMA/rxe: Add the support of net namespace notifier
->   RDMA/rxe: Replace l_sk6 with sk6 in net namespace
->
->  drivers/infiniband/core/nldev.c     |   6 ++
->  drivers/infiniband/sw/rxe/Makefile  |   3 +-
->  drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
->  drivers/infiniband/sw/rxe/rxe_net.c | 113 +++++++++++++++++-------
->  drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
->  drivers/infiniband/sw/rxe/rxe_ns.c  | 128 ++++++++++++++++++++++++++++
->  drivers/infiniband/sw/rxe/rxe_ns.h  |  11 +++
->  include/rdma/rdma_netlink.h         |   2 +
->  8 files changed, 267 insertions(+), 40 deletions(-)
->  create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
->  create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
->
-> --
-> 2.34.1
->
