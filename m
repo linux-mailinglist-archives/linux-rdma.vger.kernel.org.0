@@ -2,132 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BCC6DFACB
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 18:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CE86DFAD0
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 18:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbjDLQFX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Apr 2023 12:05:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        id S229535AbjDLQGs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Apr 2023 12:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjDLQFW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 12:05:22 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B756A48
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 09:05:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W+/cOQ+mNpEFCx3SSUSjgloJxzKhc6nmgY2i3PlK1tt4a8YdSXdKcyS3nuZKDbj5Abyf0I8v2SOu6Kx56Sd7aTUmyf/8XbkB+dRizjai/9ExWto1hry9rpKP9V3hgU/TBhF09nrPZGLQkirZHx2CJXUtPKSg1jEpgZjXwJPLfv8l4IQ3GM6V8fvzscX6iRFDUKO91iEllJEB4rQ4WjY+yOFfuHTSjEl9UwPPIlcuy3XoNR1e/wSrnzpcmx3cWu1qwsfc9b72WDEy7ZoTpEge/eEvc0GGfZwAuQ4HCRK5ZQ3yCRh0dvziHsaFQVD2RKUq37WutFsDsTW5Wq5vV2EquA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NGkSVAugN5kxEBhHFBoekNSrMm0AYQe5Ykb8q/5gBw0=;
- b=MgDMuyzLQFXAsX9JDac4ASbSA2BemvXeyp9irqVQyxVmiWzCQGYX+MncnKFVx6IbubBPKqf7CjyXc+CMJCzXq3eKuHZla14esrOltKXIAvK14KRJ+kRZ0QD7J82KhLH7smyr+IJKxjFxrc6e9LQIRMT1hVKlDP8kYq1DZ6PIdg+Dz9wg7G4bgVIClEkQcaBM+Ol3pg7jf4+okivN/q3Smz/tEK8yLS8sIwLxnDCAhOaXIC36euqXRmL0uwKby9KMUQMvX7/YHr482yk2pU7P/+xZehwKx934HNShQWZTnDO9RYpUy4tHu9DLtyvP8bQSYvsvbKKLLmIo1XumYytRpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NGkSVAugN5kxEBhHFBoekNSrMm0AYQe5Ykb8q/5gBw0=;
- b=QJ5RXZjgM6mwGzEnmH+qwmt8iEwEzUMwoygcVSBnqxFU9ge4SSRouMIVToFIQAgvPP54D2+6r5qKHUFHs+Cgdxam2HVVeGTIJGtpENKsrVg9cFOcITfcXU9o3zstZ1WDO0tojENErZmSZLcw+shja1uzVtAI8eBeZMknWAufH83F7rYXOMg2ZMHqiLmIx0nlE9+3MrvECtMYAXy/aB8ZZ3fzRL/s/DdysUPb1iP8q5GKu3IAosEvxVSkeA0rq3KTDGD8Tt8+KOcrlT8QhXFCEGdn/Wyf+GzqOGMPj7qJRoAnI4zb8qGPcehEQN06xFRZVPSQ7apTDVMP3msZexlk6g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MW4PR12MB7288.namprd12.prod.outlook.com (2603:10b6:303:223::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6277.34; Wed, 12 Apr
- 2023 16:05:12 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::6045:ad97:10b7:62a2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::6045:ad97:10b7:62a2%9]) with mapi id 15.20.6277.038; Wed, 12 Apr 2023
- 16:05:11 +0000
-Date:   Wed, 12 Apr 2023 13:05:09 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     zyjzyj2000@gmail.com, jhack@hpe.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 1/1] RDMA-rxe: Allow retry sends for rdma read
- responses
-Message-ID: <ZDbWtUMQGS3q1GSU@nvidia.com>
-References: <20230215224419.9195-1-rpearsonhpe@gmail.com>
- <20230215224419.9195-2-rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230215224419.9195-2-rpearsonhpe@gmail.com>
-X-ClientProxiedBy: SJ0PR05CA0031.namprd05.prod.outlook.com
- (2603:10b6:a03:33f::6) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW4PR12MB7288:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6ab21dcb-7795-4723-06b4-08db3b6fb1ee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uXnTkwUuD3WksBJRITbuDIF9IU1SuYBOXeetXbA+FzuCpauyp38eIfJGzNG4ha9Gay1lU4H6KNthws/CtefWsm/WQZOUpT6/qSD6LU6eJJIS3eCgIM9MTjx2h08p0bbZuY9lOh9/44xQsiDupx4bidSmvpO0l/L7vqPVgBi7UULtD1AtJil/eeL1c0gCZRud0P0GULy+Zj37XubkR00bV0TkwgSiZzjRcuHNLVpvn38QdhjZM9jnt0g4qT7pE5mxvq+0ux94QI1RBo5ZXWQhN+eNaURnBrW6HhW1aqKa4QhkKJfcHGmTrZnouRtNRFse03tOWKORhfGb4T76IRZDehXIggrMfsp2aCCu2WYDDAkHoqHdksG3tsWsABp5Fc5Pp4ttogTE1IZjeSe1ckY101d8G2BpvLAPqIKUVfdF9G3VS7UckQViMzz73GhSLlfxHVTgSiLlqruw1Iq6Dbsmo5AP0oHEAKwN3v+RzR2IfTXxvbtl5AlIgiXYJT+05mqtru1JfiYKdUi2p6/eyp3kqJs9jyBrMmt17vMAgnGDej63sBYQQQnwRwmHDgbO2837
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(346002)(366004)(39860400002)(136003)(451199021)(478600001)(26005)(6506007)(186003)(5660300002)(316002)(4744005)(2906002)(66946007)(4326008)(6916009)(6486002)(66476007)(8676002)(66556008)(8936002)(41300700001)(6512007)(36756003)(2616005)(38100700002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Da4wJXJx0K0mWdac/QegaUiMgj2uyndMfpE8mCccXAWK3YMgpIt/LbMWAQmN?=
- =?us-ascii?Q?/2tD+Qzd7vAOHWgLcEmVmdOgNvTeaHVeuffmimZsQUHBgJw7fgVLyKkOcOrI?=
- =?us-ascii?Q?VvDjTzsK3lsSO949USfovrtqw9g5vOAMJsuKDlw/h1J3/tcA1akbB2QGYmw5?=
- =?us-ascii?Q?9Iz/W9Yq0Sh1li+X+4C/UM2vT3wygID3+Fipv4vT8Ywmp0X1SA2vU1NsXz2g?=
- =?us-ascii?Q?cB+5dPW8J+zBn/OBs2oe959rRMvsiQ0xLp119y5vuKbZUHh6qP13cS2N6Z5d?=
- =?us-ascii?Q?P1pmPv33V4R4C43vVD5QeBlEEhFoU/zBItDmyekHZ/S90cNilWnY+Q4ubKmM?=
- =?us-ascii?Q?1+uLjnPRZmzYdl0DXw9X2Y/t4F5PAEB393JUGhErSUYCwwNqJ53UHXhcB2vT?=
- =?us-ascii?Q?qoLvySCd4lbd7z/9ciT5FD72gcoC8GCOB+lXWUnr/B24+ojX43X3ALN3uii6?=
- =?us-ascii?Q?4cLCNvyaAM0t4oI/RBKLzuDQ0Gxke7qJZ8/BqRxc2BMa0X571n6PRuIIGhc8?=
- =?us-ascii?Q?THdm24E50A23U9Bjj7hcfXl4rsBPpUmIZvZ+DFnLB0Z5AUCqOKNIBo8yAinv?=
- =?us-ascii?Q?t0dJ6qN+3q/XQARegtwAU4IrL/35ieOoyF/BLoZOvHYTeHXmBCWql9Lu5LZB?=
- =?us-ascii?Q?3jqel1yr1ET6KM9YbCXHqzrO8ZgTkwuUBplhZZGBcM9DlyyAEQTT5MZ3SF+Y?=
- =?us-ascii?Q?6RIlhk9wjgg3Dre5fJVL1YXgYmaTOtwxSA87bhdGCKlIRa047HpUNn2Q1jmh?=
- =?us-ascii?Q?d06tAnfxRUd1qvI+lbdhcYwvOTIC9VWKL41cqg7QjxTFKBHYYafthGeQDbun?=
- =?us-ascii?Q?30WQIAH7iyF9CbJznsdv5ZjQnAtLjd85WJlPkPo9NLaXjL8g+hwOdaPKPsyt?=
- =?us-ascii?Q?1SI3ivVeX7eEpbbaYfg5NV6e4zCPQS21CpbwFFELVWACwQ08FQWjaiyYAlE5?=
- =?us-ascii?Q?10TABA/E0en+P+S+2LjGycG5Q5VUbIOTBIEwXIscUou/26uORRoAxph1EIzL?=
- =?us-ascii?Q?7RS/MYdfqqJSkvA1O1jEPWpcORcV5+JtzxsNAPnRaduWrPld73dcoJzkiZuo?=
- =?us-ascii?Q?4whIUmtALb44Q6LsdXygvRGpJUxIdSMDlYSheF3FRvPGM4q7+ljx+Rj9AQZP?=
- =?us-ascii?Q?7bVsebHOd7gfAo7mx8YbNsK3GFRs8gdORFDUKogoBXsLVZDiGpnbJYfcMusW?=
- =?us-ascii?Q?+PdLlEP6OcZfxIihRKkQTqgFfyGDzySpOkTV2G7Eivnc9QWtLfmmV7IVoeUu?=
- =?us-ascii?Q?owbgWVXS2XO9909xen1fy+PL7BN/klDSuDMLWBFntzYgRsFMtFruTWQ+UgS4?=
- =?us-ascii?Q?UgL/G0zNgZJ2GgHOyQyeFnPhodZXmBJ/FzNUfLIysU8JjM0elTqu6wCYlvay?=
- =?us-ascii?Q?5Qb3q2xmMhEVdqKebkJG6Q4SiT6zF0bSefeEak/AqqpikKl1tPsqp/oGNh6N?=
- =?us-ascii?Q?lX/aTxWN15EE+LTV+ofrGAD0nCGo0lerp0sEIDV1HRxtZb/m0ChBuhyyUOiw?=
- =?us-ascii?Q?QNnDnoHY7pGdi63820v3rwlg83quynpKY5Drm6dJXq4daPCgmjjlsdXNj9QO?=
- =?us-ascii?Q?gvYtkJk7kr9T3538AFndMjsM+QdUA5ZWkIlXzMRx?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ab21dcb-7795-4723-06b4-08db3b6fb1ee
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2023 16:05:11.7491
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7d/DMxiEdSWrZTHETjLGtJclry2ZtBy6IDn4sMgBzO/kbHBoKDjUh2dgCWHtEfp/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7288
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S229829AbjDLQGr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 12:06:47 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA0D270D
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 09:06:45 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-54f8a3ded60so32754787b3.8
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 09:06:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1681315604;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qOZ3tRdzr0hGyj65SmYqR8EOiBJrMHU9wHV0sWwy2Pc=;
+        b=dMmMg50RH6pfkUoOxPzCVX7IU5ikGtbDFWmi2r45KgXj3VCwZ1lQFQ0bIIx1lIKc50
+         d1WFq5ChEvU+YNUSCURdJK2alRsAFNduI2SihG0yD1+2CBU/p3WMVxRopmIfzG55ooVv
+         HzaorBxvGSvBalSCOiMk8iBKIJL3W2uYkrjRACRJWafTyIaGMdzo01QjKtqsqFxFHv20
+         +fVbNuhtLK3PsF1eFNMHGRfbPXvGJL/j8HAohE2fRqQTs74Y48KXU7jHNwIVkJze/8GX
+         cEgdk9j0CRkn9iMUPQquIVeBv+4ewh6v/U8cBwSst+bZ2H2Ou1yJa8aOjt7VEPELxbY6
+         q6Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681315604;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qOZ3tRdzr0hGyj65SmYqR8EOiBJrMHU9wHV0sWwy2Pc=;
+        b=o/Q45abZ5no0P2+Q1OeOCFzM4iwPLTQOJ+6kNRT5b+dmh42V3vNkZM90DBCJCRnSpL
+         1SbxrtuTWRHCRbWT1iNq/jxPmiwtD+pk9tFeDg8/VH0zXXfIEQMku1dQ5pqhRNDwemyJ
+         s+g8niwPCu8im9Xrd+7OQvOkcI6mYK4Vcs3PeNyRVyGVb4UrQlSR7vgOb9XukP92e5ML
+         +PMshfAXfxO4J86fTs9fR/tJfTWRe9VXYgLvAkzr6VDqnv+M/kuOCzlObARI34kL1W6l
+         /tmNNaSYxPzQL24AgSC9X5pIgPPj/h3Ui5pXjlXiqAdrjDz0cuAtaa7cg2mB4FzdhEA3
+         437g==
+X-Gm-Message-State: AAQBX9dOiU3f1vgqRaYYojX2vCXSO0uTP2Yzx53rglekQlQBCjKUIy5n
+        WTM7e9TtAUpUWEElNwuPTVpQpaE=
+X-Google-Smtp-Source: AKy350alO6Bi7nwBbBUyvXEpvPDdFjOYyG+3EN768sevyKcN5qXz8S1F1xuMmrr51w4VCv+w61ymJ58=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a25:d988:0:b0:997:c919:4484 with SMTP id
+ q130-20020a25d988000000b00997c9194484mr7803210ybg.6.1681315604689; Wed, 12
+ Apr 2023 09:06:44 -0700 (PDT)
+Date:   Wed, 12 Apr 2023 09:06:42 -0700
+In-Reply-To: <402a3c73-d26d-3619-d69a-c90eb3f0e9ee@redhat.com>
+Mime-Version: 1.0
+References: <168098183268.96582.7852359418481981062.stgit@firesoul>
+ <168098188134.96582.7870014252568928901.stgit@firesoul> <CAKH8qBu2ieR+puSkF30-df3YikOvDZErxc2qjjVXPPAvCecihA@mail.gmail.com>
+ <402a3c73-d26d-3619-d69a-c90eb3f0e9ee@redhat.com>
+Message-ID: <ZDbXEqQc3MpKPmGv@google.com>
+Subject: Re: [PATCH bpf V7 1/7] selftests/bpf: xdp_hw_metadata default disable bpf_printk
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     brouer@redhat.com, bpf@vger.kernel.org,
+        "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
+        tariqt@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 15, 2023 at 04:44:21PM -0600, Bob Pearson wrote:
+On 04/12, Jesper Dangaard Brouer wrote:
+>=20
+> On 12/04/2023 00.42, Stanislav Fomichev wrote:
+> > On Sat, Apr 8, 2023 at 12:24=E2=80=AFPM Jesper Dangaard Brouer
+> > <brouer@redhat.com> wrote:
+> > >=20
+> > > The tool xdp_hw_metadata can be used by driver developers
+> > > implementing XDP-hints kfuncs.  The tool transfers the
+> > > XDP-hints via metadata information to an AF_XDP userspace
+> > > process. When everything works the bpf_printk calls are
+> > > unncesssary.  Thus, disable bpf_printk by default, but
+> > > make it easy to reenable for driver developers to use
+> > > when debugging their driver implementation.
+> > >=20
+> > > This also converts bpf_printk "forwarding UDP:9091 to AF_XDP"
+> > > into a code comment.  The bpf_printk's that are important
+> > > to the driver developers is when bpf_xdp_adjust_meta fails.
+> > > The likely mistake from driver developers is expected to
+> > > be that they didn't implement XDP metadata adjust support.
+> > >=20
+> > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > > ---
+> > >   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   16 +++++++++=
++++++--
+> > >   1 file changed, 14 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/to=
+ols/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > > index 4c55b4d79d3d..980eb60d8e5b 100644
+> > > --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > > +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > > @@ -5,6 +5,19 @@
+> > >   #include <bpf/bpf_helpers.h>
+> > >   #include <bpf/bpf_endian.h>
+> > >=20
+> > > +/* Per default below bpf_printk() calls are disabled.  Can be
+> > > + * reenabled manually for convenience by XDP-hints driver developer,
+> > > + * when troublshooting the drivers kfuncs implementation details.
+> > > + *
+> > > + * Remember BPF-prog bpf_printk info output can be access via:
+> > > + *  /sys/kernel/debug/tracing/trace_pipe
+> > > + */
+> > > +//#define DEBUG        1
+> > > +#ifndef DEBUG
+> > > +#undef  bpf_printk
+> > > +#define bpf_printk(fmt, ...) ({})
+> > > +#endif
+> >=20
+> > Are you planning to eventually do somethike similar to what I've
+> > mentioned in [0]? If not, should I try to send a patch?
+>=20
+> See next patch:
+>  - [PATCH bpf V7 2/7] selftests/bpf: Add counters to xdp_hw_metadata
+>=20
+> where I add these counters :-)
 
-> @@ -937,9 +987,15 @@ static enum resp_states read_reply(struct rxe_qp *qp,
->  	}
->  
->  	err = rxe_xmit_packet(qp, &ack_pkt, skb);
-> -	if (err)
-> +	delay = read_retry_delay(qp, err);
-> +	if (err == -EAGAIN) {
-> +		udelay(delay);
-
-I'd be happier with this patch if it wasn't a udelay here, spinning
-hoping the ip stack progresses just feels wrong
-
-Can't this use a timer or something? Re-rx the packet generating the
-reply?
-
-Jason
+Oh, nice, let me take a look. I was assuming v7 is mostly the same as
+v6..
+=20
+> >=20
+> > 0: https://lore.kernel.org/netdev/CAKH8qBupRYEg+SPMTMb4h532GESG7P1QdaFJ=
+-+zrbARVN9xrdA@mail.gmail.com/
+> >=20
+>=20
