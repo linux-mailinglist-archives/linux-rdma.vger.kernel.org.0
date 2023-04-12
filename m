@@ -2,71 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B986DFF2B
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 21:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862066E0045
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Apr 2023 23:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbjDLTu7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Apr 2023 15:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
+        id S229526AbjDLVBf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Apr 2023 17:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjDLTuV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 15:50:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39E06E98
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 12:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681328949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qPcx+fVxIdrMpmOK4dtt6MA0SYsxugdtxPcrLhiVDvU=;
-        b=IvdOdltSFjtRqLKx0X2laUnivQ1GVfiqye6TUc8S1AAnzZ8gwrLaziKFUE/y1s2rXnLOsw
-        fhO6jvuf39+AOMOS/6n6dbpNR0QvU8OMH7+t+NqrhcSnbqlF0Dnbx8gMCsI/ngWqiht8I+
-        hZD3FlRJ7AkwkHX7ks0si62rmNeuOsg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-204-1ukrPTvZPISiDkjgGrHT0w-1; Wed, 12 Apr 2023 15:49:03 -0400
-X-MC-Unique: 1ukrPTvZPISiDkjgGrHT0w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F0299185A794;
-        Wed, 12 Apr 2023 19:49:01 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.45.242.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 84FD0C15BB8;
-        Wed, 12 Apr 2023 19:49:01 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id B33C9307372E8;
-        Wed, 12 Apr 2023 21:49:00 +0200 (CEST)
-Subject: [PATCH bpf V10 6/6] selftests/bpf: Adjust bpf_xdp_metadata_rx_hash
- for new arg
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
-        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
-        davem@davemloft.net, tariqt@nvidia.com, saeedm@nvidia.com,
-        leon@kernel.org, linux-rdma@vger.kernel.org
-Date:   Wed, 12 Apr 2023 21:49:00 +0200
-Message-ID: <168132894068.340624.8914711185697163690.stgit@firesoul>
-In-Reply-To: <168132888942.340624.2449617439220153267.stgit@firesoul>
-References: <168132888942.340624.2449617439220153267.stgit@firesoul>
-User-Agent: StGit/1.4
+        with ESMTP id S229441AbjDLVBf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 17:01:35 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558B6C4
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 14:01:34 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id bj35so4971728qkb.7
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Apr 2023 14:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681333293; x=1683925293;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YrNz2yRHHbbfTLdcq6b1VjPmIlNp5yslYXKgOAUMRMw=;
+        b=M+9ZJsamX0li3ZUnPUAE90jSQPMJwm5poP7npADeS27ZO2Efck2VuiZhG9pmgdG3+/
+         cAwkqyXJUD2CZ5tx/C6hvVHLPFZgXPMsz/0P82vuTlj5js/YvyiK950Y9se6lw8LSvxP
+         LWRHEM476EPsaZIACEYY5SlO+Z73RbhO/x01K1lVsoHy1qba4p+a059zodXxx03oUNQc
+         xY51PcXtlRi2dY2ldOrtQQKLYfgdseUM7aW8vl44EztaLz6ilQUbmGB3L2Uqiy1VeJjE
+         7N2eoDt6v7Zin62wboTud2NetUHlK9+XN0xz+xY1hh2LrdtKJbf+1dwLT9+if7KCc1WM
+         UuUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681333293; x=1683925293;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YrNz2yRHHbbfTLdcq6b1VjPmIlNp5yslYXKgOAUMRMw=;
+        b=i401EFGCB+cMilfSWfNvW3Euydo4y69DxShHWUF7SSWYbgsV2osEKp+Uev1m5CNliQ
+         Zj4ZvHfzGQWj9Z2dKzLRH3zihXHEBabtUFAc8WeC0zKRc2vVs+8TxONSagjC5FOC13b3
+         V8/h337b3c5Ih5MS5wz6m3E0yKDClI9VTQfk/ANZsCZVepRsZUklAtoC+Y91fupz1n4f
+         I+f7e6CEPmoxkpQ0V8ycmRuKJhe5t2yYC6eStd0gGzPM7vROwBKCFeRaq9FkUj5EaYLq
+         rUQq9LsdZr/IW2adFp6UUntwTrYK/ihSySau6nmeoR5xH75EM5QnjykOt0htvFFV3lAb
+         RL0Q==
+X-Gm-Message-State: AAQBX9elJ5vocWf2fuOlzisbw9XRcPQVCB7aDmc61W8qOpmsbjQiVvJc
+        ywiwZwR8iK3eZOiTHk68cGRCs0s34rMu9Yl9AKs=
+X-Google-Smtp-Source: AKy350bZCi8ngoTZVKwjfLq0CXoe2sP9gcVv0j0KFWy3biy9CWg+doHy1nR5Fx9rr668Up63H7pumuumwA3JLmo016s=
+X-Received: by 2002:a05:620a:4251:b0:74a:bafc:84ed with SMTP id
+ w17-20020a05620a425100b0074abafc84edmr1393745qko.5.1681333293470; Wed, 12 Apr
+ 2023 14:01:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+References: <20230214060634.427162-1-yanjun.zhu@intel.com> <CADvaNzUvWA56BnZqNy3niEC-B0w41TPB+YFGJbn=3bKBi9Orcg@mail.gmail.com>
+In-Reply-To: <CADvaNzUvWA56BnZqNy3niEC-B0w41TPB+YFGJbn=3bKBi9Orcg@mail.gmail.com>
+From:   Mark Lehrer <lehrer@gmail.com>
+Date:   Wed, 12 Apr 2023 15:01:22 -0600
+Message-ID: <CADvaNzUdktEg=0vhrQgaYcg=GRjnQThx8_gVz71MNeqYw3e1kQ@mail.gmail.com>
+Subject: Re: [PATCHv3 0/8] Fix the problem that rxe can not work in net namespace
+To:     Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com,
+        linux-rdma@vger.kernel.org, parav@nvidia.com,
+        Zhu Yanjun <yanjun.zhu@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,141 +67,20 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Update BPF selftests to use the new RSS type argument for kfunc
-bpf_xdp_metadata_rx_hash.
+> the fabrics device and writing the host NQN etc.  Is there an easy way
+> to prove that rdma_resolve_addr is working from userland?
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Acked-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/prog_tests/xdp_metadata.c        |    2 ++
- .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   10 +++++-----
- tools/testing/selftests/bpf/progs/xdp_metadata.c   |    6 +++---
- tools/testing/selftests/bpf/progs/xdp_metadata2.c  |    7 ++++---
- tools/testing/selftests/bpf/xdp_hw_metadata.c      |    6 +++++-
- tools/testing/selftests/bpf/xdp_metadata.h         |    4 ++++
- 6 files changed, 23 insertions(+), 12 deletions(-)
+Actually I meant "is there a way to prove that the kernel
+rdma_resolve_addr() works with netns?"
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-index aa4beae99f4f..8c5e98da9ae9 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-@@ -273,6 +273,8 @@ static int verify_xsk_metadata(struct xsk *xsk)
- 	if (!ASSERT_NEQ(meta->rx_hash, 0, "rx_hash"))
- 		return -1;
- 
-+	ASSERT_EQ(meta->rx_hash_type, 0, "rx_hash_type");
-+
- 	xsk_ring_cons__release(&xsk->rx, 1);
- 	refill_rx(xsk, comp_addr);
- 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-index 0687d11162f6..e1c787815e44 100644
---- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-@@ -18,8 +18,8 @@ __u64 pkts_redir = 0;
- 
- extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
--extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
--				    __u32 *hash) __ksym;
-+extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-+				    enum xdp_rss_hash_type *rss_type) __ksym;
- 
- SEC("xdp")
- int rx(struct xdp_md *ctx)
-@@ -80,9 +80,9 @@ int rx(struct xdp_md *ctx)
- 	if (err)
- 		meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
- 
--	err = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
--	if (err)
--		meta->rx_hash = 0; /* Used by AF_XDP as not avail signal */
-+	err = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
-+	if (err < 0)
-+		meta->rx_hash_err = err; /* Used by AF_XDP as no hash signal */
- 
- 	__sync_add_and_fetch(&pkts_redir, 1);
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
-diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-index 77678b034389..d151d406a123 100644
---- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-@@ -21,8 +21,8 @@ struct {
- 
- extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
--extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
--				    __u32 *hash) __ksym;
-+extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-+				    enum xdp_rss_hash_type *rss_type) __ksym;
- 
- SEC("xdp")
- int rx(struct xdp_md *ctx)
-@@ -56,7 +56,7 @@ int rx(struct xdp_md *ctx)
- 	if (timestamp == 0)
- 		meta->rx_timestamp = 1;
- 
--	bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
-+	bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
- 
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
- }
-diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata2.c b/tools/testing/selftests/bpf/progs/xdp_metadata2.c
-index cf69d05451c3..85f88d9d7a78 100644
---- a/tools/testing/selftests/bpf/progs/xdp_metadata2.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_metadata2.c
-@@ -5,17 +5,18 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
- 
--extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
--				    __u32 *hash) __ksym;
-+extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-+				    enum xdp_rss_hash_type *rss_type) __ksym;
- 
- int called;
- 
- SEC("freplace/rx")
- int freplace_rx(struct xdp_md *ctx)
- {
-+	enum xdp_rss_hash_type type = 0;
- 	u32 hash = 0;
- 	/* Call _any_ metadata function to make sure we don't crash. */
--	bpf_xdp_metadata_rx_hash(ctx, &hash);
-+	bpf_xdp_metadata_rx_hash(ctx, &hash, &type);
- 	called++;
- 	return XDP_PASS;
- }
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 3b942ef7297b..987cf0db5ebc 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -141,7 +141,11 @@ static void verify_xdp_metadata(void *data)
- 	meta = data - sizeof(*meta);
- 
- 	printf("rx_timestamp: %llu\n", meta->rx_timestamp);
--	printf("rx_hash: %u\n", meta->rx_hash);
-+	if (meta->rx_hash_err < 0)
-+		printf("No rx_hash err=%d\n", meta->rx_hash_err);
-+	else
-+		printf("rx_hash: 0x%X with RSS type:0x%X\n",
-+		       meta->rx_hash, meta->rx_hash_type);
- }
- 
- static void verify_skb_metadata(int fd)
-diff --git a/tools/testing/selftests/bpf/xdp_metadata.h b/tools/testing/selftests/bpf/xdp_metadata.h
-index f6780fbb0a21..0c4624dc6f2f 100644
---- a/tools/testing/selftests/bpf/xdp_metadata.h
-+++ b/tools/testing/selftests/bpf/xdp_metadata.h
-@@ -12,4 +12,8 @@
- struct xdp_meta {
- 	__u64 rx_timestamp;
- 	__u32 rx_hash;
-+	union {
-+		__u32 rx_hash_type;
-+		__s32 rx_hash_err;
-+	};
- };
+It seems like this is the real problem.  If we run commands like nvme
+discover & nvme connect within the netns context, the system will use
+the non-netns IP & RDMA stacks to connect.  As an aside - this seems
+like it would be a major security issue for container systems, doesn't
+it?
 
+I'll investigate to see if the fabrics module & nvme-cli have a way to
+set and use the proper netns context.
 
+Thanks,
+Mark
