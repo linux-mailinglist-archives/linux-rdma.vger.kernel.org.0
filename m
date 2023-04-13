@@ -2,170 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE5F6E1252
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Apr 2023 18:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9105D6E1273
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Apr 2023 18:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbjDMQbM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Apr 2023 12:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
+        id S229560AbjDMQhx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Apr 2023 12:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjDMQbJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Apr 2023 12:31:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8C6AF26;
-        Thu, 13 Apr 2023 09:31:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BF02F63FE7;
-        Thu, 13 Apr 2023 16:31:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6576FC433D2;
-        Thu, 13 Apr 2023 16:31:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681403464;
-        bh=ixJOGebRoUo1BEyaLEPH8ePeNJnTnmpcCBkNUL7AClM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F2+T/f6dx5RhPROs62DbPztZ8KbufhYEmZXNWXLzHVV4t6kOsoMy4CUmGMeGqbaOk
-         i/S+vNsURoC6GQZFbvwG/3KVlPNQz3Xq6y8rENPgul5rAk7fKq22ruQkpRdXutectA
-         7X91fWt9+RL+LCSbB7JaV0N7tFLwSbRDlwk9REzzMyHWh8Mt7lhKjN03b9WEEh1/fM
-         26mzi3zXv9q2QjxAGo+3TfcpAAuPBzd8Z7Q0gfCYE3TDY7tNZr1knaBzyvWI3HEo0e
-         YzO5IyW6h23YFJ0dWTMLbfZH7ua5ZUR3h8fXIhM83UGV1g1j2X+DsNoChIJpKIId1G
-         MyEsliI5pKLxA==
-Date:   Thu, 13 Apr 2023 19:30:59 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3,net-next, 2/4] net: mana: Refactor RX buffer
- allocation code to prepare for various MTU
-Message-ID: <20230413163059.GS17993@unreal>
-References: <1681334163-31084-1-git-send-email-haiyangz@microsoft.com>
- <1681334163-31084-3-git-send-email-haiyangz@microsoft.com>
- <20230413130428.GO17993@unreal>
- <PH7PR21MB3116194E8F7D56EB434B56A6CA989@PH7PR21MB3116.namprd21.prod.outlook.com>
+        with ESMTP id S229945AbjDMQhw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Apr 2023 12:37:52 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25243AD
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Apr 2023 09:37:52 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id l11so17068662qtj.4
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Apr 2023 09:37:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681403871; x=1683995871;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PHNGtya6pE/tHQYgVtnsnCl229EcO09HpgYX/FNlZSw=;
+        b=RV5RUKReZAk2yJYF3F9yTUzsM2N91mD1lhzo8UbjN1YlpRFVKIdDstfGb1zVDan9LY
+         cbfVtKAvwDRjqR7uajEVhnSksS2hSAUDW1njHW3bqyQTVJGp1uk2nJHfku7wTfAuy8qF
+         mACbdiruux4crM8vBuWQy+sljsnWf+q6i0W3FWarpebwLeYnvuQ6OGEpBxEwSTaeWi8u
+         yLkSDJAillqPuu/wdHoULrfRymqAVvQaqHMpR+xCVY1kCkuJPy5lJ4iT7sM0b0I/sMLI
+         PqLVn2O7ZKPD7bAespI7lNURZY/5Iox7TXqfZMUIdOe0RMuQ2HmrpMcU1SQIEEU4Nf1L
+         jo/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681403871; x=1683995871;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PHNGtya6pE/tHQYgVtnsnCl229EcO09HpgYX/FNlZSw=;
+        b=lEkjaxZFgclCpDUcKPMcnYXZnMX4RbOgV64sZqLrZtDSiFY+JyA+laV3PId88d+42a
+         GV4czsqpal/bE9Mqgtq4DKnRrMBCY41yd1cc63HJP7MqwJLHe/RKzW5qS+gLDnu9tlha
+         h9yB1FXEbfXGN5V0jLGhzpplIbGldJcxzADINVwIu11g3WseVmhXMjF2yGdt/U40Ny99
+         /NZvspoft2Gvy1z5pd210g0NbBNLWMkManfLmgekODLLRIuFfg/ksfICoDYVqaXi9mMk
+         1lEV42eO8kPtbmen2CjCWGZQSupnnb5Q4NPJ6ugvTd+HF7nXmy/UFgaXUU+tt18Ts7rd
+         iX+w==
+X-Gm-Message-State: AAQBX9fs9DEpxre5yU3gGrkP++124AOu5DK/6uUmKeCdhit1NmfPY4sr
+        sSRdhvv+IWFAGFwLLjBZfljpb3s/nQCHQZTXUlU=
+X-Google-Smtp-Source: AKy350byW5AuiwBV64lVYB5s9dIKRZ4+AOtzAzLXfJDU4y1pd/acu29ENFlfZ7Qm3E7vl0sLOy8rfPgIuD/Jr39cwgM=
+X-Received: by 2002:a05:622a:1ba2:b0:3bf:c1f3:84bc with SMTP id
+ bp34-20020a05622a1ba200b003bfc1f384bcmr792910qtb.11.1681403871271; Thu, 13
+ Apr 2023 09:37:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH7PR21MB3116194E8F7D56EB434B56A6CA989@PH7PR21MB3116.namprd21.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230214060634.427162-1-yanjun.zhu@intel.com> <CADvaNzUvWA56BnZqNy3niEC-B0w41TPB+YFGJbn=3bKBi9Orcg@mail.gmail.com>
+ <CADvaNzUdktEg=0vhrQgaYcg=GRjnQThx8_gVz71MNeqYw3e1kQ@mail.gmail.com>
+ <1adb4df4-ee14-1d26-d1ac-49108b2de03d@linux.dev> <CADvaNzWqeP1iy6Q=cSzgL+KtZqvpWoMbYTS8ySO=aaQHLzMZbA@mail.gmail.com>
+ <PH0PR12MB548169DB2D2364DF3ED9E2F3DC989@PH0PR12MB5481.namprd12.prod.outlook.com>
+ <CADvaNzXm-KZZQuo2w1ovQ+-w78-DW5ewRPPY_cjvprHCNzCe_A@mail.gmail.com>
+ <PH0PR12MB54816C6137344EA1D06433DCDC989@PH0PR12MB5481.namprd12.prod.outlook.com>
+ <PH0PR12MB548134FDB99B1653C986F30DDC989@PH0PR12MB5481.namprd12.prod.outlook.com>
+In-Reply-To: <PH0PR12MB548134FDB99B1653C986F30DDC989@PH0PR12MB5481.namprd12.prod.outlook.com>
+From:   Mark Lehrer <lehrer@gmail.com>
+Date:   Thu, 13 Apr 2023 10:37:40 -0600
+Message-ID: <CADvaNzXDBKiXi5hiaiwYh5_ShqW_EVBfLhwNbk+Yck8V7DQ-fQ@mail.gmail.com>
+Subject: Re: [PATCHv3 0/8] Fix the problem that rxe can not work in net namespace
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>,
+        Zhu Yanjun <yanjun.zhu@intel.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 13, 2023 at 02:03:50PM +0000, Haiyang Zhang wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Thursday, April 13, 2023 9:04 AM
-> > To: Haiyang Zhang <haiyangz@microsoft.com>
-> > Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
-> > <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul Rosswurm
-> > <paulros@microsoft.com>; olaf@aepfle.de; vkuznets@redhat.com;
-> > davem@davemloft.net; wei.liu@kernel.org; edumazet@google.com;
-> > kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>;
-> > ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
-> > daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
-> > ast@kernel.org; Ajay Sharma <sharmaajay@microsoft.com>;
-> > hawk@kernel.org; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH V3,net-next, 2/4] net: mana: Refactor RX buffer allocation
-> > code to prepare for various MTU
-> > 
-> > On Wed, Apr 12, 2023 at 02:16:01PM -0700, Haiyang Zhang wrote:
-> > > Move out common buffer allocation code from mana_process_rx_cqe() and
-> > > mana_alloc_rx_wqe() to helper functions.
-> > > Refactor related variables so they can be changed in one place, and buffer
-> > > sizes are in sync.
+> Initiator is not net ns aware.
+
+Am I correct in my assessment that this could be a container jailbreak
+risk?  We aren't using containers, but we were shocked that RoCEv2
+connections magically worked through the physical function which was
+not in the netns context.
+
+
+Thanks,
+Mark
+
+On Thu, Apr 13, 2023 at 10:23=E2=80=AFAM Parav Pandit <parav@nvidia.com> wr=
+ote:
+>
+>
+> > From: Parav Pandit <parav@nvidia.com>
+> > Sent: Thursday, April 13, 2023 12:20 PM
+> >
+> > > From: Mark Lehrer <lehrer@gmail.com>
+> > > Sent: Thursday, April 13, 2023 11:39 AM
 > > >
-> > > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > > Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> > > ---
-> > > V3:
-> > > Refectored to multiple patches for readability. Suggested by Jacob Keller.
+> > > > Didn=E2=80=99t get a chance to review the thread discussion.
+> > > > The way to use VF is:
 > > >
-> > > V2:
-> > > Refectored to multiple patches for readability. Suggested by Yunsheng Lin.
+> > > Virtual functions were just a debugging aid.  We really just want to
+> > > use a single physical function and put it into the netns.  However, w=
+e
+> > > will do additional VF tests as it still may be a viable workaround.
 > > >
-> > > ---
-> > >  drivers/net/ethernet/microsoft/mana/mana_en.c | 154 ++++++++++-------
-> > -
-> > >  include/net/mana/mana.h                       |   6 +-
-> > >  2 files changed, 91 insertions(+), 69 deletions(-)
-> > 
-> > <...>
-> > 
-> > > +static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
-> > > +			     dma_addr_t *da, bool is_napi)
-> > > +{
-> > > +	struct page *page;
-> > > +	void *va;
-> > > +
-> > > +	/* Reuse XDP dropped page if available */
-> > > +	if (rxq->xdp_save_va) {
-> > > +		va = rxq->xdp_save_va;
-> > > +		rxq->xdp_save_va = NULL;
-> > > +	} else {
-> > > +		page = dev_alloc_page();
-> > 
-> > Documentation/networking/page_pool.rst
-> >    10 Basic use involves replacing alloc_pages() calls with the
-> >    11 page_pool_alloc_pages() call.  Drivers should use
-> > page_pool_dev_alloc_pages()
-> >    12 replacing dev_alloc_pages().
-> > 
-> > General question, is this sentence applicable to all new code or only
-> > for XDP related paths?
-> 
-> Quote from the context before that sentence --
-> 
-> =============
-> Page Pool API
-> =============
-> The page_pool allocator is optimized for the XDP mode that uses one frame
-> per-page, but it can fallback on the regular page allocator APIs.
-> Basic use involves replacing alloc_pages() calls with the
-> page_pool_alloc_pages() call.  Drivers should use page_pool_dev_alloc_pages()
-> replacing dev_alloc_pages().
-> 
-> --unquote
-> 
-> So the page pool is optimized for the XDP, and that sentence is applicable to drivers
-> that have set up page pool for XDP optimization.
-
-"but it can fallback on the regular page allocator APIs."
-
-> static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)  //need a pool been set up
-> 
-> Back to our mana driver, we don't have page pool setup yet. (will consider in the future)
-> So we cannot call page_pool_dev_alloc_pages(pool) in this place yet.
-
-ok, thanks
-
-> 
-> Thanks,
-> - Haiyang
-> 
+> > > When using the physical function, we are still having no joy using
+> > > exclusive mode with mlx5:
+> > >
+> >
+> > static int nvmet_rdma_enable_port(struct nvmet_rdma_port *port) {
+> >         struct sockaddr *addr =3D (struct sockaddr *)&port->addr;
+> >         struct rdma_cm_id *cm_id;
+> >         int ret;
+> >
+> >         cm_id =3D rdma_create_id(&init_net, nvmet_rdma_cm_handler, port=
+,
+> >                                                      ^^^^^^^ Nvme targe=
+t is not net ns aware.
+> >
+> >                         RDMA_PS_TCP, IB_QPT_RC);
+> >         if (IS_ERR(cm_id)) {
+> >                 pr_err("CM ID creation failed\n");
+> >                 return PTR_ERR(cm_id);
+> >         }
+> >
+> > >
+> Clicked send email too early.
+>
+> 574 static int nvme_rdma_alloc_queue(struct nvme_rdma_ctrl *ctrl,
+>  575                 int idx, size_t queue_size)
+>  576 {
+> [..]
+> 597         queue->cm_id =3D rdma_create_id(&init_net, nvme_rdma_cm_handl=
+er, queue,
+>  598                         RDMA_PS_TCP, IB_QPT_RC);
+>  599         if (IS_ERR(queue->cm_id)) {
+>
+> Initiator is not net ns aware.
+> Given some of the work involves workqueue operation, it needs to hold the=
+ reference to net ns and implement the net ns delete routine to terminate.
