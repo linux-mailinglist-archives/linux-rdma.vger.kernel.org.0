@@ -2,168 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4F46E0294
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Apr 2023 01:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963906E078F
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Apr 2023 09:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjDLXdN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Apr 2023 19:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
+        id S229640AbjDMHSP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Apr 2023 03:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjDLXdM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Apr 2023 19:33:12 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC9B3AA6;
-        Wed, 12 Apr 2023 16:33:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681342388; x=1712878388;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=T2lwxOWVe7EscoTytAwGmHqhYpT+mBmLuq6ZH8W/ovI=;
-  b=IoEdspELOORArsRxiGhQ/UGCQAhVMf9p8ZykYnt4Wp3G0hRXq21hNdCG
-   skLIDuWErDGeGIrdz2kc1FgPk+uS8EvXHlM2SPVPWmE6O34s7wvLTgeGW
-   iyJ0xXLtmeTdceYLpRuIB/T5GTJeK+2zWEWrL2yi8ufxc7e0kYvrQNGhy
-   71tldm+XlG2/hEEQiKi0hgDkmfQ608CGP6QP4hiPIU2Ct+kEeIdjuM77b
-   rdo7JQoRdngT8x4Up3py+wJ3OWuRdAwbe+0MgCZ1/e8I77kCyKDmxK9j9
-   kwKDNhjmhvtiSeEpjdOc7mXQSnsdkX/IeqdLNHrg7PI9McCJP4icLOiGA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="344046569"
-X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
-   d="scan'208";a="344046569"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2023 16:33:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="1018919645"
-X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
-   d="scan'208";a="1018919645"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Apr 2023 16:33:04 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 12 Apr 2023 16:33:03 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 12 Apr 2023 16:33:03 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Wed, 12 Apr 2023 16:33:03 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Wed, 12 Apr 2023 16:33:02 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X+fyVK9IMP8UJoBkScuxxJOdqUaE7TOL7s/1nEpYTdLpsrfDFlj/kzMrrzcdSEFUmXeo+IKfSq9IYMnZg6kM/ttenbKIRGpI4KeIpHZN35dayMpOrpk6LWkZCTPdaGAroc6PfD+8tap47DGBykrVQmRfMJyU2WJmMFvi9vHMDjWelIukzN/SgpV6LrjsNE6iYs1z6xdvCK0+B8NLcI4EFgH9mpCXYlESvemNHpqAQkPVSHfTe6g0GBVhD3bPaJHF1jpt6xMqqN/sGpy9Jy2GpEzfnwlncJZztFB4p1sKPfib0Wb+Tw6PTgwbLejFJkzo8KUXcxH3DNpEVTi75WiufA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DMcuqRpGIrayXgWlYMIaB9alNhXGJgTPc5zEgIxDpwc=;
- b=DdXngKK3mNS0sepIlAzhTpdnkMs1xTsJqYBJ5+9prqJL/wErjU1i7AXqxVI9WKvs6NOq5AepVE2pSZ/JeL+z3K6nGuE0Tzh3XbIsG/BbStyXdOOdVI+fI0ZtcAgYvkCCkoWalDYqYh4E3Vnv3ie4XjrZFllsd9k+4DASry7rfTOvvYVL1dbnahvgvJiMR4fJUzsR5uNQzMDwkuPU4LgaxUX9dZrhY6r1oTAvsdJ+zVe9wJABda+Oa0kLgWOwQAp+MjjQk99KzXPOjAxupheiqR7ud/CYYfopjhAsoi0cQjp0Xe1y1Rl8V4kb+gkNdrZ1+ncbBJN1DUOi5n17hkx1nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by SJ2PR11MB7670.namprd11.prod.outlook.com (2603:10b6:a03:4c3::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6277.35; Wed, 12 Apr
- 2023 23:33:01 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::6222:859a:41a7:e55b]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::6222:859a:41a7:e55b%2]) with mapi id 15.20.6298.030; Wed, 12 Apr 2023
- 23:33:00 +0000
-Message-ID: <0166d13c-dc55-c376-28ca-dae0a872b518@intel.com>
-Date:   Wed, 12 Apr 2023 16:33:06 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH net-next v2] net/mlx5: stop waiting for PCI link if reset
- is required
-Content-Language: en-US
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-CC:     Gerd Bayer <gbayer@linux.ibm.com>,
-        Alexander Schmidt <alexs@linux.ibm.com>,
-        Leon Romanovsky <leonro@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230411105103.2835394-1-schnelle@linux.ibm.com>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <20230411105103.2835394-1-schnelle@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ2PR07CA0008.namprd07.prod.outlook.com
- (2603:10b6:a03:505::8) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
+        with ESMTP id S229530AbjDMHSO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Apr 2023 03:18:14 -0400
+Received: from out-2.mta1.migadu.com (out-2.mta1.migadu.com [IPv6:2001:41d0:203:375::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733D755AB
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Apr 2023 00:18:12 -0700 (PDT)
+Message-ID: <8be0a6dd-c573-cbbb-986c-0e798a87aeee@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1681370287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/UKuWEf8xdHEwfRClIrD+r1getsLJqcYcus40zvXPmc=;
+        b=cwgS3KZF6dgYN7C+RTiToToRLXc6gR4LP/GrP6iH9BTtvj9IGNQUDrZPB6zkLtueJpcQyY
+        SawFtSlfY3zkbklJvTGxODzfA0RalJFtIU1XplrLoGSyVHvVOr+RHHrNVPrrZ28MqrnIJq
+        6G9Hv3bSsWGlnZPfyaSP7Sr0Qp94tO8=
+Date:   Thu, 13 Apr 2023 15:17:54 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|SJ2PR11MB7670:EE_
-X-MS-Office365-Filtering-Correlation-Id: 47b6dd38-b263-490b-ac79-08db3bae40cb
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cAXd2cp4pOR/rc27uWD6fdKEZCaSuCr0K0icDIOSXSYX/HWzi0utHbz5RF5G4BOivJB76lki22twM3OfnLDHPaIw2w+gQ6P39BgZnsm9wvWxMca76kBQQRKQtNMAbL8V98R3gJKtGOc0ud74S3/RlejvIzcSZ6xlJeJAVkOH4TY3HpLOIfrrB0cxRSFlKtsDjJi0kVUcdoDdmP4JGbx1ohR69UOBAzPtmXGG2UZlI92IX+mbxqzYmlOg05ABjq1Bc5uTqgJo9UlavNOTOnsaY7Jxcdyti9LA6LYm3wAPo8iF7cti7EDNzqq9pzZkkTL+SOQ/sUOxb3u4nKw81ZWiUOUzyxTxxKeQk5mieOtZ7sVFbdiKKZgW8U0rLdiqGOao0VB8sa+GhXJrli6fVmi+Jt8t4DuGKEuWJcq/oINEJPzt6vBV87EQ6Kwwob9CUQugvMYE5ZF87LkNvbqG98Jml44fUrjsO6WLTgB+uJjLITvZApRgLp92336fJd4bSgsOykdP3fq6wDPm7q0ItNl7if/XB2qCy1h+8embTmwmC2XsfCSTSa8TPRqk+rByG+O/GcHAKSojhMnBPidTaJAN0BbTN8ie/1MVjwSKpPztjk7F+TNWuct9Tli+Tpbe1yE8ozOhaEunz2zJ6T7EQ8U2IA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(39860400002)(136003)(376002)(396003)(346002)(451199021)(31686004)(316002)(4326008)(6486002)(66556008)(66946007)(66476007)(966005)(8676002)(478600001)(41300700001)(83380400001)(110136005)(54906003)(36756003)(31696002)(86362001)(2616005)(6506007)(26005)(6512007)(53546011)(8936002)(5660300002)(82960400001)(2906002)(186003)(38100700002)(7416002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bVN5NHMrNkYzZFRTaHdoeHRFdVlJLzh1ZTUwM1lCbHJjL0I3TkRuT0phWVpx?=
- =?utf-8?B?cDJQT1paU2dFeG1FWWs5VS9kMnh3Y1RiaFN0cnVwOUZsem5IME5HcTdFbDNV?=
- =?utf-8?B?Mlc0YzNPN0p2dHZkZG9Qb0FaRlFZaFdJdFo0NHR1Z0dIdkU5U3ZBQzhEVnR5?=
- =?utf-8?B?cnBpZW4wUXFZamVUL2UvSXZVc2VId3ozNnpXZmVTWnczdkFyTUdwRW04U0Vm?=
- =?utf-8?B?cDJGaStuK3NMdkxDd3UrdWJubG5wVUE0dS8vdTQvZWFlelRVSDlZdlprRkls?=
- =?utf-8?B?bjNIZ3RpVzRTalUzamdkN2JCdm80UXBVRm5jalFDY1VIZStLY29icktKdW82?=
- =?utf-8?B?d0oxN3FoZFFCell5UmxJc04rNXQ2VjBGRFRXTHQ3dTd0NGYwK3pnTzNsalRz?=
- =?utf-8?B?cE5Ua1FvY1ZyYmxVNzFicHo4WEFzSjdXOEx5bW1IazdYSElWVnQrUFkwcDZW?=
- =?utf-8?B?TGZIcVZMYzVZZk5KNnBIS2gwWURBaTZrOTEyK1dWVzlMQzRYN3FrV3o1SkJS?=
- =?utf-8?B?L1hGdzNJbDJPcGxHT3N2WUlSREVDUDNmY3MyeUxNMERnUzJnU2RwdjhpYTI2?=
- =?utf-8?B?Z2dhZVl3VTg4bVY1ZTVibHNlSnJoT21WVzNEblh6cjFkRmZjSXhheWcvMnFx?=
- =?utf-8?B?bFovdXhmMVNjNUx4WnVJZ0hkYStZV1RoU1dzYmNQa3k5NityczBKMDBER1Fa?=
- =?utf-8?B?NVc5L0g4aFpid1pqZGVEYWkyR1FTWXJuZnhWb1JDRzY0NUExN3ZWRmUzb1pP?=
- =?utf-8?B?QmNzeFNZZFE1dTZQSnR0bzJHc0lvSDdld0RuYWVNZjNMeHlUTUNWYSs3bjFT?=
- =?utf-8?B?dTNCK01DemdjTGVhUjJjWHZTRlVmZzhtWVFoS1lVcHlEOHZ4dW5zUk9DcGVr?=
- =?utf-8?B?dnFZVjVvVExHYktQdEkyTThhdVlSRFp1clN6RUY3QUdmc3NUUHJNNnF1Wloy?=
- =?utf-8?B?M0tENXZXV29HOGEvQjRkdDB5MElYVkpXSXlQeXAxbWtxbld4azVqNGNsQU9x?=
- =?utf-8?B?em83SUNYR0Jya0tlL2ZSYnF4NzFqenM5dEJwdndQaG0wdFkyMnUxTVJZZ05k?=
- =?utf-8?B?ZmpkRHlxRGNOU3AyenU1ajE4YWU1cWtEaGZ2NXNCU1hRQ3F6WS9FazdVMVVG?=
- =?utf-8?B?YTRtTk8ySUh4K2dpYnc5NE9kWFVKYk9RWWlSUFBLejd6MHY1cXBESlcrNGxP?=
- =?utf-8?B?anJ1a1U4aldoemtHRTg2SnZGTlR5ZTViQmxsN24wbUxneTJWcVVOc0JFQUZ5?=
- =?utf-8?B?NDhEQkpWSDlDVkZMRVp2SlErRVVqU01LU2VlTm43ZEJaMzNubGs0VnVmTFd0?=
- =?utf-8?B?RFF5Z0lWNTA0ZlRZdjkzWmN5bkJIRXowY0dDYUxodldlWnpIQWM4UlRRc0FV?=
- =?utf-8?B?ejN1aEpDOFREUkZiekQxdzl0T09GRE80VE1nc3I4RlpoQjNiT0JWQzl1bXlD?=
- =?utf-8?B?b1BvN2lrb0VKbTR5aVZSVWpzdkErVjBqNHVSMHI5SmRIcEM4TGRNcXhRQVZ0?=
- =?utf-8?B?MjdaMmtkMmp5NFhwRlUzVU9OaVlJN3hETncyM2tXZHZEVGxhYmxseEZkQUdB?=
- =?utf-8?B?SkVJRmtMK2J4VlA3OVZTMnI5RVFKTE1RU2hleHE0MXl6ZlFZSXJZbTlOMUZM?=
- =?utf-8?B?d3BvQ1lSdk1zQ2NnMlowQWJaVFZYZlVqSkhSd3A3V3lHU0FxSTNsaXB4S2RX?=
- =?utf-8?B?Uk1aUzk0ajc0TnBSTENubkh0ZURKNjVHanArWmp0M3RWNzNEVTNyZjlDMnM1?=
- =?utf-8?B?eU5WOE9HL3ZRenZoeVU1NnYrY3VtWDlLam9LRVZ2VlZJMVpzOWMzeTJNUUtM?=
- =?utf-8?B?czRjcjN4dy9mazkxcXJ0b0hHcWdyNU5NVFNDd243NEtnWTY3M3B6ZkxMemxM?=
- =?utf-8?B?WnBsWHVnclZleUFxem5tbkZDZ3hRdExpUHAxVjlvM0RadmIvc1RWOXY2QW90?=
- =?utf-8?B?dTZEbkY1SmJxeGtiakI5OXlCbTBWcUg5ZU01cHluejg1eTUrcHFBOE9CbnNm?=
- =?utf-8?B?T0JZLytCMklZaVlQSHVwMHlmMFpwZVNMM1J1QVBYU3p5OGZzZUIzZWNNSzVI?=
- =?utf-8?B?OTBPZHphNGpEeE1GMjZQaDYxQnBMZEtHcEcwS0FtNlo5TVF6RjF4d0I5NS9M?=
- =?utf-8?B?d29uMFFqRmdzWW5JU1NKZ2hrN0JaZFRhMkVlLzZoWnVDSm41NzU2UnIrWEpv?=
- =?utf-8?B?VHc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47b6dd38-b263-490b-ac79-08db3bae40cb
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2023 23:33:00.2629
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xgqky70DVfCDdrclfX6T6kzWvFIpDu3FMVTQsSX6TlMQJSpDscP5JAyT42buaGgt2I56rruZ4Ulv6RR67mYrf64hvw5ioAu7rvbtYDgj9Rw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7670
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCHv3 0/8] Fix the problem that rxe can not work in net
+ namespace
+To:     Mark Lehrer <lehrer@gmail.com>, Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com,
+        linux-rdma@vger.kernel.org, parav@nvidia.com
+References: <20230214060634.427162-1-yanjun.zhu@intel.com>
+ <CADvaNzUvWA56BnZqNy3niEC-B0w41TPB+YFGJbn=3bKBi9Orcg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <CADvaNzUvWA56BnZqNy3niEC-B0w41TPB+YFGJbn=3bKBi9Orcg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -171,65 +50,196 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
+在 2023/4/13 1:22, Mark Lehrer 写道:
+>> When run "ip link add" command to add a rxe rdma link in a net
+>> namespace, normally this rxe rdma link can not work in a net
+>> name space.
+> Thank you for this patch, Yanjun!  It is very helpful for some
+> research I'm doing.  I just tested the patch and now I have success
+> with utilities like rping and ib_send_bw.  It looks like rdma_cm is at
+> least doing the basics with no problems.
+>
+> However, I am still not able to "nvme discover" - this fails with
+> rdma_resolve_addr error -101.  It looks like this function is part of
+> rdma_cma.  Is this expected to work, or is more patching needed for
+> nvme-cli to have success?
 
-On 4/11/2023 3:51 AM, Niklas Schnelle wrote:
-> After an error on the PCI link, the driver does not need to wait
-> for the link to become functional again as a reset is required. Stop
-> the wait loop in this case to accelerate the recovery flow.
-> 
+Thanks for your testing.
 
-Ok, so if the PCI link is completely offline (pci_channel_offline) then
-we just bail out immediately and fail to recover, reporting to the user
-as-such. Then a system administrator can setup in and perform the
-appropriate reset? Rather than not reporting until the timeout
-completes. Essentially, we know that this will never recover at this
-point so stop wasting time.
+These commits are to make SoftRoCE work in the different net namespaces.
 
-Makes sense.
+Especially in the same host, in 2 or more different net namespace, SoftRoCE
 
-> Co-developed-by: Alexander Schmidt <alexs@linux.ibm.com>
-> Signed-off-by: Alexander Schmidt <alexs@linux.ibm.com>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> Link: https://lore.kernel.org/r/20230403075657.168294-1-schnelle@linux.ibm.com
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
+can connect to each other.
 
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+I just make rping and perftest tests. And I do not make NVMe tests.
 
->  drivers/net/ethernet/mellanox/mlx5/core/health.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> index f9438d4e43ca..81ca44e0705a 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> @@ -325,6 +325,8 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev *dev)
->  	while (sensor_pci_not_working(dev)) {
->  		if (time_after(jiffies, end))
->  			return -ETIMEDOUT;
-> +		if (pci_channel_offline(dev->pdev))
-> +			return -EIO;
->  		msleep(100);
->  	}
->  	return 0;
-> @@ -332,10 +334,16 @@ int mlx5_health_wait_pci_up(struct mlx5_core_dev *dev)
->  
->  static int mlx5_health_try_recover(struct mlx5_core_dev *dev)
->  {
-> +	int rc;
-> +
->  	mlx5_core_warn(dev, "handling bad device here\n");
->  	mlx5_handle_bad_state(dev);
-> -	if (mlx5_health_wait_pci_up(dev)) {
-> -		mlx5_core_err(dev, "health recovery flow aborted, PCI reads still not working\n");
-> +	rc = mlx5_health_wait_pci_up(dev);
-> +	if (rc) {
-> +		if (rc == -ETIMEDOUT)
-> +			mlx5_core_err(dev, "health recovery flow aborted, PCI reads still not working\n");
-> +		else
-> +			mlx5_core_err(dev, "health recovery flow aborted, PCI channel offline\n");
->  		return -EIO;
->  	}
->  	mlx5_core_err(dev, "starting health recovery flow\n");
-> 
-> base-commit: 09a9639e56c01c7a00d6c0ca63f4c7c41abe075d
+If you let me know how to reproduce the problem that you confronted,
+
+it can help me a lot to understand this problem and fix it.
+
+Thanks,
+
+Zhu Yanjun
+
+>
+> It looks like the kernel nvme-fabrics driver is making the call to
+> rdma_resolve_addr here.  According to strace, nvme-cli is just opening
+> the fabrics device and writing the host NQN etc.  Is there an easy way
+> to prove that rdma_resolve_addr is working from userland?
+>
+> Thanks,
+> Mark
+>
+>
+>
+> On Mon, Feb 13, 2023 at 11:13 PM Zhu Yanjun <yanjun.zhu@intel.com> wrote:
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> When run "ip link add" command to add a rxe rdma link in a net
+>> namespace, normally this rxe rdma link can not work in a net
+>> name space.
+>>
+>> The root cause is that a sock listening on udp port 4791 is created
+>> in init_net when the rdma_rxe module is loaded into kernel. That is,
+>> the sock listening on udp port 4791 is created in init_net. Other net
+>> namespace is difficult to use this sock.
+>>
+>> The following commits will solve this problem.
+>>
+>> In the first commit, move the creating sock listening on udp port 4791
+>> from module_init function to rdma link creating functions. That is,
+>> after the module rdma_rxe is loaded, the sock will not be created.
+>> When run "rdma link add ..." command, the sock will be created. So
+>> when creating a rdma link in the net namespace, the sock will be
+>> created in this net namespace.
+>>
+>> In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
+>> will check the sock exists in the net namespace or not. If yes, rdma
+>> link will increase the reference count of this sock, then continue other
+>> jobs instead of creating a new sock to listen on udp port 4791. Since the
+>> network notifier is global, when the module rdma_rxe is loaded, this
+>> notifier will be registered.
+>>
+>> After the rdma link is created, the command "rdma link del" is to
+>> delete rdma link at the same time the sock is checked. If the reference
+>> count of this sock is greater than the sock reference count needed by
+>> udp tunnel, the sock reference count is decreased by one. If equal, it
+>> indicates that this rdma link is the last one. As such, the udp tunnel
+>> is shut down and the sock is closed. The above work should be
+>> implemented in linkdel function. But currently no dellink function in
+>> rxe. So the 3rd commit addes dellink function pointer. And the 4th
+>> commit implements the dellink function in rxe.
+>>
+>> To now, it is not necessary to keep a global variable to store the sock
+>> listening udp port 4791. This global variable can be replaced by the
+>> functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
+>> function udp6_lib_lookup is in the fast path, a member variable l_sk6
+>> is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
+>> to lookup the sock, then the sock is stored in l_sk6, in the future,it
+>> can be used directly.
+>>
+>> All the above work has been done in init_net. And it can also work in
+>> the net namespace. So the init_net is replaced by the individual net
+>> namespace. This is what the 6th commit does. Because rxe device is
+>> dependent on the net device and the sock listening on udp port 4791,
+>> every rxe device is in exclusive mode in the individual net namespace.
+>> Other rdma netns operations will be considerred in the future.
+>>
+>> In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
+>> functions are added. When a new net namespace is created, the init
+>> function will initialize the sk4 and sk6 socks. Then the 2 socks will
+>> be released when the net namespace is destroyed. The functions
+>> rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
+>> namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
+>> handle sk6. Then sk4 and sk6 are used in the previous commits.
+>>
+>> As the sk4 and sk6 in pernet namespace can be accessed, it is not
+>> necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
+>> replaced with the sk6 in pernet namespace.
+>>
+>> Test steps:
+>> 1) Suppose that 2 NICs are in 2 different net namespaces.
+>>
+>>    # ip netns exec net0 ip link
+>>    3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
+>>       link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
+>>       altname enp5s0
+>>
+>>    # ip netns exec net1 ip link
+>>    4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
+>>       link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
+>>
+>> 2) Add rdma link in the different net namespace
+>>      net0:
+>>      # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
+>>
+>>      net1:
+>>      # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
+>>
+>> 3) Run rping test.
+>>      net0
+>>      # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
+>>      [1] 1737
+>>      # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
+>>      verbose
+>>      count 1
+>>      ...
+>>      ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+>>      ...
+>>
+>> 4) Remove the rdma links from the net namespaces.
+>>      net0:
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+>>      UNCONN    0         0         [::]:4791             [::]:*
+>>
+>>      # ip netns exec net0 rdma link del rxe0
+>>
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>
+>>      net1:
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+>>      UNCONN    0         0         [::]:4791             [::]:*
+>>
+>>      # ip netns exec net1 rdma link del rxe1
+>>
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>
+>> V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
+>>             verify rdma link is removed.
+>>          2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
+>>          3) Replace l_sk6 with sk6 of pernet_name_space
+>>
+>> V1->V2: Add the explicit initialization of sk6.
+>>
+>> Zhu Yanjun (8):
+>>    RDMA/rxe: Creating listening sock in newlink function
+>>    RDMA/rxe: Support more rdma links in init_net
+>>    RDMA/nldev: Add dellink function pointer
+>>    RDMA/rxe: Implement dellink in rxe
+>>    RDMA/rxe: Replace global variable with sock lookup functions
+>>    RDMA/rxe: add the support of net namespace
+>>    RDMA/rxe: Add the support of net namespace notifier
+>>    RDMA/rxe: Replace l_sk6 with sk6 in net namespace
+>>
+>>   drivers/infiniband/core/nldev.c     |   6 ++
+>>   drivers/infiniband/sw/rxe/Makefile  |   3 +-
+>>   drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
+>>   drivers/infiniband/sw/rxe/rxe_net.c | 113 +++++++++++++++++-------
+>>   drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
+>>   drivers/infiniband/sw/rxe/rxe_ns.c  | 128 ++++++++++++++++++++++++++++
+>>   drivers/infiniband/sw/rxe/rxe_ns.h  |  11 +++
+>>   include/rdma/rdma_netlink.h         |   2 +
+>>   8 files changed, 267 insertions(+), 40 deletions(-)
+>>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+>>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
+>>
+>> --
+>> 2.34.1
+>>
