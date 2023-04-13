@@ -2,234 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F2F6E0F86
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Apr 2023 16:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0E56E1050
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Apr 2023 16:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbjDMOEB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Apr 2023 10:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
+        id S230211AbjDMOrQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Apr 2023 10:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbjDMOEA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Apr 2023 10:04:00 -0400
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021024.outbound.protection.outlook.com [52.101.57.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972749ED0;
-        Thu, 13 Apr 2023 07:03:53 -0700 (PDT)
+        with ESMTP id S231349AbjDMOrD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Apr 2023 10:47:03 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2050.outbound.protection.outlook.com [40.107.92.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA674B446;
+        Thu, 13 Apr 2023 07:46:38 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DB7RarY5UCF2hc1HYSgmk/pxR9Gk01OjRb9KlLT3N8d969DO00588oaTlIQ9qttRfe8TPCcpzmqNQ9miZ2bM91I9RTNqgJVml5lboSyIymJjsQr7igujTbxdPtibjghyXZUj1TSkdgGZCy/x1EzZPLHwjgwMKYnI4DPFsKl/mIWP+2k6S8/PXgeFkwE0b6FgNe5PRreqOgmc7j2bqBxNMKuo59Asgi2d5Vdj0sDBTdgh3m5T2yVhkV549Qappprlu0BCuX4Yeo69EjKcWGmF8vkvnoqQv+jqa+yGmhByKJz+povxwX6wkxzpLHaa1K5Nl9ltO5lEqtNYdLa9mFRFog==
+ b=fVyhiBZLem0Er8D2BnASVFcTvGZNMb7wOeYLuM226qyDUn2s9NMHhuDEhZzdZ4g27u0JA4v+ox36e4s2cE1MMeM+E5/fIMSRkyAZ/ALyC+nLeLp3VXTSL/L46YmMBGBSOrYp6zrn5lv0Gg3tRM2YMzViZg2j8eCp6yWedU/G3Xsm4f2NJwe9GfonIhaQBVQE3wTb9zwK2cKyZOvXmMGZr2E7ZXsV1RpNWE2XPAbPbOZtwpf1JTfLtjqjCKMvFNV/xazZ/CWnuuP4GtViOTPZD4J/MJ/6kb9IhozedrgO6VA8Mfs24M3Lr7HwKrcHkMZ3mQ7iZZcBVnz0WkXulLS0wg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FZwDBmnNFlJPJUjkO1oNfzx1Ibz/ZDI+bjC2ZJxQotw=;
- b=ZPOYIJEXbe7TSLymhs1HoqMmT4mF0YYttRqLFlISXJ/UTccLrz8BwR1A9CpVU8Pb1+x7wnrpArcjvMOPzs+l0hAIu+tINcQrFvipB0Pvl6P/QAY2+PS0tLQ7up4bbA4v9NXraTC97JDmYP/cH+1NhkFCEUo79jYEssEgZPmVmDeFxuptTwukC7iY6wgYo2LWl4F0waR/0fljCZMGQ4LfIJN0l6OGz+yORKTazHnJO/0aqQxot+1F90mhuOaUMwAb13WumtOMZOPp4DSmNezjI2bk9qOCWOjbwhZbtth1I82+pGP4R+bEOLOR84Pf0lxGHskSOBCv/ra/FGXDG337/g==
+ bh=hg0TVVSVmHoCSq09o8YMzNbDqlSes+QBzk9rIF6C8xY=;
+ b=AEQtHKU0dVO2/qNHGLcbAEyCyHVTLsY/mdiBxDswp86wsLbAQcaaHfnpdH7xtc3pn8PxWELy4HZmTe17B46tGWMqKMAuj1NnHYLw0vpQIqo0NiQvDhPLlo0kg0umXtv0eJNYbdHZNf3bY0DrRMpC0hGV2MvutMPshQsJ6GZgzm0GxWPps/+lvu+nc82SWwkf+12dyY0pO+ApRjcVCYIq0wycYDZz82le5fnEM8maqXI4fFFu27MU1LRLyql+O2zFz+aGqBTuci7dyM4m1GSPFJIi1437CLTVSGGkg+ZLKYJS7ogN/bf7swixlGwuOdWRTaZvHtbvgRiOvsXbdE/tcQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FZwDBmnNFlJPJUjkO1oNfzx1Ibz/ZDI+bjC2ZJxQotw=;
- b=SZ5a5p7NnJVesdur1hUM8AtTilRiyxMKl5Tdfg+HwAH2hiwIFUUBrNQ45v9slJ9u9eUrIiZPyWnYgGw6eqxdp9qXfN9WTBrTitA+Vj2Q22Uin8QYPvczoaa4OVQe3NH39g32rrlUDDkUQymlsA0xMoUVZgae5m2di8ztnByZRUA=
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
- by MW4PR21MB1892.namprd21.prod.outlook.com (2603:10b6:303:78::15) with
+ bh=hg0TVVSVmHoCSq09o8YMzNbDqlSes+QBzk9rIF6C8xY=;
+ b=Z2adElvWUdQfnx4UuIK195UHkBzHEGALffcGI+FwiQYt3QL20eJX6au+XT6pD0fyi/8Az76I4MSuIG+E9LA0SyVH4BqbOZjTA6IcGi72Uca2PxXiyPCfyjrKWna1bcEQZYgdSmmLZMeTtt4yiSLh47R4QAjd7amYL6sR8xkphqHccDgg3M/wHr6e1d3cMwMqW6y2K6ROUansuO5yRkGdJv89pG3UTR96nPbp1bU9PP7GJja+FCJ4cnqWkiu/6+MH4SR1bs8Dcy50L/Mw73s/vaQ2lVZQIRfx7tqihAabBP+zB8qNTcRXM/ihQtwwi0WztHmOIuYdgNBWSniEztcYQw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by BY5PR12MB4210.namprd12.prod.outlook.com (2603:10b6:a03:203::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.6; Thu, 13 Apr
- 2023 14:03:50 +0000
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::969d:2908:c2e1:e787]) by PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::969d:2908:c2e1:e787%7]) with mapi id 15.20.6319.004; Thu, 13 Apr 2023
- 14:03:50 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.30; Thu, 13 Apr
+ 2023 14:46:20 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::6045:ad97:10b7:62a2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::6045:ad97:10b7:62a2%9]) with mapi id 15.20.6298.030; Thu, 13 Apr 2023
+ 14:46:19 +0000
+Date:   Thu, 13 Apr 2023 11:46:16 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     Leon Romanovsky <leon@kernel.org>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V3,net-next, 2/4] net: mana: Refactor RX buffer allocation
- code to prepare for various MTU
-Thread-Topic: [PATCH V3,net-next, 2/4] net: mana: Refactor RX buffer
- allocation code to prepare for various MTU
-Thread-Index: AQHZbYQujzvOlLV/4Ey68gIm6XL6d68pNewAgAANP5A=
-Date:   Thu, 13 Apr 2023 14:03:50 +0000
-Message-ID: <PH7PR21MB3116194E8F7D56EB434B56A6CA989@PH7PR21MB3116.namprd21.prod.outlook.com>
-References: <1681334163-31084-1-git-send-email-haiyangz@microsoft.com>
- <1681334163-31084-3-git-send-email-haiyangz@microsoft.com>
- <20230413130428.GO17993@unreal>
-In-Reply-To: <20230413130428.GO17993@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=49f3f8e9-b761-4155-8907-f27b273ddc27;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-04-13T13:51:52Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|MW4PR21MB1892:EE_
-x-ms-office365-filtering-correlation-id: 08ea56ba-0f9d-4efd-3a9d-08db3c27e891
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: s3sV0/I9T87zL4pQOAmnYKPlemcuhbdj3Gi6UhotkPskhybjUa5LcrTzrl1R8uiS7+lZkrN3NbaaZO36SezW7S5T1xfFx7rCiGFw3/H4K/AshVKUjH54r66gqDAaZ/Cyn6wAKNJkrrxUSyAWrXOCYsvAs9S9DqdsbHsHipN4aOnN0Sfsu3JkETCjA9QtWjypaL+uJ9XmWPDOUB400kGSE0I7pTb+jEE90kSLWWUxdDc4y//SFQm1efiwu52vAute+0xTX6koD4IXa9/tg/nx2X7kdau5fpv/W13Is9hQOI8stAQXQLziefealimFevlUk4naiJFaaHeaUL4YjbXMCTYQiQ91Ea9lj7RKajXGhv+nLGd4PYzsSWt+xvYBIO8Tu+GGKs+76a4SNfkn3l3EICgu87wdc698TL4f42/xT8szvgWIjwf7GaPjl6IBMqIsqQ7JE8oiUxhR3fs46k0kbHI/UoxRPT6r3sJTbmixvXUvKoWLKRLbdWJ+IHej9ddwBzyjBl8piWu3oDb4wnSKhaJeoUCRIeEzlywPQ4HzKjCA6UE5ziKkH3FqPYQ+DtNoDpEopoAeYwQNL5fm82Z7QFV8FJ5jDtgAvDmrqsadmRsFMLu8HpInLMfhMm0o0NHJIY3ZoRGa7gMD5vySaInwT6tAyB7MnXcj45vT3mQuyB8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:cs;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(396003)(136003)(39860400002)(376002)(451199021)(53546011)(26005)(9686003)(6506007)(186003)(10290500003)(478600001)(33656002)(316002)(786003)(54906003)(71200400001)(7696005)(5660300002)(7416002)(8936002)(52536014)(38070700005)(2906002)(8990500004)(82960400001)(4326008)(6916009)(8676002)(82950400001)(122000001)(86362001)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(38100700002)(41300700001)(55016003)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?dCpy/MLLF6s4ZYfNr0H3yQkqNsbaphsBL7p3ipGZXQwFdIXAFiwO/LvzPJc5?=
- =?us-ascii?Q?j50r2PWInEKd0mQEr8zW1/XpiZGDMCFIi+fa+uKJtmm9S9iTnEHfz67iVv1J?=
- =?us-ascii?Q?QtZrBT04ONpsjVQajCQganme9xvKSZeaTiGTzuoUiCkjVv0cjZTv0h08fVcB?=
- =?us-ascii?Q?IJUdAibfix3rfUrXNr/+U5KiX8KkrSbDkgZ4QTzX4TCUfZbb3cw/Rgybiko+?=
- =?us-ascii?Q?KT7I1enpa7qbJSp2V4XaF/6dU6bkfkKR9Qeb1Of96xoQAWgXqxtW2LWkbOYZ?=
- =?us-ascii?Q?YONcKX7S/aaJrYPwxv7xZmshu7I/Fa5SNkGCADJurIQKE9IkMg/rrH9pi1Z3?=
- =?us-ascii?Q?rYznlsZ0C6i73e0Aj/uyWBzvj7tiy7iXaOYtS4Yd5eUl3R1yJ7qA2oS0Oahp?=
- =?us-ascii?Q?Ftae0+koOq4MdRNZeLUPVB6ZNnbVuLbEwjfixoGxUYCxenB56cFVxmk4gkRK?=
- =?us-ascii?Q?BKT4BKjBuNfIi/+D45JNOVhHVaCm3inDtcMHTvb86q9Cm/jLYDmfksXJ1eAF?=
- =?us-ascii?Q?SSBEH0lXu40W/bE4RgynfvAc8YQMsLLq0bAVoVUZVEEIsYmR58z4+sIPveCa?=
- =?us-ascii?Q?1uNOwR1hhSOzcckhtMnNStJ4i3QEldRrrd+Ob+43i2y6q+UwzvOiZVIdd7l+?=
- =?us-ascii?Q?LZwpJ2SrLYBJDoAAVpuBSbAlgNO8gYfOG9eMDEkaZUul+2Xs2Qdex9Bi1tEt?=
- =?us-ascii?Q?ZciOjbMLapEEz8sO9wGoSulqFuOfAzESWCzwJ5PFi1ZWDNdj9npERD0piYoU?=
- =?us-ascii?Q?ukRQzAbxpDtrhk1RSSQke6FZ/+VQOr8QggP0HM+1obgJ+axZes9KaQ1gb6V5?=
- =?us-ascii?Q?h3s1R8zkuXt5SVXxXuYXT16WqSXwwIspFGEIc6J0idRgQMMvOncTCt7WGd9S?=
- =?us-ascii?Q?QCfhoimDLs/8RKEdGllnBMLfxR+KKjP2l29ng7L31PIuhR4gS3AchNEa/YLu?=
- =?us-ascii?Q?E7nXIWLKSqD2PY2Yr5FoztEttWb8b5k/a7tekWymPvK7rauxYP5l036t886E?=
- =?us-ascii?Q?PhBlqSXfAEkyu6081Mk+xGrgd0fYjCH+BCvZqiAhIAybq+jyBEFNEGa9ZtmC?=
- =?us-ascii?Q?VNbLI+HBJjidblbncLmF3YJ2UuR8zkZYtW92s0V3NlbwqJpqfcUwXV6O2n8j?=
- =?us-ascii?Q?X4OxDeWG+alDWI3W1uNKHvqKPPbA/JV/+BWxMg6wRHSTeke74xqhZ6Aw/Ncb?=
- =?us-ascii?Q?/TeyjTSpuJuq81ifdh5F4R2g8XNJfAhgVO0vqEyVdcn3HatwuZo5j118WsS5?=
- =?us-ascii?Q?95gOwy2v72Zrf1ynty92rVqRdZ89V8bBqth+RFcQKLyEO7c/NU5yWjt7GI74?=
- =?us-ascii?Q?JvWEJs7JwAE5ISI00mUlPbIA2FnN6bMuJyhYu2rhDFoE7/OiSwRpbsQ1yqn1?=
- =?us-ascii?Q?uw3pGjkjKqAGJPwo67mcQN7Pm+CW9ZsQ0m3ukn4WIS8J8Duna09lNxvy7eSt?=
- =?us-ascii?Q?zO6sstUTojkMJZM0XqBjtzkRkkrvX//zzMd1AdMNdoHKEL4N7FrjO2lnUmoN?=
- =?us-ascii?Q?CLF9e7B8VSvfyBrxNa2Ubo369LqWuT2M9OYGK1x1im4An+qsnGkyzhVM8QkV?=
- =?us-ascii?Q?EQt5b/VQYyJriy4ObB4keqHSJlv55oqekiXVGRqJ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Cc:     Jacob Keller <jacob.e.keller@intel.com>,
+        Avihai Horon <avihaih@nvidia.com>, Aya Levin <ayal@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Meir Lichtinger <meirl@mellanox.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: Re: [PATCH rdma-next 0/4] Allow relaxed ordering read in VFs and VMs
+Message-ID: <ZDgVuIbnTCPYVVpa@nvidia.com>
+References: <cover.1681131553.git.leon@kernel.org>
+ <ZDVoH0W27xo6mAbW@nvidia.com>
+ <7c5eb785-0fe7-e0e5-8232-403e1d3538ac@intel.com>
+ <20230413124929.GN17993@unreal>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230413124929.GN17993@unreal>
+X-ClientProxiedBy: BYAPR21CA0013.namprd21.prod.outlook.com
+ (2603:10b6:a03:114::23) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BY5PR12MB4210:EE_
+X-MS-Office365-Filtering-Correlation-Id: 35d65baa-9e13-450d-3b8f-08db3c2dd7e3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l7w+Z1zC5j4eOg3C3G1p6vKDxKxvqedJVtcNSFBNAdEecKQOHq1q+6D7uaxhv2D6l9TuOBOovYdaJyjrhKSmu7cIOcRwsgvSET6txF0OwotIk0ingmXued6OwdpMGjpN7RaJX6EnnLsQt+z1HmalKJIQel7WKnFOlt1I9PmY/qdw74AwzPDuUW5RiaNuMO49RBtW5AeQbygm3ST30VkInfZDb01nW5cQKfKy1nWdPT0ueM5eaX09QyjErDB9l6lZmSsMF/peAjBHJmMZDUCUR2//18Mnc9Zsin7cL9fqi+z8X0vkKpq3UXWsmFBqsiM3UW4tN9FvEN02We8v/b+OSWHp4lpn5ZPNGtfI/BSb2Tsr6vfBpwZKvFcojZ9bBw4+wWii+jUYbh9oCBeVAbugo4z9k81lcKQK+QYxqDAwkU1wfpWTVtJYkN2MR99ryaVvEgU5WItDdh+0lLyJT8KD6eYkrs1QtHpwlFNzJi/98jHIFrX0wqGrD1+L/OrXRueakyoY0DK83V7Et33zYKReQt61wi6/UMuP0cPizBAGmG5IStnbjVGmig2eEHflEgek
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(366004)(136003)(396003)(451199021)(38100700002)(5660300002)(36756003)(2906002)(316002)(8676002)(8936002)(86362001)(66556008)(41300700001)(66946007)(6916009)(66476007)(4326008)(2616005)(83380400001)(54906003)(107886003)(6506007)(186003)(478600001)(26005)(6512007)(6486002)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lw5n2a4D4Wc8rAcYqGZC7zZ4hM6ONzVHUTqepsGcWoilgtZ4ceDE3VAMFM6p?=
+ =?us-ascii?Q?sjcT6Xc0Hy6kWL5kt/T3NLKi5fXh4y9ZtZvpXE750zlq1ZoAmN7gaFh7gLg1?=
+ =?us-ascii?Q?9aHeiZdV+6Q5aDQB0Fw5iuzFDBm550m3h/cck5cyIzex/y1osGGyi6KwA0jf?=
+ =?us-ascii?Q?IZkaz+3m7PKWFDzmn+fJ5FmsVogRKl52Lvx761zGPUqJobzmB/EYyM9h2K6w?=
+ =?us-ascii?Q?Y2J0NtTeyU+ll7ywA6Kg6OLOqHGE8GZxA+y0zNYZCP8fzyOBh/fFWUKrRvE7?=
+ =?us-ascii?Q?eJGhX1vaClsveXicZ/2N+X0H70gaW6iiogHJ5YFAfUKT4TrPKw+7x64pUniG?=
+ =?us-ascii?Q?cSWnHduJ8zHuMPcEJ1EFZEiJ/naDhkUY28etxvRKA+ilWQrzmuG3KzOuX9vI?=
+ =?us-ascii?Q?WHt7tgd3aXdoTKMWtI3N4OVsgVpnkZpCt7rqT14SstvjVEkPfXZ3SoGq/25Z?=
+ =?us-ascii?Q?9uYDEvHpzI8/5Ufe7sWJG/4HJ/0saCdXgwwzFwoztODBXpqKYsIN0yuq2pjA?=
+ =?us-ascii?Q?vD95MlGskl9x+8FT2qj4jpwOdYrxkUO6iLU8zgdNbeg8jOkSin6maZZ4kmsM?=
+ =?us-ascii?Q?20V9IZmdiI3bRZLNJvVOu2+C9m0nv9sd4uLiRyAnvyrhWjzfGspJS4prMVJK?=
+ =?us-ascii?Q?7VsM2ikd7S2EcJdN1d0DLAbpQthtDHyFi5OjprllRa9m3BuDGonFOnhAhuZh?=
+ =?us-ascii?Q?JOBeAZBUTEYUdBd3P/bHjZO1VcnDmoUysgHwlkRVcktTTeGU1tmjHS2WbVId?=
+ =?us-ascii?Q?3vL8zO7etdzKooenkox1EDC9EeYhMyLFrM2WahIn1oMdmieL+GrszqBpPya/?=
+ =?us-ascii?Q?9LoNDr4mRZdfhNTTpFQwW6ad6xxCByg8sAKkH7Ha8MR2enBYl9nFO+quY5AW?=
+ =?us-ascii?Q?zrkjEeWNpQG/WinqfnMQpV1W3UgkmXXGUHJPyyp0bAArVGodS0+YWfHUV+SN?=
+ =?us-ascii?Q?urGLl+eOcqbqmHcPxg2SinKPyU0OhtD3YwXgbxXeB6FaA/DmrhCaM7AOl83w?=
+ =?us-ascii?Q?XcdsciQpfWQ+pu5SXUuX4LhTC0EV0l56rze0Ek/ViMsF7PgIrSJ4azSt01ee?=
+ =?us-ascii?Q?Fka7sdI2DfpH4UAcE2JcjA4oT86gbO0XjPNBcbWcV8Ic9WEiAyvU7I840+EX?=
+ =?us-ascii?Q?PPm76QzkOhEV+peumkZpLLeB8NX14pLlMM8AuScHgkl5qR78HF7CJnq0D9i/?=
+ =?us-ascii?Q?ryZXytKkdOF11Bvi+y6C7ce6Xm6V993JytOYArr5aFvGBbda3LqpnI2YlcVb?=
+ =?us-ascii?Q?SFSGU7x2YRl8rmM36Mqs1Cl9QC52Zt/PE4ichyXoUq3mcPBeDVVFCmzCK2Lg?=
+ =?us-ascii?Q?KiSFBZrn0deYskzgTU4X+i16MWIquByQs5M9aWAzzdFI6JEm/w6JGB6Bi9SO?=
+ =?us-ascii?Q?bs0UTMq43WU7ypuRD/CR0fFbOGg31S7VmBUZScYwtlN4wLSKzxo9UWta6aMT?=
+ =?us-ascii?Q?DSsotQmv6Y8rvKAqgDmGNuB7Rso32U936nctWcOiLK4J8e/EHEoGJIX5AFCW?=
+ =?us-ascii?Q?oi1gDqA2HLGivN8ARYzJVsNEjpQB2V5A8VtK6SxJLlVPRgkuU9Vekpdrb9p2?=
+ =?us-ascii?Q?HlO2bOeasIFihnOgiHC6Yr7M5O8NBFDe0LVsPXWT?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35d65baa-9e13-450d-3b8f-08db3c2dd7e3
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08ea56ba-0f9d-4efd-3a9d-08db3c27e891
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2023 14:03:50.5936
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2023 14:46:19.7766
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PeEqJpyF0EdYvoRW7/LiT3wgr02VxT44CaYzDVfm7BsG1MtbU3pUyIK4SWy1jjLOOye3U+Z74gTwJQNJ/iEgpg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1892
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uMysEmbYXft9Nmky4kka+Tn2IuGU1OoTQqlzwgFEB7GKpubH4Kq2LTP/pilbiDJZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4210
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Apr 13, 2023 at 03:49:29PM +0300, Leon Romanovsky wrote:
 
+> > that it fixes a setup with VF and VM, so I think thats an ok thing to
+> > call out as the goal.
+> 
+> VF or VM came from user perspective of where this behavior is not
+> correct. Avihai saw this in QEMU, so he described it in terms which
+> are more clear to the end user.
 
-> -----Original Message-----
-> From: Leon Romanovsky <leon@kernel.org>
-> Sent: Thursday, April 13, 2023 9:04 AM
-> To: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
-> <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul Rosswurm
-> <paulros@microsoft.com>; olaf@aepfle.de; vkuznets@redhat.com;
-> davem@davemloft.net; wei.liu@kernel.org; edumazet@google.com;
-> kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>;
-> ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
-> daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
-> ast@kernel.org; Ajay Sharma <sharmaajay@microsoft.com>;
-> hawk@kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH V3,net-next, 2/4] net: mana: Refactor RX buffer alloc=
-ation
-> code to prepare for various MTU
->=20
-> On Wed, Apr 12, 2023 at 02:16:01PM -0700, Haiyang Zhang wrote:
-> > Move out common buffer allocation code from mana_process_rx_cqe() and
-> > mana_alloc_rx_wqe() to helper functions.
-> > Refactor related variables so they can be changed in one place, and buf=
-fer
-> > sizes are in sync.
-> >
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> > ---
-> > V3:
-> > Refectored to multiple patches for readability. Suggested by Jacob Kell=
-er.
-> >
-> > V2:
-> > Refectored to multiple patches for readability. Suggested by Yunsheng L=
-in.
-> >
-> > ---
-> >  drivers/net/ethernet/microsoft/mana/mana_en.c | 154 ++++++++++-------
-> -
-> >  include/net/mana/mana.h                       |   6 +-
-> >  2 files changed, 91 insertions(+), 69 deletions(-)
->=20
-> <...>
->=20
-> > +static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
-> > +			     dma_addr_t *da, bool is_napi)
-> > +{
-> > +	struct page *page;
-> > +	void *va;
-> > +
-> > +	/* Reuse XDP dropped page if available */
-> > +	if (rxq->xdp_save_va) {
-> > +		va =3D rxq->xdp_save_va;
-> > +		rxq->xdp_save_va =3D NULL;
-> > +	} else {
-> > +		page =3D dev_alloc_page();
->=20
-> Documentation/networking/page_pool.rst
->    10 Basic use involves replacing alloc_pages() calls with the
->    11 page_pool_alloc_pages() call.  Drivers should use
-> page_pool_dev_alloc_pages()
->    12 replacing dev_alloc_pages().
->=20
-> General question, is this sentence applicable to all new code or only
-> for XDP related paths?
+Except it is not clear, the VF/VM issue is more properly solved by
+showing the real relaxed order cap to the VM.
 
-Quote from the context before that sentence --
+This series really is about fixing the FW mistake that had a dynamic
+cap bit for relaxed ordering. The driver does not support cap bits
+that change during runtime.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Page Pool API
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-The page_pool allocator is optimized for the XDP mode that uses one frame
-per-page, but it can fallback on the regular page allocator APIs.
-Basic use involves replacing alloc_pages() calls with the
-page_pool_alloc_pages() call.  Drivers should use page_pool_dev_alloc_pages=
-()
-replacing dev_alloc_pages().
+mlx5 racily bodged around the broken cap by by protecting the feature
+with the same test the FW was using to make the cap dynamic, but this
+is all just wrong.
 
---unquote
+The new cap bit is static, doesn't change like a cap bit should, and
+so we don't need the bodge anymore.
 
-So the page pool is optimized for the XDP, and that sentence is applicable =
-to drivers
-that have set up page pool for XDP optimization.
-static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool=
-)  //need a pool been set up
+That the bodge didn't work in VMs because of a qmeu/vfio issue is
+another bad side effect, but it isn't really the point of this series.
 
-Back to our mana driver, we don't have page pool setup yet. (will consider =
-in the future)
-So we cannot call page_pool_dev_alloc_pages(pool) in this place yet.
+This is why I'd like it if the code was more closely organized to make
+it clear that the old cap is OLD and that the bodge that goes along
+with it is part of making the cap bit work. It kind of gets lost in
+the way things are organized what is old/new.
 
-Thanks,
-- Haiyang
-
+Jason
