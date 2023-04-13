@@ -2,30 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 963906E078F
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Apr 2023 09:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442C86E079C
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Apr 2023 09:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjDMHSP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Apr 2023 03:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36602 "EHLO
+        id S229830AbjDMHWV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Apr 2023 03:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjDMHSO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Apr 2023 03:18:14 -0400
-Received: from out-2.mta1.migadu.com (out-2.mta1.migadu.com [IPv6:2001:41d0:203:375::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733D755AB
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Apr 2023 00:18:12 -0700 (PDT)
-Message-ID: <8be0a6dd-c573-cbbb-986c-0e798a87aeee@linux.dev>
+        with ESMTP id S229575AbjDMHWU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Apr 2023 03:22:20 -0400
+Received: from out-36.mta0.migadu.com (out-36.mta0.migadu.com [91.218.175.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B7055AB
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Apr 2023 00:22:17 -0700 (PDT)
+Message-ID: <1adb4df4-ee14-1d26-d1ac-49108b2de03d@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1681370287;
+        t=1681370535;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/UKuWEf8xdHEwfRClIrD+r1getsLJqcYcus40zvXPmc=;
-        b=cwgS3KZF6dgYN7C+RTiToToRLXc6gR4LP/GrP6iH9BTtvj9IGNQUDrZPB6zkLtueJpcQyY
-        SawFtSlfY3zkbklJvTGxODzfA0RalJFtIU1XplrLoGSyVHvVOr+RHHrNVPrrZ28MqrnIJq
-        6G9Hv3bSsWGlnZPfyaSP7Sr0Qp94tO8=
-Date:   Thu, 13 Apr 2023 15:17:54 +0800
+        bh=lrpBu7VCZKoA001HLE4vPibpdz3/Vwpx54m9wTzphZU=;
+        b=LLuXJ9wZDsS08Msbkza06vw6arYcwD/prNjZBPl+Y5uu4w/YnTLq+FcS7BYKYHwn+pKB1W
+        pGbSfKeYKwksm5GfegdLeW2zmQaDp9bGTkvcaH1sucqcLe1lX4UbbRwu9qCPsTq1xV/Gg9
+        w4moEnP3xPGo0KW9RFpn0MTbUqV6rSQ=
+Date:   Thu, 13 Apr 2023 15:22:08 +0800
 MIME-Version: 1.0
 Subject: Re: [PATCHv3 0/8] Fix the problem that rxe can not work in net
  namespace
@@ -34,9 +34,10 @@ Cc:     jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com,
         linux-rdma@vger.kernel.org, parav@nvidia.com
 References: <20230214060634.427162-1-yanjun.zhu@intel.com>
  <CADvaNzUvWA56BnZqNy3niEC-B0w41TPB+YFGJbn=3bKBi9Orcg@mail.gmail.com>
+ <CADvaNzUdktEg=0vhrQgaYcg=GRjnQThx8_gVz71MNeqYw3e1kQ@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <CADvaNzUvWA56BnZqNy3niEC-B0w41TPB+YFGJbn=3bKBi9Orcg@mail.gmail.com>
+In-Reply-To: <CADvaNzUdktEg=0vhrQgaYcg=GRjnQThx8_gVz71MNeqYw3e1kQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -50,196 +51,34 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-在 2023/4/13 1:22, Mark Lehrer 写道:
->> When run "ip link add" command to add a rxe rdma link in a net
->> namespace, normally this rxe rdma link can not work in a net
->> name space.
-> Thank you for this patch, Yanjun!  It is very helpful for some
-> research I'm doing.  I just tested the patch and now I have success
-> with utilities like rping and ib_send_bw.  It looks like rdma_cm is at
-> least doing the basics with no problems.
+在 2023/4/13 5:01, Mark Lehrer 写道:
+>> the fabrics device and writing the host NQN etc.  Is there an easy way
+>> to prove that rdma_resolve_addr is working from userland?
+> Actually I meant "is there a way to prove that the kernel
+> rdma_resolve_addr() works with netns?"
+
+I think rdma_resolve_addr can work with netns because rdma on mlx5 can 
+work well with netns.
+
+I do not delve into the source code. But IMO, this function should be 
+used in rdma on mlx5.
+
 >
-> However, I am still not able to "nvme discover" - this fails with
-> rdma_resolve_addr error -101.  It looks like this function is part of
-> rdma_cma.  Is this expected to work, or is more patching needed for
-> nvme-cli to have success?
+> It seems like this is the real problem.  If we run commands like nvme
+> discover & nvme connect within the netns context, the system will use
+> the non-netns IP & RDMA stacks to connect.  As an aside - this seems
+> like it would be a major security issue for container systems, doesn't
+> it?
 
-Thanks for your testing.
+Do you make tests nvme + mlx5 + net ns in your host? Can it work?
 
-These commits are to make SoftRoCE work in the different net namespaces.
-
-Especially in the same host, in 2 or more different net namespace, SoftRoCE
-
-can connect to each other.
-
-I just make rping and perftest tests. And I do not make NVMe tests.
-
-If you let me know how to reproduce the problem that you confronted,
-
-it can help me a lot to understand this problem and fix it.
-
-Thanks,
+Thanks
 
 Zhu Yanjun
 
 >
-> It looks like the kernel nvme-fabrics driver is making the call to
-> rdma_resolve_addr here.  According to strace, nvme-cli is just opening
-> the fabrics device and writing the host NQN etc.  Is there an easy way
-> to prove that rdma_resolve_addr is working from userland?
+> I'll investigate to see if the fabrics module & nvme-cli have a way to
+> set and use the proper netns context.
 >
 > Thanks,
 > Mark
->
->
->
-> On Mon, Feb 13, 2023 at 11:13 PM Zhu Yanjun <yanjun.zhu@intel.com> wrote:
->> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>
->> When run "ip link add" command to add a rxe rdma link in a net
->> namespace, normally this rxe rdma link can not work in a net
->> name space.
->>
->> The root cause is that a sock listening on udp port 4791 is created
->> in init_net when the rdma_rxe module is loaded into kernel. That is,
->> the sock listening on udp port 4791 is created in init_net. Other net
->> namespace is difficult to use this sock.
->>
->> The following commits will solve this problem.
->>
->> In the first commit, move the creating sock listening on udp port 4791
->> from module_init function to rdma link creating functions. That is,
->> after the module rdma_rxe is loaded, the sock will not be created.
->> When run "rdma link add ..." command, the sock will be created. So
->> when creating a rdma link in the net namespace, the sock will be
->> created in this net namespace.
->>
->> In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
->> will check the sock exists in the net namespace or not. If yes, rdma
->> link will increase the reference count of this sock, then continue other
->> jobs instead of creating a new sock to listen on udp port 4791. Since the
->> network notifier is global, when the module rdma_rxe is loaded, this
->> notifier will be registered.
->>
->> After the rdma link is created, the command "rdma link del" is to
->> delete rdma link at the same time the sock is checked. If the reference
->> count of this sock is greater than the sock reference count needed by
->> udp tunnel, the sock reference count is decreased by one. If equal, it
->> indicates that this rdma link is the last one. As such, the udp tunnel
->> is shut down and the sock is closed. The above work should be
->> implemented in linkdel function. But currently no dellink function in
->> rxe. So the 3rd commit addes dellink function pointer. And the 4th
->> commit implements the dellink function in rxe.
->>
->> To now, it is not necessary to keep a global variable to store the sock
->> listening udp port 4791. This global variable can be replaced by the
->> functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
->> function udp6_lib_lookup is in the fast path, a member variable l_sk6
->> is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
->> to lookup the sock, then the sock is stored in l_sk6, in the future,it
->> can be used directly.
->>
->> All the above work has been done in init_net. And it can also work in
->> the net namespace. So the init_net is replaced by the individual net
->> namespace. This is what the 6th commit does. Because rxe device is
->> dependent on the net device and the sock listening on udp port 4791,
->> every rxe device is in exclusive mode in the individual net namespace.
->> Other rdma netns operations will be considerred in the future.
->>
->> In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
->> functions are added. When a new net namespace is created, the init
->> function will initialize the sk4 and sk6 socks. Then the 2 socks will
->> be released when the net namespace is destroyed. The functions
->> rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
->> namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
->> handle sk6. Then sk4 and sk6 are used in the previous commits.
->>
->> As the sk4 and sk6 in pernet namespace can be accessed, it is not
->> necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
->> replaced with the sk6 in pernet namespace.
->>
->> Test steps:
->> 1) Suppose that 2 NICs are in 2 different net namespaces.
->>
->>    # ip netns exec net0 ip link
->>    3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
->>       link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
->>       altname enp5s0
->>
->>    # ip netns exec net1 ip link
->>    4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
->>       link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
->>
->> 2) Add rdma link in the different net namespace
->>      net0:
->>      # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
->>
->>      net1:
->>      # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
->>
->> 3) Run rping test.
->>      net0
->>      # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
->>      [1] 1737
->>      # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
->>      verbose
->>      count 1
->>      ...
->>      ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
->>      ...
->>
->> 4) Remove the rdma links from the net namespaces.
->>      net0:
->>      # ip netns exec net0 ss -lu
->>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
->>      UNCONN    0         0         [::]:4791             [::]:*
->>
->>      # ip netns exec net0 rdma link del rxe0
->>
->>      # ip netns exec net0 ss -lu
->>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->>
->>      net1:
->>      # ip netns exec net0 ss -lu
->>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
->>      UNCONN    0         0         [::]:4791             [::]:*
->>
->>      # ip netns exec net1 rdma link del rxe1
->>
->>      # ip netns exec net0 ss -lu
->>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->>
->> V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
->>             verify rdma link is removed.
->>          2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
->>          3) Replace l_sk6 with sk6 of pernet_name_space
->>
->> V1->V2: Add the explicit initialization of sk6.
->>
->> Zhu Yanjun (8):
->>    RDMA/rxe: Creating listening sock in newlink function
->>    RDMA/rxe: Support more rdma links in init_net
->>    RDMA/nldev: Add dellink function pointer
->>    RDMA/rxe: Implement dellink in rxe
->>    RDMA/rxe: Replace global variable with sock lookup functions
->>    RDMA/rxe: add the support of net namespace
->>    RDMA/rxe: Add the support of net namespace notifier
->>    RDMA/rxe: Replace l_sk6 with sk6 in net namespace
->>
->>   drivers/infiniband/core/nldev.c     |   6 ++
->>   drivers/infiniband/sw/rxe/Makefile  |   3 +-
->>   drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
->>   drivers/infiniband/sw/rxe/rxe_net.c | 113 +++++++++++++++++-------
->>   drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
->>   drivers/infiniband/sw/rxe/rxe_ns.c  | 128 ++++++++++++++++++++++++++++
->>   drivers/infiniband/sw/rxe/rxe_ns.h  |  11 +++
->>   include/rdma/rdma_netlink.h         |   2 +
->>   8 files changed, 267 insertions(+), 40 deletions(-)
->>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
->>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
->>
->> --
->> 2.34.1
->>
