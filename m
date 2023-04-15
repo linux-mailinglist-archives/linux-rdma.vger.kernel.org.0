@@ -2,53 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D72736E2FEE
-	for <lists+linux-rdma@lfdr.de>; Sat, 15 Apr 2023 11:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD566E3146
+	for <lists+linux-rdma@lfdr.de>; Sat, 15 Apr 2023 14:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbjDOJJX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 15 Apr 2023 05:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
+        id S230156AbjDOMKD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 15 Apr 2023 08:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbjDOJJK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 15 Apr 2023 05:09:10 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4775A27F;
-        Sat, 15 Apr 2023 02:08:51 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-2f87c5b4635so189048f8f.1;
-        Sat, 15 Apr 2023 02:08:51 -0700 (PDT)
+        with ESMTP id S230203AbjDOMJ4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 15 Apr 2023 08:09:56 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251C25243;
+        Sat, 15 Apr 2023 05:09:37 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3f09a3c8bbbso1985085e9.0;
+        Sat, 15 Apr 2023 05:09:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681549730; x=1684141730;
+        d=gmail.com; s=20221208; t=1681560575; x=1684152575;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=InhEM3EHiRkXrRv+rDOd/57bP6C2VpOkdZxgrLu5jHw=;
-        b=nIsKl560k8l1z5w+7Vj9euFCWZH9iEYRsj90660ZNXMvB3jyD9wfY0wtUFEPNkAAWr
-         DM6hd7rU2kNk23Pc+1FSpvcnPwXlB0bt0zS1jjavZpkr6ffnt04azfiMIHD5DTwYuv4S
-         C5XoRspwhOTPB2qwBSsm0HzAiNcEpf2KkiLZFtmKge8HFu/5PEZyeLddBuKAPjEXxn4T
-         Khp3w3pCQoHTkm4L5NakurRQD9sY0L+KWM7tvBwGcJlRyNXUdQSC2YMJ0hNJy1q73DSk
-         H1a9uPS+UUpLKnnhcDdM7CpraDeMo3FTa0RLWUsBx7q30BVtBuAXvfSO2aVDdxKRnJIn
-         wppw==
+        bh=K8x3ikmaTJACOYzpIpbcvsaXlC6/cI+6Eg2IWvlQkq0=;
+        b=s6CnqnzBZ6THc6cnIXQ9tFiKd6HkuMO7PzqDl5qYoVBPz6TLY1hkf210w8sOnAzrei
+         v9NRZuqzkZm3ujvdTD4Q/xqsKFPfppKZJkMHKOw1AXAo0XZJ/iNVur/2UqE3Jlv29kyX
+         WOn43QOaq8pv1V3qHMqN6IwqHfyZW68QFzHs6Q02KpmsgBu7UGSYRrSzvpVoPUtTl+Mh
+         FXMcaHBNr48f9KhhS0WYsUzECx59vCwrezWsHbg5B0XWjTD0sne3p5XHAreuf1/PzvZU
+         3+QyOXL//9FA9+lL8VD4Lx7D8n+ic1FTN1z4dE6iaHk0DOWVvQ9otbUTysRkeHkeJynd
+         4YHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681549730; x=1684141730;
+        d=1e100.net; s=20221208; t=1681560575; x=1684152575;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=InhEM3EHiRkXrRv+rDOd/57bP6C2VpOkdZxgrLu5jHw=;
-        b=hFRIK7FWy23kfNieFrGKUFi6s5YObri4mDrOo/NPOwhuF69Li3La6jwLgL6gyWDGkw
-         yFfOqvmrf5RO2F3y7cqS34+lakl2bgxT2SKoy0qOhLQQGSxS6J8CvlwWQfBMW6r2UItf
-         OfYb53CrIrQxd/lDqR8x2puWd2i0z9je2kiCy03x8YjSvuevl19i/XiCLf0+/PP92wSN
-         APrvWn477rhhkfIu6cl7188M+5qEh08CINWxtIYI1pHDK5Yye8hXGOUdopX6wHB6YPGE
-         ym8DdyahxGAR4EAMf/WybCQGjAfcnMrO0YOGVvDfb8hZLo+bD47nd754kVrgecY3ta8Y
-         UGxQ==
-X-Gm-Message-State: AAQBX9fM9PDbX5V3dsCZ0qcALnpy4RKPCZLg2XGAa/DByBiJesXcnztW
-        T0zNwfIMaqYv741T4Jpne84=
-X-Google-Smtp-Source: AKy350Z5pLswAXLOFSTYMOtF/X2jVhBWwPLFnyPBpYeO/k93TYYcoLOvVvEGvTS833bwvHj8k46jZA==
-X-Received: by 2002:adf:f183:0:b0:2e4:d8d7:839a with SMTP id h3-20020adff183000000b002e4d8d7839amr1028458wro.43.1681549729931;
-        Sat, 15 Apr 2023 02:08:49 -0700 (PDT)
+        bh=K8x3ikmaTJACOYzpIpbcvsaXlC6/cI+6Eg2IWvlQkq0=;
+        b=HTDfjj++AwsLL5WAtuB31ot1KMCIeo4fq3CsmppmIUxX5aq5sxVQwSKswrg7IWFSAo
+         mLAs+juZi2GV7BzbE8DF++daRC3EaSvNAFWAC8ifWeQl0Em7xlxac+TR2vWXdJqA8g4b
+         LlHKi+qkz8bWhTe6vPiesENMSS4XPrmPvh7xzGB6j0io/9FCzSvcGqgEcNMAEzK90aEW
+         jgp2D79936OkzGs8X7XVZwVlKskkIIDkCbvBQlSQuz3mJDX/7HqXrZAAHlAmgLtbP/ED
+         7ZIZIG8cSxiToW5/Uj76imEcBBCsEDOYs06pado0u4RNc+fjNZnZgAx3EThEA0Dg6FfC
+         DlVw==
+X-Gm-Message-State: AAQBX9feUpSUZXvsGfhYPOCtwn7JNebkpx3wOJ3675H5UbiJnMs4qbiY
+        OccfnP+Oby646pqGJlv4ftg6hpzTiwvqrA==
+X-Google-Smtp-Source: AKy350YomYNfdZqxeUoplG58e3G8aFqN6nmBy7aau2fgnqPuY2DvZIwHvG83m+klTmm1CrIhE9BoRQ==
+X-Received: by 2002:a5d:6a42:0:b0:2f2:3a72:1cfa with SMTP id t2-20020a5d6a42000000b002f23a721cfamr1388788wrw.15.1681560575329;
+        Sat, 15 Apr 2023 05:09:35 -0700 (PDT)
 Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.googlemail.com with ESMTPSA id j4-20020a5d5644000000b002f02df4c7a3sm5338874wrw.30.2023.04.15.02.08.48
+        by smtp.googlemail.com with ESMTPSA id t5-20020adfeb85000000b002e71156b0fcsm5651091wrn.6.2023.04.15.05.09.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Apr 2023 02:08:49 -0700 (PDT)
+        Sat, 15 Apr 2023 05:09:34 -0700 (PDT)
 From:   Lorenzo Stoakes <lstoakes@gmail.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>
@@ -84,12 +84,12 @@ Cc:     Matthew Wilcox <willy@infradead.org>,
         virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
         netdev@vger.kernel.org, io-uring@vger.kernel.org,
         bpf@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>
-Subject: [PATCH v2 6/7] mm/gup: remove vmas parameter from pin_user_pages()
-Date:   Sat, 15 Apr 2023 10:08:45 +0100
-Message-Id: <925661e55664dd65a6aaa9f60e96bd0d71ed8197.1681547405.git.lstoakes@gmail.com>
+Subject: [PATCH v3 6/7] mm/gup: remove vmas parameter from pin_user_pages()
+Date:   Sat, 15 Apr 2023 13:09:32 +0100
+Message-Id: <fa5487e54dfae725c84dfd7297b06567340165bd.1681558407.git.lstoakes@gmail.com>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <cover.1681547405.git.lstoakes@gmail.com>
-References: <cover.1681547405.git.lstoakes@gmail.com>
+In-Reply-To: <cover.1681558407.git.lstoakes@gmail.com>
+References: <cover.1681558407.git.lstoakes@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -230,11 +230,11 @@ index 1bfe73a2b6d3..363e3d0d46f4 100644
  		    struct page **pages, unsigned int gup_flags);
  long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
 diff --git a/io_uring/rsrc.c b/io_uring/rsrc.c
-index adc860bcbd4f..92d0d47e322c 100644
+index 56de4d7bfc2b..bd45681de660 100644
 --- a/io_uring/rsrc.c
 +++ b/io_uring/rsrc.c
-@@ -1157,7 +1157,7 @@ struct page **io_pin_pages(unsigned long ubuf, unsigned long len, int *npages)
- 
+@@ -1156,7 +1156,7 @@ struct page **io_pin_pages(unsigned long ubuf, unsigned long len, int *npages)
+ 	mmap_read_lock(current->mm);
  	pret = pin_user_pages(ubuf, nr_pages,
  			      FOLL_WRITE | FOLL_LONGTERM | FOLL_SAME_FILE,
 -			      pages, NULL);
