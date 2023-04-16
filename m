@@ -2,45 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9F26E3774
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Apr 2023 12:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D506E3775
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Apr 2023 12:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjDPKaE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 16 Apr 2023 06:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
+        id S230046AbjDPKaJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 16 Apr 2023 06:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjDPKaD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Apr 2023 06:30:03 -0400
+        with ESMTP id S230070AbjDPKaI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Apr 2023 06:30:08 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3337F10D7
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Apr 2023 03:30:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87541991;
+        Sun, 16 Apr 2023 03:30:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2C6D6117A
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Apr 2023 10:30:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9A3CC433EF;
-        Sun, 16 Apr 2023 10:30:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4538D61795;
+        Sun, 16 Apr 2023 10:30:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E446FC433D2;
+        Sun, 16 Apr 2023 10:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681641001;
-        bh=OWj2ezR74e2vZwiGQGJ/gGszld4xh91D7xh/mO0EAVI=;
+        s=k20201202; t=1681641005;
+        bh=wUMx+jbx9x5k9I3u4HFQExHKJ1shZvnm2CmyxGhoOFs=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=WkL+jGGRECy7+3sJq90llCrUSmDsTMNidIk+sU/93AeskZRK7u90oc3Ss7Tg7L/fC
-         Twdu1SsPYm9EzAeQdmLxjfpSWUXFMjzu/oudLX8w/jNI/6RMVt1huL3tuSs+dI9WNW
-         WvLJFAzt1euB4AKQXHTbXRCuOQouqh1iwzBbup80jUXlmdjziR+mVPObSd8fVbsAea
-         YC/foas7Sl+e4AP2PesHTdvIyv+S5zxBYPjegzuqQDS7TohvaY4KP5dt/9pFw1kydp
-         CV3F5wd/N1yVS93+wSAb5v6rHArAQjttSgMRQ9VUTLUCCl2KpRv7dUHImZW99/xjZQ
-         RzfOpvtbHgALQ==
+        b=a+MUUk34woa+q0N6Z4SMSIgCPhktewLzAut+HRYUnp07ZEVdP8tgA7CutygRDsqJo
+         D3PmhbWbn/ViOGwR4Qn6XtM8FiNhohumRkeIrJ6svie5iYe2MpHbl+bKFZ6zbcPOXb
+         5E3UJDdkoK7rzFmRBEqxrEvx8/+UStVsAfRm4rxPXPBw6UEtisTDrH5DVT2GxMorKA
+         4pRU67GLiH2B9k2a3l+HbeCejCcRr7fZRngzp2RIv3r5bORqtilT5wNyjNtuqjyqsB
+         6jB0bNuwVS6KTjzPTk8dOuSTRJARYKeAbzHILWUYST4DQscxl1CT/GWb6Ono6n1FXm
+         Nb5m3PzCxgJOg==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Linus Walleij <linus.walleij@linaro.org>
-In-Reply-To: <0-v2-05ea785520ed+10-ib_virt_page_jgg@nvidia.com>
-References: <0-v2-05ea785520ed+10-ib_virt_page_jgg@nvidia.com>
-Subject: Re: [PATCH v2] RDMA: Add ib_virt_dma_to_page()
-Message-Id: <168164099730.148301.9451001441432768414.b4-ty@kernel.org>
-Date:   Sun, 16 Apr 2023 13:29:57 +0300
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     Avihai Horon <avihaih@nvidia.com>, Aya Levin <ayal@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Meir Lichtinger <meirl@mellanox.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shay Drory <shayd@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <cover.1681131553.git.leon@kernel.org>
+References: <cover.1681131553.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next 0/4] Allow relaxed ordering read in VFs and VMs
+Message-Id: <168164100172.148301.10628615930765615542.b4-ty@kernel.org>
+Date:   Sun, 16 Apr 2023 13:30:01 +0300
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -56,20 +62,28 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On Fri, 14 Apr 2023 10:58:29 -0300, Jason Gunthorpe wrote:
-> Make it clearer what is going on by adding a function to go back from the
-> "virtual" dma_addr to a kva and another to a struct page. This is used in the
-> ib_uses_virt_dma() style drivers (siw, rxe, hfi, qib).
+On Mon, 10 Apr 2023 16:07:49 +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Call them instead of a naked casting and  virt_to_page() when working with dma_addr
-> values encoded by the various ib_map functions.
+> From Avihai,
+> 
+> Currently, Relaxed Ordering (RO) can't be used in VFs directly and in
+> VFs assigned to QEMU, even if the PF supports RO. This is due to issues
+> in reporting/emulation of PCI config space RO bit and due to current
+> HCA capability behavior.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] RDMA: Add ib_virt_dma_to_page()
-      https://git.kernel.org/rdma/rdma/c/8d7c7c0eeb7428
+[1/4] RDMA/mlx5: Remove pcie_relaxed_ordering_enabled() check for RO write
+      https://git.kernel.org/rdma/rdma/c/ed4b0661cce119
+[2/4] RDMA/mlx5: Check pcie_relaxed_ordering_enabled() in UMR
+      https://git.kernel.org/rdma/rdma/c/d43b020b0f82c0
+[3/4] net/mlx5: Update relaxed ordering read HCA capabilities
+      https://git.kernel.org/rdma/rdma/c/ccbbfe0682f2ff
+[4/4] RDMA/mlx5: Allow relaxed ordering read in VFs and VMs
+      https://git.kernel.org/rdma/rdma/c/bd4ba605c4a92b
 
 Best regards,
 -- 
