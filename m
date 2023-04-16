@@ -2,120 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD446E3978
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Apr 2023 16:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7728F6E3CC9
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Apr 2023 01:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjDPOoB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 16 Apr 2023 10:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
+        id S229547AbjDPXc0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 16 Apr 2023 19:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjDPOoA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Apr 2023 10:44:00 -0400
-Received: from out-41.mta1.migadu.com (out-41.mta1.migadu.com [95.215.58.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B24E26BA
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Apr 2023 07:43:58 -0700 (PDT)
-Message-ID: <5eafd0d6-f1fb-a9d8-3337-1f4b1691fa91@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1681656236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nVaooAlQNOj6EZBX9nYz8T3rAllPt2W+TkhY3/+hCz0=;
-        b=jJRCoEUyNGhKfu5NQe2qlAXfsQip3aY0D4OA2gLA+RnAgOfOhQYU4oruyjOY3i5fURh+42
-        rwY/lHcG1pq5Po3WYz1O88asihLpIhuh6RZIxj+kUcUFMfIYcVZxtcihV4aXs+MPkuXoWo
-        PwU/dt6bKaUEPrqf/eBCG0+98P+SG04=
-Date:   Sun, 16 Apr 2023 22:43:48 +0800
+        with ESMTP id S229478AbjDPXcZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Apr 2023 19:32:25 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB681997
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Apr 2023 16:32:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681687943; x=1713223943;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Wg2edH0dBWymRRDcntBC/0HT8HmsMD2L+WQ+HPcFBNA=;
+  b=kAVnEMHeMPig78G24CCZZNO1ygMEATHkefXjamY1YBROzBRKj5F0BpOQ
+   VWnSzDrc2HqGXdY2pru2uau3ifzyv0IHpzYOZfoK5OCumORg3yLGK+oda
+   OAh42g02zLh8xzJcKny2t59LCnhmWtMVxWJReBYyLml82zAxVOvUvhCJt
+   UoYJARFbEPt0MiylTzUl5wgXXtC2ng16IBgfekCQm5Uk16pTZTAE24mam
+   7MyWui9rv6v/p8njmqR+Iyrh+n8rV2lK/Rhkwe4dkfrqENfoEOjHpevBV
+   3VWNIySBtfD710sLhlKdSGmF86ahtqjoMUf7xUUWKCfyQPvnLkicT4fbb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10682"; a="347502524"
+X-IronPort-AV: E=Sophos;i="5.99,203,1677571200"; 
+   d="scan'208";a="347502524"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2023 16:32:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10682"; a="1020216921"
+X-IronPort-AV: E=Sophos;i="5.99,203,1677571200"; 
+   d="scan'208";a="1020216921"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Apr 2023 16:32:21 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1poBr2-000buN-2W;
+        Sun, 16 Apr 2023 23:32:20 +0000
+Date:   Mon, 17 Apr 2023 07:31:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ bd4ba605c4a92b46ab414626a4f969a19103f97a
+Message-ID: <643c8551.mn/qMWYI6iYWiqpk%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Add function name to the logs
-To:     Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com,
-        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
-References: <20230410102105.1084967-1-yanjun.zhu@intel.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230410102105.1084967-1-yanjun.zhu@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/4/10 18:21, Zhu Yanjun 写道:
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> 
-> Add the function names to the pr_ logs. As such, if some bugs occur,
-> with function names, it is easy to locate the bugs.
-> 
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: bd4ba605c4a92b46ab414626a4f969a19103f97a  RDMA/mlx5: Allow relaxed ordering read in VFs and VMs
 
-Gently ping
+elapsed time: 727m
 
-Zhu Yanjun
+configs tested: 96
+configs skipped: 9
 
-> ---
->   drivers/infiniband/sw/rxe/rxe.h       |  2 +-
->   drivers/infiniband/sw/rxe/rxe_queue.h | 12 ++++--------
->   2 files changed, 5 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
-> index 2415f3704f57..43742d2f32de 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.h
-> +++ b/drivers/infiniband/sw/rxe/rxe.h
-> @@ -10,7 +10,7 @@
->   #ifdef pr_fmt
->   #undef pr_fmt
->   #endif
-> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": %s: " fmt, __func__
->   
->   #include <linux/skbuff.h>
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_queue.h b/drivers/infiniband/sw/rxe/rxe_queue.h
-> index c711cb98b949..5d6e17b00e60 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_queue.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_queue.h
-> @@ -185,8 +185,7 @@ static inline void queue_advance_producer(struct rxe_queue *q,
->   	case QUEUE_TYPE_FROM_CLIENT:
->   		/* used by rxe, client owns the index */
->   		if (WARN_ON(1))
-> -			pr_warn("%s: attempt to advance client index\n",
-> -				__func__);
-> +			pr_warn("attempt to advance client index\n");
->   		break;
->   	case QUEUE_TYPE_TO_CLIENT:
->   		/* used by rxe which owns the index */
-> @@ -206,8 +205,7 @@ static inline void queue_advance_producer(struct rxe_queue *q,
->   	case QUEUE_TYPE_TO_ULP:
->   		/* used by ulp, rxe owns the index */
->   		if (WARN_ON(1))
-> -			pr_warn("%s: attempt to advance driver index\n",
-> -				__func__);
-> +			pr_warn("attempt to advance driver index\n");
->   		break;
->   	}
->   }
-> @@ -228,14 +226,12 @@ static inline void queue_advance_consumer(struct rxe_queue *q,
->   	case QUEUE_TYPE_TO_CLIENT:
->   		/* used by rxe, client owns the index */
->   		if (WARN_ON(1))
-> -			pr_warn("%s: attempt to advance client index\n",
-> -				__func__);
-> +			pr_warn("attempt to advance client index\n");
->   		break;
->   	case QUEUE_TYPE_FROM_ULP:
->   		/* used by ulp, rxe owns the index */
->   		if (WARN_ON(1))
-> -			pr_warn("%s: attempt to advance driver index\n",
-> -				__func__);
-> +			pr_warn("attempt to advance driver index\n");
->   		break;
->   	case QUEUE_TYPE_TO_ULP:
->   		/* used by ulp which owns the index */
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r002-20230416   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r013-20230416   gcc  
+arc                  randconfig-r043-20230416   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                             mxs_defconfig   clang
+arm                  randconfig-r011-20230416   clang
+arm                  randconfig-r021-20230416   clang
+arm                  randconfig-r046-20230416   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r001-20230416   clang
+arm64                randconfig-r012-20230416   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r025-20230416   gcc  
+hexagon              randconfig-r041-20230416   clang
+hexagon              randconfig-r045-20230416   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                          randconfig-a001   gcc  
+i386                          randconfig-a002   clang
+i386                          randconfig-a003   gcc  
+i386                          randconfig-a004   clang
+i386                          randconfig-a005   gcc  
+i386                          randconfig-a006   clang
+i386                          randconfig-a011   clang
+i386                          randconfig-a012   gcc  
+i386                          randconfig-a013   clang
+i386                          randconfig-a014   gcc  
+i386                          randconfig-a015   clang
+i386                          randconfig-a016   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r022-20230416   gcc  
+ia64                 randconfig-r026-20230416   gcc  
+ia64                 randconfig-r036-20230416   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch    buildonly-randconfig-r002-20230416   gcc  
+loongarch    buildonly-randconfig-r006-20230416   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze           randconfig-r003-20230416   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r005-20230416   gcc  
+mips                 randconfig-r022-20230416   clang
+mips                 randconfig-r025-20230416   clang
+nios2        buildonly-randconfig-r004-20230416   gcc  
+nios2                               defconfig   gcc  
+openrisc     buildonly-randconfig-r003-20230416   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r021-20230416   gcc  
+parisc               randconfig-r023-20230416   gcc  
+parisc               randconfig-r024-20230416   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                      arches_defconfig   gcc  
+powerpc                   motionpro_defconfig   gcc  
+powerpc                  mpc885_ads_defconfig   clang
+powerpc              randconfig-r016-20230416   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r015-20230416   gcc  
+riscv                randconfig-r042-20230416   gcc  
+riscv                          rv32_defconfig   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r035-20230416   clang
+s390                 randconfig-r044-20230416   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r023-20230416   gcc  
+sh                          urquell_defconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r031-20230416   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                               rhel-8.3   gcc  
+xtensa       buildonly-randconfig-r005-20230416   gcc  
+xtensa               randconfig-r006-20230416   gcc  
+xtensa               randconfig-r032-20230416   gcc  
+xtensa               randconfig-r034-20230416   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
