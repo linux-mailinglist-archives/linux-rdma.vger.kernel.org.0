@@ -2,89 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D506E3775
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Apr 2023 12:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD446E3978
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Apr 2023 16:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjDPKaJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 16 Apr 2023 06:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
+        id S229568AbjDPOoB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 16 Apr 2023 10:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbjDPKaI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Apr 2023 06:30:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87541991;
-        Sun, 16 Apr 2023 03:30:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4538D61795;
-        Sun, 16 Apr 2023 10:30:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E446FC433D2;
-        Sun, 16 Apr 2023 10:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681641005;
-        bh=wUMx+jbx9x5k9I3u4HFQExHKJ1shZvnm2CmyxGhoOFs=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=a+MUUk34woa+q0N6Z4SMSIgCPhktewLzAut+HRYUnp07ZEVdP8tgA7CutygRDsqJo
-         D3PmhbWbn/ViOGwR4Qn6XtM8FiNhohumRkeIrJ6svie5iYe2MpHbl+bKFZ6zbcPOXb
-         5E3UJDdkoK7rzFmRBEqxrEvx8/+UStVsAfRm4rxPXPBw6UEtisTDrH5DVT2GxMorKA
-         4pRU67GLiH2B9k2a3l+HbeCejCcRr7fZRngzp2RIv3r5bORqtilT5wNyjNtuqjyqsB
-         6jB0bNuwVS6KTjzPTk8dOuSTRJARYKeAbzHILWUYST4DQscxl1CT/GWb6Ono6n1FXm
-         Nb5m3PzCxgJOg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     Avihai Horon <avihaih@nvidia.com>, Aya Levin <ayal@nvidia.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Meir Lichtinger <meirl@mellanox.com>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <cover.1681131553.git.leon@kernel.org>
-References: <cover.1681131553.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next 0/4] Allow relaxed ordering read in VFs and VMs
-Message-Id: <168164100172.148301.10628615930765615542.b4-ty@kernel.org>
-Date:   Sun, 16 Apr 2023 13:30:01 +0300
+        with ESMTP id S229461AbjDPOoA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Apr 2023 10:44:00 -0400
+Received: from out-41.mta1.migadu.com (out-41.mta1.migadu.com [95.215.58.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B24E26BA
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Apr 2023 07:43:58 -0700 (PDT)
+Message-ID: <5eafd0d6-f1fb-a9d8-3337-1f4b1691fa91@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1681656236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nVaooAlQNOj6EZBX9nYz8T3rAllPt2W+TkhY3/+hCz0=;
+        b=jJRCoEUyNGhKfu5NQe2qlAXfsQip3aY0D4OA2gLA+RnAgOfOhQYU4oruyjOY3i5fURh+42
+        rwY/lHcG1pq5Po3WYz1O88asihLpIhuh6RZIxj+kUcUFMfIYcVZxtcihV4aXs+MPkuXoWo
+        PwU/dt6bKaUEPrqf/eBCG0+98P+SG04=
+Date:   Sun, 16 Apr 2023 22:43:48 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/1] RDMA/rxe: Add function name to the logs
+To:     Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
+References: <20230410102105.1084967-1-yanjun.zhu@intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20230410102105.1084967-1-yanjun.zhu@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On Mon, 10 Apr 2023 16:07:49 +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+在 2023/4/10 18:21, Zhu Yanjun 写道:
+> From: Zhu Yanjun <yanjun.zhu@linux.dev>
 > 
-> From Avihai,
+> Add the function names to the pr_ logs. As such, if some bugs occur,
+> with function names, it is easy to locate the bugs.
 > 
-> Currently, Relaxed Ordering (RO) can't be used in VFs directly and in
-> VFs assigned to QEMU, even if the PF supports RO. This is due to issues
-> in reporting/emulation of PCI config space RO bit and due to current
-> HCA capability behavior.
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+Gently ping
+
+Zhu Yanjun
+
+> ---
+>   drivers/infiniband/sw/rxe/rxe.h       |  2 +-
+>   drivers/infiniband/sw/rxe/rxe_queue.h | 12 ++++--------
+>   2 files changed, 5 insertions(+), 9 deletions(-)
 > 
-> [...]
+> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+> index 2415f3704f57..43742d2f32de 100644
+> --- a/drivers/infiniband/sw/rxe/rxe.h
+> +++ b/drivers/infiniband/sw/rxe/rxe.h
+> @@ -10,7 +10,7 @@
+>   #ifdef pr_fmt
+>   #undef pr_fmt
+>   #endif
+> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": %s: " fmt, __func__
+>   
+>   #include <linux/skbuff.h>
+>   
+> diff --git a/drivers/infiniband/sw/rxe/rxe_queue.h b/drivers/infiniband/sw/rxe/rxe_queue.h
+> index c711cb98b949..5d6e17b00e60 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_queue.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_queue.h
+> @@ -185,8 +185,7 @@ static inline void queue_advance_producer(struct rxe_queue *q,
+>   	case QUEUE_TYPE_FROM_CLIENT:
+>   		/* used by rxe, client owns the index */
+>   		if (WARN_ON(1))
+> -			pr_warn("%s: attempt to advance client index\n",
+> -				__func__);
+> +			pr_warn("attempt to advance client index\n");
+>   		break;
+>   	case QUEUE_TYPE_TO_CLIENT:
+>   		/* used by rxe which owns the index */
+> @@ -206,8 +205,7 @@ static inline void queue_advance_producer(struct rxe_queue *q,
+>   	case QUEUE_TYPE_TO_ULP:
+>   		/* used by ulp, rxe owns the index */
+>   		if (WARN_ON(1))
+> -			pr_warn("%s: attempt to advance driver index\n",
+> -				__func__);
+> +			pr_warn("attempt to advance driver index\n");
+>   		break;
+>   	}
+>   }
+> @@ -228,14 +226,12 @@ static inline void queue_advance_consumer(struct rxe_queue *q,
+>   	case QUEUE_TYPE_TO_CLIENT:
+>   		/* used by rxe, client owns the index */
+>   		if (WARN_ON(1))
+> -			pr_warn("%s: attempt to advance client index\n",
+> -				__func__);
+> +			pr_warn("attempt to advance client index\n");
+>   		break;
+>   	case QUEUE_TYPE_FROM_ULP:
+>   		/* used by ulp, rxe owns the index */
+>   		if (WARN_ON(1))
+> -			pr_warn("%s: attempt to advance driver index\n",
+> -				__func__);
+> +			pr_warn("attempt to advance driver index\n");
+>   		break;
+>   	case QUEUE_TYPE_TO_ULP:
+>   		/* used by ulp which owns the index */
 
-Applied, thanks!
-
-[1/4] RDMA/mlx5: Remove pcie_relaxed_ordering_enabled() check for RO write
-      https://git.kernel.org/rdma/rdma/c/ed4b0661cce119
-[2/4] RDMA/mlx5: Check pcie_relaxed_ordering_enabled() in UMR
-      https://git.kernel.org/rdma/rdma/c/d43b020b0f82c0
-[3/4] net/mlx5: Update relaxed ordering read HCA capabilities
-      https://git.kernel.org/rdma/rdma/c/ccbbfe0682f2ff
-[4/4] RDMA/mlx5: Allow relaxed ordering read in VFs and VMs
-      https://git.kernel.org/rdma/rdma/c/bd4ba605c4a92b
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
