@@ -2,128 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4562B6E5D07
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Apr 2023 11:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A2A6E5E7E
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Apr 2023 12:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjDRJJl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Apr 2023 05:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
+        id S231335AbjDRKUJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Apr 2023 06:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbjDRJJf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Apr 2023 05:09:35 -0400
-X-Greylist: delayed 64 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 18 Apr 2023 02:09:16 PDT
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com [139.138.37.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604F14EE9
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Apr 2023 02:09:16 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="93274021"
-X-IronPort-AV: E=Sophos;i="5.99,206,1677510000"; 
-   d="scan'208";a="93274021"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
-  by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2023 18:07:52 +0900
-Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
-        by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id D3663D3EA5
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Apr 2023 18:07:50 +0900 (JST)
-Received: from m3002.s.css.fujitsu.com (msm3.b.css.fujitsu.com [10.128.233.104])
-        by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 1D2D2D67AC
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Apr 2023 18:07:50 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.118.237.106])
-        by m3002.s.css.fujitsu.com (Postfix) with ESMTP id E84CF200B33D;
-        Tue, 18 Apr 2023 18:07:49 +0900 (JST)
-From:   Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-To:     linux-rdma@vger.kernel.org, jgg@nvidia.com, rpearsonhpe@gmail.com
-Cc:     leonro@nvidia.com, zyjzyj2000@gmail.com,
-        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH jgg-for-next] RDMA/rxe: Fix spinlock recursion deadlock on requester
-Date:   Tue, 18 Apr 2023 18:06:42 +0900
-Message-Id: <20230418090642.1849358-1-matsuda-daisuke@fujitsu.com>
-X-Mailer: git-send-email 2.39.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S231337AbjDRKTs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Apr 2023 06:19:48 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906847AA9;
+        Tue, 18 Apr 2023 03:19:35 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0VgQLRIi_1681813160;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VgQLRIi_1681813160)
+          by smtp.aliyun-inc.com;
+          Tue, 18 Apr 2023 18:19:31 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
+        sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [RFC PATCH bpf-next v2 0/5] net/smc: Introduce BPF injection capability 
+Date:   Tue, 18 Apr 2023 18:19:15 +0800
+Message-Id: <1681813160-120214-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-After applying commit f605f26ea196, the following deadlock is observed:
- Call Trace:
-  <IRQ>
-  _raw_spin_lock_bh+0x29/0x30
-  check_type_state.constprop.0+0x4e/0xc0 [rdma_rxe]
-  rxe_rcv+0x173/0x3d0 [rdma_rxe]
-  rxe_udp_encap_recv+0x69/0xd0 [rdma_rxe]
-  ? __pfx_rxe_udp_encap_recv+0x10/0x10 [rdma_rxe]
-  udp_queue_rcv_one_skb+0x258/0x520
-  udp_unicast_rcv_skb+0x75/0x90
-  __udp4_lib_rcv+0x364/0x5c0
-  ip_protocol_deliver_rcu+0xa7/0x160
-  ip_local_deliver_finish+0x73/0xa0
-  ip_sublist_rcv_finish+0x80/0x90
-  ip_sublist_rcv+0x191/0x220
-  ip_list_rcv+0x132/0x160
-  __netif_receive_skb_list_core+0x297/0x2c0
-  netif_receive_skb_list_internal+0x1c5/0x300
-  napi_complete_done+0x6f/0x1b0
-  virtnet_poll+0x1f4/0x2d0 [virtio_net]
-  __napi_poll+0x2c/0x1b0
-  net_rx_action+0x293/0x350
-  ? __napi_schedule+0x79/0x90
-  __do_softirq+0xcb/0x2ab
-  __irq_exit_rcu+0xb9/0xf0
-  common_interrupt+0x80/0xa0
-  </IRQ>
-  <TASK>
-  asm_common_interrupt+0x22/0x40
-  RIP: 0010:_raw_spin_lock+0x17/0x30
-  rxe_requester+0xe4/0x8f0 [rdma_rxe]
-  ? xas_load+0x9/0xa0
-  ? xa_load+0x70/0xb0
-  do_task+0x64/0x1f0 [rdma_rxe]
-  rxe_post_send+0x54/0x110 [rdma_rxe]
-  ib_uverbs_post_send+0x5f8/0x680 [ib_uverbs]
-  ? netif_receive_skb_list_internal+0x1e3/0x300
-  ib_uverbs_write+0x3c8/0x500 [ib_uverbs]
-  vfs_write+0xc5/0x3b0
-  ksys_write+0xab/0xe0
-  ? syscall_trace_enter.constprop.0+0x126/0x1a0
-  do_syscall_64+0x3b/0x90
-  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-  </TASK>
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-The deadlock is easily reproducible with perftest. Fix it by disabling
-softirq when acquiring the lock in process context.
+This patches attempt to introduce BPF injection capability for SMC,
+and add selftest to ensure code stability.
 
-Fixes: f605f26ea196 ("RDMA/rxe: Protect QP state with qp->state_lock")
-Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe_req.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+As we all know that the SMC protocol is not suitable for all scenarios,
+especially for short-lived. However, for most applications, they cannot
+guarantee that there are no such scenarios at all. Therefore, apps
+may need some specific strategies to decide shall we need to use SMC
+or not, for example, apps can limit the scope of the SMC to a specific
+IP address or port.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 8e50d116d273..65134a9aefe7 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -180,13 +180,13 @@ static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
- 	if (wqe == NULL)
- 		return NULL;
- 
--	spin_lock(&qp->state_lock);
-+	spin_lock_bh(&qp->state_lock);
- 	if (unlikely((qp_state(qp) == IB_QPS_SQD) &&
- 		     (wqe->state != wqe_state_processing))) {
--		spin_unlock(&qp->state_lock);
-+		spin_unlock_bh(&qp->state_lock);
- 		return NULL;
- 	}
--	spin_unlock(&qp->state_lock);
-+	spin_unlock_bh(&qp->state_lock);
- 
- 	wqe->mask = wr_opcode_mask(wqe->wr.opcode, qp);
- 	return wqe;
+Based on the consideration of transparent replacement, we hope that apps
+can remain transparent even if they need to formulate some specific
+strategies for SMC using. That is, do not need to recompile their code.
+
+On the other hand, we need to ensure the scalability of strategies
+implementation. Although it is simple to use socket options or sysctl,
+it will bring more complexity to subsequent expansion.
+
+Fortunately, BPF can solve these concerns very well, users can write
+thire own strategies in eBPF to choose whether to use SMC or not.
+And it's quite easy for them to modify their strategies in the future.
+
+This patches implement injection capability for SMC via struct_ops.
+In that way, we can add new injection scenarios in the future.
+
+v2 -> v1:
+
+1. Fix complie error if CONFIG_BPF_SYSCALL set while CONFIG_SMC_BPF not.
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/oe-kbuild-all/202304070326.mYVdiX9k-lkp@intel.com/
+
+2. Fix potential reference leaks, smc_destruct may be prematurely retired
+due to pre conditions.
+
+D. Wythe (5):
+  net/smc: move smc_sock related structure definition
+  net/smc: net/smc: allow smc to negotiate protocols on policies
+  net/smc: allow set or get smc negotiator by sockopt
+  bpf: add smc negotiator support in BPF struct_ops
+  bpf/selftests: add selftest for SMC bpf capability
+
+ include/net/smc.h                                | 268 +++++++++++++++++
+ include/uapi/linux/smc.h                         |   1 +
+ kernel/bpf/bpf_struct_ops_types.h                |   4 +
+ net/Makefile                                     |   1 +
+ net/smc/Kconfig                                  |  13 +
+ net/smc/af_smc.c                                 | 203 ++++++++++---
+ net/smc/bpf_smc.c                                | 360 +++++++++++++++++++++++
+ net/smc/smc.h                                    | 224 --------------
+ tools/testing/selftests/bpf/prog_tests/bpf_smc.c | 107 +++++++
+ tools/testing/selftests/bpf/progs/bpf_smc.c      | 265 +++++++++++++++++
+ 10 files changed, 1187 insertions(+), 259 deletions(-)
+ create mode 100644 net/smc/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
 -- 
-2.39.1
+1.8.3.1
 
