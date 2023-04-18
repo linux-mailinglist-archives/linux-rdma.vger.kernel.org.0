@@ -2,97 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131796E5EFA
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Apr 2023 12:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51746E6060
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Apr 2023 13:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbjDRKhL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Apr 2023 06:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        id S231609AbjDRLtR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Apr 2023 07:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbjDRKhJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Apr 2023 06:37:09 -0400
-Received: from out-63.mta1.migadu.com (out-63.mta1.migadu.com [95.215.58.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4B3358C
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Apr 2023 03:37:05 -0700 (PDT)
-Message-ID: <4cdbda13-3de2-8643-ff4b-1213321bd3a4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1681814223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hPZOwIpNZySZu3yJDMfJ6E5StvqjiLKJ3mVvgNAPn4A=;
-        b=oOE9KcuH09RW4dlbHosl3FCft3YsCZ+goXxD5yr238KqRwUY+pTJb1fftSxVMxGBwhZtcU
-        ZkMppE22CKkp8zW0B48ZJ46GY9h7qUiF2qewCe91GB6LEgquGaMchPp6lBBQJE2bvo+rz0
-        o/IO7I6j446ax4rbz/TyMvdTutv/6VE=
-Date:   Tue, 18 Apr 2023 18:36:54 +0800
+        with ESMTP id S231629AbjDRLtJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Apr 2023 07:49:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF646A248;
+        Tue, 18 Apr 2023 04:48:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D64FA62CDB;
+        Tue, 18 Apr 2023 11:47:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D9F8C433EF;
+        Tue, 18 Apr 2023 11:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681818456;
+        bh=hF5srHhGnVubFYKGy6gt95dlRe4xzC55sgy5w3GdgdE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Pu7EsVWW6KN8l4XdS7ObjsFpLgL28DsnhGalbcRrHrC+nh78H9i9mGpn2ddlWBCHQ
+         cqxNLbZDznoi8kdXxtDNZHTaf+wtCUXz5aE7ARsZJ+Lrmkni36dSS6jOQrLog0fRGB
+         ATFLjWdqU16Bcl9xkiefUxgrTVM0FARWVHwII6MKKqSCqTfwLZ828LrfGk/8thUATi
+         HAm6exx7vEUNlUMiGhryDHaBRbnsH91ntQAhmoPLoVrlaS6evi5Yy6rINzx0a1WuaN
+         H/v8Y5Wa1KfSY+AnITXBUZVME12g4jBS0Pc5XfE/lhH03X//a4nlbHGt5TzYs0k91g
+         v0pF0Ibr6HZSQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Tariq Toukan <tariqt@nvidia.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] net/mlx4: fix build error from usercopy size check
+Date:   Tue, 18 Apr 2023 13:47:11 +0200
+Message-Id: <20230418114730.3674657-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Add function name to the logs
-To:     Leon Romanovsky <leon@kernel.org>,
-        Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org
-References: <20230410102105.1084967-1-yanjun.zhu@intel.com>
- <20230418080807.GD9740@unreal>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230418080807.GD9740@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
-在 2023/4/18 16:08, Leon Romanovsky 写道:
-> On Mon, Apr 10, 2023 at 06:21:05PM +0800, Zhu Yanjun wrote:
->> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>
->> Add the function names to the pr_ logs. As such, if some bugs occur,
->> with function names, it is easy to locate the bugs.
->>
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->> ---
->>   drivers/infiniband/sw/rxe/rxe.h       |  2 +-
->>   drivers/infiniband/sw/rxe/rxe_queue.h | 12 ++++--------
->>   2 files changed, 5 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
->> index 2415f3704f57..43742d2f32de 100644
->> --- a/drivers/infiniband/sw/rxe/rxe.h
->> +++ b/drivers/infiniband/sw/rxe/rxe.h
->> @@ -10,7 +10,7 @@
->>   #ifdef pr_fmt
->>   #undef pr_fmt
->>   #endif
->> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->> +#define pr_fmt(fmt) KBUILD_MODNAME ": %s: " fmt, __func__
->>   
->>   #include <linux/skbuff.h>
->>   
->> diff --git a/drivers/infiniband/sw/rxe/rxe_queue.h b/drivers/infiniband/sw/rxe/rxe_queue.h
->> index c711cb98b949..5d6e17b00e60 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_queue.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_queue.h
->> @@ -185,8 +185,7 @@ static inline void queue_advance_producer(struct rxe_queue *q,
->>   	case QUEUE_TYPE_FROM_CLIENT:
->>   		/* used by rxe, client owns the index */
->>   		if (WARN_ON(1))
->> -			pr_warn("%s: attempt to advance client index\n",
->> -				__func__);
->> +			pr_warn("attempt to advance client index\n");
-> Delete all if (WARN_ON(1)) pr_warn(...) in favour of plain WARN_ON().
-> It will give you all information which you need.
+The array_size() helper is used here to prevent accidental overflow in
+mlx4_init_user_cqes(), but as this returns SIZE_MAX in case an overflow
+would happen, the logic in copy_to_user() now detects that as overflowing
+the source:
 
-Got it. Thanks a lot. I will fix it ASAP.
+In file included from arch/x86/include/asm/preempt.h:9,
+                 from include/linux/preempt.h:78,
+                 from include/linux/percpu.h:6,
+                 from include/linux/context_tracking_state.h:5,
+                 from include/linux/hardirq.h:5,
+                 from drivers/net/ethernet/mellanox/mlx4/cq.c:37:
+In function 'check_copy_size',
+    inlined from 'copy_to_user' at include/linux/uaccess.h:190:6,
+    inlined from 'mlx4_init_user_cqes' at drivers/net/ethernet/mellanox/mlx4/cq.c:317:9,
+    inlined from 'mlx4_cq_alloc' at drivers/net/ethernet/mellanox/mlx4/cq.c:394:10:
+include/linux/thread_info.h:244:4: error: call to '__bad_copy_from' declared with attribute error: copy source size is too small
+  244 |    __bad_copy_from();
+      |    ^~~~~~~~~~~~~~~~~
 
-Zhu Yanjun
+Move the size logic out, and instead use the same size value for the
+comparison and the copy.
 
->
-> Thanks
+Fixes: f69bf5dee7ef ("net/mlx4: Use array_size() helper in copy_to_user()")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/mellanox/mlx4/cq.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
+index 4d4f9cf9facb..020cb8e2883f 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
+@@ -290,6 +290,7 @@ static void mlx4_cq_free_icm(struct mlx4_dev *dev, int cqn)
+ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
+ {
+ 	int entries_per_copy = PAGE_SIZE / cqe_size;
++	size_t copy_size = array_size(entries, cqe_size);
+ 	void *init_ents;
+ 	int err = 0;
+ 	int i;
+@@ -304,7 +305,7 @@ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
+ 	 */
+ 	memset(init_ents, 0xcc, PAGE_SIZE);
+ 
+-	if (entries_per_copy < entries) {
++	if (copy_size > PAGE_SIZE) {
+ 		for (i = 0; i < entries / entries_per_copy; i++) {
+ 			err = copy_to_user((void __user *)buf, init_ents, PAGE_SIZE) ?
+ 				-EFAULT : 0;
+@@ -315,7 +316,7 @@ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
+ 		}
+ 	} else {
+ 		err = copy_to_user((void __user *)buf, init_ents,
+-				   array_size(entries, cqe_size)) ?
++				   copy_size) ?
+ 			-EFAULT : 0;
+ 	}
+ 
+-- 
+2.39.2
+
