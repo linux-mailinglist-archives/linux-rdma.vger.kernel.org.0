@@ -2,137 +2,331 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 988346E6694
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Apr 2023 16:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0166E68A3
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Apr 2023 17:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbjDRODe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Apr 2023 10:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
+        id S232342AbjDRPtw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Apr 2023 11:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbjDRODc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Apr 2023 10:03:32 -0400
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD85D13C28
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Apr 2023 07:03:29 -0700 (PDT)
+        with ESMTP id S232398AbjDRPtZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Apr 2023 11:49:25 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9199C125B6;
+        Tue, 18 Apr 2023 08:49:20 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-2f625d52275so2570156f8f.3;
+        Tue, 18 Apr 2023 08:49:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1681826610; x=1713362610;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=MKDBTzb8ZnyxP7HCaYvqxbzHpNTj+tkkUP1zW3K3TFc=;
-  b=tKSnkYRe+DXa8KaUleEib+sgv5BzXcD4wfD4mXs6L3W6N5wWtk7fkkxn
-   ueW3dSiauhfd/GEIE0dr3IQm35Q/vS54VnhvAhVYPVnafjfx4RAejhHTc
-   XhflvW1WTtarlvnioKhzxJkfZ4oGO1cyutC/zRToOWtNnm2vPnQjqNRmX
-   E=;
-X-IronPort-AV: E=Sophos;i="5.99,207,1677542400"; 
-   d="scan'208";a="319680999"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2023 14:03:27 +0000
-Received: from EX19D014EUA003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com (Postfix) with ESMTPS id 2F06480D8A;
-        Tue, 18 Apr 2023 14:03:25 +0000 (UTC)
-Received: from EX19D045EUC003.ant.amazon.com (10.252.61.236) by
- EX19D014EUA003.ant.amazon.com (10.252.50.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 18 Apr 2023 14:03:25 +0000
-Received: from [192.168.9.225] (10.1.213.20) by EX19D045EUC003.ant.amazon.com
- (10.252.61.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 18 Apr
- 2023 14:03:22 +0000
-Message-ID: <79b0ac4a-a401-0925-2ebf-1cedb209661a@amazon.com>
-Date:   Tue, 18 Apr 2023 17:03:16 +0300
+        d=gmail.com; s=20221208; t=1681832959; x=1684424959;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bb9irq9nW0pE8CSgWK7K74C7UlngMlVehaGXPHyB9ic=;
+        b=ntPGEolIZioWsoNupmOxdO7kt9WWHTCzJGRt3JeOtVCC+SVzkwa/NyZv9ukI232TBR
+         /SaCFFfiuP+yU+Tf4o6hIp9U3tMU7b5AGvSvrrMr/kY7AUvOlJsfmn/RQNibRrHgleWU
+         Q0at44oFe6V5iGpVwBJFEZ3d5+4yn9KmVpC5vgqz7XRwVwkxwq8sWQ2UENZIsQIky+JT
+         qXGN3nxRBzi/n1aZEOK/lypItYhx6fff2XHtr4sPyCmoOrbTguhoA2ytCDf6KlYdpsSq
+         cW2A33nEC11LJt6wWbm/o8z0hOIUZVu16DMDL5s3z6+SJ06YGDg5S72COZQ6YFGJuGon
+         x+uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681832959; x=1684424959;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bb9irq9nW0pE8CSgWK7K74C7UlngMlVehaGXPHyB9ic=;
+        b=M4VoWyL+R/1x6RQbbVnvx0oI6ezM8psqwGcMGCxsrOOxHlxqWrhtZzhI1VoOfK+QRY
+         Y+fAs8HSf5g5XsFEezdy/KJZlLml1ej9ldRG4cDTNl3CDvOjS1mcxw2J+akR0eTmv/iZ
+         ZHtGhX6gJmY4SO/Pz7lVRkSKsgQuaIiJSNFYEiXyCw5i8/QKgu7CrBJa47jMN9xP1+G8
+         etFI9OU63ViTRTQ6qBvnr1QM8sK40J8OrSQLaBg2ym4C+UcrmoMKQWF53YQPdXDWrvN2
+         0O3KgoH0Zi4akg7nFNqTJhaRFG9B6ZPk3ddhxumO8OAgfUhdjiBwXeR9FD3lMr/qaFR1
+         H5vw==
+X-Gm-Message-State: AAQBX9fDw2B4so5humg03vfVlhDFf+g6eYSlyBQytnYp52XRbHlPfjgz
+        nnBGN1YEjYz3AlkfD1M3Vo4=
+X-Google-Smtp-Source: AKy350aikpx9A03wx1BpHW1zS7E+sdV29dDZkTBMa7IL0AbouX1s8BmVCcsrkL1ZD5YHaD7cPB+wCQ==
+X-Received: by 2002:a5d:5001:0:b0:2d1:e517:4992 with SMTP id e1-20020a5d5001000000b002d1e5174992mr2266976wrt.69.1681832958700;
+        Tue, 18 Apr 2023 08:49:18 -0700 (PDT)
+Received: from lucifer.home (host86-156-84-164.range86-156.btcentralplus.com. [86.156.84.164])
+        by smtp.googlemail.com with ESMTPSA id z16-20020a5d4c90000000b002c7163660a9sm13381191wrs.105.2023.04.18.08.49.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Apr 2023 08:49:18 -0700 (PDT)
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org,
+        bpf@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>
+Subject: [PATCH v4 5/6] mm/gup: remove vmas parameter from pin_user_pages()
+Date:   Tue, 18 Apr 2023 16:49:14 +0100
+Message-Id: <765b2fdba141b40f72d389e942286456bf5c9f7c.1681831798.git.lstoakes@gmail.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <cover.1681831798.git.lstoakes@gmail.com>
+References: <cover.1681831798.git.lstoakes@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.1
-Subject: Re: [PATCH] RDMA/efa: Add rdma write capability to device caps
-Content-Language: en-US
-From:   "Nachum, Yonatan" <ynachum@amazon.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <sleybo@amazon.com>, <mrgolin@amazon.com>,
-        Firas Jahjah <firasj@amazon.com>
-References: <20230404154313.35194-1-ynachum@amazon.com>
- <20230409073228.GA14869@unreal>
- <f738b558-f0d9-e69e-0939-a80594063d4c@amazon.com>
- <20230409172146.GJ182481@unreal>
- <0c307561-8ee1-061b-6ba3-ceb74eb3a1c8@amazon.com>
- <20230410123812.GT182481@unreal>
- <5b9f3728-1fc7-4a87-f516-286718e94dc6@amazon.com>
- <20230413082205.GB17993@unreal>
- <960d7702-29e4-a6cd-df5b-85c5e1e74ec0@amazon.com>
-In-Reply-To: <960d7702-29e4-a6cd-df5b-85c5e1e74ec0@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.1.213.20]
-X-ClientProxiedBy: EX19D039UWB002.ant.amazon.com (10.13.138.79) To
- EX19D045EUC003.ant.amazon.com (10.252.61.236)
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+We are now in a position where no caller of pin_user_pages() requires the
+vmas parameter at all, so eliminate this parameter from the function and
+all callers.
 
->>>>>>>>>       access_flags &= ~IB_ACCESS_OPTIONAL;
->>>>>>>>>       if (access_flags & ~supp_access_flags) {
->>>>>>>>> diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
->>>>>>>>> index 74406b4817ce..d94c32f28804 100644
->>>>>>>>> --- a/include/uapi/rdma/efa-abi.h
->>>>>>>>> +++ b/include/uapi/rdma/efa-abi.h
->>>>>>>>> @@ -121,6 +121,7 @@ enum {
->>>>>>>>>       EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS = 1 << 2,
->>>>>>>>>       EFA_QUERY_DEVICE_CAPS_CQ_WITH_SGID     = 1 << 3,
->>>>>>>>>       EFA_QUERY_DEVICE_CAPS_DATA_POLLING_128 = 1 << 4,
->>>>>>>>> +     EFA_QUERY_DEVICE_CAPS_RDMA_WRITE = 1 << 5,
->>>>>>>>
->>>>>>>> Why do you need special device capability while all rdma-core users
->>>>>>>> set IBV_ACCESS_REMOTE_WRITE anyway without relying on anything from
->>>>>>>> providers?
->>>>>>>>
->>>>>>>> Thanks
->>>>>>>
->>>>>>> We need to query the device because not every device supprort the same RDMA capabilities. Upper layers in the SW stack needs this supported flags to indicate which flows they can use. In addition this is identical to the existing RDMA read support in our code.
->>>>>>
->>>>>> Nice, but it doesn't answer my question. Please pay attention to the
->>>>>> second part of my question "while all rdma-core ....".
->>>>>>
->>>>>> Thanks
->>>>>>
->>>>>
->>>>> There are rdma-core users that doesn’t fail on unsupported features but fallback to supported ones. One example is Libfabric EFA provider that emulates RDMA write by read if device write isn’t supported but there are other similar examples. Correct way doing this in user code is by querying rdma-core for device supported capabilities, then selecting a suitable work flow. This is why existing and the additional capability bits are required.
->>>>
->>>> AFAIK, RDMA write is different here as fallback is performed in the kernel and
->>>> not in the rdma-core provider. So why should EFA be different here?
->>>>
->>>> BTW, Please fix your mailer to break lines, so we will be able to reply
->>>> on specific sentence with less effort.
->>>>
->>>> Thanks
->>>
->>> Can you please elaborate more on the fallback performed in the kernel?
->>> What kind of fallback being performed? Is it in create MR/QP?
->>> Does the fallback happens when providing unsupported write capability
->>> and to what it fallback to?
->>
->> OK, looked again, "Fallback" was in my imagination, sorry about that.
->>
->> But my main question is continued to be, how other vendors which support
->> RDMA write work without capability?
->>
->> Thanks
-> 
-> Vendors that always support RDMA write don’t need a query for this capability.
-> Some EFA devices don’t support write capability so we provide the ability to
-> query the device to know if write is supported.
-> It is like mlx5 support query capabilities through direct verb.
-> 
-> Thanks
+This clears the way to removing the vmas parameter from GUP altogether.
 
-Hello,
-Kind reminder for this patch.
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com> (for qib)
+Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+---
+ arch/powerpc/mm/book3s64/iommu_api.c       | 2 +-
+ drivers/infiniband/hw/qib/qib_user_pages.c | 2 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c   | 2 +-
+ drivers/infiniband/sw/siw/siw_mem.c        | 2 +-
+ drivers/media/v4l2-core/videobuf-dma-sg.c  | 2 +-
+ drivers/vdpa/vdpa_user/vduse_dev.c         | 2 +-
+ drivers/vhost/vdpa.c                       | 2 +-
+ include/linux/mm.h                         | 3 +--
+ io_uring/rsrc.c                            | 4 +---
+ mm/gup.c                                   | 9 +++------
+ mm/gup_test.c                              | 9 ++++-----
+ net/xdp/xdp_umem.c                         | 2 +-
+ 12 files changed, 17 insertions(+), 24 deletions(-)
 
-Thanks
+diff --git a/arch/powerpc/mm/book3s64/iommu_api.c b/arch/powerpc/mm/book3s64/iommu_api.c
+index 81d7185e2ae8..d19fb1f3007d 100644
+--- a/arch/powerpc/mm/book3s64/iommu_api.c
++++ b/arch/powerpc/mm/book3s64/iommu_api.c
+@@ -105,7 +105,7 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
+ 
+ 		ret = pin_user_pages(ua + (entry << PAGE_SHIFT), n,
+ 				FOLL_WRITE | FOLL_LONGTERM,
+-				mem->hpages + entry, NULL);
++				mem->hpages + entry);
+ 		if (ret == n) {
+ 			pinned += n;
+ 			continue;
+diff --git a/drivers/infiniband/hw/qib/qib_user_pages.c b/drivers/infiniband/hw/qib/qib_user_pages.c
+index f693bc753b6b..1bb7507325bc 100644
+--- a/drivers/infiniband/hw/qib/qib_user_pages.c
++++ b/drivers/infiniband/hw/qib/qib_user_pages.c
+@@ -111,7 +111,7 @@ int qib_get_user_pages(unsigned long start_page, size_t num_pages,
+ 		ret = pin_user_pages(start_page + got * PAGE_SIZE,
+ 				     num_pages - got,
+ 				     FOLL_LONGTERM | FOLL_WRITE,
+-				     p + got, NULL);
++				     p + got);
+ 		if (ret < 0) {
+ 			mmap_read_unlock(current->mm);
+ 			goto bail_release;
+diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
+index 2a5cac2658ec..84e0f41e7dfa 100644
+--- a/drivers/infiniband/hw/usnic/usnic_uiom.c
++++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
+@@ -140,7 +140,7 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
+ 		ret = pin_user_pages(cur_base,
+ 				     min_t(unsigned long, npages,
+ 				     PAGE_SIZE / sizeof(struct page *)),
+-				     gup_flags, page_list, NULL);
++				     gup_flags, page_list);
+ 
+ 		if (ret < 0)
+ 			goto out;
+diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
+index f51ab2ccf151..e6e25f15567d 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.c
++++ b/drivers/infiniband/sw/siw/siw_mem.c
+@@ -422,7 +422,7 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
+ 		umem->page_chunk[i].plist = plist;
+ 		while (nents) {
+ 			rv = pin_user_pages(first_page_va, nents, foll_flags,
+-					    plist, NULL);
++					    plist);
+ 			if (rv < 0)
+ 				goto out_sem_up;
+ 
+diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+index 53001532e8e3..405b89ea1054 100644
+--- a/drivers/media/v4l2-core/videobuf-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+@@ -180,7 +180,7 @@ static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
+ 		data, size, dma->nr_pages);
+ 
+ 	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages, gup_flags,
+-			     dma->pages, NULL);
++			     dma->pages);
+ 
+ 	if (err != dma->nr_pages) {
+ 		dma->nr_pages = (err >= 0) ? err : 0;
+diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
+index 0c3b48616a9f..1f80254604f0 100644
+--- a/drivers/vdpa/vdpa_user/vduse_dev.c
++++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+@@ -995,7 +995,7 @@ static int vduse_dev_reg_umem(struct vduse_dev *dev,
+ 		goto out;
+ 
+ 	pinned = pin_user_pages(uaddr, npages, FOLL_LONGTERM | FOLL_WRITE,
+-				page_list, NULL);
++				page_list);
+ 	if (pinned != npages) {
+ 		ret = pinned < 0 ? pinned : -ENOMEM;
+ 		goto out;
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 7be9d9d8f01c..4317128c1c62 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -952,7 +952,7 @@ static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
+ 	while (npages) {
+ 		sz2pin = min_t(unsigned long, npages, list_size);
+ 		pinned = pin_user_pages(cur_base, sz2pin,
+-					gup_flags, page_list, NULL);
++					gup_flags, page_list);
+ 		if (sz2pin != pinned) {
+ 			if (pinned < 0) {
+ 				ret = pinned;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 0c236e2f25e2..d02c42d37bfc 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2410,8 +2410,7 @@ static inline struct page *get_user_page_vma_remote(struct mm_struct *mm,
+ long get_user_pages(unsigned long start, unsigned long nr_pages,
+ 		    unsigned int gup_flags, struct page **pages);
+ long pin_user_pages(unsigned long start, unsigned long nr_pages,
+-		    unsigned int gup_flags, struct page **pages,
+-		    struct vm_area_struct **vmas);
++		    unsigned int gup_flags, struct page **pages);
+ long get_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
+ 		    struct page **pages, unsigned int gup_flags);
+ long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
+diff --git a/io_uring/rsrc.c b/io_uring/rsrc.c
+index 3a927df9d913..82d90b97c17b 100644
+--- a/io_uring/rsrc.c
++++ b/io_uring/rsrc.c
+@@ -1180,10 +1180,8 @@ struct page **io_pin_pages(unsigned long ubuf, unsigned long len, int *npages)
+ 
+ 	ret = 0;
+ 	mmap_read_lock(current->mm);
+-
+ 	pret = pin_user_pages(ubuf, nr_pages, FOLL_WRITE | FOLL_LONGTERM,
+-			      pages, NULL);
+-
++			      pages);
+ 	if (pret == nr_pages) {
+ 		ret = check_vmas_locked(ubuf, len);
+ 		*npages = nr_pages;
+diff --git a/mm/gup.c b/mm/gup.c
+index 9440aa54c741..dffbfa623aae 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -3124,8 +3124,6 @@ EXPORT_SYMBOL(pin_user_pages_remote);
+  * @gup_flags:	flags modifying lookup behaviour
+  * @pages:	array that receives pointers to the pages pinned.
+  *		Should be at least nr_pages long.
+- * @vmas:	array of pointers to vmas corresponding to each page.
+- *		Or NULL if the caller does not require them.
+  *
+  * Nearly the same as get_user_pages(), except that FOLL_TOUCH is not set, and
+  * FOLL_PIN is set.
+@@ -3134,15 +3132,14 @@ EXPORT_SYMBOL(pin_user_pages_remote);
+  * see Documentation/core-api/pin_user_pages.rst for details.
+  */
+ long pin_user_pages(unsigned long start, unsigned long nr_pages,
+-		    unsigned int gup_flags, struct page **pages,
+-		    struct vm_area_struct **vmas)
++		    unsigned int gup_flags, struct page **pages)
+ {
+ 	int locked = 1;
+ 
+-	if (!is_valid_gup_args(pages, vmas, NULL, &gup_flags, FOLL_PIN))
++	if (!is_valid_gup_args(pages, NULL, NULL, &gup_flags, FOLL_PIN))
+ 		return 0;
+ 	return __gup_longterm_locked(current->mm, start, nr_pages,
+-				     pages, vmas, &locked, gup_flags);
++				     pages, NULL, &locked, gup_flags);
+ }
+ EXPORT_SYMBOL(pin_user_pages);
+ 
+diff --git a/mm/gup_test.c b/mm/gup_test.c
+index 9ba8ea23f84e..1668ce0e0783 100644
+--- a/mm/gup_test.c
++++ b/mm/gup_test.c
+@@ -146,18 +146,17 @@ static int __gup_test_ioctl(unsigned int cmd,
+ 						 pages + i);
+ 			break;
+ 		case PIN_BASIC_TEST:
+-			nr = pin_user_pages(addr, nr, gup->gup_flags, pages + i,
+-					    NULL);
++			nr = pin_user_pages(addr, nr, gup->gup_flags, pages + i);
+ 			break;
+ 		case PIN_LONGTERM_BENCHMARK:
+ 			nr = pin_user_pages(addr, nr,
+ 					    gup->gup_flags | FOLL_LONGTERM,
+-					    pages + i, NULL);
++					    pages + i);
+ 			break;
+ 		case DUMP_USER_PAGES_TEST:
+ 			if (gup->test_flags & GUP_TEST_FLAG_DUMP_PAGES_USE_PIN)
+ 				nr = pin_user_pages(addr, nr, gup->gup_flags,
+-						    pages + i, NULL);
++						    pages + i);
+ 			else
+ 				nr = get_user_pages(addr, nr, gup->gup_flags,
+ 						    pages + i);
+@@ -270,7 +269,7 @@ static inline int pin_longterm_test_start(unsigned long arg)
+ 							gup_flags, pages);
+ 		else
+ 			cur_pages = pin_user_pages(addr, remaining_pages,
+-						   gup_flags, pages, NULL);
++						   gup_flags, pages);
+ 		if (cur_pages < 0) {
+ 			pin_longterm_test_stop();
+ 			ret = cur_pages;
+diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+index 02207e852d79..06cead2b8e34 100644
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@ -103,7 +103,7 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
+ 
+ 	mmap_read_lock(current->mm);
+ 	npgs = pin_user_pages(address, umem->npgs,
+-			      gup_flags | FOLL_LONGTERM, &umem->pgs[0], NULL);
++			      gup_flags | FOLL_LONGTERM, &umem->pgs[0]);
+ 	mmap_read_unlock(current->mm);
+ 
+ 	if (npgs != umem->npgs) {
+-- 
+2.40.0
+
