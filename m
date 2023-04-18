@@ -2,65 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1946E6625
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Apr 2023 15:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988346E6694
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Apr 2023 16:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbjDRNnY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Apr 2023 09:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
+        id S230023AbjDRODe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Apr 2023 10:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbjDRNnY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Apr 2023 09:43:24 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D6AB762
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Apr 2023 06:43:22 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id dm2so73426203ejc.8
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Apr 2023 06:43:22 -0700 (PDT)
+        with ESMTP id S230179AbjDRODc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Apr 2023 10:03:32 -0400
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD85D13C28
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Apr 2023 07:03:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681825401; x=1684417401;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8wdeAI4bz/ty68JM0snmXVDvHDkiCZAGHSgfgvJZDxE=;
-        b=gSela94KfsiAA15/gMsC6Stu7AAFwwIgqFdEPMnaoasaeDzExdlTdF3XE0vXfQEbvi
-         7STBksV79aaTi8XMnI1ezNXrD1Odbq/guoiHXhy6wEznY2X7EvmeUwjHXoVyGtMkz2H/
-         29D/JJBIxTz6gdQobAqMz0ixCJlKKHY79P9Zob19Ni11ZWRJBNJt3PVDDeM720JHPBez
-         TpPZkn7iehclEylis6fFFscp7fhwUjGVV4CVOfPyb+O3zGdmjf3suK61DVkEdsxRy5nW
-         BOXSb8rpNTqEtYChEMwvq5G2839yYsGZ12pY65sBUFgg+OsZuVg+bJbYYj/mPi/zOT99
-         fe8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681825401; x=1684417401;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8wdeAI4bz/ty68JM0snmXVDvHDkiCZAGHSgfgvJZDxE=;
-        b=e5P9FGiNQyKEkPGsRCP+4NP3lwust429NuWyIsDlqIr+gPfwu0Bqq4pN1gMr3Tf0uJ
-         Ku11YRTO34nOkplYUFWGIQCwk7YpYtQoqjJpqPbGH7f/nzH8RSLIzxlqW34dIaJQnLq4
-         1uzuiUZeeByNvw3Hb9KjevrKr38I+iqhDoe4Vfcntt+AFpepj0x2IKilcfHsEgpMwmKo
-         owFlYXFe2y8m16WHDogiIqRiNqK+dZdx1Q6FcvT+lQnb+7MbV5N20cPovnxJbcQ29Vzf
-         q0nlhJxwCAV39zqrUcd7b/llsUdMbtgRv5A1RG3FvZIPHFB4FnDy7rfndyukjVd3NfNC
-         T41A==
-X-Gm-Message-State: AAQBX9f18Wt0z/4znJNFTmZmAhYXiIBD7vYMDJbqool2eA+G82t2sh/w
-        pWpgaiZIp5zTcM1n2gh47rRA5apFtapmBNc4A4g=
-X-Google-Smtp-Source: AKy350YN3zuNjH+pcagWdSii3gegLSaWDuZimOBUdCLsPFIaqgh6BJPEvNnGnZmB0V0AGOuw5LsKZcK9xOFBeaE8Hj8=
-X-Received: by 2002:a17:907:8b92:b0:94f:2b80:f3b4 with SMTP id
- tb18-20020a1709078b9200b0094f2b80f3b4mr9222211ejc.69.1681825400725; Tue, 18
- Apr 2023 06:43:20 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1681826610; x=1713362610;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=MKDBTzb8ZnyxP7HCaYvqxbzHpNTj+tkkUP1zW3K3TFc=;
+  b=tKSnkYRe+DXa8KaUleEib+sgv5BzXcD4wfD4mXs6L3W6N5wWtk7fkkxn
+   ueW3dSiauhfd/GEIE0dr3IQm35Q/vS54VnhvAhVYPVnafjfx4RAejhHTc
+   XhflvW1WTtarlvnioKhzxJkfZ4oGO1cyutC/zRToOWtNnm2vPnQjqNRmX
+   E=;
+X-IronPort-AV: E=Sophos;i="5.99,207,1677542400"; 
+   d="scan'208";a="319680999"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2023 14:03:27 +0000
+Received: from EX19D014EUA003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com (Postfix) with ESMTPS id 2F06480D8A;
+        Tue, 18 Apr 2023 14:03:25 +0000 (UTC)
+Received: from EX19D045EUC003.ant.amazon.com (10.252.61.236) by
+ EX19D014EUA003.ant.amazon.com (10.252.50.119) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 18 Apr 2023 14:03:25 +0000
+Received: from [192.168.9.225] (10.1.213.20) by EX19D045EUC003.ant.amazon.com
+ (10.252.61.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 18 Apr
+ 2023 14:03:22 +0000
+Message-ID: <79b0ac4a-a401-0925-2ebf-1cedb209661a@amazon.com>
+Date:   Tue, 18 Apr 2023 17:03:16 +0300
 MIME-Version: 1.0
-References: <20230418090642.1849358-1-matsuda-daisuke@fujitsu.com>
-In-Reply-To: <20230418090642.1849358-1-matsuda-daisuke@fujitsu.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 18 Apr 2023 21:43:07 +0800
-Message-ID: <CAD=hENexj_UWdLtNK=UvGJ-y9WpN3aTAKzmWWHorb7vdYnV_+w@mail.gmail.com>
-Subject: Re: [PATCH jgg-for-next] RDMA/rxe: Fix spinlock recursion deadlock on requester
-To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Cc:     linux-rdma@vger.kernel.org, jgg@nvidia.com, rpearsonhpe@gmail.com,
-        leonro@nvidia.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.1
+Subject: Re: [PATCH] RDMA/efa: Add rdma write capability to device caps
+Content-Language: en-US
+From:   "Nachum, Yonatan" <ynachum@amazon.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>,
+        <sleybo@amazon.com>, <mrgolin@amazon.com>,
+        Firas Jahjah <firasj@amazon.com>
+References: <20230404154313.35194-1-ynachum@amazon.com>
+ <20230409073228.GA14869@unreal>
+ <f738b558-f0d9-e69e-0939-a80594063d4c@amazon.com>
+ <20230409172146.GJ182481@unreal>
+ <0c307561-8ee1-061b-6ba3-ceb74eb3a1c8@amazon.com>
+ <20230410123812.GT182481@unreal>
+ <5b9f3728-1fc7-4a87-f516-286718e94dc6@amazon.com>
+ <20230413082205.GB17993@unreal>
+ <960d7702-29e4-a6cd-df5b-85c5e1e74ec0@amazon.com>
+In-Reply-To: <960d7702-29e4-a6cd-df5b-85c5e1e74ec0@amazon.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.1.213.20]
+X-ClientProxiedBy: EX19D039UWB002.ant.amazon.com (10.13.138.79) To
+ EX19D045EUC003.ant.amazon.com (10.252.61.236)
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,93 +76,63 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 5:07=E2=80=AFPM Daisuke Matsuda
-<matsuda-daisuke@fujitsu.com> wrote:
->
-> After applying commit f605f26ea196, the following deadlock is observed:
->  Call Trace:
->   <IRQ>
->   _raw_spin_lock_bh+0x29/0x30
->   check_type_state.constprop.0+0x4e/0xc0 [rdma_rxe]
->   rxe_rcv+0x173/0x3d0 [rdma_rxe]
->   rxe_udp_encap_recv+0x69/0xd0 [rdma_rxe]
->   ? __pfx_rxe_udp_encap_recv+0x10/0x10 [rdma_rxe]
->   udp_queue_rcv_one_skb+0x258/0x520
->   udp_unicast_rcv_skb+0x75/0x90
->   __udp4_lib_rcv+0x364/0x5c0
->   ip_protocol_deliver_rcu+0xa7/0x160
->   ip_local_deliver_finish+0x73/0xa0
->   ip_sublist_rcv_finish+0x80/0x90
->   ip_sublist_rcv+0x191/0x220
->   ip_list_rcv+0x132/0x160
->   __netif_receive_skb_list_core+0x297/0x2c0
->   netif_receive_skb_list_internal+0x1c5/0x300
->   napi_complete_done+0x6f/0x1b0
->   virtnet_poll+0x1f4/0x2d0 [virtio_net]
->   __napi_poll+0x2c/0x1b0
->   net_rx_action+0x293/0x350
->   ? __napi_schedule+0x79/0x90
->   __do_softirq+0xcb/0x2ab
->   __irq_exit_rcu+0xb9/0xf0
->   common_interrupt+0x80/0xa0
->   </IRQ>
->   <TASK>
->   asm_common_interrupt+0x22/0x40
->   RIP: 0010:_raw_spin_lock+0x17/0x30
->   rxe_requester+0xe4/0x8f0 [rdma_rxe]
->   ? xas_load+0x9/0xa0
->   ? xa_load+0x70/0xb0
->   do_task+0x64/0x1f0 [rdma_rxe]
->   rxe_post_send+0x54/0x110 [rdma_rxe]
->   ib_uverbs_post_send+0x5f8/0x680 [ib_uverbs]
->   ? netif_receive_skb_list_internal+0x1e3/0x300
->   ib_uverbs_write+0x3c8/0x500 [ib_uverbs]
->   vfs_write+0xc5/0x3b0
->   ksys_write+0xab/0xe0
->   ? syscall_trace_enter.constprop.0+0x126/0x1a0
->   do_syscall_64+0x3b/0x90
->   entry_SYSCALL_64_after_hwframe+0x72/0xdc
->   </TASK>
->
-> The deadlock is easily reproducible with perftest. Fix it by disabling
-> softirq when acquiring the lock in process context.
 
-I am fine. Thanks.
+>>>>>>>>>       access_flags &= ~IB_ACCESS_OPTIONAL;
+>>>>>>>>>       if (access_flags & ~supp_access_flags) {
+>>>>>>>>> diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+>>>>>>>>> index 74406b4817ce..d94c32f28804 100644
+>>>>>>>>> --- a/include/uapi/rdma/efa-abi.h
+>>>>>>>>> +++ b/include/uapi/rdma/efa-abi.h
+>>>>>>>>> @@ -121,6 +121,7 @@ enum {
+>>>>>>>>>       EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS = 1 << 2,
+>>>>>>>>>       EFA_QUERY_DEVICE_CAPS_CQ_WITH_SGID     = 1 << 3,
+>>>>>>>>>       EFA_QUERY_DEVICE_CAPS_DATA_POLLING_128 = 1 << 4,
+>>>>>>>>> +     EFA_QUERY_DEVICE_CAPS_RDMA_WRITE = 1 << 5,
+>>>>>>>>
+>>>>>>>> Why do you need special device capability while all rdma-core users
+>>>>>>>> set IBV_ACCESS_REMOTE_WRITE anyway without relying on anything from
+>>>>>>>> providers?
+>>>>>>>>
+>>>>>>>> Thanks
+>>>>>>>
+>>>>>>> We need to query the device because not every device supprort the same RDMA capabilities. Upper layers in the SW stack needs this supported flags to indicate which flows they can use. In addition this is identical to the existing RDMA read support in our code.
+>>>>>>
+>>>>>> Nice, but it doesn't answer my question. Please pay attention to the
+>>>>>> second part of my question "while all rdma-core ....".
+>>>>>>
+>>>>>> Thanks
+>>>>>>
+>>>>>
+>>>>> There are rdma-core users that doesn’t fail on unsupported features but fallback to supported ones. One example is Libfabric EFA provider that emulates RDMA write by read if device write isn’t supported but there are other similar examples. Correct way doing this in user code is by querying rdma-core for device supported capabilities, then selecting a suitable work flow. This is why existing and the additional capability bits are required.
+>>>>
+>>>> AFAIK, RDMA write is different here as fallback is performed in the kernel and
+>>>> not in the rdma-core provider. So why should EFA be different here?
+>>>>
+>>>> BTW, Please fix your mailer to break lines, so we will be able to reply
+>>>> on specific sentence with less effort.
+>>>>
+>>>> Thanks
+>>>
+>>> Can you please elaborate more on the fallback performed in the kernel?
+>>> What kind of fallback being performed? Is it in create MR/QP?
+>>> Does the fallback happens when providing unsupported write capability
+>>> and to what it fallback to?
+>>
+>> OK, looked again, "Fallback" was in my imagination, sorry about that.
+>>
+>> But my main question is continued to be, how other vendors which support
+>> RDMA write work without capability?
+>>
+>> Thanks
+> 
+> Vendors that always support RDMA write don’t need a query for this capability.
+> Some EFA devices don’t support write capability so we provide the ability to
+> query the device to know if write is supported.
+> It is like mlx5 support query capabilities through direct verb.
+> 
+> Thanks
 
-Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Hello,
+Kind reminder for this patch.
 
-Zhu Yanjun
-
->
-> Fixes: f605f26ea196 ("RDMA/rxe: Protect QP state with qp->state_lock")
-> Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_req.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/=
-rxe/rxe_req.c
-> index 8e50d116d273..65134a9aefe7 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -180,13 +180,13 @@ static struct rxe_send_wqe *req_next_wqe(struct rxe=
-_qp *qp)
->         if (wqe =3D=3D NULL)
->                 return NULL;
->
-> -       spin_lock(&qp->state_lock);
-> +       spin_lock_bh(&qp->state_lock);
->         if (unlikely((qp_state(qp) =3D=3D IB_QPS_SQD) &&
->                      (wqe->state !=3D wqe_state_processing))) {
-> -               spin_unlock(&qp->state_lock);
-> +               spin_unlock_bh(&qp->state_lock);
->                 return NULL;
->         }
-> -       spin_unlock(&qp->state_lock);
-> +       spin_unlock_bh(&qp->state_lock);
->
->         wqe->mask =3D wr_opcode_mask(wqe->wr.opcode, qp);
->         return wqe;
-> --
-> 2.39.1
->
+Thanks
