@@ -2,129 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAA96E80C9
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Apr 2023 20:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CDB6E81FA
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Apr 2023 21:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbjDSSCC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Apr 2023 14:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
+        id S229689AbjDSTiG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Apr 2023 15:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbjDSSB7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Apr 2023 14:01:59 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2BB4ECD
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Apr 2023 11:01:54 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id qf26so461476qvb.6
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Apr 2023 11:01:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681927313; x=1684519313;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NKsyfbv0GnrN62lC9AnQSc3n7HV4a0vAcxxKbT+Q1pg=;
-        b=QyKkmqAbz5AZiiXn8NOugaV2gyohj0vMUl0+kH1QTJbPKBHm3lLwBRsFR5gx2mqc3f
-         /g1pqoMkd+Nu/peTozBEAmKhv1w3kq44+S9jAyQqwd6CkDJ/R4tCsh7BJCCHwf6R3POd
-         DZG27UKoHB3FOE/Bchbdry3TFWbqf/DndFhB0jxujfNqDnPwNjxJR0B5hPGyuOP8p7zO
-         Zw+b3rKqxv8upH6rAP0ETtAKofYQj2XlgHL8fTtRvlVeSzin9Mj+ON+ytdz5qiiq3+gm
-         X8FwVbDFYw5xIQmtgaU5QJBQ5+2pTTx7g2RlNgIAXDUZRyR5vjXE9Dv1AJcFuIq9YaXH
-         w/Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681927313; x=1684519313;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NKsyfbv0GnrN62lC9AnQSc3n7HV4a0vAcxxKbT+Q1pg=;
-        b=PAPZmYnEPHnqSF/Onyk/VCiQ3nIV3Izx9vD0yfAVSvkd9heUKzevFA85E0ONwuF7mk
-         gKnKFVXeO2OlI6hcr88jR9ogGO23JCjcT24xeVgY/aP7CZxu0WCw2g5SLwMQh204RadY
-         zYEW0bd6+/X3w8dJQGDiNv90xt7kDgCjyAEP17kVHQfso/7eqoC3bzB4i3BFBQuf8C1s
-         Ph7IZTYpOQwuFjzU++scG6YiQDnOGxc2MFWAqWXBQpgaa13n80MDh2i/BdjkmTme9iHw
-         6r7iCj/DfHmZUqMp3Hi8NZKQqZsk9M3yqIEXKKthm+BGLBhYarUmduLtM6DQWfIPDeQU
-         8oYw==
-X-Gm-Message-State: AAQBX9fiCFgWUkFszZlq0EoUVOm7wVLunBGN+I/sK5dDWX0sK0R2FTsL
-        dmmNEyMr04hemtJhnx61LCGDlD6IcqDNjhWPO9g=
-X-Google-Smtp-Source: AKy350azD1CYj4V/SEqqqEa0ZPHWB2fTXJ4oJhcesq58XEDS04GXSOld3K6q8GnZFofsc0n0PuSdvDDr9ghR8AM8svY=
-X-Received: by 2002:a05:6214:2025:b0:5cc:75c7:8f19 with SMTP id
- 5-20020a056214202500b005cc75c78f19mr33681574qvf.10.1681927313151; Wed, 19 Apr
- 2023 11:01:53 -0700 (PDT)
+        with ESMTP id S229485AbjDSTiG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Apr 2023 15:38:06 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0865FDD;
+        Wed, 19 Apr 2023 12:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681933085; x=1713469085;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=t1OsSZQnF1LZH4+Xjffqd401TNQIEsaRxkp8+pmezZ8=;
+  b=jt6G4hhcqWl20ycmhlcEWjbY6v1MZ99wzDoJbWpx6ljOpE4+bDT9ACmo
+   1oVZ1iPuJ+jraVYQLsl+HgXoPRPYhyqo2uFs5te/r7E00JmUZQlJNwgen
+   hTWDx+Y5pmfNk7Yg4QzmS+klP6lSRHO3gGzQ7FgUj7L52fDcqtD1Yy7m7
+   K4LFdU6b6BqWys5lPToTWjcmFLW4DIGfN7zEwAYRkpTBw8/uoQT8gSV36
+   gvoUz858w3eHn4EHjTBW+gn26M+6JjE9CrfdXbs4tuqXvzXcafM0BE5y0
+   lXyRJy/cPje0uB6jILB1EGD0u+lTPyOE2vcvTJUU5XmG9T1kTsg7VWZR4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="373430548"
+X-IronPort-AV: E=Sophos;i="5.99,210,1677571200"; 
+   d="scan'208";a="373430548"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2023 12:38:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="835436561"
+X-IronPort-AV: E=Sophos;i="5.99,210,1677571200"; 
+   d="scan'208";a="835436561"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Apr 2023 12:38:02 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1ppDcv-000f8Q-2a;
+        Wed, 19 Apr 2023 19:38:01 +0000
+Date:   Thu, 20 Apr 2023 03:37:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
+        linux-rdma@vger.kernel.org, leonro@nvidia.com, jgg@nvidia.com,
+        zyjzyj2000@gmail.com
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        yangx.jy@fujitsu.com, lizhijian@fujitsu.com,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Subject: Re: [PATCH for-next v4 2/8] RDMA/rxe: Always schedule works before
+ accessing user MRs
+Message-ID: <202304200354.oGlN33Lg-lkp@intel.com>
+References: <7441c59fcea601c03c70ec03b5d17a69032e51f8.1681882651.git.matsuda-daisuke@fujitsu.com>
 MIME-Version: 1.0
-References: <20230214060634.427162-1-yanjun.zhu@intel.com> <CADvaNzUdktEg=0vhrQgaYcg=GRjnQThx8_gVz71MNeqYw3e1kQ@mail.gmail.com>
- <1adb4df4-ee14-1d26-d1ac-49108b2de03d@linux.dev> <CADvaNzWqeP1iy6Q=cSzgL+KtZqvpWoMbYTS8ySO=aaQHLzMZbA@mail.gmail.com>
- <PH0PR12MB548169DB2D2364DF3ED9E2F3DC989@PH0PR12MB5481.namprd12.prod.outlook.com>
- <CADvaNzXm-KZZQuo2w1ovQ+-w78-DW5ewRPPY_cjvprHCNzCe_A@mail.gmail.com>
- <PH0PR12MB54816C6137344EA1D06433DCDC989@PH0PR12MB5481.namprd12.prod.outlook.com>
- <PH0PR12MB548134FDB99B1653C986F30DDC989@PH0PR12MB5481.namprd12.prod.outlook.com>
- <CADvaNzXDBKiXi5hiaiwYh5_ShqW_EVBfLhwNbk+Yck8V7DQ-fQ@mail.gmail.com>
- <PH0PR12MB5481CA9F5AE04CE5295E7552DC989@PH0PR12MB5481.namprd12.prod.outlook.com>
- <29e1ed5a-091a-1560-19e5-05c3aefb764b@linux.dev> <CADvaNzWfS5TFQ3b5JyaKFft06ihazadSJ15V3aXvWZh1jp1cCA@mail.gmail.com>
- <CADvaNzUuYK9Z6KdP+x2_qX4vhJ_GV5U1bHsYCqoxxP=MGjfbGw@mail.gmail.com>
- <PH0PR12MB5481BD928589FE9219B3582FDC629@PH0PR12MB5481.namprd12.prod.outlook.com>
- <17efd2ea-d0f9-a95c-a593-b989d8a45434@linux.dev>
-In-Reply-To: <17efd2ea-d0f9-a95c-a593-b989d8a45434@linux.dev>
-From:   Mark Lehrer <lehrer@gmail.com>
-Date:   Wed, 19 Apr 2023 12:01:41 -0600
-Message-ID: <CADvaNzW=d03HS89H=XJDZvZUxW8HRUR4h83-voneS7egVrg1Ow@mail.gmail.com>
-Subject: Re: [PATCHv3 0/8] Fix the problem that rxe can not work in net namespace
-To:     Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc:     Parav Pandit <parav@nvidia.com>, Zhu Yanjun <yanjun.zhu@intel.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7441c59fcea601c03c70ec03b5d17a69032e51f8.1681882651.git.matsuda-daisuke@fujitsu.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> TCP without net ns notifier missed the net ns delete scenario results in =
-a use after free bug, that should be fixed first as its critical.
->
-> Sure. I also confronted this mentioned problem. If I remember correctly,
-> a net ns callback can fix this problem.
+Hi Daisuke,
 
-I'm not sure if the bug fix will be this in depth, but I have a
-related question.  What is the proper way for the kernel nvme
-initiator code to know which netns context to use?  e.g. should we
-take the pid of the process that opened /dev/nvme-fabrics and look it
-up (presumaly this will be nvme-cli), and will this method give us
-enough details for both tcp & rdma?
+kernel test robot noticed the following build warnings:
 
-Mark
+[auto build test WARNING on f605f26ea196a3b49bea249330cbd18dba61a33e]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Daisuke-Matsuda/RDMA-rxe-Tentative-workqueue-implementation/20230419-135731
+base:   f605f26ea196a3b49bea249330cbd18dba61a33e
+patch link:    https://lore.kernel.org/r/7441c59fcea601c03c70ec03b5d17a69032e51f8.1681882651.git.matsuda-daisuke%40fujitsu.com
+patch subject: [PATCH for-next v4 2/8] RDMA/rxe: Always schedule works before accessing user MRs
+config: x86_64-randconfig-a011-20230417 (https://download.01.org/0day-ci/archive/20230420/202304200354.oGlN33Lg-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/493fb0777100e2e1b6358176e84b4b29372105ae
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Daisuke-Matsuda/RDMA-rxe-Tentative-workqueue-implementation/20230419-135731
+        git checkout 493fb0777100e2e1b6358176e84b4b29372105ae
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/infiniband/sw/rxe/
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202304200354.oGlN33Lg-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/infiniband/sw/rxe/rxe_comp.c:139:36: warning: converting the enum constant to a boolean [-Wint-in-bool-context]
+           if (pkt->mask | (RXE_PAYLOAD_MASK || RXE_ATMACK_MASK))
+                                             ^
+   1 warning generated.
 
 
-On Tue, Apr 18, 2023 at 10:19=E2=80=AFPM Zhu Yanjun <yanjun.zhu@linux.dev> =
-wrote:
->
->
-> =E5=9C=A8 2023/4/19 8:43, Parav Pandit =E5=86=99=E9=81=93:
-> >
-> >> From: Mark Lehrer <lehrer@gmail.com>
-> >> Sent: Friday, April 14, 2023 12:24 PM
-> >
-> >> I'm going to try making the nvme-fabrics set of modules use the networ=
-k
-> >> namespace properly with RoCEv2.  TCP seems to work properly already, s=
-o this
-> >> should be more of a "port" than real development.
-> > TCP without net ns notifier missed the net ns delete scenario results i=
-n a use after free bug, that should be fixed first as its critical.
->
-> Sure. I also confronted this mentioned problem. If I remember correctly,
-> a net ns callback can fix this problem.
->
-> Zhu Yanjun
->
-> >
-> >> Are you (or anyone else) interested in working on this too?  I'm more =
-familiar
-> >> with the video frame buffer area of the kernel, so first I'm familiari=
-zing myself
-> >> with how nvme-fabrics works with TCP & netns.
-> >>
-> >> Thanks,
-> >> Mark
+vim +139 drivers/infiniband/sw/rxe/rxe_comp.c
+
+   128	
+   129	void rxe_comp_queue_pkt(struct rxe_pkt_info *pkt, struct sk_buff *skb)
+   130	{
+   131		struct rxe_qp *qp = pkt->qp;
+   132		int must_sched;
+   133	
+   134		skb_queue_tail(&qp->resp_pkts, skb);
+   135	
+   136		/* Schedule the task if processing Read responses or Atomic acks.
+   137		 * In these cases, completer may sleep to access ODP-enabled MRs.
+   138		 */
+ > 139		if (pkt->mask | (RXE_PAYLOAD_MASK || RXE_ATMACK_MASK))
+   140			must_sched = 1;
+   141		else
+   142			must_sched = skb_queue_len(&qp->resp_pkts) > 1;
+   143	
+   144		if (must_sched != 0)
+   145			rxe_counter_inc(SKB_TO_PKT(skb)->rxe, RXE_CNT_COMPLETER_SCHED);
+   146	
+   147		if (must_sched)
+   148			rxe_sched_task(&qp->comp.task);
+   149		else
+   150			rxe_run_task(&qp->comp.task);
+   151	}
+   152	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
