@@ -2,187 +2,342 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FBE6E72C3
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Apr 2023 07:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFC96E72B3
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Apr 2023 07:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbjDSFzb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Apr 2023 01:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
+        id S231262AbjDSFw7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Apr 2023 01:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbjDSFz3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Apr 2023 01:55:29 -0400
-Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com [207.54.90.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22B47EE8;
-        Tue, 18 Apr 2023 22:54:59 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10684"; a="114046869"
+        with ESMTP id S229633AbjDSFw6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Apr 2023 01:52:58 -0400
+Received: from esa6.hc1455-7.c3s2.iphmx.com (esa6.hc1455-7.c3s2.iphmx.com [68.232.139.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF488268F;
+        Tue, 18 Apr 2023 22:52:55 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10684"; a="115016401"
 X-IronPort-AV: E=Sophos;i="5.99,208,1677510000"; 
-   d="scan'208";a="114046869"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
-  by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2023 14:52:49 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
-        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id A9595D66B1;
-        Wed, 19 Apr 2023 14:52:46 +0900 (JST)
+   d="scan'208";a="115016401"
+Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+  by esa6.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2023 14:52:52 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
+        by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 75F2EEDF38;
+        Wed, 19 Apr 2023 14:52:50 +0900 (JST)
 Received: from m3003.s.css.fujitsu.com (m3003.s.css.fujitsu.com [10.128.233.114])
-        by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id E31F111C5F;
-        Wed, 19 Apr 2023 14:52:45 +0900 (JST)
+        by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 849CED5626;
+        Wed, 19 Apr 2023 14:52:49 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.118.237.106])
-        by m3003.s.css.fujitsu.com (Postfix) with ESMTP id B070B2043C64;
-        Wed, 19 Apr 2023 14:52:45 +0900 (JST)
+        by m3003.s.css.fujitsu.com (Postfix) with ESMTP id 40B322005334;
+        Wed, 19 Apr 2023 14:52:49 +0900 (JST)
 From:   Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
 To:     linux-rdma@vger.kernel.org, leonro@nvidia.com, jgg@nvidia.com,
         zyjzyj2000@gmail.com
 Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
         yangx.jy@fujitsu.com, lizhijian@fujitsu.com,
         Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH for-next v4 0/8] On-Demand Paging on SoftRoCE
-Date:   Wed, 19 Apr 2023 14:51:52 +0900
-Message-Id: <cover.1681882651.git.matsuda-daisuke@fujitsu.com>
+Subject: [PATCH for-next v4 1/8] RDMA/rxe: Tentative workqueue implementation
+Date:   Wed, 19 Apr 2023 14:51:53 +0900
+Message-Id: <75b12beb3f3becd951cdee85ec6e5066a12954b1.1681882651.git.matsuda-daisuke@fujitsu.com>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <cover.1681882651.git.matsuda-daisuke@fujitsu.com>
+References: <cover.1681882651.git.matsuda-daisuke@fujitsu.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch series implements the On-Demand Paging feature on SoftRoCE(rxe)
-driver, which has been available only in mlx5 driver[1] so far.
+This is a mock patch and not intended to be merged. In order to implement
+ODP on rxe, it is necessary to convert triple tasklets to workqueue. I
+expect Bob Pearson will submit his patch to do this very soon.
 
-The first patch of this series is provided for testing purpose, and it
-should be dropped in the end. It converts triple tasklets to use workqueue
-in order to let them sleep during page-fault. Bob Pearson says he will post
-the patch to do this, and I think we can adopt that. The other patches in
-this series are, I believe, completed works.
+Link: https://lore.kernel.org/linux-rdma/a74126b4-b527-af72-f23e-c9d6711e5285@gmail.com/
+Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+---
+ drivers/infiniband/sw/rxe/rxe.c      |  9 ++-
+ drivers/infiniband/sw/rxe/rxe_task.c | 84 ++++++++++++++++++----------
+ drivers/infiniband/sw/rxe/rxe_task.h |  6 +-
+ 3 files changed, 67 insertions(+), 32 deletions(-)
 
-I omitted some contents like the motive behind this series for simplicity.
-Please see the cover letter of v3 for more details[2].
-
-[Overview]
-When applications register a memory region(MR), RDMA drivers normally pin
-pages in the MR so that physical addresses are never changed during RDMA
-communication. This requires the MR to fit in physical memory and
-inevitably leads to memory pressure. On the other hand, On-Demand Paging
-(ODP) allows applications to register MRs without pinning pages. They are
-paged-in when the driver requires and paged-out when the OS reclaims. As a
-result, it is possible to register a large MR that does not fit in physical
-memory without taking up so much physical memory.
-
-[How does ODP work?]
-"struct ib_umem_odp" is used to manage pages. It is created for each
-ODP-enabled MR on its registration. This struct holds a pair of arrays
-(dma_list/pfn_list) that serve as a driver page table. DMA addresses and
-PFNs are stored in the driver page table. They are updated on page-in and
-page-out, both of which use the common interfaces in the ib_uverbs layer.
-
-Page-in can occur when requester, responder or completer access an MR in
-order to process RDMA operations. If they find that the pages being
-accessed are not present on physical memory or requisite permissions are
-not set on the pages, they provoke page fault to make the pages present
-with proper permissions and at the same time update the driver page table.
-After confirming the presence of the pages, they execute memory access such
-as read, write or atomic operations.
-
-Page-out is triggered by page reclaim or filesystem events (e.g. metadata
-update of a file that is being used as an MR). When creating an ODP-enabled
-MR, the driver registers an MMU notifier callback. When the kernel issues a
-page invalidation notification, the callback is provoked to unmap DMA
-addresses and update the driver page table. After that, the kernel releases
-the pages.
-
-[Supported operations]
-All traditional operations are supported on RC connection. The new Atomic
-write[3] and RDMA Flush[4] operations are not included in this patchset. I
-will post them later after this patchset is merged. On UD connection, Send,
-Recv, and SRQ-Recv are supported.
-
-[How to test ODP?]
-There are only a few resources available for testing. pyverbs testcases in
-rdma-core and perftest[5] are recommendable ones. Other than them, the
-ibv_rc_pingpong command can also used for testing. Note that you may have
-to build perftest from upstream because older versions do not handle ODP
-capabilities correctly.
-
-The tree is available from github:
-https://github.com/daimatsuda/linux/tree/odp_v4
-While this series is based on commit f605f26ea196, the tree includes an
-additional bugfix, which is yet to be merged as of today (Apr 19th, 2023).
-https://lore.kernel.org/linux-rdma/20230418090642.1849358-1-matsuda-daisuke@fujitsu.com/
-
-[Future work]
-My next work is to enable the new Atomic write[3] and RDMA Flush[4]
-operations with ODP. After that, I am going to implement the prefetch
-feature. It allows applications to trigger page fault using
-ibv_advise_mr(3) to optimize performance. Some existing software like
-librpma[6] use this feature. Additionally, I think we can also add the
-implicit ODP feature in the future.
-
-[1] [RFC 00/20] On demand paging
-https://www.spinics.net/lists/linux-rdma/msg18906.html
-
-[2] [PATCH for-next v3 0/7] On-Demand Paging on SoftRoCE
-https://lore.kernel.org/lkml/cover.1671772917.git.matsuda-daisuke@fujitsu.com/
-
-[3] [PATCH v7 0/8] RDMA/rxe: Add atomic write operation
-https://lore.kernel.org/linux-rdma/1669905432-14-1-git-send-email-yangx.jy@fujitsu.com/
-
-[4] [for-next PATCH 00/10] RDMA/rxe: Add RDMA FLUSH operation
-https://lore.kernel.org/lkml/20221206130201.30986-1-lizhijian@fujitsu.com/
-
-[5] linux-rdma/perftest: Infiniband Verbs Performance Tests
-https://github.com/linux-rdma/perftest
-
-[6] librpma: Remote Persistent Memory Access Library
-https://github.com/pmem/rpma
-
-v3->v4:
- 1) Re-designed functions that access MRs to use the MR xarray.
- 2) Rebased onto the latest jgg-for-next tree.
-
-v2->v3:
- 1) Removed a patch that changes the common ib_uverbs layer.
- 2) Re-implemented patches for conversion to workqueue.
- 3) Fixed compile errors (happened when CONFIG_INFINIBAND_ON_DEMAND_PAGING=n).
- 4) Fixed some functions that returned incorrect errors.
- 5) Temporarily disabled ODP for RDMA Flush and Atomic Write.
-
-v1->v2:
- 1) Fixed a crash issue reported by Haris Iqbal.
- 2) Tried to make lock patters clearer as pointed out by Romanovsky.
- 3) Minor clean ups and fixes.
-
-Daisuke Matsuda (8):
-  RDMA/rxe: Tentative workqueue implementation
-  RDMA/rxe: Always schedule works before accessing user MRs
-  RDMA/rxe: Make MR functions accessible from other rxe source code
-  RDMA/rxe: Move resp_states definition to rxe_verbs.h
-  RDMA/rxe: Add page invalidation support
-  RDMA/rxe: Allow registering MRs for On-Demand Paging
-  RDMA/rxe: Add support for Send/Recv/Write/Read with ODP
-  RDMA/rxe: Add support for the traditional Atomic operations with ODP
-
- drivers/infiniband/sw/rxe/Makefile    |   2 +
- drivers/infiniband/sw/rxe/rxe.c       |  27 ++-
- drivers/infiniband/sw/rxe/rxe.h       |  37 ---
- drivers/infiniband/sw/rxe/rxe_comp.c  |  12 +-
- drivers/infiniband/sw/rxe/rxe_loc.h   |  49 +++-
- drivers/infiniband/sw/rxe/rxe_mr.c    |  27 +--
- drivers/infiniband/sw/rxe/rxe_odp.c   | 311 ++++++++++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_recv.c  |   4 +-
- drivers/infiniband/sw/rxe/rxe_resp.c  |  32 ++-
- drivers/infiniband/sw/rxe/rxe_task.c  |  84 ++++---
- drivers/infiniband/sw/rxe/rxe_task.h  |   6 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c |   5 +-
- drivers/infiniband/sw/rxe/rxe_verbs.h |  39 ++++
- 13 files changed, 535 insertions(+), 100 deletions(-)
- create mode 100644 drivers/infiniband/sw/rxe/rxe_odp.c
-
-base-commit: f605f26ea196a3b49bea249330cbd18dba61a33e
-
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 7a7e713de52d..54c723a6edda 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -212,10 +212,16 @@ static int __init rxe_module_init(void)
+ {
+ 	int err;
+ 
+-	err = rxe_net_init();
++	err = rxe_alloc_wq();
+ 	if (err)
+ 		return err;
+ 
++	err = rxe_net_init();
++	if (err) {
++		rxe_destroy_wq();
++		return err;
++	}
++
+ 	rdma_link_register(&rxe_link_ops);
+ 	pr_info("loaded\n");
+ 	return 0;
+@@ -226,6 +232,7 @@ static void __exit rxe_module_exit(void)
+ 	rdma_link_unregister(&rxe_link_ops);
+ 	ib_unregister_driver(RDMA_DRIVER_RXE);
+ 	rxe_net_exit();
++	rxe_destroy_wq();
+ 
+ 	pr_info("unloaded\n");
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+index fb9a6bc8e620..c8aa1763d1f9 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -6,8 +6,25 @@
+ 
+ #include "rxe.h"
+ 
++static struct workqueue_struct *rxe_wq;
++
++int rxe_alloc_wq(void)
++{
++	rxe_wq = alloc_workqueue("rxe_wq", WQ_CPU_INTENSIVE | WQ_UNBOUND,
++				 WQ_MAX_ACTIVE);
++	if (!rxe_wq)
++		return -ENOMEM;
++
++	return 0;
++}
++
++void rxe_destroy_wq(void)
++{
++	destroy_workqueue(rxe_wq);
++}
++
+ /* Check if task is idle i.e. not running, not scheduled in
+- * tasklet queue and not draining. If so move to busy to
++ * work queue and not draining. If so move to busy to
+  * reserve a slot in do_task() by setting to busy and taking
+  * a qp reference to cover the gap from now until the task finishes.
+  * state will move out of busy if task returns a non zero value
+@@ -21,7 +38,7 @@ static bool __reserve_if_idle(struct rxe_task *task)
+ {
+ 	WARN_ON(rxe_read(task->qp) <= 0);
+ 
+-	if (task->tasklet.state & BIT(TASKLET_STATE_SCHED))
++	if (task->state & BIT(TASKLET_STATE_SCHED))
+ 		return false;
+ 
+ 	if (task->state == TASK_STATE_IDLE) {
+@@ -38,7 +55,7 @@ static bool __reserve_if_idle(struct rxe_task *task)
+ }
+ 
+ /* check if task is idle or drained and not currently
+- * scheduled in the tasklet queue. This routine is
++ * scheduled in the work queue. This routine is
+  * called by rxe_cleanup_task or rxe_disable_task to
+  * see if the queue is empty.
+  * Context: caller should hold task->lock.
+@@ -46,7 +63,7 @@ static bool __reserve_if_idle(struct rxe_task *task)
+  */
+ static bool __is_done(struct rxe_task *task)
+ {
+-	if (task->tasklet.state & BIT(TASKLET_STATE_SCHED))
++	if (task->state & BIT(TASKLET_STATE_SCHED))
+ 		return false;
+ 
+ 	if (task->state == TASK_STATE_IDLE ||
+@@ -77,23 +94,23 @@ static bool is_done(struct rxe_task *task)
+  * schedules the task. They must call __reserve_if_idle to
+  * move the task to busy before calling or scheduling.
+  * The task can also be moved to drained or invalid
+- * by calls to rxe-cleanup_task or rxe_disable_task.
++ * by calls to rxe_cleanup_task or rxe_disable_task.
+  * In that case tasks which get here are not executed but
+  * just flushed. The tasks are designed to look to see if
+- * there is work to do and do part of it before returning
++ * there is work to do and then do part of it before returning
+  * here with a return value of zero until all the work
+- * has been consumed then it retuens a non-zero value.
++ * has been consumed then it returns a non-zero value.
+  * The number of times the task can be run is limited by
+  * max iterations so one task cannot hold the cpu forever.
++ * If the limit is hit and work remains the task is rescheduled.
+  */
+-static void do_task(struct tasklet_struct *t)
++static void do_task(struct rxe_task *task)
+ {
+-	int cont;
+-	int ret;
+-	struct rxe_task *task = from_tasklet(task, t, tasklet);
+ 	unsigned int iterations;
+ 	unsigned long flags;
+ 	int resched = 0;
++	int cont;
++	int ret;
+ 
+ 	WARN_ON(rxe_read(task->qp) <= 0);
+ 
+@@ -122,8 +139,8 @@ static void do_task(struct tasklet_struct *t)
+ 			} else {
+ 				/* This can happen if the client
+ 				 * can add work faster than the
+-				 * tasklet can finish it.
+-				 * Reschedule the tasklet and exit
++				 * work queue can finish it.
++				 * Reschedule the task and exit
+ 				 * the loop to give up the cpu
+ 				 */
+ 				task->state = TASK_STATE_IDLE;
+@@ -131,9 +148,9 @@ static void do_task(struct tasklet_struct *t)
+ 			}
+ 			break;
+ 
+-		/* someone tried to run the task since the last time we called
+-		 * func, so we will call one more time regardless of the
+-		 * return value
++		/* someone tried to run the task since the last time we
++		 * called func, so we will call one more time regardless
++		 * of the return value
+ 		 */
+ 		case TASK_STATE_ARMED:
+ 			task->state = TASK_STATE_BUSY;
+@@ -149,13 +166,16 @@ static void do_task(struct tasklet_struct *t)
+ 
+ 		default:
+ 			WARN_ON(1);
+-			rxe_info_qp(task->qp, "unexpected task state = %d", task->state);
++			rxe_dbg_qp(task->qp, "unexpected task state = %d",
++				   task->state);
+ 		}
+ 
+ 		if (!cont) {
+ 			task->num_done++;
+ 			if (WARN_ON(task->num_done != task->num_sched))
+-				rxe_err_qp(task->qp, "%ld tasks scheduled, %ld tasks done",
++				rxe_dbg_qp(task->qp,
++					   "%ld tasks scheduled, "
++					   "%ld tasks done",
+ 					   task->num_sched, task->num_done);
+ 		}
+ 		spin_unlock_irqrestore(&task->lock, flags);
+@@ -169,6 +189,12 @@ static void do_task(struct tasklet_struct *t)
+ 	rxe_put(task->qp);
+ }
+ 
++/* wrapper around do_task to fix argument */
++static void __do_task(struct work_struct *work)
++{
++	do_task(container_of(work, struct rxe_task, work));
++}
++
+ int rxe_init_task(struct rxe_task *task, struct rxe_qp *qp,
+ 		  int (*func)(struct rxe_qp *))
+ {
+@@ -176,11 +202,9 @@ int rxe_init_task(struct rxe_task *task, struct rxe_qp *qp,
+ 
+ 	task->qp = qp;
+ 	task->func = func;
+-
+-	tasklet_setup(&task->tasklet, do_task);
+-
+ 	task->state = TASK_STATE_IDLE;
+ 	spin_lock_init(&task->lock);
++	INIT_WORK(&task->work, __do_task);
+ 
+ 	return 0;
+ }
+@@ -213,8 +237,6 @@ void rxe_cleanup_task(struct rxe_task *task)
+ 	while (!is_done(task))
+ 		cond_resched();
+ 
+-	tasklet_kill(&task->tasklet);
+-
+ 	spin_lock_irqsave(&task->lock, flags);
+ 	task->state = TASK_STATE_INVALID;
+ 	spin_unlock_irqrestore(&task->lock, flags);
+@@ -226,7 +248,7 @@ void rxe_cleanup_task(struct rxe_task *task)
+ void rxe_run_task(struct rxe_task *task)
+ {
+ 	unsigned long flags;
+-	int run;
++	bool run;
+ 
+ 	WARN_ON(rxe_read(task->qp) <= 0);
+ 
+@@ -235,11 +257,11 @@ void rxe_run_task(struct rxe_task *task)
+ 	spin_unlock_irqrestore(&task->lock, flags);
+ 
+ 	if (run)
+-		do_task(&task->tasklet);
++		do_task(task);
+ }
+ 
+-/* schedule the task to run later as a tasklet.
+- * the tasklet)schedule call can be called holding
++/* schedule the task to run later as a work queue entry.
++ * the queue_work call can be called holding
+  * the lock.
+  */
+ void rxe_sched_task(struct rxe_task *task)
+@@ -250,7 +272,7 @@ void rxe_sched_task(struct rxe_task *task)
+ 
+ 	spin_lock_irqsave(&task->lock, flags);
+ 	if (__reserve_if_idle(task))
+-		tasklet_schedule(&task->tasklet);
++		queue_work(rxe_wq, &task->work);
+ 	spin_unlock_irqrestore(&task->lock, flags);
+ }
+ 
+@@ -277,7 +299,9 @@ void rxe_disable_task(struct rxe_task *task)
+ 	while (!is_done(task))
+ 		cond_resched();
+ 
+-	tasklet_disable(&task->tasklet);
++	spin_lock_irqsave(&task->lock, flags);
++	task->state = TASK_STATE_DRAINED;
++	spin_unlock_irqrestore(&task->lock, flags);
+ }
+ 
+ void rxe_enable_task(struct rxe_task *task)
+@@ -291,7 +315,7 @@ void rxe_enable_task(struct rxe_task *task)
+ 		spin_unlock_irqrestore(&task->lock, flags);
+ 		return;
+ 	}
++
+ 	task->state = TASK_STATE_IDLE;
+-	tasklet_enable(&task->tasklet);
+ 	spin_unlock_irqrestore(&task->lock, flags);
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
+index facb7c8e3729..a63e258b3d66 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.h
++++ b/drivers/infiniband/sw/rxe/rxe_task.h
+@@ -22,7 +22,7 @@ enum {
+  * called again.
+  */
+ struct rxe_task {
+-	struct tasklet_struct	tasklet;
++	struct work_struct	work;
+ 	int			state;
+ 	spinlock_t		lock;
+ 	struct rxe_qp		*qp;
+@@ -32,6 +32,10 @@ struct rxe_task {
+ 	long			num_done;
+ };
+ 
++int rxe_alloc_wq(void);
++
++void rxe_destroy_wq(void);
++
+ /*
+  * init rxe_task structure
+  *	qp  => parameter to pass to func
 -- 
 2.39.1
 
