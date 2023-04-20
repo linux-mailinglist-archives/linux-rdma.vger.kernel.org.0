@@ -2,157 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322636E8CB9
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Apr 2023 10:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAE36E8D51
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Apr 2023 10:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbjDTI1f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Apr 2023 04:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
+        id S234397AbjDTIzw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Apr 2023 04:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233926AbjDTI1e (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Apr 2023 04:27:34 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F463AAF;
-        Thu, 20 Apr 2023 01:27:33 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-2eed43bfa4bso354946f8f.2;
-        Thu, 20 Apr 2023 01:27:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681979252; x=1684571252;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Jlo4F4g3+lV8QJ0E+q6K5kxPhHFeMG0/1IdnsG1CVbs=;
-        b=RbUI3J9JbEu22j/FdIjKbLPtmcuoTQxJBMnXpKoaSO0yIjKk58x3ylfFnfNcdaFc1b
-         9uwrAPpCw2XsgjMyjg/Jkp3MKX7JGfQW56x88Zt+J382I8+eFDgAQbiC4kRNu//pck1G
-         QTlUoX2bkyZysOPs7OROcNq7K0Qx/A6MSJ4KMVWqbfeitH02J1mxSs9hCuWa0thnb8zv
-         kLXsBb43WnESrXHV5w0npPFdRm530YH2nKHDEaS6hnt4ilxntplGTUo2Ecpp5l/R7tjl
-         4hXb1gb3Fu3JjXhUWIjO/KkNxCXnioduQmI1Xq2KmqsBlTizzx9ZuYVnU5aF5l3DK8Og
-         4F5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681979252; x=1684571252;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jlo4F4g3+lV8QJ0E+q6K5kxPhHFeMG0/1IdnsG1CVbs=;
-        b=TzYDh/HoxZwVpNIMUCUgVcaSkCwF+0M46ttbQuG5gcbgdE1mfVhNiMexPOdhZSC+w3
-         iCiPuN4+y9CeHpS0d6HGItTLkSSv38B0erqZ+F7Ajhz8hH7U1GRHP2KIk9dAaG/3Uv8m
-         QfIzmAHnZYvEx8tkGE+1Acx1tUw/h4ZiStTHQnFWNxtf/zPX45erZ4HSUXnL8cUKwXgW
-         RUE1WCGfxHtqTMtZhKXqZQQpw7ek2zPVCB3FY1voOCt7xZWXiEeVr4lieY/f+KMlJs+C
-         OSFtXEI/6CrvxueKPsJ2rKAGEGppcWBPhcAebdI0ocEETGOIwzDMZrkbprZGEK1DiJ5/
-         BYAQ==
-X-Gm-Message-State: AAQBX9eLc4EUHeMfMVb79WQ8Wuu5TdA/YJxHX1J26pNiNwQGyOngYm6z
-        uL91Yq3v55+tWkoS0HPqi8E=
-X-Google-Smtp-Source: AKy350a0fvCr5yXGh2DWTwSBE5pka+2OSnlP/XdSkIuHFdS2h/tPJ2+Cco6gw1wD04pg2RwRJr9HOA==
-X-Received: by 2002:adf:f14c:0:b0:2ff:f37:9d1a with SMTP id y12-20020adff14c000000b002ff0f379d1amr613807wro.62.1681979251597;
-        Thu, 20 Apr 2023 01:27:31 -0700 (PDT)
-Received: from [192.168.0.103] ([77.124.103.108])
-        by smtp.gmail.com with ESMTPSA id f3-20020adfdb43000000b002efb2d861dasm1294605wrj.77.2023.04.20.01.27.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Apr 2023 01:27:31 -0700 (PDT)
-Message-ID: <6b3f92e7-e54c-bb7d-2d72-1a0875989d4a@gmail.com>
-Date:   Thu, 20 Apr 2023 11:27:26 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v2 4/8] net: mlx5: switch comp_irqs_request() to using
- for_each_numa_cpu
-Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Pawel Chmielewski <pawel.chmielewski@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Barry Song <baohua@kernel.org>
-References: <20230420051946.7463-1-yury.norov@gmail.com>
- <20230420051946.7463-5-yury.norov@gmail.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20230420051946.7463-5-yury.norov@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S233832AbjDTIyO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Apr 2023 04:54:14 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EE940EE;
+        Thu, 20 Apr 2023 01:52:22 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0DB755C015E;
+        Thu, 20 Apr 2023 04:52:20 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Thu, 20 Apr 2023 04:52:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1681980740; x=1682067140; bh=q5
+        mxBDhqof2rSAXuDpt7RtRTf5pystlJ8ajZQHMW6yI=; b=nRmTNulWfXtLThuiCz
+        Rm/70Zqjci6zWwWiqnXTOnvsI45xw/aQ5daC63+jt5aS3Rtaftn7zIvrnJzongR6
+        LQ2+PCsuMmGEmQJREWQhkK4ZqlhJWruBLATxFk60fy8JDVGnOYwz40u62YgbOXoV
+        Skitk3wAuAmcrB4P7rEjaw7rQx77vZH7tiwodhigCif2gz8UlGyCiA1sgbfs24YY
+        q7FxV3yPiFbwdeV13+DA2SreM5rrfJ1/QLJSzqATXQggDGvp6XJmOJd81Zmk9zmC
+        JMVbVLWiGnsesQRD8ihBvasIRBP3XXQD6VXLz783qdQ0FDw1PAWGAWERwqtrwDgr
+        lKjw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1681980740; x=1682067140; bh=q5mxBDhqof2rS
+        AXuDpt7RtRTf5pystlJ8ajZQHMW6yI=; b=J60jxsmJM2OrbfaCfqOlbPUNPMK82
+        U/eBAT0eCuaZ2cC2Wn0t9BWWw0dNP83IjyUpwsCMhNT4z1HRF1CyK2/TdcrZnjSJ
+        4byybbl25/Df+QJU6hSfPbbrV4VCfkR8XXthoFP8Np8P+MhxB1ZnGBnPYcGZkyLu
+        OyI4l+Z72PeUOrd0FXuaNuF+KAwewlrAKmSsU7nn1c20rpDP8VJ3LcCS5NC2BZUe
+        1Gp9yap1oST/nYuMIakXx6VQHsDjk9zDwtN26VwWUsrGYPQL9Ms/aQ6XEmkhFExt
+        A4DHaCKOKRN9/IkJLvVqaU17JU/9DTkJVuqTmrCWG4JOsbKuOuPEdA7fw==
+X-ME-Sender: <xms:Q_1AZKmt-4f5f205DB_xXtbNfNJFBW1ismKZIxbuA4mDXnDmq55Ohw>
+    <xme:Q_1AZB3j8PHXnOnSIeT-3RKizcLL9GbIXBzfWu4UPF8kd23vSHj4YqcfQ1o5jlpxK
+    NUshHXYhY5-PXxGzpo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedtvddgtdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:Q_1AZIoZueuvwntS_f9RAgDDIPY3R0SKhXQq_-ehmdjefr9gMmR7tQ>
+    <xmx:Q_1AZOlH3Sb5CNO-e_5xxDtA4yHZgasujBBDlVeKXPEicGVSeio7Pw>
+    <xmx:Q_1AZI244u9QV9m-j6ZC8QJz_8gDo3mVP1C_t3jAiIEw3cKSNZwAHQ>
+    <xmx:RP1AZOw0aKt8xWq1d6aJHRUw6BWvYtbbXV1dVuHkG75MUuGqydd_fw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 86365B60086; Thu, 20 Apr 2023 04:52:19 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-372-g43825cb665-fm-20230411.003-g43825cb6
+Mime-Version: 1.0
+Message-Id: <b1d02aee-17cb-4461-8f02-b5bd513790ae@app.fastmail.com>
+In-Reply-To: <9975669b-27bf-6903-f908-184946960c25@gmail.com>
+References: <20230418114730.3674657-1-arnd@kernel.org>
+ <20230418114730.3674657-2-arnd@kernel.org>
+ <9975669b-27bf-6903-f908-184946960c25@gmail.com>
+Date:   Thu, 20 Apr 2023 10:51:58 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Tariq Toukan" <ttoukan.linux@gmail.com>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Yishai Hadas" <yishaih@nvidia.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Leon Romanovsky" <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Paolo Abeni" <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH 2/2] net/mlx4: avoid overloading user/kernel pointers
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Apr 19, 2023, at 09:09, Tariq Toukan wrote:
+> On 18/04/2023 14:47, Arnd Bergmann wrote:
+>
+> Now we should maintain the values of the two pointers before any call. 
+> I'm not sure this is less error-prune. One can mistakenly update 
+> kbuf_addr for example without nullifying ubuf_addr.
 
+That would cause a compiler warning about the uninitialized variable.
 
-On 20/04/2023 8:19, Yury Norov wrote:
-> for_each_numa_cpu() is a more straightforward alternative to
-> for_each_numa_hop_mask() + for_each_cpu_andnot().
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/eq.c | 16 +++++-----------
->   1 file changed, 5 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> index 38b32e98f3bd..80368952e9b1 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> @@ -817,12 +817,10 @@ static void comp_irqs_release(struct mlx5_core_dev *dev)
->   static int comp_irqs_request(struct mlx5_core_dev *dev)
->   {
->   	struct mlx5_eq_table *table = dev->priv.eq_table;
-> -	const struct cpumask *prev = cpu_none_mask;
-> -	const struct cpumask *mask;
->   	int ncomp_eqs = table->num_comp_eqs;
->   	u16 *cpus;
->   	int ret;
-> -	int cpu;
-> +	int cpu, hop;
->   	int i;
->   
->   	ncomp_eqs = table->num_comp_eqs;
-> @@ -844,15 +842,11 @@ static int comp_irqs_request(struct mlx5_core_dev *dev)
->   
->   	i = 0;
->   	rcu_read_lock();
-> -	for_each_numa_hop_mask(mask, dev->priv.numa_node) {
-> -		for_each_cpu_andnot(cpu, mask, prev) {
-> -			cpus[i] = cpu;
-> -			if (++i == ncomp_eqs)
-> -				goto spread_done;
-> -		}
-> -		prev = mask;
-> +	for_each_numa_cpu(cpu, hop, dev->priv.numa_node, cpu_possible_mask) {
+> Also, I'm not a big fan of passing two pointers when exactly one of them 
+> is effectively used.
+> We can think maybe of passing a union of both types, and a boolean 
+> indicating which pointer type is to be used.
 
-I like this clean API.
+This is basically what you have today. I've dropped this patch from
+my randconfig tree and will ignore the problem.
 
-nit:
-Previously cpu_online_mask was used here. Is this change intentional?
-We can fix it in a followup patch if this is the only comment on the series.
-
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-
-> +		cpus[i] = cpu;
-> +		if (++i == ncomp_eqs)
-> +			break;
->   	}
-> -spread_done:
->   	rcu_read_unlock();
->   	ret = mlx5_irqs_request_vectors(dev, cpus, ncomp_eqs, table->comp_irqs);
->   	kfree(cpus);
-
+    Arnd
