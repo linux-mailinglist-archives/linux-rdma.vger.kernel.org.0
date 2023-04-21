@@ -2,217 +2,190 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AC16EAC3A
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Apr 2023 16:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3BD6EACE0
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Apr 2023 16:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbjDUODC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Apr 2023 10:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
+        id S232582AbjDUO3Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Apr 2023 10:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbjDUOC6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Apr 2023 10:02:58 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2113.outbound.protection.outlook.com [40.107.92.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661CB118E2;
-        Fri, 21 Apr 2023 07:02:45 -0700 (PDT)
+        with ESMTP id S232578AbjDUO3O (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Apr 2023 10:29:14 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96BC30E9;
+        Fri, 21 Apr 2023 07:29:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682087351; x=1713623351;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=9NKg+/FD+B2dMpTzBcossHl+nMbetXbMGHeeEyX6IQs=;
+  b=bnh4Kgyt/qAPCSOpVVG+o/q9rECKurhBALbjTQ0DhO5t/7N1bhI+LNLg
+   aPtyzScBY7CYLcNnt69YVnA0m9hldrvvVuUeYu0PoT2U0cT05XY/61xbx
+   9c1xiV3Hp7CUM1pkKw/gIz6AkvoMteVTbJ0IhuHOOOUsIspXozRCJwv46
+   5TM9VocqBnMDAAg5XtzEJjvtwuNtysLY9uWNRvEpnjAOxqVr9iyA9ObJc
+   Ragoc98dSNMKMR8dmc0oiQcMb2KGiRLZt5xtgaQ1kwXQpDaE0ZI904X7D
+   8z8aZFK6WFeEQaghuRY5SMjBmyVROl+FBBn81l4Wz/g0ZZt494SOhKgoR
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10687"; a="373927062"
+X-IronPort-AV: E=Sophos;i="5.99,214,1677571200"; 
+   d="scan'208";a="373927062"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2023 07:29:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10687"; a="669739710"
+X-IronPort-AV: E=Sophos;i="5.99,214,1677571200"; 
+   d="scan'208";a="669739710"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga006.jf.intel.com with ESMTP; 21 Apr 2023 07:29:10 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 21 Apr 2023 07:29:10 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 21 Apr 2023 07:29:10 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Fri, 21 Apr 2023 07:29:10 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.175)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Fri, 21 Apr 2023 07:29:09 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J7tt2QlPi3gWGkCqBNkBmsdPFRiq30X8NJMt+htJiqd/8iLMtc2cBAJrHUD0jKPTw3gTSGj81Texa6Dtxgp5SokzIjEOPPUmGi5lAcreh/AvWntKi44mjFBjFQI/UrUk53q27bY5Rv83WN/FU9R0Bn0dm2TYxg/1RTWeHpQFCmwXwgOKveQXa+uNQXNewk53SWhGs5yF5K4VHrSdFGJWXuYtNMy4uvoujCacIGw7BGsc5AlkEDzkdKK+VBx4yeIZSk9+zRSbuQMj/SB9uOKvW2TG0NhHsgvh0pXWo0MVw+jxgXJMACQ+HcaxzUSA8fqIb6dWSefhRNHZ2gvdhAo3GA==
+ b=iUuEa1fthC5R7Ur82Lbfo++5ioWLVSDgxuee0HPg3RGLmUAp5qvL7llzlhRcQt3HtMZs4jNH0z+w4hAJoZUOoUu29bXiqRsJofTCcQEhgDZEa9jtU9RWS02010sfWePNnfn10VPOPIQE9N4IN2GX5irksMO9863L7dINy35AvA+5+hfQW5ejPfEM3aYHLnGxF8PBVcgEmTrp6yYm9aH0K085UjV23GGBPtvwEJsQUzA1fhCmsN/dZhYOpFLv465u969ekqy9uhaqtuOVfFbffbs+pOl6+H+4VgQNOWsd7bhJDRiF4qtyZLC+et5MmQtwN4WZQopfASh5xdkbPrxV7Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xRCSrcfoChNmgWXBXFBccyx4/aOfLmAmnjNBve9uoz4=;
- b=DklzHE72octw2SBr3NEBXVzh/DMUsw0gZlaXo2nYbQYc4nk7qtYJvtcvFLwu1D4rkgiGoLzYVaS9r4oQQNPGMxePOmT7W7gu2sHbKabbW/Lrx4tUuuiFLcKqvBczfZT4ntpZT+jJBI+GSuDnqJaCbbzgOJsZq/ufIKiEzk1sS8VvX9peONOKNJ+ZKRMD2PQE/q3HaqTvD+41d8QjxGi5ChnaaBuoiVCuYLqlhy7eiGuvNcUyN1yKMs6hoCuVuIuKd8/w7+/bMgcnezxaohsAEBkCFpQrxQkI2aexiXvsVz2tVkTQW9RIriXZ+j+1b55NXg+AvP18dqjaXzsAuhO3vA==
+ bh=HQZiNGjCUKPF91XpXL1ghFTGDEyb8IzM44Qwjd6IU4k=;
+ b=IFPJ6JbpWDQTxHRoq7zdmvwsjMjvIj3NbOXF4ndeSB11L1uO5h12mZE6xH7quiPJdt91QAxkBJyXi2xFyPLM/EKI2x/i/Ehruse+Qit7QbMy+jD8i1sc+k9FlZns7HHZwbAkiZL1a0lLE/ltFEvZG0LNEXqbDebrsihQFwC9A0oeXl3Xiwpc0VdD/I7UkQzx+ahKtw7KRkEyJK9ePudxdz3s+tYgOWrGE8jU+jR1E4TeiOfxk9Tiz96XuLxIg3SDnxkTmqykkEqqN2VVcKxo/SHSbRVfjQhIO1bATx35Wv+v8ePvPovQm1C0flteF8o/u0ShODyuquXzwYeaFcAQ0w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xRCSrcfoChNmgWXBXFBccyx4/aOfLmAmnjNBve9uoz4=;
- b=K/qAwgeyv53KiMCPbLw29EQtYJbybs7v29XGyyxT+tLCxgalyBCqhsZ40AGXxBhiVKInndFlXUN8WLu0D5s8Hc42pkEfLoKrdkinF1cENOO2YWX8qlrDz90LXEiOjgPpHKHt2YuIQi2PP8OeuCBYSfdtXAstikTMBewTLDRUetrFu0gEBgd/MI54HY9OYeF8Um/1TJThNxoxLg9oclSFng0FIZjWUJXUU1Lc0CDrp2E2EhnKjBzDQA5XXNqqFm19sOrjNPhc8FxNriY5lr8/ffwORy/Aq09eN02JY0guryEymVV5+2kGlM7SARkeJi6rP4knDPqRyNzKJzlQ7+/TzQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from DM6PR01MB4107.prod.exchangelabs.com (2603:10b6:5:22::24) by
- BL0PR01MB4193.prod.exchangelabs.com (2603:10b6:208:27::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6340.11; Fri, 21 Apr 2023 14:02:42 +0000
-Received: from DM6PR01MB4107.prod.exchangelabs.com
- ([fe80::f33a:edf4:c24:d88e]) by DM6PR01MB4107.prod.exchangelabs.com
- ([fe80::f33a:edf4:c24:d88e%7]) with mapi id 15.20.6340.009; Fri, 21 Apr 2023
- 14:02:42 +0000
-Message-ID: <26ff5035-2d70-44a0-6f0e-3e934b0ae8b6@cornelisnetworks.com>
-Date:   Fri, 21 Apr 2023 10:02:39 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: [PATCH 03/22] IB/hfi1: Use alloc_ordered_workqueue() to create
- ordered workqueues
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com (2603:10b6:301:67::25)
+ by PH0PR11MB5805.namprd11.prod.outlook.com (2603:10b6:510:14a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.22; Fri, 21 Apr
+ 2023 14:29:07 +0000
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::aa88:dd72:6809:9c05]) by MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::aa88:dd72:6809:9c05%4]) with mapi id 15.20.6319.022; Fri, 21 Apr 2023
+ 14:29:07 +0000
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Tejun Heo <tj@kernel.org>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: RE: [PATCH] RDMA/irdma: Drop spurious WQ_UNBOUND from
+ alloc_ordered_workqueue() call
+Thread-Topic: [PATCH] RDMA/irdma: Drop spurious WQ_UNBOUND from
+ alloc_ordered_workqueue() call
+Thread-Index: AQHZc8EQp4z6xXqwzkCZnEExjd5iQa8105dg
+Date:   Fri, 21 Apr 2023 14:29:06 +0000
+Message-ID: <MWHPR11MB0029F5F9C9AC249F2BC3E981E9609@MWHPR11MB0029.namprd11.prod.outlook.com>
+References: <ZEGW-IcFReR1juVM@slm.duckdns.org>
+In-Reply-To: <ZEGW-IcFReR1juVM@slm.duckdns.org>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>, jiangshanlai@gmail.com
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-References: <20230421025046.4008499-1-tj@kernel.org>
- <20230421025046.4008499-4-tj@kernel.org>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <20230421025046.4008499-4-tj@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR01CA0022.prod.exchangelabs.com (2603:10b6:208:10c::35)
- To DM6PR01MB4107.prod.exchangelabs.com (2603:10b6:5:22::24)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MWHPR11MB0029:EE_|PH0PR11MB5805:EE_
+x-ms-office365-filtering-correlation-id: a18aeff7-7219-44fa-3b55-08db4274c3aa
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kZnRO92Vv90elKTTA0jNCxnPRuUmtrf5KEgpfEbT+RVQ2/44soGFHZQLSAI5K4Lm1A6/F+EEUIpv3e/28p0c7RobcUnESOJt4F1xHpglVI9L250p5Qnuwyh3rhH39Yl5jfzyav/P6KMYEPAWN8Oscb37rJI66fi7y4RqDcY2joEak+4aLTjn7bgUc3s0uRh/KIF05P6JKuYjgh8eGuDZItvXgJNNSWXjFPit5VgyFhJBTgs1amifobxHCLbBATawK5Dihig3BqGFo+6Om0/WhMCWxgnnn5WsE6geCEkTYoTbn1pS8nkRaHVCoq7Vkr2+h3YTPdGBj3XbEAt50Mo029oX/rz377TlaXNKoKsX9sSZ7jBdzVn5NSOrhfCw6QNX9rdzEBZBkuvm+hG0DuoALfT/6sMDHQ0eU+K+5+g0JTw+C4fr5xw3p6gP7InLXMWdDS7Z7mRJIefaMop3WtDVBCBwsOXpD0QJH/TYVU8X1/zGJ/6KRZ7IH+9sHPvqb9VZyKGzdmamjICAuiOsXVAuT3wy3oUk4nrL3KjzNg7RUpoCk5OU6xA36Rwb1YIVTsV3Tk59rWbFFExjEr5LY6wSWTimzxvO4ayrbT+7ZbacSLh8njkOSeSmzIKrKyWjUI/l
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0029.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(396003)(366004)(39860400002)(376002)(346002)(451199021)(71200400001)(6506007)(9686003)(26005)(52536014)(86362001)(5660300002)(8936002)(8676002)(33656002)(66446008)(41300700001)(38070700005)(316002)(2906002)(4326008)(83380400001)(66946007)(66556008)(76116006)(64756008)(66476007)(38100700002)(186003)(7696005)(122000001)(82960400001)(478600001)(110136005)(54906003)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Zom37mk2BgcBjqW94HUDX0MZ5teVGeo6O1SQZjarz1GEsaNyIrc5i8soeI+Q?=
+ =?us-ascii?Q?KddyzL/QsLsFIWuIPttEpvSHtLf8oLgW/PhZ7hW4p2dMv5VQhOIP+nnr+u7h?=
+ =?us-ascii?Q?bPsJwsJwJGxCqPjeJiW6+EyRwrR/XCI16PZNdsf/CxruKvdpdScQkXXfJXDx?=
+ =?us-ascii?Q?ZrFEfecG1oZK0xetiB41nlaA50mpBuEZ7dSwFy2XlDTjLad3RRr4lEyiDZhB?=
+ =?us-ascii?Q?QAhgLhYp/UtizZ3vtBymcfYGpLHid7H8VnA8K9knJPmfItPiM7Ewv7GB4orn?=
+ =?us-ascii?Q?YU/veDNcZdpGGgBb0fwtSf6AehZPuMh5ApS2O+NBO/xUXEqF41GyrwHfmERk?=
+ =?us-ascii?Q?LBsjLxwDFWmO7r1urcI+r27bltf2EjBnEDVRROz+cTjNsChPj2KjfuhLssRj?=
+ =?us-ascii?Q?l4HVtd5EwBtt/pQYRa5lgRH5I83wr0WKJdzqfYwe726JHJVfkG/1fYYyZXJr?=
+ =?us-ascii?Q?imd+iyuU39QWIsuvm4zbmCTFwX/yBcpPmxbN4F8A8No/cZ4buXU9vj73i6Nw?=
+ =?us-ascii?Q?pw5OkqiWZEug5RDsQCY+WOlv4/BpUdIPbqe00geP8EuYWZ1QuHBLnQ+deGnz?=
+ =?us-ascii?Q?VVeJv+WaDlTupDaSe0wO195xJzKp1i5W/xd/J+2IDI/okobixA+xRq9zyUSp?=
+ =?us-ascii?Q?0xvRx+PRkhZHz+bSrBL9TL9vGnioyxIBx7CMCu7/FS51SksUWa6g8r5rVL3S?=
+ =?us-ascii?Q?s4CV9mqbxZRSh7WdFaHMa4swbk5EL3PMGE7AUib591G/FkOmVKjbmDxjuuv8?=
+ =?us-ascii?Q?EBmOSaGVk+Kb6Te5Ym/vphF/NY6MOg+bl3zrNb+YEaLkMkRBpGrQWN5bnR4m?=
+ =?us-ascii?Q?DBFF561K23mDE/svqmpE+/A56+plBUgeRTDsDyGaaT9InLKHgdWsL0oS43s5?=
+ =?us-ascii?Q?ZOX6/UFaUgzd5GCM8Ch2QMtRk5Kd/LJ39GvdcB22SptRmm50mwH2IwTh3uU2?=
+ =?us-ascii?Q?JoZUaKUY91Iysvlh1eVVEigesgirCiiUhptbbV85OoVhMGvvJla/h3eIpOUu?=
+ =?us-ascii?Q?eepm3rjwOy+d8FrC2BwgX254n9d1v/DjrdCa7Cza5Iydb7HDP9uHSxXx+0ge?=
+ =?us-ascii?Q?G0ayc1ji4X+IwzPGi9BSAFyGAe6MfAuhh1sM3YCpPmtjQE+9N9YNsk/FfJDC?=
+ =?us-ascii?Q?lMuFCueqDEfZ6V+hdcLL5G4YEc08anxoE0RfVT4vfFacp7HNPLmp9ozVWvBP?=
+ =?us-ascii?Q?B47iboQqzVGob2vPY5JHu5KI/YW5qL2+ibw0hNvcmQa5VizQQHavKjfd8JmW?=
+ =?us-ascii?Q?QKQxEmDcPfEhyY3XTbBVo+faY9VAVXuHuSYdQS2ItC7zGrS1no6scVEI52yj?=
+ =?us-ascii?Q?fCyTSPyBNM2fP1gTrA+OMYpt4OhbHVFO1qr8Ssk/B1vFyIEv6U/FzOSE40AZ?=
+ =?us-ascii?Q?BUfxJ/WHxTErGMOsoKfn9yAzUtszBIZplqGNOoX9Jc792TeAw0z0hPAfarx0?=
+ =?us-ascii?Q?BPcThGu1qM12ZyhQ6VT4DAlVZ+nEhh4dFz5KxlDwEcMNGPxN/m0Qv4nEHmX1?=
+ =?us-ascii?Q?AuhFD4VYZT1/8VwdLNtzxuCv0v6zw+doKiF9ObQVva8CUL81oMJT+WJNIy+o?=
+ =?us-ascii?Q?JN/4k8BKBRLSs4EeNTCcR7aC7XV8L93S92iN4abL?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB4107:EE_|BL0PR01MB4193:EE_
-X-MS-Office365-Filtering-Correlation-Id: 135c4b88-d5ec-4c5b-1ead-08db4271131a
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6XvKgIe9YLOfRv4xevCz1Vt6QVLGbcrj0R2CKKr7IZdY7hGIVeO6JlUCJsILLyQ7fXqRNwNNirJ8BkAzbEdq35sSY4YvpuUtRhLdG9HMN9O9XhEmqOspomzPVPoBjBn8+DMWE6d/wEtC1RkG5wa3N55YM7K3ih0eTpxDe76Z1rwV1YJslM+q2gwOBVRFPHe2q6XQLx4NAWQlCfmUhgJybGmWLBGp1XaZWZ7WS7hlR62J32MAGC5LH4Z8BRG00xlANzMo3oekvAsHdhFGIEzKvRrm83Ivb9s4LWjD56CZgwHDwcTALwB7mUEJJ3A13G330ZB6MCmxWZSCOeScaCOVncCsee3sr2lWP4U0DsaOiqmahPgtLRK3aCwSL5qHOiMEZV3lA2CHW9zb1Bo2VYE92vXCLxIIX7oluv0KUSo2Id04kEUE79FlAm9FEShLxzQLWs+0zG53cmVNlgX6cQINhcCz5agYHV3NY2b/Jz0YYT5foNc1AbjmuZCp0TXCKoc3M4sevPcp98BOPEdpf/G2UgDk63OO/kFP7b2J80SMz0hrc59iC6EeUxHlNLW1hq2qoUKx3dJvHicsI/mD7/8XLNyjM3xgIVI5+bv5yMQ2PpKvWQl7KOETBs7Hpm8HyAvETyMOpmCYlTsXnKvFYp067w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB4107.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39840400004)(376002)(366004)(136003)(346002)(396003)(451199021)(66946007)(66556008)(66476007)(316002)(54906003)(26005)(4326008)(478600001)(41300700001)(8936002)(8676002)(83380400001)(5660300002)(6512007)(6506007)(53546011)(6666004)(31686004)(6486002)(36756003)(52116002)(186003)(2906002)(44832011)(2616005)(38100700002)(38350700002)(86362001)(31696002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YnhjMGZBTjFlUlVyV1d5bEVGM1ZhVFREL3ZZd2lISWhKZkYwWGNOMUZtTXBS?=
- =?utf-8?B?bkJrbThDN2NCOUZTTjUyTEZLUjdpaXdrYlRNbWh3ZkpNWkdXdVpZZVM2ZFli?=
- =?utf-8?B?N0x4bmM3VTJPalVoQkFiTnFqeHVpUkNyRkVEYU1TYnVDYTV0N0RzdkpVQVpa?=
- =?utf-8?B?U05KQ2YxR0tyVDZxSlh2SlpXOHd0V1g5RDMybVJaejd1WjM1WHE5a0dHSVVU?=
- =?utf-8?B?dmNpVEs5U1FGMEJMTEhPeC9Sekk5QXdtSlNXOGxUMG4zN1hNREJqTnhLb2Jj?=
- =?utf-8?B?SEFJOHBXanp3Q2ZNQVh6bmJxZGRKSlloSGxEUEc0a2dLZWVXRlFabktNNnBW?=
- =?utf-8?B?MWhWMnZiTHdZWjZ5alR5V1g5cWVmUFkyL0UyMC8vUGpZbGxYTmRaVGM1S3dN?=
- =?utf-8?B?QzJ5Ymt2QlFKOGZjZnBhTTlCL1k1RCt4aU9PSHBwSmV0NWI3Um1TcDkrUUJN?=
- =?utf-8?B?UGFqNnM0bXBYdFVnQURaR3FUOHdtYm44QjdFWGdyeFU2bEU5cEZoNnF0OUVS?=
- =?utf-8?B?SHpFajQxWUhOMFNndUF6VTZ4YmNaTS9aK25YcmVMNVN0UTlYd0YwMTdsZ2xR?=
- =?utf-8?B?cVhJK25kZ0dDVHBFN1N5QmNYK2RmQjFabENxcVhZaUNXZ1pPQkxzNi9aZUxD?=
- =?utf-8?B?dWdJd2J1OVZHRmJHMXNKb0JhNmNYd1U4YWxjY2Q4d1RjcWxJeWRmN256ME91?=
- =?utf-8?B?QStDNWlzNEQxOHIwWk5zQnVqM1J6Nm5tUWZFK3AyQkxJK3dtWDlDeE1KSzJD?=
- =?utf-8?B?cTE5dEFUc1ZoM2hic2g4OFI5dzYwd0NQdC9ZdmFIa1FhekhYV250ZFZUeC9M?=
- =?utf-8?B?OUpmNkxad3d3ekkxbjh5U3R2MWp0ekdWZis3cGZuTFpMN0xjN1Z0Z0daSzU1?=
- =?utf-8?B?T1l2ZG9oYWFiRXpFbjlDK0dKdThCRytJMHBZSXhkTCtEZlpRTEwvT1ZnVEI4?=
- =?utf-8?B?NGVBcVM5RVh5MFJWdi9UUFVhQ0JGd01RZXV0eTJKWHpuMjB2NzZ1U0ZXeTBS?=
- =?utf-8?B?RG94OXhUbG5kaHFFMnhOMW9RbGFGMVVENFozdXJDbkR2dnFZU1RubzJGQ2JX?=
- =?utf-8?B?M3ZNaUdMT2cydUJhb25zblZUbXA4WTJBZlIxS0oxa0R4K0lOanNtUEVHRzFa?=
- =?utf-8?B?NUNlUnAxUlVkWnI4alNnM1VyVVRrS3FwWERrcTYxTlJLcEY1TnpCeFgvQlhN?=
- =?utf-8?B?a2ZWazRaLzJYUVQ2MjQzWW1vUll0eVFqT3pvUFJhWG9JckJhTDgvRklnT0t5?=
- =?utf-8?B?NVJvbXYzVndWeVBESGtYOHVsa0pFMjNBWVJjWENrSWtLUmpTa0ZhemU2ellm?=
- =?utf-8?B?RDg4WndjUE1XdmpPQ0NjeVhSZ3U2VEJGeFRVZTVOTFVDMmlJUGIrZnhCaksr?=
- =?utf-8?B?VndxUHBDUUZlQ2dQQUU5bi8zQmpsU3RXd1JVUTdPWDNBaUJleFRJd1Badzln?=
- =?utf-8?B?cjlMWnF2ekpCOUc5S0RvQXlzSWE2YnpCZHZPeFNVbFRFRE9FQ1F6WE9FcUlX?=
- =?utf-8?B?WnBDZzdTVjNiaGhqbllvV0FnMjBZNVpPL3dxN0JTOWthNjhaQ0FKTkRUck5Q?=
- =?utf-8?B?SG1KQ1FWeEM2WXFSVjZ2MnFZbm9JMVluTHFJc3A1MlF0dDRsYXB3WEkwT3VX?=
- =?utf-8?B?RGVtMWRDOHRYWlVab0xmNUhkdmdyblFXeSt2V01iSkNnNUFaSHdKZW54RGdn?=
- =?utf-8?B?bi82VW43ZlZUbGMyM3kwMzNFWXNYSFJSRWxacDQ0TXp6M1RDWE15cXVCSnEv?=
- =?utf-8?B?ZCtBVGMxVEJwbG5jN1JuL2trc1dxbndZVWhQdjZhb1h3bDZ1R1hGTFZ5QlZo?=
- =?utf-8?B?T0VVd0wreDVSbU1iQjJLU2VGanFyOGg1dGdNN2FXd2FkUUd1Uk0yQ2xiTTFO?=
- =?utf-8?B?RUhnTXVZTm93eDB3WDI4T2JQN3F0UjhlUkNGZFJ0MStDcUp6SWJZa1ZRZ2JM?=
- =?utf-8?B?YWhMMU1Oc1J5a0xCR2crQ3gxSXJEckVVd21GVDVaOTcyYlQ4LzFTd0Q4bVJF?=
- =?utf-8?B?ZnkyTUx1T2hOTHlhaURXYWhkMU1lSS9EYThBb2srOG9IQ2VZQlFJTVFpcU9H?=
- =?utf-8?B?ZzdzQkw2M1lhRDJKQ2svZzhENWxXNk1NT0lzWExPV3hjZnNMbjZBQ0F1ZklZ?=
- =?utf-8?B?bjRJai9pdHNDcWdJdlFCVDFSeUJxdWd1ZlpoMUlJWWZXS3M0cTRjNjRuS1Ra?=
- =?utf-8?Q?n2iUG9eUQzVpfPzInW138to=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 135c4b88-d5ec-4c5b-1ead-08db4271131a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB4107.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2023 14:02:42.4690
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0029.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a18aeff7-7219-44fa-3b55-08db4274c3aa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2023 14:29:06.9198
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SMifFnP5pWXnZT34SjQBI+tQb+oTbC7r05+nP9hQcXmtI8g6csYOqczoS4ejuBmXLXCeH0HDsrTXWJOhnW4vtaA1JelChlw2PQURLpwC3/5WrFp6rfspg/41XSknBYkO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR01MB4193
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KE7WDC3AX27SXFhra1KKY/wizhE08moPeEh1XakXAkAI/2ZOLVt86B6RxOMoEcmrkWSqwJW35IHc9sgV88SUFw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5805
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 4/20/23 10:50 PM, Tejun Heo wrote:
-> BACKGROUND
-> ==========
-> 
-> When multiple work items are queued to a workqueue, their execution order
-> doesn't match the queueing order. They may get executed in any order and
-> simultaneously. When fully serialized execution - one by one in the queueing
-> order - is needed, an ordered workqueue should be used which can be created
-> with alloc_ordered_workqueue().
-> 
-> However, alloc_ordered_workqueue() was a later addition. Before it, an
-> ordered workqueue could be obtained by creating an UNBOUND workqueue with
-> @max_active==1. This originally was an implementation side-effect which was
-> broken by 4c16bd327c74 ("workqueue: restore WQ_UNBOUND/max_active==1 to be
-> ordered"). Because there were users that depended on the ordered execution,
-> 5c0338c68706 ("workqueue: restore WQ_UNBOUND/max_active==1 to be ordered")
-> made workqueue allocation path to implicitly promote UNBOUND workqueues w/
-> @max_active==1 to ordered workqueues.
-> 
-> While this has worked okay, overloading the UNBOUND allocation interface
-> this way creates other issues. It's difficult to tell whether a given
-> workqueue actually needs to be ordered and users that legitimately want a
-> min concurrency level wq unexpectedly gets an ordered one instead. With
-> planned UNBOUND workqueue updates to improve execution locality and more
-> prevalence of chiplet designs which can benefit from such improvements, this
-> isn't a state we wanna be in forever.
-> 
-> This patch series audits all callsites that create an UNBOUND workqueue w/
-> @max_active==1 and converts them to alloc_ordered_workqueue() as necessary.
-> 
-> WHAT TO LOOK FOR
-> ================
-> 
-> The conversions are from
-> 
->   alloc_workqueue(WQ_UNBOUND | flags, 1, args..)
-> 
-> to
-> 
->   alloc_ordered_workqueue(flags, args...)
-> 
-> which don't cause any functional changes. If you know that fully ordered
-> execution is not ncessary, please let me know. I'll drop the conversion and
-> instead add a comment noting the fact to reduce confusion while conversion
-> is in progress.
-> 
-> If you aren't fully sure, it's completely fine to let the conversion
-> through. The behavior will stay exactly the same and we can always
-> reconsider later.
-> 
-> As there are follow-up workqueue core changes, I'd really appreciate if the
-> patch can be routed through the workqueue tree w/ your acks. Thanks.
-> 
+> Subject: [PATCH] RDMA/irdma: Drop spurious WQ_UNBOUND from
+> alloc_ordered_workqueue() call
+>=20
+> Workqueue is in the process of cleaning up the distinction between unboun=
+d
+> workqueues w/ @nr_active=3D=3D1 and ordered workqueues. Explicit
+> WQ_UNBOUND isn't needed for alloc_ordered_workqueue() and will trigger a
+> warning in the future. Let's remove it. This doesn't cause any functional
+> changes.
+>=20
 > Signed-off-by: Tejun Heo <tj@kernel.org>
-> Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Leon Romanovsky <leon@kernel.org>
-> Cc: linux-rdma@vger.kernel.org
 > ---
->  drivers/infiniband/hw/hfi1/init.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
-> index 62b6c5020039..e03d867cda13 100644
-> --- a/drivers/infiniband/hw/hfi1/init.c
-> +++ b/drivers/infiniband/hw/hfi1/init.c
-> @@ -755,14 +755,13 @@ static int create_workqueues(struct hfi1_devdata *dd)
->  		}
->  		if (!ppd->link_wq) {
->  			/*
-> -			 * Make the link workqueue single-threaded to enforce
-> +			 * Make the link workqueue ordered to enforce
->  			 * serialization.
->  			 */
->  			ppd->link_wq =
-> -				alloc_workqueue(
-> +				alloc_ordered_workqueue(
->  				    "hfi_link_%d_%d",
-> -				    WQ_SYSFS | WQ_MEM_RECLAIM | WQ_UNBOUND,
-> -				    1, /* max_active */
-> +				    WQ_SYSFS | WQ_MEM_RECLAIM,
->  				    dd->unit, pidx);
->  			if (!ppd->link_wq)
->  				goto wq_error;
+>  drivers/infiniband/hw/irdma/hw.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> --- a/drivers/infiniband/hw/irdma/hw.c
+> +++ b/drivers/infiniband/hw/irdma/hw.c
+> @@ -1901,8 +1901,8 @@ int irdma_ctrl_init_hw(struct irdma_pci_
+>  			break;
+>  		rf->init_state =3D CEQ0_CREATED;
+>  		/* Handles processing of CQP completions */
+> -		rf->cqp_cmpl_wq =3D alloc_ordered_workqueue("cqp_cmpl_wq",
+> -						WQ_HIGHPRI |
+> WQ_UNBOUND);
+> +		rf->cqp_cmpl_wq =3D
+> +			alloc_ordered_workqueue("cqp_cmpl_wq",
+> WQ_HIGHPRI);
+>  		if (!rf->cqp_cmpl_wq) {
+>  			status =3D -ENOMEM;
+>  			break;
 
-Seems OK to me.
-
-Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
