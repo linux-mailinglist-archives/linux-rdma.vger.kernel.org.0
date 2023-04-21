@@ -2,113 +2,45 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A336EAE2E
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Apr 2023 17:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0966EAE4E
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Apr 2023 17:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbjDUPkC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Apr 2023 11:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
+        id S230376AbjDUPvq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Apr 2023 11:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbjDUPkB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Apr 2023 11:40:01 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2074.outbound.protection.outlook.com [40.107.223.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB19C118FE;
-        Fri, 21 Apr 2023 08:40:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h536JtpqAXFJQLdjp7hL7DrxRJVBuXb/PgY/v+NHd4D41ArwzaoZLGsnT04frP1D070Wtlnnx3+a2XuBt8tQKN4EEN3NxjLrHRH7MB1/Wvpb7AIgLMXR1o8BlDRBS+hIierYQuKqBNlvLP5TWQu19baLMD2l8r28zbmqRT1DsfzGune7Jxhah3z8OuS2k8MPrRi7XpLicG70d+71qJzpQw03PPnBFa6YhaywF60cfkHbhpWOEpIHFZepqo1WoSfw3z9BYicm7oAsq6cMCEJe7LOL6/ISmt8vSotXBGO534V6LLe7JhbJcW4s8VBzO0NBINc7jaEw+nkWEV8bxbi2hA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8vYmNgFhp1D4RYBS2rADXRrRpTIa9oyTxt5quM7txDQ=;
- b=hOLmM1omtNSh/GPJrExHi59ldMNDT+ZP40ugrKe4TAom7v6imxmdDP7v6i25KuhzBqj+Vv5thpN/SdSNtNcj6iO0isM/e7gvOc4zhYhC8EtSi/6U0J9ua7IAQea8iTwQCqyxnUrVzf7jfJ7qJlll7QmFw0Er5RjDawf2APCsy1pMu2FOgHTCZqmB0iFYWDjf00QGxYgC8uawBMGWXO2D1uIfsXvKo3q0wKsaAfutgVFOKhsb7RJhDxoCi1ao53wldJ2J5nZcWlHxK4e0lFFqfuCvKq2Bz2QmHV9yjuRmz2INgWXofetgzGwe8Kg6hV9lFNSL0e3jYjVaPJ33FxBU5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8vYmNgFhp1D4RYBS2rADXRrRpTIa9oyTxt5quM7txDQ=;
- b=DWeLcfgU9fb/dPK9w6UbV/9pxguGBkgkpo0tH2SENXfbYhbt9WqvGOGs4r6sR+vKhNrNzRwz7cZUMmArgdtRuKxd85Yx6vUzOhXB6btXELKEUiUgfUFKylJ3XjWCDbXvsVAUzkVJrulzW4JZ4YsvQBUYWEK+fglVHfwXH60HCiVgM584A+qnR9/PZBPOgO+ek+K7UbK59answk50BqdREWafP3MgqKwUysP3co3Ovib2r2yG+V/WGRCFOnlV2lYisy6hHb5LQKp1a13IitL9lNAfwudyWaHCGJeNa3jLA/xzix1rSpUMV9ywvPJXORKkHSoMr6ArnclfNL4+4kso/w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by BN9PR12MB5082.namprd12.prod.outlook.com (2603:10b6:408:133::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.22; Fri, 21 Apr
- 2023 15:39:58 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f7a7:a561:87e9:5fab]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f7a7:a561:87e9:5fab%6]) with mapi id 15.20.6319.020; Fri, 21 Apr 2023
- 15:39:58 +0000
-Date:   Fri, 21 Apr 2023 12:39:56 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] RDMA/irdma: Drop spurious WQ_UNBOUND from
- alloc_ordered_workqueue() call
-Message-ID: <ZEKuTBvDNPJ+4Ylm@nvidia.com>
-References: <ZEGW-IcFReR1juVM@slm.duckdns.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZEGW-IcFReR1juVM@slm.duckdns.org>
-X-ClientProxiedBy: MN2PR05CA0054.namprd05.prod.outlook.com
- (2603:10b6:208:236::23) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S232334AbjDUPvp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Apr 2023 11:51:45 -0400
+Received: from out-53.mta0.migadu.com (out-53.mta0.migadu.com [91.218.175.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01D9B47D
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Apr 2023 08:51:44 -0700 (PDT)
+Message-ID: <1fbd5b6f-ba04-95b3-d37c-35fc12e81303@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1682092302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ursWG+qMGx5B7FN2AxN1ffA2GpgrM0KD+npq5cr06Uk=;
+        b=hkH2sUKuHY00fXBlRmrM/a/WxkKsIxNbqCidXzgWE9lg2bD1UulcB+Vl4cljfzCoaPYU0j
+        hCesCQGFZPdmh7NJtflFFQMTwkuXvkrwI+HsVGa75eHtzipXciGIhykXSTttFYIf9kr0OC
+        UIrpZFXNWxceuEVNfg2yAnz0GjAVi0I=
+Date:   Fri, 21 Apr 2023 23:51:34 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BN9PR12MB5082:EE_
-X-MS-Office365-Filtering-Correlation-Id: b6f89604-e18b-4069-e37b-08db427ea954
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /ZMUPgCeTyG5fC2AjiwpExNR8bodW98bWsbUDL75rK+B51tu4jABEVbMEhLRcM7FimmHC9L7pkcE7GWfV1KLsVibXZVH4JclXMKBe+vs0X2WCVr3DvypMfTYlxy+veqsO28pqE9cXIzsvnTeHUW9WMchPjwKnNb+72uDlG4oxiBRdap5A7qF3szCPGHpTK5ksl/SV9zwB9rdcM5droXlUen1k+8D5Iw48V7Zg2cYOaEnHEquPnUKTFXKvuiHvYkx1ICTV7FbtQf/0hiulUeeIa2vreMhnKRK7Q+FpdlCFY96YZZRfo8d2Q9Jdak8jcs2ku0Atay+IIvmowDhuFwYOAJjUQIko7jrKMSDT5tNOVdIejkP7mI2lskH5eBa7G+qJmcTfyhCDGHiDk0nUDBv8Z5uYE7eAIUtuXPSGDlSClwJzuGwJb2jWudA0aFRIaj5NTT8Uzyk/yW42pIhEdtQd3/A13fpxmThh7+7jy20mBshHzQIQUoZj1HsvjZCvMvZQlszCOVQxX1cdj5lUuPe4v1a40aNgVsJT9LtVjx8oGmPM3ngSle1Qa9WTseKq1rHbCGyLLm8MoP7YyNCJuObcwBfepTg3I+Y0NgmLY/8kz4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(346002)(136003)(366004)(39860400002)(451199021)(2616005)(2906002)(4744005)(38100700002)(86362001)(478600001)(316002)(41300700001)(66476007)(66946007)(66556008)(4326008)(6916009)(26005)(54906003)(6512007)(6506007)(6486002)(186003)(36756003)(8676002)(8936002)(83380400001)(5660300002)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0ubfq9NBkD8Y30EIgCG7AlW8BWA4IOGosBdDqciRtVbTBAW4JQoYHBrD7VD5?=
- =?us-ascii?Q?DP44Bbw6CTPQhmBPtECyGLO8lx32/Y+shdba9YU9bQ8lqskNHxjbXVNjV9/1?=
- =?us-ascii?Q?Cc+KxY2MSkVUyHaWjOBGEuGqaMR6YWnQZCOku4T3xggH2qz7GppRwJJ8VGll?=
- =?us-ascii?Q?/T9OmstJekLLP9JjUiPtDl0QTQfXluUfd4158NhUfaIxGYeE5hWNQdIQuIQG?=
- =?us-ascii?Q?+px6oWJO8RlPRdob8enBcU/ME33SQAT32zqWjx8ecRlTFDTSCRFah1vnMMNo?=
- =?us-ascii?Q?UYO7/RIjU/IMvxj/pR4S6+vUryWz9qz0eP/5JoOGlCZYmit3e+zMFr6C/C3o?=
- =?us-ascii?Q?oRyx+8EgS4VbnscAOPOF4yYzZ6OH8ZKcIJ6pPHCDvnEOr67cuQkwVy7JtCkF?=
- =?us-ascii?Q?K2EV5I5+WpflCMaav5GiYxathNZLOuu9QHB94260pr+6de9qj7jl7BA83LCB?=
- =?us-ascii?Q?wjrUsEqU37VG/gui7pyYAUbyYIKwWS9MeaHjFcGkbJXtu2Ed+tswfeB/XsUz?=
- =?us-ascii?Q?k42v/EeehmgNol03nPwYYf6tRyEzZNmsmrMpJtHRp9MMjvdtxwSTAmnebvBX?=
- =?us-ascii?Q?CE49xmZKJiX+C5JRKDALLYgf9EGsJQmo9s7EgtUEB7lfM/yR7hQEwoDPTCu7?=
- =?us-ascii?Q?zmRwEleCQ770VFKrDrI+IyB7QckoxlP3PFG7OKk1BHJUekspoz8Ya2pT30Aj?=
- =?us-ascii?Q?seZJfyOAkmFFihFGmi8MW0FsjS6YEtbj61Q/9kg5Df34vur9WzD4AMc/emjz?=
- =?us-ascii?Q?3X2/0qQ8yWn9NWj1QdbALCkyh6lHQ6662JIH8hxMcnqHkeBMxQyIIhUCRwt8?=
- =?us-ascii?Q?bf/l3Yf/SW3n3jRDMvCm9b3CvUSOl3hp81h+35Llvu/9DUPX/AYu5DotntP5?=
- =?us-ascii?Q?UkW1le9V8faRY3i7VPMhAtysC0cJ9OS7lYU0ibXyiCwpH+WIuGKZCxmxJkhC?=
- =?us-ascii?Q?eFnuUMLgq1LSrCqIeRSq7YhbKh7+YaOFnxG4JYY4Pq46WHdy7u5RPW/UO+WI?=
- =?us-ascii?Q?hgG7+u4SKcEf3dLtb1tQyMjlm+4Gs/h1WHoqDUoQh6slItHKyC6W6Z/fDiEu?=
- =?us-ascii?Q?doywX8jmDuGw1IDWxJ/cNHck8OQci3Q0+ev+8YcONAO1Muv5geRlLDF4hdu1?=
- =?us-ascii?Q?63ehSajEz1b2V5iVnUO1EMciRblP/IdzzS/v76XCv3B4wVf5C5GDTU5Tt8eR?=
- =?us-ascii?Q?88ebrZVgXXAcWP83HjEm09rGE/60sFsLPTuGqkcrXd+X/0dFHAik+ziZC6fV?=
- =?us-ascii?Q?rabsbR8A/rOE6VWUMPn5gQXA+CC0AmJY8UXGDkWDr+N8IIFOgZ/vLpD4jUE0?=
- =?us-ascii?Q?++NjTr6ZMm8KXeXWCAjiAP4YXqKphTMJsTk/JwbihSTPlxB/hdGwCD3bJjgk?=
- =?us-ascii?Q?NDnSSDShQiRQbAbCvYL43SfI3kbyVsntyMEtCoZWd+YbNkYmjebKTMXiFw7U?=
- =?us-ascii?Q?cYfsy5oQ/WijyctQzlbeI1GmTpEm83s6NztkeanXphKzCSMi68/OMm47cc3j?=
- =?us-ascii?Q?qVUbBCiRM3xtKGpaRqlU3vwzKLrehzst40vbo3NbmWFxr9SXDSMx7DKacUr/?=
- =?us-ascii?Q?7Pqd9imks98wJQNtlUjnuEEPJ2EkIq/vc3erh88Y?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6f89604-e18b-4069-e37b-08db427ea954
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2023 15:39:58.0005
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iMSi9KM8iMsiH15CbHDUCV53NHOm1EXixEkbLvLRtVToXPMlsVs0B29FE+09k4ye
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5082
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Subject: Re: [PATCH 1/1] RDMA/rxe: Add function name to the logs
+To:     Jason Gunthorpe <jgg@nvidia.com>, Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     zyjzyj2000@gmail.com, leon@kernel.org, linux-rdma@vger.kernel.org
+References: <20230418122611.1436836-1-yanjun.zhu@intel.com>
+ <ZEKraDHuNAltduzU@nvidia.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <ZEKraDHuNAltduzU@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,18 +48,53 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 09:48:08AM -1000, Tejun Heo wrote:
-> Workqueue is in the process of cleaning up the distinction between unbound
-> workqueues w/ @nr_active==1 and ordered workqueues. Explicit WQ_UNBOUND
-> isn't needed for alloc_ordered_workqueue() and will trigger a warning in the
-> future. Let's remove it. This doesn't cause any functional changes.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> ---
->  drivers/infiniband/hw/irdma/hw.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Applied to for-next, thanks
+在 2023/4/21 23:27, Jason Gunthorpe 写道:
+> On Tue, Apr 18, 2023 at 08:26:11PM +0800, Zhu Yanjun wrote:
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> Add the function names to the pr_ logs. As such, if some bugs occur,
+>> with function names, it is easy to locate the bugs.
+>>
+>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> ---
+>>   drivers/infiniband/sw/rxe/rxe.h       |  2 +-
+>>   drivers/infiniband/sw/rxe/rxe_queue.h | 16 ++++------------
+>>   2 files changed, 5 insertions(+), 13 deletions(-)
+> After you delete the warn_on's there is very little left:
+>
+> rivers/infiniband/sw/rxe/rxe.c:                pr_err("rxe creation allowed on top of a real device only\n");
+> drivers/infiniband/sw/rxe/rxe.c:        pr_info("loaded\n");
+> drivers/infiniband/sw/rxe/rxe.c:        pr_info("unloaded\n");
+> drivers/infiniband/sw/rxe/rxe_net.c:            pr_err("Failed to create IPv4 UDP tunnel\n");
+> drivers/infiniband/sw/rxe/rxe_net.c:            pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
+> drivers/infiniband/sw/rxe/rxe_net.c:            pr_err("Failed to create IPv6 UDP tunnel\n");
+> drivers/infiniband/sw/rxe/rxe_net.c:            pr_err("Failed to register netdev notifier\n");
+>
+> It is not exactly mysterious where these come from?
 
-Jason
+If I got you correctly, you mean that we can easily locate the above 
+pr_xxx logs. As such, it is not necessary to add function names.
+
+ From this perspective, I agree with you.
+
+Why I make this commit is that we can directly use this pr_info("xxxxx") 
+when some bug occurs. But in the logs, the function names appear.
+
+With this commit, we can decrease some work loads with some bug occurs.
+
+Now I am debugging a problem. With a similar commit with this, I 
+directly use pr_warn("xxx"). But in the logs, function names, line 
+number, file names, caller and so on will appear.
+
+This greatly decrease my workloads.
+
+I think this is a smart method. So I introduce this smart method to 
+softroce. When some bugs occur in softroce, this method can help us.
+
+Zhu Yanjun
+
+>
+> Why do we need the function name?
+>
+> Jason
