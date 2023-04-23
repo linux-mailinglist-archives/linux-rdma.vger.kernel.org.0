@@ -2,60 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6026EB898
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Apr 2023 12:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81D66EBC3D
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Apr 2023 03:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbjDVKhu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Apr 2023 06:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
+        id S230047AbjDWB1b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 22 Apr 2023 21:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjDVKhs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Apr 2023 06:37:48 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2891996
-        for <linux-rdma@vger.kernel.org>; Sat, 22 Apr 2023 03:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682159866; x=1713695866;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=0ErzR2T9H3kk/yHsOGUBpnsCv95SjJ1LWkPhfxdvOPY=;
-  b=KBtTxTAbwxZURV+5b0Ug/DCBSWhp8p3tuNxh4cdmGA707ExrYomZVGyS
-   zsotHAvUlLOTPhycjPL371b0J8dwRyXeEH5pYskgrI5moahY7nR6aryAE
-   v84O8ZHuuXlunVJCY/q5XrHpattBOPsER7w1uNyOTAygCO6js6J3wfd06
-   jQs+d2kNTynHtab2NsJTF2e0uC9YAIZzN4/FE6QJj93LwqXOefUaLsQcY
-   zM3RhFXTazkVacFPCsHpgX93FzBOUfNhYmYwlv8IvcHzAwqrzhOJdM+/j
-   bsHo2C6y/n8WPUXF3/D/Yi8EbUCPGZd7WpWjE/l0IOn8pa6mksiXCDO1w
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10687"; a="325744100"
-X-IronPort-AV: E=Sophos;i="5.99,218,1677571200"; 
-   d="scan'208";a="325744100"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2023 03:37:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10687"; a="816698029"
-X-IronPort-AV: E=Sophos;i="5.99,218,1677571200"; 
-   d="scan'208";a="816698029"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 22 Apr 2023 03:37:42 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pqAcf-000hFI-2k;
-        Sat, 22 Apr 2023 10:37:41 +0000
-Date:   Sat, 22 Apr 2023 18:36:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 531094dc7164718d28ebb581d729807d7e846363
-Message-ID: <6443b8c5.gjb/O+tWqfS5e4sP%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S230044AbjDWB1a (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Apr 2023 21:27:30 -0400
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E0310E2;
+        Sat, 22 Apr 2023 18:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+        s=170520fj; t=1682213247; i=@fujitsu.com;
+        bh=q8VRNeqr3EzQLYWmemAVzstBD0W+cAm/QdJIUQrLxOs=;
+        h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=aSBjJlGrF+mkkCk+0LdlH8rMxJNKRRdqZ65YCqyN4OCDI+PvyDkSUyTMDeIS2i1H0
+         Jpjarf4+ywBAWyhTl3qHN/J4ubuXXfeNf83wyLzV1GCVUlC9wRTxL9Z0HGR2pxBFEg
+         SfROSGP4Jzu2TLjAhtKAJP0geTzhSU1voG8Uw78zftkMoXiij6Gcww1BU95QpEcdB1
+         pFW8w4JNVbSpYpGzpvgvmridzipOtCLoVpu/WgkpCvZOQ2Wpne8/NYnUMLKHW4seY4
+         nL4I5R6NW/ptwgXQ5+qoIKwoEtZR5Klqi9O4lQlR8qXr/X+QvIsCdgl7AGTOlueIei
+         P88A6R/cpQeEg==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRWlGSWpSXmKPExsViZ8ORqFvb6ZJ
+  i0HiV2+LGNDmLbac3sFvMnHGC0eLtpiksFlN+LWW2uLxrDpvFs0O9LA7sHqff3GHy2LSqk81j
+  YcNUZo/Pm+Q8tn6+zRLAGsWamZeUX5HAmnH/dhtLQTNnxYolM1kaGNewdzFycQgJbGGUmHRyP
+  pSzgknixLZLbBDOAUaJ5TufsHQxcnKwCWhI3Gu5yQhiiwiUShxu28cOYjMLJEnMu/2WGcQWFr
+  CXuLFsHiuIzSKgKnH59nMwm1fAUeLKuR6wGgkBBYkpD98zQ8QFJU7OhJjPLCAhcfDFC6gaRYk
+  jnX9ZIOxKidYPv6BsNYmr5zYxT2Dkn4WkfRaS9gWMTKsYTYtTi8pSi3RN9JKKMtMzSnITM3P0
+  Eqt0E/VSS3XLU4tLdI30EsuL9VKLi/WKK3OTc1L08lJLNjECgz2lWKljB+P1nX/1DjFKcjApi
+  fK+2O2QIsSXlJ9SmZFYnBFfVJqTWnyIUYaDQ0mC92ObS4qQYFFqempFWmYOMPJg0hIcPEoivF
+  vLgNK8xQWJucWZ6RCpU4yKUuK8UzqAEgIgiYzSPLg2WLRfYpSVEuZlZGBgEOIpSC3KzSxBlX/
+  FKM7BqCTMqwcyhSczrwRu+iugxUxAi3dxgy0uSURISTUwuevwLF8z659/0LfmyafVDnO+vZrd
+  eZFDgM3ZUeZk45PZG9NTz0qG3lx33Krcz2ZK2YKtluv2XotW2GxdyPx/iV/A5Nkrn+2sfaV2a
+  vLmvC+Kt8s+RKas8E50mnmRnY1hTt/Txu1if85m2i/UXHrj102dsOtBZ+u5nly6KnZgO3vbRR
+  m+WD+2Jb8/Hlm29YWS2fSGObEafze/zX97rEnL4XbHoa1dm+d9MeiMYv7P9kru0Jsn8XJiwbw
+  NH2q4jgtk+XV9EE7rkBI93r1+78eDceZd8oGHLsheZ/EJ/vb0vdns+ToN1tpHayxO7JT2TQ36
+  clhtQc8ECfdeZa9J2x4fVTlWvWbf5Cf3ajdGan8IvqvEUpyRaKjFXFScCAB9YHZ+cQMAAA==
+X-Env-Sender: lizhijian@fujitsu.com
+X-Msg-Ref: server-20.tower-565.messagelabs.com!1682213245!159966!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.105.2; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 1217 invoked from network); 23 Apr 2023 01:27:25 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+  by server-20.tower-565.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 23 Apr 2023 01:27:25 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id D7C4C100226;
+        Sun, 23 Apr 2023 02:27:24 +0100 (BST)
+Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223 [10.182.185.121])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id CAF6B1001BF;
+        Sun, 23 Apr 2023 02:27:24 +0100 (BST)
+Received: from d3e152dc4f88.localdomain (10.167.226.45) by
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.42; Sun, 23 Apr 2023 02:27:21 +0100
+From:   Li Zhijian <lizhijian@fujitsu.com>
+To:     <haris.iqbal@ionos.com>, <jinpu.wang@ionos.com>, <jgg@ziepe.ca>,
+        <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC:     <guoqing.jiang@linux.dev>, <linux-kernel@vger.kernel.org>,
+        Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH for-next v2 0/3] RDMA/rtrs: bugfix and cleanups
+Date:   Sun, 23 Apr 2023 01:26:49 +0000
+Message-ID: <1682213212-2-1-git-send-email-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain
+X-Originating-IP: [10.167.226.45]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121)
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,175 +85,42 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 531094dc7164718d28ebb581d729807d7e846363  RDMA/efa: Add rdma write capability to device caps
+V2:
+- Add new patch2 to fix a memory leak
+- rewrite original patch2 to patch3 by refactoring the cleanup path instead of
+  introducing a new flag
+- Drop original patch3: RDMA/rtrs: Fix use-after-free in rtrs_clt_rdma_cm_handler
+  The problem it tried to addressing doesn't appear after the new patch3
+  where it adjust the cleanup order
 
-elapsed time: 727m
+It's trying to fix 1 issue triggered by the following script which
+connect/disconnect rnbd frequently.
 
-configs tested: 156
-configs skipped: 15
+# cat rnbd-self.sh 
+#!/bin/bash
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+/root/rpma/tools/config_softroce.sh eth0
+modprobe rnbd_server
+modprobe rnbd_client
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha        buildonly-randconfig-r001-20230421   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r005-20230421   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r011-20230421   gcc  
-arc                  randconfig-r022-20230421   gcc  
-arc                  randconfig-r026-20230421   gcc  
-arc                  randconfig-r033-20230421   gcc  
-arc                  randconfig-r043-20230421   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          exynos_defconfig   gcc  
-arm                         nhk8815_defconfig   gcc  
-arm                  randconfig-r031-20230421   clang
-arm                  randconfig-r046-20230421   gcc  
-arm64                            allyesconfig   gcc  
-arm64        buildonly-randconfig-r004-20230421   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r002-20230421   gcc  
-arm64                randconfig-r015-20230421   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r002-20230421   gcc  
-csky                 randconfig-r024-20230421   gcc  
-csky                 randconfig-r032-20230421   gcc  
-hexagon      buildonly-randconfig-r002-20230421   clang
-hexagon              randconfig-r022-20230421   clang
-hexagon              randconfig-r041-20230421   clang
-hexagon              randconfig-r045-20230421   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                          randconfig-a001   gcc  
-i386                          randconfig-a002   clang
-i386                          randconfig-a003   gcc  
-i386                          randconfig-a004   clang
-i386                          randconfig-a005   gcc  
-i386                          randconfig-a006   clang
-i386                          randconfig-a011   clang
-i386                          randconfig-a012   gcc  
-i386                          randconfig-a013   clang
-i386                          randconfig-a014   gcc  
-i386                          randconfig-a015   clang
-i386                          randconfig-a016   gcc  
-ia64                             alldefconfig   gcc  
-ia64                             allmodconfig   gcc  
-ia64         buildonly-randconfig-r005-20230421   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r003-20230421   gcc  
-ia64                 randconfig-r014-20230421   gcc  
-ia64                 randconfig-r035-20230421   gcc  
-loongarch                        alldefconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r015-20230421   gcc  
-loongarch            randconfig-r023-20230421   gcc  
-loongarch            randconfig-r025-20230421   gcc  
-loongarch            randconfig-r036-20230421   gcc  
-m68k                             allmodconfig   gcc  
-m68k                          amiga_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                            mac_defconfig   gcc  
-m68k                 randconfig-r001-20230421   gcc  
-m68k                 randconfig-r006-20230421   gcc  
-m68k                 randconfig-r016-20230421   gcc  
-m68k                 randconfig-r023-20230421   gcc  
-microblaze           randconfig-r012-20230421   gcc  
-microblaze           randconfig-r021-20230421   gcc  
-microblaze           randconfig-r031-20230421   gcc  
-microblaze           randconfig-r032-20230421   gcc  
-microblaze           randconfig-r034-20230421   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r013-20230421   gcc  
-mips                 randconfig-r021-20230421   gcc  
-nios2        buildonly-randconfig-r002-20230421   gcc  
-nios2        buildonly-randconfig-r005-20230421   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r014-20230421   gcc  
-nios2                randconfig-r035-20230421   gcc  
-openrisc     buildonly-randconfig-r002-20230421   gcc  
-openrisc     buildonly-randconfig-r003-20230421   gcc  
-openrisc     buildonly-randconfig-r006-20230421   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-openrisc             randconfig-r032-20230421   gcc  
-parisc       buildonly-randconfig-r002-20230421   gcc  
-parisc       buildonly-randconfig-r004-20230421   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r003-20230421   gcc  
-parisc               randconfig-r004-20230421   gcc  
-parisc               randconfig-r011-20230421   gcc  
-parisc               randconfig-r036-20230421   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     rainier_defconfig   gcc  
-powerpc              randconfig-r006-20230421   gcc  
-powerpc              randconfig-r014-20230421   clang
-powerpc              randconfig-r033-20230421   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r001-20230421   gcc  
-riscv                randconfig-r005-20230421   gcc  
-riscv                randconfig-r006-20230421   gcc  
-riscv                randconfig-r042-20230421   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r003-20230421   clang
-s390                                defconfig   gcc  
-s390                 randconfig-r004-20230421   gcc  
-s390                 randconfig-r005-20230421   gcc  
-s390                 randconfig-r011-20230421   clang
-s390                 randconfig-r012-20230421   clang
-s390                 randconfig-r016-20230421   clang
-s390                 randconfig-r044-20230421   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r003-20230421   gcc  
-sh                   randconfig-r016-20230421   gcc  
-sh                          sdk7780_defconfig   gcc  
-sh                           se7712_defconfig   gcc  
-sh                             sh03_defconfig   gcc  
-sparc        buildonly-randconfig-r004-20230421   gcc  
-sparc        buildonly-randconfig-r005-20230421   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r001-20230421   gcc  
-sparc                randconfig-r002-20230421   gcc  
-sparc                randconfig-r004-20230421   gcc  
-sparc64      buildonly-randconfig-r001-20230421   gcc  
-sparc64              randconfig-r024-20230421   gcc  
-sparc64              randconfig-r035-20230421   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                        randconfig-a001   clang
-x86_64                        randconfig-a002   gcc  
-x86_64                        randconfig-a003   clang
-x86_64                        randconfig-a004   gcc  
-x86_64                        randconfig-a005   clang
-x86_64                        randconfig-a006   gcc  
-x86_64                        randconfig-a011   gcc  
-x86_64                        randconfig-a012   clang
-x86_64                        randconfig-a013   gcc  
-x86_64                        randconfig-a014   clang
-x86_64                        randconfig-a015   gcc  
-x86_64                        randconfig-a016   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r001-20230421   gcc  
-xtensa               randconfig-r034-20230421   gcc  
+while true;
+do
+        echo "sessname=xyz path=ip:<server-ip> device_path=/dev/nvme0n1" > /sys/devices/virtual/rnbd-client/ctl/map_device
+        for i in /sys/block/rnbd*/rnbd/unmap_device
+        do
+                echo "normal" > $i
+        done
+done
+
+Li Zhijian (3):
+  RDMA/rtrs: remove duplicate cq_num assignment
+  RDMA/rtrs: Fix the last iu->buf leak in err path
+  RDMA/rtrs: Fix rxe_dealloc_pd warning
+
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 56 +++++++++++---------------
+ drivers/infiniband/ulp/rtrs/rtrs.c     |  4 +-
+ 2 files changed, 26 insertions(+), 34 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.29.2
+
