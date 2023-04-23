@@ -2,74 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 192AB6EBC3F
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Apr 2023 03:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177146EBC41
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Apr 2023 03:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbjDWB1h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Apr 2023 21:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
+        id S230044AbjDWB1k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 22 Apr 2023 21:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbjDWB1f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Apr 2023 21:27:35 -0400
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B227C2735;
-        Sat, 22 Apr 2023 18:27:33 -0700 (PDT)
+        with ESMTP id S230082AbjDWB1h (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Apr 2023 21:27:37 -0400
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B46030D0;
+        Sat, 22 Apr 2023 18:27:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1682213251; i=@fujitsu.com;
-        bh=O0kcifYVmFdHHYe5snDPuVQyH9cIgfpR9XX11fi5kg0=;
+        s=170520fj; t=1682213253; i=@fujitsu.com;
+        bh=W4sJFNaU5Kv134M+xnc5Z7XEkhGC4xXYWGqOZ13zAns=;
         h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
          MIME-Version:Content-Type;
-        b=irknPbmNxdYxTOoDsROLtXxBjQBinAWby00fXeXg7AzJ3y2URz/eG0NO1m13NG6mw
-         sdRtpzT7y1vJvwXgEf1Ia9PwXHnbvcKqeZz2qbs6KyvHaok2WVFs5UUQoqDNOcryH0
-         egjHixzE7EiDl1QG6q6KKaQ89VysMccQpHsMQywlQ16baZZxrcw5WRGKJI2TvOpq4W
-         PLPSXO+6La5LzzRwejygiJ458pEOn4qEeZz3hKTR7GrlRP+9yHAfS2c2ipw17o6H55
-         lT7aMBbTAkhMfqHFk+zXW5pVRO1oooWn4Om8tDt8Yud6u+iNhY1qXVDfMu8SzxCATs
-         pHUtMOy9BoovA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpileJIrShJLcpLzFFi42Kxs+HYrNvQ6ZJ
-  isGibrsWNaXIW205vYLeYOeMEo8XbTVNYLKb8WspscXnXHDaLZ4d6WRzYPU6/ucPksWlVJ5vH
-  woapzB6fN8l5bP18myWANYo1My8pvyKBNaPl/Vfmggc8FVcWfGZuYGzj7GLk4hAS2MgosfVFB
-  1sXIyeQs5RJYtXMWojEAUaJD6evsIMk2AQ0JO613GQEsUUESiUOt+0DizMLJEnMu/2WGcQWFv
-  CTeN3ezApiswioSszdsBgszivgKPFoxzMwW0JAQWLKw/dgNqeAk8Ty6w+ZIBY7SlyYtoYRol5
-  Q4uTMJywQ8yUkDr54AdWrKHGk8y8LhF0p0frhF5StJnH13CbmCYyCs5C0z0LSvoCRaRWjWXFq
-  UVlqka6lXlJRZnpGSW5iZo5eYpVuol5qqW5eflFJhq6hXmJ5sV5qcbFecWVuck6KXl5qySZGY
-  HSkFKfO3sG4eNdfvUOMkhxMSqK8L3Y7pAjxJeWnVGYkFmfEF5XmpBYfYtTg4BCYcW7udCYplr
-  z8vFQlCd6PbS4pQoJFqempFWmZOcAIhimV4OBREuHdWgaU5i0uSMwtzkyHSJ1iVJQS553SAZQ
-  QAElklObBtcGSxiVGWSlhXkYGBgYhnoLUotzMElT5V4ziHIxKwrx6IFN4MvNK4Ka/AlrMBLR4
-  FzfY4pJEhJRUA5O1zyrVP+tttweIl+cmGrba+d6cFL1uFtO0qrsT5t16fOlP7c7TL/96iOVOD
-  e9a/vmF+oy0tTfUHj4xiPojtOLavjLhax3/Jp064lKyoPN55J0Z555Fh1XeOxS1Ydqv361qF5
-  eWCaTFXr8/M5z9G9NyveiNdyYd494VM/se47lXz1cUOT96UVKT9bTu5AmGlNU1EnOO79r2ujV
-  u+dqnT5a/Mz51KMLkyZkEj57pL0VubNuj4uRVUS0TvP6f4Tbt65/W3X9/Tu3j/yfzD19da/KL
-  J/iR2/8vJ2TEZkr6v/Q+tfksL5uKh5/BtEM/dDdX5NxWyn4/+2XM6v2P9Uqm/pxZZxFr2pEu/
-  IL/nxvnxb7r7nJKLMUZiYZazEXFiQBByDHLlQMAAA==
+        b=FJVHNU70chKRKd8zorz8HeF4+bCBlUzsWZwZfdNdjBKY/QKCcZyDIsEZtOtRpurfm
+         O0OqecTCcBKaq+ME09Oo/l2quZVENvhs4dsvZ0az8XaE1K18mIBeJIycERXs+uj7n3
+         8+9Gj+1PD2ggve3v0xEuM8NPU/3U8UovsOVvHaOtcMBpBDjlCWWaP+PeyOozLLHVxT
+         QYiBviorB6g65LcWCxUE4yy60FgB4hSveTtjtugG6PPTM2J/Q16qXWi/L144DJOD7l
+         MMPr2lZXxyH0vZcqsvJDgUcUeEA4J0QIZ38pDvI8A+LdHRXdl0jTVzvlYCMmfvV/Zv
+         LUX1Xu5UMLF9Q==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGIsWRWlGSWpSXmKPExsViZ8OxWbe50yX
+  F4MV/TYsb0+Qstp3ewG4xc8YJRou3m6awWEz5tZTZ4vKuOWwWzw71sjiwe5x+c4fJY9OqTjaP
+  hQ1TmT0+b5Lz2Pr5NksAaxRrZl5SfkUCa8a+hctZC06yVbStf8XcwHiWtYuRi0NIYCOjxNHD2
+  5khnKVMEs3TmtkhnAOMEi2TPjJ1MXJysAloSNxruckIYosIlEocbtvHDmIzCyRJzLv9lhnEFh
+  YIlJh/+jRYPYuAqsThbztYQWxeAUeJc+v62EBsCQEFiSkP34PVcwo4SSy//hCsXgio5sK0NYw
+  Q9YISJ2c+YYGYLyFx8MULZoheRYkjnX9ZIOxKidYPv6BsNYmr5zYxT2AUnIWkfRaS9gWMTKsY
+  TYtTi8pSi3RN9JKKMtMzSnITM3P0Eqt0E/VSS3XLU4tLdI30EsuL9VKLi/WKK3OTc1L08lJLN
+  jECoyOlWKljB+P1nX/1DjFKcjApifK+2O2QIsSXlJ9SmZFYnBFfVJqTWnyIUYaDQ0mC92ObS4
+  qQYFFqempFWmYOMFJh0hIcPEoivFvLgNK8xQWJucWZ6RCpU4yKUuK8UzqAEgIgiYzSPLg2WHK
+  4xCgrJczLyMDAIMRTkFqUm1mCKv+KUZyDUUmYVw9kCk9mXgnc9FdAi5mAFu/iBltckoiQkmpg
+  qt2xUcziiuY38dpvXtr9N5pE69Jub9FeeC/2fkVMU2v7M/fbTA+c3Nf/V/7UwDNn53vTtr/Za
+  xJ7ddiDrmmfTNkW7ibxS8E/4GSrn1zNvo/aZaFnDXMZbxatUy+3uhj3+uyPk8+4vA3P3SsNNt
+  V7s3OHguveptjmQiYP9QsHc9U0bvX/YRd8bcvzLMPsc/TRsPeLBT6rf/xvU+ksemrPt8QyhT4
+  1rntzDycnOt11vMF9hP9l+LVJmUxHJkzK0Xgn7F2Z+bo6qXCyGV9Dmsp9Lp7oNwrBUZx8KnuP
+  PpvwcvI1jeToYwG9rpX7IuNTKj79OJ5RLxaX921S6JsrSnKzFJtjWXf4TxaeyPpH55cSS3FGo
+  qEWc1FxIgDmC3JdiQMAAA==
 X-Env-Sender: lizhijian@fujitsu.com
-X-Msg-Ref: server-7.tower-745.messagelabs.com!1682213248!234180!1
+X-Msg-Ref: server-18.tower-565.messagelabs.com!1682213251!159822!1
 X-Originating-IP: [62.60.8.179]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
-X-StarScan-Version: 9.104.2; banners=-,-,-
+X-StarScan-Version: 9.105.2; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 30566 invoked from network); 23 Apr 2023 01:27:28 -0000
+Received: (qmail 861 invoked from network); 23 Apr 2023 01:27:31 -0000
 Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
-  by server-7.tower-745.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 23 Apr 2023 01:27:28 -0000
+  by server-18.tower-565.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 23 Apr 2023 01:27:31 -0000
 Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 236B7170;
-        Sun, 23 Apr 2023 02:27:28 +0100 (BST)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 5E8C4170;
+        Sun, 23 Apr 2023 02:27:31 +0100 (BST)
 Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223 [10.182.185.121])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 175D1150;
-        Sun, 23 Apr 2023 02:27:28 +0100 (BST)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 5249F150;
+        Sun, 23 Apr 2023 02:27:31 +0100 (BST)
 Received: from d3e152dc4f88.localdomain (10.167.226.45) by
  R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Sun, 23 Apr 2023 02:27:24 +0100
+ (TLS) id 15.0.1497.42; Sun, 23 Apr 2023 02:27:28 +0100
 From:   Li Zhijian <lizhijian@fujitsu.com>
 To:     <haris.iqbal@ionos.com>, <jinpu.wang@ionos.com>, <jgg@ziepe.ca>,
         <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 CC:     <guoqing.jiang@linux.dev>, <linux-kernel@vger.kernel.org>,
         Li Zhijian <lizhijian@fujitsu.com>
-Subject: [PATCH for-next v2 1/3] RDMA/rtrs: remove duplicate cq_num assignment
-Date:   Sun, 23 Apr 2023 01:26:50 +0000
-Message-ID: <1682213212-2-2-git-send-email-lizhijian@fujitsu.com>
+Subject: [PATCH for-next v2 2/3] RDMA/rtrs: Fix the last iu->buf leak in err path
+Date:   Sun, 23 Apr 2023 01:26:51 +0000
+Message-ID: <1682213212-2-3-git-send-email-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1682213212-2-1-git-send-email-lizhijian@fujitsu.com>
 References: <1682213212-2-1-git-send-email-lizhijian@fujitsu.com>
@@ -89,42 +89,31 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-line 1701 and 1713 are duplicate:
-> 1701         cq_num = max_send_wr + max_recv_wr;
- 1702         /* alloc iu to recv new rkey reply when server reports flags set */
- 1703         if (clt_path->flags & RTRS_MSG_NEW_RKEY_F || con->c.cid == 0) {
- 1704                 con->rsp_ius = rtrs_iu_alloc(cq_num, sizeof(*rsp),
- 1705                                               GFP_KERNEL,
- 1706                                               clt_path->s.dev->ib_dev,
- 1707                                               DMA_FROM_DEVICE,
- 1708                                               rtrs_clt_rdma_done);
- 1709                 if (!con->rsp_ius)
- 1710                         return -ENOMEM;
- 1711                 con->queue_num = cq_num;
- 1712         }
-> 1713         cq_num = max_send_wr + max_recv_wr;
+The last iu->buf will leak if ib_dma_mapping_error() fails.
 
-Acked-by: Guoqing Jiang <guoqing.jiang@linux.dev>
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
-V2: Add acked-by tags
+V2: new patch to address memory leaking
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/infiniband/ulp/rtrs/rtrs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 80abf45a197a..c2065fc33a56 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1710,7 +1710,6 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 			return -ENOMEM;
- 		con->queue_num = cq_num;
- 	}
--	cq_num = max_send_wr + max_recv_wr;
- 	cq_vector = con->cpu % clt_path->s.dev->ib_dev->num_comp_vectors;
- 	if (con->c.cid >= clt_path->s.irq_con_num)
- 		err = rtrs_cq_qp_create(&clt_path->s, &con->c, max_send_sge,
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+index 4bf9d868cc52..3696f367ff51 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+@@ -37,8 +37,10 @@ struct rtrs_iu *rtrs_iu_alloc(u32 iu_num, size_t size, gfp_t gfp_mask,
+ 			goto err;
+ 
+ 		iu->dma_addr = ib_dma_map_single(dma_dev, iu->buf, size, dir);
+-		if (ib_dma_mapping_error(dma_dev, iu->dma_addr))
++		if (ib_dma_mapping_error(dma_dev, iu->dma_addr)) {
++			kfree(iu->buf);
+ 			goto err;
++		}
+ 
+ 		iu->cqe.done  = done;
+ 		iu->size      = size;
 -- 
 2.29.2
 
