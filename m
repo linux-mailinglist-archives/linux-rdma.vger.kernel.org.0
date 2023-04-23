@@ -2,202 +2,214 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBED6EC072
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Apr 2023 16:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F066EC092
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Apr 2023 16:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjDWOnU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Apr 2023 10:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50802 "EHLO
+        id S230436AbjDWOwS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Apr 2023 10:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjDWOnT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Apr 2023 10:43:19 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90926E7C;
-        Sun, 23 Apr 2023 07:43:15 -0700 (PDT)
+        with ESMTP id S229862AbjDWOwR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Apr 2023 10:52:17 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8B6E7A;
+        Sun, 23 Apr 2023 07:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682260995; x=1713796995;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3QtnzNmns+7h47kKgvPijo0mqZY/g9XoH+gSY1VEEcg=;
-  b=WNG94l1VzzUJ5imk65/ppU5ro/1RC9My0RwLGBO2NgGVsNeuA3M/6rvR
-   LC6BTNcUWEOzvh9UjfRjsIRiHiSwK6apAfguRXjAMyIiR+fo4KJbbVCGZ
-   cF/TeWl+IyQDoslL/Iv2vG0IAI2VjkhMGaaVW5EGi8d3UC19thgC5+MDj
-   Q1y5I1llA48qmshkgg0Ce86hMRC6VolSUgEP/bWty2h0uu99sbhbzwxMY
-   KtsKf1VL45tNZMTDFeWJlovEFBMRxdsb8URgXQhZCEYBW2BSiUOlXA5L+
-   TNBrjxfrgpTVAnMoEu8pfo6pOrBQte+ghlzEGTyrzx+NXO0B3L0MWux9P
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="348197433"
+  t=1682261535; x=1713797535;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eEvyKSzNDh5sQKBx5mo4WI1Jpo8Ta37lLHtIBclFcY4=;
+  b=bUofhFo0Ooj8xj+11uyi67sI8Giy1c/irwrpImeuzU1t3IyQUCQyK/W1
+   hMtnyhUZrzaNtLKQHfwXSc635ALIbMsENzh9+j6a4geweSvHQd2HgMt/q
+   fXjuuwdMU5vyGcQNFqiB/jMe5bZlVfEtaChbn8jpbu/UbHCpz9avV0oeH
+   gk8Kege/oeIfl7MGjjUFSizZWbBqb629zR3ZcXCl549A784Xp7xuEu57m
+   7OTH2YCYveAOP9FCHDei2o1/whUHnnR2fNau9ycPCCNEK78dtOoCr50n/
+   eohBBWCylA3YNr2kVaOPPMEidHxAbHS5AERZCy0pLQFs4vyEbkw+ZcPus
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="325890201"
 X-IronPort-AV: E=Sophos;i="5.99,220,1677571200"; 
-   d="scan'208";a="348197433"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2023 07:43:15 -0700
+   d="scan'208";a="325890201"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2023 07:51:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="725402610"
+X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="836680617"
 X-IronPort-AV: E=Sophos;i="5.99,220,1677571200"; 
-   d="scan'208";a="725402610"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 23 Apr 2023 07:43:11 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pqavm-000hvg-1U;
-        Sun, 23 Apr 2023 14:43:10 +0000
-Date:   Sun, 23 Apr 2023 22:42:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>, Yishai Hadas <yishaih@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>
-Cc:     oe-kbuild-all@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 2/2] net/mlx4: avoid overloading user/kernel pointers
-Message-ID: <202304232230.hFVK5ix1-lkp@intel.com>
-References: <20230418114730.3674657-2-arnd@kernel.org>
+   d="scan'208";a="836680617"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by fmsmga001.fm.intel.com with ESMTP; 23 Apr 2023 07:51:55 -0700
+From:   Zhu Yanjun <yanjun.zhu@intel.com>
+To:     jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com,
+        linux-rdma@vger.kernel.org, parav@nvidia.com,
+        netdev@vger.kernel.org, rain.1986.08.12@gmail.com
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: [PATCH rdma-next v4 0/8] Fix the problem that rxe can not work in net namespace
+Date:   Sun, 23 Apr 2023 22:48:14 +0800
+Message-Id: <20230423144822.1797465-1-yanjun.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230418114730.3674657-2-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_NONE,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Arnd,
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-kernel test robot noticed the following build warnings:
+When run "ip link add" command to add a rxe rdma link in a net
+namespace, normally this rxe rdma link can not work in a net
+name space.
 
-[auto build test WARNING on soc/for-next]
-[also build test WARNING on linus/master v6.3-rc7 next-20230421]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The root cause is that a sock listening on udp port 4791 is created
+in init_net when the rdma_rxe module is loaded into kernel. That is,
+the sock listening on udp port 4791 is created in init_net. Other net
+namespace is difficult to use this sock.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/net-mlx4-avoid-overloading-user-kernel-pointers/20230418-195238
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20230418114730.3674657-2-arnd%40kernel.org
-patch subject: [PATCH 2/2] net/mlx4: avoid overloading user/kernel pointers
-config: sparc-randconfig-s052-20230423 (https://download.01.org/0day-ci/archive/20230423/202304232230.hFVK5ix1-lkp@intel.com/config)
-compiler: sparc-linux-gcc (GCC) 12.1.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-39-gce1a6720-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/1389cdaec07839abb7b8aacb2b16f37d4affd8d3
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Arnd-Bergmann/net-mlx4-avoid-overloading-user-kernel-pointers/20230418-195238
-        git checkout 1389cdaec07839abb7b8aacb2b16f37d4affd8d3
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=sparc olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=sparc SHELL=/bin/bash drivers/net/ethernet/mellanox/mlx4/
+The following commits will solve this problem.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304232230.hFVK5ix1-lkp@intel.com/
+In the first commit, move the creating sock listening on udp port 4791
+from module_init function to rdma link creating functions. That is,
+after the module rdma_rxe is loaded, the sock will not be created.
+When run "rdma link add ..." command, the sock will be created. So
+when creating a rdma link in the net namespace, the sock will be
+created in this net namespace.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/ethernet/mellanox/mlx4/en_cq.c:141:59: sparse: sparse: incorrect type in argument 10 (different address spaces) @@     expected void [noderef] __user *ubuf_addr @@     got struct mlx4_buf * @@
-   drivers/net/ethernet/mellanox/mlx4/en_cq.c:141:59: sparse:     expected void [noderef] __user *ubuf_addr
-   drivers/net/ethernet/mellanox/mlx4/en_cq.c:141:59: sparse:     got struct mlx4_buf *
->> drivers/net/ethernet/mellanox/mlx4/en_cq.c:141:74: sparse: sparse: Using plain integer as NULL pointer
+In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
+will check the sock exists in the net namespace or not. If yes, rdma
+link will increase the reference count of this sock, then continue other
+jobs instead of creating a new sock to listen on udp port 4791. Since the
+network notifier is global, when the module rdma_rxe is loaded, this
+notifier will be registered.
 
-vim +141 drivers/net/ethernet/mellanox/mlx4/en_cq.c
+After the rdma link is created, the command "rdma link del" is to
+delete rdma link at the same time the sock is checked. If the reference
+count of this sock is greater than the sock reference count needed by
+udp tunnel, the sock reference count is decreased by one. If equal, it
+indicates that this rdma link is the last one. As such, the udp tunnel
+is shut down and the sock is closed. The above work should be
+implemented in linkdel function. But currently no dellink function in
+rxe. So the 3rd commit addes dellink function pointer. And the 4th
+commit implements the dellink function in rxe.
 
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22   88  
-76532d0c7e7424 drivers/net/ethernet/mellanox/mlx4/en_cq.c Alexander Guller  2011-10-09   89  int mlx4_en_activate_cq(struct mlx4_en_priv *priv, struct mlx4_en_cq *cq,
-76532d0c7e7424 drivers/net/ethernet/mellanox/mlx4/en_cq.c Alexander Guller  2011-10-09   90  			int cq_idx)
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22   91  {
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22   92  	struct mlx4_en_dev *mdev = priv->mdev;
-80a62deedf9d44 drivers/net/ethernet/mellanox/mlx4/en_cq.c Thomas Gleixner   2020-12-10   93  	int irq, err = 0;
-ec693d47010e83 drivers/net/ethernet/mellanox/mlx4/en_cq.c Amir Vadai        2013-04-23   94  	int timestamp_en = 0;
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31   95  	bool assigned_eq = false;
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22   96  
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22   97  	cq->dev = mdev->pndev[priv->port];
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22   98  	cq->mcq.set_ci_db  = cq->wqres.db.db;
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22   99  	cq->mcq.arm_db     = cq->wqres.db.db + 1;
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  100  	*cq->mcq.set_ci_db = 0;
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  101  	*cq->mcq.arm_db    = 0;
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  102  	memset(cq->buf, 0, cq->buf_size);
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  103  
-ccc109b8ed24c6 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2016-11-02  104  	if (cq->type == RX) {
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  105  		if (!mlx4_is_eq_vector_valid(mdev->dev, priv->port,
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  106  					     cq->vector)) {
-de1618034ae570 drivers/net/ethernet/mellanox/mlx4/en_cq.c Ido Shamay        2015-05-31  107  			cq->vector = cpumask_first(priv->rx_ring[cq->ring]->affinity_mask);
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  108  
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  109  			err = mlx4_assign_eq(mdev->dev, priv->port,
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  110  					     &cq->vector);
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  111  			if (err) {
-b0f6446377e72b drivers/net/ethernet/mellanox/mlx4/en_cq.c Carol L Soto      2015-08-27  112  				mlx4_err(mdev, "Failed assigning an EQ to CQ vector %d\n",
-b0f6446377e72b drivers/net/ethernet/mellanox/mlx4/en_cq.c Carol L Soto      2015-08-27  113  					 cq->vector);
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  114  				goto free_eq;
-1fb9876e9bf895 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2011-03-22  115  			}
-35f6f45368632f drivers/net/ethernet/mellanox/mlx4/en_cq.c Amir Vadai        2014-06-29  116  
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  117  			assigned_eq = true;
-1fb9876e9bf895 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2011-03-22  118  		}
-80a62deedf9d44 drivers/net/ethernet/mellanox/mlx4/en_cq.c Thomas Gleixner   2020-12-10  119  		irq = mlx4_eq_get_irq(mdev->dev, cq->vector);
-197d2370772957 drivers/net/ethernet/mellanox/mlx4/en_cq.c Thomas Gleixner   2020-12-10  120  		cq->aff_mask = irq_get_effective_affinity_mask(irq);
-1fb9876e9bf895 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2011-03-22  121  	} else {
-76532d0c7e7424 drivers/net/ethernet/mellanox/mlx4/en_cq.c Alexander Guller  2011-10-09  122  		/* For TX we use the same irq per
-76532d0c7e7424 drivers/net/ethernet/mellanox/mlx4/en_cq.c Alexander Guller  2011-10-09  123  		ring we assigned for the RX    */
-76532d0c7e7424 drivers/net/ethernet/mellanox/mlx4/en_cq.c Alexander Guller  2011-10-09  124  		struct mlx4_en_cq *rx_cq;
-76532d0c7e7424 drivers/net/ethernet/mellanox/mlx4/en_cq.c Alexander Guller  2011-10-09  125  
-76532d0c7e7424 drivers/net/ethernet/mellanox/mlx4/en_cq.c Alexander Guller  2011-10-09  126  		cq_idx = cq_idx % priv->rx_ring_num;
-41d942d56cfd21 drivers/net/ethernet/mellanox/mlx4/en_cq.c Eugenia Emantayev 2013-11-07  127  		rx_cq = priv->rx_cq[cq_idx];
-76532d0c7e7424 drivers/net/ethernet/mellanox/mlx4/en_cq.c Alexander Guller  2011-10-09  128  		cq->vector = rx_cq->vector;
-1fb9876e9bf895 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2011-03-22  129  	}
-1fb9876e9bf895 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2011-03-22  130  
-ccc109b8ed24c6 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2016-11-02  131  	if (cq->type == RX)
-41d942d56cfd21 drivers/net/ethernet/mellanox/mlx4/en_cq.c Eugenia Emantayev 2013-11-07  132  		cq->size = priv->rx_ring[cq->ring]->actual_size;
-38aab07c14adbf drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2009-05-24  133  
-ccc109b8ed24c6 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2016-11-02  134  	if ((cq->type != RX && priv->hwtstamp_config.tx_type) ||
-ccc109b8ed24c6 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2016-11-02  135  	    (cq->type == RX && priv->hwtstamp_config.rx_filter))
-ec693d47010e83 drivers/net/ethernet/mellanox/mlx4/en_cq.c Amir Vadai        2013-04-23  136  		timestamp_en = 1;
-ec693d47010e83 drivers/net/ethernet/mellanox/mlx4/en_cq.c Amir Vadai        2013-04-23  137  
-f3301870161ca2 drivers/net/ethernet/mellanox/mlx4/en_cq.c Moshe Shemesh     2017-06-21  138  	cq->mcq.usage = MLX4_RES_USAGE_DRIVER;
-ec693d47010e83 drivers/net/ethernet/mellanox/mlx4/en_cq.c Amir Vadai        2013-04-23  139  	err = mlx4_cq_alloc(mdev->dev, cq->size, &cq->wqres.mtt,
-ec693d47010e83 drivers/net/ethernet/mellanox/mlx4/en_cq.c Amir Vadai        2013-04-23  140  			    &mdev->priv_uar, cq->wqres.db.dma, &cq->mcq,
-e45678973dcbb1 drivers/net/ethernet/mellanox/mlx4/en_cq.c Daniel Jurgens    2018-11-21 @141  			    cq->vector, 0, timestamp_en, &cq->wqres.buf, false);
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  142  	if (err)
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  143  		goto free_eq;
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  144  
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  145  	cq->mcq.event = mlx4_en_cq_event;
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  146  
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  147  	switch (cq->type) {
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  148  	case TX:
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  149  		cq->mcq.comp = mlx4_en_tx_irq;
-16d083e28f1a4f drivers/net/ethernet/mellanox/mlx4/en_cq.c Jakub Kicinski    2022-05-04  150  		netif_napi_add_tx(cq->dev, &cq->napi, mlx4_en_poll_tx_cq);
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  151  		napi_enable(&cq->napi);
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  152  		break;
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  153  	case RX:
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  154  		cq->mcq.comp = mlx4_en_rx_irq;
-b48b89f9c189d2 drivers/net/ethernet/mellanox/mlx4/en_cq.c Jakub Kicinski    2022-09-27  155  		netif_napi_add(cq->dev, &cq->napi, mlx4_en_poll_rx_cq);
-0276a330617a0c drivers/net/ethernet/mellanox/mlx4/en_cq.c Eugenia Emantayev 2013-12-19  156  		napi_enable(&cq->napi);
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  157  		break;
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  158  	case TX_XDP:
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  159  		/* nothing regarding napi, it's shared with rx ring */
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  160  		cq->xdp_busy = false;
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  161  		break;
-6c78511b0503c9 drivers/net/ethernet/mellanox/mlx4/en_cq.c Tariq Toukan      2017-06-15  162  	}
-0276a330617a0c drivers/net/ethernet/mellanox/mlx4/en_cq.c Eugenia Emantayev 2013-12-19  163  
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  164  	return 0;
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  165  
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  166  free_eq:
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  167  	if (assigned_eq)
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  168  		mlx4_release_eq(mdev->dev, cq->vector);
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  169  	cq->vector = mdev->dev->caps.num_comp_vectors;
-c66fa19c405a36 drivers/net/ethernet/mellanox/mlx4/en_cq.c Matan Barak       2015-05-31  170  	return err;
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  171  }
-c27a02cd94d669 drivers/net/mlx4/en_cq.c                   Yevgeny Petrilin  2008-10-22  172  
+To now, it is not necessary to keep a global variable to store the sock
+listening udp port 4791. This global variable can be replaced by the
+functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
+function udp6_lib_lookup is in the fast path, a member variable l_sk6
+is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
+to lookup the sock, then the sock is stored in l_sk6, in the future,it
+can be used directly.
+
+All the above work has been done in init_net. And it can also work in
+the net namespace. So the init_net is replaced by the individual net
+namespace. This is what the 6th commit does. Because rxe device is
+dependent on the net device and the sock listening on udp port 4791,
+every rxe device is in exclusive mode in the individual net namespace.
+Other rdma netns operations will be considerred in the future.
+
+In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
+functions are added. When a new net namespace is created, the init
+function will initialize the sk4 and sk6 socks. Then the 2 socks will
+be released when the net namespace is destroyed. The functions
+rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
+namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
+handle sk6. Then sk4 and sk6 are used in the previous commits.
+
+As the sk4 and sk6 in pernet namespace can be accessed, it is not
+necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
+replaced with the sk6 in pernet namespace.
+
+Test steps:
+1) Suppose that 2 NICs are in 2 different net namespaces.
+
+  # ip netns exec net0 ip link
+  3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
+     link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
+     altname enp5s0
+
+  # ip netns exec net1 ip link
+  4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
+     link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
+
+2) Add rdma link in the different net namespace
+    net0:
+    # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
+
+    net1:
+    # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
+
+3) Run rping test.
+    net0
+    # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
+    [1] 1737
+    # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
+    verbose
+    count 1
+    ...
+    ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+    ...
+
+4) Remove the rdma links from the net namespaces.
+    net0:
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+    UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+    UNCONN    0         0         [::]:4791             [::]:*
+
+    # ip netns exec net0 rdma link del rxe0
+
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+
+    net1:
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+    UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+    UNCONN    0         0         [::]:4791             [::]:*
+
+    # ip netns exec net1 rdma link del rxe1
+
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+
+V3->V4: Rebase the commits to rdma-next;
+
+V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
+           verify rdma link is removed.
+        2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
+        3) Replace l_sk6 with sk6 of pernet_name_space
+
+V1->V2: Add the explicit initialization of sk6.
+
+
+
+
+Zhu Yanjun (8):
+  RDMA/rxe: Creating listening sock in newlink function
+  RDMA/rxe: Support more rdma links in init_net
+  RDMA/nldev: Add dellink function pointer
+  RDMA/rxe: Implement dellink in rxe
+  RDMA/rxe: Replace global variable with sock lookup functions
+  RDMA/rxe: add the support of net namespace
+  RDMA/rxe: Add the support of net namespace notifier
+  RDMA/rxe: Replace l_sk6 with sk6 in net namespace
+
+ drivers/infiniband/core/nldev.c     |   6 ++
+ drivers/infiniband/sw/rxe/Makefile  |   3 +-
+ drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
+ drivers/infiniband/sw/rxe/rxe_net.c | 113 +++++++++++++++++------
+ drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
+ drivers/infiniband/sw/rxe/rxe_ns.c  | 134 ++++++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_ns.h  |  17 ++++
+ include/rdma/rdma_netlink.h         |   2 +
+ 8 files changed, 279 insertions(+), 40 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.27.0
+
