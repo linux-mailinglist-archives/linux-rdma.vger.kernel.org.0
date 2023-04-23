@@ -2,73 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E81D66EBC3D
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Apr 2023 03:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192AB6EBC3F
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Apr 2023 03:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbjDWB1b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Apr 2023 21:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
+        id S230085AbjDWB1h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 22 Apr 2023 21:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjDWB1a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Apr 2023 21:27:30 -0400
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com [195.245.231.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E0310E2;
-        Sat, 22 Apr 2023 18:27:28 -0700 (PDT)
+        with ESMTP id S230059AbjDWB1f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Apr 2023 21:27:35 -0400
+Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com [85.158.142.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B227C2735;
+        Sat, 22 Apr 2023 18:27:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
-        s=170520fj; t=1682213247; i=@fujitsu.com;
-        bh=q8VRNeqr3EzQLYWmemAVzstBD0W+cAm/QdJIUQrLxOs=;
-        h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=aSBjJlGrF+mkkCk+0LdlH8rMxJNKRRdqZ65YCqyN4OCDI+PvyDkSUyTMDeIS2i1H0
-         Jpjarf4+ywBAWyhTl3qHN/J4ubuXXfeNf83wyLzV1GCVUlC9wRTxL9Z0HGR2pxBFEg
-         SfROSGP4Jzu2TLjAhtKAJP0geTzhSU1voG8Uw78zftkMoXiij6Gcww1BU95QpEcdB1
-         pFW8w4JNVbSpYpGzpvgvmridzipOtCLoVpu/WgkpCvZOQ2Wpne8/NYnUMLKHW4seY4
-         nL4I5R6NW/ptwgXQ5+qoIKwoEtZR5Klqi9O4lQlR8qXr/X+QvIsCdgl7AGTOlueIei
-         P88A6R/cpQeEg==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRWlGSWpSXmKPExsViZ8ORqFvb6ZJ
-  i0HiV2+LGNDmLbac3sFvMnHGC0eLtpiksFlN+LWW2uLxrDpvFs0O9LA7sHqff3GHy2LSqk81j
-  YcNUZo/Pm+Q8tn6+zRLAGsWamZeUX5HAmnH/dhtLQTNnxYolM1kaGNewdzFycQgJbGGUmHRyP
-  pSzgknixLZLbBDOAUaJ5TufsHQxcnKwCWhI3Gu5yQhiiwiUShxu28cOYjMLJEnMu/2WGcQWFr
-  CXuLFsHiuIzSKgKnH59nMwm1fAUeLKuR6wGgkBBYkpD98zQ8QFJU7OhJjPLCAhcfDFC6gaRYk
-  jnX9ZIOxKidYPv6BsNYmr5zYxT2Dkn4WkfRaS9gWMTKsYTYtTi8pSi3RN9JKKMtMzSnITM3P0
-  Eqt0E/VSS3XLU4tLdI30EsuL9VKLi/WKK3OTc1L08lJLNjECgz2lWKljB+P1nX/1DjFKcjApi
-  fK+2O2QIsSXlJ9SmZFYnBFfVJqTWnyIUYaDQ0mC92ObS4qQYFFqempFWmYOMPJg0hIcPEoivF
-  vLgNK8xQWJucWZ6RCpU4yKUuK8UzqAEgIgiYzSPLg2WLRfYpSVEuZlZGBgEOIpSC3KzSxBlX/
-  FKM7BqCTMqwcyhSczrwRu+iugxUxAi3dxgy0uSURISTUwuevwLF8z659/0LfmyafVDnO+vZrd
-  eZFDgM3ZUeZk45PZG9NTz0qG3lx33Krcz2ZK2YKtluv2XotW2GxdyPx/iV/A5Nkrn+2sfaV2a
-  vLmvC+Kt8s+RKas8E50mnmRnY1hTt/Txu1if85m2i/UXHrj102dsOtBZ+u5nly6KnZgO3vbRR
-  m+WD+2Jb8/Hlm29YWS2fSGObEafze/zX97rEnL4XbHoa1dm+d9MeiMYv7P9kru0Jsn8XJiwbw
-  NH2q4jgtk+XV9EE7rkBI93r1+78eDceZd8oGHLsheZ/EJ/vb0vdns+ToN1tpHayxO7JT2TQ36
-  clhtQc8ECfdeZa9J2x4fVTlWvWbf5Cf3ajdGan8IvqvEUpyRaKjFXFScCAB9YHZ+cQMAAA==
+        s=170520fj; t=1682213251; i=@fujitsu.com;
+        bh=O0kcifYVmFdHHYe5snDPuVQyH9cIgfpR9XX11fi5kg0=;
+        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=irknPbmNxdYxTOoDsROLtXxBjQBinAWby00fXeXg7AzJ3y2URz/eG0NO1m13NG6mw
+         sdRtpzT7y1vJvwXgEf1Ia9PwXHnbvcKqeZz2qbs6KyvHaok2WVFs5UUQoqDNOcryH0
+         egjHixzE7EiDl1QG6q6KKaQ89VysMccQpHsMQywlQ16baZZxrcw5WRGKJI2TvOpq4W
+         PLPSXO+6La5LzzRwejygiJ458pEOn4qEeZz3hKTR7GrlRP+9yHAfS2c2ipw17o6H55
+         lT7aMBbTAkhMfqHFk+zXW5pVRO1oooWn4Om8tDt8Yud6u+iNhY1qXVDfMu8SzxCATs
+         pHUtMOy9BoovA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpileJIrShJLcpLzFFi42Kxs+HYrNvQ6ZJ
+  isGibrsWNaXIW205vYLeYOeMEo8XbTVNYLKb8WspscXnXHDaLZ4d6WRzYPU6/ucPksWlVJ5vH
+  woapzB6fN8l5bP18myWANYo1My8pvyKBNaPl/Vfmggc8FVcWfGZuYGzj7GLk4hAS2MgosfVFB
+  1sXIyeQs5RJYtXMWojEAUaJD6evsIMk2AQ0JO613GQEsUUESiUOt+0DizMLJEnMu/2WGcQWFv
+  CTeN3ezApiswioSszdsBgszivgKPFoxzMwW0JAQWLKw/dgNqeAk8Ty6w+ZIBY7SlyYtoYRol5
+  Q4uTMJywQ8yUkDr54AdWrKHGk8y8LhF0p0frhF5StJnH13CbmCYyCs5C0z0LSvoCRaRWjWXFq
+  UVlqka6lXlJRZnpGSW5iZo5eYpVuol5qqW5eflFJhq6hXmJ5sV5qcbFecWVuck6KXl5qySZGY
+  HSkFKfO3sG4eNdfvUOMkhxMSqK8L3Y7pAjxJeWnVGYkFmfEF5XmpBYfYtTg4BCYcW7udCYplr
+  z8vFQlCd6PbS4pQoJFqempFWmZOcAIhimV4OBREuHdWgaU5i0uSMwtzkyHSJ1iVJQS553SAZQ
+  QAElklObBtcGSxiVGWSlhXkYGBgYhnoLUotzMElT5V4ziHIxKwrx6IFN4MvNK4Ka/AlrMBLR4
+  FzfY4pJEhJRUA5O1zyrVP+tttweIl+cmGrba+d6cFL1uFtO0qrsT5t16fOlP7c7TL/96iOVOD
+  e9a/vmF+oy0tTfUHj4xiPojtOLavjLhax3/Jp064lKyoPN55J0Z555Fh1XeOxS1Ydqv361qF5
+  eWCaTFXr8/M5z9G9NyveiNdyYd494VM/se47lXz1cUOT96UVKT9bTu5AmGlNU1EnOO79r2ujV
+  u+dqnT5a/Mz51KMLkyZkEj57pL0VubNuj4uRVUS0TvP6f4Tbt65/W3X9/Tu3j/yfzD19da/KL
+  J/iR2/8vJ2TEZkr6v/Q+tfksL5uKh5/BtEM/dDdX5NxWyn4/+2XM6v2P9Uqm/pxZZxFr2pEu/
+  IL/nxvnxb7r7nJKLMUZiYZazEXFiQBByDHLlQMAAA==
 X-Env-Sender: lizhijian@fujitsu.com
-X-Msg-Ref: server-20.tower-565.messagelabs.com!1682213245!159966!1
-X-Originating-IP: [62.60.8.97]
+X-Msg-Ref: server-7.tower-745.messagelabs.com!1682213248!234180!1
+X-Originating-IP: [62.60.8.179]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
-X-StarScan-Version: 9.105.2; banners=-,-,-
+X-StarScan-Version: 9.104.2; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 1217 invoked from network); 23 Apr 2023 01:27:25 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
-  by server-20.tower-565.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 23 Apr 2023 01:27:25 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
-        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id D7C4C100226;
-        Sun, 23 Apr 2023 02:27:24 +0100 (BST)
+Received: (qmail 30566 invoked from network); 23 Apr 2023 01:27:28 -0000
+Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
+  by server-7.tower-745.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 23 Apr 2023 01:27:28 -0000
+Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 236B7170;
+        Sun, 23 Apr 2023 02:27:28 +0100 (BST)
 Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223 [10.182.185.121])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id CAF6B1001BF;
-        Sun, 23 Apr 2023 02:27:24 +0100 (BST)
+        by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 175D1150;
+        Sun, 23 Apr 2023 02:27:28 +0100 (BST)
 Received: from d3e152dc4f88.localdomain (10.167.226.45) by
  R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Sun, 23 Apr 2023 02:27:21 +0100
+ (TLS) id 15.0.1497.42; Sun, 23 Apr 2023 02:27:24 +0100
 From:   Li Zhijian <lizhijian@fujitsu.com>
 To:     <haris.iqbal@ionos.com>, <jinpu.wang@ionos.com>, <jgg@ziepe.ca>,
         <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 CC:     <guoqing.jiang@linux.dev>, <linux-kernel@vger.kernel.org>,
         Li Zhijian <lizhijian@fujitsu.com>
-Subject: [PATCH for-next v2 0/3] RDMA/rtrs: bugfix and cleanups
-Date:   Sun, 23 Apr 2023 01:26:49 +0000
-Message-ID: <1682213212-2-1-git-send-email-lizhijian@fujitsu.com>
+Subject: [PATCH for-next v2 1/3] RDMA/rtrs: remove duplicate cq_num assignment
+Date:   Sun, 23 Apr 2023 01:26:50 +0000
+Message-ID: <1682213212-2-2-git-send-email-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1682213212-2-1-git-send-email-lizhijian@fujitsu.com>
+References: <1682213212-2-1-git-send-email-lizhijian@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.167.226.45]
@@ -85,42 +89,42 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-V2:
-- Add new patch2 to fix a memory leak
-- rewrite original patch2 to patch3 by refactoring the cleanup path instead of
-  introducing a new flag
-- Drop original patch3: RDMA/rtrs: Fix use-after-free in rtrs_clt_rdma_cm_handler
-  The problem it tried to addressing doesn't appear after the new patch3
-  where it adjust the cleanup order
+line 1701 and 1713 are duplicate:
+> 1701         cq_num = max_send_wr + max_recv_wr;
+ 1702         /* alloc iu to recv new rkey reply when server reports flags set */
+ 1703         if (clt_path->flags & RTRS_MSG_NEW_RKEY_F || con->c.cid == 0) {
+ 1704                 con->rsp_ius = rtrs_iu_alloc(cq_num, sizeof(*rsp),
+ 1705                                               GFP_KERNEL,
+ 1706                                               clt_path->s.dev->ib_dev,
+ 1707                                               DMA_FROM_DEVICE,
+ 1708                                               rtrs_clt_rdma_done);
+ 1709                 if (!con->rsp_ius)
+ 1710                         return -ENOMEM;
+ 1711                 con->queue_num = cq_num;
+ 1712         }
+> 1713         cq_num = max_send_wr + max_recv_wr;
 
-It's trying to fix 1 issue triggered by the following script which
-connect/disconnect rnbd frequently.
+Acked-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+V2: Add acked-by tags
+---
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-# cat rnbd-self.sh 
-#!/bin/bash
-
-/root/rpma/tools/config_softroce.sh eth0
-modprobe rnbd_server
-modprobe rnbd_client
-
-while true;
-do
-        echo "sessname=xyz path=ip:<server-ip> device_path=/dev/nvme0n1" > /sys/devices/virtual/rnbd-client/ctl/map_device
-        for i in /sys/block/rnbd*/rnbd/unmap_device
-        do
-                echo "normal" > $i
-        done
-done
-
-Li Zhijian (3):
-  RDMA/rtrs: remove duplicate cq_num assignment
-  RDMA/rtrs: Fix the last iu->buf leak in err path
-  RDMA/rtrs: Fix rxe_dealloc_pd warning
-
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 56 +++++++++++---------------
- drivers/infiniband/ulp/rtrs/rtrs.c     |  4 +-
- 2 files changed, 26 insertions(+), 34 deletions(-)
-
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 80abf45a197a..c2065fc33a56 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1710,7 +1710,6 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 			return -ENOMEM;
+ 		con->queue_num = cq_num;
+ 	}
+-	cq_num = max_send_wr + max_recv_wr;
+ 	cq_vector = con->cpu % clt_path->s.dev->ib_dev->num_comp_vectors;
+ 	if (con->c.cid >= clt_path->s.irq_con_num)
+ 		err = rtrs_cq_qp_create(&clt_path->s, &con->c, max_send_sge,
 -- 
 2.29.2
 
