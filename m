@@ -2,107 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B4C6EC4B5
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Apr 2023 07:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D2F6ED33D
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Apr 2023 19:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbjDXFSq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Apr 2023 01:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        id S231939AbjDXRKs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Apr 2023 13:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjDXFSm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Apr 2023 01:18:42 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589282688
-        for <linux-rdma@vger.kernel.org>; Sun, 23 Apr 2023 22:18:40 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-506bdf29712so29686916a12.0
-        for <linux-rdma@vger.kernel.org>; Sun, 23 Apr 2023 22:18:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1682313519; x=1684905519;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sMme/ObWE1XqtqiMZ6pEeHuCDa0x+FmPGqWx4VJyi4Y=;
-        b=JspeccNTbD/aZwbTWRtpKIpWvGw3H/ycf7IxvjiRK/XeTzPfJoUWsl9ROqnQfgnkzw
-         pSRSbm/CkVzDKLzYwjlzS0HIkTCxyoP2uEr3P7FHbhEab9QvtKMf1XaXQH5yWmNKs8dX
-         0Vl4tb9w36GjJORSXry5+u08TGxCW/VpuYJzEMizyk3JaMuj9X/8n4jX5vF+cBuDdzdS
-         WKAAW8o/G1WlUueOJzHKOJqY8H61nE4T8FJMtdejTeHduMl7DdrcHwLnUSpNrTyPEEqN
-         KDoLQmFkKC3kKHISc5WRN62BMCHfcX6vLuXzLkIok1wpAYlvI62bUqz+oqA2LX++PDrI
-         fczQ==
+        with ESMTP id S231908AbjDXRKo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Apr 2023 13:10:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C9A5FD1
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Apr 2023 10:09:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682356198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OgUsTW9maVz5SYqmXCdcKI0jUBBCt41uSwRWxLob5gI=;
+        b=W0pC6nhupnce7puxOAXemF7UvBG4NXqFBvIH2brXnE0tNq3BqiMV5duif+BnXBZAkuoP00
+        k/q+o1sQFADJWF9U5OC38WFsOm85KaMsq8FwohDSe4rDC0/jCR1X6WX2Jii8NLrZ4GDpC6
+        V6Z4uU1MBNITYR/eUiZcWr00DgFJoUE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-222-Pza4ffh9PKmSvip_hRqc_g-1; Mon, 24 Apr 2023 13:09:56 -0400
+X-MC-Unique: Pza4ffh9PKmSvip_hRqc_g-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f18b63229bso38936135e9.0
+        for <linux-rdma@vger.kernel.org>; Mon, 24 Apr 2023 10:09:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682313519; x=1684905519;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sMme/ObWE1XqtqiMZ6pEeHuCDa0x+FmPGqWx4VJyi4Y=;
-        b=Fna+y1nFhPaor5ivC6Xd0VpfwwMy3y8T2g8LirVHyTaTc+6Od9ifjcJhRIk3Kuyjc6
-         lnK5RJ7JrVcsFRoxWcPqy6euD9Y4fBl2JCt0yncK/YRO8u97aMZDusVUWlbxCz7+2hcf
-         uzvIbngb+xLdySl8XLDJXeM3Z217KKeXOKZxohTPcMUI9a8AjGlXHU5SDUXFAWDtNDIU
-         0x+fnXKNyP5AiDsqJEAoJp0VB8/Y959aYMPwAvoMWhD4Wu32OjfiuBW5kOC2TI1SAcBa
-         +Y7Y0zo+H2VWpRsXMk/Iq/xcXwZ82xld6IgFThODbDd+0/weyQnSPKjSP3vsyGbwwvrC
-         CXyw==
-X-Gm-Message-State: AAQBX9c6lfAuR+GMkZ68KAMVi36wJy2smzYjWWwqA+YQCb0CUrksD0eZ
-        gvaDdoXA5hYna99M7w78W5fyNcS579pPF+9X85WUqA==
-X-Google-Smtp-Source: AKy350Y7qYKAEEiTeRN1tNLajDMCA8RXEmcAKIflt12S8OLivh9JMSQEbHF+QBX0Fg9Y08RyCx6KqzDWsuUepC7hu6k=
-X-Received: by 2002:a05:6402:14d8:b0:504:88fb:8841 with SMTP id
- f24-20020a05640214d800b0050488fb8841mr10312980edx.21.1682313518856; Sun, 23
- Apr 2023 22:18:38 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682356195; x=1684948195;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OgUsTW9maVz5SYqmXCdcKI0jUBBCt41uSwRWxLob5gI=;
+        b=OsU0oXCLIHlwexYOliJDiutBzR5graEGZ2oaqPwgHJ0dMDpqMpi3hZAaxcS8wbbvTv
+         66TxRGuRSBXlo2zY1oG7Ze+tjt94NUlarev1O+JliNSO616ud+NZMxi4lg8moIs1Fpfq
+         RXAdWSj/DeqaiPYvryHSrzf4VAaQsxRbAkafLSCht0+sTo4dvVtJW82gfB1M4OHeXjcK
+         M4e6DXxLZGTX50sb97emmnGBeJSgYqsxurpAGJrUI4dHzOkb35CG2uvEeVSNE6EoB59v
+         aV8A9r5jVSXCnZkwLY40RbbTW2A9bhW6HtVyom+eZ0SN9PAGIEKHZCevoA9Z0QrVogu/
+         bylQ==
+X-Gm-Message-State: AAQBX9dtbA+h3a5VvUsgPFoHzs53ptelq3XTcfugP3kApCIRePGHU04O
+        +ekYfsCGg/RN+bIZnuSDtHwpaCZKubrkMEAlAjdd3Ck8YSFSxnnzTKHEvJ4ukIJAn55V5sE7pd6
+        616WM+3M2UrwMi6AiNVCtYQ==
+X-Received: by 2002:adf:ee91:0:b0:2f0:2e16:7e0c with SMTP id b17-20020adfee91000000b002f02e167e0cmr14022949wro.26.1682356195279;
+        Mon, 24 Apr 2023 10:09:55 -0700 (PDT)
+X-Google-Smtp-Source: AKy350YHammZSSXtFBRiRgQbIBE6xsn5b0O7mWQ6zsuEYOSTLmqZ/wx8guTLKGPMZOG3vHcfAOeOBg==
+X-Received: by 2002:adf:ee91:0:b0:2f0:2e16:7e0c with SMTP id b17-20020adfee91000000b002f02e167e0cmr14022941wro.26.1682356195016;
+        Mon, 24 Apr 2023 10:09:55 -0700 (PDT)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id z4-20020a05600c0a0400b003ef4cd057f5sm16353354wmp.4.2023.04.24.10.09.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Apr 2023 10:09:54 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Yury Norov <yury.norov@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Barry Song <baohua@kernel.org>
+Subject: Re: [PATCH v2 7/8] lib: add test for for_each_numa_{cpu,hop_mask}()
+In-Reply-To: <20230420051946.7463-8-yury.norov@gmail.com>
+References: <20230420051946.7463-1-yury.norov@gmail.com>
+ <20230420051946.7463-8-yury.norov@gmail.com>
+Date:   Mon, 24 Apr 2023 18:09:52 +0100
+Message-ID: <xhsmh8rehkxzz.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-References: <1682213212-2-1-git-send-email-lizhijian@fujitsu.com> <1682213212-2-3-git-send-email-lizhijian@fujitsu.com>
-In-Reply-To: <1682213212-2-3-git-send-email-lizhijian@fujitsu.com>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Mon, 24 Apr 2023 07:18:27 +0200
-Message-ID: <CAMGffE=TPTi6+Lr6F2-Xh=Q1gndDDY14hRo9LhNbDb43Y8VxBA@mail.gmail.com>
-Subject: Re: [PATCH for-next v2 2/3] RDMA/rtrs: Fix the last iu->buf leak in
- err path
-To:     Li Zhijian <lizhijian@fujitsu.com>
-Cc:     haris.iqbal@ionos.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org, guoqing.jiang@linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 23, 2023 at 3:27=E2=80=AFAM Li Zhijian <lizhijian@fujitsu.com> =
-wrote:
->
-> The last iu->buf will leak if ib_dma_mapping_error() fails.
->
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-Yes, as guoqing suggested, please add the Fixes tag.
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-> ---
-> V2: new patch to address memory leaking
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/=
-rtrs/rtrs.c
-> index 4bf9d868cc52..3696f367ff51 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-> @@ -37,8 +37,10 @@ struct rtrs_iu *rtrs_iu_alloc(u32 iu_num, size_t size,=
- gfp_t gfp_mask,
->                         goto err;
->
->                 iu->dma_addr =3D ib_dma_map_single(dma_dev, iu->buf, size=
-, dir);
-> -               if (ib_dma_mapping_error(dma_dev, iu->dma_addr))
-> +               if (ib_dma_mapping_error(dma_dev, iu->dma_addr)) {
-> +                       kfree(iu->buf);
->                         goto err;
-> +               }
->
->                 iu->cqe.done  =3D done;
->                 iu->size      =3D size;
-> --
-> 2.29.2
->
+On 19/04/23 22:19, Yury Norov wrote:
+> +	for (node = 0; node < sched_domains_numa_levels; node++) {
+> +		unsigned int hop, c = 0;
+> +
+> +		rcu_read_lock();
+> +		for_each_numa_cpu(cpu, hop, node, cpu_online_mask)
+> +			expect_eq_uint(cpumask_local_spread(c++, node), cpu);
+> +		rcu_read_unlock();
+> +	}
+
+I'm not fond of the export of sched_domains_numa_levels, especially
+considering it's just there for tests.
+
+Furthermore, is there any value is testing parity with
+cpumask_local_spread()? Rather, shouldn't we check that using this API does
+yield CPUs of increasing NUMA distance?
+
+Something like
+
+        for_each_node(node) {
+                unsigned int prev_cpu, hop = 0;
+
+                cpu = cpumask_first(cpumask_of_node(node));
+                prev_cpu = cpu;
+
+                rcu_read_lock();
+
+                /* Assert distance is monotonically increasing */
+                for_each_numa_cpu(cpu, hop, node, cpu_online_mask) {
+                        expect_ge_uint(cpu_to_node(cpu), cpu_to_node(prev_cpu));
+                        prev_cpu = cpu;
+                }
+
+                rcu_read_unlock();
+        }
+
