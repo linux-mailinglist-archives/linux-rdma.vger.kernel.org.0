@@ -2,588 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E42F6EE844
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Apr 2023 21:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79936EE951
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Apr 2023 23:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235509AbjDYTab (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Apr 2023 15:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        id S231978AbjDYVDK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Apr 2023 17:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235495AbjDYTaa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Apr 2023 15:30:30 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB231BCA
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Apr 2023 12:30:27 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1a6f0d8cdfeso50239865ad.2
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Apr 2023 12:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1682451027; x=1685043027;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=71cWPUBdpMNx5BAQOHNP3FeOTsE3upRdB+BeHlKCL1c=;
-        b=Ck2/lZUSNkSeU+jBoGqGTnoeXEUsW3Fzv2hpi9G03GknYUPi4fDiMNV9dCX4T7aaPv
-         LkAgIhJVWz2fQICNxApQsdGPVbHf6asyQ6J5QieslZFbq5jVhu63NyUySNG0GZjq19RM
-         hbRqAQk0jG4fgx7p7qNzaBKfJgSk3bVhzCsJ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682451027; x=1685043027;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=71cWPUBdpMNx5BAQOHNP3FeOTsE3upRdB+BeHlKCL1c=;
-        b=RATsqAZkVTP9XUTMPnBPifXV2qpbGRCpebmSrMuAzrDdmMeoo3J1im1REDGtXfdpYv
-         uuujiA32WkUJZoCfSTKo/ylHXDdS1RJs0J5y2Qo1m3yXGerWZmE7JQkbkBYE1uZU9FnS
-         zV3Y4xhwbRKHeE7+996p3iiP5tIZwn/HH4Pvvi6VzedAkSC7XScC1y7RuDa5ACeazMGe
-         6pUXPq6yQXgbJ+Dz+BVjz95FJtmCE7sVN8jeit0stjlPgDBaABTzaxZDMGt4TkeIAgPb
-         J0hWNHv7+5r357buRMP0cUFG6k3HyogZhWWKAvuwssagjQL049cvwL0ddCeRgXlkixKJ
-         Vl2Q==
-X-Gm-Message-State: AAQBX9fCtSM2Jrz9hs9WW4JMPdDvmU+RwoZpyVVXAmFiKNbILonz4vgO
-        q36jgWSZVFEQZnUdbM+KBjlSmw==
-X-Google-Smtp-Source: AKy350bj/blqyO5CS0RMIlkOn58mY8ihDIKsHT0FI3egakDPglXYNqGPJdQdPUPQ/BobBTNfExDuYg==
-X-Received: by 2002:a17:903:24c:b0:1a6:b1a2:5f21 with SMTP id j12-20020a170903024c00b001a6b1a25f21mr24555617plh.8.1682451027282;
-        Tue, 25 Apr 2023 12:30:27 -0700 (PDT)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id w3-20020a170902c78300b001a64ed4621csm8618217pla.182.2023.04.25.12.30.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 Apr 2023 12:30:26 -0700 (PDT)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        with ESMTP id S236303AbjDYVDJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Apr 2023 17:03:09 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A508716186
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Apr 2023 14:03:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682456587; x=1713992587;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HNmp1l3ZAet+UalcixAw4xQVfcIkr69KI/4gsxJQ41I=;
+  b=naGdwhSwdasLOu9lzMO5M2MRqrZK4mt2dN+rUPQZJWZCK1bK7XYdfiwL
+   +i/ITcivkyNoSMgHN/ianyM6/nvfWJdeWf55GS+MITu6ys0X2BQiTJL3K
+   qlbQwsLsq5qF6Qupfib6q0X+GChCyIi5w+Jp1ebGj0qbG+JgGV/kdAlbL
+   I5zRgoPnbIRi5h7VrlywnzSNUNAiTZhXQja8P80wQ8ILPHwIladWAhm1y
+   gPJn8Z9tfsr0os7QT+5hOV26kb5eKoG2AP3JKm3vnZ4y54bpWGsmbSJua
+   s3gva29j3yQDfA7Pw45LZSSlo479byfwWd15H3tcKs7lVQF1EWadQ16co
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10691"; a="326503599"
+X-IronPort-AV: E=Sophos;i="5.99,226,1677571200"; 
+   d="scan'208";a="326503599"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2023 14:03:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10691"; a="837600842"
+X-IronPort-AV: E=Sophos;i="5.99,226,1677571200"; 
+   d="scan'208";a="837600842"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Apr 2023 14:03:05 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1prPoR-000jm2-2b;
+        Tue, 25 Apr 2023 21:02:59 +0000
+Date:   Wed, 26 Apr 2023 05:02:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>, jgg@ziepe.ca,
+        leon@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
+        andrew.gospodarek@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v2 for-next 6/6] RDMA/bnxt_re: Enable low latency push
-Date:   Tue, 25 Apr 2023 12:29:53 -0700
-Message-Id: <1682450993-17711-7-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1682450993-17711-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1682450993-17711-1-git-send-email-selvin.xavier@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000db7bfa05fa2e270b"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 for-next 3/6] RDMA/bnxt_re: Query function
+ capabilities from firmware
+Message-ID: <202304260421.Wr6M1Ys9-lkp@intel.com>
+References: <1682450993-17711-4-git-send-email-selvin.xavier@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1682450993-17711-4-git-send-email-selvin.xavier@broadcom.com>
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000db7bfa05fa2e270b
+Hi Selvin,
 
-Introduce driver specific uapi functionalites. Added
-a alloc_page functionality for user library to allocate
-specific pages. Currently added support for allocating
-write combine pages for push functinality. This interface
-shall be extended for other page allocations.
+kernel test robot noticed the following build warnings:
 
-Allocate a WC page using the uapi hook for enabling the low latency
-push in Gen P5 adapters for small packets. This is supported only
-for the user space QPs.
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on linus/master v6.3 next-20230425]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- v1 - v2:
-	- Implemented the driver defined uapis to allocate page
- 	- Few generic code cleanup
- drivers/infiniband/hw/bnxt_re/bnxt_re.h   |   3 +
- drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 149 ++++++++++++++++++++++++++++++
- drivers/infiniband/hw/bnxt_re/ib_verbs.h  |   4 +
- drivers/infiniband/hw/bnxt_re/main.c      |  17 +++-
- drivers/infiniband/hw/bnxt_re/qplib_res.c |   3 +
- drivers/infiniband/hw/bnxt_re/qplib_res.h |   3 +-
- include/uapi/rdma/bnxt_re-abi.h           |  32 +++++++
- 7 files changed, 209 insertions(+), 2 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Selvin-Xavier/RDMA-bnxt_re-Use-the-common-mmap-helper-functions/20230426-033131
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/1682450993-17711-4-git-send-email-selvin.xavier%40broadcom.com
+patch subject: [PATCH v2 for-next 3/6] RDMA/bnxt_re: Query function capabilities from firmware
+config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20230426/202304260421.Wr6M1Ys9-lkp@intel.com/config)
+compiler: ia64-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/2e3cab6bf041dd376d6aeae617adfdcdd68f8a4b
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Selvin-Xavier/RDMA-bnxt_re-Use-the-common-mmap-helper-functions/20230426-033131
+        git checkout 2e3cab6bf041dd376d6aeae617adfdcdd68f8a4b
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=ia64 SHELL=/bin/bash drivers/infiniband/
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index 5a2baf4..d436327 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -39,6 +39,7 @@
- 
- #ifndef __BNXT_RE_H__
- #define __BNXT_RE_H__
-+#include <rdma/uverbs_ioctl.h>
- #include "hw_counters.h"
- #define ROCE_DRV_MODULE_NAME		"bnxt_re"
- 
-@@ -187,4 +188,6 @@ static inline struct device *rdev_to_dev(struct bnxt_re_dev *rdev)
- 		return  &rdev->ibdev.dev;
- 	return NULL;
- }
-+
-+extern const struct uapi_definition bnxt_re_uapi_defs[];
- #endif
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index bc85433..60169fc 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -61,6 +61,15 @@
- 
- #include "bnxt_re.h"
- #include "ib_verbs.h"
-+
-+#include <rdma/uverbs_types.h>
-+#include <rdma/uverbs_std_types.h>
-+
-+#include <rdma/ib_user_ioctl_cmds.h>
-+
-+#define UVERBS_MODULE_NAME bnxt_re
-+#include <rdma/uverbs_named_ioctl.h>
-+
- #include <rdma/bnxt_re-abi.h>
- 
- static int __from_ib_access_flags(int iflags)
-@@ -546,6 +555,7 @@ bnxt_re_mmap_entry_insert(struct bnxt_re_ucontext *uctx, u64 mem_offset,
- 
- 	entry->mem_offset = mem_offset;
- 	entry->mmap_flag = mmap_flag;
-+	entry->uctx = uctx;
- 
- 	ret = rdma_user_mmap_entry_insert(&uctx->ib_uctx,
- 					  &entry->rdma_entry, PAGE_SIZE);
-@@ -599,6 +609,7 @@ int bnxt_re_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 	}
- 
- 	if (udata) {
-+		struct bnxt_qplib_chip_ctx *cctx = rdev->chip_ctx;
- 		struct bnxt_re_pd_resp resp = {};
- 
- 		if (!ucntx->dpi.dbr) {
-@@ -611,6 +622,9 @@ int bnxt_re_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 				rc = -ENOMEM;
- 				goto dbfail;
- 			}
-+			/* Set the comp_mask to indicate users to enable WC DPI */
-+			if (cctx->modes.db_push)
-+				resp.comp_mask = BNXT_RE_COMP_MASK_PD_WC_DPI_SUP;
- 		}
- 
- 		resp.pdid = pd->qplib_pd.id;
-@@ -4036,6 +4050,9 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
- 	resp.comp_mask |= BNXT_RE_UCNTX_CMASK_HAVE_MODE;
- 	resp.mode = rdev->chip_ctx->modes.wqe_mode;
- 
-+	if (rdev->chip_ctx->modes.db_push)
-+		resp.comp_mask |= BNXT_RE_UCNTX_CMASK_WC_DPI_ENABLED;
-+
- 	entry = bnxt_re_mmap_entry_insert(uctx, 0, BNXT_RE_MMAP_SH_PAGE, NULL);
- 	if (!entry) {
- 		rc = -ENOMEM;
-@@ -4099,6 +4116,12 @@ int bnxt_re_mmap(struct ib_ucontext *ib_uctx, struct vm_area_struct *vma)
- 				  rdma_entry);
- 
- 	switch (bnxt_entry->mmap_flag) {
-+	case BNXT_RE_MMAP_WC_DB:
-+		pfn = bnxt_entry->mem_offset >> PAGE_SHIFT;
-+		ret = rdma_user_mmap_io(ib_uctx, vma, pfn, PAGE_SIZE,
-+					pgprot_writecombine(vma->vm_page_prot),
-+					rdma_entry);
-+		break;
- 	case BNXT_RE_MMAP_UC_DB:
- 		pfn = bnxt_entry->mem_offset >> PAGE_SHIFT;
- 		ret = rdma_user_mmap_io(ib_uctx, vma, pfn, PAGE_SIZE,
-@@ -4126,3 +4149,129 @@ void bnxt_re_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
- 
- 	kfree(bnxt_entry);
- }
-+
-+static int UVERBS_HANDLER(BNXT_RE_METHOD_ALLOC_PAGE)(struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
-+	enum bnxt_re_alloc_page_type alloc_type;
-+	struct bnxt_re_user_mmap_entry *entry;
-+	enum bnxt_re_mmap_flag mmap_flag;
-+	struct bnxt_qplib_chip_ctx *cctx;
-+	struct bnxt_re_ucontext *uctx;
-+	struct bnxt_re_dev *rdev;
-+	u64 mmap_offset;
-+	u32 length;
-+	u32 dpi;
-+	u64 dbr;
-+	int err;
-+
-+	uctx = container_of(ib_uverbs_get_ucontext(attrs), struct bnxt_re_ucontext, ib_uctx);
-+	if (IS_ERR(uctx))
-+		return PTR_ERR(uctx);
-+
-+	err = uverbs_get_const(&alloc_type, attrs, BNXT_RE_ALLOC_PAGE_TYPE);
-+	if (err)
-+		return err;
-+
-+	rdev = uctx->rdev;
-+	cctx = rdev->chip_ctx;
-+
-+	switch (alloc_type) {
-+	case BNXT_RE_ALLOC_WC_PAGE:
-+		if (cctx->modes.db_push)  {
-+			if (bnxt_qplib_alloc_dpi(&rdev->qplib_res, &uctx->wcdpi,
-+						 uctx, BNXT_QPLIB_DPI_TYPE_WC))
-+				return -ENOMEM;
-+		}
-+		length = PAGE_SIZE;
-+		dpi = uctx->wcdpi.dpi;
-+		dbr = (u64)uctx->wcdpi.umdbr;
-+		mmap_flag = BNXT_RE_MMAP_WC_DB;
-+
-+		break;
-+
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	entry = bnxt_re_mmap_entry_insert(uctx, dbr, mmap_flag, &mmap_offset);
-+	if (IS_ERR(entry))
-+		return PTR_ERR(entry);
-+
-+	uobj->object = entry;
-+	uverbs_finalize_uobj_create(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
-+	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
-+			     &mmap_offset, sizeof(mmap_offset));
-+	if (err)
-+		return err;
-+
-+	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_MMAP_LENGTH,
-+			     &length, sizeof(length));
-+	if (err)
-+		return err;
-+
-+	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_DPI,
-+			     &dpi, sizeof(length));
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int alloc_page_obj_cleanup(struct ib_uobject *uobject,
-+				  enum rdma_remove_reason why,
-+			    struct uverbs_attr_bundle *attrs)
-+{
-+	struct  bnxt_re_user_mmap_entry *entry = uobject->object;
-+	struct bnxt_re_ucontext *uctx = entry->uctx;
-+
-+	switch (entry->mmap_flag) {
-+	case BNXT_RE_MMAP_WC_DB:
-+		if (uctx && uctx->wcdpi.dbr) {
-+			struct bnxt_re_dev *rdev = uctx->rdev;
-+
-+			bnxt_qplib_dealloc_dpi(&rdev->qplib_res, &uctx->wcdpi);
-+			uctx->wcdpi.dbr = NULL;
-+		}
-+		break;
-+	default:
-+		goto exit;
-+	}
-+	rdma_user_mmap_entry_remove(&entry->rdma_entry);
-+exit:
-+	return 0;
-+}
-+
-+DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_ALLOC_PAGE,
-+			    UVERBS_ATTR_IDR(BNXT_RE_ALLOC_PAGE_HANDLE,
-+					    BNXT_RE_OBJECT_ALLOC_PAGE,
-+					    UVERBS_ACCESS_NEW,
-+					    UA_MANDATORY),
-+			    UVERBS_ATTR_CONST_IN(BNXT_RE_ALLOC_PAGE_TYPE,
-+						 enum bnxt_re_alloc_page_type,
-+						 UA_MANDATORY),
-+			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
-+						UVERBS_ATTR_TYPE(u64),
-+						UA_MANDATORY),
-+			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_PAGE_MMAP_LENGTH,
-+						UVERBS_ATTR_TYPE(u32),
-+						UA_MANDATORY),
-+			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_PAGE_DPI,
-+						UVERBS_ATTR_TYPE(u32),
-+						UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_DESTROY_PAGE,
-+				    UVERBS_ATTR_IDR(BNXT_RE_DESTROY_PAGE_HANDLE,
-+						    BNXT_RE_OBJECT_ALLOC_PAGE,
-+						    UVERBS_ACCESS_DESTROY,
-+						    UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_ALLOC_PAGE,
-+			    UVERBS_TYPE_ALLOC_IDR(alloc_page_obj_cleanup),
-+			    &UVERBS_METHOD(BNXT_RE_METHOD_ALLOC_PAGE),
-+			    &UVERBS_METHOD(BNXT_RE_METHOD_DESTROY_PAGE));
-+
-+const struct uapi_definition bnxt_re_uapi_defs[] = {
-+	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_ALLOC_PAGE),
-+	{}
-+};
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-index dcd31ae..32d9e9d 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-@@ -61,6 +61,7 @@ struct bnxt_re_pd {
- 	struct bnxt_qplib_pd	qplib_pd;
- 	struct bnxt_re_fence_data fence;
- 	struct rdma_user_mmap_entry *pd_db_mmap;
-+	struct rdma_user_mmap_entry *pd_wcdb_mmap;
- };
- 
- struct bnxt_re_ah {
-@@ -135,6 +136,7 @@ struct bnxt_re_ucontext {
- 	struct ib_ucontext      ib_uctx;
- 	struct bnxt_re_dev	*rdev;
- 	struct bnxt_qplib_dpi	dpi;
-+	struct bnxt_qplib_dpi   wcdpi;
- 	void			*shpg;
- 	spinlock_t		sh_lock;	/* protect shpg */
- 	struct rdma_user_mmap_entry *shpage_mmap;
-@@ -143,10 +145,12 @@ struct bnxt_re_ucontext {
- enum bnxt_re_mmap_flag {
- 	BNXT_RE_MMAP_SH_PAGE,
- 	BNXT_RE_MMAP_UC_DB,
-+	BNXT_RE_MMAP_WC_DB,
- };
- 
- struct bnxt_re_user_mmap_entry {
- 	struct rdma_user_mmap_entry rdma_entry;
-+	struct bnxt_re_ucontext *uctx;
- 	u64 mem_offset;
- 	u8 mmap_flag;
- };
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 913cb80..2a6e98e 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -66,6 +66,7 @@
- #include <rdma/bnxt_re-abi.h>
- #include "bnxt.h"
- #include "hw_counters.h"
-+#include "ib_verbs.h"
- 
- static char version[] =
- 		BNXT_RE_DESC "\n";
-@@ -117,6 +118,10 @@ static void bnxt_re_set_db_offset(struct bnxt_re_dev *rdev)
- 	 * in such cases and DB-push will be disabled.
- 	 */
- 	barlen = pci_resource_len(res->pdev, RCFW_DBR_PCI_BAR_REGION);
-+	if (cctx->modes.db_push && l2db_len && en_dev->l2_db_size != barlen) {
-+		res->dpi_tbl.wcreg.offset = en_dev->l2_db_size;
-+		dev_info(rdev_to_dev(rdev),  "Low latency framework is enabled\n");
-+	}
- }
- 
- static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev, u8 mode)
-@@ -411,6 +416,7 @@ int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev)
- 	struct hwrm_func_qcaps_input req = {0};
- 	struct bnxt_qplib_chip_ctx *cctx;
- 	struct bnxt_fw_msg fw_msg;
-+	int rc;
- 
- 	cctx = rdev->chip_ctx;
- 	memset(&fw_msg, 0, sizeof(fw_msg));
-@@ -419,7 +425,13 @@ int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev)
- 	req.fid = cpu_to_le16(0xffff);
- 	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
- 			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
--	return bnxt_send_msg(en_dev, &fw_msg);
-+
-+	rc = bnxt_send_msg(en_dev, &fw_msg);
-+	if (rc)
-+		return rc;
-+	cctx->modes.db_push = le32_to_cpu(resp.flags) & FUNC_QCAPS_RESP_FLAGS_WCB_PUSH_MODE;
-+
-+	return 0;
- }
- 
- static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
-@@ -673,6 +685,9 @@ static int bnxt_re_register_ib(struct bnxt_re_dev *rdev)
- 	ibdev->dev.parent = &rdev->en_dev->pdev->dev;
- 	ibdev->local_dma_lkey = BNXT_QPLIB_RSVD_LKEY;
- 
-+	if (IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS))
-+		ibdev->driver_def = bnxt_re_uapi_defs;
-+
- 	ib_set_device_ops(ibdev, &bnxt_re_dev_ops);
- 	ret = ib_device_set_netdev(&rdev->ibdev, rdev->netdev, 1);
- 	if (ret)
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-index e1cbe59..174db83 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-@@ -740,6 +740,9 @@ int bnxt_qplib_alloc_dpi(struct bnxt_qplib_res *res,
- 		dpi->dbr = dpit->priv_db;
- 		dpi->dpi = dpi->bit;
- 		break;
-+	case BNXT_QPLIB_DPI_TYPE_WC:
-+		dpi->dbr = ioremap_wc(umaddr, PAGE_SIZE);
-+		break;
- 	default:
- 		dpi->dbr = ioremap(umaddr, PAGE_SIZE);
- 		break;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-index 95b1d6c..dc39f67 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-@@ -47,7 +47,7 @@ extern const struct bnxt_qplib_gid bnxt_qplib_gid_zero;
- 
- struct bnxt_qplib_drv_modes {
- 	u8	wqe_mode;
--	/* Other modes to follow here */
-+	bool db_push;
- };
- 
- struct bnxt_qplib_chip_ctx {
-@@ -193,6 +193,7 @@ struct bnxt_qplib_sgid_tbl {
- enum {
- 	BNXT_QPLIB_DPI_TYPE_KERNEL      = 0,
- 	BNXT_QPLIB_DPI_TYPE_UC          = 1,
-+	BNXT_QPLIB_DPI_TYPE_WC          = 2
- };
- 
- struct bnxt_qplib_dpi {
-diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
-index c4e9077..3efc068 100644
---- a/include/uapi/rdma/bnxt_re-abi.h
-+++ b/include/uapi/rdma/bnxt_re-abi.h
-@@ -41,6 +41,7 @@
- #define __BNXT_RE_UVERBS_ABI_H__
- 
- #include <linux/types.h>
-+#include <rdma/ib_user_ioctl_cmds.h>
- 
- #define BNXT_RE_ABI_VERSION	1
- 
-@@ -51,6 +52,7 @@
- enum {
- 	BNXT_RE_UCNTX_CMASK_HAVE_CCTX = 0x1ULL,
- 	BNXT_RE_UCNTX_CMASK_HAVE_MODE = 0x02ULL,
-+	BNXT_RE_UCNTX_CMASK_WC_DPI_ENABLED = 0x04ULL,
- };
- 
- enum bnxt_re_wqe_mode {
-@@ -78,10 +80,15 @@ struct bnxt_re_uctx_resp {
-  * not 8 byted aligned. To avoid undesired padding in various cases we have to
-  * set this struct to packed.
-  */
-+enum {
-+	BNXT_RE_COMP_MASK_PD_WC_DPI_SUP = 0x01,
-+};
-+
- struct bnxt_re_pd_resp {
- 	__u32 pdid;
- 	__u32 dpi;
- 	__u64 dbr;
-+	__u64 comp_mask;
- } __attribute__((packed, aligned(4)));
- 
- struct bnxt_re_cq_req {
-@@ -127,4 +134,29 @@ enum bnxt_re_shpg_offt {
- 	BNXT_RE_END_RESV_OFFT	= 0xFF0
- };
- 
-+enum bnxt_re_objects {
-+	BNXT_RE_OBJECT_ALLOC_PAGE = (1U << UVERBS_ID_NS_SHIFT),
-+};
-+
-+enum bnxt_re_alloc_page_type {
-+	BNXT_RE_ALLOC_WC_PAGE = 0,
-+};
-+
-+enum bnxt_re_var_alloc_page_attrs {
-+	BNXT_RE_ALLOC_PAGE_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
-+	BNXT_RE_ALLOC_PAGE_TYPE,
-+	BNXT_RE_ALLOC_PAGE_DPI,
-+	BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
-+	BNXT_RE_ALLOC_PAGE_MMAP_LENGTH,
-+};
-+
-+enum bnxt_re_alloc_page_attrs {
-+	BNXT_RE_DESTROY_PAGE_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
-+};
-+
-+enum bnxt_re_alloc_page_methods {
-+	BNXT_RE_METHOD_ALLOC_PAGE = (1U << UVERBS_ID_NS_SHIFT),
-+	BNXT_RE_METHOD_DESTROY_PAGE,
-+};
-+
- #endif /* __BNXT_RE_UVERBS_ABI_H__*/
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202304260421.Wr6M1Ys9-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/infiniband/hw/bnxt_re/main.c: In function 'bnxt_re_hwrm_qcaps':
+>> drivers/infiniband/hw/bnxt_re/main.c:347:37: warning: variable 'cctx' set but not used [-Wunused-but-set-variable]
+     347 |         struct bnxt_qplib_chip_ctx *cctx;
+         |                                     ^~~~
+
+
+vim +/cctx +347 drivers/infiniband/hw/bnxt_re/main.c
+
+   340	
+   341	/* Query function capabilities using common hwrm */
+   342	int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev)
+   343	{
+   344		struct bnxt_en_dev *en_dev = rdev->en_dev;
+   345		struct hwrm_func_qcaps_output resp = {0};
+   346		struct hwrm_func_qcaps_input req = {0};
+ > 347		struct bnxt_qplib_chip_ctx *cctx;
+   348		struct bnxt_fw_msg fw_msg;
+   349	
+   350		cctx = rdev->chip_ctx;
+   351		memset(&fw_msg, 0, sizeof(fw_msg));
+   352		bnxt_re_init_hwrm_hdr(rdev, (void *)&req,
+   353				      HWRM_FUNC_QCAPS, -1, -1);
+   354		req.fid = cpu_to_le16(0xffff);
+   355		bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
+   356				    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
+   357		return bnxt_send_msg(en_dev, &fw_msg);
+   358	}
+   359	
+
 -- 
-2.5.5
-
-
---000000000000db7bfa05fa2e270b
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINr6XWCmV1lo
-OvtGDJAYxxjSRcaPwVtdawjrUzwMetkJMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDQyNTE5MzAyN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBSnJdHKdrdggAjpZ2OxJxmJrEVXiMK
-XCqa/M94vLZ7bLsMagZcEV1Mq4vEmUJCDTwi9wiVPfOTAezEuAYMinl9NXMzoaQhwdtE4WKPtfHB
-Bxp+ehRw9jqyrryKSn+iyg9SEZIJ98n1ClkPddwnbPMm70P0zZ8N+XztaGMcfNfblYrj/kmZwcCv
-nlaZChlc0zcJz63DcxOzNN+fLlLZQrecOYZRTup517jKgzsLlHrcHvHmmUUI7C8XpS5ewm7nEW2G
-3wB7o51aBbP3nXC0WmNglqFq5mH+Putirfm2WWnZfk6kl8sRz7EFFs0oGvTF7lTvpZMM2LDtBgy3
-evBVMH1M
---000000000000db7bfa05fa2e270b--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
