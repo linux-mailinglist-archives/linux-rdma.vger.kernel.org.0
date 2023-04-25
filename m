@@ -2,73 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D580B6EDDBD
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Apr 2023 10:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5E76EDFC6
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Apr 2023 11:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbjDYINV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Apr 2023 04:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
+        id S233462AbjDYJzl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Apr 2023 05:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233386AbjDYINU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Apr 2023 04:13:20 -0400
-X-Greylist: delayed 1185 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 Apr 2023 01:13:18 PDT
-Received: from mail.camacfoy.pl (mail.camacfoy.pl [195.231.80.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8234ED5
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Apr 2023 01:13:18 -0700 (PDT)
-Received: by mail.camacfoy.pl (Postfix, from userid 1001)
-        id 5783FA45B2; Tue, 25 Apr 2023 08:36:28 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=camacfoy.pl; s=mail;
-        t=1682408209; bh=0DnDcjJl846YrSvLcp0W7cMkWp4Lfhp/OZAq4oBoaY8=;
-        h=Date:From:To:Subject:From;
-        b=Yl5Cno3fOPk84cEf/FBmLelZhrDyXVosO8ZYFMYTW8K84kFgwr0+E+htVc0yA7xIb
-         8uZoCz6vbnLB+fJXEPN2j/uMzhdvgaTgQQhbVHN3kIP1INwAAC+UyV4lg3In4OW3CO
-         4FMVsbLDdZO9/MdMup2XsIMFflxFfol1u6IrhyTL27WKSsqPZvbdlfC97r03O3jf/G
-         L/DxaUzQ1sUHDQ1GlBNsoQZkvH7sBl9oR1pTrVDYLbV82dMn9f7Uvz8uoIfPT4Bm1H
-         seRoh7t8jejeT//QyluS4+UenvdySrgn7XewHyjAy0KTRSQs3X9yCOUx6I94wrpmY4
-         /qfAcHOdUIBqQ==
-Received: by mail.camacfoy.pl for <linux-rdma@vger.kernel.org>; Tue, 25 Apr 2023 07:36:05 GMT
-Message-ID: <20230425074502-0.1.83.bzs7.0.8vnafczp6o@camacfoy.pl>
-Date:   Tue, 25 Apr 2023 07:36:05 GMT
-From:   "Krzysztof Maj" <krzysztof.maj@camacfoy.pl>
-To:     <linux-rdma@vger.kernel.org>
-Subject: biznesowy angielski 
-X-Mailer: mail.camacfoy.pl
+        with ESMTP id S233454AbjDYJzk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Apr 2023 05:55:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA600618B
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Apr 2023 02:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682416492;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a3xd0KrM8HR0k4omEObz64GX2cGiGQ4SAWRK/6hdxxY=;
+        b=RDBzqjtp4R+4OYBOfGt2nzC8HJxctZB8HuBq+Xgp9IFcfji87Y6ey8Tw76e93U5ynzOMHf
+        mK7Cmml+wBYpJ+50LIqbh+RY5/KeoMux40B8MPRtwAX9uuPEc3r/6NI2m+u2Bi9hzGfKWd
+        xdGml2eXJu+SFspxDnkx12CJMi65GBk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-536-6A7y5rSJOYel-JL0WGL_wA-1; Tue, 25 Apr 2023 05:54:51 -0400
+X-MC-Unique: 6A7y5rSJOYel-JL0WGL_wA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f1754de18cso32094735e9.1
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Apr 2023 02:54:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682416490; x=1685008490;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a3xd0KrM8HR0k4omEObz64GX2cGiGQ4SAWRK/6hdxxY=;
+        b=ZteM3mghKNwgyJLGOTi+3qsgNc0ufRJpBaSBkpx/Z23ZK1dX7FcFVcUj3A3EuFNUUq
+         q+Dy7jEKkhXTIloRPZ2tzCSn8plVqFuTZYwnIks3xyGJzE6gQf2YJedosvC4RSNDHKG2
+         4N+v4E/6gsUBbK1+OyEcX5/MIcFt3V76DtZ8v0IUJFfnLz7CDJkHHbWgdOtUrCqobFxF
+         /mVCK7EK1EZtgoTjowvUz5XGwqDEqMPjD3M+ohrcS8/zDJWRhdIa5l+O0KaUrIYR9ncG
+         ijlXjX+PJkWTVFObbHAsHOgH8IQxmd9wEgIZihRZ5obVx66oxJ+4vrar9ZepJecC2NwR
+         A0rw==
+X-Gm-Message-State: AAQBX9ck07lT32u1NHtQcwVXL8alAJiFlXdIt8WE54LSp6LgUObfa23t
+        x/dRXoQNRcsQAnzYv4A5LEJn/TWnCqwTwqibRdSDSbjqenxu035uHrsryxDztd1lWzJzAyYUkm1
+        3nR+XiqTQ5XW+U9BWiuDIeQ==
+X-Received: by 2002:a1c:7714:0:b0:3f1:7277:ea6 with SMTP id t20-20020a1c7714000000b003f172770ea6mr9713883wmi.31.1682416490254;
+        Tue, 25 Apr 2023 02:54:50 -0700 (PDT)
+X-Google-Smtp-Source: AKy350aRmEdQe4zxabwm2pwPMYUidyFQgdgpzZ9JnHFgTD+Y5Jp9VdMFTOZRy9bxOM0CAGUsECTCdg==
+X-Received: by 2002:a1c:7714:0:b0:3f1:7277:ea6 with SMTP id t20-20020a1c7714000000b003f172770ea6mr9713872wmi.31.1682416489997;
+        Tue, 25 Apr 2023 02:54:49 -0700 (PDT)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id t12-20020a5d690c000000b002f74578f494sm12734891wru.41.2023.04.25.02.54.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Apr 2023 02:54:49 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Yury Norov <yury.norov@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Barry Song <baohua@kernel.org>
+Subject: Re: [PATCH v2 3/8] sched/topology: add for_each_numa_cpu() macro
+In-Reply-To: <20230420051946.7463-4-yury.norov@gmail.com>
+References: <20230420051946.7463-1-yury.norov@gmail.com>
+ <20230420051946.7463-4-yury.norov@gmail.com>
+Date:   Tue, 25 Apr 2023 10:54:48 +0100
+Message-ID: <xhsmh4jp4l21j.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
+On 19/04/23 22:19, Yury Norov wrote:
+> +/**
+> + * for_each_numa_cpu - iterate over cpus in increasing order taking into account
+> + *		       NUMA distances from a given node.
+> + * @cpu: the (optionally unsigned) integer iterator
+> + * @hop: the iterator variable, must be initialized to a desired minimal hop.
+> + * @node: the NUMA node to start the search from.
+> + * @mask: the cpumask pointer
+> + *
+> + * Requires rcu_lock to be held.
+> + */
+> +#define for_each_numa_cpu(cpu, hop, node, mask)					\
+> +	for ((cpu) = 0, (hop) = 0;						\
+> +		(cpu) = sched_numa_find_next_cpu((mask), (cpu), (node), &(hop)),\
+> +		(cpu) < nr_cpu_ids;						\
+> +		(cpu)++)
+> +
 
-czy rozwa=C5=BCali Pa=C5=84stwo rozw=C3=B3j kwalifikacji j=C4=99zykowych =
-swoich pracownik=C3=B3w?
+I think we can keep sched_numa_find_next_cpu() as-is, but could we make
+that macro use cpu_possible_mask by default? We can always add a variant
+if/when we need to feed in a different mask.
 
-Opracowali=C5=9Bmy kursy j=C4=99zykowe dla r=C3=B3=C5=BCnych bran=C5=BC, =
-w kt=C3=B3rych koncentrujemy si=C4=99 na podniesieniu poziomu s=C5=82owni=
-ctwa i jako=C5=9Bci komunikacji wykorzystuj=C4=85c autorsk=C4=85 metod=C4=
-=99, stworzon=C4=85 specjalnie dla wymagaj=C4=85cego biznesu.=20
+>  #endif /* _LINUX_TOPOLOGY_H */
+> -- 
+> 2.34.1
 
-Niestandardowy kurs on-line, dopasowany do profilu firmy i obszar=C3=B3w =
-=C5=9Bwiadczonych us=C5=82ug, w szybkim czasie przyniesie efekty, kt=C3=B3=
-re zwi=C4=99ksz=C4=85 komfort i jako=C5=9B=C4=87 pracy, rozwijaj=C4=85c m=
-o=C5=BCliwo=C5=9Bci biznesowe.=20
-
-Zdalne szkolenie j=C4=99zykowe to m.in. zaj=C4=99cia z native speakerami,=
- kt=C3=B3re w szybkim czasie naucz=C4=85 pracownik=C3=B3w rozmawia=C4=87 =
-za pomoc=C4=85 jasnego i zwi=C4=99z=C5=82ego j=C4=99zyka Business English=
-=2E
-
-Czy m=C3=B3g=C5=82bym przedstawi=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3=
-w i opowiedzie=C4=87 jak dzia=C5=82amy?
-
-
-Pozdrawiam
-Krzysztof Maj
