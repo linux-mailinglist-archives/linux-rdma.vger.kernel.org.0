@@ -2,149 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C766EEDAE
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Apr 2023 07:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9D76EEF36
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Apr 2023 09:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239354AbjDZFvZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Apr 2023 01:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
+        id S239908AbjDZHUZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Apr 2023 03:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239398AbjDZFvY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Apr 2023 01:51:24 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E615A269E;
-        Tue, 25 Apr 2023 22:50:35 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1a92369761cso53035745ad.3;
-        Tue, 25 Apr 2023 22:50:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682488226; x=1685080226;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tyDHg+l/CBccPJ14EzoCxdO4UR3Mn/BrOLjjC6CJ+24=;
-        b=TWCKU5UAu/a2FrtqYY01I+hpJZonvSm2uJk02JhZix4nco8ktd2qV5uN+suv+mgBKE
-         MCMDikcNTvZs3jXWH3U6H+cpaQaF5ZKfb/ON70gbUyyCp0z6uyt4lLKWF7VXPRrI0OGp
-         c3RVULlufKmgji1SXgMx2WuxLaubQd660tT41FUEvWDm0bYnEbhf4BmQWjNO5ox3CEfH
-         0v0iWYz+8rb9Q/rgxeh3fHZouICJFq1SybYaLaBZpQfVd9FRPNc+Jd7BROKTSSjANRLe
-         uLj9c7Qzi1iSlLCUCuhRuW9+ywKeCCFtegGDLwEyHjs9r60MSOMVCaJc3nLfGMbfVZwS
-         UFxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682488226; x=1685080226;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tyDHg+l/CBccPJ14EzoCxdO4UR3Mn/BrOLjjC6CJ+24=;
-        b=ktAtZ48AtJbi4YhniiB9CPWwsxm212yRgAdDtTVNkI5WRx+HYMZ2bStJKdLPNFRLXN
-         XCCz4QT60UyV9rxlsKx/IUhoYydZTrKcuHREyFB5scp25LDE9YDJq9cTUktHyCFVrVMY
-         NAjE2FHvxGDHPgPirs/2uwjbjogLySn5hLfEJ4muMRgLlKeXfgACQmc5FklHEspcjQVW
-         F+BAX9JBaQKcZiezosPp6txxCGFihtL2qygIytuIU9X1IxR52H7sP7aT9MwMo/3J5iu3
-         JHOG/i7RKLSw/NvdJxAzxL8rWFyJI/bEIYoTRdNAlqtwrg6dpkdvgJTuXaE393gnfVm1
-         4ntg==
-X-Gm-Message-State: AAQBX9fk3FnoCX/uQlNsNTsHxhngDR+5UGAUTtkLuubPTHjfbL3tvsQh
-        bHzkwfapPa0SWGZdU7MmKsM=
-X-Google-Smtp-Source: AKy350axHObaPbqnDo4sJmE58+P6WyJ8EC4Q/mzVqNZJwg6EQKnCWKCFzkgatUEhAYDneB7uPaPhoQ==
-X-Received: by 2002:a17:903:8c7:b0:1a0:5349:6606 with SMTP id lk7-20020a17090308c700b001a053496606mr20348126plb.56.1682488226283;
-        Tue, 25 Apr 2023 22:50:26 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
-        by smtp.gmail.com with ESMTPSA id d2-20020a170902654200b00192aa53a7d5sm9158834pln.8.2023.04.25.22.50.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Apr 2023 22:50:25 -0700 (PDT)
-Date:   Tue, 25 Apr 2023 22:50:23 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Pawel Chmielewski <pawel.chmielewski@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Barry Song <baohua@kernel.org>
-Subject: Re: [PATCH v2 7/8] lib: add test for for_each_numa_{cpu,hop_mask}()
-Message-ID: <ZEi7n4ZJgF2o8Ps9@yury-ThinkPad>
-References: <20230420051946.7463-1-yury.norov@gmail.com>
- <20230420051946.7463-8-yury.norov@gmail.com>
- <xhsmh8rehkxzz.mognet@vschneid.remote.csb>
+        with ESMTP id S239788AbjDZHUP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Apr 2023 03:20:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FCE40E9
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Apr 2023 00:19:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9000E633D6
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Apr 2023 07:19:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F103C433EF;
+        Wed, 26 Apr 2023 07:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682493577;
+        bh=ZB/+cE8VCIP9POgnc8kLomqyrULy3H+KjIA6xXKNCcc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u7VzHihyzNtdvEDCpO59dlrX1+ir8o9x4KLFT34fmCqgmfRYYvqVeB1MLOyjb8iEf
+         bMQ3kQWEa1VZZj6GN9Rm5pwJn+EtltsGUCLRvGBl1oot7ceaa30G3LIkBE+EG3J6A4
+         L3dXN7M8tTD7q+cd4cu2HK1BgYoNhbAyS1JCFR+n8UA3VfPTJo7cJvQ0+xq8hY1G31
+         9hao0jg5gRO0hkmKCGYoWn6Ehcn5lxx0oyQi5/Nqp1uzHnRtfJb0IMoIAn3ncvo8SV
+         TkvPWmFPB0PTm4hjNfIasOkcjmaqmnUMsFwwZjoK4MLu8kG28pU/3MqvFd5zj6Kw+P
+         Y5A2bcKxWkvYA==
+Date:   Wed, 26 Apr 2023 10:19:33 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        andrew.gospodarek@broadcom.com
+Subject: Re: [PATCH v2 for-next 0/6] RDMA/bnxt_re: driver update for
+ supporting low latency push
+Message-ID: <20230426071933.GL27649@unreal>
+References: <1682450993-17711-1-git-send-email-selvin.xavier@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <xhsmh8rehkxzz.mognet@vschneid.remote.csb>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1682450993-17711-1-git-send-email-selvin.xavier@broadcom.com>
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Valentin,
+On Tue, Apr 25, 2023 at 12:29:47PM -0700, Selvin Xavier wrote:
+> The series aims to add support for Low latency push path in
+> some of the bnxt devices. The low latency implementation is
+> supported only for the user applications. Also, the code
+> is modified to use  common mmap helper functions exported
+> by IB core. 
+> 
+> User library changes are getting submitted in the pull request
+> https://github.com/linux-rdma/rdma-core/pull/1321
+> 
+> Please review.
+> 
+> Thanks,
+> Selvin Xavier
+> 
 
-Thanks for review!
+We are in merge window now.
 
-On Mon, Apr 24, 2023 at 06:09:52PM +0100, Valentin Schneider wrote:
-> On 19/04/23 22:19, Yury Norov wrote:
-> > +	for (node = 0; node < sched_domains_numa_levels; node++) {
-> > +		unsigned int hop, c = 0;
-> > +
-> > +		rcu_read_lock();
-> > +		for_each_numa_cpu(cpu, hop, node, cpu_online_mask)
-> > +			expect_eq_uint(cpumask_local_spread(c++, node), cpu);
-> > +		rcu_read_unlock();
-> > +	}
-> 
-> I'm not fond of the export of sched_domains_numa_levels, especially
-> considering it's just there for tests.
-> 
-> Furthermore, is there any value is testing parity with
-> cpumask_local_spread()?
-
-I wanted to emphasize that new NUMA-aware functions are coherent with
-each other, just like find_nth_bit() is coherent with find_next_bit().
-
-But all that coherence looks important only in non-NUMA case, because
-client code may depend on fact that next CPU is never less than current.
-This doesn't hold for NUMA iterators anyways...
-
-> Rather, shouldn't we check that using this API does
-> yield CPUs of increasing NUMA distance?
-> 
-> Something like
-> 
->         for_each_node(node) {
->                 unsigned int prev_cpu, hop = 0;
-> 
->                 cpu = cpumask_first(cpumask_of_node(node));
->                 prev_cpu = cpu;
-> 
->                 rcu_read_lock();
-> 
->                 /* Assert distance is monotonically increasing */
->                 for_each_numa_cpu(cpu, hop, node, cpu_online_mask) {
->                         expect_ge_uint(cpu_to_node(cpu), cpu_to_node(prev_cpu));
->                         prev_cpu = cpu;
->                 }
-> 
->                 rcu_read_unlock();
->         }
-
-Your version of the test looks more straightforward. I need to think
-for more, but it looks like I can take it in v3.
-
-Thanks,
-Yury
+Thanks
