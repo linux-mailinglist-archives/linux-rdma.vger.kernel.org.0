@@ -2,414 +2,212 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FC56F11E5
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Apr 2023 08:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97636F144F
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Apr 2023 11:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345142AbjD1GpK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Apr 2023 02:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
+        id S1345558AbjD1JnC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Apr 2023 05:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjD1GpJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Apr 2023 02:45:09 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889A440FE
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Apr 2023 23:45:07 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6a5f21a231eso6380593a34.1
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Apr 2023 23:45:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682664307; x=1685256307;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=onD4LZ43kDf47Wbgydda1/N1+vFfpAtbBv9NGbY6Lnc=;
-        b=qVcoftmRtjp9e6ij+S1/OsF25W9Ny5DU4KbCU2EqhvgBaBO1lW38LwCiBnsGFtGoSL
-         3XfrHhp1/8QiwVglDQMYjjCv4mIKFc0wABBc9iom2bvxXuIRGPjaUVceTCh4uAgDB57f
-         kD+bkqppmAIRStBilwcCjMUaDZfTdJRQXt2nOeIMrdUNAFRL/AIMLRYe1kL9cHbWHsY4
-         mRHS8aVlRm9x2RELNjzv7ekwqoctL2uYKnrXKVjXZ9dBHEmh44pfnzV8QBXMDSawm/E7
-         8KKh2f0Y2qnSg5Y6yKV8i8biINooukqf6MtBxT/nJ3bwtQD6cEexTj3Z0StUPyfVBCs3
-         qw4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682664307; x=1685256307;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=onD4LZ43kDf47Wbgydda1/N1+vFfpAtbBv9NGbY6Lnc=;
-        b=dPNyRBJHCjaACZkpAw0NDH2v5ptGTS/t8ZN1TsWc+4nfI17N/GPRdvgwulG9mtuU8u
-         1Laa9VS+5hflaAn6YEuz3icXSj34uPRPz0gj7/TVoTNtW8HpxMiTLew/R0kuvHtBC91W
-         X4bQ0n4BMZHufykVkQ+zwsK86FFW/Es1QgAqu21/TK/eBMBlQVdElRs9reDSFgqJxJln
-         a4EvGcEuCr85LDVZWTw6FnK8JxumkNs54AzNDKMlv8lkHcvSWFlQcczPhbW2mOwZ3AVg
-         yyYqGgCVOdtGhdygqnhmubwrbdXKwsgedlO9bAJUfFuN0Ql90XlN4jsPA55fWS+w+jN5
-         lAGw==
-X-Gm-Message-State: AC+VfDxA51cJZo8Y8Zj2GdAaog47aHmLEFfykQR3iK2BZhow/xUSqeV0
-        2NMxaQR+YHCos468qtlAVOWbXExLBJM=
-X-Google-Smtp-Source: ACHHUZ67tnk95COWaQN28YyFH2wGMRU8hBUdWy5nYgZC02lwgH+WGs2kHGVZfKRQo1ZRMWjpbwPNcw==
-X-Received: by 2002:a05:6830:4785:b0:6a5:e752:d60f with SMTP id df5-20020a056830478500b006a5e752d60fmr2164256otb.31.1682664306682;
-        Thu, 27 Apr 2023 23:45:06 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:2418:a5b0:2ff4:c332? (2603-8081-140c-1a00-2418-a5b0-2ff4-c332.res6.spectrum.com. [2603:8081:140c:1a00:2418:a5b0:2ff4:c332])
-        by smtp.gmail.com with ESMTPSA id dk10-20020a0568303b0a00b006a60606de62sm8765964otb.52.2023.04.27.23.45.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Apr 2023 23:45:06 -0700 (PDT)
-Message-ID: <b4785763-3918-31c1-5607-3b3c718b6f21@gmail.com>
-Date:   Fri, 28 Apr 2023 01:45:04 -0500
+        with ESMTP id S1345455AbjD1JnB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Apr 2023 05:43:01 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09CD448C
+        for <linux-rdma@vger.kernel.org>; Fri, 28 Apr 2023 02:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682674980; x=1714210980;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=UC+nfj3BoHJgXEi4ioX7UQJrCOuidNOUnrXQEX2MSuI=;
+  b=MUb2reKIsrjNqQmO8FPKSt4/35J5BCE7S5HZAa17yTewBZQK+NFlRXMv
+   3fbHJSST5jZ2u9W9Y1VwTKCxlLNxwV3+wyyz0A7Y8gGdgL6RDyN9sA6bY
+   IY2lUKorjTJgADzpOq6FFFMR3zZKA0fJqtRWndZ64QJHsL7N5oBdNqZbs
+   hCiYT7dvaesFemXQTBgnLcJ/CIXlJabU/0VAhsRALRR56VHxUI9PPEPXk
+   /8frYOlaL0U3knQcNdSdQ25Rz7VXDBYUTgykCEoT58ieseYMJ0dKkIZ6v
+   H1W0uUEWaFMONLLDe1xU8PrPOxbIlSLuQX7RGMGx2ku6JiQUT/2vmyiPk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10693"; a="328035107"
+X-IronPort-AV: E=Sophos;i="5.99,234,1677571200"; 
+   d="scan'208";a="328035107"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2023 02:43:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10693"; a="764220233"
+X-IronPort-AV: E=Sophos;i="5.99,234,1677571200"; 
+   d="scan'208";a="764220233"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by fmsmga004.fm.intel.com with ESMTP; 28 Apr 2023 02:42:58 -0700
+From:   Zhu Yanjun <yanjun.zhu@intel.com>
+To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, parav@nvidia.com, lehrer@gmail.com
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: [PATCHv5 for-rc1 v5 0/8] Fix the problem that rxe can not work in net namespace 
+Date:   Fri, 28 Apr 2023 17:39:06 +0800
+Message-Id: <20230428093914.2121131-1-yanjun.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH for next v7] RDMA/rxe: Add workqueue support for tasks
-Content-Language: en-US
-To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc:     Ian Ziemba <ian.ziemba@hpe.com>
-References: <20230427155322.11414-1-rpearsonhpe@gmail.com>
- <TYCPR01MB8455003F0BADEE220977C585E56B9@TYCPR01MB8455.jpnprd01.prod.outlook.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <TYCPR01MB8455003F0BADEE220977C585E56B9@TYCPR01MB8455.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 4/28/23 00:37, Daisuke Matsuda (Fujitsu) wrote:
-> On Fri, April 28, 2023 12:53 AM Bob Pearson wrote:
->>
->> Replace tasklets by work queues for the three main rxe tasklets:
->> rxe_requester, rxe_completer and rxe_responder.
->>
->> Rebased to current for-next branch with changes, below, applied.
->>
->> Link: https://lore.kernel.org/linux-rdma/20230329193308.7489-1-rpearsonhpe@gmail.com/
->> Signed-off-by: Ian Ziemba <ian.ziemba@hpe.com>
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> 
-> Reviewed-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-> Tested-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-> 
-> The change looks good.
-> I tried stress test using perftest with multiple-QP settings,
-> and there were no error nor performance penalty. Additionally,
-> no new error was observed with concurrent executions of 
-> the rdma-core testcases.
-> 
-> BTW, I think we should swap the names of "do_task()" and "__do_task()".
-> They look against the naming convention. Generally, a leading double
-> underscore implies that the function is used internally, so other readers
-> would expect "do_task()"wraps "__do_task()".
-> 
-> Thanks,
-> Daisuke
-> 
-> 
->> ---
->> v7:
->>   Adjusted so patch applies after changes to rxe_task.c.
->> v6:
->>   Fixed left over references to tasklets in the comments.
->>   Added WQ_UNBOUND to the parameters for alloc_workqueue(). This shows
->>   a significant performance improvement.
->> v5:
->>   Based on corrected task logic for tasklets and simplified to only
->>   convert from tasklets to workqueues and not provide a flexible
->>   interface.
->>  drivers/infiniband/sw/rxe/rxe.c      |  9 ++-
->>  drivers/infiniband/sw/rxe/rxe_task.c | 84 ++++++++++++++++++----------
->>  drivers/infiniband/sw/rxe/rxe_task.h |  6 +-
->>  3 files changed, 67 insertions(+), 32 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
->> index 7a7e713de52d..54c723a6edda 100644
->> --- a/drivers/infiniband/sw/rxe/rxe.c
->> +++ b/drivers/infiniband/sw/rxe/rxe.c
->> @@ -212,10 +212,16 @@ static int __init rxe_module_init(void)
->>  {
->>  	int err;
->>
->> -	err = rxe_net_init();
->> +	err = rxe_alloc_wq();
->>  	if (err)
->>  		return err;
->>
->> +	err = rxe_net_init();
->> +	if (err) {
->> +		rxe_destroy_wq();
->> +		return err;
->> +	}
->> +
->>  	rdma_link_register(&rxe_link_ops);
->>  	pr_info("loaded\n");
->>  	return 0;
->> @@ -226,6 +232,7 @@ static void __exit rxe_module_exit(void)
->>  	rdma_link_unregister(&rxe_link_ops);
->>  	ib_unregister_driver(RDMA_DRIVER_RXE);
->>  	rxe_net_exit();
->> +	rxe_destroy_wq();
->>
->>  	pr_info("unloaded\n");
->>  }
->> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
->> index fea9a517c8d9..b9815c27cad7 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_task.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
->> @@ -6,8 +6,25 @@
->>
->>  #include "rxe.h"
->>
->> +static struct workqueue_struct *rxe_wq;
->> +
->> +int rxe_alloc_wq(void)
->> +{
->> +	rxe_wq = alloc_workqueue("rxe_wq", WQ_CPU_INTENSIVE | WQ_UNBOUND,
->> +				 WQ_MAX_ACTIVE);
->> +	if (!rxe_wq)
->> +		return -ENOMEM;
->> +
->> +	return 0;
->> +}
->> +
->> +void rxe_destroy_wq(void)
->> +{
->> +	destroy_workqueue(rxe_wq);
->> +}
->> +
->>  /* Check if task is idle i.e. not running, not scheduled in
->> - * tasklet queue and not draining. If so move to busy to
->> + * work queue and not draining. If so move to busy to
->>   * reserve a slot in do_task() by setting to busy and taking
->>   * a qp reference to cover the gap from now until the task finishes.
->>   * state will move out of busy if task returns a non zero value
->> @@ -21,7 +38,7 @@ static bool __reserve_if_idle(struct rxe_task *task)
->>  {
->>  	WARN_ON(rxe_read(task->qp) <= 0);
->>
->> -	if (task->tasklet.state & BIT(TASKLET_STATE_SCHED))
->> +	if (work_pending(&task->work))
->>  		return false;
->>
->>  	if (task->state == TASK_STATE_IDLE) {
->> @@ -38,7 +55,7 @@ static bool __reserve_if_idle(struct rxe_task *task)
->>  }
->>
->>  /* check if task is idle or drained and not currently
->> - * scheduled in the tasklet queue. This routine is
->> + * scheduled in the work queue. This routine is
->>   * called by rxe_cleanup_task or rxe_disable_task to
->>   * see if the queue is empty.
->>   * Context: caller should hold task->lock.
->> @@ -46,7 +63,7 @@ static bool __reserve_if_idle(struct rxe_task *task)
->>   */
->>  static bool __is_done(struct rxe_task *task)
->>  {
->> -	if (task->tasklet.state & BIT(TASKLET_STATE_SCHED))
->> +	if (work_pending(&task->work))
->>  		return false;
->>
->>  	if (task->state == TASK_STATE_IDLE ||
->> @@ -77,23 +94,23 @@ static bool is_done(struct rxe_task *task)
->>   * schedules the task. They must call __reserve_if_idle to
->>   * move the task to busy before calling or scheduling.
->>   * The task can also be moved to drained or invalid
->> - * by calls to rxe-cleanup_task or rxe_disable_task.
->> + * by calls to rxe_cleanup_task or rxe_disable_task.
->>   * In that case tasks which get here are not executed but
->>   * just flushed. The tasks are designed to look to see if
->> - * there is work to do and do part of it before returning
->> + * there is work to do and then do part of it before returning
->>   * here with a return value of zero until all the work
->> - * has been consumed then it retuens a non-zero value.
->> + * has been consumed then it returns a non-zero value.
->>   * The number of times the task can be run is limited by
->>   * max iterations so one task cannot hold the cpu forever.
->> + * If the limit is hit and work remains the task is rescheduled.
->>   */
->> -static void do_task(struct tasklet_struct *t)
->> +static void do_task(struct rxe_task *task)
->>  {
->> -	int cont;
->> -	int ret;
->> -	struct rxe_task *task = from_tasklet(task, t, tasklet);
->>  	unsigned int iterations;
->>  	unsigned long flags;
->>  	int resched = 0;
->> +	int cont;
->> +	int ret;
->>
->>  	WARN_ON(rxe_read(task->qp) <= 0);
->>
->> @@ -122,8 +139,8 @@ static void do_task(struct tasklet_struct *t)
->>  			} else {
->>  				/* This can happen if the client
->>  				 * can add work faster than the
->> -				 * tasklet can finish it.
->> -				 * Reschedule the tasklet and exit
->> +				 * work queue can finish it.
->> +				 * Reschedule the task and exit
->>  				 * the loop to give up the cpu
->>  				 */
->>  				task->state = TASK_STATE_IDLE;
->> @@ -131,9 +148,9 @@ static void do_task(struct tasklet_struct *t)
->>  			}
->>  			break;
->>
->> -		/* someone tried to run the task since the last time we called
->> -		 * func, so we will call one more time regardless of the
->> -		 * return value
->> +		/* someone tried to run the task since the last time we
->> +		 * called func, so we will call one more time regardless
->> +		 * of the return value
->>  		 */
->>  		case TASK_STATE_ARMED:
->>  			task->state = TASK_STATE_BUSY;
->> @@ -149,13 +166,16 @@ static void do_task(struct tasklet_struct *t)
->>
->>  		default:
->>  			WARN_ON(1);
->> -			rxe_info_qp(task->qp, "unexpected task state = %d", task->state);
->> +			rxe_dbg_qp(task->qp, "unexpected task state = %d",
->> +				   task->state);
->>  		}
->>
->>  		if (!cont) {
->>  			task->num_done++;
->>  			if (WARN_ON(task->num_done != task->num_sched))
->> -				rxe_err_qp(task->qp, "%ld tasks scheduled, %ld tasks done",
->> +				rxe_dbg_qp(task->qp,
->> +					   "%ld tasks scheduled, "
->> +					   "%ld tasks done",
->>  					   task->num_sched, task->num_done);
->>  		}
->>  		spin_unlock_irqrestore(&task->lock, flags);
->> @@ -169,6 +189,12 @@ static void do_task(struct tasklet_struct *t)
->>  	rxe_put(task->qp);
->>  }
->>
->> +/* wrapper around do_task to fix argument */
->> +static void __do_task(struct work_struct *work)
->> +{
->> +	do_task(container_of(work, struct rxe_task, work));
->> +}
->> +
->>  int rxe_init_task(struct rxe_task *task, struct rxe_qp *qp,
->>  		  int (*func)(struct rxe_qp *))
->>  {
->> @@ -176,11 +202,9 @@ int rxe_init_task(struct rxe_task *task, struct rxe_qp *qp,
->>
->>  	task->qp = qp;
->>  	task->func = func;
->> -
->> -	tasklet_setup(&task->tasklet, do_task);
->> -
->>  	task->state = TASK_STATE_IDLE;
->>  	spin_lock_init(&task->lock);
->> +	INIT_WORK(&task->work, __do_task);
->>
->>  	return 0;
->>  }
->> @@ -213,8 +237,6 @@ void rxe_cleanup_task(struct rxe_task *task)
->>  	while (!is_done(task))
->>  		cond_resched();
->>
->> -	tasklet_kill(&task->tasklet);
->> -
->>  	spin_lock_irqsave(&task->lock, flags);
->>  	task->state = TASK_STATE_INVALID;
->>  	spin_unlock_irqrestore(&task->lock, flags);
->> @@ -226,7 +248,7 @@ void rxe_cleanup_task(struct rxe_task *task)
->>  void rxe_run_task(struct rxe_task *task)
->>  {
->>  	unsigned long flags;
->> -	int run;
->> +	bool run;
->>
->>  	WARN_ON(rxe_read(task->qp) <= 0);
->>
->> @@ -235,11 +257,11 @@ void rxe_run_task(struct rxe_task *task)
->>  	spin_unlock_irqrestore(&task->lock, flags);
->>
->>  	if (run)
->> -		do_task(&task->tasklet);
->> +		do_task(task);
->>  }
->>
->> -/* schedule the task to run later as a tasklet.
->> - * the tasklet)schedule call can be called holding
->> +/* schedule the task to run later as a work queue entry.
->> + * the queue_work call can be called holding
->>   * the lock.
->>   */
->>  void rxe_sched_task(struct rxe_task *task)
->> @@ -250,7 +272,7 @@ void rxe_sched_task(struct rxe_task *task)
->>
->>  	spin_lock_irqsave(&task->lock, flags);
->>  	if (__reserve_if_idle(task))
->> -		tasklet_schedule(&task->tasklet);
->> +		queue_work(rxe_wq, &task->work);
->>  	spin_unlock_irqrestore(&task->lock, flags);
->>  }
->>
->> @@ -277,7 +299,9 @@ void rxe_disable_task(struct rxe_task *task)
->>  	while (!is_done(task))
->>  		cond_resched();
->>
->> -	tasklet_disable(&task->tasklet);
->> +	spin_lock_irqsave(&task->lock, flags);
->> +	task->state = TASK_STATE_DRAINED;
->> +	spin_unlock_irqrestore(&task->lock, flags);
->>  }
->>
->>  void rxe_enable_task(struct rxe_task *task)
->> @@ -291,7 +315,7 @@ void rxe_enable_task(struct rxe_task *task)
->>  		spin_unlock_irqrestore(&task->lock, flags);
->>  		return;
->>  	}
->> +
->>  	task->state = TASK_STATE_IDLE;
->> -	tasklet_enable(&task->tasklet);
->>  	spin_unlock_irqrestore(&task->lock, flags);
->>  }
->> diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
->> index facb7c8e3729..a63e258b3d66 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_task.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_task.h
->> @@ -22,7 +22,7 @@ enum {
->>   * called again.
->>   */
->>  struct rxe_task {
->> -	struct tasklet_struct	tasklet;
->> +	struct work_struct	work;
->>  	int			state;
->>  	spinlock_t		lock;
->>  	struct rxe_qp		*qp;
->> @@ -32,6 +32,10 @@ struct rxe_task {
->>  	long			num_done;
->>  };
->>
->> +int rxe_alloc_wq(void);
->> +
->> +void rxe_destroy_wq(void);
->> +
->>  /*
->>   * init rxe_task structure
->>   *	qp  => parameter to pass to func
->>
->> base-commit: 209558abea74e37402fcc3d1217c6c1043d91335
->> --
->> 2.37.2
-> 
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
+When run "ip link add" command to add a rxe rdma link in a net
+namespace, normally this rxe rdma link can not work in a net
+name space.
 
-Thanks for looking at this. We have very recently found one more issue which is easy to fix.
-Under extremely heavy loads where one of the tasks is constantly being 'rearmed' there is no
-check to see if the ret in do_task is 0 which implies it ran out of max iterations.
-This will cause the task to go back to the top of the loop and then run the task function
-one more time. If it can rearm before the loop exits it will hold the cpu forever which causes
-soft lockup warnings. The fix is to test the return value first independent of the task state
-and reschedule if ret == 0. I will merge the fix into this patch and resend tomorrow.
+The root cause is that a sock listening on udp port 4791 is created
+in init_net when the rdma_rxe module is loaded into kernel. That is,
+the sock listening on udp port 4791 is created in init_net. Other net
+namespace is difficult to use this sock.
 
-Bob
+The following commits will solve this problem.
+
+In the first commit, move the creating sock listening on udp port 4791
+from module_init function to rdma link creating functions. That is,
+after the module rdma_rxe is loaded, the sock will not be created.
+When run "rdma link add ..." command, the sock will be created. So
+when creating a rdma link in the net namespace, the sock will be
+created in this net namespace.
+
+In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
+will check the sock exists in the net namespace or not. If yes, rdma
+link will increase the reference count of this sock, then continue other
+jobs instead of creating a new sock to listen on udp port 4791. Since the
+network notifier is global, when the module rdma_rxe is loaded, this
+notifier will be registered.
+
+After the rdma link is created, the command "rdma link del" is to
+delete rdma link at the same time the sock is checked. If the reference
+count of this sock is greater than the sock reference count needed by
+udp tunnel, the sock reference count is decreased by one. If equal, it
+indicates that this rdma link is the last one. As such, the udp tunnel
+is shut down and the sock is closed. The above work should be
+implemented in linkdel function. But currently no dellink function in
+rxe. So the 3rd commit addes dellink function pointer. And the 4th
+commit implements the dellink function in rxe.
+
+To now, it is not necessary to keep a global variable to store the sock
+listening udp port 4791. This global variable can be replaced by the
+functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
+function udp6_lib_lookup is in the fast path, a member variable l_sk6
+is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
+to lookup the sock, then the sock is stored in l_sk6, in the future,it
+can be used directly.
+
+All the above work has been done in init_net. And it can also work in
+the net namespace. So the init_net is replaced by the individual net
+namespace. This is what the 6th commit does. Because rxe device is
+dependent on the net device and the sock listening on udp port 4791,
+every rxe device is in exclusive mode in the individual net namespace.
+Other rdma netns operations will be considerred in the future.
+
+In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
+functions are added. When a new net namespace is created, the init
+function will initialize the sk4 and sk6 socks. Then the 2 socks will
+be released when the net namespace is destroyed. The functions
+rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
+namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
+handle sk6. Then sk4 and sk6 are used in the previous commits.
+
+As the sk4 and sk6 in pernet namespace can be accessed, it is not
+necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
+replaced with the sk6 in pernet namespace.
+
+Test steps:
+1) Suppose that 2 NICs are in 2 different net namespaces.
+
+  # ip netns exec net0 ip link
+  3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
+     link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
+     altname enp5s0
+
+  # ip netns exec net1 ip link
+  4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
+     link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
+
+2) Add rdma link in the different net namespace
+    net0:
+    # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
+
+    net1:
+    # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
+
+3) Run rping test.
+    net0
+    # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
+    [1] 1737
+    # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
+    verbose
+    count 1
+    ...
+    ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+    ...
+
+4) Remove the rdma links from the net namespaces.
+    net0:
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+    UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+    UNCONN    0         0         [::]:4791             [::]:*
+
+    # ip netns exec net0 rdma link del rxe0
+
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+
+    net1:
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+    UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+    UNCONN    0         0         [::]:4791             [::]:*
+
+    # ip netns exec net1 rdma link del rxe1
+
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+
+V4->V5: Rebase the commits to v6.3;
+
+V3->V4: Rebase the commits to rdma-next;
+
+V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
+           verify rdma link is removed.
+        2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
+        3) Replace l_sk6 with sk6 of pernet_name_space
+
+V1->V2: Add the explicit initialization of sk6.
+
+Zhu Yanjun (8):
+  RDMA/rxe: Creating listening sock in newlink function
+  RDMA/rxe: Support more rdma links in init_net
+  RDMA/nldev: Add dellink function pointer
+  RDMA/rxe: Implement dellink in rxe
+  RDMA/rxe: Replace global variable with sock lookup functions
+  RDMA/rxe: add the support of net namespace
+  RDMA/rxe: Add the support of net namespace notifier
+  RDMA/rxe: Replace l_sk6 with sk6 in net namespace
+
+ drivers/infiniband/core/nldev.c     |   6 ++
+ drivers/infiniband/sw/rxe/Makefile  |   3 +-
+ drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
+ drivers/infiniband/sw/rxe/rxe_net.c | 113 +++++++++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
+ drivers/infiniband/sw/rxe/rxe_ns.c  | 128 ++++++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_ns.h  |  11 +++
+ include/rdma/rdma_netlink.h         |   2 +
+ 8 files changed, 267 insertions(+), 40 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
+
+-- 
+2.27.0
+
