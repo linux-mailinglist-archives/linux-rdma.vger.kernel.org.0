@@ -2,52 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE256F29DD
-	for <lists+linux-rdma@lfdr.de>; Sun, 30 Apr 2023 19:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D5A6F29E1
+	for <lists+linux-rdma@lfdr.de>; Sun, 30 Apr 2023 19:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbjD3RSO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 30 Apr 2023 13:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
+        id S231229AbjD3RSP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 30 Apr 2023 13:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjD3RSN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 30 Apr 2023 13:18:13 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CF32706;
-        Sun, 30 Apr 2023 10:18:12 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-63b5465fb99so1384404b3a.1;
-        Sun, 30 Apr 2023 10:18:12 -0700 (PDT)
+        with ESMTP id S230494AbjD3RSO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 30 Apr 2023 13:18:14 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95102D48;
+        Sun, 30 Apr 2023 10:18:13 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-24df4ef05d4so517161a91.2;
+        Sun, 30 Apr 2023 10:18:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682875092; x=1685467092;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ISrATsmvvsI3ENm0Fz7FtfUMQfm0RxH5he0WkIT7gCc=;
-        b=nZ7ewqw0Tu2rc4AgwkxP4Zdz20XibpyKqCgf1O3ShuqZVptqZOwdqbogtTz2Yh6OMQ
-         Pnlu0uWIzkDmHPHp+fpo8P9VpP3DIaEfGAUQohc+FrYFNLTZNktQQjRdrRr752fJ2pgx
-         P0smcRSMW+yQUOPQ2nPizjBPN+IqIbRo9qzjUuWlO3uusZtM0sCHLoBGsA3X/GWSUx2z
-         e+7QtL4+PkltkS06xAG9gXE8m0dcUJCk4Pl3398MCrbmourXrxl9nvi6a/RXaOgIBMV8
-         lMa9jNbK+sgUE8JY7NWxGdAag1OGJdzGz3VkDrq8hcnUvGFvViiorJk1TpuwGBwSvirH
-         L8WA==
+        d=gmail.com; s=20221208; t=1682875093; x=1685467093;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TWZ/FM9Xy42k8TQIEAYaaEoBZGiiKDahHvzomhIyOWo=;
+        b=DfGc4B6u50hjxfbXwokfigtvybIagJSpgF1k7vXk3oK29QxTRG7GYATE4MFjrmVdG/
+         J5c6Dy6piJTDC3ByETGQyRxvWRL5FEywm8uWBVIA3bXWCobrYb7tFtLGsHzSgxaYmIsy
+         0DaUFwWeniLqoFWx8bPR4xf2Z4vQDUwOO67UG1iuMv7BhkA7coitPbK0Qo/Uhxp3w09X
+         tEUlw4Yq+Hoc92NM2QyEVe+N7a6CVJdsUuBuhh4M8MIaLqFXNlh/yuwjB0y+q37zct6M
+         +s8Nn7Ek179r1DUNnx/Zd5mjKrbQ39Alm6h9+BTD9KwEdhlZYgWyV2JrENAYa1I8s7Dv
+         1Sng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682875092; x=1685467092;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ISrATsmvvsI3ENm0Fz7FtfUMQfm0RxH5he0WkIT7gCc=;
-        b=lUI/CwxpjxB0t7/IMPkQ9NlF9F/+tnPQUUdLmd3RduhOT/8djxUFkKeCf+UH9I6L9w
-         uokcKTib76zu1ydT6axg8qvrxh4eLY/w+KjIsvpCmNwzFieFLhGTKCKArDjEWcMel59r
-         z9/G1QOaU9JbGGo7IdkKgD1XRFTsNj/gxsxIce0grdBdfWVpIg8tC1AIGpQjih3jwN+T
-         v1XjT/cj3lAoILRRsnwokioE4J5/CFf1k/UmBad0h7TjPdfKet/hUAcx/oFjN5s/DDl8
-         R1ZC9wnLwXbDA1EuWeUooaBmcsiva3MVBCtd1SYcA/TNu3QX0+dBI5eoPpGx9cXVk/k0
-         LI0A==
-X-Gm-Message-State: AC+VfDx56OHU2813g4lalCq/p5laoqO0X1h+f/ad0hL5A563woryfjbC
-        p82Vq14vnLXD2wrJ2sMYJ/o=
-X-Google-Smtp-Source: ACHHUZ6za45Ner9fti6NewhJl6YCUe5nndq14uhC1VwFjXtEM6ix0p79dmyBbNtwZ64oIHLumai6ow==
-X-Received: by 2002:a05:6a21:2d8d:b0:de:247e:d1fe with SMTP id ty13-20020a056a212d8d00b000de247ed1femr12012219pzb.1.1682875091774;
-        Sun, 30 Apr 2023 10:18:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682875093; x=1685467093;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TWZ/FM9Xy42k8TQIEAYaaEoBZGiiKDahHvzomhIyOWo=;
+        b=IWd/mPIlOwL917fXchHUqYzsAyT4vurCEYG0LgoNABBOk6Sg8zivlrYG+K7d4wNsZ0
+         M3YWJ8fNEU7d90vDl0+jSX7FmInGd+pyB00PTtDL1RXRrVgzc4Q+NMZFZ73AvAju8cPo
+         9b8oDZqo44GAAGQMMEqpdJgJYVWM4eVGCUgTtKuSEUuXZYQOvHkE9sIGxwYh9/lLD2o/
+         4sqMpJu9ZH3LrzsaiBZqMI2k6nDZKjdT06BbQGLuHymQ1YZEIoMDF/Iz24i2ujI9r+ZW
+         YD+3dXpcmwV6jqFZgRQ413vjSHv88sQgvmO5K5DLhuFCX4+4JvvgyfqIEnLaDNOFEEFZ
+         Bl+Q==
+X-Gm-Message-State: AC+VfDwRrIPSp6D9qwOFZsCurs/Mr2S62dhowKTzYzzIoQnEDWpXTm9J
+        Ceqg0D0vOXr5NYMdMmT2qIg=
+X-Google-Smtp-Source: ACHHUZ4QxoittMxV8zbCIJSrLlRIt/RmzZr/yg+px1T1B035hDcTBgtdFUy65HhCICOy4EAMXasQwQ==
+X-Received: by 2002:a17:90b:4a01:b0:246:8a27:d42d with SMTP id kk1-20020a17090b4a0100b002468a27d42dmr11382564pjb.48.1682875093288;
+        Sun, 30 Apr 2023 10:18:13 -0700 (PDT)
 Received: from localhost ([4.1.102.3])
-        by smtp.gmail.com with ESMTPSA id u10-20020a62d44a000000b00637ca3eada8sm18518432pfl.6.2023.04.30.10.18.10
+        by smtp.gmail.com with ESMTPSA id n12-20020a17090a9f0c00b0024e05b7ba8bsm68533pjp.25.2023.04.30.10.18.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Apr 2023 10:18:11 -0700 (PDT)
+        Sun, 30 Apr 2023 10:18:12 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -74,10 +75,12 @@ Cc:     Yury Norov <yury.norov@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Heiko Carstens <hca@linux.ibm.com>,
         Barry Song <baohua@kernel.org>
-Subject: [PATCH v2 0/8] sched/topology: add for_each_numa_cpu() macro
-Date:   Sun, 30 Apr 2023 10:18:01 -0700
-Message-Id: <20230430171809.124686-1-yury.norov@gmail.com>
+Subject: [PATCH v3 1/8] sched: fix sched_numa_find_nth_cpu() in non-NUMA case
+Date:   Sun, 30 Apr 2023 10:18:02 -0700
+Message-Id: <20230430171809.124686-2-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230430171809.124686-1-yury.norov@gmail.com>
+References: <20230430171809.124686-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -90,102 +93,31 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-for_each_cpu() is widely used in kernel, and it's beneficial to create
-a NUMA-aware version of the macro.
+When CONFIG_NUMA is enabled, sched_numa_find_nth_cpu() searches for a
+CPU in sched_domains_numa_masks. The masks includes only online CPUs,
+so effectively offline CPUs are skipped.
 
-Recently added for_each_numa_hop_mask() works, but switching existing
-codebase to it is not an easy process.
+When CONFIG_NUMA is disabled, the fallback function should be consistent.
 
-This series adds for_each_numa_cpu(), which is designed to be similar to
-the for_each_cpu(). It allows to convert existing code to NUMA-aware as
-simple as adding a hop iterator variable and passing it inside new macro.
-for_each_numa_cpu() takes care of the rest.
+Fixes: cd7f55359c90 ("sched: add sched_numa_find_nth_cpu()")
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ include/linux/topology.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-At the moment, we have 2 users of NUMA-aware enumerators. One is
-Melanox's in-tree driver, and another is Intel's in-review driver:
-
-https://lore.kernel.org/lkml/20230216145455.661709-1-pawel.chmielewski@intel.com/
-
-Both real-life examples follow the same pattern:
-
-        for_each_numa_hop_mask(cpus, prev, node) {
-                for_each_cpu_andnot(cpu, cpus, prev) {
-                        if (cnt++ == max_num)
-                                goto out;
-                        do_something(cpu);
-                }
-                prev = cpus;
-        }
-
-With the new macro, it has a more standard look, like this:
-
-        for_each_numa_cpu(cpu, hop, node, cpu_possible_mask) {
-                if (cnt++ == max_num)
-                        break;
-                do_something(cpu);
-        }
-
-Straight conversion of existing for_each_cpu() codebase to NUMA-aware
-version with for_each_numa_hop_mask() is difficult because it doesn't
-take a user-provided cpu mask, and eventually ends up with open-coded
-double loop. With for_each_numa_cpu() it shouldn't be a brainteaser.
-Consider the NUMA-ignorant example:
-
-        cpumask_t cpus = get_mask();
-        int cnt = 0, cpu;
-
-        for_each_cpu(cpu, cpus) {
-                if (cnt++ == max_num)
-                        break;
-                do_something(cpu);
-        }
-
-Converting it to NUMA-aware version would be as simple as:
-
-        cpumask_t cpus = get_mask();
-        int node = get_node();
-        int cnt = 0, hop, cpu;
-
-        for_each_numa_cpu(cpu, hop, node, cpus) {
-                if (cnt++ == max_num)
-                        break;
-                do_something(cpu);
-        }
-
-The latter looks more verbose and avoids from open-coding that annoying
-double loop. Another advantage is that it works with a 'hop' parameter with
-the clear meaning of NUMA distance, and doesn't make people not familiar
-to enumerator internals bothering with current and previous masks machinery.
-
-v2: https://lore.kernel.org/netdev/ZD3l6FBnUh9vTIGc@yury-ThinkPad/T/
-v3:
- - fix sched_numa_find_{next,nth}_cpu() when CONFIG_NUMA is off to
-   only traverse online CPUs;
- - don't export sched_domains_numa_levels for testing purposes. In
-   the test, use for_each_node() macro;
- - extend the test for for_each_node();
- - in comments, mention that only online CPUs are traversed;
- - rebase on top of 6.3. 
-
-Yury Norov (8):
-  sched: fix sched_numa_find_nth_cpu() in non-NUMA case
-  lib/find: add find_next_and_andnot_bit()
-  sched/topology: introduce sched_numa_find_next_cpu()
-  sched/topology: add for_each_numa_{,online}_cpu() macro
-  net: mlx5: switch comp_irqs_request() to using for_each_numa_cpu
-  lib/cpumask: update comment to cpumask_local_spread()
-  sched: drop for_each_numa_hop_mask()
-  lib: test for_each_numa_cpus()
-
- drivers/net/ethernet/mellanox/mlx5/core/eq.c | 16 ++---
- include/linux/find.h                         | 43 ++++++++++++
- include/linux/topology.h                     | 40 ++++++-----
- kernel/sched/topology.c                      | 53 ++++++++-------
- lib/cpumask.c                                |  7 +-
- lib/find_bit.c                               | 12 ++++
- lib/test_bitmap.c                            | 70 +++++++++++++++++++-
- 7 files changed, 183 insertions(+), 58 deletions(-)
-
+diff --git a/include/linux/topology.h b/include/linux/topology.h
+index fea32377f7c7..52f5850730b3 100644
+--- a/include/linux/topology.h
++++ b/include/linux/topology.h
+@@ -251,7 +251,7 @@ extern const struct cpumask *sched_numa_hop_mask(unsigned int node, unsigned int
+ #else
+ static __always_inline int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
+ {
+-	return cpumask_nth(cpu, cpus);
++	return cpumask_nth_and(cpu, cpus, cpu_online_mask);
+ }
+ 
+ static inline const struct cpumask *
 -- 
 2.37.2
 
