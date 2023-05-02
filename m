@@ -2,62 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 440B26F48C1
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 May 2023 19:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5195A6F4C67
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 May 2023 23:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbjEBRAo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 May 2023 13:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        id S229582AbjEBV6a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 May 2023 17:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233462AbjEBRAn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 May 2023 13:00:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63ABB95
-        for <linux-rdma@vger.kernel.org>; Tue,  2 May 2023 10:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683046802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=soAlhU+u59r6N3bBwieU8qJXFtY5WnxjTNdmvTWn4Lo=;
-        b=KOxnz1H8J+RzNbQ6c0yqdoVvXawq8tHxJYU5bpdLY/FwVGygT+uRcKieSqlhGc6/PyOJHz
-        yz1JsMK9V0EpdDpiOQ7WSOBpyocpvvkE8AKncEqLaM6GeOhg5VbkNeeFJLHhw8UXAuikb1
-        0L8KSsa/orHePVsdxLEf6CLmWUqE9Fs=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-607-TExov4YxNfS-wlkF6d3WEA-1; Tue, 02 May 2023 12:59:59 -0400
-X-MC-Unique: TExov4YxNfS-wlkF6d3WEA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3f1793d6363so12375825e9.1
-        for <linux-rdma@vger.kernel.org>; Tue, 02 May 2023 09:59:59 -0700 (PDT)
+        with ESMTP id S229458AbjEBV63 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 May 2023 17:58:29 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616001704;
+        Tue,  2 May 2023 14:58:28 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2ac6f6e159eso2217371fa.0;
+        Tue, 02 May 2023 14:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683064706; x=1685656706;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=80TSuEdqOOm6cDgVdKdpN9l/A7aX+5rnJlnIpuVjK3c=;
+        b=dV6eiHvnUq2EnE4XrIojbKTDFE4LaLO3hogbiq+UGggNk6lKSSRf/7m/4ocRbuXq0K
+         jrBbUTaC73r/COxi36IuXrGrr48gwOrusAOXbwI67iccq9QzH7V5wpdQtTcm/C/GDkNF
+         WofF9kIPGfXxo8Bk+22MLKUaZjdz1zgVa+d23mD4De2kxsm95m9Wd4Jbj9KS1wfE1+pH
+         YdlkEdJB+S0qlp/KqInkxT80Iltojf2lwUAS53e1SFn20+15IMn5HU0SR5XJ2Wm2330X
+         ggSXwjGFqChaCKSYheQcONsHY9qEphWm06K1kgVRn+v5L8fqUvHWSnYKa53kcveNLcj8
+         2vFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683046798; x=1685638798;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=soAlhU+u59r6N3bBwieU8qJXFtY5WnxjTNdmvTWn4Lo=;
-        b=P53j3fnpF/dyi5aR39YnlX9vvxxMjde9ej60HCrzuAss/ao2OqNbpqDxCkbk8KQcIt
-         9beaFBtqho2bUXc3FrVRGZM41JDDn3TdV17sOPMCJ32v2Fxtmgir3qkk/dCWJVASzusA
-         q2VwSTNdPwEQb0n5GL8ziQZ9cnOHkGQI3svmNG7BNrqyAiw3/M8CrEeXbspayfJ6gQ3V
-         k76JixI7LnKA87WD/36cFBIHN9lK8URPa0cXA7SkONGuJM2n9HJtOoMa1bycevHRrPmh
-         YLYCnmcrUzKZuUrbAlffy7pN1jF0lB3H4O3hYdt/0qOWua0NJCCENVA5/nkBt5MvcYDZ
-         bP2w==
-X-Gm-Message-State: AC+VfDyYxx0QUf8VmjXybziBPv6QDhlDGPLTYKO/Pjwm4mZ/T8Xc8raH
-        1sFGESA5fN1C+lr80NsVoILsGsvoIf2Oy8rvJ0F8AZfiNenMxAaWrv/EDVq1bvMlm2jJadU3yXy
-        kFfqEM2DkBFsw30SA3rTIag==
-X-Received: by 2002:a7b:cb45:0:b0:3f3:3063:f904 with SMTP id v5-20020a7bcb45000000b003f33063f904mr7647313wmj.31.1683046798736;
-        Tue, 02 May 2023 09:59:58 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6bgoJ5+HeAaUwQyiueqwOdAyKf1FkpCEunCJteQTqQPYvQ3mhYBOMFixVzHFsCiv8wckCqOg==
-X-Received: by 2002:a7b:cb45:0:b0:3f3:3063:f904 with SMTP id v5-20020a7bcb45000000b003f33063f904mr7647289wmj.31.1683046798409;
-        Tue, 02 May 2023 09:59:58 -0700 (PDT)
-Received: from vschneid.remote.csb ([154.57.232.159])
-        by smtp.gmail.com with ESMTPSA id h15-20020a05600c314f00b003f1978bbcd6sm41882983wmo.3.2023.05.02.09.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 May 2023 09:59:57 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Yury Norov <yury.norov@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>,
+        d=1e100.net; s=20221208; t=1683064706; x=1685656706;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=80TSuEdqOOm6cDgVdKdpN9l/A7aX+5rnJlnIpuVjK3c=;
+        b=Woh2BFKcf9RuRwtUsnnxr/su7piH5vVCwii4pxR3V2ByUmh73UJwf9QGcrypJK1EyX
+         HgMQElUqdYnHcwxxW+3VL1GKNIV2dgn/f9xAZ+tYsgL8Rpu4WegslzMM8+2zniX+9BUc
+         xj0VHgQA1nenJ5pJ7uzbN9DSl1vM8xAQj2QBS8G6MKXT/fPmLZdDXFR8uAGBfTZTI5Yk
+         nb8PlxSb7w5uYZlbFuyZ1jo+iJO11Lbg4Z27ec0qvbiOUg2gGByzu1cbhLnh7i5nASat
+         KI6YEl9sXUDGl0IvsLEHkQXgMzFxUmPOHyBI9qsJQ0JJahnAFQ3IFE9T+PhRruy1n5BK
+         STOQ==
+X-Gm-Message-State: AC+VfDxBDgEZy/jXKLbejZMbo49BvrIs4QG3Yi2vQf1QvTgMaLcJ8rYn
+        y7GBKFaONZDAyF4ZiUaMPU3p7cmvM7mXADUXsoCrPM3AJaM=
+X-Google-Smtp-Source: ACHHUZ6wVoapTKq4N/FU1cu+N2vv4Zr4TDxQrO79te4N19OoaMp7nBEwQvDIMiKesQH1v4sLSHIv0nLvr5h/V+kHPEY=
+X-Received: by 2002:ac2:418f:0:b0:4ed:d542:6f63 with SMTP id
+ z15-20020ac2418f000000b004edd5426f63mr320003lfh.11.1683064706389; Tue, 02 May
+ 2023 14:58:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230430171809.124686-1-yury.norov@gmail.com> <xhsmhildak6t0.mognet@vschneid.remote.csb>
+In-Reply-To: <xhsmhildak6t0.mognet@vschneid.remote.csb>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Tue, 2 May 2023 14:58:15 -0700
+Message-ID: <CAAH8bW9SBrFG+gkH2sT4O_tEQaM-bNT2++v0iyjnuf_aME2DNg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/8] sched/topology: add for_each_numa_cpu() macro
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         Saeed Mahameed <saeedm@nvidia.com>,
         Pawel Chmielewski <pawel.chmielewski@intel.com>,
         Leon Romanovsky <leon@kernel.org>,
@@ -79,16 +76,10 @@ Cc:     Yury Norov <yury.norov@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Heiko Carstens <hca@linux.ibm.com>,
         Barry Song <baohua@kernel.org>
-Subject: Re: [PATCH v2 0/8] sched/topology: add for_each_numa_cpu() macro
-In-Reply-To: <20230430171809.124686-1-yury.norov@gmail.com>
-References: <20230430171809.124686-1-yury.norov@gmail.com>
-Date:   Tue, 02 May 2023 17:59:55 +0100
-Message-ID: <xhsmhildak6t0.mognet@vschneid.remote.csb>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,77 +87,10 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 30/04/23 10:18, Yury Norov wrote:
-> for_each_cpu() is widely used in kernel, and it's beneficial to create
-> a NUMA-aware version of the macro.
+> LGTM, I ran the tests on a few NUMA topologies and that all seems to behave
+> as expected. Thanks for working on this!
 >
-> Recently added for_each_numa_hop_mask() works, but switching existing
-> codebase to it is not an easy process.
->
-> This series adds for_each_numa_cpu(), which is designed to be similar to
-> the for_each_cpu(). It allows to convert existing code to NUMA-aware as
-> simple as adding a hop iterator variable and passing it inside new macro.
-> for_each_numa_cpu() takes care of the rest.
->
-> At the moment, we have 2 users of NUMA-aware enumerators. One is
-> Melanox's in-tree driver, and another is Intel's in-review driver:
->
-> https://lore.kernel.org/lkml/20230216145455.661709-1-pawel.chmielewski@intel.com/
->
-> Both real-life examples follow the same pattern:
->
->         for_each_numa_hop_mask(cpus, prev, node) {
->                 for_each_cpu_andnot(cpu, cpus, prev) {
->                         if (cnt++ == max_num)
->                                 goto out;
->                         do_something(cpu);
->                 }
->                 prev = cpus;
->         }
->
-> With the new macro, it has a more standard look, like this:
->
->         for_each_numa_cpu(cpu, hop, node, cpu_possible_mask) {
->                 if (cnt++ == max_num)
->                         break;
->                 do_something(cpu);
->         }
->
-> Straight conversion of existing for_each_cpu() codebase to NUMA-aware
-> version with for_each_numa_hop_mask() is difficult because it doesn't
-> take a user-provided cpu mask, and eventually ends up with open-coded
-> double loop. With for_each_numa_cpu() it shouldn't be a brainteaser.
-> Consider the NUMA-ignorant example:
->
->         cpumask_t cpus = get_mask();
->         int cnt = 0, cpu;
->
->         for_each_cpu(cpu, cpus) {
->                 if (cnt++ == max_num)
->                         break;
->                 do_something(cpu);
->         }
->
-> Converting it to NUMA-aware version would be as simple as:
->
->         cpumask_t cpus = get_mask();
->         int node = get_node();
->         int cnt = 0, hop, cpu;
->
->         for_each_numa_cpu(cpu, hop, node, cpus) {
->                 if (cnt++ == max_num)
->                         break;
->                 do_something(cpu);
->         }
->
-> The latter looks more verbose and avoids from open-coding that annoying
-> double loop. Another advantage is that it works with a 'hop' parameter with
-> the clear meaning of NUMA distance, and doesn't make people not familiar
-> to enumerator internals bothering with current and previous masks machinery.
->
+> Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 
-LGTM, I ran the tests on a few NUMA topologies and that all seems to behave
-as expected. Thanks for working on this! 
-
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
-
+Thank you Valentin. If you spent time testing the series, why
+don't you add your Tested-by?
