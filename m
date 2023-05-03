@@ -2,106 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4706F6069
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 May 2023 23:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38996F6253
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 May 2023 02:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbjECVE7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 May 2023 17:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
+        id S229562AbjEDATi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 May 2023 20:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjECVE6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 May 2023 17:04:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B4B7A94
-        for <linux-rdma@vger.kernel.org>; Wed,  3 May 2023 14:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683147846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8sEtZ4KKiBJy1POn8D3R9hO+Z4vqPZk3VVqn1QTUgNY=;
-        b=Fl0StGMScfdWS7y8nPnARb6S3q6N7CXoh8IHOnh4Tu8P28pliEzYgly91397z0PeF7J2lL
-        qekDbazPdBtllTwe6jGt423PuBMSNN23CAT83OQf2O4KbsGEzizH1te7imyuzRqak1BgCP
-        76lc2cHus0ktg3O7FNx1ftsbUGcKvpA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-451-fJg2bl7TOeqo1WYiWd5sJg-1; Wed, 03 May 2023 17:04:05 -0400
-X-MC-Unique: fJg2bl7TOeqo1WYiWd5sJg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B3B4710504A5;
-        Wed,  3 May 2023 21:04:04 +0000 (UTC)
-Received: from fedora-x1.redhat.com (unknown [10.22.10.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3B0452166B26;
-        Wed,  3 May 2023 21:04:03 +0000 (UTC)
-From:   Kamal Heib <kheib@redhat.com>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kheib@redhat.com
-Subject: [PATCH iproute2-next] rdma: Report device protocol
-Date:   Wed,  3 May 2023 17:03:42 -0400
-Message-Id: <20230503210342.66155-1-kheib@redhat.com>
+        with ESMTP id S229499AbjEDATh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 May 2023 20:19:37 -0400
+Received: from mail.peterfykh.hu (mail.peterfykh.hu [84.206.67.96])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A6F658C;
+        Wed,  3 May 2023 17:19:36 -0700 (PDT)
+Received: from mail.peterfykh.hu (localhost [127.0.0.1])
+        by mail.peterfykh.hu (Postfix) with ESMTP id 2ABB1A01;
+        Thu,  4 May 2023 01:42:47 +0200 (CEST)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Thu, 04 May 2023 07:42:46 +0800
+From:   mk <kalocsai.csilla@peterfykh.hu>
+To:     undisclosed-recipients:;
+Subject: =?UTF-8?Q?=E4=BD=A0=E5=A5=BD=E9=99=BD=E5=85=89?=
+Reply-To: marionn.k99@gmail.com
+Mail-Reply-To: marionn.k99@gmail.com
+Message-ID: <a3396b2280c645ac75c55c6df45103b1@peterfykh.hu>
+X-Sender: kalocsai.csilla@peterfykh.hu
+User-Agent: Roundcube Webmail/1.2.3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peterfykh.hu; s=mail; t=1683157387; bh=W6ZSce0cCVgkn0l95t889AY595zUPLw5BzNOdwdHQs8=; h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Subject:Reply-To:Message-ID; b=cDaPnpr9SwW1HlxuKXO2YbfaV19unSoH9onZb1GK+8tlZbHCXNUhdy3agqHbzF5cGz4c08bc9uIJKdP98yIgK/arIgfnbf79g3r1OV7ru+aoxl2GSYcZzSKC8olIZSCOoz9/7hSuiD2Z8unPI0NXxzUDMObVwmKl9FSvaMd1zY4=
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,ODD_FREEM_REPTO,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add support for reporting the device protocol.
+你好呀，
 
-$ rdma dev
-11: mlx5_0: node_type ca proto roce fw 12.28.2006
-    node_guid 248a:0703:004b:f094 sys_image_guid 248a:0703:004b:f094
-12: mlx5_1: node_type ca proto ib fw 12.28.2006
-    node_guid 248a:0703:0049:d4f0 sys_image_guid 248a:0703:0049:d4f0
-13: mlx5_2: node_type ca proto ib fw 12.28.2006
-    node_guid 248a:0703:0049:d4f1 sys_image_guid 248a:0703:0049:d4f0
-17: siw0: node_type rnic proto iw node_guid
-    0200:00ff:fe00:0000 sys_image_guid 0200:00ff:fe00:0000
+很抱歉打擾您並侵犯您的隱私。 我是單身，孤獨，需要一個關懷，愛心和浪漫的伴侶。
 
-Signed-off-by: Kamal Heib <kheib@redhat.com>
----
- rdma/dev.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+我是一個暗戀者，想探索更多了解彼此的機會。 我知道這樣聯繫你很奇怪，希望你能原諒我。 我是一個害羞的人，這是我知道我能引起你注意的唯一方式。 
+我只是想知道你的想法，我的本意不是要冒犯你。 我希望我們能成為朋友，如果那是你想要的，儘管我希望不僅僅是朋友。 
+我知道你有幾個問題要問，我希望我能用一些答案來滿足你的一些好奇心。
 
-diff --git a/rdma/dev.c b/rdma/dev.c
-index c684dde4a56f..04c2a574405c 100644
---- a/rdma/dev.c
-+++ b/rdma/dev.c
-@@ -189,6 +189,16 @@ static void dev_print_node_type(struct rd *rd, struct nlattr **tb)
- 			   node_str);
- }
- 
-+static void dev_print_dev_proto(struct rd *rd, struct nlattr **tb)
-+{
-+       const char *str;
-+       if (!tb[RDMA_NLDEV_ATTR_DEV_PROTOCOL])
-+               return;
-+
-+       str = mnl_attr_get_str(tb[RDMA_NLDEV_ATTR_DEV_PROTOCOL]);
-+       print_color_string(PRINT_ANY, COLOR_NONE, "proto", "proto %s ", str);
-+}
-+
- static int dev_parse_cb(const struct nlmsghdr *nlh, void *data)
- {
- 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
-@@ -206,6 +216,7 @@ static int dev_parse_cb(const struct nlmsghdr *nlh, void *data)
- 	print_color_string(PRINT_ANY, COLOR_NONE, "ifname", "%s: ", name);
- 
- 	dev_print_node_type(rd, tb);
-+	dev_print_dev_proto(rd, tb);
- 	dev_print_fw(rd, tb);
- 	dev_print_node_guid(rd, tb);
- 	dev_print_sys_image_guid(rd, tb);
--- 
-2.40.1
+我相信“對於世界來說，你只是一個人，但對於特別的人來說，你就是全世界”這句話。 我想要的只是來自一個特殊伴侶的愛、浪漫的關懷和關注，我希望是你。
 
+我希望這條消息將成為我們之間長期溝通的開始。 感謝您回复此消息，因為這會讓我很高興。
+
+
+擁抱，
+
+你的秘密崇拜者。
