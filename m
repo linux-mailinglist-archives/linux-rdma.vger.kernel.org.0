@@ -2,147 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1656A6F550A
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 May 2023 11:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CCA6F5585
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 May 2023 12:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjECJnh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 May 2023 05:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
+        id S229811AbjECKBj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 May 2023 06:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbjECJnb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 May 2023 05:43:31 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047784EEC;
-        Wed,  3 May 2023 02:43:11 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-643557840e4so125413b3a.2;
-        Wed, 03 May 2023 02:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683106990; x=1685698990;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0VT+PW1nO1R4tbtjQ+6VtJRHvR6DUPI/6keo1qQXgds=;
-        b=EPuarUAyUlqvUaDzHr6GrG4a4tL+2ZIF4xM80RmPeqWLVNfnTiRxn82GfYUhEfagai
-         wJw8ORzY03w0R6zdN8ToafRrgBNek0cYB4LMFLfOF2WnhhGAcb7IT2Jlw8xe6JnF/S0n
-         vO32sxJgdQfRfPhoGmOXgJMd1OkmDgNyCwWf366382fratxHTLyqrjqsKdjPAWyvKTYG
-         QIJ/mEEcdQTe+wnorS2oi5qmTtRWaB6XS/kbUSScgkOI1MBoB7mA8gnJLklbK/6mM3T9
-         eZRR21usZ988+muYdL0kxRYpqv3VdxG04JLTDeLn8p9GCDxxNZHDrw63pOFolObAqh9W
-         LBbA==
+        with ESMTP id S229643AbjECKBY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 May 2023 06:01:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A68D10F3
+        for <linux-rdma@vger.kernel.org>; Wed,  3 May 2023 03:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683108037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/6nW/ulj6fgmoP9Hji3Y8JXnyxUQC9ywV4YbenugH1I=;
+        b=QMUmp2wq9rEOFMRszGBiIsNkeBeAUlmMB9Bg2xbWTnnw7F0NKSQ7vODggV1wfhQc/pGhEw
+        FaaH/3UGMddG60r8w46S0oXWzR69N68Q/kM1wsbG23U2CBHCFWMVwx3+gnXHrmywXeXWS2
+        gDjHPokn+OTi0N2cRLwYZZjBfosdSww=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-577-j6sRwe0sOFG8lwotLs25GQ-1; Wed, 03 May 2023 06:00:35 -0400
+X-MC-Unique: j6sRwe0sOFG8lwotLs25GQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-30635d18e55so765905f8f.2
+        for <linux-rdma@vger.kernel.org>; Wed, 03 May 2023 03:00:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683106990; x=1685698990;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0VT+PW1nO1R4tbtjQ+6VtJRHvR6DUPI/6keo1qQXgds=;
-        b=DPc4CV7WsQMAXllBsylCsVH9GxWxi64wLAz+Gh2G2MjVejRRpZny7RjgCcMKNhsUuI
-         +YEeC34l30R7Su6+F+RbwQpqq5HDg6j8QTCZC6gbgQ1HLUymhgX3n8wTQ9cx3hI33m4+
-         es335S7C4OiC+6jqfhJTC6DdbvmqSGr785/t1C8TapWNsddAvoiPMk4Hvavk9e9ffqhR
-         1uJ8w7AW5us6oKS3/Z1H+nXtqClzKgOA0IZrhX+vXlbEuvNzPuWAM4BsKZuig2AomoMu
-         ThaDkn/v+NOGkD8asPkWbGPFvZgedfYOGjHWfAVG8bIma/A6wMB6FlvkqRtRK+LDRVM4
-         JIyQ==
-X-Gm-Message-State: AC+VfDwjyV7FIfq9iSnujKE9ShjyE2a9YbKH1ZFGa8B+LwfBxKaJBbKP
-        qF+VoIGe643snLTiq7sIlmo=
-X-Google-Smtp-Source: ACHHUZ7azennRTEMmDQZzC7RF31mRJNNMNHg8ghhGKKriy+OXImzVMZjCi09fcePVE2svjrD/G4uFA==
-X-Received: by 2002:aa7:888f:0:b0:63d:254a:3900 with SMTP id z15-20020aa7888f000000b0063d254a3900mr26121053pfe.5.1683106990331;
-        Wed, 03 May 2023 02:43:10 -0700 (PDT)
-Received: from debian.me (subs03-180-214-233-11.three.co.id. [180.214.233.11])
-        by smtp.gmail.com with ESMTPSA id y189-20020a62cec6000000b00640defda6d2sm16512867pfg.207.2023.05.03.02.43.08
+        d=1e100.net; s=20221208; t=1683108035; x=1685700035;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/6nW/ulj6fgmoP9Hji3Y8JXnyxUQC9ywV4YbenugH1I=;
+        b=YodEmFHR9oR1EYplBRXWAwRCuorzUZuwvpgRMYiZTEmMdn7q+47EbV7fnyg7PiHu2q
+         8z3jQxD43ttHgar4WZQCXDbLYw4F2sxU4xpglI/hFLfdaTR8DQivFHf7n9QV6LvR81p2
+         p5DVBDsv8j16bndA49TvH/+OTZISjnXaI6C4iAbZ2VwJcL8M7mQuQakD0krftm8AazVs
+         S7NuU+XfaM+bQx2iAHWhrwOJ5i7013eDRRVLQmxe4iMGbA+ahSqSJNfCeisG51Tei2yk
+         D0B9h9knpZcC+kNWeQUqZJ2fX3gurirVzjofGHyZhzTpBhhsF5kkfbshvU24vqu25oZp
+         aOjQ==
+X-Gm-Message-State: AC+VfDzXZFpHgV2rE8M8QsO1rgljEB2utfMRxZQWv+kvknuWMQXnkVBt
+        LeikU/FdHCQqjh+459FLIN4EvYnzRNFMtmSzxl0sAXGbM1OgZLBE06TcAq9dhbxeCZGDqdz1F36
+        iTYIuVKpW3t2eOyXFrRm65A==
+X-Received: by 2002:a5d:4f90:0:b0:2f8:f144:a22c with SMTP id d16-20020a5d4f90000000b002f8f144a22cmr14188538wru.62.1683108034794;
+        Wed, 03 May 2023 03:00:34 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5sZP/W3eAA1sD5mGDayMPgI7uxdRqkhgoaxqYxdWD5TDfzw7oHq1zZ2xQsVtBHq7cLgK1BLg==
+X-Received: by 2002:a5d:4f90:0:b0:2f8:f144:a22c with SMTP id d16-20020a5d4f90000000b002f8f144a22cmr14188495wru.62.1683108034475;
+        Wed, 03 May 2023 03:00:34 -0700 (PDT)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id l18-20020a05600012d200b002ceacff44c7sm33457472wrx.83.2023.05.03.03.00.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 02:43:08 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 210D610624E; Wed,  3 May 2023 16:43:04 +0700 (WIB)
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Linux Networking <netdev@vger.kernel.org>,
-        Linux Random Direct Memory Access 
-        <linux-rdma@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux Networking <linux-kernel@vger.kernel.org>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Wed, 03 May 2023 03:00:34 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
         Leon Romanovsky <leon@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Gal Pressman <gal@nvidia.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
         Tariq Toukan <tariqt@nvidia.com>,
-        Maher Sanalla <msanalla@nvidia.com>,
-        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>
-Subject: [PATCH net 4/4] Documentation: net/mlx5: Wrap notes in admonition blocks
-Date:   Wed,  3 May 2023 16:42:49 +0700
-Message-Id: <20230503094248.28931-5-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230503094248.28931-1-bagasdotme@gmail.com>
-References: <20230503094248.28931-1-bagasdotme@gmail.com>
+        Gal Pressman <gal@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Barry Song <baohua@kernel.org>
+Subject: Re: [PATCH v2 0/8] sched/topology: add for_each_numa_cpu() macro
+In-Reply-To: <CAAH8bW9SBrFG+gkH2sT4O_tEQaM-bNT2++v0iyjnuf_aME2DNg@mail.gmail.com>
+References: <20230430171809.124686-1-yury.norov@gmail.com>
+ <xhsmhildak6t0.mognet@vschneid.remote.csb>
+ <CAAH8bW9SBrFG+gkH2sT4O_tEQaM-bNT2++v0iyjnuf_aME2DNg@mail.gmail.com>
+Date:   Wed, 03 May 2023 11:00:32 +0100
+Message-ID: <xhsmhfs8dka4f.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2404; i=bagasdotme@gmail.com; h=from:subject; bh=z7BlSEzjQe903TqQZUDLwk/+XO0cRAPBx+0vN2jCDQs=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDClBOtO15qdsdy7eYSozd5lemVv8bvll782kWCOMgnq/L lB0DEjvKGVhEONikBVTZJmUyNd0epeRyIX2tY4wc1iZQIYwcHEKwETc1RgZFl/5kNLYVl4SnxW/ aonWbvdp6ppzmyf6ytwUVdHbqDBJlZHhTOybe0uec6qeeaO8Z6J4i9qc1mj+JaKnumdtY65Z6Rz CDwA=
-X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Wrap note paragraphs in note:: directive as it better fit for the
-purpose of noting devlink commands.
+On 02/05/23 14:58, Yury Norov wrote:
+>> LGTM, I ran the tests on a few NUMA topologies and that all seems to behave
+>> as expected. Thanks for working on this!
+>>
+>> Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+>
+> Thank you Valentin. If you spent time testing the series, why
+> don't you add your Tested-by?
 
-Fixes: f2d51e579359b7 ("net/mlx5: Separate mlx5 driver documentation into multiple pages")
-Fixes: cf14af140a5ad0 ("net/mlx5e: Add vnic devlink health reporter to representors")
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- .../ethernet/mellanox/mlx5/devlink.rst             | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+Well, I only ran the test_bitmap stuff and checked the output of the
+iterator then, I didn't get to test on actual hardware with a mellanox card
+:-)
 
-diff --git a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/devlink.rst b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/devlink.rst
-index f962c0975d8428..3354ca3608ee67 100644
---- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/devlink.rst
-+++ b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/devlink.rst
-@@ -182,7 +182,8 @@ User commands examples:
- 
-     $ devlink health diagnose pci/0000:82:00.0 reporter tx
- 
--NOTE: This command has valid output only when interface is up, otherwise the command has empty output.
-+.. note::
-+   This command has valid output only when interface is up, otherwise the command has empty output.
- 
- - Show number of tx errors indicated, number of recover flows ended successfully,
-   is autorecover enabled and graceful period from last recover::
-@@ -234,8 +235,9 @@ User commands examples:
- 
-     $ devlink health dump show pci/0000:82:00.0 reporter fw
- 
--NOTE: This command can run only on the PF which has fw tracer ownership,
--running it on other PF or any VF will return "Operation not permitted".
-+.. note::
-+   This command can run only on the PF which has fw tracer ownership,
-+   running it on other PF or any VF will return "Operation not permitted".
- 
- fw fatal reporter
- -----------------
-@@ -258,7 +260,8 @@ User commands examples:
- 
-     $ devlink health dump show pci/0000:82:00.1 reporter fw_fatal
- 
--NOTE: This command can run only on PF.
-+.. note::
-+   This command can run only on PF.
- 
- vnic reporter
- -------------
-@@ -299,4 +302,5 @@ User commands examples:
- 
-         $ devlink health diagnose pci/0000:82:00.1/65537 reporter vnic
- 
--NOTE: This command can run over all interfaces such as PF/VF and representor ports.
-+.. note::
-+   This command can run over all interfaces such as PF/VF and representor ports.
--- 
-An old man doll... just what I always wanted! - Clara
+But yeah, I suppose that does count for the rest, so feel free to add to
+all patches but #5:
+
+Tested-by: Valentin Schneider <vschneid@redhat.com>
 
