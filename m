@@ -2,41 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 515E16F8605
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 May 2023 17:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08276F860B
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 May 2023 17:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbjEEPmb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 May 2023 11:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
+        id S233023AbjEEPm7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 May 2023 11:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbjEEPma (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 May 2023 11:42:30 -0400
+        with ESMTP id S232460AbjEEPm6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 May 2023 11:42:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0951493A
-        for <linux-rdma@vger.kernel.org>; Fri,  5 May 2023 08:42:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D440516081
+        for <linux-rdma@vger.kernel.org>; Fri,  5 May 2023 08:42:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B8E3663EFC
-        for <linux-rdma@vger.kernel.org>; Fri,  5 May 2023 15:42:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7384C433EF;
-        Fri,  5 May 2023 15:42:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FC9A60AD1
+        for <linux-rdma@vger.kernel.org>; Fri,  5 May 2023 15:42:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F3E5C433D2;
+        Fri,  5 May 2023 15:42:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683301349;
-        bh=ndKw3M3u+9Ev/+6Q02FJjDEkuTYXoWl+xEOrU4Avl9o=;
+        s=k20201202; t=1683301375;
+        bh=ztAAxEXfo/rYglxTcfa78z1zwxaUdLDHkCAM9kwLHJQ=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=PAl/o3OLb105NkwdVpYZpx+yKgouWOl8pBLFBXuOIZqKvnXgw2RhYlYcyVH7cQ/4t
-         a/OQBK/hfdk97Mn91lurJYxd6qG1JT0t+XxEy5M4MClJ9LSsEPc3yOdlHKuqxILC0v
-         bIGb7sbYaIeN5wKluAJBt1YSRKiVqJmINkuv0jq5lFYGCBs+Lan4QWSA3Kbngy5Ubv
-         qDZCNeJyAQXahQWf3ztodRAyRllKumQE1PlmIuDysQqYKZ6PcKnKfBmdnTV32IxkfM
-         eXqMH54SAcX7pwdesJYmHaIk4uyRJi8gHNgTiC+KmK6k92/ieOi62henoJhq3zgjtX
-         omU/g5wJgFl0Q==
-Subject: [PATCH RFC 1/3] net/tun: Ensure tun devices have a MAC address
+        b=cJWlz6HXtyTppL41PMB8QUzObB0HOfM7vtTwotWCxF3JpS0BpC2oczT8lOgozXHxp
+         nx6ynh0tjYsHjEKnNjheNxoeqvZ+u/wM+O30k3VDQuQnXoritq5O21cbhPYSccgcki
+         byvG4osUZNpwMFZgfq1ReLSgos3zKYbmXVfXe2GjeZM8SqkxlgtzLAAD8wfPEnatU+
+         l27hpxvsluUQsQcBvRa+FsvrTWkiRKdB+ourrPBdcvfI8MVxf3lB6NrHf42k1+Xjbp
+         tnvedYMIOsvUCebn7SELbwA4kyoCO194LTvaTwZlLF4LoPfiY2IxEZN4Qz73EYDNLx
+         ONCeVTY33CKGg==
+Subject: [PATCH RFC 2/3] net/lo: Ensure lo devices have a MAC address
 From:   Chuck Lever <cel@kernel.org>
 To:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org
 Cc:     BMT@zurich.ibm.com, tom@talpey.com
-Date:   Fri, 05 May 2023 11:42:17 -0400
-Message-ID: <168330132769.5953.7109360341846745035.stgit@oracle-102.nfsv4bat.org>
+Date:   Fri, 05 May 2023 11:42:44 -0400
+Message-ID: <168330135435.5953.3471584034284499194.stgit@oracle-102.nfsv4bat.org>
 In-Reply-To: <168330051600.5953.11366152375575299483.stgit@oracle-102.nfsv4bat.org>
 References: <168330051600.5953.11366152375575299483.stgit@oracle-102.nfsv4bat.org>
 User-Agent: StGit/1.5
@@ -63,39 +63,21 @@ and rdma_resolve_address() fails.
 
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 ---
- drivers/net/tun.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/loopback.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index d4d0a41a905a..da85abfcd254 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1384,7 +1384,7 @@ static void tun_net_initialize(struct net_device *dev)
- 
- 		/* Point-to-Point TUN Device */
- 		dev->hard_header_len = 0;
--		dev->addr_len = 0;
-+		dev->addr_len = ETH_ALEN;
- 		dev->mtu = 1500;
- 
- 		/* Zero header length */
-@@ -1399,8 +1399,6 @@ static void tun_net_initialize(struct net_device *dev)
- 		dev->priv_flags &= ~IFF_TX_SKB_SHARING;
- 		dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
- 
--		eth_hw_addr_random(dev);
--
- 		/* Currently tun does not support XDP, only tap does. */
- 		dev->xdp_features = NETDEV_XDP_ACT_BASIC |
- 				    NETDEV_XDP_ACT_REDIRECT |
-@@ -1409,6 +1407,8 @@ static void tun_net_initialize(struct net_device *dev)
- 		break;
- 	}
+diff --git a/drivers/net/loopback.c b/drivers/net/loopback.c
+index f6d53e63ef4e..1ce4f19d8065 100644
+--- a/drivers/net/loopback.c
++++ b/drivers/net/loopback.c
+@@ -192,6 +192,8 @@ static void gen_lo_setup(struct net_device *dev,
+ 	dev->needs_free_netdev	= true;
+ 	dev->priv_destructor	= dev_destructor;
  
 +	eth_hw_addr_random(dev);
 +
- 	dev->min_mtu = MIN_MTU;
- 	dev->max_mtu = MAX_MTU - dev->hard_header_len;
+ 	netif_set_tso_max_size(dev, GSO_MAX_SIZE);
  }
+ 
 
 
