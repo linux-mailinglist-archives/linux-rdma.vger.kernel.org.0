@@ -2,127 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DEA6F8908
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 May 2023 20:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1747D6F89EA
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 May 2023 21:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233306AbjEESwM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 May 2023 14:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S229753AbjEET6y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 May 2023 15:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233062AbjEESwL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 May 2023 14:52:11 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D21112A;
-        Fri,  5 May 2023 11:51:59 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 0E5D220EA203; Fri,  5 May 2023 11:51:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0E5D220EA203
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1683312719;
-        bh=mb5lvwg5ohLnnbkdoeBM8lxdqhlZn5srSg8X66I10YQ=;
-        h=From:To:Cc:Subject:Date:Reply-To:From;
-        b=FGPYeoobBbC8zpKtp262vui8o6VTAI05CAw2wWRvQj7vOvJOgCkmGRsoxzUd4ognE
-         8hgvhBdXC4TabrBsmVt5QU2yZvs1DgNBfj09deVQkxZEKDpolp5jO8Q3y/plDgNGrU
-         JBDyMi63+Xf5VRF+oIQq0/gqUqe2cYzdjMvIM2MI=
-From:   longli@linuxonhyperv.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Long Li <longli@microsoft.com>
-Subject: [PATCH] RDMA/mana_ib: Use v2 version of cfg_rx_steer_req to enable RX coalescing
-Date:   Fri,  5 May 2023 11:51:48 -0700
-Message-Id: <1683312708-24872-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-Reply-To: longli@microsoft.com
-X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229598AbjEET6y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 May 2023 15:58:54 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B72197
+        for <linux-rdma@vger.kernel.org>; Fri,  5 May 2023 12:58:53 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-74e3de79bf2so209361185a.2
+        for <linux-rdma@vger.kernel.org>; Fri, 05 May 2023 12:58:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1683316732; x=1685908732;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D8/0Mz1i3TrsK5EuHofqZpbzmHEgycZi6NeOkBStzxc=;
+        b=PibVkdMtrGXG4nJCsSpO+dyX40H7jVmFM5a/TLyr7glOsgpls3oaUCXmR2tz1P9ZQS
+         aIq11OVfIkafWXqXLBrCAFAgg0Y6Uif246c/M7XoxGTk1/YmL+2TeAkyQxc6R/ur97Jd
+         560EkduqhNdBTHgYaJxzY6GKNBfDvZsCwGX9UabPP64GQQsIpsjxWgkSzQnstnioQBbB
+         zrJ8fqnPhTpZ3eUY+phtcjta6ibdPYrH0Ywr6ylLKVGmvwmJ3bNo7C6hHj4haE+y1KXf
+         h15FLI8dSGBt01m+IYnKWScqocAfpryZ41pbX20JqaysMzXYOuUkXh+0Mgl0yz70nuQ+
+         eEAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683316732; x=1685908732;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D8/0Mz1i3TrsK5EuHofqZpbzmHEgycZi6NeOkBStzxc=;
+        b=HBmLD6E0eCiFp4gS9EoIJoFd5M90izFK6dCNva1fkanzp9S2Wy95WurHo73fsfLQtg
+         PHBOHpzYzD1gQhre+Mb7uJyE3KxEgJLF2pkE1UUC/VgngZYHfQvx34IPMPbW5bGyOf27
+         wOUEPDGPunDMkAsJj7XdgiaxAaGsCCWqz5Bl1OuEsyUWZZluYvUDyKgtZWOla7jGTb9a
+         Ly21+twZDbhVpAljEo86w5LG86M1HXKQWKeDm6wf7KYObjxOo8Z3iRswlvjrJC0l0zAF
+         Jkdh3NJPyBI+I1w+nwhfwNl2hZOEE0fURRjLW+kT31AnVkv7vq9dCwdG8jUiD/YN8k0d
+         TlOw==
+X-Gm-Message-State: AC+VfDzqF5laiX76LyoglDa9QV6dLAFZgkRChbz08lGgZTDOmmYWDt1D
+        P7YjWvwVOoS8vE+HO65aYlzWf2mCjT/NY0LA4YM=
+X-Google-Smtp-Source: ACHHUZ41Fdv176OLWVq9lKASou3V2H+AkTzBXpY6k9951af/PZTdY11T+LpjtJxw5VEsQnvjkhVp8Q==
+X-Received: by 2002:a05:622a:1a21:b0:3ef:36d0:c06e with SMTP id f33-20020a05622a1a2100b003ef36d0c06emr4858856qtb.33.1683316732523;
+        Fri, 05 May 2023 12:58:52 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id n10-20020ac8674a000000b003df7d7bbc8csm853125qtp.75.2023.05.05.12.58.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 May 2023 12:58:51 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1pv1Zr-007zWe-A9;
+        Fri, 05 May 2023 16:58:51 -0300
+Date:   Fri, 5 May 2023 16:58:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Chuck Lever <cel@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        BMT@zurich.ibm.com, tom@talpey.com
+Subject: Re: [PATCH RFC 3/3] RDMA/siw: Require non-zero 6-byte MACs for soft
+ iWARP
+Message-ID: <ZFVf+wzF6Px8nlVR@ziepe.ca>
+References: <168330051600.5953.11366152375575299483.stgit@oracle-102.nfsv4bat.org>
+ <168330138101.5953.12575990094340826016.stgit@oracle-102.nfsv4bat.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <168330138101.5953.12575990094340826016.stgit@oracle-102.nfsv4bat.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+On Fri, May 05, 2023 at 11:43:11AM -0400, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> In the past, LOOPBACK and NONE (tunnel) devices had all-zero MAC
+> addresses. siw_device_create() would fall back to copying the
+> device's name in those cases, because an all-zero MAC address breaks
+> the RDMA core IP-to-device lookup mechanism.
 
-With RX coalescing, one CQE entry can be used to indicate multiple packets
-on the receive queue. This saves processing time and PCI bandwidth over
-the CQ.
+Why not just make up a dummy address in SIW? It shouldn't need to leak
+out of it.. It is just some artifact of how the iWarp stuff has been
+designed
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
- drivers/infiniband/hw/mana/qp.c |  5 ++++-
- include/net/mana/mana.h         | 17 +++++++++++++++++
- 2 files changed, 21 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 54b61930a7fd..83c768f96506 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -13,7 +13,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
- 				      u8 *rx_hash_key)
- {
- 	struct mana_port_context *mpc = netdev_priv(ndev);
--	struct mana_cfg_rx_steer_req *req = NULL;
-+	struct mana_cfg_rx_steer_req_v2 *req = NULL;
- 	struct mana_cfg_rx_steer_resp resp = {};
- 	mana_handle_t *req_indir_tab;
- 	struct gdma_context *gc;
-@@ -33,6 +33,8 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
- 	mana_gd_init_req_hdr(&req->hdr, MANA_CONFIG_VPORT_RX, req_buf_size,
- 			     sizeof(resp));
- 
-+	req->hdr.req.msg_version = GDMA_MESSAGE_V2;
-+
- 	req->vport = mpc->port_handle;
- 	req->rx_enable = 1;
- 	req->update_default_rxobj = 1;
-@@ -46,6 +48,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
- 	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
- 	req->indir_tab_offset = sizeof(*req);
- 	req->update_indir_tab = true;
-+	req->cqe_coalescing_enable = true;
- 
- 	req_indir_tab = (mana_handle_t *)(req + 1);
- 	/* The ind table passed to the hardware must have
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index cd386aa7c7cc..f8314b7c386c 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -596,6 +596,23 @@ struct mana_cfg_rx_steer_req {
- 	u8 hashkey[MANA_HASH_KEY_SIZE];
- }; /* HW DATA */
- 
-+struct mana_cfg_rx_steer_req_v2 {
-+	struct gdma_req_hdr hdr;
-+	mana_handle_t vport;
-+	u16 num_indir_entries;
-+	u16 indir_tab_offset;
-+	u32 rx_enable;
-+	u32 rss_enable;
-+	u8 update_default_rxobj;
-+	u8 update_hashkey;
-+	u8 update_indir_tab;
-+	u8 reserved;
-+	mana_handle_t default_rxobj;
-+	u8 hashkey[MANA_HASH_KEY_SIZE];
-+	u8 cqe_coalescing_enable;
-+	u8 reserved2[7];
-+}; /* HW DATA */
-+
- struct mana_cfg_rx_steer_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW DATA */
--- 
-2.17.1
-
+Jason
