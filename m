@@ -2,60 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09EDB6FC337
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 May 2023 11:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B20C96FC412
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 May 2023 12:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbjEIJvF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 May 2023 05:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
+        id S235258AbjEIKhh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 May 2023 06:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235148AbjEIJu4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 May 2023 05:50:56 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71814D9
-        for <linux-rdma@vger.kernel.org>; Tue,  9 May 2023 02:50:53 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3f315712406so200894285e9.0
-        for <linux-rdma@vger.kernel.org>; Tue, 09 May 2023 02:50:53 -0700 (PDT)
+        with ESMTP id S235199AbjEIKhg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 May 2023 06:37:36 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CDF173E
+        for <linux-rdma@vger.kernel.org>; Tue,  9 May 2023 03:37:33 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3f41d087b3bso30953035e9.0
+        for <linux-rdma@vger.kernel.org>; Tue, 09 May 2023 03:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683625852; x=1686217852;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        d=gmail.com; s=20221208; t=1683628652; x=1686220652;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
         bh=/vKrliSe2wdxq+f/rTuZKOiAboDha73w0MmDxnqvDd8=;
-        b=CIJsz6llTfm3bPkAl3mLO2UMb9zo3nqOT1j6Ab1LYPxkAHA4NWN2N8fxDelWUYt+Sa
-         1uwJjJrcvv1UV+eSL0A9un1NsRyJzL+P8TQnmSjMPuKgFcjQG+sXzujfHXbdIRousNld
-         BSmr2u9jF1nS+E+MxbkULJci1MehpM9ExUJxC3R27ez2fCMdlOgmF7oYcO8x3b4Bj6Qy
-         Lkf48xisopC/bPcAVXFXMmMlhCkxz2/Banbnw1J8a9CBrVH+FEPoWzSVbN8XvVMDCwuk
-         kH7VY3ZVoKATkS2iI6EsgRjqtwIy+fCVg3URnCa0Iad52YEFPjKoNUcVJUF8yt+mDltw
-         R+vw==
+        b=CDsDcwK1KYTiLPKSjERgh+8k0iosYDHLn+Y0MiJYFcTHtXuIPYeVH4arJvC0flz0NL
+         3lb4O0GkHQ6zSbyjalXU7Ui3h0BkN/05Rlj9geyr3vzGk0b/RHx8TAfFo7WpMF87H3+9
+         pkfMsuxZsf8272/VPYsEiU5ZY2TlwiOO0D2VDQ1mQOsJ0EpQYyQA1810lDiekrpvrINI
+         zuNvN0FCWN5E2p8udYBYWc6kZbzZmWKwKWr6ckbPLis3AlWXtjzGO/JhJB27zOQRyYth
+         I76TCa3kLFrBKOyJgXkbhzdWuyvtWIZ/fEG13kBgLTee35prCQ3kKx7ej2btstRq2lGS
+         ymjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683625852; x=1686217852;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
+        d=1e100.net; s=20221208; t=1683628652; x=1686220652;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
         bh=/vKrliSe2wdxq+f/rTuZKOiAboDha73w0MmDxnqvDd8=;
-        b=jUTjeT879e9oLOZvysCws8aFb7n15Bj1iQV8oPO7DnjdNQBhpc2jI75LpxwJ+htVO8
-         hqHRyuQTsplwEpThXKPUr+lkQujBnrDDhpDRJORKmnOgycvqFs8Sy/cUUyJ/RUjUrEBZ
-         V+m1mBhr+0WH04obqZh+uFjT8lLTjLnASaQAXVp9yUYqdDERZoNiwE6DXL1fhzqrMp5o
-         bgisVaTsPTtJetRkIaJp7BL/MwRBTa8TvnctWkOMzGny6vy08S2Bdu2mHkg/eUG4jbUu
-         chaX+d8rpAwvp8lMkJLkjZm7OZ189er3XWx41s2fGenthrY7QKYQdCQHZkea/rNYr/em
-         Q2sQ==
-X-Gm-Message-State: AC+VfDyce0D8E4zILqHBwyOARBnAVyeUB4yIk6vjLsnAKsHGXnkh4eNo
-        4WTnwGfyy3PIdaQtF+lLx4XC2IBZE9MCCXpWtFw=
-X-Google-Smtp-Source: ACHHUZ6MwMhNrYGORX4XpKfbIhG3TTNZOXaJxcB1H2hp4n1SNaryvJvKtD+EbUkHSkOeN0DCaCZXcw==
-X-Received: by 2002:a5d:680e:0:b0:307:9693:efe1 with SMTP id w14-20020a5d680e000000b003079693efe1mr4383878wru.18.1683625851469;
-        Tue, 09 May 2023 02:50:51 -0700 (PDT)
+        b=RMWky+b+ja2WEybJcPPumI3jImIbctRQzl1h567CyHFWMMYt7FrovsSUNF9UTSnN4T
+         LQ98KeOJT3TIm1gGmmmHi74V2iQv14ZJWIX7hsIJmpYYg3aCovtOCNGDZAkwI/48gnGa
+         93y/LOGNuFTjZfRnD2CFVaGY2tIAGl2s4zb1cpgxJe6tDQvew11UD+TEg71e/6RI5ID9
+         WA+r2EadEZe0xscXEwt6xY2+Mtf19ys2V3f98hV95mvbBgqDR28CQtffvVkr6WK1Jcka
+         xlbzJ1ttnZNWEOUvvLyIGErCxwWIuBN6injtnwjZ5BtPRoSl5zdUEDZJE+8Fk0zWJXFW
+         8MTg==
+X-Gm-Message-State: AC+VfDxeVHFQ//1Rh0YfZ09RkdZQzVDFa4NyYKoy3c/7j2dOLYNnu1lf
+        TDsuAT4O12MAh3ltIYU++vo=
+X-Google-Smtp-Source: ACHHUZ6Gwdc/n+6BKq3Y0v5FRMNUeEM7Gc5lWZ/vjK/5UhB4RpJFvBT13bO9FrVyAFfhpRsfpvuwJA==
+X-Received: by 2002:adf:e50e:0:b0:2ef:bb9f:e9e1 with SMTP id j14-20020adfe50e000000b002efbb9fe9e1mr8932877wrm.56.1683628651922;
+        Tue, 09 May 2023 03:37:31 -0700 (PDT)
 Received: from akishore-vm-u20.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id k22-20020a05600c0b5600b003f40049a65bsm18157312wmr.21.2023.05.09.02.50.50
+        by smtp.gmail.com with ESMTPSA id n16-20020a5d67d0000000b002fae7408544sm14029977wrw.108.2023.05.09.03.37.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 May 2023 02:50:51 -0700 (PDT)
+        Tue, 09 May 2023 03:37:31 -0700 (PDT)
 From:   Animesh Kishore <animesh.kishore@gmail.com>
-To:     yishaih@dev.mellanox.co.il
+To:     leon@kernel.org, jgg@mellanox.com
 Cc:     linux-rdma@vger.kernel.org,
         Animesh Kishore <animesh.kishore@gmail.com>
 Subject: [PATCH] verbs: Add RDMA write RC pingpong test
-Date:   Tue,  9 May 2023 12:50:16 +0300
-Message-Id: <20230509095016.112453-1-animesh.kishore@gmail.com>
+Date:   Tue,  9 May 2023 13:37:27 +0300
+Message-Id: <20230509103727.114577-1-animesh.kishore@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230509095016.112453-1-animesh.kishore@gmail.com>
+References: <20230509095016.112453-1-animesh.kishore@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
