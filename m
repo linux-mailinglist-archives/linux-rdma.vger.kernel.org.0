@@ -2,671 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9106FD49F
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 May 2023 05:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FE96FD4B1
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 May 2023 05:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbjEJDvM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 May 2023 23:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
+        id S235881AbjEJDzq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 May 2023 23:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235243AbjEJDvK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 May 2023 23:51:10 -0400
-Received: from out-59.mta0.migadu.com (out-59.mta0.migadu.com [91.218.175.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6DB2114
-        for <linux-rdma@vger.kernel.org>; Tue,  9 May 2023 20:51:07 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1683690665;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=c/H1zllcEMsDTN/b3YiUhKS+OYX9lcVCG75W/uBvce8=;
-        b=Do2nS+4J6lIuIJ1im/OtpOga2MbqvqDnMnv9zjrAv55xA2OB3goZNgB7WMX5UVVOfZxuBQ
-        Lus+jpFbtzN5NAi+Kx3Ghhv/a1t9Cwax+aHp4grtYUXBeSymLMT3UpBvC4ZwH4+EpcAaJm
-        f66cg9PSsvUL1wHEbXTRxwlrLug/a84=
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
-        rpearsonhpe@gmail.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH] RDMA/rxe: Convert spin_{lock_bh,unlock_bh} to spin_{lock_irqsave,unlock_irqrestore}
-Date:   Wed, 10 May 2023 11:50:56 +0800
-Message-Id: <20230510035056.881196-1-guoqing.jiang@linux.dev>
+        with ESMTP id S235742AbjEJDzE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 May 2023 23:55:04 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E593AB1;
+        Tue,  9 May 2023 20:54:35 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-643557840e4so7262403b3a.2;
+        Tue, 09 May 2023 20:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683690874; x=1686282874;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=c7VfK4HmZZECZTc8y6PXzxcQ+L1k1OBzevJBYhlk87o=;
+        b=gaGdt28RcEpkgfk5GFzurtmArKfRYnu6pEdKCjfjsy9niCtJd4Gz2Bh2fGXcyQFYR9
+         u0Z0AykqnECM+9pfe/+NKE/uLaagxLuGJfeueBS+arjRhCUwOBsdxdbsuIDD5F4jJUH1
+         xqLiDHd2unyx6iADRqN4sBWL6Z5vES+kL3sMGOCfMr/jnfQmQxKmkHJu4kBVtLHGHTe3
+         tE40r7gXuOvY1XuVsAH485ZqhWJAC8+YJf+1Jow0QY4kRXxMkyP4CwSrkZrNDpasJzek
+         AYV4bUdr4v9aS5ZAMbEphFq8TnWUcTu+VG8KcOmHPNZS/vEhXzOUPRAyaDlfDnYb1Oml
+         9atA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683690874; x=1686282874;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c7VfK4HmZZECZTc8y6PXzxcQ+L1k1OBzevJBYhlk87o=;
+        b=jwxhN5+VNrLYydZNAM1fH6bOeie1PdwrgQsddup5BJ5KcWDL732W5tTDSUv0kpGB17
+         TDJTozhzJ79yZyTNxjsz5Hb/zj5Is3as59BQxnH1z6dmHbL8LrGauOk66dcKINCGAHID
+         WmEl1knaUfq0u9rxjXJBRqDcMkXXzz34q9Ua/FtIf84puON3uZ4br8BhCbgF+a2EDyDd
+         YX5OfIhqK7LOSUCmnRAaLQOXZHc3coe9EwV47BBWvItn9dS2C02RetUlvBEsJR6N7HrB
+         l6OmJCug8L21FlZPSc/ZSGyCCbsa41nHSbosHOKxkDqFJz34P4lc2GqajLkskRF/S15t
+         5uBg==
+X-Gm-Message-State: AC+VfDxDiWxrnc4KtUTqR8izThbGrV5aifZ/E7N81EkCGFhxjrN3E0+5
+        mpUVHXNX8qtFa8OIZcpMO+3/OxX3sNw=
+X-Google-Smtp-Source: ACHHUZ61odxsumH5leyGMsZ34hnHK9BEErNzNUPT3fzJH0vkclEldYH16tylwJmy8KD1dWBCVtzTvw==
+X-Received: by 2002:a05:6a00:1915:b0:647:e45f:1a49 with SMTP id y21-20020a056a00191500b00647e45f1a49mr2265962pfi.4.1683690874616;
+        Tue, 09 May 2023 20:54:34 -0700 (PDT)
+Received: from debian.me (subs32-116-206-28-21.three.co.id. [116.206.28.21])
+        by smtp.gmail.com with ESMTPSA id bm17-20020a056a00321100b0063b54ccc123sm2495273pfb.196.2023.05.09.20.54.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 May 2023 20:54:34 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id BB0CD106AA6; Wed, 10 May 2023 10:54:29 +0700 (WIB)
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux Networking <netdev@vger.kernel.org>,
+        Remote Direct Memory Access Kernel Subsystem 
+        <linux-rdma@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+        Maher Sanalla <msanalla@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>
+Subject: [PATCH net v2 0/4] Documentation fixes for Mellanox mlx5 devlink info
+Date:   Wed, 10 May 2023 10:54:11 +0700
+Message-Id: <20230510035415.16956-1-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=925; i=bagasdotme@gmail.com; h=from:subject; bh=vGIotmQ0XAH1YOV1sWVtot5K851N4Z7SeyiHpdnYFh0=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDCnRolEXIj9qV7y9N2PGueXP551Z/dSYf43widwLXn617 yt/HLr/tKOUhUGMi0FWTJFlUiJf0+ldRiIX2tc6wsxhZQIZwsDFKQATKbViZFjivkVAM9Zzm+f8 dTsDzh4zPlDItJPb4ZhRxMP/5/Zs7V3B8E/3SoDgxIvyN/w0L6v/OfmK6+p8g3LjpN6szKWNNyQ 1KtgB
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-We need to call spin_lock_irqsave/spin_unlock_irqrestore for state_lock
-in rxe, otherwsie the callchain
+Here are fixes for mlx5 devlink info documentation. The first fixes
+htmldocs warnings on the mainline, while the rest is formatting fixes.
 
-ib_post_send_mad
-	-> spin_lock_irqsave
-	-> ib_post_send -> rxe_post_send
-				-> spin_lock_bh
-				-> spin_unlock_bh
-	-> spin_unlock_irqrestore
+Changes since v1 [1]:
 
-caused below traces during run block nvmeof-mp/001 test.
+  * Pick up Reviewed-by tags from Leon Romanovsky
+  * Rebase on current net tree
 
-[11634.410320] ------------[ cut here ]------------
-[11634.410325] WARNING: CPU: 0 PID: 94794 at kernel/softirq.c:376 __local_bh_enable_ip+0xc2/0x140
-[ ... ]
-[11634.410405] CPU: 0 PID: 94794 Comm: kworker/u4:1 Tainted: G            E      6.4.0-rc1 #9
-[11634.410407] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014
-[11634.410409] Workqueue: rdma_cm cma_work_handler [rdma_cm]
-[11634.410418] RIP: 0010:__local_bh_enable_ip+0xc2/0x140
-[11634.410420] Code: 48 85 c0 74 72 5b 41 5c 5d 31 c0 89 c2 89 c1 89 c6 89 c7 41 89 c0 e9 bd 0e 11 01 65 8b 05 f2 65 72 48 85 c0 0f 85 76 ff ff ff <0f> 0b e9 6f ff ff ff e8 d2 39 1c 00 eb 80 4c 89 e7 e8 68 ad 0a 00
-[11634.410421] RSP: 0018:ffffb7cf818539f0 EFLAGS: 00010046
-[11634.410423] RAX: 0000000000000000 RBX: 0000000000000201 RCX: 0000000000000000
-[11634.410425] RDX: 0000000000000000 RSI: 0000000000000201 RDI: ffffffffc0f25f79
-[11634.410426] RBP: ffffb7cf81853a00 R08: 0000000000000000 R09: 0000000000000000
-[11634.410427] R10: 0000000000000000 R11: 0000000000000000 R12: ffffffffc0f25f79
-[11634.410428] R13: ffff8db1f0fa6000 R14: ffff8db2c63ff000 R15: 00000000000000e8
-[11634.410431] FS:  0000000000000000(0000) GS:ffff8db33bc00000(0000) knlGS:0000000000000000
-[11634.410432] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[11634.410434] CR2: 0000559758db0f20 CR3: 0000000105124000 CR4: 00000000003506f0
-[11634.410436] Call Trace:
-[11634.410437]  <TASK>
-[11634.410439]  _raw_spin_unlock_bh+0x31/0x40
-[11634.410444]  rxe_post_send+0x59/0x8b0 [rdma_rxe]
-[11634.410453]  ib_send_mad+0x26b/0x470 [ib_core]
-[11634.410473]  ib_post_send_mad+0x150/0xb40 [ib_core]
-[11634.410487]  ? cm_form_tid+0x5b/0x90 [ib_cm]
-[11634.410498]  ib_send_cm_req+0x7c8/0xb70 [ib_cm]
-[11634.410510]  rdma_connect_locked+0x433/0x940 [rdma_cm]
-[11634.410521]  nvme_rdma_cm_handler+0x5d7/0x9c0 [nvme_rdma]
-[11634.410529]  cma_cm_event_handler+0x4f/0x170 [rdma_cm]
-[11634.410535]  cma_work_handler+0x6a/0xe0 [rdma_cm]
-[11634.410541]  process_one_work+0x2a9/0x580
-[11634.410549]  worker_thread+0x52/0x3f0
-[11634.410552]  ? __pfx_worker_thread+0x10/0x10
-[11634.410554]  kthread+0x109/0x140
-[11634.410556]  ? __pfx_kthread+0x10/0x10
-[11634.410559]  ret_from_fork+0x2c/0x50
-[11634.410566]  </TASK>
-[11634.410567] irq event stamp: 1024229
-[11634.410568] hardirqs last  enabled at (1024227): [<ffffffffb8a092c2>] _raw_read_unlock_irqrestore+0x72/0xa0
-[11634.410571] hardirqs last disabled at (1024228): [<ffffffffb8a085ca>] _raw_spin_lock_irqsave+0x7a/0x80
-[11634.410573] softirqs last  enabled at (1023578): [<ffffffffb78f9b38>] __irq_exit_rcu+0xe8/0x160
-[11634.410574] softirqs last disabled at (1024229): [<ffffffffc0f25f53>] rxe_post_send+0x33/0x8b0 [rdma_rxe]
-[11634.410580] ---[ end trace 0000000000000000 ]---
-[11634.410956] ------------[ cut here ]------------
-[11634.410961] raw_local_irq_restore() called with IRQs enabled
-[11634.410966] WARNING: CPU: 0 PID: 94794 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x37/0x60
-[ ... ]
-[11634.411058] CPU: 0 PID: 94794 Comm: kworker/u4:1 Tainted: G        W   E      6.4.0-rc1 #9
-[11634.411060] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014
-[11634.411061] Workqueue: rdma_cm cma_work_handler [rdma_cm]
-[11634.411068] RIP: 0010:warn_bogus_irq_restore+0x37/0x60
-[11634.411070] Code: fb 01 77 36 83 e3 01 74 0e 48 8b 5d f8 c9 31 f6 89 f7 e9 ac ea 01 00 48 c7 c7 e0 52 33 b9 c6 05 bb 1c 69 01 01 e8 39 24 f0 fe <0f> 0b 48 8b 5d f8 c9 31 f6 89 f7 e9 89 ea 01 00 0f b6 f3 48 c7 c7
-[11634.411072] RSP: 0018:ffffb7cf81853a58 EFLAGS: 00010246
-[11634.411074] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-[11634.411075] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-[11634.411076] RBP: ffffb7cf81853a60 R08: 0000000000000000 R09: 0000000000000000
-[11634.411077] R10: 0000000000000000 R11: 0000000000000000 R12: ffff8db2cfb1a9e8
-[11634.411079] R13: ffff8db2cfb1a9d8 R14: ffff8db2c63ff000 R15: 0000000000000000
-[11634.411081] FS:  0000000000000000(0000) GS:ffff8db33bc00000(0000) knlGS:0000000000000000
-[11634.411083] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[11634.411084] CR2: 0000559758db0f20 CR3: 0000000105124000 CR4: 00000000003506f0
-[11634.411086] Call Trace:
-[11634.411087]  <TASK>
-[11634.411089]  _raw_spin_unlock_irqrestore+0x91/0xa0
-[11634.411093]  ib_send_mad+0x1e3/0x470 [ib_core]
-[11634.411109]  ib_post_send_mad+0x150/0xb40 [ib_core]
-[11634.411121]  ? cm_form_tid+0x5b/0x90 [ib_cm]
-[11634.411131]  ib_send_cm_req+0x7c8/0xb70 [ib_cm]
-[11634.411143]  rdma_connect_locked+0x433/0x940 [rdma_cm]
-[11634.411154]  nvme_rdma_cm_handler+0x5d7/0x9c0 [nvme_rdma]
-[11634.411162]  cma_cm_event_handler+0x4f/0x170 [rdma_cm]
-[11634.411168]  cma_work_handler+0x6a/0xe0 [rdma_cm]
-[11634.411174]  process_one_work+0x2a9/0x580
-[11634.411180]  worker_thread+0x52/0x3f0
-[11634.411184]  ? __pfx_worker_thread+0x10/0x10
-[11634.411186]  kthread+0x109/0x140
-[11634.411188]  ? __pfx_kthread+0x10/0x10
-[11634.411191]  ret_from_fork+0x2c/0x50
-[11634.411198]  </TASK>
-[11634.411199] irq event stamp: 1025173
-[11634.411200] hardirqs last  enabled at (1025179): [<ffffffffb79b6140>] __up_console_sem+0x90/0xa0
-[11634.411204] hardirqs last disabled at (1025184): [<ffffffffb79b6125>] __up_console_sem+0x75/0xa0
-[11634.411206] softirqs last  enabled at (1024326): [<ffffffffb78f9d95>] do_softirq.part.0+0xe5/0x130
-[11634.411208] softirqs last disabled at (1024239): [<ffffffffb78f9d95>] do_softirq.part.0+0xe5/0x130
-[11634.411209] ---[ end trace 0000000000000000 ]---
+[1]: https://lore.kernel.org/linux-doc/20230503094248.28931-1-bagasdotme@gmail.com/
 
-Fixes: f605f26ea196 ("RDMA/rxe: Protect QP state with qp->state_lock")
-Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_comp.c  | 26 +++++++++++--------
- drivers/infiniband/sw/rxe/rxe_net.c   |  7 +++---
- drivers/infiniband/sw/rxe/rxe_qp.c    | 36 +++++++++++++++++----------
- drivers/infiniband/sw/rxe/rxe_recv.c  |  9 ++++---
- drivers/infiniband/sw/rxe/rxe_req.c   | 30 ++++++++++++----------
- drivers/infiniband/sw/rxe/rxe_resp.c  | 14 ++++++-----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 25 ++++++++++---------
- 7 files changed, 86 insertions(+), 61 deletions(-)
+Bagas Sanjaya (4):
+  Documentation: net/mlx5: Wrap vnic reporter devlink commands in code
+    blocks
+  Documentation: net/mlx5: Use bullet and definition lists for vnic
+    counters description
+  Documentation: net/mlx5: Add blank line separator before numbered
+    lists
+  Documentation: net/mlx5: Wrap notes in admonition blocks
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index db18ace74d2b..f46c5a5fd0ae 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -115,15 +115,16 @@ static enum ib_wc_opcode wr_to_wc_opcode(enum ib_wr_opcode opcode)
- void retransmit_timer(struct timer_list *t)
- {
- 	struct rxe_qp *qp = from_timer(qp, t, retrans_timer);
-+	unsigned long flags;
- 
- 	rxe_dbg_qp(qp, "retransmit timer fired\n");
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (qp->valid) {
- 		qp->comp.timeout = 1;
- 		rxe_sched_task(&qp->comp.task);
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- }
- 
- void rxe_comp_queue_pkt(struct rxe_qp *qp, struct sk_buff *skb)
-@@ -481,11 +482,13 @@ static void do_complete(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 
- static void comp_check_sq_drain_done(struct rxe_qp *qp)
- {
--	spin_lock_bh(&qp->state_lock);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (unlikely(qp_state(qp) == IB_QPS_SQD)) {
- 		if (qp->attr.sq_draining && qp->comp.psn == qp->req.psn) {
- 			qp->attr.sq_draining = 0;
--			spin_unlock_bh(&qp->state_lock);
-+			spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 			if (qp->ibqp.event_handler) {
- 				struct ib_event ev;
-@@ -499,7 +502,7 @@ static void comp_check_sq_drain_done(struct rxe_qp *qp)
- 			return;
- 		}
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- }
- 
- static inline enum comp_state complete_ack(struct rxe_qp *qp,
-@@ -625,13 +628,15 @@ static void free_pkt(struct rxe_pkt_info *pkt)
-  */
- static void reset_retry_timer(struct rxe_qp *qp)
- {
-+	unsigned long flags;
-+
- 	if (qp_type(qp) == IB_QPT_RC && qp->qp_timeout_jiffies) {
--		spin_lock_bh(&qp->state_lock);
-+		spin_lock_irqsave(&qp->state_lock, flags);
- 		if (qp_state(qp) >= IB_QPS_RTS &&
- 		    psn_compare(qp->req.psn, qp->comp.psn) > 0)
- 			mod_timer(&qp->retrans_timer,
- 				  jiffies + qp->qp_timeout_jiffies);
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 	}
- }
- 
-@@ -643,18 +648,19 @@ int rxe_completer(struct rxe_qp *qp)
- 	struct rxe_pkt_info *pkt = NULL;
- 	enum comp_state state;
- 	int ret;
-+	unsigned long flags;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (!qp->valid || qp_state(qp) == IB_QPS_ERR ||
- 			  qp_state(qp) == IB_QPS_RESET) {
- 		bool notify = qp->valid && (qp_state(qp) == IB_QPS_ERR);
- 
- 		drain_resp_pkts(qp);
- 		flush_send_queue(qp, notify);
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		goto exit;
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	if (qp->comp.timeout) {
- 		qp->comp.timeout_retry = 1;
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 2bc7361152ea..a38fab19bed1 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -412,15 +412,16 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 	int err;
- 	int is_request = pkt->mask & RXE_REQ_MASK;
- 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-+	unsigned long flags;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if ((is_request && (qp_state(qp) < IB_QPS_RTS)) ||
- 	    (!is_request && (qp_state(qp) < IB_QPS_RTR))) {
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		rxe_dbg_qp(qp, "Packet dropped. QP is not in ready state\n");
- 		goto drop;
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	rxe_icrc_generate(skb, pkt);
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index c5451a4488ca..1b9d8e89d915 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -300,6 +300,7 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- 	struct rxe_cq *rcq = to_rcq(init->recv_cq);
- 	struct rxe_cq *scq = to_rcq(init->send_cq);
- 	struct rxe_srq *srq = init->srq ? to_rsrq(init->srq) : NULL;
-+	unsigned long flags;
- 
- 	rxe_get(pd);
- 	rxe_get(rcq);
-@@ -325,10 +326,10 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- 	if (err)
- 		goto err2;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	qp->attr.qp_state = IB_QPS_RESET;
- 	qp->valid = 1;
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	return 0;
- 
-@@ -492,24 +493,28 @@ static void rxe_qp_reset(struct rxe_qp *qp)
- /* move the qp to the error state */
- void rxe_qp_error(struct rxe_qp *qp)
- {
--	spin_lock_bh(&qp->state_lock);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	qp->attr.qp_state = IB_QPS_ERR;
- 
- 	/* drain work and packet queues */
- 	rxe_sched_task(&qp->resp.task);
- 	rxe_sched_task(&qp->comp.task);
- 	rxe_sched_task(&qp->req.task);
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- }
- 
- static void rxe_qp_sqd(struct rxe_qp *qp, struct ib_qp_attr *attr,
- 		       int mask)
- {
--	spin_lock_bh(&qp->state_lock);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	qp->attr.sq_draining = 1;
- 	rxe_sched_task(&qp->comp.task);
- 	rxe_sched_task(&qp->req.task);
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- }
- 
- /* caller should hold qp->state_lock */
-@@ -555,14 +560,16 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
- 		qp->attr.cur_qp_state = attr->qp_state;
- 
- 	if (mask & IB_QP_STATE) {
--		spin_lock_bh(&qp->state_lock);
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&qp->state_lock, flags);
- 		err = __qp_chk_state(qp, attr, mask);
- 		if (!err) {
- 			qp->attr.qp_state = attr->qp_state;
- 			rxe_dbg_qp(qp, "state -> %s\n",
- 					qps2str[attr->qp_state]);
- 		}
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 		if (err)
- 			return err;
-@@ -688,6 +695,8 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
- /* called by the query qp verb */
- int rxe_qp_to_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask)
- {
-+	unsigned long flags;
-+
- 	*attr = qp->attr;
- 
- 	attr->rq_psn				= qp->resp.psn;
-@@ -708,12 +717,12 @@ int rxe_qp_to_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask)
- 	/* Applications that get this state typically spin on it.
- 	 * Yield the processor
- 	 */
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (qp->attr.sq_draining) {
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		cond_resched();
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	return 0;
- }
-@@ -736,10 +745,11 @@ int rxe_qp_chk_destroy(struct rxe_qp *qp)
- static void rxe_qp_do_cleanup(struct work_struct *work)
- {
- 	struct rxe_qp *qp = container_of(work, typeof(*qp), cleanup_work.work);
-+	unsigned long flags;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	qp->valid = 0;
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 	qp->qp_timeout_jiffies = 0;
- 
- 	if (qp_type(qp) == IB_QPT_RC) {
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index 2f953cc74256..5861e4244049 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -14,6 +14,7 @@ static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
- 			    struct rxe_qp *qp)
- {
- 	unsigned int pkt_type;
-+	unsigned long flags;
- 
- 	if (unlikely(!qp->valid))
- 		return -EINVAL;
-@@ -38,19 +39,19 @@ static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
- 		return -EINVAL;
- 	}
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (pkt->mask & RXE_REQ_MASK) {
- 		if (unlikely(qp_state(qp) < IB_QPS_RTR)) {
--			spin_unlock_bh(&qp->state_lock);
-+			spin_unlock_irqrestore(&qp->state_lock, flags);
- 			return -EINVAL;
- 		}
- 	} else {
- 		if (unlikely(qp_state(qp) < IB_QPS_RTS)) {
--			spin_unlock_bh(&qp->state_lock);
-+			spin_unlock_irqrestore(&qp->state_lock, flags);
- 			return -EINVAL;
- 		}
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	return 0;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 65134a9aefe7..5fe7cbae3031 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -99,17 +99,18 @@ static void req_retry(struct rxe_qp *qp)
- void rnr_nak_timer(struct timer_list *t)
- {
- 	struct rxe_qp *qp = from_timer(qp, t, rnr_nak_timer);
-+	unsigned long flags;
- 
- 	rxe_dbg_qp(qp, "nak timer fired\n");
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (qp->valid) {
- 		/* request a send queue retry */
- 		qp->req.need_retry = 1;
- 		qp->req.wait_for_rnr_timer = 0;
- 		rxe_sched_task(&qp->req.task);
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- }
- 
- static void req_check_sq_drain_done(struct rxe_qp *qp)
-@@ -118,8 +119,9 @@ static void req_check_sq_drain_done(struct rxe_qp *qp)
- 	unsigned int index;
- 	unsigned int cons;
- 	struct rxe_send_wqe *wqe;
-+	unsigned long flags;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (qp_state(qp) == IB_QPS_SQD) {
- 		q = qp->sq.queue;
- 		index = qp->req.wqe_index;
-@@ -140,7 +142,7 @@ static void req_check_sq_drain_done(struct rxe_qp *qp)
- 				break;
- 
- 			qp->attr.sq_draining = 0;
--			spin_unlock_bh(&qp->state_lock);
-+			spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 			if (qp->ibqp.event_handler) {
- 				struct ib_event ev;
-@@ -154,7 +156,7 @@ static void req_check_sq_drain_done(struct rxe_qp *qp)
- 			return;
- 		} while (0);
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- }
- 
- static struct rxe_send_wqe *__req_next_wqe(struct rxe_qp *qp)
-@@ -173,6 +175,7 @@ static struct rxe_send_wqe *__req_next_wqe(struct rxe_qp *qp)
- static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
- {
- 	struct rxe_send_wqe *wqe;
-+	unsigned long flags;
- 
- 	req_check_sq_drain_done(qp);
- 
-@@ -180,13 +183,13 @@ static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
- 	if (wqe == NULL)
- 		return NULL;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (unlikely((qp_state(qp) == IB_QPS_SQD) &&
- 		     (wqe->state != wqe_state_processing))) {
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		return NULL;
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	wqe->mask = wr_opcode_mask(wqe->wr.opcode, qp);
- 	return wqe;
-@@ -676,16 +679,17 @@ int rxe_requester(struct rxe_qp *qp)
- 	struct rxe_queue *q = qp->sq.queue;
- 	struct rxe_ah *ah;
- 	struct rxe_av *av;
-+	unsigned long flags;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (unlikely(!qp->valid)) {
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		goto exit;
- 	}
- 
- 	if (unlikely(qp_state(qp) == IB_QPS_ERR)) {
- 		wqe = __req_next_wqe(qp);
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		if (wqe)
- 			goto err;
- 		else
-@@ -700,10 +704,10 @@ int rxe_requester(struct rxe_qp *qp)
- 		qp->req.wait_psn = 0;
- 		qp->req.need_retry = 0;
- 		qp->req.wait_for_rnr_timer = 0;
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		goto exit;
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	/* we come here if the retransmit timer has fired
- 	 * or if the rnr timer has fired. If the retransmit
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 68f6cd188d8e..1da044f6b7d4 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -1047,6 +1047,7 @@ static enum resp_states do_complete(struct rxe_qp *qp,
- 	struct ib_uverbs_wc *uwc = &cqe.uibwc;
- 	struct rxe_recv_wqe *wqe = qp->resp.wqe;
- 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-+	unsigned long flags;
- 
- 	if (!wqe)
- 		goto finish;
-@@ -1137,12 +1138,12 @@ static enum resp_states do_complete(struct rxe_qp *qp,
- 		return RESPST_ERR_CQ_OVERFLOW;
- 
- finish:
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (unlikely(qp_state(qp) == IB_QPS_ERR)) {
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		return RESPST_CHK_RESOURCE;
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	if (unlikely(!pkt))
- 		return RESPST_DONE;
-@@ -1468,18 +1469,19 @@ int rxe_responder(struct rxe_qp *qp)
- 	enum resp_states state;
- 	struct rxe_pkt_info *pkt = NULL;
- 	int ret;
-+	unsigned long flags;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (!qp->valid || qp_state(qp) == IB_QPS_ERR ||
- 			  qp_state(qp) == IB_QPS_RESET) {
- 		bool notify = qp->valid && (qp_state(qp) == IB_QPS_ERR);
- 
- 		drain_req_pkts(qp);
- 		flush_recv_queue(qp, notify);
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		goto exit;
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	qp->resp.aeth_syndrome = AETH_ACK_UNLIMITED;
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index dea605b7f683..4d8f6b8051ff 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -904,10 +904,10 @@ static int rxe_post_send_kernel(struct rxe_qp *qp,
- 	if (!err)
- 		rxe_sched_task(&qp->req.task);
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (qp_state(qp) == IB_QPS_ERR)
- 		rxe_sched_task(&qp->comp.task);
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	return err;
- }
-@@ -917,22 +917,23 @@ static int rxe_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- {
- 	struct rxe_qp *qp = to_rqp(ibqp);
- 	int err;
-+	unsigned long flags;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	/* caller has already called destroy_qp */
- 	if (WARN_ON_ONCE(!qp->valid)) {
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		rxe_err_qp(qp, "qp has been destroyed");
- 		return -EINVAL;
- 	}
- 
- 	if (unlikely(qp_state(qp) < IB_QPS_RTS)) {
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		*bad_wr = wr;
- 		rxe_err_qp(qp, "qp not ready to send");
- 		return -EINVAL;
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	if (qp->is_user) {
- 		/* Utilize process context to do protocol processing */
-@@ -1008,22 +1009,22 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
- 	struct rxe_rq *rq = &qp->rq;
- 	unsigned long flags;
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	/* caller has already called destroy_qp */
- 	if (WARN_ON_ONCE(!qp->valid)) {
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		rxe_err_qp(qp, "qp has been destroyed");
- 		return -EINVAL;
- 	}
- 
- 	/* see C10-97.2.1 */
- 	if (unlikely((qp_state(qp) < IB_QPS_INIT))) {
--		spin_unlock_bh(&qp->state_lock);
-+		spin_unlock_irqrestore(&qp->state_lock, flags);
- 		*bad_wr = wr;
- 		rxe_dbg_qp(qp, "qp not ready to post recv");
- 		return -EINVAL;
- 	}
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	if (unlikely(qp->srq)) {
- 		*bad_wr = wr;
-@@ -1044,10 +1045,10 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
- 
- 	spin_unlock_irqrestore(&rq->producer_lock, flags);
- 
--	spin_lock_bh(&qp->state_lock);
-+	spin_lock_irqsave(&qp->state_lock, flags);
- 	if (qp_state(qp) == IB_QPS_ERR)
- 		rxe_sched_task(&qp->resp.task);
--	spin_unlock_bh(&qp->state_lock);
-+	spin_unlock_irqrestore(&qp->state_lock, flags);
- 
- 	return err;
- }
+ .../ethernet/mellanox/mlx5/devlink.rst        | 60 ++++++++++++-------
+ 1 file changed, 37 insertions(+), 23 deletions(-)
+
+
+base-commit: 582dbb2cc1a0a7427840f5b1e3c65608e511b061
 -- 
-2.34.1
+An old man doll... just what I always wanted! - Clara
 
