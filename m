@@ -2,68 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931536FDAA8
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 May 2023 11:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9936FD924
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 May 2023 10:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbjEJJXO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 May 2023 05:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
+        id S236483AbjEJIXq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 May 2023 04:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236657AbjEJJW4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 May 2023 05:22:56 -0400
-X-Greylist: delayed 88224 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 10 May 2023 02:22:28 PDT
-Received: from mail.rawlinsfis.com (mail.rawlinsfis.com [89.40.118.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F9C8A6E
-        for <linux-rdma@vger.kernel.org>; Wed, 10 May 2023 02:22:28 -0700 (PDT)
-Received: by mail.rawlinsfis.com (Postfix, from userid 1001)
-        id 64BCE82212; Tue,  9 May 2023 08:36:04 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rawlinsfis.com;
-        s=mail; t=1683617772;
-        bh=lDo1OjfzzJ3sOfR9tSDg5RMmT4aDyBP45hIVJCLtIrE=;
-        h=Date:From:To:Subject:From;
-        b=hrvkAK9oqE0VcbCB6O0clVLM3uYLVUdH10JF/MBbgdIxLq9NKi6h8sRarQ6xoZjga
-         mYd3crtFUcaVVT4/588ZDCRTmCfhXKJdf8/kavXKq9aCsNY/DmZD90qghicTVubVVE
-         xx4q+na/s4o7HJQQICL1JGByCVPUBPj1xOPI8Y8ZjoelPbTe81iwjNtHVrSangFT23
-         JPZEw/FicSQM3uAYosL+FXQLDSgltTIJ2oeXKq6UPf7tQDHsOmxZEOpmihg4AilFgY
-         FmDrl+7D9nb/Q6lc+dRhdz/Ge8k+m0hg+CIsf41Yp4anmU/XGUkRBR8gCFwDpyw3C1
-         YUzG0jfkVec7Q==
-Received: by mail.rawlinsfis.com for <linux-rdma@vger.kernel.org>; Tue,  9 May 2023 07:36:00 GMT
-Message-ID: <20230509074500-0.1.3e.5ov5.0.f5ma0rurgm@rawlinsfis.com>
-Date:   Tue,  9 May 2023 07:36:00 GMT
-From:   "Damian Hordych" <damian.hordych@rawlinsfis.com>
-To:     <linux-rdma@vger.kernel.org>
-Subject: =?UTF-8?Q?Pompy_ciep=C5=82a_-_nowe_warunki_?=
-X-Mailer: mail.rawlinsfis.com
+        with ESMTP id S236273AbjEJIXl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 May 2023 04:23:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84376E6B;
+        Wed, 10 May 2023 01:23:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1404C63B9A;
+        Wed, 10 May 2023 08:23:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C81FC433EF;
+        Wed, 10 May 2023 08:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683707018;
+        bh=/gMniZJi49+b3F2CxP49asUyDF2qocWAllpb4xt4W88=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b0zsNfI9p+LA76L/lfuEQcl/Z4Bl7vyuvAIAHtCL5/O48gu5Hv+tlKn1GZhIzV71x
+         OaQ2kGN1qr/eQB0taX1xmlss6VFcIseUXLJGQGn1m8LDukVUeI5drXLeodBfQV6CYy
+         lgIU79XxfCWt+XQul+U5tJI7b0LMlGf64ZvVZ7jZyb0+ekB2XYE4gpvYL6BQ30piFD
+         qnWwq1J4KI2oPLZYMfSW4e9S9HbSlaauSwlEngGJ6X5HUKC47VvaUQP9UJFaZ6Roum
+         w6NeAg6eC80Snwn0tdb5GuA1zW9M0GZX48Yav8SWrbuhHzonYzzrKmBZZEYxHv6cxU
+         41nEruMRIKgog==
+Date:   Wed, 10 May 2023 10:23:28 +0200
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     bhelgaas@google.com, davem@davemloft.net, edumazet@google.com,
+        haiyangz@microsoft.com, jakeo@microsoft.com, kuba@kernel.org,
+        kw@linux.com, kys@microsoft.com, leon@kernel.org,
+        linux-pci@vger.kernel.org, mikelley@microsoft.com,
+        pabeni@redhat.com, robh@kernel.org, saeedm@nvidia.com,
+        wei.liu@kernel.org, longli@microsoft.com, boqun.feng@gmail.com,
+        ssengar@microsoft.com, helgaas@kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        josete@microsoft.com, stable@vger.kernel.org
+Subject: Re: [PATCH v3 6/6] PCI: hv: Use async probing to reduce boot time
+Message-ID: <ZFtUgCVaneGVKBsW@lpieralisi>
+References: <20230420024037.5921-1-decui@microsoft.com>
+ <20230420024037.5921-7-decui@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230420024037.5921-7-decui@microsoft.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Wed, Apr 19, 2023 at 07:40:37PM -0700, Dexuan Cui wrote:
+> Commit 414428c5da1c ("PCI: hv: Lock PCI bus on device eject") added
+> pci_lock_rescan_remove() and pci_unlock_rescan_remove() in
+> create_root_hv_pci_bus() and in hv_eject_device_work() to address the
+> race between create_root_hv_pci_bus() and hv_eject_device_work(), but it
+> turns that grabing the pci_rescan_remove_lock mutex is not enough:
+> refer to the earlier fix "PCI: hv: Add a per-bus mutex state_lock".
 
-w ramach nowej edycji programu Czyste Powietrze dla klient=C3=B3w indywid=
-ualnych mog=C4=85 otrzyma=C4=87 Pa=C5=84stwo do 135 tys. z=C5=82 wsparcia=
- na zakup pompy ciep=C5=82a.
+This is meaningless for a commit log reader, there is nothing to
+refer to.
 
-Pr=C3=B3cz wy=C5=BCszego dofinansowania program zak=C5=82ada m.in. podwy=C5=
-=BCszenie prog=C3=B3w dochodowych oraz mo=C5=BCliwo=C5=9B=C4=87 z=C5=82o=C5=
-=BCenia kolejnego wniosku o dofinansowanie dla tych, kt=C3=B3rzy ju=C5=BC=
- wcze=C5=9Bniej skorzystali z Programu.
+> Now with hbus->state_lock and other fixes, the race is resolved, so
 
-Jako firma specjalizuj=C4=85ca si=C4=99 w dostawie, monta=C5=BCu i serwis=
-ie pomp ciep=C5=82a pomo=C5=BCemy Pa=C5=84stwu w uzyskaniu dofinansowania=
- wraz z kompleksow=C4=85 realizacj=C4=85 ca=C5=82ego projektu.
+"other fixes" is meaningless too.
 
-S=C4=85 Pa=C5=84stwo zainteresowani?
+Explain the problem and how you fix it (this patch should be split
+because the Subject does not represent what you are doing precisely,
+see below).
 
-Pozdrawiam
-Damian Hordych
+> remove pci_{lock,unlock}_rescan_remove() in create_root_hv_pci_bus():
+> this removes the serialization in hv_pci_probe() and hence allows
+> async-probing (PROBE_PREFER_ASYNCHRONOUS) to work.
+> 
+> Add the async-probing flag to hv_pci_drv.
+
+Adding the asynchronous probing should be a separate patch and
+I don't think you should send it to stable kernels straight away
+because a) it is not a fix b) it can trigger further regressions.
+
+> pci_{lock,unlock}_rescan_remove() in hv_eject_device_work() and in
+> hv_pci_remove() are still kept: according to the comment before
+> drivers/pci/probe.c: static DEFINE_MUTEX(pci_rescan_remove_lock),
+> "PCI device removal routines should always be executed under this mutex".
+
+This patch should be split, first thing is to fix and document what
+you are changing for pci_{lock,unlock}_rescan_remove() then add
+asynchronous probing.
+
+Lorenzo
+
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> Reviewed-by: Long Li <longli@microsoft.com>
+> Cc: stable@vger.kernel.org
+> ---
+> 
+> v2:
+>   No change to the patch body.
+>   Improved the commit message [Michael Kelley]
+>   Added Cc:stable
+> 
+> v3:
+>   Added Michael's and Long Li's Reviewed-by.
+>   Fixed a typo in the commit message: grubing -> grabing [Thanks, Michael!]
+> 
+>  drivers/pci/controller/pci-hyperv.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index 3ae2f99dea8c2..2ea2b1b8a4c9a 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -2312,12 +2312,16 @@ static int create_root_hv_pci_bus(struct hv_pcibus_device *hbus)
+>  	if (error)
+>  		return error;
+>  
+> -	pci_lock_rescan_remove();
+> +	/*
+> +	 * pci_lock_rescan_remove() and pci_unlock_rescan_remove() are
+> +	 * unnecessary here, because we hold the hbus->state_lock, meaning
+> +	 * hv_eject_device_work() and pci_devices_present_work() can't race
+> +	 * with create_root_hv_pci_bus().
+> +	 */
+>  	hv_pci_assign_numa_node(hbus);
+>  	pci_bus_assign_resources(bridge->bus);
+>  	hv_pci_assign_slots(hbus);
+>  	pci_bus_add_devices(bridge->bus);
+> -	pci_unlock_rescan_remove();
+>  	hbus->state = hv_pcibus_installed;
+>  	return 0;
+>  }
+> @@ -4003,6 +4007,9 @@ static struct hv_driver hv_pci_drv = {
+>  	.remove		= hv_pci_remove,
+>  	.suspend	= hv_pci_suspend,
+>  	.resume		= hv_pci_resume,
+> +	.driver = {
+> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+> +	},
+>  };
+>  
+>  static void __exit exit_hv_pci_drv(void)
+> -- 
+> 2.25.1
+> 
