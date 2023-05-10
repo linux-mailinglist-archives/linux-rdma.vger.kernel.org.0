@@ -2,237 +2,671 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA276FD158
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 May 2023 23:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9106FD49F
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 May 2023 05:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236125AbjEIVZO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 May 2023 17:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        id S229556AbjEJDvM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 May 2023 23:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236111AbjEIVYm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 May 2023 17:24:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59705A248;
-        Tue,  9 May 2023 14:22:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 37DA363725;
-        Tue,  9 May 2023 21:21:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20298C4339C;
-        Tue,  9 May 2023 21:21:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683667261;
-        bh=w3idX9v5XOeQ50vgBlbR+ZAhP3EpnQKSofC3XOe3QHE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RQfqdy2+9YZ0o0vWKlvNh73jeAtOb5K4Aj2g7ThXJ2nOQLcbqIQdRPkq5RBup/LVZ
-         WkCNnuc2UuAqhlBRnfHLwJAzAqQ16n3opXZvOTrG9dLzsr1qfhuPX7mBuRtVrOUM+Q
-         JYJBwSGOn725j+NMCTCVLPua8z9HScmlF/9RkmGgQNeZ8XEoKRgJwsNLxLQIuUvK3t
-         tToDim3xnLrLDF+TBQIfb6E5hZQruaY4lyW7MAa/h7VlAKP89EUwxnXJQrv4BtZ9ew
-         2oPm9W9kMkNt3unKgNb7BBj7aQShUjTScMeEwCbBGcbTp5i8YKxm37X33OskZteD+w
-         csDcd6nFjoL/A==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, nathan@kernel.org,
-        ndesaulniers@google.com, gregkh@linuxfoundation.org,
-        mcgrof@kernel.org, linux-rdma@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.4 1/4] RDMA/core: Fix multiple -Warray-bounds warnings
-Date:   Tue,  9 May 2023 17:20:53 -0400
-Message-Id: <20230509212058.22651-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S235243AbjEJDvK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 May 2023 23:51:10 -0400
+Received: from out-59.mta0.migadu.com (out-59.mta0.migadu.com [91.218.175.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6DB2114
+        for <linux-rdma@vger.kernel.org>; Tue,  9 May 2023 20:51:07 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1683690665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=c/H1zllcEMsDTN/b3YiUhKS+OYX9lcVCG75W/uBvce8=;
+        b=Do2nS+4J6lIuIJ1im/OtpOga2MbqvqDnMnv9zjrAv55xA2OB3goZNgB7WMX5UVVOfZxuBQ
+        Lus+jpFbtzN5NAi+Kx3Ghhv/a1t9Cwax+aHp4grtYUXBeSymLMT3UpBvC4ZwH4+EpcAaJm
+        f66cg9PSsvUL1wHEbXTRxwlrLug/a84=
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        rpearsonhpe@gmail.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH] RDMA/rxe: Convert spin_{lock_bh,unlock_bh} to spin_{lock_irqsave,unlock_irqrestore}
+Date:   Wed, 10 May 2023 11:50:56 +0800
+Message-Id: <20230510035056.881196-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+We need to call spin_lock_irqsave/spin_unlock_irqrestore for state_lock
+in rxe, otherwsie the callchain
 
-[ Upstream commit aa4d540b4150052ae3b36d286b9c833a961ce291 ]
+ib_post_send_mad
+	-> spin_lock_irqsave
+	-> ib_post_send -> rxe_post_send
+				-> spin_lock_bh
+				-> spin_unlock_bh
+	-> spin_unlock_irqrestore
 
-GCC-13 (and Clang)[1] does not like to access a partially allocated
-object, since it cannot reason about it for bounds checking.
+caused below traces during run block nvmeof-mp/001 test.
 
-In this case 140 bytes are allocated for an object of type struct
-ib_umad_packet:
+[11634.410320] ------------[ cut here ]------------
+[11634.410325] WARNING: CPU: 0 PID: 94794 at kernel/softirq.c:376 __local_bh_enable_ip+0xc2/0x140
+[ ... ]
+[11634.410405] CPU: 0 PID: 94794 Comm: kworker/u4:1 Tainted: G            E      6.4.0-rc1 #9
+[11634.410407] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014
+[11634.410409] Workqueue: rdma_cm cma_work_handler [rdma_cm]
+[11634.410418] RIP: 0010:__local_bh_enable_ip+0xc2/0x140
+[11634.410420] Code: 48 85 c0 74 72 5b 41 5c 5d 31 c0 89 c2 89 c1 89 c6 89 c7 41 89 c0 e9 bd 0e 11 01 65 8b 05 f2 65 72 48 85 c0 0f 85 76 ff ff ff <0f> 0b e9 6f ff ff ff e8 d2 39 1c 00 eb 80 4c 89 e7 e8 68 ad 0a 00
+[11634.410421] RSP: 0018:ffffb7cf818539f0 EFLAGS: 00010046
+[11634.410423] RAX: 0000000000000000 RBX: 0000000000000201 RCX: 0000000000000000
+[11634.410425] RDX: 0000000000000000 RSI: 0000000000000201 RDI: ffffffffc0f25f79
+[11634.410426] RBP: ffffb7cf81853a00 R08: 0000000000000000 R09: 0000000000000000
+[11634.410427] R10: 0000000000000000 R11: 0000000000000000 R12: ffffffffc0f25f79
+[11634.410428] R13: ffff8db1f0fa6000 R14: ffff8db2c63ff000 R15: 00000000000000e8
+[11634.410431] FS:  0000000000000000(0000) GS:ffff8db33bc00000(0000) knlGS:0000000000000000
+[11634.410432] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[11634.410434] CR2: 0000559758db0f20 CR3: 0000000105124000 CR4: 00000000003506f0
+[11634.410436] Call Trace:
+[11634.410437]  <TASK>
+[11634.410439]  _raw_spin_unlock_bh+0x31/0x40
+[11634.410444]  rxe_post_send+0x59/0x8b0 [rdma_rxe]
+[11634.410453]  ib_send_mad+0x26b/0x470 [ib_core]
+[11634.410473]  ib_post_send_mad+0x150/0xb40 [ib_core]
+[11634.410487]  ? cm_form_tid+0x5b/0x90 [ib_cm]
+[11634.410498]  ib_send_cm_req+0x7c8/0xb70 [ib_cm]
+[11634.410510]  rdma_connect_locked+0x433/0x940 [rdma_cm]
+[11634.410521]  nvme_rdma_cm_handler+0x5d7/0x9c0 [nvme_rdma]
+[11634.410529]  cma_cm_event_handler+0x4f/0x170 [rdma_cm]
+[11634.410535]  cma_work_handler+0x6a/0xe0 [rdma_cm]
+[11634.410541]  process_one_work+0x2a9/0x580
+[11634.410549]  worker_thread+0x52/0x3f0
+[11634.410552]  ? __pfx_worker_thread+0x10/0x10
+[11634.410554]  kthread+0x109/0x140
+[11634.410556]  ? __pfx_kthread+0x10/0x10
+[11634.410559]  ret_from_fork+0x2c/0x50
+[11634.410566]  </TASK>
+[11634.410567] irq event stamp: 1024229
+[11634.410568] hardirqs last  enabled at (1024227): [<ffffffffb8a092c2>] _raw_read_unlock_irqrestore+0x72/0xa0
+[11634.410571] hardirqs last disabled at (1024228): [<ffffffffb8a085ca>] _raw_spin_lock_irqsave+0x7a/0x80
+[11634.410573] softirqs last  enabled at (1023578): [<ffffffffb78f9b38>] __irq_exit_rcu+0xe8/0x160
+[11634.410574] softirqs last disabled at (1024229): [<ffffffffc0f25f53>] rxe_post_send+0x33/0x8b0 [rdma_rxe]
+[11634.410580] ---[ end trace 0000000000000000 ]---
+[11634.410956] ------------[ cut here ]------------
+[11634.410961] raw_local_irq_restore() called with IRQs enabled
+[11634.410966] WARNING: CPU: 0 PID: 94794 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x37/0x60
+[ ... ]
+[11634.411058] CPU: 0 PID: 94794 Comm: kworker/u4:1 Tainted: G        W   E      6.4.0-rc1 #9
+[11634.411060] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014
+[11634.411061] Workqueue: rdma_cm cma_work_handler [rdma_cm]
+[11634.411068] RIP: 0010:warn_bogus_irq_restore+0x37/0x60
+[11634.411070] Code: fb 01 77 36 83 e3 01 74 0e 48 8b 5d f8 c9 31 f6 89 f7 e9 ac ea 01 00 48 c7 c7 e0 52 33 b9 c6 05 bb 1c 69 01 01 e8 39 24 f0 fe <0f> 0b 48 8b 5d f8 c9 31 f6 89 f7 e9 89 ea 01 00 0f b6 f3 48 c7 c7
+[11634.411072] RSP: 0018:ffffb7cf81853a58 EFLAGS: 00010246
+[11634.411074] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[11634.411075] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+[11634.411076] RBP: ffffb7cf81853a60 R08: 0000000000000000 R09: 0000000000000000
+[11634.411077] R10: 0000000000000000 R11: 0000000000000000 R12: ffff8db2cfb1a9e8
+[11634.411079] R13: ffff8db2cfb1a9d8 R14: ffff8db2c63ff000 R15: 0000000000000000
+[11634.411081] FS:  0000000000000000(0000) GS:ffff8db33bc00000(0000) knlGS:0000000000000000
+[11634.411083] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[11634.411084] CR2: 0000559758db0f20 CR3: 0000000105124000 CR4: 00000000003506f0
+[11634.411086] Call Trace:
+[11634.411087]  <TASK>
+[11634.411089]  _raw_spin_unlock_irqrestore+0x91/0xa0
+[11634.411093]  ib_send_mad+0x1e3/0x470 [ib_core]
+[11634.411109]  ib_post_send_mad+0x150/0xb40 [ib_core]
+[11634.411121]  ? cm_form_tid+0x5b/0x90 [ib_cm]
+[11634.411131]  ib_send_cm_req+0x7c8/0xb70 [ib_cm]
+[11634.411143]  rdma_connect_locked+0x433/0x940 [rdma_cm]
+[11634.411154]  nvme_rdma_cm_handler+0x5d7/0x9c0 [nvme_rdma]
+[11634.411162]  cma_cm_event_handler+0x4f/0x170 [rdma_cm]
+[11634.411168]  cma_work_handler+0x6a/0xe0 [rdma_cm]
+[11634.411174]  process_one_work+0x2a9/0x580
+[11634.411180]  worker_thread+0x52/0x3f0
+[11634.411184]  ? __pfx_worker_thread+0x10/0x10
+[11634.411186]  kthread+0x109/0x140
+[11634.411188]  ? __pfx_kthread+0x10/0x10
+[11634.411191]  ret_from_fork+0x2c/0x50
+[11634.411198]  </TASK>
+[11634.411199] irq event stamp: 1025173
+[11634.411200] hardirqs last  enabled at (1025179): [<ffffffffb79b6140>] __up_console_sem+0x90/0xa0
+[11634.411204] hardirqs last disabled at (1025184): [<ffffffffb79b6125>] __up_console_sem+0x75/0xa0
+[11634.411206] softirqs last  enabled at (1024326): [<ffffffffb78f9d95>] do_softirq.part.0+0xe5/0x130
+[11634.411208] softirqs last disabled at (1024239): [<ffffffffb78f9d95>] do_softirq.part.0+0xe5/0x130
+[11634.411209] ---[ end trace 0000000000000000 ]---
 
-        packet = kzalloc(sizeof(*packet) + IB_MGMT_RMPP_HDR, GFP_KERNEL);
-
-However, notice that sizeof(*packet) is only 104 bytes:
-
-struct ib_umad_packet {
-        struct ib_mad_send_buf *   msg;                  /*     0     8 */
-        struct ib_mad_recv_wc *    recv_wc;              /*     8     8 */
-        struct list_head           list;                 /*    16    16 */
-        int                        length;               /*    32     4 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        struct ib_user_mad         mad __attribute__((__aligned__(8))); /*    40    64 */
-
-        /* size: 104, cachelines: 2, members: 5 */
-        /* sum members: 100, holes: 1, sum holes: 4 */
-        /* forced alignments: 1, forced holes: 1, sum forced holes: 4 */
-        /* last cacheline: 40 bytes */
-} __attribute__((__aligned__(8)));
-
-and 36 bytes extra bytes are allocated for a flexible-array member in
-struct ib_user_mad:
-
-include/rdma/ib_mad.h:
-120 enum {
-...
-123         IB_MGMT_RMPP_HDR = 36,
-... }
-
-struct ib_user_mad {
-        struct ib_user_mad_hdr     hdr;                  /*     0    64 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        __u64                      data[] __attribute__((__aligned__(8))); /*    64     0 */
-
-        /* size: 64, cachelines: 1, members: 2 */
-        /* forced alignments: 1 */
-} __attribute__((__aligned__(8)));
-
-So we have sizeof(*packet) + IB_MGMT_RMPP_HDR == 140 bytes
-
-Then the address of the flex-array member (for which only 36 bytes were
-allocated) is casted and copied into a pointer to struct ib_rmpp_mad,
-which, in turn, is of size 256 bytes:
-
-        rmpp_mad = (struct ib_rmpp_mad *) packet->mad.data;
-
-struct ib_rmpp_mad {
-        struct ib_mad_hdr          mad_hdr;              /*     0    24 */
-        struct ib_rmpp_hdr         rmpp_hdr;             /*    24    12 */
-        u8                         data[220];            /*    36   220 */
-
-        /* size: 256, cachelines: 4, members: 3 */
-};
-
-The thing is that those 36 bytes allocated for flex-array member data
-in struct ib_user_mad onlly account for the size of both struct ib_mad_hdr
-and struct ib_rmpp_hdr, but nothing is left for array u8 data[220].
-So, the compiler is legitimately complaining about accessing an object
-for which not enough memory was allocated.
-
-Apparently, the only members of struct ib_rmpp_mad that are relevant
-(that are actually being used) in function ib_umad_write() are mad_hdr
-and rmpp_hdr. So, instead of casting packet->mad.data to
-(struct ib_rmpp_mad *) create a new structure
-
-struct ib_rmpp_mad_hdr {
-        struct ib_mad_hdr       mad_hdr;
-        struct ib_rmpp_hdr      rmpp_hdr;
-} __packed;
-
-and cast packet->mad.data to (struct ib_rmpp_mad_hdr *).
-
-Notice that
-
-        IB_MGMT_RMPP_HDR == sizeof(struct ib_rmpp_mad_hdr) == 36 bytes
-
-Refactor the rest of the code, accordingly.
-
-Fix the following warnings seen under GCC-13 and -Warray-bounds:
-drivers/infiniband/core/user_mad.c:564:50: warning: array subscript ‘struct ib_rmpp_mad[0]’ is partly outside array bounds of ‘unsigned char[140]’ [-Warray-bounds=]
-drivers/infiniband/core/user_mad.c:566:42: warning: array subscript ‘struct ib_rmpp_mad[0]’ is partly outside array bounds of ‘unsigned char[140]’ [-Warray-bounds=]
-drivers/infiniband/core/user_mad.c:618:25: warning: array subscript ‘struct ib_rmpp_mad[0]’ is partly outside array bounds of ‘unsigned char[140]’ [-Warray-bounds=]
-drivers/infiniband/core/user_mad.c:622:44: warning: array subscript ‘struct ib_rmpp_mad[0]’ is partly outside array bounds of ‘unsigned char[140]’ [-Warray-bounds=]
-
-Link: https://github.com/KSPP/linux/issues/273
-Link: https://godbolt.org/z/oYWaGM4Yb [1]
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Link: https://lore.kernel.org/r/ZBpB91qQcB10m3Fw@work
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f605f26ea196 ("RDMA/rxe: Protect QP state with qp->state_lock")
+Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/core/user_mad.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_comp.c  | 26 +++++++++++--------
+ drivers/infiniband/sw/rxe/rxe_net.c   |  7 +++---
+ drivers/infiniband/sw/rxe/rxe_qp.c    | 36 +++++++++++++++++----------
+ drivers/infiniband/sw/rxe/rxe_recv.c  |  9 ++++---
+ drivers/infiniband/sw/rxe/rxe_req.c   | 30 ++++++++++++----------
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 14 ++++++-----
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 25 ++++++++++---------
+ 7 files changed, 86 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index ad3a092b8b5c3..390123f87658b 100644
---- a/drivers/infiniband/core/user_mad.c
-+++ b/drivers/infiniband/core/user_mad.c
-@@ -131,6 +131,11 @@ struct ib_umad_packet {
- 	struct ib_user_mad mad;
- };
- 
-+struct ib_rmpp_mad_hdr {
-+	struct ib_mad_hdr	mad_hdr;
-+	struct ib_rmpp_hdr      rmpp_hdr;
-+} __packed;
-+
- #define CREATE_TRACE_POINTS
- #include <trace/events/ib_umad.h>
- 
-@@ -494,11 +499,11 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
- 			     size_t count, loff_t *pos)
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index db18ace74d2b..f46c5a5fd0ae 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -115,15 +115,16 @@ static enum ib_wc_opcode wr_to_wc_opcode(enum ib_wr_opcode opcode)
+ void retransmit_timer(struct timer_list *t)
  {
- 	struct ib_umad_file *file = filp->private_data;
-+	struct ib_rmpp_mad_hdr *rmpp_mad_hdr;
- 	struct ib_umad_packet *packet;
- 	struct ib_mad_agent *agent;
- 	struct rdma_ah_attr ah_attr;
- 	struct ib_ah *ah;
--	struct ib_rmpp_mad *rmpp_mad;
- 	__be64 *tid;
- 	int ret, data_len, hdr_len, copy_offset, rmpp_active;
- 	u8 base_version;
-@@ -506,7 +511,7 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
- 	if (count < hdr_size(file) + IB_MGMT_RMPP_HDR)
+ 	struct rxe_qp *qp = from_timer(qp, t, retrans_timer);
++	unsigned long flags;
+ 
+ 	rxe_dbg_qp(qp, "retransmit timer fired\n");
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (qp->valid) {
+ 		qp->comp.timeout = 1;
+ 		rxe_sched_task(&qp->comp.task);
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ }
+ 
+ void rxe_comp_queue_pkt(struct rxe_qp *qp, struct sk_buff *skb)
+@@ -481,11 +482,13 @@ static void do_complete(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+ 
+ static void comp_check_sq_drain_done(struct rxe_qp *qp)
+ {
+-	spin_lock_bh(&qp->state_lock);
++	unsigned long flags;
++
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (unlikely(qp_state(qp) == IB_QPS_SQD)) {
+ 		if (qp->attr.sq_draining && qp->comp.psn == qp->req.psn) {
+ 			qp->attr.sq_draining = 0;
+-			spin_unlock_bh(&qp->state_lock);
++			spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 			if (qp->ibqp.event_handler) {
+ 				struct ib_event ev;
+@@ -499,7 +502,7 @@ static void comp_check_sq_drain_done(struct rxe_qp *qp)
+ 			return;
+ 		}
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ }
+ 
+ static inline enum comp_state complete_ack(struct rxe_qp *qp,
+@@ -625,13 +628,15 @@ static void free_pkt(struct rxe_pkt_info *pkt)
+  */
+ static void reset_retry_timer(struct rxe_qp *qp)
+ {
++	unsigned long flags;
++
+ 	if (qp_type(qp) == IB_QPT_RC && qp->qp_timeout_jiffies) {
+-		spin_lock_bh(&qp->state_lock);
++		spin_lock_irqsave(&qp->state_lock, flags);
+ 		if (qp_state(qp) >= IB_QPS_RTS &&
+ 		    psn_compare(qp->req.psn, qp->comp.psn) > 0)
+ 			mod_timer(&qp->retrans_timer,
+ 				  jiffies + qp->qp_timeout_jiffies);
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 	}
+ }
+ 
+@@ -643,18 +648,19 @@ int rxe_completer(struct rxe_qp *qp)
+ 	struct rxe_pkt_info *pkt = NULL;
+ 	enum comp_state state;
+ 	int ret;
++	unsigned long flags;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (!qp->valid || qp_state(qp) == IB_QPS_ERR ||
+ 			  qp_state(qp) == IB_QPS_RESET) {
+ 		bool notify = qp->valid && (qp_state(qp) == IB_QPS_ERR);
+ 
+ 		drain_resp_pkts(qp);
+ 		flush_send_queue(qp, notify);
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		goto exit;
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	if (qp->comp.timeout) {
+ 		qp->comp.timeout_retry = 1;
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 2bc7361152ea..a38fab19bed1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -412,15 +412,16 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+ 	int err;
+ 	int is_request = pkt->mask & RXE_REQ_MASK;
+ 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
++	unsigned long flags;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if ((is_request && (qp_state(qp) < IB_QPS_RTS)) ||
+ 	    (!is_request && (qp_state(qp) < IB_QPS_RTR))) {
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		rxe_dbg_qp(qp, "Packet dropped. QP is not in ready state\n");
+ 		goto drop;
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	rxe_icrc_generate(skb, pkt);
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index c5451a4488ca..1b9d8e89d915 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -300,6 +300,7 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
+ 	struct rxe_cq *rcq = to_rcq(init->recv_cq);
+ 	struct rxe_cq *scq = to_rcq(init->send_cq);
+ 	struct rxe_srq *srq = init->srq ? to_rsrq(init->srq) : NULL;
++	unsigned long flags;
+ 
+ 	rxe_get(pd);
+ 	rxe_get(rcq);
+@@ -325,10 +326,10 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
+ 	if (err)
+ 		goto err2;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	qp->attr.qp_state = IB_QPS_RESET;
+ 	qp->valid = 1;
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	return 0;
+ 
+@@ -492,24 +493,28 @@ static void rxe_qp_reset(struct rxe_qp *qp)
+ /* move the qp to the error state */
+ void rxe_qp_error(struct rxe_qp *qp)
+ {
+-	spin_lock_bh(&qp->state_lock);
++	unsigned long flags;
++
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	qp->attr.qp_state = IB_QPS_ERR;
+ 
+ 	/* drain work and packet queues */
+ 	rxe_sched_task(&qp->resp.task);
+ 	rxe_sched_task(&qp->comp.task);
+ 	rxe_sched_task(&qp->req.task);
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ }
+ 
+ static void rxe_qp_sqd(struct rxe_qp *qp, struct ib_qp_attr *attr,
+ 		       int mask)
+ {
+-	spin_lock_bh(&qp->state_lock);
++	unsigned long flags;
++
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	qp->attr.sq_draining = 1;
+ 	rxe_sched_task(&qp->comp.task);
+ 	rxe_sched_task(&qp->req.task);
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ }
+ 
+ /* caller should hold qp->state_lock */
+@@ -555,14 +560,16 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ 		qp->attr.cur_qp_state = attr->qp_state;
+ 
+ 	if (mask & IB_QP_STATE) {
+-		spin_lock_bh(&qp->state_lock);
++		unsigned long flags;
++
++		spin_lock_irqsave(&qp->state_lock, flags);
+ 		err = __qp_chk_state(qp, attr, mask);
+ 		if (!err) {
+ 			qp->attr.qp_state = attr->qp_state;
+ 			rxe_dbg_qp(qp, "state -> %s\n",
+ 					qps2str[attr->qp_state]);
+ 		}
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 		if (err)
+ 			return err;
+@@ -688,6 +695,8 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ /* called by the query qp verb */
+ int rxe_qp_to_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask)
+ {
++	unsigned long flags;
++
+ 	*attr = qp->attr;
+ 
+ 	attr->rq_psn				= qp->resp.psn;
+@@ -708,12 +717,12 @@ int rxe_qp_to_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask)
+ 	/* Applications that get this state typically spin on it.
+ 	 * Yield the processor
+ 	 */
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (qp->attr.sq_draining) {
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		cond_resched();
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	return 0;
+ }
+@@ -736,10 +745,11 @@ int rxe_qp_chk_destroy(struct rxe_qp *qp)
+ static void rxe_qp_do_cleanup(struct work_struct *work)
+ {
+ 	struct rxe_qp *qp = container_of(work, typeof(*qp), cleanup_work.work);
++	unsigned long flags;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	qp->valid = 0;
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 	qp->qp_timeout_jiffies = 0;
+ 
+ 	if (qp_type(qp) == IB_QPT_RC) {
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index 2f953cc74256..5861e4244049 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -14,6 +14,7 @@ static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
+ 			    struct rxe_qp *qp)
+ {
+ 	unsigned int pkt_type;
++	unsigned long flags;
+ 
+ 	if (unlikely(!qp->valid))
  		return -EINVAL;
- 
--	packet = kzalloc(sizeof *packet + IB_MGMT_RMPP_HDR, GFP_KERNEL);
-+	packet = kzalloc(sizeof(*packet) + IB_MGMT_RMPP_HDR, GFP_KERNEL);
- 	if (!packet)
- 		return -ENOMEM;
- 
-@@ -560,13 +565,13 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
- 		goto err_up;
+@@ -38,19 +39,19 @@ static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
+ 		return -EINVAL;
  	}
  
--	rmpp_mad = (struct ib_rmpp_mad *) packet->mad.data;
--	hdr_len = ib_get_mad_data_offset(rmpp_mad->mad_hdr.mgmt_class);
-+	rmpp_mad_hdr = (struct ib_rmpp_mad_hdr *)packet->mad.data;
-+	hdr_len = ib_get_mad_data_offset(rmpp_mad_hdr->mad_hdr.mgmt_class);
- 
--	if (ib_is_mad_class_rmpp(rmpp_mad->mad_hdr.mgmt_class)
-+	if (ib_is_mad_class_rmpp(rmpp_mad_hdr->mad_hdr.mgmt_class)
- 	    && ib_mad_kernel_rmpp_agent(agent)) {
- 		copy_offset = IB_MGMT_RMPP_HDR;
--		rmpp_active = ib_get_rmpp_flags(&rmpp_mad->rmpp_hdr) &
-+		rmpp_active = ib_get_rmpp_flags(&rmpp_mad_hdr->rmpp_hdr) &
- 						IB_MGMT_RMPP_FLAG_ACTIVE;
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (pkt->mask & RXE_REQ_MASK) {
+ 		if (unlikely(qp_state(qp) < IB_QPS_RTR)) {
+-			spin_unlock_bh(&qp->state_lock);
++			spin_unlock_irqrestore(&qp->state_lock, flags);
+ 			return -EINVAL;
+ 		}
  	} else {
- 		copy_offset = IB_MGMT_MAD_HDR;
-@@ -615,12 +620,12 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
- 		tid = &((struct ib_mad_hdr *) packet->msg->mad)->tid;
- 		*tid = cpu_to_be64(((u64) agent->hi_tid) << 32 |
- 				   (be64_to_cpup(tid) & 0xffffffff));
--		rmpp_mad->mad_hdr.tid = *tid;
-+		rmpp_mad_hdr->mad_hdr.tid = *tid;
+ 		if (unlikely(qp_state(qp) < IB_QPS_RTS)) {
+-			spin_unlock_bh(&qp->state_lock);
++			spin_unlock_irqrestore(&qp->state_lock, flags);
+ 			return -EINVAL;
+ 		}
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index 65134a9aefe7..5fe7cbae3031 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -99,17 +99,18 @@ static void req_retry(struct rxe_qp *qp)
+ void rnr_nak_timer(struct timer_list *t)
+ {
+ 	struct rxe_qp *qp = from_timer(qp, t, rnr_nak_timer);
++	unsigned long flags;
+ 
+ 	rxe_dbg_qp(qp, "nak timer fired\n");
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (qp->valid) {
+ 		/* request a send queue retry */
+ 		qp->req.need_retry = 1;
+ 		qp->req.wait_for_rnr_timer = 0;
+ 		rxe_sched_task(&qp->req.task);
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ }
+ 
+ static void req_check_sq_drain_done(struct rxe_qp *qp)
+@@ -118,8 +119,9 @@ static void req_check_sq_drain_done(struct rxe_qp *qp)
+ 	unsigned int index;
+ 	unsigned int cons;
+ 	struct rxe_send_wqe *wqe;
++	unsigned long flags;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (qp_state(qp) == IB_QPS_SQD) {
+ 		q = qp->sq.queue;
+ 		index = qp->req.wqe_index;
+@@ -140,7 +142,7 @@ static void req_check_sq_drain_done(struct rxe_qp *qp)
+ 				break;
+ 
+ 			qp->attr.sq_draining = 0;
+-			spin_unlock_bh(&qp->state_lock);
++			spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 			if (qp->ibqp.event_handler) {
+ 				struct ib_event ev;
+@@ -154,7 +156,7 @@ static void req_check_sq_drain_done(struct rxe_qp *qp)
+ 			return;
+ 		} while (0);
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ }
+ 
+ static struct rxe_send_wqe *__req_next_wqe(struct rxe_qp *qp)
+@@ -173,6 +175,7 @@ static struct rxe_send_wqe *__req_next_wqe(struct rxe_qp *qp)
+ static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
+ {
+ 	struct rxe_send_wqe *wqe;
++	unsigned long flags;
+ 
+ 	req_check_sq_drain_done(qp);
+ 
+@@ -180,13 +183,13 @@ static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
+ 	if (wqe == NULL)
+ 		return NULL;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (unlikely((qp_state(qp) == IB_QPS_SQD) &&
+ 		     (wqe->state != wqe_state_processing))) {
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		return NULL;
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	wqe->mask = wr_opcode_mask(wqe->wr.opcode, qp);
+ 	return wqe;
+@@ -676,16 +679,17 @@ int rxe_requester(struct rxe_qp *qp)
+ 	struct rxe_queue *q = qp->sq.queue;
+ 	struct rxe_ah *ah;
+ 	struct rxe_av *av;
++	unsigned long flags;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (unlikely(!qp->valid)) {
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		goto exit;
  	}
  
- 	if (!ib_mad_kernel_rmpp_agent(agent)
--	   && ib_is_mad_class_rmpp(rmpp_mad->mad_hdr.mgmt_class)
--	   && (ib_get_rmpp_flags(&rmpp_mad->rmpp_hdr) & IB_MGMT_RMPP_FLAG_ACTIVE)) {
-+	    && ib_is_mad_class_rmpp(rmpp_mad_hdr->mad_hdr.mgmt_class)
-+	    && (ib_get_rmpp_flags(&rmpp_mad_hdr->rmpp_hdr) & IB_MGMT_RMPP_FLAG_ACTIVE)) {
- 		spin_lock_irq(&file->send_lock);
- 		list_add_tail(&packet->list, &file->send_list);
- 		spin_unlock_irq(&file->send_lock);
+ 	if (unlikely(qp_state(qp) == IB_QPS_ERR)) {
+ 		wqe = __req_next_wqe(qp);
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		if (wqe)
+ 			goto err;
+ 		else
+@@ -700,10 +704,10 @@ int rxe_requester(struct rxe_qp *qp)
+ 		qp->req.wait_psn = 0;
+ 		qp->req.need_retry = 0;
+ 		qp->req.wait_for_rnr_timer = 0;
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		goto exit;
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	/* we come here if the retransmit timer has fired
+ 	 * or if the rnr timer has fired. If the retransmit
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 68f6cd188d8e..1da044f6b7d4 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -1047,6 +1047,7 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+ 	struct ib_uverbs_wc *uwc = &cqe.uibwc;
+ 	struct rxe_recv_wqe *wqe = qp->resp.wqe;
+ 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
++	unsigned long flags;
+ 
+ 	if (!wqe)
+ 		goto finish;
+@@ -1137,12 +1138,12 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+ 		return RESPST_ERR_CQ_OVERFLOW;
+ 
+ finish:
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (unlikely(qp_state(qp) == IB_QPS_ERR)) {
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		return RESPST_CHK_RESOURCE;
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	if (unlikely(!pkt))
+ 		return RESPST_DONE;
+@@ -1468,18 +1469,19 @@ int rxe_responder(struct rxe_qp *qp)
+ 	enum resp_states state;
+ 	struct rxe_pkt_info *pkt = NULL;
+ 	int ret;
++	unsigned long flags;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (!qp->valid || qp_state(qp) == IB_QPS_ERR ||
+ 			  qp_state(qp) == IB_QPS_RESET) {
+ 		bool notify = qp->valid && (qp_state(qp) == IB_QPS_ERR);
+ 
+ 		drain_req_pkts(qp);
+ 		flush_recv_queue(qp, notify);
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		goto exit;
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	qp->resp.aeth_syndrome = AETH_ACK_UNLIMITED;
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index dea605b7f683..4d8f6b8051ff 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -904,10 +904,10 @@ static int rxe_post_send_kernel(struct rxe_qp *qp,
+ 	if (!err)
+ 		rxe_sched_task(&qp->req.task);
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (qp_state(qp) == IB_QPS_ERR)
+ 		rxe_sched_task(&qp->comp.task);
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	return err;
+ }
+@@ -917,22 +917,23 @@ static int rxe_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
+ {
+ 	struct rxe_qp *qp = to_rqp(ibqp);
+ 	int err;
++	unsigned long flags;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	/* caller has already called destroy_qp */
+ 	if (WARN_ON_ONCE(!qp->valid)) {
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		rxe_err_qp(qp, "qp has been destroyed");
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (unlikely(qp_state(qp) < IB_QPS_RTS)) {
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		*bad_wr = wr;
+ 		rxe_err_qp(qp, "qp not ready to send");
+ 		return -EINVAL;
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	if (qp->is_user) {
+ 		/* Utilize process context to do protocol processing */
+@@ -1008,22 +1009,22 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 	struct rxe_rq *rq = &qp->rq;
+ 	unsigned long flags;
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	/* caller has already called destroy_qp */
+ 	if (WARN_ON_ONCE(!qp->valid)) {
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		rxe_err_qp(qp, "qp has been destroyed");
+ 		return -EINVAL;
+ 	}
+ 
+ 	/* see C10-97.2.1 */
+ 	if (unlikely((qp_state(qp) < IB_QPS_INIT))) {
+-		spin_unlock_bh(&qp->state_lock);
++		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 		*bad_wr = wr;
+ 		rxe_dbg_qp(qp, "qp not ready to post recv");
+ 		return -EINVAL;
+ 	}
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	if (unlikely(qp->srq)) {
+ 		*bad_wr = wr;
+@@ -1044,10 +1045,10 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 
+ 	spin_unlock_irqrestore(&rq->producer_lock, flags);
+ 
+-	spin_lock_bh(&qp->state_lock);
++	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (qp_state(qp) == IB_QPS_ERR)
+ 		rxe_sched_task(&qp->resp.task);
+-	spin_unlock_bh(&qp->state_lock);
++	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 
+ 	return err;
+ }
 -- 
-2.39.2
+2.34.1
 
