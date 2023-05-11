@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EB36FECFC
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 09:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3D36FECFD
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 09:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237300AbjEKHi0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 May 2023 03:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44948 "EHLO
+        id S237402AbjEKHia (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 May 2023 03:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237235AbjEKHiZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 03:38:25 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F8A1BF7
-        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:24 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-643b60855c8so6170004b3a.2
-        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:24 -0700 (PDT)
+        with ESMTP id S237235AbjEKHi2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 03:38:28 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284952115
+        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:27 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-643a1656b79so5673408b3a.3
+        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1683790704; x=1686382704;
+        d=broadcom.com; s=google; t=1683790706; x=1686382706;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=di+SHqeVj9QmRe4ujYh4WXFlSRHPHSvfuxl18Y4kYFk=;
-        b=OxmlaWUiAIhVjVboikzKSbAP87qrEPJgVAvrzQx0a51xFMs0rkPrVJYifSF6wFYDwC
-         BJfB8XGYQx8rUAHqzMBqpww9i6jL2CswtNwqhUnWjt8SGXlcXT5nKtF9+xfjFTS2NnOs
-         25v4AuvN/kGfLZWZRQO4CrMiaCBcHW89tJnfM=
+        bh=vRPzR3hysjgBXHiDIpMGYdQB4V+B83jsUHDv1pqm4+w=;
+        b=cRKR9Sresp76gCKme8KyZtThmhIHminUapJSkcvtmahhRauM4smuquByslZe62WjER
+         IBjPFoPV0CD2vHR7MksDWrneBWcyN0eP2MnENTfKWTvalJeZt2zmVHCUOw+9IXRWuOPo
+         OR5iSJYq5Z9xKM3PHGWViUVyn0HfgvQag+eu0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683790704; x=1686382704;
+        d=1e100.net; s=20221208; t=1683790706; x=1686382706;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=di+SHqeVj9QmRe4ujYh4WXFlSRHPHSvfuxl18Y4kYFk=;
-        b=UCw2Y1BjIhUa2kYmAbsfzT6/SdoQWdJDkoTJfMuCem2gNMF7JfuHoOuhoMMzT0Zmau
-         gI90BkndJ+3Yo8EbXMuBJXnSfLnajR/80ssEp7bczRqUrSkO4HmZCqFwkjNgM6u1lieS
-         zuo/uIQHH52miU21uClKUZhhkdK4j2A3iryZ9jmW/7vHDY3blU2ZeBKHVGw5+ehjwxOi
-         fgWl8vQ+C//JpmUx8cYvXiabSpb0913Mdk6fK/xIx011plniS2CAYPhgyxPvgpL2Wqjx
-         viJ3CIn4yGB/vFiobZVr16O58XiFZkWnai8u3YfZx0gCQxcHWD3WP8tIkdmjyB1wMmUc
-         Q+EA==
-X-Gm-Message-State: AC+VfDyyAwozD86W/vcL4LwFyk1+5WRzpFMR7O/Ghhw1h3sLzWo/vBH8
-        NUgDDhewgIZCFsshxkzf1w+801MUIdrC8XuupsE=
-X-Google-Smtp-Source: ACHHUZ4UlE4daxr1+UqruO1FHIWNGb9l1pBHT13pk26pXcDlIOaeOlAY6cGg6npgehMu18l8n1gzvw==
-X-Received: by 2002:a05:6a20:5481:b0:101:7ccd:e195 with SMTP id i1-20020a056a20548100b001017ccde195mr10686349pzk.8.1683790703873;
-        Thu, 11 May 2023 00:38:23 -0700 (PDT)
+        bh=vRPzR3hysjgBXHiDIpMGYdQB4V+B83jsUHDv1pqm4+w=;
+        b=Stfjv8PQv2d6UULFvzqyL3Ec0rr5NdyPS5TS+wYIRCXr0MHZrWUIJIal9cMIqt7/rX
+         iRgDQKZy7MHSXy/zoer+UMfsMX3bV2ZEQYUQ56hoJnAN2U1w7m5+yVp5VMIpe4HEkv8C
+         X8nEhd2eQarxQY+z99+VDXtn3I+bBfW+700skGTnTvuFQqzTja+WRA2SkeoOca2IEG/p
+         9NomP6dEED2GiwsjA5I+ugsunKytqA3JLpRPjPdtjAZ+cci+shg7tKZU657T9dBAUyKb
+         /hwz7elk0d3HdB0Gnh8E0eGpLtsynOWgNMiuWuxRJOYW8Hk4YwxL6RfAIEqrCOWlIuD/
+         F8rQ==
+X-Gm-Message-State: AC+VfDw/UZtRAEVjnk2seJpZnSEHvOkEetLS8ZulYGbLOSTOYX6tnCdA
+        I24G6r9OoHu4SAiDqzCdSmXsOw==
+X-Google-Smtp-Source: ACHHUZ6MtA5m6CrJkClnTMy9/YanrBz3tC8POvPfLTSOi5fEVkVSC0WJOoGu9yjd0IjVZRg1FI2uDQ==
+X-Received: by 2002:a05:6a20:12cd:b0:101:7ccd:e197 with SMTP id v13-20020a056a2012cd00b001017ccde197mr9877244pzg.52.1683790706557;
+        Thu, 11 May 2023 00:38:26 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id n14-20020a65488e000000b00502f4c62fd3sm4174332pgs.33.2023.05.11.00.38.21
+        by smtp.gmail.com with ESMTPSA id n14-20020a65488e000000b00502f4c62fd3sm4174332pgs.33.2023.05.11.00.38.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 May 2023 00:38:23 -0700 (PDT)
+        Thu, 11 May 2023 00:38:25 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 02/10] RDMA/bnxt_re: Fix to remove unnecessary return labels
-Date:   Thu, 11 May 2023 00:26:17 -0700
-Message-Id: <1683789985-22917-3-git-send-email-selvin.xavier@broadcom.com>
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Subject: [PATCH for-rc 03/10] RDMA/bnxt_re: Disable/kill tasklet only if it is enabled
+Date:   Thu, 11 May 2023 00:26:18 -0700
+Message-Id: <1683789985-22917-4-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1683789985-22917-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1683789985-22917-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000cd42a605fb6612a6"
+        boundary="000000000000f6210705fb66121f"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,66 +68,148 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000cd42a605fb6612a6
+--000000000000f6210705fb66121f
 
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+When the ulp hook to start the IRQ fails because the rings
+are not available, tasklets are not enabled. In this case when
+the driver is unloaded, driver calls CREQ tasklet_kill. This
+causes an indefinite hang as the tasklet is not enabled.
 
-If there is no cleanup needed then just return directly.
-This cleans up the code and improve readability.
+Driver shouldn't call tasklet_kill if it is not enabled. So
+using the creq->requested and nq->requested flags to identify
+if both tasklets/irqs are registered. Checking this flag while
+scheduling the tasklet from ISR. Also, added a cleanup for
+disabling tasklet, in case request_irq fails during start_irq.
+
+Check for return value for bnxt_qplib_rcfw_start_irq and in case
+the bnxt_qplib_rcfw_start_irq fails, return bnxt_re_start_irq
+without attempting to start NQ IRQs.
 
 Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Reviewed-by: Kashyap Desai <kashyap.desai@broadcom.com>
-Reviewed-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c       | 12 +++++++++---
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c   | 16 ++++++++++------
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 14 +++++++++-----
+ 3 files changed, 28 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index b9e2f89..a44f290 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -283,15 +283,21 @@ static void bnxt_re_start_irq(void *handle, struct bnxt_msix_entry *ent)
+ 	for (indx = 0; indx < rdev->num_msix; indx++)
+ 		rdev->en_dev->msix_entries[indx].vector = ent[indx].vector;
+ 
+-	bnxt_qplib_rcfw_start_irq(rcfw, msix_ent[BNXT_RE_AEQ_IDX].vector,
+-				  false);
++	rc = bnxt_qplib_rcfw_start_irq(rcfw, msix_ent[BNXT_RE_AEQ_IDX].vector,
++				       false);
++	if (rc) {
++		ibdev_warn(&rdev->ibdev, "Failed to reinit CREQ\n");
++		return;
++	}
+ 	for (indx = BNXT_RE_NQ_IDX ; indx < rdev->num_msix; indx++) {
+ 		nq = &rdev->nq[indx - 1];
+ 		rc = bnxt_qplib_nq_start_irq(nq, indx - 1,
+ 					     msix_ent[indx].vector, false);
+-		if (rc)
++		if (rc) {
+ 			ibdev_warn(&rdev->ibdev, "Failed to reinit NQ index %d\n",
+ 				   indx - 1);
++			return;
++		}
+ 	}
+ }
+ 
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index 8974f62..e42c756 100644
+index e42c756..3c4a3bb 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -1614,7 +1614,7 @@ static int bnxt_qplib_put_inline(struct bnxt_qplib_qp *qp,
- 		il_src = (void *)wqe->sg_list[indx].addr;
- 		t_len += len;
- 		if (t_len > qp->max_inline_data)
--			goto bad;
-+			return -ENOMEM;
- 		while (len) {
- 			if (pull_dst) {
- 				pull_dst = false;
-@@ -1638,8 +1638,6 @@ static int bnxt_qplib_put_inline(struct bnxt_qplib_qp *qp,
- 	}
+@@ -399,6 +399,9 @@ static irqreturn_t bnxt_qplib_nq_irq(int irq, void *dev_instance)
  
- 	return t_len;
--bad:
--	return -ENOMEM;
+ void bnxt_qplib_nq_stop_irq(struct bnxt_qplib_nq *nq, bool kill)
+ {
++	if (!nq->requested)
++		return;
++
+ 	tasklet_disable(&nq->nq_tasklet);
+ 	/* Mask h/w interrupt */
+ 	bnxt_qplib_ring_nq_db(&nq->nq_db.dbinfo, nq->res->cctx, false);
+@@ -406,11 +409,10 @@ void bnxt_qplib_nq_stop_irq(struct bnxt_qplib_nq *nq, bool kill)
+ 	synchronize_irq(nq->msix_vec);
+ 	if (kill)
+ 		tasklet_kill(&nq->nq_tasklet);
+-	if (nq->requested) {
+-		irq_set_affinity_hint(nq->msix_vec, NULL);
+-		free_irq(nq->msix_vec, nq);
+-		nq->requested = false;
+-	}
++
++	irq_set_affinity_hint(nq->msix_vec, NULL);
++	free_irq(nq->msix_vec, nq);
++	nq->requested = false;
  }
  
- static u32 bnxt_qplib_put_sges(struct bnxt_qplib_hwq *hwq,
-@@ -2069,7 +2067,7 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
- 	hwq_attr.sginfo = &cq->sg_info;
- 	rc = bnxt_qplib_alloc_init_hwq(&cq->hwq, &hwq_attr);
- 	if (rc)
--		goto exit;
-+		return rc;
+ void bnxt_qplib_disable_nq(struct bnxt_qplib_nq *nq)
+@@ -449,8 +451,10 @@ int bnxt_qplib_nq_start_irq(struct bnxt_qplib_nq *nq, int nq_indx,
  
- 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
- 				 CMDQ_BASE_OPCODE_CREATE_CQ,
-@@ -2112,7 +2110,6 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
+ 	snprintf(nq->name, sizeof(nq->name), "bnxt_qplib_nq-%d", nq_indx);
+ 	rc = request_irq(nq->msix_vec, bnxt_qplib_nq_irq, 0, nq->name, nq);
+-	if (rc)
++	if (rc) {
++		tasklet_disable(&nq->nq_tasklet);
+ 		return rc;
++	}
  
- fail:
- 	bnxt_qplib_free_hwq(res, &cq->hwq);
--exit:
- 	return rc;
+ 	cpumask_clear(&nq->mask);
+ 	cpumask_set_cpu(nq_indx, &nq->mask);
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index de90691..a668f87 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -636,6 +636,10 @@ void bnxt_qplib_rcfw_stop_irq(struct bnxt_qplib_rcfw *rcfw, bool kill)
+ 	struct bnxt_qplib_creq_ctx *creq;
+ 
+ 	creq = &rcfw->creq;
++
++	if (!creq->requested)
++		return;
++
+ 	tasklet_disable(&creq->creq_tasklet);
+ 	/* Mask h/w interrupts */
+ 	bnxt_qplib_ring_nq_db(&creq->creq_db.dbinfo, rcfw->res->cctx, false);
+@@ -644,10 +648,8 @@ void bnxt_qplib_rcfw_stop_irq(struct bnxt_qplib_rcfw *rcfw, bool kill)
+ 	if (kill)
+ 		tasklet_kill(&creq->creq_tasklet);
+ 
+-	if (creq->requested) {
+-		free_irq(creq->msix_vec, rcfw);
+-		creq->requested = false;
+-	}
++	free_irq(creq->msix_vec, rcfw);
++	creq->requested = false;
  }
  
+ void bnxt_qplib_disable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw)
+@@ -693,8 +695,10 @@ int bnxt_qplib_rcfw_start_irq(struct bnxt_qplib_rcfw *rcfw, int msix_vector,
+ 		tasklet_enable(&creq->creq_tasklet);
+ 	rc = request_irq(creq->msix_vec, bnxt_qplib_creq_irq, 0,
+ 			 "bnxt_qplib_creq", rcfw);
+-	if (rc)
++	if (rc) {
++		tasklet_disable(&creq->creq_tasklet);
+ 		return rc;
++	}
+ 	creq->requested = true;
+ 
+ 	bnxt_qplib_ring_nq_db(&creq->creq_db.dbinfo, rcfw->res->cctx, true);
 -- 
 2.5.5
 
 
---000000000000cd42a605fb6612a6
+--000000000000f6210705fb66121f
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -198,14 +280,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFBGLBqk+48r
-biFPJJ0OJ60Hb1g9I/v1Yg74E2Ee5vFHMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDUxMTA3MzgyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILEbP/9vdKO8
+BpMzFverD15f8X4Fn1yJEuhQOet8nCluMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDUxMTA3MzgyNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDEXz8xfqDO2c3Ujz/DCpMjDREvFqjl
-veKICepCH/2s27pSqOxZAeoM4+KzgdmXcVx1nNzmcRbR37L4EGDjlU9/xHCTVTzPTXXToY3f1bK7
-KLhRKMOL2Z5AkQEJjr1UQ1LDFDbm3qrF0q3ZcCmaet7eQO/y7PMlqxmo7Kr8jY/1Qwkwx27KyTBS
-PfuoU7dy4PVhRrOqNS63ZPQN3DbnDMT9vm2po/Z2GSxoX50UNwXseOfi3mT0rhng8j2llUsh1Qk4
-cvrwfwznEOIJvobsnjeae7tUbeym72WP7Ozbb/ulMKmmUV8Z+yXmjCy7DTkM1pFsM2HkJzaR6mSG
-ReSrSr/X
---000000000000cd42a605fb6612a6--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCi0uE+8Vx9lHlN6d4dhCVWplaYzgcC
+YJXYW4pMnrYWLhrUTCFBi6nj5J2RgNBNsGFQHqTLxWN3kjsyfQ0JAKTVaQHlFA1/MFIyAR9ekdFf
+3Nf+abRIoBZQML9E2HG8OBvhCLenO8YSMLxt7HAckjx0MOUsNsVbN0XxDFkIUNVgRFqAMHrZ6xfS
+g2chAmpZMYzp6YH0rC3pqQTOUqeUDJir7DkY/ldvmuxz5NxyYoYnh8TkUm9Srw/RHlcynZFV2Ajb
+uOnMvfl4n3inH2f2RRiVgTNJt67cyJAyQ2zEBeDRlZP4Tz8Xah75JNerTvYELz1s17nwgv0aMPYe
+50nG6eVJ
+--000000000000f6210705fb66121f--
