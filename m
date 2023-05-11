@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA8B6FED00
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 09:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944DB6FED02
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 09:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237469AbjEKHik (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 May 2023 03:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
+        id S237387AbjEKHin (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 May 2023 03:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237503AbjEKHii (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 03:38:38 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E86A30F1
-        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:35 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5304d0d1eddso1314683a12.2
-        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:35 -0700 (PDT)
+        with ESMTP id S237437AbjEKHik (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 03:38:40 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01782107
+        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:38 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5304913530fso2229183a12.0
+        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1683790715; x=1686382715;
+        d=broadcom.com; s=google; t=1683790718; x=1686382718;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=5+vu5xbvSd/1oIy1VuOl1dKZFeKRkkXHFfPB4wkGcuE=;
-        b=ZzVXAnc13EP5Lknp7H8njwpoAwPRUBrMkQILHtwP6MJmCFUOrFvl8nvYiAyG/w0TMS
-         qeGJmDQH/2PFyCo72RlIADqZXCQGbBzFbaOiY3xLKBg/ZrW+JskyUUnydtneBurUMTLh
-         HL5AI0QDQFp8BTfvOi9IZq4YB0USVgX2sX//E=
+        bh=qE/ig7Oj+U2B4ACzH5TZrpaS7kUAoNYL1hBk5YrJ3Qw=;
+        b=NvraUyo3UwQY0iVS6zl9KllHMwB6eVVZbB3RMuj21iJ6jMGIRneFnSALFgRgeUMcXg
+         nrHXFAK4C8z2A5YFk34UfCMY799VwfkUD9iUCGcMLtEgQLcwUNefgrzgQlHu0Zub/xej
+         XEPo6jRR19umMZOQj0NfXbHPl3dZSqk/q/Mng=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683790715; x=1686382715;
+        d=1e100.net; s=20221208; t=1683790718; x=1686382718;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5+vu5xbvSd/1oIy1VuOl1dKZFeKRkkXHFfPB4wkGcuE=;
-        b=XrVzFj9oYVtQkgYymCFnXXZXWQwvxr6U9QkglghKuZ7PFQAWiiD4/ycWnrgrOvqvbW
-         NYs6qrg47uVw+HnF/AkhSD4daGVnx9mJprKT2TAMCrCZQ5LvM7OZFBN3DV/9l65vkzBC
-         SEQtm/2skVRQn9+tBAdT9+WRmPRDZvEAvIxUU2+KYvuBZu/8FhP4Ff2XZKMJcRlLM+CF
-         jed3BVHPt7vym3fKORIhHYfhc9UFfWmu1gXEW7yOfwlULD7TVbmTQfNyLUv0Daw9JKkc
-         lMxef1LHcFV8cZihUaG1uTV1tYO4KFWqzKZ9whd8wTa44c0eI8g7EC37+UrZ3GKhJ+3v
-         bilg==
-X-Gm-Message-State: AC+VfDx98e9yr4cN5L/p25tNGK7cz8WqsTnlpocbUvkCtW6jwxJG8HTT
-        yj4CYJUn4mwkVOhtbL7WiLpxOw==
-X-Google-Smtp-Source: ACHHUZ7A8j7uCh9q+WrZi8PLvnuBtLq4aocedzCA0FDtF22rvjhyjlEChoLIrkgOghXMzR0TVyQQ5w==
-X-Received: by 2002:a17:90a:8d14:b0:24d:e273:8863 with SMTP id c20-20020a17090a8d1400b0024de2738863mr21257000pjo.3.1683790715025;
-        Thu, 11 May 2023 00:38:35 -0700 (PDT)
+        bh=qE/ig7Oj+U2B4ACzH5TZrpaS7kUAoNYL1hBk5YrJ3Qw=;
+        b=Z5kWlR3qSAEZ+RXHgTsHEOLrgTQ9GMHg2PoOn0EcL95qYxUGqv8MFaD6K4MTvMS8tg
+         MB3ANO4KTRGaUTB6Ar/5TRXqDJHxqCPuftbCuM1s/n9BMqYGSds8y1OIDa8GRQo5MzsL
+         dWTd2wEQh0FWVaZ1udONv3/CvUPDmegJmtwbX457WYOlcP+k9NyynQagTO015hOZZYDJ
+         fuiduZvWRZ0dbF4+Sca2aVHoydGyyUhZyqKnpPCGd+4UcICbwCtV6lt3MDluxdT7lacJ
+         nn6Vk3XszbUenk12XUc1SgVL7PycOUB66Ha1U47Gi1OIyE4xLBaIMpGFgys2R68Kd2NB
+         coeA==
+X-Gm-Message-State: AC+VfDy+Dr5MXAWpZ7RNEJUIbjhtaQk6yG2xee1j9y4M3Uo1ZH+Ol0dM
+        0zsFE6OAtxIgTZBGMzjoC69XDzo7CPLP6GY6TIE=
+X-Google-Smtp-Source: ACHHUZ6TkjtB9XDyDy0ylWy5RQli+C69V0JtihGMjFe9x8fuHVg14DMlslm+PoKxgHH2ITO8i1ZDMw==
+X-Received: by 2002:a17:90b:506:b0:24d:df69:5c67 with SMTP id r6-20020a17090b050600b0024ddf695c67mr21432697pjz.12.1683790717916;
+        Thu, 11 May 2023 00:38:37 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id n14-20020a65488e000000b00502f4c62fd3sm4174332pgs.33.2023.05.11.00.38.32
+        by smtp.gmail.com with ESMTPSA id n14-20020a65488e000000b00502f4c62fd3sm4174332pgs.33.2023.05.11.00.38.35
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 May 2023 00:38:34 -0700 (PDT)
+        Thu, 11 May 2023 00:38:37 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 06/10] RDMA/bnxt_re: Fix return value of bnxt_re_process_raw_qp_pkt_rx
-Date:   Thu, 11 May 2023 00:26:21 -0700
-Message-Id: <1683789985-22917-7-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-rc 07/10] RDMA/bnxt_re: Fix to remove an unnecessary log
+Date:   Thu, 11 May 2023 00:26:22 -0700
+Message-Id: <1683789985-22917-8-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1683789985-22917-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1683789985-22917-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000770bb005fb6613f0"
+        boundary="000000000000a3334405fb6613c3"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,40 +68,44 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000770bb005fb6613f0
+--000000000000a3334405fb6613c3
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-bnxt_re_process_raw_qp_pkt_rx() always return 0 and ignores
-the return value of bnxt_re_post_send_shadow_qp().
+During destroy_qp, driver sets the qp handle in the existing CQEs
+belonging to the QP being destroyed to NULL. As a result, a poll_cq
+after destroy_qp can report unnecessary messages.
+Remove this noise from system logs.
 
 Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Reviewed-by: Hongguang Gao <hongguang.gao@broadcom.com>
-Reviewed-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index e86afec..0b581c2 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3343,7 +3343,7 @@ static int bnxt_re_process_raw_qp_pkt_rx(struct bnxt_re_qp *gsi_qp,
- 	/* post data received  in the send queue */
- 	rc = bnxt_re_post_send_shadow_qp(rdev, gsi_sqp, swr);
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index 607ed69..55f092c 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -2799,11 +2799,8 @@ static int bnxt_qplib_cq_process_terminal(struct bnxt_qplib_cq *cq,
  
--	return 0;
-+	return rc;
- }
+ 	qp = (struct bnxt_qplib_qp *)((unsigned long)
+ 				      le64_to_cpu(hwcqe->qp_handle));
+-	if (!qp) {
+-		dev_err(&cq->hwq.pdev->dev,
+-			"FP: CQ Process terminal qp is NULL\n");
++	if (!qp)
+ 		return -EINVAL;
+-	}
  
- static void bnxt_re_process_res_rawqp1_wc(struct ib_wc *wc,
+ 	/* Must block new posting of SQ and RQ */
+ 	qp->state = CMDQ_MODIFY_QP_NEW_STATE_ERR;
 -- 
 2.5.5
 
 
---000000000000770bb005fb6613f0
+--000000000000a3334405fb6613c3
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -172,14 +176,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINl+tTAO5NzT
-aeAFAKsFslgIEMhK6te6bo3vxqMcaq/qMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDUxMTA3MzgzNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMcBd/rR9dar
+l40bBbvp6h6RkTotagr6iWmU8O/sO6ObMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDUxMTA3MzgzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBwGmqwgFT/ZUx4JJCV/USlBoKmH50J
-dbwvwbM7VokhjjIYU40iQcD0ANisg4nVtI6Z1DwfAEd0Ftdy4WPbJASuQF9gGCWRAbajKAnD37fS
-ETm2O7H7nIdoTOGkSbLqiG0F3FJj3FNPQDkqIgb2BMLfRRGLkM2BqdLuqlglEz8la2Xwgyz7m6F2
-KyJ3yWb6X6eubMTEIeeCsLeLz3yTnTMqXUlJtks34kY6Zpv2ZUXSTplCQ54cKwhUg0uMHcYHpyo5
-FqQlquAmav54s48B71Xe52nPl+XQezM3g3e5jhDpVZuTU2GhKbqZMTnfO2lO8Ip0zlNGeXKJLR1/
-cQGKNZKG
---000000000000770bb005fb6613f0--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC3aW5ihJwQlS0zOWZibEDB8H8InPzf
+TXbemrri2eG1l2qUi7EeCyEA1vXzJ2RhIYmfdI1F8zsT1vtDmXG8xeB09R8Dlm1d0mcj/262lsWN
+DhicbqWv2dzcwdnKNlNrTTjVlCflLpVCpiMwsgBholwFLxCZVlEtj7h5QhP2NKqBiSXiZNOJPMVi
+qpDV9j5EUCQlbNeaNBufnEFfx+f+I5fMbtifYnEbdrMsycAt9t8LaPBRlf8Dcx8ZuA/oLKSHOEvm
+cmY2vFkMs4lGErfbjf6NalUHfnqLe+2d+61bbhOPkI+UlJeziJnDYyoZG1TEMj7ObKFdrD0yja1u
+weU4DuL5
+--000000000000a3334405fb6613c3--
