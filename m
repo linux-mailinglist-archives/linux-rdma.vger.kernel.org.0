@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 748606FECFF
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 09:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA8B6FED00
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 09:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbjEKHij (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 May 2023 03:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
+        id S237469AbjEKHik (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 May 2023 03:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237387AbjEKHig (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 03:38:36 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 191101BF7
-        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:32 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-53033a0b473so2905309a12.0
-        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:32 -0700 (PDT)
+        with ESMTP id S237503AbjEKHii (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 03:38:38 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E86A30F1
+        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:35 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5304d0d1eddso1314683a12.2
+        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1683790712; x=1686382712;
+        d=broadcom.com; s=google; t=1683790715; x=1686382715;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=x7hXZMUPWRjY8wKrXSum3a8Vv4iQpiFrqaJQAhmfx54=;
-        b=UEqY9Ryhj4OfHaBompR0muJ/4hF9xG1SXIe422x1XKrJnQRUNfN/YIRopEe7avBwss
-         3CODwZBOPPcRLKjtrs6o5vFYw5hPvod3+jVR1XuAMnbMxsJslbFmnBok+s1MDd027/Tf
-         hT/XSmSWn3Tc8yuZceJTlDZ+zLqsuevukLSaM=
+        bh=5+vu5xbvSd/1oIy1VuOl1dKZFeKRkkXHFfPB4wkGcuE=;
+        b=ZzVXAnc13EP5Lknp7H8njwpoAwPRUBrMkQILHtwP6MJmCFUOrFvl8nvYiAyG/w0TMS
+         qeGJmDQH/2PFyCo72RlIADqZXCQGbBzFbaOiY3xLKBg/ZrW+JskyUUnydtneBurUMTLh
+         HL5AI0QDQFp8BTfvOi9IZq4YB0USVgX2sX//E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683790712; x=1686382712;
+        d=1e100.net; s=20221208; t=1683790715; x=1686382715;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x7hXZMUPWRjY8wKrXSum3a8Vv4iQpiFrqaJQAhmfx54=;
-        b=SIKM5Oft6TRJc6zI/D3Cn14Q/HbsmwbjZ9toCfoyc8dbcvJCQlPsmlM1TJlPd13WWk
-         r6y4dwXwJlruxLkwBLvgXR+hUo1/KFN9eYPlEn7US8G14njiVEJIgjDivh/Wmzv6KPUz
-         QByO36wAnlGFRnOmqWurGGRN40+EzyDHCFMKD6Wdx++pxgZ2m5IJpmyi8kx7cGZ8F1Z7
-         JrdKe0c29PPY4q/sXppmcseDMXeijo4JVA+97NkfGQqOQo0GEkB+fUG0UrpaKn9zsG+3
-         AxeyLY+MaovAJg+Zdegaqe+hK+seQJpuKyBKM/rp/ZTk3V4EptcPtT+fStxXAWPu07SK
-         BD3A==
-X-Gm-Message-State: AC+VfDyaomz3HEf+28uE+fw3hlNuc0HZCC/hUL3tG8x5NXKWJkEb/RtH
-        OnJ8nbX/IbQpSUHSGcHzVpLWCw==
-X-Google-Smtp-Source: ACHHUZ6nCxmz48usZbfyII+7lxc0FOYBaeZpagbx4LHFQ3GbckwWl6olcdwwJGqpqQpnrCFO/i3Q+w==
-X-Received: by 2002:a17:90a:5644:b0:24e:358a:2c6b with SMTP id d4-20020a17090a564400b0024e358a2c6bmr19520357pji.40.1683790712265;
-        Thu, 11 May 2023 00:38:32 -0700 (PDT)
+        bh=5+vu5xbvSd/1oIy1VuOl1dKZFeKRkkXHFfPB4wkGcuE=;
+        b=XrVzFj9oYVtQkgYymCFnXXZXWQwvxr6U9QkglghKuZ7PFQAWiiD4/ycWnrgrOvqvbW
+         NYs6qrg47uVw+HnF/AkhSD4daGVnx9mJprKT2TAMCrCZQ5LvM7OZFBN3DV/9l65vkzBC
+         SEQtm/2skVRQn9+tBAdT9+WRmPRDZvEAvIxUU2+KYvuBZu/8FhP4Ff2XZKMJcRlLM+CF
+         jed3BVHPt7vym3fKORIhHYfhc9UFfWmu1gXEW7yOfwlULD7TVbmTQfNyLUv0Daw9JKkc
+         lMxef1LHcFV8cZihUaG1uTV1tYO4KFWqzKZ9whd8wTa44c0eI8g7EC37+UrZ3GKhJ+3v
+         bilg==
+X-Gm-Message-State: AC+VfDx98e9yr4cN5L/p25tNGK7cz8WqsTnlpocbUvkCtW6jwxJG8HTT
+        yj4CYJUn4mwkVOhtbL7WiLpxOw==
+X-Google-Smtp-Source: ACHHUZ7A8j7uCh9q+WrZi8PLvnuBtLq4aocedzCA0FDtF22rvjhyjlEChoLIrkgOghXMzR0TVyQQ5w==
+X-Received: by 2002:a17:90a:8d14:b0:24d:e273:8863 with SMTP id c20-20020a17090a8d1400b0024de2738863mr21257000pjo.3.1683790715025;
+        Thu, 11 May 2023 00:38:35 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id n14-20020a65488e000000b00502f4c62fd3sm4174332pgs.33.2023.05.11.00.38.29
+        by smtp.gmail.com with ESMTPSA id n14-20020a65488e000000b00502f4c62fd3sm4174332pgs.33.2023.05.11.00.38.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 May 2023 00:38:31 -0700 (PDT)
+        Thu, 11 May 2023 00:38:34 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 05/10] RDMA/bnxt_re: Remove a redundant check inside bnxt_re_update_gid
-Date:   Thu, 11 May 2023 00:26:20 -0700
-Message-Id: <1683789985-22917-6-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-rc 06/10] RDMA/bnxt_re: Fix return value of bnxt_re_process_raw_qp_pkt_rx
+Date:   Thu, 11 May 2023 00:26:21 -0700
+Message-Id: <1683789985-22917-7-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1683789985-22917-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1683789985-22917-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004d866805fb6613b8"
+        boundary="000000000000770bb005fb6613f0"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,54 +68,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000004d866805fb6613b8
+--000000000000770bb005fb6613f0
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-The NULL check inside bnxt_re_update_gid() always return false.
-If sgid_tbl->tbl is not allocated, then dev_init would have failed.
+bnxt_re_process_raw_qp_pkt_rx() always return 0 and ignores
+the return value of bnxt_re_post_send_shadow_qp().
 
-Fixes: 5fac5b1b297f ("RDMA/bnxt_re: Add vlan tag for untagged RoCE traffic when PFC is configured")
-Reviewed-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Reviewed-by: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
+Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+Reviewed-by: Hongguang Gao <hongguang.gao@broadcom.com>
 Reviewed-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index a44f290..4718af6 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -969,12 +969,6 @@ static int bnxt_re_update_gid(struct bnxt_re_dev *rdev)
- 	if (!ib_device_try_get(&rdev->ibdev))
- 		return 0;
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index e86afec..0b581c2 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3343,7 +3343,7 @@ static int bnxt_re_process_raw_qp_pkt_rx(struct bnxt_re_qp *gsi_qp,
+ 	/* post data received  in the send queue */
+ 	rc = bnxt_re_post_send_shadow_qp(rdev, gsi_sqp, swr);
  
--	if (!sgid_tbl) {
--		ibdev_err(&rdev->ibdev, "QPLIB: SGID table not allocated");
--		rc = -EINVAL;
--		goto out;
--	}
--
- 	for (index = 0; index < sgid_tbl->active; index++) {
- 		gid_idx = sgid_tbl->hw_id[index];
- 
-@@ -992,7 +986,7 @@ static int bnxt_re_update_gid(struct bnxt_re_dev *rdev)
- 		rc = bnxt_qplib_update_sgid(sgid_tbl, &gid, gid_idx,
- 					    rdev->qplib_res.netdev->dev_addr);
- 	}
--out:
-+
- 	ib_device_put(&rdev->ibdev);
- 	return rc;
+-	return 0;
++	return rc;
  }
+ 
+ static void bnxt_re_process_res_rawqp1_wc(struct ib_wc *wc,
 -- 
 2.5.5
 
 
---0000000000004d866805fb6613b8
+--000000000000770bb005fb6613f0
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -186,14 +172,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPcOpm3OCx07
-vezO5KbpNlROaTubKzcATA9qgdJ6CI+dMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDUxMTA3MzgzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINl+tTAO5NzT
+aeAFAKsFslgIEMhK6te6bo3vxqMcaq/qMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDUxMTA3MzgzNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAYbsxnoLoEC0uIaq3yQQ7UpcxOMlu3
-4femEjOmI4pyq9mJGfuUvbHXzjAd47bcUlpMNfAimlQhKv0hSv8MrXICZpEhhxtutBK0jMPp6+Ul
-IP27gTEu6BJGdgm5/AHsIKD+KWrx4Y/gV9C/djCcWCrn9s6IMMhCtMN86idlmny1ZR68kIgO1p7P
-BYH6xBFG++G4AXgPL9HLlkhNY0fedzaBR8SeyFZxvfd1E7rwr6+WKo6Z+wsJjhz7Ik9zYQp3uaa8
-1WMfsfFQw2e9HRq6hIIA9aBnyeRQR1wUHAMEl6rTxNgUotVenDE1jcWqQ5J2wab6vZOfoA1GpF4T
-c5MT5wCr
---0000000000004d866805fb6613b8--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBwGmqwgFT/ZUx4JJCV/USlBoKmH50J
+dbwvwbM7VokhjjIYU40iQcD0ANisg4nVtI6Z1DwfAEd0Ftdy4WPbJASuQF9gGCWRAbajKAnD37fS
+ETm2O7H7nIdoTOGkSbLqiG0F3FJj3FNPQDkqIgb2BMLfRRGLkM2BqdLuqlglEz8la2Xwgyz7m6F2
+KyJ3yWb6X6eubMTEIeeCsLeLz3yTnTMqXUlJtks34kY6Zpv2ZUXSTplCQ54cKwhUg0uMHcYHpyo5
+FqQlquAmav54s48B71Xe52nPl+XQezM3g3e5jhDpVZuTU2GhKbqZMTnfO2lO8Ip0zlNGeXKJLR1/
+cQGKNZKG
+--000000000000770bb005fb6613f0--
