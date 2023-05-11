@@ -2,97 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C21D6FF0B2
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 13:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FA56FF260
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 15:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234431AbjEKLvR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 May 2023 07:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
+        id S238113AbjEKNQ0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 May 2023 09:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjEKLvP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 07:51:15 -0400
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232138A47
-        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 04:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1683805873; x=1715341873;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rjBOooN5o4H43NMQtcL8q8kkJ3R/anmgGygBdo2R4cw=;
-  b=rNAmveMO1Rdn6jK1YeESpmTv2fpljElBAD5FldbIjcdCkAgQ7A1Inbu9
-   C5CF3tDKN5UTUI+Nlf4JviXh9dftyWQF1sbO7gcgLG1PUOyhE/u2rhG17
-   mXEoYEBB7g9hCFn7y0DEKCCLNeQfsbpWEDKVwfjvKAmqeDGAwT9wHBhYW
-   g=;
-X-IronPort-AV: E=Sophos;i="5.99,266,1677542400"; 
-   d="scan'208";a="213072604"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2023 11:51:08 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com (Postfix) with ESMTPS id 51240A778B;
-        Thu, 11 May 2023 11:51:06 +0000 (UTC)
-Received: from EX19D004UWB004.ant.amazon.com (10.13.138.108) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 11 May 2023 11:51:05 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (10.250.64.248) by
- EX19D004UWB004.ant.amazon.com (10.13.138.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 11 May 2023 11:51:05 +0000
-Received: from dev-dsk-ynachum-1b-aa121316.eu-west-1.amazon.com
- (10.253.69.224) by mail-relay.amazon.com (10.250.64.254) with Microsoft SMTP
- Server id 15.2.1118.26 via Frontend Transport; Thu, 11 May 2023 11:51:03
- +0000
-From:   <ynachum@amazon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC:     <mrgolin@amazon.com>, <sleybo@amazon.com>, <matua@amazon.com>,
-        <bbarrett@amazon.com>, Yonatan Nachum <ynachum@amazon.com>,
-        Firas Jahjah <firasj@amazon.com>
-Subject: [PATCH for-rc] RDMA/efa: Fix unsupported page sizes in device
-Date:   Thu, 11 May 2023 11:51:03 +0000
-Message-ID: <20230511115103.13876-1-ynachum@amazon.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S238068AbjEKNPu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 09:15:50 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B70DD88;
+        Thu, 11 May 2023 06:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1683810916; x=1715346916;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jtsJhk981/YB6xXduLi5eO9mCj6c1o6wGiSwZ35uutw=;
+  b=CXASp47IaIqvG2kLnB9KTA6ERZskvH4QvPyUbkQ95xqY7h65UFtFkW4D
+   zuMz5OCAmoq+r0NJq5NgdyKE9F7lCph1CO5+aFxBoSNPwbF9RNqCJ2dha
+   iCvUcm7K7LEWnk6a+hYNbR5FMmW9qluq3H7fNhXmo0+/7RVtOUvgBXFr/
+   2d+4FvsK8fXQ29Qi6fOfBtmI4yQaACkGdA29qofBJxwfoUMxiL3fWYZ9w
+   xCAbjY79bLdSxoS0MjnPGGLZs4trNdptUgZ/wjbd2qVoiDog2NNKYHp0E
+   qftfe6GlzlDxCcCNyWoIht9mRwiaukW+LPK7LrtBFASSQl0UOKY/efAg/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10706"; a="378619428"
+X-IronPort-AV: E=Sophos;i="5.99,266,1677571200"; 
+   d="scan'208";a="378619428"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2023 06:15:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10706"; a="650169666"
+X-IronPort-AV: E=Sophos;i="5.99,266,1677571200"; 
+   d="scan'208";a="650169666"
+Received: from jsanche3-mobl1.ger.corp.intel.com (HELO ijarvine-MOBL2.ger.corp.intel.com) ([10.252.39.112])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2023 06:15:11 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 06/17] IB/hfi1: Use pcie_lnkctl{,2}_clear_and_set() for changing LNKCTL{,2}
+Date:   Thu, 11 May 2023 16:14:30 +0300
+Message-Id: <20230511131441.45704-7-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230511131441.45704-1-ilpo.jarvinen@linux.intel.com>
+References: <20230511131441.45704-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yonatan Nachum <ynachum@amazon.com>
+Don't assume that only the driver would be accessing LNKCTL/LNKCTL2.
+ASPM policy changes can trigger write to LNKCTL outside of driver's
+control. And in the case of upstream (parent), the driver does not even
+own the device it's changing the registers for.
 
-Device uses 4KB size blocks for user pages indirect list while the
-driver creates those blocks with the size of PAGE_SIZE of the kernel. On
-kernels with PAGE_SIZE different than 4KB (ARM RHEL), this leads to a
-failure on register MR with indirect list because of the miss
-communication between driver and device.
+Use pcie_lnkctl_clear_and_set() and pcie_lnkctl2_clear_and_set() which
+do proper locking to avoid losing concurrent updates to the register
+value.
 
-Reviewed-by: Firas Jahjah <firasj@amazon.com>
-Reviewed-by: Michael Margolin <mrgolin@amazon.com>
-Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+Suggested-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 ---
- drivers/infiniband/hw/efa/efa_verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hfi1/aspm.c | 16 ++++++----------
+ drivers/infiniband/hw/hfi1/pcie.c | 28 ++++++----------------------
+ 2 files changed, 12 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 8eca6c14d0cf..2a195c4b0f17 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -1403,7 +1403,7 @@ static int pbl_continuous_initialize(struct efa_dev *dev,
-  */
- static int pbl_indirect_initialize(struct efa_dev *dev, struct pbl_context *pbl)
- {
--	u32 size_in_pages = DIV_ROUND_UP(pbl->pbl_buf_size_in_bytes, PAGE_SIZE);
-+	u32 size_in_pages = DIV_ROUND_UP(pbl->pbl_buf_size_in_bytes, EFA_CHUNK_PAYLOAD_SIZE);
- 	struct scatterlist *sgl;
- 	int sg_dma_cnt, err;
+diff --git a/drivers/infiniband/hw/hfi1/aspm.c b/drivers/infiniband/hw/hfi1/aspm.c
+index a3c53be4072c..d3f3b7e9b833 100644
+--- a/drivers/infiniband/hw/hfi1/aspm.c
++++ b/drivers/infiniband/hw/hfi1/aspm.c
+@@ -66,12 +66,10 @@ static void aspm_hw_enable_l1(struct hfi1_devdata *dd)
+ 		return;
  
+ 	/* Enable ASPM L1 first in upstream component and then downstream */
+-	pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL,
+-					   PCI_EXP_LNKCTL_ASPMC,
+-					   PCI_EXP_LNKCTL_ASPM_L1);
+-	pcie_capability_clear_and_set_word(dd->pcidev, PCI_EXP_LNKCTL,
+-					   PCI_EXP_LNKCTL_ASPMC,
+-					   PCI_EXP_LNKCTL_ASPM_L1);
++	pcie_lnkctl_clear_and_set(parent, PCI_EXP_LNKCTL_ASPMC,
++				  PCI_EXP_LNKCTL_ASPM_L1);
++	pcie_lnkctl_clear_and_set(dd->pcidev, PCI_EXP_LNKCTL_ASPMC,
++				  PCI_EXP_LNKCTL_ASPM_L1);
+ }
+ 
+ void aspm_hw_disable_l1(struct hfi1_devdata *dd)
+@@ -79,11 +77,9 @@ void aspm_hw_disable_l1(struct hfi1_devdata *dd)
+ 	struct pci_dev *parent = dd->pcidev->bus->self;
+ 
+ 	/* Disable ASPM L1 first in downstream component and then upstream */
+-	pcie_capability_clear_and_set_word(dd->pcidev, PCI_EXP_LNKCTL,
+-					   PCI_EXP_LNKCTL_ASPMC, 0x0);
++	pcie_lnkctl_clear_and_set(dd->pcidev, PCI_EXP_LNKCTL_ASPMC, 0);
+ 	if (parent)
+-		pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL,
+-						   PCI_EXP_LNKCTL_ASPMC, 0x0);
++		pcie_lnkctl_clear_and_set(parent, PCI_EXP_LNKCTL_ASPMC, 0);
+ }
+ 
+ static  void aspm_enable(struct hfi1_devdata *dd)
+diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
+index 08732e1ac966..fe7324d38d64 100644
+--- a/drivers/infiniband/hw/hfi1/pcie.c
++++ b/drivers/infiniband/hw/hfi1/pcie.c
+@@ -1212,14 +1212,10 @@ int do_pcie_gen3_transition(struct hfi1_devdata *dd)
+ 		    (u32)lnkctl2);
+ 	/* only write to parent if target is not as high as ours */
+ 	if ((lnkctl2 & PCI_EXP_LNKCTL2_TLS) < target_vector) {
+-		lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
+-		lnkctl2 |= target_vector;
+-		dd_dev_info(dd, "%s: ..new link control2: 0x%x\n", __func__,
+-			    (u32)lnkctl2);
+-		ret = pcie_capability_write_word(parent,
+-						 PCI_EXP_LNKCTL2, lnkctl2);
++		pcie_lnkctl2_clear_and_set(parent, PCI_EXP_LNKCTL2_TLS,
++					   target_vector);
+ 		if (ret) {
+-			dd_dev_err(dd, "Unable to write to PCI config\n");
++			dd_dev_err(dd, "Unable to change PCI target speed\n");
+ 			return_error = 1;
+ 			goto done;
+ 		}
+@@ -1228,22 +1224,10 @@ int do_pcie_gen3_transition(struct hfi1_devdata *dd)
+ 	}
+ 
+ 	dd_dev_info(dd, "%s: setting target link speed\n", __func__);
+-	ret = pcie_capability_read_word(dd->pcidev, PCI_EXP_LNKCTL2, &lnkctl2);
++	ret = pcie_lnkctl2_clear_and_set(dd->pcidev, PCI_EXP_LNKCTL2_TLS,
++					 target_vector);
+ 	if (ret) {
+-		dd_dev_err(dd, "Unable to read from PCI config\n");
+-		return_error = 1;
+-		goto done;
+-	}
+-
+-	dd_dev_info(dd, "%s: ..old link control2: 0x%x\n", __func__,
+-		    (u32)lnkctl2);
+-	lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
+-	lnkctl2 |= target_vector;
+-	dd_dev_info(dd, "%s: ..new link control2: 0x%x\n", __func__,
+-		    (u32)lnkctl2);
+-	ret = pcie_capability_write_word(dd->pcidev, PCI_EXP_LNKCTL2, lnkctl2);
+-	if (ret) {
+-		dd_dev_err(dd, "Unable to write to PCI config\n");
++		dd_dev_err(dd, "Unable to change PCI link control2\n");
+ 		return_error = 1;
+ 		goto done;
+ 	}
 -- 
-2.39.2
+2.30.2
 
