@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 944DB6FED02
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 09:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA47C6FED03
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 09:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237387AbjEKHin (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 May 2023 03:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
+        id S237437AbjEKHio (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 May 2023 03:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237437AbjEKHik (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 03:38:40 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01782107
-        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:38 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5304913530fso2229183a12.0
-        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:38 -0700 (PDT)
+        with ESMTP id S237235AbjEKHim (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 May 2023 03:38:42 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347931BE9
+        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:41 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6439d505274so4885331b3a.0
+        for <linux-rdma@vger.kernel.org>; Thu, 11 May 2023 00:38:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1683790718; x=1686382718;
+        d=broadcom.com; s=google; t=1683790720; x=1686382720;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=qE/ig7Oj+U2B4ACzH5TZrpaS7kUAoNYL1hBk5YrJ3Qw=;
-        b=NvraUyo3UwQY0iVS6zl9KllHMwB6eVVZbB3RMuj21iJ6jMGIRneFnSALFgRgeUMcXg
-         nrHXFAK4C8z2A5YFk34UfCMY799VwfkUD9iUCGcMLtEgQLcwUNefgrzgQlHu0Zub/xej
-         XEPo6jRR19umMZOQj0NfXbHPl3dZSqk/q/Mng=
+        bh=lxbOKLr6Ds9DZcwymjSj1YfYMnrwTZ+1SF/cDL9yQUg=;
+        b=ejT1Q8lSzq99atj9yLtrY8OaSO/z1e9ySfRibWGqSZryTHxZoQNmKie9zS9F5ypGcJ
+         z+eQvpEMhWeANBzZCc+vHvDa0nfrndmjYJp0ucvuwPpngs/3/mwi/RjlSbG5bddBJRzJ
+         KdeYpK4vlBH5p05k2LJ+t1gHh43ocVzIgi3rQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683790718; x=1686382718;
+        d=1e100.net; s=20221208; t=1683790720; x=1686382720;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qE/ig7Oj+U2B4ACzH5TZrpaS7kUAoNYL1hBk5YrJ3Qw=;
-        b=Z5kWlR3qSAEZ+RXHgTsHEOLrgTQ9GMHg2PoOn0EcL95qYxUGqv8MFaD6K4MTvMS8tg
-         MB3ANO4KTRGaUTB6Ar/5TRXqDJHxqCPuftbCuM1s/n9BMqYGSds8y1OIDa8GRQo5MzsL
-         dWTd2wEQh0FWVaZ1udONv3/CvUPDmegJmtwbX457WYOlcP+k9NyynQagTO015hOZZYDJ
-         fuiduZvWRZ0dbF4+Sca2aVHoydGyyUhZyqKnpPCGd+4UcICbwCtV6lt3MDluxdT7lacJ
-         nn6Vk3XszbUenk12XUc1SgVL7PycOUB66Ha1U47Gi1OIyE4xLBaIMpGFgys2R68Kd2NB
-         coeA==
-X-Gm-Message-State: AC+VfDy+Dr5MXAWpZ7RNEJUIbjhtaQk6yG2xee1j9y4M3Uo1ZH+Ol0dM
-        0zsFE6OAtxIgTZBGMzjoC69XDzo7CPLP6GY6TIE=
-X-Google-Smtp-Source: ACHHUZ6TkjtB9XDyDy0ylWy5RQli+C69V0JtihGMjFe9x8fuHVg14DMlslm+PoKxgHH2ITO8i1ZDMw==
-X-Received: by 2002:a17:90b:506:b0:24d:df69:5c67 with SMTP id r6-20020a17090b050600b0024ddf695c67mr21432697pjz.12.1683790717916;
-        Thu, 11 May 2023 00:38:37 -0700 (PDT)
+        bh=lxbOKLr6Ds9DZcwymjSj1YfYMnrwTZ+1SF/cDL9yQUg=;
+        b=BAdofQJ/T0PtQQ4sNlWnXMDpVqEKMFDRIny40vMnyVQsE4tRIvPVS/ZexwV/ahRD8n
+         zIgt7ZbPgAKSG7Oygcy0Q3yd+3nq5mBeJnoQd7TOhdq2hBDGQwoHje4qhD1LSK9SnQGw
+         Cl8bDEL+hkdom1r3oxYBLvjkQ2LXFcDKOxQY8kRbsAKd7k4xEmInVdeLmaf9d/YLG2jh
+         AZSMq8hsyMe4s/+nKspBXWTR/zOB6QQn27aX+semB7LdAZHHClXRKK6XDeSYM+hvRll5
+         1C+W1BtFHfYigEZz1Ok+p1tHUwjDucnb6QWsAfCkkc9cWiQWT0Dhw2vucyl5s+E51iN4
+         CeTg==
+X-Gm-Message-State: AC+VfDyE9+bTOoxrMFXh6aJURN/TqmFhRQilhGp+iWStNiM86KNYXJVi
+        fGBcnC9y0Ps9GDxPEgH4MlFmRLdPafgox+ZTsYc=
+X-Google-Smtp-Source: ACHHUZ6mcT0OroJUtqGwi+4MjA97XFpY1Sz9csPJaX23Lqwatv5zAKYp2u3mKQm4ixINwOTcE3bM5w==
+X-Received: by 2002:a05:6a00:1587:b0:649:76a8:df49 with SMTP id u7-20020a056a00158700b0064976a8df49mr1319068pfk.26.1683790720535;
+        Thu, 11 May 2023 00:38:40 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id n14-20020a65488e000000b00502f4c62fd3sm4174332pgs.33.2023.05.11.00.38.35
+        by smtp.gmail.com with ESMTPSA id n14-20020a65488e000000b00502f4c62fd3sm4174332pgs.33.2023.05.11.00.38.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 May 2023 00:38:37 -0700 (PDT)
+        Thu, 11 May 2023 00:38:39 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 07/10] RDMA/bnxt_re: Fix to remove an unnecessary log
-Date:   Thu, 11 May 2023 00:26:22 -0700
-Message-Id: <1683789985-22917-8-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-rc 08/10] RDMA/bnxt_re: Do not enable congestion control on VFs
+Date:   Thu, 11 May 2023 00:26:23 -0700
+Message-Id: <1683789985-22917-9-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1683789985-22917-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1683789985-22917-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a3334405fb6613c3"
+        boundary="000000000000cc71f505fb66136e"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,44 +68,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000a3334405fb6613c3
+--000000000000cc71f505fb66136e
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-During destroy_qp, driver sets the qp handle in the existing CQEs
-belonging to the QP being destroyed to NULL. As a result, a poll_cq
-after destroy_qp can report unnecessary messages.
-Remove this noise from system logs.
+Congestion control needs to be enabled only on the PFs. FW fails
+the command if issued on VFs. Avoid sending the command on VFs.
 
-Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+Fixes: f13bcef04ba0 ("RDMA/bnxt_re: Enable congestion control by default")
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index 607ed69..55f092c 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -2799,11 +2799,8 @@ static int bnxt_qplib_cq_process_terminal(struct bnxt_qplib_cq *cq,
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 4718af6..e185fda 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1336,6 +1336,10 @@ static void bnxt_re_setup_cc(struct bnxt_re_dev *rdev, bool enable)
+ {
+ 	struct bnxt_qplib_cc_param cc_param = {};
  
- 	qp = (struct bnxt_qplib_qp *)((unsigned long)
- 				      le64_to_cpu(hwcqe->qp_handle));
--	if (!qp) {
--		dev_err(&cq->hwq.pdev->dev,
--			"FP: CQ Process terminal qp is NULL\n");
-+	if (!qp)
- 		return -EINVAL;
--	}
- 
- 	/* Must block new posting of SQ and RQ */
- 	qp->state = CMDQ_MODIFY_QP_NEW_STATE_ERR;
++	/* Do not enable congestion control on VFs */
++	if (rdev->is_virtfn)
++		return;
++
+ 	/* Currently enabling only for GenP5 adapters */
+ 	if (!bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx))
+ 		return;
 -- 
 2.5.5
 
 
---000000000000a3334405fb6613c3
+--000000000000cc71f505fb66136e
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -176,14 +172,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMcBd/rR9dar
-l40bBbvp6h6RkTotagr6iWmU8O/sO6ObMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDUxMTA3MzgzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIE4+8L6OzTiK
+8OUYWR+43HPLG9ma2H2dhUB2IKBTe75xMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDUxMTA3Mzg0MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC3aW5ihJwQlS0zOWZibEDB8H8InPzf
-TXbemrri2eG1l2qUi7EeCyEA1vXzJ2RhIYmfdI1F8zsT1vtDmXG8xeB09R8Dlm1d0mcj/262lsWN
-DhicbqWv2dzcwdnKNlNrTTjVlCflLpVCpiMwsgBholwFLxCZVlEtj7h5QhP2NKqBiSXiZNOJPMVi
-qpDV9j5EUCQlbNeaNBufnEFfx+f+I5fMbtifYnEbdrMsycAt9t8LaPBRlf8Dcx8ZuA/oLKSHOEvm
-cmY2vFkMs4lGErfbjf6NalUHfnqLe+2d+61bbhOPkI+UlJeziJnDYyoZG1TEMj7ObKFdrD0yja1u
-weU4DuL5
---000000000000a3334405fb6613c3--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDTRlmOTfKI6AQ3INZV/hcEjzcyiMd9
+FtWuhXVg7+m28jYJTLiFwj5ZGX3K1Tz4lyzqSzGaPsl5yp8aSSYqwebcD0S0pxwRkeBoNQLaiTlv
+czupjkFEuLX9FwQEEMZ1DGxsJgkOeOvDvYSHIq7Bn2GQF4BrZsM2HaTZ6cdB8zOY5hJ+MJ0QSnB3
+rwo5wDwuw9MwDilB3axAFruNnE7n+8x1wDtw8wuWGcf2IyPIziAxRJAo3ylLrVhe/1vm4GF8JZz5
+QUtpDDg9sMTcdMzgyFbEEa/biTI0l7u3PR8JWtDfROR7MtKcyM6ym1pXHAbJuLqCmAwRsiUD99rH
+U5N8wp1D
+--000000000000cc71f505fb66136e--
