@@ -2,136 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BFE6FE310
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 May 2023 19:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C226FE918
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 May 2023 03:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235628AbjEJRM3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 May 2023 13:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55124 "EHLO
+        id S236758AbjEKBO6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 May 2023 21:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjEJRM1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 May 2023 13:12:27 -0400
-Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-cusazon11020019.outbound.protection.outlook.com [52.101.61.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A956019BC;
-        Wed, 10 May 2023 10:12:26 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=myJY/0B0G0Xoiee2kdJrXKTnkoF42Gyt17Cdj8FbriLXTfSzyNPn18OywWjNB/doZkKvaSbvslZivrurkCXF+xifXOKndcOWaLJviFl/XLagXcII5zce+69hezO1GBtbwRyCQOjABK86VDXjBeWkwdANl6IQzUzUFaJe5mEk9h1qoUENlEqcq3YjW8mWufVSOZKintUgY4OlX4RplfaRR00c5OBBv2v32IM40siKrHOI7JNFVwDZWWcWYvXTjCTtEw+FB1mzLbjCtOfXaVaVGIvr8zDlr/KAb+8OwzbEVGvh9/cTu1dTF5HFa1JVCoSseObu8MEANqOXlEsNybnrMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wmGaJ+7QJHvZA3lxxMY6Ka9nn0rWq79vVJxZ3i+pe5Y=;
- b=Tf9zXZxIJ7fNtLy0YL7MVS9WBntF6DJqp/felufA4ZdgiCDr5q33yWVb81xBq1NH8/yfWIwiKKlfjCjoxKWqa4AZbbHrTWLC+4VAKY1S3ar3iUUzNHCHAK1sdtjWLv4P0TmgmZVYd+h5JCeXGOKnH1DIOk36nfWvG8SLra3KFFuTpqJL3UKeg/ZDX6INihGsNuXKf71PD1EExaUtyPr/XlZ3dHM0VlYs1Y6u2LP64R3Ya8gL9f8/m7k3XMt5i38co6hGRKDIklYPofkfa0pw3YFSfN5/c/bva7/snrV9g29CT7HPhJUShOZGYPkJGwjSeiw9SRrwpWqcdkGDs+1s1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wmGaJ+7QJHvZA3lxxMY6Ka9nn0rWq79vVJxZ3i+pe5Y=;
- b=MSE12b7YRp2B7kRpjwSWu9sNqKto7/Bu0vmA0EXAAL+yxX8EKtlf7SdyMk1B3KR8EarGV/6QnVvX+samGpR1GT7hVs8t54XmX2xGm+IMtkU0BqdrnZmSZsTcjWb6+JSIynvMjM5dC5UEVWJjLPYFuz5dOmb48vdQSa+HXpP+P/0=
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
- by DM4PR21MB3176.namprd21.prod.outlook.com (2603:10b6:8:64::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.5; Wed, 10 May
- 2023 17:12:24 +0000
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::c454:256a:ce51:e983]) by SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::c454:256a:ce51:e983%4]) with mapi id 15.20.6411.005; Wed, 10 May 2023
- 17:12:23 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
-CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jake Oshins <jakeo@microsoft.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, "kw@linux.com" <kw@linux.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "saeedm@nvidia.com" <saeedm@nvidia.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        Saurabh Singh Sengar <ssengar@microsoft.com>,
-        "helgaas@kernel.org" <helgaas@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Jose Teuttli Carranco <josete@microsoft.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v3 6/6] PCI: hv: Use async probing to reduce boot time
-Thread-Topic: [PATCH v3 6/6] PCI: hv: Use async probing to reduce boot time
-Thread-Index: AQHZgxiydynY9JdEwE2LUDobn6ASSK9TueZQ
-Date:   Wed, 10 May 2023 17:12:23 +0000
-Message-ID: <SA1PR21MB13355D8F2A7AC6CA91FE1D1BBF779@SA1PR21MB1335.namprd21.prod.outlook.com>
-References: <20230420024037.5921-1-decui@microsoft.com>
- <20230420024037.5921-7-decui@microsoft.com> <ZFtUgCVaneGVKBsW@lpieralisi>
-In-Reply-To: <ZFtUgCVaneGVKBsW@lpieralisi>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=9404ba2f-9e11-476c-bee1-b05b22020f31;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-05-10T16:54:12Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|DM4PR21MB3176:EE_
-x-ms-office365-filtering-correlation-id: 06c78f4d-9157-4b4a-184d-08db5179b8e5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AB0Dkk/XSm9Ykr50sDlRH7XIerAcUH75c5fJDmXlANjsiw11q+Nxg98Ot+MV+zXevDsZlyKdXy7b5JuGNcGmgGdruzw2tYb5qN2OAAf0O3fUxSEnFuHW/t1XuxrKkNPdsJq1Zr+pEPsMI5BjGLTeWr4gBICGstpq5eohm/55Ara9Fn5+8He2HyNfnVyrlWwyG0UplXkuVANMchT+037wcFvWcdA3BJd24J8JdNrip3PxsB3SL6d22vMehAoQ7hT/8GysP5BaxctCCO6Zpwxa69sI0xI/Sed30ago3nb9krEnLZ79p3V2hJd0g70r4Nhjlg+pKJzsgwB64uCAGCF0KipjizD3dKV39h+XuvrAXdaikyAVVc3CdXzRE+7UbQShzOO9+K4mBpaIei0Igm2MwqISKQRb/fh6mphmrer4palFHT5cyaz6mFN68O//RiTGDm8u+APC4bSh+xkMLxebqi4OTiiYmiuGG28NRLCZLENnc2kTljjWhk92UvQQFg7WjOU/IIw3xjRB/8g4qS6i/ad+l+7kEYNb7SbKLpcB3NE3WP6SgeDMqS6dRyp7EJJjDtfA4SNse1Q+xNZydgttu74wT9hYwio6Gc+8R57iSUwnWHtY2nyRMCISkqrRATz4Wh4F1+QMWvX7BuQqJwG+Gw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(136003)(396003)(376002)(346002)(451199021)(8936002)(8676002)(38100700002)(5660300002)(2906002)(10290500003)(7696005)(71200400001)(966005)(86362001)(186003)(38070700005)(6506007)(8990500004)(26005)(53546011)(33656002)(9686003)(55016003)(52536014)(478600001)(7416002)(83380400001)(6916009)(66556008)(76116006)(66446008)(66946007)(66476007)(64756008)(786003)(316002)(4326008)(82960400001)(82950400001)(41300700001)(54906003)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UnDS2tllRV5p9BpnWVm/9cS2XlQ08K9HO/yqjcreRtdAgTxB86wo/EkjGvD8?=
- =?us-ascii?Q?QJXLVxtVFc+3ngQ0Fnfmdaa74Fc9jdmKzK+67WPg0FaKP59OaS3AZEN5gFom?=
- =?us-ascii?Q?rTOoUULaM6MPrqXP94w0Df9qoGiU4SizFl7NujLCqZA+n8s7iqV80kczRfIa?=
- =?us-ascii?Q?Ox0jyrVyQ8XxFbbX68hn9eT1MBGS3k9wvy0Q20qwpQq9jyXKzjybUY9TNK92?=
- =?us-ascii?Q?9Jctv2uX84Nq2zIDbEccVOTH5VV6eWfhphx9/ouTOQiaYQ8S21WpfMbUG1JZ?=
- =?us-ascii?Q?TuiRA338fzBmgkYiV/UYBVoce+6ydk96edsglobvtnA+lXbTc5hdhfr8o5pK?=
- =?us-ascii?Q?A3Kcvn5dQPXhu/TVfd17auIVcJfuJLzyxb9XMQpeKtvmljW0T7nlbsdhznba?=
- =?us-ascii?Q?h2WH28+ZvXGTwI8P0oSQgckb8WrlDFQnAcPgzRSYin/pmuLPJHAHCWKTz1Y5?=
- =?us-ascii?Q?QUEgJgEF4nfSQvuofrxaAdQXbTTnlmx/r7GMVaGO3qNHyfVCosggUOdnfrQP?=
- =?us-ascii?Q?1FAqKj1BJQaACzJbzYLS4BLki6NIRIqhfPT1ABAAQDWEiV9r8QJ30opqOZ00?=
- =?us-ascii?Q?4w9Wb9zFWWhQTVJFqFqXNYW72AW4AS2/heZNEIqXFmnEJmGrs31dRbFymVvD?=
- =?us-ascii?Q?2Hd/nYYeWcjfYKBDFdqNlJ2oboCpuXS/u6y4rSXkAT5kKb9EOwhEqxzZVcje?=
- =?us-ascii?Q?OLNtfrfGb1W0Oi3tsoH58hbCSLb0A1BWi6s2B3jUdKH2eh1FVZbCv8uhzCkJ?=
- =?us-ascii?Q?iuyThuJzIgD3dq1Yifa95/4pjjUisDmxs/4YMhzlmsZqUoO7aRfa2xhuwP6O?=
- =?us-ascii?Q?ZMn0SeUP5MmWaU9OLdkOQ7cRzsydL8DSIgFlMgOcaG0dH8N2NxjtCFWG8Su6?=
- =?us-ascii?Q?zjALimCX9fNrBWJgnCV57fX0QuXD9BvvSZSZOGroDVbD8ThVJoDDWOCS6pMH?=
- =?us-ascii?Q?SUB5cbD3swP8hh+PdtaJfhZLZYAF3p6ckSKISWRDVU1ndQbDDUYUGnLUrsED?=
- =?us-ascii?Q?knawI/e3fWkgRlFTL4Oqo+vVV3Q73xX04MhZE385bnxxt+4xA0FbsB1sWl8A?=
- =?us-ascii?Q?+M/16ST6SJTalkVcaWC5JyCP/S1SyjK2lMjt8JZ251z2Aw+JzSfkfUhoFzDV?=
- =?us-ascii?Q?S5yMCVif35+QD4FaiZKfO3sac+7TY+YUIOYcPBHIaFml+NuFbrztGp+NijiO?=
- =?us-ascii?Q?3L9HxEPeMnLGglN9ozXZg/gw7+4wrUySUWcDPowCUVhLvCJVDc83vN9EDaKP?=
- =?us-ascii?Q?DJQdU+COpj4EccCizN/xh/vocOS1KbXo/pAr6uES5GTdJoMmkb0eF3yWmcOq?=
- =?us-ascii?Q?8zcBtuP/v6ca9PKvhXzhqNMlojdla2ji5PAl6uaudGztnP9oWkzZoVD9P9y5?=
- =?us-ascii?Q?0tGl6wGpBMcF4xwJpNrZ3w5BQEwZTzpx3WrFcOa7Qzw3gABXyLY6AKOZl3CL?=
- =?us-ascii?Q?B+Qzv8vhUzmN2nBB8cllInC1FqliDcVBxaOsHSbdO0rjvju8FAJ+znnvWlz4?=
- =?us-ascii?Q?H6cq8bpfns9NIndwipNz58yhK6khFAA1Ns+GxWFrYy3DR/Eba/Losk3OJ1qK?=
- =?us-ascii?Q?Sa/j3n7i20KFo3TO5CZIKgwN7wnw6p4IkjarVzch?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S236082AbjEKBO4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 May 2023 21:14:56 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4854535B3;
+        Wed, 10 May 2023 18:14:53 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QGv5h6001zsRVs;
+        Thu, 11 May 2023 09:12:56 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 11 May 2023 09:14:49 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Ajit Khaparde <ajit.khaparde@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        <linux-rdma@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <xen-devel@lists.xenproject.org>, <bpf@vger.kernel.org>
+Subject: [PATCH net-next v2 1/2] net: introduce and use skb_frag_fill_page_desc()
+Date:   Thu, 11 May 2023 09:12:12 +0800
+Message-ID: <20230511011213.59091-2-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20230511011213.59091-1-linyunsheng@huawei.com>
+References: <20230511011213.59091-1-linyunsheng@huawei.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 06c78f4d-9157-4b4a-184d-08db5179b8e5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2023 17:12:23.7366
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PV7sUKisFFCCK1yWDUu71hXpnF3F2oQ0OrTXHBIAbDCcArm8kV1p+2n9miWbbGOxy1AlR14fqOJGd5X/Yj/7JQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR21MB3176
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -139,73 +82,474 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Sent: Wednesday, May 10, 2023 1:23 AM
-> To: Dexuan Cui <decui@microsoft.com>
-> ...
-> On Wed, Apr 19, 2023 at 07:40:37PM -0700, Dexuan Cui wrote:
-> > Commit 414428c5da1c ("PCI: hv: Lock PCI bus on device eject") added
-> > pci_lock_rescan_remove() and pci_unlock_rescan_remove() in
-> > create_root_hv_pci_bus() and in hv_eject_device_work() to address the
-> > race between create_root_hv_pci_bus() and hv_eject_device_work(), but i=
-t
-> > turns that grabing the pci_rescan_remove_lock mutex is not enough:
-> > refer to the earlier fix "PCI: hv: Add a per-bus mutex state_lock".
->=20
-> This is meaningless for a commit log reader, there is nothing to
-> refer to.
-Correct. Because patch 5
-[PATCH v3 5/6] PCI: hv: Add a per-bus mutex state_lock
-has not been in any upstream tree, so I don't have a commit id yet.
-=20
-> > Now with hbus->state_lock and other fixes, the race is resolved, so
->=20
-> "other fixes" is meaningless too.
-Ditto.=20
-=20
-> Explain the problem and how you fix it (this patch should be split
-> because the Subject does not represent what you are doing precisely,
-> see below).
-Ok, I will better explain the boot time issue.
+Most users use __skb_frag_set_page()/skb_frag_off_set()/
+skb_frag_size_set() to fill the page desc for a skb frag.
 
-> > remove pci_{lock,unlock}_rescan_remove() in create_root_hv_pci_bus():
-> > this removes the serialization in hv_pci_probe() and hence allows
-> > async-probing (PROBE_PREFER_ASYNCHRONOUS) to work.
-> >
-> > Add the async-probing flag to hv_pci_drv.
->=20
-> Adding the asynchronous probing should be a separate patch and
-> I don't think you should send it to stable kernels straight away
-> because a) it is not a fix b) it can trigger further regressions.
-Agreed. I'll remove the line "Cc: stable".
+Introduce skb_frag_fill_page_desc() to do that.
 
-> > pci_{lock,unlock}_rescan_remove() in hv_eject_device_work() and in
-> > hv_pci_remove() are still kept: according to the comment before
-> > drivers/pci/probe.c: static DEFINE_MUTEX(pci_rescan_remove_lock),
-> > "PCI device removal routines should always be executed under this mutex=
-".
->=20
-> This patch should be split, first thing is to fix and document what
-> you are changing for pci_{lock,unlock}_rescan_remove() then add
-> asynchronous probing.
->=20
-> Lorenzo
-Ok, I'll split this patch into two.
+net/bpf/test_run.c does not call skb_frag_off_set() to
+set the offset, "copy_from_user(page_address(page), ...)"
+and 'shinfo' being part of the 'data' kzalloced in
+bpf_test_init() suggest that it is assuming offset to be
+initialized as zero, so call skb_frag_fill_page_desc()
+with offset being zero for this case.
 
-Thanks for reviewing the patch.=20
-Can you please give an "Acked-by" or "Reviewed-by" to patch 1~5=20
-if they look good to you? The first 5 patches have been there for a
-while, and they already got Michael's Reviewed-by.=20
+Also, skb_frag_set_page() is not used anymore, so remove
+it.
 
-I hope the first 5 patches can go through the hyperv-fixes branch in
-the hyperv tree
-https://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git/log/?h=3Dh=
-yperv-fixes
-since they are specific to Hyper-V.
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+---
+ .../net/ethernet/aquantia/atlantic/aq_ring.c  |  6 ++--
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  5 ++-
+ drivers/net/ethernet/chelsio/cxgb3/sge.c      |  5 ++-
+ drivers/net/ethernet/emulex/benet/be_main.c   | 32 ++++++++++---------
+ drivers/net/ethernet/freescale/enetc/enetc.c  |  5 ++-
+ .../net/ethernet/fungible/funeth/funeth_rx.c  |  5 ++-
+ drivers/net/ethernet/marvell/mvneta.c         |  5 ++-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  4 +--
+ drivers/net/ethernet/sun/cassini.c            |  8 ++---
+ drivers/net/virtio_net.c                      |  4 +--
+ drivers/net/vmxnet3/vmxnet3_drv.c             |  4 +--
+ drivers/net/xen-netback/netback.c             |  4 +--
+ include/linux/skbuff.h                        | 27 ++++++----------
+ net/bpf/test_run.c                            |  3 +-
+ net/core/gro.c                                |  4 +--
+ net/core/pktgen.c                             | 13 +++++---
+ net/core/skbuff.c                             |  7 ++--
+ net/tls/tls_device.c                          | 10 +++---
+ net/xfrm/xfrm_ipcomp.c                        |  5 +--
+ 19 files changed, 64 insertions(+), 92 deletions(-)
 
-After the first 5 patches are in, I can refer to the commit IDs, and I
-will split this patch (patch 6).
-
-Thanks,
-Dexuan
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
+index 7f933175cbda..4de22eed099a 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
+@@ -532,10 +532,10 @@ static bool aq_add_rx_fragment(struct device *dev,
+ 					      buff_->rxdata.pg_off,
+ 					      buff_->len,
+ 					      DMA_FROM_DEVICE);
+-		skb_frag_off_set(frag, buff_->rxdata.pg_off);
+-		skb_frag_size_set(frag, buff_->len);
+ 		sinfo->xdp_frags_size += buff_->len;
+-		__skb_frag_set_page(frag, buff_->rxdata.page);
++		skb_frag_fill_page_desc(frag, buff_->rxdata.page,
++					buff_->rxdata.pg_off,
++					buff_->len);
+ 
+ 		buff_->is_cleaned = 1;
+ 
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index dcd9367f05af..efaff5018af8 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -1085,9 +1085,8 @@ static u32 __bnxt_rx_agg_pages(struct bnxt *bp,
+ 			    RX_AGG_CMP_LEN) >> RX_AGG_CMP_LEN_SHIFT;
+ 
+ 		cons_rx_buf = &rxr->rx_agg_ring[cons];
+-		skb_frag_off_set(frag, cons_rx_buf->offset);
+-		skb_frag_size_set(frag, frag_len);
+-		__skb_frag_set_page(frag, cons_rx_buf->page);
++		skb_frag_fill_page_desc(frag, cons_rx_buf->page,
++					cons_rx_buf->offset, frag_len);
+ 		shinfo->nr_frags = i + 1;
+ 		__clear_bit(cons, rxr->rx_agg_bmap);
+ 
+diff --git a/drivers/net/ethernet/chelsio/cxgb3/sge.c b/drivers/net/ethernet/chelsio/cxgb3/sge.c
+index efa7f401529e..2e9a74fe0970 100644
+--- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
+@@ -2184,9 +2184,8 @@ static void lro_add_page(struct adapter *adap, struct sge_qset *qs,
+ 	len -= offset;
+ 
+ 	rx_frag += nr_frags;
+-	__skb_frag_set_page(rx_frag, sd->pg_chunk.page);
+-	skb_frag_off_set(rx_frag, sd->pg_chunk.offset + offset);
+-	skb_frag_size_set(rx_frag, len);
++	skb_frag_fill_page_desc(rx_frag, sd->pg_chunk.page,
++				sd->pg_chunk.offset + offset, len);
+ 
+ 	skb->len += len;
+ 	skb->data_len += len;
+diff --git a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
+index 7e408bcc88de..3164ed205cf7 100644
+--- a/drivers/net/ethernet/emulex/benet/be_main.c
++++ b/drivers/net/ethernet/emulex/benet/be_main.c
+@@ -2343,11 +2343,10 @@ static void skb_fill_rx_data(struct be_rx_obj *rxo, struct sk_buff *skb,
+ 		hdr_len = ETH_HLEN;
+ 		memcpy(skb->data, start, hdr_len);
+ 		skb_shinfo(skb)->nr_frags = 1;
+-		skb_frag_set_page(skb, 0, page_info->page);
+-		skb_frag_off_set(&skb_shinfo(skb)->frags[0],
+-				 page_info->page_offset + hdr_len);
+-		skb_frag_size_set(&skb_shinfo(skb)->frags[0],
+-				  curr_frag_len - hdr_len);
++		skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[0],
++					page_info->page,
++					page_info->page_offset + hdr_len,
++					curr_frag_len - hdr_len);
+ 		skb->data_len = curr_frag_len - hdr_len;
+ 		skb->truesize += rx_frag_size;
+ 		skb->tail += hdr_len;
+@@ -2369,16 +2368,17 @@ static void skb_fill_rx_data(struct be_rx_obj *rxo, struct sk_buff *skb,
+ 		if (page_info->page_offset == 0) {
+ 			/* Fresh page */
+ 			j++;
+-			skb_frag_set_page(skb, j, page_info->page);
+-			skb_frag_off_set(&skb_shinfo(skb)->frags[j],
+-					 page_info->page_offset);
+-			skb_frag_size_set(&skb_shinfo(skb)->frags[j], 0);
++			skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[j],
++						page_info->page,
++						page_info->page_offset,
++						curr_frag_len);
+ 			skb_shinfo(skb)->nr_frags++;
+ 		} else {
+ 			put_page(page_info->page);
++			skb_frag_size_add(&skb_shinfo(skb)->frags[j],
++					  curr_frag_len);
+ 		}
+ 
+-		skb_frag_size_add(&skb_shinfo(skb)->frags[j], curr_frag_len);
+ 		skb->len += curr_frag_len;
+ 		skb->data_len += curr_frag_len;
+ 		skb->truesize += rx_frag_size;
+@@ -2451,14 +2451,16 @@ static void be_rx_compl_process_gro(struct be_rx_obj *rxo,
+ 		if (i == 0 || page_info->page_offset == 0) {
+ 			/* First frag or Fresh page */
+ 			j++;
+-			skb_frag_set_page(skb, j, page_info->page);
+-			skb_frag_off_set(&skb_shinfo(skb)->frags[j],
+-					 page_info->page_offset);
+-			skb_frag_size_set(&skb_shinfo(skb)->frags[j], 0);
++			skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[j],
++						page_info->page,
++						page_info->page_offset,
++						curr_frag_len);
+ 		} else {
+ 			put_page(page_info->page);
++			skb_frag_size_add(&skb_shinfo(skb)->frags[j],
++					  curr_frag_len);
+ 		}
+-		skb_frag_size_add(&skb_shinfo(skb)->frags[j], curr_frag_len);
++
+ 		skb->truesize += rx_frag_size;
+ 		remaining -= curr_frag_len;
+ 		memset(page_info, 0, sizeof(*page_info));
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+index 3c4fa26f0f9b..63854294ac33 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -1445,9 +1445,8 @@ static void enetc_add_rx_buff_to_xdp(struct enetc_bdr *rx_ring, int i,
+ 		xdp_buff_set_frag_pfmemalloc(xdp_buff);
+ 
+ 	frag = &shinfo->frags[shinfo->nr_frags];
+-	skb_frag_off_set(frag, rx_swbd->page_offset);
+-	skb_frag_size_set(frag, size);
+-	__skb_frag_set_page(frag, rx_swbd->page);
++	skb_frag_fill_page_desc(frag, rx_swbd->page, rx_swbd->page_offset,
++				size);
+ 
+ 	shinfo->nr_frags++;
+ }
+diff --git a/drivers/net/ethernet/fungible/funeth/funeth_rx.c b/drivers/net/ethernet/fungible/funeth/funeth_rx.c
+index 29a6c2ede43a..7e2584895de3 100644
+--- a/drivers/net/ethernet/fungible/funeth/funeth_rx.c
++++ b/drivers/net/ethernet/fungible/funeth/funeth_rx.c
+@@ -323,9 +323,8 @@ static int fun_gather_pkt(struct funeth_rxq *q, unsigned int tot_len,
+ 		if (ref_ok)
+ 			ref_ok |= buf->node;
+ 
+-		__skb_frag_set_page(frags, buf->page);
+-		skb_frag_off_set(frags, q->buf_offset);
+-		skb_frag_size_set(frags++, frag_len);
++		skb_frag_fill_page_desc(frags++, buf->page, q->buf_offset,
++					frag_len);
+ 
+ 		tot_len -= frag_len;
+ 		if (!tot_len)
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index 2cad76d0a50e..01b0312977d6 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -2369,9 +2369,8 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
+ 	if (data_len > 0 && sinfo->nr_frags < MAX_SKB_FRAGS) {
+ 		skb_frag_t *frag = &sinfo->frags[sinfo->nr_frags++];
+ 
+-		skb_frag_off_set(frag, pp->rx_offset_correction);
+-		skb_frag_size_set(frag, data_len);
+-		__skb_frag_set_page(frag, page);
++		skb_frag_fill_page_desc(frag, page,
++					pp->rx_offset_correction, data_len);
+ 
+ 		if (!xdp_buff_has_frags(xdp)) {
+ 			sinfo->xdp_frags_size = *size;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+index 69634829558e..704b022cd1f0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+@@ -491,9 +491,7 @@ mlx5e_add_skb_shared_info_frag(struct mlx5e_rq *rq, struct skb_shared_info *sinf
+ 	}
+ 
+ 	frag = &sinfo->frags[sinfo->nr_frags++];
+-	__skb_frag_set_page(frag, frag_page->page);
+-	skb_frag_off_set(frag, frag_offset);
+-	skb_frag_size_set(frag, len);
++	skb_frag_fill_page_desc(frag, frag_page->page, frag_offset, len);
+ 
+ 	if (page_is_pfmemalloc(frag_page->page))
+ 		xdp_buff_set_frag_pfmemalloc(xdp);
+diff --git a/drivers/net/ethernet/sun/cassini.c b/drivers/net/ethernet/sun/cassini.c
+index 4ef05bad4613..2d52f54ebb45 100644
+--- a/drivers/net/ethernet/sun/cassini.c
++++ b/drivers/net/ethernet/sun/cassini.c
+@@ -1998,10 +1998,8 @@ static int cas_rx_process_pkt(struct cas *cp, struct cas_rx_comp *rxc,
+ 		skb->truesize += hlen - swivel;
+ 		skb->len      += hlen - swivel;
+ 
+-		__skb_frag_set_page(frag, page->buffer);
++		skb_frag_fill_page_desc(frag, page->buffer, off, hlen - swivel);
+ 		__skb_frag_ref(frag);
+-		skb_frag_off_set(frag, off);
+-		skb_frag_size_set(frag, hlen - swivel);
+ 
+ 		/* any more data? */
+ 		if ((words[0] & RX_COMP1_SPLIT_PKT) && ((dlen -= hlen) > 0)) {
+@@ -2024,10 +2022,8 @@ static int cas_rx_process_pkt(struct cas *cp, struct cas_rx_comp *rxc,
+ 			skb->len      += hlen;
+ 			frag++;
+ 
+-			__skb_frag_set_page(frag, page->buffer);
++			skb_frag_fill_page_desc(frag, page->buffer, 0, hlen);
+ 			__skb_frag_ref(frag);
+-			skb_frag_off_set(frag, 0);
+-			skb_frag_size_set(frag, hlen);
+ 			RX_USED_ADD(page, hlen + cp->crc_size);
+ 		}
+ 
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index a12ae26db0e2..fe048d4bec39 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1153,9 +1153,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+ 		}
+ 
+ 		frag = &shinfo->frags[shinfo->nr_frags++];
+-		__skb_frag_set_page(frag, page);
+-		skb_frag_off_set(frag, offset);
+-		skb_frag_size_set(frag, len);
++		skb_frag_fill_page_desc(frag, page, offset, len);
+ 		if (page_is_pfmemalloc(page))
+ 			xdp_buff_set_frag_pfmemalloc(xdp);
+ 
+diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
+index f2b76ee866a4..7fa74b8b2100 100644
+--- a/drivers/net/vmxnet3/vmxnet3_drv.c
++++ b/drivers/net/vmxnet3/vmxnet3_drv.c
+@@ -686,9 +686,7 @@ vmxnet3_append_frag(struct sk_buff *skb, struct Vmxnet3_RxCompDesc *rcd,
+ 
+ 	BUG_ON(skb_shinfo(skb)->nr_frags >= MAX_SKB_FRAGS);
+ 
+-	__skb_frag_set_page(frag, rbi->page);
+-	skb_frag_off_set(frag, 0);
+-	skb_frag_size_set(frag, rcd->len);
++	skb_frag_fill_page_desc(frag, rbi->page, 0, rcd->len);
+ 	skb->data_len += rcd->len;
+ 	skb->truesize += PAGE_SIZE;
+ 	skb_shinfo(skb)->nr_frags++;
+diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
+index c1501f41e2d8..3d79b35eb577 100644
+--- a/drivers/net/xen-netback/netback.c
++++ b/drivers/net/xen-netback/netback.c
+@@ -1128,9 +1128,7 @@ static int xenvif_handle_frag_list(struct xenvif_queue *queue, struct sk_buff *s
+ 			BUG();
+ 
+ 		offset += len;
+-		__skb_frag_set_page(&frags[i], page);
+-		skb_frag_off_set(&frags[i], 0);
+-		skb_frag_size_set(&frags[i], len);
++		skb_frag_fill_page_desc(&frags[i], page, 0, len);
+ 	}
+ 
+ 	/* Release all the original (foreign) frags. */
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 738776ab8838..30be21c7d05f 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -2411,6 +2411,15 @@ static inline unsigned int skb_pagelen(const struct sk_buff *skb)
+ 	return skb_headlen(skb) + __skb_pagelen(skb);
+ }
+ 
++static inline void skb_frag_fill_page_desc(skb_frag_t *frag,
++					   struct page *page,
++					   int off, int size)
++{
++	frag->bv_page = page;
++	frag->bv_offset = off;
++	skb_frag_size_set(frag, size);
++}
++
+ static inline void __skb_fill_page_desc_noacc(struct skb_shared_info *shinfo,
+ 					      int i, struct page *page,
+ 					      int off, int size)
+@@ -2422,9 +2431,7 @@ static inline void __skb_fill_page_desc_noacc(struct skb_shared_info *shinfo,
+ 	 * that not all callers have unique ownership of the page but rely
+ 	 * on page_is_pfmemalloc doing the right thing(tm).
+ 	 */
+-	frag->bv_page		  = page;
+-	frag->bv_offset		  = off;
+-	skb_frag_size_set(frag, size);
++	skb_frag_fill_page_desc(frag, page, off, size);
+ }
+ 
+ /**
+@@ -3496,20 +3503,6 @@ static inline void __skb_frag_set_page(skb_frag_t *frag, struct page *page)
+ 	frag->bv_page = page;
+ }
+ 
+-/**
+- * skb_frag_set_page - sets the page contained in a paged fragment of an skb
+- * @skb: the buffer
+- * @f: the fragment offset
+- * @page: the page to set
+- *
+- * Sets the @f'th fragment of @skb to contain @page.
+- */
+-static inline void skb_frag_set_page(struct sk_buff *skb, int f,
+-				     struct page *page)
+-{
+-	__skb_frag_set_page(&skb_shinfo(skb)->frags[f], page);
+-}
+-
+ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
+ 
+ /**
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index e79e3a415ca9..98143b86a9dd 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -1415,11 +1415,10 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 			}
+ 
+ 			frag = &sinfo->frags[sinfo->nr_frags++];
+-			__skb_frag_set_page(frag, page);
+ 
+ 			data_len = min_t(u32, kattr->test.data_size_in - size,
+ 					 PAGE_SIZE);
+-			skb_frag_size_set(frag, data_len);
++			skb_frag_fill_page_desc(frag, page, 0, data_len);
+ 
+ 			if (copy_from_user(page_address(page), data_in + size,
+ 					   data_len)) {
+diff --git a/net/core/gro.c b/net/core/gro.c
+index 2d84165cb4f1..6783a47a6136 100644
+--- a/net/core/gro.c
++++ b/net/core/gro.c
+@@ -239,9 +239,7 @@ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb)
+ 
+ 		pinfo->nr_frags = nr_frags + 1 + skbinfo->nr_frags;
+ 
+-		__skb_frag_set_page(frag, page);
+-		skb_frag_off_set(frag, first_offset);
+-		skb_frag_size_set(frag, first_size);
++		skb_frag_fill_page_desc(frag, page, first_offset, first_size);
+ 
+ 		memcpy(frag + 1, skbinfo->frags, sizeof(*frag) * skbinfo->nr_frags);
+ 		/* We dont need to clear skbinfo->nr_frags here */
+diff --git a/net/core/pktgen.c b/net/core/pktgen.c
+index 760238196db1..f56b8d697014 100644
+--- a/net/core/pktgen.c
++++ b/net/core/pktgen.c
+@@ -2785,14 +2785,17 @@ static void pktgen_finalize_skb(struct pktgen_dev *pkt_dev, struct sk_buff *skb,
+ 					break;
+ 			}
+ 			get_page(pkt_dev->page);
+-			skb_frag_set_page(skb, i, pkt_dev->page);
+-			skb_frag_off_set(&skb_shinfo(skb)->frags[i], 0);
++
+ 			/*last fragment, fill rest of data*/
+ 			if (i == (frags - 1))
+-				skb_frag_size_set(&skb_shinfo(skb)->frags[i],
+-				    (datalen < PAGE_SIZE ? datalen : PAGE_SIZE));
++				skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[i],
++							pkt_dev->page, 0,
++							(datalen < PAGE_SIZE ?
++							 datalen : PAGE_SIZE));
+ 			else
+-				skb_frag_size_set(&skb_shinfo(skb)->frags[i], frag_len);
++				skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[i],
++							pkt_dev->page, 0, frag_len);
++
+ 			datalen -= skb_frag_size(&skb_shinfo(skb)->frags[i]);
+ 			skb->len += skb_frag_size(&skb_shinfo(skb)->frags[i]);
+ 			skb->data_len += skb_frag_size(&skb_shinfo(skb)->frags[i]);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 26a586007d8b..c0bd428df3bf 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -4249,10 +4249,9 @@ static inline skb_frag_t skb_head_frag_to_page_desc(struct sk_buff *frag_skb)
+ 	struct page *page;
+ 
+ 	page = virt_to_head_page(frag_skb->head);
+-	__skb_frag_set_page(&head_frag, page);
+-	skb_frag_off_set(&head_frag, frag_skb->data -
+-			 (unsigned char *)page_address(page));
+-	skb_frag_size_set(&head_frag, skb_headlen(frag_skb));
++	skb_frag_fill_page_desc(&head_frag, page, frag_skb->data -
++				(unsigned char *)page_address(page),
++				skb_headlen(frag_skb));
+ 	return head_frag;
+ }
+ 
+diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+index a7cc4f9faac2..daeff54bdbfa 100644
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -268,9 +268,8 @@ static void tls_append_frag(struct tls_record_info *record,
+ 		skb_frag_size_add(frag, size);
+ 	} else {
+ 		++frag;
+-		__skb_frag_set_page(frag, pfrag->page);
+-		skb_frag_off_set(frag, pfrag->offset);
+-		skb_frag_size_set(frag, size);
++		skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset,
++					size);
+ 		++record->num_frags;
+ 		get_page(pfrag->page);
+ 	}
+@@ -357,9 +356,8 @@ static int tls_create_new_record(struct tls_offload_context_tx *offload_ctx,
+ 		return -ENOMEM;
+ 
+ 	frag = &record->frags[0];
+-	__skb_frag_set_page(frag, pfrag->page);
+-	skb_frag_off_set(frag, pfrag->offset);
+-	skb_frag_size_set(frag, prepend_size);
++	skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset,
++				prepend_size);
+ 
+ 	get_page(pfrag->page);
+ 	pfrag->offset += prepend_size;
+diff --git a/net/xfrm/xfrm_ipcomp.c b/net/xfrm/xfrm_ipcomp.c
+index 80143360bf09..9c0fa0e1786a 100644
+--- a/net/xfrm/xfrm_ipcomp.c
++++ b/net/xfrm/xfrm_ipcomp.c
+@@ -74,14 +74,11 @@ static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
+ 		if (!page)
+ 			return -ENOMEM;
+ 
+-		__skb_frag_set_page(frag, page);
+-
+ 		len = PAGE_SIZE;
+ 		if (dlen < len)
+ 			len = dlen;
+ 
+-		skb_frag_off_set(frag, 0);
+-		skb_frag_size_set(frag, len);
++		skb_frag_fill_page_desc(frag, page, 0, len);
+ 		memcpy(skb_frag_address(frag), scratch, len);
+ 
+ 		skb->truesize += len;
+-- 
+2.33.0
 
