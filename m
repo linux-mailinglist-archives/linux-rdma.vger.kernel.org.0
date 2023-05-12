@@ -2,459 +2,262 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C67700041
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 May 2023 08:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5CFD70012A
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 May 2023 09:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239909AbjELGZG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 May 2023 02:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
+        id S240192AbjELHN3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 May 2023 03:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbjELGZF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 May 2023 02:25:05 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506123ABF;
-        Thu, 11 May 2023 23:25:01 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0ViNyZRq_1683872695;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0ViNyZRq_1683872695)
-          by smtp.aliyun-inc.com;
-          Fri, 12 May 2023 14:24:56 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
-        sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        guwen@linux.alibaba.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next v1 5/5] bpf/selftests: add selftest for SMC bpf capability
-Date:   Fri, 12 May 2023 14:24:44 +0800
-Message-Id: <1683872684-64872-6-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1683872684-64872-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1683872684-64872-1-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S240019AbjELHND (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 May 2023 03:13:03 -0400
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488D2100CD
+        for <linux-rdma@vger.kernel.org>; Fri, 12 May 2023 00:10:52 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-76c6c1b16d2so443977539f.1
+        for <linux-rdma@vger.kernel.org>; Fri, 12 May 2023 00:10:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683875451; x=1686467451;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SMsFgq+oEOcmhbsxZ5bE3e0fF8uEzh1t5dBmZu5VzjQ=;
+        b=IrHtC3bjtANiS6kvgsHnWZwII8CyE3JvZLxNVGhehowv+Z5Ld86Gm2KVUpWM9dBoTL
+         vuyqU+j27OqISNSU6BYO1M7ce8rsIEg50y61iFRaWzmd4f3OiF4RehkOCgPZjyDEIZpG
+         CYU2gNrB0wMXLsRBvoFO1yyM5XRFGCuSIttYlzFMIa91YF9Mik4qWQZbUNzV+yIzcJeu
+         V/uJt4jaOhZvR4YtaZUMXbZnk6TrnHfRMkeFtXpTS1s6hRSM9SjJfSEL21hCm/fvW+Fp
+         XBIxPIGw/iZNLnlmbkfMx3QcJAGdouO9raPqDuoqXfql2u3J7Mj7mcuXpsjUzNxEHBFY
+         o0jQ==
+X-Gm-Message-State: AC+VfDxguvP2QINsJJKtEFdum2WZOsmQ3RLHfqnEppDOkEMl7aaaHy5Y
+        +6tz+x2VC8EXsDmL3zAFL59NmKPrY/ynb08CtjKcoNrGkQ30
+X-Google-Smtp-Source: ACHHUZ64xI94OQzUOuIF7AQAPwyfjA70Je4SmZIGVHplLxqTlYZst31252zspR5SqeRkvKP8p27IRhb6zA7bHRcu06V7W9/Q1Usd
+MIME-Version: 1.0
+X-Received: by 2002:a02:220c:0:b0:416:7c00:b0f1 with SMTP id
+ o12-20020a02220c000000b004167c00b0f1mr6234871jao.6.1683875451343; Fri, 12 May
+ 2023 00:10:51 -0700 (PDT)
+Date:   Fri, 12 May 2023 00:10:51 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001f992805fb79ce97@google.com>
+Subject: [syzbot] [rdma?] KASAN: slab-use-after-free Read in siw_query_port
+From:   syzbot <syzbot+79f283f1f4ccc6e8b624@syzkaller.appspotmail.com>
+To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+Hello,
 
-This PATCH adds a tiny selftest for SMC bpf capability,
-making decisions on whether to use SMC by collecting
-certain information from kernel smc sock.
+syzbot found the following issue on:
 
-Follow the steps below to run this test.
+HEAD commit:    16a8829130ca nfs: fix another case of NULL/IS_ERR confusio..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=162c0566280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8bc832f563d8bf38
+dashboard link: https://syzkaller.appspot.com/bug?extid=79f283f1f4ccc6e8b624
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-make -C tools/testing/selftests/bpf
-cd tools/testing/selftests/bpf
-sudo ./test_progs -t smc
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Results shows:
-18/1    bpf_smc/load:OK
-18/2    bpf_smc/update:OK
-18/3    bpf_smc/ref:OK
-18      bpf_smc:OK
-Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f8c18a31ba47/disk-16a88291.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/03a18f29b7e7/vmlinux-16a88291.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1db2407ade1e/bzImage-16a88291.xz
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+79f283f1f4ccc6e8b624@syzkaller.appspotmail.com
+
+xfrm0 speed is unknown, defaulting to 1000
+==================================================================
+BUG: KASAN: slab-use-after-free in siw_query_port+0x37b/0x3e0 drivers/infiniband/sw/siw/siw_verbs.c:177
+Read of size 4 at addr ffff888034efa0e8 by task kworker/1:4/24211
+
+CPU: 1 PID: 24211 Comm: kworker/1:4 Not tainted 6.4.0-rc1-syzkaller-00012-g16a8829130ca #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
+Workqueue: infiniband ib_cache_event_task
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ print_address_description.constprop.0+0x2c/0x3c0 mm/kasan/report.c:351
+ print_report mm/kasan/report.c:462 [inline]
+ kasan_report+0x11c/0x130 mm/kasan/report.c:572
+ siw_query_port+0x37b/0x3e0 drivers/infiniband/sw/siw/siw_verbs.c:177
+ iw_query_port drivers/infiniband/core/device.c:2049 [inline]
+ ib_query_port drivers/infiniband/core/device.c:2090 [inline]
+ ib_query_port+0x3c4/0x8f0 drivers/infiniband/core/device.c:2082
+ ib_cache_update.part.0+0xcf/0x920 drivers/infiniband/core/cache.c:1487
+ ib_cache_update drivers/infiniband/core/cache.c:1561 [inline]
+ ib_cache_event_task+0x1b1/0x270 drivers/infiniband/core/cache.c:1561
+ process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
+ worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
+ kthread+0x344/0x440 kernel/kthread.c:379
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+
+Allocated by task 14304:
+ kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:333 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:196 [inline]
+ __do_kmalloc_node mm/slab_common.c:966 [inline]
+ __kmalloc_node+0x61/0x1a0 mm/slab_common.c:973
+ kmalloc_node include/linux/slab.h:579 [inline]
+ kvmalloc_node+0xa2/0x1a0 mm/util.c:604
+ kvmalloc include/linux/slab.h:697 [inline]
+ kvzalloc include/linux/slab.h:705 [inline]
+ alloc_netdev_mqs+0x9c/0x1250 net/core/dev.c:10626
+ rtnl_create_link+0xbeb/0xee0 net/core/rtnetlink.c:3315
+ rtnl_newlink_create net/core/rtnetlink.c:3433 [inline]
+ __rtnl_newlink+0xfd4/0x1840 net/core/rtnetlink.c:3660
+ rtnl_newlink+0x68/0xa0 net/core/rtnetlink.c:3673
+ rtnetlink_rcv_msg+0x43d/0xd50 net/core/rtnetlink.c:6395
+ netlink_rcv_skb+0x165/0x440 net/netlink/af_netlink.c:2546
+ netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
+ netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
+ netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1913
+ sock_sendmsg_nosec net/socket.c:724 [inline]
+ sock_sendmsg+0xde/0x190 net/socket.c:747
+ __sys_sendto+0x23a/0x340 net/socket.c:2144
+ __do_sys_sendto net/socket.c:2156 [inline]
+ __se_sys_sendto net/socket.c:2152 [inline]
+ __x64_sys_sendto+0xe1/0x1b0 net/socket.c:2152
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 5268:
+ kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2e/0x40 mm/kasan/generic.c:521
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x160/0x1c0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:162 [inline]
+ slab_free_hook mm/slub.c:1781 [inline]
+ slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1807
+ slab_free mm/slub.c:3786 [inline]
+ __kmem_cache_free+0xaf/0x2d0 mm/slub.c:3799
+ kvfree+0x46/0x50 mm/util.c:650
+ device_release+0xa3/0x240 drivers/base/core.c:2484
+ kobject_cleanup lib/kobject.c:683 [inline]
+ kobject_release lib/kobject.c:714 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c2/0x4d0 lib/kobject.c:731
+ netdev_run_todo+0x762/0x1100 net/core/dev.c:10400
+ xfrmi_exit_batch_net+0x2c7/0x3e0 net/xfrm/xfrm_interface_core.c:984
+ ops_exit_list+0x125/0x170 net/core/net_namespace.c:175
+ cleanup_net+0x4ee/0xb10 net/core/net_namespace.c:614
+ process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
+ worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
+ kthread+0x344/0x440 kernel/kthread.c:379
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+
+The buggy address belongs to the object at ffff888034efa000
+ which belongs to the cache kmalloc-cg-4k of size 4096
+The buggy address is located 232 bytes inside of
+ freed 4096-byte region [ffff888034efa000, ffff888034efb000)
+
+The buggy address belongs to the physical page:
+page:ffffea0000d3be00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x34ef8
+head:ffffea0000d3be00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+memcg:ffff88807d3a3741
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000010200 ffff88801244f500 ffffea00005adc00 dead000000000002
+raw: 0000000000000000 0000000000040004 00000001ffffffff ffff88807d3a3741
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 4668, tgid 4668 (dhcpcd), ts 914718336210, free_ts 914216762552
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2db/0x350 mm/page_alloc.c:1731
+ prep_new_page mm/page_alloc.c:1738 [inline]
+ get_page_from_freelist+0xf41/0x2c00 mm/page_alloc.c:3502
+ __alloc_pages+0x1cb/0x4a0 mm/page_alloc.c:4768
+ alloc_pages+0x1aa/0x270 mm/mempolicy.c:2279
+ alloc_slab_page mm/slub.c:1851 [inline]
+ allocate_slab+0x25f/0x390 mm/slub.c:1998
+ new_slab mm/slub.c:2051 [inline]
+ ___slab_alloc+0xa91/0x1400 mm/slub.c:3192
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3291
+ __slab_alloc_node mm/slub.c:3344 [inline]
+ slab_alloc_node mm/slub.c:3441 [inline]
+ __kmem_cache_alloc_node+0x136/0x320 mm/slub.c:3490
+ __do_kmalloc_node mm/slab_common.c:965 [inline]
+ __kmalloc_node+0x51/0x1a0 mm/slab_common.c:973
+ kmalloc_node include/linux/slab.h:579 [inline]
+ kvmalloc_node+0xa2/0x1a0 mm/util.c:604
+ kvmalloc include/linux/slab.h:697 [inline]
+ seq_buf_alloc fs/seq_file.c:38 [inline]
+ seq_read_iter+0x7fb/0x12d0 fs/seq_file.c:210
+ kernfs_fop_read_iter+0x4ce/0x690 fs/kernfs/file.c:279
+ call_read_iter include/linux/fs.h:1862 [inline]
+ new_sync_read fs/read_write.c:389 [inline]
+ vfs_read+0x4b1/0x8a0 fs/read_write.c:470
+ ksys_read+0x12b/0x250 fs/read_write.c:613
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1302 [inline]
+ free_unref_page_prepare+0x62e/0xcb0 mm/page_alloc.c:2564
+ free_unref_page+0x33/0x370 mm/page_alloc.c:2659
+ __unfreeze_partials+0x17c/0x1a0 mm/slub.c:2636
+ qlink_free mm/kasan/quarantine.c:166 [inline]
+ qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:185
+ kasan_quarantine_reduce+0x195/0x220 mm/kasan/quarantine.c:292
+ __kasan_slab_alloc+0x63/0x90 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:186 [inline]
+ slab_post_alloc_hook mm/slab.h:711 [inline]
+ slab_alloc_node mm/slub.c:3451 [inline]
+ slab_alloc mm/slub.c:3459 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3466 [inline]
+ kmem_cache_alloc+0x17c/0x3b0 mm/slub.c:3475
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:140
+ getname_flags+0x9e/0xe0 include/linux/audit.h:321
+ vfs_fstatat+0x77/0xb0 fs/stat.c:275
+ __do_sys_newfstatat+0x8a/0x110 fs/stat.c:446
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Memory state around the buggy address:
+ ffff888034ef9f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888034efa000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888034efa080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                          ^
+ ffff888034efa100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888034efa180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
 ---
- tools/testing/selftests/bpf/prog_tests/bpf_smc.c | 107 +++++++++
- tools/testing/selftests/bpf/progs/bpf_smc.c      | 265 +++++++++++++++++++++++
- 2 files changed, 372 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-new file mode 100644
-index 0000000..e668857
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-@@ -0,0 +1,107 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/err.h>
-+#include <netinet/tcp.h>
-+#include <test_progs.h>
-+#include "network_helpers.h"
-+#include "bpf_smc.skel.h"
-+
-+#define SOL_SMC 286
-+#define SMC_NEGOTIATOR 2
-+static const char name[] = "apps";
-+
-+void run_smc(void)
-+{
-+	int fd, err;
-+
-+	fd = socket(AF_SMC, SOCK_STREAM, 0);
-+	ASSERT_GT(fd, 0, "create smc socket");
-+
-+	err = setsockopt(fd, SOL_SMC, SMC_NEGOTIATOR, name, sizeof(name) / sizeof(char));
-+	ASSERT_EQ(err, 0, "setsockopt");
-+
-+	close(fd);
-+}
-+
-+void test_load(void)
-+{
-+	struct bpf_smc *smc_skel;
-+	struct bpf_link *link;
-+
-+	smc_skel = bpf_smc__open_and_load();
-+	if (!ASSERT_OK_PTR(smc_skel, "skel_open"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(smc_skel->maps.ops);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-+		goto error;
-+
-+	bpf_link__destroy(link);
-+error:
-+	bpf_smc__destroy(smc_skel);
-+}
-+
-+void test_update(void)
-+{
-+	struct bpf_smc *smc_skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	smc_skel = bpf_smc__open_and_load();
-+	if (!ASSERT_OK_PTR(smc_skel, "skel_open"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(smc_skel->maps.accept);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-+		goto error;
-+
-+	run_smc();
-+	ASSERT_EQ(smc_skel->bss->accept_cnt, 1, "accept_cnt");
-+
-+	err = bpf_link__update_map(link, smc_skel->maps.drop);
-+	ASSERT_OK(err, "update_map");
-+
-+	run_smc();
-+	ASSERT_EQ(smc_skel->bss->accept_cnt, 1, "accept_cnt");
-+	ASSERT_EQ(smc_skel->bss->drop_cnt, 1, "drop_cnt");
-+
-+	bpf_link__destroy(link);
-+error:
-+	bpf_smc__destroy(smc_skel);
-+}
-+
-+void test_ref(void)
-+{
-+	struct bpf_smc *smc_skel;
-+	struct bpf_link *link;
-+	int fd = 0, err;
-+
-+	smc_skel = bpf_smc__open_and_load();
-+	if (!ASSERT_OK_PTR(smc_skel, "skel_open"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(smc_skel->maps.accept);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-+		goto error;
-+
-+	fd = socket(AF_SMC, SOCK_STREAM, 0);
-+	ASSERT_GT(fd, 0, "create smc socket");
-+	err = setsockopt(fd, SOL_SMC, SMC_NEGOTIATOR, name, sizeof(name) / sizeof(char));
-+	ASSERT_EQ(err, 0, "setsockopt");
-+	bpf_link__destroy(link);
-+	if (fd > 0)
-+		close(fd);
-+	ASSERT_EQ(smc_skel->bss->accept_release_cnt, 1, "accept_release_cnt");
-+error:
-+	bpf_smc__destroy(smc_skel);
-+}
-+
-+void test_bpf_smc(void)
-+{
-+	if (test__start_subtest("load"))
-+		test_load();
-+	if (test__start_subtest("update"))
-+		test_update();
-+	if (test__start_subtest("ref"))
-+		test_ref();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
-new file mode 100644
-index 0000000..8ff70af
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
-@@ -0,0 +1,265 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_SMC			(43)
-+#define SMC_LISTEN		(10)
-+#define SMC_SOCK_CLOSED_TIMING	(0)
-+extern unsigned long CONFIG_HZ __kconfig;
-+#define HZ CONFIG_HZ
-+
-+char _license[] SEC("license") = "GPL";
-+#define max(a, b) ((a) > (b) ? (a) : (b))
-+
-+static __always_inline struct smc_sock *smc_sk(struct sock *sk)
-+{
-+	return (struct smc_sock *)sk;
-+}
-+
-+struct smc_prediction {
-+	/* protection for smc_prediction */
-+	struct bpf_spin_lock lock;
-+	/* start of time slice */
-+	__u64	start_tstamp;
-+	/* delta of pacing */
-+	__u64	pacing_delta;
-+	/* N of closed connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	closed_long_cc;
-+	/* N of closed connections in this time slice */
-+	__u32	closed_total_cc;
-+	/* N of incoming connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	incoming_long_cc;
-+	/* last splice rate of long cc */
-+	__u32	last_rate_of_lcc;
-+};
-+
-+#define SMC_PREDICTION_MIN_PACING_DELTA                (1llu)
-+#define SMC_PREDICTION_MAX_PACING_DELTA                (HZ << 3)
-+#define SMC_PREDICTION_MAX_LONGCC_PER_SPLICE           (8)
-+#define SMC_PREDICTION_MAX_PORT                        (64)
-+#define SMC_PREDICTION_MAX_SPLICE_GAP                  (1)
-+#define SMC_PREDICTION_LONGCC_RATE_THRESHOLD           (13189)
-+#define SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD        (100)
-+#define SMC_PREDICTION_LONGCC_BYTES_THRESHOLD	\
-+		(SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD * 1024)
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, SMC_PREDICTION_MAX_PORT);
-+	__type(key, __u16);
-+	__type(value, struct smc_prediction);
-+} negotiator_map SEC(".maps");
-+
-+
-+static inline __u32 smc_prediction_calt_rate(struct smc_prediction *smc_predictor)
-+{
-+	if (!smc_predictor->closed_total_cc)
-+		return smc_predictor->last_rate_of_lcc;
-+
-+	return (smc_predictor->closed_long_cc << 14) / smc_predictor->closed_total_cc;
-+}
-+
-+static inline struct smc_prediction *smc_prediction_get(__u16 key, __u64 tstamp)
-+{
-+	struct smc_prediction zero = {}, *smc_predictor;
-+	__u32 gap;
-+	int err;
-+
-+	smc_predictor = bpf_map_lookup_elem(&negotiator_map, &key);
-+	if (!smc_predictor) {
-+		zero.start_tstamp = bpf_jiffies64();
-+		zero.pacing_delta = SMC_PREDICTION_MIN_PACING_DELTA;
-+		err = bpf_map_update_elem(&negotiator_map, &key, &zero, 0);
-+		if (err)
-+			return NULL;
-+		smc_predictor =  bpf_map_lookup_elem(&negotiator_map, &key);
-+		if (!smc_predictor)
-+			return NULL;
-+	}
-+
-+	if (tstamp) {
-+		bpf_spin_lock(&smc_predictor->lock);
-+		gap = (tstamp - smc_predictor->start_tstamp) / smc_predictor->pacing_delta;
-+		/* new splice */
-+		if (gap > 0) {
-+			smc_predictor->start_tstamp = tstamp;
-+			smc_predictor->last_rate_of_lcc =
-+				(smc_prediction_calt_rate(smc_predictor) * 7) >> (2 + gap);
-+			smc_predictor->closed_long_cc = 0;
-+			smc_predictor->closed_total_cc = 0;
-+			smc_predictor->incoming_long_cc = 0;
-+		}
-+		bpf_spin_unlock(&smc_predictor->lock);
-+	}
-+	return smc_predictor;
-+}
-+
-+int SEC("struct_ops/bpf_smc_negotiate")
-+BPF_PROG(bpf_smc_negotiate, struct sock *sk)
-+{
-+	struct smc_prediction *smc_predictor;
-+	struct smc_sock *smc = smc_sk(sk);
-+	struct tcp_sock *tp;
-+	__u32 rate = 0;
-+	__u16 key;
-+
-+	/* client side */
-+	if (smc == NULL || smc->sk.__sk_common.skc_state != SMC_LISTEN) {
-+		/* use Global smc_predictor */
-+		key = 0;
-+	} else {	/* server side */
-+		tp = bpf_skc_to_tcp_sock(sk);
-+		if (!tp)
-+			goto error;
-+		key = tp->inet_conn.icsk_inet.sk.__sk_common.skc_num;
-+	}
-+
-+	smc_predictor = smc_prediction_get(key, bpf_jiffies64());
-+	if (!smc_predictor)
-+		return SK_PASS;
-+
-+	bpf_spin_lock(&smc_predictor->lock);
-+
-+	if (smc_predictor->incoming_long_cc == 0)
-+		goto out_locked_pass;
-+
-+	if (smc_predictor->incoming_long_cc > SMC_PREDICTION_MAX_LONGCC_PER_SPLICE)
-+		goto out_locked_drop;
-+
-+	rate = smc_prediction_calt_rate(smc_predictor);
-+	if (rate < SMC_PREDICTION_LONGCC_RATE_THRESHOLD)
-+		goto out_locked_drop;
-+
-+out_locked_pass:
-+	smc_predictor->incoming_long_cc++;
-+	bpf_spin_unlock(&smc_predictor->lock);
-+	return SK_PASS;
-+out_locked_drop:
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return SK_DROP;
-+}
-+
-+void SEC("struct_ops/bpf_smc_collect_info")
-+BPF_PROG(bpf_smc_collect_info, struct sock *sk, int timing)
-+{
-+	struct smc_prediction *smc_predictor;
-+	int use_fallback, sndbuf;
-+	struct smc_sock *smc;
-+	struct tcp_sock *tp;
-+	bool match = false;
-+	__u16 wrap, count;
-+	__u16 key;
-+
-+	/* no info can collect */
-+	if (sk == NULL)
-+		return;
-+
-+	/* only fouces on closed */
-+	if (timing != SMC_SOCK_CLOSED_TIMING)
-+		return;
-+
-+	/* every full smc sock should contains a tcp sock */
-+	tp = bpf_skc_to_tcp_sock(sk);
-+	if (!tp)
-+		return;
-+
-+	smc = smc_sk(sk);
-+	if (smc->use_fallback) {
-+		use_fallback = 1;
-+		match = tp->delivered > SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD;
-+	} else {
-+		wrap = smc->conn.tx_curs_sent.wrap;
-+		count = smc->conn.tx_curs_sent.count;
-+		sndbuf = tp->inet_conn.icsk_inet.sk.sk_sndbuf;
-+		match = (count + wrap * sndbuf) > SMC_PREDICTION_LONGCC_BYTES_THRESHOLD;
-+	}
-+
-+	key = tp->inet_conn.icsk_inet.sk.__sk_common.skc_num;
-+
-+	smc_predictor = smc_prediction_get(key, 0);
-+	if (!smc_predictor)
-+		goto error;
-+
-+	bpf_spin_lock(&smc_predictor->lock);
-+	smc_predictor->closed_total_cc++;
-+	if (match) {
-+		/* increase stats */
-+		smc_predictor->closed_long_cc++;
-+		/* try more aggressive */
-+		if (smc_predictor->pacing_delta > SMC_PREDICTION_MIN_PACING_DELTA) {
-+			if (use_fallback) {
-+				smc_predictor->pacing_delta = max(SMC_PREDICTION_MIN_PACING_DELTA,
-+						(smc_predictor->pacing_delta * 3) >> 2);
-+			}
-+		}
-+	} else if (!use_fallback) {
-+		smc_predictor->pacing_delta <<= 1;
-+	}
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return;
-+}
-+
-+SEC(".struct_ops.link")
-+struct smc_sock_negotiator_ops ops = {
-+	.name = "apps",
-+	.negotiate	= (void *)bpf_smc_negotiate,
-+	.collect_info	= (void *)bpf_smc_collect_info,
-+};
-+
-+int accept_cnt = 0;
-+int drop_cnt = 0;
-+int accept_release_cnt = 0;
-+
-+int SEC("struct_ops/bpf_smc_accept")
-+BPF_PROG(bpf_smc_accept, struct sock *sk)
-+{
-+	return SK_PASS;
-+}
-+
-+void SEC("struct_ops/bpf_smc_accept_init")
-+BPF_PROG(bpf_smc_accept_init, struct sock *sk)
-+{
-+	accept_cnt++;
-+}
-+
-+void SEC("struct_ops/bpf_smc_accept_release")
-+BPF_PROG(bpf_smc_accept_release, struct sock *sk)
-+{
-+	accept_release_cnt++;
-+}
-+
-+int SEC("struct_ops/bpf_smc_drop")
-+BPF_PROG(bpf_smc_drop, struct sock *sk)
-+{
-+	return SK_DROP;
-+}
-+
-+void SEC("struct_ops/bpf_smc_drop_init")
-+BPF_PROG(bpf_smc_drop_init, struct sock *sk)
-+{
-+	drop_cnt++;
-+}
-+
-+SEC(".struct_ops.link")
-+struct smc_sock_negotiator_ops accept = {
-+	.name = "apps",
-+	.init = (void *) bpf_smc_accept_init,
-+	.release = (void *) bpf_smc_accept_release,
-+	.negotiate = (void *) bpf_smc_accept,
-+};
-+
-+SEC(".struct_ops.link")
-+struct smc_sock_negotiator_ops drop = {
-+	.name = "apps",
-+	.init = (void *) bpf_smc_drop_init,
-+	.negotiate = (void *) bpf_smc_drop,
-+};
--- 
-1.8.3.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
