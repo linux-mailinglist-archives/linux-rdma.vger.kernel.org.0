@@ -2,143 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B62BE70050D
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 May 2023 12:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20867008F5
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 May 2023 15:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240581AbjELKQf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 12 May 2023 06:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
+        id S239935AbjELNRt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 May 2023 09:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240508AbjELKQe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 May 2023 06:16:34 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B17E5B
-        for <linux-rdma@vger.kernel.org>; Fri, 12 May 2023 03:16:31 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-331632be774so359423575ab.0
-        for <linux-rdma@vger.kernel.org>; Fri, 12 May 2023 03:16:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683886591; x=1686478591;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PrGsn1wkvvej6F1uGfKqQ1+kOvoEwa4kM6TBw7EXxes=;
-        b=hvqLMewQMOrsGlx2JAYLJS+nl4xxopAqLcbaMcPc9In+7+ihrUZW04vP6f+A7NLDqD
-         XRgesLgQjPCcHO+S4R3n/WiK409n/nS4Mtu2QN2vUasq6XtvXDjKZzVdjWupWmO/sd8j
-         +XMkDYUIuaw7US2VUjy0YUQ93dM3lmLF2ymwWQv549BFFdojYBWoAF56241yqnDHYmqv
-         7Bu+FB+dgcwK0nq1Qznq235A+ljoPfKPuNmcQIMDLTFFJeGmQKAx1qxPrxJ0I6lecQuU
-         COBc9Wi8cLYH/rixiGQXQbAS88fAZhEp9Osv9NLzii/lP2PHqnU87XcZ99GvV46bbBrG
-         jaSw==
-X-Gm-Message-State: AC+VfDyW7+Mui75tZBtda65sYhKn8G3Ed+FsVLQhj6kSXdQlc36QEuOp
-        RL6wYd2ORrmUvcVVVur7/rNe9N3iJ6gDz5qQSxV9rWWezjTk
-X-Google-Smtp-Source: ACHHUZ7DwFRweg692XVZEIoGmVNAj9tG+MvoZmlV9xrn87oIubM9X54AOiWBpP6Pc50Q1breiX7GuRVrcYXUUWdiLK9u6rw8VkoH
+        with ESMTP id S240972AbjELNRs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 May 2023 09:17:48 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1192689;
+        Fri, 12 May 2023 06:17:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1683897459; x=1715433459;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=v3ur4im9RMBVOzsWz/PbY2NOqCZy1ova0YsE+zQNmWo=;
+  b=OId8rLo3ygd0DARO4RUCtgZNdIlJma94kTihxye1zJCe4dMN2BV12Luq
+   gxSixrl2S2VAqnaV8wnLbGszs6inMzYLhYULDZCa5JiZENJTXEusAvmT1
+   gUSxm9otk5KQvnIeDe0Zx6Ul6Ww+MXHondx8pSfMusRSkrWa6oJJwOELl
+   68N/bO6awE2NoafruZ2+b0KE77JkIB96VNyC3MyEZsc2hOOU0gM9RUNww
+   vgxLFvS80XpZjHSo9b7a0t3x9Y49/0J2hUuYeDuECXJiizQR1u6F3Ol+9
+   QsM9I9HMcjF1zfnyhoLimrJHIfTj2deM5DhyG1+hU29ySJ0tAkiUnAYG4
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="414155598"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200"; 
+   d="scan'208";a="414155598"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2023 06:13:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="730817781"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200"; 
+   d="scan'208";a="730817781"
+Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 12 May 2023 06:13:48 -0700
+Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pxSah-0004sP-1q;
+        Fri, 12 May 2023 13:13:47 +0000
+Date:   Fri, 12 May 2023 21:13:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        pabeni@redhat.com, song@kernel.org, sdf@google.com,
+        haoluo@google.com, yhs@fb.com, edumazet@google.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+        guwen@linux.alibaba.com
+Cc:     oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 2/5] net/smc: allow smc to negotiate
+ protocols on policies
+Message-ID: <202305122104.msaKEOV1-lkp@intel.com>
+References: <1683872684-64872-3-git-send-email-alibuda@linux.alibaba.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:c8d5:0:b0:76c:52f2:1a7a with SMTP id
- y204-20020a6bc8d5000000b0076c52f21a7amr8463170iof.2.1683886590834; Fri, 12
- May 2023 03:16:30 -0700 (PDT)
-Date:   Fri, 12 May 2023 03:16:30 -0700
-In-Reply-To: <5eacf66d-053e-d82b-1e73-c808fb4c8aad@linux.dev>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000016c3a005fb7c66f3@google.com>
-Subject: Re: [syzbot] [rdma?] KASAN: slab-use-after-free Read in siw_query_port
-From:   syzbot <syzbot+79f283f1f4ccc6e8b624@syzkaller.appspotmail.com>
-To:     guoqing.jiang@linux.dev
-Cc:     bmt@zurich.ibm.com, guoqing.jiang@linux.dev, jgg@ziepe.ca,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1683872684-64872-3-git-send-email-alibuda@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
->
->
-> On 5/12/23 15:10, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    16a8829130ca nfs: fix another case of NULL/IS_ERR confusio..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=162c0566280000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=8bc832f563d8bf38
->> dashboard link: https://syzkaller.appspot.com/bug?extid=79f283f1f4ccc6e8b624
->> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->>
->> Unfortunately, I don't have any reproducer for this issue yet.
->>
->> Downloadable assets:
->> disk image: https://storage.googleapis.com/syzbot-assets/f8c18a31ba47/disk-16a88291.raw.xz
->> vmlinux: https://storage.googleapis.com/syzbot-assets/03a18f29b7e7/vmlinux-16a88291.xz
->> kernel image: https://storage.googleapis.com/syzbot-assets/1db2407ade1e/bzImage-16a88291.xz
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+79f283f1f4ccc6e8b624@syzkaller.appspotmail.com
->>
->> xfrm0 speed is unknown, defaulting to 1000
->> ==================================================================
->> BUG: KASAN: slab-use-after-free in siw_query_port+0x37b/0x3e0 drivers/infiniband/sw/siw/siw_verbs.c:177
->> Read of size 4 at addr ffff888034efa0e8 by task kworker/1:4/24211
->>
->> CPU: 1 PID: 24211 Comm: kworker/1:4 Not tainted 6.4.0-rc1-syzkaller-00012-g16a8829130ca #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
->> Workqueue: infiniband ib_cache_event_task
->> Call Trace:
->>   <TASK>
->>   __dump_stack lib/dump_stack.c:88 [inline]
->>   dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
->>   print_address_description.constprop.0+0x2c/0x3c0 mm/kasan/report.c:351
->>   print_report mm/kasan/report.c:462 [inline]
->>   kasan_report+0x11c/0x130 mm/kasan/report.c:572
->>   siw_query_port+0x37b/0x3e0 drivers/infiniband/sw/siw/siw_verbs.c:177
->>   iw_query_port drivers/infiniband/core/device.c:2049 [inline]
->>   ib_query_port drivers/infiniband/core/device.c:2090 [inline]
->>   ib_query_port+0x3c4/0x8f0 drivers/infiniband/core/device.c:2082
->>   ib_cache_update.part.0+0xcf/0x920 drivers/infiniband/core/cache.c:1487
->>   ib_cache_update drivers/infiniband/core/cache.c:1561 [inline]
->>   ib_cache_event_task+0x1b1/0x270 drivers/infiniband/core/cache.c:1561
->>   process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
->>   worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
->>   kthread+0x344/0x440 kernel/kthread.c:379
->>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
->>   </TASK>
->
-> This might be similar as 390d3fdcae2d,  let me play with syzbot a bit 😉
->
-> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git 
+Hi Wythe,
 
-This crash does not have a reproducer. I cannot test it.
+kernel test robot noticed the following build errors:
 
-> for-rc
->
-> diff --git a/drivers/infiniband/core/device.c 
-> b/drivers/infiniband/core/device.c
-> index a666847bd714..9dd59f8d5f05 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2016,6 +2016,7 @@static int iw_query_port(struct ib_device *device,
-> {
->         struct in_device *inetdev;
->         struct net_device *netdev;
-> +int ret;
->
->         memset(port_attr, 0, sizeof(*port_attr));
->
-> @@ -2045,8 +2046,9 @@static int iw_query_port(struct ib_device *device,
->                 rcu_read_unlock();
->         }
->
-> +ret = device->ops.query_port(device, port_num, port_attr);
->         dev_put(netdev);
-> -       return device->ops.query_port(device, port_num, port_attr);
-> +return ret;
-> }
->
-> static int __ib_query_port(struct ib_device *device,
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230512-142700
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/1683872684-64872-3-git-send-email-alibuda%40linux.alibaba.com
+patch subject: [PATCH bpf-next v1 2/5] net/smc: allow smc to negotiate protocols on policies
+config: mips-allmodconfig (https://download.01.org/0day-ci/archive/20230512/202305122104.msaKEOV1-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/db8daea84b78121c3612ad5e5ba1d1eaac2f4171
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review D-Wythe/net-smc-move-smc_sock-related-structure-definition/20230512-142700
+        git checkout db8daea84b78121c3612ad5e5ba1d1eaac2f4171
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=mips olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202305122104.msaKEOV1-lkp@intel.com/
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+>> ERROR: modpost: "bpf_struct_ops_get" [net/smc/smc.ko] undefined!
+>> ERROR: modpost: "bpf_struct_ops_put" [net/smc/smc.ko] undefined!
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
