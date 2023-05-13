@@ -2,112 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B113D701163
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 May 2023 23:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A302C7013FE
+	for <lists+linux-rdma@lfdr.de>; Sat, 13 May 2023 04:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239538AbjELVd5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 May 2023 17:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58244 "EHLO
+        id S241684AbjEMChR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 May 2023 22:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239554AbjELVdz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 May 2023 17:33:55 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2064.outbound.protection.outlook.com [40.107.244.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5949E66
-        for <linux-rdma@vger.kernel.org>; Fri, 12 May 2023 14:33:50 -0700 (PDT)
+        with ESMTP id S241485AbjEMChP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 May 2023 22:37:15 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A164696;
+        Fri, 12 May 2023 19:37:10 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34D0wB0I019186;
+        Fri, 12 May 2023 19:36:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=oTl0oM5jCCmy/r0FH+WRDbxmJ5XI9DLWWcA0Wl8G/XI=;
+ b=NuvHWjeNn0+VGFvFcbNjUnCxvack2EJ9xM2Ncubp4YwaHSRPcaKNx60u4DXzmEbiItie
+ 0tlOX48+E2JsULvLPySGbyxa2aYt6V515hj4MOV+xYakr/VpO1AgPPRFWPBZD9vM8/li
+ rVJZ5/E+fHsLkGzFER4EKxJVd9krRM0p759iqbQfQ4/IMYG0m6qPQQIIitdUq4ConrNY
+ BVimrA6N004AV8dS9UpqV7RjkYSzaGGhQWG7b8Jh0+9ZK7JnOUegbifPGrWxSpBF9zDZ
+ Gbm+jWnqPOO4YabQrJOWCTya25Sh8+sHEBdVAm9zbgNuInrEbRvFbVSVdTMQ80yTmNQN Gg== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qhaxwkue6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 May 2023 19:36:40 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mcb8xg1KcW39n3tH8xIml4+MtVRtCneSA/EXoG73eEMJ9XhqwSft/o7ZynX1zZJ4A3QVbFoByH36wbQrDtDkWPUqq9b3W1ke/jFhjtePmdUEuueFb23WxhzOWw8Cv4rs+wBY9CM+83/XmvwTAwZGLnWbnFs7/JgTAgVlgwXtGFQIKBsZ4fvbk3obdogiQNidsV2JjzVKY4c6nNiwAWNQDYmAfZErRZIsxet66cPpk8Fw40FsPea97vp+I48yY+KWvC40TICSf2FEn5N0YmokZbiI8HzuM1oDmdmLWPPcJwdbFu6r9xnFtVYsTPkr9raEoonf5nx1joyTFgy8NW4vYQ==
+ b=Be5eYexbMH6juH9ArtMmHH/gGlAIbnT+tnOWoFS0t6pr8lJ9gkw2/PfI28V9+NuyPFuI/5CFuNkCg3hVashSCnsfDGMvCXD1IjgqB5LCkcSvPEn496bESdBMy8ohSCQ4B3ZQSFjEDXnH2c6yJC7bTjWPuZF99fD7NQLit2vOUz0V5Qf+8f/oHveDznmqDqkGHcJo6d9zokLU7w7hp7+5Aoa4Ju6+fReRknDHj+FNs1/A2n7+iTb0xQxOfEer3W20Eq1n2nD/ZBTnyWU7w9YJB5x2sM1pdpriYYKvyJusDR5o/yjTHYxkeM5QnF5Ufdy5OE6xcM3X6uxzapiw8m+/Nw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=78K4nIScDoeUFFaN28hMG5b6APvQvBY4o6R4Dug/YKE=;
- b=K3hfS4kSPuqLyKoum2bNhOejNqDcr42N5YOVXq/ZrgQzwOJqdYAdLOGedr9dY8jNQzlObvtk+sDZkDTZI84booLqIKV5/soygjVD75c817fkAFt31cOoQptvp2AieUF9h+OQsScvHVQkQAE8lT4zaPwRiILq3izbFaqizaM8jnmxcBfyErr7YLCgLeS7UaBmxwuZJa/kbqaeJcR9MVN0CcbVgV/7uJwHYD1YbA3H0H1Xm0TpZh9HCbMfu7Tzl5a3Dg+BNRoBJUB/OEXmNGbPh8vj47PNeNH2GNwN/BJCQvDRlJehKDDdkhIa9a4gVwhwWKjwRGU6/SNcZtDtTVV19w==
+ bh=oTl0oM5jCCmy/r0FH+WRDbxmJ5XI9DLWWcA0Wl8G/XI=;
+ b=ITMcWW3mZ0Roi59g3TZMuGUFN86Sw81NdKslx/NSBmhL/22Kcuf+v5L7NILSOexGLMQQYBdvFsc0vcFNl292aWlM6yn3RcG21R2q8l3sS+Xkk8FMISN6UgA0/+sitXOii29YhpXS2u1BzlMjWYOR4aLy6vOKZWD8TxA2pfKRFbXNeF/k2r98luYwLxfAIqyjuzGe2raNc6j6b4JTDdDUas7YvfqweVZ9lpGSyvU3wgCe94lDdo99SxQJL1fQXzu39q7dalg3MT757teXp1jNzCLE4w/YIPNDAEhNu7mt+gH9SALjwvqgd3MmMotMKuc02nlMv4o9SblZmqn/0U1Gew==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=78K4nIScDoeUFFaN28hMG5b6APvQvBY4o6R4Dug/YKE=;
- b=TbbRs8qDXRXVoKfswujvUJUjmRfGLlG6O9v6xh/hev+/IrNfqWJyy6OYzcs1h1iUd/2TjuozfxOiWxARVCLB++PGPg2uk18GGOGDIOOsLK4wGRo35bMLa1soIxl49A0zPSV+FGlXBAj9Cd/Bi7GNBF19d3f8ZPiF70TcATCRLTdMdewswm1kqLwEvHTR0eJRj+Z75qUoXZTp6Q5VUkOoHdWr+3hXXf5utldT9DIuVTobFmQHOqAYVr0AAFNGR69POdTfjTBOFdMxc2ef6lSVusaDsPUNGK13xoaYDxvlmQvHhGyguwP4DSGaB1ZcJ5kf0qbfbGZxdvJCx9PnuQIPTw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM4PR12MB5963.namprd12.prod.outlook.com (2603:10b6:8:6a::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6363.33; Fri, 12 May 2023 21:33:01 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f7a7:a561:87e9:5fab]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f7a7:a561:87e9:5fab%6]) with mapi id 15.20.6387.021; Fri, 12 May 2023
- 21:33:01 +0000
-Date:   Fri, 12 May 2023 18:32:58 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
-        andrew.gospodarek@broadcom.com,
-        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>
-Subject: Re: [PATCH for-rc] RDMA/bnxt_re: Fix the page_size used during the
- MR creation
-Message-ID: <ZF6wilKJPBM9vBbr@nvidia.com>
-References: <1683484169-9539-1-git-send-email-selvin.xavier@broadcom.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1683484169-9539-1-git-send-email-selvin.xavier@broadcom.com>
-X-ClientProxiedBy: MW2PR16CA0066.namprd16.prod.outlook.com
- (2603:10b6:907:1::43) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by CO6PR15MB4147.namprd15.prod.outlook.com (2603:10b6:5:353::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.27; Sat, 13 May
+ 2023 02:36:37 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6363.032; Sat, 13 May 2023
+ 02:36:37 +0000
+Message-ID: <a6c18615-7c48-2dc8-baff-9e64f64e2f18@meta.com>
+Date:   Fri, 12 May 2023 19:36:32 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.10.1
+Subject: Re: [PATCH bpf-next v1 4/5] bpf: add smc negotiator support in BPF
+ struct_ops
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        pabeni@redhat.com, song@kernel.org, sdf@google.com,
+        haoluo@google.com, yhs@fb.com, edumazet@google.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+        guwen@linux.alibaba.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <1683872684-64872-1-git-send-email-alibuda@linux.alibaba.com>
+ <1683872684-64872-5-git-send-email-alibuda@linux.alibaba.com>
+Content-Language: en-US
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <1683872684-64872-5-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY3PR05CA0008.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::13) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB5963:EE_
-X-MS-Office365-Filtering-Correlation-Id: d87768db-5ce1-4197-1366-08db53307606
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|CO6PR15MB4147:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce6edc31-716b-4791-a3bb-08db535adfc6
+X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kvXuBF/bDCz7jud3sSa3EwpX9Wpb20ZubWn3h0NcmAwyWiVgxWXuLcT5f64ehQQCcr+HvPJSPGLK//4NsZzMTwAlfwyVXwtmncuWs20BfA7CCzkbmgieSDIkT2ELH8OFTSii10hFiAmXtYYGiRgHPzFGTJx6oEgCgw4aY4aOfA9uFKIOBBGq2VN7f0VIU20JmNRCUfIOaLfOAiZwRJJP/4KiTjq6TPIaiwjoU4FOk4izPGebQvFfa/d//Ecq6kTNyhM/EDPR/dvpYf3WTeN3xLNLyHQ9RsQuC3Cbo5IJG+EqbB6f9f/vsMMwMVpUklaQ08suHmV9BFj8PpapnII/dFOeIM6n0x+QoIHy/q4x/cSDMqeWt/uvVXkFU5z80VyrQHodZ3pscxMpS92+WZYca7y66ur2N1gqXdFHN7Dqd+Wlx4FSkvieXvrblH/p4zJO3o5NC9uDKXn6EwCqcYPiSfeCLVGhhv8IwWrLQLxEYFkrFPwBq/V7YFi1AD8PuJ5wcOf4wr2U2NewrGP2SZ5nvKnuFPv8oOKUBhMfn/CAv6OQRIYeyFhVl+NtPjBnV+97
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(396003)(136003)(366004)(39860400002)(451199021)(36756003)(6486002)(478600001)(2616005)(83380400001)(38100700002)(6666004)(6512007)(316002)(66556008)(66946007)(66476007)(26005)(86362001)(6916009)(54906003)(6506007)(5660300002)(4326008)(8676002)(41300700001)(186003)(8936002)(2906002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: bJhMNTpO+Rx3l8gFnxySvr5Eu34d/VJKK5NG4pk7AQ9sxIIgJqe/WlQ5KL9FyFz97bQoO+zmkMu2EgAtKWs6efGdupuQWpZi2DEMZ+dQu+dfXCyRTYPUxQeMsriE8VDPnEJGI/mH6WLAAY7qjc5DxHtAu1KraJwgaCowweBTzcbqVjH6TgT23uc1ZtZaEYDyy1PDM5B0xeFJZNSBBMq6701BpWdLy2GSXCrPvFBING5hAKBPMgmPbPjOcvwA0il+sKR7qeu8tBtvveaLu30hHKPN8ANvI/HEvv0ZeoH3c3DH9MLMhhe9qzYnNvrO2vD5WfErAGCTSfPO5vtQVYo0YzW0L4+xLTmkdIjkQpR8/OHWjOCF7ahAeLUIEiOnX46YcCewQgg/DZRsW6HjJ3b8oIwX6jTUnuHbXNTl27rTxA1oGD3F1t3MqZynt+wRHlsNxhtKH3dJI6ARVsVAk6h+ETdJnl7PzfbbPBeoPICg9Q9JOAlDltd9kw1D6ioS71SStkJ9JbI3/ytKiqk6Oeqn1MAllgU9qupncFIB/zg1/uXIMPWBy4wklSh4ZA2Dq5gFaitFINYMkC7aEjlNpDuqGkRXsz3gXhfOEGdJsIZIKW1XUbPQ0YWOiDHlYYnlxJe204NfF6myMGqn8Z0pjXa3K4GAHr+iGtzuWK5fzo3btdo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(366004)(39860400002)(346002)(136003)(451199021)(478600001)(6512007)(6506007)(186003)(53546011)(36756003)(6666004)(6486002)(5660300002)(8936002)(41300700001)(8676002)(2906002)(7416002)(66946007)(66556008)(66476007)(4326008)(316002)(31686004)(86362001)(921005)(38100700002)(2616005)(31696002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VXFoPeI1sQqVcxtDqHkrDme47sEJ+Ir8pNuN37S2pDWIkI+7ygq6s17//7WC?=
- =?us-ascii?Q?ee59raBAQbUuCDb1xv8FZYW0mZBzjaTNEWhG0jcGlsUHcH00Xhlwy+1X5h54?=
- =?us-ascii?Q?wAAYy5NgtB6Fcae9HIpq1CGlrq3sj5NkdWd5j5fnLqURIpRKqOHMS9xnSLl+?=
- =?us-ascii?Q?CO1LV48+e5mS9GsUypev0GQSykWCQiDuElzHkvqVoNCjrM7QW+HzLIysBFmw?=
- =?us-ascii?Q?bqCJBMz473lYyb3204dXG/px+sBJeBECqoJZK+WpJmVU0c3CPpNGPaZ1HWna?=
- =?us-ascii?Q?LjxfDaKELZ43ILrvUfonVjMPFVtduevp5UqJoau4PQG3amp0hGdvC3RSSdFP?=
- =?us-ascii?Q?QS4xVV00JadBaG95TOlNwyWvmfWkek6AWdFbrfZrrpFFmLXHIcGAi4oYa6+g?=
- =?us-ascii?Q?AxrqZQHToCfnB00u3tNIaM5g/93/Uz9FTpuIrncwlIVA4adoFTS5nzqOqjng?=
- =?us-ascii?Q?fZr+vKCqRW+zbYCEndR5+E7TZLozMq6FUCvDVWE4F2q19h2kJN+YaKnqfa41?=
- =?us-ascii?Q?5vdY5hvlMxrFVr+Bj7rdwmzJwhCnhlJUU6JCD5Ojr1CQNnC1s5cWzqVjQ3Ok?=
- =?us-ascii?Q?AQnSNAe75KtrspHsrc2lCDVS+WWG3DOZ7H3rE7SRMz5GLr79Ma0gybBvki8G?=
- =?us-ascii?Q?KK5tqPnAVlpaz7XlwA2jasv1xvz41Lq1Sij54Oe/WJBHaOG1z4bDgvPlzxsP?=
- =?us-ascii?Q?3CnY8R6yjorE0XB5kO4cJ2DRWJsn8+5GqRuyw0VNhIZtSoDJN6YM2yqy6O8l?=
- =?us-ascii?Q?hUSJereTcxC6A2TDVLqpxL1n4CkEXjaonuEaBHPcEu6bbTC4brCbSLgltxMC?=
- =?us-ascii?Q?ljfxSrejIS9l2AwDrc9IKFaplDtcCheSdjsNLOXcZILa29cNXRMIrvwyeoqk?=
- =?us-ascii?Q?ReqRy/JE3zovA1IgYcJBAp6l5qHEfSb/scu9oS67n61nwUhOSgvv8RlZQgff?=
- =?us-ascii?Q?xW/KE0x4wo2fRWy0vSJHEUJ/zHvrAFH7e6S1LhImni0Va9qaKAWRU/rBGwsm?=
- =?us-ascii?Q?SbEr7LIDh+7LYsAxMLyhLNCSacaQrax94tXrreor5YA4UyjNPt5UFnjetqa6?=
- =?us-ascii?Q?xalyF416zfl4CVT71nBXuGC6/7GbABOnh+p7A7uXgecriKsdeyS6JYBMCwsa?=
- =?us-ascii?Q?V1wQNzRWVhUmd/UXlBg8lc661PFwRzFqv6zXI7ALr36cESw+PB9EVXVwXeZj?=
- =?us-ascii?Q?YUlC6jdKxt0qOjflyf/i/u4n/6XdQdPvPMX/IOGniFvJ+ud+K9V/fkY6KBfP?=
- =?us-ascii?Q?jwOcenRwhvw2oEooVbkVgo8Ghc24mrohgjTsOpEbrcFLTTHBGtxMILSUoj7j?=
- =?us-ascii?Q?ie/O9iCUiFmn9b9XQkb/PLmeV06V9Au/8Q3VMWDzJmy5qNwlU7V3Q1/+9nW2?=
- =?us-ascii?Q?RpAXc7dAsk30/jzX4pu2h/mh5KN8ItS7OLjjCenhjaJgEMU3XQgOtUZBByDB?=
- =?us-ascii?Q?XqBs3pBbhJLAsg7Ls7FF8l4WfD6fcIiKwDvjbqf66H6trmiUwjupd716twhp?=
- =?us-ascii?Q?QIvdXh/VwgTL6J7rYzNTNUZy74g4IOe1yuAZ8hSbLuRTmvVO7q74R+/1nYnu?=
- =?us-ascii?Q?eK/rxFiI1YkOuvT3KhnY08ouLdWJq0EBpCLi8mPu?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d87768db-5ce1-4197-1366-08db53307606
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UG1LbnVsSzhJN0pNNC9hTzFvZWVVbS9kblFWakptY2o5UGh0TTZUaG1vVUh2?=
+ =?utf-8?B?M3M1QnVab0VLZEVRUjBER2xGRUFRWUFRV01EemhMME1iU0lYVDZpTUsrcDRv?=
+ =?utf-8?B?eU1LcUFFZm9XcEd4ZzBnQVhuejJXRkR4K21XMHpkaXZGUU03THNPYlNTZFpU?=
+ =?utf-8?B?NkVoOTlzK3NvMk5CNkNYYVd3YitNc0ZML3lQQkhuWXp6VERPYXJINGFvN2Nl?=
+ =?utf-8?B?UmsxTk9GUTR0MnRlQ0gyZWR6MThWbE94TWIwRlVBUDZUcUg4N2FqQVA1VWZy?=
+ =?utf-8?B?U05nWW0wZHhHSk0vZkc4Zk9Kd2ZtWHAxYmFmZTZoTTAzM2NjRzllL3BFK0Vl?=
+ =?utf-8?B?OG5qUTg5VDR3N3B5MHkzUkU3eXVtbjlTYkFNcWJjN3JrT0N3TlYxbnJLNXdD?=
+ =?utf-8?B?QktKZHk5Zlo3WlNRenZ6T2RSQ0JTbWVTZ1VBNXBVUjhFeUdCcWlYd3Q1Wmhr?=
+ =?utf-8?B?OHZhbFFKZkhpZDdxajR2NVNsSllVdmZKT2lja3EzbjFBaG41blRkdzBOOXFn?=
+ =?utf-8?B?NUMwOU1MNTlXZDVWZms2M01EeGJZWm4rRGdoeGNUS0JaZkVGamtXVmp5ay9Q?=
+ =?utf-8?B?ejFWbVVsaExTQWxXZHI0UVdPc1ZXaG1tNE5UUTU5dzZ4QzdSK04zczNuZXFq?=
+ =?utf-8?B?YVljU1VmQU9DdkFzSlpWOUtsdXVQdEx3QTQ0dS8yY01NQUhqU2I2cGQzeEFv?=
+ =?utf-8?B?VTllbkZkMW9HQWNMQ0swYzlCc3psc1h2L29OWWIwcmNzandZdC9KejFpQ2dB?=
+ =?utf-8?B?QWlqQmwwL0J1TjZ1WjhzYktuekVpRW5uUTJPQUFCVXRoaVRTeUhRbW44Qytz?=
+ =?utf-8?B?cTZYK0t3ZllKci9rQjRGSEpsS01STTFERGt5ZmwwUUo0M2FiMVN0amlIT1I1?=
+ =?utf-8?B?cDZLRXBUMEE1RU1naTBMcmxNMXVoc3RqK2tUemhHUE81V2FEK2VaMjZyV1dn?=
+ =?utf-8?B?U3B6OFc5Sjg4TEVwb0I2cnFmWFRTcjFoSVZ0K2J6MldKQ3lGcVBHSXFnSlpY?=
+ =?utf-8?B?cmc5c2tTNkFjMnBPa1A3OFpZN2RmbTFRWjZrMnJvNE5HTStsNUVaOVhkalNK?=
+ =?utf-8?B?ZzRRN1E5dW5PVGloQ0d5Uk5QZm95dmNReHVKS1FsMnFaemNML0xTV1ZBZmNZ?=
+ =?utf-8?B?MmVNU2tHWjBiT2hyMkZiWnB1VGZzK2cvWDdGYVVZMFd4aHVNU3ptVmlvT3JZ?=
+ =?utf-8?B?M2ZrVlFoMXBSSVorVEFyU1JzRFpOMDFLbm4vK3FTTEdBZkljLzMzWmgvMDNn?=
+ =?utf-8?B?N3g2MldqYmwrOERaaWltdm5MUiszRzdHRjJXK05mUGxsM0NIMmpkZ3pIRDhW?=
+ =?utf-8?B?WDArNWRKTFM1U3U0TGc4UHpDVDRtSHhmNlB5ZVdEL2lENEhocjd3SzRIbVNr?=
+ =?utf-8?B?aW04eWVCQy9TVVU3S2sxek1ZMnc0aTcyK29yN3VuZUhHQVowUzdkbll0UlhO?=
+ =?utf-8?B?cDFLRGlvWEZXa1VOMkRQd1FpVktBMTREZmZscCtTbzYvbWFFVVVVamU1RmVI?=
+ =?utf-8?B?Y1VLK1VFRzljaVNyaXR2ejB4THV5WjhFS1JRc2U5UEk5S3Q0R2FQWERmOElX?=
+ =?utf-8?B?ayt2NkpjM21UTlBuby9SenR1cmJRb3FWaWQzbk96RmNwaVBBRllJcWxrL0Zs?=
+ =?utf-8?B?bStjOEZldHJCaWZ4VEZlNFRYeEVqZEw3ejZ6TEhETjNMU05zY0RPMzBvbVRt?=
+ =?utf-8?B?d2kwNHpTU0dlWGFGdDV1Z0N3NE9tdnU4VWRzZG5wUGNpLzEyc2lIUExKZ005?=
+ =?utf-8?B?dGhGOTJ6dnNTa3RDMUFsWTYxTmlwMTJjRWUwbDRKVjZTSGdlQ2w1YmJEalov?=
+ =?utf-8?B?SWxsRGlXMXVnVmNQL0I0T09QMU4zUHNGT2FMMnhmWXR2ZE1tczc0b0h0dmtQ?=
+ =?utf-8?B?aVhYeFRzL1hvYWo1RVJkVndTMnp3a2h3U3IzUWZhR0RyVVM2a041WVVFNUY0?=
+ =?utf-8?B?ckpmSEJvdzhoTSsyNnEzTEt6anNOSHl0bFhqeGl1cDRSWG12YTc1L1A3cTQx?=
+ =?utf-8?B?ektzUzhrTFh4UktUMHdZYy9VNldUYWVjR3loYkZ2ckUyRkV6UHpsc0htS2dj?=
+ =?utf-8?B?TGVXbjZpNHRTaFJsM3RsMTltRVlqa2RlQ1dacUZEcnF4bDJRb2xIcVE0RVVv?=
+ =?utf-8?B?SlpKUXllVThEQWlCWThlRDRQY3ppZnNYLzU5cjRyVDhscGdGNEpXejJuSHBn?=
+ =?utf-8?B?YXc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce6edc31-716b-4791-a3bb-08db535adfc6
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2023 21:33:00.9592
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2023 02:36:37.1165
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JZIBFTzXvcM5PuIYtja52kC2gEU9P96IfOptIS0ALCjEpihioSAKwg4JoGIqnO0W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5963
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-MS-Exchange-CrossTenant-UserPrincipalName: Jf6HP1kADYWk86fPCBpBajsGui2TTwL+46xmKzHtB0ei7QQ8G7meIq+ujO2eUhvy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR15MB4147
+X-Proofpoint-GUID: mAfpCdtTnxIwrwUrmktunVKEMhhl2T9X
+X-Proofpoint-ORIG-GUID: mAfpCdtTnxIwrwUrmktunVKEMhhl2T9X
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-05-12_16,2023-05-05_01,2023-02-09_01
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,27 +150,266 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, May 07, 2023 at 11:29:29AM -0700, Selvin Xavier wrote:
-> Driver populates the list of pages used for Memory region wrongly when
-> page size is more than system page size. This is causing a failure
-> when some of the applications that creates MR with page size as 2M.
-> Since HW can support multiple page sizes, pass the correct page size
-> while creating the MR.
+
+
+On 5/11/23 11:24 PM, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
 > 
-> Also, driver need not adjust the number of pages when HW Queues
-> are created with user memory. It should work with the number of
-> dma blocks returned by ib_umem_num_dma_blocks. Fix this calculation also.
+> This PATCH attempts to introduce BPF injection capability for SMC.
+> Considering that the SMC protocol is not suitable for all scenarios,
+> especially for short-lived. However, for most applications, they cannot
+> guarantee that there are no such scenarios at all. Therefore, apps
+> may need some specific strategies to decide shall we need to use SMC
+> or not, for example, apps can limit the scope of the SMC to a specific
+> IP address or port.
 > 
-> Fixes: 0c4dcd602817 ("RDMA/bnxt_re: Refactor hardware queue memory allocation")
-> Fixes: f6919d56388c ("RDMA/bnxt_re: Code refactor while populating user MRs")
-> Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> Based on the consideration of transparent replacement, we hope that apps
+> can remain transparent even if they need to formulate some specific
+> strategies for SMC using. That is, do not need to recompile their code.
+> 
+> On the other hand, we need to ensure the scalability of strategies
+> implementation. Although it is simple to use socket options or sysctl,
+> it will bring more complexity to subsequent expansion.
+> 
+> Fortunately, BPF can solve these concerns very well, users can write
+> thire own strategies in eBPF to choose whether to use SMC or not.
+> And it's quite easy for them to modify their strategies in the future.
+> 
+> This PATCH implement injection capability for SMC via struct_ops.
+> In that way, we can add new injection scenarios in the future.
+> 
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 > ---
->  drivers/infiniband/hw/bnxt_re/qplib_res.c | 12 ++----------
->  drivers/infiniband/hw/bnxt_re/qplib_sp.c  |  7 +++----
->  2 files changed, 5 insertions(+), 14 deletions(-)
+>   kernel/bpf/bpf_struct_ops_types.h |   4 +
+>   net/Makefile                      |   2 +-
+>   net/smc/bpf_smc.c                 | 171 ++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 176 insertions(+), 1 deletion(-)
+>   create mode 100644 net/smc/bpf_smc.c
+> 
+> diff --git a/kernel/bpf/bpf_struct_ops_types.h b/kernel/bpf/bpf_struct_ops_types.h
+> index 5678a9d..d952b85 100644
+> --- a/kernel/bpf/bpf_struct_ops_types.h
+> +++ b/kernel/bpf/bpf_struct_ops_types.h
+> @@ -9,4 +9,8 @@
+>   #include <net/tcp.h>
+>   BPF_STRUCT_OPS_TYPE(tcp_congestion_ops)
+>   #endif
+> +#if IS_ENABLED(CONFIG_SMC_BPF)
+> +#include <net/smc.h>
+> +BPF_STRUCT_OPS_TYPE(smc_sock_negotiator_ops)
+> +#endif
+>   #endif
+> diff --git a/net/Makefile b/net/Makefile
+> index 222916a..2139fa4 100644
+> --- a/net/Makefile
+> +++ b/net/Makefile
+> @@ -52,7 +52,7 @@ obj-$(CONFIG_TIPC)		+= tipc/
+>   obj-$(CONFIG_NETLABEL)		+= netlabel/
+>   obj-$(CONFIG_IUCV)		+= iucv/
+>   obj-$(CONFIG_SMC)		+= smc/
+> -obj-$(CONFIG_SMC_BPF)		+= smc/smc_negotiator.o
+> +obj-$(CONFIG_SMC_BPF)		+= smc/smc_negotiator.o smc/bpf_smc.o
+>   obj-$(CONFIG_RFKILL)		+= rfkill/
+>   obj-$(CONFIG_NET_9P)		+= 9p/
+>   obj-$(CONFIG_CAIF)		+= caif/
+> diff --git a/net/smc/bpf_smc.c b/net/smc/bpf_smc.c
+> new file mode 100644
+> index 0000000..ac9a9ae91
+> --- /dev/null
+> +++ b/net/smc/bpf_smc.c
+> @@ -0,0 +1,171 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + *  Support eBPF for Shared Memory Communications over RDMA (SMC-R) and RoCE
+> + *
+> + *  Copyright IBM Corp. 2016, 2018
 
-Applied to for-rc, thanks
+The above description and copyright sound very wierd.
 
-Jason
+> + *
+> + *  Author(s):  D. Wythe <alibuda@linux.alibaba.com>
+
+One author, so just "Author: ...".
+> + */
+> +
+> +#include <linux/bpf_verifier.h>
+> +#include <linux/btf_ids.h>
+> +#include <linux/kernel.h>
+> +#include <linux/bpf.h>
+> +#include <linux/btf.h>
+> +#include "smc_negotiator.h"
+> +
+> +extern struct bpf_struct_ops bpf_smc_sock_negotiator_ops;
+> +static u32 smc_sock_id, sock_id;
+> +
+> +static int bpf_smc_negotiator_init(struct btf *btf)
+> +{
+> +	s32 type_id;
+> +
+> +	type_id = btf_find_by_name_kind(btf, "sock", BTF_KIND_STRUCT);
+> +	if (type_id < 0)
+> +		return -EINVAL;
+> +	sock_id = type_id;
+> +
+> +	type_id = btf_find_by_name_kind(btf, "smc_sock", BTF_KIND_STRUCT);
+> +	if (type_id < 0)
+> +		return -EINVAL;
+> +	smc_sock_id = type_id;
+> +
+> +	return 0;
+> +}
+> +
+> +/* register ops */
+> +static int bpf_smc_negotiator_reg(void *kdata)
+> +{
+> +	return smc_sock_register_negotiator_ops(kdata);
+> +}
+> +
+> +/* unregister ops */
+> +static void bpf_smc_negotiator_unreg(void *kdata)
+> +{
+> +	smc_sock_unregister_negotiator_ops(kdata);
+> +}
+> +
+> +/* unregister ops */
+
+update ops?
+Also I think the above comments like
+'register ops', 'unregister ops' and 'update ops' are not
+necessary. The code itself is self-explanary.
+
+> +static int bpf_smc_negotiator_update(void *kdata, void *old_kdata)
+> +{
+> +	return smc_sock_update_negotiator_ops(kdata, old_kdata);
+> +}
+> +
+> +static int bpf_smc_negotiator_validate(void *kdata)
+> +{
+> +	return smc_sock_validate_negotiator_ops(kdata);
+> +}
+> +
+> +static int bpf_smc_negotiator_check_member(const struct btf_type *t,
+> +					   const struct btf_member *member,
+> +					   const struct bpf_prog *prog)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int bpf_smc_negotiator_init_member(const struct btf_type *t,
+> +					  const struct btf_member *member,
+> +					  void *kdata, const void *udata)
+> +{
+> +	const struct smc_sock_negotiator_ops *uops;
+> +	struct smc_sock_negotiator_ops *ops;
+> +	u32 moff;
+> +
+> +	uops = (const struct smc_sock_negotiator_ops *)udata;
+> +	ops = (struct smc_sock_negotiator_ops *)kdata;
+> +
+> +	moff = __btf_member_bit_offset(t, member) / 8;
+> +
+> +	/* init name */
+> +	if (moff ==  offsetof(struct smc_sock_negotiator_ops, name)) {
+> +		if (bpf_obj_name_cpy(ops->name, uops->name,
+> +				     sizeof(uops->name)) <= 0)
+> +			return -EINVAL;
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +BPF_CALL_1(bpf_smc_skc_to_tcp_sock, struct sock *, sk)
+> +{
+> +	if (sk && sk_fullsock(sk) && sk->sk_family == AF_SMC)
+> +		return (unsigned long)((struct smc_sock *)(sk))->clcsock->sk;
+> +
+> +	return (unsigned long)NULL;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_smc_skc_to_tcp_sock_proto = {
+> +	.func			= bpf_smc_skc_to_tcp_sock,
+> +	.gpl_only		= false,
+> +	.ret_type		= RET_PTR_TO_BTF_ID_OR_NULL,
+> +	.arg1_type		= ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+> +	.ret_btf_id		= &btf_sock_ids[BTF_SOCK_TYPE_TCP],
+> +};
+> +
+> +static const struct bpf_func_proto *
+> +smc_negotiator_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> +{
+> +	const struct btf_member *m;
+> +	const struct btf_type *t;
+> +	u32 midx, moff;
+> +
+> +	midx = prog->expected_attach_type;
+> +	t = bpf_smc_sock_negotiator_ops.type;
+> +	m = &btf_type_member(t)[midx];
+> +
+> +	moff = __btf_member_bit_offset(t, m) / 8;
+> +
+> +	switch (func_id) {
+> +	case BPF_FUNC_setsockopt:
+> +		switch (moff) {
+> +		/* Avoid potential deadloop risk */
+> +		case offsetof(struct smc_sock_negotiator_ops, init):
+> +			fallthrough;
+
+I am not sure whether a 'fallthrough' is needed here or since the case
+itself does not have any code. Any warning will show up if
+'fallthrough;' is removed?
+
+> +		/* Avoid potential leak risk */
+
+I think more detailed explanation about 'deadloop risk' and 'leak risk'
+is necessary.
+
+> +		case offsetof(struct smc_sock_negotiator_ops, release):
+> +			return NULL;
+> +		}
+> +		return &bpf_sk_setsockopt_proto;
+> +	case BPF_FUNC_getsockopt:
+> +		return &bpf_sk_getsockopt_proto;
+> +	case BPF_FUNC_skc_to_tcp_sock:
+> +		return &bpf_smc_skc_to_tcp_sock_proto;
+> +	default:
+> +		return bpf_base_func_proto(func_id);
+> +	}
+> +}
+> +
+> +static bool smc_negotiator_prog_is_valid_access(int off, int size, enum bpf_access_type type,
+> +						const struct bpf_prog *prog,
+> +						struct bpf_insn_access_aux *info)
+> +{
+> +	if (!bpf_tracing_btf_ctx_access(off, size, type, prog, info))
+> +		return false;
+> +
+> +	/* promote it to smc_sock */
+> +	if (base_type(info->reg_type) == PTR_TO_BTF_ID &&
+> +	    !bpf_type_has_unsafe_modifiers(info->reg_type) &&
+> +	    info->btf_id == sock_id)
+> +		info->btf_id = smc_sock_id;
+> +
+> +	return true;
+> +}
+> +
+> +static const struct bpf_verifier_ops bpf_smc_negotiator_verifier_ops = {
+> +	.get_func_proto  = smc_negotiator_prog_func_proto,
+> +	.is_valid_access = smc_negotiator_prog_is_valid_access,
+> +};
+> +
+> +struct bpf_struct_ops bpf_smc_sock_negotiator_ops = {
+> +	.verifier_ops = &bpf_smc_negotiator_verifier_ops,
+> +	.init = bpf_smc_negotiator_init,
+> +	.check_member = bpf_smc_negotiator_check_member,
+> +	.init_member = bpf_smc_negotiator_init_member,
+> +	.reg = bpf_smc_negotiator_reg,
+> +	.update = bpf_smc_negotiator_update,
+> +	.unreg = bpf_smc_negotiator_unreg,
+> +	.validate = bpf_smc_negotiator_validate,
+> +	.name = "smc_sock_negotiator_ops",
+> +};
+> \ No newline at end of file
+
+Empty line at the end?
+
