@@ -2,113 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580C9703D67
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 May 2023 21:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CDF703D88
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 May 2023 21:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242991AbjEOTMk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 May 2023 15:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
+        id S243499AbjEOTQZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 May 2023 15:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243021AbjEOTMi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 May 2023 15:12:38 -0400
+        with ESMTP id S244521AbjEOTQX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 May 2023 15:16:23 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037727DB2
-        for <linux-rdma@vger.kernel.org>; Mon, 15 May 2023 12:11:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C30183D4
+        for <linux-rdma@vger.kernel.org>; Mon, 15 May 2023 12:15:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1684177908;
+        s=mimecast20190719; t=1684178060;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FlLGF3e0GotZbUDAK+ZiXqGWgkcG4W/tdhm3LcD3Wv0=;
-        b=QD8FCS5kRHnWWSv93wa0M0ayZzN/YJ01728mL7rQxDs+Vd2SeaeoBdxjXfn0+fGNDUbDXF
-        ewoqQ+zJMLGOVgzyq4/vnwrJ4o9UyfQ1nHoDyvcjSfunQ2++e+gIA7fwLeJ2igOa1haqLS
-        Fi26ah3DSuUmt78TWUAZk5wvAgspmMw=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-283-soR4S2qIP9CUaYmKOV-pQw-1; Mon, 15 May 2023 15:11:46 -0400
-X-MC-Unique: soR4S2qIP9CUaYmKOV-pQw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7E9093C0F199;
-        Mon, 15 May 2023 19:11:46 +0000 (UTC)
-Received: from fedora-x1.redhat.com (unknown [10.22.32.238])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 177E363F3D;
-        Mon, 15 May 2023 19:11:46 +0000 (UTC)
-From:   Kamal Heib <kheib@redhat.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
+        bh=NyqukO6Ya/VIHIhNAkh6hDQgz9DKtcV+p+OFb9aF6Xg=;
+        b=V4nMfZCsBYPuCYSJwVBgotsu03z7TSd+z9oMz+sO9O7tiX2JeSWvyrUBzvr3Y//1qNkQWm
+        dJeHl1bXgU6dKpDmxW/TQyElqiLe1oL81KooLqwKO3avjglszr3L/PwPW1zu6RtZwNTk+K
+        pD05zi3DsM8Ujw9Uoqf6bRrlW2ZOBnM=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-QHyYlCNQP5amO-qwNr9YwA-1; Mon, 15 May 2023 15:14:18 -0400
+X-MC-Unique: QHyYlCNQP5amO-qwNr9YwA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7578369dff3so11587585a.0
+        for <linux-rdma@vger.kernel.org>; Mon, 15 May 2023 12:14:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684178058; x=1686770058;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NyqukO6Ya/VIHIhNAkh6hDQgz9DKtcV+p+OFb9aF6Xg=;
+        b=Ac2ZmxDkAv68BTBPGrhDrxDdRBbvT6GE7qInZ/lA4IFGX2WUmgXADTwVw8gBG5vUqM
+         1wrsldm7vRgWvCAzhUV/O5P3szYjC6c90/XloD6AKLEewT+/1lJCtZbD3uW01vsG5dSP
+         WiezBRMgOuNSUpt8ss/CSDbEvVPcqXI5zalXnKBMtFBIDnXCW7KZFx+jPMrtL1XgECrX
+         nqBe5HgkcAeIc64I5Zqlftm7wdO+oJF7GAc1lf1nC55J7utSOGk4we1NKhrHEUVz/z+a
+         9WOC6wYU3k3kCMd0ThnPBLlaoDqnja2OzQF5HdyrM6ad2EF6SMelBUH+njA0gKTfq5sA
+         q5XQ==
+X-Gm-Message-State: AC+VfDzlMRxmrGazbBevCXtSh3xgu7PErZiYqcgG+fIdeneCyv6sfXxI
+        MNEoxhOD1W4wS6N54o89SuRIwLTO8ZymXqC/TAShBp2qE6WQ8r60L/fYGq63pZbKbR6yhx8qDA5
+        FyRP2N5ccc5Ip1WQLyDeCPCsPB4RAgw==
+X-Received: by 2002:ac8:5751:0:b0:3f4:f210:50ba with SMTP id 17-20020ac85751000000b003f4f21050bamr24433448qtx.9.1684178057881;
+        Mon, 15 May 2023 12:14:17 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ652dAnfE8u/aOPgD3sY/fHXwCSvcXvnZeDe0uEmAnBff1150omvDJN8LA/421vGerHWCdaNQ==
+X-Received: by 2002:ac8:5751:0:b0:3f4:f210:50ba with SMTP id 17-20020ac85751000000b003f4f21050bamr24433413qtx.9.1684178057593;
+        Mon, 15 May 2023 12:14:17 -0700 (PDT)
+Received: from [192.168.2.101] (bras-base-toroon01zb3-grc-50-142-115-133-205.dsl.bell.ca. [142.115.133.205])
+        by smtp.gmail.com with ESMTPSA id bq6-20020a05622a1c0600b003f4fa14decbsm2952763qtb.52.2023.05.15.12.14.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 May 2023 12:14:17 -0700 (PDT)
+Message-ID: <0abc56d7-7b14-702f-a974-f18b69103ed0@redhat.com>
+Date:   Mon, 15 May 2023 15:14:15 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 1/3] RDMA/iRDMA: Return void from irdma_init_iw_device()
+Content-Language: en-US
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Leon Romanovsky <leon@kernel.org>,
-        Kamal Heib <kheib@redhat.com>
-Subject: [PATCH v2 3/3] RDMA/irdma: Move iw device ops initialization
-Date:   Mon, 15 May 2023 15:11:42 -0400
-Message-Id: <20230515191142.413633-4-kheib@redhat.com>
-In-Reply-To: <20230515191142.413633-3-kheib@redhat.com>
-References: <20230515191142.413633-1-kheib@redhat.com>
- <20230515191142.413633-2-kheib@redhat.com>
- <20230515191142.413633-3-kheib@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20230509145127.33734-1-kheib@redhat.com>
+ <20230509145127.33734-2-kheib@redhat.com>
+ <MWHPR11MB0029473794101834A57328A6E9779@MWHPR11MB0029.namprd11.prod.outlook.com>
+From:   Kamal Heib <kheib@redhat.com>
+In-Reply-To: <MWHPR11MB0029473794101834A57328A6E9779@MWHPR11MB0029.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Move the initialization of the iw device ops to be under the declaration
-of the irdma_iw_dev_ops.
+On 2023-05-10 10:48, Saleem, Shiraz wrote:
+>> Subject: [PATCH 1/3] RDMA/iRDMA: Return void from irdma_init_iw_device()
+>>
+>> The return value from irdma_init_iw_device() is always 0 - change it to be void.
+>>
+>> Signed-off-by: Kamal Heib <kheib@redhat.com>
+>> ---
+>>   drivers/infiniband/hw/irdma/verbs.c | 9 ++-------
+>>   1 file changed, 2 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+>> index ab5cdf782785..b405cc961187 100644
+>> --- a/drivers/infiniband/hw/irdma/verbs.c
+>> +++ b/drivers/infiniband/hw/irdma/verbs.c
+>> @@ -4515,7 +4515,7 @@ static void irdma_init_roce_device(struct irdma_device
+>> *iwdev)
+>>    * irdma_init_iw_device - initialization of iwarp rdma device
+>>    * @iwdev: irdma device
+>>    */
+>> -static int irdma_init_iw_device(struct irdma_device *iwdev)
+>> +static void irdma_init_iw_device(struct irdma_device *iwdev)
+>>   {
+>>   	struct net_device *netdev = iwdev->netdev;
+>>
+>> @@ -4533,8 +4533,6 @@ static int irdma_init_iw_device(struct irdma_device
+>> *iwdev)
+>>   	memcpy(iwdev->ibdev.iw_ifname, netdev->name,
+>>   	       sizeof(iwdev->ibdev.iw_ifname));
+>>   	ib_set_device_ops(&iwdev->ibdev, &irdma_iw_dev_ops);
+>> -
+>> -	return 0;
+>>   }
+>>
+>>   /**
+>> @@ -4544,14 +4542,11 @@ static int irdma_init_iw_device(struct irdma_device
+>> *iwdev)  static int irdma_init_rdma_device(struct irdma_device *iwdev)  {
+>>   	struct pci_dev *pcidev = iwdev->rf->pcidev;
+>> -	int ret;
+>>
+>>   	if (iwdev->roce_mode) {
+>>   		irdma_init_roce_device(iwdev);
+>>   	} else {
+>> -		ret = irdma_init_iw_device(iwdev);
+>> -		if (ret)
+>> -			return ret;
+>> +		irdma_init_iw_device(iwdev);
+>>   	}
+> 
+> checkpatch doesn't complain here? This becomes a single statement if/else now. No {} required.
+> 
+It complains when running it over the file, fixed in v2.
 
-Signed-off-by: Kamal Heib <kheib@redhat.com>
----
- drivers/infiniband/hw/irdma/verbs.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Thanks,
+Kamal
 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 9ff06feda872..6242ab6af77f 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -4450,8 +4450,16 @@ static const struct ib_device_ops irdma_roce_dev_ops = {
- };
- 
- static const struct ib_device_ops irdma_iw_dev_ops = {
--	.modify_qp = irdma_modify_qp,
- 	.get_port_immutable = irdma_iw_port_immutable,
-+	.iw_accept = irdma_accept,
-+	.iw_add_ref = irdma_qp_add_ref,
-+	.iw_connect = irdma_connect,
-+	.iw_create_listen = irdma_create_listen,
-+	.iw_destroy_listen = irdma_destroy_listen,
-+	.iw_get_qp = irdma_get_qp,
-+	.iw_reject = irdma_reject,
-+	.iw_rem_ref = irdma_qp_rem_ref,
-+	.modify_qp = irdma_modify_qp,
- 	.query_gid = irdma_query_gid,
- };
- 
-@@ -4522,14 +4530,6 @@ static void irdma_init_iw_device(struct irdma_device *iwdev)
- 	iwdev->ibdev.node_type = RDMA_NODE_RNIC;
- 	addrconf_addr_eui48((u8 *)&iwdev->ibdev.node_guid,
- 			    netdev->dev_addr);
--	iwdev->ibdev.ops.iw_add_ref = irdma_qp_add_ref;
--	iwdev->ibdev.ops.iw_rem_ref = irdma_qp_rem_ref;
--	iwdev->ibdev.ops.iw_get_qp = irdma_get_qp;
--	iwdev->ibdev.ops.iw_connect = irdma_connect;
--	iwdev->ibdev.ops.iw_accept = irdma_accept;
--	iwdev->ibdev.ops.iw_reject = irdma_reject;
--	iwdev->ibdev.ops.iw_create_listen = irdma_create_listen;
--	iwdev->ibdev.ops.iw_destroy_listen = irdma_destroy_listen;
- 	memcpy(iwdev->ibdev.iw_ifname, netdev->name,
- 	       sizeof(iwdev->ibdev.iw_ifname));
- 	ib_set_device_ops(&iwdev->ibdev, &irdma_iw_dev_ops);
--- 
-2.40.1
+
+>>   	iwdev->ibdev.phys_port_cnt = 1;
+>>   	iwdev->ibdev.num_comp_vectors = iwdev->rf->ceqs_count;
+>> --
+>> 2.40.1
+> 
 
