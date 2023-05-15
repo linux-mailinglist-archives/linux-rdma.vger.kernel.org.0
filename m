@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E7570284F
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 May 2023 11:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59618702855
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 May 2023 11:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239965AbjEOJWm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 May 2023 05:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        id S237674AbjEOJWs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 May 2023 05:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239667AbjEOJWR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 May 2023 05:22:17 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F3DA7
-        for <linux-rdma@vger.kernel.org>; Mon, 15 May 2023 02:18:32 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-24e5d5782edso11653798a91.0
-        for <linux-rdma@vger.kernel.org>; Mon, 15 May 2023 02:18:32 -0700 (PDT)
+        with ESMTP id S239696AbjEOJWS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 May 2023 05:22:18 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F381995
+        for <linux-rdma@vger.kernel.org>; Mon, 15 May 2023 02:18:34 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-643a1656b79so8842833b3a.3
+        for <linux-rdma@vger.kernel.org>; Mon, 15 May 2023 02:18:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1684142311; x=1686734311;
+        d=broadcom.com; s=google; t=1684142313; x=1686734313;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=r15W1kK0OGoKG8xuHd/rIsFObqiiDXmXJiRU2bZF6Vw=;
-        b=LRqRcdqIFPqZm+x1E9aSpxNBW+V57sUKUyZE8u/yCWR4Df+Sw1qZjaXQzIgNwrGWCj
-         IDsvcODMpZG6e52slDWJca6ezNUdVqxOWyILEWGZpA2Jmqh8CtNB15NEpWqcut9oHIE9
-         ZseyeS8RAs1MwW+d+G+fceItcfnTINmAm8QVE=
+        bh=0S4PaSlf1DJ4tymQ+kUv7lSs6Fr1DigQV1vXK93Y9g8=;
+        b=YL7GDAkMxOTSI0GYu/F5PyGrRkz699yp3GN637tld0/fRPCfAqLlkeRDHOhdvCRlnx
+         +aJ2Lf7jQ6KV8K6ho3nWI01M/MVp1BliuLLatGDtolY/dZLRrGalKxr/yVeBuHPLjh3v
+         tin9ACii9/+w68aazFOUizuNwyA19OD1SqBq0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684142311; x=1686734311;
+        d=1e100.net; s=20221208; t=1684142313; x=1686734313;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r15W1kK0OGoKG8xuHd/rIsFObqiiDXmXJiRU2bZF6Vw=;
-        b=hEAXIjU5ph6+/Ojhux5fK17d8z/Nwb91hITEQ1kLoKh0V/D897bWHvFXeJ2vAaBQyI
-         tFNxUKncdOuE1LDz7EzYw47x9NbjCeNI3WoRHtB6u6twtxp64CaCXTb9QLbfTNbGMerX
-         feYJ9SsbbAAAutT4y325ANKlbJOJzCT2H0ScV39cZm67B8kIdrVPZQIHjD5iorGP2VCw
-         ATFkhtERvtHdMEWUsnE/9JLUok5hbu6yCzirjWwN5PGwj1Y36nX67W1b+CDEjJ8hE8Yg
-         tj4H4ryJ9UnSnAFQlfL/K3Iksn2aGBD3jilR0boXPwu2RmsgGk6i6FVvhL1ApHgXXoq1
-         YniQ==
-X-Gm-Message-State: AC+VfDwsPCGhjcpuCQujG2uFS2G5yUvMS/DbC7/DNVB3HZAwjxW3NLLx
-        lVigRxt3qggYJ4zYBWgIN0ERCw==
-X-Google-Smtp-Source: ACHHUZ6YeGOJWIq33Patp//liwxpWpV992fobxp2FAEKRj+1idpUKTq5U1hZPODkKjRGJPJeOMVoSA==
-X-Received: by 2002:a17:90b:388:b0:252:e7db:66df with SMTP id ga8-20020a17090b038800b00252e7db66dfmr4958540pjb.49.1684142311144;
-        Mon, 15 May 2023 02:18:31 -0700 (PDT)
+        bh=0S4PaSlf1DJ4tymQ+kUv7lSs6Fr1DigQV1vXK93Y9g8=;
+        b=Agh9WAK7IfT9kYKIRaym3B1zzRDdTvG0ZvwJ0ynB8qcRZY5kpmjxNQ30dibf6rjBGc
+         ySRQGPZHBxU9ZHbORMQ0rBfpzAPqzOe6vFuJ20mnYChl4zW8dbb0/bmNDxKwB1k9ODXa
+         b+MLSRUrt8c1rJcT26kKrK/bUE1CBbwH2ADew1sNUq5OVSi8Xf2JTsmSYgd0F0r1w6CV
+         4AKNFwXIPTCaOMCNndq0e8iS02i77BPZBDk0cbZS1dQ6bORc0WF7j8eMT1VPWC8dPYve
+         7mdfceD9hKAh98saQms7edUEUJcmNkXM+ffL/3eZcL3J4l+wxfWOB/dYC+G0Q5jRlTxA
+         jjLw==
+X-Gm-Message-State: AC+VfDxVGF0V3waCneY+SgS5eSB3VGQ1Vjc3aBSerrt75c/gBwebH4ne
+        aMyrAI6Q2fo4n8VHYvFQn/39nA==
+X-Google-Smtp-Source: ACHHUZ7kJQIsV9Yfewf2TOCd6GZw2WjbHWe97R3kP6lbajyAsFz1uq1Ye/2WqCG9BtSwoY5WBo91bA==
+X-Received: by 2002:a05:6a20:6a0f:b0:102:f6f2:c962 with SMTP id p15-20020a056a206a0f00b00102f6f2c962mr22388479pzk.54.1684142313693;
+        Mon, 15 May 2023 02:18:33 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q7-20020a654947000000b00520f316ebe3sm10402169pgs.62.2023.05.15.02.18.28
+        by smtp.gmail.com with ESMTPSA id q7-20020a654947000000b00520f316ebe3sm10402169pgs.62.2023.05.15.02.18.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 May 2023 02:18:30 -0700 (PDT)
+        Mon, 15 May 2023 02:18:33 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v3 for-next 1/6] RDMA/bnxt_re: Use the common mmap helper functions
-Date:   Mon, 15 May 2023 02:06:45 -0700
-Message-Id: <1684141610-17588-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH v3 for-next 2/6] RDMA/bnxt_re: Add disassociate ucontext support
+Date:   Mon, 15 May 2023 02:06:46 -0700
+Message-Id: <1684141610-17588-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1684141610-17588-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1684141610-17588-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000003ad45105fbb7f0dd"
+        boundary="0000000000005fc53b05fbb7f080"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -67,277 +67,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000003ad45105fbb7f0dd
+--0000000000005fc53b05fbb7f080
 
-Replace the mmap handling function with common code in
-IB core. Create rdma_user_mmap_entry for each mmap
-resource and add to the ib_core mmap list. Add mmap_free
-verb support. Also, use rdma_user_mmap_io while mapping
-Doorbell pages.
+Add driver disassociation support. Driver uses the APIs
+rdma_user_mmap_io api while mapping the IO pages to user space.
+Add empty stub for disassociate ucontext.
 
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 113 ++++++++++++++++++++++++------
- drivers/infiniband/hw/bnxt_re/ib_verbs.h  |  15 ++++
- drivers/infiniband/hw/bnxt_re/main.c      |   1 +
- drivers/infiniband/hw/bnxt_re/qplib_res.c |   2 +-
- 4 files changed, 107 insertions(+), 24 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index e86afec..2434174 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -533,12 +533,43 @@ static int bnxt_re_create_fence_mr(struct bnxt_re_pd *pd)
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 1d361eb..a866951 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -466,6 +466,10 @@ static int bnxt_re_net_stats_ctx_alloc(struct bnxt_re_dev *rdev,
  	return rc;
  }
  
-+static struct bnxt_re_user_mmap_entry*
-+bnxt_re_mmap_entry_insert(struct bnxt_re_ucontext *uctx, u64 mem_offset,
-+			  enum bnxt_re_mmap_flag mmap_flag, u64 *offset)
++static void bnxt_re_disassociate_ucontext(struct ib_ucontext *ibcontext)
 +{
-+	struct bnxt_re_user_mmap_entry *entry;
-+	int ret;
-+
-+	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
-+	if (!entry)
-+		return NULL;
-+
-+	entry->mem_offset = mem_offset;
-+	entry->mmap_flag = mmap_flag;
-+
-+	ret = rdma_user_mmap_entry_insert(&uctx->ib_uctx,
-+					  &entry->rdma_entry, PAGE_SIZE);
-+	if (ret) {
-+		kfree(entry);
-+		return NULL;
-+	}
-+	if (offset)
-+		*offset = rdma_user_mmap_get_offset(&entry->rdma_entry);
-+
-+	return entry;
 +}
 +
- /* Protection Domains */
- int bnxt_re_dealloc_pd(struct ib_pd *ib_pd, struct ib_udata *udata)
- {
- 	struct bnxt_re_pd *pd = container_of(ib_pd, struct bnxt_re_pd, ib_pd);
- 	struct bnxt_re_dev *rdev = pd->rdev;
+ /* Device */
  
-+	if (udata) {
-+		rdma_user_mmap_entry_remove(pd->pd_db_mmap);
-+		pd->pd_db_mmap = NULL;
-+	}
-+
- 	bnxt_re_destroy_fence_mr(pd);
- 
- 	if (pd->qplib_pd.id) {
-@@ -557,7 +588,8 @@ int bnxt_re_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 	struct bnxt_re_ucontext *ucntx = rdma_udata_to_drv_context(
- 		udata, struct bnxt_re_ucontext, ib_uctx);
- 	struct bnxt_re_pd *pd = container_of(ibpd, struct bnxt_re_pd, ib_pd);
--	int rc;
-+	struct bnxt_re_user_mmap_entry *entry = NULL;
-+	int rc = 0;
- 
- 	pd->rdev = rdev;
- 	if (bnxt_qplib_alloc_pd(&rdev->qplib_res.pd_tbl, &pd->qplib_pd)) {
-@@ -567,7 +599,7 @@ int bnxt_re_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 	}
- 
- 	if (udata) {
--		struct bnxt_re_pd_resp resp;
-+		struct bnxt_re_pd_resp resp = {};
- 
- 		if (!ucntx->dpi.dbr) {
- 			/* Allocate DPI in alloc_pd to avoid failing of
-@@ -584,12 +616,21 @@ int bnxt_re_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 		resp.pdid = pd->qplib_pd.id;
- 		/* Still allow mapping this DBR to the new user PD. */
- 		resp.dpi = ucntx->dpi.dpi;
--		resp.dbr = (u64)ucntx->dpi.umdbr;
- 
--		rc = ib_copy_to_udata(udata, &resp, sizeof(resp));
-+		entry = bnxt_re_mmap_entry_insert(ucntx, (u64)ucntx->dpi.umdbr,
-+						  BNXT_RE_MMAP_UC_DB, &resp.dbr);
-+
-+		if (!entry) {
-+			rc = -ENOMEM;
-+			goto dbfail;
-+		}
-+
-+		pd->pd_db_mmap = &entry->rdma_entry;
-+
-+		rc = ib_copy_to_udata(udata, &resp, min(sizeof(resp), udata->outlen));
- 		if (rc) {
--			ibdev_err(&rdev->ibdev,
--				  "Failed to copy user response\n");
-+			rdma_user_mmap_entry_remove(pd->pd_db_mmap);
-+			rc = -EFAULT;
- 			goto dbfail;
- 		}
- 	}
-@@ -3956,6 +3997,7 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
- 		container_of(ctx, struct bnxt_re_ucontext, ib_uctx);
- 	struct bnxt_re_dev *rdev = to_bnxt_re_dev(ibdev, ibdev);
- 	struct bnxt_qplib_dev_attr *dev_attr = &rdev->dev_attr;
-+	struct bnxt_re_user_mmap_entry *entry;
- 	struct bnxt_re_uctx_resp resp = {};
- 	u32 chip_met_rev_num = 0;
- 	int rc;
-@@ -3994,6 +4036,13 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
- 	resp.comp_mask |= BNXT_RE_UCNTX_CMASK_HAVE_MODE;
- 	resp.mode = rdev->chip_ctx->modes.wqe_mode;
- 
-+	entry = bnxt_re_mmap_entry_insert(uctx, 0, BNXT_RE_MMAP_SH_PAGE, NULL);
-+	if (!entry) {
-+		rc = -ENOMEM;
-+		goto cfail;
-+	}
-+	uctx->shpage_mmap = &entry->rdma_entry;
-+
- 	rc = ib_copy_to_udata(udata, &resp, min(udata->outlen, sizeof(resp)));
- 	if (rc) {
- 		ibdev_err(ibdev, "Failed to copy user context");
-@@ -4017,6 +4066,8 @@ void bnxt_re_dealloc_ucontext(struct ib_ucontext *ib_uctx)
- 
- 	struct bnxt_re_dev *rdev = uctx->rdev;
- 
-+	rdma_user_mmap_entry_remove(uctx->shpage_mmap);
-+	uctx->shpage_mmap = NULL;
- 	if (uctx->shpg)
- 		free_page((unsigned long)uctx->shpg);
- 
-@@ -4036,27 +4087,43 @@ int bnxt_re_mmap(struct ib_ucontext *ib_uctx, struct vm_area_struct *vma)
- 	struct bnxt_re_ucontext *uctx = container_of(ib_uctx,
- 						   struct bnxt_re_ucontext,
- 						   ib_uctx);
--	struct bnxt_re_dev *rdev = uctx->rdev;
-+	struct bnxt_re_user_mmap_entry *bnxt_entry;
-+	struct rdma_user_mmap_entry *rdma_entry;
-+	int ret = 0;
- 	u64 pfn;
- 
--	if (vma->vm_end - vma->vm_start != PAGE_SIZE)
-+	rdma_entry = rdma_user_mmap_entry_get(&uctx->ib_uctx, vma);
-+	if (!rdma_entry)
- 		return -EINVAL;
- 
--	if (vma->vm_pgoff) {
--		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--		if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
--				       PAGE_SIZE, vma->vm_page_prot)) {
--			ibdev_err(&rdev->ibdev, "Failed to map DPI");
--			return -EAGAIN;
--		}
--	} else {
--		pfn = virt_to_phys(uctx->shpg) >> PAGE_SHIFT;
--		if (remap_pfn_range(vma, vma->vm_start,
--				    pfn, PAGE_SIZE, vma->vm_page_prot)) {
--			ibdev_err(&rdev->ibdev, "Failed to map shared page");
--			return -EAGAIN;
--		}
-+	bnxt_entry = container_of(rdma_entry, struct bnxt_re_user_mmap_entry,
-+				  rdma_entry);
-+
-+	switch (bnxt_entry->mmap_flag) {
-+	case BNXT_RE_MMAP_UC_DB:
-+		pfn = bnxt_entry->mem_offset >> PAGE_SHIFT;
-+		ret = rdma_user_mmap_io(ib_uctx, vma, pfn, PAGE_SIZE,
-+					pgprot_noncached(vma->vm_page_prot),
-+				rdma_entry);
-+		break;
-+	case BNXT_RE_MMAP_SH_PAGE:
-+		ret = vm_insert_page(vma, vma->vm_start, virt_to_page(uctx->shpg));
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
- 	}
- 
--	return 0;
-+	rdma_user_mmap_entry_put(rdma_entry);
-+	return ret;
-+}
-+
-+void bnxt_re_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
-+{
-+	struct bnxt_re_user_mmap_entry *bnxt_entry;
-+
-+	bnxt_entry = container_of(rdma_entry, struct bnxt_re_user_mmap_entry,
-+				  rdma_entry);
-+
-+	kfree(bnxt_entry);
- }
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-index 31f7e34..dcd31ae 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-@@ -60,6 +60,7 @@ struct bnxt_re_pd {
- 	struct bnxt_re_dev	*rdev;
- 	struct bnxt_qplib_pd	qplib_pd;
- 	struct bnxt_re_fence_data fence;
-+	struct rdma_user_mmap_entry *pd_db_mmap;
- };
- 
- struct bnxt_re_ah {
-@@ -136,6 +137,18 @@ struct bnxt_re_ucontext {
- 	struct bnxt_qplib_dpi	dpi;
- 	void			*shpg;
- 	spinlock_t		sh_lock;	/* protect shpg */
-+	struct rdma_user_mmap_entry *shpage_mmap;
-+};
-+
-+enum bnxt_re_mmap_flag {
-+	BNXT_RE_MMAP_SH_PAGE,
-+	BNXT_RE_MMAP_UC_DB,
-+};
-+
-+struct bnxt_re_user_mmap_entry {
-+	struct rdma_user_mmap_entry rdma_entry;
-+	u64 mem_offset;
-+	u8 mmap_flag;
- };
- 
- static inline u16 bnxt_re_get_swqe_size(int nsge)
-@@ -213,6 +226,8 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata);
- void bnxt_re_dealloc_ucontext(struct ib_ucontext *context);
- int bnxt_re_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
-+void bnxt_re_mmap_free(struct rdma_user_mmap_entry *rdma_entry);
-+
- 
- unsigned long bnxt_re_lock_cqs(struct bnxt_re_qp *qp);
- void bnxt_re_unlock_cqs(struct bnxt_re_qp *qp, unsigned long flags);
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index b9e2f89..1d361eb 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -539,6 +539,7 @@ static const struct ib_device_ops bnxt_re_dev_ops = {
- 	.get_port_immutable = bnxt_re_get_port_immutable,
- 	.map_mr_sg = bnxt_re_map_mr_sg,
- 	.mmap = bnxt_re_mmap,
-+	.mmap_free = bnxt_re_mmap_free,
- 	.modify_qp = bnxt_re_modify_qp,
- 	.modify_srq = bnxt_re_modify_srq,
- 	.poll_cq = bnxt_re_poll_cq,
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-index 126d4f2..920ab87 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-@@ -813,7 +813,7 @@ static int bnxt_qplib_alloc_dpi_tbl(struct bnxt_qplib_res     *res,
- 	return 0;
- 
- unmap_io:
--	pci_iounmap(res->pdev, dpit->dbr_bar_reg_iomem);
-+	iounmap(dpit->dbr_bar_reg_iomem);
- 	dpit->dbr_bar_reg_iomem = NULL;
- 	return -ENOMEM;
- }
+ static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev)
+@@ -532,6 +536,7 @@ static const struct ib_device_ops bnxt_re_dev_ops = {
+ 	.destroy_qp = bnxt_re_destroy_qp,
+ 	.destroy_srq = bnxt_re_destroy_srq,
+ 	.device_group = &bnxt_re_dev_attr_group,
++	.disassociate_ucontext = bnxt_re_disassociate_ucontext,
+ 	.get_dev_fw_str = bnxt_re_query_fw_str,
+ 	.get_dma_mr = bnxt_re_get_dma_mr,
+ 	.get_hw_stats = bnxt_re_ib_get_hw_stats,
 -- 
 2.5.5
 
 
---0000000000003ad45105fbb7f0dd
+--0000000000005fc53b05fbb7f080
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -408,14 +176,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEII6K/MJJxBTa
-HGxgor1Ol3PIzIrnSdCQcN1R8CUs747tMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDUxNTA5MTgzMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPMtHQFTQkWr
+fXzK6wKUmeTbT+UuVpMhxKOojSxQnVFrMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDUxNTA5MTgzM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAX7cICsRPIDZ7Cq6+FPUF09CH3sCY+
-jZeMOAmO+vMIDI7Fxqq1Ea0Lp4dXGI0K4veu1nlsPOHMl6JLmk2WsJV4rEobVr+jwjAv4KO5tojt
-p+s8xm5nt9f8ZBcTze9Cp/8LguxRAxY1GG71ngdgTlkvCAKbiL8HGUQBWOtKEJow/MAAqoZ2/eQf
-ZESzVouP2y/qVVztpvkAbq0sfx2ImIfQ+FoUxmYxLvWpcPfihA/AUows5Z67GhY+j1WCyvJ+SB6n
-PGozokQR7na0TebVNa9XyX2wqT18f0NOF5LhXRKASP2VKGaTzG5ysWGEWR5n1OWeAAZVdmnt/Y6Q
-iQWxSTy5
---0000000000003ad45105fbb7f0dd--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBn/IZg5gtQjBBtWD//H2LDs38Q3wX7
+gFodmD1aaOM4vkW6sG6hvl7CTbkqPHYitNWR4f7LgwA21j2wKSKchY8au+BZgDDEtnascFN+f58o
+fQYpXn2nnAi5e4Hz5uNS0XQr0t//rOeZPCmZV/f2M24h3WVRoin5UjV2J3ekWzHRJ7bpMRpGHejw
+cQ01v3+eAzwGORJ5T2k3VAf0IZKiJFBXK+v0GOb2BcKuGjatI+r/adq7GBiaKDXDAIhJlmt+wzu1
+Vi4IuGmGP0y9FZG+J6qCsLftTNz7S1cTWkXwvdnC+TN6I3/wMg2aIE205kfuSUnNOUARSFczDkYp
+GVU1wMpF
+--0000000000005fc53b05fbb7f080--
