@@ -2,55 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDE5704141
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 May 2023 01:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0705B704343
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 May 2023 04:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243968AbjEOXC0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 May 2023 19:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
+        id S229460AbjEPCKt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 May 2023 22:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243628AbjEOXCZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 May 2023 19:02:25 -0400
-X-Greylist: delayed 565 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 15 May 2023 16:02:20 PDT
-Received: from out-48.mta0.migadu.com (out-48.mta0.migadu.com [91.218.175.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFFCA270
-        for <linux-rdma@vger.kernel.org>; Mon, 15 May 2023 16:02:19 -0700 (PDT)
-Message-ID: <0e1656dc-b67c-ec65-83a4-6709fb186061@linux.dev>
+        with ESMTP id S229575AbjEPCKt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 May 2023 22:10:49 -0400
+Received: from out-21.mta1.migadu.com (out-21.mta1.migadu.com [95.215.58.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234753596
+        for <linux-rdma@vger.kernel.org>; Mon, 15 May 2023 19:10:48 -0700 (PDT)
+Message-ID: <b2d643f7-210f-dad8-ae4b-486b46f20a1e@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1684191171;
+        t=1684203046;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zLnDERJHjug7dAd+MXkM+9OUfYWGgTvS8O/k3Ot60w0=;
-        b=c2duEDoDOpFX+h6ODvobu6/kHvGSZpLC5E+/ZRYDkZOHnmw/vtYn+t0Q/5jJDOg1CE1bLZ
-        VY60LVjZ4glLAQ2YBoIiOYzCM63HyFOchysxBfZiREgwnxEAuGt0LPy2VyBJ4F8yfA95fn
-        qhmMlbfRCgnWosBFZJTP/Z+MU85xWZM=
-Date:   Mon, 15 May 2023 15:52:42 -0700
+        bh=xcBsn2F/7amQcKp6dUVvEZtnjYABV/LZb2RKuynLCGc=;
+        b=RF/2XE1VPv0YLM4HS1yba+UuPcyaaU8zxdIA9j3HCteLtCx/iO5YreIIxBgOXB+5hp7gjQ
+        TeXRc8DmstnqEKpdU4RYzRpD+mb4lKYKhwC9qq000YpzN4DWIrGN8LoXoP+mFWUcfl0iRK
+        Bl9bd9zF9UZN3T2J46mOajS1EmVFEDE=
+Date:   Tue, 16 May 2023 10:10:42 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 2/5] net/smc: allow smc to negotiate protocols
- on policies
+Subject: Re: [PATCH for-next] RDMA/rxe: Fix double free in rxe_qp.c
 Content-Language: en-US
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, kgraul@linux.ibm.com, wenjia@linux.ibm.com,
-        jaka@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, pabeni@redhat.com, song@kernel.org,
-        sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        guwen@linux.alibaba.com
-References: <1683872684-64872-1-git-send-email-alibuda@linux.alibaba.com>
- <1683872684-64872-3-git-send-email-alibuda@linux.alibaba.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>, dan.carpenter@linaro.org,
+        leon@kernel.org, jgg@nvidia.com, zyjzyj2000@gmail.com,
+        jhack@hpe.com, linux-rdma@vger.kernel.org
+References: <20230515201056.1591140-1-rpearsonhpe@gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <1683872684-64872-3-git-send-email-alibuda@linux.alibaba.com>
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+In-Reply-To: <20230515201056.1591140-1-rpearsonhpe@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,317 +49,48 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/11/23 11:24 PM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> As we all know, the SMC protocol is not suitable for all scenarios,
-> especially for short-lived. However, for most applications, they cannot
-> guarantee that there are no such scenarios at all. Therefore, apps
-> may need some specific strategies to decide shall we need to use SMC
-> or not.
-> 
-> Just like the congestion control implementation in TCP, this patch
-> provides a generic negotiator implementation. If necessary,
-> we can provide different protocol negotiation strategies for
-> apps based on this implementation.
-> 
-> But most importantly, this patch provides the possibility of
-> eBPF injection, allowing users to implement their own protocol
-> negotiation policy in userspace.
-> 
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+Hello,
+
+On 5/16/23 04:10, Bob Pearson wrote:
+> A recent patch can cause a double spin_unlock_bh() in rxe_qp_to_attr()
+> at line 715 in rxe_qp.c. This patch corrects that behavior.
+>
+> A newer patch from Guoqing Jiang recommends replacing all spin_lock
+> calls for qp->state_lock to spin_(un)lock_irqsave(restore)() since
+> apparently the blktests test suite can call the kernel verbs APIs
+> while in hard interrupt state. This patch needs to be applied first
+> and Guoqing's patch modified to accommodate this small change.
+
+If you don't mind, I will send a patch set with your patch as first one, 
+then
+refresh mine. Which means we don't need to keep the second paragraph
+in commit message, what do you think?
+
+> Fixes: f605f26ea196 ("RDMA/rxe: Protect QP state with qp->state_lock")
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/linux-rdma/27773078-40ce-414f-8b97-781954da9f25@kili.mountain/
+> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 > ---
->   include/net/smc.h        |  32 +++++++++++
->   net/Makefile             |   1 +
->   net/smc/Kconfig          |  11 ++++
->   net/smc/af_smc.c         | 134 ++++++++++++++++++++++++++++++++++++++++++++++-
->   net/smc/smc_negotiator.c | 119 +++++++++++++++++++++++++++++++++++++++++
->   net/smc/smc_negotiator.h | 116 ++++++++++++++++++++++++++++++++++++++++
->   6 files changed, 412 insertions(+), 1 deletion(-)
->   create mode 100644 net/smc/smc_negotiator.c
->   create mode 100644 net/smc/smc_negotiator.h
-> 
-> diff --git a/include/net/smc.h b/include/net/smc.h
-> index 6d076f5..191061c 100644
-> --- a/include/net/smc.h
-> +++ b/include/net/smc.h
-> @@ -296,6 +296,8 @@ struct smc_sock {				/* smc sock container */
->   	atomic_t                queued_smc_hs;  /* queued smc handshakes */
->   	struct inet_connection_sock_af_ops		af_ops;
->   	const struct inet_connection_sock_af_ops	*ori_af_ops;
-> +	/* protocol negotiator ops */
-> +	const struct smc_sock_negotiator_ops *negotiator_ops;
->   						/* original af ops */
->   	int			sockopt_defer_accept;
->   						/* sockopt TCP_DEFER_ACCEPT
-> @@ -316,4 +318,34 @@ struct smc_sock {				/* smc sock container */
->   						 */
->   };
->   
-> +#ifdef CONFIG_SMC_BPF
-> +/* BPF struct ops for smc protocol negotiator */
-> +struct smc_sock_negotiator_ops {
-> +
-> +	struct list_head	list;
-> +
-> +	/* ops name */
-> +	char		name[16];
-> +	/* key for name */
-> +	u32			key;
-> +
-> +	/* init with sk */
-> +	void (*init)(struct sock *sk);
-> +
-> +	/* release with sk */
-> +	void (*release)(struct sock *sk);
-> +
-> +	/* advice for negotiate */
-> +	int (*negotiate)(struct sock *sk);
-> +
-> +	/* info gathering timing */
-> +	void (*collect_info)(struct sock *sk, int timing);
-> +
-> +	/* module owner */
-> +	struct module *owner;
-> +};
-> +#else
-> +struct smc_sock_negotiator_ops {};
-> +#endif
-> +
->   #endif	/* _SMC_H */
-> diff --git a/net/Makefile b/net/Makefile
-> index 4c4dc53..222916a 100644
-> --- a/net/Makefile
-> +++ b/net/Makefile
-> @@ -52,6 +52,7 @@ obj-$(CONFIG_TIPC)		+= tipc/
->   obj-$(CONFIG_NETLABEL)		+= netlabel/
->   obj-$(CONFIG_IUCV)		+= iucv/
->   obj-$(CONFIG_SMC)		+= smc/
-> +obj-$(CONFIG_SMC_BPF)		+= smc/smc_negotiator.o >   obj-$(CONFIG_RFKILL)		+= rfkill/
->   obj-$(CONFIG_NET_9P)		+= 9p/
->   obj-$(CONFIG_CAIF)		+= caif/
-> diff --git a/net/smc/Kconfig b/net/smc/Kconfig
-> index 1ab3c5a..bdcc9f1 100644
-> --- a/net/smc/Kconfig
-> +++ b/net/smc/Kconfig
-> @@ -19,3 +19,14 @@ config SMC_DIAG
->   	  smcss.
->   
->   	  if unsure, say Y.
-> +
-> +config SMC_BPF
-> +	bool "SMC: support eBPF" if SMC
-
-
-so smc_negotiator will always be in the kernel image even af_smc is compiled as 
-a module? If the SMC_BPF needs to support af_smc as a module, proper 
-implementation needs to be added to bpf_struct_ops to support module first. It 
-is work-in-progress.
-
-> +	depends on BPF_SYSCALL
-> +	default n
-> +	help
-> +	  Supports eBPF to allows user mode participation in SMC's protocol process
-> +	  via ebpf programs. Alternatively, obtain information about the SMC socks
-> +	  through the ebpf program.
-> +
-> +	  If unsure, say N.
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index 50c38b6..7406fd4 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -52,6 +52,7 @@
->   #include "smc_close.h"
->   #include "smc_stats.h"
->   #include "smc_tracepoint.h"
-> +#include "smc_negotiator.h"
->   #include "smc_sysctl.h"
->   
->   static DEFINE_MUTEX(smc_server_lgr_pending);	/* serialize link group
-> @@ -68,6 +69,119 @@
->   static void smc_tcp_listen_work(struct work_struct *);
->   static void smc_connect_work(struct work_struct *);
->   
-> +#ifdef CONFIG_SMC_BPF
-> +
-> +/* Check if sock should use smc */
-> +int smc_sock_should_select_smc(const struct smc_sock *smc)
-> +{
-> +	const struct smc_sock_negotiator_ops *ops;
-> +	int ret;
-> +
-> +	rcu_read_lock();
-> +	ops = READ_ONCE(smc->negotiator_ops);
-> +
-> +	/* No negotiator_ops supply or no negotiate func set,
-> +	 * always pass it.
-> +	 */
-> +	if (!ops || !ops->negotiate) {
-
-A smc_sock_negotiator_ops without ->negotiate? Is it useful at all to allow the 
-register in the first place?
-
-> +		rcu_read_unlock();
-> +		return SK_PASS;
-> +	}
-> +
-> +	ret = ops->negotiate((struct sock *)&smc->sk);
-> +	rcu_read_unlock();
-> +	return ret;
-> +}
-> +
-> +void smc_sock_perform_collecting_info(const struct smc_sock *smc, int timing)
-> +{
-> +	const struct smc_sock_negotiator_ops *ops;
-> +
-> +	rcu_read_lock();
-> +	ops = READ_ONCE(smc->negotiator_ops);
-> +
-> +	if (!ops || !ops->collect_info) {
-> +		rcu_read_unlock();
-> +		return;
-> +	}
-> +
-> +	ops->collect_info((struct sock *)&smc->sk, timing);
-> +	rcu_read_unlock();
-> +}
-> +
-> +int smc_sock_assign_negotiator_ops(struct smc_sock *smc, const char *name)
-> +{
-> +	struct smc_sock_negotiator_ops *ops;
-> +	int ret = -EINVAL;
-> +
-> +	/* already set */
-> +	if (READ_ONCE(smc->negotiator_ops))
-> +		smc_sock_cleanup_negotiator_ops(smc, /* might be still referenced */ false);
-> +
-> +	/* Just for clear negotiator_ops */
-> +	if (!name || !strlen(name))
-> +		return 0;
-> +
-> +	rcu_read_lock();
-> +	ops = smc_negotiator_ops_get_by_name(name);
-> +	if (likely(ops)) {
-> +		if (unlikely(!bpf_try_module_get(ops, ops->owner))) {
-> +			ret = -EACCES;
-> +		} else {
-> +			WRITE_ONCE(smc->negotiator_ops, ops);
-> +			/* make sure ops can be seen */
-> +			smp_wmb();
-
-This rcu_read_lock(), WRITE_ONCE, and smp_wmb() combo looks very suspicious. 
-smc->negotiator_ops is protected by rcu (+refcnt) or lock_sock()?
-
-I am going to stop reviewing here.
-
-> +			if (ops->init)
-> +				ops->init(&smc->sk);
-> +			ret = 0;
-> +		}
-> +	}
-> +	rcu_read_unlock();
-> +	return ret;
-> +}
-> +
-> +void smc_sock_cleanup_negotiator_ops(struct smc_sock *smc, bool no_more)
-> +{
-> +	const struct smc_sock_negotiator_ops *ops;
-> +
-> +	ops = READ_ONCE(smc->negotiator_ops);
-> +
-> +	/* not all smc sock has negotiator_ops */
-> +	if (!ops)
-> +		return;
-> +
-> +	might_sleep();
-> +
-> +	/* Just ensure data integrity */
-> +	WRITE_ONCE(smc->negotiator_ops, NULL);
-> +	/* make sure NULL can be seen */
-> +	smp_wmb();
-> +	/* if the socks may have references to the negotiator ops to be removed.
-> +	 * it means that we might need to wait for the readers of ops
-> +	 * to complete. It's slow though.
-> +	 */
-> +	if (unlikely(!no_more))
-> +		synchronize_rcu();
-> +	if (ops->release)
-> +		ops->release(&smc->sk);
-> +	bpf_module_put(ops, ops->owner);
-> +}
-> +
-> +void smc_sock_clone_negotiator_ops(struct sock *parent, struct sock *child)
-> +{
-> +	const struct smc_sock_negotiator_ops *ops;
-> +
-> +	rcu_read_lock();
-> +	ops = READ_ONCE(smc_sk(parent)->negotiator_ops);
-> +	if (ops && bpf_try_module_get(ops, ops->owner)) {
-> +		smc_sk(child)->negotiator_ops = ops;
-> +		if (ops->init)
-> +			ops->init(child);
-> +	}
-> +	rcu_read_unlock();
-> +}
-> +#endif
-> +
->   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
->   {
->   	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
-> @@ -166,6 +280,9 @@ static bool smc_hs_congested(const struct sock *sk)
->   	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
->   		return true;
->   
-> +	if (!smc_sock_should_select_smc(smc))
-> +		return true;
-> +
->   	return false;
->   }
->   
-> @@ -320,6 +437,9 @@ static int smc_release(struct socket *sock)
->   	sock_hold(sk); /* sock_put below */
->   	smc = smc_sk(sk);
->   
-> +	/* trigger info gathering if needed.*/
-> +	smc_sock_perform_collecting_info(smc, SMC_SOCK_CLOSED_TIMING);
-> +
->   	old_state = sk->sk_state;
->   
->   	/* cleanup for a dangling non-blocking connect */
-> @@ -356,6 +476,9 @@ static int smc_release(struct socket *sock)
->   
->   static void smc_destruct(struct sock *sk)
->   {
-> +	/* cleanup negotiator_ops if set */
-> +	smc_sock_cleanup_negotiator_ops(smc_sk(sk), /* no longer used */ true);
-> +
->   	if (sk->sk_state != SMC_CLOSED)
->   		return;
->   	if (!sock_flag(sk, SOCK_DEAD))
-> @@ -1627,7 +1750,14 @@ static int smc_connect(struct socket *sock, struct sockaddr *addr,
->   	}
->   
->   	smc_copy_sock_settings_to_clc(smc);
-> -	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
-> +	/* accept out connection as SMC connection */
-> +	if (smc_sock_should_select_smc(smc) == SK_PASS) {
-> +		tcp_sk(smc->clcsock->sk)->syn_smc = 1;
+>   drivers/infiniband/sw/rxe/rxe_qp.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+> index c5451a4488ca..245dd36638c7 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+> @@ -712,8 +712,9 @@ int rxe_qp_to_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask)
+>   	if (qp->attr.sq_draining) {
+>   		spin_unlock_bh(&qp->state_lock);
+>   		cond_resched();
 > +	} else {
-> +		tcp_sk(smc->clcsock->sk)->syn_smc = 0;
-> +		smc_switch_to_fallback(smc, /* active fallback */ 0);
-> +	}
-> +
->   	if (smc->connect_nonblock) {
->   		rc = -EALREADY;
->   		goto out;
-> @@ -1679,6 +1809,8 @@ static int smc_clcsock_accept(struct smc_sock *lsmc, struct smc_sock **new_smc)
+> +		spin_unlock_bh(&qp->state_lock);
 >   	}
->   	*new_smc = smc_sk(new_sk);
+> -	spin_unlock_bh(&qp->state_lock);
 >   
-> +	smc_sock_clone_negotiator_ops(lsk, new_sk);
-> +
->   	mutex_lock(&lsmc->clcsock_release_lock);
->   	if (lsmc->clcsock)
->   		rc = kernel_accept(lsmc->clcsock, &new_clcsock, SOCK_NONBLOCK);
+>   	return 0;
+>   }
 
+Looks good, Acked-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 
+Thanks,
+Guoqing
