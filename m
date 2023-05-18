@@ -2,93 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DE870848C
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 17:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E4B70895F
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 22:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbjERPEH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 May 2023 11:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
+        id S229973AbjERUVc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 May 2023 16:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbjERPD4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 11:03:56 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2071d.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e8b::71d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352DC10E9
-        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 08:03:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H3UdH6e4l7O5rcXO3LGr2G2dT5YBNPXcprMg2wHXpwDO1TLWEPQgpdDlIKH2cWKxf5xCcM+nRlvEylLh3XAtmnCMQgJjME5epJ2p9KLOoZbKwa567Y7PrbXHXTTdRNxoAKeStTv7amXCDBv1aCL2q0JhYwfQwUuWOMKOBNfZ31u1B9r/iRdD+NVQgbF0+Vluqg/bwNezDCcrddqkAZ+7KEORg1iXbAKRgJ4fjtTJeJuYwfi0IMB/dsqCek/63Z2DjGc1j5GutRp8HXF/nziDW3ax9inJ0fYor5Glx+xoPFeckxfpWbwwdWtTVLguoCdqsJAi6VUomoCWmDV4Esz9gQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CStC4IqlsggE6sCrJ6WOItRKHwviGBn+jrsQddG39+o=;
- b=JcIYVvJibNnndhL6BwkGruatqJDEklQiaaNJTrHuhtlDoiQdCZx+coJd6bM4oVDfB5nI21g7OetylGF3jrJbpf7FAHkTlKNxadMLKj2luDQ/+r+F8pGU3Cq8WZwLkpUivdcOn0otu4GZSAGHx9ZXrrpKW3fjKcuXXlpORYmnECq+HUDuVtX4Y6P6vRFgTL7EP8Xx0DrIAz7w1vZ1oFFVaW5JsBUG3yByk2JVPYx08t0G1WhTaU0jD9qIceF7Cz4k9gOy9N9hEWORj7IFJ9XqRh0pz0bITz7biZCRr4BDpGfxo/tmysLuvK9R3f+98gir8wfKxzeEL/8LH87ltlOL0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 208.255.156.42) smtp.rcpttodomain=nvidia.com
- smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
- header.from=cornelisnetworks.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CStC4IqlsggE6sCrJ6WOItRKHwviGBn+jrsQddG39+o=;
- b=HJuP+hRFAyovuK5rkbPYR+qT1044qE7XmWYgWualJFOdHzJ4RQGsN6kxW/o5xLuxAe1I4njsLePzW2G4ozielUvmalxXwdkfe9m/NWY5OEmEVE2dS1QEWZVTi2F4RIua6DmF8XwN+vAqI610kKIxVCpfNsfXdsa0nKKJ+bz9uhFYnCzoQvC3PfXZcTl4EjpzRP9NfbyF67STB8KyoqPaOxFKWq14FDJt5K4V0+lybSduAOkPRCBp0f8RrgrjLC8TVOKqiYxa08vmkRbvDqYXAYcSIklI7iVbxOfJBQJc3zaG4WT2uqTy8q8DwaXl720lfhlG9xEjrIhQyrt0DTRC3A==
-Received: from CYZPR10CA0010.namprd10.prod.outlook.com (2603:10b6:930:8a::23)
- by BY3PR01MB6627.prod.exchangelabs.com (2603:10b6:a03:354::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6411.19; Thu, 18 May 2023 15:03:10 +0000
-Received: from CY4PEPF0000EDD7.namprd03.prod.outlook.com
- (2603:10b6:930:8a:cafe::d1) by CYZPR10CA0010.outlook.office365.com
- (2603:10b6:930:8a::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.19 via Frontend
- Transport; Thu, 18 May 2023 15:03:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
- smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
- header.d=none;dmarc=bestguesspass action=none
- header.from=cornelisnetworks.com;
-Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
- designates 208.255.156.42 as permitted sender)
- receiver=protection.outlook.com; client-ip=208.255.156.42;
- helo=awfm-02.cornelisnetworks.com; pr=C
-Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
- CY4PEPF0000EDD7.mail.protection.outlook.com (10.167.241.211) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6411.17 via Frontend Transport; Thu, 18 May 2023 15:03:08 +0000
-Received: from awfm-02.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 34IF37X73366283;
-        Thu, 18 May 2023 11:03:07 -0400
-Subject: [PATCH for-rc] IB/hfi1: Fix wrong mmu_node used for user SDMA packet
- after invalidate
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-To:     jgg@nvidia.com, leonro@nvidia.com
-Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
-        Brendan Cunningham <bcunningham@cornelisnetworks.com>,
-        linux-rdma@vger.kernel.org
-Date:   Thu, 18 May 2023 11:03:07 -0400
-Message-ID: <168442218769.3366265.13651888880883322134.stgit@awfm-02.cornelisnetworks.com>
-User-Agent: StGit/1.5.dev2+g9ce680a5
+        with ESMTP id S229966AbjERUVc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 16:21:32 -0400
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB848A9;
+        Thu, 18 May 2023 13:21:27 -0700 (PDT)
+Received: from fpc (unknown [46.242.14.200])
+        by mail.ispras.ru (Postfix) with ESMTPSA id CEE6844C1015;
+        Thu, 18 May 2023 20:21:22 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru CEE6844C1015
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+        s=default; t=1684441282;
+        bh=acPbT4hZxIZnGyP9ukYy22YaORyAOIPjyyHEzUy5fHs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eW6NJt7WYZl8mWscIwscQ5htUvDHCYtQqpeNGQiYFiWBl09nlo6eHNHPGArTxp/iC
+         E3cRejFX1zGdUuf22YHFM29Du4D+4R5uETJ1VAgk/t1rWc8L0W2ePAXCrYWn8bTF/r
+         peyLENyKfRdAEQT90axKQoIpGLTnYNvjs3nIXJwM=
+Date:   Thu, 18 May 2023 23:21:16 +0300
+From:   Fedor Pchelkin <pchelkin@ispras.ru>
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     syzbot <syzbot+79f283f1f4ccc6e8b624@syzkaller.appspotmail.com>,
+        bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        lvc-project@linuxtesting.org
+Subject: Re: [syzbot] [rdma?] KASAN: slab-use-after-free Read in
+ siw_query_port
+Message-ID: <20230518202116.rpx53vp7rrtuixoa@fpc>
+References: <0000000000001f992805fb79ce97@google.com>
+ <5eacf66d-053e-d82b-1e73-c808fb4c8aad@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD7:EE_|BY3PR01MB6627:EE_
-X-MS-Office365-Filtering-Correlation-Id: 68cd7ba6-3b4d-449d-2fe6-08db57b0fdf3
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CGjdiqAM/VT+Xye2IpBMXmeiap7la0/wtKctpiGsthHnwh7X9vRxOkrnPFV+HdEBqi++UN2AJuWGeFdT+SpJQCEFVygv5ZjMwcAXOPD06BMqaeXSdPMHDjfLkVcp8yn+3DMMwL9Mc/End+zTwYtRn4mbnBECcHs+Kf0Z5CZdsKfEwJHmj57P/egh3xhsm5Ns8ra6SSLY6SGP7nDn69zC1p82Yyauf/lNkgvlEiTYmIa56h0Pgz+XMKBqEarTvWcaJuX9pbEkf07v3b2bCJ9MJsNsNLs8C/cKpbXoqbDhTYQ6wRYnAtk/qoCfWZ+DRiJIqz69GzELW9jeOViiHpiZyQTfHtxLQf5EiE/ba4S8AJboZkdXYEF7v2Z4bF9uoqSOC0wDgc1AJxgU89y6dvwoEM2zfYF/OomXgWy50LVOObD63fFGpwE66cF1+Vh7vBU06rKNpu+qFnBIIKo3ujj5i2TZpBLYEb5zaBcFsUX7TT3iH2N2Wo12kuGw4feYcGgW8GkqN6LMJa43E9qjcuRGJqUeDjSdPsn3Ywz0PA3IAQ9whh1pE5kqezmgdNVk1e+EY/UdO0Wu1ALH9ASfB+UD6SgSfX4YmS1xXazPUSqsJ/Ow1vqsopx7Ix9UXmkI8sgltnrcVObRrL/uWj6/X+14Sb4eV2mvgdNX3YqyUcXW8POU7WtdeJsXKzKmKHd7Bw5rjeVbDUyaXGePaM661KvZxsUTEMC0j82DyRKSH2ydrnYk02fG/JH6IGpkz5QqvZfN
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(39840400004)(376002)(346002)(451199021)(46966006)(36840700001)(8676002)(86362001)(8936002)(5660300002)(44832011)(2906002)(30864003)(70206006)(70586007)(478600001)(82310400005)(81166007)(356005)(41300700001)(54906003)(103116003)(55016003)(83380400001)(36860700001)(426003)(336012)(7126003)(47076005)(4326008)(316002)(186003)(26005)(40480700001)(7696005)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2023 15:03:08.7147
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68cd7ba6-3b4d-449d-2fe6-08db57b0fdf3
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD7.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR01MB6627
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5eacf66d-053e-d82b-1e73-c808fb4c8aad@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,757 +54,1274 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Brendan Cunningham <bcunningham@cornelisnetworks.com>
+On Fri, May 12, 2023 at 06:16:26PM +0800, Guoqing Jiang wrote:
+> 
+> 
+> On 5/12/23 15:10, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    16a8829130ca nfs: fix another case of NULL/IS_ERR confusio..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=162c0566280000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=8bc832f563d8bf38
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=79f283f1f4ccc6e8b624
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > 
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> > 
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/f8c18a31ba47/disk-16a88291.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/03a18f29b7e7/vmlinux-16a88291.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/1db2407ade1e/bzImage-16a88291.xz
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+79f283f1f4ccc6e8b624@syzkaller.appspotmail.com
+> > 
+> > xfrm0 speed is unknown, defaulting to 1000
+> > ==================================================================
+> > BUG: KASAN: slab-use-after-free in siw_query_port+0x37b/0x3e0 drivers/infiniband/sw/siw/siw_verbs.c:177
+> > Read of size 4 at addr ffff888034efa0e8 by task kworker/1:4/24211
+> > 
+> > CPU: 1 PID: 24211 Comm: kworker/1:4 Not tainted 6.4.0-rc1-syzkaller-00012-g16a8829130ca #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
+> > Workqueue: infiniband ib_cache_event_task
+> > Call Trace:
+> >   <TASK>
+> >   __dump_stack lib/dump_stack.c:88 [inline]
+> >   dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+> >   print_address_description.constprop.0+0x2c/0x3c0 mm/kasan/report.c:351
+> >   print_report mm/kasan/report.c:462 [inline]
+> >   kasan_report+0x11c/0x130 mm/kasan/report.c:572
+> >   siw_query_port+0x37b/0x3e0 drivers/infiniband/sw/siw/siw_verbs.c:177
+> >   iw_query_port drivers/infiniband/core/device.c:2049 [inline]
+> >   ib_query_port drivers/infiniband/core/device.c:2090 [inline]
+> >   ib_query_port+0x3c4/0x8f0 drivers/infiniband/core/device.c:2082
+> >   ib_cache_update.part.0+0xcf/0x920 drivers/infiniband/core/cache.c:1487
+> >   ib_cache_update drivers/infiniband/core/cache.c:1561 [inline]
+> >   ib_cache_event_task+0x1b1/0x270 drivers/infiniband/core/cache.c:1561
+> >   process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
+> >   worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
+> >   kthread+0x344/0x440 kernel/kthread.c:379
+> >   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+> >   </TASK>
+> 
+> This might be similar as 390d3fdcae2d,  let me play with syzbot a bit 😉
+> 
+> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
+> for-rc
+> 
+> diff --git a/drivers/infiniband/core/device.c
+> b/drivers/infiniband/core/device.c
+> index a666847bd714..9dd59f8d5f05 100644
+> --- a/drivers/infiniband/core/device.c
+> +++ b/drivers/infiniband/core/device.c
+> @@ -2016,6 +2016,7 @@static int iw_query_port(struct ib_device *device,
+> {
+>        struct in_device *inetdev;
+>        struct net_device *netdev;
+> +int ret;
+> 
+>        memset(port_attr, 0, sizeof(*port_attr));
+> 
+> @@ -2045,8 +2046,9 @@static int iw_query_port(struct ib_device *device,
+>                rcu_read_unlock();
+>        }
+> 
+> +ret = device->ops.query_port(device, port_num, port_attr);
+>        dev_put(netdev);
+> -       return device->ops.query_port(device, port_num, port_attr);
+> +return ret;
+> }
+> 
+> static int __ib_query_port(struct ib_device *device,
 
-The hfi1 user SDMA pinned-page cache will leave a stale cache entry when
-the cache-entry's virtual address range is invalidated but that cache
-entry is in-use by an outstanding SDMA request.
+The issue can be reproduced with an attached C repro [1]. For much greater
+possibility it is better to include a delay after dev_put() and before
+calling query_port().
 
-Subsequent user SDMA requests with buffers in or spanning the virtual
-address range of the stale cache entry will result in packets
-constructed from the wrong memory, the physical pages pointed to by the
-stale cache entry.
+On our local Syzkaller instance the bug started to be caught after
+266e9b3475ba ("RDMA/siw: Remove namespace check from siw_netdev_event()")
+so CC'ing Tetsuo Handa if maybe he would be also interested in the bug.
+This fix seems to be good and perhaps it just made a bigger opportunity
+for the UAF bug to happen. Actually, the C repro was taken from there [2].
 
-To fix this, remove mmu_rb_node cache entries from the mmu_rb_handler
-cache independent of the cache entry's refcount. Add 'struct kref
-refcount' to struct mmu_rb_node and manage mmu_rb_node lifetime with
-kref_get() and kref_put().
+With your suggested solution the UAF is not reproduced. I don't know the
+exact reasons why dev_put() was placed before calling query_port() but the
+context implies that netdev can be freed in that period. And some of
+->query_port() realizations may touch netdev. So it seems reasonable to
+move ref count put after performing query_port().
 
-mmu_rb_node.refcount makes sdma_mmu_node.refcount redundant. Remove
-'atomic_t refcount' from struct sdma_mmu_node and change sdma_mmu_node
-code to use mmu_rb_node.refcount.
+[2]: https://syzkaller.appspot.com/bug?extid=5e70d01ee8985ae62a3b
+[1]: https://syzkaller.appspot.com/text?tag=ReproC&x=1193ae64f00000
 
-Move the mmu_rb_handler destructor call after a
-wait-for-SDMA-request-completion call so mmu_rb_nodes that need
-mmu_rb_handler's workqueue to queue themselves up for destruction from
-an interrupt context may do so.
+// https://syzkaller.appspot.com/bug?id=f35e12774aa3a888f874e944cda3d6e5c9e95b48
+// autogenerated by syzkaller (https://github.com/google/syzkaller)
 
-Fixes: f48ad614c100 ("IB/hfi1: Move driver out of staging")
-Fixes: 6c7efe1e4f33 ("IB/hfi1: Fix bugs with non-PAGE_SIZE-end multi-iovec user SDMA requests")
+#define _GNU_SOURCE
 
-Reviewed-by: Dean Luick <dean.luick@cornelisnetworks.com>
-Signed-off-by: Brendan Cunningham <bcunningham@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
----
- drivers/infiniband/hw/hfi1/ipoib_tx.c   |    4 -
- drivers/infiniband/hw/hfi1/mmu_rb.c     |  101 ++++++++++++++---------
- drivers/infiniband/hw/hfi1/mmu_rb.h     |    3 +
- drivers/infiniband/hw/hfi1/sdma.c       |   23 ++++-
- drivers/infiniband/hw/hfi1/sdma.h       |   47 +++++++----
- drivers/infiniband/hw/hfi1/sdma_txreq.h |    2 
- drivers/infiniband/hw/hfi1/user_sdma.c  |  137 ++++++++++++-------------------
- drivers/infiniband/hw/hfi1/user_sdma.h  |    1 
- drivers/infiniband/hw/hfi1/vnic_sdma.c  |    4 -
- 9 files changed, 177 insertions(+), 145 deletions(-)
+#include <arpa/inet.h>
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <net/if.h>
+#include <net/if_arp.h>
+#include <netinet/in.h>
+#include <sched.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/mount.h>
+#include <sys/prctl.h>
+#include <sys/resource.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
 
-diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-index 8973a081d641..e7d831330278 100644
---- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-+++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-@@ -215,11 +215,11 @@ static int hfi1_ipoib_build_ulp_payload(struct ipoib_txreq *tx,
- 		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
- 
- 		ret = sdma_txadd_page(dd,
--				      NULL,
- 				      txreq,
- 				      skb_frag_page(frag),
- 				      frag->bv_offset,
--				      skb_frag_size(frag));
-+				      skb_frag_size(frag),
-+				      NULL, NULL, NULL);
- 		if (unlikely(ret))
- 			break;
- 	}
-diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
-index 1cea8b0c78e0..a864423c256d 100644
---- a/drivers/infiniband/hw/hfi1/mmu_rb.c
-+++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
-@@ -19,8 +19,7 @@ static int mmu_notifier_range_start(struct mmu_notifier *,
- 		const struct mmu_notifier_range *);
- static struct mmu_rb_node *__mmu_rb_search(struct mmu_rb_handler *,
- 					   unsigned long, unsigned long);
--static void do_remove(struct mmu_rb_handler *handler,
--		      struct list_head *del_list);
-+static void release_immediate(struct kref *refcount);
- static void handle_remove(struct work_struct *work);
- 
- static const struct mmu_notifier_ops mn_opts = {
-@@ -106,7 +105,11 @@ void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler)
- 	}
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
--	do_remove(handler, &del_list);
-+	while (!list_empty(&del_list)) {
-+		rbnode = list_first_entry(&del_list, struct mmu_rb_node, list);
-+		list_del(&rbnode->list);
-+		kref_put(&rbnode->refcount, release_immediate);
-+	}
- 
- 	/* Now the mm may be freed. */
- 	mmdrop(handler->mn.mm);
-@@ -134,12 +137,6 @@ int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
- 	}
- 	__mmu_int_rb_insert(mnode, &handler->root);
- 	list_add_tail(&mnode->list, &handler->lru_list);
--
--	ret = handler->ops->insert(handler->ops_arg, mnode);
--	if (ret) {
--		__mmu_int_rb_remove(mnode, &handler->root);
--		list_del(&mnode->list); /* remove from LRU list */
--	}
- 	mnode->handler = handler;
- unlock:
- 	spin_unlock_irqrestore(&handler->lock, flags);
-@@ -183,6 +180,48 @@ static struct mmu_rb_node *__mmu_rb_search(struct mmu_rb_handler *handler,
- 	return node;
- }
- 
-+/*
-+ * Must NOT call while holding mnode->handler->lock.
-+ * mnode->handler->ops->remove() may sleep and mnode->handler->lock is a
-+ * spinlock.
-+ */
-+static void release_immediate(struct kref *refcount)
-+{
-+	struct mmu_rb_node *mnode =
-+		container_of(refcount, struct mmu_rb_node, refcount);
-+	mnode->handler->ops->remove(mnode->handler->ops_arg, mnode);
-+}
-+
-+/* Caller must hold mnode->handler->lock */
-+static void release_nolock(struct kref *refcount)
-+{
-+	struct mmu_rb_node *mnode =
-+		container_of(refcount, struct mmu_rb_node, refcount);
-+	list_move(&mnode->list, &mnode->handler->del_list);
-+	queue_work(mnode->handler->wq, &mnode->handler->del_work);
-+}
-+
-+/*
-+ * struct mmu_rb_node->refcount kref_put() callback.
-+ * Adds mmu_rb_node to mmu_rb_node->handler->del_list and queues
-+ * handler->del_work on handler->wq.
-+ * Does not remove mmu_rb_node from handler->lru_list or handler->rb_root.
-+ * Acquires mmu_rb_node->handler->lock; do not call while already holding
-+ * handler->lock.
-+ */
-+void hfi1_mmu_rb_release(struct kref *refcount)
-+{
-+	struct mmu_rb_node *mnode =
-+		container_of(refcount, struct mmu_rb_node, refcount);
-+	struct mmu_rb_handler *handler = mnode->handler;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&handler->lock, flags);
-+	list_move(&mnode->list, &mnode->handler->del_list);
-+	spin_unlock_irqrestore(&handler->lock, flags);
-+	queue_work(handler->wq, &handler->del_work);
-+}
-+
- void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
- {
- 	struct mmu_rb_node *rbnode, *ptr;
-@@ -197,6 +236,10 @@ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
- 
- 	spin_lock_irqsave(&handler->lock, flags);
- 	list_for_each_entry_safe(rbnode, ptr, &handler->lru_list, list) {
-+		/* refcount == 1 implies mmu_rb_handler has only rbnode ref */
-+		if (kref_read(&rbnode->refcount) > 1)
-+			continue;
-+
- 		if (handler->ops->evict(handler->ops_arg, rbnode, evict_arg,
- 					&stop)) {
- 			__mmu_int_rb_remove(rbnode, &handler->root);
-@@ -209,7 +252,7 @@ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
- 	list_for_each_entry_safe(rbnode, ptr, &del_list, list) {
--		handler->ops->remove(handler->ops_arg, rbnode);
-+		kref_put(&rbnode->refcount, release_immediate);
- 	}
- }
- 
-@@ -221,7 +264,6 @@ static int mmu_notifier_range_start(struct mmu_notifier *mn,
- 	struct rb_root_cached *root = &handler->root;
- 	struct mmu_rb_node *node, *ptr = NULL;
- 	unsigned long flags;
--	bool added = false;
- 
- 	spin_lock_irqsave(&handler->lock, flags);
- 	for (node = __mmu_int_rb_iter_first(root, range->start, range->end-1);
-@@ -230,38 +272,16 @@ static int mmu_notifier_range_start(struct mmu_notifier *mn,
- 		ptr = __mmu_int_rb_iter_next(node, range->start,
- 					     range->end - 1);
- 		trace_hfi1_mmu_mem_invalidate(node->addr, node->len);
--		if (handler->ops->invalidate(handler->ops_arg, node)) {
--			__mmu_int_rb_remove(node, root);
--			/* move from LRU list to delete list */
--			list_move(&node->list, &handler->del_list);
--			added = true;
--		}
-+		/* Remove from rb tree and lru_list. */
-+		__mmu_int_rb_remove(node, root);
-+		list_del_init(&node->list);
-+		kref_put(&node->refcount, release_nolock);
- 	}
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
--	if (added)
--		queue_work(handler->wq, &handler->del_work);
--
- 	return 0;
- }
- 
--/*
-- * Call the remove function for the given handler and the list.  This
-- * is expected to be called with a delete list extracted from handler.
-- * The caller should not be holding the handler lock.
-- */
--static void do_remove(struct mmu_rb_handler *handler,
--		      struct list_head *del_list)
--{
--	struct mmu_rb_node *node;
--
--	while (!list_empty(del_list)) {
--		node = list_first_entry(del_list, struct mmu_rb_node, list);
--		list_del(&node->list);
--		handler->ops->remove(handler->ops_arg, node);
--	}
--}
--
- /*
-  * Work queue function to remove all nodes that have been queued up to
-  * be removed.  The key feature is that mm->mmap_lock is not being held
-@@ -274,11 +294,16 @@ static void handle_remove(struct work_struct *work)
- 						del_work);
- 	struct list_head del_list;
- 	unsigned long flags;
-+	struct mmu_rb_node *node;
- 
- 	/* remove anything that is queued to get removed */
- 	spin_lock_irqsave(&handler->lock, flags);
- 	list_replace_init(&handler->del_list, &del_list);
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
--	do_remove(handler, &del_list);
-+	while (!list_empty(&del_list)) {
-+		node = list_first_entry(&del_list, struct mmu_rb_node, list);
-+		list_del(&node->list);
-+		handler->ops->remove(handler->ops_arg, node);
-+	}
- }
-diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.h b/drivers/infiniband/hw/hfi1/mmu_rb.h
-index c4da064188c9..82c505a04fc6 100644
---- a/drivers/infiniband/hw/hfi1/mmu_rb.h
-+++ b/drivers/infiniband/hw/hfi1/mmu_rb.h
-@@ -16,6 +16,7 @@ struct mmu_rb_node {
- 	struct rb_node node;
- 	struct mmu_rb_handler *handler;
- 	struct list_head list;
-+	struct kref refcount;
- };
- 
- /*
-@@ -61,6 +62,8 @@ int hfi1_mmu_rb_register(void *ops_arg,
- void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler);
- int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
- 		       struct mmu_rb_node *mnode);
-+void hfi1_mmu_rb_release(struct kref *refcount);
-+
- void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg);
- struct mmu_rb_node *hfi1_mmu_rb_get_first(struct mmu_rb_handler *handler,
- 					  unsigned long addr,
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index bb2552dd29c1..26c62162759b 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -1593,7 +1593,20 @@ static inline void sdma_unmap_desc(
- 	struct hfi1_devdata *dd,
- 	struct sdma_desc *descp)
- {
--	system_descriptor_complete(dd, descp);
-+	switch (sdma_mapping_type(descp)) {
-+	case SDMA_MAP_SINGLE:
-+		dma_unmap_single(&dd->pcidev->dev, sdma_mapping_addr(descp),
-+				 sdma_mapping_len(descp), DMA_TO_DEVICE);
-+		break;
-+	case SDMA_MAP_PAGE:
-+		dma_unmap_page(&dd->pcidev->dev, sdma_mapping_addr(descp),
-+			       sdma_mapping_len(descp), DMA_TO_DEVICE);
-+		break;
-+	}
-+
-+	if (descp->pinning_ctx && descp->ctx_put)
-+		descp->ctx_put(descp->pinning_ctx);
-+	descp->pinning_ctx = NULL;
- }
- 
- /*
-@@ -3113,8 +3126,8 @@ int ext_coal_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx,
- 
- 		/* Add descriptor for coalesce buffer */
- 		tx->desc_limit = MAX_DESC;
--		return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, NULL, tx,
--					 addr, tx->tlen);
-+		return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, tx,
-+					 addr, tx->tlen, NULL, NULL, NULL);
- 	}
- 
- 	return 1;
-@@ -3157,9 +3170,9 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- 	make_tx_sdma_desc(
- 		tx,
- 		SDMA_MAP_NONE,
--		NULL,
- 		dd->sdma_pad_phys,
--		sizeof(u32) - (tx->packet_len & (sizeof(u32) - 1)));
-+		sizeof(u32) - (tx->packet_len & (sizeof(u32) - 1)),
-+		NULL, NULL, NULL);
- 	tx->num_desc++;
- 	_sdma_close_tx(dd, tx);
- 	return rval;
-diff --git a/drivers/infiniband/hw/hfi1/sdma.h b/drivers/infiniband/hw/hfi1/sdma.h
-index 95aaec14c6c2..7fdebab202c4 100644
---- a/drivers/infiniband/hw/hfi1/sdma.h
-+++ b/drivers/infiniband/hw/hfi1/sdma.h
-@@ -594,9 +594,11 @@ static inline dma_addr_t sdma_mapping_addr(struct sdma_desc *d)
- static inline void make_tx_sdma_desc(
- 	struct sdma_txreq *tx,
- 	int type,
--	void *pinning_ctx,
- 	dma_addr_t addr,
--	size_t len)
-+	size_t len,
-+	void *pinning_ctx,
-+	void (*ctx_get)(void *),
-+	void (*ctx_put)(void *))
- {
- 	struct sdma_desc *desc = &tx->descp[tx->num_desc];
- 
-@@ -613,7 +615,11 @@ static inline void make_tx_sdma_desc(
- 				<< SDMA_DESC0_PHY_ADDR_SHIFT) |
- 			(((u64)len & SDMA_DESC0_BYTE_COUNT_MASK)
- 				<< SDMA_DESC0_BYTE_COUNT_SHIFT);
-+
- 	desc->pinning_ctx = pinning_ctx;
-+	desc->ctx_put = ctx_put;
-+	if (pinning_ctx && ctx_get)
-+		ctx_get(pinning_ctx);
- }
- 
- /* helper to extend txreq */
-@@ -645,18 +651,20 @@ static inline void _sdma_close_tx(struct hfi1_devdata *dd,
- static inline int _sdma_txadd_daddr(
- 	struct hfi1_devdata *dd,
- 	int type,
--	void *pinning_ctx,
- 	struct sdma_txreq *tx,
- 	dma_addr_t addr,
--	u16 len)
-+	u16 len,
-+	void *pinning_ctx,
-+	void (*ctx_get)(void *),
-+	void (*ctx_put)(void *))
- {
- 	int rval = 0;
- 
- 	make_tx_sdma_desc(
- 		tx,
- 		type,
--		pinning_ctx,
--		addr, len);
-+		addr, len,
-+		pinning_ctx, ctx_get, ctx_put);
- 	WARN_ON(len > tx->tlen);
- 	tx->num_desc++;
- 	tx->tlen -= len;
-@@ -676,11 +684,18 @@ static inline int _sdma_txadd_daddr(
- /**
-  * sdma_txadd_page() - add a page to the sdma_txreq
-  * @dd: the device to use for mapping
-- * @pinning_ctx: context to be released at descriptor retirement
-  * @tx: tx request to which the page is added
-  * @page: page to map
-  * @offset: offset within the page
-  * @len: length in bytes
-+ * @pinning_ctx: context to be stored on struct sdma_desc .pinning_ctx. Not
-+ *               added if coalesce buffer is used. E.g. pointer to pinned-page
-+ *               cache entry for the sdma_desc.
-+ * @ctx_get: optional function to take reference to @pinning_ctx. Not called if
-+ *           @pinning_ctx is NULL.
-+ * @ctx_put: optional function to release reference to @pinning_ctx after
-+ *           sdma_desc completes. May be called in interrupt context so must
-+ *           not sleep. Not called if @pinning_ctx is NULL.
-  *
-  * This is used to add a page/offset/length descriptor.
-  *
-@@ -692,11 +707,13 @@ static inline int _sdma_txadd_daddr(
-  */
- static inline int sdma_txadd_page(
- 	struct hfi1_devdata *dd,
--	void *pinning_ctx,
- 	struct sdma_txreq *tx,
- 	struct page *page,
- 	unsigned long offset,
--	u16 len)
-+	u16 len,
-+	void *pinning_ctx,
-+	void (*ctx_get)(void *),
-+	void (*ctx_put)(void *))
- {
- 	dma_addr_t addr;
- 	int rval;
-@@ -720,7 +737,8 @@ static inline int sdma_txadd_page(
- 		return -ENOSPC;
- 	}
- 
--	return _sdma_txadd_daddr(dd, SDMA_MAP_PAGE, pinning_ctx, tx, addr, len);
-+	return _sdma_txadd_daddr(dd, SDMA_MAP_PAGE, tx, addr, len,
-+				 pinning_ctx, ctx_get, ctx_put);
- }
- 
- /**
-@@ -754,8 +772,8 @@ static inline int sdma_txadd_daddr(
- 			return rval;
- 	}
- 
--	return _sdma_txadd_daddr(dd, SDMA_MAP_NONE, NULL, tx,
--				 addr, len);
-+	return _sdma_txadd_daddr(dd, SDMA_MAP_NONE, tx, addr, len,
-+				 NULL, NULL, NULL);
- }
- 
- /**
-@@ -801,7 +819,8 @@ static inline int sdma_txadd_kvaddr(
- 		return -ENOSPC;
- 	}
- 
--	return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, NULL, tx, addr, len);
-+	return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, tx, addr, len,
-+				 NULL, NULL, NULL);
- }
- 
- struct iowait_work;
-@@ -1034,6 +1053,4 @@ u16 sdma_get_descq_cnt(void);
- extern uint mod_num_sdma;
- 
- void sdma_update_lmc(struct hfi1_devdata *dd, u64 mask, u32 lid);
--
--void system_descriptor_complete(struct hfi1_devdata *dd, struct sdma_desc *descp);
- #endif
-diff --git a/drivers/infiniband/hw/hfi1/sdma_txreq.h b/drivers/infiniband/hw/hfi1/sdma_txreq.h
-index fad946cb5e0d..85ae7293c274 100644
---- a/drivers/infiniband/hw/hfi1/sdma_txreq.h
-+++ b/drivers/infiniband/hw/hfi1/sdma_txreq.h
-@@ -20,6 +20,8 @@ struct sdma_desc {
- 	/* private:  don't use directly */
- 	u64 qw[2];
- 	void *pinning_ctx;
-+	/* Release reference to @pinning_ctx. May be called in interrupt context. Must not sleep. */
-+	void (*ctx_put)(void *ctx);
- };
- 
- /**
-diff --git a/drivers/infiniband/hw/hfi1/user_sdma.c b/drivers/infiniband/hw/hfi1/user_sdma.c
-index ae58b48afe07..02bd62b857b7 100644
---- a/drivers/infiniband/hw/hfi1/user_sdma.c
-+++ b/drivers/infiniband/hw/hfi1/user_sdma.c
-@@ -62,18 +62,14 @@ static int defer_packet_queue(
- static void activate_packet_queue(struct iowait *wait, int reason);
- static bool sdma_rb_filter(struct mmu_rb_node *node, unsigned long addr,
- 			   unsigned long len);
--static int sdma_rb_insert(void *arg, struct mmu_rb_node *mnode);
- static int sdma_rb_evict(void *arg, struct mmu_rb_node *mnode,
- 			 void *arg2, bool *stop);
- static void sdma_rb_remove(void *arg, struct mmu_rb_node *mnode);
--static int sdma_rb_invalidate(void *arg, struct mmu_rb_node *mnode);
- 
- static struct mmu_rb_ops sdma_rb_ops = {
- 	.filter = sdma_rb_filter,
--	.insert = sdma_rb_insert,
- 	.evict = sdma_rb_evict,
- 	.remove = sdma_rb_remove,
--	.invalidate = sdma_rb_invalidate
- };
- 
- static int add_system_pages_to_sdma_packet(struct user_sdma_request *req,
-@@ -247,14 +243,14 @@ int hfi1_user_sdma_free_queues(struct hfi1_filedata *fd,
- 		spin_unlock(&fd->pq_rcu_lock);
- 		synchronize_srcu(&fd->pq_srcu);
- 		/* at this point there can be no more new requests */
--		if (pq->handler)
--			hfi1_mmu_rb_unregister(pq->handler);
- 		iowait_sdma_drain(&pq->busy);
- 		/* Wait until all requests have been freed. */
- 		wait_event_interruptible(
- 			pq->wait,
- 			!atomic_read(&pq->n_reqs));
- 		kfree(pq->reqs);
-+		if (pq->handler)
-+			hfi1_mmu_rb_unregister(pq->handler);
- 		bitmap_free(pq->req_in_use);
- 		kmem_cache_destroy(pq->txreq_cache);
- 		flush_pq_iowait(pq);
-@@ -1275,25 +1271,17 @@ static void free_system_node(struct sdma_mmu_node *node)
- 	kfree(node);
- }
- 
--static inline void acquire_node(struct sdma_mmu_node *node)
--{
--	atomic_inc(&node->refcount);
--	WARN_ON(atomic_read(&node->refcount) < 0);
--}
--
--static inline void release_node(struct mmu_rb_handler *handler,
--				struct sdma_mmu_node *node)
--{
--	atomic_dec(&node->refcount);
--	WARN_ON(atomic_read(&node->refcount) < 0);
--}
--
-+/*
-+ * kref_get()'s an additional kref on the returned rb_node to prevent rb_node
-+ * from being released until after rb_node is assigned to an SDMA descriptor
-+ * (struct sdma_desc) under add_system_iovec_to_sdma_packet(), even if the
-+ * virtual address range for rb_node is invalidated between now and then.
-+ */
- static struct sdma_mmu_node *find_system_node(struct mmu_rb_handler *handler,
- 					      unsigned long start,
- 					      unsigned long end)
- {
- 	struct mmu_rb_node *rb_node;
--	struct sdma_mmu_node *node;
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&handler->lock, flags);
-@@ -1302,11 +1290,12 @@ static struct sdma_mmu_node *find_system_node(struct mmu_rb_handler *handler,
- 		spin_unlock_irqrestore(&handler->lock, flags);
- 		return NULL;
- 	}
--	node = container_of(rb_node, struct sdma_mmu_node, rb);
--	acquire_node(node);
-+
-+	/* "safety" kref to prevent release before add_system_iovec_to_sdma_packet() */
-+	kref_get(&rb_node->refcount);
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
--	return node;
-+	return container_of(rb_node, struct sdma_mmu_node, rb);
- }
- 
- static int pin_system_pages(struct user_sdma_request *req,
-@@ -1355,6 +1344,13 @@ static int pin_system_pages(struct user_sdma_request *req,
- 	return 0;
- }
- 
-+/*
-+ * kref refcount on *node_p will be 2 on successful addition: one kref from
-+ * kref_init() for mmu_rb_handler and one kref to prevent *node_p from being
-+ * released until after *node_p is assigned to an SDMA descriptor (struct
-+ * sdma_desc) under add_system_iovec_to_sdma_packet(), even if the virtual
-+ * address range for *node_p is invalidated between now and then.
-+ */
- static int add_system_pinning(struct user_sdma_request *req,
- 			      struct sdma_mmu_node **node_p,
- 			      unsigned long start, unsigned long len)
-@@ -1368,6 +1364,12 @@ static int add_system_pinning(struct user_sdma_request *req,
- 	if (!node)
- 		return -ENOMEM;
- 
-+	/* First kref "moves" to mmu_rb_handler */
-+	kref_init(&node->rb.refcount);
-+
-+	/* "safety" kref to prevent release before add_system_iovec_to_sdma_packet() */
-+	kref_get(&node->rb.refcount);
-+
- 	node->pq = pq;
- 	ret = pin_system_pages(req, start, len, node, PFN_DOWN(len));
- 	if (ret == 0) {
-@@ -1431,15 +1433,15 @@ static int get_system_cache_entry(struct user_sdma_request *req,
- 			return 0;
- 		}
- 
--		SDMA_DBG(req, "prepend: node->rb.addr %lx, node->refcount %d",
--			 node->rb.addr, atomic_read(&node->refcount));
-+		SDMA_DBG(req, "prepend: node->rb.addr %lx, node->rb.refcount %d",
-+			 node->rb.addr, kref_read(&node->rb.refcount));
- 		prepend_len = node->rb.addr - start;
- 
- 		/*
- 		 * This node will not be returned, instead a new node
- 		 * will be. So release the reference.
- 		 */
--		release_node(handler, node);
-+		kref_put(&node->rb.refcount, hfi1_mmu_rb_release);
- 
- 		/* Prepend a node to cover the beginning of the allocation */
- 		ret = add_system_pinning(req, node_p, start, prepend_len);
-@@ -1451,6 +1453,20 @@ static int get_system_cache_entry(struct user_sdma_request *req,
- 	}
- }
- 
-+static void sdma_mmu_rb_node_get(void *ctx)
-+{
-+	struct mmu_rb_node *node = ctx;
-+
-+	kref_get(&node->refcount);
-+}
-+
-+static void sdma_mmu_rb_node_put(void *ctx)
-+{
-+	struct sdma_mmu_node *node = ctx;
-+
-+	kref_put(&node->rb.refcount, hfi1_mmu_rb_release);
-+}
-+
- static int add_mapping_to_sdma_packet(struct user_sdma_request *req,
- 				      struct user_sdma_txreq *tx,
- 				      struct sdma_mmu_node *cache_entry,
-@@ -1494,9 +1510,12 @@ static int add_mapping_to_sdma_packet(struct user_sdma_request *req,
- 			ctx = cache_entry;
- 		}
- 
--		ret = sdma_txadd_page(pq->dd, ctx, &tx->txreq,
-+		ret = sdma_txadd_page(pq->dd, &tx->txreq,
- 				      cache_entry->pages[page_index],
--				      page_offset, from_this_page);
-+				      page_offset, from_this_page,
-+				      ctx,
-+				      sdma_mmu_rb_node_get,
-+				      sdma_mmu_rb_node_put);
- 		if (ret) {
- 			/*
- 			 * When there's a failure, the entire request is freed by
-@@ -1518,8 +1537,6 @@ static int add_system_iovec_to_sdma_packet(struct user_sdma_request *req,
- 					   struct user_sdma_iovec *iovec,
- 					   size_t from_this_iovec)
- {
--	struct mmu_rb_handler *handler = req->pq->handler;
--
- 	while (from_this_iovec > 0) {
- 		struct sdma_mmu_node *cache_entry;
- 		size_t from_this_cache_entry;
-@@ -1540,15 +1557,15 @@ static int add_system_iovec_to_sdma_packet(struct user_sdma_request *req,
- 
- 		ret = add_mapping_to_sdma_packet(req, tx, cache_entry, start,
- 						 from_this_cache_entry);
-+
-+		/*
-+		 * Done adding cache_entry to zero or more sdma_desc. Can
-+		 * kref_put() the "safety" kref taken under
-+		 * get_system_cache_entry().
-+		 */
-+		kref_put(&cache_entry->rb.refcount, hfi1_mmu_rb_release);
-+
- 		if (ret) {
--			/*
--			 * We're guaranteed that there will be no descriptor
--			 * completion callback that releases this node
--			 * because only the last descriptor referencing it
--			 * has a context attached, and a failure means the
--			 * last descriptor was never added.
--			 */
--			release_node(handler, cache_entry);
- 			SDMA_DBG(req, "add system segment failed %d", ret);
- 			return ret;
- 		}
-@@ -1599,42 +1616,12 @@ static int add_system_pages_to_sdma_packet(struct user_sdma_request *req,
- 	return 0;
- }
- 
--void system_descriptor_complete(struct hfi1_devdata *dd,
--				struct sdma_desc *descp)
--{
--	switch (sdma_mapping_type(descp)) {
--	case SDMA_MAP_SINGLE:
--		dma_unmap_single(&dd->pcidev->dev, sdma_mapping_addr(descp),
--				 sdma_mapping_len(descp), DMA_TO_DEVICE);
--		break;
--	case SDMA_MAP_PAGE:
--		dma_unmap_page(&dd->pcidev->dev, sdma_mapping_addr(descp),
--			       sdma_mapping_len(descp), DMA_TO_DEVICE);
--		break;
--	}
--
--	if (descp->pinning_ctx) {
--		struct sdma_mmu_node *node = descp->pinning_ctx;
--
--		release_node(node->rb.handler, node);
--	}
--}
--
- static bool sdma_rb_filter(struct mmu_rb_node *node, unsigned long addr,
- 			   unsigned long len)
- {
- 	return (bool)(node->addr == addr);
- }
- 
--static int sdma_rb_insert(void *arg, struct mmu_rb_node *mnode)
--{
--	struct sdma_mmu_node *node =
--		container_of(mnode, struct sdma_mmu_node, rb);
--
--	atomic_inc(&node->refcount);
--	return 0;
--}
--
- /*
-  * Return 1 to remove the node from the rb tree and call the remove op.
-  *
-@@ -1647,10 +1634,6 @@ static int sdma_rb_evict(void *arg, struct mmu_rb_node *mnode,
- 		container_of(mnode, struct sdma_mmu_node, rb);
- 	struct evict_data *evict_data = evict_arg;
- 
--	/* is this node still being used? */
--	if (atomic_read(&node->refcount))
--		return 0; /* keep this node */
--
- 	/* this node will be evicted, add its pages to our count */
- 	evict_data->cleared += node->npages;
- 
-@@ -1668,13 +1651,3 @@ static void sdma_rb_remove(void *arg, struct mmu_rb_node *mnode)
- 
- 	free_system_node(node);
- }
--
--static int sdma_rb_invalidate(void *arg, struct mmu_rb_node *mnode)
--{
--	struct sdma_mmu_node *node =
--		container_of(mnode, struct sdma_mmu_node, rb);
--
--	if (!atomic_read(&node->refcount))
--		return 1;
--	return 0;
--}
-diff --git a/drivers/infiniband/hw/hfi1/user_sdma.h b/drivers/infiniband/hw/hfi1/user_sdma.h
-index a241836371dc..548347d4c5bc 100644
---- a/drivers/infiniband/hw/hfi1/user_sdma.h
-+++ b/drivers/infiniband/hw/hfi1/user_sdma.h
-@@ -104,7 +104,6 @@ struct hfi1_user_sdma_comp_q {
- struct sdma_mmu_node {
- 	struct mmu_rb_node rb;
- 	struct hfi1_user_sdma_pkt_q *pq;
--	atomic_t refcount;
- 	struct page **pages;
- 	unsigned int npages;
- };
-diff --git a/drivers/infiniband/hw/hfi1/vnic_sdma.c b/drivers/infiniband/hw/hfi1/vnic_sdma.c
-index 727eedfba332..cc6324d2d1dd 100644
---- a/drivers/infiniband/hw/hfi1/vnic_sdma.c
-+++ b/drivers/infiniband/hw/hfi1/vnic_sdma.c
-@@ -64,11 +64,11 @@ static noinline int build_vnic_ulp_payload(struct sdma_engine *sde,
- 
- 		/* combine physically continuous fragments later? */
- 		ret = sdma_txadd_page(sde->dd,
--				      NULL,
- 				      &tx->txreq,
- 				      skb_frag_page(frag),
- 				      skb_frag_off(frag),
--				      skb_frag_size(frag));
-+				      skb_frag_size(frag),
-+				      NULL, NULL, NULL);
- 		if (unlikely(ret))
- 			goto bail_txadd;
- 	}
+#include <linux/capability.h>
+#include <linux/genetlink.h>
+#include <linux/if_addr.h>
+#include <linux/if_ether.h>
+#include <linux/if_link.h>
+#include <linux/if_tun.h>
+#include <linux/in6.h>
+#include <linux/ip.h>
+#include <linux/neighbour.h>
+#include <linux/net.h>
+#include <linux/netlink.h>
+#include <linux/rtnetlink.h>
+#include <linux/tcp.h>
+#include <linux/veth.h>
 
+static unsigned long long procid;
 
+static void sleep_ms(uint64_t ms)
+{
+  usleep(ms * 1000);
+}
+
+static uint64_t current_time_ms(void)
+{
+  struct timespec ts;
+  if (clock_gettime(CLOCK_MONOTONIC, &ts))
+    exit(1);
+  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
+
+static bool write_file(const char* file, const char* what, ...)
+{
+  char buf[1024];
+  va_list args;
+  va_start(args, what);
+  vsnprintf(buf, sizeof(buf), what, args);
+  va_end(args);
+  buf[sizeof(buf) - 1] = 0;
+  int len = strlen(buf);
+  int fd = open(file, O_WRONLY | O_CLOEXEC);
+  if (fd == -1)
+    return false;
+  if (write(fd, buf, len) != len) {
+    int err = errno;
+    close(fd);
+    errno = err;
+    return false;
+  }
+  close(fd);
+  return true;
+}
+
+struct nlmsg {
+  char* pos;
+  int nesting;
+  struct nlattr* nested[8];
+  char buf[4096];
+};
+
+static void netlink_init(struct nlmsg* nlmsg, int typ, int flags,
+                         const void* data, int size)
+{
+  memset(nlmsg, 0, sizeof(*nlmsg));
+  struct nlmsghdr* hdr = (struct nlmsghdr*)nlmsg->buf;
+  hdr->nlmsg_type = typ;
+  hdr->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK | flags;
+  memcpy(hdr + 1, data, size);
+  nlmsg->pos = (char*)(hdr + 1) + NLMSG_ALIGN(size);
+}
+
+static void netlink_attr(struct nlmsg* nlmsg, int typ, const void* data,
+                         int size)
+{
+  struct nlattr* attr = (struct nlattr*)nlmsg->pos;
+  attr->nla_len = sizeof(*attr) + size;
+  attr->nla_type = typ;
+  if (size > 0)
+    memcpy(attr + 1, data, size);
+  nlmsg->pos += NLMSG_ALIGN(attr->nla_len);
+}
+
+static void netlink_nest(struct nlmsg* nlmsg, int typ)
+{
+  struct nlattr* attr = (struct nlattr*)nlmsg->pos;
+  attr->nla_type = typ;
+  nlmsg->pos += sizeof(*attr);
+  nlmsg->nested[nlmsg->nesting++] = attr;
+}
+
+static void netlink_done(struct nlmsg* nlmsg)
+{
+  struct nlattr* attr = nlmsg->nested[--nlmsg->nesting];
+  attr->nla_len = nlmsg->pos - (char*)attr;
+}
+
+static int netlink_send_ext(struct nlmsg* nlmsg, int sock, uint16_t reply_type,
+                            int* reply_len, bool dofail)
+{
+  if (nlmsg->pos > nlmsg->buf + sizeof(nlmsg->buf) || nlmsg->nesting)
+    exit(1);
+  struct nlmsghdr* hdr = (struct nlmsghdr*)nlmsg->buf;
+  hdr->nlmsg_len = nlmsg->pos - nlmsg->buf;
+  struct sockaddr_nl addr;
+  memset(&addr, 0, sizeof(addr));
+  addr.nl_family = AF_NETLINK;
+  ssize_t n = sendto(sock, nlmsg->buf, hdr->nlmsg_len, 0,
+                     (struct sockaddr*)&addr, sizeof(addr));
+  if (n != (ssize_t)hdr->nlmsg_len) {
+    if (dofail)
+      exit(1);
+    return -1;
+  }
+  n = recv(sock, nlmsg->buf, sizeof(nlmsg->buf), 0);
+  if (reply_len)
+    *reply_len = 0;
+  if (n < 0) {
+    if (dofail)
+      exit(1);
+    return -1;
+  }
+  if (n < (ssize_t)sizeof(struct nlmsghdr)) {
+    errno = EINVAL;
+    if (dofail)
+      exit(1);
+    return -1;
+  }
+  if (hdr->nlmsg_type == NLMSG_DONE)
+    return 0;
+  if (reply_len && hdr->nlmsg_type == reply_type) {
+    *reply_len = n;
+    return 0;
+  }
+  if (n < (ssize_t)(sizeof(struct nlmsghdr) + sizeof(struct nlmsgerr))) {
+    errno = EINVAL;
+    if (dofail)
+      exit(1);
+    return -1;
+  }
+  if (hdr->nlmsg_type != NLMSG_ERROR) {
+    errno = EINVAL;
+    if (dofail)
+      exit(1);
+    return -1;
+  }
+  errno = -((struct nlmsgerr*)(hdr + 1))->error;
+  return -errno;
+}
+
+static int netlink_send(struct nlmsg* nlmsg, int sock)
+{
+  return netlink_send_ext(nlmsg, sock, 0, NULL, true);
+}
+
+static int netlink_query_family_id(struct nlmsg* nlmsg, int sock,
+                                   const char* family_name, bool dofail)
+{
+  struct genlmsghdr genlhdr;
+  memset(&genlhdr, 0, sizeof(genlhdr));
+  genlhdr.cmd = CTRL_CMD_GETFAMILY;
+  netlink_init(nlmsg, GENL_ID_CTRL, 0, &genlhdr, sizeof(genlhdr));
+  netlink_attr(nlmsg, CTRL_ATTR_FAMILY_NAME, family_name,
+               strnlen(family_name, GENL_NAMSIZ - 1) + 1);
+  int n = 0;
+  int err = netlink_send_ext(nlmsg, sock, GENL_ID_CTRL, &n, dofail);
+  if (err < 0) {
+    return -1;
+  }
+  uint16_t id = 0;
+  struct nlattr* attr = (struct nlattr*)(nlmsg->buf + NLMSG_HDRLEN +
+                                         NLMSG_ALIGN(sizeof(genlhdr)));
+  for (; (char*)attr < nlmsg->buf + n;
+       attr = (struct nlattr*)((char*)attr + NLMSG_ALIGN(attr->nla_len))) {
+    if (attr->nla_type == CTRL_ATTR_FAMILY_ID) {
+      id = *(uint16_t*)(attr + 1);
+      break;
+    }
+  }
+  if (!id) {
+    errno = EINVAL;
+    return -1;
+  }
+  recv(sock, nlmsg->buf, sizeof(nlmsg->buf), 0);
+  return id;
+}
+
+static int netlink_next_msg(struct nlmsg* nlmsg, unsigned int offset,
+                            unsigned int total_len)
+{
+  struct nlmsghdr* hdr = (struct nlmsghdr*)(nlmsg->buf + offset);
+  if (offset == total_len || offset + hdr->nlmsg_len > total_len)
+    return -1;
+  return hdr->nlmsg_len;
+}
+
+static void netlink_add_device_impl(struct nlmsg* nlmsg, const char* type,
+                                    const char* name)
+{
+  struct ifinfomsg hdr;
+  memset(&hdr, 0, sizeof(hdr));
+  netlink_init(nlmsg, RTM_NEWLINK, NLM_F_EXCL | NLM_F_CREATE, &hdr,
+               sizeof(hdr));
+  if (name)
+    netlink_attr(nlmsg, IFLA_IFNAME, name, strlen(name));
+  netlink_nest(nlmsg, IFLA_LINKINFO);
+  netlink_attr(nlmsg, IFLA_INFO_KIND, type, strlen(type));
+}
+
+static void netlink_add_device(struct nlmsg* nlmsg, int sock, const char* type,
+                               const char* name)
+{
+  netlink_add_device_impl(nlmsg, type, name);
+  netlink_done(nlmsg);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_veth(struct nlmsg* nlmsg, int sock, const char* name,
+                             const char* peer)
+{
+  netlink_add_device_impl(nlmsg, "veth", name);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  netlink_nest(nlmsg, VETH_INFO_PEER);
+  nlmsg->pos += sizeof(struct ifinfomsg);
+  netlink_attr(nlmsg, IFLA_IFNAME, peer, strlen(peer));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_hsr(struct nlmsg* nlmsg, int sock, const char* name,
+                            const char* slave1, const char* slave2)
+{
+  netlink_add_device_impl(nlmsg, "hsr", name);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  int ifindex1 = if_nametoindex(slave1);
+  netlink_attr(nlmsg, IFLA_HSR_SLAVE1, &ifindex1, sizeof(ifindex1));
+  int ifindex2 = if_nametoindex(slave2);
+  netlink_attr(nlmsg, IFLA_HSR_SLAVE2, &ifindex2, sizeof(ifindex2));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_linked(struct nlmsg* nlmsg, int sock, const char* type,
+                               const char* name, const char* link)
+{
+  netlink_add_device_impl(nlmsg, type, name);
+  netlink_done(nlmsg);
+  int ifindex = if_nametoindex(link);
+  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_vlan(struct nlmsg* nlmsg, int sock, const char* name,
+                             const char* link, uint16_t id, uint16_t proto)
+{
+  netlink_add_device_impl(nlmsg, "vlan", name);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  netlink_attr(nlmsg, IFLA_VLAN_ID, &id, sizeof(id));
+  netlink_attr(nlmsg, IFLA_VLAN_PROTOCOL, &proto, sizeof(proto));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int ifindex = if_nametoindex(link);
+  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_macvlan(struct nlmsg* nlmsg, int sock, const char* name,
+                                const char* link)
+{
+  netlink_add_device_impl(nlmsg, "macvlan", name);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  uint32_t mode = MACVLAN_MODE_BRIDGE;
+  netlink_attr(nlmsg, IFLA_MACVLAN_MODE, &mode, sizeof(mode));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int ifindex = if_nametoindex(link);
+  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_geneve(struct nlmsg* nlmsg, int sock, const char* name,
+                               uint32_t vni, struct in_addr* addr4,
+                               struct in6_addr* addr6)
+{
+  netlink_add_device_impl(nlmsg, "geneve", name);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  netlink_attr(nlmsg, IFLA_GENEVE_ID, &vni, sizeof(vni));
+  if (addr4)
+    netlink_attr(nlmsg, IFLA_GENEVE_REMOTE, addr4, sizeof(*addr4));
+  if (addr6)
+    netlink_attr(nlmsg, IFLA_GENEVE_REMOTE6, addr6, sizeof(*addr6));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+#define IFLA_IPVLAN_FLAGS 2
+#define IPVLAN_MODE_L3S 2
+#undef IPVLAN_F_VEPA
+#define IPVLAN_F_VEPA 2
+
+static void netlink_add_ipvlan(struct nlmsg* nlmsg, int sock, const char* name,
+                               const char* link, uint16_t mode, uint16_t flags)
+{
+  netlink_add_device_impl(nlmsg, "ipvlan", name);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  netlink_attr(nlmsg, IFLA_IPVLAN_MODE, &mode, sizeof(mode));
+  netlink_attr(nlmsg, IFLA_IPVLAN_FLAGS, &flags, sizeof(flags));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int ifindex = if_nametoindex(link);
+  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_device_change(struct nlmsg* nlmsg, int sock,
+                                  const char* name, bool up, const char* master,
+                                  const void* mac, int macsize,
+                                  const char* new_name)
+{
+  struct ifinfomsg hdr;
+  memset(&hdr, 0, sizeof(hdr));
+  if (up)
+    hdr.ifi_flags = hdr.ifi_change = IFF_UP;
+  hdr.ifi_index = if_nametoindex(name);
+  netlink_init(nlmsg, RTM_NEWLINK, 0, &hdr, sizeof(hdr));
+  if (new_name)
+    netlink_attr(nlmsg, IFLA_IFNAME, new_name, strlen(new_name));
+  if (master) {
+    int ifindex = if_nametoindex(master);
+    netlink_attr(nlmsg, IFLA_MASTER, &ifindex, sizeof(ifindex));
+  }
+  if (macsize)
+    netlink_attr(nlmsg, IFLA_ADDRESS, mac, macsize);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static int netlink_add_addr(struct nlmsg* nlmsg, int sock, const char* dev,
+                            const void* addr, int addrsize)
+{
+  struct ifaddrmsg hdr;
+  memset(&hdr, 0, sizeof(hdr));
+  hdr.ifa_family = addrsize == 4 ? AF_INET : AF_INET6;
+  hdr.ifa_prefixlen = addrsize == 4 ? 24 : 120;
+  hdr.ifa_scope = RT_SCOPE_UNIVERSE;
+  hdr.ifa_index = if_nametoindex(dev);
+  netlink_init(nlmsg, RTM_NEWADDR, NLM_F_CREATE | NLM_F_REPLACE, &hdr,
+               sizeof(hdr));
+  netlink_attr(nlmsg, IFA_LOCAL, addr, addrsize);
+  netlink_attr(nlmsg, IFA_ADDRESS, addr, addrsize);
+  return netlink_send(nlmsg, sock);
+}
+
+static void netlink_add_addr4(struct nlmsg* nlmsg, int sock, const char* dev,
+                              const char* addr)
+{
+  struct in_addr in_addr;
+  inet_pton(AF_INET, addr, &in_addr);
+  int err = netlink_add_addr(nlmsg, sock, dev, &in_addr, sizeof(in_addr));
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_addr6(struct nlmsg* nlmsg, int sock, const char* dev,
+                              const char* addr)
+{
+  struct in6_addr in6_addr;
+  inet_pton(AF_INET6, addr, &in6_addr);
+  int err = netlink_add_addr(nlmsg, sock, dev, &in6_addr, sizeof(in6_addr));
+  if (err < 0) {
+  }
+}
+
+static struct nlmsg nlmsg;
+
+#define DEVLINK_FAMILY_NAME "devlink"
+
+#define DEVLINK_CMD_PORT_GET 5
+#define DEVLINK_ATTR_BUS_NAME 1
+#define DEVLINK_ATTR_DEV_NAME 2
+#define DEVLINK_ATTR_NETDEV_NAME 7
+
+static struct nlmsg nlmsg2;
+
+static void initialize_devlink_ports(const char* bus_name, const char* dev_name,
+                                     const char* netdev_prefix)
+{
+  struct genlmsghdr genlhdr;
+  int len, total_len, id, err, offset;
+  uint16_t netdev_index;
+  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
+  if (sock == -1)
+    exit(1);
+  int rtsock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  if (rtsock == -1)
+    exit(1);
+  id = netlink_query_family_id(&nlmsg, sock, DEVLINK_FAMILY_NAME, true);
+  if (id == -1)
+    goto error;
+  memset(&genlhdr, 0, sizeof(genlhdr));
+  genlhdr.cmd = DEVLINK_CMD_PORT_GET;
+  netlink_init(&nlmsg, id, NLM_F_DUMP, &genlhdr, sizeof(genlhdr));
+  netlink_attr(&nlmsg, DEVLINK_ATTR_BUS_NAME, bus_name, strlen(bus_name) + 1);
+  netlink_attr(&nlmsg, DEVLINK_ATTR_DEV_NAME, dev_name, strlen(dev_name) + 1);
+  err = netlink_send_ext(&nlmsg, sock, id, &total_len, true);
+  if (err < 0) {
+    goto error;
+  }
+  offset = 0;
+  netdev_index = 0;
+  while ((len = netlink_next_msg(&nlmsg, offset, total_len)) != -1) {
+    struct nlattr* attr = (struct nlattr*)(nlmsg.buf + offset + NLMSG_HDRLEN +
+                                           NLMSG_ALIGN(sizeof(genlhdr)));
+    for (; (char*)attr < nlmsg.buf + offset + len;
+         attr = (struct nlattr*)((char*)attr + NLMSG_ALIGN(attr->nla_len))) {
+      if (attr->nla_type == DEVLINK_ATTR_NETDEV_NAME) {
+        char* port_name;
+        char netdev_name[IFNAMSIZ];
+        port_name = (char*)(attr + 1);
+        snprintf(netdev_name, sizeof(netdev_name), "%s%d", netdev_prefix,
+                 netdev_index);
+        netlink_device_change(&nlmsg2, rtsock, port_name, true, 0, 0, 0,
+                              netdev_name);
+        break;
+      }
+    }
+    offset += len;
+    netdev_index++;
+  }
+error:
+  close(rtsock);
+  close(sock);
+}
+
+#define DEV_IPV4 "172.20.20.%d"
+#define DEV_IPV6 "fe80::%02x"
+#define DEV_MAC 0x00aaaaaaaaaa
+
+static void netdevsim_add(unsigned int addr, unsigned int port_count)
+{
+  char buf[16];
+  sprintf(buf, "%u %u", addr, port_count);
+  if (write_file("/sys/bus/netdevsim/new_device", buf)) {
+    snprintf(buf, sizeof(buf), "netdevsim%d", addr);
+    initialize_devlink_ports("netdevsim", buf, "netdevsim");
+  }
+}
+
+#define WG_GENL_NAME "wireguard"
+enum wg_cmd {
+  WG_CMD_GET_DEVICE,
+  WG_CMD_SET_DEVICE,
+};
+enum wgdevice_attribute {
+  WGDEVICE_A_UNSPEC,
+  WGDEVICE_A_IFINDEX,
+  WGDEVICE_A_IFNAME,
+  WGDEVICE_A_PRIVATE_KEY,
+  WGDEVICE_A_PUBLIC_KEY,
+  WGDEVICE_A_FLAGS,
+  WGDEVICE_A_LISTEN_PORT,
+  WGDEVICE_A_FWMARK,
+  WGDEVICE_A_PEERS,
+};
+enum wgpeer_attribute {
+  WGPEER_A_UNSPEC,
+  WGPEER_A_PUBLIC_KEY,
+  WGPEER_A_PRESHARED_KEY,
+  WGPEER_A_FLAGS,
+  WGPEER_A_ENDPOINT,
+  WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+  WGPEER_A_LAST_HANDSHAKE_TIME,
+  WGPEER_A_RX_BYTES,
+  WGPEER_A_TX_BYTES,
+  WGPEER_A_ALLOWEDIPS,
+  WGPEER_A_PROTOCOL_VERSION,
+};
+enum wgallowedip_attribute {
+  WGALLOWEDIP_A_UNSPEC,
+  WGALLOWEDIP_A_FAMILY,
+  WGALLOWEDIP_A_IPADDR,
+  WGALLOWEDIP_A_CIDR_MASK,
+};
+
+static void netlink_wireguard_setup(void)
+{
+  const char ifname_a[] = "wg0";
+  const char ifname_b[] = "wg1";
+  const char ifname_c[] = "wg2";
+  const char private_a[] =
+      "\xa0\x5c\xa8\x4f\x6c\x9c\x8e\x38\x53\xe2\xfd\x7a\x70\xae\x0f\xb2\x0f\xa1"
+      "\x52\x60\x0c\xb0\x08\x45\x17\x4f\x08\x07\x6f\x8d\x78\x43";
+  const char private_b[] =
+      "\xb0\x80\x73\xe8\xd4\x4e\x91\xe3\xda\x92\x2c\x22\x43\x82\x44\xbb\x88\x5c"
+      "\x69\xe2\x69\xc8\xe9\xd8\x35\xb1\x14\x29\x3a\x4d\xdc\x6e";
+  const char private_c[] =
+      "\xa0\xcb\x87\x9a\x47\xf5\xbc\x64\x4c\x0e\x69\x3f\xa6\xd0\x31\xc7\x4a\x15"
+      "\x53\xb6\xe9\x01\xb9\xff\x2f\x51\x8c\x78\x04\x2f\xb5\x42";
+  const char public_a[] =
+      "\x97\x5c\x9d\x81\xc9\x83\xc8\x20\x9e\xe7\x81\x25\x4b\x89\x9f\x8e\xd9\x25"
+      "\xae\x9f\x09\x23\xc2\x3c\x62\xf5\x3c\x57\xcd\xbf\x69\x1c";
+  const char public_b[] =
+      "\xd1\x73\x28\x99\xf6\x11\xcd\x89\x94\x03\x4d\x7f\x41\x3d\xc9\x57\x63\x0e"
+      "\x54\x93\xc2\x85\xac\xa4\x00\x65\xcb\x63\x11\xbe\x69\x6b";
+  const char public_c[] =
+      "\xf4\x4d\xa3\x67\xa8\x8e\xe6\x56\x4f\x02\x02\x11\x45\x67\x27\x08\x2f\x5c"
+      "\xeb\xee\x8b\x1b\xf5\xeb\x73\x37\x34\x1b\x45\x9b\x39\x22";
+  const uint16_t listen_a = 20001;
+  const uint16_t listen_b = 20002;
+  const uint16_t listen_c = 20003;
+  const uint16_t af_inet = AF_INET;
+  const uint16_t af_inet6 = AF_INET6;
+  const struct sockaddr_in endpoint_b_v4 = {
+      .sin_family = AF_INET,
+      .sin_port = htons(listen_b),
+      .sin_addr = {htonl(INADDR_LOOPBACK)}};
+  const struct sockaddr_in endpoint_c_v4 = {
+      .sin_family = AF_INET,
+      .sin_port = htons(listen_c),
+      .sin_addr = {htonl(INADDR_LOOPBACK)}};
+  struct sockaddr_in6 endpoint_a_v6 = {.sin6_family = AF_INET6,
+                                       .sin6_port = htons(listen_a)};
+  endpoint_a_v6.sin6_addr = in6addr_loopback;
+  struct sockaddr_in6 endpoint_c_v6 = {.sin6_family = AF_INET6,
+                                       .sin6_port = htons(listen_c)};
+  endpoint_c_v6.sin6_addr = in6addr_loopback;
+  const struct in_addr first_half_v4 = {0};
+  const struct in_addr second_half_v4 = {(uint32_t)htonl(128 << 24)};
+  const struct in6_addr first_half_v6 = {{{0}}};
+  const struct in6_addr second_half_v6 = {{{0x80}}};
+  const uint8_t half_cidr = 1;
+  const uint16_t persistent_keepalives[] = {1, 3, 7, 9, 14, 19};
+  struct genlmsghdr genlhdr = {.cmd = WG_CMD_SET_DEVICE, .version = 1};
+  int sock;
+  int id, err;
+  sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
+  if (sock == -1) {
+    return;
+  }
+  id = netlink_query_family_id(&nlmsg, sock, WG_GENL_NAME, true);
+  if (id == -1)
+    goto error;
+  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
+  netlink_attr(&nlmsg, WGDEVICE_A_IFNAME, ifname_a, strlen(ifname_a) + 1);
+  netlink_attr(&nlmsg, WGDEVICE_A_PRIVATE_KEY, private_a, 32);
+  netlink_attr(&nlmsg, WGDEVICE_A_LISTEN_PORT, &listen_a, 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGDEVICE_A_PEERS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_b, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_b_v4,
+               sizeof(endpoint_b_v4));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[0], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v4,
+               sizeof(first_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v6,
+               sizeof(first_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_c, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_c_v6,
+               sizeof(endpoint_c_v6));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[1], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v4,
+               sizeof(second_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v6,
+               sizeof(second_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  err = netlink_send(&nlmsg, sock);
+  if (err < 0) {
+  }
+  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
+  netlink_attr(&nlmsg, WGDEVICE_A_IFNAME, ifname_b, strlen(ifname_b) + 1);
+  netlink_attr(&nlmsg, WGDEVICE_A_PRIVATE_KEY, private_b, 32);
+  netlink_attr(&nlmsg, WGDEVICE_A_LISTEN_PORT, &listen_b, 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGDEVICE_A_PEERS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_a, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_a_v6,
+               sizeof(endpoint_a_v6));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[2], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v4,
+               sizeof(first_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v6,
+               sizeof(first_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_c, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_c_v4,
+               sizeof(endpoint_c_v4));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[3], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v4,
+               sizeof(second_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v6,
+               sizeof(second_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  err = netlink_send(&nlmsg, sock);
+  if (err < 0) {
+  }
+  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
+  netlink_attr(&nlmsg, WGDEVICE_A_IFNAME, ifname_c, strlen(ifname_c) + 1);
+  netlink_attr(&nlmsg, WGDEVICE_A_PRIVATE_KEY, private_c, 32);
+  netlink_attr(&nlmsg, WGDEVICE_A_LISTEN_PORT, &listen_c, 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGDEVICE_A_PEERS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_a, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_a_v6,
+               sizeof(endpoint_a_v6));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[4], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v4,
+               sizeof(first_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v6,
+               sizeof(first_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_b, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_b_v4,
+               sizeof(endpoint_b_v4));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[5], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v4,
+               sizeof(second_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v6,
+               sizeof(second_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  err = netlink_send(&nlmsg, sock);
+  if (err < 0) {
+  }
+
+error:
+  close(sock);
+}
+static void initialize_netdevices(void)
+{
+  char netdevsim[16];
+  sprintf(netdevsim, "netdevsim%d", (int)procid);
+  struct {
+    const char* type;
+    const char* dev;
+  } devtypes[] = {
+      {"ip6gretap", "ip6gretap0"}, {"bridge", "bridge0"},
+      {"vcan", "vcan0"},           {"bond", "bond0"},
+      {"team", "team0"},           {"dummy", "dummy0"},
+      {"nlmon", "nlmon0"},         {"caif", "caif0"},
+      {"batadv", "batadv0"},       {"vxcan", "vxcan1"},
+      {"netdevsim", netdevsim},    {"veth", 0},
+      {"xfrm", "xfrm0"},           {"wireguard", "wg0"},
+      {"wireguard", "wg1"},        {"wireguard", "wg2"},
+  };
+  const char* devmasters[] = {"bridge", "bond", "team", "batadv"};
+  struct {
+    const char* name;
+    int macsize;
+    bool noipv6;
+  } devices[] = {
+      {"lo", ETH_ALEN},
+      {"sit0", 0},
+      {"bridge0", ETH_ALEN},
+      {"vcan0", 0, true},
+      {"tunl0", 0},
+      {"gre0", 0},
+      {"gretap0", ETH_ALEN},
+      {"ip_vti0", 0},
+      {"ip6_vti0", 0},
+      {"ip6tnl0", 0},
+      {"ip6gre0", 0},
+      {"ip6gretap0", ETH_ALEN},
+      {"erspan0", ETH_ALEN},
+      {"bond0", ETH_ALEN},
+      {"veth0", ETH_ALEN},
+      {"veth1", ETH_ALEN},
+      {"team0", ETH_ALEN},
+      {"veth0_to_bridge", ETH_ALEN},
+      {"veth1_to_bridge", ETH_ALEN},
+      {"veth0_to_bond", ETH_ALEN},
+      {"veth1_to_bond", ETH_ALEN},
+      {"veth0_to_team", ETH_ALEN},
+      {"veth1_to_team", ETH_ALEN},
+      {"veth0_to_hsr", ETH_ALEN},
+      {"veth1_to_hsr", ETH_ALEN},
+      {"hsr0", 0},
+      {"dummy0", ETH_ALEN},
+      {"nlmon0", 0},
+      {"vxcan0", 0, true},
+      {"vxcan1", 0, true},
+      {"caif0", ETH_ALEN},
+      {"batadv0", ETH_ALEN},
+      {netdevsim, ETH_ALEN},
+      {"xfrm0", ETH_ALEN},
+      {"veth0_virt_wifi", ETH_ALEN},
+      {"veth1_virt_wifi", ETH_ALEN},
+      {"virt_wifi0", ETH_ALEN},
+      {"veth0_vlan", ETH_ALEN},
+      {"veth1_vlan", ETH_ALEN},
+      {"vlan0", ETH_ALEN},
+      {"vlan1", ETH_ALEN},
+      {"macvlan0", ETH_ALEN},
+      {"macvlan1", ETH_ALEN},
+      {"ipvlan0", ETH_ALEN},
+      {"ipvlan1", ETH_ALEN},
+      {"veth0_macvtap", ETH_ALEN},
+      {"veth1_macvtap", ETH_ALEN},
+      {"macvtap0", ETH_ALEN},
+      {"macsec0", ETH_ALEN},
+      {"veth0_to_batadv", ETH_ALEN},
+      {"veth1_to_batadv", ETH_ALEN},
+      {"batadv_slave_0", ETH_ALEN},
+      {"batadv_slave_1", ETH_ALEN},
+      {"geneve0", ETH_ALEN},
+      {"geneve1", ETH_ALEN},
+      {"wg0", 0},
+      {"wg1", 0},
+      {"wg2", 0},
+  };
+  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  if (sock == -1)
+    exit(1);
+  unsigned i;
+  for (i = 0; i < sizeof(devtypes) / sizeof(devtypes[0]); i++)
+    netlink_add_device(&nlmsg, sock, devtypes[i].type, devtypes[i].dev);
+  for (i = 0; i < sizeof(devmasters) / (sizeof(devmasters[0])); i++) {
+    char master[32], slave0[32], veth0[32], slave1[32], veth1[32];
+    sprintf(slave0, "%s_slave_0", devmasters[i]);
+    sprintf(veth0, "veth0_to_%s", devmasters[i]);
+    netlink_add_veth(&nlmsg, sock, slave0, veth0);
+    sprintf(slave1, "%s_slave_1", devmasters[i]);
+    sprintf(veth1, "veth1_to_%s", devmasters[i]);
+    netlink_add_veth(&nlmsg, sock, slave1, veth1);
+    sprintf(master, "%s0", devmasters[i]);
+    netlink_device_change(&nlmsg, sock, slave0, false, master, 0, 0, NULL);
+    netlink_device_change(&nlmsg, sock, slave1, false, master, 0, 0, NULL);
+  }
+  netlink_device_change(&nlmsg, sock, "bridge_slave_0", true, 0, 0, 0, NULL);
+  netlink_device_change(&nlmsg, sock, "bridge_slave_1", true, 0, 0, 0, NULL);
+  netlink_add_veth(&nlmsg, sock, "hsr_slave_0", "veth0_to_hsr");
+  netlink_add_veth(&nlmsg, sock, "hsr_slave_1", "veth1_to_hsr");
+  netlink_add_hsr(&nlmsg, sock, "hsr0", "hsr_slave_0", "hsr_slave_1");
+  netlink_device_change(&nlmsg, sock, "hsr_slave_0", true, 0, 0, 0, NULL);
+  netlink_device_change(&nlmsg, sock, "hsr_slave_1", true, 0, 0, 0, NULL);
+  netlink_add_veth(&nlmsg, sock, "veth0_virt_wifi", "veth1_virt_wifi");
+  netlink_add_linked(&nlmsg, sock, "virt_wifi", "virt_wifi0",
+                     "veth1_virt_wifi");
+  netlink_add_veth(&nlmsg, sock, "veth0_vlan", "veth1_vlan");
+  netlink_add_vlan(&nlmsg, sock, "vlan0", "veth0_vlan", 0, htons(ETH_P_8021Q));
+  netlink_add_vlan(&nlmsg, sock, "vlan1", "veth0_vlan", 1, htons(ETH_P_8021AD));
+  netlink_add_macvlan(&nlmsg, sock, "macvlan0", "veth1_vlan");
+  netlink_add_macvlan(&nlmsg, sock, "macvlan1", "veth1_vlan");
+  netlink_add_ipvlan(&nlmsg, sock, "ipvlan0", "veth0_vlan", IPVLAN_MODE_L2, 0);
+  netlink_add_ipvlan(&nlmsg, sock, "ipvlan1", "veth0_vlan", IPVLAN_MODE_L3S,
+                     IPVLAN_F_VEPA);
+  netlink_add_veth(&nlmsg, sock, "veth0_macvtap", "veth1_macvtap");
+  netlink_add_linked(&nlmsg, sock, "macvtap", "macvtap0", "veth0_macvtap");
+  netlink_add_linked(&nlmsg, sock, "macsec", "macsec0", "veth1_macvtap");
+  char addr[32];
+  sprintf(addr, DEV_IPV4, 14 + 10);
+  struct in_addr geneve_addr4;
+  if (inet_pton(AF_INET, addr, &geneve_addr4) <= 0)
+    exit(1);
+  struct in6_addr geneve_addr6;
+  if (inet_pton(AF_INET6, "fc00::01", &geneve_addr6) <= 0)
+    exit(1);
+  netlink_add_geneve(&nlmsg, sock, "geneve0", 0, &geneve_addr4, 0);
+  netlink_add_geneve(&nlmsg, sock, "geneve1", 1, 0, &geneve_addr6);
+  netdevsim_add((int)procid, 4);
+  netlink_wireguard_setup();
+  for (i = 0; i < sizeof(devices) / (sizeof(devices[0])); i++) {
+    char addr[32];
+    sprintf(addr, DEV_IPV4, i + 10);
+    netlink_add_addr4(&nlmsg, sock, devices[i].name, addr);
+    if (!devices[i].noipv6) {
+      sprintf(addr, DEV_IPV6, i + 10);
+      netlink_add_addr6(&nlmsg, sock, devices[i].name, addr);
+    }
+    uint64_t macaddr = DEV_MAC + ((i + 10ull) << 40);
+    netlink_device_change(&nlmsg, sock, devices[i].name, true, 0, &macaddr,
+                          devices[i].macsize, NULL);
+  }
+  close(sock);
+}
+static void initialize_netdevices_init(void)
+{
+  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  if (sock == -1)
+    exit(1);
+  struct {
+    const char* type;
+    int macsize;
+    bool noipv6;
+    bool noup;
+  } devtypes[] = {
+      {"nr", 7, true},
+      {"rose", 5, true, true},
+  };
+  unsigned i;
+  for (i = 0; i < sizeof(devtypes) / sizeof(devtypes[0]); i++) {
+    char dev[32], addr[32];
+    sprintf(dev, "%s%d", devtypes[i].type, (int)procid);
+    sprintf(addr, "172.30.%d.%d", i, (int)procid + 1);
+    netlink_add_addr4(&nlmsg, sock, dev, addr);
+    if (!devtypes[i].noipv6) {
+      sprintf(addr, "fe88::%02x:%02x", i, (int)procid + 1);
+      netlink_add_addr6(&nlmsg, sock, dev, addr);
+    }
+    int macsize = devtypes[i].macsize;
+    uint64_t macaddr = 0xbbbbbb +
+                       ((unsigned long long)i << (8 * (macsize - 2))) +
+                       (procid << (8 * (macsize - 1)));
+    netlink_device_change(&nlmsg, sock, dev, !devtypes[i].noup, 0, &macaddr,
+                          macsize, NULL);
+  }
+  close(sock);
+}
+
+#define MAX_FDS 30
+
+static void setup_common()
+{
+  if (mount(0, "/sys/fs/fuse/connections", "fusectl", 0, 0)) {
+  }
+}
+
+static void setup_binderfs()
+{
+  if (mkdir("/dev/binderfs", 0777)) {
+  }
+  if (mount("binder", "/dev/binderfs", "binder", 0, NULL)) {
+  }
+  if (symlink("/dev/binderfs", "./binderfs")) {
+  }
+}
+
+static void loop();
+
+static void sandbox_common()
+{
+  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+  setsid();
+  struct rlimit rlim;
+  rlim.rlim_cur = rlim.rlim_max = (200 << 20);
+  setrlimit(RLIMIT_AS, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 32 << 20;
+  setrlimit(RLIMIT_MEMLOCK, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 136 << 20;
+  setrlimit(RLIMIT_FSIZE, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 1 << 20;
+  setrlimit(RLIMIT_STACK, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 0;
+  setrlimit(RLIMIT_CORE, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 256;
+  setrlimit(RLIMIT_NOFILE, &rlim);
+  if (unshare(CLONE_NEWNS)) {
+  }
+  if (mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL)) {
+  }
+  if (unshare(CLONE_NEWIPC)) {
+  }
+  if (unshare(0x02000000)) {
+  }
+  if (unshare(CLONE_NEWUTS)) {
+  }
+  if (unshare(CLONE_SYSVSEM)) {
+  }
+  typedef struct {
+    const char* name;
+    const char* value;
+  } sysctl_t;
+  static const sysctl_t sysctls[] = {
+      {"/proc/sys/kernel/shmmax", "16777216"},
+      {"/proc/sys/kernel/shmall", "536870912"},
+      {"/proc/sys/kernel/shmmni", "1024"},
+      {"/proc/sys/kernel/msgmax", "8192"},
+      {"/proc/sys/kernel/msgmni", "1024"},
+      {"/proc/sys/kernel/msgmnb", "1024"},
+      {"/proc/sys/kernel/sem", "1024 1048576 500 1024"},
+  };
+  unsigned i;
+  for (i = 0; i < sizeof(sysctls) / sizeof(sysctls[0]); i++)
+    write_file(sysctls[i].name, sysctls[i].value);
+}
+
+static int wait_for_loop(int pid)
+{
+  if (pid < 0)
+    exit(1);
+  int status = 0;
+  while (waitpid(-1, &status, __WALL) != pid) {
+  }
+  return WEXITSTATUS(status);
+}
+
+static void drop_caps(void)
+{
+  struct __user_cap_header_struct cap_hdr = {};
+  struct __user_cap_data_struct cap_data[2] = {};
+  cap_hdr.version = _LINUX_CAPABILITY_VERSION_3;
+  cap_hdr.pid = getpid();
+  if (syscall(SYS_capget, &cap_hdr, &cap_data))
+    exit(1);
+  const int drop = (1 << CAP_SYS_PTRACE) | (1 << CAP_SYS_NICE);
+  cap_data[0].effective &= ~drop;
+  cap_data[0].permitted &= ~drop;
+  cap_data[0].inheritable &= ~drop;
+  if (syscall(SYS_capset, &cap_hdr, &cap_data))
+    exit(1);
+}
+
+static int do_sandbox_none(void)
+{
+  if (unshare(CLONE_NEWPID)) {
+  }
+  int pid = fork();
+  if (pid != 0)
+    return wait_for_loop(pid);
+  setup_common();
+  sandbox_common();
+  drop_caps();
+  initialize_netdevices_init();
+  if (unshare(CLONE_NEWNET)) {
+  }
+  initialize_netdevices();
+  setup_binderfs();
+  loop();
+  exit(1);
+}
+
+static void kill_and_wait(int pid, int* status)
+{
+  kill(-pid, SIGKILL);
+  kill(pid, SIGKILL);
+  for (int i = 0; i < 100; i++) {
+    if (waitpid(-1, status, WNOHANG | __WALL) == pid)
+      return;
+    usleep(1000);
+  }
+  DIR* dir = opendir("/sys/fs/fuse/connections");
+  if (dir) {
+    for (;;) {
+      struct dirent* ent = readdir(dir);
+      if (!ent)
+        break;
+      if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+        continue;
+      char abort[300];
+      snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
+               ent->d_name);
+      int fd = open(abort, O_WRONLY);
+      if (fd == -1) {
+        continue;
+      }
+      if (write(fd, abort, 1) < 0) {
+      }
+      close(fd);
+    }
+    closedir(dir);
+  } else {
+  }
+  while (waitpid(-1, status, __WALL) != pid) {
+  }
+}
+
+static void setup_test()
+{
+  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+  setpgrp();
+  write_file("/proc/self/oom_score_adj", "1000");
+}
+
+static void close_fds()
+{
+  for (int fd = 3; fd < MAX_FDS; fd++)
+    close(fd);
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void)
+{
+  int iter = 0;
+  for (;; iter++) {
+    int pid = fork();
+    if (pid < 0)
+      exit(1);
+    if (pid == 0) {
+      setup_test();
+      execute_one();
+      close_fds();
+      exit(0);
+    }
+    int status = 0;
+    uint64_t start = current_time_ms();
+    for (;;) {
+      if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid)
+        break;
+      sleep_ms(1);
+      if (current_time_ms() - start < 5000)
+        continue;
+      kill_and_wait(pid, &status);
+      break;
+    }
+  }
+}
+
+uint64_t r[2] = {0xffffffffffffffff, 0xffffffffffffffff};
+
+void execute_one(void)
+{
+  intptr_t res = 0;
+  res = syscall(__NR_socket, 0x10ul, 3ul, 0x14);
+  if (res != -1)
+    r[0] = res;
+  *(uint64_t*)0x20000200 = 0;
+  *(uint32_t*)0x20000208 = 0;
+  *(uint64_t*)0x20000210 = 0x200001c0;
+  *(uint64_t*)0x200001c0 = 0x20000180;
+  memcpy((void*)0x20000180,
+         "\x38\x00\x00\x00\x03\x14\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x09"
+         "\x00\x02\x00\x73\x79\x6a\x31\x00\x00\x00\x00\x08\x00\x41\x00\x73\x69"
+         "\x77\x00\x14\x00\x33\x00\x76\x6c\x61\x6e\x30",
+         45);
+  *(uint64_t*)0x200001c8 = 0x38;
+  *(uint64_t*)0x20000218 = 1;
+  *(uint64_t*)0x20000220 = 0;
+  *(uint64_t*)0x20000228 = 0;
+  *(uint32_t*)0x20000230 = 0;
+  syscall(__NR_sendmsg, r[0], 0x20000200ul, 0ul);
+  res = syscall(__NR_socket, 0x11ul, 3ul, 0x300);
+  if (res != -1)
+    r[1] = res;
+  syscall(__NR_bind, r[1], 0ul, 0ul);
+  *(uint32_t*)0x20000040 = 1;
+  memcpy((void*)0x20000044,
+         "vlan0\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+         "\000\000\000",
+         24);
+  *(uint32_t*)0x2000005c = 0;
+  *(uint16_t*)0x20000074 = 6;
+  syscall(__NR_ioctl, r[1], 0x8982, 0x20000040ul);
+}
+int main(void)
+{
+  syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+  syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
+  syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+  do_sandbox_none();
+  return 0;
+}
