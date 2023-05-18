@@ -2,301 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7D9707EC4
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 13:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48602707F95
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 13:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjERLEd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 May 2023 07:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
+        id S231354AbjERLhR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 May 2023 07:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjERLEc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 07:04:32 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84461721
-        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 04:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684407867; x=1715943867;
-  h=date:from:to:cc:subject:message-id;
-  bh=PzCLVl1XRUj1SJKRMEdYuN+6Tvt0njJaok/SnFlPHsI=;
-  b=OLV7SojglI2VbNbG02vrivAlCz/wBuBtnv+75+jIoenFrCdpdTWSO9aP
-   IPEgvL6yzcL+dODw3v3Uqgh8i0rjtwhDRdRIN8IX5Wvq/AcTu3rEI5E9H
-   ewpKyhZLcgYYMRqF1JE4K6+uUUsqIy5IO9cXXZucdUSbRzys/ZNtHTCj6
-   RieCd4MPx5Pwc7YY56yFesx+mNeIq+WsggrEcBNkNcve3W/BPcGrB7Fl2
-   IaRk7jE7qMY7vx85Py1FictbnKcqKwjUyA7cMPQzDLqqoO9+LxMCdSwmB
-   9mQmF0DxHvkC5Vf3Lh/48/bkXh+a87itqTQqURPGjk3hhVafsl1N0ZrRY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="417700585"
-X-IronPort-AV: E=Sophos;i="5.99,285,1677571200"; 
-   d="scan'208";a="417700585"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2023 04:04:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="732837648"
-X-IronPort-AV: E=Sophos;i="5.99,285,1677571200"; 
-   d="scan'208";a="732837648"
-Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 18 May 2023 04:04:25 -0700
-Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pzbQn-0009yQ-0I;
-        Thu, 18 May 2023 11:04:25 +0000
-Date:   Thu, 18 May 2023 19:03:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- a7dae5daf4bf50de01ebdd192bf52c2e8cd80c75
-Message-ID: <20230518110330.gLkAC%lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        with ESMTP id S231418AbjERLgk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 07:36:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96B1173D
+        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 04:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1684409749;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tEe6KsGIUg5Ug9eymZUK4cq5L1lxhWlwpIXxPsGo3ck=;
+        b=VmBYGGsCtwey0ieiDzNGTTLoxEM++51zyOWBJIjmttnbEMWZ3Kz3ucsC874e3PyOjOCCwr
+        uR1F7MD0371tgPISw/XKB7T4usF7bTAN1yAavJuAVqUnhTs3eZr+hkgMe8LYwKUCX4f4In
+        MEIQ7oNFZ+3RanCRP2jpOEzIkA4ocLs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-146-D-Rd9ENnNDKPveHNDxPUbw-1; Thu, 18 May 2023 07:35:43 -0400
+X-MC-Unique: D-Rd9ENnNDKPveHNDxPUbw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B38E010146F8;
+        Thu, 18 May 2023 11:35:42 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.221])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1878240C2063;
+        Thu, 18 May 2023 11:35:39 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Bernard Metzler <bmt@zurich.ibm.com>,
+        Tom Talpey <tom@talpey.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v8 09/16] siw: Inline do_tcp_sendpages()
+Date:   Thu, 18 May 2023 12:34:46 +0100
+Message-Id: <20230518113453.1350757-10-dhowells@redhat.com>
+In-Reply-To: <20230518113453.1350757-1-dhowells@redhat.com>
+References: <20230518113453.1350757-1-dhowells@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: INFO setup_repo_specs: /db/releases/20230517200055/lkp-src/repo/*/rdma
-https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: a7dae5daf4bf50de01ebdd192bf52c2e8cd80c75  RDMA/irdma: Move iw device ops initialization
+do_tcp_sendpages() is now just a small wrapper around tcp_sendmsg_locked(),
+so inline it, allowing do_tcp_sendpages() to be removed.  This is part of
+replacing ->sendpage() with a call to sendmsg() with MSG_SPLICE_PAGES set.
 
-elapsed time: 735m
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+Reviewed-by: Tom Talpey <tom@talpey.com>
+cc: Jason Gunthorpe <jgg@ziepe.ca>
+cc: Leon Romanovsky <leon@kernel.org>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: linux-rdma@vger.kernel.org
+cc: netdev@vger.kernel.org
+---
 
-configs tested: 224
-configs skipped: 15
+Notes:
+    ver #6)
+     - Don't clear MSG_SPLICE_PAGES on the last page.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha        buildonly-randconfig-r001-20230517   gcc  
-alpha        buildonly-randconfig-r003-20230517   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r012-20230517   gcc  
-alpha                randconfig-r015-20230517   gcc  
-arc                              allyesconfig   gcc  
-arc          buildonly-randconfig-r002-20230517   gcc  
-arc          buildonly-randconfig-r006-20230517   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r003-20230517   gcc  
-arc                  randconfig-r022-20230517   gcc  
-arc                  randconfig-r033-20230517   gcc  
-arc                  randconfig-r043-20230517   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                       imx_v6_v7_defconfig   gcc  
-arm                        keystone_defconfig   gcc  
-arm                        mvebu_v5_defconfig   clang
-arm                            qcom_defconfig   gcc  
-arm                  randconfig-r031-20230517   gcc  
-arm                  randconfig-r035-20230517   gcc  
-arm                  randconfig-r036-20230517   gcc  
-arm                  randconfig-r046-20230517   clang
-arm                           sama5_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r003-20230517   clang
-arm64                randconfig-r012-20230517   gcc  
-arm64                randconfig-r014-20230517   gcc  
-arm64                randconfig-r022-20230518   clang
-arm64                randconfig-r023-20230517   gcc  
-csky         buildonly-randconfig-r005-20230517   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r001-20230517   gcc  
-csky                 randconfig-r013-20230517   gcc  
-hexagon              randconfig-r022-20230517   clang
-hexagon              randconfig-r035-20230517   clang
-hexagon              randconfig-r041-20230517   clang
-hexagon              randconfig-r045-20230517   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                          randconfig-a001   gcc  
-i386                          randconfig-a002   clang
-i386                          randconfig-a003   gcc  
-i386                          randconfig-a004   clang
-i386                          randconfig-a005   gcc  
-i386                          randconfig-a006   clang
-i386                          randconfig-a012   gcc  
-i386                          randconfig-a014   gcc  
-i386                          randconfig-a016   gcc  
-ia64                             allmodconfig   gcc  
-ia64         buildonly-randconfig-r003-20230517   gcc  
-ia64         buildonly-randconfig-r004-20230517   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r014-20230517   gcc  
-ia64                 randconfig-r016-20230517   gcc  
-ia64                 randconfig-r036-20230517   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r001-20230517   gcc  
-loongarch            randconfig-r005-20230517   gcc  
-m68k                             alldefconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                         apollo_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          multi_defconfig   gcc  
-m68k                        mvme16x_defconfig   gcc  
-m68k                 randconfig-r005-20230517   gcc  
-m68k                 randconfig-r011-20230517   gcc  
-m68k                 randconfig-r023-20230517   gcc  
-m68k                 randconfig-r024-20230517   gcc  
-m68k                 randconfig-r034-20230517   gcc  
-microblaze   buildonly-randconfig-r001-20230517   gcc  
-microblaze   buildonly-randconfig-r002-20230517   gcc  
-microblaze   buildonly-randconfig-r003-20230517   gcc  
-microblaze           randconfig-r003-20230517   gcc  
-microblaze           randconfig-r021-20230517   gcc  
-microblaze           randconfig-r025-20230517   gcc  
-microblaze           randconfig-r031-20230517   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          ath79_defconfig   clang
-mips         buildonly-randconfig-r005-20230517   gcc  
-mips                     decstation_defconfig   gcc  
-mips                            gpr_defconfig   gcc  
-mips                        maltaup_defconfig   clang
-mips                 randconfig-r006-20230517   gcc  
-mips                 randconfig-r015-20230517   clang
-mips                 randconfig-r025-20230517   clang
-nios2                         10m50_defconfig   gcc  
-nios2        buildonly-randconfig-r006-20230517   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r004-20230517   gcc  
-nios2                randconfig-r011-20230517   gcc  
-nios2                randconfig-r025-20230517   gcc  
-openrisc             randconfig-r001-20230517   gcc  
-openrisc             randconfig-r002-20230517   gcc  
-openrisc             randconfig-r003-20230517   gcc  
-openrisc             randconfig-r013-20230517   gcc  
-openrisc             randconfig-r035-20230517   gcc  
-parisc                           alldefconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r013-20230517   gcc  
-parisc               randconfig-r026-20230517   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                       eiger_defconfig   gcc  
-powerpc                        fsp2_defconfig   clang
-powerpc                  iss476-smp_defconfig   gcc  
-powerpc              randconfig-r011-20230517   gcc  
-powerpc              randconfig-r014-20230517   gcc  
-powerpc              randconfig-r016-20230517   gcc  
-powerpc              randconfig-r025-20230518   clang
-powerpc                     sequoia_defconfig   gcc  
-powerpc                     tqm5200_defconfig   clang
-powerpc                      tqm8xx_defconfig   gcc  
-powerpc                      walnut_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv        buildonly-randconfig-r002-20230517   gcc  
-riscv                               defconfig   gcc  
-riscv             nommu_k210_sdcard_defconfig   gcc  
-riscv                randconfig-r024-20230517   gcc  
-riscv                randconfig-r026-20230517   gcc  
-riscv                randconfig-r032-20230517   clang
-riscv                randconfig-r034-20230517   clang
-riscv                randconfig-r042-20230517   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r003-20230517   gcc  
-s390         buildonly-randconfig-r005-20230517   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r004-20230517   clang
-s390                 randconfig-r021-20230517   gcc  
-s390                 randconfig-r022-20230517   gcc  
-s390                 randconfig-r026-20230517   gcc  
-s390                 randconfig-r031-20230517   clang
-s390                 randconfig-r032-20230517   clang
-s390                 randconfig-r044-20230517   gcc  
-sh                               allmodconfig   gcc  
-sh           buildonly-randconfig-r004-20230517   gcc  
-sh           buildonly-randconfig-r005-20230517   gcc  
-sh           buildonly-randconfig-r006-20230517   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                ecovec24-romimage_defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                          r7780mp_defconfig   gcc  
-sh                   randconfig-r002-20230517   gcc  
-sh                   randconfig-r013-20230517   gcc  
-sh                   randconfig-r022-20230517   gcc  
-sh                   randconfig-r024-20230517   gcc  
-sh                   randconfig-r036-20230517   gcc  
-sh                           se7619_defconfig   gcc  
-sh                           se7722_defconfig   gcc  
-sh                           se7780_defconfig   gcc  
-sh                   secureedge5410_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sh                   sh7770_generic_defconfig   gcc  
-sh                             shx3_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc        buildonly-randconfig-r002-20230517   gcc  
-sparc        buildonly-randconfig-r004-20230517   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r003-20230517   gcc  
-sparc                randconfig-r006-20230517   gcc  
-sparc                randconfig-r024-20230517   gcc  
-sparc                randconfig-r033-20230517   gcc  
-sparc64      buildonly-randconfig-r001-20230517   gcc  
-sparc64      buildonly-randconfig-r004-20230517   gcc  
-sparc64              randconfig-r005-20230517   gcc  
-sparc64              randconfig-r015-20230517   gcc  
-sparc64              randconfig-r033-20230517   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                        randconfig-a001   clang
-x86_64                        randconfig-a002   gcc  
-x86_64                        randconfig-a003   clang
-x86_64                        randconfig-a004   gcc  
-x86_64                        randconfig-a005   clang
-x86_64                        randconfig-a006   gcc  
-x86_64                        randconfig-a011   gcc  
-x86_64                        randconfig-a012   clang
-x86_64                        randconfig-a013   gcc  
-x86_64                        randconfig-a014   clang
-x86_64                        randconfig-a015   gcc  
-x86_64                        randconfig-a016   clang
-x86_64                        randconfig-x052   clang
-x86_64                        randconfig-x054   clang
-x86_64                        randconfig-x056   clang
-x86_64                        randconfig-x061   gcc  
-x86_64                        randconfig-x062   clang
-x86_64                        randconfig-x063   gcc  
-x86_64                        randconfig-x064   clang
-x86_64                        randconfig-x065   gcc  
-x86_64                        randconfig-x066   clang
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-kvm   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                           rhel-8.3-syz   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r001-20230517   gcc  
-xtensa       buildonly-randconfig-r002-20230517   gcc  
-xtensa       buildonly-randconfig-r003-20230517   gcc  
-xtensa       buildonly-randconfig-r004-20230517   gcc  
-xtensa               randconfig-r002-20230517   gcc  
-xtensa               randconfig-r004-20230517   gcc  
-xtensa               randconfig-r006-20230517   gcc  
-xtensa               randconfig-r021-20230517   gcc  
-xtensa               randconfig-r032-20230517   gcc  
-xtensa               randconfig-r034-20230517   gcc  
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index 4b292e0504f1..ffb16beb6c30 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -312,7 +312,7 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
+ }
+ 
+ /*
+- * 0copy TCP transmit interface: Use do_tcp_sendpages.
++ * 0copy TCP transmit interface: Use MSG_SPLICE_PAGES.
+  *
+  * Using sendpage to push page by page appears to be less efficient
+  * than using sendmsg, even if data are copied.
+@@ -323,20 +323,27 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
+ static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
+ 			     size_t size)
+ {
++	struct bio_vec bvec;
++	struct msghdr msg = {
++		.msg_flags = (MSG_MORE | MSG_DONTWAIT | MSG_SENDPAGE_NOTLAST |
++			      MSG_SPLICE_PAGES),
++	};
+ 	struct sock *sk = s->sk;
+-	int i = 0, rv = 0, sent = 0,
+-	    flags = MSG_MORE | MSG_DONTWAIT | MSG_SENDPAGE_NOTLAST;
++	int i = 0, rv = 0, sent = 0;
+ 
+ 	while (size) {
+ 		size_t bytes = min_t(size_t, PAGE_SIZE - offset, size);
+ 
+ 		if (size + offset <= PAGE_SIZE)
+-			flags = MSG_MORE | MSG_DONTWAIT;
++			msg.msg_flags &= ~MSG_SENDPAGE_NOTLAST;
+ 
+ 		tcp_rate_check_app_limited(sk);
++		bvec_set_page(&bvec, page[i], bytes, offset);
++		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
++
+ try_page_again:
+ 		lock_sock(sk);
+-		rv = do_tcp_sendpages(sk, page[i], offset, bytes, flags);
++		rv = tcp_sendmsg_locked(sk, &msg, size);
+ 		release_sock(sk);
+ 
+ 		if (rv > 0) {
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
