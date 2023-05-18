@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D623707BEA
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 10:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0C2707BEB
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 10:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbjERIXt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 May 2023 04:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
+        id S229750AbjERIXv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 May 2023 04:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbjERIXq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 04:23:46 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BE21721
-        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 01:23:24 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-643846c006fso1739477b3a.0
-        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 01:23:24 -0700 (PDT)
+        with ESMTP id S229982AbjERIXs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 04:23:48 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEFE19B2
+        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 01:23:26 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-64d2467d63fso98159b3a.0
+        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 01:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1684398183; x=1686990183;
+        d=broadcom.com; s=google; t=1684398185; x=1686990185;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=hQO3YqDiaYc/NCO7Loq4Lrw91GQemKMuZ2x3OieiTgg=;
-        b=XpQ2SvV7HZVVsipmCTiErpOXvbHN1Ru8lePIPaiIspwbIOUL+XAtsKMPb3TpLsEmV5
-         Cm5237KnZt4yDPbVGQZf37gDjyHYOGvThhW7WeTgJsWRr0fHojS/svaqlB/XiTX6EO7G
-         Y3SoPnlg7jvhuGGQuOGLBETftGO21Jt5erEeU=
+        bh=3oudnmeF1UdQVVWapzcFzz6TigNu8DDvRfu5qrese2c=;
+        b=gq9jqqMDP2WNEJBEiCvx+jHfzR8q4R5qXUgNEwp1J2Ka42AHReAudtG2QEhHWbChsy
+         Jzz3vAuvPyd7kL5oCiDXlwPRd8CvZ3+vVhMG7h9twt7jRjY/nGQrop7XzxA1b41OZU2h
+         Tq0z9j8zl/dpx1Fikd3QxihVz0HeUVs3r9YpQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684398183; x=1686990183;
+        d=1e100.net; s=20221208; t=1684398185; x=1686990185;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQO3YqDiaYc/NCO7Loq4Lrw91GQemKMuZ2x3OieiTgg=;
-        b=N84EeX3CF2dvQChJsl+3hZsBe6YV5dYQ4asIrmrb2G5cfD4RzGP0hFfjuQKpxEaXVA
-         EOz81SSIkl7/zrTnVFgaea5Zt+p20f/mUqZow6MHRjv8rb0RUwAqZV0A6dvgOzLqofxy
-         L5Hd45B6McVxq0cDDiVuW/Fe4vGs69Q76kWx8J4fyUtHY6lmVFS0Y3b3gvHfS5LjyvnG
-         AHZ1cNTWh8/VCx/ZD8fzVE1AYtZGrKXi4Q7EGMuMgN3/BzZSDR35smxKUcP4cVYzaz2e
-         atmuOBsiF1tN162260sdzDH/9SR6Ap/XjKbAd3BP4UDh+EFSfPoNqXv2AKMzPcPxKK/N
-         UyoQ==
-X-Gm-Message-State: AC+VfDwVF9OxXj69+WV+MyZ5/5um95KiBYsSLjRbHYFH6Moa2eScLK36
-        oqLBxOAphrGs0m4NvqyORoSgOQ==
-X-Google-Smtp-Source: ACHHUZ7wbXvhqtYw1jzHl+UCyjz1OQmVzLLh8OgQV6kvNBJD+UavYOAF7T9SNkO8anJf23EOZr0YzA==
-X-Received: by 2002:a05:6a00:238e:b0:647:3de:c0ff with SMTP id f14-20020a056a00238e00b0064703dec0ffmr2934596pfc.30.1684398182415;
-        Thu, 18 May 2023 01:23:02 -0700 (PDT)
+        bh=3oudnmeF1UdQVVWapzcFzz6TigNu8DDvRfu5qrese2c=;
+        b=R5c4h4C8QOj5LtMC9kGu2JR7q9hM9Jr6m1XQC+sNruL1Sj3xP5fshRmPrwHm0o6EWx
+         PSnsIh3+KvQ5F+eUGV8JNCvrH8DgvNRcXDSsxGjFiTo+y7fljSMYZM2BD88BAwtlkxZ9
+         HHkydc3kuTR7GopbK97CRqGiSwrLsXBoE4YT/CRg7GcpI1pa7HX59DsC8Yao1QcyMKGh
+         lNUap3ndjZX+GFRv4pQA9fPWBhpQJGIkRjUkKflce+Ov9nmnz67n0JBuWW1Ld/8QB8xh
+         RTw7+LaYAbIZJ+lyTOzckhVpcLGZyXo69Was1Lwh1S4Nauq89ZImU1V67J9FuurvEKHr
+         FmRg==
+X-Gm-Message-State: AC+VfDysVEhn+gLpN84zV1lvBXJFzEFdMohrzW9tggsApOLGjq+19MM/
+        /kKRda5hsptOMNdbnBUsmnsCF0dtXzI8/kU/2lM=
+X-Google-Smtp-Source: ACHHUZ4P/DEWd4ItYVTkiCbwXW75+eKwGURgeIbqSCyYlM+Cz5U8au9qqVQktlknJMIBbj0xHRTZAA==
+X-Received: by 2002:a05:6a00:1255:b0:64c:aa98:a69f with SMTP id u21-20020a056a00125500b0064caa98a69fmr3732513pfi.1.1684398185095;
+        Thu, 18 May 2023 01:23:05 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id b24-20020aa78718000000b0062dd9a8c1b8sm806922pfo.100.2023.05.18.01.22.59
+        by smtp.gmail.com with ESMTPSA id b24-20020aa78718000000b0062dd9a8c1b8sm806922pfo.100.2023.05.18.01.23.02
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 May 2023 01:23:01 -0700 (PDT)
+        Thu, 18 May 2023 01:23:04 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v2 for-rc 1/3] RDMA/bnxt_re: Fix a possible memory leak
-Date:   Thu, 18 May 2023 01:10:59 -0700
-Message-Id: <1684397461-23082-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH v2 for-rc 2/3] RDMA/bnxt_re: Fix return value of bnxt_re_process_raw_qp_pkt_rx
+Date:   Thu, 18 May 2023 01:11:00 -0700
+Message-Id: <1684397461-23082-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1684397461-23082-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1684397461-23082-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000005b8f4d05fbf3839f"
+        boundary="00000000000080dbfb05fbf38360"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,59 +68,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000005b8f4d05fbf3839f
+--00000000000080dbfb05fbf38360
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-Inside bnxt_qplib_create_cq(), when the check for NULL DPI
-fails, driver returns directly without freeing the memory
-allocated inside bnxt_qplib_alloc_init_hwq() routine.
-
-Fixed this by moving the check for NULL DPI before invoking
-bnxt_qplib_alloc_init_hwq().
+bnxt_re_process_raw_qp_pkt_rx() always return 0 and ignores
+the return value of bnxt_re_post_send_shadow_qp().
 
 Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Reviewed-by: Kashyap Desai <kashyap.desai@broadcom.com>
+Reviewed-by: Hongguang Gao <hongguang.gao@broadcom.com>
+Reviewed-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index f139d4c..8974f62 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -2056,6 +2056,12 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
- 	u32 pg_sz_lvl;
- 	int rc;
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index e86afec..0b581c2 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3343,7 +3343,7 @@ static int bnxt_re_process_raw_qp_pkt_rx(struct bnxt_re_qp *gsi_qp,
+ 	/* post data received  in the send queue */
+ 	rc = bnxt_re_post_send_shadow_qp(rdev, gsi_sqp, swr);
  
-+	if (!cq->dpi) {
-+		dev_err(&rcfw->pdev->dev,
-+			"FP: CREATE_CQ failed due to NULL DPI\n");
-+		return -EINVAL;
-+	}
-+
- 	hwq_attr.res = res;
- 	hwq_attr.depth = cq->max_wqe;
- 	hwq_attr.stride = sizeof(struct cq_base);
-@@ -2069,11 +2075,6 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
- 				 CMDQ_BASE_OPCODE_CREATE_CQ,
- 				 sizeof(req));
+-	return 0;
++	return rc;
+ }
  
--	if (!cq->dpi) {
--		dev_err(&rcfw->pdev->dev,
--			"FP: CREATE_CQ failed due to NULL DPI\n");
--		return -EINVAL;
--	}
- 	req.dpi = cpu_to_le32(cq->dpi->dpi);
- 	req.cq_handle = cpu_to_le64(cq->cq_handle);
- 	req.cq_size = cpu_to_le32(cq->hwq.max_elements);
+ static void bnxt_re_process_res_rawqp1_wc(struct ib_wc *wc,
 -- 
 2.5.5
 
 
---0000000000005b8f4d05fbf3839f
+--00000000000080dbfb05fbf38360
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -191,14 +172,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIElKGGqPyLBC
-QQiz2FleB1HReQjoH7qItJMSUhifp1jzMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDUxODA4MjMwMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINl+tTAO5NzT
+aeAFAKsFslgIEMhK6te6bo3vxqMcaq/qMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDUxODA4MjMwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDUvl92Q4glIBnidJHVHBHgMfJzATLl
-MwSCGH4MUAz0fS04PaP+JAokaz6of7qtOiuNVBML/DZaEHt3TkWRZW4lRw8NcEE8x99IuGTXzWaJ
-XSFYie+YC3JpCeCRa7TwvBaG02RCbUxR4dZw3xAJVw+5gG370avqFIcqFe+jxFfi7ndxSInJC5eR
-C7MtX1N1IbuHHRw+I0Y+BvNr7eCCJJWYnxxZq9iiiFXm4ZUTAGOzv0vsJAAO5arcZpw1aGfvb7Za
-2LKbT1bRcoE4dJbYf47WsJCYCM2+pwACxV8rd/G4oFzg4G4Z/ScoZpi1usc8+XqvKucnvOuutJtq
-RDyVLjOf
---0000000000005b8f4d05fbf3839f--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA+kd3ZLOUa3BYZ2Xj2EO2F4wYCYqT/
+ZlqTldZXnV2skqc8mCDGHCwK5CrgyLztKiY8zXbuy86hWWr+zcR7SfqqxZPtBPsA09nvyisPS/Jd
+zt9G4IfuPPo5sBjuwMhRSV6RARk0FHMwZsRvAEuGXbjNuf/55WkYHJqmAMHy7MNb7dzLvzfmIgru
+8wWGYZtFZWIdJQAKCXmxh5p8FGGl7Nrth5lX8DHb5h8ew/eoFXj2YrrsPO3tnklGbKDGHGQSlGax
+6CaErdU1V+rXa4uJ8FuIy3+FNRoGx7vsYVAa3xExL8j9X12vOxszt0niiGUhjoahkcyRjzpBBBQJ
+xCVf48uF
+--00000000000080dbfb05fbf38360--
