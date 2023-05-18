@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA87707EAF
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 13:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84F8707EB7
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 13:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbjERLAi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 May 2023 07:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
+        id S230090AbjERLCa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 May 2023 07:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjERLAg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 07:00:36 -0400
+        with ESMTP id S230047AbjERLC3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 07:02:29 -0400
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4D510EA
-        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 04:00:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AD010D9
+        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 04:02:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684407630; x=1715943630;
+  t=1684407747; x=1715943747;
   h=date:from:to:cc:subject:message-id;
-  bh=FGlZgSUfcuqbWO7w0cpDpglRTm92ZqKRZsCPnUiIqW8=;
-  b=QDynVcMj06XLuhKyiuTN2RSAHJ0WwxBupCBRFoe3DMFOnnIGB++b4bkL
-   mdu0iqbLSwVRNwuZFn8u9CYfCj0qIGXnAzPXpClWKAQ4Sc3jo9B3SADlv
-   hv+WHHvPOGyLTu51ef3/hpLWN9ESVAe7HelaBi/cyMlZTpF8fY3KOAep0
-   uTh+gXCd7c2wXhHCi6U4tpk8PaHjnN+oU5XH+tZn+dGObAb6cCVqFMGdi
-   IUK+5whV3JGOBtSkpyD6e4PYM14C3mvszbiprhmwvgLNEm5r6SQKYG19P
-   cKYldp2Vhd5PJYYcHDtIfQWNr9dWm1sY4n8PC3rCNVMKEX28rAjymJfyi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="417699506"
+  bh=YakYffWP1rR3Hc6MbzgeGP7Q3sORULizKPDfYDRgXko=;
+  b=Z+LHxtPOjY4RcaayWd/nSFu1rQr0AToKni38cyiyAZPNxOCsxaINI+yh
+   7K3L5w8lu1X3thKPU86C24m8Khnt6A2LeE2STwztRzWUrydQKqzv1Q6dY
+   SDabtQV9FBmYSsYkY400reH7XzqgElT8qiGPk+5LV+ulCizTv6dZwSWNH
+   mFquMhKgBXh8b9xbhk1tLimhCpcSM5K57OsMCfIB2qexF/IQkNJcLLwZE
+   tBor1sTCIy3i1Mc8FInl506OZvyc535HzuICLjZCftX0euNtlw8wKsRll
+   8EEuQUTqa8DndHv92n0R/isKD17CVlPlV/fpQaAme3BKIdl9g0abAGoBc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="417699914"
 X-IronPort-AV: E=Sophos;i="5.99,285,1677571200"; 
-   d="scan'208";a="417699506"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2023 04:00:29 -0700
+   d="scan'208";a="417699914"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2023 04:02:26 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="826326089"
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="814281955"
 X-IronPort-AV: E=Sophos;i="5.99,285,1677571200"; 
-   d="scan'208";a="826326089"
+   d="scan'208";a="814281955"
 Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 18 May 2023 04:00:24 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 18 May 2023 04:02:25 -0700
 Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pzbMt-0009vX-1f;
-        Thu, 18 May 2023 11:00:23 +0000
-Date:   Thu, 18 May 2023 19:00:20 +0800
+        id 1pzbOq-0009wd-0a;
+        Thu, 18 May 2023 11:02:24 +0000
+Date:   Thu, 18 May 2023 19:01:36 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: [rdma:for-rc] BUILD SUCCESS
- 866422cdddcdf59d8c68e9472d49ba1be29b5fcf
-Message-ID: <20230518110020.TB8UR%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ 56518a603fd2bf74762d176ac980572db84a3e14
+Message-ID: <20230518110136.i7BkH%lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -60,13 +60,13 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 tree/branch: INFO setup_repo_specs: /db/releases/20230517200055/lkp-src/repo/*/rdma
-https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: 866422cdddcdf59d8c68e9472d49ba1be29b5fcf  RDMA/efa: Fix unsupported page sizes in device
+https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
+branch HEAD: 56518a603fd2bf74762d176ac980572db84a3e14  RDMA/hns: Modify the value of long message loopback slice
 
-elapsed time: 733m
+elapsed time: 732m
 
-configs tested: 207
-configs skipped: 15
+configs tested: 217
+configs skipped: 16
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -79,6 +79,7 @@ alpha                randconfig-r012-20230517   gcc
 alpha                randconfig-r015-20230517   gcc  
 arc                              allyesconfig   gcc  
 arc          buildonly-randconfig-r002-20230517   gcc  
+arc          buildonly-randconfig-r003-20230517   gcc  
 arc          buildonly-randconfig-r006-20230517   gcc  
 arc                                 defconfig   gcc  
 arc                  randconfig-r003-20230517   gcc  
@@ -91,7 +92,6 @@ arm                       imx_v6_v7_defconfig   gcc
 arm                        keystone_defconfig   gcc  
 arm                        mvebu_v5_defconfig   clang
 arm                            qcom_defconfig   gcc  
-arm                  randconfig-r034-20230517   gcc  
 arm                  randconfig-r036-20230517   gcc  
 arm                  randconfig-r046-20230517   clang
 arm                           sama5_defconfig   gcc  
@@ -128,14 +128,14 @@ ia64                 randconfig-r016-20230517   gcc
 ia64                 randconfig-r036-20230517   gcc  
 loongarch                        allmodconfig   gcc  
 loongarch                         allnoconfig   gcc  
+loongarch    buildonly-randconfig-r002-20230517   gcc  
 loongarch                           defconfig   gcc  
 loongarch            randconfig-r001-20230517   gcc  
 loongarch            randconfig-r005-20230517   gcc  
-loongarch            randconfig-r033-20230517   gcc  
-loongarch            randconfig-r035-20230517   gcc  
 m68k                             alldefconfig   gcc  
 m68k                             allmodconfig   gcc  
 m68k                         apollo_defconfig   gcc  
+m68k         buildonly-randconfig-r005-20230517   gcc  
 m68k                                defconfig   gcc  
 m68k                          multi_defconfig   gcc  
 m68k                        mvme16x_defconfig   gcc  
@@ -150,6 +150,7 @@ microblaze           randconfig-r003-20230517   gcc
 microblaze           randconfig-r021-20230517   gcc  
 microblaze           randconfig-r025-20230517   gcc  
 microblaze           randconfig-r031-20230517   gcc  
+microblaze           randconfig-r033-20230517   gcc  
 mips                             allmodconfig   gcc  
 mips                             allyesconfig   gcc  
 mips                          ath79_defconfig   clang
@@ -174,7 +175,6 @@ parisc                           alldefconfig   gcc
 parisc                              defconfig   gcc  
 parisc               randconfig-r013-20230517   gcc  
 parisc               randconfig-r026-20230517   gcc  
-parisc               randconfig-r032-20230517   gcc  
 parisc64                            defconfig   gcc  
 powerpc                          allmodconfig   gcc  
 powerpc                           allnoconfig   gcc  
@@ -200,6 +200,7 @@ riscv                randconfig-r042-20230517   gcc
 riscv                          rv32_defconfig   gcc  
 s390                             allmodconfig   gcc  
 s390                             allyesconfig   gcc  
+s390         buildonly-randconfig-r001-20230517   gcc  
 s390         buildonly-randconfig-r003-20230517   gcc  
 s390                                defconfig   gcc  
 s390                 randconfig-r004-20230517   clang
@@ -221,6 +222,7 @@ sh                   randconfig-r002-20230517   gcc
 sh                   randconfig-r013-20230517   gcc  
 sh                   randconfig-r022-20230517   gcc  
 sh                   randconfig-r024-20230517   gcc  
+sh                   randconfig-r034-20230517   gcc  
 sh                           se7619_defconfig   gcc  
 sh                           se7722_defconfig   gcc  
 sh                           se7780_defconfig   gcc  
@@ -236,6 +238,7 @@ sparc                               defconfig   gcc
 sparc                randconfig-r003-20230517   gcc  
 sparc                randconfig-r006-20230517   gcc  
 sparc                randconfig-r024-20230517   gcc  
+sparc                randconfig-r031-20230517   gcc  
 sparc                randconfig-r033-20230517   gcc  
 sparc64      buildonly-randconfig-r001-20230517   gcc  
 sparc64      buildonly-randconfig-r004-20230517   gcc  
@@ -249,10 +252,16 @@ x86_64                           allyesconfig   gcc
 x86_64                              defconfig   gcc  
 x86_64                                  kexec   gcc  
 x86_64                        randconfig-a001   clang
+x86_64                        randconfig-a002   gcc  
 x86_64                        randconfig-a003   clang
+x86_64                        randconfig-a004   gcc  
 x86_64                        randconfig-a005   clang
+x86_64                        randconfig-a006   gcc  
+x86_64                        randconfig-a011   gcc  
 x86_64                        randconfig-a012   clang
+x86_64                        randconfig-a013   gcc  
 x86_64                        randconfig-a014   clang
+x86_64                        randconfig-a015   gcc  
 x86_64                        randconfig-a016   clang
 x86_64                        randconfig-x052   clang
 x86_64                        randconfig-x054   clang
@@ -279,6 +288,7 @@ xtensa               randconfig-r004-20230517   gcc
 xtensa               randconfig-r006-20230517   gcc  
 xtensa               randconfig-r021-20230517   gcc  
 xtensa               randconfig-r034-20230517   gcc  
+xtensa               randconfig-r035-20230517   gcc  
 
 -- 
 0-DAY CI Kernel Test Service
