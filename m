@@ -2,46 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A5B707A7D
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 09:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD68707BE9
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 May 2023 10:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbjERHB6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 May 2023 03:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
+        id S230077AbjERIXr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 May 2023 04:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjERHB4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 03:01:56 -0400
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 18 May 2023 00:01:54 PDT
-Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com [68.232.139.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCDA2D4F
-        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 00:01:54 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="116573297"
-X-IronPort-AV: E=Sophos;i="5.99,284,1677510000"; 
-   d="scan'208";a="116573297"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
-  by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2023 16:00:50 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
-        by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id ED7FDD3EB7
-        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 16:00:47 +0900 (JST)
-Received: from m3003.s.css.fujitsu.com (m3003.s.css.fujitsu.com [10.128.233.114])
-        by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 3729DD969E
-        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 16:00:47 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.118.237.106])
-        by m3003.s.css.fujitsu.com (Postfix) with ESMTP id 129EA2041EEB;
-        Thu, 18 May 2023 16:00:47 +0900 (JST)
-From:   Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-To:     linux-rdma@vger.kernel.org, jgg@nvidia.com, rpearsonhpe@gmail.com
-Cc:     leonro@nvidia.com, zyjzyj2000@gmail.com,
-        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH jgg-for-next] RDMA/rxe: Fix comments about removed tasklets
-Date:   Thu, 18 May 2023 16:00:27 +0900
-Message-Id: <20230518070027.942715-1-matsuda-daisuke@fujitsu.com>
-X-Mailer: git-send-email 2.39.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        with ESMTP id S229668AbjERIXo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 May 2023 04:23:44 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DE5E2
+        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 01:23:21 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-643a1656b79so1367055b3a.3
+        for <linux-rdma@vger.kernel.org>; Thu, 18 May 2023 01:23:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1684398179; x=1686990179;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9LuQHhN9lHciwAZTWMsIAHbq2/V2eVCaxIEbtHzzIeg=;
+        b=bP7LsqumosFYiguQ7AaRBFvmu16/4paHX+JCqb7WkohGQZLbxMXIUTc0OnSjDklCrL
+         BIMp1gctd4/aM9qZdTmdtI6VzvYiXyN+YHivmbIA60BwKcWPRIAuvir+JwVtL3BLkxkT
+         ZCBlK+QKshZqc+TWzusVi3PBar6MFgYYr27AQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684398179; x=1686990179;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9LuQHhN9lHciwAZTWMsIAHbq2/V2eVCaxIEbtHzzIeg=;
+        b=YCgW4uJitlskYanT6R+TcyHaL4NVcS5+sfip+ylT2/dmGSqiU5/5fxhUg2woUKNS5f
+         byk9oKkaVF9bdJ0323YvbA74GUW2A7/fsf22FVWN+ZheKNCYxzE+f1hGtszm9+dxNfeR
+         gwZKEnzkb65m85gMqzl5j98LAxER1N96DeUw9tH2vh8ILeocmCYHEbHXu4LoR17uJG/b
+         5oyTOLw1bJucxeqQL6aCBCK+Bpb+Rd51BxFD3Lo+vOXxt7TYypRisak+i2E+HNrHUx+0
+         fQKDeRr7AMROGLwdSQZ04+KLEWLRTB4NCLptyxOP1EjEO2E0WL29bT1pvTpbDbeGMEjb
+         zoWQ==
+X-Gm-Message-State: AC+VfDznVWM6KZSmEznc8IBLa6NER0/1VKUGyMU+IT6xg6Z2EpWb2brv
+        fYR3hLRm3zFJUBLkzsV0fhKA8Q==
+X-Google-Smtp-Source: ACHHUZ42j3krRAts7SrcuPhSRA0pf1eOXNoQNeShnihzwEKRjBaUNWN1L9YWujB15EfVEVgIKXGu0Q==
+X-Received: by 2002:a05:6a00:1744:b0:63b:2320:a39f with SMTP id j4-20020a056a00174400b0063b2320a39fmr3165010pfc.19.1684398179584;
+        Thu, 18 May 2023 01:22:59 -0700 (PDT)
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id b24-20020aa78718000000b0062dd9a8c1b8sm806922pfo.100.2023.05.18.01.22.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 May 2023 01:22:58 -0700 (PDT)
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH v2 for-rc 0/3] RDMA/bnxt_re: Bug fixes
+Date:   Thu, 18 May 2023 01:10:58 -0700
+Message-Id: <1684397461-23082-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000002cb48c05fbf38321"
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,71 +65,111 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks")
-removed tasklets and replaced them with a workqueue, but relevant comments
-are still remaining in the source code.
+--0000000000002cb48c05fbf38321
 
-Fixes: 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks")
-Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe_comp.c  | 2 +-
- drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
- drivers/infiniband/sw/rxe/rxe_req.c   | 2 +-
- drivers/infiniband/sw/rxe/rxe_resp.c  | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+Includes some of the generic bug fixes in bnxt_re driver.
+Please review and apply.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index db18ace74d2b..0c0ae214c3a9 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -826,7 +826,7 @@ int rxe_completer(struct rxe_qp *qp)
- 	}
- 
- 	/* A non-zero return value will cause rxe_do_task to
--	 * exit its loop and end the tasklet. A zero return
-+	 * exit its loop and end the work item. A zero return
- 	 * will continue looping and return to rxe_completer
- 	 */
- done:
-diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-index 7b41d79e72b2..d2f57ead78ad 100644
---- a/drivers/infiniband/sw/rxe/rxe_param.h
-+++ b/drivers/infiniband/sw/rxe/rxe_param.h
-@@ -112,7 +112,7 @@ enum rxe_device_param {
- 	RXE_INFLIGHT_SKBS_PER_QP_HIGH	= 64,
- 	RXE_INFLIGHT_SKBS_PER_QP_LOW	= 16,
- 
--	/* Max number of interations of each tasklet
-+	/* Max number of interations of each work item
- 	 * before yielding the cpu to let other
- 	 * work make progress
- 	 */
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 65134a9aefe7..400840c913a9 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -853,7 +853,7 @@ int rxe_requester(struct rxe_qp *qp)
- 	update_state(qp, &pkt);
- 
- 	/* A non-zero return value will cause rxe_do_task to
--	 * exit its loop and end the tasklet. A zero return
-+	 * exit its loop and end the work item. A zero return
- 	 * will continue looping and return to rxe_requester
- 	 */
- done:
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 68f6cd188d8e..b92c41cdb620 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -1654,7 +1654,7 @@ int rxe_responder(struct rxe_qp *qp)
- 	}
- 
- 	/* A non-zero return value will cause rxe_do_task to
--	 * exit its loop and end the tasklet. A zero return
-+	 * exit its loop and end the work item. A zero return
- 	 * will continue looping and return to rxe_responder
- 	 */
- done:
+Thanks,
+Selvin Xavier
+
+v1 -> v2:
+ Dropped 7 patches from this series which
+ will be posted against for-next branch.
+
+Kalesh AP (3):
+  RDMA/bnxt_re: Fix a possible memory leak
+  RDMA/bnxt_re: Fix return value of bnxt_re_process_raw_qp_pkt_rx
+  RDMA/bnxt_re: Do not enable congestion control on VFs
+
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c |  2 +-
+ drivers/infiniband/hw/bnxt_re/main.c     |  4 ++++
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c | 11 ++++++-----
+ 3 files changed, 11 insertions(+), 6 deletions(-)
+
 -- 
-2.39.1
+2.5.5
 
+
+--0000000000002cb48c05fbf38321
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
++zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
+AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
+L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
+Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
+YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
+cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
+MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
+MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
+dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
+iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
+hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
+j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
+9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
+hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIG8qcdXM2D72
+KNdJacdG3kuLRYQGA7veuLcGuGZ/NjTIMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDUxODA4MjI1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAgpuzMg/kILrN1M8d39j8K3fF0rM51
+Zt09ARN0I4Xy4gqUCTFhGkjbv8jDc5EpUj4tdJefj10b1mI502qcXv7z9GwklOrUTw3CG7ccx/wV
+mz738ngDn+A7xJB08fSzaS9L56ZWsyAAkjjDzh0/Tj+Qs9kQr2dTzjONoREjrmX8Ueq8ZI3zvu0K
+FgJ0rt2nkjOW2sKz4IgRvbzTQBVkqSH9LweVTTk0qS95QNLUjZZ+fuj6usyn/yTENM+smlFFdEcW
+vbM54HKLcZ1EODDlPeRc3o+EGY9jaZyAot24NTBkN76GYXqreLa6p+1Og4WhM9jHGOyxc4D5Vd7/
+VSZzckMR
+--0000000000002cb48c05fbf38321--
