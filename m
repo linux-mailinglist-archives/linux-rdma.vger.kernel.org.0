@@ -2,284 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C299709D99
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 May 2023 19:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670B2709EF1
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 May 2023 20:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbjESRKm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 May 2023 13:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53256 "EHLO
+        id S229628AbjESSPK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 May 2023 14:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbjESRKh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 May 2023 13:10:37 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C130019A;
-        Fri, 19 May 2023 10:10:33 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6ab02aeac3fso1392057a34.3;
-        Fri, 19 May 2023 10:10:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684516233; x=1687108233;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uVYfVRtF/9FsZ8Q0W/f/n8Om/0lCEChbc6RynKt9GeQ=;
-        b=C3jfxItjG5O0R+5Mf397mUWl+SBLUedzBUqCiSaF6QYFi/SdNAdelKUPiySGO0EqSo
-         xLcRwHTv1j+lH7mglywB5LVxBUncW4l5xgE29EdjUU1VnlNGuEVIJg6RsRF2l+eGnnjE
-         ip/ZWhmEF8Uz1HXtxzEdHW9WvlXkgUS1p9uShCq39T/eUMbw55MY70lsirqKcaN8Dn1F
-         5nleTyB2+1bgz3nQbCMx1XJ531VP1y1ZNwCrsCT+h+JXADnptsew9Hunsge2qdubOcxE
-         cQ0cY6D/yWFuMyulz2F5z9JPZFUJlntrwVLM3ZwUUDZKmAOYtEbc3ptC3IzDLWI/tXF8
-         4ubg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684516233; x=1687108233;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uVYfVRtF/9FsZ8Q0W/f/n8Om/0lCEChbc6RynKt9GeQ=;
-        b=LGNoYYebOUxl6M03pIfnJbMrRznRjh2USYFRHjfOKy34baIDyNkIqfkxnZmxcGOEeZ
-         UfOaWQF+4SD/KbHHjQ0XXx6cEIN00/Et+HHllPKUwe64zK1q1sjBYeHt7CtmF7sbbbyK
-         GHOL4DDeV+zc4YeNYo/JD+eK0FZY5DoGc1oklgV0hXzLkZKKXoC/0gaFTAXZ7bA3sUtJ
-         D4eyfZXJlNCavO7qXUzLnNpIO1D0jjWJ1jT8A7EYae1EJhfNoxSUzCkDtInpwU4Isi9q
-         f9ymlqDl9xcnx2P67FzYAzul4MdfvJVqkjOeRy56xc5WvEx2IOlMhYJfkTGK2dYKhQR+
-         nAxA==
-X-Gm-Message-State: AC+VfDwtEoHzw0+N4tE6hB2kR4RaDGC639WeZH1411EzTgr7p7OEyoFN
-        draEm1QjZ4xMaQ3AHuUJzRc=
-X-Google-Smtp-Source: ACHHUZ65NMUZm8MATKX4S4eDxCvT3Uky8e5qNWqNGWQ+fzBsZMYmQmN90iL0rlqFEc3CZnh6GA5fiw==
-X-Received: by 2002:a05:6830:4c7:b0:6ab:25e0:81b6 with SMTP id s7-20020a05683004c700b006ab25e081b6mr1260120otd.14.1684516232830;
-        Fri, 19 May 2023 10:10:32 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:1b3d:4b6b:e581:f922? (2603-8081-140c-1a00-1b3d-4b6b-e581-f922.res6.spectrum.com. [2603:8081:140c:1a00:1b3d:4b6b:e581:f922])
-        by smtp.gmail.com with ESMTPSA id q6-20020a05683022c600b0069fa883c738sm1831005otc.35.2023.05.19.10.10.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 May 2023 10:10:31 -0700 (PDT)
-Message-ID: <30470158-1354-b80c-45b5-34faadac7073@gmail.com>
-Date:   Fri, 19 May 2023 12:10:31 -0500
+        with ESMTP id S229456AbjESSPJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 May 2023 14:15:09 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2062c.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eab::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC63110
+        for <linux-rdma@vger.kernel.org>; Fri, 19 May 2023 11:15:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lq7jFwlMNKwcLn4AX4aHLGyjr5q5ZvY21ergjferPcEVBbcZcGsVGtp8QbiEJetRkRYObADyGizEgkFELYzTdbvpgVzGTIHIvI7CQhAz94CZq4dxHsYydRId0pMUIWrnmSWUrrofudzghpw56w/8VLJc9c1Dyw7RWw3g6WxWhZ2/kDlKI9FuppA4Jok4N9NiFzx3HiurnJgiYR+jeQQhm3/AkaPgOGvgW32cVmfFVvCVttYvZwTpb2tmcJsSDEhAnMMbSjH7vP+Bj/Q7TXuY+8rpvLXtoA3OycBjaP7KEcg6n0BJAARdK2lBlFdkey1GgYJIMtZSHBwIpriWsRJYDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iT9j/pnmlnHYtQtUd4UGYsQNhB+Kb5V/qKyDSIaqrwA=;
+ b=HYaelbUA/ldyejpSZTrPZb/e19LpKxcttSUw+d66AK35SEnlklD5kFE4j85h8tQFHkdkiyevBRsrtg1IiaOYyf4eIx7CP6sjxYAHGyrlwtjiYF+Ezpa/Q4BezxVsTXSnTw6pLtbCflxO1lBmnqYS6y02qH4Mh//tkS/FRjCoP6wsbK/rqPc3ofRo0iZWyjGxT/72Utre8K3TYNouRz6ticFsg8Feku7jReq4cgcqw7PdoB0YRNToMgmgBnj87gvZ8YPWhYT3vKInmZfiuBz2IH4mpSrjlRBLiltACbSXcRhBUR7yGtiZBjr/ycSviamy9oEJJi4hn8YYVbr4qMvAxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iT9j/pnmlnHYtQtUd4UGYsQNhB+Kb5V/qKyDSIaqrwA=;
+ b=MzBloUyk/o0HizoRAWobTgItq/dGHhkuqYSfdw7ofmLeXK3xJ3mx+RAz7M5ETkM+wPb7m1NNizM770qNPyhYVe/pnI66FDYFScH8XJH/uZYBTOrYBIDCfWUi53KvLPu3j6G4X4RCYE2VX89CLxA0VhYOpQm481Dtt0JaNRyFiiP7LRMLg9pRbxJoz0vNO/C7ngt6LBvBljZskrgib4AGWwCnmRStKyN9OatoVz3/RdUXl9WmK1ioGpEIqAHehyBWT2V+m5jI2iUAYQQSdvJxHWbg0850vonStwzHFn+KallGeDwogEytQSZ4Y1pOD3meFjBFhMFUXEBQRKGbTRxrCA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ0PR12MB5485.namprd12.prod.outlook.com (2603:10b6:a03:305::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.21; Fri, 19 May
+ 2023 18:15:04 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f7a7:a561:87e9:5fab]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f7a7:a561:87e9:5fab%6]) with mapi id 15.20.6411.021; Fri, 19 May 2023
+ 18:15:04 +0000
+Date:   Fri, 19 May 2023 15:15:02 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
+        andrew.gospodarek@broadcom.com
+Subject: Re: [PATCH for-next 0/7] RDMA/bnxt_re: driver updates
+Message-ID: <ZGe8pqKfW33/sQUd@nvidia.com>
+References: <1684478897-12247-1-git-send-email-selvin.xavier@broadcom.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1684478897-12247-1-git-send-email-selvin.xavier@broadcom.com>
+X-ClientProxiedBy: BL0PR1501CA0022.namprd15.prod.outlook.com
+ (2603:10b6:207:17::35) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH for-next v5 6/7] RDMA/rxe: Add support for
- Send/Recv/Write/Read with ODP
-Content-Language: en-US
-To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
-        linux-rdma@vger.kernel.org, leonro@nvidia.com, jgg@nvidia.com,
-        zyjzyj2000@gmail.com
-Cc:     linux-kernel@vger.kernel.org, yangx.jy@fujitsu.com,
-        lizhijian@fujitsu.com, y-goto@fujitsu.com
-References: <cover.1684397037.git.matsuda-daisuke@fujitsu.com>
- <25d903e0136ea1e65c612d8f6b8c18c1f010add7.1684397037.git.matsuda-daisuke@fujitsu.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <25d903e0136ea1e65c612d8f6b8c18c1f010add7.1684397037.git.matsuda-daisuke@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ0PR12MB5485:EE_
+X-MS-Office365-Filtering-Correlation-Id: e8c47788-dbd8-417d-6325-08db5894f78e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LkLRdJT06xFd8INbeOzvLkwSHSpFMif3dZOhK7VL4JPaM9GrMrpzzj9oBQzykY3d9k+QipBxZEH73Jsi8Ydxc9a/o46B/56E2QRLHZzQF6Znshwsb2dIPih3pmZLLisiDc0TjyuHTm3fJBd9fvYlkV1U5AasqBc+xqrMTV0kNc18elos3uMYqO3RabcEzB8NO74H6hj3e7Yywc/y/E3HETBb4foHkMDH+4S06OXG9ImXBhq6Lh1hqPOTvMtO9ggXp11bXUtf9vsVA80WinUm0+emwEm4skz7/qnsyEUgYQ//ssRvjgvnfAwlBVi5T16HKJGCJWrZnqzu0fuFOUeSjkB02uTUa3H6cWed53pqMiCgHFAjOzrawyHT/TCeKA/iqsSlWtx+9Rg655ti3AJBgxrZu1To48/oJDvjiqAGQgvXtq9J4iSkhkN9Du1sAdPwZt8/59ismDMxMYCYSdFq+0ztc6426B2HJF+DygjKFoho2WXtz+pI1tKBbwTKFVsqnGFualhIJPoMMgXlcVx2lJOubS8MzD4RphVzz8APn7mgIDZbCKMqD5ItDj1aBdpd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(376002)(396003)(346002)(136003)(451199021)(86362001)(36756003)(316002)(66946007)(66476007)(66556008)(6916009)(478600001)(4326008)(6486002)(8936002)(15650500001)(6512007)(5660300002)(4744005)(2906002)(8676002)(38100700002)(41300700001)(2616005)(26005)(186003)(6506007)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8/SAV3vQIln1meA7ALezUgIyGVBnPHHLfW9HLxv4AbTcAHrWrr9hVO+jiGFw?=
+ =?us-ascii?Q?navfiSs2PYCM5OMaODGSSTsy/wYpPyZcPoE164ZWoUdDkbVyoh3LUVuMPoCh?=
+ =?us-ascii?Q?6dUCGcEmS1toVJhWFFHs9Pr1E+T3B2F9z5AWQvnf8zZTmheXzG4yskaV6eKy?=
+ =?us-ascii?Q?UNW5UBT5DKOSj31k/iwvqx+JV2i8iyFTsolzep7I6pEsNQdfKi5hwAlEl6pm?=
+ =?us-ascii?Q?8PXQvxOS7pMOCftl2/Ndtj59fduJ6TaX60iJqPGWm7YpAzpgRjQOrhEnxc9k?=
+ =?us-ascii?Q?Zx8qhfsEPN7U4SgTA7SwGSTtzXkrNuVaPI1v7WbZDFe3TyLPyPhZBKCcqQ20?=
+ =?us-ascii?Q?A8dY8A0cHS++j6z2h3h4YOhl9W7pzPHkdq7r5fH+ZBBMrbbCzwJpPELTDaf7?=
+ =?us-ascii?Q?GzIsBJXUGaXZRk4TTtObrN2SRT7AcQm9IbwdxZBZWMQgF0YAxcKAexrdrarn?=
+ =?us-ascii?Q?TB0eUlxeGgCAswTXlXrP8DjdquZsJSYoVH42yFu0yz5qDIAKdmaodDc3tTja?=
+ =?us-ascii?Q?8LqhUirQl7lwxIpHXhp3V7DZvnzcxfiTgThPjRMKdQq/B+yzNB/FdxZcCfDP?=
+ =?us-ascii?Q?GQqrO0OHi2/0lt/Okptg7qTW0TUieKIUT6XlMv+7kWNle3WMQ5c98dGkhHWj?=
+ =?us-ascii?Q?1wnlHGhYpE2LnjFqz9QKPpvOEoavPxLTowh2NN0l/P2P/1fyxwGJL5xTLhzZ?=
+ =?us-ascii?Q?ROwTIEXazCJtL10CHf/5auUrcyBueUnNDtdXOuMdZZrgWduwXzKg8r6k+eQN?=
+ =?us-ascii?Q?tdbxKpzz9WfLWXDGMY6MYG2db4pIF+ISVXDfVew8BCdWfa0gPuYovhjwYmY9?=
+ =?us-ascii?Q?J1CAzetX1Rp8Dn33bzHPS7z8HTg0wYRJv11ArRnauPePO76PtO/w4MOgOZQ0?=
+ =?us-ascii?Q?fAgFm2BiQk1qxVjd0z6tLrxfq7D6s2rT9BIabW2iHsR+p2FCacO8bV7Foy70?=
+ =?us-ascii?Q?cVFQlRuCVQPIsgEoXbfKpklGQzS4kh6IKRdV72UwxQqpoGYoZc0hcI3Eic3E?=
+ =?us-ascii?Q?zkYhsj+Ar/ljpIddpkIuLzh9uuF3yPSAm4N+QoGqr9uvWBLVVhhIT94WgtIy?=
+ =?us-ascii?Q?feV5oxUW7rFKoBqm3E+yl5Z2Xb9YL3yY04EH/PG3Piz+0EniBYsTNtIYI3jg?=
+ =?us-ascii?Q?O5F5BThtkopT6VvtuT1dwRaJt0g6elT1qrXFzS+K2K7EOMAcZqbWbkLNOpkj?=
+ =?us-ascii?Q?eHlPPgIbTb7hfp/sYFFFDbdKQLpp+4N9ZR5wXaLIJSY3Lhq2ecFzgfzOXJBS?=
+ =?us-ascii?Q?EvjvH4FVmRBeRz17mMDHbxbYXLxlfAQ15BASPtn1lrFJT+aOvbOD0TmwvwdN?=
+ =?us-ascii?Q?N2ZG1lvAFGDU/XiyukBK/+ED+FYS634zTH4CHoG7v66n7kogNbtxWoDSWL6l?=
+ =?us-ascii?Q?riftdnNBbIrDfupQCoF1fitmbXa6FFONGfU0VYhW5IpBQVcnqFBHYQ3B3hH/?=
+ =?us-ascii?Q?f0MMz/rdBHHLPL69wqpVHsjVfZWZVcmxA9SSmJkp6ZkqcbfST7S9/W6uc8Xt?=
+ =?us-ascii?Q?3XwPP+H9s0/xAT0iTfk3l4CNMoWtTJk1h/rst3T/4eX/gdBKZT1jPxQf+k6x?=
+ =?us-ascii?Q?lTElqKihRU5K9GFZ1cC+mgGbSPx7Kl/ZNbit3Q0a?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8c47788-dbd8-417d-6325-08db5894f78e
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2023 18:15:03.7046
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YWeGlTwnjnRQ5IyD8EV0GR82fIHkeX2QmSYYNHWVU4wzTdmpw+9pGNy24OF/a4DX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5485
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/18/23 03:21, Daisuke Matsuda wrote:
-> rxe_mr_copy() is used widely to copy data to/from a user MR. requester uses
-> it to load payloads of requesting packets; responder uses it to process
-> Send, Write, and Read operaetions; completer uses it to copy data from
-> response packets of Read and Atomic operations to a user MR.
+On Thu, May 18, 2023 at 11:48:10PM -0700, Selvin Xavier wrote:
+> Includes some of the generic fixes/update to bnxt_re driver.
+> Please review and apply.
 > 
-> Allow these operations to be used with ODP by adding a subordinate function
-> rxe_odp_mr_copy(). It is comprised of the following steps:
->  1. Check the driver page table(umem_odp->dma_list) to see if pages being
->     accessed are present with appropriate permission.
->  2. If necessary, trigger page fault to map the pages.
->  3. Update the MR xarray using PFNs in umem_odp->pfn_list.
->  4. Execute data copy to/from the pages.
+> Thanks,
+> Selvin
 > 
-> umem_mutex is used to ensure that dma_list (an array of addresses of an MR)
-> is not changed while it is being checked and that mapped pages are not
-> invalidated before data copy completes.
+> Kalesh AP (6):
+>   RDMA/bnxt_re: Fix to remove unnecessary return labels
+>   RDMA/bnxt_re: Use unique names while registering interrupts
+>   RDMA/bnxt_re: Remove a redundant check inside bnxt_re_update_gid
+>   RDMA/bnxt_re: Fix to remove an unnecessary log
+>   RDMA/bnxt_re: Return directly without goto jumps
+>   RDMA/bnxt_re: Remove unnecessary checks
 > 
-> Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe.c     |  10 +++
->  drivers/infiniband/sw/rxe/rxe_loc.h |   8 ++
->  drivers/infiniband/sw/rxe/rxe_mr.c  |   2 +-
->  drivers/infiniband/sw/rxe/rxe_odp.c | 109 ++++++++++++++++++++++++++++
->  4 files changed, 128 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-> index f2284d27229b..207a022156f0 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -79,6 +79,16 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
->  
->  		/* IB_ODP_SUPPORT_IMPLICIT is not supported right now. */
->  		rxe->attr.odp_caps.general_caps |= IB_ODP_SUPPORT;
-> +
-> +		rxe->attr.odp_caps.per_transport_caps.ud_odp_caps |= IB_ODP_SUPPORT_SEND;
-> +		rxe->attr.odp_caps.per_transport_caps.ud_odp_caps |= IB_ODP_SUPPORT_RECV;
-> +		rxe->attr.odp_caps.per_transport_caps.ud_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
-> +
-> +		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SEND;
-> +		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_RECV;
-> +		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_WRITE;
-> +		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_READ;
-> +		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
->  	}
->  }
->  
-> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-> index 93247d123642..4b95c8c46bdc 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-> @@ -206,6 +206,8 @@ static inline unsigned int wr_opcode_mask(int opcode, struct rxe_qp *qp)
->  #ifdef CONFIG_INFINIBAND_ON_DEMAND_PAGING
->  int rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
->  			 u64 iova, int access_flags, struct rxe_mr *mr);
-> +int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
-> +		    enum rxe_mr_copy_dir dir);
->  #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
->  static inline int
->  rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
-> @@ -213,6 +215,12 @@ rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
->  {
->  	return -EOPNOTSUPP;
->  }
-> +static inline int
-> +rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
-> +		int length, enum rxe_mr_copy_dir dir)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->  
->  #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
->  
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index cd368cd096c8..0e3cda59d702 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -319,7 +319,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
->  	}
->  
->  	if (mr->odp_enabled)
-> -		return -EOPNOTSUPP;
-> +		return rxe_odp_mr_copy(mr, iova, addr, length, dir);
->  	else
->  		return rxe_mr_copy_xarray(mr, iova, addr, length, dir);
->  }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-> index e5497d09c399..cbe5d0c3fcc4 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-> @@ -174,3 +174,112 @@ int rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
->  
->  	return err;
->  }
-> +
-> +static inline bool rxe_is_pagefault_neccesary(struct ib_umem_odp *umem_odp,
-> +					      u64 iova, int length, u32 perm)
-> +{
-> +	int idx;
-> +	u64 addr;
-> +	bool need_fault = false;
-> +
-> +	addr = iova & (~(BIT(umem_odp->page_shift) - 1));
-> +
-> +	/* Skim through all pages that are to be accessed. */
-> +	while (addr < iova + length) {
-> +		idx = (addr - ib_umem_start(umem_odp)) >> umem_odp->page_shift;
-> +
-> +		if (!(umem_odp->dma_list[idx] & perm)) {
-> +			need_fault = true;
-> +			break;
-> +		}
-> +
-> +		addr += BIT(umem_odp->page_shift);
-> +	}
-> +	return need_fault;
-> +}
-> +
-> +/* umem mutex must be locked before entering this function. */
-> +static int rxe_odp_map_range(struct rxe_mr *mr, u64 iova, int length, u32 flags)
-> +{
-> +	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-> +	const int max_tries = 3;
-> +	int cnt = 0;
-> +
-> +	int err;
-> +	u64 perm;
-> +	bool need_fault;
-> +
-> +	if (unlikely(length < 1)) {
-> +		mutex_unlock(&umem_odp->umem_mutex);
-> +		return -EINVAL;
-> +	}
-> +
-> +	perm = ODP_READ_ALLOWED_BIT;
-> +	if (!(flags & RXE_PAGEFAULT_RDONLY))
-> +		perm |= ODP_WRITE_ALLOWED_BIT;
-> +
-> +	/*
-> +	 * A successful return from rxe_odp_do_pagefault() does not guarantee
-> +	 * that all pages in the range became present. Recheck the DMA address
-> +	 * array, allowing max 3 tries for pagefault.
-> +	 */
-> +	while ((need_fault = rxe_is_pagefault_neccesary(umem_odp,
-> +							iova, length, perm))) {
-> +		if (cnt >= max_tries)
-> +			break;
-> +
-> +		mutex_unlock(&umem_odp->umem_mutex);
-> +
-> +		/* umem_mutex is locked on success. */
-> +		err = rxe_odp_do_pagefault(mr, iova, length, flags);
-> +		if (err < 0)
-> +			return err;
-> +
-> +		cnt++;
-> +	}
-> +
-> +	if (need_fault)
-> +		return -EFAULT;
-> +
-> +	return 0;
-> +}
-> +
-> +int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
-> +		    enum rxe_mr_copy_dir dir)
-> +{
-> +	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-> +	u32 flags = 0;
-> +	int err;
-> +
-> +	if (unlikely(!mr->odp_enabled))
-> +		return -EOPNOTSUPP;
-> +
-> +	switch (dir) {
-> +	case RXE_TO_MR_OBJ:
-> +		break;
-> +
-> +	case RXE_FROM_MR_OBJ:
-> +		flags = RXE_PAGEFAULT_RDONLY;
-> +		break;
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* If pagefault is not required, umem mutex will be held until data
-> +	 * copy to the MR completes. Otherwise, it is released and locked
-> +	 * again in rxe_odp_map_range() to let invalidation handler do its
-> +	 * work meanwhile.
-> +	 */
-> +	mutex_lock(&umem_odp->umem_mutex);
-> +
-> +	err = rxe_odp_map_range(mr, iova, length, flags);
-> +	if (err)
-> +		return err;
-> +
-> +	err =  rxe_mr_copy_xarray(mr, iova, addr, length, dir);
-> +
-> +	mutex_unlock(&umem_odp->umem_mutex);
-> +
-> +	return err;
-> +}
+> Selvin Xavier (1):
+>   RDMA/bnxt_re: Disable/kill tasklet only if it is enabled
 
-Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+Applied to for-next, thanks
+
+Jason
