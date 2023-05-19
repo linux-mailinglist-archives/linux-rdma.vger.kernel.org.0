@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3BD709015
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 May 2023 09:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFCB709016
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 May 2023 09:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229489AbjESHAR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 May 2023 03:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        id S229565AbjESHAU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 May 2023 03:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbjESHAQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 May 2023 03:00:16 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E22210C9
-        for <linux-rdma@vger.kernel.org>; Fri, 19 May 2023 00:00:14 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-64d11974b45so1275662b3a.2
-        for <linux-rdma@vger.kernel.org>; Fri, 19 May 2023 00:00:14 -0700 (PDT)
+        with ESMTP id S229493AbjESHAT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 May 2023 03:00:19 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8136A10F4
+        for <linux-rdma@vger.kernel.org>; Fri, 19 May 2023 00:00:17 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1ae851f2a7dso1446355ad.0
+        for <linux-rdma@vger.kernel.org>; Fri, 19 May 2023 00:00:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1684479613; x=1687071613;
+        d=broadcom.com; s=google; t=1684479616; x=1687071616;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=LV4TftRQg6dH+CpXkebFy3uMsAmXrEEvKGZds7dlIk4=;
-        b=MWN+spyKBeLyr6/emqgHbUIS9z53yIvTWvS5iat4QskCe34ytmBUdJjFVeMX7bXybo
-         H/Wl2IFwf3lM6H94ZM/NNvWRHXBXbN+W5LX6+3/XrbdAa+Dl47rSo/8OeAxofncoUc96
-         sb730oyLGJeScvKaKAhlee8JqnTCN21Hw4F8s=
+        bh=X3C9lFDJpHh1oeM62w4yBtDTFuRJtiBA6uv7+35WM4w=;
+        b=f1SogSv1AEeU3y70HEKvqNBr00pWFMr/gDRVhykwi5jKbZ3OUKiWFGs65dI6PVDc2A
+         1FN17vglw5Q8UpE2PHCdZMnV+fmcw0tczpojEA0xCvgRT8Nd/Ibz5SWSUu4uuYmkG2sg
+         Ioe2mh7ZJhj4P0UHnjnfM8q4FTG6OzvK+Jvvw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684479613; x=1687071613;
+        d=1e100.net; s=20221208; t=1684479616; x=1687071616;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LV4TftRQg6dH+CpXkebFy3uMsAmXrEEvKGZds7dlIk4=;
-        b=MUgZOSHVDqzg8beDYubP0IhT3r06n5PbhoOJ0n75kjxQc+7Ul/v37gF1lURMFkhtbE
-         BneOdiaUsCe+WFG1dhmBSoy9wTAV2YpFiBclK4y51XluUX3j3xx+vTzM4EDNPmGNT1V2
-         gzPVa0nvDA3ZoTd+SzFIYbD5zFHMTJxKgDdeaMLbpbmAgZGhG5/PSUzrnYsSTMHKZrp3
-         fLE771s1GttDHHjYXxiNRQZbfHcKryZzChXklYGa1Br0s3YhwDCPcQL3fmfWBXiXNFFk
-         4ZJxld2LScPm/C0TNxrBx6fZttBp+PfGkWB7cJyoUNk4b01YQ05GA5owD8Sz1EOzXDQI
-         oiqQ==
-X-Gm-Message-State: AC+VfDw2QTLx7vlknxGbPIl+d596YBl/zhgCNy+D6qmiL4X2Um44V7DZ
-        11TzPdcSMPa28JB6740tAxaDgw==
-X-Google-Smtp-Source: ACHHUZ6IuMPpI8bUhlNSU50b8vYZUsCPbw7jXFBpJ+STQc6Dgx++ZB1KEVtIjZTEIWIHIroLJAECuA==
-X-Received: by 2002:a17:903:246:b0:1ad:fcdc:bcb9 with SMTP id j6-20020a170903024600b001adfcdcbcb9mr1788286plh.23.1684479613541;
-        Fri, 19 May 2023 00:00:13 -0700 (PDT)
+        bh=X3C9lFDJpHh1oeM62w4yBtDTFuRJtiBA6uv7+35WM4w=;
+        b=IiU+On4RRYifmmoh+zSXE+agyHTxiAZS7QxL6VqGj3El0IUK2YIpiEeMdhr0HA0OCG
+         COfGudot2xmUWBDPpKZatj+eibP8dEmko6141pJjEpXAEnjOl/ixiaIYv63nNC03SzuX
+         pJG0ME0SkWMkBX7tlJRpPB7jRm1c5TQQtcwwCbnBbGfYuVFatinVOnZN0G5wmHpoe/m7
+         IW5tzdGT+aHP5ZUof0zJ0+nhgrujwk/Uotjde0yCKjEc77qLgaIxmIEIRoyI6sxyB2pm
+         EuClYCOHXzJr7mHDitimJYK6kI3Vsv+SMDha9NKsg0bZgwcJ42xh7BWZUVkz1ehMD4GW
+         6ucg==
+X-Gm-Message-State: AC+VfDzCn0NdusouzbwyYVHtQz+lhjElUOe/xMclicA9KSe+5pSa8u3N
+        YPOQkEG6FO2fqM6mJA1n5+wsNA==
+X-Google-Smtp-Source: ACHHUZ5S8WVzx2QS3P+5t0JLpW7j03+QhUIx3d/9oGCcPrSBdaFbgY8Enb1WdsKsOXNThKOkMinbJQ==
+X-Received: by 2002:a17:902:d2c6:b0:1ac:9efa:bb10 with SMTP id n6-20020a170902d2c600b001ac9efabb10mr2098138plc.4.1684479616261;
+        Fri, 19 May 2023 00:00:16 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id ju19-20020a170903429300b001a64c4023aesm2654279plb.36.2023.05.19.00.00.10
+        by smtp.gmail.com with ESMTPSA id ju19-20020a170903429300b001a64c4023aesm2654279plb.36.2023.05.19.00.00.13
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 May 2023 00:00:12 -0700 (PDT)
+        Fri, 19 May 2023 00:00:15 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 6/7] RDMA/bnxt_re: Return directly without goto jumps
-Date:   Thu, 18 May 2023 23:48:16 -0700
-Message-Id: <1684478897-12247-7-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 7/7] RDMA/bnxt_re: Remove unnecessary checks
+Date:   Thu, 18 May 2023 23:48:17 -0700
+Message-Id: <1684478897-12247-8-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1684478897-12247-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1684478897-12247-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000005476e05fc0679d4"
+        boundary="0000000000002dee8005fc0679b8"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,259 +68,52 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000005476e05fc0679d4
+--0000000000002dee8005fc0679b8
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-When there is no cleanup to be done, return directly.
-This will help eliminating unnecessary local variables
-and goto labels.
-This patch fixes such occurrences in qplib_fp.c file.
+The NULL check inside bnxt_qplib_del_sgid() and
+bnxt_qplib_add_sgid() always return false as the
+"sgid_tbl" inside "rdev->qplib_res" is a static memory.
 
-Fixes: 37cb11acf1f7 ("RDMA/bnxt_re: Add SRQ support for Broadcom adapters")
-Fixes: 159fb4ceacd7 ("RDMA/bnxt_re: introduce a function to allocate swq")
+Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 60 ++++++++++++--------------------
- 1 file changed, 23 insertions(+), 37 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index e695abae..d48a26e 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -483,7 +483,6 @@ static int bnxt_qplib_map_nq_db(struct bnxt_qplib_nq *nq,  u32 reg_offt)
- 	resource_size_t reg_base;
- 	struct bnxt_qplib_nq_db *nq_db;
- 	struct pci_dev *pdev;
--	int rc = 0;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+index 1714a1e..dbb0e4e 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+@@ -233,10 +233,6 @@ int bnxt_qplib_del_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+ 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
+ 	int index;
  
- 	pdev = nq->pdev;
- 	nq_db = &nq->nq_db;
-@@ -493,8 +492,7 @@ static int bnxt_qplib_map_nq_db(struct bnxt_qplib_nq *nq,  u32 reg_offt)
- 	if (!nq_db->reg.bar_base) {
- 		dev_err(&pdev->dev, "QPLIB: NQ BAR region %d resc start is 0!",
- 			nq_db->reg.bar_id);
--		rc = -ENOMEM;
--		goto fail;
-+		return -ENOMEM;
- 	}
- 
- 	reg_base = nq_db->reg.bar_base + reg_offt;
-@@ -504,15 +502,14 @@ static int bnxt_qplib_map_nq_db(struct bnxt_qplib_nq *nq,  u32 reg_offt)
- 	if (!nq_db->reg.bar_reg) {
- 		dev_err(&pdev->dev, "QPLIB: NQ BAR region %d mapping failed",
- 			nq_db->reg.bar_id);
--		rc = -ENOMEM;
--		goto fail;
-+		return -ENOMEM;
- 	}
- 
- 	nq_db->dbinfo.db = nq_db->reg.bar_reg;
- 	nq_db->dbinfo.hwq = &nq->hwq;
- 	nq_db->dbinfo.xid = nq->ring_id;
--fail:
--	return rc;
-+
-+	return 0;
- }
- 
- int bnxt_qplib_enable_nq(struct pci_dev *pdev, struct bnxt_qplib_nq *nq,
-@@ -626,7 +623,7 @@ int bnxt_qplib_create_srq(struct bnxt_qplib_res *res,
- 	hwq_attr.type = HWQ_TYPE_QUEUE;
- 	rc = bnxt_qplib_alloc_init_hwq(&srq->hwq, &hwq_attr);
- 	if (rc)
--		goto exit;
-+		return rc;
- 
- 	srq->swq = kcalloc(srq->hwq.max_elements, sizeof(*srq->swq),
- 			   GFP_KERNEL);
-@@ -680,7 +677,7 @@ int bnxt_qplib_create_srq(struct bnxt_qplib_res *res,
- fail:
- 	bnxt_qplib_free_hwq(res, &srq->hwq);
- 	kfree(srq->swq);
--exit:
-+
- 	return rc;
- }
- 
-@@ -744,15 +741,14 @@ int bnxt_qplib_post_srq_recv(struct bnxt_qplib_srq *srq,
- 	struct rq_wqe *srqe;
- 	struct sq_sge *hw_sge;
- 	u32 sw_prod, sw_cons, count = 0;
--	int i, rc = 0, next;
-+	int i, next;
- 
- 	spin_lock(&srq_hwq->lock);
- 	if (srq->start_idx == srq->last_idx) {
- 		dev_err(&srq_hwq->pdev->dev,
- 			"FP: SRQ (0x%x) is full!\n", srq->id);
--		rc = -EINVAL;
- 		spin_unlock(&srq_hwq->lock);
--		goto done;
-+		return -EINVAL;
- 	}
- 	next = srq->start_idx;
- 	srq->start_idx = srq->swq[next].next_idx;
-@@ -793,22 +789,19 @@ int bnxt_qplib_post_srq_recv(struct bnxt_qplib_srq *srq,
- 		srq->arm_req = false;
- 		bnxt_qplib_srq_arm_db(&srq->dbinfo, srq->threshold);
- 	}
--done:
--	return rc;
-+
-+	return 0;
- }
- 
- /* QP */
- 
- static int bnxt_qplib_alloc_init_swq(struct bnxt_qplib_q *que)
- {
--	int rc = 0;
- 	int indx;
- 
- 	que->swq = kcalloc(que->max_wqe, sizeof(*que->swq), GFP_KERNEL);
--	if (!que->swq) {
--		rc = -ENOMEM;
--		goto out;
+-	if (!sgid_tbl) {
+-		dev_err(&res->pdev->dev, "SGID table not allocated\n");
+-		return -EINVAL;
 -	}
-+	if (!que->swq)
-+		return -ENOMEM;
+ 	/* Do we need a sgid_lock here? */
+ 	if (!sgid_tbl->active) {
+ 		dev_err(&res->pdev->dev, "SGID table has no active entries\n");
+@@ -297,10 +293,6 @@ int bnxt_qplib_add_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+ 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
+ 	int i, free_idx;
  
- 	que->swq_start = 0;
- 	que->swq_last = que->max_wqe - 1;
-@@ -816,8 +809,8 @@ static int bnxt_qplib_alloc_init_swq(struct bnxt_qplib_q *que)
- 		que->swq[indx].next_idx = indx + 1;
- 	que->swq[que->swq_last].next_idx = 0; /* Make it circular */
- 	que->swq_last = 0;
--out:
--	return rc;
-+
-+	return 0;
- }
- 
- int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
-@@ -851,7 +844,7 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	hwq_attr.type = HWQ_TYPE_QUEUE;
- 	rc = bnxt_qplib_alloc_init_hwq(&sq->hwq, &hwq_attr);
- 	if (rc)
--		goto exit;
-+		return rc;
- 
- 	rc = bnxt_qplib_alloc_init_swq(sq);
- 	if (rc)
-@@ -939,7 +932,6 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	kfree(sq->swq);
- fail_sq:
- 	bnxt_qplib_free_hwq(res, &sq->hwq);
--exit:
- 	return rc;
- }
- 
-@@ -1004,7 +996,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	hwq_attr.type = HWQ_TYPE_QUEUE;
- 	rc = bnxt_qplib_alloc_init_hwq(&sq->hwq, &hwq_attr);
- 	if (rc)
--		goto exit;
-+		return rc;
- 
- 	rc = bnxt_qplib_alloc_init_swq(sq);
- 	if (rc)
-@@ -1152,7 +1144,6 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	kfree(sq->swq);
- fail_sq:
- 	bnxt_qplib_free_hwq(res, &sq->hwq);
--exit:
- 	return rc;
- }
- 
-@@ -2513,7 +2504,6 @@ static int bnxt_qplib_cq_process_res_rc(struct bnxt_qplib_cq *cq,
- 	struct bnxt_qplib_qp *qp;
- 	struct bnxt_qplib_q *rq;
- 	u32 wr_id_idx;
--	int rc = 0;
- 
- 	qp = (struct bnxt_qplib_qp *)((unsigned long)
- 				      le64_to_cpu(hwcqe->qp_handle));
-@@ -2524,7 +2514,7 @@ static int bnxt_qplib_cq_process_res_rc(struct bnxt_qplib_cq *cq,
- 	if (qp->rq.flushed) {
- 		dev_dbg(&cq->hwq.pdev->dev,
- 			"%s: QP in Flush QP = %p\n", __func__, qp);
--		goto done;
-+		return 0;
- 	}
- 
- 	cqe = *pcqe;
-@@ -2580,8 +2570,7 @@ static int bnxt_qplib_cq_process_res_rc(struct bnxt_qplib_cq *cq,
- 		}
- 	}
- 
--done:
--	return rc;
-+	return 0;
- }
- 
- static int bnxt_qplib_cq_process_res_ud(struct bnxt_qplib_cq *cq,
-@@ -2594,7 +2583,6 @@ static int bnxt_qplib_cq_process_res_ud(struct bnxt_qplib_cq *cq,
- 	struct bnxt_qplib_qp *qp;
- 	struct bnxt_qplib_q *rq;
- 	u32 wr_id_idx;
--	int rc = 0;
- 
- 	qp = (struct bnxt_qplib_qp *)((unsigned long)
- 				      le64_to_cpu(hwcqe->qp_handle));
-@@ -2605,7 +2593,7 @@ static int bnxt_qplib_cq_process_res_ud(struct bnxt_qplib_cq *cq,
- 	if (qp->rq.flushed) {
- 		dev_dbg(&cq->hwq.pdev->dev,
- 			"%s: QP in Flush QP = %p\n", __func__, qp);
--		goto done;
-+		return 0;
- 	}
- 	cqe = *pcqe;
- 	cqe->opcode = hwcqe->cqe_type_toggle & CQ_BASE_CQE_TYPE_MASK;
-@@ -2667,8 +2655,8 @@ static int bnxt_qplib_cq_process_res_ud(struct bnxt_qplib_cq *cq,
- 			bnxt_qplib_add_flush_qp(qp);
- 		}
- 	}
--done:
--	return rc;
-+
-+	return 0;
- }
- 
- bool bnxt_qplib_is_cq_empty(struct bnxt_qplib_cq *cq)
-@@ -2695,7 +2683,6 @@ static int bnxt_qplib_cq_process_res_raweth_qp1(struct bnxt_qplib_cq *cq,
- 	struct bnxt_qplib_srq *srq;
- 	struct bnxt_qplib_cqe *cqe;
- 	u32 wr_id_idx;
--	int rc = 0;
- 
- 	qp = (struct bnxt_qplib_qp *)((unsigned long)
- 				      le64_to_cpu(hwcqe->qp_handle));
-@@ -2706,7 +2693,7 @@ static int bnxt_qplib_cq_process_res_raweth_qp1(struct bnxt_qplib_cq *cq,
- 	if (qp->rq.flushed) {
- 		dev_dbg(&cq->hwq.pdev->dev,
- 			"%s: QP in Flush QP = %p\n", __func__, qp);
--		goto done;
-+		return 0;
- 	}
- 	cqe = *pcqe;
- 	cqe->opcode = hwcqe->cqe_type_toggle & CQ_BASE_CQE_TYPE_MASK;
-@@ -2775,8 +2762,7 @@ static int bnxt_qplib_cq_process_res_raweth_qp1(struct bnxt_qplib_cq *cq,
- 		}
- 	}
- 
--done:
--	return rc;
-+	return 0;
- }
- 
- static int bnxt_qplib_cq_process_terminal(struct bnxt_qplib_cq *cq,
+-	if (!sgid_tbl) {
+-		dev_err(&res->pdev->dev, "SGID table not allocated\n");
+-		return -EINVAL;
+-	}
+ 	/* Do we need a sgid_lock here? */
+ 	if (sgid_tbl->active == sgid_tbl->max) {
+ 		dev_err(&res->pdev->dev, "SGID table is full\n");
 -- 
 2.5.5
 
 
---00000000000005476e05fc0679d4
+--0000000000002dee8005fc0679b8
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -391,14 +184,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILBxwH+GBT2n
-Mei4O6DpdwIF3Kxzd2cMF2XiXloEBPW8MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDUxOTA3MDAxM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDdImXPTHVi1
+1zx5dbfw8pumSLzzBXZREAHptTBvhB8jMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDUxOTA3MDAxNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCLTTXveGN39uSm8XV0jiomclT+13Mm
-/u/QGfgk0XvHUeo7I5gPG5pJaXZJ9TU/CtZ6psPHs/FON1Qhon9JitzCkqoWNgldLa0fLqLwV1UZ
-e6pKR1CObG5mmY4VJs7B6Id6vPjocm7okRSPLuxqXD4dtlL+71ibGYWpxlxmAmuoH/bfWKN+EIjI
-YTVnDz0CscRVelyKPGhiqCjaRSeLWKCNsE3loezXy87QRqNw0CDs4ZWELBL/TVjlUf978Qa85JkE
-+osfR4yDlpydz2F6qR8Zvg4lAQjCYTTmoaGo1cEmufZ6esg+IiSMQf3X/cBTicf/NQvogyx6Rn2P
-ed4LzkcB
---00000000000005476e05fc0679d4--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB0lQ8zo13ZdK2grigVPvKD7QvfMs+P
+JUhdV26812flhm9yk7Lkmb96HpN40sxvDHwEvAtsaestwPuDzj8Sa1PB4J1D6s2H3ObS8R/8se+8
+D5yLkNBvAer48j9McC7Tmfq9DG87TIuYFnBnljz7C1Gd0x/0bW6vKfXUL9G87c7gZbE1ypa5QLW7
+eFGuLjxD/XM9rAIgaKDoOrtItgKjRh4pQfZtQsc2EbSTTGwqnxloVeKKney6jUu9l632zdJZOEPy
+Duo38/C65SAGsMxWql0pP8uViS+rFNIWGrvsn2PmS72d3gGDQy17/sjbdHzdcWxsZA5Z3V073q97
+u6FFGqJl
+--0000000000002dee8005fc0679b8--
