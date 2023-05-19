@@ -2,43 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB60709C80
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 May 2023 18:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166C1709CF8
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 May 2023 18:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbjESQdU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 May 2023 12:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
+        id S231490AbjESQyY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 May 2023 12:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbjESQdT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 May 2023 12:33:19 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2101.outbound.protection.outlook.com [40.107.243.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19331728
-        for <linux-rdma@vger.kernel.org>; Fri, 19 May 2023 09:32:45 -0700 (PDT)
+        with ESMTP id S231501AbjESQyW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 May 2023 12:54:22 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2126.outbound.protection.outlook.com [40.107.220.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BDA13D
+        for <linux-rdma@vger.kernel.org>; Fri, 19 May 2023 09:54:19 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UL9+Bywq2ukCFhbo7rE6mIgRaqgrqtDcYO5HOnxH3NyZ3x/4fGCmYFy9eecF9mINKLsLlenCzJjwXiBYtkfWgTk29iS6IZHb29EiRl3+0QQ/+UlC9n7LahmYDSySgfYzFC1bqjbCRiB4YJHvDlQ5iy/HVfUEZWoQMnFKXbYAr7/cuXMVqDfkvffNKtpOm8kLUssSyrzTCoPV2Gca1xihhWGNP8/6Q2CIa0Pv5FRCY7nwJTF2Do7YCX+IQNOd0AvyUdOV2C926888LvYDU1kDSoG6WieizhIMbyxLEdqTT63vnvFdgTJJ4QOWg8m8UDIJVAUZWEiqUxLRLphqKl13ag==
+ b=iKvpg7/Dx6AkMhRqahC++S+HOQKeaXvtM21Ww+7hmyZNyEJ4IR8vgaysbiWXOdJ0CKX1c5nb+itIjrlHkXG3Ts3icfIZ0Qd89OB9V6nSMl5MG9IdTKaF5hXQJadfcIIvg3Ut+x1YeiFR7f5cD/EnwtwgTCuzUb0O/+wVvAXVmqazporZq9QDwaZjb+jgmZ3kcDHi6veOaQYhAp9sihU0lL5dbzzS2kkLIyuXsnPwh3lMoCo+/3IGmER8jwleLrsYtlFI15/OCXEvMiiJKiZeR9W3c5eKYrGtDBedfyfNGjcqldBcVbsu9tcv4ArN5Qx9qVHdb/u0ZF6e7wEULibOpA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FFJ7iTmdrIk6fuyfJZiMdWvuM/Ibnzero0JDpckWwI0=;
- b=S2g1jm89xlDeEyidC9hxjc8wbfejNWmJ0SkVyat5Fl5kGcKiDekEuV2ShugNEZ2Rv7B7EkFY9ryvav4y5FAstT+Fmxhb23hYgvytE5Z9yV3dazwlix20euRXUB3l/cczNB3jHzI5yG1WpiWvkq9vxewefjGTs9Iy39UIhHfwtnlAhdUOKS/jXlKH/GGo9Jk4sxdvR+ptMrHpb9L1A2gWk5Lx8SbfGAydhCLK2QlKnIRxbg1W3uWnSNFLQqpzmUFHlKIGtLIpl/61hnMlt6xY53eYjUHZJQ83ay8rXgFmfC+4JH/XGw7g/60cXstXDPd2MMS28ieNkQMUygYYG7mY5w==
+ bh=6uF7u4Jr1EOS0hJCxSNrMsHPG2t3yqJMN3vJNoSL5CE=;
+ b=DbJBvikqitPALXXRDerUlP0kT/Ee/ulKmRJ5mnP/1JFal/3879IxS765YH/dthv5bD5FUyQdqOQp/NtNr8U6ao0uvW/mmoYfwhb76rz5pGP51Joufwbg8f3OyQUV54GndasjFWexGqZXJ2XtWbs8VjY7g73YdeliRE/3PbgOY4OtEO44rt/Y0wuTVCUTnafMCwXHlQ3/6XSLAWkw5KcKLnTRVkCcqxvrEFUH8Fza0ks98vjaFI68IABMJycUXtSkf2aQdCOIh0qdzAJlDAt0pXkt8dIyot0gWH1UC03qVrB+u7vhDiSRCqTZ+Fbh+1dQjisIjF0vUkErc6oRXt7L9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 208.255.156.42) smtp.rcpttodomain=nvidia.com
+ 208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
  header.from=cornelisnetworks.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FFJ7iTmdrIk6fuyfJZiMdWvuM/Ibnzero0JDpckWwI0=;
- b=lITrgS5wkGJYaEvOXZLksDU8bXDGMiZVmwy4oAAuBcaEokoBTInA2N56d7gMeU74d424lmGWo2N/r1EKBmBYcdrZMXpdSntzzF6MYPfC+6k4NFjrei3JRsXZmgofAxz6kx8AIr6+nBF2yUpLKP2Fi3BLGzWmew2tkPkOGCv/ErzSbUmxCvtX2FhvbtsdenlEnQnJxJBclJNmEf3NnYohUSkvM/KJ2ZRujb6K8cvOBfhiHKUcQJWELNJH/yuoycs7k7/sCUuTK+XdB049TgHuU/l+XmltD+UKASqwJM9JfC/uwXFphPknb+65kRiVjR7L7ibPiJmSMlXaZcqj4/lKrw==
-Received: from BN0PR08CA0018.namprd08.prod.outlook.com (2603:10b6:408:142::29)
- by BY3PR01MB6706.prod.exchangelabs.com (2603:10b6:a03:357::6) with Microsoft
+ bh=6uF7u4Jr1EOS0hJCxSNrMsHPG2t3yqJMN3vJNoSL5CE=;
+ b=PCQ9yf2ntd/bjc06caDKvyzByVO9Dpsg8uc3qk4D3JD87Oj3IxCWBOtaXIWrV6jiKZ/cpekRrLAaU6Gnwhisni89J+3YEQeuGtmWtqIeMJJRSFVnoxO55dsjTOTWIMpmJSJ1CRiYLJpshd0oIISP2Z28fJX4JC8W57RlqQUcUPWx24m92pMPrFxJaTM1phoyZ0bfxx0LkoIAZsa2EuZiP3nvasLmULSTOlQ8Of3ACgCsDaMIyE/QalluZ/aMtHm8hc9JhQgYyyU/Wx/mxP6TWGuPJhBxZVbuw0ZKl4R2KohjwQgbWxMBXsmV9Mlj8ZOtzDqfvVq+s5veqiDzf2i1Hg==
+Received: from BN9PR03CA0663.namprd03.prod.outlook.com (2603:10b6:408:10e::8)
+ by DM4PR01MB7713.prod.exchangelabs.com (2603:10b6:8:65::20) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6411.21; Fri, 19 May 2023 16:32:17 +0000
-Received: from BN8NAM11FT071.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:142:cafe::b4) by BN0PR08CA0018.outlook.office365.com
- (2603:10b6:408:142::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.21 via Frontend
- Transport; Fri, 19 May 2023 16:32:16 +0000
+ 15.20.6411.19; Fri, 19 May 2023 16:54:15 +0000
+Received: from BN8NAM11FT094.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:10e:cafe::66) by BN9PR03CA0663.outlook.office365.com
+ (2603:10b6:408:10e::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.20 via Frontend
+ Transport; Fri, 19 May 2023 16:54:15 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=bestguesspass action=none
@@ -48,45 +48,45 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=awfm-02.cornelisnetworks.com; pr=C
 Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
- BN8NAM11FT071.mail.protection.outlook.com (10.13.177.92) with Microsoft SMTP
+ BN8NAM11FT094.mail.protection.outlook.com (10.13.176.131) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6411.21 via Frontend Transport; Fri, 19 May 2023 16:32:16 +0000
+ 15.20.6411.21 via Frontend Transport; Fri, 19 May 2023 16:54:15 +0000
 Received: from awfm-02.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 34JGWG8k3700699;
-        Fri, 19 May 2023 12:32:16 -0400
-Subject: [PATCH for-rc v2] IB/hfi1: Fix wrong mmu_node used for user SDMA
- packet after invalidate
+        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 34JGsEEx3702359;
+        Fri, 19 May 2023 12:54:14 -0400
+Subject: [PATCH for-next 0/3] Updates for 6.5
 From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To:     jgg@nvidia.com, leonro@nvidia.com
-Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
+Cc:     Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
+        Dean Luick <dean.luick@cornelisnetworks.com>,
         Brendan Cunningham <bcunningham@cornelisnetworks.com>,
         linux-rdma@vger.kernel.org
-Date:   Fri, 19 May 2023 12:32:16 -0400
-Message-ID: <168451393605.3700681.13493776139032178861.stgit@awfm-02.cornelisnetworks.com>
+Date:   Fri, 19 May 2023 12:54:14 -0400
+Message-ID: <168451505181.3702129.3429054159823295146.stgit@awfm-02.cornelisnetworks.com>
 User-Agent: StGit/1.5.dev2+g9ce680a5
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT071:EE_|BY3PR01MB6706:EE_
-X-MS-Office365-Filtering-Correlation-Id: 74245c64-ff70-477e-3d69-08db58869bf1
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT094:EE_|DM4PR01MB7713:EE_
+X-MS-Office365-Filtering-Correlation-Id: b042e123-4f8a-48b2-30e6-08db5889ade2
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ltbrT0Kpl9vsoZubYEC0oEhd2CTM/dycIZK/eYe6ufhtf4X4/BImKvmpQlQeCa8ySI/lFdtHI/tI7yoSoa0BzvWD49u4be6w9jEcyJ4Sv9u3g8fcuNIrJHg0HXe7yg7kXEpTZv3BKPJJq4S/oFLSYzeFlLsA9uXGxhdlAMgQBJLo7P3h9m3rlqnU0ABJFmrH1CeEufwBV2nTWyK6njFZcw0LAY7TLKtW6wQML30UTowj9FnAk+Gr8Mc3lLxvVYACNRW6Z8Ij0HwwIQw7eTSsBy7PECbykky+iGxSC0Y9l136LmhDGwJPg1+mHRWhPU+RzoJ4rrL9QZJJxeYHXcLvart9qHoQAMwTsle7wEcQlgjZu+tleBGQ3oKUZEglmRMCfQ2TVLRHm68KZICSNCFhEnpNypMaac2tAFT9Ef6wCTlbxeS9hX4FH4n7JH3U6tP4Wdq0sjaX5eudRV6tkg0mDH1XyM0zwKEE1vTXDZFf3sMbmRKcE8C6Cc+VTs5QQkmK082mD5NK+GmdBRXpDJi29i2Tv1Hs0SKopXar39EYhHxlP7ikUUDn7btJz6MjEdtdJxi9xku26JJYuz10NArX0xA1OaWVjCVIuCLUH+dM4MnljpKFA4azZGh2ar+EEGeLaDEGJpvHi+Nvd/KxQOuhcpAYVSzE63dfjXFtPNBBpQktvV0ghh/aUOomehfFoOyP7G87rjUjfA8Ti5ynn4cfgjywq4WrgdT9EpxPjnVlFWsk9lJrWjDzoIZ7/1MF/+kv
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39840400004)(396003)(376002)(346002)(136003)(451199021)(46966006)(36840700001)(356005)(81166007)(103116003)(82310400005)(36860700001)(83380400001)(40480700001)(2906002)(336012)(426003)(30864003)(7126003)(86362001)(47076005)(55016003)(70586007)(70206006)(4326008)(316002)(54906003)(478600001)(41300700001)(7696005)(186003)(26005)(5660300002)(44832011)(8676002)(8936002)(36900700001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: L6L2EJ3sJwkzgvgvdZjTtM7rYyQz/1Vv4UJwVqUqQ+ei+oHGdq2i3tFcVX1PRsD7vgH2nWR/z9nKXzT4tYvVZ5Pu/iBbMP4ks3j/pBwQsq0IAveGum9jk4Y0IA8zAF+/M4lcJanTM3+SfITqzjpxv0ylTXIkET4vU5GmGIPOWuEnIhbfcXLqyApPfL4sQ2dat5n+M0jwDekz/Qv7mNQG7PF9V0m+BhjN/acL0RmO44WjbRsx8WVFMtw2sa1YqYObICf8w/kTHBoqocQWasXfN11KvgZD9Jej2fBr07eCllOxbeChC4vLCxA1PYY308PN7ko2bXjFJYN5cWsHvFPgc2Cs4kkk/BMvB1PRCzDyBwEziDD+0dwoNuw0F7hDnM2M24OqwOpHTDcTpa0R6MDEfNoKAN9jP5hsUe/jya72PEHtfq41VQKLhQPnlEJhQmUnNjC/MKBibjOH0ByfEgtV3+2EaEIp2tXctWktjCrnVf5k8gfn6PDMwKCrrKhVvxnn8piNaKgRqzI/AWbcA7rJTlaV4WtEMuoOZetfIH23pv7RElqnBM3j5boY0wqWZ/0BfJg9BA3H7cBYdCVrzTn6MOZpNL//dRowIYOoy87VoktCn7z70CQ8HboRVcyn+sNrGS04ak3oMOu4rIJTh39yaCXuLk32e3vAazpyDgYTY0Jo9HwE9d2eKRKjtLPcyswUtdraLCC/AnJ4fcb/R+crYPhsxLq81fGXx0oD2wnEtrc=
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(39840400004)(376002)(136003)(451199021)(36840700001)(46966006)(26005)(7696005)(966005)(36860700001)(7126003)(40480700001)(47076005)(83380400001)(426003)(336012)(86362001)(82310400005)(103116003)(186003)(356005)(81166007)(55016003)(54906003)(44832011)(316002)(478600001)(2906002)(8936002)(8676002)(4326008)(41300700001)(5660300002)(70586007)(70206006)(36900700001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2023 16:32:16.7885
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2023 16:54:15.3790
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74245c64-ff70-477e-3d69-08db58869bf1
+X-MS-Exchange-CrossTenant-Network-Message-Id: b042e123-4f8a-48b2-30e6-08db5889ade2
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT071.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT094.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR01MB6706
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR01MB7713
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -97,760 +97,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Brendan Cunningham <bcunningham@cornelisnetworks.com>
+Here are 3 more patches related/spawned out of the work to scale back the
+page pinning re-work. This series depends on [1] which was submitted for RC
+recently.
 
-The hfi1 user SDMA pinned-page cache will leave a stale cache entry when
-the cache-entry's virtual address range is invalidated but that cache
-entry is in-use by an outstanding SDMA request.
-
-Subsequent user SDMA requests with buffers in or spanning the virtual
-address range of the stale cache entry will result in packets
-constructed from the wrong memory, the physical pages pointed to by the
-stale cache entry.
-
-To fix this, remove mmu_rb_node cache entries from the mmu_rb_handler
-cache independent of the cache entry's refcount. Add 'struct kref
-refcount' to struct mmu_rb_node and manage mmu_rb_node lifetime with
-kref_get() and kref_put().
-
-mmu_rb_node.refcount makes sdma_mmu_node.refcount redundant. Remove
-'atomic_t refcount' from struct sdma_mmu_node and change sdma_mmu_node
-code to use mmu_rb_node.refcount.
-
-Move the mmu_rb_handler destructor call after a
-wait-for-SDMA-request-completion call so mmu_rb_nodes that need
-mmu_rb_handler's workqueue to queue themselves up for destruction from
-an interrupt context may do so.
-
-Fixes: f48ad614c100 ("IB/hfi1: Move driver out of staging")
-Fixes: 00cbce5cbf88 ("IB/hfi1: Fix bugs with non-PAGE_SIZE-end multi-iovec user SDMA requests")
-
-Reviewed-by: Dean Luick <dean.luick@cornelisnetworks.com>
-Signed-off-by: Brendan Cunningham <bcunningham@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+[1] https://patchwork.kernel.org/project/linux-rdma/patch/168451393605.3700681.13493776139032178861.stgit@awfm-02.cornelisnetworks.com/
 
 ---
-changes since v1: Update Fixes SHA
----
- drivers/infiniband/hw/hfi1/ipoib_tx.c   |    4 -
- drivers/infiniband/hw/hfi1/mmu_rb.c     |  101 ++++++++++++++---------
- drivers/infiniband/hw/hfi1/mmu_rb.h     |    3 +
- drivers/infiniband/hw/hfi1/sdma.c       |   23 ++++-
- drivers/infiniband/hw/hfi1/sdma.h       |   47 +++++++----
- drivers/infiniband/hw/hfi1/sdma_txreq.h |    2 
- drivers/infiniband/hw/hfi1/user_sdma.c  |  137 ++++++++++++-------------------
- drivers/infiniband/hw/hfi1/user_sdma.h  |    1 
- drivers/infiniband/hw/hfi1/vnic_sdma.c  |    4 -
- 9 files changed, 177 insertions(+), 145 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-index 8973a081d641..e7d831330278 100644
---- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-+++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-@@ -215,11 +215,11 @@ static int hfi1_ipoib_build_ulp_payload(struct ipoib_txreq *tx,
- 		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
- 
- 		ret = sdma_txadd_page(dd,
--				      NULL,
- 				      txreq,
- 				      skb_frag_page(frag),
- 				      frag->bv_offset,
--				      skb_frag_size(frag));
-+				      skb_frag_size(frag),
-+				      NULL, NULL, NULL);
- 		if (unlikely(ret))
- 			break;
- 	}
-diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
-index 1cea8b0c78e0..a864423c256d 100644
---- a/drivers/infiniband/hw/hfi1/mmu_rb.c
-+++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
-@@ -19,8 +19,7 @@ static int mmu_notifier_range_start(struct mmu_notifier *,
- 		const struct mmu_notifier_range *);
- static struct mmu_rb_node *__mmu_rb_search(struct mmu_rb_handler *,
- 					   unsigned long, unsigned long);
--static void do_remove(struct mmu_rb_handler *handler,
--		      struct list_head *del_list);
-+static void release_immediate(struct kref *refcount);
- static void handle_remove(struct work_struct *work);
- 
- static const struct mmu_notifier_ops mn_opts = {
-@@ -106,7 +105,11 @@ void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler)
- 	}
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
--	do_remove(handler, &del_list);
-+	while (!list_empty(&del_list)) {
-+		rbnode = list_first_entry(&del_list, struct mmu_rb_node, list);
-+		list_del(&rbnode->list);
-+		kref_put(&rbnode->refcount, release_immediate);
-+	}
- 
- 	/* Now the mm may be freed. */
- 	mmdrop(handler->mn.mm);
-@@ -134,12 +137,6 @@ int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
- 	}
- 	__mmu_int_rb_insert(mnode, &handler->root);
- 	list_add_tail(&mnode->list, &handler->lru_list);
--
--	ret = handler->ops->insert(handler->ops_arg, mnode);
--	if (ret) {
--		__mmu_int_rb_remove(mnode, &handler->root);
--		list_del(&mnode->list); /* remove from LRU list */
--	}
- 	mnode->handler = handler;
- unlock:
- 	spin_unlock_irqrestore(&handler->lock, flags);
-@@ -183,6 +180,48 @@ static struct mmu_rb_node *__mmu_rb_search(struct mmu_rb_handler *handler,
- 	return node;
- }
- 
-+/*
-+ * Must NOT call while holding mnode->handler->lock.
-+ * mnode->handler->ops->remove() may sleep and mnode->handler->lock is a
-+ * spinlock.
-+ */
-+static void release_immediate(struct kref *refcount)
-+{
-+	struct mmu_rb_node *mnode =
-+		container_of(refcount, struct mmu_rb_node, refcount);
-+	mnode->handler->ops->remove(mnode->handler->ops_arg, mnode);
-+}
-+
-+/* Caller must hold mnode->handler->lock */
-+static void release_nolock(struct kref *refcount)
-+{
-+	struct mmu_rb_node *mnode =
-+		container_of(refcount, struct mmu_rb_node, refcount);
-+	list_move(&mnode->list, &mnode->handler->del_list);
-+	queue_work(mnode->handler->wq, &mnode->handler->del_work);
-+}
-+
-+/*
-+ * struct mmu_rb_node->refcount kref_put() callback.
-+ * Adds mmu_rb_node to mmu_rb_node->handler->del_list and queues
-+ * handler->del_work on handler->wq.
-+ * Does not remove mmu_rb_node from handler->lru_list or handler->rb_root.
-+ * Acquires mmu_rb_node->handler->lock; do not call while already holding
-+ * handler->lock.
-+ */
-+void hfi1_mmu_rb_release(struct kref *refcount)
-+{
-+	struct mmu_rb_node *mnode =
-+		container_of(refcount, struct mmu_rb_node, refcount);
-+	struct mmu_rb_handler *handler = mnode->handler;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&handler->lock, flags);
-+	list_move(&mnode->list, &mnode->handler->del_list);
-+	spin_unlock_irqrestore(&handler->lock, flags);
-+	queue_work(handler->wq, &handler->del_work);
-+}
-+
- void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
- {
- 	struct mmu_rb_node *rbnode, *ptr;
-@@ -197,6 +236,10 @@ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
- 
- 	spin_lock_irqsave(&handler->lock, flags);
- 	list_for_each_entry_safe(rbnode, ptr, &handler->lru_list, list) {
-+		/* refcount == 1 implies mmu_rb_handler has only rbnode ref */
-+		if (kref_read(&rbnode->refcount) > 1)
-+			continue;
-+
- 		if (handler->ops->evict(handler->ops_arg, rbnode, evict_arg,
- 					&stop)) {
- 			__mmu_int_rb_remove(rbnode, &handler->root);
-@@ -209,7 +252,7 @@ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
- 	list_for_each_entry_safe(rbnode, ptr, &del_list, list) {
--		handler->ops->remove(handler->ops_arg, rbnode);
-+		kref_put(&rbnode->refcount, release_immediate);
- 	}
- }
- 
-@@ -221,7 +264,6 @@ static int mmu_notifier_range_start(struct mmu_notifier *mn,
- 	struct rb_root_cached *root = &handler->root;
- 	struct mmu_rb_node *node, *ptr = NULL;
- 	unsigned long flags;
--	bool added = false;
- 
- 	spin_lock_irqsave(&handler->lock, flags);
- 	for (node = __mmu_int_rb_iter_first(root, range->start, range->end-1);
-@@ -230,38 +272,16 @@ static int mmu_notifier_range_start(struct mmu_notifier *mn,
- 		ptr = __mmu_int_rb_iter_next(node, range->start,
- 					     range->end - 1);
- 		trace_hfi1_mmu_mem_invalidate(node->addr, node->len);
--		if (handler->ops->invalidate(handler->ops_arg, node)) {
--			__mmu_int_rb_remove(node, root);
--			/* move from LRU list to delete list */
--			list_move(&node->list, &handler->del_list);
--			added = true;
--		}
-+		/* Remove from rb tree and lru_list. */
-+		__mmu_int_rb_remove(node, root);
-+		list_del_init(&node->list);
-+		kref_put(&node->refcount, release_nolock);
- 	}
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
--	if (added)
--		queue_work(handler->wq, &handler->del_work);
--
- 	return 0;
- }
- 
--/*
-- * Call the remove function for the given handler and the list.  This
-- * is expected to be called with a delete list extracted from handler.
-- * The caller should not be holding the handler lock.
-- */
--static void do_remove(struct mmu_rb_handler *handler,
--		      struct list_head *del_list)
--{
--	struct mmu_rb_node *node;
--
--	while (!list_empty(del_list)) {
--		node = list_first_entry(del_list, struct mmu_rb_node, list);
--		list_del(&node->list);
--		handler->ops->remove(handler->ops_arg, node);
--	}
--}
--
- /*
-  * Work queue function to remove all nodes that have been queued up to
-  * be removed.  The key feature is that mm->mmap_lock is not being held
-@@ -274,11 +294,16 @@ static void handle_remove(struct work_struct *work)
- 						del_work);
- 	struct list_head del_list;
- 	unsigned long flags;
-+	struct mmu_rb_node *node;
- 
- 	/* remove anything that is queued to get removed */
- 	spin_lock_irqsave(&handler->lock, flags);
- 	list_replace_init(&handler->del_list, &del_list);
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
--	do_remove(handler, &del_list);
-+	while (!list_empty(&del_list)) {
-+		node = list_first_entry(&del_list, struct mmu_rb_node, list);
-+		list_del(&node->list);
-+		handler->ops->remove(handler->ops_arg, node);
-+	}
- }
-diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.h b/drivers/infiniband/hw/hfi1/mmu_rb.h
-index c4da064188c9..82c505a04fc6 100644
---- a/drivers/infiniband/hw/hfi1/mmu_rb.h
-+++ b/drivers/infiniband/hw/hfi1/mmu_rb.h
-@@ -16,6 +16,7 @@ struct mmu_rb_node {
- 	struct rb_node node;
- 	struct mmu_rb_handler *handler;
- 	struct list_head list;
-+	struct kref refcount;
- };
- 
- /*
-@@ -61,6 +62,8 @@ int hfi1_mmu_rb_register(void *ops_arg,
- void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler);
- int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
- 		       struct mmu_rb_node *mnode);
-+void hfi1_mmu_rb_release(struct kref *refcount);
-+
- void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg);
- struct mmu_rb_node *hfi1_mmu_rb_get_first(struct mmu_rb_handler *handler,
- 					  unsigned long addr,
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index bb2552dd29c1..26c62162759b 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -1593,7 +1593,20 @@ static inline void sdma_unmap_desc(
- 	struct hfi1_devdata *dd,
- 	struct sdma_desc *descp)
- {
--	system_descriptor_complete(dd, descp);
-+	switch (sdma_mapping_type(descp)) {
-+	case SDMA_MAP_SINGLE:
-+		dma_unmap_single(&dd->pcidev->dev, sdma_mapping_addr(descp),
-+				 sdma_mapping_len(descp), DMA_TO_DEVICE);
-+		break;
-+	case SDMA_MAP_PAGE:
-+		dma_unmap_page(&dd->pcidev->dev, sdma_mapping_addr(descp),
-+			       sdma_mapping_len(descp), DMA_TO_DEVICE);
-+		break;
-+	}
-+
-+	if (descp->pinning_ctx && descp->ctx_put)
-+		descp->ctx_put(descp->pinning_ctx);
-+	descp->pinning_ctx = NULL;
- }
- 
- /*
-@@ -3113,8 +3126,8 @@ int ext_coal_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx,
- 
- 		/* Add descriptor for coalesce buffer */
- 		tx->desc_limit = MAX_DESC;
--		return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, NULL, tx,
--					 addr, tx->tlen);
-+		return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, tx,
-+					 addr, tx->tlen, NULL, NULL, NULL);
- 	}
- 
- 	return 1;
-@@ -3157,9 +3170,9 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- 	make_tx_sdma_desc(
- 		tx,
- 		SDMA_MAP_NONE,
--		NULL,
- 		dd->sdma_pad_phys,
--		sizeof(u32) - (tx->packet_len & (sizeof(u32) - 1)));
-+		sizeof(u32) - (tx->packet_len & (sizeof(u32) - 1)),
-+		NULL, NULL, NULL);
- 	tx->num_desc++;
- 	_sdma_close_tx(dd, tx);
- 	return rval;
-diff --git a/drivers/infiniband/hw/hfi1/sdma.h b/drivers/infiniband/hw/hfi1/sdma.h
-index 95aaec14c6c2..7fdebab202c4 100644
---- a/drivers/infiniband/hw/hfi1/sdma.h
-+++ b/drivers/infiniband/hw/hfi1/sdma.h
-@@ -594,9 +594,11 @@ static inline dma_addr_t sdma_mapping_addr(struct sdma_desc *d)
- static inline void make_tx_sdma_desc(
- 	struct sdma_txreq *tx,
- 	int type,
--	void *pinning_ctx,
- 	dma_addr_t addr,
--	size_t len)
-+	size_t len,
-+	void *pinning_ctx,
-+	void (*ctx_get)(void *),
-+	void (*ctx_put)(void *))
- {
- 	struct sdma_desc *desc = &tx->descp[tx->num_desc];
- 
-@@ -613,7 +615,11 @@ static inline void make_tx_sdma_desc(
- 				<< SDMA_DESC0_PHY_ADDR_SHIFT) |
- 			(((u64)len & SDMA_DESC0_BYTE_COUNT_MASK)
- 				<< SDMA_DESC0_BYTE_COUNT_SHIFT);
-+
- 	desc->pinning_ctx = pinning_ctx;
-+	desc->ctx_put = ctx_put;
-+	if (pinning_ctx && ctx_get)
-+		ctx_get(pinning_ctx);
- }
- 
- /* helper to extend txreq */
-@@ -645,18 +651,20 @@ static inline void _sdma_close_tx(struct hfi1_devdata *dd,
- static inline int _sdma_txadd_daddr(
- 	struct hfi1_devdata *dd,
- 	int type,
--	void *pinning_ctx,
- 	struct sdma_txreq *tx,
- 	dma_addr_t addr,
--	u16 len)
-+	u16 len,
-+	void *pinning_ctx,
-+	void (*ctx_get)(void *),
-+	void (*ctx_put)(void *))
- {
- 	int rval = 0;
- 
- 	make_tx_sdma_desc(
- 		tx,
- 		type,
--		pinning_ctx,
--		addr, len);
-+		addr, len,
-+		pinning_ctx, ctx_get, ctx_put);
- 	WARN_ON(len > tx->tlen);
- 	tx->num_desc++;
- 	tx->tlen -= len;
-@@ -676,11 +684,18 @@ static inline int _sdma_txadd_daddr(
- /**
-  * sdma_txadd_page() - add a page to the sdma_txreq
-  * @dd: the device to use for mapping
-- * @pinning_ctx: context to be released at descriptor retirement
-  * @tx: tx request to which the page is added
-  * @page: page to map
-  * @offset: offset within the page
-  * @len: length in bytes
-+ * @pinning_ctx: context to be stored on struct sdma_desc .pinning_ctx. Not
-+ *               added if coalesce buffer is used. E.g. pointer to pinned-page
-+ *               cache entry for the sdma_desc.
-+ * @ctx_get: optional function to take reference to @pinning_ctx. Not called if
-+ *           @pinning_ctx is NULL.
-+ * @ctx_put: optional function to release reference to @pinning_ctx after
-+ *           sdma_desc completes. May be called in interrupt context so must
-+ *           not sleep. Not called if @pinning_ctx is NULL.
-  *
-  * This is used to add a page/offset/length descriptor.
-  *
-@@ -692,11 +707,13 @@ static inline int _sdma_txadd_daddr(
-  */
- static inline int sdma_txadd_page(
- 	struct hfi1_devdata *dd,
--	void *pinning_ctx,
- 	struct sdma_txreq *tx,
- 	struct page *page,
- 	unsigned long offset,
--	u16 len)
-+	u16 len,
-+	void *pinning_ctx,
-+	void (*ctx_get)(void *),
-+	void (*ctx_put)(void *))
- {
- 	dma_addr_t addr;
- 	int rval;
-@@ -720,7 +737,8 @@ static inline int sdma_txadd_page(
- 		return -ENOSPC;
- 	}
- 
--	return _sdma_txadd_daddr(dd, SDMA_MAP_PAGE, pinning_ctx, tx, addr, len);
-+	return _sdma_txadd_daddr(dd, SDMA_MAP_PAGE, tx, addr, len,
-+				 pinning_ctx, ctx_get, ctx_put);
- }
- 
- /**
-@@ -754,8 +772,8 @@ static inline int sdma_txadd_daddr(
- 			return rval;
- 	}
- 
--	return _sdma_txadd_daddr(dd, SDMA_MAP_NONE, NULL, tx,
--				 addr, len);
-+	return _sdma_txadd_daddr(dd, SDMA_MAP_NONE, tx, addr, len,
-+				 NULL, NULL, NULL);
- }
- 
- /**
-@@ -801,7 +819,8 @@ static inline int sdma_txadd_kvaddr(
- 		return -ENOSPC;
- 	}
- 
--	return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, NULL, tx, addr, len);
-+	return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, tx, addr, len,
-+				 NULL, NULL, NULL);
- }
- 
- struct iowait_work;
-@@ -1034,6 +1053,4 @@ u16 sdma_get_descq_cnt(void);
- extern uint mod_num_sdma;
- 
- void sdma_update_lmc(struct hfi1_devdata *dd, u64 mask, u32 lid);
--
--void system_descriptor_complete(struct hfi1_devdata *dd, struct sdma_desc *descp);
- #endif
-diff --git a/drivers/infiniband/hw/hfi1/sdma_txreq.h b/drivers/infiniband/hw/hfi1/sdma_txreq.h
-index fad946cb5e0d..85ae7293c274 100644
---- a/drivers/infiniband/hw/hfi1/sdma_txreq.h
-+++ b/drivers/infiniband/hw/hfi1/sdma_txreq.h
-@@ -20,6 +20,8 @@ struct sdma_desc {
- 	/* private:  don't use directly */
- 	u64 qw[2];
- 	void *pinning_ctx;
-+	/* Release reference to @pinning_ctx. May be called in interrupt context. Must not sleep. */
-+	void (*ctx_put)(void *ctx);
- };
- 
- /**
-diff --git a/drivers/infiniband/hw/hfi1/user_sdma.c b/drivers/infiniband/hw/hfi1/user_sdma.c
-index ae58b48afe07..02bd62b857b7 100644
---- a/drivers/infiniband/hw/hfi1/user_sdma.c
-+++ b/drivers/infiniband/hw/hfi1/user_sdma.c
-@@ -62,18 +62,14 @@ static int defer_packet_queue(
- static void activate_packet_queue(struct iowait *wait, int reason);
- static bool sdma_rb_filter(struct mmu_rb_node *node, unsigned long addr,
- 			   unsigned long len);
--static int sdma_rb_insert(void *arg, struct mmu_rb_node *mnode);
- static int sdma_rb_evict(void *arg, struct mmu_rb_node *mnode,
- 			 void *arg2, bool *stop);
- static void sdma_rb_remove(void *arg, struct mmu_rb_node *mnode);
--static int sdma_rb_invalidate(void *arg, struct mmu_rb_node *mnode);
- 
- static struct mmu_rb_ops sdma_rb_ops = {
- 	.filter = sdma_rb_filter,
--	.insert = sdma_rb_insert,
- 	.evict = sdma_rb_evict,
- 	.remove = sdma_rb_remove,
--	.invalidate = sdma_rb_invalidate
- };
- 
- static int add_system_pages_to_sdma_packet(struct user_sdma_request *req,
-@@ -247,14 +243,14 @@ int hfi1_user_sdma_free_queues(struct hfi1_filedata *fd,
- 		spin_unlock(&fd->pq_rcu_lock);
- 		synchronize_srcu(&fd->pq_srcu);
- 		/* at this point there can be no more new requests */
--		if (pq->handler)
--			hfi1_mmu_rb_unregister(pq->handler);
- 		iowait_sdma_drain(&pq->busy);
- 		/* Wait until all requests have been freed. */
- 		wait_event_interruptible(
- 			pq->wait,
- 			!atomic_read(&pq->n_reqs));
- 		kfree(pq->reqs);
-+		if (pq->handler)
-+			hfi1_mmu_rb_unregister(pq->handler);
- 		bitmap_free(pq->req_in_use);
- 		kmem_cache_destroy(pq->txreq_cache);
- 		flush_pq_iowait(pq);
-@@ -1275,25 +1271,17 @@ static void free_system_node(struct sdma_mmu_node *node)
- 	kfree(node);
- }
- 
--static inline void acquire_node(struct sdma_mmu_node *node)
--{
--	atomic_inc(&node->refcount);
--	WARN_ON(atomic_read(&node->refcount) < 0);
--}
--
--static inline void release_node(struct mmu_rb_handler *handler,
--				struct sdma_mmu_node *node)
--{
--	atomic_dec(&node->refcount);
--	WARN_ON(atomic_read(&node->refcount) < 0);
--}
--
-+/*
-+ * kref_get()'s an additional kref on the returned rb_node to prevent rb_node
-+ * from being released until after rb_node is assigned to an SDMA descriptor
-+ * (struct sdma_desc) under add_system_iovec_to_sdma_packet(), even if the
-+ * virtual address range for rb_node is invalidated between now and then.
-+ */
- static struct sdma_mmu_node *find_system_node(struct mmu_rb_handler *handler,
- 					      unsigned long start,
- 					      unsigned long end)
- {
- 	struct mmu_rb_node *rb_node;
--	struct sdma_mmu_node *node;
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&handler->lock, flags);
-@@ -1302,11 +1290,12 @@ static struct sdma_mmu_node *find_system_node(struct mmu_rb_handler *handler,
- 		spin_unlock_irqrestore(&handler->lock, flags);
- 		return NULL;
- 	}
--	node = container_of(rb_node, struct sdma_mmu_node, rb);
--	acquire_node(node);
-+
-+	/* "safety" kref to prevent release before add_system_iovec_to_sdma_packet() */
-+	kref_get(&rb_node->refcount);
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 
--	return node;
-+	return container_of(rb_node, struct sdma_mmu_node, rb);
- }
- 
- static int pin_system_pages(struct user_sdma_request *req,
-@@ -1355,6 +1344,13 @@ static int pin_system_pages(struct user_sdma_request *req,
- 	return 0;
- }
- 
-+/*
-+ * kref refcount on *node_p will be 2 on successful addition: one kref from
-+ * kref_init() for mmu_rb_handler and one kref to prevent *node_p from being
-+ * released until after *node_p is assigned to an SDMA descriptor (struct
-+ * sdma_desc) under add_system_iovec_to_sdma_packet(), even if the virtual
-+ * address range for *node_p is invalidated between now and then.
-+ */
- static int add_system_pinning(struct user_sdma_request *req,
- 			      struct sdma_mmu_node **node_p,
- 			      unsigned long start, unsigned long len)
-@@ -1368,6 +1364,12 @@ static int add_system_pinning(struct user_sdma_request *req,
- 	if (!node)
- 		return -ENOMEM;
- 
-+	/* First kref "moves" to mmu_rb_handler */
-+	kref_init(&node->rb.refcount);
-+
-+	/* "safety" kref to prevent release before add_system_iovec_to_sdma_packet() */
-+	kref_get(&node->rb.refcount);
-+
- 	node->pq = pq;
- 	ret = pin_system_pages(req, start, len, node, PFN_DOWN(len));
- 	if (ret == 0) {
-@@ -1431,15 +1433,15 @@ static int get_system_cache_entry(struct user_sdma_request *req,
- 			return 0;
- 		}
- 
--		SDMA_DBG(req, "prepend: node->rb.addr %lx, node->refcount %d",
--			 node->rb.addr, atomic_read(&node->refcount));
-+		SDMA_DBG(req, "prepend: node->rb.addr %lx, node->rb.refcount %d",
-+			 node->rb.addr, kref_read(&node->rb.refcount));
- 		prepend_len = node->rb.addr - start;
- 
- 		/*
- 		 * This node will not be returned, instead a new node
- 		 * will be. So release the reference.
- 		 */
--		release_node(handler, node);
-+		kref_put(&node->rb.refcount, hfi1_mmu_rb_release);
- 
- 		/* Prepend a node to cover the beginning of the allocation */
- 		ret = add_system_pinning(req, node_p, start, prepend_len);
-@@ -1451,6 +1453,20 @@ static int get_system_cache_entry(struct user_sdma_request *req,
- 	}
- }
- 
-+static void sdma_mmu_rb_node_get(void *ctx)
-+{
-+	struct mmu_rb_node *node = ctx;
-+
-+	kref_get(&node->refcount);
-+}
-+
-+static void sdma_mmu_rb_node_put(void *ctx)
-+{
-+	struct sdma_mmu_node *node = ctx;
-+
-+	kref_put(&node->rb.refcount, hfi1_mmu_rb_release);
-+}
-+
- static int add_mapping_to_sdma_packet(struct user_sdma_request *req,
- 				      struct user_sdma_txreq *tx,
- 				      struct sdma_mmu_node *cache_entry,
-@@ -1494,9 +1510,12 @@ static int add_mapping_to_sdma_packet(struct user_sdma_request *req,
- 			ctx = cache_entry;
- 		}
- 
--		ret = sdma_txadd_page(pq->dd, ctx, &tx->txreq,
-+		ret = sdma_txadd_page(pq->dd, &tx->txreq,
- 				      cache_entry->pages[page_index],
--				      page_offset, from_this_page);
-+				      page_offset, from_this_page,
-+				      ctx,
-+				      sdma_mmu_rb_node_get,
-+				      sdma_mmu_rb_node_put);
- 		if (ret) {
- 			/*
- 			 * When there's a failure, the entire request is freed by
-@@ -1518,8 +1537,6 @@ static int add_system_iovec_to_sdma_packet(struct user_sdma_request *req,
- 					   struct user_sdma_iovec *iovec,
- 					   size_t from_this_iovec)
- {
--	struct mmu_rb_handler *handler = req->pq->handler;
--
- 	while (from_this_iovec > 0) {
- 		struct sdma_mmu_node *cache_entry;
- 		size_t from_this_cache_entry;
-@@ -1540,15 +1557,15 @@ static int add_system_iovec_to_sdma_packet(struct user_sdma_request *req,
- 
- 		ret = add_mapping_to_sdma_packet(req, tx, cache_entry, start,
- 						 from_this_cache_entry);
-+
-+		/*
-+		 * Done adding cache_entry to zero or more sdma_desc. Can
-+		 * kref_put() the "safety" kref taken under
-+		 * get_system_cache_entry().
-+		 */
-+		kref_put(&cache_entry->rb.refcount, hfi1_mmu_rb_release);
-+
- 		if (ret) {
--			/*
--			 * We're guaranteed that there will be no descriptor
--			 * completion callback that releases this node
--			 * because only the last descriptor referencing it
--			 * has a context attached, and a failure means the
--			 * last descriptor was never added.
--			 */
--			release_node(handler, cache_entry);
- 			SDMA_DBG(req, "add system segment failed %d", ret);
- 			return ret;
- 		}
-@@ -1599,42 +1616,12 @@ static int add_system_pages_to_sdma_packet(struct user_sdma_request *req,
- 	return 0;
- }
- 
--void system_descriptor_complete(struct hfi1_devdata *dd,
--				struct sdma_desc *descp)
--{
--	switch (sdma_mapping_type(descp)) {
--	case SDMA_MAP_SINGLE:
--		dma_unmap_single(&dd->pcidev->dev, sdma_mapping_addr(descp),
--				 sdma_mapping_len(descp), DMA_TO_DEVICE);
--		break;
--	case SDMA_MAP_PAGE:
--		dma_unmap_page(&dd->pcidev->dev, sdma_mapping_addr(descp),
--			       sdma_mapping_len(descp), DMA_TO_DEVICE);
--		break;
--	}
--
--	if (descp->pinning_ctx) {
--		struct sdma_mmu_node *node = descp->pinning_ctx;
--
--		release_node(node->rb.handler, node);
--	}
--}
--
- static bool sdma_rb_filter(struct mmu_rb_node *node, unsigned long addr,
- 			   unsigned long len)
- {
- 	return (bool)(node->addr == addr);
- }
- 
--static int sdma_rb_insert(void *arg, struct mmu_rb_node *mnode)
--{
--	struct sdma_mmu_node *node =
--		container_of(mnode, struct sdma_mmu_node, rb);
--
--	atomic_inc(&node->refcount);
--	return 0;
--}
--
- /*
-  * Return 1 to remove the node from the rb tree and call the remove op.
-  *
-@@ -1647,10 +1634,6 @@ static int sdma_rb_evict(void *arg, struct mmu_rb_node *mnode,
- 		container_of(mnode, struct sdma_mmu_node, rb);
- 	struct evict_data *evict_data = evict_arg;
- 
--	/* is this node still being used? */
--	if (atomic_read(&node->refcount))
--		return 0; /* keep this node */
--
- 	/* this node will be evicted, add its pages to our count */
- 	evict_data->cleared += node->npages;
- 
-@@ -1668,13 +1651,3 @@ static void sdma_rb_remove(void *arg, struct mmu_rb_node *mnode)
- 
- 	free_system_node(node);
- }
--
--static int sdma_rb_invalidate(void *arg, struct mmu_rb_node *mnode)
--{
--	struct sdma_mmu_node *node =
--		container_of(mnode, struct sdma_mmu_node, rb);
--
--	if (!atomic_read(&node->refcount))
--		return 1;
--	return 0;
--}
-diff --git a/drivers/infiniband/hw/hfi1/user_sdma.h b/drivers/infiniband/hw/hfi1/user_sdma.h
-index a241836371dc..548347d4c5bc 100644
---- a/drivers/infiniband/hw/hfi1/user_sdma.h
-+++ b/drivers/infiniband/hw/hfi1/user_sdma.h
-@@ -104,7 +104,6 @@ struct hfi1_user_sdma_comp_q {
- struct sdma_mmu_node {
- 	struct mmu_rb_node rb;
- 	struct hfi1_user_sdma_pkt_q *pq;
--	atomic_t refcount;
- 	struct page **pages;
- 	unsigned int npages;
- };
-diff --git a/drivers/infiniband/hw/hfi1/vnic_sdma.c b/drivers/infiniband/hw/hfi1/vnic_sdma.c
-index 727eedfba332..cc6324d2d1dd 100644
---- a/drivers/infiniband/hw/hfi1/vnic_sdma.c
-+++ b/drivers/infiniband/hw/hfi1/vnic_sdma.c
-@@ -64,11 +64,11 @@ static noinline int build_vnic_ulp_payload(struct sdma_engine *sde,
- 
- 		/* combine physically continuous fragments later? */
- 		ret = sdma_txadd_page(sde->dd,
--				      NULL,
- 				      &tx->txreq,
- 				      skb_frag_page(frag),
- 				      skb_frag_off(frag),
--				      skb_frag_size(frag));
-+				      skb_frag_size(frag),
-+				      NULL, NULL, NULL);
- 		if (unlikely(ret))
- 			goto bail_txadd;
- 	}
+Brendan Cunningham (2):
+      IB/hfi1: Add mmu_rb_node refcount to hfi1_mmu_rb_template tracepoints
+      IB/hfi1: Remove unused struct mmu_rb_ops fields .insert, .invalidate
 
+Patrick Kelsey (1):
+      IB/hfi1: Separate user SDMA page-pinning from memory type
+
+
+ drivers/infiniband/hw/hfi1/Makefile     |   2 +
+ drivers/infiniband/hw/hfi1/init.c       |   5 +
+ drivers/infiniband/hw/hfi1/mmu_rb.c     |   7 +-
+ drivers/infiniband/hw/hfi1/mmu_rb.h     |   7 +-
+ drivers/infiniband/hw/hfi1/pin_system.c | 487 ++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi1/pinning.c    |  55 +++
+ drivers/infiniband/hw/hfi1/pinning.h    |  75 ++++
+ drivers/infiniband/hw/hfi1/trace_mmu.h  |  48 ++-
+ drivers/infiniband/hw/hfi1/user_sdma.c  | 472 ++---------------------
+ drivers/infiniband/hw/hfi1/user_sdma.h  |  15 +-
+ include/uapi/rdma/hfi/hfi1_user.h       |  31 +-
+ 11 files changed, 743 insertions(+), 461 deletions(-)
+ create mode 100644 drivers/infiniband/hw/hfi1/pin_system.c
+ create mode 100644 drivers/infiniband/hw/hfi1/pinning.c
+ create mode 100644 drivers/infiniband/hw/hfi1/pinning.h
+
+--
+-Denny
 
