@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 166C1709CF8
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 May 2023 18:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE03709CF9
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 May 2023 18:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjESQyY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 May 2023 12:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
+        id S231448AbjESQy0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 May 2023 12:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbjESQyW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 May 2023 12:54:22 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2126.outbound.protection.outlook.com [40.107.220.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BDA13D
-        for <linux-rdma@vger.kernel.org>; Fri, 19 May 2023 09:54:19 -0700 (PDT)
+        with ESMTP id S229526AbjESQyZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 May 2023 12:54:25 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2113.outbound.protection.outlook.com [40.107.223.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577B011F
+        for <linux-rdma@vger.kernel.org>; Fri, 19 May 2023 09:54:23 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iKvpg7/Dx6AkMhRqahC++S+HOQKeaXvtM21Ww+7hmyZNyEJ4IR8vgaysbiWXOdJ0CKX1c5nb+itIjrlHkXG3Ts3icfIZ0Qd89OB9V6nSMl5MG9IdTKaF5hXQJadfcIIvg3Ut+x1YeiFR7f5cD/EnwtwgTCuzUb0O/+wVvAXVmqazporZq9QDwaZjb+jgmZ3kcDHi6veOaQYhAp9sihU0lL5dbzzS2kkLIyuXsnPwh3lMoCo+/3IGmER8jwleLrsYtlFI15/OCXEvMiiJKiZeR9W3c5eKYrGtDBedfyfNGjcqldBcVbsu9tcv4ArN5Qx9qVHdb/u0ZF6e7wEULibOpA==
+ b=hAEywwJAKCXjz05FokKRLEDlkMHrZ+TZVAu/Q55Z27yX9RncF43ydkmVe/UoQand24xzbEssvZkoBVRLglI3DsJZamMPY21hiXsDJMp+KZPD3ZdpwINmOZ8kJTh0MiQELCUh7zJsg9TXlTaZeYWE5Fou2G4aebPp5LfzMytIbsThRPG3kWFAdgHh9Fukx2AbaXN35Fbi3oZr9t2+vxsVffMff7L9GGxm5qGI8E8VKoJOymLl1ij6GTjh38PR8PvAY5drTqMSsEx1AKIYAL26BJBJ2xKi9lYLbELXbTHArqeNjHAnGNmm3iYPUXeODEP5Ef5vSP3z8NGfx+irlDnf6Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6uF7u4Jr1EOS0hJCxSNrMsHPG2t3yqJMN3vJNoSL5CE=;
- b=DbJBvikqitPALXXRDerUlP0kT/Ee/ulKmRJ5mnP/1JFal/3879IxS765YH/dthv5bD5FUyQdqOQp/NtNr8U6ao0uvW/mmoYfwhb76rz5pGP51Joufwbg8f3OyQUV54GndasjFWexGqZXJ2XtWbs8VjY7g73YdeliRE/3PbgOY4OtEO44rt/Y0wuTVCUTnafMCwXHlQ3/6XSLAWkw5KcKLnTRVkCcqxvrEFUH8Fza0ks98vjaFI68IABMJycUXtSkf2aQdCOIh0qdzAJlDAt0pXkt8dIyot0gWH1UC03qVrB+u7vhDiSRCqTZ+Fbh+1dQjisIjF0vUkErc6oRXt7L9g==
+ bh=5+cedQLMw9vghL34Lz55LC7/SsOldKqjZ9jp0LS0HOY=;
+ b=dlVZYNbVDqCffFa8j4+flDGeyJNa39iz0N8i9CVUUoWfS050zeWrKxoKRUoqMD5n5BD8pal64jl6808p9rOdrwqB+oiaqHfa8ZLHNz3T61zAU2SW2dFxuPxGS3QjgHQU19fuial29nRje7QpAvw7R/Ub7mA7FMK/a0g/FSCb/P7jhUY8ppLhc3lGZ06Tl8R1dHEYrYZTwR/tjyhnVAbLan+P6AbT29Tn6yVjdksOvlomVbCpk1MzdOc97gHBY+XmnyaG8ezEblXqeJ3cyrX0KcrGnvs/TDqAdQJbTXJPJqKiaPgtI8YdnCSga/cbfP3p6fO1ztAfnMKngGMksw7EqQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
@@ -28,17 +28,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6uF7u4Jr1EOS0hJCxSNrMsHPG2t3yqJMN3vJNoSL5CE=;
- b=PCQ9yf2ntd/bjc06caDKvyzByVO9Dpsg8uc3qk4D3JD87Oj3IxCWBOtaXIWrV6jiKZ/cpekRrLAaU6Gnwhisni89J+3YEQeuGtmWtqIeMJJRSFVnoxO55dsjTOTWIMpmJSJ1CRiYLJpshd0oIISP2Z28fJX4JC8W57RlqQUcUPWx24m92pMPrFxJaTM1phoyZ0bfxx0LkoIAZsa2EuZiP3nvasLmULSTOlQ8Of3ACgCsDaMIyE/QalluZ/aMtHm8hc9JhQgYyyU/Wx/mxP6TWGuPJhBxZVbuw0ZKl4R2KohjwQgbWxMBXsmV9Mlj8ZOtzDqfvVq+s5veqiDzf2i1Hg==
-Received: from BN9PR03CA0663.namprd03.prod.outlook.com (2603:10b6:408:10e::8)
- by DM4PR01MB7713.prod.exchangelabs.com (2603:10b6:8:65::20) with Microsoft
+ bh=5+cedQLMw9vghL34Lz55LC7/SsOldKqjZ9jp0LS0HOY=;
+ b=Icqze2mKY0Rk5/uerqa7GsmZ2/ZfTI6nQV205r8ZZZ6LX+tE7vq/RoR7LVKT03ttqfT/AXtcXvNHETUTEfCMM/CsqxNrHdmUF+yhAb8Ge50x4C3gSSJcwTNMxrcZ8oc4gzG+pPNuE9Le/WgXVLncm2ryFR8EKDf1V0O53dKNIqOtEJ94exH/0asfTFAgz6LhDlEC/PAvqwuJUGeQHjAlZJj+E8K59p3JLgYHfHKYjLMx34DMKSEgW/avFddMx+30vYEjnbhpryxjXhws8J16b6V0zaK4hAdnvJPZsoxq0Nkr+PA6NRJh2+toVzWnMmMHgMq8BBYWEc3BCmb7fczdVA==
+Received: from BN7PR02CA0035.namprd02.prod.outlook.com (2603:10b6:408:20::48)
+ by MN2PR01MB5407.prod.exchangelabs.com (2603:10b6:208:118::25) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6411.19; Fri, 19 May 2023 16:54:15 +0000
-Received: from BN8NAM11FT094.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:10e:cafe::66) by BN9PR03CA0663.outlook.office365.com
- (2603:10b6:408:10e::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.20 via Frontend
- Transport; Fri, 19 May 2023 16:54:15 +0000
+ 15.20.6411.21; Fri, 19 May 2023 16:54:20 +0000
+Received: from BN8NAM11FT112.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:20:cafe::74) by BN7PR02CA0035.outlook.office365.com
+ (2603:10b6:408:20::48) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.22 via Frontend
+ Transport; Fri, 19 May 2023 16:54:20 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=bestguesspass action=none
@@ -48,45 +48,47 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=awfm-02.cornelisnetworks.com; pr=C
 Received: from awfm-02.cornelisnetworks.com (208.255.156.42) by
- BN8NAM11FT094.mail.protection.outlook.com (10.13.176.131) with Microsoft SMTP
+ BN8NAM11FT112.mail.protection.outlook.com (10.13.176.210) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6411.21 via Frontend Transport; Fri, 19 May 2023 16:54:15 +0000
+ 15.20.6411.21 via Frontend Transport; Fri, 19 May 2023 16:54:20 +0000
 Received: from awfm-02.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 34JGsEEx3702359;
-        Fri, 19 May 2023 12:54:14 -0400
-Subject: [PATCH for-next 0/3] Updates for 6.5
+        by awfm-02.cornelisnetworks.com (8.16.1/8.16.1) with ESMTP id 34JGsJ9t3702373;
+        Fri, 19 May 2023 12:54:19 -0400
+Subject: [PATCH for-next 1/3] IB/hfi1: Add mmu_rb_node refcount to
+ hfi1_mmu_rb_template tracepoints
 From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To:     jgg@nvidia.com, leonro@nvidia.com
-Cc:     Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
-        Dean Luick <dean.luick@cornelisnetworks.com>,
+Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
         Brendan Cunningham <bcunningham@cornelisnetworks.com>,
         linux-rdma@vger.kernel.org
-Date:   Fri, 19 May 2023 12:54:14 -0400
-Message-ID: <168451505181.3702129.3429054159823295146.stgit@awfm-02.cornelisnetworks.com>
+Date:   Fri, 19 May 2023 12:54:19 -0400
+Message-ID: <168451525987.3702129.12824880387615916700.stgit@awfm-02.cornelisnetworks.com>
+In-Reply-To: <168451505181.3702129.3429054159823295146.stgit@awfm-02.cornelisnetworks.com>
+References: <168451505181.3702129.3429054159823295146.stgit@awfm-02.cornelisnetworks.com>
 User-Agent: StGit/1.5.dev2+g9ce680a5
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT094:EE_|DM4PR01MB7713:EE_
-X-MS-Office365-Filtering-Correlation-Id: b042e123-4f8a-48b2-30e6-08db5889ade2
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT112:EE_|MN2PR01MB5407:EE_
+X-MS-Office365-Filtering-Correlation-Id: 32676101-29e6-4adb-ca3c-08db5889b0fe
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: L6L2EJ3sJwkzgvgvdZjTtM7rYyQz/1Vv4UJwVqUqQ+ei+oHGdq2i3tFcVX1PRsD7vgH2nWR/z9nKXzT4tYvVZ5Pu/iBbMP4ks3j/pBwQsq0IAveGum9jk4Y0IA8zAF+/M4lcJanTM3+SfITqzjpxv0ylTXIkET4vU5GmGIPOWuEnIhbfcXLqyApPfL4sQ2dat5n+M0jwDekz/Qv7mNQG7PF9V0m+BhjN/acL0RmO44WjbRsx8WVFMtw2sa1YqYObICf8w/kTHBoqocQWasXfN11KvgZD9Jej2fBr07eCllOxbeChC4vLCxA1PYY308PN7ko2bXjFJYN5cWsHvFPgc2Cs4kkk/BMvB1PRCzDyBwEziDD+0dwoNuw0F7hDnM2M24OqwOpHTDcTpa0R6MDEfNoKAN9jP5hsUe/jya72PEHtfq41VQKLhQPnlEJhQmUnNjC/MKBibjOH0ByfEgtV3+2EaEIp2tXctWktjCrnVf5k8gfn6PDMwKCrrKhVvxnn8piNaKgRqzI/AWbcA7rJTlaV4WtEMuoOZetfIH23pv7RElqnBM3j5boY0wqWZ/0BfJg9BA3H7cBYdCVrzTn6MOZpNL//dRowIYOoy87VoktCn7z70CQ8HboRVcyn+sNrGS04ak3oMOu4rIJTh39yaCXuLk32e3vAazpyDgYTY0Jo9HwE9d2eKRKjtLPcyswUtdraLCC/AnJ4fcb/R+crYPhsxLq81fGXx0oD2wnEtrc=
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(39840400004)(376002)(136003)(451199021)(36840700001)(46966006)(26005)(7696005)(966005)(36860700001)(7126003)(40480700001)(47076005)(83380400001)(426003)(336012)(86362001)(82310400005)(103116003)(186003)(356005)(81166007)(55016003)(54906003)(44832011)(316002)(478600001)(2906002)(8936002)(8676002)(4326008)(41300700001)(5660300002)(70586007)(70206006)(36900700001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: PgUmFg9qAu65PUgvhiS6iOEH5xmiRhSXujrGelBSTaCyZUmuTYlmL3SPj7I06HqxtbpTICLPO7sgwa0aCrMLy5sClLaEMw8Pv8/yNiycosU2fq1VQ8bRpSR7XSHsUL5QBSgvbWjH9IKYcuQ2jLYjXpoGCuWv/Ng00om+KZ7EeCcCnXQyoMVmthri1J1a2+zxCC+opaNNA1+DDNzjifBNmLHpWeI2pjIuoxnmLEc/YfulGZn8PPxg+FNdj9Hv6606JxAsEhliPt3Iffr24CylN8ew/W6IdhdKGLKFv5ex3h63CU6gL5f8Q/RmcUeP50x80hqKVAGJMxfUYrYFgO7WsWIqHjvH2RlDKBeNWX9gmC8Qe39cvkPuB6HqZEP8IxW6z05AARpj4yFrvD1z8ntshWvseSsascbERoLHmnKHtfQmuDPX+Qwo/RPouLbaaIq7VKuQ/k56Q+92raFKkgwBcXY7dPoD96aulHLq5DXnopFRK0k/dOG06/OzyCZdWz36jaMmxBXgfXiF4idmdUC2SCe66u2yXKioiqWHOcK1ILaWRNn+hLe7P3rdXdlhg3vugOW5k/7zMbgZ8MbWgg8/O0fr904IvumWPkM6uqA30+rTNmPAEiKq8OdgCLFIkFS9Hzi5D2f2YofmSZtQNiJDAzkTw8Tr3cBSG/XoN0Z+2cm5rXgusVRJCNzcSFZH2GakINCQ6wCmipwpIxC/f0MlcestIaEGSTut2xI7jislKms=
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-02.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(39840400004)(376002)(396003)(136003)(451199021)(46966006)(36840700001)(41300700001)(7696005)(44832011)(26005)(82310400005)(36860700001)(5660300002)(83380400001)(7126003)(186003)(47076005)(426003)(336012)(103116003)(2906002)(86362001)(356005)(81166007)(8676002)(8936002)(40480700001)(55016003)(478600001)(70586007)(70206006)(4326008)(54906003)(316002)(36900700001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2023 16:54:15.3790
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2023 16:54:20.5996
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b042e123-4f8a-48b2-30e6-08db5889ade2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32676101-29e6-4adb-ca3c-08db5889b0fe
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-02.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT094.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT112.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR01MB7713
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR01MB5407
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -97,38 +99,146 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Here are 3 more patches related/spawned out of the work to scale back the
-page pinning re-work. This series depends on [1] which was submitted for RC
-recently.
+From: Brendan Cunningham <bcunningham@cornelisnetworks.com>
 
-[1] https://patchwork.kernel.org/project/linux-rdma/patch/168451393605.3700681.13493776139032178861.stgit@awfm-02.cornelisnetworks.com/
+Add kref_read() of mmu_rb_node.refcount in hfi1_mmu_rb_template-type
+tracepoint output.
 
+Change hfi1_mmu_rb_template tracepoint to take a struct mmu_rb_node* and
+record the values it needs from that. This makes the trace_hfi1_mmu*()
+calls shorter and easier to read.
+
+Add hfi1_mmu_release_node() tracepoint before all
+mmu_rb_node->handler->ops->remove() calls.
+
+Make hfi1_mmu_rb_search() tracepoint its own tracepoint type separate
+from hfi1_mmu_rb_template since hfi1_mmu_rb_search() does not take a
+struct mmu_rb_node*.
+
+Reviewed-by: Dean Luick <dean.luick@cornelisnetworks.com>
+Signed-off-by: Brendan Cunningham <bcunningham@cornelisnetworks.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
+ drivers/infiniband/hw/hfi1/mmu_rb.c    |    7 +++--
+ drivers/infiniband/hw/hfi1/trace_mmu.h |   48 +++++++++++++++++++++++---------
+ 2 files changed, 40 insertions(+), 15 deletions(-)
 
-Brendan Cunningham (2):
-      IB/hfi1: Add mmu_rb_node refcount to hfi1_mmu_rb_template tracepoints
-      IB/hfi1: Remove unused struct mmu_rb_ops fields .insert, .invalidate
+diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
+index a864423c256d..7a51f7d73b61 100644
+--- a/drivers/infiniband/hw/hfi1/mmu_rb.c
++++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
+@@ -124,7 +124,7 @@ int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
+ 	unsigned long flags;
+ 	int ret = 0;
+ 
+-	trace_hfi1_mmu_rb_insert(mnode->addr, mnode->len);
++	trace_hfi1_mmu_rb_insert(mnode);
+ 
+ 	if (current->mm != handler->mn.mm)
+ 		return -EPERM;
+@@ -189,6 +189,7 @@ static void release_immediate(struct kref *refcount)
+ {
+ 	struct mmu_rb_node *mnode =
+ 		container_of(refcount, struct mmu_rb_node, refcount);
++	trace_hfi1_mmu_release_node(mnode);
+ 	mnode->handler->ops->remove(mnode->handler->ops_arg, mnode);
+ }
+ 
+@@ -252,6 +253,7 @@ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
+ 	spin_unlock_irqrestore(&handler->lock, flags);
+ 
+ 	list_for_each_entry_safe(rbnode, ptr, &del_list, list) {
++		trace_hfi1_mmu_rb_evict(rbnode);
+ 		kref_put(&rbnode->refcount, release_immediate);
+ 	}
+ }
+@@ -271,7 +273,7 @@ static int mmu_notifier_range_start(struct mmu_notifier *mn,
+ 		/* Guard against node removal. */
+ 		ptr = __mmu_int_rb_iter_next(node, range->start,
+ 					     range->end - 1);
+-		trace_hfi1_mmu_mem_invalidate(node->addr, node->len);
++		trace_hfi1_mmu_mem_invalidate(node);
+ 		/* Remove from rb tree and lru_list. */
+ 		__mmu_int_rb_remove(node, root);
+ 		list_del_init(&node->list);
+@@ -304,6 +306,7 @@ static void handle_remove(struct work_struct *work)
+ 	while (!list_empty(&del_list)) {
+ 		node = list_first_entry(&del_list, struct mmu_rb_node, list);
+ 		list_del(&node->list);
++		trace_hfi1_mmu_release_node(node);
+ 		handler->ops->remove(handler->ops_arg, node);
+ 	}
+ }
+diff --git a/drivers/infiniband/hw/hfi1/trace_mmu.h b/drivers/infiniband/hw/hfi1/trace_mmu.h
+index 57900ebb7702..82cc12aa3fb8 100644
+--- a/drivers/infiniband/hw/hfi1/trace_mmu.h
++++ b/drivers/infiniband/hw/hfi1/trace_mmu.h
+@@ -15,31 +15,53 @@
+ #define TRACE_SYSTEM hfi1_mmu
+ 
+ DECLARE_EVENT_CLASS(hfi1_mmu_rb_template,
+-		    TP_PROTO(unsigned long addr, unsigned long len),
+-		    TP_ARGS(addr, len),
++		    TP_PROTO(struct mmu_rb_node *node),
++		    TP_ARGS(node),
+ 		    TP_STRUCT__entry(__field(unsigned long, addr)
+ 				     __field(unsigned long, len)
++				     __field(unsigned int, refcount)
+ 			    ),
+-		    TP_fast_assign(__entry->addr = addr;
+-				   __entry->len = len;
++		    TP_fast_assign(__entry->addr = node->addr;
++				   __entry->len = node->len;
++				   __entry->refcount = kref_read(&node->refcount);
+ 			    ),
+-		    TP_printk("MMU node addr 0x%lx, len %lu",
++		    TP_printk("MMU node addr 0x%lx, len %lu, refcount %u",
+ 			      __entry->addr,
+-			      __entry->len
++			      __entry->len,
++			      __entry->refcount
+ 			    )
+ );
+ 
+ DEFINE_EVENT(hfi1_mmu_rb_template, hfi1_mmu_rb_insert,
+-	     TP_PROTO(unsigned long addr, unsigned long len),
+-	     TP_ARGS(addr, len));
++	     TP_PROTO(struct mmu_rb_node *node),
++	     TP_ARGS(node));
+ 
+-DEFINE_EVENT(hfi1_mmu_rb_template, hfi1_mmu_rb_search,
+-	     TP_PROTO(unsigned long addr, unsigned long len),
+-	     TP_ARGS(addr, len));
++TRACE_EVENT(hfi1_mmu_rb_search,
++	    TP_PROTO(unsigned long addr, unsigned long len),
++	    TP_ARGS(addr, len),
++	    TP_STRUCT__entry(__field(unsigned long, addr)
++			     __field(unsigned long, len)
++		    ),
++	    TP_fast_assign(__entry->addr = addr;
++			   __entry->len = len;
++		    ),
++	    TP_printk("MMU node addr 0x%lx, len %lu",
++		      __entry->addr,
++		      __entry->len
++		    )
++);
+ 
+ DEFINE_EVENT(hfi1_mmu_rb_template, hfi1_mmu_mem_invalidate,
+-	     TP_PROTO(unsigned long addr, unsigned long len),
+-	     TP_ARGS(addr, len));
++	     TP_PROTO(struct mmu_rb_node *node),
++	     TP_ARGS(node));
++
++DEFINE_EVENT(hfi1_mmu_rb_template, hfi1_mmu_rb_evict,
++	     TP_PROTO(struct mmu_rb_node *node),
++	     TP_ARGS(node));
++
++DEFINE_EVENT(hfi1_mmu_rb_template, hfi1_mmu_release_node,
++	     TP_PROTO(struct mmu_rb_node *node),
++	     TP_ARGS(node));
+ 
+ #endif /* __HFI1_TRACE_RC_H */
+ 
 
-Patrick Kelsey (1):
-      IB/hfi1: Separate user SDMA page-pinning from memory type
-
-
- drivers/infiniband/hw/hfi1/Makefile     |   2 +
- drivers/infiniband/hw/hfi1/init.c       |   5 +
- drivers/infiniband/hw/hfi1/mmu_rb.c     |   7 +-
- drivers/infiniband/hw/hfi1/mmu_rb.h     |   7 +-
- drivers/infiniband/hw/hfi1/pin_system.c | 487 ++++++++++++++++++++++++
- drivers/infiniband/hw/hfi1/pinning.c    |  55 +++
- drivers/infiniband/hw/hfi1/pinning.h    |  75 ++++
- drivers/infiniband/hw/hfi1/trace_mmu.h  |  48 ++-
- drivers/infiniband/hw/hfi1/user_sdma.c  | 472 ++---------------------
- drivers/infiniband/hw/hfi1/user_sdma.h  |  15 +-
- include/uapi/rdma/hfi/hfi1_user.h       |  31 +-
- 11 files changed, 743 insertions(+), 461 deletions(-)
- create mode 100644 drivers/infiniband/hw/hfi1/pin_system.c
- create mode 100644 drivers/infiniband/hw/hfi1/pinning.c
- create mode 100644 drivers/infiniband/hw/hfi1/pinning.h
-
---
--Denny
 
