@@ -2,58 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEAF70D2CA
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 May 2023 06:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F1F70D315
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 May 2023 07:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbjEWE3t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 May 2023 00:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
+        id S229713AbjEWFI7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 May 2023 01:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjEWE3s (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 May 2023 00:29:48 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4EBFA;
-        Mon, 22 May 2023 21:29:47 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-510ddeab704so595961a12.3;
-        Mon, 22 May 2023 21:29:47 -0700 (PDT)
+        with ESMTP id S231277AbjEWFI6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 May 2023 01:08:58 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8756B10D;
+        Mon, 22 May 2023 22:08:56 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-96fb1642b09so406698566b.0;
+        Mon, 22 May 2023 22:08:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684816186; x=1687408186;
+        d=gmail.com; s=20221208; t=1684818535; x=1687410535;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=53F7nqwqQEhqsr+wrxJIasUQcBALYUEWV178mBfizlk=;
-        b=mXWaKofF+P7YXx9mx6Iha/Royl4mFZDvYnnSjPTO2lbPB/HOrkgGkPivIos4HyZC1P
-         McYXQvdn9zT+1IXuxt98SkvBKh/YH0jxKYSba+tJxUmVkEkghtQeNXVlBDZKlajwS476
-         b3ZQiYndgLu5/VwJRugLFbETdL0HyPUZeB0EEtks0pjnxMwUvPDMXyUc1JUtDReLLh4K
-         n70kO8VAR2Lwl+ImWjxTX6n8aDGrJFAbMDkULYlbhXFRPmz07veNg0gUL4un5ZO185iU
-         JlWchEhPkhHxTtBZe1DcaSdW+fsb6xQV6NpZH5ymE+4e1jDavV/+PCCOvIEP2PPnjARk
-         d+qg==
+        bh=ccUpSo5CJAHGMjq9I+q+FKG1cRoF/TWQPS+NnY32hvg=;
+        b=izycGQWkeUhiWfSgorIn5e1mas9O/zMUpTM17nQ8thg7m7+QuGie0sd4fADKgZcJyn
+         525jELK4O6Tj1ve6ppeULuzhi3GtpSrdDWA3Zct1vhrWkw2fuxJKRhu5yXARhv071LFs
+         vGN+mC3izAjeZKf0sgRlr5gVU4NKzj3zk5IFGqdE4FHiWuWs0ISB2jgA6wUdSZV+NL9G
+         rqELbz/5ly8lzd1UZwhk0rsvmiha7zUOCKefp/UcVHcduQbS4WxGX4uBSGkEOQhhdwIu
+         JN9vg1rkxYGTYDhl8HhIRgFELN2hxTl0wcMPph1N77Bwp/AzPiZmlArPEzsq/iz+j+oy
+         0Lqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684816186; x=1687408186;
+        d=1e100.net; s=20221208; t=1684818535; x=1687410535;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=53F7nqwqQEhqsr+wrxJIasUQcBALYUEWV178mBfizlk=;
-        b=T/91hPptw8JLAP+2wsxOKd4Nqj7rJ1TlObaGfD00jbSM7HH/PIqCq6WysfdmAKgKPp
-         jkZJOdI8vPYkI22hBAzqA/vRXi4K2vFGHhA4zQc0pedAyv3ByOD/hTod2jb4GkTTdMRX
-         E17GisO5PsQCc0QdgjpHDqC55IN3Dbm91xFNVdGqKL1vePJnimdn8ZUAWhD0FhKP5Q0X
-         qOgZqvkxxUUNdYJrk92wF+IqTiHQYJY0zLwoB6Eq+927DjsFLi7FC7Bjbvi3VeaoEq8J
-         6wghJKjTQgLqsZGexC+mgLvrd/JnbUZvJ0820HJ11zmSeF6nssEP2aHubSGKnfun73Pw
-         LxKA==
-X-Gm-Message-State: AC+VfDyCgsuXIpcAIHN2ozoEfTsyLaHI7k74I+GdihAkOC3YjEOjU1Xv
-        OcaqrebrSWLpVepsXtZJRh3vN+swLHNHUr7g1O0=
-X-Google-Smtp-Source: ACHHUZ7dVojBJEzxlc7n6PZs/RU6pQT5Zh3lWMe/BsWCAK4ykUBeokawONhnXtSWvLqERwKzfl/SYvJmpOaDP0578s0=
-X-Received: by 2002:a17:907:a4c:b0:94e:e30e:7245 with SMTP id
- be12-20020a1709070a4c00b0094ee30e7245mr9463484ejc.8.1684816185754; Mon, 22
- May 2023 21:29:45 -0700 (PDT)
+        bh=ccUpSo5CJAHGMjq9I+q+FKG1cRoF/TWQPS+NnY32hvg=;
+        b=BeDx6VshojgO864H6v+I70R2aO4rd90RwzysQ+0qDG65R66tyCighPypAwQ7N4Ibh3
+         2u5syGc9UGSw0K+uQqbUfcsiQ6h4VUPYSc+LgTZRL12xOlGyEc/rSLAK+eKWcIu7LczW
+         LzPOIm6xMZlyr6s21XUWscbGx9n4XqI8HnlSgdDmWRaQ+SRXk6yx9jtTFXrENc3wKyiL
+         +totGdDwJqsf2fB9VqQr36aCxlGFA+/DKWM7f0sMyW0hYYFxUvRbfhjFuufN61NYd1v8
+         BJp88hqc7OmzsNp5z+KDQRjhvI+ZqZbD/JD78Kh4Tcr8zRYkFmuGCg+4ZG+aVd7RT9ps
+         bDfg==
+X-Gm-Message-State: AC+VfDyZiUG5ZCimTM+1RTn41skXkrJHnYZ0nceKtEQyFQIBuTVxOvjW
+        ETLoi6X3g6Kzyr9T+v9LzkRjhlBqxLw6PYE3LE8=
+X-Google-Smtp-Source: ACHHUZ6XHKU72z3WljTmZesf+gXwAZI4Empvl3Z/a7PiHx/1F5556xWlM9IOvPybp+8vJaXhP69qGhPOZkkhA9q2Eug=
+X-Received: by 2002:a17:907:784:b0:96b:4ed5:a1c9 with SMTP id
+ xd4-20020a170907078400b0096b4ed5a1c9mr11535364ejb.51.1684818534857; Mon, 22
+ May 2023 22:08:54 -0700 (PDT)
 MIME-Version: 1.0
 References: <000000000000a589d005fc52ee2d@google.com> <13528f21-0f36-4fa2-d34f-eecee6720bc1@linux.dev>
  <CAD=hENeCo=-Pk9TWnqxOWP9Pg-JXWk6n6J19gvPo9_h7drROGg@mail.gmail.com>
- <CAD=hENdoyBZaRz7aTy4mX5Kq1OYmWabx2vx8vPH0gQfHO1grzw@mail.gmail.com> <0d515e17-5386-61ba-8278-500620969497@linux.dev>
-In-Reply-To: <0d515e17-5386-61ba-8278-500620969497@linux.dev>
+ <CAD=hENdoyBZaRz7aTy4mX5Kq1OYmWabx2vx8vPH0gQfHO1grzw@mail.gmail.com>
+ <0d515e17-5386-61ba-8278-500620969497@linux.dev> <CAD=hENcqa0jQvLjuXw9bMtivCkKpQ9=1e0-y-1oxL23OLjutuw@mail.gmail.com>
+In-Reply-To: <CAD=hENcqa0jQvLjuXw9bMtivCkKpQ9=1e0-y-1oxL23OLjutuw@mail.gmail.com>
 From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 23 May 2023 12:29:33 +0800
-Message-ID: <CAD=hENcqa0jQvLjuXw9bMtivCkKpQ9=1e0-y-1oxL23OLjutuw@mail.gmail.com>
+Date:   Tue, 23 May 2023 13:08:42 +0800
+Message-ID: <CAD=hENdXdqfcxjNrNnP8CoaDy6sUJ4g5uxcWE0mj3HtNohDUzw@mail.gmail.com>
 Subject: Re: [syzbot] [rdma?] INFO: trying to register non-static key in
  skb_dequeue (2)
 To:     Guoqing Jiang <guoqing.jiang@linux.dev>
@@ -73,45 +74,74 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 23, 2023 at 12:10=E2=80=AFPM Guoqing Jiang <guoqing.jiang@linux=
-.dev> wrote:
+On Tue, May 23, 2023 at 12:29=E2=80=AFPM Zhu Yanjun <zyjzyj2000@gmail.com> =
+wrote:
 >
+> On Tue, May 23, 2023 at 12:10=E2=80=AFPM Guoqing Jiang <guoqing.jiang@lin=
+ux.dev> wrote:
+> >
+> >
+> >
+> > On 5/23/23 12:02, Zhu Yanjun wrote:
+> > > On Tue, May 23, 2023 at 11:47=E2=80=AFAM Zhu Yanjun <zyjzyj2000@gmail=
+.com> wrote:
+> > >> On Tue, May 23, 2023 at 10:26=E2=80=AFAM Guoqing Jiang <guoqing.jian=
+g@linux.dev> wrote:
+> > >>>
+> > >>>
+> > >>> On 5/23/23 10:13, syzbot wrote:
+> > >>>> Hello,
+> > >>>>
+> > >>>> syzbot tried to test the proposed patch but the build/boot failed:
+> > >>>>
+> > >>>> failed to apply patch:
+> > >>>> checking file drivers/infiniband/sw/rxe/rxe_qp.c
+> > >>>> patch: **** unexpected end of file in patch
+> > >> This is not the root cause. The fix is not good.
+> > > This problem is about "INFO: trying to register non-static key. The
+> > > code is fine but needs lockdep annotation, or maybe"
 >
+> This warning is from "lock is not initialized". This is a
+> use-before-initialized problem.
+> The correct fix is to initialize the lock that is complained before it is=
+ used.
 >
-> On 5/23/23 12:02, Zhu Yanjun wrote:
-> > On Tue, May 23, 2023 at 11:47=E2=80=AFAM Zhu Yanjun <zyjzyj2000@gmail.c=
-om> wrote:
-> >> On Tue, May 23, 2023 at 10:26=E2=80=AFAM Guoqing Jiang <guoqing.jiang@=
-linux.dev> wrote:
-> >>>
-> >>>
-> >>> On 5/23/23 10:13, syzbot wrote:
-> >>>> Hello,
-> >>>>
-> >>>> syzbot tried to test the proposed patch but the build/boot failed:
-> >>>>
-> >>>> failed to apply patch:
-> >>>> checking file drivers/infiniband/sw/rxe/rxe_qp.c
-> >>>> patch: **** unexpected end of file in patch
-> >> This is not the root cause. The fix is not good.
-> > This problem is about "INFO: trying to register non-static key. The
-> > code is fine but needs lockdep annotation, or maybe"
+> Zhu Yanjun
 
-This warning is from "lock is not initialized". This is a
-use-before-initialized problem.
-The correct fix is to initialize the lock that is complained before it is u=
-sed.
+Based on the call trace, the followings are the order of this call trace.
+
+291 /* called by the create qp verb */
+292 int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp,
+struct rxe_pd *pd,
+297 {
+            ...
+317         rxe_qp_init_misc(rxe, qp, init);
+            ...
+322
+323         err =3D rxe_qp_init_resp(rxe, qp, init, udata, uresp);
+324         if (err)
+325                 goto err2;   <--- error
+
+            ...
+
+334 err2:
+335         rxe_queue_cleanup(qp->sq.queue); <--- Goto here
+336         qp->sq.queue =3D NULL;
+
+In rxe_qp_init_resp, the error occurs before skb_queue_head_init.
+So this call trace appeared.
 
 Zhu Yanjun
->
-> Which is caused by  "skb_queue_head_init(&qp->resp_pkts)" is not called
-> given rxe_qp_init_resp returns error, but the cleanup still trigger the
-> chain.
->
-> rxe_qp_do_cleanup -> rxe_completer -> drain_resp_pkts ->
-> skb_dequeue(&qp->resp_pkts)
->
-> But I might misunderstood it ...
->
-> Thanks,
-> Guoqing
+
+> >
+> > Which is caused by  "skb_queue_head_init(&qp->resp_pkts)" is not called
+> > given rxe_qp_init_resp returns error, but the cleanup still trigger the
+> > chain.
+> >
+> > rxe_qp_do_cleanup -> rxe_completer -> drain_resp_pkts ->
+> > skb_dequeue(&qp->resp_pkts)
+> >
+> > But I might misunderstood it ...
+> >
+> > Thanks,
+> > Guoqing
