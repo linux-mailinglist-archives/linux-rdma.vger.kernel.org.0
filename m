@@ -2,152 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AABB870DC5A
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 May 2023 14:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD2670DF1A
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 May 2023 16:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235983AbjEWMSz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 May 2023 08:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
+        id S237050AbjEWOUz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 May 2023 10:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236429AbjEWMSw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 May 2023 08:18:52 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6355119;
-        Tue, 23 May 2023 05:18:50 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QQYBl5GcDzTkl3;
-        Tue, 23 May 2023 20:13:51 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Tue, 23 May 2023 20:18:48 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-rc 3/3] RDMA/hns: Add clear_hem return value to log
-Date:   Tue, 23 May 2023 20:16:41 +0800
-Message-ID: <20230523121641.3132102-4-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230523121641.3132102-1-huangjunxian6@hisilicon.com>
-References: <20230523121641.3132102-1-huangjunxian6@hisilicon.com>
+        with ESMTP id S236973AbjEWOUy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 May 2023 10:20:54 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66999E9;
+        Tue, 23 May 2023 07:20:53 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1q1Ssb-0007OG-Pc; Tue, 23 May 2023 16:20:49 +0200
+Message-ID: <71346a9d-d892-c473-ddff-53475191d4b0@leemhuis.info>
+Date:   Tue, 23 May 2023 16:20:49 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: system hang on start-up (mlx5?)
+Content-Language: en-US, de-DE
+To:     Chuck Lever III <chuck.lever@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>, Eli Cohen <elic@nvidia.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <A1E5B427-897B-409E-B8E3-E417678E81F6@oracle.com>
+ <DM8PR12MB54003FBFCABCCB37EE807B45AB6C9@DM8PR12MB5400.namprd12.prod.outlook.com>
+ <91176545-61D2-44BF-B736-513B78728DC7@oracle.com>
+ <20230504072953.GP525452@unreal>
+ <46EB453C-3CEB-43E8-BEE5-CD788162A3C9@oracle.com>
+ <DBFBD6F9-FAC3-4C04-A9C5-4E126BC96090@oracle.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <DBFBD6F9-FAC3-4C04-A9C5-4E126BC96090@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1684851653;7436f8c1;
+X-HE-SMSGID: 1q1Ssb-0007OG-Pc
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+[CCing the regression list, as it should be in the loop for regressions:
+https://docs.kernel.org/admin-guide/reporting-regressions.html]
 
-Log return value of clear_hem() to help diagnose.
+On 16.05.23 21:23, Chuck Lever III wrote:
+>> On May 4, 2023, at 3:02 PM, Chuck Lever III <chuck.lever@oracle.com> wrote:
+>>> On May 4, 2023, at 3:29 AM, Leon Romanovsky <leon@kernel.org> wrote:
+>>> On Wed, May 03, 2023 at 02:02:33PM +0000, Chuck Lever III wrote:
+>>>>> On May 3, 2023, at 2:34 AM, Eli Cohen <elic@nvidia.com> wrote:
+>>>>> Just verifying, could you make sure your server and card firmware are up to date?
+>>>> Device firmware updated to 16.35.2000; no change.
+>>>> System firmware is dated September 2016. I'll see if I can get
+>>>> something more recent installed.
+>>> We are trying to reproduce this issue internally.
+>> More information. I captured the serial console during boot.
+>> Here are the last messages:
+>[…]
+> Following up.
+> 
+> Jason shamed me into replacing a working CX-3Pro in one of
+> my lab systems with a CX-5 VPI, and the same problem occurs.
+> Removing the CX-5 from the system alleviates the problem.
+> 
+> Supermicro SYS-6028R-T/X10DRi, v6.4-rc2
 
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hem.c | 44 ++++++++++++++++--------
- 1 file changed, 30 insertions(+), 14 deletions(-)
+I wondered what happened to this, as this looks stalled. Or was progress
+to fix this regression made I just missed it?
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index f30274986c0d..47c0efed1821 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -619,6 +619,7 @@ static void clear_mhop_hem(struct hns_roce_dev *hr_dev,
- 	u32 hop_num = mhop->hop_num;
- 	u32 chunk_ba_num;
- 	u32 step_idx;
-+	int ret;
- 
- 	index->inited = HEM_INDEX_BUF;
- 	chunk_ba_num = mhop->bt_chunk_size / BA_BYTE_LEN;
-@@ -642,16 +643,24 @@ static void clear_mhop_hem(struct hns_roce_dev *hr_dev,
- 		else
- 			step_idx = hop_num;
- 
--		if (hr_dev->hw->clear_hem(hr_dev, table, obj, step_idx))
--			ibdev_warn(ibdev, "failed to clear hop%u HEM.\n", hop_num);
--
--		if (index->inited & HEM_INDEX_L1)
--			if (hr_dev->hw->clear_hem(hr_dev, table, obj, 1))
--				ibdev_warn(ibdev, "failed to clear HEM step 1.\n");
-+		ret = hr_dev->hw->clear_hem(hr_dev, table, obj, step_idx);
-+		if (ret)
-+			ibdev_warn(ibdev, "failed to clear hop%u HEM, ret = %d.\n",
-+				   hop_num, ret);
-+
-+		if (index->inited & HEM_INDEX_L1) {
-+			ret = hr_dev->hw->clear_hem(hr_dev, table, obj, 1);
-+			if (ret)
-+				ibdev_warn(ibdev, "failed to clear HEM step 1, ret = %d.\n",
-+					   ret);
-+		}
- 
--		if (index->inited & HEM_INDEX_L0)
--			if (hr_dev->hw->clear_hem(hr_dev, table, obj, 0))
--				ibdev_warn(ibdev, "failed to clear HEM step 0.\n");
-+		if (index->inited & HEM_INDEX_L0) {
-+			ret = hr_dev->hw->clear_hem(hr_dev, table, obj, 0);
-+			if (ret)
-+				ibdev_warn(ibdev, "failed to clear HEM step 0, ret = %d.\n",
-+					   ret);
-+		}
- 	}
- }
- 
-@@ -688,6 +697,7 @@ void hns_roce_table_put(struct hns_roce_dev *hr_dev,
- {
- 	struct device *dev = hr_dev->dev;
- 	unsigned long i;
-+	int ret;
- 
- 	if (hns_roce_check_whether_mhop(hr_dev, table->type)) {
- 		hns_roce_table_mhop_put(hr_dev, table, obj, 1);
-@@ -700,8 +710,10 @@ void hns_roce_table_put(struct hns_roce_dev *hr_dev,
- 					 &table->mutex))
- 		return;
- 
--	if (hr_dev->hw->clear_hem(hr_dev, table, obj, HEM_HOP_STEP_DIRECT))
--		dev_warn(dev, "failed to clear HEM base address.\n");
-+	ret = hr_dev->hw->clear_hem(hr_dev, table, obj, HEM_HOP_STEP_DIRECT);
-+	if (ret)
-+		dev_warn(dev, "failed to clear HEM base address, ret = %d.\n",
-+			 ret);
- 
- 	hns_roce_free_hem(hr_dev, table->hem[i]);
- 	table->hem[i] = NULL;
-@@ -917,6 +929,8 @@ void hns_roce_cleanup_hem_table(struct hns_roce_dev *hr_dev,
- {
- 	struct device *dev = hr_dev->dev;
- 	unsigned long i;
-+	int obj;
-+	int ret;
- 
- 	if (hns_roce_check_whether_mhop(hr_dev, table->type)) {
- 		hns_roce_cleanup_mhop_hem_table(hr_dev, table);
-@@ -925,9 +939,11 @@ void hns_roce_cleanup_hem_table(struct hns_roce_dev *hr_dev,
- 
- 	for (i = 0; i < table->num_hem; ++i)
- 		if (table->hem[i]) {
--			if (hr_dev->hw->clear_hem(hr_dev, table,
--			    i * table->table_chunk_size / table->obj_size, 0))
--				dev_err(dev, "clear HEM base address failed.\n");
-+			obj = i * table->table_chunk_size / table->obj_size;
-+			ret = hr_dev->hw->clear_hem(hr_dev, table, obj, 0);
-+			if (ret)
-+				dev_err(dev, "clear HEM base address failed, ret = %d.\n",
-+					ret);
- 
- 			hns_roce_free_hem(hr_dev, table->hem[i]);
- 		}
--- 
-2.30.0
+I noticed the patch "net/mlx5: Fix irq affinity management" (
+https://lore.kernel.org/all/20230523054242.21596-15-saeed@kernel.org/
+) refers to the culprit of this regression. Is that supposed to fix this
+issue and just lacks proper tags to indicate that?
 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
