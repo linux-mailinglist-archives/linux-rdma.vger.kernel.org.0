@@ -2,21 +2,21 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C5770DC55
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 May 2023 14:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B157970DC57
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 May 2023 14:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236580AbjEWMSx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 May 2023 08:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47668 "EHLO
+        id S236715AbjEWMSy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 May 2023 08:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235983AbjEWMSv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 May 2023 08:18:51 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FE9118;
+        with ESMTP id S236120AbjEWMSw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 May 2023 08:18:52 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5EE11F;
         Tue, 23 May 2023 05:18:50 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4QQYGn1b5WzLmFy;
-        Tue, 23 May 2023 20:17:21 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QQYF46lKwzLpyJ;
+        Tue, 23 May 2023 20:15:52 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -25,9 +25,9 @@ From:   Junxian Huang <huangjunxian6@hisilicon.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-rc 1/3] RDMA/hns: Remove unnecessary QP type checks
-Date:   Tue, 23 May 2023 20:16:39 +0800
-Message-ID: <20230523121641.3132102-2-huangjunxian6@hisilicon.com>
+Subject: [PATCH for-rc 2/3] RDMA/hns: Fix hns_roce_table_get return value
+Date:   Tue, 23 May 2023 20:16:40 +0800
+Message-ID: <20230523121641.3132102-3-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230523121641.3132102-1-huangjunxian6@hisilicon.com>
 References: <20230523121641.3132102-1-huangjunxian6@hisilicon.com>
@@ -47,56 +47,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It is not necessary to check the type of the queue on IO path
-because unsupported QP type cannot be created.
+From: Chengchang Tang <tangchengchang@huawei.com>
 
+The return value of set_hem has been fixed to ENODEV, which will
+lead a diagnostic information missing.
+
+Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
 Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 22 +++-------------------
- 1 file changed, 3 insertions(+), 19 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hem.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index d4c6b9bc0a4e..673fd31b9ecf 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -373,17 +373,10 @@ static int check_send_valid(struct hns_roce_dev *hr_dev,
- 			    struct hns_roce_qp *hr_qp)
- {
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
--	struct ib_qp *ibqp = &hr_qp->ibqp;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
+index aa8a08d1c014..f30274986c0d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
+@@ -595,11 +595,12 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
+ 	}
  
--	if (unlikely(ibqp->qp_type != IB_QPT_RC &&
--		     ibqp->qp_type != IB_QPT_GSI &&
--		     ibqp->qp_type != IB_QPT_UD)) {
--		ibdev_err(ibdev, "not supported QP(0x%x)type!\n",
--			  ibqp->qp_type);
--		return -EOPNOTSUPP;
--	} else if (unlikely(hr_qp->state == IB_QPS_RESET ||
--		   hr_qp->state == IB_QPS_INIT ||
--		   hr_qp->state == IB_QPS_RTR)) {
-+	if (unlikely(hr_qp->state == IB_QPS_RESET ||
-+		     hr_qp->state == IB_QPS_INIT ||
-+		     hr_qp->state == IB_QPS_RTR)) {
- 		ibdev_err(ibdev, "failed to post WQE, QP state %u!\n",
- 			  hr_qp->state);
- 		return -EINVAL;
-@@ -772,15 +765,6 @@ static int check_recv_valid(struct hns_roce_dev *hr_dev,
- 			    struct hns_roce_qp *hr_qp)
- {
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
--	struct ib_qp *ibqp = &hr_qp->ibqp;
--
--	if (unlikely(ibqp->qp_type != IB_QPT_RC &&
--		     ibqp->qp_type != IB_QPT_GSI &&
--		     ibqp->qp_type != IB_QPT_UD)) {
--		ibdev_err(ibdev, "unsupported qp type, qp_type = %d.\n",
--			  ibqp->qp_type);
--		return -EOPNOTSUPP;
--	}
+ 	/* Set HEM base address(128K/page, pa) to Hardware */
+-	if (hr_dev->hw->set_hem(hr_dev, table, obj, HEM_HOP_STEP_DIRECT)) {
++	ret = hr_dev->hw->set_hem(hr_dev, table, obj, HEM_HOP_STEP_DIRECT);
++	if (ret) {
+ 		hns_roce_free_hem(hr_dev, table->hem[i]);
+ 		table->hem[i] = NULL;
+-		ret = -ENODEV;
+-		dev_err(dev, "set HEM base address to HW failed.\n");
++		dev_err(dev, "set HEM base address to HW failed, ret = %d.\n",
++			ret);
+ 		goto out;
+ 	}
  
- 	if (unlikely(hr_dev->state >= HNS_ROCE_DEVICE_STATE_RST_DOWN))
- 		return -EIO;
 -- 
 2.30.0
 
