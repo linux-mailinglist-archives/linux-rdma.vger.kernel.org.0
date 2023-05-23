@@ -2,191 +2,243 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B9170C589
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 May 2023 20:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10AD70D0CD
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 May 2023 04:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbjEVSth (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 May 2023 14:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
+        id S231439AbjEWCIA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 May 2023 22:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232881AbjEVStg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 May 2023 14:49:36 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C59E9;
-        Mon, 22 May 2023 11:49:34 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-546ee6030e5so3162372eaf.3;
-        Mon, 22 May 2023 11:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684781373; x=1687373373;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zPnh0GSbi1dq7uAWP5m2L0+IfeMa+LjsQJWktiIr+ME=;
-        b=Q4xsD+MS+hGClA+44HAYaJ6HwnWDJaOjtxi3hPhQPBd3ezUrVg1RWULVFBI8Yjn9Ro
-         BKAHaWhU+KdfVOu8NOjQnC2F/OwhayYvEcfPisXJ26ILOA5Djfe0r9waKwoaeKPcUVk+
-         0plJ8yQZA4gVchhCvV7RGwdQAyZ63FXBm4NJasbBe25aPTiReoRb/2lyDrFJB4ow403z
-         HbMegnpCcMgmlqrWfXebNy9+UFOFb0VMGVl/zv9klwP4f/wWIX4jCnSREOHgWjEV1w14
-         opWNynAQ0lbp0bN9SR7YgcPSjBg+sWTveWNXz1D4+sJxcaqULY/c8bZVsLkXKAvBZspf
-         F8Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684781373; x=1687373373;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zPnh0GSbi1dq7uAWP5m2L0+IfeMa+LjsQJWktiIr+ME=;
-        b=kThTZLLhPEnUbjmMJHR92zumIU4FiOkssm1bkxyaacci0j42F12/44S9kJrtLbsoLB
-         FtdoxQ5scXpyPdX/mip6Oxi+/7+IMQ3AiQykI969gEeF0+9pEJCibhAOSZdJp4Ncw0dm
-         yq7LgA1/2a+NL1m2rJiSOxieVD0GXsOEuqYsZ5KcUT3AVoXFqQOGzz+ReDcdUUU1qiu8
-         +FaGNPMcsC5/272FAkuYwiDPEEnqhpD0+dU+bCs7QcAHEXlt1n8Vsm3GxNmxH/CddVbG
-         WwdVY7MCchCtobAwb/Z0Ghmpi5eQXhzDgXeOzVQiRjQE+KzH85OlNegulgNvqgaencVt
-         /+Kg==
-X-Gm-Message-State: AC+VfDyb+tsUG3X4NwNTMhZy9S7FUU90JDPWGihCAHU3tbC2GxYfgSsl
-        5QTdSB+3uZr8OSjt+M/Tz44LPuHkCW8ttQ==
-X-Google-Smtp-Source: ACHHUZ5tF1GkdvqA6wyObI+k5g1uDTlNWrn8pA+WE6C6RNdTvF1kIKHvfNkgnOpQFdX+zzB8/i9ZFA==
-X-Received: by 2002:a4a:6101:0:b0:547:6a79:18cb with SMTP id n1-20020a4a6101000000b005476a7918cbmr4842602ooc.9.1684781373241;
-        Mon, 22 May 2023 11:49:33 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:738:17c9:f946:babd? (2603-8081-140c-1a00-0738-17c9-f946-babd.res6.spectrum.com. [2603:8081:140c:1a00:738:17c9:f946:babd])
-        by smtp.gmail.com with ESMTPSA id q9-20020acaf209000000b003941dfbf924sm3052754oih.35.2023.05.22.11.49.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 May 2023 11:49:32 -0700 (PDT)
-Message-ID: <edad669f-e84e-a9ba-9554-87ae1d571931@gmail.com>
-Date:   Mon, 22 May 2023 13:49:31 -0500
+        with ESMTP id S229477AbjEWCH7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 May 2023 22:07:59 -0400
+Received: from out-1.mta0.migadu.com (out-1.mta0.migadu.com [91.218.175.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0967CD
+        for <linux-rdma@vger.kernel.org>; Mon, 22 May 2023 19:07:57 -0700 (PDT)
+Message-ID: <0f3f5941-0a95-723e-11e1-6fad8e2133b0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1684807675;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UtSrFNA5Z/qTKiavsU/dFyTb0TEeHD1OhiqAl2mf7tc=;
+        b=WHmAu/4228kuKvEzWkxACDIvlTfhlX5NqrIc4ZPyPzRQJWZles/F9Ckw57YvfB1g06D6+5
+        VV/AN42e0ZGacGUsCdGRRwdkJ4urGd0MEXGPCmoxVwwtXJWTCsYLAxYUYHccD+TkEu4Cje
+        DlH+zlOkVuLFhxHWib4jvaLaHvxsk9w=
+Date:   Tue, 23 May 2023 10:07:51 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH for-next v5 7/7] RDMA/rxe: Add support for the traditional
- Atomic operations with ODP
-To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
-        linux-rdma@vger.kernel.org, leonro@nvidia.com, jgg@nvidia.com,
-        zyjzyj2000@gmail.com
-Cc:     linux-kernel@vger.kernel.org, yangx.jy@fujitsu.com,
-        lizhijian@fujitsu.com, y-goto@fujitsu.com
-References: <cover.1684397037.git.matsuda-daisuke@fujitsu.com>
- <2841b1a86987564f14f15ec5b59f6a8bead86b30.1684397037.git.matsuda-daisuke@fujitsu.com>
+Subject: Re: [syzbot] [rdma?] INFO: trying to register non-static key in
+ skb_dequeue (2)
 Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <2841b1a86987564f14f15ec5b59f6a8bead86b30.1684397037.git.matsuda-daisuke@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     syzbot <syzbot+eba589d8f49c73d356da@syzkaller.appspotmail.com>,
+        jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, zyjzyj2000@gmail.com
+References: <00000000000063657005fbf44fb2@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+In-Reply-To: <00000000000063657005fbf44fb2@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/18/23 03:21, Daisuke Matsuda wrote:
-> Enable 'fetch and add' and 'compare and swap' operations to manipulate
-> data in an ODP-enabled MR. This is comprised of the following steps:
->  1. Check the driver page table(umem_odp->dma_list) to see if the target
->     page is both readable and writable.
->  2. If not, then trigger page fault to map the page.
->  3. Update the entry in the MR xarray.
->  4. Execute the operation.
-> 
-> umem_mutex is used to ensure that dma_list (an array of addresses of an MR)
-> is not changed while it is being checked and that the target page is not
-> invalidated before data access completes.
-> 
-> Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe.c      |  1 +
->  drivers/infiniband/sw/rxe/rxe_loc.h  |  9 +++++++++
->  drivers/infiniband/sw/rxe/rxe_odp.c  | 26 ++++++++++++++++++++++++++
->  drivers/infiniband/sw/rxe/rxe_resp.c |  5 ++++-
->  4 files changed, 40 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-> index 207a022156f0..abd3267c2873 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -88,6 +88,7 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
->  		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_RECV;
->  		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_WRITE;
->  		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_READ;
-> +		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_ATOMIC;
->  		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
->  	}
->  }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-> index 4b95c8c46bdc..b9d2985774ee 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-> @@ -208,6 +208,9 @@ int rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
->  			 u64 iova, int access_flags, struct rxe_mr *mr);
->  int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
->  		    enum rxe_mr_copy_dir dir);
-> +int rxe_odp_mr_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-> +			 u64 compare, u64 swap_add, u64 *orig_val);
-> +
->  #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
->  static inline int
->  rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
-> @@ -221,6 +224,12 @@ rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
->  {
->  	return -EOPNOTSUPP;
->  }
-> +static inline int
-> +rxe_odp_mr_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-> +		     u64 compare, u64 swap_add, u64 *orig_val)
-> +{
-> +	return RESPST_ERR_UNSUPPORTED_OPCODE;
-> +}
->  
->  #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
->  
-> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-> index cbe5d0c3fcc4..194b1fab98b7 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-> @@ -283,3 +283,29 @@ int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
->  
->  	return err;
->  }
-> +
-> +int rxe_odp_mr_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-> +			 u64 compare, u64 swap_add, u64 *orig_val)
-> +{
-> +	int err;
-> +	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-> +
-> +	/* If pagefault is not required, umem mutex will be held until the
-> +	 * atomic operation completes. Otherwise, it is released and locked
-> +	 * again in rxe_odp_map_range() to let invalidation handler do its
-> +	 * work meanwhile.
-> +	 */
-> +	mutex_lock(&umem_odp->umem_mutex);
-> +
-> +	/* Atomic operations manipulate a single char. */
-> +	err = rxe_odp_map_range(mr, iova, sizeof(char), 0);
-> +	if (err)
-> +		return err;
-> +
-> +	err = rxe_mr_do_atomic_op(mr, iova, opcode, compare,
-> +				  swap_add, orig_val);
-> +
-> +	mutex_unlock(&umem_odp->umem_mutex);
-> +
-> +	return err;
-> +}
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 90c31c4f2944..0a918145dc07 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -684,7 +684,10 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
->  		u64 iova = qp->resp.va + qp->resp.offset;
->  
->  		if (mr->odp_enabled)
-> -			err = RESPST_ERR_UNSUPPORTED_OPCODE;
-> +			err = rxe_odp_mr_atomic_op(mr, iova, pkt->opcode,
-> +						   atmeth_comp(pkt),
-> +						   atmeth_swap_add(pkt),
-> +						   &res->atomic.orig_val);
->  		else
->  			err = rxe_mr_do_atomic_op(mr, iova, pkt->opcode,
->  						  atmeth_comp(pkt),
 
-Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+
+On 5/18/23 17:20, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+>
+> HEAD commit:    ab87603b2511 net: wwan: t7xx: Ensure init is completed bef..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1157266a280000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=eb92acf166a5d2cd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=eba589d8f49c73d356da
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124d5da6280000
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/ac3ed2228400/disk-ab87603b.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/c51b74034116/vmlinux-ab87603b.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/98ab9d7ee1ee/bzImage-ab87603b.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+eba589d8f49c73d356da@syzkaller.appspotmail.com
+>
+> infiniband syz2: set active
+> infiniband syz2: added team0
+> INFO: trying to register non-static key.
+> The code is fine but needs lockdep annotation, or maybe
+> you didn't initialize this object before use?
+> turning off the locking correctness validator.
+> CPU: 0 PID: 5133 Comm: syz-executor.3 Not tainted 6.4.0-rc1-syzkaller-00136-gab87603b2511 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/28/2023
+> Call Trace:
+>   <TASK>
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+>   assign_lock_key kernel/locking/lockdep.c:982 [inline]
+>   register_lock_class+0xdb6/0x1120 kernel/locking/lockdep.c:1295
+>   __lock_acquire+0x10a/0x5df0 kernel/locking/lockdep.c:4951
+>   lock_acquire kernel/locking/lockdep.c:5691 [inline]
+>   lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5656
+>   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+>   _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
+>   skb_dequeue+0x20/0x180 net/core/skbuff.c:3639
+>   drain_resp_pkts drivers/infiniband/sw/rxe/rxe_comp.c:555 [inline]
+>   rxe_completer+0x250d/0x3cc0 drivers/infiniband/sw/rxe/rxe_comp.c:652
+>   rxe_qp_do_cleanup+0x1be/0x820 drivers/infiniband/sw/rxe/rxe_qp.c:761
+>   execute_in_process_context+0x3b/0x150 kernel/workqueue.c:3473
+>   __rxe_cleanup+0x21e/0x370 drivers/infiniband/sw/rxe/rxe_pool.c:233
+>   rxe_create_qp+0x3f6/0x5f0 drivers/infiniband/sw/rxe/rxe_verbs.c:583
+>   create_qp+0x5ac/0x970 drivers/infiniband/core/verbs.c:1235
+>   ib_create_qp_kernel+0xa1/0x310 drivers/infiniband/core/verbs.c:1346
+>   ib_create_qp include/rdma/ib_verbs.h:3743 [inline]
+>   create_mad_qp+0x177/0x380 drivers/infiniband/core/mad.c:2905
+>   ib_mad_port_open drivers/infiniband/core/mad.c:2986 [inline]
+>   ib_mad_init_device+0xf40/0x1a90 drivers/infiniband/core/mad.c:3077
+>   add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:721
+>   enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1332
+>   ib_register_device drivers/infiniband/core/device.c:1420 [inline]
+>   ib_register_device+0x8b1/0xbc0 drivers/infiniband/core/device.c:1366
+>   rxe_register_device+0x302/0x3e0 drivers/infiniband/sw/rxe/rxe_verbs.c:1485
+>   rxe_net_add+0x90/0xf0 drivers/infiniband/sw/rxe/rxe_net.c:527
+>   rxe_newlink+0xf0/0x1b0 drivers/infiniband/sw/rxe/rxe.c:197
+>   nldev_newlink+0x332/0x5e0 drivers/infiniband/core/nldev.c:1731
+>   rdma_nl_rcv_msg+0x371/0x6a0 drivers/infiniband/core/netlink.c:195
+>   rdma_nl_rcv_skb.constprop.0.isra.0+0x2fc/0x440 drivers/infiniband/core/netlink.c:239
+>   netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
+>   netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
+>   netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1913
+>   sock_sendmsg_nosec net/socket.c:724 [inline]
+>   sock_sendmsg+0xde/0x190 net/socket.c:747
+>   ____sys_sendmsg+0x71c/0x900 net/socket.c:2503
+>   ___sys_sendmsg+0x110/0x1b0 net/socket.c:2557
+>   __sys_sendmsg+0xf7/0x1c0 net/socket.c:2586
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f7a1ee8c169
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f7a1fc76168 EFLAGS: 00000246
+>   ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 00007f7a1efabf80 RCX: 00007f7a1ee8c169
+> RDX: 0000000000000040 RSI: 0000000020000200 RDI: 0000000000000003
+> RBP: 00007f7a1eee7ca1 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007fffc46ccb6f R14: 00007f7a1fc76300 R15: 0000000000022000
+>   </TASK>
+> general protection fault, probably for non-canonical address 0xdffffc0000000006: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000030-0x0000000000000037]
+> CPU: 0 PID: 5133 Comm: syz-executor.3 Not tainted 6.4.0-rc1-syzkaller-00136-gab87603b2511 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/28/2023
+> RIP: 0010:flush_send_queue drivers/infiniband/sw/rxe/rxe_comp.c:597 [inline]
+> RIP: 0010:rxe_completer+0x255c/0x3cc0 drivers/infiniband/sw/rxe/rxe_comp.c:653
+> Code: 80 3c 02 00 0f 85 81 10 00 00 49 8b af 88 03 00 00 48 8d 45 30 48 89 c2 48 89 04 24 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 83 11 00 00 48 8d 45 2c 44 8b
+> RSP: 0018:ffffc9000419e938 EFLAGS: 00010206
+> RAX: dffffc0000000000 RBX: ffffed100f5fb800 RCX: 0000000000000000
+> RDX: 0000000000000006 RSI: ffffffff877f3bea RDI: ffff88807afdc388
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: fffffbfff1cf4e42 R11: 205d313330355420 R12: ffff88807afdc1a0
+> R13: 0000000000000000 R14: 0000000000000000 R15: ffff88807afdc000
+> FS:  00007f7a1fc76700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000c001136000 CR3: 00000000206d3000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   rxe_qp_do_cleanup+0x1be/0x820 drivers/infiniband/sw/rxe/rxe_qp.c:761
+>   execute_in_process_context+0x3b/0x150 kernel/workqueue.c:3473
+>   __rxe_cleanup+0x21e/0x370 drivers/infiniband/sw/rxe/rxe_pool.c:233
+>   rxe_create_qp+0x3f6/0x5f0 drivers/infiniband/sw/rxe/rxe_verbs.c:583
+>   create_qp+0x5ac/0x970 drivers/infiniband/core/verbs.c:1235
+>   ib_create_qp_kernel+0xa1/0x310 drivers/infiniband/core/verbs.c:1346
+>   ib_create_qp include/rdma/ib_verbs.h:3743 [inline]
+>   create_mad_qp+0x177/0x380 drivers/infiniband/core/mad.c:2905
+>   ib_mad_port_open drivers/infiniband/core/mad.c:2986 [inline]
+>   ib_mad_init_device+0xf40/0x1a90 drivers/infiniband/core/mad.c:3077
+>   add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:721
+>   enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1332
+>   ib_register_device drivers/infiniband/core/device.c:1420 [inline]
+>   ib_register_device+0x8b1/0xbc0 drivers/infiniband/core/device.c:1366
+>   rxe_register_device+0x302/0x3e0 drivers/infiniband/sw/rxe/rxe_verbs.c:1485
+>   rxe_net_add+0x90/0xf0 drivers/infiniband/sw/rxe/rxe_net.c:527
+>   rxe_newlink+0xf0/0x1b0 drivers/infiniband/sw/rxe/rxe.c:197
+>   nldev_newlink+0x332/0x5e0 drivers/infiniband/core/nldev.c:1731
+>   rdma_nl_rcv_msg+0x371/0x6a0 drivers/infiniband/core/netlink.c:195
+>   rdma_nl_rcv_skb.constprop.0.isra.0+0x2fc/0x440 drivers/infiniband/core/netlink.c:239
+>   netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
+>   netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
+>   netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1913
+>   sock_sendmsg_nosec net/socket.c:724 [inline]
+>   sock_sendmsg+0xde/0x190 net/socket.c:747
+>   ____sys_sendmsg+0x71c/0x900 net/socket.c:2503
+>   ___sys_sendmsg+0x110/0x1b0 net/socket.c:2557
+>   __sys_sendmsg+0xf7/0x1c0 net/socket.c:2586
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f7a1ee8c169
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f7a1fc76168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 00007f7a1efabf80 RCX: 00007f7a1ee8c169
+> RDX: 0000000000000040 RSI: 0000000020000200 RDI: 0000000000000003
+> RBP: 00007f7a1eee7ca1 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007fffc46ccb6f R14: 00007f7a1fc76300 R15: 0000000000022000
+>   </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:flush_send_queue drivers/infiniband/sw/rxe/rxe_comp.c:597 [inline]
+> RIP: 0010:rxe_completer+0x255c/0x3cc0 drivers/infiniband/sw/rxe/rxe_comp.c:653
+
+Looks if rxe_qp_from_init returns failure, qp->sq.queue is NULL but rxe
+still de-reference it during cleanup. And it is the same for sk_buff_head.
+
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git 
+for-rc
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c 
+b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 61a2eb77d999..17ed41309756 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -758,19 +758,21 @@ static void rxe_qp_do_cleanup(struct work_struct 
+*work)
+                 del_timer_sync(&qp->rnr_nak_timer);
+         }
+
+-       if (qp->resp.task.func)
++       /* flush out any receive wr's or pending requests */
++       if (qp->resp.task.func) {
+                 rxe_cleanup_task(&qp->resp.task);
++               rxe_responder(qp);
++       }
+
+-       if (qp->req.task.func)
++       if (qp->req.task.func) {
+                 rxe_cleanup_task(&qp->req.task);
++               rxe_requester(qp);
++       }
+
+-       if (qp->comp.task.func)
++       if (qp->comp.task.func) {
+                 rxe_cleanup_task(&qp->comp.task);
+-
+-       /* flush out any receive wr's or pending requests */
+-       rxe_requester(qp);
+-       rxe_completer(qp);
+-       rxe_responder(qp);
++               rxe_completer(qp);
++       }
+
+         if (qp->sq.queue)
+                 rxe_queue_cleanup(qp->sq.queue);
