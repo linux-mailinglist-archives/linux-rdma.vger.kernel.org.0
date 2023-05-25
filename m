@@ -2,137 +2,202 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A45710DDC
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 May 2023 16:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634ED710E64
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 May 2023 16:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241488AbjEYOCb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 May 2023 10:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
+        id S241126AbjEYOeK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 May 2023 10:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241458AbjEYOCa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 May 2023 10:02:30 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4DC1B6
-        for <linux-rdma@vger.kernel.org>; Thu, 25 May 2023 07:02:03 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-309d3e8777cso796544f8f.0
-        for <linux-rdma@vger.kernel.org>; Thu, 25 May 2023 07:02:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685023320; x=1687615320;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HUbH3AqqDl8CE94ueCQYCD3fcBOZcuYmHQxQOWzVdSI=;
-        b=AB/2sJFSbuTqwsZTCrfgFt0hVWsnb/KsgsZvmfNIJ/vK0a8oqMv1d5VqO+0UXeGcqC
-         WNmVQURw2sdgCCZv2evGfdvntSL9XeVy7KQIio/WVhMEEWuRkFMYfDq8Nwg/DahYA5zy
-         egQSSPXTeS52CzY8Bd1kfbW+OFdLCwoBKT/jkG7tCa5iRqLXAJRZtsfkr0V7d/FGDrqa
-         8h2UGsOQHanQlZTXB1y644pZaRDcfNFSFHfjU5XvOTetWyShK4SwDSBraE7w7DUZiSVN
-         9IPrrwyvzX4KGugorH2+x1cOBhmY8zb+uqKHmkyHmToSDvbK20MDgJEUWTpCUrXA22CL
-         922g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685023320; x=1687615320;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HUbH3AqqDl8CE94ueCQYCD3fcBOZcuYmHQxQOWzVdSI=;
-        b=ACb94yVQlzoV2mQTUic7Sa0+lYMM+/AuSDAUg0RLaP3ifSxf08f+x/qQ8SELaVanAm
-         tktyTZEEY5tpbdCnDBqjjwEWWLIrsF4IAjoFNDKJiKOKwpKCt3IY4FbHxJ8PGE8E135I
-         56lEOTxbNZStpvzDCr7L4LkPk/k+hgqeEj6y71xLznBQg8ZLoIqvGVUWnHfvugG4K/BF
-         yhkqRfWc04DG7Bvxcyi5Zxu0YxBQLLG+jikT4MaMXTZhxoI5igqZExFunKEfM32PW0PE
-         5MBiKv15XXmzUl0rMQpkP1s/pfceeThIY9USewtecSh7VsZu7qOWtIsm1DnFnWWsuRsm
-         LY8A==
-X-Gm-Message-State: AC+VfDySi8r0jpR+UqaZRhPJKzI1N1gSWCIgnkZZwi2HmUVX5/flsppV
-        v8idZ/nDi21IO4FaJzw/lZYTnQ==
-X-Google-Smtp-Source: ACHHUZ4tXSENb+Vpjdf1ltyggjuSDPeNMOgHYDIP1ZGt4QKGSuaeGFxeAHpbVKgbP5ttyGtPZ1y0ew==
-X-Received: by 2002:adf:f644:0:b0:309:6fe4:a20d with SMTP id x4-20020adff644000000b003096fe4a20dmr2025859wrp.9.1685023320556;
-        Thu, 25 May 2023 07:02:00 -0700 (PDT)
-Received: from mai.box.freepro.com ([2a05:6e02:1041:c10:5aef:8608:89d7:7961])
-        by smtp.gmail.com with ESMTPSA id u4-20020adfdd44000000b003063176ef09sm1944866wrm.6.2023.05.25.07.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 May 2023 07:01:59 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rafael@kernel.org
-Cc:     linux-pm@vger.kernel.org, thierry.reding@gmail.com,
-        Sandipan Patra <spatra@nvidia.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        netdev@vger.kernel.org (open list:MELLANOX MLX5 core VPI driver),
-        linux-rdma@vger.kernel.org (open list:MELLANOX MLX5 core VPI driver),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/8] net/mlx5: Update the driver with the recent thermal changes
-Date:   Thu, 25 May 2023 16:01:28 +0200
-Message-Id: <20230525140135.3589917-2-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230525140135.3589917-1-daniel.lezcano@linaro.org>
-References: <20230525140135.3589917-1-daniel.lezcano@linaro.org>
+        with ESMTP id S229702AbjEYOeJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 May 2023 10:34:09 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020020.outbound.protection.outlook.com [52.101.61.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC70CC;
+        Thu, 25 May 2023 07:34:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZB/iswJLjSX16mOEKwgOTv8yl2DMn7KmZ6JxFS8fn0f9kuCxUo+Fa/Lbdy2RRuzJlhuWbVsIlmeWHhRz/bO1Md7Q/PMY7h6MR9MoC5vYhtTRGjlMKVNd6oQnqcdWS4nb1j00fqyZzbfiMepl1dd8hABrquBH6Mg7DzWFmPWsQUjkCvNj9jZ2RLtG5CcyabNp1ao52DWlC3yGxp6kPHNNZdGQLiEA6kMYMKCfO3WF7NJYnJX2KQNoi9DdMZ9BBM57F1FcMvHltvbYll6XYKENQcp+Ag4zKIrZdAm5rBpa8E+wphSYO7sHitL9QTbs/Rv8DU9KE2m8suzeEjG2SKzL9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rn7aXzNk1537IH1OBP2NR6a9GMEDxVr+yJabDSZR/ZI=;
+ b=mW+yTfWxHXPu7WIfyt/NVP/I0ltWcIAq11LyRaNdu52/UAlYrdTBjwJKgoLsDtK8ALRrIasl91m7UHZ5NSHFO7C0KE8ZhhRBiCHieo5LFKDsRTnIEpwQR2f9XQeazRMz1GNVHAX+allXAItOYAt4SsjjZxrvrjKur59ZZr89SToj74immYhaH+0L7wHQ/uVHF/ROxAh1G3NsYuPVxqcqYD3072Ke024dU5e4YVbnh+2t+3mKYQSBDHSQvg/CZRh6TpWrwv81FWbcDxXvOJuOv5jcyonmNxcULAp6QuDZ0OcLFmd4d98MYuU7tcTnTKNxLgKQHBW1q7nRsAVR7r6dsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rn7aXzNk1537IH1OBP2NR6a9GMEDxVr+yJabDSZR/ZI=;
+ b=VuBVVIeQUW6MfPlraHl4gt5EjQe9tTJrWylb57P71KKGzohCLU3768SOkohEhT9fIQ+y/rb2byJvGoGA3d875GCZ83btUg2BiSZECDECBJV55LsxVPzWg6Sc2TT99wxytgt2zHyAox2AoS7P1yEExGmksJ7A+vJ4LPL9V28yi4w=
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
+ by PH0PR21MB1975.namprd21.prod.outlook.com (2603:10b6:510:1c::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.7; Thu, 25 May
+ 2023 14:34:04 +0000
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::5600:ea5a:6768:1900]) by PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::5600:ea5a:6768:1900%5]) with mapi id 15.20.6433.013; Thu, 25 May 2023
+ 14:34:04 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Paul Rosswurm <paulros@microsoft.com>,
+        "olaf@aepfle.de" <olaf@aepfle.de>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH net] net: mana: Fix perf regression: remove rx_cqes,
+ tx_cqes counters
+Thread-Topic: [PATCH net] net: mana: Fix perf regression: remove rx_cqes,
+ tx_cqes counters
+Thread-Index: AQHZjoX1WTJfOkpxnkOGdXtSJcYZ8a9qjN+AgACAu1A=
+Date:   Thu, 25 May 2023 14:34:04 +0000
+Message-ID: <PH7PR21MB31161F3291FF951877355DA9CA46A@PH7PR21MB3116.namprd21.prod.outlook.com>
+References: <1684963320-25282-1-git-send-email-haiyangz@microsoft.com>
+ <20230525064849.ca5p6npej7p2luw2@soft-dev3-1>
+In-Reply-To: <20230525064849.ca5p6npej7p2luw2@soft-dev3-1>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e63b229e-0b77-4b7c-9d17-baa93e325182;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-05-25T14:29:33Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|PH0PR21MB1975:EE_
+x-ms-office365-filtering-correlation-id: b94e7dc3-33bd-4a0e-3dbb-08db5d2d173d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SADQW2WteTWVXC1UI/s+PZEcnJ9p18OfkKltnBfdCRHKZBLd+2ALvCfQCu4cnHqiGhHpR+vbgkyq7TT0e+v1pcF01ML5k3Xe7xxfJrVlW94Cz1LcvXa+Nzw05ovrhJms3RhPOpr+itcHu/uJSMYPHvsCR4AntA0zhLVcFHPtSGLCSSfju3yr82Y5jNfqfcfmoy+rdTZiHOzk3w+rNl+fgtRi+R9CSLL1dXfqlps9FYoX3qt9n20pOAtvq69/+4+yY2ksWxjKGtVCA/sJkzif7wUDnKpvPLRDl1pIv3nawOx4Sl8xaEPV5jYhrAo25xB8dICQpUjTIumx8Ufbg5S4iTA11xWKAClpyeaKqEQCIK4eFhk1Saidgkjm524Xh0joE+NnZbhcZR34Kl+rKkYnllIH5ffZiPGC1Wm7tvXAZ32nW571a70k7jnPKqF7gWGMKNgJU6tfyLWUJdDezXo185+9tNcfaLHRllayPik5Io3ifrtVIJqtZ3N9XXMKln1Dw8lmcuXxIuxP7ykfKr3QOpWIEBi+HOOmpBJoHpw2cMsfeR0dO5z+0dXef6GyBr3oHEWIS2z8QZhpLDIvkmYfGKQ6zMU2oWG3wVVbORO6XUhU9ZiFhZDwLGHD23VRhrdEpjjN7RhsZxJHzjOj9+weqQzBL8+bSHHwWt3Otssv6FM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(376002)(346002)(366004)(39860400002)(451199021)(33656002)(82960400001)(38100700002)(82950400001)(122000001)(86362001)(38070700005)(55016003)(8676002)(8936002)(5660300002)(52536014)(10290500003)(7416002)(966005)(9686003)(6506007)(26005)(2906002)(186003)(83380400001)(66556008)(76116006)(71200400001)(786003)(7696005)(66946007)(41300700001)(316002)(4326008)(478600001)(54906003)(6916009)(8990500004)(66446008)(64756008)(66476007)(53546011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Ei0052iCAa2LWnj4DdknuKikjA2boVslNCDnsd+2YVxT1yvMPaerYyY//G5X?=
+ =?us-ascii?Q?9Qzj9ZqIaOZvq5GuIjuUdsH2rnFFNBGktWn9rjM7Sd2N6yoAPLKxiNS92T0H?=
+ =?us-ascii?Q?U//oFhuy7vdy+Te3VIGdcfW2m3mSjAJNyRon9dr/AQ77rU/3cvGZffv0V+D4?=
+ =?us-ascii?Q?RqKT57TMw2Gf47576JPCiaBzp0c09VjjtDi7rJxZzJ4tvG++RA/nreIE+WZq?=
+ =?us-ascii?Q?AaNGvy3jSTgPNlh6osmp7WuYLa9n/M4zi+bZtMv0kJNU5jpqP0jdBXVEFQRA?=
+ =?us-ascii?Q?dZyLi52tfW773Skxvx0pdTDLjr2Onp96u44jIHT42LEBsjFyAV6x8RiJ001x?=
+ =?us-ascii?Q?XRP83BtNGYcg2uofFhwAnQV1YQ/S3DB3kQqrGebze/rR0vCjgzkU1KzaY7IS?=
+ =?us-ascii?Q?DNEbA+g7OtCfourUdPI2ph3JY1R25UYB6B0FRzXacJwaE3KOSLX2LTCtYKvr?=
+ =?us-ascii?Q?0XsR2BzLMilrbgpSrGbMqgYsWcqrPjYM7pTDjz3o4BxBAuHaQ1KILbFpOWTs?=
+ =?us-ascii?Q?4b0PZ+sUO28dESsmIWPn6AbDjc1vE3b2noK1pxFITJh74tAdCB5iOcJ8mCZo?=
+ =?us-ascii?Q?TftkXIX/5TpSXDjT/ao4co1UEZ9uKUDw5J/43/zk96o5xIVOC8pYr7CBMdIl?=
+ =?us-ascii?Q?essEdWpXSczyURMzDVEtUXWYQL3RA++3pWBeSYxii97Jkh7oUEs1WLt041md?=
+ =?us-ascii?Q?AyOkZlweUfLhzpsomADc0PB/VkRWTys5zc8ziT7h6cmUvF6+Nu8fLuKKZRem?=
+ =?us-ascii?Q?ak5Yp3LDd52HILfi7dJuBLCIwriPxdhIoodc2y3rz/ZbCRDnx6eK/g67ZR3O?=
+ =?us-ascii?Q?YdGiF8ZP9QogFZBkEhSWABuabNuEBCOFOKo/9dUgotbk0XwTwAoANMFzhpcT?=
+ =?us-ascii?Q?ZAhZLwOg0kigbyCux2N8+94WwCL1T3j8J8eTQUSuqpZQr4J6u3Tho4VfOqkK?=
+ =?us-ascii?Q?shJyo/iJJChSXLit9GmDLt9HNTXf27ZpfjhEp8QHSNffufBC5vTjlShb2fwL?=
+ =?us-ascii?Q?l4Eqw2y4uTqyN9VrFljalUINvG2bZ13b2i84nQZcgUUUdlJLx3QwXd6LG2sm?=
+ =?us-ascii?Q?74RmD6tJ2a6uHBQi0lV7e8CtkTHF57u2p7HE0cMmOPRjE7tUFVlmwXJT1ntt?=
+ =?us-ascii?Q?LjmsXgJ0lmqwMMYIITlZIbHnayW/KXIhowUtLkAaYFVhTxf9yCWLEe8vUI+f?=
+ =?us-ascii?Q?h4a9ngdkIs1XBpay8uPw7fjqbn6Q4B3/UAoCnOkJjmsPO2neZoYS31jLJU7I?=
+ =?us-ascii?Q?zzbop0BkHUXGDt8YbrUm7HFLWh6urRt1PPPqy5ju6fgS+Ngk8DtnZ3nHdLKZ?=
+ =?us-ascii?Q?6ZAvLZv9pTameX2IkE7oD8n2U9RWtjKEQqKNpOOK0chjTeoTklEzKs9DerWU?=
+ =?us-ascii?Q?o5MltTJ03XU7fztyvIoORJfNDTyAl5ulc+C98KjkjxlGZmBkdqDstCZLC2oE?=
+ =?us-ascii?Q?fpjCdAWk3/ays3azAE7sTlioIjjxJ4mLjxGslwL4tmbmJSOAFTM1cj85yAzu?=
+ =?us-ascii?Q?U687k0howEv9QnqtlioEubdCwfAEdf5KVLvm6IqfNHjKvla4MgraeSWM4mto?=
+ =?us-ascii?Q?s6ogLujvyEvja3bZRFboBd0gU+CQAncZNG2RQLLz?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b94e7dc3-33bd-4a0e-3dbb-08db5d2d173d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 May 2023 14:34:04.7580
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6cow0s78QPjCze0+Amm9Ur8Yc7D9Vr3tjtfD+7XJ0lH5nC0OsNuVT3w1vF/bXnTtSyHueuzYyd9N5bIK754Skg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR21MB1975
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The thermal framework is migrating to the generic trip points. The set
-of changes also implies a self-encapsulation of the thermal zone
-device structure where the internals are no longer directly accessible
-but with accessors.
 
-Use the new API instead, so the next changes can be pushed in the
-thermal framework without this driver failing to compile.
 
-No functional changes intended.
+> -----Original Message-----
+> From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Sent: Thursday, May 25, 2023 2:49 AM
+> To: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
+> <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul Rosswurm
+> <paulros@microsoft.com>; olaf@aepfle.de; vkuznets@redhat.com;
+> davem@davemloft.net; wei.liu@kernel.org; edumazet@google.com;
+> kuba@kernel.org; pabeni@redhat.com; leon@kernel.org; Long Li
+> <longli@microsoft.com>; ssengar@linux.microsoft.com; linux-
+> rdma@vger.kernel.org; daniel@iogearbox.net; john.fastabend@gmail.com;
+> bpf@vger.kernel.org; ast@kernel.org; Ajay Sharma
+> <sharmaajay@microsoft.com>; hawk@kernel.org; linux-
+> kernel@vger.kernel.org; stable@vger.kernel.org
+> Subject: Re: [PATCH net] net: mana: Fix perf regression: remove rx_cqes,
+> tx_cqes counters
+>=20
+> [Some people who received this message don't often get email from
+> horatiu.vultur@microchip.com. Learn why this is important at
+> https://aka.ms/LearnAboutSenderIdentification ]
+>=20
+> The 05/24/2023 14:22, Haiyang Zhang wrote:
+>=20
+> Hi Haiyang,
+>=20
+> >
+> > The apc->eth_stats.rx_cqes is one per NIC (vport), and it's on the
+> > frequent and parallel code path of all queues. So, r/w into this
+> > single shared variable by many threads on different CPUs creates a
+> > lot caching and memory overhead, hence perf regression. And, it's
+> > not accurate due to the high volume concurrent r/w.
+>=20
+> Do you have any numbers to show the improvement of this change?
 
-Cc: Sandipan Patra <spatra@nvidia.com>
-Cc: Gal Pressman <gal@nvidia.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/thermal.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+The numbers are not published. The perf regression of the previous=20
+patch is very significant, and this patch eliminates the regression.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/thermal.c b/drivers/net/ethernet/mellanox/mlx5/core/thermal.c
-index e47fa6fb836f..20bb5eb266c1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/thermal.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/thermal.c
-@@ -45,7 +45,7 @@ static int mlx5_thermal_get_mtmp_temp(struct mlx5_core_dev *mdev, u32 id, int *p
- static int mlx5_thermal_get_temp(struct thermal_zone_device *tzdev,
- 				 int *p_temp)
- {
--	struct mlx5_thermal *thermal = tzdev->devdata;
-+	struct mlx5_thermal *thermal = thermal_zone_device_priv(tzdev);
- 	struct mlx5_core_dev *mdev = thermal->mdev;
- 	int err;
- 
-@@ -81,12 +81,13 @@ int mlx5_thermal_init(struct mlx5_core_dev *mdev)
- 		return -ENOMEM;
- 
- 	thermal->mdev = mdev;
--	thermal->tzdev = thermal_zone_device_register(data,
--						      MLX5_THERMAL_NUM_TRIPS,
--						      MLX5_THERMAL_TRIP_MASK,
--						      thermal,
--						      &mlx5_thermal_ops,
--						      NULL, 0, MLX5_THERMAL_POLL_INT_MSEC);
-+	thermal->tzdev = thermal_zone_device_register_with_trips(data,
-+								 NULL,
-+								 MLX5_THERMAL_NUM_TRIPS,
-+								 MLX5_THERMAL_TRIP_MASK,
-+								 thermal,
-+								 &mlx5_thermal_ops,
-+								 NULL, 0, MLX5_THERMAL_POLL_INT_MSEC);
- 	if (IS_ERR(thermal->tzdev)) {
- 		dev_err(mdev->device, "Failed to register thermal zone device (%s) %ld\n",
- 			data, PTR_ERR(thermal->tzdev));
--- 
-2.34.1
+>=20
+> >
+> > Since the error path of mana_poll_rx_cq() already has warnings, so
+> > keeping the counter and convert it to a per-queue variable is not
+> > necessary. So, just remove this counter from this high frequency
+> > code path.
+> >
+> > Also, remove the tx_cqes counter for the same reason. We have
+> > warnings & other counters for errors on that path, and don't need
+> > to count every normal cqe processing.
+>=20
+> Will you not have problems with the counter 'apc->eth_stats.tx_cqe_err'?
+> It is not in the hot path but you will have concurrent access to it.
+
+Yes, but that error happens rarely, so a shared variable is good enough. So=
+, I=20
+don't change it in this patch.
+
+Thanks,
+- Haiyang
 
