@@ -2,59 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D709D71074F
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 May 2023 10:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE76710925
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 May 2023 11:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239735AbjEYI1s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 May 2023 04:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        id S233558AbjEYJo6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 May 2023 05:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235794AbjEYI1r (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 May 2023 04:27:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6EAC186;
-        Thu, 25 May 2023 01:27:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3805A63C3E;
-        Thu, 25 May 2023 08:27:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BF57C433EF;
-        Thu, 25 May 2023 08:27:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685003264;
-        bh=TXzkAJJtr+rb8+qhlaMHIqTqmmEXt7KMrw8HfElDAJE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J35245Wq98yYPRUnLLCiT44fAp7tz9SYlr6TWHMK2i4IvPOJAmr2x/gsAVhHmh0BW
-         M5pefjyGo5aDKkPtKyHYK6omGZDyqWCWRhEI/G7GsEJE2IKx6+NuSI+uX3Bm1Calrc
-         tc5MpwpSqLCg4Gp69lLvO+fxKwk2QqI+lQ5OItzhqQYasd4Pm+U0mvMPOsNJAsQs+6
-         ybY/dfxk49hudYozaRGRRWD8OtxgaJme91Q+zWxenywCQNcu9qNo79Q7UHAeD9h5iF
-         4NJejm1VsfleZXpbjxCKYfiusxtEcKiTJj67zeKAp2l5b35mW4qAsxfZjWLuGbWXs/
-         unNc/oob7IUBA==
-Date:   Thu, 25 May 2023 10:27:35 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     bhelgaas@google.com, davem@davemloft.net, edumazet@google.com,
-        haiyangz@microsoft.com, jakeo@microsoft.com, kuba@kernel.org,
-        kw@linux.com, kys@microsoft.com, leon@kernel.org,
-        linux-pci@vger.kernel.org, mikelley@microsoft.com,
-        pabeni@redhat.com, robh@kernel.org, saeedm@nvidia.com,
-        wei.liu@kernel.org, longli@microsoft.com, boqun.feng@gmail.com,
-        ssengar@microsoft.com, helgaas@kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        josete@microsoft.com, stable@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] PCI: hv: Add a per-bus mutex state_lock
-Message-ID: <ZG8b933WBtpssRz0@lpieralisi>
-References: <20230420024037.5921-1-decui@microsoft.com>
- <20230420024037.5921-6-decui@microsoft.com>
+        with ESMTP id S239807AbjEYJo5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 May 2023 05:44:57 -0400
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBA8A9
+        for <linux-rdma@vger.kernel.org>; Thu, 25 May 2023 02:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1685007898; x=1716543898;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dVRill0ltZ01ymFt19AlVkKRLG4nUCF3MRAO5Y/RSQo=;
+  b=K7+MhY7ULBOOmMH3qobV7p1LBpA12J1MTsAvIV3j9pTwtploQwYx93oO
+   w7YpIdCDn2siYtdAd4loeD+HK9ri4QgawAawGRhXuKR+qcEDDok/3s/1+
+   cISwviYYyLeZTI2a5wz4ZdYvr92GO5wR8vHsrObUDswj7PcSiXEnfEbXP
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.00,190,1681171200"; 
+   d="scan'208";a="216533887"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-d23e07e8.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2023 09:44:54 +0000
+Received: from EX19D013EUA003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1d-m6i4x-d23e07e8.us-east-1.amazon.com (Postfix) with ESMTPS id 4DE9380FC5;
+        Thu, 25 May 2023 09:44:52 +0000 (UTC)
+Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
+ EX19D013EUA003.ant.amazon.com (10.252.50.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 25 May 2023 09:44:45 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by mail-relay.amazon.com (10.252.135.200) with Microsoft
+ SMTP Server id 15.2.1118.26 via Frontend Transport; Thu, 25 May 2023 09:44:44
+ +0000
+From:   Michael Margolin <mrgolin@amazon.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC:     <sleybo@amazon.com>, <matua@amazon.com>
+Subject: [PATCH] MAINTAINERS: Update maintainer of Amazon EFA driver
+Date:   Thu, 25 May 2023 09:44:44 +0000
+Message-ID: <20230525094444.12570-1-mrgolin@amazon.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230420024037.5921-6-decui@microsoft.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,170 +59,26 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 19, 2023 at 07:40:36PM -0700, Dexuan Cui wrote:
-> In the case of fast device addition/removal, it's possible that
-> hv_eject_device_work() can start to run before create_root_hv_pci_bus()
-> starts to run; as a result, the pci_get_domain_bus_and_slot() in
-> hv_eject_device_work() can return a 'pdev' of NULL, and
-> hv_eject_device_work() can remove the 'hpdev', and immediately send a
-> message PCI_EJECTION_COMPLETE to the host, and the host immediately
-> unassigns the PCI device from the guest; meanwhile,
-> create_root_hv_pci_bus() and the PCI device driver can be probing the
-> dead PCI device and reporting timeout errors.
-> 
-> Fix the issue by adding a per-bus mutex 'state_lock' and grabbing the
-> mutex before powering on the PCI bus in hv_pci_enter_d0(): when
-> hv_eject_device_work() starts to run, it's able to find the 'pdev' and call
-> pci_stop_and_remove_bus_device(pdev): if the PCI device driver has
-> loaded, the PCI device driver's probe() function is already called in
-> create_root_hv_pci_bus() -> pci_bus_add_devices(), and now
-> hv_eject_device_work() -> pci_stop_and_remove_bus_device() is able
-> to call the PCI device driver's remove() function and remove the device
-> reliably; if the PCI device driver hasn't loaded yet, the function call
-> hv_eject_device_work() -> pci_stop_and_remove_bus_device() is able to
-> remove the PCI device reliably and the PCI device driver's probe()
-> function won't be called; if the PCI device driver's probe() is already
-> running (e.g., systemd-udev is loading the PCI device driver), it must
-> be holding the per-device lock, and after the probe() finishes and releases
-> the lock, hv_eject_device_work() -> pci_stop_and_remove_bus_device() is
-> able to proceed to remove the device reliably.
-> 
-> Fixes: 4daace0d8ce8 ("PCI: hv: Add paravirtual PCI front-end for Microsoft Hyper-V VMs")
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> Cc: stable@vger.kernel.org
-> ---
-> 
-> v2:
->   Removed the "debug code".
->   Fixed the "goto out" in hv_pci_resume() [Michael Kelley]
->   Added Cc:stable
-> 
-> v3:
->   Added Michael's Reviewed-by.
-> 
->  drivers/pci/controller/pci-hyperv.c | 29 ++++++++++++++++++++++++++---
->  1 file changed, 26 insertions(+), 3 deletions(-)
+Change EFA driver maintainer from Gal Pressman to myself.
 
-Acked-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index 48feab095a144..3ae2f99dea8c2 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -489,7 +489,10 @@ struct hv_pcibus_device {
->  	struct fwnode_handle *fwnode;
->  	/* Protocol version negotiated with the host */
->  	enum pci_protocol_version_t protocol_version;
-> +
-> +	struct mutex state_lock;
->  	enum hv_pcibus_state state;
-> +
->  	struct hv_device *hdev;
->  	resource_size_t low_mmio_space;
->  	resource_size_t high_mmio_space;
-> @@ -2512,6 +2515,8 @@ static void pci_devices_present_work(struct work_struct *work)
->  	if (!dr)
->  		return;
->  
-> +	mutex_lock(&hbus->state_lock);
-> +
->  	/* First, mark all existing children as reported missing. */
->  	spin_lock_irqsave(&hbus->device_list_lock, flags);
->  	list_for_each_entry(hpdev, &hbus->children, list_entry) {
-> @@ -2593,6 +2598,8 @@ static void pci_devices_present_work(struct work_struct *work)
->  		break;
->  	}
->  
-> +	mutex_unlock(&hbus->state_lock);
-> +
->  	kfree(dr);
->  }
->  
-> @@ -2741,6 +2748,8 @@ static void hv_eject_device_work(struct work_struct *work)
->  	hpdev = container_of(work, struct hv_pci_dev, wrk);
->  	hbus = hpdev->hbus;
->  
-> +	mutex_lock(&hbus->state_lock);
-> +
->  	/*
->  	 * Ejection can come before or after the PCI bus has been set up, so
->  	 * attempt to find it and tear down the bus state, if it exists.  This
-> @@ -2777,6 +2786,8 @@ static void hv_eject_device_work(struct work_struct *work)
->  	put_pcichild(hpdev);
->  	put_pcichild(hpdev);
->  	/* hpdev has been freed. Do not use it any more. */
-> +
-> +	mutex_unlock(&hbus->state_lock);
->  }
->  
->  /**
-> @@ -3562,6 +3573,7 @@ static int hv_pci_probe(struct hv_device *hdev,
->  		return -ENOMEM;
->  
->  	hbus->bridge = bridge;
-> +	mutex_init(&hbus->state_lock);
->  	hbus->state = hv_pcibus_init;
->  	hbus->wslot_res_allocated = -1;
->  
-> @@ -3670,9 +3682,11 @@ static int hv_pci_probe(struct hv_device *hdev,
->  	if (ret)
->  		goto free_irq_domain;
->  
-> +	mutex_lock(&hbus->state_lock);
-> +
->  	ret = hv_pci_enter_d0(hdev);
->  	if (ret)
-> -		goto free_irq_domain;
-> +		goto release_state_lock;
->  
->  	ret = hv_pci_allocate_bridge_windows(hbus);
->  	if (ret)
-> @@ -3690,12 +3704,15 @@ static int hv_pci_probe(struct hv_device *hdev,
->  	if (ret)
->  		goto free_windows;
->  
-> +	mutex_unlock(&hbus->state_lock);
->  	return 0;
->  
->  free_windows:
->  	hv_pci_free_bridge_windows(hbus);
->  exit_d0:
->  	(void) hv_pci_bus_exit(hdev, true);
-> +release_state_lock:
-> +	mutex_unlock(&hbus->state_lock);
->  free_irq_domain:
->  	irq_domain_remove(hbus->irq_domain);
->  free_fwnode:
-> @@ -3945,20 +3962,26 @@ static int hv_pci_resume(struct hv_device *hdev)
->  	if (ret)
->  		goto out;
->  
-> +	mutex_lock(&hbus->state_lock);
-> +
->  	ret = hv_pci_enter_d0(hdev);
->  	if (ret)
-> -		goto out;
-> +		goto release_state_lock;
->  
->  	ret = hv_send_resources_allocated(hdev);
->  	if (ret)
-> -		goto out;
-> +		goto release_state_lock;
->  
->  	prepopulate_bars(hbus);
->  
->  	hv_pci_restore_msi_state(hbus);
->  
->  	hbus->state = hv_pcibus_installed;
-> +	mutex_unlock(&hbus->state_lock);
->  	return 0;
-> +
-> +release_state_lock:
-> +	mutex_unlock(&hbus->state_lock);
->  out:
->  	vmbus_close(hdev->channel);
->  	return ret;
-> -- 
-> 2.25.1
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e0ad886d3163..24a0640ded06 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -956,7 +956,7 @@ F:	Documentation/networking/device_drivers/ethernet/amazon/ena.rst
+ F:	drivers/net/ethernet/amazon/
+ 
+ AMAZON RDMA EFA DRIVER
+-M:	Gal Pressman <galpress@amazon.com>
++M:	Michael Margolin <mrgolin@amazon.com>
+ R:	Yossi Leybovich <sleybo@amazon.com>
+ L:	linux-rdma@vger.kernel.org
+ S:	Supported
+-- 
+2.39.2
+
