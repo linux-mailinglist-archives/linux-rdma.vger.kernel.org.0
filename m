@@ -2,124 +2,192 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C05710412
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 May 2023 06:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8FA7105CA
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 May 2023 08:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjEYE0d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 May 2023 00:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        id S238627AbjEYGsy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 May 2023 02:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjEYE0c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 May 2023 00:26:32 -0400
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3FDA1
-        for <linux-rdma@vger.kernel.org>; Wed, 24 May 2023 21:26:31 -0700 (PDT)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-19a13476ffeso952607fac.0
-        for <linux-rdma@vger.kernel.org>; Wed, 24 May 2023 21:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684988790; x=1687580790;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/roThbYZCSuZiJLsVgHd2Y9oggMmArXpfeJ8dLweZ5o=;
-        b=BrhAuF11RJNOJn8LRdFOsmPdHI79K/OOegMtmbljwh+HDoy8lrNzA5uW7KgCBcBx6n
-         /l+TWDzEhpttHpyjgSPhSdsBj7l5dEQbEduBXLU7/tRBgyf4pdESZ5NfE0+YebhjO1Sh
-         k4wfiLzBMm9iAR3C5qinw+Gdb06EeyHjJ3QbTEPNz0lF9gnWKDGjH9xpJVYlOjNcaoRP
-         FzYumTloUUo+vTtg9jKBIw1f9PaJfmaxdeQ/8HMljptSRom7SnZQKKJBgPoX6WVP7f5T
-         A5KRhC8YLjfBgfLWy+veQXCbqxUfbWMiM+a45BO5a/PoKBkJv5gaCw3Ae+HwHBJ59Qqi
-         jRNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684988790; x=1687580790;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/roThbYZCSuZiJLsVgHd2Y9oggMmArXpfeJ8dLweZ5o=;
-        b=ToWaCXNyyV60RQv40DJrZd2yZyIeLsUoFm9v/B1Ld+uU5gHUwj+ekNV0fsr93oiwpQ
-         aBzCa1QVFqyTBqUvg49l/y6dOZNZ6xvO3oZDJ/Q7/s/wwoJsQ/hjHRR6xRBgncDQx58q
-         l+ANKuGN7rEzOf1JgnpYBdSGRK6nOk+04kTw/TQU+yr806ecVH+oRlyRm+o2a2A75xf7
-         eUAE1DSC6KqYjeZkKcck4k0q/xq6ARK++LEtigS39RCn3LIFzUfTZjdJ6Q4W0wW5psBb
-         ppqVICldLjRG06NHqkpETi7MBj2DHMaiBsP5l1Dx38AhL6YvzCauZRYAXBRwSe1tv5uS
-         cgag==
-X-Gm-Message-State: AC+VfDzmPGrRmpof66N+4teZQr5JGkjn2XbIhmaZja1flyb6kYfUFtlw
-        nIVdMR2BANJewobPL+a6PrM=
-X-Google-Smtp-Source: ACHHUZ5PtkjsCQx/OioUy3sB/Ltv9RsWmzT24VQ/0fra4IgNOjolb3383E8Dw6B7m7UHccKRSsjgPA==
-X-Received: by 2002:a05:6870:9187:b0:19a:82b:a8d8 with SMTP id b7-20020a056870918700b0019a082ba8d8mr1298158oaf.40.1684988790133;
-        Wed, 24 May 2023 21:26:30 -0700 (PDT)
-Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-e32a-8417-bb00-f8d7.res6.spectrum.com. [2603:8081:140c:1a00:e32a:8417:bb00:f8d7])
-        by smtp.gmail.com with ESMTPSA id t3-20020a056871054300b0017aafd12843sm264124oal.32.2023.05.24.21.26.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 May 2023 21:26:29 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     edwards@nvidia.com, idok@nvidia.com, jgg@nvidia.com,
-        linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH RFC] tests: Fix test_mr_rereg_pd
-Date:   Wed, 24 May 2023 23:25:17 -0500
-Message-Id: <20230525042517.14657-1-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S230265AbjEYGsx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 May 2023 02:48:53 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2737AC0;
+        Wed, 24 May 2023 23:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1684997332; x=1716533332;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fXnFdHMpIBK0pbiO2rn3en44HrYigxb3fY8Niaa5yX8=;
+  b=gaqRJqJTVwTZ9Q2sq2+MxiQYDoGTNdwWs5dCwDSnOQ37z1c24DanVuOB
+   QmOaBYGWaHwxuCoyvprdSUnZ98iK04gkrqXOYdh1qfJIrfxJqkFlVLGHk
+   /dW66xFx5gJVKCFIzrlS/jtK55m1UMY+lueQqsCD9jm+Y6/ORwGE2Jw/l
+   gz6zeQXICUsOyVT/KrZa7KP3Bgj8Dp9h6CeoyYACshDM1jm4qPR1CYZ43
+   onBFZaaAp+JPtGS7eXAlCRNzZW5vYeQw1+DmowmkndksqDz2rpmZqeHYN
+   HufSDN+4u87xwlpQ4luS5SUhzT/6TLm26a0779pt84G6kq+lELj9W7nA7
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.00,190,1681196400"; 
+   d="scan'208";a="217198440"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 May 2023 23:48:50 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 24 May 2023 23:48:50 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Wed, 24 May 2023 23:48:50 -0700
+Date:   Thu, 25 May 2023 08:48:49 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+CC:     <linux-hyperv@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <decui@microsoft.com>, <kys@microsoft.com>,
+        <paulros@microsoft.com>, <olaf@aepfle.de>, <vkuznets@redhat.com>,
+        <davem@davemloft.net>, <wei.liu@kernel.org>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <leon@kernel.org>,
+        <longli@microsoft.com>, <ssengar@linux.microsoft.com>,
+        <linux-rdma@vger.kernel.org>, <daniel@iogearbox.net>,
+        <john.fastabend@gmail.com>, <bpf@vger.kernel.org>,
+        <ast@kernel.org>, <sharmaajay@microsoft.com>, <hawk@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH net] net: mana: Fix perf regression: remove rx_cqes,
+ tx_cqes counters
+Message-ID: <20230525064849.ca5p6npej7p2luw2@soft-dev3-1>
+References: <1684963320-25282-1-git-send-email-haiyangz@microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <1684963320-25282-1-git-send-email-haiyangz@microsoft.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch adds a util method drain_cq which drains out
-the cq associated with a client or server. This is then
-added to the method restate_qps in tests/test_mr.py.
-This allows correct operation when recovering test state
-from an error which may have also left stray completions
-in the cqs before resetting the qps for use.
+The 05/24/2023 14:22, Haiyang Zhang wrote:
 
-Fixes: 4bc72d894481 ("tests: Add rereg MR tests")
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- tests/test_mr.py |  2 ++
- tests/utils.py   | 14 ++++++++++++++
- 2 files changed, 16 insertions(+)
+Hi Haiyang,
 
-diff --git a/tests/test_mr.py b/tests/test_mr.py
-index 534df46a..73dfbff2 100644
---- a/tests/test_mr.py
-+++ b/tests/test_mr.py
-@@ -109,6 +109,8 @@ class MRTest(RDMATestCase):
-         self.server.qp.to_rts(self.server_qp_attr)
-         self.client.qp.modify(QPAttr(qp_state=e.IBV_QPS_RESET), e.IBV_QP_STATE)
-         self.client.qp.to_rts(self.client_qp_attr)
-+        u.drain_cq(self.client.cq)
-+        u.drain_cq(self.server.cq)
- 
-     def test_mr_rereg_access(self):
-         self.create_players(MRRes)
-diff --git a/tests/utils.py b/tests/utils.py
-index a1dfa7d8..f6966b1a 100644
---- a/tests/utils.py
-+++ b/tests/utils.py
-@@ -672,6 +672,20 @@ def poll_cq_ex(cqex, count=1, data=None, sgid=None):
-     finally:
-         cqex.end_poll()
- 
-+def drain_cq(cq):
-+    """
-+    Drain completions from a CQ.
-+    :param cq: CQ to drain
-+    :return: None
-+    """
-+    channel = cq.comp_channel
-+    while 1:
-+        if channel:
-+            channel.get_cq_event(cq)
-+            cq.req_notify()
-+        nc, tmp_wcs = cq.poll(1)
-+        if nc == 0:
-+            break
- 
- def validate(received_str, is_server, msg_size):
-     """
+> 
+> The apc->eth_stats.rx_cqes is one per NIC (vport), and it's on the
+> frequent and parallel code path of all queues. So, r/w into this
+> single shared variable by many threads on different CPUs creates a
+> lot caching and memory overhead, hence perf regression. And, it's
+> not accurate due to the high volume concurrent r/w.
+
+Do you have any numbers to show the improvement of this change?
+
+> 
+> Since the error path of mana_poll_rx_cq() already has warnings, so
+> keeping the counter and convert it to a per-queue variable is not
+> necessary. So, just remove this counter from this high frequency
+> code path.
+> 
+> Also, remove the tx_cqes counter for the same reason. We have
+> warnings & other counters for errors on that path, and don't need
+> to count every normal cqe processing.
+
+Will you not have problems with the counter 'apc->eth_stats.tx_cqe_err'?
+It is not in the hot path but you will have concurrent access to it.
+
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: bd7fc6e1957c ("net: mana: Add new MANA VF performance counters for easier troubleshooting")
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c      | 10 ----------
+>  drivers/net/ethernet/microsoft/mana/mana_ethtool.c |  2 --
+>  include/net/mana/mana.h                            |  2 --
+>  3 files changed, 14 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 06d6292e09b3..d907727c7b7a 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -1279,8 +1279,6 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+>         if (comp_read < 1)
+>                 return;
+> 
+> -       apc->eth_stats.tx_cqes = comp_read;
+> -
+>         for (i = 0; i < comp_read; i++) {
+>                 struct mana_tx_comp_oob *cqe_oob;
+> 
+> @@ -1363,8 +1361,6 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+>                 WARN_ON_ONCE(1);
+> 
+>         cq->work_done = pkt_transmitted;
+> -
+> -       apc->eth_stats.tx_cqes -= pkt_transmitted;
+>  }
+> 
+>  static void mana_post_pkt_rxq(struct mana_rxq *rxq)
+> @@ -1626,15 +1622,11 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+>  {
+>         struct gdma_comp *comp = cq->gdma_comp_buf;
+>         struct mana_rxq *rxq = cq->rxq;
+> -       struct mana_port_context *apc;
+>         int comp_read, i;
+> 
+> -       apc = netdev_priv(rxq->ndev);
+> -
+>         comp_read = mana_gd_poll_cq(cq->gdma_cq, comp, CQE_POLLING_BUFFER);
+>         WARN_ON_ONCE(comp_read > CQE_POLLING_BUFFER);
+> 
+> -       apc->eth_stats.rx_cqes = comp_read;
+>         rxq->xdp_flush = false;
+> 
+>         for (i = 0; i < comp_read; i++) {
+> @@ -1646,8 +1638,6 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+>                         return;
+> 
+>                 mana_process_rx_cqe(rxq, cq, &comp[i]);
+> -
+> -               apc->eth_stats.rx_cqes--;
+>         }
+> 
+>         if (rxq->xdp_flush)
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> index a64c81410dc1..0dc78679f620 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> @@ -13,11 +13,9 @@ static const struct {
+>  } mana_eth_stats[] = {
+>         {"stop_queue", offsetof(struct mana_ethtool_stats, stop_queue)},
+>         {"wake_queue", offsetof(struct mana_ethtool_stats, wake_queue)},
+> -       {"tx_cqes", offsetof(struct mana_ethtool_stats, tx_cqes)},
+>         {"tx_cq_err", offsetof(struct mana_ethtool_stats, tx_cqe_err)},
+>         {"tx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+>                                         tx_cqe_unknown_type)},
+> -       {"rx_cqes", offsetof(struct mana_ethtool_stats, rx_cqes)},
+>         {"rx_coalesced_err", offsetof(struct mana_ethtool_stats,
+>                                         rx_coalesced_err)},
+>         {"rx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> index cd386aa7c7cc..9eef19972845 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -347,10 +347,8 @@ struct mana_tx_qp {
+>  struct mana_ethtool_stats {
+>         u64 stop_queue;
+>         u64 wake_queue;
+> -       u64 tx_cqes;
+>         u64 tx_cqe_err;
+>         u64 tx_cqe_unknown_type;
+> -       u64 rx_cqes;
+>         u64 rx_coalesced_err;
+>         u64 rx_cqe_unknown_type;
+>  };
+> --
+> 2.25.1
+> 
+> 
+
 -- 
-2.39.2
-
+/Horatiu
