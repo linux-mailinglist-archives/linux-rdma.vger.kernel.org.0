@@ -2,75 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F52711E6C
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 May 2023 05:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A35712066
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 May 2023 08:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjEZD0C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 May 2023 23:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43142 "EHLO
+        id S242177AbjEZGpg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 May 2023 02:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjEZD0A (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 May 2023 23:26:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498EDE6;
-        Thu, 25 May 2023 20:26:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D846B6471F;
-        Fri, 26 May 2023 03:25:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F170C433EF;
-        Fri, 26 May 2023 03:25:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685071559;
-        bh=BTIaAcxw6JMw/kBG+7/ytX8/qt2HopHJ9Nqlbp6SrPU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eIztQ0pfSz7V7fBvUzeog84FT45VkAZ2Lae27wsJjMo2fG1neQr92ibbIFgGHsQ2d
-         r4JJTPcmgjMJnT+uzL6zfSlfkfBY8dFo++z67mnF7wrr/9P/KiWD0ShmXwko8V+SIE
-         zoqSY3IREiAbPn2Znwq2kn2tRNNV2Ly7FViIEibdDkP7RxB1FMhHu22yVTGyQYbsN2
-         OX4koaThdA9hIKe7/x64Ho3jdyINstDb+ujciIDpcmybpuL5c2X9JGIqtJNRCxc5Ni
-         jKHY5EnBMTUPsHPsGt8BBA+PoBgarYho9GcKQlrbQUIpEZqkQSQWDIuFJen+j5HryZ
-         CMMU/YZeGrRJQ==
-Date:   Thu, 25 May 2023 20:25:57 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
+        with ESMTP id S236735AbjEZGpf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 May 2023 02:45:35 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F7DBC;
+        Thu, 25 May 2023 23:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1685083534; x=1716619534;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IJu7yRqmaECoG+aUqI9gqOkbcGWsi1NNfVI1riIMsLk=;
+  b=jnvGkXV2jj7ELXJylaWO2oE/vW6V8LmVSo/Bs39Vj2SR/Dsxfp+E/lED
+   e+8GHyzXw/PrTx7iXpKtYuUA43VzCG3u7op8Pd1ZMoe7xuPXfiNZ1ktMG
+   x0XvZOwlkCkRImqxxTYAe3GC4+8GkrwWvMcQ3HkBl1wZmXUrBYR6DrjVq
+   5thcfyCW3jCkHMb2k7Sm80tKGZUv2++x26E+54HnN6+Co7yBw+2JKzrVJ
+   HW0ytnoCF/fKbuI908kxFwXSjCVFGc22yMdBmbBliDUVHrZYfyfijTwm5
+   p5p8jfLTDGmWdcrLk7J6Y5uKJEJRTG2yGZ+I5a96nqkXyVCq9JrCOzBel
+   A==;
+X-IronPort-AV: E=Sophos;i="6.00,193,1681196400"; 
+   d="scan'208";a="217418416"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 May 2023 23:45:33 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 25 May 2023 23:45:32 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Thu, 25 May 2023 23:45:32 -0700
+Date:   Fri, 26 May 2023 08:45:31 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
 To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
-        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
-        wei.liu@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        leon@kernel.org, longli@microsoft.com, ssengar@linux.microsoft.com,
-        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
-        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH V2,net] net: mana: Fix perf regression: remove rx_cqes,
+CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Paul Rosswurm <paulros@microsoft.com>,
+        "olaf@aepfle.de" <olaf@aepfle.de>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH net] net: mana: Fix perf regression: remove rx_cqes,
  tx_cqes counters
-Message-ID: <20230525202557.5a5f020b@kernel.org>
-In-Reply-To: <1685025990-14598-1-git-send-email-haiyangz@microsoft.com>
-References: <1685025990-14598-1-git-send-email-haiyangz@microsoft.com>
+Message-ID: <20230526064531.zohcgjbaraq7c2ui@soft-dev3-1>
+References: <1684963320-25282-1-git-send-email-haiyangz@microsoft.com>
+ <20230525064849.ca5p6npej7p2luw2@soft-dev3-1>
+ <PH7PR21MB31161F3291FF951877355DA9CA46A@PH7PR21MB3116.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <PH7PR21MB31161F3291FF951877355DA9CA46A@PH7PR21MB3116.namprd21.prod.outlook.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 25 May 2023 07:46:30 -0700 Haiyang Zhang wrote:
-> lot caching and memory overhead, hence perf regression.
+The 05/25/2023 14:34, Haiyang Zhang wrote:
+> 
+> > -----Original Message-----
+> > From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > Sent: Thursday, May 25, 2023 2:49 AM
+> > To: Haiyang Zhang <haiyangz@microsoft.com>
+> > Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
+> > <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul Rosswurm
+> > <paulros@microsoft.com>; olaf@aepfle.de; vkuznets@redhat.com;
+> > davem@davemloft.net; wei.liu@kernel.org; edumazet@google.com;
+> > kuba@kernel.org; pabeni@redhat.com; leon@kernel.org; Long Li
+> > <longli@microsoft.com>; ssengar@linux.microsoft.com; linux-
+> > rdma@vger.kernel.org; daniel@iogearbox.net; john.fastabend@gmail.com;
+> > bpf@vger.kernel.org; ast@kernel.org; Ajay Sharma
+> > <sharmaajay@microsoft.com>; hawk@kernel.org; linux-
+> > kernel@vger.kernel.org; stable@vger.kernel.org
+> > Subject: Re: [PATCH net] net: mana: Fix perf regression: remove rx_cqes,
+> > tx_cqes counters
+> >
+> > [Some people who received this message don't often get email from
+> > horatiu.vultur@microchip.com. Learn why this is important at
+> > https://aka.ms/LearnAboutSenderIdentification ]
+> >
+> > The 05/24/2023 14:22, Haiyang Zhang wrote:
+> >
+> > Hi Haiyang,
+> >
+> > >
+> > > The apc->eth_stats.rx_cqes is one per NIC (vport), and it's on the
+> > > frequent and parallel code path of all queues. So, r/w into this
+> > > single shared variable by many threads on different CPUs creates a
+> > > lot caching and memory overhead, hence perf regression. And, it's
+> > > not accurate due to the high volume concurrent r/w.
+> >
+> > Do you have any numbers to show the improvement of this change?
+> 
+> The numbers are not published. The perf regression of the previous
+> patch is very significant, and this patch eliminates the regression.
+> 
+> >
+> > >
+> > > Since the error path of mana_poll_rx_cq() already has warnings, so
+> > > keeping the counter and convert it to a per-queue variable is not
+> > > necessary. So, just remove this counter from this high frequency
+> > > code path.
+> > >
+> > > Also, remove the tx_cqes counter for the same reason. We have
+> > > warnings & other counters for errors on that path, and don't need
+> > > to count every normal cqe processing.
+> >
+> > Will you not have problems with the counter 'apc->eth_stats.tx_cqe_err'?
+> > It is not in the hot path but you will have concurrent access to it.
+> 
+> Yes, but that error happens rarely, so a shared variable is good enough. So, I
+> don't change it in this patch.
 
-Horatiu's ask for more details was perfectly reasonable.
-Provide more details to give the distros and users an
-idea of the order of magnitude of the problem. Example
-workload and relative perf hit, anything.
+OK, I understand.
+Maybe this can be fixed in a different patch at a later point. Thanks.
 
-Please do not repost within 24 hours:
-https://www.kernel.org/doc/html/next/process/maintainer-netdev.html
+Reviwed-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+
+> 
+> Thanks,
+> - Haiyang
+> 
+
 -- 
-pw-bot: cr
+/Horatiu
