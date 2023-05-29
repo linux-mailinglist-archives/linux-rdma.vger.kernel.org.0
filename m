@@ -2,151 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48747714EE3
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 May 2023 19:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2347150E6
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 May 2023 23:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbjE2RUM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 May 2023 13:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
+        id S229567AbjE2VUO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 May 2023 17:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjE2RUL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 May 2023 13:20:11 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B54FAB
-        for <linux-rdma@vger.kernel.org>; Mon, 29 May 2023 10:20:10 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-39831cb47c6so1163387b6e.2
-        for <linux-rdma@vger.kernel.org>; Mon, 29 May 2023 10:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685380809; x=1687972809;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tKHvbgdSlt80lgWkqXJFhTQj8qozxs0n+wq2xAkxMEc=;
-        b=MeDFXJzVru2tcSnmzIxleirURjVNuv/ne9hFXVdRLqtANF8xwvd/3/HZcMZ3b/D8iP
-         HBrFqBRJ4WBsgPRrFDxj2XnfY6tsdUF8IopglS0J4yIC1MeTz/pHqVV/A+itlMo3+DHq
-         OW4QfcT+oQ3FKg1vJCVayXDcLK4X5OokLNz+2L1+tmAkF2NFj8Tqnl/b2+KXujq6NEtC
-         wO+4j0pjiO91l0fbOfsH/Q/5S7ovt2gAl5vNCXLnu6LeYgDcR3zXPyNYG4nqFpljV+fP
-         DkYokFWXmS/SQvkPXpgSWEPqSO9/QiUHZZbM//nDurnU/htNu673iWlRj/p32b1NyJ3b
-         cF8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685380809; x=1687972809;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tKHvbgdSlt80lgWkqXJFhTQj8qozxs0n+wq2xAkxMEc=;
-        b=IIU0AcZCNJktUm0Z7HpiYA190EoX4n5N8sH9vfRaAsxj86oqRJVtilYsIs3z2zrTHz
-         dUZ5Pk3L3ku9zCqshEg8mG0QYeEJXLtQCsltsD8BczkdDZk7zXWChqI72h3QjRJyucGQ
-         zCyr92v63U2eUdrkEYwPODOGdWzdPYfLXDbDk510NDtM7ZuPgecKFkSgzWXc2/Co/3so
-         YwuRwy7wnWD92VXD9q+jZmelZziHrz4mBoK/eBIcan/XvpHSFpeA7/kPqDgPVSKXkqJh
-         S+ts7LsCRXRusP0Mx/rc4/FT1YokP2SZQYyu0E3zbdWiFIpJe5slN1shX9y6H4Gcqw5Z
-         ShsA==
-X-Gm-Message-State: AC+VfDy7Hi42OjyVpQSec9BHxzqrDMH2wPP39+0SgYSJP8svrF2gOLPb
-        5okvykd8Egyu5rxN+rjFgwun8eXdyHKdrA==
-X-Google-Smtp-Source: ACHHUZ71+jXg53MtgbDz+pbHCnZomLEaAJdCykRYccWtJRS9JJMpItRB1tzhN6+jWni2noM9uxaSyg==
-X-Received: by 2002:a05:6808:140f:b0:398:f48:eb4 with SMTP id w15-20020a056808140f00b003980f480eb4mr6993171oiv.36.1685380809291;
-        Mon, 29 May 2023 10:20:09 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:bd71:7fe:392d:ac1f? (2603-8081-140c-1a00-bd71-07fe-392d-ac1f.res6.spectrum.com. [2603:8081:140c:1a00:bd71:7fe:392d:ac1f])
-        by smtp.gmail.com with ESMTPSA id t12-20020a4ae9ac000000b005555797999dsm4350776ood.17.2023.05.29.10.20.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 May 2023 10:20:08 -0700 (PDT)
-Message-ID: <27279077-ddb6-7060-97ac-ae36f5575d3d@gmail.com>
-Date:   Mon, 29 May 2023 12:20:08 -0500
+        with ESMTP id S229459AbjE2VUO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 May 2023 17:20:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58872C7;
+        Mon, 29 May 2023 14:20:11 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1685395209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vZhBQR9q3SUgg9iCc2i3JVyzYRPAGeV4tGL2QQEIHxY=;
+        b=DfekSqJwFtryBc4U81a/ZMaRxU/dd0Q0WqYqonNTIqUnongfhsRvLEVeK5Y4pRy//d+shy
+        CRwZpQki2MEKgOeZfKTKRoEiGfevOCcsLXcXwDM0YwPuPgYSrg/6aA9r948R2oHMZ/1DSz
+        UCRnJrrBuelJdpFnnJlO3QQ0iVRp1e4dBiKRO/P74bZnJSoxbaI1xAR3HxXiV53A1k0Jqf
+        VaLpudER9rlyYOSziMfZ5rAR5WbeHatW6ENiI0o5Z5ZFp3REHm7DAcjEX0QZtDENWeceDH
+        53om/U+BqVPdXq1o1nPFxQjrnH/TWZJ5YOUAX8mYoXmY4VG66h7CZn/lMz6RXw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1685395209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vZhBQR9q3SUgg9iCc2i3JVyzYRPAGeV4tGL2QQEIHxY=;
+        b=nDMrrKXgx86380d3HBnm5A7se+PRD4eT7Ab7LXrJmfLK2S9p+pTBJYA78fichvfJCwl3R6
+        lUrPpgOWwune1aBw==
+To:     Chuck Lever III <chuck.lever@oracle.com>,
+        Eli Cohen <elic@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Subject: Re: system hang on start-up (mlx5?)
+In-Reply-To: <A54A0032-C066-4243-AD76-1E4D93AD9864@oracle.com>
+References: <A1E5B427-897B-409E-B8E3-E417678E81F6@oracle.com>
+ <DM8PR12MB54003FBFCABCCB37EE807B45AB6C9@DM8PR12MB5400.namprd12.prod.outlook.com>
+ <91176545-61D2-44BF-B736-513B78728DC7@oracle.com>
+ <20230504072953.GP525452@unreal>
+ <46EB453C-3CEB-43E8-BEE5-CD788162A3C9@oracle.com>
+ <DM8PR12MB54001D6A1C81673284074B37AB709@DM8PR12MB5400.namprd12.prod.outlook.com>
+ <A54A0032-C066-4243-AD76-1E4D93AD9864@oracle.com>
+Date:   Mon, 29 May 2023 23:20:09 +0200
+Message-ID: <875y8altrq.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH RFC] tests: Fix test_mr_rereg_pd
-Content-Language: en-US
-To:     Edward Srouji <edwards@nvidia.com>, idok@nvidia.com,
-        jgg@nvidia.com, linux-rdma@vger.kernel.org
-References: <20230525042517.14657-1-rpearsonhpe@gmail.com>
- <4efc60d6-e281-031c-16ba-ba0f18384513@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <4efc60d6-e281-031c-16ba-ba0f18384513@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/29/23 05:48, Edward Srouji wrote:
-> I see that the traffic() function used in this test posts just one receive/send WR each iteration.
-> Meaning that once the first CQE with error occurs, there are no more CQEs left to drain.
-I believe it is the receive WQEs that are getting flushed.
-> 
-> If that is the case, I'm not sure why you still see stray completions in the CQ.
-> 
-> On 5/25/2023 7:25 AM, Bob Pearson wrote:
->> External email: Use caution opening links or attachments
->>
->>
->> This patch adds a util method drain_cq which drains out
->> the cq associated with a client or server. This is then
->> added to the method restate_qps in tests/test_mr.py.
->> This allows correct operation when recovering test state
->> from an error which may have also left stray completions
->> in the cqs before resetting the qps for use.
->>
->> Fixes: 4bc72d894481 ("tests: Add rereg MR tests")
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->> ---
->>   tests/test_mr.py |  2 ++
->>   tests/utils.py   | 14 ++++++++++++++
->>   2 files changed, 16 insertions(+)
->>
->> diff --git a/tests/test_mr.py b/tests/test_mr.py
->> index 534df46a..73dfbff2 100644
->> --- a/tests/test_mr.py
->> +++ b/tests/test_mr.py
->> @@ -109,6 +109,8 @@ class MRTest(RDMATestCase):
->>           self.server.qp.to_rts(self.server_qp_attr)
->>           self.client.qp.modify(QPAttr(qp_state=e.IBV_QPS_RESET), e.IBV_QP_STATE)
->>           self.client.qp.to_rts(self.client_qp_attr)
->> +        u.drain_cq(self.client.cq)
->> +        u.drain_cq(self.server.cq)
->>
->>       def test_mr_rereg_access(self):
->>           self.create_players(MRRes)
->> diff --git a/tests/utils.py b/tests/utils.py
->> index a1dfa7d8..f6966b1a 100644
->> --- a/tests/utils.py
->> +++ b/tests/utils.py
->> @@ -672,6 +672,20 @@ def poll_cq_ex(cqex, count=1, data=None, sgid=None):
->>       finally:
->>           cqex.end_poll()
-> Keep two blank lines before and after module-level function definition (PEP-8 convention)
->> +def drain_cq(cq):
->> +    """
->> +    Drain completions from a CQ.
->> +    :param cq: CQ to drain
->> +    :return: None
->> +    """
->> +    channel = cq.comp_channel
->> +    while 1:
->> +        if channel:
->> +            channel.get_cq_event(cq)
->> +            cq.req_notify()
->> +        nc, tmp_wcs = cq.poll(1)
-> 
-> tmp_wcs is unused. You can do this instead:
-> 
-> nc, _ = cq.poll(1)
-> 
->> +        if nc == 0:
->> +            break
->>
->>   def validate(received_str, is_server, msg_size):
->>       """
->> -- 
->> 2.39.2
->>
+On Sat, May 27 2023 at 20:16, Chuck Lever, III wrote:
+>> On May 7, 2023, at 1:31 AM, Eli Cohen <elic@nvidia.com> wrote:
+> I can boot the system with mlx5_core deny-listed. I log in, remove
+> mlx5_core from the deny list, and then "modprobe mlx5_core" to
+> reproduce the issue while the system is running.
+>
+> May 27 15:47:45 manet.1015granger.net kernel: mlx5_core 0000:81:00.0: firmware version: 16.35.2000
+> May 27 15:47:45 manet.1015granger.net kernel: mlx5_core 0000:81:00.0: 126.016 Gb/s available PCIe bandwidth (8.0 GT/s PCIe x16 link)
+> May 27 15:47:46 manet.1015granger.net kernel: mlx5_irq_alloc: pool=ffff9a3718e56180 i=0 af_desc=ffffb6c88493fc90
+> May 27 15:47:46 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->managed_map=ffff9a3aefcf0f80 m->system_map=ffff9a33801990d0 end=236
+> May 27 15:47:46 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->alloc_map=ffff9a3aefcf0f60 end=236
+> May 27 15:47:46 manet.1015granger.net kernel: mlx5_core 0000:81:00.0: Port module event: module 0, Cable plugged
+> May 27 15:47:46 manet.1015granger.net kernel: mlx5_irq_alloc: pool=ffff9a3718e56180 i=1 af_desc=ffffb6c88493fc60
+> May 27 15:47:46 manet.1015granger.net kernel: mlx5_core 0000:81:00.0: mlx5_pcie_event:301:(pid 10): PCIe slot advertised sufficient power (27W).
+> May 27 15:47:46 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->managed_map=ffff9a36efcf0f80 m->system_map=ffff9a33801990d0 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->alloc_map=ffff9a36efcf0f60 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->managed_map=ffff9a36efd30f80 m->system_map=ffff9a33801990d0 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->alloc_map=ffff9a36efd30f60 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->managed_map=ffff9a3aefc30f80 m->system_map=ffff9a33801990d0 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->alloc_map=ffff9a3aefc30f60 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->managed_map=ffff9a3aefc70f80 m->system_map=ffff9a33801990d0 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->alloc_map=ffff9a3aefc70f60 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->managed_map=ffff9a3aefd30f80 m->system_map=ffff9a33801990d0 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->alloc_map=ffff9a3aefd30f60 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->managed_map=ffff9a3aefd70f80 m->system_map=ffff9a33801990d0 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->alloc_map=ffff9a3aefd70f60 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: matrix_alloc_area: m->scratch_map=ffff9a33801990b0 cm->managed_map=ffffffffb9ef3f80 m->system_map=ffff9a33801990d0 end=236
+> May 27 15:47:47 manet.1015granger.net kernel: BUG: unable to handle page fault for address: ffffffffb9ef3f80
+>
+> ###
+>
+> The fault address is the cm->managed_map for one of the CPUs.
 
-Thanks, I can fix those.
+That does not make any sense at all. The irq matrix is initialized via:
 
-Bob
+irq_alloc_matrix()
+  m = kzalloc(sizeof(matric);
+  m->maps = alloc_percpu(*m->maps);
 
+So how is any per CPU map which got allocated there supposed to be
+invalid (not mapped):
+
+> May 27 15:47:47 manet.1015granger.net kernel: BUG: unable to handle page fault for address: ffffffffb9ef3f80
+> May 27 15:47:47 manet.1015granger.net kernel: #PF: supervisor read access in kernel mode
+> May 27 15:47:47 manet.1015granger.net kernel: #PF: error_code(0x0000) - not-present page
+> May 27 15:47:47 manet.1015granger.net kernel: PGD 54ec19067 P4D 54ec19067 PUD 54ec1a063 PMD 482b83063 PTE 800ffffab110c062
+
+But if you look at the address: 0xffffffffb9ef3f80
+
+That one is bogus:
+
+     managed_map=ffff9a36efcf0f80
+     managed_map=ffff9a36efd30f80
+     managed_map=ffff9a3aefc30f80
+     managed_map=ffff9a3aefc70f80
+     managed_map=ffff9a3aefd30f80
+     managed_map=ffff9a3aefd70f80
+     managed_map=ffffffffb9ef3f80
+
+Can you spot the fail?
+
+The first six are in the direct map and the last one is in module map,
+which makes no sense at all.
+
+Can you please apply the debug patch below and provide the output?
+
+Thanks,
+
+        tglx
+---
+--- a/kernel/irq/matrix.c
++++ b/kernel/irq/matrix.c
+@@ -51,6 +51,7 @@ struct irq_matrix {
+ 					   unsigned int alloc_end)
+ {
+ 	struct irq_matrix *m;
++	unsigned int cpu;
+ 
+ 	if (matrix_bits > IRQ_MATRIX_BITS)
+ 		return NULL;
+@@ -68,6 +69,8 @@ struct irq_matrix {
+ 		kfree(m);
+ 		return NULL;
+ 	}
++	for_each_possible_cpu(cpu)
++		pr_info("ALLOC: CPU%03u: %016lx\n", cpu, (unsigned long)per_cpu_ptr(m->maps, cpu));
+ 	return m;
+ }
+ 
+@@ -215,6 +218,8 @@ int irq_matrix_reserve_managed(struct ir
+ 		struct cpumap *cm = per_cpu_ptr(m->maps, cpu);
+ 		unsigned int bit;
+ 
++		pr_info("RESERVE MANAGED: CPU%03u: %016lx\n", cpu, (unsigned long)cm);
++
+ 		bit = matrix_alloc_area(m, cm, 1, true);
+ 		if (bit >= m->alloc_end)
+ 			goto cleanup;
