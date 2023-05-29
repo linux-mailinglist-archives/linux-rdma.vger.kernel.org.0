@@ -2,67 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1760714EE0
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 May 2023 19:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48747714EE3
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 May 2023 19:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229489AbjE2RTC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 May 2023 13:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S229527AbjE2RUM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 May 2023 13:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjE2RTB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 May 2023 13:19:01 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E02B5
-        for <linux-rdma@vger.kernel.org>; Mon, 29 May 2023 10:19:00 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3942c6584f0so1060071b6e.3
-        for <linux-rdma@vger.kernel.org>; Mon, 29 May 2023 10:19:00 -0700 (PDT)
+        with ESMTP id S229455AbjE2RUL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 May 2023 13:20:11 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B54FAB
+        for <linux-rdma@vger.kernel.org>; Mon, 29 May 2023 10:20:10 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-39831cb47c6so1163387b6e.2
+        for <linux-rdma@vger.kernel.org>; Mon, 29 May 2023 10:20:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685380739; x=1687972739;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=vHUH8SX+NPR9RIStD30Jt/0ygYhBa4SLxMMiVrC//Ig=;
-        b=U3jN1rbFw2khpUorSdpra7kCrcRWl4fLK5dT3n0wHNk2sFcoD2fDdW9QpVIRmRvmKM
-         N3omPkI3LHRwMhz5l+mvmP7h4QuK0/AFJkki6oPmtp/M2Q+vYQSH/8ciujrcy29Mahle
-         TDGSqKrd8OrxjCLBQgyqZdSUXo8hf07sPcP+lhETE8ck22xwQGa9P5JA5Huq7vvcQqY3
-         y8ekzfYTmnOqM1MYGguBeWblDYE+suwf23i+vCWMJMy4yh6pzp8BuThGhnc/roUQV44S
-         Rsr6gPvNDH1rINqeuVt2TpPGHikjfb566rkeqVu2ENuNUzB7He7t36UUC5XqfEgVLDag
-         yaQA==
+        d=gmail.com; s=20221208; t=1685380809; x=1687972809;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tKHvbgdSlt80lgWkqXJFhTQj8qozxs0n+wq2xAkxMEc=;
+        b=MeDFXJzVru2tcSnmzIxleirURjVNuv/ne9hFXVdRLqtANF8xwvd/3/HZcMZ3b/D8iP
+         HBrFqBRJ4WBsgPRrFDxj2XnfY6tsdUF8IopglS0J4yIC1MeTz/pHqVV/A+itlMo3+DHq
+         OW4QfcT+oQ3FKg1vJCVayXDcLK4X5OokLNz+2L1+tmAkF2NFj8Tqnl/b2+KXujq6NEtC
+         wO+4j0pjiO91l0fbOfsH/Q/5S7ovt2gAl5vNCXLnu6LeYgDcR3zXPyNYG4nqFpljV+fP
+         DkYokFWXmS/SQvkPXpgSWEPqSO9/QiUHZZbM//nDurnU/htNu673iWlRj/p32b1NyJ3b
+         cF8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685380739; x=1687972739;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1685380809; x=1687972809;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vHUH8SX+NPR9RIStD30Jt/0ygYhBa4SLxMMiVrC//Ig=;
-        b=VQ7+FARy1NSRQyXr2EGmf6Y+CAZnpatwqSXnEYrZNzCgztcWb3BHdZRP+iJ1hDMH5W
-         uNtiiNtrEKMGH5papN8O+fr6/yAg29tucchWyA/36bMcG19ZSFAaA86l/X7gO0MF7evG
-         I373MgH5fCqD9eVR4iphUIdroC0GncUx7adBmgx/p+crlI6J2T9pV0p9vDSpbBjd9qLe
-         N3LVDnzhI7zLiw/+3L2Y1iNXkfzikLPOzS2aMarOshxNIGbnLD7UHrRmaXB4L2OwRxfg
-         5jbi0pCvebMAs3Y6qSpbGt7+p92ChvT+H8/9thONQDC5cSIqewLTTGSfNMZxagSYMc7t
-         nj4w==
-X-Gm-Message-State: AC+VfDw4/PeZR13zcOgFhY9EJmugXyxIldh3HKZBjVV/wtreT6NF5B9N
-        xjV/qe0Hi94+SxKjhr7Y4zGrDsUm4c9zmw==
-X-Google-Smtp-Source: ACHHUZ6uA07W7J6pnC4uIWiXApo0b4nRc6+shyIJP2pX1un5R2ccvzTG+gQ5B8SI6lgSMNm0NKdIUw==
-X-Received: by 2002:a05:6808:993:b0:398:560c:a4c5 with SMTP id a19-20020a056808099300b00398560ca4c5mr5004782oic.55.1685380739371;
-        Mon, 29 May 2023 10:18:59 -0700 (PDT)
+        bh=tKHvbgdSlt80lgWkqXJFhTQj8qozxs0n+wq2xAkxMEc=;
+        b=IIU0AcZCNJktUm0Z7HpiYA190EoX4n5N8sH9vfRaAsxj86oqRJVtilYsIs3z2zrTHz
+         dUZ5Pk3L3ku9zCqshEg8mG0QYeEJXLtQCsltsD8BczkdDZk7zXWChqI72h3QjRJyucGQ
+         zCyr92v63U2eUdrkEYwPODOGdWzdPYfLXDbDk510NDtM7ZuPgecKFkSgzWXc2/Co/3so
+         YwuRwy7wnWD92VXD9q+jZmelZziHrz4mBoK/eBIcan/XvpHSFpeA7/kPqDgPVSKXkqJh
+         S+ts7LsCRXRusP0Mx/rc4/FT1YokP2SZQYyu0E3zbdWiFIpJe5slN1shX9y6H4Gcqw5Z
+         ShsA==
+X-Gm-Message-State: AC+VfDy7Hi42OjyVpQSec9BHxzqrDMH2wPP39+0SgYSJP8svrF2gOLPb
+        5okvykd8Egyu5rxN+rjFgwun8eXdyHKdrA==
+X-Google-Smtp-Source: ACHHUZ71+jXg53MtgbDz+pbHCnZomLEaAJdCykRYccWtJRS9JJMpItRB1tzhN6+jWni2noM9uxaSyg==
+X-Received: by 2002:a05:6808:140f:b0:398:f48:eb4 with SMTP id w15-20020a056808140f00b003980f480eb4mr6993171oiv.36.1685380809291;
+        Mon, 29 May 2023 10:20:09 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:bd71:7fe:392d:ac1f? (2603-8081-140c-1a00-bd71-07fe-392d-ac1f.res6.spectrum.com. [2603:8081:140c:1a00:bd71:7fe:392d:ac1f])
-        by smtp.gmail.com with ESMTPSA id z82-20020aca3355000000b0038de3f4e375sm4908600oiz.23.2023.05.29.10.18.58
+        by smtp.gmail.com with ESMTPSA id t12-20020a4ae9ac000000b005555797999dsm4350776ood.17.2023.05.29.10.20.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 May 2023 10:18:59 -0700 (PDT)
-Message-ID: <4478bf2f-eebd-70b6-59cc-32f7ffdb126f@gmail.com>
-Date:   Mon, 29 May 2023 12:18:58 -0500
+        Mon, 29 May 2023 10:20:08 -0700 (PDT)
+Message-ID: <27279077-ddb6-7060-97ac-ae36f5575d3d@gmail.com>
+Date:   Mon, 29 May 2023 12:20:08 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: problems with test_mr_rereg_pd
-To:     Edward Srouji <edwards@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, ido Kalir <idok@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <12981460-88f4-017e-be8e-f19d1dee142f@gmail.com>
- <eec66b91-d3b9-47d3-32db-cc38d4aff527@nvidia.com>
+Subject: Re: [PATCH RFC] tests: Fix test_mr_rereg_pd
 Content-Language: en-US
+To:     Edward Srouji <edwards@nvidia.com>, idok@nvidia.com,
+        jgg@nvidia.com, linux-rdma@vger.kernel.org
+References: <20230525042517.14657-1-rpearsonhpe@gmail.com>
+ <4efc60d6-e281-031c-16ba-ba0f18384513@nvidia.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <eec66b91-d3b9-47d3-32db-cc38d4aff527@nvidia.com>
+In-Reply-To: <4efc60d6-e281-031c-16ba-ba0f18384513@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,69 +74,79 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/29/23 03:46, Edward Srouji wrote:
+On 5/29/23 05:48, Edward Srouji wrote:
+> I see that the traffic() function used in this test posts just one receive/send WR each iteration.
+> Meaning that once the first CQE with error occurs, there are no more CQEs left to drain.
+I believe it is the receive WQEs that are getting flushed.
 > 
-> On 5/25/2023 1:22 AM, Bob Pearson wrote:
+> If that is the case, I'm not sure why you still see stray completions in the CQ.
+> 
+> On 5/25/2023 7:25 AM, Bob Pearson wrote:
 >> External email: Use caution opening links or attachments
 >>
 >>
->> Edward, Ido,
+>> This patch adds a util method drain_cq which drains out
+>> the cq associated with a client or server. This is then
+>> added to the method restate_qps in tests/test_mr.py.
+>> This allows correct operation when recovering test state
+>> from an error which may have also left stray completions
+>> in the cqs before resetting the qps for use.
 >>
->> The test_mr_rereg_pd pyverbs test is failing for the rxe driver.
+>> Fixes: 4bc72d894481 ("tests: Add rereg MR tests")
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>> ---
+>>   tests/test_mr.py |  2 ++
+>>   tests/utils.py   | 14 ++++++++++++++
+>>   2 files changed, 16 insertions(+)
+>>
+>> diff --git a/tests/test_mr.py b/tests/test_mr.py
+>> index 534df46a..73dfbff2 100644
+>> --- a/tests/test_mr.py
+>> +++ b/tests/test_mr.py
+>> @@ -109,6 +109,8 @@ class MRTest(RDMATestCase):
+>>           self.server.qp.to_rts(self.server_qp_attr)
+>>           self.client.qp.modify(QPAttr(qp_state=e.IBV_QPS_RESET), e.IBV_QP_STATE)
+>>           self.client.qp.to_rts(self.client_qp_attr)
+>> +        u.drain_cq(self.client.cq)
+>> +        u.drain_cq(self.server.cq)
+>>
+>>       def test_mr_rereg_access(self):
+>>           self.create_players(MRRes)
+>> diff --git a/tests/utils.py b/tests/utils.py
+>> index a1dfa7d8..f6966b1a 100644
+>> --- a/tests/utils.py
+>> +++ b/tests/utils.py
+>> @@ -672,6 +672,20 @@ def poll_cq_ex(cqex, count=1, data=None, sgid=None):
+>>       finally:
+>>           cqex.end_poll()
+> Keep two blank lines before and after module-level function definition (PEP-8 convention)
+>> +def drain_cq(cq):
+>> +    """
+>> +    Drain completions from a CQ.
+>> +    :param cq: CQ to drain
+>> +    :return: None
+>> +    """
+>> +    channel = cq.comp_channel
+>> +    while 1:
+>> +        if channel:
+>> +            channel.get_cq_event(cq)
+>> +            cq.req_notify()
+>> +        nc, tmp_wcs = cq.poll(1)
 > 
-> Does rxe even support rereg? This is what I get:
+> tmp_wcs is unused. You can do this instead:
+> 
+> nc, _ = cq.poll(1)
+> 
+>> +        if nc == 0:
+>> +            break
+>>
+>>   def validate(received_str, is_server, msg_size):
+>>       """
+>> -- 
+>> 2.39.2
+>>
 
-I am working to implement it. Change PD and change ACCESS are working.
-Change trans probably won't for now.
-> 
-> $ python3 tests/run_tests.py -v -k rereg_pd --dev rxe0 --gid 1
-> test_mr_rereg_pd (tests.test_mr.MRTest)
-> Test that cover rereg MR's PD with this flow: ... skipped 'Rereg MR is not supported (Failed to rereg MR: IBV_REREG_MR_ERR_CMD. Errno: 95, Operation not supported)'
-> 
-> (Your below suggested solution should be done anyway)
-> 
->> I have figured out that the problem is that the following sequence
->>
->>      def test_mr_rereg_pd(self):
->>          """
->>          Test that cover rereg MR's PD with this flow:
->>          Use MR with QP that was created with the same PD. Then rereg the MR's PD
->>          and use the MR with the same QP, expect the traffic to fail with "remote
->>          operation error". Restate the QP from ERR state, rereg the MR back
->>          to its previous PD and use it again with the QP, verify that it now
->>          succeeds.
->>          """
->>          self.create_players(MRRes)
->>          u.traffic(**self.traffic_args)
->>          server_new_pd = PD(self.server.ctx)
->>          self.server.rereg_mr(flags=e.IBV_REREG_MR_CHANGE_PD, pd=server_new_pd)
->>          with self.assertRaisesRegex(PyverbsRDMAError, 'Remote operation error'):
->>              u.traffic(**self.traffic_args)
->>          self.restate_qps()
->>          self.server.rereg_mr(flags=e.IBV_REREG_MR_CHANGE_PD, pd=self.server.pd)
->>          u.traffic(**self.traffic_args)
->>          # Rereg the MR again with the new PD to cover
->>          # destroying a PD with a re-registered MR.
->>          self.server.rereg_mr(flags=e.IBV_REREG_MR_CHANGE_PD, pd=server_new_pd)
->>
->> Schedules 10 iterations of a UD send to UD receive with an invalid mr pd which does not
->> match the qp pd. So it fails with a remote operation error on the first request.
->> The remaining 9 send and receive work requests are flushed to the caller with a
->> FLUSH_ERROR but not cleared out of the completion queues.
->>
->> This is required by the IBA for Class A responder errors ("Remote operational error").
->> In C9-220 it requires:
->>
->>        All other WQEs on both queues, and all WQEs subse-
->>        quently posted to either Queue, are completed with
->>        the “Completed - Flushed in Error” status
->>
->> The final phase of the test wants to verify that after putting the original pd
->> back into the mr traffic works OK. But the remaining FLUSH errors in the completion
->> queues cause the test to fail.
->>
->> To make this test work you would have to clean the completion queues as part of
->> restate_qps but that is not done.
->>
->> Bob
+Thanks, I can fix those.
+
+Bob
 
