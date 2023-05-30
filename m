@@ -2,95 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C561A715B21
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 May 2023 12:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE1F715D26
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 May 2023 13:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbjE3KLF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 May 2023 06:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
+        id S231904AbjE3L03 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 May 2023 07:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbjE3KKk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 May 2023 06:10:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE5EE6C;
-        Tue, 30 May 2023 03:10:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C43A62D0C;
-        Tue, 30 May 2023 10:10:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 80E8BC4339B;
-        Tue, 30 May 2023 10:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685441420;
-        bh=HJNcXaAUyXKvgisDwudLEOOftSXDXFSDtCqGxjZ80Fw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UsJQCpZzgiF+nqG1IPA7V9srR3gSXtZeZUuxAAluyJnglUVgyCPyTqCpeU5F3ErEs
-         UktXJbO3vHnMmc5baD2LNmZDZuTDUXlhd/ifVfnXaWQf+QzcIL+xFcdRKefq60guLJ
-         /xRwyIbb+wDIQ9DQdNuYDFtD9pqYEt9iqzhmaV60grW9pVYmjMWbWj0/BE5vs3XywA
-         zEbjrt2p9IdSSy+PFrNbyTI9mVIvkYgO8bGmxoSoMtRZzU+EiW7yyogGmCft262rAE
-         JttxKisLiFBsFIWQ8eFOCRcMn914B34W2tlWbiLVIfQwAH3VQ9xDMlAaRixk8j/iDH
-         lM1s6TvyoLzZA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 65394E52C02;
-        Tue, 30 May 2023 10:10:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231848AbjE3L02 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 May 2023 07:26:28 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC1BB0
+        for <linux-rdma@vger.kernel.org>; Tue, 30 May 2023 04:26:26 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-30af56f5f52so354665f8f.1
+        for <linux-rdma@vger.kernel.org>; Tue, 30 May 2023 04:26:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1685445985; x=1688037985;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FqdrqXNbfCgMI8+biRbceXwl0BZDruANq5DV83zV1yU=;
+        b=kn28w4RqdmntYmPFf0GDvju5O92VtbOuwdPiXOWWOeBBPM69eqiK4Yhhmryf4o3iQd
+         9rUlFUzKT6De40BlNv7jF5lZ6D6Byz7ibsslsuDz0HRIU6As1Sr9vl0qmZAxINgxTe7u
+         CEZa3eVSymQIFi0ZyS1Mgl0A2iQbcIONhozgdR7O0TV9XCkAb/u6075uQ0JmM5EsjHLm
+         3J1qRMHHwO+YuAGGpVeo82ggum0x+z2Tkq3tJtB7hwYdseRSJ2WkemCnjEJso+ymK2Mu
+         qldmSwq1qYOj68hJ+6zmOCeq9WXFj1hS2nR9jx2zOK8ig7jr9tqN39r1aRun3mA+Jjfz
+         BshA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685445985; x=1688037985;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FqdrqXNbfCgMI8+biRbceXwl0BZDruANq5DV83zV1yU=;
+        b=aQei3+GNyobVa5u/RH4GLeqGcNJU6/vwsrG+LrAQdJHNhbzcVQ85ojJRfhplFZwZ7e
+         jWLp9B9safbbbQtNHpHuHshfnmD/FqjemYmMbKFZR1R/Aqg2Kjm86cX248ApQtYV6j/L
+         PzBi7PcFzIPhjibbntLzIdXFQHOUmsklH0309vU9ZHmJ1kNn4aLY/lUVJu0LSxicJD1S
+         EZ6X5Ko1hnFm3mqwF4I0O76KGfpPxcb9zr6PttiBlPzA2zrQolhymtiyYN2z52f0734+
+         IFur7Thld1h3wDFCkr10MoZswLPB7HRcq7003+0LH9/EJFWhzYVwyOrsFa73gpK+6KrJ
+         nemQ==
+X-Gm-Message-State: AC+VfDxD7aR7MWCbuNop3mrgoKfOl2xxZd2Ib5+6+4mJ28KmXy3U4fUp
+        3fTWSh3B94O5ie2jNdq/1/KzPSBLGBwdqpcUZOs=
+X-Google-Smtp-Source: ACHHUZ7eDbugNz+iSapUOEKg7EqbEoO7RlHyJZzKi56hB/bo3jnRPI6E7ZF8qOVOSFkh3OLDnN4MhQ==
+X-Received: by 2002:adf:f647:0:b0:30a:9cb2:badd with SMTP id x7-20020adff647000000b0030a9cb2baddmr1502304wrp.46.1685445984764;
+        Tue, 30 May 2023 04:26:24 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id x13-20020a5d54cd000000b003063db8f45bsm2994735wrv.23.2023.05.30.04.26.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 May 2023 04:26:22 -0700 (PDT)
+Date:   Tue, 30 May 2023 14:26:19 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] net/mlx5e: Simulate missing IPsec TX limits hardware
+ functionality
+Message-ID: <3987af55-0068-4a06-acea-c281a59e273a@kili.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V3,net] net: mana: Fix perf regression: remove rx_cqes,
- tx_cqes counters
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168544142040.13918.458960316651183871.git-patchwork-notify@kernel.org>
-Date:   Tue, 30 May 2023 10:10:20 +0000
-References: <1685115537-31675-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1685115537-31675-1-git-send-email-haiyangz@microsoft.com>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
-        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
-        wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
-        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
-        hawk@kernel.org, tglx@linutronix.de,
-        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
+Hello Leon Romanovsky,
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+The patch b2f7b01d36a9: "net/mlx5e: Simulate missing IPsec TX limits
+hardware functionality" from Mar 30, 2023, leads to the following
+Smatch static checker warning:
 
-On Fri, 26 May 2023 08:38:57 -0700 you wrote:
-> The apc->eth_stats.rx_cqes is one per NIC (vport), and it's on the
-> frequent and parallel code path of all queues. So, r/w into this
-> single shared variable by many threads on different CPUs creates a
-> lot caching and memory overhead, hence perf regression. And, it's
-> not accurate due to the high volume concurrent r/w.
-> 
-> For example, a workload is iperf with 128 threads, and with RPS
-> enabled. We saw perf regression of 25% with the previous patch
-> adding the counters. And this patch eliminates the regression.
-> 
-> [...]
+	drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c:68 mlx5e_ipsec_handle_tx_limit()
+	warn: sleeping in atomic context
 
-Here is the summary with links:
-  - [V3,net] net: mana: Fix perf regression: remove rx_cqes, tx_cqes counters
-    https://git.kernel.org/netdev/net/c/1919b39fc6ea
+drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+    57 static void mlx5e_ipsec_handle_tx_limit(struct work_struct *_work)
+    58 {
+    59         struct mlx5e_ipsec_dwork *dwork =
+    60                 container_of(_work, struct mlx5e_ipsec_dwork, dwork.work);
+    61         struct mlx5e_ipsec_sa_entry *sa_entry = dwork->sa_entry;
+    62         struct xfrm_state *x = sa_entry->x;
+    63 
+    64         spin_lock(&x->lock);
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Holding a spinlock.
 
+    65         xfrm_state_check_expire(x);
+    66         if (x->km.state == XFRM_STATE_EXPIRED) {
+    67                 sa_entry->attrs.drop = true;
+--> 68                 mlx5e_accel_ipsec_fs_modify(sa_entry);
 
+This function call will do some GFP_KERNEL allocations so it sleeps.
+
+    69         }
+    70         spin_unlock(&x->lock);
+    71 
+    72         if (sa_entry->attrs.drop)
+    73                 return;
+    74 
+    75         queue_delayed_work(sa_entry->ipsec->wq, &dwork->dwork,
+    76                            MLX5_IPSEC_RESCHED);
+    77 }
+
+regards,
+dan carpenter
