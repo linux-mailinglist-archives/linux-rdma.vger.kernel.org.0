@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3BC717080
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 May 2023 00:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67921717082
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 May 2023 00:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbjE3WN6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 May 2023 18:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
+        id S233615AbjE3WN7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 May 2023 18:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbjE3WNy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 May 2023 18:13:54 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBBA93
-        for <linux-rdma@vger.kernel.org>; Tue, 30 May 2023 15:13:53 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-55564892accso2567876eaf.2
-        for <linux-rdma@vger.kernel.org>; Tue, 30 May 2023 15:13:53 -0700 (PDT)
+        with ESMTP id S233420AbjE3WN6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 May 2023 18:13:58 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C70E5
+        for <linux-rdma@vger.kernel.org>; Tue, 30 May 2023 15:13:56 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3909756b8b1so1774466b6e.1
+        for <linux-rdma@vger.kernel.org>; Tue, 30 May 2023 15:13:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685484833; x=1688076833;
+        d=gmail.com; s=20221208; t=1685484835; x=1688076835;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RROA+UCxw4Q5NEPetgrpyXLK0oTWWTCIDqOiKpL19pk=;
-        b=HQyuAJW1gMpW3B+RiopZOee08bApkhpL/uN+m/XOGljziTNLIEixIyIlCDM2Cyuymn
-         pzrdeGUyZfqJtOLUb4BI6dolbkPj3Vdb7RwhnF2406lsfP7OqLmmos11DQ+fgH8/s3sO
-         QWUOxe5f3ksh+OE2ZwCF0QXPMILxrdElLFFu/EusY+lafKnSJbezR/iiTIRPqo8ZRN54
-         WPudIINuTVoXR9xbYwZxtRFBNL7oJj9sZ5FC2Lmx7N48MZT7FUF/j69hShQ1EPapIwvk
-         6tcS5goL4aWPPjon1TuI5WyfpMPSXOXuF2l66WXbU6UyV2GxyCbRtigB6TRuHH2Ir1fy
-         8ePg==
+        bh=5joMuKjZqEF29Zy4iKhDoohhfPjvd0ykaakmkeg//1c=;
+        b=p/853iM4wi+DCVC7rT3hPjcGI8zJo5u3M+qMCVGDDc0+iYl9mLFVpbB3vZEUxZ9HMX
+         nPvOrw1a/k+HDc/6y8yLCL8Q7+KISkWRj7GZqJ9AIjLj3h2c3alsfKouJ/CR7e9IQvLD
+         w2kY6+rqj6MRIkvtuKxm6THIiNDa0v/tTHRx8ByLLUbEmiK1IaR0IaTAX4dYtLLlhUue
+         KNrNnTBQFQdUnXNrm43dDK6To261XlCqpugBRaPf1ElHgn6liW/NYmrZg3/GichHABUj
+         QLlzhKdjrafeVdRCfhLDHjziPutdpEdHjhKPAvS7lC/3Qza7XQvO5+D+FfeES50V70ig
+         Ju6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685484833; x=1688076833;
+        d=1e100.net; s=20221208; t=1685484835; x=1688076835;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RROA+UCxw4Q5NEPetgrpyXLK0oTWWTCIDqOiKpL19pk=;
-        b=jF+wA0F0XA4lDx1moPRoEwP5RNc35Poh0fnBMd0zGaGGKifo/lrdGhOsrKgC+Xzvyv
-         r59qJMAJgsml4mbJJ/Jq9Qhiyw0jP0F8Ow1JQyV6PzF2EsBBPEnVGnjU/NCH2NLev+Bl
-         kVPcqzoyJUb+mNg0o8jha8T7/+gSkZoIhWxyExs/NqKVCCZCVGjq2TJeTePlWiGNpADD
-         Ako8EvngZhCseqjEFcFufFNYvPAhR8Fzx4mo/IATEsOx8DAoh6xNhSAqB1kcNFjTIhlH
-         hu41Wu/pR4iPgAEhaT+SWyZSt0fccHXYYxBFdklGJ3rhh8mnoxUv7KOQmaPwMt4Ulz2x
-         Gccg==
-X-Gm-Message-State: AC+VfDzhjjZtiAx6tFsM3yGoG1ofbzdMIRIioSWpeGBu3wiLCHkIPHz/
-        P7wUbd1ypO2lFYrvnqUcmHM=
-X-Google-Smtp-Source: ACHHUZ6DP6FwAMu8C8P30BRR/tjwTheNDO07eJ1ARS8CXVQGIExmQDunwWBv31qoEpW22sV3dEcd2A==
-X-Received: by 2002:a05:6808:218d:b0:398:1c55:82bd with SMTP id be13-20020a056808218d00b003981c5582bdmr2955341oib.45.1685484833235;
-        Tue, 30 May 2023 15:13:53 -0700 (PDT)
+        bh=5joMuKjZqEF29Zy4iKhDoohhfPjvd0ykaakmkeg//1c=;
+        b=Ct6sAWDBIxxbVdANOxJKq9+ETinTE0fQy0pUq3t9Untz5ryFNVKBjZZOUx5xZ1Durp
+         7468ZbBeEGnJN4BF7jnNU/LTz4AVfz2zDAxWoRnNr83kM+vMCC1KDhIzjfiVkDTT/tV3
+         ea3wdqG4A+/q33wy65ZubUlfpeQ4VpxBznb+BaVfsuuysS7qA9MZqlVxzipR8ht2MbjL
+         hmWpmm4Bl7O7ltoXdWW41qOGDo89TK04pMVY+ifYXonMPvvnllVCJk1WNiEICVKkmxQL
+         QiEdYzWXFHxnOQmkwFXEAgmvn/qCXwC9mHQvT5wF/sT5SS7v+i8ICHHC4sDSOI0gLG5l
+         NC1A==
+X-Gm-Message-State: AC+VfDwYWCMrbziqrQyxs92xh9eBL3HX109PWOHjNGN7Q0UpP4Br4Cus
+        JB964eovJZscWadhK5CuFQPh9pKAVzI=
+X-Google-Smtp-Source: ACHHUZ7jE4OfritkEFyZYGmJte5MfLHe4iGy6iYsTEMeSYtD5CaiPwL3RPIl99jLCUWGVyUoZSYzHg==
+X-Received: by 2002:a05:6808:2816:b0:39a:bf0:4fd2 with SMTP id et22-20020a056808281600b0039a0bf04fd2mr2003155oib.11.1685484834186;
+        Tue, 30 May 2023 15:13:54 -0700 (PDT)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-61e7-5a75-8a81-5bfc.res6.spectrum.com. [2603:8081:140c:1a00:61e7:5a75:8a81:5bfc])
-        by smtp.gmail.com with ESMTPSA id r77-20020a4a3750000000b00541854ce607sm6156772oor.28.2023.05.30.15.13.52
+        by smtp.gmail.com with ESMTPSA id r77-20020a4a3750000000b00541854ce607sm6156772oor.28.2023.05.30.15.13.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 May 2023 15:13:52 -0700 (PDT)
+        Tue, 30 May 2023 15:13:53 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, edwards@nvidia.com,
         linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 5/6] RDMA/rxe: Let rkey == lkey for local access
-Date:   Tue, 30 May 2023 17:13:34 -0500
-Message-Id: <20230530221334.89432-6-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 6/6] RDMA/rxe: Implement rereg_user_mr
+Date:   Tue, 30 May 2023 17:13:35 -0500
+Message-Id: <20230530221334.89432-7-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230530221334.89432-1-rpearsonhpe@gmail.com>
 References: <20230530221334.89432-1-rpearsonhpe@gmail.com>
@@ -71,69 +71,83 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In order to conform to other drivers stop using rkey == 0
-as an indication that there are no remote access flags set.
-Set rkey == lkey by default for all MRs.
+Implement the two easy cases of ib_rereg_user_mr.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 35 +++++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  5 ++++
+ 2 files changed, 40 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index b3bc4ac5fedd..f54042e9aeb2 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -47,16 +47,15 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index bb2b9d40e242..f6396333bcef 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1299,6 +1299,40 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
+ 	return ERR_PTR(err);
+ }
  
- static void rxe_mr_init(int access, struct rxe_mr *mr)
++static struct ib_mr *rxe_rereg_user_mr(struct ib_mr *ibmr, int flags,
++				       u64 start, u64 length, u64 iova,
++				       int access, struct ib_pd *ibpd,
++				       struct ib_udata *udata)
++{
++	struct rxe_mr *mr = to_rmr(ibmr);
++	struct rxe_pd *old_pd = to_rpd(ibmr->pd);
++	struct rxe_pd *pd = to_rpd(ibpd);
++
++	/* for now only support the two easy cases:
++	 * rereg_pd and rereg_access
++	 */
++	if (flags & ~RXE_MR_REREG_SUPPORTED) {
++		rxe_err_mr(mr, "flags = %#x not supported", flags);
++		return ERR_PTR(-EOPNOTSUPP);
++	}
++
++	if (flags & IB_MR_REREG_PD) {
++		rxe_put(old_pd);
++		rxe_get(pd);
++		mr->ibmr.pd = ibpd;
++	}
++
++	if (flags & IB_MR_REREG_ACCESS) {
++		if (access & ~RXE_ACCESS_SUPPORTED_MR) {
++			rxe_err_mr(mr, "access = %#x not supported", access);
++			return ERR_PTR(-EOPNOTSUPP);
++		}
++		mr->access = access;
++	}
++
++	return NULL;
++}
++
+ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+ 				  u32 max_num_sg)
  {
--	u32 lkey = mr->elem.index << 8 | rxe_get_next_key(-1);
--	u32 rkey = (access & RXE_ACCESS_REMOTE) ? lkey : 0;
-+	u32 key = mr->elem.index << 8 | rxe_get_next_key(-1);
+@@ -1451,6 +1485,7 @@ static const struct ib_device_ops rxe_dev_ops = {
+ 	.query_srq = rxe_query_srq,
+ 	.reg_user_mr = rxe_reg_user_mr,
+ 	.req_notify_cq = rxe_req_notify_cq,
++	.rereg_user_mr = rxe_rereg_user_mr,
+ 	.resize_cq = rxe_resize_cq,
  
- 	/* set ibmr->l/rkey and also copy into private l/rkey
- 	 * for user MRs these will always be the same
- 	 * for cases where caller 'owns' the key portion
- 	 * they may be different until REG_MR WQE is executed.
- 	 */
--	mr->lkey = mr->ibmr.lkey = lkey;
--	mr->rkey = mr->ibmr.rkey = rkey;
-+	mr->lkey = mr->ibmr.lkey = key;
-+	mr->rkey = mr->ibmr.rkey = key;
+ 	INIT_RDMA_OBJ_SIZE(ib_ah, rxe_ah, ibah),
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 2f2dc67f03dd..cb18b83b73c1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -284,6 +284,11 @@ enum rxe_mr_lookup_type {
+ 	RXE_LOOKUP_REMOTE,
+ };
  
- 	mr->access = access;
- 	mr->ibmr.page_size = PAGE_SIZE;
-@@ -640,6 +639,7 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key)
++enum rxe_rereg {
++	RXE_MR_REREG_SUPPORTED	= IB_MR_REREG_PD
++				| IB_MR_REREG_ACCESS,
++};
++
+ static inline int rkey_is_mw(u32 rkey)
  {
- 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
- 	struct rxe_mr *mr;
-+	int remote;
- 	int ret;
- 
- 	mr = rxe_pool_get_index(&rxe->mr_pool, key >> 8);
-@@ -649,9 +649,10 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key)
- 		goto err;
- 	}
- 
--	if (mr->rkey ? (key != mr->rkey) : (key != mr->lkey)) {
-+	remote = mr->access & RXE_ACCESS_REMOTE;
-+	if (remote ? (key != mr->rkey) : (key != mr->lkey)) {
- 		rxe_dbg_mr(mr, "wr key (%#x) doesn't match mr key (%#x)\n",
--			key, (mr->rkey ? mr->rkey : mr->lkey));
-+			key, (remote ? mr->rkey : mr->lkey));
- 		ret = -EINVAL;
- 		goto err_drop_ref;
- 	}
-@@ -711,7 +712,7 @@ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 
- 	mr->access = access;
- 	mr->lkey = key;
--	mr->rkey = (access & RXE_ACCESS_REMOTE) ? key : 0;
-+	mr->rkey = key;
- 	mr->ibmr.iova = wqe->wr.wr.reg.mr->iova;
- 	mr->state = RXE_MR_STATE_VALID;
- 
+ 	u32 index = rkey >> 8;
 -- 
 2.39.2
 
