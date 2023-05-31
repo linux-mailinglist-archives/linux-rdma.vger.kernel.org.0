@@ -2,105 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 626FC718E65
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Jun 2023 00:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F8D718E96
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Jun 2023 00:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjEaW0U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 May 2023 18:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
+        id S229849AbjEaWfr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 May 2023 18:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjEaW0T (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 May 2023 18:26:19 -0400
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2048.outbound.protection.outlook.com [40.107.96.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8DC9D
-        for <linux-rdma@vger.kernel.org>; Wed, 31 May 2023 15:26:17 -0700 (PDT)
+        with ESMTP id S229542AbjEaWfp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 May 2023 18:35:45 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2046.outbound.protection.outlook.com [40.107.92.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5192121
+        for <linux-rdma@vger.kernel.org>; Wed, 31 May 2023 15:35:43 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CR9vYBQ/MPHhFo7WB2RvyjbbqLLCUKwB4YvomsrStmUu1aYP4vL6afq8pHvg6N4gFmviHR0xE1+IqHkvfS9QhZcBInR5oOKbf9cwgH6GLjRW0eAgGxMyJnbGEdmDcv/3h1/qmZIV7k9zesU4o54Hs37fEyWaMaJm17SBP3FftrOf/dQPoyQA7xMckccWEobOeme2EJVs4Q7y3AWW8VcWp0fOMZJaroYEAgdR4Jp8tgSwYhRCaj/iNc40EqSaEEzmd7WeahUin9007F7hVz5hIs8hu4AUgEIGdctMyGhQf2lEDY6bIUbtNOrUqjv1xDhMEw1bmTjf3rzoi3hrvWzt6A==
+ b=IeLu8lciJqweDjXcoeHSVzySuFzzPoh5PpL0mvRIkAN5/QY+uT/fyMvIZzuzFaprQQJDRAOKYeuoHHLgidXxddjBKnwtvPjpxc/BUQrNPrlI1wRHPYDsCBvUk4vjP7LuZAtm03EdsN1oBnwkaqiZ/YCLydVlAvo7z+iqCiWAEpDcs55sl7gdIu7YvvcjMNPKQfd74eJg/ODrx1HeMrRL16wxmgZ6lcx5Gg+OcrLhWbrfcP9eQyzbIeYmYT/dGLGQl0UrJjwNIuqwlkTYuyv/U+/Wgwi9ObYVbwBwSxo3i6mcrFmtl9FCr6GXMtaVUMN2ZhuU5WSk1wofqIszSuN8zA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kZbMx8fiUxUQEbVLeqA2RKuOohO3EQ7VBClRF9gGf/c=;
- b=eXWwJuBvpK/q96cGUdxofm8CUI4b2FYxHJi6YCOjA7kX6x+ZhvcNTJv4lagj+2atelsN710we3rhXBKY7A7kHwfCO0d+vbsEfWrekGQVBjVaCvkgl5FBlFH3uDVP9OSANXdfbybqczfy5M8MjbCvaXVZxyv+Xzxh2jDnN7K2QzKPny3PguQ0Ya/xHJxFqwp+bSbAAAqpjf/GJm/2WqWke0ddIeT3I8vOlavimnV9/QWq/crw3fhKAeURrLs+OVr9LjfcpCrpkLwFRLRrRW1gpbGNUVZFZf3Ea2ybbiZySiugGgLoGC3sNUcVQ05PxdjjJrPcB6VABJ7SsJG+EaxPNg==
+ bh=3MinLwvShvanWinxE2GgqzNcTfKSacB7lRy/RZHeDAM=;
+ b=V/nTQHIB7TBpo2oQUdzQ/+pBZVYpYRJfUrARxnLwg3tdJwchHV+TtdnW3uDcoQ1fNXjmYCt8JA6MdxVyzLwhXiBpK51B1o2Y/ZoLUUqtTWilAoIAfu26rBAb6WZyOdhgmeIgPSL6WMg3h3jSaOJGzvaALeT0oA2nmwKlM/VnAufczu5LfXnRMMZqdtYBu7DA3GcYKzMH/njmio8+zMtrZGQgDY3yO1OcpYaijgeK7eJh5F/qOvOLnrIglHwlzttk1dZzvOdiSr7Ft9JVv7Zo2x8STunlioOVCM20N5UOWClmG93O0lm1o+cjyQGs05tEI+Z4bzsp3QqnbiViLYROPQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kZbMx8fiUxUQEbVLeqA2RKuOohO3EQ7VBClRF9gGf/c=;
- b=B0hb9Lusp42bMnI4mpbURlgBwHmyrrNLMLAFUuj3P/n/FoJpAqsQj95HQitPRd7IiDnZTdWeOmZg+D+cD8lSTHG29Pr378J1pFOueiylMLVZCTW4la2nQhdBmhtalgYjesFp7X3ilbdtUnOPRDZPFwPHuy0WYkEp3YyemmrI3qymHn7nPjDkRIvGIHiwz3jFD1HpbnG3ppyWjNRv0c7UekmaDsHuNOq1rLRcOM/NvvTFkbSlfvH+QQKXDzVsUlY4KQ+8AUx1cTdytQRn40AfWI0nH2DTheUXeY/zAHzIZBZeUZvJMhl8A6sCPI67iVafdI+vqrIAEqjvF+TXiHePQQ==
+ bh=3MinLwvShvanWinxE2GgqzNcTfKSacB7lRy/RZHeDAM=;
+ b=eyaTqZPAssK2fvRHuREOb0Y302wLyWdWmVOs5XPRLFGOZeIMuZXBFNmT43QUoV2d11G1JlokK4POeb4vbbP9w3hu+BcT1efY2JNtksXwn4uxlzFjdcAcDZl7Vh4spLplh+oOSlT/iS6MiHEDRPRI8aWjHfCjkbYZIyPXPTt3VbKNP9L+5G2ol+bpQRiqCZUOzMjoA7ueaLmJpJTR+TmPz7MQhJGzpx9SbILqF+YcRAHmLvJLuZ/JkZo9mfOmSKp6rBjAPcKQbdTqlMbTYG5XcE24FFUQFXf2MU8inXrmE7RTaH6ws4jhmX2z/rXNhoai7uuzd9UotUiTpwr+RhNleg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DM5PR12MB1340.namprd12.prod.outlook.com (2603:10b6:3:76::15) by
- DM4PR12MB5263.namprd12.prod.outlook.com (2603:10b6:5:39b::23) with Microsoft
+ DS0PR12MB7769.namprd12.prod.outlook.com (2603:10b6:8:138::14) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6433.22; Wed, 31 May 2023 22:26:16 +0000
+ 15.20.6433.24; Wed, 31 May 2023 22:35:41 +0000
 Received: from DM5PR12MB1340.namprd12.prod.outlook.com
  ([fe80::acb6:3bf1:b720:530c]) by DM5PR12MB1340.namprd12.prod.outlook.com
  ([fe80::acb6:3bf1:b720:530c%5]) with mapi id 15.20.6433.024; Wed, 31 May 2023
- 22:26:15 +0000
-Date:   Wed, 31 May 2023 15:26:13 -0700
+ 22:35:41 +0000
+Date:   Wed, 31 May 2023 15:35:39 -0700
 From:   Saeed Mahameed <saeedm@nvidia.com>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Eli Cohen <elic@nvidia.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: mlx5 WARNING during shutdown
-Message-ID: <ZHfJhfnUhhp5xJY1@x130>
-References: <19D363C1-86EE-4A0A-A204-38A37AD96EF1@oracle.com>
+To:     Chuck Lever <cel@kernel.org>
+Cc:     elic@nvidia.com, Thomas Gleixner <tglx@linutronix.de>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5: Ensure af_desc.mask is properly initialized
+Message-ID: <ZHfLu2u5w69VV6Ts@x130>
+References: <168556238265.1445.7577814343475230160.stgit@manet.1015granger.net>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <19D363C1-86EE-4A0A-A204-38A37AD96EF1@oracle.com>
-X-ClientProxiedBy: BYAPR11CA0080.namprd11.prod.outlook.com
- (2603:10b6:a03:f4::21) To DM5PR12MB1340.namprd12.prod.outlook.com
+In-Reply-To: <168556238265.1445.7577814343475230160.stgit@manet.1015granger.net>
+X-ClientProxiedBy: SJ0PR13CA0001.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::6) To DM5PR12MB1340.namprd12.prod.outlook.com
  (2603:10b6:3:76::15)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1340:EE_|DM4PR12MB5263:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1001c490-b4ef-4d75-954e-08db62260bd4
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1340:EE_|DS0PR12MB7769:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5a18e1d0-9194-47f0-2462-08db62275d72
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NNe6QZuiv85+GaRRZ4qjGmu2o4z+WgjK4281Hyei1uoZoL+V02JSZw5Uop/DxlxDbx9CyDZF2FXLdZ6/hV74Es/xwNzRjv+w+AdBto5I6D0bYDBXZH7lOnMuf/9blkAdXqaQXGV7H//ElgRXErKmGXWntHsgNF/5kflECq8/HOPyuVTYwHLxX6xAtf4WNEi7MYvBdQCN+E9eG+Rv6ll9l8HEDoojoCzh/jH59nsSF/ENAq4PC1jrMgmHe9g0Ni7u7tzV295sNEYVXolQ2cExtl/jpLIQ/HXjQipuQJQonulup/rUILbMZ6YwsRxsGf7rgmr/qgm0vq/xITxe0neXWOWDlwiKGOw3vK/ntG2YDwT2ZItA4WuwOLRgUlTWvAArm/vCu9Ix7HOo+z5hSUI6sDDCL9niq7wbpqIzInGgIwRZp+5ZT95Hqkv9MkZgDfQW5wVXfgXS+rkqFXKrYoN+YL4cFQ/lDieU1yj9UL6TdALgOoAuKjXE1LbR+ioOy+A3hEYSsqO5bwtRT0J41Xsvp+nxqmEXErg3u9z8aFJN75SWnn5+vd3VzqM6MyD7GuB6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1340.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(376002)(366004)(346002)(396003)(39860400002)(136003)(451199021)(66476007)(54906003)(478600001)(5660300002)(4744005)(86362001)(2906002)(8936002)(33716001)(66556008)(6916009)(66946007)(4326008)(316002)(8676002)(41300700001)(38100700002)(186003)(6506007)(26005)(9686003)(6512007)(83380400001)(6486002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: unh38zo5TOp8fdLbWeYWJ6/Jbwb7zma/FlNlgkPI+eCheJWVYccLirQuM14DwyT2me4mdlwVcpLJtOSyXc+Ick3R1SlFJd4Iy05dvLguP1CJISTuNC0aPUHRGuCfLVIESJ2PAB2DABP1CZ8svyPXEEBiVrQDZDNsYZjeOMlND71chdwFnGQbZ3G3UXXaoPAYqJQT8Okzpp7Ek3hekYx8aUVpsO4R1lCJlO95ICwH7WWb4gZYNjbxwUYeU+XLUpSdzDrC+GB0xx11uslWwAyobp8OKH9rwD3ieBwFT56Rg9dl1U35T781S99erkuXKj07R9V/Q2Ii1T/0Tpx8XFT14+4o55EdEjwarLIhRD6fXoOC3fZ/prXl5XXUaym96RzCx5+TxX6B2hIsIRYaLQSI2uNjQg/Io0Xyn6lnMZF5QtxZ9WWjKIP+ABBcnS3F2HmZ+47XSPLhB2rJhKPYencBk1gF4GKMsibocSs6Nhx0mRtPWSavMFMs2V3UVP4Swv5K2IPpXefLZMmoMDkYB7lnlpnIfJqKdJSB6avXnMDKCeQZy0YF35NmYqd2O59cRRpt
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1340.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(396003)(346002)(376002)(136003)(39860400002)(366004)(451199021)(478600001)(6916009)(316002)(6486002)(8676002)(8936002)(2906002)(4326008)(66476007)(66946007)(66556008)(54906003)(186003)(83380400001)(5660300002)(41300700001)(9686003)(33716001)(38100700002)(86362001)(26005)(6512007)(6506007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XMaPhgQVUGbo7f8pzLD9Q24Ne8HT4cmmwFGVqLqZP7ia/8e40hfKlTC8Xsan?=
- =?us-ascii?Q?v6WEQvvw0Fg0NrG4XGV/Qn45AAzo2TiqLVrG86Ldins+fRCUDYbgzYpMLbXV?=
- =?us-ascii?Q?x3YVhTnZ8a6xUeLPMhXQksXdqKgT6fee/SE8WXcPeGiuPCybB24TplgAmNZS?=
- =?us-ascii?Q?eT2JnPziYdiUHA0TQv375je058VoElZWJ8zKDZ4ocNq7PNfZzUIuwfnVo/4O?=
- =?us-ascii?Q?+tFo4xY5g+jC65dCQRvsQT9MPiHlNImCICwYMlBxoOmV/LAE9QoN2obA6ycu?=
- =?us-ascii?Q?IDXNOR0SCQNwsVo+lAF8zsJLyP73mt2CEqeVvdeusbF8q40w1Xi86dePAbtd?=
- =?us-ascii?Q?a70giCgYvBpmv3CaKJu9d8PDAfiMf4dQ2WnHqY2rHWz/5RPdEEciho68/jff?=
- =?us-ascii?Q?0M7fJGcG6hx7/uV2Vf4jtFB/fjJ5zjAuZj9iBlAZOMjyKJjcPl5OAchnXL8i?=
- =?us-ascii?Q?89kzu66MvKZkDuM8hyXr1iGMJUWKnUM2DpQeKHCCztlK5VB91JTXGz4EdCPT?=
- =?us-ascii?Q?pbi/rQB1bYuv+SVMwdAMnLjoK9QglTxLNjd4lvU+ykWN/kmHWhrsPcEKOIzj?=
- =?us-ascii?Q?o7oBKnb01HOOk2l1sYcu22GFwyMBSFeqMFi8Qp0LZgvDhnm0QMUFfzD+ZmOT?=
- =?us-ascii?Q?yqCx0EwcZhfmZ8TqlnJ8IJx60GLQZIbJcRzLqBYXTMymf1qU+iRDp2EH/3gi?=
- =?us-ascii?Q?RaZWWgb0on3RSTFBSR66vP2fcfCqZFyWBX1H7q/ZUgho+2/BGd+LVfZJKttD?=
- =?us-ascii?Q?BGVLuuqaIE3a76XcGvgXuguaKtgWFE3OTOHEoRqwHRlr2AulAYTOysh6mKDh?=
- =?us-ascii?Q?tcRKjYSAPtF8CD+biubq3e+a11qBp2BYqFPoHifU/1UpBjPqgbhkYG6Ko9RS?=
- =?us-ascii?Q?W5ZtdzCLraI/vqUI7Up38I3hzvdIktlzxW2tguUinb8v/3K1xosQo6vzEVVT?=
- =?us-ascii?Q?nTK0IyRWrj1EUUhOC8mdALdSNZ6DeDgYREnCxFfmGosQR1Ej63APKSpounmt?=
- =?us-ascii?Q?7ce4NnqKtD0HIn8P/8USdXJCovcS1Rg8Vf/QM/c9R42nJdVgkVSPwH0Z4Yu9?=
- =?us-ascii?Q?QagXo6WNu7TWjMke/AXMFUQh+erdgnVVz8gEo/Shn0hAvvof5nkJJaBe+Bwl?=
- =?us-ascii?Q?tIpioa3Pld2U7gv2qeH2WktBon3zkO9UNtr0gynMd1ymNitjo5592lpkQyu1?=
- =?us-ascii?Q?cEC9JdByAnvwoiIQ4+AVSlKk7g7hM0tcdehX6az0JHiyoltXV3ra3MqhoO8/?=
- =?us-ascii?Q?Q0z8ErHuEOQhW5JbnFDyVsaFP4Evu97A95KxIP3J1a0COr9G/hTHIkadIB8w?=
- =?us-ascii?Q?Qmdan5Irgyr0gqu6mKM/LOhc+yMFPrCv55yHdUX4gCkiYVrYLqPRdiQahf96?=
- =?us-ascii?Q?UbNYuZZPSZ/C5atqjYmRi0W3D9NQRcDHa5TPDOp2gX7a9Fs3Cb70CMA57U79?=
- =?us-ascii?Q?B2teYm9GysyxjxRbkZ6vNy0cS2yZdMz3yuY7O9DCmsB96bg02rLP/BY5zLLQ?=
- =?us-ascii?Q?jWJQxNVWZrbgkhTB3hQty1cnBYdGvcAMssGLAakr+wDAo+nHyLAoAZBLn8Be?=
- =?us-ascii?Q?mFGUZ1TUwps1krhQ71ayD71kGT4UnCX6a8H0+pTy?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hbrx6/AMKNyKfZPAijtomuTroCIf5ALE+yzVqVvhkqqlrDF3kljjlU9OLW7a?=
+ =?us-ascii?Q?svov8tiDBUwVJYA8284yJWiWJlF18zg+a8FE5Lz688Im6YtTsGPHfZgCW4mg?=
+ =?us-ascii?Q?W496osx95v3sb3nfXDfNaHAPykkAlzPwB8okx/apLaScI1h20Vm2wk/36cxV?=
+ =?us-ascii?Q?yguTaGNmrfvct+Bh/s71orjQccUrQxqEdlgMtkzF8CU9zXbEQFJW3jXRlo/s?=
+ =?us-ascii?Q?s/loXhKIuy8h0+lHRCKc0HV0kBD69cJDw8VBj0xbCOeSa8IhjvN+y96K2M+U?=
+ =?us-ascii?Q?mnCUZNfCbqWCEt/vBnnilSBSe3e7y9q5IM4YW6wGDc/SscymWRJk1ToEvIpa?=
+ =?us-ascii?Q?fM3ajcLQoKu9+cvqUSTVTFkicKzWb3iWcu/lQYfasyzp+DzkV1M6m03m8L2A?=
+ =?us-ascii?Q?nVoocPICAScFu8LmUpsS66CTWviNNTl1Xb/5WL3OYGDIijl0mBJFkm5DsSvn?=
+ =?us-ascii?Q?3eQNjoe5ncK6J3KCrKeYreXt/CALo6lTSDjp9H3Iq6TrK+6qwkllr52Ju00J?=
+ =?us-ascii?Q?bKRendRivTUc09DCkaEfdVVXr7N/+OKNz/lVdV4KjEDwsCSQA+kaf5PF/MKa?=
+ =?us-ascii?Q?HWV8bG5ZdCwybqLy65XWp9bLyc788iDN4Rt3Mz0kSLrzS9BTXmEQaVlLuGQC?=
+ =?us-ascii?Q?aGvKaE9ISS0/vBLNIYSVuEjC2FSXHpe8eROuptqyYTTq5XVUyyTDHp1MeT5D?=
+ =?us-ascii?Q?39wYAwBJUZnDqOrkFvh1Bapn4u7kyrKgH/UGk/1rDw10Ww/bYn/KTU6JRCxU?=
+ =?us-ascii?Q?Me5vwXH/gx7MjHIzWyLSsGqWFXGd3Nd0CPvrSrMrxxktwnfRS8m5obvfJXvG?=
+ =?us-ascii?Q?NGspw4JcemESYnCUloaF/ari3AXq7X5i3IExO0sHYUeXJ4xBBAjiK+F6R4o9?=
+ =?us-ascii?Q?bMehTP4nOhyTJ1wz5bp4ilxuuZI6u16EJsO1QeS/J3I8zglKDlAgI3+cqhWb?=
+ =?us-ascii?Q?KKbizSbPSV0iwpPNV2F3EygBYlpq3Hc9C2I6ZI3WUDBbBqE8yxWRtNAz5roO?=
+ =?us-ascii?Q?sEdYoI8+AWsGaBw7Vtt1ohlW3Eb6JofpJnYx1eImqeKo8f7TSYQ2+pqVtMhu?=
+ =?us-ascii?Q?4rSM81eud+0Xr6HxWHTCaHt2w7VR+fgBVw1Cwr0In4k6ACe1RxebGXQewf7G?=
+ =?us-ascii?Q?PM5o7R4ldA5VM74rCxckGs5w+PDBowE390+2Hu7HfAyi7Q88eu8S3jBP2oG4?=
+ =?us-ascii?Q?4yusByV+GhrjciwL7+qAuJUjstRv6BWJhwJ8IbuA9xvp/d7fJ8A5kqbxRK5X?=
+ =?us-ascii?Q?U+C5ceEFOifDq10uELrslMj+acEU2ZMk4uGdN0pTCoSEe98SJim02vrcq9hd?=
+ =?us-ascii?Q?lYKg5boqCZHT7cuplYmrpjyTt6e4audgG6sLI9FN2mi+5plWQ3yZJ+9ifwji?=
+ =?us-ascii?Q?9scFjM9wSR+Z6v8q17OBmPD+tQQxGrdB+xP1IBUCtOi7pDecW0QAF6gXoKSf?=
+ =?us-ascii?Q?dZIpPvLV6OzcMq4Y96tKkrQApF9URNoBCOdf6xuj53NzrKWCxpnqNWI4HLRo?=
+ =?us-ascii?Q?eMuQP1abTD6JEyM7P64Ji++7CyQfQRmhV/dJakAf6GBEm0N9OaPIe7e9FDSc?=
+ =?us-ascii?Q?T875PL9FILE8ylarnRtTH497UrwWtBVkMO6JaloG?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1001c490-b4ef-4d75-954e-08db62260bd4
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a18e1d0-9194-47f0-2462-08db62275d72
 X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1340.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2023 22:26:15.3437
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2023 22:35:41.5248
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A58+E8yZCvMn/SCJLG5gN8KWbDdERbWdkIEg4ZdLQ21wA7byZpYIlcoC1PRwxcAXfNj5zL+NG6IFh0btq4tcsg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5263
+X-MS-Exchange-CrossTenant-UserPrincipalName: YW/Ywm3WydeufXo/E/fCgBCjygdP2soqtJ7H0zlORKzLHd51VPkM5twQkSY8cw36XYYCMt27CFp3ryDlGwaddw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7769
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -112,17 +113,64 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 31 May 20:06, Chuck Lever III wrote:
->The below WARNING displays on the system console multiple
->times during shutdown. It does not appear to block shutdown
->processing.
+On 31 May 15:48, Chuck Lever wrote:
+>From: Chuck Lever <chuck.lever@oracle.com>
 >
->This is on 6.4-rc4 with the mlx5_irqs_request_vectors() fix
->applied.
+>[    9.837087] mlx5_core 0000:02:00.0: firmware version: 16.35.2000
+>[    9.843126] mlx5_core 0000:02:00.0: 126.016 Gb/s available PCIe bandwidth (8.0 GT/s PCIe x16 link)
+>[   10.311515] mlx5_core 0000:02:00.0: Rate limit: 127 rates are supported, range: 0Mbps to 97656Mbps
+>[   10.321948] mlx5_core 0000:02:00.0: E-Switch: Total vports 2, per vport: max uc(128) max mc(2048)
+>[   10.344324] mlx5_core 0000:02:00.0: mlx5_pcie_event:301:(pid 88): PCIe slot advertised sufficient power (27W).
+>[   10.354339] BUG: unable to handle page fault for address: ffffffff8ff0ade0
+>[   10.361206] #PF: supervisor read access in kernel mode
+>[   10.366335] #PF: error_code(0x0000) - not-present page
+>[   10.371467] PGD 81ec39067 P4D 81ec39067 PUD 81ec3a063 PMD 114b07063 PTE 800ffff7e10f5062
+>[   10.379544] Oops: 0000 [#1] PREEMPT SMP PTI
+>[   10.383721] CPU: 0 PID: 117 Comm: kworker/0:6 Not tainted 6.3.0-13028-g7222f123c983 #1
+>[   10.391625] Hardware name: Supermicro X10SRA-F/X10SRA-F, BIOS 2.0b 06/12/2017
+>[   10.398750] Workqueue: events work_for_cpu_fn
+>[   10.403108] RIP: 0010:__bitmap_or+0x10/0x26
+>[   10.407286] Code: 85 c0 0f 95 c0 c3 cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 89 c9 31 c0 48 83 c1 3f 48 c1 e9 06 39 c>
+>[   10.426024] RSP: 0000:ffffb45a0078f7b0 EFLAGS: 00010097
+>[   10.431240] RAX: 0000000000000000 RBX: ffffffff8ff0adc0 RCX: 0000000000000004
+>[   10.438365] RDX: ffff9156801967d0 RSI: ffffffff8ff0ade0 RDI: ffff9156801967b0
+>[   10.445489] RBP: ffffb45a0078f7e8 R08: 0000000000000030 R09: 0000000000000000
+>[   10.452613] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000000ec
+>[   10.459737] R13: ffffffff8ff0ade0 R14: 0000000000000001 R15: 0000000000000020
+>[   10.466862] FS:  0000000000000000(0000) GS:ffff9165bfc00000(0000) knlGS:0000000000000000
+>[   10.474936] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>[   10.480674] CR2: ffffffff8ff0ade0 CR3: 00000001011ae003 CR4: 00000000003706f0
+>[   10.487800] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>[   10.494922] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>[   10.502046] Call Trace:
+>[   10.504493]  <TASK>
+>[   10.506589]  ? matrix_alloc_area.constprop.0+0x43/0x9a
+>[   10.511729]  ? prepare_namespace+0x84/0x174
+>[   10.515914]  irq_matrix_reserve_managed+0x56/0x10c
+>[   10.520699]  x86_vector_alloc_irqs+0x1d2/0x31e
+>[   10.525146]  irq_domain_alloc_irqs_hierarchy+0x39/0x3f
+>[   10.530284]  irq_domain_alloc_irqs_parent+0x1a/0x2a
+>[   10.535155]  intel_irq_remapping_alloc+0x59/0x5e9
+>[   10.539859]  ? kmem_cache_debug_flags+0x11/0x26
+>[   10.544383]  ? __radix_tree_lookup+0x39/0xb9
+>[   10.548649]  irq_domain_alloc_irqs_hierarchy+0x39/0x3f
+>[   10.553779]  irq_domain_alloc_irqs_parent+0x1a/0x2a
+>[   10.558650]  msi_domain_alloc+0x8c/0x120
+>[   10.567697]  irq_domain_alloc_irqs_locked+0x11d/0x286
+>[   10.572741]  __irq_domain_alloc_irqs+0x72/0x93
+>[   10.577179]  __msi_domain_alloc_irqs+0x193/0x3f1
+>[   10.581789]  ? __xa_alloc+0xcf/0xe2
+>[   10.585273]  msi_domain_alloc_irq_at+0xa8/0xfe
+>[   10.589711]  pci_msix_alloc_irq_at+0x47/0x5c
 >
+>The crash is due to matrix_alloc_area() attempting to access per-CPU
+>memory for CPUs that are not present on the system. The CPU mask
+>passed into reserve_managed_vector() via it's @irqd parameter is
+>corrupted because it contains uninitialized stack data.
 >
->[  270.146851][    T1] WARNING: CPU: 7 PID: 1 at kernel/irq/manage.c:2034 free_irq+0x59/0x70
+>Fixes: bbac70c74183 ("net/mlx5: Use newer affinity descriptor")
+>Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+>Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 
-There is a patch pending submission to fix this, Just CC'ed you, thanks for
-the report.
-
+Applied to net-mlx5, Chuck, for Faster review please CC netdev next time
+for mlx5 patches.
