@@ -2,62 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF89971974F
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Jun 2023 11:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A000719753
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Jun 2023 11:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbjFAJm4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Jun 2023 05:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57848 "EHLO
+        id S231690AbjFAJnG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Jun 2023 05:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232713AbjFAJmz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Jun 2023 05:42:55 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6253B1B0
-        for <linux-rdma@vger.kernel.org>; Thu,  1 Jun 2023 02:42:43 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-25690e009c8so134324a91.0
-        for <linux-rdma@vger.kernel.org>; Thu, 01 Jun 2023 02:42:43 -0700 (PDT)
+        with ESMTP id S232297AbjFAJnE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Jun 2023 05:43:04 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDB1E62
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Jun 2023 02:42:47 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-5555765c6d3so518280eaf.1
+        for <linux-rdma@vger.kernel.org>; Thu, 01 Jun 2023 02:42:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1685612563; x=1688204563;
+        d=broadcom.com; s=google; t=1685612566; x=1688204566;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UdbkOY64oCOpk6c4lcew+CZzCgf7GSFBj5w5kk41xZI=;
-        b=fV7V2vba++Ph0rbPeQPR4eOn8RiK1C+TDKV4NnW2t6BggGPsCFRdG88zrzKqf0AdGO
-         fBMmAD7e5ZgAgdN8cY86nXYBNNsWONApKXWBzQhDeVJApR1WfX2tDTlid37Q3pampNL4
-         jzwOlcZTDLYBP4sgtXgYGd1LmscBcHbDDmcfM=
+        bh=mJ5zBVvByf2yO78KESoPlYAeCNrqepIQbuqjnGer02c=;
+        b=Dx6DRjFWcTAXM2OiWu3rS4bBStC/fiFvsxYdz0jhB1u6xQsCTWxrItifs1HhqcSGFo
+         5oP5GgNyiRM3x2eYwulBjo48/G6fBEtF3ieu/cgS1CAdCtlui88bOHuNrIKKEdoQNa0Y
+         f3uEgSotMw7kmaxY803fErkpewISfDQTUh8zc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685612563; x=1688204563;
+        d=1e100.net; s=20221208; t=1685612566; x=1688204566;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UdbkOY64oCOpk6c4lcew+CZzCgf7GSFBj5w5kk41xZI=;
-        b=U8B+jy8IAJASPeHxV8eWfAJcDvnP+kCybi2iYVfZahm4JIy75dyx34Qrpm7SgIdEuE
-         iId7A9Yo/PZGg3XyM4vD1Y7nJAODGQk/z2ydo1ahqymMVnPPe9KUmMyJcnoWN6f0qItt
-         phgEPWcFO4AieLAlIKfkhnu2/wv15S8KbZxnMANAPBiKjkrPHtheCqLpZf5T8qtYfY3P
-         tY0GtWkFadhYr6C8thyypIHS77Q1xO6n8XvvMzhmMwLNPLRrDnQhfIdWPLDLHVB9PvCw
-         FjPLRz2A7fIQSPOq0fHQ6JOsgwuHlupo4le65ejKRzmq/2JgOaAQ3CTW8IuqxhmUbsMt
-         qfww==
-X-Gm-Message-State: AC+VfDwmjcHj3JdFjdtLFvJnb0djGFDpWNySFEtukt27E2N2ZdCtnZ/z
-        ivlb1k8H6Ko8PJ6YuBraqPfBmQ==
-X-Google-Smtp-Source: ACHHUZ6tww5MKcHls6RbhjWNubL7NLASMtkQ0pFpMFD0GJnqyw0GYpX5Zp+b1zhJ5Vl6bC8Y4PzkWQ==
-X-Received: by 2002:a17:90a:8a98:b0:256:31f3:1f03 with SMTP id x24-20020a17090a8a9800b0025631f31f03mr6029085pjn.21.1685612562534;
-        Thu, 01 Jun 2023 02:42:42 -0700 (PDT)
+        bh=mJ5zBVvByf2yO78KESoPlYAeCNrqepIQbuqjnGer02c=;
+        b=Rm3SLGFBkePU5hsGXK5XOynUg2nJ4NCoRAlLgGNwbHGwmaXtztKyKqasIbFPMGdK6b
+         Kj8eHtsl47s/gLAfBbDZWvGBUfYLEZ/waoIdw0PD2U3EfI46zAZwgHamZoe7oFojVFhZ
+         McZ4R6Yxeiax7D6kcrXrsKY9Myi0jwKQb92TueL6m/zxvVqmurezvTGwwkHBQFZBYhBG
+         i0etvPI1KYYiaHtK/naemcivSQscC84GLH85sz7aGeSj3vdXdH6PFmeR9tom4naI53Xt
+         QHd03y43w3Ky/2LOM3hgmma+/ORvHNSgPR7FkdfN5hp8sEp3CFPA2cxha4hNf/38ahnc
+         c/Zg==
+X-Gm-Message-State: AC+VfDzBp2jjBcqHej9bnoK/KefVxQla9X18PbDaFqlvAJSws6WJ+E/N
+        YHfGlRCR6X8lmt88U0eB1ji+Cw==
+X-Google-Smtp-Source: ACHHUZ5xeXOjpJsPf3JyNp/fePU3MWxW2mkmgK3q7CzdoNH2fj3Vcga2dcfdiONqhd0GpYGP0EgDFQ==
+X-Received: by 2002:a05:6358:9218:b0:125:80a4:4733 with SMTP id d24-20020a056358921800b0012580a44733mr6110251rwb.10.1685612566302;
+        Thu, 01 Jun 2023 02:42:46 -0700 (PDT)
 Received: from localhost.localdomain ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id e12-20020a63ee0c000000b00502e7115cbdsm2744960pgi.51.2023.06.01.02.42.40
+        by smtp.gmail.com with ESMTPSA id e12-20020a63ee0c000000b00502e7115cbdsm2744960pgi.51.2023.06.01.02.42.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jun 2023 02:42:42 -0700 (PDT)
+        Thu, 01 Jun 2023 02:42:46 -0700 (PDT)
 From:   Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 To:     selvin.xavier@broadcom.com, jgg@ziepe.ca, leon@kernel.org,
         sagi@grimberg.me
 Cc:     linux-rdma@vger.kernel.org,
         Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Subject: [PATCH for-rc 2/3] IB/isert: Fix possible list corruption in CMA handler
-Date:   Thu,  1 Jun 2023 02:42:19 -0700
-Message-Id: <20230601094220.64810-3-saravanan.vajravel@broadcom.com>
+Subject: [PATCH for-rc 3/3] IB/isert: Fix incorrect release of isert connextion
+Date:   Thu,  1 Jun 2023 02:42:20 -0700
+Message-Id: <20230601094220.64810-4-saravanan.vajravel@broadcom.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230601094220.64810-1-saravanan.vajravel@broadcom.com>
 References: <20230601094220.64810-1-saravanan.vajravel@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000000c454105fd0e4211"
+        boundary="00000000000045fd2005fd0e42f9"
 X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -68,45 +68,42 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000000c454105fd0e4211
+--00000000000045fd2005fd0e42f9
 Content-Transfer-Encoding: 8bit
 
-When ib_isert module receives connection error event, it is
-releasing the isert session and removes corresponding list
-node but it doesn't take appropriate mutex lock to remove
-the list node.  This can lead to linked  list corruption
+The ib_isert module is releasing the isert connection both in
+isert_wait_conn() handler as well as isert_free_conn() handler.
+In isert_wait_conn() handler, it is expected to wait for iSCSI
+session logout operation to complete. It should free the isert
+connection only in isert_free_conn() handler.
+
+When a bunch of iSER target is cleared, this issue can lead to
+use-after-free memory issue as isert conn is twice released
 
 Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/ulp/isert/ib_isert.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/infiniband/ulp/isert/ib_isert.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index b3471ac82c1a..64af8d966adf 100644
+index 64af8d966adf..873c8cbaaa5f 100644
 --- a/drivers/infiniband/ulp/isert/ib_isert.c
 +++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -657,11 +657,15 @@ static int
- isert_connect_error(struct rdma_cm_id *cma_id)
- {
- 	struct isert_conn *isert_conn = cma_id->qp->qp_context;
-+	struct isert_np *isert_np = cma_id->context;
- 
- 	ib_drain_qp(isert_conn->qp);
-+
-+	mutex_lock(&isert_np->mutex);
- 	list_del_init(&isert_conn->node);
- 	isert_conn->cm_id = NULL;
- 	isert_put_conn(isert_conn);
-+	mutex_unlock(&isert_np->mutex);
- 
- 	return -1;
+@@ -2570,8 +2570,6 @@ static void isert_wait_conn(struct iscsit_conn *conn)
+ 	isert_put_unsol_pending_cmds(conn);
+ 	isert_wait4cmds(conn);
+ 	isert_wait4logout(isert_conn);
+-
+-	queue_work(isert_release_wq, &isert_conn->release_work);
  }
+ 
+ static void isert_free_conn(struct iscsit_conn *conn)
 -- 
 2.31.1
 
 
---0000000000000c454105fd0e4211
+--00000000000045fd2005fd0e42f9
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -177,14 +174,14 @@ pb/Gi74xj8wc5zCrVpXS1UNVJ8B6Jib+vas1cAtL6RFi0RDtFbUXe9U4wB07Ker1yMtBA6QzfZW2
 d0VRyjqv9NL22cjJ4ffotr8ZKbiSVEHbnDRxAgeuMxkkpjQQk/y1S1fk0wDOYNfV0zIkWtVMNBzY
 Ttmt2pp+/hwLYVAxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxT
 aWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAy
-MDIwAgwz1tXFZ7RRpYwmQDswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHMabsiq
-xhss6jRHdkwZ9cgp06vLK6MpntRU2uw18SnDMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
-KoZIhvcNAQkFMQ8XDTIzMDYwMTA5NDI0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
+MDIwAgwz1tXFZ7RRpYwmQDswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINErzIFs
+j7BmwxCkBMCg2VmOTOWakBgDYlIOFHwDgTKPMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
+KoZIhvcNAQkFMQ8XDTIzMDYwMTA5NDI0NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
 CwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZI
-hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCl+ZEaxZmIVAnduqMVwTgM1OL+
-F/TtQEny4LVMuULFhPak3uCFBaiLrHnC7aw5ZMsTldKCrFCON8dLSWrVg2KW/ILKN9rUMui+yDF/
-FX/8TnMMvlT0PHnhEmGq+ee7Uf8l2FjCKqle037qdragNZK3DOpCxWrt5gNwp2bfnTN2D/ceKhjI
-/DG0V5/MKocJAyvtyHzFa9/tFtxMCil+lze3LKFQx8xy4SnwCxzMrjZZeHizf7pfSGTIAdwNkuwO
-7LSVdSrW8K98xbqtRRUQYgRg6eh3YBDKiVDlvlkz5A55CTtCObGSjAUdxKFDINunGkqO+TaJOgOJ
-b5A+QakrnzQS
---0000000000000c454105fd0e4211--
+hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBBNams+EPDUIO05iJ3yv+YrlK2
+GJaGnOVBmtvGl6w+VFaOdHG6roAMz8Fff/PtN1BdnCbT9Oe/EHKAsEVj+Rqx6iTB/slAst4RBvmx
+LUNOItO7F9h7sRrqsnaGx78oJmTvG92XgAqMZeuWqHdMBuyKccRIMWm0uBOn6cPBSOo/4wYXLchO
+ox3Fczeu8SMPchjp884FaZSrJiu/bCcegLcrUtQRvlkgE+yXL2r5gxdsPfmqkXaVlNvlQue9GgKv
+qQuEH8BOVq9NgbCUZNaYit/kmg7fFI+gydOakhOPFFMFmCSy2GYsHTfxV/RkRQajtd1/t8PelC1K
+P8jqespWhXQU
+--00000000000045fd2005fd0e42f9--
