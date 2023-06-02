@@ -2,62 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 833DC71FFD3
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 12:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDF771FFD4
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 12:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbjFBK4k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Jun 2023 06:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
+        id S234629AbjFBK4n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Jun 2023 06:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235177AbjFBK4j (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Jun 2023 06:56:39 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C908A3
-        for <linux-rdma@vger.kernel.org>; Fri,  2 Jun 2023 03:56:38 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-39a3f165ac5so1661055b6e.3
-        for <linux-rdma@vger.kernel.org>; Fri, 02 Jun 2023 03:56:38 -0700 (PDT)
+        with ESMTP id S235328AbjFBK4m (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Jun 2023 06:56:42 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C63C132
+        for <linux-rdma@vger.kernel.org>; Fri,  2 Jun 2023 03:56:41 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-51452556acdso1100821a12.2
+        for <linux-rdma@vger.kernel.org>; Fri, 02 Jun 2023 03:56:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1685703397; x=1688295397;
+        d=broadcom.com; s=google; t=1685703401; x=1688295401;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IZ1z/reDHjBzR7tUxdrk3cq0sc1Ym7t1FVzyfTAlUqk=;
-        b=UgvtKMYyIbSu/3ZRRyj7og1Sxn6ZpM0vIC2c1Ux8fGIf92Bp0oe/pbapUIbhjSIx+i
-         O10WoZcp7MA5OOngz2E/0yDDR5ERUTg3CgelvNvxUUi8lJj9oqIfPPnXvHjjAp8CtU53
-         WtKUuaZITA4qWo4HifoSNzi5+Z5MrStdxelgQ=
+        bh=vrU8RuwXJuDR+wRdVbfrIbe8rLmiHx/mKu/aVHb735M=;
+        b=EwG4tRV4XbcNw1gRBSGZzHWCYU+150yVGWKcusFsW2RAt+5VeC0vY2jI0ahdRNfxJQ
+         U4atOk8oYyZAToV2Tqj5loBCFs9wYTt1MqVDCWrZL8SrGlrUUqzsvmNBwzjLgid7lxD9
+         XUOUYyWNhwQMrSqXGSLxru2BcUy00fa5diceA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685703397; x=1688295397;
+        d=1e100.net; s=20221208; t=1685703401; x=1688295401;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IZ1z/reDHjBzR7tUxdrk3cq0sc1Ym7t1FVzyfTAlUqk=;
-        b=Sqk7iL5qQd42X+kysxBILZTBp7Kl8F9kg6YR/Eha7e0gO36Yt83eD3W7JTuZ0ne0ze
-         oQgkW0lbR2PYvul14Joh3dHyTFMblzSI+KG2KAkT/CL264RFDtbs1la2NLUz4jsAh1/q
-         uWvFgRXCv8k+A1a+cD8Yv+wPtG4NplQR4oBJ2C7soFYCdx5o0SwUOcTcR//Cu4xhPEfP
-         GGcUbxIDouuSq6OZS5hr4nqRIALpqitrkQd1uSU8aVc5UbtEa8ycUlNIaGo5EQOgl7MM
-         rQX8iKfawAtEP5YNzaSs6k1rBXczMSw89Ld00v1GfJX9rMR3w64w8BeZVRuEwXcH8V/x
-         cJDg==
-X-Gm-Message-State: AC+VfDw6KHc08PsgZBdetXsAEi5smz6DN/jnnk09/8Si2QyzZUyvGMWK
-        mNCi1o83g1Kc4rcoabIve1wqlg==
-X-Google-Smtp-Source: ACHHUZ7sgmM7yXq1t8TUlildfF8CQNzglZEFHveyQEIKPYDi7/OC12jMV1n2dbnqb2Cq+Y4BACtqlw==
-X-Received: by 2002:a54:4190:0:b0:39a:748f:4bbd with SMTP id 16-20020a544190000000b0039a748f4bbdmr2229760oiy.15.1685703397398;
-        Fri, 02 Jun 2023 03:56:37 -0700 (PDT)
+        bh=vrU8RuwXJuDR+wRdVbfrIbe8rLmiHx/mKu/aVHb735M=;
+        b=AIthjrKjToS9Q6tbAmPDrifbilEXw+1W0t3hK4VyeFWzj44g1qZ9cCX4q/lXJcnMcJ
+         KcxFq/87ny8mE9TnwkXGI/E/q82Dm1+ZBeHIRLj/zxkHoHWjiUpEOIihygfZKZ8TaT8g
+         UU4RahjmiXKwWLLvu7ngJAfts4DHHc6JY8o5XXY5S8yywrN7mb4ixGyFTN5lQ2b8EKWO
+         SexL0CTOsTIlFiR7LiwBKfWbReC5QLszDlhRBc9EXhW68X1n31Eti0IS//9uW9/qmqcF
+         8yFQgl56+TQ4bMEzjkXN6CxTMoWvL/oYmdG4z9W9qvqttgUHMKNRjDnmb9VnW0GpBth3
+         Jh5Q==
+X-Gm-Message-State: AC+VfDyRMtp0KQ6/+7ezLdqxtgIMwU4lpKiPqKG/yV66Fnl4Ces5des3
+        x0CTiVhLSI5sHiUDNM9fhYUFLg==
+X-Google-Smtp-Source: ACHHUZ7jBCD9zHB8nYTXvBmVvlkpiSg0M+v2ewaJh0MtUEWEEESkjSofQYazeQWAlF1n+sOfU1XS3g==
+X-Received: by 2002:a05:6a20:6f05:b0:10b:a9ca:97bf with SMTP id gt5-20020a056a206f0500b0010ba9ca97bfmr8492084pzb.24.1685703400708;
+        Fri, 02 Jun 2023 03:56:40 -0700 (PDT)
 Received: from localhost.localdomain ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id s9-20020aa78d49000000b0064f708ca12asm792315pfe.70.2023.06.02.03.56.35
+        by smtp.gmail.com with ESMTPSA id s9-20020aa78d49000000b0064f708ca12asm792315pfe.70.2023.06.02.03.56.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jun 2023 03:56:36 -0700 (PDT)
+        Fri, 02 Jun 2023 03:56:40 -0700 (PDT)
 From:   Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 To:     selvin.xavier@broadcom.com, jgg@ziepe.ca, leon@kernel.org,
         sagi@grimberg.me
 Cc:     linux-rdma@vger.kernel.org,
         Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Subject: [PATCH v2 for-rc 1/3] IB/isert: Fix dead lock in ib_isert
-Date:   Fri,  2 Jun 2023 03:56:11 -0700
-Message-Id: <20230602105613.95952-2-saravanan.vajravel@broadcom.com>
+Subject: [PATCH v2 for-rc 2/3] IB/isert: Fix possible list corruption in CMA handler
+Date:   Fri,  2 Jun 2023 03:56:12 -0700
+Message-Id: <20230602105613.95952-3-saravanan.vajravel@broadcom.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230602105613.95952-1-saravanan.vajravel@broadcom.com>
 References: <20230602105613.95952-1-saravanan.vajravel@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000038eade05fd2368e1"
+        boundary="0000000000006d4ba905fd236834"
 X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -68,118 +68,46 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000038eade05fd2368e1
+--0000000000006d4ba905fd236834
 Content-Transfer-Encoding: 8bit
 
-- When a iSER session is released, ib_isert module is taking a mutex lock and
-  releasing all pending connections. As part of this, ib_isert is destroying
-  rdma cm_id. To destroy cm_id, rdma_cm module is sending CM events to CMA
-  handler of ib_isert. This handler is taking same mutex lock. Hence it leads
-  to deadlock between ib_isert & rdma_cm modules.
-
-- For fix, created local list of pending connections and release the connection
-  outside of mutex lock.
-
-Calltrace:
----------
-[ 1229.791410] INFO: task kworker/10:1:642 blocked for more than 120 seconds.
-[ 1229.791416]       Tainted: G           OE    --------- -  - 4.18.0-372.9.1.el8.x86_64 #1
-[ 1229.791418] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 1229.791419] task:kworker/10:1    state:D stack:    0 pid:  642 ppid:     2 flags:0x80004000
-[ 1229.791424] Workqueue: ib_cm cm_work_handler [ib_cm]
-[ 1229.791436] Call Trace:
-[ 1229.791438]  __schedule+0x2d1/0x830
-[ 1229.791445]  ? select_idle_sibling+0x23/0x6f0
-[ 1229.791449]  schedule+0x35/0xa0
-[ 1229.791451]  schedule_preempt_disabled+0xa/0x10
-[ 1229.791453]  __mutex_lock.isra.7+0x310/0x420
-[ 1229.791456]  ? select_task_rq_fair+0x351/0x990
-[ 1229.791459]  isert_cma_handler+0x224/0x330 [ib_isert]
-[ 1229.791463]  ? ttwu_queue_wakelist+0x159/0x170
-[ 1229.791466]  cma_cm_event_handler+0x25/0xd0 [rdma_cm]
-[ 1229.791474]  cma_ib_handler+0xa7/0x2e0 [rdma_cm]
-[ 1229.791478]  cm_process_work+0x22/0xf0 [ib_cm]
-[ 1229.791483]  cm_work_handler+0xf4/0xf30 [ib_cm]
-[ 1229.791487]  ? move_linked_works+0x6e/0xa0
-[ 1229.791490]  process_one_work+0x1a7/0x360
-[ 1229.791491]  ? create_worker+0x1a0/0x1a0
-[ 1229.791493]  worker_thread+0x30/0x390
-[ 1229.791494]  ? create_worker+0x1a0/0x1a0
-[ 1229.791495]  kthread+0x10a/0x120
-[ 1229.791497]  ? set_kthread_struct+0x40/0x40
-[ 1229.791499]  ret_from_fork+0x1f/0x40
-
-[ 1229.791739] INFO: task targetcli:28666 blocked for more than 120 seconds.
-[ 1229.791740]       Tainted: G           OE    --------- -  - 4.18.0-372.9.1.el8.x86_64 #1
-[ 1229.791741] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 1229.791742] task:targetcli       state:D stack:    0 pid:28666 ppid:  5510 flags:0x00004080
-[ 1229.791743] Call Trace:
-[ 1229.791744]  __schedule+0x2d1/0x830
-[ 1229.791746]  schedule+0x35/0xa0
-[ 1229.791748]  schedule_preempt_disabled+0xa/0x10
-[ 1229.791749]  __mutex_lock.isra.7+0x310/0x420
-[ 1229.791751]  rdma_destroy_id+0x15/0x20 [rdma_cm]
-[ 1229.791755]  isert_connect_release+0x115/0x130 [ib_isert]
-[ 1229.791757]  isert_free_np+0x87/0x140 [ib_isert]
-[ 1229.791761]  iscsit_del_np+0x74/0x120 [iscsi_target_mod]
-[ 1229.791776]  lio_target_np_driver_store+0xe9/0x140 [iscsi_target_mod]
-[ 1229.791784]  configfs_write_file+0xb2/0x110
-[ 1229.791788]  vfs_write+0xa5/0x1a0
-[ 1229.791792]  ksys_write+0x4f/0xb0
-[ 1229.791794]  do_syscall_64+0x5b/0x1a0
-[ 1229.791798]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+When ib_isert module receives connection error event, it is
+releasing the isert session and removes corresponding list
+node but it doesn't take appropriate mutex lock to remove
+the list node.  This can lead to linked  list corruption
 
 Fixes: bd3792205aae ("iser-target: Fix pending connections handling in target stack shutdown sequnce")
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 ---
- drivers/infiniband/ulp/isert/ib_isert.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/infiniband/ulp/isert/ib_isert.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index f290cd49698e..b4809d237250 100644
+index b4809d237250..7214a9bba524 100644
 --- a/drivers/infiniband/ulp/isert/ib_isert.c
 +++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -2431,6 +2431,7 @@ isert_free_np(struct iscsi_np *np)
+@@ -657,11 +657,15 @@ static int
+ isert_connect_error(struct rdma_cm_id *cma_id)
  {
- 	struct isert_np *isert_np = np->np_context;
- 	struct isert_conn *isert_conn, *n;
-+	LIST_HEAD(drop_conn_list);
+ 	struct isert_conn *isert_conn = cma_id->qp->qp_context;
++	struct isert_np *isert_np = cma_id->context;
  
- 	if (isert_np->cm_id)
- 		rdma_destroy_id(isert_np->cm_id);
-@@ -2450,7 +2451,7 @@ isert_free_np(struct iscsi_np *np)
- 					 node) {
- 			isert_info("cleaning isert_conn %p state (%d)\n",
- 				   isert_conn, isert_conn->state);
--			isert_connect_release(isert_conn);
-+			list_move_tail(&isert_conn->node, &drop_conn_list);
- 		}
- 	}
- 
-@@ -2461,11 +2462,16 @@ isert_free_np(struct iscsi_np *np)
- 					 node) {
- 			isert_info("cleaning isert_conn %p state (%d)\n",
- 				   isert_conn, isert_conn->state);
--			isert_connect_release(isert_conn);
-+			list_move_tail(&isert_conn->node, &drop_conn_list);
- 		}
- 	}
- 	mutex_unlock(&isert_np->mutex);
- 
-+	list_for_each_entry_safe(isert_conn, n, &drop_conn_list, node) {
-+		list_del_init(&isert_conn->node);
-+		isert_connect_release(isert_conn);
-+	}
+ 	ib_drain_qp(isert_conn->qp);
 +
- 	np->np_context = NULL;
- 	kfree(isert_np);
++	mutex_lock(&isert_np->mutex);
+ 	list_del_init(&isert_conn->node);
+ 	isert_conn->cm_id = NULL;
+ 	isert_put_conn(isert_conn);
++	mutex_unlock(&isert_np->mutex);
+ 
+ 	return -1;
  }
 -- 
 2.31.1
 
 
---00000000000038eade05fd2368e1
+--0000000000006d4ba905fd236834
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -250,14 +178,14 @@ pb/Gi74xj8wc5zCrVpXS1UNVJ8B6Jib+vas1cAtL6RFi0RDtFbUXe9U4wB07Ker1yMtBA6QzfZW2
 d0VRyjqv9NL22cjJ4ffotr8ZKbiSVEHbnDRxAgeuMxkkpjQQk/y1S1fk0wDOYNfV0zIkWtVMNBzY
 Ttmt2pp+/hwLYVAxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxT
 aWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAy
-MDIwAgwz1tXFZ7RRpYwmQDswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAJul/Y9
-aSMkv+gpQ2J9CwZksa6nCWIlOPi2wk5o2ZA1MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
-KoZIhvcNAQkFMQ8XDTIzMDYwMjEwNTYzN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
+MDIwAgwz1tXFZ7RRpYwmQDswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPqPb1l6
+DM+8F5/7VeTkwyiApxAw6dAHsRdFc87A7OefMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
+KoZIhvcNAQkFMQ8XDTIzMDYwMjEwNTY0MVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
 CwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZI
-hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDAl+VwjMLO/4BBkBuZlpw/UMO8
-GyReLTdN76Mds5wIzypqnOKL6otwCcqLhfVqv3Paa4Fu7XpH1Tz7NBoTIunNsLEyBDlVaJUjfoyX
-PD1cVb/woM+ii5YiJcI3L1nd8jd2FZ6fvNIaAESWw5DcqaKl679NE5W+hwDqC3ybgjcgcMssJ+7j
-Hs0E79SVmrqoO4dsJRe4JoBoo6mQqpuG2hdOe0phrhY+9BgSrDqDZwkwVKHSNRJElA4hfbr3z/rd
-7Q/cuizAvXJFjBwkI0rf2bdVdjuXBC4J860NHtuK3jB56C73hFjdsj/A5nJRFQn+HTOuG7YINd9G
-zdf0Av86DyYH
---00000000000038eade05fd2368e1--
+hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAnm1DEQBWLqN9IAUh82ZdTeeiM
+XcgoG6Djps6lg31LtifiuhXojptvL3ixoTlaPnz2UifdhB6YzxH6ZY9AHh7aOZxtIgw+y/Q+tmVk
+++iTofPDq65U957SLJGlu/tZSAZLnIJEpOsmmTCHvt0r9cfpIMopSG/ZIRhxeU+NuE5Y/pMBFKvp
+sistA+NlU9/s7o9yG1L5YhC+cGwite61H5Z4uUQrL5iKPlhAAxPq5WUabB6zGqAnIgdpflQKZe1M
+5iBMhtTURKktAMQQFfl7iK6vyIMEtnLCJU3yBWviBax0kd/or8IrLJWjL/csooYaJPJK75xxgM/l
+GU8zef6U7kVK
+--0000000000006d4ba905fd236834--
