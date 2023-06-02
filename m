@@ -2,81 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3313C71FB67
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 09:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6728D720EEF
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Jun 2023 11:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbjFBHzL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Jun 2023 03:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
+        id S230114AbjFCJ3z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 3 Jun 2023 05:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjFBHzK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Jun 2023 03:55:10 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9D2123;
-        Fri,  2 Jun 2023 00:55:09 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4QXZtB2fvDz18LQp;
-        Fri,  2 Jun 2023 15:50:26 +0800 (CST)
-Received: from [10.67.102.17] (10.67.102.17) by kwepemi500006.china.huawei.com
- (7.221.188.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 2 Jun
- 2023 15:55:06 +0800
-Message-ID: <b5d8a033-171a-f269-a686-ddd5d15eb27c@hisilicon.com>
-Date:   Fri, 2 Jun 2023 15:55:06 +0800
+        with ESMTP id S230028AbjFCJ3z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 3 Jun 2023 05:29:55 -0400
+X-Greylist: delayed 89042 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 03 Jun 2023 02:29:54 PDT
+Received: from mail.webtopbits.pl (mail.webtopbits.pl [195.231.64.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FE5E58
+        for <linux-rdma@vger.kernel.org>; Sat,  3 Jun 2023 02:29:53 -0700 (PDT)
+Received: by mail.webtopbits.pl (Postfix, from userid 1001)
+        id 905CBA3939; Fri,  2 Jun 2023 09:45:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=webtopbits.pl;
+        s=mail; t=1685695550;
+        bh=Eh8ECMiYd4baGAwPAzhz8mhJACXX7NSRkYjh+plaY18=;
+        h=Date:From:To:Subject:From;
+        b=TR1dkx+5an7DYBWFk6Nt8G3VmvXmbEJATiRi6w0EsZsmuEPF0tmAlsJjKzfJFHBBa
+         GMKO+XxRKUK4O4r6oRwAsO1giQv8w2jHAm+cyhPZYCMbWh9e+nlydOfzQxyYSREKkJ
+         R6fsuwflJlEC2jVM09Xu7Ge/RWYAyfyNzlIfVtN5USBEVvyK26JY3ezNcKesEOljBY
+         7inz1dsDN67Npco5DAYM+pvx5Iz4Xv9GyCthx3W4Pkag5Ije83gEMXDkuN9RvGJP0F
+         H964UPED7wUQJmbyilvw1Dngfh3Wx77En8sempzYaKzRmr5ihLQLmY0IOh7EsLefQE
+         kOFIbZESJ2N2Q==
+Received: by mail.webtopbits.pl for <linux-rdma@vger.kernel.org>; Fri,  2 Jun 2023 08:45:39 GMT
+Message-ID: <20230602085530-0.1.8w.5kkd.0.77owgjmd29@webtopbits.pl>
+Date:   Fri,  2 Jun 2023 08:45:39 GMT
+From:   "Kamil Durjasz" <kamil.durjasz@webtopbits.pl>
+To:     <linux-rdma@vger.kernel.org>
+Subject: =?UTF-8?Q?Wy=C5=BCsza_konwersja_w_e-sklepie_?=
+X-Mailer: mail.webtopbits.pl
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH for-rc 0/3] RDMA/hns: Bugfix and improvements
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20230523121641.3132102-1-huangjunxian6@hisilicon.com>
- <ZHkjHl1H02sr8pnq@nvidia.com>
-Content-Language: en-US
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <ZHkjHl1H02sr8pnq@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.17]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Dzie=C5=84 dobry,
+
+w jaki spos=C3=B3b docieraj=C4=85 Pa=C5=84stwo do odbiorc=C3=B3w?
+
+Tworzymy pot=C4=99=C5=BCne narz=C4=99dzia sprzeda=C5=BCy, kt=C3=B3re pozw=
+alaj=C4=85 kompleksowo rozwi=C4=85za=C4=87 problemy potencjalnych klient=C3=
+=B3w i skutecznie wp=C5=82yn=C4=85=C4=87 na ich decyzje zakupowe.=20
+
+Skupiamy si=C4=99 na Pa=C5=84stwa potrzebach zwi=C4=85zanych z obs=C5=82u=
+g=C4=85 sklepu, oczekiwaniach i planach sprzeda=C5=BCowych. Szczeg=C3=B3=C5=
+=82owo dopasowujemy grafik=C4=99, funkcjonalno=C5=9Bci, struktur=C4=99 i =
+mikrointerakcje do Pa=C5=84stwa grupy docelowej, co przek=C5=82ada si=C4=99=
+ na oczekiwane rezultaty.
+
+Ch=C4=99tnie przedstawi=C4=99 dotychczasowe realizacje, aby mogli Pa=C5=84=
+stwo przekona=C4=87 si=C4=99 o naszych mo=C5=BCliwo=C5=9Bciach. Mog=C4=99=
+ si=C4=99 skontaktowa=C4=87?
 
 
-On 2023/6/2 7:00, Jason Gunthorpe wrote:
-> On Tue, May 23, 2023 at 08:16:38PM +0800, Junxian Huang wrote:
->> 1. #1-#2: The first two patches improves diagnostic information to
->>    the driver.
->>
->> 2. #3: The third patch removes unnecessary QP type checks.
->>
->>
->> Chengchang Tang (2):
->>   RDMA/hns: Fix hns_roce_table_get return value
->>   RDMA/hns: Add clear_hem return value to log
->>
->> Junxian Huang (1):
->>   RDMA/hns: Remove unnecessary QP type checks
-> 
-> These are not -rc patches, they don't fix user facing things, so I put
-> them in for-next
-> 
-> Also there was a compile warning I fixed
-> 
-> ../drivers/infiniband/hw/hns/hns_roce_hw_v2.c:767:20: warning: unused variable 'ibdev' [-Wunused-variable]
->         struct ib_device *ibdev = &hr_dev->ib_dev;
-> 
-> Although it could probably use more fixing.
-> 
-> Jason
-
-Oops,that's our miss. Thanks!
+Pozdrawiam
+Kamil Durjasz
