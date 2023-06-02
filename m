@@ -2,173 +2,199 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADD77200DA
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 13:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E230D720130
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 14:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235325AbjFBLuk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Jun 2023 07:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
+        id S235097AbjFBMLA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Jun 2023 08:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235498AbjFBLu1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Jun 2023 07:50:27 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A46AE5E;
-        Fri,  2 Jun 2023 04:49:57 -0700 (PDT)
+        with ESMTP id S235717AbjFBMKe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Jun 2023 08:10:34 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092AFD3
+        for <linux-rdma@vger.kernel.org>; Fri,  2 Jun 2023 05:10:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685706597; x=1717242597;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dtcnuM+2TdnbsCijUckC327W0mtKyRtASd4omSZHYjg=;
-  b=dhOY6WwD9tFuCuNpuke6q6ieXvkiWB1ka421N2iGJyH3t11c/dO3Ave3
-   uyUjL8e54Ujg+zQDU3jo1J4Q+IfkMn0axTp/MwrpP4+M8IZL24fARlFCm
-   xNY0pBSFachRkmOSfzExXpZdwCroT+BmNhYuymJziAOrtOLLVj+72wJG5
-   HWVL5IALGh1McnNLAPzt7W27CmP2lyTl2xSdTc/en9YIAFh08RJdKEi6z
-   /JCRZV7LK92B/atT0xoeTI6QCjcWb4pFsRl6xub+Tkfwel/h8lOq7vW6H
-   ye6Es4NDwLnKTFqBxSP1Bo3V0sYYtYNWL2sWcwP0m6I2QiNMj40e/jRI5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="358279796"
+  t=1685707833; x=1717243833;
+  h=date:from:to:cc:subject:message-id;
+  bh=eSTN+85hNv1QZhoG2neP8dnhZC86mFjdTbZNlwb1BsY=;
+  b=lAX7Ths/5yVqNxm9lkHBUzFHTVok+/TvyjqImbVa6ND2CKHpjWiGW+Jb
+   EXtS7TWflKe/VUEgaZ280KIPyz8UaC9IAl7hY81XcFcLUawhi7MmpwpWo
+   brEd0/+IRbFYwQ1WD6aZIv0x5917xsoYkMmBjeHET4VnFySxUEFlBH9Uu
+   StxP9bgNftOHr8lO2X8tC+YOYifJaLhbWd0P5bH2o3kfYmflQiV9tMuSn
+   Qk4RzEEofDUUYKL1IJQrF9RplazhQyOtFJ16erZ9XYgQ52RrZBXd+qXdS
+   tb23JTgAayctG0VoA4WC0T0VOAUW8aJFTKVLUDBwv9yrYqh9+10pPYhdm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="354701933"
 X-IronPort-AV: E=Sophos;i="6.00,212,1681196400"; 
-   d="scan'208";a="358279796"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2023 04:49:17 -0700
+   d="scan'208";a="354701933"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2023 05:10:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="707819552"
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="797581820"
 X-IronPort-AV: E=Sophos;i="6.00,212,1681196400"; 
-   d="scan'208";a="707819552"
-Received: from rspatil-mobl3.gar.corp.intel.com (HELO ijarvine-MOBL2.ger.corp.intel.com) ([10.251.208.112])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2023 04:49:11 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [RFC PATCH v1 12/13] IB/hfi1: Use pci_disable/enable_link_state()
-Date:   Fri,  2 Jun 2023 14:47:49 +0300
-Message-Id: <20230602114751.19671-13-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230602114751.19671-1-ilpo.jarvinen@linux.intel.com>
-References: <20230602114751.19671-1-ilpo.jarvinen@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+   d="scan'208";a="797581820"
+Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Jun 2023 05:10:30 -0700
+Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1q53bw-0000QZ-0h;
+        Fri, 02 Jun 2023 12:10:28 +0000
+Date:   Fri, 02 Jun 2023 20:09:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 95ea2efbd66fb9e85238bd8d59341f8ce7a31065
+Message-ID: <20230602120958.mFIRn%lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-IB/hfi1 driver adjusts ASPM state itself which leaves ASPM service
-driver in PCI core unaware of the link state changes the driver
-implemented.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 95ea2efbd66fb9e85238bd8d59341f8ce7a31065  IB/hfi1: Remove unused struct mmu_rb_ops fields .insert, .invalidate
 
-Call pci_disable_link_state() and pci_enable_link_state() instead of
-adjusting ASPMC field in LNKCTL directly in the driver and let PCI core
-handle the ASPM state management. Remove the functions that handled the
-ASPM changes that are now unnecessary.
+elapsed time: 720m
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- drivers/infiniband/hw/hfi1/aspm.c | 38 +++----------------------------
- drivers/infiniband/hw/hfi1/pcie.c |  2 +-
- 2 files changed, 4 insertions(+), 36 deletions(-)
+configs tested: 123
+configs skipped: 12
 
-diff --git a/drivers/infiniband/hw/hfi1/aspm.c b/drivers/infiniband/hw/hfi1/aspm.c
-index a3c53be4072c..8e3fc1d4c9c6 100644
---- a/drivers/infiniband/hw/hfi1/aspm.c
-+++ b/drivers/infiniband/hw/hfi1/aspm.c
-@@ -54,45 +54,13 @@ static void aspm_hw_set_l1_ent_latency(struct hfi1_devdata *dd)
- 	pci_write_config_dword(dd->pcidev, PCIE_CFG_REG_PL3, reg32);
- }
- 
--static void aspm_hw_enable_l1(struct hfi1_devdata *dd)
--{
--	struct pci_dev *parent = dd->pcidev->bus->self;
--
--	/*
--	 * If the driver does not have access to the upstream component,
--	 * it cannot support ASPM L1 at all.
--	 */
--	if (!parent)
--		return;
--
--	/* Enable ASPM L1 first in upstream component and then downstream */
--	pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL,
--					   PCI_EXP_LNKCTL_ASPMC,
--					   PCI_EXP_LNKCTL_ASPM_L1);
--	pcie_capability_clear_and_set_word(dd->pcidev, PCI_EXP_LNKCTL,
--					   PCI_EXP_LNKCTL_ASPMC,
--					   PCI_EXP_LNKCTL_ASPM_L1);
--}
--
--void aspm_hw_disable_l1(struct hfi1_devdata *dd)
--{
--	struct pci_dev *parent = dd->pcidev->bus->self;
--
--	/* Disable ASPM L1 first in downstream component and then upstream */
--	pcie_capability_clear_and_set_word(dd->pcidev, PCI_EXP_LNKCTL,
--					   PCI_EXP_LNKCTL_ASPMC, 0x0);
--	if (parent)
--		pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL,
--						   PCI_EXP_LNKCTL_ASPMC, 0x0);
--}
--
- static  void aspm_enable(struct hfi1_devdata *dd)
- {
- 	if (dd->aspm_enabled || aspm_mode == ASPM_MODE_DISABLED ||
- 	    !dd->aspm_supported)
- 		return;
- 
--	aspm_hw_enable_l1(dd);
-+	pci_enable_link_state(dd->pcidev, PCI_EXP_LNKCTL_ASPM_L1);
- 	dd->aspm_enabled = true;
- }
- 
-@@ -101,7 +69,7 @@ static  void aspm_disable(struct hfi1_devdata *dd)
- 	if (!dd->aspm_enabled || aspm_mode == ASPM_MODE_ENABLED)
- 		return;
- 
--	aspm_hw_disable_l1(dd);
-+	pci_disable_link_state(dd->pcidev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
- 	dd->aspm_enabled = false;
- }
- 
-@@ -254,7 +222,7 @@ void aspm_init(struct hfi1_devdata *dd)
- 	/* Start with ASPM disabled */
- 	aspm_hw_set_l1_ent_latency(dd);
- 	dd->aspm_enabled = false;
--	aspm_hw_disable_l1(dd);
-+	pci_disable_link_state(dd->pcidev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
- 
- 	/* Now turn on ASPM if configured */
- 	aspm_enable_all(dd);
-diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
-index 08732e1ac966..767f6cb770b6 100644
---- a/drivers/infiniband/hw/hfi1/pcie.c
-+++ b/drivers/infiniband/hw/hfi1/pcie.c
-@@ -1182,7 +1182,7 @@ int do_pcie_gen3_transition(struct hfi1_devdata *dd)
- 	 * will be enabled if required later
- 	 */
- 	dd_dev_info(dd, "%s: clearing ASPM\n", __func__);
--	aspm_hw_disable_l1(dd);
-+	pci_disable_link_state(dd->pcidev, PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
- 
- 	/*
- 	 * step 5f: clear DirectSpeedChange
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha        buildonly-randconfig-r004-20230602   gcc  
+alpha        buildonly-randconfig-r005-20230531   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r006-20230531   gcc  
+alpha                randconfig-r025-20230531   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r043-20230531   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm          buildonly-randconfig-r001-20230602   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r003-20230602   clang
+arm                  randconfig-r021-20230531   gcc  
+arm                  randconfig-r026-20230531   gcc  
+arm                  randconfig-r032-20230531   clang
+arm                  randconfig-r046-20230531   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r016-20230602   clang
+arm64                randconfig-r022-20230531   clang
+arm64                randconfig-r036-20230602   gcc  
+csky         buildonly-randconfig-r002-20230531   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r025-20230531   gcc  
+csky                 randconfig-r035-20230602   gcc  
+hexagon              randconfig-r041-20230531   clang
+hexagon              randconfig-r045-20230531   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r001-20230531   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230531   gcc  
+i386                 randconfig-i001-20230602   gcc  
+i386                 randconfig-i002-20230531   gcc  
+i386                 randconfig-i002-20230602   gcc  
+i386                 randconfig-i003-20230531   gcc  
+i386                 randconfig-i003-20230602   gcc  
+i386                 randconfig-i004-20230531   gcc  
+i386                 randconfig-i004-20230602   gcc  
+i386                 randconfig-i005-20230531   gcc  
+i386                 randconfig-i005-20230602   gcc  
+i386                 randconfig-i006-20230602   gcc  
+i386                 randconfig-i051-20230531   gcc  
+i386                 randconfig-i051-20230602   gcc  
+i386                 randconfig-i052-20230531   gcc  
+i386                 randconfig-i052-20230602   gcc  
+i386                 randconfig-i053-20230531   gcc  
+i386                 randconfig-i053-20230602   gcc  
+i386                 randconfig-i054-20230531   gcc  
+i386                 randconfig-i054-20230602   gcc  
+i386                 randconfig-i055-20230531   gcc  
+i386                 randconfig-i055-20230602   gcc  
+i386                 randconfig-i056-20230531   gcc  
+i386                 randconfig-i056-20230602   gcc  
+i386                 randconfig-i061-20230531   gcc  
+i386                 randconfig-i062-20230531   gcc  
+i386                 randconfig-i063-20230531   gcc  
+i386                 randconfig-i064-20230531   gcc  
+i386                 randconfig-i065-20230531   gcc  
+i386                 randconfig-i066-20230531   gcc  
+i386                 randconfig-r001-20230531   gcc  
+i386                 randconfig-r004-20230602   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k         buildonly-randconfig-r004-20230531   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r015-20230531   gcc  
+m68k                 randconfig-r034-20230531   gcc  
+microblaze           randconfig-r014-20230531   gcc  
+microblaze           randconfig-r024-20230531   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips         buildonly-randconfig-r002-20230602   clang
+mips                 randconfig-r012-20230602   gcc  
+mips                 randconfig-r022-20230531   gcc  
+mips                 randconfig-r033-20230531   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r002-20230531   gcc  
+nios2                randconfig-r014-20230602   gcc  
+nios2                randconfig-r026-20230531   gcc  
+openrisc             randconfig-r011-20230531   gcc  
+openrisc             randconfig-r031-20230531   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r004-20230531   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r034-20230602   gcc  
+riscv                randconfig-r042-20230531   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230531   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r002-20230602   gcc  
+sparc        buildonly-randconfig-r003-20230602   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r006-20230602   gcc  
+sparc                randconfig-r011-20230602   gcc  
+sparc                randconfig-r036-20230531   gcc  
+sparc64              randconfig-r003-20230531   gcc  
+sparc64              randconfig-r005-20230531   gcc  
+sparc64              randconfig-r015-20230602   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r003-20230531   gcc  
+x86_64       buildonly-randconfig-r006-20230602   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r001-20230602   gcc  
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r016-20230531   gcc  
+xtensa               randconfig-r023-20230531   gcc  
+xtensa               randconfig-r033-20230602   gcc  
+
 -- 
-2.30.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
