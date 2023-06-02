@@ -2,182 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C82FC71F900
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 05:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF79271F90D
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 05:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbjFBDli (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Jun 2023 23:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
+        id S229542AbjFBDzo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Jun 2023 23:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbjFBDle (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Jun 2023 23:41:34 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EB0BA
-        for <linux-rdma@vger.kernel.org>; Thu,  1 Jun 2023 20:41:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fvXWuF1zGIwwd9DrnjEqc6PKdQaGU6OANm07Vd+H5mZxhSJmJNaClt2rA23q3chBTLS7gGXvGrqOiG/LbqNqM/3lGnEkGmGeVWEgPPKqvF9Yopfu5JWw0rHhLRijW6TO/1N536U6A2YNmrUkhCf3wrBIQv6uKAJEQvov8323omQMxgUhi9nWC3Mbvtlr9WS+Y9hl7fhZOjVCDc/8CfT/sTzr0a4rbaSkqQEkQA6AW9IoAmkqiMcVPNx0/pLmmUnQlvNjsql7BykgGEbaCN/RQs6S582b3v4hTSsc4ykY7lp9QeFID7jXpU2p4d7gLip6sPyqSBP5GWMqEXf/vjUGLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a2AdKBd3soP9rpMuLJkT5NPOjmjvQuF3asv0rPJwQdg=;
- b=SHMLoMdfek2fhls96hy6ILf/YdrD9vfUo2Cr74MLfawKYj15YPr3zpAvBxxrcNQn1rAZjx+h+cEpBhMHu94X7/tJ1fCbpC8Qxh6MTOME1vB7nzYfqzJW64dIdc+2fIEijThOCZWLdg5b+9El4Et9GOmcmGN7qhzZFZD/WvoYyjYflN3xFXQtgZQrlLbjvYtfDBsiy/NS8kbZi+ZWbYroJQ1rGzaeCsLg/Licvud4ezEiEOEBNDSSXjf9Sz978Hmy909Cr8RbVtbRUXkalTn3Y660uKqGJFVrCBuvjs2K8g2aaQKeByQofFhySuyT1rtZeF1w5WHBz29NAIysq1xy/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a2AdKBd3soP9rpMuLJkT5NPOjmjvQuF3asv0rPJwQdg=;
- b=RH13S5LH1fL3vNV5K18MjRnvrUocetoHFbypXH1U98rM5xfMPFCl4PoJGyzOao4RWE0RY295tft4cWKAa+gCckIe7TXkz8qgWeIbA1iPtmzuiScWTt3CgR7M8ZggOqOsRrhonboQScgXapMXIk62AeVOeCpC1YhLUQ1WMxOSg8ZriFtryjHhpqeP7qWHjRPjuz0kDlD1dnPipJPse8O2TrL74EsyLDpbH/4FKwSmK5DsRwVk4V9S1eqbONTEn3iPoFTzoVZ0ymMdw2J90ap6cuhY9173UapRAW5XLAr3kplgOgZlVOWwJVe1W0rHnRatNIcaw/QninQ/d4lH+vqOIQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from BL0PR01MB4099.prod.exchangelabs.com (2603:10b6:208:42::12) by
- SJ0PR01MB6480.prod.exchangelabs.com (2603:10b6:a03:295::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6433.23; Fri, 2 Jun 2023 03:41:27 +0000
-Received: from BL0PR01MB4099.prod.exchangelabs.com
- ([fe80::938b:a632:32e8:95cb]) by BL0PR01MB4099.prod.exchangelabs.com
- ([fe80::938b:a632:32e8:95cb%5]) with mapi id 15.20.6433.025; Fri, 2 Jun 2023
- 03:41:27 +0000
-Message-ID: <d5f1df96-b06d-8708-8732-7c034f5bbd81@cornelisnetworks.com>
-Date:   Thu, 1 Jun 2023 23:41:24 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.11.2
-Subject: Re: [PATCH for-next 0/3] Updates for 6.5
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     leonro@nvidia.com, Dean Luick <dean.luick@cornelisnetworks.com>,
-        Brendan Cunningham <bcunningham@cornelisnetworks.com>,
+        with ESMTP id S229524AbjFBDzn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Jun 2023 23:55:43 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B74180
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Jun 2023 20:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685678142; x=1717214142;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lu+GfY9LAqlqNebqMFSKM1Sb0+k2zDUwWDf7IaFwoEI=;
+  b=Utq/CJzProlRUEvMBldGj8gZHWQK6vBZSAuOmp6y4+nkWJUhqB6whkiD
+   CcBGaBoZL+3ovzbn1Moex7f1N4Ef3RffHVgLZSo1bNWzUaSZD35wvrBTj
+   fLhwrXEnaIGgLxndpVuB2/Cyo2d9LrhJtMc4F/Y2S3o20exh3u5sArQZU
+   EgcqO5m/XMO4DCY8O2yAf84yIxsVEbkxevrVitRin1/nIyF6Ux3v4Mwsy
+   qiWilFV0jr4E6FQsk+JkiZ82aBlPt4aCJaezYCDpMsF+Nqteuaykj+VVb
+   qx7PkkjcKOYg0Zm8O9HPlzl9orDdGwc9gFZ54HA5S3fDFn+v825zLKoxb
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="442135107"
+X-IronPort-AV: E=Sophos;i="6.00,211,1681196400"; 
+   d="scan'208";a="442135107"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2023 20:55:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="707663446"
+X-IronPort-AV: E=Sophos;i="6.00,211,1681196400"; 
+   d="scan'208";a="707663446"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by orsmga002.jf.intel.com with ESMTP; 01 Jun 2023 20:55:37 -0700
+From:   Zhu Yanjun <yanjun.zhu@intel.com>
+To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
         linux-rdma@vger.kernel.org
-References: <168451505181.3702129.3429054159823295146.stgit@awfm-02.cornelisnetworks.com>
- <ZHkhjTvi8vNAmmEC@nvidia.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <ZHkhjTvi8vNAmmEC@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0355.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::30) To BL0PR01MB4099.prod.exchangelabs.com
- (2603:10b6:208:42::12)
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>,
+        syzbot+eba589d8f49c73d356da@syzkaller.appspotmail.com
+Subject: [PATCH v2 1/1] RDMA/rxe: Fix the use-before-initialization error of resp_pkts
+Date:   Fri,  2 Jun 2023 11:54:08 +0800
+Message-Id: <20230602035408.741534-1-yanjun.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR01MB4099:EE_|SJ0PR01MB6480:EE_
-X-MS-Office365-Filtering-Correlation-Id: 89d69df7-ca62-4406-2aae-08db631b3ea6
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3Pw0FSJKJvTccqxgzP+uR6nU8VfjABvwvK1uyyyZaiVv1TT9r43z7qzOthmz6vWSPbffggFczSOEljruXhrxTvSF3CsIGjpnyyvVpgVaTtMNy+F0G4Zv+yoE4qiiufc9YYSxfZt4AXZty8Jc6aWVWRAS91Wq/xg1/dc4fWXGQZOCJmCe0E3zBNE9OvRmd6QqD/0SzkuhFApD1ZkZ4R7+FKqIhM63QcNTbLl7NGlv4OL5XckHvogCVq2dyF/foSjJiPEacvsCAZmFh/kIFkomKJU/4fNkfStbCJmO9luT3fowZ8UOJA2xV4MvtbkdiEvWOJWoRQCOaMWKjjpEljpLuFBa8qFdime4hlBeEsz/HUFH2cVHv8Nn3ApJBP1726jIPjxXyUnVYPUzureJGIpdR83ViKsd0to8lblUi91i9YAq0mTk7Lsn49jbOh9KqFQjs6sXyzJOi8yTiEbaUtEo7v6rWJWwJHJ/G95T+PoKA1F8Gb6wi6yWYur35Xb9oUC18hDN2irUJ7DXZ55yGh2v93zAA4GJO2FLc2G50KoJcJeCXSWYH7daNE8KJX0v1r6V5kfJI8z3D1wQEynfvcn/WqtoOwKamY0Np+z7McZXQWMFKiGYGEDWVNF+q17O+ZQhpdA6qIjfJZk3cRhzJkDzeg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR01MB4099.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(136003)(39840400004)(346002)(366004)(451199021)(6512007)(6506007)(186003)(83380400001)(53546011)(2906002)(36756003)(2616005)(316002)(6916009)(6666004)(4326008)(66476007)(66946007)(66556008)(966005)(41300700001)(52116002)(6486002)(54906003)(38350700002)(31686004)(38100700002)(478600001)(44832011)(26005)(31696002)(8676002)(5660300002)(86362001)(8936002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OEVWTC9PN2wwaGlzaElGT2NHUkRBUk1rYUNxTU9ZUFQ2akY4KzdFTW0ybWNo?=
- =?utf-8?B?MFNmUmlLVzRlY3Z5b09CbDFpc2xBaS91d0dpYmhlTEtzTHlKN2RMYVlaazdM?=
- =?utf-8?B?ZVdzeXFXS2c5V3NhdnBuOGF1U0dTYVV4OFNmWllrWE84ZUY4Qk51a0xEZE9Z?=
- =?utf-8?B?dldwc3RVRTNyYnhmT1puSW5yTkduTStyc09sdXZQejdTSWhKN2VJODhTZnJu?=
- =?utf-8?B?SE1JeWhOZ1ZQdmhab2JFR2daRHFhRTQ3TjVDM29qUERsRmsrNDNma3AwZjE2?=
- =?utf-8?B?QXlQOWFiRWNqa2dDTWtLSUQrOWRmMStNeWFsZFdPYUY2bFo0dmh6cmRFK1VL?=
- =?utf-8?B?TVlDRE81U3MzSm9RdlZlT3BQUUxzeExoRVFaY0lpZDM5OER1RFl0aXEvcUw3?=
- =?utf-8?B?OFJYaG5WRnZoTFBUMDVYY1BWanlUNUhEaTYweWE5TW9qUWF6eTBialdEdnhB?=
- =?utf-8?B?RkQ4eElZWDQvSkRkVW5mY3BycWQxdTI5TjN3TU01SDE4M3c4MnNmSHVmcU9s?=
- =?utf-8?B?Nk9JRzlhTy9jeFFZM3VXcm1wSE5XME13cGZCbnRRVUxLRVB5NEs3WGlMMVUw?=
- =?utf-8?B?OHU5RjNNUUNVRFZPalcybFdPYVBBTllJeGRSd0dKM1ZrSFF4WGlWcUZ2YVNL?=
- =?utf-8?B?NXlZdlp4OS8rTmtIcWRNSXMxUFR4TUs0WCtlLzlKUXA1MmJLbEtoelExb1pu?=
- =?utf-8?B?c0d2YVVWOFV1Rm5ZRjhLS3AyenpMV01PcGM2UTg3eUEweXhReWNJQm5TOS9J?=
- =?utf-8?B?Q01SR3JNUi82c05nL2tQbzV3TVhtdlVWbDFwclNVdDJjRW1LSWhsMGozYnhV?=
- =?utf-8?B?QUlZays0aXYzY0tlclBHWjJqVkw2OEx2N0c5RXB3WFRqMkg3c1o4ZmgrUHpO?=
- =?utf-8?B?ZEk0elAxc2RuZXRIQUFJMy9JTzNhY3M2WXEwNVAwSjAyUXl4Z2J4SG9TdVFu?=
- =?utf-8?B?NWpPM2hteE1TUWNMYzlSeUdMUDkzVkhOT0ZPY0thQkd0c21rTDNMQzdhS2Fm?=
- =?utf-8?B?bHBMaDlQQVYxUkdzNys5M216SHNNZFZkQ29aQnEvQUpYRWpucHptUEh5VWhP?=
- =?utf-8?B?UkxrbW5LVllwNnk2Z20wcHkxVzVPVzFFNWVtS2J2MXlZaXk0SWM2cHovL1lu?=
- =?utf-8?B?NnEwZ0c1ZlJKT2NwSmhkUVBiaXljUG1zSlIwY1l6L2FTMExOM2Zwcy9RRUg1?=
- =?utf-8?B?TkRXbDlKRlAxc0tGa3lCUTQyYWNHU2owZDRvOE52RmQydllHbVBZZ1VPOXhV?=
- =?utf-8?B?aUp0eWRGZkNXb2VRMGFOcmJXTWNZeFdpaUU3ckpmZ0pGMkJxbUpBKzNrbXlV?=
- =?utf-8?B?WWRaMU9EZnl1VXVJb2hSMnlwRTVLYjlvOEFwWjd0bHR0NUZZSkw2WElPd2sx?=
- =?utf-8?B?OFBwK2laZVpSTExHbUJpVGZZUTRFU3FwU1QwUkdraDRMc0NlSVZSY3pjTEFx?=
- =?utf-8?B?dHdCZ1BuT3ZrelA1M0QxNHNtcWhub1NqMmhaeHdrTGFkc1l2dWltSmRjNVhh?=
- =?utf-8?B?UWRpc2JuM3pXTDBSL0N5WmJkRkJPSEVySnljVTkya3VoT3Z3QjFQZnBKQ1Rh?=
- =?utf-8?B?Z1NUUnpjVXBSWThoSEs0a1F6aktTNHd0cXNhdzVBcitMR0F2SzN0OUhEZDhK?=
- =?utf-8?B?bzV1L0dJTmhLeElmZ0IzQnQ0aTV3dDBEQjAxUk9aSldPMFdPcngzQ2hBeXUz?=
- =?utf-8?B?NWFNazgzSkx6NHY0UjZWRXRLS1BkbTVnMkZka3VtQ01xSm5CY2NvRlJVT1lJ?=
- =?utf-8?B?aTRxNjhoc2pSTVZXU2dRQ2VLYzNpYmtyeUdiV1phVFhCTXRPOTVtc3B3Qm1i?=
- =?utf-8?B?eFhybW9GQXdrQzgrUVhwa3N1VVhVdkJ6RkRWZzMrNm03dDFKMURxd3VFbTRE?=
- =?utf-8?B?Q1R0WDM4QjlySVdOYS96cWVmUFRHb1FKeDF3aGFMVHIzU1VFWWZqWlFQQ01i?=
- =?utf-8?B?MlVNSVJDTXMwUTlIOEhONkhVaTdwYk04eXN3V0xvUk9TWVY1a21qdU9hQ0Vl?=
- =?utf-8?B?UzA5ZzhNK04rUWNGM1cyVnl4akQvYUs3MGVVay9raEpJYW11LzNvV0NUb3ly?=
- =?utf-8?B?SndaSGFhRnVndXAyYURuZ2NWNk9leGZRc0hKdkQyREFvVUs2WDVRN0tVV3lh?=
- =?utf-8?B?TkIxWUZaZTE1Ynpaa2VxUk1GaHprVmE1cGUvT3dnckwvSzY3Q25qWlBqRmox?=
- =?utf-8?Q?JM4UPBjN9ezA6RwuhgzuU4c=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 89d69df7-ca62-4406-2aae-08db631b3ea6
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR01MB4099.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2023 03:41:27.1241
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aylZWcn5eiGgDl/2OcbqGMw+EtJ/og5s5O2KqQ2fdMEnmqlSkt8arkMk6JtirIXq9kyaqYO1iB1azGUWQ+3Q73Ddb1QDvASf3DtHMvdYhnrCMxfkgmOQb1KVoDY9TDxN
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR01MB6480
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/1/23 6:54 PM, Jason Gunthorpe wrote:
-> On Fri, May 19, 2023 at 12:54:14PM -0400, Dennis Dalessandro wrote:
->> Here are 3 more patches related/spawned out of the work to scale back the
->> page pinning re-work. This series depends on [1] which was submitted for RC
->> recently.
->>
->> [1] https://patchwork.kernel.org/project/linux-rdma/patch/168451393605.3700681.13493776139032178861.stgit@awfm-02.cornelisnetworks.com/
->>
->> ---
->>
->> Brendan Cunningham (2):
->>       IB/hfi1: Add mmu_rb_node refcount to hfi1_mmu_rb_template tracepoints
->>       IB/hfi1: Remove unused struct mmu_rb_ops fields .insert, .invalidate
-> 
-> I took these two
-> 
->> Patrick Kelsey (1):
->>       IB/hfi1: Separate user SDMA page-pinning from memory type
-> 
-> Don't know what to do with this one
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-I'm not seeing why it's a problem. It improves our existing page pinning by
-making the code easier to follow. It makes the code easier to maintain as well
-centralizing the pinning code.
+In the following:
+"
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ assign_lock_key kernel/locking/lockdep.c:982 [inline]
+ register_lock_class+0xdb6/0x1120 kernel/locking/lockdep.c:1295
+ __lock_acquire+0x10a/0x5df0 kernel/locking/lockdep.c:4951
+ lock_acquire kernel/locking/lockdep.c:5691 [inline]
+ lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5656
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
+ skb_dequeue+0x20/0x180 net/core/skbuff.c:3639
+ drain_resp_pkts drivers/infiniband/sw/rxe/rxe_comp.c:555 [inline]
+ rxe_completer+0x250d/0x3cc0 drivers/infiniband/sw/rxe/rxe_comp.c:652
+ rxe_qp_do_cleanup+0x1be/0x820 drivers/infiniband/sw/rxe/rxe_qp.c:761
+ execute_in_process_context+0x3b/0x150 kernel/workqueue.c:3473
+ __rxe_cleanup+0x21e/0x370 drivers/infiniband/sw/rxe/rxe_pool.c:233
+ rxe_create_qp+0x3f6/0x5f0 drivers/infiniband/sw/rxe/rxe_verbs.c:583
+...
+"
+This is a use-before-initialization problem.
 
-> Maybe send a complete feature.
+In the following function
+"
+291 /* called by the create qp verb */
+292 int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp,
+struct rxe_pd *pd,
+297 {
+            ...
+317         rxe_qp_init_misc(rxe, qp, init);
+            ...
+322
+323         err = rxe_qp_init_resp(rxe, qp, init, udata, uresp);
+324         if (err)
+325                 goto err2;   <--- error
 
-It is a complete feature. It's just a refactoring really of an existing feature.
-It makes it more flexible to extend in the future and is the current interface
-or psm2 and libfabric.
+            ...
 
-We are clearly not throwing some uapi changes over the fence that have no user
-backing. We have existing use cases already.
+334 err2:
+335         rxe_queue_cleanup(qp->sq.queue); <--- Goto here
+336         qp->sq.queue = NULL;
+"
+In rxe_qp_init_resp, the error occurs before skb_queue_head_init.
+So this call trace appeared.
 
-Now all of this being said, this is starting to concern me. We plan to start
-sending patches for supporting new HW soon. We were going to do this
-incrementally. Is that going to be considered an incomplete feature? Should we
-wait until it's all done and ship it all at once? I was envisioning doing things
-the way we did for rdmavt, showing our work so to speak, making incremental
-changes overtime as opposed to how we submitted the original hfi1 code in a
-giant blob.
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Reported-by: syzbot+eba589d8f49c73d356da@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/lkml/000000000000235bce05fac5f850@google.com/T/
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+V1->V2: Add Fixes and Link.
+---
+ drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-For instance, we are going to add a field to a data structure to hold parameters
-that differ between multiple chips. The first patch was going to be adding that
-infrastructure and moving WFR (the existing chip) values into it. In my opinion
-that's basically the same thing we are doing here with the pinning interface.
-
-This is all in effort to be open and involve the community as much as possible
-along the way so we avoid a fiasco like we had years ago with hfi1's introduction.
-
--Denny
-
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 61a2eb77d999..a0f206431cf8 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -176,6 +176,9 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	spin_lock_init(&qp->rq.producer_lock);
+ 	spin_lock_init(&qp->rq.consumer_lock);
+ 
++	skb_queue_head_init(&qp->req_pkts);
++	skb_queue_head_init(&qp->resp_pkts);
++
+ 	atomic_set(&qp->ssn, 0);
+ 	atomic_set(&qp->skb_out, 0);
+ }
+@@ -234,8 +237,6 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	qp->req.opcode		= -1;
+ 	qp->comp.opcode		= -1;
+ 
+-	skb_queue_head_init(&qp->req_pkts);
+-
+ 	rxe_init_task(&qp->req.task, qp, rxe_requester);
+ 	rxe_init_task(&qp->comp.task, qp, rxe_completer);
+ 
+@@ -279,8 +280,6 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		}
+ 	}
+ 
+-	skb_queue_head_init(&qp->resp_pkts);
+-
+ 	rxe_init_task(&qp->resp.task, qp, rxe_responder);
+ 
+ 	qp->resp.opcode		= OPCODE_NONE;
+-- 
+2.27.0
 
