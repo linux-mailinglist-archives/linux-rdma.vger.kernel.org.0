@@ -2,67 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7B97207CF
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 18:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD867207D3
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 18:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbjFBQlA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Jun 2023 12:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S235248AbjFBQmg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Jun 2023 12:42:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236840AbjFBQkr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Jun 2023 12:40:47 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A86413E
-        for <linux-rdma@vger.kernel.org>; Fri,  2 Jun 2023 09:40:46 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6af8b25fc72so1929849a34.3
-        for <linux-rdma@vger.kernel.org>; Fri, 02 Jun 2023 09:40:46 -0700 (PDT)
+        with ESMTP id S236873AbjFBQmd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Jun 2023 12:42:33 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E456E13E
+        for <linux-rdma@vger.kernel.org>; Fri,  2 Jun 2023 09:42:32 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1a1b95cc10eso2416614fac.0
+        for <linux-rdma@vger.kernel.org>; Fri, 02 Jun 2023 09:42:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685724045; x=1688316045;
+        d=gmail.com; s=20221208; t=1685724152; x=1688316152;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
         bh=IChJi0lW/a7/uzxrX6HAQ3jc9vGY9aOMbO9nhfcZRcQ=;
-        b=plFf1AQBiqTW3vdedhJZI0yQ3SG6iUGe6b125rqP3NhYXjXEBduWts7JbEiPcez7EQ
-         N0tBAS35/mmZRQYM2iVxSQjXrJ22Ue2KHUun6nZ5qmGa4FaojFciAG30RPQy9BkM64Kx
-         JXD/DjaKA8mQNDrNWN6gCRurmEcXGSJRQiYZeaiXVuHQxUhWN3kDs3UAs5IbdyacNhWC
-         Xr2yQlQrVBYR2i3JRrPtEtY7nR0MuTB7tX0L8nV8dKP4zu9S7HlUzXjKKBWPagc50D2K
-         yuBdUEosz+UiJFK3UGC/rFRC3P2FtmhtjFM694hibTuBisfb5tef85VPJThL2f3s+49b
-         Hhkw==
+        b=qbXWqz0qjWUrlETQ2G9dztfOAJJAyOx4216RVGkoh+EgDdHADavb4bVKTtuxiUWbp4
+         54UPCivqNx+Vl1Tb8gE05Y57MYZ6uazLbjyNJLYu2mTXwAeU0hYowX8aY1ouETD9HO1E
+         Q4oUKqHQzbonSwGccSC7sl9manaI9wx+urZYfefm6wovSIUSMlV5SXhkgHv8Dx/BQQ9A
+         nNlP6aHdcwNkgGtty19lkGFtrj7e2oN3yrPmil9lzc2n50ErEOIVUebW77QYQOFtPa+R
+         qipXyDlWZwtHWKPa/VQzTMkfP3kWkGXMkLk6/Jp9+f4cUj+RF4Uaf3URVpOZC4STkvBQ
+         coCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685724045; x=1688316045;
+        d=1e100.net; s=20221208; t=1685724152; x=1688316152;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=IChJi0lW/a7/uzxrX6HAQ3jc9vGY9aOMbO9nhfcZRcQ=;
-        b=EoIlXCaRdQjywsBfKARbbljyujIediSXKQtOjHcf9X5URkPOg0tQQhAgPwPeIdMtaH
-         1SFOUJQMZbc2bVn+GI2LFSmt3k/w5C4Wz/qZ5R9Fmz/sF2ucBwAbwAUMS/cOsj/gMqcu
-         zPnZBFGnfuocHSfcUiprSuaEbRpbjhwdZz+VEA1Lo8rJ79wXrEvyKnzPm/Iu+lT46jd0
-         URMG0hc87MK9Q0eLkdIuLgUJHtT6i1k0wbMPJiZztdZOb9eEVWUndeDMjmQsZj+NEG4y
-         hZkUEMsI4WZLxpHSUOwBY2WvlOUvm8FSZymjrSKUM3eBpjqwFdKRL7uYTQuTj77DGCNj
-         0r4A==
-X-Gm-Message-State: AC+VfDy0Oh2UndbRdDEifwIlYJGglvgd3T7OAjcPZv9PaSemx0OdHjDw
-        MHUOxEqKhWDFkb06vCZS5sHrjWB5NU4=
-X-Google-Smtp-Source: ACHHUZ5VpKIl6xy1aYRGJNrtcgNzVMjBCJCVvHWgss1Q4QrUnTIx168OyLkJsrmJgHvpmGXf7TBLgQ==
-X-Received: by 2002:a05:6830:3b07:b0:6af:a0d7:1819 with SMTP id dk7-20020a0568303b0700b006afa0d71819mr3162111otb.28.1685724045565;
-        Fri, 02 Jun 2023 09:40:45 -0700 (PDT)
+        b=lyI/2l2wUOwuS2ujFqiWZRT0vnOqMJY8cp+MPML91ajiIw2msZRNoFE2RaWVav515X
+         zA6NBnIYFkanPehRM6TMUQ9pnKaeZ18DtErpNkyD9gDp6aRYc+jhh2DvYws8my5fkT/I
+         quZuvxoAXivzBwINe7rKYwWTtNOY1T+EpBD1PXM0GOt3LQSrTWZH/iwHiPYI+jaxOOZe
+         ez/69QdGMoUQBsSKXM9P1XciJ8TVeoWv34GFUIMh+lVOpL8vHudpL/ygdPR9DSJvkkPO
+         AIrEz6ffWSHTRfKazYJHs+OM/Hn/r7+Dq8OHqC83hx4w7k1aTKZeO2a5yJLj+0589fqr
+         79WA==
+X-Gm-Message-State: AC+VfDwZyndvoLsa1/C8nOigcw08vQcYLHNOKNn1rTgqEL407D4eCV4Q
+        vzplAgItdgJtPpJiFLZqsRg=
+X-Google-Smtp-Source: ACHHUZ5Ns09PN18MYmwDSxWefECWGvVBibbKUBhuWPONycodUPJjJJdkd4xsgLckhiMhB6bUNi6I2w==
+X-Received: by 2002:a05:6870:37c6:b0:19f:1c6a:80b6 with SMTP id p6-20020a05687037c600b0019f1c6a80b6mr2886627oai.8.1685724151929;
+        Fri, 02 Jun 2023 09:42:31 -0700 (PDT)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-8586-f477-c596-9820.res6.spectrum.com. [2603:8081:140c:1a00:8586:f477:c596:9820])
-        by smtp.gmail.com with ESMTPSA id y25-20020a056830109900b006af92419e70sm742145oto.70.2023.06.02.09.40.44
+        by smtp.gmail.com with ESMTPSA id w22-20020a056870a2d600b0019f2bf84bf5sm774961oak.48.2023.06.02.09.42.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jun 2023 09:40:45 -0700 (PDT)
+        Fri, 02 Jun 2023 09:42:31 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, leon@kernel.org,
         linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH] RDMA/rxe: Send last wqe reached event on qp cleanup
-Date:   Fri,  2 Jun 2023 11:40:42 -0500
-Message-Id: <20230602164042.9240-1-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next] RDMA/rxe: Send last wqe reached event on qp cleanup
+Date:   Fri,  2 Jun 2023 11:42:29 -0500
+Message-Id: <20230602164229.9277-1-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
