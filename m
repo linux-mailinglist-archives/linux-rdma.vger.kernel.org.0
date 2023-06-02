@@ -2,70 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7EB7207D8
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 18:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69DC7207F5
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 18:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236589AbjFBQni (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Jun 2023 12:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
+        id S236816AbjFBQyM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Jun 2023 12:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236496AbjFBQnh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Jun 2023 12:43:37 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A099197
-        for <linux-rdma@vger.kernel.org>; Fri,  2 Jun 2023 09:43:35 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6af713338ccso1798045a34.0
-        for <linux-rdma@vger.kernel.org>; Fri, 02 Jun 2023 09:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685724214; x=1688316214;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ztvqo9dEvEewn15+stfPz2bAyVShxNd0yL4S+Ankfc8=;
-        b=q43lxTnpQ7AXsk3SmzGWHpf2/uVfpwHM3S+iGhRUxZUVGBiuD+qbeL1J1/gVc5/5FC
-         EZk57910MkVD3qDHm9GthCtNPs7RBTCNiMIgvc8CbPQzrVN08HDgcVysycGP3yoCCCIz
-         zRLpP8N6XGWCONoM42yrCefxhdf6DEysPlvZA7Z0OL9ckgZw0b0e1+fXx2WuewxvRfX6
-         hoa6dCujFQCTMfUm7IsL2gfLq8Rvjr/y5pnM8UiWqX/0sUzZXEBYHR9P95njDoVd40jE
-         Ds3SE1xhLYYybdDM6wXkUeO7OkBzm4XU5CAmMZ4TRDUeVcf+J8s74sFaxt1qOVSmFvy9
-         YflQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685724214; x=1688316214;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ztvqo9dEvEewn15+stfPz2bAyVShxNd0yL4S+Ankfc8=;
-        b=LQ/XpuAv2XbCnHOA1Lzrwjask1IMgpCx8QOdEZyB2iZYKlwP1uayjPnMCyhOPGqkBO
-         beXWjL3ZwAago3+XsgRIT2qLZmsKZVdMbc8qVkvcAELjdamfitExk/xXJTAFcMuyoEPz
-         yq6k7lWWl5Iq/z2ePPOlQKgz2Z0WTK+16lTL2nbS//+iSdu+iUONEByqX+aX48AMDbzW
-         z4XNLIcy8ivK0vuRa8BsRoNT9GZRikT1RIBgr5CiI6FfVmUODeAWycrVeRGqLq33Ys5g
-         rE0qKnO5447GIOx3Efrvn7A1AP7lOiubcSccHck191dMm1mU8U7LtBMfQIYzSxcs5TXB
-         HMjA==
-X-Gm-Message-State: AC+VfDx+rMK/o4ffpr579bkK7ae6KxWF2dX1oivqh4wdpU3RpG4sw0iq
-        ROe+I3yL+BGMxJQXEZr/ouY=
-X-Google-Smtp-Source: ACHHUZ4i3jjkvQFFMWWN7byE83xEz1LfoGcno8S30WmzPBCLCtvizILAgkiw89grKf4qyOVrGCRLIQ==
-X-Received: by 2002:a05:6830:ce:b0:6af:9cfa:a38b with SMTP id x14-20020a05683000ce00b006af9cfaa38bmr2618466oto.32.1685724214250;
-        Fri, 02 Jun 2023 09:43:34 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:8586:f477:c596:9820? (2603-8081-140c-1a00-8586-f477-c596-9820.res6.spectrum.com. [2603:8081:140c:1a00:8586:f477:c596:9820])
-        by smtp.gmail.com with ESMTPSA id t2-20020a9d7f82000000b006af7ccca526sm779141otp.20.2023.06.02.09.43.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jun 2023 09:43:33 -0700 (PDT)
-Message-ID: <dd87f075-e0f9-7fea-e134-6dd5167c8334@gmail.com>
-Date:   Fri, 2 Jun 2023 11:43:33 -0500
+        with ESMTP id S236068AbjFBQyL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Jun 2023 12:54:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1F91A5
+        for <linux-rdma@vger.kernel.org>; Fri,  2 Jun 2023 09:54:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6975565266
+        for <linux-rdma@vger.kernel.org>; Fri,  2 Jun 2023 16:54:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77BABC433D2;
+        Fri,  2 Jun 2023 16:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1685724848;
+        bh=cn8PP+KjC0WdCEavBUy1xLwsTmD3K1c7Pp/44YdagUc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MLYFWvjvPLphpN5Mb3iQJwqqIMW3Dm2kYlBVp41Lqw8WsAX2cMaz15LCUGAYUrfO8
+         dEl/ZeJ8RVHSiktRjhv531xztCw8MXvkribL1MhTA1BeWUVMGJQh+DrDWJQ88s5R/s
+         FzTdeVacX2FN2l3W+NxvYwMjE504jwU5c9EHrT6DrAS5f0Lj8UQAtSdBS+g1+UmhLR
+         M/9Hymur+J7mDh+QCGUl/WKTGzPKwjB5enIcpbdfXxUeqyeUbbwLYPHJdHZqFILDSH
+         rpvL7Fa8sXCxdtMMEPeVKT+v7dmT98RsUDzG458g99hy6fLAaoeljHz8v0Spw48SXf
+         XAwm/r7XfSyKA==
+Date:   Fri, 2 Jun 2023 09:54:07 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        "elic@nvidia.com" <elic@nvidia.com>,
+        "saeedm@nvidia.com" <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Subject: Re: system hang on start-up (mlx5?)
+Message-ID: <20230602095407.109bdffc@kernel.org>
+In-Reply-To: <ZHn8xALvQ/wKER1t@ziepe.ca>
+References: <A1E5B427-897B-409E-B8E3-E417678E81F6@oracle.com>
+        <bf2594bb-94e0-5c89-88ad-935dee2ac95c@leemhuis.info>
+        <5b235e0f-cd4c-a453-d648-5a4e9080ac19@leemhuis.info>
+        <AAFDF38A-E59A-4D6A-8EC2-113861C8B5DB@oracle.com>
+        <bb2df75d-05be-3f7b-693a-84be195dc2f1@leemhuis.info>
+        <ZHn8xALvQ/wKER1t@ziepe.ca>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] RDMA/rxe: Send last wqe reached event on qp cleanup
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20230602164042.9240-1-rpearsonhpe@gmail.com>
-Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20230602164042.9240-1-rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,51 +63,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Sorry ignore this one. I forgot the for-next.
-
-Bob
-
-On 6/2/23 11:40, Bob Pearson wrote:
-> The IBA requires:
-> 	o11-5.2.5: If the HCA supports SRQ, for RC and UD service,
-> 	the CI shall generate a Last WQE Reached Affiliated Asynchronous
-> 	Event on a QP that is in the Error State and is associated with
-> 	an SRQ when either:
-> 		• a CQE is generated for the last WQE, or
-> 		• the QP gets in the Error State and there are no more
-> 		  WQEs on the RQ.
+On Fri, 2 Jun 2023 11:29:24 -0300 Jason Gunthorpe wrote:
+> > > Also, checkpatch.pl is now complaining about Closes: tags instead
+> > > of Link: tags. A bug was never opened for this issue.  
+> > 
+> > That was a change by somebody else, but FWIW, just use Closes: (instead
+> > of Link:) with a link to the report on lore, that tag is not reserved
+> > for bugs.
+> > 
+> > /me will go and update his boilerplate text used above  
 > 
-> This patch implements this behavior in flush_recv_queue() which is
-> called as a result of rxe_qp_error() being called whenever the qp
-> is put into the error state. The rxe responder executes SRQ WQEs
-> directly from the SRQ so there are never more WQES on the RQ.
+> And now you say they should be closes not link?
 > 
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_resp.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 172c8f916470..0c24facd12cb 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -1492,8 +1492,17 @@ static void flush_recv_queue(struct rxe_qp *qp, bool notify)
->  	struct rxe_recv_wqe *wqe;
->  	int err;
->  
-> -	if (qp->srq)
-> +	if (qp->srq) {
-> +		if (notify && qp->ibqp.event_handler) {
-> +			struct ib_event ev;
-> +
-> +			ev.device = qp->ibqp.device;
-> +			ev.element.qp = &qp->ibqp;
-> +			ev.event = IB_EVENT_QP_LAST_WQE_REACHED;
-> +			qp->ibqp.event_handler(&ev, qp->ibqp.qp_context);
-> +		}
->  		return;
-> +	}
->  
->  	while ((wqe = queue_head(q, q->type))) {
->  		if (notify) {
+> Oy it makes my head hurt all these rules.
 
++1
+
+I don't understand why the Closes tag were accepted. 
+I may be misremembering but I thought Linus wanted Link tags:
+
+Link: https://bla/bla
+
+optionally with a trailer:
+
+Link: https://bla/bla # closes
+
+The checkpatch warning is just adding an annoying amount of noise
+for all of use who don't use Closes tags.
