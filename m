@@ -2,55 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B97D771F885
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 04:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C02F71F8BD
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Jun 2023 05:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbjFBCjA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Jun 2023 22:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50026 "EHLO
+        id S229524AbjFBDKH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Jun 2023 23:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjFBCjA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Jun 2023 22:39:00 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6495192
-        for <linux-rdma@vger.kernel.org>; Thu,  1 Jun 2023 19:38:58 -0700 (PDT)
+        with ESMTP id S229598AbjFBDKG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Jun 2023 23:10:06 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185D099
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Jun 2023 20:10:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685673538; x=1717209538;
+  t=1685675405; x=1717211405;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=BE08BwvuLjzi+GbAqGNlznMI6GVM+02gHjKfpB/U1OE=;
-  b=SB+nB/6q2ueOuS96fAP8mfkMW+t2j3Dot9cJrYR7+18CrCnGzL/n+fKp
-   NoIvNxW+rDw6No9rFlPvkPpoGX1Ej36ap7XNp53/jARVmFO6sjMw3269f
-   y2wOaNzgFjMtwtyXs5oUIWfENdrDbam+U0HpPcEN1hPIEO19Z/wzaXIHZ
-   Q/pnx5sd9OgM6GCGTX43iQ+jUetyK0Ni+pn0xlUDSy7M9JBlNYRSdpHGN
-   wTvp7JMGB13xuHL5llRAJrtM+JGC5Z1JDc/MBqJwqrARqDvXlTH5uxhtL
-   +FVt5IIiZoP+hSL5kue4YaDXCSjoWpNybtcK0EYZKPRdg9AEfosSUImkU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="421563125"
+  bh=9Gt8st/ryKSg8qnsIEF7QXkgeLEpi4pVanUVqfCBXlI=;
+  b=lW5KLZPZT18tGhq7ADZdhkeACLHohuZXPWjgxgQOKHflzVPv0P/T4YWY
+   m+dthakxvSVDegQ5KCHzpJgYsO23Go/EYk6L9spvHiBmm55dBIg7UEpFS
+   37JKpRRUmkjzvx/l8McjkTJzrb/JERNgILrnfvBFADQqFUvDswVOTyY7k
+   oqgIt6E98c1puMxx9vUZefyNqySBZTCOtvCyc8mqw/2wUENMFhRnt+yQc
+   Unvs9XoTWbI7StTiAugLeoCDu10lw00cMBN4YvWaOBRHO1FxSXJJ8vLh8
+   OTXae8EFS+LGVvYgGSllHeZiFJ93vanSx3kdlD2QwmwnIO71h0M/VHFua
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="353246165"
 X-IronPort-AV: E=Sophos;i="6.00,211,1681196400"; 
-   d="scan'208";a="421563125"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2023 19:38:58 -0700
+   d="scan'208";a="353246165"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2023 20:10:03 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="820084758"
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="954284983"
 X-IronPort-AV: E=Sophos;i="6.00,211,1681196400"; 
-   d="scan'208";a="820084758"
-Received: from lkp-server01.sh.intel.com (HELO fb1ced2c09fb) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Jun 2023 19:38:56 -0700
-Received: from kbuild by fb1ced2c09fb with local (Exim 4.96)
+   d="scan'208";a="954284983"
+Received: from lkp-server01.sh.intel.com (HELO d1d49124694e) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Jun 2023 20:10:00 -0700
+Received: from kbuild by d1d49124694e with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1q4ugp-0002wc-1d;
-        Fri, 02 Jun 2023 02:38:55 +0000
-Date:   Fri, 2 Jun 2023 10:38:29 +0800
+        id 1q4vAu-00001o-11;
+        Fri, 02 Jun 2023 03:10:00 +0000
+Date:   Fri, 2 Jun 2023 11:09:19 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Saravanan Vajravel <saravanan.vajravel@broadcom.com>,
         selvin.xavier@broadcom.com, jgg@ziepe.ca, leon@kernel.org,
         sagi@grimberg.me
-Cc:     oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-rdma@vger.kernel.org,
         Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 Subject: Re: [PATCH for-rc 1/3] IB/isert: Fix dead lock in ib_isert
-Message-ID: <202306021057.prO0j0bN-lkp@intel.com>
+Message-ID: <202306021038.ms6aIjpB-lkp@intel.com>
 References: <20230601094220.64810-2-saravanan.vajravel@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -80,31 +81,34 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Saravanan-Vajravel/IB-ise
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
 patch link:    https://lore.kernel.org/r/20230601094220.64810-2-saravanan.vajravel%40broadcom.com
 patch subject: [PATCH for-rc 1/3] IB/isert: Fix dead lock in ib_isert
-config: x86_64-buildonly-randconfig-r005-20230602 (https://download.01.org/0day-ci/archive/20230602/202306021057.prO0j0bN-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+config: arm64-randconfig-r025-20230531 (https://download.01.org/0day-ci/archive/20230602/202306021038.ms6aIjpB-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project 4faf3aaf28226a4e950c103a14f6fc1d1fdabb1b)
 reproduce (this is a W=1 build):
+        mkdir -p ~/bin
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm64 cross compiling tool for clang build
+        # apt-get install binutils-aarch64-linux-gnu
         # https://github.com/intel-lab-lkp/linux/commit/c7031144a2a9b6f14201977b35600ab80ee30e09
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Saravanan-Vajravel/IB-isert-Fix-dead-lock-in-ib_isert/20230601-225628
         git checkout c7031144a2a9b6f14201977b35600ab80ee30e09
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 olddefconfig
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/infiniband/ulp/isert/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=arm64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/infiniband/ulp/isert/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306021057.prO0j0bN-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306021038.ms6aIjpB-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   drivers/infiniband/ulp/isert/ib_isert.c: In function 'isert_free_np':
->> drivers/infiniband/ulp/isert/ib_isert.c:2454:75: error: expected ';' before '}' token
-    2454 |                         list_move_tail(&isert_conn->node, &drop_conn_list)
-         |                                                                           ^
-         |                                                                           ;
-    2455 |                 }
-         |                 ~                                                          
+>> drivers/infiniband/ulp/isert/ib_isert.c:2454:54: error: expected ';' after expression
+                           list_move_tail(&isert_conn->node, &drop_conn_list)
+                                                                             ^
+                                                                             ;
+   1 error generated.
 
 
 vim +2454 drivers/infiniband/ulp/isert/ib_isert.c
