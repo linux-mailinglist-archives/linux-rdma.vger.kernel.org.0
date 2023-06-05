@@ -2,48 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 973B67210BC
-	for <lists+linux-rdma@lfdr.de>; Sat,  3 Jun 2023 17:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEED72231F
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jun 2023 12:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbjFCPO1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 3 Jun 2023 11:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
+        id S231248AbjFEKOT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Jun 2023 06:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjFCPO0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 3 Jun 2023 11:14:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB290123
-        for <linux-rdma@vger.kernel.org>; Sat,  3 Jun 2023 08:14:25 -0700 (PDT)
+        with ESMTP id S231218AbjFEKOR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jun 2023 06:14:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D20DEE;
+        Mon,  5 Jun 2023 03:14:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 774E960AB8
-        for <linux-rdma@vger.kernel.org>; Sat,  3 Jun 2023 15:14:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EDC0C433D2;
-        Sat,  3 Jun 2023 15:14:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A60236123F;
+        Mon,  5 Jun 2023 10:14:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0CC4C433EF;
+        Mon,  5 Jun 2023 10:14:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685805264;
-        bh=ScfCpeueTKwIGM7OyFbKO5lv13xBUuDYOH1xc/AuVB0=;
-        h=Subject:From:To:Cc:Date:From;
-        b=FHOD3LN9n/3vjWi6poVszen3yA5WgsdOf9H5byhinDAT0kAbCF9QmxZ4c3R/Mh6aa
-         LaE4TEV6FtgfS1uJi0cMqWvtZ7jW2BUTJdeT+WojAehapsRbX/8wTnA5siYo0cVuwi
-         2eqKGrk587kvl6XqsyQoc0CZlydW1bEzhBLFe2pTboVCdITcN6sdD9pvPdTl/xxHnU
-         bvRXURDeQhA+0GoRxHJ9i5Chua4CT5YBr4IffLAn+0Rjyz4SckRSHIg1AQkVuvhu81
-         R6z2kzsT97HYVsmNi4e2i9Bfj+vAyid/QMuv9+gYci1vzxkBpwc2ZjkY80miANNsH7
-         2Sz7RR6xBLZQA==
-Subject: [PATCH RFC] RDMA/siw: Fabricate a GID on tun and loopback devices
-From:   Chuck Lever <cel@kernel.org>
-To:     BMT@zurich.ibm.com
-Cc:     Tom Talpey <tom@talpey.com>, Chuck Lever <chuck.lever@oracle.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org, tom@talpey.com
-Date:   Sat, 03 Jun 2023 11:14:13 -0400
-Message-ID: <168580524310.5238.13720896895363588620.stgit@oracle-102.nfsv4bat.org>
-User-Agent: StGit/1.5
+        s=k20201202; t=1685960052;
+        bh=Zy7F8g5Z2TeY0mKknBJU4ExG8y5dcguFh9LlLAlh+Pk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XSO0HxdFSe0laVAjCG6+Bc+fRWM38yXCxIYJtou5sPcLKjdPnj6OjbwftGpmIXezL
+         wHJN3eQln4Zg+3ZP68eLM5jQrd2hKdhmW4jHKAsM7kQicrKorXcItrj0S6EBp1Ljs8
+         0Z3opamSxw6u2X9DW2MJwrfeu0rLYa1vv1xio+Cv0zRtU5/HNR6jBgZu32ZGYqocIo
+         j/5tSqgjXlteQEVbalAF7W4gfm18rc3I096RqhzP0ZmaEQy3HMEpMdRjIPm/KZqNrl
+         5olqyoDRByLUy9+CGBZoBs2bPVNJsVFAC/D//5sIKTQBkkpZStzZJ0b7x+iOqrYYtF
+         jEvLJVr5N1jzA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Patrisious Haddad <phaddad@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH rdma-next v2 0/4] Handle FW failures to destroy QP/RQ objects
+Date:   Mon,  5 Jun 2023 13:14:03 +0300
+Message-Id: <cover.1685953497.git.leon@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,109 +56,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-LOOPBACK and NONE (tunnel) devices have all-zero MAC addresses.
-Currently, siw_device_create() falls back to copying the IB device's
-name in those cases, because an all-zero MAC address breaks the RDMA
-core address resolution mechanism.
+Changelog:
+v2:
+ * Reworked DCT patch
+v1: https://lore.kernel.org/all/cover.1678973858.git.leon@kernel.org
+ * Dropped EQ changes
+v0: https://lore.kernel.org/all/cover.1649139915.git.leonro@nvidia.com
+-----------------------------------------------------------------------
 
-However, at the point when siw_device_create() constructs a GID, the
-ib_device::name field is uninitialized, leaving the MAC address to
-remain in an all-zero state.
+Hi,
 
-Fabricate a random artificial GID for such devices, and ensure that
-artificial GID is returned for all device query operations.
+This series from Patrisious extends mlx5 driver to convey FW failures
+back to the upper layers and allow retry to delete these hardware
+resources.
 
-Reported-by: Tom Talpey <tom@talpey.com>
-Link: https://lore.kernel.org/linux-rdma/SA0PR15MB391986C07C4D41E107E79659994FA@SA0PR15MB3919.namprd15.prod.outlook.com/T/#t
-Fixes: a2d36b02c15d ("RDMA/siw: Enable siw on tunnel devices")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- drivers/infiniband/sw/siw/siw.h       |    1 +
- drivers/infiniband/sw/siw/siw_main.c  |   22 ++++++++--------------
- drivers/infiniband/sw/siw/siw_verbs.c |    4 ++--
- 3 files changed, 11 insertions(+), 16 deletions(-)
+Thanks
 
-diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-index d7f5b2a8669d..41fb8976abc6 100644
---- a/drivers/infiniband/sw/siw/siw.h
-+++ b/drivers/infiniband/sw/siw/siw.h
-@@ -74,6 +74,7 @@ struct siw_device {
- 
- 	u32 vendor_part_id;
- 	int numa_node;
-+	char raw_gid[ETH_ALEN];
- 
- 	/* physical port state (only one port per device) */
- 	enum ib_port_state state;
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 1225ca613f50..57896fafa6c0 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -75,8 +75,7 @@ static int siw_device_register(struct siw_device *sdev, const char *name)
- 		return rv;
- 	}
- 
--	siw_dbg(base_dev, "HWaddr=%pM\n", sdev->netdev->dev_addr);
--
-+	siw_dbg(base_dev, "HWaddr=%pM\n", sdev->raw_gid);
- 	return 0;
- }
- 
-@@ -314,24 +313,19 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- 		return NULL;
- 
- 	base_dev = &sdev->base_dev;
--
- 	sdev->netdev = netdev;
- 
--	if (netdev->type != ARPHRD_LOOPBACK && netdev->type != ARPHRD_NONE) {
--		addrconf_addr_eui48((unsigned char *)&base_dev->node_guid,
--				    netdev->dev_addr);
-+	if (netdev->addr_len) {
-+		memcpy(sdev->raw_gid, netdev->dev_addr,
-+		       min_t(unsigned int, netdev->addr_len, ETH_ALEN));
- 	} else {
- 		/*
--		 * This device does not have a HW address,
--		 * but connection mangagement lib expects gid != 0
-+		 * This device does not have a HW address, but
-+		 * connection mangagement requires a unique gid.
- 		 */
--		size_t len = min_t(size_t, strlen(base_dev->name), 6);
--		char addr[6] = { };
--
--		memcpy(addr, base_dev->name, len);
--		addrconf_addr_eui48((unsigned char *)&base_dev->node_guid,
--				    addr);
-+		eth_random_addr(sdev->raw_gid);
- 	}
-+	addrconf_addr_eui48((u8 *)&base_dev->node_guid, sdev->raw_gid);
- 
- 	base_dev->uverbs_cmd_mask |= BIT_ULL(IB_USER_VERBS_CMD_POST_SEND);
- 
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 398ec13db624..32b0befd25e2 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -157,7 +157,7 @@ int siw_query_device(struct ib_device *base_dev, struct ib_device_attr *attr,
- 	attr->vendor_part_id = sdev->vendor_part_id;
- 
- 	addrconf_addr_eui48((u8 *)&attr->sys_image_guid,
--			    sdev->netdev->dev_addr);
-+			    sdev->raw_gid);
- 
- 	return 0;
- }
-@@ -218,7 +218,7 @@ int siw_query_gid(struct ib_device *base_dev, u32 port, int idx,
- 
- 	/* subnet_prefix == interface_id == 0; */
- 	memset(gid, 0, sizeof(*gid));
--	memcpy(&gid->raw[0], sdev->netdev->dev_addr, 6);
-+	memcpy(gid->raw, sdev->raw_gid, ETH_ALEN);
- 
- 	return 0;
- }
+Leon Romanovsky (1):
+  RDMA/mlx5: Reduce QP table exposure
 
+Patrisious Haddad (3):
+  net/mlx5: Nullify qp->dbg pointer post destruction
+  RDMA/mlx5: Handle DCT QP logic separately from low level QP interface
+  RDMA/mlx5: Return the firmware result upon destroying QP/RQ
+
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  1 +
+ drivers/infiniband/hw/mlx5/qp.h               | 12 ++-
+ drivers/infiniband/hw/mlx5/qpc.c              | 93 +++++++++++--------
+ .../net/ethernet/mellanox/mlx5/core/debugfs.c |  6 +-
+ include/linux/mlx5/driver.h                   | 10 --
+ 5 files changed, 69 insertions(+), 53 deletions(-)
+
+-- 
+2.40.1
 
