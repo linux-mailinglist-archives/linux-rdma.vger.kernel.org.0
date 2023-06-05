@@ -2,41 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2ECB72239D
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jun 2023 12:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62817722399
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jun 2023 12:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjFEKe2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Jun 2023 06:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
+        id S231293AbjFEKeW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Jun 2023 06:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbjFEKeT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jun 2023 06:34:19 -0400
+        with ESMTP id S231330AbjFEKeQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jun 2023 06:34:16 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E86E41
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 03:34:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2D31A8
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 03:34:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 66A7062267
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 10:34:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FA80C433EF;
-        Mon,  5 Jun 2023 10:34:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ACD6C6225F
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 10:34:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9FB3C433EF;
+        Mon,  5 Jun 2023 10:34:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685961248;
-        bh=QpFFFlNxWIcnRDAY9hU4W8LNXtFoBTcdlUBVKXO9wm8=;
+        s=k20201202; t=1685961242;
+        bh=P6qTBjExfs6p45g3tbSPwwNmlQsHzBCSAozQgEWxuh8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B4OKtRsF6WHA1mS1Ajw3a6Hz3YYVOFYHGm2pjRxUL+FqbwG6MYzqooFM2mcVyGYce
-         E8opNuviyY+7PxDMvw4mSqWOEFHyoVF7vCq+ovaEpvlBiEduQe24ZcAQg3m3I4s3hv
-         t1ypUNUT3RQGJHY7I69Tq5psOM8hlA/fgcIzoN57Q5x3NIDLOor1nniGOk+rQOcltu
-         wtiJziQn6eTfGeGku4qR6y2NQmvCXLiWFjMQ2Xpb60E7IAebOGwkLSuUZoE8w7MCUd
-         tEfqKi/TA3xEKFxCVJLy2dJqQF2zPkIwjBwufUE3WBvQBzYEKeqYdGYop7FDnuq6Qh
-         D1M1C128u1YYQ==
+        b=XSzUcOuB/JUN8YY9zZRG6ZBk6/HfF9Hrypfn8rRyAc05/48FrycMYPPvxxOHadjsd
+         zMF8PRm/H/Mu9wdsSfPfCXqUR2kiwreJNxB6VKLmSFRNaO3jG6sBQtTlrPfZwBkzci
+         wrPXnVyn4kj+YMaK7R/VH11Hz/vORQ+gias4hgBLXOTU5Moc4wTKtEr1OY+Fncfw7J
+         9FIBI/15SwvC8HCl5pF04+5JB50xf+XE3UYNVPJoiCk+ndNoJC451CendprxOQ22AB
+         V/AbwU6W1lfG+u9708gY22QAlYe/FtnRt7EJPoRJP8zknyz4RV3YSGUV0Mzbhb8HzF
+         uqfgQw2P33Yyg==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc 08/10] RDMA/uverbs: Restrict usage of privileged QKEYs
-Date:   Mon,  5 Jun 2023 13:33:24 +0300
-Message-Id: <c00c809ddafaaf87d6f6cb827978670989a511b3.1685960567.git.leon@kernel.org>
+Cc:     Yishai Hadas <yishaih@nvidia.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-rc 09/10] IB/uverbs: Fix to consider event queue closing also upon non-blocking mode
+Date:   Mon,  5 Jun 2023 13:33:25 +0300
+Message-Id: <97b00116a1e1e13f8dc4ec38a5ea81cf8c030210.1685960567.git.leon@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1685960567.git.leon@kernel.org>
 References: <cover.1685960567.git.leon@kernel.org>
@@ -52,41 +53,62 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Edward Srouji <edwards@nvidia.com>
+From: Yishai Hadas <yishaih@nvidia.com>
 
-According to the IB specification rel-1.6, section 3.5.3:
-"QKEYs with the most significant bit set are considered controlled
-QKEYs, and a HCA does not allow a consumer to arbitrarily specify a
-controlled QKEY."
+Fix ib_uverbs_event_read() to consider event queue closing also upon
+non-blocking mode.
 
-Thus, block non-privileged users from setting such a QKEY.
+Once the queue is closed (e.g. hot-plug flow) all the existing events
+are cleaned-up as part of ib_uverbs_free_event_queue().
 
-Fixes: bc38a6abdd5a ("[PATCH] IB uverbs: core implementation")
-Signed-off-by: Edward Srouji <edwards@nvidia.com>
+An application that uses the non-blocking FD mode should get -EIO in
+that case to let it knows that the device was removed already.
+
+Otherwise, it can loose the indication that the device was removed and
+won't recover.
+
+As part of that, refactor the code to have a single flow with regards to
+'is_closed' for both blocking and non-blocking modes.
+
+Fixes: 14e23bd6d221 ("RDMA/core: Fix locking in ib_uverbs_event_read")
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/uverbs_cmd.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/uverbs_main.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 4796f6a8828c..e836c9c477f6 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -1850,8 +1850,13 @@ static int modify_qp(struct uverbs_attr_bundle *attrs,
- 		attr->path_mtu = cmd->base.path_mtu;
- 	if (cmd->base.attr_mask & IB_QP_PATH_MIG_STATE)
- 		attr->path_mig_state = cmd->base.path_mig_state;
--	if (cmd->base.attr_mask & IB_QP_QKEY)
-+	if (cmd->base.attr_mask & IB_QP_QKEY) {
-+		if (cmd->base.qkey & IB_QP_SET_QKEY && !capable(CAP_NET_RAW)) {
-+			ret = -EPERM;
-+			goto release_qp;
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index fbace69672ca..7c9c79c13941 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -222,8 +222,12 @@ static ssize_t ib_uverbs_event_read(struct ib_uverbs_event_queue *ev_queue,
+ 	spin_lock_irq(&ev_queue->lock);
+ 
+ 	while (list_empty(&ev_queue->event_list)) {
+-		spin_unlock_irq(&ev_queue->lock);
++		if (ev_queue->is_closed) {
++			spin_unlock_irq(&ev_queue->lock);
++			return -EIO;
 +		}
- 		attr->qkey = cmd->base.qkey;
-+	}
- 	if (cmd->base.attr_mask & IB_QP_RQ_PSN)
- 		attr->rq_psn = cmd->base.rq_psn;
- 	if (cmd->base.attr_mask & IB_QP_SQ_PSN)
+ 
++		spin_unlock_irq(&ev_queue->lock);
+ 		if (filp->f_flags & O_NONBLOCK)
+ 			return -EAGAIN;
+ 
+@@ -233,12 +237,6 @@ static ssize_t ib_uverbs_event_read(struct ib_uverbs_event_queue *ev_queue,
+ 			return -ERESTARTSYS;
+ 
+ 		spin_lock_irq(&ev_queue->lock);
+-
+-		/* If device was disassociated and no event exists set an error */
+-		if (list_empty(&ev_queue->event_list) && ev_queue->is_closed) {
+-			spin_unlock_irq(&ev_queue->lock);
+-			return -EIO;
+-		}
+ 	}
+ 
+ 	event = list_entry(ev_queue->event_list.next, struct ib_uverbs_event, list);
 -- 
 2.40.1
 
