@@ -2,52 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D43722327
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jun 2023 12:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03C6722321
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jun 2023 12:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbjFEKOj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Jun 2023 06:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
+        id S231153AbjFEKOU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Jun 2023 06:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbjFEKOh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jun 2023 06:14:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7885A118
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 03:14:27 -0700 (PDT)
+        with ESMTP id S230224AbjFEKOS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jun 2023 06:14:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7DBF7
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 03:14:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F053E62214
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 10:14:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA6B3C433A0;
-        Mon,  5 Jun 2023 10:14:25 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 62AF062217
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 10:14:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F0B0C4339C;
+        Mon,  5 Jun 2023 10:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685960066;
-        bh=QfSq/8HGnCI9pJaK2B2ezUlX+KtyUbZYG96XddVGVRc=;
+        s=k20201202; t=1685960055;
+        bh=qm6MedU5NkwL9B9WtLNrnQbOBGPrlm1J4Z/H1eepMzg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WOakJVRCz/AegkEKgyDofqt/y1zbK1eNpXeB66aXedDX5VNakAEPlKYaxNAQUY1LZ
-         jSfkXFCHrRGTqeMvUwli0V6bK/K/hAYmcVLIpJ499AXH6eqX0DHCjrPe6UNTMOvjYi
-         LtCu8qU2SH7EB+gGDY0vQpWGDCagqaTAnmOofiqvX0iFMWRjC0cv924/sFPZyvj+gd
-         KjcZaek2rlktwcfhyhgBsSd4kk8YBLGKWCi6J83dK8zxiVYyOfMIyDi+hlylWe0TkM
-         yf2g+SQMHxYz1Gua/5lJ482zKW/O8Wfh5X7jMr6UjhIXOOs+NSUNgGxHmwmEJXpG53
-         vLw/iDZ/h8GRQ==
+        b=vAOLb4xoT3cDCwlstfGfNQU0u1f2bveN1LLHsfojbHcZx7EIVxk9jg0fnHzvZ6Gst
+         aApjbDwFuyepTarS3Unh/oaUFf3Iv3tHAhTckOjpsrunP0Iy2RH/FXarG/xrCy5zbo
+         ghKVDxy1MjKnKUMyR4RPFBYYk4YGXfcRdONx+zOv1YvALNwxrBX68su6W71++35RZY
+         8ad6A/axoGaM/twiOjuxzZKJxoFyLmWST9rGeuj9KBYwVkJADiRd9x+qfD+fZM6HYI
+         QHq7EyEpc8EE4jw0zt6jS1k00ckyuCo5oicU/YG54jZplOR5CPGSTFVnv1UwWEQGCy
+         m2QUdASVX8Lew==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Patrisious Haddad <phaddad@nvidia.com>,
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
         netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Patrisious Haddad <phaddad@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH rdma-next v2 1/4] net/mlx5: Nullify qp->dbg pointer post destruction
-Date:   Mon,  5 Jun 2023 13:14:04 +0300
-Message-Id: <1677e52bb642fd8d6062d73a5aa69083c0283dc9.1685953497.git.leon@kernel.org>
+Subject: [PATCH rdma-next v2 2/4] RDMA/mlx5: Reduce QP table exposure
+Date:   Mon,  5 Jun 2023 13:14:05 +0300
+Message-Id: <bec0dc1158e795813b135d1143147977f26bf668.1685953497.git.leon@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1685953497.git.leon@kernel.org>
 References: <cover.1685953497.git.leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,38 +57,73 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Nullifying qp->dbg is a preparation for the next patches
-from the series in which mlx5_core_destroy_qp() could actually fail,
-and then it can be called again which causes a kernel crash, since
-qp->dbg was not nullified in previous call.
+driver.h is common header to whole mlx5 code base, but struct
+mlx5_qp_table is used in mlx5_ib driver only. So move that struct
+to be under sole responsibility of mlx5_ib.
 
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/debugfs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  1 +
+ drivers/infiniband/hw/mlx5/qp.h      | 11 ++++++++++-
+ include/linux/mlx5/driver.h          |  9 ---------
+ 3 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c b/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c
-index bb95b40d25eb..b08b5695ee45 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c
-@@ -513,11 +513,11 @@ EXPORT_SYMBOL(mlx5_debug_qp_add);
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index fe5e23a06735..1eefefdaa009 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -25,6 +25,7 @@
+ #include <rdma/mlx5_user_ioctl_verbs.h>
  
- void mlx5_debug_qp_remove(struct mlx5_core_dev *dev, struct mlx5_core_qp *qp)
- {
--	if (!mlx5_debugfs_root)
-+	if (!mlx5_debugfs_root || !qp->dbg)
- 		return;
+ #include "srq.h"
++#include "qp.h"
  
--	if (qp->dbg)
--		rem_res_tree(qp->dbg);
-+	rem_res_tree(qp->dbg);
-+	qp->dbg = NULL;
- }
- EXPORT_SYMBOL(mlx5_debug_qp_remove);
+ #define mlx5_ib_dbg(_dev, format, arg...)                                      \
+ 	dev_dbg(&(_dev)->ib_dev.dev, "%s:%d:(pid %d): " format, __func__,      \
+diff --git a/drivers/infiniband/hw/mlx5/qp.h b/drivers/infiniband/hw/mlx5/qp.h
+index 77f9b4a54816..f5130873dd52 100644
+--- a/drivers/infiniband/hw/mlx5/qp.h
++++ b/drivers/infiniband/hw/mlx5/qp.h
+@@ -6,7 +6,16 @@
+ #ifndef _MLX5_IB_QP_H
+ #define _MLX5_IB_QP_H
  
+-#include "mlx5_ib.h"
++struct mlx5_ib_dev;
++
++struct mlx5_qp_table {
++	struct notifier_block nb;
++
++	/* protect radix tree
++	 */
++	spinlock_t lock;
++	struct radix_tree_root tree;
++};
+ 
+ int mlx5_init_qp_table(struct mlx5_ib_dev *dev);
+ void mlx5_cleanup_qp_table(struct mlx5_ib_dev *dev);
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index a4c4f737f9c1..e3b616388b18 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -443,15 +443,6 @@ struct mlx5_core_health {
+ 	struct delayed_work		update_fw_log_ts_work;
+ };
+ 
+-struct mlx5_qp_table {
+-	struct notifier_block   nb;
+-
+-	/* protect radix tree
+-	 */
+-	spinlock_t		lock;
+-	struct radix_tree_root	tree;
+-};
+-
+ enum {
+ 	MLX5_PF_NOTIFY_DISABLE_VF,
+ 	MLX5_PF_NOTIFY_ENABLE_VF,
 -- 
 2.40.1
 
