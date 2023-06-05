@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D24722390
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jun 2023 12:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0BD722393
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jun 2023 12:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjFEKdt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Jun 2023 06:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
+        id S231793AbjFEKeO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Jun 2023 06:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjFEKds (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jun 2023 06:33:48 -0400
+        with ESMTP id S231308AbjFEKeD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jun 2023 06:34:03 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F97EA
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 03:33:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72164EA
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 03:33:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB3136121E
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 10:33:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD865C433EF;
-        Mon,  5 Jun 2023 10:33:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F1D2B6121E
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Jun 2023 10:33:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3CD5C433D2;
+        Mon,  5 Jun 2023 10:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685961227;
-        bh=4nPWi1m1zyWeKstR86T0YCsDA7ksQ9Xx04R5YkTHyiQ=;
+        s=k20201202; t=1685961232;
+        bh=QVUDK/aRoQ7jFxhURfJyIlysyNbdKu1oCPBu1IjHqGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OUSaG6AtpyN5xL1cCXJRVCIG1pZruPNHPvjLybvsp58HM8H6fSulJPSy83N9o/xKr
-         6Y9BEtIOGudECXYfBJhWrKtP39dXU4EZDPqfxt6a4o3gvQ1GmweAxrMbkWURoRBaeV
-         Q02qHDaUcgNj9geHNHGP2PpQpEPMiyU6ZIbW37qbX665lYBzYQmDcdgrVxA4kZoTQ4
-         qEO/V0Svv6WX6HHZj7CHOAqKU2qcMwbe1XXM2DpEm9iDplynm3wx2eYCPAEDL6uKl3
-         Ps87Z7l3GWZFbByJs2vQYhbtxqhtpblEhcLnhUilikZ3cgYGgp+Re1JdYyyTnNmnra
-         u+UE36BlRQS9w==
+        b=U4McRRDPEHJNUMsIW26ZO2Ugybsn74OM9yVR27ne36ntzFBT7x6iTwfnKv/74AAP/
+         SD4njznBxfRo7/Fa6y65MhTSUAU6bhjf94E753F3NzLqG/16JK3HWBANWcZEttCDUK
+         LuIbVICln0ABuPyk6c3jn6LJcNhMtWLuksJySzmUNSvjYcFWq2FxqY5wJNDd6i0oaq
+         Ootq9XAsmqpxzqfe2+uyJ7B2mrLl/rehHh9phKtGFYYKodqzeQ1+b2UNkhbKSsoihI
+         SGwICvX0UxynNgyTDMLwletrrA+Yb0aprpoM4X52XN34DVUZbxuTwc/RBTWI6JPA+p
+         zOZ1KV3I54I6w==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Patrisious Haddad <phaddad@nvidia.com>, linux-rdma@vger.kernel.org,
-        Mark Zhang <markzhang@nvidia.com>
-Subject: [PATCH rdma-rc 05/10] RDMA/mlx5: Fix Q-counters query in LAG mode
-Date:   Mon,  5 Jun 2023 13:33:21 +0300
-Message-Id: <778d7d7a24892348d0bdef17d2e5f9e044717e86.1685960567.git.leon@kernel.org>
+Cc:     Michael Guralnik <michaelgur@nvidia.com>,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-rc 06/10] RDMA/mlx5: Fix mkey cache possible deadlock on cleanup
+Date:   Mon,  5 Jun 2023 13:33:22 +0300
+Message-Id: <babba5ce5a995ced9ea35133dbc938d2a19510d2.1685960567.git.leon@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1685960567.git.leon@kernel.org>
 References: <cover.1685960567.git.leon@kernel.org>
@@ -45,7 +45,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,53 +53,114 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+From: Michael Guralnik <michaelgur@nvidia.com>
 
-Previously we used the core device associated to the IB device in order
-to do the Q-counters query to the FW, but in LAG mode it is possible
-that the core device isn't the one that created this VF.
+Move cancellation of delayed cache work that adds or removes mkeys to the
+a separate iteration in the mkey cleanup so that we don't call
+someone_adding() while holding the rb_lock.
 
-Hence instead of using the core device to query the Q-counters
-we use the ESW core device which is guaranteed to be that of the VF.
+Lockdep:
+WARNING: possible circular locking dependency detected
+ 6.2.0-rc6_for_upstream_debug_2023_01_31_14_02 #1 Not tainted
+ ------------------------------------------------------
+ devlink/53872 is trying to acquire lock:
+ ffff888124f8c0c8 ((work_completion)(&(&ent->dwork)->work)){+.+.}-{0:0}, at: __flush_work+0xc8/0x900
 
-Fixes: d22467a71ebe ("RDMA/mlx5: Expand switchdev Q-counters to expose representor statistics")
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+ but task is already holding lock:
+ ffff88817e8f1260 (&dev->cache.rb_lock){+.+.}-{3:3}, at: mlx5_mkey_cache_cleanup+0x77/0x250 [mlx5_ib]
+
+ which lock already depends on the new lock.
+
+
+ the existing dependency chain (in reverse order) is:
+
+ -> #1 (&dev->cache.rb_lock){+.+.}-{3:3}:
+        __mutex_lock+0x14c/0x15c0
+        delayed_cache_work_func+0x2d1/0x610 [mlx5_ib]
+        process_one_work+0x7c2/0x1310
+        worker_thread+0x59d/0xec0
+        kthread+0x28f/0x330
+        ret_from_fork+0x1f/0x30
+
+ -> #0 ((work_completion)(&(&ent->dwork)->work)){+.+.}-{0:0}:
+        __lock_acquire+0x2d8a/0x5fe0
+        lock_acquire+0x1c1/0x540
+        __flush_work+0xe8/0x900
+        __cancel_work_timer+0x2c7/0x3f0
+        mlx5_mkey_cache_cleanup+0xfb/0x250 [mlx5_ib]
+        mlx5_ib_stage_pre_ib_reg_umr_cleanup+0x16/0x30 [mlx5_ib]
+        __mlx5_ib_remove+0x68/0x120 [mlx5_ib]
+        mlx5r_remove+0x63/0x80 [mlx5_ib]
+        auxiliary_bus_remove+0x52/0x70
+        device_release_driver_internal+0x3c1/0x600
+        bus_remove_device+0x2a5/0x560
+        device_del+0x492/0xb80
+        mlx5_detach_device+0x1a9/0x360 [mlx5_core]
+        mlx5_unload_one_devl_locked+0x5a/0x110 [mlx5_core]
+        mlx5_devlink_reload_down+0x292/0x580 [mlx5_core]
+        devlink_reload+0x439/0x590
+        devlink_nl_cmd_reload+0xaef/0xff0
+        genl_family_rcv_msg_doit.isra.0+0x1bd/0x290
+        genl_rcv_msg+0x3ca/0x6c0
+        netlink_rcv_skb+0x12c/0x360
+        genl_rcv+0x24/0x40
+        netlink_unicast+0x438/0x710
+        netlink_sendmsg+0x7a1/0xca0
+        sock_sendmsg+0xc5/0x190
+        __sys_sendto+0x1bc/0x290
+        __x64_sys_sendto+0xdc/0x1b0
+        do_syscall_64+0x3d/0x90
+        entry_SYSCALL_64_after_hwframe+0x46/0xb0
+
+ other info that might help us debug this:
+
+  Possible unsafe locking scenario:
+
+        CPU0                    CPU1
+        ----                    ----
+   lock(&dev->cache.rb_lock);
+                                lock((work_completion)(&(&ent->dwork)->work));
+                                lock(&dev->cache.rb_lock);
+   lock((work_completion)(&(&ent->dwork)->work));
+
+  *** DEADLOCK ***
+
+ 6 locks held by devlink/53872:
+  #0: ffffffff84c17a50 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40
+  #1: ffff888142280218 (&devlink->lock_key){+.+.}-{3:3}, at: devlink_get_from_attrs_lock+0x12d/0x2d0
+  #2: ffff8881422d3c38 (&dev->lock_key){+.+.}-{3:3}, at: mlx5_unload_one_devl_locked+0x4a/0x110 [mlx5_core]
+  #3: ffffffffa0e59068 (mlx5_intf_mutex){+.+.}-{3:3}, at: mlx5_detach_device+0x60/0x360 [mlx5_core]
+  #4: ffff88810e3cb0e8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal+0x8d/0x600
+  #5: ffff88817e8f1260 (&dev->cache.rb_lock){+.+.}-{3:3}, at: mlx5_mkey_cache_cleanup+0x77/0x250 [mlx5_ib]
+
+Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/counters.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/mr.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
-index f40d9c61e30b..93257fa5aae8 100644
---- a/drivers/infiniband/hw/mlx5/counters.c
-+++ b/drivers/infiniband/hw/mlx5/counters.c
-@@ -330,6 +330,7 @@ static int mlx5_ib_query_q_counters_vport(struct mlx5_ib_dev *dev,
- {
- 	u32 out[MLX5_ST_SZ_DW(query_q_counter_out)] = {};
- 	u32 in[MLX5_ST_SZ_DW(query_q_counter_in)] = {};
-+	struct mlx5_core_dev *mdev;
- 	__be32 val;
- 	int ret, i;
- 
-@@ -337,12 +338,16 @@ static int mlx5_ib_query_q_counters_vport(struct mlx5_ib_dev *dev,
- 	    dev->port[port_num].rep->vport == MLX5_VPORT_UPLINK)
- 		return 0;
- 
-+	mdev = mlx5_eswitch_get_core_dev(dev->port[port_num].rep->esw);
-+	if (!mdev)
-+		return -EOPNOTSUPP;
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 1ce48e485c5b..f113656e4027 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1033,7 +1033,15 @@ void mlx5_mkey_cache_cleanup(struct mlx5_ib_dev *dev)
+ 		xa_lock_irq(&ent->mkeys);
+ 		ent->disabled = true;
+ 		xa_unlock_irq(&ent->mkeys);
+-		cancel_delayed_work_sync(&ent->dwork);
++	}
 +
- 	MLX5_SET(query_q_counter_in, in, opcode, MLX5_CMD_OP_QUERY_Q_COUNTER);
- 	MLX5_SET(query_q_counter_in, in, other_vport, 1);
- 	MLX5_SET(query_q_counter_in, in, vport_number,
- 		 dev->port[port_num].rep->vport);
- 	MLX5_SET(query_q_counter_in, in, aggregate, 1);
--	ret = mlx5_cmd_exec_inout(dev->mdev, query_q_counter, in, out);
-+	ret = mlx5_cmd_exec_inout(mdev, query_q_counter, in, out);
- 	if (ret)
- 		return ret;
++	/* Run the canceling of delayed works on the cache in a separate loop after
++	 * disabling all entries to ensure someone_adding() will not try taking the
++	 * rb_lock while flushing the workqueue.
++	 */
++	for (node = rb_first(root); node; node = rb_next(node)) {
++		ent = rb_entry(node, struct mlx5_cache_ent, node);
++		cancel_delayed_work(&ent->dwork);
+ 	}
  
+ 	mlx5_mkey_cache_debugfs_cleanup(dev);
 -- 
 2.40.1
 
