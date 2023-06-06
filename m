@@ -2,62 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E70B723F6C
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jun 2023 12:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51AB723F73
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jun 2023 12:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236069AbjFFK1d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jun 2023 06:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49886 "EHLO
+        id S236116AbjFFK3b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jun 2023 06:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236123AbjFFK1c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Jun 2023 06:27:32 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E466DE6B
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Jun 2023 03:27:30 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-777b46516ddso93693539f.1
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Jun 2023 03:27:30 -0700 (PDT)
+        with ESMTP id S236904AbjFFK3Z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Jun 2023 06:29:25 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D79610DD
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Jun 2023 03:29:21 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-77797beb42dso122879339f.2
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Jun 2023 03:29:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686047250; x=1688639250;
+        d=broadcom.com; s=google; t=1686047360; x=1688639360;
         h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
          :references:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tO3abjbK0YBLEhA4Nk9zHtM+FY1LJRqn4rxcB2q5864=;
-        b=PXwE1H2lz8DoSCmmzi/5UHzP3lRvwh8dHfx0er8cgdEoshsks0e+L0jkByZ9XW24gj
-         qfSEQrpnEp7A0YfDJXoRr1ksxaIxQTc8fkhZYeH9zUhv6BYc/ic216T20uWXQprSnRFx
-         tsw4pW3L0ok4CnW5orlDzVl467zylhyvM0knc=
+        bh=F4+nm5eUpI+shZG+NbxI/AWzIXmMJyRCYyPGySZzXQs=;
+        b=gWoCMrIf7/rbKCoMid586rRM0C+M1o9QSyfdIshPpn66h+2d07/KiWLZZuXjT0FgM1
+         BWNBz6gd2ftzf6I0P1Y5HlZPfzn/FOFi7uin3pGJGr+JO9c+9BCNbkqmR5k3Ms2ZFP/l
+         eOiws24bVzXrUjB6zoIyOAsUs72uZFw3ckbOc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686047250; x=1688639250;
+        d=1e100.net; s=20221208; t=1686047360; x=1688639360;
         h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
          :references:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tO3abjbK0YBLEhA4Nk9zHtM+FY1LJRqn4rxcB2q5864=;
-        b=J41o//+MX5PxKczWKZSP7Dq4R8OfobUViUXV5Omgi/q6KcnLA6CsHHnolMvxZ21dK/
-         DQnCuFd7iYYBgWEQXKxh5HLXluas105nrrI/qhQqi+8vrL3u7z2OYDMj/uX7Ps2Ts6rU
-         MvpGUeCvpIbEYowVzcoo6tXyI5sh3DRtko3DAwuT0wlRNpRZS/rXXXH8jif3ZdfyVhsE
-         4nV+Rpi1mY8i8LPHbdvyQfVU8VRoGr6m3de2sQEkTy7/ArpL2X1vQMW0ubgk0a4zWmSD
-         t5ISWQc85i05M0cjZnpoEMsHkic0oGdVohTYFMBb7a5v6ZSYyeJ1eySXnZkJN/a1QOib
-         Vjnw==
-X-Gm-Message-State: AC+VfDxuSEJ7+OZ28T81JVO2Wtdf/At0BRsNUMVJOu0JbIuQAZjwWJ2l
-        vpeJUBWRfuaPmAFSBIdFjxD5hxFG8WCAbjPeDo+npw==
-X-Google-Smtp-Source: ACHHUZ5U09NIWiLsa88dECPao+xRGMSPfgioOrECiMHmebxxuz5/elFL/UDPFlfAgws7OeCAaJjaeWkRJ1xyojM7BtQ=
-X-Received: by 2002:a5d:93c1:0:b0:774:9c64:e0ab with SMTP id
- j1-20020a5d93c1000000b007749c64e0abmr1664262ioo.17.1686047250149; Tue, 06 Jun
- 2023 03:27:30 -0700 (PDT)
+        bh=F4+nm5eUpI+shZG+NbxI/AWzIXmMJyRCYyPGySZzXQs=;
+        b=XC1ALJF2wzcKN8I/ZDojOFWr8ehtTyUc+TacC8WzrZKOPUPUwwveIvGKBPVnBlI/pS
+         f/YlHcV5yD17xwcqkhQHr56xtnNfsosY8jFfg1Uj+Z/FtiUoUZmwIyZXln/+99lfPhL5
+         TtnNpzH6Xinzp/DhvKt6lmDwRZQKnHpFOg2WWK3S1pIalnoLhyMDnxEOB4U0F1hrIJaT
+         JcewnAuI+0V1KqCcRjkaFKBvgBymExbvKjcExVdJ/VWtKltqfxvzw4ikxu1/uFgsKkFe
+         YeBy9mHg22EaA+owNM3AnUr+yq+UltoZv3hEkoeDpjjld/3kLXTRJ3111jyZzNiL6Fz0
+         5Z+w==
+X-Gm-Message-State: AC+VfDzgAsbqUNPhztgmeJOIjbWncXI40sFatzQjBi9mHrxur4qzycHE
+        7sxS8y9D29dGNyaws1zcgl3WoaBKWX28qTZwidu4XA==
+X-Google-Smtp-Source: ACHHUZ53lDFUqmODPT0Hsd6jcgtw9C3OBVP+6TI02aU8BN/sMhiPVvp2jLrM0Uusg5Z7TiYjLflLT5JYZ7hrKy2xC38=
+X-Received: by 2002:a6b:dd13:0:b0:777:cdfc:102e with SMTP id
+ f19-20020a6bdd13000000b00777cdfc102emr2615668ioc.19.1686047360448; Tue, 06
+ Jun 2023 03:29:20 -0700 (PDT)
 From:   Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-References: <20230602105613.95952-1-saravanan.vajravel@broadcom.com>
- <20230602105613.95952-4-saravanan.vajravel@broadcom.com> <cfcfc65f-a646-597f-bc5e-454f2c8a3805@grimberg.me>
-In-Reply-To: <cfcfc65f-a646-597f-bc5e-454f2c8a3805@grimberg.me>
+References: <20230601094220.64810-1-saravanan.vajravel@broadcom.com>
+ <20230601094220.64810-3-saravanan.vajravel@broadcom.com> <150253ed-5fd5-9404-7792-bc14f210cdd3@grimberg.me>
+In-Reply-To: <150253ed-5fd5-9404-7792-bc14f210cdd3@grimberg.me>
 MIME-Version: 1.0
 X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHM3yLWr2iciNu/L/1QVyPHP1NVJgIA31GRAXGZ5nmve3CxAA==
-Date:   Tue, 6 Jun 2023 15:57:27 +0530
-Message-ID: <10eac0594635f37d867111aea8df04d3@mail.gmail.com>
-Subject: RE: [PATCH v2 for-rc 3/3] IB/isert: Fix incorrect release of isert connextion
+Thread-Index: AQHy08BEOKdm+p8sdcxeTRyowGxDnAKjlEwkAidbONqvJMQSMA==
+Date:   Tue, 6 Jun 2023 15:59:18 +0530
+Message-ID: <e466ac917c2a949c93fee9a8d147cefb@mail.gmail.com>
+Subject: RE: [PATCH for-rc 2/3] IB/isert: Fix possible list corruption in CMA handler
 To:     Sagi Grimberg <sagi@grimberg.me>,
         Selvin Xavier <selvin.xavier@broadcom.com>, jgg@ziepe.ca,
         leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000071207705fd737733"
+        boundary="00000000000002cc4105fd737eeb"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -68,26 +68,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000071207705fd737733
+--00000000000002cc4105fd737eeb
 Content-Type: text/plain; charset="UTF-8"
 
-> > The ib_isert module is releasing the isert connection both in
-> > isert_wait_conn() handler as well as isert_free_conn() handler.
-> > In isert_wait_conn() handler, it is expected to wait for iSCSI session
-> > logout operation to complete. It should free the isert connection only
-> > in isert_free_conn() handler.
+> > When ib_isert module receives connection error event, it is releasing
+> > the isert session and removes corresponding list node but it doesn't
+> > take appropriate mutex lock to remove the list node.  This can lead to
+> > linked  list corruption
 > >
-> > When a bunch of iSER target is cleared, this issue can lead to
-> > use-after-free memory issue as isert conn is twice released
+> > Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> > ---
+> >   drivers/infiniband/ulp/isert/ib_isert.c | 4 ++++
+> >   1 file changed, 4 insertions(+)
 > >
-> > Fixes: 0fc4ea701fcf ("Target/iser: Don't put isert_conn inside
-> > disconnected handler")
+> diff --git a/drivers/infiniband/ulp/isert/ib_isert.c
+> b/drivers/infiniband/ulp/isert/ib_isert.c
+> index b3471ac82c1a..64af8d966adf 100644
+> --- a/drivers/infiniband/ulp/isert/ib_isert.c
+> +++ b/drivers/infiniband/ulp/isert/ib_isert.c
+> @@ -657,11 +657,15 @@ static int
+>   isert_connect_error(struct rdma_cm_id *cma_id)
+>   {
+>   	struct isert_conn *isert_conn = cma_id->qp->qp_context;
+> +	struct isert_np *isert_np = cma_id->context;
+>
+>   	ib_drain_qp(isert_conn->qp);
+> +
+> +	mutex_lock(&isert_np->mutex);
+>   	list_del_init(&isert_conn->node);
+>   	isert_conn->cm_id = NULL;
+>   	isert_put_conn(isert_conn);
+> +	mutex_unlock(&isert_np->mutex);
 
-> Doesn't seem quite right?
+> I'd place the mutex on the list_del_init only, it does not protect the
+> rest.
 
-Corrected Fixes tag. Sent v3 patch.
+Addressed this comment and sent v3 patch
 
---00000000000071207705fd737733
+--00000000000002cc4105fd737eeb
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -158,14 +177,14 @@ pb/Gi74xj8wc5zCrVpXS1UNVJ8B6Jib+vas1cAtL6RFi0RDtFbUXe9U4wB07Ker1yMtBA6QzfZW2
 d0VRyjqv9NL22cjJ4ffotr8ZKbiSVEHbnDRxAgeuMxkkpjQQk/y1S1fk0wDOYNfV0zIkWtVMNBzY
 Ttmt2pp+/hwLYVAxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxT
 aWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAy
-MDIwAgwz1tXFZ7RRpYwmQDswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKULHxQj
-ll0PXlIq4bZQRD55MKi5ZDPkPiVrqjBGb7HnMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
-KoZIhvcNAQkFMQ8XDTIzMDYwNjEwMjczMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
+MDIwAgwz1tXFZ7RRpYwmQDswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEX2FwVF
+ZIE0/qsLBpq2ak/MvpJu4AutCGzvuppn1YoSMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
+KoZIhvcNAQkFMQ8XDTIzMDYwNjEwMjkyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
 CwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZI
-hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC7fTjjmBeoJIyCwrdQA3x0RgNl
-lwa9AEd+H/UAR6QMW5/cxeU4wrI871Ek7VYDQ2xzkFmDNr062AWYQSGZ4ovujSKqqSNWs0nKzbLn
-sbo+tIEVKmE92NfsTFvrrXs9RRpmP1St2IyvJD/SZvSULdBA9m4b2nLVa6TwLw7ldDaoabsO/71V
-kga/eXfwac1iSz047RXfiRDyhGRv5bttUJa+BSfmLKB5SIEqqzXU1sHsJLUJdnXXIqB8nNileSeU
-o2pv7DOXXoHDc5zFALePUipA0wkhqvkQ6/ZrI1bw9WOpRXgUbk5V4E33sK4H1TZ8ADZvtBOTBWJL
-eW5XFX+xbPRW
---00000000000071207705fd737733--
+hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB3gfxv98b6NqSqf2PRO0SvuDVK
+o9IFG4E1u/AfQ8mfOX2o4DB3y/AusSFOJdllho/yYsZVrAE5RM+cYEC0Ne2On8adL184jpGe/qc8
+v46iqhgDEOTQ4rJ5w98AdY70E0fVloe8hgTELzXak5njy6Md0NKq7MsuQFjFcMBFqIRmZlF69you
+pwzQPoTX+xvbejNoArcUJjfnSP0qtFRLtIEuEiT3lljsPqMQMHJWg2hEvwHczIV6Ykz3WMGT/V/8
+Ryf3zfE4bh5miZFGB7cB8hRj1fSeCF65R9x/DHzzhnAnan+5cdt4B9rpjlSPZF4Y7FOxZRBgIRw+
+SWp+TjlTLmo/
+--00000000000002cc4105fd737eeb--
