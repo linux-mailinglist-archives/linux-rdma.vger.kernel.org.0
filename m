@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1F172388C
+	by mail.lfdr.de (Postfix) with ESMTP id E9B0D72388D
 	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jun 2023 09:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235975AbjFFHND (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jun 2023 03:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33738 "EHLO
+        id S236004AbjFFHNE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jun 2023 03:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236014AbjFFHMp (ORCPT
+        with ESMTP id S236018AbjFFHMp (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Jun 2023 03:12:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D98EE78
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Jun 2023 00:12:44 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65900E7C
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Jun 2023 00:12:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A5CBB6238E
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Jun 2023 07:12:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3342C433A1;
-        Tue,  6 Jun 2023 07:12:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EFF0962DE6
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Jun 2023 07:12:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46067C43326;
+        Tue,  6 Jun 2023 07:12:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686035563;
-        bh=7oGh3m3AYfvl4G/Qz+5mK7ZAsFz7T61yJYaDySQZShc=;
+        s=k20201202; t=1686035564;
+        bh=SCPGQDaiOmgv4WfRu3mWoyJB1OIsY/K3JEmAQ5RxAxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZNWkpkN8Pzor2xO19GGzoimx/sBBc8vQbe2JlRpSUq98jcmsZp38GjXxGARnURl1N
-         gC+BUiI37bgzELjBJhNwyxBnbULL29yJKll7mlREZbTWgEY6IIubnmpk+CBzAoTVuf
-         Zp9JuxoaABdy9FF4sPiUqKMeJ4VedEFRJVeusEBQvMF+SG/EraDwpXqHdmOlmVmvhm
-         9f61XxmWcOgIko6DLrxpdWt3BFk9ZNUL5+6EXPHecaRYu5kK6NDTMDs0M0QlCiJ4LS
-         3PQugYfmwH5DjrnYAncNzPcDU+68YxNVXlPHICHOsC3NMR7/NLu9dY3GGa8GmhJHb2
-         3+CINqcIXsVhw==
+        b=ECYHGwhI0xsGNGsdWTd6IxZpD0TLqszF7toES4OTzahw9JEiKhaziAQMaj7oJVvCf
+         MIEJzgDCX/jlhVP6LRMxg5itW7rq+wlBuGqrM80LAjRmopdn1T0uYJHS9xdELbJvkL
+         2U22hlj7w0t4hwnqYtGxFZ3aWc6D1tzhrSW4vlD5sx0cntVlRPhFDAA2hf0jx2+Vgf
+         RR2iBqyzVZLTU5CmxW/YghXUsCv5TAimH3TCxfMZDvZNplhjqGAX1lQxYCTaLUGNOb
+         1QtwujFauTn4MMxA2UqJQ2EuvjPO63DYPvUVEn8zoNzBzxTcaAXYS52OPVXTLtd6p7
+         qWxorKuHJbwRg==
 From:   Saeed Mahameed <saeed@kernel.org>
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -39,18 +39,17 @@ To:     "David S. Miller" <davem@davemloft.net>,
 Cc:     Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
         Tariq Toukan <tariqt@nvidia.com>,
         Leon Romanovsky <leonro@nvidia.com>,
-        linux-rdma@vger.kernel.org, Lama Kayal <lkayal@nvidia.com>,
-        Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: [net-next 10/15] net/mlx5e: Expose catastrophic steering error counters
-Date:   Tue,  6 Jun 2023 00:12:14 -0700
-Message-Id: <20230606071219.483255-11-saeed@kernel.org>
+        linux-rdma@vger.kernel.org, Dragos Tatulea <dtatulea@nvidia.com>
+Subject: [net-next 11/15] net/mlx5e: Remove RX page cache leftovers
+Date:   Tue,  6 Jun 2023 00:12:15 -0700
+Message-Id: <20230606071219.483255-12-saeed@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230606071219.483255-1-saeed@kernel.org>
 References: <20230606071219.483255-1-saeed@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,96 +58,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lama Kayal <lkayal@nvidia.com>
+From: Tariq Toukan <tariqt@nvidia.com>
 
-Add generated_pkt_steering_fail and handled_pkt_steering_fail to devlink
-heatlth reporter.
-generated_pkt_steering_fail indicates the number of packets dropped due to
-illegal steering operation within the vport steering domain.
-handled_pkt_steering_fail indicates the number of packets dropped due to
-illegal steering operation, originated by the vport.
+Remove unused definitions left after the removal
+of the RX page cache feature.
 
-Also, update devlink reporter functionality documentation with the newly
-exposed counters.
-
-Signed-off-by: Lama Kayal <lkayal@nvidia.com>
-Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 ---
- .../ethernet/mellanox/mlx5/devlink.rst               |  7 +++++++
- .../ethernet/mellanox/mlx5/core/diag/reporter_vnic.c | 10 ++++++++++
- include/linux/mlx5/mlx5_ifc.h                        | 12 ++++++++++--
- 3 files changed, 27 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en.h | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/devlink.rst b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/devlink.rst
-index 3354ca3608ee..a4edf908b707 100644
---- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/devlink.rst
-+++ b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/devlink.rst
-@@ -290,6 +290,13 @@ Description of the vnic counters:
- - nic_receive_steering_discard
-         number of packets that completed RX flow
-         steering but were discarded due to a mismatch in flow table.
-+- generated_pkt_steering_fail
-+	number of packets generated by the VNIC experiencing unexpected steering
-+	failure (at any point in steering flow).
-+- handled_pkt_steering_fail
-+	number of packets handled by the VNIC experiencing unexpected steering
-+	failure (at any point in steering flow owned by the VNIC, including the FDB
-+	for the eswitch owner).
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index 8e999f238194..ceabe57c511a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -594,13 +594,6 @@ struct mlx5e_mpw_info {
  
- User commands examples:
+ #define MLX5E_MAX_RX_FRAGS 4
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.c
-index 9114661cd967..b0128336ff01 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.c
-@@ -76,6 +76,16 @@ int mlx5_reporter_vnic_diagnose_counters(struct mlx5_core_dev *dev,
- 	if (err)
- 		return err;
- 
-+	err = devlink_fmsg_u64_pair_put(fmsg, "generated_pkt_steering_fail",
-+					VNIC_ENV_GET64(&vnic, generated_pkt_steering_fail));
-+	if (err)
-+		return err;
-+
-+	err = devlink_fmsg_u64_pair_put(fmsg, "handled_pkt_steering_fail",
-+					VNIC_ENV_GET64(&vnic, handled_pkt_steering_fail));
-+	if (err)
-+		return err;
-+
- 	err = devlink_fmsg_obj_nest_end(fmsg);
- 	if (err)
- 		return err;
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index b89778d0d326..af3a92ad2e6b 100644
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -1755,7 +1755,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
- 	u8         reserved_at_328[0x2];
- 	u8	   relaxed_ordering_read[0x1];
- 	u8         log_max_pd[0x5];
--	u8         reserved_at_330[0x9];
-+	u8         reserved_at_330[0x7];
-+	u8         vnic_env_cnt_steering_fail[0x1];
-+	u8         reserved_at_338[0x1];
- 	u8         q_counter_aggregation[0x1];
- 	u8         q_counter_other_vport[0x1];
- 	u8         log_max_xrcd[0x5];
-@@ -3673,7 +3675,13 @@ struct mlx5_ifc_vnic_diagnostic_statistics_bits {
- 
- 	u8         eth_wqe_too_small[0x20];
- 
--	u8         reserved_at_220[0xdc0];
-+	u8         reserved_at_220[0xc0];
-+
-+	u8         generated_pkt_steering_fail[0x40];
-+
-+	u8         handled_pkt_steering_fail[0x40];
-+
-+	u8         reserved_at_360[0xc80];
- };
- 
- struct mlx5_ifc_traffic_counter_bits {
+-/* a single cache unit is capable to serve one napi call (for non-striding rq)
+- * or a MPWQE (for striding rq).
+- */
+-#define MLX5E_CACHE_UNIT (MLX5_MPWRQ_MAX_PAGES_PER_WQE > NAPI_POLL_WEIGHT ? \
+-			  MLX5_MPWRQ_MAX_PAGES_PER_WQE : NAPI_POLL_WEIGHT)
+-#define MLX5E_CACHE_SIZE	(4 * roundup_pow_of_two(MLX5E_CACHE_UNIT))
+-
+ struct mlx5e_rq;
+ typedef void (*mlx5e_fp_handle_rx_cqe)(struct mlx5e_rq*, struct mlx5_cqe64*);
+ typedef struct sk_buff *
 -- 
 2.40.1
 
