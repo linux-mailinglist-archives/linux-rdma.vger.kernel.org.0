@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A11F72703A
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jun 2023 23:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EC5727039
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jun 2023 23:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236261AbjFGVFu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Jun 2023 17:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
+        id S236243AbjFGVFt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Jun 2023 17:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236923AbjFGVFP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jun 2023 17:05:15 -0400
+        with ESMTP id S236908AbjFGVFO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jun 2023 17:05:14 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43FD1707
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49891721
         for <linux-rdma@vger.kernel.org>; Wed,  7 Jun 2023 14:04:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 35CDB64A05
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Jun 2023 21:04:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70551C4339C;
-        Wed,  7 Jun 2023 21:04:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 95066649E4
+        for <linux-rdma@vger.kernel.org>; Wed,  7 Jun 2023 21:04:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7F56C4331E;
+        Wed,  7 Jun 2023 21:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686171883;
-        bh=r89Xj2j+5/zrHv2pqibN65frjLskJnt4a9WgjDPNKDI=;
+        s=k20201202; t=1686171884;
+        bh=+x5l76jEigP+jfedcLp5qK2IoJnrnOHNChSi6eV9RfE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K7DaN0CvS0ncksR+5THjtKZLsZ3Z5xlFcmVgA8++lJGHH6gXdwYnxXp9MTA0qMWFZ
-         vvNMr76k57+BUtlMpT2HFsL1Mso99cBiepC/E3B/PPlIvUIqmVUObfEKUOQwlgwH7G
-         HtrKpwxOVAqFeCbRfDobMZZG7hTcpLzhEoUztGwTeXEqnYqHQiyI9+rKa3giuhhUjf
-         U0s49n3OktGs1n+A2tou3VsFMvrSSVWOp77vmdZUk6fuEsa8UUiF/RdJJCZzN0AgD5
-         jIkA/FMaZZH7HoU3/y+WWh6iWcW1+y196Qx0dRcRF4MJbBW3BHespdOIL5InUSCjxL
-         86drI60THiCdg==
+        b=PlyRi4egE7WcLCeYsXKBDXKkCCNpShyLc063sG6Cw7H0MBCp9cVtbF+m1Vg1FSUOg
+         3RDim0Fs7km0dhD8Xlx1kX7KPp/Ty1yoEoFek95kfhdH697MkgTXFdDtZnRA4dU3Ut
+         /RaRbeWqRgvOY0WtjRKtLW3nGWRlVUHKTWchFypVwg5o5owFXt6qNXAK5lkJXbrrCR
+         A7+YH1tMwdQhs5a7B/iAYEIJaOOLhSKzLw8DddOkeJPD9rdZJhHFG+kw8Z2ve2GvMI
+         UIQX4oI9p12hQbDltvhDK4owz2AlhCyutDQzliikOcme9tx/hY/USQDpgSQ+Oc1+Ud
+         3n/c9hnIDF+NQ==
 From:   Saeed Mahameed <saeed@kernel.org>
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -38,12 +38,10 @@ To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>
 Cc:     Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
         Tariq Toukan <tariqt@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        linux-rdma@vger.kernel.org, Bodong Wang <bodong@nvidia.com>,
-        Mark Bloch <mbloch@nvidia.com>
-Subject: [net-next V2 13/14] mlx5/core: E-Switch, Allocate ECPF vport if it's an eswitch manager
-Date:   Wed,  7 Jun 2023 14:04:09 -0700
-Message-Id: <20230607210410.88209-14-saeed@kernel.org>
+        Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [net-next V2 14/14] net/mlx5e: simplify condition after napi budget handling change
+Date:   Wed,  7 Jun 2023 14:04:10 -0700
+Message-Id: <20230607210410.88209-15-saeed@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230607210410.88209-1-saeed@kernel.org>
 References: <20230607210410.88209-1-saeed@kernel.org>
@@ -59,33 +57,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bodong Wang <bodong@nvidia.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-Eswitch vport is needed for eswitch manager when creating LAG,
-to create egress rules. However, this was not handled when ECPF is
-an eswitch manager.
+Since recent commit budget can't be 0 here.
 
-Signed-off-by: Bodong Wang <bodong@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-index 31956cd9d1bb..ecd8864d5d11 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-@@ -1601,7 +1601,8 @@ static int mlx5_esw_vports_init(struct mlx5_eswitch *esw)
- 		idx++;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
+index fbb2d963fb7e..a7d9b7cb4297 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
+@@ -207,7 +207,7 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
+ 		}
+ 		ch_stats->aff_change++;
+ 		aff_change = true;
+-		if (budget && work_done == budget)
++		if (work_done == budget)
+ 			work_done--;
  	}
  
--	if (mlx5_ecpf_vport_exists(dev)) {
-+	if (mlx5_ecpf_vport_exists(dev) ||
-+	    mlx5_core_is_ecpf_esw_manager(dev)) {
- 		err = mlx5_esw_vport_alloc(esw, idx, MLX5_VPORT_ECPF);
- 		if (err)
- 			goto err;
 -- 
 2.40.1
 
