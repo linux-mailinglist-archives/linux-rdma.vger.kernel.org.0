@@ -2,84 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EC5727039
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jun 2023 23:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5458072725B
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jun 2023 00:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236243AbjFGVFt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Jun 2023 17:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
+        id S232646AbjFGWzk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Jun 2023 18:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236908AbjFGVFO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jun 2023 17:05:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49891721
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Jun 2023 14:04:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 95066649E4
-        for <linux-rdma@vger.kernel.org>; Wed,  7 Jun 2023 21:04:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7F56C4331E;
-        Wed,  7 Jun 2023 21:04:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686171884;
-        bh=+x5l76jEigP+jfedcLp5qK2IoJnrnOHNChSi6eV9RfE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PlyRi4egE7WcLCeYsXKBDXKkCCNpShyLc063sG6Cw7H0MBCp9cVtbF+m1Vg1FSUOg
-         3RDim0Fs7km0dhD8Xlx1kX7KPp/Ty1yoEoFek95kfhdH697MkgTXFdDtZnRA4dU3Ut
-         /RaRbeWqRgvOY0WtjRKtLW3nGWRlVUHKTWchFypVwg5o5owFXt6qNXAK5lkJXbrrCR
-         A7+YH1tMwdQhs5a7B/iAYEIJaOOLhSKzLw8DddOkeJPD9rdZJhHFG+kw8Z2ve2GvMI
-         UIQX4oI9p12hQbDltvhDK4owz2AlhCyutDQzliikOcme9tx/hY/USQDpgSQ+Oc1+Ud
-         3n/c9hnIDF+NQ==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [net-next V2 14/14] net/mlx5e: simplify condition after napi budget handling change
-Date:   Wed,  7 Jun 2023 14:04:10 -0700
-Message-Id: <20230607210410.88209-15-saeed@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230607210410.88209-1-saeed@kernel.org>
-References: <20230607210410.88209-1-saeed@kernel.org>
+        with ESMTP id S233131AbjFGWzd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jun 2023 18:55:33 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6713E26AB
+        for <linux-rdma@vger.kernel.org>; Wed,  7 Jun 2023 15:55:15 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-51491b87565so2576995a12.1
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Jun 2023 15:55:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686178513; x=1688770513;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
+        b=h4j71OFNDV5FfvldtjCh/L+Qg71oYHcBnHuDB5srtk996zsBHlbD8SaqVv65TPPNSR
+         D55ZWk68qXdEmt+kIdXRugiaujZb/weZnFCTHcuZcbiNqcbtWT0X7OlskYnP/y/1JDzr
+         WbOZ68AcZfM/aHW4up57fkOGafclaBar/hLOCFBtTjAlCxKYQtVTvq0W4SECGmO4CUql
+         dig397pPxdZX0OTvC2J8JrOzuSqogeJM29duG5G1BgaFsW6donzZWRU1Jz4x6qDKSWR9
+         w6/41Hy1gwVz7zf6M5uQKiqeQS7jHj9sppdk3jRa//N+UQ6Qg+lxAaHE7mp4Zy+a5Adc
+         Kv2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686178513; x=1688770513;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
+        b=dq1XeaT5JxJKzr1F4x+cm7kM2fk6Sr5X0FQc1kw/VmXAkVfoFyg/ihLMP6SC/OfHbh
+         RW/CimB4FqebM9xQiAe5l6IU0+4Kyv8izX+Rx0000Z49pJzZgmFETfBGHDUl0wQ631SK
+         yBjXS3t6MKtrVyBZNtyBRvqYWGjRyJOZSCmDByQCNrh/mgscs91ThrbFCuzq4EhIqc2i
+         V5oLiauc3QwpJGfR1xWwNQtAi2XP8yEgNppooT79pnemgJb58E0+EBy49lZN/Iq2R3Z6
+         agQS6xIWwHcPdtlhpaoPLrwlBPqIWBJxiF1GS5R/vrcNLFtQZIMOgsIKltt8Qvwa/rzN
+         Jlsw==
+X-Gm-Message-State: AC+VfDzl/oQqAhgFiOZCR7T6SF61HEmVlHiXQmz2Cu71FMACDSSuiCmc
+        R8lucwfDqLZ1/JpdHIWo9rGO7Vxq96s+/lvK1CjCahvVzaBFXw==
+X-Google-Smtp-Source: ACHHUZ5q9v5E8VuN7LGrTh1boUYVANIIUnJnBwlK4YNL8XVT+z7GalrAexguq0b795Op+2qoCUEoHnMN8sFXq0M0ebg=
+X-Received: by 2002:a17:907:8a15:b0:96f:d154:54f7 with SMTP id
+ sc21-20020a1709078a1500b0096fd15454f7mr7113590ejc.42.1686178492570; Wed, 07
+ Jun 2023 15:54:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a54:2409:0:b0:217:72a9:f646 with HTTP; Wed, 7 Jun 2023
+ 15:54:52 -0700 (PDT)
+Reply-To: unitednationcompensationcoordinatortreasury@hotmail.com
+From:   "UNITED NATION DEPUTY SECRETARY-GENERAL (U.N)" 
+        <successikolo@gmail.com>
+Date:   Wed, 7 Jun 2023 15:54:52 -0700
+Message-ID: <CADFNGJ8vkgORi1jPvvhP+FQnPCNqs4cr588+_a-ywDXpqf+qKA@mail.gmail.com>
+Subject: CONTACT DHL OFFICE IMMEDIATELY FOR YOUR ATM MASTER CARD 1.5 MILLION,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.6 required=5.0 tests=ADVANCE_FEE_3_NEW_FRM_MNY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FILL_THIS_FORM,FORM_FRAUD_5,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FORM,MONEY_FRAUD_5,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
+        T_FILL_THIS_FORM_LOAN,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:530 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [successikolo[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  0.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.0 FILL_THIS_FORM Fill in a form with personal information
+        *  0.0 T_FILL_THIS_FORM_LOAN Answer loan question(s)
+        *  0.0 MONEY_FORM Lots of money if you fill out a form
+        *  1.3 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  0.0 ADVANCE_FEE_3_NEW_FRM_MNY Advance Fee fraud form and lots of
+        *      money
+        *  0.2 MONEY_FRAUD_5 Lots of money and many fraud phrases
+        *  0.0 FORM_FRAUD_5 Fill a form and many fraud phrases
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+UNITED NATION DEPUTY SECRETARY-GENERAL.
 
-Since recent commit budget can't be 0 here.
+This is to official inform you that we have been having meetings for
+the past three (3) weeks which ended two days ago with MR. JIM YONG
+KIM the world bank president and other seven continent presidents on
+the congress we treated on solution to scam victim problems.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Note: we have decided to contact you following the reports we
+received from anti-fraud international monitoring group your
+name/email has been submitted to us therefore the united nations have
+agreed to compensate you with the sum of (USD$ 1.5 Million) this
+compensation is also including international business that failed you
+in the past due to government problems etc.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-index fbb2d963fb7e..a7d9b7cb4297 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-@@ -207,7 +207,7 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
- 		}
- 		ch_stats->aff_change++;
- 		aff_change = true;
--		if (budget && work_done == budget)
-+		if (work_done == budget)
- 			work_done--;
- 	}
- 
--- 
-2.40.1
+ We have arranged your payment through our ATM Master Card and
+deposited it in DHL Office to deliver it to you which is the latest
+instruction from the World Bank president MR. JIM YONG KIM, For your
+information=E2=80=99s, the delivery charges already paid by U.N treasury, t=
+he
+only money you will send to DHL office south Korea is
+($500). for security keeping fee, U.N coordinator already paid for
+others charges fees for delivery except the security keeping fee, the
+director of DHL refused to collect the security keeping fee from U.N
+coordinator, the Director of DHL office said that they don=E2=80=99t know
+exactly time you will contact them to reconfirm your details to avoid
+counting demur-rage that is why they refused collecting the ($500) .
+for security keeping fee.
 
+ Therefore be advice to contact DHL Office agent south Korea. Rev:John
+Lee Tae-seok
+who is in position to deliver your ATM
+Master Card to your location address, contact DHL Office immediately
+with the bellow email & phone number as listed below.
+
+ Contact name: John Lee Tae-seok
+
+ Email:( dhlgeneralheadquartersrepublic@gmail.com )
+
+ Do not hesitate to Contact Rev: John Lee Tae-seok, as soon as you
+
+ read this message. Email:( dhlgeneralheadquartersrepublic@gmail.com )
+
+ Make sure you reconfirmed DHL Office your details ASAP as stated
+below to avoid wrong delivery.
+
+ Your full name..........
+
+ Home address:.........
+
+ Your country...........
+
+ Your city..............
+
+ Telephone......
+
+ Occupation:.......
+
+ Age:=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6..
+
+ Let us know as soon as possible you receive your ATM MasterCard
+for proper verification.
+
+ Regards,
+
+ Mrs Vivian kakadu.
+
+ DEPUTY SECRETARY-GENERAL (U.N)
