@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02517727D02
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jun 2023 12:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F05727D03
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jun 2023 12:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbjFHKht (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Jun 2023 06:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
+        id S234388AbjFHKhv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Jun 2023 06:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234388AbjFHKhs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Jun 2023 06:37:48 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B487F2D43
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Jun 2023 03:37:32 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-53fbb3a013dso234818a12.1
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Jun 2023 03:37:32 -0700 (PDT)
+        with ESMTP id S235253AbjFHKhu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Jun 2023 06:37:50 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6897230C7
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Jun 2023 03:37:35 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b02d0942caso1640995ad.1
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Jun 2023 03:37:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686220652; x=1688812652;
+        d=broadcom.com; s=google; t=1686220655; x=1688812655;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=w6HW1Tve1A5DQfVVPzLnGqYQquumLqFDrnWccriu8+g=;
-        b=ak/rdo7UJjUTKHZ1M9pnF+zxicw4sLU9N0pKV4GItpY6/xIpwH4Bba/s3wphvgfA5/
-         Sq1s+b1RuhMArsg1l8vjjEekTU0jOJBEXj9ZI9RXWCUhbV2jMmnWut4yklOwQOrNPOQm
-         6aAVSnTXKcnw/lYs1Yg+0sah/0ULg+rgO2ukM=
+        bh=xXNBUhvWKZ2gdj45Hr9XWCQfaApid+t7wJQiKNdg72k=;
+        b=DT7H4ZQUQ91L8b+kxRceq/1nDNJSpo7Xz/fx6Jxef6XuS0Fm3VUYG3xQ7HyNou51HZ
+         z9dk99Z8/tgsKxivNvw/oU07paz+hJDrp77RYBXLCeEiR1UvOowlA3IaWUdUdmWsHGhZ
+         nkOv5sdjkHNyuCCefIqgZQSc1GRA62zz/JBSc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686220652; x=1688812652;
+        d=1e100.net; s=20221208; t=1686220655; x=1688812655;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w6HW1Tve1A5DQfVVPzLnGqYQquumLqFDrnWccriu8+g=;
-        b=OIfEOfPMinUhe/RplRabHhUVMp1FMf6OrAWgUYYrnF9BKyP4WgQfd5mFmpx7GhwGvQ
-         5m0N68jcTpzoKt87AuihM3MoH5RDz3pgImFBl+2VQ41c99tKziFyo+5qkY68qhvrv6wZ
-         TnLQWNKcFIa33l+Pzz7zIPUYBC+nqkK/BW12Axt1BKmUoUaqxwuxPzMrJoP+nF77f4qv
-         YCG5Elx+m3JZ8lEO4C12wzATgvcLkrEZPYax1Vwu3i81IJqmCbPx9MdBQ56cxsEgIGnO
-         IuTa9nXF5iFFHE6lesEU5za65PtlBb1OJTmd24RCjT0YJsR5SI5ZIQ3IaZOdcAgz6dBW
-         zjaA==
-X-Gm-Message-State: AC+VfDzIHKUimwYkxuueHS0UyxjlNRLV+G23R7fPGeQhC1Mv0IDBHM6G
-        4pdnaYWps1ZUDEKof45otlljSQ==
-X-Google-Smtp-Source: ACHHUZ4PUp3sS3+oaZYQpnMn1LqPGGQI4W/TnHS1rRsfq+S0c8Xktx0rXVkb9WH/eRK48bhvsupQaQ==
-X-Received: by 2002:a05:6a20:1611:b0:10b:cb77:5403 with SMTP id l17-20020a056a20161100b0010bcb775403mr6992375pzj.52.1686220652130;
-        Thu, 08 Jun 2023 03:37:32 -0700 (PDT)
+        bh=xXNBUhvWKZ2gdj45Hr9XWCQfaApid+t7wJQiKNdg72k=;
+        b=LdGkBBcrKk43n74H70g9O1BCVBkM3zUv9U21Motsm1pPxKg3F6+F8BsXi8tgGp8jkw
+         c8a6eEhFPFzIlqny6zqFzxU0fQEq1zmj+AJEX9gUHQv64iDiauSzsAa0/jwzh+2W8Hk7
+         Mm9K2KsziHYJ9qnX174b68tWdtrLp6XDkmnWBQ2zkz+7yC0OjNs05lyjVTIKjs7K6aFx
+         3mNpXLg289QJBG79gWPlB91QbOky9DM8P9uUqLJaU9mWs7gPziQEehGjHbwllR5E+8hX
+         6Zg5CCqIk1Ed4oxs3s1+6RZaQFscRROU4gdzOUsdEu3T1tz6QsbnGd0gp2NFPVt5JJug
+         Hy+A==
+X-Gm-Message-State: AC+VfDzQQ8cNImpyU1cJK1NOYTw0r/xKMy2b8VU18dY6Yxfj75I68Kyq
+        GBxOoeTUIb9H93gYc32yKLxp6A==
+X-Google-Smtp-Source: ACHHUZ7/MYkTRGCtv6fSgl+ZnFotHIIHiQ1f59049iM/1h58l9sxSgbJ522KwIty36YC8DJQENhuyw==
+X-Received: by 2002:a17:903:1251:b0:1b0:4527:3716 with SMTP id u17-20020a170903125100b001b045273716mr4905441plh.15.1686220654813;
+        Thu, 08 Jun 2023 03:37:34 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id jj11-20020a170903048b00b001a980a23802sm1128510plb.111.2023.06.08.03.37.29
+        by smtp.gmail.com with ESMTPSA id jj11-20020a170903048b00b001a980a23802sm1128510plb.111.2023.06.08.03.37.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Jun 2023 03:37:31 -0700 (PDT)
+        Thu, 08 Jun 2023 03:37:34 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Kashyap Desai <kashyap.desai@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 13/17] RDMA/bnxt_re: consider timeout of destroy ah as success.
-Date:   Thu,  8 Jun 2023 03:25:04 -0700
-Message-Id: <1686219908-11181-14-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 14/17] RDMA/bnxt_re: cancel all control path command waiters upon error.
+Date:   Thu,  8 Jun 2023 03:25:05 -0700
+Message-Id: <1686219908-11181-15-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1686219908-11181-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1686219908-11181-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000007b8005fd9bd736"
+        boundary="00000000000028f4b305fd9bd706"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,120 +68,52 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000007b8005fd9bd736
+--00000000000028f4b305fd9bd706
 
 From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-If destroy_ah is timed out, it is likely to be destroyed by firmware
-but it is taking longer time due to temporary slowness
-in processing the rcfw command. In worst case, there might be
-AH resource leak in firmware.
-
-Sending timeout return value can dump warning message from ib_core
-which can be avoided if we map timeout of destroy_ah as success.
+When an error is detected in FW, wake up all the waiters as the
+all of them need to be completed with timeout. Add the device
+error state also as a wait condition.
 
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  2 ++
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 16 ++++++++++++----
- drivers/infiniband/hw/bnxt_re/qplib_sp.c |  8 +++++---
- drivers/infiniband/hw/bnxt_re/qplib_sp.h |  4 ++--
- 4 files changed, 21 insertions(+), 9 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c       | 1 +
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index 5a2baf4..80f198e 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -181,6 +181,8 @@ struct bnxt_re_dev {
- #define BNXT_RE_ROCEV2_IPV4_PACKET	2
- #define BNXT_RE_ROCEV2_IPV6_PACKET	3
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 51372de..8241154 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1495,6 +1495,7 @@ static int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
+ 	 */
+ 	set_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags);
+ 	set_bit(ERR_DEVICE_DETACHED, &rdev->rcfw.cmdq.flags);
++	wake_up_all(&rdev->rcfw.cmdq.waitq);
+ 	mutex_unlock(&bnxt_re_mutex);
  
-+#define BNXT_RE_CHECK_RC(x) ((x) && (x != -ETIMEDOUT))
-+
- static inline struct device *rdev_to_dev(struct bnxt_re_dev *rdev)
- {
- 	if (rdev)
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index e86afec..053afc9 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -613,12 +613,20 @@ int bnxt_re_destroy_ah(struct ib_ah *ib_ah, u32 flags)
- {
- 	struct bnxt_re_ah *ah = container_of(ib_ah, struct bnxt_re_ah, ib_ah);
- 	struct bnxt_re_dev *rdev = ah->rdev;
-+	bool block = true;
-+	int rc = 0;
- 
--	bnxt_qplib_destroy_ah(&rdev->qplib_res, &ah->qplib_ah,
--			      !(flags & RDMA_DESTROY_AH_SLEEPABLE));
-+	block = !(flags & RDMA_DESTROY_AH_SLEEPABLE);
-+	rc = bnxt_qplib_destroy_ah(&rdev->qplib_res, &ah->qplib_ah, block);
-+	if (BNXT_RE_CHECK_RC(rc)) {
-+		if (rc == -ETIMEDOUT)
-+			rc = 0;
-+		else
-+			goto fail;
-+	}
- 	atomic_dec(&rdev->ah_count);
--
--	return 0;
-+fail:
-+	return rc;
- }
- 
- static u8 bnxt_re_stack_to_dev_nw_type(enum rdma_network_type ntype)
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index dbb0e4e..910d17d 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -460,13 +460,14 @@ int bnxt_qplib_create_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
  	return 0;
- }
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index 3461e3b..4f36644 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -118,7 +118,8 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
  
--void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
--			   bool block)
-+int bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
-+			  bool block)
- {
- 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
- 	struct creq_destroy_ah_resp resp = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
- 	struct cmdq_destroy_ah req = {};
-+	int rc;
+ 		/* Non zero means command completed */
+ 		ret = wait_event_timeout(cmdq->waitq,
+-					 !test_bit(cbit, cmdq->cmdq_bitmap),
++					 !test_bit(cbit, cmdq->cmdq_bitmap) ||
++					 test_bit(ERR_DEVICE_DETACHED, &cmdq->flags),
+ 					 msecs_to_jiffies(RCFW_FW_STALL_TIMEOUT_SEC
+ 							  * 1000));
  
- 	/* Clean up the AH table in the device */
- 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
-@@ -477,7 +478,8 @@ void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
- 
- 	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req),
- 				sizeof(resp), block);
--	bnxt_qplib_rcfw_send_message(rcfw, &msg);
-+	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
-+	return rc;
- }
- 
- /* MRW */
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-index 5de87465..4061616 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-@@ -327,8 +327,8 @@ int bnxt_qplib_set_func_resources(struct bnxt_qplib_res *res,
- 				  struct bnxt_qplib_ctx *ctx);
- int bnxt_qplib_create_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
- 			 bool block);
--void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
--			   bool block);
-+int bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
-+			  bool block);
- int bnxt_qplib_alloc_mrw(struct bnxt_qplib_res *res,
- 			 struct bnxt_qplib_mrw *mrw);
- int bnxt_qplib_dereg_mrw(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mrw,
 -- 
 2.5.5
 
 
---000000000000007b8005fd9bd736
+--00000000000028f4b305fd9bd706
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -252,14 +184,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIL3siXb42aZo
-9Yu9XGVKzad8WJnYZJ/yMc5uz/XykMnmMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwODEwMzczMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGm07Sa7Ua/b
+qGjbuNtBHLHvboED5CDkVG1IAAAYpVyLMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYwODEwMzczNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB3hfrxLlfqRw6OPVjyC4h+gdekSquv
-hywnEqvOar3qQCH7yYMoeYwFhB3IZh/dNdks0xiEeyH1D1RVL+qx7NTVV+G+5beTCljyhyUQY/EZ
-zaQS0xPYUKdklTsgLQYYkyJ4lV28mNdXiwpPTXf/LaD8+fqhrptUFfoM/JbJp9GdSpFdsWQPnDOs
-oK6dJldEBie4tyBfNgw8jgqiG1bHDRcWsHqIzLwBv5CB1bjKOHoc3kt/rrZ3h7ft4g9Z6b2GZfJb
-1PbSwLc6v6dJFPPIGoeTd8tIUlWtWMt/HF9nDCJKQ1AQY2RliyEmhCVuXYW4sQtFkT3BqOxTQk+R
-/MN/nJnH
---000000000000007b8005fd9bd736--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBn0aPpGwrpPk4fL98Ri16DTiYtBK8e
+5kdSHV9J9mawTASQt9LEaQXTkWZcJVVvhC4J0LRpP6R9qfS7w7SeyGZvpALN5EiNuVzuvKUYJa0+
+HFJxuAmVqQ6yUGHdWWxo3f28zn8kIcTjiob9H7IxfaY4E6uBck4SYVi8Yo6NCQOTl6uYNwqCzGvB
+fZ6BnVY7IgZMwpxBCLlujl7FZl/ElXMzKor1xryGkNSJG22aGNhdb86Z13h7O5bswxN21LCbd8Tx
+17zA4oOCGCtklvHYgJhqSN9bD9H1ySlVvglUZR9nt/GhwApeD8ZrxzpcDp6gElvkiKufQlpPaLoe
+sxcg7+Aa
+--00000000000028f4b305fd9bd706--
