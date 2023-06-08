@@ -2,345 +2,289 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7C3727D06
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jun 2023 12:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18B3727E95
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jun 2023 13:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233965AbjFHKiG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Jun 2023 06:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
+        id S230290AbjFHLRr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Jun 2023 07:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235462AbjFHKiE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Jun 2023 06:38:04 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D3D30D0
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Jun 2023 03:37:43 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-543c692db30so232852a12.3
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Jun 2023 03:37:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686220663; x=1688812663;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=H7X2h68Oxs4Gb9veWaY48teMprU/YVNoF3JPTJbDMQo=;
-        b=eorCv2W31kAhrQXiWBe5SSZpfed/ikPrYsgVtmYNJ51Z8qhXNNgsBH04cT7H+pgYDN
-         6MyYgkMU5amLbICX1KvaatfRHSxkcilb/4eGD7MfiSdKbChjlOi1pKyG8mfwqIB2GCcZ
-         nQmLDhuOZHrwI2zMWbnBC5X5iezZPD5j4op7g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686220663; x=1688812663;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H7X2h68Oxs4Gb9veWaY48teMprU/YVNoF3JPTJbDMQo=;
-        b=ElPZw/Gpe/TFbr9DkQlr75X4/iOmBN+j5Ht6gDJ6SBWlfneljzaRvqzCILZGhUGjem
-         Y6ybFYkisxZh5PuOKiSDVA/qtpNZJEeVfsRWZ5YRaeijSySwJcQZf8T0ZaO61WrbHQEC
-         aTxtlpzHoPQJoNOtjdEQMrckHBA050TygPh3wpy39T+rOyZvLlyI9EsgxaxQO9sA3W2h
-         cKWokMVjXKSs0UGXqsjexjlE5R0ypmGURBVo/ZY6RWmzTLTW3o3gce3KRTp2efZOO+uA
-         USXhrVINe3ufC8imp/SWiZJeQzD1VPLSYx+tvuIwKoaCfnVAyZoPvF0AYj4LFI2SHz9m
-         VboA==
-X-Gm-Message-State: AC+VfDx1lQK8ngW8FvBS9pLwnDp4KIQ9FWtSzFwxmPSW7uZ9RLIMC0Od
-        7RTCuY0aHUoKqYd7aGhmze9hPg==
-X-Google-Smtp-Source: ACHHUZ7jgF7fRe9SpxSqVcv82A4I7wJFrVIbMdCJRVQj/nZhYFWAB02R69oPWlXdvuNdThc6KAGC2Q==
-X-Received: by 2002:a17:90a:4d:b0:255:b07a:3d55 with SMTP id 13-20020a17090a004d00b00255b07a3d55mr7830376pjb.28.1686220663098;
-        Thu, 08 Jun 2023 03:37:43 -0700 (PDT)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id jj11-20020a170903048b00b001a980a23802sm1128510plb.111.2023.06.08.03.37.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Jun 2023 03:37:42 -0700 (PDT)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 17/17] RDMA/bnxt_re: optimize the parameters passed to helper functions
-Date:   Thu,  8 Jun 2023 03:25:08 -0700
-Message-Id: <1686219908-11181-18-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1686219908-11181-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1686219908-11181-1-git-send-email-selvin.xavier@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a8c4b605fd9bd7f1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230033AbjFHLRr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Jun 2023 07:17:47 -0400
+Received: from HK2P15301CU002.outbound.protection.outlook.com (mail-eastasiaazon11020026.outbound.protection.outlook.com [52.101.128.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC2D269E;
+        Thu,  8 Jun 2023 04:17:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IdwgGXtex9WjqGMEoCaIcnOlGuCtdT8tnW/nxqkqCrmsJ3lmy3ZZS8wKZMeDGUN1EzB+jgYjf8FPgtFMDdNWmpfoYS6+1TmXa19Md6ApHgZnQseYy5Q10sxrAjp8/0oS9JLeaS3Us46i3CSEAbf45Vo/Iw+EXmFIk4eIdfClPNdWVmFFLnxImltkYqW+HYEp2JxeKSjgyimryDFse8YZdj1UP/+y5q9SfGswoGCnAGyhN8O25eV2XGKZvrRQN+IGuyarMZEx7Gms/GKcnNp5ESP3ofbR9BgYxgUIyvewi4FZhyl5yl5J4buLPyZz0Bx0NLZaFrqfUNjQzlkDA5wk3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1Zm1s6F7eo47iEv+x7F/yOtuW/oF/LoZd2EKtmZhXO4=;
+ b=Xoc/tITRqF5eHjhEiOiU9i4etEcwws9VFTVvksPR49kjmJxAWM30aicVveEGkcjz28uI5Hs+0pLsTjV6jnGWqonHqjl4qb8BhCTTgnQ96kkMQmmMSlAU19/imWHwAzVApvKjhaSVFN+Ti+p1B9X/d97YwXmsxHKG1tHO7+wGZcJNMKqCDtdseRYEb5S5YejfaFAnCqfNZVJjdZ9geZrhXZW3oIDtCt0yx7iBb2gfPbv7fwYwqIEpO4Zca4pvtkrXpMB0+SE1uiqGI60fJnAoHv8rLfKmLHEwtSZEHT9zq71/MqmmuxC4PLR9l/VaioDSPoXpuZ8JWXszBstR2uv9ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Zm1s6F7eo47iEv+x7F/yOtuW/oF/LoZd2EKtmZhXO4=;
+ b=Mg58uQCIfd2nxkRYkADIJAF9f9H1Oe40Hj7o9YqhBj7EoWwCLFLenO2BoY9XmcVo4FS7yesBGDWcgtlcSCRaKsGK0RbobMwzDVmgq0dtukR2iHkLkjXcQhGQ0DVO2o8cR5YCtlYOb1As6kwwIwthtNFXzLFzxnmzm/qsAzz4/wg=
+Received: from SI2P153MB0441.APCP153.PROD.OUTLOOK.COM (2603:1096:4:fc::7) by
+ TYZP153MB0691.APCP153.PROD.OUTLOOK.COM (2603:1096:400:25f::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6500.14; Thu, 8 Jun 2023 11:17:40 +0000
+Received: from SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
+ ([fe80::643:ed9:497b:3cac]) by SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
+ ([fe80::643:ed9:497b:3cac%4]) with mapi id 15.20.6500.010; Thu, 8 Jun 2023
+ 11:17:40 +0000
+From:   Wei Hu <weh@microsoft.com>
+To:     Long Li <longli@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>
+Subject: RE: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
+ driver.
+Thread-Topic: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
+ driver.
+Thread-Index: AQHZmIoyK0/pJvWPX0+gdBo6594smK9/1dWAgADsBLA=
+Date:   Thu, 8 Jun 2023 11:17:40 +0000
+Message-ID: <SI2P153MB0441EC655394CEA3E8E727E7BB50A@SI2P153MB0441.APCP153.PROD.OUTLOOK.COM>
+References: <20230606151747.1649305-1-weh@microsoft.com>
+ <PH7PR21MB32634CB06AFF8BFFDBC003B3CE53A@PH7PR21MB3263.namprd21.prod.outlook.com>
+In-Reply-To: <PH7PR21MB32634CB06AFF8BFFDBC003B3CE53A@PH7PR21MB3263.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=6ddf424f-7835-43f4-b969-27a83fd42970;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-06-07T20:49:00Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SI2P153MB0441:EE_|TYZP153MB0691:EE_
+x-ms-office365-filtering-correlation-id: 9e2a79df-1dff-4aa9-63f3-08db6811f8dc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IgzL+J9ylANc2jJsl7M0+GoA9Q90thA+t5saRF8hfdV5hpL4S0w2Ckri2EFZ0FdX2Qp7PjuOqWUDZv3wxlYaF9vZuDTyuXYjM3nx1he6C5BQk6SMTqDtE+KxCjrJJ1c226bxiT9EBdnsOCdzNfCwyRELxRsJiTl4/h5dyyJSfC3TAyKVsuiMPujA2MVz5lklIq0imFgvp6+fjK340yvbQVUsCwT0/ZfUX4wFjdDaPv2Fp8fdESJEk9/Yk93dy4IwNRlJhTaRBRaxS5kl6Vea+1KAg0/5iXBp7NGfR17cpbxE+PG48bQv6dh3zmt7CpYmtyl82+jcB0Clo7XRukoDZbVPPGQq0VYXGWGUpfesLVBGglgGsNT3BWtEFN1U6afFHHo+S4lsVvvT9XF6Kl2zSblCXwEKGoCG5GKZYgMcKmFK1IecpHt1QwzojpMkIbUO6kt9hh0frlB/ymZDey8COnMlBqn9fohI2FkFZrlcgDluAX3uXUEAiwH3TI76AhcMGmGrbrvFT6th34ILDTSM6eQNj1Ex53CIL+rxgMbX8V/bhFiCQDMLvwUcYdubulyM9Bkwj9ePrpFIyCPhjnKMXHzjgxmSNaS6SpJKB6G30F+xq9AX7CwLmhsdKLMGz7xRJOp2EaIHpg6F7Y+RZNHOPRWiirrGk72p4wWE9YkJVVH+yHCEo4sm7QTt1DOzci9J
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2P153MB0441.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(376002)(396003)(346002)(136003)(451199021)(83380400001)(7416002)(82950400001)(110136005)(82960400001)(55016003)(10290500003)(478600001)(33656002)(8676002)(8936002)(41300700001)(38070700005)(316002)(76116006)(66946007)(66476007)(66556008)(52536014)(66446008)(921005)(122000001)(64756008)(5660300002)(38100700002)(86362001)(7696005)(71200400001)(2906002)(186003)(6506007)(9686003)(66899021)(8990500004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lWnyk7aoiCqohg05Nk3wLejBt9dOhlLzEHfR2fZhBI6M0M8HzLwa7xBTHx1R?=
+ =?us-ascii?Q?Gw6t5fjEopXFa4bhh58jF3XPgj2NBb493a+GXry1Xw5JzkUngIC/rmRJWH2v?=
+ =?us-ascii?Q?kQ6rm6K9MGv2/QNNc1q+4elnP5yikWNoZAjDWRAI4U0rRrJKgt51J1M8yn09?=
+ =?us-ascii?Q?aLZif3bjZ1/eoWNNrzYj25BbZ7dE4DKC38VVfs/YXP7bq/XimCp+UmoSkMS7?=
+ =?us-ascii?Q?l87Q9Iou7drteiuFPCKHgWMABrQY5Ckf3MCpPp5DPuJVgaAjy3h39K0WQ3NE?=
+ =?us-ascii?Q?mvuvvWYC1LzhBiN9oWXhO7CYAUyZTcqtiXQN5QVgM5F58gI1pZfn6nj9iro0?=
+ =?us-ascii?Q?lrTs+dM97kvNYAPnVAXenTnGjc4tW7LOIdyVLTc0h59UNE9F5Jyftgt1HvGI?=
+ =?us-ascii?Q?8rOgsi3z9YIa6bAU7sOYpNhi94P0mGA/wH8e/gkPMNljgzKaEtEpqYkGcJe+?=
+ =?us-ascii?Q?S6cCxYindqvQrf/w+lr5Zow5SCGxaAZUlwBpCaXp83GlBFhq1MK5UYZ83B8q?=
+ =?us-ascii?Q?K9vrXRQjhOJBEbAoSdw9meSaF4zVytlXzv8ly7ZAGJLKr4YS2LBfXt6/2Ldj?=
+ =?us-ascii?Q?Lp4MO8M52YaKw/Scjz9dn+DeBfKTMGFV2VHoQAqBoOadfFLfY++Xu99ae1aI?=
+ =?us-ascii?Q?cx5gjLaJPYZN1bKv/WEGzFxmVljF8WDveptDGWgJBxS1uoNBbCFxybCV0DXV?=
+ =?us-ascii?Q?kw53LG5bIk4jyAQvpzW2KKkiVPBqeEwwccUiRNB//JVNOPdh/kyfemAzqHbH?=
+ =?us-ascii?Q?Id8sVfecllphW1yoc7fydBLzTbrhZQZQ6omfUYQm0jNiGg/YVxI+6SJrOnGP?=
+ =?us-ascii?Q?oYhnVKNJt1o6o7aUaDu2cJOrGNhWrcPi/VT1+dJlY1Dfsedls4uYvYCC81z9?=
+ =?us-ascii?Q?FSWlA4X75nptEincYRIh6sPvOZBoJfmoA+7lVMKDnhKVVq+eADPWkMsOFfrA?=
+ =?us-ascii?Q?RuAza69eEVKrdndxbUwr9BF1x4h9e/RadQOXSepXS2+wBHnWHTKW79HvVgSY?=
+ =?us-ascii?Q?QqbxbW7vKkD4ubqyLA7TFhjFGXJ7AX3fcGl0LCFGdqxM4JmKG5WJp5Z5XoeD?=
+ =?us-ascii?Q?YXTyo/oP8yrPLKrwHWes2Z05uV4jALjpxvjmBleY9SU2waFt+FJeXiMp4d6i?=
+ =?us-ascii?Q?QFfz7RnlDDblmzEEL9OjDY0Qh0ul1pQr1Qf45GYUcT/vYSCNwuFx1YY8Qs7s?=
+ =?us-ascii?Q?PxDRCHVIweh4CXLWAsTU2f96ji1nI4AUx/uP9CTT+dUUGGV7oOkEti3tW5l9?=
+ =?us-ascii?Q?xsnOr2hh2QYkv0qM7Fm+TafF5Wc6onomvVQyyCOkFR0GolUbi5YaEphukgMl?=
+ =?us-ascii?Q?5vFSwXshRbpP/XPhchwDn3fE0rSaI22RfHpMSvjfDdAi1fmNJqWkPe/zYbLI?=
+ =?us-ascii?Q?k1jhBvqjDWvxsxWRbldJVIRe17UcCZuc/4V2AJmGLKryabZ4vdpaLva7aeWb?=
+ =?us-ascii?Q?dCbOff7mS0q5oev/ipBnpXQLaNrGPSiogQYTk5eVtUTpGS3OshVPEeJ77nVo?=
+ =?us-ascii?Q?cmXMBSUE4nJ/zn36CHJm7xmZK121F27ZxRe2FigrsjSfKx6PhtI3xCVLQCvL?=
+ =?us-ascii?Q?+Rq+kpTxNuaDDVb6e0ZjTU3ppTF+K8DJZ7+nEqIpuYqgVo6nsq5aOV1yMWjo?=
+ =?us-ascii?Q?Sg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e2a79df-1dff-4aa9-63f3-08db6811f8dc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2023 11:17:40.1870
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CPBfkeQriP5nDxuvq8xX/4tp7EoeHDnxSBNvO/MLPeu2ay/eXHoASHhteKFel/LKkRT7cgkE647Oq9lOOZPM5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZP153MB0691
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000a8c4b605fd9bd7f1
-
-From: Kashyap Desai <kashyap.desai@broadcom.com>
-
-Avoid passing arguments like Opcode which can be retrieved from
-bnxt_qplib_crsqe structure.
-
-Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 44 +++++++++++++-----------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 45bbf5f..3526518 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -93,9 +93,6 @@ static int bnxt_qplib_map_rc(u8 opcode)
-  * bnxt_re_is_fw_stalled   -	Check firmware health
-  * @rcfw      -   rcfw channel instance of rdev
-  * @cookie    -   cookie to track the command
-- * @opcode    -   rcfw submitted for given opcode
-- * @cbit      -   bitmap entry of cookie
-- * @in_used   -   command is in used or freed
-  *
-  * If firmware has not responded any rcfw command within
-  * rcfw->max_timeout, consider firmware as stalled.
-@@ -105,20 +102,22 @@ static int bnxt_qplib_map_rc(u8 opcode)
-  * -ENODEV if firmware is not responding
-  */
- static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
--				 u16 cookie, u8 opcode, bool in_used)
-+				 u16 cookie)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq;
-+	struct bnxt_qplib_crsqe *crsqe;
- 
-+	crsqe = &rcfw->crsqe_tbl[cookie];
- 	cmdq = &rcfw->cmdq;
- 
- 	if (time_after(jiffies, cmdq->last_seen +
- 		      (rcfw->max_timeout * HZ))) {
- 		dev_warn_ratelimited(&rcfw->pdev->dev,
- 				     "%s: FW STALL Detected. cmdq[%#x]=%#x waited (%d > %d) msec active %d ",
--				     __func__, cookie, opcode,
-+				     __func__, cookie, crsqe->opcode,
- 				     jiffies_to_msecs(jiffies - cmdq->last_seen),
- 				     rcfw->max_timeout * 1000,
--				     in_used);
-+				     crsqe->is_in_used);
- 		return -ENODEV;
- 	}
- 
-@@ -129,7 +128,6 @@ static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
-  * __wait_for_resp   -	Don't hold the cpu context and wait for response
-  * @rcfw      -   rcfw channel instance of rdev
-  * @cookie    -   cookie to track the command
-- * @opcode    -   rcfw submitted for given opcode
-  *
-  * Wait for command completion in sleepable context.
-  *
-@@ -137,7 +135,7 @@ static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
-  * 0 if command is completed by firmware.
-  * Non zero error code for rest of the case.
-  */
--static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
-+static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq;
- 	struct bnxt_qplib_crsqe *crsqe;
-@@ -148,7 +146,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
- 
- 	do {
- 		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
--			return bnxt_qplib_map_rc(opcode);
-+			return bnxt_qplib_map_rc(crsqe->opcode);
- 		if (test_bit(FIRMWARE_STALL_DETECTED, &cmdq->flags))
- 			return -ETIMEDOUT;
- 
-@@ -166,7 +164,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
- 		if (!crsqe->is_in_used)
- 			return 0;
- 
--		ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, crsqe->is_in_used);
-+		ret = bnxt_re_is_fw_stalled(rcfw, cookie);
- 		if (ret)
- 			return ret;
- 
-@@ -177,7 +175,6 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
-  * __block_for_resp   -	hold the cpu context and wait for response
-  * @rcfw      -   rcfw channel instance of rdev
-  * @cookie    -   cookie to track the command
-- * @opcode    -   rcfw submitted for given opcode
-  *
-  * This function will hold the cpu (non-sleepable context) and
-  * wait for command completion. Maximum holding interval is 8 second.
-@@ -186,7 +183,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
-  * -ETIMEOUT if command is not completed in specific time interval.
-  * 0 if command is completed by firmware.
-  */
--static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
-+static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
- 	struct bnxt_qplib_crsqe *crsqe;
-@@ -197,7 +194,7 @@ static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
- 
- 	do {
- 		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
--			return bnxt_qplib_map_rc(opcode);
-+			return bnxt_qplib_map_rc(crsqe->opcode);
- 		if (test_bit(FIRMWARE_STALL_DETECTED, &cmdq->flags))
- 			return -ETIMEDOUT;
- 
-@@ -375,7 +372,6 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
-  * __poll_for_resp   -	self poll completion for rcfw command
-  * @rcfw      -   rcfw channel instance of rdev
-  * @cookie    -   cookie to track the command
-- * @opcode    -   rcfw submitted for given opcode
-  *
-  * It works same as __wait_for_resp except this function will
-  * do self polling in sort interval since interrupt is disabled.
-@@ -385,8 +381,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
-  * -ETIMEOUT if command is not completed in specific time interval.
-  * 0 if command is completed by firmware.
-  */
--static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
--			   u8 opcode)
-+static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
- 	struct bnxt_qplib_crsqe *crsqe;
-@@ -398,7 +393,7 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
- 
- 	do {
- 		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
--			return bnxt_qplib_map_rc(opcode);
-+			return bnxt_qplib_map_rc(crsqe->opcode);
- 		if (test_bit(FIRMWARE_STALL_DETECTED, &cmdq->flags))
- 			return -ETIMEDOUT;
- 
-@@ -409,7 +404,7 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
- 			return 0;
- 		if (jiffies_to_msecs(jiffies - issue_time) >
- 		    (rcfw->max_timeout * 1000)) {
--			ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, crsqe->is_in_used);
-+			ret = bnxt_re_is_fw_stalled(rcfw, cookie);
- 			if (ret)
- 				return ret;
- 		}
-@@ -417,13 +412,12 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
- };
- 
- static int __send_message_basic_sanity(struct bnxt_qplib_rcfw *rcfw,
--				       struct bnxt_qplib_cmdqmsg *msg)
-+				       struct bnxt_qplib_cmdqmsg *msg,
-+				       u8 opcode)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq;
--	u32 opcode;
- 
- 	cmdq = &rcfw->cmdq;
--	opcode = __get_cmdq_base_opcode(msg->req, msg->req_sz);
- 
- 	/* Prevent posting if f/w is not in a state to process */
- 	if (test_bit(ERR_DEVICE_DETACHED, &rcfw->cmdq.flags))
-@@ -495,7 +489,7 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 
- 	opcode = __get_cmdq_base_opcode(msg->req, msg->req_sz);
- 
--	rc = __send_message_basic_sanity(rcfw, msg);
-+	rc = __send_message_basic_sanity(rcfw, msg, opcode);
- 	if (rc)
- 		return rc == -ENXIO ? bnxt_qplib_map_rc(opcode) : rc;
- 
-@@ -507,11 +501,11 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 				& RCFW_MAX_COOKIE_VALUE;
- 
- 	if (msg->block)
--		rc = __block_for_resp(rcfw, cookie, opcode);
-+		rc = __block_for_resp(rcfw, cookie);
- 	else if (atomic_read(&rcfw->rcfw_intr_enabled))
--		rc = __wait_for_resp(rcfw, cookie, opcode);
-+		rc = __wait_for_resp(rcfw, cookie);
- 	else
--		rc = __poll_for_resp(rcfw, cookie, opcode);
-+		rc = __poll_for_resp(rcfw, cookie);
- 	if (rc) {
- 		/* timed out */
- 		dev_err(&rcfw->pdev->dev, "cmdq[%#x]=%#x timedout (%d)msec\n",
--- 
-2.5.5
 
 
---000000000000a8c4b605fd9bd7f1
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+> -----Original Message-----
+> Subject: RE: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to
+> mana ib driver.
+>=20
+> > Subject: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana
+> > ib driver.
+> >
+> > Add EQ interrupt support for mana ib driver. Allocate EQs per ucontext
+> > to receive interrupt. Attach EQ when CQ is created. Call CQ interrupt
+> > handler when completion interrupt happens. EQs are destroyed when
+> ucontext is deallocated.
+> >
+> > The change calls some public APIs in mana ethernet driver to allocate
+> > EQs and other resources. Ehe EQ process routine is also shared by mana
+> > ethernet and mana ib drivers.
+> >
+> > Co-developed-by: Ajay Sharma <sharmaajay@microsoft.com>
+> > Signed-off-by: Ajay Sharma <sharmaajay@microsoft.com>
+> > Signed-off-by: Wei Hu <weh@microsoft.com>
+> > ---
+> >
+> > v2: Use ibdev_dbg to print error messages and return -ENOMEN
+> >     when kzalloc fails.
+> >
+> >  drivers/infiniband/hw/mana/cq.c               |  32 ++++-
+> >  drivers/infiniband/hw/mana/main.c             |  87 ++++++++++++
+> >  drivers/infiniband/hw/mana/mana_ib.h          |   4 +
+> >  drivers/infiniband/hw/mana/qp.c               |  90 +++++++++++-
+> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 131 ++++++++++--------
+> >  drivers/net/ethernet/microsoft/mana/mana_en.c |   1 +
+> >  include/net/mana/gdma.h                       |   9 +-
+> >  7 files changed, 290 insertions(+), 64 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/hw/mana/cq.c
+> > b/drivers/infiniband/hw/mana/cq.c index d141cab8a1e6..3cd680e0e753
+> > 100644
+> > --- a/drivers/infiniband/hw/mana/cq.c
+> > +++ b/drivers/infiniband/hw/mana/cq.c
+> > @@ -12,13 +12,20 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const
+> > struct ib_cq_init_attr *attr,
+> >  	struct ib_device *ibdev =3D ibcq->device;
+> >  	struct mana_ib_create_cq ucmd =3D {};
+> >  	struct mana_ib_dev *mdev;
+> > +	struct gdma_context *gc;
+> > +	struct gdma_dev *gd;
+> >  	int err;
+> >
+> >  	mdev =3D container_of(ibdev, struct mana_ib_dev, ib_dev);
+> > +	gd =3D mdev->gdma_dev;
+> > +	gc =3D gd->gdma_context;
+> >
+> >  	if (udata->inlen < sizeof(ucmd))
+> >  		return -EINVAL;
+> >
+> > +	cq->comp_vector =3D attr->comp_vector > gc->max_num_queues ?
+> > +				0 : attr->comp_vector;
+> > +
+> >  	err =3D ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata-
+> > >inlen));
+> >  	if (err) {
+> >  		ibdev_dbg(ibdev,
+> > @@ -69,11 +76,32 @@ int mana_ib_destroy_cq(struct ib_cq *ibcq, struct
+> > ib_udata *udata)
+> >  	struct mana_ib_cq *cq =3D container_of(ibcq, struct mana_ib_cq, ibcq)=
+;
+> >  	struct ib_device *ibdev =3D ibcq->device;
+> >  	struct mana_ib_dev *mdev;
+> > +	struct gdma_context *gc;
+> > +	struct gdma_dev *gd;
+> > +
+> >
+> >  	mdev =3D container_of(ibdev, struct mana_ib_dev, ib_dev);
+> > +	gd =3D mdev->gdma_dev;
+> > +	gc =3D gd->gdma_context;
+> >
+> > -	mana_ib_gd_destroy_dma_region(mdev, cq->gdma_region);
+> > -	ib_umem_release(cq->umem);
+> > +
+> > +
+> > +	if (atomic_read(&ibcq->usecnt) =3D=3D 0) {
+> > +		mana_ib_gd_destroy_dma_region(mdev, cq->gdma_region);
+>=20
+> Need to check if this function fails. The following code will call kfree(=
+gc-
+> >cq_table[cq->id]), it's possible that IRQ is happening at the same time =
+if CQ
+> is not destroyed.
+>=20
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFJZEwXMgxPy
-maOnVkH/R2vYNF2+Odg2dWkYfuvrFIwVMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwODEwMzc0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCJEwM+WGTriAnjQrTiGmBx3kqL3TYd
-ZKD+OTrZ6tt25yc6sPamBASMT0fW8ZtVmte2tmrc+wVny7cpGKhCVN5hmmEjBM6QrBjaejZCzotP
-YLr93mnSZ50YNKrbK9553QlTxaFgUqKaJjRtwVmDigwr+uMHSPJCcVnUnSSa/b9W+z4E3BMxTkIt
-C7N0oNw7NMyg32dE8z9khxfS8dqTNim/YOmyR3MDijBbZT6/YN13HAxUX03M2yehdL6LVsc1uAKi
-905/OXV4oDVYl93o6edguXGrloVJaXFeOu5k5FDmWlG4U2EteyaDRYSNhpY2htJvMI/AEF/YSard
-G1RV5vQ1
---000000000000a8c4b605fd9bd7f1--
+Sure. Will update.
+
+> > +		ibdev_dbg(ibdev, "freeing gdma cq %p\n", gc->cq_table[cq-
+> >id]);
+> > +		kfree(gc->cq_table[cq->id]);
+> > +		gc->cq_table[cq->id] =3D NULL;
+> > +		ib_umem_release(cq->umem);
+> > +	}
+> >
+> >  	return 0;
+> >  }
+> > +
+> > +void mana_ib_cq_handler(void *ctx, struct gdma_queue *gdma_cq) {
+> > +	struct mana_ib_cq *cq =3D ctx;
+> > +	struct ib_device *ibdev =3D cq->ibcq.device;
+> > +
+> > +	ibdev_dbg(ibdev, "Enter %s %d\n", __func__, __LINE__);
+>=20
+> This debug message seems overkill?
+>=20
+> > +	cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context); }
+> > diff --git a/drivers/infiniband/hw/mana/main.c
+> > b/drivers/infiniband/hw/mana/main.c
+> > index 7be4c3adb4e2..e4efbcaed10e 100644
+> > --- a/drivers/infiniband/hw/mana/main.c
+> > +++ b/drivers/infiniband/hw/mana/main.c
+> > @@ -143,6 +143,81 @@ int mana_ib_dealloc_pd(struct ib_pd *ibpd, struct
+> > ib_udata *udata)
+> >  	return err;
+> >  }
+> >
+> > +static void mana_ib_destroy_eq(struct mana_ib_ucontext *ucontext,
+> > +			       struct mana_ib_dev *mdev)
+> > +{
+> > +	struct gdma_context *gc =3D mdev->gdma_dev->gdma_context;
+> > +	struct ib_device *ibdev =3D ucontext->ibucontext.device;
+> > +	struct gdma_queue *eq;
+> > +	int i;
+> > +
+> > +	if (!ucontext->eqs)
+> > +		return;
+> > +
+> > +	for (i =3D 0; i < gc->max_num_queues; i++) {
+> > +		eq =3D ucontext->eqs[i].eq;
+> > +		if (!eq)
+> > +			continue;
+> > +
+> > +		mana_gd_destroy_queue(gc, eq);
+> > +	}
+> > +
+> > +	kfree(ucontext->eqs);
+> > +	ucontext->eqs =3D NULL;
+> > +
+> > +	ibdev_dbg(ibdev, "destroyed eq's count %d\n", gc-
+> >max_num_queues); }
+>=20
+> Will gc->max_num_queues change after destroying a EQ?
+>=20
+
+I think it will not change. Also the compiler might optimize
+the code to just read the value once and store it in a register.
+
+Thanks,
+Wei
