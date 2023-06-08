@@ -2,62 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EED4727CEE
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jun 2023 12:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FBD727CF0
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jun 2023 12:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235808AbjFHKg6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Jun 2023 06:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
+        id S232139AbjFHKhC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Jun 2023 06:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbjFHKg6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Jun 2023 06:36:58 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECE9E6C
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Jun 2023 03:36:57 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-55b38fc0c70so297216eaf.0
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Jun 2023 03:36:57 -0700 (PDT)
+        with ESMTP id S235957AbjFHKhA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Jun 2023 06:37:00 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D363AE6C
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Jun 2023 03:36:59 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b01d3bb571so1885945ad.2
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Jun 2023 03:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686220616; x=1688812616;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qJk1U406oFNpgB757GU046VERu6MZti9kpGA/OcmYlU=;
-        b=EiX3uhkvORokhmoYhb4GMq3PCyP85t8AZzcCLEYmFqvSsYS1HyUcRhSIZSmadPfvfS
-         l3a6gKJlBZCYGVzF9ui0fPPMJC326lW4WPaWuUn9+YFI2fL+jTsjES2zgzTLt/dr8+Kl
-         bY0MsDAyOCtcGFpcl+0ZOsbbqPD3DqRb5vKVk=
+        d=broadcom.com; s=google; t=1686220619; x=1688812619;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5uWpYILjByNrdhhrXHCKg6f9gV/+49ynHktODwaTeZk=;
+        b=eznfhcFWjR5BL94/wx2N5GEZSziFwVUxb0QTLAkP7txA6Iffi3mPEH8f+KyXgES1Gz
+         jAYgkzFmVGajYdKgb6MrEbvVn3G0eBvKyY3GDwp1Q/wY2Y2aGpXTGxBzPJw6DASY/DCr
+         yOiw/xGPfERz/lealAxdb40wn6toKy6kwLQ1I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686220616; x=1688812616;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qJk1U406oFNpgB757GU046VERu6MZti9kpGA/OcmYlU=;
-        b=i4JeGgTHMpyg8pA3OreOSRNTtQ8qlgb3fn53h0vQ63xLVj3AatQ67y6YTrYQl/2YB6
-         kxZ6u2Bvcj4P2oNnZrZ+stR5x4yuOAVwkhoCcErYuBOfBWwocBoA/E/jsOcvgnOIgbUH
-         pN/lp6Kj1zKfoQ0KGPAkbFRwlvbjy9yzT+e8MPsblHLPBvUXxWVFly7pllA/fg6YdRM4
-         ehIDrNbHqpA3V2sDU57iw/NyFxNialkrscb2TOlIn1eOf4LZY2VPRf7Yxymxh4PC54YI
-         08qZ2ehKiUaDNyLwlZEtIfw7NAZteWLKVwkoLiEzc/v3yRS8rAdYMOAGBVCT0fcXfV/C
-         mPeQ==
-X-Gm-Message-State: AC+VfDyhefB7Gb9L09AMzJIGAe42TdSIjAY8urPq2Pqw34zDN1M+VwQL
-        5UYL4IL1Gz7PdSas5vRsSk08R13l8yezG0tBYOU=
-X-Google-Smtp-Source: ACHHUZ5OF9bUaWagXU0z0bytdZOgkN2uM5iG7uSNW8rzVw0g9J5bMHetqL30pAHTzu/QL3tzxIHqHg==
-X-Received: by 2002:aca:6704:0:b0:398:4870:d2ed with SMTP id z4-20020aca6704000000b003984870d2edmr8740159oix.13.1686220616565;
-        Thu, 08 Jun 2023 03:36:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686220619; x=1688812619;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5uWpYILjByNrdhhrXHCKg6f9gV/+49ynHktODwaTeZk=;
+        b=aWy0wkh6lp0OXbyiodC1Vugylnj8dzruHMMAq7oMIJqogPXqKc/F2oEnIfhSb65bqE
+         hYplKslg17RugD4KpKq5XX/o04+TNhSPljNhq1TM5tFPscLKzaFBDfS9+iBk+3PeQt+6
+         Yx+Fl+EJT9JqM/1/CIVX/HFpFfQteKGKP1AAm+zTjQjpb9ZI4GuOHBz4+n4SXkeftQCD
+         jE6MF+NbYjBgDG18UROW2yIe+gUxYPU62RErVHZpw/vtOM5gHSEDNporE1H7tQrqopWv
+         MewATJuBBKU76eAYkQMUJVviCOC8xHHweH7jqgKg2GKhyDUsBXzExy2zlRRU/Ffa51fu
+         b8hg==
+X-Gm-Message-State: AC+VfDw5bNysRdzi7nJiV6YIwOhP7Qe++uun4HKqBIm0rPwc890Qow0S
+        Uy4WQCDM2A6My45ymiaNUA7FoA==
+X-Google-Smtp-Source: ACHHUZ7V8aRPmF1TX3mUAyBePHaYOD0rg5p0tt/gugpjg5yAw4yV0Phnlcase3n6Y1LZzDr2oV1RBw==
+X-Received: by 2002:a17:903:2450:b0:1ad:bc86:851 with SMTP id l16-20020a170903245000b001adbc860851mr4600826pls.45.1686220619251;
+        Thu, 08 Jun 2023 03:36:59 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id jj11-20020a170903048b00b001a980a23802sm1128510plb.111.2023.06.08.03.36.54
+        by smtp.gmail.com with ESMTPSA id jj11-20020a170903048b00b001a980a23802sm1128510plb.111.2023.06.08.03.36.56
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Jun 2023 03:36:55 -0700 (PDT)
+        Thu, 08 Jun 2023 03:36:58 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 00/17] RDMA/bnxt_re: Control path updates
-Date:   Thu,  8 Jun 2023 03:24:51 -0700
-Message-Id: <1686219908-11181-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 01/17] RDMA/bnxt_re: wraparound mbox producer index
+Date:   Thu,  8 Jun 2023 03:24:52 -0700
+Message-Id: <1686219908-11181-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1686219908-11181-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1686219908-11181-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000e1744305fd9bd477"
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="0000000000000bcc8905fd9bd5a8"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=no
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,54 +68,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000e1744305fd9bd477
+--0000000000000bcc8905fd9bd5a8
 
-This patch series from Kashyap includes code refactoring and some
-optimizations in the FW control path of the driver. It also address
-some of the issues seen as we scale up the HW resources.
-It also includes few bug fixes in the control path.
+From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-Please review and apply.
+Driver is not handling the wraparound of the mbox producer index correctly.
+Currently the wraparound happens once u32 max is reached.
 
-Thanks,
-Selvin Xavier
+Bit 31 of the producer index register is special and should be set
+only once for the first command. Because the producer index overflow
+setting bit31 after a long time, FW goes to initialization sequence
+and this causes FW hang.
 
-Kashyap Desai (17):
-  RDMA/bnxt_re: wraparound mbox producer index
-  RDMA/bnxt_re: Avoid calling wake_up threads from spin_lock context
-  RDMA/bnxt_re: remove virt_func check while creating RoCE FW channel
-  RDMA/bnxt_re: set fixed command queue depth
-  RDMA/bnxt_re: Enhance the existing functions that wait for FW
-    responses
-  RDMA/bnxt_re: Avoid the command wait if firmware is inactive
-  RDMA/bnxt_re: use shadow qd while posting non blocking rcfw command
-  RDMA/bnxt_re: Simplify the function that sends the FW commands
-  RDMA/bnxt_re: add helper function __poll_for_resp
-  RDMA/bnxt_re: handle command completions after driver detect a
-    timedout
-  RDMA/bnxt_re: Add firmware stall check detection
-  RDMA/bnxt_re: post destroy_ah for delayed completion of AH creation
-  RDMA/bnxt_re: consider timeout of destroy ah as success.
-  RDMA/bnxt_re: cancel all control path command waiters upon error.
-  RDMA/bnxt_re: use firmware provided max request timeout
-  RDMA/bnxt_re: remove redundant cmdq_bitmap
-  RDMA/bnxt_re: optimize the parameters passed to helper functions
+Fix is to wraparound the mbox producer index once it reaches u16 max.
 
- drivers/infiniband/hw/bnxt_re/bnxt_re.h    |   2 +
- drivers/infiniband/hw/bnxt_re/ib_verbs.c   |  16 +-
- drivers/infiniband/hw/bnxt_re/main.c       |  11 +-
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 623 ++++++++++++++++++++++-------
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  51 ++-
- drivers/infiniband/hw/bnxt_re/qplib_res.h  |   1 +
- drivers/infiniband/hw/bnxt_re/qplib_sp.c   |   8 +-
- drivers/infiniband/hw/bnxt_re/qplib_sp.h   |   4 +-
- 8 files changed, 557 insertions(+), 159 deletions(-)
+Fixes: cee0c7bba486 ("RDMA/bnxt_re: Refactor command queue management code")
+Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index 688eaa0..d4ce82b 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -180,7 +180,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	} while (bsize > 0);
+ 	cmdq->seq_num++;
+ 
+-	cmdq_prod = hwq->prod;
++	cmdq_prod = hwq->prod & 0xFFFF;
+ 	if (test_bit(FIRMWARE_FIRST_FLAG, &cmdq->flags)) {
+ 		/* The very first doorbell write
+ 		 * is required to set this flag
+@@ -599,7 +599,7 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
+ 		rcfw->cmdq_depth = BNXT_QPLIB_CMDQE_MAX_CNT_8192;
+ 
+ 	sginfo.pgsize = bnxt_qplib_cmdqe_page_size(rcfw->cmdq_depth);
+-	hwq_attr.depth = rcfw->cmdq_depth;
++	hwq_attr.depth = rcfw->cmdq_depth & 0x7FFFFFFF;
+ 	hwq_attr.stride = BNXT_QPLIB_CMDQE_UNITS;
+ 	hwq_attr.type = HWQ_TYPE_CTX;
+ 	if (bnxt_qplib_alloc_init_hwq(&cmdq->hwq, &hwq_attr)) {
 -- 
 2.5.5
 
 
---000000000000e1744305fd9bd477
+--0000000000000bcc8905fd9bd5a8
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -183,14 +187,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMIHAxxYu8IU
-gHFSNTn8CHpSEbJ7MJaDGnHhGJUR1MNVMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwODEwMzY1NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIN/sZv3zAtDJ
+BW/s2OmJPlwqKpXQEPucyLOAZSCHvi7zMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYwODEwMzY1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBA/ts+K67497cVCmll8tpnuPBVl//W
-0/iCT37SZLaC/Xtvh3ltihqa+nCxVgnq/kH1lwaA7Tete009CtzLeMgzUZtTQCpYnFZqC+ygFQLj
-SWs4PBagesGqOf/hwQvCAIiEIDT5PtxC04dGA5KEKprAylHCgqr2AQ2lKh3XIPGicytst9vTKnrl
-S2dvm0jgzlMsH7/JAt/Jf1yCA7DFdw/kYEEHmCYKY/OVsi+1IrrdZf59l2kAFoAywa3yvL2IBqM+
-1I5gHdUi7dzmqIf6kbuL7Fa3eSItYQH+fxsNHVlXcgv2lRIYnAv+wQrvV+DNS8Mt5U07R2o3dRE3
-hcYcIWAH
---000000000000e1744305fd9bd477--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBiTwl0ya4NnF4mMtEBbx1BMABwQRvj
+FPwmgTJRHmvTUGY1d8OHr9HogwL5FNVPdl67G7DdD7JFJbDQQa4IEMFgJUpXE8ykUtUObGjUxgMu
+cMTn0AARdheQo7FPfxa7Hmg/gSu8CWRmhR+qomUPRtkTC9WscCnOEuwg53De+rb2SFVz2Haz+Y3x
+ojTfh8xWgcgmG+mYWcNKgR0EyEqsMH6Bkp1J+dLrvy/SMtnBF7MYnP7+ah4ltWwbdtwkJk7dmZSs
+6SGhYw/AuFql37GgpsPEdBn/Rm9AYCXJD2QcSxgPEu4F5dNJEPpYdhjyBFxnBsq/8FFGtygMSvXg
+vryifPTg
+--0000000000000bcc8905fd9bd5a8--
