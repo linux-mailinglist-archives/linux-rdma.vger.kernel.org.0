@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B1D727D04
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jun 2023 12:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E9F727D05
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jun 2023 12:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbjFHKhy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Jun 2023 06:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
+        id S235059AbjFHKiB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Jun 2023 06:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235059AbjFHKhx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Jun 2023 06:37:53 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE272D6D
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Jun 2023 03:37:38 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b0314f057cso2010775ad.1
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Jun 2023 03:37:38 -0700 (PDT)
+        with ESMTP id S233965AbjFHKiA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Jun 2023 06:38:00 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E0A1712
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Jun 2023 03:37:41 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b065154b79so12087835ad.1
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Jun 2023 03:37:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686220658; x=1688812658;
+        d=broadcom.com; s=google; t=1686220660; x=1688812660;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Ww0q9fpRyaBvzYRhuPEEV+DRtPaxNTZDMxjiruNuri4=;
-        b=aPcrki9O2+q1VyNQzTBpo53aRvHmhHBFgp/Nqd1Pdl4nIeLv/k4HFqa+KdldHUKiPA
-         u9pfX2pd6/iPEtV08pcz+4qcYg3Me3ho7tR5ZGnSPxAV8nNj8nHd9OHeO34ksP6i91AB
-         aHyjkU3QGNWsh4d2kuuS7qxXrJUJDsKwwbQRc=
+        bh=nZORGEz5YcIDqb9yaf9IaIdONJL6308EeG2LuLD1oaY=;
+        b=M3+kGAvfjmjNTCVBJ8Qjpa+8wlYdYIBuFRY4l2IbyvxZ62nDD0E/Nfbw5SFmzezk9H
+         xT2ZnFlkcf7aqV2XZWmNhXbjZ9eA+AvzG3VMSnYWdOfuYcexHR4OabGqjG1pm+eoyf5S
+         hUXSIgPdGNGNl4+afos/2L4E2360Zbw7AquOY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686220658; x=1688812658;
+        d=1e100.net; s=20221208; t=1686220660; x=1688812660;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ww0q9fpRyaBvzYRhuPEEV+DRtPaxNTZDMxjiruNuri4=;
-        b=EQXZz4qUDksk8LAUeQQDz+ssw78Xt3WtqYgGsY0Ai6EIISzTbbzHCx1I0Wsm82431i
-         6yWZDmJb8r7sB7nLqEo6voTJGpI/TAqdgyxiGa38Wx/kM8dr5YU0O85KOvOTdgwCNJfx
-         DLV4zW2JcNCLTPsxBygxoPErDB7SfvVMg49TUNYjaa3YmeTf3gCXYjB+LmVPa5y7nV2q
-         f3ECq7HXCdn6KLTRWlopBGZOQVMEgZmki7ESgw2WkVc1pWDxAJJdtpDmrfQ4lE9uY+YA
-         pkID0eWE7Md6PJwjiDQJR0EHtGDSZVLaxXRYOUmmOlgiqeOUMPpvYeZ90czC92Xn58dr
-         nmUw==
-X-Gm-Message-State: AC+VfDwDXBR3AqwaZ5rBaWGyAqgMHJog09Nq/chnaTjbgoyial2UufRI
-        u13kjrNslEMYYoC2L+X9EwljiA==
-X-Google-Smtp-Source: ACHHUZ4zd/zs97m1vWfYe/KhBoTIeS1N2DZC9FAAm/8aEKtpuW+fCXZG6QeX+rZ45b4BGI2DqTp/0Q==
-X-Received: by 2002:a17:903:32cf:b0:1b2:1ee9:682 with SMTP id i15-20020a17090332cf00b001b21ee90682mr6370016plr.23.1686220657687;
-        Thu, 08 Jun 2023 03:37:37 -0700 (PDT)
+        bh=nZORGEz5YcIDqb9yaf9IaIdONJL6308EeG2LuLD1oaY=;
+        b=PlIA60uk2bR+d8V7G2Rc2Rmhz+bkBcSeR0bVHk05EnblIGbjBMRQTsuDCb06wKPUVg
+         v0T8Bh5RXxfEEJbKSWcB3EzGHZTpC2+UKwXMSzFCr8GhoBBSCOao3wVHKKNpmkz1z7vu
+         evao0fC0DKFCsb54j6mHvBmjni4k3ioBejAhFcuM98QgAgCMIMmfMoIqcjQV11bpWAzF
+         IlI61vcGJCXHkgXpyFC4iqiqFgbXJiRYqqv89rRAUel1yPKpnApOQZBuIF0vtTdFI+GH
+         CxxAB2jOjbt6S+iHHRLV+0lxbP5/QSKcI/8WDNlhAYaVg0L/Sv1gqOPyzf38KSQV6TK6
+         grxw==
+X-Gm-Message-State: AC+VfDwZsOdIRCt9iV45qo6ac9YiiaUTQZLL12Eu5PAyEfKrQmTTjIlS
+        CxjLHNJFhRD4ouL1PelJFobv8Q==
+X-Google-Smtp-Source: ACHHUZ43RpzWnbeOjiCxvlVikNLkumsRrpuBrUsEQvDkqjkRTERutQv6FJEhd3uKWFh2VUtt7oKBRQ==
+X-Received: by 2002:a17:902:ab59:b0:1aa:d235:6dd4 with SMTP id ij25-20020a170902ab5900b001aad2356dd4mr1680386plb.19.1686220660372;
+        Thu, 08 Jun 2023 03:37:40 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id jj11-20020a170903048b00b001a980a23802sm1128510plb.111.2023.06.08.03.37.35
+        by smtp.gmail.com with ESMTPSA id jj11-20020a170903048b00b001a980a23802sm1128510plb.111.2023.06.08.03.37.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Jun 2023 03:37:36 -0700 (PDT)
+        Thu, 08 Jun 2023 03:37:39 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Kashyap Desai <kashyap.desai@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 15/17] RDMA/bnxt_re: use firmware provided max request timeout
-Date:   Thu,  8 Jun 2023 03:25:06 -0700
-Message-Id: <1686219908-11181-16-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 16/17] RDMA/bnxt_re: remove redundant cmdq_bitmap
+Date:   Thu,  8 Jun 2023 03:25:07 -0700
+Message-Id: <1686219908-11181-17-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1686219908-11181-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1686219908-11181-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000562f5605fd9bd7a5"
+        boundary="00000000000080970205fd9bd75f"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,197 +68,357 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000562f5605fd9bd7a5
+--00000000000080970205fd9bd75f
 
 From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-Firmware provides max request timeout value as part of hwrm_ver_get
-API. Driver gets the timeout from firmware and if that interface is
-not available then fall back to hardcoded timeout value.
-Also, Add a helper function to check the FW status.
+cmdq_bitmap is used to derive the next available index in the CMDQ.
+This is not required as the we can get the next index
+using the existing bnxt_qplib_crsqe array.
+
+Driver will use bnxt_qplib_crsqe array and flag is_in_used to
+derive valid entries. is_in_used  is replacement of cmdq_bitmap.
+There is no change in the existing mechanism of the circular buffer
+used to get index.
+
+Added opcode field in bnxt_qplib_crsqe array so that it is easy to map
+opcode associated with pending rcfw command.
 
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c       |  8 +++++
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 57 ++++++++++++++++++++++++------
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  4 ++-
- drivers/infiniband/hw/bnxt_re/qplib_res.h  |  1 +
- 4 files changed, 58 insertions(+), 12 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 81 ++++++++++++------------------
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  3 +-
+ 2 files changed, 35 insertions(+), 49 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 8241154..a2c7d3f 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1041,6 +1041,7 @@ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
- 	struct bnxt_en_dev *en_dev = rdev->en_dev;
- 	struct hwrm_ver_get_output resp = {0};
- 	struct hwrm_ver_get_input req = {0};
-+	struct bnxt_qplib_chip_ctx *cctx;
- 	struct bnxt_fw_msg fw_msg;
- 	int rc = 0;
- 
-@@ -1058,11 +1059,18 @@ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
- 			  rc);
- 		return;
- 	}
-+
-+	cctx = rdev->chip_ctx;
- 	rdev->qplib_ctx.hwrm_intf_ver =
- 		(u64)le16_to_cpu(resp.hwrm_intf_major) << 48 |
- 		(u64)le16_to_cpu(resp.hwrm_intf_minor) << 32 |
- 		(u64)le16_to_cpu(resp.hwrm_intf_build) << 16 |
- 		le16_to_cpu(resp.hwrm_intf_patch);
-+
-+	cctx->hwrm_cmd_max_timeout = le16_to_cpu(resp.max_req_timeout);
-+
-+	if (!cctx->hwrm_cmd_max_timeout)
-+		cctx->hwrm_cmd_max_timeout = RCFW_FW_STALL_MAX_TIMEOUT;
- }
- 
- static int bnxt_re_ib_init(struct bnxt_re_dev *rdev)
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 4f36644..8d08715 100644
+index 8d08715..45bbf5f 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -90,6 +90,41 @@ static int bnxt_qplib_map_rc(u8 opcode)
- }
- 
- /**
-+ * bnxt_re_is_fw_stalled   -	Check firmware health
-+ * @rcfw      -   rcfw channel instance of rdev
-+ * @cookie    -   cookie to track the command
-+ * @opcode    -   rcfw submitted for given opcode
-+ * @cbit      -   bitmap entry of cookie
-+ *
-+ * If firmware has not responded any rcfw command within
-+ * rcfw->max_timeout, consider firmware as stalled.
-+ *
-+ * Returns:
-+ * 0 if firmware is responding
-+ * -ENODEV if firmware is not responding
-+ */
-+static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
-+				 u16 cookie, u8 opcode, u16 cbit)
-+{
-+	struct bnxt_qplib_cmdq_ctx *cmdq;
-+
-+	cmdq = &rcfw->cmdq;
-+
-+	if (time_after(jiffies, cmdq->last_seen +
-+		      (rcfw->max_timeout * HZ))) {
-+		dev_warn_ratelimited(&rcfw->pdev->dev,
-+				     "%s: FW STALL Detected. cmdq[%#x]=%#x waited (%d > %d) msec active %d ",
-+				     __func__, cookie, opcode,
-+				     jiffies_to_msecs(jiffies - cmdq->last_seen),
-+				     rcfw->max_timeout * 1000,
-+				     test_bit(cbit, cmdq->cmdq_bitmap));
-+		return -ENODEV;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-  * __wait_for_resp   -	Don't hold the cpu context and wait for response
-  * @rcfw      -   rcfw channel instance of rdev
+@@ -95,6 +95,7 @@ static int bnxt_qplib_map_rc(u8 opcode)
   * @cookie    -   cookie to track the command
-@@ -120,8 +155,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
+  * @opcode    -   rcfw submitted for given opcode
+  * @cbit      -   bitmap entry of cookie
++ * @in_used   -   command is in used or freed
+  *
+  * If firmware has not responded any rcfw command within
+  * rcfw->max_timeout, consider firmware as stalled.
+@@ -104,7 +105,7 @@ static int bnxt_qplib_map_rc(u8 opcode)
+  * -ENODEV if firmware is not responding
+  */
+ static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
+-				 u16 cookie, u8 opcode, u16 cbit)
++				 u16 cookie, u8 opcode, bool in_used)
+ {
+ 	struct bnxt_qplib_cmdq_ctx *cmdq;
+ 
+@@ -117,7 +118,7 @@ static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
+ 				     __func__, cookie, opcode,
+ 				     jiffies_to_msecs(jiffies - cmdq->last_seen),
+ 				     rcfw->max_timeout * 1000,
+-				     test_bit(cbit, cmdq->cmdq_bitmap));
++				     in_used);
+ 		return -ENODEV;
+ 	}
+ 
+@@ -139,11 +140,11 @@ static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
+ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
+ {
+ 	struct bnxt_qplib_cmdq_ctx *cmdq;
+-	u16 cbit;
++	struct bnxt_qplib_crsqe *crsqe;
+ 	int ret;
+ 
+ 	cmdq = &rcfw->cmdq;
+-	cbit = cookie % rcfw->cmdq_depth;
++	crsqe = &rcfw->crsqe_tbl[cookie];
+ 
+ 	do {
+ 		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
+@@ -153,19 +154,19 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
+ 
+ 		/* Non zero means command completed */
  		ret = wait_event_timeout(cmdq->waitq,
- 					 !test_bit(cbit, cmdq->cmdq_bitmap) ||
+-					 !test_bit(cbit, cmdq->cmdq_bitmap) ||
++					 !crsqe->is_in_used ||
  					 test_bit(ERR_DEVICE_DETACHED, &cmdq->flags),
--					 msecs_to_jiffies(RCFW_FW_STALL_TIMEOUT_SEC
--							  * 1000));
-+					 msecs_to_jiffies(rcfw->max_timeout * 1000));
+ 					 msecs_to_jiffies(rcfw->max_timeout * 1000));
  
- 		if (!test_bit(cbit, cmdq->cmdq_bitmap))
- 			return 0;
-@@ -131,10 +165,9 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
- 		if (!test_bit(cbit, cmdq->cmdq_bitmap))
+-		if (!test_bit(cbit, cmdq->cmdq_bitmap))
++		if (!crsqe->is_in_used)
  			return 0;
  
--		/* Firmware stall is detected */
--		if (time_after(jiffies, cmdq->last_seen +
--			      (RCFW_FW_STALL_TIMEOUT_SEC * HZ)))
--			return -ENODEV;
-+		ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, cbit);
-+		if (ret)
-+			return ret;
+ 		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
  
- 	} while (true);
- };
-@@ -357,6 +390,7 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
+-		if (!test_bit(cbit, cmdq->cmdq_bitmap))
++		if (!crsqe->is_in_used)
+ 			return 0;
+ 
+-		ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, cbit);
++		ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, crsqe->is_in_used);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -188,11 +189,11 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
+ static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
+ {
  	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
- 	unsigned long issue_time;
- 	u16 cbit;
-+	int ret;
++	struct bnxt_qplib_crsqe *crsqe;
+ 	unsigned long issue_time = 0;
+-	u16 cbit;
  
- 	cbit = cookie % rcfw->cmdq_depth;
+-	cbit = cookie % rcfw->cmdq_depth;
  	issue_time = jiffies;
-@@ -373,11 +407,10 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
- 		if (!test_bit(cbit, cmdq->cmdq_bitmap))
++	crsqe = &rcfw->crsqe_tbl[cookie];
+ 
+ 	do {
+ 		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
+@@ -203,7 +204,7 @@ static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
+ 		udelay(1);
+ 
+ 		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
+-		if (!test_bit(cbit, cmdq->cmdq_bitmap))
++		if (!crsqe->is_in_used)
+ 			return 0;
+ 
+ 	} while (time_before(jiffies, issue_time + (8 * HZ)));
+@@ -236,16 +237,13 @@ static void __send_message_no_waiter(struct bnxt_qplib_rcfw *rcfw,
+ 	struct bnxt_qplib_crsqe *crsqe;
+ 	struct bnxt_qplib_cmdqe *cmdqe;
+ 	u32 sw_prod, cmdq_prod;
+-	u16 cookie, cbit;
++	u16 cookie;
+ 	u32 bsize;
+ 	u8 *preq;
+ 
+ 	cookie = cmdq->seq_num & RCFW_MAX_COOKIE_VALUE;
+-	cbit = cookie % rcfw->cmdq_depth;
+-
+-	set_bit(cbit, cmdq->cmdq_bitmap);
+ 	__set_cmdq_base_cookie(msg->req, msg->req_sz, cpu_to_le16(cookie));
+-	crsqe = &rcfw->crsqe_tbl[cbit];
++	crsqe = &rcfw->crsqe_tbl[cookie];
+ 
+ 	/* Set cmd_size in terms of 16B slots in req. */
+ 	bsize = bnxt_qplib_set_cmd_slots(msg->req);
+@@ -254,6 +252,7 @@ static void __send_message_no_waiter(struct bnxt_qplib_rcfw *rcfw,
+ 	 */
+ 	crsqe->is_internal_cmd = true;
+ 	crsqe->is_waiter_alive = false;
++	crsqe->is_in_used = true;
+ 	crsqe->req_size = __get_cmdq_base_cmd_size(msg->req, msg->req_sz);
+ 
+ 	preq = (u8 *)msg->req;
+@@ -281,7 +280,7 @@ static void __send_message_no_waiter(struct bnxt_qplib_rcfw *rcfw,
+ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 			  struct bnxt_qplib_cmdqmsg *msg)
+ {
+-	u32 bsize, opcode, free_slots, required_slots;
++	u32 bsize, free_slots, required_slots;
+ 	struct bnxt_qplib_cmdq_ctx *cmdq;
+ 	struct bnxt_qplib_crsqe *crsqe;
+ 	struct bnxt_qplib_cmdqe *cmdqe;
+@@ -289,7 +288,8 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	u32 sw_prod, cmdq_prod;
+ 	struct pci_dev *pdev;
+ 	unsigned long flags;
+-	u16 cookie, cbit;
++	u16 cookie;
++	u8 opcode;
+ 	u8 *preq;
+ 
+ 	cmdq = &rcfw->cmdq;
+@@ -305,10 +305,9 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	required_slots = bnxt_qplib_get_cmd_slots(msg->req);
+ 	free_slots = HWQ_FREE_SLOTS(hwq);
+ 	cookie = cmdq->seq_num & RCFW_MAX_COOKIE_VALUE;
+-	cbit = cookie % rcfw->cmdq_depth;
++	crsqe = &rcfw->crsqe_tbl[cookie];
+ 
+-	if (required_slots >= free_slots ||
+-	    test_bit(cbit, cmdq->cmdq_bitmap)) {
++	if (required_slots >= free_slots) {
+ 		dev_info_ratelimited(&pdev->dev,
+ 				     "CMDQ is full req/free %d/%d!",
+ 				     required_slots, free_slots);
+@@ -317,15 +316,17 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	}
+ 	if (msg->block)
+ 		cookie |= RCFW_CMD_IS_BLOCKING;
+-	set_bit(cbit, cmdq->cmdq_bitmap);
+ 	__set_cmdq_base_cookie(msg->req, msg->req_sz, cpu_to_le16(cookie));
+-	crsqe = &rcfw->crsqe_tbl[cbit];
++
+ 	bsize = bnxt_qplib_set_cmd_slots(msg->req);
+ 	crsqe->free_slots = free_slots;
+ 	crsqe->resp = (struct creq_qp_event *)msg->resp;
+ 	crsqe->resp->cookie = cpu_to_le16(cookie);
+ 	crsqe->is_internal_cmd = false;
+ 	crsqe->is_waiter_alive = true;
++	crsqe->is_in_used = true;
++	crsqe->opcode = opcode;
++
+ 	crsqe->req_size = __get_cmdq_base_cmd_size(msg->req, msg->req_sz);
+ 	if (__get_cmdq_base_resp_size(msg->req, msg->req_sz) && msg->sb) {
+ 		struct bnxt_qplib_rcfw_sbuf *sbuf = msg->sb;
+@@ -388,12 +389,12 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
+ 			   u8 opcode)
+ {
+ 	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
++	struct bnxt_qplib_crsqe *crsqe;
+ 	unsigned long issue_time;
+-	u16 cbit;
+ 	int ret;
+ 
+-	cbit = cookie % rcfw->cmdq_depth;
+ 	issue_time = jiffies;
++	crsqe = &rcfw->crsqe_tbl[cookie];
+ 
+ 	do {
+ 		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
+@@ -404,11 +405,11 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
+ 		usleep_range(1000, 1001);
+ 
+ 		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
+-		if (!test_bit(cbit, cmdq->cmdq_bitmap))
++		if (!crsqe->is_in_used)
  			return 0;
  		if (jiffies_to_msecs(jiffies - issue_time) >
--		    (RCFW_FW_STALL_TIMEOUT_SEC * 1000)) {
--			/* Firmware stall is detected */
--			if (time_after(jiffies, cmdq->last_seen +
--				      (RCFW_FW_STALL_TIMEOUT_SEC * HZ)))
--				return -ENODEV;
-+		    (rcfw->max_timeout * 1000)) {
-+			ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, cbit);
-+			if (ret)
-+				return ret;
+ 		    (rcfw->max_timeout * 1000)) {
+-			ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, cbit);
++			ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, crsqe->is_in_used);
+ 			if (ret)
+ 				return ret;
  		}
- 	} while (true);
- };
-@@ -957,6 +990,8 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
- 	if (!rcfw->qp_tbl)
+@@ -488,7 +489,7 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	struct creq_qp_event *evnt = (struct creq_qp_event *)msg->resp;
+ 	struct bnxt_qplib_crsqe *crsqe;
+ 	unsigned long flags;
+-	u16 cookie, cbit;
++	u16 cookie;
+ 	int rc = 0;
+ 	u8 opcode;
+ 
+@@ -504,7 +505,6 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
+ 
+ 	cookie = le16_to_cpu(__get_cmdq_base_cookie(msg->req, msg->req_sz))
+ 				& RCFW_MAX_COOKIE_VALUE;
+-	cbit = cookie % rcfw->cmdq_depth;
+ 
+ 	if (msg->block)
+ 		rc = __block_for_resp(rcfw, cookie, opcode);
+@@ -521,7 +521,7 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
+ 
+ 	if (rc) {
+ 		spin_lock_irqsave(&rcfw->cmdq.hwq.lock, flags);
+-		crsqe = &rcfw->crsqe_tbl[cbit];
++		crsqe = &rcfw->crsqe_tbl[cookie];
+ 		crsqe->is_waiter_alive = false;
+ 		if (rc == -ENODEV)
+ 			set_bit(FIRMWARE_STALL_DETECTED, &rcfw->cmdq.flags);
+@@ -633,13 +633,12 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+ 	struct bnxt_qplib_crsqe *crsqe;
+ 	u32 qp_id, tbl_indx, req_size;
+ 	struct bnxt_qplib_qp *qp;
+-	u16 cbit, blocked = 0;
++	u16 cookie, blocked = 0;
+ 	bool is_waiter_alive;
+ 	struct pci_dev *pdev;
+ 	unsigned long flags;
+ 	u32 wait_cmds = 0;
+ 	__le16  mcookie;
+-	u16 cookie;
+ 	int rc = 0;
+ 
+ 	pdev = rcfw->pdev;
+@@ -675,8 +674,8 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+ 		mcookie = qp_event->cookie;
+ 		blocked = cookie & RCFW_CMD_IS_BLOCKING;
+ 		cookie &= RCFW_MAX_COOKIE_VALUE;
+-		cbit = cookie % rcfw->cmdq_depth;
+-		crsqe = &rcfw->crsqe_tbl[cbit];
++		crsqe = &rcfw->crsqe_tbl[cookie];
++		crsqe->is_in_used = false;
+ 
+ 		if (WARN_ONCE(test_bit(FIRMWARE_STALL_DETECTED,
+ 				       &rcfw->cmdq.flags),
+@@ -687,9 +686,6 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+ 			return rc;
+ 		}
+ 
+-		if (!test_and_clear_bit(cbit, rcfw->cmdq.cmdq_bitmap))
+-			dev_warn(&pdev->dev,
+-				 "CMD bit %d was not requested\n", cbit);
+ 		if (crsqe->is_internal_cmd && !qp_event->status)
+ 			atomic_dec(&rcfw->timeout_send);
+ 
+@@ -924,7 +920,6 @@ int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
+ 
+ void bnxt_qplib_free_rcfw_channel(struct bnxt_qplib_rcfw *rcfw)
+ {
+-	bitmap_free(rcfw->cmdq.cmdq_bitmap);
+ 	kfree(rcfw->qp_tbl);
+ 	kfree(rcfw->crsqe_tbl);
+ 	bnxt_qplib_free_hwq(rcfw->res, &rcfw->cmdq.hwq);
+@@ -979,10 +974,6 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
+ 	if (!rcfw->crsqe_tbl)
  		goto fail;
  
-+	rcfw->max_timeout = res->cctx->hwrm_cmd_max_timeout;
-+
- 	return 0;
+-	cmdq->cmdq_bitmap = bitmap_zalloc(rcfw->cmdq_depth, GFP_KERNEL);
+-	if (!cmdq->cmdq_bitmap)
+-		goto fail;
+-
+ 	/* Allocate one extra to hold the QP1 entries */
+ 	rcfw->qp_tbl_size = qp_tbl_sz + 1;
+ 	rcfw->qp_tbl = kcalloc(rcfw->qp_tbl_size, sizeof(struct bnxt_qplib_qp_node),
+@@ -1027,7 +1018,6 @@ void bnxt_qplib_disable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw)
+ {
+ 	struct bnxt_qplib_creq_ctx *creq;
+ 	struct bnxt_qplib_cmdq_ctx *cmdq;
+-	unsigned long indx;
  
- fail:
+ 	creq = &rcfw->creq;
+ 	cmdq = &rcfw->cmdq;
+@@ -1037,11 +1027,6 @@ void bnxt_qplib_disable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw)
+ 	iounmap(cmdq->cmdq_mbox.reg.bar_reg);
+ 	iounmap(creq->creq_db.reg.bar_reg);
+ 
+-	indx = find_first_bit(cmdq->cmdq_bitmap, rcfw->cmdq_depth);
+-	if (indx != rcfw->cmdq_depth)
+-		dev_err(&rcfw->pdev->dev,
+-			"disabling RCFW with pending cmd-bit %lx\n", indx);
+-
+ 	cmdq->cmdq_mbox.reg.bar_reg = NULL;
+ 	creq->creq_db.reg.bar_reg = NULL;
+ 	creq->aeq_handler = NULL;
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-index 338bf6a..b644dcc 100644
+index b644dcc..f46de07 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-@@ -51,7 +51,7 @@
- 
- #define RCFW_DBR_PCI_BAR_REGION		2
- #define RCFW_DBR_BASE_PAGE_SHIFT	12
--#define RCFW_FW_STALL_TIMEOUT_SEC	40
-+#define RCFW_FW_STALL_MAX_TIMEOUT	40
- 
- /* Cmdq contains a fix number of a 16-Byte slots */
- struct bnxt_qplib_cmdqe {
-@@ -227,6 +227,8 @@ struct bnxt_qplib_rcfw {
- 	atomic_t rcfw_intr_enabled;
- 	struct semaphore rcfw_inflight;
- 	atomic_t timeout_send;
-+	/* cached from chip cctx for quick reference in slow path */
-+	u16 max_timeout;
+@@ -152,8 +152,10 @@ struct bnxt_qplib_crsqe {
+ 	u32			req_size;
+ 	/* Free slots at the time of submission */
+ 	u32			free_slots;
++	u8			opcode;
+ 	bool			is_waiter_alive;
+ 	bool			is_internal_cmd;
++	bool			is_in_used;
  };
  
- struct bnxt_qplib_cmdqmsg {
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-index 982e2c9..77f0b84 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-@@ -55,6 +55,7 @@ struct bnxt_qplib_chip_ctx {
- 	u8	chip_rev;
- 	u8	chip_metal;
- 	u16	hw_stats_size;
-+	u16	hwrm_cmd_max_timeout;
- 	struct bnxt_qplib_drv_modes modes;
+ struct bnxt_qplib_rcfw_sbuf {
+@@ -185,7 +187,6 @@ struct bnxt_qplib_cmdq_ctx {
+ 	struct bnxt_qplib_cmdq_mbox	cmdq_mbox;
+ 	wait_queue_head_t		waitq;
+ 	unsigned long			flags;
+-	unsigned long			*cmdq_bitmap;
+ 	unsigned long			last_seen;
+ 	u32				seq_num;
  };
- 
 -- 
 2.5.5
 
 
---000000000000562f5605fd9bd7a5
+--00000000000080970205fd9bd75f
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -329,14 +489,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBxEKg3px07b
-QziP1d6nj9qroh94Zx638kolXVEmGoZwMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwODEwMzczOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMB9HJFnQXX9
+M+XM4Fs19ejXcMeWRXmOPuQ4VY5+0yvnMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYwODEwMzc0MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDSowavDLm5QtnOoPV0e7+DRxFUSKX2
-ruj9YTe3UwBUMdw5z5788TBAl6eayxk6J3NGWJjJo6uqFtE3AbL+To/9bXIaL5bfT5cCy3a+aweY
-TWkpornz8LYY0nzbQSEGk1rtF4Nxsxak25odrX/l4/sZoxlyH71t3EUCwMJnDXjdXFqgd5aBQFiE
-R7/XAx6QIQhwG7zjwY6M/5H4A99paSnmIgUD95buwknN4dmnhnHwi4rV8CGyNLso450F6VMPVmil
-GYXdpZ9g8WP1DW2pDK+3tps7HFhdmw4yoQm6WD6aod7pq8NCotM5VzICLlAwelwzdlnlrPl1mSe+
-CxVMVCU9
---000000000000562f5605fd9bd7a5--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCfjtWvfDj/xZC+83CZBq9qx1WJymdL
+xEUYjA/8poS/xrbpigZ4Nh5CdEz4jJGHsVLKzZqmBSurhbwaG5/xw/w1MHA5rFRxQOdrCldqRGuZ
+wz3vPYYnlBCjG/NhTy7a4AaKjBBqTY6ZMwc6i5/NKEUhVajndg4mAxo4ITRKhcixDRw2qXVIDCyZ
+OBkW03hswuq5dKtf0VdhzxzaBFPqAOc5uwLGXPocuWRTto9S5t1OkZ0zYe1QARj1++4YkZEdDr2C
+0c6xG2CykVBOPRC1LjNveylVcJgEYfcZ0GfAobGQ3Y4/HJWSYzcjm8MhTsoVZF39RIs8v/2etw00
+3o8JfK8O
+--00000000000080970205fd9bd75f--
