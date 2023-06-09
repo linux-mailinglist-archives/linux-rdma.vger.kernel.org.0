@@ -2,96 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87AA072A6B8
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jun 2023 01:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D61F72A6E7
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jun 2023 01:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbjFIX2j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 19:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33290 "EHLO
+        id S229805AbjFIX7O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 19:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232396AbjFIX1t (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 19:27:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954DE3ABF;
-        Fri,  9 Jun 2023 16:27:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2250565CD2;
-        Fri,  9 Jun 2023 23:27:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ABABC433D2;
-        Fri,  9 Jun 2023 23:27:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686353262;
-        bh=LhcK1dVS/ODURx+/PKNTsLc8985DDWmW1YmahU/XwI8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oe+mJXeo6zzuE2GSIILaWA014EJ0/y1TG6erjhnN7raTZqCGevhGZBjVONwYd565u
-         LaIlt5Da9w3UC2npEHEhdbpajaiMq/BT7IUZb88vq7nVNODU9P3kfw6KRCJpmCSaqi
-         L8yC0LVf9b10zxZiFcQt0czKjDNS0z43jMTp3npICWRs9hdsh+8maPXv0pJt400qlv
-         dUXvUk/lc4raRvB2SnN6cJ3ifJqFMe3tQATshe4JaxB3EkJFUdoektHcksejFzHiVv
-         zAaDW+7TKjtn0y6kKOSoW8QCABYxGwaeg9DiYAo3JXufGmDfESe2CuglPmIN2KEqrO
-         HoxeBwhXY0BcA==
-Date:   Fri, 9 Jun 2023 16:27:39 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Cc:     jiri@resnulli.us, vadfed@meta.com, jonathan.lemon@gmail.com,
-        pabeni@redhat.com, corbet@lwn.net, davem@davemloft.net,
-        edumazet@google.com, vadfed@fb.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
-        richardcochran@gmail.com, sj@kernel.org, javierm@redhat.com,
-        ricardo.canuelo@collabora.com, mst@redhat.com, tzimmermann@suse.de,
-        michal.michalik@intel.com, gregkh@linuxfoundation.org,
-        jacek.lawrynowicz@linux.intel.com, airlied@redhat.com,
-        ogabbay@kernel.org, arnd@arndb.de, nipun.gupta@amd.com,
-        axboe@kernel.dk, linux@zary.sk, masahiroy@kernel.org,
-        benjamin.tissoires@redhat.com, geert+renesas@glider.be,
-        milena.olech@intel.com, kuniyu@amazon.com, liuhangbin@gmail.com,
-        hkallweit1@gmail.com, andy.ren@getcruise.com, razor@blackwall.org,
-        idosch@nvidia.com, lucien.xin@gmail.com, nicolas.dichtel@6wind.com,
-        phil@nwl.cc, claudiajkang@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, poros@redhat.com,
-        mschmidt@redhat.com, linux-clk@vger.kernel.org,
-        vadim.fedorenko@linux.dev
-Subject: Re: [RFC PATCH v8 00/10] Create common DPLL configuration API
-Message-ID: <20230609162739.0d94a704@kernel.org>
-In-Reply-To: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
-References: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
+        with ESMTP id S229470AbjFIX7N (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 19:59:13 -0400
+Received: from out-10.mta0.migadu.com (out-10.mta0.migadu.com [91.218.175.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62248CE
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 16:59:12 -0700 (PDT)
+Message-ID: <6b35e9a2-8ad5-cdc9-aef2-f1477ddda6eb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1686355149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2fkUsQJQ3ZrohqzGZsoGGnhzPfGRE8GbgwcnEUR1PHo=;
+        b=lwtx2rEArMVwn3U5BIFjqandm5wPIjqviIZpVEQQot1V1GCxBB+uvFhovubLBjdnsu2Wbd
+        AhbkzPR6Dljwtlt1FS193SX+GdVPCg3pqyNNTfuUy3U89KbOLyL5H2Iqs0wpZxNnCXdamW
+        tNwUyYDFQzwV9k+H82g+kyGVLZKZlzc=
+Date:   Sat, 10 Jun 2023 07:59:04 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 1/1] RDMA/rxe: Fix the use-before-initialization error
+ of resp_pkts
+To:     Jason Gunthorpe <jgg@nvidia.com>, Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     zyjzyj2000@gmail.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        syzbot+eba589d8f49c73d356da@syzkaller.appspotmail.com
+References: <20230602035408.741534-1-yanjun.zhu@intel.com>
+ <ZINbszg48aMRrbFP@nvidia.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <ZINbszg48aMRrbFP@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri,  9 Jun 2023 14:18:43 +0200 Arkadiusz Kubalewski wrote:
-> Implement common API for clock/DPLL configuration and status reporting.
-> The API utilises netlink interface as transport for commands and event
-> notifications. This API aim to extend current pin configuration and
-> make it flexible and easy to cover special configurations.
+在 2023/6/10 1:04, Jason Gunthorpe 写道:
+> On Fri, Jun 02, 2023 at 11:54:08AM +0800, Zhu Yanjun wrote:
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> In the following:
+>> "
+>> Call Trace:
+>>   <TASK>
+>>   __dump_stack lib/dump_stack.c:88 [inline]
+>>   dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+>>   assign_lock_key kernel/locking/lockdep.c:982 [inline]
+>>   register_lock_class+0xdb6/0x1120 kernel/locking/lockdep.c:1295
+>>   __lock_acquire+0x10a/0x5df0 kernel/locking/lockdep.c:4951
+>>   lock_acquire kernel/locking/lockdep.c:5691 [inline]
+>>   lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5656
+>>   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+>>   _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
+>>   skb_dequeue+0x20/0x180 net/core/skbuff.c:3639
+>>   drain_resp_pkts drivers/infiniband/sw/rxe/rxe_comp.c:555 [inline]
+>>   rxe_completer+0x250d/0x3cc0 drivers/infiniband/sw/rxe/rxe_comp.c:652
+>>   rxe_qp_do_cleanup+0x1be/0x820 drivers/infiniband/sw/rxe/rxe_qp.c:761
+>>   execute_in_process_context+0x3b/0x150 kernel/workqueue.c:3473
+>>   __rxe_cleanup+0x21e/0x370 drivers/infiniband/sw/rxe/rxe_pool.c:233
+>>   rxe_create_qp+0x3f6/0x5f0 drivers/infiniband/sw/rxe/rxe_verbs.c:583
+>> ...
+>> "
+>> This is a use-before-initialization problem.
+>>
+>> In the following function
+>> "
+>> 291 /* called by the create qp verb */
+>> 292 int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp,
+>> struct rxe_pd *pd,
+>> 297 {
+>>              ...
+>> 317         rxe_qp_init_misc(rxe, qp, init);
+>>              ...
+>> 322
+>> 323         err = rxe_qp_init_resp(rxe, qp, init, udata, uresp);
+>> 324         if (err)
+>> 325                 goto err2;   <--- error
+>>
+>>              ...
+>>
+>> 334 err2:
+>> 335         rxe_queue_cleanup(qp->sq.queue); <--- Goto here
+>> 336         qp->sq.queue = NULL;
+>> "
+>> In rxe_qp_init_resp, the error occurs before skb_queue_head_init.
+>> So this call trace appeared.
+>>
+>> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+>> Reported-by: syzbot+eba589d8f49c73d356da@syzkaller.appspotmail.com
+>> Link: https://lore.kernel.org/lkml/000000000000235bce05fac5f850@google.com/T/
+>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> ---
+>> V1->V2: Add Fixes and Link.
+>> ---
+>>   drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++----
+>>   1 file changed, 3 insertions(+), 4 deletions(-)
 > 
-> Netlink interface is based on ynl spec, it allows use of in-kernel
-> tools/net/ynl/cli.py application to control the interface with properly
-> formated command and json attribute strings. Here are few command
-> examples of how it works with `ice` driver on supported NIC:
+> Applied to for-rc, thanks
 
-Now I see why you sent the ynl-gen patch you sent :) It's the
-combination of nest and multi-attr which doesn't populate the right
-policy. Also the enums are not policed right by ynl-gen.
+Thanks.
 
-I pushed two fixes to my local tree:
-https://github.com/kuba-moo/linux/commits/ynl-c
-in case you need them. I'll submit them on Monday.
+Zhu Yanjun
 
-I also tried to run the user space C code gen (for generating C
-API/lib as described in [1]). It seems to work just fine, FWIW, so
-just LMK if C bindings would be useful, I can give more instructions.
+> 
+> Jason
 
-[1] https://docs.kernel.org/next/userspace-api/netlink/intro-specs.html#ynl-lib
