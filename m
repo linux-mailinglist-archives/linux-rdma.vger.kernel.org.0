@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DB37297F2
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F1C7297F3
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239401AbjFILOX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 07:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
+        id S230129AbjFILO2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 07:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238684AbjFILOU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:14:20 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F657210E
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:18 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b02085bf8dso5185245ad.0
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:18 -0700 (PDT)
+        with ESMTP id S239410AbjFILOX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:14:23 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389192134
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:21 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b24ff03400so5463625ad.3
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686309258; x=1688901258;
+        d=broadcom.com; s=google; t=1686309260; x=1688901260;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Myl9J5io+Ujxi80X0SIz1xpO7qZJ6EOTJjd918q7LvY=;
-        b=BcTsxRRYChP7S2L03uLQXk2Ctqbb3JWLcmwkC8+M0UDbsQ2ELBa/c9sEoMRK/mBxOo
-         Mr+Hi7rIG5EXkioKXgjSwKNMVwRUn30HBslvMMGWcMbU2VOMN7Li6zLWCoeItktLnrSa
-         r7iuqDY32nBHp2M4qbc2/GDprPzBwL9svnDBY=
+        bh=JAj0COTLbrPpnHT6rgkalbFl8GkEeEU2UmlgAmSEq3o=;
+        b=IIdH0GVUBCD/crDLRmYKSUU7zJtTFb4PfxKHdftKvdX8CUfEM6V2q1LFQz35k8dmAz
+         pjLqG6jBWcGRNeaRDDXmabzsZuH7nIhFT2Z6Z9ZH3jczlEV2x//5/LtoezuifgPl8h1u
+         ZKmw+QF0BcPfol2r4uqpkQu3Nh9IqAAC6RVnU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686309258; x=1688901258;
+        d=1e100.net; s=20221208; t=1686309260; x=1688901260;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Myl9J5io+Ujxi80X0SIz1xpO7qZJ6EOTJjd918q7LvY=;
-        b=QSIPbV7dSU8DOWppJqtiONquUqRFurxLys6rtAITkXbxa2GppYOYbwc0ap4FmGCpYs
-         Fx+m08FTW52EddhG8A4kFYhC3/u0NRxUwFifeuFNXkAzbEVj0xPptUtmEBovbQ5WqG1N
-         qACMcvEWBQbDseGRIQTJY/Kl1sPh5c1VbQo/+aHzFSMu8TP6BzChjiu+E82A7UsyiReW
-         jWZ5ViM7+Qpes6os1lIESWtfrt5j+kelYdQ1Sh3t/6h5MbZaqGQF+CNkh/5p0tW5de4N
-         lKwCEV+1YL8dpVPODKt0YvCIbQFuvxE+kfDD4qEIkFgoPEOnt9V9S7DeJfj+CxPMKqDn
-         WlDg==
-X-Gm-Message-State: AC+VfDzf1czJ9a0iUz3frz1jJGkV4q1aR/kcxLpwEdtcwIEyKkQopIak
-        DsDqNsITFo0/GNgjtWxAdvFfwA==
-X-Google-Smtp-Source: ACHHUZ4yV7g8g6noiZssGmqkTthNBSfHo+f/S7d5rIZhLJ17UvmWl1NN7tXVl8uxdgUCyqBnhQ6bfA==
-X-Received: by 2002:a17:902:6bcb:b0:1b1:b50c:e330 with SMTP id m11-20020a1709026bcb00b001b1b50ce330mr659645plt.2.1686309257849;
-        Fri, 09 Jun 2023 04:14:17 -0700 (PDT)
+        bh=JAj0COTLbrPpnHT6rgkalbFl8GkEeEU2UmlgAmSEq3o=;
+        b=NvSgBAzERQMY+MGRaFP1XpQqZUpXGxbcrvZTISpVN+VajT4IeWHtnrFYybHjB6LIu/
+         ZaP/ZpzNEMznqh2Bl93LMa3sbtEGExmfz4qyvHJ2HYF76hSXbPu8Rj7E99dZpQtQT+cS
+         Qs9GuleYpjwOQz2rvb7/GnR+G7wyJwzk9Mau4rrsKV99ZBKehPpOs0z2TUF8zF1J5vit
+         BA1IM3x4yn+hZp6USfrzBQnUBnAlsU67xi6+n6RYvP6NQ724KHrMJH3UEtBJANGEyRbP
+         TrdIX6bVP/gp+rR9c37I8EJJ9SYl5T+ix3+TGmqDOPMdvoNLlhmhEilR20vY2iaJKwCi
+         /4mQ==
+X-Gm-Message-State: AC+VfDxAPm2leMm1WBOmDJJ4pWzKUaiCd0y+qt3NIcrF2Hqx923zuhVc
+        3GcoyWhi4JXISODEoBbeFMW8zQ==
+X-Google-Smtp-Source: ACHHUZ5Ag1XKgm9wqHwDW5qpfGAaIm5AlMhTNxJjgJJkDJtKgE2GU/wKJYVUX/73J1OXdmfvXnLkpw==
+X-Received: by 2002:a17:902:dac6:b0:1ad:fc06:d7c0 with SMTP id q6-20020a170902dac600b001adfc06d7c0mr953518plx.1.1686309260640;
+        Fri, 09 Jun 2023 04:14:20 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.15
+        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.18
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jun 2023 04:14:17 -0700 (PDT)
+        Fri, 09 Jun 2023 04:14:19 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         kashyap.desai@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v2 for-next 02/17] RDMA/bnxt_re: Avoid calling wake_up threads from spin_lock context
-Date:   Fri,  9 Jun 2023 04:01:39 -0700
-Message-Id: <1686308514-11996-3-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH v2 for-next 03/17] RDMA/bnxt_re: remove virt_func check while creating RoCE FW channel
+Date:   Fri,  9 Jun 2023 04:01:40 -0700
+Message-Id: <1686308514-11996-4-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000512d4005fdb078d9"
+        boundary="0000000000007b088b05fdb078ed"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,99 +68,114 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000512d4005fdb078d9
+--0000000000007b088b05fdb078ed
 
 From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-bnxt_qplib_service_creq can be called from interrupt or tasklet or
-process context. So the function take irq variant  of spin_lock.
-But when wake_up is invoked with the lock held, it is putting the
-calling context to sleep.
+There is a common FW communication offset for both PF and VF.
+Removed code around virt_fn check while creating FW channel.
 
-[exception RIP: __wake_up_common+190]
-RIP: ffffffffb7539d7e  RSP: ffffa73300207ad8  RFLAGS: 00000083
-RAX: 0000000000000001  RBX: ffff91fa295f69b8  RCX: dead000000000200
-RDX: ffffa733344af940  RSI: ffffa73336527940  RDI: ffffa73336527940
-RBP: 000000000000001c   R8: 0000000000000002   R9: 00000000000299c0
-R10: 0000017230de82c5  R11: 0000000000000002  R12: ffffa73300207b28
-R13: 0000000000000000  R14: ffffa733341bf928  R15: 0000000000000000
-ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-
-Call the wakeup after releasing the lock.
-
-Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c       |  2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 15 ++++++---------
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  5 ++---
+ 3 files changed, 9 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 4718af6..51372de 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1202,7 +1202,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
+ 	db_offt = bnxt_re_get_nqdb_offset(rdev, BNXT_RE_AEQ_IDX);
+ 	vid = rdev->en_dev->msix_entries[BNXT_RE_AEQ_IDX].vector;
+ 	rc = bnxt_qplib_enable_rcfw_channel(&rdev->rcfw,
+-					    vid, db_offt, rdev->is_virtfn,
++					    vid, db_offt,
+ 					    &bnxt_re_aeq_handler);
+ 	if (rc) {
+ 		ibdev_err(&rdev->ibdev, "Failed to enable RCFW channel: %#x\n",
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index d4ce82b..c11b8e7 100644
+index c11b8e7..67140eb 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -295,7 +295,8 @@ static int bnxt_qplib_process_func_event(struct bnxt_qplib_rcfw *rcfw,
+@@ -724,13 +724,11 @@ int bnxt_qplib_rcfw_start_irq(struct bnxt_qplib_rcfw *rcfw, int msix_vector,
+ 	return 0;
  }
  
- static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
--				       struct creq_qp_event *qp_event)
-+				       struct creq_qp_event *qp_event,
-+				       u32 *num_wait)
+-static int bnxt_qplib_map_cmdq_mbox(struct bnxt_qplib_rcfw *rcfw, bool is_vf)
++static int bnxt_qplib_map_cmdq_mbox(struct bnxt_qplib_rcfw *rcfw)
  {
- 	struct creq_qp_error_notification *err_event;
- 	struct bnxt_qplib_hwq *hwq = &rcfw->cmdq.hwq;
-@@ -304,6 +305,7 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
- 	u16 cbit, blocked = 0;
+ 	struct bnxt_qplib_cmdq_mbox *mbox;
+ 	resource_size_t bar_reg;
  	struct pci_dev *pdev;
- 	unsigned long flags;
-+	u32 wait_cmds = 0;
- 	__le16  mcookie;
- 	u16 cookie;
- 	int rc = 0;
-@@ -363,9 +365,10 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
- 		crsqe->req_size = 0;
+-	u16 prod_offt;
+-	int rc = 0;
  
- 		if (!blocked)
--			wake_up(&rcfw->cmdq.waitq);
-+			wait_cmds++;
- 		spin_unlock_irqrestore(&hwq->lock, flags);
+ 	pdev = rcfw->pdev;
+ 	mbox = &rcfw->cmdq.cmdq_mbox;
+@@ -755,11 +753,10 @@ static int bnxt_qplib_map_cmdq_mbox(struct bnxt_qplib_rcfw *rcfw, bool is_vf)
+ 		return -ENOMEM;
  	}
-+	*num_wait += wait_cmds;
- 	return rc;
+ 
+-	prod_offt = is_vf ? RCFW_VF_COMM_PROD_OFFSET :
+-			    RCFW_PF_COMM_PROD_OFFSET;
+-	mbox->prod = (void  __iomem *)(mbox->reg.bar_reg + prod_offt);
++	mbox->prod = (void  __iomem *)(mbox->reg.bar_reg +
++			RCFW_PF_VF_COMM_PROD_OFFSET);
+ 	mbox->db = (void __iomem *)(mbox->reg.bar_reg + RCFW_COMM_TRIG_OFFSET);
+-	return rc;
++	return 0;
  }
  
-@@ -379,6 +382,7 @@ static void bnxt_qplib_service_creq(struct tasklet_struct *t)
- 	struct creq_base *creqe;
- 	u32 sw_cons, raw_cons;
- 	unsigned long flags;
-+	u32 num_wakeup = 0;
+ static int bnxt_qplib_map_creq_db(struct bnxt_qplib_rcfw *rcfw, u32 reg_offt)
+@@ -820,7 +817,7 @@ static void bnxt_qplib_start_rcfw(struct bnxt_qplib_rcfw *rcfw)
  
- 	/* Service the CREQ until budget is over */
- 	spin_lock_irqsave(&hwq->lock, flags);
-@@ -397,7 +401,8 @@ static void bnxt_qplib_service_creq(struct tasklet_struct *t)
- 		switch (type) {
- 		case CREQ_BASE_TYPE_QP_EVENT:
- 			bnxt_qplib_process_qp_event
--				(rcfw, (struct creq_qp_event *)creqe);
-+				(rcfw, (struct creq_qp_event *)creqe,
-+				 &num_wakeup);
- 			creq->stats.creq_qp_event_processed++;
- 			break;
- 		case CREQ_BASE_TYPE_FUNC_EVENT:
-@@ -425,6 +430,8 @@ static void bnxt_qplib_service_creq(struct tasklet_struct *t)
- 				      rcfw->res->cctx, true);
- 	}
- 	spin_unlock_irqrestore(&hwq->lock, flags);
-+	if (num_wakeup)
-+		wake_up_nr(&rcfw->cmdq.waitq, num_wakeup);
- }
+ int bnxt_qplib_enable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw,
+ 				   int msix_vector,
+-				   int cp_bar_reg_off, int virt_fn,
++				   int cp_bar_reg_off,
+ 				   aeq_handler_t aeq_handler)
+ {
+ 	struct bnxt_qplib_cmdq_ctx *cmdq;
+@@ -840,7 +837,7 @@ int bnxt_qplib_enable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw,
+ 	creq->stats.creq_func_event_processed = 0;
+ 	creq->aeq_handler = aeq_handler;
  
- static irqreturn_t bnxt_qplib_creq_irq(int irq, void *dev_instance)
+-	rc = bnxt_qplib_map_cmdq_mbox(rcfw, virt_fn);
++	rc = bnxt_qplib_map_cmdq_mbox(rcfw);
+ 	if (rc)
+ 		return rc;
+ 
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+index 92f7a25..0dff56e 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+@@ -45,8 +45,7 @@
+ #define RCFW_COMM_PCI_BAR_REGION	0
+ #define RCFW_COMM_CONS_PCI_BAR_REGION	2
+ #define RCFW_COMM_BASE_OFFSET		0x600
+-#define RCFW_PF_COMM_PROD_OFFSET	0xc
+-#define RCFW_VF_COMM_PROD_OFFSET	0xc
++#define RCFW_PF_VF_COMM_PROD_OFFSET	0xc
+ #define RCFW_COMM_TRIG_OFFSET		0x100
+ #define RCFW_COMM_SIZE			0x104
+ 
+@@ -235,7 +234,7 @@ int bnxt_qplib_rcfw_start_irq(struct bnxt_qplib_rcfw *rcfw, int msix_vector,
+ 			      bool need_init);
+ int bnxt_qplib_enable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw,
+ 				   int msix_vector,
+-				   int cp_bar_reg_off, int virt_fn,
++				   int cp_bar_reg_off,
+ 				   aeq_handler_t aeq_handler);
+ 
+ struct bnxt_qplib_rcfw_sbuf *bnxt_qplib_rcfw_alloc_sbuf(
 -- 
 2.5.5
 
 
---000000000000512d4005fdb078d9
+--0000000000007b088b05fdb078ed
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -231,14 +246,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIC77VvAsiPQJ
-8kwcKXuK46QYnMptw/Ah87TWrBKoCQDKMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwOTExMTQxOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMNtqfYWpN90
+0QENwFxZK0wlqVoOPicRHI5SEKf0cfuqMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYwOTExMTQyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA0slR/OaLmIwftZRwogY6fF77N76ca
-wwqT3qGkAzIRIsNphHsWkTBJyIdaI1nnkyCzGsyCFQjAVE1HiiM86JcDg903oHXBWlsf4zRcCQek
-3p2ofYmRdF9jh0shsF34UiqBkxqhIZnDejiqTryBmWeAyLr2YcQ+ulIB8wU2J5181osg/dSiZtMy
-1z2bvZtey4D7y7YeqZjgqOVO/TWlhCoiK9uqa7qD3A6YAmCMss8tnYiYkACfxUWb/O39sIlU8DAi
-8Nf8MzskYecgpl90zze2l5u3wIZQ9oirxJ4HynptKV46hX0aQ71Ce5rOKE3s1jy0lh3oy23+biAY
-zZLSr/IR
---000000000000512d4005fdb078d9--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAv66JOyIKmdYdDqgE6lcomZw05uOo4
+rcG1WESUBxR+HEcdKLvXlChatM2g4GPmVaUowuypLRc621VJvovsvBsDtH1YM2HvefMnegTuc8VT
+xT1/9NYmR5f9qT2QJ5HnZ0OoJxhdJB1X1uv07d7MCHMxAPHV5zkZ1JdBWVpGpIWfRdaRHRyM5I2o
+uhEmLQd6Yy2zOL5AaWDlNDtem81Jt1PR2rkoFYgYUEJptkCEIEqI6VuvhfqH0al/IiXakFe5LUon
+ooYM3Fe8J62Mq+/pSzGXzSx7SQywEWZvrnIV9dR6NDHyUVX12cz1Pf5wEFLTuvaW2hC7cM6WiY3P
+rzcruSJt
+--0000000000007b088b05fdb078ed--
