@@ -2,345 +2,714 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 493A0729801
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815D872992C
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 14:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238739AbjFILPh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 07:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
+        id S240168AbjFIMLQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 08:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238335AbjFILPc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:15:32 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690D12718
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:15:06 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b00ffb4186so4998335ad.0
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:15:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686309306; x=1688901306;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vUjBbmG0pFsXGBXG1xTfCMoo62fJwX1u/eGxfv/tnUE=;
-        b=SbY78acjvrwsop9jL93v3sWNORutXyzphOSJLcWrETEE4/BQ8t0xM2KvUsj/DcpUS2
-         OGuuEqCnUETJm2CKygxx/Y+vzCnvDJLimOXW0sktwlv9UG8U1KcX/Y+EEHPD3ecNZ12n
-         lcOP2KfMHPCTkL5tK0cSo1ILBX3WpapKObgR8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686309306; x=1688901306;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vUjBbmG0pFsXGBXG1xTfCMoo62fJwX1u/eGxfv/tnUE=;
-        b=NaWu5rl6/77s9X/3irbhwkpAx//SgX9lXo3QWcH2Y8kKooSrjbHsIiSedpY5NcNZqi
-         mPCwsC/Cyt/XvNvzBsnMbrm52FXTRnoDqtdyRPwA19CHJMQxStO8ztmU7xZ/9pXWEPcK
-         Qv7NEqy6nG+9zblk6kGQm813WSmC3ziPeKM6VKVTWnFH747ua4bjILM92ddAp6lVUx1g
-         Q9jAsbaui2KfHU9XoxEf5OI36CqylmWjLv9MdhkV6F6dlwxJ9+WaT4Qn4uDZhhxcjAOQ
-         jCqPEI0BgoCoPz/BeU3XsKBJihEYHYCOVBWiF+ozVJNTr05FsOuvfJMoYzzFqzGwTkXQ
-         MZ+A==
-X-Gm-Message-State: AC+VfDwaa6K23shHBe5ZkalbNloTUqFCZ8r5iRV5bRtqK/hiSIQ1Ef+u
-        Yw41Zxsl0d///4S2KDBPE5boCg==
-X-Google-Smtp-Source: ACHHUZ5WvqBRJGjqX3ZFk80qZGXO4yL8PBxcKqQyGDtDW8rP71ktqMQUa7yZOB3Co0iF4vxosJ2ulQ==
-X-Received: by 2002:a17:902:ed41:b0:1ae:4bbb:e958 with SMTP id y1-20020a170902ed4100b001ae4bbbe958mr694220plb.14.1686309305637;
-        Fri, 09 Jun 2023 04:15:05 -0700 (PDT)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.15.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jun 2023 04:15:05 -0700 (PDT)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        kashyap.desai@broadcom.com,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v2 for-next 17/17] RDMA/bnxt_re: optimize the parameters passed to helper functions
-Date:   Fri,  9 Jun 2023 04:01:54 -0700
-Message-Id: <1686308514-11996-18-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000002ab50a05fdb07b7e"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S240227AbjFIMLJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 08:11:09 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2040.outbound.protection.outlook.com [40.107.7.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652AD3AB2
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 05:10:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cs0FoihvR0cjM4vnq2cjV1RpWXSAV52aCbUHyShY1N0aYuA3gpMNWQG7p7ZiK3oymKgjkW5Oma1PkpUh74LNhWvKW9VBO5TzyJzG2Jzh+uRfyRvh1HXKg8LDdb5lWPQx8KRygjLhgUqMywiKNHSyRe3d++EKvXUNHTmED40PBGo3X/O4tKf6GMToyznuBl3N34dRSSiomFGNj3uXrJr/EerS1s21YvDHn8vKPg+M0wlNNCHmnL2lBA+9ZZuOrLeaPsMe2nPxMZaB1NARnUXkrHcWqIvu9pEYy09NbIWiopfCVrJ1/UxDBwngicZmrkAYP/E0HZP0/9qkkAGUH5P9Gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ehbsy19ks6Dju2/W31npWW5u+kREZhh0Nn1zh5Kt7DU=;
+ b=OxuXgfvKmviJxWmyDEPTYbueQTC9BN04WVEnh6U7OjjcT9RoOnHr2MV/WRoF8gwE2YezxbZfXElfmv7suGpxlnyaz6ljy63oXXUjhRxF1tzs1mCMykKRsdC8MSPRhc7IVNZz4oP1xRUUmx1c4MTbvU6t0C4VOHWQqK64fj4M5j2Ea0XgWmo3vGlQe8b2tcuKq3YF/r8EDYrewhWBcxPAIFpAyHhUkTgOgIL2IYdOI1jShxQxR+D7n5smlncudV7ii6g27o4vWfkB2Z5x6EGQbXDVgMaUx4Ajk6Od5KApD/FYN2BK7nLP3xbrNZ4Xh/mG0lLrhHTpgWe+WojI6scKSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ehbsy19ks6Dju2/W31npWW5u+kREZhh0Nn1zh5Kt7DU=;
+ b=XkK7fQ6ekwFR3iioXozE/UrKrdaUGTKBTPUhb3gS1rDmNhdNHnuA/Fh+baVNWcSN0lu/0DTnmHaWGRUibFKiFV1OPmGI67KGxL+W5ciG/GO5DaFsqgBRWytLX8TbGXSxJwpi0OGVmzBUnD0Zm4NbwdWrX320uY7DrWZTBzYJq6ZFKZkdcNat4ttfepgWMGRWTECXx6J2eYVhR64DsDjJSuJLazfKKCp2UnYJOf633gHw7yKcQmESfYVfDyXLw5NYHpTmY8sBprR0UVvePmIeFebMkTBiHTZxYWzYd8lZtkiBr/fcC/dcyrsZvRPH7aqFlYaoUcTh1LYfgiOCEU8VYA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from HE1PR04MB2969.eurprd04.prod.outlook.com (2603:10a6:7:1c::23) by
+ VE1PR04MB7357.eurprd04.prod.outlook.com (2603:10a6:800:1ae::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.32; Fri, 9 Jun
+ 2023 12:10:44 +0000
+Received: from HE1PR04MB2969.eurprd04.prod.outlook.com
+ ([fe80::bf77:7f01:b0e0:55f4]) by HE1PR04MB2969.eurprd04.prod.outlook.com
+ ([fe80::bf77:7f01:b0e0:55f4%6]) with mapi id 15.20.6455.030; Fri, 9 Jun 2023
+ 12:10:44 +0000
+Message-ID: <82fd6801-722e-a21a-fafd-33f3deecf5d6@suse.com>
+Date:   Fri, 9 Jun 2023 14:10:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+From:   Nicolas Morey <nmorey@suse.com>
+Subject: [ANNOUNCE] rdma-core: new stable releases
+To:     linux-rdma@vger.kernel.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MR1P264CA0184.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:58::6) To HE1PR04MB2969.eurprd04.prod.outlook.com
+ (2603:10a6:7:1c::23)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HE1PR04MB2969:EE_|VE1PR04MB7357:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4e812249-a216-4b35-cc71-08db68e28ce4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: arRFi9FLjzNCmH0FA99HCGiNxCErZSjtKuocedP0jdqIvKCDMTMLub0xerMHjpHRKfBoG5mKELmYHlva5yk9CX8sIdLMffnosSOixJU3SPdpvrAVBQ48Fh75H0r5k4ehPsMw8H2uQt/Tp9EHEgwG2c08c8XMsZK8Rc2xzFcrUFTMECsnkCM+9VxiUsweoD8DvGDZhIUPzKyOV7tuzlt9dQdVC3G/O2Fk2ZX+ymjasT8Y/c2SXh6DWUV4xMrqxVO/YhlaZdj87mhraTdClP0iAVIHdyBLdF6p101lCxX3UoSyfv+lHJpznyXsiApHA7AZLqzmixR5807P4zYuqS09aKQbRgpgH3sqoqnp35SOFxDTNdaQ+l81Fr1YLKcO1E8FovZK0qXG0oba0m5LZMRBt8o29s/Wv7R8obAWGV05u3deY+BgKC1+I3qPHtCmS779iawrU/PhNmvHkGqXmusU3XQRxwJpap20BLttwQnn1J70xSKmJPvEA7wfwrPcqQsVlImxBUvsBWntmsU+KKRIHyRsWXuMKrk8347HLoua0l4JZ2v2Czq2z1acp+XfekCQuZbvP3ORNLgaaNCLPtU2sDrTgPMgbwZGqviFRMFh60TkrRorq6LzadYHiO3u+54PrzdW6n5256+HlgEPPEXt9Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR04MB2969.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39850400004)(136003)(366004)(376002)(346002)(451199021)(478600001)(8676002)(2906002)(8936002)(5660300002)(31696002)(36756003)(30864003)(6916009)(66556008)(66476007)(66946007)(316002)(6506007)(41300700001)(2616005)(38100700002)(45954011)(6512007)(26005)(966005)(83380400001)(6486002)(31686004)(186003)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NFNSZmI5Y1NnTmlnNW1sOEVzdm8vZktuUFhJVEhqVk5MazBuY1FyTUJKRjZx?=
+ =?utf-8?B?eTlRZWcwUmJFMGRmSi9SK1pvU3BKOW5MZmhtWGhkd1pmR25EZ1pyNHVtOVpH?=
+ =?utf-8?B?YjNKKzlUUS94aW40VEZzOXNCUUtpV29tZWRNS29LTmpGTXY0a1VMV1B0emJY?=
+ =?utf-8?B?VDN2dUU4eURSZnlKR3lJaXlVQitsOUdNdUZBTHBIdGxJLzNxKzBvRGZxcFNT?=
+ =?utf-8?B?cWMydnJPRUY2cmxIVEUzQlhibSt1NFFxY1NrZ3doWGVoVGU0bitUV2MvQ2g4?=
+ =?utf-8?B?b1JZdCtYYmZrTmxSUHQxd0psbTlZeENXdUFxMFNDdUpPM3phK011QVlvakRG?=
+ =?utf-8?B?elJNTXBNN3p2clVtTlV6Y0dQekxpcjh6cXBEb0FkblVuY0JpS09Tdkxudkps?=
+ =?utf-8?B?cmQvWHlZWEhRUTNzN1BQVHhrNHJnQ3laWjBjQVRIcjRBcUt3VDAyaGpwMUxO?=
+ =?utf-8?B?L0pkMllFNExvVmVUVG96M1I1aGV3d2h3MlBmODlEVWM1a0lHekUwS1MwQ3Mx?=
+ =?utf-8?B?cjhzSGs1amhHVTV4UlNpTHZvMW9vaGhJYksxWG8yOFA2dG95U0NWR0k5Q2kz?=
+ =?utf-8?B?ZXFydmFTTUJTQVhka1c3a2xqQjZ2VUNJMmRIMTB4aFFqb3BxcTNTQTFuN2Fv?=
+ =?utf-8?B?ckJDTWFPb1F3cTM5VWIxSmhxeE9kM1BkY3U1V1d2VHBsQzQ1b0RhbjNkWWFT?=
+ =?utf-8?B?dTFrcUdhTW9BSDd3b1NoTy9PaVBtUGpXU3NoME9XWGkzdExXamw2b3BLSCta?=
+ =?utf-8?B?aTJDbTNVOHZMeHZRdDdsYWZwN1Mxc1p2RGE0aTFVeW0rTmxsR1pVOHQ2ZXA2?=
+ =?utf-8?B?M3lGMDUyU1RlUVNpMFh3TkRxSk01SmxBTmhNa3JVdzA4c1dLYWt0ZHh2OHBP?=
+ =?utf-8?B?TDkwazFzemkrNHZiUkFuTnBKL0kvQ1A4WG9zNTkrQWZvOTR3Wk55Sy9yYktK?=
+ =?utf-8?B?c21waHpaQjRzZlFXSUMzNWNjS1hTTTlScnVuVENrb2lBaWtYd1QxQTdFSkFN?=
+ =?utf-8?B?U29qeklDQ1FEUVNJSzliSDA0blpCaEU1eDRNMGZ0TTFyZFpBeWhGbHVoTVZE?=
+ =?utf-8?B?VXhjeW9DYzZYNU1LZk5rSmluY2dZQm9IYjVINTZSMFYvUnUzRmRlZjZNc091?=
+ =?utf-8?B?aDZOczJLUXZKYktmbzBzY2lIMzhORGtCUk1XY2UzZml0Vy9MU3B5bDl3RUFp?=
+ =?utf-8?B?azAvTGVCMlFTMWkvc1BweHFjZjFDcmFqMzQ2WTIyenQrekY4alE0aHhmekRX?=
+ =?utf-8?B?Q2loYy9aOGhJNk4xSkhGL2xPUFNoM3Fjbkk0WGxleTBZNVJ3WTZOSEFxTXY3?=
+ =?utf-8?B?aVdvbEFNTGJrdnMrSGd6cmIvMEMrL1VMMURwL2REeVlobFdRTll3UVNZc1Zw?=
+ =?utf-8?B?ZiswbndRSHVOU25RUVpNWU1MOVp3YlUvUWVOcWtCNk9pSVMvZkF4dFhOaDFh?=
+ =?utf-8?B?TEs2aFVaOURPUm50R3VwTjlNd1dhblVuNHh1TXB2SmxtOUhJRFVoay9BczJ5?=
+ =?utf-8?B?WmVFMVNtRzR6ODhRTk11dy83c3dCUWxoUURCcEEvblFTdGJ0UFZEd0JFbTN5?=
+ =?utf-8?B?d3REYnJVK3kxTzZUaXZBT0VNakhsOTcxYnZtZWhERVc1SUVHTHdFNnVabjJh?=
+ =?utf-8?B?NTU0bGh0NWJIcjZNblFLdVVSdkZxZG0ya1o0YTZKYmltT29IN3ErRlg0YjU0?=
+ =?utf-8?B?TlliUTRjSFVHQ3QwUXd1QVpteklNazhsVElVS1BTS3FBWVpJL0wzaHhYVGk0?=
+ =?utf-8?B?akQ1RTR4QkZwMU1qQTdDSnI5WHN0eVBjWDFRZSt0U2JneGNyb0pFTTlpZ056?=
+ =?utf-8?B?WW9lSE1UOWNGVmQrZm00emwraTNicWNaZWlpclIrNEpiR3VCd2pyQzBva2R0?=
+ =?utf-8?B?RkFuS2tPZ1NsMVVIRW1Wa1lJdHA2MGZPb2hHTThiUVFOTHJsMlVEazkzc3ov?=
+ =?utf-8?B?Z2NCTDhBRFZXN0l5NkhDTW51TWUvZlpHS1VrcVBlbE45U0VPM09nd1hXQ0hI?=
+ =?utf-8?B?a3hmeDBCT001cXFtQWphc3Z4cFROQXNYajlJWUhMbSs3WFhkZm9PVUxxK3R6?=
+ =?utf-8?B?TjE0VUVBZXJwbU03T3JydHFCWVZYUVpidkZnbVNBV0xiQWtaWGhocDVxQko0?=
+ =?utf-8?Q?GhjAmJqv44hfwxwvbtYKu30dh?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e812249-a216-4b35-cc71-08db68e28ce4
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR04MB2969.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2023 12:10:44.1332
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 57DAC6djsmSKWm/mfzj1k1EdMMVMHuRgEJfrj/Eryhls7+VBDFdmoXxt9SkHVoiwab7JAJgUZEThcxMHEGT6ew==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7357
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,BITCOIN_SPAM_02,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_BTC_ID,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000002ab50a05fdb07b7e
+*** IMPORTANT: Due to their age and the lack of significant patches, branches v26-v27 have been retired. ***
 
-From: Kashyap Desai <kashyap.desai@broadcom.com>
+These version were tagged/released:
+ * v26.11
+ * v27.10
+ * v28.10
+ * v29.9
+ * v30.9
+ * v31.10
+ * v32.9
+ * v33.9
+ * v34.8
+ * v35.7
+ * v36.7
+ * v37.6
+ * v38.5
+ * v39.4
+ * v40.3
+ * v41.3
+ * v42.3
+ * v43.2
+ * v44.2
+ * v45.1
 
-Avoid passing arguments like Opcode which can be retrieved from
-bnxt_qplib_crsqe structure.
+It's available at the normal places:
 
-Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+git://github.com/linux-rdma/rdma-core
+https://github.com/linux-rdma/rdma-core/releases
+
 ---
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 44 +++++++++++++-----------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 3ae2f82ff..bb5aeba 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -93,9 +93,6 @@ static int bnxt_qplib_map_rc(u8 opcode)
-  * bnxt_re_is_fw_stalled   -	Check firmware health
-  * @rcfw      -   rcfw channel instance of rdev
-  * @cookie    -   cookie to track the command
-- * @opcode    -   rcfw submitted for given opcode
-- * @cbit      -   bitmap entry of cookie
-- * @in_used   -   command is in used or freed
-  *
-  * If firmware has not responded any rcfw command within
-  * rcfw->max_timeout, consider firmware as stalled.
-@@ -105,20 +102,22 @@ static int bnxt_qplib_map_rc(u8 opcode)
-  * -ENODEV if firmware is not responding
-  */
- static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
--				 u16 cookie, u8 opcode, bool in_used)
-+				 u16 cookie)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq;
-+	struct bnxt_qplib_crsqe *crsqe;
- 
-+	crsqe = &rcfw->crsqe_tbl[cookie];
- 	cmdq = &rcfw->cmdq;
- 
- 	if (time_after(jiffies, cmdq->last_seen +
- 		      (rcfw->max_timeout * HZ))) {
- 		dev_warn_ratelimited(&rcfw->pdev->dev,
- 				     "%s: FW STALL Detected. cmdq[%#x]=%#x waited (%d > %d) msec active %d ",
--				     __func__, cookie, opcode,
-+				     __func__, cookie, crsqe->opcode,
- 				     jiffies_to_msecs(jiffies - cmdq->last_seen),
- 				     rcfw->max_timeout * 1000,
--				     in_used);
-+				     crsqe->is_in_used);
- 		return -ENODEV;
- 	}
- 
-@@ -129,7 +128,6 @@ static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
-  * __wait_for_resp   -	Don't hold the cpu context and wait for response
-  * @rcfw      -   rcfw channel instance of rdev
-  * @cookie    -   cookie to track the command
-- * @opcode    -   rcfw submitted for given opcode
-  *
-  * Wait for command completion in sleepable context.
-  *
-@@ -137,7 +135,7 @@ static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
-  * 0 if command is completed by firmware.
-  * Non zero error code for rest of the case.
-  */
--static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
-+static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq;
- 	struct bnxt_qplib_crsqe *crsqe;
-@@ -148,7 +146,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
- 
- 	do {
- 		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
--			return bnxt_qplib_map_rc(opcode);
-+			return bnxt_qplib_map_rc(crsqe->opcode);
- 		if (test_bit(FIRMWARE_STALL_DETECTED, &cmdq->flags))
- 			return -ETIMEDOUT;
- 
-@@ -165,7 +163,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
- 		if (!crsqe->is_in_used)
- 			return 0;
- 
--		ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, crsqe->is_in_used);
-+		ret = bnxt_re_is_fw_stalled(rcfw, cookie);
- 		if (ret)
- 			return ret;
- 
-@@ -176,7 +174,6 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
-  * __block_for_resp   -	hold the cpu context and wait for response
-  * @rcfw      -   rcfw channel instance of rdev
-  * @cookie    -   cookie to track the command
-- * @opcode    -   rcfw submitted for given opcode
-  *
-  * This function will hold the cpu (non-sleepable context) and
-  * wait for command completion. Maximum holding interval is 8 second.
-@@ -185,7 +182,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
-  * -ETIMEOUT if command is not completed in specific time interval.
-  * 0 if command is completed by firmware.
-  */
--static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
-+static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
- 	struct bnxt_qplib_crsqe *crsqe;
-@@ -196,7 +193,7 @@ static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
- 
- 	do {
- 		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
--			return bnxt_qplib_map_rc(opcode);
-+			return bnxt_qplib_map_rc(crsqe->opcode);
- 		if (test_bit(FIRMWARE_STALL_DETECTED, &cmdq->flags))
- 			return -ETIMEDOUT;
- 
-@@ -372,7 +369,6 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
-  * __poll_for_resp   -	self poll completion for rcfw command
-  * @rcfw      -   rcfw channel instance of rdev
-  * @cookie    -   cookie to track the command
-- * @opcode    -   rcfw submitted for given opcode
-  *
-  * It works same as __wait_for_resp except this function will
-  * do self polling in sort interval since interrupt is disabled.
-@@ -382,8 +378,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
-  * -ETIMEOUT if command is not completed in specific time interval.
-  * 0 if command is completed by firmware.
-  */
--static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
--			   u8 opcode)
-+static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
- 	struct bnxt_qplib_crsqe *crsqe;
-@@ -395,7 +390,7 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
- 
- 	do {
- 		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
--			return bnxt_qplib_map_rc(opcode);
-+			return bnxt_qplib_map_rc(crsqe->opcode);
- 		if (test_bit(FIRMWARE_STALL_DETECTED, &cmdq->flags))
- 			return -ETIMEDOUT;
- 
-@@ -406,7 +401,7 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
- 			return 0;
- 		if (jiffies_to_msecs(jiffies - issue_time) >
- 		    (rcfw->max_timeout * 1000)) {
--			ret = bnxt_re_is_fw_stalled(rcfw, cookie, opcode, crsqe->is_in_used);
-+			ret = bnxt_re_is_fw_stalled(rcfw, cookie);
- 			if (ret)
- 				return ret;
- 		}
-@@ -414,13 +409,12 @@ static int __poll_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie,
- };
- 
- static int __send_message_basic_sanity(struct bnxt_qplib_rcfw *rcfw,
--				       struct bnxt_qplib_cmdqmsg *msg)
-+				       struct bnxt_qplib_cmdqmsg *msg,
-+				       u8 opcode)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq;
--	u32 opcode;
- 
- 	cmdq = &rcfw->cmdq;
--	opcode = __get_cmdq_base_opcode(msg->req, msg->req_sz);
- 
- 	/* Prevent posting if f/w is not in a state to process */
- 	if (test_bit(ERR_DEVICE_DETACHED, &rcfw->cmdq.flags))
-@@ -492,7 +486,7 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 
- 	opcode = __get_cmdq_base_opcode(msg->req, msg->req_sz);
- 
--	rc = __send_message_basic_sanity(rcfw, msg);
-+	rc = __send_message_basic_sanity(rcfw, msg, opcode);
- 	if (rc)
- 		return rc == -ENXIO ? bnxt_qplib_map_rc(opcode) : rc;
- 
-@@ -504,11 +498,11 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 				& RCFW_MAX_COOKIE_VALUE;
- 
- 	if (msg->block)
--		rc = __block_for_resp(rcfw, cookie, opcode);
-+		rc = __block_for_resp(rcfw, cookie);
- 	else if (atomic_read(&rcfw->rcfw_intr_enabled))
--		rc = __wait_for_resp(rcfw, cookie, opcode);
-+		rc = __wait_for_resp(rcfw, cookie);
- 	else
--		rc = __poll_for_resp(rcfw, cookie, opcode);
-+		rc = __poll_for_resp(rcfw, cookie);
- 	if (rc) {
- 		/* timed out */
- 		dev_err(&rcfw->pdev->dev, "cmdq[%#x]=%#x timedout (%d)msec\n",
--- 
-2.5.5
+Here's the information from the tags:
+tag v26.11
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:03 2023 +0200
 
+rdma-core-26.11:
 
---0000000000002ab50a05fdb07b7e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Updates from version 26.10
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+-----BEGIN PGP SIGNATURE-----
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPVkLHVZqWLq
-iDsZxuhZr/187HRfiPRgUe5dwfkx5Iu2MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwOTExMTUwNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBT00mUf+Mxbt62BNShcYSSJciWrcWZ
-VwTGcVQ5AvPM+rzl6svE4eYr45UYE9xoHj0Kw9QoI5NPKVNHsx+EEpoL3G+ps7G+d0omxLBNRWWe
-SaTzldIZISgVW5OhRC3R+Z9eTF1hq66/VaVT+PhbMxj2PUF+gcdg5NbM2Um8Ts10dhO8AWAqLHSx
-jOT60XA1/sSAOGGgE7C/aZCMy+0V8NjRxatzeNGKiANOX2DBdFq3ftX5EumdFU7lOf/0EHR8Gr3K
-/UahmQAxNNiQwAKEWsLLpCr1BMp+RKNtw282PFwrOFT2HtweHEX6TTlRXL6RHCHA44Jxopk9Onhc
-AJnGWhnj
---0000000000002ab50a05fdb07b7e--
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kMfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZJDbCACvQXziPEXf0aG1
+T/lzErt7VXqaPahijg6zdOWLB5TJC0lvMSjCo+lpdG/CFAJsrAS3lBXEsAI7Zb80
+IQ3oteLovEWNVEzRgFh4BAKWykmf/bq1pRUusLP454JR+K286z+4jJ3YF6joNI7v
+5ccgeiDiV9My/xuTqQggwXu7auXyicm+77EenjimVwYrP6Tq7aS5/DTTfRj+EDwP
+96TNyomjbyvqYsOkzsq8LkCSXYOyAbMsYevv1lZtvELQyhXA/hJFde8iB2mUYMFE
+IIv7ELFOUdTkOedu8zgbT7qHQZ/oyoemM8jnhc1VPYWZbshONZsJD+9dz4VTu+Ie
+muvHtpt7
+=Ufvg
+-----END PGP SIGNATURE-----
+
+tag v27.10
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:04 2023 +0200
+
+rdma-core-27.10:
+
+Updates from version 27.9
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kQfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZEtwB/9aq1voDENns8N5
+loWY83SErfwBBAqCoraHC5b5bE5YwSgap60iWjj0/f9a3DV0PYoqZdaG1xMDZw5b
+vIIFmwimP3ZXaGyJOOxezPqrlSYjxayINFWPxQPIfsUTtbVhQqxsuqUd1uTDkj9c
+gvYuc1dMSfGtSn86HV4ALjbqG1qXIxgwP+Ej+5a3kpE+eAdpTxwYKueYkvD/9GBe
+mB4qnD0G1bnkj3VblDiOCLBfKrASFcVldp56557pN0+5y7lljBq9j4iWgWJ1QTN0
+QoJRB1UaJxeGJ/EGkGW08m6OemPJhSV+f5HSd2uZA8BE6jLNftnpEDXwaFI2L5iU
+5u6rj3dD
+=MkJu
+-----END PGP SIGNATURE-----
+
+tag v28.10
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:04 2023 +0200
+
+rdma-core-28.10:
+
+Updates from version 28.9
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kQfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZKesB/4x4Y9X7b8J2D8h
+LVIKwT5TEKpEl9Uj/WRe0z+EOEIlco5SbyZnMUBtwh2YDwMtPKJ+GP79VEg6/7vN
+/dh43AZUREhYyCHlIne9Dkbpet7RMnpXKABVZaAtDb6hYZEDDengZDU7bjHqrIwi
+xefM0g8H9SCAH4K6L39NLhhEeE4hHAFhlTMAjdNHu6F1gYhZuqdrRQGTdAg99lsW
+8B1jcYPROxEGYVi0lcHuQbtB+A5qdbuHqw+xsH8u0UucV9dVwGr0jtPySsNjIxHf
+yYODM33Ycrt2DyOCMMHhEedrNfj05Ln6pANqyEmiRHh3lfUTlLD6YCKbsVtBG9pL
+9IwkEmni
+=jxQ7
+-----END PGP SIGNATURE-----
+
+tag v29.9
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:04 2023 +0200
+
+rdma-core-29.9:
+
+Updates from version 29.8
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kQfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZAgFB/9Q/Vdp+oMHWp8D
+KzIqbNUUT2O7vfgk1gOF8Q4Z1qgu/fDhcpE4hRUa8VLQNYtVFLz4wgwvlMy9lZ9x
+cdra8Iu6GDGeiDzjzoSBy4DzYRfmZcXe+wVO/E+isPHXgto04n5LkJfrajYQKW3Z
+Orvfq3Yi7v43f33dpKSEMUY1LooljZ17vlZarX+mwX9PkQOoXR9MMaPRCH+Xj4WT
+v9wSmp2vQeCnZTUrkkn1JDKtLqUuo17kwCky8VJWnX/Q2328vA50Wzpj4F+/9K3r
+q/KeBYtAoj+U4NmXd4XYK6PAkNPrgjg949cif3ehz3WGpoEAvjKthW6yY04fjeUw
+tIcV29v6
+=LlI9
+-----END PGP SIGNATURE-----
+
+tag v30.9
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:05 2023 +0200
+
+rdma-core-30.9:
+
+Updates from version 30.8
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kUfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZNcSB/sEd64aunfJtWL4
+N0LccfpFBidXa/N/7Nx21dZDqBdrRFJVI751gGdpBpz2efo48hWOLPVgLailqotz
+BdNRWj4jQcq9pYXGUjHwOSIEQw9TZJvt7DkWt3DjbJwS5sc/R/xaIxxHtCUzvSQN
+b5ML52Qam6WRPhMQwo7D9dz6ONRJyz/GuhR/yu/34g3fJsIGCj6s9US5M7tajlL+
+KcyQ5dp6hJdkxqOV5tbV+0aTJmnY5kD1/AykjIsPCUUMXCHfDhCGAS4VCZNRsaAQ
+iS8CPd6Badri17qAlzu8BIQSZt5pAEyeA6A5TD7Is9bm4XndQuMZFXWb7UxRHsJR
+M+RURsdi
+=M2Bg
+-----END PGP SIGNATURE-----
+
+tag v31.10
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:05 2023 +0200
+
+rdma-core-31.10:
+
+Updates from version 31.9
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kUfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZFAPB/4ttJM4e6XQJYrw
+7/lS1NAVmd9STciO5QBZ4lAjSDxzxJniGw64kNbMwDorVoHgshGqiBhgyxf9l0vG
+J52Wb4qTbRUMjHOsUrb4PGr1UiLP97bH4obBGJC8Rp7SaQmWB5EhQbK8df3llsTL
+4F50J2jIZ0Wcht9EMobd7Tb7qTbRQ/ZNKMX78yKZHo994dTEz6gf3slUBxhB4j9t
+OltJgqvEDjIZozuPA9UO9e/j0mfqdWVj7tP0YiKf0juvniOlc2IM1Cgj+7pIjAc3
+xm9BsTaTCn8x8reMGPxn6lwSJjkAZm/UCZDtAh5/wROM4MlyD0bj/SDRVdFgCwFG
+mHVZAq5P
+=pT/a
+-----END PGP SIGNATURE-----
+
+tag v32.9
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:05 2023 +0200
+
+rdma-core-32.9:
+
+Updates from version 32.8
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kUfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZCBEB/43leQ8bZWZS4wA
+GKjfQLVZcYFV4fPp6DPA43i3Oo/8Xwuamj3QFiwBHVOo8vSw8oT+Zyz3CXjYbmIL
+x8RbjLKITWYoUHvmUBCOp7MbB/DYFyL56y3kNMVbKHu7o7tLMyyR+SWa40CN9UAY
+c8C1Wr1miGnCP0EzSm0ogeg+FswgFbFWU8oVii/Xo7fJyY9adG9bsbLzz29X/HXv
+fOAxHuVnflO37hRN4ecDhvYkk7Uco9Thr5owqF/7mAwnJzUQu7pf7ggMlALYyfFp
+tq2YjgTMCp0omEAKMK1JSFMf4UDdQ+owB1xuk2/HcBw2grXPLT8orq+nF4Lf+891
+b7NF1mfT
+=hr03
+-----END PGP SIGNATURE-----
+
+tag v33.9
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:05 2023 +0200
+
+rdma-core-33.9:
+
+Updates from version 33.8
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kUfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZMD1CADBYo1kKJ3tjzFw
+q7T/r7MoPJuo2PXsrD7JZCZkPNJrxUvDqePYcrH4x9gxnd8O4kQnV4HtbvCDUTF9
+Y1uuk/BzFjOyprk/lXy1nvpFVFQkmxnR1K+XZGrdWX92ADvxaD1yfV6L/Cr9preD
+6neZtKzzFl2TSxDilF173rFaEL781zwCiBBxmbKXRCQIrxhHHsOkwH6DFeAer5aJ
+Itd1/TNjDVq2hz2dtALUAPcRo40L2KYbOV47NDZgBv1LVY7zG7iCB5br6/tH57Nz
+ab+aigG/r36qQSOzP86cr4JdepBwaW7xyEBIQOG+5zzGDVZXvmBgFza8UVO1q2lf
+1BQYxtUB
+=/TUs
+-----END PGP SIGNATURE-----
+
+tag v34.8
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:06 2023 +0200
+
+rdma-core-34.8:
+
+Updates from version 34.7
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kYfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZBTXCADB4s33U+boDFuB
+hg5yZC6HyZV9x/rT01++LUt8Oplk3KcMbLkOGtehvslqPQXuWfQ1eEZikXrhP9B3
+37gr4pA/ZnJZnRjdfzZWLfgjQEgZ4oSr6PQAgdGg2gheQxo+dYSWMrouUfuIpKiX
+nlsHLW4DZkgCqsMGla2zXcT4oh7v3F6ecEyxr0tUxOrCr+c/OVb26f7x3tXP7S9i
+trDrQYVRjJiRzOhPCh+TfF4aneP2QoYX0I9kUGbjI5wUwhNk/2Urtv2t7V6Plsqr
+V/K3nEi1chUQ/ZMYl7MxZ9M3VzCqX2Cw9EC3XxTFaRdcFAKd9yyWx4prNm8RMupv
+nRTitzsL
+=NBuZ
+-----END PGP SIGNATURE-----
+
+tag v35.7
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:06 2023 +0200
+
+rdma-core-35.7:
+
+Updates from version 35.6
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kYfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZKz2CACahidc3TVdYV+g
+t8xa791mBs+Z4lSORu3Rx+GQU8QNO8xMa7IfYRqlr3ZUD8TMqSONa3LQZ/kxwKFa
+aPZjx0DofgDllU9v9atpyH9QMIR+RMPRAk8iN8cvmvNcYpl+gOfxsMzfZroxaUBW
+QLY6EyQmYwKDpoaiyvwvmEVNqsOf/hbVoq5r59aRGlIRfgDk5b6iMVduVhUUXDZC
+6wZh+d/Kjp5QkJOFD/Unid/sh+7JtXpp9M6GWPXQ60QK6e8GAtXtNeJQbkQAxVwW
+pDEOgowQPC8jRclsPYPcLqVpV1shrnojRGnLVQ9R5C/3MhfeU0hUpJsGG8MlK169
+4iuLqg0k
+=JuU4
+-----END PGP SIGNATURE-----
+
+tag v36.7
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:06 2023 +0200
+
+rdma-core-36.7:
+
+Updates from version 36.6
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kYfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZCLNCAC5wlvLZE6Ycwll
+F8GTpRQI5eX/vbwX7VT8UbepZV0cvavDWCs7OZgcVnFNsl4fqU0ozWVoyBia0ThN
+qquom1SARVw4YOzAR/+GTwKXgC+mY1KHvhv+AUKmbOkXslJ53Le6vBV5y9RRRRJg
+fcMCbY4ctp06RAg2LhBe2WsWOXcaQ5eyvXlaJIRyFu6nXYYX/uIqCpCqz5jloyAR
+tTybD5fV30xuprLzywAV8dbcErupk0IYf3ElrUPlf8nh9vHUov7Ku7MWJzcImk9e
+k4BdL6PrfJoyzb/9oyrlXFBO4alimnYYwGSmAhsukFizxAk7OyHwwQcYmV+BNb5A
+U7kerM0e
+=xmCn
+-----END PGP SIGNATURE-----
+
+tag v37.6
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:07 2023 +0200
+
+rdma-core-37.6:
+
+Updates from version 37.5
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kcfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZF7eB/wNE33lOJ0uDW+P
+kKHfljbQn+On2mhfVq9A7VQvV/symsE1WFMjJAgLe30miXXyDgkxOShLsSwUtvcX
+e6Un02nOSNpw0+LXOKGJNnZslzAIQTLuI+tSIu2Z3IHrKHuBPm8EBT3lWy5twmnb
+kEnl6LbdxTnhL5dTlMx0UEp+ZGrR9fjBea7sBU8cd2sBOf95TZ8NFb3bHnNnGA7O
+JpO4z9JmjOQszk7m1z8hkCErcouBQwZsw7rJsoZjqaG9sjdwJq9LphI061ydripy
+3Tg52SymN1BI3ZTaL/Ykkgsj+JnZQdx1SlYvuQVhBliJumDl5hZDf4T22RkCoRoK
+Uw6SQpEU
+=FLbB
+-----END PGP SIGNATURE-----
+
+tag v38.5
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:07 2023 +0200
+
+rdma-core-38.5:
+
+Updates from version 38.4
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kcfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZOgRCADBjJBvzCBGEt2y
+ADT12BKsJAOYfF/RJ7ifs+EZDQYZ+MWLNqpudqzc8TAQHgN1euIhR7/6Oj9dfMKG
+V6ulJJk5JheuXL1y6sqGGzt2HPxGHx6INc50KUrRJl5ncJlVuIURn65cUN8tai+9
+2sEzXecCj8DxErnI4BbrgP3f9SgU+F6o4k6Dhza9IZ5bCB0/8l5Vz1l9HhOvugUP
+EyLqiWj/g4dy5GxsdSBjiDZZr6wF4RYGql2p8qB1z7FC5tt0yZflWIY9q3sVFEkV
+w6/2/eiqEPRtq7MtByOgpuhcqt2xNiRiz2hk3wgD1aZfMhBxeeR183TRf8E9MjsF
+pyOArlEE
+=gtE+
+-----END PGP SIGNATURE-----
+
+tag v39.4
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:07 2023 +0200
+
+rdma-core-39.4:
+
+Updates from version 39.3
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kcfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZMYBB/9Tq9CLCKqHNqU8
+rm0sET4t6RqYbgtrg1x7hjPe2TEedS99S00g0KJ//ExF/JTeo28ZuhjmToVnH+XC
+USzWEDK6wbjRiPUzPC6FSnHiX7b/v5+8qGhHky4bJCRirvh63/8DkJx7X0sRP0H9
+9t0jne3Jyk6M0pH4c5GK6IU5TXFYB8D1p1JQcWlLUktz/lENGHWZbiIrI2r5KGsi
+5/vBWl25O0Ch9L6Q8QI9wwhZ66KBtz/QrxDU4xaYfYJd9bGuOWMUBS0IfnndtnUS
+nVusZwdQQh/VNtTU25V2Lm4UiJi5GrX5v8oTfBm36cJg93/FQ2c3dDr0GU12VSCr
+Yvt41F6j
+=JqTy
+-----END PGP SIGNATURE-----
+
+tag v40.3
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:07 2023 +0200
+
+rdma-core-40.3:
+
+Updates from version 40.2
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * libhns: Disable local invalidate operation
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix the sge num problem of atomic op
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kcfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZM0hCACd6bXGH3z9jD52
+187Np+OdswYnNklAx7f8hqUS6Slk91jPt7MuUyLrgkV1WsI1xkvjXnnSm4KMnaD1
+KziZCM3i9h4fMnbpXCW6XJ4A+DmSCP5FwKc5ws9tlaZ6CPHuZ9/r6JiQOAKSkcLC
+DPOB8F8uE9/TGuYJ50Tcx9LBNcerufgdXBTpXHjjHM3tcLlIlLVHZYlQTGd7h4p1
+wZ1c5ZEB34VzsoptXu6jekS3EITk+EcvteO14SBR1MDWa5z2ZuTOI17W/CpQ1wDg
+uKPJZMwd9GqxNsBdbHhKhkbyxlrBFra7uojPCgcDcCLJTZZzJ4CjnAd4tLC+Hkp7
+1q0m4S/S
+=T//i
+-----END PGP SIGNATURE-----
+
+tag v41.3
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:08 2023 +0200
+
+rdma-core-41.3:
+
+Updates from version 41.2
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * libhns: Disable local invalidate operation
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix the sge num problem of atomic op
+   * libhns: Fix the problem of sge nums
+   * Update kernel headers
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kgfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZGVEB/4v1oiUdaB2ivDq
+GD+cxmn3a/apiipjII4+7rtNs4ertjhubNsQmPhZHA7nq2NAXWC7xPm+Lsj+Cpi4
+7FyBQBptjussNRwo1RrCgCif3vL8aq1Q5zfQLsJBtOyTAxirgl/OEqHBBMFM4O5G
+XotcDBZcCShxt7Ghdj6Xn2Fo81kQ7NcW/WtXlysxyucvYn9g+BiiYBBmsXDFgHov
+q4q6pAqPU9kGc9mzDK/YafL2mSYWALHe2pbqX6VMyqGqDeMCN1sgdDIWnRFht4Y4
+xgtBmZhP9tzv+RBi1iUoLVwM4G92Yyx+pYqJrMlZ2NlLdN2l5yHw3qF6o2ckMx/y
+d1GC49Fb
+=EwYp
+-----END PGP SIGNATURE-----
+
+tag v42.3
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:08 2023 +0200
+
+rdma-core-42.3:
+
+Updates from version 42.2
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * libhns: Disable local invalidate operation
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix the sge num problem of atomic op
+   * mlx5: DR, Fix error flow in creating modify header pattern
+   * libhns: Fix the problem of sge nums
+   * Update kernel headers
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kgfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZCL3B/9MIgV8OqhaS2ag
+k1M2wPnT6N/e0VKaeJTY8Egjo8yfBR4s7IXwN15RH4DPLsz6ngjIcpJaJ9zaOfY7
+thz2s6FMdiyF6dFaxc6eNYSOIUeqiZUIg4A/0RVO4zJHG8Z8BjmDtCkFH5o173ZS
+Y82CR9TgAnvbW+KQ5pKp/cwjCp7keASzKFQyOs8InN4PqAvXeEKjvbbt/YrCcvj9
+DPk6u4hul4UlzuaLSQCLDP7+z65BPXKK9wz5XlXpvE1j1vN59v95vqNBjCz4bAJ8
+p0urlMby/a8e3Ixz1iw3QbdX0NGnWOVwQQ+aMJb815MMKDi7J/ctWxmhBRm6PWA6
+K2P8I1Nx
+=p8r7
+-----END PGP SIGNATURE-----
+
+tag v43.2
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:08 2023 +0200
+
+rdma-core-43.2:
+
+Updates from version 43.1
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * libhns: Disable local invalidate operation
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix the sge num problem of atomic op
+   * mlx5: DR, Fix error flow in creating modify header pattern
+   * libhns: Fix the problem of sge nums
+   * Update kernel headers
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kgfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZIzoCAChdggFfwjDIToa
+a4taGx3BOwOP3oJb/RqJi0IXQ4ANZSZIMlLTDq0BgyGByZsLw06caqsYI5xuVii9
+341cRudwDZC5ihptEwGB8xsYgQsdhge3LH/Jsque1CvobKCwLCC93n8nMRJKThI9
+dMWqGN8yzVTgK4dxmkfr3TJ97ZhimDdZCS0COFm0nnLFXrv6leA1gzNMgSuIAcsV
+eJcB6f4/hvI+dRj1NQ2TEfItMqIuoD1CnWRgakaKCxcJKnYertv7kzrDgucx6q7l
+Adiz9wo8IaUmHNMkCAVnjgNc/CfWY06IYQNdm7iiHO6x738+6Z4zcrhCDiSe5bOy
+mbbQl/HK
+=7GZI
+-----END PGP SIGNATURE-----
+
+tag v44.2
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:08 2023 +0200
+
+rdma-core-44.2:
+
+Updates from version 44.1
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * libhns: Disable local invalidate operation
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix the sge num problem of atomic op
+   * suse: fix package name for libmana
+   * mlx5: DR, Fix error flow in creating modify header pattern
+   * debian: Exclude libmana.so from ibverbs-providers
+   * libhns: Fix the problem of sge nums
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kgfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZC24B/9WU2vmxc4VeOSV
+Xab4cLXqJO1OGgvyzkYeKJHzKK9/J3bmBAWO20SZhd9XBrlPl7grmxeSnJwRrX+2
+sJ4i+zFvVHwQ65J8w798Ak8QabkribRR2jwvcEGpQ5qlUl/jKo2/zkyr9nmVeOYi
+VQTZiRYHFhw067GObHlBeB/9aj/L6o+THa/EpcTBbvOrZXfL6pdxAORsyW8B3StE
+2b5+cRE+hEu+ftAl4fEEYH4kKFx01mtDK92O0RYAZJUOlo5dS1Uvj2BhvJoF1s7R
+m/zK4Se0BR3xXyGLs2/io+OpYncfpPw5D5ULEDIhDxECek2dDbMI5xUMJiXc4G+n
+2s3XmANn
+=151p
+-----END PGP SIGNATURE-----
+
+tag v45.1
+Tagger: Nicolas Morey <nmorey@suse.com>
+Date:   Fri Jun 9 11:52:09 2023 +0200
+
+rdma-core-45.1:
+
+Updates from version 45.0
+ * Backport fixes:
+   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
+   * mlx5: DR, Add missing action state for FDB push vlan states
+   * mlx5: DR, Enable QP retransmission
+   * libhns: Disable local invalidate operation
+   * bnxt_re/lib: Fix the UD completion reported
+   * libhns: Fix sge tail_len overflow
+   * libhns: Fix the sge num problem of atomic op
+   * suse: fix package name for libmana
+   * mlx5: DR, Fix error flow in creating modify header pattern
+   * libhns: Fix the problem of sge nums
+   * libhns: Fix ext_sge num error when post send
+   * libhns: Use a constant instead of sizeof operation
+   * ABI Files
+-----BEGIN PGP SIGNATURE-----
+
+iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kkfHG5pY29sYXNA
+bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZIVyB/9CiDsvnuTtro2Z
+KQkc09g5tyWMS16OdFRO2QVU4iiEgNhfIEFa5blVoAwOTGXGEgm/ryEjA439VxU1
+abzztfr1TtvGUW9+W1Sa+USF+HGavB7xd2GxFd/07zds0M43XjTjgiWtvwTvYYPT
+Wf1owS78MzCApC9AnWDGW1mYWVgn+v8fGk5TIokKM751ERBMZoL2XLWWUbAVY9kS
+u1aK6Pzck1idXWYfryQikglOxa5YgPzwTHrHNztjySaB427faKEwDCN5IB4VVfun
+E0kqbBByXPoV+T0mYZ6DqdWxYYa4xO1eFT6S2FykAcIsqxqyQbHn5ETqRL6qdEFs
+p3iN2B4P
+=kHt5
+-----END PGP SIGNATURE-----
+
