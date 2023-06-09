@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F1C7297F3
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B16C7297F4
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbjFILO2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 07:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
+        id S239428AbjFILOc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 07:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239410AbjFILOX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:14:23 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389192134
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:21 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b24ff03400so5463625ad.3
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:21 -0700 (PDT)
+        with ESMTP id S238846AbjFILO1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:14:27 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4429630C1
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:24 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-65292f79456so1259918b3a.2
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686309260; x=1688901260;
+        d=broadcom.com; s=google; t=1686309263; x=1688901263;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=JAj0COTLbrPpnHT6rgkalbFl8GkEeEU2UmlgAmSEq3o=;
-        b=IIdH0GVUBCD/crDLRmYKSUU7zJtTFb4PfxKHdftKvdX8CUfEM6V2q1LFQz35k8dmAz
-         pjLqG6jBWcGRNeaRDDXmabzsZuH7nIhFT2Z6Z9ZH3jczlEV2x//5/LtoezuifgPl8h1u
-         ZKmw+QF0BcPfol2r4uqpkQu3Nh9IqAAC6RVnU=
+        bh=D/XK+e8xEZ2UscGZFQz8Vqmt84+jVCmoEiIa15dSAtw=;
+        b=ggZvu7sXttNbmuBR0dTFoRL9bXs3wFdcf0K/vIn1FEP7/AvQwjmcmNt64WZX4cI0M/
+         tKOxV+WCkM+K6TqRJtln91BqOC879zOKhdVQZ0vzvVj6XTQUmiocgB7NFuxIFP19EUWF
+         ZrG/DpMf4D/D12G97wHK0eL1xoILo//2ND3qw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686309260; x=1688901260;
+        d=1e100.net; s=20221208; t=1686309263; x=1688901263;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JAj0COTLbrPpnHT6rgkalbFl8GkEeEU2UmlgAmSEq3o=;
-        b=NvSgBAzERQMY+MGRaFP1XpQqZUpXGxbcrvZTISpVN+VajT4IeWHtnrFYybHjB6LIu/
-         ZaP/ZpzNEMznqh2Bl93LMa3sbtEGExmfz4qyvHJ2HYF76hSXbPu8Rj7E99dZpQtQT+cS
-         Qs9GuleYpjwOQz2rvb7/GnR+G7wyJwzk9Mau4rrsKV99ZBKehPpOs0z2TUF8zF1J5vit
-         BA1IM3x4yn+hZp6USfrzBQnUBnAlsU67xi6+n6RYvP6NQ724KHrMJH3UEtBJANGEyRbP
-         TrdIX6bVP/gp+rR9c37I8EJJ9SYl5T+ix3+TGmqDOPMdvoNLlhmhEilR20vY2iaJKwCi
-         /4mQ==
-X-Gm-Message-State: AC+VfDxAPm2leMm1WBOmDJJ4pWzKUaiCd0y+qt3NIcrF2Hqx923zuhVc
-        3GcoyWhi4JXISODEoBbeFMW8zQ==
-X-Google-Smtp-Source: ACHHUZ5Ag1XKgm9wqHwDW5qpfGAaIm5AlMhTNxJjgJJkDJtKgE2GU/wKJYVUX/73J1OXdmfvXnLkpw==
-X-Received: by 2002:a17:902:dac6:b0:1ad:fc06:d7c0 with SMTP id q6-20020a170902dac600b001adfc06d7c0mr953518plx.1.1686309260640;
-        Fri, 09 Jun 2023 04:14:20 -0700 (PDT)
+        bh=D/XK+e8xEZ2UscGZFQz8Vqmt84+jVCmoEiIa15dSAtw=;
+        b=AR6dIbgJ9h2ahU/3Fi4eqCFJvOMW8W1Wpip+2NhvN4ojbLJxK7Wz6wnkisNvtVmofP
+         LjXml0M6lLZgLIPhHEb//WsKwxzvj7IlMOASJVKA73xc+8GpEPop35IJ6IJX/fcJkHFL
+         Kr1CnNS/Fa7iHKKLd1ptD5WgNIEjIbjYiBfQbNqPDTWpwT4gKk+2nY3GBsd6AMm3IAn7
+         jNkrBFoH/fVIBAxMj2dGftThiWawmiBFgoRJGW7ClFZNtSbevCStlAbg5O4WcCgVh2at
+         4ZWQ69vUJ81V5SUXLIobHhCm+lqgCcK2478ABkKn/DeOpSUpCxcH+Tz3Ad+rmJCGPjYp
+         KZ7w==
+X-Gm-Message-State: AC+VfDyQuOMqcmVKCAKAQ4QBe1whiIGW5B5q4nMS7W0r+kioUz38qh4m
+        572Pnn402L2sz2MYLHLCWbSD++VNFpDjlB87mmY=
+X-Google-Smtp-Source: ACHHUZ7bvmeGCUfJHnF1woC41ygt8oKfip8/4jJPLf5c8pX0fMbgxcoatK6Mfs2YuBCm9K0p7qZzwQ==
+X-Received: by 2002:a17:903:2446:b0:1ad:fa2e:17f8 with SMTP id l6-20020a170903244600b001adfa2e17f8mr746690pls.12.1686309263576;
+        Fri, 09 Jun 2023 04:14:23 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.18
+        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jun 2023 04:14:19 -0700 (PDT)
+        Fri, 09 Jun 2023 04:14:22 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         kashyap.desai@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v2 for-next 03/17] RDMA/bnxt_re: remove virt_func check while creating RoCE FW channel
-Date:   Fri,  9 Jun 2023 04:01:40 -0700
-Message-Id: <1686308514-11996-4-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH v2 for-next 04/17] RDMA/bnxt_re: set fixed command queue depth
+Date:   Fri,  9 Jun 2023 04:01:41 -0700
+Message-Id: <1686308514-11996-5-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007b088b05fdb078ed"
+        boundary="000000000000a7c8e905fdb07832"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,114 +68,72 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000007b088b05fdb078ed
+--000000000000a7c8e905fdb07832
 
 From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-There is a common FW communication offset for both PF and VF.
-Removed code around virt_fn check while creating FW channel.
+There is no need of setting max command queue entries based on
+firmware version check.
+
+Removing deperecated code.
 
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c       |  2 +-
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 15 ++++++---------
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  5 ++---
- 3 files changed, 9 insertions(+), 13 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 6 ++----
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h | 7 ++-----
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 4718af6..51372de 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1202,7 +1202,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 	db_offt = bnxt_re_get_nqdb_offset(rdev, BNXT_RE_AEQ_IDX);
- 	vid = rdev->en_dev->msix_entries[BNXT_RE_AEQ_IDX].vector;
- 	rc = bnxt_qplib_enable_rcfw_channel(&rdev->rcfw,
--					    vid, db_offt, rdev->is_virtfn,
-+					    vid, db_offt,
- 					    &bnxt_re_aeq_handler);
- 	if (rc) {
- 		ibdev_err(&rdev->ibdev, "Failed to enable RCFW channel: %#x\n",
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index c11b8e7..67140eb 100644
+index 67140eb..66121fb 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -724,13 +724,11 @@ int bnxt_qplib_rcfw_start_irq(struct bnxt_qplib_rcfw *rcfw, int msix_vector,
- 	return 0;
- }
- 
--static int bnxt_qplib_map_cmdq_mbox(struct bnxt_qplib_rcfw *rcfw, bool is_vf)
-+static int bnxt_qplib_map_cmdq_mbox(struct bnxt_qplib_rcfw *rcfw)
- {
- 	struct bnxt_qplib_cmdq_mbox *mbox;
- 	resource_size_t bar_reg;
- 	struct pci_dev *pdev;
--	u16 prod_offt;
--	int rc = 0;
- 
- 	pdev = rcfw->pdev;
- 	mbox = &rcfw->cmdq.cmdq_mbox;
-@@ -755,11 +753,10 @@ static int bnxt_qplib_map_cmdq_mbox(struct bnxt_qplib_rcfw *rcfw, bool is_vf)
- 		return -ENOMEM;
+@@ -600,10 +600,8 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
+ 			"HW channel CREQ allocation failed\n");
+ 		goto fail;
  	}
+-	if (ctx->hwrm_intf_ver < HWRM_VERSION_RCFW_CMDQ_DEPTH_CHECK)
+-		rcfw->cmdq_depth = BNXT_QPLIB_CMDQE_MAX_CNT_256;
+-	else
+-		rcfw->cmdq_depth = BNXT_QPLIB_CMDQE_MAX_CNT_8192;
++
++	rcfw->cmdq_depth = BNXT_QPLIB_CMDQE_MAX_CNT;
  
--	prod_offt = is_vf ? RCFW_VF_COMM_PROD_OFFSET :
--			    RCFW_PF_COMM_PROD_OFFSET;
--	mbox->prod = (void  __iomem *)(mbox->reg.bar_reg + prod_offt);
-+	mbox->prod = (void  __iomem *)(mbox->reg.bar_reg +
-+			RCFW_PF_VF_COMM_PROD_OFFSET);
- 	mbox->db = (void __iomem *)(mbox->reg.bar_reg + RCFW_COMM_TRIG_OFFSET);
--	return rc;
-+	return 0;
- }
- 
- static int bnxt_qplib_map_creq_db(struct bnxt_qplib_rcfw *rcfw, u32 reg_offt)
-@@ -820,7 +817,7 @@ static void bnxt_qplib_start_rcfw(struct bnxt_qplib_rcfw *rcfw)
- 
- int bnxt_qplib_enable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw,
- 				   int msix_vector,
--				   int cp_bar_reg_off, int virt_fn,
-+				   int cp_bar_reg_off,
- 				   aeq_handler_t aeq_handler)
- {
- 	struct bnxt_qplib_cmdq_ctx *cmdq;
-@@ -840,7 +837,7 @@ int bnxt_qplib_enable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw,
- 	creq->stats.creq_func_event_processed = 0;
- 	creq->aeq_handler = aeq_handler;
- 
--	rc = bnxt_qplib_map_cmdq_mbox(rcfw, virt_fn);
-+	rc = bnxt_qplib_map_cmdq_mbox(rcfw);
- 	if (rc)
- 		return rc;
- 
+ 	sginfo.pgsize = bnxt_qplib_cmdqe_page_size(rcfw->cmdq_depth);
+ 	hwq_attr.depth = rcfw->cmdq_depth & 0x7FFFFFFF;
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-index 92f7a25..0dff56e 100644
+index 0dff56e..32e5b67 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-@@ -45,8 +45,7 @@
- #define RCFW_COMM_PCI_BAR_REGION	0
- #define RCFW_COMM_CONS_PCI_BAR_REGION	2
- #define RCFW_COMM_BASE_OFFSET		0x600
--#define RCFW_PF_COMM_PROD_OFFSET	0xc
--#define RCFW_VF_COMM_PROD_OFFSET	0xc
-+#define RCFW_PF_VF_COMM_PROD_OFFSET	0xc
- #define RCFW_COMM_TRIG_OFFSET		0x100
- #define RCFW_COMM_SIZE			0x104
+@@ -69,8 +69,7 @@ static inline void bnxt_qplib_rcfw_cmd_prep(struct cmdq_base *req,
+ #define RCFW_CMD_WAIT_TIME_MS		20000 /* 20 Seconds timeout */
  
-@@ -235,7 +234,7 @@ int bnxt_qplib_rcfw_start_irq(struct bnxt_qplib_rcfw *rcfw, int msix_vector,
- 			      bool need_init);
- int bnxt_qplib_enable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw,
- 				   int msix_vector,
--				   int cp_bar_reg_off, int virt_fn,
-+				   int cp_bar_reg_off,
- 				   aeq_handler_t aeq_handler);
+ /* CMDQ elements */
+-#define BNXT_QPLIB_CMDQE_MAX_CNT_256	256
+-#define BNXT_QPLIB_CMDQE_MAX_CNT_8192	8192
++#define BNXT_QPLIB_CMDQE_MAX_CNT	8192
+ #define BNXT_QPLIB_CMDQE_BYTES(depth)	((depth) * BNXT_QPLIB_CMDQE_UNITS)
  
- struct bnxt_qplib_rcfw_sbuf *bnxt_qplib_rcfw_alloc_sbuf(
+ static inline u32 bnxt_qplib_cmdqe_npages(u32 depth)
+@@ -105,12 +104,10 @@ static inline u32 bnxt_qplib_set_cmd_slots(struct cmdq_base *req)
+ 	return cmd_byte;
+ }
+ 
+-#define RCFW_MAX_COOKIE_VALUE		0x7FFF
++#define RCFW_MAX_COOKIE_VALUE		(BNXT_QPLIB_CMDQE_MAX_CNT - 1)
+ #define RCFW_CMD_IS_BLOCKING		0x8000
+ #define RCFW_BLOCKED_CMD_WAIT_COUNT	20000000UL /* 20 sec */
+ 
+-#define HWRM_VERSION_RCFW_CMDQ_DEPTH_CHECK 0x1000900020011ULL
+-
+ /* Crsq buf is 1024-Byte */
+ struct bnxt_qplib_crsbe {
+ 	u8			data[1024];
 -- 
 2.5.5
 
 
---0000000000007b088b05fdb078ed
+--000000000000a7c8e905fdb07832
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -246,14 +204,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMNtqfYWpN90
-0QENwFxZK0wlqVoOPicRHI5SEKf0cfuqMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwOTExMTQyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIj4QKpyG9nK
+seWL0OGN1xQXHyITZbOn/lTnTr8JxtFRMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYwOTExMTQyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAv66JOyIKmdYdDqgE6lcomZw05uOo4
-rcG1WESUBxR+HEcdKLvXlChatM2g4GPmVaUowuypLRc621VJvovsvBsDtH1YM2HvefMnegTuc8VT
-xT1/9NYmR5f9qT2QJ5HnZ0OoJxhdJB1X1uv07d7MCHMxAPHV5zkZ1JdBWVpGpIWfRdaRHRyM5I2o
-uhEmLQd6Yy2zOL5AaWDlNDtem81Jt1PR2rkoFYgYUEJptkCEIEqI6VuvhfqH0al/IiXakFe5LUon
-ooYM3Fe8J62Mq+/pSzGXzSx7SQywEWZvrnIV9dR6NDHyUVX12cz1Pf5wEFLTuvaW2hC7cM6WiY3P
-rzcruSJt
---0000000000007b088b05fdb078ed--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDa2beYrXp5vd7N8EW1MJ4IAdAYaTJW
+saz7w07D2fI3rFPGZA+m4pO/LCRbovz9nT1BSmC7WezwqUZeO0A4jne7p5NNyVlpBxdeC5sc5QKr
+2Qotv1xL5/gf0mI1bEsOUPVUfg5bznBgwuQWxnNYZ3VPPb+9aDOStgHxQLWyLwc1NItxN+atxEa8
+L1ObpPA27JqBpVuktTRCgcnDB1ChJaX0Wmqa1jNfTIJTDWNiIgG8QV/Rcps4eNiFs7jM+swFeZM5
+05Qbg7YBNCTFxcLUDAquqDOwk4qgmqN0SCcZ7UMUEIGgXpr5ujIjvwB6/Ia4wq3WYCR494c+m9e0
+sNuTFojj
+--000000000000a7c8e905fdb07832--
