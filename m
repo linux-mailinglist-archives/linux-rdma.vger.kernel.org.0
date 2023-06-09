@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9CD7297F5
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2327297F6
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238052AbjFILOj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 07:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57504 "EHLO
+        id S229776AbjFILPM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 07:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238846AbjFILOf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:14:35 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400BB2715
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:27 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b01d912924so6856625ad.1
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:27 -0700 (PDT)
+        with ESMTP id S236561AbjFILOq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:14:46 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4138D2737
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:30 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b2439e9004so5256875ad.3
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686309266; x=1688901266;
+        d=broadcom.com; s=google; t=1686309270; x=1688901270;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=FX/rkXjLmrdSdsV7/KzhYydiHsIUhKpcbDYGjbR+zc0=;
-        b=TfhLtYMk6PoysYYJUeaIxrQ2L1+Iek0FGgUB2Eez+hFXy4AcBJrwv1NCR9irAF/gNI
-         ol6p5rqDAv6yowP0uO5nRXr+8PQ4ZsTHlpVpSKaeqct9Gx1TzgxgdTfo/dAVNkJSWINk
-         WHwc/PzYy5Vg3NtXCxiBDN8imEC6bWv3TnGc4=
+        bh=1goHtNkDhbstCc5HCdOWnRrRV63nLY8Bax+1w3aZqg8=;
+        b=fHWV+29XjKnzUBq36DR7VSwEpmR1QAkoYciw+UeYBzZ8KsUJQaLxnsCdvgnpuTwATy
+         xbd2OcFXGQB3xBGxSujGITGyMesoyEuFecEumWqTWDK2EGHtZBtF1QfBlZzXPOgWo6+y
+         q4oVcqYIKPt6tjWAxs2g4By6IJvcZUcyC3wYc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686309266; x=1688901266;
+        d=1e100.net; s=20221208; t=1686309270; x=1688901270;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FX/rkXjLmrdSdsV7/KzhYydiHsIUhKpcbDYGjbR+zc0=;
-        b=eQ1fXPIEZjSwkAqzMY7LDeiwzGXJfijr6ta8A7wbvXNPreqKozduwaaqODKJSTInuz
-         Tnn+jM/x71MYuuEweznhBhmCPfypNXT1pS2Nmj8cuIiy0Vis/6qpedi48RYWlq2AObep
-         l7cHy5VtcsnitoKfXUkP8GFlRj8t8FNHjqZLAHub4TUbumxYBLA+mbSSY1SXczsSBipw
-         K6n10sMl7ZLWhUvfHpOZlJKga3YIOmOyve8jFgCt0As5QEfEFQ/xxpCwAa41N2oO72YK
-         LjmlcQcgvDfZyqj5plYoYrs9kwReKS2UHuh5YGzMgODYp2sD37/VAn7SqjCrsFgNA0L2
-         zGQg==
-X-Gm-Message-State: AC+VfDzSf/by6t6m7spd7fEM8rbDoEt+gQ5i7XjXWHU89WLiJlPsV/0m
-        E/3utMoAhkQA2telPfabvL0xyw==
-X-Google-Smtp-Source: ACHHUZ4U8zv3RcQq8POU+Q7rbqqLwMqwjYjOAwK+dCB9YWJEwWk8+CEY18wYjCHdVRHDQNnNfZeytA==
-X-Received: by 2002:a17:902:e88c:b0:1b0:f8:9b2d with SMTP id w12-20020a170902e88c00b001b000f89b2dmr1278103plg.29.1686309266379;
-        Fri, 09 Jun 2023 04:14:26 -0700 (PDT)
+        bh=1goHtNkDhbstCc5HCdOWnRrRV63nLY8Bax+1w3aZqg8=;
+        b=LPzQdnTQU35GJqm264WL/N3ZjgL5KyC4vbbJZhBi1ExeYVY6VquSk2QF1dxYlS1z50
+         voXU8bq838bszNUG+GVrdDDAuJqrXU/dSoIdyE4FbNglttn9G+T6ZbJLi0UOhh/IIaCP
+         Z11mkuz0ZmgTmlVBS9vhxJj9V0HfVVLaGOIHl4g2n/A0ILueA4XcnV6By4rhDPy/HVST
+         L5H00aV1AIEh3RhzY78SFxywUaTNy5xgLqJzJw437+f0ZXWPCeLEBNRf/leREGiu9hnK
+         yvL3ayUf44apOYG1uUqx76dnh2ngYqq0+T/jXVGBxHBAznndC3uhW8TRRs0Vp3U0s3vL
+         vMmg==
+X-Gm-Message-State: AC+VfDwMoA9oD/bS9BCFKMEXllBKVxhDgYM9G5Zh1kpfQ5GJe/AR7zsP
+        spkYeMdhPCajdueWpqWYSPRfLFeSfoh80fQIauA=
+X-Google-Smtp-Source: ACHHUZ75CiD00bnGEac0ClaapyzPI3IFZped8FLqZFcAlFD0YQUuFwnL5BP0yRUoKqrnhZ9zNhILUg==
+X-Received: by 2002:a17:902:db0d:b0:1b1:e88b:f63 with SMTP id m13-20020a170902db0d00b001b1e88b0f63mr805202plx.61.1686309269709;
+        Fri, 09 Jun 2023 04:14:29 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.23
+        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jun 2023 04:14:25 -0700 (PDT)
+        Fri, 09 Jun 2023 04:14:28 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         kashyap.desai@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v2 for-next 05/17] RDMA/bnxt_re: Enhance the existing functions that wait for FW responses
-Date:   Fri,  9 Jun 2023 04:01:42 -0700
-Message-Id: <1686308514-11996-6-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH v2 for-next 06/17] RDMA/bnxt_re: Avoid the command wait if firmware is inactive
+Date:   Fri,  9 Jun 2023 04:01:43 -0700
+Message-Id: <1686308514-11996-7-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000d34fc905fdb0781a"
+        boundary="00000000000005ad6c05fdb0795b"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,121 +68,135 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000d34fc905fdb0781a
+--00000000000005ad6c05fdb0795b
 
 From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-Use jiffies based timewait instead of counting iteration for
-commands that block for FW response.
-
-Also add a poll routine for control path commands. This is for
-polling completion if the waiting commands timeout. This avoids cases
-where the driver misses completion interrupts.
+Add a check to avoid waiting if driver already detects a
+FW timeout. Return success for resource destroy in case
+the device is detached. Add helper function to map timeout
+error code to success.
 
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 65 +++++++++++++++++++++++-------
- 1 file changed, 51 insertions(+), 14 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 52 +++++++++++++++++++++++++++---
+ 1 file changed, 48 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 66121fb..3b242cc 100644
+index 3b242cc..3c4f72a 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -53,37 +53,74 @@
- 
+@@ -54,9 +54,46 @@
  static void bnxt_qplib_service_creq(struct tasklet_struct *t);
  
--/* Hardware communication channel */
-+/**
-+ * __wait_for_resp   -	Don't hold the cpu context and wait for response
-+ * @rcfw      -   rcfw channel instance of rdev
-+ * @cookie    -   cookie to track the command
+ /**
++ * bnxt_qplib_map_rc  -  map return type based on opcode
++ * @opcode    -  roce slow path opcode
 + *
-+ * Wait for command completion in sleepable context.
++ * In some cases like firmware halt is detected, the driver is supposed to
++ * remap the error code of the timed out command.
++ *
++ * It is not safe to assume hardware is really inactive so certain opcodes
++ * like destroy qp etc are not safe to be returned success, but this function
++ * will be called when FW already reports a timeout. This would be possible
++ * only when FW crashes and resets. This will clear all the HW resources.
 + *
 + * Returns:
-+ * 0 if command is completed by firmware.
-+ * Non zero error code for rest of the case.
++ * 0 to communicate success to caller.
++ * Non zero error code to communicate failure to caller.
 + */
- static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
++static int bnxt_qplib_map_rc(u8 opcode)
++{
++	switch (opcode) {
++	case CMDQ_BASE_OPCODE_DESTROY_QP:
++	case CMDQ_BASE_OPCODE_DESTROY_SRQ:
++	case CMDQ_BASE_OPCODE_DESTROY_CQ:
++	case CMDQ_BASE_OPCODE_DEALLOCATE_KEY:
++	case CMDQ_BASE_OPCODE_DEREGISTER_MR:
++	case CMDQ_BASE_OPCODE_DELETE_GID:
++	case CMDQ_BASE_OPCODE_DESTROY_QP1:
++	case CMDQ_BASE_OPCODE_DESTROY_AH:
++	case CMDQ_BASE_OPCODE_DEINITIALIZE_FW:
++	case CMDQ_BASE_OPCODE_MODIFY_ROCE_CC:
++	case CMDQ_BASE_OPCODE_SET_LINK_AGGR_MODE:
++		return 0;
++	default:
++		return -ETIMEDOUT;
++	}
++}
++
++/**
+  * __wait_for_resp   -	Don't hold the cpu context and wait for response
+  * @rcfw      -   rcfw channel instance of rdev
+  * @cookie    -   cookie to track the command
++ * @opcode    -   rcfw submitted for given opcode
+  *
+  * Wait for command completion in sleepable context.
+  *
+@@ -64,7 +101,7 @@ static void bnxt_qplib_service_creq(struct tasklet_struct *t);
+  * 0 if command is completed by firmware.
+  * Non zero error code for rest of the case.
+  */
+-static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
++static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
  {
  	struct bnxt_qplib_cmdq_ctx *cmdq;
  	u16 cbit;
--	int rc;
-+	int ret;
- 
- 	cmdq = &rcfw->cmdq;
+@@ -74,6 +111,9 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
  	cbit = cookie % rcfw->cmdq_depth;
--	rc = wait_event_timeout(cmdq->waitq,
--				!test_bit(cbit, cmdq->cmdq_bitmap),
--				msecs_to_jiffies(RCFW_CMD_WAIT_TIME_MS));
--	return rc ? 0 : -ETIMEDOUT;
-+
-+	do {
-+		/* Non zero means command completed */
-+		ret = wait_event_timeout(cmdq->waitq,
-+					 !test_bit(cbit, cmdq->cmdq_bitmap),
-+					 msecs_to_jiffies(10000));
-+
-+		if (!test_bit(cbit, cmdq->cmdq_bitmap))
-+			return 0;
-+
-+		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
-+
-+		if (!test_bit(cbit, cmdq->cmdq_bitmap))
-+			return 0;
-+
-+	} while (true);
- };
  
-+/**
-+ * __block_for_resp   -	hold the cpu context and wait for response
-+ * @rcfw      -   rcfw channel instance of rdev
-+ * @cookie    -   cookie to track the command
-+ *
-+ * This function will hold the cpu (non-sleepable context) and
-+ * wait for command completion. Maximum holding interval is 8 second.
-+ *
-+ * Returns:
-+ * -ETIMEOUT if command is not completed in specific time interval.
-+ * 0 if command is completed by firmware.
-+ */
- static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
- {
--	u32 count = RCFW_BLOCKED_CMD_WAIT_COUNT;
--	struct bnxt_qplib_cmdq_ctx *cmdq;
-+	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
-+	unsigned long issue_time = 0;
- 	u16 cbit;
- 
--	cmdq = &rcfw->cmdq;
- 	cbit = cookie % rcfw->cmdq_depth;
--	if (!test_bit(cbit, cmdq->cmdq_bitmap))
--		goto done;
-+	issue_time = jiffies;
-+
  	do {
- 		udelay(1);
++		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
++			return bnxt_qplib_map_rc(opcode);
 +
- 		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
--	} while (test_bit(cbit, cmdq->cmdq_bitmap) && --count);
--done:
--	return count ? 0 : -ETIMEDOUT;
-+		if (!test_bit(cbit, cmdq->cmdq_bitmap))
-+			return 0;
-+
-+	} while (time_before(jiffies, issue_time + (8 * HZ)));
-+
-+	return -ETIMEDOUT;
- };
+ 		/* Non zero means command completed */
+ 		ret = wait_event_timeout(cmdq->waitq,
+ 					 !test_bit(cbit, cmdq->cmdq_bitmap),
+@@ -94,6 +134,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
+  * __block_for_resp   -	hold the cpu context and wait for response
+  * @rcfw      -   rcfw channel instance of rdev
+  * @cookie    -   cookie to track the command
++ * @opcode    -   rcfw submitted for given opcode
+  *
+  * This function will hold the cpu (non-sleepable context) and
+  * wait for command completion. Maximum holding interval is 8 second.
+@@ -102,7 +143,7 @@ static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
+  * -ETIMEOUT if command is not completed in specific time interval.
+  * 0 if command is completed by firmware.
+  */
+-static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
++static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
+ {
+ 	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
+ 	unsigned long issue_time = 0;
+@@ -112,6 +153,9 @@ static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
+ 	issue_time = jiffies;
  
- static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	do {
++		if (test_bit(ERR_DEVICE_DETACHED, &cmdq->flags))
++			return bnxt_qplib_map_rc(opcode);
++
+ 		udelay(1);
+ 
+ 		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
+@@ -267,9 +311,9 @@ int bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	} while (retry_cnt--);
+ 
+ 	if (msg->block)
+-		rc = __block_for_resp(rcfw, cookie);
++		rc = __block_for_resp(rcfw, cookie, opcode);
+ 	else
+-		rc = __wait_for_resp(rcfw, cookie);
++		rc = __wait_for_resp(rcfw, cookie, opcode);
+ 	if (rc) {
+ 		/* timed out */
+ 		dev_err(&rcfw->pdev->dev, "cmdq[%#x]=%#x timedout (%d)msec\n",
 -- 
 2.5.5
 
 
---000000000000d34fc905fdb0781a
+--00000000000005ad6c05fdb0795b
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -253,14 +267,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKOEc0rMB7dU
-3XLg83/zag2YLQBPu4SZEBhbYV2QbeoiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwOTExMTQyNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAWZQwMb0XYW
+q8TaMwJwefya2wAyG06bKLU2j0A0BxU/MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYwOTExMTQzMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAilKnMwjKw4DZ1WPqcc0CTigI1niMS
-3eJWqFg1WzLi2AbzHIz0HlBCrBAfdX/QAPbNg/a/a72e6l7xJit6koxX6sr1Y7blH4PR9gyQbveO
-zx6L4IMObC9+w7mnViAQGNDUqcjkK1HhpGFubHjbaMt+FK93Zb8lUPFUzTymKBgQSJDVeLfZjj9t
-N9wnAOiccwIpp3yKglimpQprAjIPn3AT/QUSwyLJOCzPlUMSsHZj7/tbbvTDwNyGS9vhJtWGkC6Z
-O11WWeFK2tjt1QOosafq8QrON+/45oxIgoBLvvYHayo/8wLrZu7ApgQRH+Y1dqZ4AG7MIirS65QV
-nDGq9MVs
---000000000000d34fc905fdb0781a--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCcNnCVYMtzbTjMte//AW05fG5GuFGL
+5moOnTnHf28ld2ZM2rIcQPMmV5Hi+0uHfvcy1W19K5RQaVrp6NBey2tcPjEQpbxXXTpoY01uUGf8
+zGmJ49LzM5rzWzqH/tBiEnDv+/lz3vHxAtjCjsEv9dti+oOTTCdPN0GR8/vYQuIji1KtOPqH0QmB
+3azoF1apbnsFyO80xVQ/DkzSrQ7bubTczPOqIDYQ3xvGcpiNXE5HttW4tKcWnmoCdSdpYZv4x9xh
+alLvRctuNtx6WYv91Eu8uF13BJllf2Xah/yie0eQwVbXVmG52i53w8pA74yZW3lJUam4TnNd5tZp
+D5KyILho
+--00000000000005ad6c05fdb0795b--
