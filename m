@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EA07297FC
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95AD17297FD
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238318AbjFILPS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 07:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58030 "EHLO
+        id S239375AbjFILPT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 07:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240018AbjFILPI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:15:08 -0400
+        with ESMTP id S231197AbjFILPN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:15:13 -0400
 Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB20B30F6
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:46 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b04949e5baso6708275ad.0
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8575535B6
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:49 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b00ecabdf2so6791775ad.2
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686309286; x=1688901286;
+        d=broadcom.com; s=google; t=1686309288; x=1688901288;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=PUmlB0j/Ek1X9jpopE1ToLHMxPQfFuk6bWiWHxuFBlY=;
-        b=WOlA28kCndbPsiohfzxQ9XWhyxfNv9jFrAW+bdsgvF+1HyVpweT0qPZKNNL4pprckP
-         4sNq/S/c+X8xsiYd+ygFxBmafhA73Eb23Zg9RRq+a6huxo1PqI411ntFHNFdtK68c6/z
-         nlmbqbDe3cbETupZGw+eYEZ7ZG322tCPg0jlk=
+        bh=++DMdAHBYE7RZ0lqnHF/6Mw2elO8ZlwSwA0fC7++qXc=;
+        b=J1pPL86sqPsXPEWgrldT+c0ovah9ErrCMRXFjeE+xCyWY0+PsNY1Y0HmDP8ryD7GYC
+         /RwubgUPR/myWnrIWX3tmoevHg5945XbC/4XnXLRE08w8WZHOzggH2+2oqjHGN0hgzpX
+         yMOAxncK2ZE8dvX+mOCXj1nSdwDRS7SGFuFNA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686309286; x=1688901286;
+        d=1e100.net; s=20221208; t=1686309288; x=1688901288;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PUmlB0j/Ek1X9jpopE1ToLHMxPQfFuk6bWiWHxuFBlY=;
-        b=gXIEb8VpS8mwk/vSNOYgOaR4yNWaOVYfB/a+b7+LpvPBjWyTsBfugaC0PWMycmOFFP
-         l4A+cY/iosyIoEgDrdSCUftsSR6zaXMI31437N3NK7QIyDbUc2iqxriwFnAKbUJYjdim
-         TumGORm1gPjV0+C/JaNDH3MnmZb5h5sJIY2tLcJqiRgUCSznQu0c9V7YSDkKv1RWnJsN
-         t6FcirHR0a8BXKiWXgssQcPl6voixsU1enwZZ9RExAqRutSxktBVWgz7dcu+pJpAk1Yn
-         VhcJKXinaFIFHDaxiQqrdELdpfFHTNm/LdPdgs6M0xPWg7CmM5LBdHeHczBPiaYnvEks
-         5cgQ==
-X-Gm-Message-State: AC+VfDyQdiEHOzcjVPRB/jj/d//9a6Eye/iaG0jw4QxeGSfhVBlAs6vF
-        cbHuQlHINHSB4Cci+vKPkjuMKw==
-X-Google-Smtp-Source: ACHHUZ6g3iDGQ963epvCPGyTi+DaNVn9e19ZTHkZ2M7EmvigwE0ha37XjABknbGS0XkfO5a9mdwgNA==
-X-Received: by 2002:a17:902:c941:b0:1b2:1a79:147d with SMTP id i1-20020a170902c94100b001b21a79147dmr1136255pla.2.1686309286026;
-        Fri, 09 Jun 2023 04:14:46 -0700 (PDT)
+        bh=++DMdAHBYE7RZ0lqnHF/6Mw2elO8ZlwSwA0fC7++qXc=;
+        b=BIfpprmeJpbBGBgG+L6x/3x0CzC7ngXmPJXtqMAOhHicOa7QUzXwzUz9f/b5qa8sIX
+         ksyT39bAP74sCvr19P5+xdFGggP2Tmxe7ohWCewF/q1eaRffQ+ErdZWnFaKl4u1kBwCu
+         eSc+Os1Ddy+KydEjyZNWDinJuBzph9QieEt1ML63mkB+ZelzKQvKGCrIuMZSq6xDb8j5
+         cxZtD2OUtAKy4rKWO4WWOjBz+9yeH8YmItTWEj5YJ8LDy4fynbi4NuF/f/6Sigb/Na6M
+         6E7hvAcj2p+hnlzbU2srebY+Tag9Lvf/pFl5P0k3guV1/xKFXG7B1wEcO4f31mYfYUrE
+         xPjg==
+X-Gm-Message-State: AC+VfDzCVWeI79kz/5CJWaSOYzwXytxdfFudXtYv4HkYpKCM9oU9ACKk
+        fqbe2+mRO/OdM3U3JLCLNG+TVA==
+X-Google-Smtp-Source: ACHHUZ5uLRYlQpE9cwJjQ0/MbDepouo7Q90zqaewURIb+F1XK328yQSws8FqzX+iOcC+5tvG/OC9DQ==
+X-Received: by 2002:a17:903:244f:b0:1b0:41fb:4ad5 with SMTP id l15-20020a170903244f00b001b041fb4ad5mr1041594pls.46.1686309288614;
+        Fri, 09 Jun 2023 04:14:48 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.43
+        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.46
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jun 2023 04:14:45 -0700 (PDT)
+        Fri, 09 Jun 2023 04:14:47 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         kashyap.desai@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v2 for-next 12/17] RDMA/bnxt_re: post destroy_ah for delayed completion of AH creation
-Date:   Fri,  9 Jun 2023 04:01:49 -0700
-Message-Id: <1686308514-11996-13-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH v2 for-next 13/17] RDMA/bnxt_re: consider timeout of destroy ah as success.
+Date:   Fri,  9 Jun 2023 04:01:50 -0700
+Message-Id: <1686308514-11996-14-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000ff333a05fdb079b4"
+        boundary="000000000000260f5d05fdb07a30"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,207 +68,120 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000ff333a05fdb079b4
+--000000000000260f5d05fdb07a30
 
 From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-AH create may be called from interrpt context and driver has a special
-timeout (8 sec) for this command. This is to avoid soft lockups when
-the FW command takes more time. Driver returns -ETIMEOUT and fail
-create AH, without waiting for actual completion from firmware.
-When FW completion is received, use is_waiter_alive flag to avoid
-a regular completion path.
+If destroy_ah is timed out, it is likely to be destroyed by firmware
+but it is taking longer time due to temporary slowness
+in processing the rcfw command. In worst case, there might be
+AH resource leak in firmware.
 
-If create_ah opcode is detected in completion path which does not have
-waiter alive, driver will fetch ah_id from successful firmware
-completion in the interrupt context and sends destroy_ah command
-for same ah_id. This special post is done in quick manner using helper
-function __send_message_no_waiter.
-
-timeout_send is only used for debugging purposes.
-If timeout_send value keeps incrementing, it indicates out of sync
-active ah counter between driver and firmware. This is a limitation
-but graceful handling is possible in future.
+Sending timeout return value can dump warning message from ib_core
+which can be avoided if we map timeout of destroy_ah as success.
 
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 108 +++++++++++++++++++++++++++++
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |   2 +
- 2 files changed, 110 insertions(+)
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  2 ++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 16 ++++++++++++----
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c |  8 +++++---
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h |  4 ++--
+ 4 files changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 349fbed..8dd8216 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -175,6 +175,73 @@ static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie, u8 opcode)
- 	return -ETIMEDOUT;
- };
+diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+index 5a2baf4..f34fb87 100644
+--- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
++++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+@@ -181,6 +181,8 @@ struct bnxt_re_dev {
+ #define BNXT_RE_ROCEV2_IPV4_PACKET	2
+ #define BNXT_RE_ROCEV2_IPV6_PACKET	3
  
-+/*  __send_message_no_waiter -	get cookie and post the message.
-+ * @rcfw      -   rcfw channel instance of rdev
-+ * @msg      -    qplib message internal
-+ *
-+ * This function will just post and don't bother about completion.
-+ * Current design of this function is -
-+ * user must hold the completion queue hwq->lock.
-+ * user must have used existing completion and free the resources.
-+ * this function will not check queue full condition.
-+ * this function will explicitly set is_waiter_alive=false.
-+ * current use case is - send destroy_ah if create_ah is return
-+ * after waiter of create_ah is lost. It can be extended for other
-+ * use case as well.
-+ *
-+ * Returns: Nothing
-+ *
-+ */
-+static void __send_message_no_waiter(struct bnxt_qplib_rcfw *rcfw,
-+				     struct bnxt_qplib_cmdqmsg *msg)
-+{
-+	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
-+	struct bnxt_qplib_hwq *hwq = &cmdq->hwq;
-+	struct bnxt_qplib_crsqe *crsqe;
-+	struct bnxt_qplib_cmdqe *cmdqe;
-+	u32 sw_prod, cmdq_prod;
-+	u16 cookie, cbit;
-+	u32 bsize;
-+	u8 *preq;
++#define BNXT_RE_CHECK_RC(x) ((x) && ((x) != -ETIMEDOUT))
 +
-+	cookie = cmdq->seq_num & RCFW_MAX_COOKIE_VALUE;
-+	cbit = cookie % rcfw->cmdq_depth;
-+
-+	set_bit(cbit, cmdq->cmdq_bitmap);
-+	__set_cmdq_base_cookie(msg->req, msg->req_sz, cpu_to_le16(cookie));
-+	crsqe = &rcfw->crsqe_tbl[cbit];
-+
-+	/* Set cmd_size in terms of 16B slots in req. */
-+	bsize = bnxt_qplib_set_cmd_slots(msg->req);
-+	/* GET_CMD_SIZE would return number of slots in either case of tlv
-+	 * and non-tlv commands after call to bnxt_qplib_set_cmd_slots()
-+	 */
-+	crsqe->is_internal_cmd = true;
-+	crsqe->is_waiter_alive = false;
-+	crsqe->req_size = __get_cmdq_base_cmd_size(msg->req, msg->req_sz);
-+
-+	preq = (u8 *)msg->req;
-+	do {
-+		/* Locate the next cmdq slot */
-+		sw_prod = HWQ_CMP(hwq->prod, hwq);
-+		cmdqe = bnxt_qplib_get_qe(hwq, sw_prod, NULL);
-+		/* Copy a segment of the req cmd to the cmdq */
-+		memset(cmdqe, 0, sizeof(*cmdqe));
-+		memcpy(cmdqe, preq, min_t(u32, bsize, sizeof(*cmdqe)));
-+		preq += min_t(u32, bsize, sizeof(*cmdqe));
-+		bsize -= min_t(u32, bsize, sizeof(*cmdqe));
-+		hwq->prod++;
-+	} while (bsize > 0);
-+	cmdq->seq_num++;
-+
-+	cmdq_prod = hwq->prod;
-+	atomic_inc(&rcfw->timeout_send);
-+	/* ring CMDQ DB */
-+	wmb();
-+	writel(cmdq_prod, cmdq->cmdq_mbox.prod);
-+	writel(RCFW_CMDQ_TRIG_VAL, cmdq->cmdq_mbox.db);
-+}
-+
- static int __send_message(struct bnxt_qplib_rcfw *rcfw,
- 			  struct bnxt_qplib_cmdqmsg *msg)
+ static inline struct device *rdev_to_dev(struct bnxt_re_dev *rdev)
  {
-@@ -219,6 +286,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
- 	crsqe->free_slots = free_slots;
- 	crsqe->resp = (struct creq_qp_event *)msg->resp;
- 	crsqe->resp->cookie = cpu_to_le16(cookie);
-+	crsqe->is_internal_cmd = false;
- 	crsqe->is_waiter_alive = true;
- 	crsqe->req_size = __get_cmdq_base_cmd_size(msg->req, msg->req_sz);
- 	if (__get_cmdq_base_resp_size(msg->req, msg->req_sz) && msg->sb) {
-@@ -343,6 +411,26 @@ static int __send_message_basic_sanity(struct bnxt_qplib_rcfw *rcfw,
+ 	if (rdev)
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index e86afec..053afc9 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -613,12 +613,20 @@ int bnxt_re_destroy_ah(struct ib_ah *ib_ah, u32 flags)
+ {
+ 	struct bnxt_re_ah *ah = container_of(ib_ah, struct bnxt_re_ah, ib_ah);
+ 	struct bnxt_re_dev *rdev = ah->rdev;
++	bool block = true;
++	int rc = 0;
+ 
+-	bnxt_qplib_destroy_ah(&rdev->qplib_res, &ah->qplib_ah,
+-			      !(flags & RDMA_DESTROY_AH_SLEEPABLE));
++	block = !(flags & RDMA_DESTROY_AH_SLEEPABLE);
++	rc = bnxt_qplib_destroy_ah(&rdev->qplib_res, &ah->qplib_ah, block);
++	if (BNXT_RE_CHECK_RC(rc)) {
++		if (rc == -ETIMEDOUT)
++			rc = 0;
++		else
++			goto fail;
++	}
+ 	atomic_dec(&rdev->ah_count);
+-
+-	return 0;
++fail:
++	return rc;
+ }
+ 
+ static u8 bnxt_re_stack_to_dev_nw_type(enum rdma_network_type ntype)
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+index dbb0e4e..910d17d 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+@@ -460,13 +460,14 @@ int bnxt_qplib_create_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
  	return 0;
  }
  
-+/* This function will just post and do not bother about completion */
-+static void __destroy_timedout_ah(struct bnxt_qplib_rcfw *rcfw,
-+				  struct creq_create_ah_resp *create_ah_resp)
-+{
-+	struct bnxt_qplib_cmdqmsg msg = {};
-+	struct cmdq_destroy_ah req = {};
-+
-+	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
-+				 CMDQ_BASE_OPCODE_DESTROY_AH,
-+				 sizeof(req));
-+	req.ah_cid = create_ah_resp->xid;
-+	msg.req = (struct cmdq_base *)&req;
-+	msg.req_sz = sizeof(req);
-+	__send_message_no_waiter(rcfw, &msg);
-+	dev_info_ratelimited(&rcfw->pdev->dev,
-+			     "From %s: ah_cid = %d timeout_send %d\n",
-+			     __func__, req.ah_cid,
-+			     atomic_read(&rcfw->timeout_send));
-+}
-+
- /**
-  * __bnxt_qplib_rcfw_send_message   -	qplib interface to send
-  * and complete rcfw command.
-@@ -563,6 +651,8 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
- 		if (!test_and_clear_bit(cbit, rcfw->cmdq.cmdq_bitmap))
- 			dev_warn(&pdev->dev,
- 				 "CMD bit %d was not requested\n", cbit);
-+		if (crsqe->is_internal_cmd && !qp_event->status)
-+			atomic_dec(&rcfw->timeout_send);
+-void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
+-			   bool block)
++int bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
++			  bool block)
+ {
+ 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
+ 	struct creq_destroy_ah_resp resp = {};
+ 	struct bnxt_qplib_cmdqmsg msg = {};
+ 	struct cmdq_destroy_ah req = {};
++	int rc;
  
- 		if (crsqe->is_waiter_alive) {
- 			if (crsqe->resp)
-@@ -579,6 +669,24 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
- 			crsqe->resp = NULL;
+ 	/* Clean up the AH table in the device */
+ 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
+@@ -477,7 +478,8 @@ void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
  
- 		hwq->cons += req_size;
-+
-+		/* This is a case to handle below scenario -
-+		 * Create AH is completed successfully by firmware,
-+		 * but completion took more time and driver already lost
-+		 * the context of create_ah from caller.
-+		 * We have already return failure for create_ah verbs,
-+		 * so let's destroy the same address vector since it is
-+		 * no more used in stack. We don't care about completion
-+		 * in __send_message_no_waiter.
-+		 * If destroy_ah is failued by firmware, there will be AH
-+		 * resource leak and relatively not critical +  unlikely
-+		 * scenario. Current design is not to handle such case.
-+		 */
-+		if (!is_waiter_alive && !qp_event->status &&
-+		    qp_event->event == CREQ_QP_EVENT_EVENT_CREATE_AH)
-+			__destroy_timedout_ah(rcfw,
-+					      (struct creq_create_ah_resp *)
-+					      qp_event);
- 		spin_unlock_irqrestore(&hwq->lock, flags);
- 	}
- 	*num_wait += wait_cmds;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-index 54576f1..338bf6a 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-@@ -153,6 +153,7 @@ struct bnxt_qplib_crsqe {
- 	/* Free slots at the time of submission */
- 	u32			free_slots;
- 	bool			is_waiter_alive;
-+	bool			is_internal_cmd;
- };
+ 	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req),
+ 				sizeof(resp), block);
+-	bnxt_qplib_rcfw_send_message(rcfw, &msg);
++	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
++	return rc;
+ }
  
- struct bnxt_qplib_rcfw_sbuf {
-@@ -225,6 +226,7 @@ struct bnxt_qplib_rcfw {
- 	u32 cmdq_depth;
- 	atomic_t rcfw_intr_enabled;
- 	struct semaphore rcfw_inflight;
-+	atomic_t timeout_send;
- };
- 
- struct bnxt_qplib_cmdqmsg {
+ /* MRW */
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+index 5de87465..4061616 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -327,8 +327,8 @@ int bnxt_qplib_set_func_resources(struct bnxt_qplib_res *res,
+ 				  struct bnxt_qplib_ctx *ctx);
+ int bnxt_qplib_create_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
+ 			 bool block);
+-void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
+-			   bool block);
++int bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
++			  bool block);
+ int bnxt_qplib_alloc_mrw(struct bnxt_qplib_res *res,
+ 			 struct bnxt_qplib_mrw *mrw);
+ int bnxt_qplib_dereg_mrw(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mrw,
 -- 
 2.5.5
 
 
---000000000000ff333a05fdb079b4
+--000000000000260f5d05fdb07a30
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -339,14 +252,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIATRqP7/kuwB
-RjrkFocNXjXvwvB7wrR52dvXZUII/H8PMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwOTExMTQ0NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICxDLKs96TZu
+V9FMMHWE/hnCoYZXfzQC3U3TuVT65V4RMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYwOTExMTQ0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBxTt1q9xT1tt7+/VpVunI4V+fLzqjq
-0fPBtnpUzVzzOkIioTmB12YzIy3iup5zIbjqayOTZOznyVxm1CrVzbasPGr0BD+8lz6oVY2mBhrR
-WPaqLyJmS6YMhpBWH1hmYaEV5G/fwxKx8cNBvQPA/nMMeJA0s3cEvzkw+qVGro6HUKElRqo9iueO
-gh7VZAoavI/oMM20E/zzzYDIcsZ8uMH5wwrbMi2OkpPU40DvbNbrkUSW29TxSjuQLYjWasLWDPcC
-3igcox/mFMnBZV9AWmtyzj1XeOrZCJNc5ZYc+5TmYIm1hQXYFSn8Cg7ab6fBmAC1FbkWExA5sL1c
-aAdE26+9
---000000000000ff333a05fdb079b4--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAsNwhyaC5k/RtfYHuZt7QSHAbUTxOi
+LMO06H2smdLU1GxwRFRVCxrVAKAMUxeOQpKkTrt77VbSS5eqxF1jCILv/1vt9cCCOP0f3t3JNcgj
+XMUKIhtdIl8INOPzNivlLEYR/4lgwD8EOlxzrOb2YC2mbfeMXR/VLakSH5IaSQmNMR//WDHytSE7
+6Z+WAfFVgHXo42gTCH1054a/ZcLYeo0e48i73siCsMivaF/agnGxuFC1BMYuc1DaEfYfXljT2cPS
+qhlgg4uUGu3oQj+rhDlxwSJxJ7rZk83jInvIPcPNIa4LL4M1WeX6p3moulcgfKpCCKCmNdCfxZPF
+Pp9cqUbk
+--000000000000260f5d05fdb07a30--
