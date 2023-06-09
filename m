@@ -2,714 +2,427 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 815D872992C
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 14:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A41729981
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 14:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240168AbjFIMLQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 08:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        id S239223AbjFIMVI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 08:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240227AbjFIMLJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 08:11:09 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2040.outbound.protection.outlook.com [40.107.7.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652AD3AB2
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 05:10:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cs0FoihvR0cjM4vnq2cjV1RpWXSAV52aCbUHyShY1N0aYuA3gpMNWQG7p7ZiK3oymKgjkW5Oma1PkpUh74LNhWvKW9VBO5TzyJzG2Jzh+uRfyRvh1HXKg8LDdb5lWPQx8KRygjLhgUqMywiKNHSyRe3d++EKvXUNHTmED40PBGo3X/O4tKf6GMToyznuBl3N34dRSSiomFGNj3uXrJr/EerS1s21YvDHn8vKPg+M0wlNNCHmnL2lBA+9ZZuOrLeaPsMe2nPxMZaB1NARnUXkrHcWqIvu9pEYy09NbIWiopfCVrJ1/UxDBwngicZmrkAYP/E0HZP0/9qkkAGUH5P9Gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ehbsy19ks6Dju2/W31npWW5u+kREZhh0Nn1zh5Kt7DU=;
- b=OxuXgfvKmviJxWmyDEPTYbueQTC9BN04WVEnh6U7OjjcT9RoOnHr2MV/WRoF8gwE2YezxbZfXElfmv7suGpxlnyaz6ljy63oXXUjhRxF1tzs1mCMykKRsdC8MSPRhc7IVNZz4oP1xRUUmx1c4MTbvU6t0C4VOHWQqK64fj4M5j2Ea0XgWmo3vGlQe8b2tcuKq3YF/r8EDYrewhWBcxPAIFpAyHhUkTgOgIL2IYdOI1jShxQxR+D7n5smlncudV7ii6g27o4vWfkB2Z5x6EGQbXDVgMaUx4Ajk6Od5KApD/FYN2BK7nLP3xbrNZ4Xh/mG0lLrhHTpgWe+WojI6scKSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ehbsy19ks6Dju2/W31npWW5u+kREZhh0Nn1zh5Kt7DU=;
- b=XkK7fQ6ekwFR3iioXozE/UrKrdaUGTKBTPUhb3gS1rDmNhdNHnuA/Fh+baVNWcSN0lu/0DTnmHaWGRUibFKiFV1OPmGI67KGxL+W5ciG/GO5DaFsqgBRWytLX8TbGXSxJwpi0OGVmzBUnD0Zm4NbwdWrX320uY7DrWZTBzYJq6ZFKZkdcNat4ttfepgWMGRWTECXx6J2eYVhR64DsDjJSuJLazfKKCp2UnYJOf633gHw7yKcQmESfYVfDyXLw5NYHpTmY8sBprR0UVvePmIeFebMkTBiHTZxYWzYd8lZtkiBr/fcC/dcyrsZvRPH7aqFlYaoUcTh1LYfgiOCEU8VYA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from HE1PR04MB2969.eurprd04.prod.outlook.com (2603:10a6:7:1c::23) by
- VE1PR04MB7357.eurprd04.prod.outlook.com (2603:10a6:800:1ae::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.32; Fri, 9 Jun
- 2023 12:10:44 +0000
-Received: from HE1PR04MB2969.eurprd04.prod.outlook.com
- ([fe80::bf77:7f01:b0e0:55f4]) by HE1PR04MB2969.eurprd04.prod.outlook.com
- ([fe80::bf77:7f01:b0e0:55f4%6]) with mapi id 15.20.6455.030; Fri, 9 Jun 2023
- 12:10:44 +0000
-Message-ID: <82fd6801-722e-a21a-fafd-33f3deecf5d6@suse.com>
-Date:   Fri, 9 Jun 2023 14:10:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-From:   Nicolas Morey <nmorey@suse.com>
-Subject: [ANNOUNCE] rdma-core: new stable releases
-To:     linux-rdma@vger.kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MR1P264CA0184.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:501:58::6) To HE1PR04MB2969.eurprd04.prod.outlook.com
- (2603:10a6:7:1c::23)
+        with ESMTP id S239055AbjFIMVB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 08:21:01 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D61E50;
+        Fri,  9 Jun 2023 05:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686313259; x=1717849259;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rdh8Kl69+xkYuoast0lKfh0GODJsyTNnmG1WAARcz24=;
+  b=huMAND/Cifi00ywqBWKFQ403Asq2GVGsJDxdaZqaELoF5BuykSzTkMaz
+   +Vhobp94YJV4pNoqrzJ8hv9NDUss8BMVoP0Ha6YG7y2aQiJ7+LfszicZC
+   mtk46/ldcsJJNwnbPsk+lnRJNHjOPmF5SkljG8/rSZ3v14i+KNxeVarpH
+   Fg7mTh+EWiS3IkM1cSjbf0U3KHXRw0jWjOB+/eIKRQEMUTUZJ8H0vK7Ot
+   Ti16P1BmwZlfGBFZjTDwjvzR9umkQfxk8Ce2+XRGi+XfmeOc3q4ukEDiG
+   mKhjlDGKIERXGBVdEW8v4iVVFDyFEVXGAU4u33Q4co27Wx7zUZGHj5Ndh
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10735"; a="337219728"
+X-IronPort-AV: E=Sophos;i="6.00,229,1681196400"; 
+   d="scan'208";a="337219728"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2023 05:20:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10735"; a="710348232"
+X-IronPort-AV: E=Sophos;i="6.00,229,1681196400"; 
+   d="scan'208";a="710348232"
+Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
+  by orsmga002.jf.intel.com with ESMTP; 09 Jun 2023 05:20:46 -0700
+From:   Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+To:     kuba@kernel.org, jiri@resnulli.us, arkadiusz.kubalewski@intel.com,
+        vadfed@meta.com, jonathan.lemon@gmail.com, pabeni@redhat.com
+Cc:     corbet@lwn.net, davem@davemloft.net, edumazet@google.com,
+        vadfed@fb.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
+        richardcochran@gmail.com, sj@kernel.org, javierm@redhat.com,
+        ricardo.canuelo@collabora.com, mst@redhat.com, tzimmermann@suse.de,
+        michal.michalik@intel.com, gregkh@linuxfoundation.org,
+        jacek.lawrynowicz@linux.intel.com, airlied@redhat.com,
+        ogabbay@kernel.org, arnd@arndb.de, nipun.gupta@amd.com,
+        axboe@kernel.dk, linux@zary.sk, masahiroy@kernel.org,
+        benjamin.tissoires@redhat.com, geert+renesas@glider.be,
+        milena.olech@intel.com, kuniyu@amazon.com, liuhangbin@gmail.com,
+        hkallweit1@gmail.com, andy.ren@getcruise.com, razor@blackwall.org,
+        idosch@nvidia.com, lucien.xin@gmail.com, nicolas.dichtel@6wind.com,
+        phil@nwl.cc, claudiajkang@gmail.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, poros@redhat.com,
+        mschmidt@redhat.com, linux-clk@vger.kernel.org,
+        vadim.fedorenko@linux.dev
+Subject: [RFC PATCH v8 00/10] Create common DPLL configuration API
+Date:   Fri,  9 Jun 2023 14:18:43 +0200
+Message-Id: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HE1PR04MB2969:EE_|VE1PR04MB7357:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4e812249-a216-4b35-cc71-08db68e28ce4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: arRFi9FLjzNCmH0FA99HCGiNxCErZSjtKuocedP0jdqIvKCDMTMLub0xerMHjpHRKfBoG5mKELmYHlva5yk9CX8sIdLMffnosSOixJU3SPdpvrAVBQ48Fh75H0r5k4ehPsMw8H2uQt/Tp9EHEgwG2c08c8XMsZK8Rc2xzFcrUFTMECsnkCM+9VxiUsweoD8DvGDZhIUPzKyOV7tuzlt9dQdVC3G/O2Fk2ZX+ymjasT8Y/c2SXh6DWUV4xMrqxVO/YhlaZdj87mhraTdClP0iAVIHdyBLdF6p101lCxX3UoSyfv+lHJpznyXsiApHA7AZLqzmixR5807P4zYuqS09aKQbRgpgH3sqoqnp35SOFxDTNdaQ+l81Fr1YLKcO1E8FovZK0qXG0oba0m5LZMRBt8o29s/Wv7R8obAWGV05u3deY+BgKC1+I3qPHtCmS779iawrU/PhNmvHkGqXmusU3XQRxwJpap20BLttwQnn1J70xSKmJPvEA7wfwrPcqQsVlImxBUvsBWntmsU+KKRIHyRsWXuMKrk8347HLoua0l4JZ2v2Czq2z1acp+XfekCQuZbvP3ORNLgaaNCLPtU2sDrTgPMgbwZGqviFRMFh60TkrRorq6LzadYHiO3u+54PrzdW6n5256+HlgEPPEXt9Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR04MB2969.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39850400004)(136003)(366004)(376002)(346002)(451199021)(478600001)(8676002)(2906002)(8936002)(5660300002)(31696002)(36756003)(30864003)(6916009)(66556008)(66476007)(66946007)(316002)(6506007)(41300700001)(2616005)(38100700002)(45954011)(6512007)(26005)(966005)(83380400001)(6486002)(31686004)(186003)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NFNSZmI5Y1NnTmlnNW1sOEVzdm8vZktuUFhJVEhqVk5MazBuY1FyTUJKRjZx?=
- =?utf-8?B?eTlRZWcwUmJFMGRmSi9SK1pvU3BKOW5MZmhtWGhkd1pmR25EZ1pyNHVtOVpH?=
- =?utf-8?B?YjNKKzlUUS94aW40VEZzOXNCUUtpV29tZWRNS29LTmpGTXY0a1VMV1B0emJY?=
- =?utf-8?B?VDN2dUU4eURSZnlKR3lJaXlVQitsOUdNdUZBTHBIdGxJLzNxKzBvRGZxcFNT?=
- =?utf-8?B?cWMydnJPRUY2cmxIVEUzQlhibSt1NFFxY1NrZ3doWGVoVGU0bitUV2MvQ2g4?=
- =?utf-8?B?b1JZdCtYYmZrTmxSUHQxd0psbTlZeENXdUFxMFNDdUpPM3phK011QVlvakRG?=
- =?utf-8?B?elJNTXBNN3p2clVtTlV6Y0dQekxpcjh6cXBEb0FkblVuY0JpS09Tdkxudkps?=
- =?utf-8?B?cmQvWHlZWEhRUTNzN1BQVHhrNHJnQ3laWjBjQVRIcjRBcUt3VDAyaGpwMUxO?=
- =?utf-8?B?L0pkMllFNExvVmVUVG96M1I1aGV3d2h3MlBmODlEVWM1a0lHekUwS1MwQ3Mx?=
- =?utf-8?B?cjhzSGs1amhHVTV4UlNpTHZvMW9vaGhJYksxWG8yOFA2dG95U0NWR0k5Q2kz?=
- =?utf-8?B?ZXFydmFTTUJTQVhka1c3a2xqQjZ2VUNJMmRIMTB4aFFqb3BxcTNTQTFuN2Fv?=
- =?utf-8?B?ckJDTWFPb1F3cTM5VWIxSmhxeE9kM1BkY3U1V1d2VHBsQzQ1b0RhbjNkWWFT?=
- =?utf-8?B?dTFrcUdhTW9BSDd3b1NoTy9PaVBtUGpXU3NoME9XWGkzdExXamw2b3BLSCta?=
- =?utf-8?B?aTJDbTNVOHZMeHZRdDdsYWZwN1Mxc1p2RGE0aTFVeW0rTmxsR1pVOHQ2ZXA2?=
- =?utf-8?B?M3lGMDUyU1RlUVNpMFh3TkRxSk01SmxBTmhNa3JVdzA4c1dLYWt0ZHh2OHBP?=
- =?utf-8?B?TDkwazFzemkrNHZiUkFuTnBKL0kvQ1A4WG9zNTkrQWZvOTR3Wk55Sy9yYktK?=
- =?utf-8?B?c21waHpaQjRzZlFXSUMzNWNjS1hTTTlScnVuVENrb2lBaWtYd1QxQTdFSkFN?=
- =?utf-8?B?U29qeklDQ1FEUVNJSzliSDA0blpCaEU1eDRNMGZ0TTFyZFpBeWhGbHVoTVZE?=
- =?utf-8?B?VXhjeW9DYzZYNU1LZk5rSmluY2dZQm9IYjVINTZSMFYvUnUzRmRlZjZNc091?=
- =?utf-8?B?aDZOczJLUXZKYktmbzBzY2lIMzhORGtCUk1XY2UzZml0Vy9MU3B5bDl3RUFp?=
- =?utf-8?B?azAvTGVCMlFTMWkvc1BweHFjZjFDcmFqMzQ2WTIyenQrekY4alE0aHhmekRX?=
- =?utf-8?B?Q2loYy9aOGhJNk4xSkhGL2xPUFNoM3Fjbkk0WGxleTBZNVJ3WTZOSEFxTXY3?=
- =?utf-8?B?aVdvbEFNTGJrdnMrSGd6cmIvMEMrL1VMMURwL2REeVlobFdRTll3UVNZc1Zw?=
- =?utf-8?B?ZiswbndRSHVOU25RUVpNWU1MOVp3YlUvUWVOcWtCNk9pSVMvZkF4dFhOaDFh?=
- =?utf-8?B?TEs2aFVaOURPUm50R3VwTjlNd1dhblVuNHh1TXB2SmxtOUhJRFVoay9BczJ5?=
- =?utf-8?B?WmVFMVNtRzR6ODhRTk11dy83c3dCUWxoUURCcEEvblFTdGJ0UFZEd0JFbTN5?=
- =?utf-8?B?d3REYnJVK3kxTzZUaXZBT0VNakhsOTcxYnZtZWhERVc1SUVHTHdFNnVabjJh?=
- =?utf-8?B?NTU0bGh0NWJIcjZNblFLdVVSdkZxZG0ya1o0YTZKYmltT29IN3ErRlg0YjU0?=
- =?utf-8?B?TlliUTRjSFVHQ3QwUXd1QVpteklNazhsVElVS1BTS3FBWVpJL0wzaHhYVGk0?=
- =?utf-8?B?akQ1RTR4QkZwMU1qQTdDSnI5WHN0eVBjWDFRZSt0U2JneGNyb0pFTTlpZ056?=
- =?utf-8?B?WW9lSE1UOWNGVmQrZm00emwraTNicWNaZWlpclIrNEpiR3VCd2pyQzBva2R0?=
- =?utf-8?B?RkFuS2tPZ1NsMVVIRW1Wa1lJdHA2MGZPb2hHTThiUVFOTHJsMlVEazkzc3ov?=
- =?utf-8?B?Z2NCTDhBRFZXN0l5NkhDTW51TWUvZlpHS1VrcVBlbE45U0VPM09nd1hXQ0hI?=
- =?utf-8?B?a3hmeDBCT001cXFtQWphc3Z4cFROQXNYajlJWUhMbSs3WFhkZm9PVUxxK3R6?=
- =?utf-8?B?TjE0VUVBZXJwbU03T3JydHFCWVZYUVpidkZnbVNBV0xiQWtaWGhocDVxQko0?=
- =?utf-8?Q?GhjAmJqv44hfwxwvbtYKu30dh?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e812249-a216-4b35-cc71-08db68e28ce4
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR04MB2969.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2023 12:10:44.1332
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 57DAC6djsmSKWm/mfzj1k1EdMMVMHuRgEJfrj/Eryhls7+VBDFdmoXxt9SkHVoiwab7JAJgUZEThcxMHEGT6ew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7357
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,BITCOIN_SPAM_02,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_BTC_ID,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-*** IMPORTANT: Due to their age and the lack of significant patches, branches v26-v27 have been retired. ***
-
-These version were tagged/released:
- * v26.11
- * v27.10
- * v28.10
- * v29.9
- * v30.9
- * v31.10
- * v32.9
- * v33.9
- * v34.8
- * v35.7
- * v36.7
- * v37.6
- * v38.5
- * v39.4
- * v40.3
- * v41.3
- * v42.3
- * v43.2
- * v44.2
- * v45.1
-
-It's available at the normal places:
-
-git://github.com/linux-rdma/rdma-core
-https://github.com/linux-rdma/rdma-core/releases
-
----
-
-Here's the information from the tags:
-tag v26.11
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:03 2023 +0200
-
-rdma-core-26.11:
-
-Updates from version 26.10
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kMfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZJDbCACvQXziPEXf0aG1
-T/lzErt7VXqaPahijg6zdOWLB5TJC0lvMSjCo+lpdG/CFAJsrAS3lBXEsAI7Zb80
-IQ3oteLovEWNVEzRgFh4BAKWykmf/bq1pRUusLP454JR+K286z+4jJ3YF6joNI7v
-5ccgeiDiV9My/xuTqQggwXu7auXyicm+77EenjimVwYrP6Tq7aS5/DTTfRj+EDwP
-96TNyomjbyvqYsOkzsq8LkCSXYOyAbMsYevv1lZtvELQyhXA/hJFde8iB2mUYMFE
-IIv7ELFOUdTkOedu8zgbT7qHQZ/oyoemM8jnhc1VPYWZbshONZsJD+9dz4VTu+Ie
-muvHtpt7
-=Ufvg
------END PGP SIGNATURE-----
-
-tag v27.10
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:04 2023 +0200
-
-rdma-core-27.10:
-
-Updates from version 27.9
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kQfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZEtwB/9aq1voDENns8N5
-loWY83SErfwBBAqCoraHC5b5bE5YwSgap60iWjj0/f9a3DV0PYoqZdaG1xMDZw5b
-vIIFmwimP3ZXaGyJOOxezPqrlSYjxayINFWPxQPIfsUTtbVhQqxsuqUd1uTDkj9c
-gvYuc1dMSfGtSn86HV4ALjbqG1qXIxgwP+Ej+5a3kpE+eAdpTxwYKueYkvD/9GBe
-mB4qnD0G1bnkj3VblDiOCLBfKrASFcVldp56557pN0+5y7lljBq9j4iWgWJ1QTN0
-QoJRB1UaJxeGJ/EGkGW08m6OemPJhSV+f5HSd2uZA8BE6jLNftnpEDXwaFI2L5iU
-5u6rj3dD
-=MkJu
------END PGP SIGNATURE-----
-
-tag v28.10
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:04 2023 +0200
-
-rdma-core-28.10:
-
-Updates from version 28.9
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kQfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZKesB/4x4Y9X7b8J2D8h
-LVIKwT5TEKpEl9Uj/WRe0z+EOEIlco5SbyZnMUBtwh2YDwMtPKJ+GP79VEg6/7vN
-/dh43AZUREhYyCHlIne9Dkbpet7RMnpXKABVZaAtDb6hYZEDDengZDU7bjHqrIwi
-xefM0g8H9SCAH4K6L39NLhhEeE4hHAFhlTMAjdNHu6F1gYhZuqdrRQGTdAg99lsW
-8B1jcYPROxEGYVi0lcHuQbtB+A5qdbuHqw+xsH8u0UucV9dVwGr0jtPySsNjIxHf
-yYODM33Ycrt2DyOCMMHhEedrNfj05Ln6pANqyEmiRHh3lfUTlLD6YCKbsVtBG9pL
-9IwkEmni
-=jxQ7
------END PGP SIGNATURE-----
-
-tag v29.9
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:04 2023 +0200
-
-rdma-core-29.9:
-
-Updates from version 29.8
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kQfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZAgFB/9Q/Vdp+oMHWp8D
-KzIqbNUUT2O7vfgk1gOF8Q4Z1qgu/fDhcpE4hRUa8VLQNYtVFLz4wgwvlMy9lZ9x
-cdra8Iu6GDGeiDzjzoSBy4DzYRfmZcXe+wVO/E+isPHXgto04n5LkJfrajYQKW3Z
-Orvfq3Yi7v43f33dpKSEMUY1LooljZ17vlZarX+mwX9PkQOoXR9MMaPRCH+Xj4WT
-v9wSmp2vQeCnZTUrkkn1JDKtLqUuo17kwCky8VJWnX/Q2328vA50Wzpj4F+/9K3r
-q/KeBYtAoj+U4NmXd4XYK6PAkNPrgjg949cif3ehz3WGpoEAvjKthW6yY04fjeUw
-tIcV29v6
-=LlI9
------END PGP SIGNATURE-----
-
-tag v30.9
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:05 2023 +0200
-
-rdma-core-30.9:
-
-Updates from version 30.8
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kUfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZNcSB/sEd64aunfJtWL4
-N0LccfpFBidXa/N/7Nx21dZDqBdrRFJVI751gGdpBpz2efo48hWOLPVgLailqotz
-BdNRWj4jQcq9pYXGUjHwOSIEQw9TZJvt7DkWt3DjbJwS5sc/R/xaIxxHtCUzvSQN
-b5ML52Qam6WRPhMQwo7D9dz6ONRJyz/GuhR/yu/34g3fJsIGCj6s9US5M7tajlL+
-KcyQ5dp6hJdkxqOV5tbV+0aTJmnY5kD1/AykjIsPCUUMXCHfDhCGAS4VCZNRsaAQ
-iS8CPd6Badri17qAlzu8BIQSZt5pAEyeA6A5TD7Is9bm4XndQuMZFXWb7UxRHsJR
-M+RURsdi
-=M2Bg
------END PGP SIGNATURE-----
-
-tag v31.10
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:05 2023 +0200
-
-rdma-core-31.10:
-
-Updates from version 31.9
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kUfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZFAPB/4ttJM4e6XQJYrw
-7/lS1NAVmd9STciO5QBZ4lAjSDxzxJniGw64kNbMwDorVoHgshGqiBhgyxf9l0vG
-J52Wb4qTbRUMjHOsUrb4PGr1UiLP97bH4obBGJC8Rp7SaQmWB5EhQbK8df3llsTL
-4F50J2jIZ0Wcht9EMobd7Tb7qTbRQ/ZNKMX78yKZHo994dTEz6gf3slUBxhB4j9t
-OltJgqvEDjIZozuPA9UO9e/j0mfqdWVj7tP0YiKf0juvniOlc2IM1Cgj+7pIjAc3
-xm9BsTaTCn8x8reMGPxn6lwSJjkAZm/UCZDtAh5/wROM4MlyD0bj/SDRVdFgCwFG
-mHVZAq5P
-=pT/a
------END PGP SIGNATURE-----
-
-tag v32.9
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:05 2023 +0200
-
-rdma-core-32.9:
-
-Updates from version 32.8
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kUfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZCBEB/43leQ8bZWZS4wA
-GKjfQLVZcYFV4fPp6DPA43i3Oo/8Xwuamj3QFiwBHVOo8vSw8oT+Zyz3CXjYbmIL
-x8RbjLKITWYoUHvmUBCOp7MbB/DYFyL56y3kNMVbKHu7o7tLMyyR+SWa40CN9UAY
-c8C1Wr1miGnCP0EzSm0ogeg+FswgFbFWU8oVii/Xo7fJyY9adG9bsbLzz29X/HXv
-fOAxHuVnflO37hRN4ecDhvYkk7Uco9Thr5owqF/7mAwnJzUQu7pf7ggMlALYyfFp
-tq2YjgTMCp0omEAKMK1JSFMf4UDdQ+owB1xuk2/HcBw2grXPLT8orq+nF4Lf+891
-b7NF1mfT
-=hr03
------END PGP SIGNATURE-----
-
-tag v33.9
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:05 2023 +0200
-
-rdma-core-33.9:
-
-Updates from version 33.8
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kUfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZMD1CADBYo1kKJ3tjzFw
-q7T/r7MoPJuo2PXsrD7JZCZkPNJrxUvDqePYcrH4x9gxnd8O4kQnV4HtbvCDUTF9
-Y1uuk/BzFjOyprk/lXy1nvpFVFQkmxnR1K+XZGrdWX92ADvxaD1yfV6L/Cr9preD
-6neZtKzzFl2TSxDilF173rFaEL781zwCiBBxmbKXRCQIrxhHHsOkwH6DFeAer5aJ
-Itd1/TNjDVq2hz2dtALUAPcRo40L2KYbOV47NDZgBv1LVY7zG7iCB5br6/tH57Nz
-ab+aigG/r36qQSOzP86cr4JdepBwaW7xyEBIQOG+5zzGDVZXvmBgFza8UVO1q2lf
-1BQYxtUB
-=/TUs
------END PGP SIGNATURE-----
-
-tag v34.8
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:06 2023 +0200
-
-rdma-core-34.8:
-
-Updates from version 34.7
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kYfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZBTXCADB4s33U+boDFuB
-hg5yZC6HyZV9x/rT01++LUt8Oplk3KcMbLkOGtehvslqPQXuWfQ1eEZikXrhP9B3
-37gr4pA/ZnJZnRjdfzZWLfgjQEgZ4oSr6PQAgdGg2gheQxo+dYSWMrouUfuIpKiX
-nlsHLW4DZkgCqsMGla2zXcT4oh7v3F6ecEyxr0tUxOrCr+c/OVb26f7x3tXP7S9i
-trDrQYVRjJiRzOhPCh+TfF4aneP2QoYX0I9kUGbjI5wUwhNk/2Urtv2t7V6Plsqr
-V/K3nEi1chUQ/ZMYl7MxZ9M3VzCqX2Cw9EC3XxTFaRdcFAKd9yyWx4prNm8RMupv
-nRTitzsL
-=NBuZ
------END PGP SIGNATURE-----
-
-tag v35.7
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:06 2023 +0200
-
-rdma-core-35.7:
-
-Updates from version 35.6
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kYfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZKz2CACahidc3TVdYV+g
-t8xa791mBs+Z4lSORu3Rx+GQU8QNO8xMa7IfYRqlr3ZUD8TMqSONa3LQZ/kxwKFa
-aPZjx0DofgDllU9v9atpyH9QMIR+RMPRAk8iN8cvmvNcYpl+gOfxsMzfZroxaUBW
-QLY6EyQmYwKDpoaiyvwvmEVNqsOf/hbVoq5r59aRGlIRfgDk5b6iMVduVhUUXDZC
-6wZh+d/Kjp5QkJOFD/Unid/sh+7JtXpp9M6GWPXQ60QK6e8GAtXtNeJQbkQAxVwW
-pDEOgowQPC8jRclsPYPcLqVpV1shrnojRGnLVQ9R5C/3MhfeU0hUpJsGG8MlK169
-4iuLqg0k
-=JuU4
------END PGP SIGNATURE-----
-
-tag v36.7
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:06 2023 +0200
-
-rdma-core-36.7:
-
-Updates from version 36.6
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kYfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZCLNCAC5wlvLZE6Ycwll
-F8GTpRQI5eX/vbwX7VT8UbepZV0cvavDWCs7OZgcVnFNsl4fqU0ozWVoyBia0ThN
-qquom1SARVw4YOzAR/+GTwKXgC+mY1KHvhv+AUKmbOkXslJ53Le6vBV5y9RRRRJg
-fcMCbY4ctp06RAg2LhBe2WsWOXcaQ5eyvXlaJIRyFu6nXYYX/uIqCpCqz5jloyAR
-tTybD5fV30xuprLzywAV8dbcErupk0IYf3ElrUPlf8nh9vHUov7Ku7MWJzcImk9e
-k4BdL6PrfJoyzb/9oyrlXFBO4alimnYYwGSmAhsukFizxAk7OyHwwQcYmV+BNb5A
-U7kerM0e
-=xmCn
------END PGP SIGNATURE-----
-
-tag v37.6
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:07 2023 +0200
-
-rdma-core-37.6:
-
-Updates from version 37.5
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kcfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZF7eB/wNE33lOJ0uDW+P
-kKHfljbQn+On2mhfVq9A7VQvV/symsE1WFMjJAgLe30miXXyDgkxOShLsSwUtvcX
-e6Un02nOSNpw0+LXOKGJNnZslzAIQTLuI+tSIu2Z3IHrKHuBPm8EBT3lWy5twmnb
-kEnl6LbdxTnhL5dTlMx0UEp+ZGrR9fjBea7sBU8cd2sBOf95TZ8NFb3bHnNnGA7O
-JpO4z9JmjOQszk7m1z8hkCErcouBQwZsw7rJsoZjqaG9sjdwJq9LphI061ydripy
-3Tg52SymN1BI3ZTaL/Ykkgsj+JnZQdx1SlYvuQVhBliJumDl5hZDf4T22RkCoRoK
-Uw6SQpEU
-=FLbB
------END PGP SIGNATURE-----
-
-tag v38.5
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:07 2023 +0200
-
-rdma-core-38.5:
-
-Updates from version 38.4
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kcfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZOgRCADBjJBvzCBGEt2y
-ADT12BKsJAOYfF/RJ7ifs+EZDQYZ+MWLNqpudqzc8TAQHgN1euIhR7/6Oj9dfMKG
-V6ulJJk5JheuXL1y6sqGGzt2HPxGHx6INc50KUrRJl5ncJlVuIURn65cUN8tai+9
-2sEzXecCj8DxErnI4BbrgP3f9SgU+F6o4k6Dhza9IZ5bCB0/8l5Vz1l9HhOvugUP
-EyLqiWj/g4dy5GxsdSBjiDZZr6wF4RYGql2p8qB1z7FC5tt0yZflWIY9q3sVFEkV
-w6/2/eiqEPRtq7MtByOgpuhcqt2xNiRiz2hk3wgD1aZfMhBxeeR183TRf8E9MjsF
-pyOArlEE
-=gtE+
------END PGP SIGNATURE-----
-
-tag v39.4
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:07 2023 +0200
-
-rdma-core-39.4:
-
-Updates from version 39.3
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kcfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZMYBB/9Tq9CLCKqHNqU8
-rm0sET4t6RqYbgtrg1x7hjPe2TEedS99S00g0KJ//ExF/JTeo28ZuhjmToVnH+XC
-USzWEDK6wbjRiPUzPC6FSnHiX7b/v5+8qGhHky4bJCRirvh63/8DkJx7X0sRP0H9
-9t0jne3Jyk6M0pH4c5GK6IU5TXFYB8D1p1JQcWlLUktz/lENGHWZbiIrI2r5KGsi
-5/vBWl25O0Ch9L6Q8QI9wwhZ66KBtz/QrxDU4xaYfYJd9bGuOWMUBS0IfnndtnUS
-nVusZwdQQh/VNtTU25V2Lm4UiJi5GrX5v8oTfBm36cJg93/FQ2c3dDr0GU12VSCr
-Yvt41F6j
-=JqTy
------END PGP SIGNATURE-----
-
-tag v40.3
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:07 2023 +0200
-
-rdma-core-40.3:
-
-Updates from version 40.2
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * libhns: Disable local invalidate operation
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix the sge num problem of atomic op
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kcfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZM0hCACd6bXGH3z9jD52
-187Np+OdswYnNklAx7f8hqUS6Slk91jPt7MuUyLrgkV1WsI1xkvjXnnSm4KMnaD1
-KziZCM3i9h4fMnbpXCW6XJ4A+DmSCP5FwKc5ws9tlaZ6CPHuZ9/r6JiQOAKSkcLC
-DPOB8F8uE9/TGuYJ50Tcx9LBNcerufgdXBTpXHjjHM3tcLlIlLVHZYlQTGd7h4p1
-wZ1c5ZEB34VzsoptXu6jekS3EITk+EcvteO14SBR1MDWa5z2ZuTOI17W/CpQ1wDg
-uKPJZMwd9GqxNsBdbHhKhkbyxlrBFra7uojPCgcDcCLJTZZzJ4CjnAd4tLC+Hkp7
-1q0m4S/S
-=T//i
------END PGP SIGNATURE-----
-
-tag v41.3
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:08 2023 +0200
-
-rdma-core-41.3:
-
-Updates from version 41.2
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * libhns: Disable local invalidate operation
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix the sge num problem of atomic op
-   * libhns: Fix the problem of sge nums
-   * Update kernel headers
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kgfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZGVEB/4v1oiUdaB2ivDq
-GD+cxmn3a/apiipjII4+7rtNs4ertjhubNsQmPhZHA7nq2NAXWC7xPm+Lsj+Cpi4
-7FyBQBptjussNRwo1RrCgCif3vL8aq1Q5zfQLsJBtOyTAxirgl/OEqHBBMFM4O5G
-XotcDBZcCShxt7Ghdj6Xn2Fo81kQ7NcW/WtXlysxyucvYn9g+BiiYBBmsXDFgHov
-q4q6pAqPU9kGc9mzDK/YafL2mSYWALHe2pbqX6VMyqGqDeMCN1sgdDIWnRFht4Y4
-xgtBmZhP9tzv+RBi1iUoLVwM4G92Yyx+pYqJrMlZ2NlLdN2l5yHw3qF6o2ckMx/y
-d1GC49Fb
-=EwYp
------END PGP SIGNATURE-----
-
-tag v42.3
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:08 2023 +0200
-
-rdma-core-42.3:
-
-Updates from version 42.2
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * libhns: Disable local invalidate operation
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix the sge num problem of atomic op
-   * mlx5: DR, Fix error flow in creating modify header pattern
-   * libhns: Fix the problem of sge nums
-   * Update kernel headers
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kgfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZCL3B/9MIgV8OqhaS2ag
-k1M2wPnT6N/e0VKaeJTY8Egjo8yfBR4s7IXwN15RH4DPLsz6ngjIcpJaJ9zaOfY7
-thz2s6FMdiyF6dFaxc6eNYSOIUeqiZUIg4A/0RVO4zJHG8Z8BjmDtCkFH5o173ZS
-Y82CR9TgAnvbW+KQ5pKp/cwjCp7keASzKFQyOs8InN4PqAvXeEKjvbbt/YrCcvj9
-DPk6u4hul4UlzuaLSQCLDP7+z65BPXKK9wz5XlXpvE1j1vN59v95vqNBjCz4bAJ8
-p0urlMby/a8e3Ixz1iw3QbdX0NGnWOVwQQ+aMJb815MMKDi7J/ctWxmhBRm6PWA6
-K2P8I1Nx
-=p8r7
------END PGP SIGNATURE-----
-
-tag v43.2
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:08 2023 +0200
-
-rdma-core-43.2:
-
-Updates from version 43.1
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * libhns: Disable local invalidate operation
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix the sge num problem of atomic op
-   * mlx5: DR, Fix error flow in creating modify header pattern
-   * libhns: Fix the problem of sge nums
-   * Update kernel headers
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kgfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZIzoCAChdggFfwjDIToa
-a4taGx3BOwOP3oJb/RqJi0IXQ4ANZSZIMlLTDq0BgyGByZsLw06caqsYI5xuVii9
-341cRudwDZC5ihptEwGB8xsYgQsdhge3LH/Jsque1CvobKCwLCC93n8nMRJKThI9
-dMWqGN8yzVTgK4dxmkfr3TJ97ZhimDdZCS0COFm0nnLFXrv6leA1gzNMgSuIAcsV
-eJcB6f4/hvI+dRj1NQ2TEfItMqIuoD1CnWRgakaKCxcJKnYertv7kzrDgucx6q7l
-Adiz9wo8IaUmHNMkCAVnjgNc/CfWY06IYQNdm7iiHO6x738+6Z4zcrhCDiSe5bOy
-mbbQl/HK
-=7GZI
------END PGP SIGNATURE-----
-
-tag v44.2
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:08 2023 +0200
-
-rdma-core-44.2:
-
-Updates from version 44.1
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * libhns: Disable local invalidate operation
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix the sge num problem of atomic op
-   * suse: fix package name for libmana
-   * mlx5: DR, Fix error flow in creating modify header pattern
-   * debian: Exclude libmana.so from ibverbs-providers
-   * libhns: Fix the problem of sge nums
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kgfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZC24B/9WU2vmxc4VeOSV
-Xab4cLXqJO1OGgvyzkYeKJHzKK9/J3bmBAWO20SZhd9XBrlPl7grmxeSnJwRrX+2
-sJ4i+zFvVHwQ65J8w798Ak8QabkribRR2jwvcEGpQ5qlUl/jKo2/zkyr9nmVeOYi
-VQTZiRYHFhw067GObHlBeB/9aj/L6o+THa/EpcTBbvOrZXfL6pdxAORsyW8B3StE
-2b5+cRE+hEu+ftAl4fEEYH4kKFx01mtDK92O0RYAZJUOlo5dS1Uvj2BhvJoF1s7R
-m/zK4Se0BR3xXyGLs2/io+OpYncfpPw5D5ULEDIhDxECek2dDbMI5xUMJiXc4G+n
-2s3XmANn
-=151p
------END PGP SIGNATURE-----
-
-tag v45.1
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Fri Jun 9 11:52:09 2023 +0200
-
-rdma-core-45.1:
-
-Updates from version 45.0
- * Backport fixes:
-   * man page: correct IBV_ZERO_BASED to IBV_ACCESS_ZERO_BASED
-   * mlx5: DR, Add missing action state for FDB push vlan states
-   * mlx5: DR, Enable QP retransmission
-   * libhns: Disable local invalidate operation
-   * bnxt_re/lib: Fix the UD completion reported
-   * libhns: Fix sge tail_len overflow
-   * libhns: Fix the sge num problem of atomic op
-   * suse: fix package name for libmana
-   * mlx5: DR, Fix error flow in creating modify header pattern
-   * libhns: Fix the problem of sge nums
-   * libhns: Fix ext_sge num error when post send
-   * libhns: Use a constant instead of sizeof operation
-   * ABI Files
------BEGIN PGP SIGNATURE-----
-
-iQFTBAABCAA9FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmSC9kkfHG5pY29sYXNA
-bW9yZXktY2hhaXNlbWFydGluLmNvbQAKCRCAG924JZiPZIVyB/9CiDsvnuTtro2Z
-KQkc09g5tyWMS16OdFRO2QVU4iiEgNhfIEFa5blVoAwOTGXGEgm/ryEjA439VxU1
-abzztfr1TtvGUW9+W1Sa+USF+HGavB7xd2GxFd/07zds0M43XjTjgiWtvwTvYYPT
-Wf1owS78MzCApC9AnWDGW1mYWVgn+v8fGk5TIokKM751ERBMZoL2XLWWUbAVY9kS
-u1aK6Pzck1idXWYfryQikglOxa5YgPzwTHrHNztjySaB427faKEwDCN5IB4VVfun
-E0kqbBByXPoV+T0mYZ6DqdWxYYa4xO1eFT6S2FykAcIsqxqyQbHn5ETqRL6qdEFs
-p3iN2B4P
-=kHt5
------END PGP SIGNATURE-----
+Implement common API for clock/DPLL configuration and status reporting.
+The API utilises netlink interface as transport for commands and event
+notifications. This API aim to extend current pin configuration and
+make it flexible and easy to cover special configurations.
+
+Netlink interface is based on ynl spec, it allows use of in-kernel
+tools/net/ynl/cli.py application to control the interface with properly
+formated command and json attribute strings. Here are few command
+examples of how it works with `ice` driver on supported NIC:
+
+- dump dpll devices
+$# ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/dpll.yaml \
+--dump device-get
+[{'clock-id': 282574471561216,
+  'id': 0,
+  'lock-status': 'unlocked',
+  'mode': 'automatic',
+  'module-name': 'ice',
+  'type': 'eec'},
+ {'clock-id': 282574471561216,
+  'id': 1,
+  'lock-status': 'unlocked',
+  'mode': 'automatic',
+  'module-name': 'ice',
+  'type': 'pps'}]
+
+- get single pin info:
+$# ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/dpll.yaml \
+--do pin-get --json '{"pin-id":2}'
+{'clock-id': 282574471561216,
+ 'module-name': 'ice',
+ 'pin-board-label': 'C827_0-RCLKA',
+ 'pin-dpll-caps': 6,
+ 'pin-frequency': 1953125,
+ 'pin-id': 2,
+ 'pin-parent': [{'id': 0,
+                 'pin-direction': 'input',
+                 'pin-prio': 11,
+                 'pin-state': 'selectable'},
+                {'id': 1,
+                 'pin-direction': 'input',
+                 'pin-prio': 9,
+                 'pin-state': 'selectable'}],
+ 'pin-type': 'mux'}
+
+- set pin's state on dpll:
+$# ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/dpll.yaml \
+--do pin-set --json '{"pin-id":2, "pin-parent":{"id":1, "pin-state":2}}'
+
+- set pin's prio on dpll:
+$# ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/dpll.yaml \
+--do pin-set --json '{"pin-id":2, "pin-parent":{"id":1, "pin-prio":4}}'
+
+- set pin's state on parent pin:
+$# ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/dpll.yaml \
+--do pin-set --json '{"pin-id":13, \
+                      "pin-parent":{"pin-id":2, "pin-state":1}}'
+
+
+v7 -> v8:
+[0/10] Create common DPLL configuration API
+- reorder the patches in patch series
+- split patch "[RFC PATCH v7 2/8] dpll: Add DPLL framework base functions"
+  into 3 smaller patches for easier review:
+  - [03/10] dpll: core: Add DPLL framework base functions
+  - [04/10] dpll: netlink: Add DPLL framework base functions
+  - [05/10] dpll: api header: Add DPLL framework base
+- add cli.py usage examples in commit message
+
+[01/10] dpll: documentation on DPLL subsystem interface
+- fix DPLL_MODE_MANUAL documentation
+- remove DPLL_MODE_NCO
+- remove DPLL_LOCK_STATUS_CALIBRATING
+- add grepability Use full names of commands, attributes and values of
+  dpll subsystem in the documentation
+- align documentation with changes introduced in v8
+- fix typos
+- fix phrases to better show the intentions
+- move dpll.rst to Documentation/driver-api/
+
+[02/10] dpll: spec: Add Netlink spec in YAML
+- remove unspec attribute values
+- add 10 KHZ and 77,5 KHZ frequency defines
+- fix documentation
+- remove assigned values from subset attributes
+- reorder dpll attributes
+- fix `device` nested attribute usage, device get is not used on pin-get
+- temperature with 3 digit float precision
+- remove enum from subset definitions
+- move pin-direction to pin-dpll tuple/subset
+- remove DPLL_MODE_NCO
+- remove DPLL_LOCK_STATUS_CALIBRATING
+- fix naming scheme od notification interface functions
+- separate notifications for pins
+- rename attribute enum name: dplla -> dpll_a
+- rename pin-idx to pin-id
+- remove attributes: pin-parent-idx, device
+- replace bus-name and dev-name attributes with module-name
+- replace pin-label with 3 new attributes: pin-board-label,
+  pin-panel-label, pin-package-label
+- add device-id-get and pin-id-get commands
+- remove rclk-dev-name atribute
+- rename DPLL_PIN_DIRECTION_SOURCE -> DPLL_PIN_DIRECTION_INPUT
+
+[03/10] dpll: core: Add DPLL framework base functions
+[04/10] dpll: netlink: Add DPLL framework base functions
+[05/10] dpll: api header: Add DPLL framework base
+- remove unspec attributes after removing from dpll netlink spec
+- move pin-direction to pin-dpll tuple
+- pass parent_priv on state_on_pin_<get/set>
+- align with new notification definitions from netlink spec
+- use separated notifications for dpll pins and devices
+- format notification messages as corresponding get netlink commands
+- rename pin-idx to pin-id
+- remove attributes pin-parent-idx, device
+- use DPLL_A_PIN_PARENT to hold information on parent pin or dpll device
+- refactor lookup for pins and dplls for dpll subsystem
+- replace bus-name, dev-name with module-name
+- replace pin-label with 3 new attributes: pin-board-label,
+  pin-panel-label, pin-package-label
+- add device-id-get and pin-id-get commands
+- rename dpll_xa_lock to dpll_lock
+- improve doxygen in dpll_core.c
+- remove unused parent and dev fields from dpll_device struct
+- use u32 for pin_idx in dpll_pin_alloc
+- use driver provided pin properties struct
+- verify pin/dpll owner on registering pin
+- remove const arg modifier for helper _priv functions
+- remove function declaration _get_by_name()
+- update SPDX headers
+- parse netlink set attributes with nlattr array
+- remove rclk-dev-name attribute
+- remove device pointer from dpll_pin_register/dpll_device_register
+- remove redundant doxygen from dpll header
+- use module_name() to get name of module
+- add missing/remove outdated kdocs
+- fix call frequency_set only if available
+- fix call direction_set only for pin-dpll tuple
+
+[06/10] netdev: expose DPLL pin handle for netdevice
+- rebased on top of v8 changes
+  - use dpll_msg_add_pin_handle() in dpll_pin_find_from_nlattr()
+    and dpll_msg_add_pin_parents()
+  - fixed handle to use DPLL_A_PIN_ID and removed temporary comments
+- added documentation record for dpll_pin pointer
+- fixed compilation of net/core/dev.c when CONFIG_DPLL is not enabled
+- adjusted patch description a bit
+
+[07/10] ice: add admin commands to access cgu configuration
+- Remove unspec attributes after removing from dpll netlink spec.
+
+[08/10] ice: implement dpll interface to control cgu
+- remove unspec attributes
+- do not store pin flags received in set commands
+- use pin state field to provide pin state to the caller
+- remove include of uapi header
+- remove redundant check against null arguments
+- propagate lock function return value to the caller
+- use switch case instead of if statements
+- fix dev_dbg to dev_err for error cases
+- fix dpll/pin lookup on dpll subsytem callbacks
+- fix extack of dpll subsystem callbacks
+- remove double negation and variable cast
+- simplify ice_dpll_pin_state_set function
+- pass parent_priv on state_on_pin_<get/set>
+- remove parent hw_idx lookup
+- fix use const qualifier for dpll/dpll_pin ops
+- fix IS_ERR macros usage in ice_dpll
+- add notify previous source state change
+- fix mutex locking on releasing pins
+- use '|=' instead of '+=' when modifing capabilities field
+- rename ice_dpll_register_pins function
+- clock_id function to return clock ID on the stack instead of using
+  an output variable
+- DPLL_LOCK_STATUS_CALIBRATING was removed, return:
+  DPLL_LOCK_STATUS_LOCKED - if dpll was locked
+  DPLL_LOCK_STATUS_LOCKED_HO_ACQ - if dpll was locked and holdover is
+  acquired
+- propagate and use dpll_priv to obtain pf pointer in corresponding
+  functions.
+- remove null check for pf pointer
+- adapt to `dpll: core: fix notification scheme`
+- expose pf related pin to corresponding netdevice
+- fix dpll init error path
+- fix dpll pins naming scheme `source` -> `input`
+- replace pin-label with pin-board-label
+- dpll remove parent and dev fields from dpll_device
+- remove device pointer from dpll_pin_register/dpll_device_register
+- rename DPLL_PIN_DIRECTION_SOURCE -> DPLL_PIN_DIRECTION_INPUT
+
+[09/10] ptp_ocp: implement DPLL ops
+- replace pin-label with pin-board-label
+- dpll remove parent and dev fields from dpll_device
+- remove device pointer from dpll_pin_register/dpll_device_register
+- rename DPLL_PIN_DIRECTION_SOURCE -> DPLL_PIN_DIRECTION_INPUT
+
+[10/10] mlx5: Implement SyncE support using DPLL infrastructure
+- rebased on top of v8 changes:
+  - changed notification scheme
+  - no need to fill pin label
+  - implemented locked_ho_acq status
+  - rename DPLL_PIN_DIRECTION_SOURCE -> DPLL_PIN_DIRECTION_INPUT
+  - remove device pointer from dpll_pin_register/dpll_device_register
+- fixed MSEES register writes
+- adjusted pin state and lock state values reported
+- fixed a white space issue
+
+v6 -> v7:
+ * YAML spec:
+   - remove nested 'pin' attribute
+   - clean up definitions on top of the latest changes
+ * pin object:
+   - pin xarray uses id provided by the driver
+   - remove usage of PIN_IDX_INVALID in set function
+   - source_pin_get() returns object instead of idx
+   - fixes in frequency support API
+ * device and pin operations are const now
+ * small fixes in naming in Makefile and in the functions
+ * single mutex for the subsystem to avoid possible ABBA locks
+ * no special *_priv() helpers anymore, private data is passed as void*
+ * no netlink filters by name anymore, only index is supported
+ * update ptp_ocp and ice drivers to follow new API version
+ * add mlx5e driver as a new customer of the subsystem
+v5 -> v6:
+ * rework pin part to better fit shared pins use cases
+ * add YAML spec to easy generate user-space apps
+ * simple implementation in ptp_ocp is back again
+v4 -> v5:
+ * fix code issues found during last reviews:
+   - replace cookie with clock id
+   - follow one naming schema in dpll subsys
+   - move function comments to dpll_core.c, fix exports
+   - remove single-use helper functions
+   - merge device register with alloc
+   - lock and unlock mutex on dpll device release
+   - move dpll_type to uapi header
+   - rename DPLLA_DUMP_FILTER to DPLLA_FILTER
+   - rename dpll_pin_state to dpll_pin_mode
+   - rename DPLL_MODE_FORCED to DPLL_MODE_MANUAL
+   - remove DPLL_CHANGE_PIN_TYPE enum value
+ * rewrite framework once again (Arkadiusz)
+   - add clock class:
+     Provide userspace with clock class value of DPLL with dpll device
+     dump netlink request. Clock class is assigned by driver allocating
+     a dpll device. Clock class values are defined as specified in:
+     ITU-T G.8273.2/Y.1368.2 recommendation.
+   - dpll device naming schema use new pattern:
+     "dpll_%s_%d_%d", where:
+       - %s - dev_name(parent) of parent device,
+       - %d (1) - enum value of dpll type,
+       - %d (2) - device index provided by parent device.
+   - new muxed/shared pin registration:
+     Let the kernel module to register a shared or muxed pin without
+     finding it or its parent. Instead use a parent/shared pin
+     description to find correct pin internally in dpll_core, simplifing
+     a dpll API
+ * Implement complex DPLL design in ice driver (Arkadiusz)
+ * Remove ptp_ocp driver from the series for now
+v3 -> v4:
+ * redesign framework to make pins dynamically allocated (Arkadiusz)
+ * implement shared pins (Arkadiusz)
+v2 -> v3:
+ * implement source select mode (Arkadiusz)
+ * add documentation
+ * implementation improvements (Jakub)
+v1 -> v2:
+ * implement returning supported input/output types
+ * ptp_ocp: follow suggestions from Jonathan
+ * add linux-clk mailing list
+v0 -> v1:
+ * fix code style and errors
+ * add linux-arm mailing list
+
+Arkadiusz Kubalewski (3):
+  dpll: spec: Add Netlink spec in YAML
+  ice: add admin commands to access cgu configuration
+  ice: implement dpll interface to control cgu
+
+Jiri Pirko (2):
+  netdev: expose DPLL pin handle for netdevice
+  mlx5: Implement SyncE support using DPLL infrastructure
+
+Vadim Fedorenko (5):
+  dpll: documentation on DPLL subsystem interface
+  dpll: core: Add DPLL framework base functions
+  dpll: netlink: Add DPLL framework base functions
+  dpll: api header: Add DPLL framework base functions
+  ptp_ocp: implement DPLL ops
+
+ Documentation/driver-api/dpll.rst             |  458 ++++
+ Documentation/driver-api/index.rst            |    1 +
+ Documentation/netlink/specs/dpll.yaml         |  466 ++++
+ MAINTAINERS                                   |    8 +
+ drivers/Kconfig                               |    2 +
+ drivers/Makefile                              |    1 +
+ drivers/dpll/Kconfig                          |    7 +
+ drivers/dpll/Makefile                         |    9 +
+ drivers/dpll/dpll_core.c                      |  953 ++++++++
+ drivers/dpll/dpll_core.h                      |  104 +
+ drivers/dpll/dpll_netlink.c                   | 1195 ++++++++++
+ drivers/dpll/dpll_netlink.h                   |   44 +
+ drivers/dpll/dpll_nl.c                        |  161 ++
+ drivers/dpll/dpll_nl.h                        |   50 +
+ drivers/net/ethernet/intel/Kconfig            |    1 +
+ drivers/net/ethernet/intel/ice/Makefile       |    3 +-
+ drivers/net/ethernet/intel/ice/ice.h          |    5 +
+ .../net/ethernet/intel/ice/ice_adminq_cmd.h   |  240 +-
+ drivers/net/ethernet/intel/ice/ice_common.c   |  467 ++++
+ drivers/net/ethernet/intel/ice/ice_common.h   |   43 +
+ drivers/net/ethernet/intel/ice/ice_dpll.c     | 2015 +++++++++++++++++
+ drivers/net/ethernet/intel/ice/ice_dpll.h     |  102 +
+ drivers/net/ethernet/intel/ice/ice_lib.c      |   17 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     |    7 +
+ drivers/net/ethernet/intel/ice/ice_ptp_hw.c   |  414 ++++
+ drivers/net/ethernet/intel/ice/ice_ptp_hw.h   |  230 ++
+ drivers/net/ethernet/intel/ice/ice_type.h     |    1 +
+ .../net/ethernet/mellanox/mlx5/core/Kconfig   |    8 +
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |    3 +
+ drivers/net/ethernet/mellanox/mlx5/core/dev.c |   17 +
+ .../net/ethernet/mellanox/mlx5/core/dpll.c    |  432 ++++
+ drivers/ptp/Kconfig                           |    1 +
+ drivers/ptp/ptp_ocp.c                         |  329 ++-
+ include/linux/dpll.h                          |  164 ++
+ include/linux/mlx5/driver.h                   |    2 +
+ include/linux/mlx5/mlx5_ifc.h                 |   59 +-
+ include/linux/netdevice.h                     |   10 +
+ include/uapi/linux/dpll.h                     |  184 ++
+ include/uapi/linux/if_link.h                  |    2 +
+ net/core/dev.c                                |   22 +
+ net/core/rtnetlink.c                          |   38 +
+ 41 files changed, 8216 insertions(+), 59 deletions(-)
+ create mode 100644 Documentation/driver-api/dpll.rst
+ create mode 100644 Documentation/netlink/specs/dpll.yaml
+ create mode 100644 drivers/dpll/Kconfig
+ create mode 100644 drivers/dpll/Makefile
+ create mode 100644 drivers/dpll/dpll_core.c
+ create mode 100644 drivers/dpll/dpll_core.h
+ create mode 100644 drivers/dpll/dpll_netlink.c
+ create mode 100644 drivers/dpll/dpll_netlink.h
+ create mode 100644 drivers/dpll/dpll_nl.c
+ create mode 100644 drivers/dpll/dpll_nl.h
+ create mode 100644 drivers/net/ethernet/intel/ice/ice_dpll.c
+ create mode 100644 drivers/net/ethernet/intel/ice/ice_dpll.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/dpll.c
+ create mode 100644 include/linux/dpll.h
+ create mode 100644 include/uapi/linux/dpll.h
+
+-- 
+2.37.3
 
