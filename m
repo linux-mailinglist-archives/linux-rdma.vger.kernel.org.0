@@ -2,151 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9B172A4FD
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 22:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62B872A4FB
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 22:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjFIUuA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 16:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
+        id S231183AbjFIUt7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 16:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbjFIUt5 (ORCPT
+        with ESMTP id S232727AbjFIUt5 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 16:49:57 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DD02D74;
-        Fri,  9 Jun 2023 13:49:56 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 359Hn4Au019392;
-        Fri, 9 Jun 2023 20:49:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=zzvrDuwjiq8ys8I1XBB5c1pjGKVH06QNTqdKD8KSLSU=;
- b=YtPw9rY8idYK9YSvGkvfrTUUVo9FNK7NMPhjkNMlG0aYXzBbV+3v3y1hb/buoIOoJu/7
- RWtp0rN+0ZjlV2TzOXQwBQtwzTrDUM5wfMo5RrHwgp6fkwxufMqIr/mQQQkmauatwvBZ
- bSckhBL4aKCd9KbqgP0bi7f6+75lvkwLXe4OqD3xq7pm5cWtK8EEw3UmwNmuP/49RmQC
- oV+jxQNOyG3u1g+prGV8jEZQnMjcsenqHoCqrabx/B5zcTQXfw72VH2U5MZCCobSspyd
- HVycVjtHt2soPn1jc25gDXWAukuDSPDiE719t2AEq82WSuNFba8zDcM/Kjb3VxI5u/tq Rw== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3r2a6rfmpf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Jun 2023 20:49:48 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 359KXgxP010542;
-        Fri, 9 Jun 2023 20:49:47 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3r2a6tp1nw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Jun 2023 20:49:47 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2070.outbound.protection.outlook.com [40.107.220.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D62E2D7C
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 13:49:56 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eAyXk4OUuDRcZ+Jtp9uT6dl5je3CDEl+u082rBfOpQ5GPkMwLYKtgPkX10bfcUHLPEfc+6YI6yiApWBqUCwy+Pqx7ccUaPMkDBN2sg1WqVhH9YTCvFySkTeZ00UeXxyh2Eyp1tFVaFfc4npTB+nhRkM4t0HiWI/fjv4pjVqh4+kfd7E7GatUFV1PPKSu79nYg7cJrAIDPLenMY6NjnjsJ/CEUtTfNH4d8d36xlbJr0TFYwkKNDZ89Qij71hyR5efAGtRK0QshqU6M24DojKZWaqfJEUGLJT1oRr6vl+CrRex0iRmpJIIVacn/9IAfDilB12RI7OAVYWvq9vGdrQYqw==
+ b=R2iDxfSzf4K2pW+ZqmhN7oGBHd05ll3hvElMmeeUegp8VUGGKIWgR04xZhzVp3+zeFK/z/PLCdLXdaIuEJAY7Xz9kJ1vhdDcghM7Lo0kwH57gxH2l7Q9VMc0w2jiZCp5jgiejQeZ9xgvZU+liix5XV0wU0WBI7C92dCBktN8bXoTZwx/U2BVxwxDH1x3c7onm2azS/BI1FoeBPiuYxeVSTibByiV3yRFFsv93HEs681hv61yW2zv3DmvH5GqAfGx/hVc6Znyd3mHMtQzBGWr58zl/9G6YrRsyC4+R4ecmf9IaNpxj4vP52O1Z85LdnCXxdxWBsOBmYzi9gg8r+S4TA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zzvrDuwjiq8ys8I1XBB5c1pjGKVH06QNTqdKD8KSLSU=;
- b=BcYwYU/Wlr+iohKG7TFv0DcBBvQUFUF1BmWzJ/65jFYvoiIP2t7gU684oc3DzzYPhVQLA8dF9GPUJwa1cKWkcK+6G9HDRxhkelrS1ZvHdASWSvyggwhny/7nH8OB69bQ/qKHTyLm9geukPqgyT7a2AwbhDG1xzBlv54wqhm3WRk0yLOJwnK35wOYvAKosQyBZS38eFAdbR9BV8Gml3SZ70Rm3DDiVfhub3RMg8u5+UM8+/4vZPzxV11mnf/vphpDsTO1SyuU6SkDgVN/mwdAFDAwhzygIhnvEqlatIZz4MJAStgyABGzjOKup/Vsi8NDEWkydNTrVODaRDfHlfxlTQ==
+ bh=/rIoJxrerU7jCmZzu5HhxCKtHFRn062UQl+vKfUkM8I=;
+ b=TKSDp6e3guRxeFqW6VsWPlYFacR/gJgP4YWxMh1dmYutkc7nF+jcNPulhnxkWJarmGjETPvEAaNA68MvcBeRWTXqL+ViAPmNVocUs7BdBUGc2jjtzRw95RXkBN73DXvVNI5bCmbrLp6ZKMziXXrJnAlecNRHMi08OLRNxg/8wZ+0HB6HakZI5qO+oJClRVqUWKx+RKJ4zRkUx1nmzky5RgccnFzT0jzxFXzvF6zk0OJ9NEJAoIdAH3fD7xrPRPG/uJ0TFZvyi1CPASc3vv+YPa2qvA1lmt5wNbMPgcpwG9SOZrF5EaidcfBNirySnLoY5Y56ZxbwBp/+eXAhq58byg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zzvrDuwjiq8ys8I1XBB5c1pjGKVH06QNTqdKD8KSLSU=;
- b=nPh+zCZ7wI0sET6GbOJV9jR5+XvaCmeE4uRZcAIBUMzdi/lF9LdZrKFePiGXg4Dnqy2zqV2vZF0gFNLmCH7QxGXw9qLRfjYzEjBT0tMZKbI1iQEZRaLAHh2tdQb6AWBuGqS8vIORlcyFskCCWCuPMf8BpbKg6wBv1ciQWZknB9c=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by SN7PR10MB6497.namprd10.prod.outlook.com (2603:10b6:806:2a4::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.44; Fri, 9 Jun
- 2023 20:49:45 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ecbd:fc46:2528:36db]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ecbd:fc46:2528:36db%5]) with mapi id 15.20.6455.030; Fri, 9 Jun 2023
- 20:49:44 +0000
-From:   Chuck Lever III <chuck.lever@oracle.com>
-To:     Tom Talpey <tom@talpey.com>
-CC:     Chuck Lever <cel@kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v1 4/4] SUNRPC: Optimize page release in svc_rdma_sendto()
-Thread-Topic: [PATCH v1 4/4] SUNRPC: Optimize page release in
- svc_rdma_sendto()
-Thread-Index: AQHZmJ0NA0ZICmeJcUqRKW78JwWSNa+C8XYAgAAFGgA=
-Date:   Fri, 9 Jun 2023 20:49:44 +0000
-Message-ID: <17F60F35-FA54-459B-BE48-07522D951675@oracle.com>
-References: <168607259937.2076.15447551371235387735.stgit@manet.1015granger.net>
- <168607282316.2076.15999420482159168604.stgit@manet.1015granger.net>
- <7ae922eb-511b-f5af-04fe-f68cd5b19237@talpey.com>
-In-Reply-To: <7ae922eb-511b-f5af-04fe-f68cd5b19237@talpey.com>
-Accept-Language: en-US
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
+ MW4PR01MB6243.prod.exchangelabs.com (2603:10b6:303:67::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6455.33; Fri, 9 Jun 2023 20:49:51 +0000
+Received: from SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::17e9:7e30:6603:23bc]) by SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::17e9:7e30:6603:23bc%5]) with mapi id 15.20.6455.039; Fri, 9 Jun 2023
+ 20:49:50 +0000
+Message-ID: <dd9f65ab-d54f-7830-8043-57ea66c76149@talpey.com>
+Date:   Fri, 9 Jun 2023 16:49:49 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v1] RDMA/core: Handle ARPHRD_NONE devices for iWARP
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.600.7)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|SN7PR10MB6497:EE_
-x-ms-office365-filtering-correlation-id: f7a9d911-d077-4769-3dca-08db692b0e69
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dZOSb4jaLRbQa8nLi49JMV4JPoPP627atHXypYj6+agDtEZYslAlHSkrO4bClElEVJ7MSyaaTGHK2VbnshrXDY0h+oovd32RMjxvMc+Yl7XMlyQgWv6C2Xu2DWyhePtnkaolEMnFejrbCElPT3K1xxc9wGowy5vgbtMeC1xo9wqOFzzEwCA8+lWVxmcoZkoxS8tJAZM8yk7d+cpr/rCGjLPDCiEug+OzGxfLqtkUA+U9l/x3ITAegKpb6Phhp1VE77J1QphcmuF0wnIs/yUUfGLcylIXgpTw79O+4/5oDXs7Vr8MlXT7MxQglp41PHLo4/ZCf0bfGCqF7ozQ7Co3jCdp9IJzatRQvNokZKfejMjuweSTi/aTeVX1pjYXe2N8LYKK4E2LyRPt8VOBBBElCt4XxOlspKGyamqsDzHgYl1SPMtZFcBI6Y1lqcEYQ1a6dBKpJV240X59d//EUh1RIYwYyS6cDWT3JKhQ2/0JctZ+khXhiAR9nQDIie8mLtizQqmW79ZBuuw+2QOt2jbK8LxCSfQxwqE67zjOrQ75+SKJzVmOfALIt1G7lEzCAZND24DyP6zp1u7c41ACGZbutt5ZiQjsurwLtBrISH5xNQEd0Km3RldD2tO72vUgIn5itaHUyIQhOuOsY4SILmjaqg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(376002)(136003)(366004)(39860400002)(346002)(451199021)(316002)(91956017)(122000001)(38100700002)(86362001)(186003)(38070700005)(26005)(6506007)(6512007)(54906003)(53546011)(33656002)(478600001)(36756003)(8936002)(76116006)(8676002)(66476007)(66446008)(6916009)(4326008)(66556008)(64756008)(66946007)(5660300002)(2616005)(41300700001)(71200400001)(6486002)(83380400001)(2906002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FTLmHDXuBv2Z1jIJye/TL42PaDmf362a+LLRfDZK4HNMi7b+AppnW5e4USKC?=
- =?us-ascii?Q?1r2EguM4tJ4/Z0IkghNnIA5bczIdaouyD6nX0wMTouFTJUUa3IlayLpnZv/h?=
- =?us-ascii?Q?wwRtwozkYRQkxeMCuGAcFxk+wdIjHX/yJyUvwxPVnqg3FOmn3lFuGj2U+z+J?=
- =?us-ascii?Q?DOGsVhsmU+GLS6pHBcf/75AXNNNCgt+FkuoLN8qo6pyyUUoujgFffXTa3WbD?=
- =?us-ascii?Q?C3ruyzjesQniSvSs9AzKCHTQwkEkm6KToOMGSW1S7srFdwAEgpnB/8kSOh+Z?=
- =?us-ascii?Q?lZfeoma8jIGnLECeyMGbv2+bxEl/Rq2vmtO48T25FO/cRfweHLVeVX73Ae0+?=
- =?us-ascii?Q?NmJzfBKPgOdi2OnCELuPgFSxrUiolaEp3J1xGoVu1FEA9d73VlWaSMbP4A3s?=
- =?us-ascii?Q?LTUj164aMJw+dzGn4j4UPAzkWEHnhTpjrLS7ZuOir5RP9WZAfLsiD9rWyy0n?=
- =?us-ascii?Q?Ehk3sEduE42gGoYF5pIuUXlJSci5ebNwazCOxDffrBw7+BsaD5kysFhhzznL?=
- =?us-ascii?Q?yg9wl5kg50ORQo18UbcOnsBzvqaEjFzxPxRDv3M/N9PV9aXILvvuKILU56xd?=
- =?us-ascii?Q?kc7Cy4wfPqeyjd8bo0Z/6u0MlbtlYHSY0LU1oZieRN4/o/nqsfWGBIhU5PKk?=
- =?us-ascii?Q?+/GuXtqHuowNMtWAdbU9y+ce0/18EvgR1D0O1IaDW1DwyFgpk0LZ0SRPpdWR?=
- =?us-ascii?Q?bLnbnvD6FdnoVF096o//AqOs4ZukdXuIF7547OH/gtGC1Oib0pWSQLKZrRyN?=
- =?us-ascii?Q?CSC2YgkPLHojEXTegLJ0AC1IooFpkFZPzywR6NAdZKzLz0ZDK9l7WR5z6dLG?=
- =?us-ascii?Q?Sk9Y0PcoTDOYfd2ti1A7ER8fNhtdymq00VTF2tFmKfPRpCuJCR+gnM7JxeHI?=
- =?us-ascii?Q?6S1o5J4Y6Gj+G3POsaWkz8VfIGJnSIkVs2qtoWnoA6QjbawAUagKIfqY7Csz?=
- =?us-ascii?Q?jqJgzrXGnThYlqeq8Srh7UnAcOC1r4HDjDXh82UEK+DuPjCliXWTcYnMsz/D?=
- =?us-ascii?Q?pVAhvEpFbNINZb0+cExcFO+EzT8MyF0VIlhG7/Sgepioj1jpfRLE0PGawrQM?=
- =?us-ascii?Q?DoIzfjLSi8q6qkKHxnIDwSaLw3vtsaCwiCyBbAxy2q5oZ5uW1wkOYj7klFG1?=
- =?us-ascii?Q?0hDHVCR+hAdVmKELA6L5KF7UEWqRL/vjFHmWqsv37rBFrdiIwK1YbNYxbSGY?=
- =?us-ascii?Q?gVug8sZYPlDk8sRT3j7SFSnqogFhJ1vjryR1h3xMSfW9rF0O5JXELhA6jde/?=
- =?us-ascii?Q?GtxYP/lSHlpd/h+oV/6iIbD9SJ4w50DIg5DYzTWG6LsRrmqvLJHM3NANEXCO?=
- =?us-ascii?Q?TCR4yVoEdS25VIHJLOxQI9e2gUQ/XKPR5603volhKvcidmpNNNUTV9BAbpsH?=
- =?us-ascii?Q?Cy+d9X0LQ10AYSE259ZgXPv7nAJO1Y39kDCa7FM1j4kupnqhNh9dvqMs+Bk/?=
- =?us-ascii?Q?Da5IzNSXyuacuR1fAFbO7CF3ZWbyebirwI1ivLoTrFXgU7FqXV+xSvGhmWnU?=
- =?us-ascii?Q?Ci9WmMQi0eWAoeZH+CAdb6NIAGlmIjR1+PzV3W23LzVXsW+/ETEerqrnh5C/?=
- =?us-ascii?Q?Pl5REOT3beMbsatk48LKo5gSN4ZdwaEL1sQd7x4nPGprrQ6VwvPHlVdAaZ3c?=
- =?us-ascii?Q?Wg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B35137E6F659F24281A1DF6F8EB38787@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+To:     Chuck Lever <cel@kernel.org>, jgg@nvidia.com, BMT@zurich.ibm.com
+Cc:     Chuck Lever <chuck.lever@oracle.com>, linux-rdma@vger.kernel.org
+References: <168616682205.2099.4473975057644323224.stgit@oracle-102.nfsv4bat.org>
+From:   Tom Talpey <tom@talpey.com>
+In-Reply-To: <168616682205.2099.4473975057644323224.stgit@oracle-102.nfsv4bat.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR13CA0008.namprd13.prod.outlook.com
+ (2603:10b6:208:160::21) To SN6PR01MB4445.prod.exchangelabs.com
+ (2603:10b6:805:e2::33)
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: q18xlkrH9RxOnnQEniaJro6YUJ8OllPmpMHXLNOnQH3xqpRSyc+6uiBO6zUzkQ5XxBW0MVnbSmmbwi70pr3/NKhKJX2QUXzC898MS4bPQstPz8n02152LNvakeB2+QCQkz4mQbMdtUvn1NTI9n/VgprcLg6kO7SdST0bSJj9WqlxN0dmsRK9Cm/kZCuaoOgDA2v3XkJRsdoz9baL3d1Pt0x/QoicTx3zLbDqJdki3YLyl/tuTfVYdxJDnOxne2JNcC01IMXI4pDt1X4G0lZxCVRRIkRy96UtgQH9qhiR8Xvo7d/qLkGtpmP5CqF11r4skKTx+HUHBqhkg72LbXivwdSuRoRyTgChlyaRG9Tl9htBr8G2cHXmAJte0CjAQ7fzFwKo6dXeG/jReqEIirvc03Uz0j3XqzLwZU/zgnGnUpZ8RmtKSNoeOuPv0sOWdJOcnAx00maTl7iHP0ER2Hp0qZuP15MHt1d5FSIWR7iP/twemIKTz98CXOsVIC6xuytt/Yahcq0hqBhEMVNrQhQdMMePlxJewbNLkQAxi/oVHweQqtrNzcGwzUoWL4GgbgQDBiA5jsxs0GubgMpZRiCpi1anB/MjE7fTNnzFLNbvKK+J91eQdaKzK9LJ5GS+MrSlb2CPUGb37DLgSCEs8HArrxv0Y6YbllMdDKDjVtciETnaqotj3O+k85LamiacUjFMfvPBaPoM9VWpK8A73Dgbhqaqp5QqhFh6nkgLK55/+lCMgflI6hAWCzjjPbhLZuxV2s+NdzlGp9bAZ2qIbDsUVHSHdXsoTklAQUgL8ap3LsfaTLZSEPTtz31eCwLb3W4C
-X-OriginatorOrg: oracle.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR01MB4445:EE_|MW4PR01MB6243:EE_
+X-MS-Office365-Filtering-Correlation-Id: df32bdd1-8935-4242-5993-08db692b11e1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jawA01RDwsKtL3flTifhxPZE01UoclVytHkYzvNUAX+kl/Yow8i5XjdoGe75aJFKh5hBzFQ0jFdjXibiorfJ9e94IzV3LedEAEmSR/AY9Mjrc9O0WxRa17K6Ym8Hbah98UmSxB7o802iLvk1FiI2zMRd4yeNWv/3AHnar2ODX2p1zTGcuSWoHFEbLgLJH+G0AHvLHVOPanc8nNp0qtF645Z2UvKMtAHwF4Q7V3D4DJ2WnlMOZrKxrOJhNy+G8lva1dKcvDc+79jxSmkU4FVPybU4CG122DBX3gPD8Mk0mX3xENmY6cipddEpgI4eTG5JK9f3wLSifcPFdTHzHOHkITvD8qokfMXRKQWCYPG6ieMHHlSiHSX5SUBTcaBdausnftf7sU7euYRgXW/TCrRHGCVjQ52C0gskjHhJVb24vfSR2CAkkRwHjUPQAN4RPbbtGTN90e5v70kNQJn98UJwZAe/OYejQ2YYrFvvVnktDE7MX8red6IWyJRJ+aaWrd8HaAusm2o8j4FK+js8NmM7A8YSUOA6rqGdPnLa6FYH+Zd7396T+Y4SwdM+JKYzrlr6lBTdUoDca+jI8nBRDUb8zkiG1mfy7E6vaB9h26rz3ZkEibRsr/Jaqtm/U6KbqAbHLt9DrX60zmryvQNAXdGHpg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(39840400004)(366004)(396003)(136003)(451199021)(478600001)(5660300002)(8676002)(4326008)(66476007)(316002)(8936002)(38100700002)(66556008)(38350700002)(41300700001)(66946007)(2616005)(186003)(83380400001)(6486002)(52116002)(6506007)(6512007)(26005)(53546011)(31696002)(86362001)(31686004)(36756003)(2906002)(66899021)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WVFaUi9nTGhSOFYxSUdBT1RlaVJNQ3gwdU45Rlg3TnM0QlBGamdKbDJVT0Nx?=
+ =?utf-8?B?b2Z3c0tzWGNkSFc1TFIrNzNFdEZTQ0hGSDRRVTN6dzFXNmxDRFh3ak5LZENX?=
+ =?utf-8?B?OU5OTC90SkFEQ3g1RjhFaitnZTEvTzhZRHBkbFhPQnRDT3Z2bUtNY1I5eFFY?=
+ =?utf-8?B?enFtMFZDS0o1YTJFVmErOSt1Ukc3QTRLRjlsb3ZOTmN4aXI0Nkt1RDRHaDlu?=
+ =?utf-8?B?bTBGcERXNFlJTUVsMDlYbElZUDZrZzNmU0pJVmZkbzFvazQzVVZpZFRWRUNS?=
+ =?utf-8?B?SkpPUTY3am5LWHBMQzh0eGxDVXZBVHFpU3VQSWphRmJLS0hQczJFN2lVdHF4?=
+ =?utf-8?B?Y3JkeXNBcTZSa0l2NDdDZTBlMGV5TVRoMXcrV0hkOXMvZ2lDVkppSWFOcWtL?=
+ =?utf-8?B?ajQzTG8yYllrL3BwWm5yQkJ2RXlyUStYNmRPcjJBU0wyYVN2d1F5ekhMbzg5?=
+ =?utf-8?B?VkdOZE90bkhpVHZ2dWIvNHdVQ0g1cDRWY0pOL01yWCtLRnBER3BCNXJSdnVS?=
+ =?utf-8?B?T1lSM0FDWTFDQWpxRkZHSzBkSlVlcDZWSml3QmoyMC8xOVIyMmgvMURhTVli?=
+ =?utf-8?B?Ty9jdjRYU2E1aytsQU04NHR0dW5VNS90M0M4YmVXYnFYenJOSW5CU1ExTE5G?=
+ =?utf-8?B?a2t5WllmVENDZ1N6SU1UNitLZEdxdWpSM1BVbUUzOS9qZGh3alZLK28yODJz?=
+ =?utf-8?B?RzRLMmdSVmQvQmhDNGdiRkZqZUd5WVdhaVpQNW9DQkZzQXRLRHVmZGlSM0NX?=
+ =?utf-8?B?bG8yVTcySmowR1dqRnpzTHZXM3VLeFpPL0x3dVZQY2lhTDltKzkwQUhrOExw?=
+ =?utf-8?B?aUpIUFhlNjA2RjBaRDBzRWhOdFkwWm1VVTJ5OC81RE5DK2FwZHljSmo3aS9t?=
+ =?utf-8?B?dHU1RDRzdDI5ejhoMU41ZE8zUHFyTGdDVXBKZ28zaDVSOXNacEpLblFQTzlJ?=
+ =?utf-8?B?TzEyYlB5cWpNODNoMzJTWFM1dmhyTmtKbXJEZThTR3V4d0RXRFNkei9lOXRJ?=
+ =?utf-8?B?d3pUeFF0YzY2NWRueXliVzZGb2VteEhFcFVlb0Y4TWFlcmNMZW05K0tVVHVH?=
+ =?utf-8?B?dmdBdVVFWTRDam5nWW14dUpLenRJWnV4YUhMKzQwUmVpMWczN2JsYWc3NWJx?=
+ =?utf-8?B?VVp0elliZUJ0Q1ZTZjZmYnlRdDcvS2dWZzVTVVhZOTVmV3ZabWRzOGhEMmVD?=
+ =?utf-8?B?MGNxc1ZaeTZJREdiNVlqaGhTZmpzQnFJZ2xGSHY2R0dLaktjUzBKYXFIT29E?=
+ =?utf-8?B?Ulp6MWV6MzBLZXI1aUVWVHBYZTVVZHRGRzFjc09kcHM4K3FvcFBXMjlGOTNj?=
+ =?utf-8?B?ekY3VndHM2l5YmdoVnNhUUo2eDlQN3NVYS9WMWtES01pZFgzS2pud2xzSWF5?=
+ =?utf-8?B?S00vamlKZVkxZEZnTWdxQnFka3pEZTJwQVl2TncrQ0xadldXaXhEbjlMQ0hM?=
+ =?utf-8?B?Q2pMOEp4TTZBYTBSVHQ5QU1Pa080akl4QW96TU1CeHY5NnUvcTNFdXhVYmhS?=
+ =?utf-8?B?cll0enYxZlJiUlZaWnF1UHhwNlZjWS9vMm5TdmlmdEs1ZVlTV2hJTGVNdEla?=
+ =?utf-8?B?V1duelU5Q2dMUWZLeFBZckhXdjAzMzRRdGVjVlNQN1FwMUNpVkVWNVVIRlQz?=
+ =?utf-8?B?WEdTSFcvTUhicEFOVTdzdURoSkVjcHBlOTE5M2YyVzJ6bW5PSVlOcDBMSXY5?=
+ =?utf-8?B?M1dBQXY4dGRYN1RNTWlyRy9HTTRYUGpnRWdFNUZJT3hsemV6b2NOOFNsMXRl?=
+ =?utf-8?B?YjhFWHVlRWxBOEYyWS82NzBxSWlSRXFGUFNBZllZaWw4aC9FNTY4RHFxNExn?=
+ =?utf-8?B?eDFpUnhtZE9TeC9Wd3pVY1N1OFcvbGpKazJ4UEZFeEVkMEhKbG9rbElTWUpC?=
+ =?utf-8?B?WnVvTnJHemhQU094SndUWmdWNVk2YUhyY1A3S3pXL1ZsZVlxSDRuSTAwcmRR?=
+ =?utf-8?B?UDN3THlkMVRTeEx2cE5reVJ1ZFBCMlZjOUs2emV2UHZNUkhNTTRPTE95eTc3?=
+ =?utf-8?B?QllYUkJ3dGN1Sjl5M1VoMnZGZ2hrQjVZK2RCMFpDYW1FRFNuR2prbzB6ZElJ?=
+ =?utf-8?B?UEhJNXpSWGhiU3hNMXB4Tm5aSzZKQjdMZnFGZVY1QlBRQmp5WGhCMC9QT21O?=
+ =?utf-8?Q?4kDvBpt46MQ7yJtOniV3jnuLx?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: df32bdd1-8935-4242-5993-08db692b11e1
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7a9d911-d077-4769-3dca-08db692b0e69
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jun 2023 20:49:44.8780
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2023 20:49:50.8751
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UZypubVFRCr9ej4NiS8XqpXxtDlFvKFkCvhurAy9TrrZfejOAQn1ZB7SguSztzRHS7qoQVUnUHo3wIpig4T+LQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6497
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-09_16,2023-06-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- mlxscore=0 bulkscore=0 phishscore=0 mlxlogscore=826 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2305260000 definitions=main-2306090175
-X-Proofpoint-ORIG-GUID: 2HKhNuL2vcwW8a9gLNy8ZgNCxknCq2w_
-X-Proofpoint-GUID: 2HKhNuL2vcwW8a9gLNy8ZgNCxknCq2w_
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JiRG9ULVe5lF6DmwX+DDUsJ9f5zlooNgi3VL2cwypFr2gHS8hrIX9zJAuI/LE5KT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6243
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -154,67 +116,56 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 6/7/2023 3:43 PM, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> We would like to enable the use of siw on top of a VPN that is
+> constructed and managed via a tun device. That hasn't worked up
+> until now because ARPHRD_NONE devices (such as tun devices) have
+> no GID for the RDMA/core to look up.
+> 
+> But it turns out that the egress device has already been picked for
+> us. addr_handler() just has to do the right thing with it.
+> 
+> Tested with siw and qedr, both initiator and target.
+> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>   drivers/infiniband/core/cma.c |    3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> This of course needs broader testing, but it seems to work, and it's
+> a little nicer than "if (dev_type == ARPHRD_NONE)".
+> 
+> One thing I discovered is that the NFS/RDMA server implementation
+> does not deal at all with more than one RDMA device on the system.
+> I will address that with an ib_client; SunRPC patches forthcoming.
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index 56e568fcd32b..c9a2bdb49e3c 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -694,6 +694,9 @@ cma_validate_port(struct ib_device *device, u32 port,
+>   	if (!rdma_dev_access_netns(device, id_priv->id.route.addr.dev_addr.net))
+>   		return ERR_PTR(-ENODEV);
+>   
+> +	if (rdma_protocol_iwarp(device, port))
+> +		return rdma_get_gid_attr(device, port, 0);
 
+This might work, but I'm skeptical of the conditional. There's nothing
+special about iWARP that says a GID should come from the outgoing device
+mac. And, other protocols without IB GID addressing won't benefit.
 
-> On Jun 9, 2023, at 4:31 PM, Tom Talpey <tom@talpey.com> wrote:
->=20
-> On 6/6/2023 1:33 PM, Chuck Lever wrote:
->> From: Chuck Lever <chuck.lever@oracle.com>
->> Now that we have bulk page allocation and release APIs, it's more
->> efficient to use those than it is for nfsd threads to wait for send
->> completions. Previous patches have eliminated the calls to
->> wait_for_completion() and complete(), in order to avoid scheduler
->> overhead.
->=20
-> Makes sense to me. Have you considered changing the send cq arming
-> to avoid completion notifications and simply poll them from the cq
-> at future convenient/efficient times?
+Wouldn't it be better to detect a missing GID, or infer the need from
+some other transport attribute?
 
-That doesn't work for Read completions: those need to wake a new
-nfsd as soon as they complete.
+Tom.
 
-Send and Write completion don't need timely handling unless the
-SQ is out of SQEs. It would be nice to move that processing out
-of the CQ handler.
-
-Otherwise, no, I haven't considered leaving the Send CQ disarmed.
-I assumed that, at least on mlx5 hardware, there is some interrupt
-mitigation that helps in this regard.
-
-
-> Reviewed-by: Tom Talpey <tom@talpey.com>
->=20
-> Tom.
->=20
->> Now release pages-under-I/O in the send completion handler using
->> the efficient bulk release API.
->> I've measured a 7% reduction in cumulative CPU utilization in
->> svc_rdma_sendto(), svc_rdma_wc_send(), and svc_xprt_release(). In
->> particular, using release_pages() instead of complete() cuts the
->> time per svc_rdma_wc_send() call by two-thirds. This helps improve
->> scalability because svc_rdma_wc_send() is single-threaded per
->> connection.
->> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
->> ---
->>  net/sunrpc/xprtrdma/svc_rdma_sendto.c |    4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->> diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma=
-/svc_rdma_sendto.c
->> index 1ae4236d04a3..24228f3611e8 100644
->> --- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
->> +++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
->> @@ -236,8 +236,8 @@ void svc_rdma_send_ctxt_put(struct svcxprt_rdma *rdm=
-a,
->>   struct ib_device *device =3D rdma->sc_cm_id->device;
->>   unsigned int i;
->>  - for (i =3D 0; i < ctxt->sc_page_count; ++i)
->> - put_page(ctxt->sc_pages[i]);
->> + if (ctxt->sc_page_count)
->> + release_pages(ctxt->sc_pages, ctxt->sc_page_count);
->>     /* The first SGE contains the transport header, which
->>   * remains mapped until @ctxt is destroyed.
-
---
-Chuck Lever
-
-
+> +
+>   	if ((dev_type == ARPHRD_INFINIBAND) && !rdma_protocol_ib(device, port))
+>   		return ERR_PTR(-ENODEV);
+>   
+> 
+> 
+> 
