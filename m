@@ -2,183 +2,253 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E99729A51
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 14:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AE4729B6C
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 15:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238385AbjFIMr5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 08:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51322 "EHLO
+        id S241082AbjFINUA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 09:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240650AbjFIMrc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 08:47:32 -0400
-Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020018.outbound.protection.outlook.com [52.101.61.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9022136;
-        Fri,  9 Jun 2023 05:47:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KARYcr+kxKs9b18YepAhMJnpqOxunRj24pJUXq8iGXDFSzrscV7swD1lDkn/sWsER9YGKDHgnT3V+efgEYVig7NMOBQW5PfWzVATZGpbk7eF3U4Jab0CBGddW/17+N0TKc31dQRD9UPQKorX6wehgTikt9kGczqtGZ8hWaQ07G9f5Ifihg9PnWLmwig8Z8qR2ianwtsyVTrJZjrXZ5WH55aQW0Mi8BqJufYR5iNfxlOgSA+nfS+uNek/uwKkagMjfiHeGk4yTPIMM4Magt2Aecymlobly6CQLTQMLG+tgOYxOO9kJ8cvjL8QrnR3b+7FYcAIwkmY9wHcRkVYOufcwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q65oAac/4CkSujD77p+jm27aO2fBUlyIW/TMumQxvO4=;
- b=lxiKdBgmeFIWXpT3FY9GpFrO3jyaozinO/1NSB/OVK5IGQ7ZmEoRzU9iaC/n7pqPXGvQ87LiMhxIAQCAk3TK6yrKLEdmpt2MW/zjVp8U6e1oYaGlnFrQjbLcSii9NK74qZ/fejmlCEU3MPyyNgOKkQ6Vl3RN9Uy8ppG8tJoq1Fq9ISD8BSwI0v6Slz3b3KOBxaUYHR3kUHNrQ4r75FZujAHQG1mbfAr3SAsuh92gK8u8Mewfu6M4F0ekjUa0/WGrvXBxJVf93UuSU5QwXaJTlPna1J19WdNte8BhZx613JTWdgTSpj4BmGERPaFZ7h7+oRcF/RnKxYzMQmwxQavo9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q65oAac/4CkSujD77p+jm27aO2fBUlyIW/TMumQxvO4=;
- b=YoFiJ2Oqzg03amzIrXTuGEFxLTOJ3KUpbhc/6vjVgwsvrr9U0twhNq1rvn2ezGiP22nbBdzFB+gepDP4XW7rdPH+M7rj57qz52nYNqTNF+cjc8GZx7Dt2zRSpPAUagEIEcBsxvql2Du3HGbdpmxzBnyoSqdUAhhSByewp8ohSCc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
- by DM4PR21MB3056.namprd21.prod.outlook.com (2603:10b6:8:5c::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6500.6; Fri, 9 Jun 2023 12:47:28 +0000
-Received: from BY5PR21MB1443.namprd21.prod.outlook.com
- ([fe80::4eff:a209:efda:81d4]) by BY5PR21MB1443.namprd21.prod.outlook.com
- ([fe80::4eff:a209:efda:81d4%6]) with mapi id 15.20.6500.016; Fri, 9 Jun 2023
- 12:47:27 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
-Cc:     haiyangz@microsoft.com, decui@microsoft.com, kys@microsoft.com,
-        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
-        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
-        longli@microsoft.com, ssengar@linux.microsoft.com,
-        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
-        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next,V2] net: mana: Add support for vlan tagging
-Date:   Fri,  9 Jun 2023 05:47:17 -0700
-Message-Id: <1686314837-14042-1-git-send-email-haiyangz@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR04CA0086.namprd04.prod.outlook.com
- (2603:10b6:303:6b::31) To BY5PR21MB1443.namprd21.prod.outlook.com
- (2603:10b6:a03:21f::18)
+        with ESMTP id S240307AbjFINT7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 09:19:59 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AAA1A4;
+        Fri,  9 Jun 2023 06:19:55 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Qd1pD607qztQW8;
+        Fri,  9 Jun 2023 21:17:24 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 9 Jun 2023 21:19:49 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        <linux-rdma@vger.kernel.org>
+Subject: [PATCH net-next v3 1/4] page_pool: frag API support for 32-bit arch with 64-bit DMA
+Date:   Fri, 9 Jun 2023 21:17:36 +0800
+Message-ID: <20230609131740.7496-2-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20230609131740.7496-1-linyunsheng@huawei.com>
+References: <20230609131740.7496-1-linyunsheng@huawei.com>
 MIME-Version: 1.0
-Sender: LKML haiyangz <lkmlhyz@microsoft.com>
-X-MS-Exchange-MessageSentRepresentingType: 2
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|DM4PR21MB3056:EE_
-X-MS-Office365-Filtering-Correlation-Id: 94488e2b-4259-4a12-7994-08db68e7ada3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CePopvVD3k4GKOKb9mDzCJ5nbEzGGc6Q6bDIyS1CTH7CZ0ZRFbRO0TvwmOVcAFKL06bprqGUThv4QG8h8CnHln6/lFr8rt+YUk/neu2ltge0B0nYHPKT37hH4ar2D63hGLwUMGTw2br1rrW1eJflujwWRBMoLcdV0jxzwu77c+qHETUypDN+Vap6Em+RVQZkj/v2Y7tJPgI4DI4lzebs6H3zOg5aU0j7wewhN8I5QnaN1kTbwTXPi3Z/HxbI/8TrsXtgsr81vutqyMeZrIidleJYbJDgGlMmNxNwVmNNfPGC9+0t7P7poYntAhwqPAKE+TvNquUIucWe0jyI9/n2yAKrCqiDrX9bIZlzXC6T7TOZYoX2BNRekkymkYhlmN0696QjSDmoGZDFRF1rFJSAk1/q3MGwVnTrpM0fDzR/WCj1IyUDMjEK6TqYx74yigspw4VWylJr6cVAIghWy+Pg472EO4UuY0tBfFa+uzVhXWX818/XzpA+LKy+kd0uU2VFpSrp+OwZkVajRZh20cPdr/zPM2geOXhGkvW65sEcFEkNsQlV4OSyq/H58etqrHwnp9zgtARoq6d3UG6HadUiF/YGEJQHBCpTD33xZNRMqdpir1nGjVYOpRs6JXAbpN/PoElq+NbQPqzGX1pDetfckAcDYM9bjCsXzornKs5S8F4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(396003)(39860400002)(366004)(346002)(451199021)(66946007)(36756003)(7416002)(5660300002)(2906002)(6666004)(7846003)(6486002)(186003)(6512007)(83380400001)(52116002)(26005)(6506007)(82950400001)(478600001)(38350700002)(82960400001)(10290500003)(41300700001)(316002)(66556008)(2616005)(38100700002)(66476007)(4326008)(8936002)(8676002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5+2gyRh2pA5hCg8ywYCUn9d7a21UEDTTz32wRkugP9Dw61Bv7yPijmdRZKMd?=
- =?us-ascii?Q?M6gAMLdHHvj5AUNfnPqx73Sp1+zlaMApqlA9RBXJr5oOtps/SSmCNYsAeEPd?=
- =?us-ascii?Q?iy7w6XXwBZX4am6sddB2OB/ubUSQBGG4TWZsIMOeXF13PsdQ6jAAy7QNbC9c?=
- =?us-ascii?Q?fYqREOJUD0bRfCM4Ju+bIsryE9HC2oy+y4ixyPBd1iI8cbcWolakyGhtVLq5?=
- =?us-ascii?Q?Y55tSZM/Wh27xI+dDPUBfRDTNQnyyqh+TDJzk5oVsyw7rnHx3AgIatHI3Jxb?=
- =?us-ascii?Q?tQbvY6B+YLDjNJzr5jOWpxdfQcngZBLkbovdlG8mjh5nuP4JrN6lZHXLkFxO?=
- =?us-ascii?Q?P6O7mAHcazqV6f67KG92Wp/d9oWPNB4oeRV2EQeUouJPlxm2ikKGhbzXZmbf?=
- =?us-ascii?Q?+LBWqDUeAtSxlOCczC/Ih6YIXtM50C8pkClXa+0xZaS6IdTa80pTnDR3PSIG?=
- =?us-ascii?Q?GpFz6RG8MqnEY+CFYUWzshdZBIrrUo5qFkdpGTJ/ZrNAcRuwphDj219DUMzb?=
- =?us-ascii?Q?pttm/QDy/AqpeSFeCpskPwCNwrKEARBp2yxjrwcRW1fT4bFICUW/H+5fO65J?=
- =?us-ascii?Q?zrpOZRikrVQXLi1wdmO/IysOSMDLTChPBpIXtX9Uw/NGBSWdyWILDx6u2jZW?=
- =?us-ascii?Q?xtbMsUz7gqirV91vzlrQ69RNK5pSLcjngpnoNwczReu6/zlYk3werL7rOFtP?=
- =?us-ascii?Q?LH6GmJH6Vfs64jrQr/2ZpgO9wfLM0MqunFb0GujQ1GN+3gwxtU3UyrvO/7zW?=
- =?us-ascii?Q?GtLbMM36Wc+ZrhmzLchipXrCNpUUZdC3w02ZoC00kHaf7v2kbzoXJFHvTnKV?=
- =?us-ascii?Q?nJF1r9bsfqyrJT0kFcENYT2zP+XqrJzDuGDBaaEzeXnIlPD2E2Uy1tGdgYrN?=
- =?us-ascii?Q?/EgkrJnhiuF5bD+Jh9RspLvYWyR1vpIED+0CN88yDJftpgmSXojOzvvHieFV?=
- =?us-ascii?Q?tWFaZgYVeOMxjWfN1fe/nZPzGahk9QY+mIv0N74NCDr5P+NpwVyLIZNA9rKj?=
- =?us-ascii?Q?f1Y9/jM52RS26cMaa7q3gayMK37AAICvMxvJ36bOGJYG3jUhDevAG0VxoYWg?=
- =?us-ascii?Q?lwtY/HMW0g1t+A8FdQu4j0PSrT2ZqF6lQnD7Lx+RmC9qGwASNK0eAgZXVa4Z?=
- =?us-ascii?Q?rSVeaA/C9B/wiUvGJnet1wJ72C/YYrdTOGNLHiJDXhK8PyN6P7XnRJ74ux7v?=
- =?us-ascii?Q?oyiI6z/Ji+GtqTBFxoqkReCRgRzqrXREpGSxm4/DI+gAWtOilSKmh0ZefFGt?=
- =?us-ascii?Q?w1k45DJtNkPNR8eJu3iRPs18xfgX5yVXIv2mU9FY3cHPArGmO524FkbxZ05C?=
- =?us-ascii?Q?wK8lrkkOAx6CGt4APGz3OlxPusPSwb22evOKYV7yv11nQS4uEd18ADHMq/HV?=
- =?us-ascii?Q?dI/K46+z3uQxA3YZgTE8loCice1LkZtRDBdl9cyXH94/E8WNbfaBLUgll4Mt?=
- =?us-ascii?Q?ZMl013aGtl9ZyEVAYL/oWphvmyMq6itFlGuh5zXL53NAbmF8UPobsxUQecWa?=
- =?us-ascii?Q?siZlMTwahnV/T+FMvJM45XS2dyZN2JlIuudVhMs2CHIWpkS39OzCBXUguVhR?=
- =?us-ascii?Q?D6NbiDzfkpZfaWdyxQ6ZFHW+lHFtn4MLXIPzynUL?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94488e2b-4259-4a12-7994-08db68e7ada3
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2023 12:47:26.7101
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U5Ion2XW9DPzD4nJCtDZ8DNK3yYXbx/BW1DYRV/hKyywG8WAZRAvy6Xt5zJ1oFEr4Oa/iVHuuZF+mNEqFa8ZRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR21MB3056
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-To support vlan, use MANA_LONG_PKT_FMT if vlan tag is present in TX
-skb. Then extract the vlan tag from the skb struct, and save it to
-tx_oob for the NIC to transmit. For vlan tags on the payload, they
-are accepted by the NIC too.
+Currently page_pool_alloc_frag() is not supported in 32-bit
+arch with 64-bit DMA, which seems to be quite common, see
+[1], which means driver may need to handle it when using
+page_pool_alloc_frag() API.
 
-For RX, extract the vlan tag from CQE and put it into skb.
+In order to simplify the driver's work for supporting page
+frag, this patch allows page_pool_alloc_frag() to call
+page_pool_alloc_pages() to return a big page frag without
+page splitting because of overlap issue between pp_frag_count
+and dma_addr_upper in 'struct page' for those arches.
 
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+As page_pool_create() with PP_FLAG_PAGE_FRAG is supported in
+32-bit arch with 64-bit DMA now, mlx5 calls page_pool_create()
+with PP_FLAG_PAGE_FRAG and manipulate the page->pp_frag_count
+directly using the page_pool_defrag_page(), so add a checking
+for it to aoivd writing to page->pp_frag_count that may not
+exist in some arch.
+
+Note that it may aggravate truesize underestimate problem for
+skb as there is no page splitting for those pages, if driver
+need a accuate truesize, it may calculate that according to
+frag size, page order and PAGE_POOL_DMA_USE_PP_FRAG_COUNT
+being true or not. And we may provide a helper for that if it
+turns out to be helpful.
+
+1. https://lore.kernel.org/all/20211117075652.58299-1-linyunsheng@huawei.com/
+
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+CC: Lorenzo Bianconi <lorenzo@kernel.org>
+CC: Alexander Duyck <alexander.duyck@gmail.com>
 ---
-V2:
-Removed the code that extracts inband tag, because our NIC accepts
-inband tags too.
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  9 ++++
+ include/net/page_pool.h                       | 44 ++++++++++++++++---
+ net/core/page_pool.c                          | 18 ++------
+ 3 files changed, 51 insertions(+), 20 deletions(-)
 
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index d907727c7b7a..cd4d5ceb9f2d 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -179,6 +179,14 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 		pkg.tx_oob.s_oob.short_vp_offset = txq->vp_offset;
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index a7c526ee5024..cd4ac378cc63 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -832,6 +832,15 @@ static int mlx5e_alloc_rq(struct mlx5e_params *params,
+ 		/* Create a page_pool and register it with rxq */
+ 		struct page_pool_params pp_params = { 0 };
  
-+	if (skb_vlan_tag_present(skb)) {
-+		pkt_fmt = MANA_LONG_PKT_FMT;
-+		pkg.tx_oob.l_oob.inject_vlan_pri_tag = 1;
-+		pkg.tx_oob.l_oob.pcp = skb_vlan_tag_get_prio(skb);
-+		pkg.tx_oob.l_oob.dei = skb_vlan_tag_get_cfi(skb);
-+		pkg.tx_oob.l_oob.vlan_id = skb_vlan_tag_get_id(skb);
++		/* Return error here to aoivd writing to page->pp_frag_count in
++		 * mlx5e_page_release_fragmented() for page->pp_frag_count is not
++		 * usable for arch with PAGE_POOL_DMA_USE_PP_FRAG_COUNT being true.
++		 */
++		if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
++			err = -EINVAL;
++			goto err_free_by_rq_type;
++		}
++
+ 		pp_params.order     = 0;
+ 		pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV | PP_FLAG_PAGE_FRAG;
+ 		pp_params.pool_size = pool_size;
+diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+index 126f9e294389..5c7f7501f300 100644
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -33,6 +33,7 @@
+ #include <linux/mm.h> /* Needed by ptr_ring */
+ #include <linux/ptr_ring.h>
+ #include <linux/dma-direction.h>
++#include <linux/dma-mapping.h>
+ 
+ #define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
+ 					* map/unmap
+@@ -50,6 +51,9 @@
+ 				 PP_FLAG_DMA_SYNC_DEV |\
+ 				 PP_FLAG_PAGE_FRAG)
+ 
++#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
++		(sizeof(dma_addr_t) > sizeof(unsigned long))
++
+ /*
+  * Fast allocation side cache array/stack
+  *
+@@ -219,8 +223,33 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
+ 	return page_pool_alloc_pages(pool, gfp);
+ }
+ 
+-struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
+-				  unsigned int size, gfp_t gfp);
++struct page *__page_pool_alloc_frag(struct page_pool *pool,
++				    unsigned int *offset, unsigned int size,
++				    gfp_t gfp);
++
++static inline struct page *page_pool_alloc_frag(struct page_pool *pool,
++						unsigned int *offset,
++						unsigned int size, gfp_t gfp)
++{
++	unsigned int max_size = PAGE_SIZE << pool->p.order;
++
++	size = ALIGN(size, dma_get_cache_alignment());
++
++	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
++		    size > max_size))
++		return NULL;
++
++	/* Don't allow page splitting and allocate one big frag
++	 * for 32-bit arch with 64-bit DMA, corresponding to
++	 * the checking in page_pool_is_last_frag().
++	 */
++	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
++		*offset = 0;
++		return page_pool_alloc_pages(pool, gfp);
 +	}
 +
- 	pkg.tx_oob.s_oob.pkt_fmt = pkt_fmt;
++	return __page_pool_alloc_frag(pool, offset, size, gfp);
++}
  
- 	if (pkt_fmt == MANA_SHORT_PKT_FMT) {
-@@ -1457,6 +1465,12 @@ static void mana_rx_skb(void *buf_va, struct mana_rxcomp_oob *cqe,
- 			skb_set_hash(skb, hash_value, PKT_HASH_TYPE_L3);
+ static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
+ 						    unsigned int *offset,
+@@ -322,8 +351,14 @@ static inline long page_pool_defrag_page(struct page *page, long nr)
+ static inline bool page_pool_is_last_frag(struct page_pool *pool,
+ 					  struct page *page)
+ {
+-	/* If fragments aren't enabled or count is 0 we were the last user */
++	/* We assume we are the last frag user that is still holding
++	 * on to the page if:
++	 * 1. Fragments aren't enabled.
++	 * 2. We are running in 32-bit arch with 64-bit DMA.
++	 * 3. page_pool_defrag_page() indicate we are the last user.
++	 */
+ 	return !(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
++	       PAGE_POOL_DMA_USE_PP_FRAG_COUNT ||
+ 	       (page_pool_defrag_page(page, 1) == 0);
+ }
+ 
+@@ -357,9 +392,6 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+ 	page_pool_put_full_page(pool, page, true);
+ }
+ 
+-#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
+-		(sizeof(dma_addr_t) > sizeof(unsigned long))
+-
+ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+ {
+ 	dma_addr_t ret = page->dma_addr;
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index a3e12a61d456..9c4118c62997 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -14,7 +14,6 @@
+ #include <net/xdp.h>
+ 
+ #include <linux/dma-direction.h>
+-#include <linux/dma-mapping.h>
+ #include <linux/page-flags.h>
+ #include <linux/mm.h> /* for put_page() */
+ #include <linux/poison.h>
+@@ -200,10 +199,6 @@ static int page_pool_init(struct page_pool *pool,
+ 		 */
  	}
  
-+	if (cqe->rx_vlantag_present) {
-+		u16 vlan_tci = cqe->rx_vlan_id;
-+
-+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tci);
-+	}
-+
- 	u64_stats_update_begin(&rx_stats->syncp);
- 	rx_stats->packets++;
- 	rx_stats->bytes += pkt_len;
-@@ -2451,8 +2465,9 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	ndev->hw_features |= NETIF_F_RXCSUM;
- 	ndev->hw_features |= NETIF_F_TSO | NETIF_F_TSO6;
- 	ndev->hw_features |= NETIF_F_RXHASH;
--	ndev->features = ndev->hw_features;
--	ndev->vlan_features = 0;
-+	ndev->features = ndev->hw_features | NETIF_F_HW_VLAN_CTAG_TX |
-+			 NETIF_F_HW_VLAN_CTAG_RX;
-+	ndev->vlan_features = ndev->features;
- 	ndev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
- 			     NETDEV_XDP_ACT_NDO_XMIT;
+-	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+-	    pool->p.flags & PP_FLAG_PAGE_FRAG)
+-		return -EINVAL;
+-
+ #ifdef CONFIG_PAGE_POOL_STATS
+ 	pool->recycle_stats = alloc_percpu(struct page_pool_recycle_stats);
+ 	if (!pool->recycle_stats)
+@@ -715,18 +710,13 @@ static void page_pool_free_frag(struct page_pool *pool)
+ 	page_pool_return_page(pool, page);
+ }
  
+-struct page *page_pool_alloc_frag(struct page_pool *pool,
+-				  unsigned int *offset,
+-				  unsigned int size, gfp_t gfp)
++struct page *__page_pool_alloc_frag(struct page_pool *pool,
++				    unsigned int *offset,
++				    unsigned int size, gfp_t gfp)
+ {
+ 	unsigned int max_size = PAGE_SIZE << pool->p.order;
+ 	struct page *page = pool->frag_page;
+ 
+-	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
+-		    size > max_size))
+-		return NULL;
+-
+-	size = ALIGN(size, dma_get_cache_alignment());
+ 	*offset = pool->frag_offset;
+ 
+ 	if (page && *offset + size > max_size) {
+@@ -759,7 +749,7 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
+ 	alloc_stat_inc(pool, fast);
+ 	return page;
+ }
+-EXPORT_SYMBOL(page_pool_alloc_frag);
++EXPORT_SYMBOL(__page_pool_alloc_frag);
+ 
+ static void page_pool_empty_ring(struct page_pool *pool)
+ {
 -- 
-2.25.1
+2.33.0
 
