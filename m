@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 532547297F1
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DB37297F2
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jun 2023 13:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbjFILOR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 07:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
+        id S239401AbjFILOX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 07:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjFILOQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:14:16 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13AE1FDC
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:15 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b24ff03400so5463105ad.3
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:15 -0700 (PDT)
+        with ESMTP id S238684AbjFILOU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 07:14:20 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F657210E
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 04:14:18 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b02085bf8dso5185245ad.0
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Jun 2023 04:14:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686309255; x=1688901255;
+        d=broadcom.com; s=google; t=1686309258; x=1688901258;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=tCGAeAnDjRbpJU4Q7ejLwWgvSEb0nbz9W+JEEFo/ndE=;
-        b=VmIKyafqDd2NAx6P14H+0AHKfdcXBPTuh2Wx4HmEHEl0zIHmrZ+GPMBrCxMtvtuZUO
-         rbrAwp0VILPpMMzAsV58l4n9SujOogZf9B+rg4XbtyLOTOvaX3gQ2zx7laPZ2cvyE1Df
-         vGK8r6UVbtl+L/8TNBoAqjiOhf699erhwqdMQ=
+        bh=Myl9J5io+Ujxi80X0SIz1xpO7qZJ6EOTJjd918q7LvY=;
+        b=BcTsxRRYChP7S2L03uLQXk2Ctqbb3JWLcmwkC8+M0UDbsQ2ELBa/c9sEoMRK/mBxOo
+         Mr+Hi7rIG5EXkioKXgjSwKNMVwRUn30HBslvMMGWcMbU2VOMN7Li6zLWCoeItktLnrSa
+         r7iuqDY32nBHp2M4qbc2/GDprPzBwL9svnDBY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686309255; x=1688901255;
+        d=1e100.net; s=20221208; t=1686309258; x=1688901258;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tCGAeAnDjRbpJU4Q7ejLwWgvSEb0nbz9W+JEEFo/ndE=;
-        b=hKtwhN2UnWsqqlk+M7Ws/1L9DsEnKjnXDsQZAKNIpDhfkVMDyN4kmRLRnaeQpPCc6p
-         JruxSUFuV3/1dzfG4PzzISsiV46Vj+ECO4kpDxG4EyKN36W1gMkit8yA7g2JuavDeVFF
-         e2WR3SejF8LVOwSTXILpjiESa3zhA8XOFFR2uxcKvtIRy4Oz9/AL2A5ypYRM+e2mwXy8
-         QJYVGAcdaa8ygff4fC3QU8SI94ByD1cO1Ft+3y1+tvuYsMBtkGGX3Si8KzkMjClwtv/C
-         1vELnOyObmnB+22eN4f81i0kiIWh0y5PqvPKgwSQkXcCw2czxYOef1zKDXwRgF6druBN
-         wnww==
-X-Gm-Message-State: AC+VfDxdNHB/ogbzBzvSGtHh76k1v8C3dnnjM4aZklIuYUycvQSZpU5q
-        H++vvxrajTZWVzpBhZ/tQ6o+Bw==
-X-Google-Smtp-Source: ACHHUZ5M5sVmBB5iqZg8GCI96iYyP3eiKQdGzp/ZJCy9rOaLVqmmUcXzgYKkRZ488h5WgBeAE21+/w==
-X-Received: by 2002:a17:902:db02:b0:1ac:750e:33ef with SMTP id m2-20020a170902db0200b001ac750e33efmr856052plx.3.1686309255088;
-        Fri, 09 Jun 2023 04:14:15 -0700 (PDT)
+        bh=Myl9J5io+Ujxi80X0SIz1xpO7qZJ6EOTJjd918q7LvY=;
+        b=QSIPbV7dSU8DOWppJqtiONquUqRFurxLys6rtAITkXbxa2GppYOYbwc0ap4FmGCpYs
+         Fx+m08FTW52EddhG8A4kFYhC3/u0NRxUwFifeuFNXkAzbEVj0xPptUtmEBovbQ5WqG1N
+         qACMcvEWBQbDseGRIQTJY/Kl1sPh5c1VbQo/+aHzFSMu8TP6BzChjiu+E82A7UsyiReW
+         jWZ5ViM7+Qpes6os1lIESWtfrt5j+kelYdQ1Sh3t/6h5MbZaqGQF+CNkh/5p0tW5de4N
+         lKwCEV+1YL8dpVPODKt0YvCIbQFuvxE+kfDD4qEIkFgoPEOnt9V9S7DeJfj+CxPMKqDn
+         WlDg==
+X-Gm-Message-State: AC+VfDzf1czJ9a0iUz3frz1jJGkV4q1aR/kcxLpwEdtcwIEyKkQopIak
+        DsDqNsITFo0/GNgjtWxAdvFfwA==
+X-Google-Smtp-Source: ACHHUZ4yV7g8g6noiZssGmqkTthNBSfHo+f/S7d5rIZhLJ17UvmWl1NN7tXVl8uxdgUCyqBnhQ6bfA==
+X-Received: by 2002:a17:902:6bcb:b0:1b1:b50c:e330 with SMTP id m11-20020a1709026bcb00b001b1b50ce330mr659645plt.2.1686309257849;
+        Fri, 09 Jun 2023 04:14:17 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.12
+        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001b0142908f7sm2992954plx.291.2023.06.09.04.14.15
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jun 2023 04:14:14 -0700 (PDT)
+        Fri, 09 Jun 2023 04:14:17 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         kashyap.desai@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v2 for-next 01/17] RDMA/bnxt_re: wraparound mbox producer index
-Date:   Fri,  9 Jun 2023 04:01:38 -0700
-Message-Id: <1686308514-11996-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH v2 for-next 02/17] RDMA/bnxt_re: Avoid calling wake_up threads from spin_lock context
+Date:   Fri,  9 Jun 2023 04:01:39 -0700
+Message-Id: <1686308514-11996-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000026c3ce05fdb07829"
+        boundary="000000000000512d4005fdb078d9"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,55 +68,99 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000026c3ce05fdb07829
+--000000000000512d4005fdb078d9
 
 From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-Driver is not handling the wraparound of the mbox producer index correctly.
-Currently the wraparound happens once u32 max is reached.
+bnxt_qplib_service_creq can be called from interrupt or tasklet or
+process context. So the function take irq variant  of spin_lock.
+But when wake_up is invoked with the lock held, it is putting the
+calling context to sleep.
 
-Bit 31 of the producer index register is special and should be set
-only once for the first command. Because the producer index overflow
-setting bit31 after a long time, FW goes to initialization sequence
-and this causes FW hang.
+[exception RIP: __wake_up_common+190]
+RIP: ffffffffb7539d7e  RSP: ffffa73300207ad8  RFLAGS: 00000083
+RAX: 0000000000000001  RBX: ffff91fa295f69b8  RCX: dead000000000200
+RDX: ffffa733344af940  RSI: ffffa73336527940  RDI: ffffa73336527940
+RBP: 000000000000001c   R8: 0000000000000002   R9: 00000000000299c0
+R10: 0000017230de82c5  R11: 0000000000000002  R12: ffffa73300207b28
+R13: 0000000000000000  R14: ffffa733341bf928  R15: 0000000000000000
+ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
 
-Fix is to wraparound the mbox producer index once it reaches u16 max.
+Call the wakeup after releasing the lock.
 
-Fixes: cee0c7bba486 ("RDMA/bnxt_re: Refactor command queue management code")
 Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 688eaa0..d4ce82b 100644
+index d4ce82b..c11b8e7 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -180,7 +180,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
- 	} while (bsize > 0);
- 	cmdq->seq_num++;
+@@ -295,7 +295,8 @@ static int bnxt_qplib_process_func_event(struct bnxt_qplib_rcfw *rcfw,
+ }
  
--	cmdq_prod = hwq->prod;
-+	cmdq_prod = hwq->prod & 0xFFFF;
- 	if (test_bit(FIRMWARE_FIRST_FLAG, &cmdq->flags)) {
- 		/* The very first doorbell write
- 		 * is required to set this flag
-@@ -599,7 +599,7 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
- 		rcfw->cmdq_depth = BNXT_QPLIB_CMDQE_MAX_CNT_8192;
+ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+-				       struct creq_qp_event *qp_event)
++				       struct creq_qp_event *qp_event,
++				       u32 *num_wait)
+ {
+ 	struct creq_qp_error_notification *err_event;
+ 	struct bnxt_qplib_hwq *hwq = &rcfw->cmdq.hwq;
+@@ -304,6 +305,7 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+ 	u16 cbit, blocked = 0;
+ 	struct pci_dev *pdev;
+ 	unsigned long flags;
++	u32 wait_cmds = 0;
+ 	__le16  mcookie;
+ 	u16 cookie;
+ 	int rc = 0;
+@@ -363,9 +365,10 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+ 		crsqe->req_size = 0;
  
- 	sginfo.pgsize = bnxt_qplib_cmdqe_page_size(rcfw->cmdq_depth);
--	hwq_attr.depth = rcfw->cmdq_depth;
-+	hwq_attr.depth = rcfw->cmdq_depth & 0x7FFFFFFF;
- 	hwq_attr.stride = BNXT_QPLIB_CMDQE_UNITS;
- 	hwq_attr.type = HWQ_TYPE_CTX;
- 	if (bnxt_qplib_alloc_init_hwq(&cmdq->hwq, &hwq_attr)) {
+ 		if (!blocked)
+-			wake_up(&rcfw->cmdq.waitq);
++			wait_cmds++;
+ 		spin_unlock_irqrestore(&hwq->lock, flags);
+ 	}
++	*num_wait += wait_cmds;
+ 	return rc;
+ }
+ 
+@@ -379,6 +382,7 @@ static void bnxt_qplib_service_creq(struct tasklet_struct *t)
+ 	struct creq_base *creqe;
+ 	u32 sw_cons, raw_cons;
+ 	unsigned long flags;
++	u32 num_wakeup = 0;
+ 
+ 	/* Service the CREQ until budget is over */
+ 	spin_lock_irqsave(&hwq->lock, flags);
+@@ -397,7 +401,8 @@ static void bnxt_qplib_service_creq(struct tasklet_struct *t)
+ 		switch (type) {
+ 		case CREQ_BASE_TYPE_QP_EVENT:
+ 			bnxt_qplib_process_qp_event
+-				(rcfw, (struct creq_qp_event *)creqe);
++				(rcfw, (struct creq_qp_event *)creqe,
++				 &num_wakeup);
+ 			creq->stats.creq_qp_event_processed++;
+ 			break;
+ 		case CREQ_BASE_TYPE_FUNC_EVENT:
+@@ -425,6 +430,8 @@ static void bnxt_qplib_service_creq(struct tasklet_struct *t)
+ 				      rcfw->res->cctx, true);
+ 	}
+ 	spin_unlock_irqrestore(&hwq->lock, flags);
++	if (num_wakeup)
++		wake_up_nr(&rcfw->cmdq.waitq, num_wakeup);
+ }
+ 
+ static irqreturn_t bnxt_qplib_creq_irq(int irq, void *dev_instance)
 -- 
 2.5.5
 
 
---00000000000026c3ce05fdb07829
+--000000000000512d4005fdb078d9
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -187,14 +231,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIN/sZv3zAtDJ
-BW/s2OmJPlwqKpXQEPucyLOAZSCHvi7zMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYwOTExMTQxNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIC77VvAsiPQJ
+8kwcKXuK46QYnMptw/Ah87TWrBKoCQDKMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYwOTExMTQxOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCieu7qxPjL5+QbW6s4APaoyF9w9EpE
-O2DRSK6ZgCg34lr8j57EmUBLMBlhRjPkptO51G9WLEmB+a66O1whTWVE0a2R4CftnQXZTir2cjU3
-7KvEynBVjWNYqDmhNFTT+wVUN2ARH6DR5VRNy7z5108/1HsWLun4kTmA+P3M468jx/Xh7emnEIEe
-axAWEnD/7vmY8dp5q9zU05X8zqZngOzsDE4zECZNQmFiMPIVDScBb1DopS1DbH3lXetUYDoOSKDd
-v+vOhlr0KrlR8vaqUigCMMyVrMVO+UDUrZfukiwVerg39q5GAcj1CW3Hf5qx5grX6LDbpbCcCdTc
-sL3twmNV
---00000000000026c3ce05fdb07829--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA0slR/OaLmIwftZRwogY6fF77N76ca
+wwqT3qGkAzIRIsNphHsWkTBJyIdaI1nnkyCzGsyCFQjAVE1HiiM86JcDg903oHXBWlsf4zRcCQek
+3p2ofYmRdF9jh0shsF34UiqBkxqhIZnDejiqTryBmWeAyLr2YcQ+ulIB8wU2J5181osg/dSiZtMy
+1z2bvZtey4D7y7YeqZjgqOVO/TWlhCoiK9uqa7qD3A6YAmCMss8tnYiYkACfxUWb/O39sIlU8DAi
+8Nf8MzskYecgpl90zze2l5u3wIZQ9oirxJ4HynptKV46hX0aQ71Ce5rOKE3s1jy0lh3oy23+biAY
+zZLSr/IR
+--000000000000512d4005fdb078d9--
