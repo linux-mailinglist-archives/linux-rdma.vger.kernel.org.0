@@ -2,142 +2,245 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F5172ABA2
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jun 2023 15:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A79872AC53
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jun 2023 16:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjFJNNq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 10 Jun 2023 09:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
+        id S233149AbjFJObq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 10 Jun 2023 10:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbjFJNNp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 10 Jun 2023 09:13:45 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F04426B1;
-        Sat, 10 Jun 2023 06:13:44 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1b3b5a5134dso596415ad.2;
-        Sat, 10 Jun 2023 06:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686402823; x=1688994823;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xsZHpFFEg1aiG9pWfwZJZiPP97oTmn5dJUzpJC9EWqY=;
-        b=Lhx3+goHLzT60FeyKoZ6DHIuzTkj3UxiIdQ1KMPp0aBK2bxWJ1sRcCob+LT9u1rEsf
-         p4+oQUxXGRoxTYqRAtP15/E2nN+/XqSjcVfEsM/5LXCw/GhkLiqcxiQVTGkxkp7TFZjs
-         21rlXwkHxFNgBxyOmBweFkidGSYPbmd17ftthCB9FdSow+LmbmObHW17eAvEvtPngdUF
-         7LYY6kvbXQMyEHZr92k58N+4pSafCiCkYZMnKrhGjvieZYsImTNFn+bfpYmaGWE+4WJd
-         AKvLXrEDtyti/IjjoKKq7yphIKGtR4uzAZxDT5gtcfi1ZKSfzbSBg7cGBFggMYL6lDy4
-         R63Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686402823; x=1688994823;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xsZHpFFEg1aiG9pWfwZJZiPP97oTmn5dJUzpJC9EWqY=;
-        b=UNB7TrcDF+oucUTktGlArbZoZ7zpytqefwAJBxT2CasgPWgcOJtVpP3bKQvD1PLNwL
-         6PruJfuAbxEr4tl3q+zVZmGnUDphnQHv4LCpbHDfCXj13JVym195pOVmfljKJc6MudrH
-         1k7Sp5Ju9JMBT7KkiaP3aqRrl6mjuiFamLB2kY5aeJT4n16NLB0Hl9JzClEMj9x1NTK9
-         21Bvl0enPCH+paykFjceyGqi/1yNctTxjdqFxSur65lzobz4yLzKQE+aCrx2NBMYdPUv
-         /hmfvots/wbEGCQaodqRq3qhxzVOQYyHab0jHyvoSUXt1kmdOruAyMdtxK0u7LZFQ9qx
-         /dQQ==
-X-Gm-Message-State: AC+VfDxXkV8PzOw6u1aNlmOBeRLLzX/mBn1o8iyo3dRjpJOdE3mFQ1Ft
-        VnBDUGM1gOdKyvxbH020EgxcWBKDJ9EG0FBnwx4=
-X-Google-Smtp-Source: ACHHUZ5HXZMOmfbEv2/eWLiHRpM3NQeADEJCnzd539jzBqe8sDyS60Wc8qanH4oltZdQRMjKrxNtBg==
-X-Received: by 2002:a17:902:c411:b0:1af:b7cd:5961 with SMTP id k17-20020a170902c41100b001afb7cd5961mr2655583plk.1.1686402823481;
-        Sat, 10 Jun 2023 06:13:43 -0700 (PDT)
-Received: from ?IPv6:2409:8a55:301b:e120:20b4:84e8:2690:6d80? ([2409:8a55:301b:e120:20b4:84e8:2690:6d80])
-        by smtp.gmail.com with ESMTPSA id jj19-20020a170903049300b001aae64e9b36sm5001073plb.114.2023.06.10.06.13.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Jun 2023 06:13:42 -0700 (PDT)
-Subject: Re: [PATCH net-next v3 1/4] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     brouer@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org
-References: <20230609131740.7496-1-linyunsheng@huawei.com>
- <20230609131740.7496-2-linyunsheng@huawei.com>
- <4f1a0b7d-973f-80f5-cc39-74f09622ccef@redhat.com>
-From:   Yunsheng Lin <yunshenglin0825@gmail.com>
-Message-ID: <1bbf2afa-91b2-a3d0-60e0-81cd386eb68d@gmail.com>
-Date:   Sat, 10 Jun 2023 21:13:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <4f1a0b7d-973f-80f5-cc39-74f09622ccef@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229521AbjFJObp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 10 Jun 2023 10:31:45 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6062C0
+        for <linux-rdma@vger.kernel.org>; Sat, 10 Jun 2023 07:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686407504; x=1717943504;
+  h=date:from:to:cc:subject:message-id;
+  bh=uFFTqdbrfvHda2eMOHR/nm3SGrUp4Wd1RKvOi0f7BDo=;
+  b=jSDjTJWvedn13XvO6JFC6UfDzQH6W6TK2yN3YizrhsBl/L9Q1ohpsmX/
+   EtSkvSCpjzsVhM7bfUFSQn7XPxlxstDmjaBMIYZETmEf+D3SVfKiATn/J
+   Nk8sOTLVqKe37uWeUF7PrnFOM83EJFSnX5inFVbA9xNOGPgNFz0W0PD5S
+   4/ZosxHzM/A0sXq4MuUK+dnxlclkLIyJiSzR8WbW5jp5P4Vws/aipbI4i
+   KZz8bTKLM216J5qZgDZS6WdUcceFDIZfg8Y0NWfzP09dxwmwc/w9rx9DU
+   4UdDqm4sKafImCu//muc21urusy696QuWhEoCD2vpdGA0lc3iU/BU7DFS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10737"; a="342451927"
+X-IronPort-AV: E=Sophos;i="6.00,232,1681196400"; 
+   d="scan'208";a="342451927"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2023 07:31:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10737"; a="775815688"
+X-IronPort-AV: E=Sophos;i="6.00,232,1681196400"; 
+   d="scan'208";a="775815688"
+Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 10 Jun 2023 07:31:42 -0700
+Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1q7zcz-000A9C-2W;
+        Sat, 10 Jun 2023 14:31:41 +0000
+Date:   Sat, 10 Jun 2023 22:31:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ 2a62b6210ce876c596086ab8fd4c8a0c3d10611a
+Message-ID: <202306102208.EYt3bGbK-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2023/6/9 23:02, Jesper Dangaard Brouer wrote:
-...
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
+branch HEAD: 2a62b6210ce876c596086ab8fd4c8a0c3d10611a  RDMA/rxe: Fix the use-before-initialization error of resp_pkts
 
->>                    PP_FLAG_DMA_SYNC_DEV |\
->>                    PP_FLAG_PAGE_FRAG)
->>   +#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT    \
->> +        (sizeof(dma_addr_t) > sizeof(unsigned long))
->> +
-> 
-> I have a problem with the name PAGE_POOL_DMA_USE_PP_FRAG_COUNT
-> because it is confusing to read in an if-statement.
+elapsed time: 1227m
 
-Actually, it is already in an if-statement before this patch:)
-Maybe starting to use it in the driver is confusing to you?
-If not, maybe we can keep it that for now, and change it when
-we come up with a better name.
+configs tested: 168
+configs skipped: 8
 
-> 
-> Proposals rename to:  DMA_OVERLAP_PP_FRAG_COUNT
->  Or:  MM_DMA_OVERLAP_PP_FRAG_COUNT
->  Or:  DMA_ADDR_OVERLAP_PP_FRAG_COUNT
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-It seems DMA_ADDR_OVERLAP_PP_FRAG_COUNT is better,
-and DMA_ADDR_UPPER_OVERLAP_PP_FRAG_COUNT seems more accurate if a
-longer macro name is not an issue here.
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha        buildonly-randconfig-r006-20230610   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r005-20230610   gcc  
+alpha                randconfig-r014-20230610   gcc  
+arc                              allyesconfig   gcc  
+arc          buildonly-randconfig-r001-20230610   gcc  
+arc                                 defconfig   gcc  
+arc                         haps_hs_defconfig   gcc  
+arc                            hsdk_defconfig   gcc  
+arc                  randconfig-r012-20230610   gcc  
+arc                  randconfig-r015-20230610   gcc  
+arc                  randconfig-r043-20230609   gcc  
+arc                  randconfig-r043-20230610   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm          buildonly-randconfig-r001-20230610   clang
+arm          buildonly-randconfig-r002-20230610   clang
+arm                                 defconfig   gcc  
+arm                          ep93xx_defconfig   clang
+arm                          moxart_defconfig   clang
+arm                       netwinder_defconfig   clang
+arm                  randconfig-r013-20230610   clang
+arm                  randconfig-r022-20230610   clang
+arm                  randconfig-r046-20230609   clang
+arm                  randconfig-r046-20230610   clang
+arm                         vf610m4_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r024-20230610   gcc  
+csky         buildonly-randconfig-r002-20230610   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r025-20230610   gcc  
+hexagon              randconfig-r005-20230610   clang
+hexagon              randconfig-r025-20230608   clang
+hexagon              randconfig-r036-20230610   clang
+hexagon              randconfig-r041-20230609   clang
+hexagon              randconfig-r041-20230610   clang
+hexagon              randconfig-r045-20230609   clang
+hexagon              randconfig-r045-20230610   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230608   gcc  
+i386                 randconfig-i001-20230610   clang
+i386                 randconfig-i002-20230608   gcc  
+i386                 randconfig-i002-20230610   clang
+i386                 randconfig-i003-20230608   gcc  
+i386                 randconfig-i003-20230610   clang
+i386                 randconfig-i004-20230608   gcc  
+i386                 randconfig-i004-20230610   clang
+i386                 randconfig-i005-20230610   clang
+i386                 randconfig-i011-20230610   gcc  
+i386                 randconfig-i012-20230610   gcc  
+i386                 randconfig-i013-20230610   gcc  
+i386                 randconfig-i014-20230610   gcc  
+i386                 randconfig-i015-20230610   gcc  
+i386                 randconfig-i016-20230610   gcc  
+i386                 randconfig-r024-20230608   clang
+i386                 randconfig-r025-20230610   gcc  
+i386                 randconfig-r026-20230608   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch    buildonly-randconfig-r005-20230610   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r021-20230610   gcc  
+loongarch            randconfig-r022-20230608   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                            mac_defconfig   gcc  
+m68k                 randconfig-r024-20230610   gcc  
+m68k                        stmark2_defconfig   gcc  
+microblaze   buildonly-randconfig-r006-20230610   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                      bmips_stb_defconfig   clang
+mips         buildonly-randconfig-r004-20230610   gcc  
+mips                          malta_defconfig   clang
+mips                      malta_kvm_defconfig   clang
+mips                 randconfig-r011-20230610   clang
+mips                 randconfig-r022-20230610   clang
+mips                 randconfig-r026-20230610   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r032-20230610   gcc  
+openrisc             randconfig-r011-20230610   gcc  
+openrisc             randconfig-r033-20230610   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r023-20230610   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                    gamecube_defconfig   clang
+powerpc                      katmai_defconfig   clang
+powerpc                      pasemi_defconfig   gcc  
+powerpc              randconfig-r033-20230610   clang
+powerpc              randconfig-r035-20230610   clang
+powerpc                      tqm8xx_defconfig   gcc  
+riscv                            alldefconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv        buildonly-randconfig-r003-20230610   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r031-20230610   clang
+riscv                randconfig-r042-20230609   gcc  
+riscv                randconfig-r042-20230610   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390         buildonly-randconfig-r003-20230610   gcc  
+s390         buildonly-randconfig-r005-20230610   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r002-20230610   clang
+s390                 randconfig-r031-20230610   clang
+s390                 randconfig-r044-20230609   gcc  
+s390                 randconfig-r044-20230610   gcc  
+sh                               allmodconfig   gcc  
+sh                          kfr2r09_defconfig   gcc  
+sh                          polaris_defconfig   gcc  
+sh                   randconfig-r034-20230610   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                   sh7724_generic_defconfig   gcc  
+sh                  sh7785lcr_32bit_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r014-20230610   gcc  
+sparc                randconfig-r016-20230610   gcc  
+sparc                randconfig-r023-20230608   gcc  
+sparc64      buildonly-randconfig-r004-20230610   gcc  
+sparc64              randconfig-r034-20230610   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230610   clang
+x86_64               randconfig-a002-20230610   clang
+x86_64               randconfig-a003-20230610   clang
+x86_64               randconfig-a004-20230610   clang
+x86_64               randconfig-a006-20230610   clang
+x86_64               randconfig-a011-20230608   clang
+x86_64               randconfig-a011-20230610   gcc  
+x86_64               randconfig-a012-20230610   gcc  
+x86_64               randconfig-a013-20230608   clang
+x86_64               randconfig-a013-20230610   gcc  
+x86_64               randconfig-a014-20230608   clang
+x86_64               randconfig-a014-20230610   gcc  
+x86_64               randconfig-a015-20230610   gcc  
+x86_64               randconfig-a016-20230610   gcc  
+x86_64               randconfig-r004-20230610   clang
+x86_64               randconfig-r015-20230610   gcc  
+x86_64               randconfig-r021-20230610   gcc  
+x86_64               randconfig-r023-20230610   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-kvm   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                           alldefconfig   gcc  
+xtensa                generic_kc705_defconfig   gcc  
+xtensa               randconfig-r006-20230610   gcc  
+xtensa               randconfig-r016-20230610   gcc  
+xtensa               randconfig-r021-20230608   gcc  
 
-> 
-> Notice how I also removed the prefix PAGE_POOL_ because this is a MM-layer constraint and not a property of page_pool.
-
-I am not sure if it is a MM-layer constraint yet.
-Do you mean 'MM-layer constraint' as 'struct page' not having
-enough space for page pool with 32-bit arch with 64-bit DMA?
-If that is the case, we may need a more generic name for that
-constraint instead of 'DMA_ADDR_OVERLAP_PP_FRAG_COUNT'?
-
-And a more generic name seems confusing for page pool too, as
-it doesn't tell that we only have that problem for 32-bit arch
-with 64-bit DMA.
-
-So if the above makes sense, it seems we may need to keep the
-PAGE_POOL_ prefix, which would be
-'PAGE_POOL_DMA_ADDR_UPPER_OVERLAP_PP_FRAG_COUNT' if the long
-name is not issue here.
-
-Anyway, naming is hard, we may need a seperate patch to explain
-it, which is not really related to this patchset IHMO, so I'd
-rather keep it as before if we can not come up with a name which
-is not confusing to most people.
-
-> 
-> 
-> --Jesper
-> 
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
