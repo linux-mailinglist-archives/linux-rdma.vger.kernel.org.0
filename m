@@ -2,41 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D61F72A6E7
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jun 2023 01:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB8B72A6F0
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jun 2023 02:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjFIX7O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jun 2023 19:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
+        id S230049AbjFJAEk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jun 2023 20:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjFIX7N (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 19:59:13 -0400
-Received: from out-10.mta0.migadu.com (out-10.mta0.migadu.com [91.218.175.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62248CE
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 16:59:12 -0700 (PDT)
-Message-ID: <6b35e9a2-8ad5-cdc9-aef2-f1477ddda6eb@linux.dev>
+        with ESMTP id S229950AbjFJAEj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jun 2023 20:04:39 -0400
+Received: from out-58.mta0.migadu.com (out-58.mta0.migadu.com [91.218.175.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32A9134
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jun 2023 17:04:38 -0700 (PDT)
+Message-ID: <68b162e4-06a1-520d-f157-d655cffafb01@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1686355149;
+        t=1686355476;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2fkUsQJQ3ZrohqzGZsoGGnhzPfGRE8GbgwcnEUR1PHo=;
-        b=lwtx2rEArMVwn3U5BIFjqandm5wPIjqviIZpVEQQot1V1GCxBB+uvFhovubLBjdnsu2Wbd
-        AhbkzPR6Dljwtlt1FS193SX+GdVPCg3pqyNNTfuUy3U89KbOLyL5H2Iqs0wpZxNnCXdamW
-        tNwUyYDFQzwV9k+H82g+kyGVLZKZlzc=
-Date:   Sat, 10 Jun 2023 07:59:04 +0800
+        bh=wMMcRwD5HKY5JA4vvoRPL+UAGq4H1ELRf3vY8w6pc6U=;
+        b=DSLl7wle8/rQl1garT7NvZ8zN70Izglt+etm6KO//4jka63Q/2gJfR2lkBieVWqCPaBJ98
+        18YNjvpXw/K9MUtT22bDyQhdUSorKwvDGmfuyNrJCnMIzKkEyMz4HYetMtLPEX8tNUpbBa
+        v0mnjlfmoBlSJJpmPDgx+Ly1KTYZtRw=
+Date:   Sat, 10 Jun 2023 08:04:32 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/1] RDMA/rxe: Fix the use-before-initialization error
- of resp_pkts
-To:     Jason Gunthorpe <jgg@nvidia.com>, Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     zyjzyj2000@gmail.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        syzbot+eba589d8f49c73d356da@syzkaller.appspotmail.com
-References: <20230602035408.741534-1-yanjun.zhu@intel.com>
- <ZINbszg48aMRrbFP@nvidia.com>
+Subject: Re: [PATCH v1] RDMA/core: Handle ARPHRD_NONE devices for iWARP
+To:     Tom Talpey <tom@talpey.com>, Chuck Lever <cel@kernel.org>,
+        jgg@nvidia.com, BMT@zurich.ibm.com
+Cc:     Chuck Lever <chuck.lever@oracle.com>, linux-rdma@vger.kernel.org
+References: <168616682205.2099.4473975057644323224.stgit@oracle-102.nfsv4bat.org>
+ <dd9f65ab-d54f-7830-8043-57ea66c76149@talpey.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <ZINbszg48aMRrbFP@nvidia.com>
+In-Reply-To: <dd9f65ab-d54f-7830-8043-57ea66c76149@talpey.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -50,73 +49,65 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/6/10 1:04, Jason Gunthorpe 写道:
-> On Fri, Jun 02, 2023 at 11:54:08AM +0800, Zhu Yanjun wrote:
->> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+在 2023/6/10 4:49, Tom Talpey 写道:
+> On 6/7/2023 3:43 PM, Chuck Lever wrote:
+>> From: Chuck Lever <chuck.lever@oracle.com>
 >>
->> In the following:
->> "
->> Call Trace:
->>   <TASK>
->>   __dump_stack lib/dump_stack.c:88 [inline]
->>   dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
->>   assign_lock_key kernel/locking/lockdep.c:982 [inline]
->>   register_lock_class+0xdb6/0x1120 kernel/locking/lockdep.c:1295
->>   __lock_acquire+0x10a/0x5df0 kernel/locking/lockdep.c:4951
->>   lock_acquire kernel/locking/lockdep.c:5691 [inline]
->>   lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5656
->>   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
->>   _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
->>   skb_dequeue+0x20/0x180 net/core/skbuff.c:3639
->>   drain_resp_pkts drivers/infiniband/sw/rxe/rxe_comp.c:555 [inline]
->>   rxe_completer+0x250d/0x3cc0 drivers/infiniband/sw/rxe/rxe_comp.c:652
->>   rxe_qp_do_cleanup+0x1be/0x820 drivers/infiniband/sw/rxe/rxe_qp.c:761
->>   execute_in_process_context+0x3b/0x150 kernel/workqueue.c:3473
->>   __rxe_cleanup+0x21e/0x370 drivers/infiniband/sw/rxe/rxe_pool.c:233
->>   rxe_create_qp+0x3f6/0x5f0 drivers/infiniband/sw/rxe/rxe_verbs.c:583
->> ...
->> "
->> This is a use-before-initialization problem.
+>> We would like to enable the use of siw on top of a VPN that is
+>> constructed and managed via a tun device. That hasn't worked up
+>> until now because ARPHRD_NONE devices (such as tun devices) have
+>> no GID for the RDMA/core to look up.
 >>
->> In the following function
->> "
->> 291 /* called by the create qp verb */
->> 292 int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp,
->> struct rxe_pd *pd,
->> 297 {
->>              ...
->> 317         rxe_qp_init_misc(rxe, qp, init);
->>              ...
->> 322
->> 323         err = rxe_qp_init_resp(rxe, qp, init, udata, uresp);
->> 324         if (err)
->> 325                 goto err2;   <--- error
+>> But it turns out that the egress device has already been picked for
+>> us. addr_handler() just has to do the right thing with it.
 >>
->>              ...
+>> Tested with siw and qedr, both initiator and target.
 >>
->> 334 err2:
->> 335         rxe_queue_cleanup(qp->sq.queue); <--- Goto here
->> 336         qp->sq.queue = NULL;
->> "
->> In rxe_qp_init_resp, the error occurs before skb_queue_head_init.
->> So this call trace appeared.
->>
->> Fixes: 8700e3e7c485 ("Soft RoCE driver")
->> Reported-by: syzbot+eba589d8f49c73d356da@syzkaller.appspotmail.com
->> Link: https://lore.kernel.org/lkml/000000000000235bce05fac5f850@google.com/T/
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 >> ---
->> V1->V2: Add Fixes and Link.
->> ---
->>   drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++----
->>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>   drivers/infiniband/core/cma.c |    3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> This of course needs broader testing, but it seems to work, and it's
+>> a little nicer than "if (dev_type == ARPHRD_NONE)".
+>>
+>> One thing I discovered is that the NFS/RDMA server implementation
+>> does not deal at all with more than one RDMA device on the system.
+>> I will address that with an ib_client; SunRPC patches forthcoming.
+>>
+>> diff --git a/drivers/infiniband/core/cma.c 
+>> b/drivers/infiniband/core/cma.c
+>> index 56e568fcd32b..c9a2bdb49e3c 100644
+>> --- a/drivers/infiniband/core/cma.c
+>> +++ b/drivers/infiniband/core/cma.c
+>> @@ -694,6 +694,9 @@ cma_validate_port(struct ib_device *device, u32 port,
+>>       if (!rdma_dev_access_netns(device, 
+>> id_priv->id.route.addr.dev_addr.net))
+>>           return ERR_PTR(-ENODEV);
+>> +    if (rdma_protocol_iwarp(device, port))
+>> +        return rdma_get_gid_attr(device, port, 0);
 > 
-> Applied to for-rc, thanks
+> This might work, but I'm skeptical of the conditional. There's nothing
+> special about iWARP that says a GID should come from the outgoing device
+> mac. And, other protocols without IB GID addressing won't benefit.
 
-Thanks.
+Agree with you. Other protocols, such as RXE, also need be handled.
+So a better solution than this needs.
 
 Zhu Yanjun
 
 > 
-> Jason
+> Wouldn't it be better to detect a missing GID, or infer the need from
+> some other transport attribute?
+> 
+> Tom.
+> 
+>> +
+>>       if ((dev_type == ARPHRD_INFINIBAND) && !rdma_protocol_ib(device, 
+>> port))
+>>           return ERR_PTR(-ENODEV);
+>>
+>>
+>>
 
