@@ -2,109 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D50AD72AD60
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jun 2023 18:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B691072AD75
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jun 2023 18:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbjFJQgt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 10 Jun 2023 12:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
+        id S230194AbjFJQjY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 10 Jun 2023 12:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjFJQgr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 10 Jun 2023 12:36:47 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46ABD3A97
-        for <linux-rdma@vger.kernel.org>; Sat, 10 Jun 2023 09:36:44 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-974638ed5c5so592853566b.1
-        for <linux-rdma@vger.kernel.org>; Sat, 10 Jun 2023 09:36:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1686415002; x=1689007002;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X8VbRFbQOuqhFAPglq3rUuEFETDHIQvOfBEZigyYE00=;
-        b=fcZwhYQXbZrGUCxD2cxWjeGu7RFEU0ScoH6Fu1j8oZlTPWxdTpxZpMcmjp2EzDf/9d
-         FfZHTb9Jegul55u7V0zCjPzL5GRZCoYWPuup8y0FgDEX/VE4abtLSaelCPLmqGhOFvXf
-         0hiMFMG0SHOUJHmTFAtrpSUozKDhB5uBNbxOAm1l9CSRT6MqowUWZKvUTc/wZ1A942wY
-         p8bL7na2XtF6nwgC4GwchfUxPf/wCWr8c/90iLSEeM82o53tpfNniHl2LweqNqiJTqEo
-         8La/4VPf8P1Wsh/9IK2QftfK8rl0/botcKtufVlRAOULG+cZ15IapPXlNaqykMscXVUg
-         hfOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686415002; x=1689007002;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X8VbRFbQOuqhFAPglq3rUuEFETDHIQvOfBEZigyYE00=;
-        b=dTKPJS7aL3KYy7YtwnglG9t0OLBtnjccl+Fn+zsMdlB2C9KIFKfOtJE3gMFbaE8AgT
-         e+bqfJtksoRN8HLCdyjEDBol3DkFMjU++U90EZrMZXa8NhN9HbaWlgdU1Cj8P2XRBK84
-         zR5Msq4+Bhi8GX5OSxjLQ+KhT3tVsBQMrgtm60HA70iSoJXlJgi2BC9MM1BFxqf8jsDr
-         QFyRUqWuow2WsioypJ3mrFOWXWxOhG4XdFCfIh5JZ8CWx06nr3nxWnwCKZLpd15JoW+l
-         rA5M1Yto98K7lGngDo4GfN9WA3MY0REMCKkLKHD4lCt5mpOfDP/I+T0J2EIvsnSEHV7N
-         LtUQ==
-X-Gm-Message-State: AC+VfDwkrjmp2ZZPb1rsqK3EtdwssqSJopAh+NZQ70VHHMf7vBbu+T98
-        nyrcrliGpIRLjc4Dyt7jmdRxdw==
-X-Google-Smtp-Source: ACHHUZ4Vwbn5FWH4cTwcJAta6H8LObUb+MmlwTVJNnxgyTP9w4AqfMkvEAq7AY8i3/cgxY1KiIKmkw==
-X-Received: by 2002:a17:906:58c5:b0:974:5e8b:fc28 with SMTP id e5-20020a17090658c500b009745e8bfc28mr5052733ejs.9.1686415002366;
-        Sat, 10 Jun 2023 09:36:42 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id t16-20020a1709064f1000b0096f89fd4bf8sm2728669eju.122.2023.06.10.09.36.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jun 2023 09:36:41 -0700 (PDT)
-Date:   Sat, 10 Jun 2023 18:36:40 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Cc:     kuba@kernel.org, vadfed@meta.com, jonathan.lemon@gmail.com,
-        pabeni@redhat.com, corbet@lwn.net, davem@davemloft.net,
-        edumazet@google.com, vadfed@fb.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
-        richardcochran@gmail.com, sj@kernel.org, javierm@redhat.com,
-        ricardo.canuelo@collabora.com, mst@redhat.com, tzimmermann@suse.de,
-        michal.michalik@intel.com, gregkh@linuxfoundation.org,
-        jacek.lawrynowicz@linux.intel.com, airlied@redhat.com,
-        ogabbay@kernel.org, arnd@arndb.de, nipun.gupta@amd.com,
-        axboe@kernel.dk, linux@zary.sk, masahiroy@kernel.org,
-        benjamin.tissoires@redhat.com, geert+renesas@glider.be,
-        milena.olech@intel.com, kuniyu@amazon.com, liuhangbin@gmail.com,
-        hkallweit1@gmail.com, andy.ren@getcruise.com, razor@blackwall.org,
-        idosch@nvidia.com, lucien.xin@gmail.com, nicolas.dichtel@6wind.com,
-        phil@nwl.cc, claudiajkang@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, poros@redhat.com,
-        mschmidt@redhat.com, linux-clk@vger.kernel.org,
-        vadim.fedorenko@linux.dev
-Subject: Re: [RFC PATCH v8 08/10] ice: implement dpll interface to control cgu
-Message-ID: <ZISmmH0jqxZRB4VX@nanopsycho>
-References: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
- <20230609121853.3607724-9-arkadiusz.kubalewski@intel.com>
+        with ESMTP id S230163AbjFJQjU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 10 Jun 2023 12:39:20 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2043.outbound.protection.outlook.com [40.107.101.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F62E420A
+        for <linux-rdma@vger.kernel.org>; Sat, 10 Jun 2023 09:38:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cafrxWeyrOHc5syCG2kdb7KPbqfCEdm8t/oiumpLJ6FwBVEOfZETUZbw7r0yye+WX/ToanZDriYWAbS5o4EgKq812zWDnsEjJJGKNzyxhfQ6foPCy5EsThf/jcILgpHT/G7iH+VU2DNtuHqK3AGTX/Sja6PMITmc6QCkKLEVozKylO6sRKenpuIqkAhlCwyxJkx8CvU9DwWjwRol/POKP1zxfanVgBxnTjfz4hcQTcGIJXA2VPlQGuGKUQi9SNXSNn/DcnSjAzfbjHBBWlxKq1TGT8s2PQ9ceXdx1yPk9+xxwifBi3KjT6w5Sa9fkTG5GJCIfd/9+1Kr3DbTnviypg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C5wJ9eO1PB42L3vAd89lg5v3vF9anTmKFaEkR4KSd9o=;
+ b=L4ial/CW7/V4PIkHMGv8WnzSIUHYlQoTwzm+/Y/UTOJyccfcDEBY2ebVGSLLTQnPAteRc7+fwkps6cKzeR/z7OomM2vezvzQ5Mx9O0aPX3QhYWdnMyaDMVLCM2IrZNWRlImRSVaK/DemdCPkXCbrY5tVSToepXmS1/UWezN5xdTCJdt4MX0dPwaxQri2h6ml+qrU/AJoMxpQrFGaOQi0ggzbM5NlpP0Nw+rndeoNjxYMqnoo3u3Wbs6/C/RHrv2WKLmcbY9qH9QsBMHp22Nij66NVNsnQ8EK5D8jHtufkciakUlI/fy2+cZaANy3Jf+5mtMeRo1yMZDYITxx6DD4VQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
+ SA0PR01MB6106.prod.exchangelabs.com (2603:10b6:806:ec::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6477.29; Sat, 10 Jun 2023 16:38:55 +0000
+Received: from SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::17e9:7e30:6603:23bc]) by SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::17e9:7e30:6603:23bc%5]) with mapi id 15.20.6455.039; Sat, 10 Jun 2023
+ 16:38:55 +0000
+Message-ID: <b7e3081d-51b2-b74e-5e22-cfcab88dcc51@talpey.com>
+Date:   Sat, 10 Jun 2023 12:38:53 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v1] RDMA/core: Handle ARPHRD_NONE devices for iWARP
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Chuck Lever <cel@kernel.org>, BMT@zurich.ibm.com,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-rdma@vger.kernel.org
+References: <168616682205.2099.4473975057644323224.stgit@oracle-102.nfsv4bat.org>
+ <dd9f65ab-d54f-7830-8043-57ea66c76149@talpey.com>
+ <ZIRm9s9xjq3ioKtQ@nvidia.com>
+From:   Tom Talpey <tom@talpey.com>
+In-Reply-To: <ZIRm9s9xjq3ioKtQ@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BLAPR03CA0117.namprd03.prod.outlook.com
+ (2603:10b6:208:32a::32) To SN6PR01MB4445.prod.exchangelabs.com
+ (2603:10b6:805:e2::33)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230609121853.3607724-9-arkadiusz.kubalewski@intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR01MB4445:EE_|SA0PR01MB6106:EE_
+X-MS-Office365-Filtering-Correlation-Id: 68af926c-3f7d-406c-8d50-08db69d12e95
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: S6W4aw3snuokR2ZL0DKVCVpePqSeH3PFrFnUrWZEC0lOKxbgzezBqjqSEXXbX75bNtsw3PH75wLKX8bh0ZPbw29wO841q2lWYQZm0nOOPyRbuIKugvg3u4oDJdKz9a/4U3ol7xUWInsIG8oG9+N+yjpNUulV+QA4F3gDSJ1WEenIiIwgtBrUtxjWBeyeEafRCxGu0RZLEYLGMDyFXJgPxZqHfrzyPdASTJzPo8RVxuM+4sT9ef+ctpJrIPC4G/HJRoRCX5CgxyLoekSs+9u2TvtSAczRjFVdoWpS20toRpwS6JO6OmnXK+j4G872r8HPJGFjrS86l3XR9g3Ah9lg8qmI8dgBrnZSj+WIjiA7wIsVhQoGi3FaZE7v4szhwh/WPr4vUgCnYicckouGEu21wIcTgZa3CFRIdMoWpqyDCj5uoqWB/yiew29/R+i0aL6FixSpUdg2avAo5aAqawqwq6ZmWCN4dy9M8fcTQDbMLpsJJRd8LgQp+edsdoSkYdLFEIb9DvPejPzp+PYgu5+NY+UFMxR8exEWU/MxUno64DNYfT+FzfuCaOJSl5Xw7OXs28a+lEUkBlYQUhCawvnATJwTW7VqN8488e3+wpzrAqRKhLP9wbkbZa0B7lNgb5T0qE6ws4H0LgYv24VbKnUF4Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(366004)(39830400003)(136003)(396003)(376002)(451199021)(86362001)(52116002)(31696002)(6486002)(316002)(8676002)(41300700001)(83380400001)(5660300002)(26005)(38350700002)(38100700002)(6512007)(53546011)(6506007)(8936002)(36756003)(66476007)(66556008)(4326008)(66946007)(6916009)(478600001)(186003)(31686004)(54906003)(2906002)(66899021)(2616005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?enFEU29Kb2tVZnRtSElybWkzSWtiZmsvKzNKU1ZiTzdtV01zWEU0bmxLblcz?=
+ =?utf-8?B?VHRseHAwS2JzZ1ZhUFZNK09GTExZK0F0VUpSV0VIR05lT29xOExHOENQaFBC?=
+ =?utf-8?B?b09RbitUbTJUOFhKcjVKQkJOdW9KMFlkSS9jc25YcUtkMnNnTnYya1F4TXRq?=
+ =?utf-8?B?WEdDaUhpVlN2cGdwOERYalBFZmtYb3dpZHg4K2s4alRUbDhKeE1wczQvcTIx?=
+ =?utf-8?B?S05rd1k5RmxWc1ZiZVJuVHBvM1NWb3crYjJlVXVXVmk3NytrZnp3Zi9xQk43?=
+ =?utf-8?B?S0FvUlM0VG5IMWpTcUFlN2t1c082NStvUmVKcFVobzlTeVZ5dTBrenQ4ZHF5?=
+ =?utf-8?B?dHZsZDdKcHZjMmx3NFNDaHdtLzJFdmxvVC9NaE9RTjhESmpETHBrT0VDSGhw?=
+ =?utf-8?B?ZGtIRjBJU0JRSTBqcElQVzdHUElWOThZWW5lenBEek01djdGQVdqV1p4MnNC?=
+ =?utf-8?B?ZWZaMXdTeDVGVHdZV2hxcGNQalZhY1NHODUvbnA4SUxHQm90NGx6bDIvdmN3?=
+ =?utf-8?B?R3dncmM0YTl6YncyQ25TSXE3cHRGalRZaHBWL0NMRjBaSHZNVGNGNXJ5RVBm?=
+ =?utf-8?B?aGFWNjRQSFdMOUlvMWQ2aWc5T1R1REx6ZlM0elQ4Z0VVRmZoWGpXWGsyazZu?=
+ =?utf-8?B?endEbnBKRVdhc1RvYXh2azR6Y1Zld1ZQczJNYk5yUDJOczZObExJWXpPZ2Rs?=
+ =?utf-8?B?S1lLZFhXTU80dTlPZXltdmdZeXFYU2syZEl4TThOL1lTdWZRbUtJTjdyY2VR?=
+ =?utf-8?B?cXdLVTUxRnFVTGtWV25DM0ZsZ0NhSnJGWTJZWFlEOUJkK1pONk0zTWEwcG1K?=
+ =?utf-8?B?cXdLS2ZUOEFMVWx0ak9oOHBha3dYeUZoMC9WQU5yak5uUGg5dkhrci9MTGlU?=
+ =?utf-8?B?U2I2SW5TZ0VhbWFPM0FJYmJ1WEk0OXBUakhWVlJndE1tWmsrdFZmbkVGbWc2?=
+ =?utf-8?B?ZGFKK0x2b1lZZUpMUms5RzNuYzJJWEFCeDBHZjlpc04xYkljUFNZTmVUVzZJ?=
+ =?utf-8?B?Ky9JYmhPUVZzM3NSVlZWSkVzSTVKZm9DeU5qQVVXYkd0VEdIM1BoV0k2TkNC?=
+ =?utf-8?B?K1V2T3dnNDl0T1ZESnlSbTVPN3RvWmlIWldKck13QXFaQno5bUpFQWpTWGM5?=
+ =?utf-8?B?YUtEQ21QUldyWHFOQjdzaWRVeklYei9ZNVUxSWVibFpVYm9VM3JzRHdMYVNN?=
+ =?utf-8?B?OHdYVkVBRE1yMmRlQ0RxbjNZZmFhdUdUR2JKMG9pVllNS0RLSG9KVEdzRDln?=
+ =?utf-8?B?R0FJaGxEUWMySXJ6b200TnVVWlY4VlZTZVNYaWFPQzI3MDdPVjFkNmQ1cndN?=
+ =?utf-8?B?c1ZGWU5tUDI2RUtKR041K0pxR0Zick92VWdWVG1KVi92TzQydGlZcy9nb3or?=
+ =?utf-8?B?MGFITEo4WC9CMmVvODRvL3dvVXJCTXh0cXMydk1UQ3BKYWE5U21HZlVSTjBY?=
+ =?utf-8?B?aU5kUnZZRnlPUnUrT0FtcG9rTThsTHlWNEJZTWl3V3N1T0hlenBQdzVKVTE3?=
+ =?utf-8?B?SU9wbmNIRjN2ckdvYmhmV3N6eEt4MEN3WUp1S0pidXlhL2lLS1k5S2Nmd2pM?=
+ =?utf-8?B?bkxlTTVRZ29JNGxPQ0VpR21RZWR1T2JZVXRTS3Y5RGpFaEt1RWZkWG10L0VY?=
+ =?utf-8?B?NVo4WWR0c21XRFZLS2VYTnducWRDdzRVRVVNeDJCcFloZldXSE9tRFR0bUl3?=
+ =?utf-8?B?cFdhV3dsZVN5OC9qTG1OWmRzLzlPMjNVa053ZlVsbzcvVk1TOXhRU1FyUzdX?=
+ =?utf-8?B?ZkNKZXR3RXZjZHVpSmQ0Q2ZuY0UwMG9YbEpFWnp1WkwzdlY2b09KdUR0UnFV?=
+ =?utf-8?B?UE8zTFBUZHhFQ3ZOazhneEE5SzJSZml2dUJMOG51Rm9CL0xkZ0pGbG0xb3JV?=
+ =?utf-8?B?WHpVbTdNc2ZQRnJ5bTZjWU11NW1leHNSL0dpQXVlZm5JcHQ5d3VKRkUzQXhT?=
+ =?utf-8?B?Wm45amlTbjZZNllROHJEeWJMMEFtOHo4Vk43a0FZaHNJSlNXUlk4NVNxSVhh?=
+ =?utf-8?B?R0RsMWRxVm5BdUw5OGdCaWhJOG1vNFZNTzZXR3NUQW0vOFh4d1lUblMvYVcy?=
+ =?utf-8?B?T0YrR290ck4zSkNlOFJHMnpWZEZwc2hsZjhrNi9EU3NrcnRsWEdRZ0ZHdG45?=
+ =?utf-8?Q?C1d2oaE4q3/tYkyCg44nyUaAs?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68af926c-3f7d-406c-8d50-08db69d12e95
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2023 16:38:55.5868
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dAO84+Ts96VTmJsJreX3mxm9ZfuOO8gaflQZjT2Hqnnqfg19jR8+pw1UzkX7TVW6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR01MB6106
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fri, Jun 09, 2023 at 02:18:51PM CEST, arkadiusz.kubalewski@intel.com wrote:
+On 6/10/2023 8:05 AM, Jason Gunthorpe wrote:
+> On Fri, Jun 09, 2023 at 04:49:49PM -0400, Tom Talpey wrote:
+>> On 6/7/2023 3:43 PM, Chuck Lever wrote:
+>>> From: Chuck Lever <chuck.lever@oracle.com>
+>>>
+>>> We would like to enable the use of siw on top of a VPN that is
+>>> constructed and managed via a tun device. That hasn't worked up
+>>> until now because ARPHRD_NONE devices (such as tun devices) have
+>>> no GID for the RDMA/core to look up.
+>>>
+>>> But it turns out that the egress device has already been picked for
+>>> us. addr_handler() just has to do the right thing with it.
+>>>
+>>> Tested with siw and qedr, both initiator and target.
+>>>
+>>> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+>>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+>>> ---
+>>>    drivers/infiniband/core/cma.c |    3 +++
+>>>    1 file changed, 3 insertions(+)
+>>>
+>>> This of course needs broader testing, but it seems to work, and it's
+>>> a little nicer than "if (dev_type == ARPHRD_NONE)".
+>>>
+>>> One thing I discovered is that the NFS/RDMA server implementation
+>>> does not deal at all with more than one RDMA device on the system.
+>>> I will address that with an ib_client; SunRPC patches forthcoming.
+>>>
+>>> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+>>> index 56e568fcd32b..c9a2bdb49e3c 100644
+>>> --- a/drivers/infiniband/core/cma.c
+>>> +++ b/drivers/infiniband/core/cma.c
+>>> @@ -694,6 +694,9 @@ cma_validate_port(struct ib_device *device, u32 port,
+>>>    	if (!rdma_dev_access_netns(device, id_priv->id.route.addr.dev_addr.net))
+>>>    		return ERR_PTR(-ENODEV);
+>>> +	if (rdma_protocol_iwarp(device, port))
+>>> +		return rdma_get_gid_attr(device, port, 0);
+>>
+>> This might work, but I'm skeptical of the conditional. There's nothing
+>> special about iWARP that says a GID should come from the outgoing device
+>> mac. And, other protocols without IB GID addressing won't benefit.
+> 
+> The GID represents the source address, so it better come from the
+> outgoing device or something is really wrong.
+> 
+> iWARP gets a conditional because iwarp always has a single GID, other
+> devices do not work that way.
 
-[...]
+Not sure I follow. TCP is routable so it can use multiple egress ports.
+That same routing means an incoming packet bearing an appropriate local
+address will be accepted on any port.
 
+So still, I don't think this an iWARP property per se. It's coming from
+the transport and its addressing. I'd hope that this can be gleaned from
+something other than "it's iWARP, cma needs to do ...".
 
->+static int ice_dpll_mode_get(const struct dpll_device *dpll, void *priv,
->+			     enum dpll_mode *mode,
->+			     struct netlink_ext_ack *extack)
->+{
->+	*mode = DPLL_MODE_AUTOMATIC;
-
-I don't understand how the automatic mode could work with SyncE. The
-There is one pin exposed for one netdev. The SyncE daemon should select
-exacly one pin. How do you achieve that?
-Is is by setting DPLL_PIN_STATE_SELECTABLE on the pin-netdev you want to
-select and DPLL_PIN_STATE_DISCONNECTED on the rest?
-
-
-[...]
+Tom.
