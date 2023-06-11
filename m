@@ -2,178 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9DB72B146
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 12:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBED472B156
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 12:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbjFKKBX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Jun 2023 06:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53554 "EHLO
+        id S229624AbjFKK0p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Jun 2023 06:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231355AbjFKKBT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 06:01:19 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB4510C1
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 03:01:16 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5183101690cso1581476a12.0
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 03:01:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1686477675; x=1689069675;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=U7HN0f6TOWWkr11pJT0tfFyGZ1Me6eKxGL1ZqHz5p/E=;
-        b=CK+40rDIEO4qBWIjslHU71w2FzcpmL66yJ2ffo8QNiGyJVgjt2njdUY13r8vlWLyRh
-         bFzF3aspyFifeybgeAm5JsTbvM0Y0U+htlNyMhY4rZdso0DpijNINO8CzRHkG4h6vTm2
-         qDNewH1UtM2COGT2JZr0R53kucC4xe+Scno8vkuo9GrhvTpVhzxcRtNBK/Aq+CslaRWL
-         6hGnkuO6xqG3ciKigTB9qYkhGVxQ+wJ/f/yVK+VC1tnSVF3wpmP3pZLfGG23kH9vlrXt
-         mefPq9PTmMZ08D7NdNkgeJfPZ4BFv+VTpfc09VRr8QF7C3rGqDJ7tFv5INdS55jkARsQ
-         vZYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686477675; x=1689069675;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U7HN0f6TOWWkr11pJT0tfFyGZ1Me6eKxGL1ZqHz5p/E=;
-        b=aAJ3iyJFF2KNnsYVBMi81L5wgKi6u0CJOIf5FhIuAx7x3VyxYItqzAVQnFIGo2Guxx
-         ves451a1TVKpBTpm8TJm/WZxF1/5mYO6okF54cPtucBad6nJsrz5f7ryONNSDUsvLVo6
-         c0SFKc/jqaCJ9xFD6n7xUuiegOnZ+lQ9blHXE72p2EKs5c7FOPks8G2bXQ8L4Z1Nvm4X
-         f/vswOU7oeIEUOP4rK697AzuX51VJhSMLUAkGzfkUtEQLo5aQ1dAGmUlW6C3hQkbW+FE
-         zAGVJ6dh8JQQRDq0KnzJAGCvQzN62xMwD510ywOYeM1OEq7Zq5RjcvbRKDntPFCkJQzg
-         OIHA==
-X-Gm-Message-State: AC+VfDw+pYujM4ODERBZWKARSNvCguUCqprdNvyuGvQc/bYU7pPpHBIq
-        +wacuOaoDlhaPGzBqeul6DfdQw==
-X-Google-Smtp-Source: ACHHUZ5gWuO7BIceLcmBKNYkMGao9xFPw4XyyBHtMY8YchWoEkZuudgzgArbFrxLghboz06yhmTvFA==
-X-Received: by 2002:a05:6402:520a:b0:516:a1d5:846f with SMTP id s10-20020a056402520a00b00516a1d5846fmr3286182edd.1.1686477674815;
-        Sun, 11 Jun 2023 03:01:14 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id c7-20020aa7df07000000b00514b854c399sm3744198edy.84.2023.06.11.03.01.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jun 2023 03:01:13 -0700 (PDT)
-Date:   Sun, 11 Jun 2023 12:01:12 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Cc:     kuba@kernel.org, vadfed@meta.com, jonathan.lemon@gmail.com,
-        pabeni@redhat.com, corbet@lwn.net, davem@davemloft.net,
-        edumazet@google.com, vadfed@fb.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
-        richardcochran@gmail.com, sj@kernel.org, javierm@redhat.com,
-        ricardo.canuelo@collabora.com, mst@redhat.com, tzimmermann@suse.de,
-        michal.michalik@intel.com, gregkh@linuxfoundation.org,
-        jacek.lawrynowicz@linux.intel.com, airlied@redhat.com,
-        ogabbay@kernel.org, arnd@arndb.de, nipun.gupta@amd.com,
-        axboe@kernel.dk, linux@zary.sk, masahiroy@kernel.org,
-        benjamin.tissoires@redhat.com, geert+renesas@glider.be,
-        milena.olech@intel.com, kuniyu@amazon.com, liuhangbin@gmail.com,
-        hkallweit1@gmail.com, andy.ren@getcruise.com, razor@blackwall.org,
-        idosch@nvidia.com, lucien.xin@gmail.com, nicolas.dichtel@6wind.com,
-        phil@nwl.cc, claudiajkang@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, poros@redhat.com,
-        mschmidt@redhat.com, linux-clk@vger.kernel.org,
-        vadim.fedorenko@linux.dev
-Subject: Re: [RFC PATCH v8 03/10] dpll: core: Add DPLL framework base
- functions
-Message-ID: <ZIWbaLd87EMbkDAY@nanopsycho>
-References: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
- <20230609121853.3607724-4-arkadiusz.kubalewski@intel.com>
+        with ESMTP id S229455AbjFKK0n (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 06:26:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C4D13E
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 03:26:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A7D8061086
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 10:26:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E2B0C433D2;
+        Sun, 11 Jun 2023 10:26:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686479202;
+        bh=bAZLjL4Krz+2zYfKrlGEAmkRYY6y1Y//j5SlWnR/EMY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b0JSbDJ077QTX/SFqKyRqXMSV2wK79Euypjw0kIjYmOMi2sun9wsHW9p55LrxTgzG
+         Fb5bgWkS0eYrJsVwy3t4CqGmmlfYa3CaeRiV0jn89AwXTbuDuiRgs3aVr9csS2PGA1
+         Dwpta2wrJs/VgS1YQjWhWcLZ8NUInKcnasVDSESmu6u89mj3HUC6YWJOgzsiggXsyQ
+         F9X0kTAfxQITL16GQvIu2tyPhII7K1BpGO/pJY1ZrjlZBSLBbGaq3eSyMpGVqtgP/J
+         wfnxkBCc+bjwUHVllE9Fu3mCmH7OHT9ngOZFchiEDwMF+5MCpdzdqVt2c/1ZeZZS0q
+         D4YIj1kaKEeKw==
+Date:   Sun, 11 Jun 2023 13:26:37 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: Question about SQD in the mlx5_ib driver
+Message-ID: <20230611102637.GC12152@unreal>
+References: <6F7F6F24-2AF7-4BBC-9D6C-70C8CC451A3B@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230609121853.3607724-4-arkadiusz.kubalewski@intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6F7F6F24-2AF7-4BBC-9D6C-70C8CC451A3B@oracle.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fri, Jun 09, 2023 at 02:18:46PM CEST, arkadiusz.kubalewski@intel.com wrote:
->From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+On Thu, May 11, 2023 at 04:16:16PM +0000, Haakon Bugge wrote:
+> Hi,
+> 
+> I see that with commit 021c1f24f002 ("RDMA/mlx5: Support SQD2RTS for modify QP"), the driver supports the SQD -> RTS transition. Which is good.
+> 
+> But I see no way how the driver can transition a QP into SQD in the first place. Is the RTS -> SQD transition missing?
 
-[...]
+I see this callchain:
+  __mlx5_ib_modify_qp ->
+	  mlx5_core_qp_modify ->
+	  	modify_qp_mbox_alloc
+		mlx5_cmd_exec
 
+Thanks
 
->+ * dpll_xa_ref_dpll_first - find first record of given xarray
->+ * @xa_refs: xarray
->+ *
->+ * Context: shall be called under a lock (dpll_lock)
->+ * Return: first element on given xaaray
-
-typo: xarray
-
-
->+ */
->+struct dpll_pin_ref *dpll_xa_ref_dpll_first(struct xarray *xa_refs)
-
-[...]
-
-
->+/**
->+ * dpll_device_get - find existing or create new dpll device
->+ * @clock_id: clock_id of creator
->+ * @device_idx: idx given by device driver
->+ * @module: reference to registering module
->+ *
->+ * Get existing object of a dpll device, unique for given arguments.
->+ * Create new if doesn't exist yet.
->+ *
->+ * Context: Acquires a lock (dpll_lock)
->+ * Return:
->+ * * valid dpll_device struct pointer if succeeded
->+ * * ERR_PTR(-ENOMEM) - failed memory allocation
-
-Yeah, that is kind of obvious, isn't? Really, drop this pointless
-coments.
-
-
->+ * * ERR_PTR(X) - failed allocation on dpll's xa
->+ */
->+struct dpll_device *
->+dpll_device_get(u64 clock_id, u32 device_idx, struct module *module)
-
-[...]
-
-
->+/**
->+ * dpll_pin_register - register the dpll pin in the subsystem
->+ * @dpll: pointer to a dpll
->+ * @pin: pointer to a dpll pin
->+ * @ops: ops for a dpll pin ops
->+ * @priv: pointer to private information of owner
->+ *
->+ * Context: Acquires a lock (dpll_lock)
->+ * Return:
->+ * * 0 on success
->+ * * -EINVAL - missing pin ops
->+ * * -ENOMEM - failed to allocate memory
-
-Does not make sense to assign one errno to one specific error.
-Avoid tables like this.
-
-
->+ */
->+int
->+dpll_pin_register(struct dpll_device *dpll, struct dpll_pin *pin,
->+		  const struct dpll_pin_ops *ops, void *priv)
->+{
->+	int ret;
->+
->+	mutex_lock(&dpll_lock);
->+	if (WARN_ON(!(dpll->module == pin->module &&
->+		      dpll->clock_id == pin->clock_id)))
->+		ret = -EFAULT;
-
--EINVAL;
-
-
->+	else
->+		ret = __dpll_pin_register(dpll, pin, ops, priv);
->+	mutex_unlock(&dpll_lock);
->+
->+	return ret;
->+}
-
-[...]
+> 
+> 
+> Thxs, Håkon
+> 
