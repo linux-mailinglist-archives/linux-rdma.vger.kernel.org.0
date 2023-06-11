@@ -2,83 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E087C72B21A
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 15:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E37572B859
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 08:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbjFKNhO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Jun 2023 09:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
+        id S234676AbjFLGxa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jun 2023 02:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjFKNhN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 09:37:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8686B8
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 06:37:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S234600AbjFLGx1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 02:53:27 -0400
+X-Greylist: delayed 9006 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 11 Jun 2023 23:48:22 PDT
+Received: from mail1.ceniai.inf.cu (mail1.ceniai.inf.cu [169.158.128.150])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B615A10C2;
+        Sun, 11 Jun 2023 23:48:22 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail1.ceniai.inf.cu (Postfix) with ESMTP id 57EC14E8137;
+        Mon, 12 Jun 2023 00:09:26 -0400 (EDT)
+X-Virus-Scanned: amavisd-new at mail1.ceniai.inf.cu
+Received: from mail1.ceniai.inf.cu ([127.0.0.1])
+        by localhost (mail1.ceniai.inf.cu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id WSVsOis4rone; Mon, 12 Jun 2023 00:09:26 -0400 (EDT)
+Received: from mail.vega.inf.cu (mail.vega.inf.cu [169.158.143.34])
+        by mail1.ceniai.inf.cu (Postfix) with ESMTP id 9A3994E8D46;
+        Mon, 12 Jun 2023 00:00:28 -0400 (EDT)
+Received: from mx1.ecovida.cu (unknown [169.158.179.26])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 435E660ED6
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 13:37:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E8F1C433D2;
-        Sun, 11 Jun 2023 13:37:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686490631;
-        bh=GIJOQ8txaskJl9U3vspUzmUZPnSUNtkGFTsu43NT5LE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MHBEFodrtFZ+Iho6qKno5gTD/uVk3lZBs1VTQlehpxW7PC0C/bUKTPFYrpyuORHSk
-         f19BU+cspQnGmn+rnga/myyHYX4qDMvHqAMmtagwZMglBFj9wPuWWY30ZjSfk4HWc3
-         yeK1n44Wit0d4eUNv/m7tnyP6yl+Ds6ks3DUeRh6yloB2BPBXnEOd43lrMV+aMcT9w
-         //8qHdLMTR4UQYXJs0EAY5EcUXE8EUjyfhHf3OMY0CEqz6yK+9kYpyzwS86bfqQ7u/
-         1MLzQql/dBhEleNeBD6KFGXoG8G7IQAw6XJ3gdFaVWRbAoQEfkLQ/2SY6dVcjZJQzJ
-         NBWPmDDcCMFnA==
-Date:   Sun, 11 Jun 2023 16:37:07 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-nvme@lists.infradead.org,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: Re: [PATCH] RDMA/cma: prevent rdma id destroy during cma_iw_handler
-Message-ID: <20230611133707.GE12152@unreal>
-References: <20230603004620.906089-1-shinichiro.kawasaki@wdc.com>
+        by mail.vega.inf.cu (Postfix) with ESMTPS id D54B5565B0A;
+        Sun, 11 Jun 2023 11:40:11 -0400 (CDT)
+Received: from mx1.ecovida.cu (localhost [127.0.0.1])
+        by mx1.ecovida.cu (Proxmox) with ESMTP id 6A2B9240CE7;
+        Sun, 11 Jun 2023 15:23:52 -0400 (CDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ecovida.cu; h=cc
+        :content-description:content-transfer-encoding:content-type
+        :content-type:date:from:from:message-id:mime-version:reply-to
+        :reply-to:subject:subject:to:to; s=ecovida20; bh=eJCLj5LjLfltOUH
+        QwbhnEIM71NnOqC+k0uTJlyqNYA0=; b=DcRsVnh8PwZgs7y+XuOKXZsVaQBR/H6
+        XoACm7D3Yogbb1byEspwmAO2qEbTBHMBRjokBnHhowQEK0u5DCx6Q+DJuM4aPAGQ
+        m1IUL3Jrxhpnx1mha+204x7zV997W+a7qgttKpEZNEYo1zNd4bwr6JrPxUXBrvVV
+        rNjSKjASF1PcwDaH5VBWrFOfNBj+nT7kFyp1MNWVPoL6pgZtGf5rPwhdx6IMsT4C
+        /ezCQy3gmtNplW3691klQbMXXvf9m8f2STt41mJQnysXmxFaUi6AC3GMnQMOII6B
+        u4191nZxATn9FePP1IhGYMxqmuczU0qatcarBodAiiGfygRm1/JQUFA==
+Received: from correoweb.ecovida.cu (correoweb.ecovida.cu [192.168.100.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mx1.ecovida.cu (Proxmox) with ESMTPS id 5C4AE240A32;
+        Sun, 11 Jun 2023 15:23:52 -0400 (CDT)
+Received: from localhost (localhost [127.0.0.1])
+        by correoweb.ecovida.cu (Postfix) with ESMTP id 8253F50575F;
+        Sun, 11 Jun 2023 13:20:22 -0400 (CDT)
+Received: from correoweb.ecovida.cu ([127.0.0.1])
+        by localhost (correoweb.ecovida.cu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 4y-7DLKV7ivg; Sun, 11 Jun 2023 13:20:22 -0400 (CDT)
+Received: from localhost (localhost [127.0.0.1])
+        by correoweb.ecovida.cu (Postfix) with ESMTP id 091644AD4E2;
+        Sun, 11 Jun 2023 12:35:34 -0400 (CDT)
+X-Virus-Scanned: amavisd-new at ecovida.cu
+Received: from correoweb.ecovida.cu ([127.0.0.1])
+        by localhost (correoweb.ecovida.cu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4IrgkPfrbOHY; Sun, 11 Jun 2023 12:35:33 -0400 (CDT)
+Received: from [192.168.100.9] (unknown [45.88.97.218])
+        by correoweb.ecovida.cu (Postfix) with ESMTPSA id 5E2674B2B1D;
+        Sun, 11 Jun 2023 10:29:39 -0400 (CDT)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230603004620.906089-1-shinichiro.kawasaki@wdc.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: RE:
+To:     Recipients <lazaroluis@ecovida.cu>
+From:   Aldi Albrecht <lazaroluis@ecovida.cu>
+Date:   Sun, 11 Jun 2023 15:33:46 +0100
+Reply-To: aldiheister@gmail.com
+X-Antivirus: Avast (VPS 230611-4, 6/11/2023), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20230611142940.5E2674B2B1D@correoweb.ecovida.cu>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 03, 2023 at 09:46:20AM +0900, Shin'ichiro Kawasaki wrote:
-> When rdma_destroy_id() and cma_iw_handler() race, struct rdma_id_private
-> *id_priv can be destroyed during cma_iw_handler call. This causes "BUG:
-> KASAN: slab-use-after-free" at mutex_lock() in cma_iw_handler().
-> To prevent the destroy of id_priv, keep its reference count by calling
-> cma_id_get() and cma_id_put() at start and end of cma_iw_handler().
+Hallo gesch=E4tzter Beg=FCnstigter, Sie wurden f=FCr eine gro=DFe Geldsumme=
+ f=FCr humanit=E4re und Investitionszwecke jeglicher Art ausgew=E4hlt. F=FC=
+r weitere Details antworten Sie bitte.
 
-Please add relevant kernel panic to commit message.
+Gr=FC=DFe
+ 
+Beate Heister
+Eigent=FCmer
+Aldi Albrecht-TRUST
 
-> 
-> Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-> Cc: stable@vger.kernel.org
+-- 
+This email has been checked for viruses by Avast antivirus software.
+www.avast.com
 
-Add Fixes line when you are fixing bug.
-
-> ---
-> The BUG KASAN was observed with blktests at test cases nvme/030 or nvme/031,
-> using SIW transport [1]. To reproduce it, it is required to repeat the test
-> cases from 30 to 50 times on my test system.
-> 
-> [1] https://lore.kernel.org/linux-block/rsmmxrchy6voi5qhl4irss5sprna3f5owkqtvybxglcv2pnylm@xmrnpfu3tfpe/
-> 
->  drivers/infiniband/core/cma.c | 3 +++
->  1 file changed, 3 insertions(+)
-
-The fix looks correct to me.
-
-Thanks
