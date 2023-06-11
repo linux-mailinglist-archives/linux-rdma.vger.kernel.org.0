@@ -2,49 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1270572B11C
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 11:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E46572B11F
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 11:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbjFKJTw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Jun 2023 05:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        id S231480AbjFKJUB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Jun 2023 05:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232716AbjFKJTv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 05:19:51 -0400
+        with ESMTP id S233328AbjFKJT7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 05:19:59 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDBA2139;
-        Sun, 11 Jun 2023 02:19:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD5D2722
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 02:19:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B956660C6C;
-        Sun, 11 Jun 2023 09:19:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61ED6C433D2;
-        Sun, 11 Jun 2023 09:19:49 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 59AB0611EC
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 09:19:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41761C433A1;
+        Sun, 11 Jun 2023 09:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686475190;
-        bh=AZYx4+6AZpYpOskdFVIWBDbgGw4M55BanHGx4ndhFDE=;
+        s=k20201202; t=1686475194;
+        bh=xTi3abJAEaS1tfCPyw7CWWztgshTpaDCZBuq04+KRAo=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=bdBKjkkiloTMS4mCzOOYfi4Qa1r3NmiHEHcnWzFbqXt0er0H1j9kMW41ILIKLkBOw
-         S+7wUC3l7UHak2i3jYqcwk1iUZJSsNsfemcZ+xFXmeA70r8FtnP12ErIKeHf+VoOiC
-         I8iJi1XK8M4es3tUJj68W+Sbia7Wz0k+UMbZRI3dItCWyrNiDGb/ZN4MOFitGslhu+
-         dVdwY1NUFCdtsSJoCX1AoXFqr5gy0XkSsJx5VAdJZXByHdTSzGM9HaYDrZKoelE7KF
-         BCE5RFMxHow6xIWVhZJM7x+yGUAqEvWmQ72xzovtm0vCsK3vPUNCPDeIMRsiB6AkMq
-         uYMBMSOCP4/yQ==
+        b=VHymba9iV2+237quSnnAgiZQHTSlQxxsMVMpp49cdPhdBanNT2FyQJzmz/wR7CKED
+         rVB0ml7yfsFj5gdmTcBExqu+tHN0D0fe3gkog14XLWUVPQPk6chVPCfx4wiEbXcihc
+         h9QI42v7X1XEb1Irpc2kX9MLGnEhA3qIEb50gCcSg0n+kwQqjB7mQHPO6DZkvHace1
+         TfRg7aezSH0lsDFpQ8oqzs+N7d+z+ouSSyhAw0T1L9rjIm+BJS9wmHnLpMhNZJ0ojW
+         YWYysLKRym2XpwhvZxblKGtH3UH7DeA5+r4C5Xks1hNK4U5GfWW9Qp9aY0OXUT+Zob
+         pVwKRSdIDS2BA==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        Patrisious Haddad <phaddad@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <cover.1685953497.git.leon@kernel.org>
-References: <cover.1685953497.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next v2 0/4] Handle FW failures to destroy QP/RQ objects
-Message-Id: <168647518603.116598.4329507797128349123.b4-ty@kernel.org>
-Date:   Sun, 11 Jun 2023 12:19:46 +0300
+To:     jgg@ziepe.ca, Cheng Xu <chengyou@linux.alibaba.com>
+Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
+In-Reply-To: <20230606055005.80729-1-chengyou@linux.alibaba.com>
+References: <20230606055005.80729-1-chengyou@linux.alibaba.com>
+Subject: Re: [PATCH for-next 0/4] RDMA/erdma: Add a new doorbell allocation mechanism
+Message-Id: <168647519066.116598.18282681779687114248.b4-ty@kernel.org>
+Date:   Sun, 11 Jun 2023 12:19:50 +0300
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -60,29 +54,27 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On Mon, 05 Jun 2023 13:14:03 +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Changelog:
-> v2:
->  * Reworked DCT patch
-> v1: https://lore.kernel.org/all/cover.1678973858.git.leon@kernel.org
->  * Dropped EQ changes
-> v0: https://lore.kernel.org/all/cover.1649139915.git.leonro@nvidia.com
-> -----------------------------------------------------------------------
+On Tue, 06 Jun 2023 13:50:01 +0800, Cheng Xu wrote:
+> This series adds a new doorbell allocation mechanism to meet the
+> the isolation requirement for userspace applications. Two main change
+> points in this patch set: One is that we extend the bar space for doorbell
+> allocation, and the other one is that we associate QPs/CQs with the
+> allocated doorbells for authorization. We also keep the original doorbell
+> mechanism for compatibility, but only used under CAP_SYS_RAWIO to prevent
+> non-privileged access, which suggested by Jason before.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/4] net/mlx5: Nullify qp->dbg pointer post destruction
-      https://git.kernel.org/rdma/rdma/c/c023b61ac8285d
-[2/4] RDMA/mlx5: Reduce QP table exposure
-      https://git.kernel.org/rdma/rdma/c/2ecfd946169e7f
-[3/4] RDMA/mlx5: Handle DCT QP logic separately from low level QP interface
-      https://git.kernel.org/rdma/rdma/c/afff24899846ff
-[4/4] RDMA/mlx5: Return the firmware result upon destroying QP/RQ
-      https://git.kernel.org/rdma/rdma/c/22664c06e99708
+[1/4] RDMA/erdma: Configure PAGE_SIZE to hardware
+      https://git.kernel.org/rdma/rdma/c/128f8404306d42
+[2/4] RDMA/erdma: Allocate doorbell resources from hardware
+      https://git.kernel.org/rdma/rdma/c/7e9a1dada2266c
+[3/4] RDMA/erdma: Associate QPs/CQs with doorbells for authorization
+      https://git.kernel.org/rdma/rdma/c/6534de1fe38514
+[4/4] RDMA/erdma: Refactor the original doorbell allocation mechanism
+      https://git.kernel.org/rdma/rdma/c/3b3dfd58bace12
 
 Best regards,
 -- 
