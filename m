@@ -2,298 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E059B72B330
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 19:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EAA172B349
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 19:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbjFKRVY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Jun 2023 13:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        id S229687AbjFKRa0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Jun 2023 13:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233952AbjFKRVU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 13:21:20 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 458D7E75;
-        Sun, 11 Jun 2023 10:20:55 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 974869200CC; Sun, 11 Jun 2023 19:20:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 91D4E9200CA;
-        Sun, 11 Jun 2023 18:20:10 +0100 (BST)
-Date:   Sun, 11 Jun 2023 18:20:10 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Stefan Roese <sr@denx.de>, Jim Wilson <wilson@tuliptree.org>,
-        David Abdurachmanov <david.abdurachmanov@gmail.com>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 14/14] PCI: Work around PCIe link training failures
-In-Reply-To: <alpine.DEB.2.21.2305310024400.59226@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2305310038540.59226@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2305310024400.59226@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        with ESMTP id S229601AbjFKRaZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 13:30:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC33BD
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 10:30:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4127560FA8
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 17:30:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0481FC433EF;
+        Sun, 11 Jun 2023 17:30:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686504623;
+        bh=aTM6zEzeSB3E8tNtjp91XLDg1fb71d1/vuCTzvMBfJI=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=L8aZsqTs3cyN8laCcJ3gGj5CrI74eq6I5c4EXE9loJtfZOkvyvfFchnqLjT808mnf
+         PzQ91R5URpMhRl/+/Ed9piGe0yf+lNA+CvvTEhph3atirJM6gCU+zVfjL2rDQuDnMh
+         OaJHGdpHT52bWJactcM78gIaKKTh6tNRQE6/sc26cATqkcUGRwJ+0hyHRWai/kt05J
+         T1Vu+/HVgAR1/sEsdGXdf916kl0qGgdZuc8CzJ3LeS7IyRJv7HS46YEfqorW5ZhtQk
+         HwT+Xh12XuxNxW1IJm9PmEhDtPE62JAn8K5Nxtu6Jo7BphHtPIVHHd7llu8SOhRHR7
+         HhelQjol6f76A==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     selvin.xavier@broadcom.com, jgg@ziepe.ca, sagi@grimberg.me,
+        Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+Cc:     linux-rdma@vger.kernel.org
+In-Reply-To: <20230606102531.162967-1-saravanan.vajravel@broadcom.com>
+References: <20230606102531.162967-1-saravanan.vajravel@broadcom.com>
+Subject: Re: [PATCH v3 for-rc 0/3] IB/isert Bug fixes in ib_isert
+Message-Id: <168650461915.409055.4386732440058913162.b4-ty@kernel.org>
+Date:   Sun, 11 Jun 2023 20:30:19 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Attempt to handle cases such as with a downstream port of the ASMedia 
-ASM2824 PCIe switch where link training never completes and the link 
-continues switching between speeds indefinitely with the data link layer 
-never reaching the active state.
 
-It has been observed with a downstream port of the ASMedia ASM2824 Gen 3 
-switch wired to the upstream port of the Pericom PI7C9X2G304 Gen 2 
-switch, using a Delock Riser Card PCI Express x1 > 2 x PCIe x1 device, 
-P/N 41433, wired to a SiFive HiFive Unmatched board.  In this setup the 
-switches are supposed to negotiate the link speed of preferably 5.0GT/s, 
-falling back to 2.5GT/s.
+On Tue, 06 Jun 2023 03:25:28 -0700, Saravanan Vajravel wrote:
+> Generic bug fixes to ib_isert
+> 
+> Regards,
+> Saravanan Vajravel
+> 
+> v1 -> v2:
+>  - Added Fixes tag to all patches
+>  - Fixed compilation issue in first patch
+> v2 -> v3:
+>  - In second patch, limited mutex lock to list_del_init() only
+>  - In third patch, corrected Fixes tag
+> 
+> [...]
 
-Instead the link continues oscillating between the two speeds, at the 
-rate of 34-35 times per second, with link training reported repeatedly 
-active ~84% of the time.  Forcibly limiting the target link speed to 
-2.5GT/s with the upstream ASM2824 device however makes the two switches 
-communicate correctly.  Removing the speed restriction afterwards makes 
-the two devices switch to 5.0GT/s then.
+Applied, thanks!
 
-Make use of these observations then and detect the inability to train 
-the link, by checking for the Data Link Layer Link Active status bit 
-being off while the Link Bandwidth Management Status indicating that 
-hardware has changed the link speed or width in an attempt to correct 
-unreliable link operation.
+[1/3] IB/isert: Fix dead lock in ib_isert
+      https://git.kernel.org/rdma/rdma/c/691b0480933f0c
+[2/3] IB/isert: Fix possible list corruption in CMA handler
+      https://git.kernel.org/rdma/rdma/c/7651e2d6c5b359
+[3/3] IB/isert: Fix incorrect release of isert connection
+      https://git.kernel.org/rdma/rdma/c/699826f4e30ab7
 
-Restrict the speed to 2.5GT/s then with the Target Link Speed field, 
-request a retrain and wait 200ms for the data link to go up.  If this 
-turns out successful, then lift the restriction, letting the devices 
-negotiate a higher speed.
-
-Also check for a 2.5GT/s speed restriction the firmware may have already 
-arranged and lift it too with ports of devices known to continue working 
-afterwards, currently the ASM2824 only, that already report their data 
-link being up.
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Link: https://lore.kernel.org/r/alpine.DEB.2.21.2203022037020.56670@angie.orcam.me.uk/
-Link: https://source.denx.de/u-boot/u-boot/-/commit/a398a51ccc68
----
-Changes from v8:
-
-- Rename `pcie_downstream_link_retrain' to `pcie_failed_link_retrain', add 
-  a prototype in "pci.h", moving the stub implementation under !PCI_QUIRKS 
-  umbrella.
-
-- Move back to quirks.c, though as an internal API call rather than a 
-  regular quirk.
-
-- Adjust for PCIE_LINK_RETRAIN_TIMEOUT_MS expressed in milliseconds rather 
-  than jiffies.
-
-- Use a `pcie_retrain_link' call rather than retraining inline, and also 
-  use it in the restriction lift path, making it another possible failure 
-  point.
-
-No changes from v7.
-
-Changes from v6:
-
-- Regenerate against 6.3-rc5.
-
-- Shorten the lore.kernel.org archive link in the change description.
-
-Changes from v5:
-
-- Move from a quirk into PCI core and call at device probing, hot-plug,
-  reset and resume.  Keep the ASMedia part under CONFIG_PCI_QUIRKS.
-
-- Rely on `dev->link_active_reporting' rather than re-retrieving the 
-  capability.
-
-Changes from v4:
-
-- Remove <linux/bug.h> inclusion no longer needed.
-
-- Make the quirk generic based on probing device features rather than 
-  specific to the ASM2824 part only; take the Retrain Link bit erratum 
-  into account.
-
-- Still lift the 2.5GT/s speed restriction with the ASM2824 only.
-
-- Increase retrain timeout from 200ms to 1s (PCIE_LINK_RETRAIN_TIMEOUT).
-
-- Remove retrain success notification.
-
-- Use PCIe helpers rather than generic PCI functions throughout.
-
-- Trim down and update the wording of the change description for the 
-  switch from an ASM2824-specific to a generic fixup.
-
-Changes from v3:
-
-- Remove the <linux/pci_ids.h> entry for the ASM2824.
-
-Changes from v2:
-
-- Regenerate for 5.17-rc2 for a merge conflict.
-
-- Replace BUG_ON for a missing PCI Express capability with WARN_ON and an
-  early return.
-
-Changes from v1:
-
-- Regenerate for a merge conflict.
----
- drivers/pci/pci.h    |    3 +
- drivers/pci/quirks.c |   93 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 95 insertions(+), 1 deletion(-)
-
-linux-pcie-asm2824-manual-retrain.diff
-Index: linux-macro/drivers/pci/pci.h
-===================================================================
---- linux-macro.orig/drivers/pci/pci.h
-+++ linux-macro/drivers/pci/pci.h
-@@ -539,6 +539,7 @@ void pci_acs_init(struct pci_dev *dev);
- int pci_dev_specific_acs_enabled(struct pci_dev *dev, u16 acs_flags);
- int pci_dev_specific_enable_acs(struct pci_dev *dev);
- int pci_dev_specific_disable_acs_redir(struct pci_dev *dev);
-+bool pcie_failed_link_retrain(struct pci_dev *dev);
- #else
- static inline int pci_dev_specific_acs_enabled(struct pci_dev *dev,
- 					       u16 acs_flags)
-@@ -553,11 +554,11 @@ static inline int pci_dev_specific_disab
- {
- 	return -ENOTTY;
- }
--#endif
- static inline bool pcie_failed_link_retrain(struct pci_dev *dev)
- {
- 	return false;
- }
-+#endif
- 
- /* PCI error reporting and recovery */
- pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-Index: linux-macro/drivers/pci/quirks.c
-===================================================================
---- linux-macro.orig/drivers/pci/quirks.c
-+++ linux-macro/drivers/pci/quirks.c
-@@ -33,6 +33,99 @@
- #include <linux/switchtec.h>
- #include "pci.h"
- 
-+/*
-+ * Retrain the link of a downstream PCIe port by hand if necessary.
-+ *
-+ * This is needed at least where a downstream port of the ASMedia ASM2824
-+ * Gen 3 switch is wired to the upstream port of the Pericom PI7C9X2G304
-+ * Gen 2 switch, and observed with the Delock Riser Card PCI Express x1 >
-+ * 2 x PCIe x1 device, P/N 41433, plugged into the SiFive HiFive Unmatched
-+ * board.
-+ *
-+ * In such a configuration the switches are supposed to negotiate the link
-+ * speed of preferably 5.0GT/s, falling back to 2.5GT/s.  However the link
-+ * continues switching between the two speeds indefinitely and the data
-+ * link layer never reaches the active state, with link training reported
-+ * repeatedly active ~84% of the time.  Forcing the target link speed to
-+ * 2.5GT/s with the upstream ASM2824 device makes the two switches talk to
-+ * each other correctly however.  And more interestingly retraining with a
-+ * higher target link speed afterwards lets the two successfully negotiate
-+ * 5.0GT/s.
-+ *
-+ * With the ASM2824 we can rely on the otherwise optional Data Link Layer
-+ * Link Active status bit and in the failed link training scenario it will
-+ * be off along with the Link Bandwidth Management Status indicating that
-+ * hardware has changed the link speed or width in an attempt to correct
-+ * unreliable link operation.  For a port that has been left unconnected
-+ * both bits will be clear.  So use this information to detect the problem
-+ * rather than polling the Link Training bit and watching out for flips or
-+ * at least the active status.
-+ *
-+ * Since the exact nature of the problem isn't known and in principle this
-+ * could trigger where an ASM2824 device is downstream rather upstream,
-+ * apply this erratum workaround to any downstream ports as long as they
-+ * support Link Active reporting and have the Link Control 2 register.
-+ * Restrict the speed to 2.5GT/s then with the Target Link Speed field,
-+ * request a retrain and wait 200ms for the data link to go up.
-+ *
-+ * If this turns out successful and we know by the Vendor:Device ID it is
-+ * safe to do so, then lift the restriction, letting the devices negotiate
-+ * a higher speed.  Also check for a similar 2.5GT/s speed restriction the
-+ * firmware may have already arranged and lift it with ports that already
-+ * report their data link being up.
-+ *
-+ * Return TRUE if the link has been successfully retrained, otherwise FALSE.
-+ */
-+bool pcie_failed_link_retrain(struct pci_dev *dev)
-+{
-+	static const struct pci_device_id ids[] = {
-+		{ PCI_VDEVICE(ASMEDIA, 0x2824) }, /* ASMedia ASM2824 */
-+		{}
-+	};
-+	u16 lnksta, lnkctl2;
-+
-+	if (!pci_is_pcie(dev) || !pcie_downstream_port(dev) ||
-+	    !pcie_cap_has_lnkctl2(dev) || !dev->link_active_reporting)
-+		return false;
-+
-+	pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &lnkctl2);
-+	pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
-+	if ((lnksta & (PCI_EXP_LNKSTA_LBMS | PCI_EXP_LNKSTA_DLLLA)) ==
-+	    PCI_EXP_LNKSTA_LBMS) {
-+		pci_info(dev, "broken device, retraining non-functional downstream link at 2.5GT/s\n");
-+
-+		lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
-+		lnkctl2 |= PCI_EXP_LNKCTL2_TLS_2_5GT;
-+		pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
-+
-+		if (!pcie_retrain_link(dev, false)) {
-+			pci_info(dev, "retraining failed\n");
-+			return false;
-+		}
-+
-+		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
-+	}
-+
-+	if ((lnksta & PCI_EXP_LNKSTA_DLLLA) &&
-+	    (lnkctl2 & PCI_EXP_LNKCTL2_TLS) == PCI_EXP_LNKCTL2_TLS_2_5GT &&
-+	    pci_match_id(ids, dev)) {
-+		u32 lnkcap;
-+
-+		pci_info(dev, "removing 2.5GT/s downstream link speed restriction\n");
-+		pcie_capability_read_dword(dev, PCI_EXP_LNKCAP, &lnkcap);
-+		lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
-+		lnkctl2 |= lnkcap & PCI_EXP_LNKCAP_SLS;
-+		pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
-+
-+		if (!pcie_retrain_link(dev, false)) {
-+			pci_info(dev, "retraining failed\n");
-+			return false;
-+		}
-+	}
-+
-+	return true;
-+}
-+
- static ktime_t fixup_debug_start(struct pci_dev *dev,
- 				 void (*fn)(struct pci_dev *dev))
- {
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
