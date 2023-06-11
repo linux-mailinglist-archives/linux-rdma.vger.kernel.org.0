@@ -2,24 +2,24 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8449F72B323
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 19:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C17472B32D
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 19:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbjFKRU4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Jun 2023 13:20:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
+        id S233888AbjFKRVU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Jun 2023 13:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjFKRUz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 13:20:55 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 21BFFE6F;
-        Sun, 11 Jun 2023 10:20:30 -0700 (PDT)
+        with ESMTP id S233992AbjFKRVT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 13:21:19 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCE1719AA;
+        Sun, 11 Jun 2023 10:20:54 -0700 (PDT)
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 529979200C9; Sun, 11 Jun 2023 19:20:02 +0200 (CEST)
+        id 6DEA69200CB; Sun, 11 Jun 2023 19:20:06 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 4E1479200C0;
-        Sun, 11 Jun 2023 18:20:02 +0100 (BST)
-Date:   Sun, 11 Jun 2023 18:20:02 +0100 (BST)
+        by angie.orcam.me.uk (Postfix) with ESMTP id 66A4F9200CA;
+        Sun, 11 Jun 2023 18:20:06 +0100 (BST)
+Date:   Sun, 11 Jun 2023 18:20:06 +0100 (BST)
 From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
 To:     Bjorn Helgaas <bhelgaas@google.com>,
         Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
@@ -42,10 +42,10 @@ cc:     Alex Williamson <alex.williamson@redhat.com>,
         linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v9 12/14] PCI: Provide stub failed link recovery for device
- probing and hot plug
+Subject: [PATCH v9 13/14] PCI: Add failed link recovery for device reset
+ events
 In-Reply-To: <alpine.DEB.2.21.2305310024400.59226@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2306111619570.64925@angie.orcam.me.uk>
+Message-ID: <alpine.DEB.2.21.2306111631050.64925@angie.orcam.me.uk>
 References: <alpine.DEB.2.21.2305310024400.59226@angie.orcam.me.uk>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
@@ -59,62 +59,97 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This now fails unconditionally and will be always optimised away, but 
-provides for quirks to implement recovery for failed links detected in 
-device probing and device hot plug events.
+Request failed link recovery with any upstream bridge where a device has 
+not come back after reset within PCI_RESET_WAIT time.  Reset the polling 
+interval if recovery succeeded, otherwise continue as usual.
 
 Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
 ---
 New change in v9, factored out from 7/7:
 
+- Remove duplicate succesful completion report previously added (not sure 
+  where it came from, possibly an unnoticed leftover from experiments).
+
+- Make the type of `retrain' variable `bool' rather than `int' and invert
+  the logic used.
+
 - Rename `pcie_downstream_link_retrain' to `pcie_failed_link_retrain'.
 
-- Add stub implementation in "pci.h".
+- Rename `pcie_upstream_link_retrain' to `pcie_parent_link_retrain'.  Add 
+  documentation.
 ---
- drivers/pci/pci.c   |    2 ++
- drivers/pci/pci.h   |    4 ++++
- drivers/pci/probe.c |    2 ++
- 3 files changed, 8 insertions(+)
+ drivers/pci/pci.c |   39 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 34 insertions(+), 5 deletions(-)
 
-linux-pcie-failed-link-retrain.diff
+linux-pcie-dev-wait-link-retrain.diff
 Index: linux-macro/drivers/pci/pci.c
 ===================================================================
 --- linux-macro.orig/drivers/pci/pci.c
 +++ linux-macro/drivers/pci/pci.c
-@@ -4912,6 +4912,8 @@ static bool pcie_wait_for_link_delay(str
- 	if (active)
- 		msleep(20);
- 	ret = pcie_wait_for_link_status(pdev, false, active);
-+	if (active && !ret)
-+		ret = pcie_failed_link_retrain(pdev);
- 	if (active && ret)
- 		msleep(delay);
- 
-Index: linux-macro/drivers/pci/pci.h
-===================================================================
---- linux-macro.orig/drivers/pci/pci.h
-+++ linux-macro/drivers/pci/pci.h
-@@ -554,6 +554,10 @@ static inline int pci_dev_specific_disab
- 	return -ENOTTY;
+@@ -1146,10 +1146,27 @@ void pci_resume_bus(struct pci_bus *bus)
+ 		pci_walk_bus(bus, pci_resume_one, NULL);
  }
- #endif
-+static inline bool pcie_failed_link_retrain(struct pci_dev *dev)
+ 
++/**
++ * pcie_parent_link_retrain - Check and retrain link we are downstream from
++ * @dev: PCI device to handle.
++ *
++ * Return TRUE if the link was retrained, FALSE otherwise.
++ */
++static bool pcie_parent_link_retrain(struct pci_dev *dev)
 +{
-+	return false;
-+}
- 
- /* PCI error reporting and recovery */
- pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-Index: linux-macro/drivers/pci/probe.c
-===================================================================
---- linux-macro.orig/drivers/pci/probe.c
-+++ linux-macro/drivers/pci/probe.c
-@@ -2549,6 +2549,8 @@ void pci_device_add(struct pci_dev *dev,
- 	dma_set_max_seg_size(&dev->dev, 65536);
- 	dma_set_seg_boundary(&dev->dev, 0xffffffff);
- 
-+	pcie_failed_link_retrain(dev);
++	struct pci_dev *bridge;
 +
- 	/* Fix up broken headers */
- 	pci_fixup_device(pci_fixup_header, dev);
++	bridge = pci_upstream_bridge(dev);
++	if (bridge)
++		return pcie_failed_link_retrain(bridge);
++	else
++		return false;
++}
++
+ static int pci_dev_wait(struct pci_dev *dev, char *reset_type, int timeout)
+ {
++	bool retrain = true;
+ 	int delay = 1;
+-	u32 id;
  
+ 	/*
+ 	 * After reset, the device should not silently discard config
+@@ -1163,21 +1180,33 @@ static int pci_dev_wait(struct pci_dev *
+ 	 * Command register instead of Vendor ID so we don't have to
+ 	 * contend with the CRS SV value.
+ 	 */
+-	pci_read_config_dword(dev, PCI_COMMAND, &id);
+-	while (PCI_POSSIBLE_ERROR(id)) {
++	for (;;) {
++		u32 id;
++
++		pci_read_config_dword(dev, PCI_COMMAND, &id);
++		if (!PCI_POSSIBLE_ERROR(id))
++			break;
++
+ 		if (delay > timeout) {
+ 			pci_warn(dev, "not ready %dms after %s; giving up\n",
+ 				 delay - 1, reset_type);
+ 			return -ENOTTY;
+ 		}
+ 
+-		if (delay > PCI_RESET_WAIT)
++		if (delay > PCI_RESET_WAIT) {
++			if (retrain) {
++				retrain = false;
++				if (pcie_parent_link_retrain(dev)) {
++					delay = 1;
++					continue;
++				}
++			}
+ 			pci_info(dev, "not ready %dms after %s; waiting\n",
+ 				 delay - 1, reset_type);
++		}
+ 
+ 		msleep(delay);
+ 		delay *= 2;
+-		pci_read_config_dword(dev, PCI_COMMAND, &id);
+ 	}
+ 
+ 	if (delay > PCI_RESET_WAIT)
