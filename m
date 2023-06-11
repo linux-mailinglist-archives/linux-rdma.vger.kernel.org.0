@@ -2,76 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A51D672B1BA
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 13:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC1772B1F1
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 15:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbjFKLqa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Jun 2023 07:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        id S230087AbjFKNE1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Jun 2023 09:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjFKLqa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 07:46:30 -0400
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F61219BB
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 04:46:28 -0700 (PDT)
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.66.156])
+        with ESMTP id S229562AbjFKNE0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 09:04:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0039BB
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 06:04:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id D65463F54C
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 11:46:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-        s=20210803; t=1686483985;
-        bh=+YXuhSU2S0JQIQhdtvBhI3FoA/qt40zpy9VZMhukVHc=;
-        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-         Reply-To;
-        b=Y/lx80SVxTU+N3urgY89BtduwL74dL3OMxw2SQuCaRPHNmgYXiJAJjAzw6Gyhd/T1
-         3cxLl1wab/uW8NdRivSO5tsXkUDuIDXPOlHhgk8MFLwjQdJ0BOI3lvlcyGGUjSO7nR
-         C7Ij9cf+DYQFfkYrMXaYIyMEmDSrH3dtv66MTDAAzIPCPunZACKmzV3PXsZ7QMaRsV
-         XAGp0a7fAhY3ZdhtkLrMqFi3SHZY/2C8VoSvMlqa8iXFqzf9m3lP47ehaQL0eImyuT
-         lNCTEYrQaEfrI9drdxtfepbjr2oOAHYGQ1YYdXhqhYNjDKm07g3NNyb0xBWf0BMXPK
-         5XwjrUtjWa1mA==
-Received: from juju-4112d9-prod-launchpad-manual-servers-4.lp.internal (localhost [127.0.0.1])
-        by buildd-manager.lp.internal (Postfix) with ESMTP id B59C1C13E2
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 11:46:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B0326108B
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 13:04:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CAF8C433EF;
+        Sun, 11 Jun 2023 13:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686488664;
+        bh=qnNMfyBspyW1zE9ZE9IRtyG908OJWAzzujDJ3yjSmhE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wq7UD4iiH8uCoF8BJCjFSE8ZUfse5cMxhELQhfDgHwtYPE+JbZdyjM1iR6mv/ltqb
+         rvg45wR4ZD3xnQ68f6MGWnOObbTIXuX60FcH86Nfrx5kmxLpH4pBAEhIvRar0mn3Ua
+         SZOa5DjZL0YHnLOZNxqNMKqX4EPoMhnsh8iRPwDz0VgpcMVcMGGDwIAPgxDqAsJWeh
+         nx5W4W6+4ypjRe+p66nRi0PvCKAZ3w6on3YfScCwvCvIAIlNLYpZ6YpncW/lxkyfhs
+         0dslZPe4iLfr9oqRZ8eE6Ve90GeAaOArsb8b7We5bqVxx/wdsOw0gY8iRf1HXHsjzN
+         Cg+MrIuHENsyg==
+Date:   Sun, 11 Jun 2023 16:04:20 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        andrew.gospodarek@broadcom.com
+Subject: Re: [PATCH v4 for-next 3/6] RDMA/bnxt_re: Query function
+ capabilities from firmware
+Message-ID: <20230611130420.GD12152@unreal>
+References: <1685617837-15725-1-git-send-email-selvin.xavier@broadcom.com>
+ <1685617837-15725-4-git-send-email-selvin.xavier@broadcom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Build-State: MANUALDEPWAIT
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-To:     Linux RDMA <linux-rdma@vger.kernel.org>
-From:   noreply@launchpad.net
-Subject: [recipe build #3555296] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <168648398571.23180.17833681031814351853.launchpad@juju-4112d9-prod-launchpad-manual-servers-4.lp.internal>
-Date:   Sun, 11 Jun 2023 11:46:25 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-X-Generated-By: Launchpad (canonical.com); Revision="620cd5280e3a973662e263ebf9346837ed657a46"; Instance="buildmaster"
-X-Launchpad-Hash: d937e98cbf8599be331cb3f51ba48718f4b3fc63
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1685617837-15725-4-git-send-email-selvin.xavier@broadcom.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 1 minute
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3555296/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-010
+On Thu, Jun 01, 2023 at 04:10:34AM -0700, Selvin Xavier wrote:
+> Query Function capabilities to enable advanced features.
+> 
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/main.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+> index 9cc652e..da99f69 100644
+> --- a/drivers/infiniband/hw/bnxt_re/main.c
+> +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> @@ -83,6 +83,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+>  				unsigned long event, void *ptr);
+>  static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev);
+>  static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev);
+> +static int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev);
+>  
+>  static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev, u8 mode)
+>  {
+> @@ -91,6 +92,9 @@ static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev, u8 mode)
+>  	cctx = rdev->chip_ctx;
+>  	cctx->modes.wqe_mode = bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx) ?
+>  			       mode : BNXT_QPLIB_WQE_MODE_STATIC;
+> +	if (bnxt_re_hwrm_qcaps(rdev))
+> +		dev_err(rdev_to_dev(rdev),
+> +			"Failed to query hwrm qcaps\n");
+>  }
+>  
+>  static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
+> @@ -340,6 +344,25 @@ static void bnxt_re_fill_fw_msg(struct bnxt_fw_msg *fw_msg, void *msg,
+>  	fw_msg->timeout = timeout;
+>  }
+>  
+> +/* Query function capabilities using common hwrm */
+> +int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev)
+> +{
+> +	struct bnxt_en_dev *en_dev = rdev->en_dev;
+> +	struct hwrm_func_qcaps_output resp = {0};
+> +	struct hwrm_func_qcaps_input req = {0};
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3555296
-Your team Linux RDMA is the requester of the build.
+There is no need in 0 here, just use {}
+
+> +	struct bnxt_qplib_chip_ctx *cctx;
+> +	struct bnxt_fw_msg fw_msg;
+
+Initialize it to zero from the beginning and remove memset()
+
+> +
+> +	cctx = rdev->chip_ctx;
+> +	memset(&fw_msg, 0, sizeof(fw_msg));
+> +	bnxt_re_init_hwrm_hdr(rdev, (void *)&req,
+> +			      HWRM_FUNC_QCAPS, -1, -1);
+
+All callers to bnxt_re_init_hwrm_hdr() provide "-1, -1" and rdev is not
+used at all.
+
+> +	req.fid = cpu_to_le16(0xffff);
+> +	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
+> +			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
+> +	return bnxt_send_msg(en_dev, &fw_msg);
+> +}
+> +
+>  static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
+>  				 u16 fw_ring_id, int type)
+>  {
+> -- 
+> 2.5.5
+> 
+
 
