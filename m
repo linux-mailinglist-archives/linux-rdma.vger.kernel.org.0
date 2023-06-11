@@ -2,24 +2,24 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FE772B313
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 19:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2A072B318
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 19:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbjFKRU2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Jun 2023 13:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44768 "EHLO
+        id S233872AbjFKRUe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Jun 2023 13:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbjFKRUZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 13:20:25 -0400
+        with ESMTP id S233464AbjFKRU3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 13:20:29 -0400
 Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 397CE1FE9;
-        Sun, 11 Jun 2023 10:20:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C3D9010E2;
+        Sun, 11 Jun 2023 10:20:07 -0700 (PDT)
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id C29129200BF; Sun, 11 Jun 2023 19:19:27 +0200 (CEST)
+        id 67DE69200C3; Sun, 11 Jun 2023 19:19:32 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id C025E9200BB;
-        Sun, 11 Jun 2023 18:19:27 +0100 (BST)
-Date:   Sun, 11 Jun 2023 18:19:27 +0100 (BST)
+        by angie.orcam.me.uk (Postfix) with ESMTP id 640209200BB;
+        Sun, 11 Jun 2023 18:19:32 +0100 (BST)
+Date:   Sun, 11 Jun 2023 18:19:32 +0100 (BST)
 From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
 To:     Bjorn Helgaas <bhelgaas@google.com>,
         Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
@@ -42,9 +42,9 @@ cc:     Alex Williamson <alex.williamson@redhat.com>,
         linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v9 04/14] PCI: Initialize `link_active_reporting' earlier
+Subject: [PATCH v9 05/14] powerpc/eeh: Rely on `link_active_reporting'
 In-Reply-To: <alpine.DEB.2.21.2305310024400.59226@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2305310122210.59226@angie.orcam.me.uk>
+Message-ID: <alpine.DEB.2.21.2305310124100.59226@angie.orcam.me.uk>
 References: <alpine.DEB.2.21.2305310024400.59226@angie.orcam.me.uk>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
@@ -58,56 +58,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Determine whether Data Link Layer Link Active Reporting is available 
-ahead of calling any fixups so that the cached value can be used there 
-and later on.
+Use `link_active_reporting' to determine whether Data Link Layer Link 
+Active Reporting is available rather than re-retrieving the capability.
 
 Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
 ---
+NB this has been compile-tested only with a PPC64LE configuration.
+
 No change from v8.
 
 Changes from v7:
 
-- Reorder from 3/7.
+- Reorder from 4/7.
 
-Changes from v6:
-
-- Regenerate against 6.3-rc5.
+No change from v6.
 
 New change in v6.
 ---
- drivers/pci/probe.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/powerpc/kernel/eeh_pe.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-linux-pcie-link-active-reporting-early.diff
-Index: linux-macro/drivers/pci/probe.c
+linux-pcie-link-active-reporting-eeh.diff
+Index: linux-macro/arch/powerpc/kernel/eeh_pe.c
 ===================================================================
---- linux-macro.orig/drivers/pci/probe.c
-+++ linux-macro/drivers/pci/probe.c
-@@ -820,7 +820,6 @@ static void pci_set_bus_speed(struct pci
+--- linux-macro.orig/arch/powerpc/kernel/eeh_pe.c
++++ linux-macro/arch/powerpc/kernel/eeh_pe.c
+@@ -671,9 +671,8 @@ static void eeh_bridge_check_link(struct
+ 	eeh_ops->write_config(edev, cap + PCI_EXP_LNKCTL, 2, val);
  
- 		pcie_capability_read_dword(bridge, PCI_EXP_LNKCAP, &linkcap);
- 		bus->max_bus_speed = pcie_link_speed[linkcap & PCI_EXP_LNKCAP_SLS];
--		bridge->link_active_reporting = !!(linkcap & PCI_EXP_LNKCAP_DLLLARC);
- 
- 		pcie_capability_read_word(bridge, PCI_EXP_LNKSTA, &linksta);
- 		pcie_update_link_speed(bus, linksta);
-@@ -1829,6 +1828,7 @@ int pci_setup_device(struct pci_dev *dev
- 	int err, pos = 0;
- 	struct pci_bus_region region;
- 	struct resource *res;
-+	u32 linkcap;
- 
- 	hdr_type = pci_hdr_type(dev);
- 
-@@ -1876,6 +1876,10 @@ int pci_setup_device(struct pci_dev *dev
- 	/* "Unknown power state" */
- 	dev->current_state = PCI_UNKNOWN;
- 
-+	/* Set it early to make it available to fixups, etc.  */
-+	pcie_capability_read_dword(dev, PCI_EXP_LNKCAP, &linkcap);
-+	dev->link_active_reporting = !!(linkcap & PCI_EXP_LNKCAP_DLLLARC);
-+
- 	/* Early fixups, before probing the BARs */
- 	pci_fixup_device(pci_fixup_early, dev);
- 
+ 	/* Check link */
+-	eeh_ops->read_config(edev, cap + PCI_EXP_LNKCAP, 4, &val);
+-	if (!(val & PCI_EXP_LNKCAP_DLLLARC)) {
+-		eeh_edev_dbg(edev, "No link reporting capability (0x%08x) \n", val);
++	if (!edev->pdev->link_active_reporting) {
++		eeh_edev_dbg(edev, "No link reporting capability\n");
+ 		msleep(1000);
+ 		return;
+ 	}
