@@ -2,24 +2,24 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7DD72B31E
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 19:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8449F72B323
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jun 2023 19:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbjFKRUt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Jun 2023 13:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45078 "EHLO
+        id S233849AbjFKRU4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Jun 2023 13:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjFKRUs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 13:20:48 -0400
+        with ESMTP id S230156AbjFKRUz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 13:20:55 -0400
 Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B5ED199E;
-        Sun, 11 Jun 2023 10:20:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 21BFFE6F;
+        Sun, 11 Jun 2023 10:20:30 -0700 (PDT)
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id E73559200C7; Sun, 11 Jun 2023 19:19:57 +0200 (CEST)
+        id 529979200C9; Sun, 11 Jun 2023 19:20:02 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id E0F309200C0;
-        Sun, 11 Jun 2023 18:19:57 +0100 (BST)
-Date:   Sun, 11 Jun 2023 18:19:57 +0100 (BST)
+        by angie.orcam.me.uk (Postfix) with ESMTP id 4E1479200C0;
+        Sun, 11 Jun 2023 18:20:02 +0100 (BST)
+Date:   Sun, 11 Jun 2023 18:20:02 +0100 (BST)
 From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
 To:     Bjorn Helgaas <bhelgaas@google.com>,
         Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
@@ -42,10 +42,10 @@ cc:     Alex Williamson <alex.williamson@redhat.com>,
         linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v9 11/14] PCI: Use `pcie_wait_for_link_status' in
- `pcie_wait_for_link_delay'
+Subject: [PATCH v9 12/14] PCI: Provide stub failed link recovery for device
+ probing and hot plug
 In-Reply-To: <alpine.DEB.2.21.2305310024400.59226@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2306111611170.64925@angie.orcam.me.uk>
+Message-ID: <alpine.DEB.2.21.2306111619570.64925@angie.orcam.me.uk>
 References: <alpine.DEB.2.21.2305310024400.59226@angie.orcam.me.uk>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
@@ -59,62 +59,62 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Remove a DLLLA status bit polling loop from `pcie_wait_for_link_delay' 
-and call almost identical code in `pcie_wait_for_link_status' instead.  
-This reduces the lower bound on the polling interval from 10ms to 1ms, 
-possibly increasing the CPU load on the system in favour to reducing 
-the wait time.
+This now fails unconditionally and will be always optimised away, but 
+provides for quirks to implement recovery for failed links detected in 
+device probing and device hot plug events.
 
 Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
 ---
-New change in v9.
----
- drivers/pci/pci.c |   17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+New change in v9, factored out from 7/7:
 
-linux-pcie-wait-for-link-delay-status.diff
+- Rename `pcie_downstream_link_retrain' to `pcie_failed_link_retrain'.
+
+- Add stub implementation in "pci.h".
+---
+ drivers/pci/pci.c   |    2 ++
+ drivers/pci/pci.h   |    4 ++++
+ drivers/pci/probe.c |    2 ++
+ 3 files changed, 8 insertions(+)
+
+linux-pcie-failed-link-retrain.diff
 Index: linux-macro/drivers/pci/pci.c
 ===================================================================
 --- linux-macro.orig/drivers/pci/pci.c
 +++ linux-macro/drivers/pci/pci.c
-@@ -4889,16 +4889,14 @@ static bool pcie_wait_for_link_status(st
- static bool pcie_wait_for_link_delay(struct pci_dev *pdev, bool active,
- 				     int delay)
- {
--	int timeout = PCIE_LINK_RETRAIN_TIMEOUT_MS;
- 	bool ret;
--	u16 lnk_status;
- 
- 	/*
- 	 * Some controllers might not implement link active reporting. In this
- 	 * case, we wait for 1000 ms + any delay requested by the caller.
- 	 */
- 	if (!pdev->link_active_reporting) {
--		msleep(timeout + delay);
-+		msleep(PCIE_LINK_RETRAIN_TIMEOUT_MS + delay);
- 		return true;
- 	}
- 
-@@ -4913,20 +4911,11 @@ static bool pcie_wait_for_link_delay(str
- 	 */
+@@ -4912,6 +4912,8 @@ static bool pcie_wait_for_link_delay(str
  	if (active)
  		msleep(20);
--	for (;;) {
--		pcie_capability_read_word(pdev, PCI_EXP_LNKSTA, &lnk_status);
--		ret = !!(lnk_status & PCI_EXP_LNKSTA_DLLLA);
--		if (ret == active)
--			break;
--		if (timeout <= 0)
--			break;
--		msleep(10);
--		timeout -= 10;
--	}
-+	ret = pcie_wait_for_link_status(pdev, false, active);
+ 	ret = pcie_wait_for_link_status(pdev, false, active);
++	if (active && !ret)
++		ret = pcie_failed_link_retrain(pdev);
  	if (active && ret)
  		msleep(delay);
  
--	return ret == active;
-+	return ret;
+Index: linux-macro/drivers/pci/pci.h
+===================================================================
+--- linux-macro.orig/drivers/pci/pci.h
++++ linux-macro/drivers/pci/pci.h
+@@ -554,6 +554,10 @@ static inline int pci_dev_specific_disab
+ 	return -ENOTTY;
  }
+ #endif
++static inline bool pcie_failed_link_retrain(struct pci_dev *dev)
++{
++	return false;
++}
  
- /**
+ /* PCI error reporting and recovery */
+ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+Index: linux-macro/drivers/pci/probe.c
+===================================================================
+--- linux-macro.orig/drivers/pci/probe.c
++++ linux-macro/drivers/pci/probe.c
+@@ -2549,6 +2549,8 @@ void pci_device_add(struct pci_dev *dev,
+ 	dma_set_max_seg_size(&dev->dev, 65536);
+ 	dma_set_seg_boundary(&dev->dev, 0xffffffff);
+ 
++	pcie_failed_link_retrain(dev);
++
+ 	/* Fix up broken headers */
+ 	pci_fixup_device(pci_fixup_header, dev);
+ 
