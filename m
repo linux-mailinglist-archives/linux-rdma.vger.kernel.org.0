@@ -2,205 +2,228 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D30C72B6BC
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 06:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B42972B7CD
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 07:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234419AbjFLEqN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jun 2023 00:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
+        id S235513AbjFLFrw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jun 2023 01:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235574AbjFLEpY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 00:45:24 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2098.outbound.protection.outlook.com [40.107.117.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33E1171F;
-        Sun, 11 Jun 2023 21:44:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ao1zz4RP1rkuzIiMvzC/Dfl7eEm5hCNZrZnDtqZihYXsNn5tSj8ihv74O8gn3W5LSlHd9imXpSQVaNfLDedg8sk6V6ilA87lQwgeGDhWcJjHQ6Qrf2H38LE682Gf3RP2gV6DAN81m5Jgt/7xJDb9+pX0VO04WUg8+ffKgtNLmWB123jPE/pXpoyTRkxhhjr5RwU2P3ln84l5oHItYSYKN4g9kRj6GRDbOhVvjOILAfX1uyTEzDaFxAuWCl8tvzp1ciP4qFpuMxwHO6HkHWhTB9tyarPwDgojVFKwNkv7Uzzzh0LJmuAVUKXXb5zE0e0CegoWGO3/4Jylwf5Lv148FQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YHjwTgLFcNJj0wyrZHVMKfHWyCiJPiJ2euEEU90+NB0=;
- b=IJMnexhSeZ/BneZKW0mfny+0ibb2QWYQQ5+ZBw8jb8HeuF5ekloDyw5q1Jc+B1NvA94OzOAW6vwaVUF1r80hIS+gJ3+a0TrkHn5GXoOIpu1T9hI8Xo6++wMLcmru+aMCHABm4rCmojXc7o+mBZnXin7WS7XCRfYlGqhvmiT9pw+7hYKpMlbM8sMWnPLCQxl0xmyqFHhzo+Wml1gPSs920LJgePvR2jJogLxASmjLKor+hIzOHKjY5/QCE7FuECj5/E4hfaiT/XXssTcvnsmkHpucaQrdDVUzDg/3jC4F3DgxH4MycknU3k0Zno9gAA/F9c7MtjNCpSiEwYCbBvHa1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YHjwTgLFcNJj0wyrZHVMKfHWyCiJPiJ2euEEU90+NB0=;
- b=fFbBQo2NcYGzrcUKLwDb0kPYYQ1WzZqZ8AHxSRLM04qCo8O6LvNsPBLZRffBXfdlUPWlOABXKNrl9vAuzXJtdIe0lp1ALR09js/Oq2Y0liQ1WvXMaSPwFKiLJ0LHJjJRqSZVCZqRi0Q3lN6vRWEDRBQKuxdQaE043cGLMHG2z6c=
-Received: from SI2P153MB0441.APCP153.PROD.OUTLOOK.COM (2603:1096:4:fc::7) by
- TYZP153MB0628.APCP153.PROD.OUTLOOK.COM (2603:1096:400:25e::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6521.3; Mon, 12 Jun 2023 04:44:44 +0000
-Received: from SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
- ([fe80::7d79:7433:e57b:55b5]) by SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
- ([fe80::7d79:7433:e57b:55b5%4]) with mapi id 15.20.6521.002; Mon, 12 Jun 2023
- 04:44:44 +0000
-From:   Wei Hu <weh@microsoft.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>
-Subject: RE: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
- driver.
-Thread-Topic: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
- driver.
-Thread-Index: AQHZmIoyK0/pJvWPX0+gdBo6594smK+AVTiAgAZKrxA=
-Date:   Mon, 12 Jun 2023 04:44:44 +0000
-Message-ID: <SI2P153MB0441DAC4E756A1991A03520FBB54A@SI2P153MB0441.APCP153.PROD.OUTLOOK.COM>
-References: <20230606151747.1649305-1-weh@microsoft.com>
- <20230607213903.470f71ae@kernel.org>
-In-Reply-To: <20230607213903.470f71ae@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=286edcf7-c4c8-4100-bc0e-54eb0eca02c6;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-06-12T04:43:54Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SI2P153MB0441:EE_|TYZP153MB0628:EE_
-x-ms-office365-filtering-correlation-id: ad805535-b1ef-4aa9-f41e-08db6affbe21
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hmZWzL7I0dTSui7wNVmU2pf8DeDGfP+R/x2FTk0Z7tCeQ0GmvlopBle41y8AuC0r+tRMvKfe/4dGlU7jPVlFipCu8+t5mPNVfU556yiXs0vs/wownV1ltM9FQulm+BGhcKwNnvIP2okpKH5VfdFAHIob5pLEyUUY7zQFfJrgw3W/CFjJEU/eG5Bcg2tkMUVa0dU+XP9xnLd+lXMMUhMfC+r8thmTieJ2RsCY9WcFGfmtFJvRyxSeSULH3ehFBddp8TYPyAvGKk61RH5uw0BQLs8szPw55O6fekMRXYc0bQHDyNMDwVLShEEcUum3AwUD/dcvwjRim0Na2rIFVztSTwvqKWY4s+1K7TwM9rYa7A53gfpWEAdk+g956PSsq+tI5qsf7lAM6360Upi+jioVRIe469wGnVEtyeDUcxf32O5+cvS+LqEn8ibYdy6dy8COW2yfzCABDwHg7v6lSJd1QoDnynztinaGtp8fAKvG9HNCm8xVaS9CmpXcE/QBHbiyRN5ac/TIdEe25CObklFYRY+yVxL0pTMCTL6zrJ3Xd70sS7HFPo8CGBlYUJ7gj9iI6LPzlITRSweO+qewvvQ1Terr6prIAwdT2vAZlqxUOD7+3bk8Idhm+rRfqQ8mgyjU65Uc4iSKkbf1mCcDH0klPQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2P153MB0441.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(396003)(346002)(376002)(366004)(451199021)(966005)(7696005)(316002)(41300700001)(83380400001)(86362001)(8990500004)(38070700005)(9686003)(6506007)(53546011)(186003)(26005)(107886003)(7416002)(2906002)(33656002)(122000001)(82950400001)(82960400001)(38100700002)(55016003)(52536014)(5660300002)(8936002)(8676002)(10290500003)(66946007)(66446008)(64756008)(66476007)(66556008)(54906003)(76116006)(4326008)(478600001)(71200400001)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?HMxftERMGmJnb8/eTZ2/2CwfcHp8hs+tfpTT/TlBYvhBTMxZBgaAOpCdiuFZ?=
- =?us-ascii?Q?7ozqFyX33sXekSx33JL96g6jaRNgpPe7ghA+KojP936rhzaZD5DdApsjquUN?=
- =?us-ascii?Q?NibwA1VjwQJPWMXietk3P0MQvtVjFvtzSAf+QQyO8Yzo6z3EVOnpJI6pU53v?=
- =?us-ascii?Q?YlAi98hQZMRcER0XG8CquHZ2uHpYpIcG2sSBkZ+FJ6YbTQMTotxhJJxXvET2?=
- =?us-ascii?Q?/wO8Qt2pX20vSVY8JVUCoMxGkqdTjGEQFNfGAYdgWaX7kbo/J+g7wnMX5j9G?=
- =?us-ascii?Q?E8WObYnratrS/bd4g2HmmkKbD/T6DkmN2w8qOKWk7HJyNdLY7i5tPSi+RjGe?=
- =?us-ascii?Q?hIY6DSLJitfcqeTGuCRvBBvbiBYEnewOngbXHaY3v9aR0A0MF9Crm8H8Ha2w?=
- =?us-ascii?Q?mAZ78hr7n3d9VgdCxu3dEZKf/3EWoV+Ugg9JHbAiFR+1lEMTVikmS8lLGa8v?=
- =?us-ascii?Q?nRpnuNGmHY0xxAEWLFzbUkP46Uy106rqgFXeUuZ5gBqcyez3LvjWZVGS3JRc?=
- =?us-ascii?Q?sFqo/qExcffsmcGzwHoFM/hEPlrsEWuE12t55mu2Lpp2HrqCrDXqmae7P72Y?=
- =?us-ascii?Q?g0bsfwtREHvAPXquIbKOLeVg+kr5teEz6Stb6AQk4xw5eE5Wl/avxknFqIjK?=
- =?us-ascii?Q?Dr3bA0f5766iaLTEhA/7EJ1wPcC2UvAiT06LUpP8Y96IGURBxxRxsAS8TRch?=
- =?us-ascii?Q?ln15PMuRBsygJetIKV215dg3MOq4MZrzDNa5VinYT9lzv44eLawKFz+aHnDB?=
- =?us-ascii?Q?DqzV41fy6sk52JB6vISzvSMjz41YL+smJGLmdKO0ZQ+U+3aqwAn8RzajFENN?=
- =?us-ascii?Q?VqoirlQuuRPxMp01ReZTvWNmcoi6EngQGFY3uhwrnLz8+2LjxAvZ6yE8CJx2?=
- =?us-ascii?Q?ser5ZK7/OrBDmdRHaLd3+UbBmLjPne5N5id6c665G/g8V6ACLEh6NhM3Icr0?=
- =?us-ascii?Q?QS4RXB7oWjGOWL7eSzdj0TqDuaTWiMOdDDQUZ+9NjWANZu+owhbGDtwvAbDs?=
- =?us-ascii?Q?p+w3Of2sEds9doSKFfBxXS1l+ScjurQ5WtbnDfBTMI0DZho3kHJrE6srj8Wj?=
- =?us-ascii?Q?IwEh2ba1GnpXMtmbdNILZgQwNb4jzk3Zs8mZ28OcP63QLmfkLMLTCX9QJ8RG?=
- =?us-ascii?Q?lrSafm6dzUIpCPw5iGG0cXs0GXNnbcti1sfEeyiuGhePKJdMCUC5BZPOGjFq?=
- =?us-ascii?Q?asqvmctenZODz3Nzm1z1WTKcEHv7nz74vAo1PNRIDjOTgm63ghMKmFceXYcj?=
- =?us-ascii?Q?wHxkbQG/bIPp/38X63HMf4n6y2pHd8dOfXNREEQb6nj5Y0omr9HlXTpbU1PP?=
- =?us-ascii?Q?FEUtlqEFuefV4Evr/IuilaM70xqC4Frh+uamZ/sIQHgK2NsqEtlI7gE5dKq6?=
- =?us-ascii?Q?ng/I786/Bss90ydlaztZ7aNwU9wyPZ6jUnW7uTMdAG/VwEwI0urgK96/2ju6?=
- =?us-ascii?Q?pWIzBqWvgYDLcNgA/W30eNEsXkAQoMUVA9U+YOprHxuLeh0xgKd3qjFPpvyj?=
- =?us-ascii?Q?zQTApyM+BiJ1gA/oPq6nzAx9lZ9Qs/jvhHe7ocqrg1+/XRfEzFsUl4y292H+?=
- =?us-ascii?Q?nIg9epbrRbhCZkyQgpg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S235599AbjFLFrX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 01:47:23 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B501199C
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 22:43:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1686548628; x=1718084628;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bcQ9MAb6Kml0F+jmJRbrMByxY0+us5vRd5ZBKaPi0Q4=;
+  b=K5P+fJfUOw6VIwhKgkZI4Mgpmt6Ynwtd9tDVd6vAcvAiCOJInlmVz9F5
+   1ppdbJuQepD34jPhMSIXRjeeh3KAoluAMemNdEZi7Xjny/R1lQQq/wUuT
+   juymSvRa6e2/iQu5RtsztK7WK3bfNp4vFgjBwmvYTPC4iADJYp7jHarVM
+   cn0fUJHYzwAPf/BtZUpNGLo3J5X7KT/CwGxWzu+MJGqEjKUiqwWI1ExX/
+   R75LeGSzkSbdka5oXFI3Y5d6eCpQt+hLnyAI4pEL5AyTHie6T9YpqOGka
+   qB3wDQu1oRl/c6/4KnAh74OwK1ZXXFf8U+G1+blcexa4p/b+etgYgzOiM
+   A==;
+X-IronPort-AV: E=Sophos;i="6.00,236,1681142400"; 
+   d="scan'208";a="233473817"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Jun 2023 13:42:39 +0800
+IronPort-SDR: FL+15qHHNOoP8W0o47XE2flx2qt1AgMFWv7E70O7WWy/7OkuYL6tfV1crIbNk4n+YLB63yO8cI
+ wYAtm9HJriYTjxNxiAOK5zMxV5WKpeduTJl1z14OtGs+8BKJspSykaHEw//KKPuyxd0ZbYNxFM
+ 3uVfTMOOrPTT9/5wjX3XBBLeJr2DkyQC8N1iE2P7b1TCcK1r/YuGU7CNZVGWzCqZqst6YGBf3n
+ cZBR7ccki3rAzmG7mzwpE5ADW9giyXt+LbnrAFUk8SyE0IWFt1L7lmD7VEBEesg5Uv6++n044T
+ zW0=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Jun 2023 21:51:36 -0700
+IronPort-SDR: fQ1Xj7+ryZDGrYQITJqXcvKcl3qBuRoq+aUwL/uwwqZjVKrSlbNNdkrl28GGCun4GIovLyDkTh
+ kLCNklyLjGZ+fJq9tAUCfwwo4BPZDykXDiAz4crKpWfz/iGC5HJ2zlpk5C1++XrPr49tb8wD5Z
+ hDYcTazhaKOrlDKSAP0WP13zeRkQvPKXCOB6ho1UbsHxYrorvs0yfTCnkR6614Hl3wefqGGDpM
+ Nb/ieHFl2TOF9yxGLVthj/+UizkwzLtR0kH/5ZfWPh7a4JuvJPM/g/e+iFYkvh3Kn7QceOzznV
+ WIc=
+WDCIronportException: Internal
+Received: from shindev.dhcp.fujisawa.hgst.com (HELO shindev.fujisawa.hgst.com) ([10.149.53.55])
+  by uls-op-cesaip01.wdc.com with ESMTP; 11 Jun 2023 22:42:38 -0700
+From:   Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     linux-nvme@lists.infradead.org,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH v2] RDMA/cma: prevent rdma id destroy during cma_iw_handler
+Date:   Mon, 12 Jun 2023 14:42:37 +0900
+Message-Id: <20230612054237.1855292-1-shinichiro.kawasaki@wdc.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad805535-b1ef-4aa9-f41e-08db6affbe21
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2023 04:44:44.1905
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VmTsVxCoKPlN4QnIFTBSPuGC8W7dyMtHac7luPB13kGFEXb4tfDH+SSY3m46mI1dJY2df+EtgC4GkO8ybcAhgg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZP153MB0628
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jakub,
+When rdma_destroy_id() and cma_iw_handler() race, struct rdma_id_private
+*id_priv can be destroyed during cma_iw_handler call. This causes "BUG:
+KASAN: slab-use-after-free" at mutex_lock() in cma_iw_handler() [1].
+To prevent the destroy of id_priv, keep its reference count by calling
+cma_id_get() and cma_id_put() at start and end of cma_iw_handler().
 
-> -----Original Message-----
-> From: Jakub Kicinski <kuba@kernel.org>
-> Sent: Thursday, June 8, 2023 12:39 PM
-> To: Wei Hu <weh@microsoft.com>
-> Cc: netdev@vger.kernel.org; linux-hyperv@vger.kernel.org; linux-
-> rdma@vger.kernel.org; Long Li <longli@microsoft.com>; Ajay Sharma
-> <sharmaajay@microsoft.com>; jgg@ziepe.ca; leon@kernel.org; KY
-> Srinivasan <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>;
-> wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>;
-> davem@davemloft.net; edumazet@google.com; pabeni@redhat.com;
-> vkuznets@redhat.com; ssengar@linux.microsoft.com;
-> shradhagupta@linux.microsoft.com
-> Subject: Re: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to
-> mana ib driver.
->=20
-> On Tue,  6 Jun 2023 15:17:47 +0000 Wei Hu wrote:
-> >  drivers/infiniband/hw/mana/cq.c               |  32 ++++-
-> >  drivers/infiniband/hw/mana/main.c             |  87 ++++++++++++
-> >  drivers/infiniband/hw/mana/mana_ib.h          |   4 +
-> >  drivers/infiniband/hw/mana/qp.c               |  90 +++++++++++-
-> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 131 ++++++++++--------
-> >  drivers/net/ethernet/microsoft/mana/mana_en.c |   1 +
-> >  include/net/mana/gdma.h                       |   9 +-
->=20
-> IB and netdev are different subsystem, can you put it on a branch and sen=
-d a
-> PR as the cover letter so that both subsystems can pull?
->=20
-> Examples:
-> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.
-> kernel.org%2Fall%2F20230607210410.88209-1-
-> saeed%40kernel.org%2F&data=3D05%7C01%7Cweh%40microsoft.com%7Cb672
-> 4a9f672f47d433ef08db67da4ada%7C72f988bf86f141af91ab2d7cd011db47%7C
-> 1%7C0%7C638217959538674174%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM
-> C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000
-> %7C%7C%7C&sdata=3DamO0W8QsR2I5INNNzCNOKEjrsYbzuZ92KXhNdfwSCHA
-> %3D&reserved=3D0
-> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.
-> kernel.org%2Fall%2F20230602171302.745492-1-
-> anthony.l.nguyen%40intel.com%2F&data=3D05%7C01%7Cweh%40microsoft.co
-> m%7Cb6724a9f672f47d433ef08db67da4ada%7C72f988bf86f141af91ab2d7cd0
-> 11db47%7C1%7C0%7C638217959538674174%7CUnknown%7CTWFpbGZsb3d8
-> eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
-> D%7C3000%7C%7C%7C&sdata=3DA%2BjjtSx%2FvY2T%2BNIEPGuftk%2BCr%2Fv
-> Yt2Xc1q8B6h2tb6g%3D&reserved=3D0
+[1]
 
-Thanks for you comment. I am  new to the process. I have a few questions re=
-garding to this and hope you can help. First of all, the patch is mostly fo=
-r IB. Is it possible for the patch to just go through the RDMA branch, sinc=
-e most of the changes are in RDMA?=20
+==================================================================
+BUG: KASAN: slab-use-after-free in __mutex_lock+0x1324/0x18f0
+Read of size 8 at addr ffff888197b37418 by task kworker/u8:0/9
 
-If the patch also needs to go through the NETDEV branch, does it mean two s=
-ubsystems will pull its own part? A few follow-up questions about generatin=
-g a PR, since I have never done such before.
+CPU: 0 PID: 9 Comm: kworker/u8:0 Not tainted 6.3.0 #62
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
+Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x57/0x90
+ print_report+0xcf/0x660
+ ? __mutex_lock+0x1324/0x18f0
+ kasan_report+0xa4/0xe0
+ ? __mutex_lock+0x1324/0x18f0
+ __mutex_lock+0x1324/0x18f0
+ ? cma_iw_handler+0xac/0x4f0 [rdma_cm]
+ ? _raw_spin_unlock_irqrestore+0x30/0x60
+ ? rcu_is_watching+0x11/0xb0
+ ? _raw_spin_unlock_irqrestore+0x30/0x60
+ ? trace_hardirqs_on+0x12/0x100
+ ? __pfx___mutex_lock+0x10/0x10
+ ? __percpu_counter_sum+0x147/0x1e0
+ ? domain_dirty_limits+0x246/0x390
+ ? wb_over_bg_thresh+0x4d5/0x610
+ ? rcu_is_watching+0x11/0xb0
+ ? cma_iw_handler+0xac/0x4f0 [rdma_cm]
+ cma_iw_handler+0xac/0x4f0 [rdma_cm]
+ ? rcu_is_watching+0x11/0xb0
+ ? __pfx_cma_iw_handler+0x10/0x10 [rdma_cm]
+ ? attach_entity_load_avg+0x4e2/0x920
+ ? _raw_spin_unlock_irqrestore+0x30/0x60
+ ? rcu_is_watching+0x11/0xb0
+ cm_work_handler+0x139e/0x1c50 [iw_cm]
+ ? __pfx_cm_work_handler+0x10/0x10 [iw_cm]
+ ? rcu_is_watching+0x11/0xb0
+ ? __pfx_try_to_wake_up+0x10/0x10
+ ? __pfx_do_raw_spin_lock+0x10/0x10
+ ? __pfx___might_resched+0x10/0x10
+ ? _raw_spin_unlock_irq+0x24/0x50
+ process_one_work+0x843/0x1350
+ ? __pfx_lock_acquire+0x10/0x10
+ ? __pfx_process_one_work+0x10/0x10
+ ? __pfx_do_raw_spin_lock+0x10/0x10
+ worker_thread+0xfc/0x1260
+ ? __pfx_worker_thread+0x10/0x10
+ kthread+0x29e/0x340
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x2c/0x50
+ </TASK>
 
-1. Which repo should I clone and create the branch from?
+Allocated by task 4225:
+ kasan_save_stack+0x2f/0x50
+ kasan_set_track+0x21/0x30
+ __kasan_kmalloc+0xa6/0xb0
+ __rdma_create_id+0x5b/0x5d0 [rdma_cm]
+ __rdma_create_kernel_id+0x12/0x40 [rdma_cm]
+ nvme_rdma_alloc_queue+0x26a/0x5f0 [nvme_rdma]
+ nvme_rdma_setup_ctrl+0xb84/0x1d90 [nvme_rdma]
+ nvme_rdma_create_ctrl+0x7b5/0xd20 [nvme_rdma]
+ nvmf_dev_write+0xddd/0x22b0 [nvme_fabrics]
+ vfs_write+0x211/0xd50
+ ksys_write+0x100/0x1e0
+ do_syscall_64+0x5b/0x80
+ entry_SYSCALL_64_after_hwframe+0x72/0xdc
 
-2. From the example you provided, I see these people has their own branches=
- on kernel.org, for example something like:
-git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux.git tags/mlx5-upd=
-ates-2023-06-06.=20
-I am not Linux maintainer. I just have repo on Github. How do I create or f=
-ork on kernel.org? Do I need an account to do so? Or I can use my own repo =
-on Github?
+Freed by task 4227:
+ kasan_save_stack+0x2f/0x50
+ kasan_set_track+0x21/0x30
+ kasan_save_free_info+0x2a/0x50
+ ____kasan_slab_free+0x169/0x1c0
+ slab_free_freelist_hook+0xdb/0x1b0
+ __kmem_cache_free+0xb8/0x2e0
+ nvme_rdma_free_queue+0x4a/0x70 [nvme_rdma]
+ nvme_rdma_teardown_io_queues.part.0+0x14a/0x1e0 [nvme_rdma]
+ nvme_rdma_delete_ctrl+0x4f/0x100 [nvme_rdma]
+ nvme_do_delete_ctrl+0x14e/0x240 [nvme_core]
+ nvme_sysfs_delete+0xcb/0x100 [nvme_core]
+ kernfs_fop_write_iter+0x359/0x530
+ vfs_write+0x58f/0xd50
+ ksys_write+0x100/0x1e0
+ do_syscall_64+0x5b/0x80
+ entry_SYSCALL_64_after_hwframe+0x72/0xdc
 
-3.  How to create PR in this case? Should I follow this link: https://docs.=
-kernel.org/maintainer/pull-requests.html?
+The buggy address belongs to the object at ffff888197b37000
+        which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 1048 bytes inside of
+        freed 2048-byte region [ffff888197b37000, ffff888197b37800)
 
-Thanks,
-Wei
+The buggy address belongs to the physical page:
+page:00000000fbe33a6e refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x197b30
+head:00000000fbe33a6e order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+anon flags: 0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+raw: 0017ffffc0010200 ffff888100042f00 0000000000000000 dead000000000001
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888197b37300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888197b37380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888197b37400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff888197b37480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888197b37500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+Fixes: de910bd92137 ("RDMA/cma: Simplify locking needed for serialization of callbacks")
+Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: stable@vger.kernel.org
+---
+The BUG KASAN was observed with blktests at test cases nvme/030 or nvme/031,
+using SIW transport [*]. To reproduce it, it is required to repeat the test
+cases from 30 to 50 times on my test system.
+
+[*] https://lore.kernel.org/linux-block/rsmmxrchy6voi5qhl4irss5sprna3f5owkqtvybxglcv2pnylm@xmrnpfu3tfpe/
+
+Changes from v1:
+* Improved the commit message per comments on the list
+
+ drivers/infiniband/core/cma.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 93a1c48d0c32..c5267d9bb184 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2477,6 +2477,7 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
+ 	struct sockaddr *laddr = (struct sockaddr *)&iw_event->local_addr;
+ 	struct sockaddr *raddr = (struct sockaddr *)&iw_event->remote_addr;
+ 
++	cma_id_get(id_priv);
+ 	mutex_lock(&id_priv->handler_mutex);
+ 	if (READ_ONCE(id_priv->state) != RDMA_CM_CONNECT)
+ 		goto out;
+@@ -2524,12 +2525,14 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
+ 	if (ret) {
+ 		/* Destroy the CM ID by returning a non-zero value. */
+ 		id_priv->cm_id.iw = NULL;
++		cma_id_put(id_priv);
+ 		destroy_id_handler_unlock(id_priv);
+ 		return ret;
+ 	}
+ 
+ out:
+ 	mutex_unlock(&id_priv->handler_mutex);
++	cma_id_put(id_priv);
+ 	return ret;
+ }
+ 
+-- 
+2.40.1
+
