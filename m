@@ -2,120 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF44972CDAC
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 20:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1295672CDBC
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 20:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237486AbjFLSQn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jun 2023 14:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
+        id S235401AbjFLST7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jun 2023 14:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237415AbjFLSQl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 14:16:41 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C304E73
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 11:16:40 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-3f9dd2fabe2so1409611cf.3
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 11:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1686593799; x=1689185799;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CSNNtD+uLuYv9nmzTpbeMCfqzOJ+jjSwaoJb9/60IFY=;
-        b=kMjXibD0dT1WnxLDRNzvxtdFWK18G0ro8YnUhV4611pocZCZnQHVROJEvrtMZWiwuB
-         KT7ki2dAQo432XryBydHa9238V3WXuw85jF1aS8kXUvOnkP1/9Apcf4/AVe7TyiEdDfb
-         vt+w189CJpY79/WVWRDv4xOv3OOjGNZxmcAMCaO6aEMlmHitWoLkbI6WmeWcK+0j77jj
-         aZ5kBoGgN8ZSH6vWYcxrHtpTZo9lT/cDq2okXqGL3UdJBXgF2rEeUSZ0jaFaXO43z8ct
-         R0hRJ8gkZLKAJTbi5Dpn1rlVnFECchaGeJ66MGSh/Q05HklJmAg8YW4xhg0RdqZrPvGF
-         Ih1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686593799; x=1689185799;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CSNNtD+uLuYv9nmzTpbeMCfqzOJ+jjSwaoJb9/60IFY=;
-        b=TIQ0jd+60WW/nIhID1+zBG628yZLEmjByZG8D+Nt+ik5IHgT9oQEpJklmPIoRu9yAX
-         hCqI/1YKshNecErwmCiHZ4Xc8d+z4ip8evrSRvewFtwSFpCPqPHFTWIT5WAvwEJZvesQ
-         gLoWwlsYagJ0nfLH9qulMIqiEpN5gSaJL1PreGy3h4n01OGMxGYtXeZlvPAawM+vjor9
-         cMleYmE6PahHUShaSbf1Fujzck53m/izpVXFA2DTdzRQKlgElv11n+IqHkEkKWC5dIwU
-         FtAciCB6TSfM5Cufvqv1RqGRQh4UOQ0FYkXE/PFRvc3DnX39xofuf9ao1nas5YK6AP0z
-         wPig==
-X-Gm-Message-State: AC+VfDyoEvsj7E5sRv4u7wq+yLsfvdbQDuLKyfeRRYriSHTec1sJ2tSC
-        JuD2CTQuq21I+i3EvG6/qkqhaw==
-X-Google-Smtp-Source: ACHHUZ56PLfbA1IsbtQ4tzlNdBNTVPqZZyyRiNfrvp+Ra3DOcBiDzJJB/sLUzltmV2qMRWikkyD4ag==
-X-Received: by 2002:a05:622a:1301:b0:3f9:a73b:57a2 with SMTP id v1-20020a05622a130100b003f9a73b57a2mr9983956qtk.26.1686593799273;
-        Mon, 12 Jun 2023 11:16:39 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id a22-20020ac844b6000000b003f6c9f8f0a8sm3559539qto.68.2023.06.12.11.16.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jun 2023 11:16:38 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1q8m5m-004idI-5Q;
-        Mon, 12 Jun 2023 15:16:38 -0300
-Date:   Mon, 12 Jun 2023 15:16:38 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>, Wei Hu <weh@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>
-Subject: Re: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
- driver.
-Message-ID: <ZIdhBtz/++OoyhyR@ziepe.ca>
-References: <20230606151747.1649305-1-weh@microsoft.com>
- <20230607213903.470f71ae@kernel.org>
- <SI2P153MB0441DAC4E756A1991A03520FBB54A@SI2P153MB0441.APCP153.PROD.OUTLOOK.COM>
- <20230612061349.GM12152@unreal>
- <20230612102221.2ca726fd@kernel.org>
-MIME-Version: 1.0
+        with ESMTP id S237470AbjFLSTq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 14:19:46 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2064.outbound.protection.outlook.com [40.107.237.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67771196
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 11:19:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DIpHHJydNImsHn2PbVV5elK0XEqP6niiNMSeSWLa/Siz1m2Tt+/2KuSXTgs619c3b4OhMYL4ovoJKJv+JYz9LUB/VpAH6WwHUUE1P2ugOFhkUAx3WN21zF5WLqu7tmzwUPDIsUTzRGKfXVieBtkXGIZQ7p2dIfyiwBQBQ+AuHgKVGl/gaNTET3I0+eLmwZKVuSPq8Hs8gHa0FaL5GkqZ/VG124pJCjeVHKN1mTVTfBWJN+N47LOs9e5im1OG4pV5WBgXVfZTdRKQ2CyTWwXGVFfHSZDIjLoVOpKoufBWS/YddXcZB+vIVHIIMqjNEfNEIRT3PpS8XBDfyYScMMQfKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TnrF3nyIJ45DEQhueCmMmnFMQg93+0rxzBmvNPH9W3k=;
+ b=CAD7U7Bk2YBYLiarUg2CD1BT/r8j1N0jL5nnw90Bs2QKe3Qca1ToNRXYfhG4ncCIquxmWZ+hDDgzbkn1sPwGW39d9DzPKvntptSOaDeAgXSmeeDzfTl8OUQRPlxhE68W9UyR9XiLVerWGFipMEotKRNBW3LejiZd5dpPTw4SbAGm1bECASE4TuyaCDh224QbMmJ1O+gXOPySAtzaWKczy4oL2i0gbhighGCjQatoAC1PLPx/wOFGGxFPiUQE2G4KXubs0DOfeSBeKCUr2v2Q5r7vDVlKFjAI4XiKr813pwoJBm5zIKBfgRZgZcjfLFhdil+XQ8ZAqBldNyb0EraIsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TnrF3nyIJ45DEQhueCmMmnFMQg93+0rxzBmvNPH9W3k=;
+ b=LdaSPYOUR8PZpC2ke0UuhIk6sEPE86Jz3JcRAT1QyCIOntM9B9WOFE6c/G8wrOi47nYt5uorp8GqmJYBgX/jOnC6SwhlAe7/jzZRA+2gnC3vuzV8l649UEhxq0tyey1c+4i3t9IiPiOz4eXmDvUEOech5ppFYmEgd9c0F9SyDMKUdt8Kzdpr2abaUddHixJMyJk43wX3h2iEAJ6onNfZk7NALKxlPA6zXqV6bUFqKd+04Dq3wXSPU75p/SdWqxG3/eMVjnzmnP88v4irYSazt3prpmYaFK9JB1M4APQUfrf/tr5/HkVMP9cSwpYzRrcUzkQB/4rPQbCXWHvbP+Rbxg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ0PR12MB6855.namprd12.prod.outlook.com (2603:10b6:a03:47e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.44; Mon, 12 Jun
+ 2023 18:19:40 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f7a7:a561:87e9:5fab]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f7a7:a561:87e9:5fab%6]) with mapi id 15.20.6455.030; Mon, 12 Jun 2023
+ 18:19:40 +0000
+Date:   Mon, 12 Jun 2023 15:19:38 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
+        andrew.gospodarek@broadcom.com
+Subject: Re: [PATCH v5 for-next 7/7] RDMA/bnxt_re: Enable low latency push
+Message-ID: <ZIdhunLGPLg6h5ID@nvidia.com>
+References: <1686563342-15233-1-git-send-email-selvin.xavier@broadcom.com>
+ <1686563342-15233-8-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230612102221.2ca726fd@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1686563342-15233-8-git-send-email-selvin.xavier@broadcom.com>
+X-ClientProxiedBy: MN2PR19CA0038.namprd19.prod.outlook.com
+ (2603:10b6:208:19b::15) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ0PR12MB6855:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61dd7695-c6dd-4926-3243-08db6b719673
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DTYmJjHuc069p/2KiizFVe47G+4XMnSh7mJNz7Am/OalOJnDBq/IufMD0ExEC96/jEeA8gZGh05DVOV/1zNct1oec4cOBRzwe1YUtxVgHDtYV+9FHWArHTVheBRbp8g0kSJTusNZpO4y59KHWO3B7u+5TApT5vlqJ8mLaI/Coxq7MtjMH1zZpDetf85BSIEVGppMTUr57RUi7xKT5MKMII3YtxVDY0VCsbLBQDvqZwaw7Zxzr1BaJjgnuVgxMbuGPdBM4sIG84NBX3/5Gd4ar17Cd0GqgFdl67y34D2/XZ7jZjodIESqN1Uxx4kDPbSziZwXBn/p5W42tDTDq5GmFHXEMy0a89lDJcCWo2lYtI7SMSKvQDLMn2K+rOiMszYX2IvrqsjJeC2I3aPQMW10uXrf4CQ7Tiu//HsD/9PMGxTmryZHWTYwMvnW2SihSb31RJoVqVH2LZeoudDGXVu11zTdulU3tFUxYqSFYhoJnvlpRTdwXP2c96PNqVQiXF4wYewON2+gXVVRKC0hMsYXcAMrE9C3meXSWMeWf1bj9bSLZYkc8MkxyIzTfjyGIzBi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(396003)(136003)(39860400002)(366004)(376002)(451199021)(6486002)(478600001)(186003)(26005)(6512007)(6506007)(36756003)(2616005)(38100700002)(86362001)(5660300002)(8936002)(8676002)(316002)(41300700001)(2906002)(4326008)(6916009)(66556008)(66476007)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8SaYtEMpMpQYSuL1filVDz+OEmOr0CiYVx6LwvJznKYMRsEoYOBnxx+zGqrN?=
+ =?us-ascii?Q?LEPjWnwOZGpMCq3v/gE/eUXyt93Sfv2eeMMgSBaU2w5U5Pr3Bi4VVoZDRKMr?=
+ =?us-ascii?Q?te/tzgXWqUBDMxbkGMJgBmGvSJp4QFyHOU+Jct6F56e5RDAMpVxjBgHyNBTD?=
+ =?us-ascii?Q?YgNPVfoR3Vk8FYFxvGBLOPhTojjtITLlx69LL6aEXwy14chFlRVURwVmKoNv?=
+ =?us-ascii?Q?Ppd06HrI3wIjW3cO8mkEJRgDRWOoFlZvyMVUysu3yooV1kqJk1JQ/Hzvl0Bu?=
+ =?us-ascii?Q?UFnesrZLUaynAcnOLDps9sWhQ39Z74Tg7yQiuNzExwrSFajhLCae3IwDtN2r?=
+ =?us-ascii?Q?fM03/lrRG59JogCBRrr7706VAI7XN2HNeCrBdGKgBvoHV722s5YjuPwJM145?=
+ =?us-ascii?Q?xdmi6/b+9FYHRJki65CzfDUU4riYgyGWaQAvW6FyKOuCDbyJXmk9L0gbREyp?=
+ =?us-ascii?Q?w7CrKloV5JxpmCjJ1zRRpe2QrGqf8bVNEWZ3jJucKz2hChFDmCx3xgqntxWJ?=
+ =?us-ascii?Q?28Q0xg/mjWhRntCxgzz4WsDX6KBHn4bIgrNL/fNj+6A90CHk8O/m2gW7qR9M?=
+ =?us-ascii?Q?XAW3KODPImOtnzb7KNfFCW5ZV82ihi1Ynz3QDAlWNx8opd/ftATXms7q/oZF?=
+ =?us-ascii?Q?EnuE14jXxJ54REwH8uKmVIeva6usQOj9YFzIo+KC4fjuOlmQ8YJMPxq95+yp?=
+ =?us-ascii?Q?xbGN//6qHuWZha0HHGejuKuAfDnosfCRLVQbDRAiVwerymJeONMuQSgtZceT?=
+ =?us-ascii?Q?oIpzcmT5fCAtDonFNOGZwnnB7ZyXCzdZ9tt5k+6UOpyQ2rHbxnGBiBfOMSAP?=
+ =?us-ascii?Q?Nuy9gKSS5tpolz4aUxQXQvOpBSHYzpJwo3cI9wU9H0RDQh38pL/dX4ozzXA3?=
+ =?us-ascii?Q?OeQGNyqC+AlmZP6ZXfMqw+9b7MVDJbnmSI9QdkjIoUOBEOPSXyngYVQkfYva?=
+ =?us-ascii?Q?s9Q2R1KMAKJnpm116STmO9qibkJfBq7EZBys2KzfN3n6m31tWU6P6JE9vteI?=
+ =?us-ascii?Q?FxfjSVXMId4GPIw/6oLi7xD7ht9gjax2Cclz78XfC3J4NuD1xyRx/8vgxTPh?=
+ =?us-ascii?Q?ca5v1gsFMVsJv20dB+qQzsUlKkbZ2halJMoMVQADExR9/vCRlmjE9A+T+765?=
+ =?us-ascii?Q?cCw8X4eO7xN5ccNLwJcvMOp14ZjPVQB5u4hXoBAVKfHDMRbqk/dJdnj9Mu1w?=
+ =?us-ascii?Q?+05R83Pzkqf0OLfD+omVcoDgIX3aLAianmfo4ksWGrEO0tra7xssZpF3UZdY?=
+ =?us-ascii?Q?xYXrQgWCGe7Lg4vBU1SZ9cX02+QBnVu3VQ9t/9EtME8FKZ5s4lcv4uiF6REx?=
+ =?us-ascii?Q?VyjhNAcjREzvdL5djQ59Q9G5gh5ecKrTOr/Acgx6ex6JO8Lf6C1sPWgXqmir?=
+ =?us-ascii?Q?UUuF8ySvETd99MO7ZaSrpyN8ndxyR/5k7a/fcjdkYkkc3EvK7HYAOvpm2pLU?=
+ =?us-ascii?Q?KO7M0hYujmzwg85bzmgpcmqm3gw8S3I/9Otnoe7ehrFNmyzhqd3vuquj+d2H?=
+ =?us-ascii?Q?aex1hSoJMxsG9UnrbkXzlS2HYKuOLDL2h0dtOYxgBnsSSDc2RwkaU5qaV2wl?=
+ =?us-ascii?Q?g8vwS119TOP63VbRL/yGxKnRohI8kcMcw0c/3Mim?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61dd7695-c6dd-4926-3243-08db6b719673
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2023 18:19:40.4714
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5yh43CtW4Sir4f+PafbnkQ9Z+YEd5KNz0C0FBIBfoj1B2MEHK+lexli7GOYjtn62
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6855
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 10:22:21AM -0700, Jakub Kicinski wrote:
-> On Mon, 12 Jun 2023 09:13:49 +0300 Leon Romanovsky wrote:
-> > > Thanks for you comment. I am  new to the process. I have a few
-> > > questions regarding to this and hope you can help. First of all,
-> > > the patch is mostly for IB. Is it possible for the patch to just go
-> > > through the RDMA branch, since most of the changes are in RDMA?   
-> > 
-> > Yes, it can, we (RDMA) will handle it.
-> 
-> Probably, although it's better to teach them some process sooner
-> rather than later?
+On Mon, Jun 12, 2023 at 02:49:02AM -0700, Selvin Xavier wrote:
 
-I've been of the opinion the shared branch process is difficult - we
-took a long time to fine tune the process. If you don't fully
-understand how to do this with git you can make a real mess of it.
+> +static int UVERBS_HANDLER(BNXT_RE_METHOD_ALLOC_PAGE)(struct uverbs_attr_bundle *attrs)
+> +{
+> +	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
+> +	enum bnxt_re_alloc_page_type alloc_type;
+> +	struct bnxt_re_user_mmap_entry *entry;
+> +	enum bnxt_re_mmap_flag mmap_flag;
+> +	struct bnxt_qplib_chip_ctx *cctx;
+> +	struct bnxt_re_ucontext *uctx;
+> +	struct bnxt_re_dev *rdev;
+> +	u64 mmap_offset;
+> +	u32 length;
+> +	u32 dpi;
+> +	u64 dbr;
+> +	int err;
+> +
+> +	uctx = container_of(ib_uverbs_get_ucontext(attrs), struct bnxt_re_ucontext, ib_uctx);
+> +	if (IS_ERR(uctx))
+> +		return PTR_ERR(uctx);
+> +
+> +	err = uverbs_get_const(&alloc_type, attrs, BNXT_RE_ALLOC_PAGE_TYPE);
+> +	if (err)
+> +		return err;
+> +
+> +	rdev = uctx->rdev;
+> +	cctx = rdev->chip_ctx;
+> +
+> +	switch (alloc_type) {
+> +	case BNXT_RE_ALLOC_WC_PAGE:
+> +		if (cctx->modes.db_push)  {
+> +			if (bnxt_qplib_alloc_dpi(&rdev->qplib_res, &uctx->wcdpi,
+> +						 uctx, BNXT_QPLIB_DPI_TYPE_WC))
+> +				return -ENOMEM;
+> +			length = PAGE_SIZE;
+> +			dpi = uctx->wcdpi.dpi;
+> +			dbr = (u64)uctx->wcdpi.umdbr;
+> +			mmap_flag = BNXT_RE_MMAP_WC_DB;
+> +		} else {
+> +			return -EINVAL;
+> +		}
+> +
+> +		break;
+> +
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	entry = bnxt_re_mmap_entry_insert(uctx, dbr, mmap_flag, &mmap_offset);
+> +	if (IS_ERR(entry))
+> +		return PTR_ERR(entry);
+> +
+> +	uobj->object = entry;
+> +	uverbs_finalize_uobj_create(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
 
-So I would say MS is welcome to use it if they can do it right, but I
-wouldn't push them to do so or expect they must to be
-successful. Really only Mellanox and Intel seem to have enough churn
-to justify it right now.
+uverbs_finalize_uobj_create() is supposed to be called once the
+function cannot fail anymore
 
-If they don't use shared branches then they must be responsible to
-avoid conflicts, even if that means they have to delay sending patches
-for a cycle.
+> +	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
+> +			     &mmap_offset, sizeof(mmap_offset));
+> +	if (err)
+> +		return err;
+
+Because there is no way to undo it on error.
+
+So the error handling here needs adjusting
 
 Jason
