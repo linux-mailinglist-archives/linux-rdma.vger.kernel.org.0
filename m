@@ -2,51 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EEA72B7F2
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 08:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D1272B7FB
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 08:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbjFLGKk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jun 2023 02:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
+        id S231764AbjFLGN4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jun 2023 02:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjFLGKj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 02:10:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B1EBE
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 23:10:38 -0700 (PDT)
+        with ESMTP id S229573AbjFLGNz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 02:13:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3DE93;
+        Sun, 11 Jun 2023 23:13:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BE81C61F6E
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 06:10:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AD3EC433D2;
-        Mon, 12 Jun 2023 06:10:36 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BB5161F6E;
+        Mon, 12 Jun 2023 06:13:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B004C433EF;
+        Mon, 12 Jun 2023 06:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686550237;
-        bh=GrpxXR5xpUL26o4mJO8qQ9dz5svqY6QrRuvWw1Td764=;
+        s=k20201202; t=1686550433;
+        bh=58MbQy7xKDiKseM5d6mW8cUc/YGdsopViJxC6mgqasw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zs7nXv0j7IAkjFc94Di+VXW1+8Yn+w065KO/k+ghyr0Zn8dnYvnBnuU26OwBuwuXR
-         uOhAD/OWcZO0ijZl8sMGsObaGuNajaTu80cwdzyHymlecHujK3a+XQN7uzHAe0h0ga
-         gmuEKB2Mc7QZdflUPYsGj4LQ0/wXBuVQNN0AXyDfQ+V5IoQ6Zugqz2Rw4lV4d76456
-         NRJIGA1DMDqDw7Iz3McC6cw8/M3ndLYkl7H+lXlZGNR20CU6cEJ5mqNxSf7ejObMBq
-         MKem9PkExhPWp44b1f/b8UppTEtAQuHnVrlHbuTCsM965ggujZv+TjKzTZ+1NnwZO9
-         F8a1kOYhb6l2w==
-Date:   Mon, 12 Jun 2023 09:10:32 +0300
+        b=iqqmYapoPKherGGRx8hLARAa//bmyZ+dt/X+ZAPtzPZglpSDqTneR/j3kA3uqyNUi
+         9PTz0iOSueDU66hcvVYaVsovvg7hBKcYz4wHjVQw+C34oETuB3MyDnyNVbhsoVUQ51
+         nRGHLnKEaYDYZDPgb677soAW9dsp7xNFYtlY+oeJyqFzaEocHS8X/TfFyJzZw0Vg+Y
+         zKY6Yo9Gip0xKZjM0ygd4u+SAR1dmN0+J/udwPAWKQnMKpYF6+gPKIYB7mrhKFgmOh
+         pHXUqYpqTPo2GKG6orVc5WuOEpIZeHZTB8htyUGMq+lxozNIXAfMvO1+973Vbu5fEP
+         JW2UJO/qG7JDA==
+Date:   Mon, 12 Jun 2023 09:13:49 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Chuck Lever <cel@kernel.org>, "jgg@nvidia.com" <jgg@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/cma: Address sparse warnings
-Message-ID: <20230612061032.GL12152@unreal>
-References: <168625482324.6564.3866640282297592339.stgit@oracle-102.nfsv4bat.org>
- <20230611180748.GI12152@unreal>
- <64058A51-B935-4027-B00B-E83428E25BFB@oracle.com>
+To:     Wei Hu <weh@microsoft.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Long Li <longli@microsoft.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>
+Subject: Re: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
+ driver.
+Message-ID: <20230612061349.GM12152@unreal>
+References: <20230606151747.1649305-1-weh@microsoft.com>
+ <20230607213903.470f71ae@kernel.org>
+ <SI2P153MB0441DAC4E756A1991A03520FBB54A@SI2P153MB0441.APCP153.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <64058A51-B935-4027-B00B-E83428E25BFB@oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <SI2P153MB0441DAC4E756A1991A03520FBB54A@SI2P153MB0441.APCP153.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,215 +70,56 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 12:48:06AM +0000, Chuck Lever III wrote:
+On Mon, Jun 12, 2023 at 04:44:44AM +0000, Wei Hu wrote:
+> Hi Jakub,
 > 
-> 
-> > On Jun 11, 2023, at 2:07 PM, Leon Romanovsky <leon@kernel.org> wrote:
+> > -----Original Message-----
+> > From: Jakub Kicinski <kuba@kernel.org>
+> > Sent: Thursday, June 8, 2023 12:39 PM
+> > To: Wei Hu <weh@microsoft.com>
+> > Cc: netdev@vger.kernel.org; linux-hyperv@vger.kernel.org; linux-
+> > rdma@vger.kernel.org; Long Li <longli@microsoft.com>; Ajay Sharma
+> > <sharmaajay@microsoft.com>; jgg@ziepe.ca; leon@kernel.org; KY
+> > Srinivasan <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>;
+> > wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>;
+> > davem@davemloft.net; edumazet@google.com; pabeni@redhat.com;
+> > vkuznets@redhat.com; ssengar@linux.microsoft.com;
+> > shradhagupta@linux.microsoft.com
+> > Subject: Re: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to
+> > mana ib driver.
 > > 
-> > On Thu, Jun 08, 2023 at 04:07:13PM -0400, Chuck Lever wrote:
-> >> From: Chuck Lever <chuck.lever@oracle.com>
-> >> 
-> >> drivers/infiniband/core/cma.c:2090:13: warning: context imbalance in 'destroy_id_handler_unlock' - wrong count at exit
-> >> drivers/infiniband/core/cma.c:2113:6: warning: context imbalance in 'rdma_destroy_id' - unexpected unlock
-> >> drivers/infiniband/core/cma.c:2256:17: warning: context imbalance in 'cma_ib_handler' - unexpected unlock
-> >> drivers/infiniband/core/cma.c:2448:17: warning: context imbalance in 'cma_ib_req_handler' - unexpected unlock
-> >> drivers/infiniband/core/cma.c:2571:17: warning: context imbalance in 'cma_iw_handler' - unexpected unlock
-> >> drivers/infiniband/core/cma.c:2616:17: warning: context imbalance in 'iw_conn_req_handler' - unexpected unlock
-> >> drivers/infiniband/core/cma.c:3035:17: warning: context imbalance in 'cma_work_handler' - unexpected unlock
-> >> drivers/infiniband/core/cma.c:3542:17: warning: context imbalance in 'addr_handler' - unexpected unlock
-> >> drivers/infiniband/core/cma.c:4269:17: warning: context imbalance in 'cma_sidr_rep_handler' - unexpected unlock
+> > On Tue,  6 Jun 2023 15:17:47 +0000 Wei Hu wrote:
+> > >  drivers/infiniband/hw/mana/cq.c               |  32 ++++-
+> > >  drivers/infiniband/hw/mana/main.c             |  87 ++++++++++++
+> > >  drivers/infiniband/hw/mana/mana_ib.h          |   4 +
+> > >  drivers/infiniband/hw/mana/qp.c               |  90 +++++++++++-
+> > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 131 ++++++++++--------
+> > >  drivers/net/ethernet/microsoft/mana/mana_en.c |   1 +
+> > >  include/net/mana/gdma.h                       |   9 +-
 > > 
-> > Strange, I was under impression that we don't have sparse errors in cma.c
-> 
-> They might show up only if certain CONFIG options are enabled.
-> For example, I have
-> 
->     CONFIG_LOCK_DEBUGGING_SUPPORT=y
->     CONFIG_PROVE_LOCKING=y
-
-Thanks, I reproduced it.
-
-> 
-> 
-> >> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> >> ---
-> >> drivers/infiniband/core/cma.c |    3 +--
-> >> 1 file changed, 1 insertion(+), 2 deletions(-)
-> >> 
-> >> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> >> index 10a1a8055e8c..35c8d67a623c 100644
-> >> --- a/drivers/infiniband/core/cma.c
-> >> +++ b/drivers/infiniband/core/cma.c
-> >> @@ -2058,7 +2058,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
-> >>  * handlers can start running concurrently.
-> >>  */
-> >> static void destroy_id_handler_unlock(struct rdma_id_private *id_priv)
-> >> - __releases(&idprv->handler_mutex)
-> >> + __must_hold(&idprv->handler_mutex)
+> > IB and netdev are different subsystem, can you put it on a branch and send a
+> > PR as the cover letter so that both subsystems can pull?
 > > 
-> > According to the Documentation/dev-tools/sparse.rst
-> >   64 __must_hold - The specified lock is held on function entry and exit.
-> >   65
-> >   66 __acquires - The specified lock is held on function exit, but not entry.
-> >   67
-> >   68 __releases - The specified lock is held on function entry, but not exit.
+> > Examples:
+> > https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.
+> > kernel.org%2Fall%2F20230607210410.88209-1-
+> > saeed%40kernel.org%2F&data=05%7C01%7Cweh%40microsoft.com%7Cb672
+> > 4a9f672f47d433ef08db67da4ada%7C72f988bf86f141af91ab2d7cd011db47%7C
+> > 1%7C0%7C638217959538674174%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM
+> > C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000
+> > %7C%7C%7C&sdata=amO0W8QsR2I5INNNzCNOKEjrsYbzuZ92KXhNdfwSCHA
+> > %3D&reserved=0
+> > https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.
+> > kernel.org%2Fall%2F20230602171302.745492-1-
+> > anthony.l.nguyen%40intel.com%2F&data=05%7C01%7Cweh%40microsoft.co
+> > m%7Cb6724a9f672f47d433ef08db67da4ada%7C72f988bf86f141af91ab2d7cd0
+> > 11db47%7C1%7C0%7C638217959538674174%7CUnknown%7CTWFpbGZsb3d8
+> > eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
+> > D%7C3000%7C%7C%7C&sdata=A%2BjjtSx%2FvY2T%2BNIEPGuftk%2BCr%2Fv
+> > Yt2Xc1q8B6h2tb6g%3D&reserved=0
 > 
-> Fair enough, but the warnings vanish with this patch. Something
-> ain't right here.
-> 
-> 
-> > In our case, handler_mutex is unlocked while exiting from destroy_id_handler_unlock().
-> 
-> Sure, that is the way I read the code too. However I don't agree
-> that this structure makes it easy to eye-ball the locks and unlocks.
-> Even sparse 0.6.4 seems to be confused by this arrangement.
+> Thanks for you comment. I am  new to the process. I have a few questions regarding to this and hope you can help. First of all, the patch is mostly for IB. Is it possible for the patch to just go through the RDMA branch, since most of the changes are in RDMA? 
 
-I think this change will solve it.
+Yes, it can, we (RDMA) will handle it.
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 93a1c48d0c32..435ac3c93c1f 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2043,7 +2043,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
-  * handlers can start running concurrently.
-  */
- static void destroy_id_handler_unlock(struct rdma_id_private *id_priv)
--	__releases(&idprv->handler_mutex)
-+	__releases(&id_prv->handler_mutex)
- {
- 	enum rdma_cm_state state;
- 	unsigned long flags;
-@@ -2061,6 +2061,7 @@ static void destroy_id_handler_unlock(struct rdma_id_private *id_priv)
- 	state = id_priv->state;
- 	id_priv->state = RDMA_CM_DESTROYING;
- 	spin_unlock_irqrestore(&id_priv->lock, flags);
-+	__release(&id_priv->handler_mutex);
- 	mutex_unlock(&id_priv->handler_mutex);
- 	_destroy_id(id_priv, state);
- }
-@@ -2071,6 +2072,7 @@ void rdma_destroy_id(struct rdma_cm_id *id)
- 		container_of(id, struct rdma_id_private, id);
- 
- 	mutex_lock(&id_priv->handler_mutex);
-+	__acquire(&id_priv->handler_mutex);
- 	destroy_id_handler_unlock(id_priv);
- }
- EXPORT_SYMBOL(rdma_destroy_id);
-@@ -2209,6 +2211,7 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
- 	if (ret) {
- 		/* Destroy the CM ID by returning a non-zero value. */
- 		id_priv->cm_id.ib = NULL;
-+		__acquire(&id_priv->handler_mutex);
- 		destroy_id_handler_unlock(id_priv);
- 		return ret;
- 	}
-@@ -2400,6 +2403,7 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 	mutex_lock_nested(&conn_id->handler_mutex, SINGLE_DEPTH_NESTING);
- 	ret = cma_ib_acquire_dev(conn_id, listen_id, &req);
- 	if (ret) {
-+		__acquire(&conn_id->handler_mutex);
- 		destroy_id_handler_unlock(conn_id);
- 		goto err_unlock;
- 	}
-@@ -2413,6 +2417,7 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 		/* Destroy the CM ID by returning a non-zero value. */
- 		conn_id->cm_id.ib = NULL;
- 		mutex_unlock(&listen_id->handler_mutex);
-+		__acquire(&conn_id->handler_mutex);
- 		destroy_id_handler_unlock(conn_id);
- 		goto net_dev_put;
- 	}
-@@ -2524,6 +2529,7 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
- 	if (ret) {
- 		/* Destroy the CM ID by returning a non-zero value. */
- 		id_priv->cm_id.iw = NULL;
-+		__acquire(&id_priv->handler_mutex);
- 		destroy_id_handler_unlock(id_priv);
- 		return ret;
- 	}
-@@ -2569,6 +2575,7 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 	ret = rdma_translate_ip(laddr, &conn_id->id.route.addr.dev_addr);
- 	if (ret) {
- 		mutex_unlock(&listen_id->handler_mutex);
-+		__acquire(&conn_id->handler_mutex);
- 		destroy_id_handler_unlock(conn_id);
- 		return ret;
- 	}
-@@ -2576,6 +2583,7 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 	ret = cma_iw_acquire_dev(conn_id, listen_id);
- 	if (ret) {
- 		mutex_unlock(&listen_id->handler_mutex);
-+		__acquire(&conn_id->handler_mutex);
- 		destroy_id_handler_unlock(conn_id);
- 		return ret;
- 	}
-@@ -2592,6 +2600,7 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 		/* User wants to destroy the CM ID */
- 		conn_id->cm_id.iw = NULL;
- 		mutex_unlock(&listen_id->handler_mutex);
-+		__acquire(&conn_id->handler_mutex);
- 		destroy_id_handler_unlock(conn_id);
- 		return ret;
- 	}
-@@ -2987,6 +2996,7 @@ static void cma_work_handler(struct work_struct *_work)
- 
- 	if (cma_cm_event_handler(id_priv, &work->event)) {
- 		cma_id_put(id_priv);
-+		__acquire(&id_priv->handler_mutex);
- 		destroy_id_handler_unlock(id_priv);
- 		goto out_free;
- 	}
-@@ -3491,6 +3501,7 @@ static void addr_handler(int status, struct sockaddr *src_addr,
- 		event.event = RDMA_CM_EVENT_ADDR_RESOLVED;
- 
- 	if (cma_cm_event_handler(id_priv, &event)) {
-+		__acquire(&id_priv->handler_mutex);
- 		destroy_id_handler_unlock(id_priv);
- 		return;
- 	}
-@@ -4219,6 +4230,7 @@ static int cma_sidr_rep_handler(struct ib_cm_id *cm_id,
- 	if (ret) {
- 		/* Destroy the CM ID by returning a non-zero value. */
- 		id_priv->cm_id.ib = NULL;
-+		__acquire(&id_priv->handler_mutex);
- 		destroy_id_handler_unlock(id_priv);
- 		return ret;
- 	}
-@@ -5138,9 +5150,9 @@ static void cma_netevent_work_handler(struct work_struct *_work)
- 	event.status = -ETIMEDOUT;
- 
- 	if (cma_cm_event_handler(id_priv, &event)) {
--		__acquire(&id_priv->handler_mutex);
- 		id_priv->cm_id.ib = NULL;
- 		cma_id_put(id_priv);
-+		__acquire(&id_priv->handler_mutex);
- 		destroy_id_handler_unlock(id_priv);
- 		return;
- 	}
--- 
-2.40.1
-
-
-> 
-> Sometimes deduplication can be taken too far.
-> 
-> 
-> > Thanks
-> > 
-> >> {
-> >> enum rdma_cm_state state;
-> >> unsigned long flags;
-> >> @@ -5153,7 +5153,6 @@ static void cma_netevent_work_handler(struct work_struct *_work)
-> >> event.status = -ETIMEDOUT;
-> >> 
-> >> if (cma_cm_event_handler(id_priv, &event)) {
-> >> - __acquire(&id_priv->handler_mutex);
-> >> id_priv->cm_id.ib = NULL;
-> >> cma_id_put(id_priv);
-> >> destroy_id_handler_unlock(id_priv);
-> 
-> 
-> --
-> Chuck Lever
-> 
-> 
+Thanks
