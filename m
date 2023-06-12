@@ -2,50 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D4872C702
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 16:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0874E72C818
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 16:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236919AbjFLOKe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jun 2023 10:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
+        id S238249AbjFLOWA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jun 2023 10:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237044AbjFLOKc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 10:10:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5173410FF;
-        Mon, 12 Jun 2023 07:10:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DAA62629A1;
-        Mon, 12 Jun 2023 14:10:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F051AC433D2;
-        Mon, 12 Jun 2023 14:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686579028;
-        bh=X0+nBclNyvOxNp4D2C4RvpHhcmAZyrcuNkgUbCgAI30=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=sajRYHN37jBk3vRmdTN0BNS+U1wG6gAtrvC+Hjhsnu3XwNR6BB2CVMNS5ETPNvWXU
-         jUrEpraGlv+rjNHeXBAtweVFw+KFDJdUKQ+HwiUMn4pGZPjt1DySg9QI/bvr1o3hpe
-         7QeLBbcR0z/PfAMjmPeThXGx6FIT/1oAuIB0gMY82lKcHXCMDZy5SRG75rqa+m3PeL
-         rr5bGWFunVmDGOhqup9AKUWu4lpL0wkoQ92uU2bnEB5dzfpUoELiLyvn0ONQ4OEHBC
-         DCRUvf7OUL3AolTs+/R3fLJxKdG147ZZoDtPrFNl7H3Idv3xhnkVsFUjaE90cDAHa/
-         itWTAwaXA0PPg==
-Subject: [PATCH v2 5/5] SUNRPC: Optimize page release in svc_rdma_sendto()
-From:   Chuck Lever <cel@kernel.org>
-To:     linux-nfs@vger.kernel.org
-Cc:     Chuck Lever <chuck.lever@oracle.com>, Tom Talpey <tom@talpey.com>,
-        linux-rdma@vger.kernel.org, tom@talpey.com
-Date:   Mon, 12 Jun 2023 10:10:27 -0400
-Message-ID: <168657902707.5619.1368921836287929972.stgit@manet.1015granger.net>
-In-Reply-To: <168657879115.5619.5573632864481586166.stgit@manet.1015granger.net>
-References: <168657879115.5619.5573632864481586166.stgit@manet.1015granger.net>
-User-Agent: StGit/1.5
+        with ESMTP id S238248AbjFLOVp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 10:21:45 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5621468C
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 07:19:05 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-3f9eea9d0a1so18152941cf.1
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 07:19:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1686579487; x=1689171487;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Hx6JaA1VFMYuuPRejPTqH+/kHaaNNp+8XTwPIciGZk=;
+        b=D7eGkhPav+Iw9SGA7aEVSTNfKwuRTKm5G+sl0JlstlReKmUBBQSK9e9wUhNmXP7o4z
+         UHHeAM+A2oaPorjylRyHzR1iSgcK/mmUP9WjLwZRc1d+m+Spb8WGKRyGZIX+V+acrk++
+         JB5MzpxRKQWZDWtmNfGyRNJyNUdzAUJaUAPlRtxGAFPXh0N2WGU/JOryeICEZ3On+zyN
+         BG+4CAxzqY0LnXhAwObkeEBDjnbZWUqMiFYpwlPOIspCciA61nSDFC+nd2HUKExpdgvK
+         ELky1u1iZLU3Yc9cjXm+ee1Aa0ofQ05s6A3ZejB5iyxqlMulXKXOca85JG5D9vaN/bWI
+         xOVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686579487; x=1689171487;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4Hx6JaA1VFMYuuPRejPTqH+/kHaaNNp+8XTwPIciGZk=;
+        b=WoEgmaw/9OK3oWSQxosrVk/wecm5G9P9qg3lFdvLy+e52wydX/myr/oSrlgffuDDd1
+         odSZFhz4MACixzNEmUDdRfiGD23OpufOLzvT9i0KHvffEce4W1pkxn6nLi7wwpjXGxD6
+         dTKVu8wK//XRi/s6PgwsliZHe2EaEP7RKYmMRj/Y1DfKU5YGEsEauAR61c6Xv2x/Vsua
+         4YFzLwqbxzgp4s+8zizFiQQtCWpVCpzr2jlvI4c8Brze+QCcLd9YGIZfGy4MnORD/GD7
+         nbVSBAA6x38AOC5K122MVF6qBriJZVAOSFtXlIqRFm7Y1XR2ob4ZP+UpBXQmqTbcGF5p
+         cawQ==
+X-Gm-Message-State: AC+VfDzCqWWuiHsi21Dk+lTKwmhdjo5vFLGge/9g9PpMIvf5ttzNWYdF
+        HWS7BEf/DLOyRQW0OrZCv/Plbw==
+X-Google-Smtp-Source: ACHHUZ5uXYK3k9fARcVs12zkAlloXFgFswgLnTGTsduaqOQC0Q2Jq7lsI3SuS0aFpOUsHwK9sN4gjA==
+X-Received: by 2002:ac8:57cc:0:b0:3f9:7251:30f4 with SMTP id w12-20020ac857cc000000b003f9725130f4mr12276118qta.4.1686579487027;
+        Mon, 12 Jun 2023 07:18:07 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id bs17-20020ac86f11000000b003e3860f12f7sm3412801qtb.56.2023.06.12.07.18.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jun 2023 07:18:06 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1q8iMv-004amy-JE;
+        Mon, 12 Jun 2023 11:18:05 -0300
+Date:   Mon, 12 Jun 2023 11:18:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        linux-nvme@lists.infradead.org, Damien Le Moal <dlemoal@kernel.org>
+Subject: Re: [PATCH v2] RDMA/cma: prevent rdma id destroy during
+ cma_iw_handler
+Message-ID: <ZIcpHbV3oqsjuwfz@ziepe.ca>
+References: <20230612054237.1855292-1-shinichiro.kawasaki@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230612054237.1855292-1-shinichiro.kawasaki@wdc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,44 +75,80 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+On Mon, Jun 12, 2023 at 02:42:37PM +0900, Shin'ichiro Kawasaki wrote:
+> When rdma_destroy_id() and cma_iw_handler() race, struct rdma_id_private
+> *id_priv can be destroyed during cma_iw_handler call. This causes "BUG:
+> KASAN: slab-use-after-free" at mutex_lock() in cma_iw_handler() [1].
+> To prevent the destroy of id_priv, keep its reference count by calling
+> cma_id_get() and cma_id_put() at start and end of cma_iw_handler().
+> 
+> [1]
+> 
+> ==================================================================
+> BUG: KASAN: slab-use-after-free in __mutex_lock+0x1324/0x18f0
+> Read of size 8 at addr ffff888197b37418 by task kworker/u8:0/9
+> 
+> CPU: 0 PID: 9 Comm: kworker/u8:0 Not tainted 6.3.0 #62
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
+> Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+> Call Trace:
+>  <TASK>
+>  dump_stack_lvl+0x57/0x90
+>  print_report+0xcf/0x660
+>  ? __mutex_lock+0x1324/0x18f0
+>  kasan_report+0xa4/0xe0
+>  ? __mutex_lock+0x1324/0x18f0
+>  __mutex_lock+0x1324/0x18f0
+>  ? cma_iw_handler+0xac/0x4f0 [rdma_cm]
+>  ? _raw_spin_unlock_irqrestore+0x30/0x60
+>  ? rcu_is_watching+0x11/0xb0
+>  ? _raw_spin_unlock_irqrestore+0x30/0x60
+>  ? trace_hardirqs_on+0x12/0x100
+>  ? __pfx___mutex_lock+0x10/0x10
+>  ? __percpu_counter_sum+0x147/0x1e0
+>  ? domain_dirty_limits+0x246/0x390
+>  ? wb_over_bg_thresh+0x4d5/0x610
+>  ? rcu_is_watching+0x11/0xb0
+>  ? cma_iw_handler+0xac/0x4f0 [rdma_cm]
+>  cma_iw_handler+0xac/0x4f0 [rdma_cm]
 
-Now that we have bulk page allocation and release APIs, it's more
-efficient to use those than it is for nfsd threads to wait for send
-completions. Previous patches have eliminated the calls to
-wait_for_completion() and complete(), in order to avoid scheduler
-overhead.
+What is the full call chain here, eg with the static functions
+un-inlined?
+> 
+>  drivers/infiniband/core/cma.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index 93a1c48d0c32..c5267d9bb184 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -2477,6 +2477,7 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
+>  	struct sockaddr *laddr = (struct sockaddr *)&iw_event->local_addr;
+>  	struct sockaddr *raddr = (struct sockaddr *)&iw_event->remote_addr;
+>  
+> +	cma_id_get(id_priv);
+>  	mutex_lock(&id_priv->handler_mutex);
+>  	if (READ_ONCE(id_priv->state) != RDMA_CM_CONNECT)
+>  		goto out;
+> @@ -2524,12 +2525,14 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
+>  	if (ret) {
+>  		/* Destroy the CM ID by returning a non-zero value. */
+>  		id_priv->cm_id.iw = NULL;
+> +		cma_id_put(id_priv);
+>  		destroy_id_handler_unlock(id_priv);
+>  		return ret;
+>  	}
+>  
+>  out:
+>  	mutex_unlock(&id_priv->handler_mutex);
+> +	cma_id_put(id_priv);
+>  	return ret;
+>  }
 
-Now release pages-under-I/O in the send completion handler using
-the efficient bulk release API.
+cm_work_handler already has a ref on the iwcm_id_private
 
-I've measured a 7% reduction in cumulative CPU utilization in
-svc_rdma_sendto(), svc_rdma_wc_send(), and svc_xprt_release(). In
-particular, using release_pages() instead of complete() cuts the
-time per svc_rdma_wc_send() call by two-thirds. This helps improve
-scalability because svc_rdma_wc_send() is single-threaded per
-connection.
+I think there is likely some much larger issue with the IW CM if the
+cm_id can be destroyed while the iwcm_id is in use? It is weird that
+there are two id memories for this :\
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Reviewed-by: Tom Talpey <tom@talpey.com>
----
- net/sunrpc/xprtrdma/svc_rdma_sendto.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-index 1ae4236d04a3..24228f3611e8 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-@@ -236,8 +236,8 @@ void svc_rdma_send_ctxt_put(struct svcxprt_rdma *rdma,
- 	struct ib_device *device = rdma->sc_cm_id->device;
- 	unsigned int i;
- 
--	for (i = 0; i < ctxt->sc_page_count; ++i)
--		put_page(ctxt->sc_pages[i]);
-+	if (ctxt->sc_page_count)
-+		release_pages(ctxt->sc_pages, ctxt->sc_page_count);
- 
- 	/* The first SGE contains the transport header, which
- 	 * remains mapped until @ctxt is destroyed.
-
-
+Jason
