@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CADF72D4A2
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 00:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2D372D519
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 01:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238446AbjFLWnn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jun 2023 18:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
+        id S231126AbjFLXpV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jun 2023 19:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236558AbjFLWnf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 18:43:35 -0400
+        with ESMTP id S234190AbjFLXpU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 19:45:20 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE869F0;
-        Mon, 12 Jun 2023 15:43:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF5110F9;
+        Mon, 12 Jun 2023 16:45:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 888D961F2D;
-        Mon, 12 Jun 2023 22:43:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE8A3C433D2;
-        Mon, 12 Jun 2023 22:43:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 09359617D1;
+        Mon, 12 Jun 2023 23:45:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6862DC433EF;
+        Mon, 12 Jun 2023 23:45:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686609812;
-        bh=JBnyaSL01ZIaD9BxSHKCygGU9ZOWddzqcQnjN+ViNR8=;
+        s=k20201202; t=1686613518;
+        bh=wiSNyZ18E7j0+vGKZGV00souZm1bq4VUlxQ/AgkGk+M=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Y+dhwf2/ZroIxTkGwW0S2KpBpLyAmhnEDkWq8yrVJBaUmeNTM8chFq3gJGGAI9AJP
-         hgMI//H1pDJ47odAmSs2mBJR2CpDMQqiviylWQF8wWxOJvSni8Y4Mbh8LAXR20OxcU
-         6Xhm7nJrbOoj0l2hV0O/MUopYZQ1jj1VgkAFYT0F1CwVg2T3QOmJFlDXbUzMR92E5X
-         HVXSZcqxVSq0xilwvIoplXESzJcetA9CXlCXMguI3cKCaAJndPxDEi39UqHgpoH0EV
-         /yv/QVyVJVoJr2TdG4igeCfEZUJjvTah3/P2T8uGRxR2wSkfztSfGPM1HFOARQ6xzL
-         L/1Gs8PyRFmiw==
-Date:   Mon, 12 Jun 2023 15:43:29 -0700
+        b=J/MbfG7MqX/927qmjvcVnKooeZ6fLV4ndi1AMb2SvblEdbUjlOz3OsBYSj7Hb2YxX
+         p1UDScovbSf5bMhh7Wj5E9CIrguJ/9jISL1SL83WoQmh0XafXF+1pYkc/JWTCq0QZP
+         w8RNro1J+vNs9ODuH5Ry+9ABjZh9vMybvqv3FnW/Xa1DFv4gHlkZUV3ONDL42+45kw
+         9NkF5K7GWjvQHRD84IifFKUHQefevWPmINHyeKebUTarV7OZnETKsrrZdIvVFml7YD
+         Q5pXXPFTmIdOttGbUj2lZ+nxblghEnDRRXezc++cLqoqTE3lmI61WYh+dktineV29n
+         VYg0dlPUojOKg==
+Date:   Mon, 12 Jun 2023 16:45:15 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
 Cc:     jiri@resnulli.us, vadfed@meta.com, jonathan.lemon@gmail.com,
@@ -54,12 +54,12 @@ Cc:     jiri@resnulli.us, vadfed@meta.com, jonathan.lemon@gmail.com,
         linux-arm-kernel@lists.infradead.org, poros@redhat.com,
         mschmidt@redhat.com, linux-clk@vger.kernel.org,
         vadim.fedorenko@linux.dev
-Subject: Re: [RFC PATCH v8 01/10] dpll: documentation on DPLL subsystem
- interface
-Message-ID: <20230612154329.7bd2d52f@kernel.org>
-In-Reply-To: <20230609121853.3607724-2-arkadiusz.kubalewski@intel.com>
+Subject: Re: [RFC PATCH v8 03/10] dpll: core: Add DPLL framework base
+ functions
+Message-ID: <20230612164515.6eacefb1@kernel.org>
+In-Reply-To: <20230609121853.3607724-4-arkadiusz.kubalewski@intel.com>
 References: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
-        <20230609121853.3607724-2-arkadiusz.kubalewski@intel.com>
+        <20230609121853.3607724-4-arkadiusz.kubalewski@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -73,45 +73,41 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri,  9 Jun 2023 14:18:44 +0200 Arkadiusz Kubalewski wrote:
-> From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-> 
-> Add documentation explaining common netlink interface to configure DPLL
-> devices and monitoring events. Common way to implement DPLL device in
-> a driver is also covered.
-
-> +``'pin': [{
-> + {'clock-id': 282574471561216,
-> +  'module-name': 'ice',
-> +  'pin-dpll-caps': 4,
-> +  'pin-id': 13,
-> +  'pin-parent': [{'pin-id': 2, 'pin-state': 'connected'},
-> +                 {'pin-id': 3, 'pin-state': 'disconnected'},
-> +                 {'id': 0, 'pin-direction': 'input'},
-> +                 {'id': 1, 'pin-direction': 'input'}],
-> +  'pin-type': 'synce-eth-port'}
-> +}]``
-
-It seems like pin-parent is overloaded, can we split it into two
-different nests?
-
-> +SET commands format
-> +===================
+On Fri,  9 Jun 2023 14:18:46 +0200 Arkadiusz Kubalewski wrote:
+> +	xa_for_each(xa_pins, i, ref) {
+> +		if (ref->pin != pin)
+> +			continue;
+> +		reg = dpll_pin_registration_find(ref, ops, priv);
+> +		if (reg) {
+> +			refcount_inc(&ref->refcount);
+> +			return 0;
+> +		}
+> +		ref_exists = true;
+> +		break;
+> +	}
 > +
-> +``DPLL_CMD_DEVICE_SET`` - to target a dpll device, the user provides
-> +``DPLL_A_ID``, which is unique identifier of dpll device in the system,
-> +as well as parameter being configured (``DPLL_A_MODE``).
+> +	if (!ref_exists) {
+> +		ref = kzalloc(sizeof(*ref), GFP_KERNEL);
+> +		if (!ref)
+> +			return -ENOMEM;
+> +		ref->pin = pin;
+> +		INIT_LIST_HEAD(&ref->registration_list);
+> +		ret = xa_insert(xa_pins, pin->pin_idx, ref, GFP_KERNEL);
+> +		if (ret) {
+> +			kfree(ref);
+> +			return ret;
+> +		}
+> +		refcount_set(&ref->refcount, 1);
+> +	}
 > +
-> +``DPLL_CMD_PIN_SET`` - to target a pin user has to provide a
-> +``DPLL_A_PIN_ID``, which is unique identifier of a pin in the system.
-> +Also configured pin parameters must be added.
-> +If ``DPLL_A_PIN_DIRECTION`` or ``DPLL_A_PIN_FREQUENCY`` are configured,
-> +this affects all the dpll device they are connected, that is why those
-> +attributes shall not be enclosed in ``DPLL_A_PIN_PARENT``.
-> +Other attributes:
-> +``DPLL_A_PIN_PRIO`` or ``DPLL_A_PIN_STATE`` must be enclosed in
-> +``DPLL_A_PIN_PARENT`` as their configuration relates to only one
-> +parent dpll or parent pin.
+> +	reg = kzalloc(sizeof(*reg), GFP_KERNEL);
 
-Also sounds like setting pin attrs and pin-parent attrs should be
-different commands.
+Why do we have two structures - ref and reg?
+
+> +	if (!reg) {
+> +		if (!ref_exists)
+> +			kfree(ref);
+
+ref has already been inserted into xa_pins
+
+> +		return -ENOMEM;
