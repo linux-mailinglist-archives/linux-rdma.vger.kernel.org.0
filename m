@@ -2,188 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E3272B5A6
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 05:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D30C72B6BC
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 06:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjFLDFM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Jun 2023 23:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
+        id S234419AbjFLEqN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jun 2023 00:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjFLDE5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 11 Jun 2023 23:04:57 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C77DE47
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jun 2023 20:04:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1686539096; x=1718075096;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=HfP4vFiZS9tAVwqTwGnGOCYXdZPQ/z7QNlpoHyE/27g=;
-  b=fbwznjnovZfMm3NG708b+0NHzvp/nDRGOuU2gCP8YDG1oV3Ywilk+lmr
-   qDqPXv+QVyHcGPwYw26yDT/0B2riwWpwmBeE0Epc/Zcp4eo3QnJlj21v/
-   VrxiLRRdWmqKz6vwM/IIOEhfL16aI3k6+2G9GwKV5ZCPbRRTZXwzpjoAb
-   55E2vEyNzXQmDTVStZ2HIN1oVI/2wr1kKlKx0muDqmIrzMqFnhc5x38TS
-   n+FbxAAT32qU6duryiudjByBSoL4iEq5XzEBc/RnFeyzsqW5/1dwn+8pd
-   VvbqantFGkCpYDCDn7uWqqTnvIwzT6gNQ9wOeC/EVYPM7gsQoHU53uR8W
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.00,235,1681142400"; 
-   d="scan'208";a="340032123"
-Received: from mail-dm6nam12lp2170.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.170])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Jun 2023 11:04:55 +0800
+        with ESMTP id S235574AbjFLEpY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 00:45:24 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2098.outbound.protection.outlook.com [40.107.117.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33E1171F;
+        Sun, 11 Jun 2023 21:44:48 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RX34v6jSoI0gmZSr759wLJaiiqJiXPiqCISkvlFSZ5ZMdQFxJInimYD8UtmWpp611cAfcLrK+efQUxgZPxnb2HBXd58LDK6HbRvS/DVuugR+DUpqh6Ru0xPcm06OQ4yhPNkcal8zqaVbiJofnEVI85eyKG5HOpuFBKYvSBXGRPNTe/XnnvM04+R2ZdGDhjD7drkmzfHbWinFY0YsCIhMwQJleGM+wYHyi3uX2WQpsOMSM20JmJVYANwkvyojonaufXn9P/g7kFKC3fwJhTxeWxGeP6cdg+wMOlI7n0kUcFh7G9NkGlho1AlYNouS5PdRPlW3I5ge9JEAg1yfYNZV5g==
+ b=Ao1zz4RP1rkuzIiMvzC/Dfl7eEm5hCNZrZnDtqZihYXsNn5tSj8ihv74O8gn3W5LSlHd9imXpSQVaNfLDedg8sk6V6ilA87lQwgeGDhWcJjHQ6Qrf2H38LE682Gf3RP2gV6DAN81m5Jgt/7xJDb9+pX0VO04WUg8+ffKgtNLmWB123jPE/pXpoyTRkxhhjr5RwU2P3ln84l5oHItYSYKN4g9kRj6GRDbOhVvjOILAfX1uyTEzDaFxAuWCl8tvzp1ciP4qFpuMxwHO6HkHWhTB9tyarPwDgojVFKwNkv7Uzzzh0LJmuAVUKXXb5zE0e0CegoWGO3/4Jylwf5Lv148FQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gxK8t9YHyr5w73KeO+oRMERjnJi5amlyXAH/i8e+HEU=;
- b=cWVLVw03fTzjEkJU433pBZlbjIeHSVVotcCqlPjBPsrRPm2y51E4GBlhOe3Rb+JAvn/w1eyW55Xgr2V+fYGuZcKmeJsKQlDQGG3ySV19QF5MPeNAMkR9p/rARs0TCdLZ4QPa1OclEHgoyYir/RYaK+cDyTJggQtBWqmVPq9dr16Xo7L+aiSjlN3Lv4Wf0lbMsLlyvltvZON97b0Vo0TWXV79Kv/mleOlpHdQgg7fhqRcovoNrvBIloUEOruMObuP/IC9va+0S8UraiMPbsUxK9Z+U1rtFOLkGCY0pa+MlNq5NK3QnUpjdyz48GQ16Ndt/eSWY1kQDxk+k+CgFkBXRw==
+ bh=YHjwTgLFcNJj0wyrZHVMKfHWyCiJPiJ2euEEU90+NB0=;
+ b=IJMnexhSeZ/BneZKW0mfny+0ibb2QWYQQ5+ZBw8jb8HeuF5ekloDyw5q1Jc+B1NvA94OzOAW6vwaVUF1r80hIS+gJ3+a0TrkHn5GXoOIpu1T9hI8Xo6++wMLcmru+aMCHABm4rCmojXc7o+mBZnXin7WS7XCRfYlGqhvmiT9pw+7hYKpMlbM8sMWnPLCQxl0xmyqFHhzo+Wml1gPSs920LJgePvR2jJogLxASmjLKor+hIzOHKjY5/QCE7FuECj5/E4hfaiT/XXssTcvnsmkHpucaQrdDVUzDg/3jC4F3DgxH4MycknU3k0Zno9gAA/F9c7MtjNCpSiEwYCbBvHa1A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gxK8t9YHyr5w73KeO+oRMERjnJi5amlyXAH/i8e+HEU=;
- b=YbdtlkfqEb42+reZ03JfD0OxExJ3fwcJlc60gscO6nnY9jqJrAQzJSZIbb1OPnxjZTTBqMFV4W4xuGZ8oWIcA1UM10qlGg+if2AFOhkzl3L47pKM2HpbiVHOSKQ27XByKDo5co/46FvCgWrr0AmklQ7UyHMN5niC6IIgEP9fTBc=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- DM6PR04MB6332.namprd04.prod.outlook.com (2603:10b6:5:1e7::9) with Microsoft
+ bh=YHjwTgLFcNJj0wyrZHVMKfHWyCiJPiJ2euEEU90+NB0=;
+ b=fFbBQo2NcYGzrcUKLwDb0kPYYQ1WzZqZ8AHxSRLM04qCo8O6LvNsPBLZRffBXfdlUPWlOABXKNrl9vAuzXJtdIe0lp1ALR09js/Oq2Y0liQ1WvXMaSPwFKiLJ0LHJjJRqSZVCZqRi0Q3lN6vRWEDRBQKuxdQaE043cGLMHG2z6c=
+Received: from SI2P153MB0441.APCP153.PROD.OUTLOOK.COM (2603:1096:4:fc::7) by
+ TYZP153MB0628.APCP153.PROD.OUTLOOK.COM (2603:1096:400:25e::6) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6477.29; Mon, 12 Jun 2023 03:04:52 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::bfa:d453:e7e9:8f98]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::bfa:d453:e7e9:8f98%6]) with mapi id 15.20.6477.028; Mon, 12 Jun 2023
- 03:04:51 +0000
-From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: Re: [PATCH] RDMA/cma: prevent rdma id destroy during cma_iw_handler
-Thread-Topic: [PATCH] RDMA/cma: prevent rdma id destroy during cma_iw_handler
-Thread-Index: AQHZlbTSAgxx2jnCnE2SRIGXfjrpbq+FqDeAgADhk4A=
-Date:   Mon, 12 Jun 2023 03:04:51 +0000
-Message-ID: <gwd7gnvufcdq2ybzs2tazdncgp4dzyppmvfrxnre4khwzbuhf6@wdlct3ilzqrj>
-References: <20230603004620.906089-1-shinichiro.kawasaki@wdc.com>
- <20230611133707.GE12152@unreal>
-In-Reply-To: <20230611133707.GE12152@unreal>
+ 15.20.6521.3; Mon, 12 Jun 2023 04:44:44 +0000
+Received: from SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
+ ([fe80::7d79:7433:e57b:55b5]) by SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
+ ([fe80::7d79:7433:e57b:55b5%4]) with mapi id 15.20.6521.002; Mon, 12 Jun 2023
+ 04:44:44 +0000
+From:   Wei Hu <weh@microsoft.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Long Li <longli@microsoft.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>
+Subject: RE: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
+ driver.
+Thread-Topic: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
+ driver.
+Thread-Index: AQHZmIoyK0/pJvWPX0+gdBo6594smK+AVTiAgAZKrxA=
+Date:   Mon, 12 Jun 2023 04:44:44 +0000
+Message-ID: <SI2P153MB0441DAC4E756A1991A03520FBB54A@SI2P153MB0441.APCP153.PROD.OUTLOOK.COM>
+References: <20230606151747.1649305-1-weh@microsoft.com>
+ <20230607213903.470f71ae@kernel.org>
+In-Reply-To: <20230607213903.470f71ae@kernel.org>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=286edcf7-c4c8-4100-bc0e-54eb0eca02c6;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-06-12T04:43:54Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
 authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|DM6PR04MB6332:EE_
-x-ms-office365-filtering-correlation-id: 1c4a5613-977d-41f0-dde2-08db6af1ca4b
-wdcipoutbound: EOP-TRUE
+x-ms-traffictypediagnostic: SI2P153MB0441:EE_|TYZP153MB0628:EE_
+x-ms-office365-filtering-correlation-id: ad805535-b1ef-4aa9-f41e-08db6affbe21
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: P52A7Ewch3fgGbSXFGg3JrnG1myv07EFEnAr0fqLLKjDRVTgng+7TDDmTyYYMGmmX2hjgmLZf++TBXxqYTXXA3ZGJJ/2fRZ/PEI/Pt9knx6Uy5yLobhD6hPy0GPWqvCc2rw7pkhvGHaaByTxnFfLIMOm5nrXbyv7IpwW311fvwrfZ4iwpIvpFqjIIJHNV8ZmBfcVg7HMvDb1jui2cAD/M6nF41WYYqLK3NjK6W5RDGTKn7njhCml+/NX+5V/2RaqQtJoid31zeu3529poftKYktjLMkPFqf39iWgZ9tnGn/yMgAEKS1KcIYECAOQ0A2s/pRAuPoQMuyIWR9rTeyKsaveRhQ8Gp0glkVQ8LqPmY7elsPj/mekWLooCHpnY6zGy4jo07T7gcwgDcAnfAQ+jAYDv7EZdKTI3Z7RULZuKYZnFhGR06PEaIppEBLGQsYqjDtU/ll9dxMxBKTjqpq9a+jvjVkFp7jfsDnCL/R+7ChokLSn/5efCgWAgURssduKHmA/fX6Gq3avMENtFM/nA8fyasktRVvK+QrQN04BgAvClYkOk8SwPW9TwpXu6nWNOBw8y3X/K5Yj4CHZIHa4BJonUrI2BgRBgyh9NKioVAc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(396003)(366004)(39860400002)(136003)(376002)(346002)(451199021)(76116006)(4326008)(66946007)(91956017)(64756008)(66556008)(66446008)(66476007)(186003)(6916009)(478600001)(2906002)(54906003)(33716001)(8676002)(316002)(966005)(41300700001)(86362001)(6486002)(6506007)(9686003)(44832011)(38070700005)(71200400001)(122000001)(8936002)(82960400001)(83380400001)(5660300002)(26005)(38100700002)(6512007);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: hmZWzL7I0dTSui7wNVmU2pf8DeDGfP+R/x2FTk0Z7tCeQ0GmvlopBle41y8AuC0r+tRMvKfe/4dGlU7jPVlFipCu8+t5mPNVfU556yiXs0vs/wownV1ltM9FQulm+BGhcKwNnvIP2okpKH5VfdFAHIob5pLEyUUY7zQFfJrgw3W/CFjJEU/eG5Bcg2tkMUVa0dU+XP9xnLd+lXMMUhMfC+r8thmTieJ2RsCY9WcFGfmtFJvRyxSeSULH3ehFBddp8TYPyAvGKk61RH5uw0BQLs8szPw55O6fekMRXYc0bQHDyNMDwVLShEEcUum3AwUD/dcvwjRim0Na2rIFVztSTwvqKWY4s+1K7TwM9rYa7A53gfpWEAdk+g956PSsq+tI5qsf7lAM6360Upi+jioVRIe469wGnVEtyeDUcxf32O5+cvS+LqEn8ibYdy6dy8COW2yfzCABDwHg7v6lSJd1QoDnynztinaGtp8fAKvG9HNCm8xVaS9CmpXcE/QBHbiyRN5ac/TIdEe25CObklFYRY+yVxL0pTMCTL6zrJ3Xd70sS7HFPo8CGBlYUJ7gj9iI6LPzlITRSweO+qewvvQ1Terr6prIAwdT2vAZlqxUOD7+3bk8Idhm+rRfqQ8mgyjU65Uc4iSKkbf1mCcDH0klPQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2P153MB0441.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(396003)(346002)(376002)(366004)(451199021)(966005)(7696005)(316002)(41300700001)(83380400001)(86362001)(8990500004)(38070700005)(9686003)(6506007)(53546011)(186003)(26005)(107886003)(7416002)(2906002)(33656002)(122000001)(82950400001)(82960400001)(38100700002)(55016003)(52536014)(5660300002)(8936002)(8676002)(10290500003)(66946007)(66446008)(64756008)(66476007)(66556008)(54906003)(76116006)(4326008)(478600001)(71200400001)(6916009);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?reYdASLDiMzDK3+lY2q+3BuEa8dMKJStqDvIO3zB55JIpRqgWFPzmMtQSZ4w?=
- =?us-ascii?Q?pcscO+beH4Av4DwuvvR+HrTColSMPPIHBTY8Go4xQWv4XYt7OMDEm5KnhWO2?=
- =?us-ascii?Q?K6cVHwYHILL5GldIPc/isHySwCLv704c/C2kISwP2jBvklfAmZ5a7p8NGyfQ?=
- =?us-ascii?Q?et/zOt93NJnEAMR4cCP8Ma0PW6YwAcFGQ7y5Stv9RahURi+S+lfZvvM4Urx2?=
- =?us-ascii?Q?iuLzXg1PGRFpEmuY52DplRuP/hSVAeFWaa0lIBoNwdTsClZ0maB6cA94obzW?=
- =?us-ascii?Q?cOIC3K666m8L2Igr54G1wwi+J3ZzMW4RVQJSwL04z1LOe9553Y5+ugHLgfqd?=
- =?us-ascii?Q?IDS/MC8V6PM+srcbbpEOL96o30dtBQ1Xcmq+m4Ye/zhQPHiD7pnmqyRZoKdv?=
- =?us-ascii?Q?4g7leIcu9BNhPbFq7WmpPa+bnf+d0PH2P1rbJKkhv94v21OBq1ZAXzdPvBWL?=
- =?us-ascii?Q?4zATQtGh3fbfF5kp+fchLn9vn8G752csYi3MBJvEYYaJVMQq9g0DrGVXh06l?=
- =?us-ascii?Q?M5jP2QB8sUTF1ZHLppr7CfclQjVrisZt9ohBP60r8/PxNJAmxhQmywDdy/b9?=
- =?us-ascii?Q?UlMYsOaRzmfG+aYRt0+vdmJqxvpPcEIMYKKjBSCE+BBQvuFXxrFBe5z34WQ5?=
- =?us-ascii?Q?Whyz3MbYn4YNoXaXVn9dNhwrEA0fIg7CwdwNykotK2ryX07+qKD+Wpu2tl7j?=
- =?us-ascii?Q?W1O8126tpCp99Hav5tpdub8CIYaS6Y2nkgRb7rA7lQl1FwGd3RKbWVJbD9ur?=
- =?us-ascii?Q?6FKpLN7zMwqSsXHqOy2gAm9oy22bFmV9QFCAmbh3GOF6ph5LLWcojG4dPy22?=
- =?us-ascii?Q?ZfmD+YylvUewkoqXPZGMYZMs9e5jmNu5UOx1On5BGhg4GvGQMLfWkFo1HhQ9?=
- =?us-ascii?Q?WCxqOveMG5mPSyzL0XW9hlyQr81HpUxacSJq7xmTdc6XQ8Ot80U26d5N7drA?=
- =?us-ascii?Q?LfRpXsKPARanV0nwwOPgmWEjeIUeZEmGNu7tK9yhmrfNZnH4JyDDeF5xD96p?=
- =?us-ascii?Q?NdAq4QKoonjZouDj88BUJlSQtKm7lP3wcu6yIJz06qk98anBEw3V2MOZKi63?=
- =?us-ascii?Q?j3HwLk161g1lP/tNDL0IVac47utctBalTrteMBVb4701oeWyS1SsFsr/4n16?=
- =?us-ascii?Q?60VVsZ3qO+P4LF3V4/LpDb9rxE5/3kM6FXW/yZqWvnmpZdRdcfpt8Su6vJBl?=
- =?us-ascii?Q?sfNaglc1PTtcvwYigF/qtA1YolMKCYlKzvoe+Eo74OMbDPn0oQSocSoYSh3I?=
- =?us-ascii?Q?M8Q1hy3VQFzbKNJa1g2dU9/5/0bMbYJUsewYPnNUHl8rEdj7pjaKdFhVCplO?=
- =?us-ascii?Q?/o1gVxPhDK+rf5bTkppqbpBeKKqQxYaBa0fqdyo404fhsgYcLGTN13EaXX6f?=
- =?us-ascii?Q?0+3fMdMyMnQT5xEWUljzSdsjqEN/l3sgb5d7ePZT6fJEFMTqwz87VGtrNtcg?=
- =?us-ascii?Q?ioaZ9MGtz0/EsEej0E9Z+zvcLnlreRnXPdUr/FQcRJTCBfuOCyMn3uwqdRu1?=
- =?us-ascii?Q?kDznMKkdhhuvRTkTEnOj1I3qseHHl3S29olrThy4yyibcMg8AK2l3wdoMKOC?=
- =?us-ascii?Q?I8ioQJ92qylcEPf5AyMVwyXoZBJ1G/s0JLGudMYrrB80fyobNa4p0yqqxNKY?=
- =?us-ascii?Q?KqUGziT77VL/NptdAOVvEgA=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?HMxftERMGmJnb8/eTZ2/2CwfcHp8hs+tfpTT/TlBYvhBTMxZBgaAOpCdiuFZ?=
+ =?us-ascii?Q?7ozqFyX33sXekSx33JL96g6jaRNgpPe7ghA+KojP936rhzaZD5DdApsjquUN?=
+ =?us-ascii?Q?NibwA1VjwQJPWMXietk3P0MQvtVjFvtzSAf+QQyO8Yzo6z3EVOnpJI6pU53v?=
+ =?us-ascii?Q?YlAi98hQZMRcER0XG8CquHZ2uHpYpIcG2sSBkZ+FJ6YbTQMTotxhJJxXvET2?=
+ =?us-ascii?Q?/wO8Qt2pX20vSVY8JVUCoMxGkqdTjGEQFNfGAYdgWaX7kbo/J+g7wnMX5j9G?=
+ =?us-ascii?Q?E8WObYnratrS/bd4g2HmmkKbD/T6DkmN2w8qOKWk7HJyNdLY7i5tPSi+RjGe?=
+ =?us-ascii?Q?hIY6DSLJitfcqeTGuCRvBBvbiBYEnewOngbXHaY3v9aR0A0MF9Crm8H8Ha2w?=
+ =?us-ascii?Q?mAZ78hr7n3d9VgdCxu3dEZKf/3EWoV+Ugg9JHbAiFR+1lEMTVikmS8lLGa8v?=
+ =?us-ascii?Q?nRpnuNGmHY0xxAEWLFzbUkP46Uy106rqgFXeUuZ5gBqcyez3LvjWZVGS3JRc?=
+ =?us-ascii?Q?sFqo/qExcffsmcGzwHoFM/hEPlrsEWuE12t55mu2Lpp2HrqCrDXqmae7P72Y?=
+ =?us-ascii?Q?g0bsfwtREHvAPXquIbKOLeVg+kr5teEz6Stb6AQk4xw5eE5Wl/avxknFqIjK?=
+ =?us-ascii?Q?Dr3bA0f5766iaLTEhA/7EJ1wPcC2UvAiT06LUpP8Y96IGURBxxRxsAS8TRch?=
+ =?us-ascii?Q?ln15PMuRBsygJetIKV215dg3MOq4MZrzDNa5VinYT9lzv44eLawKFz+aHnDB?=
+ =?us-ascii?Q?DqzV41fy6sk52JB6vISzvSMjz41YL+smJGLmdKO0ZQ+U+3aqwAn8RzajFENN?=
+ =?us-ascii?Q?VqoirlQuuRPxMp01ReZTvWNmcoi6EngQGFY3uhwrnLz8+2LjxAvZ6yE8CJx2?=
+ =?us-ascii?Q?ser5ZK7/OrBDmdRHaLd3+UbBmLjPne5N5id6c665G/g8V6ACLEh6NhM3Icr0?=
+ =?us-ascii?Q?QS4RXB7oWjGOWL7eSzdj0TqDuaTWiMOdDDQUZ+9NjWANZu+owhbGDtwvAbDs?=
+ =?us-ascii?Q?p+w3Of2sEds9doSKFfBxXS1l+ScjurQ5WtbnDfBTMI0DZho3kHJrE6srj8Wj?=
+ =?us-ascii?Q?IwEh2ba1GnpXMtmbdNILZgQwNb4jzk3Zs8mZ28OcP63QLmfkLMLTCX9QJ8RG?=
+ =?us-ascii?Q?lrSafm6dzUIpCPw5iGG0cXs0GXNnbcti1sfEeyiuGhePKJdMCUC5BZPOGjFq?=
+ =?us-ascii?Q?asqvmctenZODz3Nzm1z1WTKcEHv7nz74vAo1PNRIDjOTgm63ghMKmFceXYcj?=
+ =?us-ascii?Q?wHxkbQG/bIPp/38X63HMf4n6y2pHd8dOfXNREEQb6nj5Y0omr9HlXTpbU1PP?=
+ =?us-ascii?Q?FEUtlqEFuefV4Evr/IuilaM70xqC4Frh+uamZ/sIQHgK2NsqEtlI7gE5dKq6?=
+ =?us-ascii?Q?ng/I786/Bss90ydlaztZ7aNwU9wyPZ6jUnW7uTMdAG/VwEwI0urgK96/2ju6?=
+ =?us-ascii?Q?pWIzBqWvgYDLcNgA/W30eNEsXkAQoMUVA9U+YOprHxuLeh0xgKd3qjFPpvyj?=
+ =?us-ascii?Q?zQTApyM+BiJ1gA/oPq6nzAx9lZ9Qs/jvhHe7ocqrg1+/XRfEzFsUl4y292H+?=
+ =?us-ascii?Q?nIg9epbrRbhCZkyQgpg=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <0173E42FF2EBEB4AA63CB31C9921435B@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: uJacDpxEOmuIk38T95BrBfOq76UXORwcihR+I26qECupRdFPj5WGHMLi1H8sg/5SjXagQ9riH5CAHNkblKslqMG5xiL2qA8bWh+4EBa8EvHto4yLI/JSgr5WpIfKAzy4IvogLpxfV3UdOeDguckJT5ZRSVB4hM+7rV8i51GU46momiquQcD7uZn68oKmXDqZwJtdgJsnaOBALUXKSNYK5KvTmZUcEMa5B5cENoB+cXcREpeTSCWhhGoZ3uqKOYH74FwBTSpRDsPnTM58eplRbxW8qEz6K7aeN6xnWhCmTLYQvN6YJlrqheauWyqQGQYcr6YIg06J3EVTFnQg6EfGPDwO33uQwi2El8W9/W907n/bZSyGn/3nvPdkUgHPO9m69k1aXoCuKh6sR1ulvtWkAFMa/3JtTIMMRntyuNrdH6yDm4H3Jg4Jt5pXc/pz1iJv8/eylhwBQRXnrEpnbxMYypEu5Im/k5+6MDmcKl3wWAeTCzjgs5slEsbbtV81bzOyKKcElp+QSSF2j1lbri5oVV37MbezfSwUV5lFHfBzS731R2qJ8hm5AQ0wuM8KXli2q+gUDPwJzypYrV0FfJO8TDDa+Ug15j7R/fp9BlOR7nHYks0L6iYaBAufpo/mif+HHBW67EffCwJeOHhAkxVBk/yK0Bt59xfveqXIrKdoQDBYWuR+w2n9HKSIkXFEAg19mJwNFPlhJzWVYVSNvCYeAE3v4c/dwSbOddfYAxtxRYWXcUafBOhxUBFtOxGqLMOQE5y3s0UotZNZxv2zizM5wXiJNcgLSypWW/DoVlaCvJ2iWHCJhY4LfK7mEg8bc9MhANUlXtbBfc+FyQzz/sd4017FDdObVsWQNjWglaGi0OTtDomV6Ccpy+UxznASV+ZR
-X-OriginatorOrg: wdc.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c4a5613-977d-41f0-dde2-08db6af1ca4b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2023 03:04:51.6302
+X-MS-Exchange-CrossTenant-AuthSource: SI2P153MB0441.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad805535-b1ef-4aa9-f41e-08db6affbe21
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jun 2023 04:44:44.1905
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SmmfTkYwYUvYudN7tdWWDWZSHJTQQLqSXp44K536FiFkk2OXrbRC0WolgzxUFFmDAWpaR+iE77Sef82mvDpDigWCdBchG1eeoFUWDr6CJfI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6332
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-userprincipalname: VmTsVxCoKPlN4QnIFTBSPuGC8W7dyMtHac7luPB13kGFEXb4tfDH+SSY3m46mI1dJY2df+EtgC4GkO8ybcAhgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZP153MB0628
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thanks for the comments.
+Hi Jakub,
 
-On Jun 11, 2023 / 16:37, Leon Romanovsky wrote:
-> On Sat, Jun 03, 2023 at 09:46:20AM +0900, Shin'ichiro Kawasaki wrote:
-> > When rdma_destroy_id() and cma_iw_handler() race, struct rdma_id_privat=
-e
-> > *id_priv can be destroyed during cma_iw_handler call. This causes "BUG:
-> > KASAN: slab-use-after-free" at mutex_lock() in cma_iw_handler().
-> > To prevent the destroy of id_priv, keep its reference count by calling
-> > cma_id_get() and cma_id_put() at start and end of cma_iw_handler().
+> -----Original Message-----
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Thursday, June 8, 2023 12:39 PM
+> To: Wei Hu <weh@microsoft.com>
+> Cc: netdev@vger.kernel.org; linux-hyperv@vger.kernel.org; linux-
+> rdma@vger.kernel.org; Long Li <longli@microsoft.com>; Ajay Sharma
+> <sharmaajay@microsoft.com>; jgg@ziepe.ca; leon@kernel.org; KY
+> Srinivasan <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>;
+> wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>;
+> davem@davemloft.net; edumazet@google.com; pabeni@redhat.com;
+> vkuznets@redhat.com; ssengar@linux.microsoft.com;
+> shradhagupta@linux.microsoft.com
+> Subject: Re: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to
+> mana ib driver.
 >=20
-> Please add relevant kernel panic to commit message.
+> On Tue,  6 Jun 2023 15:17:47 +0000 Wei Hu wrote:
+> >  drivers/infiniband/hw/mana/cq.c               |  32 ++++-
+> >  drivers/infiniband/hw/mana/main.c             |  87 ++++++++++++
+> >  drivers/infiniband/hw/mana/mana_ib.h          |   4 +
+> >  drivers/infiniband/hw/mana/qp.c               |  90 +++++++++++-
+> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 131 ++++++++++--------
+> >  drivers/net/ethernet/microsoft/mana/mana_en.c |   1 +
+> >  include/net/mana/gdma.h                       |   9 +-
+>=20
+> IB and netdev are different subsystem, can you put it on a branch and sen=
+d a
+> PR as the cover letter so that both subsystems can pull?
+>=20
+> Examples:
+> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.
+> kernel.org%2Fall%2F20230607210410.88209-1-
+> saeed%40kernel.org%2F&data=3D05%7C01%7Cweh%40microsoft.com%7Cb672
+> 4a9f672f47d433ef08db67da4ada%7C72f988bf86f141af91ab2d7cd011db47%7C
+> 1%7C0%7C638217959538674174%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM
+> C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000
+> %7C%7C%7C&sdata=3DamO0W8QsR2I5INNNzCNOKEjrsYbzuZ92KXhNdfwSCHA
+> %3D&reserved=3D0
+> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.
+> kernel.org%2Fall%2F20230602171302.745492-1-
+> anthony.l.nguyen%40intel.com%2F&data=3D05%7C01%7Cweh%40microsoft.co
+> m%7Cb6724a9f672f47d433ef08db67da4ada%7C72f988bf86f141af91ab2d7cd0
+> 11db47%7C1%7C0%7C638217959538674174%7CUnknown%7CTWFpbGZsb3d8
+> eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
+> D%7C3000%7C%7C%7C&sdata=3DA%2BjjtSx%2FvY2T%2BNIEPGuftk%2BCr%2Fv
+> Yt2Xc1q8B6h2tb6g%3D&reserved=3D0
 
-Sure, will do in v2.
+Thanks for you comment. I am  new to the process. I have a few questions re=
+garding to this and hope you can help. First of all, the patch is mostly fo=
+r IB. Is it possible for the patch to just go through the RDMA branch, sinc=
+e most of the changes are in RDMA?=20
 
->=20
-> >=20
-> > Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-> > Cc: stable@vger.kernel.org
->=20
-> Add Fixes line when you are fixing bug.
+If the patch also needs to go through the NETDEV branch, does it mean two s=
+ubsystems will pull its own part? A few follow-up questions about generatin=
+g a PR, since I have never done such before.
 
-I see. I checked commit logs of drivers/infinibad/core/cma.c. It looks the =
-issue
-has been existing since the commit de910bd92137 ("RDMA/cma: Simplify lockin=
-g
-needed for serialization of callbacks") in 2008, which modified the method =
-to
-guard id_priv. I'll add the Fixes tag with this commit.
+1. Which repo should I clone and create the branch from?
 
->=20
-> > ---
-> > The BUG KASAN was observed with blktests at test cases nvme/030 or nvme=
-/031,
-> > using SIW transport [1]. To reproduce it, it is required to repeat the =
-test
-> > cases from 30 to 50 times on my test system.
-> >=20
-> > [1] https://lore.kernel.org/linux-block/rsmmxrchy6voi5qhl4irss5sprna3f5=
-owkqtvybxglcv2pnylm@xmrnpfu3tfpe/
-> >=20
-> >  drivers/infiniband/core/cma.c | 3 +++
-> >  1 file changed, 3 insertions(+)
->=20
-> The fix looks correct to me.
->=20
-> Thanks=
+2. From the example you provided, I see these people has their own branches=
+ on kernel.org, for example something like:
+git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux.git tags/mlx5-upd=
+ates-2023-06-06.=20
+I am not Linux maintainer. I just have repo on Github. How do I create or f=
+ork on kernel.org? Do I need an account to do so? Or I can use my own repo =
+on Github?
+
+3.  How to create PR in this case? Should I follow this link: https://docs.=
+kernel.org/maintainer/pull-requests.html?
+
+Thanks,
+Wei
