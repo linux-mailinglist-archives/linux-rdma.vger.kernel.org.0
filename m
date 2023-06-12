@@ -2,40 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B7872C563
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 15:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA5172C567
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 15:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbjFLNFQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jun 2023 09:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
+        id S236219AbjFLNF3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jun 2023 09:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbjFLNFQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 09:05:16 -0400
+        with ESMTP id S235962AbjFLNF0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 09:05:26 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C010519D;
-        Mon, 12 Jun 2023 06:05:13 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QfsKC4GY6zLqgj;
-        Mon, 12 Jun 2023 21:02:07 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9AEE7D;
+        Mon, 12 Jun 2023 06:05:22 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QfsKN076yzLqgt;
+        Mon, 12 Jun 2023 21:02:16 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 12 Jun 2023 21:05:11 +0800
+ 15.1.2507.23; Mon, 12 Jun 2023 21:05:20 +0800
 From:   Yunsheng Lin <linyunsheng@huawei.com>
 To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
 CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Yunsheng Lin <linyunsheng@huawei.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Alexander Duyck <alexander.duyck@gmail.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>
-Subject: [PATCH net-next v4 1/5] page_pool: frag API support for 32-bit arch with 64-bit DMA
-Date:   Mon, 12 Jun 2023 21:02:52 +0800
-Message-ID: <20230612130256.4572-2-linyunsheng@huawei.com>
+        <linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH net-next v4 4/5] page_pool: remove PP_FLAG_PAGE_FRAG flag
+Date:   Mon, 12 Jun 2023 21:02:55 +0800
+Message-ID: <20230612130256.4572-5-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20230612130256.4572-1-linyunsheng@huawei.com>
 References: <20230612130256.4572-1-linyunsheng@huawei.com>
@@ -55,201 +71,114 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently page_pool_alloc_frag() is not supported in 32-bit
-arch with 64-bit DMA, which seems to be quite common, see
-[1], which means driver may need to handle it when using
-page_pool_alloc_frag() API.
-
-In order to simplify the driver's work for supporting page
-frag, this patch allows page_pool_alloc_frag() to call
-page_pool_alloc_pages() to return a big page frag without
-page splitting because of overlap issue between pp_frag_count
-and dma_addr_upper in 'struct page' for those arches.
-
-As page_pool_create() with PP_FLAG_PAGE_FRAG is supported in
-32-bit arch with 64-bit DMA now, mlx5 calls page_pool_create()
-with PP_FLAG_PAGE_FRAG and manipulate the page->pp_frag_count
-directly using the page_pool_defrag_page(), so add a checking
-for it to aoivd writing to page->pp_frag_count that may not
-exist in some arch.
-
-Note that it may aggravate truesize underestimate problem for
-skb as there is no page splitting for those pages, if driver
-need a accuate truesize, it may calculate that according to
-frag size, page order and PAGE_POOL_DMA_USE_PP_FRAG_COUNT
-being true or not. And we may provide a helper for that if it
-turns out to be helpful.
-
-1. https://lore.kernel.org/all/20211117075652.58299-1-linyunsheng@huawei.com/
+PP_FLAG_PAGE_FRAG is not really needed after pp_frag_count
+handling is unified and page_pool_alloc_frag() is supported
+in 32-bit arch with 64-bit DMA, so remove it.
 
 Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 CC: Lorenzo Bianconi <lorenzo@kernel.org>
 CC: Alexander Duyck <alexander.duyck@gmail.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 10 +++++
- include/net/page_pool.h                       | 44 ++++++++++++++++---
- net/core/page_pool.c                          | 18 ++------
- 3 files changed, 52 insertions(+), 20 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c          | 3 +--
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c        | 2 +-
+ drivers/net/wireless/mediatek/mt76/mac80211.c            | 2 +-
+ include/net/page_pool.h                                  | 7 ++-----
+ net/core/skbuff.c                                        | 2 +-
+ 6 files changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index a7c526ee5024..593cdfbfc035 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -832,6 +832,16 @@ static int mlx5e_alloc_rq(struct mlx5e_params *params,
- 		/* Create a page_pool and register it with rxq */
- 		struct page_pool_params pp_params = { 0 };
- 
-+		/* Return error here to avoid writing to page->pp_frag_count in
-+		 * mlx5e_page_release_fragmented() for page->pp_frag_count is
-+		 * not usable for arch with PAGE_POOL_DMA_USE_PP_FRAG_COUNT
-+		 * being true.
-+		 */
-+		if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-+			err = -EINVAL;
-+			goto err_free_by_rq_type;
-+		}
-+
- 		pp_params.order     = 0;
- 		pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV | PP_FLAG_PAGE_FRAG;
- 		pp_params.pool_size = pool_size;
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index 126f9e294389..5c7f7501f300 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -33,6 +33,7 @@
- #include <linux/mm.h> /* Needed by ptr_ring */
- #include <linux/ptr_ring.h>
- #include <linux/dma-direction.h>
-+#include <linux/dma-mapping.h>
- 
- #define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
- 					* map/unmap
-@@ -50,6 +51,9 @@
- 				 PP_FLAG_DMA_SYNC_DEV |\
- 				 PP_FLAG_PAGE_FRAG)
- 
-+#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
-+		(sizeof(dma_addr_t) > sizeof(unsigned long))
-+
- /*
-  * Fast allocation side cache array/stack
-  *
-@@ -219,8 +223,33 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
- 	return page_pool_alloc_pages(pool, gfp);
- }
- 
--struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
--				  unsigned int size, gfp_t gfp);
-+struct page *__page_pool_alloc_frag(struct page_pool *pool,
-+				    unsigned int *offset, unsigned int size,
-+				    gfp_t gfp);
-+
-+static inline struct page *page_pool_alloc_frag(struct page_pool *pool,
-+						unsigned int *offset,
-+						unsigned int size, gfp_t gfp)
-+{
-+	unsigned int max_size = PAGE_SIZE << pool->p.order;
-+
-+	size = ALIGN(size, dma_get_cache_alignment());
-+
-+	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
-+		    size > max_size))
-+		return NULL;
-+
-+	/* Don't allow page splitting and allocate one big frag
-+	 * for 32-bit arch with 64-bit DMA, corresponding to
-+	 * the checking in page_pool_is_last_frag().
-+	 */
-+	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-+		*offset = 0;
-+		return page_pool_alloc_pages(pool, gfp);
-+	}
-+
-+	return __page_pool_alloc_frag(pool, offset, size, gfp);
-+}
- 
- static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
- 						    unsigned int *offset,
-@@ -322,8 +351,14 @@ static inline long page_pool_defrag_page(struct page *page, long nr)
- static inline bool page_pool_is_last_frag(struct page_pool *pool,
- 					  struct page *page)
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index b676496ec6d7..4e613d5bf1fd 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -4925,8 +4925,7 @@ static void hns3_put_ring_config(struct hns3_nic_priv *priv)
+ static void hns3_alloc_page_pool(struct hns3_enet_ring *ring)
  {
--	/* If fragments aren't enabled or count is 0 we were the last user */
-+	/* We assume we are the last frag user that is still holding
-+	 * on to the page if:
-+	 * 1. Fragments aren't enabled.
-+	 * 2. We are running in 32-bit arch with 64-bit DMA.
-+	 * 3. page_pool_defrag_page() indicate we are the last user.
-+	 */
- 	return !(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
-+	       PAGE_POOL_DMA_USE_PP_FRAG_COUNT ||
- 	       (page_pool_defrag_page(page, 1) == 0);
- }
- 
-@@ -357,9 +392,6 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
- 	page_pool_put_full_page(pool, page, true);
- }
- 
--#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
--		(sizeof(dma_addr_t) > sizeof(unsigned long))
--
- static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
- {
- 	dma_addr_t ret = page->dma_addr;
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index a3e12a61d456..9c4118c62997 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -14,7 +14,6 @@
- #include <net/xdp.h>
- 
- #include <linux/dma-direction.h>
--#include <linux/dma-mapping.h>
- #include <linux/page-flags.h>
- #include <linux/mm.h> /* for put_page() */
- #include <linux/poison.h>
-@@ -200,10 +199,6 @@ static int page_pool_init(struct page_pool *pool,
- 		 */
+ 	struct page_pool_params pp_params = {
+-		.flags = PP_FLAG_DMA_MAP | PP_FLAG_PAGE_FRAG |
+-				PP_FLAG_DMA_SYNC_DEV,
++		.flags = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV,
+ 		.order = hns3_page_order(ring),
+ 		.pool_size = ring->desc_num * hns3_buf_size(ring) /
+ 				(PAGE_SIZE << hns3_page_order(ring)),
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index a79cb680bb23..404caec467af 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -1426,7 +1426,7 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+ 		return 0;
  	}
  
--	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
--	    pool->p.flags & PP_FLAG_PAGE_FRAG)
--		return -EINVAL;
--
- #ifdef CONFIG_PAGE_POOL_STATS
- 	pool->recycle_stats = alloc_percpu(struct page_pool_recycle_stats);
- 	if (!pool->recycle_stats)
-@@ -715,18 +710,13 @@ static void page_pool_free_frag(struct page_pool *pool)
- 	page_pool_return_page(pool, page);
- }
+-	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
++	pp_params.flags = PP_FLAG_DMA_MAP;
+ 	pp_params.pool_size = numptrs;
+ 	pp_params.nid = NUMA_NO_NODE;
+ 	pp_params.dev = pfvf->dev;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index 593cdfbfc035..79f2f5e51ae0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -843,7 +843,7 @@ static int mlx5e_alloc_rq(struct mlx5e_params *params,
+ 		}
  
--struct page *page_pool_alloc_frag(struct page_pool *pool,
--				  unsigned int *offset,
--				  unsigned int size, gfp_t gfp)
-+struct page *__page_pool_alloc_frag(struct page_pool *pool,
-+				    unsigned int *offset,
-+				    unsigned int size, gfp_t gfp)
+ 		pp_params.order     = 0;
+-		pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV | PP_FLAG_PAGE_FRAG;
++		pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV;
+ 		pp_params.pool_size = pool_size;
+ 		pp_params.nid       = node;
+ 		pp_params.dev       = rq->pdev;
+diff --git a/drivers/net/wireless/mediatek/mt76/mac80211.c b/drivers/net/wireless/mediatek/mt76/mac80211.c
+index 467afef98ba2..ee72869e5572 100644
+--- a/drivers/net/wireless/mediatek/mt76/mac80211.c
++++ b/drivers/net/wireless/mediatek/mt76/mac80211.c
+@@ -566,7 +566,7 @@ int mt76_create_page_pool(struct mt76_dev *dev, struct mt76_queue *q)
  {
- 	unsigned int max_size = PAGE_SIZE << pool->p.order;
- 	struct page *page = pool->frag_page;
+ 	struct page_pool_params pp_params = {
+ 		.order = 0,
+-		.flags = PP_FLAG_PAGE_FRAG,
++		.flags = 0,
+ 		.nid = NUMA_NO_NODE,
+ 		.dev = dev->dma_dev,
+ 	};
+diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+index c135cd157cea..f4fc339ff020 100644
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -46,10 +46,8 @@
+ 					* Please note DMA-sync-for-CPU is still
+ 					* device driver responsibility
+ 					*/
+-#define PP_FLAG_PAGE_FRAG	BIT(2) /* for page frag feature */
+ #define PP_FLAG_ALL		(PP_FLAG_DMA_MAP |\
+-				 PP_FLAG_DMA_SYNC_DEV |\
+-				 PP_FLAG_PAGE_FRAG)
++				 PP_FLAG_DMA_SYNC_DEV)
+ 
+ #define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
+ 		(sizeof(dma_addr_t) > sizeof(unsigned long))
+@@ -235,8 +233,7 @@ static inline struct page *page_pool_alloc_frag(struct page_pool *pool,
+ 
+ 	size = ALIGN(size, dma_get_cache_alignment());
  
 -	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
 -		    size > max_size))
--		return NULL;
--
--	size = ALIGN(size, dma_get_cache_alignment());
- 	*offset = pool->frag_offset;
++	if (WARN_ON(size > max_size))
+ 		return NULL;
  
- 	if (page && *offset + size > max_size) {
-@@ -759,7 +749,7 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
- 	alloc_stat_inc(pool, fast);
- 	return page;
- }
--EXPORT_SYMBOL(page_pool_alloc_frag);
-+EXPORT_SYMBOL(__page_pool_alloc_frag);
- 
- static void page_pool_empty_ring(struct page_pool *pool)
- {
+ 	/* Don't allow page splitting and allocate one big frag
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 7c4338221b17..ca2316cc1e7e 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -5652,7 +5652,7 @@ bool skb_try_coalesce(struct sk_buff *to, struct sk_buff *from,
+ 	/* In general, avoid mixing page_pool and non-page_pool allocated
+ 	 * pages within the same SKB. Additionally avoid dealing with clones
+ 	 * with page_pool pages, in case the SKB is using page_pool fragment
+-	 * references (PP_FLAG_PAGE_FRAG). Since we only take full page
++	 * references (page_pool_alloc_frag()). Since we only take full page
+ 	 * references for cloned SKBs at the moment that would result in
+ 	 * inconsistent reference counts.
+ 	 * In theory we could take full references if @from is cloned and
 -- 
 2.33.0
 
