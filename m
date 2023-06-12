@@ -2,64 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D1272B7FB
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 08:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5ED72B8BE
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jun 2023 09:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbjFLGN4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jun 2023 02:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
+        id S233298AbjFLHjN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jun 2023 03:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjFLGNz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 02:13:55 -0400
+        with ESMTP id S232917AbjFLHjM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jun 2023 03:39:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3DE93;
-        Sun, 11 Jun 2023 23:13:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4323C10C4
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 00:38:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BB5161F6E;
-        Mon, 12 Jun 2023 06:13:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B004C433EF;
-        Mon, 12 Jun 2023 06:13:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9AAB761501
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 07:00:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71DBBC433D2;
+        Mon, 12 Jun 2023 07:00:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686550433;
-        bh=58MbQy7xKDiKseM5d6mW8cUc/YGdsopViJxC6mgqasw=;
+        s=k20201202; t=1686553253;
+        bh=4SqPBiv41NU6Y3srObFTWiNu+J8KHW3bTix4MHAAM2M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iqqmYapoPKherGGRx8hLARAa//bmyZ+dt/X+ZAPtzPZglpSDqTneR/j3kA3uqyNUi
-         9PTz0iOSueDU66hcvVYaVsovvg7hBKcYz4wHjVQw+C34oETuB3MyDnyNVbhsoVUQ51
-         nRGHLnKEaYDYZDPgb677soAW9dsp7xNFYtlY+oeJyqFzaEocHS8X/TfFyJzZw0Vg+Y
-         zKY6Yo9Gip0xKZjM0ygd4u+SAR1dmN0+J/udwPAWKQnMKpYF6+gPKIYB7mrhKFgmOh
-         pHXUqYpqTPo2GKG6orVc5WuOEpIZeHZTB8htyUGMq+lxozNIXAfMvO1+973Vbu5fEP
-         JW2UJO/qG7JDA==
-Date:   Mon, 12 Jun 2023 09:13:49 +0300
+        b=SmxD7N5nrg/j1z73K2Iquv5bss4rs6UUpjlnjzQxEdUAYsk+hu0E3o2YxP/2QmwTF
+         4AedlX0Qsfw4E7r30bB9jng01eZLFW+gdb2vCpW3jS0tFAKeQ66s0sh13seVG9Txtj
+         fTED3JzoTF8FKBug0gAJYfTFpU7NsajtsPLMDoRvY0hDmBTDRIJrDFpc7RQXSjCOjz
+         eJ9mnQ03p0z11TChSgHwXAe+qzWM2+wMl4ngskriv7MftEh/4uaZ5F4XACiAwJOFtI
+         ftirjaXWZo0jEltxVLDCedlq2dWB0GiRJLFnR9uhIljE22DS0kem5VyWPCBgDokZ1a
+         p8k18TUUCF3Ow==
+Date:   Mon, 12 Jun 2023 10:00:48 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Wei Hu <weh@microsoft.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>
-Subject: Re: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
- driver.
-Message-ID: <20230612061349.GM12152@unreal>
-References: <20230606151747.1649305-1-weh@microsoft.com>
- <20230607213903.470f71ae@kernel.org>
- <SI2P153MB0441DAC4E756A1991A03520FBB54A@SI2P153MB0441.APCP153.PROD.OUTLOOK.COM>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        andrew.gospodarek@broadcom.com, kashyap.desai@broadcom.com
+Subject: Re: [PATCH v2 for-next 05/17] RDMA/bnxt_re: Enhance the existing
+ functions that wait for FW responses
+Message-ID: <20230612070048.GN12152@unreal>
+References: <1686308514-11996-1-git-send-email-selvin.xavier@broadcom.com>
+ <1686308514-11996-6-git-send-email-selvin.xavier@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SI2P153MB0441DAC4E756A1991A03520FBB54A@SI2P153MB0441.APCP153.PROD.OUTLOOK.COM>
+In-Reply-To: <1686308514-11996-6-git-send-email-selvin.xavier@broadcom.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -70,56 +55,123 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 04:44:44AM +0000, Wei Hu wrote:
-> Hi Jakub,
+On Fri, Jun 09, 2023 at 04:01:42AM -0700, Selvin Xavier wrote:
+> From: Kashyap Desai <kashyap.desai@broadcom.com>
 > 
-> > -----Original Message-----
-> > From: Jakub Kicinski <kuba@kernel.org>
-> > Sent: Thursday, June 8, 2023 12:39 PM
-> > To: Wei Hu <weh@microsoft.com>
-> > Cc: netdev@vger.kernel.org; linux-hyperv@vger.kernel.org; linux-
-> > rdma@vger.kernel.org; Long Li <longli@microsoft.com>; Ajay Sharma
-> > <sharmaajay@microsoft.com>; jgg@ziepe.ca; leon@kernel.org; KY
-> > Srinivasan <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>;
-> > wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>;
-> > davem@davemloft.net; edumazet@google.com; pabeni@redhat.com;
-> > vkuznets@redhat.com; ssengar@linux.microsoft.com;
-> > shradhagupta@linux.microsoft.com
-> > Subject: Re: [PATCH v2 1/1] RDMA/mana_ib: Add EQ interrupt support to
-> > mana ib driver.
-> > 
-> > On Tue,  6 Jun 2023 15:17:47 +0000 Wei Hu wrote:
-> > >  drivers/infiniband/hw/mana/cq.c               |  32 ++++-
-> > >  drivers/infiniband/hw/mana/main.c             |  87 ++++++++++++
-> > >  drivers/infiniband/hw/mana/mana_ib.h          |   4 +
-> > >  drivers/infiniband/hw/mana/qp.c               |  90 +++++++++++-
-> > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 131 ++++++++++--------
-> > >  drivers/net/ethernet/microsoft/mana/mana_en.c |   1 +
-> > >  include/net/mana/gdma.h                       |   9 +-
-> > 
-> > IB and netdev are different subsystem, can you put it on a branch and send a
-> > PR as the cover letter so that both subsystems can pull?
-> > 
-> > Examples:
-> > https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.
-> > kernel.org%2Fall%2F20230607210410.88209-1-
-> > saeed%40kernel.org%2F&data=05%7C01%7Cweh%40microsoft.com%7Cb672
-> > 4a9f672f47d433ef08db67da4ada%7C72f988bf86f141af91ab2d7cd011db47%7C
-> > 1%7C0%7C638217959538674174%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM
-> > C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000
-> > %7C%7C%7C&sdata=amO0W8QsR2I5INNNzCNOKEjrsYbzuZ92KXhNdfwSCHA
-> > %3D&reserved=0
-> > https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.
-> > kernel.org%2Fall%2F20230602171302.745492-1-
-> > anthony.l.nguyen%40intel.com%2F&data=05%7C01%7Cweh%40microsoft.co
-> > m%7Cb6724a9f672f47d433ef08db67da4ada%7C72f988bf86f141af91ab2d7cd0
-> > 11db47%7C1%7C0%7C638217959538674174%7CUnknown%7CTWFpbGZsb3d8
-> > eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
-> > D%7C3000%7C%7C%7C&sdata=A%2BjjtSx%2FvY2T%2BNIEPGuftk%2BCr%2Fv
-> > Yt2Xc1q8B6h2tb6g%3D&reserved=0
+> Use jiffies based timewait instead of counting iteration for
+> commands that block for FW response.
 > 
-> Thanks for you comment. I am  new to the process. I have a few questions regarding to this and hope you can help. First of all, the patch is mostly for IB. Is it possible for the patch to just go through the RDMA branch, since most of the changes are in RDMA? 
+> Also add a poll routine for control path commands. This is for
+> polling completion if the waiting commands timeout. This avoids cases
+> where the driver misses completion interrupts.
+> 
+> Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 65 +++++++++++++++++++++++-------
+>  1 file changed, 51 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+> index 66121fb..3b242cc 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+> @@ -53,37 +53,74 @@
+>  
+>  static void bnxt_qplib_service_creq(struct tasklet_struct *t);
+>  
+> -/* Hardware communication channel */
+> +/**
+> + * __wait_for_resp   -	Don't hold the cpu context and wait for response
+> + * @rcfw      -   rcfw channel instance of rdev
+> + * @cookie    -   cookie to track the command
+> + *
+> + * Wait for command completion in sleepable context.
+> + *
+> + * Returns:
+> + * 0 if command is completed by firmware.
+> + * Non zero error code for rest of the case.
 
-Yes, it can, we (RDMA) will handle it.
+I don't see "return ret;" in this function.
 
-Thanks
+> + */
+>  static int __wait_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
+>  {
+>  	struct bnxt_qplib_cmdq_ctx *cmdq;
+>  	u16 cbit;
+> -	int rc;
+> +	int ret;
+>  
+>  	cmdq = &rcfw->cmdq;
+>  	cbit = cookie % rcfw->cmdq_depth;
+> -	rc = wait_event_timeout(cmdq->waitq,
+> -				!test_bit(cbit, cmdq->cmdq_bitmap),
+> -				msecs_to_jiffies(RCFW_CMD_WAIT_TIME_MS));
+> -	return rc ? 0 : -ETIMEDOUT;
+> +
+> +	do {
+> +		/* Non zero means command completed */
+> +		ret = wait_event_timeout(cmdq->waitq,
+> +					 !test_bit(cbit, cmdq->cmdq_bitmap),
+> +					 msecs_to_jiffies(10000));
+
+Don't you need to check ret here?
+
+> +
+> +		if (!test_bit(cbit, cmdq->cmdq_bitmap))
+> +			return 0;
+> +
+> +		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
+> +
+> +		if (!test_bit(cbit, cmdq->cmdq_bitmap))
+> +			return 0;
+> +
+> +	} while (true);
+>  };
+>  
+> +/**
+> + * __block_for_resp   -	hold the cpu context and wait for response
+> + * @rcfw      -   rcfw channel instance of rdev
+> + * @cookie    -   cookie to track the command
+> + *
+> + * This function will hold the cpu (non-sleepable context) and
+> + * wait for command completion. Maximum holding interval is 8 second.
+> + *
+> + * Returns:
+> + * -ETIMEOUT if command is not completed in specific time interval.
+> + * 0 if command is completed by firmware.
+> + */
+>  static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
+>  {
+> -	u32 count = RCFW_BLOCKED_CMD_WAIT_COUNT;
+> -	struct bnxt_qplib_cmdq_ctx *cmdq;
+> +	struct bnxt_qplib_cmdq_ctx *cmdq = &rcfw->cmdq;
+> +	unsigned long issue_time = 0;
+>  	u16 cbit;
+>  
+> -	cmdq = &rcfw->cmdq;
+>  	cbit = cookie % rcfw->cmdq_depth;
+> -	if (!test_bit(cbit, cmdq->cmdq_bitmap))
+> -		goto done;
+> +	issue_time = jiffies;
+> +
+>  	do {
+>  		udelay(1);
+> +
+>  		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
+> -	} while (test_bit(cbit, cmdq->cmdq_bitmap) && --count);
+> -done:
+> -	return count ? 0 : -ETIMEDOUT;
+> +		if (!test_bit(cbit, cmdq->cmdq_bitmap))
+> +			return 0;
+> +
+> +	} while (time_before(jiffies, issue_time + (8 * HZ)));
+> +
+> +	return -ETIMEDOUT;
+>  };
+>  
+>  static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+> -- 
+> 2.5.5
+> 
+
+
