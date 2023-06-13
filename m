@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEB672EAD4
+	by mail.lfdr.de (Postfix) with ESMTP id 2527B72EAD3
 	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 20:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239231AbjFMSYN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Jun 2023 14:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58042 "EHLO
+        id S239273AbjFMSYO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Jun 2023 14:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239117AbjFMSYL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 14:24:11 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356B810E6
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 11:24:10 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b3afd2f9bdso21410015ad.0
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 11:24:10 -0700 (PDT)
+        with ESMTP id S239242AbjFMSYN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 14:24:13 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B792710CB
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 11:24:12 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b3d8aa2c17so13389765ad.3
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 11:24:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686680650; x=1689272650;
+        d=broadcom.com; s=google; t=1686680652; x=1689272652;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=3L7yVBgpJeCW5ffReamb7iHyD++6/r3nxJ+K7jgbXOI=;
-        b=Em7PQvk7ocuGNMlTdWY7VR8U8o/2K/IgwDvAAQrvtWcLNWGPY9Al/H2sxgMwgt4f3H
-         5uq0bv3SMYGODr5tEK5q4hbZSVe17UgnJxe8TQsChibJEQUmPWoeivD4lFJAVgsuZXFN
-         KJiSnRMd0JQJM8PR0vLTiSY6IuAIH99uC84/U=
+        bh=DioKl5VVD4/CDEyHj0B6+rJByxy0UsdHFeg9iAIZctE=;
+        b=NRwtIVSSRrnz956LDr0HIPtGJvCsAQe2qh0AjyFz1QRW1jkJ24ar0qbGbWMvROxCOP
+         Y6E9FMbOuiFjFWXj8KQHBqx3DpLHU7dRh3Q8MdmF8x//D+O5GEEMMz5icHx7pwDxQuIv
+         +kKDP7A3xuOl1nXepgxBkyuI3t5le9M+DFUGk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686680650; x=1689272650;
+        d=1e100.net; s=20221208; t=1686680652; x=1689272652;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3L7yVBgpJeCW5ffReamb7iHyD++6/r3nxJ+K7jgbXOI=;
-        b=ClITfcQSviSxioizbQVcHKQQf5MoZR+8YUn+Anxt7JLzs8QYOPu5uJg3lgwyDOheZ8
-         Hhzy5OZhALuQ5rVB+rH+DqX1iM4EJmz0Rn790rYwIv9jImYwCQKR2xUUuqtYEp60scf1
-         6XFSmDYCdracCl/kE/FV/trj+Oqlt85fUEqk3aHakWzeYzSSYs1e0fe+BZOT5Hj1ax4J
-         rqHHDex2uV2rXbgubtLTwKn0tIUvqd2DV9TF0lXRecKyX6MWBtjz5g11oKusLm0ctJ3d
-         mX3WM8XP8XkwlWeu90qtIdkW3qcHfeVNLTqgJpWpUH1EUWSUrXum4Q9DTg6QivjwtIoZ
-         b9Ig==
-X-Gm-Message-State: AC+VfDwmKkjSoGsh5BIJbmm7NCxeo1kl+ajA+2sj7/oSLfuiNFs891Eu
-        srGlq3PjDvn6Fa3NrXddNZ5X8A==
-X-Google-Smtp-Source: ACHHUZ4dR+tJydNPf1sK2k42YrbJHjGSZZEnSlvUbM6nD5IDIvuJyoHXh/uV/recQ8QOgfZBZkQe/g==
-X-Received: by 2002:a17:903:41cd:b0:1b3:d5ec:673a with SMTP id u13-20020a17090341cd00b001b3d5ec673amr4768671ple.33.1686680649638;
-        Tue, 13 Jun 2023 11:24:09 -0700 (PDT)
+        bh=DioKl5VVD4/CDEyHj0B6+rJByxy0UsdHFeg9iAIZctE=;
+        b=Y4QMYjCvsIXnKMTFKoMM2tUY3neLlwXNVLdTKLcyJPd8/JW7jvZcEgrv8ciaXorhBU
+         GaxEj2ZLhf564l5trjM1jau5AUEqp6L+reXUKj3Dh5iitlwK38G8E4sXq1mktAeQcElF
+         86wvaLKlhD4ls9yi4uk9mVqe7S+Ba2x9Ibb1nB/Mi+qTMxCl1eDzen11G9LbO7w1AxEM
+         Rz76UAbSD1MDqPflKS/91AIL3KV4jwzk1cJexVMGqtoEhgUhNTy8+PpQI/hYyMOO5sTV
+         n4sGDcf+Rvo4LjETdxHXlOZzkTkmPI2E2ugaDWCuMNw9DlX6vnQ2cBPd5XyZGX8b5W9T
+         r62w==
+X-Gm-Message-State: AC+VfDzEoY3HMuUAbzMudXk2ZMLv+wmLTNEr2z55qIKWDf32d2xW819T
+        5y5Qs5Sv7mzBTeMQfpDJqNWjzg==
+X-Google-Smtp-Source: ACHHUZ65AMgzDvVC5iHMqH1TIgJK7StKxS26CCbSWKUe82DYteZ2gaHYgFIF9RIE0PQ4sozHNfbRKA==
+X-Received: by 2002:a17:902:ea0e:b0:1b0:3576:c2a9 with SMTP id s14-20020a170902ea0e00b001b03576c2a9mr10554656plg.33.1686680652165;
+        Tue, 13 Jun 2023 11:24:12 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001b3fb909f73sm285493plb.112.2023.06.13.11.24.07
+        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001b3fb909f73sm285493plb.112.2023.06.13.11.24.09
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Jun 2023 11:24:08 -0700 (PDT)
+        Tue, 13 Jun 2023 11:24:11 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v6 for-next 3/7] RDMA/bnxt_re: Optimize the bnxt_re_init_hwrm_hdr usage
-Date:   Tue, 13 Jun 2023 11:12:19 -0700
-Message-Id: <1686679943-17117-4-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH v6 for-next 4/7] RDMA/bnxt_re: Query function capabilities from firmware
+Date:   Tue, 13 Jun 2023 11:12:20 -0700
+Message-Id: <1686679943-17117-5-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1686679943-17117-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1686679943-17117-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000fe0be205fe06f0a2"
+        boundary="0000000000002433a405fe06f104"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -67,156 +67,66 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000fe0be205fe06f0a2
+--0000000000002433a405fe06f104
 
-As of now bnxt_re_init_hwrm_hdr is taking only the opcode from
-the caller. compl_ring and target_id field is always -1. These
-fields might be changed when newer features are added. For now,
-removing these parameters as they are hard coded. Also, remove
-the rdev field which is not used.
+Query Function capabilities to enable advanced features.
 
-Also, initialize the structure bnxt_fw_msg during declaration
-itself.
-
-Suggested-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 48 ++++++++++++++----------------------
- 1 file changed, 19 insertions(+), 29 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 406b100..1b16c42 100644
+index 1b16c42..247f724 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -321,12 +321,11 @@ static int bnxt_re_register_netdev(struct bnxt_re_dev *rdev)
- 	return rc;
- }
+@@ -83,6 +83,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+ 				unsigned long event, void *ptr);
+ static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev);
+ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev);
++static int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev);
  
--static void bnxt_re_init_hwrm_hdr(struct bnxt_re_dev *rdev, struct input *hdr,
--				  u16 opcd, u16 crid, u16 trid)
-+static void bnxt_re_init_hwrm_hdr(struct input *hdr, u16 opcd)
+ static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev, u8 mode)
  {
- 	hdr->req_type = cpu_to_le16(opcd);
--	hdr->cmpl_ring = cpu_to_le16(crid);
--	hdr->target_id = cpu_to_le16(trid);
-+	hdr->cmpl_ring = cpu_to_le16(-1);
-+	hdr->target_id = cpu_to_le16(-1);
+@@ -91,6 +92,9 @@ static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev, u8 mode)
+ 	cctx = rdev->chip_ctx;
+ 	cctx->modes.wqe_mode = bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx) ?
+ 			       mode : BNXT_QPLIB_WQE_MODE_STATIC;
++	if (bnxt_re_hwrm_qcaps(rdev))
++		dev_err(rdev_to_dev(rdev),
++			"Failed to query hwrm qcaps\n");
  }
  
- static void bnxt_re_fill_fw_msg(struct bnxt_fw_msg *fw_msg, void *msg,
-@@ -344,9 +343,9 @@ static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
+ static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
+@@ -339,6 +343,23 @@ static void bnxt_re_fill_fw_msg(struct bnxt_fw_msg *fw_msg, void *msg,
+ 	fw_msg->timeout = timeout;
+ }
+ 
++/* Query function capabilities using common hwrm */
++int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev)
++{
++	struct bnxt_en_dev *en_dev = rdev->en_dev;
++	struct hwrm_func_qcaps_output resp = {};
++	struct hwrm_func_qcaps_input req = {};
++	struct bnxt_qplib_chip_ctx *cctx;
++	struct bnxt_fw_msg fw_msg = {};
++
++	cctx = rdev->chip_ctx;
++	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_FUNC_QCAPS);
++	req.fid = cpu_to_le16(0xffff);
++	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
++			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
++	return bnxt_send_msg(en_dev, &fw_msg);
++}
++
+ static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
  				 u16 fw_ring_id, int type)
  {
- 	struct bnxt_en_dev *en_dev;
--	struct hwrm_ring_free_input req = {0};
-+	struct hwrm_ring_free_input req = {};
- 	struct hwrm_ring_free_output resp;
--	struct bnxt_fw_msg fw_msg;
-+	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
- 
- 	if (!rdev)
-@@ -360,9 +359,7 @@ static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
- 	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
- 		return 0;
- 
--	memset(&fw_msg, 0, sizeof(fw_msg));
--
--	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_RING_FREE, -1, -1);
-+	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_RING_FREE);
- 	req.ring_type = type;
- 	req.ring_id = cpu_to_le16(fw_ring_id);
- 	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
-@@ -379,16 +376,15 @@ static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev,
- 				  u16 *fw_ring_id)
- {
- 	struct bnxt_en_dev *en_dev = rdev->en_dev;
--	struct hwrm_ring_alloc_input req = {0};
-+	struct hwrm_ring_alloc_input req = {};
- 	struct hwrm_ring_alloc_output resp;
--	struct bnxt_fw_msg fw_msg;
-+	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
- 
- 	if (!en_dev)
- 		return rc;
- 
--	memset(&fw_msg, 0, sizeof(fw_msg));
--	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_RING_ALLOC, -1, -1);
-+	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_RING_ALLOC);
- 	req.enables = 0;
- 	req.page_tbl_addr =  cpu_to_le64(ring_attr->dma_arr[0]);
- 	if (ring_attr->pages > 1) {
-@@ -417,7 +413,7 @@ static int bnxt_re_net_stats_ctx_free(struct bnxt_re_dev *rdev,
- 	struct bnxt_en_dev *en_dev = rdev->en_dev;
- 	struct hwrm_stat_ctx_free_input req = {};
- 	struct hwrm_stat_ctx_free_output resp = {};
--	struct bnxt_fw_msg fw_msg;
-+	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
- 
- 	if (!en_dev)
-@@ -426,9 +422,7 @@ static int bnxt_re_net_stats_ctx_free(struct bnxt_re_dev *rdev,
- 	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
- 		return 0;
- 
--	memset(&fw_msg, 0, sizeof(fw_msg));
--
--	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_STAT_CTX_FREE, -1, -1);
-+	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_STAT_CTX_FREE);
- 	req.stat_ctx_id = cpu_to_le32(fw_stats_ctx_id);
- 	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
- 			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
-@@ -445,10 +439,10 @@ static int bnxt_re_net_stats_ctx_alloc(struct bnxt_re_dev *rdev,
- 				       u32 *fw_stats_ctx_id)
- {
- 	struct bnxt_qplib_chip_ctx *chip_ctx = rdev->chip_ctx;
--	struct hwrm_stat_ctx_alloc_output resp = {0};
--	struct hwrm_stat_ctx_alloc_input req = {0};
-+	struct hwrm_stat_ctx_alloc_output resp = {};
-+	struct hwrm_stat_ctx_alloc_input req = {};
- 	struct bnxt_en_dev *en_dev = rdev->en_dev;
--	struct bnxt_fw_msg fw_msg;
-+	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
- 
- 	*fw_stats_ctx_id = INVALID_STATS_CTX_ID;
-@@ -456,9 +450,7 @@ static int bnxt_re_net_stats_ctx_alloc(struct bnxt_re_dev *rdev,
- 	if (!en_dev)
- 		return rc;
- 
--	memset(&fw_msg, 0, sizeof(fw_msg));
--
--	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_STAT_CTX_ALLOC, -1, -1);
-+	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_STAT_CTX_ALLOC);
- 	req.update_period_ms = cpu_to_le32(1000);
- 	req.stats_dma_addr = cpu_to_le64(dma_map);
- 	req.stats_dma_length = cpu_to_le16(chip_ctx->hw_stats_size);
-@@ -1045,15 +1037,13 @@ static int bnxt_re_setup_qos(struct bnxt_re_dev *rdev)
- static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
- {
- 	struct bnxt_en_dev *en_dev = rdev->en_dev;
--	struct hwrm_ver_get_output resp = {0};
--	struct hwrm_ver_get_input req = {0};
-+	struct hwrm_ver_get_output resp = {};
-+	struct hwrm_ver_get_input req = {};
- 	struct bnxt_qplib_chip_ctx *cctx;
--	struct bnxt_fw_msg fw_msg;
-+	struct bnxt_fw_msg fw_msg = {};
- 	int rc = 0;
- 
--	memset(&fw_msg, 0, sizeof(fw_msg));
--	bnxt_re_init_hwrm_hdr(rdev, (void *)&req,
--			      HWRM_VER_GET, -1, -1);
-+	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_VER_GET);
- 	req.hwrm_intf_maj = HWRM_VERSION_MAJOR;
- 	req.hwrm_intf_min = HWRM_VERSION_MINOR;
- 	req.hwrm_intf_upd = HWRM_VERSION_UPDATE;
 -- 
 2.5.5
 
 
---000000000000fe0be205fe06f0a2
+--0000000000002433a405fe06f104
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -287,14 +197,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILKnHVcG5G3O
-ChQOhIYtbMaWWFJmqXAgrae8e+PhwdIBMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYxMzE4MjQwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEeKMmOX0KkZ
+BtxntL/+ojbu3Fndg+MYjv4OrDCT4890MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYxMzE4MjQxMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBY70sjilZ/0ZRdRZY9YhFH7oGF13JQ
-4ZWO2z5u6zHz4yIpaQEx1rxjFHA938vGgwEUSO90afNHh/kdsgGQlz6iGRCsQQ+OZRz55Wr59lLg
-X1UrUuTF8BTGP+6TKcdnDUjnK63aW697gqrk7MjPLv3h2EdTKRomAxL/RpcbtUKsBXwBOqSrfaWO
-utmExEk9A9k6qOfPLm9RXkT/C/g9YiFkqu3/g2J/m3kjTHf0qAPQltA37XWYpFA7pHFzPZ5IhJc5
-5Y6c7fX5afdnocP7QM9sf4xJ/w9ekK8VlIvtRy6CC3Zvc6A5g7PwLPnBuG8j2Xa+u+iCYQAo4E2h
-sxkMkV69
---000000000000fe0be205fe06f0a2--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBXF0XZHV7SlHqiK9aOseoW/j+4jTcG
+pf1pL8XQdHpnYy7An/gz7bK1BYdFjwb2uWJlTVxjLrk5QesuKUxWWlSzq4+v6jgGa26R7qQWf3a5
+i97Y+f48Uh7Rz+CblxMrSKJjveWXupbIqsBQNPWWkNW7gJ6WzwuSCX5qqsE/72hek7VUYqB7LxaL
+hQiOtwniVR2aJgWAMCvdE42W42KNIKDsh0V5Ahjoig1A9YR0MhMWlK8kwtW1AbplTl0GE2oq1LEO
+bwpBtTBpOxUHf7lLKLz0QcUNXjun/tHDZ+VAORBfaEL+p+oSKx7WoZCI7uoEBKpckeq7Sb1eRD5y
+8jJ6QbHM
+--0000000000002433a405fe06f104--
