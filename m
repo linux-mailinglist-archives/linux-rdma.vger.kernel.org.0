@@ -2,244 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8EA72D90A
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 07:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F73772DA1D
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 08:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbjFMFX0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Jun 2023 01:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
+        id S239483AbjFMGrd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Jun 2023 02:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233136AbjFMFXZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 01:23:25 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1849DE78
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 22:23:24 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-565aa2cc428so44802627b3.1
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 22:23:24 -0700 (PDT)
+        with ESMTP id S234763AbjFMGrZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 02:47:25 -0400
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773F510D8
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 23:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1686638842; x=1718174842;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=DJh7yBQYN/50MYesl0ixI2/Bqz8WgzWwKqAakdVEn7o=;
+  b=SPFD3HHUZ4/Y+h1T/K7TBG89Fkvaj/DxB6AIGGWN1pJdjfAPW1jJxFns
+   z9TI3FFQniXVhWgOdahLeU4nzEsIHyamREqCEdJMTSiJgUCZ6s/Mtt2Pq
+   omMNZvxpig17AJ5TPIRcKmzU7xxOds3F31Kkp83MoI94eBuzNfvunnNG0
+   9Jpvus+g3F3Fl2gfQR7NEWijWUqv7FVel31iOZ1qI0oiRJDowkHwu2I5j
+   +7yR11Ohk09ACt13/zBxpF69ufeXXbGpXY0FqRvwsJROTSf/qqT9zfOwZ
+   XSXjRk8hdZ/G/X2k5aOYCF64ZNLZf1wPQR3T8CG73LZ6oWGeoyxL3evrw
+   g==;
+X-IronPort-AV: E=Sophos;i="6.00,238,1681142400"; 
+   d="scan'208";a="239921519"
+Received: from mail-dm6nam10lp2109.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.109])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Jun 2023 14:47:21 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e3Jz8AIIuF4uircKkGeQ5Gs134d+HVIZpaDhmXmqcBZxGx8pEvFbrIfUXtHHx+VrJyA79Lai1V2LtpUlcVxi58HaFOy/caAfzxtVqcTlPp7sJ2a784CJRw5gmAiH6FsPc5kk9DG5iT1LrCs7BoU1drjSgdhXIfUTDvAroKl6EyCl4ypEXKjVhkMhw1G3p8yld2KLi1QGLZ6IZBudq/5AZc28NQrCq1dijjVQi1B2geInQmKXUw5orui8tUFEl1UrxNm2lPEk8fOzcra8xRlMvmFNirgvA9DnUJdIFeGooVm02YTCTbWaufCB6rT3RN5igmcNVlJqlGSfgXGASehjzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DJh7yBQYN/50MYesl0ixI2/Bqz8WgzWwKqAakdVEn7o=;
+ b=io8TbDquhHf+lLtnuKdtxRhG2rR6nGT/jO7nSzexMB2Vne6TApgFRHzKnPbEPyoSRqlQDqAHLcrCRD+8L3mWoXNGrQaIw2eXqH9DYlOmb87TFb9yTfeP6K7K8O3+RrdeSBPx2xKL7dDDBHsf+oIiuhdfeJhp+A0DmeKZyuqe1Hd6yHqe9JszCxkTq14VhDPBDjAp2KQDjlNZFTQurvYb9o3dldcwFK4jgERkOKdupBpt+RyvARRWuba0Zx1cHbcUPeDKjxxZMu7w6cXCtSHwiS1hkOFTCoKLOvsmeul5eEsHoqnDqDittUxz5e/v5CUBI7evaUawyUS2KMYozjf1Yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686633803; x=1689225803;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z+p7H5SO9x91jwpKdt5l3hVEqZVEGw5u+QmwbgK+hH4=;
-        b=eMwKWVQRI3/6KCcV52k/JRzVW0odHUrw2rqDmz62XCBekqhm6To/Qmh5gmhthG8o1z
-         Z1zmuME9pcxaNZq0417CoS9+Vnwe0qJBIPqVriUjV2URtzrz5k8kFErNge5OJ6Kt9M8X
-         tB6uY+bWJPrF4pZUcTIjRbwCIqU+johUzN6ek=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686633803; x=1689225803;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z+p7H5SO9x91jwpKdt5l3hVEqZVEGw5u+QmwbgK+hH4=;
-        b=GYpc9xMsjnHZaSjcOE9/1zBJal89xUionDiaXGxsd6iZ20UjnP2WixprfVZjltOGj0
-         hU/npGSkEYfG10kjj67saOQtkpRhf0Qn5gxeO92ashM36X49ThGltItiPNd1IJ9lg0+V
-         hYh2+9gW6MlV+x4WSf7EeBtJeKf/tM1pFZ51A6+BaUVolRLzwfPKxE8GLSmXDu4kdVC7
-         PFEwZ0K8IGojJvpnmcYMyEKMxEvTroJxLBpyNrJ8x4nUVUs3Gfk3f/PJmVeUi630pHw3
-         cpj2ZWtnBjH27/2+BgttXGE1SuOE1u/9bGyLh38IVO0hTbA5ZNwiD+oGU5dTABagUcBD
-         0A4Q==
-X-Gm-Message-State: AC+VfDxF/qCIYGHA0S+Ot1Cy9bE8c8mns0mjg3azowcFv6F2mjAiPdqV
-        9B9I1NGxmZ144y7sQrAVzcDTUwWrwqpBjBRpoJeeiQ==
-X-Google-Smtp-Source: ACHHUZ4OWtT0/P4VUcduG5wAWOml3ivKJODpnSvmOIz9KX5rjRaB5YXL/lzmWW7aIZcuR2O7qcerHuJQm2IKLRHQo4U=
-X-Received: by 2002:a25:8d87:0:b0:bca:cbc8:9608 with SMTP id
- o7-20020a258d87000000b00bcacbc89608mr629868ybl.15.1686633803099; Mon, 12 Jun
- 2023 22:23:23 -0700 (PDT)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DJh7yBQYN/50MYesl0ixI2/Bqz8WgzWwKqAakdVEn7o=;
+ b=mtw6GzHEmX3I88f0H7ycus5UlIll9WAM8Fk6C7MKhEPDdV87Loi7v9EusFtOMERrjQ8sfY9Cm20BNIS12c+ToaVy/l8pE3GTnAT0HgScQUkADPVZtJOBJZmPFvOVAXQLmOusp694BnEbCH6dPjfVF7CaMyFMWvQTKfhY4LJ/NsA=
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
+ SJ2PR04MB8510.namprd04.prod.outlook.com (2603:10b6:a03:4fb::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6455.33; Tue, 13 Jun 2023 06:47:19 +0000
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::bfa:d453:e7e9:8f98]) by DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::bfa:d453:e7e9:8f98%6]) with mapi id 15.20.6477.028; Tue, 13 Jun 2023
+ 06:47:18 +0000
+From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Damien Le Moal <dlemoal@kernel.org>
+Subject: Re: [PATCH v2] RDMA/cma: prevent rdma id destroy during
+ cma_iw_handler
+Thread-Topic: [PATCH v2] RDMA/cma: prevent rdma id destroy during
+ cma_iw_handler
+Thread-Index: AQHZnPC2s/8x06ig6k2H99zVQRnT1a+HN4aAgAC/dQCAAFTTAA==
+Date:   Tue, 13 Jun 2023 06:47:18 +0000
+Message-ID: <6bhvt577yfjsqjgfqdm7h766xtw3g5aahn23zzb6gplnp3lz7y@ylgwlqdwylvw>
+References: <20230612054237.1855292-1-shinichiro.kawasaki@wdc.com>
+ <ZIcpHbV3oqsjuwfz@ziepe.ca>
+ <3x4kcccwy5s2yhni5t26brhgejj24kxyk7bnlabp5zw2js26eb@kjwyilm5d4wc>
+In-Reply-To: <3x4kcccwy5s2yhni5t26brhgejj24kxyk7bnlabp5zw2js26eb@kjwyilm5d4wc>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|SJ2PR04MB8510:EE_
+x-ms-office365-filtering-correlation-id: 02672d52-b11f-4419-1fb2-08db6bda082a
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IllmKGc0DMqz5pCW32O731iM6thukUg3hMSBudrx8roeoEbYFZ7/dvroxB97rYrow85ZLVl4P8UffF7+4+xUUJM6IcqxZPcpgsg2j/yc+ccEA544V8uNY+S/yTX9/GzwBI1HPyaFsd29cnhd1VNINeSe65cQcgHMoXaOvtEnxoFo5Dvd5DEDemPVA8+07j2HonYD+UkdykUrLqf7OKF+RpDgv1+aDpLHkXoGHgatAO/pWsFX+ybGte8GIrHsDurz2+nTm0+iLb4x8OX/VUdBUupoHMqrJpViBV0SDMJlLXPVbaPOGlKMKztYpAi0TKNgLoymRyfB+XdwYkHDpQITQcqcptRvQ6J5noOevmsgBp1e+xwJorTAa8nWxq/iWBLJJQdnhTNFbiODR3nysFikQZR3LrbUN3tDtfV4IdVRPQwFy+vOgwa4afzQOzwrkIYVNLHWNiSt9TorHdUF9dyy8+fC4AmSGWztvUcOzB9HYnJhI5AJl8nQaKrft2yV3IjbpORgIpGYX+35coslupDmR6kHxV0Ij6uUQ6wNuK+HfUWv0oIazlYGIr0ynj+QRyTm230ZDiu7Csch3XQzFNYBVy3fJLKdHNYos9U8Py1A9DWlc6RiqmegfyvGhLE3TtVwKKnFF2Clvk31QiqUdNN1fg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(366004)(39860400002)(376002)(396003)(136003)(346002)(451199021)(6512007)(26005)(6506007)(9686003)(186003)(83380400001)(33716001)(66476007)(122000001)(82960400001)(64756008)(66556008)(66946007)(2906002)(4744005)(76116006)(66446008)(41300700001)(6486002)(71200400001)(54906003)(8936002)(38070700005)(8676002)(86362001)(38100700002)(5660300002)(91956017)(44832011)(478600001)(6916009)(316002)(4326008)(27246005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?z2hG4K6XsHedTx4IriCO/MqpAKFNt0s0cQlWzXthCDi+xa6Ex2R27Ck+SxwK?=
+ =?us-ascii?Q?9j879Lob/dmEnmXb9WJY+5W5I1d6mAzat1mEObwatN6GGTjOoavzFEafyeXl?=
+ =?us-ascii?Q?sRnpAGW9m3Pi1M0QMoVFA7f0uIZ3/maaDu5oOd2bG7BwbN3eY8EDiWS76Oi0?=
+ =?us-ascii?Q?lmsXHy8tK4huq4q7y1BtiS6vV0Arj0oH/tyTXr3PHJEHUJXFslKuhvM3FpGj?=
+ =?us-ascii?Q?pm4xZv45xgdLpTim5KPnAPOQA+hNCXS6MZk1EeSqcw7YozbPnDwhkug4hk9e?=
+ =?us-ascii?Q?wKVHwiSXE0q4yxUWePw3gZ7bYqNuYpqvewX8vOSqgY+i5fcKt44Vf7enFb12?=
+ =?us-ascii?Q?iS6afslRp+krnquPEhO9dbs9To5HSgW5m+IlYD1iTSdP0XXv5TVAnmJKk1Bt?=
+ =?us-ascii?Q?pn/0nFW4x4N4dK7sC6cen3THmHNq8E1xdZ0lCjd++BtqQM+LUGWoL0n5E9Cg?=
+ =?us-ascii?Q?pTjhzPr7FdZdWJvblonJ8ADGo5YjgYDD2x0FRR0tm0PIAMcsAOvudUeBLLsi?=
+ =?us-ascii?Q?t9RPEwaWMVkSUymtno8YMDyJeF3dehohofSwwM3Zy/FU+WagJjzafJAUbRsa?=
+ =?us-ascii?Q?ufehHd9DV2selwuqBKkoK4/MKg2SCpyuqVfH9NAp0j9eOVn54XB24gpyNoAy?=
+ =?us-ascii?Q?79WJnE+xTaRMTVDxzoJAO/rvB4wP0QNrdUteit2oaGp38ElTzGb67T564oMw?=
+ =?us-ascii?Q?uKSbruqF+qcxatch2SGSkqDZJYlCustzsNJ3tH9B0ojLB2MoPpcUlfj4nVnB?=
+ =?us-ascii?Q?ru6tZVFQ8hpT+KpORxInF/F4KaV9bs9caveHQ5oC2bcreCSGQpCf3GFeLLWh?=
+ =?us-ascii?Q?SA0V/ARkgE3OF+Hn3I4piokxMSDf2fErFO87PjrYv1iYVOwh7ZRw7C4Qenak?=
+ =?us-ascii?Q?0t3/PS94lQeXFEenXJ1vMqolxDEq18jxqujobyVd0KsXS+D82R6nvW7226xv?=
+ =?us-ascii?Q?boRZda45Gan58aQzXRoVHBhfVHWL2lE3jgIRIiFmKVDyQWOOH+thrJoGDO8g?=
+ =?us-ascii?Q?ItPaWl+SW0CbaLTLXuBEAQkuQpAm2vP/UGQRexH23LnYeCKJa01vKfpIuNwk?=
+ =?us-ascii?Q?LfRcmUEQ+cMzXwCf5k1ImkbOacuGvfgzQuUhf7mT5fxLlU1HsYOGIMdJh6DM?=
+ =?us-ascii?Q?AKW473ZKbzYOG0H2Hqe0W0dVnG3weuGIwwT/f/9aYECA0HnqGg2ybgQN6nSt?=
+ =?us-ascii?Q?IWLiZve5swHj4GeEutpduwltDn0YMvc3eX3LA+35vHJ0f3/YEpRhOjwN/Sm8?=
+ =?us-ascii?Q?aean+/2Gegg/NJgM4hrNfkJ+tvKghHmke8cr6PdkwCE7o6B5pCTbCgVnGQ4I?=
+ =?us-ascii?Q?5vt/m/CTVsnLSUfP8UgBTdBdDbV5DYDA7i4xvQBFmOdqDVbTgnE6QV2A1fQ+?=
+ =?us-ascii?Q?cYNbNugGpTNTj2o/c7XOIJgeXzAtISS+Ox8MajNT6XQ8Kalqv6uzPeeDaqBW?=
+ =?us-ascii?Q?XWQSkVFkb7ak64nO9G6UeUYIzF2qnmf3LaD62MKZY1Muk8dvgAic/Qtj/2Ft?=
+ =?us-ascii?Q?KZs7lsE2t1UKNBsZvwG9CWtdc/KEnrQ7o6RJG9pG1nkvgf5iI0NfiQBouBaU?=
+ =?us-ascii?Q?rCGr1FzxAMkbON+1kWF0UpzOfYDeu1vXkWhnbI4EQnbyPRqDmpkM0lgzysjj?=
+ =?us-ascii?Q?cHC3k7mSJdZ0XD9ok0JKUlw=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <FBF3718A8271E341A0C1952AF5D4B8C2@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <1686563342-15233-1-git-send-email-selvin.xavier@broadcom.com>
- <1686563342-15233-8-git-send-email-selvin.xavier@broadcom.com> <ZIdhunLGPLg6h5ID@nvidia.com>
-In-Reply-To: <ZIdhunLGPLg6h5ID@nvidia.com>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Tue, 13 Jun 2023 10:53:11 +0530
-Message-ID: <CA+sbYW0GD351sTnGaQp5omKj00kmVQPKE0KbWTSuHt6E8M+Jyg@mail.gmail.com>
-Subject: Re: [PATCH v5 for-next 7/7] RDMA/bnxt_re: Enable low latency push
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
-        andrew.gospodarek@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b9963905fdfc08ae"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: /Rje7eabyguokFEVh3JnrjT5I2TsfT7CPEkorEIaxNI17tr4zu9oekSZiW1HQ2TnNDo0TrYEvfu4oql5ObHCwtlcpp4TpCZPeqCRb0xlk4DnhnmTSmjMmg/B7O2iFAF8kavJ+OEHJBdOp3Igy/fdwePpXLsbgVcjVMvZ1EbektIrfiHtHbwX5WOOTCvwW6ZGeF1w5j4eXPk2EXB4qUU6ta8+b9IO3U48d9qhIsqXXOiDKCMlFs3Hfhhn17U9DfAcMXOu9JsjJPJINtMw5Fw5o3SLth7yuIZUyD46J4Psv2oldqaNrc052jR8/v51da3KOeL8lVBQ6SPN7Q+dRvDDoR6L161lGCiaOZ/f0xCO1VWrO5JMj8RVm5hPvGMVe0K8bEw4ivNbrXhB74i+p0EsWVQRW6GXQQxGtIgPnrrmJ46XooJ5VuKoqfgM+qsNIFVSird69+dAGSMetH9yt9bMpjG+gnqYD/gVbpiWR54aEU3WaHbp0yR0j1Ban2RWrzRS8n0zdrgxqQCAJA5xd/KoQe3xef1rebgwcJm81GJnLXtA1tIloPCsGiBTDuWn3vsT4FIOhr/QhPVOlGmQ6x8nMYDVBN46aI8kxSg8TY3HImVmtolfol885BIYc6QyJg6tHXqJqd0Xy8EDZEcuppJGbH4WkSkkfgUUduT9NHX7IrU5m1RF2ughqNW238kHZzJQ1jHnrmLGCx1bIyxCJQvU7V5PkF/+ZLNQ4Ko3QXLn4k/ZSdaF7npRSFkWLtAJmPJC5wWbineCR3xueLb5nsCHm1HNK/O9RTddJq/VtN7QtX57wKE963AOYKqjrH99BE19LxPnhG86/Lzbtt0Y6+6WOt7Hk238WrvwExEDjllOI2aL8WQqTJ2Ulfue+JYA31Un
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02672d52-b11f-4419-1fb2-08db6bda082a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jun 2023 06:47:18.6812
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: n0PkusqEwRtOYfHNBxXXW2dAww9vH/Qh+FNBXTK2cSqsOByQZGog0/I/L5oWwkKm48nsBkILuODlfmXJQX1g2sE8Zd8N6qIEoxpN7WgmyBI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR04MB8510
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000b9963905fdfc08ae
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Jun 13, 2023 / 10:43, Shin'ichiro Kawasaki wrote:
 
-On Mon, Jun 12, 2023 at 11:49=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> w=
-rote:
->
-> On Mon, Jun 12, 2023 at 02:49:02AM -0700, Selvin Xavier wrote:
->
-> > +static int UVERBS_HANDLER(BNXT_RE_METHOD_ALLOC_PAGE)(struct uverbs_att=
-r_bundle *attrs)
-> > +{
-> > +     struct ib_uobject *uobj =3D uverbs_attr_get_uobject(attrs, BNXT_R=
-E_ALLOC_PAGE_HANDLE);
-> > +     enum bnxt_re_alloc_page_type alloc_type;
-> > +     struct bnxt_re_user_mmap_entry *entry;
-> > +     enum bnxt_re_mmap_flag mmap_flag;
-> > +     struct bnxt_qplib_chip_ctx *cctx;
-> > +     struct bnxt_re_ucontext *uctx;
-> > +     struct bnxt_re_dev *rdev;
-> > +     u64 mmap_offset;
-> > +     u32 length;
-> > +     u32 dpi;
-> > +     u64 dbr;
-> > +     int err;
-> > +
-> > +     uctx =3D container_of(ib_uverbs_get_ucontext(attrs), struct bnxt_=
-re_ucontext, ib_uctx);
-> > +     if (IS_ERR(uctx))
-> > +             return PTR_ERR(uctx);
-> > +
-> > +     err =3D uverbs_get_const(&alloc_type, attrs, BNXT_RE_ALLOC_PAGE_T=
-YPE);
-> > +     if (err)
-> > +             return err;
-> > +
-> > +     rdev =3D uctx->rdev;
-> > +     cctx =3D rdev->chip_ctx;
-> > +
-> > +     switch (alloc_type) {
-> > +     case BNXT_RE_ALLOC_WC_PAGE:
-> > +             if (cctx->modes.db_push)  {
-> > +                     if (bnxt_qplib_alloc_dpi(&rdev->qplib_res, &uctx-=
->wcdpi,
-> > +                                              uctx, BNXT_QPLIB_DPI_TYP=
-E_WC))
-> > +                             return -ENOMEM;
-> > +                     length =3D PAGE_SIZE;
-> > +                     dpi =3D uctx->wcdpi.dpi;
-> > +                     dbr =3D (u64)uctx->wcdpi.umdbr;
-> > +                     mmap_flag =3D BNXT_RE_MMAP_WC_DB;
-> > +             } else {
-> > +                     return -EINVAL;
-> > +             }
-> > +
-> > +             break;
-> > +
-> > +     default:
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +
-> > +     entry =3D bnxt_re_mmap_entry_insert(uctx, dbr, mmap_flag, &mmap_o=
-ffset);
-> > +     if (IS_ERR(entry))
-> > +             return PTR_ERR(entry);
-> > +
-> > +     uobj->object =3D entry;
-> > +     uverbs_finalize_uobj_create(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
->
-> uverbs_finalize_uobj_create() is supposed to be called once the
-> function cannot fail anymore
->
-> > +     err =3D uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
-> > +                          &mmap_offset, sizeof(mmap_offset));
-> > +     if (err)
-> > +             return err;
->
-> Because there is no way to undo it on error.
->
-> So the error handling here needs adjusting
+[...]
 
-Hi Jason,
+> My understanding about the call chain to rdma id destroy is as follows. I=
+ guess
+> _destory_id calls iw_destory_cm_id before destroying the rdma id, but not=
+ sure
+> why it does not wait for cm_id deref by cm_work_handler.
 
-uverbs_finalize_uobj_create is the last step before uverbs_copy_to.
-All the error checking
-after this is for uverbs_copy_to.  Can you please clarify what needs
-to be changed?
- I took the reference of other modules that call
-uverbs_finalize_uobj_create for this implementation
-and was not able to find the issue you mentioned.
-Thanks,
-Selvin
-
->
-> Jason
-
---000000000000b9963905fdfc08ae
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJ5AEtmevvAn
-6mznPn0AggT7nyEI4lAmj0Om4xUgpAS7MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYxMzA1MjMyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBbkdW8gOejWJXp3r6vr70SyiNBT4Z0
-NyNDYKHOgT82hBdaNrUNYxOjXoJWTQcuDiccXqFdot/VOIo1rrP1Yspa56F2xm60IJip/9jLQAEC
-GqWK1SHWGiwE6ECrvq4vAWqXRv0bEjcBco4de8iSF4/Jvcl+0W/zLocsOQV+/2r+4wNcuryLKF1X
-JDUxIHUEii9id0AHNaAvr40xJp6wMz0XC8SeDQCz4FfdEU7D0VjRkoGr617QAQV67r3x0mXJ6T6W
-jMuG5Ms+OZQteO/rAlgjtwWvT22Zc00f4tQHZIAm/SJiFd1lQV5Y8J+lNGid+PHeKa/WnSBeYPl8
-1hfD2cRG
---000000000000b9963905fdfc08ae--
+I found the commit 59c68ac31e15 ("iw_cm: free cm_id resources on the last
+deref") looks related the issue. Its commit message says that it "removed t=
+he
+block in iw_destroy_cm_id()" to avoid potential deadlock. So it looks cm_id=
+ ref
+no longer guards rdma id destroy. I'm not sure how to fix this issue at IW =
+CM
+level.
