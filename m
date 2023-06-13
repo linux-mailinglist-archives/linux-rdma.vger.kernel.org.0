@@ -2,313 +2,334 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8D572ED4D
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 22:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC7A72EE26
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 23:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjFMUuR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Jun 2023 16:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
+        id S229834AbjFMVij (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Jun 2023 17:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjFMUuQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 16:50:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAAA10E6
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 13:50:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2205A635CC
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 20:50:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5DDEC433C0;
-        Tue, 13 Jun 2023 20:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686689411;
-        bh=xhD3KsDenC2acGYDfepb2r9sH74k5NXsBZ5Y5v+InHw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=H2jLraoJ1XAlVcFkdHMOHsjldusi7Zd8q81A3PQLTZsirNIxTahgUfTAgk5ZfvNtT
-         bSOEyfDwp3uFn4pfsmkcygsrsOCTM2zJKo7ob0RBjMrnOMGZT9Q731HCJUgxAtNZm1
-         JaO4TI81Pbzc9u5KsFonpDch7/VDxu35PWt6JxMUVuHaa3Y5PeXSefeDo+6wGmSh2d
-         9bRRu/xOTsNOngT0yl/w8Phib5V6wuh+RH7JXM12ING58uPu34/ZaZggzGzwrJm0hc
-         vQyDpJK9B9glvi+YDlHbMjZMlgIPdhWIbhh+xWLqP6PU0Bp1w0+CsgFsM/P6B9UPkG
-         GwkqjfAU7GBkw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com,
-        Jakub Kicinski <kuba@kernel.org>, j.vosburgh@gmail.com,
-        andy@greyhouse.net, rajur@chelsio.com, ayush.sawal@chelsio.com,
-        dmichail@fungible.com, borisp@nvidia.com, saeedm@nvidia.com,
-        leon@kernel.org, simon.horman@corigine.com,
-        john.fastabend@gmail.com, anirudh.venkataramanan@intel.com,
-        maxtram95@gmail.com, tariqt@nvidia.com, gal@nvidia.com,
-        raeds@nvidia.com, liorna@nvidia.com, louis.peens@corigine.com,
-        yinjun.zhang@corigine.com, na.wang@corigine.com,
-        linux-rdma@vger.kernel.org, oss-drivers@corigine.com
-Subject: [PATCH net-next] net: tls: make the offload check helper take skb not socket
-Date:   Tue, 13 Jun 2023 13:50:06 -0700
-Message-Id: <20230613205006.1995873-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229947AbjFMVih (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 17:38:37 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2501F198D;
+        Tue, 13 Jun 2023 14:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686692314; x=1718228314;
+  h=date:from:to:cc:subject:message-id;
+  bh=Guc7gtRTxli+wBjPsahIGhnNE4Kjiv1U0ukfm90hN6g=;
+  b=jXzgjZp3aNd6IPo7GD9Cnws9cjnKQKm8v/brftnMSUOBAASn1/anUmLY
+   NdnU4diE+voZduFor46Uc5TGm3bCMAV9Mf2fTt2FHWoaTAmcne02vY7hY
+   cl4o8b9mBg63azAvK6vciJGyWffRI6P80PWoPCpg4n+4AkmfOLHJZQKh1
+   PPmjJItUWGG4PvB01//3OaWNBap2/ZsA0o02I1fvGYTBqaDxDIAvkt+Bh
+   HWB7vRaI+ETI91GP9BrN4P6K3UieCZReBNXJLBWCjB5mHanlxjLp0w1nG
+   LcW9HnwKJDSVhx3S27mI8BuoZAMzdqCliVoAogItjbDfsYerUJZG6XhBO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10740"; a="386859600"
+X-IronPort-AV: E=Sophos;i="6.00,240,1681196400"; 
+   d="scan'208";a="386859600"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2023 14:38:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10740"; a="662147806"
+X-IronPort-AV: E=Sophos;i="6.00,240,1681196400"; 
+   d="scan'208";a="662147806"
+Received: from lkp-server01.sh.intel.com (HELO 211f47bdb1cb) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 13 Jun 2023 14:38:23 -0700
+Received: from kbuild by 211f47bdb1cb with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1q9BiZ-0001ng-01;
+        Tue, 13 Jun 2023 21:38:23 +0000
+Date:   Wed, 14 Jun 2023 05:38:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kunit-dev@googlegroups.com, kvmarm@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        samba-technical@lists.samba.org
+Subject: [linux-next:master] BUILD REGRESSION
+ 1f6ce8392d6ff486af5ca96df9ded5882c4b6977
+Message-ID: <202306140504.RvxBbOLo-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-All callers of tls_is_sk_tx_device_offloaded() currently do
-an equivalent of:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 1f6ce8392d6ff486af5ca96df9ded5882c4b6977  Add linux-next specific files for 20230613
 
- if (skb->sk && tls_is_skb_tx_device_offloaded(skb->sk))
+Error/Warning reports:
 
-Have the helper accept skb and do the skb->sk check locally.
-Two drivers have local static inlines with similar wrappers
-already.
+https://lore.kernel.org/oe-kbuild-all/202306082341.UQtCM8PO-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202306122223.HHER4zOo-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202306132155.BFZc9arF-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202306132237.Z4LJE8bP-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202306140347.S9nJS3Al-lkp@intel.com
 
-While at it change the ifdef condition to TLS_DEVICE.
-Only TLS_DEVICE selects SOCK_VALIDATE_XMIT, so the two are
-equivalent. This makes removing the duplicated IS_ENABLED()
-check in funeth more obviously correct.
+Error/Warning: (recently discovered and may have been fixed)
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: j.vosburgh@gmail.com
-CC: andy@greyhouse.net
-CC: rajur@chelsio.com
-CC: ayush.sawal@chelsio.com
-CC: dmichail@fungible.com
-CC: borisp@nvidia.com
-CC: saeedm@nvidia.com
-CC: leon@kernel.org
-CC: simon.horman@corigine.com
-CC: john.fastabend@gmail.com
-CC: anirudh.venkataramanan@intel.com
-CC: maxtram95@gmail.com
-CC: tariqt@nvidia.com
-CC: gal@nvidia.com
-CC: raeds@nvidia.com
-CC: liorna@nvidia.com
-CC: louis.peens@corigine.com
-CC: yinjun.zhang@corigine.com
-CC: na.wang@corigine.com
-CC: linux-rdma@vger.kernel.org
-CC: oss-drivers@corigine.com
----
- drivers/net/bonding/bond_main.c                           | 4 ++--
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c           | 2 +-
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h            | 5 -----
- drivers/net/ethernet/chelsio/cxgb4/sge.c                  | 2 +-
- .../ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c    | 2 +-
- drivers/net/ethernet/fungible/funeth/funeth_tx.c          | 3 +--
- .../net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h   | 2 +-
- .../net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c    | 2 +-
- .../net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h  | 5 -----
- drivers/net/ethernet/netronome/nfp/nfp_net_common.c       | 4 ++--
- include/net/tls.h                                         | 8 +++++---
- net/tls/tls_device.c                                      | 4 ++--
- 12 files changed, 17 insertions(+), 26 deletions(-)
+arch/microblaze/include/asm/page.h:34: warning: "ARCH_DMA_MINALIGN" redefined
+arch/parisc/kernel/pdt.c:65:6: warning: no previous prototype for 'arch_report_meminfo' [-Wmissing-prototypes]
+csky-linux-ld: drivers/net/ethernet/sfc/ef100_netdev.c:114: undefined reference to `efx_tc_netevent_event'
+drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c:76: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+drivers/gpu/drm/i915/display/intel_display_power.h:256:70: error: declaration of 'struct seq_file' will not be visible outside of this function [-Werror,-Wvisibility]
+drivers/leds/leds-cht-wcove.c:144:21: warning: no previous prototype for 'cht_wc_leds_brightness_get' [-Wmissing-prototypes]
+include/asm-generic/bitops/instrumented-non-atomic.h:141: undefined reference to `uv_info'
+lib/kunit/executor_test.c:138:4: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+lib/kunit/test.c:775:38: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 007cec23a92f..16405b84dc2f 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -5442,7 +5442,7 @@ static netdev_tx_t bond_tls_device_xmit(struct bonding *bond, struct sk_buff *sk
- {
- 	struct net_device *tls_netdev = rcu_dereference(tls_get_ctx(skb->sk)->netdev);
- 
--	/* tls_netdev might become NULL, even if tls_is_sk_tx_device_offloaded
-+	/* tls_netdev might become NULL, even if tls_is_skb_tx_device_offloaded
- 	 * was true, if tls_device_down is running in parallel, but it's OK,
- 	 * because bond_get_slave_by_dev has a NULL check.
- 	 */
-@@ -5461,7 +5461,7 @@ static netdev_tx_t __bond_start_xmit(struct sk_buff *skb, struct net_device *dev
- 		return NETDEV_TX_OK;
- 
- #if IS_ENABLED(CONFIG_TLS_DEVICE)
--	if (skb->sk && tls_is_sk_tx_device_offloaded(skb->sk))
-+	if (tls_is_skb_tx_device_offloaded(skb))
- 		return bond_tls_device_xmit(bond, skb, dev);
- #endif
- 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-index f0bc7396ce2b..2eb33a727bba 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-@@ -1175,7 +1175,7 @@ static u16 cxgb_select_queue(struct net_device *dev, struct sk_buff *skb,
- 		txq = netdev_pick_tx(dev, skb, sb_dev);
- 		if (xfrm_offload(skb) || is_ptp_enabled(skb, dev) ||
- 		    skb->encapsulation ||
--		    cxgb4_is_ktls_skb(skb) ||
-+		    tls_is_skb_tx_device_offloaded(skb) ||
- 		    (proto != IPPROTO_TCP && proto != IPPROTO_UDP))
- 			txq = txq % pi->nqsets;
- 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
-index 34546f5312ee..a9599ba26975 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
-@@ -497,11 +497,6 @@ struct cxgb4_uld_info {
- #endif
- };
- 
--static inline bool cxgb4_is_ktls_skb(struct sk_buff *skb)
--{
--	return skb->sk && tls_is_sk_tx_device_offloaded(skb->sk);
--}
--
- void cxgb4_uld_enable(struct adapter *adap);
- void cxgb4_register_uld(enum cxgb4_uld type, const struct cxgb4_uld_info *p);
- int cxgb4_unregister_uld(enum cxgb4_uld type);
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-index 46809e2d94ee..98dd78551d89 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-@@ -1530,7 +1530,7 @@ static netdev_tx_t cxgb4_eth_xmit(struct sk_buff *skb, struct net_device *dev)
- #endif /* CHELSIO_IPSEC_INLINE */
- 
- #if IS_ENABLED(CONFIG_CHELSIO_TLS_DEVICE)
--	if (cxgb4_is_ktls_skb(skb) &&
-+	if (tls_is_skb_tx_device_offloaded(skb) &&
- 	    (skb->len - skb_tcp_all_headers(skb)))
- 		return adap->uld[CXGB4_ULD_KTLS].tx_handler(skb, dev);
- #endif /* CHELSIO_TLS_DEVICE */
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
-index 1a5fdd755e9e..bcdc7fc2f427 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
-@@ -1946,7 +1946,7 @@ static int chcr_ktls_xmit(struct sk_buff *skb, struct net_device *dev)
- 	tls_ctx = tls_get_ctx(skb->sk);
- 	tls_netdev = rcu_dereference_bh(tls_ctx->netdev);
- 	/* Don't quit on NULL: if tls_device_down is running in parallel,
--	 * netdev might become NULL, even if tls_is_sk_tx_device_offloaded was
-+	 * netdev might become NULL, even if tls_is_skb_tx_device_offloaded was
- 	 * true. Rather continue processing this packet.
- 	 */
- 	if (unlikely(tls_netdev && tls_netdev != dev))
-diff --git a/drivers/net/ethernet/fungible/funeth/funeth_tx.c b/drivers/net/ethernet/fungible/funeth/funeth_tx.c
-index 706d81e39a54..8ddefd3ec15b 100644
---- a/drivers/net/ethernet/fungible/funeth/funeth_tx.c
-+++ b/drivers/net/ethernet/fungible/funeth/funeth_tx.c
-@@ -348,8 +348,7 @@ netdev_tx_t fun_start_xmit(struct sk_buff *skb, struct net_device *netdev)
- 	unsigned int tls_len = 0;
- 	unsigned int ndesc;
- 
--	if (IS_ENABLED(CONFIG_TLS_DEVICE) && skb->sk &&
--	    tls_is_sk_tx_device_offloaded(skb->sk)) {
-+	if (tls_is_skb_tx_device_offloaded(skb)) {
- 		skb = fun_tls_tx(skb, q, &tls_len);
- 		if (unlikely(!skb))
- 			goto dropped;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
-index c964644ee866..bac4717548c6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
-@@ -125,7 +125,7 @@ static inline bool mlx5e_accel_tx_begin(struct net_device *dev,
- 
- #ifdef CONFIG_MLX5_EN_TLS
- 	/* May send WQEs. */
--	if (mlx5e_ktls_skb_offloaded(skb))
-+	if (tls_is_skb_tx_device_offloaded(skb))
- 		if (unlikely(!mlx5e_ktls_handle_tx_skb(dev, sq, skb,
- 						       &state->tls)))
- 			return false;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-index 0e4c0a093293..efb2cf74ad6a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-@@ -846,7 +846,7 @@ bool mlx5e_ktls_handle_tx_skb(struct net_device *netdev, struct mlx5e_txqsq *sq,
- 	tls_ctx = tls_get_ctx(skb->sk);
- 	tls_netdev = rcu_dereference_bh(tls_ctx->netdev);
- 	/* Don't WARN on NULL: if tls_device_down is running in parallel,
--	 * netdev might become NULL, even if tls_is_sk_tx_device_offloaded was
-+	 * netdev might become NULL, even if tls_is_skb_tx_device_offloaded was
- 	 * true. Rather continue processing this packet.
- 	 */
- 	if (WARN_ON_ONCE(tls_netdev && tls_netdev != netdev))
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
-index 2dd78dd4ad65..f87b65c560ea 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
-@@ -49,11 +49,6 @@ mlx5e_ktls_rx_pending_resync_list(struct mlx5e_channel *c, int budget)
- 	return budget && test_bit(MLX5E_SQ_STATE_PENDING_TLS_RX_RESYNC, &c->async_icosq.state);
- }
- 
--static inline bool mlx5e_ktls_skb_offloaded(struct sk_buff *skb)
--{
--	return skb->sk && tls_is_sk_tx_device_offloaded(skb->sk);
--}
--
- static inline void
- mlx5e_ktls_handle_tx_wqe(struct mlx5_wqe_ctrl_seg *cseg,
- 			 struct mlx5e_accel_tx_tls_state *state)
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-index b7cce746b5c0..49f2f081ebb5 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-@@ -598,7 +598,7 @@ nfp_net_tls_tx(struct nfp_net_dp *dp, struct nfp_net_r_vector *r_vec,
- 
- 	if (likely(!dp->ktls_tx))
- 		return skb;
--	if (!skb->sk || !tls_is_sk_tx_device_offloaded(skb->sk))
-+	if (!tls_is_skb_tx_device_offloaded(skb))
- 		return skb;
- 
- 	datalen = skb->len - skb_tcp_all_headers(skb);
-@@ -666,7 +666,7 @@ void nfp_net_tls_tx_undo(struct sk_buff *skb, u64 tls_handle)
- 
- 	if (!tls_handle)
- 		return;
--	if (WARN_ON_ONCE(!skb->sk || !tls_is_sk_tx_device_offloaded(skb->sk)))
-+	if (WARN_ON_ONCE(!tls_is_skb_tx_device_offloaded(skb)))
- 		return;
- 
- 	datalen = skb->len - skb_tcp_all_headers(skb);
-diff --git a/include/net/tls.h b/include/net/tls.h
-index b7d0f1e3058b..5e71dd3df8ca 100644
---- a/include/net/tls.h
-+++ b/include/net/tls.h
-@@ -370,10 +370,12 @@ struct sk_buff *
- tls_validate_xmit_skb_sw(struct sock *sk, struct net_device *dev,
- 			 struct sk_buff *skb);
- 
--static inline bool tls_is_sk_tx_device_offloaded(struct sock *sk)
-+static inline bool tls_is_skb_tx_device_offloaded(const struct sk_buff *skb)
- {
--#ifdef CONFIG_SOCK_VALIDATE_XMIT
--	return sk_fullsock(sk) &&
-+#ifdef CONFIG_TLS_DEVICE
-+	struct sock *sk = skb->sk;
-+
-+	return sk && sk_fullsock(sk) &&
- 	       (smp_load_acquire(&sk->sk_validate_xmit_skb) ==
- 	       &tls_validate_xmit_skb);
- #else
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index b4864d55900f..b82770f68807 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -1219,7 +1219,7 @@ int tls_set_device_offload(struct sock *sk, struct tls_context *ctx)
- 	tls_device_attach(ctx, sk, netdev);
- 	up_read(&device_offload_lock);
- 
--	/* following this assignment tls_is_sk_tx_device_offloaded
-+	/* following this assignment tls_is_skb_tx_device_offloaded
- 	 * will return true and the context might be accessed
- 	 * by the netdev's xmit function.
- 	 */
-@@ -1372,7 +1372,7 @@ static int tls_device_down(struct net_device *netdev)
- 
- 	list_for_each_entry_safe(ctx, tmp, &list, list)	{
- 		/* Stop offloaded TX and switch to the fallback.
--		 * tls_is_sk_tx_device_offloaded will return false.
-+		 * tls_is_skb_tx_device_offloaded will return false.
- 		 */
- 		WRITE_ONCE(ctx->sk->sk_validate_xmit_skb, tls_validate_xmit_skb_sw);
- 
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+arch/arm64/kvm/mmu.c:147:3-9: preceding lock on line 140
+drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c:98 mlx5_devcom_register_device() error: uninitialized symbol 'tmp_dev'.
+drivers/usb/cdns3/cdns3-starfive.c:23: warning: expecting prototype for cdns3(). Prototype was for USB_STRAP_HOST() instead
+fs/btrfs/volumes.c:6404 btrfs_map_block() error: we previously assumed 'mirror_num_ret' could be null (see line 6242)
+fs/smb/client/cifsfs.c:982 cifs_smb3_do_mount() warn: possible memory leak of 'cifs_sb'
+fs/smb/client/cifssmb.c:4089 CIFSFindFirst() warn: missing error code? 'rc'
+fs/smb/client/cifssmb.c:4216 CIFSFindNext() warn: missing error code? 'rc'
+fs/smb/client/connect.c:2775 cifs_match_super() error: 'tlink' dereferencing possible ERR_PTR()
+fs/smb/client/connect.c:2974 generic_ip_connect() error: we previously assumed 'socket' could be null (see line 2962)
+lib/kunit/test.c:336 __kunit_abort() warn: ignoring unreachable code.
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- arc-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- arm-allmodconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- arm-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- arm64-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- arm64-randconfig-c033-20230611
+|   `-- arch-arm64-kvm-mmu.c:preceding-lock-on-line
+|-- csky-randconfig-c044-20230612
+|   |-- csky-linux-ld:drivers-net-ethernet-sfc-ef100_netdev.c:undefined-reference-to-efx_tc_netevent_event
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- i386-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|   `-- drivers-leds-leds-cht-wcove.c:warning:no-previous-prototype-for-cht_wc_leds_brightness_get
+|-- i386-randconfig-m021-20230612
+|   |-- fs-smb-client-cifsfs.c-cifs_smb3_do_mount()-warn:possible-memory-leak-of-cifs_sb
+|   |-- fs-smb-client-cifssmb.c-CIFSFindFirst()-warn:missing-error-code-rc
+|   |-- fs-smb-client-cifssmb.c-CIFSFindNext()-warn:missing-error-code-rc
+|   |-- fs-smb-client-connect.c-cifs_match_super()-error:tlink-dereferencing-possible-ERR_PTR()
+|   `-- fs-smb-client-connect.c-generic_ip_connect()-error:we-previously-assumed-socket-could-be-null-(see-line-)
+|-- m68k-randconfig-m031-20230612
+|   |-- fs-btrfs-volumes.c-btrfs_map_block()-error:we-previously-assumed-mirror_num_ret-could-be-null-(see-line-)
+|   `-- lib-kunit-test.c-__kunit_abort()-warn:ignoring-unreachable-code.
+|-- microblaze-buildonly-randconfig-r002-20230612
+|   `-- arch-microblaze-include-asm-page.h:warning:ARCH_DMA_MINALIGN-redefined
+|-- mips-allmodconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- mips-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- openrisc-randconfig-r013-20230612
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- parisc-allyesconfig
+|   |-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- parisc-defconfig
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- parisc-randconfig-r004-20230612
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- parisc-randconfig-s031-20230612
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- parisc64-defconfig
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- powerpc-allmodconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- riscv-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
+|-- riscv-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
+|-- s390-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- s390-randconfig-r026-20230612
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- s390-randconfig-r044-20230612
+|   `-- include-asm-generic-bitops-instrumented-non-atomic.h:undefined-reference-to-uv_info
+|-- sparc-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|-- x86_64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
+|   `-- drivers-leds-leds-cht-wcove.c:warning:no-previous-prototype-for-cht_wc_leds_brightness_get
+`-- x86_64-randconfig-m001-20230612
+    |-- drivers-net-ethernet-mellanox-mlx5-core-lib-devcom.c-mlx5_devcom_register_device()-error:uninitialized-symbol-tmp_dev-.
+    |-- fs-smb-client-cifsfs.c-cifs_smb3_do_mount()-warn:possible-memory-leak-of-cifs_sb
+    |-- fs-smb-client-cifssmb.c-CIFSFindFirst()-warn:missing-error-code-rc
+    |-- fs-smb-client-cifssmb.c-CIFSFindNext()-warn:missing-error-code-rc
+    |-- fs-smb-client-connect.c-cifs_match_super()-error:tlink-dereferencing-possible-ERR_PTR()
+    `-- fs-smb-client-connect.c-generic_ip_connect()-error:we-previously-assumed-socket-could-be-null-(see-line-)
+clang_recent_errors
+|-- hexagon-buildonly-randconfig-r006-20230612
+|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|-- hexagon-randconfig-r041-20230612
+|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|-- hexagon-randconfig-r045-20230612
+|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|-- riscv-randconfig-r003-20230612
+|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+`-- x86_64-randconfig-r036-20230612
+    `-- drivers-gpu-drm-i915-display-intel_display_power.h:error:declaration-of-struct-seq_file-will-not-be-visible-outside-of-this-function-Werror-Wvisibility
+
+elapsed time: 816m
+
+configs tested: 126
+configs skipped: 6
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha        buildonly-randconfig-r001-20230612   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r031-20230612   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r015-20230612   gcc  
+arc                  randconfig-r025-20230612   gcc  
+arc                  randconfig-r043-20230612   gcc  
+arm                              alldefconfig   clang
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         axm55xx_defconfig   gcc  
+arm          buildonly-randconfig-r005-20230612   clang
+arm                     davinci_all_defconfig   clang
+arm                                 defconfig   gcc  
+arm                            hisi_defconfig   gcc  
+arm                            mmp2_defconfig   clang
+arm                         nhk8815_defconfig   gcc  
+arm                  randconfig-r046-20230612   clang
+arm                           spitz_defconfig   clang
+arm                           u8500_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+hexagon      buildonly-randconfig-r006-20230612   clang
+hexagon              randconfig-r041-20230612   clang
+hexagon              randconfig-r045-20230612   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230612   clang
+i386                 randconfig-i002-20230612   clang
+i386                 randconfig-i003-20230612   clang
+i386                 randconfig-i004-20230612   clang
+i386                 randconfig-i005-20230612   clang
+i386                 randconfig-i006-20230612   clang
+i386                 randconfig-i011-20230612   gcc  
+i386                 randconfig-i012-20230612   gcc  
+i386                 randconfig-i013-20230612   gcc  
+i386                 randconfig-i014-20230612   gcc  
+i386                 randconfig-i015-20230612   gcc  
+i386                 randconfig-i016-20230612   gcc  
+i386                 randconfig-r012-20230612   gcc  
+i386                 randconfig-r014-20230612   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r035-20230612   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        m5307c3_defconfig   gcc  
+m68k                 randconfig-r023-20230612   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                        maltaup_defconfig   clang
+mips                        omega2p_defconfig   clang
+mips                 randconfig-r001-20230612   gcc  
+mips                 randconfig-r011-20230612   clang
+mips                       rbtx49xx_defconfig   clang
+mips                         rt305x_defconfig   gcc  
+mips                           xway_defconfig   gcc  
+nios2        buildonly-randconfig-r003-20230612   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r022-20230612   gcc  
+openrisc     buildonly-randconfig-r004-20230612   gcc  
+openrisc             randconfig-r013-20230612   gcc  
+openrisc             randconfig-r024-20230612   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r004-20230612   gcc  
+parisc64                            defconfig   gcc  
+powerpc                    adder875_defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                     mpc512x_defconfig   clang
+powerpc                  mpc885_ads_defconfig   clang
+powerpc                    mvme5100_defconfig   clang
+powerpc                     rainier_defconfig   gcc  
+powerpc              randconfig-r033-20230612   clang
+powerpc                    sam440ep_defconfig   gcc  
+powerpc                      walnut_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r003-20230612   clang
+riscv                randconfig-r042-20230612   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r016-20230612   gcc  
+s390                 randconfig-r026-20230612   gcc  
+s390                 randconfig-r044-20230612   gcc  
+sh                               allmodconfig   gcc  
+sh                             espt_defconfig   gcc  
+sh                          polaris_defconfig   gcc  
+sh                   randconfig-r002-20230612   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64              randconfig-r021-20230612   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r002-20230612   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230613   gcc  
+x86_64               randconfig-a002-20230613   gcc  
+x86_64               randconfig-a003-20230613   gcc  
+x86_64               randconfig-a004-20230613   gcc  
+x86_64               randconfig-a005-20230613   gcc  
+x86_64               randconfig-a006-20230613   gcc  
+x86_64               randconfig-a011-20230612   gcc  
+x86_64               randconfig-a012-20230612   gcc  
+x86_64               randconfig-a013-20230612   gcc  
+x86_64               randconfig-a014-20230612   gcc  
+x86_64               randconfig-a015-20230612   gcc  
+x86_64               randconfig-a016-20230612   gcc  
+x86_64               randconfig-r005-20230612   clang
+x86_64               randconfig-r036-20230612   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                          iss_defconfig   gcc  
+
 -- 
-2.40.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
