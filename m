@@ -2,211 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F32072DE45
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 11:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1F672DE56
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 11:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240535AbjFMJuk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Jun 2023 05:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        id S240275AbjFMJzg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Jun 2023 05:55:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239821AbjFMJuR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 05:50:17 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B5C1997
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 02:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686649790; x=1718185790;
-  h=date:from:to:cc:subject:message-id;
-  bh=uJdYFhmaU3Uvmi/HJAmkRlw/96OovMBr49Aahbz+2rA=;
-  b=iH6/PFktU2YJEFyh3GBT91g/n9y9EYAHLJavRsrGhWMg6bTgYMJ8nAWN
-   cOKlbAJm5rL9P0B7sRySJwPIUJHK2UFxNJOll8SsH/LrVMb6AocoeAzEN
-   +Q/n/lrNM31j5K0bPc1/rRxx8JiYILlF0+SKIuPJRoeI+ogr26xeoK9Cj
-   iK423v3fgi0hx+axCmiJ8MsLInhw4V+KwNDu8e/8PCJ+Adf2HgJVmlekP
-   gwVbEtUNWi6fP74WyFqKQMdlrUsfUsyg0WLOPVJycwsqK4nNGo7+L63XM
-   iVvpvoqcxo05O5NrqfDDuvcFjg+MEZM/egXoKwKuysXBormjZn6mlzyGR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="338643426"
-X-IronPort-AV: E=Sophos;i="6.00,239,1681196400"; 
-   d="scan'208";a="338643426"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2023 02:49:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="835817248"
-X-IronPort-AV: E=Sophos;i="6.00,239,1681196400"; 
-   d="scan'208";a="835817248"
-Received: from lkp-server01.sh.intel.com (HELO 211f47bdb1cb) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 13 Jun 2023 02:49:47 -0700
-Received: from kbuild by 211f47bdb1cb with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q90eo-0001C2-1Q;
-        Tue, 13 Jun 2023 09:49:46 +0000
-Date:   Tue, 13 Jun 2023 17:48:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- f5d494e2e082f28fb6aea1bdba0b7ac43d6a9d6c
-Message-ID: <202306131743.dVhA7KsP-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S241851AbjFMJzS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 05:55:18 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D329FEC
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 02:55:15 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-30c4775d05bso3707733f8f.2
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 02:55:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1686650114; x=1689242114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RqNvggRPyNB9Hehd7xfWxJNAOn1bnmQJXJE17DkVdBU=;
+        b=g/gQ2/z9jaLvDVlTUHmih1Mf6W7SQX7wJSQ+I8XBYvpmmlpFWCMKBmAtIqbdA9HJWB
+         iWJ8265l0uWUBs0Kg2xf88IK1ASsgY7HBMkicdvyoLSF2ZFw96kmx8hlZ4inRvc6mfw6
+         usW+eWfcjxc7P7c5wlWofL6a/6amUVvrMqWmVbcEPl/2nvlor4GEZMJYDGvrBQ2ES0Kz
+         MIm+Gt3o5Al8+xgJHIvN+k83T0tslOCriSPQAfvlsubkAEA+EPvZDMa6sTwznVHhsGT7
+         9tQ5f+N1kjiEiCDElzEW318WS8K22rXW/SvG9B0QnKg+Y4mmXmNqLX7TKuwjrx3J05kI
+         izbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686650114; x=1689242114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RqNvggRPyNB9Hehd7xfWxJNAOn1bnmQJXJE17DkVdBU=;
+        b=dTk4KwhsHfeg+2tczhfgw8VwiX2sdFwmWA809Q6IASCafOkxw+hINAP95VMowIynwT
+         XV8WXYuhOBx3+YbZvIhiR+lfztwmQaB5dHL4cbxjNu5P+yyegBEnPL6oPNwUATa6DnzG
+         gQKhaRbTAKTG3VW3zc7JX2Tn2G7FURXLdkwiJ5MZ1SIXyOLgYaJylGtIfFgx8ce29bWb
+         MAIMh+wuga+Nc8bHHZ/azmjQ7qChoxZZx1RdkRBCluyKrWsSzLpShaDmwP+jvGihX00L
+         xVA1rI/SAEjlmGPY+3ZCZQcru92+sBkB3LJNREOE68a0neYK/OC0rCzWBwsUUF35Dide
+         Hq1A==
+X-Gm-Message-State: AC+VfDz+orTLAN416FvpAEcZqpjzAnC7syL5gRAi9nYSl8Czbq6ZeWAS
+        e7TLrT9qfHz0xtuKS3LEytjgoA==
+X-Google-Smtp-Source: ACHHUZ5ZrdfyYh5y1tk49fFKsi3ApIfFMGD+jwFkSrpureaIeIWoGT4Ghm/fdObK/np4YyjXHk7Jyg==
+X-Received: by 2002:adf:e252:0:b0:307:7f38:37f with SMTP id bl18-20020adfe252000000b003077f38037fmr6934139wrb.66.1686650114217;
+        Tue, 13 Jun 2023 02:55:14 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id e4-20020adfdbc4000000b0030ada01ca78sm14844845wrj.10.2023.06.13.02.55.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jun 2023 02:55:13 -0700 (PDT)
+Date:   Tue, 13 Jun 2023 11:55:11 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        vadfed@meta.com, jonathan.lemon@gmail.com, pabeni@redhat.com,
+        corbet@lwn.net, davem@davemloft.net, edumazet@google.com,
+        vadfed@fb.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
+        richardcochran@gmail.com, sj@kernel.org, javierm@redhat.com,
+        ricardo.canuelo@collabora.com, mst@redhat.com, tzimmermann@suse.de,
+        michal.michalik@intel.com, gregkh@linuxfoundation.org,
+        jacek.lawrynowicz@linux.intel.com, airlied@redhat.com,
+        ogabbay@kernel.org, arnd@arndb.de, nipun.gupta@amd.com,
+        axboe@kernel.dk, linux@zary.sk, masahiroy@kernel.org,
+        benjamin.tissoires@redhat.com, geert+renesas@glider.be,
+        milena.olech@intel.com, kuniyu@amazon.com, liuhangbin@gmail.com,
+        hkallweit1@gmail.com, andy.ren@getcruise.com, razor@blackwall.org,
+        idosch@nvidia.com, lucien.xin@gmail.com, nicolas.dichtel@6wind.com,
+        phil@nwl.cc, claudiajkang@gmail.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, poros@redhat.com,
+        mschmidt@redhat.com, linux-clk@vger.kernel.org,
+        vadim.fedorenko@linux.dev
+Subject: Re: [RFC PATCH v8 01/10] dpll: documentation on DPLL subsystem
+ interface
+Message-ID: <ZIg8/0UJB9Lbyx2D@nanopsycho>
+References: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
+ <20230609121853.3607724-2-arkadiusz.kubalewski@intel.com>
+ <20230612154329.7bd2d52f@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230612154329.7bd2d52f@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: f5d494e2e082f28fb6aea1bdba0b7ac43d6a9d6c  RDMA/rxe: Fix rxe_cq_post
+Tue, Jun 13, 2023 at 12:43:29AM CEST, kuba@kernel.org wrote:
+>On Fri,  9 Jun 2023 14:18:44 +0200 Arkadiusz Kubalewski wrote:
+>> From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+>> 
+>> Add documentation explaining common netlink interface to configure DPLL
+>> devices and monitoring events. Common way to implement DPLL device in
+>> a driver is also covered.
+>
+>> +``'pin': [{
+>> + {'clock-id': 282574471561216,
+>> +  'module-name': 'ice',
+>> +  'pin-dpll-caps': 4,
+>> +  'pin-id': 13,
+>> +  'pin-parent': [{'pin-id': 2, 'pin-state': 'connected'},
+>> +                 {'pin-id': 3, 'pin-state': 'disconnected'},
+>> +                 {'id': 0, 'pin-direction': 'input'},
+>> +                 {'id': 1, 'pin-direction': 'input'}],
+>> +  'pin-type': 'synce-eth-port'}
+>> +}]``
+>
+>It seems like pin-parent is overloaded, can we split it into two
+>different nests?
 
-elapsed time: 727m
+Yeah, we had it as two and converged to this one. The thing is, the rest
+of the attrs are the same for both parent pin and parent device. I link
+it this way a bit better. No strong feeling.
 
-configs tested: 134
-configs skipped: 5
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>
+>> +SET commands format
+>> +===================
+>> +
+>> +``DPLL_CMD_DEVICE_SET`` - to target a dpll device, the user provides
+>> +``DPLL_A_ID``, which is unique identifier of dpll device in the system,
+>> +as well as parameter being configured (``DPLL_A_MODE``).
+>> +
+>> +``DPLL_CMD_PIN_SET`` - to target a pin user has to provide a
+>> +``DPLL_A_PIN_ID``, which is unique identifier of a pin in the system.
+>> +Also configured pin parameters must be added.
+>> +If ``DPLL_A_PIN_DIRECTION`` or ``DPLL_A_PIN_FREQUENCY`` are configured,
+>> +this affects all the dpll device they are connected, that is why those
+>> +attributes shall not be enclosed in ``DPLL_A_PIN_PARENT``.
+>> +Other attributes:
+>> +``DPLL_A_PIN_PRIO`` or ``DPLL_A_PIN_STATE`` must be enclosed in
+>> +``DPLL_A_PIN_PARENT`` as their configuration relates to only one
+>> +parent dpll or parent pin.
+>
+>Also sounds like setting pin attrs and pin-parent attrs should be
+>different commands.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r022-20230612   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r014-20230612   gcc  
-arc                  randconfig-r025-20230612   gcc  
-arc                  randconfig-r043-20230612   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         axm55xx_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                            hisi_defconfig   gcc  
-arm                         nhk8815_defconfig   gcc  
-arm                  randconfig-r036-20230612   gcc  
-arm                  randconfig-r046-20230612   clang
-arm                           u8500_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r022-20230612   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r011-20230612   gcc  
-csky                 randconfig-r012-20230612   gcc  
-csky                 randconfig-r031-20230612   gcc  
-csky                 randconfig-r034-20230612   gcc  
-csky                 randconfig-r036-20230612   gcc  
-hexagon              randconfig-r001-20230612   clang
-hexagon              randconfig-r016-20230612   clang
-hexagon              randconfig-r041-20230612   clang
-hexagon              randconfig-r045-20230612   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r006-20230612   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230612   clang
-i386                 randconfig-i002-20230612   clang
-i386                 randconfig-i003-20230612   clang
-i386                 randconfig-i004-20230612   clang
-i386                 randconfig-i005-20230612   clang
-i386                 randconfig-i006-20230612   clang
-i386                 randconfig-i011-20230612   gcc  
-i386                 randconfig-i012-20230612   gcc  
-i386                 randconfig-i013-20230612   gcc  
-i386                 randconfig-i014-20230612   gcc  
-i386                 randconfig-i015-20230612   gcc  
-i386                 randconfig-i016-20230612   gcc  
-i386                 randconfig-r016-20230612   gcc  
-i386                 randconfig-r031-20230612   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch    buildonly-randconfig-r001-20230612   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r015-20230612   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k         buildonly-randconfig-r004-20230612   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r011-20230612   gcc  
-m68k                 randconfig-r032-20230612   gcc  
-m68k                 randconfig-r033-20230612   gcc  
-microblaze           randconfig-r013-20230612   gcc  
-microblaze           randconfig-r024-20230612   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     cu1830-neo_defconfig   clang
-mips                     loongson2k_defconfig   clang
-mips                 randconfig-r001-20230612   gcc  
-mips                 randconfig-r021-20230612   clang
-mips                         rt305x_defconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r024-20230612   gcc  
-parisc                           allyesconfig   gcc  
-parisc       buildonly-randconfig-r003-20230612   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r004-20230612   gcc  
-parisc               randconfig-r023-20230612   gcc  
-parisc               randconfig-r033-20230612   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc      buildonly-randconfig-r002-20230612   gcc  
-powerpc      buildonly-randconfig-r003-20230612   gcc  
-powerpc      buildonly-randconfig-r005-20230612   gcc  
-powerpc                      obs600_defconfig   clang
-powerpc                      pasemi_defconfig   gcc  
-powerpc              randconfig-r026-20230612   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv        buildonly-randconfig-r005-20230612   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230612   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r005-20230612   clang
-s390                 randconfig-r015-20230612   gcc  
-s390                 randconfig-r025-20230612   gcc  
-s390                 randconfig-r044-20230612   gcc  
-sh                               allmodconfig   gcc  
-sh                             espt_defconfig   gcc  
-sh                   randconfig-r002-20230612   gcc  
-sh                   randconfig-r004-20230612   gcc  
-sh                   randconfig-r012-20230612   gcc  
-sh                        sh7785lcr_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r014-20230612   gcc  
-sparc64              randconfig-r013-20230612   gcc  
-sparc64              randconfig-r035-20230612   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r002-20230612   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230612   clang
-x86_64               randconfig-a002-20230612   clang
-x86_64               randconfig-a003-20230612   clang
-x86_64               randconfig-a004-20230612   clang
-x86_64               randconfig-a005-20230612   clang
-x86_64               randconfig-a006-20230612   clang
-x86_64               randconfig-a011-20230612   gcc  
-x86_64               randconfig-a012-20230612   gcc  
-x86_64               randconfig-a013-20230612   gcc  
-x86_64               randconfig-a014-20230612   gcc  
-x86_64               randconfig-a015-20230612   gcc  
-x86_64               randconfig-a016-20230612   gcc  
-x86_64               randconfig-r003-20230612   clang
-x86_64               randconfig-r021-20230612   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r006-20230612   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Could be, but what't the benefit? Also, you are not configuring
+pin-parent. You are configuring pin:pin-parent tuple. Basically the pin
+configuration as a child. So this is mainly config of the pin itsest
+Therefore does not really make sense to me to split to two comments.
