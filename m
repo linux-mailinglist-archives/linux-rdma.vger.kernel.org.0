@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 162A072D8BD
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 06:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8EA72D90A
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 07:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234129AbjFMEs2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Jun 2023 00:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
+        id S233950AbjFMFX0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Jun 2023 01:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233856AbjFMEs1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 00:48:27 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1F9186
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 21:48:25 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-56d304e5f83so17037447b3.2
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 21:48:25 -0700 (PDT)
+        with ESMTP id S233136AbjFMFXZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 01:23:25 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1849DE78
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 22:23:24 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-565aa2cc428so44802627b3.1
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Jun 2023 22:23:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686631704; x=1689223704;
+        d=broadcom.com; s=google; t=1686633803; x=1689225803;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=W5Q9G+ckgCcPelgGsseGQ6WFcmlgOcZ4r1p/5eVMQKw=;
-        b=e3eoczAPVp7mD41Zd1VKXjViazW/vr8a2uirWlOb8XmWXHOd4BA6qZVG+B8O7MaXSY
-         y/30Ei1qypJGSguz9b5tPz4sAP5dmaHs9OSQM5JBDJX4tKAc1dQyjIiYaVwT7M+Zb8Ta
-         xGyAPJhawlvks0qe3po8XW0dFJtXuXmNlKUUk=
+        bh=Z+p7H5SO9x91jwpKdt5l3hVEqZVEGw5u+QmwbgK+hH4=;
+        b=eMwKWVQRI3/6KCcV52k/JRzVW0odHUrw2rqDmz62XCBekqhm6To/Qmh5gmhthG8o1z
+         Z1zmuME9pcxaNZq0417CoS9+Vnwe0qJBIPqVriUjV2URtzrz5k8kFErNge5OJ6Kt9M8X
+         tB6uY+bWJPrF4pZUcTIjRbwCIqU+johUzN6ek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686631704; x=1689223704;
+        d=1e100.net; s=20221208; t=1686633803; x=1689225803;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=W5Q9G+ckgCcPelgGsseGQ6WFcmlgOcZ4r1p/5eVMQKw=;
-        b=KLFg3mBCuv8cQvqBjNtAYnIshQ9qdTlKcPjWCc1U9oM3sjYNo3Vwz4pg1C+uqZC5is
-         ESSMOliXqTEdUKoAF/KUQP3TE8cNN1eSqCdwl38xiAX+yiZgbCVk+grVa36WmAFn1NJR
-         nCwIYM9jHzYjg/kcbI1pULppg1orA5FC3UCntHHAfSa3pv+BRjAQ7wDU8HMjmncN/EYp
-         zS/+/JDdT+UQUsXVTuXkmvmGnQIAdDdr5JsamYhsZBihbcfm64A9mS4yJXQY2biiJ5DX
-         WnOeBzyPhlV/RyoLh5TkmE55fI09nTqYxo+TYz4CFTZQql0TRQPpqcAOU0cZtdsazDpf
-         U4yw==
-X-Gm-Message-State: AC+VfDzdC4mtd78SmTLrNp1w4kakMbRrFCqW0Cz6+QMZ5ocXmGRseUSG
-        mfzssi5H1sYzlCfDi4f5JMKtoIoJiheyvMrT+ImQyg==
-X-Google-Smtp-Source: ACHHUZ6Vb7w/o7/8lvEtjWKGjzrJhs7hh+p8BAj707l1WrsFu7KOEiz5ppG7g84YGt10PgFZwHz3UBJP6mJn5Q3MbAg=
-X-Received: by 2002:a25:a564:0:b0:bc9:9b3f:374d with SMTP id
- h91-20020a25a564000000b00bc99b3f374dmr641767ybi.2.1686631704077; Mon, 12 Jun
- 2023 21:48:24 -0700 (PDT)
+        bh=Z+p7H5SO9x91jwpKdt5l3hVEqZVEGw5u+QmwbgK+hH4=;
+        b=GYpc9xMsjnHZaSjcOE9/1zBJal89xUionDiaXGxsd6iZ20UjnP2WixprfVZjltOGj0
+         hU/npGSkEYfG10kjj67saOQtkpRhf0Qn5gxeO92ashM36X49ThGltItiPNd1IJ9lg0+V
+         hYh2+9gW6MlV+x4WSf7EeBtJeKf/tM1pFZ51A6+BaUVolRLzwfPKxE8GLSmXDu4kdVC7
+         PFEwZ0K8IGojJvpnmcYMyEKMxEvTroJxLBpyNrJ8x4nUVUs3Gfk3f/PJmVeUi630pHw3
+         cpj2ZWtnBjH27/2+BgttXGE1SuOE1u/9bGyLh38IVO0hTbA5ZNwiD+oGU5dTABagUcBD
+         0A4Q==
+X-Gm-Message-State: AC+VfDxF/qCIYGHA0S+Ot1Cy9bE8c8mns0mjg3azowcFv6F2mjAiPdqV
+        9B9I1NGxmZ144y7sQrAVzcDTUwWrwqpBjBRpoJeeiQ==
+X-Google-Smtp-Source: ACHHUZ4OWtT0/P4VUcduG5wAWOml3ivKJODpnSvmOIz9KX5rjRaB5YXL/lzmWW7aIZcuR2O7qcerHuJQm2IKLRHQo4U=
+X-Received: by 2002:a25:8d87:0:b0:bca:cbc8:9608 with SMTP id
+ o7-20020a258d87000000b00bcacbc89608mr629868ybl.15.1686633803099; Mon, 12 Jun
+ 2023 22:23:23 -0700 (PDT)
 MIME-Version: 1.0
 References: <1686563342-15233-1-git-send-email-selvin.xavier@broadcom.com>
- <1686563342-15233-2-git-send-email-selvin.xavier@broadcom.com> <ZIdex3yPdSiX6qfA@nvidia.com>
-In-Reply-To: <ZIdex3yPdSiX6qfA@nvidia.com>
+ <1686563342-15233-8-git-send-email-selvin.xavier@broadcom.com> <ZIdhunLGPLg6h5ID@nvidia.com>
+In-Reply-To: <ZIdhunLGPLg6h5ID@nvidia.com>
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Tue, 13 Jun 2023 10:18:12 +0530
-Message-ID: <CA+sbYW3qmg=XzX7nhqkJ+ajvOJ5ftXc7B0mZd7W42FtRK6cPNQ@mail.gmail.com>
-Subject: Re: [PATCH v5 for-next 1/7] RDMA/bnxt_re: Use the common mmap helper functions
+Date:   Tue, 13 Jun 2023 10:53:11 +0530
+Message-ID: <CA+sbYW0GD351sTnGaQp5omKj00kmVQPKE0KbWTSuHt6E8M+Jyg@mail.gmail.com>
+Subject: Re: [PATCH v5 for-next 7/7] RDMA/bnxt_re: Enable low latency push
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
         andrew.gospodarek@broadcom.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000009ce17105fdfb8b0d"
+        boundary="000000000000b9963905fdfc08ae"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -65,41 +65,103 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000009ce17105fdfb8b0d
+--000000000000b9963905fdfc08ae
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 12, 2023 at 11:37=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> w=
+On Mon, Jun 12, 2023 at 11:49=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> w=
 rote:
 >
-> On Mon, Jun 12, 2023 at 02:48:56AM -0700, Selvin Xavier wrote:
+> On Mon, Jun 12, 2023 at 02:49:02AM -0700, Selvin Xavier wrote:
 >
-> > @@ -4002,6 +4044,13 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *c=
-tx, struct ib_udata *udata)
-> >       resp.comp_mask |=3D BNXT_RE_UCNTX_CMASK_HAVE_MODE;
-> >       resp.mode =3D rdev->chip_ctx->modes.wqe_mode;
-> >
-> > +     entry =3D bnxt_re_mmap_entry_insert(uctx, 0, BNXT_RE_MMAP_SH_PAGE=
-, NULL);
-> > +     if (!entry) {
-> > +             rc =3D -ENOMEM;
-> > +             goto cfail;
+> > +static int UVERBS_HANDLER(BNXT_RE_METHOD_ALLOC_PAGE)(struct uverbs_att=
+r_bundle *attrs)
+> > +{
+> > +     struct ib_uobject *uobj =3D uverbs_attr_get_uobject(attrs, BNXT_R=
+E_ALLOC_PAGE_HANDLE);
+> > +     enum bnxt_re_alloc_page_type alloc_type;
+> > +     struct bnxt_re_user_mmap_entry *entry;
+> > +     enum bnxt_re_mmap_flag mmap_flag;
+> > +     struct bnxt_qplib_chip_ctx *cctx;
+> > +     struct bnxt_re_ucontext *uctx;
+> > +     struct bnxt_re_dev *rdev;
+> > +     u64 mmap_offset;
+> > +     u32 length;
+> > +     u32 dpi;
+> > +     u64 dbr;
+> > +     int err;
+> > +
+> > +     uctx =3D container_of(ib_uverbs_get_ucontext(attrs), struct bnxt_=
+re_ucontext, ib_uctx);
+> > +     if (IS_ERR(uctx))
+> > +             return PTR_ERR(uctx);
+> > +
+> > +     err =3D uverbs_get_const(&alloc_type, attrs, BNXT_RE_ALLOC_PAGE_T=
+YPE);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     rdev =3D uctx->rdev;
+> > +     cctx =3D rdev->chip_ctx;
+> > +
+> > +     switch (alloc_type) {
+> > +     case BNXT_RE_ALLOC_WC_PAGE:
+> > +             if (cctx->modes.db_push)  {
+> > +                     if (bnxt_qplib_alloc_dpi(&rdev->qplib_res, &uctx-=
+>wcdpi,
+> > +                                              uctx, BNXT_QPLIB_DPI_TYP=
+E_WC))
+> > +                             return -ENOMEM;
+> > +                     length =3D PAGE_SIZE;
+> > +                     dpi =3D uctx->wcdpi.dpi;
+> > +                     dbr =3D (u64)uctx->wcdpi.umdbr;
+> > +                     mmap_flag =3D BNXT_RE_MMAP_WC_DB;
+> > +             } else {
+> > +                     return -EINVAL;
+> > +             }
+> > +
+> > +             break;
+> > +
+> > +     default:
+> > +             return -EOPNOTSUPP;
 > > +     }
-> > +     uctx->shpage_mmap =3D &entry->rdma_entry;
+> > +
+> > +     entry =3D bnxt_re_mmap_entry_insert(uctx, dbr, mmap_flag, &mmap_o=
+ffset);
+> > +     if (IS_ERR(entry))
+> > +             return PTR_ERR(entry);
+> > +
+> > +     uobj->object =3D entry;
+> > +     uverbs_finalize_uobj_create(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
 >
-> How can this be called with a NULL offset return?
+> uverbs_finalize_uobj_create() is supposed to be called once the
+> function cannot fail anymore
 >
-> It seems like the offset is hardwired by userspace?
+> > +     err =3D uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
+> > +                          &mmap_offset, sizeof(mmap_offset));
+> > +     if (err)
+> > +             return err;
 >
-Yes. It is hardwired to maintain backward compatibility with
-libbnxt_re from older rdma-core.
-> If so it should use of the insert exact offset APIs
-Will use rdma_user_mmap_entry_insert_exact and repost the series.
+> Because there is no way to undo it on error.
+>
+> So the error handling here needs adjusting
+
+Hi Jason,
+
+uverbs_finalize_uobj_create is the last step before uverbs_copy_to.
+All the error checking
+after this is for uverbs_copy_to.  Can you please clarify what needs
+to be changed?
+ I took the reference of other modules that call
+uverbs_finalize_uobj_create for this implementation
+and was not able to find the issue you mentioned.
+Thanks,
+Selvin
 
 >
 > Jason
 
---0000000000009ce17105fdfb8b0d
+--000000000000b9963905fdfc08ae
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -170,14 +232,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEJzJMSod8m4
-3g0dInshv+dEHkUY9PUtcdzX9H6NydiHMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYxMzA0NDgyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJ5AEtmevvAn
+6mznPn0AggT7nyEI4lAmj0Om4xUgpAS7MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDYxMzA1MjMyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBgyA6VcIJsifUsgFc7vCHWsrKWgPii
-G8GxADBDllqUjND87mtiorv8iGQ8oI+B1yZUIbPy0SKbSnbuV0XKL5/ONCmGuuj8i9Cma5z52nS8
-rmgGFmPpj8NGd2q99I43fdG0lPHka0bfjrUuEe5ZwgE0yep5WtVkDAH9yXtQ48W/7qYmyTBOOwCF
-UyKmMckH/xc8TrGmTUVVXWv0DGxTdex03D2WwdBtNV1oEYmNNHBT6kJwQrkHXLD/WF/Q41knnAvz
-Po/hLIan7IfU6DPPx0qp32eYy7I/TFsLIxjUp798OuaINnVAahkr0RIBwbBM5bzKe6I4HcLZ6Oxx
-P7WRldZm
---0000000000009ce17105fdfb8b0d--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBbkdW8gOejWJXp3r6vr70SyiNBT4Z0
+NyNDYKHOgT82hBdaNrUNYxOjXoJWTQcuDiccXqFdot/VOIo1rrP1Yspa56F2xm60IJip/9jLQAEC
+GqWK1SHWGiwE6ECrvq4vAWqXRv0bEjcBco4de8iSF4/Jvcl+0W/zLocsOQV+/2r+4wNcuryLKF1X
+JDUxIHUEii9id0AHNaAvr40xJp6wMz0XC8SeDQCz4FfdEU7D0VjRkoGr617QAQV67r3x0mXJ6T6W
+jMuG5Ms+OZQteO/rAlgjtwWvT22Zc00f4tQHZIAm/SJiFd1lQV5Y8J+lNGid+PHeKa/WnSBeYPl8
+1hfD2cRG
+--000000000000b9963905fdfc08ae--
