@@ -2,136 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D40F972E8DF
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 18:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6760272E93C
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 19:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbjFMQz7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Jun 2023 12:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37522 "EHLO
+        id S238337AbjFMRTC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Jun 2023 13:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234522AbjFMQz6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 12:55:58 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D70E183
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 09:55:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NhY9CsCMP+S5xbktDoPvjorsmVgtYVa2pKsV51wpID7RHkdkIk7trE3mbdyrK9afMJY9GnkufQg4zQ96vDUcH5q9Ponm9uGqsCRDhUJQNfRmOVWsYwoBlx36/43yW+wQIhbHbyEQ5aTjjrIto8OGRWXw+FWZxI/pd6pLp/akSNLblUChWumfmRQJndS3KQsh5ElQhlGV6N4Au7PXbIGUCPspwAYtsiThZ/NR07JH254kZwIkw5JAtPPr4sz3Lr3ZpY9ToBWXtNBlUB44f6Jld3v7JDSv3EYxqZ98OapWbddunH0QMgPnq839/c68TbvJ+o2cqrul00KurgpKANyWWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RLq336NSrbIsQ8T9LyzhJbBe50VjhOq07U1ClEwIIP0=;
- b=Vs92tA02r9GUROvMk0+sGZecXVINibYHijWB1k2XAs+RM568J7d1uzagGJXEMq96USAcUNTUGLFB2p5ScVws8pu9WQS29pbrQ/IScC9vV5B/oPsvFjbkDMJRm0Zy+pLvOfEgO5BBj0QI4aTPkaDQlvolGCaEs8qyDWBhKGK1Me6gSQ4wAjNtztT18h35lgBApmTs9vDIf8QEu3qF44YdvZJjQ76QDZBjJRfvv7ySJ4WAeBJGZ8d9HzKqxjrBtLpqyoZNYLNkc1FVBWcTj7k3YEDUWcp1uDuBGnyyVvG3zM/K7S9AYzzPE8cjf4DMy+d6ykOHjz0F22eqNR2wqgyKbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RLq336NSrbIsQ8T9LyzhJbBe50VjhOq07U1ClEwIIP0=;
- b=Dtuuo2TzqxBqZq4MBRkb83XTbtIdDgVUrgmUN6MhcwPjExFXCgMt4MB5L7Ienn4b9LPBKNqhgB/XFRL5/p+SUtGRNs1Zkbq/NWjjrg2XMmhRUhhXwDdy0ZIkrwIQGCoUGF/iuHuCVkec+TWzi7G5tje7mcevJjKebrd/frtlIJvBJygnZPuENUNDXv0xuZNyAjnT30ljsbpgmj/MwnHCHJEBbkYZiFsNa0llGonuhIA3zkI5v8fzaKJEmHqrny192Q8kkHOXydaD7kdvzK1OHl6rU3ff+TqBrsIU0AVmNwVC5ECD5CUwUAVf8IRWXSQhl9xZFXHgJU9gdoxbOLvZRw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DS0PR12MB9058.namprd12.prod.outlook.com (2603:10b6:8:c6::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Tue, 13 Jun
- 2023 16:55:55 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f7a7:a561:87e9:5fab]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::f7a7:a561:87e9:5fab%6]) with mapi id 15.20.6455.030; Tue, 13 Jun 2023
- 16:55:55 +0000
-Date:   Tue, 13 Jun 2023 13:55:52 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: Bug report in reg_user_mr in exe
-Message-ID: <ZIifmHzwnvn3YVbI@nvidia.com>
-References: <80328b20-9c5d-afe8-0ff4-a7eb05c8fb4f@gmail.com>
- <ZIieuVnhnGP8RGQw@nvidia.com>
- <2c854bc5-40c4-aea7-c220-981938a01b6e@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c854bc5-40c4-aea7-c220-981938a01b6e@gmail.com>
-X-ClientProxiedBy: BY5PR13CA0001.namprd13.prod.outlook.com
- (2603:10b6:a03:180::14) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S238333AbjFMRTB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 13:19:01 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B521AC
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 10:19:00 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6b2d8b5fde6so2080389a34.2
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 10:19:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686676739; x=1689268739;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zQXoCRHymE4uVf1TfGvqvejrHT9Pt6FBTTGcSlMOJGs=;
+        b=F+7i4pg9/Z/4n/FKmMc5MQBHwK1ZFS8LuRT69g7SPiCw2vx7dlx3NWt0pbts0xltS5
+         QINhuzgDjEgIgsC508iSIkGMeT+LCR3kFKd35a5SMCGP5hGymCvIlr/zIz45BYuZ8nGu
+         InQULxCUhA/Htr/I9EFlH59571Eb9tWGl0oxIoLsQUi6Us0+fn8DtbWjhLdcwjwXbefu
+         N1YbKcnLnjLVu/2hzK7IzWVBYxd9ZeJPpK8Q1I8wva5QeVpoT23FYi8zVR62eHCurqDx
+         zOKHGmlitXyBaRb++uoMIGeRt/Hr8IMj2FEAmTDAigSsnqUlu6iTR8i92jiPltiPlF9A
+         KqLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686676739; x=1689268739;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zQXoCRHymE4uVf1TfGvqvejrHT9Pt6FBTTGcSlMOJGs=;
+        b=JfvQLPSvp/YlYXoTqBO/r8Y1nPbkgHcIT2/GtU54+RQ3U5dGRpoh9Zku0KhqWmlglU
+         YZz1XwmOEB/6qOXmqWgalDHHWai0wlNCQlOXkOQOuPM0ZA38z1pFntcA1kt6I3w4graA
+         hRoLgT0/t6LzOTp4mueXG9cneAr8e7nJaaVnbQrLOFHLwo9FQs6eaoiUW3pkd43+J2SX
+         F5V82wWrYdkLxmiGKyqWL4UUZsi3zB3TczwnHZJJDVsMUSdQfr7jiDRQ4l9sj2Wlwdz0
+         7r60ehjo6MikFk2SfcVmUOOfjzaAjmyoQxALTr5PU8wCNaFWwe2C8iVWcgBlYdSlnrkB
+         RC8w==
+X-Gm-Message-State: AC+VfDwxRmAbyBIXB04QE3ZDOGvCVC6d8Xo+mGqZp8DrAGaeGBzgcKeS
+        Q4ENz2eSeYgk7cBWO1cRfnc=
+X-Google-Smtp-Source: ACHHUZ6PED2Qfiv8iqYhr63rnPvdEAmQXZ8Q3GbKFLDCFNJ/h15jX1pRPLPN3mbq0EKHi5VJNVm+Bg==
+X-Received: by 2002:a05:6870:35c4:b0:1a6:4920:d331 with SMTP id c4-20020a05687035c400b001a64920d331mr8083153oak.42.1686676739504;
+        Tue, 13 Jun 2023 10:18:59 -0700 (PDT)
+Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-b626-4062-16bc-09b1.res6.spectrum.com. [2603:8081:140c:1a00:b626:4062:16bc:9b1])
+        by smtp.gmail.com with ESMTPSA id b17-20020a4aba11000000b005255e556399sm4251667oop.43.2023.06.13.10.18.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jun 2023 10:18:59 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH v2 for-next] RDMA/rxe: Fixes mr access supported list
+Date:   Tue, 13 Jun 2023 12:16:55 -0500
+Message-Id: <20230613171654.19334-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS0PR12MB9058:EE_
-X-MS-Office365-Filtering-Correlation-Id: a6585c18-23f1-4b8f-9c19-08db6c2f0df7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wF1gceN4wXeoJh4tiCEttSutx09AektKHuaRlAb3E2YUO/53oBEZz+w/k+k/0hK/cCkNv/QanrN5hnsmjIJL8xG39jb4FvzymHVZWPoI1HhpHLGw13/AVMbPTyOw8gnIvLh4MYQow8NTTLNWHK2jACx9lWqU7aoMk1ZTgaYvEwkbrufacmwwOGPYDISkb4LTMbguxNB+8ogrNJghuOCz9YpbWUJu7bABNc9qkqXG0HqQ7enlqwCrYTpbh5pVIePxoqJ4VH091/OY9P6d84siRNqOQeb7lJLyEUvhCDLdbYaYZR6h2/6qMMkCQ8DEqDQvAvtkHDpKSvaykY2vOpJQNxCJ+CwVWQhTXS/0OrhoXhBL05IP9msvqMGzMxX3S9DYoP4RUSVloWdarriwLbdBjz/7JdK1IR4RXEMI1Uk+t80mNcpz4cvto5U476B6mnag9GgEbeH8I3QE2HAa7iFxFsQKmBDBVIfbOiZ3wfgYEULSqQLhVwld03/x/N10fVWmCMhBWQk7djsdzZIUgHsgDpjhBFIorC+igULHjgccGwAtKgDoM5ztSOhf16j2+csk
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(136003)(366004)(396003)(346002)(451199021)(66946007)(66556008)(6916009)(8936002)(5660300002)(4326008)(8676002)(316002)(86362001)(38100700002)(41300700001)(478600001)(66476007)(4744005)(2906002)(186003)(6486002)(6666004)(53546011)(26005)(6506007)(6512007)(2616005)(83380400001)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BbtlNhh3FMBtAOaEygIO4r28MojQCouEvNIg5py76z9P9I0xwKziGRPV7zZ9?=
- =?us-ascii?Q?l/EnXqGzvmkFaZt2b0nw/MwL9hn1Kp6i1ElfwBQHrQ0OEECogeg9Lj3rQjkN?=
- =?us-ascii?Q?uJ1feedeOOfkOvqzMIDnV+RuMMq7T3hdi3WWCwgjkTRKvAZ2o0c23hOYIzw1?=
- =?us-ascii?Q?2qlMVjoU2BQdpYNzch2e7veRxypZ/Udhxq7xtdVBJtue6o/ZL9MigksxkgfJ?=
- =?us-ascii?Q?1t2cgDoBmYJQwWLdilDc/UdCgr7Ar32XYx9FfNWEBTY5ELTFAvNNuIQwgX2C?=
- =?us-ascii?Q?aZkwJFRbuMbC6ZrtVqWKmZCWto2FOCGeiDG+1wBiwIBbOc26t1YKbARIj/VU?=
- =?us-ascii?Q?cTuOtCTd9u8lNWhx/qjcMIjnNTuUzBQ9AE8QPxUttbyubdnqFZyFBoKdINIm?=
- =?us-ascii?Q?rcWDvSjk523XSEnPhqeEuTxOas0wMpZAZBAMnPTYFzCTTS/HvHgWStrqYbfd?=
- =?us-ascii?Q?/i6YKwY8DANyoVmucAE8+R7WmE9fw1rhKVDoKlUV57ezpCgIpPukOH3NFpCf?=
- =?us-ascii?Q?Oc61lFNRN1xnHr2BLUOZ4Tldea5pzNN07dDti52BkrPUCYe3RlR8dlBD/Wwj?=
- =?us-ascii?Q?Ny/drMYa82sa1cYOsHFyvPV25FhpuM9iFqK/n/gJGOhIS+Y11xAh4rWvJFF+?=
- =?us-ascii?Q?lpmXOlJIYinoXviQt///OVrAX4O+W/LQJqWtRutU/QKgqvaSq1iSDVfX56Wd?=
- =?us-ascii?Q?psmWrvE1JBQxUaupIU41gk72WvexakidYTfp48JcQv+Q0y6QUruWXH2wBniS?=
- =?us-ascii?Q?+BVQ391EkKgvgkrPPh1ukyQqcVJqMB2jAulkW14v0I7DiXhxrGqBy0Cw1H8G?=
- =?us-ascii?Q?bsXL837IJotTLPUXlgdclKVxg7aP5cgFwCdkRKrSMkZe3vdkP+UY66/6PZJF?=
- =?us-ascii?Q?IGMigy1cDAMMwnL+iHqcQUHPLlc5t3/ZoAkuum18Uen3Nhwkfiwj7wWZklnU?=
- =?us-ascii?Q?YP/BDdEOUeVcptJUsI6ODVespE1eNji90ZxcCGVRnCyS03RBjGPqPP/NdWNO?=
- =?us-ascii?Q?B0ZdLRXs8NfRn1Q6Vhjc8Q6C2KhQKH3y7PJ5zYB2HyTXfQA/SJ79eLKskrN4?=
- =?us-ascii?Q?l/ZZgdfuUzyMQtILHsLqqXn98dBgx+sBeo7Swi8oQO48nJtztBwAYdyvFhoo?=
- =?us-ascii?Q?sEpc+c/prryjYwg/vpgXjIkY43zsbmr9YtdNLqBbCesGL+yjhFEZzVIS8YUJ?=
- =?us-ascii?Q?iZH5GjwfJm3BUkXn9n1yEKS+WxYnWAJm917Kl2suq3Dh6lJp4Jvb+RY3D+nE?=
- =?us-ascii?Q?mtb8I0/i2ZTox7zntD7lzJObZNhALokGCTzGqVFCJLN8EQ2V9Wq4wvxgYfJb?=
- =?us-ascii?Q?ddFlnXKyM3wBgDeQ6YTO9U+Oz49vVNckpFZOCyxtQDdtMQwSgpgVprsztqWb?=
- =?us-ascii?Q?5Mp/bZyiDPkPEN1xv6K2G9rKBkVGYv1p7DAX2QadEieByABHMhwxC5+cOtPM?=
- =?us-ascii?Q?YpI3W97s1sMLZ6ZyC3n6TAkXZOkYxTf7v+eKquVu86cFuLE37/ZUMXQcv2/6?=
- =?us-ascii?Q?IokhUjfTMRnhZPa+/5ZwqnFSn59VCbhOTqKLe8zS1EsoNyVlChbPk05RHFsc?=
- =?us-ascii?Q?9+3wZIf66ckl9BDL2otXr59FinhZLq3CGuKoZBo5?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6585c18-23f1-4b8f-9c19-08db6c2f0df7
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jun 2023 16:55:55.7674
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0Zq1CpKVEFlApawWQvcemi6xoTnqTWrqiFK+W4ogXRBn1dFL6nMWaBrE2BVbWT2o
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9058
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 13, 2023 at 11:54:46AM -0500, Bob Pearson wrote:
-> On 6/13/23 11:52, Jason Gunthorpe wrote:
-> > On Tue, Jun 13, 2023 at 11:26:55AM -0500, Bob Pearson wrote:
-> >> Jason,
-> >>
-> >> Recently the code in rxe_reg_user_mr was changed to check if the driver supported the
-> >> access flags. Since the rxe driver does nothing about relaxed ordering. I assumed that the
-> >> driver didn't support that option but it turns out that this breaks the perf tests which
-> >> request relaxed ordering by default.
-> > 
-> > Sounds like rxe is checking the flags wrong, there is a set of
-> > optional access flags that should be ignored by the driver.
-> > 
-> > Jason
-> 
-> OK. That's easy. I'm just embarrassed I broke ib_send_bw.
-> So mask off the optional ones and check the rest?
+A recent patch incorrectly did not include IB_ACCESS_RELAXED_ORDERING
+in the list of supported access flags for the rxe driver. The driver
+actually does nothing related to relaxed ordering but it causes no
+problems to include it as supported but with no effect. This change
+caused ib_send_bw and friends to not run correctly.
 
-Yes, there is a constant for it too
+The correct approach is for the driver to allow any of the optional
+access flags and otherwise ignore them. This patch adds
+IB_ACCESS_OPTIONAL to the list of rxe supported flags.
 
-Jason
+Link: https://lore.kernel.org/linux-rdma/ZIifmHzwnvn3YVbI@nvidia.com/raw
+Fixes: 02ed253770fb ("RDMA/rxe: Introduce rxe access supported flags")
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+v2: Changed the target to for-next since the error is not currently in
+    for-rc. Replaced IB_ACCESS_RELAXED_ORDERING by IB_ACCESS_OPTIONAL
+    per a suggestion by Jason Gunthorpe.
+---
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index cb18b83b73c1..ccb9d19ffe8a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -262,7 +262,8 @@ enum {
+ 				| IB_ACCESS_MW_BIND
+ 				| IB_ACCESS_ON_DEMAND
+ 				| IB_ACCESS_FLUSH_GLOBAL
+-				| IB_ACCESS_FLUSH_PERSISTENT,
++				| IB_ACCESS_FLUSH_PERSISTENT
++				| IB_ACCESS_OPTIONAL,
+ 	RXE_ACCESS_SUPPORTED_QP	= RXE_ACCESS_SUPPORTED_MR,
+ 	RXE_ACCESS_SUPPORTED_MW	= RXE_ACCESS_SUPPORTED_MR
+ 				| IB_ZERO_BASED,
+
+base-commit: 830f93f47068b1632cc127871fbf27e918efdf46
+-- 
+2.39.2
+
