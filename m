@@ -2,85 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 553E872E87B
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 18:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92A172E89D
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jun 2023 18:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbjFMQ1A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Jun 2023 12:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
+        id S232056AbjFMQiG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Jun 2023 12:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbjFMQ07 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 12:26:59 -0400
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F018AA1
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 09:26:58 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-19f9f11ba3dso3814902fac.2
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jun 2023 09:26:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686673617; x=1689265617;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zz+FUsawQCBxfOxaj3sS3P4x+I0BIHidbAG/Hr/y+Ag=;
-        b=Dqircumr5L/bg2ms3A+CsL01UmhZx6BLCl/M5er/0Ep+tbzB/uew7B4fx5qYmYerqa
-         x6OYVyyLepjfDrksKto3Hg7s6TUYvvQmYA1710Nkq8e2bl5tglALeIO2fnEPNu4TLWPx
-         Ke31vvEHGuK1BM8WHi0eTOLv9jgRyI5bKXJUdSFdH11JanX56oZBW0UTK9XbY8QCUGIc
-         uePbBIG8Tgg/cCDD+1vnE0SgEk3SrHX3PaaqBElG8tDsfAYgNV+T3tFbSrn/wp4NlzUh
-         xIBTcyUT6lihL3GhNd69BgB4vtGqFFccbDc0IzFKUNLbEgC51oEl/r/pFoY80mUzk2Gj
-         Av9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686673617; x=1689265617;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zz+FUsawQCBxfOxaj3sS3P4x+I0BIHidbAG/Hr/y+Ag=;
-        b=X3jyZX6XWY/Mws0XJV4G0IEk/kcb66TYKFmqzIIT85m3OqxhigA1n7chiDGr8gplTw
-         sbp2Aq548MPnbh8qciqDwObQTPsxfeQmHKPstfPJwwzway8OlM9MKo4v/Q65qf1Sq9I1
-         9MGCipzk3mfPX61TRCDLt+3VV+WJWahAeky2s7KW6WVnLt274QYJwr9Z2kmVkrlnS1d7
-         PbibOM+63mSxl2sBJT6563+JtbGjLcYCl1SHfcxjW4dbj5ZxQLLdNnut5H+4EVA8X+hr
-         u7i8NCJMuStpf9xOa+pmnoAtMpvY/XBskRN0Yqf3yaUGCkap+rXn2iIP6ygohsk8yfnw
-         rBcA==
-X-Gm-Message-State: AC+VfDwYC60Y8AdY2KNZcQx5QabR8pZyGImc5a0D4XtLY/te0DwbcGCq
-        X1dWaimN8WyR6k9cN1qd+II5uuvpTTk=
-X-Google-Smtp-Source: ACHHUZ6f8HnmZ4Bv0dIFE0Y2rseAUOM0msrn3/UAykBXMaLFvaF5pfIlui8m/0A1kFxK5X/1fIOwtg==
-X-Received: by 2002:a05:6870:1aa9:b0:1a2:f7ca:61af with SMTP id ef41-20020a0568701aa900b001a2f7ca61afmr7580812oab.2.1686673617099;
-        Tue, 13 Jun 2023 09:26:57 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:b626:4062:16bc:9b1? (2603-8081-140c-1a00-b626-4062-16bc-09b1.res6.spectrum.com. [2603:8081:140c:1a00:b626:4062:16bc:9b1])
-        by smtp.gmail.com with ESMTPSA id oi10-20020a0568702e0a00b0019e4fe93d72sm7408646oab.42.2023.06.13.09.26.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jun 2023 09:26:56 -0700 (PDT)
-Message-ID: <80328b20-9c5d-afe8-0ff4-a7eb05c8fb4f@gmail.com>
-Date:   Tue, 13 Jun 2023 11:26:55 -0500
+        with ESMTP id S229552AbjFMQiG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Jun 2023 12:38:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275C11989;
+        Tue, 13 Jun 2023 09:38:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ACE9963860;
+        Tue, 13 Jun 2023 16:38:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04ABDC433D9;
+        Tue, 13 Jun 2023 16:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686674284;
+        bh=bma3arsPpRb//8pgoNM3rtYZA2qY8vvDp0ehgi/2gxk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m02aDZlxwJWg1TkGHhSEydUAGQyDn4VxaaFu+EAhFrOxQMpNTldfJGa9j8xIBoG3+
+         dxsatRKFdTMSBGr5VzPwoFEcxZ3BSi6jf5hud+okZsVHlU4ppKQrtlHqhW01LP4Fsm
+         EPXKjnT/ftGpTf2OYAolq6OVhZY/CIgv7+xZ1W3PofzoctoQR+xbCs7QTaodX8F2Zr
+         We9aC2q6rKEWOG3svpB2gaZmG3164+4RsciO/5PyySG+bDzw/oJJsB/wZrCEb+5K8n
+         hKOX0x1y0Gy9452eBu2wfBOD3Eu3zkyv9YESl18ZnxR2IgRY/PH6xC2TOsfSb6tm1D
+         X9ZdgJgd/PDyw==
+Date:   Tue, 13 Jun 2023 09:38:01 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        vadfed@meta.com, jonathan.lemon@gmail.com, pabeni@redhat.com,
+        corbet@lwn.net, davem@davemloft.net, edumazet@google.com,
+        vadfed@fb.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
+        richardcochran@gmail.com, sj@kernel.org, javierm@redhat.com,
+        ricardo.canuelo@collabora.com, mst@redhat.com, tzimmermann@suse.de,
+        michal.michalik@intel.com, gregkh@linuxfoundation.org,
+        jacek.lawrynowicz@linux.intel.com, airlied@redhat.com,
+        ogabbay@kernel.org, arnd@arndb.de, nipun.gupta@amd.com,
+        axboe@kernel.dk, linux@zary.sk, masahiroy@kernel.org,
+        benjamin.tissoires@redhat.com, geert+renesas@glider.be,
+        milena.olech@intel.com, kuniyu@amazon.com, liuhangbin@gmail.com,
+        hkallweit1@gmail.com, andy.ren@getcruise.com, razor@blackwall.org,
+        idosch@nvidia.com, lucien.xin@gmail.com, nicolas.dichtel@6wind.com,
+        phil@nwl.cc, claudiajkang@gmail.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, poros@redhat.com,
+        mschmidt@redhat.com, linux-clk@vger.kernel.org,
+        vadim.fedorenko@linux.dev
+Subject: Re: [RFC PATCH v8 01/10] dpll: documentation on DPLL subsystem
+ interface
+Message-ID: <20230613093801.735cd341@kernel.org>
+In-Reply-To: <ZIg8/0UJB9Lbyx2D@nanopsycho>
+References: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
+        <20230609121853.3607724-2-arkadiusz.kubalewski@intel.com>
+        <20230612154329.7bd2d52f@kernel.org>
+        <ZIg8/0UJB9Lbyx2D@nanopsycho>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Subject: Bug report in reg_user_mr in exe
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Jason,
+On Tue, 13 Jun 2023 11:55:11 +0200 Jiri Pirko wrote:
+> >> +``'pin': [{
+> >> + {'clock-id': 282574471561216,
+> >> +  'module-name': 'ice',
+> >> +  'pin-dpll-caps': 4,
+> >> +  'pin-id': 13,
+> >> +  'pin-parent': [{'pin-id': 2, 'pin-state': 'connected'},
+> >> +                 {'pin-id': 3, 'pin-state': 'disconnected'},
+> >> +                 {'id': 0, 'pin-direction': 'input'},
+> >> +                 {'id': 1, 'pin-direction': 'input'}],
+> >> +  'pin-type': 'synce-eth-port'}
+> >> +}]``  
+> >
+> >It seems like pin-parent is overloaded, can we split it into two
+> >different nests?  
+> 
+> Yeah, we had it as two and converged to this one. The thing is, the rest
+> of the attrs are the same for both parent pin and parent device. I link
+> it this way a bit better. No strong feeling.
 
-Recently the code in rxe_reg_user_mr was changed to check if the driver supported the
-access flags. Since the rxe driver does nothing about relaxed ordering. I assumed that the
-driver didn't support that option but it turns out that this breaks the perf tests which
-request relaxed ordering by default.
+Do you mean the same attribute enum / "space" / "set"?
+In the example above the attributes present don't seem to overlap.
+For user space its an extra if to sift thru the objects under
+pin-parent.
 
-It looks like the correct fix for this is to go ahead and claim support for relaxed ordering
-but it will be a no-op.
+> >Also sounds like setting pin attrs and pin-parent attrs should be
+> >different commands.  
+> 
+> Could be, but what't the benefit? Also, you are not configuring
+> pin-parent. You are configuring pin:pin-parent tuple. Basically the pin
+> configuration as a child. So this is mainly config of the pin itsest
+> Therefore does not really make sense to me to split to two comments.
 
-Thoughts?
-
-Bob
+Clarity of the API. If muxing everything thru few calls was the goal
+we should also have very few members in struct dpll_pin_ops, and we
+don't.
