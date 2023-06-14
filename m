@@ -2,113 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2C172F35F
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jun 2023 06:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2637F72F58B
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jun 2023 09:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233905AbjFNEJM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Jun 2023 00:09:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59200 "EHLO
+        id S242895AbjFNHJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Jun 2023 03:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbjFNEJL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 00:09:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4E411C;
-        Tue, 13 Jun 2023 21:09:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 951066148B;
-        Wed, 14 Jun 2023 04:09:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5949EC433C0;
-        Wed, 14 Jun 2023 04:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686715748;
-        bh=yG/U6Ks90Qon8HXe90awol5NmPipuQ3/JKA84Zfu4H0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JLbww1UgJFhNhtyf61pVhxIVSrQeRbUIf9/7kpp52qvXgx32Pdt6fIw+r50fQaBpk
-         qKct6FT70tTLinUmhBUHHrBZ3oGdGwTH6ogG3GdOfLgIJTH6VLgNgMaWxtWNsaTAU+
-         RSItd1IHG+1vZnfzyw5qhFZ0/CbRgI8Ilkg9etJK6uhnaEImSsiA/v9JD7WqC8gIGB
-         uZ71u5AnOIVBVrKCIO4rQjIMF2qyNULT6THlLLrwfLURMwQjKWKI4IhVBoOZM/EgzE
-         oCa7EsW2oVk9cYHIEKLItONBFMu2fO6Q5u+tHQ1D/IYDAM0lGLgMA5NoznP3tNVYQQ
-         ZyKNUE64NIp9Q==
-Date:   Tue, 13 Jun 2023 21:09:06 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next v4 1/5] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-Message-ID: <20230613210906.42ea393e@kernel.org>
-In-Reply-To: <20230612130256.4572-2-linyunsheng@huawei.com>
-References: <20230612130256.4572-1-linyunsheng@huawei.com>
-        <20230612130256.4572-2-linyunsheng@huawei.com>
+        with ESMTP id S243206AbjFNHJM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 03:09:12 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E43A1BD3;
+        Wed, 14 Jun 2023 00:09:08 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-977cf86aae5so52808966b.0;
+        Wed, 14 Jun 2023 00:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686726547; x=1689318547;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JQ68G2T9sQKjPb+2pkANGWg3W2HeuEanoLaoohVC2mo=;
+        b=K/CUsWp6tf8rMVWWwmL2Rxpb5lnD4znSw3ZLjYsCEf5ztUVzahW5PKWq2sexwsUbx6
+         rbBAFfB5M1PYwDVjrSfWc5WaJFUGQQmUQZlcxpHPaUr7NfLQ8OB7U4U3B90VngDBTI7+
+         WpXMf9UP76VxMmfJ1Yxxja9co+NEbVrLRSQruaAM6rWen8rNcXoeOciju5Qcq3UnAtTX
+         AwxqHGVlRrhImBZ76j+vrHT18VAFUvt8bFTkwn2MwnFvYcdwLVq1LDxLK8veP/ATwFC9
+         QyK3H1QBMQMhqQpEFOXkTG6Q0w/gUeVDFilLRtLn2m2KklC69VyFHlXCPuQWdnk9L+xn
+         79dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686726547; x=1689318547;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JQ68G2T9sQKjPb+2pkANGWg3W2HeuEanoLaoohVC2mo=;
+        b=baEn5B4/erawvorsyaifWTB0ok3azepMqTKGGmMP/H/b9VKSt9ga+EA+pPa1C2QDD0
+         kW8uk4x2HSm5GeKVPbrDFhTKE1Xgzi1Mi7mFkFSbSixulUlWbmJMrd1H0Bl2vCdfqMgF
+         WRIA7KkNovvYe7OKj4VbOe2qsD6gpKrbuBVOxmdJWE/Ky98J5dJPOuVVSAYz0cfEZ2/E
+         gCAHYG25qG9x2Fh3lu4J1eEqGzAR+x/ooVl/Q7vz1/MsfV9ZZLdfvRa8w7/kib+eqyGD
+         6Wx7HV4QMqIvc7WFw2HZYZYOG0kITizqmX0WKognWzxHl3HYt1mV5bdxJ6E2EHUA5Pm2
+         eQwg==
+X-Gm-Message-State: AC+VfDzoozGs4y/+e0yLv8MRPnpZhsfzioz80/ixkoq254LGzemrnnib
+        lXGmbBO3+TTRYqw45gldKDc=
+X-Google-Smtp-Source: ACHHUZ75lXtTVkbsy75zZgLVfmZqSpIPIV68GNPDB1JimL+QNuFasY8bcAhE87hFZNwdR2nGRQpNjw==
+X-Received: by 2002:a17:907:168a:b0:982:3bae:afda with SMTP id hc10-20020a170907168a00b009823baeafdamr4073647ejc.45.1686726546545;
+        Wed, 14 Jun 2023 00:09:06 -0700 (PDT)
+Received: from localhost ([185.220.101.84])
+        by smtp.gmail.com with ESMTPSA id rh15-20020a17090720ef00b00977d7bd9069sm7711888ejb.179.2023.06.14.00.09.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jun 2023 00:09:05 -0700 (PDT)
+Date:   Wed, 14 Jun 2023 10:09:02 +0300
+From:   Maxim Mikityanskiy <maxtram95@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+        pabeni@redhat.com, j.vosburgh@gmail.com, andy@greyhouse.net,
+        rajur@chelsio.com, ayush.sawal@chelsio.com, dmichail@fungible.com,
+        borisp@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+        simon.horman@corigine.com, john.fastabend@gmail.com,
+        anirudh.venkataramanan@intel.com, tariqt@nvidia.com,
+        gal@nvidia.com, raeds@nvidia.com, liorna@nvidia.com,
+        louis.peens@corigine.com, yinjun.zhang@corigine.com,
+        na.wang@corigine.com, linux-rdma@vger.kernel.org,
+        oss-drivers@corigine.com
+Subject: Re: [PATCH net-next] net: tls: make the offload check helper take
+ skb not socket
+Message-ID: <ZIlng6G_xP3V8O5E@mail.gmail.com>
+References: <20230613205006.1995873-1-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230613205006.1995873-1-kuba@kernel.org>
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 12 Jun 2023 21:02:52 +0800 Yunsheng Lin wrote:
-> Currently page_pool_alloc_frag() is not supported in 32-bit
-> arch with 64-bit DMA, which seems to be quite common, see
-> [1], which means driver may need to handle it when using
-> page_pool_alloc_frag() API.
+On Tue, 13 Jun 2023 at 13:50:06 -0700, Jakub Kicinski wrote:
+> All callers of tls_is_sk_tx_device_offloaded() currently do
+> an equivalent of:
 > 
-> In order to simplify the driver's work for supporting page
-> frag, this patch allows page_pool_alloc_frag() to call
-> page_pool_alloc_pages() to return a big page frag without
-
-it returns an entire (potentially compound) page, not a frag.
-AFAICT
-
-> page splitting because of overlap issue between pp_frag_count
-> and dma_addr_upper in 'struct page' for those arches.
-
-These two lines seem to belong in the first paragraph,
-
-> As page_pool_create() with PP_FLAG_PAGE_FRAG is supported in
-
-"is" -> "will now be"
-
-> 32-bit arch with 64-bit DMA now, mlx5 calls page_pool_create()
-> with PP_FLAG_PAGE_FRAG and manipulate the page->pp_frag_count
-> directly using the page_pool_defrag_page(), so add a checking
-> for it to aoivd writing to page->pp_frag_count that may not
-> exist in some arch.
-
-This paragraph needs some proof reading :(
-
-> Note that it may aggravate truesize underestimate problem for
-> skb as there is no page splitting for those pages, if driver
-> need a accuate truesize, it may calculate that according to
-
-accurate
-
-> frag size, page order and PAGE_POOL_DMA_USE_PP_FRAG_COUNT
-> being true or not. And we may provide a helper for that if it
-> turns out to be helpful.
+>  if (skb->sk && tls_is_skb_tx_device_offloaded(skb->sk))
 > 
-> 1. https://lore.kernel.org/all/20211117075652.58299-1-linyunsheng@huawei.com/
+> Have the helper accept skb and do the skb->sk check locally.
+> Two drivers have local static inlines with similar wrappers
+> already.
+> 
+> While at it change the ifdef condition to TLS_DEVICE.
+> Only TLS_DEVICE selects SOCK_VALIDATE_XMIT, so the two are
+> equivalent. This makes removing the duplicated IS_ENABLED()
+> check in funeth more obviously correct.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-> +		/* Return error here to avoid writing to page->pp_frag_count in
-> +		 * mlx5e_page_release_fragmented() for page->pp_frag_count is
+Acked-by: Maxim Mikityanskiy <maxtram95@gmail.com>
 
-I don't see any direct access to pp_frag_count anywhere outside of
-page_pool.h in net-next. PAGE_POOL_DMA_USE_PP_FRAG_COUNT sounds like 
-an internal flag, drivers shouldn't be looking at it, IMO.
+Nice cleanup, thanks!
+
+[...]
+
+> diff --git a/include/net/tls.h b/include/net/tls.h
+> index b7d0f1e3058b..5e71dd3df8ca 100644
+> --- a/include/net/tls.h
+> +++ b/include/net/tls.h
+> @@ -370,10 +370,12 @@ struct sk_buff *
+>  tls_validate_xmit_skb_sw(struct sock *sk, struct net_device *dev,
+>  			 struct sk_buff *skb);
+>  
+> -static inline bool tls_is_sk_tx_device_offloaded(struct sock *sk)
+> +static inline bool tls_is_skb_tx_device_offloaded(const struct sk_buff *skb)
+>  {
+> -#ifdef CONFIG_SOCK_VALIDATE_XMIT
+> -	return sk_fullsock(sk) &&
+> +#ifdef CONFIG_TLS_DEVICE
+> +	struct sock *sk = skb->sk;
+> +
+> +	return sk && sk_fullsock(sk) &&
+>  	       (smp_load_acquire(&sk->sk_validate_xmit_skb) ==
+>  	       &tls_validate_xmit_skb);
+>  #else
+
+After this change, the only usage of CONFIG_SOCK_VALIDATE_XMIT remains
+in sk_validate_xmit_skb, which has #ifdef CONFIG_TLS_DEVICE inside
+#ifdef CONFIG_SOCK_VALIDATE_XMIT. If feels a little bit weird, given
+that both defines always have the same value, but maybe it's OK if we
+consider that more users can start using sk_validate_xmit_skb in the
+future.
