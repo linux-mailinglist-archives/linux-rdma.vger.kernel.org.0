@@ -2,86 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2637F72F58B
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jun 2023 09:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6225A72F689
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jun 2023 09:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242895AbjFNHJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Jun 2023 03:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
+        id S243423AbjFNHjG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Jun 2023 03:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243206AbjFNHJM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 03:09:12 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E43A1BD3;
-        Wed, 14 Jun 2023 00:09:08 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-977cf86aae5so52808966b.0;
-        Wed, 14 Jun 2023 00:09:08 -0700 (PDT)
+        with ESMTP id S243494AbjFNHi4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 03:38:56 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2103.outbound.protection.outlook.com [40.107.223.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB1C2103;
+        Wed, 14 Jun 2023 00:38:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GoW8uy8YZdzRR317dsuL0NGYsSBI5gFjqx0QTkNtXggZbaMPT56ZfokEtI4oISVmkrYcPWiU6IpBNYmZ3eaVobhcNEwSJ7yV7t5AYCAQ9oTeYrRFNdYBI/i+CM4JKVSXbbBcd3eVnX5v7l3mpIRP277LzV4JuZShmIPEUD8xYpbvGlOkOQdvgVA+EUBxUX9xhtg4V+5+hhutHl6ZlLMblmVVdliIHPSyKtBLqfiUT+B019GQ2545NFaX51+XCwObbf/DOhOEkWFLhRNjIGQ5PJORwLNMg6SZCaaegCQMzx0lGaDwYUzBI6kmJoGnZ2OLYqlIYmBQ8zxY4XKJeop0sQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=I0D2wYvImE2pR0ifp1wxMzHJhS3b3oQX4FETIejTeLM=;
+ b=gNm7Uin7dCFx7jG59HwBFyI4fYWAozMOHm1U8tHnUvLSrPvPHzT7YD3yQhiS1KfEF1/DZAm9er1VHp69Yfe8kknO5uIcYJWrJY5RvGNOS+6XHxhA4+wyPi6XUjkCGHa6cpSEqySBpUv/7iAg1nq77qhzq4Dn/9paOlvYNn1cPhRHPifgZHWBEBwUaLJ843OjJNneSHwmB3tyvueKfp7QC+R9PAjehJOhzNxCge5uzb2lfmc7utPQ9siefgHkii2snlxghE/y27SGC6B+RrySKOGXhnYuMKMhZLaiv826RxqkweFkY5lQ44rieSP2MD8HxQ8F0AuL0A9ESP2df0WzFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686726547; x=1689318547;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JQ68G2T9sQKjPb+2pkANGWg3W2HeuEanoLaoohVC2mo=;
-        b=K/CUsWp6tf8rMVWWwmL2Rxpb5lnD4znSw3ZLjYsCEf5ztUVzahW5PKWq2sexwsUbx6
-         rbBAFfB5M1PYwDVjrSfWc5WaJFUGQQmUQZlcxpHPaUr7NfLQ8OB7U4U3B90VngDBTI7+
-         WpXMf9UP76VxMmfJ1Yxxja9co+NEbVrLRSQruaAM6rWen8rNcXoeOciju5Qcq3UnAtTX
-         AwxqHGVlRrhImBZ76j+vrHT18VAFUvt8bFTkwn2MwnFvYcdwLVq1LDxLK8veP/ATwFC9
-         QyK3H1QBMQMhqQpEFOXkTG6Q0w/gUeVDFilLRtLn2m2KklC69VyFHlXCPuQWdnk9L+xn
-         79dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686726547; x=1689318547;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JQ68G2T9sQKjPb+2pkANGWg3W2HeuEanoLaoohVC2mo=;
-        b=baEn5B4/erawvorsyaifWTB0ok3azepMqTKGGmMP/H/b9VKSt9ga+EA+pPa1C2QDD0
-         kW8uk4x2HSm5GeKVPbrDFhTKE1Xgzi1Mi7mFkFSbSixulUlWbmJMrd1H0Bl2vCdfqMgF
-         WRIA7KkNovvYe7OKj4VbOe2qsD6gpKrbuBVOxmdJWE/Ky98J5dJPOuVVSAYz0cfEZ2/E
-         gCAHYG25qG9x2Fh3lu4J1eEqGzAR+x/ooVl/Q7vz1/MsfV9ZZLdfvRa8w7/kib+eqyGD
-         6Wx7HV4QMqIvc7WFw2HZYZYOG0kITizqmX0WKognWzxHl3HYt1mV5bdxJ6E2EHUA5Pm2
-         eQwg==
-X-Gm-Message-State: AC+VfDzoozGs4y/+e0yLv8MRPnpZhsfzioz80/ixkoq254LGzemrnnib
-        lXGmbBO3+TTRYqw45gldKDc=
-X-Google-Smtp-Source: ACHHUZ75lXtTVkbsy75zZgLVfmZqSpIPIV68GNPDB1JimL+QNuFasY8bcAhE87hFZNwdR2nGRQpNjw==
-X-Received: by 2002:a17:907:168a:b0:982:3bae:afda with SMTP id hc10-20020a170907168a00b009823baeafdamr4073647ejc.45.1686726546545;
-        Wed, 14 Jun 2023 00:09:06 -0700 (PDT)
-Received: from localhost ([185.220.101.84])
-        by smtp.gmail.com with ESMTPSA id rh15-20020a17090720ef00b00977d7bd9069sm7711888ejb.179.2023.06.14.00.09.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jun 2023 00:09:05 -0700 (PDT)
-Date:   Wed, 14 Jun 2023 10:09:02 +0300
-From:   Maxim Mikityanskiy <maxtram95@gmail.com>
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=I0D2wYvImE2pR0ifp1wxMzHJhS3b3oQX4FETIejTeLM=;
+ b=IsDq9amVKpGCHoNXPQ7oifCY5DT+ZxkItTjrw8wVfHIZ0IwnMX9++AxCCFc9UMxPvATfRIRAXgNY/3G1oobP/yrfTeZAL39j/66TwVbqYd8NNyNoI7FowtqZV7DaleIVOWVajLQ1IBymbqYcAW81CJ91c4oNLtAOjPk+F2cPB5I=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by BY3PR13MB4804.namprd13.prod.outlook.com (2603:10b6:a03:355::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.37; Wed, 14 Jun
+ 2023 07:38:39 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e%4]) with mapi id 15.20.6477.028; Wed, 14 Jun 2023
+ 07:38:39 +0000
+Date:   Wed, 14 Jun 2023 09:38:30 +0200
+From:   Simon Horman <simon.horman@corigine.com>
 To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
         pabeni@redhat.com, j.vosburgh@gmail.com, andy@greyhouse.net,
         rajur@chelsio.com, ayush.sawal@chelsio.com, dmichail@fungible.com,
         borisp@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
-        simon.horman@corigine.com, john.fastabend@gmail.com,
-        anirudh.venkataramanan@intel.com, tariqt@nvidia.com,
-        gal@nvidia.com, raeds@nvidia.com, liorna@nvidia.com,
-        louis.peens@corigine.com, yinjun.zhang@corigine.com,
-        na.wang@corigine.com, linux-rdma@vger.kernel.org,
-        oss-drivers@corigine.com
+        john.fastabend@gmail.com, anirudh.venkataramanan@intel.com,
+        maxtram95@gmail.com, tariqt@nvidia.com, gal@nvidia.com,
+        raeds@nvidia.com, liorna@nvidia.com, louis.peens@corigine.com,
+        yinjun.zhang@corigine.com, na.wang@corigine.com,
+        linux-rdma@vger.kernel.org, oss-drivers@corigine.com
 Subject: Re: [PATCH net-next] net: tls: make the offload check helper take
  skb not socket
-Message-ID: <ZIlng6G_xP3V8O5E@mail.gmail.com>
+Message-ID: <ZIludj9blHkIovR3@corigine.com>
 References: <20230613205006.1995873-1-kuba@kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20230613205006.1995873-1-kuba@kernel.org>
-X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+X-ClientProxiedBy: AM0PR02CA0135.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28c::32) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|BY3PR13MB4804:EE_
+X-MS-Office365-Filtering-Correlation-Id: bf0cee9d-e159-4eff-e04c-08db6caa5ea2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /n2NBAAzLBlo/XwbMcb+xeOMPown9lHvvlI/ePe7js4KZwMF3CsTu7tj/ydsUQWCY8qvnWfZIaze+gQxe6w8Yu3Is2aMSX9NedH9JI4WCabWoegW8VQI7K5UN7SyX80huGV/wZqqxUHoj3IyAtMc6oWJKvh0hqNlKa0rF4bK/LNdbaLsstza7mMxNfVO5jXSiz4W2XlO11dj4FdqjV5irXrYfM5gCiCYht02+akH2OMa4b53EdkpNd47YZ+3iX2O7O9jGrMcwySRB8Z8BbOarMOajAXni4TXdrPHC7tNpjcGx0WnFHpAR/iepsOPOQX/dMnPK9WzHdUjDKe16AOuOm6DXLsdgxiftY1NbBAWvQEnzwD/bO3oLW1JeliOa0sZdU+QLZptV0AJzksmdtpMHrJFA1x3wsX9H0+2wY/2pOpLCvH9TE52Kei0mf201LHmaJsV+41JsaW4d7bb739kMeNMTJyiOG5NtcEclvzBckAm7PpSo4Bqocfhu9ACB3juRi4zkjZ9GWSdtX6FqXCgPFkpM3G3enM8z/yGMAEWILbxfFXVmz0mySvpb9BNclNaP45/AMVKCTWWw9VNdpmedfRgN64jTfKIPIcHY9wpMH8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39840400004)(136003)(376002)(396003)(346002)(451199021)(83380400001)(5660300002)(186003)(6506007)(44832011)(2906002)(2616005)(7416002)(107886003)(41300700001)(6512007)(8936002)(8676002)(6486002)(316002)(6666004)(36756003)(478600001)(38100700002)(86362001)(4326008)(66556008)(66476007)(66946007)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?N23XB9fB5OM0wxNB8QYMx5XEANWs8X/aiwvAHtuahPd2Pt9jK8E1zwKTGHTM?=
+ =?us-ascii?Q?ogx7vVXzmvQJHLnLT3hTyLeQ/Vew61UsgsoVFxwmyqnynea/NocORM09zMPV?=
+ =?us-ascii?Q?DakbVHcH3tvEAzPPZ/gj9PFP+YWtdxviExkc1yoPXh2lr2jM2e7RGI/YHeeU?=
+ =?us-ascii?Q?AuAdVwoYhpPu+C7eqztLDVatUO1WKHW+BeGCjsiqeR3WpOCYnNRJnqP9ab7g?=
+ =?us-ascii?Q?8BXV7B0yCBD3aWGGo9JowIzJne/5ovusocUuBgk6Gbpa747cNSkZVxJSh2FK?=
+ =?us-ascii?Q?gd/dQ+E9ZI8ZSqva7RfG06D6WRjwA5Oj0kEpUxj3tHUd5ToCYb1bpPDTLlUc?=
+ =?us-ascii?Q?PGxDscUrrE5nyNYTJOg6/A1+xrfYnY1m5/3lTxX+kTyugdf2P6D6leA5TciZ?=
+ =?us-ascii?Q?TeGWSv069rhdUMvmk/5C2IoJ/HMVieQbaH24a+8LIz6vsX+oYsvRy3IToK12?=
+ =?us-ascii?Q?7EP16DSL4U+h6XtP5NBb6XWQW8CgLep+n+ikZKzmkqW2U5Xt7nEPvLyHvRoD?=
+ =?us-ascii?Q?jiVzH5zMd+wE2FqciOmwH0H/iWDS1Gi9KvxSUOgwShO5GiWOhQZZGvjbpnvC?=
+ =?us-ascii?Q?ytFbRBC5LIOUKP5ktwzrZ++I76bAJpE6tmCC2WLIfuo+5rOOzJo65/vShVmp?=
+ =?us-ascii?Q?qYgy6JNhGD0IrjhIpU7wP9MY5JBW7OgEwpZykVuOFgtUXOyhgmgB5/etLs6a?=
+ =?us-ascii?Q?V1/uSMXYY1FORdu9Qm87MJKg9XW/oNhtpjbjGdTmuRLwpGc4O8wwh7/mUt2G?=
+ =?us-ascii?Q?z8YjmYBekiR3SyLGqRDY32xT5wtdkPISnzhpz6FXZAjQi3U+xJtHY1XZ2sv9?=
+ =?us-ascii?Q?NihZmOBDQuLSOIbNPyXyVhqVzv4/pkM4RpWtMEQ/z7Don4Ft1qE/xXaBdlG1?=
+ =?us-ascii?Q?meALP0WWaxQmR7ilaT1cp49Pm26aFNdKpHXS6k8Ycb5iaSIISRd/JOSsajvP?=
+ =?us-ascii?Q?5b6MYMmxab89+dmJR8hMxqNhQceDECPxjKCIe34/6T9H3JLV8d/H1bMxUAg9?=
+ =?us-ascii?Q?g9va9xCjm2HywOvXlnxpXevWGoRiVwSCpIw5TbD7UlvXrvHW7Jw/jmIeCt3j?=
+ =?us-ascii?Q?fNgF7vv+S6ctj64uLbu3A/tp24ZqJ3rGkfjEvCDG0OHEE6teJHBepBUuIVHC?=
+ =?us-ascii?Q?vN2tEeZeeGZJWqRAbaJ059ntym4WVkNuP3oyoxc+WENohIBynhpN0CF2td02?=
+ =?us-ascii?Q?IQVspNzI8/WDo1oIkCaienD9XVi+8jP+yQhRNfqBczAUe3NF4r8zOwSb76mX?=
+ =?us-ascii?Q?MKOhtsEci9DWglQLzvjFY1xzl73gXr9QnY0p7w/zMtx0eTu0nbd7nE2HdNoJ?=
+ =?us-ascii?Q?csu8oybKdvN5hc2vYUcV4eV3BYlS99jgLtbS4b4PQ2q/GmJOxBID81qk0znG?=
+ =?us-ascii?Q?AWddmFqrPkr9BzH58V0SoFa71i8mmTV8SG+9tyClYqrRSjbhnT5tV2GYn4Nn?=
+ =?us-ascii?Q?gVZncsPT8aR0Qy1pslpbbZLCc4rKOefqgEy9j0XHjp+5tz3P/M+WisATRGmO?=
+ =?us-ascii?Q?PIbQol6WBWgo0tuZhFlVbnBUQ/QWycDDiwSViFTi4Wh3RmbRiTDujEt3f+pw?=
+ =?us-ascii?Q?HvaTZ3wKSKIPaAfLHhQIfA7EHlEtUpE1l11cVTOXfDD8HjmZ9KWxB1QS3iJt?=
+ =?us-ascii?Q?fiGIsNv4llbj7MqeiU/pWCBaqFMZ/+hudBBAUqMGs/Zn6xbd4/BWVwAIbm8Z?=
+ =?us-ascii?Q?GNY0Vg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf0cee9d-e159-4eff-e04c-08db6caa5ea2
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2023 07:38:39.2468
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hr8B6dM17iFAL1FPg9icGaCJn/nbHBI6hv0MMr8TTu97IkZ97HmbILjonc27rSw9whnTGxUg84FNyIMJ3H+8m26qOw8D3z2vBHi3/24IMko=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR13MB4804
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 13 Jun 2023 at 13:50:06 -0700, Jakub Kicinski wrote:
+On Tue, Jun 13, 2023 at 01:50:06PM -0700, Jakub Kicinski wrote:
 > All callers of tls_is_sk_tx_device_offloaded() currently do
 > an equivalent of:
 > 
@@ -98,36 +138,35 @@ On Tue, 13 Jun 2023 at 13:50:06 -0700, Jakub Kicinski wrote:
 > 
 > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-Acked-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+Thanks. This looks correct.
+And try as I did, I couldn't find anything missing.
 
-Nice cleanup, thanks!
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
-[...]
-
-> diff --git a/include/net/tls.h b/include/net/tls.h
-> index b7d0f1e3058b..5e71dd3df8ca 100644
-> --- a/include/net/tls.h
-> +++ b/include/net/tls.h
-> @@ -370,10 +370,12 @@ struct sk_buff *
->  tls_validate_xmit_skb_sw(struct sock *sk, struct net_device *dev,
->  			 struct sk_buff *skb);
->  
-> -static inline bool tls_is_sk_tx_device_offloaded(struct sock *sk)
-> +static inline bool tls_is_skb_tx_device_offloaded(const struct sk_buff *skb)
+> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> index 007cec23a92f..16405b84dc2f 100644
+> --- a/drivers/net/bonding/bond_main.c
+> +++ b/drivers/net/bonding/bond_main.c
+> @@ -5442,7 +5442,7 @@ static netdev_tx_t bond_tls_device_xmit(struct bonding *bond, struct sk_buff *sk
 >  {
-> -#ifdef CONFIG_SOCK_VALIDATE_XMIT
-> -	return sk_fullsock(sk) &&
-> +#ifdef CONFIG_TLS_DEVICE
-> +	struct sock *sk = skb->sk;
-> +
-> +	return sk && sk_fullsock(sk) &&
->  	       (smp_load_acquire(&sk->sk_validate_xmit_skb) ==
->  	       &tls_validate_xmit_skb);
->  #else
+>  	struct net_device *tls_netdev = rcu_dereference(tls_get_ctx(skb->sk)->netdev);
+>  
+> -	/* tls_netdev might become NULL, even if tls_is_sk_tx_device_offloaded
+> +	/* tls_netdev might become NULL, even if tls_is_skb_tx_device_offloaded
+>  	 * was true, if tls_device_down is running in parallel, but it's OK,
+>  	 * because bond_get_slave_by_dev has a NULL check.
+>  	 */
+> @@ -5461,7 +5461,7 @@ static netdev_tx_t __bond_start_xmit(struct sk_buff *skb, struct net_device *dev
+>  		return NETDEV_TX_OK;
+>  
+>  #if IS_ENABLED(CONFIG_TLS_DEVICE)
+> -	if (skb->sk && tls_is_sk_tx_device_offloaded(skb->sk))
+> +	if (tls_is_skb_tx_device_offloaded(skb))
+>  		return bond_tls_device_xmit(bond, skb, dev);
+>  #endif
 
-After this change, the only usage of CONFIG_SOCK_VALIDATE_XMIT remains
-in sk_validate_xmit_skb, which has #ifdef CONFIG_TLS_DEVICE inside
-#ifdef CONFIG_SOCK_VALIDATE_XMIT. If feels a little bit weird, given
-that both defines always have the same value, but maybe it's OK if we
-consider that more users can start using sk_validate_xmit_skb in the
-future.
+<2c>
+Possibly some further shuffling, perhaps by making bond_tls_device_xmit
+do nothing if CONFIG_TLS_DEVICE isn't enabled, could remove the #if from
+here. But possibly that wouldn't be an improvement anyway.
+</2c>
