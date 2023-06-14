@@ -2,157 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7518572F82C
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jun 2023 10:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28F972F90E
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jun 2023 11:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242991AbjFNIpT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Jun 2023 04:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
+        id S243991AbjFNJ1g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Jun 2023 05:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234266AbjFNIpT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 04:45:19 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDFF1B2
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Jun 2023 01:45:17 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-30e412a852dso4480269f8f.0
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Jun 2023 01:45:17 -0700 (PDT)
+        with ESMTP id S243984AbjFNJ1d (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 05:27:33 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD78E1981
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Jun 2023 02:27:30 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31109cd8d8cso319790f8f.2
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Jun 2023 02:27:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686732316; x=1689324316;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RyMsJrvbKosPNY/vAwwOvxxS4pHd5M9Y0nilZ5D2MVo=;
-        b=qF/FZgavsPbxPKfHFAvaCjTgNcg4rmKEeDsPhpQycQbZViuEbe2bQRsjq3EWrUAlIT
-         UKtKJnP1ZWNU2zTuWecdDR5/R0nT7//x+lS74yyY2+Opm/p1NnAUFlufvuaDyCQUvsUL
-         oGhvgvjfYZeYht3JPBIJxldwcAvR3vP5c1tZfPfJJEe/LRSkfhX6sSHP40K++CG45Ci0
-         c9phmXAZXnZ1vBE9R6PKc/i42x+CK4mlu/zqFlfVppTSbGJd9K1anPGIMlEDB94VGDu9
-         okeUyoI+3Kgy7KZKlyScdDm202z60blkP6vHL3rlzY+jfCJ8QvzrmFrdRK9Wm0+jJ5pP
-         vrzw==
+        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1686734849; x=1689326849;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HtefXDjYklud7abCsC+WgTuAbpHOK06ISGHObSNNODA=;
+        b=yrfI34Q6GvN+FjN0tBMhRhIOeZ+VqlZlmPBIeLwUQwYA9symwc6XeIfHRDvjxLjG6V
+         mWI92FC7g4Iy+mbS+/EKtIv6gpw4bdc2QDKWvI32GRRv8eRIejwNFcMqxmc54nmtzfOS
+         vf3+qYecBp+aVBHQXycTqZiXDwW3Cs5cTChM//GSlmbcUKVdqWeA+3LPSuydIIMrsEB+
+         q1rV5ytMHmwhHX17niRkrt4lA0p7by3+yJTr4CpUmls7/tfRMGt4+9e4kjWUuWR080Qf
+         P3ot1hflAhk4tZAoWorHdR08BCgd3svaC365uWcMicY8oIDQ/xlHHpPBO6Z0nBwgzCNt
+         WmZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686732316; x=1689324316;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RyMsJrvbKosPNY/vAwwOvxxS4pHd5M9Y0nilZ5D2MVo=;
-        b=HF9umCF+8EHpKy22pvgg3oAD783Kc9FbmrCoGT5jEH/4vpHyPzgcq0HTO0PqzsBwap
-         bxNAfDAl2JOjFIyFr/6eflrgA0isfJmNvb/5VS/mQWghAs8XCunqjMWiPnOZjLSPlGA7
-         OJ8ejPWaii3ps79SyOUf1oYeBkTI0ArB3jlkwsL+X1yG0BsVjTqn3B26uEAcOH6wE7H4
-         VWhLpZHXrx2RMXatVmIuLJK6IH4tzR3xwiMOybf7Z44JvDLD5XJzjW+Wdij1iYrDqKbq
-         +C3pfe9n1Ow8703BRkIsDol867JBgfc89orIBfsaG7/buNGDbvXTGHcAY948GqpC0L1i
-         ahYw==
-X-Gm-Message-State: AC+VfDzHXRtkjigZBXjovfEM97XZxHeYslhu0gUAgSnB8MmTh0P/Qq7p
-        Irf0oZ/ul7p1Wghv8g+P1p4CYeC3a3DPxZvdMTA=
-X-Google-Smtp-Source: ACHHUZ5TzLBSnecH4B5CgmPrlBpr04x1ixw6qgAnL9QgNelafrBnbmVWNN1MvDh+9LIYEKnKeuFuHg==
-X-Received: by 2002:adf:e504:0:b0:30a:dd15:bb69 with SMTP id j4-20020adfe504000000b0030add15bb69mr7198529wrm.18.1686732316212;
-        Wed, 14 Jun 2023 01:45:16 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id b1-20020a5d5501000000b0030ae69920c9sm17644303wrv.53.2023.06.14.01.45.11
+        d=1e100.net; s=20221208; t=1686734849; x=1689326849;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HtefXDjYklud7abCsC+WgTuAbpHOK06ISGHObSNNODA=;
+        b=ZQ7V5n1Gssl7VYezN+6oqKgis8YNlX2V2DB2NXVQE0HxuaLUyemW7ajlK9cllcaQbw
+         L+S7+otFOXTlGcU2ALfnf+scX2RwChif9GJl/wBgO3ahIHKx9DuXwG46AZeV6KPARtJu
+         4kC8DL5I4kgRROwUKmqUwhjOnu5lIWpryRljL61PtK0RLj7h2AYBK+A9ulktY4JS5z/f
+         iLZpRtlmI/3MUVuaXqnqSM5T0bR7KkTo/ZGYFTmsbgUJVM0iz2bfebtpsK347OKFpglC
+         kKAZkme9J6l4rfj64hyDgBkoJ54foj7dPexobN6KdOdzfTH9QGDvEDji3wPTyVuci9Na
+         RC2A==
+X-Gm-Message-State: AC+VfDxedGcXLA9LJ+DOrPIMfTFxiwq7hrSn1GqJeFEXZ8veRylrQC8y
+        NlWXq1bM5R+1+NPSkuZoBpAsjA==
+X-Google-Smtp-Source: ACHHUZ7GlBUfe4DA2qBjSg64mcltE0M9LgJWODvo3Av0ztoxCP/DZKdZxYp0GD/Cv/+mNbbxd4YpFg==
+X-Received: by 2002:adf:e54c:0:b0:30f:bd48:6828 with SMTP id z12-20020adfe54c000000b0030fbd486828mr7876719wrm.31.1686734849068;
+        Wed, 14 Jun 2023 02:27:29 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id s14-20020adfeb0e000000b0030ae53550f5sm17681103wrn.51.2023.06.14.02.27.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jun 2023 01:45:14 -0700 (PDT)
-Date:   Wed, 14 Jun 2023 11:45:08 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     kashyap.desai@broadcom.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] RDMA/bnxt_re: handle command completions after driver
- detect a timedout
-Message-ID: <35e505b9-f174-46b4-9b0d-7d30e5717560@moroto.mountain>
+        Wed, 14 Jun 2023 02:27:28 -0700 (PDT)
+Date:   Wed, 14 Jun 2023 11:27:27 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        vadfed@meta.com, jonathan.lemon@gmail.com, pabeni@redhat.com,
+        corbet@lwn.net, davem@davemloft.net, edumazet@google.com,
+        vadfed@fb.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
+        richardcochran@gmail.com, sj@kernel.org, javierm@redhat.com,
+        ricardo.canuelo@collabora.com, mst@redhat.com, tzimmermann@suse.de,
+        michal.michalik@intel.com, gregkh@linuxfoundation.org,
+        jacek.lawrynowicz@linux.intel.com, airlied@redhat.com,
+        ogabbay@kernel.org, arnd@arndb.de, nipun.gupta@amd.com,
+        axboe@kernel.dk, linux@zary.sk, masahiroy@kernel.org,
+        benjamin.tissoires@redhat.com, geert+renesas@glider.be,
+        milena.olech@intel.com, kuniyu@amazon.com, liuhangbin@gmail.com,
+        hkallweit1@gmail.com, andy.ren@getcruise.com, razor@blackwall.org,
+        idosch@nvidia.com, lucien.xin@gmail.com, nicolas.dichtel@6wind.com,
+        phil@nwl.cc, claudiajkang@gmail.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, poros@redhat.com,
+        mschmidt@redhat.com, linux-clk@vger.kernel.org,
+        vadim.fedorenko@linux.dev
+Subject: Re: [RFC PATCH v8 01/10] dpll: documentation on DPLL subsystem
+ interface
+Message-ID: <ZImH/6GzGdydC3U3@nanopsycho>
+References: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
+ <20230609121853.3607724-2-arkadiusz.kubalewski@intel.com>
+ <20230612154329.7bd2d52f@kernel.org>
+ <ZIg8/0UJB9Lbyx2D@nanopsycho>
+ <20230613093801.735cd341@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230613093801.735cd341@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Kashyap Desai,
+Tue, Jun 13, 2023 at 06:38:01PM CEST, kuba@kernel.org wrote:
+>On Tue, 13 Jun 2023 11:55:11 +0200 Jiri Pirko wrote:
+>> >> +``'pin': [{
+>> >> + {'clock-id': 282574471561216,
+>> >> +  'module-name': 'ice',
+>> >> +  'pin-dpll-caps': 4,
+>> >> +  'pin-id': 13,
+>> >> +  'pin-parent': [{'pin-id': 2, 'pin-state': 'connected'},
+>> >> +                 {'pin-id': 3, 'pin-state': 'disconnected'},
+>> >> +                 {'id': 0, 'pin-direction': 'input'},
+>> >> +                 {'id': 1, 'pin-direction': 'input'}],
+>> >> +  'pin-type': 'synce-eth-port'}
+>> >> +}]``  
+>> >
+>> >It seems like pin-parent is overloaded, can we split it into two
+>> >different nests?  
+>> 
+>> Yeah, we had it as two and converged to this one. The thing is, the rest
+>> of the attrs are the same for both parent pin and parent device. I link
+>> it this way a bit better. No strong feeling.
+>
+>Do you mean the same attribute enum / "space" / "set"?
 
-The patch 691eb7c6110f: "RDMA/bnxt_re: handle command completions
-after driver detect a timedout" from Jun 9, 2023, leads to the
-following Smatch static checker warning:
+Yeah, that is my understanding. Arkadiusz, could you please clarify?
 
-	drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:513 __bnxt_qplib_rcfw_send_message()
-	warn: duplicate check 'rc' (previous on line 506)
 
-drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-    477 static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
-    478                                           struct bnxt_qplib_cmdqmsg *msg)
-    479 {
-    480         struct creq_qp_event *evnt = (struct creq_qp_event *)msg->resp;
-    481         struct bnxt_qplib_crsqe *crsqe;
-    482         unsigned long flags;
-    483         u16 cookie;
-    484         int rc = 0;
-    485         u8 opcode;
-    486 
-    487         opcode = __get_cmdq_base_opcode(msg->req, msg->req_sz);
-    488 
-    489         rc = __send_message_basic_sanity(rcfw, msg, opcode);
-    490         if (rc)
-    491                 return rc == -ENXIO ? bnxt_qplib_map_rc(opcode) : rc;
+>In the example above the attributes present don't seem to overlap.
+>For user space its an extra if to sift thru the objects under
+>pin-parent.
+>
+>> >Also sounds like setting pin attrs and pin-parent attrs should be
+>> >different commands.  
+>> 
+>> Could be, but what't the benefit? Also, you are not configuring
+>> pin-parent. You are configuring pin:pin-parent tuple. Basically the pin
+>> configuration as a child. So this is mainly config of the pin itsest
+>> Therefore does not really make sense to me to split to two comments.
+>
+>Clarity of the API. If muxing everything thru few calls was the goal
+>we should also have very few members in struct dpll_pin_ops, and we
+>don't.
 
-The comments in bnxt_qplib_map_rc() talk about "firmware halt is detected"
-and "this function will be called when FW already reports a timeout.
-This would be possible only when FW crashes and resets."  The
-__send_message_basic_sanity() function returns -ENXIO in the case of
-ERR_DEVICE_DETACHED and it returns -ETIMEDOUT in the case of
-FIRMWARE_STALL_DETECTED.
+How the the internal kernel api related to the uapi? I mean, it's quite
+common to have 1:N relationsip between cmd and op. I have to be missing
+your point. Could you be more specific please?
 
-Based on the comments, I would have expected this test to be:
-
-	if (rc)
-		return rc == -ETIMEDOUT ? bnxt_qplib_map_rc(opcode) : rc;
-
-Presumably the code is correct, but the comments are confusing.
-
-    492 
-    493         rc = __send_message(rcfw, msg);
-    494         if (rc)
-    495                 return rc;
-    496 
-    497         cookie = le16_to_cpu(__get_cmdq_base_cookie(msg->req, msg->req_sz))
-    498                                 & RCFW_MAX_COOKIE_VALUE;
-    499 
-    500         if (msg->block)
-    501                 rc = __block_for_resp(rcfw, cookie);
-    502         else if (atomic_read(&rcfw->rcfw_intr_enabled))
-    503                 rc = __wait_for_resp(rcfw, cookie);
-    504         else
-    505                 rc = __poll_for_resp(rcfw, cookie);
-    506         if (rc) {
-                ^^^^^^^^^
-rc is checked here.
-
-    507                 /* timed out */
-    508                 dev_err(&rcfw->pdev->dev, "cmdq[%#x]=%#x timedout (%d)msec\n",
-    509                         cookie, opcode, RCFW_CMD_WAIT_TIME_MS);
-    510                 return rc;
-    511         }
-    512 
---> 513         if (rc) {
-                ^^^^^^^^^
-The patch adds some dead code.
-
-    514                 spin_lock_irqsave(&rcfw->cmdq.hwq.lock, flags);
-    515                 crsqe = &rcfw->crsqe_tbl[cookie];
-    516                 crsqe->is_waiter_alive = false;
-    517                 if (rc == -ENODEV)
-    518                         set_bit(FIRMWARE_STALL_DETECTED, &rcfw->cmdq.flags);
-    519                 spin_unlock_irqrestore(&rcfw->cmdq.hwq.lock, flags);
-    520                 return -ETIMEDOUT;
-    521         }
-    522 
-    523         if (evnt->status) {
-    524                 /* failed with status */
-    525                 dev_err(&rcfw->pdev->dev, "cmdq[%#x]=%#x status %#x\n",
-    526                         cookie, opcode, evnt->status);
-    527                 rc = -EFAULT;
-    528         }
-    529 
-    530         return rc;
-    531 }
-
-regards,
-dan carpenter
+Current code presents PIN_SET command with accepts structured set of
+attribute to be set. The core-driver api is pretty clear. Squashing to
+a single op would be disaster. Having one command per attr looks like an
+overkill without any real benefit. How exactly do you propose to change
+this?
