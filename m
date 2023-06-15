@@ -2,176 +2,371 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D692F730C55
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jun 2023 02:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B1E730CF1
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jun 2023 03:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233913AbjFOAps (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Jun 2023 20:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
+        id S237923AbjFOBzA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Jun 2023 21:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232940AbjFOApn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 20:45:43 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9D81BD2
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Jun 2023 17:45:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1686789942; x=1718325942;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=mTgNyvtT/NfKrvwFIALIsOSbSMvS11S4kSSbUHZLmRY=;
-  b=m4n9zhE4PISIg6XY/mXI6l+zv7gXK7935fcSG+5z/Y2WWnOQThx6phNb
-   +oYrUEkNv8U2pxZPWkoWygGNNKOeNnJBFh3HZ1yCkFpcjwR8N+EdqTjYc
-   xIBFF/kUbp9PrAtr/mQmHWNTRjkVkyn7rX8ZckW1nDa7bnGIEau56YT8C
-   +HAHAjjn0NWdFMc/xvJ9GQoA/h9teW5f0xj09LFzArAcMx4W3KufNZr5e
-   9XxAaQmP/TV7y7Yh9zHXkPAr+QoL1cJqpsrjfE7AoHIEJI5sbq0sfrrHY
-   x6SuWkyPe27BTUQIXrJAoivn8XMmAJptD1KxJ8YgXeIfhpD1GTSDrEtJk
-   A==;
-Received: from mail-dm6nam11lp2176.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.176])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Jun 2023 08:45:41 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rtl7ykndz3gEJxfu8UhmZk8xxaz+cSKQyLdQsTfNr75CFz4rxPPlpJq7Oy9ykrheI06NzlAV3pDV87fCbXM7jncg2vO2hGeawvwoqGgjNoshF50M6OpXj0Ujf2IIaQDX6Z9bfcknJhvH94eaHxU9Bgq5zJ+JEmn+d2mQdgrL4F1wQzvu0XmDhDjdXwORsr2BGxcMQIc4ICWkU7hlXW7+0WNFyXVQBM15ub28QAY7UQ/xU0Nu2VBpJkmbDxojVTPcnJnPuLWzniTk8CR6HmZN/nUunuR5aUbnb3OwSWGuCgUuVPRV0ETo44UhhQssmwwYJ4pr0gXw/ir+O1xpP+lbfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mTgNyvtT/NfKrvwFIALIsOSbSMvS11S4kSSbUHZLmRY=;
- b=mWDzn3J+EtPeKFEAy2G6vHuJgp72p0wCE7cNZj9yFWeNrg1hPiaiNbuxbtXaHHlaHh/kcHHnnTFQc1miAL4CC0QCkh/NDa3o+QP/2+ncR20g1caD/k7E9mVe//fiQwMV2wVsAQYiQIZrnR4020lVWAqf/ICcm8H2c827prV2nwoPIO8iCPMozckYFBceP3vsNIjN3KJC8Wz/IJaVRcl4onYCsfUtA7W3vLzPrFpSChDmfE4EzSdZ1zQLzhciqE18OYEEJB3l9NjEJ9vP9p1Q2TZZeuklcg4hgpgI3jmm6N4lDtaJjbg8LU3Mr1gIEkTzXU98noAAXPFgoMYlslBL+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        with ESMTP id S240835AbjFOBy7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 21:54:59 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBE910DA
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Jun 2023 18:54:57 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3f8d1eb535eso11533275e9.3
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Jun 2023 18:54:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mTgNyvtT/NfKrvwFIALIsOSbSMvS11S4kSSbUHZLmRY=;
- b=MHIuWiK7MmR2ZsO8WTZ3iTTQ7EliofKLi6xRE88QUuFbwdJDuu7c+4VL0thMwCiqIK4kAEcq7rY3gY3q/7fHyCn5DTjd9eRMx3VGU5if35sL0HtxtTKt4vRvjif7c1QdIubGOTBg4+/NwGZMQctCjNbp5BvQNHLKeTNupcRh4M4=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- DM8PR04MB7749.namprd04.prod.outlook.com (2603:10b6:8:3a::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6455.40; Thu, 15 Jun 2023 00:45:39 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::bfa:d453:e7e9:8f98]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::bfa:d453:e7e9:8f98%6]) with mapi id 15.20.6477.028; Thu, 15 Jun 2023
- 00:45:39 +0000
-From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Damien Le Moal <dlemoal@kernel.org>
-Subject: Re: [PATCH v2] RDMA/cma: prevent rdma id destroy during
- cma_iw_handler
-Thread-Topic: [PATCH v2] RDMA/cma: prevent rdma id destroy during
- cma_iw_handler
-Thread-Index: AQHZnPC2s/8x06ig6k2H99zVQRnT1a+HN4aAgAC/dQCAAMWdgIAATXGAgADmt4CAAKMBAIAAd8UA
-Date:   Thu, 15 Jun 2023 00:45:38 +0000
-Message-ID: <l3gjwsd7hlx5dnl74moxo3rvnbsrejjvur6ykdl3pxiwh52wzp@6hfb4xb2tco3>
-References: <20230612054237.1855292-1-shinichiro.kawasaki@wdc.com>
- <ZIcpHbV3oqsjuwfz@ziepe.ca>
- <3x4kcccwy5s2yhni5t26brhgejj24kxyk7bnlabp5zw2js26eb@kjwyilm5d4wc>
- <ZIhvfdVOMsN2cXEX@ziepe.ca> <20230613180747.GB12152@unreal>
- <iclshorg6eyrorloix2bkfsezzbnkwdepschcn5vhk3m2ionxc@oti3l4kvv4ds>
- <ZIn6ul5jPuxC+uIG@ziepe.ca>
-In-Reply-To: <ZIn6ul5jPuxC+uIG@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|DM8PR04MB7749:EE_
-x-ms-office365-filtering-correlation-id: 6301e1bf-88fc-44dc-4b64-08db6d39d6e0
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9ym+B7aYhY52knI1YBlJDaprJccshlMfKxK04Z5o7Jvk8GUSJrUsAcCKmm81azDWkOYiVH9jY5WhcHz58AS8DMnlzlMzenXYwHziuGoUkqYRmkIkdjEhvZnK4Hg2YO5FDrqUPydgHjzzMmryPzH5LDdpTBPV5j1l3kMx0FDaHHPtzHhLbL8890rr5mNqMbLnwMV4TAJUnf2+eXfQ9bv8RVRFMIJPkY7O3rA0pGRkqncpJMYQ09s8eT2llY4+LSE4Ix9LlSJheBvY44Iunuv2WviHP0O0lodaVjUXdK6kMZjtbQDDBO9kUAlJggwpY8rOqpJC+BV9WfT2l4iHcnsUFBrziGiTglgOc4IO4kystcEhW6RwmuEOIpuKY0Iy2qMdZRWtnU2s2Em5K1laCyUv/Y9bBXXSDGY8R8lBWHqqTEdayP4qsRNRhsIMdjKU9l+6Rh4nzSoVpEOvY9KZO2JLDc8Kk6iIuwVHJ7vGucfAfwWZo+e1T7BKuKyCoO/9LuC32NbCVhvtIfaAJXasgOEKoIOX8KuYk67OO9kZboXQooiMLnTbFw/kH9v+K0tkhGpJH3awd49psBJNcYnp54SfA2dxuLfRUAwL1HobyolnemRDKfgnPq4DvSuBZj5XqPfD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(136003)(346002)(366004)(39860400002)(396003)(376002)(451199021)(6486002)(83380400001)(86362001)(38100700002)(82960400001)(38070700005)(122000001)(6512007)(33716001)(6506007)(9686003)(26005)(186003)(4326008)(2906002)(54906003)(478600001)(66476007)(6916009)(316002)(44832011)(91956017)(64756008)(66556008)(76116006)(41300700001)(66446008)(5660300002)(71200400001)(8936002)(66946007)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EnJrGD88eC1cd3sBMp0wcZG9S3LIVAHxG9p7oBHSO1HJmQqaQ+1zw9pGPstd?=
- =?us-ascii?Q?Zy7Xcbhv01kGKyVmeIHiNsKLMjGLYHfdx3OCm6dTEBWFQigCS5OuTMmUnvIB?=
- =?us-ascii?Q?jI8xL0hExD0h8ylwO98Xe+zjbflSrnoXoJ5L0ynlz9KGmp/uPhy3ULJLR6Yh?=
- =?us-ascii?Q?+d/hLoDUPJXx0oJWc2gABCzHaTXK6FPPon/hxN26TlbKj2PE8P4L7G5OjHvv?=
- =?us-ascii?Q?GiBdq0rmxLzJKiaD/IGfJq8SqavfZtQDlzghcuwGm1pucfig+xT3Y4i3MtgT?=
- =?us-ascii?Q?ZOhaD8bnDoP8SOuR6j1SY9SA0hOOTDuFL+Equ/rL91C2tSY3Rw4iVRsicjWk?=
- =?us-ascii?Q?/IXcqQf6pKHFMP9Vlhm6BVqg89PKxZgNJiM03CrzraL8zvNaK3/ofcUpFoTq?=
- =?us-ascii?Q?wNpYQxeCCY+IWMUWrxWXcQVlgTv/lKOATwoMgjW7GLqjenE68SvvmLBiZyus?=
- =?us-ascii?Q?UhTnADgu4FBIVPuMJcppsnJTAuC4NKUFF8WbKr67djn7jMU1hsYgeTEwOKDe?=
- =?us-ascii?Q?NGccnaSTv7BZ3dKbhQIqWfsr7eOOMJVS7rzmCnq1nAAslwOzqtrVTH/SmG0z?=
- =?us-ascii?Q?+ONw7ElwsUyqUJnGKib+oV9lYIJtCYyxRjCyqT2rPvHrCsDYdeeJrQU3JrUk?=
- =?us-ascii?Q?n8NV5+lxSZzteiweHNr1kIBIEmNhEujJ9BVG4Emt4qK9HICYWqnFvaNUZbXR?=
- =?us-ascii?Q?Np/Xq6ZZA2xGfJ2ygN7C7pktf0304VqC8aNBDa2aL7Lqx6TF3BQvrqleReo1?=
- =?us-ascii?Q?0E7KnrxD/ODBGzjDPBbECqzxfB00i7yUZFPmjwZmXSC7BTG6JPawIVwsf++x?=
- =?us-ascii?Q?8geHhFkbN2itjIWjQMmtyxOze07fJK74cuAJFldWMsrinHlIA6ei1+4n8lsU?=
- =?us-ascii?Q?AH2ochlXxRRLpQi9WlhU0YUMOgaHUntO9+e8IDg2X1J/jahvR/K40uteq2Wr?=
- =?us-ascii?Q?XaDIt74oOKYT2Mr6kLS1NQaf2qOgWQy0BUYrhCCtJo0a8FBYRuyu2x0yPFzT?=
- =?us-ascii?Q?FM+Zc/YXARSXJRPb06K285kAJ/Anc2PKGrbKL/ctZvMICtrel3PrVqBLM7iA?=
- =?us-ascii?Q?UHQnRenzKgrL+h9WBKgFntq+g3tWI3sN3HRtQkwTd8af1jO2PImAx0i0oKgt?=
- =?us-ascii?Q?SKKMMNa7U56vfXCjG3sdySbIS6XXK/Lz0L856HUt2Psc6kgGVmulcbkYw/iK?=
- =?us-ascii?Q?0a0fgPvWjCJtfUIwHdi9ymVMnIrOeEjW7u/GPDwbYzYVk8CMslcxIV5TVi1K?=
- =?us-ascii?Q?qm8N93Wkhd49EYlDLlqy8n4k+XgitREvVcRMz0jxygNHCdONwDxyuUZDkv5L?=
- =?us-ascii?Q?RTg1ln/aP2fJEZsAr8dv2aqZ/XsKN9Q8kmOnlsbNUJpz4rvcGngXmCjDUX39?=
- =?us-ascii?Q?0jBrCcwpkW3atUD9LU61L61GwP7DLUrD3RgyrGloGhorf80p1t9tc5fsZlrP?=
- =?us-ascii?Q?rWaoV8VsXWpsE0oAL5vbjD/FNhDEhrpQnN8NW5mN1zRpoME1Nng2cKE/qpwG?=
- =?us-ascii?Q?2dxDroIQHBBC5btCV/1qLyFxxq+FWptfpKslOP2G2Ajkzy+H+kzzZzWfMMje?=
- =?us-ascii?Q?KEojN4dV0Kx958ZM18YE3kwU94tWCY0iRCowQwH6L7f0YENZfGa+md/WL3mM?=
- =?us-ascii?Q?mdDPrpyiOLNezScLG13C4gA=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D3052FADC7EB314F87EB339073AE0B4D@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=fungible.com; s=google; t=1686794096; x=1689386096;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=olw35jcEhaAEv0ksbBgyDo2jB9UKobR+ATGcg40H9xs=;
+        b=hL7XvFLuxas2Iw3DZTdaSSXrMF0gNv2l8saM79luEzQsmMopoINuRyGY3qqaNxKels
+         OTn+JL/R4bVD0UpHJSMCvvlnnd8RWGoi9YD/SkNqTKrf/C9961sQ//oNGYMqCU/XmBBE
+         A9tVoa/2kIrCikty1fGvcaOyE1vmv3q1tQZAo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686794096; x=1689386096;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=olw35jcEhaAEv0ksbBgyDo2jB9UKobR+ATGcg40H9xs=;
+        b=Aj/MgoVYcd7Dgr6+DyvkQNsfIGUZYCVOR39yLqXEQIoHV8oU4y7zhvzGCBOaQ4QWc2
+         f4HNGq8k7lvcQS0V9yWNUkAGDJXNSj+VA8yOI3mbpIZLPDa4iiHpViG65mZzxMIlBjQQ
+         +EXwDnwpZkYii2ru+pvRWRQkU0FMwp+xZDZ8FzO7dRqMdO3UiByf7C7wC2v3avo49XaE
+         m43KLSGv8ovNRyAsORj9+luIjjQ97PSSkHaHHTdG/pqZrO2yJBwHVGlHQljptqQJHPg8
+         UXJ15pKosBeVYdB7yb2JY3VdwrIRPNFCs9hv0scuMlUaCL/cnksnBpkIfQg8aPAHKKCH
+         BIcA==
+X-Gm-Message-State: AC+VfDwoVtDxgIrGf8/UNxUEomYWNNv7KRuFIrFliI/Gzjas6SBtZ7aS
+        tBSVsYXeTlmp9aq2CigwN42qJ9OnlhR0+gm4/pX85g==
+X-Google-Smtp-Source: ACHHUZ7dvMbJgJBbWS6nZB626OX5Zm7mqWQK6hboRcLWce8jq5MJ5ZLR4E8yOi4PnDlxqDi/YiXlV3iJd3LPnMLtuek=
+X-Received: by 2002:a05:600c:28d3:b0:3f6:48e:92ca with SMTP id
+ h19-20020a05600c28d300b003f6048e92camr10060685wmd.39.1686794095583; Wed, 14
+ Jun 2023 18:54:55 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: pY4btOtV+s3AOE8r9DmHqsSt6kYhlcpb3ehDs/OUns5n9aQzhr91Sq1YpGr7nG652d0Hy96Mu7aVbA6Cf3k42WAEwQcdUcROPDLTUlEoSubhhZ+4swgEZ0M3biZwe5uNzMUXD3dVKlOlgyV9F194Fnv3z0sjoCLuaKNuZiU1JA+c7gYpyjp7tvGwwFGQbxpXLYQGZjBG6sY241iivAS8c0mZmerKeDZNcW8eJ4mFapgK/xs1tIRT2va5licXUPv98xA/putBejh5NroT3yVKfIxRVnYYIKYiF55tSFwwU+DKy+H/yAyiKX67qGt4S2VWObuMsyvE5hlfyZD1gAbVr5QsNg3FbWCmBzv+88F+orfm3lIbUy+vq3uNkij+bwXP9vYbpS6O+N3zz9X4CAs5ISwvI1lZvdEI9J5c90rO9kHD/BfbIa1jWCcaa25A224jZXXCNgHQWNxgElLEKU5UqCV6FPNiGAfgoeaV5TTCUOxRtz+WiS4sa2eMW1LvCBpZ6POUG5t3HTFxW3w3nV/eRI7kUqFm0MsGIoH6r0bVxO8FEi6cQhjaaexNySYiz4f7Jb/zEtKlKMR/qtKMmUCKCM8As6dlSs+duBIURTJDM/LRLsFMbsG6tlrQOE4Q4P7PSq9I70vgDszPs/6Q01Uy2+im5shAgPCxkEeeySmYQian84DwWRII3Gt2tiFTWPT1uWNGUscX5q1GuQNR/gNJCmVCjIMhb6T1nNnsvy9cncumLruyNDpaQvrUTvKHsZCvXCvKNbpvkC18YzlBpAOWt9sDUiyMfcHXK0FPPpW8KnqLYSWWkkWgwoKuQE+GimZZT4L61/nXTzAhSyII1fL9SO9dg+dT+rH6IhJ8rSGywJSOZSTd5wDI8LVjSoffLbybgtmCxGuIc4DktwVeuD87wg==
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6301e1bf-88fc-44dc-4b64-08db6d39d6e0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2023 00:45:38.8310
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WhBtIKwcZs9zVqtVQh6ormc4PLGGZWHUtzAbysxcG2QuohkkRtq5rruZqHOWKFuLethtT3Q7wB8klFp0qGMBS4keboxBj1vm57t4BprKCrE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB7749
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230613205006.1995873-1-kuba@kernel.org>
+In-Reply-To: <20230613205006.1995873-1-kuba@kernel.org>
+From:   Dimitris Michailidis <d.michailidis@fungible.com>
+Date:   Wed, 14 Jun 2023 18:54:42 -0700
+Message-ID: <CAOkoqZk12MtXpdJ7ZMiNPTvZdpfeRCDnNwDm0tHKZBnt=axtOw@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: tls: make the offload check helper take skb
+ not socket
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+        pabeni@redhat.com, j.vosburgh@gmail.com, andy@greyhouse.net,
+        rajur@chelsio.com, ayush.sawal@chelsio.com, dmichail@fungible.com,
+        borisp@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+        simon.horman@corigine.com, john.fastabend@gmail.com,
+        anirudh.venkataramanan@intel.com, maxtram95@gmail.com,
+        tariqt@nvidia.com, gal@nvidia.com, raeds@nvidia.com,
+        liorna@nvidia.com, louis.peens@corigine.com,
+        yinjun.zhang@corigine.com, na.wang@corigine.com,
+        linux-rdma@vger.kernel.org, oss-drivers@corigine.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Jun 14, 2023 / 14:36, Jason Gunthorpe wrote:
-> On Wed, Jun 14, 2023 at 07:53:49AM +0000, Shinichiro Kawasaki wrote:
-[...]
-> > As another fix approach, I reverted the commit 59c68ac31e15 ("iw_cm: fr=
-ee cm_id
-> > resources on the last deref") so that iw_destroy_cm_id() waits for dere=
-f of
-> > cm_id. With that revert, the KASAN slab-use-after-free disappeared. Is =
-this
-> > the right fix approach?
->=20
-> That seems like it would bring back the bug it was fixing, though it
-> isn't totally clear what that is
->=20
-> There is something wrong with the iwarp cm if it is destroying IDs in
-> handlers, IB cm avoids doing that to avoid the deadlock, the same
-> solution will be needed for iwarp too.
->=20
-> Also the code this patch removed is quite ugly, if we are going back
-> to waiting it should be written in a more modern way without the test
-> bit and so on.
+On Tue, Jun 13, 2023 at 1:50=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> All callers of tls_is_sk_tx_device_offloaded() currently do
+> an equivalent of:
+>
+>  if (skb->sk && tls_is_skb_tx_device_offloaded(skb->sk))
+>
+> Have the helper accept skb and do the skb->sk check locally.
+> Two drivers have local static inlines with similar wrappers
+> already.
+>
+> While at it change the ifdef condition to TLS_DEVICE.
+> Only TLS_DEVICE selects SOCK_VALIDATE_XMIT, so the two are
+> equivalent. This makes removing the duplicated IS_ENABLED()
+> check in funeth more obviously correct.
+>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-I see, thanks for the clarifications. I took a look in ib_destroy_cm_id() a=
-nd
-fount it does differently from iw_destroy_cm_id(). I guess certain amount o=
-f
-changes will be required for the good fix in iwarp code.
+Looks good, thanks.
 
-I stop my fix attempt here, since it looks beyond my bandwidth now. If anyo=
-ne
-provides fix patches, I'm willing to test them.=
+Acked-by: Dimitris Michailidis <dmichail@fungible.com>
+
+> ---
+> CC: j.vosburgh@gmail.com
+> CC: andy@greyhouse.net
+> CC: rajur@chelsio.com
+> CC: ayush.sawal@chelsio.com
+> CC: dmichail@fungible.com
+> CC: borisp@nvidia.com
+> CC: saeedm@nvidia.com
+> CC: leon@kernel.org
+> CC: simon.horman@corigine.com
+> CC: john.fastabend@gmail.com
+> CC: anirudh.venkataramanan@intel.com
+> CC: maxtram95@gmail.com
+> CC: tariqt@nvidia.com
+> CC: gal@nvidia.com
+> CC: raeds@nvidia.com
+> CC: liorna@nvidia.com
+> CC: louis.peens@corigine.com
+> CC: yinjun.zhang@corigine.com
+> CC: na.wang@corigine.com
+> CC: linux-rdma@vger.kernel.org
+> CC: oss-drivers@corigine.com
+> ---
+>  drivers/net/bonding/bond_main.c                           | 4 ++--
+>  drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c           | 2 +-
+>  drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h            | 5 -----
+>  drivers/net/ethernet/chelsio/cxgb4/sge.c                  | 2 +-
+>  .../ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c    | 2 +-
+>  drivers/net/ethernet/fungible/funeth/funeth_tx.c          | 3 +--
+>  .../net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h   | 2 +-
+>  .../net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c    | 2 +-
+>  .../net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h  | 5 -----
+>  drivers/net/ethernet/netronome/nfp/nfp_net_common.c       | 4 ++--
+>  include/net/tls.h                                         | 8 +++++---
+>  net/tls/tls_device.c                                      | 4 ++--
+>  12 files changed, 17 insertions(+), 26 deletions(-)
+>
+> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_m=
+ain.c
+> index 007cec23a92f..16405b84dc2f 100644
+> --- a/drivers/net/bonding/bond_main.c
+> +++ b/drivers/net/bonding/bond_main.c
+> @@ -5442,7 +5442,7 @@ static netdev_tx_t bond_tls_device_xmit(struct bond=
+ing *bond, struct sk_buff *sk
+>  {
+>         struct net_device *tls_netdev =3D rcu_dereference(tls_get_ctx(skb=
+->sk)->netdev);
+>
+> -       /* tls_netdev might become NULL, even if tls_is_sk_tx_device_offl=
+oaded
+> +       /* tls_netdev might become NULL, even if tls_is_skb_tx_device_off=
+loaded
+>          * was true, if tls_device_down is running in parallel, but it's =
+OK,
+>          * because bond_get_slave_by_dev has a NULL check.
+>          */
+> @@ -5461,7 +5461,7 @@ static netdev_tx_t __bond_start_xmit(struct sk_buff=
+ *skb, struct net_device *dev
+>                 return NETDEV_TX_OK;
+>
+>  #if IS_ENABLED(CONFIG_TLS_DEVICE)
+> -       if (skb->sk && tls_is_sk_tx_device_offloaded(skb->sk))
+> +       if (tls_is_skb_tx_device_offloaded(skb))
+>                 return bond_tls_device_xmit(bond, skb, dev);
+>  #endif
+>
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/ne=
+t/ethernet/chelsio/cxgb4/cxgb4_main.c
+> index f0bc7396ce2b..2eb33a727bba 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+> @@ -1175,7 +1175,7 @@ static u16 cxgb_select_queue(struct net_device *dev=
+, struct sk_buff *skb,
+>                 txq =3D netdev_pick_tx(dev, skb, sb_dev);
+>                 if (xfrm_offload(skb) || is_ptp_enabled(skb, dev) ||
+>                     skb->encapsulation ||
+> -                   cxgb4_is_ktls_skb(skb) ||
+> +                   tls_is_skb_tx_device_offloaded(skb) ||
+>                     (proto !=3D IPPROTO_TCP && proto !=3D IPPROTO_UDP))
+>                         txq =3D txq % pi->nqsets;
+>
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h b/drivers/net=
+/ethernet/chelsio/cxgb4/cxgb4_uld.h
+> index 34546f5312ee..a9599ba26975 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
+> @@ -497,11 +497,6 @@ struct cxgb4_uld_info {
+>  #endif
+>  };
+>
+> -static inline bool cxgb4_is_ktls_skb(struct sk_buff *skb)
+> -{
+> -       return skb->sk && tls_is_sk_tx_device_offloaded(skb->sk);
+> -}
+> -
+>  void cxgb4_uld_enable(struct adapter *adap);
+>  void cxgb4_register_uld(enum cxgb4_uld type, const struct cxgb4_uld_info=
+ *p);
+>  int cxgb4_unregister_uld(enum cxgb4_uld type);
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ether=
+net/chelsio/cxgb4/sge.c
+> index 46809e2d94ee..98dd78551d89 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+> @@ -1530,7 +1530,7 @@ static netdev_tx_t cxgb4_eth_xmit(struct sk_buff *s=
+kb, struct net_device *dev)
+>  #endif /* CHELSIO_IPSEC_INLINE */
+>
+>  #if IS_ENABLED(CONFIG_CHELSIO_TLS_DEVICE)
+> -       if (cxgb4_is_ktls_skb(skb) &&
+> +       if (tls_is_skb_tx_device_offloaded(skb) &&
+>             (skb->len - skb_tcp_all_headers(skb)))
+>                 return adap->uld[CXGB4_ULD_KTLS].tx_handler(skb, dev);
+>  #endif /* CHELSIO_TLS_DEVICE */
+> diff --git a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls=
+.c b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
+> index 1a5fdd755e9e..bcdc7fc2f427 100644
+> --- a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
+> +++ b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
+> @@ -1946,7 +1946,7 @@ static int chcr_ktls_xmit(struct sk_buff *skb, stru=
+ct net_device *dev)
+>         tls_ctx =3D tls_get_ctx(skb->sk);
+>         tls_netdev =3D rcu_dereference_bh(tls_ctx->netdev);
+>         /* Don't quit on NULL: if tls_device_down is running in parallel,
+> -        * netdev might become NULL, even if tls_is_sk_tx_device_offloade=
+d was
+> +        * netdev might become NULL, even if tls_is_skb_tx_device_offload=
+ed was
+>          * true. Rather continue processing this packet.
+>          */
+>         if (unlikely(tls_netdev && tls_netdev !=3D dev))
+> diff --git a/drivers/net/ethernet/fungible/funeth/funeth_tx.c b/drivers/n=
+et/ethernet/fungible/funeth/funeth_tx.c
+> index 706d81e39a54..8ddefd3ec15b 100644
+> --- a/drivers/net/ethernet/fungible/funeth/funeth_tx.c
+> +++ b/drivers/net/ethernet/fungible/funeth/funeth_tx.c
+> @@ -348,8 +348,7 @@ netdev_tx_t fun_start_xmit(struct sk_buff *skb, struc=
+t net_device *netdev)
+>         unsigned int tls_len =3D 0;
+>         unsigned int ndesc;
+>
+> -       if (IS_ENABLED(CONFIG_TLS_DEVICE) && skb->sk &&
+> -           tls_is_sk_tx_device_offloaded(skb->sk)) {
+> +       if (tls_is_skb_tx_device_offloaded(skb)) {
+>                 skb =3D fun_tls_tx(skb, q, &tls_len);
+>                 if (unlikely(!skb))
+>                         goto dropped;
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h =
+b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
+> index c964644ee866..bac4717548c6 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
+> @@ -125,7 +125,7 @@ static inline bool mlx5e_accel_tx_begin(struct net_de=
+vice *dev,
+>
+>  #ifdef CONFIG_MLX5_EN_TLS
+>         /* May send WQEs. */
+> -       if (mlx5e_ktls_skb_offloaded(skb))
+> +       if (tls_is_skb_tx_device_offloaded(skb))
+>                 if (unlikely(!mlx5e_ktls_handle_tx_skb(dev, sq, skb,
+>                                                        &state->tls)))
+>                         return false;
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c b=
+/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
+> index 0e4c0a093293..efb2cf74ad6a 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
+> @@ -846,7 +846,7 @@ bool mlx5e_ktls_handle_tx_skb(struct net_device *netd=
+ev, struct mlx5e_txqsq *sq,
+>         tls_ctx =3D tls_get_ctx(skb->sk);
+>         tls_netdev =3D rcu_dereference_bh(tls_ctx->netdev);
+>         /* Don't WARN on NULL: if tls_device_down is running in parallel,
+> -        * netdev might become NULL, even if tls_is_sk_tx_device_offloade=
+d was
+> +        * netdev might become NULL, even if tls_is_skb_tx_device_offload=
+ed was
+>          * true. Rather continue processing this packet.
+>          */
+>         if (WARN_ON_ONCE(tls_netdev && tls_netdev !=3D netdev))
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h=
+ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
+> index 2dd78dd4ad65..f87b65c560ea 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
+> @@ -49,11 +49,6 @@ mlx5e_ktls_rx_pending_resync_list(struct mlx5e_channel=
+ *c, int budget)
+>         return budget && test_bit(MLX5E_SQ_STATE_PENDING_TLS_RX_RESYNC, &=
+c->async_icosq.state);
+>  }
+>
+> -static inline bool mlx5e_ktls_skb_offloaded(struct sk_buff *skb)
+> -{
+> -       return skb->sk && tls_is_sk_tx_device_offloaded(skb->sk);
+> -}
+> -
+>  static inline void
+>  mlx5e_ktls_handle_tx_wqe(struct mlx5_wqe_ctrl_seg *cseg,
+>                          struct mlx5e_accel_tx_tls_state *state)
+> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/driver=
+s/net/ethernet/netronome/nfp/nfp_net_common.c
+> index b7cce746b5c0..49f2f081ebb5 100644
+> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> @@ -598,7 +598,7 @@ nfp_net_tls_tx(struct nfp_net_dp *dp, struct nfp_net_=
+r_vector *r_vec,
+>
+>         if (likely(!dp->ktls_tx))
+>                 return skb;
+> -       if (!skb->sk || !tls_is_sk_tx_device_offloaded(skb->sk))
+> +       if (!tls_is_skb_tx_device_offloaded(skb))
+>                 return skb;
+>
+>         datalen =3D skb->len - skb_tcp_all_headers(skb);
+> @@ -666,7 +666,7 @@ void nfp_net_tls_tx_undo(struct sk_buff *skb, u64 tls=
+_handle)
+>
+>         if (!tls_handle)
+>                 return;
+> -       if (WARN_ON_ONCE(!skb->sk || !tls_is_sk_tx_device_offloaded(skb->=
+sk)))
+> +       if (WARN_ON_ONCE(!tls_is_skb_tx_device_offloaded(skb)))
+>                 return;
+>
+>         datalen =3D skb->len - skb_tcp_all_headers(skb);
+> diff --git a/include/net/tls.h b/include/net/tls.h
+> index b7d0f1e3058b..5e71dd3df8ca 100644
+> --- a/include/net/tls.h
+> +++ b/include/net/tls.h
+> @@ -370,10 +370,12 @@ struct sk_buff *
+>  tls_validate_xmit_skb_sw(struct sock *sk, struct net_device *dev,
+>                          struct sk_buff *skb);
+>
+> -static inline bool tls_is_sk_tx_device_offloaded(struct sock *sk)
+> +static inline bool tls_is_skb_tx_device_offloaded(const struct sk_buff *=
+skb)
+>  {
+> -#ifdef CONFIG_SOCK_VALIDATE_XMIT
+> -       return sk_fullsock(sk) &&
+> +#ifdef CONFIG_TLS_DEVICE
+> +       struct sock *sk =3D skb->sk;
+> +
+> +       return sk && sk_fullsock(sk) &&
+>                (smp_load_acquire(&sk->sk_validate_xmit_skb) =3D=3D
+>                &tls_validate_xmit_skb);
+>  #else
+> diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+> index b4864d55900f..b82770f68807 100644
+> --- a/net/tls/tls_device.c
+> +++ b/net/tls/tls_device.c
+> @@ -1219,7 +1219,7 @@ int tls_set_device_offload(struct sock *sk, struct =
+tls_context *ctx)
+>         tls_device_attach(ctx, sk, netdev);
+>         up_read(&device_offload_lock);
+>
+> -       /* following this assignment tls_is_sk_tx_device_offloaded
+> +       /* following this assignment tls_is_skb_tx_device_offloaded
+>          * will return true and the context might be accessed
+>          * by the netdev's xmit function.
+>          */
+> @@ -1372,7 +1372,7 @@ static int tls_device_down(struct net_device *netde=
+v)
+>
+>         list_for_each_entry_safe(ctx, tmp, &list, list) {
+>                 /* Stop offloaded TX and switch to the fallback.
+> -                * tls_is_sk_tx_device_offloaded will return false.
+> +                * tls_is_skb_tx_device_offloaded will return false.
+>                  */
+>                 WRITE_ONCE(ctx->sk->sk_validate_xmit_skb, tls_validate_xm=
+it_skb_sw);
+>
+> --
+> 2.40.1
+>
