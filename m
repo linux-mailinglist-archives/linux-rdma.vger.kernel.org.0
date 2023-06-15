@@ -2,371 +2,220 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B1E730CF1
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jun 2023 03:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F780730DC7
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jun 2023 05:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237923AbjFOBzA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Jun 2023 21:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
+        id S237658AbjFOD4G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Jun 2023 23:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240835AbjFOBy7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 21:54:59 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBE910DA
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Jun 2023 18:54:57 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3f8d1eb535eso11533275e9.3
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Jun 2023 18:54:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fungible.com; s=google; t=1686794096; x=1689386096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=olw35jcEhaAEv0ksbBgyDo2jB9UKobR+ATGcg40H9xs=;
-        b=hL7XvFLuxas2Iw3DZTdaSSXrMF0gNv2l8saM79luEzQsmMopoINuRyGY3qqaNxKels
-         OTn+JL/R4bVD0UpHJSMCvvlnnd8RWGoi9YD/SkNqTKrf/C9961sQ//oNGYMqCU/XmBBE
-         A9tVoa/2kIrCikty1fGvcaOyE1vmv3q1tQZAo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686794096; x=1689386096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=olw35jcEhaAEv0ksbBgyDo2jB9UKobR+ATGcg40H9xs=;
-        b=Aj/MgoVYcd7Dgr6+DyvkQNsfIGUZYCVOR39yLqXEQIoHV8oU4y7zhvzGCBOaQ4QWc2
-         f4HNGq8k7lvcQS0V9yWNUkAGDJXNSj+VA8yOI3mbpIZLPDa4iiHpViG65mZzxMIlBjQQ
-         +EXwDnwpZkYii2ru+pvRWRQkU0FMwp+xZDZ8FzO7dRqMdO3UiByf7C7wC2v3avo49XaE
-         m43KLSGv8ovNRyAsORj9+luIjjQ97PSSkHaHHTdG/pqZrO2yJBwHVGlHQljptqQJHPg8
-         UXJ15pKosBeVYdB7yb2JY3VdwrIRPNFCs9hv0scuMlUaCL/cnksnBpkIfQg8aPAHKKCH
-         BIcA==
-X-Gm-Message-State: AC+VfDwoVtDxgIrGf8/UNxUEomYWNNv7KRuFIrFliI/Gzjas6SBtZ7aS
-        tBSVsYXeTlmp9aq2CigwN42qJ9OnlhR0+gm4/pX85g==
-X-Google-Smtp-Source: ACHHUZ7dvMbJgJBbWS6nZB626OX5Zm7mqWQK6hboRcLWce8jq5MJ5ZLR4E8yOi4PnDlxqDi/YiXlV3iJd3LPnMLtuek=
-X-Received: by 2002:a05:600c:28d3:b0:3f6:48e:92ca with SMTP id
- h19-20020a05600c28d300b003f6048e92camr10060685wmd.39.1686794095583; Wed, 14
- Jun 2023 18:54:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230613205006.1995873-1-kuba@kernel.org>
-In-Reply-To: <20230613205006.1995873-1-kuba@kernel.org>
-From:   Dimitris Michailidis <d.michailidis@fungible.com>
-Date:   Wed, 14 Jun 2023 18:54:42 -0700
-Message-ID: <CAOkoqZk12MtXpdJ7ZMiNPTvZdpfeRCDnNwDm0tHKZBnt=axtOw@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: tls: make the offload check helper take skb
- not socket
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
-        pabeni@redhat.com, j.vosburgh@gmail.com, andy@greyhouse.net,
-        rajur@chelsio.com, ayush.sawal@chelsio.com, dmichail@fungible.com,
-        borisp@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
-        simon.horman@corigine.com, john.fastabend@gmail.com,
-        anirudh.venkataramanan@intel.com, maxtram95@gmail.com,
-        tariqt@nvidia.com, gal@nvidia.com, raeds@nvidia.com,
-        liorna@nvidia.com, louis.peens@corigine.com,
-        yinjun.zhang@corigine.com, na.wang@corigine.com,
-        linux-rdma@vger.kernel.org, oss-drivers@corigine.com
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S229711AbjFODzs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Jun 2023 23:55:48 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020023.outbound.protection.outlook.com [52.101.61.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724E22133;
+        Wed, 14 Jun 2023 20:55:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I4nDQLXtBrHKjc50hMe7hGXLLJTrPn//qLKoWrQNZZwpwg3qAZya7R7ccA4h0FMXS+Q9fUk5BUnRR16x88AXOJdrfAS5zTDGKRGvCpl+1SgWnva6Yn4h7VQQEtBXNUkRyqAY3FofQuHhQJWYkxiJ0lzgbBE9yUf/XbRHL+f5v2ErKT8FQ/VrwMYi0Pe+RLCUO2PX/qhZyUQWmf1b9yA2SnxwV58mQuQMA44eHaK1m00hKJctfkqfafeWMuiT6gYfVWXI/nTZZ7g6sCyYwk55gpkfYhzfs86QXBGhbDKA364t8Ikqf9czyLlx3ddTBEZJxW48vCMuHVXMUBX7mTXckQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JrichSzLPYq+YUu82LbzmuirLDiaXyTwDNkCwoFSZLE=;
+ b=hB7lY8LiD981vVcLYGJlr2YYd45UF4YoDZ6pFWqUk9vWpKLe46HHxNgUT5tMr5WekA3xpAWBtMpiJ9OD/nK99lUzwT5MoWaOd+YLR9IHyOCJ8co51er8svxCkN7TLE8v/Z69CMUdPj7QT2fX4HG7NLSMZ/kI4SFXyE7Bn7MhInu22BjuKaWtof6cG9Bxcd7cQeK0PAo4sv2iLS8Gcy95IjKahmUcKD9HHRR9EF9cz8txRIgAGRpTlkRGmA9qyRRq5Dhl9VZg8Di1cKuChBa8W+TOmJq0874BiIA+kd7HohEzIcyik96PjcKjMdqBM9LkfczjuOkD4mw9n4T8p36SxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JrichSzLPYq+YUu82LbzmuirLDiaXyTwDNkCwoFSZLE=;
+ b=h4EAyzrSBD7xOhmE353to6aQb2m+sMRnhuHD4CJ70eRZUETlyY4WfzaCEjWaExLR9k9KpC/ZMeo2W00eK2qjOQSC54ryNvaoq7fLBub3ZEmAh3Txm5efU8jOdqLXgFdAVPvWskFm9lONFSApIUusmxv2xL2+XeOgEXcBPhhJNDA=
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
+ by PH7PR21MB3260.namprd21.prod.outlook.com (2603:10b6:510:1d8::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.6; Thu, 15 Jun
+ 2023 03:55:43 +0000
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::bb03:96fc:3397:6022]) by SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::bb03:96fc:3397:6022%4]) with mapi id 15.20.6521.009; Thu, 15 Jun 2023
+ 03:55:43 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jake Oshins <jakeo@microsoft.com>,
+        "kuba@kernel.org" <kuba@kernel.org>, "kw@linux.com" <kw@linux.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "saeedm@nvidia.com" <saeedm@nvidia.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        Saurabh Singh Sengar <ssengar@microsoft.com>,
+        "helgaas@kernel.org" <helgaas@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jose Teuttli Carranco <josete@microsoft.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v3 1/6] PCI: hv: Fix a race condition bug in
+ hv_pci_query_relations()
+Thread-Topic: [PATCH v3 1/6] PCI: hv: Fix a race condition bug in
+ hv_pci_query_relations()
+Thread-Index: AQHZjuDp3/HWlZZHlUKokFlSLFMUD6+LWp4Q
+Date:   Thu, 15 Jun 2023 03:55:43 +0000
+Message-ID: <SA1PR21MB133577C1859A3B1DCE1ACAA5BF5BA@SA1PR21MB1335.namprd21.prod.outlook.com>
+References: <20230420024037.5921-1-decui@microsoft.com>
+ <20230420024037.5921-2-decui@microsoft.com> <ZG8YzuK/5+8iE8He@lpieralisi>
+In-Reply-To: <ZG8YzuK/5+8iE8He@lpieralisi>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=f554af38-df63-4f69-b441-4d0e85cb67dc;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-06-15T03:48:03Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|PH7PR21MB3260:EE_
+x-ms-office365-filtering-correlation-id: 25e9e427-70a1-47fc-b3d2-08db6d546454
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4kkL3w+St+5wcM5U24X4JfOGqVnN2aZU0/TaGfawHY11PNTWrY3LeufcNx5fhk6Q9mGYx6miT107lZfvm8FJNfDKEnYQH5mjXTFoat5oUUv6zN8KbwLjs8dePylUhsyMoOHEghaLJl4ROVcJbPyWECZ4OqxwxwaBC9dLFWxsvPAQYPdfoRRNFqUvDozQPYH0dnYX4lIK/mLo8oM5sECiNdZiJMN9alHvohc/8qz9i+jmKM0pBRXhqnv0DYYtx8IObvgzN716tf/WoRbwm1KLAFTEOLwh/4SzhiZdEeEUO7dl6CZWpP7SWt5e9kXEt32OyCGNhd47jcCLnG4ixVql6gw5uo4ODe2ucTnF8Ql40ed4OTM6oP7Rex8Z/RADAeaVJBTiO/4iTC3F3kSlX2ls0yqz5DwFim3K3GxZtKReVpZnaL31B1n/VYEW0ckVe/ksL3rT+cYAMghCYnEACb5pn7oWpz+NCi1n6FWtiNlZmN78/D/Jith+4otkIVgrNizDHNM6DatWhcAECSXcRyJuWRiSJZ4fMBAm5UalHLQMJlo1ubMdoNtUlbAJh0tW1L2+S++/7+C6CyEsetcq8OePahJD7c+Z3OUIbMa5+ibjfEUv+ZwKDhG6Usel7tYDQ9Ql/qw1aT9QM6bL16VjJiZcLAfc597ZOLdEHyEfMo8Niuo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(396003)(346002)(366004)(376002)(451199021)(86362001)(38070700005)(8990500004)(33656002)(7416002)(2906002)(66899021)(55016003)(38100700002)(7696005)(186003)(83380400001)(52536014)(53546011)(9686003)(6506007)(82960400001)(82950400001)(71200400001)(54906003)(122000001)(5660300002)(66476007)(10290500003)(76116006)(316002)(66556008)(6916009)(4326008)(478600001)(64756008)(66946007)(8676002)(41300700001)(66446008)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?y08mJpOX6Psi9+Nor0+EqM6W+feECnp/F1qXOrEUuDzAZmhyj5O/otfqgEkD?=
+ =?us-ascii?Q?d72ee/0D6zGqZ8sFr06CcDFUKg8qyhc5G1Q/ym30JxIe7JDkB1uAe3kN90Fe?=
+ =?us-ascii?Q?T6bFOIu1OPqHBhF4paHJa8ssCXEHALHAHSQfaevAQVtMyFI6NOzI/LXyEi3s?=
+ =?us-ascii?Q?t6TnHqVA2yp8tUfydfLkx3UCZD+4Ws7mFGoV0sJn9E8802bZfGY6aqk0lYIV?=
+ =?us-ascii?Q?AsD9n6CvrU9biXrUUQf7Jh247GYXICbFZrQyIh3wWU3CNKy2ouH01ofRw3oQ?=
+ =?us-ascii?Q?jbDZtVfVVGGzVTELQrTno97nZFPMpLSjEzCQ15uO5+GRne2n1Xb4ieoR/zqY?=
+ =?us-ascii?Q?IeDn2/fz/6N8CB9R7w4KNcBGoDseh80PBtne7IC9mRLfLi/z/Jd9RspZnRER?=
+ =?us-ascii?Q?mTWs+8vD+qoEZvQJVExrv8N3zUaL6sQZtPpooZF1vbfH5j66pvBEsBJwgXwF?=
+ =?us-ascii?Q?QlamJXaf/DPOWW0rPMrGzkY19BNV2gDY+fkeGiSpnLBPOVvEuAf/uT/ZKBe3?=
+ =?us-ascii?Q?Jo6yohdPg1TIdiiglnyJUcDwhkanaTybNbmdFvhsaQtPKkvxYtQJs0d5mr7g?=
+ =?us-ascii?Q?ZdrnyBfoL91yc5NkWlyqw+FvA+ixQBuv/Ya7LZWWrAOukSCMfLeAVmeXEAld?=
+ =?us-ascii?Q?jvikpDCxacDpEiSjVVp/f/JFB9cDbOMTQW0DOpdPx5B3b81TY7+qaBl4Zn7j?=
+ =?us-ascii?Q?1Shvv7GDkn/lELFIF+Hirawozf/AFKUpvM1NkXAdqc8kyFSb+ZJPYmkuKFwQ?=
+ =?us-ascii?Q?6zAlMYLM0Um7/cw8m4ETChjqK4vB7tLMbvwAHbjxm8KN9e2z3pz1sTEBbclf?=
+ =?us-ascii?Q?y8B8mPiYNibbSlqUFCPTCmmOUWjpBwC3lXemkxe/57xQwQrRGg+VYyauwzzU?=
+ =?us-ascii?Q?QRtYvBcuZzpvhCXjh46oBm2neWXLautBDJ1ISEbzxRyL+0fUS06Qgv910zAG?=
+ =?us-ascii?Q?AlHkVuYKYyMLmy6yyWe4b0Wn4b2q4vDQ/42LbR7lYbVitSlKNpDTTHUnpc4q?=
+ =?us-ascii?Q?tC4veBlcA79HuFh9jBDherL/ewyYDD3ZFCLbgRi+tTO8FGOdhZZBWC24hntg?=
+ =?us-ascii?Q?POlIDOVmWVNz3I+bAsS7xYwKiUqdaVSq0iqZHuh78WWHfgzBd3yNF+FKemaf?=
+ =?us-ascii?Q?inC5IZfqDFh5RqCxcATc2JCys8aLAWMw45j+OFf2Dy/RSduW/caH41lHQElD?=
+ =?us-ascii?Q?o9owJ4VYEdGbzKbfFQr4oQK3ZhKjPnag+70Sl9QRHQKKmpBUlbiLsI7zsKtx?=
+ =?us-ascii?Q?i7Pe/fLAgCxgQG6GvBNE0syqQco7O0j8vnNIpC5gmL/lH1nPF4aDkM/4Z2Ox?=
+ =?us-ascii?Q?Lt2fe+cESCGXTfK65/WgnCY9AUig6CL4W+n2PGykxo+1AGDHvtzMFDrWjmJV?=
+ =?us-ascii?Q?s2DbRnCzeYanyjrF0X+fCnMaYJgOOs3hrsFXBknXiuJAucAyXCaIqFwnR00u?=
+ =?us-ascii?Q?0dveFmgMVDP2B4SzJhx9LIATD+iNe3QjwknEWvyjR1vRFZwM3J/pagyJD9XW?=
+ =?us-ascii?Q?Ij0c2xoTK9xQ8mVI5vif/hhSzzmnc5Q7eh9P+tvU5+RUbSYu7Uox+qXKpcFw?=
+ =?us-ascii?Q?Sj0tyjI3M6vlj539/0JC8fBEGOhnHgqzxhG8BJO11NbUVapYzjNKVIbpf2VM?=
+ =?us-ascii?Q?N86YFKePOGuhTzFT5wFnlRE=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25e9e427-70a1-47fc-b3d2-08db6d546454
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2023 03:55:43.0614
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oQl98l7LPcQ39ZI6GSxjpYf8I0cm4BhUCl78GqJmKN03SrMtKvAa/WmFhfIxiurUypjYUy4wQuNuJx+xp96Rng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR21MB3260
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 13, 2023 at 1:50=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> All callers of tls_is_sk_tx_device_offloaded() currently do
-> an equivalent of:
->
->  if (skb->sk && tls_is_skb_tx_device_offloaded(skb->sk))
->
-> Have the helper accept skb and do the skb->sk check locally.
-> Two drivers have local static inlines with similar wrappers
-> already.
->
-> While at it change the ifdef condition to TLS_DEVICE.
-> Only TLS_DEVICE selects SOCK_VALIDATE_XMIT, so the two are
-> equivalent. This makes removing the duplicated IS_ENABLED()
-> check in funeth more obviously correct.
->
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> Sent: Thursday, May 25, 2023 1:14 AM
+> To: Dexuan Cui <decui@microsoft.com>
+>=20
+> On Wed, Apr 19, 2023 at 07:40:32PM -0700, Dexuan Cui wrote:
+> > Fix the longstanding race between hv_pci_query_relations() and
+> > survey_child_resources() by flushing the workqueue before we exit from
+> > hv_pci_query_relations().
+>=20
+> "Fix the longstanding race" is vague. Please describe the race
+> succinctly at least to give an idea of what the problem is.
+Hi Lozenzo, I'm sorry for the late response -- finally I'm back on the patc=
+hset...
 
-Looks good, thanks.
+I'll use the below commit message in v4:
+=20
+ Since day 1 of the driver, there has been a race between
+ hv_pci_query_relations() and survey_child_resources(): during fast
+ device hotplug, hv_pci_query_relations() may error out due to
+ device-remove and the stack variable 'comp' is no longer valid;
+ however, pci_devices_present_work() -> survey_child_resources() ->
+ complete() may be running on another CPU and accessing the no-longer-valid
+ 'comp'. Fix the race by flushing the workqueue before we exit from
+ hv_pci_query_relations().
 
-Acked-by: Dimitris Michailidis <dmichail@fungible.com>
+I'll also update the comment to share more details of the race:
 
-> ---
-> CC: j.vosburgh@gmail.com
-> CC: andy@greyhouse.net
-> CC: rajur@chelsio.com
-> CC: ayush.sawal@chelsio.com
-> CC: dmichail@fungible.com
-> CC: borisp@nvidia.com
-> CC: saeedm@nvidia.com
-> CC: leon@kernel.org
-> CC: simon.horman@corigine.com
-> CC: john.fastabend@gmail.com
-> CC: anirudh.venkataramanan@intel.com
-> CC: maxtram95@gmail.com
-> CC: tariqt@nvidia.com
-> CC: gal@nvidia.com
-> CC: raeds@nvidia.com
-> CC: liorna@nvidia.com
-> CC: louis.peens@corigine.com
-> CC: yinjun.zhang@corigine.com
-> CC: na.wang@corigine.com
-> CC: linux-rdma@vger.kernel.org
-> CC: oss-drivers@corigine.com
-> ---
->  drivers/net/bonding/bond_main.c                           | 4 ++--
->  drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c           | 2 +-
->  drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h            | 5 -----
->  drivers/net/ethernet/chelsio/cxgb4/sge.c                  | 2 +-
->  .../ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c    | 2 +-
->  drivers/net/ethernet/fungible/funeth/funeth_tx.c          | 3 +--
->  .../net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h   | 2 +-
->  .../net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c    | 2 +-
->  .../net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h  | 5 -----
->  drivers/net/ethernet/netronome/nfp/nfp_net_common.c       | 4 ++--
->  include/net/tls.h                                         | 8 +++++---
->  net/tls/tls_device.c                                      | 4 ++--
->  12 files changed, 17 insertions(+), 26 deletions(-)
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -3401,6 +3401,24 @@ static int hv_pci_query_relations(struct hv_device *=
+hdev)
+        if (!ret)
+                ret =3D wait_for_response(hdev, &comp);
+
++       /*
++        * In the case of fast device addition/removal, it's possible that
++        * vmbus_sendpacket() or wait_for_response() returns -ENODEV but we
++        * already got a PCI_BUS_RELATIONS* message from the host and the
++        * channel callback already scheduled a work to hbus->wq, which can=
+ be
++        * running pci_devices_present_work() -> survey_child_resources() -=
 >
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_m=
-ain.c
-> index 007cec23a92f..16405b84dc2f 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -5442,7 +5442,7 @@ static netdev_tx_t bond_tls_device_xmit(struct bond=
-ing *bond, struct sk_buff *sk
->  {
->         struct net_device *tls_netdev =3D rcu_dereference(tls_get_ctx(skb=
-->sk)->netdev);
->
-> -       /* tls_netdev might become NULL, even if tls_is_sk_tx_device_offl=
-oaded
-> +       /* tls_netdev might become NULL, even if tls_is_skb_tx_device_off=
-loaded
->          * was true, if tls_device_down is running in parallel, but it's =
-OK,
->          * because bond_get_slave_by_dev has a NULL check.
->          */
-> @@ -5461,7 +5461,7 @@ static netdev_tx_t __bond_start_xmit(struct sk_buff=
- *skb, struct net_device *dev
->                 return NETDEV_TX_OK;
->
->  #if IS_ENABLED(CONFIG_TLS_DEVICE)
-> -       if (skb->sk && tls_is_sk_tx_device_offloaded(skb->sk))
-> +       if (tls_is_skb_tx_device_offloaded(skb))
->                 return bond_tls_device_xmit(bond, skb, dev);
->  #endif
->
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/ne=
-t/ethernet/chelsio/cxgb4/cxgb4_main.c
-> index f0bc7396ce2b..2eb33a727bba 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-> @@ -1175,7 +1175,7 @@ static u16 cxgb_select_queue(struct net_device *dev=
-, struct sk_buff *skb,
->                 txq =3D netdev_pick_tx(dev, skb, sb_dev);
->                 if (xfrm_offload(skb) || is_ptp_enabled(skb, dev) ||
->                     skb->encapsulation ||
-> -                   cxgb4_is_ktls_skb(skb) ||
-> +                   tls_is_skb_tx_device_offloaded(skb) ||
->                     (proto !=3D IPPROTO_TCP && proto !=3D IPPROTO_UDP))
->                         txq =3D txq % pi->nqsets;
->
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h b/drivers/net=
-/ethernet/chelsio/cxgb4/cxgb4_uld.h
-> index 34546f5312ee..a9599ba26975 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
-> @@ -497,11 +497,6 @@ struct cxgb4_uld_info {
->  #endif
->  };
->
-> -static inline bool cxgb4_is_ktls_skb(struct sk_buff *skb)
-> -{
-> -       return skb->sk && tls_is_sk_tx_device_offloaded(skb->sk);
-> -}
-> -
->  void cxgb4_uld_enable(struct adapter *adap);
->  void cxgb4_register_uld(enum cxgb4_uld type, const struct cxgb4_uld_info=
- *p);
->  int cxgb4_unregister_uld(enum cxgb4_uld type);
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ether=
-net/chelsio/cxgb4/sge.c
-> index 46809e2d94ee..98dd78551d89 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-> @@ -1530,7 +1530,7 @@ static netdev_tx_t cxgb4_eth_xmit(struct sk_buff *s=
-kb, struct net_device *dev)
->  #endif /* CHELSIO_IPSEC_INLINE */
->
->  #if IS_ENABLED(CONFIG_CHELSIO_TLS_DEVICE)
-> -       if (cxgb4_is_ktls_skb(skb) &&
-> +       if (tls_is_skb_tx_device_offloaded(skb) &&
->             (skb->len - skb_tcp_all_headers(skb)))
->                 return adap->uld[CXGB4_ULD_KTLS].tx_handler(skb, dev);
->  #endif /* CHELSIO_TLS_DEVICE */
-> diff --git a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls=
-.c b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
-> index 1a5fdd755e9e..bcdc7fc2f427 100644
-> --- a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
-> +++ b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
-> @@ -1946,7 +1946,7 @@ static int chcr_ktls_xmit(struct sk_buff *skb, stru=
-ct net_device *dev)
->         tls_ctx =3D tls_get_ctx(skb->sk);
->         tls_netdev =3D rcu_dereference_bh(tls_ctx->netdev);
->         /* Don't quit on NULL: if tls_device_down is running in parallel,
-> -        * netdev might become NULL, even if tls_is_sk_tx_device_offloade=
-d was
-> +        * netdev might become NULL, even if tls_is_skb_tx_device_offload=
-ed was
->          * true. Rather continue processing this packet.
->          */
->         if (unlikely(tls_netdev && tls_netdev !=3D dev))
-> diff --git a/drivers/net/ethernet/fungible/funeth/funeth_tx.c b/drivers/n=
-et/ethernet/fungible/funeth/funeth_tx.c
-> index 706d81e39a54..8ddefd3ec15b 100644
-> --- a/drivers/net/ethernet/fungible/funeth/funeth_tx.c
-> +++ b/drivers/net/ethernet/fungible/funeth/funeth_tx.c
-> @@ -348,8 +348,7 @@ netdev_tx_t fun_start_xmit(struct sk_buff *skb, struc=
-t net_device *netdev)
->         unsigned int tls_len =3D 0;
->         unsigned int ndesc;
->
-> -       if (IS_ENABLED(CONFIG_TLS_DEVICE) && skb->sk &&
-> -           tls_is_sk_tx_device_offloaded(skb->sk)) {
-> +       if (tls_is_skb_tx_device_offloaded(skb)) {
->                 skb =3D fun_tls_tx(skb, q, &tls_len);
->                 if (unlikely(!skb))
->                         goto dropped;
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h =
-b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
-> index c964644ee866..bac4717548c6 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
-> @@ -125,7 +125,7 @@ static inline bool mlx5e_accel_tx_begin(struct net_de=
-vice *dev,
->
->  #ifdef CONFIG_MLX5_EN_TLS
->         /* May send WQEs. */
-> -       if (mlx5e_ktls_skb_offloaded(skb))
-> +       if (tls_is_skb_tx_device_offloaded(skb))
->                 if (unlikely(!mlx5e_ktls_handle_tx_skb(dev, sq, skb,
->                                                        &state->tls)))
->                         return false;
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c b=
-/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-> index 0e4c0a093293..efb2cf74ad6a 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c
-> @@ -846,7 +846,7 @@ bool mlx5e_ktls_handle_tx_skb(struct net_device *netd=
-ev, struct mlx5e_txqsq *sq,
->         tls_ctx =3D tls_get_ctx(skb->sk);
->         tls_netdev =3D rcu_dereference_bh(tls_ctx->netdev);
->         /* Don't WARN on NULL: if tls_device_down is running in parallel,
-> -        * netdev might become NULL, even if tls_is_sk_tx_device_offloade=
-d was
-> +        * netdev might become NULL, even if tls_is_skb_tx_device_offload=
-ed was
->          * true. Rather continue processing this packet.
->          */
->         if (WARN_ON_ONCE(tls_netdev && tls_netdev !=3D netdev))
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h=
- b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
-> index 2dd78dd4ad65..f87b65c560ea 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
-> @@ -49,11 +49,6 @@ mlx5e_ktls_rx_pending_resync_list(struct mlx5e_channel=
- *c, int budget)
->         return budget && test_bit(MLX5E_SQ_STATE_PENDING_TLS_RX_RESYNC, &=
-c->async_icosq.state);
->  }
->
-> -static inline bool mlx5e_ktls_skb_offloaded(struct sk_buff *skb)
-> -{
-> -       return skb->sk && tls_is_sk_tx_device_offloaded(skb->sk);
-> -}
-> -
->  static inline void
->  mlx5e_ktls_handle_tx_wqe(struct mlx5_wqe_ctrl_seg *cseg,
->                          struct mlx5e_accel_tx_tls_state *state)
-> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/driver=
-s/net/ethernet/netronome/nfp/nfp_net_common.c
-> index b7cce746b5c0..49f2f081ebb5 100644
-> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-> @@ -598,7 +598,7 @@ nfp_net_tls_tx(struct nfp_net_dp *dp, struct nfp_net_=
-r_vector *r_vec,
->
->         if (likely(!dp->ktls_tx))
->                 return skb;
-> -       if (!skb->sk || !tls_is_sk_tx_device_offloaded(skb->sk))
-> +       if (!tls_is_skb_tx_device_offloaded(skb))
->                 return skb;
->
->         datalen =3D skb->len - skb_tcp_all_headers(skb);
-> @@ -666,7 +666,7 @@ void nfp_net_tls_tx_undo(struct sk_buff *skb, u64 tls=
-_handle)
->
->         if (!tls_handle)
->                 return;
-> -       if (WARN_ON_ONCE(!skb->sk || !tls_is_sk_tx_device_offloaded(skb->=
-sk)))
-> +       if (WARN_ON_ONCE(!tls_is_skb_tx_device_offloaded(skb)))
->                 return;
->
->         datalen =3D skb->len - skb_tcp_all_headers(skb);
-> diff --git a/include/net/tls.h b/include/net/tls.h
-> index b7d0f1e3058b..5e71dd3df8ca 100644
-> --- a/include/net/tls.h
-> +++ b/include/net/tls.h
-> @@ -370,10 +370,12 @@ struct sk_buff *
->  tls_validate_xmit_skb_sw(struct sock *sk, struct net_device *dev,
->                          struct sk_buff *skb);
->
-> -static inline bool tls_is_sk_tx_device_offloaded(struct sock *sk)
-> +static inline bool tls_is_skb_tx_device_offloaded(const struct sk_buff *=
-skb)
->  {
-> -#ifdef CONFIG_SOCK_VALIDATE_XMIT
-> -       return sk_fullsock(sk) &&
-> +#ifdef CONFIG_TLS_DEVICE
-> +       struct sock *sk =3D skb->sk;
-> +
-> +       return sk && sk_fullsock(sk) &&
->                (smp_load_acquire(&sk->sk_validate_xmit_skb) =3D=3D
->                &tls_validate_xmit_skb);
->  #else
-> diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-> index b4864d55900f..b82770f68807 100644
-> --- a/net/tls/tls_device.c
-> +++ b/net/tls/tls_device.c
-> @@ -1219,7 +1219,7 @@ int tls_set_device_offload(struct sock *sk, struct =
-tls_context *ctx)
->         tls_device_attach(ctx, sk, netdev);
->         up_read(&device_offload_lock);
->
-> -       /* following this assignment tls_is_sk_tx_device_offloaded
-> +       /* following this assignment tls_is_skb_tx_device_offloaded
->          * will return true and the context might be accessed
->          * by the netdev's xmit function.
->          */
-> @@ -1372,7 +1372,7 @@ static int tls_device_down(struct net_device *netde=
-v)
->
->         list_for_each_entry_safe(ctx, tmp, &list, list) {
->                 /* Stop offloaded TX and switch to the fallback.
-> -                * tls_is_sk_tx_device_offloaded will return false.
-> +                * tls_is_skb_tx_device_offloaded will return false.
->                  */
->                 WRITE_ONCE(ctx->sk->sk_validate_xmit_skb, tls_validate_xm=
-it_skb_sw);
->
-> --
-> 2.40.1
->
++        * complete(&hbus->survey_event), even after hv_pci_query_relations=
+()
++        * exits and the stack variable 'comp' is no longer valid; as a res=
+ult,
++        * a hang or a page fault may happen when the complete() calls
++        * raw_spin_lock_irqsave(). Flush hbus->wq before we exit from
++        * hv_pci_query_relations() to avoid the issues. Note: if 'ret' is
++        * -ENODEV, there can't be any more work item scheduled to hbus->wq
++        * after the flush_workqueue(): see vmbus_onoffer_rescind() ->
++        * vmbus_reset_channel_cb(), vmbus_rescind_cleanup() ->
++        * channel->rescind =3D true.
++        */
++       flush_workqueue(hbus->wq);
++
+        return ret;
+ }
+
+> > +	 * In the case of fast device addition/removal, it's possible that
+> > +	 * vmbus_sendpacket() or wait_for_response() returns -ENODEV but we
+> > +	 * already got a PCI_BUS_RELATIONS* message from the host and the
+> > +	 * channel callback already scheduled a work to hbus->wq, which can
+> >  be
+> > +	 * running survey_child_resources() -> complete(&hbus->survey_event),
+> > +	 * even after hv_pci_query_relations() exits and the stack variable
+> > +	 * 'comp' is no longer valid. This can cause a strange hang issue
+>=20
+> "A strange hang" sounds like we don't understand what's happening, it
+> does not feel like it is a solid understanding of the issue.
+>=20
+> I would remove it - given that you already explain that comp is no
+> longer valid - that is already a bug that needs fixing.
+I share more details in the comment (see the above).
+=20
+> Acked-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Thanks!
