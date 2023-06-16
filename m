@@ -2,89 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDDE73285D
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jun 2023 09:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D73732B0E
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jun 2023 11:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240391AbjFPHFZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Jun 2023 03:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
+        id S1343927AbjFPJHv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Jun 2023 05:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244229AbjFPHEu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Jun 2023 03:04:50 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3365268A
-        for <linux-rdma@vger.kernel.org>; Fri, 16 Jun 2023 00:04:09 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3f8d258f203so2360005e9.1
-        for <linux-rdma@vger.kernel.org>; Fri, 16 Jun 2023 00:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686899048; x=1689491048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mEheVmmZKno00YKGHW7xItrFqYeydiqUmVYCZ+1Z/zQ=;
-        b=EjiHj+r5R7Alb6qabtNlIP8BiZziH6PtlHcBdGKC6xMxZYcuYyW9Z9f8Cw+HVjZ2tZ
-         a7FoZdClbl6nfaoYyZegjq2VAbvbqaejNyl+Rx8CsZyRtZKe/cEJiZUTk85UD26dyRSP
-         MZUSGCCXdJ/mOJEgsa9B62YSLZ1nEe/0bTe1K63Jl+UL94upJIWcqFtJFoTRdscok9ry
-         8AOaFybtK8Ppmxxd4yTlgqINI57pYpiXwfGYKNlSVFter+oGPC0/3JTRbHjnKQ851QqE
-         i+G0dK/aaKwvlCWV7feNisvDAJJgqhqMTiw3gShdxnrnVgl33hupoqhkoSqau3H5nxIX
-         Hx+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686899048; x=1689491048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mEheVmmZKno00YKGHW7xItrFqYeydiqUmVYCZ+1Z/zQ=;
-        b=ROTdzFP/AnrhU8Bpwd20XiE/nM7JyDGFoKg7xHFXDen+7weotTBaFqvuq3pwxvKifl
-         mGkKsm+HLw8+5+fkSNSv+h5FNGiLS4ZMYSUvDgkrUDG3Q1Bj2KJlmsWIMjaLP7rMMfnU
-         pd9zYjuykYoMIXP48hwkZSf//+9wdIDr4Zy9hYTlHT38WahTK2Mlibpl27Q3A7oW4d9G
-         f4f/FPP/tNlqvhSlxpSvVDL80u91Ns538h+DJaV/LdGXeqeyEhoDnbqqC7xKDMy4nPnm
-         U2hE2W4TD2G2h9LtAAsiQcWvBpj7U1URXraFLJMPDAbJRXaKZwfxeOpzNh0kAEi21HFD
-         bBJw==
-X-Gm-Message-State: AC+VfDxr6U1uXEuW08ow6cWlNW4OBonBoe3JA3mK5cpm4SN1J0zTd/xw
-        0B0Zzanho2dhSGAK5nnuviIaTG4HM061E7+xuD0=
-X-Google-Smtp-Source: ACHHUZ69x2GEowOeIEdcZAo0xjAgCeMwfsaYBE20/5avoOVSNTyNtXAaxgaBygwcxZYS2IC9OR9WmA==
-X-Received: by 2002:a05:600c:2295:b0:3f7:5e3:c1f2 with SMTP id 21-20020a05600c229500b003f705e3c1f2mr927547wmf.8.1686899048229;
-        Fri, 16 Jun 2023 00:04:08 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id p4-20020a5d48c4000000b0030903d44dbcsm22711525wrs.33.2023.06.16.00.04.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jun 2023 00:04:06 -0700 (PDT)
-Date:   Fri, 16 Jun 2023 10:04:02 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>
-Cc:     linux-rdma@vger.kernel.org,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: Re: [PATCH for-next 2/2] RDMA/bnxt_re: refactor code around
- bnxt_qplib_map_rc
-Message-ID: <8d8a4fa2-34bb-41a1-a26c-305036c711b2@kadam.mountain>
-References: <20230616061700.741769-1-kashyap.desai@broadcom.com>
- <20230616061700.741769-2-kashyap.desai@broadcom.com>
+        with ESMTP id S1343975AbjFPJHf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Jun 2023 05:07:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A454C05;
+        Fri, 16 Jun 2023 02:05:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DF6763088;
+        Fri, 16 Jun 2023 09:05:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1FAFC433C8;
+        Fri, 16 Jun 2023 09:05:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686906351;
+        bh=k/trZ96PiS/GWyCEHrmskygB7J0jtwXePPp4HjHDZMs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eyCArWvMCg3UlfRODXgh7mn1uAFFpqGklxVjDsJ3NtFTmFrnqgp4gFdsQtrLMjbJV
+         LWmhz8d6m3mXtdAmx1e1UnYoXAmw9QMBSckNIN4bCOAtUKfTvfJb9hVcLBmj/dWWAf
+         EsURUjUEvbMS0n2C+H/HczxpdGTnEW8nDZ4xlphguV62YaHfaQGeKCGcdlyn3IytfY
+         W9VvWOAhcnWTyYky1PWcHfTYPjE189FHLbFcuvnuM2E6cLEceJI1NLeQZ/X6R9ZH94
+         pi1ZZBy3JAyVmi9T0br3X+GgqCG4bOPChEVt55xrB0mtlHNK6FeUnF2Wf3WvXEUkk0
+         ruk/1sAfTIbFA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [BUGREPORT] RDMA/bnxt_re: avoid unintialized variable use
+Date:   Fri, 16 Jun 2023 11:05:40 +0200
+Message-Id: <20230616090546.2555077-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230616061700.741769-2-kashyap.desai@broadcom.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 16, 2023 at 11:47:00AM +0530, Kashyap Desai wrote:
-> Updated function comment of bnxt_qplib_map_rc
-> Removed intermediate return value ENXIO and directly called bnxt_qplib_map_rc
-> from __send_message_basic_sanity.
-> 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> ---
+From: Arnd Bergmann <arnd@arndb.de>
 
-Probably Reported-by is giving me to much credit but I do like this
-change.  It's more clear now.  Thanks, a lot!
+The newly added opcode variable is not initialized anywhere:
 
-regards,
-dan carpenter
+drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:322:18: error: variable 'opcode' is uninitialized when used here [-Werror,-Wuninitialized]
+        crsqe->opcode = opcode;
+
+Not sure what the intention was here, but this is clearly pointless, so
+instead use 0 in place of the variable.
+
+Fixes: bcfee4ce3e013 ("RDMA/bnxt_re: remove redundant cmdq_bitmap")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+This is likely not the correct fix, so treat this as a bug report,
+the patch is what I applied as a temporary workaround in my randconfig
+tree.
+---
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index bb5aebafe1622..8d349d6a633fa 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -285,7 +285,6 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	struct pci_dev *pdev;
+ 	unsigned long flags;
+ 	u16 cookie;
+-	u8 opcode;
+ 	u8 *preq;
+ 
+ 	cmdq = &rcfw->cmdq;
+@@ -319,7 +318,7 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	crsqe->is_internal_cmd = false;
+ 	crsqe->is_waiter_alive = true;
+ 	crsqe->is_in_used = true;
+-	crsqe->opcode = opcode;
++	crsqe->opcode = 0;
+ 
+ 	crsqe->req_size = __get_cmdq_base_cmd_size(msg->req, msg->req_sz);
+ 	if (__get_cmdq_base_resp_size(msg->req, msg->req_sz) && msg->sb) {
+-- 
+2.39.2
 
