@@ -2,161 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A53B173310B
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jun 2023 14:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B5C73312D
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jun 2023 14:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344177AbjFPMVN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Jun 2023 08:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
+        id S229912AbjFPM2B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Jun 2023 08:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241493AbjFPMVM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Jun 2023 08:21:12 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB27358C;
-        Fri, 16 Jun 2023 05:20:59 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4QjJ642Bt3z18MFb;
-        Fri, 16 Jun 2023 20:15:56 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 16 Jun
- 2023 20:20:55 +0800
-Subject: Re: [PATCH net-next v4 4/5] page_pool: remove PP_FLAG_PAGE_FRAG flag
-To:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
+        with ESMTP id S1344192AbjFPM17 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Jun 2023 08:27:59 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A4EF30DE;
+        Fri, 16 Jun 2023 05:27:56 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 1B84492009C; Fri, 16 Jun 2023 14:27:53 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 13F8F92009B;
+        Fri, 16 Jun 2023 13:27:53 +0100 (BST)
+Date:   Fri, 16 Jun 2023 13:27:52 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
         Eric Dumazet <edumazet@google.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-References: <20230612130256.4572-1-linyunsheng@huawei.com>
- <20230612130256.4572-5-linyunsheng@huawei.com>
- <20230614101954.30112d6e@kernel.org>
- <8c544cd9-00a3-2f17-bd04-13ca99136750@huawei.com>
- <20230615095100.35c5eb10@kernel.org>
- <CAKgT0Uc6Xoyh3Edgt+83b+HTM5j4JDr3fuxcyL9qDk+Wwt9APg@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <908b8b17-f942-f909-61e6-276df52a5ad5@huawei.com>
-Date:   Fri, 16 Jun 2023 20:20:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Oliver O'Halloran <oohall@gmail.com>,
+        Stefan Roese <sr@denx.de>, Leon Romanovsky <leon@kernel.org>,
+        linux-rdma@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jim Wilson <wilson@tuliptree.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Abdurachmanov <david.abdurachmanov@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Lukas Wunner <lukas@wunner.de>, netdev@vger.kernel.org,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH v9 00/14] pci: Work around ASMedia ASM2824 PCIe link
+ training failures
+In-Reply-To: <20230615183754.GA1483387@bhelgaas>
+Message-ID: <alpine.DEB.2.21.2306160431470.64925@angie.orcam.me.uk>
+References: <20230615183754.GA1483387@bhelgaas>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0Uc6Xoyh3Edgt+83b+HTM5j4JDr3fuxcyL9qDk+Wwt9APg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2023/6/16 2:26, Alexander Duyck wrote:
-> On Thu, Jun 15, 2023 at 9:51 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Thu, 15 Jun 2023 15:17:39 +0800 Yunsheng Lin wrote:
->>>> Does hns3_page_order() set a good example for the users?
->>>>
->>>> static inline unsigned int hns3_page_order(struct hns3_enet_ring *ring)
->>>> {
->>>> #if (PAGE_SIZE < 8192)
->>>>     if (ring->buf_size > (PAGE_SIZE / 2))
->>>>             return 1;
->>>> #endif
->>>>     return 0;
->>>> }
->>>>
->>>> Why allocate order 1 pages for buffers which would fit in a single page?
->>>> I feel like this soft of heuristic should be built into the API itself.
->>>
->>> hns3 only support fixed buf size per desc by 512 byte, 1024 bytes, 2048 bytes
->>> 4096 bytes, see hns3_buf_size2type(), I think the order 1 pages is for buf size
->>> with 4096 bytes and system page size with 4K, as hns3 driver still support the
->>> per-desc ping-pong way of page splitting when page_pool_enabled is false.
->>>
->>> With page pool enabled, you are right that order 0 pages is enough, and I am not
->>> sure about the exact reason we use the some order as the ping-pong way of page
->>> splitting now.
->>> As 2048 bytes buf size seems to be the default one, and I has not heard any one
->>> changing it. Also, it caculates the pool_size using something as below, so the
->>> memory usage is almost the same for order 0 and order 1:
->>>
->>> .pool_size = ring->desc_num * hns3_buf_size(ring) /
->>>               (PAGE_SIZE << hns3_page_order(ring)),
->>>
->>> I am not sure it worth changing it, maybe just change it to set good example for
->>> the users:) anyway I need to discuss this with other colleague internally and do
->>> some testing before doing the change.
->>
->> Right, I think this may be a leftover from the page flipping mode of
->> operation. But AFAIU we should leave the recycling fully to the page
->> pool now. If we make any improvements try to make them at the page pool
->> level.
+On Thu, 15 Jun 2023, Bjorn Helgaas wrote:
 
-I checked, the per-desc buf with 4096 bytes for hnse does not seem to
-be used mainly because of the larger memory usage you mentioned below.
-
->>
->> I like your patches as they isolate the drivers from having to make the
->> fragmentation decisions based on the system page size (4k vs 64k but
->> we're hearing more and more about ARM w/ 16k pages). For that use case
->> this is great.
-
-Yes, That is my point. For hw case, the page splitting in page pool is
-mainly to enble multi-descs to use the same page as my understanding.
-
->>
->> What we don't want is drivers to start requesting larger page sizes
->> because it looks good in iperf on a freshly booted, idle system :(
+> >  If doing it this way, which I actually like, I think it would be a little 
+> > bit better performance- and style-wise if this was written as:
+> > 
+> > 	if (pci_is_pcie(dev)) {
+> > 		bridge = pci_upstream_bridge(dev);
+> > 		retrain = !!bridge;
+> > 	}
+> > 
+> > (or "retrain = bridge != NULL" if you prefer this style), and then we 
+> > don't have to repeatedly check two variables iff (pcie && !bridge) in the 
+> > loop below:
 > 
-> Actually that would be a really good direction for this patch set to
-> look at going into. Rather than having us always allocate a "page" it
-> would make sense for most drivers to allocate a 4K fragment or the
-> like in the case that the base page size is larger than 4K. That might
-> be a good use case to justify doing away with the standard page pool
-> page and look at making them all fragmented.
-
-I am not sure if I understand the above, isn't the frag API able to
-support allocating a 4K fragment when base page size is larger than
-4K before or after this patch? what more do we need to do?
-
+> Done, thanks, I do like that better.  I did:
 > 
-> In the case of the standard page size being 4K a standard page would
-> just have to take on the CPU overhead of the atomic_set and
-> atomic_read for pp_ref_count (new name) which should be minimal as on
-> most sane systems those just end up being a memory write and read.
-
-If I understand you correctly, I think what you are trying to do
-may break some of Jesper' benchmarking:)
-
-[1] https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/bench_page_pool_simple.c
-
-> .
+>   bridge = pci_upstream_bridge(dev);
+>   if (bridge)
+>     retrain = true;
 > 
+> because it seems like it flows more naturally when reading.
+
+ Perfect, and good timing too, as I have just started checking your tree 
+as your message arrived.  I ran my usual tests with and w/o PCI_QUIRKS 
+enabled and results were as expected.  As before I didn't check hot plug 
+and reset paths as these features are awkward with the HiFive Unmatched 
+system involved.
+
+ I have skimmed over the changes as committed to pci/enumeration and found 
+nothing suspicious.  I have verified that the tree builds as at each of 
+them with my configuration.
+
+ As per my earlier remark:
+
+> I think making a system halfway-fixed would make little sense, but with
+> the actual fix actually made last as you suggested I think this can be
+> split off, because it'll make no functional change by itself.
+
+I am not perfectly happy with your rearrangement to fold the !PCI_QUIRKS 
+stub into the change carrying the actual workaround and then have the 
+reset path update with a follow-up change only, but I won't fight over it.  
+It's only one tree revision that will be in this halfway-fixed state and 
+I'll trust your judgement here.
+
+ Let me know if anything pops up related to these changes anytime and I'll 
+be happy to look into it.  The system involved is nearing two years since 
+its deployment already, but hopefully it has many years to go yet and will 
+continue being ready to verify things.  It's not that there's lots of real 
+RISC-V hardware available, let alone with PCI/e connectivity.
+
+ Thank you for staying with me and reviewing this patch series through all 
+the iterations.
+
+  Maciej
