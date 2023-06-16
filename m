@@ -2,114 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA91F732736
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jun 2023 08:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E93732738
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jun 2023 08:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243227AbjFPGTI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Jun 2023 02:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53554 "EHLO
+        id S230053AbjFPGTg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Jun 2023 02:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243152AbjFPGTH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Jun 2023 02:19:07 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA552D60
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Jun 2023 23:19:05 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-762303b2ca9so25143285a.1
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Jun 2023 23:19:05 -0700 (PDT)
+        with ESMTP id S231727AbjFPGTd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Jun 2023 02:19:33 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7B710E9
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Jun 2023 23:19:33 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-666669bb882so450535b3a.1
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Jun 2023 23:19:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686896344; x=1689488344;
-        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ADAZeXd1bCxor2apdHpok/9BKnMqkYeexMs0bR4x5q0=;
-        b=JQriUzsalqX5RjCOrec5EXvZXW3DHuIgJ05nH18x9ZuecbBP+vIl7XT6kPUaDqrFGy
-         BH7jHLUUfxPHCjBCKxGGi/YKqpxP9RpfJ6vuUz16p6Lcx65EK7h9KSxyRK22BrU0nzsO
-         jVK1uHh40uJJpdgxiKfijZ7QXw0EELZzt++so=
+        d=broadcom.com; s=google; t=1686896372; x=1689488372;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uXPiL1PAF4V7Ybxk1Vbr8Vy8WM9X5iVchsoZ4C341tk=;
+        b=aGIf4eRu61eF2wT+QGdNLOb/txjq7DfYGtOVdZ4bQx1qqRjSaDAsQ9NTbK++3s8iyg
+         kB2GTxoP8kIvdYt68WO19bbGxtGIMy86q9qA3TVZsxZkoQEnXGCqBzTb4KmisheOZPg4
+         4J8sLpGJ55ihisqSrdKvWg1uXkj21yv3LxtqE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686896344; x=1689488344;
-        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ADAZeXd1bCxor2apdHpok/9BKnMqkYeexMs0bR4x5q0=;
-        b=TDeSBmx9nf2unviHXTCy0JSBu3UXVsxuztmICHkzhRtiJckvmNz4WfFRf0m6V0km5b
-         pw5ldfr9g4iDCVM4qM2V4LcWkUZVYeZqWIzvXSuv1coXhc3+jawFEq6NPzYQFcyCA6zU
-         0UxTG1gqEtxN4soFy7Wcq+3sUB6VCCMwK8SkAlALlDcQETWzM3ckcN08flY/q3JVxFe2
-         RP/nlE5F1SUXJUQLnqSErHG4vr8fUqnmOwWKp2pOGhgs8kcM7TgiNB4CpIlA5zFkobGN
-         K5FrX5wp1wsGbgNWv+QfFHCcuieFWK3VpDzXAnlE9qBIajnuQHy80p3e5ndQJYk15GTp
-         8Q1g==
-X-Gm-Message-State: AC+VfDwpWFhHPxpX04Y3h9mbMPBDIKw2apPn7+YRY6UzDvabmLGAm9XO
-        4AbRTT5X3C8+lj0Yc6l6meS793XGXfrxebHqCbfR/KuzoxleXTbG4WqjM9fsDUmLN7FYn0w2/8i
-        /+REDKDIAo/TdJ0heldN8tl4Z5IclZLkHDwUoqdJV/9ihOdytwoFG4kTNi7rGL/4RYeCQtLxA0E
-        eA1sfyZWBahO4=
-X-Google-Smtp-Source: ACHHUZ5GGCwQdkifEaLnad1NeDZKacgc/2xwxD75UPhbov/r8PfhwW95ugGN55hGvT0Sjvb9Y+guYg==
-X-Received: by 2002:a05:620a:27d2:b0:75b:23a1:3683 with SMTP id i18-20020a05620a27d200b0075b23a13683mr757262qkp.68.1686896343922;
-        Thu, 15 Jun 2023 23:19:03 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686896372; x=1689488372;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uXPiL1PAF4V7Ybxk1Vbr8Vy8WM9X5iVchsoZ4C341tk=;
+        b=CmZzWqseOSh7Q1M1vz4jpgqfWxA58lOv7Rh6ibAs3cWX5Ybb5d8jr9m6fxYdxS8vS7
+         +n914uNgxemhD+qmrtMSy+JUnzJv/NKuxigdlvljAO+VOgXluEOvrlHlwNuaglea4L1o
+         ybBiloQ3BLBSlbU/psAafTicB4WX2ptn/ptJqh6Q0styO172OMTD57Eu/uyixpDToTau
+         pJqnNNpz3f8GU9+0rZPza8nE2RqitoQOenNqaM6dzqKQqhRcLXwuBhLfkq8bCyEur5Dz
+         IL/8TIqq7b+M+RJHmTa5m0WzEwiQY2eSvsKhm68KdGq+Uoy0FgJYcWB3cRKR8CYHiU3H
+         94ww==
+X-Gm-Message-State: AC+VfDzx/v9iVIGkk/q8esrCYpNg0Ncgwx9/WDU4dt7fJ/Vw4z6vOjsU
+        RQ3KLx7wRMGMT7TSEw3GFrIGDt5rpw0KhU8Y8Cac3wmL77iG79b/fIoB10yKV7Lgsui8/pWszIi
+        mpwLY1p9oqYfnR3wx3m8bd1hb8gElieNpbvZyo9Y39tjrjpJ3Y6d97CEoZ8l6C4VItkMrHwCjaT
+        GLuR1ZcdUkqWE=
+X-Google-Smtp-Source: ACHHUZ6ddxXgkYuwF0qk/mcZdqJod8A72SV0cg2SOjLgJ5VAAd3P2U8nkR/vBXsF2WKFhWpWGJx+yQ==
+X-Received: by 2002:a05:6a00:14ca:b0:64d:42f6:4c7b with SMTP id w10-20020a056a0014ca00b0064d42f64c7bmr1334543pfu.27.1686896371758;
+        Thu, 15 Jun 2023 23:19:31 -0700 (PDT)
 Received: from amd_smc.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id c9-20020a62e809000000b0064d48d98260sm12878506pfi.156.2023.06.15.23.19.01
+        by smtp.gmail.com with ESMTPSA id c9-20020a62e809000000b0064d48d98260sm12878506pfi.156.2023.06.15.23.19.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jun 2023 23:19:02 -0700 (PDT)
+        Thu, 15 Jun 2023 23:19:31 -0700 (PDT)
 From:   Kashyap Desai <kashyap.desai@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     dan.carpenter@linaro.org,
         Kashyap Desai <kashyap.desai@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 1/2] RDMA/bnxt_re: Remove incorrect  return check from slow path
-Date:   Fri, 16 Jun 2023 11:46:59 +0530
-Message-Id: <20230616061700.741769-1-kashyap.desai@broadcom.com>
+Subject: [PATCH for-next 2/2] RDMA/bnxt_re: refactor code around bnxt_qplib_map_rc
+Date:   Fri, 16 Jun 2023 11:47:00 +0530
+Message-Id: <20230616061700.741769-2-kashyap.desai@broadcom.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20230616061700.741769-1-kashyap.desai@broadcom.com>
+References: <20230616061700.741769-1-kashyap.desai@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000005fbbaa05fe392988"
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        boundary="00000000000009aa7205fe392bd5"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000005fbbaa05fe392988
+--00000000000009aa7205fe392bd5
 Content-Transfer-Encoding: 8bit
 
-The patch 691eb7c6110f: "RDMA/bnxt_re: handle command
-completions after driver detect a timedout" introduced code resulting in
-below warning issued by the smatch static checker.
+Updated function comment of bnxt_qplib_map_rc
+Removed intermediate return value ENXIO and directly called bnxt_qplib_map_rc
+from __send_message_basic_sanity.
 
-        drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:513 __bnxt_qplib_rcfw_send_message()
-        warn: duplicate check 'rc' (previous on line 506)
-
-Fix the warning by removing incorrect code block.
-
-Fixes: 691eb7c6110f ("RDMA/bnxt_re: handle command completions after driver detect a timedout")
 Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 23 ++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index bb5aebafe162..30c6e865d691 100644
+index 30c6e865d691..a8323054cfee 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -503,12 +503,6 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 		rc = __wait_for_resp(rcfw, cookie);
- 	else
- 		rc = __poll_for_resp(rcfw, cookie);
--	if (rc) {
--		/* timed out */
--		dev_err(&rcfw->pdev->dev, "cmdq[%#x]=%#x timedout (%d)msec\n",
--			cookie, opcode, RCFW_CMD_WAIT_TIME_MS);
--		return rc;
--	}
+@@ -57,13 +57,20 @@ static void bnxt_qplib_service_creq(struct tasklet_struct *t);
+  * bnxt_qplib_map_rc  -  map return type based on opcode
+  * @opcode    -  roce slow path opcode
+  *
+- * In some cases like firmware halt is detected, the driver is supposed to
+- * remap the error code of the timed out command.
++ * case #1
++ * Firmware initiated error recovery is a safe state machine and
++ * driver can consider all the underlying rdma resources are free.
++ * In this state, it is safe to return success for opcodes related to
++ * destroying rdma resources (like destroy qp, destroy cq etc.).
+  *
+- * It is not safe to assume hardware is really inactive so certain opcodes
+- * like destroy qp etc are not safe to be returned success, but this function
+- * will be called when FW already reports a timeout. This would be possible
+- * only when FW crashes and resets. This will clear all the HW resources.
++ * case #2
++ * If driver detect potential firmware stall, it is not safe state machine
++ * and the driver can not consider all the underlying rdma resources are
++ * freed.
++ * In this state, it is not safe to return success for opcodes related to
++ * destroying rdma resources (like destroy qp, destroy cq etc.).
++ *
++ * Scope of this helper function is only for case #1.
+  *
+  * Returns:
+  * 0 to communicate success to caller.
+@@ -418,7 +425,7 @@ static int __send_message_basic_sanity(struct bnxt_qplib_rcfw *rcfw,
  
- 	if (rc) {
- 		spin_lock_irqsave(&rcfw->cmdq.hwq.lock, flags);
+ 	/* Prevent posting if f/w is not in a state to process */
+ 	if (test_bit(ERR_DEVICE_DETACHED, &rcfw->cmdq.flags))
+-		return -ENXIO;
++		return bnxt_qplib_map_rc(opcode);
+ 	if (test_bit(FIRMWARE_STALL_DETECTED, &cmdq->flags))
+ 		return -ETIMEDOUT;
+ 
+@@ -488,7 +495,7 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
+ 
+ 	rc = __send_message_basic_sanity(rcfw, msg, opcode);
+ 	if (rc)
+-		return rc == -ENXIO ? bnxt_qplib_map_rc(opcode) : rc;
++		return rc;
+ 
+ 	rc = __send_message(rcfw, msg);
+ 	if (rc)
 -- 
 2.27.0
 
 
---0000000000005fbbaa05fe392988
+--00000000000009aa7205fe392bd5
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -180,13 +208,13 @@ GRRQamqDhA+VgD34fZSymk33umJA6SDgqaX9pDs276nwbY0g8TSOZwohc/6eTzU0Gsl1jSuJezXm
 /bctt3Fx6+DwYeO9905PrJUE+iBLLHPm5cHBNF9yWCy/FrP9ZMFvsUvcPiWyEWFPYhsVxAMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQyr9ygXXwrg7q
-ph4wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBsZl/LWNPpnYqUphN+Dy06mJxrc
-zDn0c0bn07GT1CidMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDYxNjA2MTkwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+ph4wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAXjxHGHHZGhMEtWVWSnumEDofdO
+KfdmluBMuQZIDnqPMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDYxNjA2MTkzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQAG2vUau20dk11aQDsS1x0T9U0lvzE0DwljljagGf5FdIhD
-N+LM1yAMvGzvxiBBP3bEzIR590xDdSXTMtKddwJL8cQoS4VEOi53FnVkr9ait3ZZCLg2glr6Cd/U
-ii/ej//1aNb7MT63Ua6H2NcXn1pqAs8mflm0DuxgTT1iHgn3fTNvIsYmxSScMxu8EugXp5U7yegH
-3HqSDZnBNg2mJCDimyrI4RagX/qc7vRX876yzSKI7+X/R/fvaFRJmpnwC0kvixa2rZNgwPybwwE2
-QTYXaMP6DWEIG81M3i+e4cUjBgra6ClSIpk767z+LwhAPDvk1dtY+d79N4YuhytBFc6r
---0000000000005fbbaa05fe392988--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCj1IkiP6IadQnUdzDYqDEPwrL1MkPOdbMfA0szdu172xqB
++CnTfgoLGhzKZVBYTjFaZder9xPRDI/sFiKYwxrQ++ifZtW1jaKNENSUWWTIoMCypa4mP+kIkdpB
+dk0KC7qF07eY8Y2d6Rti1gJz6UVSKp7XYOsgKk4b+3NrQdZVbGWVTCSI2KsRIx2sf2xUSK8j/af1
+jU+JABL8DlK31WrNZe4Ujwgi7zLdw5mMSzQWw1w3jubRJFtF7V/zGHRjKOLIrggHR6kjqu2aA/OQ
+lgF9bLI2IRLKwV3NWHT8f1AvLnM4tqFkn6PZFWMQbzo5QH9DKu2f4xtGuMEFXaEEXyyN
+--00000000000009aa7205fe392bd5--
