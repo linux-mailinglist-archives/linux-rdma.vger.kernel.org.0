@@ -2,126 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8E3734048
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 Jun 2023 12:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D30A7340AE
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 Jun 2023 14:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346342AbjFQKiK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 17 Jun 2023 06:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        id S234243AbjFQMNX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 17 Jun 2023 08:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbjFQKiF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 17 Jun 2023 06:38:05 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020A72720
-        for <linux-rdma@vger.kernel.org>; Sat, 17 Jun 2023 03:37:19 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-51a3e6a952aso1912800a12.3
-        for <linux-rdma@vger.kernel.org>; Sat, 17 Jun 2023 03:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1686998172; x=1689590172;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/1x1TufhGga+vhofQhW3+rOkuF8WKt/IeOnnrmJtrog=;
-        b=BSLERsDAgGslIeEyq94ScS8bRLgPPRRRwT8Nf8n+6gest5CBJm7weH95XbHUWqLPrs
-         lMqAZ5YohISaainT6DoT5KRo+06ct7IyRAWJITH8QiX+CKXNRf7RTEbj4ehIcYJxYtHJ
-         S+tMFiI9UWNXT2a5hg0KLa/1NxteLO2ap4RvVkp9qGeFfK5FKir/7euwyrkgLckOtKmi
-         Xn2ZIAD96h2+mraRrWLl1sWZ/1oEO7vpCWKa7qJYU0VpWfYwdunjJkr7fjK6tTnVnk6L
-         LIWC6DFNj4ViFnScRoCYtPIpyJ2HWmk9OlLm6i3tklX7Kcc0HpSuhcjnvvvKwhWWp6Pq
-         o8mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686998172; x=1689590172;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/1x1TufhGga+vhofQhW3+rOkuF8WKt/IeOnnrmJtrog=;
-        b=dH9CtoA4jk4LHKPI1v4PbTXRyPNqyHz43+6PaywnXd+p35AMtkK+f6t23BjUt5+oMG
-         vfufn1ZG+ZzfF9HFsXS34UMrB7aYn0Mkj+xno0F3XbAnStP1q98MPyfT9CvrhsDRRGX1
-         PWuQBAtVPQMpDs0lOIdPt2DsKKxi6FNSY4BsBh6GBUQvXZkAGseOwWGY12Uwhd9Eo2bQ
-         qWBbVDFmgql4J0q3dcnF/P374mgFA15RswVoYA26T0uRM+xIfpLvgT3igPm7pv/Ge1VR
-         iCGoJV9GJq8Fb56tc5d46c/9eBJCZ2rSJiwu0szjyC1x5rKTFsHd6yhHR3hfWsieUsy5
-         ripQ==
-X-Gm-Message-State: AC+VfDzns5NgeZwVVfYmltE1Q+5lOMmJLs1AkmqTJu2LqadbaVd48sft
-        V+DhrfmzX5Ak4GSxZy/BoTmmgQ==
-X-Google-Smtp-Source: ACHHUZ7OhqQdwYiCXLWpW4pNAkdtQLu1xzSJt4dCibpw5uqj3GQ/nixFPiQmcTPdSiQpJVj0JEscIg==
-X-Received: by 2002:a17:907:7204:b0:94f:5847:8ac with SMTP id dr4-20020a170907720400b0094f584708acmr4832912ejc.51.1686998172291;
-        Sat, 17 Jun 2023 03:36:12 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id s22-20020a1709064d9600b00982881f1e2dsm4053734eju.84.2023.06.17.03.36.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jun 2023 03:36:11 -0700 (PDT)
-Date:   Sat, 17 Jun 2023 12:36:09 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>,
-        "vadfed@meta.com" <vadfed@meta.com>,
-        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "vadfed@fb.com" <vadfed@fb.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "M, Saeed" <saeedm@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        "sj@kernel.org" <sj@kernel.org>,
-        "javierm@redhat.com" <javierm@redhat.com>,
-        "ricardo.canuelo@collabora.com" <ricardo.canuelo@collabora.com>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "Michalik, Michal" <michal.michalik@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jacek.lawrynowicz@linux.intel.com" 
-        <jacek.lawrynowicz@linux.intel.com>,
-        "airlied@redhat.com" <airlied@redhat.com>,
-        "ogabbay@kernel.org" <ogabbay@kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "nipun.gupta@amd.com" <nipun.gupta@amd.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux@zary.sk" <linux@zary.sk>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "benjamin.tissoires@redhat.com" <benjamin.tissoires@redhat.com>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        "Olech, Milena" <milena.olech@intel.com>,
-        "kuniyu@amazon.com" <kuniyu@amazon.com>,
-        "liuhangbin@gmail.com" <liuhangbin@gmail.com>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "andy.ren@getcruise.com" <andy.ren@getcruise.com>,
-        "razor@blackwall.org" <razor@blackwall.org>,
-        "idosch@nvidia.com" <idosch@nvidia.com>,
-        "lucien.xin@gmail.com" <lucien.xin@gmail.com>,
-        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
-        "phil@nwl.cc" <phil@nwl.cc>,
-        "claudiajkang@gmail.com" <claudiajkang@gmail.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, poros <poros@redhat.com>,
-        mschmidt <mschmidt@redhat.com>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>
-Subject: Re: [RFC PATCH v8 01/10] dpll: documentation on DPLL subsystem
- interface
-Message-ID: <ZI2MmaQ1NAggT+l6@nanopsycho>
-References: <20230609121853.3607724-2-arkadiusz.kubalewski@intel.com>
- <20230612154329.7bd2d52f@kernel.org>
- <ZIg8/0UJB9Lbyx2D@nanopsycho>
- <20230613093801.735cd341@kernel.org>
- <ZImH/6GzGdydC3U3@nanopsycho>
- <DM6PR11MB465799A5A9BB0B8E73A073449B5AA@DM6PR11MB4657.namprd11.prod.outlook.com>
- <20230614121514.0d038aa3@kernel.org>
- <20230614122348.3e9b7e42@kernel.org>
- <ZIrldB4ic3zt9nIk@nanopsycho>
- <20230615093111.0ee762e4@kernel.org>
+        with ESMTP id S234599AbjFQMNR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 17 Jun 2023 08:13:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2B519B0
+        for <linux-rdma@vger.kernel.org>; Sat, 17 Jun 2023 05:12:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1687003947;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VjthvFXeQGZeDxQ7unAKOEBDdmvRqvLtJxvDci7YFS0=;
+        b=WsHoLljZclTFdvtLOhOPEdKsanVmq+dAq8OZK4+5ibkQe8UXFUn6ThRu4ez6bTCr4dEIPl
+        wLX84emgx8c3g12y8F8oa7Gvwt1hPSUzjSdiPsFzBRWOlUvkjumToOPW7Bzlmix8A7MUpF
+        iLGOIbXlW4FeqiHXbhJN7S6b6lRdRMw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-658-0gggrxlKN_S56nOJ9-go3w-1; Sat, 17 Jun 2023 08:12:23 -0400
+X-MC-Unique: 0gggrxlKN_S56nOJ9-go3w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 28B3785A58A;
+        Sat, 17 Jun 2023 12:12:22 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E03D1415102;
+        Sat, 17 Jun 2023 12:12:20 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Bernard Metzler <bmt@zurich.ibm.com>,
+        Tom Talpey <tom@talpey.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v2 04/17] siw: Use sendmsg(MSG_SPLICE_PAGES) rather than sendpage to transmit
+Date:   Sat, 17 Jun 2023 13:11:33 +0100
+Message-ID: <20230617121146.716077-5-dhowells@redhat.com>
+In-Reply-To: <20230617121146.716077-1-dhowells@redhat.com>
+References: <20230617121146.716077-1-dhowells@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230615093111.0ee762e4@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -130,43 +71,359 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thu, Jun 15, 2023 at 06:31:11PM CEST, kuba@kernel.org wrote:
->On Thu, 15 Jun 2023 12:18:28 +0200 Jiri Pirko wrote:
->> Yeah, that is what we had originally. This just pushes out the
->> different attr selection from the nest one level up to the actualy
->> nesting attribute.
->
->Oh no, no extra nesting. Let me try to fake up the output:
+When transmitting data, call down into TCP using a single sendmsg with
+MSG_SPLICE_PAGES to indicate that content should be spliced rather than
+performing several sendmsg and sendpage calls to transmit header, data
+pages and trailer.
 
-I wasn't implying any extra nesting.
+To make this work, the data is assembled in a bio_vec array and attached to
+a BVEC-type iterator.  The header and trailer (if present) are copied into
+page fragments that can be freed with put_page().
 
->
->'pin': [{
-> {'clock-id': 282574471561216,
->  'module-name': 'ice',
->  'pin-dpll-caps': 4,
->  'pin-id': 13,
->  'parent-device': [{'pin-id': 2, 'pin-state': 'connected'},
->                    {'pin-id': 3, 'pin-state': 'disconnected'}],
->  'parent-pin': [{'id': 0, 'pin-direction': 'input'},
->                 {'id': 1, 'pin-direction': 'input'}],
->  'pin-type': 'synce-eth-port'}
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Bernard Metzler <bmt@zurich.ibm.com>
+cc: Tom Talpey <tom@talpey.com>
+cc: Jason Gunthorpe <jgg@ziepe.ca>
+cc: Leon Romanovsky <leon@kernel.org>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: linux-rdma@vger.kernel.org
+cc: netdev@vger.kernel.org
+---
 
-You messed up a bit. Should be:
-parent-device : id
-parent-pin : pin-id
+Notes:
+    ver #2)
+     - Wrap lines at 80.
 
-That is basically my point. The fact if the parent is either device or
-pin is carried inside the nest by either providing "id" or "pin-id".
-So you add redundant info which could be source of mixups - as you
-already demonstrated :)
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 231 ++++----------------------
+ 1 file changed, 36 insertions(+), 195 deletions(-)
 
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index ffb16beb6c30..2584f9da0dd8 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -311,114 +311,8 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
+ 	return rv;
+ }
+ 
+-/*
+- * 0copy TCP transmit interface: Use MSG_SPLICE_PAGES.
+- *
+- * Using sendpage to push page by page appears to be less efficient
+- * than using sendmsg, even if data are copied.
+- *
+- * A general performance limitation might be the extra four bytes
+- * trailer checksum segment to be pushed after user data.
+- */
+-static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
+-			     size_t size)
+-{
+-	struct bio_vec bvec;
+-	struct msghdr msg = {
+-		.msg_flags = (MSG_MORE | MSG_DONTWAIT | MSG_SENDPAGE_NOTLAST |
+-			      MSG_SPLICE_PAGES),
+-	};
+-	struct sock *sk = s->sk;
+-	int i = 0, rv = 0, sent = 0;
+-
+-	while (size) {
+-		size_t bytes = min_t(size_t, PAGE_SIZE - offset, size);
+-
+-		if (size + offset <= PAGE_SIZE)
+-			msg.msg_flags &= ~MSG_SENDPAGE_NOTLAST;
+-
+-		tcp_rate_check_app_limited(sk);
+-		bvec_set_page(&bvec, page[i], bytes, offset);
+-		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
+-
+-try_page_again:
+-		lock_sock(sk);
+-		rv = tcp_sendmsg_locked(sk, &msg, size);
+-		release_sock(sk);
+-
+-		if (rv > 0) {
+-			size -= rv;
+-			sent += rv;
+-			if (rv != bytes) {
+-				offset += rv;
+-				bytes -= rv;
+-				goto try_page_again;
+-			}
+-			offset = 0;
+-		} else {
+-			if (rv == -EAGAIN || rv == 0)
+-				break;
+-			return rv;
+-		}
+-		i++;
+-	}
+-	return sent;
+-}
+-
+-/*
+- * siw_0copy_tx()
+- *
+- * Pushes list of pages to TCP socket. If pages from multiple
+- * SGE's, all referenced pages of each SGE are pushed in one
+- * shot.
+- */
+-static int siw_0copy_tx(struct socket *s, struct page **page,
+-			struct siw_sge *sge, unsigned int offset,
+-			unsigned int size)
+-{
+-	int i = 0, sent = 0, rv;
+-	int sge_bytes = min(sge->length - offset, size);
+-
+-	offset = (sge->laddr + offset) & ~PAGE_MASK;
+-
+-	while (sent != size) {
+-		rv = siw_tcp_sendpages(s, &page[i], offset, sge_bytes);
+-		if (rv >= 0) {
+-			sent += rv;
+-			if (size == sent || sge_bytes > rv)
+-				break;
+-
+-			i += PAGE_ALIGN(sge_bytes + offset) >> PAGE_SHIFT;
+-			sge++;
+-			sge_bytes = min(sge->length, size - sent);
+-			offset = sge->laddr & ~PAGE_MASK;
+-		} else {
+-			sent = rv;
+-			break;
+-		}
+-	}
+-	return sent;
+-}
+-
+ #define MAX_TRAILER (MPA_CRC_SIZE + 4)
+ 
+-static void siw_unmap_pages(struct kvec *iov, unsigned long kmap_mask, int len)
+-{
+-	int i;
+-
+-	/*
+-	 * Work backwards through the array to honor the kmap_local_page()
+-	 * ordering requirements.
+-	 */
+-	for (i = (len-1); i >= 0; i--) {
+-		if (kmap_mask & BIT(i)) {
+-			unsigned long addr = (unsigned long)iov[i].iov_base;
+-
+-			kunmap_local((void *)(addr & PAGE_MASK));
+-		}
+-	}
+-}
+-
+ /*
+  * siw_tx_hdt() tries to push a complete packet to TCP where all
+  * packet fragments are referenced by the elements of one iovec.
+@@ -438,30 +332,21 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ {
+ 	struct siw_wqe *wqe = &c_tx->wqe_active;
+ 	struct siw_sge *sge = &wqe->sqe.sge[c_tx->sge_idx];
+-	struct kvec iov[MAX_ARRAY];
+-	struct page *page_array[MAX_ARRAY];
++	struct bio_vec bvec[MAX_ARRAY];
+ 	struct msghdr msg = { .msg_flags = MSG_DONTWAIT | MSG_EOR };
++	void *trl;
+ 
+ 	int seg = 0, do_crc = c_tx->do_crc, is_kva = 0, rv;
+ 	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len = 0,
+ 		     sge_off = c_tx->sge_off, sge_idx = c_tx->sge_idx,
+ 		     pbl_idx = c_tx->pbl_idx;
+-	unsigned long kmap_mask = 0L;
+ 
+ 	if (c_tx->state == SIW_SEND_HDR) {
+-		if (c_tx->use_sendpage) {
+-			rv = siw_tx_ctrl(c_tx, s, MSG_DONTWAIT | MSG_MORE);
+-			if (rv)
+-				goto done;
++		void *hdr = &c_tx->pkt.ctrl + c_tx->ctrl_sent;
+ 
+-			c_tx->state = SIW_SEND_DATA;
+-		} else {
+-			iov[0].iov_base =
+-				(char *)&c_tx->pkt.ctrl + c_tx->ctrl_sent;
+-			iov[0].iov_len = hdr_len =
+-				c_tx->ctrl_len - c_tx->ctrl_sent;
+-			seg = 1;
+-		}
++		hdr_len = c_tx->ctrl_len - c_tx->ctrl_sent;
++		bvec_set_virt(&bvec[0], hdr, hdr_len);
++		seg = 1;
+ 	}
+ 
+ 	wqe->processed += data_len;
+@@ -477,28 +362,9 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 		} else {
+ 			is_kva = 1;
+ 		}
+-		if (is_kva && !c_tx->use_sendpage) {
+-			/*
+-			 * tx from kernel virtual address: either inline data
+-			 * or memory region with assigned kernel buffer
+-			 */
+-			iov[seg].iov_base =
+-				ib_virt_dma_to_ptr(sge->laddr + sge_off);
+-			iov[seg].iov_len = sge_len;
+-
+-			if (do_crc)
+-				crypto_shash_update(c_tx->mpa_crc_hd,
+-						    iov[seg].iov_base,
+-						    sge_len);
+-			sge_off += sge_len;
+-			data_len -= sge_len;
+-			seg++;
+-			goto sge_done;
+-		}
+ 
+ 		while (sge_len) {
+ 			size_t plen = min((int)PAGE_SIZE - fp_off, sge_len);
+-			void *kaddr;
+ 
+ 			if (!is_kva) {
+ 				struct page *p;
+@@ -511,33 +377,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 					p = siw_get_upage(mem->umem,
+ 							  sge->laddr + sge_off);
+ 				if (unlikely(!p)) {
+-					siw_unmap_pages(iov, kmap_mask, seg);
+ 					wqe->processed -= c_tx->bytes_unsent;
+ 					rv = -EFAULT;
+ 					goto done_crc;
+ 				}
+-				page_array[seg] = p;
+-
+-				if (!c_tx->use_sendpage) {
+-					void *kaddr = kmap_local_page(p);
+-
+-					/* Remember for later kunmap() */
+-					kmap_mask |= BIT(seg);
+-					iov[seg].iov_base = kaddr + fp_off;
+-					iov[seg].iov_len = plen;
+-
+-					if (do_crc)
+-						crypto_shash_update(
+-							c_tx->mpa_crc_hd,
+-							iov[seg].iov_base,
+-							plen);
+-				} else if (do_crc) {
+-					kaddr = kmap_local_page(p);
+-					crypto_shash_update(c_tx->mpa_crc_hd,
+-							    kaddr + fp_off,
+-							    plen);
+-					kunmap_local(kaddr);
+-				}
++
++				bvec_set_page(&bvec[seg], p, plen, fp_off);
+ 			} else {
+ 				/*
+ 				 * Cast to an uintptr_t to preserve all 64 bits
+@@ -545,12 +390,17 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 				 */
+ 				u64 va = sge->laddr + sge_off;
+ 
+-				page_array[seg] = ib_virt_dma_to_page(va);
+-				if (do_crc)
+-					crypto_shash_update(
+-						c_tx->mpa_crc_hd,
+-						ib_virt_dma_to_ptr(va),
+-						plen);
++				bvec_set_virt(&bvec[seg],
++					      ib_virt_dma_to_ptr(va), plen);
++			}
++
++			if (do_crc) {
++				void *kaddr =
++					kmap_local_page(bvec[seg].bv_page);
++				crypto_shash_update(c_tx->mpa_crc_hd,
++						    kaddr + bvec[seg].bv_offset,
++						    bvec[seg].bv_len);
++				kunmap_local(kaddr);
+ 			}
+ 
+ 			sge_len -= plen;
+@@ -560,13 +410,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 
+ 			if (++seg >= (int)MAX_ARRAY) {
+ 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
+-				siw_unmap_pages(iov, kmap_mask, seg-1);
+ 				wqe->processed -= c_tx->bytes_unsent;
+ 				rv = -EMSGSIZE;
+ 				goto done_crc;
+ 			}
+ 		}
+-sge_done:
++
+ 		/* Update SGE variables at end of SGE */
+ 		if (sge_off == sge->length &&
+ 		    (data_len != 0 || wqe->processed < wqe->bytes)) {
+@@ -575,15 +424,8 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 			sge_off = 0;
+ 		}
+ 	}
+-	/* trailer */
+-	if (likely(c_tx->state != SIW_SEND_TRAILER)) {
+-		iov[seg].iov_base = &c_tx->trailer.pad[4 - c_tx->pad];
+-		iov[seg].iov_len = trl_len = MAX_TRAILER - (4 - c_tx->pad);
+-	} else {
+-		iov[seg].iov_base = &c_tx->trailer.pad[c_tx->ctrl_sent];
+-		iov[seg].iov_len = trl_len = MAX_TRAILER - c_tx->ctrl_sent;
+-	}
+ 
++	/* Set the CRC in the trailer */
+ 	if (c_tx->pad) {
+ 		*(u32 *)c_tx->trailer.pad = 0;
+ 		if (do_crc)
+@@ -596,23 +438,23 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	else if (do_crc)
+ 		crypto_shash_final(c_tx->mpa_crc_hd, (u8 *)&c_tx->trailer.crc);
+ 
+-	data_len = c_tx->bytes_unsent;
+-
+-	if (c_tx->use_sendpage) {
+-		rv = siw_0copy_tx(s, page_array, &wqe->sqe.sge[c_tx->sge_idx],
+-				  c_tx->sge_off, data_len);
+-		if (rv == data_len) {
+-			rv = kernel_sendmsg(s, &msg, &iov[seg], 1, trl_len);
+-			if (rv > 0)
+-				rv += data_len;
+-			else
+-				rv = data_len;
+-		}
++	/* Copy the trailer and add it to the output list */
++	if (likely(c_tx->state != SIW_SEND_TRAILER)) {
++		trl = &c_tx->trailer.pad[4 - c_tx->pad];
++		trl_len = MAX_TRAILER - (4 - c_tx->pad);
+ 	} else {
+-		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
+-				    hdr_len + data_len + trl_len);
+-		siw_unmap_pages(iov, kmap_mask, seg);
++		trl = &c_tx->trailer.pad[c_tx->ctrl_sent];
++		trl_len = MAX_TRAILER - c_tx->ctrl_sent;
+ 	}
++	bvec_set_virt(&bvec[seg], trl, trl_len);
++
++	data_len = c_tx->bytes_unsent;
++
++	if (c_tx->use_sendpage)
++		msg.msg_flags |= MSG_SPLICE_PAGES;
++	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, bvec, seg + 1,
++		      hdr_len + data_len + trl_len);
++	rv = sock_sendmsg(s, &msg);
+ 	if (rv < (int)hdr_len) {
+ 		/* Not even complete hdr pushed or negative rv */
+ 		wqe->processed -= data_len;
+@@ -673,7 +515,6 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	}
+ done_crc:
+ 	c_tx->do_crc = 0;
+-done:
+ 	return rv;
+ }
+ 
 
->}]
->
->> One downside of this is you will have 2 arrays of parent objects,
->> one per parent type. Current code neatly groups them into a single array.
->> 
->> I guess this is a matter of personal preference, I'm fine either way.
->
->Yeah, could be.
