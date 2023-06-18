@@ -2,108 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8927344BA
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jun 2023 05:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9BE73471B
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jun 2023 18:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbjFRDGQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 17 Jun 2023 23:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
+        id S229619AbjFRQyo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Jun 2023 12:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjFRDGP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 17 Jun 2023 23:06:15 -0400
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02616E4D;
-        Sat, 17 Jun 2023 20:06:14 -0700 (PDT)
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-666e6541c98so1664830b3a.2;
-        Sat, 17 Jun 2023 20:06:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687057573; x=1689649573;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        with ESMTP id S229470AbjFRQym (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Jun 2023 12:54:42 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD2610B;
+        Sun, 18 Jun 2023 09:54:41 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-76344f8140dso23198385a.3;
+        Sun, 18 Jun 2023 09:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687107281; x=1689699281;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TKr/7fFsDyuqeMVJXBiEJIZ7rSj0By3FJTWDssD98XA=;
-        b=lKstEJr0z+1iKP4xpUz8l7TJLScBf6OQ5cAk96VrCQSW2xrP/Wl/nmFMHfwxU1gXz8
-         VRlgx6CELNkQCSowXdKTi/PW+FB4YpmsmINrf0ePSNjqX8rnZ1vG2IdZzVTrc6rT3YZr
-         r3nVq8CwLRfk9eWBPJJrIhoE/UAXxnUPe08nQreVdfavjkWZMIDlN4osA125ECXeEJR4
-         oP/p435fCt6By/KA7ZMnGVYESTFOd1zrqhPtHSreDFLqOdHU9f3EiPXIMWASmmO78o3o
-         BpxxiRR12yn95prcEwlMyZnDn7YKOkUS0JF31+HozWbsUH7Y6cZJvxQZeQDfe31Nxeyq
-         ikAA==
-X-Gm-Message-State: AC+VfDzYuQLFHoCYGGyTksjsQjCwsERpTdjHMZQ1gaBmrx+S6jQga0Al
-        i0U+6VLAWmanjxaLIsqami8=
-X-Google-Smtp-Source: ACHHUZ74QrQ86X1lYZ850oqc82Io3H167wR3MfIR6qT0HuQK7NUlA3TCEIzguXToHF7OYlQIYKqjDg==
-X-Received: by 2002:a05:6a00:14d2:b0:64f:6c01:d580 with SMTP id w18-20020a056a0014d200b0064f6c01d580mr9104380pfu.14.1687057573305;
-        Sat, 17 Jun 2023 20:06:13 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id k16-20020aa792d0000000b00665a76a8cfasm9539488pfa.194.2023.06.17.20.06.12
+        bh=4sK61SVjYCcgummf/cy7pNsLb9SbPBeqU0f1FYDFMyI=;
+        b=rY8QSvEl6p4fIeB+cNXrfBx3Qi8Q0oRZm5VoS2BoCgfjuYRQQUwrdFGEDdU23IrXo0
+         chGoGHKPwP0LXmrfTl3qHlcCmo1sRYapzINEnQSow+fzi+pFn5PGiApYOrJ50HKaB68T
+         utE+yg2GnzRQ30Bj8a8L69p3c374+UtcDkNfJR34GIn05f0b7+0AmEbyApvKm1DNJWT/
+         bJcRj7sz29ir/3TzVW+gzb/qTkz7VnAPSgi9enEEZ3+K74hSxYqhdeSEvqiAsjKKoCqT
+         OzoP6N5BMK7b0x2JfdgrfrTiD4DoK57jW0lPFco02d1KYyD6s/pMa/qc2P6IX40592qx
+         JtnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687107281; x=1689699281;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4sK61SVjYCcgummf/cy7pNsLb9SbPBeqU0f1FYDFMyI=;
+        b=PvJr6nOajjEg6nBWopPUvyV3lClFlhSHKoj82QChhFMt5m0zUes7J2L5PDvWmtiU3f
+         Tkv7uvyfCLXXiQ9UPnBzG/c6gN5imTqXeq9eqnmsEbpxASViHl5pamiWZ0b7bpDy2N6Y
+         fcJUj1N5qzG+TiD8kZVzEMYgLTHHhkDjpw7BR1RZFfxEgoS8HpnUf10BLt0IUKVKR3G7
+         0kR/tp/e+qFdY9jwf4y2q2Pv5xkb6q7bwXujC6jzKuS7YBTEiz7t7roz6cNe1O24RMDL
+         +MaqHuMQhHqZqG7iQqUsM5DAz5ENn/nqB8rnM4cj0NgZp94pX3zzfjSfOmAJSRD0fvoE
+         wT8A==
+X-Gm-Message-State: AC+VfDwwVj5h13DIgF4ld/PJoPOX85Y7FxEt4vVz5VMfxDa5ThP1KLpo
+        AfAazsDXyLUe6K6DxIRLknI=
+X-Google-Smtp-Source: ACHHUZ7rD2n8b5vnYB/xOzS5BAQNWYuxXJrQo4BmBND6gWZP6jCAnPQahStFSM7LauZ1ZKr4AefxaQ==
+X-Received: by 2002:ad4:5be2:0:b0:626:33bb:3fd3 with SMTP id k2-20020ad45be2000000b0062633bb3fd3mr8290593qvc.19.1687107280821;
+        Sun, 18 Jun 2023 09:54:40 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id t3-20020ac85303000000b003f7a54fa72fsm1857340qtn.0.2023.06.18.09.54.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jun 2023 20:06:12 -0700 (PDT)
-Date:   Sun, 18 Jun 2023 03:06:11 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     bhelgaas@google.com, davem@davemloft.net, edumazet@google.com,
-        haiyangz@microsoft.com, jakeo@microsoft.com, kuba@kernel.org,
-        kw@linux.com, kys@microsoft.com, leon@kernel.org,
-        linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-        mikelley@microsoft.com, pabeni@redhat.com, robh@kernel.org,
-        saeedm@nvidia.com, wei.liu@kernel.org, longli@microsoft.com,
-        boqun.feng@gmail.com, ssengar@microsoft.com, helgaas@kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        josete@microsoft.com, simon.horman@corigine.com
-Subject: Re: [PATCH v4 0/5] pci-hyperv: Fix race condition bugs for fast
- device hotplug
-Message-ID: <ZI50o1XBQbRL5Hlk@liuwe-devbox-debian-v2>
-References: <20230615044451.5580-1-decui@microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230615044451.5580-1-decui@microsoft.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Sun, 18 Jun 2023 09:54:40 -0700 (PDT)
+Date:   Sun, 18 Jun 2023 12:54:40 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        dccp@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-x25@vger.kernel.org,
+        mptcp@lists.linux.dev, rds-devel@oss.oracle.com,
+        tipc-discussion@lists.sourceforge.net,
+        virtualization@lists.linux-foundation.org
+Message-ID: <648f36d02fe6e_33cfbc2944f@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20230617121146.716077-18-dhowells@redhat.com>
+References: <20230617121146.716077-1-dhowells@redhat.com>
+ <20230617121146.716077-18-dhowells@redhat.com>
+Subject: RE: [PATCH net-next v2 17/17] net: Kill MSG_SENDPAGE_NOTLAST
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 14, 2023 at 09:44:46PM -0700, Dexuan Cui wrote:
-> Before the guest finishes probing a device, the host may be already starting
-> to remove the device. Currently there are multiple race condition bugs in the
-> pci-hyperv driver, which can cause the guest to panic.  The patchset fixes
-> the crashes.
+David Howells wrote:
+> Now that ->sendpage() has been removed, MSG_SENDPAGE_NOTLAST can be cleaned
+> up.  Things were converted to use MSG_MORE instead, but the protocol
+> sendpage stubs still convert MSG_SENDPAGE_NOTLAST to MSG_MORE, which is now
+> unnecessary.
 > 
-> The patchset also does some cleanup work: patch 3 removes the useless
-> hv_pcichild_state, and patch 4 reverts an old patch which is not really
-> useful (without patch 4, it would be hard to make patch 5 clean).
-> 
-> Patch 6 in v3 is dropped for now since it's a feature rather than a fix.
-> Patch 6 will be split into two patches as suggested by Lorenzo and will be
-> posted after the 5 patches are accepted first.
-> 
-> The v4 addressed Lorenzo's comments and added Lorenzo' Acks to patch
-> 1, 3 and 5.
-> 
-> The v4 is based on v6.4-rc6, and can apply cleanly to the Hyper-V tree's
-> hyperv-fixes branch.
-> 
-> The patchset is also availsble in my github branch:
-> https://github.com/dcui/tdx/commits/decui/vpci/v6.4-rc6-vpci-v4
-> 
-> FYI, v3 can be found here:
-> https://lwn.net/ml/linux-kernel/20230420024037.5921-1-decui@microsoft.com/
-> 
-> Please review. Thanks!
-> 
-> 
-> Dexuan Cui (5):
->   PCI: hv: Fix a race condition bug in hv_pci_query_relations()
->   PCI: hv: Fix a race condition in hv_irq_unmask() that can cause panic
->   PCI: hv: Remove the useless hv_pcichild_state from struct hv_pci_dev
->   Revert "PCI: hv: Fix a timing issue which causes kdump to fail
->     occasionally"
->   PCI: hv: Add a per-bus mutex state_lock
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: "David S. Miller" <davem@davemloft.net>
+> cc: Eric Dumazet <edumazet@google.com>
+> cc: Jakub Kicinski <kuba@kernel.org>
+> cc: Paolo Abeni <pabeni@redhat.com>
+> cc: Jens Axboe <axboe@kernel.dk>
+> cc: Matthew Wilcox <willy@infradead.org>
+> cc: bpf@vger.kernel.org
+> cc: dccp@vger.kernel.org
+> cc: linux-afs@lists.infradead.org
+> cc: linux-arm-msm@vger.kernel.org
+> cc: linux-can@vger.kernel.org
+> cc: linux-crypto@vger.kernel.org
+> cc: linux-doc@vger.kernel.org
+> cc: linux-hams@vger.kernel.org
+> cc: linux-perf-users@vger.kernel.org
+> cc: linux-rdma@vger.kernel.org
+> cc: linux-sctp@vger.kernel.org
+> cc: linux-wpan@vger.kernel.org
+> cc: linux-x25@vger.kernel.org
+> cc: mptcp@lists.linux.dev
+> cc: netdev@vger.kernel.org
+> cc: rds-devel@oss.oracle.com
+> cc: tipc-discussion@lists.sourceforge.net
+> cc: virtualization@lists.linux-foundation.org
+> ---
+>  include/linux/socket.h                         | 4 +---
+>  net/ipv4/tcp_bpf.c                             | 4 +++-
+>  net/tls/tls_device.c                           | 3 +--
+>  net/tls/tls_main.c                             | 2 +-
+>  net/tls/tls_sw.c                               | 2 +-
+>  tools/perf/trace/beauty/include/linux/socket.h | 1 -
+>  tools/perf/trace/beauty/msg_flags.c            | 3 ---
+>  7 files changed, 7 insertions(+), 12 deletions(-)
+>
+ 
+> @@ -90,7 +90,9 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+>  {
+>  	bool apply = apply_bytes;
+>  	struct scatterlist *sge;
+> -	struct msghdr msghdr = { .msg_flags = flags | MSG_SPLICE_PAGES, };
+> +	struct msghdr msghdr = {
+> +		.msg_flags = flags | MSG_SPLICE_PAGES | MSG_MORE,
+> +	};
+>  	struct page *page;
+>  	int size, ret = 0;
+>  	u32 off;
 
-Applied to hyperv-fixes. Thanks.
+Is it intentional to add MSG_MORE here in this patch?
+
+I do see that patch 3 removes this branch:
+
+@@ -111,9 +111,6 @@  static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+ 		if (has_tx_ulp)
+ 			msghdr.msg_flags |= MSG_SENDPAGE_NOPOLICY;
+ 
+-		if (flags & MSG_SENDPAGE_NOTLAST)
+-			msghdr.msg_flags |= MSG_MORE;
+-
