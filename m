@@ -2,95 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A7E735D78
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jun 2023 20:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD75B735E6A
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jun 2023 22:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbjFSS3Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Jun 2023 14:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
+        id S229555AbjFSUVo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Jun 2023 16:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbjFSS3Z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Jun 2023 14:29:25 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC34137
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Jun 2023 11:29:24 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-76300f4d7eeso110098485a.1
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Jun 2023 11:29:24 -0700 (PDT)
+        with ESMTP id S229537AbjFSUVn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Jun 2023 16:21:43 -0400
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F93199
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Jun 2023 13:21:41 -0700 (PDT)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1a9f25f271dso2948459fac.2
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Jun 2023 13:21:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1687199363; x=1689791363;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2srzci4Ajc4qNXSDpnKuPvoH+6k2As0TgkUfoMG4fYs=;
-        b=C7mbYlmSUcv/2SOnmIL/j9r+2/KLMWYpzxJrrwzFifLVBw2iACIQGuQZBO5BA1bNnN
-         Hzk1CNTrz2uEnQ7KsmhwA3GdVq+/WPBPhVKahjWbLi5H8EtM7O++kVzXCPoNShsl/O1d
-         rGlZnJtszbMdW0hnjBBHBE6oH54YfiMREqZYgy9SVzTsSvQ14t9KJ8DjKLmPsbncYgQ7
-         A7yUSHbUD9RaEVifA24kZzWzbSZsjqOGnAKxsO/HNCRd1SoySO/9NNh6B/G6v44n09c5
-         5Ud0JpykRnuFonH3CmJmxu4IDCOy8LfyJt8e+8dfPksUGLcAFBInzwLvkiwb1KMw9rW7
-         2+lg==
+        d=gmail.com; s=20221208; t=1687206100; x=1689798100;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BhnhIO6gxg+bu4wuaGePVl+lqTScxGBy1B6fHOtVRq4=;
+        b=oKRyO2E4EsYRVgd43454V1uYYLhU/dgSkf3HIG+IzrzbB3NSSfWMRIuAgwVPFEgMA0
+         RCj8REVtPiDyOZ7jUgs7AoJHRh62B4rIrKTn69ymzVsXmix/F1Z/0EO6ynYSFPPAMaSF
+         3o2LYVdDPDfkyWe05RJfd1TSNlNPH2kQpIGllcUoMDX3uJHjXCAz40eiXGbyYPmyMYJQ
+         0HmtGA92RaS/BriBJ5trkuh7eYja6KYEplK2N/hBuR9zTMPDELWABqguSmqD4L1wOWca
+         KIqRBZRMFUOl8YYtPTNz74hSfEYNVTF3lAWM7poi23INdZwYuUoFeX/3EMXXTDi4oP8Q
+         iddg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687199363; x=1689791363;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2srzci4Ajc4qNXSDpnKuPvoH+6k2As0TgkUfoMG4fYs=;
-        b=dGSL8oVIgmspitn4HFRqP5VWoiMo3zo+YgBOzW4RNtPPX3xr1zcPuWSiRbt+yDsZfK
-         ie2BS6dYTXxO6Qod2Ax177JvlaGdGtRThm6HGngrGLM0ucA3kT1u4NF9UEM1lF76Jx8m
-         zvA6vg0YFoprGCQpmEjFmtEJnIrTPsHukNlhpbBmGw5WFVhnT4UzZFCyX6JcZh3DOsMK
-         LyoIwczDG9AkJ8AcCOjLYMwx81TKxRb2pS+Q9ARp/J/qEtFhI5lu/Fkkp3+5DUeK+/t2
-         kXp8Ft2zDKHD+InZ7v+J9XNf1sCVBNn5a5v0oS5vGe47KK7nmjFOAFjyHx0MCnXRXaV8
-         AiVA==
-X-Gm-Message-State: AC+VfDwgwxh7c1SnSm0dBym8KgQ2V0gjKgDIRBGlI9XKaqqneBxWB0TP
-        Y/osKkDZjIfd6FGv7ZCjb+KAI08PAR09qMYAOpM=
-X-Google-Smtp-Source: ACHHUZ69JavB7h0IolWLlW6mq4pJdIZ0hV/eCwB2ScqAs5R2GTFtoLiMnMTIfEAj2nLori2NpDWTEQ==
-X-Received: by 2002:a05:620a:3e09:b0:763:97a8:b958 with SMTP id tt9-20020a05620a3e0900b0076397a8b958mr2721987qkn.39.1687199363279;
-        Mon, 19 Jun 2023 11:29:23 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id n8-20020a05620a152800b00762f37b206dsm189997qkk.81.2023.06.19.11.29.22
+        d=1e100.net; s=20221208; t=1687206100; x=1689798100;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BhnhIO6gxg+bu4wuaGePVl+lqTScxGBy1B6fHOtVRq4=;
+        b=jy1wxzrRRqJj8GuJm6zHrusI/0ncQDIXARNw9NmVMgedo6vrX+awyWK6uNlf+5uY2C
+         FVTltc8qtIyNs1mks+fx6ax1AjhRi4V8nNHrEv8C/Gd67q7NiCaQ9gvkyjvjs36E/e4R
+         NWi3W/fn2BKSvbJTZ878TavHFVhj8T8pvUzi/F8t+gvkQenuibu+s6oHO275bY/Tkvwa
+         5hBWLLNd+FONNsbIUeNM6OjJD2WACwtvd6WEFgPOtmhHvqvyO5Pkw6i99oyAZKdtV2fJ
+         64yqTUqIKbKHi4Asix0bXybukE8tWoc8WxUnccIAnGonzjs9qzd9IsV+STtjlFtylohU
+         xshA==
+X-Gm-Message-State: AC+VfDxq/NgjJCY1UxNTs0fu2iyff971jSQP5K5jq1fk+i/J4JmpHYQ6
+        +H19CN3ilSf0p19/XydAaM4=
+X-Google-Smtp-Source: ACHHUZ4amtfLAr5IKImAC8vyAa6KhSIaLeVOQ4ECIIpykc4PJIODxe0tW5imGPdOo0I5mzDtJWZHyQ==
+X-Received: by 2002:a05:6870:e481:b0:19e:cdd1:a400 with SMTP id v1-20020a056870e48100b0019ecdd1a400mr1416490oag.45.1687206100347;
+        Mon, 19 Jun 2023 13:21:40 -0700 (PDT)
+Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-773b-851f-3075-b82a.res6.spectrum.com. [2603:8081:140c:1a00:773b:851f:3075:b82a])
+        by smtp.gmail.com with ESMTPSA id kw41-20020a056870ac2900b001a6a3f99691sm311368oab.27.2023.06.19.13.21.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jun 2023 11:29:22 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qBJcv-007DrH-Vo;
-        Mon, 19 Jun 2023 15:29:21 -0300
-Date:   Mon, 19 Jun 2023 15:29:21 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com
-Subject: Re: [syzbot] [rdma?] general protection fault in rxe_completer
-Message-ID: <ZJCegWuC8i6n3WA3@ziepe.ca>
-References: <00000000000012d89205fe7cfe00@google.com>
- <d66248b3-646a-a25c-92c2-f182cf910b21@gmail.com>
+        Mon, 19 Jun 2023 13:21:39 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
+        syzbot+2da1965168e7dbcba136@syzkaller.appspotmail.com
+Subject: [PATCH for-next 0/3] RDMA/rxe: Fix error path code in rxe_create_qp
+Date:   Mon, 19 Jun 2023 15:21:08 -0500
+Message-Id: <20230619202110.45680-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d66248b3-646a-a25c-92c2-f182cf910b21@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 19, 2023 at 11:47:57AM -0500, Bob Pearson wrote:
+If a call to rxe_create_qp() fails in rxe_qp_from_init()
+rxe_cleanup(qp) will be called. This code currently does not correctly
+handle cases where not all qp resources are allocated and can seg
+fault as reported below. The first two patches cleanup cases where
+this happens. The third patch corrects an error in rxe_srq.c where
+if caller requests a change in the srq size the correct new value
+is not returned to caller.
 
-> There is a fairly obvious error in create_qp error path code. The
-> seg fault occurs in flush_send_queue() in rxe_comp.c. However, the
-> cleanup routine which got here was called after rxe_create_qp()
-> failed the call to rxe_qp_from_init(). That routine attempts to
-> cleanup qp resources if it fails so the send queue will be either
-> not yet be created or cleaned up before it returns. Then referencing
-> the send queue in flush_send_queue() will seg fault. The top level
-> qp cleanup code needs to handle this case correctly.  I will give it
-> a try. Not sure what they were doing to cause create_qp to fail but
-> it's a bug. Is there a way to get them to re-run it or will it
-> happen as a matter of course?
+Reported-by: syzbot+2da1965168e7dbcba136@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/linux-rdma/00000000000012d89205fe7cfe00@google.com/raw
+Fixes: 49dc9c1f0c7e ("RDMA/rxe: Cleanup reset state handling in rxe_resp.c")
+Fixes: fbdeb828a21f ("RDMA/rxe: Cleanup error state handling in rxe_comp.c")
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 
-Without a syzkaller reproducer you have to fix it by inspection, make
-a patch that is really logically sound, then push it as a
-fixes/reported-by. If it doesn't fix it then we will still get pings
-on it.
+Bob Pearson (3):
+  RDMA/rxe: Move work queue code to subroutines
+  RDMA/rxe: Fix unsafe drain work queue code
+  RDMA/rxe: Fix rxe_modify_srq
 
-Jason
+ drivers/infiniband/sw/rxe/rxe_comp.c |   4 +
+ drivers/infiniband/sw/rxe/rxe_loc.h  |   6 -
+ drivers/infiniband/sw/rxe/rxe_qp.c   | 163 ++++++++++++++++++---------
+ drivers/infiniband/sw/rxe/rxe_resp.c |   4 +
+ drivers/infiniband/sw/rxe/rxe_srq.c  |  55 +++++----
+ 5 files changed, 150 insertions(+), 82 deletions(-)
+
+
+base-commit: 830f93f47068b1632cc127871fbf27e918efdf46
+-- 
+2.39.2
+
