@@ -2,212 +2,342 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 855B2736F8F
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 17:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0619736FB0
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 17:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbjFTPAS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Jun 2023 11:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
+        id S233338AbjFTPDp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Jun 2023 11:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233507AbjFTO7v (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 10:59:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30751A3
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 07:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1687273088;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=096kfvQCNbO3jjvPJlb61wpL4gpNse4m8jbz5dQcH+U=;
-        b=J8Th5jRP5MCydVvFeBYTzcZpvyldYeX9W0yZ8fxRIhaF8xNVvSG1Lg7Eg8YmgVy0wo5SQA
-        qaiqDAj9GNVykms0b67Ea1TYaKb21vN+RupEFiXiPAKqqpPh7N5Gzd5ucnb5mHIe1VtTqz
-        E2CdIawTXr3oCfvy1uPEKBHPqRPbAFA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-246-cetdja7_MNaYUIl_PdTHIQ-1; Tue, 20 Jun 2023 10:58:01 -0400
-X-MC-Unique: cetdja7_MNaYUIl_PdTHIQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D63E710665CD;
-        Tue, 20 Jun 2023 14:54:49 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D321E40C6CD2;
-        Tue, 20 Jun 2023 14:54:46 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-x25@vger.kernel.org,
-        mptcp@lists.linux.dev, rds-devel@oss.oracle.com,
-        tipc-discussion@lists.sourceforge.net,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH net-next v3 18/18] net: Kill MSG_SENDPAGE_NOTLAST
-Date:   Tue, 20 Jun 2023 15:53:37 +0100
-Message-ID: <20230620145338.1300897-19-dhowells@redhat.com>
-In-Reply-To: <20230620145338.1300897-1-dhowells@redhat.com>
-References: <20230620145338.1300897-1-dhowells@redhat.com>
+        with ESMTP id S233344AbjFTPD2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 11:03:28 -0400
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4622F1BF9
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 08:02:28 -0700 (PDT)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1acfce1fc0bso306916fac.2
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 08:02:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687273347; x=1689865347;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BOoYXXMjtPuXJ3NkEGdCmjRbTXxXdBB7rLGK3JA8fDM=;
+        b=JV96NlY7EiUpYFlNUqO33z0yH0YWe9QDr5BZv0Zf/xJ6KeVJxIbb0WA1aEbhlc40Dl
+         igmTrcYbERElTfptomw+HB/b9bdgLPNxrzgAgYDAoxdtrEW6/Rtafn8yIDRYrqGAQDI4
+         LrPkUS4AELEv46A6l77z7TYa+xHy/dyVNBCs4G4MoijtVNV6OcR5nK/DKrKBLWtR4tWN
+         tBytcIxSqTbDPIfEY5+DR9wj9t1WvKJdKakWY03IiXK9buzz4YTW7/5kscaGc3+8Y7xI
+         RVqdGj+EQB7eEnNOkkKkcxOGD0wnPP14yFp5Nn0eFz/DaBjVJFNA1zCOEmaQlIt5243G
+         v/eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687273347; x=1689865347;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BOoYXXMjtPuXJ3NkEGdCmjRbTXxXdBB7rLGK3JA8fDM=;
+        b=XXFZvCTqFut2QFbNeYKCjDhtZgLjvRHAhMUOTlxMKFxH7XX6GqscF+Xq3Roptxp7Js
+         N+pYORqTdb53hHBeoW6mjGYZW/fyWMQLrut4h7PT6E+630F3ofm4MH0E6HRPbr9CPibZ
+         ls79PgTTD1yJJOb7+jfgRwn33V9HVR2rlZlrOWuajfppFPDT6DAXb4GmrfEvSCSzpisV
+         HX+37OJ7i1oJ29flkIqkbPsE1ZmYjw5/opoBhXicHleK7+hWei09PmDbl1yGf34V28qo
+         Q9+JS8O9q3vQ2bi/fmqdxEjvTxP5PS5BSHOurFvQueaGsGLI08VExJ003M2FX6RMa/x+
+         2ZHQ==
+X-Gm-Message-State: AC+VfDxGhxT5yUZaLMa8yrh9flB3/+Xj/WScP33cNuYyBT2YkLworsOQ
+        NcN8NfYyCsydlM2o0JyACrYQtCuv9wc=
+X-Google-Smtp-Source: ACHHUZ6CJTH1cDeOPMhGxhcm/Dm2rXT9DTz2imm9aUPIclwZUWwcR4/Qlq5iBue3fT9MTgNeQdY6Rg==
+X-Received: by 2002:a05:6870:1986:b0:1a9:8c0f:7a5 with SMTP id v6-20020a056870198600b001a98c0f07a5mr3282276oam.3.1687273347169;
+        Tue, 20 Jun 2023 08:02:27 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:ba53:355d:2a89:4598? (2603-8081-140c-1a00-ba53-355d-2a89-4598.res6.spectrum.com. [2603:8081:140c:1a00:ba53:355d:2a89:4598])
+        by smtp.gmail.com with ESMTPSA id lx23-20020a0568704b9700b001a6c1fcf1d6sm1411892oab.18.2023.06.20.08.02.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jun 2023 08:02:26 -0700 (PDT)
+Message-ID: <ebe9541f-ee4a-02e2-1a13-684f2c20a959@gmail.com>
+Date:   Tue, 20 Jun 2023 10:02:25 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH for-next v2 1/3] RDMA/rxe: Move work queue code to
+ subroutines
+Content-Language: en-US
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org
+References: <20230620135519.9365-1-rpearsonhpe@gmail.com>
+ <20230620135519.9365-2-rpearsonhpe@gmail.com>
+ <CAD=hENcibyPP9e8BAotUVqc1TcgD1Yym2KA3a9k4V3BWTFn6bw@mail.gmail.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <CAD=hENcibyPP9e8BAotUVqc1TcgD1Yym2KA3a9k4V3BWTFn6bw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Now that ->sendpage() has been removed, MSG_SENDPAGE_NOTLAST can be cleaned
-up.  Things were converted to use MSG_MORE instead, but the protocol
-sendpage stubs still convert MSG_SENDPAGE_NOTLAST to MSG_MORE, which is now
-unnecessary.
+On 6/20/23 09:49, Zhu Yanjun wrote:
+> On Tue, Jun 20, 2023 at 9:55 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>
+>> This patch:
+>>         - Moves code to initialize a qp send work queue to a
+>>           subroutine named rxe_init_sq.
+>>         - Moves code to initialize a qp recv work queue to a
+>>           subroutine named rxe_init_rq.
+> 
+> This is a use-before-initialization problem. It is better to
+> initialize the sq/rq queues before the queues are used.
+> These 3 commits are complicated. It is easy to introduce some risks
+> just like in the first version. A compact fix is preferred.
+> But these commits seems to fix the problem.
+> 
+> Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: bpf@vger.kernel.org
-cc: dccp@vger.kernel.org
-cc: linux-afs@lists.infradead.org
-cc: linux-arm-msm@vger.kernel.org
-cc: linux-can@vger.kernel.org
-cc: linux-crypto@vger.kernel.org
-cc: linux-doc@vger.kernel.org
-cc: linux-hams@vger.kernel.org
-cc: linux-perf-users@vger.kernel.org
-cc: linux-rdma@vger.kernel.org
-cc: linux-sctp@vger.kernel.org
-cc: linux-wpan@vger.kernel.org
-cc: linux-x25@vger.kernel.org
-cc: mptcp@lists.linux.dev
-cc: netdev@vger.kernel.org
-cc: rds-devel@oss.oracle.com
-cc: tipc-discussion@lists.sourceforge.net
-cc: virtualization@lists.linux-foundation.org
----
+The fix to the reported problem is in patch 2/3 which is very simple.
+Patch 1/3 mainly just cuts and pastes the code to init the queues into a
+subroutine without any functional change. But it fixes another potential
+use before setting issue with the packet queues simply by initializing
+them first.
 
-Notes:
-    ver #3)
-     - tcp_bpf is now handled by an earlier patch.
+I am planning on spending today looking at the namespace patches.
 
- include/linux/socket.h                         | 4 +---
- net/tls/tls_device.c                           | 3 +--
- net/tls/tls_main.c                             | 2 +-
- net/tls/tls_sw.c                               | 2 +-
- tools/perf/trace/beauty/include/linux/socket.h | 1 -
- tools/perf/trace/beauty/msg_flags.c            | 3 ---
- 6 files changed, 4 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/socket.h b/include/linux/socket.h
-index 58204700018a..39b74d83c7c4 100644
---- a/include/linux/socket.h
-+++ b/include/linux/socket.h
-@@ -319,7 +319,6 @@ struct ucred {
- #define MSG_MORE	0x8000	/* Sender will send more */
- #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
- #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
--#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
- #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
- #define MSG_EOF         MSG_FIN
- #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
-@@ -341,8 +340,7 @@ struct ucred {
- 
- /* Flags to be cleared on entry by sendmsg and sendmmsg syscalls */
- #define MSG_INTERNAL_SENDMSG_FLAGS \
--	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_NOTLAST | \
--	 MSG_SENDPAGE_DECRYPTED)
-+	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_DECRYPTED)
- 
- /* Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx */
- #define SOL_IP		0
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index 840ee06f1708..2021fe557e50 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -441,8 +441,7 @@ static int tls_push_data(struct sock *sk,
- 	long timeo;
- 
- 	if (flags &
--	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SENDPAGE_NOTLAST |
--	      MSG_SPLICE_PAGES))
-+	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SPLICE_PAGES))
- 		return -EOPNOTSUPP;
- 
- 	if (unlikely(sk->sk_err))
-diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-index d5ed4d47b16e..b6896126bb92 100644
---- a/net/tls/tls_main.c
-+++ b/net/tls/tls_main.c
-@@ -127,7 +127,7 @@ int tls_push_sg(struct sock *sk,
- {
- 	struct bio_vec bvec;
- 	struct msghdr msg = {
--		.msg_flags = MSG_SENDPAGE_NOTLAST | MSG_SPLICE_PAGES | flags,
-+		.msg_flags = MSG_SPLICE_PAGES | flags,
- 	};
- 	int ret = 0;
- 	struct page *p;
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index 9b3aa89a4292..53f944e6d8ef 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -1194,7 +1194,7 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 
- 	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
- 			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES |
--			       MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
-+			       MSG_SENDPAGE_NOPOLICY))
- 		return -EOPNOTSUPP;
- 
- 	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
-diff --git a/tools/perf/trace/beauty/include/linux/socket.h b/tools/perf/trace/beauty/include/linux/socket.h
-index 13c3a237b9c9..3bef212a24d7 100644
---- a/tools/perf/trace/beauty/include/linux/socket.h
-+++ b/tools/perf/trace/beauty/include/linux/socket.h
-@@ -318,7 +318,6 @@ struct ucred {
- #define MSG_MORE	0x8000	/* Sender will send more */
- #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
- #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
--#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
- #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
- #define MSG_EOF         MSG_FIN
- #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
-diff --git a/tools/perf/trace/beauty/msg_flags.c b/tools/perf/trace/beauty/msg_flags.c
-index ea68db08b8e7..b5b580e5a77e 100644
---- a/tools/perf/trace/beauty/msg_flags.c
-+++ b/tools/perf/trace/beauty/msg_flags.c
-@@ -8,9 +8,6 @@
- #ifndef MSG_WAITFORONE
- #define MSG_WAITFORONE		   0x10000
- #endif
--#ifndef MSG_SENDPAGE_NOTLAST
--#define MSG_SENDPAGE_NOTLAST	   0x20000
--#endif
- #ifndef MSG_FASTOPEN
- #define MSG_FASTOPEN		0x20000000
- #endif
+Thanks for looking - Bob
+> 
+> 
+> 
+>>         - Moves initialization of qp request and response packet
+>>           queues ahead of work queue initialization so that cleanup
+>>           of a qp if it is not fully completed can successfully
+>>           attempt to drain the packet queues without a seg fault.
+>>         - Makes minor whitespace cleanups.
+>>
+>> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>> ---
+>>  drivers/infiniband/sw/rxe/rxe_qp.c | 163 +++++++++++++++++++----------
+>>  1 file changed, 108 insertions(+), 55 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+>> index 95d4a6760c33..9dbb16699c36 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+>> @@ -180,13 +180,63 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
+>>         atomic_set(&qp->skb_out, 0);
+>>  }
+>>
+>> +static int rxe_init_sq(struct rxe_qp *qp, struct ib_qp_init_attr *init,
+>> +                      struct ib_udata *udata,
+>> +                      struct rxe_create_qp_resp __user *uresp)
+>> +{
+>> +       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+>> +       int wqe_size;
+>> +       int err;
+>> +
+>> +       qp->sq.max_wr = init->cap.max_send_wr;
+>> +       wqe_size = max_t(int, init->cap.max_send_sge * sizeof(struct ib_sge),
+>> +                        init->cap.max_inline_data);
+>> +       qp->sq.max_sge = wqe_size / sizeof(struct ib_sge);
+>> +       qp->sq.max_inline = wqe_size;
+>> +       wqe_size += sizeof(struct rxe_send_wqe);
+>> +
+>> +       qp->sq.queue = rxe_queue_init(rxe, &qp->sq.max_wr, wqe_size,
+>> +                                     QUEUE_TYPE_FROM_CLIENT);
+>> +       if (!qp->sq.queue) {
+>> +               rxe_err_qp(qp, "Unable to allocate send queue");
+>> +               err = -ENOMEM;
+>> +               goto err_out;
+>> +       }
+>> +
+>> +       /* prepare info for caller to mmap send queue if user space qp */
+>> +       err = do_mmap_info(rxe, uresp ? &uresp->sq_mi : NULL, udata,
+>> +                          qp->sq.queue->buf, qp->sq.queue->buf_size,
+>> +                          &qp->sq.queue->ip);
+>> +       if (err) {
+>> +               rxe_err_qp(qp, "do_mmap_info failed, err = %d", err);
+>> +               goto err_free;
+>> +       }
+>> +
+>> +       /* return actual capabilities to caller which may be larger
+>> +        * than requested
+>> +        */
+>> +       init->cap.max_send_wr = qp->sq.max_wr;
+>> +       init->cap.max_send_sge = qp->sq.max_sge;
+>> +       init->cap.max_inline_data = qp->sq.max_inline;
+>> +
+>> +       return 0;
+>> +
+>> +err_free:
+>> +       vfree(qp->sq.queue->buf);
+>> +       kfree(qp->sq.queue);
+>> +       qp->sq.queue = NULL;
+>> +err_out:
+>> +       return err;
+>> +}
+>> +
+>>  static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+>>                            struct ib_qp_init_attr *init, struct ib_udata *udata,
+>>                            struct rxe_create_qp_resp __user *uresp)
+>>  {
+>>         int err;
+>> -       int wqe_size;
+>> -       enum queue_type type;
+>> +
+>> +       /* if we don't finish qp create make sure queue is valid */
+>> +       skb_queue_head_init(&qp->req_pkts);
+>>
+>>         err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
+>>         if (err < 0)
+>> @@ -201,32 +251,10 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+>>          * (0xc000 - 0xffff).
+>>          */
+>>         qp->src_port = RXE_ROCE_V2_SPORT + (hash_32(qp_num(qp), 14) & 0x3fff);
+>> -       qp->sq.max_wr           = init->cap.max_send_wr;
+>> -
+>> -       /* These caps are limited by rxe_qp_chk_cap() done by the caller */
+>> -       wqe_size = max_t(int, init->cap.max_send_sge * sizeof(struct ib_sge),
+>> -                        init->cap.max_inline_data);
+>> -       qp->sq.max_sge = init->cap.max_send_sge =
+>> -               wqe_size / sizeof(struct ib_sge);
+>> -       qp->sq.max_inline = init->cap.max_inline_data = wqe_size;
+>> -       wqe_size += sizeof(struct rxe_send_wqe);
+>> -
+>> -       type = QUEUE_TYPE_FROM_CLIENT;
+>> -       qp->sq.queue = rxe_queue_init(rxe, &qp->sq.max_wr,
+>> -                               wqe_size, type);
+>> -       if (!qp->sq.queue)
+>> -               return -ENOMEM;
+>>
+>> -       err = do_mmap_info(rxe, uresp ? &uresp->sq_mi : NULL, udata,
+>> -                          qp->sq.queue->buf, qp->sq.queue->buf_size,
+>> -                          &qp->sq.queue->ip);
+>> -
+>> -       if (err) {
+>> -               vfree(qp->sq.queue->buf);
+>> -               kfree(qp->sq.queue);
+>> -               qp->sq.queue = NULL;
+>> +       err = rxe_init_sq(qp, init, udata, uresp);
+>> +       if (err)
+>>                 return err;
+>> -       }
+>>
+>>         qp->req.wqe_index = queue_get_producer(qp->sq.queue,
+>>                                                QUEUE_TYPE_FROM_CLIENT);
+>> @@ -234,8 +262,6 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+>>         qp->req.opcode          = -1;
+>>         qp->comp.opcode         = -1;
+>>
+>> -       skb_queue_head_init(&qp->req_pkts);
+>> -
+>>         rxe_init_task(&qp->req.task, qp, rxe_requester);
+>>         rxe_init_task(&qp->comp.task, qp, rxe_completer);
+>>
+>> @@ -247,40 +273,67 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+>>         return 0;
+>>  }
+>>
+>> +static int rxe_init_rq(struct rxe_qp *qp, struct ib_qp_init_attr *init,
+>> +                      struct ib_udata *udata,
+>> +                      struct rxe_create_qp_resp __user *uresp)
+>> +{
+>> +       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+>> +       int wqe_size;
+>> +       int err;
+>> +
+>> +       qp->rq.max_wr = init->cap.max_recv_wr;
+>> +       qp->rq.max_sge = init->cap.max_recv_sge;
+>> +       wqe_size = sizeof(struct rxe_recv_wqe) +
+>> +                               qp->rq.max_sge*sizeof(struct ib_sge);
+>> +
+>> +       qp->rq.queue = rxe_queue_init(rxe, &qp->rq.max_wr, wqe_size,
+>> +                                     QUEUE_TYPE_FROM_CLIENT);
+>> +       if (!qp->rq.queue) {
+>> +               rxe_err_qp(qp, "Unable to allocate recv queue");
+>> +               err = -ENOMEM;
+>> +               goto err_out;
+>> +       }
+>> +
+>> +       /* prepare info for caller to mmap recv queue if user space qp */
+>> +       err = do_mmap_info(rxe, uresp ? &uresp->rq_mi : NULL, udata,
+>> +                          qp->rq.queue->buf, qp->rq.queue->buf_size,
+>> +                          &qp->rq.queue->ip);
+>> +       if (err) {
+>> +               rxe_err_qp(qp, "do_mmap_info failed, err = %d", err);
+>> +               goto err_free;
+>> +       }
+>> +
+>> +       /* return actual capabilities to caller which may be larger
+>> +        * than requested
+>> +        */
+>> +       init->cap.max_recv_wr = qp->rq.max_wr;
+>> +
+>> +       return 0;
+>> +
+>> +err_free:
+>> +       vfree(qp->rq.queue->buf);
+>> +       kfree(qp->rq.queue);
+>> +       qp->rq.queue = NULL;
+>> +err_out:
+>> +       return err;
+>> +}
+>> +
+>>  static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+>>                             struct ib_qp_init_attr *init,
+>>                             struct ib_udata *udata,
+>>                             struct rxe_create_qp_resp __user *uresp)
+>>  {
+>>         int err;
+>> -       int wqe_size;
+>> -       enum queue_type type;
+>> +
+>> +       /* if we don't finish qp create make sure queue is valid */
+>> +       skb_queue_head_init(&qp->resp_pkts);
+>>
+>>         if (!qp->srq) {
+>> -               qp->rq.max_wr           = init->cap.max_recv_wr;
+>> -               qp->rq.max_sge          = init->cap.max_recv_sge;
+>> -
+>> -               wqe_size = rcv_wqe_size(qp->rq.max_sge);
+>> -
+>> -               type = QUEUE_TYPE_FROM_CLIENT;
+>> -               qp->rq.queue = rxe_queue_init(rxe, &qp->rq.max_wr,
+>> -                                       wqe_size, type);
+>> -               if (!qp->rq.queue)
+>> -                       return -ENOMEM;
+>> -
+>> -               err = do_mmap_info(rxe, uresp ? &uresp->rq_mi : NULL, udata,
+>> -                                  qp->rq.queue->buf, qp->rq.queue->buf_size,
+>> -                                  &qp->rq.queue->ip);
+>> -               if (err) {
+>> -                       vfree(qp->rq.queue->buf);
+>> -                       kfree(qp->rq.queue);
+>> -                       qp->rq.queue = NULL;
+>> +               err = rxe_init_rq(qp, init, udata, uresp);
+>> +               if (err)
+>>                         return err;
+>> -               }
+>>         }
+>>
+>> -       skb_queue_head_init(&qp->resp_pkts);
+>> -
+>>         rxe_init_task(&qp->resp.task, qp, rxe_responder);
+>>
+>>         qp->resp.opcode         = OPCODE_NONE;
+>> @@ -307,10 +360,10 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
+>>         if (srq)
+>>                 rxe_get(srq);
+>>
+>> -       qp->pd                  = pd;
+>> -       qp->rcq                 = rcq;
+>> -       qp->scq                 = scq;
+>> -       qp->srq                 = srq;
+>> +       qp->pd = pd;
+>> +       qp->rcq = rcq;
+>> +       qp->scq = scq;
+>> +       qp->srq = srq;
+>>
+>>         atomic_inc(&rcq->num_wq);
+>>         atomic_inc(&scq->num_wq);
+>> --
+>> 2.39.2
+>>
 
