@@ -2,139 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF565736C82
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 14:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BEA736D9A
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 15:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbjFTM7Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Jun 2023 08:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
+        id S232647AbjFTNn3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Jun 2023 09:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbjFTM7W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 08:59:22 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF2810FF;
-        Tue, 20 Jun 2023 05:59:20 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-7624e8ceef7so346133885a.2;
-        Tue, 20 Jun 2023 05:59:20 -0700 (PDT)
+        with ESMTP id S231710AbjFTNn2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 09:43:28 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DC7170D
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 06:43:16 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31129591288so2975453f8f.1
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 06:43:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687265960; x=1689857960;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4RvNVFujZzQ9FH/nRDQhxgK8HOnuVe0ilksjI7/FigQ=;
-        b=V7CBqsvwa7HO9941Gx9rU48fbSNnkTARJq3hU0s4FJKqNq7uyQJvuWMi48BFYirjd9
-         Z+CSYTenkWtjPExrbuK55Lr4LajYIvMVcZS1i2H4hkmnnVf92/3eU5+256AdSIU7TTh1
-         xwVepNxy0+wSCXEIn2FLnq5fwolgWObqyrXGJD4a4dArZIDrRTCCQbOXeliLMdRNukOE
-         bfBqEL3D5v18ty2Fda4DTUDINVko/+/f9bRuKWlc9As/MXSXKCsqRSAvjLHgGSN+PYBz
-         OhKP930iRzIK8HICV0ZdtEG/GKM89Wb5av0m6K808diQPwrVMMP/ZUSrK2PjzRbzzuKs
-         Xiqw==
+        d=linaro.org; s=google; t=1687268594; x=1689860594;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FXEzWvVaTpDBI6VqaBUCaMKU3ESDTmt5tb+GXKM/9lU=;
+        b=jHRzec0TCzelOEc95MtKjmVHQWlHzHZi8Pp8968XHSTBMdl5I7PiaqWG4hV/2tnSpK
+         g7y8+YWM2qNJT6DCoP7+ztfFyG+nPCQrAvRZrO0KqffM5/4lHf03ao/aH6GZ9rqfh4nU
+         TeFKMZzQ5Z9OR1xdQeEphnjZziYE1tz4HhjDJxmI1ikcB9THDn8XCwbTfProloBFFTC2
+         bxKCJFpXs4Ng8uPP/+BhjpdNuR2QqS6ee0Rvs9eZUmckFF1Hooh77PWYFpgylNIbcwdc
+         OxMnPXOqoZCFZBOP/t5eeRa43gDA2Qoet08VWSQu2/y1AEpBo03LWGewnKr0Zk7RHYbs
+         w74g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687265960; x=1689857960;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4RvNVFujZzQ9FH/nRDQhxgK8HOnuVe0ilksjI7/FigQ=;
-        b=TXgc61V4R/4/uHY2QZsPXgAX2Rf37It/aP8tEzZXkexa1Utxq2r8RE3sBLePmzTuoD
-         Dg/24MZVRUWEeB9qLSuWh9TxnBk3C9xAbLBjodnoCNHP4jSZs14NOCFeN5e5O5/OJJyU
-         9GE1yCOApc5CfQJxBmFnXVMD61xCjgHWd9RJT1do3WkwFPH0npMZTU3gKqWofrJdDGgu
-         qXndaATjAJrGxzyM2onxl5nsbdIT81r60FXCvnzC0rq/1EPneitwbOnIpJbj3rrubQw5
-         xJcJHr54Exltplonli1SVVhaeuevVfouQJAGylb1lVkNVADLArf5jY1csDryORRiJq3/
-         w1pg==
-X-Gm-Message-State: AC+VfDw+AvcpB+kzcrU2tO8dary8v4OzIEJ2EVlGXjUryXMHJcwWKhEV
-        ljMDIV+uw0uRJ28AUUbBK2o=
-X-Google-Smtp-Source: ACHHUZ5DO7ilI0HCjRl4Lbeq4UH3F7W+AS3gn0PcL1py6Hb93MUCpM1EgmXOFtEL5TVj5cEqHyVw6w==
-X-Received: by 2002:a05:6214:1306:b0:628:2e08:78b7 with SMTP id pn6-20020a056214130600b006282e0878b7mr5517848qvb.31.1687265959785;
-        Tue, 20 Jun 2023 05:59:19 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id m17-20020a0cf191000000b00631ecb1052esm1216204qvl.74.2023.06.20.05.59.19
+        d=1e100.net; s=20221208; t=1687268594; x=1689860594;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FXEzWvVaTpDBI6VqaBUCaMKU3ESDTmt5tb+GXKM/9lU=;
+        b=ceDczWXswTj2aEbGdIs8Vb91itANS3HfAv/wBODRTEBDLEeNrGiZFxD+LEo3R+e8kt
+         GPK7t/l+Xg6OwHvbWOdrEhHI6knZ2SLYCpLR34AbqxnRe3wouZmjyC50tjiW0WqCijmO
+         pwXzWGDwAfciGZk6A9a4WkR2jVXVY3+sK9GwRfF7I8FxQMORBZ09Saa1M7AC8i9mBceX
+         fxsjapmEB6KJ9RSWDvIN0dqrrWuxKq3Tpq6de/mOPuFxEBoMVdYFHoEVwLmlIfCUjRNW
+         AeeuOG7otjFEyxH1cUDMGkN5HdiLPJtYebeys/UbmUiO4k9CE1ugcDM+jhsFD4FerBp0
+         udww==
+X-Gm-Message-State: AC+VfDxD8tEGW5KytK8VYf8MSMK9clgB88Q5xPWFNn2TtLEuMdtbIcLD
+        jidg0auQLENjGFVvlOrUxyXfTA==
+X-Google-Smtp-Source: ACHHUZ6upvLJQp+I/vEd6WG/WBwHY2kcxULaHdzrZEwgyc1/ebxdsp11EH/PEpQ+MbvkNOiJ/2VQ+Q==
+X-Received: by 2002:a5d:45c6:0:b0:30f:c653:b819 with SMTP id b6-20020a5d45c6000000b0030fc653b819mr8616094wrs.14.1687268594450;
+        Tue, 20 Jun 2023 06:43:14 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id c9-20020a056000104900b0030631a599a0sm2023107wrx.24.2023.06.20.06.43.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jun 2023 05:59:19 -0700 (PDT)
-Date:   Tue, 20 Jun 2023 08:59:18 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     David Howells <dhowells@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
-        Alexander Duyck <alexander.duyck@gmail.com>,
+        Tue, 20 Jun 2023 06:43:12 -0700 (PDT)
+Date:   Tue, 20 Jun 2023 16:43:07 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Moshe Shemesh <moshe@nvidia.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-x25@vger.kernel.org,
-        mptcp@lists.linux.dev, rds-devel@oss.oracle.com,
-        tipc-discussion@lists.sourceforge.net,
-        virtualization@lists.linux-foundation.org
-Message-ID: <6491a2a6f1488_3bcfec294d7@willemb.c.googlers.com.notmuch>
-In-Reply-To: <784658.1687176327@warthog.procyon.org.uk>
-References: <648f36d02fe6e_33cfbc2944f@willemb.c.googlers.com.notmuch>
- <20230617121146.716077-1-dhowells@redhat.com>
- <20230617121146.716077-18-dhowells@redhat.com>
- <784658.1687176327@warthog.procyon.org.uk>
-Subject: Re: [PATCH net-next v2 17/17] net: Kill MSG_SENDPAGE_NOTLAST
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH net-next] net/mlx5: Fix error code in
+ mlx5_is_reset_now_capable()
+Message-ID: <53f95829-1a94-4565-aa75-f0335cd64b8a@moroto.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-David Howells wrote:
-> Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
-> 
-> > Is it intentional to add MSG_MORE here in this patch?
-> > 
-> > I do see that patch 3 removes this branch:
-> 
-> Yeah.  I think I may have tcp_bpf a bit wrong with regard to handling
-> MSG_MORE.
-> 
-> How about the attached version of tcp_bpf_push()?
-> 
-> I wonder if it's save to move the setting of MSG_SENDPAGE_NOPOLICY out of the
-> loop as I've done here.  The caller holds the socket lock.
-> 
-> Also, I'm not sure whether to take account of apply/apply_bytes when setting
-> MSG_MORE mid-message, or whether to just go on whether we've reached
-> sge->length yet.  (I'm not sure exactly how tcp_bpf works).
+The mlx5_is_reset_now_capable() function returns bool, not negative
+error codes.  So if fast teardown is not supported it should return
+false instead of -EOPNOTSUPP.
 
-I'm not very familiar with it either.
+Fixes: 92501fa6e421 ("net/mlx5: Ack on sync_reset_request only if PF can do reset_now")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Instead of inferring whether MSG_MORE is safe to set, as below, sufficient to
-rely on the caller to pass it when appropriate?
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+index 7af2b14ab5d8..fb7874da3caa 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+@@ -327,7 +327,7 @@ static bool mlx5_is_reset_now_capable(struct mlx5_core_dev *dev)
+ 
+ 	if (!MLX5_CAP_GEN(dev, fast_teardown)) {
+ 		mlx5_core_warn(dev, "fast teardown is not supported by firmware\n");
+-		return -EOPNOTSUPP;
++		return false;
+ 	}
+ 
+ 	err = pci_read_config_word(dev->pdev, PCI_DEVICE_ID, &dev_id);
+-- 
+2.39.2
 
-size = min(apply_bytes, sge->length). I doubt that size < apply_bytes is
-ever intended.
-
-And instead of this former branch
-
-                if (flags & MSG_SENDPAGE_NOTLAST)
-                        msghdr.msg_flags |= MSG_MORE;
-
-update any caller to pass MSG_MORE instead of MSG_SENDPAGE_NOTLAST, if not yet
-done so.
-
-> 		msghdr.msg_flags = flags;
-> 
-> 		/* Determine if we need to set MSG_MORE. */
-> 		if (!(msghdr.msg_flags & MSG_MORE)) {
-> 			if (apply && size < apply_bytes)
-> 				msghdr.msg_flags |= MSG_MORE;
-> 			else if (!apply && size < sge->length &&
-> 				 msg->sg.start != msg->sg.end)
-> 				msghdr.msg_flags |= MSG_MORE;
-> 		}
