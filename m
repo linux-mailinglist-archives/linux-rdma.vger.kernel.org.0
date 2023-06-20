@@ -2,118 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 311BF73620D
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 05:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E5C736793
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 11:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjFTDKr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Jun 2023 23:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52798 "EHLO
+        id S231652AbjFTJVB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Jun 2023 05:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjFTDKj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Jun 2023 23:10:39 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B461723
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Jun 2023 20:10:26 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1aa291b3fc7so1449463fac.1
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Jun 2023 20:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687230626; x=1689822626;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lUJ1yJst3Mgf0WLoIU9PLb0BKiE3rdSqygY39Xaqy+Q=;
-        b=I9xqRTigUV6cxFXRum0tZ4ki3I+dzql3S4T4Axp9BgxEfwaDArzweNXebxmm1w22YU
-         JWjSCxrdAxHGDC2LjzPy7eVNIrSCrR4wrZ+phnKtKqIW2pfXNy0h5UcvxSZtsxesSWPq
-         t7mWmRznkdhOdXzkLtPUshvhkXE+qWnIf6zGLP4KjqkUGu5407bTmZGb+RTqeSv1GSYZ
-         Pulx3DAum8ZISXzKj0m466nOrnJymdRxdc0g5Ii5ILmuXv2+pvs3F0DFsCuz7lqHnfnL
-         KdBnHsJasRHJX76aXDwTTfv1DhOHz2VBlJhrs8+xJMD2BuWP6N4+YWlMwCithoVP7PRi
-         MTsA==
+        with ESMTP id S231899AbjFTJVB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 05:21:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C969D
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 02:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1687252815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YKlFS4GRFyLfxQyoUYwSoUhG2vDj3eHL58QXsQUCy8w=;
+        b=TJoZZdgC7BODoyqeIKP3hwssyuJ/iv21fUI6NWvbOoaQ89db25qbk2BocZ6O60DnX126Jb
+        jIyY5gDqtQs/UUjw4sWXKMOo5BacR2o4WYp3ICU25uxmGz3mOwAXlqSwWGAIk+Y2Jrwo3D
+        cfZMRNnH7Gb+FTCxvdaznoaoP1sZhqU=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-331-BBv44A6ZNGCoastg5rsMgA-1; Tue, 20 Jun 2023 05:20:13 -0400
+X-MC-Unique: BBv44A6ZNGCoastg5rsMgA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-763a3e3e760so173382985a.0
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 02:20:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687230626; x=1689822626;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lUJ1yJst3Mgf0WLoIU9PLb0BKiE3rdSqygY39Xaqy+Q=;
-        b=ejnEl6TwBdHHgf72gnR024/25G30t+gllx1WfyiU34AOHdcRCnwrtoZazciBsyk5E9
-         Wxbx59P0UJ6inm7/1JsNxhbQUkcw1yyrX9aTs4zoU9lpkUAnV/tnZo2hOrveJzYJSjMf
-         N2HMCJfSaaW5cxtk842HTYssUxyxDeiT5G2b0CPA9Sa1HhEVmJkjGtjaNtIGBN71bOFM
-         RcMpnPyavPqOE+bVMBxWGLrDIKMMEoSX2rb/L/CkNd5Hz3ZvYwkaqdC4/KfZZ8dwmceE
-         89KdMAlcoR6p3wdFgIevWRdJMp271/TOq/EKWBIzQ6dl/l3Gsv4Y/GKiXdvflP6IKU1B
-         PsUw==
-X-Gm-Message-State: AC+VfDyl5R/vJuOiL9SYpts9P1LnwaU14xNal7RjF1hlUnqawg8TRwHV
-        WKvE0faexptSOVRJgc5oyjBfUgeNrzA=
-X-Google-Smtp-Source: ACHHUZ6DOrjf+sC10JLLCPJFGohJ02YN2l3xhMl4Wvfq8lAgM6MeIH35gYaBVS+d4nZuZlmWRLVj1A==
-X-Received: by 2002:a05:6870:c806:b0:1a3:16af:56e2 with SMTP id ee6-20020a056870c80600b001a316af56e2mr7297170oab.19.1687230626110;
-        Mon, 19 Jun 2023 20:10:26 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:773b:851f:3075:b82a? (2603-8081-140c-1a00-773b-851f-3075-b82a.res6.spectrum.com. [2603:8081:140c:1a00:773b:851f:3075:b82a])
-        by smtp.gmail.com with ESMTPSA id t25-20020a9d7f99000000b006acfdbdf37csm506721otp.31.2023.06.19.20.10.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jun 2023 20:10:25 -0700 (PDT)
-Message-ID: <7b086701-02b1-459b-5f99-00e35b2b4892@gmail.com>
-Date:   Mon, 19 Jun 2023 22:10:25 -0500
+        d=1e100.net; s=20221208; t=1687252813; x=1689844813;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YKlFS4GRFyLfxQyoUYwSoUhG2vDj3eHL58QXsQUCy8w=;
+        b=bXqm1xm8gP/Ea3I1EcdLvLmRlKEM79MBTTx5cDlA41+hVLYoLUljkQ+E9v5cFfbSTb
+         Z5M00Ept7RPcQZ2TAOg1fjcbu+cnh+l0dFHf693d430H8Enq/9C50L+JlkT5BmhPd++W
+         Na+2WE8eK2L2xXWioowDzPGUyWAu2Xl21zxkXqGXbFvkyrSvkdXUxELlikNxJz1948iU
+         1sEN0UMJyxyVpKcqmvc7htxM9nP6TVeesv1DVxgpotCXKMnWb3qBdMs+X8/KKER5uM5C
+         wo6wKx8M0QRXwQiZeubvk5m1gWr0VuIVHV4+tSLEgUIUeJkaYaHwU7yD+9+yT/cU3SYH
+         djkw==
+X-Gm-Message-State: AC+VfDx8FWmOmiDY42Kr5GSzJaGvqxnhEsHbdspH14BBN8nO17PIQPqg
+        wpgoe3nyvZhipDjE4jpynr+w/I9mHX6Z7lgZEqdJnEnH/hEOg6MYVdmwspdPL7R9bMb6ZnDFGni
+        J15tiZxQJXzBxVt8ssoHJLdBF1IiMQ8L/FVNvJpc6z8zY9w==
+X-Received: by 2002:a05:620a:8f09:b0:762:51c3:cfda with SMTP id rh9-20020a05620a8f0900b0076251c3cfdamr6835859qkn.7.1687252812908;
+        Tue, 20 Jun 2023 02:20:12 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7/sXxYZyk7GODk1ZNp9vpi+6jndC87IboxMu7bTkgZZVJfY8XP4cHMFoPK9tp8UGws/TDf5LRnfmj5y/1RwZw=
+X-Received: by 2002:a05:620a:8f09:b0:762:51c3:cfda with SMTP id
+ rh9-20020a05620a8f0900b0076251c3cfdamr6835849qkn.7.1687252812657; Tue, 20 Jun
+ 2023 02:20:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH for-next 0/3] RDMA/rxe: Fix error path code in
- rxe_create_qp
-Content-Language: en-US
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org,
-        syzbot+2da1965168e7dbcba136@syzkaller.appspotmail.com
-References: <20230619202110.45680-1-rpearsonhpe@gmail.com>
- <CAD=hENcSotJ7EMe_4xbw4=1MeQARV2Us8mhBUPqe-+wPz=V+gw@mail.gmail.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <CAD=hENcSotJ7EMe_4xbw4=1MeQARV2Us8mhBUPqe-+wPz=V+gw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230609153147.667674-1-neelx@redhat.com> <20230613131931.738436-1-neelx@redhat.com>
+In-Reply-To: <20230613131931.738436-1-neelx@redhat.com>
+From:   Daniel Vacek <neelx@redhat.com>
+Date:   Tue, 20 Jun 2023 11:19:36 +0200
+Message-ID: <CACjP9X_ONQR53Js301r1WGguMR4hhtDZRkoMJjUMDqX-=yA+1g@mail.gmail.com>
+Subject: Re: [PATCH v2] verbs: fix compilation warning with C++20
+To:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Rogerio Moraes <rogerio@cadence.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/19/23 17:45, Zhu Yanjun wrote:
-> On Tue, Jun 20, 2023 at 4:21 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->>
->> If a call to rxe_create_qp() fails in rxe_qp_from_init()
->> rxe_cleanup(qp) will be called. This code currently does not correctly
->> handle cases where not all qp resources are allocated and can seg
->> fault as reported below. The first two patches cleanup cases where
->> this happens. The third patch corrects an error in rxe_srq.c where
->> if caller requests a change in the srq size the correct new value
->> is not returned to caller.
->>
->> Reported-by: syzbot+2da1965168e7dbcba136@syzkaller.appspotmail.com
->> Closes: https://lore.kernel.org/linux-rdma/00000000000012d89205fe7cfe00@google.com/raw
->> Fixes: 49dc9c1f0c7e ("RDMA/rxe: Cleanup reset state handling in rxe_resp.c")
->> Fixes: fbdeb828a21f ("RDMA/rxe: Cleanup error state handling in rxe_comp.c")
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> 
-> Can not apply these commits to Linux 6.4-rc7.
-> 
-> Zhu Yanjun
-> 
->>
->> Bob Pearson (3):
->>   RDMA/rxe: Move work queue code to subroutines
->>   RDMA/rxe: Fix unsafe drain work queue code
->>   RDMA/rxe: Fix rxe_modify_srq
->>
->>  drivers/infiniband/sw/rxe/rxe_comp.c |   4 +
->>  drivers/infiniband/sw/rxe/rxe_loc.h  |   6 -
->>  drivers/infiniband/sw/rxe/rxe_qp.c   | 163 ++++++++++++++++++---------
->>  drivers/infiniband/sw/rxe/rxe_resp.c |   4 +
->>  drivers/infiniband/sw/rxe/rxe_srq.c  |  55 +++++----
->>  5 files changed, 150 insertions(+), 82 deletions(-)
->>
->>
->> base-commit: 830f93f47068b1632cc127871fbf27e918efdf46
->> --
->> 2.39.2
->>
+Adding CC: Jason
 
-They applied to current for-next.
+--nX
+
+On Tue, Jun 13, 2023 at 3:20=E2=80=AFPM Daniel Vacek <neelx@redhat.com> wro=
+te:
+>
+> Our customer reported the below warning whe using Clang v16.0.4 and C++20=
+,
+> on a code that includes the header "/usr/include/infiniband/verbs.h":
+>
+> error: bitwise operation between different enumeration types ('ibv_access=
+_flags' and
+> 'ib_uverbs_access_flags') is deprecated [-Werror,-Wdeprecated-enum-enum-c=
+onversion]
+>                 mem->mr =3D ibv_reg_mr(dev->pd, (void*)start, len, IBV_AC=
+CESS_LOCAL_WRITE);
+>                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~~
+> /usr/include/infiniband/verbs.h:2514:19: note: expanded from macro 'ibv_r=
+eg_mr'
+>                              ((access) & IBV_ACCESS_OPTIONAL_RANGE) =3D=
+=3D 0))
+>                               ~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~
+> 1 error generated.
+>
+> According to the article "Clang 11 warning: Bitwise operation between dif=
+ferent
+> enumeration types is deprecated":
+>
+> C++20's P1120R0 deprecated bitwise operations between different enums. Su=
+ch code is
+> likely to become ill-formed in C++23. Clang 11 warns about such cases. It=
+ should be fixed.
+>
+> Reported-by: Rogerio Moraes <rogerio@cadence.com>
+> Signed-off-by: Daniel Vacek <neelx@redhat.com>
+> ---
+>  libibverbs/verbs.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
+> index 03a7a2a7..ed9aed21 100644
+> --- a/libibverbs/verbs.h
+> +++ b/libibverbs/verbs.h
+> @@ -2590,7 +2590,7 @@ __ibv_reg_mr(struct ibv_pd *pd, void *addr, size_t =
+length, unsigned int access,
+>  #define ibv_reg_mr(pd, addr, length, access)                            =
+       \
+>         __ibv_reg_mr(pd, addr, length, access,                           =
+      \
+>                      __builtin_constant_p(                               =
+      \
+> -                            ((access) & IBV_ACCESS_OPTIONAL_RANGE) =3D=
+=3D 0))
+> +                            ((int)(access) & IBV_ACCESS_OPTIONAL_RANGE) =
+=3D=3D 0))
+>
+>  /**
+>   * ibv_reg_mr_iova - Register a memory region with a virtual offset
+> --
+> 2.40.1
+>
+
