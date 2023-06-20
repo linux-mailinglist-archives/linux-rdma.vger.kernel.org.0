@@ -2,35 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E1F73685D
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 11:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40B573687F
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 11:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232553AbjFTJwW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Jun 2023 05:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
+        id S232563AbjFTJ5M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Jun 2023 05:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbjFTJvs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 05:51:48 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C16B198C;
-        Tue, 20 Jun 2023 02:49:41 -0700 (PDT)
+        with ESMTP id S232500AbjFTJ4e (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 05:56:34 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE3E42115;
+        Tue, 20 Jun 2023 02:54:05 -0700 (PDT)
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 1C5FB92009E; Tue, 20 Jun 2023 11:49:20 +0200 (CEST)
+        id BC22792009C; Tue, 20 Jun 2023 11:54:04 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 166A192009B;
-        Tue, 20 Jun 2023 10:49:20 +0100 (BST)
-Date:   Tue, 20 Jun 2023 10:49:20 +0100 (BST)
+        by angie.orcam.me.uk (Postfix) with ESMTP id B4F1492009B;
+        Tue, 20 Jun 2023 10:54:04 +0100 (BST)
+Date:   Tue, 20 Jun 2023 10:54:04 +0100 (BST)
 From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-cc:     linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] IB/hfi1: Remove pci_parent_bus_reset() duplication
-In-Reply-To: <alpine.DEB.2.21.2306200153110.14084@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2306200235510.14084@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2306200153110.14084@angie.orcam.me.uk>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Stefan Roese <sr@denx.de>, Leon Romanovsky <leon@kernel.org>,
+        linux-rdma@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jim Wilson <wilson@tuliptree.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Abdurachmanov <david.abdurachmanov@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Lukas Wunner <lukas@wunner.de>, netdev@vger.kernel.org,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH v9 00/14] pci: Work around ASMedia ASM2824 PCIe link
+ training failures
+In-Reply-To: <20230616202900.GA1540115@bhelgaas>
+Message-ID: <alpine.DEB.2.21.2306201040200.14084@angie.orcam.me.uk>
+References: <20230616202900.GA1540115@bhelgaas>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,57 +57,23 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Call pci_parent_bus_reset() rather than duplicating it in trigger_sbr().
-There are extra preparatory checks made by the former function, but they 
-are supposed to be neutral to the HFI1 device.
+On Fri, 16 Jun 2023, Bjorn Helgaas wrote:
 
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
- drivers/infiniband/hw/hfi1/pcie.c |   30 ++++--------------------------
- 1 file changed, 4 insertions(+), 26 deletions(-)
+> I agree that as I rearranged it, the workaround doesn't apply in all
+> cases simultaneously.  Maybe not ideal, but maybe not terrible either.
+> Looking at it again, maybe it would have made more sense to move the
+> pcie_wait_for_link_delay() change to the last patch along with the
+> pci_dev_wait() change.  I dunno.
 
-linux-ib-hfi1-pcie-sbr-parent-bus-reset.diff
-Index: linux-macro/drivers/infiniband/hw/hfi1/pcie.c
-===================================================================
---- linux-macro.orig/drivers/infiniband/hw/hfi1/pcie.c
-+++ linux-macro/drivers/infiniband/hw/hfi1/pcie.c
-@@ -796,35 +796,13 @@ static void pcie_post_steps(struct hfi1_
- /*
-  * Trigger a secondary bus reset (SBR) on ourselves using our parent.
-  *
-- * Based on pci_parent_bus_reset() which is not exported by the
-- * kernel core.
-+ * This is an end around to do an SBR during probe time.  A new API
-+ * needs to be implemented to have cleaner interface but this fixes
-+ * the current brokenness.
-  */
- static int trigger_sbr(struct hfi1_devdata *dd)
- {
--	struct pci_dev *dev = dd->pcidev;
--	struct pci_dev *pdev;
--
--	/* need a parent */
--	if (!dev->bus->self) {
--		dd_dev_err(dd, "%s: no parent device\n", __func__);
--		return -ENOTTY;
--	}
--
--	/* should not be anyone else on the bus */
--	list_for_each_entry(pdev, &dev->bus->devices, bus_list)
--		if (pdev != dev) {
--			dd_dev_err(dd,
--				   "%s: another device is on the same bus\n",
--				   __func__);
--			return -ENOTTY;
--		}
--
--	/*
--	 * This is an end around to do an SBR during probe time. A new API needs
--	 * to be implemented to have cleaner interface but this fixes the
--	 * current brokenness
--	 */
--	return pci_bridge_secondary_bus_reset(dev->bus->self);
-+	return pci_parent_bus_reset(dd->pcidev, PCI_RESET_DO_RESET);
- }
- 
- /*
+ I think the order of the changes is not important enough to justify 
+spending a lot of time and mental effort on it.  You decided, so be it.  
+Thank you for your effort made with this review.
+
+ With this series out of the way I have now posted a small clean-up for 
+SBR code duplication between PCI core and an InfiniBand driver I came 
+across in the course of working on this series.  See 
+<https://lore.kernel.org/r/alpine.DEB.2.21.2306200153110.14084@angie.orcam.me.uk/>.
+
+ Please have a look at your convenience.
+
+  Maciej
