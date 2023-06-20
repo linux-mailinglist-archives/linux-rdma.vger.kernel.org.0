@@ -2,78 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B40B573687F
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 11:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6576736A3C
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 13:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbjFTJ5M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Jun 2023 05:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
+        id S231733AbjFTLFR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Jun 2023 07:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232500AbjFTJ4e (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 05:56:34 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE3E42115;
-        Tue, 20 Jun 2023 02:54:05 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id BC22792009C; Tue, 20 Jun 2023 11:54:04 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id B4F1492009B;
-        Tue, 20 Jun 2023 10:54:04 +0100 (BST)
-Date:   Tue, 20 Jun 2023 10:54:04 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Stefan Roese <sr@denx.de>, Leon Romanovsky <leon@kernel.org>,
-        linux-rdma@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jim Wilson <wilson@tuliptree.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Abdurachmanov <david.abdurachmanov@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Lukas Wunner <lukas@wunner.de>, netdev@vger.kernel.org,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH v9 00/14] pci: Work around ASMedia ASM2824 PCIe link
- training failures
-In-Reply-To: <20230616202900.GA1540115@bhelgaas>
-Message-ID: <alpine.DEB.2.21.2306201040200.14084@angie.orcam.me.uk>
-References: <20230616202900.GA1540115@bhelgaas>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        with ESMTP id S231320AbjFTLFQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 07:05:16 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71CAE41
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 04:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687259115; x=1718795115;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FlD9EqEAehVX55CqKmIz5nVWbCKGN9LWDUnA94CZ798=;
+  b=NFEluB2de+QJ/miya2frA6FeVM4Zf34ZHygcYSZCWM662xQrx31hLPsr
+   FhO2gBKWmz4Der7MPJ5EZfLJYwIYBfDdvi1LetG1mhqB9bVt8HbJLJT1u
+   6vkmlh5NaxQCucooixx9WFo6n83RVM536UBYzALShJwKyhsUFPm7whogz
+   CwwkljOVhKRGr8J9O82SbDeEwzFdbOoaAtGN47FRpwnXH5eeetBVlFwpV
+   ua3ryUjpCaWajMWtMqZYtEdlWOEaFY3JsHsDHfqxvI7sSYiM7HkA64VJT
+   sJGzkF/EkLi8s/IKAG2DUK7vNRC3yT25U8pW/MIGwoLI32VVzP+6QLsZF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="363251780"
+X-IronPort-AV: E=Sophos;i="6.00,256,1681196400"; 
+   d="scan'208";a="363251780"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2023 04:05:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="784032418"
+X-IronPort-AV: E=Sophos;i="6.00,256,1681196400"; 
+   d="scan'208";a="784032418"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Jun 2023 04:05:13 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qBZAe-0005pY-0h;
+        Tue, 20 Jun 2023 11:05:12 +0000
+Date:   Tue, 20 Jun 2023 19:04:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
+        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Bob Pearson <rpearsonhpe@gmail.com>
+Subject: Re: [PATCH for-next 3/3] RDMA/rxe: Fix rxe_m-dify_srq
+Message-ID: <202306201807.sCYZpuDH-lkp@intel.com>
+References: <20230619202110.45680-4-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230619202110.45680-4-rpearsonhpe@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 16 Jun 2023, Bjorn Helgaas wrote:
+Hi Bob,
 
-> I agree that as I rearranged it, the workaround doesn't apply in all
-> cases simultaneously.  Maybe not ideal, but maybe not terrible either.
-> Looking at it again, maybe it would have made more sense to move the
-> pcie_wait_for_link_delay() change to the last patch along with the
-> pci_dev_wait() change.  I dunno.
+kernel test robot noticed the following build warnings:
 
- I think the order of the changes is not important enough to justify 
-spending a lot of time and mental effort on it.  You decided, so be it.  
-Thank you for your effort made with this review.
+[auto build test WARNING on 830f93f47068b1632cc127871fbf27e918efdf46]
 
- With this series out of the way I have now posted a small clean-up for 
-SBR code duplication between PCI core and an InfiniBand driver I came 
-across in the course of working on this series.  See 
-<https://lore.kernel.org/r/alpine.DEB.2.21.2306200153110.14084@angie.orcam.me.uk/>.
+url:    https://github.com/intel-lab-lkp/linux/commits/Bob-Pearson/RDMA-rxe-Move-work-queue-code-to-subroutines/20230620-042342
+base:   830f93f47068b1632cc127871fbf27e918efdf46
+patch link:    https://lore.kernel.org/r/20230619202110.45680-4-rpearsonhpe%40gmail.com
+patch subject: [PATCH for-next 3/3] RDMA/rxe: Fix rxe_m-dify_srq
+config: x86_64-randconfig-a005-20230620 (https://download.01.org/0day-ci/archive/20230620/202306201807.sCYZpuDH-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230620/202306201807.sCYZpuDH-lkp@intel.com/reproduce)
 
- Please have a look at your convenience.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306201807.sCYZpuDH-lkp@intel.com/
 
-  Maciej
+All warnings (new ones prefixed by >>):
+
+>> drivers/infiniband/sw/rxe/rxe_srq.c:73:18: warning: variable 'q' is uninitialized when used here [-Wuninitialized]
+           srq->rq.queue = q;
+                           ^
+   drivers/infiniband/sw/rxe/rxe_srq.c:50:21: note: initialize the variable 'q' to silence this warning
+           struct rxe_queue *q;
+                              ^
+                               = NULL
+   1 warning generated.
+
+
+vim +/q +73 drivers/infiniband/sw/rxe/rxe_srq.c
+
+8700e3e7c4857d Moni Shoua         2016-06-16   43  
+8700e3e7c4857d Moni Shoua         2016-06-16   44  int rxe_srq_from_init(struct rxe_dev *rxe, struct rxe_srq *srq,
+ff23dfa134576e Shamir Rabinovitch 2019-03-31   45  		      struct ib_srq_init_attr *init, struct ib_udata *udata,
+0c43ab371bcb07 Jason Gunthorpe    2018-03-13   46  		      struct rxe_create_srq_resp __user *uresp)
+8700e3e7c4857d Moni Shoua         2016-06-16   47  {
+8700e3e7c4857d Moni Shoua         2016-06-16   48  	int err;
+06e1f13ffd8b02 Bob Pearson        2023-06-19   49  	int wqe_size;
+8700e3e7c4857d Moni Shoua         2016-06-16   50  	struct rxe_queue *q;
+8700e3e7c4857d Moni Shoua         2016-06-16   51  
+8700e3e7c4857d Moni Shoua         2016-06-16   52  	srq->ibsrq.event_handler = init->event_handler;
+8700e3e7c4857d Moni Shoua         2016-06-16   53  	srq->ibsrq.srq_context = init->srq_context;
+8700e3e7c4857d Moni Shoua         2016-06-16   54  	srq->limit = init->attr.srq_limit;
+02827b67085162 Bob Pearson        2021-11-03   55  	srq->srq_num = srq->elem.index;
+8700e3e7c4857d Moni Shoua         2016-06-16   56  	srq->rq.max_wr = init->attr.max_wr;
+8700e3e7c4857d Moni Shoua         2016-06-16   57  	srq->rq.max_sge = init->attr.max_sge;
+8700e3e7c4857d Moni Shoua         2016-06-16   58  
+06e1f13ffd8b02 Bob Pearson        2023-06-19   59  	wqe_size = sizeof(struct rxe_recv_wqe) +
+06e1f13ffd8b02 Bob Pearson        2023-06-19   60  			srq->rq.max_sge*sizeof(struct ib_sge);
+8700e3e7c4857d Moni Shoua         2016-06-16   61  
+8700e3e7c4857d Moni Shoua         2016-06-16   62  	spin_lock_init(&srq->rq.producer_lock);
+8700e3e7c4857d Moni Shoua         2016-06-16   63  	spin_lock_init(&srq->rq.consumer_lock);
+8700e3e7c4857d Moni Shoua         2016-06-16   64  
+06e1f13ffd8b02 Bob Pearson        2023-06-19   65  	srq->rq.queue = rxe_queue_init(rxe, &srq->rq.max_wr, wqe_size,
+06e1f13ffd8b02 Bob Pearson        2023-06-19   66  				       QUEUE_TYPE_FROM_CLIENT);
+06e1f13ffd8b02 Bob Pearson        2023-06-19   67  	if (!srq->rq.queue) {
+0e6090024b3ebf Bob Pearson        2022-11-03   68  		rxe_dbg_srq(srq, "Unable to allocate queue\n");
+06e1f13ffd8b02 Bob Pearson        2023-06-19   69  		err = -ENOMEM;
+06e1f13ffd8b02 Bob Pearson        2023-06-19   70  		goto err_out;
+8700e3e7c4857d Moni Shoua         2016-06-16   71  	}
+8700e3e7c4857d Moni Shoua         2016-06-16   72  
+8700e3e7c4857d Moni Shoua         2016-06-16  @73  	srq->rq.queue = q;
+8700e3e7c4857d Moni Shoua         2016-06-16   74  
+ff23dfa134576e Shamir Rabinovitch 2019-03-31   75  	err = do_mmap_info(rxe, uresp ? &uresp->mi : NULL, udata, q->buf,
+8700e3e7c4857d Moni Shoua         2016-06-16   76  			   q->buf_size, &q->ip);
+aae0484e15f062 Zhu Yanjun         2018-09-30   77  	if (err) {
+06e1f13ffd8b02 Bob Pearson        2023-06-19   78  		rxe_dbg_srq(srq, "Unable to init mmap info for caller\n");
+06e1f13ffd8b02 Bob Pearson        2023-06-19   79  		goto err_free;
+aae0484e15f062 Zhu Yanjun         2018-09-30   80  	}
+8700e3e7c4857d Moni Shoua         2016-06-16   81  
+06e1f13ffd8b02 Bob Pearson        2023-06-19   82  	init->attr.max_wr = srq->rq.max_wr;
+06e1f13ffd8b02 Bob Pearson        2023-06-19   83  
+0c43ab371bcb07 Jason Gunthorpe    2018-03-13   84  	if (uresp) {
+0c43ab371bcb07 Jason Gunthorpe    2018-03-13   85  		if (copy_to_user(&uresp->srq_num, &srq->srq_num,
+aae0484e15f062 Zhu Yanjun         2018-09-30   86  				 sizeof(uresp->srq_num))) {
+aae0484e15f062 Zhu Yanjun         2018-09-30   87  			rxe_queue_cleanup(q);
+8700e3e7c4857d Moni Shoua         2016-06-16   88  			return -EFAULT;
+8700e3e7c4857d Moni Shoua         2016-06-16   89  		}
+aae0484e15f062 Zhu Yanjun         2018-09-30   90  	}
+0c43ab371bcb07 Jason Gunthorpe    2018-03-13   91  
+8700e3e7c4857d Moni Shoua         2016-06-16   92  	return 0;
+06e1f13ffd8b02 Bob Pearson        2023-06-19   93  
+06e1f13ffd8b02 Bob Pearson        2023-06-19   94  err_free:
+06e1f13ffd8b02 Bob Pearson        2023-06-19   95  	vfree(q->buf);
+06e1f13ffd8b02 Bob Pearson        2023-06-19   96  	kfree(q);
+06e1f13ffd8b02 Bob Pearson        2023-06-19   97  err_out:
+06e1f13ffd8b02 Bob Pearson        2023-06-19   98  	return err;
+8700e3e7c4857d Moni Shoua         2016-06-16   99  }
+8700e3e7c4857d Moni Shoua         2016-06-16  100  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
