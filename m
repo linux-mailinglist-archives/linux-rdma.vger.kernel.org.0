@@ -2,342 +2,201 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0619736FB0
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 17:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD24737009
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jun 2023 17:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233338AbjFTPDp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Jun 2023 11:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
+        id S233707AbjFTPOF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Jun 2023 11:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233344AbjFTPD2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 11:03:28 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4622F1BF9
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 08:02:28 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1acfce1fc0bso306916fac.2
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 08:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687273347; x=1689865347;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BOoYXXMjtPuXJ3NkEGdCmjRbTXxXdBB7rLGK3JA8fDM=;
-        b=JV96NlY7EiUpYFlNUqO33z0yH0YWe9QDr5BZv0Zf/xJ6KeVJxIbb0WA1aEbhlc40Dl
-         igmTrcYbERElTfptomw+HB/b9bdgLPNxrzgAgYDAoxdtrEW6/Rtafn8yIDRYrqGAQDI4
-         LrPkUS4AELEv46A6l77z7TYa+xHy/dyVNBCs4G4MoijtVNV6OcR5nK/DKrKBLWtR4tWN
-         tBytcIxSqTbDPIfEY5+DR9wj9t1WvKJdKakWY03IiXK9buzz4YTW7/5kscaGc3+8Y7xI
-         RVqdGj+EQB7eEnNOkkKkcxOGD0wnPP14yFp5Nn0eFz/DaBjVJFNA1zCOEmaQlIt5243G
-         v/eg==
+        with ESMTP id S233674AbjFTPNt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Jun 2023 11:13:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A28FE
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 08:12:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1687273977;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RIHjNkxkimsgCBMvM6HkxzQRXw0ocJYlxEDBNvgOzO8=;
+        b=ihu/f2yPRswnR8OiGyZv5MQ4aniQ4wuLOGmMoVp2KSfNdWjG45dacyVrrUQ+L8mc/yguR3
+        pX7tx0DVgpUMco8jsI/ogUwySQhwre4NOD0IwL8Vi8clewomhg+Ws0d1oL3UXTcGhPMFJg
+        Qk9wZGONdt8NZ0cmbGJhP9P/meSs8H0=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-78-GNzGoQeEP9KW2w2ZrTnahA-1; Tue, 20 Jun 2023 11:12:52 -0400
+X-MC-Unique: GNzGoQeEP9KW2w2ZrTnahA-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b467b1dd70so26477831fa.1
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Jun 2023 08:12:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687273347; x=1689865347;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BOoYXXMjtPuXJ3NkEGdCmjRbTXxXdBB7rLGK3JA8fDM=;
-        b=XXFZvCTqFut2QFbNeYKCjDhtZgLjvRHAhMUOTlxMKFxH7XX6GqscF+Xq3Roptxp7Js
-         N+pYORqTdb53hHBeoW6mjGYZW/fyWMQLrut4h7PT6E+630F3ofm4MH0E6HRPbr9CPibZ
-         ls79PgTTD1yJJOb7+jfgRwn33V9HVR2rlZlrOWuajfppFPDT6DAXb4GmrfEvSCSzpisV
-         HX+37OJ7i1oJ29flkIqkbPsE1ZmYjw5/opoBhXicHleK7+hWei09PmDbl1yGf34V28qo
-         Q9+JS8O9q3vQ2bi/fmqdxEjvTxP5PS5BSHOurFvQueaGsGLI08VExJ003M2FX6RMa/x+
-         2ZHQ==
-X-Gm-Message-State: AC+VfDxGhxT5yUZaLMa8yrh9flB3/+Xj/WScP33cNuYyBT2YkLworsOQ
-        NcN8NfYyCsydlM2o0JyACrYQtCuv9wc=
-X-Google-Smtp-Source: ACHHUZ6CJTH1cDeOPMhGxhcm/Dm2rXT9DTz2imm9aUPIclwZUWwcR4/Qlq5iBue3fT9MTgNeQdY6Rg==
-X-Received: by 2002:a05:6870:1986:b0:1a9:8c0f:7a5 with SMTP id v6-20020a056870198600b001a98c0f07a5mr3282276oam.3.1687273347169;
-        Tue, 20 Jun 2023 08:02:27 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:ba53:355d:2a89:4598? (2603-8081-140c-1a00-ba53-355d-2a89-4598.res6.spectrum.com. [2603:8081:140c:1a00:ba53:355d:2a89:4598])
-        by smtp.gmail.com with ESMTPSA id lx23-20020a0568704b9700b001a6c1fcf1d6sm1411892oab.18.2023.06.20.08.02.26
+        d=1e100.net; s=20221208; t=1687273965; x=1689865965;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RIHjNkxkimsgCBMvM6HkxzQRXw0ocJYlxEDBNvgOzO8=;
+        b=C693zeI4Dc7hVCieSysviCcOl1JP3ChX4lw0r+F3Xo893+HUN14u2lcd5/iNtyoYH6
+         lU9QIZUZI55nA0DCfS/ZIDQyN1k5hGOBfwoTBTxS8eDsozPgQhGkV2mV9msMgRd38Nge
+         6urHD+LshF+znPTsylZ6vzmxIdpzndkqYIowpPNAZ1Ma5kk0vxwJHdpcpka/YGV0R4io
+         n1RX7JV4tUrAW+foi7BBq5wfDjfAkWNqqSmjzJ10QvzmKMKnj4drQc1T3lI9MCDaHjP0
+         bzNpJ0ujXc0XOl4sfbqg/MVMD2oSTTbvfbGFkOL3/cLLjURXvi64mavjPQv+y58WDOt7
+         jAjw==
+X-Gm-Message-State: AC+VfDxqAJ043cANpOOeGbb/ZmvcRhCd9PFx8+N3mF1i3G4uczwdZ6W4
+        hLbx+TAOWKs9iL3LCL8aTJBGJShSIl0xdcCKdrEpowAIqeWisNmVmu6tXFhbB03ARdxg/QkFvEV
+        ZG1sS6bDtpnMCb/+5J/jYrA==
+X-Received: by 2002:a05:651c:14e:b0:2b4:7559:f240 with SMTP id c14-20020a05651c014e00b002b47559f240mr4078156ljd.6.1687273964880;
+        Tue, 20 Jun 2023 08:12:44 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ6Lo7qb4XkZPXjkccx/HyjXuRTo3yLp1oLQpdeobTRT2dgjfvEI4TXJ3K+ZZv10qb5gfg8RjQ==
+X-Received: by 2002:a05:651c:14e:b0:2b4:7559:f240 with SMTP id c14-20020a05651c014e00b002b47559f240mr4078127ljd.6.1687273964526;
+        Tue, 20 Jun 2023 08:12:44 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id lf4-20020a170906ae4400b0098822e05eddsm1565730ejb.100.2023.06.20.08.12.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jun 2023 08:02:26 -0700 (PDT)
-Message-ID: <ebe9541f-ee4a-02e2-1a13-684f2c20a959@gmail.com>
-Date:   Tue, 20 Jun 2023 10:02:25 -0500
+        Tue, 20 Jun 2023 08:12:43 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <6909d28b-0ffc-a02a-235b-7bdce594965d@redhat.com>
+Date:   Tue, 20 Jun 2023 17:12:41 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH for-next v2 1/3] RDMA/rxe: Move work queue code to
- subroutines
+ Thunderbird/102.10.0
+Cc:     brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
 Content-Language: en-US
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org
-References: <20230620135519.9365-1-rpearsonhpe@gmail.com>
- <20230620135519.9365-2-rpearsonhpe@gmail.com>
- <CAD=hENcibyPP9e8BAotUVqc1TcgD1Yym2KA3a9k4V3BWTFn6bw@mail.gmail.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <CAD=hENcibyPP9e8BAotUVqc1TcgD1Yym2KA3a9k4V3BWTFn6bw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <20230612130256.4572-1-linyunsheng@huawei.com>
+ <20230612130256.4572-5-linyunsheng@huawei.com>
+ <20230614101954.30112d6e@kernel.org>
+ <8c544cd9-00a3-2f17-bd04-13ca99136750@huawei.com>
+ <20230615095100.35c5eb10@kernel.org>
+ <CAKgT0Uc6Xoyh3Edgt+83b+HTM5j4JDr3fuxcyL9qDk+Wwt9APg@mail.gmail.com>
+ <908b8b17-f942-f909-61e6-276df52a5ad5@huawei.com>
+ <CAKgT0UeZfbxDYaeUntrQpxHmwCh6zy0dEpjxghiCNxPxv=kdoQ@mail.gmail.com>
+ <72ccf224-7b45-76c5-5ca9-83e25112c9c6@redhat.com>
+ <20230616122140.6e889357@kernel.org>
+ <eadebd58-d79a-30b6-87aa-1c77acb2ec17@redhat.com>
+ <20230619110705.106ec599@kernel.org>
+In-Reply-To: <20230619110705.106ec599@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/20/23 09:49, Zhu Yanjun wrote:
-> On Tue, Jun 20, 2023 at 9:55 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->>
->> This patch:
->>         - Moves code to initialize a qp send work queue to a
->>           subroutine named rxe_init_sq.
->>         - Moves code to initialize a qp recv work queue to a
->>           subroutine named rxe_init_rq.
-> 
-> This is a use-before-initialization problem. It is better to
-> initialize the sq/rq queues before the queues are used.
-> These 3 commits are complicated. It is easy to introduce some risks
-> just like in the first version. A compact fix is preferred.
-> But these commits seems to fix the problem.
-> 
-> Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
 
-The fix to the reported problem is in patch 2/3 which is very simple.
-Patch 1/3 mainly just cuts and pastes the code to init the queues into a
-subroutine without any functional change. But it fixes another potential
-use before setting issue with the packet queues simply by initializing
-them first.
 
-I am planning on spending today looking at the namespace patches.
+On 19/06/2023 20.07, Jakub Kicinski wrote:
+> On Fri, 16 Jun 2023 22:42:35 +0200 Jesper Dangaard Brouer wrote:
+>>> Former is better for huge pages, latter is better for IO mem
+>>> (peer-to-peer DMA). I wonder if you have different use case which
+>>> requires a different model :(
+>>
+>> I want for the network stack SKBs (and XDP) to support different memory
+>> types for the "head" frame and "data-frags". Eric have described this
+>> idea before, that hardware will do header-split, and we/he can get TCP
+>> data part is another page/frag, making it faster for TCP-streams, but
+>> this can be used for much more.
+>>
+>> My proposed use-cases involves more that TCP.  We can easily imagine
+>> NVMe protocol header-split, and the data-frag could be a mem_type that
+>> actually belongs to the harddisk (maybe CPU cannot even read this).  The
+>> same scenario goes for GPU memory, which is for the AI use-case.  IIRC
+>> then Jonathan have previously send patches for the GPU use-case.
+>>
+>> I really hope we can work in this direction together,
+> 
+> Perfect, that's also the use case I had in mind. The huge page thing
+> was just a quick thing to implement as a PoC (although useful in its
+> own right, one day I'll find the time to finish it, sigh).
+> 
+> That said I couldn't convince myself that for a peer-to-peer setup we
+> have enough space in struct page to store all the information we need.
+> Or that we'd get a struct page at all, and not just a region of memory
+> with no struct page * allocated :S
 
-Thanks for looking - Bob
+Good with big ideas, but I think we should start smaller and evolve.
+
 > 
+> That'd require serious surgery on the page pool's fast paths to work
+> around.
 > 
+> I haven't dug into the details, tho. If you think we can use page pool
+> as a frontend for iouring and/or p2p memory that'd be awesome!
 > 
->>         - Moves initialization of qp request and response packet
->>           queues ahead of work queue initialization so that cleanup
->>           of a qp if it is not fully completed can successfully
->>           attempt to drain the packet queues without a seg fault.
->>         - Makes minor whitespace cleanups.
->>
->> Fixes: 8700e3e7c485 ("Soft RoCE driver")
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->> ---
->>  drivers/infiniband/sw/rxe/rxe_qp.c | 163 +++++++++++++++++++----------
->>  1 file changed, 108 insertions(+), 55 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
->> index 95d4a6760c33..9dbb16699c36 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
->> @@ -180,13 +180,63 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
->>         atomic_set(&qp->skb_out, 0);
->>  }
->>
->> +static int rxe_init_sq(struct rxe_qp *qp, struct ib_qp_init_attr *init,
->> +                      struct ib_udata *udata,
->> +                      struct rxe_create_qp_resp __user *uresp)
->> +{
->> +       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
->> +       int wqe_size;
->> +       int err;
->> +
->> +       qp->sq.max_wr = init->cap.max_send_wr;
->> +       wqe_size = max_t(int, init->cap.max_send_sge * sizeof(struct ib_sge),
->> +                        init->cap.max_inline_data);
->> +       qp->sq.max_sge = wqe_size / sizeof(struct ib_sge);
->> +       qp->sq.max_inline = wqe_size;
->> +       wqe_size += sizeof(struct rxe_send_wqe);
->> +
->> +       qp->sq.queue = rxe_queue_init(rxe, &qp->sq.max_wr, wqe_size,
->> +                                     QUEUE_TYPE_FROM_CLIENT);
->> +       if (!qp->sq.queue) {
->> +               rxe_err_qp(qp, "Unable to allocate send queue");
->> +               err = -ENOMEM;
->> +               goto err_out;
->> +       }
->> +
->> +       /* prepare info for caller to mmap send queue if user space qp */
->> +       err = do_mmap_info(rxe, uresp ? &uresp->sq_mi : NULL, udata,
->> +                          qp->sq.queue->buf, qp->sq.queue->buf_size,
->> +                          &qp->sq.queue->ip);
->> +       if (err) {
->> +               rxe_err_qp(qp, "do_mmap_info failed, err = %d", err);
->> +               goto err_free;
->> +       }
->> +
->> +       /* return actual capabilities to caller which may be larger
->> +        * than requested
->> +        */
->> +       init->cap.max_send_wr = qp->sq.max_wr;
->> +       init->cap.max_send_sge = qp->sq.max_sge;
->> +       init->cap.max_inline_data = qp->sq.max_inline;
->> +
->> +       return 0;
->> +
->> +err_free:
->> +       vfree(qp->sq.queue->buf);
->> +       kfree(qp->sq.queue);
->> +       qp->sq.queue = NULL;
->> +err_out:
->> +       return err;
->> +}
->> +
->>  static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->>                            struct ib_qp_init_attr *init, struct ib_udata *udata,
->>                            struct rxe_create_qp_resp __user *uresp)
->>  {
->>         int err;
->> -       int wqe_size;
->> -       enum queue_type type;
->> +
->> +       /* if we don't finish qp create make sure queue is valid */
->> +       skb_queue_head_init(&qp->req_pkts);
->>
->>         err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
->>         if (err < 0)
->> @@ -201,32 +251,10 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->>          * (0xc000 - 0xffff).
->>          */
->>         qp->src_port = RXE_ROCE_V2_SPORT + (hash_32(qp_num(qp), 14) & 0x3fff);
->> -       qp->sq.max_wr           = init->cap.max_send_wr;
->> -
->> -       /* These caps are limited by rxe_qp_chk_cap() done by the caller */
->> -       wqe_size = max_t(int, init->cap.max_send_sge * sizeof(struct ib_sge),
->> -                        init->cap.max_inline_data);
->> -       qp->sq.max_sge = init->cap.max_send_sge =
->> -               wqe_size / sizeof(struct ib_sge);
->> -       qp->sq.max_inline = init->cap.max_inline_data = wqe_size;
->> -       wqe_size += sizeof(struct rxe_send_wqe);
->> -
->> -       type = QUEUE_TYPE_FROM_CLIENT;
->> -       qp->sq.queue = rxe_queue_init(rxe, &qp->sq.max_wr,
->> -                               wqe_size, type);
->> -       if (!qp->sq.queue)
->> -               return -ENOMEM;
->>
->> -       err = do_mmap_info(rxe, uresp ? &uresp->sq_mi : NULL, udata,
->> -                          qp->sq.queue->buf, qp->sq.queue->buf_size,
->> -                          &qp->sq.queue->ip);
->> -
->> -       if (err) {
->> -               vfree(qp->sq.queue->buf);
->> -               kfree(qp->sq.queue);
->> -               qp->sq.queue = NULL;
->> +       err = rxe_init_sq(qp, init, udata, uresp);
->> +       if (err)
->>                 return err;
->> -       }
->>
->>         qp->req.wqe_index = queue_get_producer(qp->sq.queue,
->>                                                QUEUE_TYPE_FROM_CLIENT);
->> @@ -234,8 +262,6 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->>         qp->req.opcode          = -1;
->>         qp->comp.opcode         = -1;
->>
->> -       skb_queue_head_init(&qp->req_pkts);
->> -
->>         rxe_init_task(&qp->req.task, qp, rxe_requester);
->>         rxe_init_task(&qp->comp.task, qp, rxe_completer);
->>
->> @@ -247,40 +273,67 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->>         return 0;
->>  }
->>
->> +static int rxe_init_rq(struct rxe_qp *qp, struct ib_qp_init_attr *init,
->> +                      struct ib_udata *udata,
->> +                      struct rxe_create_qp_resp __user *uresp)
->> +{
->> +       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
->> +       int wqe_size;
->> +       int err;
->> +
->> +       qp->rq.max_wr = init->cap.max_recv_wr;
->> +       qp->rq.max_sge = init->cap.max_recv_sge;
->> +       wqe_size = sizeof(struct rxe_recv_wqe) +
->> +                               qp->rq.max_sge*sizeof(struct ib_sge);
->> +
->> +       qp->rq.queue = rxe_queue_init(rxe, &qp->rq.max_wr, wqe_size,
->> +                                     QUEUE_TYPE_FROM_CLIENT);
->> +       if (!qp->rq.queue) {
->> +               rxe_err_qp(qp, "Unable to allocate recv queue");
->> +               err = -ENOMEM;
->> +               goto err_out;
->> +       }
->> +
->> +       /* prepare info for caller to mmap recv queue if user space qp */
->> +       err = do_mmap_info(rxe, uresp ? &uresp->rq_mi : NULL, udata,
->> +                          qp->rq.queue->buf, qp->rq.queue->buf_size,
->> +                          &qp->rq.queue->ip);
->> +       if (err) {
->> +               rxe_err_qp(qp, "do_mmap_info failed, err = %d", err);
->> +               goto err_free;
->> +       }
->> +
->> +       /* return actual capabilities to caller which may be larger
->> +        * than requested
->> +        */
->> +       init->cap.max_recv_wr = qp->rq.max_wr;
->> +
->> +       return 0;
->> +
->> +err_free:
->> +       vfree(qp->rq.queue->buf);
->> +       kfree(qp->rq.queue);
->> +       qp->rq.queue = NULL;
->> +err_out:
->> +       return err;
->> +}
->> +
->>  static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
->>                             struct ib_qp_init_attr *init,
->>                             struct ib_udata *udata,
->>                             struct rxe_create_qp_resp __user *uresp)
->>  {
->>         int err;
->> -       int wqe_size;
->> -       enum queue_type type;
->> +
->> +       /* if we don't finish qp create make sure queue is valid */
->> +       skb_queue_head_init(&qp->resp_pkts);
->>
->>         if (!qp->srq) {
->> -               qp->rq.max_wr           = init->cap.max_recv_wr;
->> -               qp->rq.max_sge          = init->cap.max_recv_sge;
->> -
->> -               wqe_size = rcv_wqe_size(qp->rq.max_sge);
->> -
->> -               type = QUEUE_TYPE_FROM_CLIENT;
->> -               qp->rq.queue = rxe_queue_init(rxe, &qp->rq.max_wr,
->> -                                       wqe_size, type);
->> -               if (!qp->rq.queue)
->> -                       return -ENOMEM;
->> -
->> -               err = do_mmap_info(rxe, uresp ? &uresp->rq_mi : NULL, udata,
->> -                                  qp->rq.queue->buf, qp->rq.queue->buf_size,
->> -                                  &qp->rq.queue->ip);
->> -               if (err) {
->> -                       vfree(qp->rq.queue->buf);
->> -                       kfree(qp->rq.queue);
->> -                       qp->rq.queue = NULL;
->> +               err = rxe_init_rq(qp, init, udata, uresp);
->> +               if (err)
->>                         return err;
->> -               }
->>         }
->>
->> -       skb_queue_head_init(&qp->resp_pkts);
->> -
->>         rxe_init_task(&qp->resp.task, qp, rxe_responder);
->>
->>         qp->resp.opcode         = OPCODE_NONE;
->> @@ -307,10 +360,10 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
->>         if (srq)
->>                 rxe_get(srq);
->>
->> -       qp->pd                  = pd;
->> -       qp->rcq                 = rcq;
->> -       qp->scq                 = scq;
->> -       qp->srq                 = srq;
->> +       qp->pd = pd;
->> +       qp->rcq = rcq;
->> +       qp->scq = scq;
->> +       qp->srq = srq;
->>
->>         atomic_inc(&rcq->num_wq);
->>         atomic_inc(&scq->num_wq);
->> --
->> 2.39.2
->>
+
+Hmm... I don't like the sound of this.
+My point is that we should create a more plug-able memory system for
+netstack.  And NOT try to extend page_pool to cover all use-cases.
+
+> The workaround solution I had in mind would be to create a narrower API
+> for just data pages. Since we'd need to sprinkle ifs anyway, pull them
+> up close to the call site. Allowing to switch page pool for a
+> completely different implementation, like the one Jonathan coded up for
+> iouring. Basically
+> 
+> $name_alloc_page(queue)
+> {
+> 	if (queue->pp)
+> 		return page_pool_dev_alloc_pages(queue->pp);
+> 	else if (queue->iouring..)
+> 		...
+> }
+
+Yes, this is more the direction I'm thinking.
+In many cases, you don't need this if-statement helper in the driver, as
+driver RX side code will know the API used upfront.
+
+The TX completion side will need this kind of multiplexing return
+helper, to return the pages to the correct memory allocator type (e.g.
+page_pool being one).  See concept in [1] __xdp_return().
+
+Performance wise, function pointers are slow due to RETPOLINE, but
+switch-case statements (below certain size) becomes a jump table, which
+is fast.  See[1].
+
+[1] https://elixir.bootlin.com/linux/v6.4-rc7/source/net/core/xdp.c#L377
+
+Regarding room in "struct page", notice that page->pp_magic will have
+plenty room for e.g. storing xdp_mem_type or even xdp_mem_info (which
+also contains an ID).
+
+--Jesper
 
