@@ -2,240 +2,208 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA337381D7
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jun 2023 13:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A15F73815F
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jun 2023 13:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbjFUKYU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jun 2023 06:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
+        id S232100AbjFUK30 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jun 2023 06:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbjFUKYM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 06:24:12 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452671718
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 03:23:59 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b45c289615so75969341fa.1
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 03:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687343037; x=1689935037;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qIP/RgUHzsZiGVBRB71b7glXbG7VXiyuTjWvBX5krQg=;
-        b=S/CdoZua/1rLl8yRwjaUF9IfJ2JcWeppWIYsAe/kEWbp+VzSobUM4iS9eeLWZHt5FO
-         j/+mECwtEut66NCJpjuzLpLobjA7fzCyDUwpVOGTHl1cVmF3qTtFzfRaBX7G+Tegl8Tm
-         87Q/OZiSy1hpcxgY+MGptzKzvpXBNnTUuiwawnXX2OiPypV+k03lx7aTLBlVlmFPyOCK
-         oOwW0/iZyWnJ4lfaT24bKv+GYWW44GzHrflM4FjMvA3v2Bo8q5EMHhya2b4FnBXvqkic
-         qrcQPaiA4BdDNTsbHtCocDQbJDuuggPiCViWJpmfQFFiYemQpuO3YqlziZ0eyW6vOYiK
-         i8ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687343037; x=1689935037;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qIP/RgUHzsZiGVBRB71b7glXbG7VXiyuTjWvBX5krQg=;
-        b=M7Qe5EZsVSEPzzO6uaDxcPgOfYd1fYH2gQq3HOR8WLVmUQ4aMo/0vm7B8NW9ZagE10
-         d+SI/DEvsxzh8bwZYjf562GqXcN6rODI8t4iLClwojSjV6CzPRXgRc9u2LH+eMxzmUXD
-         gHKdRQD1TJzfk7isAVXxWuS+0TXWQabPHLoKCfnepweg7P39D6b8OdtKkskXneJeHKoG
-         2lOwqZHIHYdtBawK2K0SisILzv3uFgQCIqgDoC4iwaJl/13MKEoqjlq67J97PRU+K6wQ
-         brJKQhZ1Qj10HwKjbcnFgdRdSQUo4ow8GbrxloNxEh0Bbfuf6Grd1HGZ6Pb7u9RXcH10
-         c6kw==
-X-Gm-Message-State: AC+VfDxyJ/8Ap+m5fPgnI0DcZ31HQiBZjKQAKjiHmlHoxX8LMGOh2auR
-        p52Lud2Rc9WwCLFcV3wBLjXVgw==
-X-Google-Smtp-Source: ACHHUZ47T18xkAbbJT1Ek0oO9Y+tEkoagA5plZsIhQf/ly6xrGEeqlbNRj/M5efxydPdN9Sgu8PD7g==
-X-Received: by 2002:a2e:94c1:0:b0:2b3:4621:b6e3 with SMTP id r1-20020a2e94c1000000b002b34621b6e3mr9804142ljh.34.1687343037327;
-        Wed, 21 Jun 2023 03:23:57 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id d2-20020adff842000000b00312793cc763sm4142979wrq.15.2023.06.21.03.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jun 2023 03:23:55 -0700 (PDT)
-Date:   Wed, 21 Jun 2023 13:23:52 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     mcgrof@kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Joerg Reuter <jreuter@yaina.de>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexander Aring <alex.aring@gmail.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <martineau@kernel.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Remi Denis-Courmont <courmisch@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
-        Martin Schiller <ms@dev.tdt.de>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hams@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, bridge@lists.linux-foundation.org,
-        dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
-        mptcp@lists.linux.dev, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-Subject: Re: [PATCH 06/11] sysctl: Add size to register_net_sysctl function
-Message-ID: <5aba7eee-7a6e-4f3b-9921-e4220d479346@kadam.mountain>
-References: <20230621091000.424843-1-j.granados@samsung.com>
- <CGME20230621091022eucas1p1c097da50842b23e902e1a674e117e1aa@eucas1p1.samsung.com>
- <20230621091000.424843-7-j.granados@samsung.com>
- <dab06c20-f8b0-4e34-b885-f3537e442d54@kadam.mountain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dab06c20-f8b0-4e34-b885-f3537e442d54@kadam.mountain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        with ESMTP id S232117AbjFUK3L (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 06:29:11 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C471C1737;
+        Wed, 21 Jun 2023 03:29:04 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 266D621C2043; Wed, 21 Jun 2023 03:29:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 266D621C2043
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1687343344;
+        bh=chZwILjB8n5vZjnofE7dyAXFYm12Ys8pfNtbWBPSFg0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VtCZ45Dj+681XgJ/rY2h8s7WG5WqyExIxJhfSehRcNJQ7Ixa/HwkMlDiba1CXkOge
+         82oFWc8yJlqQZcOJ1PfnkUHxRGL5TRGAl/cHeJ0/3B0qg9PikYe0vebEuqqSrqf+wi
+         yGPSkz6mg7CXO0Ma002vvPowWZhbjn4+MVCy7dPw=
+From:   souradeep chakrabarti <schakrabarti@linux.microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: [PATCH] net: mana: Fix MANA VF unload when host is unresponsive
+Date:   Wed, 21 Jun 2023 03:29:01 -0700
+Message-Id: <1687343341-10898-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 21, 2023 at 12:47:30PM +0300, Dan Carpenter wrote:
-> The patchset doesn't include the actual interesting changes, just a
-> bunch of mechanical prep work.
-> 
-> On Wed, Jun 21, 2023 at 11:09:55AM +0200, Joel Granados wrote:
-> > diff --git a/net/ieee802154/6lowpan/reassembly.c b/net/ieee802154/6lowpan/reassembly.c
-> > index a91283d1e5bf..7b717434368c 100644
-> > --- a/net/ieee802154/6lowpan/reassembly.c
-> > +++ b/net/ieee802154/6lowpan/reassembly.c
-> > @@ -379,7 +379,8 @@ static int __net_init lowpan_frags_ns_sysctl_register(struct net *net)
-> >  	table[1].extra2	= &ieee802154_lowpan->fqdir->high_thresh;
-> >  	table[2].data	= &ieee802154_lowpan->fqdir->timeout;
-> >  
-> > -	hdr = register_net_sysctl(net, "net/ieee802154/6lowpan", table);
-> > +	hdr = register_net_sysctl(net, "net/ieee802154/6lowpan", table,
-> > +				  ARRAY_SIZE(lowpan_frags_ns_ctl_table));
-> 
-> For example, in lowpan_frags_ns_sysctl_register() the sentinel is
-> sometimes element zero if the user doesn't have enough permissions.  I
-> would want to ensure that was handled correctly, but that's going to be
-> done later in a completely different patchset.  I'm definitely not going
-> to remember to check.
+From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 
-On reflecting the patch is obviously wrong.  It should be pass zero as
-table_size in that case.  See diff at the end.
+This patch addresses  the VF unload issue, where mana_dealloc_queues()
+gets stuck in infinite while loop, because of host unresponsiveness.
+It adds a timeout in the while loop, to fix it.
 
-There is a similar bug in neigh_sysctl_register() where we use memset to
-zero out the whole table.  And another in __ip_vs_lblc_init().  I used
-the smatch cross function database
-	`smdb.py where ctl_table procname | grep '(null)' | grep min-max`
-to make a list of functions which set procname to zero.
+Also this patch adds a new attribute in mana_context, which gets set when
+mana_hwc_send_request() hits a timeout because of host unresponsiveness.
+This flag then helps to avoid the timeouts in successive calls.
 
-Probably we should add a WARN_ON() if procname is zero in the new code
-which doesn't use sentinels.
+Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   |  4 +++-
+ .../net/ethernet/microsoft/mana/hw_channel.c  | 12 ++++++++++-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 21 +++++++++++++++++--
+ include/net/mana/mana.h                       |  2 ++
+ 4 files changed, 35 insertions(+), 4 deletions(-)
 
-regards,
-dan carpenter
-
-drivers/char/random.c          | proc_do_uuid                   | (struct ctl_table)->procname | 0
-fs/proc/proc_sysctl.c          | new_dir                        | (struct ctl_table)->procname | 48,3906148897379000352
-fs/proc/proc_sysctl.c          | new_links                      | (struct ctl_table)->procname | 4096-ptr_max
-arch/arm64/kernel/fpsimd.c     | vec_proc_do_default_vl         | (struct ctl_table)->procname | 0
-arch/arm64/kernel/armv8_deprecated.c | register_insn_emulation        | (struct ctl_table)->procname | 0-u64max
-kernel/sysctl-test.c           | sysctl_test_api_dointvec_null_tbl_data | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl-test.c           | sysctl_test_api_dointvec_table_maxlen_unset | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl-test.c           | sysctl_test_api_dointvec_table_len_is_zero | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl-test.c           | sysctl_test_api_dointvec_table_read_but_position_set | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl-test.c           | sysctl_test_dointvec_read_happy_single_positive | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl-test.c           | sysctl_test_dointvec_read_happy_single_negative | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl-test.c           | sysctl_test_dointvec_write_happy_single_positive | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl-test.c           | sysctl_test_dointvec_write_happy_single_negative | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl-test.c           | sysctl_test_api_dointvec_write_single_less_int_min | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl-test.c           | sysctl_test_api_dointvec_write_single_greater_int_max | (struct ctl_table)->procname | 7612622206476333056
-kernel/sysctl.c                | proc_do_static_key             | (struct ctl_table)->procname | 0
-kernel/kexec_core.c            | kexec_limit_handler            | (struct ctl_table)->procname | 0
-kernel/bpf/syscall.c           | bpf_stats_handler              | (struct ctl_table)->procname | 0
-net/core/sysctl_net_core.c     | rps_sock_flow_sysctl           | (struct ctl_table)->procname | 0
-net/core/sysctl_net_core.c     | set_default_qdisc              | (struct ctl_table)->procname | 0
-net/core/neighbour.c           | neigh_sysctl_register          | (struct ctl_table)->procname | 0
-net/netfilter/ipvs/ip_vs_lblc.c | __ip_vs_lblc_init              | (struct ctl_table)->procname | 0-u64max
-net/netfilter/ipvs/ip_vs_lblcr.c | __ip_vs_lblcr_init             | (struct ctl_table)->procname | 0-u64max
-net/netfilter/ipvs/ip_vs_ctl.c | proc_do_defense_mode           | (struct ctl_table)->procname | 0
-net/netfilter/ipvs/ip_vs_ctl.c | proc_do_sync_threshold         | (struct ctl_table)->procname | 0
-net/netfilter/ipvs/ip_vs_ctl.c | proc_do_sync_ports             | (struct ctl_table)->procname | 0
-net/netfilter/ipvs/ip_vs_ctl.c | ipvs_proc_est_nice             | (struct ctl_table)->procname | 0
-net/netfilter/ipvs/ip_vs_ctl.c | ipvs_proc_run_estimation       | (struct ctl_table)->procname | 0
-net/netfilter/ipvs/ip_vs_ctl.c | ip_vs_control_net_init_sysctl  | (struct ctl_table)->procname | 0-u64max
-net/netfilter/nf_log.c         | netfilter_log_sysctl_init      | (struct ctl_table)->procname | 0-u64max
-net/sctp/sysctl.c              | proc_sctp_do_hmac_alg          | (struct ctl_table)->procname | 0
-net/sctp/sysctl.c              | proc_sctp_do_rto_min           | (struct ctl_table)->procname | 0
-net/sctp/sysctl.c              | proc_sctp_do_rto_max           | (struct ctl_table)->procname | 0
-net/sctp/sysctl.c              | proc_sctp_do_auth              | (struct ctl_table)->procname | 0
-net/sctp/sysctl.c              | proc_sctp_do_udp_port          | (struct ctl_table)->procname | 0
-net/sctp/sysctl.c              | proc_sctp_do_probe_interval    | (struct ctl_table)->procname | 0
-net/ipv6/route.c               | ipv6_route_sysctl_init         | (struct ctl_table)->procname | 0-u64max
-net/ipv6/addrconf.c            | addrconf_sysctl_addr_gen_mode  | (struct ctl_table)->procname | 0
-net/ieee802154/6lowpan/reassembly.c | lowpan_frags_ns_sysctl_register | (struct ctl_table)->procname | 0-u64max
-net/xfrm/xfrm_sysctl.c         | xfrm_sysctl_init               | (struct ctl_table)->procname | 0-u64max
-net/phonet/sysctl.c            | proc_local_port_range          | (struct ctl_table)->procname | 0
-net/ipv4/route.c               | sysctl_route_net_init          | (struct ctl_table)->procname | 0-u64max
-net/ipv4/sysctl_net_ipv4.c     | ipv4_local_port_range          | (struct ctl_table)->procname | 0
-net/ipv4/sysctl_net_ipv4.c     | ipv4_privileged_ports          | (struct ctl_table)->procname | 0
-net/ipv4/sysctl_net_ipv4.c     | ipv4_ping_group_range          | (struct ctl_table)->procname | 0
-net/ipv4/sysctl_net_ipv4.c     | proc_tcp_congestion_control    | (struct ctl_table)->procname | 0
-net/ipv4/sysctl_net_ipv4.c     | proc_tcp_available_congestion_control | (struct ctl_table)->procname | 0
-net/ipv4/sysctl_net_ipv4.c     | proc_allowed_congestion_control | (struct ctl_table)->procname | 0
-net/ipv4/sysctl_net_ipv4.c     | proc_tcp_fastopen_key          | (struct ctl_table)->procname | 0
-net/ipv4/sysctl_net_ipv4.c     | proc_tcp_available_ulp         | (struct ctl_table)->procname | 0
-net/ipv4/sysctl_net_ipv4.c     | proc_tcp_ehash_entries         | (struct ctl_table)->procname | 0
-net/ipv4/sysctl_net_ipv4.c     | proc_udp_hash_entries          | (struct ctl_table)->procname | 0
-
-diff --git a/net/ieee802154/6lowpan/reassembly.c b/net/ieee802154/6lowpan/reassembly.c
-index a91283d1e5bf..749238d38014 100644
---- a/net/ieee802154/6lowpan/reassembly.c
-+++ b/net/ieee802154/6lowpan/reassembly.c
-@@ -360,6 +360,7 @@ static int __net_init lowpan_frags_ns_sysctl_register(struct net *net)
- 	struct ctl_table_header *hdr;
- 	struct netns_ieee802154_lowpan *ieee802154_lowpan =
- 		net_ieee802154_lowpan(net);
-+	size_t table_size = ARRAY_SIZE(lowpan_frags_ns_ctl_table);
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 8f3f78b68592..5cc43ae78334 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -946,10 +946,12 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
+ 	struct gdma_context *gc = gd->gdma_context;
+ 	struct gdma_general_resp resp = {};
+ 	struct gdma_general_req req = {};
++	struct mana_context *ac;
+ 	int err;
  
- 	table = lowpan_frags_ns_ctl_table;
- 	if (!net_eq(net, &init_net)) {
-@@ -369,8 +370,10 @@ static int __net_init lowpan_frags_ns_sysctl_register(struct net *net)
- 			goto err_alloc;
+ 	if (gd->pdid == INVALID_PDID)
+ 		return -EINVAL;
++	ac = (struct mana_context *)gd->driver_data;
  
- 		/* Don't export sysctls to unprivileged users */
--		if (net->user_ns != &init_user_ns)
-+		if (net->user_ns != &init_user_ns) {
- 			table[0].procname = NULL;
-+			table_size = 0;
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_DEREGISTER_DEVICE, sizeof(req),
+ 			     sizeof(resp));
+@@ -957,7 +959,7 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
+ 	req.hdr.dev_id = gd->dev_id;
+ 
+ 	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+-	if (err || resp.hdr.status) {
++	if ((err || resp.hdr.status) && !ac->vf_unload_timeout) {
+ 		dev_err(gc->dev, "Failed to deregister device: %d, 0x%x\n",
+ 			err, resp.hdr.status);
+ 		if (!err)
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 9d1507eba5b9..557b890ad0ae 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -1,8 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /* Copyright (c) 2021, Microsoft Corporation. */
+ 
++#include "asm-generic/errno.h"
+ #include <net/mana/gdma.h>
+ #include <net/mana/hw_channel.h>
++#include <net/mana/mana.h>
+ 
+ static int mana_hwc_get_msg_index(struct hw_channel_context *hwc, u16 *msg_id)
+ {
+@@ -786,12 +788,19 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 	struct hwc_wq *txq = hwc->txq;
+ 	struct gdma_req_hdr *req_msg;
+ 	struct hwc_caller_ctx *ctx;
++	struct mana_context *ac;
+ 	u32 dest_vrcq = 0;
+ 	u32 dest_vrq = 0;
+ 	u16 msg_id;
+ 	int err;
+ 
+ 	mana_hwc_get_msg_index(hwc, &msg_id);
++	ac = (struct mana_context *)hwc->gdma_dev->driver_data;
++	if (ac->vf_unload_timeout) {
++		dev_err(hwc->dev, "HWC: vport is already unloaded.\n");
++		err = -ETIMEDOUT;
++		goto out;
++	}
+ 
+ 	tx_wr = &txq->msg_buf->reqs[msg_id];
+ 
+@@ -825,9 +834,10 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 		goto out;
+ 	}
+ 
+-	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
++	if (!wait_for_completion_timeout(&ctx->comp_event, 5 * HZ)) {
+ 		dev_err(hwc->dev, "HWC: Request timed out!\n");
+ 		err = -ETIMEDOUT;
++		ac->vf_unload_timeout = true;
+ 		goto out;
+ 	}
+ 
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index d907727c7b7a..24f5508d2979 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -2330,7 +2330,10 @@ static int mana_dealloc_queues(struct net_device *ndev)
+ 	struct mana_port_context *apc = netdev_priv(ndev);
+ 	struct gdma_dev *gd = apc->ac->gdma_dev;
+ 	struct mana_txq *txq;
++	struct sk_buff *skb;
++	struct mana_cq *cq;
+ 	int i, err;
++	unsigned long timeout;
+ 
+ 	if (apc->port_is_up)
+ 		return -EINVAL;
+@@ -2348,13 +2351,26 @@ static int mana_dealloc_queues(struct net_device *ndev)
+ 	 *
+ 	 * Drain all the in-flight TX packets
+ 	 */
++
++	timeout = jiffies + 120 * HZ;
+ 	for (i = 0; i < apc->num_queues; i++) {
+ 		txq = &apc->tx_qp[i].txq;
+-
+-		while (atomic_read(&txq->pending_sends) > 0)
++		while (atomic_read(&txq->pending_sends) > 0 &&
++		       time_before(jiffies, timeout)) {
+ 			usleep_range(1000, 2000);
 +		}
  	}
  
- 	table[0].data	= &ieee802154_lowpan->fqdir->high_thresh;
-@@ -379,7 +382,7 @@ static int __net_init lowpan_frags_ns_sysctl_register(struct net *net)
- 	table[1].extra2	= &ieee802154_lowpan->fqdir->high_thresh;
- 	table[2].data	= &ieee802154_lowpan->fqdir->timeout;
++	for (i = 0; i < apc->num_queues; i++) {
++		txq = &apc->tx_qp[i].txq;
++		cq = &apc->tx_qp[i].tx_cq;
++		while (atomic_read(&txq->pending_sends)) {
++			skb = skb_dequeue(&txq->pending_skbs);
++			mana_unmap_skb(skb, apc);
++			napi_consume_skb(skb, cq->budget);
++			atomic_sub(1, &txq->pending_sends);
++		}
++	}
+ 	/* We're 100% sure the queues can no longer be woken up, because
+ 	 * we're sure now mana_poll_tx_cq() can't be running.
+ 	 */
+@@ -2605,6 +2621,7 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
+ 		}
+ 	}
  
--	hdr = register_net_sysctl(net, "net/ieee802154/6lowpan", table);
-+	hdr = register_net_sysctl(net, "net/ieee802154/6lowpan", table, table_size);
- 	if (hdr == NULL)
- 		goto err_reg;
++	ac->vf_unload_timeout = false;
+ 	err = add_adev(gd);
+ out:
+ 	if (err)
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 9eef19972845..34f5d8e06ede 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -361,6 +361,8 @@ struct mana_context {
+ 	struct mana_eq *eqs;
  
+ 	struct net_device *ports[MAX_PORTS_IN_MANA_DEV];
++
++	bool vf_unload_timeout;
+ };
+ 
+ struct mana_port_context {
+-- 
+2.34.1
+
