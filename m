@@ -2,199 +2,236 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215CC738CE9
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jun 2023 19:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5CE0738D3F
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jun 2023 19:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbjFURTP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jun 2023 13:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57794 "EHLO
+        id S229470AbjFURhW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jun 2023 13:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjFURTP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 13:19:15 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534DD132
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 10:19:14 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-bf3934ee767so5206668276.0
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 10:19:14 -0700 (PDT)
+        with ESMTP id S230363AbjFURhS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 13:37:18 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2101.outbound.protection.outlook.com [40.107.102.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD00919AB;
+        Wed, 21 Jun 2023 10:37:15 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jc91xi3dCjryq11e/mA+Fz85d7LQBextYXBqQZfxIZaSzVAb8/EH/Avenj6EFwlnCSDBxXnGJNE3N+AbJ1IutzPkOlXpWrP2P2A3dAWHuKHYAZNcAnCZ6xDhBcYBqScjfiLdJ0Esw4VTAp4weVgxq+spgFp3kLE13UXt66LE7d28twKbbWvqnzDjIhPH4PnkpWb/1yycqEIk0vQA0Sk2SLlJ2vtyWXvYtqRAUg1He/KwHnQgXilO23ar+YBrpl6F57Q35vWd8QU3f5bc4e478GCcsJCID3lNjtxPE6oXWR1yr5IhspoiLicfyqFfgT/94AzuzGNv9DHjjhO43PGSHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZICNO9UgoYynMg6diZAkp+guVZ57QU3v1aBgTSS80iQ=;
+ b=g3j8Jz9EAEbNi5CjCm2LnCnjveQoWc4ren+UMgVjlp2hthfte+jqdUAAphNYizYYNXhpaqFHdtV7tMlf0G6aDtttlfk0YPETSlN7k7L0Qt4TWJRLeeogyUJhitpOd36X7QGh0iA6BxrTwCpwq4yM40ro4Beur6DULpFFvw39kgxiKuv0AIGbykWwqgOKVjoOyNTO5s2Ni1ZXEfhIPKctJ8kYtjrgjojxf6mg7ED1kaZduUHasoRVERyI0IeeiwKl4dkAEUw6w//vc3brOoysnv6wpEh262v6AOix4SUjc6cUG6RTMB6xrMzNGUKXdrhxo8gbfAvrCz+IGCMjm75TLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1687367953; x=1689959953;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=e0d4/5WTxH/A+307pJ+K6wtSqayFL5KXlDrtp/qWD4U=;
-        b=iRx38MOKdX087qyuJHjh+mE3YzOHKeuZBegAzx1NYM3EtDRPAhJtNq+dqROUcuw8Nv
-         RIgEjV+VQT7z+ZqOYp3L6Cd/AntUKtAnv4tB1fSJhvvz8gGYfIuMFGXMPjCkT7RpLurp
-         CAExo/BOO64Sp9xDnFHjPLWO+tsRvwGzBld/s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687367953; x=1689959953;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e0d4/5WTxH/A+307pJ+K6wtSqayFL5KXlDrtp/qWD4U=;
-        b=YzKpMobZSE4idQw0w03pPQ/UY78WXsrS3k4edrN45b1K7E4OlsX4R5iSGqa1mvrm7x
-         VJwu2QyQp1uSfMp1Hdi0kADe9d22HJMVnMymTi/vXpuSr7qSAj7Y9fvT1WYN9TQ2AY0c
-         Y1aitQxksLU3cnwVY5wounU2S7SPP2XSJSvevspZraR5N1Q3F2iX4SP2cQB0Imnz9tAN
-         s5k1d9LB3ZNwWrRxGEXg1ehCAvJ/xhOZFnGAPo9i4omZpwHlR2dwUbIzZCymOYQrgERN
-         dmIJytp1Rm7MKPjucMo4OyReYig/FSKrbtLjO0MXAGJw/yPuWRegG1AikV/HddJRqZ2a
-         rpiA==
-X-Gm-Message-State: AC+VfDwUG78EytbkANp/1BD/PHGUyq62DjnBd/yOjDwsZ2ogFb+kDSBc
-        SJ96J7NYd5vMMryifpEO0eOGiCJrmX5Pfx0Esat6m+4IsYQ8ocw0
-X-Google-Smtp-Source: ACHHUZ7Zb54mu539HYdnYufdVymfmG4BRpTR7n1G56hzSdCB3aT2xPQCpMxO12VfQjXv9YZrB/482xGwVuV4/sCriX8=
-X-Received: by 2002:a25:4802:0:b0:b9e:c516:6e32 with SMTP id
- v2-20020a254802000000b00b9ec5166e32mr14042395yba.24.1687367953352; Wed, 21
- Jun 2023 10:19:13 -0700 (PDT)
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZICNO9UgoYynMg6diZAkp+guVZ57QU3v1aBgTSS80iQ=;
+ b=WzomL7cnlzwSRN3SbsJaPDvhz09p7FYrvslCMKMYMA9TmhmUvDq2UnBI6IKKesTQa3oyrjTDRscyGXIJ7BijISmlmLHVQtgpoYpRS9SuAGEvr23YC1aoLKq/fFcDBiXQYRQWvCaCVm4joaTUh3c0lrQHvcz5o8e8qm/ICg+5kUA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by MN2PR13MB3663.namprd13.prod.outlook.com (2603:10b6:208:1ec::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Wed, 21 Jun
+ 2023 17:37:13 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e%5]) with mapi id 15.20.6521.023; Wed, 21 Jun 2023
+ 17:37:12 +0000
+Date:   Wed, 21 Jun 2023 19:37:05 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     souradeep chakrabarti <schakrabarti@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] net: mana: Fix MANA VF unload when host is unresponsive
+Message-ID: <ZJM1QcJmUSAiH2q2@corigine.com>
+References: <1687343341-10898-1-git-send-email-schakrabarti@linux.microsoft.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1687343341-10898-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-ClientProxiedBy: AS4PR09CA0007.eurprd09.prod.outlook.com
+ (2603:10a6:20b:5e0::8) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-References: <1686679943-17117-1-git-send-email-selvin.xavier@broadcom.com>
- <ZJMsLUfPFUZ97hfq@nvidia.com> <CA+sbYW2ymd9cVKZLO-V0mcijjqsZunHjmGyhFDHbCBJMtF+O0A@mail.gmail.com>
- <ZJMvg97sV9p3bFpU@nvidia.com>
-In-Reply-To: <ZJMvg97sV9p3bFpU@nvidia.com>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Wed, 21 Jun 2023 22:49:02 +0530
-Message-ID: <CA+sbYW3Jx=5XM8+emPPonYXZoqSrG_G28ZeUJ=Jt0dedrS4=MA@mail.gmail.com>
-Subject: Re: [PATCH v6 for-next 0/7] RDMA/bnxt_re: driver update for
- supporting low latency push
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
-        andrew.gospodarek@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007c445605fea6f7dc"
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SCC_BODY_URI_ONLY,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|MN2PR13MB3663:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1b799e56-e37b-4422-9ac7-08db727e25a1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u0YU5KAKo8L/POSSSEAPPooz6XGFsWB8HLM3vMCF3+hmVNNQcuZ8z2cVPDK40371lII8BTJKbaFZ1DbtKQMCiF0smVUd5ucr6FOdm0CTdtf3/c5gA24Q5ddHRxgfUjGTDw1WHCLs9626pmgrxMJ+BLYmRq15RgmZq7k34cw2ptRuBWqCjk8idqA8Itj1sBkDCLpWBuaIfgJg2UsmWve/DlbIoBf859Y0ppzywCHQPYt8djbB8t1Zwn4NEFYs7r7P4OUKA573hCA+4vdkHUEx+oV1gAcNVGLrknAxYJT5QxvYjr5GrOpXCs5gP26/JTH25RQVkzY+db16Z6Apg2gG+w1Tk+qKYmObMexe1Fq4Af0CaGciHIZu6463TRNX0Z+orbwOSd+Q8jUY1W90PTE4BleRuODk1jYKH9e+BWWa5sDK+BKcvOGrTrG0zd7qX8xtxv0zGKVFQZ5beubfPUDg+Mttg40aQR5Z67h9rjBRkBuE9XMjAi7vRQg4RGYIcIln9lRUsZC0ZsCRA9SuD4WEc3dEi/gEGQOXOxqnSPJOEuPMrW8uwyKAPoUTAycrkVhEUXlBEraC6PodRxT7WPLBKgzuyzvm3z5B8oCtX0V2TE18IAo16YDnBFRENyB1cSqjb5CrBRJdR4Jjh2IGTKLZMeDK74KdXb0xVvvOYBghMdo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39840400004)(366004)(396003)(136003)(376002)(346002)(451199021)(38100700002)(6486002)(83380400001)(6506007)(186003)(2616005)(44832011)(7416002)(8936002)(8676002)(41300700001)(5660300002)(2906002)(6512007)(6666004)(36756003)(45080400002)(478600001)(66556008)(6916009)(66476007)(4326008)(66946007)(316002)(86362001)(66899021)(21314003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RFBKsXA2WuDpFTtZgJHVmSi/V2JZ3F8m3cp+X+MXkq6oZaI5Yg82QYpZjp1n?=
+ =?us-ascii?Q?7GNdsH3Tj5XuAbYeFr161bz3P9HmBKSc/9uVM9NpbAmXTNWNz9o7u35v5YVv?=
+ =?us-ascii?Q?jSgAmlxGbJY/2E5is6z+MidRQQJHIMTfXF4JaTYsju2+3bN8r/8/EaFyFLf2?=
+ =?us-ascii?Q?I660kQDrRj5NLV8lqsL9EPBx5YlOzb0vejwBhvv14gr2FGHWQQytbupJ875H?=
+ =?us-ascii?Q?1mUc+RsCfsBGFSjJZU5MOplddo0BgCd2Vbtx2v4xjKBbJnUPQv+EA83C/ShM?=
+ =?us-ascii?Q?AdJFdkAiMuTAlUz2Unly62WlgqPZyUfrE7qQmohpGf7vklxFdmMqBJsRUFzI?=
+ =?us-ascii?Q?oHX70G/N2E8gSKFJy+hhAlUTOs/Oq5KEktBn3+fhSm79gaCuj5eouW15Ytjk?=
+ =?us-ascii?Q?R6cEKXMuHzGKlvI4DT1W9NVVB/4O9R5bfqsQLiu+0UNQlEUY1Vtf7N59N+ad?=
+ =?us-ascii?Q?DYzbVa3VWODyZ4A7kApJHypCTJ2MGm28xV++163TD8aX1e0EKge9n7D0uelm?=
+ =?us-ascii?Q?1Rzm5N7qg6SuxEecYVvjy76KpxyitompdZcVJe0MKehpUF2B7F+VS+0kGl14?=
+ =?us-ascii?Q?2u0ui61WfIDisa5wzB7o/NPbxRmJOE7hglwk8pYRmbsyjHummztuUg69as1C?=
+ =?us-ascii?Q?NsIQNms5dEdu/toDNgCWTVUxstpP/eXyBu1zNMYPv83IXTUxW9z2hs4+Px9f?=
+ =?us-ascii?Q?Iusg5Ywn2gWFehZCaa26C9VzhOUDWsb+kqV+O6+qFSFCxtR2/IVUuzHAYdO2?=
+ =?us-ascii?Q?Zl5TvwDGRAjUF6rt4IvDU4E4QcmxBHBa0yEZEiHmbkcjL/JXgn2DYM4GAb1x?=
+ =?us-ascii?Q?KlwCpT0pli4DMVC4rg4pi32VwEXlW773wSUQS1lf89FF8r8U3iPyYuEn5U35?=
+ =?us-ascii?Q?mYMBdpyI474exIBO2ncwBzoVNYA5ub7DIfRTAcNn/qEUUJM+ZLF06Ro3Ff6I?=
+ =?us-ascii?Q?+EUuBrM1WbkQJZ4XvKaKpTM+wbqfI6N8qbXsgLGfwpw2NFBzT0bINekBlABE?=
+ =?us-ascii?Q?e0FFkE4GAfgb03YWZn7odLzsS5gxmV9A2givtBU1q94I/pS8ceSDdr6UyOxz?=
+ =?us-ascii?Q?7ZQmG6x5lWspL6BQng9V5ffkLJeTFf4DKm/aaprk4FD1Kc5vo46BOkk9B74T?=
+ =?us-ascii?Q?egrhFGpI9yx0LyGoyPn09FhloinEghzA6ZqTkeYqx9u9AUgZ11dqaT+b7v0S?=
+ =?us-ascii?Q?TtdS2D2NaER3yUuFZJw5fRyNqkxuux6V2ptBdCrgy2h95S6yCnRn1sOEXPBI?=
+ =?us-ascii?Q?4GAyZqU9EoUDWevDJ9qNG9F//HjYjDhweqiraS7IT/KLmPscJ/jjQ2jLpCvv?=
+ =?us-ascii?Q?811nSGCmqxI67cvTHi8tdAaphoNSLGvJeV4QMoS86dkOQYRb4lcBBfCnEV9g?=
+ =?us-ascii?Q?mxS107VnyvlDSgzFmHPPSwZAKOZgJEEEBy6S9b5bAJKLEql1jgCPdUxPqzAF?=
+ =?us-ascii?Q?KmBjpYUMNA5E5UDIyZMYIM0QPCj7+aAEeWWCIxldH5sWtOwlSzBLrLk4PQCZ?=
+ =?us-ascii?Q?Q+6GXc7kb/5aaDBsxLO2zzaYwy9FJMBnuJGVjJfNRm8TdRuMK5cvsLnzHiCj?=
+ =?us-ascii?Q?SCxd2ldFBpxpTxU+cvYWVFE5hXSypwO5ZbkJLHI/6gBdtP3Z9IVPhS4GG645?=
+ =?us-ascii?Q?WLiq9xTrVoU1ESG0GBrI1fV+Y9HsQxzj0ukSq6fpNIrTSAQFqkgeK/SxbYA2?=
+ =?us-ascii?Q?V5jbOw=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b799e56-e37b-4422-9ac7-08db727e25a1
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2023 17:37:12.8096
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 823aSiMC0zMS4pVQ/UOCoulY4mN/uwXXYQy5LcT6gIGDVq/5LmzXGLQVQesPSmxkly6FP4jTqW3BFKW+nzVe3PSdHryZBtHTcRo2v97LrJ0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB3663
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000007c445605fea6f7dc
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 21, 2023 at 03:29:01AM -0700, souradeep chakrabarti wrote:
+> From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> 
+> This patch addresses  the VF unload issue, where mana_dealloc_queues()
+> gets stuck in infinite while loop, because of host unresponsiveness.
+> It adds a timeout in the while loop, to fix it.
+> 
+> Also this patch adds a new attribute in mana_context, which gets set when
+> mana_hwc_send_request() hits a timeout because of host unresponsiveness.
+> This flag then helps to avoid the timeouts in successive calls.
+> 
+> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 
-On Wed, Jun 21, 2023 at 10:42=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> w=
-rote:
->
-> On Wed, Jun 21, 2023 at 10:33:45PM +0530, Selvin Xavier wrote:
-> > On Wed, Jun 21, 2023 at 10:28=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.co=
-m> wrote:
-> > >
-> > > On Tue, Jun 13, 2023 at 11:12:16AM -0700, Selvin Xavier wrote:
-> > > > The series aims to add support for Low latency push path in
-> > > > some of the bnxt devices. The low latency implementation is
-> > > > supported only for the user applications. Also, the code
-> > > > is modified to use  common mmap helper functions exported
-> > > > by IB core.
-> > > >
-> > > > User library changes are in the pull request
-> > > > https://github.com/linux-rdma/rdma-core/pull/1321
-> > > >
-> > > > Please review and apply
-> > >
-> > > It gets compile warnings:
-> > >
-> > > ../drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:322:18: warning: variab=
-le 'opcode' is uninitialized when used here [-Wuninitialized]
-> > >         crsqe->opcode =3D opcode;
-> > >                         ^~~~~~
-> > > ../drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:288:11: note: initializ=
-e the variable 'opcode' to silence this warning
-> > >         u8 opcode;
-> > >                  ^
-> > >                   =3D '\0'
-> > >
-> > Hi Jason,
-> >  Leon already fixed this. This was introduced by the last series that
-> > got merged.
-> > https://lore.kernel.org/r/6ad1e44be2b560986da6fdc6b68da606413e9026.1686=
-644105.git.leonro@nvidia.com
->
-> Oh, some patches got misplaced, I fixed it up..
->
-> Okay, applied to for-next
-Thank you.
->
-> Thanks,
-> Jason
+Hi Souradeep,
 
---0000000000007c445605fea6f7dc
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+thanks for your patch.
+Some minor feedback from my aide.
 
-MIIQfAYJKoZIhvcNAQcCoIIQbTCCEGkCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3TMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVswggRDoAMCAQICDHL4K7jH/uUzTPFjtzANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODE4NDdaFw0yNTA5MTAwODE4NDdaMIGc
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xIjAgBgNVBAMTGVNlbHZpbiBUaHlwYXJhbXBpbCBYYXZpZXIx
-KTAnBgkqhkiG9w0BCQEWGnNlbHZpbi54YXZpZXJAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEA4/0O+hycwcsNi4j4tTBav8CvSVzv5i1Zk0tYtK7mzA3r8Ij35v5j
-L2NsFikHjmHCDfvkP6XrWLSnobeEI4CV0PyrqRVpjZ3XhMPi2M2abxd8BWSGDhd0d8/j8VcjRTuT
-fqtDSVGh1z3bqKegUA5r3mbucVWPoIMnjjCLCCim0sJQFblBP+3wkgAWdBcRr/apKCrKhnk0FjpC
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILtqnLZjiZ6O
-YY0H2w6+xi7L9S880F3Q5jMUF++JfvpGMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDYyMTE3MTkxM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDSKvFvPYnva0Lx4Tada3iTQ18RyggK
-RGXxeCaF5tS5nYePaUBuEjZSytAuZbAXut0LI87fEBdkJwQzzjGei3O3kZIRq3GDMJTh3RQ7LRVP
-ga+TDvMY+F6Ow53vCWdZd0W7ywy6vFJS3BWmL55xQxiOyfPO08gykxnvxGCkT/+62sG1Ldg7bQkB
-rktKrA+u21Y9IjhRPn4ezPo8BEnAKFHp2BJsYSI/iRTsXq0uX9+sRg5OOSjaH18inehtQ/HlPw5X
-cLvdC6553YyRQGs1v8EoIoHXPDkj7Dbzz+XdkJTDRiLbGgiSMoCe/PCr/6PRmjXC+Qs6xQ5/9ykO
-cdaefPEx
---0000000000007c445605fea6f7dc--
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index 8f3f78b68592..5cc43ae78334 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> @@ -946,10 +946,12 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
+>  	struct gdma_context *gc = gd->gdma_context;
+>  	struct gdma_general_resp resp = {};
+>  	struct gdma_general_req req = {};
+> +	struct mana_context *ac;
+>  	int err;
+>  
+>  	if (gd->pdid == INVALID_PDID)
+>  		return -EINVAL;
+> +	ac = (struct mana_context *)gd->driver_data;
+
+drive_data is a void *.
+There is no need to cast it to another type of pointer.
+
+...
+
+> diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+> index 9d1507eba5b9..557b890ad0ae 100644
+> --- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
+> +++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+
+...
+
+> @@ -786,12 +788,19 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+>  	struct hwc_wq *txq = hwc->txq;
+>  	struct gdma_req_hdr *req_msg;
+>  	struct hwc_caller_ctx *ctx;
+> +	struct mana_context *ac;
+>  	u32 dest_vrcq = 0;
+>  	u32 dest_vrq = 0;
+>  	u16 msg_id;
+>  	int err;
+>  
+>  	mana_hwc_get_msg_index(hwc, &msg_id);
+> +	ac = (struct mana_context *)hwc->gdma_dev->driver_data;
+
+Ditto.
+
+...
+
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index d907727c7b7a..24f5508d2979 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -2330,7 +2330,10 @@ static int mana_dealloc_queues(struct net_device *ndev)
+>  	struct mana_port_context *apc = netdev_priv(ndev);
+>  	struct gdma_dev *gd = apc->ac->gdma_dev;
+>  	struct mana_txq *txq;
+> +	struct sk_buff *skb;
+> +	struct mana_cq *cq;
+>  	int i, err;
+> +	unsigned long timeout;
+
+Please use reverse xmas tree - longest line to shortest - for
+local variable declarations in Networking code.
+
+...
+
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> index 9eef19972845..34f5d8e06ede 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -361,6 +361,8 @@ struct mana_context {
+>  	struct mana_eq *eqs;
+>  
+>  	struct net_device *ports[MAX_PORTS_IN_MANA_DEV];
+> +
+> +	bool vf_unload_timeout;
+
+Perhaps it is not important, but on x86_54 there is a 6 byte hole in the first
+cacheline after num_ports where this could go.
+
+pahole reports:
+
+struct mana_context {
+	struct gdma_dev *          gdma_dev;             /*     0     8 */
+	u16                        num_ports;            /*     8     2 */
+
+	/* XXX 6 bytes hole, try to pack */
+
+	struct mana_eq *           eqs;                  /*    16     8 */
+	struct net_device *        ports[256];           /*    24  2048 */
+	/* --- cacheline 32 boundary (2048 bytes) was 24 bytes ago --- */
+	bool                       vf_unload_timeout;    /*  2072     1 */
+
+	/* size: 2080, cachelines: 33, members: 5 */
+	/* sum members: 2067, holes: 1, sum holes: 6 */
+	/* padding: 7 */
+	/* last cacheline: 32 bytes */
+};
+
+-- 
+pw-bot: changes-requested
+
