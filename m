@@ -2,171 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 632C473834A
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jun 2023 14:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF707383C1
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jun 2023 14:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbjFUMD4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jun 2023 08:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
+        id S231942AbjFUM2r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jun 2023 08:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231791AbjFUMDf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 08:03:35 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5176B1737;
-        Wed, 21 Jun 2023 05:03:30 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230621120328euoutp02c5707f1f8db51fe5712290c971959904~qqvutf1pT0885508855euoutp02y;
-        Wed, 21 Jun 2023 12:03:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230621120328euoutp02c5707f1f8db51fe5712290c971959904~qqvutf1pT0885508855euoutp02y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1687349008;
-        bh=UhbTj7rbSuIz0wQAIgRbt5npWj7iwCf9ys8+fT26dmg=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=GKxv5RAvXgxBewzVmQQ972Cjcp5klA3uKmvo3IQPk3I6RYA1PA6V4xOCUWVaFLxNl
-         JDUWVOuWvxr33giiXju03VnTLQDdGSgCl3k4Izp8oglyncIxJ9ZI6d8HydRQb71iZ8
-         7mXk6Jouf9L3c4d+NVR0ASAr4r9Y8BUUs95K6b78=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20230621120328eucas1p1fda92019a773b938e579c6b1330f6749~qqvuerCuc1536715367eucas1p15;
-        Wed, 21 Jun 2023 12:03:28 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id B4.C9.37758.F07E2946; Wed, 21
-        Jun 2023 13:03:27 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230621120327eucas1p1c148cfc468823fbd592e0f24992d7b74~qqvt8HnZl1538815388eucas1p1p;
-        Wed, 21 Jun 2023 12:03:27 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230621120327eusmtrp14df30445bdb3be5d54096bf3a264c34f~qqvt67ZKp0101701017eusmtrp1F;
-        Wed, 21 Jun 2023 12:03:27 +0000 (GMT)
-X-AuditID: cbfec7f5-815ff7000002937e-b9-6492e70f7e30
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id C7.5B.10549.F07E2946; Wed, 21
-        Jun 2023 13:03:27 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230621120327eusmtip1c54e59bf6315793873fd19bfdbc5cd8c~qqvtlH5Nz2473324733eusmtip1A;
-        Wed, 21 Jun 2023 12:03:27 +0000 (GMT)
-Received: from localhost (106.210.248.248) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Wed, 21 Jun 2023 13:03:26 +0100
-Date:   Wed, 21 Jun 2023 14:03:24 +0200
-From:   Joel Granados <j.granados@samsung.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-CC:     <mcgrof@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Joerg Reuter <jreuter@yaina.de>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexander Aring <alex.aring@gmail.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <martineau@kernel.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Remi Denis-Courmont <courmisch@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
-        Martin Schiller <ms@dev.tdt.de>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-hams@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
-        <coreteam@netfilter.org>, <bridge@lists.linux-foundation.org>,
-        <dccp@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
-        <mptcp@lists.linux.dev>, <lvs-devel@vger.kernel.org>,
-        <rds-devel@oss.oracle.com>, <linux-afs@lists.infradead.org>,
-        <linux-sctp@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <tipc-discussion@lists.sourceforge.net>,
-        <linux-x25@vger.kernel.org>
-Subject: Re: [PATCH 06/11] sysctl: Add size to register_net_sysctl function
-Message-ID: <20230621120324.cl2admxrku7ilecm@localhost>
+        with ESMTP id S231878AbjFUM2p (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 08:28:45 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBCA19A4
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 05:28:42 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3f9b1a117caso29866485e9.0
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 05:28:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1687350520; x=1689942520;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JY6qu40VU0iOU+uQjSN/rpx66RGcpmW4WoflmnS71Xs=;
+        b=QJYEvSQGMsdga3Sw+LEwbmfVCv51FFTfe+zTbbvvLwPUJ0LE4ezg0a9FAPbbtvS79j
+         ldxilCxXfk/qb7MqAy+ESNd212YZxzqu3oycOTPossmGxj/+Lb2eOqOOf9lcPEMGXAEN
+         PiEYqFDWetWK8ZfRYfrmZm/9P89sNnGCcrKh+GQE86nDsP6EGdk29TuwFXKUxE/dT5c4
+         kUzlr7iP+NMAGevxrG3+JX0+3jlshbVy1oEq1ZHpEdLRStJDOrBcIv/hLMaGbpLbE0oh
+         XBXCRXJpf4jxbClgVqR/q8D15/odn7mAE5hds9N3YLjCa841c6Sp0r20lDZIHsSQdQ6S
+         NwWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687350520; x=1689942520;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JY6qu40VU0iOU+uQjSN/rpx66RGcpmW4WoflmnS71Xs=;
+        b=b/eeo8cXQDDpZ8ONZX9mTBi/Iny4JK3pe5sc1wpPg1XS8GM9yF5pVLPofErDnp0won
+         P3xSvQALFcdOqo1DGClEFRmnrSG/ppRCblF9c8hpdFzJqNw5A0dU68o4aqPxo7ocuffX
+         Hkjo9PsB9MfWKqUGJwQOF3YUqiQ78toJkQZ7AvALMlKTE4KkYvd74kcyIsfCcx+JH7l3
+         BDCPHEUghFzVBpkTmv+seZLot9LwdcDyyWx31xRVi4asTJK7YF3zjVLA/jn/aOWzKFNP
+         GJ5oF3pbtZe0M2iuTBKn7bL9gzEZDIE06mPVkZBovfFEU3lcQ9pHvBCU6fgkAQcN/9yz
+         JKPw==
+X-Gm-Message-State: AC+VfDxtFex5HMmQu4R/EbDAT0uNilsnURjcVBJDyN3Udv649GgRaEOH
+        0Tj2x0Wsl4g01IeeXN968VXAfA==
+X-Google-Smtp-Source: ACHHUZ60rXBng2He7vOU89dbQRdYFpRJqDtQ+N0XHlr2RIF8GRtfIJ4xQCwrAe/ejPJeeSMNSO3pmQ==
+X-Received: by 2002:a05:600c:2315:b0:3f9:b02:9103 with SMTP id 21-20020a05600c231500b003f90b029103mr6786163wmo.29.1687350520103;
+        Wed, 21 Jun 2023 05:28:40 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c240900b003f93c450657sm4835029wmp.38.2023.06.21.05.28.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jun 2023 05:28:39 -0700 (PDT)
+Date:   Wed, 21 Jun 2023 14:28:38 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>
+Cc:     "kuba@kernel.org" <kuba@kernel.org>,
+        "vadfed@meta.com" <vadfed@meta.com>,
+        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "vadfed@fb.com" <vadfed@fb.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "M, Saeed" <saeedm@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "sj@kernel.org" <sj@kernel.org>,
+        "javierm@redhat.com" <javierm@redhat.com>,
+        "ricardo.canuelo@collabora.com" <ricardo.canuelo@collabora.com>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "Michalik, Michal" <michal.michalik@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jacek.lawrynowicz@linux.intel.com" 
+        <jacek.lawrynowicz@linux.intel.com>,
+        "airlied@redhat.com" <airlied@redhat.com>,
+        "ogabbay@kernel.org" <ogabbay@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "nipun.gupta@amd.com" <nipun.gupta@amd.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux@zary.sk" <linux@zary.sk>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "benjamin.tissoires@redhat.com" <benjamin.tissoires@redhat.com>,
+        "geert+renesas@glider.be" <geert+renesas@glider.be>,
+        "Olech, Milena" <milena.olech@intel.com>,
+        "kuniyu@amazon.com" <kuniyu@amazon.com>,
+        "liuhangbin@gmail.com" <liuhangbin@gmail.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "andy.ren@getcruise.com" <andy.ren@getcruise.com>,
+        "razor@blackwall.org" <razor@blackwall.org>,
+        "idosch@nvidia.com" <idosch@nvidia.com>,
+        "lucien.xin@gmail.com" <lucien.xin@gmail.com>,
+        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
+        "phil@nwl.cc" <phil@nwl.cc>,
+        "claudiajkang@gmail.com" <claudiajkang@gmail.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, poros <poros@redhat.com>,
+        mschmidt <mschmidt@redhat.com>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>
+Subject: Re: [RFC PATCH v8 08/10] ice: implement dpll interface to control cgu
+Message-ID: <ZJLs9np6CgKOtrWN@nanopsycho>
+References: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
+ <20230609121853.3607724-9-arkadiusz.kubalewski@intel.com>
+ <ZIRI+/YDZMQJVs3i@nanopsycho>
+ <DM6PR11MB4657C07B0DA46408BDD957CD9B5FA@DM6PR11MB4657.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="je5dyz423x2mm343"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5aba7eee-7a6e-4f3b-9921-e4220d479346@kadam.mountain>
-X-Originating-IP: [106.210.248.248]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTaVBTZxSG+917kxuwkUu05RuX1qJoq6h1rPV0rFtHO7dl2tH+YNpilwi3
-        LtWgiViXsYKJpZKCkbQgIWAEgSARZEtVEDGUEJZJqKJgxC2CKAJSQ6zYBku42DrTf895z3m/
-        c94fn4iUdNMTRBtk2zi5TLopWOhPma2D9tkBXclRb+arACyxC8FmukqD93Q8Ce5bXQLoz9xP
-        g96hosDbqhZC376/KCg8s5+ATquLBnNiAQJ19yRQlnsQdBx0CaAlt18IaYdtCG54XBQMJo2B
-        tAQlAQ9S0gloNicJ4OcnOSRoGubB5V+vEXDxjF4IdyyJFGiOKknoNNwXQLs2l4Lqs0cQuIoe
-        EKA88pAEpfs2CU+MdQKwJz4lwdh0h4A2TSeCmvgqATQV7aPhUaaNBKvhZdAUNlDgVNYL4VFj
-        D4LUnkskXKicBg0DTwmwl7oF4Na/Drc0Dgq0xjICKg48pqHMsRHimsw03G5tJZctZJ0uD8n2
-        2esRm2nazT4ZnMmW5V8hWPVv3SR7WneNZs3VIayhJIYtOX5AyLZfrhSytfknCFaTVY3Y0mN7
-        WW1bHmLvlqahVVM+9383itu0YTsnn7vka//1Kqub3nJk9Y7s2Ho6FsUtT0B+Isy8hc+rYwUJ
-        yF8kYYwI/16nJvhiAGF7ZS3JF26Ej9sOoWeWoqsFlI8lTB7CKaqX/h1SF3eNOsoRbjdeEvqm
-        KCYE601e2sdCJhQ7etpJH48f5iGvlvIZSKY4AN8/c2VkxTgmDPfHpoyYxcxCnG1sFPAciOvT
-        OkZWk8wO3Nh8YfhR0TBPxHlDIp/sx7yHE4ayCP7Sqbi1KlvI8x7cUOYcyYYZ3Yu4XTNE8o0V
-        2K7sFPA8DnfXldE8T8KN2p8o3qBF+NxQP80XBQjnxnlGVyzCqpaOUcdyvM+bRfouwsxY3NYb
-        yB86FiebU0dlMf7xBwk/PR0XXO+hNGiq7rlouuei6f6Lxsuh2FDxUPg/eRbOPXqf5HkxLix8
-        QBkQfRwFcTGKzes4xXwZ990chXSzIka2bk5k9OYSNPwFG4fqPKeQsfuPORZEiJAFTRs2u04W
-        NKMJlCxaxgWPF08uSY6SiKOkO3dx8uiv5DGbOIUFTRRRwUHiWYvrIyXMOuk27luO28LJn3UJ
-        kd+EWCLx2Pf3OgTfOHsLBg/XPXbsX/H++RBJQMj4Mdu5+erUyvCNq0gP+vK1vKXpb9huNC/I
-        vElFBIW/Y33bzzT3lx4mSFpVQ1BFM0pnqD/1ZohyFzSHHhLB3SUZe3qXJZ0YU6vbNXtStr0p
-        4UPB0shTN4tDZVktyRfvXepqNk936Hp2hjNma4S+RdgX1rvyujh76w5sy4lImRxhyKqm1u6O
-        11cqukrDzmUEWNJj2hb5l7yyrOKDor6cm+VfrHKbIj6KVn/y5/y/nWFxU/KDxY3Fe1VnSzYc
-        vHtwwaPa8hdUa67nmOrDHLUfO+NXnFzz2daBwJWei8k1Jqv3ctrSzNy1leGvam2rAyXBlGK9
-        dN5MUq6Q/gOuFxqq/QQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTeUxUVxTGc997s0ClTgHbF4qpGbW1iCPDesANG6vPNI3FNqmlWhzlCbQw
-        4AwQlFqRgbDrAFOEYRUKDjAFWZVFi4DsBWMrIAMah60sZSk7MtCBaVOT/ve73/nOd05ucti4
-        YRjLhO0h9KVFQoEnl6lPtK429u3ZPBznahGTbgS1QXbQpFSxQFMRhsPMy2EGTKWFsiClI4QA
-        TVcUEyaCXxFQUBmKwWCDmgXlMfkIokZNQVI2h2DghpoBv+dMMSEpsQnBizk1AUvX34CkSAkG
-        kwnJGDwuv84A2XI2DtIWPnTe7cPgt8oUJgzVxhAgvSXBYTBjjAG98TkE1NxPR6AunMRAkv4X
-        DpKZfhyWFY0MaI9Zw0HRNoRBt3QQQV3YAwa0FQazYD6tCYeGjLdBWtBCQI+kmQnzreMIbo4/
-        xeFJ9Q5omV3DoL1khgEzKbvgpbSDgHhFKQZVEYssKO34Fq61lbOgv6sLd7SjetRzODXR3oyo
-        NGUgtbxkRpXmPsOoqPpRnKqQ97Go8pqdVEaxH1WcF8GkejurmdSj3J8xSppZg6iSn65S8d23
-        EfVHSRL6bJszb7/I28+X3ubuLfY9wP2aD5Y8vj3wLK3teXwruzMOljbcvQf3u9KeHv60aO/B
-        szz3lepUlk+qU8DzRSUjCK05RiI9NsmxJgtV+UQk0mcbcrIR2Vq0ROgKpmTR7FOGjo3Ilc5I
-        ps40jcjE+rv/PMoQmdyYjq+7CM5OMkWpYa0zk2NOdoz3bujGWl7VxG+MwDlFm8nxaOXGCCPO
-        J+RUUAJznQ04dmSWopWhSy3ByMX2PzFd4S2yOWlgowHn+JMrqVKtia3ld8nbq+x1WY/zERm5
-        monpVt1Odj3IYur4CjmjGUJSZCR/LUn+WpL8vySdbEZ2r45g/5N3kzm3xnAdHyALCiaJDMTK
-        Q8a0n9jLzUvM54kFXmI/oRvvvLdXMdJeQXnDUsk9lDY6zatFGBvVoh3aTvWd/MfIhBB6C2mu
-        scHW4jhXQwNXwaXLtMjbReTnSYtrkY32G2Nxky3nvbUnJfR14dta2PCtbe0tbOxtrbjvGBz3
-        CRcYctwEvvR3NO1Di/7tw9h6JkGYUraWWcbJjksWygOvvbiYbXa00HxZ7xzuiG0VfPl8/ljZ
-        p0myYYPhNx1ORs9dPb1wwZl2jp1wSntSdXSfbKwo49QHoydufv+DwoXKyx25f655pX5gu9Px
-        qdGkaNmNTd8kmF+qyBP0q6ot3VxPvwe4/i7VRQ+72KIFh4Ue4S+D4QGWuUt1XAV3LtFlpdP4
-        w/DA5ODiKy3dASGiQ1Uhn0ccqfQ/+/6zrPm+6cVDNWcO3/tY9jBo/thD10R986k9s6FfjJLW
-        r0Ymuo3Zl+f8fy3TUFamyqKUlFM/suvrdnes7ev8KmfyxCOZ15GIDlOJmTJDvoW609TeoqIa
-        GIc3yS+UqU8KVJNcQuwu4JvhIrHgb+hkHU2aBAAA
-X-CMS-MailID: 20230621120327eucas1p1c148cfc468823fbd592e0f24992d7b74
-X-Msg-Generator: CA
-X-RootMTR: 20230621091022eucas1p1c097da50842b23e902e1a674e117e1aa
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230621091022eucas1p1c097da50842b23e902e1a674e117e1aa
-References: <20230621091000.424843-1-j.granados@samsung.com>
-        <CGME20230621091022eucas1p1c097da50842b23e902e1a674e117e1aa@eucas1p1.samsung.com>
-        <20230621091000.424843-7-j.granados@samsung.com>
-        <dab06c20-f8b0-4e34-b885-f3537e442d54@kadam.mountain>
-        <5aba7eee-7a6e-4f3b-9921-e4220d479346@kadam.mountain>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <DM6PR11MB4657C07B0DA46408BDD957CD9B5FA@DM6PR11MB4657.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -174,225 +123,389 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---je5dyz423x2mm343
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Mon, Jun 19, 2023 at 08:08:11PM CEST, arkadiusz.kubalewski@intel.com wrote:
+>>From: Jiri Pirko <jiri@resnulli.us>
+>>Sent: Saturday, June 10, 2023 11:57 AM
+>>
+>>Fri, Jun 09, 2023 at 02:18:51PM CEST, arkadiusz.kubalewski@intel.com wrote:
 
-Hey Dan
+[...]
 
-On Wed, Jun 21, 2023 at 01:23:52PM +0300, Dan Carpenter wrote:
-> On Wed, Jun 21, 2023 at 12:47:30PM +0300, Dan Carpenter wrote:
-> > The patchset doesn't include the actual interesting changes, just a
-> > bunch of mechanical prep work.
-> >=20
-> > On Wed, Jun 21, 2023 at 11:09:55AM +0200, Joel Granados wrote:
-> > > diff --git a/net/ieee802154/6lowpan/reassembly.c b/net/ieee802154/6lo=
-wpan/reassembly.c
-> > > index a91283d1e5bf..7b717434368c 100644
-> > > --- a/net/ieee802154/6lowpan/reassembly.c
-> > > +++ b/net/ieee802154/6lowpan/reassembly.c
-> > > @@ -379,7 +379,8 @@ static int __net_init lowpan_frags_ns_sysctl_regi=
-ster(struct net *net)
-> > >  	table[1].extra2	=3D &ieee802154_lowpan->fqdir->high_thresh;
-> > >  	table[2].data	=3D &ieee802154_lowpan->fqdir->timeout;
-> > > =20
-> > > -	hdr =3D register_net_sysctl(net, "net/ieee802154/6lowpan", table);
-> > > +	hdr =3D register_net_sysctl(net, "net/ieee802154/6lowpan", table,
-> > > +				  ARRAY_SIZE(lowpan_frags_ns_ctl_table));
-> >=20
-> > For example, in lowpan_frags_ns_sysctl_register() the sentinel is
-> > sometimes element zero if the user doesn't have enough permissions.  I
-> > would want to ensure that was handled correctly, but that's going to be
-> > done later in a completely different patchset.  I'm definitely not going
-> > to remember to check.
->=20
-> On reflecting the patch is obviously wrong.  It should be pass zero as
-> table_size in that case.  See diff at the end.
-yes
 
->=20
-> There is a similar bug in neigh_sysctl_register() where we use memset to
-> zero out the whole table.  And another in __ip_vs_lblc_init().  I used
-> the smatch cross function database
-> 	`smdb.py where ctl_table procname | grep '(null)' | grep min-max`
-> to make a list of functions which set procname to zero.
-Awesome. That is homework on my part for V2. It gives me a way forward.
-Thx!!!
+>>>+/**
+>>>+ * ice_dpll_cb_lock - lock dplls mutex in callback context
+>>>+ * @pf: private board structure
+>>>+ *
+>>>+ * Lock the mutex from the callback operations invoked by dpll subsystem.
+>>>+ * Prevent dead lock caused by `rmmod ice` when dpll callbacks are under
+>>>stress
+>>
+>>"dead lock", really? Which one? Didn't you want to write "livelock"?
+>>
+>
+>As explained, rmmod takes and destroys lock, it can happen that
+>netlink request/ops hangs on trying to lock when rmmod started deinit.
 
->=20
-> Probably we should add a WARN_ON() if procname is zero in the new code
-> which doesn't use sentinels.
-Yes
+Yeah, don't take the lock in rmmod, see below.
 
->=20
-> regards,
-> dan carpenter
->=20
-> drivers/char/random.c          | proc_do_uuid                   | (struct=
- ctl_table)->procname | 0
-> fs/proc/proc_sysctl.c          | new_dir                        | (struct=
- ctl_table)->procname | 48,3906148897379000352
-> fs/proc/proc_sysctl.c          | new_links                      | (struct=
- ctl_table)->procname | 4096-ptr_max
-> arch/arm64/kernel/fpsimd.c     | vec_proc_do_default_vl         | (struct=
- ctl_table)->procname | 0
-> arch/arm64/kernel/armv8_deprecated.c | register_insn_emulation        | (=
-struct ctl_table)->procname | 0-u64max
-> kernel/sysctl-test.c           | sysctl_test_api_dointvec_null_tbl_data |=
- (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl-test.c           | sysctl_test_api_dointvec_table_maxlen_un=
-set | (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl-test.c           | sysctl_test_api_dointvec_table_len_is_ze=
-ro | (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl-test.c           | sysctl_test_api_dointvec_table_read_but_=
-position_set | (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl-test.c           | sysctl_test_dointvec_read_happy_single_p=
-ositive | (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl-test.c           | sysctl_test_dointvec_read_happy_single_n=
-egative | (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl-test.c           | sysctl_test_dointvec_write_happy_single_=
-positive | (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl-test.c           | sysctl_test_dointvec_write_happy_single_=
-negative | (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl-test.c           | sysctl_test_api_dointvec_write_single_le=
-ss_int_min | (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl-test.c           | sysctl_test_api_dointvec_write_single_gr=
-eater_int_max | (struct ctl_table)->procname | 7612622206476333056
-> kernel/sysctl.c                | proc_do_static_key             | (struct=
- ctl_table)->procname | 0
-> kernel/kexec_core.c            | kexec_limit_handler            | (struct=
- ctl_table)->procname | 0
-> kernel/bpf/syscall.c           | bpf_stats_handler              | (struct=
- ctl_table)->procname | 0
-> net/core/sysctl_net_core.c     | rps_sock_flow_sysctl           | (struct=
- ctl_table)->procname | 0
-> net/core/sysctl_net_core.c     | set_default_qdisc              | (struct=
- ctl_table)->procname | 0
-> net/core/neighbour.c           | neigh_sysctl_register          | (struct=
- ctl_table)->procname | 0
-> net/netfilter/ipvs/ip_vs_lblc.c | __ip_vs_lblc_init              | (struc=
-t ctl_table)->procname | 0-u64max
-> net/netfilter/ipvs/ip_vs_lblcr.c | __ip_vs_lblcr_init             | (stru=
-ct ctl_table)->procname | 0-u64max
-> net/netfilter/ipvs/ip_vs_ctl.c | proc_do_defense_mode           | (struct=
- ctl_table)->procname | 0
-> net/netfilter/ipvs/ip_vs_ctl.c | proc_do_sync_threshold         | (struct=
- ctl_table)->procname | 0
-> net/netfilter/ipvs/ip_vs_ctl.c | proc_do_sync_ports             | (struct=
- ctl_table)->procname | 0
-> net/netfilter/ipvs/ip_vs_ctl.c | ipvs_proc_est_nice             | (struct=
- ctl_table)->procname | 0
-> net/netfilter/ipvs/ip_vs_ctl.c | ipvs_proc_run_estimation       | (struct=
- ctl_table)->procname | 0
-> net/netfilter/ipvs/ip_vs_ctl.c | ip_vs_control_net_init_sysctl  | (struct=
- ctl_table)->procname | 0-u64max
-> net/netfilter/nf_log.c         | netfilter_log_sysctl_init      | (struct=
- ctl_table)->procname | 0-u64max
-> net/sctp/sysctl.c              | proc_sctp_do_hmac_alg          | (struct=
- ctl_table)->procname | 0
-> net/sctp/sysctl.c              | proc_sctp_do_rto_min           | (struct=
- ctl_table)->procname | 0
-> net/sctp/sysctl.c              | proc_sctp_do_rto_max           | (struct=
- ctl_table)->procname | 0
-> net/sctp/sysctl.c              | proc_sctp_do_auth              | (struct=
- ctl_table)->procname | 0
-> net/sctp/sysctl.c              | proc_sctp_do_udp_port          | (struct=
- ctl_table)->procname | 0
-> net/sctp/sysctl.c              | proc_sctp_do_probe_interval    | (struct=
- ctl_table)->procname | 0
-> net/ipv6/route.c               | ipv6_route_sysctl_init         | (struct=
- ctl_table)->procname | 0-u64max
-> net/ipv6/addrconf.c            | addrconf_sysctl_addr_gen_mode  | (struct=
- ctl_table)->procname | 0
-> net/ieee802154/6lowpan/reassembly.c | lowpan_frags_ns_sysctl_register | (=
-struct ctl_table)->procname | 0-u64max
-> net/xfrm/xfrm_sysctl.c         | xfrm_sysctl_init               | (struct=
- ctl_table)->procname | 0-u64max
-> net/phonet/sysctl.c            | proc_local_port_range          | (struct=
- ctl_table)->procname | 0
-> net/ipv4/route.c               | sysctl_route_net_init          | (struct=
- ctl_table)->procname | 0-u64max
-> net/ipv4/sysctl_net_ipv4.c     | ipv4_local_port_range          | (struct=
- ctl_table)->procname | 0
-> net/ipv4/sysctl_net_ipv4.c     | ipv4_privileged_ports          | (struct=
- ctl_table)->procname | 0
-> net/ipv4/sysctl_net_ipv4.c     | ipv4_ping_group_range          | (struct=
- ctl_table)->procname | 0
-> net/ipv4/sysctl_net_ipv4.c     | proc_tcp_congestion_control    | (struct=
- ctl_table)->procname | 0
-> net/ipv4/sysctl_net_ipv4.c     | proc_tcp_available_congestion_control | =
-(struct ctl_table)->procname | 0
-> net/ipv4/sysctl_net_ipv4.c     | proc_allowed_congestion_control | (struc=
-t ctl_table)->procname | 0
-> net/ipv4/sysctl_net_ipv4.c     | proc_tcp_fastopen_key          | (struct=
- ctl_table)->procname | 0
-> net/ipv4/sysctl_net_ipv4.c     | proc_tcp_available_ulp         | (struct=
- ctl_table)->procname | 0
-> net/ipv4/sysctl_net_ipv4.c     | proc_tcp_ehash_entries         | (struct=
- ctl_table)->procname | 0
-> net/ipv4/sysctl_net_ipv4.c     | proc_udp_hash_entries          | (struct=
- ctl_table)->procname | 0
->=20
-> diff --git a/net/ieee802154/6lowpan/reassembly.c b/net/ieee802154/6lowpan=
-/reassembly.c
-> index a91283d1e5bf..749238d38014 100644
-> --- a/net/ieee802154/6lowpan/reassembly.c
-> +++ b/net/ieee802154/6lowpan/reassembly.c
-> @@ -360,6 +360,7 @@ static int __net_init lowpan_frags_ns_sysctl_register=
-(struct net *net)
->  	struct ctl_table_header *hdr;
->  	struct netns_ieee802154_lowpan *ieee802154_lowpan =3D
->  		net_ieee802154_lowpan(net);
-> +	size_t table_size =3D ARRAY_SIZE(lowpan_frags_ns_ctl_table);
-> =20
->  	table =3D lowpan_frags_ns_ctl_table;
->  	if (!net_eq(net, &init_net)) {
-> @@ -369,8 +370,10 @@ static int __net_init lowpan_frags_ns_sysctl_registe=
-r(struct net *net)
->  			goto err_alloc;
-> =20
->  		/* Don't export sysctls to unprivileged users */
-> -		if (net->user_ns !=3D &init_user_ns)
-> +		if (net->user_ns !=3D &init_user_ns) {
->  			table[0].procname =3D NULL;
-> +			table_size =3D 0;
-> +		}
->  	}
-> =20
->  	table[0].data	=3D &ieee802154_lowpan->fqdir->high_thresh;
-> @@ -379,7 +382,7 @@ static int __net_init lowpan_frags_ns_sysctl_register=
-(struct net *net)
->  	table[1].extra2	=3D &ieee802154_lowpan->fqdir->high_thresh;
->  	table[2].data	=3D &ieee802154_lowpan->fqdir->timeout;
-> =20
-> -	hdr =3D register_net_sysctl(net, "net/ieee802154/6lowpan", table);
-> +	hdr =3D register_net_sysctl(net, "net/ieee802154/6lowpan", table, table=
-_size);
->  	if (hdr =3D=3D NULL)
->  		goto err_reg;
-> =20
 
---=20
+>
+>>If this is livelock prevention, is this something you really see or
+>>just an assumption? Seems to me unlikely.
+>>
+>>Plus, see my note in ice_dpll_init(). If you remove taking the lock from
+>>ice_dpll_init() and ice_dpll_deinit(), do you still need this? I don't
+>>think so.
+>>
+>
+>I won't remove it from there, as the lock shall serialize the access to ice dpll
+>data, so it must be held on init until everything is ready for netlink access,
 
-Joel Granados
+Before you register the dpll device/pin, no netlink cmd can happen. So
+do whatever you want in the init, no lock needed, register at the and
+when you are ready. Same on deinit. After you unregister, no call can
+happen, no need to lock anything in deinit.
 
---je5dyz423x2mm343
-Content-Type: application/pgp-signature; name="signature.asc"
+Either I'm missing something really odd, or your locking scheme is very
+wrong.
 
------BEGIN PGP SIGNATURE-----
+If this locking here is needed, could you please present an example of a
+race it solves here?
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmSS5wsACgkQupfNUreW
-QU9ERQwAgEMy70wE4h18ynQTGRx76Q41zwefjWXFjEGR0K3NIsFmJQ0zHEbUM4QJ
-IAZlo1uMboPLnI3bAsabEclKxOWcFy09FHUrVxLBEA2W6++zEHwohyoCKbOTxX47
-T8PRYwwPkowWc4cF1iRrHsJlBU9xPYDzNpwFIM/hx/OFxPgcs4jpLZPN9i49q0Lx
-ikkO54H2IHbPeRQb65JbXwFqG4KwDDJw3Y4pdmItfiqSuRqTmAS+9yLSOqnMn6Nc
-f3C8/IzSg+3FYe4VBKnDur0si+IDxn+BOCHTJoPr+J/Lb9wk8/ZtS3dtxy+wf/41
-CdEhbC17uw6GqbdzvAh6uENWMUfACrEPQnjZmu1IulsnpaP2U6fOJNRvVuibR9vh
-KwdpxWSezi8xZ29gYfJbYjl5ckpT1H9zZhaSO23hgYzq7KVLr45hR/A+IQGamBYc
-K/GWPGudYiQgXWTyk+CUA6rCvIVQDY0g92E5iONzE9JweFTG9pCFztodAJL16fPI
-wgfgt0fB
-=XFZg
------END PGP SIGNATURE-----
 
---je5dyz423x2mm343--
+
+>or when deinit takes place, until everything is released.
+>
+>>
+>>>+ * tests.
+>>>+ *
+>>>+ * Return:
+>>>+ * 0 - if lock acquired
+>>>+ * negative - lock not acquired or dpll was deinitialized
+>>>+ */
+>>>+static int ice_dpll_cb_lock(struct ice_pf *pf)
+>>>+{
+>>>+	int i;
+>>>+
+>>>+	for (i = 0; i < ICE_DPLL_LOCK_TRIES; i++) {
+>>>+		if (mutex_trylock(&pf->dplls.lock))
+>>>+			return 0;
+>>>+		usleep_range(100, 150);
+>>>+		if (!test_bit(ICE_FLAG_DPLL, pf->flags))
+>>
+>>How exactly could this happen? I don't think it can. Drop it.
+>>
+>
+>Asynchronously called deinit, and kworker tries to update at the same time.
+
+Could you provide an example please?
+Because I see 2 possible paths:
+1) dpll op call
+2) periodic work
+
+But when ICE_FLAG_DPLL is cleared in ice_dpll_deinit(), no dpll op call
+can happen anymore and no periodic work is scheduled.
+
+Is this another "just in case" situation? If yes, please remove.
+If no, please provide an example of a race this solves.
+
+
+>
+>>
+>>>+			return -EFAULT;
+>>>+	}
+>>>+
+>>>+	return -EBUSY;
+>>>+}
+
+[...]
+
+
+>>>+static void ice_dpll_periodic_work(struct kthread_work *work)
+>>>+{
+>>>+	struct ice_dplls *d = container_of(work, struct ice_dplls,
+>>>work.work);
+>>>+	struct ice_pf *pf = container_of(d, struct ice_pf, dplls);
+>>>+	struct ice_dpll *de = &pf->dplls.eec;
+>>>+	struct ice_dpll *dp = &pf->dplls.pps;
+>>>+	int ret = 0;
+>>>+
+>>>+	if (!test_bit(ICE_FLAG_DPLL, pf->flags))
+>>
+>>How exactly could this happen? I don't think it can. Drop it.
+>>
+>
+>I will change a bit here, ice_dpll_cb_lock returns an error
+>if that flag was already down, so will use it instead.
+
+Yeah, I believe that this simply cannot happen as when the bit is
+cleared, no work is scheduled anymore. See above.
+
+
+>
+>>
+>>>+		return;
+>>>+	ret = ice_dpll_cb_lock(pf);
+>>>+	if (ret) {
+>>>+		d->lock_err_num++;
+>>
+
+[...]
+
+
+>
+>>>+		mutex_lock(&pf->dplls.lock);
+>>
+>>Related to my question in ice_dpll_init(), why do you need to lock the
+>>mutex
+>>here?
+>
+>Because before deinit takes place on driver unload the user can still ask
+>for the info from the dpll subsystem or kworker can try to alter the status.
+
+When you unregister dpll and stop the kworker, you can't see anything
+like that. No need to take this lock.
+
+
+>
+>>
+>>
+>>>+		ice_dpll_deinit_pins(pf, cgu);
+>>>+		ice_dpll_deinit_info(pf);
+>>>+		ice_dpll_deinit_dpll(pf, &pf->dplls.pps, cgu);
+>>>+		ice_dpll_deinit_dpll(pf, &pf->dplls.eec, cgu);
+>>
+>>Please reorder to match error path in ice_dpll_init()
+>>
+>
+>Fixed.
+>
+>>>+		if (cgu)
+>>
+>>In ice_dpll_init() you call this "cgu_present". Please be consistent in
+>>naming.
+>>
+>
+>Fixed.
+>
+>>
+>>>+			ice_dpll_deinit_worker(pf);
+>>>+		clear_bit(ICE_FLAG_DPLL, pf->flags);
+>>>+		mutex_unlock(&pf->dplls.lock);
+>>>+		mutex_destroy(&pf->dplls.lock);
+>>>+	}
+>>>+}
+>>>+
+>>>+/**
+>>>+ * ice_dpll_init_info_direct_pins - initializes direct pins info
+>>>+ * @pf: board private structure
+>>>+ * @pin_type: type of pins being initialized
+>>>+ *
+>>>+ * Init information for directly connected pins, cache them in pf's pins
+>>>+ * structures.
+>>>+ *
+>>>+ * Context: Function initializes and holds pf->dplls.lock mutex.
+>>>+ * Return:
+>>>+ * * 0 - success
+>>>+ * * negative - init failure reason
+>>>+ */
+>>>+static int
+>>>+ice_dpll_init_info_direct_pins(struct ice_pf *pf,
+>>>+			       enum ice_dpll_pin_type pin_type)
+>>>+{
+>>>+	struct ice_dpll *de = &pf->dplls.eec, *dp = &pf->dplls.pps;
+>>>+	int num_pins, i, ret = -EINVAL;
+>>>+	struct ice_hw *hw = &pf->hw;
+>>>+	struct ice_dpll_pin *pins;
+>>>+	u8 freq_supp_num;
+>>>+	bool input;
+>>>+
+>>>+	switch (pin_type) {
+>>>+	case ICE_DPLL_PIN_TYPE_INPUT:
+>>>+		pins = pf->dplls.inputs;
+>>>+		num_pins = pf->dplls.num_inputs;
+>>>+		input = true;
+>>>+		break;
+>>>+	case ICE_DPLL_PIN_TYPE_OUTPUT:
+>>>+		pins = pf->dplls.outputs;
+>>>+		num_pins = pf->dplls.num_outputs;
+>>>+		input = false;
+>>>+		break;
+>>>+	default:
+>>>+		return ret;
+>>>+	}
+>>>+
+>>>+	for (i = 0; i < num_pins; i++) {
+>>>+		pins[i].idx = i;
+>>>+		pins[i].prop.board_label = ice_cgu_get_pin_name(hw, i, input);
+>>>+		pins[i].prop.type = ice_cgu_get_pin_type(hw, i, input);
+>>>+		if (input) {
+>>>+			ret = ice_aq_get_cgu_ref_prio(hw, de->dpll_idx, i,
+>>>+						      &de->input_prio[i]);
+>>>+			if (ret)
+>>>+				return ret;
+>>>+			ret = ice_aq_get_cgu_ref_prio(hw, dp->dpll_idx, i,
+>>>+						      &dp->input_prio[i]);
+>>>+			if (ret)
+>>>+				return ret;
+>>>+			pins[i].prop.capabilities |=
+>>>+				DPLL_PIN_CAPS_PRIORITY_CAN_CHANGE;
+>>>+		}
+>>>+		pins[i].prop.capabilities |= DPLL_PIN_CAPS_STATE_CAN_CHANGE;
+>>>+		ret = ice_dpll_pin_state_update(pf, &pins[i], pin_type);
+>>>+		if (ret)
+>>>+			return ret;
+>>>+		pins[i].prop.freq_supported =
+>>>+			ice_cgu_get_pin_freq_supp(hw, i, input, &freq_supp_num);
+>>>+		pins[i].prop.freq_supported_num = freq_supp_num;
+>>>+		pins[i].pf = pf;
+>>>+	}
+>>>+
+>>>+	return ret;
+>>>+}
+>>>+
+>>>+/**
+>>>+ * ice_dpll_init_rclk_pin - initializes rclk pin information
+>>>+ * @pf: board private structure
+>>>+ * @pin_type: type of pins being initialized
+>>>+ *
+>>>+ * Init information for rclk pin, cache them in pf->dplls.rclk.
+>>>+ *
+>>>+ * Return:
+>>>+ * * 0 - success
+>>>+ * * negative - init failure reason
+>>>+ */
+>>>+static int ice_dpll_init_rclk_pin(struct ice_pf *pf)
+>>>+{
+>>>+	struct ice_dpll_pin *pin = &pf->dplls.rclk;
+>>>+	struct device *dev = ice_pf_to_dev(pf);
+>>>+
+>>>+	pin->prop.board_label = dev_name(dev);
+>>
+>>What??? Must be some sort of joke, correct?
+>>"board_label" should be an actual writing on a board. For syncE, I don't
+>>think it makes sense to fill any label. The connection to the netdev
+>>should be enough. That is what I do in mlx5.
+>>
+>>Please drop this.
+>>
+>
+>No, we want a label, as this is recovered clock, will change it to
+
+Okay, so it is recovered clock, so what? I want a lot of things, that
+does not make them meaningful.
+
+
+>package_label but the name will stay for now, this is much more meaningful
+>then i.e. "phy0" or "RCLK".
+
+No, dev_name() here is total non-sense!
+The label should contain the actual label as for example a writing on a
+front panel, board, etc.
+
+Why exactly do you need this? Why a link from netdev to this dpll pin is
+not enough for you.
+
+Please describe exactly what you need the label for. Usecases, examples,
+etc.
+
+Jakub, if you read this, this is very nice example of a misuse that even
+very precisely defined netlink attribute cannot prevent :/
+
+
+>
+>>
+>>
+>>>+	pin->prop.type = DPLL_PIN_TYPE_SYNCE_ETH_PORT;
+>>>+	pin->prop.capabilities |= DPLL_PIN_CAPS_STATE_CAN_CHANGE;
+>>>+	pin->pf = pf;
+>>>+
+
+[...]
+
+
+>>>+int ice_dpll_init(struct ice_pf *pf)
+>>>+{
+>>>+	bool cgu_present = ice_is_feature_supported(pf, ICE_F_CGU);
+>>>+	struct ice_dplls *d = &pf->dplls;
+>>>+	int err = 0;
+>>>+
+>>>+	mutex_init(&d->lock);
+>>>+	mutex_lock(&d->lock);
+>>
+>>Seeing pattern like this always triggers questions.
+>>Why exactly do you need to lock the mutex here?
+>>
+>
+>Could do it few lines below before the dplls are inited,
+>but this would make error path confusing.
+
+See above, you don't need to do this if you register dpll and start the
+periodic work only after everything is ready. I believe that you
+actually have it like this now.
+
+
+>
+>>
+>>>+	err = ice_dpll_init_info(pf, cgu_present);
+>>>+	if (err)
+>>>+		goto err_exit;
+>>>+	err = ice_dpll_init_dpll(pf, &pf->dplls.eec, cgu_present,
+>>>+				 DPLL_TYPE_EEC);
+>>>+	if (err)
+>>>+		goto deinit_info;
+>>>+	err = ice_dpll_init_dpll(pf, &pf->dplls.pps, cgu_present,
+>>>+				 DPLL_TYPE_PPS);
+>>>+	if (err)
+>>>+		goto deinit_eec;
+>>>+	err = ice_dpll_init_pins(pf, cgu_present);
+>>>+	if (err)
+>>>+		goto deinit_pps;
+>>>+	set_bit(ICE_FLAG_DPLL, pf->flags);
+>>>+	if (cgu_present) {
+>>>+		err = ice_dpll_init_worker(pf);
+>>>+		if (err)
+>>>+			goto deinit_pins;
+>>>+	}
+>>>+	mutex_unlock(&d->lock);
+>>>+	dev_info(ice_pf_to_dev(pf), "DPLLs init successful\n");
+>>
+>>What is this good for? Please avoid polluting dmesg and drop this.
+>>
+>
+>Sure, removed.
+>
+>>
+>>>+
+>>>+	return err;
+>>>+
+>>>+deinit_pins:
+>>>+	ice_dpll_deinit_pins(pf, cgu_present);
+>>>+deinit_pps:
+>>>+	ice_dpll_deinit_dpll(pf, &pf->dplls.pps, cgu_present);
+>>>+deinit_eec:
+>>>+	ice_dpll_deinit_dpll(pf, &pf->dplls.eec, cgu_present);
+>>>+deinit_info:
+>>>+	ice_dpll_deinit_info(pf);
+>>>+err_exit:
+>>>+	clear_bit(ICE_FLAG_DPLL, pf->flags);
+>>>+	mutex_unlock(&d->lock);
+>>>+	mutex_destroy(&d->lock);
+>>>+	dev_warn(ice_pf_to_dev(pf), "DPLLs init failure err:\n");
+>>
+>>You are missing the err. But why do you need the message?
+>>
+>
+>To give a clue that something went wrong on dpll init.
+
+Yeah, you ignore the err in the caller. That makes sense.
+Don't forget to add the "err" :)
+
+
+>
+>>
+>>>+
+>>>+	return err;
+
+
+[...]
