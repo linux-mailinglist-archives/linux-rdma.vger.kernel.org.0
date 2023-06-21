@@ -2,208 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A15F73815F
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jun 2023 13:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1015A7380B2
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jun 2023 13:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbjFUK30 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jun 2023 06:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
+        id S232636AbjFUKvc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jun 2023 06:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjFUK3L (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 06:29:11 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C471C1737;
-        Wed, 21 Jun 2023 03:29:04 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 266D621C2043; Wed, 21 Jun 2023 03:29:04 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 266D621C2043
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1687343344;
-        bh=chZwILjB8n5vZjnofE7dyAXFYm12Ys8pfNtbWBPSFg0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VtCZ45Dj+681XgJ/rY2h8s7WG5WqyExIxJhfSehRcNJQ7Ixa/HwkMlDiba1CXkOge
-         82oFWc8yJlqQZcOJ1PfnkUHxRGL5TRGAl/cHeJ0/3B0qg9PikYe0vebEuqqSrqf+wi
-         yGPSkz6mg7CXO0Ma002vvPowWZhbjn4+MVCy7dPw=
-From:   souradeep chakrabarti <schakrabarti@linux.microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: [PATCH] net: mana: Fix MANA VF unload when host is unresponsive
-Date:   Wed, 21 Jun 2023 03:29:01 -0700
-Message-Id: <1687343341-10898-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232429AbjFUKut (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 06:50:49 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEF819AF
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 03:50:02 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3f9b4bf99c2so25458885e9.3
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 03:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1687344600; x=1689936600;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fSRkwHLFq+2I9Xiyi/hU6wMpRwozZdsPaoeIOTE25yg=;
+        b=AIsj2vEdz+Fc9Jy19U2Q4+7jk5CdnnBRAq8EU0/qgIBKasDy/i9F7ZXwuxvu/FIk+V
+         e/sUJHlgDgR4Qx2Oh1t5R17vdDFqF/9Ly0AVSK9zUVBFtxeRPEJfGRY1Ks9BJsa7NWkf
+         GXQKQBgxImLcLHozIYWaaIqJ2GrVDZ8vDZMAG4ZNWlYOBv1zbniTnw6kcMxllyCdLRPM
+         ZQ4LPyPa8TOuuqU/g5NEtzVey08OWckHaORybMu3dXpLsx3EAMUOJp98YetCTODsSvBK
+         UGnxHZVFuD2xpLdXg7xgTBB0HXflRT1SIPGFL3SgcodXnvQYRGYsUcq+78aAj0lpxCAJ
+         /6yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687344600; x=1689936600;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fSRkwHLFq+2I9Xiyi/hU6wMpRwozZdsPaoeIOTE25yg=;
+        b=QES6SFISRxmeCstM2p20fA3GwqJVP19lw/oFLUkjfqRDZud0GvvXs6sHBHbLIvhcWf
+         03+LYC2lLYURMKaeARVXwPlkAiUyQBU04nOzUO/hNw3pvgi52gEn6Y6v9gpPLhJG2EYv
+         ZaTCyXJC3d0Ylov718Ph6SKoeabtCHDuhuSCTFy89LWO74wE+MhHqRACPclDzIzlvyLM
+         YAIL6XFqrAvfF3/wRh8/gy2DSudhpadmLjo3xCaQp7rvUNAlG7BDs/PWW2cRJXZ7fh7p
+         rhHFjENHFFJ0ToS+brQRQ7KJUhgydidHpfX/lnSUBorV+gPdEqTWIvEr5Q5EunRd6Ke+
+         AGnw==
+X-Gm-Message-State: AC+VfDxd+C6EBURYUeSODbCHTG1BJ0qo9YEWhRoIMD9BkNvFx6S+LGg1
+        GE6puoKvUyhgFcPlvhKMB3itiQ==
+X-Google-Smtp-Source: ACHHUZ4kGH8qImQSxaCquFokOidLojUiduGNeN6yC7xlAN8t9enaJAidhtFzyKegekb0YEbNp5wSRg==
+X-Received: by 2002:a05:600c:a39f:b0:3f9:8da:bb4b with SMTP id hn31-20020a05600ca39f00b003f908dabb4bmr8183476wmb.37.1687344600642;
+        Wed, 21 Jun 2023 03:50:00 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id c9-20020a05600c0ac900b003f7eeec829asm4670229wmr.10.2023.06.21.03.49.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jun 2023 03:49:58 -0700 (PDT)
+Date:   Wed, 21 Jun 2023 13:49:54 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     mcgrof@kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Joerg Reuter <jreuter@yaina.de>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <martineau@kernel.org>,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
+        Remi Denis-Courmont <courmisch@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        Martin Schiller <ms@dev.tdt.de>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hams@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, bridge@lists.linux-foundation.org,
+        dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
+        mptcp@lists.linux.dev, lvs-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+Subject: Re: [PATCH 06/11] sysctl: Add size to register_net_sysctl function
+Message-ID: <f95b7489-8654-435c-bc74-da1eac479fba@kadam.mountain>
+References: <20230621091000.424843-1-j.granados@samsung.com>
+ <CGME20230621091022eucas1p1c097da50842b23e902e1a674e117e1aa@eucas1p1.samsung.com>
+ <20230621091000.424843-7-j.granados@samsung.com>
+ <dab06c20-f8b0-4e34-b885-f3537e442d54@kadam.mountain>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="ZFMDZBc9cnLbyP1u"
+Content-Disposition: inline
+In-Reply-To: <dab06c20-f8b0-4e34-b885-f3537e442d54@kadam.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 
-This patch addresses  the VF unload issue, where mana_dealloc_queues()
-gets stuck in infinite while loop, because of host unresponsiveness.
-It adds a timeout in the while loop, to fix it.
+--ZFMDZBc9cnLbyP1u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Also this patch adds a new attribute in mana_context, which gets set when
-mana_hwc_send_request() hits a timeout because of host unresponsiveness.
-This flag then helps to avoid the timeouts in successive calls.
+On Wed, Jun 21, 2023 at 12:47:30PM +0300, Dan Carpenter wrote:
+> The patchset doesn't include the actual interesting changes, just a
+> bunch of mechanical prep work.
+> 
 
-Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
----
- .../net/ethernet/microsoft/mana/gdma_main.c   |  4 +++-
- .../net/ethernet/microsoft/mana/hw_channel.c  | 12 ++++++++++-
- drivers/net/ethernet/microsoft/mana/mana_en.c | 21 +++++++++++++++++--
- include/net/mana/mana.h                       |  2 ++
- 4 files changed, 35 insertions(+), 4 deletions(-)
+I was wrong here, the patchset just hadn't all hit the mailing lists.
+I can't apply this patchset to anything.  I tried linux-next, net, and
+net-next.  So it's hard to review.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 8f3f78b68592..5cc43ae78334 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -946,10 +946,12 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
- 	struct gdma_context *gc = gd->gdma_context;
- 	struct gdma_general_resp resp = {};
- 	struct gdma_general_req req = {};
-+	struct mana_context *ac;
- 	int err;
- 
- 	if (gd->pdid == INVALID_PDID)
- 		return -EINVAL;
-+	ac = (struct mana_context *)gd->driver_data;
- 
- 	mana_gd_init_req_hdr(&req.hdr, GDMA_DEREGISTER_DEVICE, sizeof(req),
- 			     sizeof(resp));
-@@ -957,7 +959,7 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
- 	req.hdr.dev_id = gd->dev_id;
- 
- 	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
--	if (err || resp.hdr.status) {
-+	if ((err || resp.hdr.status) && !ac->vf_unload_timeout) {
- 		dev_err(gc->dev, "Failed to deregister device: %d, 0x%x\n",
- 			err, resp.hdr.status);
- 		if (!err)
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-index 9d1507eba5b9..557b890ad0ae 100644
---- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -1,8 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
- /* Copyright (c) 2021, Microsoft Corporation. */
- 
-+#include "asm-generic/errno.h"
- #include <net/mana/gdma.h>
- #include <net/mana/hw_channel.h>
-+#include <net/mana/mana.h>
- 
- static int mana_hwc_get_msg_index(struct hw_channel_context *hwc, u16 *msg_id)
- {
-@@ -786,12 +788,19 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
- 	struct hwc_wq *txq = hwc->txq;
- 	struct gdma_req_hdr *req_msg;
- 	struct hwc_caller_ctx *ctx;
-+	struct mana_context *ac;
- 	u32 dest_vrcq = 0;
- 	u32 dest_vrq = 0;
- 	u16 msg_id;
- 	int err;
- 
- 	mana_hwc_get_msg_index(hwc, &msg_id);
-+	ac = (struct mana_context *)hwc->gdma_dev->driver_data;
-+	if (ac->vf_unload_timeout) {
-+		dev_err(hwc->dev, "HWC: vport is already unloaded.\n");
-+		err = -ETIMEDOUT;
-+		goto out;
-+	}
- 
- 	tx_wr = &txq->msg_buf->reqs[msg_id];
- 
-@@ -825,9 +834,10 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
- 		goto out;
- 	}
- 
--	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
-+	if (!wait_for_completion_timeout(&ctx->comp_event, 5 * HZ)) {
- 		dev_err(hwc->dev, "HWC: Request timed out!\n");
- 		err = -ETIMEDOUT;
-+		ac->vf_unload_timeout = true;
- 		goto out;
- 	}
- 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index d907727c7b7a..24f5508d2979 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -2330,7 +2330,10 @@ static int mana_dealloc_queues(struct net_device *ndev)
- 	struct mana_port_context *apc = netdev_priv(ndev);
- 	struct gdma_dev *gd = apc->ac->gdma_dev;
- 	struct mana_txq *txq;
-+	struct sk_buff *skb;
-+	struct mana_cq *cq;
- 	int i, err;
-+	unsigned long timeout;
- 
- 	if (apc->port_is_up)
- 		return -EINVAL;
-@@ -2348,13 +2351,26 @@ static int mana_dealloc_queues(struct net_device *ndev)
- 	 *
- 	 * Drain all the in-flight TX packets
- 	 */
-+
-+	timeout = jiffies + 120 * HZ;
- 	for (i = 0; i < apc->num_queues; i++) {
- 		txq = &apc->tx_qp[i].txq;
--
--		while (atomic_read(&txq->pending_sends) > 0)
-+		while (atomic_read(&txq->pending_sends) > 0 &&
-+		       time_before(jiffies, timeout)) {
- 			usleep_range(1000, 2000);
-+		}
- 	}
- 
-+	for (i = 0; i < apc->num_queues; i++) {
-+		txq = &apc->tx_qp[i].txq;
-+		cq = &apc->tx_qp[i].tx_cq;
-+		while (atomic_read(&txq->pending_sends)) {
-+			skb = skb_dequeue(&txq->pending_skbs);
-+			mana_unmap_skb(skb, apc);
-+			napi_consume_skb(skb, cq->budget);
-+			atomic_sub(1, &txq->pending_sends);
-+		}
-+	}
- 	/* We're 100% sure the queues can no longer be woken up, because
- 	 * we're sure now mana_poll_tx_cq() can't be running.
- 	 */
-@@ -2605,6 +2621,7 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 		}
- 	}
- 
-+	ac->vf_unload_timeout = false;
- 	err = add_adev(gd);
- out:
- 	if (err)
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 9eef19972845..34f5d8e06ede 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -361,6 +361,8 @@ struct mana_context {
- 	struct mana_eq *eqs;
- 
- 	struct net_device *ports[MAX_PORTS_IN_MANA_DEV];
-+
-+	bool vf_unload_timeout;
- };
- 
- struct mana_port_context {
--- 
-2.34.1
+It looks like ensure_safe_net_sysctl() never got update to use
+table_size...
 
+You could easily write a static checker test to print a warning any time
+that ->procname is checked for NULL.  I have attached a Smatch check.
+You would need to added to check_list.h and recompile.
+
+net/sysctl_net.c:130 ensure_safe_net_sysctl() warn: checking ->procname 'ent->procname'
+
+regards,
+dan carpenter
+
+
+--ZFMDZBc9cnLbyP1u
+Content-Type: text/x-csrc; charset=us-ascii
+Content-Disposition: attachment; filename="check_checking_procname.c"
+
+#include "smatch.h"
+#include "smatch_slist.h"
+
+static int my_id;
+
+static void match_condition(struct expression *expr)
+{
+	char *member_name;
+
+	if (expr->type == EXPR_COMPARE)
+		return;
+
+	member_name = get_member_name(expr);
+	if (!member_name)
+		return;
+
+	if (strcmp(member_name, "(struct ctl_table)->procname") == 0)
+		sm_warning("checking ->procname '%s'", expr_to_str(expr));
+}
+
+void check_checking_procname(int id)
+{
+	my_id = id;
+
+	add_hook(&match_condition, CONDITION_HOOK);
+}
+
+--ZFMDZBc9cnLbyP1u--
