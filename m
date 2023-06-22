@@ -2,64 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5DB739544
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jun 2023 04:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A7F7395E1
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jun 2023 05:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbjFVCJa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jun 2023 22:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
+        id S229638AbjFVDrG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jun 2023 23:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjFVCJ3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 22:09:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95449AC;
-        Wed, 21 Jun 2023 19:09:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Jh+sIBjTdpmN4bUdroe5Mom352UKBoihFU0ru+h1MFo=; b=ZnGaFtAYOb+yMjydAZycuQNc1U
-        Zc4s8vsOkWTz+/q7mdsTMXCu71SKCsIO2C4RRIK9Jqb8h6H9wc+Y/8ZVCdhYcy4rHFr5CWT6BhFmc
-        HnNoX4D+KWjgPf6r5FY8rX7JGdvUE4dgRR9bzvS8OKD2hVn6PeqmMCpW7WhtI3HAeS7EqsIYH9qv8
-        6fnxNk1UUA7f92Ik2vFbd7Fsu+OL4K1FL30ECew9m11Y4NDPUSxeFsAAP8jUZsY+yFFcD2X+xU3rY
-        /MCLzV9g7CsJrEyPZwt5r7y4xWa+nkaz78HRCGGdiGeuqL46/HppiVpnxNErSXh0Q11CjH/3wEl4N
-        H3rScSlA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qC9l6-00GWGA-0w;
-        Thu, 22 Jun 2023 02:09:16 +0000
-Message-ID: <9860cb6c-8fd4-79c6-a64b-ea855298e339@infradead.org>
-Date:   Wed, 21 Jun 2023 19:09:15 -0700
+        with ESMTP id S229513AbjFVDrF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 23:47:05 -0400
+Received: from out-26.mta1.migadu.com (out-26.mta1.migadu.com [IPv6:2001:41d0:203:375::1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662951BCA
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 20:47:03 -0700 (PDT)
+Message-ID: <c2dd65c7-bab4-c551-3514-a0702a6d7e7b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1687405620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qtkAEbyDmDf5J+S8WoX5R8oWjCwgH8J9kSS76zlhyyU=;
+        b=ZfewmxjOG9O70fQ+QR09Ru62AXhZTCxP7GdBg1RwbpWxwvyWYMzm8HIO0aRagED/pqnzpN
+        4CA1+HDF3ZQ6RWbKu14K/gaUWtqfbIIcp3nbcK2gYjdr/riv55ExY/eATDy9BnK2pZPIdX
+        /Ft8mj55AXatTwsjrXOHQ2I9ObP5oJU=
+Date:   Thu, 22 Jun 2023 11:46:47 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 8/8] scripts/spelling.txt: Add "transmit" patterns
-Content-Language: en-US
-To:     Yueh-Shun Li <shamrocklee@posteo.net>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>
-Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org,
-        mptcp@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230622012627.15050-1-shamrocklee@posteo.net>
- <20230622012627.15050-9-shamrocklee@posteo.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230622012627.15050-9-shamrocklee@posteo.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v6.4-rc1 v5 0/8] Fix the problem that rxe can not work in
+ net namespace
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
+        parav@nvidia.com, lehrer@gmail.com
+References: <20230508075636.352138-1-yanjun.zhu@intel.com>
+ <4f097d4a-85f5-392f-53bb-85ca0d75e16f@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <4f097d4a-85f5-392f-53bb-85ca0d75e16f@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -67,49 +51,220 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
+在 2023/6/22 5:09, Bob Pearson 写道:
+> On 5/8/23 02:56, Zhu Yanjun wrote:
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> When run "ip link add" command to add a rxe rdma link in a net
+>> namespace, normally this rxe rdma link can not work in a net
+>> name space.
+>>
+>> The root cause is that a sock listening on udp port 4791 is created
+>> in init_net when the rdma_rxe module is loaded into kernel. That is,
+>> the sock listening on udp port 4791 is created in init_net. Other net
+>> namespace is difficult to use this sock.
+>>
+>> The following commits will solve this problem.
+>>
+>> In the first commit, move the creating sock listening on udp port 4791
+>> from module_init function to rdma link creating functions. That is,
+>> after the module rdma_rxe is loaded, the sock will not be created.
+>> When run "rdma link add ..." command, the sock will be created. So
+>> when creating a rdma link in the net namespace, the sock will be
+>> created in this net namespace.
+>>
+>> In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
+>> will check the sock exists in the net namespace or not. If yes, rdma
+>> link will increase the reference count of this sock, then continue other
+>> jobs instead of creating a new sock to listen on udp port 4791. Since the
+>> network notifier is global, when the module rdma_rxe is loaded, this
+>> notifier will be registered.
+>>
+>> After the rdma link is created, the command "rdma link del" is to
+>> delete rdma link at the same time the sock is checked. If the reference
+>> count of this sock is greater than the sock reference count needed by
+>> udp tunnel, the sock reference count is decreased by one. If equal, it
+>> indicates that this rdma link is the last one. As such, the udp tunnel
+>> is shut down and the sock is closed. The above work should be
+>> implemented in linkdel function. But currently no dellink function in
+>> rxe. So the 3rd commit addes dellink function pointer. And the 4th
+>> commit implements the dellink function in rxe.
+>>
+>> To now, it is not necessary to keep a global variable to store the sock
+>> listening udp port 4791. This global variable can be replaced by the
+>> functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
+>> function udp6_lib_lookup is in the fast path, a member variable l_sk6
+>> is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
+>> to lookup the sock, then the sock is stored in l_sk6, in the future,it
+>> can be used directly.
+>>
+>> All the above work has been done in init_net. And it can also work in
+>> the net namespace. So the init_net is replaced by the individual net
+>> namespace. This is what the 6th commit does. Because rxe device is
+>> dependent on the net device and the sock listening on udp port 4791,
+>> every rxe device is in exclusive mode in the individual net namespace.
+>> Other rdma netns operations will be considerred in the future.
+>>
+>> In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
+>> functions are added. When a new net namespace is created, the init
+>> function will initialize the sk4 and sk6 socks. Then the 2 socks will
+>> be released when the net namespace is destroyed. The functions
+>> rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
+>> namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
+>> handle sk6. Then sk4 and sk6 are used in the previous commits.
+>>
+>> As the sk4 and sk6 in pernet namespace can be accessed, it is not
+>> necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
+>> replaced with the sk6 in pernet namespace.
+>>
+>> Test steps:
+>> 1) Suppose that 2 NICs are in 2 different net namespaces.
+>>
+>>    # ip netns exec net0 ip link
+>>    3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
+>>       link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
+>>       altname enp5s0
+>>
+>>    # ip netns exec net1 ip link
+>>    4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
+>>       link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
+>>
+>> 2) Add rdma link in the different net namespace
+>>      net0:
+>>      # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
+>>
+>>      net1:
+>>      # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
+>>
+>> 3) Run rping test.
+>>      net0
+>>      # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
+>>      [1] 1737
+>>      # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
+>>      verbose
+>>      count 1
+>>      ...
+>>      ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+>>      ...
+>>
+>> 4) Remove the rdma links from the net namespaces.
+>>      net0:
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+>>      UNCONN    0         0         [::]:4791             [::]:*
+>>
+>>      # ip netns exec net0 rdma link del rxe0
+>>
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>
+>>      net1:
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+>>      UNCONN    0         0         [::]:4791             [::]:*
+>>
+>>      # ip netns exec net1 rdma link del rxe1
+>>
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>
+>> V4->V5: Rebase the commits to V6.4-rc1
+>>
+>> V3->V4: Rebase the commits to rdma-next;
+>>
+>> V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
+>>             verify rdma link is removed.
+>>          2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
+>>          3) Replace l_sk6 with sk6 of pernet_name_space
+>>
+>> V1->V2: Add the explicit initialization of sk6.
+>>
+>> Zhu Yanjun (8):
+>>    RDMA/rxe: Creating listening sock in newlink function
+>>    RDMA/rxe: Support more rdma links in init_net
+>>    RDMA/nldev: Add dellink function pointer
+>>    RDMA/rxe: Implement dellink in rxe
+>>    RDMA/rxe: Replace global variable with sock lookup functions
+>>    RDMA/rxe: add the support of net namespace
+>>    RDMA/rxe: Add the support of net namespace notifier
+>>    RDMA/rxe: Replace l_sk6 with sk6 in net namespace
+>>
+>>   drivers/infiniband/core/nldev.c     |   6 ++
+>>   drivers/infiniband/sw/rxe/Makefile  |   3 +-
+>>   drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
+>>   drivers/infiniband/sw/rxe/rxe_net.c | 113 +++++++++++++++++------
+>>   drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
+>>   drivers/infiniband/sw/rxe/rxe_ns.c  | 134 ++++++++++++++++++++++++++++ip netns add test
+>>   drivers/infiniband/sw/rxe/rxe_ns.h  |  17 ++++
+>>   include/rdma/rdma_netlink.h         |   2 +
+>>   8 files changed, 279 insertions(+), 40 deletions(-)
+>>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+>>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.hip netns add test
+>>
+> Zhu,
+>
+> I did some simple experiments on netns functionality.
+>
+> With your patch set applied and rxe0 created on enp6s0 and rxe1 created on lo in the default namespace
+>
+> 	# sudo ip netns add test
+> 	# ip netns
+> 	test
+> 	# sudo ip netns exec test ip link
+> 	1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+> 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+> 	# sudo ip netns exec test ip link set dev lo up
+> 	# sudo ip netns exec test ip link
+> 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+> 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+> 	# sudo ip netns exec test ip addr add dev lo fe80::0200:00ff:fe00:0000/64
+> 		[rxe doesn't work unless this IPV6 address is set]
+> 	# sudo ip netns exec test ip addr
+> 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+> 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+> 	    inet 127.0.0.1/8 scope host lo
+> 	       valid_lft forever preferred_lft forever
+> 	    inet6 fe80::200:ff:fe00:0/64 scope link
+> 	       valid_lft forever preferred_lft forever
+> 	    inet6 ::1/128 scope host
+> 	       valid_lft forever preferred_lft forever
+> 	# sudo ip netns exec test ls /sys/class/infiniband
+> 	rxe0  rxe1
+> 		[These show up even though the ndevs do *not* belong to the test namespace! Probably OK.]
+> 	# sudo ip netns exec test rdma link add rxe2 type rxe netdev lo
+> 	# ls /sys/class/infiniband
+> 	rxe0  rxe1  rxe2
+> 		[The new rxe device shows up in the default namespace. At least we're consistent.]
+> 	# ib_send_bw -d rxe0 ... 192.168.0.27
+> 		[Works. Didn't break the existing rxe devices. Expected]
+> 	# ib_send_bw -d rxe1 ... 127.0.0.1
+> 		[Works. Expected]
+> 	# ib_send_bw -d rxe2 ... 127.0.0.1
+> 	IB device rxe2 not found
+>   	 Unable to find the Infiniband/RoCE device
+> 		[Not work. Expected.]
+> 	# sudo ip netns exec test ib_send_bw -d rxe2 ... 127.0.0.1
+> 	IB device rxe2 not found
+> 	 Unable to find the Infiniband/RoCE device
+> 		[Also not work. Turns out rxe2 device is gone after failure. Not expected.]
+> 	# sudo ip netns exec test rdma link add rxe2 type rxe netdev lo
+> 	# ls /sys/class/infiniband
+> 	rxe0  rxe1  rxe2
+> 		[Good. It's back]
+> 	# sudo ip netns exec test ib_send_bw -d rxe2 ... 127.0.0.1
+> 		[Works in test namespace! Expected.]
+> 	# sudo ip netns exec test ib_send_bw -d rxe1 ... 127.0.0.1
+> 		[Also works. Definitely not expected.]
+>
+> My take, it sort of works. But there are some serious issues. You shouldn't be able to use the
+> rxe2 device in the default namespace. It would be nice if you couldn't see the rxe devices in each
+> other's namespaces (Like ip link or ip addr hide other namespace's devices.)
 
-On 6/21/23 18:26, Yueh-Shun Li wrote:
-> Add "transmit"-related patterns misspelled with the first "s" missing.
-> 
-> Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
+Thanks, Bob. I will delve into your tests and reply you tomorrow.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Zhu Yanjun
 
-Thanks.
-
-> ---
->  scripts/spelling.txt | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-> index f8bd6178d17b..c81e489ba4cf 100644
-> --- a/scripts/spelling.txt
-> +++ b/scripts/spelling.txt
-> @@ -1319,6 +1319,12 @@ ressource||resource
->  ressources||resources
->  restesting||retesting
->  resumbmitting||resubmitting
-> +retranmission||retransmission
-> +retranmissions||retransmissions
-> +retranmit||retransmit
-> +retranmits||retransmits
-> +retranmitted||retransmitted
-> +retranmitting||retransmitting
->  retransmited||retransmitted
->  retreived||retrieved
->  retreive||retrieve
-> @@ -1553,6 +1559,11 @@ tranasction||transaction
->  tranceiver||transceiver
->  tranfer||transfer
->  tranmission||transmission
-> +tranmissions||transmissions
-> +tranmit||transmit
-> +tranmits||transmits
-> +tranmitted||transmitted
-> +tranmitting||transmitting
->  transcevier||transceiver
->  transciever||transceiver
->  transferd||transferred
-
--- 
-~Randy
+>
+> Bob
