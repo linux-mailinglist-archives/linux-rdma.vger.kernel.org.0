@@ -2,44 +2,45 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD0C73A4A5
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jun 2023 17:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716BB73A4A7
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jun 2023 17:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbjFVPUg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Jun 2023 11:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
+        id S231694AbjFVPUm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Jun 2023 11:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbjFVPUe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Jun 2023 11:20:34 -0400
+        with ESMTP id S232118AbjFVPUk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Jun 2023 11:20:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F7DE4B
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Jun 2023 08:20:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DD41713
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Jun 2023 08:20:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B502B617DB
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Jun 2023 15:20:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3FCBC433C8;
-        Thu, 22 Jun 2023 15:20:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B355617B0
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Jun 2023 15:20:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FDD9C433C0;
+        Thu, 22 Jun 2023 15:20:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687447232;
-        bh=lJguwL74pHMBTj150wwXK6RGyrGPW//UR6ztnL09Fas=;
+        s=k20201202; t=1687447238;
+        bh=QYfiTehHwNsyhrFEAAsXvpslipmwSWUHlNZkYctCvIc=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Td2nCDfsyD+Xao34kZ+CzDoIbLslA7UJajnHJ2hVDZ3ObZEez6Q3G4wt+PE8/bcHa
-         uvOFppOy7dRPkTZi8MR68cFMLQnN7/c8p+PfMq19XZdC78Pe/VI/148bijd6BYXxwE
-         7BLhNUSHcIELDpEkyRL3aJfsWKnOIpr7RlgQ6ZUVfvXMhAS/bRU1ta6D/YLhT+xA8f
-         bq72stg1JPJ/er7G+HJ5POx3cu5G1Aowiq6U3hlsrIN/IEEQ1sjpqDO30vgpnyoKap
-         vnmG1RLesyzI+kJ6j49D3VYUiPjiD+49EGjSfmXtrWi/fXTSSVosc0F7hX0V14M/Uq
-         eFSG/JJs8iEBQ==
-Subject: [PATCH v4 2/4] RDMA/core: Set gid_attr.ndev for iWARP devices
+        b=IFP4X5LiaRw/HLuN/m+adFEWADWu4OuiMlbjY4KSBqwm+5W1J5BxfUDVEmMS0tm+y
+         QLBYx4nuDz7EpRGtOVmZ+YCh0MBcWWQmXwnPhHz0GxjM/Isu9ePQX28OR7notKt0te
+         +UlecnAbS8H+R7rofTYs1JDYfdJc89gR0bNOBb6i94Vq5twm0LtBITYdYfibSk7d8/
+         +IsPbrRFwaytRy5F0WyVT3IElyOlppZnyicRJJrobcW9dyjiFsloxGSyQemQikwCr8
+         sueDlaA0NakrlaYN70kE4KoRLmTNE7rEUcStJ7pMASNttnSoCpLrkYcQQoHmgfeAhG
+         urupnwZYmjLbQ==
+Subject: [PATCH v4 3/4] RDMA/cma: Deduplicate error flow in
+ cma_validate_port()
 From:   Chuck Lever <cel@kernel.org>
 To:     jgg@nvidia.com
 Cc:     Chuck Lever <chuck.lever@oracle.com>, tom@talpey.com,
         linux-rdma@vger.kernel.org, BMT@zurich.ibm.com,
         yanjun.zhu@linux.dev
-Date:   Thu, 22 Jun 2023 11:20:30 -0400
-Message-ID: <168744723080.136340.15471993685775481944.stgit@manet.1015granger.net>
+Date:   Thu, 22 Jun 2023 11:20:37 -0400
+Message-ID: <168744723736.136340.13859959715311898671.stgit@manet.1015granger.net>
 In-Reply-To: <168744710872.136340.12090873711939747309.stgit@manet.1015granger.net>
 References: <168744710872.136340.12090873711939747309.stgit@manet.1015granger.net>
 User-Agent: StGit/1.5
@@ -58,48 +59,53 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Chuck Lever <chuck.lever@oracle.com>
 
-Have the iwarp side properly set the ndev in the device's sgid_attrs
-so that address resolution can treat it more like a RoCE device.
+Clean up to prepare for the addition of new logic.
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 ---
- drivers/infiniband/core/cache.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/infiniband/core/cma.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index 2e91d8879326..717524fe8a39 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -1439,6 +1439,7 @@ static int config_non_roce_gid_cache(struct ib_device *device,
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 93a1c48d0c32..a1756ed1faa1 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -686,30 +686,31 @@ cma_validate_port(struct ib_device *device, u32 port,
+ 		  struct rdma_id_private *id_priv)
  {
- 	struct ib_gid_attr gid_attr = {};
- 	struct ib_gid_table *table;
-+	struct net_device *ndev;
- 	int ret = 0;
- 	int i;
+ 	struct rdma_dev_addr *dev_addr = &id_priv->id.route.addr.dev_addr;
++	const struct ib_gid_attr *sgid_attr = ERR_PTR(-ENODEV);
+ 	int bound_if_index = dev_addr->bound_dev_if;
+-	const struct ib_gid_attr *sgid_attr;
+ 	int dev_type = dev_addr->dev_type;
+ 	struct net_device *ndev = NULL;
  
-@@ -1457,10 +1458,21 @@ static int config_non_roce_gid_cache(struct ib_device *device,
- 				 i);
- 			goto err;
- 		}
-+
-+		ndev = NULL;
-+		if (rdma_protocol_iwarp(device, port)) {
-+			ndev = ib_device_get_netdev(device, port);
-+			if (!ndev)
-+				continue;
-+			RCU_INIT_POINTER(gid_attr.ndev, ndev);
-+		}
-+
- 		gid_attr.index = i;
- 		tprops->subnet_prefix =
- 			be64_to_cpu(gid_attr.gid.global.subnet_prefix);
- 		add_modify_gid(table, &gid_attr);
-+
-+		dev_put(ndev);
+ 	if (!rdma_dev_access_netns(device, id_priv->id.route.addr.dev_addr.net))
+-		return ERR_PTR(-ENODEV);
++		goto out;
+ 
+ 	if ((dev_type == ARPHRD_INFINIBAND) && !rdma_protocol_ib(device, port))
+-		return ERR_PTR(-ENODEV);
++		goto out;
+ 
+ 	if ((dev_type != ARPHRD_INFINIBAND) && rdma_protocol_ib(device, port))
+-		return ERR_PTR(-ENODEV);
++		goto out;
+ 
+ 	if (dev_type == ARPHRD_ETHER && rdma_protocol_roce(device, port)) {
+ 		ndev = dev_get_by_index(dev_addr->net, bound_if_index);
+ 		if (!ndev)
+-			return ERR_PTR(-ENODEV);
++			goto out;
+ 	} else {
+ 		gid_type = IB_GID_TYPE_IB;
  	}
- err:
- 	mutex_unlock(&table->lock);
+ 
+ 	sgid_attr = rdma_find_gid_by_port(device, gid, gid_type, port, ndev);
+ 	dev_put(ndev);
++out:
+ 	return sgid_attr;
+ }
+ 
 
 
