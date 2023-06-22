@@ -2,102 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E8273A4A8
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jun 2023 17:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5E473A601
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jun 2023 18:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbjFVPUs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Jun 2023 11:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        id S229884AbjFVQWp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Jun 2023 12:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231873AbjFVPUq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Jun 2023 11:20:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4350919A1
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Jun 2023 08:20:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C5C66617B0
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Jun 2023 15:20:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C413CC433C0;
-        Thu, 22 Jun 2023 15:20:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687447245;
-        bh=Ft4T15mYM44LFVGCbeCI8XWz6EdO6piD5ud1i1JpF/Q=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YRfteNRxbyuAyuSmEMdRezIxunPEP4G28QN1jO5qOugNVMS6A7ENxVqwSPelUGmTW
-         XyG5qIa8Lw2GnMMzKUy14CxDqRCBvEpDDlIDPfFDTL8/X8AREz6ysndHhOKetTfIHn
-         A1dNinTADNyCBdGh/yYwSWYwBeCpwxqLionC7eCKiFjIkgVtkheDHwS7eImC/0n4Rs
-         5IrNqn/2VJs/Q3tykci9cJBc5bWNnLUX/YQrLKfP3Zvh/V7s49DlAr9eB7/TH4Zsm9
-         0Rd8XGDKccwtG0EIL2ibjCKVex8sSWsLs4OwZ+onkf3F7oCI01m4knWRPsoQldvkaW
-         TX8w1tqf3+P3Q==
-Subject: [PATCH v4 4/4] RDMA/cma: Avoid GID lookups on iWARP devices
-From:   Chuck Lever <cel@kernel.org>
-To:     jgg@nvidia.com
-Cc:     Chuck Lever <chuck.lever@oracle.com>, tom@talpey.com,
-        linux-rdma@vger.kernel.org, BMT@zurich.ibm.com,
-        yanjun.zhu@linux.dev
-Date:   Thu, 22 Jun 2023 11:20:43 -0400
-Message-ID: <168744724392.136340.9404948097647851506.stgit@manet.1015granger.net>
-In-Reply-To: <168744710872.136340.12090873711939747309.stgit@manet.1015granger.net>
-References: <168744710872.136340.12090873711939747309.stgit@manet.1015granger.net>
-User-Agent: StGit/1.5
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230384AbjFVQWn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Jun 2023 12:22:43 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F2141FE8;
+        Thu, 22 Jun 2023 09:22:42 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 2637D21C20A2; Thu, 22 Jun 2023 09:22:41 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2637D21C20A2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1687450961;
+        bh=bpRMX3RMcGhusT5aTzmC87ILJ8BKTaQbhSuw8yFpVNw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Gg655xF/W9QuTA6iSWGzMfa5Y88+NWxxT7CxBWMTLltOohhrLituO8sn8cLto9Dk6
+         30D4NeQsfwrBTpt87SSf2MbgvhMp2ohNQKMf7pl/qFiz5KazqQ1UwR77ZMXVIxhYtz
+         PHtjkgh1X3mUVQ9UYhvIlrIOuV40neEgq7+iMQhI=
+From:   longli@linuxonhyperv.com
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Long Li <longli@microsoft.com>, stable@vger.kernel.org
+Subject: [PATCH v2] net: mana: Batch ringing RX queue doorbell on receiving packets
+Date:   Thu, 22 Jun 2023 09:22:36 -0700
+Message-Id: <1687450956-6407-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Long Li <longli@microsoft.com>
 
-We would like to enable the use of siw on top of a VPN that is
-constructed and managed via a tun device. That hasn't worked up
-until now because ARPHRD_NONE devices (such as tun devices) have
-no GID for the RDMA/core to look up.
+It's inefficient to ring the doorbell page every time a WQE is posted to
+the received queue.
 
-But it turns out that the egress device has already been picked for
-us -- no GID is necessary. addr_handler() just has to do the right
-thing with it.
+Move the code for ringing doorbell page to where after we have posted all
+WQEs to the receive queue during a callback from napi_poll().
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Tests showed no regression in network latency benchmarks.
+
+Cc: stable@vger.kernel.org
+Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+Signed-off-by: Long Li <longli@microsoft.com>
 ---
- drivers/infiniband/core/cma.c |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Change log:
+v2:
+Check for comp_read > 0 as it might be negative on completion error.
+Set rq.wqe_cnt to 0 according to BNIC spec.
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index a1756ed1faa1..45c4544c7687 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -700,6 +700,21 @@ cma_validate_port(struct ib_device *device, u32 port,
- 	if ((dev_type != ARPHRD_INFINIBAND) && rdma_protocol_ib(device, port))
- 		goto out;
+ drivers/net/ethernet/microsoft/mana/gdma_main.c |  5 ++++-
+ drivers/net/ethernet/microsoft/mana/mana_en.c   | 10 ++++++++--
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 8f3f78b68592..ef11d09a3655 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -300,8 +300,11 @@ static void mana_gd_ring_doorbell(struct gdma_context *gc, u32 db_index,
  
-+	/* Linux iWARP devices have but one port */
-+	if (rdma_protocol_iwarp(device, port)) {
-+		sgid_attr = rdma_get_gid_attr(device, port, 0);
-+		if (IS_ERR(sgid_attr))
-+			goto out;
+ void mana_gd_wq_ring_doorbell(struct gdma_context *gc, struct gdma_queue *queue)
+ {
++	/* BNIC Spec specifies that client should set 0 for rq.wqe_cnt
++	 * This value is not used in sq
++	 */
+ 	mana_gd_ring_doorbell(gc, queue->gdma_dev->doorbell, queue->type,
+-			      queue->id, queue->head * GDMA_WQE_BU_SIZE, 1);
++			      queue->id, queue->head * GDMA_WQE_BU_SIZE, 0);
+ }
+ 
+ void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit)
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index cd4d5ceb9f2d..1d8abe63fcb8 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1383,8 +1383,8 @@ static void mana_post_pkt_rxq(struct mana_rxq *rxq)
+ 
+ 	recv_buf_oob = &rxq->rx_oobs[curr_index];
+ 
+-	err = mana_gd_post_and_ring(rxq->gdma_rq, &recv_buf_oob->wqe_req,
+-				    &recv_buf_oob->wqe_inf);
++	err = mana_gd_post_work_request(rxq->gdma_rq, &recv_buf_oob->wqe_req,
++					&recv_buf_oob->wqe_inf);
+ 	if (WARN_ON_ONCE(err))
+ 		return;
+ 
+@@ -1654,6 +1654,12 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+ 		mana_process_rx_cqe(rxq, cq, &comp[i]);
+ 	}
+ 
++	if (comp_read > 0) {
++		struct gdma_context *gc = rxq->gdma_rq->gdma_dev->gdma_context;
 +
-+		rcu_read_lock();
-+		ndev = rcu_dereference(sgid_attr->ndev);
-+		if (!net_eq(dev_net(ndev), dev_addr->net) ||
-+		    ndev->ifindex != bound_if_index)
-+			sgid_attr = ERR_PTR(-ENODEV);
-+		rcu_read_unlock();
-+		goto out;
++		mana_gd_wq_ring_doorbell(gc, rxq->gdma_rq);
 +	}
 +
- 	if (dev_type == ARPHRD_ETHER && rdma_protocol_roce(device, port)) {
- 		ndev = dev_get_by_index(dev_addr->net, bound_if_index);
- 		if (!ndev)
-
+ 	if (rxq->xdp_flush)
+ 		xdp_do_flush();
+ }
+-- 
+2.34.1
 
