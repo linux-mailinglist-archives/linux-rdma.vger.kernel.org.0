@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC207394A0
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jun 2023 03:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8243D7394A8
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jun 2023 03:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbjFVBdQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jun 2023 21:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
+        id S229661AbjFVBdr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jun 2023 21:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbjFVBdP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 21:33:15 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF60C1BFA
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 18:33:08 -0700 (PDT)
+        with ESMTP id S230116AbjFVBdp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jun 2023 21:33:45 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B01B1FE0
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jun 2023 18:33:35 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 9E9AE240108
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Jun 2023 03:33:07 +0200 (CEST)
+        by mout01.posteo.de (Postfix) with ESMTPS id B37D5240029
+        for <linux-rdma@vger.kernel.org>; Thu, 22 Jun 2023 03:33:33 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1687397587; bh=Db7tJRwCI2sfN/eoZqTNayUe3toQkg0kEoXA0Xol1V4=;
+        t=1687397613; bh=ua0QK6EC/OqIc9NpFWckWJA/7En1GQHaNHUYKDQh45A=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
          Content-Transfer-Encoding:From;
-        b=jkKpchV6d5qDaXAUgzQiTGyr9g3/w9QXL5Kpt7xGTH362QeFX6QraF5uTQ1aWcqLR
-         nFJ3voqtkUW2uaJkbUZlMihuBBBJQgKHqTSHvywR1nUaG+w+7AhBGGLdnfCkYg1K4y
-         yt+L/XAgBk1m/07Q5E/GZ7qdOpx8FABvpSpdeuaRlKKfkrwVoaouHgsOE1eBEVtnx7
-         zAPa3N1mq5ThvTNS1P6N84MVYsscVm6V7VVybgWBNL45nFiuAY6wZQiWPFHsrd3HOq
-         Eyz8/xJX1Eb+7nxBJpG54GAMt4BLCGuH7V/WMc8JS9egZdPRUmGjEt9VuZWsmfXj51
-         /4vMiy4xI6OZw==
+        b=HfdEgLLZGnqn8oxDQy5cJS0VAWIGo38Lmvtq9HsQSdPiokJhWu1RzrTs/kuMYV+3s
+         EA71sePC2PEtYxgNjWV8/AkFESitDoJnX7q2IbQCFByxvsDxZWRvXeuybCgBRjwPLw
+         9ZBusiKAduWw1Mh1vWWPUiXoEUv8kd2auxzLGxlWHDXy0EJ47Uyho0oRavSg4t+mlc
+         Glxq+bKZ2gg1FWxXhppKqRa3RTnMCRnIVAWhJi0ONfjjLqg3d4Xl8sVl5cu1AER1Jw
+         WQVzpBRvvYbUmcSY+KpYpxuDpws3g+wzKsBkXTdq9RVK2tKje6j698CCCOvFtG5qFE
+         t2gab8Gqj64/Q==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4QmjYS3Kq6z6txs;
-        Thu, 22 Jun 2023 03:33:00 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4QmjYy1Vy9z6twX;
+        Thu, 22 Jun 2023 03:33:25 +0200 (CEST)
 From:   Yueh-Shun Li <shamrocklee@posteo.net>
 To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
@@ -44,9 +44,9 @@ Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
         linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org,
         mptcp@lists.linux.dev, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org, Yueh-Shun Li <shamrocklee@posteo.net>
-Subject: [PATCH 5/8] tcp: fix comment typo
-Date:   Thu, 22 Jun 2023 01:26:31 +0000
-Message-Id: <20230622012627.15050-6-shamrocklee@posteo.net>
+Subject: [PATCH 6/8] net/tls: fix comment typo
+Date:   Thu, 22 Jun 2023 01:26:33 +0000
+Message-Id: <20230622012627.15050-7-shamrocklee@posteo.net>
 In-Reply-To: <20230622012627.15050-1-shamrocklee@posteo.net>
 References: <20230622012627.15050-1-shamrocklee@posteo.net>
 MIME-Version: 1.0
@@ -62,28 +62,28 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Spell "transmissions" properly.
+Spell "retransmit" properly.
 
 Found by searching for keyword "tranm".
 
 Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
 ---
- net/ipv4/tcp_input.c | 2 +-
+ net/tls/tls_device_fallback.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index bf8b22218dd4..6f072095211e 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -2867,7 +2867,7 @@ static void tcp_process_loss(struct sock *sk, int flag, int num_dupack,
- 	}
- 	if (tcp_is_reno(tp)) {
- 		/* A Reno DUPACK means new data in F-RTO step 2.b above are
--		 * delivered. Lower inflight to clock out (re)tranmissions.
-+		 * delivered. Lower inflight to clock out (re)transmissions.
+diff --git a/net/tls/tls_device_fallback.c b/net/tls/tls_device_fallback.c
+index 7fbb1d0b69b3..b28c5e296dfd 100644
+--- a/net/tls/tls_device_fallback.c
++++ b/net/tls/tls_device_fallback.c
+@@ -271,7 +271,7 @@ static int fill_sg_in(struct scatterlist *sg_in,
+ 		 * There is a corner case where the packet contains
+ 		 * both an acked and a non-acked record.
+ 		 * We currently don't handle that case and rely
+-		 * on TCP to retranmit a packet that doesn't contain
++		 * on TCP to retransmit a packet that doesn't contain
+ 		 * already acked payload.
  		 */
- 		if (after(tp->snd_nxt, tp->high_seq) && num_dupack)
- 			tcp_add_reno_sack(sk, num_dupack, flag & FLAG_ECE);
+ 		if (!is_start_marker)
 -- 
 2.38.1
 
