@@ -2,263 +2,216 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2B273B3E3
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jun 2023 11:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F089973B43A
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jun 2023 11:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbjFWJoH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Jun 2023 05:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
+        id S230170AbjFWJ63 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jun 2023 05:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbjFWJoF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Jun 2023 05:44:05 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578911FFD
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Jun 2023 02:44:01 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so658733f8f.2
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Jun 2023 02:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1687513440; x=1690105440;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pcy5cyjz7F8/6l0R/EBOM5X+Qzp4ddDgR685z6/Mzss=;
-        b=ok4Ft78NCIBjvhxW6+v7MQjB26wxgcCwNpE1Ml0e0dES5zZCq7apHWlDFflAKjDAyc
-         h99BcsaBrDSYbom6kNsNjhUDrV14INYkboViGd7fIqL3q7IB+ZPqawgGMT4ekZA7STgx
-         IViXmHCmEnAUn9oVFg9sioxPx2fEWXgsC7E6WJ27QCwNSfaG7Af+tV7QzRFqdCQrlLLB
-         RozewenzHz1pqcTU64hm3p6EDzwQNHwYwy/uD4FiRPYvUsCvhIsM3eym3p0h5Au+PJQA
-         BsfvNGWOI4rk+dvwRD53tzJRxJP9FUrrVDXCSQWqJ262Ub+4UgQ2ELAwJhgG9cyDZDNZ
-         SgWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687513440; x=1690105440;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pcy5cyjz7F8/6l0R/EBOM5X+Qzp4ddDgR685z6/Mzss=;
-        b=NDFEI0bjMpXfWAn3xzEppA9WJvyv6omRsQwvWJXWu+7E/bJ69sKJJzX9pJv+mObNfp
-         D2dWXke5lZoTL4LDQlxc/+xK2yKo1WosjmUUkw48wyleOZcFkMf91VR1IUeYGyKRCE2g
-         572qeYTNJBT7zMtih5ehOuIc5t1K27pd0VyQN1oqGHyO7RCMDZhx/AQXB6Ti3WAggJPD
-         Qa+Sa6g7HItNqb8QBz+YErGuZZyqssOShiUz5UUgy1tM1SJipQXoJyU0VC9pcvKtSmO2
-         Pt+nsZyedB5arOoOJjR+4SvkGbp2qHDj6vX2NjSFPSlRO0wE8FD4h5EhbHVm9nfh2aEU
-         kqPA==
-X-Gm-Message-State: AC+VfDyJMe1MoyFQznLwSAZe8O4nw7fnxJ3MxBpDPgZ4JA1gDFj1Eop1
-        /M9j4wdhRm0mgrquCm22jiPt8Q==
-X-Google-Smtp-Source: ACHHUZ7DMQ7qm38AjWRARvBdOxeZdZfTwYAdbda1YDLhCgkTQvc+wurTdcmndV+S22IzJxbEHx6UJA==
-X-Received: by 2002:a5d:58ea:0:b0:30f:bafb:2478 with SMTP id f10-20020a5d58ea000000b0030fbafb2478mr19835564wrd.42.1687513439618;
-        Fri, 23 Jun 2023 02:43:59 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id o8-20020a5d4a88000000b003068f5cca8csm9069659wrq.94.2023.06.23.02.43.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jun 2023 02:43:58 -0700 (PDT)
-Date:   Fri, 23 Jun 2023 11:43:57 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     souradeep chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, stable@vger.kernel.org,
-        schakrabarti@microsoft.com
-Subject: Re: [PATCH V2 net] net: mana: Fix MANA VF unload when host is
- unresponsive
-Message-ID: <ZJVpXR52RQxdYRY+@nanopsycho>
-References: <1687505355-29212-1-git-send-email-schakrabarti@linux.microsoft.com>
+        with ESMTP id S230120AbjFWJ62 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Jun 2023 05:58:28 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890E5C6
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Jun 2023 02:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687514307; x=1719050307;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=C2l3Y9jAznndkRMjZV5B73vQ5aFhsWoDljTcUpCTWxQ=;
+  b=iCxmxB1W2hHhcCtLrxDSNNWWbDZpyJAF2oCzmmv1Si4pzgE8UvcHcRpi
+   +a5zTRoAeVVKyNO0s1fSp0zX3JPz3lIwO7jSqGiyPaoMw0ogUUBr42C79
+   tmULgK5H+mrm8FB5LAJXJOLNMa/F3byUV5dl93RQxHx7+0/NF+zDEhDJj
+   w6e/uiiPlTTdXKMXs4EnyXpI5KD9mgQqrARmKmWpHl4iyoL9hh0mOW1DD
+   PcbMDgaIzwVBgD3AYCw9AhfwcOCWMHvEvzgHA0CTBrHrNHRkZ8vRsNLW/
+   Q3cS4cSbZtqbVR7rAsA1QDkSvZTChXZCiYu3NHy0cgCr+HA/4NZgS8lKA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10749"; a="424411336"
+X-IronPort-AV: E=Sophos;i="6.01,151,1684825200"; 
+   d="scan'208";a="424411336"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2023 02:58:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10749"; a="715262979"
+X-IronPort-AV: E=Sophos;i="6.01,151,1684825200"; 
+   d="scan'208";a="715262979"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by orsmga002.jf.intel.com with ESMTP; 23 Jun 2023 02:58:24 -0700
+From:   Zhu Yanjun <yanjun.zhu@intel.com>
+To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, parav@nvidia.com, lehrer@gmail.com,
+        rpearsonhpe@gmail.com
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: [PATCH v6 0/8] Fix the problem that rxe can not work in net namespace
+Date:   Fri, 23 Jun 2023 17:57:41 +0800
+Message-Id: <20230623095749.485873-1-yanjun.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1687505355-29212-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fri, Jun 23, 2023 at 09:29:15AM CEST, schakrabarti@linux.microsoft.com wrote:
->From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
->
->This patch addresses  the VF unload issue, where mana_dealloc_queues()
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-double space here    ^^
+When run "ip link add" command to add a rxe rdma link in a net
+namespace, normally this rxe rdma link can not work in a net
+name space.
 
->gets stuck in infinite while loop, because of host unresponsiveness.
->It adds a timeout in the while loop, to fix it.
->
->Also this patch adds a new attribute in mana_context, which gets set when
->mana_hwc_send_request() hits a timeout because of host unresponsiveness.
->This flag then helps to avoid the timeouts in successive calls.
+The root cause is that a sock listening on udp port 4791 is created
+in init_net when the rdma_rxe module is loaded into kernel. That is,
+the sock listening on udp port 4791 is created in init_net. Other net
+namespace is difficult to use this sock.
 
-You aparently combine 2 patches together. Please split.
+The following commits will solve this problem.
 
+In the first commit, move the creating sock listening on udp port 4791
+from module_init function to rdma link creating functions. That is,
+after the module rdma_rxe is loaded, the sock will not be created.
+When run "rdma link add ..." command, the sock will be created. So
+when creating a rdma link in the net namespace, the sock will be
+created in this net namespace.
 
->
->Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
+will check the sock exists in the net namespace or not. If yes, rdma
+link will increase the reference count of this sock, then continue other
+jobs instead of creating a new sock to listen on udp port 4791. Since the
+network notifier is global, when the module rdma_rxe is loaded, this
+notifier will be registered.
 
-Please provide a "Fixes" tag with pointer to the commit that introduced
-the problem.
+After the rdma link is created, the command "rdma link del" is to
+delete rdma link at the same time the sock is checked. If the reference
+count of this sock is greater than the sock reference count needed by
+udp tunnel, the sock reference count is decreased by one. If equal, it
+indicates that this rdma link is the last one. As such, the udp tunnel
+is shut down and the sock is closed. The above work should be
+implemented in linkdel function. But currently no dellink function in
+rxe. So the 3rd commit addes dellink function pointer. And the 4th
+commit implements the dellink function in rxe.
 
+To now, it is not necessary to keep a global variable to store the sock
+listening udp port 4791. This global variable can be replaced by the
+functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
+function udp6_lib_lookup is in the fast path, a member variable l_sk6
+is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
+to lookup the sock, then the sock is stored in l_sk6, in the future,it
+can be used directly.
 
->---
->V1 -> V2:
->* Added net branch
->* Removed the typecasting to (struct mana_context*) of void pointer
->* Repositioned timeout variable in mana_dealloc_queues()
->* Repositioned vf_unload_timeout in mana_context struct, to utilise the
->  6 bytes hole
->---
-> .../net/ethernet/microsoft/mana/gdma_main.c   |  4 +++-
-> .../net/ethernet/microsoft/mana/hw_channel.c  | 12 ++++++++++-
-> drivers/net/ethernet/microsoft/mana/mana_en.c | 21 +++++++++++++++++--
-> include/net/mana/mana.h                       |  2 ++
-> 4 files changed, 35 insertions(+), 4 deletions(-)
->
->diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
->index 8f3f78b68592..6411f01be0d9 100644
->--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
->+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
->@@ -946,10 +946,12 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
-> 	struct gdma_context *gc = gd->gdma_context;
-> 	struct gdma_general_resp resp = {};
-> 	struct gdma_general_req req = {};
->+	struct mana_context *ac;
-> 	int err;
-> 
-> 	if (gd->pdid == INVALID_PDID)
-> 		return -EINVAL;
->+	ac = gd->driver_data;
-> 
-> 	mana_gd_init_req_hdr(&req.hdr, GDMA_DEREGISTER_DEVICE, sizeof(req),
-> 			     sizeof(resp));
->@@ -957,7 +959,7 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
-> 	req.hdr.dev_id = gd->dev_id;
-> 
-> 	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
->-	if (err || resp.hdr.status) {
->+	if ((err || resp.hdr.status) && !ac->vf_unload_timeout) {
-> 		dev_err(gc->dev, "Failed to deregister device: %d, 0x%x\n",
-> 			err, resp.hdr.status);
-> 		if (!err)
->diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
->index 9d1507eba5b9..492cb2c6e2cb 100644
->--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
->+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
->@@ -1,8 +1,10 @@
-> // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-> /* Copyright (c) 2021, Microsoft Corporation. */
-> 
->+#include "asm-generic/errno.h"
-> #include <net/mana/gdma.h>
-> #include <net/mana/hw_channel.h>
->+#include <net/mana/mana.h>
-> 
-> static int mana_hwc_get_msg_index(struct hw_channel_context *hwc, u16 *msg_id)
-> {
->@@ -786,12 +788,19 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
-> 	struct hwc_wq *txq = hwc->txq;
-> 	struct gdma_req_hdr *req_msg;
-> 	struct hwc_caller_ctx *ctx;
->+	struct mana_context *ac;
-> 	u32 dest_vrcq = 0;
-> 	u32 dest_vrq = 0;
-> 	u16 msg_id;
-> 	int err;
-> 
-> 	mana_hwc_get_msg_index(hwc, &msg_id);
->+	ac = hwc->gdma_dev->driver_data;
->+	if (ac->vf_unload_timeout) {
->+		dev_err(hwc->dev, "HWC: vport is already unloaded.\n");
->+		err = -ETIMEDOUT;
->+		goto out;
->+	}
-> 
-> 	tx_wr = &txq->msg_buf->reqs[msg_id];
-> 
->@@ -825,9 +834,10 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
-> 		goto out;
-> 	}
-> 
->-	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
->+	if (!wait_for_completion_timeout(&ctx->comp_event, 5 * HZ)) {
-> 		dev_err(hwc->dev, "HWC: Request timed out!\n");
-> 		err = -ETIMEDOUT;
->+		ac->vf_unload_timeout = true;
-> 		goto out;
-> 	}
-> 
->diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
->index d907727c7b7a..cb2080b3a00c 100644
->--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
->+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
->@@ -2329,7 +2329,10 @@ static int mana_dealloc_queues(struct net_device *ndev)
-> {
-> 	struct mana_port_context *apc = netdev_priv(ndev);
-> 	struct gdma_dev *gd = apc->ac->gdma_dev;
->+	unsigned long timeout;
-> 	struct mana_txq *txq;
->+	struct sk_buff *skb;
->+	struct mana_cq *cq;
-> 	int i, err;
-> 
-> 	if (apc->port_is_up)
->@@ -2348,13 +2351,26 @@ static int mana_dealloc_queues(struct net_device *ndev)
-> 	 *
-> 	 * Drain all the in-flight TX packets
-> 	 */
->+
->+	timeout = jiffies + 120 * HZ;
-> 	for (i = 0; i < apc->num_queues; i++) {
-> 		txq = &apc->tx_qp[i].txq;
->-
->-		while (atomic_read(&txq->pending_sends) > 0)
->+		while (atomic_read(&txq->pending_sends) > 0 &&
->+		       time_before(jiffies, timeout)) {
-> 			usleep_range(1000, 2000);
->+		}
-> 	}
-> 
->+	for (i = 0; i < apc->num_queues; i++) {
->+		txq = &apc->tx_qp[i].txq;
->+		cq = &apc->tx_qp[i].tx_cq;
->+		while (atomic_read(&txq->pending_sends)) {
->+			skb = skb_dequeue(&txq->pending_skbs);
->+			mana_unmap_skb(skb, apc);
->+			napi_consume_skb(skb, cq->budget);
->+			atomic_sub(1, &txq->pending_sends);
->+		}
->+	}
-> 	/* We're 100% sure the queues can no longer be woken up, because
-> 	 * we're sure now mana_poll_tx_cq() can't be running.
-> 	 */
->@@ -2605,6 +2621,7 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
-> 		}
-> 	}
-> 
->+	ac->vf_unload_timeout = false;
+All the above work has been done in init_net. And it can also work in
+the net namespace. So the init_net is replaced by the individual net
+namespace. This is what the 6th commit does. Because rxe device is
+dependent on the net device and the sock listening on udp port 4791,
+every rxe device is in exclusive mode in the individual net namespace.
+Other rdma netns operations will be considerred in the future.
 
-Pointless init. You have the struct zeroed during allocation.
+In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
+functions are added. When a new net namespace is created, the init
+function will initialize the sk4 and sk6 socks. Then the 2 socks will
+be released when the net namespace is destroyed. The functions
+rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
+namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
+handle sk6. Then sk4 and sk6 are used in the previous commits.
 
+As the sk4 and sk6 in pernet namespace can be accessed, it is not
+necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
+replaced with the sk6 in pernet namespace.
 
-> 	err = add_adev(gd);
-> out:
-> 	if (err)
->diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
->index 9eef19972845..5f5affdca1eb 100644
->--- a/include/net/mana/mana.h
->+++ b/include/net/mana/mana.h
->@@ -358,6 +358,8 @@ struct mana_context {
-> 
-> 	u16 num_ports;
-> 
->+	bool vf_unload_timeout;
->+
-> 	struct mana_eq *eqs;
-> 
-> 	struct net_device *ports[MAX_PORTS_IN_MANA_DEV];
->-- 
->2.34.1
->
->
+Test steps:
+1) Suppose that 2 NICs are in 2 different net namespaces.
+
+  # ip netns exec net0 ip link
+  3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
+     link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
+     altname enp5s0
+
+  # ip netns exec net1 ip link
+  4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
+     link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
+
+2) Add rdma link in the different net namespace
+    net0:
+    # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
+
+    net1:
+    # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
+
+3) Run rping test.
+    net0
+    # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
+    [1] 1737
+    # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
+    verbose
+    count 1
+    ...
+    ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+    ...
+
+4) Remove the rdma links from the net namespaces.
+    net0:
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+    UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+    UNCONN    0         0         [::]:4791             [::]:*
+
+    # ip netns exec net0 rdma link del rxe0
+
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+
+    net1:
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+    UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+    UNCONN    0         0         [::]:4791             [::]:*
+
+    # ip netns exec net1 rdma link del rxe1
+
+    # ip netns exec net0 ss -lu
+    State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+
+V5->V6: Fix resource leak problem when rxe_net_init fails. And fix some
+	style problems.
+
+V4->V5: Rebase the commits to V6.4-rc1
+
+V3->V4: Rebase the commits to rdma-next;
+
+V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
+           verify rdma link is removed.
+        2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
+        3) Replace l_sk6 with sk6 of pernet_name_space
+
+V1->V2: Add the explicit initialization of sk6.
+
+Zhu Yanjun (8):
+  RDMA/rxe: Creating listening sock in newlink function
+  RDMA/rxe: Support more rdma links in init_net
+  RDMA/nldev: Add dellink function pointer
+  RDMA/rxe: Implement dellink in rxe
+  RDMA/rxe: Replace global variable with sock lookup functions
+  RDMA/rxe: add the support of net namespace
+  RDMA/rxe: Add the support of net namespace notifier
+  RDMA/rxe: Replace l_sk6 with sk6 in net namespace
+
+ drivers/infiniband/core/nldev.c     |   6 ++
+ drivers/infiniband/sw/rxe/Makefile  |   3 +-
+ drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
+ drivers/infiniband/sw/rxe/rxe_net.c | 119 ++++++++++++++++++------
+ drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
+ drivers/infiniband/sw/rxe/rxe_ns.c  | 134 ++++++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_ns.h  |  17 ++++
+ include/rdma/rdma_netlink.h         |   2 +
+ 8 files changed, 285 insertions(+), 40 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
+
+-- 
+2.27.0
+
