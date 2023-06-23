@@ -2,43 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DF873B11C
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jun 2023 09:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CB573B131
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jun 2023 09:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbjFWHPR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Jun 2023 03:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S229765AbjFWHTn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jun 2023 03:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjFWHPP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Jun 2023 03:15:15 -0400
-Received: from out-9.mta0.migadu.com (out-9.mta0.migadu.com [91.218.175.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAF9212F
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Jun 2023 00:15:13 -0700 (PDT)
-Message-ID: <8e13254c-f8f5-f9ce-14fe-f8fd21c0c6bd@linux.dev>
+        with ESMTP id S230151AbjFWHTm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Jun 2023 03:19:42 -0400
+Received: from out-44.mta0.migadu.com (out-44.mta0.migadu.com [91.218.175.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367761B4
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Jun 2023 00:19:41 -0700 (PDT)
+Message-ID: <46047b13-10fd-7f41-029f-f2eaa6bcfda5@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1687504511;
+        t=1687504777;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TKeMAk+ckAnwN3KfmDSHnsgaQ9kJFrxNyYpqc3wg5CA=;
-        b=epio+Lr4FV6iiwuRwg7g+mxyxpkF+1570YcuwwUpTBx3Ngj26nQp4n3xC+HTgKggnHmsTb
-        rXBb0r4GigYiI1p6CipeoRrIbQL6cyRDXsD4sh220r42VniAFMXOYQPwzCLfNpoHCn6sUU
-        z2V68lihQLH6xPg8qEGvYmA6oSPEH9A=
-Date:   Fri, 23 Jun 2023 15:15:04 +0800
+        bh=8za61mgtXZq1Utliu6iHSxh4YU47UcDw4VDskJjKR9k=;
+        b=j//iybKOvsUGvMWbXzZ15HV0EL6Z+IfEyohV1pEiVB8Vx/Y748UQZPvjB9W/5MRNFUeXA4
+        i5L0biwwpfmYQ1+KG7p9zpM2G4qwiOyWsC6yJar+jzG9ZW0nDFfeuGAsU45awqSjEck4xU
+        ZudvrmloNPi1SACD5kOXmTapr+H9KyM=
+Date:   Fri, 23 Jun 2023 15:19:30 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH v6.4-rc1 v5 0/8] Fix the problem that rxe can not work in
- net namespace
+Subject: Re: [PATCHv5 for-rc1 v5 4/8] RDMA/rxe: Implement dellink in rxe
 To:     Bob Pearson <rpearsonhpe@gmail.com>,
         Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com,
         jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
         parav@nvidia.com, lehrer@gmail.com
-References: <20230508075636.352138-1-yanjun.zhu@intel.com>
- <4f097d4a-85f5-392f-53bb-85ca0d75e16f@gmail.com>
- <fbba95ad-a0f7-435e-c152-d6094b70bb1f@gmail.com>
+Cc:     Rain River <rain.1986.08.12@gmail.com>
+References: <20230428093914.2121131-1-yanjun.zhu@intel.com>
+ <20230428093914.2121131-5-yanjun.zhu@intel.com>
+ <28959f27-46a2-6b51-e0cc-f80546d0f27f@gmail.com>
+ <f1464e30-9e35-638a-d042-7a06a59b8405@linux.dev>
+ <fbdae0e8-87f1-c28b-f3ac-fe2b0d26ae41@gmail.com>
+ <da338b50-12fb-2836-06cb-e6579652cc58@linux.dev>
+ <a3121337-9fa9-a159-b93d-fd3b375f5cb0@gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <fbba95ad-a0f7-435e-c152-d6094b70bb1f@gmail.com>
+In-Reply-To: <a3121337-9fa9-a159-b93d-fd3b375f5cb0@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -52,234 +56,165 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-在 2023/6/22 5:27, Bob Pearson 写道:
-> On 6/21/23 16:09, Bob Pearson wrote:
->> On 5/8/23 02:56, Zhu Yanjun wrote:
->>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>
->>> When run "ip link add" command to add a rxe rdma link in a net
->>> namespace, normally this rxe rdma link can not work in a net
->>> name space.
->>>
->>> The root cause is that a sock listening on udp port 4791 is created
->>> in init_net when the rdma_rxe module is loaded into kernel. That is,
->>> the sock listening on udp port 4791 is created in init_net. Other net
->>> namespace is difficult to use this sock.
->>>
->>> The following commits will solve this problem.
->>>
->>> In the first commit, move the creating sock listening on udp port 4791
->>> from module_init function to rdma link creating functions. That is,
->>> after the module rdma_rxe is loaded, the sock will not be created.
->>> When run "rdma link add ..." command, the sock will be created. So
->>> when creating a rdma link in the net namespace, the sock will be
->>> created in this net namespace.
->>>
->>> In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
->>> will check the sock exists in the net namespace or not. If yes, rdma
->>> link will increase the reference count of this sock, then continue other
->>> jobs instead of creating a new sock to listen on udp port 4791. Since the
->>> network notifier is global, when the module rdma_rxe is loaded, this
->>> notifier will be registered.
->>>
->>> After the rdma link is created, the command "rdma link del" is to
->>> delete rdma link at the same time the sock is checked. If the reference
->>> count of this sock is greater than the sock reference count needed by
->>> udp tunnel, the sock reference count is decreased by one. If equal, it
->>> indicates that this rdma link is the last one. As such, the udp tunnel
->>> is shut down and the sock is closed. The above work should be
->>> implemented in linkdel function. But currently no dellink function in
->>> rxe. So the 3rd commit addes dellink function pointer. And the 4th
->>> commit implements the dellink function in rxe.
->>>
->>> To now, it is not necessary to keep a global variable to store the sock
->>> listening udp port 4791. This global variable can be replaced by the
->>> functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
->>> function udp6_lib_lookup is in the fast path, a member variable l_sk6
->>> is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
->>> to lookup the sock, then the sock is stored in l_sk6, in the future,it
->>> can be used directly.
->>>
->>> All the above work has been done in init_net. And it can also work in
->>> the net namespace. So the init_net is replaced by the individual net
->>> namespace. This is what the 6th commit does. Because rxe device is
->>> dependent on the net device and the sock listening on udp port 4791,
->>> every rxe device is in exclusive mode in the individual net namespace.
->>> Other rdma netns operations will be considerred in the future.
->>>
->>> In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
->>> functions are added. When a new net namespace is created, the init
->>> function will initialize the sk4 and sk6 socks. Then the 2 socks will
->>> be released when the net namespace is destroyed. The functions
->>> rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
->>> namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
->>> handle sk6. Then sk4 and sk6 are used in the previous commits.
->>>
->>> As the sk4 and sk6 in pernet namespace can be accessed, it is not
->>> necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
->>> replaced with the sk6 in pernet namespace.
->>>
->>> Test steps:
->>> 1) Suppose that 2 NICs are in 2 different net namespaces.
->>>
->>>    # ip netns exec net0 ip link
->>>    3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
->>>       link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
->>>       altname enp5s0
->>>
->>>    # ip netns exec net1 ip link
->>>    4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
->>>       link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
->>>
->>> 2) Add rdma link in the different net namespace
->>>      net0:
->>>      # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
->>>
->>>      net1:
->>>      # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
->>>
->>> 3) Run rping test.
->>>      net0
->>>      # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
->>>      [1] 1737
->>>      # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
->>>      verbose
->>>      count 1
->>>      ...
->>>      ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
->>>      ...
->>>
->>> 4) Remove the rdma links from the net namespaces.
->>>      net0:
->>>      # ip netns exec net0 ss -lu
->>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->>>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
->>>      UNCONN    0         0         [::]:4791             [::]:*
->>>
->>>      # ip netns exec net0 rdma link del rxe0
->>>
->>>      # ip netns exec net0 ss -lu
->>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->>>
->>>      net1:
->>>      # ip netns exec net0 ss -lu
->>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->>>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
->>>      UNCONN    0         0         [::]:4791             [::]:*
->>>
->>>      # ip netns exec net1 rdma link del rxe1
->>>
->>>      # ip netns exec net0 ss -lu
->>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
->>>
->>> V4->V5: Rebase the commits to V6.4-rc1
->>>
->>> V3->V4: Rebase the commits to rdma-next;
->>>
->>> V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
->>>             verify rdma link is removed.
->>>          2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
->>>          3) Replace l_sk6 with sk6 of pernet_name_space
->>>
->>> V1->V2: Add the explicit initialization of sk6.
->>>
->>> Zhu Yanjun (8):
->>>    RDMA/rxe: Creating listening sock in newlink function
->>>    RDMA/rxe: Support more rdma links in init_net
->>>    RDMA/nldev: Add dellink function pointer
->>>    RDMA/rxe: Implement dellink in rxe
->>>    RDMA/rxe: Replace global variable with sock lookup functions
->>>    RDMA/rxe: add the support of net namespace
->>>    RDMA/rxe: Add the support of net namespace notifier
->>>    RDMA/rxe: Replace l_sk6 with sk6 in net namespace
->>>
->>>   drivers/infiniband/core/nldev.c     |   6 ++
->>>   drivers/infiniband/sw/rxe/Makefile  |   3 +-
->>>   drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
->>>   drivers/infiniband/sw/rxe/rxe_net.c | 113 +++++++++++++++++------
->>>   drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
->>>   drivers/infiniband/sw/rxe/rxe_ns.c  | 134 ++++++++++++++++++++++++++++ip netns add test
->>>   drivers/infiniband/sw/rxe/rxe_ns.h  |  17 ++++
->>>   include/rdma/rdma_netlink.h         |   2 +
->>>   8 files changed, 279 insertions(+), 40 deletions(-)
->>>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
->>>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.hip netns add test
->>>
->> Zhu,
+在 2023/6/22 0:24, Bob Pearson 写道:
+> On 6/21/23 01:17, Zhu Yanjun wrote:
 >>
->> I did some simple experiments on netns functionality.
+>> 在 2023/6/21 11:23, Bob Pearson 写道:
+>>> On 6/20/23 21:13, Zhu Yanjun wrote:
+>>>> 在 2023/6/21 4:21, Bob Pearson 写道:
+>>>>> On 4/28/23 04:39, Zhu Yanjun wrote:
+>>>>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>>>>
+>>>>>> When running "rdma link del" command, dellink function will be called.
+>>>>>> If the sock refcnt is greater than the refcnt needed for udp tunnel,
+>>>>>> the sock refcnt will be decreased by 1.
+>>>>>>
+>>>>>> If equal, the last rdma link is removed. The udp tunnel will be
+>>>>>> destroyed.
+>>>>>>
+>>>>>> Tested-by: Rain River <rain.1986.08.12@gmail.com>
+>>>>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>>>> ---
+>>>>>>     drivers/infiniband/sw/rxe/rxe.c     | 12 +++++++++++-
+>>>>>>     drivers/infiniband/sw/rxe/rxe_net.c | 17 +++++++++++++++--
+>>>>>>     drivers/infiniband/sw/rxe/rxe_net.h |  1 +
+>>>>>>     3 files changed, 27 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+>>>>>> index 0ce6adb43cfc..ebfabc6d6b76 100644
+>>>>>> --- a/drivers/infiniband/sw/rxe/rxe.c
+>>>>>> +++ b/drivers/infiniband/sw/rxe/rxe.c
+>>>>>> @@ -166,10 +166,12 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
+>>>>>>     /* called by ifc layer to create new rxe device.
+>>>>>>      * The caller should allocate memory for rxe by calling ib_alloc_device.
+>>>>>>      */
+>>>>>> +static struct rdma_link_ops rxe_link_ops;
+>>>>>>     int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name)
+>>>>>>     {
+>>>>>>         rxe_init(rxe);
+>>>>>>         rxe_set_mtu(rxe, mtu);
+>>>>>> +    rxe->ib_dev.link_ops = &rxe_link_ops;
+>>>>>>           return rxe_register_device(rxe, ibdev_name);
+>>>>>>     }
+>>>>>> @@ -206,9 +208,17 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+>>>>>>         return err;
+>>>>>>     }
+>>>>>>     -struct rdma_link_ops rxe_link_ops = {
+>>>>>> +static int rxe_dellink(struct ib_device *dev)
+>>>>>> +{
+>>>>>> +    rxe_net_del(dev);
+>>>>>> +
+>>>>>> +    return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static struct rdma_link_ops rxe_link_ops = {
+>>>>>>         .type = "rxe",
+>>>>>>         .newlink = rxe_newlink,
+>>>>>> +    .dellink = rxe_dellink,
+>>>>>>     };
+>>>>>>       static int __init rxe_module_init(void)
+>>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+>>>>>> index 3ca92e062800..4cc7de7b115b 100644
+>>>>>> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+>>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+>>>>>> @@ -530,6 +530,21 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
+>>>>>>         return 0;
+>>>>>>     }
+>>>>>>     +#define SK_REF_FOR_TUNNEL    2
+>>>>>> +void rxe_net_del(struct ib_device *dev)
+>>>>>> +{
+>>>>>> +    if (refcount_read(&recv_sockets.sk6->sk->sk_refcnt) > SK_REF_FOR_TUNNEL)
+>>>>>> +        __sock_put(recv_sockets.sk6->sk);
+>>>>>> +    else
+>>>>>> +        rxe_release_udp_tunnel(recv_sockets.sk6);
+>>>>>> +
+>>>>>> +    if (refcount_read(&recv_sockets.sk4->sk->sk_refcnt) > SK_REF_FOR_TUNNEL)
+>>>>>> +        __sock_put(recv_sockets.sk4->sk);
+>>>>>> +    else
+>>>>>> +        rxe_release_udp_tunnel(recv_sockets.sk4);
+>>>>>> +}
+>>>>>> +#undef SK_REF_FOR_TUNNEL
+>>>>>> +
+>>>>>>     static void rxe_port_event(struct rxe_dev *rxe,
+>>>>>>                    enum ib_event_type event)
+>>>>>>     {
+>>>>>> @@ -689,8 +704,6 @@ int rxe_register_notifier(void)
+>>>>>>       void rxe_net_exit(void)
+>>>>>>     {
+>>>>>> -    rxe_release_udp_tunnel(recv_sockets.sk6);
+>>>>>> -    rxe_release_udp_tunnel(recv_sockets.sk4);
+>>>>>>         unregister_netdevice_notifier(&rxe_net_notifier);
+>>>>>>     }
+>>>>> These calls are moved to rxe_net_del which is called by an explicit unlink command.
+>>>>> But if rxe_net_init fails and returns an error code this will never happen.
+>>>>> This will result in leaking resources.
+>>>> Thanks a lot. Bob.
+>>>>
+>>>> Sure, if ipv6 tunnel fails to be created, the resource related with ipv4 should be released.
+>>>>
+>>>> I will fix it in the latest version.
+>>>>
+>>>> Zhu Yanjun
+>>> I haven't had a chance to test netns yet. I am sure it works but I will test it.
+>> Yes. Please. It is an interesting feature.
+>>> The only other thing I noticed are some stylistic differences with the rest of
+>>> the rxe driver. You use
+>>>
+>>> struct rxe_dev *rdev;
+>>>
+>>> elsewhere it is
+>>>
+>>> struct rxe_dev *rxe;
+>>>
+>>> Yours is more like the mlx drivers where they use dev for ib_device and mdev for mlx_device.
+>>> rxe tries to use ibdev ibqp, ibmr, etc for the ib objects and no prefix for the driver
+>>> specific ones. It's less typing that way.
 >>
->> With your patch set applied and rxe0 created on enp6s0 and rxe1 created on lo in the default namespace
 >>
->> 	# sudo ip netns add test
->> 	# ip netns
->> 	test
->> 	# sudo ip netns exec test ip link
->> 	1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->> 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
->> 	# sudo ip netns exec test ip link set dev lo up
->> 	# sudo ip netns exec test ip link
->> 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
->> 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
->> 	# sudo ip netns exec test ip addr add dev lo fe80::0200:00ff:fe00:0000/64
->> 		[rxe doesn't work unless this IPV6 address is set]
->> 	# sudo ip netns exec test ip addr
->> 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
->> 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
->> 	    inet 127.0.0.1/8 scope host lo
->> 	       valid_lft forever preferred_lft forever
->> 	    inet6 fe80::200:ff:fe00:0/64 scope link
->> 	       valid_lft forever preferred_lft forever
->> 	    inet6 ::1/128 scope host
->> 	       valid_lft forever preferred_lft forever
->> 	# sudo ip netns exec test ls /sys/class/infiniband
->> 	rxe0  rxe1
->> 		[These show up even though the ndevs do *not* belong to the test namespace! Probably OK.]
->> 	# sudo ip netns exec test rdma link add rxe2 type rxe netdev lo
->> 	# ls /sys/class/infiniband
->> 	rxe0  rxe1  rxe2
->> 		[The new rxe device shows up in the default namespace. At least we're consistent.]
->> 	# ib_send_bw -d rxe0 ... 192.168.0.27
->> 		[Works. Didn't break the existing rxe devices. Expected]
->> 	# ib_send_bw -d rxe1 ... 127.0.0.1
->> 		[Works. Expected]
->> 	# ib_send_bw -d rxe2 ... 127.0.0.1
->> 	IB device rxe2 not found
->>   	 Unable to find the Infiniband/RoCE device
->> 		[Not work. Expected.]
->> 	# sudo ip netns exec test ib_send_bw -d rxe2 ... 127.0.0.1
->> 	IB device rxe2 not found
->> 	 Unable to find the Infiniband/RoCE device
->> 		[Also not work. Turns out rxe2 device is gone after failure. Not expected.]
->> 	# sudo ip netns exec test rdma link add rxe2 type rxe netdev lo
->> 	# ls /sys/class/infiniband
->> 	rxe0  rxe1  rxe2
->> 		[Good. It's back]
->> 	# sudo ip netns exec test ib_send_bw -d rxe2 ... 127.0.0.1
->> 		[Works in test namespace! Expected.]
->> 	# sudo ip netns exec test ib_send_bw -d rxe1 ... 127.0.0.1
->> 		[Also works. Definitely not expected.]
+>> Got you. I think we should use rxe instead of rdev. I will fix it in the latest commits.
 >>
->> My take, it sort of works. But there are some serious issues. You shouldn't be able to use the
->> rxe2 device in the default namespace. It would be nice if you couldn't see the rxe devices in each
->> other's namespaces (Like ip link or ip addr hide other namespace's devices.)
 >>
->> Bob
-> Forgot to mention. It also is definitely not good that a process in the default namespace can destroy
-> a rxe device in the test namespace by trying to use it.
+>>>
+>>> With a couple of exceptions all the printk's are now in the form
+>>>
+>>> rxe_[type]_[obj](obj, "message", ...) or rxe_[type] if there isn't an obj to refer to.
+>>>
+>>> where type = info, err, warn, or dbg and obj = rxe, ah, pd, qp, cq, etc. These are basically
+>>> adapted from the siw driver.
+>>
+>> If I can get you correctly, you mean that we should use rxe_dbg_qp, .... to replace pr_err ....
+>>
+>> I have questions:
+>>
+>> 1). What benefit will this bring?
+>>
+>> 2). If the log is in module __init or  module __exit functions, we should use pr_xxx? Because obj does not exist in these __init and __exit functions.
+> I think that is the way the driver is now. Go ahead.
 
-Thanks a lot.
-
-I am not sure if it is correct or not to destroy a rxe device outside 
-this this net namespace.
-
-Because to irdma/mlx5 rdma devices, we can also destroy them with the 
-command "modprobe -v irdma/mlx5..." outside of the net namespace.
-
-I am not sure if this is correct or not.
+OK. The latest commits will be sent out very soon.
 
 Zhu Yanjun
 
->
-> Bob
+>>
+>> Best Regards,
+>>
+>> Zhu Yanjun
+>>
+>>>
+>>> Regards,
+>>>
+>>> Bob
+>>>
+>>>>> Bob
+>>>>>>     diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
+>>>>>> index a222c3eeae12..f48f22f3353b 100644
+>>>>>> --- a/drivers/infiniband/sw/rxe/rxe_net.h
+>>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_net.h
+>>>>>> @@ -17,6 +17,7 @@ struct rxe_recv_sockets {
+>>>>>>     };
+>>>>>>       int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
+>>>>>> +void rxe_net_del(struct ib_device *dev);
+>>>>>>       int rxe_register_notifier(void);
+>>>>>>     int rxe_net_init(void);
+> 
+
