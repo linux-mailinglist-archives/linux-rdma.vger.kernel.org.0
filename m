@@ -2,219 +2,216 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CB573B131
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jun 2023 09:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C748F73B1AA
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jun 2023 09:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbjFWHTn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Jun 2023 03:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
+        id S230151AbjFWH35 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jun 2023 03:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjFWHTm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Jun 2023 03:19:42 -0400
-Received: from out-44.mta0.migadu.com (out-44.mta0.migadu.com [91.218.175.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367761B4
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Jun 2023 00:19:41 -0700 (PDT)
-Message-ID: <46047b13-10fd-7f41-029f-f2eaa6bcfda5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1687504777;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8za61mgtXZq1Utliu6iHSxh4YU47UcDw4VDskJjKR9k=;
-        b=j//iybKOvsUGvMWbXzZ15HV0EL6Z+IfEyohV1pEiVB8Vx/Y748UQZPvjB9W/5MRNFUeXA4
-        i5L0biwwpfmYQ1+KG7p9zpM2G4qwiOyWsC6yJar+jzG9ZW0nDFfeuGAsU45awqSjEck4xU
-        ZudvrmloNPi1SACD5kOXmTapr+H9KyM=
-Date:   Fri, 23 Jun 2023 15:19:30 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCHv5 for-rc1 v5 4/8] RDMA/rxe: Implement dellink in rxe
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com,
-        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
-        parav@nvidia.com, lehrer@gmail.com
-Cc:     Rain River <rain.1986.08.12@gmail.com>
-References: <20230428093914.2121131-1-yanjun.zhu@intel.com>
- <20230428093914.2121131-5-yanjun.zhu@intel.com>
- <28959f27-46a2-6b51-e0cc-f80546d0f27f@gmail.com>
- <f1464e30-9e35-638a-d042-7a06a59b8405@linux.dev>
- <fbdae0e8-87f1-c28b-f3ac-fe2b0d26ae41@gmail.com>
- <da338b50-12fb-2836-06cb-e6579652cc58@linux.dev>
- <a3121337-9fa9-a159-b93d-fd3b375f5cb0@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <a3121337-9fa9-a159-b93d-fd3b375f5cb0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S231308AbjFWH3x (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Jun 2023 03:29:53 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6734F269E;
+        Fri, 23 Jun 2023 00:29:30 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id DAE5821C252A; Fri, 23 Jun 2023 00:29:29 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DAE5821C252A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1687505369;
+        bh=WxxAPKNGl0H+WTQ0UDLQ32a7/6XvpGgl1O/Ni4g9HfY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Eap/hEPhjwd5yosGaSuaJOIxVroA3M7faq1C9kS+rybdNoQP4FlLYAfS5x9fkrnL+
+         u5GtbHklLVumy8lRUXL4QKATNzsNWRCg83h9p17A12l3eoh4n3n2e2D8cHZB+kdzEv
+         tOWXns2Xy1e8Kei4Z2AMsV6Y5cCgaBS4Wgmk1xJQ=
+From:   souradeep chakrabarti <schakrabarti@linux.microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     stable@vger.kernel.org, schakrabarti@microsoft.com,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: [PATCH V2 net] net: mana: Fix MANA VF unload when host is unresponsive
+Date:   Fri, 23 Jun 2023 00:29:15 -0700
+Message-Id: <1687505355-29212-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/6/22 0:24, Bob Pearson 写道:
-> On 6/21/23 01:17, Zhu Yanjun wrote:
->>
->> 在 2023/6/21 11:23, Bob Pearson 写道:
->>> On 6/20/23 21:13, Zhu Yanjun wrote:
->>>> 在 2023/6/21 4:21, Bob Pearson 写道:
->>>>> On 4/28/23 04:39, Zhu Yanjun wrote:
->>>>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>>>>
->>>>>> When running "rdma link del" command, dellink function will be called.
->>>>>> If the sock refcnt is greater than the refcnt needed for udp tunnel,
->>>>>> the sock refcnt will be decreased by 1.
->>>>>>
->>>>>> If equal, the last rdma link is removed. The udp tunnel will be
->>>>>> destroyed.
->>>>>>
->>>>>> Tested-by: Rain River <rain.1986.08.12@gmail.com>
->>>>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>>>> ---
->>>>>>     drivers/infiniband/sw/rxe/rxe.c     | 12 +++++++++++-
->>>>>>     drivers/infiniband/sw/rxe/rxe_net.c | 17 +++++++++++++++--
->>>>>>     drivers/infiniband/sw/rxe/rxe_net.h |  1 +
->>>>>>     3 files changed, 27 insertions(+), 3 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
->>>>>> index 0ce6adb43cfc..ebfabc6d6b76 100644
->>>>>> --- a/drivers/infiniband/sw/rxe/rxe.c
->>>>>> +++ b/drivers/infiniband/sw/rxe/rxe.c
->>>>>> @@ -166,10 +166,12 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
->>>>>>     /* called by ifc layer to create new rxe device.
->>>>>>      * The caller should allocate memory for rxe by calling ib_alloc_device.
->>>>>>      */
->>>>>> +static struct rdma_link_ops rxe_link_ops;
->>>>>>     int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name)
->>>>>>     {
->>>>>>         rxe_init(rxe);
->>>>>>         rxe_set_mtu(rxe, mtu);
->>>>>> +    rxe->ib_dev.link_ops = &rxe_link_ops;
->>>>>>           return rxe_register_device(rxe, ibdev_name);
->>>>>>     }
->>>>>> @@ -206,9 +208,17 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
->>>>>>         return err;
->>>>>>     }
->>>>>>     -struct rdma_link_ops rxe_link_ops = {
->>>>>> +static int rxe_dellink(struct ib_device *dev)
->>>>>> +{
->>>>>> +    rxe_net_del(dev);
->>>>>> +
->>>>>> +    return 0;
->>>>>> +}
->>>>>> +
->>>>>> +static struct rdma_link_ops rxe_link_ops = {
->>>>>>         .type = "rxe",
->>>>>>         .newlink = rxe_newlink,
->>>>>> +    .dellink = rxe_dellink,
->>>>>>     };
->>>>>>       static int __init rxe_module_init(void)
->>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
->>>>>> index 3ca92e062800..4cc7de7b115b 100644
->>>>>> --- a/drivers/infiniband/sw/rxe/rxe_net.c
->>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
->>>>>> @@ -530,6 +530,21 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
->>>>>>         return 0;
->>>>>>     }
->>>>>>     +#define SK_REF_FOR_TUNNEL    2
->>>>>> +void rxe_net_del(struct ib_device *dev)
->>>>>> +{
->>>>>> +    if (refcount_read(&recv_sockets.sk6->sk->sk_refcnt) > SK_REF_FOR_TUNNEL)
->>>>>> +        __sock_put(recv_sockets.sk6->sk);
->>>>>> +    else
->>>>>> +        rxe_release_udp_tunnel(recv_sockets.sk6);
->>>>>> +
->>>>>> +    if (refcount_read(&recv_sockets.sk4->sk->sk_refcnt) > SK_REF_FOR_TUNNEL)
->>>>>> +        __sock_put(recv_sockets.sk4->sk);
->>>>>> +    else
->>>>>> +        rxe_release_udp_tunnel(recv_sockets.sk4);
->>>>>> +}
->>>>>> +#undef SK_REF_FOR_TUNNEL
->>>>>> +
->>>>>>     static void rxe_port_event(struct rxe_dev *rxe,
->>>>>>                    enum ib_event_type event)
->>>>>>     {
->>>>>> @@ -689,8 +704,6 @@ int rxe_register_notifier(void)
->>>>>>       void rxe_net_exit(void)
->>>>>>     {
->>>>>> -    rxe_release_udp_tunnel(recv_sockets.sk6);
->>>>>> -    rxe_release_udp_tunnel(recv_sockets.sk4);
->>>>>>         unregister_netdevice_notifier(&rxe_net_notifier);
->>>>>>     }
->>>>> These calls are moved to rxe_net_del which is called by an explicit unlink command.
->>>>> But if rxe_net_init fails and returns an error code this will never happen.
->>>>> This will result in leaking resources.
->>>> Thanks a lot. Bob.
->>>>
->>>> Sure, if ipv6 tunnel fails to be created, the resource related with ipv4 should be released.
->>>>
->>>> I will fix it in the latest version.
->>>>
->>>> Zhu Yanjun
->>> I haven't had a chance to test netns yet. I am sure it works but I will test it.
->> Yes. Please. It is an interesting feature.
->>> The only other thing I noticed are some stylistic differences with the rest of
->>> the rxe driver. You use
->>>
->>> struct rxe_dev *rdev;
->>>
->>> elsewhere it is
->>>
->>> struct rxe_dev *rxe;
->>>
->>> Yours is more like the mlx drivers where they use dev for ib_device and mdev for mlx_device.
->>> rxe tries to use ibdev ibqp, ibmr, etc for the ib objects and no prefix for the driver
->>> specific ones. It's less typing that way.
->>
->>
->> Got you. I think we should use rxe instead of rdev. I will fix it in the latest commits.
->>
->>
->>>
->>> With a couple of exceptions all the printk's are now in the form
->>>
->>> rxe_[type]_[obj](obj, "message", ...) or rxe_[type] if there isn't an obj to refer to.
->>>
->>> where type = info, err, warn, or dbg and obj = rxe, ah, pd, qp, cq, etc. These are basically
->>> adapted from the siw driver.
->>
->> If I can get you correctly, you mean that we should use rxe_dbg_qp, .... to replace pr_err ....
->>
->> I have questions:
->>
->> 1). What benefit will this bring?
->>
->> 2). If the log is in module __init or  module __exit functions, we should use pr_xxx? Because obj does not exist in these __init and __exit functions.
-> I think that is the way the driver is now. Go ahead.
+From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 
-OK. The latest commits will be sent out very soon.
+This patch addresses  the VF unload issue, where mana_dealloc_queues()
+gets stuck in infinite while loop, because of host unresponsiveness.
+It adds a timeout in the while loop, to fix it.
 
-Zhu Yanjun
+Also this patch adds a new attribute in mana_context, which gets set when
+mana_hwc_send_request() hits a timeout because of host unresponsiveness.
+This flag then helps to avoid the timeouts in successive calls.
 
->>
->> Best Regards,
->>
->> Zhu Yanjun
->>
->>>
->>> Regards,
->>>
->>> Bob
->>>
->>>>> Bob
->>>>>>     diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
->>>>>> index a222c3eeae12..f48f22f3353b 100644
->>>>>> --- a/drivers/infiniband/sw/rxe/rxe_net.h
->>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_net.h
->>>>>> @@ -17,6 +17,7 @@ struct rxe_recv_sockets {
->>>>>>     };
->>>>>>       int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
->>>>>> +void rxe_net_del(struct ib_device *dev);
->>>>>>       int rxe_register_notifier(void);
->>>>>>     int rxe_net_init(void);
-> 
+Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+---
+V1 -> V2:
+* Added net branch
+* Removed the typecasting to (struct mana_context*) of void pointer
+* Repositioned timeout variable in mana_dealloc_queues()
+* Repositioned vf_unload_timeout in mana_context struct, to utilise the
+  6 bytes hole
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   |  4 +++-
+ .../net/ethernet/microsoft/mana/hw_channel.c  | 12 ++++++++++-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 21 +++++++++++++++++--
+ include/net/mana/mana.h                       |  2 ++
+ 4 files changed, 35 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 8f3f78b68592..6411f01be0d9 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -946,10 +946,12 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
+ 	struct gdma_context *gc = gd->gdma_context;
+ 	struct gdma_general_resp resp = {};
+ 	struct gdma_general_req req = {};
++	struct mana_context *ac;
+ 	int err;
+ 
+ 	if (gd->pdid == INVALID_PDID)
+ 		return -EINVAL;
++	ac = gd->driver_data;
+ 
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_DEREGISTER_DEVICE, sizeof(req),
+ 			     sizeof(resp));
+@@ -957,7 +959,7 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
+ 	req.hdr.dev_id = gd->dev_id;
+ 
+ 	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+-	if (err || resp.hdr.status) {
++	if ((err || resp.hdr.status) && !ac->vf_unload_timeout) {
+ 		dev_err(gc->dev, "Failed to deregister device: %d, 0x%x\n",
+ 			err, resp.hdr.status);
+ 		if (!err)
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 9d1507eba5b9..492cb2c6e2cb 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -1,8 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /* Copyright (c) 2021, Microsoft Corporation. */
+ 
++#include "asm-generic/errno.h"
+ #include <net/mana/gdma.h>
+ #include <net/mana/hw_channel.h>
++#include <net/mana/mana.h>
+ 
+ static int mana_hwc_get_msg_index(struct hw_channel_context *hwc, u16 *msg_id)
+ {
+@@ -786,12 +788,19 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 	struct hwc_wq *txq = hwc->txq;
+ 	struct gdma_req_hdr *req_msg;
+ 	struct hwc_caller_ctx *ctx;
++	struct mana_context *ac;
+ 	u32 dest_vrcq = 0;
+ 	u32 dest_vrq = 0;
+ 	u16 msg_id;
+ 	int err;
+ 
+ 	mana_hwc_get_msg_index(hwc, &msg_id);
++	ac = hwc->gdma_dev->driver_data;
++	if (ac->vf_unload_timeout) {
++		dev_err(hwc->dev, "HWC: vport is already unloaded.\n");
++		err = -ETIMEDOUT;
++		goto out;
++	}
+ 
+ 	tx_wr = &txq->msg_buf->reqs[msg_id];
+ 
+@@ -825,9 +834,10 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 		goto out;
+ 	}
+ 
+-	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
++	if (!wait_for_completion_timeout(&ctx->comp_event, 5 * HZ)) {
+ 		dev_err(hwc->dev, "HWC: Request timed out!\n");
+ 		err = -ETIMEDOUT;
++		ac->vf_unload_timeout = true;
+ 		goto out;
+ 	}
+ 
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index d907727c7b7a..cb2080b3a00c 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -2329,7 +2329,10 @@ static int mana_dealloc_queues(struct net_device *ndev)
+ {
+ 	struct mana_port_context *apc = netdev_priv(ndev);
+ 	struct gdma_dev *gd = apc->ac->gdma_dev;
++	unsigned long timeout;
+ 	struct mana_txq *txq;
++	struct sk_buff *skb;
++	struct mana_cq *cq;
+ 	int i, err;
+ 
+ 	if (apc->port_is_up)
+@@ -2348,13 +2351,26 @@ static int mana_dealloc_queues(struct net_device *ndev)
+ 	 *
+ 	 * Drain all the in-flight TX packets
+ 	 */
++
++	timeout = jiffies + 120 * HZ;
+ 	for (i = 0; i < apc->num_queues; i++) {
+ 		txq = &apc->tx_qp[i].txq;
+-
+-		while (atomic_read(&txq->pending_sends) > 0)
++		while (atomic_read(&txq->pending_sends) > 0 &&
++		       time_before(jiffies, timeout)) {
+ 			usleep_range(1000, 2000);
++		}
+ 	}
+ 
++	for (i = 0; i < apc->num_queues; i++) {
++		txq = &apc->tx_qp[i].txq;
++		cq = &apc->tx_qp[i].tx_cq;
++		while (atomic_read(&txq->pending_sends)) {
++			skb = skb_dequeue(&txq->pending_skbs);
++			mana_unmap_skb(skb, apc);
++			napi_consume_skb(skb, cq->budget);
++			atomic_sub(1, &txq->pending_sends);
++		}
++	}
+ 	/* We're 100% sure the queues can no longer be woken up, because
+ 	 * we're sure now mana_poll_tx_cq() can't be running.
+ 	 */
+@@ -2605,6 +2621,7 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
+ 		}
+ 	}
+ 
++	ac->vf_unload_timeout = false;
+ 	err = add_adev(gd);
+ out:
+ 	if (err)
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 9eef19972845..5f5affdca1eb 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -358,6 +358,8 @@ struct mana_context {
+ 
+ 	u16 num_ports;
+ 
++	bool vf_unload_timeout;
++
+ 	struct mana_eq *eqs;
+ 
+ 	struct net_device *ports[MAX_PORTS_IN_MANA_DEV];
+-- 
+2.34.1
 
