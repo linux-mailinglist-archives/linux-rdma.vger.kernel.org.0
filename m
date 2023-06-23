@@ -2,75 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFF873C48E
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jun 2023 00:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E00973C4D3
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Jun 2023 01:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbjFWW6X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Jun 2023 18:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38592 "EHLO
+        id S231129AbjFWXj0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jun 2023 19:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbjFWW5v (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Jun 2023 18:57:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BC42970
-        for <linux-rdma@vger.kernel.org>; Fri, 23 Jun 2023 15:56:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1687560970;
+        with ESMTP id S230010AbjFWXj0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 23 Jun 2023 19:39:26 -0400
+Received: from out-7.mta0.migadu.com (out-7.mta0.migadu.com [91.218.175.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0526A2699
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Jun 2023 16:39:23 -0700 (PDT)
+Message-ID: <5c8ac2e7-f7cb-4404-7fec-8a7fcaa906fc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1687563562;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xQVg0pnXVfTxPUpA8yd29SmocczyZN6S+xS0BIA8ljI=;
-        b=fk1hFjmzIHFSsF+WttlzEJjCZClsKT5LxwNe0kitW1sYzNsi/WczhvT/0OelRFVa2wuhoF
-        xik8a8I0KNtMVeNAiFCov6NFsVdO8Ud87W2E4ARxUOdklkM/uFc2zvzIYzmFgjhHko7tEC
-        cAHeqeQ7xa73gVLXEBaBlq+td0fdKjQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-392-ui08z6zkOsOzsb7oEUVtzw-1; Fri, 23 Jun 2023 18:56:05 -0400
-X-MC-Unique: ui08z6zkOsOzsb7oEUVtzw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2C7B7185A78B;
-        Fri, 23 Jun 2023 22:56:04 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 240AF492C13;
-        Fri, 23 Jun 2023 22:56:01 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-x25@vger.kernel.org,
-        mptcp@lists.linux.dev, rds-devel@oss.oracle.com,
-        tipc-discussion@lists.sourceforge.net,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH net-next v5 16/16] net: Kill MSG_SENDPAGE_NOTLAST
-Date:   Fri, 23 Jun 2023 23:55:13 +0100
-Message-ID: <20230623225513.2732256-17-dhowells@redhat.com>
-In-Reply-To: <20230623225513.2732256-1-dhowells@redhat.com>
-References: <20230623225513.2732256-1-dhowells@redhat.com>
+        bh=BrFtbKr+zUaty6hP1VFyuKrdjaW7pEaVraraRL1co3w=;
+        b=jIroLkVjxu5rl7MiHqvDNbeuT4WDUTKJgS24fAiBnp/NvX8xdVM27bd8rWDno4EJcNwRkY
+        9crDucd6CAzn3jMnGPNd8TARkUkh8+QQQPPI+RQTELk+JgsYwvnlEmNBygJkEHMPHd/VDt
+        3oD4Csr99msCVoPKV5jOmhhg/a8nNto=
+Date:   Sat, 24 Jun 2023 07:39:16 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v6 0/8] Fix the problem that rxe can not work in net
+ namespace
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
+        parav@nvidia.com, lehrer@gmail.com
+References: <20230623095749.485873-1-yanjun.zhu@intel.com>
+ <349b54b1-e002-3c55-3334-50873d401579@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <349b54b1-e002-3c55-3334-50873d401579@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,145 +51,173 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Now that ->sendpage() has been removed, MSG_SENDPAGE_NOTLAST can be cleaned
-up.  Things were converted to use MSG_MORE instead, but the protocol
-sendpage stubs still convert MSG_SENDPAGE_NOTLAST to MSG_MORE, which is now
-unnecessary.
+在 2023/6/23 21:00, Bob Pearson 写道:
+> On 6/23/23 04:57, Zhu Yanjun wrote:
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> When run "ip link add" command to add a rxe rdma link in a net
+>> namespace, normally this rxe rdma link can not work in a net
+>> name space.
+>>
+>> The root cause is that a sock listening on udp port 4791 is created
+>> in init_net when the rdma_rxe module is loaded into kernel. That is,
+>> the sock listening on udp port 4791 is created in init_net. Other net
+>> namespace is difficult to use this sock.
+>>
+>> The following commits will solve this problem.
+>>
+>> In the first commit, move the creating sock listening on udp port 4791
+>> from module_init function to rdma link creating functions. That is,
+>> after the module rdma_rxe is loaded, the sock will not be created.
+>> When run "rdma link add ..." command, the sock will be created. So
+>> when creating a rdma link in the net namespace, the sock will be
+>> created in this net namespace.
+>>
+>> In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
+>> will check the sock exists in the net namespace or not. If yes, rdma
+>> link will increase the reference count of this sock, then continue other
+>> jobs instead of creating a new sock to listen on udp port 4791. Since the
+>> network notifier is global, when the module rdma_rxe is loaded, this
+>> notifier will be registered.
+>>
+>> After the rdma link is created, the command "rdma link del" is to
+>> delete rdma link at the same time the sock is checked. If the reference
+>> count of this sock is greater than the sock reference count needed by
+>> udp tunnel, the sock reference count is decreased by one. If equal, it
+>> indicates that this rdma link is the last one. As such, the udp tunnel
+>> is shut down and the sock is closed. The above work should be
+>> implemented in linkdel function. But currently no dellink function in
+>> rxe. So the 3rd commit addes dellink function pointer. And the 4th
+>> commit implements the dellink function in rxe.
+>>
+>> To now, it is not necessary to keep a global variable to store the sock
+>> listening udp port 4791. This global variable can be replaced by the
+>> functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
+>> function udp6_lib_lookup is in the fast path, a member variable l_sk6
+>> is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
+>> to lookup the sock, then the sock is stored in l_sk6, in the future,it
+>> can be used directly.
+>>
+>> All the above work has been done in init_net. And it can also work in
+>> the net namespace. So the init_net is replaced by the individual net
+>> namespace. This is what the 6th commit does. Because rxe device is
+>> dependent on the net device and the sock listening on udp port 4791,
+>> every rxe device is in exclusive mode in the individual net namespace.
+>> Other rdma netns operations will be considerred in the future.
+>>
+>> In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
+>> functions are added. When a new net namespace is created, the init
+>> function will initialize the sk4 and sk6 socks. Then the 2 socks will
+>> be released when the net namespace is destroyed. The functions
+>> rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
+>> namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
+>> handle sk6. Then sk4 and sk6 are used in the previous commits.
+>>
+>> As the sk4 and sk6 in pernet namespace can be accessed, it is not
+>> necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
+>> replaced with the sk6 in pernet namespace.
+>>
+>> Test steps:
+>> 1) Suppose that 2 NICs are in 2 different net namespaces.
+>>
+>>    # ip netns exec net0 ip link
+>>    3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
+>>       link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
+>>       altname enp5s0
+>>
+>>    # ip netns exec net1 ip link
+>>    4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
+>>       link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
+>>
+>> 2) Add rdma link in the different net namespace
+>>      net0:
+>>      # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
+>>
+>>      net1:
+>>      # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
+>>
+>> 3) Run rping test.
+>>      net0
+>>      # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
+>>      [1] 1737
+>>      # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
+>>      verbose
+>>      count 1
+>>      ...
+>>      ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+>>      ...
+>>
+>> 4) Remove the rdma links from the net namespaces.
+>>      net0:
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+>>      UNCONN    0         0         [::]:4791             [::]:*
+>>
+>>      # ip netns exec net0 rdma link del rxe0
+>>
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>
+>>      net1:
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>      UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+>>      UNCONN    0         0         [::]:4791             [::]:*
+>>
+>>      # ip netns exec net1 rdma link del rxe1
+>>
+>>      # ip netns exec net0 ss -lu
+>>      State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>>
+>> V5->V6: Fix resource leak problem when rxe_net_init fails. And fix some
+>> 	style problems.
+>>
+>> V4->V5: Rebase the commits to V6.4-rc1
+>>
+>> V3->V4: Rebase the commits to rdma-next;
+>>
+>> V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
+>>             verify rdma link is removed.
+>>          2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
+>>          3) Replace l_sk6 with sk6 of pernet_name_space
+>>
+>> V1->V2: Add the explicit initialization of sk6.
+>>
+>> Zhu Yanjun (8):
+>>    RDMA/rxe: Creating listening sock in newlink function
+>>    RDMA/rxe: Support more rdma links in init_net
+>>    RDMA/nldev: Add dellink function pointer
+>>    RDMA/rxe: Implement dellink in rxe
+>>    RDMA/rxe: Replace global variable with sock lookup functions
+>>    RDMA/rxe: add the support of net namespace
+>>    RDMA/rxe: Add the support of net namespace notifier
+>>    RDMA/rxe: Replace l_sk6 with sk6 in net namespace
+>>
+>>   drivers/infiniband/core/nldev.c     |   6 ++
+>>   drivers/infiniband/sw/rxe/Makefile  |   3 +-
+>>   drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
+>>   drivers/infiniband/sw/rxe/rxe_net.c | 119 ++++++++++++++++++------
+>>   drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
+>>   drivers/infiniband/sw/rxe/rxe_ns.c  | 134 ++++++++++++++++++++++++++++
+>>   drivers/infiniband/sw/rxe/rxe_ns.h  |  17 ++++
+>>   include/rdma/rdma_netlink.h         |   2 +
+>>   8 files changed, 285 insertions(+), 40 deletions(-)
+>>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+>>   create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
+>>
+> 
+> I am OOO until Monday evening. I will try it then.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: bpf@vger.kernel.org
-cc: dccp@vger.kernel.org
-cc: linux-afs@lists.infradead.org
-cc: linux-arm-msm@vger.kernel.org
-cc: linux-can@vger.kernel.org
-cc: linux-crypto@vger.kernel.org
-cc: linux-doc@vger.kernel.org
-cc: linux-hams@vger.kernel.org
-cc: linux-perf-users@vger.kernel.org
-cc: linux-rdma@vger.kernel.org
-cc: linux-sctp@vger.kernel.org
-cc: linux-wpan@vger.kernel.org
-cc: linux-x25@vger.kernel.org
-cc: mptcp@lists.linux.dev
-cc: netdev@vger.kernel.org
-cc: rds-devel@oss.oracle.com
-cc: tipc-discussion@lists.sourceforge.net
-cc: virtualization@lists.linux-foundation.org
----
+Got it. When you make tests with net namespace, please do not use lo 
+because lo can not work with rxe. GID of rxe can not be generated 
+correctly.
+Please use a physical NIC. Use the command "ip link set xxx netns test" 
+to set the physical NIC xxx in the net namespace test.
 
-Notes:
-    ver #3)
-     - tcp_bpf is now handled by an earlier patch.
+Thanks a lot.
+Zhu Yanjun
 
- include/linux/socket.h                         | 4 +---
- net/tls/tls_device.c                           | 3 +--
- net/tls/tls_main.c                             | 2 +-
- net/tls/tls_sw.c                               | 2 +-
- tools/perf/trace/beauty/include/linux/socket.h | 1 -
- tools/perf/trace/beauty/msg_flags.c            | 5 +----
- 6 files changed, 5 insertions(+), 12 deletions(-)
-
-diff --git a/include/linux/socket.h b/include/linux/socket.h
-index 58204700018a..39b74d83c7c4 100644
---- a/include/linux/socket.h
-+++ b/include/linux/socket.h
-@@ -319,7 +319,6 @@ struct ucred {
- #define MSG_MORE	0x8000	/* Sender will send more */
- #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
- #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
--#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
- #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
- #define MSG_EOF         MSG_FIN
- #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
-@@ -341,8 +340,7 @@ struct ucred {
- 
- /* Flags to be cleared on entry by sendmsg and sendmmsg syscalls */
- #define MSG_INTERNAL_SENDMSG_FLAGS \
--	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_NOTLAST | \
--	 MSG_SENDPAGE_DECRYPTED)
-+	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_DECRYPTED)
- 
- /* Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx */
- #define SOL_IP		0
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index 840ee06f1708..2021fe557e50 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -441,8 +441,7 @@ static int tls_push_data(struct sock *sk,
- 	long timeo;
- 
- 	if (flags &
--	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SENDPAGE_NOTLAST |
--	      MSG_SPLICE_PAGES))
-+	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SPLICE_PAGES))
- 		return -EOPNOTSUPP;
- 
- 	if (unlikely(sk->sk_err))
-diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-index d5ed4d47b16e..b6896126bb92 100644
---- a/net/tls/tls_main.c
-+++ b/net/tls/tls_main.c
-@@ -127,7 +127,7 @@ int tls_push_sg(struct sock *sk,
- {
- 	struct bio_vec bvec;
- 	struct msghdr msg = {
--		.msg_flags = MSG_SENDPAGE_NOTLAST | MSG_SPLICE_PAGES | flags,
-+		.msg_flags = MSG_SPLICE_PAGES | flags,
- 	};
- 	int ret = 0;
- 	struct page *p;
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index 9b3aa89a4292..53f944e6d8ef 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -1194,7 +1194,7 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 
- 	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
- 			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES |
--			       MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
-+			       MSG_SENDPAGE_NOPOLICY))
- 		return -EOPNOTSUPP;
- 
- 	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
-diff --git a/tools/perf/trace/beauty/include/linux/socket.h b/tools/perf/trace/beauty/include/linux/socket.h
-index 13c3a237b9c9..3bef212a24d7 100644
---- a/tools/perf/trace/beauty/include/linux/socket.h
-+++ b/tools/perf/trace/beauty/include/linux/socket.h
-@@ -318,7 +318,6 @@ struct ucred {
- #define MSG_MORE	0x8000	/* Sender will send more */
- #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
- #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
--#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
- #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
- #define MSG_EOF         MSG_FIN
- #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
-diff --git a/tools/perf/trace/beauty/msg_flags.c b/tools/perf/trace/beauty/msg_flags.c
-index ea68db08b8e7..5cdebd7ece7e 100644
---- a/tools/perf/trace/beauty/msg_flags.c
-+++ b/tools/perf/trace/beauty/msg_flags.c
-@@ -8,9 +8,6 @@
- #ifndef MSG_WAITFORONE
- #define MSG_WAITFORONE		   0x10000
- #endif
--#ifndef MSG_SENDPAGE_NOTLAST
--#define MSG_SENDPAGE_NOTLAST	   0x20000
--#endif
- #ifndef MSG_FASTOPEN
- #define MSG_FASTOPEN		0x20000000
- #endif
-@@ -50,7 +47,7 @@ static size_t syscall_arg__scnprintf_msg_flags(char *bf, size_t size,
- 	P_MSG_FLAG(NOSIGNAL);
- 	P_MSG_FLAG(MORE);
- 	P_MSG_FLAG(WAITFORONE);
--	P_MSG_FLAG(SENDPAGE_NOTLAST);
-+	P_MSG_FLAG(SPLICE_PAGES);
- 	P_MSG_FLAG(FASTOPEN);
- 	P_MSG_FLAG(CMSG_CLOEXEC);
- #undef P_MSG_FLAG
+> 
+> Bob
 
