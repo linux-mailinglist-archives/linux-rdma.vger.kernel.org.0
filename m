@@ -2,88 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8B873CD97
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 Jun 2023 02:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC6D73CD9C
+	for <lists+linux-rdma@lfdr.de>; Sun, 25 Jun 2023 02:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbjFYAyS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 24 Jun 2023 20:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
+        id S229815AbjFYA5u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 24 Jun 2023 20:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjFYAyR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 24 Jun 2023 20:54:17 -0400
-Received: from out-36.mta0.migadu.com (out-36.mta0.migadu.com [91.218.175.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F8E10D8
-        for <linux-rdma@vger.kernel.org>; Sat, 24 Jun 2023 17:54:16 -0700 (PDT)
-Message-ID: <c973ddac-2f7f-ca8d-49a0-3f490e7343a5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1687654454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AErB05jdWB40vdbBAAW+enN+qEvUBzufZ13kpj8BniQ=;
-        b=iSsH3AxJixyVTXAd6pKmcVt9Ba2DYGAZr/eaWfTbiBOoLXIhwRMMM8C5tQKyMuqWKHxnko
-        OLQLb+whktVPqhwkB66eM3manMV0grw1wMUKPOYJapTKCqSQ9/KIhJIPLebrhgpOC2/4NV
-        Wazfvr4suEkLJrlzDjkQZFjOBx3Awxo=
-Date:   Sun, 25 Jun 2023 08:54:09 +0800
+        with ESMTP id S229449AbjFYA5t (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 24 Jun 2023 20:57:49 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28A0E78;
+        Sat, 24 Jun 2023 17:57:47 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VlqN6ji_1687654664;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VlqN6ji_1687654664)
+          by smtp.aliyun-inc.com;
+          Sun, 25 Jun 2023 08:57:45 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     selvin.xavier@broadcom.com
+Cc:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] RDMA/bnxt_re: Remove unneeded semicolon
+Date:   Sun, 25 Jun 2023 08:57:43 +0800
+Message-Id: <20230625005743.125952-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Subject: Re: [PATCH v6.4-rc1 v5 0/8] Fix the problem that rxe can not work in
- net namespace
-To:     Chuck Lever III <chuck.lever@oracle.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Zhu Yanjun <yanjun.zhu@intel.com>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "parav@nvidia.com" <parav@nvidia.com>,
-        "lehrer@gmail.com" <lehrer@gmail.com>
-References: <20230508075636.352138-1-yanjun.zhu@intel.com>
- <4f097d4a-85f5-392f-53bb-85ca0d75e16f@gmail.com>
- <fbba95ad-a0f7-435e-c152-d6094b70bb1f@gmail.com>
- <8e13254c-f8f5-f9ce-14fe-f8fd21c0c6bd@linux.dev>
- <3f472f86-43d7-037a-d7d2-207314e183fa@gmail.com>
- <05d4a5d8-9646-49b0-9d7f-19d8966a308d@linux.dev>
- <MW4PR84MB2307BB2D7AC00BE3A63F6D5DBC20A@MW4PR84MB2307.NAMPRD84.PROD.OUTLOOK.COM>
- <9DD4E3B8-7FA1-4054-8AC0-85FC96D710A7@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <9DD4E3B8-7FA1-4054-8AC0-85FC96D710A7@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+./drivers/infiniband/hw/bnxt_re/main.c: ib_verbs.h is included more than once.
 
-在 2023/6/25 1:32, Chuck Lever III 写道:
->> The GID of rxe can not be generated with lo. This is a problem.
-> I agree, and would like to see a fix. It's obviously going to be a very
-> useful use case for CI environments for upper layer storage protocols
-> such as NFS and SMB, for instance.
->
->
->> Now Chuck Lever <cel@kernel.org> will fix it.
-> My understanding is that, because RoCE allows more than one port per egress
-> device, the mechanism for enabling rxe-on-lo is going to be different than
-> it is for iWARP -- or it might not be possible at all. That's why my siw
-> patches do not implement a fix for rxe.
->
-> Jason needs to outline a mechanism for it so we can see what needs to be
-> done. At which point, any interested party should be able to fix it.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=5588
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/infiniband/hw/bnxt_re/main.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Look forward to the fix.
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 1e5b60f9269e..b42166fe7454 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -66,7 +66,6 @@
+ #include <rdma/bnxt_re-abi.h>
+ #include "bnxt.h"
+ #include "hw_counters.h"
+-#include "ib_verbs.h"
+ 
+ static char version[] =
+ 		BNXT_RE_DESC "\n";
+-- 
+2.20.1.7.g153144c
 
-Zhu Yanjun
-
->
->
-> --
-> Chuck Lever
->
->
