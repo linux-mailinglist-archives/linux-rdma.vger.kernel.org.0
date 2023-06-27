@@ -2,43 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 353B973FEDB
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jun 2023 16:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1214173FEC7
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jun 2023 16:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbjF0Oph (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Jun 2023 10:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        id S232116AbjF0OqW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Jun 2023 10:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbjF0OpL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jun 2023 10:45:11 -0400
+        with ESMTP id S231902AbjF0Op2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jun 2023 10:45:28 -0400
 Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67463593;
-        Tue, 27 Jun 2023 07:44:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2484D3A96;
+        Tue, 27 Jun 2023 07:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=inria.fr; s=dc;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=OHv2BAP3aRkKkSVfOQ7PNXJXXJkfxWmwjM1eG5qnd00=;
-  b=uWxagvqScJ4P/eaWlwExiFn9fJPU7N64Zvsr7shHMa+4qAIIkcRXjsDK
-   eOh6XoEpvq48Xf/zwXlYXqObrFaDd1vUTLpcpW1DabzmJuEMY/JqpRasu
-   FjmjeNNt/ww0IQj/LKk3VC2H1IcYqjOTpYP+fvSDTIMkkqW1wJ61EbMFv
-   Q=;
+  bh=RmZB8noDrpTEgQ34AyoMdB9Dp2s8sUTzrIorMQcMPuE=;
+  b=GjCGi63WWIhe+GQ1WuZtY7p1RpJ9Ss04/hj/GygcSrN0F8lf6k6MzF+b
+   yzRzNlhLeIjc9mGf96UTSuog/GrBhy16Fk/+6wcK7vSpr21Me+u+A9MQg
+   pxRZpNH8xzpyxzYNzf79A1Gii+do3IX74quXSmqOfuQCWgbDHugM5j40T
+   M=;
 Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
 X-IronPort-AV: E=Sophos;i="6.01,162,1684792800"; 
-   d="scan'208";a="114936322"
+   d="scan'208";a="114936337"
 Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2023 16:43:51 +0200
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2023 16:43:52 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Cheng Xu <chengyou@linux.alibaba.com>
+To:     Bernard Metzler <bmt@zurich.ibm.com>
 Cc:     kernel-janitors@vger.kernel.org, keescook@chromium.org,
         christophe.jaillet@wanadoo.fr, kuba@kernel.org,
-        Kai Shen <kaishen@linux.alibaba.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 05/24] RDMA/erdma: use vmalloc_array and vcalloc
-Date:   Tue, 27 Jun 2023 16:43:20 +0200
-Message-Id: <20230627144339.144478-6-Julia.Lawall@inria.fr>
+Subject: [PATCH v2 14/24] RDMA/siw: use vmalloc_array and vcalloc
+Date:   Tue, 27 Jun 2023 16:43:29 +0200
+Message-Id: <20230627144339.144478-15-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230627144339.144478-1-Julia.Lawall@inria.fr>
 References: <20230627144339.144478-1-Julia.Lawall@inria.fr>
@@ -106,21 +105,59 @@ v2: Use vmalloc_array and vcalloc instead of array_size.
 This also leaves a multiplication of a constant by a sizeof
 as is.  Two patches are thus dropped from the series.
 
- drivers/infiniband/hw/erdma/erdma_verbs.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/sw/siw/siw_qp.c    |    4 ++--
+ drivers/infiniband/sw/siw/siw_verbs.c |    6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff -u -p a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
---- a/drivers/infiniband/hw/erdma/erdma_verbs.c
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
-@@ -481,8 +481,8 @@ static int init_kernel_qp(struct erdma_d
- 		dev->func_bar + (ERDMA_SDB_SHARED_PAGE_INDEX << PAGE_SHIFT);
- 	kqp->hw_rq_db = dev->func_bar + ERDMA_BAR_RQDB_SPACE_OFFSET;
+diff -u -p a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -381,7 +381,7 @@ int siw_create_qp(struct ib_qp *ibqp, st
+ 	if (udata)
+ 		qp->sendq = vmalloc_user(num_sqe * sizeof(struct siw_sqe));
+ 	else
+-		qp->sendq = vzalloc(num_sqe * sizeof(struct siw_sqe));
++		qp->sendq = vcalloc(num_sqe, sizeof(struct siw_sqe));
  
--	kqp->swr_tbl = vmalloc(qp->attrs.sq_size * sizeof(u64));
--	kqp->rwr_tbl = vmalloc(qp->attrs.rq_size * sizeof(u64));
-+	kqp->swr_tbl = vmalloc_array(qp->attrs.sq_size, sizeof(u64));
-+	kqp->rwr_tbl = vmalloc_array(qp->attrs.rq_size, sizeof(u64));
- 	if (!kqp->swr_tbl || !kqp->rwr_tbl)
- 		goto err_out;
+ 	if (qp->sendq == NULL) {
+ 		rv = -ENOMEM;
+@@ -414,7 +414,7 @@ int siw_create_qp(struct ib_qp *ibqp, st
+ 			qp->recvq =
+ 				vmalloc_user(num_rqe * sizeof(struct siw_rqe));
+ 		else
+-			qp->recvq = vzalloc(num_rqe * sizeof(struct siw_rqe));
++			qp->recvq = vcalloc(num_rqe, sizeof(struct siw_rqe));
  
+ 		if (qp->recvq == NULL) {
+ 			rv = -ENOMEM;
+@@ -1624,7 +1624,7 @@ int siw_create_srq(struct ib_srq *base_s
+ 		srq->recvq =
+ 			vmalloc_user(srq->num_rqe * sizeof(struct siw_rqe));
+ 	else
+-		srq->recvq = vzalloc(srq->num_rqe * sizeof(struct siw_rqe));
++		srq->recvq = vcalloc(srq->num_rqe, sizeof(struct siw_rqe));
+ 
+ 	if (srq->recvq == NULL) {
+ 		rv = -ENOMEM;
+diff -u -p a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
+--- a/drivers/infiniband/sw/siw/siw_qp.c
++++ b/drivers/infiniband/sw/siw/siw_qp.c
+@@ -204,7 +204,7 @@ static int siw_qp_readq_init(struct siw_
+ {
+ 	if (irq_size) {
+ 		irq_size = roundup_pow_of_two(irq_size);
+-		qp->irq = vzalloc(irq_size * sizeof(struct siw_sqe));
++		qp->irq = vcalloc(irq_size, sizeof(struct siw_sqe));
+ 		if (!qp->irq) {
+ 			qp->attrs.irq_size = 0;
+ 			return -ENOMEM;
+@@ -212,7 +212,7 @@ static int siw_qp_readq_init(struct siw_
+ 	}
+ 	if (orq_size) {
+ 		orq_size = roundup_pow_of_two(orq_size);
+-		qp->orq = vzalloc(orq_size * sizeof(struct siw_sqe));
++		qp->orq = vcalloc(orq_size, sizeof(struct siw_sqe));
+ 		if (!qp->orq) {
+ 			qp->attrs.orq_size = 0;
+ 			qp->attrs.irq_size = 0;
 
