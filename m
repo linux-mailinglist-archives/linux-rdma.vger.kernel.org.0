@@ -2,50 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5801A73FEC0
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jun 2023 16:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E16740172
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jun 2023 18:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbjF0Oqp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Jun 2023 10:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        id S232413AbjF0Qk1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Jun 2023 12:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjF0Opz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jun 2023 10:45:55 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F8635A4;
-        Tue, 27 Jun 2023 07:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=pZdndxQjXQo3BjDH5lsbs+qaO6vkvVK0DG4Lv8xJQDg=;
-  b=g8uRt1mM441oG8JVpko4SPSsBHoBBFNgc9h+XNADjURwzgbxiF4pOxxw
-   rpfubCYGNo2a7MOBMZHsQ5NqmOwXA/WELw6L0eotmQyDA3gTbvDHCM72i
-   BK1nd4nWtLzc1fcFRMbFdp8G8mGEkpNIzyClpIYE/itJvBkxQW1F7CwPs
-   E=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.01,162,1684792800"; 
-   d="scan'208";a="114936342"
-Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2023 16:43:52 +0200
-From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     kernel-janitors@vger.kernel.org, keescook@chromium.org,
-        christophe.jaillet@wanadoo.fr, kuba@kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 19/24] RDMA/bnxt_re: use vmalloc_array and vcalloc
-Date:   Tue, 27 Jun 2023 16:43:34 +0200
-Message-Id: <20230627144339.144478-20-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230627144339.144478-1-Julia.Lawall@inria.fr>
-References: <20230627144339.144478-1-Julia.Lawall@inria.fr>
+        with ESMTP id S231721AbjF0Qk0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jun 2023 12:40:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DDEF4;
+        Tue, 27 Jun 2023 09:40:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 59458611EB;
+        Tue, 27 Jun 2023 16:40:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9D8F0C433C9;
+        Tue, 27 Jun 2023 16:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687884023;
+        bh=Mddr9IEnVSSEtvey/EPFRhLi4YnxlTkalZzmHZ6bmJ8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XGRGiORnH0FmaQ+kclMjYIsE8aiZt7Gs4g5WBNw+zT0ASSus8daZkKZirfbcgaoBv
+         HsuO0nskJhLaiZxylU7zlINMijGNLl9q7WEg/ms3Lh/IrCmjj2LVp6pXCXh1uqP4W3
+         kOcx2VCa4pIOSzcMTF35giAc72J/A42BnFN7K4h/MvLUE7JXaOanngW1cFFib+5J4v
+         8N2ABirViOcrN32FYcrvP15sAv/TezaSVGJHU9rgp1d1sCUFbyUbMRRUsWjqDMoEYN
+         HlJlhL0V9YgQDqvmqEWLdtvBli6Q5b70JaJ8QNh8cP8DiB/xBCXlUB+GXHpoI+1ee3
+         oj4CRUwtvenNQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7B046C64458;
+        Tue, 27 Jun 2023 16:40:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Subject: Re: [PATCH v2 00/24] use vmalloc_array and vcalloc
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168788402349.21860.17350888958370358926.git-patchwork-notify@kernel.org>
+Date:   Tue, 27 Jun 2023 16:40:23 +0000
+References: <20230627144339.144478-1-Julia.Lawall@inria.fr>
+In-Reply-To: <20230627144339.144478-1-Julia.Lawall@inria.fr>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     linux-hyperv@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        keescook@chromium.org, christophe.jaillet@wanadoo.fr,
+        kuba@kernel.org, kasan-dev@googlegroups.com, andreyknvl@gmail.com,
+        dvyukov@google.com, iommu@lists.linux.dev,
+        linux-tegra@vger.kernel.org, robin.murphy@arm.com,
+        vdumpa@nvidia.com, virtualization@lists.linux-foundation.org,
+        xuanzhuo@linux.alibaba.com, linux-scsi@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        jstultz@google.com, Brian.Starkey@arm.com, labbott@redhat.com,
+        lmark@codeaurora.org, benjamin.gaignard@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, shailend@google.com,
+        linux-rdma@vger.kernel.org, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dave.hansen@linux.intel.com,
+        hpa@zytor.com, linux-sgx@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,76 +72,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use vmalloc_array and vcalloc to protect against
-multiplication overflows.
+Hello:
 
-The changes were done using the following Coccinelle
-semantic patch:
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-// <smpl>
-@initialize:ocaml@
-@@
+On Tue, 27 Jun 2023 16:43:15 +0200 you wrote:
+> The functions vmalloc_array and vcalloc were introduced in
+> 
+> commit a8749a35c399 ("mm: vmalloc: introduce array allocation functions")
+> 
+> but are not used much yet.  This series introduces uses of
+> these functions, to protect against multiplication overflows.
+> 
+> [...]
 
-let rename alloc =
-  match alloc with
-    "vmalloc" -> "vmalloc_array"
-  | "vzalloc" -> "vcalloc"
-  | _ -> failwith "unknown"
+Here is the summary with links:
+  - [v2,02/24] octeon_ep: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/32d462a5c3e5
+  - [v2,04/24] gve: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/a13de901e8d5
+  - [v2,09/24] pds_core: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/906a76cc7645
+  - [v2,11/24] ionic: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/f712c8297e0a
+  - [v2,18/24] net: enetc: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/fa87c54693ae
+  - [v2,22/24] net: mana: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/e9c74f8b8a31
 
-@@
-    size_t e1,e2;
-    constant C1, C2;
-    expression E1, E2, COUNT, x1, x2, x3;
-    typedef u8;
-    typedef __u8;
-    type t = {u8,__u8,char,unsigned char};
-    identifier alloc = {vmalloc,vzalloc};
-    fresh identifier realloc = script:ocaml(alloc) { rename alloc };
-@@
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-(
-      alloc(x1*x2*x3)
-|
-      alloc(C1 * C2)
-|
-      alloc((sizeof(t)) * (COUNT), ...)
-|
--     alloc((e1) * (e2))
-+     realloc(e1, e2)
-|
--     alloc((e1) * (COUNT))
-+     realloc(COUNT, e1)
-|
--     alloc((E1) * (E2))
-+     realloc(E1, E2)
-)
-// </smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-
----
-v2: Use vmalloc_array and vcalloc instead of array_size.
-This also leaves a multiplication of a constant by a sizeof
-as is.  Two patches are thus dropped from the series.
-
- drivers/infiniband/hw/bnxt_re/qplib_res.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff -u -p a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-@@ -118,11 +118,11 @@ static int __alloc_pbl(struct bnxt_qplib
- 	else
- 		pages = sginfo->npages;
- 	/* page ptr arrays */
--	pbl->pg_arr = vmalloc(pages * sizeof(void *));
-+	pbl->pg_arr = vmalloc_array(pages, sizeof(void *));
- 	if (!pbl->pg_arr)
- 		return -ENOMEM;
- 
--	pbl->pg_map_arr = vmalloc(pages * sizeof(dma_addr_t));
-+	pbl->pg_map_arr = vmalloc_array(pages, sizeof(dma_addr_t));
- 	if (!pbl->pg_map_arr) {
- 		vfree(pbl->pg_arr);
- 		pbl->pg_arr = NULL;
 
