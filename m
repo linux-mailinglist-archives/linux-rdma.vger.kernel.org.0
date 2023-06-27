@@ -2,144 +2,315 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CA773EF7F
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jun 2023 01:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724DC73F08E
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jun 2023 03:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbjFZX5N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Jun 2023 19:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
+        id S229897AbjF0BbN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Jun 2023 21:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjFZX5N (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Jun 2023 19:57:13 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2FB90E5A;
-        Mon, 26 Jun 2023 16:57:12 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 5992020553EC; Mon, 26 Jun 2023 16:57:11 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5992020553EC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1687823831;
-        bh=fiPgyc8J5BXMwqhx//yUhPKJcnCZ0LyA5rM0uvnK2RY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hwuzGsd2Oc4je6vn0zd2blhZI89dhXLSyTpRe5TdImHU+QimtplZLUomb62Ga1ozO
-         yyl/HRhtzwXuY0YUNAsVfgWjMCkuZYyzlxUFAzpWOVq7fD/gHqDcDxjP99XqwqP4eV
-         3G7iIQ3K0o0LhNNMULVp2YA0FtGWVRutI8KDUZCY=
-From:   longli@linuxonhyperv.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Long Li <longli@microsoft.com>, stable@vger.kernel.org
-Subject: [Patch v3] net: mana: Batch ringing RX queue doorbell on receiving packets
-Date:   Mon, 26 Jun 2023 16:57:07 -0700
-Message-Id: <1687823827-15850-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230174AbjF0Bax (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Jun 2023 21:30:53 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F1B1991
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Jun 2023 18:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687829451; x=1719365451;
+  h=date:from:to:cc:subject:message-id;
+  bh=D/vPsh2id2LxF3KIscTyLIrTTF6JpA2ae8K2iEMgFF8=;
+  b=EbUfg7nriZMXUqgM5uoCcLXciexD0y0+XUr0IYcAaH31aweAo8XX0vNX
+   q6MULTrjPA0nOr02vhtxbXHgn2hralG6Xm91MwzDkWRPE0mqjDjUTO13X
+   TOGy+7CjBnBF3z17AAIqAYpByOZOEM3BIYmrFbaEjfZaOcXdYVldm5Cps
+   TYjz57k6MOkqSmiBXLPZVKcdniSM2/jZNpBGtcGLU2gdH3ZxhCTkw/Y5m
+   tPVoLYen/R8h2CytEq5yGTJlkUYtRPxHrUR7GbD9GgibMpjbQ1K8AABBc
+   6s1oe+g/3JttlEAD8aWbl7rxvPe3e5yTCeXbd/tQpfw2SJ4nmw8BnXkMi
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="364890159"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="364890159"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 18:30:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="716355107"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="716355107"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 26 Jun 2023 18:30:47 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qDxXa-000BZX-2c;
+        Tue, 27 Jun 2023 01:30:46 +0000
+Date:   Tue, 27 Jun 2023 09:29:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 360da60d6c6edb9740de7a8e6d8969d62ceff956
+Message-ID: <202306270947.lagFvY0x-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 360da60d6c6edb9740de7a8e6d8969d62ceff956  RDMA/bnxt_re: Enable low latency push
 
-It's inefficient to ring the doorbell page every time a WQE is posted to
-the received queue. Excessive MMIO writes result in CPU spending more
-time waiting on LOCK instructions (atomic operations), resulting in
-poor scaling performance.
+elapsed time: 7676m
 
-Move the code for ringing doorbell page to where after we have posted all
-WQEs to the receive queue during a callback from napi_poll().
+configs tested: 237
+configs skipped: 14
 
-With this change, tests showed an improvement from 120G/s to 160G/s on a
-200G physical link, with 16 or 32 hardware queues.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Tests showed no regression in network latency benchmarks on single
-connection.
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r016-20230622   gcc  
+alpha                randconfig-r022-20230622   gcc  
+alpha                randconfig-r024-20230621   gcc  
+alpha                randconfig-r026-20230622   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r003-20230621   gcc  
+arc                  randconfig-r006-20230622   gcc  
+arc                  randconfig-r016-20230622   gcc  
+arc                  randconfig-r024-20230622   gcc  
+arc                  randconfig-r043-20230621   gcc  
+arc                  randconfig-r043-20230622   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                       aspeed_g5_defconfig   gcc  
+arm                        clps711x_defconfig   gcc  
+arm                          collie_defconfig   clang
+arm                                 defconfig   gcc  
+arm                          gemini_defconfig   gcc  
+arm                          pxa910_defconfig   gcc  
+arm                             pxa_defconfig   gcc  
+arm                  randconfig-r004-20230622   gcc  
+arm                  randconfig-r005-20230621   clang
+arm                  randconfig-r006-20230622   gcc  
+arm                  randconfig-r016-20230621   gcc  
+arm                  randconfig-r024-20230621   gcc  
+arm                  randconfig-r035-20230621   clang
+arm                  randconfig-r035-20230622   gcc  
+arm                  randconfig-r046-20230621   gcc  
+arm                  randconfig-r046-20230622   clang
+arm                           spitz_defconfig   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r002-20230621   gcc  
+arm64                randconfig-r005-20230622   clang
+arm64                randconfig-r013-20230622   gcc  
+arm64                randconfig-r021-20230621   clang
+arm64                randconfig-r021-20230622   gcc  
+arm64                randconfig-r032-20230622   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r001-20230621   gcc  
+csky                 randconfig-r004-20230621   gcc  
+csky                 randconfig-r014-20230621   gcc  
+csky                 randconfig-r023-20230621   gcc  
+csky                 randconfig-r025-20230622   gcc  
+csky                 randconfig-r032-20230622   gcc  
+csky                 randconfig-r036-20230622   gcc  
+hexagon                             defconfig   clang
+hexagon              randconfig-r003-20230622   clang
+hexagon              randconfig-r005-20230622   clang
+hexagon              randconfig-r013-20230622   clang
+hexagon              randconfig-r014-20230622   clang
+hexagon              randconfig-r023-20230621   clang
+hexagon              randconfig-r041-20230621   clang
+hexagon              randconfig-r041-20230622   clang
+hexagon              randconfig-r045-20230621   clang
+hexagon              randconfig-r045-20230622   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230621   gcc  
+i386         buildonly-randconfig-r005-20230621   gcc  
+i386         buildonly-randconfig-r006-20230621   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230621   gcc  
+i386                 randconfig-i002-20230621   gcc  
+i386                 randconfig-i003-20230621   gcc  
+i386                 randconfig-i004-20230621   gcc  
+i386                 randconfig-i005-20230621   gcc  
+i386                 randconfig-i006-20230621   gcc  
+i386                 randconfig-i011-20230621   clang
+i386                 randconfig-i011-20230623   clang
+i386                 randconfig-i012-20230621   clang
+i386                 randconfig-i012-20230623   clang
+i386                 randconfig-i013-20230621   clang
+i386                 randconfig-i013-20230623   clang
+i386                 randconfig-i014-20230621   clang
+i386                 randconfig-i014-20230623   clang
+i386                 randconfig-i015-20230621   clang
+i386                 randconfig-i015-20230623   clang
+i386                 randconfig-i016-20230621   clang
+i386                 randconfig-i016-20230622   gcc  
+i386                 randconfig-i016-20230623   clang
+i386                 randconfig-r006-20230622   clang
+i386                 randconfig-r012-20230622   gcc  
+i386                 randconfig-r014-20230622   gcc  
+i386                 randconfig-r015-20230622   gcc  
+i386                 randconfig-r021-20230621   clang
+i386                 randconfig-r031-20230622   clang
+i386                 randconfig-r032-20230621   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r015-20230621   gcc  
+loongarch            randconfig-r032-20230622   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5208evb_defconfig   gcc  
+m68k                 randconfig-r002-20230622   gcc  
+m68k                 randconfig-r005-20230622   gcc  
+m68k                 randconfig-r015-20230622   gcc  
+m68k                 randconfig-r021-20230621   gcc  
+m68k                 randconfig-r022-20230621   gcc  
+microblaze           randconfig-r003-20230622   gcc  
+microblaze           randconfig-r013-20230621   gcc  
+microblaze           randconfig-r016-20230622   gcc  
+microblaze           randconfig-r023-20230622   gcc  
+microblaze           randconfig-r033-20230622   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                        bcm63xx_defconfig   clang
+mips                         bigsur_defconfig   gcc  
+mips                         cobalt_defconfig   gcc  
+mips                     decstation_defconfig   gcc  
+mips                       lemote2f_defconfig   clang
+mips                     loongson1b_defconfig   gcc  
+mips                malta_qemu_32r6_defconfig   clang
+mips                        omega2p_defconfig   clang
+mips                 randconfig-r003-20230621   clang
+mips                 randconfig-r012-20230621   gcc  
+mips                 randconfig-r021-20230622   clang
+mips                 randconfig-r024-20230622   clang
+mips                 randconfig-r032-20230622   gcc  
+mips                 randconfig-r035-20230622   gcc  
+mips                       rbtx49xx_defconfig   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r001-20230622   gcc  
+nios2                randconfig-r013-20230621   gcc  
+nios2                randconfig-r024-20230621   gcc  
+nios2                randconfig-r026-20230621   gcc  
+nios2                randconfig-r031-20230621   gcc  
+nios2                randconfig-r034-20230622   gcc  
+nios2                randconfig-r035-20230622   gcc  
+nios2                randconfig-r036-20230621   gcc  
+openrisc             randconfig-r016-20230621   gcc  
+openrisc             randconfig-r022-20230621   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r002-20230622   gcc  
+parisc               randconfig-r023-20230622   gcc  
+parisc               randconfig-r033-20230622   gcc  
+parisc               randconfig-r034-20230622   gcc  
+parisc64                         alldefconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                    adder875_defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                      chrp32_defconfig   gcc  
+powerpc                       eiger_defconfig   gcc  
+powerpc                      ep88xc_defconfig   gcc  
+powerpc                        fsp2_defconfig   clang
+powerpc                 linkstation_defconfig   gcc  
+powerpc                      makalu_defconfig   gcc  
+powerpc                 mpc85xx_cds_defconfig   gcc  
+powerpc                     ppa8548_defconfig   clang
+powerpc                       ppc64_defconfig   gcc  
+powerpc                         ps3_defconfig   gcc  
+powerpc                     rainier_defconfig   gcc  
+powerpc              randconfig-r004-20230622   clang
+powerpc              randconfig-r006-20230621   gcc  
+powerpc              randconfig-r011-20230621   clang
+powerpc              randconfig-r015-20230622   gcc  
+powerpc              randconfig-r034-20230622   clang
+powerpc                     sequoia_defconfig   gcc  
+powerpc                     tqm5200_defconfig   clang
+powerpc                      tqm8xx_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r005-20230621   gcc  
+riscv                randconfig-r023-20230621   clang
+riscv                randconfig-r026-20230621   clang
+riscv                randconfig-r042-20230621   clang
+riscv                randconfig-r042-20230622   gcc  
+riscv                          rv32_defconfig   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r001-20230622   clang
+s390                 randconfig-r002-20230621   gcc  
+s390                 randconfig-r022-20230621   clang
+s390                 randconfig-r025-20230622   gcc  
+s390                 randconfig-r026-20230622   gcc  
+s390                 randconfig-r036-20230622   clang
+s390                 randconfig-r044-20230621   clang
+s390                 randconfig-r044-20230622   gcc  
+s390                       zfcpdump_defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                ecovec24-romimage_defconfig   gcc  
+sh                         ecovec24_defconfig   gcc  
+sh                          kfr2r09_defconfig   gcc  
+sh                         microdev_defconfig   gcc  
+sh                   randconfig-r001-20230622   gcc  
+sh                   randconfig-r002-20230622   gcc  
+sh                   randconfig-r006-20230621   gcc  
+sh                   randconfig-r031-20230622   gcc  
+sh                          rsk7264_defconfig   gcc  
+sh                          sdk7780_defconfig   gcc  
+sh                           se7751_defconfig   gcc  
+sh                  sh7785lcr_32bit_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r011-20230622   gcc  
+sparc                randconfig-r036-20230622   gcc  
+sparc64              randconfig-r004-20230622   gcc  
+sparc64              randconfig-r011-20230621   gcc  
+sparc64              randconfig-r025-20230621   gcc  
+sparc64              randconfig-r026-20230621   gcc  
+sparc64              randconfig-r033-20230622   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r003-20230622   gcc  
+um                   randconfig-r012-20230621   gcc  
+um                   randconfig-r034-20230621   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230621   gcc  
+x86_64       buildonly-randconfig-r002-20230621   gcc  
+x86_64       buildonly-randconfig-r003-20230621   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r015-20230621   clang
+x86_64               randconfig-r025-20230621   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                           alldefconfig   gcc  
+xtensa               randconfig-r011-20230622   gcc  
+xtensa               randconfig-r012-20230622   gcc  
+xtensa               randconfig-r014-20230621   gcc  
+xtensa               randconfig-r036-20230622   gcc  
 
-While we are making changes in this code path, change the code for
-ringing doorbell to set the WQE_COUNT to 0 for Receive Queue. The
-hardware specification specifies that it should set to 0. Although
-currently the hardware doesn't enforce the check, in the future releases
-it may do.
-
-Cc: stable@vger.kernel.org
-Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Long Li <longli@microsoft.com>
----
-Change log:
-v2:
-Check for comp_read > 0 as it might be negative on completion error.
-Set rq.wqe_cnt to 0 according to BNIC spec.
-
-v3:
-Add details in the commit on the reason of performance increase and test numbers.
-Add details in the commit on why rq.wqe_cnt should be set to 0 according to hardware spec.
-Add "Reviewed-by" from Haiyang and Dexuan.
-
- drivers/net/ethernet/microsoft/mana/gdma_main.c |  5 ++++-
- drivers/net/ethernet/microsoft/mana/mana_en.c   | 10 ++++++++--
- 2 files changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 8f3f78b68592..3765d3389a9a 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -300,8 +300,11 @@ static void mana_gd_ring_doorbell(struct gdma_context *gc, u32 db_index,
- 
- void mana_gd_wq_ring_doorbell(struct gdma_context *gc, struct gdma_queue *queue)
- {
-+	/* Hardware Spec specifies that software client should set 0 for
-+	 * wqe_cnt for Receive Queues. This value is not used in Send Queues.
-+	 */
- 	mana_gd_ring_doorbell(gc, queue->gdma_dev->doorbell, queue->type,
--			      queue->id, queue->head * GDMA_WQE_BU_SIZE, 1);
-+			      queue->id, queue->head * GDMA_WQE_BU_SIZE, 0);
- }
- 
- void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit)
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index cd4d5ceb9f2d..1d8abe63fcb8 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -1383,8 +1383,8 @@ static void mana_post_pkt_rxq(struct mana_rxq *rxq)
- 
- 	recv_buf_oob = &rxq->rx_oobs[curr_index];
- 
--	err = mana_gd_post_and_ring(rxq->gdma_rq, &recv_buf_oob->wqe_req,
--				    &recv_buf_oob->wqe_inf);
-+	err = mana_gd_post_work_request(rxq->gdma_rq, &recv_buf_oob->wqe_req,
-+					&recv_buf_oob->wqe_inf);
- 	if (WARN_ON_ONCE(err))
- 		return;
- 
-@@ -1654,6 +1654,12 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
- 		mana_process_rx_cqe(rxq, cq, &comp[i]);
- 	}
- 
-+	if (comp_read > 0) {
-+		struct gdma_context *gc = rxq->gdma_rq->gdma_dev->gdma_context;
-+
-+		mana_gd_wq_ring_doorbell(gc, rxq->gdma_rq);
-+	}
-+
- 	if (rxq->xdp_flush)
- 		xdp_do_flush();
- }
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
