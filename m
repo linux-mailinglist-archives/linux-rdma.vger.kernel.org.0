@@ -2,88 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E89774302C
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jun 2023 00:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBA074309D
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jun 2023 00:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbjF2WKA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Jun 2023 18:10:00 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41696 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjF2WJ5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jun 2023 18:09:57 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 20A7220AECAD; Thu, 29 Jun 2023 15:09:56 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 20A7220AECAD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1688076596;
-        bh=sNVCTU5gFBqe2BQjTeFzfJALosLnCbsvG4CoTL1NyEs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FDaBTtSqHtUX0HV8fAgs5RDMLHjO7gn4fSzK5XPajhYEnBJnZnjChdh81UVoWPqro
-         DRLG+Vx8mrN3oaM/KcdZMq2puu07wo5Eajn+HxTooK1XuAfynP0YfMvXqQRJ9+2xWv
-         +w/ReMKXpbzZcy6YvSZRQPqWoVvNVBszicCyAvA8=
-From:   longli@linuxonhyperv.com
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Shradha Gupta <shradhagupta@linux.microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Shachar Raindel <shacharr@microsoft.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-rdma@vger.kernel.org, Long Li <longli@microsoft.com>,
-        stable@vger.kernel.org
-Subject: [PATCH net v4 2/2] net: mana: Use the correct WQE count for ringing RQ doorbell
-Date:   Thu, 29 Jun 2023 15:09:31 -0700
-Message-Id: <1688076571-24938-3-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1688076571-24938-1-git-send-email-longli@linuxonhyperv.com>
-References: <1688076571-24938-1-git-send-email-longli@linuxonhyperv.com>
+        id S231950AbjF2Wcz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Jun 2023 18:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231952AbjF2Wcn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jun 2023 18:32:43 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26DC359C
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 15:31:25 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6b867acbf6dso750131a34.0
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 15:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688077885; x=1690669885;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=800WRXQ6Tm/rlujxnl9FxV7t6ZEH09a2JuLU2meIAyM=;
+        b=nSs4GNxuhmzYGMKEZWWsm1sjwmTJw/6V+4Dl7TndqK5kWK9PYjRKVAr80ir1Sm8gYA
+         LTbROe7dTDb9ND3t/7r2labkvB85SD8p5bg/hk3t6OKeWU+8jehB3agsW23yrp6YuvKQ
+         9oLTR7yxItXC2eHkGfS7rjrn954mCa3uv+aPjkUnud2NL0x/4O6a5xIU6BIBnJHEoNNh
+         1jXsVinj481/RAuBnmiaJ7/XTQVDRSLtGJrJWmAaJf6JMCyVne4Wr9oSzTGoPKvojo7w
+         qlhWXmxKwO35tybkBFuL0FHmaANMbuUT7mbgFa/SP1mlH5J1N3zpLEE1V5rBuZE5Oguv
+         LbsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688077885; x=1690669885;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=800WRXQ6Tm/rlujxnl9FxV7t6ZEH09a2JuLU2meIAyM=;
+        b=imMjActvzLotbLrW8tluTY3U8i0OHyu1tHrqW/lfDCv8uvpWFIMHBx6iiryk4uN3c/
+         sGepRxrfnt5jaz8E4Hdlqty4VKknH9qLWOWv22XnQLU3cqYvp4pW7Z+qOhFQZIE6YhTk
+         9MD1YaNQPnpMXjm6iYZtLqhNtX2pHIMn7pxKWE+uMcJ1B3DPbU6t3XPKvmcdPJMhFJEb
+         lNOs43492nFwfFx6qPQjp7PL2QhRl3XsFMKgEtPPV9DXt9EfZ/irID5PUyN4K6d+++RV
+         5MTw7x4hxc7yk70KEa3EDWwX1D4Ebp6CvjWDNQNBEOFb8To/NvsSk5u0YqImWVUx2ZTt
+         Ux+Q==
+X-Gm-Message-State: AC+VfDxBY8lAtD0fcrKBXKgOrtJlthLztjHp6xnGYKMSHUM4Ltq5tqnh
+        YefCUkAg0D3QBQZzWL2t6dob9p57flc=
+X-Google-Smtp-Source: ACHHUZ7tGHTLx33j1SA3rCqMvkW36tZpL+4m0Z2+syIww1TP9dbeOsjRxqVTbYjEVibp1ZAU9zgrkg==
+X-Received: by 2002:aca:f056:0:b0:3a1:d438:843c with SMTP id o83-20020acaf056000000b003a1d438843cmr3217627oih.24.1688077884873;
+        Thu, 29 Jun 2023 15:31:24 -0700 (PDT)
+Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-fa73-c602-0aec-b14e.res6.spectrum.com. [2603:8081:140c:1a00:fa73:c602:aec:b14e])
+        by smtp.gmail.com with ESMTPSA id f5-20020a4ab645000000b005658aed310bsm2508525ooo.15.2023.06.29.15.31.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jun 2023 15:31:24 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, frank.zago@hpe.com,
+        ian.ziemba@hpe.com, jhack@hpe.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next] RDMA/rxe: Fix potential race in rxe_pool_get_index
+Date:   Thu, 29 Jun 2023 17:30:24 -0500
+Message-Id: <20230629223023.84008-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+Currently the lookup of an object from its index and taking a
+reference to the object are incorrectly protected by an rcu_read_lock
+but this does not make the xa_load and the kref_get combination an
+atomic operation.
 
-The hardware specification specifies that WQE_COUNT should set to 0 for
-the Receive Queue. Although currently the hardware doesn't enforce the
-check, in the future releases it may check on this value.
+The various write operations need to share the xarray state in a
+mixture of user, soft irq and hard irq contexts so the xa_locking
+must support that.
 
-Cc: stable@vger.kernel.org
-Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Long Li <longli@microsoft.com>
+This patch replaces the xa locks with xa_lock_irqsave.
+
+Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by xarrays")
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
-Change log:
-v4:
-Split the original patch into two: one for batching doorbell, one for setting the correct wqe count
+ drivers/infiniband/sw/rxe/rxe_pool.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
- drivers/net/ethernet/microsoft/mana/gdma_main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 8f3f78b68592..3765d3389a9a 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -300,8 +300,11 @@ static void mana_gd_ring_doorbell(struct gdma_context *gc, u32 db_index,
- 
- void mana_gd_wq_ring_doorbell(struct gdma_context *gc, struct gdma_queue *queue)
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+index 6215c6de3a84..f2b586249793 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.c
++++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+@@ -119,8 +119,10 @@ void rxe_pool_cleanup(struct rxe_pool *pool)
+ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem,
+ 				bool sleepable)
  {
-+	/* Hardware Spec specifies that software client should set 0 for
-+	 * wqe_cnt for Receive Queues. This value is not used in Send Queues.
-+	 */
- 	mana_gd_ring_doorbell(gc, queue->gdma_dev->doorbell, queue->type,
--			      queue->id, queue->head * GDMA_WQE_BU_SIZE, 1);
-+			      queue->id, queue->head * GDMA_WQE_BU_SIZE, 0);
- }
+-	int err;
++	struct xarray *xa = &pool->xa;
++	unsigned long flags;
+ 	gfp_t gfp_flags;
++	int err;
  
- void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit)
+ 	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
+ 		goto err_cnt;
+@@ -138,8 +140,10 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem,
+ 
+ 	if (sleepable)
+ 		might_sleep();
+-	err = xa_alloc_cyclic(&pool->xa, &elem->index, NULL, pool->limit,
++	xa_lock_irqsave(xa, flags);
++	err = __xa_alloc_cyclic(xa, &elem->index, NULL, pool->limit,
+ 			      &pool->next, gfp_flags);
++	xa_unlock_irqrestore(xa, flags);
+ 	if (err < 0)
+ 		goto err_cnt;
+ 
+@@ -154,15 +158,16 @@ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
+ {
+ 	struct rxe_pool_elem *elem;
+ 	struct xarray *xa = &pool->xa;
++	unsigned long flags;
+ 	void *obj;
+ 
+-	rcu_read_lock();
++	xa_lock_irqsave(xa, flags);
+ 	elem = xa_load(xa, index);
+ 	if (elem && kref_get_unless_zero(&elem->ref_cnt))
+ 		obj = elem->obj;
+ 	else
+ 		obj = NULL;
+-	rcu_read_unlock();
++	xa_unlock_irqrestore(xa, flags);
+ 
+ 	return obj;
+ }
+@@ -179,6 +184,7 @@ int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
+ 	struct rxe_pool *pool = elem->pool;
+ 	struct xarray *xa = &pool->xa;
+ 	static int timeout = RXE_POOL_TIMEOUT;
++	unsigned long flags;
+ 	int ret, err = 0;
+ 	void *xa_ret;
+ 
+@@ -188,7 +194,9 @@ int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
+ 	/* erase xarray entry to prevent looking up
+ 	 * the pool elem from its index
+ 	 */
+-	xa_ret = xa_erase(xa, elem->index);
++	xa_lock_irqsave(xa, flags);
++	xa_ret = __xa_erase(xa, elem->index);
++	xa_unlock_irqrestore(xa, flags);
+ 	WARN_ON(xa_err(xa_ret));
+ 
+ 	/* if this is the last call to rxe_put complete the
+@@ -249,8 +257,12 @@ int __rxe_put(struct rxe_pool_elem *elem)
+ 
+ void __rxe_finalize(struct rxe_pool_elem *elem)
+ {
++	struct xarray *xa = &elem->pool->xa;
++	unsigned long flags;
+ 	void *xa_ret;
+ 
+-	xa_ret = xa_store(&elem->pool->xa, elem->index, elem, GFP_KERNEL);
++	xa_lock_irqsave(xa, flags);
++	xa_ret = __xa_store(xa, elem->index, elem, GFP_KERNEL);
++	xa_unlock_irqrestore(xa, flags);
+ 	WARN_ON(xa_err(xa_ret));
+ }
+
+base-commit: 5f004bcaee4cb552cf1b46a505f18f08777db7e5
 -- 
-2.34.1
+2.39.2
 
