@@ -2,94 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CCA7423B2
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jun 2023 12:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7380C74253A
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jun 2023 14:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbjF2KGf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Jun 2023 06:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        id S229987AbjF2MCW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Jun 2023 08:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjF2KEd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jun 2023 06:04:33 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B6E3AA3
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 03:03:25 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-313f3a6db22so516597f8f.3
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 03:03:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1688033003; x=1690625003;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uaMGImYnQKnsq7fsnwOVnpPcILnExtFuFwZ75WjZ+G8=;
-        b=h+09ytWCV2amGFMopbaZtCXUJjJKz8DhAHtUefOVoKcGXTUaJcbmQzfziST1ySjwBs
-         fwMco4LDFc2kq+ha49mXvjonPLONQbpv3VPtykCjLfssrCYQ4DbEi8P9yVzhmqZZxDA2
-         qj4cQioeKR7RYGJx9ZwrtCpAPmq53BjVkt2tRarlOIUDH2Y1XbUgv9Mip5o2n88kjgEO
-         Yu2e+7sJ/cxB/dBNmExZIehrl8FIx27R5lVO+qDZPbkA110hpbVEiZxm1g5PFoROd4mJ
-         ucY4MkjHjiL+Wj2Ebd7rUzW+0Lq+eIYa+3auIEWrvhpKVopwKTYj+znGGMkMIrcfAWpM
-         3/Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688033003; x=1690625003;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uaMGImYnQKnsq7fsnwOVnpPcILnExtFuFwZ75WjZ+G8=;
-        b=OgF9HiJzM0NLYxcYtoUxa40BTpoejAtqGNa4N/+CcVidB0ySUXACJkDoabn0xYlr29
-         y2iPYs3ubz85ejfT+jLl3IFIDGZ0WrBOuFDbCDP4e96W3pzSfHo2kRaQajSQGGADEp7y
-         tw7jQXG2C8b5ffRwYRj2nUzPj0SqmM+BMzlxMNbPWxlqsUbYLKUoOxpJa4T8ynq6kOv1
-         vDV3Xk34iSo9uneoNvzPmgARA2aT1syF1IISL/IUPIIYBjuHt8QwapEajPv1vWgmzFLd
-         gdaRuzLZWspPIKHMLOO/yOJwzFkTsC7eK7xSIz+e2rQH1CWI1R8u9v4hzYU2tKo3fMAf
-         irlw==
-X-Gm-Message-State: AC+VfDwVYPrdmZy3SD7IXHYntj15SyL5p+/rt80twGE4/abqZryYRm53
-        5df8zcvPyKnAxPzWODBMu4N+NQ==
-X-Google-Smtp-Source: ACHHUZ4gGOlHZ3B9k0qBbIR5qB2LqkDmU6fIVVUkapqWekDMKRTnDoYalnmqNRmJCQ+KcYBUnFu3kw==
-X-Received: by 2002:a05:6000:42:b0:313:e2c4:7bc2 with SMTP id k2-20020a056000004200b00313e2c47bc2mr14036940wrx.53.1688033003304;
-        Thu, 29 Jun 2023 03:03:23 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id l6-20020adff486000000b00313fd294d6csm7414075wro.7.2023.06.29.03.03.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jun 2023 03:03:22 -0700 (PDT)
-Date:   Thu, 29 Jun 2023 12:03:21 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Vitaly Grinberg <vgrinber@redhat.com>
-Cc:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>,
-        David Airlie <airlied@redhat.com>, andy.ren@getcruise.com,
-        anthony.l.nguyen@intel.com, arnd@arndb.de, axboe@kernel.dk,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        claudiajkang@gmail.com, corbet@lwn.net, davem@davemloft.net,
-        edumazet@google.com, geert+renesas@glider.be,
-        gregkh@linuxfoundation.org, hkallweit1@gmail.com,
-        idosch@nvidia.com, intel-wired-lan@lists.osuosl.org,
-        jacek.lawrynowicz@linux.intel.com,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        jesse.brandeburg@intel.com, jonathan.lemon@gmail.com,
-        kuba@kernel.org, kuniyu@amazon.com, leon@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux@zary.sk, liuhangbin@gmail.com,
-        lucien.xin@gmail.com, masahiroy@kernel.org,
-        michal.michalik@intel.com, milena.olech@intel.com,
-        Michal Schmidt <mschmidt@redhat.com>,
-        Michael Tsirkin <mst@redhat.com>, netdev@vger.kernel.org,
-        nicolas.dichtel@6wind.com, nipun.gupta@amd.com, ogabbay@kernel.org,
-        Paolo Abeni <pabeni@redhat.com>, phil@nwl.cc,
-        Petr Oros <poros@redhat.com>, razor@blackwall.org,
-        ricardo.canuelo@collabora.com, richardcochran@gmail.com,
-        saeedm@nvidia.com, sj@kernel.org, tzimmermann@suse.de,
-        vadfed@fb.com, vadfed@meta.com, vadim.fedorenko@linux.dev
-Subject: Re: [RFC PATCH v8 00/10] Create common DPLL configuration API
-Message-ID: <ZJ1W6Trfar7xxkJ2@nanopsycho>
-References: <CACLnSDhkUA=19905RKk=f1WBkd3jTEDcvytJCgavi90FroXb5w@mail.gmail.com>
- <ZJ0/StDYFANB1COA@nanopsycho>
- <CACLnSDgudK155J8myg99Q+sr18sUy5nJOQsBWtgsFBPGRVhDCQ@mail.gmail.com>
+        with ESMTP id S230198AbjF2MCV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jun 2023 08:02:21 -0400
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DDA30E5
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 05:02:18 -0700 (PDT)
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.66.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 31A503F27F
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 12:02:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+        s=20210803; t=1688040137;
+        bh=oK9Wpw24mutaIeH4fkDeuX5k8BH4ocvPRrB6L014yFk=;
+        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+         Reply-To;
+        b=plvnl0nNj4Kkt4+Jm0oCjHoSTai+uOmxHqrWnf1HiBAHf+9V6bvpMKdPoTiUrH5dn
+         lFiEfmZEz7kcbFuA7dsqCrINxthpE8Vrt2GX57vAMgVzV1nnfZY8Esa6TXAqXq02s2
+         u2Qt1wSgaHY2sI7hRelVFZOVjtObIyI1ZyvXZ3xUlj+4cCl48pQnNCnjZniNhP4190
+         HuLg9bYVj7WYzdDwxhhGcgy7U5ACtotU7cxyg9QE2pqvc7Yhx4C2OwjAkh4hc3MsEO
+         fm1O9LpvEgGNfoHk1j6D6xyIlgLgILorN8WLxAf1I4MjJ0/jREoJs8LOmsgH54oY4M
+         +4KacXNQ9GpCA==
+Received: from juju-4112d9-prod-launchpad-manual-servers-4.lp.internal (localhost [127.0.0.1])
+        by buildd-manager.lp.internal (Postfix) with ESMTP id 582F1BDE6A
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 12:02:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACLnSDgudK155J8myg99Q+sr18sUy5nJOQsBWtgsFBPGRVhDCQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To:     Linux RDMA <linux-rdma@vger.kernel.org>
+From:   noreply@launchpad.net
+Subject: [recipe build #3565435] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <168804013633.18761.17252561458004932839.launchpad@juju-4112d9-prod-launchpad-manual-servers-4.lp.internal>
+Date:   Thu, 29 Jun 2023 12:02:16 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+X-Generated-By: Launchpad (canonical.com); Revision="d6e3bf1b1b4849a91befd7dad9268049d9a506ae"; Instance="buildmaster"
+X-Launchpad-Hash: d7be7297c41f8a52c2229819d70174f1ec0997e5
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,29 +60,18 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thu, Jun 29, 2023 at 10:26:28AM CEST, vgrinber@redhat.com wrote:
->Hi Jiri,
->We are pushing for it to be implemented in Intel Ice driver.
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 2 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3565435/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-056
 
-It does not have to be part of the initial submission. It can be
-extended later on. Also, not possible to define the UAPI without actual
-driver implementation.
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3565435
+Your team Linux RDMA is the requester of the build.
 
-
->Thanks,
->Vitaly
->
->On Thu, Jun 29, 2023 at 11:22 AM Jiri Pirko <jiri@resnulli.us> wrote:
->>
->> Thu, Jun 22, 2023 at 09:44:19AM CEST, vgrinber@redhat.com wrote:
->> >Hi,
->> >Could it be possible to add PPS DPLL phase offset to the netlink API? We
->> >are relying on it in the E810-based grandmaster implementation.
->>
->> In which driver you need to implement this?
->>
->>
->> >Thanks,
->> >Vitaly
->>
->
