@@ -2,120 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D13E174221F
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jun 2023 10:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CA574227F
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jun 2023 10:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbjF2I1j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Jun 2023 04:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        id S232568AbjF2Ioh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Jun 2023 04:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjF2I1b (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jun 2023 04:27:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA0B2D51
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 01:26:43 -0700 (PDT)
+        with ESMTP id S232607AbjF2In7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jun 2023 04:43:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A8D2972
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 01:42:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1688027202;
+        s=mimecast20190719; t=1688028159;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2X/9hjh4GCRep3Yr5A88t6/9ZJUgY/QuDsFgqFDxHcg=;
-        b=UalajFWSBy0qITeImnTR8Yh+pO5iHnOpdgx7eKPuyYugE3YwonarzuAn6iBBMJUdJpFw3g
-        Ptf+ggvnF23HcYQjKgKxSbKu/kBo772JrysoXAj4KCr+ciz0sgpkJlDExITHYHfQJ1WdX3
-        WWR105kFr1OzgbgINMKWJ/WD47hSuQo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=Y7uH2v60++wlSFd3mdA5C25peNy3bqIH/P5Zip2EcJY=;
+        b=Alr/EKmhy79bwZ4O9Q7RJfYzqgYu7h5Af1xyuy8aVNI1RCX674wCfylb/e5nxm7S1sBPIf
+        M/+pIMQ5unn9KQ2tSpBxLCbCwazE8QO9w4nk70IJ25SSfoHh7EpKl0cbshZRZkbF9NBEt7
+        XFcJaXoUnBQBj9WFzQPWquMapAQXY5A=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-119-HvJ4YNhiMMuyAuJ3BmbSBQ-1; Thu, 29 Jun 2023 04:26:40 -0400
-X-MC-Unique: HvJ4YNhiMMuyAuJ3BmbSBQ-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3141325af78so266116f8f.3
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 01:26:40 -0700 (PDT)
+ us-mta-386-HGyLf6ikMzmq1HS7VaoacA-1; Thu, 29 Jun 2023 04:42:38 -0400
+X-MC-Unique: HGyLf6ikMzmq1HS7VaoacA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3faf68cb69eso926095e9.0
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 01:42:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688027199; x=1690619199;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2X/9hjh4GCRep3Yr5A88t6/9ZJUgY/QuDsFgqFDxHcg=;
-        b=Uj7EEnbU6CAtMkaEM50yhURCF7BzVdgwGehQLZzEMAOJlMUXoVn0Z+PgYXJOov3MYH
-         drDoeQK1PNcToN5Z44Rlc2+u0yPdgHeGvsazrlm9e9OLiyqTiLl8JIXSK4fxSIAGZOLz
-         wQta3NksqDywO/kEYbmPylXGFO79RZqOO99e9YvQGHll4hNLrjw/rBSolaxgs4zehaJd
-         E74S4ZOKqV5fOMEOgzKpHuLbrl3fLslxlhj8ngBV4s6MBv1B6g0vn8QtVNtJp8sMHf0x
-         ycMEFCRMDZlEkKFNzCbLnCb+hivrcEq+47X52wW6ILVwToB4xQgNC6E0EpYLSErR9OU4
-         QHAg==
-X-Gm-Message-State: AC+VfDyLvIvx0lUAHB3gDGnmOgNrj0bMM6n9m8ZrYYr6hx0K+aNuUwOC
-        rbGs1kEeXSUBVyu/2P+/s41Q+IK6ss0PTYFk7A0ekTy5PLgWTsKL6VbO1bdaHohtyJOKA8kkPkw
-        2ZpqMH2O4CEj5tgJo2b6olcXNdKKrRKs/rpIweA==
-X-Received: by 2002:a5d:4c49:0:b0:307:9702:dfc8 with SMTP id n9-20020a5d4c49000000b003079702dfc8mr32317064wrt.48.1688027199778;
-        Thu, 29 Jun 2023 01:26:39 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ7omIpTgTvWmp/XA4qHqIcJGGRJMHLQApXBTxOevoUf3FMPyDoPRMaq5jK0ngggDraIqFDpoXXUgwpysfyG+3w=
-X-Received: by 2002:a5d:4c49:0:b0:307:9702:dfc8 with SMTP id
- n9-20020a5d4c49000000b003079702dfc8mr32317009wrt.48.1688027199420; Thu, 29
- Jun 2023 01:26:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <CACLnSDhkUA=19905RKk=f1WBkd3jTEDcvytJCgavi90FroXb5w@mail.gmail.com>
- <ZJ0/StDYFANB1COA@nanopsycho>
-In-Reply-To: <ZJ0/StDYFANB1COA@nanopsycho>
-From:   Vitaly Grinberg <vgrinber@redhat.com>
-Date:   Thu, 29 Jun 2023 11:26:28 +0300
-Message-ID: <CACLnSDgudK155J8myg99Q+sr18sUy5nJOQsBWtgsFBPGRVhDCQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v8 00/10] Create common DPLL configuration API
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>,
-        David Airlie <airlied@redhat.com>, andy.ren@getcruise.com,
-        anthony.l.nguyen@intel.com, arnd@arndb.de, axboe@kernel.dk,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        claudiajkang@gmail.com, corbet@lwn.net, davem@davemloft.net,
-        edumazet@google.com, geert+renesas@glider.be,
-        gregkh@linuxfoundation.org, hkallweit1@gmail.com,
-        idosch@nvidia.com, intel-wired-lan@lists.osuosl.org,
-        jacek.lawrynowicz@linux.intel.com,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        jesse.brandeburg@intel.com, jonathan.lemon@gmail.com,
-        kuba@kernel.org, kuniyu@amazon.com, leon@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux@zary.sk, liuhangbin@gmail.com,
-        lucien.xin@gmail.com, masahiroy@kernel.org,
-        michal.michalik@intel.com, milena.olech@intel.com,
-        Michal Schmidt <mschmidt@redhat.com>,
-        Michael Tsirkin <mst@redhat.com>, netdev@vger.kernel.org,
-        nicolas.dichtel@6wind.com, nipun.gupta@amd.com, ogabbay@kernel.org,
-        Paolo Abeni <pabeni@redhat.com>, phil@nwl.cc,
-        Petr Oros <poros@redhat.com>, razor@blackwall.org,
-        ricardo.canuelo@collabora.com, richardcochran@gmail.com,
-        saeedm@nvidia.com, sj@kernel.org, tzimmermann@suse.de,
-        vadfed@fb.com, vadfed@meta.com, vadim.fedorenko@linux.dev
+        d=1e100.net; s=20221208; t=1688028157; x=1690620157;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y7uH2v60++wlSFd3mdA5C25peNy3bqIH/P5Zip2EcJY=;
+        b=Pg5XgVv9Z/fogrjW3WUuGartRfjOqao2YWg1Rr4F6VuqtrD3+7r/8h74k2t/mJSeWk
+         ivthFvUbfcgoJ0jXBosX4bNMQlnm6ozoVi+UUii71SEEecIOq+zczsSVQK78pTsJUjgk
+         0kfSeikIa0vaKS0ugXCQYGRKelK59spocQ9zeP+kgTu3mImRBizwMHq4pHcezFk2g+Bg
+         wEtWTMY0zBmy/XizSXZMeA9H4jECtob9WYZ+D5cBChWRJvVRcbsK0nl8JHbtqRkcds3H
+         zebhtUlAG86TL3PqpMRIpMX09Uq7x0WZUZzMBz52LaRvG/MTQHj1xelQhcxo11h2KAbx
+         HURA==
+X-Gm-Message-State: AC+VfDz8cPTFQPQ8FYfCNpi7T3zXXGS/QW1pGb3/PAXbB9b3LPWRNUD7
+        s+/ghL8adUtsgNPAt5CqA6EDyezNJqpS1xaLFVWHy3Rgy2qba0OBXEUJtGHZyQWDVGqlkotcHWU
+        YS3qprRQERACKQoa/ROtUQQ==
+X-Received: by 2002:a1c:ed17:0:b0:3f5:f543:d81f with SMTP id l23-20020a1ced17000000b003f5f543d81fmr38947306wmh.3.1688028157033;
+        Thu, 29 Jun 2023 01:42:37 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ6+iH2URekcBBIFaPW3s8y3AcFdwpt0qhkGkVRHNjX6kI62bNLzHfSyF8zFoO0Ym2TuJLWyPg==
+X-Received: by 2002:a1c:ed17:0:b0:3f5:f543:d81f with SMTP id l23-20020a1ced17000000b003f5f543d81fmr38947276wmh.3.1688028156751;
+        Thu, 29 Jun 2023 01:42:36 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-231-196.dyn.eolo.it. [146.241.231.196])
+        by smtp.gmail.com with ESMTPSA id r15-20020adfe68f000000b003111025ec67sm15279253wrm.25.2023.06.29.01.42.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jun 2023 01:42:36 -0700 (PDT)
+Message-ID: <36c95dd6babb2202f70594d5dde13493af62dcad.camel@redhat.com>
+Subject: Re: [Patch v3] net: mana: Batch ringing RX queue doorbell on
+ receiving packets
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     longli@linuxonhyperv.com, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Long Li <longli@microsoft.com>, stable@vger.kernel.org
+Date:   Thu, 29 Jun 2023 10:42:34 +0200
+In-Reply-To: <1687823827-15850-1-git-send-email-longli@linuxonhyperv.com>
+References: <1687823827-15850-1-git-send-email-longli@linuxonhyperv.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jiri,
-We are pushing for it to be implemented in Intel Ice driver.
-Thanks,
-Vitaly
+On Mon, 2023-06-26 at 16:57 -0700, longli@linuxonhyperv.com wrote:
+> From: Long Li <longli@microsoft.com>
+>=20
+> It's inefficient to ring the doorbell page every time a WQE is posted to
+> the received queue. Excessive MMIO writes result in CPU spending more
+> time waiting on LOCK instructions (atomic operations), resulting in
+> poor scaling performance.
+>=20
+> Move the code for ringing doorbell page to where after we have posted all
+> WQEs to the receive queue during a callback from napi_poll().
+>=20
+> With this change, tests showed an improvement from 120G/s to 160G/s on a
+> 200G physical link, with 16 or 32 hardware queues.
+>=20
+> Tests showed no regression in network latency benchmarks on single
+> connection.
+>=20
+> While we are making changes in this code path, change the code for
+> ringing doorbell to set the WQE_COUNT to 0 for Receive Queue. The
+> hardware specification specifies that it should set to 0. Although
+> currently the hardware doesn't enforce the check, in the future releases
+> it may do.
+>=20
+> Cc: stable@vger.kernel.org
+> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network=
+ Adapter (MANA)")
 
-On Thu, Jun 29, 2023 at 11:22=E2=80=AFAM Jiri Pirko <jiri@resnulli.us> wrot=
-e:
->
-> Thu, Jun 22, 2023 at 09:44:19AM CEST, vgrinber@redhat.com wrote:
-> >Hi,
-> >Could it be possible to add PPS DPLL phase offset to the netlink API? We
-> >are relying on it in the E810-based grandmaster implementation.
->
-> In which driver you need to implement this?
->
->
-> >Thanks,
-> >Vitaly
->
+Uhmmm... this looks like a performance improvement to me, more suitable
+for the net-next tree ?!? (Note that net-next is closed now).
+
+In any case you must avoid empty lines in the tag area.
+
+If you really intend targeting the -net tree, please repost fixing the
+above and explicitly specifying the target tree in the subj prefix.
+
+thanks!
+
+Paolo
 
